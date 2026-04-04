@@ -1,26 +1,64 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ══════════════════════════════════════════
+   도시공존 디자인 시스템
+   ══════════════════════════════════════════ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Primary — 샌드 오렌지 */
+  --color-primary: #FF8A65;
+  --color-primary-light: #FFAB91;
+  --color-primary-dark: #E57550;
+
+  /* Background — 샴페인 베이지 */
+  --color-warm-white: #FDFBF7;
+  --color-surface: #FFFFFF;
+  --color-surface-alt: #FAF7F2;
+
+  /* Text */
+  --color-text-main: #2D2D2D;
+  --color-text-sub: #8A8580;
+  --color-text-light: #B5B0AA;
+  --color-text-muted: #C5C0BA;
+
+  /* Accents */
+  --color-mint: #7ECEC1;
+  --color-coral: #FFB5A7;
+  --color-error: #EF767A;
+  --color-warning: #FFD166;
+
+  /* Border */
+  --color-border: #EDE8E3;
+  --color-divider: #F5F0EB;
+
+  /* Font */
+  --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { -webkit-tap-highlight-color: transparent; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-warm-white);
+  color: var(--color-text-main);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
+
+/* ── 유틸리티 ── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.card {
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.card-sm {
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.nav-shadow { box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03); }
+.fab-shadow { box-shadow: 0 6px 16px rgba(255, 138, 101, 0.3); }
