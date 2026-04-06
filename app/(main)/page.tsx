@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, ChevronRight, Eye, MessageCircle, Sparkles } from "lucide-react";
+import { AlertTriangle, ChevronRight, Eye, MessageCircle, Sparkles, Bot, Send } from "lucide-react";
+import AIChatModal from "@/app/components/AIChatModal";
 import type { Post } from "@/lib/types";
 import { CATEGORY_MAP } from "@/lib/types";
 import { getPosts, formatRelativeTime } from "@/lib/store";
@@ -32,6 +33,8 @@ export default function HomePage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [fact, setFact] = useState("");
   const [greeting, setGreeting] = useState("안녕하세요");
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatInput, setChatInput] = useState("");
 
   useEffect(() => {
     setMounted(true);
@@ -79,6 +82,36 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* ── AI 집사 카드 ── */}
+      <div className="card p-5 mt-4">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+            <Bot size={20} className="text-primary" />
+          </div>
+          <div>
+            <p className="text-[15px] font-bold text-text-main">AI 집사</p>
+            <p className="text-[11px] text-text-sub">길고양이 돌봄이 궁금하다면 물어보세요</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setChatOpen(true)}
+            className="flex-1 bg-surface-alt rounded-2xl px-4 py-3 text-[13px] text-text-muted text-left"
+          >
+            예: 새끼 고양이를 발견했어요...
+          </button>
+          <button
+            onClick={() => setChatOpen(true)}
+            className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center shrink-0 active:scale-90 transition-transform"
+          >
+            <Send size={16} color="white" />
+          </button>
+        </div>
+      </div>
+
+      {/* ── AI 채팅 모달 ── */}
+      <AIChatModal open={chatOpen} onClose={() => setChatOpen(false)} />
 
       {/* ── 퀵 액션 ── */}
       <div className="grid grid-cols-4 gap-2.5 mt-5">
