@@ -51,14 +51,51 @@ body {
 .card {
   background: white;
   border-radius: 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
 }
 
 .card-sm {
   background: white;
-  border-radius: 18px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border-radius: 20px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.03);
+}
+
+.card-glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 24px;
 }
 
 .nav-shadow { box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03); }
-.fab-shadow { box-shadow: 0 6px 16px rgba(255, 138, 101, 0.3); }
+.fab-shadow { box-shadow: 0 6px 20px rgba(255, 138, 101, 0.35); }
+
+/* ── 태그 ── */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ── 프로그레스 바 ── */
+.progress-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-divider);
+  overflow: hidden;
+}
+.progress-bar > div {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+/* ── 가로 스크롤 카드 ── */
+.slide-card {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}

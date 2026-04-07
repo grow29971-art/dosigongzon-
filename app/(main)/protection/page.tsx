@@ -31,7 +31,7 @@ const cards: {
     iconBg: "#DBEAFE",
     iconColor: "#3B82F6",
     type: "external",
-    href: "https://www.animal.go.kr/front/community/show.do?boardId=contents&seq=89",
+    href: "https://www.mafra.go.kr/bbs/home/795/570364/artclView.do",
     wide: true,
   },
   {

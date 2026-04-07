@@ -31,6 +31,7 @@ const SEED_POSTS: Post[] = [
     content: "오른쪽 앞다리를 절뚝거리고 있어요. 역삼동 GS25 앞 골목입니다. 도움이 필요합니다.",
     authorId: "admin",
     authorName: "도시공존",
+    region: "역삼동",
     images: [],
     isPinned: false,
     viewCount: 42,
@@ -45,6 +46,7 @@ const SEED_POSTS: Post[] = [
     content: "아파트 주차장에서 발견된 생후 약 3주 된 아기 고양이들입니다. 엄마가 보이지 않아 임시보호가 시급합니다.",
     authorId: "user-1",
     authorName: "캣맘서울",
+    region: "합정동",
     images: [],
     isPinned: false,
     viewCount: 156,
@@ -59,6 +61,7 @@ const SEED_POSTS: Post[] = [
     content: "2살 된 코숏 수컷입니다. 중성화, 예방접종 모두 완료. 사람을 잘 따르고 성격이 온순합니다.",
     authorId: "user-2",
     authorName: "고양이사랑",
+    region: "역삼동",
     images: [],
     isPinned: false,
     viewCount: 89,
@@ -73,6 +76,7 @@ const SEED_POSTS: Post[] = [
     content: "오늘 아침 용산구 이태원로 급식소에 사료 5kg 보충했습니다. 물그릇도 교체했어요.",
     authorId: "user-3",
     authorName: "동네지킴이",
+    region: "이태원동",
     images: [],
     isPinned: false,
     viewCount: 67,
@@ -87,6 +91,7 @@ const SEED_POSTS: Post[] = [
     content: "4월 1일부터 보이지 않습니다. 목에 파란색 목걸이를 하고 있어요. 목격하신 분 연락 부탁드려요.",
     authorId: "user-4",
     authorName: "방배냥이",
+    region: "방배동",
     images: [],
     isPinned: false,
     viewCount: 234,
@@ -101,6 +106,7 @@ const SEED_POSTS: Post[] = [
     content: "출근길에 매일 보는 치즈태비인데 오늘따라 다가와서 손 냄새를 맡더라고요 🥹",
     authorId: "user-5",
     authorName: "출근냥덕",
+    region: "합정동",
     images: [],
     isPinned: false,
     viewCount: 312,
@@ -126,6 +132,21 @@ export function getPosts(): Post[] {
 
 export function getPostsByCategory(category: PostCategory): Post[] {
   return getPosts().filter((p) => p.category === category);
+}
+
+export function getPostsByRegion(region: string): Post[] {
+  return getPosts().filter((p) => p.region === region);
+}
+
+// 사용자 동네 저장/불러오기
+const REGION_KEY = "dosigongzon_region";
+
+export function getUserRegion(): string {
+  return get<string>(REGION_KEY, "");
+}
+
+export function setUserRegion(region: string) {
+  set(REGION_KEY, region);
 }
 
 export function getPostById(id: string): Post | undefined {

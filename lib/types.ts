@@ -39,6 +39,7 @@ export interface Post {
   content: string;
   authorId: string;
   authorName: string;
+  region?: string; // 동 단위 (예: "역삼동")
   images: string[];
   isPinned: boolean;
   viewCount: number;
