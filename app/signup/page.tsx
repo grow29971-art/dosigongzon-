@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { PawPrint, Mail, Lock, User, Eye, EyeOff, ArrowLeft, Check } from "lucide-react";
+import { PawPrint, Mail, Lock, User, Eye, EyeOff, ArrowLeft, Check, Loader2 } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -19,6 +20,8 @@ export default function SignupPage() {
   const [agree, setAgree] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [pressing, setPressing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   const validate = () => {
     const next: Record<string, string> = {};
@@ -34,10 +37,31 @@ export default function SignupPage() {
     return Object.keys(next).length === 0;
   };
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!validate()) return;
-    // TODO: 실제 회원가입 API 연동
-    router.push("/");
+    setLoading(true);
+    setErrors({});
+
+    const { error } = await createClient().auth.signUp({
+      email,
+      password,
+      options: {
+        data: { nickname },
+      },
+    });
+
+    if (error) {
+      setLoading(false);
+      if (error.message.includes("already registered")) {
+        setErrors({ email: "이미 가입된 이메일입니다." });
+      } else {
+        setErrors({ email: error.message });
+      }
+      return;
+    }
+
+    setLoading(false);
+    setEmailSent(true);
   };
 
   const pwStrength =
@@ -75,8 +99,26 @@ export default function SignupPage() {
           </p>
         </div>
 
+        {/* ══════ 이메일 인증 안내 ══════ */}
+        {emailSent && (
+          <div className="bg-green-50 border border-green-200 rounded-2xl p-6 text-center mb-6">
+            <Mail size={32} className="text-green-500 mx-auto mb-3" />
+            <p className="text-[16px] font-bold text-text-main mb-2">인증 메일을 보냈습니다!</p>
+            <p className="text-[13px] text-text-sub leading-relaxed">
+              <strong>{email}</strong>로 인증 링크를 보냈어요.<br />
+              메일함을 확인하고 링크를 클릭하면 가입이 완료됩니다.
+            </p>
+            <Link
+              href="/login"
+              className="inline-block mt-4 px-6 py-2.5 rounded-xl bg-primary text-white text-[14px] font-bold"
+            >
+              로그인 페이지로
+            </Link>
+          </div>
+        )}
+
         {/* ══════ 입력 폼 ══════ */}
-        <div className="space-y-3 mb-6">
+        {!emailSent && <><div className="space-y-3 mb-6">
           {/* 닉네임 */}
           <div>
             <div
@@ -202,7 +244,8 @@ export default function SignupPage() {
           onPointerUp={() => setPressing(false)}
           onPointerLeave={() => setPressing(false)}
           onClick={handleSignup}
-          className="w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold transition-transform duration-100"
+          disabled={loading}
+          className="w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold transition-transform duration-100 disabled:opacity-60"
           style={{
             transform: pressing ? "scale(0.97)" : "scale(1)",
             boxShadow: pressing
@@ -210,7 +253,11 @@ export default function SignupPage() {
               : "0 6px 20px rgba(255,138,101,0.35)",
           }}
         >
-          가입하기
+          {loading ? (
+            <Loader2 size={20} className="animate-spin mx-auto" />
+          ) : (
+            "가입하기"
+          )}
         </button>
 
         {/* ══════ 로그인 링크 ══════ */}
@@ -220,6 +267,7 @@ export default function SignupPage() {
             로그인
           </Link>
         </div>
+        </>}
       </div>
     </div>
   );
