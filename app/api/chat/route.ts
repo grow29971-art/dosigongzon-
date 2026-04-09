@@ -11,20 +11,43 @@ const OFFLINE_RESPONSES: { keywords: string[]; answer: string }[] = [
   { keywords: ["물", "물통", "수분"], answer: "길고양이에게 깨끗한 물을 제공해주시는 거군요! 매일 신선한 물로 교체해주시고, 겨울에는 깊은 그릇을 사용하거나 하루 2회 이상 교체해주세요. 성우님의 세심한 배려가 큰 힘이 됩니다!" },
 ];
 
-const OFFLINE_FALLBACK = "좋은 질문이에요! 지금 AI 집사가 잠시 쉬고 있어서 자세한 답변이 어렵지만, 보호지침 메뉴에서 관련 가이드를 확인해보시거나 동물보호콜센터(1577-0954)에 문의해보세요. 성우님, 항상 응원합니다!";
+const OFFLINE_FALLBACK = "좋은 질문이에요! 지금 AI 집사가 잠시 쉬고 있어서 자세한 답변이 어렵지만, 도시공존 앱의 보호지침 메뉴에서 관련 가이드를 확인해보시거나 동물보호콜센터(1577-0954)에 문의해보세요. 병원 탭에서 근처 협력병원도 찾아보실 수 있어요! 성우님, 항상 응원합니다!";
+
+const OFFLINE_EXTRAS: { keywords: string[]; answer: string }[] = [
+  { keywords: ["쉼터", "온열", "온도", "IoT", "모니터링"], answer: "도시공존 앱 홈 화면에서 무선 온열 쉼터의 온도, 습도, 배터리 상태를 실시간으로 확인하실 수 있어요. 쉼터 내부 적정 온도는 15~20도 사이가 좋습니다. 성우님의 쉼터가 길냥이들에게 큰 힘이 됩니다!" },
+  { keywords: ["진료비", "병원비", "가격", "비교", "얼마"], answer: "도시공존 앱 병원 탭에서 기본진료, 중성화, 예방접종 가격을 병원별로 비교해보실 수 있어요. 'TNR 협력', '과잉진료 없음' 태그가 붙은 병원을 추천드립니다! 성우님, 현명한 집사의 선택을 응원해요!" },
+  { keywords: ["앱", "기능", "도시공존", "뭐해", "뭘 할 수"], answer: "도시공존 앱에서는 무선 온열 쉼터 모니터링, 동물병원 진료비 비교, 동네 기반 커뮤니티, 보호지침(냥줍/응급/포획/법률 가이드), 그리고 저 AI 집사까지 이용하실 수 있어요! 성우님과 함께 공존의 길을 걸어가요!" },
+];
 
 function getOfflineResponse(question: string): string {
   const q = question.toLowerCase();
   for (const r of OFFLINE_RESPONSES) {
     if (r.keywords.some((kw) => q.includes(kw))) return r.answer;
   }
+  for (const r of OFFLINE_EXTRAS) {
+    if (r.keywords.some((kw) => q.includes(kw))) return r.answer;
+  }
   return OFFLINE_FALLBACK;
 }
 
-const SYSTEM_PROMPT = `너는 길고양이 보호와 공존을 돕는 '도시공존' 서비스의 AI 전문가 집사야.
-따뜻하고 친절한 말투를 사용하고, 고양이 건강이나 돌봄에 대해 전문적이지만 이해하기 쉽게 설명해 줘.
-답변 끝에는 항상 성우님을 응원하는 한 줄 멘트를 덧붙여줘.
-반드시 500자 이내로, 핵심만 담아 2~4문장으로 간결하게 답변해.`;
+const SYSTEM_PROMPT = `너는 '도시공존' 앱의 AI 집사야. 길고양이 보호와 도시 공존을 전문으로 하는 따뜻한 조력자야.
+
+[너의 성격]
+- 따뜻하고 친절하며 전문적인 말투 사용
+- 어려운 용어는 쉽게 풀어서 설명
+- 답변 끝에 항상 성우님을 응원하는 한 줄 멘트 추가
+
+[도시공존 서비스에 대한 지식]
+- 무선 온열 쉼터: 길고양이를 위한 IoT 온열 쉼터. 앱에서 온도/습도/배터리를 실시간 모니터링 가능
+- 진료비 비교: 동물병원별 기본진료/중성화/예방접종 가격을 비교하고, TNR 협력병원/과잉진료 없는 병원을 찾을 수 있음
+- 동네 소식: 지역 기반으로 길고양이 관련 소식을 공유하는 커뮤니티
+- 보호지침: 냥줍 가이드, 응급 구조, 포획 가이드, 법률 가이드(동물보호법) 제공
+- TNR: 포획-중성화-방사 사업. 구청 동물보호 담당부서에서 무료 진행 가능
+
+[답변 규칙]
+- 핵심만 담아 3~6문장으로 간결하지만 끊기지 않게 완결된 문장으로 답변
+- 길고양이와 무관한 질문에도 친절하게 응대하되, 길고양이 관련 정보로 자연스럽게 유도
+- 위급한 상황(학대, 부상)에는 즉시 신고 번호 안내 (경찰 112, 동물보호콜센터 1577-0954)`;
 
 // 우선순위대로 시도할 모델 목록 (폭넓게 폴백)
 const MODEL_CANDIDATES = [
@@ -44,7 +67,7 @@ async function tryChat(
 ): Promise<{ text: string; model: string }> {
   const model = genAI.getGenerativeModel({
     model: modelName,
-    generationConfig: { maxOutputTokens: 300 },
+    generationConfig: { maxOutputTokens: 2048 },
   });
 
   const chat = model.startChat({
