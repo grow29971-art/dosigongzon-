@@ -90,11 +90,16 @@ export default function OnboardingPage() {
     }, 400);
   };
 
+  const completeOnboarding = () => {
+    try { localStorage.setItem("dosigongzon_onboarded", "true"); } catch {}
+  };
+
   const handleNext = () => {
     if (isLast) {
       setHeartbeat(true);
+      completeOnboarding();
       setTimeout(() => {
-        router.push("/login");
+        router.push("/");
       }, 600);
     } else {
       goTo(current + 1);
@@ -105,7 +110,7 @@ export default function OnboardingPage() {
     <div className="fixed inset-0 overflow-hidden" style={{ background: slide.bg, transition: "background 0.8s ease" }}>
       {/* ── 건너뛰기 ── */}
       <button
-        onClick={() => router.push("/login")}
+        onClick={() => { completeOnboarding(); router.push("/"); }}
         className="absolute top-12 right-5 z-20 text-[13px] font-medium px-3 py-1.5 rounded-full active:opacity-50 transition-opacity"
         style={{ color: "rgba(255,255,255,0.5)" }}
       >

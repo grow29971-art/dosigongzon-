@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Bell,
   User,
@@ -89,6 +90,7 @@ function getGreeting() {
 
 /* ═══ 페이지 ═══ */
 export default function HomePage() {
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [fact, setFact] = useState("");
   const [greeting, setGreeting] = useState("안녕하세요");
@@ -98,6 +100,14 @@ export default function HomePage() {
   const [weatherError, setWeatherError] = useState("");
 
   useEffect(() => {
+    // 처음 방문자 → 온보딩으로 리다이렉트
+    try {
+      if (!localStorage.getItem("dosigongzon_onboarded")) {
+        router.push("/onboarding");
+        return;
+      }
+    } catch {}
+
     setMounted(true);
     setFact(CAT_FACTS[Math.floor(Math.random() * CAT_FACTS.length)]);
     setGreeting(getGreeting());
