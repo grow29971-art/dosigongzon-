@@ -3,9 +3,10 @@
 **작성일:** 2026. 02. 08
 **상태:** 최종 확정 (Ready for Coding)
 **문서 버전:** v1.2
-**연동 문서:** PRD v1.6
+**연동 문서:** PRD v1.6, 학습로드맵_8주파운데이션.md
 **개발 체제:** 1인 풀스택 + AI 어시스턴트
 **변경 이력:** v1.0 아키텍처 + v1.1 보안 개선(정적 흐림 좌표, 보안 단일 창구, AI 가드레일)을 통합. CCTV는 PRD 기준 P2 유지. 스키마·API·일정 전면 재정비.
+**부분 갱신(2026-04-10):** MVP 스택 표에 `shadcn/ui` UI Kit 항목을 공식 편입. 동일 날짜 세이지/클레이 팔레트 전면 리뉴얼 작업과 연계하여, 향후 컴포넌트 재작성 시 shadcn/ui 블록을 기반으로 한다. tRPC는 학습로드맵에만 포함하며 본 TRD에는 도입하지 않는다(기존 Drizzle + Route Handler 구조 유지).
 
 ---
 
@@ -18,6 +19,7 @@
 | **Framework** | Next.js 15 (App Router) | SSR/SSG로 SEO 극대화. 서버 컴포넌트로 프론트·백엔드 통합. |
 | **Language** | TypeScript 5.x | 도메인 엔티티 타입 안전성. 런타임 버그 사전 차단. |
 | **Styling** | Tailwind CSS 3.x | 벤토 스타일 레이아웃 빠른 구현. |
+| **UI Kit** | shadcn/ui | Radix UI + Tailwind 기반 설치형 컴포넌트. 복사-붙여넣기 방식이라 커스텀 팔레트(세이지/클레이) 적용이 자유로움. 신규 페이지 및 기존 페이지 재작성 시 블록 단위로 점진적 도입. |
 | **BaaS/DB** | Supabase (PostgreSQL 15) | Auth·Realtime·Storage 통합. Free tier 초기 비용 0원. |
 | **ORM** | Drizzle ORM | 타입 안전 쿼리. 경량. Supabase PostgreSQL 네이티브 호환. |
 | **Validation** | Zod | API 입력 검증 + AI 응답 구조 검증 공통 사용. |
