@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, BriefcaseMedical } from "lucide-react";
 
 const STEPS = [
-  { step: 1, title: "안전 확보", color: "#EF4444", items: ["장갑 착용 (겁먹은 고양이는 물 수 있음)", "큰 소리와 급한 움직임 금지", "차도 근처라면 교통 안전 먼저 확인"] },
-  { step: 2, title: "지혈 및 응급처치", color: "#F97316", items: ["출혈 시 깨끗한 천으로 상처 부위 압박", "골절 의심 시 움직이지 않도록 고정", "절대 사람용 약 투여 금지 (독성 위험)"] },
-  { step: 3, title: "신속한 이송", color: "#3B82F6", items: ["담요나 수건으로 부드럽게 감싸기", "상자나 캐리어에 넣어 이동", "가장 가까운 24시 동물병원으로 이송", "이송 중 체온 유지에 주의"] },
+  { step: 1, title: "안전 확보", color: "#B84545", items: ["장갑 착용 (겁먹은 고양이는 물 수 있음)", "큰 소리와 급한 움직임 금지", "차도 근처라면 교통 안전 먼저 확인"] },
+  { step: 2, title: "지혈 및 응급처치", color: "#C47E5A", items: ["출혈 시 깨끗한 천으로 상처 부위 압박", "골절 의심 시 움직이지 않도록 고정", "절대 사람용 약 투여 금지 (독성 위험)"] },
+  { step: 3, title: "신속한 이송", color: "#5B7A8F", items: ["담요나 수건으로 부드럽게 감싸기", "상자나 캐리어에 넣어 이동", "가장 가까운 24시 동물병원으로 이송", "이송 중 체온 유지에 주의"] },
 ];
 
 export default function EmergencyGuidePage() {
@@ -21,8 +21,8 @@ export default function EmergencyGuidePage() {
       </div>
 
       <div className="card p-5 mb-4 flex items-center gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-[#FEE2E2] flex items-center justify-center">
-          <BriefcaseMedical size={24} color="#EF4444" />
+        <div className="w-12 h-12 rounded-2xl bg-[#EEE3DE] flex items-center justify-center">
+          <BriefcaseMedical size={24} color="#B84545" />
         </div>
         <p className="text-[14px] text-text-sub leading-relaxed">
           다친 길고양이를 발견했을 때<br/>

@@ -37,8 +37,8 @@ const SLIDES = [
     /* 중간 — 따뜻한 빛 */
     bg: "linear-gradient(170deg, #3d2e1f 0%, #6b4c2a 30%, #c8956c 70%, #e8c49a 100%)",
     particleColor: "rgba(255,220,160,0.08)",
-    accentColor: "#FCD34D",
-    dotActive: "#FCD34D",
+    accentColor: "#D4B676",
+    dotActive: "#D4B676",
     title: "당신이 전한 그 온기 하나가,\n누군가에겐 삶의 전부가 됩니다.",
     body: "차가운 아스팔트 위에서\n밤을 지새우는 아이들에게,\n우리가 함께 만든 작은 쉼터는\n세상에서 가장 안전하고\n포근한 품이 되어줄 거예요.",
     MainIcon: Flame,
@@ -53,10 +53,10 @@ const SLIDES = [
   },
   {
     /* 새벽 — 희망의 빛 */
-    bg: "linear-gradient(170deg, #6b4c2a 0%, #d4856a 25%, #f4a985 50%, #fcd5c0 75%, #fff5ee 100%)",
-    particleColor: "rgba(255,180,140,0.08)",
-    accentColor: "#FF8A65",
-    dotActive: "#FF8A65",
+    bg: "linear-gradient(170deg, #5a3e22 0%, #b87050 25%, #d4906a 50%, #e8c4a8 75%, #f5f0e8 100%)",
+    particleColor: "rgba(212,149,111,0.08)",
+    accentColor: "#C47E5A",
+    dotActive: "#C47E5A",
     title: "이제 '도시공존'이\n당신의 든든한 쉼터가\n되어드릴게요.",
     body: "혼자 하는 돌봄이 외롭지 않도록,\n당신의 진심이 지치지 않도록.\n우리가 곁에서 정보를 나누고\n진심을 더하겠습니다.\n\n함께 공존의 길을 걸어봐요.",
     MainIcon: Handshake,
@@ -194,7 +194,7 @@ export default function OnboardingPage() {
           className="w-full py-4.5 rounded-2xl text-[16px] font-bold flex items-center justify-center gap-2"
           style={{
             backgroundColor: slide.accentColor,
-            color: isLast ? "#fff" : "#1a1a2e",
+            color: isLast ? "#fff" : "#2A2A28",
             boxShadow: `0 8px 24px ${slide.accentColor}44`,
             transform: heartbeat ? "scale(1.05)" : "scale(1)",
             transition: "transform 0.3s ease, background-color 0.8s ease, box-shadow 0.8s ease",

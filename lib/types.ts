@@ -23,12 +23,12 @@ export type PostCategory =
   | "free";      // 자유게시판
 
 export const CATEGORY_MAP: Record<PostCategory, { label: string; color: string; emoji: string }> = {
-  emergency: { label: "긴급 제보", color: "#EF4444", emoji: "🚨" },
-  foster:    { label: "임시보호", color: "#F97316", emoji: "🏠" },
-  adoption:  { label: "입양",    color: "#EC4899", emoji: "💕" },
-  care:      { label: "돌봄",    color: "#22C55E", emoji: "🌿" },
-  lost:      { label: "실종/보호", color: "#3B82F6", emoji: "🔍" },
-  free:      { label: "자유",    color: "#8B5CF6", emoji: "💬" },
+  emergency: { label: "긴급 제보", color: "#B84545", emoji: "🚨" },
+  foster:    { label: "임시보호", color: "#C47E5A", emoji: "🏠" },
+  adoption:  { label: "입양",    color: "#B06478", emoji: "💕" },
+  care:      { label: "돌봄",    color: "#6B8E6F", emoji: "🌿" },
+  lost:      { label: "실종/보호", color: "#5B7A8F", emoji: "🔍" },
+  free:      { label: "자유",    color: "#7A6B8E", emoji: "💬" },
 };
 
 // ── 게시글 ──

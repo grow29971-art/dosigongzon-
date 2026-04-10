@@ -103,8 +103,8 @@ function LoginContent() {
 
         {/* ══════ 에러 메시지 ══════ */}
         {(errors.general || authError) && (
-          <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-4">
-            <p className="text-[13px] text-red-600">
+          <div className="rounded-xl px-4 py-3 mb-4" style={{ backgroundColor: "#EEE3DE", border: "1px solid #E3D2CC" }}>
+            <p className="text-[13px]" style={{ color: "#B84545" }}>
               {errors.general || "로그인에 실패했습니다. 다시 시도해주세요."}
             </p>
           </div>
@@ -198,8 +198,8 @@ function LoginContent() {
           style={{
             transform: pressing ? "scale(0.97)" : "scale(1)",
             boxShadow: pressing
-              ? "0 2px 8px rgba(255,138,101,0.2)"
-              : "0 6px 20px rgba(255,138,101,0.35)",
+              ? "0 2px 8px rgba(196,126,90,0.2)"
+              : "0 6px 20px rgba(196,126,90,0.3)",
           }}
         >
           {loading ? (
@@ -243,7 +243,7 @@ function LoginContent() {
             onClick={() => handleSocialLogin("google")}
             disabled={!!socialLoading}
             className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.97] transition-transform border border-[#E0E0E0] disabled:opacity-60"
-            style={{ backgroundColor: "#FFFFFF", color: "#2D2D2D" }}
+            style={{ backgroundColor: "#FFFFFF", color: "#2A2A28" }}
           >
             {socialLoading === "google" ? (
               <Loader2 size={18} className="animate-spin" />

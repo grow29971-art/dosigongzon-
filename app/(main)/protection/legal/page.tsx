@@ -86,7 +86,7 @@ function Checklist({
 
       {/* 진행률 바 */}
       <div className="flex items-center gap-2 mb-4">
-        <div className="flex-1 h-1.5 rounded-full bg-[#F0EDE8] overflow-hidden">
+        <div className="flex-1 h-1.5 rounded-full bg-[#E5E0D6] overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-300"
             style={{ width: `${progress}%`, backgroundColor: iconColor }}
@@ -138,8 +138,8 @@ function Checklist({
 
       {/* 완료 메시지 */}
       {progress === 100 && (
-        <div className="mt-4 p-3 rounded-2xl bg-[#F0FDF4] text-center">
-          <p className="text-[13px] font-semibold text-[#16A34A]">
+        <div className="mt-4 p-3 rounded-2xl bg-[#E8ECE5] text-center">
+          <p className="text-[13px] font-semibold text-[#6B8E6F]">
             모든 단계를 완료했습니다
           </p>
         </div>
@@ -165,8 +165,8 @@ export default function LegalGuidePage() {
       {/* 법률 요약 */}
       <div className="card p-6 mb-4">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#EDE9FE] flex items-center justify-center">
-            <ShieldCheck size={24} color="#8B5CF6" />
+          <div className="w-12 h-12 rounded-2xl bg-[#EAE6E8] flex items-center justify-center">
+            <ShieldCheck size={24} color="#7A6B8E" />
           </div>
           <div>
             <p className="text-base font-bold text-text-main">동물보호법 안내</p>
@@ -193,8 +193,8 @@ export default function LegalGuidePage() {
           title="숨숨집 파손 시"
           subtitle="재물손괴죄 · 형법 제366조"
           icon={Home}
-          iconBg="#FEF3C7"
-          iconColor="#D97706"
+          iconBg="#EDE9E0"
+          iconColor="#C9A961"
           items={SHELTER_CHECKLIST}
         />
 
@@ -202,8 +202,8 @@ export default function LegalGuidePage() {
           title="학대 목격 시"
           subtitle="동물보호법 제8조 위반"
           icon={CircleAlert}
-          iconBg="#FEE2E2"
-          iconColor="#DC2626"
+          iconBg="#EEE3DE"
+          iconColor="#B84545"
           items={ABUSE_CHECKLIST}
         />
       </div>

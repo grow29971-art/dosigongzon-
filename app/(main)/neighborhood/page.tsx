@@ -200,7 +200,7 @@ export default function NeighborhoodPage() {
           />
           <div
             className="relative mt-auto w-full rounded-t-[32px] flex flex-col"
-            style={{ maxHeight: "60dvh", backgroundColor: "#FDFBF7" }}
+            style={{ maxHeight: "60dvh", backgroundColor: "#F5F3EE" }}
           >
             <div className="flex justify-center pt-3 pb-1">
               <div className="w-10 h-1 rounded-full bg-border" />
@@ -243,7 +243,7 @@ export default function NeighborhoodPage() {
           />
           <div
             className="relative w-[85%] max-w-sm rounded-[28px] p-6"
-            style={{ backgroundColor: "#FDFBF7" }}
+            style={{ backgroundColor: "#F5F3EE" }}
           >
             <button
               onClick={() => setShowWarning(false)}

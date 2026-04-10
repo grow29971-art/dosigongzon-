@@ -43,10 +43,10 @@ const CAT_FACTS = [
 
 /* ═══ 퀵 액션 데이터 ═══ */
 const QUICK_ACTIONS = [
-  { label: "보호지침", href: "/protection", icon: BookOpen, bg: "#EDE9FE", color: "#8B5CF6" },
-  { label: "병원 찾기", href: "/hospitals", icon: Stethoscope, bg: "#FFEDD5", color: "#F97316" },
-  { label: "나눔 장터", href: "/community", icon: Gift, bg: "#DCFCE7", color: "#22C55E" },
-  { label: "동네 소식", href: "/neighborhood", icon: MapPin, bg: "#DBEAFE", color: "#3B82F6" },
+  { label: "보호지침", href: "/protection", icon: BookOpen, bg: "#EAE6E8", color: "#7A6B8E" },
+  { label: "병원 찾기", href: "/hospitals", icon: Stethoscope, bg: "#EEE8E0", color: "#C47E5A" },
+  { label: "나눔 장터", href: "/community", icon: Gift, bg: "#E8ECE5", color: "#6B8E6F" },
+  { label: "동네 소식", href: "/neighborhood", icon: MapPin, bg: "#E5E8ED", color: "#5B7A8F" },
 ];
 
 /* ═══ 날씨 아이콘 매핑 ═══ */
@@ -63,11 +63,11 @@ const WEATHER_ICONS: Record<string, typeof Sun> = {
 };
 
 function getTempColor(temp: number): string {
-  if (temp <= 0) return "#3B82F6";
-  if (temp <= 10) return "#60A5FA";
-  if (temp <= 20) return "#2D2D2D";
-  if (temp <= 30) return "#F97316";
-  return "#EF4444";
+  if (temp <= 0) return "#5B7A8F";
+  if (temp <= 10) return "#7A9BB0";
+  if (temp <= 20) return "#2A2A28";
+  if (temp <= 30) return "#C47E5A";
+  return "#B84545";
 }
 
 interface WeatherData {
@@ -372,8 +372,8 @@ export default function HomePage() {
                 <span
                   className="absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-xl backdrop-blur-sm"
                   style={{
-                    color: item.dday.startsWith("D-") ? "#EF4444" : "#22C55E",
-                    backgroundColor: item.dday.startsWith("D-") ? "rgba(254,226,226,0.9)" : "rgba(220,252,231,0.9)",
+                    color: item.dday.startsWith("D-") ? "#B84545" : "#6B8E6F",
+                    backgroundColor: item.dday.startsWith("D-") ? "rgba(238,227,222,0.9)" : "rgba(232,236,229,0.9)",
                   }}
                 >
                   {item.dday}

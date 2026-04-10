@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Cat } from "lucide-react";
 
 const STEPS = [
-  { step: 1, title: "관찰 (2~3시간)", color: "#EAB308", items: ["엄마 고양이가 올 수 있으니 2~3시간 관찰", "사람 냄새가 묻으면 엄마가 거부할 수 있음", "위험한 장소가 아니라면 함부로 만지지 않기"] },
-  { step: 2, title: "체온 유지", color: "#F97316", items: ["새끼 고양이는 스스로 체온 유지가 어려움", "수건이나 담요로 감싸주기", "핫팩은 화상 위험 — 수건으로 감싼 뒤 사용"] },
-  { step: 3, title: "급여 (KMR 분유)", color: "#22C55E", items: ["절대 우유 금지! (유당불내증)", "고양이 전용 분유(KMR) 사용", "2~3시간 간격으로 소량씩 급여", "생후 4주 이전은 젖병, 이후는 접시 급여 가능"] },
+  { step: 1, title: "관찰 (2~3시간)", color: "#C9A961", items: ["엄마 고양이가 올 수 있으니 2~3시간 관찰", "사람 냄새가 묻으면 엄마가 거부할 수 있음", "위험한 장소가 아니라면 함부로 만지지 않기"] },
+  { step: 2, title: "체온 유지", color: "#C47E5A", items: ["새끼 고양이는 스스로 체온 유지가 어려움", "수건이나 담요로 감싸주기", "핫팩은 화상 위험 — 수건으로 감싼 뒤 사용"] },
+  { step: 3, title: "급여 (KMR 분유)", color: "#6B8E6F", items: ["절대 우유 금지! (유당불내증)", "고양이 전용 분유(KMR) 사용", "2~3시간 간격으로 소량씩 급여", "생후 4주 이전은 젖병, 이후는 접시 급여 가능"] },
 ];
 
 export default function KittenGuidePage() {
@@ -21,8 +21,8 @@ export default function KittenGuidePage() {
       </div>
 
       <div className="card p-5 mb-4 flex items-center gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-[#FEF9C3] flex items-center justify-center">
-          <Cat size={24} color="#EAB308" />
+        <div className="w-12 h-12 rounded-2xl bg-[#EDE9E0] flex items-center justify-center">
+          <Cat size={24} color="#C9A961" />
         </div>
         <p className="text-[14px] text-text-sub leading-relaxed">
           새끼 고양이를 발견했을 때<br/>

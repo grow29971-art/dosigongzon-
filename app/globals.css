@@ -5,31 +5,33 @@
    ══════════════════════════════════════════ */
 
 @theme inline {
-  /* Primary — 샌드 오렌지 */
-  --color-primary: #FF8A65;
-  --color-primary-light: #FFAB91;
-  --color-primary-dark: #E57550;
+  /* Primary — 번트 클레이 */
+  --color-primary: #C47E5A;
+  --color-primary-light: #D4956F;
+  --color-primary-dark: #A06541;
 
-  /* Background — 샴페인 베이지 */
-  --color-warm-white: #FDFBF7;
+  /* Background — 웜 오프화이트 */
+  --color-warm-white: #F5F3EE;
   --color-surface: #FFFFFF;
-  --color-surface-alt: #FAF7F2;
+  --color-surface-alt: #EEEAE2;
 
   /* Text */
-  --color-text-main: #2D2D2D;
-  --color-text-sub: #8A8580;
-  --color-text-light: #B5B0AA;
-  --color-text-muted: #C5C0BA;
+  --color-text-main: #2A2A28;
+  --color-text-sub: #7A756E;
+  --color-text-light: #A8A39C;
+  --color-text-muted: #BFB9B0;
 
   /* Accents */
-  --color-mint: #7ECEC1;
-  --color-coral: #FFB5A7;
-  --color-error: #EF767A;
-  --color-warning: #FFD166;
+  --color-sage: #6B8E6F;
+  --color-mint: #6B8E6F;
+  --color-clay: #D4A590;
+  --color-coral: #D4A590;
+  --color-error: #B84545;
+  --color-warning: #C9A961;
 
   /* Border */
-  --color-border: #EDE8E3;
-  --color-divider: #F5F0EB;
+  --color-border: #E5E0D6;
+  --color-divider: #EEEAE2;
 
   /* Font */
   --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -69,7 +71,7 @@ body {
 }
 
 .nav-shadow { box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03); }
-.fab-shadow { box-shadow: 0 6px 20px rgba(255, 138, 101, 0.35); }
+.fab-shadow { box-shadow: 0 6px 20px rgba(196, 126, 90, 0.3); }
 
 /* ── 태그 ── */
 .tag {

@@ -72,7 +72,7 @@ export default function SignupPage() {
         : password.length < 10
           ? 2
           : 3;
-  const pwColors = ["", "#EF4444", "#F97316", "#22C55E"];
+  const pwColors = ["", "#B84545", "#C47E5A", "#6B8E6F"];
   const pwLabels = ["", "약함", "보통", "강함"];
 
   return (
@@ -101,8 +101,8 @@ export default function SignupPage() {
 
         {/* ══════ 이메일 인증 안내 ══════ */}
         {emailSent && (
-          <div className="bg-green-50 border border-green-200 rounded-2xl p-6 text-center mb-6">
-            <Mail size={32} className="text-green-500 mx-auto mb-3" />
+          <div className="rounded-2xl p-6 text-center mb-6" style={{ backgroundColor: "#E8ECE5", border: "1px solid #D6DCD2" }}>
+            <Mail size={32} className="mx-auto mb-3" style={{ color: "#6B8E6F" }} />
             <p className="text-[16px] font-bold text-text-main mb-2">인증 메일을 보냈습니다!</p>
             <p className="text-[13px] text-text-sub leading-relaxed">
               <strong>{email}</strong>로 인증 링크를 보냈어요.<br />
@@ -185,7 +185,7 @@ export default function SignupPage() {
                       key={level}
                       className="h-1 flex-1 rounded-full transition-colors"
                       style={{
-                        backgroundColor: pwStrength >= level ? pwColors[pwStrength] : "#EDE8E3",
+                        backgroundColor: pwStrength >= level ? pwColors[pwStrength] : "#E5E0D6",
                       }}
                     />
                   ))}
@@ -213,7 +213,7 @@ export default function SignupPage() {
                 className="flex-1 text-[14px] text-text-main bg-transparent outline-none placeholder:text-text-muted"
               />
               {passwordConfirm && password === passwordConfirm && (
-                <Check size={18} className="text-[#22C55E] shrink-0" />
+                <Check size={18} className="text-[#6B8E6F] shrink-0" />
               )}
             </div>
             {errors.passwordConfirm && <p className="text-[11px] text-error mt-1 ml-1">{errors.passwordConfirm}</p>}
@@ -249,8 +249,8 @@ export default function SignupPage() {
           style={{
             transform: pressing ? "scale(0.97)" : "scale(1)",
             boxShadow: pressing
-              ? "0 2px 8px rgba(255,138,101,0.2)"
-              : "0 6px 20px rgba(255,138,101,0.35)",
+              ? "0 2px 8px rgba(196,126,90,0.2)"
+              : "0 6px 20px rgba(196,126,90,0.3)",
           }}
         >
           {loading ? (

@@ -130,7 +130,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
               comment.trim() ? "bg-primary active:scale-90" : "bg-border"
             }`}
           >
-            <Send size={18} color={comment.trim() ? "#fff" : "#C5C0BA"} />
+            <Send size={18} color={comment.trim() ? "#fff" : "#BFB9B0"} />
           </button>
         </div>
       </div>

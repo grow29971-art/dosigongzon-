@@ -57,8 +57,8 @@ export default function NewsDetailPage({ params }: { params: Promise<{ id: strin
           <span
             className="text-[12px] font-bold px-3 py-1.5 rounded-xl backdrop-blur-sm"
             style={{
-              color: news.dday.startsWith("D-") ? "#EF4444" : "#22C55E",
-              backgroundColor: news.dday.startsWith("D-") ? "rgba(254,226,226,0.9)" : "rgba(220,252,231,0.9)",
+              color: news.dday.startsWith("D-") ? "#B84545" : "#6B8E6F",
+              backgroundColor: news.dday.startsWith("D-") ? "rgba(238,227,222,0.9)" : "rgba(232,236,229,0.9)",
             }}
           >
             {news.dday}
@@ -106,7 +106,7 @@ export default function NewsDetailPage({ params }: { params: Promise<{ id: strin
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.97] transition-transform"
-            style={{ boxShadow: "0 6px 20px rgba(255,138,101,0.35)" }}
+            style={{ boxShadow: "0 6px 20px rgba(196,126,90,0.3)" }}
           >
             <ExternalLink size={18} />
             {news.externalLabel || "관련 홈페이지 바로가기"}

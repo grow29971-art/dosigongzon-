@@ -113,7 +113,7 @@ export default function AIChatModal({
       {/* 바텀 시트 */}
       <div
         className="relative mt-auto w-full flex flex-col rounded-t-[32px]"
-        style={{ height: "85dvh", backgroundColor: "#FDFBF7" }}
+        style={{ height: "85dvh", backgroundColor: "#F5F3EE" }}
       >
         {/* 핸들 바 */}
         <div className="flex justify-center pt-3 pb-1">
@@ -125,13 +125,13 @@ export default function AIChatModal({
           <div className="flex items-center gap-3">
             <div
               className="w-10 h-10 rounded-2xl flex items-center justify-center"
-              style={{ backgroundColor: "rgba(255,138,101,0.1)" }}
+              style={{ backgroundColor: "rgba(196,126,90,0.1)" }}
             >
-              <Bot size={20} color="#FF8A65" />
+              <Bot size={20} color="#C47E5A" />
             </div>
             <div>
-              <p className="text-[15px] font-bold" style={{ color: "#2D2D2D" }}>도시공존 AI 집사</p>
-              <p className="text-[11px]" style={{ color: "#8A8580" }}>
+              <p className="text-[15px] font-bold" style={{ color: "#2A2A28" }}>도시공존 AI 집사</p>
+              <p className="text-[11px]" style={{ color: "#7A756E" }}>
                 {loading ? "AI가 답변을 생각 중이에요..." : "길고양이 돌봄 전문가"}
               </p>
             </div>
@@ -139,9 +139,9 @@ export default function AIChatModal({
           <button
             onClick={onClose}
             className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform"
-            style={{ backgroundColor: "#FAF7F2" }}
+            style={{ backgroundColor: "#EEEAE2" }}
           >
-            <X size={18} color="#8A8580" />
+            <X size={18} color="#7A756E" />
           </button>
         </div>
 
@@ -157,13 +157,13 @@ export default function AIChatModal({
                 style={
                   msg.role === "user"
                     ? {
-                        backgroundColor: "#FF8A65",
+                        backgroundColor: "#C47E5A",
                         color: "#fff",
                         borderRadius: "20px 20px 8px 20px",
                       }
                     : {
                         backgroundColor: "#FFFFFF",
-                        color: "#2D2D2D",
+                        color: "#2A2A28",
                         borderRadius: "20px 20px 20px 8px",
                         boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                       }
@@ -185,9 +185,9 @@ export default function AIChatModal({
                   boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                 }}
               >
-                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(255,138,101,0.4)", animationDelay: "0ms" }} />
-                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(255,138,101,0.4)", animationDelay: "150ms" }} />
-                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(255,138,101,0.4)", animationDelay: "300ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(196,126,90,0.4)", animationDelay: "0ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(196,126,90,0.4)", animationDelay: "150ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(196,126,90,0.4)", animationDelay: "300ms" }} />
               </div>
             </div>
           )}
@@ -197,7 +197,7 @@ export default function AIChatModal({
         <div
           className="px-4 py-3 border-t"
           style={{
-            borderColor: "#EDE8E3",
+            borderColor: "#E5E0D6",
             backgroundColor: "#FFFFFF",
             paddingBottom: "max(12px, env(safe-area-inset-bottom))",
           }}
@@ -213,15 +213,15 @@ export default function AIChatModal({
               placeholder="길고양이에 대해 물어보세요..."
               className="flex-1 rounded-2xl px-4 py-3 text-[14px] outline-none transition"
               style={{
-                backgroundColor: "#FAF7F2",
-                color: "#2D2D2D",
+                backgroundColor: "#EEEAE2",
+                color: "#2A2A28",
               }}
             />
             <button
               onClick={send}
               disabled={!input.trim() || loading}
               className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 active:scale-90 transition-transform disabled:opacity-40"
-              style={{ backgroundColor: "#FF8A65" }}
+              style={{ backgroundColor: "#C47E5A" }}
             >
               <Send size={18} color="white" />
             </button>

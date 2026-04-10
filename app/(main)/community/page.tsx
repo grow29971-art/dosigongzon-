@@ -28,12 +28,12 @@ const TABS: { key: "all" | PostCategory; label: string }[] = [
 
 /* ═══ 포토 플레이스홀더 (이미지 대신 그라데이션 + 아이콘) ═══ */
 const PHOTO_GRADIENTS = [
-  "linear-gradient(135deg, #FECACA 0%, #FDE68A 100%)",
-  "linear-gradient(135deg, #DBEAFE 0%, #C7D2FE 100%)",
-  "linear-gradient(135deg, #CCFBF1 0%, #A7F3D0 100%)",
-  "linear-gradient(135deg, #FEE2E2 0%, #FECDD3 100%)",
-  "linear-gradient(135deg, #EDE9FE 0%, #DDD6FE 100%)",
-  "linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)",
+  "linear-gradient(135deg, #EEE8E0 0%, #E3DACD 100%)",
+  "linear-gradient(135deg, #E5E8ED 0%, #D6DBE2 100%)",
+  "linear-gradient(135deg, #E8ECE5 0%, #D6DCD2 100%)",
+  "linear-gradient(135deg, #EEE3DE 0%, #E3D2CC 100%)",
+  "linear-gradient(135deg, #EAE6E8 0%, #DCD6D9 100%)",
+  "linear-gradient(135deg, #EDE9E0 0%, #E2DCCA 100%)",
 ];
 
 export default function CommunityPage() {
@@ -69,8 +69,8 @@ export default function CommunityPage() {
       {/* ── 트렌딩 배너 ── */}
       <div className="px-5 py-3">
         <div className="card p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#FEF3C7] flex items-center justify-center shrink-0">
-            <TrendingUp size={20} color="#EAB308" strokeWidth={1.8} />
+          <div className="w-10 h-10 rounded-2xl bg-[#EDE9E0] flex items-center justify-center shrink-0">
+            <TrendingUp size={20} color="#C9A961" strokeWidth={1.8} />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-bold text-text-main">지금 뜨는 주제</p>
@@ -158,7 +158,7 @@ export default function CommunityPage() {
                         </span>
                         {/* 지역 뱃지 */}
                         {post.region && (
-                          <span className="tag" style={{ color: "#3B82F6", backgroundColor: "#DBEAFE" }}>
+                          <span className="tag" style={{ color: "#5B7A8F", backgroundColor: "#E5E8ED" }}>
                             <MapPin size={9} className="mr-0.5" />
                             {post.region}
                           </span>

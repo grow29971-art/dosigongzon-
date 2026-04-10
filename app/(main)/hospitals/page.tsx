@@ -37,9 +37,9 @@ const HOSPITALS: HospitalData[] = [
     rating: 4.8,
     reviewCount: 127,
     tags: [
-      { label: "TNR 협력", color: "#14B8A6", bg: "#CCFBF1" },
-      { label: "과잉진료 없음", color: "#22C55E", bg: "#DCFCE7" },
-      { label: "24시 응급", color: "#EF4444", bg: "#FEE2E2" },
+      { label: "TNR 협력", color: "#6B8E6F", bg: "#E8ECE5" },
+      { label: "과잉진료 없음", color: "#6B8E6F", bg: "#E8ECE5" },
+      { label: "24시 응급", color: "#B84545", bg: "#EEE3DE" },
     ],
     prices: [
       { name: "기본 진료", price: 15000, avg: 20000 },
@@ -57,8 +57,8 @@ const HOSPITALS: HospitalData[] = [
     rating: 4.6,
     reviewCount: 89,
     tags: [
-      { label: "TNR 협력", color: "#14B8A6", bg: "#CCFBF1" },
-      { label: "고양이 전문", color: "#8B5CF6", bg: "#EDE9FE" },
+      { label: "TNR 협력", color: "#6B8E6F", bg: "#E8ECE5" },
+      { label: "고양이 전문", color: "#7A6B8E", bg: "#EAE6E8" },
     ],
     prices: [
       { name: "기본 진료", price: 18000, avg: 20000 },
@@ -76,9 +76,9 @@ const HOSPITALS: HospitalData[] = [
     rating: 4.5,
     reviewCount: 203,
     tags: [
-      { label: "24시 응급", color: "#EF4444", bg: "#FEE2E2" },
-      { label: "과잉진료 없음", color: "#22C55E", bg: "#DCFCE7" },
-      { label: "길고양이 할인", color: "#F97316", bg: "#FFEDD5" },
+      { label: "24시 응급", color: "#B84545", bg: "#EEE3DE" },
+      { label: "과잉진료 없음", color: "#6B8E6F", bg: "#E8ECE5" },
+      { label: "길고양이 할인", color: "#C47E5A", bg: "#EEE8E0" },
     ],
     prices: [
       { name: "기본 진료", price: 20000, avg: 20000 },
@@ -96,9 +96,9 @@ const HOSPITALS: HospitalData[] = [
     rating: 4.9,
     reviewCount: 64,
     tags: [
-      { label: "TNR 협력", color: "#14B8A6", bg: "#CCFBF1" },
-      { label: "과잉진료 없음", color: "#22C55E", bg: "#DCFCE7" },
-      { label: "고양이 전문", color: "#8B5CF6", bg: "#EDE9FE" },
+      { label: "TNR 협력", color: "#6B8E6F", bg: "#E8ECE5" },
+      { label: "과잉진료 없음", color: "#6B8E6F", bg: "#E8ECE5" },
+      { label: "고양이 전문", color: "#7A6B8E", bg: "#EAE6E8" },
     ],
     prices: [
       { name: "기본 진료", price: 12000, avg: 20000 },
@@ -115,7 +115,7 @@ const DISTRICTS = ["전체", "강남구", "마포구", "용산구", "서초구"]
 function PriceBar({ name, price, avg }: { name: string; price: number; avg: number }) {
   const pct = Math.min((price / avg) * 100, 100);
   const cheaper = price < avg;
-  const color = cheaper ? "#22C55E" : "#F97316";
+  const color = cheaper ? "#6B8E6F" : "#C47E5A";
 
   return (
     <div className="flex items-center gap-3">
@@ -141,7 +141,7 @@ function HospitalCard({ hospital }: { hospital: HospitalData }) {
         <div className="flex-1 min-w-0">
           <h3 className="text-[16px] font-bold text-text-main">{hospital.name}</h3>
           <div className="flex items-center gap-1 mt-1">
-            <Star size={13} className="text-[#FBBF24]" fill="#FBBF24" />
+            <Star size={13} className="text-[#C9A961]" fill="#C9A961" />
             <span className="text-[13px] font-semibold text-text-main">{hospital.rating}</span>
             <span className="text-[12px] text-text-light">({hospital.reviewCount})</span>
           </div>
@@ -275,14 +275,14 @@ export default function HospitalsPage() {
             <p className="text-[11px] text-text-sub">협력병원</p>
           </div>
           <div className="card p-3.5 text-center">
-            <Heart size={18} className="text-[#EF4444] mx-auto mb-1" />
+            <Heart size={18} className="text-[#B84545] mx-auto mb-1" />
             <p className="text-[18px] font-extrabold text-text-main">
               {filtered.filter((h) => h.tags.some((t) => t.label === "과잉진료 없음")).length}
             </p>
             <p className="text-[11px] text-text-sub">과잉진료 없음</p>
           </div>
           <div className="card p-3.5 text-center">
-            <Shield size={18} className="text-[#14B8A6] mx-auto mb-1" />
+            <Shield size={18} className="text-[#6B8E6F] mx-auto mb-1" />
             <p className="text-[18px] font-extrabold text-text-main">
               {filtered.filter((h) => h.tags.some((t) => t.label === "TNR 협력")).length}
             </p>

@@ -31,9 +31,9 @@ const cards: {
     title: "돌봄 가이드",
     subtitle: "농림축산식품부 공식 돌봄 매뉴얼",
     Icon: BookOpenText,
-    iconBg: "rgba(59,130,246,0.15)",
-    iconColor: "#3B82F6",
-    cardGradient: "linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)",
+    iconBg: "rgba(91,122,143,0.15)",
+    iconColor: "#5B7A8F",
+    cardGradient: "linear-gradient(135deg, #E5E8ED 0%, #D6DBE2 100%)",
     type: "external",
     href: "https://www.mafra.go.kr/bbs/home/795/570364/artclView.do",
     wide: true,
@@ -43,9 +43,9 @@ const cards: {
     title: "구청 연락처",
     subtitle: "TNR 담당부서 바로 연결",
     Icon: Phone,
-    iconBg: "rgba(20,184,166,0.15)",
-    iconColor: "#14B8A6",
-    cardGradient: "linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 100%)",
+    iconBg: "rgba(107,142,111,0.15)",
+    iconColor: "#6B8E6F",
+    cardGradient: "linear-gradient(135deg, #E8ECE5 0%, #D6DCD2 100%)",
     type: "tel",
     href: "tel:02-120",
   },
@@ -53,9 +53,9 @@ const cards: {
     title: "병원 찾기",
     subtitle: "근처 협력병원 검색",
     Icon: BriefcaseMedical,
-    iconBg: "rgba(249,115,22,0.15)",
-    iconColor: "#F97316",
-    cardGradient: "linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%)",
+    iconBg: "rgba(196,126,90,0.15)",
+    iconColor: "#C47E5A",
+    cardGradient: "linear-gradient(135deg, #EEE8E0 0%, #E3DACD 100%)",
     type: "link",
     href: "/hospitals",
   },
@@ -63,9 +63,9 @@ const cards: {
     title: "TNR 신청",
     subtitle: "국가동물보호정보시스템 바로가기",
     Icon: Globe,
-    iconBg: "rgba(255,138,101,0.15)",
-    iconColor: "#FF8A65",
-    cardGradient: "linear-gradient(135deg, #FFF7ED 0%, #FFE4D6 100%)",
+    iconBg: "rgba(196,126,90,0.15)",
+    iconColor: "#C47E5A",
+    cardGradient: "linear-gradient(135deg, #EEE8E0 0%, #E5D5C4 100%)",
     type: "external",
     href: "https://www.animal.go.kr",
     wide: true,
@@ -74,9 +74,9 @@ const cards: {
     title: "법률 가이드",
     subtitle: "동물보호법 · 학대/훼손 대응 매뉴얼",
     Icon: ShieldCheck,
-    iconBg: "rgba(139,92,246,0.15)",
-    iconColor: "#8B5CF6",
-    cardGradient: "linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%)",
+    iconBg: "rgba(122,107,142,0.15)",
+    iconColor: "#7A6B8E",
+    cardGradient: "linear-gradient(135deg, #EAE6E8 0%, #DCD6D9 100%)",
     type: "link",
     href: "/protection/legal",
     full: true,
@@ -85,9 +85,9 @@ const cards: {
     title: "냥줍 가이드",
     subtitle: "관찰 · 체온 · 급여 3단계",
     Icon: Cat,
-    iconBg: "rgba(234,179,8,0.15)",
-    iconColor: "#EAB308",
-    cardGradient: "linear-gradient(135deg, #FEFCE8 0%, #FEF9C3 100%)",
+    iconBg: "rgba(201,169,97,0.15)",
+    iconColor: "#C9A961",
+    cardGradient: "linear-gradient(135deg, #EDE9E0 0%, #E2DCCA 100%)",
     type: "link",
     href: "/protection/kitten-guide",
   },
@@ -95,9 +95,9 @@ const cards: {
     title: "응급 구조 가이드",
     subtitle: "안전확보 · 지혈 · 이송 절차",
     Icon: BriefcaseMedical,
-    iconBg: "rgba(239,68,68,0.15)",
-    iconColor: "#EF4444",
-    cardGradient: "linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%)",
+    iconBg: "rgba(184,69,69,0.15)",
+    iconColor: "#B84545",
+    cardGradient: "linear-gradient(135deg, #EEE3DE 0%, #E3D2CC 100%)",
     type: "link",
     href: "/protection/emergency-guide",
     wide: true,
@@ -106,9 +106,9 @@ const cards: {
     title: "포획 가이드",
     subtitle: "준비물 · 설치 · 대기 · 주의사항",
     Icon: Hand,
-    iconBg: "rgba(20,184,166,0.15)",
-    iconColor: "#14B8A6",
-    cardGradient: "linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 100%)",
+    iconBg: "rgba(107,142,111,0.15)",
+    iconColor: "#6B8E6F",
+    cardGradient: "linear-gradient(135deg, #E8ECE5 0%, #D6DCD2 100%)",
     type: "link",
     href: "/protection/trapping-guide",
     full: true,
@@ -124,7 +124,7 @@ function InfoCard({ card }: { card: (typeof cards)[number] }) {
         background: card.cardGradient,
         borderRadius: 24,
         boxShadow: "6px 6px 16px rgba(0,0,0,0.04), -4px -4px 12px rgba(255,255,255,0.8)",
-        border: card.highlight ? "1.5px solid rgba(255,138,101,0.35)" : "1px solid rgba(255,255,255,0.6)",
+        border: card.highlight ? "1.5px solid rgba(196,126,90,0.3)" : "1px solid rgba(255,255,255,0.6)",
       }}
     >
       {/* 배경 발바닥 패턴 */}
@@ -242,13 +242,13 @@ export default function ProtectionPage() {
             href="tel:112"
             className="p-4 flex flex-col items-center active:scale-95 transition-transform"
             style={{
-              background: "linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%)",
+              background: "linear-gradient(135deg, #EEE3DE 0%, #E3D2CC 100%)",
               borderRadius: 24,
               boxShadow: "6px 6px 16px rgba(0,0,0,0.04), -4px -4px 12px rgba(255,255,255,0.8)",
               border: "1px solid rgba(255,255,255,0.6)",
             }}
           >
-            <div className="w-11 h-11 rounded-2xl bg-red-100 flex items-center justify-center mb-2">
+            <div className="w-11 h-11 rounded-2xl flex items-center justify-center mb-2" style={{ backgroundColor: "rgba(184,69,69,0.12)" }}>
               <span className="text-lg">🚔</span>
             </div>
             <p className="text-[13px] font-semibold text-text-main">경찰</p>
@@ -258,13 +258,13 @@ export default function ProtectionPage() {
             href="tel:1577-0954"
             className="p-4 flex flex-col items-center active:scale-95 transition-transform"
             style={{
-              background: "linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%)",
+              background: "linear-gradient(135deg, #EEE8E0 0%, #E3DACD 100%)",
               borderRadius: 24,
               boxShadow: "6px 6px 16px rgba(0,0,0,0.04), -4px -4px 12px rgba(255,255,255,0.8)",
               border: "1px solid rgba(255,255,255,0.6)",
             }}
           >
-            <div className="w-11 h-11 rounded-2xl bg-orange-50 flex items-center justify-center mb-2">
+            <div className="w-11 h-11 rounded-2xl flex items-center justify-center mb-2" style={{ backgroundColor: "rgba(196,126,90,0.12)" }}>
               <span className="text-lg">🐾</span>
             </div>
             <p className="text-[13px] font-semibold text-text-main">동물보호콜센터</p>
