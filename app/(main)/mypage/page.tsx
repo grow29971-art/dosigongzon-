@@ -18,6 +18,7 @@ import {
   Newspaper,
   MessageSquare,
   Inbox,
+  Stethoscope,
 } from "lucide-react";
 import InquiryModal from "@/app/components/InquiryModal";
 import { useAuth } from "@/lib/auth-context";
@@ -688,6 +689,35 @@ export default function MyPage() {
                     </p>
                   </div>
                   <ChevronRight size={16} className="shrink-0" style={{ color: "#D85555", opacity: 0.7 }} />
+                </Link>
+                <Link
+                  href="/admin/hospitals"
+                  className="flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
+                  style={{
+                    background: "#FFFFFF",
+                    borderRadius: 16,
+                    boxShadow: "0 4px 14px rgba(107,142,111,0.10), 0 1px 2px rgba(0,0,0,0.02)",
+                    border: "1px solid rgba(0,0,0,0.04)",
+                  }}
+                >
+                  <div
+                    className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
+                    style={{
+                      background: "linear-gradient(135deg, #6B8E6F 0%, #5A7C5E 100%)",
+                      boxShadow: "0 5px 12px rgba(107,142,111,0.35), inset 0 1px 0 rgba(255,255,255,0.4)",
+                    }}
+                  >
+                    <Stethoscope size={20} color="#fff" strokeWidth={2.3} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+                      병원 관리
+                    </p>
+                    <p className="text-[11px] text-text-sub mt-0.5">
+                      구조동물 치료 도움병원 추가·수정·삭제
+                    </p>
+                  </div>
+                  <ChevronRight size={16} className="shrink-0" style={{ color: "#6B8E6F", opacity: 0.7 }} />
                 </Link>
               </div>
             </div>

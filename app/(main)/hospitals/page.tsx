@@ -1,307 +1,301 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Search,
   MapPin,
   Phone,
   Clock,
-  Star,
-  ChevronDown,
   Stethoscope,
+  Pin,
+  Loader2,
   Heart,
-  Shield,
 } from "lucide-react";
+import {
+  listRescueHospitals,
+  groupByCityDistrict,
+  type RescueHospital,
+} from "@/lib/hospitals-repo";
 
-/* ═══ 병원 데이터 ═══ */
-interface HospitalData {
-  id: string;
-  name: string;
-  address: string;
-  phone: string;
-  hours: string;
-  rating: number;
-  reviewCount: number;
-  tags: { label: string; color: string; bg: string }[];
-  prices: { name: string; price: number; avg: number }[];
-  district: string;
-}
+export default function HospitalsPage() {
+  const [hospitals, setHospitals] = useState<RescueHospital[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [cityFilter, setCityFilter] = useState<string>("전체");
 
-const HOSPITALS: HospitalData[] = [
-  {
-    id: "h1",
-    name: "서울냥이 동물병원",
-    address: "서울 강남구 역삼동 123-4",
-    phone: "02-1234-5678",
-    hours: "09:00 ~ 22:00 (연중무휴)",
-    rating: 4.8,
-    reviewCount: 127,
-    tags: [
-      { label: "TNR 협력", color: "#6B8E6F", bg: "#E8ECE5" },
-      { label: "과잉진료 없음", color: "#6B8E6F", bg: "#E8ECE5" },
-      { label: "24시 응급", color: "#B84545", bg: "#EEE3DE" },
-    ],
-    prices: [
-      { name: "기본 진료", price: 15000, avg: 20000 },
-      { name: "중성화(수컷)", price: 80000, avg: 120000 },
-      { name: "예방접종", price: 25000, avg: 30000 },
-    ],
-    district: "강남구",
-  },
-  {
-    id: "h2",
-    name: "마포 고양이 전문병원",
-    address: "서울 마포구 합정동 456-7",
-    phone: "02-9876-5432",
-    hours: "10:00 ~ 21:00 (일요일 휴무)",
-    rating: 4.6,
-    reviewCount: 89,
-    tags: [
-      { label: "TNR 협력", color: "#6B8E6F", bg: "#E8ECE5" },
-      { label: "고양이 전문", color: "#7A6B8E", bg: "#EAE6E8" },
-    ],
-    prices: [
-      { name: "기본 진료", price: 18000, avg: 20000 },
-      { name: "중성화(수컷)", price: 100000, avg: 120000 },
-      { name: "예방접종", price: 28000, avg: 30000 },
-    ],
-    district: "마포구",
-  },
-  {
-    id: "h3",
-    name: "용산 24시 동물의료센터",
-    address: "서울 용산구 이태원동 789-0",
-    phone: "02-5555-1234",
-    hours: "24시간 (연중무휴)",
-    rating: 4.5,
-    reviewCount: 203,
-    tags: [
-      { label: "24시 응급", color: "#B84545", bg: "#EEE3DE" },
-      { label: "과잉진료 없음", color: "#6B8E6F", bg: "#E8ECE5" },
-      { label: "길고양이 할인", color: "#C47E5A", bg: "#EEE8E0" },
-    ],
-    prices: [
-      { name: "기본 진료", price: 20000, avg: 20000 },
-      { name: "중성화(수컷)", price: 90000, avg: 120000 },
-      { name: "예방접종", price: 25000, avg: 30000 },
-    ],
-    district: "용산구",
-  },
-  {
-    id: "h4",
-    name: "서초 봄날 동물병원",
-    address: "서울 서초구 방배동 321-5",
-    phone: "02-3333-7777",
-    hours: "09:30 ~ 20:00 (일요일 휴무)",
-    rating: 4.9,
-    reviewCount: 64,
-    tags: [
-      { label: "TNR 협력", color: "#6B8E6F", bg: "#E8ECE5" },
-      { label: "과잉진료 없음", color: "#6B8E6F", bg: "#E8ECE5" },
-      { label: "고양이 전문", color: "#7A6B8E", bg: "#EAE6E8" },
-    ],
-    prices: [
-      { name: "기본 진료", price: 12000, avg: 20000 },
-      { name: "중성화(수컷)", price: 70000, avg: 120000 },
-      { name: "예방접종", price: 22000, avg: 30000 },
-    ],
-    district: "서초구",
-  },
-];
+  useEffect(() => {
+    let cancelled = false;
+    listRescueHospitals()
+      .then((list) => {
+        if (!cancelled) setHospitals(list);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-const DISTRICTS = ["전체", "강남구", "마포구", "용산구", "서초구"];
+  // 검색 필터
+  const filtered = useMemo(() => {
+    const q = search.trim();
+    return hospitals.filter((h) => {
+      if (cityFilter !== "전체" && h.city !== cityFilter) return false;
+      if (!q) return true;
+      return (
+        h.name.includes(q) ||
+        h.city.includes(q) ||
+        h.district.includes(q) ||
+        (h.address?.includes(q) ?? false) ||
+        h.tags.some((t) => t.includes(q))
+      );
+    });
+  }, [hospitals, search, cityFilter]);
 
-/* ═══ 가격 비교 바 ═══ */
-function PriceBar({ name, price, avg }: { name: string; price: number; avg: number }) {
-  const pct = Math.min((price / avg) * 100, 100);
-  const cheaper = price < avg;
-  const color = cheaper ? "#6B8E6F" : "#C47E5A";
+  // 시 목록 (필터용)
+  const cities = useMemo(() => {
+    const set = new Set<string>();
+    hospitals.forEach((h) => set.add(h.city));
+    return ["전체", ...Array.from(set).sort()];
+  }, [hospitals]);
+
+  const groups = useMemo(() => groupByCityDistrict(filtered), [filtered]);
 
   return (
-    <div className="flex items-center gap-3">
-      <span className="text-[12px] text-text-sub w-[72px] shrink-0">{name}</span>
-      <div className="flex-1 progress-bar">
-        <div style={{ width: `${pct}%`, backgroundColor: color }} />
-      </div>
-      <span className="text-[12px] font-bold w-[60px] text-right" style={{ color }}>
-        {(price / 10000).toFixed(1)}만
-      </span>
-    </div>
-  );
-}
-
-/* ═══ 병원 카드 ═══ */
-function HospitalCard({ hospital }: { hospital: HospitalData }) {
-  const [expanded, setExpanded] = useState(false);
-
-  return (
-    <div className="card p-5">
-      {/* 헤더 */}
-      <div className="flex items-start justify-between mb-2">
-        <div className="flex-1 min-w-0">
-          <h3 className="text-[16px] font-bold text-text-main">{hospital.name}</h3>
-          <div className="flex items-center gap-1 mt-1">
-            <Star size={13} className="text-[#C9A961]" fill="#C9A961" />
-            <span className="text-[13px] font-semibold text-text-main">{hospital.rating}</span>
-            <span className="text-[12px] text-text-light">({hospital.reviewCount})</span>
-          </div>
+    <div className="px-4 pt-14 pb-8">
+      {/* ── 헤더 ── */}
+      <div className="mb-5 px-1">
+        <div className="flex items-baseline gap-2 mb-1">
+          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
+            구조동물 치료 도움병원
+          </h1>
         </div>
-        <a
-          href={`tel:${hospital.phone}`}
-          className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0 active:scale-90 transition-transform"
-        >
-          <Phone size={18} className="text-primary" />
-        </a>
-      </div>
-
-      {/* 태그 */}
-      <div className="flex flex-wrap gap-1.5 mb-3">
-        {hospital.tags.map((tag) => (
-          <span
-            key={tag.label}
-            className="tag"
-            style={{ color: tag.color, backgroundColor: tag.bg }}
-          >
-            {tag.label}
-          </span>
-        ))}
-      </div>
-
-      {/* 정보 */}
-      <div className="space-y-1.5 mb-3">
-        <div className="flex items-center gap-2 text-[12px] text-text-sub">
-          <MapPin size={13} className="text-text-light shrink-0" />
-          <span>{hospital.address}</span>
-        </div>
-        <div className="flex items-center gap-2 text-[12px] text-text-sub">
-          <Clock size={13} className="text-text-light shrink-0" />
-          <span>{hospital.hours}</span>
-        </div>
-      </div>
-
-      {/* 가격 비교 토글 */}
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-center gap-1 py-2 rounded-2xl bg-surface-alt text-[13px] font-semibold text-text-sub active:scale-[0.98] transition-transform"
-      >
-        진료비 비교
-        <ChevronDown
-          size={16}
-          className={`transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
-        />
-      </button>
-
-      {expanded && (
-        <div className="mt-3 space-y-2.5 pt-3 border-t border-divider">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[11px] text-text-muted">항목</span>
-            <span className="text-[11px] text-text-muted">평균 대비</span>
-          </div>
-          {hospital.prices.map((p) => (
-            <PriceBar key={p.name} {...p} />
-          ))}
-          <p className="text-[10px] text-text-muted text-center pt-1">
-            * 평균가는 서울 지역 기준 참고 자료입니다
+        <div className="flex items-center gap-2">
+          <div
+            className="w-5 h-[2px] rounded-full"
+            style={{ backgroundColor: "#C47E5A", opacity: 0.6 }}
+          />
+          <p className="text-[12px] font-bold text-text-sub">
+            길 위의 아이들 치료를 도와주시는 병원
           </p>
+          <span
+            className="text-[9px] font-bold tracking-[0.15em]"
+            style={{ color: "#C47E5A", opacity: 0.5 }}
+          >
+            RESCUE VETS
+          </span>
+        </div>
+      </div>
+
+      {/* ── 검색 ── */}
+      <div
+        className="flex items-center gap-2 px-4 py-3 mb-3"
+        style={{
+          background: "#FFFFFF",
+          borderRadius: 18,
+          boxShadow: "0 4px 16px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02)",
+          border: "1px solid rgba(0,0,0,0.04)",
+        }}
+      >
+        <Search size={18} className="text-text-muted shrink-0" />
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="병원명, 지역, 태그로 검색..."
+          className="flex-1 text-[13px] text-text-main bg-transparent outline-none placeholder:text-text-muted"
+        />
+      </div>
+
+      {/* ── 시 필터 ── */}
+      {cities.length > 1 && (
+        <div className="flex gap-2 pb-4 overflow-x-auto no-scrollbar">
+          {cities.map((c) => {
+            const active = cityFilter === c;
+            return (
+              <button
+                key={c}
+                onClick={() => setCityFilter(c)}
+                className="shrink-0 px-4 py-2 rounded-full text-[12.5px] font-bold transition-all"
+                style={{
+                  backgroundColor: active ? "#C47E5A" : "#FFFFFF",
+                  color: active ? "#FFFFFF" : "#A38E7A",
+                  border: `1.5px solid ${active ? "#C47E5A" : "#E3DCD3"}`,
+                  boxShadow: active ? "0 4px 12px rgba(196,126,90,0.35)" : "0 1px 3px rgba(0,0,0,0.03)",
+                }}
+              >
+                {c}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ── 본문 ── */}
+      {loading ? (
+        <div className="flex justify-center pt-16">
+          <Loader2 size={28} className="animate-spin text-primary" />
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="pt-16 text-center">
+          <Stethoscope
+            size={44}
+            strokeWidth={1.2}
+            className="text-text-light mx-auto mb-3"
+          />
+          <p className="text-[14px] font-bold text-text-main mb-1">
+            {hospitals.length === 0
+              ? "아직 등록된 병원이 없어요"
+              : "검색 결과가 없어요"}
+          </p>
+          {hospitals.length === 0 && (
+            <p className="text-[11px] text-text-sub">
+              관리자가 섭외한 병원이 여기에 표시돼요
+            </p>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {groups.map((group) => (
+            <section key={group.city}>
+              {/* 시 헤더 */}
+              <div className="flex items-center gap-2 mb-3 px-1">
+                <div
+                  className="w-1 h-4 rounded-full"
+                  style={{ backgroundColor: "#C47E5A" }}
+                />
+                <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+                  {group.city}
+                </h2>
+                <span className="text-[10px] font-bold text-text-light tabular-nums">
+                  {group.districts.reduce(
+                    (sum, d) => sum + d.hospitals.length,
+                    0,
+                  )}
+                  개
+                </span>
+              </div>
+
+              {/* 군별 그룹 */}
+              <div className="space-y-4">
+                {group.districts.map((d) => (
+                  <div key={d.district}>
+                    <h3 className="text-[12px] font-bold text-text-sub mb-2 px-1 flex items-center gap-1.5">
+                      <MapPin size={11} className="text-text-light" />
+                      {d.district}
+                    </h3>
+                    <div className="space-y-2.5">
+                      {d.hospitals.map((h) => (
+                        <HospitalCard key={h.id} hospital={h} />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))}
         </div>
       )}
     </div>
   );
 }
 
-/* ═══ 페이지 ═══ */
-export default function HospitalsPage() {
-  const [search, setSearch] = useState("");
-  const [district, setDistrict] = useState("전체");
-
-  const filtered = HOSPITALS.filter((h) => {
-    const matchDistrict = district === "전체" || h.district === district;
-    const matchSearch =
-      !search ||
-      h.name.includes(search) ||
-      h.address.includes(search) ||
-      h.tags.some((t) => t.label.includes(search));
-    return matchDistrict && matchSearch;
-  });
-
+/* ═══ 병원 카드 ═══ */
+function HospitalCard({ hospital }: { hospital: RescueHospital }) {
   return (
-    <div className="pb-4">
-      {/* ── 헤더 ── */}
-      <div className="px-5 pt-14 pb-3">
-        <h1 className="text-[22px] font-extrabold text-text-main tracking-tight">
-          동물병원
-        </h1>
-        <p className="text-[13px] text-text-sub mt-1">
-          길고양이 협력병원 · 진료비 비교
-        </p>
-      </div>
-
-      {/* ── 검색 ── */}
-      <div className="px-5 mb-3">
-        <div className="flex items-center gap-2 bg-white rounded-2xl px-4 py-3 shadow-[0_1px_8px_rgba(0,0,0,0.03)]">
-          <Search size={18} className="text-text-muted shrink-0" />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="병원명, 지역, 태그로 검색..."
-            className="flex-1 text-[14px] text-text-main bg-transparent outline-none placeholder:text-text-muted"
-          />
+    <div
+      className="p-4"
+      style={{
+        background: "#FFFFFF",
+        borderRadius: 18,
+        boxShadow: hospital.pinned
+          ? "0 8px 24px rgba(196,126,90,0.14), 0 1px 3px rgba(0,0,0,0.03)"
+          : "0 4px 16px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02)",
+        border: hospital.pinned
+          ? "1.5px solid rgba(196,126,90,0.25)"
+          : "1px solid rgba(0,0,0,0.04)",
+      }}
+    >
+      {/* 헤더: 이름 + 고정 마크 + 전화 버튼 */}
+      <div className="flex items-start justify-between gap-3 mb-2">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 mb-1">
+            {hospital.pinned && (
+              <span
+                className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md flex items-center gap-0.5"
+                style={{ backgroundColor: "#EEE8E0", color: "#C47E5A" }}
+              >
+                <Pin size={9} /> 추천
+              </span>
+            )}
+            <div
+              className="w-6 h-6 rounded-[8px] flex items-center justify-center"
+              style={{
+                background: "linear-gradient(135deg, #E86B8C 0%, #C55374 100%)",
+                boxShadow: "0 3px 8px rgba(232,107,140,0.3), inset 0 1px 0 rgba(255,255,255,0.4)",
+              }}
+            >
+              <Heart size={12} color="#fff" strokeWidth={2.3} fill="#fff" />
+            </div>
+            <h4 className="text-[15px] font-extrabold text-text-main tracking-tight">
+              {hospital.name}
+            </h4>
+          </div>
         </div>
-      </div>
-
-      {/* ── 지역 필터 ── */}
-      <div className="flex gap-2 px-5 pb-4 overflow-x-auto no-scrollbar">
-        {DISTRICTS.map((d) => (
-          <button
-            key={d}
-            onClick={() => setDistrict(d)}
-            className={`shrink-0 px-4 py-2 rounded-full text-[13px] font-semibold border transition-all ${
-              district === d
-                ? "bg-primary text-white border-primary"
-                : "bg-white text-text-sub border-border"
-            }`}
+        {hospital.phone && (
+          <a
+            href={`tel:${hospital.phone}`}
+            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 active:scale-90 transition-transform"
+            style={{
+              background: "linear-gradient(135deg, #6B8E6F 0%, #5A7C5E 100%)",
+              boxShadow: "0 4px 10px rgba(107,142,111,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",
+            }}
           >
-            {d}
-          </button>
-        ))}
-      </div>
-
-      {/* ── 통계 요약 ── */}
-      <div className="px-5 mb-4">
-        <div className="grid grid-cols-3 gap-3">
-          <div className="card p-3.5 text-center">
-            <Stethoscope size={18} className="text-primary mx-auto mb-1" />
-            <p className="text-[18px] font-extrabold text-text-main">{filtered.length}</p>
-            <p className="text-[11px] text-text-sub">협력병원</p>
-          </div>
-          <div className="card p-3.5 text-center">
-            <Heart size={18} className="text-[#B84545] mx-auto mb-1" />
-            <p className="text-[18px] font-extrabold text-text-main">
-              {filtered.filter((h) => h.tags.some((t) => t.label === "과잉진료 없음")).length}
-            </p>
-            <p className="text-[11px] text-text-sub">과잉진료 없음</p>
-          </div>
-          <div className="card p-3.5 text-center">
-            <Shield size={18} className="text-[#6B8E6F] mx-auto mb-1" />
-            <p className="text-[18px] font-extrabold text-text-main">
-              {filtered.filter((h) => h.tags.some((t) => t.label === "TNR 협력")).length}
-            </p>
-            <p className="text-[11px] text-text-sub">TNR 협력</p>
-          </div>
-        </div>
-      </div>
-
-      {/* ── 병원 리스트 ── */}
-      <div className="px-5 space-y-3">
-        {filtered.length === 0 ? (
-          <div className="flex flex-col items-center pt-16 text-text-light">
-            <Stethoscope size={48} strokeWidth={1.2} />
-            <p className="text-base mt-4 text-text-sub">검색 결과가 없습니다</p>
-          </div>
-        ) : (
-          filtered.map((h) => <HospitalCard key={h.id} hospital={h} />)
+            <Phone size={16} color="#fff" strokeWidth={2.3} />
+          </a>
         )}
       </div>
+
+      {/* 태그 */}
+      {hospital.tags.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-2.5">
+          {hospital.tags.map((tag) => (
+            <span
+              key={tag}
+              className="text-[10px] font-bold px-2 py-0.5 rounded-md"
+              style={{ backgroundColor: "#F6F1EA", color: "#8B6F5A" }}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* 정보 */}
+      <div className="space-y-1 mb-2">
+        {hospital.address && (
+          <div className="flex items-start gap-2 text-[11.5px] text-text-sub">
+            <MapPin size={12} className="text-text-light shrink-0 mt-0.5" />
+            <span className="leading-relaxed">{hospital.address}</span>
+          </div>
+        )}
+        {hospital.hours && (
+          <div className="flex items-start gap-2 text-[11.5px] text-text-sub">
+            <Clock size={12} className="text-text-light shrink-0 mt-0.5" />
+            <span className="leading-relaxed">{hospital.hours}</span>
+          </div>
+        )}
+      </div>
+
+      {/* 메모 */}
+      {hospital.note && (
+        <div
+          className="mt-2 px-3 py-2 rounded-lg text-[11px] leading-relaxed"
+          style={{ backgroundColor: "#F6F1EA", color: "#4A3F35" }}
+        >
+          {hospital.note}
+        </div>
+      )}
     </div>
   );
 }
