@@ -145,9 +145,6 @@ function InfoCard({ card }: { card: (typeof cards)[number] }) {
           <p className="text-[15.5px] font-extrabold text-text-main tracking-tight leading-tight">
             {card.title}
           </p>
-          <p className="text-[11.5px] text-text-sub mt-1 leading-snug truncate">
-            {card.subtitle}
-          </p>
         </div>
         <ChevronRight
           size={18}
