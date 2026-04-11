@@ -25,6 +25,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import AIChatModal from "@/app/components/AIChatModal";
+import SplashLoading from "@/app/components/SplashLoading";
+import { useAuth } from "@/lib/auth-context";
 import {
   listNews,
   BADGE_PRESETS,
@@ -76,7 +78,9 @@ interface WeatherData {
 /* ═══ 페이지 ═══ */
 export default function HomePage() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [mounted, setMounted] = useState(false);
+  const [onboardingChecked, setOnboardingChecked] = useState(false);
   const [fact, setFact] = useState("");
   const [chatOpen, setChatOpen] = useState(false);
   const [weather, setWeather] = useState<WeatherData | null>(null);
@@ -89,14 +93,28 @@ export default function HomePage() {
     listNews().then(setNewsItems);
   }, []);
 
+  // 온보딩 체크
   useEffect(() => {
-    // 처음 방문자 → 온보딩으로 리다이렉트
     try {
       if (!localStorage.getItem("dosigongzon_onboarded")) {
         router.push("/onboarding");
         return;
       }
     } catch {}
+    setOnboardingChecked(true);
+  }, [router]);
+
+  // 온보딩 통과 후 auth 확인 → 로그인 안 되어 있으면 로그인 페이지로
+  useEffect(() => {
+    if (!onboardingChecked) return;
+    if (authLoading) return;
+    if (!user) {
+      router.push("/login");
+    }
+  }, [onboardingChecked, authLoading, user, router]);
+
+  useEffect(() => {
+    if (!onboardingChecked || authLoading || !user) return;
 
     setMounted(true);
     setFact(CAT_FACTS[Math.floor(Math.random() * CAT_FACTS.length)]);
@@ -132,9 +150,12 @@ export default function HomePage() {
       },
       { timeout: 5000 },
     );
-  }, []);
+  }, [onboardingChecked, authLoading, user]);
 
-  if (!mounted) return null;
+  // 로딩 중이거나 auth 체크 전 → 스플래시 로딩 화면
+  if (!onboardingChecked || authLoading || !user || !mounted) {
+    return <SplashLoading />;
+  }
 
   return (
     <div className="px-5 pt-12 pb-4">
