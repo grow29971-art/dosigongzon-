@@ -19,16 +19,17 @@ import {
   CloudFog,
   Loader2,
   WifiOff,
-  BookOpen,
-  Stethoscope,
-  Gift,
   Bot,
   Send,
   ChevronRight,
   Sparkles,
 } from "lucide-react";
 import AIChatModal from "@/app/components/AIChatModal";
-import { NEWS_ITEMS } from "@/lib/news";
+import {
+  listNews,
+  BADGE_PRESETS,
+  type NewsItem,
+} from "@/lib/news-repo";
 
 /* ═══ 냥식 ═══ */
 const CAT_FACTS = [
@@ -39,14 +40,6 @@ const CAT_FACTS = [
   "고양이는 자기 키의 5배 높이를 점프할 수 있어요.",
   "삼색 고양이는 99% 확률로 암컷이에요.",
   "꼬리를 바짝 세우고 다가오는 건 반갑다는 뜻이에요.",
-];
-
-/* ═══ 퀵 액션 데이터 ═══ */
-const QUICK_ACTIONS = [
-  { label: "보호지침", href: "/protection", icon: BookOpen, bg: "#EAE6E8", color: "#7A6B8E" },
-  { label: "병원 찾기", href: "/hospitals", icon: Stethoscope, bg: "#EEE8E0", color: "#C47E5A" },
-  { label: "나눔 장터", href: "/community", icon: Gift, bg: "#E8ECE5", color: "#6B8E6F" },
-  { label: "동네 소식", href: "/neighborhood", icon: MapPin, bg: "#E5E8ED", color: "#5B7A8F" },
 ];
 
 /* ═══ 날씨 아이콘 매핑 ═══ */
@@ -80,24 +73,21 @@ interface WeatherData {
   windSpeed: number;
 }
 
-function getGreeting() {
-  const h = new Date().getHours();
-  if (h < 6) return "좋은 새벽이에요";
-  if (h < 12) return "좋은 아침이에요";
-  if (h < 18) return "좋은 오후예요";
-  return "좋은 저녁이에요";
-}
-
 /* ═══ 페이지 ═══ */
 export default function HomePage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [fact, setFact] = useState("");
-  const [greeting, setGreeting] = useState("안녕하세요");
   const [chatOpen, setChatOpen] = useState(false);
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [weatherLoading, setWeatherLoading] = useState(true);
   const [weatherError, setWeatherError] = useState("");
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+
+  // 뉴스 목록 가져오기
+  useEffect(() => {
+    listNews().then(setNewsItems);
+  }, []);
 
   useEffect(() => {
     // 처음 방문자 → 온보딩으로 리다이렉트
@@ -110,7 +100,6 @@ export default function HomePage() {
 
     setMounted(true);
     setFact(CAT_FACTS[Math.floor(Math.random() * CAT_FACTS.length)]);
-    setGreeting(getGreeting());
 
     // 날씨 가져오기
     const fetchWeather = async (lat?: number, lon?: number) => {
@@ -150,15 +139,29 @@ export default function HomePage() {
   return (
     <div className="px-5 pt-12 pb-4">
       {/* ══════ 헤더 ══════ */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-start justify-between mb-7">
         <div>
-          <div className="flex items-center gap-1.5 mb-1">
-            <MapPin size={14} className="text-primary" />
-            <span className="text-[12px] font-semibold text-primary">인천시 남동구</span>
-          </div>
-          <h1 className="text-[22px] font-extrabold text-text-main tracking-tight">
-            {greeting}, 성우님
+          {/* 브랜드 타이틀 */}
+          <h1 className="text-[32px] font-black tracking-[-0.04em] leading-none mb-2.5">
+            <span className="text-text-main">도시</span>
+            <span className="text-primary">공존</span>
           </h1>
+          {/* 서브타이틀 + 디바이더 */}
+          <div className="flex items-center gap-2">
+            <div
+              className="w-5 h-[2px] rounded-full"
+              style={{ backgroundColor: "#C47E5A", opacity: 0.6 }}
+            />
+            <p className="text-[12.5px] font-extrabold text-text-sub tracking-[-0.01em]">
+              길 위의 아이들
+            </p>
+            <span
+              className="text-[9px] font-bold tracking-[0.15em]"
+              style={{ color: "#C47E5A", opacity: 0.5 }}
+            >
+              FOR STRAY CATS
+            </span>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <button className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shadow-[0_2px_12px_rgba(0,0,0,0.04)] active:scale-90 transition-transform">
@@ -174,7 +177,15 @@ export default function HomePage() {
       </div>
 
       {/* ══════ 실시간 날씨 위젯 ══════ */}
-      <div className="card-glass rounded-[24px] p-5 mb-5">
+      <div
+        className="p-5 mb-5"
+        style={{
+          background: "linear-gradient(135deg, #FFFFFF 0%, #FDF9F2 100%)",
+          borderRadius: 22,
+          boxShadow: "0 8px 24px rgba(74,123,168,0.08), 0 1px 3px rgba(0,0,0,0.03)",
+          border: "1px solid rgba(0,0,0,0.04)",
+        }}
+      >
         {weatherLoading ? (
           /* 로딩 */
           <div className="flex items-center justify-center py-6 gap-2">
@@ -266,59 +277,89 @@ export default function HomePage() {
         ) : null}
       </div>
 
-      {/* ══════ 냥식 ══════ */}
-      <div className="bg-white rounded-[24px] p-4 mb-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-start gap-3">
-        <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-          <Sparkles size={16} className="text-primary" />
+      {/* ══════ 오늘의 냥식 ══════ */}
+      <div
+        className="flex items-start gap-3.5 px-5 py-4 mb-5"
+        style={{
+          background: "#FFFFFF",
+          borderRadius: 22,
+          boxShadow: "0 6px 20px rgba(232,176,64,0.10), 0 1px 3px rgba(0,0,0,0.03)",
+          border: "1px solid rgba(0,0,0,0.04)",
+        }}
+      >
+        <div
+          className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
+          style={{
+            background: "linear-gradient(135deg, #E8B040 0%, #C9A961 100%)",
+            boxShadow: "0 5px 12px rgba(232,176,64,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)",
+          }}
+        >
+          <Sparkles size={18} color="#fff" strokeWidth={2.3} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-bold text-primary mb-0.5">오늘의 냥식</p>
-          <p className="text-[14px] font-medium text-text-main leading-relaxed">{fact}</p>
+          <p className="text-[10px] font-extrabold tracking-[0.12em] mb-0.5" style={{ color: "#C9A961" }}>
+            TODAY&apos;S FACT
+          </p>
+          <p className="text-[13.5px] font-semibold text-text-main leading-relaxed">
+            {fact}
+          </p>
         </div>
-      </div>
-
-      {/* ══════ 퀵 액션 ══════ */}
-      <div className="grid grid-cols-4 gap-3 mb-6">
-        {QUICK_ACTIONS.map((action) => (
-          <Link
-            key={action.label}
-            href={action.href}
-            className="flex flex-col items-center gap-2 active:scale-95 transition-transform"
-          >
-            <div
-              className="w-14 h-14 rounded-[20px] flex items-center justify-center"
-              style={{ backgroundColor: action.bg }}
-            >
-              <action.icon size={24} color={action.color} strokeWidth={1.8} />
-            </div>
-            <span className="text-[11px] font-semibold text-text-main">{action.label}</span>
-          </Link>
-        ))}
       </div>
 
       {/* ══════ AI 집사 ══════ */}
-      <div className="bg-white rounded-[24px] p-5 mb-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-            <Bot size={20} className="text-primary" />
+      <div
+        className="px-5 py-4 mb-6"
+        style={{
+          background: "#FFFFFF",
+          borderRadius: 22,
+          boxShadow: "0 6px 20px rgba(196,126,90,0.10), 0 1px 3px rgba(0,0,0,0.03)",
+          border: "1px solid rgba(0,0,0,0.04)",
+        }}
+      >
+        <div className="flex items-center gap-3.5 mb-3.5">
+          <div
+            className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
+            style={{
+              background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+              boxShadow: "0 5px 12px rgba(196,126,90,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)",
+            }}
+          >
+            <Bot size={20} color="#fff" strokeWidth={2.3} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[14px] font-bold text-text-main">AI 집사</p>
-            <p className="text-[11px] text-text-sub">길고양이 돌봄이 궁금하다면 물어보세요</p>
+            <div className="flex items-baseline gap-2">
+              <p className="text-[15px] font-extrabold text-text-main tracking-tight">
+                AI 집사
+              </p>
+              <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#C47E5A", opacity: 0.5 }}>
+                BETA
+              </span>
+            </div>
+            <p className="text-[11.5px] text-text-sub mt-0.5">
+              길고양이 돌봄이 궁금하다면 물어보세요
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setChatOpen(true)}
-            className="flex-1 bg-surface-alt rounded-2xl px-4 py-3 text-[13px] text-text-muted text-left"
+            className="flex-1 rounded-xl px-4 py-2.5 text-[12.5px] text-text-muted text-left transition-all active:scale-[0.98]"
+            style={{
+              backgroundColor: "#F6F1EA",
+              border: "1px solid #E3DCD3",
+            }}
           >
             예: 새끼 고양이를 발견했어요...
           </button>
           <button
             onClick={() => setChatOpen(true)}
-            className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center shrink-0 active:scale-90 transition-transform"
+            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 active:scale-90 transition-transform"
+            style={{
+              background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+              boxShadow: "0 4px 10px rgba(196,126,90,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",
+            }}
           >
-            <Send size={16} color="white" />
+            <Send size={15} color="white" />
           </button>
         </div>
       </div>
@@ -328,9 +369,15 @@ export default function HomePage() {
       {/* ══════ 고양이 사회 소식 & 일정 ══════ */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-[16px] font-extrabold text-text-main">
-            고양이 사회 소식 & 일정
-          </h2>
+          <div className="flex items-center gap-2 px-1">
+            <div className="w-1 h-4 rounded-full bg-primary" />
+            <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+              고양이 사회 소식
+            </h2>
+            <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#C47E5A", opacity: 0.5 }}>
+              NEWS &amp; EVENTS
+            </span>
+          </div>
           <Link
             href="/community"
             className="flex items-center gap-0.5 text-[12px] font-semibold text-primary"
@@ -340,59 +387,90 @@ export default function HomePage() {
         </div>
 
         <div className="space-y-4">
-          {NEWS_ITEMS.map((item) => (
-            <Link
-              key={item.id}
-              href={`/news/${item.id}`}
-              className="block rounded-[24px] overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-transform"
+          {newsItems.length === 0 && (
+            <div
+              className="p-6 text-center text-[13px] text-text-sub"
+              style={{
+                background: "#FFFFFF",
+                borderRadius: 22,
+                boxShadow: "0 4px 16px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.03)",
+                border: "1px solid rgba(0,0,0,0.04)",
+              }}
             >
-              {/* 이미지 영역 (16:9) */}
-              <div className="relative aspect-[16/9] overflow-hidden">
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-full object-cover"
-                />
-                {/* 하단 그라데이션 오버레이 */}
-                <div
-                  className="absolute inset-0"
-                  style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)" }}
-                />
-                {/* 카테고리 뱃지 (좌상단 플로팅) */}
-                <span
-                  className="absolute top-3 left-3 text-[11px] font-bold px-2.5 py-1 rounded-xl backdrop-blur-sm"
-                  style={{
-                    color: item.badgeColor,
-                    backgroundColor: `${item.badgeBg}dd`,
-                  }}
-                >
-                  {item.badge}
-                </span>
-                {/* D-Day 뱃지 (우상단) */}
-                <span
-                  className="absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-xl backdrop-blur-sm"
-                  style={{
-                    color: item.dday.startsWith("D-") ? "#B84545" : "#6B8E6F",
-                    backgroundColor: item.dday.startsWith("D-") ? "rgba(238,227,222,0.9)" : "rgba(232,236,229,0.9)",
-                  }}
-                >
-                  {item.dday}
-                </span>
-                {/* 이미지 위 제목 (하단) */}
-                <p className="absolute bottom-3 left-4 right-4 text-white text-[13px] font-semibold leading-snug drop-shadow-md">
-                  {item.desc}
-                </p>
-              </div>
+              아직 등록된 소식이 없어요.
+            </div>
+          )}
+          {newsItems.map((item) => {
+            const preset = BADGE_PRESETS[item.badge_type];
+            const isDday = item.dday?.startsWith("D-") ?? false;
+            return (
+              <Link
+                key={item.id}
+                href={`/news/${item.id}`}
+                className="block overflow-hidden active:scale-[0.98] transition-transform"
+                style={{
+                  background: "#FFFFFF",
+                  borderRadius: 22,
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.03)",
+                  border: "1px solid rgba(0,0,0,0.04)",
+                }}
+              >
+                {/* 이미지 영역 (16:9) */}
+                <div className="relative aspect-[16/9] overflow-hidden" style={{ background: preset.gradient }}>
+                  {item.image_url && (
+                    <img
+                      src={item.image_url}
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                  {/* 하단 그라데이션 오버레이 */}
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)" }}
+                  />
+                  {/* 카테고리 뱃지 (좌상단) */}
+                  <span
+                    className="absolute top-3 left-3 text-[11px] font-bold px-2.5 py-1 rounded-xl backdrop-blur-sm"
+                    style={{
+                      color: preset.color,
+                      backgroundColor: `${preset.bg}dd`,
+                    }}
+                  >
+                    {preset.label}
+                  </span>
+                  {/* D-Day 뱃지 (우상단) */}
+                  {item.dday && (
+                    <span
+                      className="absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-xl backdrop-blur-sm"
+                      style={{
+                        color: isDday ? "#B84545" : "#6B8E6F",
+                        backgroundColor: isDday ? "rgba(238,227,222,0.9)" : "rgba(232,236,229,0.9)",
+                      }}
+                    >
+                      {item.dday}
+                    </span>
+                  )}
+                  {/* 이미지 위 설명 */}
+                  {item.description && (
+                    <p className="absolute bottom-3 left-4 right-4 text-white text-[13px] font-semibold leading-snug drop-shadow-md">
+                      {item.description}
+                    </p>
+                  )}
+                </div>
 
-              {/* 텍스트 영역 */}
-              <div className="bg-white px-4 py-3.5">
-                <p className="text-[16px] font-bold text-text-main leading-snug mb-1">
-                  {item.title}
-                </p>
-                <p className="text-[13px] text-text-light">{item.date}</p>
-              </div>
-            </Link>
-          ))}
+                {/* 텍스트 영역 */}
+                <div className="bg-white px-4 py-3.5">
+                  <p className="text-[16px] font-bold text-text-main leading-snug mb-1">
+                    {item.title}
+                  </p>
+                  {item.date_label && (
+                    <p className="text-[13px] text-text-light">{item.date_label}</p>
+                  )}
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </div>

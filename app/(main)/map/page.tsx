@@ -18,8 +18,10 @@ import {
   Camera,
   ThumbsUp,
   ThumbsDown,
+  Flag,
 } from "lucide-react";
 import AddCatModal from "@/app/components/AddCatModal";
+import ReportModal from "@/app/components/ReportModal";
 import {
   listCats,
   listComments,
@@ -124,6 +126,12 @@ export default function MapPage() {
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   // 내 투표 상태 Map<commentId, 1|-1>
   const [myVotes, setMyVotes] = useState<Map<string, 1 | -1>>(new Map());
+  // 신고 모달
+  const [reportTarget, setReportTarget] = useState<{
+    id: string;
+    type: "comment" | "cat";
+    snapshot: string;
+  } | null>(null);
 
   // 댓글 사진 프리뷰 URL 정리 (메모리 누수 방지)
   useEffect(() => {
@@ -963,6 +971,25 @@ export default function MapPage() {
                                     {c.dislike_count}
                                   </span>
                                 </button>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setReportTarget({
+                                      id: c.id,
+                                      type: "comment",
+                                      snapshot: c.body?.slice(0, 200) ?? "",
+                                    })
+                                  }
+                                  className="ml-auto flex items-center justify-center w-7 h-7 rounded-lg active:scale-90 transition-transform"
+                                  style={{
+                                    backgroundColor: "#FFFFFF",
+                                    border: "1px solid #E3DCD3",
+                                  }}
+                                  aria-label="신고"
+                                  title="신고하기"
+                                >
+                                  <Flag size={11} style={{ color: "#A38E7A" }} strokeWidth={2.2} />
+                                </button>
                               </>
                             );
                           })()}
@@ -1093,6 +1120,15 @@ export default function MapPage() {
           </button>
         </div>
       )}
+
+      {/* 신고 모달 */}
+      <ReportModal
+        open={!!reportTarget}
+        onClose={() => setReportTarget(null)}
+        targetType={reportTarget?.type ?? "comment"}
+        targetId={reportTarget?.id ?? ""}
+        targetSnapshot={reportTarget?.snapshot}
+      />
 
       {/* 등록 모달 */}
       <AddCatModal

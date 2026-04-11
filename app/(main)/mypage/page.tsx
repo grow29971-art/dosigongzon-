@@ -15,7 +15,11 @@ import {
   Pencil,
   Check,
   X,
+  Newspaper,
+  MessageSquare,
+  Inbox,
 } from "lucide-react";
+import InquiryModal from "@/app/components/InquiryModal";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -34,6 +38,7 @@ import {
   type CatCommentWithCat,
   type MyActivitySummary,
 } from "@/lib/cats-repo";
+import { isCurrentUserAdmin } from "@/lib/news-repo";
 
 function formatRelative(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -58,6 +63,8 @@ export default function MyPage() {
   const [myCats, setMyCats] = useState<Cat[]>([]);
   const [myComments, setMyComments] = useState<CatCommentWithCat[]>([]);
   const [dataLoading, setDataLoading] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [inquiryOpen, setInquiryOpen] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarError, setAvatarError] = useState("");
   const avatarInputRef = useRef<HTMLInputElement>(null);
@@ -129,12 +136,14 @@ export default function MyPage() {
       getMyActivitySummary(),
       listMyCats(),
       listMyComments(10),
+      isCurrentUserAdmin(),
     ])
-      .then(([s, cats, comments]) => {
+      .then(([s, cats, comments, admin]) => {
         if (cancelled) return;
         setSummary(s);
         setMyCats(cats);
         setMyComments(comments);
+        setIsAdmin(admin);
       })
       .finally(() => {
         if (!cancelled) setDataLoading(false);
@@ -572,6 +581,118 @@ export default function MyPage() {
             )}
           </div>
 
+          {/* ── 지원 / 문의 ── */}
+          <div className="mb-3">
+            <div className="flex items-center gap-2 mb-3 px-1">
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4A7BA8" }} />
+              <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+                지원
+              </h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => setInquiryOpen(true)}
+              className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
+              style={{
+                background: "#FFFFFF",
+                borderRadius: 16,
+                boxShadow: "0 4px 14px rgba(74,123,168,0.10), 0 1px 2px rgba(0,0,0,0.02)",
+                border: "1px solid rgba(0,0,0,0.04)",
+              }}
+            >
+              <div
+                className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
+                style={{
+                  background: "linear-gradient(135deg, #4A7BA8 0%, #3A6590 100%)",
+                  boxShadow: "0 5px 12px rgba(74,123,168,0.35), inset 0 1px 0 rgba(255,255,255,0.4)",
+                }}
+              >
+                <MessageSquare size={20} color="#fff" strokeWidth={2.3} />
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+                  문의하기
+                </p>
+                <p className="text-[11px] text-text-sub mt-0.5">
+                  불편사항, 버그, 제안 등을 관리자에게 전달
+                </p>
+              </div>
+              <ChevronRight size={16} className="shrink-0" style={{ color: "#4A7BA8", opacity: 0.7 }} />
+            </button>
+          </div>
+
+          {/* ── 관리자 전용 ── */}
+          {isAdmin && (
+            <div className="mb-3">
+              <div className="flex items-center gap-2 mb-3 px-1">
+                <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#7A6B8E" }} />
+                <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+                  관리자 메뉴
+                </h2>
+              </div>
+              <div className="space-y-2">
+                <Link
+                  href="/admin/news"
+                  className="flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
+                  style={{
+                    background: "#FFFFFF",
+                    borderRadius: 16,
+                    boxShadow: "0 4px 14px rgba(122,107,142,0.10), 0 1px 2px rgba(0,0,0,0.02)",
+                    border: "1px solid rgba(0,0,0,0.04)",
+                  }}
+                >
+                  <div
+                    className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
+                    style={{
+                      background: "linear-gradient(135deg, #7A6B8E 0%, #695B7A 100%)",
+                      boxShadow: "0 5px 12px rgba(122,107,142,0.35), inset 0 1px 0 rgba(255,255,255,0.4)",
+                    }}
+                  >
+                    <Newspaper size={20} color="#fff" strokeWidth={2.3} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+                      뉴스 관리
+                    </p>
+                    <p className="text-[11px] text-text-sub mt-0.5">
+                      홈 화면 소식 & 일정 추가·수정·삭제
+                    </p>
+                  </div>
+                  <ChevronRight size={16} className="shrink-0" style={{ color: "#7A6B8E", opacity: 0.7 }} />
+                </Link>
+                <Link
+                  href="/admin/inbox"
+                  className="flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
+                  style={{
+                    background: "#FFFFFF",
+                    borderRadius: 16,
+                    boxShadow: "0 4px 14px rgba(216,85,85,0.10), 0 1px 2px rgba(0,0,0,0.02)",
+                    border: "1px solid rgba(0,0,0,0.04)",
+                  }}
+                >
+                  <div
+                    className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
+                    style={{
+                      background: "linear-gradient(135deg, #D85555 0%, #B84545 100%)",
+                      boxShadow: "0 5px 12px rgba(216,85,85,0.35), inset 0 1px 0 rgba(255,255,255,0.4)",
+                    }}
+                  >
+                    <Inbox size={20} color="#fff" strokeWidth={2.3} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+                      신고·문의 관리
+                    </p>
+                    <p className="text-[11px] text-text-sub mt-0.5">
+                      유저 신고와 문의를 확인하고 처리
+                    </p>
+                  </div>
+                  <ChevronRight size={16} className="shrink-0" style={{ color: "#D85555", opacity: 0.7 }} />
+                </Link>
+              </div>
+            </div>
+          )}
+
           {/* ── 로그아웃 ── */}
           <button
             onClick={handleSignOut}
@@ -621,6 +742,9 @@ export default function MyPage() {
       )}
 
       <p className="text-center text-[10px] text-text-muted mt-6">도시공존 v0.1.0</p>
+
+      {/* 문의 모달 */}
+      <InquiryModal open={inquiryOpen} onClose={() => setInquiryOpen(false)} />
     </div>
   );
 }

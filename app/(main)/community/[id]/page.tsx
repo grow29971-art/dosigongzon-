@@ -3,29 +3,83 @@
 import { useEffect, useState } from "react";
 import { use } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Eye, Heart, MessageCircle, Send, Clock, User } from "lucide-react";
+import {
+  ArrowLeft,
+  Eye,
+  Heart,
+  MessageCircle,
+  Send,
+  Clock,
+  User,
+  Flag,
+  Loader2,
+} from "lucide-react";
 import type { Post } from "@/lib/types";
 import { CATEGORY_MAP } from "@/lib/types";
 import { getPostById, formatRelativeTime } from "@/lib/store";
+import {
+  listPostComments,
+  createPostComment,
+  type PostComment,
+} from "@/lib/post-comments-repo";
+import { useAuth } from "@/lib/auth-context";
+import ReportModal from "@/app/components/ReportModal";
 
-// 더미 댓글
-const DUMMY_COMMENTS = [
-  { id: "c1", author: "냥집사01", content: "정보 감사합니다! 근처 주민인데 확인해볼게요.", time: "1시간 전" },
-  { id: "c2", author: "동네고양이", content: "저도 그 근처에서 본 적 있어요. 조심해서 접근해야 할 것 같아요.", time: "30분 전" },
-];
-
-export default function PostDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default function PostDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = use(params);
   const router = useRouter();
+  const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [post, setPost] = useState<Post | null>(null);
-  const [comment, setComment] = useState("");
+
+  // 댓글 상태
+  const [comments, setComments] = useState<PostComment[]>([]);
+  const [commentsLoading, setCommentsLoading] = useState(true);
+  const [commentText, setCommentText] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [commentError, setCommentError] = useState("");
+
+  // 신고 모달
+  const [reportTarget, setReportTarget] = useState<{
+    type: "post" | "post_comment";
+    id: string;
+    snapshot: string;
+  } | null>(null);
 
   useEffect(() => {
     setMounted(true);
     const found = getPostById(id);
     if (found) setPost(found);
+
+    // 댓글 로드
+    setCommentsLoading(true);
+    listPostComments(id)
+      .then(setComments)
+      .finally(() => setCommentsLoading(false));
   }, [id]);
+
+  const handleSubmitComment = async () => {
+    if (!user) {
+      setCommentError("로그인이 필요해요.");
+      return;
+    }
+    if (!commentText.trim() || submitting) return;
+    setSubmitting(true);
+    setCommentError("");
+    try {
+      const created = await createPostComment(id, commentText);
+      setComments((prev) => [...prev, created]);
+      setCommentText("");
+    } catch (err) {
+      setCommentError(err instanceof Error ? err.message : "작성 실패");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   if (!mounted) return null;
 
@@ -34,7 +88,10 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
       <div className="flex flex-col items-center justify-center pt-32 text-text-light">
         <MessageCircle size={48} strokeWidth={1.2} />
         <p className="text-base mt-4 text-text-sub">게시글을 찾을 수 없습니다</p>
-        <button onClick={() => router.push("/community")} className="mt-4 px-4 py-2 rounded-full bg-primary text-white text-sm font-bold">
+        <button
+          onClick={() => router.push("/community")}
+          className="mt-4 px-4 py-2 rounded-full bg-primary text-white text-sm font-bold"
+        >
           목록으로
         </button>
       </div>
@@ -47,17 +104,25 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
     <div className="pb-24">
       {/* ── 헤더 ── */}
       <div className="flex items-center px-4 pt-14 pb-3 gap-3">
-        <button onClick={() => router.back()} className="p-2 -ml-2 active:scale-90 transition-transform">
+        <button
+          onClick={() => router.back()}
+          className="p-2 -ml-2 active:scale-90 transition-transform"
+        >
           <ArrowLeft size={24} className="text-text-main" />
         </button>
-        <span className="text-[12px] font-bold text-white px-2.5 py-1 rounded-lg" style={{ backgroundColor: cat.color }}>
+        <span
+          className="text-[12px] font-bold text-white px-2.5 py-1 rounded-lg"
+          style={{ backgroundColor: cat.color }}
+        >
           {cat.emoji} {cat.label}
         </span>
       </div>
 
       {/* ── 게시글 본문 ── */}
       <div className="px-5">
-        <h1 className="text-xl font-extrabold text-text-main leading-snug">{post.title}</h1>
+        <h1 className="text-xl font-extrabold text-text-main leading-snug">
+          {post.title}
+        </h1>
 
         {/* 작성자 정보 */}
         <div className="flex items-center gap-2 mt-3 mb-5">
@@ -65,7 +130,9 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
             <User size={16} className="text-primary" />
           </div>
           <div>
-            <p className="text-[13px] font-semibold text-text-main">{post.authorName}</p>
+            <p className="text-[13px] font-semibold text-text-main">
+              {post.authorName}
+            </p>
             <div className="flex items-center gap-1.5 text-[11px] text-text-light">
               <Clock size={11} />
               <span>{formatRelativeTime(post.createdAt)}</span>
@@ -75,7 +142,9 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
 
         {/* 본문 내용 */}
         <div className="card p-5">
-          <p className="text-[15px] text-text-main leading-relaxed whitespace-pre-wrap">{post.content}</p>
+          <p className="text-[15px] text-text-main leading-relaxed whitespace-pre-wrap">
+            {post.content}
+          </p>
         </div>
 
         {/* 반응 바 */}
@@ -87,51 +156,157 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
             <Eye size={18} /> <span>{post.viewCount}</span>
           </span>
           <span className="flex items-center gap-1.5 text-[13px]">
-            <MessageCircle size={18} /> <span>{post.commentCount}</span>
+            <MessageCircle size={18} /> <span>{comments.length}</span>
           </span>
+          <button
+            type="button"
+            onClick={() =>
+              setReportTarget({
+                type: "post",
+                id: post.id,
+                snapshot: `${post.title} — ${post.content.slice(0, 150)}`,
+              })
+            }
+            className="ml-auto flex items-center gap-1 px-2.5 py-1 rounded-lg text-[12px] active:scale-95 transition-transform"
+            style={{
+              backgroundColor: "#FFFFFF",
+              border: "1px solid #E3DCD3",
+              color: "#A38E7A",
+            }}
+            aria-label="게시글 신고"
+          >
+            <Flag size={12} strokeWidth={2.2} />
+            신고
+          </button>
         </div>
 
         {/* ── 구분선 ── */}
         <div className="h-px bg-divider my-5" />
 
         {/* ── 댓글 ── */}
-        <h2 className="text-[15px] font-bold text-text-main mb-3">댓글 {DUMMY_COMMENTS.length}</h2>
+        <h2 className="text-[15px] font-bold text-text-main mb-3">
+          댓글 {comments.length}
+        </h2>
 
-        <div className="space-y-3">
-          {DUMMY_COMMENTS.map((c) => (
-            <div key={c.id} className="card-sm p-4">
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-coral/30 flex items-center justify-center">
-                    <User size={12} className="text-primary-dark" />
+        {commentsLoading ? (
+          <div className="flex justify-center py-6">
+            <Loader2 size={18} className="animate-spin text-primary" />
+          </div>
+        ) : comments.length === 0 ? (
+          <div className="text-center py-6 text-[12px] text-text-light">
+            첫 번째 댓글을 남겨보세요
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {comments.map((c) => (
+              <div key={c.id} className="card-sm p-4">
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2">
+                    {c.author_avatar_url ? (
+                      <img
+                        src={c.author_avatar_url}
+                        alt=""
+                        className="w-6 h-6 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center">
+                        <span className="text-[10px] font-extrabold text-primary">
+                          {c.author_name?.charAt(0) ?? "?"}
+                        </span>
+                      </div>
+                    )}
+                    <span className="text-[13px] font-semibold text-text-main">
+                      {c.author_name ?? "익명"}
+                    </span>
                   </div>
-                  <span className="text-[13px] font-semibold text-text-main">{c.author}</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[11px] text-text-light">
+                      {formatRelativeTime(c.created_at)}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setReportTarget({
+                          type: "post_comment",
+                          id: c.id,
+                          snapshot: c.body.slice(0, 150),
+                        })
+                      }
+                      className="w-5 h-5 rounded-md flex items-center justify-center active:scale-90"
+                      style={{ backgroundColor: "#F6F1EA" }}
+                      aria-label="댓글 신고"
+                      title="신고하기"
+                    >
+                      <Flag size={9} style={{ color: "#A38E7A" }} strokeWidth={2.5} />
+                    </button>
+                  </div>
                 </div>
-                <span className="text-[11px] text-text-light">{c.time}</span>
+                <p className="text-[13px] text-text-sub leading-relaxed pl-8 whitespace-pre-wrap">
+                  {c.body}
+                </p>
               </div>
-              <p className="text-[13px] text-text-sub leading-relaxed pl-8">{c.content}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* ── 댓글 입력 (하단 고정) ── */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border px-4 py-3 z-50">
-        <div className="mx-auto max-w-lg flex items-center gap-2">
-          <input
-            type="text"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="댓글을 입력하세요..."
-            className="flex-1 px-4 py-2.5 rounded-full border border-border bg-surface-alt text-[14px] text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
-          />
-          <button
-            className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-              comment.trim() ? "bg-primary active:scale-90" : "bg-border"
-            }`}
-          >
-            <Send size={18} color={comment.trim() ? "#fff" : "#BFB9B0"} />
-          </button>
+      {/* ── 신고 모달 ── */}
+      <ReportModal
+        open={!!reportTarget}
+        onClose={() => setReportTarget(null)}
+        targetType={reportTarget?.type ?? "post"}
+        targetId={reportTarget?.id ?? ""}
+        targetSnapshot={reportTarget?.snapshot}
+      />
+
+      {/* ── 댓글 입력 (하단 고정, BottomNav 위) ── */}
+      <div
+        className="fixed left-0 right-0 bg-white border-t border-border px-4 py-3 z-40"
+        style={{
+          bottom: "calc(5rem + env(safe-area-inset-bottom))",
+        }}
+      >
+        <div className="mx-auto max-w-lg">
+          {commentError && (
+            <p
+              className="text-[11px] mb-1 px-2"
+              style={{ color: "#B84545" }}
+            >
+              {commentError}
+            </p>
+          )}
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSubmitComment();
+              }}
+              placeholder={
+                user ? "댓글을 입력하세요..." : "로그인 후 댓글을 작성할 수 있어요"
+              }
+              disabled={!user || submitting}
+              className="flex-1 px-4 py-2.5 rounded-full border border-border bg-surface-alt text-[14px] text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
+            />
+            <button
+              onClick={handleSubmitComment}
+              disabled={!commentText.trim() || submitting || !user}
+              className="w-10 h-10 rounded-full flex items-center justify-center transition-all disabled:opacity-40"
+              style={{
+                backgroundColor: commentText.trim() && user ? "#C47E5A" : "#E3DCD3",
+              }}
+            >
+              {submitting ? (
+                <Loader2 size={16} className="animate-spin text-white" />
+              ) : (
+                <Send
+                  size={18}
+                  color={commentText.trim() && user ? "#fff" : "#BFB9B0"}
+                />
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>
