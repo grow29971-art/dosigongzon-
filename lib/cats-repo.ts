@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════
 
 import { createClient } from "@/lib/supabase/client";
+import { isSafeImageUrl } from "@/lib/url-validate";
 
 export interface Cat {
   id: string;
@@ -189,6 +190,11 @@ export async function listCats(): Promise<Cat[]> {
   return (data ?? []) as Cat[];
 }
 
+// ── 고양이 등록 제한 상수 (SQL 마이그레이션과 값이 일치해야 함) ──
+// supabase_cats_write_limits_migration.sql 참조.
+const CAT_GRACE_HOURS = 24;
+const CAT_DAILY_LIMIT = 1;
+
 // ── 고양이 등록 (인증 필요) ──
 export async function createCat(input: CreateCatInput): Promise<Cat> {
   const supabase = createClient();
@@ -199,10 +205,46 @@ export async function createCat(input: CreateCatInput): Promise<Cat> {
     throw new Error("로그인이 필요해요.");
   }
 
+  // 계정 나이 체크 (장난 계정 차단)
+  if (user.created_at) {
+    const accountAgeMs = Date.now() - new Date(user.created_at).getTime();
+    const graceMs = CAT_GRACE_HOURS * 60 * 60 * 1000;
+    if (accountAgeMs < graceMs) {
+      const remainHours = Math.ceil((graceMs - accountAgeMs) / (60 * 60 * 1000));
+      throw new Error(
+        `가입 후 ${CAT_GRACE_HOURS}시간 뒤부터 고양이를 등록할 수 있어요. (약 ${remainHours}시간 남음)`,
+      );
+    }
+  }
+
+  // 레이트리밋: 최근 24시간 등록 수 조회
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+  const { count: dailyCount } = await supabase
+    .from("cats")
+    .select("*", { count: "exact", head: true })
+    .eq("caretaker_id", user.id)
+    .gte("created_at", oneDayAgo);
+
+  if ((dailyCount ?? 0) >= CAT_DAILY_LIMIT) {
+    throw new Error(
+      `하루에 최대 ${CAT_DAILY_LIMIT}마리까지 등록할 수 있어요. 내일 다시 시도해주세요.`,
+    );
+  }
+
+  // photo_url 검증: Storage URL 외의 값(XSS 탈출 시도 등) 차단
+  const safePhotoUrl = input.photo_url
+    ? (isSafeImageUrl(input.photo_url) ? input.photo_url : null)
+    : null;
+  if (input.photo_url && !safePhotoUrl) {
+    throw new Error("사진 URL 형식이 올바르지 않아요.");
+  }
+
   const { data, error } = await supabase
     .from("cats")
     .insert({
       ...input,
+      photo_url: safePhotoUrl,
       caretaker_id: user.id,
       caretaker_name: input.caretaker_name ?? getDisplayName(user),
       tags: input.tags ?? [],
@@ -220,7 +262,7 @@ export async function createCat(input: CreateCatInput): Promise<Cat> {
 
 // ── 클라이언트 사이드 이미지 → WebP 변환 + 리사이즈 ──
 // 폰 카메라 사진(4~8MB)을 200~500KB로 압축. 서버 부담 + Storage 용량 절약.
-async function convertImageToWebp(
+export async function convertImageToWebp(
   file: File,
   maxDimension = 1280, // 720p — 긴 변 1280px
   quality = 0.82,
@@ -340,6 +382,7 @@ export interface CatComment {
   author_name: string | null;
   author_avatar_url: string | null;
   author_level: number | null;
+  author_title: string | null;
   body: string;
   kind: CommentKind;
   photo_url: string | null;
@@ -597,15 +640,31 @@ export async function createComment(
     throw new Error("내용이나 사진 중 하나는 있어야 해요.");
   }
 
+  // photo_url 검증
+  const safePhotoUrl = photoUrl && isSafeImageUrl(photoUrl) ? photoUrl : null;
+  if (photoUrl && !safePhotoUrl) {
+    throw new Error("사진 URL 형식이 올바르지 않아요.");
+  }
+
   // 현재 레벨 스냅샷 — 활동 요약 조회 후 계산
   let authorLevel: number | null = null;
   try {
     const summary = await getMyActivitySummary();
     authorLevel = computeLevel(computeScore(summary)).level;
   } catch {
-    // 요약 실패해도 댓글 작성은 진행
+    // 요약 실패해도 일반 댓글은 진행, 경보는 아래에서 막힘
     authorLevel = null;
   }
+
+  // 경보(alert)는 레벨 1 이상만 기록 가능 — 신규/장난 계정이 가짜 경보 난립 차단
+  if (kind === "alert" && (authorLevel === null || authorLevel < 1)) {
+    throw new Error(
+      "경보 기록은 레벨 1 이상 유저만 남길 수 있어요. 댓글·투표 등으로 활동을 시작하면 바로 열려요.",
+    );
+  }
+
+  const equippedTitle =
+    (user.user_metadata?.equipped_title as string | undefined) ?? null;
 
   const { data, error } = await supabase
     .from("cat_comments")
@@ -615,9 +674,10 @@ export async function createComment(
       author_name: getDisplayName(user),
       author_avatar_url: user.user_metadata?.avatar_url ?? null,
       author_level: authorLevel,
+      author_title: equippedTitle,
       body: trimmed,
       kind,
-      photo_url: photoUrl,
+      photo_url: safePhotoUrl,
     })
     .select()
     .single();

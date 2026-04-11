@@ -12,6 +12,7 @@ export interface PostComment {
   author_id: string | null;
   author_name: string | null;
   author_avatar_url: string | null;
+  author_title: string | null;
   body: string;
   created_at: string;
 }
@@ -45,6 +46,9 @@ export async function createPostComment(
   const trimmed = body.trim();
   if (!trimmed) throw new Error("내용을 입력해주세요.");
 
+  const equippedTitle =
+    (user.user_metadata?.equipped_title as string | undefined) ?? null;
+
   const { data, error } = await supabase
     .from("post_comments")
     .insert({
@@ -52,6 +56,7 @@ export async function createPostComment(
       author_id: user.id,
       author_name: getDisplayName(user),
       author_avatar_url: user.user_metadata?.avatar_url ?? null,
+      author_title: equippedTitle,
       body: trimmed,
     })
     .select()

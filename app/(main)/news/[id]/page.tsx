@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import { ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
 import { getNewsById, BADGE_PRESETS, type NewsItem } from "@/lib/news-repo";
+import { sanitizeHttpUrl } from "@/lib/url-validate";
 
 export default function NewsDetailPage({
   params,
@@ -147,9 +148,9 @@ export default function NewsDetailPage({
         )}
 
         {/* 외부 링크 */}
-        {news.external_url && (
+        {news.external_url && sanitizeHttpUrl(news.external_url) && (
           <a
-            href={news.external_url}
+            href={sanitizeHttpUrl(news.external_url)}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.97] transition-transform"

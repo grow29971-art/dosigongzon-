@@ -350,6 +350,17 @@ export default function AddCatModal({
             </div>
           </div>
 
+          {/* 안내: 하루 1마리 제한 */}
+          <div
+            className="rounded-2xl px-4 py-2.5 flex items-start gap-2"
+            style={{ backgroundColor: "#EEE8E0", border: "1px solid rgba(196,126,90,0.2)" }}
+          >
+            <span className="text-[13px]">🐾</span>
+            <p className="text-[12px] font-semibold leading-snug" style={{ color: "#7A5238" }}>
+              하루에 한 마리씩 등록 가능합니다. 신중하게 기록해주세요.
+            </p>
+          </div>
+
           {/* 에러 메시지 */}
           {error && (
             <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: "#EEE3DE" }}>

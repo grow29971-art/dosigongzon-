@@ -5,6 +5,7 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { getDisplayName } from "@/lib/cats-repo";
+import { requireAdmin } from "@/lib/admin-guard";
 
 // ══ 신고 ══
 export type ReportTargetType = "comment" | "cat" | "post" | "post_comment";
@@ -107,6 +108,7 @@ export async function updateReportStatus(
   status: ReportStatus,
   adminNote?: string | null,
 ): Promise<void> {
+  await requireAdmin();
   const supabase = createClient();
   const patch: { status: ReportStatus; updated_at: string; admin_note?: string | null } = {
     status,
@@ -126,6 +128,7 @@ export async function updateReportStatus(
 }
 
 export async function deleteReport(id: string): Promise<void> {
+  await requireAdmin();
   const supabase = createClient();
   const { error } = await supabase.from("reports").delete().eq("id", id);
   if (error) {
@@ -210,6 +213,7 @@ export async function updateInquiryStatus(
   status: InquiryStatus,
   adminNote?: string | null,
 ): Promise<void> {
+  await requireAdmin();
   const supabase = createClient();
   const patch: { status: InquiryStatus; updated_at: string; admin_note?: string | null } = {
     status,
@@ -229,6 +233,7 @@ export async function updateInquiryStatus(
 }
 
 export async function deleteInquiry(id: string): Promise<void> {
+  await requireAdmin();
   const supabase = createClient();
   const { error } = await supabase.from("inquiries").delete().eq("id", id);
   if (error) {
@@ -255,9 +260,8 @@ export async function suspendUser(
   reason: string,
   durationDays: number | null = null,
 ): Promise<void> {
+  const adminId = await requireAdmin();
   const supabase = createClient();
-  const { data: { user: currentUser } } = await supabase.auth.getUser();
-  if (!currentUser) throw new Error("로그인이 필요해요.");
 
   const until = durationDays
     ? new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000).toISOString()
@@ -270,7 +274,7 @@ export async function suspendUser(
         user_id: userId,
         reason,
         suspended_until: until,
-        suspended_by: currentUser.id,
+        suspended_by: adminId,
       },
       { onConflict: "user_id" },
     );
@@ -282,6 +286,7 @@ export async function suspendUser(
 }
 
 export async function unsuspendUser(userId: string): Promise<void> {
+  await requireAdmin();
   const supabase = createClient();
   const { error } = await supabase
     .from("user_suspensions")
@@ -333,6 +338,7 @@ export async function getMySuspension(): Promise<{
 // 대신 이 함수는 삭제 정책을 admin이 지울 수 있도록 확장된 상태에서 동작.
 // (SQL 마이그레이션에서 cat_comments_delete_admin 정책 추가 필요)
 export async function deleteCommentByAdmin(commentId: string): Promise<void> {
+  await requireAdmin();
   const supabase = createClient();
   const { error } = await supabase
     .from("cat_comments")
@@ -346,6 +352,7 @@ export async function deleteCommentByAdmin(commentId: string): Promise<void> {
 
 // admin이 고양이 삭제
 export async function deleteCatByAdmin(catId: string): Promise<void> {
+  await requireAdmin();
   const supabase = createClient();
   const { error } = await supabase.from("cats").delete().eq("id", catId);
   if (error) {
@@ -356,6 +363,7 @@ export async function deleteCatByAdmin(catId: string): Promise<void> {
 
 // admin이 커뮤니티 댓글 삭제
 export async function deletePostCommentByAdmin(commentId: string): Promise<void> {
+  await requireAdmin();
   const supabase = createClient();
   const { error } = await supabase
     .from("post_comments")

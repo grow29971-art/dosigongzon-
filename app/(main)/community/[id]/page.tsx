@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import type { Post } from "@/lib/types";
 import { CATEGORY_MAP } from "@/lib/types";
-import { getPostById, formatRelativeTime } from "@/lib/store";
+import { getPostById, formatRelativeTime, incrementPostViewCount } from "@/lib/posts-repo";
 import {
   listPostComments,
   createPostComment,
@@ -24,6 +24,7 @@ import {
 } from "@/lib/post-comments-repo";
 import { useAuth } from "@/lib/auth-context";
 import ReportModal from "@/app/components/ReportModal";
+import TitleBadge from "@/app/components/TitleBadge";
 
 export default function PostDetailPage({
   params,
@@ -52,8 +53,14 @@ export default function PostDetailPage({
 
   useEffect(() => {
     setMounted(true);
-    const found = getPostById(id);
-    if (found) setPost(found);
+    getPostById(id).then((found) => {
+      if (found) {
+        // 낙관적으로 조회수 +1 표시
+        setPost({ ...found, viewCount: found.viewCount + 1 });
+        // 서버 반영
+        incrementPostViewCount(id).catch(() => {});
+      }
+    });
 
     // 댓글 로드
     setCommentsLoading(true);
@@ -130,9 +137,12 @@ export default function PostDetailPage({
             <User size={16} className="text-primary" />
           </div>
           <div>
-            <p className="text-[13px] font-semibold text-text-main">
-              {post.authorName}
-            </p>
+            <div className="flex items-center gap-1.5">
+              <p className="text-[13px] font-semibold text-text-main">
+                {post.authorName}
+              </p>
+              <TitleBadge titleId={post.authorTitle} size="sm" />
+            </div>
             <div className="flex items-center gap-1.5 text-[11px] text-text-light">
               <Clock size={11} />
               <span>{formatRelativeTime(post.createdAt)}</span>
@@ -145,6 +155,21 @@ export default function PostDetailPage({
           <p className="text-[15px] text-text-main leading-relaxed whitespace-pre-wrap">
             {post.content}
           </p>
+
+          {post.images.length > 0 && (
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              {post.images.map((url) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={url}
+                  src={url}
+                  alt=""
+                  className="w-full aspect-square object-cover rounded-xl"
+                  style={{ border: "1px solid #E3DCD3" }}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* 반응 바 */}
@@ -218,6 +243,7 @@ export default function PostDetailPage({
                     <span className="text-[13px] font-semibold text-text-main">
                       {c.author_name ?? "익명"}
                     </span>
+                    <TitleBadge titleId={c.author_title} />
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="text-[11px] text-text-light">

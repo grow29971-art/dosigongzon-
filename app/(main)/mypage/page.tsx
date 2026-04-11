@@ -40,6 +40,15 @@ import {
   type MyActivitySummary,
 } from "@/lib/cats-repo";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
+import {
+  getTitleStatuses,
+  countUnlocked,
+  CATEGORY_LABELS,
+  CATEGORY_COLORS,
+  TITLES,
+  type TitleStatus,
+} from "@/lib/titles";
+import { createClient } from "@/lib/supabase/client";
 
 function formatRelative(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -421,6 +430,16 @@ export default function MyPage() {
               loading={dataLoading}
             />
           </div>
+
+          {/* ── 업적 (타이틀) ── */}
+          {summary && (
+            <TitleSection
+              summary={summary}
+              initialEquipped={
+                (user?.user_metadata?.equipped_title as string | undefined) ?? null
+              }
+            />
+          )}
 
           {/* ── 내가 등록한 고양이 ── */}
           <div className="mb-5">
@@ -822,6 +841,156 @@ function StatCard({
       </p>
       <p className="text-[10.5px] text-text-sub mt-0.5 font-semibold">{label}</p>
     </div>
+  );
+}
+
+/* ═══ 타이틀(업적) 섹션 ═══ */
+function TitleSection({
+  summary,
+  initialEquipped,
+}: {
+  summary: MyActivitySummary;
+  initialEquipped: string | null;
+}) {
+  const statuses = getTitleStatuses(summary);
+  const unlockedCount = countUnlocked(summary);
+  const total = TITLES.length;
+  const [equipped, setEquipped] = useState<string | null>(initialEquipped);
+  const [saving, setSaving] = useState(false);
+
+  const handleToggle = async (id: string, isUnlocked: boolean) => {
+    if (!isUnlocked || saving) return;
+    const next = equipped === id ? null : id;
+    // 낙관적 UI
+    const prev = equipped;
+    setEquipped(next);
+    setSaving(true);
+    try {
+      const { error } = await createClient().auth.updateUser({
+        data: { equipped_title: next },
+      });
+      if (error) throw error;
+    } catch {
+      setEquipped(prev);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="mb-5">
+      <div className="flex items-center gap-2 mb-3 px-1">
+        <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C9A961" }} />
+        <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+          업적
+        </h2>
+        <span className="text-[11px] font-bold text-text-sub tabular-nums ml-0.5">
+          {unlockedCount} / {total}
+        </span>
+        <span className="text-[10px] text-text-light ml-auto">
+          {equipped ? "탭해서 해제" : "해제된 업적을 탭하면 장착돼요"}
+        </span>
+      </div>
+
+      <div className="grid grid-cols-3 gap-2">
+        {statuses.map((t) => (
+          <TitleCard
+            key={t.id}
+            status={t}
+            isEquipped={equipped === t.id}
+            onToggle={() => handleToggle(t.id, t.isUnlocked)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TitleCard({
+  status,
+  isEquipped,
+  onToggle,
+}: {
+  status: TitleStatus;
+  isEquipped: boolean;
+  onToggle: () => void;
+}) {
+  const locked = !status.isUnlocked;
+  const categoryColor = CATEGORY_COLORS[status.category];
+
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      disabled={locked}
+      className="relative overflow-hidden p-2.5 flex flex-col items-center text-center active:scale-[0.97] transition-transform disabled:active:scale-100"
+      style={{
+        background: isEquipped
+          ? `linear-gradient(135deg, ${categoryColor}18, ${categoryColor}08)`
+          : locked
+            ? "#F6F1EA"
+            : "#FFFFFF",
+        borderRadius: 14,
+        boxShadow: isEquipped
+          ? `0 6px 18px ${categoryColor}33, 0 1px 3px rgba(0,0,0,0.04)`
+          : locked
+            ? "inset 0 1px 2px rgba(0,0,0,0.03)"
+            : `0 4px 12px ${categoryColor}22, 0 1px 2px rgba(0,0,0,0.03)`,
+        border: isEquipped
+          ? `2px solid ${categoryColor}`
+          : locked
+            ? "1px dashed #D6CDBE"
+            : `1.5px solid ${categoryColor}55`,
+      }}
+      title={status.description}
+    >
+      {isEquipped && (
+        <span
+          className="absolute top-1 right-1 text-[8px] font-extrabold px-1.5 py-0.5 rounded-full"
+          style={{ backgroundColor: categoryColor, color: "#fff" }}
+        >
+          장착
+        </span>
+      )}
+      <div
+        className="w-9 h-9 rounded-full flex items-center justify-center text-[18px] mb-1"
+        style={{
+          background: locked ? "#E8E0D2" : `${categoryColor}18`,
+          filter: locked ? "grayscale(100%) opacity(0.55)" : "none",
+        }}
+      >
+        {status.emoji}
+      </div>
+      <p
+        className="text-[10.5px] font-extrabold leading-tight"
+        style={{ color: locked ? "#A38E7A" : "#2A2A28" }}
+      >
+        {status.name}
+      </p>
+      <span
+        className="text-[9px] font-bold mt-0.5 uppercase tracking-wider"
+        style={{ color: locked ? "#C0B3A0" : categoryColor }}
+      >
+        {CATEGORY_LABELS[status.category]}
+      </span>
+
+      {/* 진행도 바 (잠금 상태일 때만) */}
+      {locked && status.progressValue > 0 && (
+        <div
+          className="w-full h-1 rounded-full mt-1.5 overflow-hidden"
+          style={{ backgroundColor: "#E3DCD3" }}
+        >
+          <div
+            className="h-full rounded-full"
+            style={{
+              width: `${status.progressValue * 100}%`,
+              backgroundColor: categoryColor,
+              opacity: 0.55,
+            }}
+          />
+        </div>
+      )}
+    </button>
   );
 }
 

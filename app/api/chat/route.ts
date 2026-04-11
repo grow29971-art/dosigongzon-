@@ -1,4 +1,25 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createClient } from "@/lib/supabase/server";
+
+// ── 유저당 레이트리밋 (인메모리, 인스턴스별) ──
+// 분산 환경에선 Redis 권장. 지금은 단일 서버 MVP 기준.
+const RATE_LIMIT = 10; // 윈도우당 최대 호출
+const RATE_WINDOW_MS = 60_000; // 1분
+const rateBuckets = new Map<string, { count: number; resetAt: number }>();
+
+function checkRateLimit(userId: string): { ok: true } | { ok: false; retryAfter: number } {
+  const now = Date.now();
+  const bucket = rateBuckets.get(userId);
+  if (!bucket || bucket.resetAt <= now) {
+    rateBuckets.set(userId, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return { ok: true };
+  }
+  if (bucket.count >= RATE_LIMIT) {
+    return { ok: false, retryAfter: Math.ceil((bucket.resetAt - now) / 1000) };
+  }
+  bucket.count += 1;
+  return { ok: true };
+}
 
 /* ═══ 오프라인 폴백 답변 (API 전체 실패 시) ═══
  * {name} 플레이스홀더는 요청의 userName(또는 기본 "집사님")으로 치환됨.
@@ -111,14 +132,27 @@ async function tryChat(
 }
 
 export async function POST(request: Request) {
+  // 인증 체크: 로그인 유저만 — API 크레딧 보호
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
+  }
+
+  // 레이트리밋
+  const rl = checkRateLimit(user.id);
+  if (!rl.ok) {
+    return Response.json(
+      { error: `잠시 후 다시 시도해주세요. (${rl.retryAfter}초)` },
+      { status: 429, headers: { "Retry-After": String(rl.retryAfter) } },
+    );
+  }
+
   const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
   if (!apiKey) {
+    console.error("[chat] GOOGLE_GENERATIVE_AI_API_KEY 미설정");
     return Response.json(
-      {
-        error: "환경변수(API KEY)가 설정되지 않았습니다.",
-        debug:
-          "process.env.GOOGLE_GENERATIVE_AI_API_KEY is undefined. .env.local 파일을 확인하고 서버를 재시작하세요.",
-      },
+      { error: "AI 서비스가 준비되지 않았어요." },
       { status: 500 },
     );
   }
@@ -201,17 +235,13 @@ export async function POST(request: Request) {
         {
           error:
             "현재 이용자가 많아 AI 집사가 잠시 쉬고 있어요. 1분 뒤에 다시 물어봐 주세요! 😿",
-          debug: rawMessage,
         },
         { status: 429 },
       );
     }
 
     return Response.json(
-      {
-        error: "AI 응답 중 문제가 발생했습니다.",
-        debug: rawMessage,
-      },
+      { error: "AI 응답 중 문제가 발생했습니다." },
       { status: 500 },
     );
   }

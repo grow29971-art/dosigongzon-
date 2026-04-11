@@ -37,11 +37,13 @@ export interface Post {
   content: string;
   authorId: string;
   authorName: string;
+  authorTitle?: string | null; // 장착 타이틀 id (스냅샷)
   region?: string; // 동 단위 (예: "역삼동")
   images: string[];
   isPinned: boolean;
   viewCount: number;
   likeCount: number;
+  dislikeCount: number;
   commentCount: number;
   createdAt: string;
 }

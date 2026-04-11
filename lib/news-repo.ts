@@ -4,6 +4,56 @@
 // ══════════════════════════════════════════
 
 import { createClient } from "@/lib/supabase/client";
+import { requireAdmin } from "@/lib/admin-guard";
+import { isSafeImageUrl, isSafeHttpUrl } from "@/lib/url-validate";
+import { convertImageToWebp } from "@/lib/cats-repo";
+
+// ── 뉴스 이미지 업로드 (admin 전용, cat-photos 버킷 공유) ──
+// 경로: {adminId}/news-{timestamp}.webp
+// 반환: 공개 URL
+export async function uploadNewsImage(file: File): Promise<string> {
+  const adminId = await requireAdmin();
+  const supabase = createClient();
+
+  const MAX_INPUT_SIZE = 20 * 1024 * 1024;
+  if (file.size > MAX_INPUT_SIZE) {
+    throw new Error("이미지는 20MB 이하만 업로드 가능해요.");
+  }
+  if (!file.type.startsWith("image/")) {
+    throw new Error("이미지 파일만 업로드 가능해요.");
+  }
+
+  const webpFile = await convertImageToWebp(file);
+  const fileName = `${adminId}/news-${Date.now()}.webp`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("cat-photos")
+    .upload(fileName, webpFile, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: "image/webp",
+    });
+
+  if (uploadError) {
+    console.error("[news-repo] uploadNewsImage failed:", uploadError);
+    throw new Error(`이미지 업로드에 실패했어요: ${uploadError.message}`);
+  }
+
+  const { data: urlData } = supabase.storage
+    .from("cat-photos")
+    .getPublicUrl(fileName);
+
+  return urlData.publicUrl;
+}
+
+function validateNewsInput(input: Partial<NewsInput>): void {
+  if (input.image_url && !isSafeImageUrl(input.image_url)) {
+    throw new Error("이미지 URL 형식이 올바르지 않아요.");
+  }
+  if (input.external_url && !isSafeHttpUrl(input.external_url)) {
+    throw new Error("외부 링크는 http(s) URL만 허용돼요.");
+  }
+}
 
 export type NewsBadgeType = "event" | "tnr" | "law" | "notice" | "urgent";
 
@@ -95,6 +145,8 @@ export async function getNewsById(id: string): Promise<NewsItem | null> {
 export type NewsInput = Omit<NewsItem, "id" | "created_at" | "updated_at">;
 
 export async function createNews(input: NewsInput): Promise<NewsItem> {
+  await requireAdmin();
+  validateNewsInput(input);
   const supabase = createClient();
   const { data, error } = await supabase
     .from("news")
@@ -113,6 +165,8 @@ export async function updateNews(
   id: string,
   input: Partial<NewsInput>,
 ): Promise<NewsItem> {
+  await requireAdmin();
+  validateNewsInput(input);
   const supabase = createClient();
   const { data, error } = await supabase
     .from("news")
@@ -129,6 +183,7 @@ export async function updateNews(
 }
 
 export async function deleteNews(id: string): Promise<void> {
+  await requireAdmin();
   const supabase = createClient();
   const { error } = await supabase.from("news").delete().eq("id", id);
 

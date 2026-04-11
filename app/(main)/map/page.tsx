@@ -19,6 +19,8 @@ import {
   ThumbsUp,
   ThumbsDown,
   Flag,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import AddCatModal from "@/app/components/AddCatModal";
 import ReportModal from "@/app/components/ReportModal";
@@ -40,6 +42,8 @@ import {
   type VoteValue,
 } from "@/lib/cats-repo";
 import { useAuth } from "@/lib/auth-context";
+import { sanitizeImageUrl } from "@/lib/url-validate";
+import TitleBadge from "@/app/components/TitleBadge";
 
 declare global {
   interface Window {
@@ -77,6 +81,8 @@ export default function MapPage() {
   const [loadingCats, setLoadingCats] = useState(true);
   const [catsError, setCatsError] = useState("");
   const [alertedCats, setAlertedCats] = useState<Set<string>>(new Set());
+  const [abuseCardExpanded, setAbuseCardExpanded] = useState(false);
+  const [userPos, setUserPos] = useState<{ lat: number; lng: number } | null>(null);
 
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [pickedCoord, setPickedCoord] = useState<{ lat: number; lng: number } | undefined>();
@@ -351,6 +357,20 @@ export default function MapPage() {
     document.head.appendChild(script);
   }, [apiKey]);
 
+  // ── 접속 시 GPS 위치 요청 (거부해도 기본 중심으로 폴백) ──
+  useEffect(() => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserPos({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+      },
+      (err) => {
+        console.log("[map] geolocation denied or failed:", err.message);
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60_000 },
+    );
+  }, []);
+
   // ── SDK 준비되면 지도 초기화 ──
   useEffect(() => {
     if (!scriptLoaded || !mapContainerRef.current) return;
@@ -363,8 +383,10 @@ export default function MapPage() {
       const container = mapContainerRef.current;
       if (!container) return;
 
+      // 초기 중심: GPS가 이미 왔으면 그 위치, 아니면 기본 중심
+      const initialCenter = userPos ?? MAP_CENTER;
       const map = new window.kakao.maps.Map(container, {
-        center: new window.kakao.maps.LatLng(MAP_CENTER.lat, MAP_CENTER.lng),
+        center: new window.kakao.maps.LatLng(initialCenter.lat, initialCenter.lng),
         level: 6,
       });
       mapInstanceRef.current = map;
@@ -379,7 +401,16 @@ export default function MapPage() {
 
       setMapReady(true);
     });
+    // userPos는 초기 중심 계산에만 쓰이고, GPS가 뒤늦게 오는 경우는 아래 effect가 처리.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scriptLoaded]);
+
+  // ── 지도 초기화 후에 GPS가 뒤늦게 도착하면 중심 이동 ──
+  useEffect(() => {
+    if (!mapReady || !userPos || !mapInstanceRef.current || !window.kakao) return;
+    const map = mapInstanceRef.current;
+    map.setCenter(new window.kakao.maps.LatLng(userPos.lat, userPos.lng));
+  }, [mapReady, userPos]);
 
   // ── cats 변경 시 마커 다시 그리기 (로그인 상태 바뀌면 퍼징 여부도 바뀜) ──
   useEffect(() => {
@@ -395,7 +426,11 @@ export default function MapPage() {
       const isAlerted = alertedCats.has(cat.id);
 
       const content = document.createElement("div");
-      const photoUrl = cat.photo_url ?? "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F";
+      // innerHTML에 내삽되므로 엄격 검증. 형식 위반 시 placeholder로 대체 → XSS 차단.
+      const photoUrl = sanitizeImageUrl(
+        cat.photo_url,
+        "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F",
+      );
       const borderColor = isAlerted ? "#D85555" : "#C47E5A";
       const shadow = isAlerted
         ? "0 6px 18px rgba(216,85,85,0.55), 0 0 0 2px rgba(216,85,85,0.15)"
@@ -569,6 +604,124 @@ export default function MapPage() {
             </div>
           </div>
         )}
+
+        {/* 학대 경보 & 시민 참여 카드 */}
+        {(() => {
+          const alertCount = alertedCats.size;
+          const hasAlert = alertCount > 0;
+          const theme = hasAlert
+            ? { bg: "#FBEAEA", border: "#D85555", accent: "#D85555", text: "#7A2A2A", sub: "#A84444" }
+            : { bg: "#EAF0EA", border: "#6B8E6F", accent: "#6B8E6F", text: "#3E5A42", sub: "#6B8E6F" };
+          return (
+            <div
+              className="rounded-2xl pointer-events-auto shadow-[0_2px_12px_rgba(0,0,0,0.06)] overflow-hidden"
+              style={{
+                backgroundColor: theme.bg,
+                borderLeft: `3px solid ${theme.border}`,
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => setAbuseCardExpanded((v) => !v)}
+                className="w-full px-4 py-2.5 flex items-center gap-2.5 text-left active:scale-[0.99] transition-transform"
+              >
+                <div
+                  className="w-7 h-7 rounded-[10px] flex items-center justify-center shrink-0"
+                  style={{
+                    background: `linear-gradient(135deg, ${theme.accent} 0%, ${theme.accent}DD 100%)`,
+                    boxShadow: `0 3px 8px ${theme.accent}55, inset 0 1px 0 rgba(255,255,255,0.4)`,
+                  }}
+                >
+                  {hasAlert ? (
+                    <AlertTriangle size={13} color="#fff" strokeWidth={2.5} />
+                  ) : (
+                    <Shield size={13} color="#fff" strokeWidth={2.5} />
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p
+                    className="text-[12px] font-extrabold leading-tight"
+                    style={{ color: theme.text }}
+                  >
+                    {hasAlert
+                      ? `학대 경보 ${alertCount}마리 · 함께 지켜주세요`
+                      : "평화로운 동네 · 그래도 관심이 필요해요"}
+                  </p>
+                  <p
+                    className="text-[10.5px] leading-snug mt-0.5"
+                    style={{ color: theme.sub }}
+                  >
+                    {hasAlert
+                      ? "빨간 테두리 마커를 탭하면 상세를 볼 수 있어요"
+                      : "학대 징후 발견 시 즉시 시민 제보가 가장 큰 힘이에요"}
+                  </p>
+                </div>
+                {abuseCardExpanded ? (
+                  <ChevronUp size={14} style={{ color: theme.sub }} />
+                ) : (
+                  <ChevronDown size={14} style={{ color: theme.sub }} />
+                )}
+              </button>
+
+              {abuseCardExpanded && (
+                <div
+                  className="px-4 pb-3 pt-0.5 space-y-2.5"
+                  style={{ borderTop: `1px solid ${theme.border}22` }}
+                >
+                  <p
+                    className="text-[11px] leading-relaxed mt-2"
+                    style={{ color: theme.text }}
+                  >
+                    길고양이 학대는 동물보호법 제8조 위반으로 <b>3년 이하 징역 또는 3,000만원 이하 벌금</b>이에요. 수사와 구조는 시민 제보가 없으면 시작조차 못 해요.
+                  </p>
+
+                  <div>
+                    <p
+                      className="text-[11px] font-extrabold mb-1"
+                      style={{ color: theme.text }}
+                    >
+                      목격하셨다면
+                    </p>
+                    <ul
+                      className="text-[10.5px] leading-relaxed space-y-0.5 pl-3"
+                      style={{ color: theme.sub, listStyleType: "disc" }}
+                    >
+                      <li>가능한 범위에서 증거 촬영(사진·영상·시간·장소)</li>
+                      <li>해당 고양이 정보를 이 지도에 <b>경보 기록</b>으로 남기기</li>
+                      <li>구청 동물보호 담당부서 / 경찰 112 / 동물보호콜센터에 신고</li>
+                    </ul>
+                  </div>
+
+                  <div className="flex gap-1.5">
+                    <a
+                      href="tel:112"
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[11.5px] font-extrabold active:scale-[0.97] transition-transform"
+                      style={{
+                        backgroundColor: theme.accent,
+                        color: "#fff",
+                      }}
+                    >
+                      <Phone size={12} strokeWidth={2.8} />
+                      112 경찰 신고
+                    </a>
+                    <a
+                      href="tel:1577-0954"
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[11.5px] font-extrabold active:scale-[0.97] transition-transform"
+                      style={{
+                        backgroundColor: "#fff",
+                        color: theme.accent,
+                        border: `1.5px solid ${theme.accent}`,
+                      }}
+                    >
+                      <Phone size={12} strokeWidth={2.8} />
+                      1577-0954
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
         {/* 돌봄 팁 배너 — 회전 */}
         {!tipDismissed && (
@@ -899,6 +1052,8 @@ export default function MapPage() {
                               Lv.{c.author_level}
                             </span>
                           )}
+                          <TitleBadge titleId={c.author_title} />
+
                           <span className="text-[10px] text-text-light ml-auto">
                             {formatRelativeTime(c.created_at)}
                           </span>

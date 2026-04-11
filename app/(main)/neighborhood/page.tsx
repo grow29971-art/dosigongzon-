@@ -17,12 +17,10 @@ import {
 import type { Post } from "@/lib/types";
 import { CATEGORY_MAP } from "@/lib/types";
 import {
-  getPosts,
-  getPostsByRegion,
   getUserRegion,
   setUserRegion,
-  formatRelativeTime,
 } from "@/lib/store";
+import { listPosts, formatRelativeTime } from "@/lib/posts-repo";
 
 /* ═══ 동네 목록 (샘플) ═══ */
 const REGIONS = [
@@ -44,18 +42,21 @@ export default function NeighborhoodPage() {
     const saved = getUserRegion();
     if (saved) {
       setRegion(saved);
-      setPosts(getPostsByRegion(saved));
+      listPosts().then((all) =>
+        setPosts(all.filter((p) => p.region === saved)),
+      );
     } else {
       // 동네 설정 안 된 경우 전체 보여주되 선택 유도
-      setPosts(getPosts());
+      listPosts().then(setPosts);
       setShowPicker(true);
     }
   }, []);
 
-  const selectRegion = (r: string) => {
+  const selectRegion = async (r: string) => {
     setRegion(r);
     setUserRegion(r);
-    setPosts(getPostsByRegion(r));
+    const all = await listPosts();
+    setPosts(all.filter((p) => p.region === r));
     setShowPicker(false);
   };
 

@@ -13,12 +13,14 @@ import {
   Loader2,
   Shield,
   Pin,
+  ImagePlus,
 } from "lucide-react";
 import {
   listNews,
   createNews,
   updateNews,
   deleteNews,
+  uploadNewsImage,
   isCurrentUserAdmin,
   BADGE_PRESETS,
   type NewsItem,
@@ -53,6 +55,7 @@ export default function AdminNewsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState<NewsInput>(EMPTY_DRAFT);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [error, setError] = useState("");
 
   // 권한 + 데이터 로드
@@ -106,6 +109,26 @@ export default function AdminNewsPage() {
     setEditingId(null);
     setDraft(EMPTY_DRAFT);
     setError("");
+  };
+
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // 같은 파일 재선택 허용
+    if (!file) return;
+    setUploadingImage(true);
+    setError("");
+    try {
+      const url = await uploadNewsImage(file);
+      setDraft((d) => ({ ...d, image_url: url }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "이미지 업로드 실패");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleImageClear = () => {
+    setDraft((d) => ({ ...d, image_url: null }));
   };
 
   const handleSave = async () => {
@@ -263,13 +286,61 @@ export default function AdminNewsPage() {
             placeholder="카드 아래 작게 표시돼요"
           />
 
-          {/* 이미지 URL */}
-          <Label>이미지 URL</Label>
-          <Input
-            value={draft.image_url ?? ""}
-            onChange={(v) => setDraft((d) => ({ ...d, image_url: v || null }))}
-            placeholder="https://..."
-          />
+          {/* 이미지 업로드 */}
+          <Label>이미지</Label>
+          <div className="mb-3">
+            {draft.image_url ? (
+              <div className="relative">
+                <img
+                  src={draft.image_url}
+                  alt=""
+                  className="w-full aspect-[16/9] rounded-xl object-cover"
+                  style={{ border: "1px solid #E3DCD3" }}
+                />
+                <button
+                  type="button"
+                  onClick={handleImageClear}
+                  className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center active:scale-90"
+                  style={{
+                    backgroundColor: "rgba(0,0,0,0.6)",
+                    color: "#fff",
+                  }}
+                  aria-label="이미지 제거"
+                >
+                  <X size={16} strokeWidth={3} />
+                </button>
+              </div>
+            ) : (
+              <label
+                className="flex flex-col items-center justify-center aspect-[16/9] rounded-xl cursor-pointer active:scale-[0.99] transition-transform"
+                style={{
+                  backgroundColor: "#F6F1EA",
+                  border: "1.5px dashed #C9BDAA",
+                  color: "#A38E7A",
+                }}
+              >
+                {uploadingImage ? (
+                  <>
+                    <Loader2 size={22} className="animate-spin mb-1" />
+                    <span className="text-[12px] font-semibold">업로드 중...</span>
+                  </>
+                ) : (
+                  <>
+                    <ImagePlus size={24} className="mb-1" />
+                    <span className="text-[12px] font-semibold">이미지 선택</span>
+                    <span className="text-[10px] mt-0.5">JPG/PNG · 20MB 이하</span>
+                  </>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  disabled={uploadingImage}
+                  onChange={handleImageSelect}
+                />
+              </label>
+            )}
+          </div>
 
           {/* 날짜 + D-Day */}
           <div className="grid grid-cols-2 gap-2">
@@ -349,7 +420,7 @@ export default function AdminNewsPage() {
           <div className="flex gap-2">
             <button
               onClick={handleSave}
-              disabled={saving}
+              disabled={saving || uploadingImage}
               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 active:scale-[0.97] transition-all"
             >
               {saving ? (

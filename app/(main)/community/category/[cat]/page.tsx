@@ -20,12 +20,11 @@ import {
 } from "lucide-react";
 import type { Post, PostCategory } from "@/lib/types";
 import { CATEGORY_MAP } from "@/lib/types";
+import { listPosts, formatRelativeTime, updatePostVote } from "@/lib/posts-repo";
+import TitleBadge from "@/app/components/TitleBadge";
 import {
-  getPosts,
-  formatRelativeTime,
   getMyPostVotes,
-  votePost,
-  getPostDislike,
+  setMyPostVote,
   type PostVote,
 } from "@/lib/store";
 
@@ -82,16 +81,58 @@ export default function CategoryPage() {
 
   useEffect(() => {
     setMounted(true);
-    setPosts(getPosts().filter((p) => p.category === cat));
+    listPosts(cat).then(setPosts);
     setMyVotes(getMyPostVotes());
   }, [cat]);
 
-  const handleVote = (postId: string, next: PostVote, e: React.MouseEvent) => {
+  const handleVote = async (postId: string, next: PostVote, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const updated = votePost(postId, next);
-    if (updated) {
-      setPosts((prev) => prev.map((p) => (p.id === postId ? updated : p)));
+
+    const prev = myVotes[postId] ?? 0;
+    // 같은 걸 다시 누르면 취소, 반대면 전환
+    const newVote: PostVote | 0 = prev === next ? 0 : next;
+
+    // delta 계산 (like, dislike)
+    let dLike: -1 | 0 | 1 = 0;
+    let dDislike: -1 | 0 | 1 = 0;
+    if (prev === 1) dLike = -1;
+    if (prev === -1) dDislike = -1;
+    if (newVote === 1) dLike = (dLike + 1) as -1 | 0 | 1;
+    if (newVote === -1) dDislike = (dDislike + 1) as -1 | 0 | 1;
+
+    // 낙관적 UI 업데이트
+    setPosts((prevPosts) =>
+      prevPosts.map((p) =>
+        p.id === postId
+          ? {
+              ...p,
+              likeCount: Math.max(0, p.likeCount + dLike),
+              dislikeCount: Math.max(0, p.dislikeCount + dDislike),
+            }
+          : p,
+      ),
+    );
+    setMyPostVote(postId, newVote);
+    setMyVotes(getMyPostVotes());
+
+    // 서버 반영
+    try {
+      await updatePostVote(postId, dLike, dDislike);
+    } catch {
+      // 실패 시 롤백
+      setPosts((prevPosts) =>
+        prevPosts.map((p) =>
+          p.id === postId
+            ? {
+                ...p,
+                likeCount: Math.max(0, p.likeCount - dLike),
+                dislikeCount: Math.max(0, p.dislikeCount - dDislike),
+              }
+            : p,
+        ),
+      );
+      setMyPostVote(postId, prev);
       setMyVotes(getMyPostVotes());
     }
   };
@@ -180,7 +221,7 @@ export default function CategoryPage() {
                     border: "1px solid rgba(0,0,0,0.04)",
                   }}
                 >
-                  {/* 사진 (플레이스홀더) */}
+                  {/* 사진 */}
                   {post.images.length === 0 ? (
                     <div
                       className="h-36 flex items-center justify-center relative"
@@ -191,7 +232,22 @@ export default function CategoryPage() {
                       <ImageIcon size={28} strokeWidth={1.5} style={{ color: meta.color, opacity: 0.4 }} />
                     </div>
                   ) : (
-                    <div className="h-36 bg-surface-alt" />
+                    <div className="h-36 relative overflow-hidden bg-surface-alt">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={post.images[0]}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                      {post.images.length > 1 && (
+                        <span
+                          className="absolute bottom-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full"
+                          style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}
+                        >
+                          +{post.images.length - 1}
+                        </span>
+                      )}
+                    </div>
                   )}
 
                   {/* 콘텐츠 */}
@@ -219,6 +275,7 @@ export default function CategoryPage() {
                         <span className="text-[12px] font-semibold text-text-main">
                           {post.authorName}
                         </span>
+                        <TitleBadge titleId={post.authorTitle} />
                         {post.region && (
                           <span className="text-[10px] text-text-light flex items-center gap-0.5">
                             <MapPin size={9} />
@@ -244,7 +301,16 @@ export default function CategoryPage() {
                         const liked = myVote === 1;
                         const disliked = myVote === -1;
                         return (
-                          <div className="flex items-center gap-1.5 ml-auto">
+                          <div
+                            className="flex items-center gap-1.5 ml-auto"
+                            onClick={(e) => {
+                              // 버튼 영역 클릭이 카드 Link로 전파되지 않도록 강제 차단
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
+                            onMouseDown={(e) => e.stopPropagation()}
+                            onPointerDown={(e) => e.stopPropagation()}
+                          >
                             <button
                               onClick={(e) => handleVote(post.id, 1, e)}
                               className="flex items-center gap-1 px-2 py-1 rounded-lg active:scale-95 transition-all"
@@ -270,7 +336,7 @@ export default function CategoryPage() {
                             >
                               <ThumbsDown size={11} strokeWidth={2.2} fill={disliked ? "#FFFFFF" : "none"} />
                               <span className="text-[10px] font-bold tabular-nums">
-                                {getPostDislike(post.id)}
+                                {post.dislikeCount}
                               </span>
                             </button>
                           </div>

@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════
 
 import { createClient } from "@/lib/supabase/client";
+import { requireAdmin } from "@/lib/admin-guard";
 
 export interface RescueHospital {
   id: string;
@@ -47,6 +48,7 @@ export async function listRescueHospitals(): Promise<RescueHospital[]> {
 export async function createRescueHospital(
   input: RescueHospitalInput,
 ): Promise<RescueHospital> {
+  await requireAdmin();
   const supabase = createClient();
   const { data, error } = await supabase
     .from("rescue_hospitals")
@@ -65,6 +67,7 @@ export async function updateRescueHospital(
   id: string,
   input: Partial<RescueHospitalInput>,
 ): Promise<RescueHospital> {
+  await requireAdmin();
   const supabase = createClient();
   const { data, error } = await supabase
     .from("rescue_hospitals")
@@ -81,6 +84,7 @@ export async function updateRescueHospital(
 }
 
 export async function deleteRescueHospital(id: string): Promise<void> {
+  await requireAdmin();
   const supabase = createClient();
   const { error } = await supabase
     .from("rescue_hospitals")

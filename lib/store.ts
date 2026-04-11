@@ -36,6 +36,7 @@ const SEED_POSTS: Post[] = [
     isPinned: false,
     viewCount: 42,
     likeCount: 15,
+    dislikeCount: 0,
     commentCount: 8,
     createdAt: new Date(Date.now() - 2 * 3600000).toISOString(),
   },
@@ -51,6 +52,7 @@ const SEED_POSTS: Post[] = [
     isPinned: false,
     viewCount: 156,
     likeCount: 23,
+    dislikeCount: 0,
     commentCount: 12,
     createdAt: new Date(Date.now() - 5 * 3600000).toISOString(),
   },
@@ -66,6 +68,7 @@ const SEED_POSTS: Post[] = [
     isPinned: false,
     viewCount: 89,
     likeCount: 31,
+    dislikeCount: 0,
     commentCount: 7,
     createdAt: new Date(Date.now() - 8 * 3600000).toISOString(),
   },
@@ -81,6 +84,7 @@ const SEED_POSTS: Post[] = [
     isPinned: false,
     viewCount: 67,
     likeCount: 45,
+    dislikeCount: 0,
     commentCount: 3,
     createdAt: new Date(Date.now() - 24 * 3600000).toISOString(),
   },
@@ -96,6 +100,7 @@ const SEED_POSTS: Post[] = [
     isPinned: false,
     viewCount: 234,
     likeCount: 8,
+    dislikeCount: 0,
     commentCount: 15,
     createdAt: new Date(Date.now() - 48 * 3600000).toISOString(),
   },
@@ -111,6 +116,7 @@ const SEED_POSTS: Post[] = [
     isPinned: false,
     viewCount: 312,
     likeCount: 87,
+    dislikeCount: 0,
     commentCount: 21,
     createdAt: new Date(Date.now() - 3 * 3600000).toISOString(),
   },
@@ -146,6 +152,14 @@ export type PostVote = 1 | -1;
 
 export function getMyPostVotes(): Record<string, PostVote> {
   return get<Record<string, PostVote>>(POST_VOTES_KEY, {});
+}
+
+/** 유저 투표 상태만 localStorage에 저장 (카운트 증감은 DB RPC로 별도 처리) */
+export function setMyPostVote(postId: string, vote: PostVote | 0): void {
+  const votes = getMyPostVotes();
+  if (vote === 0) delete votes[postId];
+  else votes[postId] = vote;
+  set(POST_VOTES_KEY, votes);
 }
 
 /**

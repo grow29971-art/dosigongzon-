@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PawPrint, Mail, Lock, User, Eye, EyeOff, ArrowLeft, Check, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import TurnstileWidget from "@/app/components/TurnstileWidget";
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -22,6 +23,8 @@ export default function SignupPage() {
   const [pressing, setPressing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRequired = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
   const validate = () => {
     const next: Record<string, string> = {};
@@ -33,6 +36,7 @@ export default function SignupPage() {
     else if (password.length < 6) next.password = "비밀번호는 6자 이상이어야 합니다.";
     if (password !== passwordConfirm) next.passwordConfirm = "비밀번호가 일치하지 않습니다.";
     if (!agree) next.agree = "약관에 동의해주세요.";
+    if (captchaRequired && !captchaToken) next.captcha = "봇 방어 확인이 필요해요.";
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -41,6 +45,28 @@ export default function SignupPage() {
     if (!validate()) return;
     setLoading(true);
     setErrors({});
+
+    // Turnstile 토큰 서버 검증
+    if (captchaRequired && captchaToken) {
+      try {
+        const res = await fetch("/api/turnstile-verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: captchaToken }),
+        });
+        const data = await res.json();
+        if (!data.success) {
+          setLoading(false);
+          setErrors({ captcha: "봇 방어 검증에 실패했어요. 다시 시도해주세요." });
+          setCaptchaToken(null);
+          return;
+        }
+      } catch {
+        setLoading(false);
+        setErrors({ captcha: "봇 방어 검증 중 문제가 발생했어요." });
+        return;
+      }
+    }
 
     const { error } = await createClient().auth.signUp({
       email,
@@ -237,6 +263,23 @@ export default function SignupPage() {
           </button>
           {errors.agree && <p className="text-[11px] text-error mt-1 ml-8">{errors.agree}</p>}
         </div>
+
+        {/* ══════ Turnstile (봇 방어) ══════ */}
+        {captchaRequired && (
+          <div className="mb-4">
+            <TurnstileWidget
+              onVerify={(token) => {
+                setCaptchaToken(token);
+                setErrors((p) => ({ ...p, captcha: "" }));
+              }}
+              onExpire={() => setCaptchaToken(null)}
+              onError={() => setCaptchaToken(null)}
+            />
+            {errors.captcha && (
+              <p className="text-[11px] text-error text-center">{errors.captcha}</p>
+            )}
+          </div>
+        )}
 
         {/* ══════ 가입 버튼 ══════ */}
         <button

@@ -13,7 +13,7 @@ import {
   Plus,
 } from "lucide-react";
 import type { Post, PostCategory } from "@/lib/types";
-import { getPosts, formatRelativeTime } from "@/lib/store";
+import { listPosts, formatRelativeTime } from "@/lib/posts-repo";
 
 /* ═══ 카테고리 카드 데이터 ═══ */
 type CategoryCard = {
@@ -143,7 +143,7 @@ export default function CommunityPage() {
 
   useEffect(() => {
     setMounted(true);
-    setPosts(getPosts());
+    listPosts().then(setPosts);
   }, []);
 
   if (!mounted) return null;
