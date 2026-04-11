@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { X, Send, Bot } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
+import { getDisplayName } from "@/lib/cats-repo";
 
 /* ═══ 타입 ═══ */
 interface Message {
@@ -19,13 +21,36 @@ export default function AIChatModal({
   open: boolean;
   onClose: () => void;
 }) {
+  const { user } = useAuth();
+  const displayName = useMemo(() => getDisplayName(user), [user]);
+  // 호칭: "XX님" 형태
+  const addressName = useMemo(() => {
+    if (!displayName || displayName === "익명") return "집사님";
+    return displayName.endsWith("님") ? displayName : `${displayName}님`;
+  }, [displayName]);
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 0,
       role: "ai",
-      text: "안녕하세요 성우님! 도시공존 AI 집사예요 🐱\n길고양이 돌봄에 대해 궁금한 점이 있으시면 편하게 물어보세요!",
+      text: `안녕하세요 ${addressName}! 도시공존 AI 집사예요 🐱\n길고양이 돌봄에 대해 궁금한 점이 있으시면 편하게 물어보세요!`,
     },
   ]);
+
+  // 유저가 바뀌면(또는 처음 로드되면) 초기 인사말도 이름에 맞춰 갱신
+  useEffect(() => {
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === 0 && m.role === "ai"
+          ? {
+              ...m,
+              text: `안녕하세요 ${addressName}! 도시공존 AI 집사예요 🐱\n길고양이 돌봄에 대해 궁금한 점이 있으시면 편하게 물어보세요!`,
+            }
+          : m,
+      ),
+    );
+  }, [addressName]);
+
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -74,7 +99,7 @@ export default function AIChatModal({
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, history }),
+        body: JSON.stringify({ message: text, history, userName: displayName }),
       });
 
       const data = await res.json();

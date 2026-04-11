@@ -514,7 +514,7 @@ export default function MapPage() {
     return (
       <div className="px-5 pt-14 pb-8">
         <h1 className="text-[22px] font-extrabold text-text-main tracking-tight mb-2">
-          우리 동네 고양이
+          우리 동네 시민참여 돌봄 고양이
         </h1>
         <div className="card p-6 mt-6">
           <div className="w-12 h-12 rounded-2xl bg-warning/20 flex items-center justify-center mb-3">
@@ -542,8 +542,8 @@ export default function MapPage() {
             <MapPin size={14} className="text-primary" />
             <span className="text-[12px] font-semibold text-primary">인천시 남동구</span>
           </div>
-          <h1 className="text-[18px] font-extrabold text-text-main tracking-tight">
-            우리 동네 고양이 {cats.length}마리
+          <h1 className="text-[17px] font-extrabold text-text-main tracking-tight leading-snug">
+            우리 동네 시민참여 돌봄 고양이 {cats.length}마리
           </h1>
           <p className="text-[11px] text-text-sub mt-0.5">
             {loadingCats
