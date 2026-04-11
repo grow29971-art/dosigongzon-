@@ -10,7 +10,6 @@ import {
   Cat,
   Hand,
   ChevronRight,
-  PawPrint,
 } from "lucide-react";
 
 /* ═══ 카드 데이터 ═══ */
@@ -20,7 +19,7 @@ const cards: {
   Icon: typeof BookOpenText;
   iconBg: string;
   iconColor: string;
-  cardGradient: string;
+  glowColor: string;
   type: "link" | "external" | "tel";
   href: string;
   wide?: boolean;
@@ -31,9 +30,9 @@ const cards: {
     title: "돌봄 가이드",
     subtitle: "농림축산식품부 공식 돌봄 매뉴얼",
     Icon: BookOpenText,
-    iconBg: "rgba(91,122,143,0.15)",
-    iconColor: "#5B7A8F",
-    cardGradient: "linear-gradient(135deg, #E5E8ED 0%, #D6DBE2 100%)",
+    iconBg: "#4A7BA8",
+    iconColor: "#FFFFFF",
+    glowColor: "74,123,168",
     type: "external",
     href: "https://www.mafra.go.kr/bbs/home/795/570364/artclView.do",
     wide: true,
@@ -43,9 +42,9 @@ const cards: {
     title: "구청 연락처",
     subtitle: "TNR 담당부서 바로 연결",
     Icon: Phone,
-    iconBg: "rgba(107,142,111,0.15)",
-    iconColor: "#6B8E6F",
-    cardGradient: "linear-gradient(135deg, #E8ECE5 0%, #D6DCD2 100%)",
+    iconBg: "#5BA876",
+    iconColor: "#FFFFFF",
+    glowColor: "91,168,118",
     type: "tel",
     href: "tel:02-120",
   },
@@ -53,9 +52,9 @@ const cards: {
     title: "병원 찾기",
     subtitle: "근처 협력병원 검색",
     Icon: BriefcaseMedical,
-    iconBg: "rgba(196,126,90,0.15)",
-    iconColor: "#C47E5A",
-    cardGradient: "linear-gradient(135deg, #EEE8E0 0%, #E3DACD 100%)",
+    iconBg: "#E88D5A",
+    iconColor: "#FFFFFF",
+    glowColor: "232,141,90",
     type: "link",
     href: "/hospitals",
   },
@@ -63,9 +62,9 @@ const cards: {
     title: "TNR 신청",
     subtitle: "국가동물보호정보시스템 바로가기",
     Icon: Globe,
-    iconBg: "rgba(196,126,90,0.15)",
-    iconColor: "#C47E5A",
-    cardGradient: "linear-gradient(135deg, #EEE8E0 0%, #E5D5C4 100%)",
+    iconBg: "#48A59E",
+    iconColor: "#FFFFFF",
+    glowColor: "72,165,158",
     type: "external",
     href: "https://www.animal.go.kr",
     wide: true,
@@ -74,9 +73,9 @@ const cards: {
     title: "법률 가이드",
     subtitle: "동물보호법 · 학대/훼손 대응 매뉴얼",
     Icon: ShieldCheck,
-    iconBg: "rgba(122,107,142,0.15)",
-    iconColor: "#7A6B8E",
-    cardGradient: "linear-gradient(135deg, #EAE6E8 0%, #DCD6D9 100%)",
+    iconBg: "#8B65B8",
+    iconColor: "#FFFFFF",
+    glowColor: "139,101,184",
     type: "link",
     href: "/protection/legal",
     full: true,
@@ -85,9 +84,9 @@ const cards: {
     title: "냥줍 가이드",
     subtitle: "관찰 · 체온 · 급여 3단계",
     Icon: Cat,
-    iconBg: "rgba(201,169,97,0.15)",
-    iconColor: "#C9A961",
-    cardGradient: "linear-gradient(135deg, #EDE9E0 0%, #E2DCCA 100%)",
+    iconBg: "#E8B040",
+    iconColor: "#FFFFFF",
+    glowColor: "232,176,64",
     type: "link",
     href: "/protection/kitten-guide",
   },
@@ -95,9 +94,9 @@ const cards: {
     title: "응급 구조 가이드",
     subtitle: "안전확보 · 지혈 · 이송 절차",
     Icon: BriefcaseMedical,
-    iconBg: "rgba(184,69,69,0.15)",
-    iconColor: "#B84545",
-    cardGradient: "linear-gradient(135deg, #EEE3DE 0%, #E3D2CC 100%)",
+    iconBg: "#D85555",
+    iconColor: "#FFFFFF",
+    glowColor: "216,85,85",
     type: "link",
     href: "/protection/emergency-guide",
     wide: true,
@@ -106,9 +105,9 @@ const cards: {
     title: "포획 가이드",
     subtitle: "준비물 · 설치 · 대기 · 주의사항",
     Icon: Hand,
-    iconBg: "rgba(107,142,111,0.15)",
-    iconColor: "#6B8E6F",
-    cardGradient: "linear-gradient(135deg, #E8ECE5 0%, #D6DCD2 100%)",
+    iconBg: "#8BA86B",
+    iconColor: "#FFFFFF",
+    glowColor: "139,168,107",
     type: "link",
     href: "/protection/trapping-guide",
     full: true,
@@ -119,33 +118,43 @@ const cards: {
 function InfoCard({ card }: { card: (typeof cards)[number] }) {
   const inner = (
     <div
-      className="relative overflow-hidden p-5"
+      className="relative overflow-hidden px-5 py-[18px]"
       style={{
-        background: card.cardGradient,
-        borderRadius: 24,
-        boxShadow: "6px 6px 16px rgba(0,0,0,0.04), -4px -4px 12px rgba(255,255,255,0.8)",
-        border: card.highlight ? "1.5px solid rgba(196,126,90,0.3)" : "1px solid rgba(255,255,255,0.6)",
+        background: "#FFFFFF",
+        borderRadius: 22,
+        boxShadow: card.highlight
+          ? `0 12px 32px rgba(${card.glowColor},0.18), 0 2px 6px rgba(${card.glowColor},0.08)`
+          : `0 6px 20px rgba(${card.glowColor},0.10), 0 1px 3px rgba(0,0,0,0.03)`,
+        border: card.highlight
+          ? `1.5px solid rgba(${card.glowColor},0.30)`
+          : "1px solid rgba(0,0,0,0.04)",
       }}
     >
-      {/* 배경 발바닥 패턴 */}
-      <div className="absolute -right-3 -bottom-3 opacity-[0.04]">
-        <PawPrint size={80} color={card.iconColor} strokeWidth={1} />
-      </div>
-
       <div className="flex items-center gap-4 relative z-10">
+        {/* 아이콘: 컬러 bg + 광택 + glow */}
         <div
-          className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-          style={{ backgroundColor: card.iconBg }}
+          className="w-[52px] h-[52px] rounded-2xl flex items-center justify-center shrink-0 relative"
+          style={{
+            background: `linear-gradient(135deg, ${card.iconBg} 0%, ${card.iconBg}DD 100%)`,
+            boxShadow: `0 6px 14px rgba(${card.glowColor},0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)`,
+          }}
         >
-          <card.Icon size={24} color={card.iconColor} strokeWidth={1.8} />
+          <card.Icon size={24} color={card.iconColor} strokeWidth={2.3} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-bold text-text-main">{card.title}</p>
-          <p className="text-[12px] text-text-sub mt-0.5 leading-relaxed truncate">
+          <p className="text-[15.5px] font-extrabold text-text-main tracking-tight leading-tight">
+            {card.title}
+          </p>
+          <p className="text-[11.5px] text-text-sub mt-1 leading-snug truncate">
             {card.subtitle}
           </p>
         </div>
-        <ChevronRight size={18} className="text-text-muted shrink-0" />
+        <ChevronRight
+          size={18}
+          strokeWidth={2.5}
+          className="shrink-0"
+          style={{ color: card.iconBg, opacity: 0.7 }}
+        />
       </div>
     </div>
   );
@@ -185,12 +194,17 @@ export default function ProtectionPage() {
   return (
     <div className="px-4 pt-14 pb-8">
       {/* ── 헤더 ── */}
-      <div className="text-center mb-6">
-        <h1 className="text-[22px] font-extrabold text-text-main tracking-tight">
-          보호지침
-        </h1>
-        <p className="text-[13px] text-text-sub mt-1">
-          길고양이 보호에 필요한 모든 정보
+      <div className="mb-6 px-1">
+        <div className="flex items-baseline gap-2 mb-1">
+          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
+            보호지침
+          </h1>
+          <span className="text-[11px] font-semibold text-text-light">
+            Protection Guide
+          </span>
+        </div>
+        <p className="text-[12.5px] text-text-sub leading-relaxed">
+          길고양이 보호에 필요한 모든 정보를 한 곳에
         </p>
       </div>
 
@@ -234,44 +248,75 @@ export default function ProtectionPage() {
 
       {/* ── 긴급 연락처 ── */}
       <div className="mt-6">
-        <h2 className="text-[15px] font-bold text-text-main mb-3 px-1">
-          긴급 연락처
-        </h2>
-        <div className="grid grid-cols-2 gap-3">
-          <a
-            href="tel:112"
-            className="p-4 flex flex-col items-center active:scale-95 transition-transform"
-            style={{
-              background: "linear-gradient(135deg, #EEE3DE 0%, #E3D2CC 100%)",
-              borderRadius: 24,
-              boxShadow: "6px 6px 16px rgba(0,0,0,0.04), -4px -4px 12px rgba(255,255,255,0.8)",
-              border: "1px solid rgba(255,255,255,0.6)",
-            }}
-          >
-            <div className="w-11 h-11 rounded-2xl flex items-center justify-center mb-2" style={{ backgroundColor: "rgba(184,69,69,0.12)" }}>
-              <span className="text-lg">🚔</span>
-            </div>
-            <p className="text-[13px] font-semibold text-text-main">경찰</p>
-            <p className="text-[14px] font-bold text-primary mt-0.5">112</p>
-          </a>
-          <a
-            href="tel:1577-0954"
-            className="p-4 flex flex-col items-center active:scale-95 transition-transform"
-            style={{
-              background: "linear-gradient(135deg, #EEE8E0 0%, #E3DACD 100%)",
-              borderRadius: 24,
-              boxShadow: "6px 6px 16px rgba(0,0,0,0.04), -4px -4px 12px rgba(255,255,255,0.8)",
-              border: "1px solid rgba(255,255,255,0.6)",
-            }}
-          >
-            <div className="w-11 h-11 rounded-2xl flex items-center justify-center mb-2" style={{ backgroundColor: "rgba(196,126,90,0.12)" }}>
-              <span className="text-lg">🐾</span>
-            </div>
-            <p className="text-[13px] font-semibold text-text-main">동물보호콜센터</p>
-            <p className="text-[14px] font-bold text-primary mt-0.5">1577-0954</p>
-          </a>
+        <div className="flex items-center gap-2 mb-3 px-1">
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#B84545" }} />
+          <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+            긴급 연락처
+          </h2>
         </div>
+        <div className="grid grid-cols-3 gap-2.5">
+          {EMERGENCY_CONTACTS.map((c) => (
+            <a
+              key={c.label}
+              href={`tel:${c.tel}`}
+              className="py-4 px-2 flex flex-col items-center active:scale-95 transition-transform"
+              style={{
+                background: "#FFFFFF",
+                borderRadius: 20,
+                boxShadow: `0 6px 20px rgba(${c.glow},0.12), 0 1px 3px rgba(0,0,0,0.03)`,
+                border: "1px solid rgba(0,0,0,0.04)",
+              }}
+            >
+              <div
+                className="w-11 h-11 rounded-[14px] flex items-center justify-center mb-2"
+                style={{
+                  background: `linear-gradient(135deg, ${c.accent} 0%, ${c.accent}DD 100%)`,
+                  boxShadow: `0 5px 12px rgba(${c.glow},0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)`,
+                }}
+              >
+                <span className="text-[17px]">{c.emoji}</span>
+              </div>
+              <p className="text-[12px] font-extrabold text-text-main tracking-tight">
+                {c.label}
+              </p>
+              <p
+                className="text-[10.5px] font-bold mt-0.5 tracking-tight"
+                style={{ color: c.accent }}
+              >
+                {c.tel}
+              </p>
+            </a>
+          ))}
+        </div>
+        <p className="text-[10.5px] text-text-light mt-2.5 px-1 leading-relaxed">
+          학대 현장 목격 시 경찰 우선 · 보호/상담은 동물권 단체
+        </p>
       </div>
     </div>
   );
 }
+
+/* ═══ 긴급 연락처 데이터 ═══ */
+const EMERGENCY_CONTACTS = [
+  {
+    label: "경찰",
+    tel: "112",
+    emoji: "🚔",
+    accent: "#D85555",
+    glow: "216,85,85",
+  },
+  {
+    label: "카라",
+    tel: "02-3482-0999",
+    emoji: "🐾",
+    accent: "#5BA876",
+    glow: "91,168,118",
+  },
+  {
+    label: "케어",
+    tel: "02-313-8886",
+    emoji: "💚",
+    accent: "#E88D5A",
+    glow: "232,141,90",
+  },
+];

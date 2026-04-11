@@ -3,43 +3,143 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Eye,
-  MessageCircle,
-  Plus,
+  Siren,
+  Home,
   Heart,
+  ShoppingBag,
+  MessagesSquare,
   ChevronRight,
-  MapPin,
-  ImageIcon,
   TrendingUp,
+  Plus,
 } from "lucide-react";
 import type { Post, PostCategory } from "@/lib/types";
-import { CATEGORY_MAP } from "@/lib/types";
 import { getPosts, formatRelativeTime } from "@/lib/store";
 
-const TABS: { key: "all" | PostCategory; label: string }[] = [
-  { key: "all", label: "전체" },
-  { key: "emergency", label: "긴급" },
-  { key: "foster", label: "임보" },
-  { key: "adoption", label: "입양" },
-  { key: "care", label: "돌봄" },
-  { key: "lost", label: "실종" },
-  { key: "free", label: "자유" },
+/* ═══ 카테고리 카드 데이터 ═══ */
+type CategoryCard = {
+  key: PostCategory;
+  title: string;
+  subtitle: string;
+  Icon: typeof Siren;
+  iconBg: string;
+  glowColor: string;
+  highlight?: boolean;
+};
+
+const CATEGORIES: CategoryCard[] = [
+  {
+    key: "emergency",
+    title: "긴급",
+    subtitle: "학대 · 실종 · 응급 구조 제보",
+    Icon: Siren,
+    iconBg: "#D85555",
+    glowColor: "216,85,85",
+    highlight: true,
+  },
+  {
+    key: "foster",
+    title: "임보",
+    subtitle: "임시보호 요청 · 제안",
+    Icon: Home,
+    iconBg: "#E88D5A",
+    glowColor: "232,141,90",
+  },
+  {
+    key: "adoption",
+    title: "입양",
+    subtitle: "새 가족을 찾아요",
+    Icon: Heart,
+    iconBg: "#E86B8C",
+    glowColor: "232,107,140",
+  },
+  {
+    key: "market",
+    title: "중고마켓",
+    subtitle: "용품 거래 · 무료 나눔",
+    Icon: ShoppingBag,
+    iconBg: "#48A59E",
+    glowColor: "72,165,158",
+  },
+  {
+    key: "free",
+    title: "자유게시판",
+    subtitle: "일상 · 정보 · 수다",
+    Icon: MessagesSquare,
+    iconBg: "#8B65B8",
+    glowColor: "139,101,184",
+  },
 ];
 
-/* ═══ 포토 플레이스홀더 (이미지 대신 그라데이션 + 아이콘) ═══ */
-const PHOTO_GRADIENTS = [
-  "linear-gradient(135deg, #EEE8E0 0%, #E3DACD 100%)",
-  "linear-gradient(135deg, #E5E8ED 0%, #D6DBE2 100%)",
-  "linear-gradient(135deg, #E8ECE5 0%, #D6DCD2 100%)",
-  "linear-gradient(135deg, #EEE3DE 0%, #E3D2CC 100%)",
-  "linear-gradient(135deg, #EAE6E8 0%, #DCD6D9 100%)",
-  "linear-gradient(135deg, #EDE9E0 0%, #E2DCCA 100%)",
-];
+/* ═══ 카테고리 카드 컴포넌트 ═══ */
+function CategoryCardItem({
+  card,
+  count,
+}: {
+  card: CategoryCard;
+  count: number;
+}) {
+  return (
+    <Link
+      href={`/community/category/${card.key}`}
+      className="block active:scale-[0.98] transition-transform"
+    >
+      <div
+        className="relative overflow-hidden px-5 py-[18px]"
+        style={{
+          background: "#FFFFFF",
+          borderRadius: 22,
+          boxShadow: card.highlight
+            ? `0 12px 32px rgba(${card.glowColor},0.18), 0 2px 6px rgba(${card.glowColor},0.08)`
+            : `0 6px 20px rgba(${card.glowColor},0.10), 0 1px 3px rgba(0,0,0,0.03)`,
+          border: card.highlight
+            ? `1.5px solid rgba(${card.glowColor},0.30)`
+            : "1px solid rgba(0,0,0,0.04)",
+        }}
+      >
+        <div className="flex items-center gap-4">
+          <div
+            className="w-[52px] h-[52px] rounded-2xl flex items-center justify-center shrink-0"
+            style={{
+              background: `linear-gradient(135deg, ${card.iconBg} 0%, ${card.iconBg}DD 100%)`,
+              boxShadow: `0 6px 14px rgba(${card.glowColor},0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)`,
+            }}
+          >
+            <card.Icon size={24} color="#FFFFFF" strokeWidth={2.3} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-baseline gap-2">
+              <p className="text-[15.5px] font-extrabold text-text-main tracking-tight leading-tight">
+                {card.title}
+              </p>
+              {count > 0 && (
+                <span
+                  className="text-[11px] font-bold tabular-nums"
+                  style={{ color: card.iconBg }}
+                >
+                  {count}
+                </span>
+              )}
+            </div>
+            <p className="text-[11.5px] text-text-sub mt-1 leading-snug truncate">
+              {card.subtitle}
+            </p>
+          </div>
+          <ChevronRight
+            size={18}
+            strokeWidth={2.5}
+            className="shrink-0"
+            style={{ color: card.iconBg, opacity: 0.7 }}
+          />
+        </div>
+      </div>
+    </Link>
+  );
+}
 
+/* ═══ 페이지 ═══ */
 export default function CommunityPage() {
   const [mounted, setMounted] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [filter, setFilter] = useState<"all" | PostCategory>("all");
 
   useEffect(() => {
     setMounted(true);
@@ -48,147 +148,143 @@ export default function CommunityPage() {
 
   if (!mounted) return null;
 
-  const filtered = filter === "all" ? posts : posts.filter((p) => p.category === filter);
+  const countByCat = (key: PostCategory) =>
+    posts.filter((p) => p.category === key).length;
+
+  // 최근 게시글 3건 (모든 카테고리)
+  const recentPosts = [...posts]
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
+    .slice(0, 3);
 
   return (
-    <div className="pb-4">
+    <div className="px-4 pt-14 pb-24">
       {/* ── 헤더 ── */}
-      <div className="px-5 pt-14 pb-2 flex items-center justify-between">
-        <h1 className="text-[22px] font-extrabold text-text-main tracking-tight">
-          커뮤니티
-        </h1>
-        <Link
-          href="/neighborhood"
-          className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/10 active:scale-95 transition-transform"
-        >
-          <MapPin size={13} className="text-primary" />
-          <span className="text-[12px] font-semibold text-primary">동네 소식</span>
-        </Link>
-      </div>
-
-      {/* ── 트렌딩 배너 ── */}
-      <div className="px-5 py-3">
-        <div className="card p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#EDE9E0] flex items-center justify-center shrink-0">
-            <TrendingUp size={20} color="#C9A961" strokeWidth={1.8} />
+      <div className="mb-6 px-1 flex items-end justify-between">
+        <div>
+          <div className="flex items-baseline gap-2 mb-1">
+            <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
+              커뮤니티
+            </h1>
+            <span className="text-[11px] font-semibold text-text-light">
+              Community
+            </span>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-bold text-text-main">지금 뜨는 주제</p>
-            <p className="text-[12px] text-text-sub truncate">
-              봄철 길고양이 중성화 · 새끼 발견 급증
-            </p>
-          </div>
+          <p className="text-[12.5px] text-text-sub leading-relaxed">
+            동네 이웃들과 함께 만드는 공간
+          </p>
         </div>
       </div>
 
-      {/* ── 카테고리 필터 ── */}
-      <div className="flex gap-2 px-5 pb-3 overflow-x-auto no-scrollbar">
-        {TABS.map((tab) => {
-          const active = filter === tab.key;
-          return (
-            <button
-              key={tab.key}
-              onClick={() => setFilter(tab.key)}
-              className={`shrink-0 px-4 py-2 rounded-full text-[13px] font-semibold transition-all ${
-                active
-                  ? "bg-text-main text-white"
-                  : "bg-white text-text-sub border border-border"
-              }`}
-            >
-              {tab.key !== "all" && (
-                <span className="mr-1">{CATEGORY_MAP[tab.key].emoji}</span>
-              )}
-              {tab.label}
-            </button>
-          );
-        })}
+      {/* ── 트렌딩 배너 ── */}
+      <div
+        className="mb-4 px-4 py-3.5 flex items-center gap-3"
+        style={{
+          background: "#FFFFFF",
+          borderRadius: 20,
+          boxShadow: "0 6px 20px rgba(201,169,97,0.10), 0 1px 3px rgba(0,0,0,0.03)",
+          border: "1px solid rgba(0,0,0,0.04)",
+        }}
+      >
+        <div
+          className="w-10 h-10 rounded-[13px] flex items-center justify-center shrink-0"
+          style={{
+            background: "linear-gradient(135deg, #E8B040 0%, #E8B040DD 100%)",
+            boxShadow: "0 5px 12px rgba(232,176,64,0.35), inset 0 1px 0 rgba(255,255,255,0.4)",
+          }}
+        >
+          <TrendingUp size={18} color="#FFFFFF" strokeWidth={2.3} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[12px] font-extrabold text-text-main">지금 뜨는 주제</p>
+          <p className="text-[11.5px] text-text-sub truncate">
+            봄철 길고양이 중성화 · 새끼 발견 급증
+          </p>
+        </div>
       </div>
 
-      {/* ── 피드 ── */}
-      <div className="px-4 space-y-4">
-        {filtered.length === 0 ? (
-          <div className="flex flex-col items-center pt-20 text-text-light">
-            <MessageCircle size={48} strokeWidth={1.2} />
-            <p className="text-base mt-4 text-text-sub">게시글이 없습니다</p>
-            <p className="text-[13px] mt-1">첫 번째 글을 작성해보세요!</p>
+      {/* ── 카테고리 벤토 그리드 ── */}
+      <div className="space-y-3">
+        {/* Row 1: 긴급 (wide, highlight) */}
+        <CategoryCardItem card={CATEGORIES[0]} count={countByCat("emergency")} />
+
+        {/* Row 2: 임보 | 입양 */}
+        <div className="grid grid-cols-2 gap-3">
+          <Link
+            href={`/community/category/${CATEGORIES[1].key}`}
+            className="block active:scale-[0.98] transition-transform"
+          >
+            <CompactCard card={CATEGORIES[1]} count={countByCat("foster")} />
+          </Link>
+          <Link
+            href={`/community/category/${CATEGORIES[2].key}`}
+            className="block active:scale-[0.98] transition-transform"
+          >
+            <CompactCard card={CATEGORIES[2]} count={countByCat("adoption")} />
+          </Link>
+        </div>
+
+        {/* Row 3: 중고마켓 */}
+        <CategoryCardItem card={CATEGORIES[3]} count={countByCat("market")} />
+
+        {/* Row 4: 자유게시판 */}
+        <CategoryCardItem card={CATEGORIES[4]} count={countByCat("free")} />
+      </div>
+
+      {/* ── 최근 글 ── */}
+      {recentPosts.length > 0 && (
+        <div className="mt-6">
+          <div className="flex items-center gap-2 mb-3 px-1">
+            <div className="w-1 h-4 rounded-full bg-primary" />
+            <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+              최근 글
+            </h2>
           </div>
-        ) : (
-          filtered.map((post, idx) => {
-            const cat = CATEGORY_MAP[post.category];
-            const gradient = PHOTO_GRADIENTS[idx % PHOTO_GRADIENTS.length];
-
-            return (
-              <Link key={post.id} href={`/community/${post.id}`} className="block">
-                <article className="card overflow-hidden active:scale-[0.99] transition-transform">
-                  {/* 사진 영역 (플레이스홀더) */}
+          <div className="space-y-2.5">
+            {recentPosts.map((post) => {
+              const cat = CATEGORIES.find((c) => c.key === post.category);
+              if (!cat) return null;
+              return (
+                <Link
+                  key={post.id}
+                  href={`/community/${post.id}`}
+                  className="block active:scale-[0.99] transition-transform"
+                >
                   <div
-                    className="h-40 flex items-center justify-center relative"
-                    style={{ background: gradient }}
+                    className="flex items-center gap-3 px-4 py-3"
+                    style={{
+                      background: "#FFFFFF",
+                      borderRadius: 16,
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)",
+                      border: "1px solid rgba(0,0,0,0.04)",
+                    }}
                   >
-                    <ImageIcon size={32} className="text-white/50" strokeWidth={1.5} />
-                    {/* 카테고리 뱃지 */}
                     <span
-                      className="absolute top-3 left-3 text-[11px] font-bold text-white px-2.5 py-1 rounded-xl"
-                      style={{ backgroundColor: cat.color }}
+                      className="text-[10px] font-extrabold px-2 py-1 rounded-lg shrink-0"
+                      style={{
+                        backgroundColor: `${cat.iconBg}15`,
+                        color: cat.iconBg,
+                      }}
                     >
-                      {cat.emoji} {cat.label}
+                      {cat.title}
                     </span>
-                  </div>
-
-                  {/* 콘텐츠 */}
-                  <div className="p-4">
-                    <h3 className="text-[16px] font-bold text-text-main leading-snug mb-1.5">
-                      {post.title}
-                    </h3>
-                    <p className="text-[13px] text-text-sub leading-relaxed line-clamp-2 mb-3">
-                      {post.content}
-                    </p>
-
-                    {/* 작성자 + 지역 뱃지 */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        {/* 아바타 */}
-                        <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-[11px] font-bold text-primary">
-                            {post.authorName.charAt(0)}
-                          </span>
-                        </div>
-                        <span className="text-[13px] font-semibold text-text-main">
-                          {post.authorName}
-                        </span>
-                        {/* 지역 뱃지 */}
-                        {post.region && (
-                          <span className="tag" style={{ color: "#5B7A8F", backgroundColor: "#E5E8ED" }}>
-                            <MapPin size={9} className="mr-0.5" />
-                            {post.region}
-                          </span>
-                        )}
-                      </div>
-
-                      <span className="text-[11px] text-text-light">
-                        {formatRelativeTime(post.createdAt)}
-                      </span>
-                    </div>
-
-                    {/* 상호작용 */}
-                    <div className="flex items-center gap-4 mt-3 pt-3 border-t border-divider text-text-light text-[12px]">
-                      <span className="flex items-center gap-1">
-                        <Eye size={14} /> {post.viewCount}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Heart size={14} /> {post.likeCount}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <MessageCircle size={14} /> {post.commentCount}
-                      </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-bold text-text-main truncate">
+                        {post.title}
+                      </p>
+                      <p className="text-[10.5px] text-text-light mt-0.5">
+                        {post.authorName} · {formatRelativeTime(post.createdAt)}
+                      </p>
                     </div>
                   </div>
-                </article>
-              </Link>
-            );
-          })
-        )}
-      </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* ── FAB ── */}
       <Link
@@ -197,6 +293,47 @@ export default function CommunityPage() {
       >
         <Plus size={28} color="#fff" strokeWidth={2.5} />
       </Link>
+    </div>
+  );
+}
+
+/* ═══ 2칸 그리드용 컴팩트 카드 ═══ */
+function CompactCard({ card, count }: { card: CategoryCard; count: number }) {
+  return (
+    <div
+      className="relative overflow-hidden px-4 py-[18px]"
+      style={{
+        background: "#FFFFFF",
+        borderRadius: 22,
+        boxShadow: `0 6px 20px rgba(${card.glowColor},0.10), 0 1px 3px rgba(0,0,0,0.03)`,
+        border: "1px solid rgba(0,0,0,0.04)",
+      }}
+    >
+      <div
+        className="w-[48px] h-[48px] rounded-2xl flex items-center justify-center mb-3"
+        style={{
+          background: `linear-gradient(135deg, ${card.iconBg} 0%, ${card.iconBg}DD 100%)`,
+          boxShadow: `0 6px 14px rgba(${card.glowColor},0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)`,
+        }}
+      >
+        <card.Icon size={22} color="#FFFFFF" strokeWidth={2.3} />
+      </div>
+      <div className="flex items-baseline gap-1.5">
+        <p className="text-[15px] font-extrabold text-text-main tracking-tight">
+          {card.title}
+        </p>
+        {count > 0 && (
+          <span
+            className="text-[11px] font-bold tabular-nums"
+            style={{ color: card.iconBg }}
+          >
+            {count}
+          </span>
+        )}
+      </div>
+      <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
+        {card.subtitle}
+      </p>
     </div>
   );
 }

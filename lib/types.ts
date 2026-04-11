@@ -15,20 +15,18 @@ export interface User {
 
 // ── 게시글 카테고리 ──
 export type PostCategory =
-  | "emergency"  // 긴급 제보
+  | "emergency"  // 긴급
   | "foster"     // 임시보호
   | "adoption"   // 입양
-  | "care"       // 급식소/돌봄
-  | "lost"       // 실종/보호
+  | "market"     // 중고마켓
   | "free";      // 자유게시판
 
 export const CATEGORY_MAP: Record<PostCategory, { label: string; color: string; emoji: string }> = {
-  emergency: { label: "긴급 제보", color: "#B84545", emoji: "🚨" },
-  foster:    { label: "임시보호", color: "#C47E5A", emoji: "🏠" },
-  adoption:  { label: "입양",    color: "#B06478", emoji: "💕" },
-  care:      { label: "돌봄",    color: "#6B8E6F", emoji: "🌿" },
-  lost:      { label: "실종/보호", color: "#5B7A8F", emoji: "🔍" },
-  free:      { label: "자유",    color: "#7A6B8E", emoji: "💬" },
+  emergency: { label: "긴급",     color: "#D85555", emoji: "🚨" },
+  foster:    { label: "임보",     color: "#E88D5A", emoji: "🏠" },
+  adoption:  { label: "입양",     color: "#E86B8C", emoji: "💕" },
+  market:    { label: "중고마켓", color: "#48A59E", emoji: "🛍️" },
+  free:      { label: "자유게시판", color: "#8B65B8", emoji: "💬" },
 };
 
 // ── 게시글 ──

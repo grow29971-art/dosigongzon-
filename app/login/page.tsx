@@ -1,10 +1,17 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { PawPrint, Mail, Lock, Eye, EyeOff, Check, ChevronRight, Loader2 } from "lucide-react";
+import { PawPrint, Mail, Lock, Eye, EyeOff, Check, ChevronRight, Loader2, ExternalLink, AlertCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import {
+  detectInAppBrowser,
+  detectOS,
+  inAppBrowserLabel,
+  openInExternalBrowser,
+  type InAppBrowser,
+} from "@/lib/in-app-browser";
 
 /* ═══ 이메일 유효성 검사 ═══ */
 function isValidEmail(email: string) {
@@ -32,6 +39,24 @@ function LoginContent() {
   const [pressing, setPressing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState<string | null>(null);
+
+  // 인앱 브라우저 감지 (카톡/페북/인스타 등)
+  const [inApp, setInApp] = useState<InAppBrowser>(null);
+  const [showIosCopyHint, setShowIosCopyHint] = useState(false);
+  useEffect(() => {
+    setInApp(detectInAppBrowser());
+  }, []);
+
+  const handleOpenExternal = async () => {
+    const success = openInExternalBrowser();
+    if (!success) {
+      // iOS 카톡 외 인앱: URL 복사로 안내
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+      } catch {}
+      setShowIosCopyHint(true);
+    }
+  };
 
   const authError = searchParams.get("error");
 
@@ -88,6 +113,50 @@ function LoginContent() {
   return (
     <div className="min-h-dvh bg-warm-white flex flex-col">
       <div className="flex-1 overflow-y-auto px-6 py-12 flex flex-col justify-center max-w-lg mx-auto w-full">
+        {/* ══════ 인앱 브라우저 경고 (카톡/페북/인스타 등에서 Google OAuth 차단) ══════ */}
+        {inApp && (
+          <div
+            className="mb-6 rounded-2xl p-4"
+            style={{ backgroundColor: "#FBEAEA", border: "1px solid #E8C5C5" }}
+          >
+            <div className="flex items-start gap-2.5 mb-3">
+              <AlertCircle size={18} className="mt-0.5 shrink-0" style={{ color: "#B84545" }} />
+              <div className="min-w-0">
+                <p className="text-[13px] font-extrabold" style={{ color: "#B84545" }}>
+                  {inAppBrowserLabel(inApp)} 안에서는 소셜 로그인이 안 돼요
+                </p>
+                <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#8B2F2F" }}>
+                  Google/카카오 보안 정책으로 인앱 브라우저에서 OAuth가 차단됩니다.
+                  일반 브라우저로 열어주세요.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleOpenExternal}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-[13px] text-white transition-transform active:scale-95"
+              style={{ backgroundColor: "#B84545" }}
+            >
+              <ExternalLink size={14} />
+              {detectOS() === "ios" && inApp !== "kakaotalk"
+                ? "주소 복사하고 사파리에서 열기"
+                : "크롬/사파리에서 열기"}
+            </button>
+            {showIosCopyHint && (
+              <div
+                className="mt-3 rounded-xl p-3 text-[11px] leading-relaxed"
+                style={{ backgroundColor: "#FFF", color: "#6B5043" }}
+              >
+                <p className="font-bold mb-1">주소가 복사됐어요 ✓</p>
+                <p>
+                  사파리(iOS) 또는 크롬(Android)을 직접 열고 주소창에 붙여넣어주세요.
+                  또는 공유 메뉴 → "사파리로 열기"를 이용할 수 있어요.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* ══════ 로고 섹션 ══════ */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-[28px] bg-primary/10 mb-4">

@@ -71,11 +71,11 @@ const SEED_POSTS: Post[] = [
   },
   {
     id: "seed-4",
-    category: "care",
-    title: "용산구 급식소 사료 보충 완료했습니다",
-    content: "오늘 아침 용산구 이태원로 급식소에 사료 5kg 보충했습니다. 물그릇도 교체했어요.",
+    category: "market",
+    title: "사용감 적은 캣타워 무료나눔합니다",
+    content: "이사 가면서 정리해요. 155cm 4단 캣타워, 최근에 소독 + 천갈이 완료. 직거래만 가능해요 (용산구).",
     authorId: "user-3",
-    authorName: "동네지킴이",
+    authorName: "정리중입니다",
     region: "이태원동",
     images: [],
     isPinned: false,
@@ -86,7 +86,7 @@ const SEED_POSTS: Post[] = [
   },
   {
     id: "seed-5",
-    category: "lost",
+    category: "emergency",
     title: "서초구 방배동 턱시도 고양이 실종",
     content: "4월 1일부터 보이지 않습니다. 목에 파란색 목걸이를 하고 있어요. 목격하신 분 연락 부탁드려요.",
     authorId: "user-4",
@@ -116,7 +116,8 @@ const SEED_POSTS: Post[] = [
   },
 ];
 
-const POSTS_KEY = "dosigongzon_posts";
+// 카테고리 구조 변경 시 키 버전 업 (기존 localStorage 무효화)
+const POSTS_KEY = "dosigongzon_posts_v2";
 const COMMENTS_KEY = "dosigongzon_comments";
 
 // ── Posts CRUD ──
@@ -136,6 +137,70 @@ export function getPostsByCategory(category: PostCategory): Post[] {
 
 export function getPostsByRegion(region: string): Post[] {
   return getPosts().filter((p) => p.region === region);
+}
+
+// ── Post Votes (커뮤니티 글 좋아요/싫어요, localStorage) ──
+const POST_VOTES_KEY = "dosigongzon_post_votes";
+
+export type PostVote = 1 | -1;
+
+export function getMyPostVotes(): Record<string, PostVote> {
+  return get<Record<string, PostVote>>(POST_VOTES_KEY, {});
+}
+
+/**
+ * 포스트 투표 토글.
+ * - 현재 투표 없음 → next로 설정 (+1)
+ * - 같은 투표 다시 누름 → 취소 (-1)
+ * - 반대 투표 누름 → 전환 (-1 + +1)
+ * 반환: 갱신된 포스트
+ */
+export function votePost(postId: string, next: PostVote): Post | undefined {
+  const votes = getMyPostVotes();
+  const prev = votes[postId] ?? 0;
+  const posts = getPosts();
+  const idx = posts.findIndex((p) => p.id === postId);
+  if (idx < 0) return undefined;
+
+  const post = { ...posts[idx] };
+  // dislikeCount가 없는 기존 타입을 보존하기 위해 any 캐스팅은 지양.
+  // 대신 likeCount만 사용하고 dislike는 별도 저장소에 보관.
+  const dislikes = getDislikeCounts();
+  const prevDislike = dislikes[postId] ?? 0;
+
+  // 이전 투표 되돌리기
+  if (prev === 1) post.likeCount = Math.max(0, post.likeCount - 1);
+  if (prev === -1) dislikes[postId] = Math.max(0, prevDislike - 1);
+
+  // 새 투표 적용 (같은 걸 다시 누르면 취소)
+  const newVote: PostVote | 0 = prev === next ? 0 : next;
+  if (newVote === 1) post.likeCount += 1;
+  if (newVote === -1) dislikes[postId] = (dislikes[postId] ?? 0) + 1;
+
+  // 저장
+  posts[idx] = post;
+  set(POSTS_KEY, posts);
+  setDislikeCounts(dislikes);
+  if (newVote === 0) delete votes[postId];
+  else votes[postId] = newVote;
+  set(POST_VOTES_KEY, votes);
+
+  return post;
+}
+
+// ── Post Dislike 카운트 (타입 확장 없이 별도 저장) ──
+const POST_DISLIKES_KEY = "dosigongzon_post_dislikes";
+
+export function getDislikeCounts(): Record<string, number> {
+  return get<Record<string, number>>(POST_DISLIKES_KEY, {});
+}
+
+function setDislikeCounts(counts: Record<string, number>) {
+  set(POST_DISLIKES_KEY, counts);
+}
+
+export function getPostDislike(postId: string): number {
+  return getDislikeCounts()[postId] ?? 0;
 }
 
 // 사용자 동네 저장/불러오기

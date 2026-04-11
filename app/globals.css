@@ -101,3 +101,15 @@ body {
   scroll-snap-align: start;
   flex-shrink: 0;
 }
+
+/* ── 학대경보 펄스 애니메이션 ── */
+@keyframes alert-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 3px 10px rgba(216,85,85,0.55);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 4px 14px rgba(216,85,85,0.75), 0 0 0 4px rgba(216,85,85,0.15);
+  }
+}

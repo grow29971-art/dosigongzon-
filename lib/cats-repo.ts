@@ -36,6 +36,143 @@ export const MAP_CENTER = {
   lng: 126.7320,
 };
 
+// ══════════════════════════════════════════
+// 표시 이름 폴백 (OAuth/이메일 유저 공통)
+// ══════════════════════════════════════════
+type UserLike = {
+  user_metadata?: Record<string, unknown> | null;
+  email?: string | null;
+} | null | undefined;
+
+export function getDisplayName(user: UserLike): string {
+  if (!user) return "익명";
+  const meta = (user.user_metadata ?? {}) as Record<string, unknown>;
+  const nickname = typeof meta.nickname === "string" ? meta.nickname : "";
+  const fullName = typeof meta.full_name === "string" ? meta.full_name : "";
+  const name = typeof meta.name === "string" ? meta.name : "";
+  const emailLocal = user.email?.split("@")[0] ?? "";
+  return nickname || fullName || name || emailLocal || "익명";
+}
+
+// ══════════════════════════════════════════
+// 지도 페이지 교육용 팁 (올바른 돌봄 상식)
+// ══════════════════════════════════════════
+
+export interface CareTip {
+  emoji: string;
+  title: string;
+  body: string;
+  severity: "info" | "warn" | "danger";
+}
+
+export const CARE_TIPS: CareTip[] = [
+  {
+    emoji: "⚠️",
+    title: "츄르 대신 닭가슴살 · 사료를",
+    body: "츄르는 구내염·치아질환을 유발할 수 있어요. 무염으로 삶은 닭가슴살이나 건사료가 훨씬 안전해요.",
+    severity: "danger",
+  },
+  {
+    emoji: "🥛",
+    title: "우유는 주지 마세요",
+    body: "고양이 대부분은 유당불내증이 있어요. 설사·구토의 원인이 돼요. 깨끗한 물이 최고예요.",
+    severity: "warn",
+  },
+  {
+    emoji: "🐟",
+    title: "참치캔은 주식이 될 수 없어요",
+    body: "수은 함량이 높고 영양 불균형을 유발해요. 간식으로도 일주일에 한두 번 소량만.",
+    severity: "warn",
+  },
+  {
+    emoji: "💧",
+    title: "물그릇은 매일 새로",
+    body: "여름철은 2번 이상 교체. 사료보다 물이 훨씬 중요해요. 얕고 넓은 그릇을 선호해요.",
+    severity: "info",
+  },
+  {
+    emoji: "✂️",
+    title: "TNR은 고양이를 위한 것",
+    body: "중성화는 번식 스트레스·질병·영역 다툼을 크게 줄여요. 개체수 관리 + 개묘 복지 모두에 도움.",
+    severity: "info",
+  },
+  {
+    emoji: "🤚",
+    title: "갑자기 만지지 마세요",
+    body: "손을 천천히 내밀고 냄새를 맡게 해주세요. 경계심 많은 아이들은 시선을 피해주는 게 좋아요.",
+    severity: "info",
+  },
+  {
+    emoji: "🚨",
+    title: "학대 목격 시 112 신고",
+    body: "동물보호법상 학대는 형사처벌 대상이에요. 현장 사진·동영상은 중요한 증거가 돼요.",
+    severity: "danger",
+  },
+  {
+    emoji: "🌡️",
+    title: "겨울엔 단열 쉼터를",
+    body: "스티로폼 박스 + 담요로 간단히 만들 수 있어요. 입구는 작게, 바닥은 지면에서 띄워주세요.",
+    severity: "info",
+  },
+];
+
+// ══════════════════════════════════════════
+// 위치 보호: 비로그인 유저에게는 좌표 퍼징
+// ══════════════════════════════════════════
+
+// 문자열 해시 → 0~1 범위 float 2개 (deterministic)
+function hashToUnitFloats(seed: string): [number, number] {
+  let h1 = 0x811c9dc5;
+  let h2 = 0x01000193;
+  for (let i = 0; i < seed.length; i++) {
+    const c = seed.charCodeAt(i);
+    h1 = Math.imul(h1 ^ c, 0x01000193);
+    h2 = Math.imul(h2 ^ c, 0x85ebca6b);
+  }
+  // unsigned → 0~1 float
+  const f1 = (h1 >>> 0) / 0xffffffff;
+  const f2 = (h2 >>> 0) / 0xffffffff;
+  return [f1, f2];
+}
+
+/**
+ * 학대 방지를 위한 좌표 퍼징.
+ * 같은 cat.id는 항상 같은 퍼징 결과를 내도록 결정적 시드 사용.
+ * @param lat 원본 위도
+ * @param lng 원본 경도
+ * @param seed 결정적 시드 (cat.id 권장)
+ * @param radiusMeters 퍼징 반경 (기본 70m)
+ */
+export function fuzzCoord(
+  lat: number,
+  lng: number,
+  seed: string,
+  radiusMeters = 70,
+): { lat: number; lng: number } {
+  const [f1, f2] = hashToUnitFloats(seed);
+  // 균일 원반 분포: r = R * sqrt(u1), θ = 2π * u2
+  const r = radiusMeters * Math.sqrt(f1);
+  const theta = 2 * Math.PI * f2;
+  const dLatMeters = r * Math.sin(theta);
+  const dLngMeters = r * Math.cos(theta);
+  // 1도 ≈ 111_111m (위도), 경도는 cos(lat)로 보정
+  const dLat = dLatMeters / 111111;
+  const dLng = dLngMeters / (111111 * Math.cos((lat * Math.PI) / 180));
+  return { lat: lat + dLat, lng: lng + dLng };
+}
+
+/**
+ * 뷰어 권한에 따라 실제 또는 퍼징된 좌표 반환.
+ * 로그인 유저 = 정확 / 게스트 = 퍼징 70m.
+ */
+export function getDisplayCoord(
+  cat: Pick<Cat, "id" | "lat" | "lng">,
+  isLoggedIn: boolean,
+): { lat: number; lng: number } {
+  if (isLoggedIn) return { lat: cat.lat, lng: cat.lng };
+  return fuzzCoord(cat.lat, cat.lng, cat.id, 70);
+}
+
 // ── 모든 고양이 조회 (지도 핀용) ──
 export async function listCats(): Promise<Cat[]> {
   const supabase = createClient();
@@ -67,7 +204,7 @@ export async function createCat(input: CreateCatInput): Promise<Cat> {
     .insert({
       ...input,
       caretaker_id: user.id,
-      caretaker_name: input.caretaker_name ?? user.user_metadata?.nickname ?? "익명",
+      caretaker_name: input.caretaker_name ?? getDisplayName(user),
       tags: input.tags ?? [],
     })
     .select()
@@ -201,10 +338,17 @@ export interface CatComment {
   cat_id: string;
   author_id: string | null;
   author_name: string | null;
+  author_avatar_url: string | null;
+  author_level: number | null;
   body: string;
   kind: CommentKind;
+  photo_url: string | null;
+  like_count: number;
+  dislike_count: number;
   created_at: string;
 }
+
+export type VoteValue = 1 | -1 | 0; // 0 = 투표 없음/취소
 
 // ── 특정 고양이 댓글 조회 ──
 export async function listComments(catId: string): Promise<CatComment[]> {
@@ -223,11 +367,223 @@ export async function listComments(catId: string): Promise<CatComment[]> {
   return (data ?? []) as CatComment[];
 }
 
+// ── 댓글 투표 (좋아요/싫어요/취소) ──
+export async function voteComment(
+  commentId: string,
+  vote: VoteValue,
+): Promise<void> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("로그인이 필요해요.");
+
+  if (vote === 0) {
+    const { error } = await supabase
+      .from("cat_comment_votes")
+      .delete()
+      .eq("comment_id", commentId)
+      .eq("user_id", user.id);
+    if (error) {
+      console.error("[cats-repo] voteComment(delete) failed:", error);
+      throw new Error(`투표 취소 실패: ${error.message}`);
+    }
+    return;
+  }
+
+  const { error } = await supabase
+    .from("cat_comment_votes")
+    .upsert(
+      { comment_id: commentId, user_id: user.id, vote },
+      { onConflict: "comment_id,user_id" },
+    );
+  if (error) {
+    console.error("[cats-repo] voteComment(upsert) failed:", error);
+    throw new Error(`투표 실패: ${error.message}`);
+  }
+}
+
+// ── 내가 누른 투표들 조회 (Map<commentId, 1 | -1>) ──
+export async function getMyCommentVotes(
+  commentIds: string[],
+): Promise<Map<string, 1 | -1>> {
+  if (commentIds.length === 0) return new Map();
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return new Map();
+
+  const { data, error } = await supabase
+    .from("cat_comment_votes")
+    .select("comment_id, vote")
+    .eq("user_id", user.id)
+    .in("comment_id", commentIds);
+
+  if (error) {
+    console.error("[cats-repo] getMyCommentVotes failed:", error);
+    return new Map();
+  }
+
+  return new Map(
+    (data ?? []).map((r: { comment_id: string; vote: number }) => [
+      r.comment_id,
+      r.vote as 1 | -1,
+    ]),
+  );
+}
+
+// ── 학대 신고(alert) 2회 이상 받은 고양이 ID 목록 ──
+// 지도 마커에 "학대경보" 표시 용도. 기본 최근 30일, 최소 2건 이상일 때만.
+// 1건만 올라오면 오보 가능성 고려해서 표시 안 함 (집단 검증 효과).
+export async function listAlertedCatIds(
+  daysWindow = 30,
+  minCount = 2,
+): Promise<Set<string>> {
+  const supabase = createClient();
+  const since = new Date(
+    Date.now() - daysWindow * 24 * 60 * 60 * 1000,
+  ).toISOString();
+
+  const { data, error } = await supabase
+    .from("cat_comments")
+    .select("cat_id")
+    .eq("kind", "alert")
+    .gte("created_at", since);
+
+  if (error) {
+    console.error("[cats-repo] listAlertedCatIds failed:", error);
+    return new Set();
+  }
+
+  // cat_id 별로 신고 건수 집계
+  const counts = new Map<string, number>();
+  for (const row of (data ?? []) as { cat_id: string }[]) {
+    counts.set(row.cat_id, (counts.get(row.cat_id) ?? 0) + 1);
+  }
+
+  // minCount 이상인 것만 반환
+  return new Set(
+    [...counts.entries()]
+      .filter(([, n]) => n >= minCount)
+      .map(([id]) => id),
+  );
+}
+
+// ══════════════════════════════════════════
+// 프로필 아바타 (Supabase auth user_metadata.avatar_url)
+// ══════════════════════════════════════════
+
+// ── 아바타 파일 업로드 → 공개 URL 반환 ──
+export async function uploadAvatar(file: File): Promise<string> {
+  const supabase = createClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("로그인이 필요해요.");
+
+  const MAX_INPUT_SIZE = 20 * 1024 * 1024;
+  if (file.size > MAX_INPUT_SIZE) {
+    throw new Error("사진은 20MB 이하만 업로드 가능해요.");
+  }
+  if (!file.type.startsWith("image/")) {
+    throw new Error("이미지 파일만 업로드 가능해요.");
+  }
+
+  // 아바타는 작게: 512px, 품질 0.85
+  const webpFile = await convertImageToWebp(file, 512, 0.85);
+
+  const fileName = `${user.id}/avatar_${Date.now()}.webp`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("cat-photos")
+    .upload(fileName, webpFile, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: "image/webp",
+    });
+
+  if (uploadError) {
+    console.error("[cats-repo] uploadAvatar failed:", uploadError);
+    throw new Error(`사진 업로드에 실패했어요: ${uploadError.message}`);
+  }
+
+  const { data: urlData } = supabase.storage
+    .from("cat-photos")
+    .getPublicUrl(fileName);
+
+  return urlData.publicUrl;
+}
+
+// ── user_metadata.avatar_url 갱신 ──
+export async function updateMyAvatar(avatarUrl: string): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase.auth.updateUser({
+    data: { avatar_url: avatarUrl },
+  });
+  if (error) {
+    console.error("[cats-repo] updateMyAvatar failed:", error);
+    throw new Error(`프로필 사진 저장에 실패했어요: ${error.message}`);
+  }
+}
+
+// ── 닉네임 갱신 ──
+export async function updateMyNickname(nickname: string): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase.auth.updateUser({
+    data: { nickname },
+  });
+  if (error) {
+    console.error("[cats-repo] updateMyNickname failed:", error);
+    throw new Error(`닉네임 저장에 실패했어요: ${error.message}`);
+  }
+}
+
+// ── 댓글 사진 업로드 (cat-photos 버킷 재사용, comment 폴더) ──
+// 인증 필요. 반환: 공개 URL
+export async function uploadCommentPhoto(file: File): Promise<string> {
+  const supabase = createClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("로그인이 필요해요.");
+  }
+
+  const MAX_INPUT_SIZE = 20 * 1024 * 1024;
+  if (file.size > MAX_INPUT_SIZE) {
+    throw new Error("사진은 20MB 이하만 업로드 가능해요.");
+  }
+  if (!file.type.startsWith("image/")) {
+    throw new Error("이미지 파일만 업로드 가능해요.");
+  }
+
+  // WebP로 변환 — 댓글은 피드용이라 더 작게 (1024px, 품질 0.8)
+  const webpFile = await convertImageToWebp(file, 1024, 0.8);
+
+  // 경로: {userId}/comment_{timestamp}.webp — 삭제 정책 {userId} prefix 유지
+  const fileName = `${user.id}/comment_${Date.now()}.webp`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("cat-photos")
+    .upload(fileName, webpFile, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: "image/webp",
+    });
+
+  if (uploadError) {
+    console.error("[cats-repo] uploadCommentPhoto failed:", uploadError);
+    throw new Error(`사진 업로드에 실패했어요: ${uploadError.message}`);
+  }
+
+  const { data: urlData } = supabase.storage
+    .from("cat-photos")
+    .getPublicUrl(fileName);
+
+  return urlData.publicUrl;
+}
+
 // ── 댓글 작성 (인증 필요) ──
 export async function createComment(
   catId: string,
   body: string,
   kind: CommentKind = "note",
+  photoUrl: string | null = null,
 ): Promise<CatComment> {
   const supabase = createClient();
 
@@ -237,8 +593,18 @@ export async function createComment(
   }
 
   const trimmed = body.trim();
-  if (!trimmed) {
-    throw new Error("내용을 입력해주세요.");
+  if (!trimmed && !photoUrl) {
+    throw new Error("내용이나 사진 중 하나는 있어야 해요.");
+  }
+
+  // 현재 레벨 스냅샷 — 활동 요약 조회 후 계산
+  let authorLevel: number | null = null;
+  try {
+    const summary = await getMyActivitySummary();
+    authorLevel = computeLevel(computeScore(summary)).level;
+  } catch {
+    // 요약 실패해도 댓글 작성은 진행
+    authorLevel = null;
   }
 
   const { data, error } = await supabase
@@ -246,9 +612,12 @@ export async function createComment(
     .insert({
       cat_id: catId,
       author_id: user.id,
-      author_name: user.user_metadata?.nickname ?? "익명",
+      author_name: getDisplayName(user),
+      author_avatar_url: user.user_metadata?.avatar_url ?? null,
+      author_level: authorLevel,
       body: trimmed,
       kind,
+      photo_url: photoUrl,
     })
     .select()
     .single();
@@ -259,6 +628,172 @@ export async function createComment(
   }
 
   return data as CatComment;
+}
+
+// ══════════════════════════════════════════
+// 마이페이지용 — 내 활동 조회
+// ══════════════════════════════════════════
+
+// ── 내가 등록한 고양이 목록 ──
+export async function listMyCats(): Promise<Cat[]> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("cats")
+    .select("*")
+    .eq("caretaker_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("[cats-repo] listMyCats failed:", error);
+    return [];
+  }
+  return (data ?? []) as Cat[];
+}
+
+// ── 내가 쓴 돌봄 기록(+고양이 정보) ──
+export interface CatCommentWithCat extends CatComment {
+  cat: { id: string; name: string; photo_url: string | null; region: string | null } | null;
+}
+
+export async function listMyComments(limit = 20): Promise<CatCommentWithCat[]> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("cat_comments")
+    .select("*, cat:cats(id, name, photo_url, region)")
+    .eq("author_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error("[cats-repo] listMyComments failed:", error);
+    return [];
+  }
+  return (data ?? []) as CatCommentWithCat[];
+}
+
+// ── 내 활동 요약 (고양이 수 · 기록 수 · 신고 수) ──
+export interface MyActivitySummary {
+  catCount: number;
+  commentCount: number;
+  alertCount: number;
+  likesReceived: number;
+}
+
+// ── 레벨 시스템 ──
+// 점수 계산: 일반 기록 1점 + 학대 신고 3점 + 고양이 등록 10점
+// 집계에는 alertCount가 commentCount에 포함되어 있으므로 alertCount에는 +2점 보너스만
+export interface LevelInfo {
+  level: number;
+  title: string;
+  emoji: string;
+  score: number;
+  current: number;   // 현재 티어 시작 점수
+  next: number | null; // 다음 티어 시작 점수 (null이면 최고 레벨)
+  progress: number;  // 0~1 현재 레벨 내 진행도
+}
+
+const LEVEL_THRESHOLDS: { min: number; title: string; emoji: string }[] = [
+  { min: 0,   title: "새싹 집사",   emoji: "🌱" },
+  { min: 10,  title: "캣프렌드",   emoji: "🐾" },
+  { min: 30,  title: "캣러버",     emoji: "🐱" },
+  { min: 70,  title: "캣지기",     emoji: "🛡️" },
+  { min: 150, title: "마을 지킴이", emoji: "⭐" },
+  { min: 300, title: "골목 대장",   emoji: "👑" },
+  { min: 600, title: "전설의 집사", emoji: "🌟" },
+];
+
+export function computeScore(summary: MyActivitySummary): number {
+  // commentCount는 note+alert 합계. alert에는 추가 보너스 2점(총 3점 = 1점+2점)
+  const base = summary.commentCount * 1 + summary.alertCount * 2;
+  const fromCats = summary.catCount * 10;
+  const fromLikes = summary.likesReceived * 2; // 받은 좋아요 1개당 2점
+  return base + fromCats + fromLikes;
+}
+
+// 레벨별 표시 색 (뱃지 등)
+const LEVEL_COLORS = [
+  "#6B8E6F", // Lv1 새싹 세이지
+  "#48A59E", // Lv2 캣프렌드 틸
+  "#4A7BA8", // Lv3 캣러버 블루
+  "#8B65B8", // Lv4 캣지기 퍼플
+  "#E88D5A", // Lv5 마을지킴이 오렌지
+  "#D85555", // Lv6 골목대장 레드
+  "#C9A961", // Lv7 전설의 집사 골드
+];
+
+export function getLevelColor(level: number): string {
+  if (level < 1) return LEVEL_COLORS[0];
+  return LEVEL_COLORS[Math.min(level - 1, LEVEL_COLORS.length - 1)];
+}
+
+export function computeLevel(score: number): LevelInfo {
+  let idx = 0;
+  for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+    if (score >= LEVEL_THRESHOLDS[i].min) {
+      idx = i;
+      break;
+    }
+  }
+  const tier = LEVEL_THRESHOLDS[idx];
+  const nextTier = LEVEL_THRESHOLDS[idx + 1] ?? null;
+  const progress = nextTier
+    ? Math.min(1, (score - tier.min) / (nextTier.min - tier.min))
+    : 1;
+  return {
+    level: idx + 1,
+    title: tier.title,
+    emoji: tier.emoji,
+    score,
+    current: tier.min,
+    next: nextTier?.min ?? null,
+    progress,
+  };
+}
+
+export async function getMyActivitySummary(): Promise<MyActivitySummary> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user)
+    return { catCount: 0, commentCount: 0, alertCount: 0, likesReceived: 0 };
+
+  // 4개 쿼리 병렬
+  const [catsRes, commentsRes, alertsRes, likeSumRes] = await Promise.all([
+    supabase
+      .from("cats")
+      .select("id", { count: "exact", head: true })
+      .eq("caretaker_id", user.id),
+    supabase
+      .from("cat_comments")
+      .select("id", { count: "exact", head: true })
+      .eq("author_id", user.id),
+    supabase
+      .from("cat_comments")
+      .select("id", { count: "exact", head: true })
+      .eq("author_id", user.id)
+      .eq("kind", "alert"),
+    // 내 댓글들의 like_count 합계
+    supabase
+      .from("cat_comments")
+      .select("like_count")
+      .eq("author_id", user.id),
+  ]);
+
+  const likesReceived = (
+    (likeSumRes.data ?? []) as { like_count: number }[]
+  ).reduce((sum, r) => sum + (r.like_count ?? 0), 0);
+
+  return {
+    catCount: catsRes.count ?? 0,
+    commentCount: commentsRes.count ?? 0,
+    alertCount: alertsRes.count ?? 0,
+    likesReceived,
+  };
 }
 
 // ── 본인이 등록한 고양이 삭제 ──
