@@ -21,6 +21,8 @@ import {
   Flag,
   ChevronDown,
   ChevronUp,
+  Stethoscope,
+  Clock,
 } from "lucide-react";
 import AddCatModal from "@/app/components/AddCatModal";
 import ReportModal from "@/app/components/ReportModal";
@@ -44,6 +46,7 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import TitleBadge from "@/app/components/TitleBadge";
+import { listRescueHospitals, type RescueHospital } from "@/lib/hospitals-repo";
 
 declare global {
   interface Window {
@@ -83,6 +86,11 @@ export default function MapPage() {
   const [alertedCats, setAlertedCats] = useState<Set<string>>(new Set());
   const [abuseCardExpanded, setAbuseCardExpanded] = useState(false);
   const [userPos, setUserPos] = useState<{ lat: number; lng: number } | null>(null);
+
+  // 병원 오버레이 (항상 표시)
+  const [hospitals, setHospitals] = useState<RescueHospital[]>([]);
+  const [selectedHospital, setSelectedHospital] = useState<RescueHospital | null>(null);
+  const hospitalOverlaysRef = useRef<any[]>([]);
 
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [pickedCoord, setPickedCoord] = useState<{ lat: number; lng: number } | undefined>();
@@ -326,6 +334,7 @@ export default function MapPage() {
 
   useEffect(() => {
     fetchCats();
+    listRescueHospitals().then(setHospitals);
   }, [fetchCats]);
 
   // ── 카카오 SDK 직접 로드 ──
@@ -346,7 +355,7 @@ export default function MapPage() {
     }
 
     const script = document.createElement("script");
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false`;
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false&libraries=services`;
     script.async = true;
     script.dataset.kakaoSdk = "true";
     script.onload = () => setScriptLoaded(true);
@@ -426,15 +435,25 @@ export default function MapPage() {
       const isAlerted = alertedCats.has(cat.id);
 
       const content = document.createElement("div");
-      // innerHTML에 내삽되므로 엄격 검증. 형식 위반 시 placeholder로 대체 → XSS 차단.
       const photoUrl = sanitizeImageUrl(
         cat.photo_url,
         "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F",
       );
-      const borderColor = isAlerted ? "#D85555" : "#C47E5A";
+
+      // 마커 색상: 경보(빨강) > TNR 필요(주황) > TNR 완료(초록) > 기본(갈색)
+      const tags = cat.tags ?? [];
+      const hasTnrDone = tags.some((t) => t.includes("TNR 완료") || t.includes("이어팁"));
+      const hasTnrNeeded = tags.some((t) => t.includes("TNR 필요"));
+      const borderColor = isAlerted
+        ? "#D85555"
+        : hasTnrNeeded
+          ? "#E88D5A"
+          : hasTnrDone
+            ? "#6B8E6F"
+            : "#C47E5A";
       const shadow = isAlerted
         ? "0 6px 18px rgba(216,85,85,0.55), 0 0 0 2px rgba(216,85,85,0.15)"
-        : "0 4px 12px rgba(0,0,0,0.2)";
+        : `0 4px 12px ${borderColor}55`;
 
       content.innerHTML = `
         <div style="
@@ -495,6 +514,94 @@ export default function MapPage() {
       overlaysRef.current.push(overlay);
     });
   }, [cats, mapReady, isLoggedIn, alertedCats]);
+
+  // ── 병원 마커 (상시 표시, Geocoder로 주소 → 좌표 변환) ──
+  useEffect(() => {
+    hospitalOverlaysRef.current.forEach((ov) => ov.setMap(null));
+    hospitalOverlaysRef.current = [];
+
+    if (!mapReady || !mapInstanceRef.current || !window.kakao) return;
+    if (hospitals.length === 0) return;
+
+    const map = mapInstanceRef.current;
+
+    function placeHospitalMarker(h: RescueHospital, lat: number, lng: number) {
+      const position = new window.kakao.maps.LatLng(lat, lng);
+      const el = document.createElement("div");
+      const label = h.name.length > 14 ? h.name.slice(0, 14) + "…" : h.name;
+      const isPharmacy = (h.tags ?? []).some((t: string) => t.includes("동물약국"));
+      // 약국: 보라+핑크 그라디언트 / 병원: 초록 그라디언트
+      const mc1 = isPharmacy ? "#9B6DD7" : "#22B573";
+      const mc2 = isPharmacy ? "#7B4FBF" : "#1A9A5E";
+      // 약국: 💊 알약 아이콘 / 병원: ✚ 십자가
+      const icon = isPharmacy
+        ? `<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="8" width="18" height="8" rx="4" fill="#fff" opacity="0.95"/>
+            <line x1="12" y1="8" x2="12" y2="16" stroke="${mc1}" stroke-width="1.5" stroke-dasharray="2 1.5"/>
+            <circle cx="7.5" cy="12" r="1.2" fill="${mc2}"/>
+            <circle cx="16.5" cy="12" r="1.2" fill="#E8A0BF"/>
+           </svg>`
+        : `<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z" fill="#fff"/></svg>`;
+      el.innerHTML = `
+        <div style="
+          transform: translate(-50%, -100%);
+          display: flex; flex-direction: column; align-items: center; cursor: pointer;
+        ">
+          <div style="
+            width: ${isPharmacy ? 44 : 48}px; height: ${isPharmacy ? 44 : 48}px;
+            border-radius: ${isPharmacy ? 22 : 14}px;
+            background: linear-gradient(135deg, ${mc1} 0%, ${mc2} 100%);
+            border: 3px solid #fff;
+            box-shadow: 0 6px 20px ${mc1}66, 0 0 0 2px ${mc1}20;
+            display: flex; align-items: center; justify-content: center;
+          ">
+            ${icon}
+          </div>
+          <div style="
+            margin-top: 3px; padding: 2.5px 9px; border-radius: 10px;
+            background: ${mc1}ee; color: #fff;
+            font-size: ${isPharmacy ? 9 : 10}px; font-weight: 800; white-space: nowrap;
+            box-shadow: 0 3px 8px ${mc1}44;
+            letter-spacing: -0.3px;
+          ">${isPharmacy ? "💊 " : ""}${label}</div>
+          <div style="
+            width: 8px; height: 8px;
+            background: ${mc1};
+            transform: rotate(45deg);
+            margin-top: -6px;
+          "></div>
+        </div>
+      `;
+      el.onclick = () => setSelectedHospital(h);
+
+      const overlay = new window.kakao.maps.CustomOverlay({
+        position,
+        content: el,
+        yAnchor: 1,
+        zIndex: 3,
+      });
+      overlay.setMap(map);
+      hospitalOverlaysRef.current.push(overlay);
+    }
+
+    const geocoder = window.kakao.maps?.services
+      ? new window.kakao.maps.services.Geocoder()
+      : null;
+
+    hospitals.forEach((h) => {
+      if (h.lat != null && h.lng != null) {
+        placeHospitalMarker(h, h.lat, h.lng);
+        return;
+      }
+      const addr = h.address || `${h.city} ${h.district}`;
+      if (!geocoder || !addr) return;
+      geocoder.addressSearch(addr, (result: any, status: any) => {
+        if (status === window.kakao.maps.services.Status.OK && result[0]) {
+          placeHospitalMarker(h, parseFloat(result[0].y), parseFloat(result[0].x));
+        }
+      });
+    });
+  }, [hospitals, mapReady]);
 
   const handleCatCreated = (newCat: Cat) => {
     setCats((prev) => [newCat, ...prev]);
@@ -832,8 +939,8 @@ export default function MapPage() {
         </div>
       )}
 
-      {/* + 등록 FAB — 고양이 카드 열려있을 때는 숨김 (Send 버튼과 겹침 방지) */}
-      {!selectedCat && (
+      {/* + 등록 FAB — 고양이 카드 열려있을 때는 숨김 */}
+      {!selectedCat && !selectedHospital && (
         <button
           onClick={handleAddClick}
           className="absolute bottom-6 right-5 w-14 h-14 rounded-[20px] bg-primary flex items-center justify-center fab-shadow active:scale-90 transition-transform z-30"
@@ -842,6 +949,133 @@ export default function MapPage() {
           <Plus size={28} color="#fff" strokeWidth={2.5} />
         </button>
       )}
+
+      {/* 선택된 병원/약국 상세 카드 */}
+      {selectedHospital && (() => {
+        const isPharm = (selectedHospital.tags ?? []).some((t) => t.includes("동물약국"));
+        const accent = isPharm ? "#9B6DD7" : "#22B573";
+        return (
+        <div className="absolute bottom-0 left-0 right-0 z-20 px-4 pb-4 pointer-events-none">
+          <div
+            className="relative pointer-events-auto animate-slide-up overflow-hidden"
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 28,
+              boxShadow: `0 -4px 24px ${accent}26, 0 2px 8px rgba(0,0,0,0.06)`,
+              border: `1.5px solid ${accent}33`,
+            }}
+          >
+            <button
+              onClick={() => setSelectedHospital(null)}
+              className="absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform shadow-md"
+            >
+              <X size={18} className="text-text-sub" />
+            </button>
+
+            {/* 헤더 */}
+            <div className="px-5 pt-5 pb-3">
+              <div className="flex items-center gap-3 mb-2">
+                <div
+                  className="w-12 h-12 flex items-center justify-center shrink-0"
+                  style={{
+                    borderRadius: isPharm ? 24 : 16,
+                    background: `linear-gradient(135deg, ${accent} 0%, ${accent}DD 100%)`,
+                    boxShadow: `0 6px 14px ${accent}55`,
+                  }}
+                >
+                  {isPharm ? (
+                    <span style={{ fontSize: 22 }}>💊</span>
+                  ) : (
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z" fill="#fff"/>
+                    </svg>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-[16px] font-extrabold text-text-main leading-tight">
+                    {selectedHospital.name}
+                  </h3>
+                  <p className="text-[11px] text-text-sub mt-0.5">
+                    {selectedHospital.city} {selectedHospital.district}
+                  </p>
+                </div>
+              </div>
+
+              {/* 태그 */}
+              {selectedHospital.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1 mb-3">
+                  {selectedHospital.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-md"
+                      style={{ backgroundColor: `${accent}18`, color: accent }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* 정보 리스트 */}
+              <div className="space-y-2">
+                {selectedHospital.address && (
+                  <div className="flex items-start gap-2.5">
+                    <MapPin size={14} className="shrink-0 mt-0.5" style={{ color: accent }} />
+                    <span className="text-[13px] text-text-main">{selectedHospital.address}</span>
+                  </div>
+                )}
+                {selectedHospital.phone && (
+                  <div className="flex items-center gap-2.5">
+                    <Phone size={14} className="shrink-0" style={{ color: accent }} />
+                    <a
+                      href={`tel:${selectedHospital.phone}`}
+                      className="text-[13px] font-semibold"
+                      style={{ color: accent }}
+                    >
+                      {selectedHospital.phone}
+                    </a>
+                  </div>
+                )}
+                {selectedHospital.hours && (
+                  <div className="flex items-center gap-2.5">
+                    <Clock size={14} className="shrink-0" style={{ color: accent }} />
+                    <span className="text-[13px] text-text-main">{selectedHospital.hours}</span>
+                  </div>
+                )}
+                {selectedHospital.note && (
+                  <div
+                    className="mt-2 px-3 py-2.5 rounded-xl text-[12px] leading-relaxed"
+                    style={{ backgroundColor: `${accent}10`, color: `${accent}DD` }}
+                  >
+                    {selectedHospital.note}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* 하단 전화 버튼 */}
+            {selectedHospital.phone && (
+              <div
+                className="px-5 py-3 border-t"
+                style={{ borderColor: `${accent}15` }}
+              >
+                <a
+                  href={`tel:${selectedHospital.phone}`}
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-[14px] font-bold text-white active:scale-[0.97] transition-transform"
+                  style={{
+                    background: `linear-gradient(135deg, ${accent} 0%, ${accent}DD 100%)`,
+                    boxShadow: `0 6px 18px ${accent}55`,
+                  }}
+                >
+                  <Phone size={16} strokeWidth={2.5} />
+                  {isPharm ? "약국 전화하기" : "병원 전화하기"}
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+        );
+      })()}
 
       {/* 선택된 고양이 카드 */}
       {selectedCat && (

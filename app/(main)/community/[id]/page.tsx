@@ -13,10 +13,14 @@ import {
   User,
   Flag,
   Loader2,
+  Pin,
 } from "lucide-react";
 import type { Post } from "@/lib/types";
 import { CATEGORY_MAP } from "@/lib/types";
 import { getPostById, formatRelativeTime, incrementPostViewCount } from "@/lib/posts-repo";
+import { getLevelColor } from "@/lib/cats-repo";
+import { isCurrentUserAdmin } from "@/lib/news-repo";
+import { createClient } from "@/lib/supabase/client";
 import {
   listPostComments,
   createPostComment,
@@ -44,6 +48,9 @@ export default function PostDetailPage({
   const [submitting, setSubmitting] = useState(false);
   const [commentError, setCommentError] = useState("");
 
+  // admin 여부
+  const [isAdmin, setIsAdmin] = useState(false);
+
   // 신고 모달
   const [reportTarget, setReportTarget] = useState<{
     type: "post" | "post_comment";
@@ -55,12 +62,11 @@ export default function PostDetailPage({
     setMounted(true);
     getPostById(id).then((found) => {
       if (found) {
-        // 낙관적으로 조회수 +1 표시
         setPost({ ...found, viewCount: found.viewCount + 1 });
-        // 서버 반영
         incrementPostViewCount(id).catch(() => {});
       }
     });
+    isCurrentUserAdmin().then(setIsAdmin);
 
     // 댓글 로드
     setCommentsLoading(true);
@@ -123,6 +129,39 @@ export default function PostDetailPage({
         >
           {cat.emoji} {cat.label}
         </span>
+
+        {post.isPinned && (
+          <span
+            className="text-[10px] font-bold px-2 py-1 rounded-lg flex items-center gap-1"
+            style={{ backgroundColor: "#C9A96120", color: "#C9A961" }}
+          >
+            <Pin size={10} /> 공지
+          </span>
+        )}
+
+        {isAdmin && (
+          <button
+            className="ml-auto text-[11px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform flex items-center gap-1"
+            style={{
+              backgroundColor: post.isPinned ? "#FBEAEA" : "#EEE8E0",
+              color: post.isPinned ? "#D85555" : "#A38E7A",
+            }}
+            onClick={async () => {
+              const supabase = createClient();
+              const next = !post.isPinned;
+              const { error } = await supabase
+                .from("posts")
+                .update({ is_pinned: next })
+                .eq("id", post.id);
+              if (!error) {
+                setPost({ ...post, isPinned: next });
+              }
+            }}
+          >
+            <Pin size={11} />
+            {post.isPinned ? "공지 해제" : "공지 고정"}
+          </button>
+        )}
       </div>
 
       {/* ── 게시글 본문 ── */}
@@ -141,6 +180,18 @@ export default function PostDetailPage({
               <p className="text-[13px] font-semibold text-text-main">
                 {post.authorName}
               </p>
+              {post.authorLevel && (
+                <span
+                  className="text-[9px] font-extrabold px-1.5 py-[1px] rounded-md tabular-nums"
+                  style={{
+                    backgroundColor: getLevelColor(post.authorLevel),
+                    color: "#FFFFFF",
+                    boxShadow: `0 1px 3px ${getLevelColor(post.authorLevel)}55`,
+                  }}
+                >
+                  Lv.{post.authorLevel}
+                </span>
+              )}
               <TitleBadge titleId={post.authorTitle} size="sm" />
             </div>
             <div className="flex items-center gap-1.5 text-[11px] text-text-light">
@@ -243,6 +294,18 @@ export default function PostDetailPage({
                     <span className="text-[13px] font-semibold text-text-main">
                       {c.author_name ?? "익명"}
                     </span>
+                    {c.author_level && (
+                      <span
+                        className="text-[9px] font-extrabold px-1.5 py-[1px] rounded-md tabular-nums"
+                        style={{
+                          backgroundColor: getLevelColor(c.author_level),
+                          color: "#FFFFFF",
+                          boxShadow: `0 1px 3px ${getLevelColor(c.author_level)}55`,
+                        }}
+                      >
+                        Lv.{c.author_level}
+                      </span>
+                    )}
                     <TitleBadge titleId={c.author_title} />
                   </div>
                   <div className="flex items-center gap-1.5">

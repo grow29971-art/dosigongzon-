@@ -17,11 +17,14 @@ import {
   MessagesSquare,
   ThumbsUp,
   ThumbsDown,
+  Pin,
+  Megaphone,
 } from "lucide-react";
 import type { Post, PostCategory } from "@/lib/types";
 import { CATEGORY_MAP } from "@/lib/types";
 import { listPosts, formatRelativeTime, updatePostVote } from "@/lib/posts-repo";
 import TitleBadge from "@/app/components/TitleBadge";
+import { getLevelColor } from "@/lib/cats-repo";
 import {
   getMyPostVotes,
   setMyPostVote,
@@ -195,16 +198,57 @@ export default function CategoryPage() {
         </div>
       </div>
 
+      {/* ── 공지사항 (pinned) ── */}
+      {(() => {
+        const pinned = posts.filter((p) => p.isPinned);
+        if (pinned.length === 0) return null;
+        return (
+          <div className="px-4 mb-3">
+            <div className="flex items-center gap-1.5 mb-2 px-1">
+              <Megaphone size={13} style={{ color: meta.color }} />
+              <span className="text-[12px] font-extrabold" style={{ color: meta.color }}>
+                공지사항
+              </span>
+            </div>
+            <div
+              className="overflow-hidden"
+              style={{
+                borderRadius: 16,
+                border: `1.5px solid ${meta.color}33`,
+                background: `linear-gradient(135deg, ${meta.color}08 0%, ${meta.color}03 100%)`,
+              }}
+            >
+              {pinned.map((post, i) => (
+                <Link
+                  key={post.id}
+                  href={`/community/${post.id}`}
+                  className="flex items-center gap-3 px-4 py-3 active:bg-black/[0.02] transition-colors"
+                  style={i < pinned.length - 1 ? { borderBottom: `1px solid ${meta.color}15` } : {}}
+                >
+                  <Pin size={12} style={{ color: meta.color }} className="shrink-0" />
+                  <p className="text-[13px] font-bold text-text-main truncate flex-1">
+                    {post.title}
+                  </p>
+                  <span className="text-[10px] text-text-light shrink-0">
+                    {formatRelativeTime(post.createdAt)}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
+
       {/* ── 글 목록 ── */}
       <div className="px-4 space-y-3">
-        {posts.length === 0 ? (
+        {posts.filter((p) => !p.isPinned).length === 0 && posts.filter((p) => p.isPinned).length === 0 ? (
           <div className="flex flex-col items-center pt-16 text-text-light">
             <meta.Icon size={48} strokeWidth={1.2} style={{ color: meta.color, opacity: 0.3 }} />
             <p className="text-[14px] mt-4 text-text-sub font-semibold">아직 글이 없어요</p>
             <p className="text-[12px] mt-1">첫 번째 글을 작성해보세요</p>
           </div>
         ) : (
-          posts.map((post) => {
+          posts.filter((p) => !p.isPinned).map((post) => {
             const catInfo = CATEGORY_MAP[post.category];
             return (
               <Link
@@ -275,6 +319,18 @@ export default function CategoryPage() {
                         <span className="text-[12px] font-semibold text-text-main">
                           {post.authorName}
                         </span>
+                        {post.authorLevel && (
+                          <span
+                            className="text-[9px] font-extrabold px-1.5 py-[1px] rounded-md tabular-nums"
+                            style={{
+                              backgroundColor: getLevelColor(post.authorLevel),
+                              color: "#FFFFFF",
+                              boxShadow: `0 1px 3px ${getLevelColor(post.authorLevel)}55`,
+                            }}
+                          >
+                            Lv.{post.authorLevel}
+                          </span>
+                        )}
                         <TitleBadge titleId={post.authorTitle} />
                         {post.region && (
                           <span className="text-[10px] text-text-light flex items-center gap-0.5">

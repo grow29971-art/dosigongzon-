@@ -151,11 +151,12 @@ export default function CommunityPage() {
   const countByCat = (key: PostCategory) =>
     posts.filter((p) => p.category === key).length;
 
-  // 최근 게시글 3건 (모든 카테고리)
-  const recentPosts = [...posts]
+  // 인기 게시글 3건 — 좋아요 + 댓글 + 조회수 가중 합산
+  const popularPosts = [...posts]
     .sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        (b.likeCount * 3 + b.commentCount * 2 + b.viewCount)
+        - (a.likeCount * 3 + a.commentCount * 2 + a.viewCount),
     )
     .slice(0, 3);
 
@@ -233,17 +234,18 @@ export default function CommunityPage() {
         <CategoryCardItem card={CATEGORIES[4]} count={countByCat("free")} />
       </div>
 
-      {/* ── 최근 글 ── */}
-      {recentPosts.length > 0 && (
+      {/* ── 인기 글 ── */}
+      {popularPosts.length > 0 && (
         <div className="mt-6">
           <div className="flex items-center gap-2 mb-3 px-1">
-            <div className="w-1 h-4 rounded-full bg-primary" />
+            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C9A961" }} />
             <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
-              최근 글
+              인기 글
             </h2>
+            <TrendingUp size={13} style={{ color: "#C9A961" }} />
           </div>
           <div className="space-y-2.5">
-            {recentPosts.map((post) => {
+            {popularPosts.map((post) => {
               const cat = CATEGORIES.find((c) => c.key === post.category);
               if (!cat) return null;
               return (

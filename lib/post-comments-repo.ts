@@ -4,7 +4,7 @@
 // ══════════════════════════════════════════
 
 import { createClient } from "@/lib/supabase/client";
-import { getDisplayName } from "@/lib/cats-repo";
+import { getDisplayName, getMyActivitySummary, computeScore, computeLevel } from "@/lib/cats-repo";
 
 export interface PostComment {
   id: string;
@@ -13,6 +13,7 @@ export interface PostComment {
   author_name: string | null;
   author_avatar_url: string | null;
   author_title: string | null;
+  author_level: number | null;
   body: string;
   created_at: string;
 }
@@ -49,6 +50,14 @@ export async function createPostComment(
   const equippedTitle =
     (user.user_metadata?.equipped_title as string | undefined) ?? null;
 
+  let authorLevel: number | null = null;
+  try {
+    const summary = await getMyActivitySummary();
+    authorLevel = computeLevel(computeScore(summary)).level;
+  } catch {
+    authorLevel = null;
+  }
+
   const { data, error } = await supabase
     .from("post_comments")
     .insert({
@@ -57,6 +66,7 @@ export async function createPostComment(
       author_name: getDisplayName(user),
       author_avatar_url: user.user_metadata?.avatar_url ?? null,
       author_title: equippedTitle,
+      author_level: authorLevel,
       body: trimmed,
     })
     .select()

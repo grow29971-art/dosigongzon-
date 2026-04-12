@@ -5,7 +5,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { isSafeImageUrl } from "@/lib/url-validate";
 import type { Post, PostCategory } from "@/lib/types";
-import { getDisplayName } from "@/lib/cats-repo";
+import { getDisplayName, getMyActivitySummary, computeScore, computeLevel } from "@/lib/cats-repo";
 
 // DB row → Post 변환
 interface PostRow {
@@ -16,6 +16,7 @@ interface PostRow {
   author_id: string | null;
   author_name: string | null;
   author_title: string | null;
+  author_level: number | null;
   region: string | null;
   images: string[];
   is_pinned: boolean;
@@ -36,6 +37,7 @@ function rowToPost(row: PostRow): Post {
     authorId: row.author_id ?? "unknown",
     authorName: row.author_name ?? "익명",
     authorTitle: row.author_title ?? null,
+    authorLevel: row.author_level ?? null,
     region: row.region ?? undefined,
     images: row.images ?? [],
     isPinned: row.is_pinned,
@@ -108,6 +110,14 @@ export async function createPost(input: CreatePostInput): Promise<Post> {
   const equippedTitle =
     (user.user_metadata?.equipped_title as string | undefined) ?? null;
 
+  let authorLevel: number | null = null;
+  try {
+    const summary = await getMyActivitySummary();
+    authorLevel = computeLevel(computeScore(summary)).level;
+  } catch {
+    authorLevel = null;
+  }
+
   const { data, error } = await supabase
     .from("posts")
     .insert({
@@ -117,6 +127,7 @@ export async function createPost(input: CreatePostInput): Promise<Post> {
       author_id: user.id,
       author_name: getDisplayName(user),
       author_title: equippedTitle,
+      author_level: authorLevel,
       region: input.region?.trim() || null,
       images: safeImages,
     })

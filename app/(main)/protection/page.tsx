@@ -10,6 +10,7 @@ import {
   Cat,
   Hand,
   ChevronRight,
+  Pill,
 } from "lucide-react";
 
 /* ═══ 카드 데이터 ═══ */
@@ -112,6 +113,18 @@ const cards: {
     href: "/protection/trapping-guide",
     full: true,
   },
+  {
+    title: "약품 가이드",
+    subtitle: "동물약국 영양제 · 구충제 · 상처 관리",
+    Icon: Pill,
+    iconBg: "#9B6DD7",
+    iconColor: "#FFFFFF",
+    glowColor: "155,109,215",
+    type: "link",
+    href: "/protection/pharmacy-guide",
+    wide: true,
+    highlight: true,
+  },
 ];
 
 /* ═══ 카드 컴포넌트 ═══ */
@@ -187,6 +200,7 @@ export default function ProtectionPage() {
   const row5a = cards.slice(5, 6);
   const row5b = cards.slice(6, 7);
   const row6 = cards.slice(7, 8);
+  const row7 = cards.slice(8, 9);
 
   return (
     <div className="px-4 pt-14 pb-8">
@@ -239,6 +253,10 @@ export default function ProtectionPage() {
         </div>
 
         {row6.map((c) => (
+          <InfoCard key={c.title} card={c} />
+        ))}
+
+        {row7.map((c) => (
           <InfoCard key={c.title} card={c} />
         ))}
       </div>

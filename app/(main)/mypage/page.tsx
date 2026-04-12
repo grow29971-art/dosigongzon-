@@ -738,6 +738,64 @@ export default function MyPage() {
                   </div>
                   <ChevronRight size={16} className="shrink-0" style={{ color: "#6B8E6F", opacity: 0.7 }} />
                 </Link>
+                <Link
+                  href="/admin/users"
+                  className="flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
+                  style={{
+                    background: "#FFFFFF",
+                    borderRadius: 16,
+                    boxShadow: "0 4px 14px rgba(74,123,168,0.10), 0 1px 2px rgba(0,0,0,0.02)",
+                    border: "1px solid rgba(0,0,0,0.04)",
+                  }}
+                >
+                  <div
+                    className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
+                    style={{
+                      background: "linear-gradient(135deg, #4A7BA8 0%, #3A6B98 100%)",
+                      boxShadow: "0 5px 12px rgba(74,123,168,0.35), inset 0 1px 0 rgba(255,255,255,0.4)",
+                    }}
+                  >
+                    <User size={20} color="#fff" strokeWidth={2.3} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+                      가입자 관리
+                    </p>
+                    <p className="text-[11px] text-text-sub mt-0.5">
+                      전체 회원 조회 · 정지 현황
+                    </p>
+                  </div>
+                  <ChevronRight size={16} className="shrink-0" style={{ color: "#4A7BA8", opacity: 0.7 }} />
+                </Link>
+                <Link
+                  href="/admin/pharmacy-guide"
+                  className="flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
+                  style={{
+                    background: "#FFFFFF",
+                    borderRadius: 16,
+                    boxShadow: "0 4px 14px rgba(155,109,215,0.10), 0 1px 2px rgba(0,0,0,0.02)",
+                    border: "1px solid rgba(0,0,0,0.04)",
+                  }}
+                >
+                  <div
+                    className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0 text-xl"
+                    style={{
+                      background: "linear-gradient(135deg, #9B6DD7 0%, #7B4FBF 100%)",
+                      boxShadow: "0 5px 12px rgba(155,109,215,0.35), inset 0 1px 0 rgba(255,255,255,0.4)",
+                    }}
+                  >
+                    💊
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+                      약품 가이드 관리
+                    </p>
+                    <p className="text-[11px] text-text-sub mt-0.5">
+                      약품·영양제 정보 추가·수정·삭제
+                    </p>
+                  </div>
+                  <ChevronRight size={16} className="shrink-0" style={{ color: "#9B6DD7", opacity: 0.7 }} />
+                </Link>
               </div>
             </div>
           )}

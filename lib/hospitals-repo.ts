@@ -17,6 +17,8 @@ export interface RescueHospital {
   note: string | null;
   tags: string[];
   pinned: boolean;
+  lat: number | null;
+  lng: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -24,7 +26,10 @@ export interface RescueHospital {
 export type RescueHospitalInput = Omit<
   RescueHospital,
   "id" | "created_at" | "updated_at"
->;
+> & {
+  lat?: number | null;
+  lng?: number | null;
+};
 
 // ── 읽기 ──
 export async function listRescueHospitals(): Promise<RescueHospital[]> {

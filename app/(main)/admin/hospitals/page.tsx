@@ -39,6 +39,8 @@ const EMPTY: RescueHospitalInput = {
   note: null,
   tags: [],
   pinned: false,
+  lat: null,
+  lng: null,
 };
 
 export default function AdminHospitalsPage() {
@@ -95,6 +97,8 @@ export default function AdminHospitalsPage() {
       note: item.note,
       tags: item.tags,
       pinned: item.pinned,
+      lat: item.lat,
+      lng: item.lng,
     });
     setTagsInput(item.tags.join(", "));
     setEditingId(item.id);
