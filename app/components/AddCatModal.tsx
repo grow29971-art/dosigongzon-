@@ -43,6 +43,8 @@ export default function AddCatModal({
 
   const [name, setName] = useState("");
   const [region, setRegion] = useState("");
+  const [detectedGu, setDetectedGu] = useState("");
+  const [dongList, setDongList] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -78,9 +80,39 @@ export default function AddCatModal({
       setLng("");
       setError("");
       setSubmitting(false);
+      setDetectedGu("");
+      setDongList([]);
     }
     return () => { document.body.style.overflow = ""; };
   }, [open, initialLat, initialLng]);
+
+  // 좌표 변경 시 역지오코딩 → 구/동 자동 감지
+  useEffect(() => {
+    if (!open) return;
+    const latNum = parseFloat(lat);
+    const lngNum = parseFloat(lng);
+    if (!latNum || !lngNum || latNum < 33 || latNum > 39 || lngNum < 124 || lngNum > 132) return;
+    if (!window.kakao?.maps?.services) return;
+
+    const geocoder = new window.kakao.maps.services.Geocoder();
+    geocoder.coord2RegionCode(lngNum, latNum, (result: any, status: any) => {
+      if (status !== window.kakao.maps.services.Status.OK || !result[0]) return;
+      const item = result[0];
+      const gu = item.region_2depth_name || "";
+      const dong = item.region_3depth_name || "";
+
+      setDetectedGu(gu);
+      if (dong) {
+        setRegion(dong);
+        setDongList((prev) => {
+          const set = new Set(prev);
+          set.add(dong);
+          return Array.from(set);
+        });
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lat, lng, open]);
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -264,17 +296,47 @@ export default function AddCatModal({
             />
           </div>
 
-          {/* 동네 */}
+          {/* 동네 (역지오코딩 자동 감지 + 수동 입력) */}
           <div>
-            <label className="text-[12px] font-bold text-text-main mb-2 block">동네</label>
-            <input
-              type="text"
-              value={region}
-              onChange={(e) => setRegion(e.target.value)}
-              placeholder="예: 만수동, 구월동"
-              maxLength={20}
-              className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[14px] text-text-main outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted"
-            />
+            <label className="text-[12px] font-bold text-text-main mb-2 block">
+              동네
+              {detectedGu && (
+                <span className="text-[10px] font-normal text-text-light ml-2">
+                  📍 {detectedGu}
+                </span>
+              )}
+            </label>
+            {dongList.length > 0 ? (
+              <div className="flex gap-2">
+                <select
+                  value={region}
+                  onChange={(e) => setRegion(e.target.value)}
+                  className="flex-1 px-4 py-3 rounded-2xl bg-surface-alt text-[14px] text-text-main outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all appearance-none"
+                  style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23A38E7A' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 16px center" }}
+                >
+                  {dongList.map((d) => (
+                    <option key={d} value={d}>{d}</option>
+                  ))}
+                </select>
+                <input
+                  type="text"
+                  value={region}
+                  onChange={(e) => setRegion(e.target.value)}
+                  placeholder="직접 입력"
+                  maxLength={20}
+                  className="w-28 px-3 py-3 rounded-2xl bg-surface-alt text-[13px] text-text-main outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted"
+                />
+              </div>
+            ) : (
+              <input
+                type="text"
+                value={region}
+                onChange={(e) => setRegion(e.target.value)}
+                placeholder="위치를 먼저 지정하면 자동 감지돼요"
+                maxLength={20}
+                className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[14px] text-text-main outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted"
+              />
+            )}
           </div>
 
           {/* 위치 (위도/경도) */}

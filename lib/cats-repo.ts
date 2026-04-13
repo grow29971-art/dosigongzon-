@@ -856,6 +856,22 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
   };
 }
 
+// ── 고양이 정보 수정 (본인 또는 admin) ──
+export async function updateCat(
+  catId: string,
+  input: Partial<Pick<Cat, "name" | "description" | "region" | "tags" | "photo_url">>,
+): Promise<Cat> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("cats")
+    .update(input)
+    .eq("id", catId)
+    .select()
+    .single();
+  if (error) throw new Error(`수정 실패: ${error.message}`);
+  return data as Cat;
+}
+
 // ── 본인이 등록한 고양이 삭제 ──
 export async function deleteCat(catId: string): Promise<void> {
   const supabase = createClient();

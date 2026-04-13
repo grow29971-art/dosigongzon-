@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   Eye,
-  Heart,
   MessageCircle,
   Send,
   Clock,
@@ -14,11 +13,14 @@ import {
   Flag,
   Loader2,
   Pin,
+  ThumbsUp,
+  ThumbsDown,
 } from "lucide-react";
 import type { Post } from "@/lib/types";
 import { CATEGORY_MAP } from "@/lib/types";
-import { getPostById, formatRelativeTime, incrementPostViewCount } from "@/lib/posts-repo";
+import { getPostById, formatRelativeTime, incrementPostViewCount, updatePostVote } from "@/lib/posts-repo";
 import { getLevelColor } from "@/lib/cats-repo";
+import { getMyPostVotes, setMyPostVote, type PostVote } from "@/lib/store";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -29,6 +31,7 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import ReportModal from "@/app/components/ReportModal";
 import TitleBadge from "@/app/components/TitleBadge";
+import SendDMButton from "@/app/components/SendDMButton";
 
 export default function PostDetailPage({
   params,
@@ -50,6 +53,47 @@ export default function PostDetailPage({
 
   // admin 여부
   const [isAdmin, setIsAdmin] = useState(false);
+
+  // 좋아요/싫어요
+  const [myVote, setMyVote] = useState<PostVote | 0>(0);
+
+  useEffect(() => {
+    const votes = getMyPostVotes();
+    setMyVote(votes[id] ?? 0);
+  }, [id]);
+
+  const handleVote = async (next: PostVote) => {
+    if (!post) return;
+    const prev = myVote;
+    const newVote: PostVote | 0 = prev === next ? 0 : next;
+
+    let dLike: -1 | 0 | 1 = 0;
+    let dDislike: -1 | 0 | 1 = 0;
+    if (prev === 1) dLike = -1;
+    if (prev === -1) dDislike = -1;
+    if (newVote === 1) dLike = (dLike + 1) as -1 | 0 | 1;
+    if (newVote === -1) dDislike = (dDislike + 1) as -1 | 0 | 1;
+
+    setPost({
+      ...post,
+      likeCount: Math.max(0, post.likeCount + dLike),
+      dislikeCount: Math.max(0, post.dislikeCount + dDislike),
+    });
+    setMyVote(newVote);
+    setMyPostVote(id, newVote);
+
+    try {
+      await updatePostVote(id, dLike, dDislike);
+    } catch {
+      setPost({
+        ...post,
+        likeCount: Math.max(0, post.likeCount - dLike),
+        dislikeCount: Math.max(0, post.dislikeCount - dDislike),
+      });
+      setMyVote(prev);
+      setMyPostVote(id, prev);
+    }
+  };
 
   // 신고 모달
   const [reportTarget, setReportTarget] = useState<{
@@ -140,27 +184,46 @@ export default function PostDetailPage({
         )}
 
         {isAdmin && (
-          <button
-            className="ml-auto text-[11px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform flex items-center gap-1"
-            style={{
-              backgroundColor: post.isPinned ? "#FBEAEA" : "#EEE8E0",
-              color: post.isPinned ? "#D85555" : "#A38E7A",
-            }}
-            onClick={async () => {
-              const supabase = createClient();
-              const next = !post.isPinned;
-              const { error } = await supabase
-                .from("posts")
-                .update({ is_pinned: next })
-                .eq("id", post.id);
-              if (!error) {
-                setPost({ ...post, isPinned: next });
-              }
-            }}
-          >
-            <Pin size={11} />
-            {post.isPinned ? "공지 해제" : "공지 고정"}
-          </button>
+          <div className="ml-auto flex items-center gap-1.5">
+            <button
+              className="text-[11px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform flex items-center gap-1"
+              style={{
+                backgroundColor: post.isPinned ? "#FBEAEA" : "#EEE8E0",
+                color: post.isPinned ? "#D85555" : "#A38E7A",
+              }}
+              onClick={async () => {
+                const supabase = createClient();
+                const next = !post.isPinned;
+                const { error } = await supabase
+                  .from("posts")
+                  .update({ is_pinned: next })
+                  .eq("id", post.id);
+                if (!error) {
+                  setPost({ ...post, isPinned: next });
+                }
+              }}
+            >
+              <Pin size={11} />
+              {post.isPinned ? "공지 해제" : "공지 고정"}
+            </button>
+            <button
+              className="text-[11px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform flex items-center gap-1"
+              style={{ backgroundColor: "#FBEAEA", color: "#D85555" }}
+              onClick={async () => {
+                if (!confirm(`"${post.title}" 글을 삭제할까요?`)) return;
+                const supabase = createClient();
+                const { error } = await supabase.from("posts").delete().eq("id", post.id);
+                if (error) {
+                  alert("삭제 실패: " + error.message);
+                } else {
+                  router.push("/community");
+                }
+              }}
+            >
+              <Flag size={11} />
+              삭제
+            </button>
+          </div>
         )}
       </div>
 
@@ -172,9 +235,14 @@ export default function PostDetailPage({
 
         {/* 작성자 정보 */}
         <div className="flex items-center gap-2 mt-3 mb-5">
-          <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center">
-            <User size={16} className="text-primary" />
-          </div>
+          {post.authorAvatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={post.authorAvatarUrl} alt="" className="w-8 h-8 rounded-full object-cover shrink-0" />
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center">
+              <User size={16} className="text-primary" />
+            </div>
+          )}
           <div>
             <div className="flex items-center gap-1.5">
               <p className="text-[13px] font-semibold text-text-main">
@@ -193,6 +261,7 @@ export default function PostDetailPage({
                 </span>
               )}
               <TitleBadge titleId={post.authorTitle} size="sm" />
+              <SendDMButton userId={post.authorId} userName={post.authorName} currentUserId={user?.id} size="sm" />
             </div>
             <div className="flex items-center gap-1.5 text-[11px] text-text-light">
               <Clock size={11} />
@@ -224,16 +293,42 @@ export default function PostDetailPage({
         </div>
 
         {/* 반응 바 */}
-        <div className="flex items-center gap-4 mt-4 px-1 text-text-light">
-          <button className="flex items-center gap-1.5 text-[13px] active:scale-95 transition-transform">
-            <Heart size={18} /> <span>{post.likeCount}</span>
+        <div className="flex items-center gap-3 mt-4 px-1">
+          {/* 좋아요 */}
+          <button
+            onClick={() => handleVote(1)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold active:scale-95 transition-all"
+            style={{
+              backgroundColor: myVote === 1 ? cat.color : "#FFFFFF",
+              border: `1.5px solid ${myVote === 1 ? cat.color : "#E3DCD3"}`,
+              color: myVote === 1 ? "#FFFFFF" : cat.color,
+            }}
+          >
+            <ThumbsUp size={15} strokeWidth={2.2} fill={myVote === 1 ? "#FFFFFF" : "none"} />
+            {post.likeCount}
           </button>
-          <span className="flex items-center gap-1.5 text-[13px]">
-            <Eye size={18} /> <span>{post.viewCount}</span>
+
+          {/* 싫어요 */}
+          <button
+            onClick={() => handleVote(-1)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold active:scale-95 transition-all"
+            style={{
+              backgroundColor: myVote === -1 ? "#A38E7A" : "#FFFFFF",
+              border: `1.5px solid ${myVote === -1 ? "#A38E7A" : "#E3DCD3"}`,
+              color: myVote === -1 ? "#FFFFFF" : "#A38E7A",
+            }}
+          >
+            <ThumbsDown size={15} strokeWidth={2.2} fill={myVote === -1 ? "#FFFFFF" : "none"} />
+            {post.dislikeCount}
+          </button>
+
+          <span className="flex items-center gap-1 text-text-light text-[13px]">
+            <Eye size={15} /> {post.viewCount}
           </span>
-          <span className="flex items-center gap-1.5 text-[13px]">
-            <MessageCircle size={18} /> <span>{comments.length}</span>
+          <span className="flex items-center gap-1 text-text-light text-[13px]">
+            <MessageCircle size={15} /> {comments.length}
           </span>
+
           <button
             type="button"
             onClick={() =>
@@ -243,13 +338,8 @@ export default function PostDetailPage({
                 snapshot: `${post.title} — ${post.content.slice(0, 150)}`,
               })
             }
-            className="ml-auto flex items-center gap-1 px-2.5 py-1 rounded-lg text-[12px] active:scale-95 transition-transform"
-            style={{
-              backgroundColor: "#FFFFFF",
-              border: "1px solid #E3DCD3",
-              color: "#A38E7A",
-            }}
-            aria-label="게시글 신고"
+            className="ml-auto flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] active:scale-95 transition-transform"
+            style={{ backgroundColor: "#FFFFFF", border: "1px solid #E3DCD3", color: "#A38E7A" }}
           >
             <Flag size={12} strokeWidth={2.2} />
             신고
@@ -307,6 +397,7 @@ export default function PostDetailPage({
                       </span>
                     )}
                     <TitleBadge titleId={c.author_title} />
+                    <SendDMButton userId={c.author_id} userName={c.author_name} currentUserId={user?.id} />
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="text-[11px] text-text-light">

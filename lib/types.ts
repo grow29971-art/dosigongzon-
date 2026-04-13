@@ -37,6 +37,7 @@ export interface Post {
   content: string;
   authorId: string;
   authorName: string;
+  authorAvatarUrl?: string | null;
   authorTitle?: string | null;
   authorLevel?: number | null;
   region?: string;

@@ -239,171 +239,86 @@ export default function CategoryPage() {
         );
       })()}
 
-      {/* ── 글 목록 ── */}
-      <div className="px-4 space-y-3">
+      {/* ── 글 목록 (간결 리스트) ── */}
+      <div
+        className="mx-4 overflow-hidden"
+        style={{
+          background: "#FFFFFF",
+          borderRadius: 20,
+          boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
+          border: "1px solid rgba(0,0,0,0.04)",
+        }}
+      >
         {posts.filter((p) => !p.isPinned).length === 0 && posts.filter((p) => p.isPinned).length === 0 ? (
-          <div className="flex flex-col items-center pt-16 text-text-light">
+          <div className="flex flex-col items-center py-16 text-text-light">
             <meta.Icon size={48} strokeWidth={1.2} style={{ color: meta.color, opacity: 0.3 }} />
             <p className="text-[14px] mt-4 text-text-sub font-semibold">아직 글이 없어요</p>
             <p className="text-[12px] mt-1">첫 번째 글을 작성해보세요</p>
           </div>
         ) : (
-          posts.filter((p) => !p.isPinned).map((post) => {
-            const catInfo = CATEGORY_MAP[post.category];
-            return (
-              <Link
-                key={post.id}
-                href={`/community/${post.id}`}
-                className="block active:scale-[0.99] transition-transform"
-              >
-                <article
-                  className="overflow-hidden"
-                  style={{
-                    background: "#FFFFFF",
-                    borderRadius: 20,
-                    boxShadow: "0 4px 16px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.03)",
-                    border: "1px solid rgba(0,0,0,0.04)",
-                  }}
-                >
-                  {/* 사진 */}
-                  {post.images.length === 0 ? (
-                    <div
-                      className="h-36 flex items-center justify-center relative"
-                      style={{
-                        background: `linear-gradient(135deg, ${meta.color}18 0%, ${meta.color}08 100%)`,
-                      }}
-                    >
-                      <ImageIcon size={28} strokeWidth={1.5} style={{ color: meta.color, opacity: 0.4 }} />
-                    </div>
+          posts.filter((p) => !p.isPinned).map((post, idx, arr) => (
+            <Link
+              key={post.id}
+              href={`/community/${post.id}`}
+              className="flex items-center gap-3 px-4 py-3 active:bg-black/[0.02] transition-colors"
+              style={idx < arr.length - 1 ? { borderBottom: "1px solid rgba(0,0,0,0.04)" } : {}}
+            >
+              {/* 썸네일 (이미지 있을 때만) */}
+              {post.images.length > 0 ? (
+                <div className="relative shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={post.images[0]} alt="" className="w-14 h-14 rounded-xl object-cover" />
+                  {post.images.length > 1 && (
+                    <span className="absolute bottom-0.5 right-0.5 text-[8px] font-bold px-1 rounded-md" style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}>
+                      +{post.images.length - 1}
+                    </span>
+                  )}
+                </div>
+              ) : null}
+
+              {/* 본문 */}
+              <div className="flex-1 min-w-0">
+                <h3 className="text-[14px] font-bold text-text-main leading-snug truncate">
+                  {post.title}
+                </h3>
+                <p className="text-[11.5px] text-text-sub truncate mt-0.5">
+                  {post.content}
+                </p>
+                <div className="flex items-center gap-2 mt-1.5">
+                  {/* 아바타 */}
+                  {post.authorAvatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={post.authorAvatarUrl} alt="" className="w-4 h-4 rounded-full object-cover" />
                   ) : (
-                    <div className="h-36 relative overflow-hidden bg-surface-alt">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={post.images[0]}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
-                      {post.images.length > 1 && (
-                        <span
-                          className="absolute bottom-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full"
-                          style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}
-                        >
-                          +{post.images.length - 1}
-                        </span>
-                      )}
+                    <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: `${meta.color}1A` }}>
+                      <span className="text-[7px] font-bold" style={{ color: meta.color }}>{post.authorName.charAt(0)}</span>
                     </div>
                   )}
+                  <span className="text-[10.5px] text-text-sub font-semibold">{post.authorName}</span>
+                  {post.authorLevel && (
+                    <span className="text-[8px] font-extrabold px-1 py-[0.5px] rounded" style={{ backgroundColor: getLevelColor(post.authorLevel), color: "#fff" }}>
+                      Lv.{post.authorLevel}
+                    </span>
+                  )}
+                  <span className="text-[10px] text-text-light ml-auto shrink-0">{formatRelativeTime(post.createdAt)}</span>
+                </div>
+              </div>
 
-                  {/* 콘텐츠 */}
-                  <div className="p-4">
-                    <h3 className="text-[15px] font-extrabold text-text-main leading-snug mb-1">
-                      {post.title}
-                    </h3>
-                    <p className="text-[12.5px] text-text-sub leading-relaxed line-clamp-2 mb-3">
-                      {post.content}
-                    </p>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className="w-6 h-6 rounded-full flex items-center justify-center"
-                          style={{ backgroundColor: `${meta.color}1A` }}
-                        >
-                          <span
-                            className="text-[10px] font-extrabold"
-                            style={{ color: meta.color }}
-                          >
-                            {post.authorName.charAt(0)}
-                          </span>
-                        </div>
-                        <span className="text-[12px] font-semibold text-text-main">
-                          {post.authorName}
-                        </span>
-                        {post.authorLevel && (
-                          <span
-                            className="text-[9px] font-extrabold px-1.5 py-[1px] rounded-md tabular-nums"
-                            style={{
-                              backgroundColor: getLevelColor(post.authorLevel),
-                              color: "#FFFFFF",
-                              boxShadow: `0 1px 3px ${getLevelColor(post.authorLevel)}55`,
-                            }}
-                          >
-                            Lv.{post.authorLevel}
-                          </span>
-                        )}
-                        <TitleBadge titleId={post.authorTitle} />
-                        {post.region && (
-                          <span className="text-[10px] text-text-light flex items-center gap-0.5">
-                            <MapPin size={9} />
-                            {post.region}
-                          </span>
-                        )}
-                      </div>
-                      <span className="text-[10.5px] text-text-light">
-                        {formatRelativeTime(post.createdAt)}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-3 mt-2.5 pt-2.5 border-t border-divider">
-                      <span className="flex items-center gap-1 text-text-light text-[11px]">
-                        <Eye size={12} /> {post.viewCount}
-                      </span>
-                      <span className="flex items-center gap-1 text-text-light text-[11px]">
-                        <MessageCircle size={12} /> {post.commentCount}
-                      </span>
-                      {/* 좋아요 */}
-                      {(() => {
-                        const myVote = myVotes[post.id] ?? 0;
-                        const liked = myVote === 1;
-                        const disliked = myVote === -1;
-                        return (
-                          <div
-                            className="flex items-center gap-1.5 ml-auto"
-                            onClick={(e) => {
-                              // 버튼 영역 클릭이 카드 Link로 전파되지 않도록 강제 차단
-                              e.preventDefault();
-                              e.stopPropagation();
-                            }}
-                            onMouseDown={(e) => e.stopPropagation()}
-                            onPointerDown={(e) => e.stopPropagation()}
-                          >
-                            <button
-                              onClick={(e) => handleVote(post.id, 1, e)}
-                              className="flex items-center gap-1 px-2 py-1 rounded-lg active:scale-95 transition-all"
-                              style={{
-                                backgroundColor: liked ? meta.color : "#FFFFFF",
-                                border: `1px solid ${liked ? meta.color : "#E3DCD3"}`,
-                                color: liked ? "#FFFFFF" : meta.color,
-                              }}
-                            >
-                              <ThumbsUp size={11} strokeWidth={2.2} fill={liked ? "#FFFFFF" : "none"} />
-                              <span className="text-[10px] font-bold tabular-nums">
-                                {post.likeCount}
-                              </span>
-                            </button>
-                            <button
-                              onClick={(e) => handleVote(post.id, -1, e)}
-                              className="flex items-center gap-1 px-2 py-1 rounded-lg active:scale-95 transition-all"
-                              style={{
-                                backgroundColor: disliked ? "#A38E7A" : "#FFFFFF",
-                                border: `1px solid ${disliked ? "#A38E7A" : "#E3DCD3"}`,
-                                color: disliked ? "#FFFFFF" : "#A38E7A",
-                              }}
-                            >
-                              <ThumbsDown size={11} strokeWidth={2.2} fill={disliked ? "#FFFFFF" : "none"} />
-                              <span className="text-[10px] font-bold tabular-nums">
-                                {post.dislikeCount}
-                              </span>
-                            </button>
-                          </div>
-                        );
-                      })()}
-                    </div>
-                  </div>
-                </article>
-              </Link>
-            );
-          })
+              {/* 우측 통계 */}
+              <div className="flex flex-col items-end gap-1 shrink-0 text-text-light">
+                {post.commentCount > 0 && (
+                  <span className="flex items-center gap-0.5 text-[10px]">
+                    <MessageCircle size={10} /> {post.commentCount}
+                  </span>
+                )}
+                {post.likeCount > 0 && (
+                  <span className="flex items-center gap-0.5 text-[10px]" style={{ color: meta.color }}>
+                    <ThumbsUp size={10} /> {post.likeCount}
+                  </span>
+                )}
+              </div>
+            </Link>
+          ))
         )}
       </div>
 

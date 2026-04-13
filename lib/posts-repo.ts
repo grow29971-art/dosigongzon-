@@ -15,6 +15,7 @@ interface PostRow {
   content: string;
   author_id: string | null;
   author_name: string | null;
+  author_avatar_url: string | null;
   author_title: string | null;
   author_level: number | null;
   region: string | null;
@@ -36,6 +37,7 @@ function rowToPost(row: PostRow): Post {
     content: row.content,
     authorId: row.author_id ?? "unknown",
     authorName: row.author_name ?? "익명",
+    authorAvatarUrl: row.author_avatar_url ?? null,
     authorTitle: row.author_title ?? null,
     authorLevel: row.author_level ?? null,
     region: row.region ?? undefined,
@@ -126,6 +128,7 @@ export async function createPost(input: CreatePostInput): Promise<Post> {
       content,
       author_id: user.id,
       author_name: getDisplayName(user),
+      author_avatar_url: user.user_metadata?.avatar_url ?? null,
       author_title: equippedTitle,
       author_level: authorLevel,
       region: input.region?.trim() || null,

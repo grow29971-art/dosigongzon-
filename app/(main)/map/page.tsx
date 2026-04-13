@@ -23,6 +23,9 @@ import {
   ChevronUp,
   Stethoscope,
   Clock,
+  ChevronRight,
+  Pencil,
+  Save,
 } from "lucide-react";
 import AddCatModal from "@/app/components/AddCatModal";
 import ReportModal from "@/app/components/ReportModal";
@@ -46,7 +49,17 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import TitleBadge from "@/app/components/TitleBadge";
+import SendDMButton from "@/app/components/SendDMButton";
 import { listRescueHospitals, type RescueHospital } from "@/lib/hospitals-repo";
+import type { Post } from "@/lib/types";
+import { createClient as createSupabaseClient } from "@/lib/supabase/client";
+import { getDisplayName as getChatDisplayName, updateCat, deleteCat } from "@/lib/cats-repo";
+import { isCurrentUserAdmin } from "@/lib/news-repo";
+
+const CAT_TAG_OPTIONS = [
+  "TNR 완료","TNR 필요","이어팁","사람 친화","겁 많음","성묘",
+  "어린 고양이","새끼 동반","야행성","온순","예민","식탐 많음",
+];
 
 declare global {
   interface Window {
@@ -91,6 +104,123 @@ export default function MapPage() {
   const [hospitals, setHospitals] = useState<RescueHospital[]>([]);
   const [selectedHospital, setSelectedHospital] = useState<RescueHospital | null>(null);
   const hospitalOverlaysRef = useRef<any[]>([]);
+
+  // 현재 구 감지 + 채팅
+  const [currentGu, setCurrentGu] = useState("");
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState<{id:string;area:string;author_id:string|null;author_name:string|null;author_avatar_url?:string|null;author_level?:number|null;body:string;created_at:string}[]>([]);
+  const [chatText, setChatText] = useState("");
+  const [chatSending, setChatSending] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // 채팅 메시지 전송: 즉시 화면 표시 + DB 저장
+  const handleChatSend = async () => {
+    if (!currentGu || !chatText.trim() || chatSending || !user) return;
+    const body = chatText.trim();
+    setChatText("");
+    setChatSending(true);
+
+    // 낙관적 업데이트: 보내는 즉시 화면에 표시
+    const tempId = `temp-${Date.now()}`;
+    const optimisticMsg = {
+      id: tempId,
+      area: currentGu,
+      author_id: user.id,
+      author_name: getChatDisplayName(user),
+      body,
+      created_at: new Date().toISOString(),
+    };
+    setChatMessages((prev) => [...prev, optimisticMsg]);
+    setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 30);
+
+    try {
+      const supabase = createSupabaseClient();
+      // 레벨 계산
+      let level: number | null = null;
+      try {
+        const { getMyActivitySummary, computeScore, computeLevel } = await import("@/lib/cats-repo");
+        const s = await getMyActivitySummary();
+        level = computeLevel(computeScore(s)).level;
+      } catch { /* skip */ }
+
+      const { data, error } = await supabase
+        .from("area_chats")
+        .insert({
+          area: currentGu,
+          author_id: user.id,
+          author_name: getChatDisplayName(user),
+          author_avatar_url: user.user_metadata?.avatar_url ?? null,
+          author_level: level,
+          body,
+        })
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+
+      // 임시 ID를 실제 ID로 교체
+      setChatMessages((prev) =>
+        prev.map((m) => (m.id === tempId ? data : m)),
+      );
+
+      // 폴링이 1초마다 다른 클라이언트에 전달
+    } catch (err) {
+      // 실패 시 낙관적 메시지 제거
+      setChatMessages((prev) => prev.filter((m) => m.id !== tempId));
+      alert(err instanceof Error ? err.message : "메시지 전송 실패");
+    } finally {
+      setChatSending(false);
+    }
+  };
+
+  // 채팅방: 히스토리 로드 + 1초 폴링 (다른 사람 메시지 실시간 수신)
+  useEffect(() => {
+    if (!chatOpen || !currentGu) return;
+
+    const supabase = createSupabaseClient();
+    let active = true;
+    let lastCount = 0;
+    let lastId = "";
+
+    const fetchMessages = async () => {
+      const { data } = await supabase
+        .from("area_chats")
+        .select("*")
+        .eq("area", currentGu)
+        .order("created_at", { ascending: true })
+        .limit(50) as { data: any };
+
+      if (!active) return;
+      const msgs = data ?? [];
+
+      // 새 메시지가 있을 때만 state 업데이트 (불필요한 리렌더 방지)
+      const newLastId = msgs.length > 0 ? msgs[msgs.length - 1].id : "";
+      if (msgs.length !== lastCount || newLastId !== lastId) {
+        lastCount = msgs.length;
+        lastId = newLastId;
+
+        setChatMessages((prev) => {
+          // temp- 메시지(낙관적)는 유지하면서 DB 메시지로 병합
+          const tempMsgs = prev.filter((m) => m.id.startsWith("temp-"));
+          const dbIds = new Set(msgs.map((m: any) => m.id));
+          const remainingTemp = tempMsgs.filter((t) => !msgs.some((m: any) =>
+            m.author_id === t.author_id && m.body === t.body
+          ));
+          const merged = [...msgs, ...remainingTemp];
+          return merged;
+        });
+
+        setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
+      }
+    };
+
+    fetchMessages();
+    const interval = setInterval(fetchMessages, 1000);
+
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
+  }, [chatOpen, currentGu]);
 
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [pickedCoord, setPickedCoord] = useState<{ lat: number; lng: number } | undefined>();
@@ -335,6 +465,7 @@ export default function MapPage() {
   useEffect(() => {
     fetchCats();
     listRescueHospitals().then(setHospitals);
+    isCurrentUserAdmin().then(setIsAdmin);
   }, [fetchCats]);
 
   // ── 카카오 SDK 직접 로드 ──
@@ -408,6 +539,22 @@ export default function MapPage() {
         setAddModalOpen(true);
       });
 
+      // 지도 이동/줌 끝날 때 현재 구 감지
+      const detectGu = () => {
+        if (!window.kakao?.maps?.services) return;
+        const center = map.getCenter();
+        const geocoder = new window.kakao.maps.services.Geocoder();
+        geocoder.coord2RegionCode(center.getLng(), center.getLat(), (result: any, status: any) => {
+          if (status === window.kakao.maps.services.Status.OK && result[0]) {
+            const gu = result[0].region_2depth_name || "";
+            setCurrentGu(gu || "");
+          }
+        });
+      };
+      window.kakao.maps.event.addListener(map, "idle", detectGu);
+      // 초기 감지
+      setTimeout(detectGu, 1000);
+
       setMapReady(true);
     });
     // userPos는 초기 중심 계산에만 쓰이고, GPS가 뒤늦게 오는 경우는 아래 effect가 처리.
@@ -421,97 +568,110 @@ export default function MapPage() {
     map.setCenter(new window.kakao.maps.LatLng(userPos.lat, userPos.lng));
   }, [mapReady, userPos]);
 
-  // ── cats 변경 시 마커 다시 그리기 (로그인 상태 바뀌면 퍼징 여부도 바뀜) ──
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // ── 고양이 수정 모드 ──
+  const [editingCat, setEditingCat] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editDesc, setEditDesc] = useState("");
+  const [editRegion, setEditRegion] = useState("");
+  const [editTags, setEditTags] = useState<string[]>([]);
+  const [editSaving, setEditSaving] = useState(false);
+
+  // ── 동(region) 선택 시 해당 동 고양이 목록 ──
+  const [selectedDong, setSelectedDong] = useState<string | null>(null);
+  const selectedDongCats = selectedDong
+    ? cats.filter((c) => c.region === selectedDong)
+    : [];
+
+  // ── cats를 동 단위로 그룹화 → 클러스터 마커 ──
   useEffect(() => {
     if (!mapReady || !mapInstanceRef.current || !window.kakao) return;
 
-    // 기존 마커 제거
     overlaysRef.current.forEach((ov) => ov.setMap(null));
     overlaysRef.current = [];
 
+    // region(동)별 그룹핑
+    const groups = new Map<string, Cat[]>();
     cats.forEach((cat) => {
-      const coord = getDisplayCoord(cat, isLoggedIn);
-      const position = new window.kakao.maps.LatLng(coord.lat, coord.lng);
-      const isAlerted = alertedCats.has(cat.id);
+      const dong = cat.region || "기타";
+      if (!groups.has(dong)) groups.set(dong, []);
+      groups.get(dong)!.push(cat);
+    });
 
-      const content = document.createElement("div");
-      const photoUrl = sanitizeImageUrl(
-        cat.photo_url,
-        "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F",
+    const geocoder = window.kakao.maps?.services
+      ? new window.kakao.maps.services.Geocoder()
+      : null;
+
+    groups.forEach((dongCats, dong) => {
+      if (dong === "기타" || !geocoder) {
+        // region이 없는 고양이는 원래 좌표 사용 (개별 마커)
+        dongCats.forEach((cat) => {
+          const coord = getDisplayCoord(cat, isLoggedIn);
+          const pos = new window.kakao.maps.LatLng(coord.lat, coord.lng);
+          const photoUrl = sanitizeImageUrl(cat.photo_url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
+          const isAlerted = alertedCats.has(cat.id);
+          const borderColor = isAlerted ? "#D85555" : "#C47E5A";
+
+          const el = document.createElement("div");
+          el.innerHTML = `
+            <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;">
+              <div style="width:48px;height:48px;border-radius:50%;border:3px solid ${borderColor};background:white;box-shadow:0 4px 12px ${borderColor}55;overflow:hidden;background-image:url('${photoUrl}');background-size:cover;background-position:center;"></div>
+              <div style="width:10px;height:10px;background:${borderColor};transform:rotate(45deg);margin-top:-7px;"></div>
+            </div>
+          `;
+          el.onclick = () => setSelectedCat(cat);
+          const ov = new window.kakao.maps.CustomOverlay({ map: mapInstanceRef.current, position: pos, content: el, yAnchor: 1 });
+          overlaysRef.current.push(ov);
+        });
+        return;
+      }
+
+      // 동 이름으로 중심 좌표 얻기
+      const hasAlert = dongCats.some((c) => alertedCats.has(c.id));
+      const tnrNeeded = dongCats.some((c) => (c.tags ?? []).some((t) => t.includes("TNR 필요")));
+      const clusterColor = hasAlert ? "#D85555" : tnrNeeded ? "#E88D5A" : "#C47E5A";
+      const count = dongCats.length;
+
+      // 첫 번째 고양이의 좌표를 동 대표 좌표로 사용 (Geocoder보다 빠르고 정확)
+      const repCat = dongCats[0];
+      const repCoord = getDisplayCoord(repCat, isLoggedIn);
+      const pos = new window.kakao.maps.LatLng(repCoord.lat, repCoord.lng);
+
+      // 대표 사진 (최대 3개)
+      const photos = dongCats.slice(0, 3).map((c) =>
+        sanitizeImageUrl(c.photo_url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F")
       );
 
-      // 마커 색상: 경보(빨강) > TNR 필요(주황) > TNR 완료(초록) > 기본(갈색)
-      const tags = cat.tags ?? [];
-      const hasTnrDone = tags.some((t) => t.includes("TNR 완료") || t.includes("이어팁"));
-      const hasTnrNeeded = tags.some((t) => t.includes("TNR 필요"));
-      const borderColor = isAlerted
-        ? "#D85555"
-        : hasTnrNeeded
-          ? "#E88D5A"
-          : hasTnrDone
-            ? "#6B8E6F"
-            : "#C47E5A";
-      const shadow = isAlerted
-        ? "0 6px 18px rgba(216,85,85,0.55), 0 0 0 2px rgba(216,85,85,0.15)"
-        : `0 4px 12px ${borderColor}55`;
-
-      content.innerHTML = `
-        <div style="
-          transform: translate(-50%, -100%);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          cursor: pointer;
-        ">
-          ${isAlerted
-            ? `
-              <div style="
-                background: linear-gradient(135deg, #D85555 0%, #B84545 100%);
-                color: #fff;
-                padding: 3px 10px;
-                border-radius: 11px;
-                font-size: 10px;
-                font-weight: 800;
-                white-space: nowrap;
-                box-shadow: 0 3px 10px rgba(216,85,85,0.55);
-                letter-spacing: -0.3px;
-                margin-bottom: 5px;
-                animation: alert-pulse 1.6s ease-in-out infinite;
-              ">⚠️ 학대경보</div>
-            `
-            : ""
-          }
-          <div style="
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            border: 3px solid ${borderColor};
-            background: white;
-            box-shadow: ${shadow};
-            overflow: hidden;
-            background-image: url('${photoUrl}');
-            background-size: cover;
-            background-position: center;
-          "></div>
-          <div style="
-            width: 12px;
-            height: 12px;
-            background: ${borderColor};
-            transform: rotate(45deg);
-            margin-top: -8px;
-            box-shadow: ${isAlerted ? "0 2px 6px rgba(216,85,85,0.5)" : "none"};
-          "></div>
+      const el = document.createElement("div");
+      el.innerHTML = `
+        <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;">
+          ${hasAlert ? `<div style="background:linear-gradient(135deg,#D85555,#B84545);color:#fff;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:800;white-space:nowrap;box-shadow:0 3px 8px rgba(216,85,85,0.5);margin-bottom:4px;animation:alert-pulse 1.6s ease-in-out infinite;">⚠️ 학대경보</div>` : ""}
+          <div style="display:flex;gap:-8px;align-items:center;">
+            ${photos.map((url, i) => `
+              <div style="width:${i === 0 ? 52 : 40}px;height:${i === 0 ? 52 : 40}px;border-radius:50%;border:3px solid ${i === 0 ? clusterColor : "#fff"};background:white;box-shadow:0 3px 10px rgba(0,0,0,0.15);overflow:hidden;background-image:url('${url}');background-size:cover;background-position:center;margin-left:${i > 0 ? "-12px" : "0"};z-index:${3 - i};position:relative;"></div>
+            `).join("")}
+          </div>
+          <div style="margin-top:4px;padding:3px 12px;border-radius:12px;background:${clusterColor}ee;color:#fff;font-size:11px;font-weight:800;white-space:nowrap;box-shadow:0 3px 10px ${clusterColor}44;display:flex;align-items:center;gap:4px;">
+            <span>🐾</span>
+            <span>${dong}</span>
+            <span style="background:rgba(255,255,255,0.3);padding:1px 6px;border-radius:8px;font-size:10px;">${count}</span>
+          </div>
+          <div style="width:10px;height:10px;background:${clusterColor};transform:rotate(45deg);margin-top:-7px;"></div>
         </div>
       `;
-      content.onclick = () => setSelectedCat(cat);
+      el.onclick = () => {
+        setSelectedDong(dong);
+        setSelectedCat(null);
+      };
 
-      const overlay = new window.kakao.maps.CustomOverlay({
+      const ov = new window.kakao.maps.CustomOverlay({
         map: mapInstanceRef.current,
-        position,
-        content,
+        position: pos,
+        content: el,
         yAnchor: 1,
       });
-      overlaysRef.current.push(overlay);
+      overlaysRef.current.push(ov);
     });
   }, [cats, mapReady, isLoggedIn, alertedCats]);
 
@@ -712,10 +872,28 @@ export default function MapPage() {
           </div>
         )}
 
-        {/* 학대 경보 & 시민 참여 카드 */}
+        {/* 학대 경보 & 시민 참여 카드 — 현재 보이는 구 기준 */}
         {(() => {
-          const alertCount = alertedCats.size;
-          const hasAlert = alertCount > 0;
+          // 현재 지도 화면에 보이는 경보 고양이만 필터
+          const map = mapInstanceRef.current;
+          const bounds = map?.getBounds?.();
+          const alertedInView = cats.filter((c) => {
+            if (!alertedCats.has(c.id)) return false;
+            if (!bounds || !window.kakao) return false;
+            const coord = getDisplayCoord(c, isLoggedIn);
+            const pos = new window.kakao.maps.LatLng(coord.lat, coord.lng);
+            return bounds.contain(pos);
+          });
+          const alertedCount = alertedInView.length;
+          const hasAlert = alertedCount > 0;
+
+          // 경보가 있는 동 목록
+          const alertDongs = new Map<string, number>();
+          alertedInView.forEach((c) => {
+            const dong = c.region || "미확인";
+            alertDongs.set(dong, (alertDongs.get(dong) ?? 0) + 1);
+          });
+
           const theme = hasAlert
             ? { bg: "#FBEAEA", border: "#D85555", accent: "#D85555", text: "#7A2A2A", sub: "#A84444" }
             : { bg: "#EAF0EA", border: "#6B8E6F", accent: "#6B8E6F", text: "#3E5A42", sub: "#6B8E6F" };
@@ -751,17 +929,26 @@ export default function MapPage() {
                     style={{ color: theme.text }}
                   >
                     {hasAlert
-                      ? `학대 경보 ${alertCount}마리 · 함께 지켜주세요`
-                      : "평화로운 동네 · 그래도 관심이 필요해요"}
+                      ? `${currentGu || "전체"} 학대 경보 ${alertedCount}건`
+                      : `${currentGu || "이 동네"} · 현재 경보 없음`}
                   </p>
-                  <p
-                    className="text-[10.5px] leading-snug mt-0.5"
-                    style={{ color: theme.sub }}
-                  >
-                    {hasAlert
-                      ? "빨간 테두리 마커를 탭하면 상세를 볼 수 있어요"
-                      : "학대 징후 발견 시 즉시 시민 제보가 가장 큰 힘이에요"}
-                  </p>
+                  {hasAlert ? (
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {Array.from(alertDongs.entries()).map(([dong, cnt]) => (
+                        <span
+                          key={dong}
+                          className="text-[10px] font-bold px-1.5 py-0.5 rounded-md"
+                          style={{ backgroundColor: "#D8555522", color: "#D85555" }}
+                        >
+                          {dong} {cnt}건
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[10.5px] leading-snug mt-0.5" style={{ color: theme.sub }}>
+                      학대 징후 발견 시 즉시 시민 제보가 가장 큰 힘이에요
+                    </p>
+                  )}
                 </div>
                 {abuseCardExpanded ? (
                   <ChevronUp size={14} style={{ color: theme.sub }} />
@@ -939,8 +1126,33 @@ export default function MapPage() {
         </div>
       )}
 
-      {/* + 등록 FAB — 고양이 카드 열려있을 때는 숨김 */}
-      {!selectedCat && !selectedHospital && (
+      {/* 현재 구 채팅 FAB */}
+      {currentGu && !selectedCat && !selectedHospital && !chatOpen && !selectedDong && (
+        <button
+          type="button"
+          onClick={() => setChatOpen(true)}
+          className="absolute bottom-6 left-5 z-30 flex items-center gap-2.5 pl-3 pr-4 py-2.5 active:scale-[0.95] transition-transform"
+          style={{
+            background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+            borderRadius: 22,
+            boxShadow: "0 6px 20px rgba(196,126,90,0.45), 0 0 0 2px rgba(255,255,255,0.8)",
+          }}
+        >
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center"
+            style={{ backgroundColor: "rgba(255,255,255,0.25)" }}
+          >
+            <MessageCircle size={16} color="#fff" strokeWidth={2.5} />
+          </div>
+          <div>
+            <p className="text-[12px] font-extrabold text-white leading-tight">{currentGu}</p>
+            <p className="text-[9px] font-semibold" style={{ color: "rgba(255,255,255,0.7)" }}>동네 채팅</p>
+          </div>
+        </button>
+      )}
+
+      {/* + 등록 FAB — 채팅/카드 열려있을 때는 숨김 */}
+      {!selectedCat && !selectedHospital && !chatOpen && !selectedDong && (
         <button
           onClick={handleAddClick}
           className="absolute bottom-6 right-5 w-14 h-14 rounded-[20px] bg-primary flex items-center justify-center fab-shadow active:scale-90 transition-transform z-30"
@@ -948,6 +1160,206 @@ export default function MapPage() {
         >
           <Plus size={28} color="#fff" strokeWidth={2.5} />
         </button>
+      )}
+
+      {/* 구 채팅방 */}
+      {chatOpen && currentGu && (
+        <div className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none">
+          <div
+            className="pointer-events-auto animate-slide-up mx-4 mb-4 flex flex-col"
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 28,
+              boxShadow: "0 -4px 24px rgba(0,0,0,0.12)",
+              border: "1px solid rgba(0,0,0,0.06)",
+              height: "55vh",
+            }}
+          >
+            {/* 헤더 */}
+            <div className="flex items-center gap-3 px-5 pt-4 pb-3 border-b border-divider shrink-0">
+              <MessageCircle size={16} className="text-primary" />
+              <span className="text-[14px] font-extrabold text-text-main flex-1">{currentGu} 채팅</span>
+              <span className="text-[10px] text-text-light">{chatMessages.length}개 메시지</span>
+              <button onClick={() => setChatOpen(false)} className="w-8 h-8 rounded-full bg-surface-alt flex items-center justify-center active:scale-90">
+                <X size={16} className="text-text-sub" />
+              </button>
+            </div>
+
+            {/* 메시지 목록 */}
+            <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+              {chatMessages.length === 0 && (
+                <div className="flex flex-col items-center justify-center h-full text-text-light">
+                  <MessageCircle size={32} strokeWidth={1.2} className="mb-2 opacity-30" />
+                  <p className="text-[12px]">아직 대화가 없어요</p>
+                  <p className="text-[11px] mt-0.5">첫 메시지를 보내보세요!</p>
+                </div>
+              )}
+              {chatMessages.map((msg) => {
+                const isMe = user?.id === msg.author_id;
+                return (
+                  <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"} gap-2`}>
+                    {!isMe && (
+                      msg.author_avatar_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={msg.author_avatar_url} alt="" className="w-7 h-7 rounded-full object-cover shrink-0 mt-0.5" />
+                      ) : (
+                        <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                          <span className="text-[10px] font-bold text-primary">{(msg.author_name ?? "?")[0]}</span>
+                        </div>
+                      )
+                    )}
+                    <div className={`max-w-[75%] ${isMe ? "items-end" : "items-start"}`}>
+                      {!isMe && (
+                        <div className="flex items-center gap-1 mb-0.5 px-1">
+                          <span className="text-[10px] font-semibold text-text-sub">{msg.author_name ?? "익명"}</span>
+                          {msg.author_level && (
+                            <span
+                              className="text-[8px] font-extrabold px-1 py-[1px] rounded-md tabular-nums"
+                              style={{
+                                backgroundColor: getLevelColor(msg.author_level),
+                                color: "#FFFFFF",
+                              }}
+                            >
+                              Lv.{msg.author_level}
+                            </span>
+                          )}
+                          <SendDMButton userId={msg.author_id} userName={msg.author_name} currentUserId={user?.id} />
+                        </div>
+                      )}
+                      <div
+                        className="px-3.5 py-2 text-[13px] leading-relaxed"
+                        style={{
+                          backgroundColor: isMe ? "#C47E5A" : "#F6F1EA",
+                          color: isMe ? "#fff" : "#2A2A28",
+                          borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
+                        }}
+                      >
+                        {msg.body}
+                      </div>
+                      <div className={`flex items-center gap-1.5 mt-0.5 px-1 ${isMe ? "justify-end" : ""}`}>
+                        <span className="text-[9px] text-text-light">
+                          {new Date(msg.created_at).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+              <div ref={chatEndRef} />
+            </div>
+
+            {/* 입력 */}
+            {user ? (
+              <div className="flex gap-2 px-4 py-3 border-t border-divider shrink-0">
+                <input
+                  type="text"
+                  value={chatText}
+                  onChange={(e) => setChatText(e.target.value)}
+                  placeholder="메시지를 입력하세요"
+                  className="flex-1 px-3.5 py-2.5 rounded-2xl text-[13px] outline-none"
+                  style={{ backgroundColor: "#F6F1EA", border: "1px solid #E3DCD3" }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.nativeEvent.isComposing && chatText.trim()) {
+                      e.preventDefault();
+                      handleChatSend();
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={handleChatSend}
+                  disabled={chatSending || !chatText.trim()}
+                  className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center disabled:opacity-40 active:scale-90 transition-transform"
+                >
+                  {chatSending ? <Loader2 size={16} className="animate-spin text-white" /> : <Send size={16} color="#fff" />}
+                </button>
+              </div>
+            ) : (
+              <p className="px-5 py-3 text-[11px] text-text-light text-center border-t border-divider">로그인하면 대화에 참여할 수 있어요</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 선택된 동 — 고양이 목록 */}
+      {selectedDong && !selectedCat && (
+        <div className="absolute bottom-0 left-0 right-0 z-20 px-4 pb-4 pointer-events-none">
+          <div
+            className="relative pointer-events-auto animate-slide-up overflow-hidden"
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 28,
+              boxShadow: "0 -4px 24px rgba(196,126,90,0.15), 0 2px 8px rgba(0,0,0,0.06)",
+              border: "1.5px solid rgba(196,126,90,0.2)",
+              maxHeight: "60vh",
+            }}
+          >
+            <button
+              onClick={() => setSelectedDong(null)}
+              className="absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform shadow-md"
+            >
+              <X size={18} className="text-text-sub" />
+            </button>
+
+            <div className="px-5 pt-5 pb-2">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[18px]">🐾</span>
+                <h3 className="text-[17px] font-extrabold text-text-main">{selectedDong}</h3>
+                <span
+                  className="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                  style={{ backgroundColor: "#C47E5A", color: "#fff" }}
+                >
+                  {selectedDongCats.length}마리
+                </span>
+              </div>
+              <p className="text-[11px] text-text-sub">고양이를 탭하면 상세 정보를 볼 수 있어요</p>
+            </div>
+
+            <div className="overflow-y-auto px-3 pb-4" style={{ maxHeight: "calc(60vh - 80px)" }}>
+              {selectedDongCats.map((cat) => {
+                const photoUrl = sanitizeImageUrl(cat.photo_url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
+                const isAlerted = alertedCats.has(cat.id);
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => { setSelectedCat(cat); setSelectedDong(null); }}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl active:bg-black/[0.03] transition-colors text-left"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={photoUrl}
+                      alt=""
+                      className="w-12 h-12 rounded-full object-cover shrink-0"
+                      style={{
+                        border: `2.5px solid ${isAlerted ? "#D85555" : "#C47E5A"}`,
+                      }}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[14px] font-bold text-text-main truncate">{cat.name}</span>
+                        {isAlerted && (
+                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md" style={{ backgroundColor: "#D85555", color: "#fff" }}>경보</span>
+                        )}
+                      </div>
+                      {cat.description && (
+                        <p className="text-[11px] text-text-sub truncate mt-0.5">{cat.description}</p>
+                      )}
+                      {(cat.tags ?? []).length > 0 && (
+                        <div className="flex gap-1 mt-1">
+                          {cat.tags.slice(0, 3).map((tag) => (
+                            <span key={tag} className="text-[9px] px-1.5 py-0.5 rounded-md" style={{ backgroundColor: "#EEE8E0", color: "#A38E7A" }}>{tag}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <ChevronRight size={14} className="text-text-light shrink-0" />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       )}
 
       {/* 선택된 병원/약국 상세 카드 */}
@@ -1081,12 +1493,46 @@ export default function MapPage() {
       {selectedCat && (
         <div className="absolute bottom-0 left-0 right-0 z-20 px-4 pb-4 pointer-events-none">
           <div className="relative bg-white rounded-[28px] overflow-hidden shadow-[0_-4px_24px_rgba(0,0,0,0.12)] pointer-events-auto animate-slide-up max-h-[75vh] overflow-y-auto">
-            <button
-              onClick={() => setSelectedCat(null)}
-              className="absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform shadow-md"
-            >
-              <X size={18} className="text-text-sub" />
-            </button>
+            <div className="absolute top-3 right-3 z-20 flex gap-2">
+              {/* 수정/삭제 버튼 (본인 또는 admin) */}
+              {(user?.id === selectedCat.caretaker_id || isAdmin) && !editingCat && (
+                <>
+                  <button
+                    onClick={() => {
+                      setEditingCat(true);
+                      setEditName(selectedCat.name);
+                      setEditDesc(selectedCat.description ?? "");
+                      setEditRegion(selectedCat.region ?? "");
+                      setEditTags(selectedCat.tags ?? []);
+                    }}
+                    className="w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform shadow-md"
+                  >
+                    <Pencil size={16} className="text-primary" />
+                  </button>
+                  <button
+                    onClick={async () => {
+                      if (!confirm(`"${selectedCat.name}" 을(를) 삭제할까요?`)) return;
+                      try {
+                        await deleteCat(selectedCat.id);
+                        setCats((prev) => prev.filter((c) => c.id !== selectedCat.id));
+                        setSelectedCat(null);
+                      } catch (err) {
+                        alert(err instanceof Error ? err.message : "삭제 실패");
+                      }
+                    }}
+                    className="w-9 h-9 rounded-full bg-red-500/90 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform shadow-md"
+                  >
+                    <X size={16} color="#fff" />
+                  </button>
+                </>
+              )}
+              <button
+                onClick={() => { setSelectedCat(null); setEditingCat(false); }}
+                className="w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform shadow-md"
+              >
+                <X size={18} className="text-text-sub" />
+              </button>
+            </div>
 
             {/* 사진 */}
             <div className="relative aspect-[4/3] overflow-hidden bg-surface-alt">
@@ -1125,33 +1571,102 @@ export default function MapPage() {
 
             {/* 정보 */}
             <div className="px-5 py-4">
-              <div className="flex items-baseline gap-2 mb-1.5">
-                <h2 className="text-[20px] font-extrabold text-text-main tracking-tight">
-                  {selectedCat.name}
-                </h2>
-                {selectedCat.region && (
-                  <span className="text-[12px] text-text-light">
-                    {selectedCat.region}에 살아요
-                  </span>
-                )}
-              </div>
-              {selectedCat.description && (
-                <p className="text-[14px] text-text-sub leading-relaxed mb-3">
-                  {selectedCat.description}
-                </p>
-              )}
-              {selectedCat.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {selectedCat.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-[11px] font-semibold px-2.5 py-1 rounded-lg"
-                      style={{ backgroundColor: "#EEE8E0", color: "#C47E5A" }}
+              {editingCat ? (
+                /* ═══ 수정 모드 ═══ */
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-[11px] font-bold text-text-sub mb-1 block">이름</label>
+                    <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} maxLength={20}
+                      className="w-full px-3 py-2 rounded-xl text-[14px] outline-none" style={{ backgroundColor: "#F6F1EA", border: "1px solid #E3DCD3" }} />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-text-sub mb-1 block">설명</label>
+                    <textarea value={editDesc} onChange={(e) => setEditDesc(e.target.value)} rows={3} maxLength={200}
+                      className="w-full px-3 py-2 rounded-xl text-[13px] outline-none resize-none" style={{ backgroundColor: "#F6F1EA", border: "1px solid #E3DCD3" }} />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-text-sub mb-1 block">동네</label>
+                    <input type="text" value={editRegion} onChange={(e) => setEditRegion(e.target.value)} maxLength={20}
+                      className="w-full px-3 py-2 rounded-xl text-[13px] outline-none" style={{ backgroundColor: "#F6F1EA", border: "1px solid #E3DCD3" }} />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-text-sub mb-1 block">태그</label>
+                    <div className="flex flex-wrap gap-1.5">
+                      {CAT_TAG_OPTIONS.map((tag) => {
+                        const active = editTags.includes(tag);
+                        return (
+                          <button key={tag} type="button"
+                            onClick={() => setEditTags((prev) => active ? prev.filter((t) => t !== tag) : [...prev, tag])}
+                            className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg transition-all ${active ? "bg-primary text-white" : "bg-surface-alt text-text-sub border border-border"}`}>
+                            {active ? "✓ " : ""}{tag}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="flex gap-2 pt-1">
+                    <button
+                      onClick={async () => {
+                        if (!editName.trim()) return;
+                        setEditSaving(true);
+                        try {
+                          const updated = await updateCat(selectedCat.id, {
+                            name: editName.trim(),
+                            description: editDesc.trim() || undefined,
+                            region: editRegion.trim() || undefined,
+                            tags: editTags,
+                          });
+                          setSelectedCat(updated);
+                          setCats((prev) => prev.map((c) => c.id === updated.id ? updated : c));
+                          setEditingCat(false);
+                        } catch (err) {
+                          alert(err instanceof Error ? err.message : "수정 실패");
+                        } finally {
+                          setEditSaving(false);
+                        }
+                      }}
+                      disabled={editSaving || !editName.trim()}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 active:scale-[0.97] transition-all"
                     >
-                      {tag}
-                    </span>
-                  ))}
+                      {editSaving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} 저장
+                    </button>
+                    <button onClick={() => setEditingCat(false)} className="px-5 py-2.5 rounded-xl text-[13px] font-bold" style={{ backgroundColor: "#EEE8E0", color: "#A38E7A" }}>
+                      취소
+                    </button>
+                  </div>
                 </div>
+              ) : (
+                /* ═══ 보기 모드 ═══ */
+                <>
+                  <div className="flex items-baseline gap-2 mb-1.5">
+                    <h2 className="text-[20px] font-extrabold text-text-main tracking-tight">
+                      {selectedCat.name}
+                    </h2>
+                    {selectedCat.region && (
+                      <span className="text-[12px] text-text-light">
+                        {selectedCat.region}에 살아요
+                      </span>
+                    )}
+                  </div>
+                  {selectedCat.description && (
+                    <p className="text-[14px] text-text-sub leading-relaxed mb-3">
+                      {selectedCat.description}
+                    </p>
+                  )}
+                  {selectedCat.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {selectedCat.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-[11px] font-semibold px-2.5 py-1 rounded-lg"
+                          style={{ backgroundColor: "#EEE8E0", color: "#C47E5A" }}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </>
               )}
 
               {/* ══ 학대/위험 신고 빠른 대응 ══ */}

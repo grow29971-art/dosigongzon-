@@ -49,6 +49,7 @@ import {
   type TitleStatus,
 } from "@/lib/titles";
 import { createClient } from "@/lib/supabase/client";
+import { getUnreadCount } from "@/lib/dm-repo";
 
 function formatRelative(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -74,6 +75,7 @@ export default function MyPage() {
   const [myComments, setMyComments] = useState<CatCommentWithCat[]>([]);
   const [dataLoading, setDataLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [unreadDM, setUnreadDM] = useState(0);
   const [inquiryOpen, setInquiryOpen] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarError, setAvatarError] = useState("");
@@ -147,13 +149,15 @@ export default function MyPage() {
       listMyCats(),
       listMyComments(10),
       isCurrentUserAdmin(),
+      getUnreadCount(),
     ])
-      .then(([s, cats, comments, admin]) => {
+      .then(([s, cats, comments, admin, unread]) => {
         if (cancelled) return;
         setSummary(s);
         setMyCats(cats);
         setMyComments(comments);
         setIsAdmin(admin);
+        setUnreadDM(unread);
       })
       .finally(() => {
         if (!cancelled) setDataLoading(false);
