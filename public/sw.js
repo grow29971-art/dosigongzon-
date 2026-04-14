@@ -1,4 +1,4 @@
-const CACHE_NAME = "dosigongzon-v1";
+const CACHE_NAME = "dosigongzon-v2";
 const STATIC_ASSETS = ["/", "/map", "/community", "/messages", "/protection", "/mypage"];
 
 self.addEventListener("install", (e) => {

@@ -477,11 +477,24 @@ export default function MapPage() {
       return;
     }
 
+    // 이미 kakao 객체가 있으면 바로 진행
+    if (window.kakao?.maps) {
+      setScriptLoaded(true);
+      return;
+    }
+
     const existing = document.querySelector<HTMLScriptElement>(
       'script[data-kakao-sdk="true"]'
     );
     if (existing) {
-      existing.addEventListener("load", () => setScriptLoaded(true));
+      // 이미 로드 완료됐을 수 있으므로 폴링 체크
+      const check = setInterval(() => {
+        if (window.kakao?.maps) {
+          clearInterval(check);
+          setScriptLoaded(true);
+        }
+      }, 100);
+      setTimeout(() => clearInterval(check), 10000);
       return;
     }
 
