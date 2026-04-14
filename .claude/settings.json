@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "PreCommit": [
+      {
+        "command": "npx tsc --noEmit",
+        "description": "커밋 전 타입 체크"
+      }
+    ]
+  }
+}

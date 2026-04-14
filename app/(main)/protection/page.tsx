@@ -29,13 +29,13 @@ const cards: {
 }[] = [
   {
     title: "돌봄 가이드",
-    subtitle: "농림축산식품부 공식 돌봄 매뉴얼",
+    subtitle: "농림축산식품부 공식 PDF 매뉴얼",
     Icon: BookOpenText,
     iconBg: "#4A7BA8",
     iconColor: "#FFFFFF",
     glowColor: "74,123,168",
     type: "external",
-    href: "https://www.mafra.go.kr/bbs/home/795/570364/artclView.do",
+    href: "https://www.mafra.go.kr/bbs/home/795/577856/download.do",
     wide: true,
     highlight: true,
   },

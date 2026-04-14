@@ -1,31 +1,42 @@
-"use client";
+import Link from "next/link";
+import { ArrowLeft, AlertTriangle } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import BackButton from "./BackButton";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, AlertTriangle, Loader2 } from "lucide-react";
-import {
-  listPharmacyGuideItems,
-  type PharmacyGuideItem,
-} from "@/lib/pharmacy-guide-repo";
+interface GuideItem {
+  id: string;
+  name: string;
+  brand: string | null;
+  category: string;
+  color: string;
+  image_url: string | null;
+  description: string;
+  usage_info: string | null;
+  tip: string | null;
+  price: string | null;
+  sort_order: number;
+}
 
-export default function PharmacyGuidePage() {
-  const router = useRouter();
-  const [items, setItems] = useState<PharmacyGuideItem[]>([]);
-  const [loading, setLoading] = useState(true);
+async function getGuideItems(): Promise<GuideItem[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("pharmacy_guide_items")
+    .select("*")
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: false });
 
-  useEffect(() => {
-    listPharmacyGuideItems()
-      .then(setItems)
-      .finally(() => setLoading(false));
-  }, []);
+  if (error) return [];
+  return (data ?? []) as GuideItem[];
+}
+
+export default async function PharmacyGuidePage() {
+  const items = await getGuideItems();
 
   return (
     <div className="px-4 pt-14 pb-24">
       {/* 헤더 */}
       <div className="flex items-center gap-3 mb-5">
-        <button onClick={() => router.back()} className="p-2 -ml-2 active:scale-90 transition-transform">
-          <ArrowLeft size={24} className="text-text-main" />
-        </button>
+        <BackButton />
         <div>
           <h1 className="text-[20px] font-extrabold text-text-main">동물약국 약품 가이드</h1>
           <p className="text-[11px] text-text-sub mt-0.5">길고양이 돌봄에 쓰이는 약품·영양제</p>
@@ -51,15 +62,8 @@ export default function PharmacyGuidePage() {
         </div>
       </div>
 
-      {/* 로딩 */}
-      {loading && (
-        <div className="flex justify-center py-12">
-          <Loader2 size={28} className="animate-spin text-primary" />
-        </div>
-      )}
-
       {/* 빈 상태 */}
-      {!loading && items.length === 0 && (
+      {items.length === 0 && (
         <div className="py-16 text-center text-[13px] text-text-sub">
           아직 등록된 약품이 없어요.
         </div>
@@ -125,13 +129,17 @@ export default function PharmacyGuidePage() {
       </div>
 
       {/* 하단 */}
-      {!loading && items.length > 0 && (
+      {items.length > 0 && (
         <div className="mt-6 px-5 py-4 text-center" style={{ background: "#FFFFFF", borderRadius: 18, boxShadow: "0 2px 8px rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.04)" }}>
           <p className="text-[13px] font-bold text-text-main mb-1">가까운 동물약국 찾기</p>
           <p className="text-[11px] text-text-sub mb-3">지도에서 💊 보라색 마커를 탭하면 약국 정보를 확인할 수 있어요</p>
-          <button onClick={() => router.push("/map")} className="px-5 py-2.5 rounded-xl text-[13px] font-bold text-white active:scale-[0.97] transition-transform" style={{ background: "linear-gradient(135deg, #9B6DD7 0%, #7B4FBF 100%)", boxShadow: "0 6px 16px rgba(155,109,215,0.35)" }}>
+          <Link
+            href="/map"
+            className="inline-block px-5 py-2.5 rounded-xl text-[13px] font-bold text-white"
+            style={{ background: "linear-gradient(135deg, #9B6DD7 0%, #7B4FBF 100%)", boxShadow: "0 6px 16px rgba(155,109,215,0.35)" }}
+          >
             지도에서 동물약국 보기
-          </button>
+          </Link>
         </div>
       )}
     </div>

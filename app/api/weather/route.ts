@@ -1,13 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
-
 export async function GET(request: Request) {
-  // 인증 체크: 로그인 유저만
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
-  }
-
   const apiKey = process.env.OPENWEATHERMAP_API_KEY;
   if (!apiKey) {
     return Response.json(
