@@ -39,6 +39,20 @@ export async function sendDM(receiverId: string, receiverName: string, body: str
     body: trimmed,
   });
   if (error) throw new Error(`쪽지 전송 실패: ${error.message}`);
+
+  // 푸시 알림 (실패해도 쪽지 전송 자체는 성공)
+  try {
+    fetch("/api/push/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId: receiverId,
+        title: `${getDisplayName(user)}님의 쪽지`,
+        body: trimmed.length > 50 ? trimmed.slice(0, 50) + "…" : trimmed,
+        url: "/messages",
+      }),
+    }).catch(() => {});
+  } catch {}
 }
 
 export async function getConversations(): Promise<Conversation[]> {
