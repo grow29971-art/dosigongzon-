@@ -14,7 +14,6 @@ import {
   Phone,
   Copy,
   Check,
-  Lightbulb,
   Camera,
   ThumbsUp,
   ThumbsDown,
@@ -40,7 +39,6 @@ import {
   getMyCommentVotes,
   getLevelColor,
   MAP_CENTER,
-  CARE_TIPS,
   type Cat,
   type CatComment,
   type CommentKind,
@@ -224,38 +222,6 @@ export default function MapPage() {
 
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [pickedCoord, setPickedCoord] = useState<{ lat: number; lng: number } | undefined>();
-
-  // ── 돌봄 팁 배너 (자동 로테이션) ──
-  const [tipIndex, setTipIndex] = useState(0);
-  const [tipDismissed, setTipDismissed] = useState(false);
-  useEffect(() => {
-    // 세션 내 닫기 상태 복원
-    if (typeof window !== "undefined" && sessionStorage.getItem("map_tip_dismissed") === "1") {
-      setTipDismissed(true);
-    }
-  }, []);
-  useEffect(() => {
-    if (tipDismissed) return;
-    const id = setInterval(() => {
-      setTipIndex((i) => (i + 1) % CARE_TIPS.length);
-    }, 7000);
-    return () => clearInterval(id);
-  }, [tipDismissed]);
-  const handleNextTip = () => {
-    setTipIndex((i) => (i + 1) % CARE_TIPS.length);
-  };
-  const handleDismissTip = () => {
-    setTipDismissed(true);
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("map_tip_dismissed", "1");
-    }
-  };
-  const currentTip = CARE_TIPS[tipIndex];
-  const tipTheme = {
-    info: { bg: "#E8ECE5", border: "#6B8E6F", text: "#3F5B42", accent: "#5BA876" },
-    warn: { bg: "#EDE9E0", border: "#C9A961", text: "#6B5A2A", accent: "#E8B040" },
-    danger: { bg: "#FBEAEA", border: "#B84545", text: "#8B2F2F", accent: "#D85555" },
-  }[currentTip.severity];
 
   // ── 댓글 상태 ──
   const [comments, setComments] = useState<CatComment[]>([]);
@@ -703,45 +669,47 @@ export default function MapPage() {
       const el = document.createElement("div");
       const label = h.name.length > 14 ? h.name.slice(0, 14) + "…" : h.name;
       const isPharmacy = (h.tags ?? []).some((t: string) => t.includes("동물약국"));
-      // 약국: 보라+핑크 그라디언트 / 병원: 초록 그라디언트
-      const mc1 = isPharmacy ? "#9B6DD7" : "#22B573";
-      const mc2 = isPharmacy ? "#7B4FBF" : "#1A9A5E";
-      // 약국: 💊 알약 아이콘 / 병원: ✚ 십자가
+      const mc1 = isPharmacy ? "#E88D5A" : "#22B573";
+      const mc2 = isPharmacy ? "#C47E5A" : "#1A9A5E";
       const icon = isPharmacy
-        ? `<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <rect x="3" y="8" width="18" height="8" rx="4" fill="#fff" opacity="0.95"/>
-            <line x1="12" y1="8" x2="12" y2="16" stroke="${mc1}" stroke-width="1.5" stroke-dasharray="2 1.5"/>
-            <circle cx="7.5" cy="12" r="1.2" fill="${mc2}"/>
-            <circle cx="16.5" cy="12" r="1.2" fill="#E8A0BF"/>
+        ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.5 20H6a2 2 0 01-2-2V8l4-4h8l4 4v4"/>
+            <path d="M8 4v4h4"/>
+            <circle cx="17" cy="17" r="4"/>
+            <path d="M15 17h4"/>
+            <path d="M17 15v4"/>
            </svg>`
-        : `<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z" fill="#fff"/></svg>`;
+        : `<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z" fill="#fff"/></svg>`;
       el.innerHTML = `
         <div style="
           transform: translate(-50%, -100%);
           display: flex; flex-direction: column; align-items: center; cursor: pointer;
         ">
           <div style="
-            width: ${isPharmacy ? 44 : 48}px; height: ${isPharmacy ? 44 : 48}px;
-            border-radius: ${isPharmacy ? 22 : 14}px;
+            width: 42px; height: 42px;
+            border-radius: ${isPharmacy ? "50%" : "14px"};
             background: linear-gradient(135deg, ${mc1} 0%, ${mc2} 100%);
-            border: 3px solid #fff;
-            box-shadow: 0 6px 20px ${mc1}66, 0 0 0 2px ${mc1}20;
+            border: 2.5px solid #fff;
+            box-shadow: 0 4px 14px ${mc1}55;
             display: flex; align-items: center; justify-content: center;
           ">
             ${icon}
           </div>
           <div style="
-            margin-top: 3px; padding: 2.5px 9px; border-radius: 10px;
-            background: ${mc1}ee; color: #fff;
-            font-size: ${isPharmacy ? 9 : 10}px; font-weight: 800; white-space: nowrap;
-            box-shadow: 0 3px 8px ${mc1}44;
+            margin-top: 3px; padding: 2px 8px; border-radius: 8px;
+            background: #fff; color: ${mc1};
+            font-size: 9.5px; font-weight: 800; white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             letter-spacing: -0.3px;
-          ">${isPharmacy ? "💊 " : ""}${label}</div>
+            border: 1.5px solid ${mc1}30;
+          ">${label}</div>
           <div style="
-            width: 8px; height: 8px;
-            background: ${mc1};
+            width: 6px; height: 6px;
+            background: #fff;
+            border-right: 1.5px solid ${mc1}30;
+            border-bottom: 1.5px solid ${mc1}30;
             transform: rotate(45deg);
-            margin-top: -6px;
+            margin-top: -5px;
           "></div>
         </div>
       `;
@@ -849,21 +817,64 @@ export default function MapPage() {
   }
 
   return (
-    <div className="relative" style={{ height: "calc(100dvh - 5rem)" }}>
+    <div className="relative no-dark" style={{ height: "calc(100dvh - 5rem)" }}>
       {/* 헤더 (지도 위에 떠있음) */}
       <div className="absolute top-0 left-0 right-0 z-10 px-4 pt-12 pb-3 pointer-events-none space-y-2">
-        <div className="bg-white/90 backdrop-blur-md rounded-2xl px-4 py-3 pointer-events-auto shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
-          <div className="flex items-center gap-2 mb-0.5">
-            <MapPin size={14} className="text-primary" />
-            <span className="text-[12px] font-semibold text-primary">인천시 남동구</span>
+        <div
+          className="rounded-2xl px-4 py-3.5 pointer-events-auto shadow-[0_4px_20px_rgba(196,126,90,0.25)]"
+          style={{
+            background: "linear-gradient(135deg, #C47E5A 0%, #A8623E 100%)",
+          }}
+        >
+          {/* 전체 등록 */}
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-1.5">
+              <MapPin size={12} color="#FFE0CC" strokeWidth={2.5} />
+              <span className="text-[10.5px] font-semibold" style={{ color: "#FFE0CC" }}>전체 등록 고양이</span>
+            </div>
+            <span className="text-[13px] font-extrabold" style={{ color: "#FFD9A0" }}>
+              {cats.length}마리
+            </span>
           </div>
-          <h1 className="text-[17px] font-extrabold text-text-main tracking-tight leading-snug">
-            우리 동네 시민참여 돌봄 고양이 {cats.length}마리
-          </h1>
-          <p className="text-[11px] text-text-sub mt-0.5">
+          {/* 구분선 */}
+          <div className="h-px mb-2" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
+          {/* 현재 구 */}
+          <div className="flex items-baseline gap-1.5">
+            <h1 className="text-[15px] font-extrabold tracking-tight leading-snug text-white">
+              {currentGu || "우리 동네"} 돌봄 고양이
+            </h1>
+            <span
+              className="text-[22px] font-black tracking-tight"
+              style={{ color: "#FFD9A0" }}
+            >
+              {(() => {
+                const map = mapInstanceRef.current;
+                const bounds = map?.getBounds?.();
+                if (!bounds || !window.kakao) return cats.length;
+                return cats.filter((c) => {
+                  const coord = getDisplayCoord(c, isLoggedIn);
+                  const pos = new window.kakao.maps.LatLng(coord.lat, coord.lng);
+                  return bounds.contain(pos);
+                }).length;
+              })()}
+            </span>
+            <span className="text-[13px] font-bold text-white/80">마리</span>
+          </div>
+          <p className="text-[11px] mt-1 font-medium" style={{ color: "rgba(255,255,255,0.85)" }}>
             {loadingCats
               ? "불러오는 중..."
-              : "오른쪽 클릭(데스크톱) 또는 + 버튼으로 새 아이 등록"}
+              : "우리 동네 고양이를 등록하고 수호해보세요 🐾"}
+          </p>
+        </div>
+
+        {/* 동 단위 안내 */}
+        <div
+          className="rounded-2xl px-3.5 py-2 pointer-events-auto flex items-center gap-2"
+          style={{ backgroundColor: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)" }}
+        >
+          <Shield size={14} className="shrink-0" style={{ color: "#C47E5A" }} />
+          <p className="text-[10.5px] leading-snug" style={{ color: "#7A5238" }}>
+            고양이 위치는 보안상 <b>동 단위</b>로 표기됩니다. 지역별 커뮤니티에서 다같이 보호하고 돌봄해보세요.
           </p>
         </div>
 
@@ -907,120 +918,72 @@ export default function MapPage() {
             alertDongs.set(dong, (alertDongs.get(dong) ?? 0) + 1);
           });
 
-          const theme = hasAlert
-            ? { bg: "#FBEAEA", border: "#D85555", accent: "#D85555", text: "#7A2A2A", sub: "#A84444" }
-            : { bg: "#EAF0EA", border: "#6B8E6F", accent: "#6B8E6F", text: "#3E5A42", sub: "#6B8E6F" };
           return (
             <div
-              className="rounded-2xl pointer-events-auto shadow-[0_2px_12px_rgba(0,0,0,0.06)] overflow-hidden"
+              className="rounded-2xl pointer-events-auto overflow-hidden backdrop-blur-md"
               style={{
-                backgroundColor: theme.bg,
-                borderLeft: `3px solid ${theme.border}`,
+                background: hasAlert
+                  ? "linear-gradient(135deg, rgba(216,85,85,0.12) 0%, rgba(184,69,69,0.08) 100%)"
+                  : "rgba(255,255,255,0.9)",
+                boxShadow: hasAlert
+                  ? "0 4px 20px rgba(216,85,85,0.15)"
+                  : "0 2px 12px rgba(0,0,0,0.06)",
               }}
             >
               <button
                 type="button"
                 onClick={() => setAbuseCardExpanded((v) => !v)}
-                className="w-full px-4 py-2.5 flex items-center gap-2.5 text-left active:scale-[0.99] transition-transform"
+                className="w-full px-4 py-2.5 flex items-center gap-3 text-left active:scale-[0.99] transition-transform"
               >
-                <div
-                  className="w-7 h-7 rounded-[10px] flex items-center justify-center shrink-0"
-                  style={{
-                    background: `linear-gradient(135deg, ${theme.accent} 0%, ${theme.accent}DD 100%)`,
-                    boxShadow: `0 3px 8px ${theme.accent}55, inset 0 1px 0 rgba(255,255,255,0.4)`,
-                  }}
-                >
-                  {hasAlert ? (
-                    <AlertTriangle size={13} color="#fff" strokeWidth={2.5} />
-                  ) : (
-                    <Shield size={13} color="#fff" strokeWidth={2.5} />
-                  )}
-                </div>
+                {hasAlert ? (
+                  <AlertTriangle size={16} color="#D85555" strokeWidth={2.5} />
+                ) : (
+                  <Shield size={16} color="#6B8E6F" strokeWidth={2.5} />
+                )}
                 <div className="min-w-0 flex-1">
-                  <p
-                    className="text-[12px] font-extrabold leading-tight"
-                    style={{ color: theme.text }}
-                  >
+                  <p className="text-[12px] font-bold leading-tight" style={{ color: hasAlert ? "#8B2F2F" : "#3F5B42" }}>
                     {hasAlert
                       ? `${currentGu || "전체"} 학대 경보 ${alertedCount}건`
                       : `${currentGu || "이 동네"} · 현재 경보 없음`}
                   </p>
-                  {hasAlert ? (
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {Array.from(alertDongs.entries()).map(([dong, cnt]) => (
-                        <span
-                          key={dong}
-                          className="text-[10px] font-bold px-1.5 py-0.5 rounded-md"
-                          style={{ backgroundColor: "#D8555522", color: "#D85555" }}
-                        >
-                          {dong} {cnt}건
-                        </span>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-[10.5px] leading-snug mt-0.5" style={{ color: theme.sub }}>
-                      학대 징후 발견 시 즉시 시민 제보가 가장 큰 힘이에요
-                    </p>
-                  )}
+                  <p className="text-[10px] mt-0.5" style={{ color: hasAlert ? "#B84545" : "#7A9A7E" }}>
+                    {hasAlert
+                      ? Array.from(alertDongs.entries()).map(([dong, cnt]) => `${dong} ${cnt}건`).join(" · ")
+                      : "학대 징후 발견 시 시민 제보가 가장 큰 힘이에요"}
+                  </p>
                 </div>
                 {abuseCardExpanded ? (
-                  <ChevronUp size={14} style={{ color: theme.sub }} />
+                  <ChevronUp size={14} style={{ color: hasAlert ? "#B84545" : "#7A9A7E" }} />
                 ) : (
-                  <ChevronDown size={14} style={{ color: theme.sub }} />
+                  <ChevronDown size={14} style={{ color: hasAlert ? "#B84545" : "#7A9A7E" }} />
                 )}
               </button>
 
               {abuseCardExpanded && (
-                <div
-                  className="px-4 pb-3 pt-0.5 space-y-2.5"
-                  style={{ borderTop: `1px solid ${theme.border}22` }}
-                >
-                  <p
-                    className="text-[11px] leading-relaxed mt-2"
-                    style={{ color: theme.text }}
-                  >
-                    길고양이 학대는 동물보호법 제8조 위반으로 <b>3년 이하 징역 또는 3,000만원 이하 벌금</b>이에요. 수사와 구조는 시민 제보가 없으면 시작조차 못 해요.
+                <div className="px-4 pb-3 space-y-2.5" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+                  <p className="text-[11px] leading-relaxed mt-2.5" style={{ color: "#5A5A5A" }}>
+                    동물보호법 제8조 위반 · <b>3년 이하 징역 또는 3,000만원 이하 벌금</b>
                   </p>
-
-                  <div>
-                    <p
-                      className="text-[11px] font-extrabold mb-1"
-                      style={{ color: theme.text }}
-                    >
-                      목격하셨다면
-                    </p>
-                    <ul
-                      className="text-[10.5px] leading-relaxed space-y-0.5 pl-3"
-                      style={{ color: theme.sub, listStyleType: "disc" }}
-                    >
-                      <li>가능한 범위에서 증거 촬영(사진·영상·시간·장소)</li>
-                      <li>해당 고양이 정보를 이 지도에 <b>경보 기록</b>으로 남기기</li>
-                      <li>구청 동물보호 담당부서 / 경찰 112 / 동물보호콜센터에 신고</li>
-                    </ul>
+                  <div className="flex flex-wrap gap-1.5 text-[10px]" style={{ color: "#666" }}>
+                    <span>· 증거 촬영(사진·영상·시간·장소)</span>
+                    <span>· 지도에 경보 기록 남기기</span>
+                    <span>· 구청·경찰·동물보호콜센터 신고</span>
                   </div>
-
-                  <div className="flex gap-1.5">
+                  <div className="flex gap-2">
                     <a
                       href="tel:112"
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[11.5px] font-extrabold active:scale-[0.97] transition-transform"
-                      style={{
-                        backgroundColor: theme.accent,
-                        color: "#fff",
-                      }}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-[11px] font-bold active:scale-[0.97] transition-transform"
+                      style={{ backgroundColor: "#2C2C2C", color: "#fff" }}
                     >
-                      <Phone size={12} strokeWidth={2.8} />
+                      <Phone size={11} strokeWidth={2.5} />
                       112 경찰 신고
                     </a>
                     <a
                       href="tel:1577-0954"
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[11.5px] font-extrabold active:scale-[0.97] transition-transform"
-                      style={{
-                        backgroundColor: "#fff",
-                        color: theme.accent,
-                        border: `1.5px solid ${theme.accent}`,
-                      }}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-[11px] font-bold active:scale-[0.97] transition-transform"
+                      style={{ backgroundColor: "#F5F5F5", color: "#333" }}
                     >
-                      <Phone size={12} strokeWidth={2.8} />
+                      <Phone size={11} strokeWidth={2.5} />
                       1577-0954
                     </a>
                   </div>
@@ -1030,67 +993,6 @@ export default function MapPage() {
           );
         })()}
 
-        {/* 돌봄 팁 배너 — 회전 */}
-        {!tipDismissed && (
-          <button
-            type="button"
-            onClick={handleNextTip}
-            className="w-full rounded-2xl pointer-events-auto shadow-[0_2px_12px_rgba(0,0,0,0.06)] text-left overflow-hidden relative"
-            style={{
-              backgroundColor: tipTheme.bg,
-              borderLeft: `3px solid ${tipTheme.border}`,
-            }}
-          >
-            <div className="px-4 py-2.5 pr-9 flex items-start gap-2.5">
-              <div
-                className="w-7 h-7 rounded-[10px] flex items-center justify-center shrink-0 mt-0.5"
-                style={{
-                  background: `linear-gradient(135deg, ${tipTheme.accent} 0%, ${tipTheme.accent}DD 100%)`,
-                  boxShadow: `0 3px 8px ${tipTheme.accent}55, inset 0 1px 0 rgba(255,255,255,0.4)`,
-                }}
-              >
-                <Lightbulb size={13} color="#fff" strokeWidth={2.5} />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <span className="text-[11px]">{currentTip.emoji}</span>
-                  <p className="text-[12px] font-extrabold leading-tight" style={{ color: tipTheme.text }}>
-                    {currentTip.title}
-                  </p>
-                </div>
-                <p className="text-[10.5px] leading-snug" style={{ color: tipTheme.text, opacity: 0.85 }}>
-                  {currentTip.body}
-                </p>
-                {/* 인디케이터 점 */}
-                <div className="flex items-center gap-1 mt-1.5">
-                  {CARE_TIPS.map((_, i) => (
-                    <span
-                      key={i}
-                      className="h-1 rounded-full transition-all"
-                      style={{
-                        width: i === tipIndex ? 10 : 4,
-                        backgroundColor: i === tipIndex ? tipTheme.border : `${tipTheme.border}44`,
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-            {/* 닫기 버튼 */}
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDismissTip();
-              }}
-              className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center active:scale-90 transition-transform cursor-pointer"
-              style={{ backgroundColor: `${tipTheme.border}22` }}
-              role="button"
-              aria-label="팁 닫기"
-            >
-              <X size={12} style={{ color: tipTheme.text }} />
-            </div>
-          </button>
-        )}
       </div>
 
       {/* 지도 영역 */}

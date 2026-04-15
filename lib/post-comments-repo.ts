@@ -9,6 +9,7 @@ import { getDisplayName, getMyActivitySummary, computeScore, computeLevel } from
 export interface PostComment {
   id: string;
   post_id: string;
+  parent_id: string | null;
   author_id: string | null;
   author_name: string | null;
   author_avatar_url: string | null;
@@ -38,6 +39,7 @@ export async function listPostComments(postId: string): Promise<PostComment[]> {
 export async function createPostComment(
   postId: string,
   body: string,
+  parentId?: string | null,
 ): Promise<PostComment> {
   const supabase = createClient();
 
@@ -62,6 +64,7 @@ export async function createPostComment(
     .from("post_comments")
     .insert({
       post_id: postId,
+      parent_id: parentId ?? null,
       author_id: user.id,
       author_name: getDisplayName(user),
       author_avatar_url: user.user_metadata?.avatar_url ?? null,

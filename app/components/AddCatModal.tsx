@@ -42,15 +42,12 @@ export default function AddCatModal({
   const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
 
   const [name, setName] = useState("");
-  const [region, setRegion] = useState("");
   const [detectedGu, setDetectedGu] = useState("");
-  const [dongList, setDongList] = useState<string[]>([]);
+  const [selectedDong, setSelectedDong] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [lat, setLat] = useState<string>("");
-  const [lng, setLng] = useState<string>("");
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -61,58 +58,35 @@ export default function AddCatModal({
     setPortalRoot(document.body);
   }, []);
 
-  // 모달 열릴 때 좌표 prefill + body 스크롤 잠금
+  // 모달 열릴 때 역지오코딩으로 동 자동 감지 + body 스크롤 잠금
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
-      if (initialLat !== undefined) setLat(initialLat.toFixed(6));
-      if (initialLng !== undefined) setLng(initialLng.toFixed(6));
+      // 좌표가 전달되면 역지오코딩으로 구/동 자동 감지
+      if (initialLat !== undefined && initialLng !== undefined && window.kakao?.maps?.services) {
+        const geocoder = new window.kakao.maps.services.Geocoder();
+        geocoder.coord2RegionCode(initialLng, initialLat, (result: any, status: any) => {
+          if (status !== window.kakao.maps.services.Status.OK || !result[0]) return;
+          const gu = result[0].region_2depth_name || "";
+          const dong = result[0].region_3depth_name || "";
+          setDetectedGu(gu);
+          if (dong) setSelectedDong(dong);
+        });
+      }
     } else {
       document.body.style.overflow = "";
-      // 닫힐 때 폼 리셋
       setName("");
-      setRegion("");
+      setDetectedGu("");
+      setSelectedDong("");
       setDescription("");
       setTags([]);
       setPhotoFile(null);
       setPhotoPreview(null);
-      setLat("");
-      setLng("");
       setError("");
       setSubmitting(false);
-      setDetectedGu("");
-      setDongList([]);
     }
     return () => { document.body.style.overflow = ""; };
   }, [open, initialLat, initialLng]);
-
-  // 좌표 변경 시 역지오코딩 → 구/동 자동 감지
-  useEffect(() => {
-    if (!open) return;
-    const latNum = parseFloat(lat);
-    const lngNum = parseFloat(lng);
-    if (!latNum || !lngNum || latNum < 33 || latNum > 39 || lngNum < 124 || lngNum > 132) return;
-    if (!window.kakao?.maps?.services) return;
-
-    const geocoder = new window.kakao.maps.services.Geocoder();
-    geocoder.coord2RegionCode(lngNum, latNum, (result: any, status: any) => {
-      if (status !== window.kakao.maps.services.Status.OK || !result[0]) return;
-      const item = result[0];
-      const gu = item.region_2depth_name || "";
-      const dong = item.region_3depth_name || "";
-
-      setDetectedGu(gu);
-      if (dong) {
-        setRegion(dong);
-        setDongList((prev) => {
-          const set = new Set(prev);
-          set.add(dong);
-          return Array.from(set);
-        });
-      }
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lat, lng, open]);
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -144,16 +118,9 @@ export default function AddCatModal({
   const handleSubmit = async () => {
     setError("");
 
-    // 검증
     if (!name.trim()) return setError("이름을 입력해주세요.");
-    const latNum = parseFloat(lat);
-    const lngNum = parseFloat(lng);
-    if (isNaN(latNum) || isNaN(lngNum)) {
-      return setError("위치(위도/경도)를 입력해주세요.");
-    }
-    if (latNum < 33 || latNum > 39 || lngNum < 124 || lngNum > 132) {
-      return setError("한국 영역 안의 좌표를 입력해주세요.");
-    }
+    if (!selectedDong.trim()) return setError("동네를 입력해주세요.");
+    if (initialLat === undefined || initialLng === undefined) return setError("위치 정보가 없어요. 다시 시도해주세요.");
 
     setSubmitting(true);
     try {
@@ -162,13 +129,17 @@ export default function AddCatModal({
         photoUrl = await uploadCatPhoto(photoFile);
       }
 
+      // 지도 중심 좌표에 약간의 랜덤 오프셋 (마커 겹침 방지)
+      const offsetLat = initialLat + (Math.random() - 0.5) * 0.004;
+      const offsetLng = initialLng + (Math.random() - 0.5) * 0.004;
+
       const newCat = await createCat({
         name: name.trim(),
         description: description.trim() || undefined,
         photo_url: photoUrl,
-        lat: latNum,
-        lng: lngNum,
-        region: region.trim() || undefined,
+        lat: offsetLat,
+        lng: offsetLng,
+        region: selectedDong.trim(),
         tags,
       });
 
@@ -296,81 +267,40 @@ export default function AddCatModal({
             />
           </div>
 
-          {/* 동네 (역지오코딩 자동 감지 + 수동 입력) */}
+          {/* 동네 */}
           <div>
             <label className="text-[12px] font-bold text-text-main mb-2 block">
-              동네
+              동네 <span className="text-error">*</span>
               {detectedGu && (
                 <span className="text-[10px] font-normal text-text-light ml-2">
                   📍 {detectedGu}
                 </span>
               )}
             </label>
-            {dongList.length > 0 ? (
-              <div className="flex gap-2">
-                <select
-                  value={region}
-                  onChange={(e) => setRegion(e.target.value)}
-                  className="flex-1 px-4 py-3 rounded-2xl bg-surface-alt text-[14px] text-text-main outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all appearance-none"
-                  style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23A38E7A' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 16px center" }}
+            {selectedDong ? (
+              <div className="flex items-center gap-2">
+                <div className="flex-1 flex items-center gap-2 px-4 py-3 rounded-2xl bg-primary/10 border border-primary/20">
+                  <MapPin size={14} className="text-primary shrink-0" />
+                  <span className="text-[14px] font-bold text-text-main">{selectedDong}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedDong("")}
+                  className="text-[12px] text-text-sub underline shrink-0 px-2"
                 >
-                  {dongList.map((d) => (
-                    <option key={d} value={d}>{d}</option>
-                  ))}
-                </select>
-                <input
-                  type="text"
-                  value={region}
-                  onChange={(e) => setRegion(e.target.value)}
-                  placeholder="직접 입력"
-                  maxLength={20}
-                  className="w-28 px-3 py-3 rounded-2xl bg-surface-alt text-[13px] text-text-main outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted"
-                />
+                  변경
+                </button>
               </div>
             ) : (
               <input
                 type="text"
-                value={region}
-                onChange={(e) => setRegion(e.target.value)}
-                placeholder="위치를 먼저 지정하면 자동 감지돼요"
+                value={selectedDong}
+                onChange={(e) => setSelectedDong(e.target.value)}
+                placeholder="예: 구월동, 역삼동, 해운대동"
                 maxLength={20}
                 className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[14px] text-text-main outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted"
               />
             )}
-          </div>
-
-          {/* 위치 (위도/경도) */}
-          <div>
-            <label className="text-[12px] font-bold text-text-main mb-2 block">
-              위치 <span className="text-error">*</span>
-            </label>
-            <p className="text-[11px] text-text-sub mb-2">
-              지도에서 핀 위치를 길게 눌러 좌표를 가져오거나, 직접 입력하세요.
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-text-light">위도</span>
-                <input
-                  type="number"
-                  step="0.000001"
-                  value={lat}
-                  onChange={(e) => setLat(e.target.value)}
-                  placeholder="37.4470"
-                  className="w-full pl-12 pr-3 py-3 rounded-2xl bg-surface-alt text-[13px] text-text-main outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted"
-                />
-              </div>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-text-light">경도</span>
-                <input
-                  type="number"
-                  step="0.000001"
-                  value={lng}
-                  onChange={(e) => setLng(e.target.value)}
-                  placeholder="126.7320"
-                  className="w-full pl-12 pr-3 py-3 rounded-2xl bg-surface-alt text-[13px] text-text-main outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted"
-                />
-              </div>
-            </div>
           </div>
 
           {/* 한 줄 소개 */}

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Bell,
   User,
   MapPin,
   Thermometer,
@@ -23,10 +22,13 @@ import {
   Send,
   ChevronRight,
   Sparkles,
+  Moon,
+  SunMedium,
 } from "lucide-react";
 import AIChatModal from "@/app/components/AIChatModal";
 import SplashLoading from "@/app/components/SplashLoading";
 import { useAuth } from "@/lib/auth-context";
+import { createClient } from "@/lib/supabase/client";
 import {
   listNews,
   BADGE_PRESETS,
@@ -65,6 +67,11 @@ const CAT_FACTS = [
   "고양이의 귀는 각각 따로 최대 180도 회전할 수 있어요.",
   "고양이 한 마리를 TNR하면 한 해에 수십 마리의 추가 번식을 막을 수 있어요.",
   "고양이의 혀는 케라틴 돌기로 덮여 있어 까끌까끌해요. 털 빗질과 고기 발라내기에 쓰여요.",
+  "⚠️ 츄르는 구내염·치아질환을 유발할 수 있어요. 무염 삶은 닭가슴살이나 건사료가 훨씬 안전해요.",
+  "⚠️ 우유는 절대 주지 마세요. 고양이 대부분은 유당불내증이라 설사·탈수로 위험해질 수 있어요.",
+  "⚠️ 한번 밥을 주기 시작했으면 꾸준히 줘야 해요. 갑자기 끊으면 다른 먹이를 찾지 못해 굶어 죽을 수 있어요.",
+  "길고양이에게 밥을 줄 때는 같은 시간, 같은 장소가 좋아요. 규칙적인 급식이 스트레스를 줄여줘요.",
+  "참치캔은 염분이 높아 주식이 될 수 없어요. 가끔 간식으로만 주세요.",
 ];
 
 /* ═══ 날씨 아이콘 매핑 ═══ */
@@ -106,15 +113,49 @@ export default function HomePage() {
   const [onboardingChecked, setOnboardingChecked] = useState(false);
   const [fact, setFact] = useState("");
   const [chatOpen, setChatOpen] = useState(false);
+  const [isDark, setIsDark] = useState(false);
+
+  // 다크모드 초기화
+  useEffect(() => {
+    const saved = localStorage.getItem("dosigongzon_dark");
+    if (saved === "1") {
+      document.documentElement.classList.add("dark");
+      setIsDark(true);
+    }
+  }, []);
+
+  const toggleDark = () => {
+    const next = !isDark;
+    setIsDark(next);
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("dosigongzon_dark", next ? "1" : "0");
+  };
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [weatherLoading, setWeatherLoading] = useState(true);
   const [weatherError, setWeatherError] = useState("");
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
-
-  // 뉴스 목록 가져오기
+  // 뉴스 목록
   useEffect(() => {
     listNews().then(setNewsItems);
   }, []);
+
+  // 방문자 카운트 (로그인 완료 후 토큰 포함)
+  useEffect(() => {
+    if (authLoading) return;
+    const recordVisit = async () => {
+      const headers: Record<string, string> = {};
+      if (user) {
+        try {
+          const { data } = await createClient().auth.getSession();
+          if (data.session?.access_token) {
+            headers["Authorization"] = `Bearer ${data.session.access_token}`;
+          }
+        } catch {}
+      }
+      fetch("/api/visit", { method: "POST", headers }).catch(() => {});
+    };
+    recordVisit();
+  }, [authLoading, user]);
 
   // 온보딩 체크
   useEffect(() => {
@@ -160,7 +201,7 @@ export default function HomePage() {
     };
 
     if (!navigator.geolocation) {
-      // 위치 서비스 미지원 → IP 기반 위치로 날씨 조회
+      // 위치 서비스 미지원 → IP 기반으로 서버에서 처리
       fetchWeather();
       return;
     }
@@ -168,7 +209,7 @@ export default function HomePage() {
     navigator.geolocation.getCurrentPosition(
       (pos) => fetchWeather(pos.coords.latitude, pos.coords.longitude),
       () => {
-        // GPS 거부 또는 HTTP 환경 → IP 기반 위치로 폴백
+        // GPS 거부 → IP 기반으로 서버에서 처리
         fetchWeather();
       },
       { timeout: 5000 },
@@ -208,8 +249,12 @@ export default function HomePage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shadow-[0_2px_12px_rgba(0,0,0,0.04)] active:scale-90 transition-transform">
-            <Bell size={20} className="text-text-sub" />
+          <button
+            onClick={toggleDark}
+            className="w-10 h-10 rounded-2xl bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
+            aria-label="다크모드 전환"
+          >
+            {isDark ? <SunMedium size={18} className="text-warning" /> : <Moon size={18} className="text-text-sub" />}
           </button>
           <Link
             href="/mypage"
@@ -220,9 +265,11 @@ export default function HomePage() {
         </div>
       </div>
 
+
+
       {/* ══════ 실시간 날씨 위젯 ══════ */}
       <div
-        className="p-5 mb-5"
+        className="p-5 mb-5 dark-card-level"
         style={{
           background: "linear-gradient(135deg, #FFFFFF 0%, #FDF9F2 100%)",
           borderRadius: 22,

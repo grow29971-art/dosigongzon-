@@ -27,6 +27,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko">
       <head>
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+          crossOrigin="anonymous"
+        />
       </head>
       <body>
         <AuthProvider>
@@ -35,7 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </AuthProvider>
         <script
           dangerouslySetInnerHTML={{
-            __html: `if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js")`,
+            __html: `if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js");if(localStorage.getItem("dosigongzon_dark")==="1")document.documentElement.classList.add("dark")`,
           }}
         />
       </body>

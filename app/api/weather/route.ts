@@ -27,12 +27,14 @@ export async function GET(request: Request) {
     return Response.json({ error: "lat/lon이 올바르지 않아요." }, { status: 400 });
   }
 
-  // GPS 좌표가 없으면 IP 기반 위치 추정 (HTTPS)
+  // GPS 좌표가 없으면 클라이언트 IP 기반 위치 추정
   if (lat === null || lon === null) {
     try {
-      const ipRes = await fetch("https://ip-api.com/json/?fields=lat,lon,city,regionName&lang=ko");
+      // 사용자의 실제 IP 가져오기 (Vercel이 전달하는 헤더)
+      const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "";
+      const ipParam = clientIp && clientIp !== "::1" && clientIp !== "127.0.0.1" ? `/${clientIp}` : "";
+      const ipRes = await fetch(`http://ip-api.com/json${ipParam}?fields=lat,lon,city,regionName&lang=ko`);
       const ipData = await ipRes.json();
-      console.log("[Weather API] IP 기반 위치:", ipData);
 
       const ipLat = parseCoord(ipData?.lat != null ? String(ipData.lat) : null, -90, 90);
       const ipLon = parseCoord(ipData?.lon != null ? String(ipData.lon) : null, -180, 180);
@@ -41,17 +43,14 @@ export async function GET(request: Request) {
         lat = ipLat;
         lon = ipLon;
       } else {
-        return Response.json(
-          { error: "위치를 확인할 수 없습니다." },
-          { status: 500 },
-        );
+        // IP 위치 실패 시 기본 좌표 (서울)
+        lat = 37.5665;
+        lon = 126.9780;
       }
-    } catch (err) {
-      console.error("[Weather API] IP 위치 확인 실패:", err);
-      return Response.json(
-        { error: "위치 확인 실패" },
-        { status: 500 },
-      );
+    } catch {
+      // 폴백: 서울 좌표
+      lat = 37.5665;
+      lon = 126.9780;
     }
   }
 

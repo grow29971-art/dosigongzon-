@@ -42,9 +42,14 @@ export async function sendDM(receiverId: string, receiverName: string, body: str
 
   // 푸시 알림 (실패해도 쪽지 전송 자체는 성공)
   try {
+    const { data: { session } } = await supabase.auth.getSession();
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (session?.access_token) {
+      headers["Authorization"] = `Bearer ${session.access_token}`;
+    }
     fetch("/api/push/send", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify({
         userId: receiverId,
         title: `${getDisplayName(user)}님의 쪽지`,

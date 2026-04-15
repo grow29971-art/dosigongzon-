@@ -11,6 +11,9 @@ import {
   Hand,
   ChevronRight,
   Pill,
+  Siren,
+  Heart,
+  HeartHandshake,
 } from "lucide-react";
 
 /* ═══ 카드 데이터 ═══ */
@@ -41,13 +44,13 @@ const cards: {
   },
   {
     title: "구청 연락처",
-    subtitle: "TNR 담당부서 바로 연결",
+    subtitle: "시·군·구별 동물보호 담당부서",
     Icon: Phone,
     iconBg: "#5BA876",
     iconColor: "#FFFFFF",
     glowColor: "91,168,118",
-    type: "tel",
-    href: "tel:02-120",
+    type: "link",
+    href: "/protection/district-contacts",
   },
   {
     title: "병원 찾기",
@@ -117,9 +120,9 @@ const cards: {
     title: "약품 가이드",
     subtitle: "동물약국 영양제 · 구충제 · 상처 관리",
     Icon: Pill,
-    iconBg: "#9B6DD7",
+    iconBg: "#D4708F",
     iconColor: "#FFFFFF",
-    glowColor: "155,109,215",
+    glowColor: "212,112,143",
     type: "link",
     href: "/protection/pharmacy-guide",
     wide: true,
@@ -146,13 +149,10 @@ function InfoCard({ card }: { card: (typeof cards)[number] }) {
       <div className="flex items-center gap-4 relative z-10">
         {/* 아이콘: 컬러 bg + 광택 + glow */}
         <div
-          className="w-[52px] h-[52px] rounded-2xl flex items-center justify-center shrink-0 relative"
-          style={{
-            background: `linear-gradient(135deg, ${card.iconBg} 0%, ${card.iconBg}DD 100%)`,
-            boxShadow: `0 6px 14px rgba(${card.glowColor},0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)`,
-          }}
+          className="w-[48px] h-[48px] rounded-2xl flex items-center justify-center shrink-0 relative dark-icon-box"
+          style={{ backgroundColor: `${card.iconBg}15` }}
         >
-          <card.Icon size={24} color={card.iconColor} strokeWidth={2.3} />
+          <card.Icon size={22} color={card.iconBg} strokeWidth={2} />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[15.5px] font-extrabold text-text-main tracking-tight leading-tight">
@@ -270,38 +270,37 @@ export default function ProtectionPage() {
           </h2>
         </div>
         <div className="grid grid-cols-3 gap-2.5">
-          {EMERGENCY_CONTACTS.map((c) => (
-            <a
-              key={c.label}
-              href={`tel:${c.tel}`}
-              className="py-4 px-2 flex flex-col items-center active:scale-95 transition-transform"
-              style={{
-                background: "#FFFFFF",
-                borderRadius: 20,
-                boxShadow: `0 6px 20px rgba(${c.glow},0.12), 0 1px 3px rgba(0,0,0,0.03)`,
-                border: "1px solid rgba(0,0,0,0.04)",
-              }}
-            >
-              <div
-                className="w-11 h-11 rounded-[14px] flex items-center justify-center mb-2"
+          {EMERGENCY_CONTACTS.map((c) => {
+            const Icon = c.icon;
+            return (
+              <a
+                key={c.label}
+                href={`tel:${c.tel}`}
+                className="py-4 px-2 flex flex-col items-center active:scale-95 transition-transform"
                 style={{
-                  background: `linear-gradient(135deg, ${c.accent} 0%, ${c.accent}DD 100%)`,
-                  boxShadow: `0 5px 12px rgba(${c.glow},0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)`,
+                  background: `linear-gradient(135deg, ${c.accent}12 0%, ${c.accent}08 100%)`,
+                  borderRadius: 20,
+                  border: `1.5px solid ${c.accent}20`,
                 }}
               >
-                <span className="text-[17px]">{c.emoji}</span>
-              </div>
-              <p className="text-[12px] font-extrabold text-text-main tracking-tight">
-                {c.label}
-              </p>
-              <p
-                className="text-[10.5px] font-bold mt-0.5 tracking-tight"
-                style={{ color: c.accent }}
-              >
-                {c.tel}
-              </p>
-            </a>
-          ))}
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center mb-2"
+                  style={{ backgroundColor: `${c.accent}15` }}
+                >
+                  <Icon size={20} color={c.accent} strokeWidth={2} />
+                </div>
+                <p className="text-[12px] font-extrabold text-text-main tracking-tight">
+                  {c.label}
+                </p>
+                <p
+                  className="text-[10.5px] font-bold mt-0.5 tracking-tight"
+                  style={{ color: c.accent }}
+                >
+                  {c.tel}
+                </p>
+              </a>
+            );
+          })}
         </div>
         <p className="text-[10.5px] text-text-light mt-2.5 px-1 leading-relaxed">
           학대 현장 목격 시 경찰 우선 · 보호/상담은 동물권 단체
@@ -316,22 +315,19 @@ const EMERGENCY_CONTACTS = [
   {
     label: "경찰",
     tel: "112",
-    emoji: "🚔",
+    icon: Siren,
     accent: "#D85555",
-    glow: "216,85,85",
   },
   {
     label: "카라",
     tel: "02-3482-0999",
-    emoji: "🐾",
+    icon: Heart,
     accent: "#5BA876",
-    glow: "91,168,118",
   },
   {
     label: "케어",
     tel: "02-313-8886",
-    emoji: "💚",
+    icon: HeartHandshake,
     accent: "#E88D5A",
-    glow: "232,141,90",
   },
 ];

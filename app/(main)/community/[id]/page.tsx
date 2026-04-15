@@ -15,6 +15,9 @@ import {
   Pin,
   ThumbsUp,
   ThumbsDown,
+  Reply,
+  X,
+  CornerDownRight,
 } from "lucide-react";
 import type { Post } from "@/lib/types";
 import { CATEGORY_MAP } from "@/lib/types";
@@ -50,6 +53,7 @@ export default function PostDetailPage({
   const [commentText, setCommentText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [commentError, setCommentError] = useState("");
+  const [replyTo, setReplyTo] = useState<{ id: string; name: string } | null>(null);
 
   // admin 여부
   const [isAdmin, setIsAdmin] = useState(false);
@@ -128,9 +132,10 @@ export default function PostDetailPage({
     setSubmitting(true);
     setCommentError("");
     try {
-      const created = await createPostComment(id, commentText);
+      const created = await createPostComment(id, commentText, replyTo?.id);
       setComments((prev) => [...prev, created]);
       setCommentText("");
+      setReplyTo(null);
     } catch (err) {
       setCommentError(err instanceof Error ? err.message : "작성 실패");
     } finally {
@@ -364,68 +369,36 @@ export default function PostDetailPage({
           </div>
         ) : (
           <div className="space-y-3">
-            {comments.map((c) => (
-              <div key={c.id} className="card-sm p-4">
-                <div className="flex items-center justify-between mb-1.5">
-                  <div className="flex items-center gap-2">
-                    {c.author_avatar_url ? (
-                      <img
-                        src={c.author_avatar_url}
-                        alt=""
-                        className="w-6 h-6 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center">
-                        <span className="text-[10px] font-extrabold text-primary">
-                          {c.author_name?.charAt(0) ?? "?"}
-                        </span>
+            {/* 루트 댓글 */}
+            {comments.filter((c) => !c.parent_id).map((c) => {
+              const replies = comments.filter((r) => r.parent_id === c.id);
+              return (
+                <div key={c.id}>
+                  {/* 댓글 */}
+                  <CommentItem
+                    c={c}
+                    user={user}
+                    onReply={() => setReplyTo({ id: c.id, name: c.author_name ?? "익명" })}
+                    onReport={() => setReportTarget({ type: "post_comment", id: c.id, snapshot: c.body.slice(0, 150) })}
+                  />
+                  {/* 대댓글 */}
+                  {replies.map((r) => (
+                    <div key={r.id} className="ml-6 mt-1.5">
+                      <div className="flex items-center gap-1 mb-1 pl-2">
+                        <CornerDownRight size={12} className="text-text-light" />
                       </div>
-                    )}
-                    <span className="text-[13px] font-semibold text-text-main">
-                      {c.author_name ?? "익명"}
-                    </span>
-                    {c.author_level && (
-                      <span
-                        className="text-[9px] font-extrabold px-1.5 py-[1px] rounded-md tabular-nums"
-                        style={{
-                          backgroundColor: getLevelColor(c.author_level),
-                          color: "#FFFFFF",
-                          boxShadow: `0 1px 3px ${getLevelColor(c.author_level)}55`,
-                        }}
-                      >
-                        Lv.{c.author_level}
-                      </span>
-                    )}
-                    <TitleBadge titleId={c.author_title} />
-                    <SendDMButton userId={c.author_id} userName={c.author_name} currentUserId={user?.id} />
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[11px] text-text-light">
-                      {formatRelativeTime(c.created_at)}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setReportTarget({
-                          type: "post_comment",
-                          id: c.id,
-                          snapshot: c.body.slice(0, 150),
-                        })
-                      }
-                      className="w-5 h-5 rounded-md flex items-center justify-center active:scale-90"
-                      style={{ backgroundColor: "#F6F1EA" }}
-                      aria-label="댓글 신고"
-                      title="신고하기"
-                    >
-                      <Flag size={9} style={{ color: "#A38E7A" }} strokeWidth={2.5} />
-                    </button>
-                  </div>
+                      <CommentItem
+                        c={r}
+                        user={user}
+                        onReply={() => setReplyTo({ id: c.id, name: r.author_name ?? "익명" })}
+                        onReport={() => setReportTarget({ type: "post_comment", id: r.id, snapshot: r.body.slice(0, 150) })}
+                        isReply
+                      />
+                    </div>
+                  ))}
                 </div>
-                <p className="text-[13px] text-text-sub leading-relaxed pl-8 whitespace-pre-wrap">
-                  {c.body}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
@@ -447,6 +420,20 @@ export default function PostDetailPage({
         }}
       >
         <div className="mx-auto max-w-lg">
+          {replyTo && (
+            <div className="flex items-center gap-2 mb-1.5 px-2">
+              <Reply size={12} className="text-primary" />
+              <span className="text-[11px] text-primary font-bold">{replyTo.name}</span>
+              <span className="text-[11px] text-text-light">에게 답글</span>
+              <button
+                type="button"
+                onClick={() => setReplyTo(null)}
+                className="ml-auto w-5 h-5 rounded-full bg-surface-alt flex items-center justify-center active:scale-90"
+              >
+                <X size={10} className="text-text-sub" />
+              </button>
+            </div>
+          )}
           {commentError && (
             <p
               className="text-[11px] mb-1 px-2"
@@ -464,7 +451,7 @@ export default function PostDetailPage({
                 if (e.key === "Enter") handleSubmitComment();
               }}
               placeholder={
-                user ? "댓글을 입력하세요..." : "로그인 후 댓글을 작성할 수 있어요"
+                replyTo ? `${replyTo.name}에게 답글...` : user ? "댓글을 입력하세요..." : "로그인 후 댓글을 작성할 수 있어요"
               }
               disabled={!user || submitting}
               className="flex-1 px-4 py-2.5 rounded-full border border-border bg-surface-alt text-[14px] text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
@@ -489,6 +476,88 @@ export default function PostDetailPage({
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ═══ 댓글 아이템 ═══ */
+function CommentItem({
+  c,
+  user,
+  onReply,
+  onReport,
+  isReply,
+}: {
+  c: PostComment;
+  user: { id: string } | null;
+  onReply: () => void;
+  onReport: () => void;
+  isReply?: boolean;
+}) {
+  return (
+    <div
+      className={`card-sm ${isReply ? "p-3" : "p-4"}`}
+      style={isReply ? { backgroundColor: "#FAFAF7" } : undefined}
+    >
+      <div className="flex items-center justify-between mb-1.5">
+        <div className="flex items-center gap-2">
+          {c.author_avatar_url ? (
+            <img src={c.author_avatar_url} alt="" className="w-6 h-6 rounded-full object-cover" />
+          ) : (
+            <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center">
+              <span className="text-[10px] font-extrabold text-primary">
+                {c.author_name?.charAt(0) ?? "?"}
+              </span>
+            </div>
+          )}
+          <span className="text-[13px] font-semibold text-text-main">
+            {c.author_name ?? "익명"}
+          </span>
+          {c.author_level && (
+            <span
+              className="text-[9px] font-extrabold px-1.5 py-[1px] rounded-md tabular-nums"
+              style={{
+                backgroundColor: getLevelColor(c.author_level),
+                color: "#FFFFFF",
+                boxShadow: `0 1px 3px ${getLevelColor(c.author_level)}55`,
+              }}
+            >
+              Lv.{c.author_level}
+            </span>
+          )}
+          <TitleBadge titleId={c.author_title} />
+          <SendDMButton userId={c.author_id} userName={c.author_name} currentUserId={user?.id} />
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="text-[11px] text-text-light">
+            {formatRelativeTime(c.created_at)}
+          </span>
+          <button
+            type="button"
+            onClick={onReport}
+            className="w-5 h-5 rounded-md flex items-center justify-center active:scale-90"
+            style={{ backgroundColor: "#F6F1EA" }}
+            aria-label="댓글 신고"
+          >
+            <Flag size={9} style={{ color: "#A38E7A" }} strokeWidth={2.5} />
+          </button>
+        </div>
+      </div>
+      <p className="text-[13px] text-text-sub leading-relaxed pl-8 whitespace-pre-wrap">
+        {c.body}
+      </p>
+      {/* 답글 버튼 */}
+      {user && !isReply && (
+        <button
+          type="button"
+          onClick={onReply}
+          className="flex items-center gap-1 ml-8 mt-1.5 text-[11px] font-semibold active:scale-95 transition-transform"
+          style={{ color: "#A38E7A" }}
+        >
+          <Reply size={11} />
+          답글
+        </button>
+      )}
     </div>
   );
 }

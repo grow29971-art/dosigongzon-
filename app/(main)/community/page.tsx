@@ -11,6 +11,7 @@ import {
   ChevronRight,
   TrendingUp,
   Plus,
+  Eye,
 } from "lucide-react";
 import type { Post, PostCategory } from "@/lib/types";
 import { listPosts, formatRelativeTime } from "@/lib/posts-repo";
@@ -98,13 +99,10 @@ function CategoryCardItem({
       >
         <div className="flex items-center gap-4">
           <div
-            className="w-[52px] h-[52px] rounded-2xl flex items-center justify-center shrink-0"
-            style={{
-              background: `linear-gradient(135deg, ${card.iconBg} 0%, ${card.iconBg}DD 100%)`,
-              boxShadow: `0 6px 14px rgba(${card.glowColor},0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)`,
-            }}
+            className="w-[48px] h-[48px] rounded-2xl flex items-center justify-center shrink-0 dark-icon-box"
+            style={{ backgroundColor: `${card.iconBg}15` }}
           >
-            <card.Icon size={24} color="#FFFFFF" strokeWidth={2.3} />
+            <card.Icon size={22} color={card.iconBg} strokeWidth={2} />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-baseline gap-2">
@@ -140,10 +138,16 @@ function CategoryCardItem({
 export default function CommunityPage() {
   const [mounted, setMounted] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [todayVisit, setTodayVisit] = useState<number | null>(null);
+  const [totalUsers, setTotalUsers] = useState<number | null>(null);
 
   useEffect(() => {
     setMounted(true);
     listPosts().then(setPosts);
+    fetch("/api/visit").then((r) => r.json()).then((d) => {
+      setTodayVisit(d.today);
+      setTotalUsers(d.total);
+    }).catch(() => {});
   }, []);
 
   if (!mounted) return null;
@@ -179,32 +183,21 @@ export default function CommunityPage() {
         </div>
       </div>
 
-      {/* ── 트렌딩 배너 ── */}
-      <div
-        className="mb-4 px-4 py-3.5 flex items-center gap-3"
-        style={{
-          background: "#FFFFFF",
-          borderRadius: 20,
-          boxShadow: "0 6px 20px rgba(201,169,97,0.10), 0 1px 3px rgba(0,0,0,0.03)",
-          border: "1px solid rgba(0,0,0,0.04)",
-        }}
-      >
+      {/* ── 오늘 방문자 ── */}
+      {todayVisit !== null && (
         <div
-          className="w-10 h-10 rounded-[13px] flex items-center justify-center shrink-0"
+          className="mb-4 flex items-center justify-center gap-2 py-2.5 rounded-2xl"
           style={{
-            background: "linear-gradient(135deg, #E8B040 0%, #E8B040DD 100%)",
-            boxShadow: "0 5px 12px rgba(232,176,64,0.35), inset 0 1px 0 rgba(255,255,255,0.4)",
+            background: "rgba(196,126,90,0.08)",
+            border: "1px solid rgba(196,126,90,0.12)",
           }}
         >
-          <TrendingUp size={18} color="#FFFFFF" strokeWidth={2.3} />
+          <Eye size={14} className="text-primary" />
+          <span className="text-[12px] text-text-sub">오늘 방문자</span>
+          <span className="text-[14px] font-extrabold text-primary">{todayVisit.toLocaleString()}</span>
+          <span className="text-[12px] text-text-sub">명</span>
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[12px] font-extrabold text-text-main">지금 뜨는 주제</p>
-          <p className="text-[11.5px] text-text-sub truncate">
-            봄철 길고양이 중성화 · 새끼 발견 급증
-          </p>
-        </div>
-      </div>
+      )}
 
       {/* ── 카테고리 벤토 그리드 ── */}
       <div className="space-y-3">
@@ -312,13 +305,10 @@ function CompactCard({ card, count }: { card: CategoryCard; count: number }) {
       }}
     >
       <div
-        className="w-[48px] h-[48px] rounded-2xl flex items-center justify-center mb-3"
-        style={{
-          background: `linear-gradient(135deg, ${card.iconBg} 0%, ${card.iconBg}DD 100%)`,
-          boxShadow: `0 6px 14px rgba(${card.glowColor},0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)`,
-        }}
+        className="w-[44px] h-[44px] rounded-2xl flex items-center justify-center mb-3 dark-icon-box"
+        style={{ backgroundColor: `${card.iconBg}15` }}
       >
-        <card.Icon size={22} color="#FFFFFF" strokeWidth={2.3} />
+        <card.Icon size={20} color={card.iconBg} strokeWidth={2} />
       </div>
       <div className="flex items-baseline gap-1.5">
         <p className="text-[15px] font-extrabold text-text-main tracking-tight">

@@ -302,20 +302,18 @@ export default function CategoryPage() {
                   )}
                   <span className="text-[10px] text-text-light ml-auto shrink-0">{formatRelativeTime(post.createdAt)}</span>
                 </div>
-              </div>
-
-              {/* 우측 통계 */}
-              <div className="flex flex-col items-end gap-1 shrink-0 text-text-light">
-                {post.commentCount > 0 && (
-                  <span className="flex items-center gap-0.5 text-[10px]">
-                    <MessageCircle size={10} /> {post.commentCount}
+                {/* 통계 */}
+                <div className="flex items-center gap-3 mt-1 text-text-light text-[10px]">
+                  <span className="flex items-center gap-0.5">
+                    <Eye size={10} /> {post.viewCount}
                   </span>
-                )}
-                {post.likeCount > 0 && (
-                  <span className="flex items-center gap-0.5 text-[10px]" style={{ color: meta.color }}>
+                  <span className="flex items-center gap-0.5" style={{ color: post.likeCount > 0 ? meta.color : undefined }}>
                     <ThumbsUp size={10} /> {post.likeCount}
                   </span>
-                )}
+                  <span className="flex items-center gap-0.5">
+                    <MessageCircle size={10} /> {post.commentCount}
+                  </span>
+                </div>
               </div>
             </Link>
           ))

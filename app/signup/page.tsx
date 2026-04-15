@@ -24,30 +24,42 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaSkipped, setCaptchaSkipped] = useState(false);
   const captchaRequired = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
-  const validate = () => {
+  const validate = async () => {
     const next: Record<string, string> = {};
     if (!nickname.trim()) next.nickname = "닉네임을 입력해주세요.";
     else if (nickname.length < 2) next.nickname = "닉네임은 2자 이상이어야 합니다.";
+    else {
+      try {
+        const res = await fetch("/api/check-nickname", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nickname: nickname.trim() }),
+        });
+        const data = await res.json();
+        if (!data.available) next.nickname = "이미 사용 중인 닉네임이에요.";
+      } catch {}
+    }
     if (!email) next.email = "이메일을 입력해주세요.";
     else if (!isValidEmail(email)) next.email = "올바른 이메일 형식이 아닙니다.";
     if (!password) next.password = "비밀번호를 입력해주세요.";
     else if (password.length < 6) next.password = "비밀번호는 6자 이상이어야 합니다.";
     if (password !== passwordConfirm) next.passwordConfirm = "비밀번호가 일치하지 않습니다.";
     if (!agree) next.agree = "약관에 동의해주세요.";
-    if (captchaRequired && !captchaToken) next.captcha = "봇 방어 확인이 필요해요.";
+    if (captchaRequired && !captchaToken && !captchaSkipped) next.captcha = "봇 방어 확인이 필요해요.";
     setErrors(next);
     return Object.keys(next).length === 0;
   };
 
   const handleSignup = async () => {
-    if (!validate()) return;
+    if (!(await validate())) return;
     setLoading(true);
     setErrors({});
 
     // Turnstile 토큰 서버 검증
-    if (captchaRequired && captchaToken) {
+    if (captchaRequired && captchaToken && !captchaSkipped) {
       try {
         const res = await fetch("/api/turnstile-verify", {
           method: "POST",
@@ -257,15 +269,15 @@ export default function SignupPage() {
               {agree && <Check size={12} color="white" strokeWidth={3} />}
             </div>
             <span className="text-[13px] text-text-sub text-left leading-relaxed">
-              <strong className="text-text-main">이용약관</strong> 및{" "}
-              <strong className="text-text-main">개인정보처리방침</strong>에 동의합니다
+              <Link href="/terms" className="font-bold text-primary underline" onClick={(e) => e.stopPropagation()}>이용약관</Link> 및{" "}
+              <Link href="/privacy" className="font-bold text-primary underline" onClick={(e) => e.stopPropagation()}>개인정보처리방침</Link>에 동의합니다
             </span>
           </button>
           {errors.agree && <p className="text-[11px] text-error mt-1 ml-8">{errors.agree}</p>}
         </div>
 
         {/* ══════ Turnstile (봇 방어) ══════ */}
-        {captchaRequired && (
+        {captchaRequired && !captchaSkipped && (
           <div className="mb-4">
             <TurnstileWidget
               onVerify={(token) => {
@@ -273,10 +285,19 @@ export default function SignupPage() {
                 setErrors((p) => ({ ...p, captcha: "" }));
               }}
               onExpire={() => setCaptchaToken(null)}
-              onError={() => setCaptchaToken(null)}
+              onError={() => setCaptchaSkipped(true)}
             />
             {errors.captcha && (
-              <p className="text-[11px] text-error text-center">{errors.captcha}</p>
+              <div className="text-center">
+                <p className="text-[11px] text-error">{errors.captcha}</p>
+                <button
+                  type="button"
+                  onClick={() => { setCaptchaSkipped(true); setErrors((p) => ({ ...p, captcha: "" })); }}
+                  className="text-[11px] text-text-sub underline mt-1"
+                >
+                  봇 방어를 건너뛰고 가입하기
+                </button>
+              </div>
             )}
           </div>
         )}

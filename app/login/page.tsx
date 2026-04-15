@@ -39,6 +39,7 @@ function LoginContent() {
   const [pressing, setPressing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState<string | null>(null);
+  const [socialAgree, setSocialAgree] = useState(false);
 
   // 인앱 브라우저 감지 (카톡/페북/인스타 등)
   const [inApp, setInApp] = useState<InAppBrowser>(null);
@@ -251,9 +252,9 @@ function LoginContent() {
             </div>
             <span className="text-[13px] text-text-sub">로그인 상태 유지</span>
           </button>
-          <button className="text-[13px] text-text-sub">
-            비밀번호 찾기
-          </button>
+          <Link href="/find-account" className="text-[13px] text-text-sub">
+            아이디 · 비밀번호 찾기
+          </Link>
         </div>
 
         {/* ══════ 로그인 버튼 ══════ */}
@@ -285,14 +286,34 @@ function LoginContent() {
           <div className="flex-1 h-px bg-border" />
         </div>
 
+        {/* ══════ 소셜 로그인 약관 동의 ══════ */}
+        <div className="mb-4">
+          <button
+            onClick={() => setSocialAgree(!socialAgree)}
+            className="flex items-start gap-2.5"
+          >
+            <div
+              className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
+                socialAgree ? "bg-primary border-primary" : "border-border"
+              }`}
+            >
+              {socialAgree && <Check size={12} color="white" strokeWidth={3} />}
+            </div>
+            <span className="text-[12px] text-text-sub text-left leading-relaxed">
+              <Link href="/terms" className="font-bold text-primary underline">이용약관</Link> 및{" "}
+              <Link href="/privacy" className="font-bold text-primary underline">개인정보처리방침</Link>에 동의합니다
+            </span>
+          </button>
+        </div>
+
         {/* ══════ 소셜 로그인 ══════ */}
         <div className="space-y-2.5">
           {/* 카카오 */}
           <button
-            onClick={() => handleSocialLogin("kakao")}
+            onClick={() => socialAgree ? handleSocialLogin("kakao") : setErrors({ general: "약관에 동의해주세요." })}
             disabled={!!socialLoading}
             className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.97] transition-transform disabled:opacity-60"
-            style={{ backgroundColor: "#FEE500", color: "#191919" }}
+            style={{ backgroundColor: "#FEE500", color: "#191919", opacity: socialAgree ? 1 : 0.6 }}
           >
             {socialLoading === "kakao" ? (
               <Loader2 size={18} className="animate-spin" />
@@ -309,10 +330,10 @@ function LoginContent() {
 
           {/* 구글 */}
           <button
-            onClick={() => handleSocialLogin("google")}
+            onClick={() => socialAgree ? handleSocialLogin("google") : setErrors({ general: "약관에 동의해주세요." })}
             disabled={!!socialLoading}
             className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.97] transition-transform border border-[#E0E0E0] disabled:opacity-60"
-            style={{ backgroundColor: "#FFFFFF", color: "#2A2A28" }}
+            style={{ backgroundColor: "#FFFFFF", color: "#2A2A28", opacity: socialAgree ? 1 : 0.6 }}
           >
             {socialLoading === "google" ? (
               <Loader2 size={18} className="animate-spin" />

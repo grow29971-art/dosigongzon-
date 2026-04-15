@@ -19,6 +19,8 @@ import {
   MessageSquare,
   Inbox,
   Stethoscope,
+  Pill,
+  Bell,
 } from "lucide-react";
 import InquiryModal from "@/app/components/InquiryModal";
 import { useAuth } from "@/lib/auth-context";
@@ -78,6 +80,9 @@ export default function MyPage() {
   const [unreadDM, setUnreadDM] = useState(0);
   const [inquiryOpen, setInquiryOpen] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deleting, setDeleting] = useState(false);
   const [avatarError, setAvatarError] = useState("");
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
@@ -102,6 +107,10 @@ export default function MyPage() {
       setNickError("닉네임을 입력해주세요.");
       return;
     }
+    if (trimmed.length < 2) {
+      setNickError("닉네임은 2자 이상이어야 합니다.");
+      return;
+    }
     if (trimmed.length > 20) {
       setNickError("20자 이내로 입력해주세요.");
       return;
@@ -109,6 +118,18 @@ export default function MyPage() {
     setNickSaving(true);
     setNickError("");
     try {
+      // 닉네임 중복 체크
+      const res = await fetch("/api/check-nickname", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nickname: trimmed, currentUserId: user?.id }),
+      });
+      const check = await res.json();
+      if (!check.available) {
+        setNickError("이미 사용 중인 닉네임이에요.");
+        setNickSaving(false);
+        return;
+      }
       await updateMyNickname(trimmed);
       setEditingNick(false);
     } catch (err) {
@@ -171,6 +192,30 @@ export default function MyPage() {
     await signOut();
     router.push("/");
     router.refresh();
+  };
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText !== "탈퇴합니다") return;
+    setDeleting(true);
+    try {
+      const supabase = (await import("@/lib/supabase/client")).createClient();
+      const { data } = await supabase.auth.getSession();
+      if (!data.session?.access_token) throw new Error("세션 없음");
+
+      const res = await fetch("/api/account/delete", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${data.session.access_token}` },
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error);
+
+      await signOut();
+      router.push("/login");
+      router.refresh();
+    } catch {
+      alert("탈퇴 처리에 실패했어요. 다시 시도해주세요.");
+      setDeleting(false);
+    }
   };
 
   const nickname = getDisplayName(user);
@@ -342,7 +387,7 @@ export default function MyPage() {
             const lv = computeLevel(score);
             return (
               <div
-                className="mb-3 px-5 py-4 relative overflow-hidden"
+                className="mb-3 px-5 py-4 relative overflow-hidden dark-card-level"
                 style={{
                   background: "linear-gradient(135deg, #FFFFFF 0%, #FDF9F2 100%)",
                   borderRadius: 22,
@@ -352,10 +397,9 @@ export default function MyPage() {
               >
                 <div className="flex items-center gap-4 mb-3">
                   <div
-                    className="w-[52px] h-[52px] rounded-2xl flex items-center justify-center shrink-0 text-2xl"
+                    className="w-[48px] h-[48px] rounded-full flex items-center justify-center shrink-0 text-2xl"
                     style={{
-                      background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
-                      boxShadow: "0 8px 18px rgba(196,126,90,0.40), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)",
+                      backgroundColor: "rgba(196,126,90,0.12)",
                     }}
                   >
                     {lv.emoji}
@@ -625,13 +669,10 @@ export default function MyPage() {
               }}
             >
               <div
-                className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
-                style={{
-                  background: "linear-gradient(135deg, #4A7BA8 0%, #3A6590 100%)",
-                  boxShadow: "0 5px 12px rgba(74,123,168,0.35), inset 0 1px 0 rgba(255,255,255,0.4)",
-                }}
+                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                style={{ backgroundColor: "rgba(74,123,168,0.1)" }}
               >
-                <MessageSquare size={20} color="#fff" strokeWidth={2.3} />
+                <MessageSquare size={18} color="#4A7BA8" strokeWidth={2} />
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <p className="text-[14px] font-extrabold text-text-main tracking-tight">
@@ -666,13 +707,10 @@ export default function MyPage() {
                   }}
                 >
                   <div
-                    className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
-                    style={{
-                      background: "linear-gradient(135deg, #7A6B8E 0%, #695B7A 100%)",
-                      boxShadow: "0 5px 12px rgba(122,107,142,0.35), inset 0 1px 0 rgba(255,255,255,0.4)",
-                    }}
+                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: "rgba(122,107,142,0.1)" }}
                   >
-                    <Newspaper size={20} color="#fff" strokeWidth={2.3} />
+                    <Newspaper size={18} color="#7A6B8E" strokeWidth={2} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[14px] font-extrabold text-text-main tracking-tight">
@@ -695,13 +733,10 @@ export default function MyPage() {
                   }}
                 >
                   <div
-                    className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
-                    style={{
-                      background: "linear-gradient(135deg, #D85555 0%, #B84545 100%)",
-                      boxShadow: "0 5px 12px rgba(216,85,85,0.35), inset 0 1px 0 rgba(255,255,255,0.4)",
-                    }}
+                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: "rgba(216,85,85,0.1)" }}
                   >
-                    <Inbox size={20} color="#fff" strokeWidth={2.3} />
+                    <Inbox size={18} color="#D85555" strokeWidth={2} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[14px] font-extrabold text-text-main tracking-tight">
@@ -724,13 +759,10 @@ export default function MyPage() {
                   }}
                 >
                   <div
-                    className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
-                    style={{
-                      background: "linear-gradient(135deg, #6B8E6F 0%, #5A7C5E 100%)",
-                      boxShadow: "0 5px 12px rgba(107,142,111,0.35), inset 0 1px 0 rgba(255,255,255,0.4)",
-                    }}
+                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: "rgba(107,142,111,0.1)" }}
                   >
-                    <Stethoscope size={20} color="#fff" strokeWidth={2.3} />
+                    <Stethoscope size={18} color="#6B8E6F" strokeWidth={2} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[14px] font-extrabold text-text-main tracking-tight">
@@ -753,13 +785,10 @@ export default function MyPage() {
                   }}
                 >
                   <div
-                    className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
-                    style={{
-                      background: "linear-gradient(135deg, #4A7BA8 0%, #3A6B98 100%)",
-                      boxShadow: "0 5px 12px rgba(74,123,168,0.35), inset 0 1px 0 rgba(255,255,255,0.4)",
-                    }}
+                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: "rgba(74,123,168,0.1)" }}
                   >
-                    <User size={20} color="#fff" strokeWidth={2.3} />
+                    <User size={18} color="#4A7BA8" strokeWidth={2} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[14px] font-extrabold text-text-main tracking-tight">
@@ -782,13 +811,10 @@ export default function MyPage() {
                   }}
                 >
                   <div
-                    className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0 text-xl"
-                    style={{
-                      background: "linear-gradient(135deg, #9B6DD7 0%, #7B4FBF 100%)",
-                      boxShadow: "0 5px 12px rgba(155,109,215,0.35), inset 0 1px 0 rgba(255,255,255,0.4)",
-                    }}
+                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: "rgba(155,109,215,0.1)" }}
                   >
-                    💊
+                    <Pill size={18} color="#9B6DD7" strokeWidth={2} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[14px] font-extrabold text-text-main tracking-tight">
@@ -799,6 +825,32 @@ export default function MyPage() {
                     </p>
                   </div>
                   <ChevronRight size={16} className="shrink-0" style={{ color: "#9B6DD7", opacity: 0.7 }} />
+                </Link>
+                <Link
+                  href="/admin/push"
+                  className="flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
+                  style={{
+                    background: "#FFFFFF",
+                    borderRadius: 16,
+                    boxShadow: "0 4px 14px rgba(196,126,90,0.10), 0 1px 2px rgba(0,0,0,0.02)",
+                    border: "1px solid rgba(0,0,0,0.04)",
+                  }}
+                >
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: "rgba(196,126,90,0.1)" }}
+                  >
+                    <Bell size={18} color="#C47E5A" strokeWidth={2} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+                      푸시 알림 발송
+                    </p>
+                    <p className="text-[11px] text-text-sub mt-0.5">
+                      전체 사용자에게 공지 알림 보내기
+                    </p>
+                  </div>
+                  <ChevronRight size={16} className="shrink-0" style={{ color: "#C47E5A", opacity: 0.7 }} />
                 </Link>
               </div>
             </div>
@@ -818,6 +870,63 @@ export default function MyPage() {
             <LogOut size={14} />
             로그아웃
           </button>
+
+          {/* ── 회원탈퇴 ── */}
+          <button
+            onClick={() => setDeleteConfirmOpen(true)}
+            className="w-full text-center py-3 text-[11px] text-text-light underline active:scale-[0.97] transition-transform mt-2"
+          >
+            회원탈퇴
+          </button>
+
+          {/* 탈퇴 확인 모달 */}
+          {deleteConfirmOpen && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center px-5">
+              <div className="absolute inset-0 bg-black/40" onClick={() => !deleting && setDeleteConfirmOpen(false)} />
+              <div className="relative w-full max-w-sm bg-white rounded-[28px] p-6 shadow-2xl">
+                <h2 className="text-[18px] font-extrabold text-text-main mb-2">
+                  정말 탈퇴하시겠어요?
+                </h2>
+                <p className="text-[13px] text-text-sub leading-relaxed mb-1">
+                  탈퇴하면 다음 데이터가 <b style={{ color: "#B84545" }}>영구 삭제</b>됩니다.
+                </p>
+                <ul className="text-[12px] text-text-sub leading-relaxed mb-4 pl-4 list-disc">
+                  <li>등록한 고양이 정보</li>
+                  <li>돌봄 기록 및 댓글</li>
+                  <li>커뮤니티 게시글</li>
+                  <li>쪽지 내역</li>
+                  <li>업적 및 레벨</li>
+                </ul>
+                <p className="text-[12px] text-text-sub mb-3">
+                  확인을 위해 <b style={{ color: "#B84545" }}>탈퇴합니다</b>를 입력해주세요.
+                </p>
+                <input
+                  type="text"
+                  value={deleteConfirmText}
+                  onChange={(e) => setDeleteConfirmText(e.target.value)}
+                  placeholder="탈퇴합니다"
+                  className="w-full px-4 py-3 rounded-xl bg-surface-alt text-[14px] text-text-main outline-none focus:ring-2 focus:ring-error/20 mb-4 placeholder:text-text-muted"
+                />
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => { setDeleteConfirmOpen(false); setDeleteConfirmText(""); }}
+                    disabled={deleting}
+                    className="flex-1 py-3 rounded-xl text-[14px] font-bold bg-surface-alt text-text-sub active:scale-[0.97] transition-transform"
+                  >
+                    취소
+                  </button>
+                  <button
+                    onClick={handleDeleteAccount}
+                    disabled={deleteConfirmText !== "탈퇴합니다" || deleting}
+                    className="flex-1 py-3 rounded-xl text-[14px] font-bold text-white active:scale-[0.97] transition-transform disabled:opacity-40"
+                    style={{ backgroundColor: "#B84545" }}
+                  >
+                    {deleting ? "처리 중..." : "탈퇴하기"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       ) : (
         <>
@@ -887,13 +996,10 @@ function StatCard({
       }}
     >
       <div
-        className="w-10 h-10 rounded-[13px] flex items-center justify-center mb-2"
-        style={{
-          background: `linear-gradient(135deg, ${color} 0%, ${color}DD 100%)`,
-          boxShadow: `0 5px 12px rgba(${glow},0.35), inset 0 1px 0 rgba(255,255,255,0.4)`,
-        }}
+        className="w-10 h-10 rounded-full flex items-center justify-center mb-2"
+        style={{ backgroundColor: `rgba(${glow},0.1)` }}
       >
-        <Icon size={18} color="#fff" strokeWidth={2.3} />
+        <Icon size={18} color={color} strokeWidth={2} />
       </div>
       <p
         className="text-[18px] font-extrabold tabular-nums tracking-tight"
@@ -985,24 +1091,22 @@ function TitleCard({
       type="button"
       onClick={onToggle}
       disabled={locked}
-      className="relative overflow-hidden p-2.5 flex flex-col items-center text-center active:scale-[0.97] transition-transform disabled:active:scale-100"
+      className="relative overflow-hidden p-3 flex flex-col items-center text-center active:scale-[0.97] transition-transform disabled:active:scale-100"
       style={{
         background: isEquipped
-          ? `linear-gradient(135deg, ${categoryColor}18, ${categoryColor}08)`
+          ? `${categoryColor}08`
           : locked
-            ? "#F6F1EA"
+            ? "#F8F5F0"
             : "#FFFFFF",
-        borderRadius: 14,
-        boxShadow: isEquipped
-          ? `0 6px 18px ${categoryColor}33, 0 1px 3px rgba(0,0,0,0.04)`
-          : locked
-            ? "inset 0 1px 2px rgba(0,0,0,0.03)"
-            : `0 4px 12px ${categoryColor}22, 0 1px 2px rgba(0,0,0,0.03)`,
+        borderRadius: 16,
+        boxShadow: locked
+          ? "none"
+          : "0 2px 8px rgba(0,0,0,0.04)",
         border: isEquipped
           ? `2px solid ${categoryColor}`
           : locked
-            ? "1px dashed #D6CDBE"
-            : `1.5px solid ${categoryColor}55`,
+            ? "1.5px dashed #DDD6CC"
+            : `1px solid rgba(0,0,0,0.06)`,
       }}
       title={status.description}
     >
@@ -1015,10 +1119,10 @@ function TitleCard({
         </span>
       )}
       <div
-        className="w-9 h-9 rounded-full flex items-center justify-center text-[18px] mb-1"
+        className="w-10 h-10 rounded-full flex items-center justify-center text-[20px] mb-1.5"
         style={{
-          background: locked ? "#E8E0D2" : `${categoryColor}18`,
-          filter: locked ? "grayscale(100%) opacity(0.55)" : "none",
+          background: locked ? "#EEEAE4" : `${categoryColor}12`,
+          filter: locked ? "grayscale(100%) opacity(0.45)" : "none",
         }}
       >
         {status.emoji}

@@ -90,25 +90,14 @@ export default function WritePage() {
   };
 
   return (
-    <div className="pb-8">
+    <div className="pb-24">
       {/* ── 헤더 ── */}
       <div className="flex items-center justify-between px-4 pt-14 pb-3">
         <button onClick={() => router.back()} className="p-2 -ml-2 active:scale-90 transition-transform">
           <ArrowLeft size={24} className="text-text-main" />
         </button>
         <h1 className="text-lg font-bold text-text-main">글쓰기</h1>
-        <button
-          onClick={handleSubmit}
-          disabled={!canSubmit || submitting}
-          className={`flex items-center gap-1 px-4 py-2 rounded-full text-sm font-bold transition-all ${
-            canSubmit
-              ? "bg-primary text-white active:scale-95"
-              : "bg-border text-text-muted"
-          }`}
-        >
-          <Send size={16} />
-          등록
-        </button>
+        <div className="w-16" />
       </div>
 
       <div className="px-5 space-y-5">
@@ -242,6 +231,30 @@ export default function WritePage() {
             </p>
           </div>
         )}
+      </div>
+
+      {/* ── 하단 등록 버튼 ── */}
+      <div
+        className="fixed left-0 right-0 z-30 px-5 py-3 bg-white/95 backdrop-blur-md border-t border-divider"
+        style={{ bottom: "5rem" }}
+      >
+        <button
+          onClick={handleSubmit}
+          disabled={!canSubmit || submitting}
+          className={`w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-[15px] font-bold transition-all active:scale-[0.97] ${
+            canSubmit
+              ? "bg-primary text-white"
+              : "bg-border text-text-muted"
+          }`}
+          style={canSubmit ? { boxShadow: "0 6px 20px rgba(196,126,90,0.3)" } : undefined}
+        >
+          {submitting ? (
+            <Loader2 size={18} className="animate-spin" />
+          ) : (
+            <Send size={18} />
+          )}
+          {submitting ? "등록 중..." : "등록하기"}
+        </button>
       </div>
     </div>
   );
