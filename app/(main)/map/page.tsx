@@ -654,94 +654,191 @@ export default function MapPage() {
     });
   }, [cats, mapReady, isLoggedIn, alertedCats]);
 
-  // ── 병원 마커 (상시 표시, Geocoder로 주소 → 좌표 변환) ──
+  // ── 병원 마커 (뷰포트 기반 + 좌표 없으면 Geocoder 변환) ──
+  const hospitalIdleListenerRef = useRef<any>(null);
+  const geocodedCoordsRef = useRef<Map<string, { lat: number; lng: number }>>(new Map());
+
   useEffect(() => {
+    // 기존 마커 정리
     hospitalOverlaysRef.current.forEach((ov) => ov.setMap(null));
     hospitalOverlaysRef.current = [];
+    // 기존 idle 리스너 해제
+    if (hospitalIdleListenerRef.current && mapInstanceRef.current && window.kakao) {
+      window.kakao.maps.event.removeListener(mapInstanceRef.current, "idle", hospitalIdleListenerRef.current);
+      hospitalIdleListenerRef.current = null;
+    }
 
     if (!mapReady || !mapInstanceRef.current || !window.kakao) return;
     if (hospitals.length === 0) return;
 
     const map = mapInstanceRef.current;
+    const MAX_MARKERS = 200;
 
-    function placeHospitalMarker(h: RescueHospital, lat: number, lng: number) {
-      const position = new window.kakao.maps.LatLng(lat, lng);
+    // 좌표 없는 병원을 Geocoder로 변환 (수동 등록된 약국 등)
+    const geocoder = window.kakao.maps?.services
+      ? new window.kakao.maps.services.Geocoder()
+      : null;
+    const noCoord = hospitals.filter((h) => h.lat == null || h.lng == null);
+    for (const h of noCoord) {
+      if (geocodedCoordsRef.current.has(h.id)) continue;
+      const addr = h.address || `${h.city} ${h.district}`;
+      if (!geocoder || !addr) continue;
+      geocoder.addressSearch(addr, (result: any, status: any) => {
+        if (status === window.kakao.maps.services.Status.OK && result[0]) {
+          geocodedCoordsRef.current.set(h.id, {
+            lat: parseFloat(result[0].y),
+            lng: parseFloat(result[0].x),
+          });
+          // 변환 완료 후 마커 다시 그리기
+          renderVisibleHospitals();
+        }
+      });
+    }
+
+    function createHospitalEl(h: RescueHospital) {
       const el = document.createElement("div");
-      const label = h.name.length > 14 ? h.name.slice(0, 14) + "…" : h.name;
       const isPharmacy = (h.tags ?? []).some((t: string) => t.includes("동물약국"));
+      const isManual = h.source !== "kakao";
+      const isLarge = isPharmacy || isManual; // 약국 + 수동 등록 = 큰 마커
       const mc1 = isPharmacy ? "#E88D5A" : "#22B573";
       const mc2 = isPharmacy ? "#C47E5A" : "#1A9A5E";
+      const sz = isLarge ? 42 : 28; // 카카오 병원은 작게
+      const iconSz = isLarge ? (isPharmacy ? 20 : 22) : 14;
       const icon = isPharmacy
-        ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        ? `<svg width="${iconSz}" height="${iconSz}" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M10.5 20H6a2 2 0 01-2-2V8l4-4h8l4 4v4"/>
             <path d="M8 4v4h4"/>
             <circle cx="17" cy="17" r="4"/>
             <path d="M15 17h4"/>
             <path d="M17 15v4"/>
            </svg>`
-        : `<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z" fill="#fff"/></svg>`;
-      el.innerHTML = `
-        <div style="
-          transform: translate(-50%, -100%);
-          display: flex; flex-direction: column; align-items: center; cursor: pointer;
-        ">
-          <div style="
-            width: 42px; height: 42px;
-            border-radius: ${isPharmacy ? "50%" : "14px"};
-            background: linear-gradient(135deg, ${mc1} 0%, ${mc2} 100%);
-            border: 2.5px solid #fff;
-            box-shadow: 0 4px 14px ${mc1}55;
-            display: flex; align-items: center; justify-content: center;
-          ">
-            ${icon}
-          </div>
-          <div style="
-            margin-top: 3px; padding: 2px 8px; border-radius: 8px;
-            background: #fff; color: ${mc1};
-            font-size: 9.5px; font-weight: 800; white-space: nowrap;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            letter-spacing: -0.3px;
-            border: 1.5px solid ${mc1}30;
-          ">${label}</div>
-          <div style="
-            width: 6px; height: 6px;
-            background: #fff;
-            border-right: 1.5px solid ${mc1}30;
-            border-bottom: 1.5px solid ${mc1}30;
-            transform: rotate(45deg);
-            margin-top: -5px;
-          "></div>
-        </div>
-      `;
-      el.onclick = () => setSelectedHospital(h);
+        : `<svg width="${iconSz}" height="${iconSz}" viewBox="0 0 24 24" fill="none"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z" fill="#fff"/></svg>`;
 
-      const overlay = new window.kakao.maps.CustomOverlay({
-        position,
-        content: el,
-        yAnchor: 1,
-        zIndex: 3,
-      });
-      overlay.setMap(map);
-      hospitalOverlaysRef.current.push(overlay);
+      // 큰 마커 (약국/수동): 아이콘 + 라벨 + 포인터
+      if (isLarge) {
+        const label = h.name.length > 14 ? h.name.slice(0, 14) + "…" : h.name;
+        el.innerHTML = `
+          <div style="
+            transform: translate(-50%, -100%);
+            display: flex; flex-direction: column; align-items: center; cursor: pointer;
+          ">
+            <div style="
+              width: ${sz}px; height: ${sz}px;
+              border-radius: ${isPharmacy ? "50%" : "14px"};
+              background: linear-gradient(135deg, ${mc1} 0%, ${mc2} 100%);
+              border: 2.5px solid #fff;
+              box-shadow: 0 4px 14px ${mc1}55;
+              display: flex; align-items: center; justify-content: center;
+            ">
+              ${icon}
+            </div>
+            <div style="
+              margin-top: 3px; padding: 2px 8px; border-radius: 8px;
+              background: #fff; color: ${mc1};
+              font-size: 9.5px; font-weight: 800; white-space: nowrap;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+              letter-spacing: -0.3px;
+              border: 1.5px solid ${mc1}30;
+            ">${label}</div>
+            <div style="
+              width: 6px; height: 6px;
+              background: #fff;
+              border-right: 1.5px solid ${mc1}30;
+              border-bottom: 1.5px solid ${mc1}30;
+              transform: rotate(45deg);
+              margin-top: -5px;
+            "></div>
+          </div>
+        `;
+      } else {
+        // 작은 마커 (카카오 병원): 아이콘만, 라벨 없음
+        el.innerHTML = `
+          <div style="
+            transform: translate(-50%, -100%);
+            display: flex; flex-direction: column; align-items: center; cursor: pointer;
+          ">
+            <div style="
+              width: ${sz}px; height: ${sz}px;
+              border-radius: 10px;
+              background: linear-gradient(135deg, ${mc1} 0%, ${mc2} 100%);
+              border: 2px solid #fff;
+              box-shadow: 0 2px 8px ${mc1}44;
+              display: flex; align-items: center; justify-content: center;
+            ">
+              ${icon}
+            </div>
+          </div>
+        `;
+      }
+      el.onclick = () => setSelectedHospital(h);
+      return el;
     }
 
-    const geocoder = window.kakao.maps?.services
-      ? new window.kakao.maps.services.Geocoder()
-      : null;
+    function getCoord(h: RescueHospital): { lat: number; lng: number } | null {
+      if (h.lat != null && h.lng != null) return { lat: h.lat, lng: h.lng };
+      return geocodedCoordsRef.current.get(h.id) ?? null;
+    }
 
-    hospitals.forEach((h) => {
-      if (h.lat != null && h.lng != null) {
-        placeHospitalMarker(h, h.lat, h.lng);
-        return;
-      }
-      const addr = h.address || `${h.city} ${h.district}`;
-      if (!geocoder || !addr) return;
-      geocoder.addressSearch(addr, (result: any, status: any) => {
-        if (status === window.kakao.maps.services.Status.OK && result[0]) {
-          placeHospitalMarker(h, parseFloat(result[0].y), parseFloat(result[0].x));
-        }
+    // 뷰포트 내 병원만 마커로 표시
+    function renderVisibleHospitals() {
+      hospitalOverlaysRef.current.forEach((ov) => ov.setMap(null));
+      hospitalOverlaysRef.current = [];
+
+      const level = map.getLevel();
+      if (level >= 9) return;
+
+      const bounds = map.getBounds();
+      const sw = bounds.getSouthWest();
+      const ne = bounds.getNorthEast();
+
+      const visible = hospitals.filter((h) => {
+        const coord = getCoord(h);
+        if (!coord) return false;
+        return (
+          coord.lat >= sw.getLat() &&
+          coord.lat <= ne.getLat() &&
+          coord.lng >= sw.getLng() &&
+          coord.lng <= ne.getLng()
+        );
       });
-    });
+
+      // 수동 등록(약국 등) 우선 → pinned 우선 → 나머지
+      const sorted = visible.sort((a, b) => {
+        const aManual = a.source !== "kakao" ? 1 : 0;
+        const bManual = b.source !== "kakao" ? 1 : 0;
+        if (bManual !== aManual) return bManual - aManual;
+        return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+      });
+      const toRender = sorted.slice(0, MAX_MARKERS);
+
+      for (const h of toRender) {
+        const coord = getCoord(h)!;
+        const position = new window.kakao.maps.LatLng(coord.lat, coord.lng);
+        const el = createHospitalEl(h);
+        const isImportant = h.source !== "kakao" || (h.tags ?? []).some((t: string) => t.includes("동물약국"));
+        const overlay = new window.kakao.maps.CustomOverlay({
+          position,
+          content: el,
+          yAnchor: 1,
+          zIndex: isImportant ? 5 : 2, // 약국/수동 마커가 항상 위에
+        });
+        overlay.setMap(map);
+        hospitalOverlaysRef.current.push(overlay);
+      }
+    }
+
+    // 초기 렌더링
+    renderVisibleHospitals();
+
+    // 지도 이동/줌 시 재렌더링
+    hospitalIdleListenerRef.current = renderVisibleHospitals;
+    window.kakao.maps.event.addListener(map, "idle", renderVisibleHospitals);
+
+    return () => {
+      if (hospitalIdleListenerRef.current && map && window.kakao) {
+        window.kakao.maps.event.removeListener(map, "idle", hospitalIdleListenerRef.current);
+      }
+    };
   }, [hospitals, mapReady]);
 
   const handleCatCreated = (newCat: Cat) => {
@@ -1001,6 +1098,13 @@ export default function MapPage() {
         className="w-full h-full"
         style={{ background: "#EEEAE2" }}
       />
+
+      {/* 저작권 표시 */}
+      <div className="absolute bottom-1 left-2 z-[1] pointer-events-none">
+        <span className="text-[9px]" style={{ color: "rgba(0,0,0,0.4)" }}>
+          © Kakao Corp. · 공공데이터포털(data.go.kr)
+        </span>
+      </div>
 
       {/* 로딩 표시 */}
       {(loadingCats || !scriptLoaded) && !mapError && (
@@ -1380,12 +1484,12 @@ export default function MapPage() {
               </div>
             </div>
 
-            {/* 하단 전화 버튼 */}
-            {selectedHospital.phone && (
-              <div
-                className="px-5 py-3 border-t"
-                style={{ borderColor: `${accent}15` }}
-              >
+            {/* 하단 버튼들 */}
+            <div
+              className="px-5 py-3 border-t flex flex-col gap-2"
+              style={{ borderColor: `${accent}15` }}
+            >
+              {selectedHospital.phone && (
                 <a
                   href={`tel:${selectedHospital.phone}`}
                   className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-[14px] font-bold text-white active:scale-[0.97] transition-transform"
@@ -1397,8 +1501,42 @@ export default function MapPage() {
                   <Phone size={16} strokeWidth={2.5} />
                   {isPharm ? "약국 전화하기" : "병원 전화하기"}
                 </a>
-              </div>
-            )}
+              )}
+              {isLoggedIn && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (!confirm(`"${selectedHospital.name}"을(를) 폐업으로 신고할까요?\n신고하면 지도에서 숨겨집니다.`)) return;
+                    try {
+                      const { createClient: cc } = await import("@/lib/supabase/client");
+                      const sb = cc();
+                      const { data: { session } } = await sb.auth.getSession();
+                      const res = await fetch("/api/hospitals/report-closed", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                          Authorization: `Bearer ${session?.access_token ?? ""}`,
+                        },
+                        body: JSON.stringify({ hospitalId: selectedHospital.id }),
+                      });
+                      const d = await res.json();
+                      if (res.ok) {
+                        alert(d.message);
+                        setSelectedHospital(null);
+                        setHospitals((prev) => prev.filter((h) => h.id !== selectedHospital.id));
+                      } else {
+                        alert(d.error || "신고 실패");
+                      }
+                    } catch { alert("신고 처리 중 오류가 발생했어요"); }
+                  }}
+                  className="flex items-center justify-center gap-1.5 w-full py-2.5 rounded-2xl text-[12px] font-bold active:scale-[0.97] transition-transform"
+                  style={{ backgroundColor: "#F5F0EB", color: "#A38E7A" }}
+                >
+                  <Flag size={13} />
+                  폐업 신고
+                </button>
+              )}
+            </div>
           </div>
         </div>
         );

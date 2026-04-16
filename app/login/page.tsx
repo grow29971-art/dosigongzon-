@@ -301,7 +301,7 @@ function LoginContent() {
             </div>
             <span className="text-[12px] text-text-sub text-left leading-relaxed">
               <Link href="/terms" className="font-bold text-primary underline">이용약관</Link> 및{" "}
-              <Link href="/privacy" className="font-bold text-primary underline">개인정보처리방침</Link>에 동의합니다
+              <Link href="/privacy" className="font-bold text-primary underline">개인정보처리방침</Link>에 동의하며, 만 14세 이상입니다
             </span>
           </button>
         </div>

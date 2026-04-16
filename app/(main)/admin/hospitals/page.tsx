@@ -17,6 +17,8 @@ import {
   Phone,
   Clock,
   Stethoscope,
+  RefreshCw,
+  Database,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import {
@@ -28,6 +30,7 @@ import {
   type RescueHospital,
   type RescueHospitalInput,
 } from "@/lib/hospitals-repo";
+import { createClient } from "@/lib/supabase/client";
 
 const EMPTY: RescueHospitalInput = {
   name: "",
@@ -56,6 +59,10 @@ export default function AdminHospitalsPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
+  // ── 공공데이터 동기화 ──
+  const [syncing, setSyncing] = useState(false);
+  const [syncResult, setSyncResult] = useState<string | null>(null);
+
   useEffect(() => {
     let cancelled = false;
     Promise.all([isCurrentUserAdmin(), listRescueHospitals()])
@@ -77,6 +84,33 @@ export default function AdminHospitalsPage() {
   const refresh = async () => {
     const list = await listRescueHospitals();
     setItems(list);
+  };
+
+  const handleSync = async () => {
+    if (!confirm("전국 동물병원 공공데이터를 동기화할까요?\n카카오 검색 API로 전국을 탐색합니다. (1~2분 소요)")) return;
+    setSyncing(true);
+    setSyncResult(null);
+    try {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/admin/sync-hospitals", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session?.access_token ?? ""}`,
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setSyncResult(`오류: ${data.error}`);
+      } else {
+        setSyncResult(data.message);
+        await refresh();
+      }
+    } catch (err) {
+      setSyncResult(`동기화 실패: ${err instanceof Error ? err.message : "알 수 없는 오류"}`);
+    } finally {
+      setSyncing(false);
+    }
   };
 
   const handleCreate = () => {
@@ -203,16 +237,64 @@ export default function AdminHospitalsPage() {
               구조동물 치료 도움병원을 추가·수정·삭제할 수 있어요
             </p>
           </div>
-          <button
-            onClick={handleCreate}
-            className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center active:scale-95 transition-transform"
-            style={{ boxShadow: "0 6px 14px rgba(196,126,90,0.35)" }}
-            aria-label="새 병원 추가"
-          >
-            <Plus size={20} color="#fff" strokeWidth={2.5} />
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleSync}
+              disabled={syncing}
+              className="w-11 h-11 rounded-2xl flex items-center justify-center active:scale-95 transition-transform disabled:opacity-40"
+              style={{
+                backgroundColor: "#22B573",
+                boxShadow: "0 6px 14px rgba(34,181,115,0.35)",
+              }}
+              aria-label="공공데이터 동기화"
+            >
+              {syncing ? (
+                <Loader2 size={18} color="#fff" className="animate-spin" />
+              ) : (
+                <Database size={18} color="#fff" strokeWidth={2.5} />
+              )}
+            </button>
+            <button
+              onClick={handleCreate}
+              className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center active:scale-95 transition-transform"
+              style={{ boxShadow: "0 6px 14px rgba(196,126,90,0.35)" }}
+              aria-label="새 병원 추가"
+            >
+              <Plus size={20} color="#fff" strokeWidth={2.5} />
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* 동기화 상태 */}
+      {(syncing || syncResult) && (
+        <div
+          className="mb-4 px-4 py-3"
+          style={{
+            background: syncing ? "rgba(34,181,115,0.08)" : syncResult?.startsWith("오류") || syncResult?.startsWith("동기화 실패") ? "rgba(216,85,85,0.08)" : "rgba(34,181,115,0.08)",
+            borderRadius: 16,
+            border: `1px solid ${syncing ? "rgba(34,181,115,0.15)" : syncResult?.startsWith("오류") || syncResult?.startsWith("동기화 실패") ? "rgba(216,85,85,0.15)" : "rgba(34,181,115,0.15)"}`,
+          }}
+        >
+          <div className="flex items-center gap-2">
+            {syncing ? (
+              <>
+                <RefreshCw size={14} className="animate-spin" style={{ color: "#22B573" }} />
+                <span className="text-[12px] font-bold" style={{ color: "#22B573" }}>
+                  전국 동물병원 검색 중... (1~2분 소요)
+                </span>
+              </>
+            ) : (
+              <>
+                <Database size={14} style={{ color: syncResult?.startsWith("오류") || syncResult?.startsWith("동기화 실패") ? "#D85555" : "#22B573" }} />
+                <span className="text-[12px] font-bold" style={{ color: syncResult?.startsWith("오류") || syncResult?.startsWith("동기화 실패") ? "#D85555" : "#22B573" }}>
+                  {syncResult}
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* 편집 폼 */}
       {editingId && (

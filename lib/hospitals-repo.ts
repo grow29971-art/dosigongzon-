@@ -19,34 +19,50 @@ export interface RescueHospital {
   pinned: boolean;
   lat: number | null;
   lng: number | null;
+  source: string;
+  kakao_place_id: string | null;
+  hidden: boolean;
   created_at: string;
   updated_at: string;
 }
 
 export type RescueHospitalInput = Omit<
   RescueHospital,
-  "id" | "created_at" | "updated_at"
+  "id" | "created_at" | "updated_at" | "source" | "kakao_place_id" | "hidden"
 > & {
   lat?: number | null;
   lng?: number | null;
 };
 
-// ── 읽기 ──
+// ── 읽기 (전체 로드 — Supabase 기본 1000행 제한 우회) ──
 export async function listRescueHospitals(): Promise<RescueHospital[]> {
   const supabase = createClient();
-  const { data, error } = await supabase
-    .from("rescue_hospitals")
-    .select("*")
-    .order("pinned", { ascending: false })
-    .order("city", { ascending: true })
-    .order("district", { ascending: true })
-    .order("created_at", { ascending: false });
+  const all: RescueHospital[] = [];
+  const PAGE = 1000;
+  let from = 0;
 
-  if (error) {
-    console.error("[hospitals-repo] listRescueHospitals failed:", error);
-    return [];
+  while (true) {
+    const { data, error } = await supabase
+      .from("rescue_hospitals")
+      .select("*")
+      .eq("hidden", false)
+      .order("pinned", { ascending: false })
+      .order("city", { ascending: true })
+      .order("district", { ascending: true })
+      .order("created_at", { ascending: false })
+      .range(from, from + PAGE - 1);
+
+    if (error) {
+      console.error("[hospitals-repo] listRescueHospitals failed:", error);
+      break;
+    }
+    if (!data || data.length === 0) break;
+    all.push(...(data as RescueHospital[]));
+    if (data.length < PAGE) break;
+    from += PAGE;
   }
-  return (data ?? []) as RescueHospital[];
+
+  return all;
 }
 
 // ── admin CRUD ──

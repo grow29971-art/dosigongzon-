@@ -18,6 +18,15 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      // 약관 동의 일시 기록 (소셜 로그인 첫 가입 시)
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase
+          .from("profiles")
+          .update({ terms_agreed_at: new Date().toISOString() })
+          .eq("id", user.id)
+          .is("terms_agreed_at", null);
+      }
       return NextResponse.redirect(`${origin}${next}`);
     }
   }

@@ -55,10 +55,19 @@ export default function PrivacyPage() {
 
         <section>
           <h2 className="text-[15px] font-bold text-text-main mb-2">제5조 (위탁)</h2>
+          <p className="mb-2">서비스는 다음 기업·기관에 개인정보 처리를 위탁합니다.</p>
+          <p className="text-[12px] font-bold text-text-sub mt-2 mb-1">가. 필수 인프라</p>
           <ul className="list-disc pl-4 space-y-1">
-            <li><b>Supabase</b>: 데이터베이스 및 인증 서비스 운영</li>
-            <li><b>Vercel</b>: 웹 서비스 호스팅</li>
+            <li><b>Supabase(Supabase Inc)</b>: 데이터베이스, 인증, 파일 저장소</li>
+            <li><b>Vercel(Vercel Inc)</b>: 웹 서비스 호스팅</li>
+          </ul>
+          <p className="text-[12px] font-bold text-text-sub mt-2 mb-1">나. 기능 제공 서비스</p>
+          <ul className="list-disc pl-4 space-y-1">
+            <li><b>Kakao(카카오)</b>: 지도 서비스 및 병원·약국 검색 API</li>
+            <li><b>Google(Gemini API)</b>: AI 챗봇 상담</li>
             <li><b>Cloudflare</b>: 봇 방어(Turnstile)</li>
+            <li><b>OpenWeatherMap</b>: 날씨 정보 제공</li>
+            <li><b>공공데이터포털(LOCALDATA)</b>: 동물약국 공공데이터 조회</li>
           </ul>
         </section>
 

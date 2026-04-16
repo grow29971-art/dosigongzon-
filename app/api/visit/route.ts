@@ -52,13 +52,12 @@ export async function GET() {
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-  // 오늘 방문자 수
-  const today = new Date().toISOString().split("T")[0];
-  const { data: todayData } = await supabase
+  // 총 누적 방문자 수 (모든 날짜의 visit_count 합산)
+  const { data: allStats } = await supabase
     .from("daily_stats")
-    .select("visit_count")
-    .eq("date", today)
-    .maybeSingle();
+    .select("visit_count");
+
+  const totalVisits = (allStats ?? []).reduce((sum, row) => sum + (row.visit_count ?? 0), 0);
 
   // 전체 가입자 수 (auth.users → profiles 테이블)
   const { count: totalUsers } = await supabase
@@ -66,7 +65,7 @@ export async function GET() {
     .select("*", { count: "exact", head: true });
 
   return Response.json({
-    today: todayData?.visit_count ?? 0,
+    today: totalVisits,
     total: totalUsers ?? 0,
   });
 }

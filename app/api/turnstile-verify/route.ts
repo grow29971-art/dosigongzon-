@@ -4,9 +4,12 @@
 export async function POST(request: Request) {
   const secret = process.env.TURNSTILE_SECRET_KEY;
 
-  // 키가 없으면 배포/개발 편의를 위해 통과 처리. 프로덕션엔 반드시 설정.
+  // 프로덕션에서 키 미설정 시 차단, 개발 환경에서만 bypass
   if (!secret) {
-    console.warn("[turnstile] TURNSTILE_SECRET_KEY not set — bypassing verification");
+    if (process.env.VERCEL_ENV === "production") {
+      return Response.json({ success: false, error: "bot_verification_unavailable" }, { status: 500 });
+    }
+    console.warn("[turnstile] TURNSTILE_SECRET_KEY not set — bypassing (dev only)");
     return Response.json({ success: true, bypassed: true });
   }
 

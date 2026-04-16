@@ -19,6 +19,7 @@ export default function SignupPage() {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [agree, setAgree] = useState(false);
+  const [ageConfirm, setAgeConfirm] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [pressing, setPressing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -47,7 +48,7 @@ export default function SignupPage() {
     if (!password) next.password = "비밀번호를 입력해주세요.";
     else if (password.length < 6) next.password = "비밀번호는 6자 이상이어야 합니다.";
     if (password !== passwordConfirm) next.passwordConfirm = "비밀번호가 일치하지 않습니다.";
-    if (!agree) next.agree = "약관에 동의해주세요.";
+    if (!agree || !ageConfirm) next.agree = !agree ? "약관에 동의해주세요." : "만 14세 이상 확인이 필요해요.";
     if (captchaRequired && !captchaToken && !captchaSkipped) next.captcha = "봇 방어 확인이 필요해요.";
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -84,7 +85,7 @@ export default function SignupPage() {
       email,
       password,
       options: {
-        data: { nickname },
+        data: { nickname, terms_agreed_at: new Date().toISOString() },
       },
     });
 
@@ -258,8 +259,8 @@ export default function SignupPage() {
           </div>
         </div>
 
-        {/* ══════ 약관 동의 ══════ */}
-        <div className="mb-6">
+        {/* ══════ 약관 동의 + 14세 이상 확인 ══════ */}
+        <div className="mb-6 space-y-3">
           <button onClick={() => { setAgree(!agree); setErrors((p) => ({ ...p, agree: "" })); }} className="flex items-start gap-2.5">
             <div
               className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
@@ -271,6 +272,18 @@ export default function SignupPage() {
             <span className="text-[13px] text-text-sub text-left leading-relaxed">
               <Link href="/terms" className="font-bold text-primary underline" onClick={(e) => e.stopPropagation()}>이용약관</Link> 및{" "}
               <Link href="/privacy" className="font-bold text-primary underline" onClick={(e) => e.stopPropagation()}>개인정보처리방침</Link>에 동의합니다
+            </span>
+          </button>
+          <button onClick={() => { setAgeConfirm(!ageConfirm); setErrors((p) => ({ ...p, agree: "" })); }} className="flex items-start gap-2.5">
+            <div
+              className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
+                ageConfirm ? "bg-primary border-primary" : errors.agree ? "border-error" : "border-border"
+              }`}
+            >
+              {ageConfirm && <Check size={12} color="white" strokeWidth={3} />}
+            </div>
+            <span className="text-[13px] text-text-sub text-left leading-relaxed">
+              만 14세 이상입니다 <span className="text-[11px] text-text-light">(개인정보보호법 제22조)</span>
             </span>
           </button>
           {errors.agree && <p className="text-[11px] text-error mt-1 ml-8">{errors.agree}</p>}

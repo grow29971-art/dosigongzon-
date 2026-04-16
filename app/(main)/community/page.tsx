@@ -183,7 +183,7 @@ export default function CommunityPage() {
         </div>
       </div>
 
-      {/* ── 오늘 방문자 ── */}
+      {/* ── 오늘 방문자 (누적 총 방문자 수) ── */}
       {todayVisit !== null && (
         <div
           className="mb-4 flex items-center justify-center gap-2 py-2.5 rounded-2xl"
