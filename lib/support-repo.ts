@@ -74,8 +74,8 @@ export async function createReport(input: CreateReportInput): Promise<void> {
 
   const { error } = await supabase.from("reports").insert({
     reporter_id: user.id,
-    reporter_email: user.email ?? null,
-    reporter_name: getDisplayName(user),
+    reporter_email: null,
+    reporter_name: "익명 신고자",
     target_type: input.target_type,
     target_id: input.target_id,
     target_snapshot: input.target_snapshot ?? null,

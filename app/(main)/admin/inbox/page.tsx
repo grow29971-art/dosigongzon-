@@ -151,7 +151,7 @@ export default function AdminInboxPage() {
       return;
     }
     const days = prompt(
-      `신고자 "${report.reporter_name ?? "익명"}"을(를) 정지합니다.\n정지 기간(일 단위, 빈 값이면 영구):`,
+      `신고자를 정지합니다.\n정지 기간(일 단위, 빈 값이면 영구):`,
       "7",
     );
     if (days === null) return;
@@ -305,10 +305,7 @@ export default function AdminInboxPage() {
                   </span>
                 </div>
                 <p className="text-[12px] font-semibold text-text-main mb-1">
-                  신고자: {r.reporter_name ?? "익명"}{" "}
-                  <span className="text-text-light font-normal">
-                    {r.reporter_email && `(${r.reporter_email})`}
-                  </span>
+                  신고자: 익명
                 </p>
                 {r.target_snapshot && (
                   <div
