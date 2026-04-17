@@ -486,11 +486,11 @@ export async function getMyCommentVotes(
 }
 
 // ── 학대 신고(alert) 2회 이상 받은 고양이 ID 목록 ──
-// 지도 마커에 "학대경보" 표시 용도. 기본 최근 30일, 최소 2건 이상일 때만.
-// 1건만 올라오면 오보 가능성 고려해서 표시 안 함 (집단 검증 효과).
+// 지도 마커에 "학대경보" 표시 용도. 최근 48시간 이내 신고만, 최소 1건.
+// 48시간 지나면 자동 해제.
 export async function listAlertedCatIds(
-  daysWindow = 30,
-  minCount = 2,
+  daysWindow = 2, // 48시간
+  minCount = 1,
 ): Promise<Set<string>> {
   const supabase = createClient();
   const since = new Date(

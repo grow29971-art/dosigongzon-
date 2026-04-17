@@ -419,7 +419,7 @@ export default function MapPage() {
     try {
       const [data, alertedIds] = await Promise.all([
         listCats(),
-        listAlertedCatIds(30),
+        listAlertedCatIds(2),
       ]);
       setCats(data);
       setAlertedCats(alertedIds);

@@ -71,8 +71,20 @@ function LoginContent() {
     return Object.keys(next).length === 0;
   };
 
+  // 브루트포스 방어: 5회 실패 시 60초 잠금
+  const [loginAttempts, setLoginAttempts] = useState(0);
+  const [lockedUntil, setLockedUntil] = useState(0);
+
   const handleLogin = async () => {
     if (!validate()) return;
+
+    // 잠금 확인
+    if (lockedUntil > Date.now()) {
+      const remain = Math.ceil((lockedUntil - Date.now()) / 1000);
+      setErrors({ general: `로그인 시도가 너무 많습니다. ${remain}초 후 다시 시도해주세요.` });
+      return;
+    }
+
     setLoading(true);
     setErrors({});
 
@@ -83,8 +95,19 @@ function LoginContent() {
 
     if (error) {
       setLoading(false);
+      const attempts = loginAttempts + 1;
+      setLoginAttempts(attempts);
+
+      // 5회 실패 시 60초 잠금
+      if (attempts >= 5) {
+        setLockedUntil(Date.now() + 60000);
+        setLoginAttempts(0);
+        setErrors({ general: "로그인 시도가 5회 실패했습니다. 1분 후 다시 시도해주세요." });
+        return;
+      }
+
       if (error.message.includes("Invalid login credentials")) {
-        setErrors({ general: "이메일 또는 비밀번호가 올바르지 않습니다." });
+        setErrors({ general: `이메일 또는 비밀번호가 올바르지 않습니다. (${attempts}/5)` });
       } else if (error.message.includes("Email not confirmed")) {
         setErrors({ general: "이메일 인증을 완료해주세요. 메일함을 확인해주세요." });
       } else {
@@ -92,6 +115,8 @@ function LoginContent() {
       }
       return;
     }
+
+    setLoginAttempts(0);
 
     router.push("/");
     router.refresh();
