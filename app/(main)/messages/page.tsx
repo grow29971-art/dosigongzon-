@@ -3,12 +3,13 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Send, Loader2, Mail, ChevronRight } from "lucide-react";
+import { ArrowLeft, Send, Loader2, Mail, ChevronRight, Camera, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import {
   getConversations,
   getMessagesWithUser,
   sendDM,
+  uploadDMPhoto,
   type Conversation,
   type DirectMessage,
 } from "@/lib/dm-repo";
@@ -33,6 +34,9 @@ function MessagesPage() {
   const [messages, setMessages] = useState<DirectMessage[]>([]);
   const [msgText, setMsgText] = useState("");
   const [sending, setSending] = useState(false);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
   // URL 파라미터로 바로 쪽지 보내기 (?to=userId&name=이름)
@@ -72,30 +76,37 @@ function MessagesPage() {
   }, [selectedPartner]);
 
   const handleSend = async () => {
-    if (!selectedPartner || !msgText.trim() || sending) return;
+    if (!selectedPartner || (!msgText.trim() && !photoFile) || sending) return;
     const body = msgText.trim();
     setMsgText("");
     setSending(true);
 
-    // 낙관적
-    const tempMsg: DirectMessage = {
-      id: `temp-${Date.now()}`,
-      sender_id: user!.id,
-      sender_name: null,
-      sender_avatar_url: user!.user_metadata?.avatar_url ?? null,
-      receiver_id: selectedPartner.id,
-      receiver_name: selectedPartner.name,
-      body,
-      is_read: false,
-      created_at: new Date().toISOString(),
-    };
-    setMessages((prev) => [...prev, tempMsg]);
-    setTimeout(() => endRef.current?.scrollIntoView({ behavior: "smooth" }), 30);
-
     try {
-      await sendDM(selectedPartner.id, selectedPartner.name, body);
+      let photoUrl: string | undefined;
+      if (photoFile) {
+        photoUrl = await uploadDMPhoto(photoFile);
+        setPhotoFile(null);
+        setPhotoPreview(null);
+      }
+
+      // 낙관적
+      const tempMsg: DirectMessage = {
+        id: `temp-${Date.now()}`,
+        sender_id: user!.id,
+        sender_name: null,
+        sender_avatar_url: user!.user_metadata?.avatar_url ?? null,
+        receiver_id: selectedPartner.id,
+        receiver_name: selectedPartner.name,
+        body: body || (photoUrl ? "📷 사진" : ""),
+        photo_url: photoUrl ?? null,
+        is_read: false,
+        created_at: new Date().toISOString(),
+      };
+      setMessages((prev) => [...prev, tempMsg]);
+      setTimeout(() => endRef.current?.scrollIntoView({ behavior: "smooth" }), 30);
+
+      await sendDM(selectedPartner.id, selectedPartner.name, body, photoUrl);
     } catch (err) {
-      setMessages((prev) => prev.filter((m) => m.id !== tempMsg.id));
       alert(err instanceof Error ? err.message : "전송 실패");
     } finally {
       setSending(false);
@@ -151,14 +162,26 @@ function MessagesPage() {
                 )}
                 <div className="max-w-[75%]">
                   <div
-                    className="px-3.5 py-2 text-[13px] leading-relaxed"
+                    className="overflow-hidden"
                     style={{
                       backgroundColor: isMe ? "#C47E5A" : "#F6F1EA",
-                      color: isMe ? "#fff" : "#2A2A28",
                       borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
                     }}
                   >
-                    {msg.body}
+                    {msg.photo_url && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={msg.photo_url} alt="" className="max-w-full max-h-48 object-cover" />
+                    )}
+                    {msg.body && msg.body !== "📷 사진" && (
+                      <p className="px-3.5 py-2 text-[13px] leading-relaxed" style={{ color: isMe ? "#fff" : "#2A2A28" }}>
+                        {msg.body}
+                      </p>
+                    )}
+                    {(!msg.body || msg.body === "📷 사진") && !msg.photo_url && (
+                      <p className="px-3.5 py-2 text-[13px] leading-relaxed" style={{ color: isMe ? "#fff" : "#2A2A28" }}>
+                        {msg.body}
+                      </p>
+                    )}
                   </div>
                   <div className={`flex items-center gap-1 mt-0.5 px-1 ${isMe ? "justify-end" : ""}`}>
                     <span className="text-[9px] text-text-light">
@@ -173,8 +196,46 @@ function MessagesPage() {
           <div ref={endRef} />
         </div>
 
+        {/* 사진 미리보기 */}
+        {photoPreview && (
+          <div className="px-4 py-2 border-t border-divider shrink-0">
+            <div className="relative inline-block">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={photoPreview} alt="" className="h-20 rounded-xl object-cover" />
+              <button
+                type="button"
+                onClick={() => { setPhotoFile(null); setPhotoPreview(null); }}
+                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-white shadow flex items-center justify-center"
+              >
+                <X size={10} className="text-text-sub" />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* 입력 */}
-        <div className="flex gap-2 px-4 py-3 border-t border-divider shrink-0" style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
+        <div className="flex items-center gap-2 px-4 py-3 border-t border-divider shrink-0" style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
+          <input
+            ref={photoInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              setPhotoFile(file);
+              setPhotoPreview(URL.createObjectURL(file));
+              e.target.value = "";
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => photoInputRef.current?.click()}
+            className="w-10 h-10 rounded-2xl flex items-center justify-center active:scale-90 transition-transform shrink-0"
+            style={{ backgroundColor: photoFile ? "#6B8E6F" : "#F6F1EA", border: "1px solid #E3DCD3" }}
+          >
+            <Camera size={18} style={{ color: photoFile ? "#fff" : "#A38E7A" }} />
+          </button>
           <input
             type="text"
             value={msgText}
@@ -183,7 +244,7 @@ function MessagesPage() {
             className="flex-1 px-3.5 py-2.5 rounded-2xl text-[13px] outline-none"
             style={{ backgroundColor: "#F6F1EA", border: "1px solid #E3DCD3" }}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.nativeEvent.isComposing && msgText.trim()) {
+              if (e.key === "Enter" && !e.nativeEvent.isComposing && (msgText.trim() || photoFile)) {
                 e.preventDefault();
                 handleSend();
               }
@@ -191,8 +252,8 @@ function MessagesPage() {
           />
           <button
             onClick={handleSend}
-            disabled={sending || !msgText.trim()}
-            className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center disabled:opacity-40 active:scale-90 transition-transform"
+            disabled={sending || (!msgText.trim() && !photoFile)}
+            className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center disabled:opacity-40 active:scale-90 transition-transform shrink-0"
           >
             <Send size={16} color="#fff" />
           </button>

@@ -99,7 +99,7 @@ export default function OnboardingPage() {
       setHeartbeat(true);
       completeOnboarding();
       setTimeout(() => {
-        router.push("/login");
+        router.push("/map");
       }, 600);
     } else {
       goTo(current + 1);
@@ -110,7 +110,7 @@ export default function OnboardingPage() {
     <div className="fixed inset-0 overflow-hidden" style={{ background: slide.bg, transition: "background 0.8s ease" }}>
       {/* ── 건너뛰기 ── */}
       <button
-        onClick={() => { completeOnboarding(); router.push("/login"); }}
+        onClick={() => { completeOnboarding(); router.push("/map"); }}
         className="absolute top-12 right-5 z-20 text-[13px] font-medium px-3 py-1.5 rounded-full active:opacity-50 transition-opacity"
         style={{ color: "rgba(255,255,255,0.5)" }}
       >

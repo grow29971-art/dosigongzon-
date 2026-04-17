@@ -188,12 +188,12 @@ export default function HomePage() {
     setOnboardingChecked(true);
   }, [router]);
 
-  // 온보딩 통과 후 auth 확인 → 로그인 안 되어 있으면 로그인 페이지로
+  // 온보딩 통과 후 auth 확인 → 로그인 안 되어 있으면 지도(비회원 모드)로
   useEffect(() => {
     if (!onboardingChecked) return;
     if (authLoading) return;
     if (!user) {
-      router.push("/login");
+      router.push("/map");
     }
   }, [onboardingChecked, authLoading, user, router]);
 
@@ -294,7 +294,9 @@ export default function HomePage() {
 
 
       {/* ══════ 내 활동 요약 ══════ */}
-      {activity && levelInfo && (
+      {activity && levelInfo && (() => {
+        const lc = getLevelColor(levelInfo.level);
+        return (
         <Link
           href="/mypage"
           className="block mb-5 active:scale-[0.98] transition-transform"
@@ -302,70 +304,72 @@ export default function HomePage() {
           <div
             className="p-5 dark-card-level"
             style={{
-              background: "linear-gradient(145deg, #C47E5A 0%, #A8684A 50%, #8B5A3E 100%)",
+              background: "#FFFFFF",
               borderRadius: 22,
-              boxShadow: "0 10px 30px rgba(196,126,90,0.3), 0 2px 6px rgba(0,0,0,0.06)",
+              boxShadow: "0 8px 28px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.03)",
+              border: "1px solid rgba(0,0,0,0.04)",
             }}
           >
             {/* 레벨 + 이름 */}
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                  style={{ backgroundColor: "rgba(255,255,255,0.15)", backdropFilter: "blur(4px)" }}
-                >
-                  <span className="text-[24px]">{levelInfo.emoji}</span>
+            <div className="flex items-center gap-3.5 mb-4">
+              <div
+                className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
+                style={{ background: `linear-gradient(135deg, ${lc}20 0%, ${lc}10 100%)`, border: `2px solid ${lc}30` }}
+              >
+                <span className="text-[28px]">{levelInfo.emoji}</span>
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <p className="text-[18px] font-extrabold text-text-main tracking-tight">{levelInfo.title}</p>
+                  <span
+                    className="text-[10px] font-extrabold px-2 py-0.5 rounded-lg text-white"
+                    style={{ backgroundColor: lc }}
+                  >
+                    Lv.{levelInfo.level}
+                  </span>
                 </div>
-                <div>
-                  <p className="text-[17px] font-extrabold text-white tracking-tight">{levelInfo.title}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-md" style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.9)" }}>
-                      Lv.{levelInfo.level}
-                    </span>
-                    <span className="text-[11px] font-semibold" style={{ color: "rgba(255,255,255,0.6)" }}>
-                      {levelInfo.score}점 {levelInfo.next ? `/ ${levelInfo.next}점` : "MAX"}
-                    </span>
+                {/* 경험치 바 */}
+                <div className="flex items-center gap-2.5 mt-2">
+                  <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: "#F0EBE4" }}>
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${Math.max(levelInfo.progress * 100, 4)}%`,
+                        background: `linear-gradient(90deg, ${lc} 0%, ${lc}BB 100%)`,
+                      }}
+                    />
                   </div>
+                  <span className="text-[10px] font-bold text-text-light tabular-nums shrink-0">
+                    {levelInfo.score}{levelInfo.next ? `/${levelInfo.next}` : " MAX"}
+                  </span>
                 </div>
               </div>
-              <ChevronRight size={20} style={{ color: "rgba(255,255,255,0.4)" }} />
-            </div>
-
-            {/* 경험치 바 */}
-            <div className="mb-4">
-              <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.15)" }}>
-                <div
-                  className="h-full rounded-full"
-                  style={{
-                    width: `${Math.max(levelInfo.progress * 100, 4)}%`,
-                    background: "linear-gradient(90deg, #FFD9A0 0%, #FFE8C5 100%)",
-                    boxShadow: "0 0 8px rgba(255,217,160,0.5)",
-                  }}
-                />
-              </div>
+              <ChevronRight size={16} className="text-text-light shrink-0" />
             </div>
 
             {/* 스탯 4칸 */}
             <div className="grid grid-cols-4 gap-2">
               {[
-                { label: "고양이", value: activity.catCount, icon: "🐱" },
-                { label: "돌봄", value: activity.commentCount + activity.careLogCount, icon: "✍️" },
-                { label: "신고", value: activity.alertCount, icon: "🛡️" },
-                { label: "좋아요", value: activity.likesReceived, icon: "♥" },
+                { label: "고양이", value: activity.catCount, color: "#C47E5A", icon: "🐱" },
+                { label: "돌봄", value: activity.commentCount + activity.careLogCount, color: "#48A59E", icon: "📝" },
+                { label: "신고", value: activity.alertCount, color: "#8B65B8", icon: "🛡️" },
+                { label: "좋아요", value: activity.likesReceived, color: "#E86B8C", icon: "❤️" },
               ].map((s) => (
                 <div
                   key={s.label}
-                  className="text-center py-2 rounded-xl"
-                  style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
+                  className="text-center py-2.5 rounded-2xl"
+                  style={{ backgroundColor: `${s.color}08`, border: `1px solid ${s.color}15` }}
                 >
-                  <p className="text-[16px] font-black text-white">{s.value}</p>
-                  <p className="text-[9px] font-semibold mt-0.5" style={{ color: "rgba(255,255,255,0.55)" }}>{s.label}</p>
+                  <p className="text-[11px] mb-0.5">{s.icon}</p>
+                  <p className="text-[17px] font-black" style={{ color: s.color }}>{s.value}</p>
+                  <p className="text-[9px] font-semibold text-text-light">{s.label}</p>
                 </div>
               ))}
             </div>
           </div>
         </Link>
-      )}
+        );
+      })()}
 
       {/* ══════ 실시간 날씨 위젯 ══════ */}
       <div

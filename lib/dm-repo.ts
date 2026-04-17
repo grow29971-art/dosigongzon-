@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
-import { getDisplayName } from "@/lib/cats-repo";
+import { getDisplayName, convertImageToWebp } from "@/lib/cats-repo";
 
 export interface DirectMessage {
   id: string;
@@ -9,6 +9,7 @@ export interface DirectMessage {
   receiver_id: string;
   receiver_name: string | null;
   body: string;
+  photo_url: string | null;
   is_read: boolean;
   created_at: string;
 }
@@ -22,13 +23,13 @@ export interface Conversation {
   unreadCount: number;
 }
 
-export async function sendDM(receiverId: string, receiverName: string, body: string): Promise<void> {
+export async function sendDM(receiverId: string, receiverName: string, body: string, photoUrl?: string): Promise<void> {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("로그인이 필요해요.");
 
   const trimmed = body.trim();
-  if (!trimmed) throw new Error("내용을 입력해주세요.");
+  if (!trimmed && !photoUrl) throw new Error("내용을 입력해주세요.");
 
   const { error } = await supabase.from("direct_messages").insert({
     sender_id: user.id,
@@ -36,7 +37,8 @@ export async function sendDM(receiverId: string, receiverName: string, body: str
     sender_avatar_url: user.user_metadata?.avatar_url ?? null,
     receiver_id: receiverId,
     receiver_name: receiverName,
-    body: trimmed,
+    body: trimmed || (photoUrl ? "📷 사진" : ""),
+    photo_url: photoUrl || null,
   });
   if (error) throw new Error(`쪽지 전송 실패: ${error.message}`);
 
@@ -58,6 +60,25 @@ export async function sendDM(receiverId: string, receiverName: string, body: str
       }),
     }).catch(() => {});
   } catch {}
+}
+
+export async function uploadDMPhoto(file: File): Promise<string> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("로그인이 필요해요.");
+  if (file.size > 20 * 1024 * 1024) throw new Error("20MB 이하만 가능해요.");
+  if (!file.type.startsWith("image/")) throw new Error("이미지 파일만 가능해요.");
+
+  const webpFile = await convertImageToWebp(file, 1024, 0.8);
+  const fileName = `${user.id}/dm_${Date.now()}.webp`;
+
+  const { error } = await supabase.storage
+    .from("cat-photos")
+    .upload(fileName, webpFile, { cacheControl: "3600", upsert: false, contentType: "image/webp" });
+  if (error) throw new Error(`업로드 실패: ${error.message}`);
+
+  const { data: urlData } = supabase.storage.from("cat-photos").getPublicUrl(fileName);
+  return urlData.publicUrl;
 }
 
 export async function getConversations(): Promise<Conversation[]> {

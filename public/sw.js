@@ -1,7 +1,12 @@
-const CACHE_NAME = "dosigongzon-v3";
+const CACHE_NAME = "dosigongzon-v4";
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE_NAME));
+  // 이전 캐시 즉시 삭제
+  e.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.map((k) => caches.delete(k)))
+    ).then(() => caches.open(CACHE_NAME))
+  );
   self.skipWaiting();
 });
 
@@ -36,16 +41,15 @@ self.addEventListener("fetch", (e) => {
     return;
   }
 
-  // 정적 자원 → 캐시 우선 (없으면 네트워크)
+  // 정적 자원 → 네트워크 우선 (실패 시 캐시)
   e.respondWith(
-    caches.match(e.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(e.request).then((res) => {
+    fetch(e.request)
+      .then((res) => {
         const clone = res.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
         return res;
-      });
-    })
+      })
+      .catch(() => caches.match(e.request))
   );
 });
 

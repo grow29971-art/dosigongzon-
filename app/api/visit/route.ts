@@ -1,5 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 
+// 비회원 IP 중복 방지 (인메모리, 날짜별)
+const anonVisitLog = new Set<string>();
+
 export async function POST(request: Request) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -10,11 +13,35 @@ export async function POST(request: Request) {
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-  // 유저 인증 확인
   const authHeader = request.headers.get("authorization");
+
+  // 비로그인 → IP 기반 하루 1회 카운트
   if (!authHeader) {
-    // 비로그인 → 카운트만 조회
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
     const today = new Date().toISOString().split("T")[0];
+    const key = `${ip}_${today}`;
+
+    if (!anonVisitLog.has(key)) {
+      anonVisitLog.add(key);
+      // daily_stats에 오늘 행이 없으면 생성, 있으면 +1
+      const { data: existing } = await supabase
+        .from("daily_stats")
+        .select("visit_count")
+        .eq("date", today)
+        .maybeSingle();
+
+      if (existing) {
+        await supabase
+          .from("daily_stats")
+          .update({ visit_count: existing.visit_count + 1 })
+          .eq("date", today);
+      } else {
+        await supabase
+          .from("daily_stats")
+          .insert({ date: today, visit_count: 1 });
+      }
+    }
+
     const { data } = await supabase
       .from("daily_stats")
       .select("visit_count")

@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Users, Map, Bell, BookOpen, User } from "lucide-react";
-import { getUnreadNotificationCount } from "@/lib/notifications-repo";
+import { Home, Users, Map, Mail, BookOpen, User } from "lucide-react";
+import { getUnreadCount } from "@/lib/dm-repo";
 
 const tabs = [
   { href: "/", label: "홈", Icon: Home },
   { href: "/community", label: "커뮤니티", Icon: Users },
   { href: "/map", label: "지도", Icon: Map },
-  { href: "/notifications", label: "알림", Icon: Bell },
+  { href: "/messages", label: "쪽지", Icon: Mail },
   { href: "/protection", label: "보호지침", Icon: BookOpen },
   { href: "/mypage", label: "마이", Icon: User },
 ];
@@ -23,10 +23,10 @@ export default function BottomNav() {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    getUnreadNotificationCount().then(setUnreadCount).catch(() => {});
+    getUnreadCount().then(setUnreadCount).catch(() => {});
     // 30초마다 갱신
     const interval = setInterval(() => {
-      getUnreadNotificationCount().then(setUnreadCount).catch(() => {});
+      getUnreadCount().then(setUnreadCount).catch(() => {});
     }, 30000);
     return () => clearInterval(interval);
   }, []);
@@ -36,7 +36,7 @@ export default function BottomNav() {
       <div className="mx-auto max-w-lg flex justify-around px-1 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         {tabs.map(({ href, label, Icon }) => {
           const on = isActive(href);
-          const showBadge = href === "/notifications" && unreadCount > 0;
+          const showBadge = href === "/messages" && unreadCount > 0;
           return (
             <Link
               key={href}

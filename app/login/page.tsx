@@ -311,6 +311,17 @@ function LoginContent() {
           <div className="flex-1 h-px bg-border" />
         </div>
 
+        {/* 소셜 로그인 안내 */}
+        <div
+          className="mb-3 rounded-xl px-4 py-2.5 flex items-start gap-2"
+          style={{ backgroundColor: "#F6F1EA", border: "1px solid #E5E0D6" }}
+        >
+          <span className="text-[13px] mt-0.5">💡</span>
+          <p className="text-[11px] text-text-sub leading-relaxed">
+            소셜 로그인은 <b>크롬 · 사파리</b>에서 접속해주세요. 카카오톡/인스타 등 앱 내 브라우저에서는 로그인이 안 될 수 있어요.
+          </p>
+        </div>
+
         {/* ══════ 소셜 로그인 약관 동의 ══════ */}
         <div className="mb-4">
           <button

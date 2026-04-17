@@ -197,6 +197,64 @@ export default function DistrictContactsPage() {
           </a>
         ))}
       </div>
+
+      {/* 길고양이 급식소 커뮤니티 */}
+      <div className="mt-6 mb-4">
+        <div className="flex items-center gap-2 mb-3 px-1">
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#48A59E" }} />
+          <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+            길고양이 급식소 커뮤니티
+          </h2>
+        </div>
+        <div className="space-y-2">
+          <a
+            href="https://cafe.naver.com/icfc0520"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl active:scale-[0.98] transition-transform"
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid rgba(0,0,0,0.04)",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+            }}
+          >
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+              style={{ backgroundColor: "rgba(3,199,90,0.1)" }}
+            >
+              <span className="text-[18px]">🍚</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-bold text-text-main">길냥이 급식소</p>
+              <p className="text-[11px] text-text-sub mt-0.5">네이버 카페 · 길고양이 급식 정보 공유</p>
+            </div>
+            <span className="text-[11px] font-bold shrink-0" style={{ color: "#03C75A" }}>NAVER</span>
+          </a>
+          <a
+            href="https://cafe.naver.com/caretaker"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl active:scale-[0.98] transition-transform"
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid rgba(0,0,0,0.04)",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+            }}
+          >
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+              style={{ backgroundColor: "rgba(3,199,90,0.1)" }}
+            >
+              <span className="text-[18px]">🐱</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-bold text-text-main">길고양이 급식소</p>
+              <p className="text-[11px] text-text-sub mt-0.5">네이버 카페 · 전국 급식소 위치 및 운영</p>
+            </div>
+            <span className="text-[11px] font-bold shrink-0" style={{ color: "#03C75A" }}>NAVER</span>
+          </a>
+        </div>
+      </div>
     </div>
   );
 }

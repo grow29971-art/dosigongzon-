@@ -20,6 +20,8 @@ import {
   Flag,
   ChevronDown,
   ChevronUp,
+  Trash2,
+  LocateFixed,
   Stethoscope,
   Clock,
   ChevronRight,
@@ -52,7 +54,7 @@ import { listRescueHospitals, type RescueHospital } from "@/lib/hospitals-repo";
 import type { Post } from "@/lib/types";
 import { createClient as createSupabaseClient } from "@/lib/supabase/client";
 import CareLogTab from "@/app/components/CareLogTab";
-import { getDisplayName as getChatDisplayName, updateCat, deleteCat, GENDER_MAP, HEALTH_MAP, type CatGender, type CatHealthStatus } from "@/lib/cats-repo";
+import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, GENDER_MAP, HEALTH_MAP, type CatGender, type CatHealthStatus } from "@/lib/cats-repo";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 
 const CAT_TAG_OPTIONS = [
@@ -91,6 +93,10 @@ export default function MapPage() {
   const [mapReady, setMapReady] = useState(false);
   const [selectedCat, setSelectedCat] = useState<Cat | null>(null);
   const [catCardTab, setCatCardTab] = useState<"carelog" | "community">("carelog");
+  const [showCats, setShowCats] = useState(true);
+  const [todayVisit, setTodayVisit] = useState<number | null>(null);
+  const [showHospitals, setShowHospitals] = useState(true);
+  const [showPharmacies, setShowPharmacies] = useState(true);
   const [mapError, setMapError] = useState("");
 
   const [cats, setCats] = useState<Cat[]>([]);
@@ -434,6 +440,9 @@ export default function MapPage() {
     fetchCats();
     listRescueHospitals().then(setHospitals).catch(() => {});
     isCurrentUserAdmin().then(setIsAdmin).catch(() => {});
+    // 방문자 카운트 (비회원 포함)
+    fetch("/api/visit", { method: "POST" }).catch(() => {});
+    fetch("/api/visit").then((r) => r.json()).then((d) => setTodayVisit(d.today)).catch(() => {});
   }, [fetchCats]);
 
   // ── 카카오 SDK 직접 로드 ──
@@ -578,6 +587,8 @@ export default function MapPage() {
     overlaysRef.current.forEach((ov) => ov.setMap(null));
     overlaysRef.current = [];
 
+    if (!showCats) return;
+
     // region(동)별 그룹핑
     const groups = new Map<string, Cat[]>();
     cats.forEach((cat) => {
@@ -607,8 +618,11 @@ export default function MapPage() {
               <div style="width:10px;height:10px;background:${borderColor};transform:rotate(45deg);margin-top:-7px;"></div>
             </div>
           `;
-          el.onclick = () => { setSelectedCat(cat); setCatCardTab("carelog"); };
-          const ov = new window.kakao.maps.CustomOverlay({ map: mapInstanceRef.current, position: pos, content: el, yAnchor: 1 });
+          el.onclick = () => {
+            if (!isLoggedIn) { if (confirm("로그인하면 고양이 정보를 볼 수 있어요. 로그인할까요?")) window.location.href = "/login"; return; }
+            setSelectedCat(cat); setCatCardTab("carelog");
+          };
+          const ov = new window.kakao.maps.CustomOverlay({ map: mapInstanceRef.current, position: pos, content: el, yAnchor: 1, zIndex: 10 });
           overlaysRef.current.push(ov);
         });
         return;
@@ -648,6 +662,7 @@ export default function MapPage() {
         </div>
       `;
       el.onclick = () => {
+        if (!isLoggedIn) { if (confirm("로그인하면 고양이 정보를 볼 수 있어요. 로그인할까요?")) window.location.href = "/login"; return; }
         setSelectedDong(dong);
         setSelectedCat(null);
       };
@@ -657,10 +672,11 @@ export default function MapPage() {
         position: pos,
         content: el,
         yAnchor: 1,
+        zIndex: 10,
       });
       overlaysRef.current.push(ov);
     });
-  }, [cats, mapReady, isLoggedIn, alertedCats]);
+  }, [cats, mapReady, isLoggedIn, alertedCats, showCats]);
 
   // ── 병원 마커 (뷰포트 기반 + 좌표 없으면 Geocoder 변환) ──
   const hospitalIdleListenerRef = useRef<any>(null);
@@ -793,13 +809,31 @@ export default function MapPage() {
       hospitalOverlaysRef.current = [];
 
       const level = map.getLevel();
-      if (level >= 9) return;
+      // 줌 레벨별 표시: 6~7 약국만, 8+ 전부, 9+ 숨김 없음(전부 표시)
+      if (level >= 12) return; // 너무 넓으면 전부 숨김
 
       const bounds = map.getBounds();
       const sw = bounds.getSouthWest();
       const ne = bounds.getNorthEast();
 
       const visible = hospitals.filter((h) => {
+        const isPharm = (h.tags ?? []).some((t: string) => t.includes("동물약국"));
+        const isManual = h.source !== "kakao";
+
+        // 필터 칩 적용
+        if (isPharm && !showPharmacies) return false;
+        if (!isPharm && !showHospitals) return false;
+
+        // 줌 레벨별 단계 표시
+        if (level >= 9) {
+          // 넓은 범위: 수동 등록(약국 포함)만
+          if (!isManual) return false;
+        } else if (level >= 7) {
+          // 중간 범위: 수동 + pinned 병원만
+          if (!isManual && !h.pinned) return false;
+        }
+        // level < 7: 전부 표시
+
         const coord = getCoord(h);
         if (!coord) return false;
         return (
@@ -847,7 +881,7 @@ export default function MapPage() {
         window.kakao.maps.event.removeListener(map, "idle", hospitalIdleListenerRef.current);
       }
     };
-  }, [hospitals, mapReady]);
+  }, [hospitals, mapReady, showHospitals, showPharmacies]);
 
   const handleCatCreated = (newCat: Cat) => {
     setCats((prev) => [newCat, ...prev]);
@@ -886,7 +920,23 @@ export default function MapPage() {
 
   const alertCount = comments.filter((c) => c.kind === "alert").length;
 
+  const handleLocateMe = () => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        if (mapInstanceRef.current && window.kakao) {
+          mapInstanceRef.current.setCenter(new window.kakao.maps.LatLng(latitude, longitude));
+          mapInstanceRef.current.setLevel(4);
+        }
+      },
+      () => {},
+      { enableHighAccuracy: true, timeout: 5000 },
+    );
+  };
+
   const handleAddClick = () => {
+    if (!isLoggedIn) { if (confirm("로그인하면 고양이를 등록할 수 있어요. 로그인할까요?")) window.location.href = "/login"; return; }
     // 지도 중심을 기본 좌표로 사용
     if (mapInstanceRef.current && window.kakao) {
       const center = mapInstanceRef.current.getCenter();
@@ -923,35 +973,17 @@ export default function MapPage() {
 
   return (
     <div className="relative no-dark" style={{ height: "calc(100dvh - 5rem)" }}>
-      {/* 헤더 (지도 위에 떠있음) */}
-      <div className="absolute top-0 left-0 right-0 z-10 px-4 pt-12 pb-3 pointer-events-none space-y-2">
-        <div
-          className="rounded-2xl px-4 py-3.5 pointer-events-auto shadow-[0_4px_20px_rgba(196,126,90,0.25)]"
-          style={{
-            background: "linear-gradient(135deg, #C47E5A 0%, #A8623E 100%)",
-          }}
-        >
-          {/* 전체 등록 */}
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-1.5">
-              <MapPin size={12} color="#FFE0CC" strokeWidth={2.5} />
-              <span className="text-[10.5px] font-semibold" style={{ color: "#FFE0CC" }}>전체 등록 고양이</span>
-            </div>
-            <span className="text-[13px] font-extrabold" style={{ color: "#FFD9A0" }}>
-              {cats.length}마리
-            </span>
-          </div>
-          {/* 구분선 */}
-          <div className="h-px mb-2" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
-          {/* 현재 구 */}
-          <div className="flex items-baseline gap-1.5">
-            <h1 className="text-[15px] font-extrabold tracking-tight leading-snug text-white">
-              {currentGu || "우리 동네"} 돌봄 고양이
-            </h1>
-            <span
-              className="text-[22px] font-black tracking-tight"
-              style={{ color: "#FFD9A0" }}
-            >
+      {/* 헤더 (슬림 — 호갱노노 스타일) */}
+      <div className="absolute top-0 left-0 right-0 z-10 px-4 pt-12 pb-2 pointer-events-none">
+        <div className="flex items-center gap-2 pointer-events-auto">
+          {/* 지역 + 마릿수 */}
+          <div
+            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl shrink-0"
+            style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}
+          >
+            <MapPin size={14} style={{ color: "#C47E5A" }} />
+            <span className="text-[13px] font-extrabold text-text-main">{currentGu || "전체"}</span>
+            <span className="text-[13px] font-black" style={{ color: "#C47E5A" }}>
               {(() => {
                 const map = mapInstanceRef.current;
                 const bounds = map?.getBounds?.();
@@ -963,41 +995,62 @@ export default function MapPage() {
                 }).length;
               })()}
             </span>
-            <span className="text-[13px] font-bold text-white/80">마리</span>
+            <span className="text-[10px] text-text-light">/</span>
+            <span className="text-[11px] font-bold text-text-light">{cats.length}</span>
+            {todayVisit != null && (
+              <>
+                <span className="w-px h-3 mx-0.5" style={{ backgroundColor: "#E0DBD3" }} />
+                <span className="text-[10px] font-bold text-text-light">오늘 방문자 {todayVisit.toLocaleString()}명</span>
+              </>
+            )}
           </div>
-          <p className="text-[11px] mt-1 font-medium" style={{ color: "rgba(255,255,255,0.85)" }}>
-            {loadingCats
-              ? "불러오는 중..."
-              : "우리 동네 고양이를 등록하고 수호해보세요 🐾"}
-          </p>
+
+          {/* 필터 칩 */}
+          <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
+            {[
+              { key: "cats", label: "고양이", active: showCats, toggle: () => setShowCats(!showCats), color: "#C47E5A" },
+              { key: "hospitals", label: "병원", active: showHospitals, toggle: () => setShowHospitals(!showHospitals), color: "#22B573" },
+              { key: "pharmacies", label: "약국", active: showPharmacies, toggle: () => setShowPharmacies(!showPharmacies), color: "#E88D5A" },
+            ].map((f) => (
+              <button
+                key={f.key}
+                type="button"
+                onClick={f.toggle}
+                className="px-3 py-2 rounded-xl text-[11px] font-bold active:scale-95 transition-all shrink-0"
+                style={{
+                  backgroundColor: f.active ? f.color : "rgba(255,255,255,0.85)",
+                  color: f.active ? "#fff" : "#A38E7A",
+                  boxShadow: f.active ? `0 2px 8px ${f.color}40` : "0 1px 4px rgba(0,0,0,0.06)",
+                }}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* 동 단위 안내 */}
-        <div
-          className="rounded-2xl px-3.5 py-2 pointer-events-auto flex items-center gap-2"
-          style={{ backgroundColor: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)" }}
-        >
-          <Shield size={14} className="shrink-0" style={{ color: "#C47E5A" }} />
-          <p className="text-[10.5px] leading-snug" style={{ color: "#7A5238" }}>
-            고양이 위치는 보안상 <b>동 단위</b>로 표기됩니다. 지역별 커뮤니티에서 다같이 보호하고 돌봄해보세요.
-          </p>
-        </div>
-
-        {/* 게스트 보호 배너 — 학대 방지용 좌표 퍼징 안내 */}
+        {/* 게스트 배너 — 로그인 유도 + 좌표 퍼징 안내 */}
         {!isLoggedIn && !loadingCats && (
           <div
             className="rounded-2xl px-4 py-2.5 pointer-events-auto shadow-[0_2px_12px_rgba(0,0,0,0.06)] flex items-start gap-2.5"
-            style={{ backgroundColor: "#EEE8E0" }}
+            style={{ backgroundColor: "#C47E5A" }}
           >
-            <Shield size={15} className="mt-0.5 shrink-0" style={{ color: "#C47E5A" }} />
-            <div className="min-w-0">
-              <p className="text-[12px] font-bold" style={{ color: "#7A5238" }}>
-                아이들 보호를 위해 대략적 위치만 표시돼요
+            <Shield size={15} className="mt-0.5 shrink-0" style={{ color: "#fff" }} />
+            <div className="min-w-0 flex-1">
+              <p className="text-[12px] font-bold text-white">
+                둘러보기 모드예요
               </p>
-              <p className="text-[11px] mt-0.5" style={{ color: "#A38E7A" }}>
-                로그인하면 정확한 위치가 보여요 · 약 70m 오차
+              <p className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.8)" }}>
+                로그인하면 고양이 정보 확인 · 돌봄 기록 · 채팅을 사용할 수 있어요
               </p>
             </div>
+            <a
+              href="/login"
+              className="shrink-0 px-3 py-1.5 rounded-xl text-[11px] font-bold active:scale-95"
+              style={{ backgroundColor: "#fff", color: "#C47E5A" }}
+            >
+              로그인
+            </a>
           </div>
         )}
 
@@ -1153,40 +1206,66 @@ export default function MapPage() {
         </div>
       )}
 
-      {/* 현재 구 채팅 FAB */}
+      {/* 현재 구 채팅 FAB + 안내 */}
       {currentGu && !selectedCat && !selectedHospital && !chatOpen && !selectedDong && (
-        <button
-          type="button"
-          onClick={() => setChatOpen(true)}
-          className="absolute bottom-6 left-5 z-30 flex items-center gap-2.5 pl-3 pr-4 py-2.5 active:scale-[0.95] transition-transform"
-          style={{
-            background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
-            borderRadius: 22,
-            boxShadow: "0 6px 20px rgba(196,126,90,0.45), 0 0 0 2px rgba(255,255,255,0.8)",
-          }}
-        >
-          <div
-            className="w-8 h-8 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: "rgba(255,255,255,0.25)" }}
+        <div className="absolute bottom-6 left-4 z-30 flex flex-col items-start gap-1.5">
+          <button
+            type="button"
+            onClick={() => { if (!isLoggedIn) { if (confirm("로그인하면 동네 채팅을 사용할 수 있어요. 로그인할까요?")) window.location.href = "/login"; return; } setChatOpen(true); }}
+            className="flex items-center gap-2.5 pl-3 pr-4 py-2.5 active:scale-[0.95] transition-transform"
+            style={{
+              background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+              borderRadius: 22,
+              boxShadow: "0 6px 20px rgba(196,126,90,0.45), 0 0 0 2px rgba(255,255,255,0.8)",
+            }}
           >
-            <MessageCircle size={16} color="#fff" strokeWidth={2.5} />
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: "rgba(255,255,255,0.25)" }}
+            >
+              <MessageCircle size={16} color="#fff" strokeWidth={2.5} />
+            </div>
+            <div>
+              <p className="text-[12px] font-extrabold text-white leading-tight">{currentGu}</p>
+              <p className="text-[9px] font-semibold" style={{ color: "rgba(255,255,255,0.7)" }}>동네 채팅</p>
+            </div>
+          </button>
+          <div
+            className="px-3 py-2 rounded-2xl max-w-[160px]"
+            style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "0 2px 10px rgba(0,0,0,0.08)" }}
+          >
+            <p className="text-[9.5px] font-semibold text-text-main leading-snug">동네 채팅에 참여해보세요 💬</p>
           </div>
-          <div>
-            <p className="text-[12px] font-extrabold text-white leading-tight">{currentGu}</p>
-            <p className="text-[9px] font-semibold" style={{ color: "rgba(255,255,255,0.7)" }}>동네 채팅</p>
-          </div>
-        </button>
+        </div>
       )}
 
-      {/* + 등록 FAB — 채팅/카드 열려있을 때는 숨김 */}
+      {/* 내 위치 + 등록 FAB */}
       {!selectedCat && !selectedHospital && !chatOpen && !selectedDong && (
-        <button
-          onClick={handleAddClick}
-          className="absolute bottom-6 right-5 w-14 h-14 rounded-[20px] bg-primary flex items-center justify-center fab-shadow active:scale-90 transition-transform z-30"
-          aria-label="고양이 등록"
-        >
-          <Plus size={28} color="#fff" strokeWidth={2.5} />
-        </button>
+        <div className="absolute bottom-6 right-4 z-30 flex flex-col gap-2.5 items-end">
+          <button
+            onClick={handleLocateMe}
+            className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center active:scale-90 transition-transform"
+            style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.12)" }}
+            aria-label="내 위치"
+          >
+            <LocateFixed size={18} style={{ color: "#C47E5A" }} strokeWidth={2.2} />
+          </button>
+          <button
+            onClick={handleAddClick}
+            className="w-13 h-13 rounded-[18px] bg-primary flex items-center justify-center fab-shadow active:scale-90 transition-transform"
+            style={{ width: 52, height: 52 }}
+            aria-label="고양이 등록"
+          >
+            <Plus size={26} color="#fff" strokeWidth={2.5} />
+          </button>
+          <div
+            className="px-3 py-2 rounded-2xl max-w-[180px] text-right"
+            style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "0 2px 10px rgba(0,0,0,0.08)" }}
+          >
+            <p className="text-[9.5px] font-semibold text-text-main leading-snug">우리 동네 고양이를 등록하고 품앗이 케어해보세요 🐾</p>
+            <p className="text-[8.5px] text-text-light mt-0.5">고양이 위치는 보안상 동 단위로 표기됩니다</p>
+          </div>
+        </div>
       )}
 
       {/* 구 채팅방 */}
@@ -1943,6 +2022,22 @@ export default function MapPage() {
                           <span className="text-[10px] text-text-light ml-auto">
                             {formatRelativeTime(c.created_at)}
                           </span>
+                          {user?.id === c.author_id && (
+                            <button
+                              type="button"
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                if (!confirm("이 댓글을 삭제할까요?")) return;
+                                try {
+                                  await deleteComment(c.id);
+                                  setComments((prev) => prev.filter((cm) => cm.id !== c.id));
+                                } catch { alert("삭제 실패"); }
+                              }}
+                              className="ml-1 text-text-light active:scale-90"
+                            >
+                              <Trash2 size={11} />
+                            </button>
+                          )}
                         </div>
                         {c.body && (
                           <p

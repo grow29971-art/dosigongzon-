@@ -485,6 +485,16 @@ export async function getMyCommentVotes(
   );
 }
 
+// ── 본인 댓글 삭제 ──
+export async function deleteComment(commentId: string): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("cat_comments")
+    .delete()
+    .eq("id", commentId);
+  if (error) throw new Error(`삭제 실패: ${error.message}`);
+}
+
 // ── 학대 신고(alert) 2회 이상 받은 고양이 ID 목록 ──
 // 지도 마커에 "학대경보" 표시 용도. 최근 48시간 이내 신고만, 최소 1건.
 // 48시간 지나면 자동 해제.
