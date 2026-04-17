@@ -37,6 +37,7 @@ import {
   updateMyNickname,
   getDisplayName,
   getLevelColor,
+  getLevelPerks,
   type Cat,
   type CatCommentWithCat,
   type MyActivitySummary,
@@ -48,6 +49,8 @@ import {
   CATEGORY_LABELS,
   CATEGORY_COLORS,
   TITLES,
+  ADMIN_TITLES,
+  findAdminTitle,
   type TitleStatus,
 } from "@/lib/titles";
 import { createClient } from "@/lib/supabase/client";
@@ -78,6 +81,7 @@ export default function MyPage() {
   const [dataLoading, setDataLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [unreadDM, setUnreadDM] = useState(0);
+  const [adminTitle, setAdminTitle] = useState<string | null>(null);
   const [inquiryOpen, setInquiryOpen] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -171,14 +175,16 @@ export default function MyPage() {
       listMyComments(10),
       isCurrentUserAdmin(),
       getUnreadCount(),
+      createClient().from("profiles").select("admin_title").eq("id", user.id).maybeSingle(),
     ])
-      .then(([s, cats, comments, admin, unread]) => {
+      .then(([s, cats, comments, admin, unread, profileRes]) => {
         if (cancelled) return;
         setSummary(s);
         setMyCats(cats);
         setMyComments(comments);
         setIsAdmin(admin);
         setUnreadDM(unread);
+        setAdminTitle((profileRes.data as { admin_title: string | null } | null)?.admin_title ?? null);
       })
       .finally(() => {
         if (!cancelled) setDataLoading(false);
@@ -447,6 +453,37 @@ export default function MyPage() {
                     />
                   </div>
                 </div>
+                {/* 레벨 혜택 */}
+                {(() => {
+                  const perks = getLevelPerks(lv.level);
+                  return (
+                    <div className="mt-3 pt-3 border-t" style={{ borderColor: "#EEE8E0" }}>
+                      <p className="text-[10px] font-bold text-text-light mb-2">Lv.{lv.level} 혜택</p>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        <div className="flex items-center gap-1.5 text-[10.5px]">
+                          <span>🐱</span>
+                          <span className="text-text-sub">하루 등록</span>
+                          <span className="font-bold text-text-main ml-auto">{perks.dailyCatLimit}마리</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-[10.5px]">
+                          <span>🤖</span>
+                          <span className="text-text-sub">AI 대화</span>
+                          <span className="font-bold text-text-main ml-auto">{perks.aiChatPerMinute}회/분</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-[10.5px]">
+                          <span>📝</span>
+                          <span className="text-text-sub">글 작성</span>
+                          <span className="font-bold text-text-main ml-auto">{perks.dailyPostLimit === 0 ? "무제한" : `${perks.dailyPostLimit}개/일`}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-[10.5px]">
+                          <span>{perks.canUseSpecialEmoji ? "✨" : "🔒"}</span>
+                          <span className="text-text-sub">특별 이모지</span>
+                          <span className="font-bold ml-auto" style={{ color: perks.canUseSpecialEmoji ? "#6B8E6F" : "#A0A0A0" }}>{perks.canUseSpecialEmoji ? "사용 가능" : "Lv.3+"}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             );
           })()}
@@ -486,6 +523,7 @@ export default function MyPage() {
               initialEquipped={
                 (user?.user_metadata?.equipped_title as string | undefined) ?? null
               }
+              adminTitleId={adminTitle}
             />
           )}
 
@@ -1016,20 +1054,22 @@ function StatCard({
 function TitleSection({
   summary,
   initialEquipped,
+  adminTitleId,
 }: {
   summary: MyActivitySummary;
   initialEquipped: string | null;
+  adminTitleId: string | null;
 }) {
   const statuses = getTitleStatuses(summary);
   const unlockedCount = countUnlocked(summary);
   const total = TITLES.length;
   const [equipped, setEquipped] = useState<string | null>(initialEquipped);
   const [saving, setSaving] = useState(false);
+  const myAdminTitle = findAdminTitle(adminTitleId);
 
   const handleToggle = async (id: string, isUnlocked: boolean) => {
     if (!isUnlocked || saving) return;
     const next = equipped === id ? null : id;
-    // 낙관적 UI
     const prev = equipped;
     setEquipped(next);
     setSaving(true);
@@ -1047,6 +1087,52 @@ function TitleSection({
 
   return (
     <div className="mb-5">
+      {/* 관리자 부여 특별 타이틀 */}
+      {myAdminTitle && (
+        <div className="mb-3">
+          <div className="flex items-center gap-2 mb-2 px-1">
+            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: myAdminTitle.color }} />
+            <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+              특별 타이틀
+            </h2>
+          </div>
+          <button
+            type="button"
+            onClick={() => handleToggle(adminTitleId!, true)}
+            disabled={saving}
+            className="w-full flex items-center gap-3 p-3 active:scale-[0.98] transition-transform"
+            style={{
+              background: equipped === adminTitleId
+                ? `linear-gradient(135deg, ${myAdminTitle.color}15 0%, ${myAdminTitle.color}08 100%)`
+                : "#FFFFFF",
+              borderRadius: 16,
+              border: equipped === adminTitleId
+                ? `2px solid ${myAdminTitle.color}`
+                : "1px solid rgba(0,0,0,0.06)",
+              boxShadow: equipped === adminTitleId
+                ? `0 4px 14px ${myAdminTitle.color}20`
+                : "0 2px 8px rgba(0,0,0,0.04)",
+            }}
+          >
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center text-[24px]"
+              style={{ backgroundColor: `${myAdminTitle.color}15` }}
+            >
+              {myAdminTitle.emoji}
+            </div>
+            <div className="flex-1 text-left">
+              <div className="flex items-center gap-2">
+                <span className="text-[14px] font-extrabold text-text-main">{myAdminTitle.name}</span>
+                {equipped === adminTitleId && (
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md text-white" style={{ backgroundColor: myAdminTitle.color }}>장착중</span>
+                )}
+              </div>
+              <p className="text-[11px] text-text-sub mt-0.5">{myAdminTitle.description}</p>
+            </div>
+          </button>
+        </div>
+      )}
+
       <div className="flex items-center gap-2 mb-3 px-1">
         <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C9A961" }} />
         <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
@@ -1056,7 +1142,7 @@ function TitleSection({
           {unlockedCount} / {total}
         </span>
         <span className="text-[10px] text-text-light ml-auto">
-          {equipped ? "탭해서 해제" : "해제된 업적을 탭하면 장착돼요"}
+          {equipped ? "탭해서 해제" : "탭하면 장착돼요"}
         </span>
       </div>
 

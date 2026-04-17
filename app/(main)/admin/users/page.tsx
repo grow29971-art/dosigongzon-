@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { createClient } from "@/lib/supabase/client";
+import { ADMIN_TITLES, findAdminTitle } from "@/lib/titles";
 
 interface UserRow {
   id: string;
@@ -26,6 +27,7 @@ interface UserRow {
   last_sign_in_at: string | null;
   is_suspended: boolean;
   suspended_reason: string | null;
+  admin_title: string | null;
 }
 
 function formatDate(iso: string | null): string {
@@ -58,6 +60,29 @@ export default function AdminUsersPage() {
   const [users, setUsers] = useState<UserRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [titleTarget, setTitleTarget] = useState<string | null>(null); // 타이틀 편집 중인 유저 ID
+
+  const handleSetTitle = async (userId: string, titleId: string | null) => {
+    try {
+      const sb = createClient();
+      const { data: { session } } = await sb.auth.getSession();
+      const res = await fetch("/api/admin/set-title", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token ?? ""}`,
+        },
+        body: JSON.stringify({ userId, titleId }),
+      });
+      if (res.ok) {
+        setUsers((prev) => prev.map((u) => u.id === userId ? { ...u, admin_title: titleId } : u));
+        setTitleTarget(null);
+      } else {
+        const d = await res.json();
+        alert(d.error || "실패");
+      }
+    } catch { alert("타이틀 부여 실패"); }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -208,6 +233,17 @@ export default function AdminUsersPage() {
                       정지
                     </span>
                   )}
+                  {(() => {
+                    const at = findAdminTitle(u.admin_title);
+                    return at ? (
+                      <span
+                        className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md"
+                        style={{ backgroundColor: at.color, color: "#fff" }}
+                      >
+                        {at.emoji} {at.name}
+                      </span>
+                    ) : null;
+                  })()}
                 </div>
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className="text-[10.5px] text-text-light flex items-center gap-0.5 truncate">
@@ -226,6 +262,44 @@ export default function AdminUsersPage() {
                   <p className="text-[10px] mt-1" style={{ color: "#D85555" }}>
                     정지 사유: {u.suspended_reason}
                   </p>
+                )}
+                {/* 타이틀 부여 버튼 */}
+                <button
+                  type="button"
+                  onClick={() => setTitleTarget(titleTarget === u.id ? null : u.id)}
+                  className="text-[10px] font-bold mt-1.5 px-2 py-0.5 rounded-lg active:scale-95"
+                  style={{ backgroundColor: "#F6F1EA", color: "#C47E5A" }}
+                >
+                  {u.admin_title ? "🏷️ 타이틀 변경" : "🏷️ 타이틀 부여"}
+                </button>
+                {/* 타이틀 선택 드롭다운 */}
+                {titleTarget === u.id && (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {u.admin_title && (
+                      <button
+                        type="button"
+                        onClick={() => handleSetTitle(u.id, null)}
+                        className="text-[10px] font-bold px-2 py-1 rounded-lg active:scale-95"
+                        style={{ backgroundColor: "#FBEAEA", color: "#D85555" }}
+                      >
+                        ✕ 제거
+                      </button>
+                    )}
+                    {ADMIN_TITLES.map((t) => (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => handleSetTitle(u.id, t.id)}
+                        className="text-[10px] font-bold px-2 py-1 rounded-lg active:scale-95"
+                        style={{
+                          backgroundColor: u.admin_title === t.id ? t.color : `${t.color}15`,
+                          color: u.admin_title === t.id ? "#fff" : t.color,
+                        }}
+                      >
+                        {t.emoji} {t.name}
+                      </button>
+                    ))}
+                  </div>
                 )}
               </div>
             </div>

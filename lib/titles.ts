@@ -173,6 +173,31 @@ export function countUnlocked(summary: MyActivitySummary): number {
   return TITLES.filter((t) => t.unlocked(summary)).length;
 }
 
+// ── 관리자 부여 특별 타이틀 ──
+export interface AdminTitle {
+  id: string;
+  name: string;
+  emoji: string;
+  color: string;
+  description: string;
+}
+
+export const ADMIN_TITLES: AdminTitle[] = [
+  { id: "official_volunteer", name: "공식 봉사자", emoji: "💛", color: "#C9A961", description: "공식 인증된 길고양이 봉사 활동가" },
+  { id: "tnr_expert", name: "TNR 전문가", emoji: "✂️", color: "#8B65B8", description: "TNR 활동에 적극 기여한 시민" },
+  { id: "rescue_hero", name: "구조 영웅", emoji: "🦸", color: "#D85555", description: "위기 상황에서 고양이를 구조한 시민" },
+  { id: "community_leader", name: "커뮤니티 리더", emoji: "🌟", color: "#E88D5A", description: "커뮤니티를 이끄는 모범 회원" },
+  { id: "veterinary_partner", name: "수의 파트너", emoji: "🏥", color: "#48A59E", description: "수의학 지식을 나누는 협력자" },
+  { id: "early_supporter", name: "초기 서포터", emoji: "🌱", color: "#6B8E6F", description: "서비스 초기부터 함께한 서포터" },
+  { id: "content_creator", name: "콘텐츠 크리에이터", emoji: "📸", color: "#4A7BA8", description: "우수한 돌봄 콘텐츠를 생산하는 회원" },
+  { id: "donor", name: "후원자", emoji: "💝", color: "#E86B8C", description: "길고양이 돌봄을 후원하는 회원" },
+];
+
+export function findAdminTitle(id: string | null | undefined): AdminTitle | null {
+  if (!id) return null;
+  return ADMIN_TITLES.find((t) => t.id === id) ?? null;
+}
+
 // ── 장착 관련 ──
 // equipped_title은 Supabase auth user_metadata에 저장됨.
 // 여기서는 id → TitleDef 조회 헬퍼만 제공.

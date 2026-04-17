@@ -34,6 +34,16 @@ import {
   BADGE_PRESETS,
   type NewsItem,
 } from "@/lib/news-repo";
+import {
+  getMyActivitySummary,
+  computeScore,
+  computeLevel,
+  getLevelColor,
+  type MyActivitySummary,
+  type LevelInfo,
+} from "@/lib/cats-repo";
+import { listPosts, formatRelativeTime } from "@/lib/posts-repo";
+import type { Post } from "@/lib/types";
 
 /* ═══ 냥식 ═══ */
 const CAT_FACTS = [
@@ -134,9 +144,19 @@ export default function HomePage() {
   const [weatherLoading, setWeatherLoading] = useState(true);
   const [weatherError, setWeatherError] = useState("");
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
-  // 뉴스 목록
+  const [activity, setActivity] = useState<MyActivitySummary | null>(null);
+  const [levelInfo, setLevelInfo] = useState<LevelInfo | null>(null);
+  const [popularPosts, setPopularPosts] = useState<Post[]>([]);
+
+  // 데이터 로드
   useEffect(() => {
     listNews().then(setNewsItems);
+    listPosts().then((posts) => {
+      const sorted = [...posts].sort(
+        (a, b) => (b.likeCount * 3 + b.commentCount * 2 + b.viewCount) - (a.likeCount * 3 + a.commentCount * 2 + a.viewCount),
+      );
+      setPopularPosts(sorted.slice(0, 3));
+    });
   }, []);
 
   // 방문자 카운트 (로그인 완료 후 토큰 포함)
@@ -182,6 +202,12 @@ export default function HomePage() {
 
     setMounted(true);
     setFact(CAT_FACTS[Math.floor(Math.random() * CAT_FACTS.length)]);
+
+    // 내 활동 요약 + 레벨
+    getMyActivitySummary().then((s) => {
+      setActivity(s);
+      setLevelInfo(computeLevel(computeScore(s)));
+    });
 
     // 날씨 가져오기
     const fetchWeather = async (lat?: number, lon?: number) => {
@@ -266,6 +292,80 @@ export default function HomePage() {
       </div>
 
 
+
+      {/* ══════ 내 활동 요약 ══════ */}
+      {activity && levelInfo && (
+        <Link
+          href="/mypage"
+          className="block mb-5 active:scale-[0.98] transition-transform"
+        >
+          <div
+            className="p-5 dark-card-level"
+            style={{
+              background: "linear-gradient(145deg, #C47E5A 0%, #A8684A 50%, #8B5A3E 100%)",
+              borderRadius: 22,
+              boxShadow: "0 10px 30px rgba(196,126,90,0.3), 0 2px 6px rgba(0,0,0,0.06)",
+            }}
+          >
+            {/* 레벨 + 이름 */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-12 h-12 rounded-2xl flex items-center justify-center"
+                  style={{ backgroundColor: "rgba(255,255,255,0.15)", backdropFilter: "blur(4px)" }}
+                >
+                  <span className="text-[24px]">{levelInfo.emoji}</span>
+                </div>
+                <div>
+                  <p className="text-[17px] font-extrabold text-white tracking-tight">{levelInfo.title}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-md" style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.9)" }}>
+                      Lv.{levelInfo.level}
+                    </span>
+                    <span className="text-[11px] font-semibold" style={{ color: "rgba(255,255,255,0.6)" }}>
+                      {levelInfo.score}점 {levelInfo.next ? `/ ${levelInfo.next}점` : "MAX"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <ChevronRight size={20} style={{ color: "rgba(255,255,255,0.4)" }} />
+            </div>
+
+            {/* 경험치 바 */}
+            <div className="mb-4">
+              <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.15)" }}>
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${Math.max(levelInfo.progress * 100, 4)}%`,
+                    background: "linear-gradient(90deg, #FFD9A0 0%, #FFE8C5 100%)",
+                    boxShadow: "0 0 8px rgba(255,217,160,0.5)",
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* 스탯 4칸 */}
+            <div className="grid grid-cols-4 gap-2">
+              {[
+                { label: "고양이", value: activity.catCount, icon: "🐱" },
+                { label: "돌봄", value: activity.commentCount + activity.careLogCount, icon: "✍️" },
+                { label: "신고", value: activity.alertCount, icon: "🛡️" },
+                { label: "좋아요", value: activity.likesReceived, icon: "♥" },
+              ].map((s) => (
+                <div
+                  key={s.label}
+                  className="text-center py-2 rounded-xl"
+                  style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
+                >
+                  <p className="text-[16px] font-black text-white">{s.value}</p>
+                  <p className="text-[9px] font-semibold mt-0.5" style={{ color: "rgba(255,255,255,0.55)" }}>{s.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Link>
+      )}
 
       {/* ══════ 실시간 날씨 위젯 ══════ */}
       <div
@@ -364,6 +464,60 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
+
+            {/* 돌봄 팁 */}
+            {(() => {
+              const t = weather.feelsLike;
+              const tips: { emoji: string; text: string; color: string }[] = [];
+
+              if (t <= -10) {
+                tips.push({ emoji: "🥶", text: "극한 추위! 숨숨집 내부에 핫팩을 넣어주세요. 물이 얼지 않게 자주 교체해주세요.", color: "#4A7BA8" });
+              } else if (t <= 0) {
+                tips.push({ emoji: "❄️", text: "물이 얼 수 있어요. 따뜻한 물로 하루 2회 이상 교체해주세요.", color: "#5B7A8F" });
+                tips.push({ emoji: "🏠", text: "스티로폼 숨숨집에 짚이나 담요를 깔아주세요.", color: "#6B8E6F" });
+              } else if (t <= 5) {
+                tips.push({ emoji: "🧣", text: "쌀쌀해요. 쉼터 점검하고 입구가 바람을 막는지 확인해주세요.", color: "#7A9BB0" });
+              } else if (t >= 33) {
+                tips.push({ emoji: "🔥", text: "폭염 주의! 그늘진 곳에 시원한 물을 놓아주세요. 사료가 상하기 쉬워요.", color: "#D85555" });
+              } else if (t >= 28) {
+                tips.push({ emoji: "☀️", text: "더워요. 물을 자주 갈아주고 그늘에 밥을 놓아주세요.", color: "#E88D5A" });
+              }
+
+              if (weather.weatherMain === "Rain" || weather.weatherMain === "Drizzle") {
+                tips.push({ emoji: "🌧️", text: "비 오는 날이에요. 밥그릇에 비가 들어가지 않게 지붕 아래에 놓아주세요.", color: "#4A7BA8" });
+              } else if (weather.weatherMain === "Snow") {
+                tips.push({ emoji: "🌨️", text: "눈이 와요. 쉼터 입구에 눈이 쌓이지 않게 치워주세요.", color: "#5B7A8F" });
+              }
+
+              if (weather.humidity >= 85) {
+                tips.push({ emoji: "💦", text: "습도가 높아요. 건사료가 눅눅해질 수 있으니 소량만 놓아주세요.", color: "#48A59E" });
+              }
+
+              if (weather.windSpeed >= 10) {
+                tips.push({ emoji: "💨", text: "바람이 강해요. 밥그릇이 날아가지 않게 무거운 그릇을 사용해주세요.", color: "#8B65B8" });
+              }
+
+              if (tips.length === 0 && t >= 10 && t <= 25) {
+                tips.push({ emoji: "🐾", text: "돌봄하기 좋은 날씨예요. 오늘도 아이들을 챙겨주셔서 감사해요!", color: "#6B8E6F" });
+              }
+
+              return tips.length > 0 ? (
+                <div className="mt-3 space-y-1.5">
+                  {tips.map((tip, i) => (
+                    <div
+                      key={i}
+                      className="flex items-start gap-2 px-3 py-2 rounded-xl"
+                      style={{ backgroundColor: `${tip.color}10` }}
+                    >
+                      <span className="text-[14px] shrink-0">{tip.emoji}</span>
+                      <p className="text-[11.5px] font-semibold leading-snug" style={{ color: tip.color }}>
+                        {tip.text}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : null;
+            })()}
           </>
         ) : null}
       </div>
@@ -456,6 +610,58 @@ export default function HomePage() {
       </div>
 
       <AIChatModal open={chatOpen} onClose={() => setChatOpen(false)} />
+
+      {/* ══════ 인기 커뮤니티 글 ══════ */}
+      {popularPosts.length > 0 && (
+        <div className="mb-5">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2 px-1">
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E88D5A" }} />
+              <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+                인기 게시글
+              </h2>
+            </div>
+            <Link
+              href="/community"
+              className="flex items-center gap-0.5 text-[12px] font-semibold text-primary"
+            >
+              전체보기 <ChevronRight size={14} />
+            </Link>
+          </div>
+          <div className="space-y-2">
+            {popularPosts.map((post) => (
+              <Link
+                key={post.id}
+                href={`/community/${post.id}`}
+                className="block active:scale-[0.99] transition-transform"
+              >
+                <div
+                  className="flex items-center gap-3 px-4 py-3"
+                  style={{
+                    background: "#FFFFFF",
+                    borderRadius: 16,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)",
+                    border: "1px solid rgba(0,0,0,0.04)",
+                  }}
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-bold text-text-main truncate">
+                      {post.title}
+                    </p>
+                    <p className="text-[10.5px] text-text-light mt-0.5">
+                      {post.authorName} · {formatRelativeTime(post.createdAt)}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0 text-[10px] text-text-light">
+                    <span>❤️ {post.likeCount}</span>
+                    <span>💬 {post.commentCount}</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ══════ 고양이 사회 소식 & 일정 ══════ */}
       <div className="mb-4">

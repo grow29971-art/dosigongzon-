@@ -310,10 +310,10 @@ function LoginContent() {
         <div className="space-y-2.5">
           {/* 카카오 */}
           <button
-            onClick={() => socialAgree ? handleSocialLogin("kakao") : setErrors({ general: "약관에 동의해주세요." })}
+            onClick={() => inApp ? handleOpenExternal() : socialAgree ? handleSocialLogin("kakao") : setErrors({ general: "약관에 동의해주세요." })}
             disabled={!!socialLoading}
             className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.97] transition-transform disabled:opacity-60"
-            style={{ backgroundColor: "#FEE500", color: "#191919", opacity: socialAgree ? 1 : 0.6 }}
+            style={{ backgroundColor: "#FEE500", color: "#191919", opacity: (socialAgree || inApp) ? 1 : 0.6 }}
           >
             {socialLoading === "kakao" ? (
               <Loader2 size={18} className="animate-spin" />
@@ -330,10 +330,10 @@ function LoginContent() {
 
           {/* 구글 */}
           <button
-            onClick={() => socialAgree ? handleSocialLogin("google") : setErrors({ general: "약관에 동의해주세요." })}
+            onClick={() => inApp ? handleOpenExternal() : socialAgree ? handleSocialLogin("google") : setErrors({ general: "약관에 동의해주세요." })}
             disabled={!!socialLoading}
             className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.97] transition-transform border border-[#E0E0E0] disabled:opacity-60"
-            style={{ backgroundColor: "#FFFFFF", color: "#2A2A28", opacity: socialAgree ? 1 : 0.6 }}
+            style={{ backgroundColor: "#FFFFFF", color: "#2A2A28", opacity: (socialAgree || inApp) ? 1 : 0.6 }}
           >
             {socialLoading === "google" ? (
               <Loader2 size={18} className="animate-spin" />

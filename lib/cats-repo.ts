@@ -6,28 +6,51 @@
 import { createClient } from "@/lib/supabase/client";
 import { isSafeImageUrl } from "@/lib/url-validate";
 
+export type CatGender = "male" | "female" | "unknown";
+export type CatHealthStatus = "good" | "caution" | "danger";
+
 export interface Cat {
   id: string;
   name: string;
   description: string | null;
   photo_url: string | null;
+  photo_urls: string[];
   lat: number;
   lng: number;
   region: string | null;
   tags: string[];
+  gender: CatGender;
+  neutered: boolean | null;
+  health_status: CatHealthStatus;
   caretaker_id: string | null;
   caretaker_name: string | null;
   created_at: string;
 }
 
+export const GENDER_MAP: Record<CatGender, { label: string; emoji: string }> = {
+  male: { label: "수컷", emoji: "♂️" },
+  female: { label: "암컷", emoji: "♀️" },
+  unknown: { label: "모름", emoji: "?" },
+};
+
+export const HEALTH_MAP: Record<CatHealthStatus, { label: string; emoji: string; color: string }> = {
+  good: { label: "양호", emoji: "💚", color: "#6B8E6F" },
+  caution: { label: "주의", emoji: "💛", color: "#C9A961" },
+  danger: { label: "위험", emoji: "❤️‍🩹", color: "#D85555" },
+};
+
 export interface CreateCatInput {
   name: string;
   description?: string;
   photo_url?: string;
+  photo_urls?: string[];
   lat: number;
   lng: number;
   region?: string;
   tags?: string[];
+  gender?: CatGender;
+  neutered?: boolean | null;
+  health_status?: CatHealthStatus;
   caretaker_name?: string;
 }
 
@@ -192,10 +215,7 @@ export async function listCats(): Promise<Cat[]> {
 
 // ── 고양이 등록 제한 상수 (SQL 마이그레이션과 값이 일치해야 함) ──
 // supabase_cats_write_limits_migration.sql 참조.
-const CAT_GRACE_HOURS = 24;
-const CAT_DAILY_LIMIT = 1;
-
-// ── 고양이 등록 (인증 필요) ──
+// ── 고양이 등록 (인증 필요, 레벨별 제한) ──
 export async function createCat(input: CreateCatInput): Promise<Cat> {
   const supabase = createClient();
 
@@ -205,17 +225,10 @@ export async function createCat(input: CreateCatInput): Promise<Cat> {
     throw new Error("로그인이 필요해요.");
   }
 
-  // 계정 나이 체크 (장난 계정 차단)
-  if (user.created_at) {
-    const accountAgeMs = Date.now() - new Date(user.created_at).getTime();
-    const graceMs = CAT_GRACE_HOURS * 60 * 60 * 1000;
-    if (accountAgeMs < graceMs) {
-      const remainHours = Math.ceil((graceMs - accountAgeMs) / (60 * 60 * 1000));
-      throw new Error(
-        `가입 후 ${CAT_GRACE_HOURS}시간 뒤부터 고양이를 등록할 수 있어요. (약 ${remainHours}시간 남음)`,
-      );
-    }
-  }
+  // 레벨별 등록 제한 계산
+  const summary = await getMyActivitySummary();
+  const level = computeLevel(computeScore(summary)).level;
+  const perks = getLevelPerks(level);
 
   // 레이트리밋: 최근 24시간 등록 수 조회
   const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
@@ -226,9 +239,9 @@ export async function createCat(input: CreateCatInput): Promise<Cat> {
     .eq("caretaker_id", user.id)
     .gte("created_at", oneDayAgo);
 
-  if ((dailyCount ?? 0) >= CAT_DAILY_LIMIT) {
+  if ((dailyCount ?? 0) >= perks.dailyCatLimit) {
     throw new Error(
-      `하루에 최대 ${CAT_DAILY_LIMIT}마리까지 등록할 수 있어요. 내일 다시 시도해주세요.`,
+      `하루에 최대 ${perks.dailyCatLimit}마리까지 등록할 수 있어요. (Lv.${level}) 레벨을 올리면 더 많이 등록할 수 있어요!`,
     );
   }
 
@@ -743,6 +756,7 @@ export interface MyActivitySummary {
   commentCount: number;
   alertCount: number;
   likesReceived: number;
+  careLogCount: number;
 }
 
 // ── 레벨 시스템 ──
@@ -768,12 +782,57 @@ const LEVEL_THRESHOLDS: { min: number; title: string; emoji: string }[] = [
   { min: 600, title: "전설의 집사", emoji: "🌟" },
 ];
 
+// ── 레벨별 혜택 ──
+export interface LevelPerks {
+  dailyCatLimit: number;      // 하루 고양이 등록 수
+  aiChatPerMinute: number;    // AI 집사 분당 대화 수
+  dailyPostLimit: number;     // 커뮤니티 글 하루 제한 (0=무제한)
+  profileBorder: string;      // 프로필 테두리 스타일
+  profileBorderColor: string; // 프로필 테두리 색상
+  canUseSpecialEmoji: boolean; // 특별 이모지 사용 가능
+}
+
+export function getLevelPerks(level: number): LevelPerks {
+  if (level >= 5) {
+    // Lv5~7: 마을 지킴이 / 골목 대장 / 전설의 집사
+    return {
+      dailyCatLimit: 10,
+      aiChatPerMinute: 30,
+      dailyPostLimit: 0, // 무제한
+      profileBorder: "3px solid",
+      profileBorderColor: "#C9A961", // 골드
+      canUseSpecialEmoji: true,
+    };
+  }
+  if (level >= 3) {
+    // Lv3~4: 캣러버 / 캣지기
+    return {
+      dailyCatLimit: 5,
+      aiChatPerMinute: 20,
+      dailyPostLimit: 15,
+      profileBorder: "2.5px solid",
+      profileBorderColor: "#A0A0A0", // 실버
+      canUseSpecialEmoji: true,
+    };
+  }
+  // Lv1~2: 새싹 집사 / 캣프렌드
+  return {
+    dailyCatLimit: 3,
+    aiChatPerMinute: 10,
+    dailyPostLimit: 5,
+    profileBorder: "2px solid",
+    profileBorderColor: "transparent",
+    canUseSpecialEmoji: false,
+  };
+}
+
 export function computeScore(summary: MyActivitySummary): number {
   // commentCount는 note+alert 합계. alert에는 추가 보너스 2점(총 3점 = 1점+2점)
   const base = summary.commentCount * 1 + summary.alertCount * 2;
   const fromCats = summary.catCount * 10;
-  const fromLikes = summary.likesReceived * 2; // 받은 좋아요 1개당 2점
-  return base + fromCats + fromLikes;
+  const fromLikes = summary.likesReceived * 2;
+  const fromCareLogs = summary.careLogCount * 2; // 돌봄 일지 1건당 2점
+  return base + fromCats + fromLikes + fromCareLogs;
 }
 
 // 레벨별 표시 색 (뱃지 등)
@@ -820,10 +879,10 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user)
-    return { catCount: 0, commentCount: 0, alertCount: 0, likesReceived: 0 };
+    return { catCount: 0, commentCount: 0, alertCount: 0, likesReceived: 0, careLogCount: 0 };
 
-  // 4개 쿼리 병렬
-  const [catsRes, commentsRes, alertsRes, likeSumRes] = await Promise.all([
+  // 5개 쿼리 병렬
+  const [catsRes, commentsRes, alertsRes, likeSumRes, careLogsRes] = await Promise.all([
     supabase
       .from("cats")
       .select("id", { count: "exact", head: true })
@@ -842,6 +901,11 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
       .from("cat_comments")
       .select("like_count")
       .eq("author_id", user.id),
+    // 돌봄 일지 건수
+    supabase
+      .from("care_logs")
+      .select("id", { count: "exact", head: true })
+      .eq("author_id", user.id),
   ]);
 
   const likesReceived = (
@@ -853,13 +917,14 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
     commentCount: commentsRes.count ?? 0,
     alertCount: alertsRes.count ?? 0,
     likesReceived,
+    careLogCount: careLogsRes.count ?? 0,
   };
 }
 
 // ── 고양이 정보 수정 (본인 또는 admin) ──
 export async function updateCat(
   catId: string,
-  input: Partial<Pick<Cat, "name" | "description" | "region" | "tags" | "photo_url">>,
+  input: Partial<Pick<Cat, "name" | "description" | "region" | "tags" | "photo_url" | "photo_urls" | "gender" | "neutered" | "health_status">>,
 ): Promise<Cat> {
   const supabase = createClient();
   const { data, error } = await supabase

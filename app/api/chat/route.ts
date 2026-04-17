@@ -3,18 +3,24 @@ import { createClient } from "@/lib/supabase/server";
 
 // ── 유저당 레이트리밋 (인메모리, 인스턴스별) ──
 // 분산 환경에선 Redis 권장. 지금은 단일 서버 MVP 기준.
-const RATE_LIMIT = 10; // 윈도우당 최대 호출
+// 레벨별 분당 대화 제한: Lv1-2=10, Lv3-4=20, Lv5+=30
+function getRateLimit(level: number): number {
+  if (level >= 5) return 30;
+  if (level >= 3) return 20;
+  return 10;
+}
+
 const RATE_WINDOW_MS = 60_000; // 1분
 const rateBuckets = new Map<string, { count: number; resetAt: number }>();
 
-function checkRateLimit(userId: string): { ok: true } | { ok: false; retryAfter: number } {
+function checkRateLimit(userId: string, limit: number): { ok: true } | { ok: false; retryAfter: number } {
   const now = Date.now();
   const bucket = rateBuckets.get(userId);
   if (!bucket || bucket.resetAt <= now) {
     rateBuckets.set(userId, { count: 1, resetAt: now + RATE_WINDOW_MS });
     return { ok: true };
   }
-  if (bucket.count >= RATE_LIMIT) {
+  if (bucket.count >= limit) {
     return { ok: false, retryAfter: Math.ceil((bucket.resetAt - now) / 1000) };
   }
   bucket.count += 1;
@@ -74,20 +80,29 @@ function buildSystemPrompt(name: string): string {
 [너의 성격]
 - 따뜻하고 친절하며 전문적인 말투 사용
 - 어려운 용어는 쉽게 풀어서 설명
-- 사용자 호칭은 반드시 "${name}" 으로만 부를 것. 다른 이름(예: "성우님")을 절대 사용하지 말 것.
+- 사용자 호칭은 반드시 "${name}" 으로만 부를 것. 다른 이름을 절대 사용하지 말 것.
 - 답변 끝에 ${name}을 응원하는 짧은 한 줄 멘트 추가
 
 [도시공존 서비스에 대한 지식]
-- 길고양이 지도: 동네 고양이 위치와 돌봄 기록 공유
-- 구조동물 치료 도움병원: 길고양이 치료를 지원하는 병원 목록
-- 동네 커뮤니티: 긴급/임보/입양/중고마켓/자유게시판 카테고리
-- 보호지침: 냥줍 가이드, 응급 구조, 포획 가이드, 법률 가이드(동물보호법)
-- TNR: 포획-중성화-방사 사업. 구청 동물보호 담당부서에서 무료 진행 가능
+- 길고양이 지도: 동네 고양이 위치와 돌봄 기록 공유. 앱 하단 "지도" 탭에서 이용.
+- 구조동물 치료 도움병원: 전국 4,000+ 병원, 170+ 동물약국. 지도에서 바로 확인 가능.
+- 동네 커뮤니티: 긴급/임보/입양/중고마켓/자유게시판. 하단 "커뮤니티" 탭.
+- 보호지침: 냥줍 가이드, 응급 구조, 포획 가이드, 법률 가이드. 하단 "보호지침" 탭.
+- TNR: 포획-중성화-방사 사업. 구청 동물보호 담당부서에서 무료 진행 가능.
+- 돌봄 일지: 고양이별로 밥/물/건강체크/병원 방문 등 돌봄 기록 가능. 지도에서 고양이 탭.
+
+[⚠️ 의료 관련 절대 규칙]
+- 절대로 구체적인 약 이름, 용량, 처방, 투약 방법을 제시하지 마.
+- "○○약을 ○mg 먹이세요" 같은 답변 절대 금지.
+- 의료 질문에는 반드시 "정확한 진단과 처방은 수의사 선생님께 상담하세요"를 포함해.
+- 증상 설명은 가능하지만 진단명을 단정짓지 마. "~일 수 있어요, 수의사 상담을 추천해요" 형태로.
+- 응급 상황: 즉시 가까운 동물병원 방문 권고 + 도시공존 지도에서 병원 검색 안내.
 
 [답변 규칙]
-- 핵심만 담아 3~6문장으로 간결하지만 끊기지 않게 완결된 문장으로 답변
+- 핵심만 담아 3~6문장으로 간결하되 완결된 문장으로 답변
 - 길고양이와 무관한 질문에도 친절하게 응대하되, 길고양이 관련 정보로 자연스럽게 유도
-- 위급한 상황(학대, 부상)에는 즉시 신고 번호 안내 (경찰 112, 동물보호콜센터 1577-0954)`;
+- 위급한 상황(학대, 부상): 즉시 신고 번호 안내 (경찰 112, 동물보호콜센터 1577-0954)
+- 병원 관련: "도시공존 앱 지도에서 가까운 동물병원을 검색해보세요"로 안내`;
 }
 
 // 우선순위대로 시도할 모델 목록 (폭넓게 폴백)
@@ -139,11 +154,16 @@ export async function POST(request: Request) {
     return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
   }
 
-  // 레이트리밋
-  const rl = checkRateLimit(user.id);
+  // 레이트리밋 (요청 body에서 레벨 받거나 기본값 사용)
+  let userLevel = 1;
+  try {
+    const body = await request.clone().json();
+    if (body.level && typeof body.level === "number") userLevel = body.level;
+  } catch {}
+  const rl = checkRateLimit(user.id, getRateLimit(userLevel));
   if (!rl.ok) {
     return Response.json(
-      { error: `잠시 후 다시 시도해주세요. (${rl.retryAfter}초)` },
+      { error: `잠시 후 다시 시도해주세요. (${rl.retryAfter}초) 레벨을 올리면 더 많이 대화할 수 있어요!` },
       { status: 429, headers: { "Retry-After": String(rl.retryAfter) } },
     );
   }

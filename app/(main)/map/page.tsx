@@ -51,7 +51,8 @@ import SendDMButton from "@/app/components/SendDMButton";
 import { listRescueHospitals, type RescueHospital } from "@/lib/hospitals-repo";
 import type { Post } from "@/lib/types";
 import { createClient as createSupabaseClient } from "@/lib/supabase/client";
-import { getDisplayName as getChatDisplayName, updateCat, deleteCat } from "@/lib/cats-repo";
+import CareLogTab from "@/app/components/CareLogTab";
+import { getDisplayName as getChatDisplayName, updateCat, deleteCat, GENDER_MAP, HEALTH_MAP, type CatGender, type CatHealthStatus } from "@/lib/cats-repo";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 
 const CAT_TAG_OPTIONS = [
@@ -89,6 +90,7 @@ export default function MapPage() {
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [selectedCat, setSelectedCat] = useState<Cat | null>(null);
+  const [catCardTab, setCatCardTab] = useState<"carelog" | "community">("carelog");
   const [mapError, setMapError] = useState("");
 
   const [cats, setCats] = useState<Cat[]>([]);
@@ -430,37 +432,42 @@ export default function MapPage() {
 
   useEffect(() => {
     fetchCats();
-    listRescueHospitals().then(setHospitals);
-    isCurrentUserAdmin().then(setIsAdmin);
+    listRescueHospitals().then(setHospitals).catch(() => {});
+    isCurrentUserAdmin().then(setIsAdmin).catch(() => {});
   }, [fetchCats]);
 
   // ── 카카오 SDK 직접 로드 ──
   useEffect(() => {
     if (!apiKey) return;
 
-    if (window.kakao && window.kakao.maps) {
-      setScriptLoaded(true);
-      return;
-    }
-
-    // 이미 kakao 객체가 있으면 바로 진행
+    // 이미 로드 완료
     if (window.kakao?.maps) {
       setScriptLoaded(true);
       return;
     }
 
-    const existing = document.querySelector<HTMLScriptElement>(
-      'script[data-kakao-sdk="true"]'
-    );
-    if (existing) {
-      // 이미 로드 완료됐을 수 있으므로 폴링 체크
+    // SDK 로드 대기 (폴링 + 타임아웃)
+    const waitForSdk = () => {
       const check = setInterval(() => {
         if (window.kakao?.maps) {
           clearInterval(check);
           setScriptLoaded(true);
         }
       }, 100);
-      setTimeout(() => clearInterval(check), 10000);
+      // 15초 안에 안 되면 에러 표시
+      setTimeout(() => {
+        clearInterval(check);
+        if (!window.kakao?.maps) {
+          setMapError("지도 로드가 너무 오래 걸려요. 페이지를 새로고침해주세요.");
+        }
+      }, 15000);
+    };
+
+    const existing = document.querySelector<HTMLScriptElement>(
+      'script[data-kakao-sdk="true"]'
+    );
+    if (existing) {
+      waitForSdk();
       return;
     }
 
@@ -468,11 +475,9 @@ export default function MapPage() {
     script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false&libraries=services`;
     script.async = true;
     script.dataset.kakaoSdk = "true";
-    script.onload = () => setScriptLoaded(true);
+    script.onload = () => waitForSdk();
     script.onerror = () =>
-      setMapError(
-        "지도 스크립트 로드에 실패했어요. 네트워크 또는 도메인 등록을 확인해주세요."
-      );
+      setMapError("지도를 불러올 수 없어요. 네트워크를 확인해주세요.");
     document.head.appendChild(script);
   }, [apiKey]);
 
@@ -555,6 +560,9 @@ export default function MapPage() {
   const [editDesc, setEditDesc] = useState("");
   const [editRegion, setEditRegion] = useState("");
   const [editTags, setEditTags] = useState<string[]>([]);
+  const [editGender, setEditGender] = useState<CatGender>("unknown");
+  const [editNeutered, setEditNeutered] = useState<boolean | null>(null);
+  const [editHealth, setEditHealth] = useState<CatHealthStatus>("good");
   const [editSaving, setEditSaving] = useState(false);
 
   // ── 동(region) 선택 시 해당 동 고양이 목록 ──
@@ -599,7 +607,7 @@ export default function MapPage() {
               <div style="width:10px;height:10px;background:${borderColor};transform:rotate(45deg);margin-top:-7px;"></div>
             </div>
           `;
-          el.onclick = () => setSelectedCat(cat);
+          el.onclick = () => { setSelectedCat(cat); setCatCardTab("carelog"); };
           const ov = new window.kakao.maps.CustomOverlay({ map: mapInstanceRef.current, position: pos, content: el, yAnchor: 1 });
           overlaysRef.current.push(ov);
         });
@@ -1342,7 +1350,7 @@ export default function MapPage() {
                   <button
                     key={cat.id}
                     type="button"
-                    onClick={() => { setSelectedCat(cat); setSelectedDong(null); }}
+                    onClick={() => { setSelectedCat(cat); setSelectedDong(null); setCatCardTab("carelog"); }}
                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl active:bg-black/[0.03] transition-colors text-left"
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -1557,6 +1565,9 @@ export default function MapPage() {
                       setEditDesc(selectedCat.description ?? "");
                       setEditRegion(selectedCat.region ?? "");
                       setEditTags(selectedCat.tags ?? []);
+                      setEditGender(selectedCat.gender ?? "unknown");
+                      setEditNeutered(selectedCat.neutered ?? null);
+                      setEditHealth(selectedCat.health_status ?? "good");
                     }}
                     className="w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform shadow-md"
                   >
@@ -1657,6 +1668,28 @@ export default function MapPage() {
                       })}
                     </div>
                   </div>
+                  {/* 성별/중성화/건강 */}
+                  <div className="flex gap-1.5 flex-wrap">
+                    {(Object.entries(GENDER_MAP) as [CatGender, { label: string; emoji: string }][]).map(([k, v]) => (
+                      <button key={k} type="button" onClick={() => setEditGender(k)}
+                        className={`text-[11px] font-bold px-2.5 py-1.5 rounded-lg ${editGender === k ? "bg-primary text-white" : "bg-surface-alt text-text-sub border border-border"}`}>
+                        {v.emoji} {v.label}
+                      </button>
+                    ))}
+                    <span className="w-px bg-border mx-0.5" />
+                    <button type="button" onClick={() => setEditNeutered(editNeutered === true ? null : true)}
+                      className={`text-[11px] font-bold px-2.5 py-1.5 rounded-lg ${editNeutered === true ? "bg-primary text-white" : "bg-surface-alt text-text-sub border border-border"}`}>
+                      ✂️ 중성화
+                    </button>
+                    <span className="w-px bg-border mx-0.5" />
+                    {(Object.entries(HEALTH_MAP) as [CatHealthStatus, { label: string; emoji: string; color: string }][]).map(([k, v]) => (
+                      <button key={k} type="button" onClick={() => setEditHealth(k)}
+                        className="text-[11px] font-bold px-2.5 py-1.5 rounded-lg"
+                        style={{ backgroundColor: editHealth === k ? v.color : undefined, color: editHealth === k ? "#fff" : v.color, border: editHealth === k ? "none" : `1px solid ${v.color}40` }}>
+                        {v.emoji} {v.label}
+                      </button>
+                    ))}
+                  </div>
                   <div className="flex gap-2 pt-1">
                     <button
                       onClick={async () => {
@@ -1668,6 +1701,9 @@ export default function MapPage() {
                             description: editDesc.trim() || undefined,
                             region: editRegion.trim() || undefined,
                             tags: editTags,
+                            gender: editGender,
+                            neutered: editNeutered,
+                            health_status: editHealth,
                           });
                           setSelectedCat(updated);
                           setCats((prev) => prev.map((c) => c.id === updated.id ? updated : c));
@@ -1701,6 +1737,29 @@ export default function MapPage() {
                       </span>
                     )}
                   </div>
+
+                  {/* 프로필 뱃지: 성별 · 중성화 · 건강 */}
+                  <div className="flex flex-wrap gap-1.5 mb-2">
+                    {selectedCat.gender && selectedCat.gender !== "unknown" && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: "#EEE8E0", color: "#8B65B8" }}>
+                        {GENDER_MAP[selectedCat.gender]?.emoji} {GENDER_MAP[selectedCat.gender]?.label}
+                      </span>
+                    )}
+                    {selectedCat.neutered != null && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: selectedCat.neutered ? "#E8F5E9" : "#FFF3E0", color: selectedCat.neutered ? "#6B8E6F" : "#E88D5A" }}>
+                        {selectedCat.neutered ? "✂️ 중성화 완료" : "중성화 필요"}
+                      </span>
+                    )}
+                    {selectedCat.health_status && selectedCat.health_status !== "good" && (() => {
+                      const h = HEALTH_MAP[selectedCat.health_status];
+                      return (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: `${h.color}18`, color: h.color }}>
+                          {h.emoji} {h.label}
+                        </span>
+                      );
+                    })()}
+                  </div>
+
                   {selectedCat.description && (
                     <p className="text-[14px] text-text-sub leading-relaxed mb-3">
                       {selectedCat.description}
@@ -1776,15 +1835,40 @@ export default function MapPage() {
                 </div>
               )}
 
-              {/* ══ 댓글 섹션 ══ */}
-              <div className="mt-4 pt-4 border-t" style={{ borderColor: "#EEE8E0" }}>
-                <div className="flex items-center gap-1.5 mb-3">
-                  <MessageCircle size={14} className="text-text-sub" />
-                  <span className="text-[12px] font-bold text-text-main">
-                    돌봄 기록 {comments.length > 0 && `· ${comments.length}`}
-                  </span>
+              {/* ══ 탭: 돌봄 일지 | 커뮤니티 ══ */}
+              <div className="mt-4 pt-3 border-t" style={{ borderColor: "#EEE8E0" }}>
+                <div className="flex gap-1 mb-3 px-1">
+                  <button
+                    type="button"
+                    onClick={() => setCatCardTab("carelog")}
+                    className="flex-1 py-2 rounded-xl text-[12px] font-bold transition-all"
+                    style={{
+                      backgroundColor: catCardTab === "carelog" ? "#C47E5A" : "#F6F1EA",
+                      color: catCardTab === "carelog" ? "#fff" : "#A38E7A",
+                    }}
+                  >
+                    🐾 돌봄 일지
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCatCardTab("community")}
+                    className="flex-1 py-2 rounded-xl text-[12px] font-bold transition-all"
+                    style={{
+                      backgroundColor: catCardTab === "community" ? "#C47E5A" : "#F6F1EA",
+                      color: catCardTab === "community" ? "#fff" : "#A38E7A",
+                    }}
+                  >
+                    💬 커뮤니티 {comments.length > 0 && `· ${comments.length}`}
+                  </button>
                 </div>
 
+                {/* 돌봄 일지 탭 */}
+                {catCardTab === "carelog" && (
+                  <CareLogTab catId={selectedCat.id} isLoggedIn={isLoggedIn} currentUserId={user?.id} />
+                )}
+
+                {/* 커뮤니티 탭 (기존 댓글) */}
+                <div style={{ display: catCardTab === "community" ? "block" : "none" }}>
                 {/* 댓글 목록 (최대 높이 제한, 스크롤) */}
                 <div className="max-h-[180px] overflow-y-auto -mx-1 px-1 space-y-2">
                   {commentsLoading && (
@@ -2051,6 +2135,7 @@ export default function MapPage() {
                 </div>
               </div>
             </div>
+              </div>
           </div>
         </div>
       )}

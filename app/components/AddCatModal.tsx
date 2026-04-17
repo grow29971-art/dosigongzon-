@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { X, Camera, MapPin, Loader2, Plus, Lock } from "lucide-react";
-import { createCat, uploadCatPhoto, type Cat } from "@/lib/cats-repo";
+import { createCat, uploadCatPhoto, type Cat, type CatGender, type CatHealthStatus, GENDER_MAP, HEALTH_MAP } from "@/lib/cats-repo";
 import { useAuth } from "@/lib/auth-context";
 
 interface AddCatModalProps {
@@ -46,6 +46,9 @@ export default function AddCatModal({
   const [selectedDong, setSelectedDong] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);
+  const [gender, setGender] = useState<CatGender>("unknown");
+  const [neutered, setNeutered] = useState<boolean | null>(null);
+  const [healthStatus, setHealthStatus] = useState<CatHealthStatus>("good");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
@@ -62,16 +65,29 @@ export default function AddCatModal({
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
-      // 좌표가 전달되면 역지오코딩으로 구/동 자동 감지
-      if (initialLat !== undefined && initialLng !== undefined && window.kakao?.maps?.services) {
+
+      const resolveRegion = (lat: number, lng: number) => {
+        if (!window.kakao?.maps?.services) return;
         const geocoder = new window.kakao.maps.services.Geocoder();
-        geocoder.coord2RegionCode(initialLng, initialLat, (result: any, status: any) => {
+        geocoder.coord2RegionCode(lng, lat, (result: any, status: any) => {
           if (status !== window.kakao.maps.services.Status.OK || !result[0]) return;
           const gu = result[0].region_2depth_name || "";
           const dong = result[0].region_3depth_name || "";
           setDetectedGu(gu);
           if (dong) setSelectedDong(dong);
         });
+      };
+
+      if (initialLat !== undefined && initialLng !== undefined) {
+        // 지도 클릭 좌표가 있으면 그걸로
+        resolveRegion(initialLat, initialLng);
+      } else if (navigator.geolocation) {
+        // 없으면 GPS 현재 위치로 자동 감지
+        navigator.geolocation.getCurrentPosition(
+          (pos) => resolveRegion(pos.coords.latitude, pos.coords.longitude),
+          () => {},
+          { timeout: 5000 },
+        );
       }
     } else {
       document.body.style.overflow = "";
@@ -80,6 +96,9 @@ export default function AddCatModal({
       setSelectedDong("");
       setDescription("");
       setTags([]);
+      setGender("unknown");
+      setNeutered(null);
+      setHealthStatus("good");
       setPhotoFile(null);
       setPhotoPreview(null);
       setError("");
@@ -141,6 +160,9 @@ export default function AddCatModal({
         lng: offsetLng,
         region: selectedDong.trim(),
         tags,
+        gender,
+        neutered,
+        health_status: healthStatus,
       });
 
       onCreated(newCat);
@@ -339,6 +361,70 @@ export default function AddCatModal({
                   </button>
                 );
               })}
+            </div>
+          </div>
+
+          {/* 성별 */}
+          <div>
+            <label className="text-[12px] font-bold text-text-main mb-2 block">성별</label>
+            <div className="flex gap-2">
+              {(Object.entries(GENDER_MAP) as [CatGender, { label: string; emoji: string }][]).map(([key, info]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setGender(key)}
+                  className={`flex-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all active:scale-95 ${
+                    gender === key ? "bg-primary text-white" : "bg-surface-alt text-text-sub border border-border"
+                  }`}
+                >
+                  {info.emoji} {info.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 중성화 여부 */}
+          <div>
+            <label className="text-[12px] font-bold text-text-main mb-2 block">중성화 여부</label>
+            <div className="flex gap-2">
+              {([
+                { value: true, label: "✂️ 완료" },
+                { value: false, label: "❌ 미완료" },
+                { value: null, label: "❓ 모름" },
+              ] as const).map((opt) => (
+                <button
+                  key={String(opt.value)}
+                  type="button"
+                  onClick={() => setNeutered(opt.value)}
+                  className={`flex-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all active:scale-95 ${
+                    neutered === opt.value ? "bg-primary text-white" : "bg-surface-alt text-text-sub border border-border"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 건강 상태 */}
+          <div>
+            <label className="text-[12px] font-bold text-text-main mb-2 block">건강 상태</label>
+            <div className="flex gap-2">
+              {(Object.entries(HEALTH_MAP) as [CatHealthStatus, { label: string; emoji: string; color: string }][]).map(([key, info]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setHealthStatus(key)}
+                  className={`flex-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all active:scale-95`}
+                  style={{
+                    backgroundColor: healthStatus === key ? info.color : undefined,
+                    color: healthStatus === key ? "#fff" : info.color,
+                    border: healthStatus === key ? "none" : `1.5px solid ${info.color}40`,
+                  }}
+                >
+                  {info.emoji} {info.label}
+                </button>
+              ))}
             </div>
           </div>
 

@@ -2,9 +2,9 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
-import { X, Send, Bot } from "lucide-react";
+import { X, Send, Bot, Info } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-import { getDisplayName } from "@/lib/cats-repo";
+import { getDisplayName, getMyActivitySummary, computeScore, computeLevel } from "@/lib/cats-repo";
 
 /* ═══ 타입 ═══ */
 interface Message {
@@ -79,8 +79,8 @@ export default function AIChatModal({
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  const send = async () => {
-    const text = input.trim();
+  const send = async (directText?: string) => {
+    const text = (directText ?? input).trim();
     if (!text || loading) return;
 
     const userMsg: Message = { id: idRef.current++, role: "user", text };
@@ -99,7 +99,7 @@ export default function AIChatModal({
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, history, userName: displayName }),
+        body: JSON.stringify({ message: text, history, userName: displayName, level: await getMyActivitySummary().then(s => computeLevel(computeScore(s)).level).catch(() => 1) }),
       });
 
       const data = await res.json();
@@ -170,6 +170,14 @@ export default function AIChatModal({
           </button>
         </div>
 
+        {/* 면책 고지 */}
+        <div className="px-4 py-2 flex items-start gap-2" style={{ backgroundColor: "#F6F1EA", borderBottom: "1px solid #E5E0D6" }}>
+          <Info size={13} className="shrink-0 mt-0.5" style={{ color: "#A38E7A" }} />
+          <p className="text-[10px] leading-relaxed" style={{ color: "#8B7A68" }}>
+            AI 집사의 답변은 참고용이며 <b>전문 수의사 상담을 대체하지 않습니다</b>. 대화 내용은 Google AI에 전송되며 서버에 저장되지 않습니다.
+          </p>
+        </div>
+
         {/* 메시지 영역 */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
           {messages.map((msg) => (
@@ -198,6 +206,30 @@ export default function AIChatModal({
               </div>
             </div>
           ))}
+
+          {/* 빠른 질문 버튼 (첫 메시지만 있을 때) */}
+          {messages.length <= 1 && !loading && (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {[
+                "새끼 고양이를 발견했어요",
+                "다친 고양이 응급처치 방법",
+                "TNR이 뭐예요?",
+                "길고양이 밥 줄 때 주의사항",
+                "근처 동물병원 찾고 싶어요",
+                "겨울철 쉼터 만드는 법",
+              ].map((q) => (
+                <button
+                  key={q}
+                  type="button"
+                  onClick={() => send(q)}
+                  className="text-[12px] font-semibold px-3 py-2 rounded-2xl active:scale-95 transition-transform"
+                  style={{ backgroundColor: "#fff", color: "#C47E5A", border: "1.5px solid #E5DCD3" }}
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* 로딩 인디케이터 */}
           {loading && (
@@ -243,7 +275,7 @@ export default function AIChatModal({
               }}
             />
             <button
-              onClick={send}
+              onClick={() => send()}
               disabled={!input.trim() || loading}
               className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 active:scale-90 transition-transform disabled:opacity-40"
               style={{ backgroundColor: "#C47E5A" }}
