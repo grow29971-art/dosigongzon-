@@ -5,6 +5,7 @@ import { useEffect, useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Send, Loader2, Mail, ChevronRight, Camera, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import FollowButton from "@/app/components/FollowButton";
 import {
   getConversations,
   getMessagesWithUser,
@@ -132,10 +133,11 @@ function MessagesPage() {
           <button onClick={() => { setSelectedPartner(null); setMessages([]); getConversations().then(setConvs); }} className="p-2 -ml-2 active:scale-90 transition-transform">
             <ArrowLeft size={24} className="text-text-main" />
           </button>
-          <div>
-            <p className="text-[15px] font-extrabold text-text-main">{selectedPartner.name}</p>
+          <div className="flex-1 min-w-0">
+            <p className="text-[15px] font-extrabold text-text-main truncate">{selectedPartner.name}</p>
             <p className="text-[10px] text-text-light">1:1 쪽지</p>
           </div>
+          <FollowButton userId={selectedPartner.id} size="sm" />
         </div>
 
         {/* 메시지 */}

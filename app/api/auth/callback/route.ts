@@ -24,52 +24,96 @@ export async function GET(request: Request) {
   const code = searchParams.get("code");
   const next = safeNextPath(searchParams.get("next"));
 
+  // OAuth provider가 에러를 쿼리스트링에 넣어 돌려준 경우
+  const oauthError = searchParams.get("error");
+  const oauthErrorDesc = searchParams.get("error_description");
+  const oauthErrorCode = searchParams.get("error_code");
+  const providerParam = searchParams.get("provider");
+
+  const ua = request.headers.get("user-agent")?.slice(0, 500) ?? null;
+  const ref = request.headers.get("referer")?.slice(0, 500) ?? null;
+
+  if (oauthError || oauthErrorDesc) {
+    try {
+      const supabase = await createClient();
+      await supabase.from("auth_error_logs").insert({
+        provider: providerParam,
+        stage: "callback",
+        error_code: oauthErrorCode || oauthError,
+        error_desc: oauthErrorDesc,
+        user_agent: ua,
+        url: request.url.slice(0, 1000),
+        referrer: ref,
+      });
+    } catch { /* 로깅 실패 무시 */ }
+
+    const params = new URLSearchParams();
+    if (oauthError) params.set("error", oauthError);
+    if (oauthErrorCode) params.set("error_code", oauthErrorCode);
+    if (oauthErrorDesc) params.set("error_description", oauthErrorDesc);
+    if (providerParam) params.set("provider", providerParam);
+    return NextResponse.redirect(`${origin}/login?${params.toString()}`);
+  }
+
   if (code) {
     const supabase = await createClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        // 소셜 로그인 첫 가입: 실명 → 랜덤 닉네임 교체
-        const meta = user.user_metadata ?? {};
-        const isFirstLogin = !meta.nickname_set;
-        const provider = user.app_metadata?.provider;
+    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
 
-        if (isFirstLogin && provider && provider !== "email") {
-          const nickname = generateNickname();
-          await supabase.auth.updateUser({
-            data: { nickname, nickname_set: true, full_name: nickname, name: nickname },
-          });
-
-          // 초기 서포터 타이틀: 100명까지 자동 부여
-          const { count } = await supabase
-            .from("profiles")
-            .select("*", { count: "exact", head: true });
-          const earlyTitle = (count ?? 0) <= 100 ? "early_supporter" : null;
-
-          await supabase
-            .from("profiles")
-            .update({ nickname, terms_agreed_at: new Date().toISOString(), admin_title: earlyTitle })
-            .eq("id", user.id);
-        } else {
-          // 약관 동의 일시 + 초기 서포터 체크
-          const { count } = await supabase
-            .from("profiles")
-            .select("*", { count: "exact", head: true });
-          const earlyTitle = (count ?? 0) <= 100 ? "early_supporter" : null;
-
-          await supabase
-            .from("profiles")
-            .update({
-              terms_agreed_at: new Date().toISOString(),
-              ...(earlyTitle ? { admin_title: earlyTitle } : {}),
-            })
-            .eq("id", user.id)
-            .is("admin_title", null);
-        }
-      }
-      return NextResponse.redirect(`${origin}${next}`);
+    if (exchangeError) {
+      try {
+        await supabase.from("auth_error_logs").insert({
+          provider: providerParam,
+          stage: "exchange",
+          error_code: "exchange_failed",
+          error_desc: exchangeError.message,
+          user_agent: ua,
+          url: request.url.slice(0, 1000),
+          referrer: ref,
+        });
+      } catch { /* 로깅 실패 무시 */ }
+      return NextResponse.redirect(
+        `${origin}/login?error=auth_failed&error_description=${encodeURIComponent(exchangeError.message)}`,
+      );
     }
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const meta = user.user_metadata ?? {};
+      const isFirstLogin = !meta.nickname_set;
+      const userProvider = user.app_metadata?.provider;
+
+      if (isFirstLogin && userProvider && userProvider !== "email") {
+        const nickname = generateNickname();
+        await supabase.auth.updateUser({
+          data: { nickname, nickname_set: true, full_name: nickname, name: nickname },
+        });
+
+        const { count } = await supabase
+          .from("profiles")
+          .select("*", { count: "exact", head: true });
+        const earlyTitle = (count ?? 0) <= 100 ? "early_supporter" : null;
+
+        await supabase
+          .from("profiles")
+          .update({ nickname, terms_agreed_at: new Date().toISOString(), admin_title: earlyTitle })
+          .eq("id", user.id);
+      } else {
+        const { count } = await supabase
+          .from("profiles")
+          .select("*", { count: "exact", head: true });
+        const earlyTitle = (count ?? 0) <= 100 ? "early_supporter" : null;
+
+        await supabase
+          .from("profiles")
+          .update({
+            terms_agreed_at: new Date().toISOString(),
+            ...(earlyTitle ? { admin_title: earlyTitle } : {}),
+          })
+          .eq("id", user.id)
+          .is("admin_title", null);
+      }
+    }
+    return NextResponse.redirect(`${origin}${next}`);
   }
 
   return NextResponse.redirect(`${origin}/login?error=auth_failed`);

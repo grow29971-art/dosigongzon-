@@ -9,6 +9,9 @@ import {
   AlertTriangle,
   Loader2,
   ChevronRight,
+  MessageSquare,
+  CheckCircle2,
+  UserPlus,
 } from "lucide-react";
 import {
   getNotifications,
@@ -17,10 +20,13 @@ import {
 } from "@/lib/notifications-repo";
 
 const TYPE_CONFIG: Record<NotificationType, { icon: typeof Bell; color: string; bg: string }> = {
-  comment_on_my_cat: { icon: MessageCircle, color: "#C47E5A", bg: "#C47E5A15" },
-  carelog_on_my_cat: { icon: Heart, color: "#6B8E6F", bg: "#6B8E6F15" },
-  dm_received: { icon: MessageCircle, color: "#4A7BA8", bg: "#4A7BA815" },
-  alert_on_my_cat: { icon: AlertTriangle, color: "#D85555", bg: "#D8555515" },
+  comment_on_my_cat:   { icon: MessageCircle, color: "#C47E5A", bg: "#C47E5A15" },
+  carelog_on_my_cat:   { icon: Heart,         color: "#6B8E6F", bg: "#6B8E6F15" },
+  dm_received:         { icon: MessageCircle, color: "#4A7BA8", bg: "#4A7BA815" },
+  alert_on_my_cat:     { icon: AlertTriangle, color: "#D85555", bg: "#D8555515" },
+  comment_on_my_post:  { icon: MessageSquare, color: "#8B65B8", bg: "#8B65B815" },
+  inquiry_updated:     { icon: CheckCircle2,  color: "#48A59E", bg: "#48A59E15" },
+  following_activity:  { icon: UserPlus,      color: "#E8B040", bg: "#E8B04015" },
 };
 
 function formatTime(iso: string): string {
@@ -77,9 +83,16 @@ export default function NotificationsPage() {
           {items.map((item) => {
             const config = TYPE_CONFIG[item.type];
             const Icon = config.icon;
-            const href = item.type === "dm_received"
-              ? `/messages?partner=${item.targetId}`
-              : `/map`;
+            const href =
+              item.type === "dm_received"
+                ? `/messages?partner=${item.targetId}`
+                : item.type === "comment_on_my_post"
+                ? `/community/${item.targetId}`
+                : item.type === "inquiry_updated"
+                ? "/mypage"
+                : item.type === "following_activity"
+                ? `/cats/${item.targetId}`
+                : "/map";
 
             return (
               <Link
@@ -116,8 +129,13 @@ export default function NotificationsPage() {
                     </div>
                     <p className="text-[12px] text-text-sub mt-0.5 truncate">
                       <span className="font-semibold" style={{ color: config.color }}>{item.targetName}</span>
-                      {item.type !== "dm_received" && "에 "}
-                      {item.type === "dm_received" ? `: ${item.message}` : item.message}
+                      {item.type === "dm_received"
+                        ? `: ${item.message}`
+                        : item.type === "inquiry_updated"
+                        ? ` — ${item.message}`
+                        : item.type === "following_activity"
+                        ? ` 에 ${item.message}`
+                        : ` 에 ${item.message}`}
                     </p>
                     <p className="text-[10px] text-text-light mt-1">{formatTime(item.createdAt)}</p>
                   </div>

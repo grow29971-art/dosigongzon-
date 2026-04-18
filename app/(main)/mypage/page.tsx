@@ -28,6 +28,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   listMyCats,
+  listMyLikedCats,
   listMyComments,
   getMyActivitySummary,
   computeScore,
@@ -77,6 +78,7 @@ export default function MyPage() {
 
   const [summary, setSummary] = useState<MyActivitySummary | null>(null);
   const [myCats, setMyCats] = useState<Cat[]>([]);
+  const [likedCats, setLikedCats] = useState<Cat[]>([]);
   const [myComments, setMyComments] = useState<CatCommentWithCat[]>([]);
   const [dataLoading, setDataLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -164,6 +166,7 @@ export default function MyPage() {
     if (!user) {
       setSummary(null);
       setMyCats([]);
+      setLikedCats([]);
       setMyComments([]);
       return;
     }
@@ -172,15 +175,17 @@ export default function MyPage() {
     Promise.all([
       getMyActivitySummary(),
       listMyCats(),
+      listMyLikedCats(30),
       listMyComments(10),
       isCurrentUserAdmin(),
       getUnreadCount(),
       createClient().from("profiles").select("admin_title").eq("id", user.id).maybeSingle(),
     ])
-      .then(([s, cats, comments, admin, unread, profileRes]) => {
+      .then(([s, cats, liked, comments, admin, unread, profileRes]) => {
         if (cancelled) return;
         setSummary(s);
         setMyCats(cats);
+        setLikedCats(liked);
         setMyComments(comments);
         setIsAdmin(admin);
         setUnreadDM(unread);
@@ -600,6 +605,67 @@ export default function MyPage() {
             )}
           </div>
 
+          {/* ── 좋아요한 고양이 ── */}
+          {likedCats.length > 0 && (
+            <div className="mb-5">
+              <div className="flex items-center gap-2 mb-3 px-1">
+                <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E86B8C" }} />
+                <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+                  응원하는 고양이 · {likedCats.length}
+                </h2>
+              </div>
+              <div
+                className="flex gap-2 overflow-x-auto scrollbar-hide px-1 -mx-1 pb-1"
+              >
+                {likedCats.map((cat) => (
+                  <Link
+                    key={cat.id}
+                    href={`/cats/${cat.id}`}
+                    className="shrink-0 active:scale-[0.97] transition-transform"
+                    style={{ width: 96 }}
+                  >
+                    <div
+                      className="relative w-24 h-24 rounded-2xl overflow-hidden mb-1.5"
+                      style={{
+                        background: cat.photo_url
+                          ? `url('${cat.photo_url}') center/cover`
+                          : "#EEE8E0",
+                        boxShadow: "0 3px 10px rgba(0,0,0,0.08)",
+                        border: "2px solid #fff",
+                      }}
+                    >
+                      {!cat.photo_url && (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <CatIcon size={24} style={{ color: "#C47E5A" }} strokeWidth={2} />
+                        </div>
+                      )}
+                      <div
+                        className="absolute top-1.5 right-1.5 flex items-center gap-0.5 px-1.5 py-0.5 rounded-full"
+                        style={{
+                          background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)",
+                          boxShadow: "0 2px 6px rgba(232,107,140,0.4)",
+                        }}
+                      >
+                        <span style={{ fontSize: 9 }}>❤️</span>
+                        <span className="text-[9px] font-extrabold text-white">
+                          {cat.like_count ?? 0}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-[12px] font-extrabold text-text-main truncate text-center">
+                      {cat.name}
+                    </p>
+                    {cat.region && (
+                      <p className="text-[10px] text-text-sub truncate text-center">
+                        {cat.region}
+                      </p>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* ── 최근 돌봄 기록 ── */}
           <div className="mb-5">
             <div className="flex items-center gap-2 mb-3 px-1">
@@ -687,6 +753,42 @@ export default function MyPage() {
             )}
           </div>
 
+          {/* ── 내 설정 ── */}
+          <div className="mb-3">
+            <div className="flex items-center gap-2 mb-3 px-1">
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C47E5A" }} />
+              <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+                내 설정
+              </h2>
+            </div>
+            <Link
+              href="/mypage/activity-regions"
+              className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
+              style={{
+                background: "#FFFFFF",
+                borderRadius: 16,
+                boxShadow: "0 4px 14px rgba(196,126,90,0.10), 0 1px 2px rgba(0,0,0,0.02)",
+                border: "1px solid rgba(0,0,0,0.04)",
+              }}
+            >
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                style={{ backgroundColor: "rgba(196,126,90,0.1)" }}
+              >
+                <MapPin size={18} color="#C47E5A" strokeWidth={2} />
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+                  활동 지역 설정
+                </p>
+                <p className="text-[11px] text-text-sub mt-0.5">
+                  최대 2곳까지 내 동네를 지정할 수 있어요
+                </p>
+              </div>
+              <ChevronRight size={16} className="shrink-0" style={{ color: "#C47E5A", opacity: 0.7 }} />
+            </Link>
+          </div>
+
           {/* ── 지원 / 문의 ── */}
           <div className="mb-3">
             <div className="flex items-center gap-2 mb-3 px-1">
@@ -724,173 +826,40 @@ export default function MyPage() {
             </button>
           </div>
 
-          {/* ── 관리자 전용 ── */}
+          {/* ── 관리자 대시보드 (단일 진입점) ── */}
           {isAdmin && (
             <div className="mb-3">
               <div className="flex items-center gap-2 mb-3 px-1">
-                <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#7A6B8E" }} />
+                <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#2C2C2C" }} />
                 <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
-                  관리자 메뉴
+                  운영 관리
                 </h2>
               </div>
-              <div className="space-y-2">
-                <Link
-                  href="/admin/news"
-                  className="flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
-                  style={{
-                    background: "#FFFFFF",
-                    borderRadius: 16,
-                    boxShadow: "0 4px 14px rgba(122,107,142,0.10), 0 1px 2px rgba(0,0,0,0.02)",
-                    border: "1px solid rgba(0,0,0,0.04)",
-                  }}
+              <Link
+                href="/admin"
+                className="flex items-center gap-3 px-4 py-4 active:scale-[0.99] transition-transform"
+                style={{
+                  background: "linear-gradient(135deg, #2C2C2C 0%, #3F3F3F 100%)",
+                  borderRadius: 18,
+                  boxShadow: "0 6px 20px rgba(44,44,44,0.30), 0 1px 2px rgba(0,0,0,0.04)",
+                }}
+              >
+                <div
+                  className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
                 >
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: "rgba(122,107,142,0.1)" }}
-                  >
-                    <Newspaper size={18} color="#7A6B8E" strokeWidth={2} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                      뉴스 관리
-                    </p>
-                    <p className="text-[11px] text-text-sub mt-0.5">
-                      홈 화면 소식 & 일정 추가·수정·삭제
-                    </p>
-                  </div>
-                  <ChevronRight size={16} className="shrink-0" style={{ color: "#7A6B8E", opacity: 0.7 }} />
-                </Link>
-                <Link
-                  href="/admin/inbox"
-                  className="flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
-                  style={{
-                    background: "#FFFFFF",
-                    borderRadius: 16,
-                    boxShadow: "0 4px 14px rgba(216,85,85,0.10), 0 1px 2px rgba(0,0,0,0.02)",
-                    border: "1px solid rgba(0,0,0,0.04)",
-                  }}
-                >
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: "rgba(216,85,85,0.1)" }}
-                  >
-                    <Inbox size={18} color="#D85555" strokeWidth={2} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                      신고·문의 관리
-                    </p>
-                    <p className="text-[11px] text-text-sub mt-0.5">
-                      유저 신고와 문의를 확인하고 처리
-                    </p>
-                  </div>
-                  <ChevronRight size={16} className="shrink-0" style={{ color: "#D85555", opacity: 0.7 }} />
-                </Link>
-                <Link
-                  href="/admin/hospitals"
-                  className="flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
-                  style={{
-                    background: "#FFFFFF",
-                    borderRadius: 16,
-                    boxShadow: "0 4px 14px rgba(107,142,111,0.10), 0 1px 2px rgba(0,0,0,0.02)",
-                    border: "1px solid rgba(0,0,0,0.04)",
-                  }}
-                >
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: "rgba(107,142,111,0.1)" }}
-                  >
-                    <Stethoscope size={18} color="#6B8E6F" strokeWidth={2} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                      병원 관리
-                    </p>
-                    <p className="text-[11px] text-text-sub mt-0.5">
-                      구조동물 치료 도움병원 추가·수정·삭제
-                    </p>
-                  </div>
-                  <ChevronRight size={16} className="shrink-0" style={{ color: "#6B8E6F", opacity: 0.7 }} />
-                </Link>
-                <Link
-                  href="/admin/users"
-                  className="flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
-                  style={{
-                    background: "#FFFFFF",
-                    borderRadius: 16,
-                    boxShadow: "0 4px 14px rgba(74,123,168,0.10), 0 1px 2px rgba(0,0,0,0.02)",
-                    border: "1px solid rgba(0,0,0,0.04)",
-                  }}
-                >
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: "rgba(74,123,168,0.1)" }}
-                  >
-                    <User size={18} color="#4A7BA8" strokeWidth={2} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                      가입자 관리
-                    </p>
-                    <p className="text-[11px] text-text-sub mt-0.5">
-                      전체 회원 조회 · 정지 현황
-                    </p>
-                  </div>
-                  <ChevronRight size={16} className="shrink-0" style={{ color: "#4A7BA8", opacity: 0.7 }} />
-                </Link>
-                <Link
-                  href="/admin/pharmacy-guide"
-                  className="flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
-                  style={{
-                    background: "#FFFFFF",
-                    borderRadius: 16,
-                    boxShadow: "0 4px 14px rgba(155,109,215,0.10), 0 1px 2px rgba(0,0,0,0.02)",
-                    border: "1px solid rgba(0,0,0,0.04)",
-                  }}
-                >
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: "rgba(155,109,215,0.1)" }}
-                  >
-                    <Pill size={18} color="#9B6DD7" strokeWidth={2} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                      약품 가이드 관리
-                    </p>
-                    <p className="text-[11px] text-text-sub mt-0.5">
-                      약품·영양제 정보 추가·수정·삭제
-                    </p>
-                  </div>
-                  <ChevronRight size={16} className="shrink-0" style={{ color: "#9B6DD7", opacity: 0.7 }} />
-                </Link>
-                <Link
-                  href="/admin/push"
-                  className="flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
-                  style={{
-                    background: "#FFFFFF",
-                    borderRadius: 16,
-                    boxShadow: "0 4px 14px rgba(196,126,90,0.10), 0 1px 2px rgba(0,0,0,0.02)",
-                    border: "1px solid rgba(0,0,0,0.04)",
-                  }}
-                >
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: "rgba(196,126,90,0.1)" }}
-                  >
-                    <Bell size={18} color="#C47E5A" strokeWidth={2} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                      푸시 알림 발송
-                    </p>
-                    <p className="text-[11px] text-text-sub mt-0.5">
-                      전체 사용자에게 공지 알림 보내기
-                    </p>
-                  </div>
-                  <ChevronRight size={16} className="shrink-0" style={{ color: "#C47E5A", opacity: 0.7 }} />
-                </Link>
-              </div>
+                  <User size={19} color="#fff" strokeWidth={2.2} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[14px] font-extrabold tracking-tight" style={{ color: "#fff" }}>
+                    관리자 대시보드
+                  </p>
+                  <p className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.65)" }}>
+                    통계 · 신고·문의 · 유저 · 뉴스 · 병원 · 약품 · 푸시 · 로그
+                  </p>
+                </div>
+                <ChevronRight size={16} className="shrink-0" style={{ color: "rgba(255,255,255,0.7)" }} />
+              </Link>
             </div>
           )}
 

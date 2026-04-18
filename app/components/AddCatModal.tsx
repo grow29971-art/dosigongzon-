@@ -44,6 +44,7 @@ export default function AddCatModal({
   const [name, setName] = useState("");
   const [detectedGu, setDetectedGu] = useState("");
   const [selectedDong, setSelectedDong] = useState("");
+  const [editingDong, setEditingDong] = useState(false);
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [gender, setGender] = useState<CatGender>("unknown");
@@ -94,6 +95,7 @@ export default function AddCatModal({
       setName("");
       setDetectedGu("");
       setSelectedDong("");
+      setEditingDong(false);
       setDescription("");
       setTags([]);
       setGender("unknown");
@@ -299,7 +301,7 @@ export default function AddCatModal({
                 </span>
               )}
             </label>
-            {selectedDong ? (
+            {selectedDong && !editingDong ? (
               <div className="flex items-center gap-2">
                 <div className="flex-1 flex items-center gap-2 px-4 py-3 rounded-2xl bg-primary/10 border border-primary/20">
                   <MapPin size={14} className="text-primary shrink-0" />
@@ -307,7 +309,7 @@ export default function AddCatModal({
                 </div>
                 <button
                   type="button"
-                  onClick={() => setSelectedDong("")}
+                  onClick={() => setEditingDong(true)}
                   className="text-[12px] text-text-sub underline shrink-0 px-2"
                 >
                   변경
@@ -318,6 +320,8 @@ export default function AddCatModal({
                 type="text"
                 value={selectedDong}
                 onChange={(e) => setSelectedDong(e.target.value)}
+                onBlur={() => { if (selectedDong.trim()) setEditingDong(false); }}
+                autoFocus={editingDong}
                 placeholder="예: 구월동, 역삼동, 해운대동"
                 maxLength={20}
                 className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[14px] text-text-main outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted"

@@ -38,8 +38,19 @@ create policy "area_chats_delete_own"
   on public.area_chats for delete
   using (auth.uid() = author_id);
 
--- Realtime 활성화
-alter publication supabase_realtime add table public.area_chats;
+-- Realtime 활성화 (이미 등록돼 있으면 건너뜀 — idempotent)
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'area_chats'
+  ) then
+    alter publication supabase_realtime add table public.area_chats;
+  end if;
+end $$;
 
 notify pgrst, 'reload schema';
 -- 끝.

@@ -30,6 +30,8 @@ import {
   setMyPostVote,
   type PostVote,
 } from "@/lib/store";
+import { useAuth } from "@/lib/auth-context";
+import LoginRequired from "@/app/components/LoginRequired";
 
 const CATEGORY_META: Record<
   PostCategory,
@@ -77,6 +79,7 @@ export default function CategoryPage() {
   const router = useRouter();
   const cat = params.cat as PostCategory;
   const meta = CATEGORY_META[cat];
+  const { user, loading: authLoading } = useAuth();
 
   const [mounted, setMounted] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -84,9 +87,15 @@ export default function CategoryPage() {
 
   useEffect(() => {
     setMounted(true);
+    if (!user) return;
     listPosts(cat).then(setPosts);
     setMyVotes(getMyPostVotes());
-  }, [cat]);
+  }, [cat, user]);
+
+  // 비로그인 가드
+  if (mounted && !authLoading && !user) {
+    return <LoginRequired from={`/community/category/${cat}`} />;
+  }
 
   const handleVote = async (postId: string, next: PostVote, e: React.MouseEvent) => {
     e.preventDefault();

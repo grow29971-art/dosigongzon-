@@ -15,6 +15,13 @@ import {
 } from "lucide-react";
 import type { Post, PostCategory } from "@/lib/types";
 import { listPosts, formatRelativeTime } from "@/lib/posts-repo";
+import {
+  listMyActivityRegions,
+  type ActivityRegion,
+} from "@/lib/activity-regions-repo";
+import { MapPin, ExternalLink } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
+import LoginRequired from "@/app/components/LoginRequired";
 
 /* ═══ 카테고리 카드 데이터 ═══ */
 type CategoryCard = {
@@ -136,27 +143,46 @@ function CategoryCardItem({
 
 /* ═══ 페이지 ═══ */
 export default function CommunityPage() {
+  const { user, loading: authLoading } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [todayVisit, setTodayVisit] = useState<number | null>(null);
   const [totalUsers, setTotalUsers] = useState<number | null>(null);
+  const [myRegions, setMyRegions] = useState<ActivityRegion[]>([]);
+  const [neighborhoodOnly, setNeighborhoodOnly] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    if (!user) return;
     listPosts().then(setPosts);
     fetch("/api/visit").then((r) => r.json()).then((d) => {
       setTodayVisit(d.today);
       setTotalUsers(d.total);
     }).catch(() => {});
-  }, []);
+    listMyActivityRegions().then(setMyRegions).catch(() => {});
+  }, [user]);
+
+  // 비로그인 가드
+  if (mounted && !authLoading && !user) {
+    return <LoginRequired from="/community" />;
+  }
+
+  const filterByNeighborhood = (p: Post) => {
+    if (!p.region) return false;
+    return myRegions.some(
+      (r) => p.region && (r.name.includes(p.region) || p.region.includes(r.name)),
+    );
+  };
+
+  const visiblePosts = neighborhoodOnly ? posts.filter(filterByNeighborhood) : posts;
 
   if (!mounted) return null;
 
   const countByCat = (key: PostCategory) =>
-    posts.filter((p) => p.category === key).length;
+    visiblePosts.filter((p) => p.category === key).length;
 
   // 인기 게시글 3건 — 좋아요 + 댓글 + 조회수 가중 합산
-  const popularPosts = [...posts]
+  const popularPosts = [...visiblePosts]
     .sort(
       (a, b) =>
         (b.likeCount * 3 + b.commentCount * 2 + b.viewCount)
@@ -196,6 +222,54 @@ export default function CommunityPage() {
           <span className="text-[12px] text-text-sub">오늘 방문자</span>
           <span className="text-[14px] font-extrabold text-primary">{todayVisit.toLocaleString()}</span>
           <span className="text-[12px] text-text-sub">명</span>
+        </div>
+      )}
+
+      {/* ── 내 동네만 필터 ── */}
+      {myRegions.length > 0 && (
+        <div className="mb-4 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setNeighborhoodOnly(false)}
+            className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-transform"
+            style={{
+              backgroundColor: !neighborhoodOnly ? "#2C2C2C" : "rgba(255,255,255,0.9)",
+              color: !neighborhoodOnly ? "#fff" : "#666",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+            }}
+          >
+            전체
+          </button>
+          <button
+            type="button"
+            onClick={() => setNeighborhoodOnly(true)}
+            className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-transform flex items-center gap-1"
+            style={{
+              background: neighborhoodOnly
+                ? "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)"
+                : "rgba(255,255,255,0.9)",
+              color: neighborhoodOnly ? "#fff" : "#666",
+              boxShadow: neighborhoodOnly
+                ? "0 2px 8px rgba(196,126,90,0.35)"
+                : "0 2px 6px rgba(0,0,0,0.05)",
+            }}
+          >
+            <MapPin size={11} />
+            내 동네만
+            {neighborhoodOnly && (
+              <span
+                className="ml-0.5 px-1.5 py-0.5 rounded-md text-[9px]"
+                style={{ background: "rgba(255,255,255,0.25)" }}
+              >
+                {visiblePosts.length}
+              </span>
+            )}
+          </button>
+          {neighborhoodOnly && visiblePosts.length === 0 && (
+            <p className="text-[10px] text-text-light ml-1">
+              내 동네({myRegions.map((r) => r.name).join(", ")}) 글이 아직 없어요
+            </p>
+          )}
         </div>
       )}
 
@@ -280,6 +354,56 @@ export default function CommunityPage() {
           </div>
         </div>
       )}
+
+      {/* ── 함께하는 커뮤니티 ── */}
+      <div className="mt-6">
+        <div className="flex items-center gap-2 mb-3 px-1">
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#48A59E" }} />
+          <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+            함께하는 커뮤니티
+          </h2>
+        </div>
+        <a
+          href="https://cafe.naver.com/clubpet"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block active:scale-[0.99] transition-transform"
+        >
+          <div
+            className="flex items-center gap-3 px-4 py-3.5"
+            style={{
+              background: "linear-gradient(135deg, #FFFFFF 0%, #F6FBFA 100%)",
+              borderRadius: 18,
+              boxShadow: "0 4px 14px rgba(72,165,158,0.10), 0 1px 2px rgba(0,0,0,0.02)",
+              border: "1px solid rgba(72,165,158,0.15)",
+            }}
+          >
+            <div
+              className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+              style={{ backgroundColor: "rgba(72,165,158,0.12)" }}
+            >
+              <span style={{ fontSize: 22 }}>🐾</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1.5">
+                <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+                  냥이네
+                </p>
+                <span
+                  className="text-[9px] font-bold px-1.5 py-0.5 rounded-md"
+                  style={{ backgroundColor: "#22C55E15", color: "#15803D" }}
+                >
+                  네이버 카페
+                </span>
+              </div>
+              <p className="text-[11.5px] text-text-sub mt-0.5 truncate">
+                캣맘·캣대디 정보 공유 · 구조 후기 · Q&A
+              </p>
+            </div>
+            <ExternalLink size={15} className="shrink-0" style={{ color: "#48A59E", opacity: 0.7 }} />
+          </div>
+        </a>
+      </div>
 
       {/* ── FAB ── */}
       <Link

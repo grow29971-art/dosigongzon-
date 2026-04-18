@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { PawPrint, Mail, Lock, Eye, EyeOff, Check, ChevronRight, Loader2, ExternalLink, AlertCircle } from "lucide-react";
+import { PawPrint, Mail, Lock, Eye, EyeOff, Check, ChevronRight, Loader2, ExternalLink, AlertCircle, Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
   detectInAppBrowser,
@@ -12,6 +12,27 @@ import {
   openInExternalBrowser,
   type InAppBrowser,
 } from "@/lib/in-app-browser";
+import { explainAuthError } from "@/lib/auth-errors";
+
+// 로그인 에러를 서버에 로깅 (best-effort, 실패해도 무시)
+function logAuthError(payload: {
+  provider?: string | null;
+  stage?: string;
+  error_code?: string | null;
+  error_desc?: string | null;
+}) {
+  try {
+    fetch("/api/auth/log-error", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        ...payload,
+        url: typeof window !== "undefined" ? window.location.href : null,
+      }),
+      keepalive: true,
+    }).catch(() => {});
+  } catch { /* no-op */ }
+}
 
 /* ═══ 이메일 유효성 검사 ═══ */
 function isValidEmail(email: string) {
@@ -60,6 +81,62 @@ function LoginContent() {
   };
 
   const authError = searchParams.get("error");
+  const authErrorCode = searchParams.get("error_code");
+  const authErrorDesc = searchParams.get("error_description");
+  const authProvider = searchParams.get("provider");
+
+  // 콜백으로 돌아온 에러를 가이드 객체로 변환
+  const oauthGuide = (authError || authErrorDesc)
+    ? explainAuthError(authErrorCode || authError, authErrorDesc, authProvider)
+    : null;
+
+  // 페이지에 에러 파라미터 들고 돌아왔을 때 한 번 로깅
+  // (콜백에서 이미 로깅했지만, 클라이언트 환경 정보가 추가로 필요할 때를 위해)
+  useEffect(() => {
+    if (!authError && !authErrorDesc) return;
+    logAuthError({
+      provider: authProvider,
+      stage: "redirected",
+      error_code: authErrorCode || authError,
+      error_desc: authErrorDesc,
+    });
+    // 한 번만
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // 매직링크
+  const [magicEmail, setMagicEmail] = useState("");
+  const [magicSent, setMagicSent] = useState(false);
+  const [magicSending, setMagicSending] = useState(false);
+  const [magicErr, setMagicErr] = useState("");
+  const [showMagic, setShowMagic] = useState(false);
+
+  const handleMagicLink = async () => {
+    setMagicErr("");
+    if (!isValidEmail(magicEmail)) {
+      setMagicErr("올바른 이메일을 입력해주세요.");
+      return;
+    }
+    setMagicSending(true);
+    const { error } = await createClient().auth.signInWithOtp({
+      email: magicEmail,
+      options: {
+        emailRedirectTo: `${window.location.origin}/api/auth/callback`,
+      },
+    });
+    setMagicSending(false);
+    if (error) {
+      setMagicErr(error.message);
+      logAuthError({
+        provider: "magic_link",
+        stage: "client",
+        error_code: "otp_failed",
+        error_desc: error.message,
+      });
+      return;
+    }
+    setMagicSent(true);
+  };
 
   const validate = () => {
     const next: typeof errors = {};
@@ -118,21 +195,33 @@ function LoginContent() {
 
     setLoginAttempts(0);
 
-    router.push("/");
+    // next 파라미터 있으면 해당 경로로, 없으면 홈
+    const rawNext = searchParams.get("next");
+    const safeNext = rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
+    router.push(safeNext);
     router.refresh();
   };
 
-  const handleSocialLogin = async (provider: "google" | "kakao") => {
+  const handleSocialLogin = async (provider: "google") => {
     setSocialLoading(provider);
+    const rawNext = searchParams.get("next");
+    const safeNext = rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
+    const callbackUrl = `${window.location.origin}/api/auth/callback?provider=${provider}&next=${encodeURIComponent(safeNext)}`;
     const { error } = await createClient().auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/api/auth/callback`,
+        redirectTo: callbackUrl,
       },
     });
     if (error) {
       setSocialLoading(null);
       setErrors({ general: error.message });
+      logAuthError({
+        provider,
+        stage: "client",
+        error_code: "signin_with_oauth_failed",
+        error_desc: error.message,
+      });
     }
   };
 
@@ -196,11 +285,61 @@ function LoginContent() {
           </p>
         </div>
 
-        {/* ══════ 에러 메시지 ══════ */}
-        {(errors.general || authError) && (
+        {/* ══════ OAuth 에러 가이드 카드 (redirect 후 돌아왔을 때) ══════ */}
+        {oauthGuide && (
+          <div
+            className="rounded-2xl p-4 mb-4"
+            style={{
+              backgroundColor:
+                oauthGuide.severity === "danger" ? "#FBEAEA" :
+                oauthGuide.severity === "warn" ? "#FFF4E0" : "#F0F6FF",
+              border: `1px solid ${
+                oauthGuide.severity === "danger" ? "#E8C5C5" :
+                oauthGuide.severity === "warn" ? "#F5DAB0" : "#C9DBF5"
+              }`,
+            }}
+          >
+            <div className="flex items-start gap-2.5">
+              <AlertCircle
+                size={18}
+                className="mt-0.5 shrink-0"
+                style={{
+                  color:
+                    oauthGuide.severity === "danger" ? "#B84545" :
+                    oauthGuide.severity === "warn" ? "#B07A1C" : "#3A6CB5",
+                }}
+              />
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] font-extrabold" style={{
+                  color:
+                    oauthGuide.severity === "danger" ? "#8B2F2F" :
+                    oauthGuide.severity === "warn" ? "#6F4910" : "#22457A",
+                }}>
+                  {oauthGuide.title}
+                </p>
+                <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#5A5A5A" }}>
+                  {oauthGuide.body}
+                </p>
+                {oauthGuide.tip && (
+                  <p className="text-[11.5px] mt-2 leading-relaxed font-semibold" style={{ color: "#3F5B42" }}>
+                    💡 {oauthGuide.tip}
+                  </p>
+                )}
+                {(authErrorCode || authError) && (
+                  <p className="text-[10px] mt-2 font-mono" style={{ color: "#9A8A7A" }}>
+                    코드: {authErrorCode || authError}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ══════ 일반 에러 메시지 (비밀번호 로그인 실패 등) ══════ */}
+        {errors.general && (
           <div className="rounded-xl px-4 py-3 mb-4" style={{ backgroundColor: "#EEE3DE", border: "1px solid #E3D2CC" }}>
             <p className="text-[13px]" style={{ color: "#B84545" }}>
-              {errors.general || "로그인에 실패했습니다. 다시 시도해주세요."}
+              {errors.general}
             </p>
           </div>
         )}
@@ -318,7 +457,7 @@ function LoginContent() {
         >
           <span className="text-[13px] mt-0.5">💡</span>
           <p className="text-[11px] text-text-sub leading-relaxed">
-            소셜 로그인은 <b>크롬 · 사파리</b>에서 접속해주세요. 카카오톡/인스타 등 앱 내 브라우저에서는 로그인이 안 될 수 있어요.
+            소셜 로그인은 <b>크롬 · 사파리</b>에서 접속해주세요. 카카오톡/인스타 등 앱 내 브라우저에서는 구글 로그인이 차단돼요.
           </p>
         </div>
 
@@ -344,26 +483,6 @@ function LoginContent() {
 
         {/* ══════ 소셜 로그인 ══════ */}
         <div className="space-y-2.5">
-          {/* 카카오 */}
-          <button
-            onClick={() => inApp ? handleOpenExternal() : socialAgree ? handleSocialLogin("kakao") : setErrors({ general: "약관에 동의해주세요." })}
-            disabled={!!socialLoading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.97] transition-transform disabled:opacity-60"
-            style={{ backgroundColor: "#FEE500", color: "#191919", opacity: (socialAgree || inApp) ? 1 : 0.6 }}
-          >
-            {socialLoading === "kakao" ? (
-              <Loader2 size={18} className="animate-spin" />
-            ) : (
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path
-                  d="M9 1C4.58 1 1 3.79 1 7.21c0 2.17 1.45 4.08 3.64 5.18l-.93 3.44c-.08.3.26.54.52.37l4.12-2.74c.21.02.43.03.65.03 4.42 0 8-2.79 8-6.28S13.42 1 9 1z"
-                  fill="#191919"
-                />
-              </svg>
-            )}
-            카카오로 시작하기
-          </button>
-
           {/* 구글 */}
           <button
             onClick={() => inApp ? handleOpenExternal() : socialAgree ? handleSocialLogin("google") : setErrors({ general: "약관에 동의해주세요." })}
@@ -383,6 +502,97 @@ function LoginContent() {
             )}
             Google로 시작하기
           </button>
+        </div>
+
+        {/* ══════ 매직링크 (이메일로 로그인 링크 받기) ══════ */}
+        <div className="mt-5">
+          {!showMagic ? (
+            <button
+              type="button"
+              onClick={() => setShowMagic(true)}
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-[12.5px] font-semibold text-text-sub active:scale-[0.98] transition-transform"
+              style={{ backgroundColor: "#F6F1EA", border: "1px dashed #D6CCBF" }}
+            >
+              <Sparkles size={14} className="text-primary" />
+              소셜 로그인이 안 되면 이메일로 로그인 링크 받기
+            </button>
+          ) : magicSent ? (
+            <div
+              className="rounded-2xl p-4"
+              style={{ backgroundColor: "#E8F4E8", border: "1px solid #C8E0C8" }}
+            >
+              <p className="text-[13px] font-extrabold" style={{ color: "#3F5B42" }}>
+                📨 메일을 보냈어요!
+              </p>
+              <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#5A7A5E" }}>
+                <b>{magicEmail}</b> 메일함을 확인해주세요. 링크를 누르면 바로 로그인돼요.
+                <br />스팸함도 확인해보세요.
+              </p>
+              <button
+                type="button"
+                onClick={() => { setMagicSent(false); setShowMagic(false); setMagicEmail(""); }}
+                className="mt-2 text-[11px] font-bold text-primary"
+              >
+                다른 이메일로 다시 보내기
+              </button>
+            </div>
+          ) : (
+            <div
+              className="rounded-2xl p-4"
+              style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E0D6" }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles size={14} className="text-primary" />
+                <p className="text-[12.5px] font-extrabold text-text-main">
+                  이메일 로그인 링크
+                </p>
+              </div>
+              <p className="text-[11px] text-text-sub mb-3 leading-relaxed">
+                비밀번호 없이 메일로 받은 링크만 누르면 로그인돼요. 소셜 로그인이 안 될 때 가장 확실한 방법이에요.
+              </p>
+              <div
+                className={`flex items-center gap-2 bg-[#F6F1EA] rounded-xl px-3 py-2.5 border ${
+                  magicErr ? "border-error" : "border-border"
+                }`}
+              >
+                <Mail size={15} className="text-text-muted shrink-0" />
+                <input
+                  type="email"
+                  value={magicEmail}
+                  onChange={(e) => { setMagicEmail(e.target.value); setMagicErr(""); }}
+                  placeholder="이메일 주소"
+                  className="flex-1 text-[13px] bg-transparent outline-none placeholder:text-text-muted"
+                  onKeyDown={(e) => e.key === "Enter" && handleMagicLink()}
+                />
+              </div>
+              {magicErr && (
+                <p className="text-[11px] text-error mt-1">{magicErr}</p>
+              )}
+              <div className="flex gap-2 mt-3">
+                <button
+                  type="button"
+                  onClick={() => { setShowMagic(false); setMagicErr(""); }}
+                  className="px-3 py-2 rounded-xl text-[12px] font-bold text-text-sub"
+                  style={{ backgroundColor: "#F6F1EA" }}
+                >
+                  닫기
+                </button>
+                <button
+                  type="button"
+                  onClick={handleMagicLink}
+                  disabled={magicSending}
+                  className="flex-1 py-2 rounded-xl text-[12px] font-extrabold text-white active:scale-[0.98] disabled:opacity-60"
+                  style={{ backgroundColor: "#C47E5A" }}
+                >
+                  {magicSending ? (
+                    <Loader2 size={14} className="animate-spin mx-auto" />
+                  ) : (
+                    "로그인 링크 받기"
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* ══════ 회원가입 링크 ══════ */}

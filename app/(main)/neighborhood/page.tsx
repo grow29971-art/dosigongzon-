@@ -21,6 +21,8 @@ import {
   setUserRegion,
 } from "@/lib/store";
 import { listPosts, formatRelativeTime } from "@/lib/posts-repo";
+import { useAuth } from "@/lib/auth-context";
+import LoginRequired from "@/app/components/LoginRequired";
 
 /* ═══ 동네 목록 (샘플) ═══ */
 const REGIONS = [
@@ -31,6 +33,7 @@ const REGIONS = [
 
 export default function NeighborhoodPage() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [region, setRegion] = useState("");
   const [posts, setPosts] = useState<Post[]>([]);
@@ -39,6 +42,7 @@ export default function NeighborhoodPage() {
 
   useEffect(() => {
     setMounted(true);
+    if (!user) return;
     const saved = getUserRegion();
     if (saved) {
       setRegion(saved);
@@ -46,11 +50,15 @@ export default function NeighborhoodPage() {
         setPosts(all.filter((p) => p.region === saved)),
       );
     } else {
-      // 동네 설정 안 된 경우 전체 보여주되 선택 유도
       listPosts().then(setPosts);
       setShowPicker(true);
     }
-  }, []);
+  }, [user]);
+
+  // 비로그인 가드
+  if (mounted && !authLoading && !user) {
+    return <LoginRequired from="/neighborhood" />;
+  }
 
   const selectRegion = async (r: string) => {
     setRegion(r);

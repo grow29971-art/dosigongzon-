@@ -27,6 +27,9 @@ import {
   ChevronRight,
   Pencil,
   Save,
+  Share2,
+  Search,
+  SlidersHorizontal,
 } from "lucide-react";
 import AddCatModal from "@/app/components/AddCatModal";
 import ReportModal from "@/app/components/ReportModal";
@@ -54,8 +57,14 @@ import { listRescueHospitals, type RescueHospital } from "@/lib/hospitals-repo";
 import type { Post } from "@/lib/types";
 import { createClient as createSupabaseClient } from "@/lib/supabase/client";
 import CareLogTab from "@/app/components/CareLogTab";
-import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, GENDER_MAP, HEALTH_MAP, type CatGender, type CatHealthStatus } from "@/lib/cats-repo";
+import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, toggleCatLike, listMyLikedCatIds, GENDER_MAP, HEALTH_MAP, type CatGender, type CatHealthStatus } from "@/lib/cats-repo";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
+import {
+  listMyActivityRegions,
+  type ActivityRegion,
+} from "@/lib/activity-regions-repo";
+import Link from "next/link";
+import { shareToKakao } from "@/lib/kakao-share";
 
 const CAT_TAG_OPTIONS = [
   "TNR 완료","TNR 필요","이어팁","사람 친화","겁 많음","성묘",
@@ -98,6 +107,25 @@ export default function MapPage() {
   const [showHospitals, setShowHospitals] = useState(true);
   const [showPharmacies, setShowPharmacies] = useState(true);
   const [mapError, setMapError] = useState("");
+
+  // ── 고양이 좋아요 ──
+  const [likedCatIds, setLikedCatIds] = useState<Set<string>>(new Set());
+  const [likingCat, setLikingCat] = useState(false);
+
+  // ── 공유 상태 ──
+  const [shareStatus, setShareStatus] = useState<"idle" | "copied">("idle");
+
+  // ── 검색 / 필터 ──
+  const [searchQ, setSearchQ] = useState("");
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
+  type CatFilter = "all" | "tnr_needed" | "neutered" | "health_concern" | "alert";
+  const [catFilter, setCatFilter] = useState<CatFilter>("all");
+
+  // ── 활동 지역 ──
+  const [activityRegions, setActivityRegions] = useState<ActivityRegion[]>([]);
+  // 'all' = 전체, 1|2 = 해당 슬롯만 필터
+  const [regionFilter, setRegionFilter] = useState<"all" | 1 | 2>("all");
+  const regionCirclesRef = useRef<any[]>([]);
 
   const [cats, setCats] = useState<Cat[]>([]);
   const [loadingCats, setLoadingCats] = useState(true);
@@ -182,41 +210,47 @@ export default function MapPage() {
   useEffect(() => {
     if (!chatOpen || !currentGu) return;
 
+    // ★ 구가 바뀌면 이전 구 메시지를 즉시 비운다 (크로스 구 유출 방지)
+    setChatMessages([]);
+
     const supabase = createSupabaseClient();
+    const fetchArea = currentGu; // 이 effect가 담당하는 구 — 폴링 중 값 고정
     let active = true;
-    let lastCount = 0;
+    let firstFetchDone = false;
+    let lastCount = -1;
     let lastId = "";
 
     const fetchMessages = async () => {
       const { data } = await supabase
         .from("area_chats")
         .select("*")
-        .eq("area", currentGu)
+        .eq("area", fetchArea)
         .order("created_at", { ascending: true })
         .limit(50) as { data: any };
 
       if (!active) return;
-      const msgs = data ?? [];
+      // 혹시 모를 경쟁 상태: 응답이 도착했을 때 이미 다른 구로 바뀌었다면 무시
+      if (fetchArea !== currentGu) return;
 
-      // 새 메시지가 있을 때만 state 업데이트 (불필요한 리렌더 방지)
+      const msgs: any[] = (data ?? []).filter((m: any) => m.area === fetchArea);
+
       const newLastId = msgs.length > 0 ? msgs[msgs.length - 1].id : "";
-      if (msgs.length !== lastCount || newLastId !== lastId) {
-        lastCount = msgs.length;
-        lastId = newLastId;
+      const needsUpdate = !firstFetchDone || msgs.length !== lastCount || newLastId !== lastId;
+      if (!needsUpdate) return;
 
-        setChatMessages((prev) => {
-          // temp- 메시지(낙관적)는 유지하면서 DB 메시지로 병합
-          const tempMsgs = prev.filter((m) => m.id.startsWith("temp-"));
-          const dbIds = new Set(msgs.map((m: any) => m.id));
-          const remainingTemp = tempMsgs.filter((t) => !msgs.some((m: any) =>
-            m.author_id === t.author_id && m.body === t.body
-          ));
-          const merged = [...msgs, ...remainingTemp];
-          return merged;
-        });
+      firstFetchDone = true;
+      lastCount = msgs.length;
+      lastId = newLastId;
 
-        setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
-      }
+      setChatMessages((prev) => {
+        // temp- 메시지(낙관적)는 아직 DB에 없고 현재 구에 속한 것만 유지
+        const tempMsgs = prev.filter((m) => m.id.startsWith("temp-") && m.area === fetchArea);
+        const remainingTemp = tempMsgs.filter(
+          (t) => !msgs.some((m: any) => m.author_id === t.author_id && m.body === t.body),
+        );
+        return [...msgs, ...remainingTemp];
+      });
+      setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
     };
 
     fetchMessages();
@@ -445,6 +479,128 @@ export default function MapPage() {
     fetch("/api/visit").then((r) => r.json()).then((d) => setTodayVisit(d.today)).catch(() => {});
   }, [fetchCats]);
 
+  // ── 활동 지역 로드 (로그인 유저만) ──
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setActivityRegions([]);
+      return;
+    }
+    listMyActivityRegions().then(setActivityRegions).catch(() => {});
+  }, [isLoggedIn, user?.id]);
+
+  // ── 내가 좋아요 누른 고양이 로드 ──
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setLikedCatIds(new Set());
+      return;
+    }
+    listMyLikedCatIds().then(setLikedCatIds).catch(() => {});
+  }, [isLoggedIn, user?.id]);
+
+  // ── 좋아요 토글 ──
+  const handleToggleCatLike = async () => {
+    if (!selectedCat) return;
+    if (!isLoggedIn) {
+      if (confirm("로그인하면 좋아요를 누를 수 있어요. 로그인할까요?")) window.location.href = "/login";
+      return;
+    }
+    if (likingCat) return;
+    setLikingCat(true);
+
+    const catId = selectedCat.id;
+    const wasLiked = likedCatIds.has(catId);
+    const currentCount = selectedCat.like_count ?? 0;
+
+    // 낙관적 업데이트
+    setLikedCatIds((prev) => {
+      const n = new Set(prev);
+      if (wasLiked) n.delete(catId);
+      else n.add(catId);
+      return n;
+    });
+    setSelectedCat((prev) => prev && prev.id === catId ? { ...prev, like_count: Math.max(0, currentCount + (wasLiked ? -1 : 1)) } : prev);
+    setCats((prev) => prev.map((c) => c.id === catId ? { ...c, like_count: Math.max(0, (c.like_count ?? 0) + (wasLiked ? -1 : 1)) } : c));
+
+    try {
+      const { liked, likeCount } = await toggleCatLike(catId);
+      // 서버 실제 값으로 동기화
+      setSelectedCat((prev) => prev && prev.id === catId ? { ...prev, like_count: likeCount } : prev);
+      setCats((prev) => prev.map((c) => c.id === catId ? { ...c, like_count: likeCount } : c));
+      setLikedCatIds((prev) => {
+        const n = new Set(prev);
+        if (liked) n.add(catId);
+        else n.delete(catId);
+        return n;
+      });
+    } catch (err) {
+      // 롤백
+      setLikedCatIds((prev) => {
+        const n = new Set(prev);
+        if (wasLiked) n.add(catId);
+        else n.delete(catId);
+        return n;
+      });
+      setSelectedCat((prev) => prev && prev.id === catId ? { ...prev, like_count: currentCount } : prev);
+      setCats((prev) => prev.map((c) => c.id === catId ? { ...c, like_count: currentCount } : c));
+      alert(err instanceof Error ? err.message : "좋아요 실패");
+    } finally {
+      setLikingCat(false);
+    }
+  };
+
+  // ── 고양이 공유 (Web Share API → 링크 복사 폴백) ──
+  const handleShareCat = async () => {
+    if (!selectedCat) return;
+    const url = `${window.location.origin}/cats/${selectedCat.id}`;
+    const title = `${selectedCat.name} · ${selectedCat.region ?? "우리 동네"} | 도시공존`;
+    const text = selectedCat.description
+      ? selectedCat.description
+      : `${selectedCat.region ?? "우리 동네"}에 사는 ${selectedCat.name}을(를) 함께 돌봐주세요 🐾`;
+
+    const nav = typeof navigator !== "undefined" ? (navigator as Navigator) : null;
+
+    if (nav && typeof nav.share === "function") {
+      try {
+        await nav.share({ title, text, url });
+      } catch {
+        // 사용자가 공유 취소 → 조용히 무시
+      }
+      return;
+    }
+
+    // 폴백: 링크 복사
+    try {
+      await nav?.clipboard?.writeText(url);
+      setShareStatus("copied");
+      setTimeout(() => setShareStatus("idle"), 2000);
+    } catch {
+      window.prompt("아래 링크를 복사해서 공유하세요:", url);
+    }
+  };
+
+  // ── 카카오톡으로 고양이 공유 ──
+  const handleShareCatToKakao = async () => {
+    if (!selectedCat) return;
+    const url = `${window.location.origin}/cats/${selectedCat.id}`;
+    const title = `${selectedCat.name} · ${selectedCat.region ?? "우리 동네"}`;
+    const description = selectedCat.description
+      ? selectedCat.description.slice(0, 100)
+      : `${selectedCat.region ?? "우리 동네"}에 사는 ${selectedCat.name}을(를) 함께 돌봐주세요 🐾`;
+    const imageUrl = `${window.location.origin}/cats/${selectedCat.id}/opengraph-image`;
+
+    const ok = await shareToKakao({ title, description, imageUrl, url });
+    if (!ok) {
+      // Kakao SDK 실패 → 링크 복사 폴백
+      try {
+        await navigator.clipboard?.writeText(url);
+        setShareStatus("copied");
+        setTimeout(() => setShareStatus("idle"), 2000);
+      } catch {
+        window.prompt("아래 링크를 복사해서 공유하세요:", url);
+      }
+    }
+  };
+
   // ── 카카오 SDK 직접 로드 ──
   useEffect(() => {
     if (!apiKey) return;
@@ -516,8 +672,9 @@ export default function MapPage() {
       const container = mapContainerRef.current;
       if (!container) return;
 
-      // 초기 중심: GPS가 이미 왔으면 그 위치, 아니면 기본 중심
-      const initialCenter = userPos ?? MAP_CENTER;
+      // 초기 중심: GPS > 주 활동 지역 > 기본 중심
+      const primary = activityRegions.find((r) => r.is_primary) ?? activityRegions[0];
+      const initialCenter = userPos ?? (primary ? { lat: primary.lat, lng: primary.lng } : MAP_CENTER);
       const map = new window.kakao.maps.Map(container, {
         center: new window.kakao.maps.LatLng(initialCenter.lat, initialCenter.lng),
         level: 6,
@@ -532,15 +689,19 @@ export default function MapPage() {
         setAddModalOpen(true);
       });
 
-      // 지도 이동/줌 끝날 때 현재 구 감지
+      // 지도 이동/줌 끝날 때 현재 구 감지 (시·도 + 구 조합으로 유니크하게)
       const detectGu = () => {
         if (!window.kakao?.maps?.services) return;
         const center = map.getCenter();
         const geocoder = new window.kakao.maps.services.Geocoder();
         geocoder.coord2RegionCode(center.getLng(), center.getLat(), (result: any, status: any) => {
           if (status === window.kakao.maps.services.Status.OK && result[0]) {
+            const sido = (result[0].region_1depth_name || "")
+              .replace(/(특별시|광역시|특별자치시|특별자치도|도)$/, "");
             const gu = result[0].region_2depth_name || "";
-            setCurrentGu(gu || "");
+            // 예: "인천 남동구", "서울 중구", "부산 중구" → 같은 '중구'라도 다르게 구분
+            const area = [sido, gu].filter(Boolean).join(" ");
+            setCurrentGu(area);
           }
         });
       };
@@ -560,6 +721,47 @@ export default function MapPage() {
     const map = mapInstanceRef.current;
     map.setCenter(new window.kakao.maps.LatLng(userPos.lat, userPos.lng));
   }, [mapReady, userPos]);
+
+  // ── 활동 지역 Circle 오버레이 ──
+  useEffect(() => {
+    if (!mapReady || !window.kakao) return;
+    regionCirclesRef.current.forEach((ov) => ov.setMap(null));
+    regionCirclesRef.current = [];
+
+    if (activityRegions.length === 0) return;
+
+    activityRegions.forEach((r) => {
+      const color = r.slot === 1 ? "#C47E5A" : "#4A7BA8";
+      const active = regionFilter === "all" || regionFilter === r.slot;
+      const circle = new window.kakao.maps.Circle({
+        map: mapInstanceRef.current,
+        center: new window.kakao.maps.LatLng(r.lat, r.lng),
+        radius: r.radius_m,
+        strokeWeight: active ? 2 : 1,
+        strokeColor: color,
+        strokeOpacity: active ? 0.8 : 0.3,
+        strokeStyle: active ? "solid" : "dashed",
+        fillColor: color,
+        fillOpacity: active ? 0.08 : 0.02,
+      });
+      regionCirclesRef.current.push(circle);
+
+      // 지역 이름 라벨
+      const labelEl = document.createElement("div");
+      labelEl.innerHTML = `
+        <div style="transform:translate(-50%,-50%);padding:3px 10px;border-radius:12px;background:${color}dd;color:#fff;font-size:10px;font-weight:800;box-shadow:0 2px 6px ${color}66;white-space:nowrap;opacity:${active ? 1 : 0.5};">
+          📍 ${r.name}
+        </div>
+      `;
+      const label = new window.kakao.maps.CustomOverlay({
+        map: mapInstanceRef.current,
+        position: new window.kakao.maps.LatLng(r.lat, r.lng),
+        content: labelEl,
+        zIndex: 8,
+      });
+      regionCirclesRef.current.push(label);
+    });
+  }, [mapReady, activityRegions, regionFilter]);
 
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -589,9 +791,35 @@ export default function MapPage() {
 
     if (!showCats) return;
 
-    // region(동)별 그룹핑
+    // 검색어 + 속성 필터 적용
+    const q = searchQ.trim().toLowerCase();
+    const filtered = cats.filter((c) => {
+      if (q) {
+        const hay = [
+          c.name,
+          c.region ?? "",
+          c.description ?? "",
+          ...(c.tags ?? []),
+        ].join(" ").toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      switch (catFilter) {
+        case "tnr_needed":
+          return (c.tags ?? []).some((t) => t.includes("TNR 필요"));
+        case "neutered":
+          return c.neutered === true || (c.tags ?? []).some((t) => t.includes("TNR 완료"));
+        case "health_concern":
+          return c.health_status === "caution" || c.health_status === "danger";
+        case "alert":
+          return alertedCats.has(c.id);
+        default:
+          return true;
+      }
+    });
+
+    // region(동)별 그룹핑 — 고양이는 전부 표시 (활동 지역은 Circle 시각 표시만)
     const groups = new Map<string, Cat[]>();
-    cats.forEach((cat) => {
+    filtered.forEach((cat) => {
       const dong = cat.region || "기타";
       if (!groups.has(dong)) groups.set(dong, []);
       groups.get(dong)!.push(cat);
@@ -676,7 +904,7 @@ export default function MapPage() {
       });
       overlaysRef.current.push(ov);
     });
-  }, [cats, mapReady, isLoggedIn, alertedCats, showCats]);
+  }, [cats, mapReady, isLoggedIn, alertedCats, showCats, activityRegions, regionFilter, searchQ, catFilter]);
 
   // ── 병원 마커 (뷰포트 기반 + 좌표 없으면 Geocoder 변환) ──
   const hospitalIdleListenerRef = useRef<any>(null);
@@ -921,6 +1149,17 @@ export default function MapPage() {
   const alertCount = comments.filter((c) => c.kind === "alert").length;
 
   const handleLocateMe = () => {
+    // 현재 활동 지역 필터가 slot이면 해당 지역으로, 아니면 주 활동 지역, 그것도 없으면 GPS
+    const slotTarget =
+      regionFilter !== "all"
+        ? activityRegions.find((r) => r.slot === regionFilter)
+        : activityRegions.find((r) => r.is_primary) ?? activityRegions[0];
+
+    if (slotTarget && mapInstanceRef.current && window.kakao) {
+      mapInstanceRef.current.setCenter(new window.kakao.maps.LatLng(slotTarget.lat, slotTarget.lng));
+      mapInstanceRef.current.setLevel(4);
+      return;
+    }
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -1028,6 +1267,158 @@ export default function MapPage() {
             ))}
           </div>
         </div>
+
+        {/* 고양이 검색 + 속성 필터 */}
+        {showCats && (
+          <div className="mt-2 pointer-events-auto">
+            <div className="flex items-center gap-1.5">
+              <div
+                className="flex-1 flex items-center gap-2 px-3 py-2 rounded-2xl"
+                style={{
+                  background: "rgba(255,255,255,0.95)",
+                  backdropFilter: "blur(8px)",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                }}
+              >
+                <Search size={13} className="text-text-sub shrink-0" />
+                <input
+                  type="text"
+                  value={searchQ}
+                  onChange={(e) => setSearchQ(e.target.value)}
+                  placeholder="이름·동네·태그로 찾기"
+                  className="flex-1 text-[12px] font-semibold bg-transparent outline-none placeholder:text-text-light"
+                />
+                {searchQ && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQ("")}
+                    className="shrink-0 w-5 h-5 rounded-full bg-surface-alt flex items-center justify-center active:scale-90"
+                    aria-label="검색어 지우기"
+                  >
+                    <X size={11} className="text-text-sub" />
+                  </button>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowFilterPanel((v) => !v)}
+                className="w-9 h-9 rounded-2xl flex items-center justify-center active:scale-90 shrink-0"
+                style={{
+                  background: catFilter !== "all" || showFilterPanel
+                    ? "#C47E5A"
+                    : "rgba(255,255,255,0.95)",
+                  color: catFilter !== "all" || showFilterPanel ? "#fff" : "#A38E7A",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                }}
+                aria-label="필터"
+              >
+                <SlidersHorizontal size={14} />
+              </button>
+            </div>
+
+            {/* 속성 필터 칩 */}
+            {showFilterPanel && (
+              <div className="flex gap-1.5 mt-2 overflow-x-auto scrollbar-hide">
+                {([
+                  { key: "all",             label: "🌍 전체",       color: "#2C2C2C" },
+                  { key: "alert",           label: "⚠️ 학대 경보",   color: "#D85555" },
+                  { key: "tnr_needed",      label: "✂️ TNR 필요",   color: "#E88D5A" },
+                  { key: "neutered",        label: "✅ 중성화 완료", color: "#6B8E6F" },
+                  { key: "health_concern",  label: "🩺 건강 주의",   color: "#C9A961" },
+                ] as { key: CatFilter; label: string; color: string }[]).map((f) => {
+                  const active = catFilter === f.key;
+                  return (
+                    <button
+                      key={f.key}
+                      type="button"
+                      onClick={() => setCatFilter(f.key)}
+                      className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-all shrink-0"
+                      style={{
+                        backgroundColor: active ? f.color : "rgba(255,255,255,0.95)",
+                        color: active ? "#fff" : "#555",
+                        boxShadow: active ? `0 2px 8px ${f.color}44` : "0 1px 4px rgba(0,0,0,0.06)",
+                      }}
+                    >
+                      {f.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 활동 지역 탭 (당근마켓 스타일) */}
+        {isLoggedIn && (
+          <div className="flex gap-1.5 mt-2 pointer-events-auto overflow-x-auto scrollbar-hide">
+            {activityRegions.length > 0 ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setRegionFilter("all")}
+                  className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-all shrink-0"
+                  style={{
+                    backgroundColor: regionFilter === "all" ? "#2C2C2C" : "rgba(255,255,255,0.95)",
+                    color: regionFilter === "all" ? "#fff" : "#555",
+                    boxShadow: "0 1px 6px rgba(0,0,0,0.08)",
+                  }}
+                >
+                  🌍 전체
+                </button>
+                {activityRegions.map((r) => {
+                  const color = r.slot === 1 ? "#C47E5A" : "#4A7BA8";
+                  const active = regionFilter === r.slot;
+                  return (
+                    <button
+                      key={r.slot}
+                      type="button"
+                      onClick={() => {
+                        setRegionFilter(r.slot as 1 | 2);
+                        if (mapInstanceRef.current && window.kakao) {
+                          mapInstanceRef.current.setCenter(new window.kakao.maps.LatLng(r.lat, r.lng));
+                          mapInstanceRef.current.setLevel(4);
+                        }
+                      }}
+                      className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-all shrink-0 flex items-center gap-1"
+                      style={{
+                        backgroundColor: active ? color : "rgba(255,255,255,0.95)",
+                        color: active ? "#fff" : "#555",
+                        boxShadow: active ? `0 2px 8px ${color}44` : "0 1px 6px rgba(0,0,0,0.08)",
+                      }}
+                    >
+                      📍 {r.name}
+                      {r.is_primary && <span style={{ fontSize: 9 }}>⭐</span>}
+                    </button>
+                  );
+                })}
+                <Link
+                  href="/mypage/activity-regions"
+                  className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-all shrink-0"
+                  style={{
+                    backgroundColor: "rgba(255,255,255,0.7)",
+                    color: "#A38E7A",
+                    boxShadow: "0 1px 6px rgba(0,0,0,0.06)",
+                    border: "1px dashed rgba(163,142,122,0.4)",
+                  }}
+                >
+                  ⚙ 지역 설정
+                </Link>
+              </>
+            ) : (
+              <Link
+                href="/mypage/activity-regions"
+                className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-all shrink-0"
+                style={{
+                  background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+                  color: "#fff",
+                  boxShadow: "0 2px 8px rgba(196,126,90,0.35)",
+                }}
+              >
+                📍 내 활동 지역 추가하기
+              </Link>
+            )}
+          </div>
+        )}
 
         {/* 게스트 배너 — 로그인 유도 + 좌표 퍼징 안내 */}
         {!isLoggedIn && !loadingCats && (
@@ -1263,7 +1654,11 @@ export default function MapPage() {
             style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "0 2px 10px rgba(0,0,0,0.08)" }}
           >
             <p className="text-[9.5px] font-semibold text-text-main leading-snug">우리 동네 고양이를 등록하고 품앗이 케어해보세요 🐾</p>
-            <p className="text-[8.5px] text-text-light mt-0.5">고양이 위치는 보안상 동 단위로 표기됩니다</p>
+            <p className="text-[8.5px] text-text-light mt-0.5 leading-snug">
+              고양이 위치는 보안상 동 단위로 표기돼요.
+              <br />
+              안심하고 등록해주세요 — 내가 못 가는 시간엔 이웃이 지켜줘요 🫶
+            </p>
           </div>
         </div>
       )}
@@ -1815,6 +2210,84 @@ export default function MapPage() {
                         {selectedCat.region}에 살아요
                       </span>
                     )}
+                  </div>
+
+                  {/* 좋아요 버튼 */}
+                  <div className="flex items-center gap-2 mb-2.5">
+                    <button
+                      type="button"
+                      onClick={handleToggleCatLike}
+                      disabled={likingCat}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl active:scale-95 transition-transform disabled:opacity-60"
+                      style={{
+                        background: likedCatIds.has(selectedCat.id)
+                          ? "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)"
+                          : "#F6F1EA",
+                        color: likedCatIds.has(selectedCat.id) ? "#fff" : "#A38E7A",
+                        boxShadow: likedCatIds.has(selectedCat.id)
+                          ? "0 3px 10px rgba(232,107,140,0.35)"
+                          : "0 1px 4px rgba(0,0,0,0.04)",
+                      }}
+                      aria-label={likedCatIds.has(selectedCat.id) ? "좋아요 취소" : "좋아요"}
+                    >
+                      <Heart
+                        size={13}
+                        strokeWidth={2.5}
+                        fill={likedCatIds.has(selectedCat.id) ? "#fff" : "none"}
+                      />
+                      <span className="text-[12px] font-extrabold">
+                        {selectedCat.like_count ?? 0}
+                      </span>
+                    </button>
+                    {(selectedCat.like_count ?? 0) > 0 && (
+                      <span className="text-[10.5px] text-text-light font-semibold">
+                        {likedCatIds.has(selectedCat.id)
+                          ? "마음이 전해졌어요 💛"
+                          : `${selectedCat.like_count}명이 응원해요`}
+                      </span>
+                    )}
+                    {/* 공유 버튼들 */}
+                    <div className="ml-auto flex items-center gap-1.5">
+                      {/* 카카오톡 공유 */}
+                      <button
+                        type="button"
+                        onClick={handleShareCatToKakao}
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-2xl active:scale-95 transition-transform"
+                        style={{
+                          background: "#FEE500",
+                          color: "#3C1E1E",
+                          boxShadow: "0 2px 6px rgba(254,229,0,0.45)",
+                        }}
+                        aria-label="카카오톡으로 공유"
+                      >
+                        <span style={{ fontSize: 13 }}>💬</span>
+                        <span className="text-[10.5px] font-extrabold">카톡</span>
+                      </button>
+                      {/* 기본 공유 / 복사 */}
+                      <button
+                        type="button"
+                        onClick={handleShareCat}
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-2xl active:scale-95 transition-transform"
+                        style={{
+                          background: shareStatus === "copied" ? "#6B8E6F" : "#F6F1EA",
+                          color: shareStatus === "copied" ? "#fff" : "#A38E7A",
+                          boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+                        }}
+                        aria-label="공유"
+                      >
+                        {shareStatus === "copied" ? (
+                          <>
+                            <Check size={12} strokeWidth={2.5} />
+                            <span className="text-[10.5px] font-extrabold">복사됨</span>
+                          </>
+                        ) : (
+                          <>
+                            <Share2 size={12} strokeWidth={2.5} />
+                            <span className="text-[10.5px] font-extrabold">공유</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
 
                   {/* 프로필 뱃지: 성별 · 중성화 · 건강 */}

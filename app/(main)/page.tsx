@@ -24,6 +24,7 @@ import {
   Sparkles,
   Moon,
   SunMedium,
+  Bell,
 } from "lucide-react";
 import AIChatModal from "@/app/components/AIChatModal";
 import SplashLoading from "@/app/components/SplashLoading";
@@ -43,7 +44,24 @@ import {
   type LevelInfo,
 } from "@/lib/cats-repo";
 import { listPosts, formatRelativeTime } from "@/lib/posts-repo";
+import { getUnreadNotificationCount } from "@/lib/notifications-repo";
+import { getMyStreakInfo, type StreakInfo } from "@/lib/streak-repo";
+import {
+  getWeeklyCaretakerRanking,
+  getWeeklyPopularCats,
+  type CaretakerRank,
+  type PopularCat,
+} from "@/lib/leaderboard-repo";
+import { getRecentFeed, type FeedItem } from "@/lib/live-feed-repo";
+import { getTodayAnniversaries, type Anniversary } from "@/lib/anniversaries-repo";
 import type { Post } from "@/lib/types";
+import { listCats, type Cat } from "@/lib/cats-repo";
+import {
+  listMyActivityRegions,
+  distanceMeters,
+  type ActivityRegion,
+} from "@/lib/activity-regions-repo";
+import { sanitizeImageUrl } from "@/lib/url-validate";
 
 /* ═══ 냥식 ═══ */
 const CAT_FACTS = [
@@ -147,17 +165,114 @@ export default function HomePage() {
   const [activity, setActivity] = useState<MyActivitySummary | null>(null);
   const [levelInfo, setLevelInfo] = useState<LevelInfo | null>(null);
   const [popularPosts, setPopularPosts] = useState<Post[]>([]);
+  const [allPosts, setAllPosts] = useState<Post[]>([]);
+  const [allCats, setAllCats] = useState<Cat[]>([]);
+  const [myRegions, setMyRegions] = useState<ActivityRegion[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [streakInfo, setStreakInfo] = useState<StreakInfo | null>(null);
+  const [caretakerRank, setCaretakerRank] = useState<CaretakerRank[]>([]);
+  const [popularCats, setPopularCats] = useState<PopularCat[]>([]);
+  const [feed, setFeed] = useState<FeedItem[]>([]);
+  const [anniversaries, setAnniversaries] = useState<Anniversary[]>([]);
 
   // 데이터 로드
   useEffect(() => {
     listNews().then(setNewsItems);
     listPosts().then((posts) => {
+      setAllPosts(posts);
       const sorted = [...posts].sort(
         (a, b) => (b.likeCount * 3 + b.commentCount * 2 + b.viewCount) - (a.likeCount * 3 + a.commentCount * 2 + a.viewCount),
       );
       setPopularPosts(sorted.slice(0, 3));
     });
+    listCats().then(setAllCats).catch(() => {});
   }, []);
+
+  // 활동 지역 로드 (로그인 유저만)
+  useEffect(() => {
+    if (!user) {
+      setMyRegions([]);
+      return;
+    }
+    listMyActivityRegions().then(setMyRegions).catch(() => {});
+  }, [user]);
+
+  // streak 로드
+  useEffect(() => {
+    if (!user) {
+      setStreakInfo(null);
+      return;
+    }
+    getMyStreakInfo().then(setStreakInfo).catch(() => {});
+  }, [user]);
+
+  // 리더보드 로드 (비로그인도 볼 수 있음)
+  useEffect(() => {
+    getWeeklyCaretakerRanking(3).then(setCaretakerRank).catch(() => {});
+    getWeeklyPopularCats(5).then(setPopularCats).catch(() => {});
+    getTodayAnniversaries().then(setAnniversaries).catch(() => {});
+  }, []);
+
+  // 실시간 피드 로드 + 60초 폴링
+  useEffect(() => {
+    const primary = myRegions.find((r) => r.is_primary) ?? myRegions[0] ?? null;
+    let cancelled = false;
+    const refresh = () => {
+      getRecentFeed({ region: primary, limit: 10, hours: 24 })
+        .then((list) => { if (!cancelled) setFeed(list); })
+        .catch(() => {});
+    };
+    refresh();
+    const interval = setInterval(refresh, 60_000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [myRegions]);
+
+  // 알림 카운트 로드 + 30초 폴링
+  useEffect(() => {
+    if (!user) {
+      setUnreadCount(0);
+      return;
+    }
+    let cancelled = false;
+    const refresh = () => {
+      getUnreadNotificationCount()
+        .then((n) => { if (!cancelled) setUnreadCount(n); })
+        .catch(() => {});
+    };
+    refresh();
+    const interval = setInterval(refresh, 30_000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [user]);
+
+  // 내 동네 고양이 (주 활동 지역 반경 내)
+  const primaryRegion = myRegions.find((r) => r.is_primary) ?? myRegions[0] ?? null;
+  const neighborhoodCats = primaryRegion
+    ? allCats
+        .filter(
+          (c) =>
+            distanceMeters({ lat: c.lat, lng: c.lng }, { lat: primaryRegion.lat, lng: primaryRegion.lng }) <=
+            primaryRegion.radius_m,
+        )
+        .slice(0, 6)
+    : [];
+
+  // 내 동네 글 (region 이름이 활동 지역 이름과 일치하는 것)
+  const neighborhoodPosts = primaryRegion
+    ? allPosts
+        .filter((p) => {
+          if (!p.region) return false;
+          return myRegions.some(
+            (r) => p.region && (r.name.includes(p.region) || p.region.includes(r.name)),
+          );
+        })
+        .slice(0, 3)
+    : [];
 
   // 방문자 카운트 (로그인 완료 후 토큰 포함)
   useEffect(() => {
@@ -282,6 +397,26 @@ export default function HomePage() {
           >
             {isDark ? <SunMedium size={18} className="text-warning" /> : <Moon size={18} className="text-text-sub" />}
           </button>
+          {user && (
+            <Link
+              href="/notifications"
+              className="relative w-10 h-10 rounded-2xl bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
+              aria-label="알림"
+            >
+              <Bell size={18} className={unreadCount > 0 ? "text-primary" : "text-text-sub"} />
+              {unreadCount > 0 && (
+                <span
+                  className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white"
+                  style={{
+                    background: "linear-gradient(135deg, #E86B8C 0%, #D85555 100%)",
+                    boxShadow: "0 2px 6px rgba(216,85,85,0.4)",
+                  }}
+                >
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </span>
+              )}
+            </Link>
+          )}
           <Link
             href="/mypage"
             className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center active:scale-90 transition-transform"
@@ -292,6 +427,219 @@ export default function HomePage() {
       </div>
 
 
+
+      {/* ══════ 돌봄 연속 일수 + 이번 주 ══════ */}
+      {user && streakInfo && (streakInfo.streak > 0 || streakInfo.weekly.count > 0 || !streakInfo.hasToday) && (() => {
+        const s = streakInfo.streak;
+        const hasToday = streakInfo.hasToday;
+        const weekly = streakInfo.weekly;
+        const progress = Math.min(100, Math.round((weekly.count / weekly.goal) * 100));
+        const fireCount = s >= 30 ? 3 : s >= 7 ? 2 : s >= 1 ? 1 : 0;
+        const accent =
+          s >= 30 ? "#D85555" :
+          s >= 7  ? "#E88D5A" :
+          s >= 1  ? "#C47E5A" : "#A38E7A";
+        const headline = s === 0
+          ? (hasToday ? "오늘 돌봄을 시작했어요" : "오늘 첫 돌봄을 기록해보세요")
+          : hasToday
+            ? `${s}일 연속 돌봄 중!`
+            : `${s}일 연속 — 오늘도 이어가볼까요?`;
+        const subline = s === 0
+          ? "1건만 기록해도 연속 일수가 시작돼요"
+          : !hasToday
+            ? "아직 오늘 기록이 없어요. 끊기지 않게 💛"
+            : s >= 7
+              ? "대단해요! 꾸준함이 아이들을 지켜요"
+              : "매일 조금씩이 가장 큰 힘이에요";
+
+        const dayLabels = ["월", "화", "수", "목", "금", "토", "일"];
+        const todayIdx = (() => {
+          const kst = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
+          return (kst.getDay() + 6) % 7;
+        })();
+
+        return (
+          <Link
+            href="/map"
+            className="block mb-4 active:scale-[0.99] transition-transform"
+          >
+            <div
+              className="p-5"
+              style={{
+                background: hasToday
+                  ? `linear-gradient(135deg, ${accent}18 0%, ${accent}08 100%)`
+                  : "#FFFFFF",
+                borderRadius: 22,
+                border: `1px solid ${hasToday ? `${accent}30` : "rgba(0,0,0,0.05)"}`,
+                boxShadow: "0 4px 16px rgba(0,0,0,0.05)",
+              }}
+            >
+              <div className="flex items-start gap-3 mb-3">
+                <div
+                  className="flex items-center justify-center shrink-0"
+                  style={{
+                    width: 52,
+                    height: 52,
+                    borderRadius: 18,
+                    background: s >= 1
+                      ? `linear-gradient(135deg, #FF9A3C 0%, #E8652A 100%)`
+                      : "#F0EBE3",
+                    boxShadow: s >= 1 ? "0 6px 16px rgba(255,154,60,0.35)" : "none",
+                    fontSize: 26,
+                  }}
+                >
+                  <span style={{ filter: s === 0 ? "grayscale(1)" : "none", opacity: s === 0 ? 0.5 : 1 }}>
+                    {fireCount === 3 ? "🔥🔥🔥" : fireCount === 2 ? "🔥🔥" : "🔥"}
+                  </span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: accent }}>
+                    STREAK
+                  </p>
+                  <p className="text-[16px] font-extrabold text-text-main tracking-tight leading-tight mt-0.5">
+                    {headline}
+                  </p>
+                  <p className="text-[11.5px] text-text-sub mt-1 leading-snug">
+                    {subline}
+                  </p>
+                </div>
+              </div>
+
+              {/* 이번 주 진행률 */}
+              <div className="mt-3">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[11px] font-bold text-text-sub">이번 주 돌봄</span>
+                  <span className="text-[12px] font-extrabold" style={{ color: accent }}>
+                    {weekly.count}/{weekly.goal}
+                    {progress >= 100 && <span className="ml-1">🎉</span>}
+                  </span>
+                </div>
+                <div
+                  className="w-full h-2 rounded-full overflow-hidden"
+                  style={{ background: "rgba(0,0,0,0.06)" }}
+                >
+                  <div
+                    className="h-full rounded-full transition-all"
+                    style={{
+                      width: `${progress}%`,
+                      background: `linear-gradient(90deg, ${accent} 0%, ${accent}CC 100%)`,
+                    }}
+                  />
+                </div>
+                {/* 요일 도트 */}
+                <div className="flex items-center justify-between mt-2.5">
+                  {weekly.byDay.map((done, i) => {
+                    const isToday = i === todayIdx;
+                    return (
+                      <div key={i} className="flex flex-col items-center gap-1" style={{ width: 32 }}>
+                        <div
+                          className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-extrabold"
+                          style={{
+                            background: done ? accent : isToday ? `${accent}25` : "rgba(0,0,0,0.05)",
+                            color: done ? "#fff" : isToday ? accent : "#B0A89C",
+                            border: isToday && !done ? `1.5px dashed ${accent}` : "none",
+                          }}
+                        >
+                          {done ? "✓" : ""}
+                        </div>
+                        <span
+                          className="text-[9px] font-bold"
+                          style={{ color: isToday ? accent : "#A38E7A" }}
+                        >
+                          {dayLabels[i]}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </Link>
+        );
+      })()}
+
+      {/* ══════ 오늘의 기념일 ══════ */}
+      {anniversaries.length > 0 && (
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-3 px-1">
+            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E86B8C" }} />
+            <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+              오늘의 기념일
+            </h2>
+            <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#E86B8C", opacity: 0.6 }}>
+              ANNIVERSARY 🎂
+            </span>
+          </div>
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1">
+            {anniversaries.map((a) => {
+              const label = a.years === 0
+                ? "오늘 구조됐어요"
+                : `만난 지 ${a.years}주년 🎉`;
+              const bgGradient = a.years >= 3
+                ? "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)"
+                : a.years >= 1
+                ? "linear-gradient(135deg, #F4A5C0 0%, #E86B8C 100%)"
+                : "linear-gradient(135deg, #FFD56B 0%, #E8B040 100%)";
+              return (
+                <Link
+                  key={a.catId}
+                  href={`/cats/${a.catId}`}
+                  className="shrink-0 active:scale-[0.97] transition-transform"
+                  style={{ width: 200 }}
+                >
+                  <div
+                    className="relative overflow-hidden"
+                    style={{
+                      borderRadius: 20,
+                      aspectRatio: "5 / 3",
+                      background: a.photoUrl
+                        ? `url('${a.photoUrl}') center/cover`
+                        : "#EEE8E0",
+                      boxShadow: "0 6px 18px rgba(232,107,140,0.25)",
+                    }}
+                  >
+                    {/* 그라디언트 오버레이 */}
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 55%)",
+                      }}
+                    />
+                    {/* 상단: 기념일 뱃지 */}
+                    <div
+                      className="absolute top-2 left-2 right-2 flex items-center justify-between"
+                    >
+                      <div
+                        className="px-2.5 py-1 rounded-full flex items-center gap-1"
+                        style={{
+                          background: bgGradient,
+                          boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
+                        }}
+                      >
+                        <span style={{ fontSize: 11 }}>🎂</span>
+                        <span className="text-[10px] font-extrabold text-white tracking-tight">
+                          {label}
+                        </span>
+                      </div>
+                    </div>
+                    {/* 하단: 이름·지역 */}
+                    <div className="absolute bottom-0 inset-x-0 px-3 py-2.5">
+                      <p className="text-[15px] font-extrabold text-white drop-shadow tracking-tight">
+                        {a.name}
+                      </p>
+                      {a.region && (
+                        <p className="text-[10px] text-white/80 drop-shadow">
+                          📍 {a.region}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* ══════ 내 활동 요약 ══════ */}
       {activity && levelInfo && (() => {
@@ -614,6 +962,403 @@ export default function HomePage() {
       </div>
 
       <AIChatModal open={chatOpen} onClose={() => setChatOpen(false)} />
+
+      {/* ══════ 내 동네 소식 ══════ */}
+      {user && (
+        <div className="mb-5">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2 px-1">
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C47E5A" }} />
+              <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+                내 동네 소식
+              </h2>
+              {primaryRegion && (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ background: "rgba(196,126,90,0.12)", color: "#C47E5A" }}>
+                  📍 {primaryRegion.name}
+                </span>
+              )}
+            </div>
+            <Link
+              href={primaryRegion ? "/map" : "/mypage/activity-regions"}
+              className="flex items-center gap-0.5 text-[12px] font-semibold text-primary"
+            >
+              {primaryRegion ? "지도에서 보기" : "지역 설정"} <ChevronRight size={14} />
+            </Link>
+          </div>
+
+          {!primaryRegion ? (
+            <Link
+              href="/mypage/activity-regions"
+              className="block active:scale-[0.99] transition-transform"
+            >
+              <div
+                className="px-4 py-4 flex items-center gap-3"
+                style={{
+                  background: "linear-gradient(135deg, rgba(196,126,90,0.08) 0%, rgba(168,104,74,0.04) 100%)",
+                  borderRadius: 18,
+                  border: "1px dashed rgba(196,126,90,0.3)",
+                }}
+              >
+                <div
+                  className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: "rgba(196,126,90,0.15)" }}
+                >
+                  <MapPin size={18} color="#C47E5A" strokeWidth={2} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-extrabold text-text-main">활동 지역을 설정해보세요</p>
+                  <p className="text-[11px] text-text-sub mt-0.5">우리 동네 고양이 소식을 모아 볼 수 있어요</p>
+                </div>
+                <ChevronRight size={16} style={{ color: "#C47E5A" }} />
+              </div>
+            </Link>
+          ) : (
+            <div className="space-y-2.5">
+              {/* 우리 동네 고양이 */}
+              {neighborhoodCats.length > 0 ? (
+                <Link
+                  href="/map"
+                  className="block active:scale-[0.99] transition-transform"
+                >
+                  <div
+                    className="px-4 py-3.5"
+                    style={{
+                      background: "#FFFFFF",
+                      borderRadius: 18,
+                      boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+                      border: "1px solid rgba(0,0,0,0.04)",
+                    }}
+                  >
+                    <div className="flex items-center justify-between mb-2.5">
+                      <p className="text-[12px] font-extrabold text-text-main">
+                        🐾 우리 동네 고양이 <span className="text-primary">{neighborhoodCats.length}</span>
+                      </p>
+                      <span className="text-[10px] text-text-light">
+                        반경 {primaryRegion.radius_m >= 1000 ? `${primaryRegion.radius_m / 1000}km` : `${primaryRegion.radius_m}m`}
+                      </span>
+                    </div>
+                    <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
+                      {neighborhoodCats.map((c) => (
+                        <div
+                          key={c.id}
+                          className="shrink-0 text-center"
+                          style={{ width: 56 }}
+                        >
+                          <div
+                            className="w-12 h-12 rounded-full mx-auto"
+                            style={{
+                              backgroundImage: `url('${sanitizeImageUrl(c.photo_url, "https://placehold.co/100x100/EEEAE2/2A2A28?text=%3F")}')`,
+                              backgroundSize: "cover",
+                              backgroundPosition: "center",
+                              border: "2px solid #fff",
+                              boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                            }}
+                          />
+                          <p className="text-[10px] font-bold text-text-main mt-1 truncate">
+                            {c.name}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </Link>
+              ) : (
+                <div
+                  className="px-4 py-3 text-center"
+                  style={{
+                    background: "#FFFFFF",
+                    borderRadius: 18,
+                    boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+                    border: "1px solid rgba(0,0,0,0.04)",
+                  }}
+                >
+                  <p className="text-[11.5px] text-text-sub">
+                    아직 우리 동네에 등록된 고양이가 없어요 🐾
+                  </p>
+                </div>
+              )}
+
+              {/* 우리 동네 글 */}
+              {neighborhoodPosts.length > 0 && (
+                <div
+                  className="px-4 py-3"
+                  style={{
+                    background: "#FFFFFF",
+                    borderRadius: 18,
+                    boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+                    border: "1px solid rgba(0,0,0,0.04)",
+                  }}
+                >
+                  <p className="text-[12px] font-extrabold text-text-main mb-2">
+                    💬 우리 동네 이야기
+                  </p>
+                  <div className="space-y-1.5">
+                    {neighborhoodPosts.map((p) => (
+                      <Link
+                        key={p.id}
+                        href={`/community/${p.id}`}
+                        className="flex items-center gap-2 py-1.5 active:opacity-70"
+                      >
+                        <span
+                          className="text-[10px] font-extrabold px-2 py-0.5 rounded-md shrink-0"
+                          style={{ backgroundColor: "rgba(196,126,90,0.12)", color: "#C47E5A" }}
+                        >
+                          {p.region}
+                        </span>
+                        <p className="text-[12.5px] font-bold text-text-main truncate flex-1">
+                          {p.title}
+                        </p>
+                        <span className="text-[10px] text-text-light shrink-0">
+                          {formatRelativeTime(p.createdAt)}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ══════ 실시간 동네 피드 ══════ */}
+      {feed.length > 0 && (() => {
+        const primary = myRegions.find((r) => r.is_primary) ?? myRegions[0] ?? null;
+        return (
+          <div className="mb-5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2 px-1">
+                <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#48A59E" }} />
+                <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+                  지금 우리 동네
+                </h2>
+                <span
+                  className="inline-flex items-center gap-1 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md"
+                  style={{ backgroundColor: "#48A59E15", color: "#48A59E" }}
+                >
+                  <span
+                    className="w-1.5 h-1.5 rounded-full animate-pulse"
+                    style={{ background: "#48A59E" }}
+                  />
+                  LIVE
+                </span>
+              </div>
+              {primary && (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: "rgba(72,165,158,0.12)", color: "#48A59E" }}>
+                  📍 {primary.name}
+                </span>
+              )}
+            </div>
+            <div
+              className="overflow-hidden"
+              style={{
+                background: "#FFFFFF",
+                borderRadius: 20,
+                boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+                border: "1px solid rgba(72,165,158,0.12)",
+              }}
+            >
+              {feed.map((f, i) => {
+                const href = `/cats/${f.catId}`;
+                return (
+                  <Link
+                    key={f.id}
+                    href={href}
+                    className="block active:bg-gray-50 transition-colors"
+                    style={{
+                      borderTop: i === 0 ? "none" : "1px solid rgba(0,0,0,0.04)",
+                    }}
+                  >
+                    <div className="flex items-center gap-3 px-4 py-3">
+                      {/* 고양이 썸네일 */}
+                      <div
+                        className="w-10 h-10 rounded-xl shrink-0"
+                        style={{
+                          background: f.catPhoto
+                            ? `url('${f.catPhoto}') center/cover`
+                            : "#EEE8E0",
+                          border: "2px solid #fff",
+                          boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
+                        }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[12px] text-text-sub leading-snug truncate">
+                          <span className="font-extrabold" style={{ color: "#48A59E" }}>
+                            {f.actorName}
+                          </span>
+                          <span className="text-text-light"> 님이 </span>
+                          <span className="font-bold text-text-main">{f.catRegion ?? "동네"} </span>
+                          <span className="font-extrabold text-text-main">{f.catName}</span>
+                          <span className="text-text-light">에게 </span>
+                          <span className="text-text-main">{f.message}</span>
+                        </p>
+                        <p className="text-[10px] text-text-light mt-0.5">
+                          {formatRelativeTime(f.createdAt)}
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* ══════ 이번 주 돌봄 왕 TOP 3 ══════ */}
+      {caretakerRank.length > 0 && (
+        <div className="mb-5">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2 px-1">
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E8B040" }} />
+              <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+                이번 주 돌봄 왕
+              </h2>
+              <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#E8B040", opacity: 0.6 }}>
+                WEEKLY TOP
+              </span>
+            </div>
+          </div>
+          <div
+            className="p-4"
+            style={{
+              background: "linear-gradient(135deg, #FFF9E8 0%, #FFF3CC 100%)",
+              borderRadius: 22,
+              border: "1px solid rgba(232,176,64,0.25)",
+              boxShadow: "0 4px 14px rgba(232,176,64,0.15)",
+            }}
+          >
+            <div className="space-y-2.5">
+              {caretakerRank.map((r, idx) => {
+                const medal = idx === 0 ? "🥇" : idx === 1 ? "🥈" : "🥉";
+                const rankBg = idx === 0 ? "#E8B040" : idx === 1 ? "#B8B8B8" : "#C08860";
+                return (
+                  <div
+                    key={r.userId}
+                    className="flex items-center gap-3 px-3 py-2.5"
+                    style={{
+                      background: "#FFFFFF",
+                      borderRadius: 14,
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.04)",
+                    }}
+                  >
+                    <div
+                      className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-[18px]"
+                      style={{
+                        background: `${rankBg}20`,
+                      }}
+                    >
+                      {medal}
+                    </div>
+                    <div
+                      className="w-9 h-9 rounded-full shrink-0"
+                      style={{
+                        background: r.avatarUrl
+                          ? `url('${r.avatarUrl}') center/cover`
+                          : "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+                        border: "2px solid #fff",
+                        boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+                      }}
+                    >
+                      {!r.avatarUrl && (
+                        <div className="w-full h-full flex items-center justify-center text-[13px] font-bold text-white">
+                          {r.name.slice(0, 1)}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-extrabold text-text-main truncate tracking-tight">
+                        {r.name}
+                      </p>
+                      <p className="text-[10.5px] text-text-sub">
+                        이번 주 돌봄 <span className="font-extrabold" style={{ color: "#E88D5A" }}>{r.careCount}</span>회
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ══════ 이번 주 인기 고양이 TOP 5 ══════ */}
+      {popularCats.length > 0 && (
+        <div className="mb-5">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2 px-1">
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E86B8C" }} />
+              <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+                이번 주 인기 고양이
+              </h2>
+              <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#E86B8C", opacity: 0.6 }}>
+                TRENDING
+              </span>
+            </div>
+            <Link
+              href="/map"
+              className="flex items-center gap-0.5 text-[12px] font-semibold text-primary"
+            >
+              지도 <ChevronRight size={14} />
+            </Link>
+          </div>
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1">
+            {popularCats.map((c, idx) => (
+              <Link
+                key={c.id}
+                href={`/cats/${c.id}`}
+                className="shrink-0 active:scale-[0.97] transition-transform"
+                style={{ width: 112 }}
+              >
+                <div className="relative">
+                  <div
+                    className="rounded-2xl overflow-hidden mb-2"
+                    style={{
+                      aspectRatio: "1/1",
+                      background: c.photo_url
+                        ? `url('${c.photo_url}') center/cover`
+                        : "#EEE8E0",
+                      boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
+                      border: "2px solid #fff",
+                    }}
+                  />
+                  <div
+                    className="absolute top-1.5 left-1.5 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white"
+                    style={{
+                      background: idx === 0
+                        ? "linear-gradient(135deg, #E8B040 0%, #C08860 100%)"
+                        : idx === 1
+                        ? "linear-gradient(135deg, #B8B8B8 0%, #888 100%)"
+                        : idx === 2
+                        ? "linear-gradient(135deg, #C08860 0%, #8B5A3C 100%)"
+                        : "rgba(44,44,44,0.7)",
+                      boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                    }}
+                  >
+                    {idx + 1}
+                  </div>
+                  <div
+                    className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 px-1.5 py-0.5 rounded-full"
+                    style={{
+                      background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)",
+                      boxShadow: "0 2px 4px rgba(232,107,140,0.4)",
+                    }}
+                  >
+                    <span style={{ fontSize: 9 }}>❤️</span>
+                    <span className="text-[9.5px] font-extrabold text-white">{c.like_count}</span>
+                  </div>
+                </div>
+                <p className="text-[12.5px] font-extrabold text-text-main truncate">
+                  {c.name}
+                </p>
+                <p className="text-[10px] text-text-sub truncate">
+                  {c.region ?? "우리 동네"}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ══════ 인기 커뮤니티 글 ══════ */}
       {popularPosts.length > 0 && (

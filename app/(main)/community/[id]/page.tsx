@@ -18,10 +18,13 @@ import {
   Reply,
   X,
   CornerDownRight,
+  Share2,
+  Check,
 } from "lucide-react";
 import type { Post } from "@/lib/types";
 import { CATEGORY_MAP } from "@/lib/types";
 import { getPostById, formatRelativeTime, incrementPostViewCount, updatePostVote } from "@/lib/posts-repo";
+import { shareToKakao } from "@/lib/kakao-share";
 import { getLevelColor } from "@/lib/cats-repo";
 import { getMyPostVotes, setMyPostVote, type PostVote } from "@/lib/store";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
@@ -35,6 +38,7 @@ import { useAuth } from "@/lib/auth-context";
 import ReportModal from "@/app/components/ReportModal";
 import TitleBadge from "@/app/components/TitleBadge";
 import SendDMButton from "@/app/components/SendDMButton";
+import LoginRequired from "@/app/components/LoginRequired";
 
 export default function PostDetailPage({
   params,
@@ -43,7 +47,7 @@ export default function PostDetailPage({
 }) {
   const { id } = use(params);
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [post, setPost] = useState<Post | null>(null);
 
@@ -100,6 +104,45 @@ export default function PostDetailPage({
   };
 
   // 신고 모달
+  const [shareStatus, setShareStatus] = useState<"idle" | "copied">("idle");
+
+  const handleShareKakao = async () => {
+    if (!post) return;
+    const url = `${window.location.origin}/community/${post.id}`;
+    const title = post.title;
+    const description = post.content.replace(/\s+/g, " ").trim().slice(0, 120) || "도시공존 커뮤니티";
+    const imageUrl = `${window.location.origin}/community/${post.id}/opengraph-image`;
+    const ok = await shareToKakao({ title, description, imageUrl, url });
+    if (!ok) {
+      try {
+        await navigator.clipboard?.writeText(url);
+        setShareStatus("copied");
+        setTimeout(() => setShareStatus("idle"), 2000);
+      } catch {
+        window.prompt("아래 링크를 복사해서 공유하세요:", url);
+      }
+    }
+  };
+
+  const handleShare = async () => {
+    if (!post) return;
+    const url = `${window.location.origin}/community/${post.id}`;
+    const title = `${post.title} | 도시공존`;
+    const text = post.content.replace(/\s+/g, " ").trim().slice(0, 120);
+    const nav = typeof navigator !== "undefined" ? (navigator as Navigator) : null;
+    if (nav && typeof nav.share === "function") {
+      try { await nav.share({ title, text, url }); } catch { /* 취소 무시 */ }
+      return;
+    }
+    try {
+      await nav?.clipboard?.writeText(url);
+      setShareStatus("copied");
+      setTimeout(() => setShareStatus("idle"), 2000);
+    } catch {
+      window.prompt("아래 링크를 복사해서 공유하세요:", url);
+    }
+  };
+
   const [reportTarget, setReportTarget] = useState<{
     type: "post" | "post_comment";
     id: string;
@@ -108,6 +151,7 @@ export default function PostDetailPage({
 
   useEffect(() => {
     setMounted(true);
+    if (!user) return; // 비로그인은 fetch 안 함
     getPostById(id).then((found) => {
       if (found) {
         setPost({ ...found, viewCount: found.viewCount + 1 });
@@ -121,7 +165,7 @@ export default function PostDetailPage({
     listPostComments(id)
       .then(setComments)
       .finally(() => setCommentsLoading(false));
-  }, [id]);
+  }, [id, user]);
 
   const handleSubmitComment = async () => {
     if (!user) {
@@ -144,6 +188,11 @@ export default function PostDetailPage({
   };
 
   if (!mounted) return null;
+
+  // 비로그인 가드
+  if (!authLoading && !user) {
+    return <LoginRequired from={`/community/${id}`} />;
+  }
 
   if (!post) {
     return (
@@ -336,6 +385,43 @@ export default function PostDetailPage({
 
           <button
             type="button"
+            onClick={handleShareKakao}
+            className="ml-auto flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] font-extrabold active:scale-95 transition-transform"
+            style={{
+              backgroundColor: "#FEE500",
+              color: "#3C1E1E",
+              boxShadow: "0 2px 6px rgba(254,229,0,0.45)",
+            }}
+            aria-label="카카오톡으로 공유"
+          >
+            <span style={{ fontSize: 12 }}>💬</span>
+            카톡
+          </button>
+          <button
+            type="button"
+            onClick={handleShare}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] font-bold active:scale-95 transition-transform"
+            style={{
+              backgroundColor: shareStatus === "copied" ? "#6B8E6F" : "#FFFFFF",
+              border: `1px solid ${shareStatus === "copied" ? "#6B8E6F" : "#E3DCD3"}`,
+              color: shareStatus === "copied" ? "#FFFFFF" : cat.color,
+            }}
+            aria-label="공유"
+          >
+            {shareStatus === "copied" ? (
+              <>
+                <Check size={12} strokeWidth={2.5} />
+                복사됨
+              </>
+            ) : (
+              <>
+                <Share2 size={12} strokeWidth={2.2} />
+                공유
+              </>
+            )}
+          </button>
+          <button
+            type="button"
             onClick={() =>
               setReportTarget({
                 type: "post",
@@ -343,7 +429,7 @@ export default function PostDetailPage({
                 snapshot: `${post.title} — ${post.content.slice(0, 150)}`,
               })
             }
-            className="ml-auto flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] active:scale-95 transition-transform"
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] active:scale-95 transition-transform"
             style={{ backgroundColor: "#FFFFFF", border: "1px solid #E3DCD3", color: "#A38E7A" }}
           >
             <Flag size={12} strokeWidth={2.2} />

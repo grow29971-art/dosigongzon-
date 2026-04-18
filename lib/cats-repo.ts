@@ -24,6 +24,7 @@ export interface Cat {
   health_status: CatHealthStatus;
   caretaker_id: string | null;
   caretaker_name: string | null;
+  like_count: number;
   created_at: string;
 }
 
@@ -957,4 +958,92 @@ export async function deleteCat(catId: string): Promise<void> {
     console.error("[cats-repo] deleteCat failed:", error);
     throw new Error(`삭제에 실패했어요: ${error.message}`);
   }
+}
+
+// ══════════════════════════════════════════
+// 고양이 좋아요 (cat_likes)
+// ══════════════════════════════════════════
+
+// 내가 좋아요 누른 고양이 ID 목록
+export async function listMyLikedCatIds(): Promise<Set<string>> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return new Set();
+
+  const { data, error } = await supabase
+    .from("cat_likes")
+    .select("cat_id")
+    .eq("user_id", user.id);
+
+  if (error) {
+    console.error("[cats-repo] listMyLikedCatIds failed:", error);
+    return new Set();
+  }
+  return new Set(((data ?? []) as { cat_id: string }[]).map((r) => r.cat_id));
+}
+
+// 내가 좋아요 누른 고양이 전체 정보 (최근 누른 순)
+export async function listMyLikedCats(limit = 50): Promise<Cat[]> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("cat_likes")
+    .select("created_at, cats(*)")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error("[cats-repo] listMyLikedCats failed:", error);
+    return [];
+  }
+
+  // cats 조인 결과에서 cat 객체만 추출 (null 제외)
+  const rows = (data ?? []) as { cats: Cat | null }[];
+  return rows.map((r) => r.cats).filter((c): c is Cat => c !== null);
+}
+
+// 좋아요 토글: 이미 눌렀으면 취소, 아니면 추가
+// 반환: { liked: 새 상태, likeCount: 최신 카운트 }
+export async function toggleCatLike(catId: string): Promise<{ liked: boolean; likeCount: number }> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("로그인이 필요해요.");
+
+  // 현재 상태 확인
+  const { data: existing } = await supabase
+    .from("cat_likes")
+    .select("cat_id")
+    .eq("cat_id", catId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (existing) {
+    // 이미 눌러둔 상태 → 취소
+    const { error } = await supabase
+      .from("cat_likes")
+      .delete()
+      .eq("cat_id", catId)
+      .eq("user_id", user.id);
+    if (error) throw new Error(`좋아요 취소 실패: ${error.message}`);
+  } else {
+    const { error } = await supabase
+      .from("cat_likes")
+      .insert({ cat_id: catId, user_id: user.id });
+    if (error) throw new Error(`좋아요 실패: ${error.message}`);
+  }
+
+  // 트리거가 cats.like_count 를 업데이트하므로 최신 값을 읽어옴
+  const { data: catRow } = await supabase
+    .from("cats")
+    .select("like_count")
+    .eq("id", catId)
+    .maybeSingle();
+
+  return {
+    liked: !existing,
+    likeCount: (catRow?.like_count as number | undefined) ?? 0,
+  };
 }
