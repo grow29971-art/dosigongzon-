@@ -65,6 +65,7 @@ import {
 } from "@/lib/activity-regions-repo";
 import Link from "next/link";
 import { shareToKakao } from "@/lib/kakao-share";
+import MapCoachmark from "@/app/components/MapCoachmark";
 
 const CAT_TAG_OPTIONS = [
   "TNR 완료","TNR 필요","이어팁","사람 친화","겁 많음","성묘",
@@ -1661,6 +1662,14 @@ export default function MapPage() {
             </p>
           </div>
         </div>
+      )}
+
+      {/* 첫 진입 유저용 코치마크 (내 고양이 0마리일 때만) */}
+      {!selectedCat && !selectedHospital && !chatOpen && !selectedDong && !addModalOpen && (
+        <MapCoachmark
+          isLoggedIn={isLoggedIn}
+          hasMyCat={cats.some((c) => c.caretaker_id === user?.id)}
+        />
       )}
 
       {/* 구 채팅방 */}

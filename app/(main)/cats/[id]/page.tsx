@@ -6,6 +6,7 @@ import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer 
 import { GENDER_MAP, HEALTH_MAP } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import FollowButton from "@/app/components/FollowButton";
+import ShareCatButton from "@/app/components/ShareCatButton";
 
 const SITE_URL = "https://dosigongzon.com";
 
@@ -146,6 +147,33 @@ export default async function CatDetailPage({ params }: { params: Params }) {
         </div>
       </div>
 
+      {/* 갤러리 썸네일 (사진 2장 이상일 때) */}
+      {cat.photo_urls && cat.photo_urls.length > 1 && (
+        <div className="px-4 mt-3">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+            {cat.photo_urls.map((url, idx) => (
+              <a
+                key={idx}
+                href={sanitizeImageUrl(url, "")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 rounded-xl overflow-hidden active:scale-[0.97]"
+                style={{
+                  width: 72,
+                  height: 72,
+                  backgroundImage: `url('${sanitizeImageUrl(url, "")}')`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  border: idx === 0 ? "2px solid #C47E5A" : "1.5px solid rgba(0,0,0,0.06)",
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+                }}
+                aria-label={`사진 ${idx + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* 카운트 스탯 */}
       <div className="grid grid-cols-3 gap-2 px-4 mt-4">
         <StatCard emoji="❤️" label="좋아요" value={cat.like_count ?? 0} color="#E86B8C" />
@@ -198,7 +226,17 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             {cat.caretaker_name && (
               <>
                 <span>·</span>
-                <span>돌보미 {cat.caretaker_name}</span>
+                {cat.caretaker_id ? (
+                  <Link
+                    href={`/users/${cat.caretaker_id}`}
+                    className="font-bold hover:underline"
+                    style={{ color: "#C47E5A" }}
+                  >
+                    돌보미 {cat.caretaker_name}
+                  </Link>
+                ) : (
+                  <span>돌보미 {cat.caretaker_name}</span>
+                )}
                 {cat.caretaker_id && (
                   <FollowButton userId={cat.caretaker_id} size="sm" />
                 )}
@@ -210,6 +248,15 @@ export default async function CatDetailPage({ params }: { params: Params }) {
 
       {/* CTA */}
       <div className="px-4 mt-4 space-y-2">
+        {cat.health_status === "danger" && (
+          <ShareCatButton
+            catId={cat.id}
+            name={cat.name}
+            region={region}
+            description={cat.description}
+            urgent
+          />
+        )}
         <Link
           href="/map"
           className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary text-white active:scale-[0.98] transition-transform"
@@ -218,9 +265,17 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           <PawPrint size={16} />
           <span className="text-[13.5px] font-extrabold">지도에서 돌봄하기</span>
         </Link>
+        {cat.health_status !== "danger" && (
+          <ShareCatButton
+            catId={cat.id}
+            name={cat.name}
+            region={region}
+            description={cat.description}
+          />
+        )}
         <p className="text-[10.5px] text-text-light text-center leading-relaxed mt-2">
           보안상 정확한 위치는 로그인 후 지도에서만 공개돼요.
-          <br />내가 못 가는 시간엔 이웃이 지켜줘요 🫶
+          <br />동네 단톡방에 공유하면 더 많은 이웃이 지켜줘요 🫶
         </p>
       </div>
     </div>

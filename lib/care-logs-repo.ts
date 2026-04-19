@@ -11,6 +11,7 @@ import { convertImageToWebp } from "@/lib/cats-repo";
 export type CareType =
   | "feed"
   | "water"
+  | "treat"
   | "health"
   | "tnr"
   | "hospital"
@@ -23,6 +24,7 @@ export const CARE_TYPE_MAP: Record<
 > = {
   feed: { label: "밥 줌", emoji: "🍚", color: "#E88D5A" },
   water: { label: "물 줌", emoji: "💧", color: "#48A59E" },
+  treat: { label: "간식 줌", emoji: "🍗", color: "#E8B040" },
   health: { label: "건강 체크", emoji: "🩺", color: "#6B8E6F" },
   tnr: { label: "TNR", emoji: "✂️", color: "#8B65B8" },
   hospital: { label: "병원 방문", emoji: "🏥", color: "#D85555" },

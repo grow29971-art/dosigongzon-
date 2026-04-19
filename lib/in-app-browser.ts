@@ -29,6 +29,17 @@ export function detectInAppBrowser(ua?: string): InAppBrowser {
   return null;
 }
 
+/**
+ * 삼성인터넷 브라우저 감지.
+ * 정식 브라우저지만 기본 활성화된 "스마트 안티 트래킹"이 OAuth 리다이렉트 중
+ * 쿠키를 drop시켜서 카카오 KOE205 등 state 검증 실패를 유발한다.
+ */
+export function detectSamsungInternet(ua?: string): boolean {
+  if (typeof window === "undefined" && !ua) return false;
+  const s = ua ?? navigator.userAgent;
+  return /SamsungBrowser/i.test(s);
+}
+
 /** 기기 OS 감지 */
 export function detectOS(ua?: string): OS {
   if (typeof window === "undefined" && !ua) return "other";

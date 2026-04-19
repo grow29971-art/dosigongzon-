@@ -50,8 +50,10 @@ export default function AddCatModal({
   const [gender, setGender] = useState<CatGender>("unknown");
   const [neutered, setNeutered] = useState<boolean | null>(null);
   const [healthStatus, setHealthStatus] = useState<CatHealthStatus>("good");
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  // 최대 5장까지 다중 업로드
+  const MAX_PHOTOS = 5;
+  const [photoFiles, setPhotoFiles] = useState<File[]>([]);
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -101,8 +103,8 @@ export default function AddCatModal({
       setGender("unknown");
       setNeutered(null);
       setHealthStatus("good");
-      setPhotoFile(null);
-      setPhotoPreview(null);
+      setPhotoFiles([]);
+      setPhotoPreviews([]);
       setError("");
       setSubmitting(false);
     }
@@ -110,24 +112,50 @@ export default function AddCatModal({
   }, [open, initialLat, initialLng]);
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const selected = Array.from(e.target.files ?? []);
+    if (selected.length === 0) return;
 
-    if (!file.type.startsWith("image/")) {
-      setError("이미지 파일만 업로드 가능해요.");
+    const available = MAX_PHOTOS - photoFiles.length;
+    if (available <= 0) {
+      setError(`최대 ${MAX_PHOTOS}장까지만 올릴 수 있어요.`);
       return;
     }
-    // 원본은 20MB까지 허용. 업로드 직전에 720p WebP로 변환됨.
-    if (file.size > 20 * 1024 * 1024) {
-      setError("사진은 20MB 이하만 가능해요.");
-      return;
+    const toAdd = selected.slice(0, available);
+
+    for (const file of toAdd) {
+      if (!file.type.startsWith("image/")) {
+        setError("이미지 파일만 업로드 가능해요.");
+        return;
+      }
+      if (file.size > 20 * 1024 * 1024) {
+        setError("사진은 각 20MB 이하만 가능해요.");
+        return;
+      }
     }
 
     setError("");
-    setPhotoFile(file);
-    const reader = new FileReader();
-    reader.onload = (ev) => setPhotoPreview(ev.target?.result as string);
-    reader.readAsDataURL(file);
+    const newPreviews: string[] = [];
+    let loaded = 0;
+    toAdd.forEach((file, idx) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        newPreviews[idx] = ev.target?.result as string;
+        loaded += 1;
+        if (loaded === toAdd.length) {
+          setPhotoFiles((prev) => [...prev, ...toAdd]);
+          setPhotoPreviews((prev) => [...prev, ...newPreviews]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // 같은 파일 다시 선택 가능하게 리셋
+    if (e.target) e.target.value = "";
+  };
+
+  const handleRemovePhoto = (idx: number) => {
+    setPhotoFiles((prev) => prev.filter((_, i) => i !== idx));
+    setPhotoPreviews((prev) => prev.filter((_, i) => i !== idx));
   };
 
   const toggleTag = (tag: string) => {
@@ -145,10 +173,14 @@ export default function AddCatModal({
 
     setSubmitting(true);
     try {
-      let photoUrl: string | undefined;
-      if (photoFile) {
-        photoUrl = await uploadCatPhoto(photoFile);
+      // 여러 장 동시 업로드 (순서 유지)
+      const uploaded: string[] = [];
+      for (const file of photoFiles) {
+        const url = await uploadCatPhoto(file);
+        uploaded.push(url);
       }
+      const photoUrl = uploaded[0]; // 대표 사진 = 첫 번째
+      const photoUrls = uploaded; // 전체 배열
 
       // 지도 중심 좌표에 약간의 랜덤 오프셋 (마커 겹침 방지)
       const offsetLat = initialLat + (Math.random() - 0.5) * 0.004;
@@ -158,6 +190,7 @@ export default function AddCatModal({
         name: name.trim(),
         description: description.trim() || undefined,
         photo_url: photoUrl,
+        photo_urls: photoUrls,
         lat: offsetLat,
         lng: offsetLng,
         region: selectedDong.trim(),
@@ -245,32 +278,71 @@ export default function AddCatModal({
 
         {/* 스크롤 영역 */}
         <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5">
-          {/* 사진 업로드 */}
+          {/* 사진 업로드 — 최대 5장 */}
           <div>
-            <label className="text-[12px] font-bold text-text-main mb-2 block">사진</label>
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="relative w-full aspect-[4/3] rounded-2xl bg-surface-alt border-2 border-dashed border-border flex flex-col items-center justify-center gap-2 active:scale-[0.99] transition-transform overflow-hidden"
-            >
-              {photoPreview ? (
-                <img
-                  src={photoPreview}
-                  alt="미리보기"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              ) : (
-                <>
-                  <Camera size={28} className="text-text-light" strokeWidth={1.5} />
-                  <p className="text-[12px] text-text-sub font-medium">사진 추가하기</p>
-                  <p className="text-[10px] text-text-light">자동으로 720p WebP로 변환돼요</p>
-                </>
-              )}
-            </button>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-[12px] font-bold text-text-main">
+                사진 <span className="text-text-light font-normal">· 첫 장이 대표</span>
+              </label>
+              <span className="text-[10.5px] text-text-light">
+                {photoFiles.length}/{MAX_PHOTOS}
+              </span>
+            </div>
+            {photoPreviews.length === 0 ? (
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="relative w-full aspect-[4/3] rounded-2xl bg-surface-alt border-2 border-dashed border-border flex flex-col items-center justify-center gap-2 active:scale-[0.99] transition-transform overflow-hidden"
+              >
+                <Camera size={28} className="text-text-light" strokeWidth={1.5} />
+                <p className="text-[12px] text-text-sub font-medium">사진 추가하기</p>
+                <p className="text-[10px] text-text-light">720p WebP로 자동 변환 · 최대 {MAX_PHOTOS}장</p>
+              </button>
+            ) : (
+              <div className="grid grid-cols-3 gap-2">
+                {photoPreviews.map((src, idx) => (
+                  <div
+                    key={idx}
+                    className="relative aspect-square rounded-xl overflow-hidden"
+                    style={{ border: idx === 0 ? "2px solid #C47E5A" : "1px solid #E3DCD3" }}
+                  >
+                    <img src={src} alt={`미리보기 ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" />
+                    {idx === 0 && (
+                      <span
+                        className="absolute top-1 left-1 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md text-white"
+                        style={{ background: "#C47E5A" }}
+                      >
+                        대표
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => handleRemovePhoto(idx)}
+                      className="absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center active:scale-90"
+                      style={{ background: "rgba(0,0,0,0.55)" }}
+                      aria-label="삭제"
+                    >
+                      <X size={11} color="#fff" strokeWidth={2.8} />
+                    </button>
+                  </div>
+                ))}
+                {photoFiles.length < MAX_PHOTOS && (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="aspect-square rounded-xl bg-surface-alt border-2 border-dashed border-border flex flex-col items-center justify-center gap-1 active:scale-[0.97]"
+                  >
+                    <Camera size={20} className="text-text-light" strokeWidth={1.5} />
+                    <p className="text-[10px] text-text-sub font-medium">추가</p>
+                  </button>
+                )}
+              </div>
+            )}
             <input
               ref={fileInputRef}
               type="file"
               accept="image/*"
+              multiple
               onChange={handlePhotoSelect}
               className="hidden"
             />

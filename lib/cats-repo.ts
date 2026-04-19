@@ -768,6 +768,7 @@ export interface MyActivitySummary {
   alertCount: number;
   likesReceived: number;
   careLogCount: number;
+  inviteCount: number; // 내가 초대해서 가입한 친구 수
 }
 
 // ── 레벨 시스템 ──
@@ -890,10 +891,9 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user)
-    return { catCount: 0, commentCount: 0, alertCount: 0, likesReceived: 0, careLogCount: 0 };
+    return { catCount: 0, commentCount: 0, alertCount: 0, likesReceived: 0, careLogCount: 0, inviteCount: 0 };
 
-  // 5개 쿼리 병렬
-  const [catsRes, commentsRes, alertsRes, likeSumRes, careLogsRes] = await Promise.all([
+  const [catsRes, commentsRes, alertsRes, likeSumRes, careLogsRes, invitesRes] = await Promise.all([
     supabase
       .from("cats")
       .select("id", { count: "exact", head: true })
@@ -907,16 +907,19 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
       .select("id", { count: "exact", head: true })
       .eq("author_id", user.id)
       .eq("kind", "alert"),
-    // 내 댓글들의 like_count 합계
     supabase
       .from("cat_comments")
       .select("like_count")
       .eq("author_id", user.id),
-    // 돌봄 일지 건수
     supabase
       .from("care_logs")
       .select("id", { count: "exact", head: true })
       .eq("author_id", user.id),
+    // 내가 초대한 친구 수
+    supabase
+      .from("invite_events")
+      .select("id", { count: "exact", head: true })
+      .eq("inviter_id", user.id),
   ]);
 
   const likesReceived = (
@@ -929,6 +932,7 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
     alertCount: alertsRes.count ?? 0,
     likesReceived,
     careLogCount: careLogsRes.count ?? 0,
+    inviteCount: invitesRes.count ?? 0,
   };
 }
 

@@ -1,18 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { PawPrint, Mail, Lock, User, Eye, EyeOff, ArrowLeft, Check, Loader2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { PawPrint, Mail, Lock, User, Eye, EyeOff, ArrowLeft, Check, Loader2, Gift } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import TurnstileWidget from "@/app/components/TurnstileWidget";
+import { setPendingInviteCode, isValidInviteCodeFormat } from "@/lib/invites-repo";
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 export default function SignupPage() {
+  return (
+    <Suspense>
+      <SignupContent />
+    </Suspense>
+  );
+}
+
+function SignupContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,6 +37,18 @@ export default function SignupPage() {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [captchaSkipped, setCaptchaSkipped] = useState(false);
   const captchaRequired = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
+  // 초대 코드 (URL ?invite=XXX 우선, 없으면 유저 수동 입력)
+  const [inviteCode, setInviteCode] = useState("");
+  const [inviteLocked, setInviteLocked] = useState(false); // URL로 자동 채워진 경우 잠금
+  useEffect(() => {
+    const fromUrl = (searchParams.get("invite") || searchParams.get("i") || "").trim().toUpperCase();
+    if (fromUrl && isValidInviteCodeFormat(fromUrl)) {
+      setInviteCode(fromUrl);
+      setInviteLocked(true);
+      setPendingInviteCode(fromUrl);
+    }
+  }, [searchParams]);
 
   const validate = async () => {
     const next: Record<string, string> = {};
@@ -79,6 +101,13 @@ export default function SignupPage() {
         setErrors({ captcha: "봇 방어 검증 중 문제가 발생했어요." });
         return;
       }
+    }
+
+    // 유효한 초대 코드가 있으면 localStorage에 저장
+    // 이메일 인증 후 세션이 열리면 PendingInviteApplier가 자동 적용
+    const trimmedCode = inviteCode.trim().toUpperCase();
+    if (trimmedCode && isValidInviteCodeFormat(trimmedCode)) {
+      setPendingInviteCode(trimmedCode);
     }
 
     const { error } = await createClient().auth.signUp({
@@ -256,6 +285,34 @@ export default function SignupPage() {
               )}
             </div>
             {errors.passwordConfirm && <p className="text-[11px] text-error mt-1 ml-1">{errors.passwordConfirm}</p>}
+          </div>
+
+          {/* 초대 코드 (선택) */}
+          <div>
+            <div
+              className="flex items-center gap-3 bg-white rounded-xl px-4 py-3.5 border border-border focus-within:border-primary transition-colors"
+              style={{ background: inviteLocked ? "rgba(196,126,90,0.06)" : "#fff" }}
+            >
+              <Gift size={18} style={{ color: inviteLocked ? "#C47E5A" : "#A38E7A" }} className="shrink-0" />
+              <input
+                value={inviteCode}
+                onChange={(e) => {
+                  if (inviteLocked) return;
+                  const v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
+                  setInviteCode(v);
+                }}
+                disabled={inviteLocked}
+                placeholder="초대 코드 (선택)"
+                maxLength={10}
+                className="flex-1 text-[14px] tracking-[0.15em] font-bold bg-transparent outline-none placeholder:text-text-muted placeholder:tracking-normal placeholder:font-normal disabled:text-[#C47E5A]"
+              />
+              {inviteLocked && (
+                <span className="text-[10px] font-bold" style={{ color: "#C47E5A" }}>자동 입력</span>
+              )}
+            </div>
+            <p className="text-[10.5px] text-text-light mt-1 ml-1">
+              친구에게 받은 코드가 있나요? 입력하면 서로 연결돼요.
+            </p>
           </div>
         </div>
 

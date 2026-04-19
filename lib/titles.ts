@@ -6,7 +6,7 @@
 
 import type { MyActivitySummary } from "@/lib/cats-repo";
 
-export type TitleCategory = "register" | "record" | "alert" | "popular";
+export type TitleCategory = "register" | "record" | "alert" | "popular" | "invite";
 
 export interface TitleDef {
   id: string;
@@ -112,6 +112,35 @@ export const TITLES: TitleDef[] = [
     progress: (s) => clamp01(s.alertCount / 15),
   },
 
+  // ── 초대 (inviteCount) ──
+  {
+    id: "first_invite",
+    name: "씨앗을 심는 자",
+    emoji: "🌱",
+    category: "invite",
+    description: "첫 친구를 도시공존에 초대했어요",
+    unlocked: (s) => s.inviteCount >= 1,
+    progress: (s) => clamp01(s.inviteCount / 1),
+  },
+  {
+    id: "bridge_builder",
+    name: "다리를 잇는 자",
+    emoji: "🤝",
+    category: "invite",
+    description: "3명의 이웃을 초대해서 연결했어요",
+    unlocked: (s) => s.inviteCount >= 3,
+    progress: (s) => clamp01(s.inviteCount / 3),
+  },
+  {
+    id: "community_gardener",
+    name: "마을을 가꾸는 자",
+    emoji: "🌳",
+    category: "invite",
+    description: "10명 이상 초대한 커뮤니티 지킴이",
+    unlocked: (s) => s.inviteCount >= 10,
+    progress: (s) => clamp01(s.inviteCount / 10),
+  },
+
   // ── 공감 (likesReceived) ──
   {
     id: "loved",
@@ -147,6 +176,7 @@ export const CATEGORY_LABELS: Record<TitleCategory, string> = {
   record: "기록",
   alert: "경보",
   popular: "공감",
+  invite: "초대",
 };
 
 export const CATEGORY_COLORS: Record<TitleCategory, string> = {
@@ -154,6 +184,7 @@ export const CATEGORY_COLORS: Record<TitleCategory, string> = {
   record: "#4A7BA8",
   alert: "#D85555",
   popular: "#C9A961",
+  invite: "#E86B8C",
 };
 
 export interface TitleStatus extends TitleDef {

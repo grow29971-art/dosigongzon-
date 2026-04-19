@@ -3,6 +3,8 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AuthProvider } from "@/lib/auth-context";
 import PushSubscriber from "@/app/components/PushSubscriber";
+import PwaInstallPrompt from "@/app/components/PwaInstallPrompt";
+import PendingInviteApplier from "@/app/components/PendingInviteApplier";
 import "./globals.css";
 
 const SITE_URL = "https://dosigongzon.com";
@@ -152,6 +154,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthProvider>
           {children}
           <PushSubscriber />
+          <PwaInstallPrompt />
+          <PendingInviteApplier />
         </AuthProvider>
         <Analytics />
         <SpeedInsights />

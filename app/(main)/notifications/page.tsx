@@ -89,7 +89,7 @@ export default function NotificationsPage() {
                 : item.type === "comment_on_my_post"
                 ? `/community/${item.targetId}`
                 : item.type === "inquiry_updated"
-                ? "/mypage"
+                ? "/mypage/inquiries"
                 : item.type === "following_activity"
                 ? `/cats/${item.targetId}`
                 : "/map";

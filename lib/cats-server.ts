@@ -3,6 +3,7 @@
 // ══════════════════════════════════════════
 
 import { createClient } from "@/lib/supabase/server";
+import { createAnonClient } from "@/lib/supabase/anon";
 import type { Cat } from "@/lib/cats-repo";
 
 export async function getCatByIdServer(id: string): Promise<Cat | null> {
@@ -38,5 +39,45 @@ export async function getCatCareLogsCountServer(id: string): Promise<number> {
     .from("care_logs")
     .select("*", { count: "exact", head: true })
     .eq("cat_id", id);
+  return count ?? 0;
+}
+
+/**
+ * 특정 구/동 리스트에 해당하는 고양이를 최신순으로 조회 (SEO 랜딩용).
+ * region은 자유 입력 필드라 gu 이름과 dongs를 OR 조건으로 ilike 매칭.
+ */
+export async function getCatsByRegionServer(
+  guName: string,
+  dongs: string[],
+  limit = 24,
+): Promise<Array<Pick<Cat, "id" | "name" | "region" | "photo_url" | "like_count" | "health_status" | "created_at" | "description">>> {
+  // ISR/SSG 호환을 위해 cookie-less anon 클라이언트 사용
+  const supabase = createAnonClient();
+  const terms = [guName, ...dongs];
+  const orClauses = terms.map((t) => `region.ilike.%${t}%`).join(",");
+  const { data, error } = await supabase
+    .from("cats")
+    .select("id, name, region, photo_url, like_count, health_status, created_at, description")
+    .or(orClauses)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) {
+    console.error("[cats-server] getCatsByRegionServer failed:", error);
+    return [];
+  }
+  return (data ?? []) as never;
+}
+
+export async function getCatCountByRegionServer(
+  guName: string,
+  dongs: string[],
+): Promise<number> {
+  const supabase = createAnonClient();
+  const terms = [guName, ...dongs];
+  const orClauses = terms.map((t) => `region.ilike.%${t}%`).join(",");
+  const { count } = await supabase
+    .from("cats")
+    .select("*", { count: "exact", head: true })
+    .or(orClauses);
   return count ?? 0;
 }

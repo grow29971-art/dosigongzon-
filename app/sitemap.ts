@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { SEOUL_GUS } from "@/lib/seoul-regions";
 
 const SITE_URL = "https://dosigongzon.com";
 
@@ -17,6 +18,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }[] = [
     { path: "/",                             priority: 1.0,  changeFrequency: "daily" },
     { path: "/map",                          priority: 0.95, changeFrequency: "hourly" },
+    { path: "/areas",                        priority: 0.9,  changeFrequency: "daily" },
+    { path: "/about",                        priority: 0.8,  changeFrequency: "monthly" },
     { path: "/hospitals",                    priority: 0.8,  changeFrequency: "weekly" },
     { path: "/shelters",                     priority: 0.7,  changeFrequency: "weekly" },
     { path: "/protection",                   priority: 0.85, changeFrequency: "weekly" },
@@ -38,6 +41,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: r.changeFrequency,
     priority: r.priority,
   }));
+
+  // 서울 25개 구 SEO 랜딩
+  for (const g of SEOUL_GUS) {
+    entries.push({
+      url: `${SITE_URL}/areas/${g.slug}`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.85,
+    });
+    // 구 아래 동별 랜딩
+    for (const d of g.dongs) {
+      entries.push({
+        url: `${SITE_URL}/areas/${g.slug}/${encodeURIComponent(d)}`,
+        lastModified: now,
+        changeFrequency: "weekly",
+        priority: 0.7,
+      });
+    }
+  }
 
   // 동적 고양이 페이지 — /cats/[id] (공개 페이지, 위치는 퍼징됨)
   try {

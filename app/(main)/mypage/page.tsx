@@ -23,6 +23,9 @@ import {
   Bell,
 } from "lucide-react";
 import InquiryModal from "@/app/components/InquiryModal";
+import InstallAppMenuItem from "@/app/components/InstallAppMenuItem";
+import InviteSection from "@/app/components/InviteSection";
+import EmailDigestToggle from "@/app/components/EmailDigestToggle";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -753,6 +756,9 @@ export default function MyPage() {
             )}
           </div>
 
+          {/* ── 친구 초대 ── */}
+          <InviteSection />
+
           {/* ── 내 설정 ── */}
           <div className="mb-3">
             <div className="flex items-center gap-2 mb-3 px-1">
@@ -787,6 +793,8 @@ export default function MyPage() {
               </div>
               <ChevronRight size={16} className="shrink-0" style={{ color: "#C47E5A", opacity: 0.7 }} />
             </Link>
+            <InstallAppMenuItem />
+            <EmailDigestToggle />
           </div>
 
           {/* ── 지원 / 문의 ── */}
@@ -824,6 +832,32 @@ export default function MyPage() {
               </div>
               <ChevronRight size={16} className="shrink-0" style={{ color: "#4A7BA8", opacity: 0.7 }} />
             </button>
+            <Link
+              href="/mypage/inquiries"
+              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
+              style={{
+                background: "#FFFFFF",
+                borderRadius: 16,
+                boxShadow: "0 4px 14px rgba(72,165,158,0.10), 0 1px 2px rgba(0,0,0,0.02)",
+                border: "1px solid rgba(0,0,0,0.04)",
+              }}
+            >
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                style={{ backgroundColor: "rgba(72,165,158,0.1)" }}
+              >
+                <Inbox size={18} color="#48A59E" strokeWidth={2} />
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+                  내 문의 보기
+                </p>
+                <p className="text-[11px] text-text-sub mt-0.5">
+                  접수한 문의·관리자 답변 확인
+                </p>
+              </div>
+              <ChevronRight size={16} className="shrink-0" style={{ color: "#48A59E", opacity: 0.7 }} />
+            </Link>
           </div>
 
           {/* ── 관리자 대시보드 (단일 진입점) ── */}
