@@ -212,7 +212,7 @@ export default function PostDetailPage({
   const cat = CATEGORY_MAP[post.category];
 
   return (
-    <div className="pb-24">
+    <div className="pb-24 overflow-x-hidden">
       {/* ── 헤더 ── */}
       <div className="flex items-center px-4 pt-14 pb-3 gap-3">
         <button

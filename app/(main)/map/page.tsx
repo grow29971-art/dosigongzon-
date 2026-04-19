@@ -1275,7 +1275,14 @@ export default function MapPage() {
   }
 
   return (
-    <div className="relative no-dark" style={{ height: "calc(100dvh - 5rem)" }}>
+    <div
+      className="relative no-dark"
+      style={{
+        // 100dvh가 부정확한 기기 대비 vh 폴백 + 최소 높이 보장
+        height: "calc(100dvh - 5rem)",
+        minHeight: "calc(100vh - 5rem)",
+      }}
+    >
       {/* 헤더 (슬림 — 호갱노노 스타일) */}
       <div className="absolute top-0 left-0 right-0 z-10 px-4 pt-12 pb-2 pointer-events-none">
         <div className="flex items-center gap-2 pointer-events-auto">
@@ -1612,7 +1619,11 @@ export default function MapPage() {
       <div
         ref={mapContainerRef}
         className="w-full h-full"
-        style={{ background: "#EEEAE2" }}
+        style={{
+          background: "#EEEAE2",
+          // 부모 높이 계산 실패 시도 최소 400px 확보 (빈 화면 방지)
+          minHeight: 400,
+        }}
       />
 
       {/* 저작권 표시 */}
