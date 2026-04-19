@@ -202,15 +202,18 @@ function LoginContent() {
     router.refresh();
   };
 
-  const handleSocialLogin = async (provider: "google") => {
+  const handleSocialLogin = async (provider: "google" | "kakao") => {
     setSocialLoading(provider);
     const rawNext = searchParams.get("next");
     const safeNext = rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
     const callbackUrl = `${window.location.origin}/api/auth/callback?provider=${provider}&next=${encodeURIComponent(safeNext)}`;
+    // Kakao 는 account_email 을 개인앱에서 받을 수 없으므로 scope 명시적 지정
+    const scopes = provider === "kakao" ? "profile_nickname profile_image" : undefined;
     const { error } = await createClient().auth.signInWithOAuth({
       provider,
       options: {
         redirectTo: callbackUrl,
+        scopes,
       },
     });
     if (error) {
@@ -241,7 +244,7 @@ function LoginContent() {
                   {inAppBrowserLabel(inApp)} 안에서는 소셜 로그인이 안 돼요
                 </p>
                 <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#8B2F2F" }}>
-                  Google/카카오 보안 정책으로 인앱 브라우저에서 OAuth가 차단됩니다.
+                  Google 보안 정책으로 인앱 브라우저에서 OAuth가 차단됩니다.
                   일반 브라우저로 열어주세요.
                 </p>
               </div>
@@ -457,7 +460,7 @@ function LoginContent() {
         >
           <span className="text-[13px] mt-0.5">💡</span>
           <p className="text-[11px] text-text-sub leading-relaxed">
-            소셜 로그인은 <b>크롬 · 사파리</b>에서 접속해주세요. 카카오톡/인스타 등 앱 내 브라우저에서는 구글 로그인이 차단돼요.
+            소셜 로그인은 <b>크롬 · 사파리</b>에서 접속해주세요. 카카오톡/인스타 등 앱 내 브라우저에서는 OAuth가 차단돼요.
           </p>
         </div>
 
@@ -483,6 +486,26 @@ function LoginContent() {
 
         {/* ══════ 소셜 로그인 ══════ */}
         <div className="space-y-2.5">
+          {/* 카카오 */}
+          <button
+            onClick={() => inApp ? handleOpenExternal() : socialAgree ? handleSocialLogin("kakao") : setErrors({ general: "약관에 동의해주세요." })}
+            disabled={!!socialLoading}
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.97] transition-transform disabled:opacity-60"
+            style={{ backgroundColor: "#FEE500", color: "#191919", opacity: (socialAgree || inApp) ? 1 : 0.6 }}
+          >
+            {socialLoading === "kakao" ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path
+                  d="M9 1C4.58 1 1 3.79 1 7.21c0 2.17 1.45 4.08 3.64 5.18l-.93 3.44c-.08.3.26.54.52.37l4.12-2.74c.21.02.43.03.65.03 4.42 0 8-2.79 8-6.28S13.42 1 9 1z"
+                  fill="#191919"
+                />
+              </svg>
+            )}
+            카카오로 시작하기
+          </button>
+
           {/* 구글 */}
           <button
             onClick={() => inApp ? handleOpenExternal() : socialAgree ? handleSocialLogin("google") : setErrors({ general: "약관에 동의해주세요." })}

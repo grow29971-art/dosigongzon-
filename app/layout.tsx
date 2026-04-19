@@ -100,9 +100,7 @@ const jsonLd = {
   url: SITE_URL,
   logo: `${SITE_URL}/icons/icon-512.png`,
   description: SITE_DESCRIPTION,
-  sameAs: [
-    "https://cafe.naver.com/clubpet",
-  ],
+  sameAs: [] as string[],
   areaServed: {
     "@type": "Country",
     name: "대한민국",

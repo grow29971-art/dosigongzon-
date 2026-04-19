@@ -19,7 +19,7 @@ import {
   listMyActivityRegions,
   type ActivityRegion,
 } from "@/lib/activity-regions-repo";
-import { MapPin, ExternalLink } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import LoginRequired from "@/app/components/LoginRequired";
 
@@ -354,56 +354,6 @@ export default function CommunityPage() {
           </div>
         </div>
       )}
-
-      {/* ── 함께하는 커뮤니티 ── */}
-      <div className="mt-6">
-        <div className="flex items-center gap-2 mb-3 px-1">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#48A59E" }} />
-          <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
-            함께하는 커뮤니티
-          </h2>
-        </div>
-        <a
-          href="https://cafe.naver.com/clubpet"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block active:scale-[0.99] transition-transform"
-        >
-          <div
-            className="flex items-center gap-3 px-4 py-3.5"
-            style={{
-              background: "linear-gradient(135deg, #FFFFFF 0%, #F6FBFA 100%)",
-              borderRadius: 18,
-              boxShadow: "0 4px 14px rgba(72,165,158,0.10), 0 1px 2px rgba(0,0,0,0.02)",
-              border: "1px solid rgba(72,165,158,0.15)",
-            }}
-          >
-            <div
-              className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
-              style={{ backgroundColor: "rgba(72,165,158,0.12)" }}
-            >
-              <span style={{ fontSize: 22 }}>🐾</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1.5">
-                <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                  냥이네
-                </p>
-                <span
-                  className="text-[9px] font-bold px-1.5 py-0.5 rounded-md"
-                  style={{ backgroundColor: "#22C55E15", color: "#15803D" }}
-                >
-                  네이버 카페
-                </span>
-              </div>
-              <p className="text-[11.5px] text-text-sub mt-0.5 truncate">
-                캣맘·캣대디 정보 공유 · 구조 후기 · Q&A
-              </p>
-            </div>
-            <ExternalLink size={15} className="shrink-0" style={{ color: "#48A59E", opacity: 0.7 }} />
-          </div>
-        </a>
-      </div>
 
       {/* ── FAB ── */}
       <Link

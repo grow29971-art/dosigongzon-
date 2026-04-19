@@ -54,6 +54,7 @@ import {
 } from "@/lib/leaderboard-repo";
 import { getRecentFeed, type FeedItem } from "@/lib/live-feed-repo";
 import { getTodayAnniversaries, type Anniversary } from "@/lib/anniversaries-repo";
+import OnboardingCard from "@/app/components/OnboardingCard";
 import type { Post } from "@/lib/types";
 import { listCats, type Cat } from "@/lib/cats-repo";
 import {
@@ -174,6 +175,7 @@ export default function HomePage() {
   const [popularCats, setPopularCats] = useState<PopularCat[]>([]);
   const [feed, setFeed] = useState<FeedItem[]>([]);
   const [anniversaries, setAnniversaries] = useState<Anniversary[]>([]);
+  const [onboardingDismissed, setOnboardingDismissed] = useState(false);
 
   // 데이터 로드
   useEffect(() => {
@@ -205,6 +207,24 @@ export default function HomePage() {
     }
     getMyStreakInfo().then(setStreakInfo).catch(() => {});
   }, [user]);
+
+  // 온보딩 dismissal 상태 복원
+  useEffect(() => {
+    if (!user) return;
+    try {
+      const key = `dosigongzon_onboarding_dismissed_${user.id}`;
+      setOnboardingDismissed(localStorage.getItem(key) === "1");
+    } catch { /* localStorage 차단 등 무시 */ }
+  }, [user]);
+
+  const handleDismissOnboarding = () => {
+    setOnboardingDismissed(true);
+    if (user) {
+      try {
+        localStorage.setItem(`dosigongzon_onboarding_dismissed_${user.id}`, "1");
+      } catch { /* no-op */ }
+    }
+  };
 
   // 리더보드 로드 (비로그인도 볼 수 있음)
   useEffect(() => {
@@ -427,6 +447,16 @@ export default function HomePage() {
       </div>
 
 
+
+      {/* ══════ 온보딩 가이드 (신규 유저용) ══════ */}
+      {user && activity && !onboardingDismissed && (
+        <OnboardingCard
+          hasActivityRegion={myRegions.length > 0}
+          hasMyCat={activity.catCount > 0}
+          hasCareLog={activity.careLogCount > 0}
+          onDismiss={handleDismissOnboarding}
+        />
+      )}
 
       {/* ══════ 돌봄 연속 일수 + 이번 주 ══════ */}
       {user && streakInfo && (streakInfo.streak > 0 || streakInfo.weekly.count > 0 || !streakInfo.hasToday) && (() => {
