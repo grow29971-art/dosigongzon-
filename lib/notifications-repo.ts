@@ -12,7 +12,8 @@ export type NotificationType =
   | "alert_on_my_cat"     // 내 고양이에 학대 신고
   | "comment_on_my_post"  // 내 커뮤니티 글에 댓글
   | "inquiry_updated"     // 내 문의 처리됨
-  | "following_activity"; // 팔로우한 유저의 돌봄·댓글
+  | "following_activity"  // 팔로우한 유저의 돌봄·댓글
+  | "invite_accepted";    // 내 초대 코드로 친구가 가입
 
 export interface NotificationItem {
   id: string;
@@ -209,6 +210,42 @@ export async function getNotifications(limit = 30): Promise<NotificationItem[]> 
     }
   }
 
+  // 4.6. 내 초대 코드로 가입한 친구 (최근 이벤트)
+  const { data: invites } = await supabase
+    .from("invite_events")
+    .select("id, invitee_id, invite_code, created_at")
+    .eq("inviter_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  const inviteRows = (invites ?? []) as { id: string; invitee_id: string; invite_code: string | null; created_at: string }[];
+  if (inviteRows.length > 0) {
+    const inviteeIds = inviteRows.map((r) => r.invitee_id);
+    const { data: invitees } = await supabase
+      .from("profiles")
+      .select("id, nickname, avatar_url")
+      .in("id", inviteeIds);
+    const inviteeMap = new Map(
+      ((invitees ?? []) as { id: string; nickname: string | null; avatar_url: string | null }[])
+        .map((p) => [p.id, p]),
+    );
+
+    for (const r of inviteRows) {
+      const prof = inviteeMap.get(r.invitee_id);
+      items.push({
+        id: `invite_${r.id}`,
+        type: "invite_accepted",
+        actorName: prof?.nickname ?? "새 이웃",
+        actorAvatar: prof?.avatar_url ?? null,
+        message: "🎉 초대 코드로 가입했어요. 동네에서 반갑게 맞아주세요!",
+        targetId: r.invitee_id,
+        targetName: prof?.nickname ?? "새 이웃",
+        createdAt: r.created_at,
+        isRead: false,
+      });
+    }
+  }
+
   // 5. 받은 쪽지 (읽지 않은 것 우선)
   const { data: dms } = await supabase
     .from("direct_messages")
@@ -311,5 +348,12 @@ export async function getUnreadNotificationCount(): Promise<number> {
     followActivity = fc ?? 0;
   }
 
-  return (dmCount ?? 0) + catActivity + postCommentCount + (inqCount ?? 0) + followActivity;
+  // 6) 최근 7일 내 내 초대 코드로 가입한 친구
+  const { count: inviteCount } = await supabase
+    .from("invite_events")
+    .select("*", { count: "exact", head: true })
+    .eq("inviter_id", user.id)
+    .gte("created_at", d7);
+
+  return (dmCount ?? 0) + catActivity + postCommentCount + (inqCount ?? 0) + followActivity + (inviteCount ?? 0);
 }

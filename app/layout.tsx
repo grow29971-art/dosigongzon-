@@ -74,11 +74,11 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: "/favicon.ico",
-    apple: "/icons/icon-192.png",
+    apple: "/icons/apple-touch-icon.png",
   },
   category: "community",
   verification: {
-    google: "GYsqQQsXSHohScWs04azTgn87IS7JS0SY07hirxXp-8",
+    google: "bBcue9CIj5JLafNxn_u41zPHPsKPxnDcFJXoHnVScj4",
     other: {
       "naver-site-verification": "58daf8950fc151db07a0b92aded034390411475c",
     },
@@ -135,7 +135,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       <head>
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"

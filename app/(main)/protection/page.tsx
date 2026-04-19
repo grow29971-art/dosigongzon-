@@ -14,6 +14,8 @@ import {
   Siren,
   Heart,
   HeartHandshake,
+  Utensils,
+  Home as HomeIcon,
 } from "lucide-react";
 
 /* ═══ 카드 데이터 ═══ */
@@ -127,6 +129,28 @@ const cards: {
     href: "/protection/pharmacy-guide",
     wide: true,
     highlight: true,
+  },
+  {
+    title: "먹이 가이드",
+    subtitle: "주면 안 되는 음식 · 안전한 급식 원칙",
+    Icon: Utensils,
+    iconBg: "#E88D5A",
+    iconColor: "#FFFFFF",
+    glowColor: "232,141,90",
+    type: "link",
+    href: "/protection/feeding-guide",
+    wide: true,
+  },
+  {
+    title: "쉼터 · 겨울나기",
+    subtitle: "숨숨집 DIY · 설치 원칙 · 계절 운영",
+    Icon: HomeIcon,
+    iconBg: "#4A7BA8",
+    iconColor: "#FFFFFF",
+    glowColor: "74,123,168",
+    type: "link",
+    href: "/protection/shelter-guide",
+    wide: true,
   },
 ];
 

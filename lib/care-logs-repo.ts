@@ -168,6 +168,37 @@ export async function createCareLog(
     console.error("[care-logs] createCareLog failed:", error);
     throw new Error(`기록 실패: ${error.message}`);
   }
+
+  // 푸시 알림: 고양이 주인이 본인 아닌 경우
+  try {
+    const { data: cat } = await supabase
+      .from("cats")
+      .select("caretaker_id, name")
+      .eq("id", input.cat_id)
+      .maybeSingle();
+    const owner = (cat as { caretaker_id: string | null; name: string } | null) ?? null;
+    if (owner?.caretaker_id && owner.caretaker_id !== user.id) {
+      const typeEmoji: Record<string, string> = {
+        feed: "🍚", water: "💧", treat: "🍗", health: "🩺",
+        tnr: "✂️", hospital: "🏥", shelter: "🏠", other: "📝",
+      };
+      const typeLabel = CARE_TYPE_MAP[input.care_type]?.label ?? "돌봄";
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (session?.access_token) headers["Authorization"] = `Bearer ${session.access_token}`;
+      fetch("/api/push/send", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          userId: owner.caretaker_id,
+          title: `${typeEmoji[input.care_type] ?? "📝"} ${owner.name ?? "고양이"} 돌봄 기록`,
+          body: `${authorName}님이 ${typeLabel}을(를) 기록했어요${input.memo ? ` — ${input.memo.slice(0, 40)}` : ""}`,
+          url: `/cats/${input.cat_id}`,
+        }),
+      }).catch(() => {});
+    }
+  } catch {}
+
   return data as CareLog;
 }
 

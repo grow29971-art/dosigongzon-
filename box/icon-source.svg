@@ -1,0 +1,34 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D48C68"/>
+      <stop offset="100%" stop-color="#A8684A"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <!-- 배경: rounded square (iOS가 추가로 rounding 하지만 Android 대응 위해 미리) -->
+  <rect width="512" height="512" rx="112" ry="112" fill="url(#bg)"/>
+
+  <!-- PawPrint: 발가락 4개 + 메인 패드 -->
+  <g filter="url(#shadow)" fill="#FFFFFF">
+    <!-- 발가락 (위쪽 3개 + 왼쪽 좀 더 큰 것, 고양이 발자국 느낌) -->
+    <ellipse cx="168" cy="195" rx="34" ry="42" transform="rotate(-18 168 195)"/>
+    <ellipse cx="240" cy="155" rx="36" ry="46"/>
+    <ellipse cx="312" cy="155" rx="36" ry="46"/>
+    <ellipse cx="384" cy="195" rx="34" ry="42" transform="rotate(18 384 195)"/>
+
+    <!-- 메인 패드 (heart-like, 하단 중앙) -->
+    <path d="
+      M 256 250
+      C 328 250, 395 298, 395 356
+      C 395 398, 358 430, 318 430
+      C 288 430, 270 414, 256 395
+      C 242 414, 224 430, 194 430
+      C 154 430, 117 398, 117 356
+      C 117 298, 184 250, 256 250
+      Z" />
+  </g>
+</svg>

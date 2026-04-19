@@ -711,6 +711,32 @@ export async function createComment(
     throw new Error(`댓글 작성에 실패했어요: ${error.message}`);
   }
 
+  // 푸시 알림 (고양이 주인이 본인 아닌 경우) — 실패해도 댓글 성공은 유지
+  try {
+    const { data: cat } = await supabase
+      .from("cats")
+      .select("caretaker_id, name")
+      .eq("id", catId)
+      .maybeSingle();
+    const owner = (cat as { caretaker_id: string | null; name: string } | null) ?? null;
+    if (owner?.caretaker_id && owner.caretaker_id !== user.id) {
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (session?.access_token) headers["Authorization"] = `Bearer ${session.access_token}`;
+      const isAlert = kind === "alert";
+      fetch("/api/push/send", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          userId: owner.caretaker_id,
+          title: isAlert ? `🚨 ${owner.name ?? "고양이"} 경보 알림` : `${owner.name ?? "고양이"}에 새 댓글`,
+          body: `${getDisplayName(user)}: ${trimmed.length > 50 ? trimmed.slice(0, 50) + "…" : trimmed || "사진"}`,
+          url: `/cats/${catId}`,
+        }),
+      }).catch(() => {});
+    }
+  } catch {}
+
   return data as CatComment;
 }
 

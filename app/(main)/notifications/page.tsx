@@ -12,6 +12,7 @@ import {
   MessageSquare,
   CheckCircle2,
   UserPlus,
+  Gift,
 } from "lucide-react";
 import {
   getNotifications,
@@ -27,6 +28,7 @@ const TYPE_CONFIG: Record<NotificationType, { icon: typeof Bell; color: string; 
   comment_on_my_post:  { icon: MessageSquare, color: "#8B65B8", bg: "#8B65B815" },
   inquiry_updated:     { icon: CheckCircle2,  color: "#48A59E", bg: "#48A59E15" },
   following_activity:  { icon: UserPlus,      color: "#E8B040", bg: "#E8B04015" },
+  invite_accepted:     { icon: Gift,          color: "#E86B8C", bg: "#E86B8C15" },
 };
 
 function formatTime(iso: string): string {
@@ -92,6 +94,8 @@ export default function NotificationsPage() {
                 ? "/mypage/inquiries"
                 : item.type === "following_activity"
                 ? `/cats/${item.targetId}`
+                : item.type === "invite_accepted"
+                ? `/users/${item.targetId}`
                 : "/map";
 
             return (
@@ -135,6 +139,8 @@ export default function NotificationsPage() {
                         ? ` — ${item.message}`
                         : item.type === "following_activity"
                         ? ` 에 ${item.message}`
+                        : item.type === "invite_accepted"
+                        ? ` — ${item.message}`
                         : ` 에 ${item.message}`}
                     </p>
                     <p className="text-[10px] text-text-light mt-1">{formatTime(item.createdAt)}</p>
