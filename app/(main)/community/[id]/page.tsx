@@ -346,95 +346,97 @@ export default function PostDetailPage({
           )}
         </div>
 
-        {/* 반응 바 */}
-        <div className="flex items-center gap-3 mt-4 px-1">
-          {/* 좋아요 */}
-          <button
-            onClick={() => handleVote(1)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold active:scale-95 transition-all"
-            style={{
-              backgroundColor: myVote === 1 ? cat.color : "#FFFFFF",
-              border: `1.5px solid ${myVote === 1 ? cat.color : "#E3DCD3"}`,
-              color: myVote === 1 ? "#FFFFFF" : cat.color,
-            }}
-          >
-            <ThumbsUp size={15} strokeWidth={2.2} fill={myVote === 1 ? "#FFFFFF" : "none"} />
-            {post.likeCount}
-          </button>
+        {/* 반응 바 — 좁은 화면 대비 2줄로 분리 */}
+        <div className="mt-4 px-1 flex flex-wrap items-center justify-between gap-y-2">
+          {/* 왼쪽: 좋아요 · 싫어요 · 조회수 · 댓글수 */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              onClick={() => handleVote(1)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold active:scale-95 transition-all"
+              style={{
+                backgroundColor: myVote === 1 ? cat.color : "#FFFFFF",
+                border: `1.5px solid ${myVote === 1 ? cat.color : "#E3DCD3"}`,
+                color: myVote === 1 ? "#FFFFFF" : cat.color,
+              }}
+            >
+              <ThumbsUp size={15} strokeWidth={2.2} fill={myVote === 1 ? "#FFFFFF" : "none"} />
+              {post.likeCount}
+            </button>
+            <button
+              onClick={() => handleVote(-1)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold active:scale-95 transition-all"
+              style={{
+                backgroundColor: myVote === -1 ? "#A38E7A" : "#FFFFFF",
+                border: `1.5px solid ${myVote === -1 ? "#A38E7A" : "#E3DCD3"}`,
+                color: myVote === -1 ? "#FFFFFF" : "#A38E7A",
+              }}
+            >
+              <ThumbsDown size={15} strokeWidth={2.2} fill={myVote === -1 ? "#FFFFFF" : "none"} />
+              {post.dislikeCount}
+            </button>
+            <span className="flex items-center gap-1 text-text-light text-[12.5px] px-1">
+              <Eye size={14} /> {post.viewCount}
+            </span>
+            <span className="flex items-center gap-1 text-text-light text-[12.5px] px-1">
+              <MessageCircle size={14} /> {comments.length}
+            </span>
+          </div>
 
-          {/* 싫어요 */}
-          <button
-            onClick={() => handleVote(-1)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold active:scale-95 transition-all"
-            style={{
-              backgroundColor: myVote === -1 ? "#A38E7A" : "#FFFFFF",
-              border: `1.5px solid ${myVote === -1 ? "#A38E7A" : "#E3DCD3"}`,
-              color: myVote === -1 ? "#FFFFFF" : "#A38E7A",
-            }}
-          >
-            <ThumbsDown size={15} strokeWidth={2.2} fill={myVote === -1 ? "#FFFFFF" : "none"} />
-            {post.dislikeCount}
-          </button>
-
-          <span className="flex items-center gap-1 text-text-light text-[13px]">
-            <Eye size={15} /> {post.viewCount}
-          </span>
-          <span className="flex items-center gap-1 text-text-light text-[13px]">
-            <MessageCircle size={15} /> {comments.length}
-          </span>
-
-          <button
-            type="button"
-            onClick={handleShareKakao}
-            className="ml-auto flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] font-extrabold active:scale-95 transition-transform"
-            style={{
-              backgroundColor: "#FEE500",
-              color: "#3C1E1E",
-              boxShadow: "0 2px 6px rgba(254,229,0,0.45)",
-            }}
-            aria-label="카카오톡으로 공유"
-          >
-            <span style={{ fontSize: 12 }}>💬</span>
-            카톡
-          </button>
-          <button
-            type="button"
-            onClick={handleShare}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] font-bold active:scale-95 transition-transform"
-            style={{
-              backgroundColor: shareStatus === "copied" ? "#6B8E6F" : "#FFFFFF",
-              border: `1px solid ${shareStatus === "copied" ? "#6B8E6F" : "#E3DCD3"}`,
-              color: shareStatus === "copied" ? "#FFFFFF" : cat.color,
-            }}
-            aria-label="공유"
-          >
-            {shareStatus === "copied" ? (
-              <>
-                <Check size={12} strokeWidth={2.5} />
-                복사됨
-              </>
-            ) : (
-              <>
-                <Share2 size={12} strokeWidth={2.2} />
-                공유
-              </>
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={() =>
-              setReportTarget({
-                type: "post",
-                id: post.id,
-                snapshot: `${post.title} — ${post.content.slice(0, 150)}`,
-              })
-            }
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] active:scale-95 transition-transform"
-            style={{ backgroundColor: "#FFFFFF", border: "1px solid #E3DCD3", color: "#A38E7A" }}
-          >
-            <Flag size={12} strokeWidth={2.2} />
-            신고
-          </button>
+          {/* 오른쪽: 카톡 · 공유 · 신고 */}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <button
+              type="button"
+              onClick={handleShareKakao}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] font-extrabold active:scale-95 transition-transform"
+              style={{
+                backgroundColor: "#FEE500",
+                color: "#3C1E1E",
+                boxShadow: "0 2px 6px rgba(254,229,0,0.45)",
+              }}
+              aria-label="카카오톡으로 공유"
+            >
+              <span style={{ fontSize: 12 }}>💬</span>
+              카톡
+            </button>
+            <button
+              type="button"
+              onClick={handleShare}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] font-bold active:scale-95 transition-transform"
+              style={{
+                backgroundColor: shareStatus === "copied" ? "#6B8E6F" : "#FFFFFF",
+                border: `1px solid ${shareStatus === "copied" ? "#6B8E6F" : "#E3DCD3"}`,
+                color: shareStatus === "copied" ? "#FFFFFF" : cat.color,
+              }}
+              aria-label="공유"
+            >
+              {shareStatus === "copied" ? (
+                <>
+                  <Check size={12} strokeWidth={2.5} />
+                  복사됨
+                </>
+              ) : (
+                <>
+                  <Share2 size={12} strokeWidth={2.2} />
+                  공유
+                </>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                setReportTarget({
+                  type: "post",
+                  id: post.id,
+                  snapshot: `${post.title} — ${post.content.slice(0, 150)}`,
+                })
+              }
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] active:scale-95 transition-transform"
+              style={{ backgroundColor: "#FFFFFF", border: "1px solid #E3DCD3", color: "#A38E7A" }}
+            >
+              <Flag size={12} strokeWidth={2.2} />
+              신고
+            </button>
+          </div>
         </div>
 
         {/* ── 구분선 ── */}

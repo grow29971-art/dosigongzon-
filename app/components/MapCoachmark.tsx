@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { X, ArrowDownRight } from "lucide-react";
 
-const KEY = "dosigongzon_map_coachmark_seen";
+const KEY = "dosigongzon_map_coachmark_ts_v2";
+const DISMISS_TTL_HOURS = 24;
 
 interface Props {
   /** 유저가 이미 고양이를 등록한 적 있는지. true면 안 띄움 */
@@ -18,7 +19,11 @@ export default function MapCoachmark({ hasMyCat, isLoggedIn }: Props) {
   useEffect(() => {
     if (!isLoggedIn || hasMyCat) return;
     try {
-      if (localStorage.getItem(KEY) === "1") return;
+      const raw = localStorage.getItem(KEY);
+      if (raw) {
+        const ts = parseInt(raw, 10);
+        if (!isNaN(ts) && Date.now() - ts < DISMISS_TTL_HOURS * 60 * 60 * 1000) return;
+      }
     } catch { /* no-op */ }
 
     // 지도 로딩 끝난 뒤 5초 후 노출
@@ -28,7 +33,7 @@ export default function MapCoachmark({ hasMyCat, isLoggedIn }: Props) {
 
   const dismiss = () => {
     setVisible(false);
-    try { localStorage.setItem(KEY, "1"); } catch { /* no-op */ }
+    try { localStorage.setItem(KEY, String(Date.now())); } catch { /* no-op */ }
   };
 
   if (!visible) return null;

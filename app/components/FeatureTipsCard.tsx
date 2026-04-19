@@ -4,10 +4,14 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   MapPin, PawPrint, Pencil, Gift, MessageSquare, BookOpen, X,
-  Heart, Users, Bell,
+  Heart, Users, Bell, MessageCircle, Plus,
 } from "lucide-react";
 import type { MyActivitySummary } from "@/lib/cats-repo";
 import type { ActivityRegion } from "@/lib/activity-regions-repo";
+
+/** dismiss TTL — 2시간 뒤 자동 재노출 (하루 3~5번 노출) */
+const DISMISS_TTL_HOURS = 2;
+const DISMISS_KEY = "dosigongzon_feature_tips_dismissed_v3";
 
 interface Tip {
   id: string;
@@ -67,6 +71,32 @@ const TIPS: Tip[] = [
     priority: 3,
   },
   {
+    id: "area_chat",
+    icon: MessageCircle,
+    iconColor: "#4A7BA8",
+    iconBg: "rgba(74,123,168,0.12)",
+    title: "지역 채팅 참여하기 💬",
+    desc: "지도 하단 채팅 버튼을 누르면 우리 구 이웃들과 실시간 대화. 짧게 인사만 해도 이웃이 늘어요.",
+    ctaLabel: "지도에서 채팅 열기",
+    href: "/map",
+    // 활동 지역이 있거나 고양이가 있으면 — 즉 지역 밀착 유저라면 계속 권장
+    show: ({ activity, regions }) => regions.length > 0 || activity.catCount > 0,
+    priority: 4,
+  },
+  {
+    id: "more_cats",
+    icon: Plus,
+    iconColor: "#6B8E6F",
+    iconBg: "rgba(107,142,111,0.12)",
+    title: "주변에 또 다른 아이 있나요?",
+    desc: "동네에 등록 안 된 아이가 더 있다면 지도에 올려주세요. 다른 이웃이 함께 챙길 수 있어요.",
+    ctaLabel: "지도에서 등록",
+    href: "/map",
+    // 이미 몇 마리 등록했지만 더 있을 가능성 — 20마리 미만까지 계속 권장
+    show: ({ activity }) => activity.catCount >= 1 && activity.catCount < 20,
+    priority: 5,
+  },
+  {
     id: "streak_challenge",
     icon: Heart,
     iconColor: "#E88D5A",
@@ -77,7 +107,7 @@ const TIPS: Tip[] = [
     href: "/map",
     show: ({ activity }) =>
       activity.careLogCount > 0 && activity.currentStreak < 7 && !activity.weeklyGoalAchieved,
-    priority: 4,
+    priority: 6,
   },
   {
     id: "invite_friend",
@@ -87,9 +117,9 @@ const TIPS: Tip[] = [
     title: "친구를 초대해보세요",
     desc: "내 초대 코드로 친구가 가입하면 15점 보너스 + '씨앗을 심는 자' 업적. 카카오톡으로 바로 보낼 수 있어요.",
     ctaLabel: "내 코드 보기",
-    href: "/mypage#email-digest",
+    href: "/mypage",
     show: ({ activity }) => activity.inviteCount === 0 && activity.catCount > 0,
-    priority: 5,
+    priority: 7,
   },
   {
     id: "community",
@@ -101,7 +131,7 @@ const TIPS: Tip[] = [
     ctaLabel: "커뮤니티 열기",
     href: "/community",
     show: ({ activity }) => activity.catCount > 0 && activity.commentCount >= 3,
-    priority: 6,
+    priority: 8,
   },
   {
     id: "protection_guide",
@@ -113,7 +143,7 @@ const TIPS: Tip[] = [
     ctaLabel: "가이드 보기",
     href: "/protection",
     show: () => true, // fallback
-    priority: 7,
+    priority: 9,
   },
 ];
 
@@ -123,33 +153,38 @@ interface Props {
 }
 
 export default function FeatureTipsCard({ activity, regions }: Props) {
-  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
+  const [dismissMap, setDismissMap] = useState<Record<string, number>>({});
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem("dosigongzon_feature_tips_dismissed");
-      if (raw) setDismissed(new Set(JSON.parse(raw) as string[]));
+      const raw = localStorage.getItem(DISMISS_KEY);
+      if (raw) setDismissMap(JSON.parse(raw) as Record<string, number>);
     } catch { /* no-op */ }
   }, []);
 
   const dismiss = (id: string) => {
-    const next = new Set(dismissed);
-    next.add(id);
-    setDismissed(next);
+    const next = { ...dismissMap, [id]: Date.now() };
+    setDismissMap(next);
     try {
-      localStorage.setItem("dosigongzon_feature_tips_dismissed", JSON.stringify(Array.from(next)));
+      localStorage.setItem(DISMISS_KEY, JSON.stringify(next));
     } catch { /* no-op */ }
   };
 
   const ctx: TipContext = useMemo(() => ({ activity, regions }), [activity, regions]);
 
   const tip = useMemo(() => {
+    const ttlMs = DISMISS_TTL_HOURS * 60 * 60 * 1000;
+    const now = Date.now();
+    const isDismissedRecently = (id: string) => {
+      const ts = dismissMap[id];
+      return typeof ts === "number" && now - ts < ttlMs;
+    };
     const candidates = TIPS
-      .filter((t) => !dismissed.has(t.id))
+      .filter((t) => !isDismissedRecently(t.id))
       .filter((t) => t.show(ctx))
       .sort((a, b) => a.priority - b.priority);
     return candidates[0] ?? null;
-  }, [ctx, dismissed]);
+  }, [ctx, dismissMap]);
 
   if (!tip) return null;
 

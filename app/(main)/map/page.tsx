@@ -723,6 +723,68 @@ export default function MapPage() {
     map.setCenter(new window.kakao.maps.LatLng(userPos.lat, userPos.lng));
   }, [mapReady, userPos]);
 
+  // ── 내 위치 마커 (파란 점 + 펄스 링) ──
+  const userLocationOverlayRef = useRef<any>(null);
+  useEffect(() => {
+    if (!mapReady || !userPos || !window.kakao) return;
+    const map = mapInstanceRef.current;
+
+    // 기존 마커 제거
+    if (userLocationOverlayRef.current) {
+      userLocationOverlayRef.current.setMap(null);
+    }
+
+    // 한 번만 펄스 keyframes 주입
+    if (!document.getElementById("__user_location_pulse_css")) {
+      const style = document.createElement("style");
+      style.id = "__user_location_pulse_css";
+      style.textContent = `
+        @keyframes dosi-user-pulse {
+          0%   { transform: translate(-50%, -50%) scale(1);   opacity: 0.55; }
+          100% { transform: translate(-50%, -50%) scale(2.6); opacity: 0;    }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    const el = document.createElement("div");
+    el.style.cssText = "position:relative;width:0;height:0;pointer-events:none;";
+    el.innerHTML = `
+      <div style="
+        position:absolute;left:50%;top:50%;
+        transform:translate(-50%,-50%);
+        width:18px;height:18px;border-radius:50%;
+        background:#4A90E2;
+        box-shadow:0 0 0 3px rgba(255,255,255,0.95), 0 2px 6px rgba(0,0,0,0.25);
+        z-index:2;
+      "></div>
+      <div style="
+        position:absolute;left:50%;top:50%;
+        width:18px;height:18px;border-radius:50%;
+        background:rgba(74,144,226,0.35);
+        animation:dosi-user-pulse 1.8s ease-out infinite;
+        z-index:1;
+      "></div>
+    `;
+
+    const ov = new window.kakao.maps.CustomOverlay({
+      map,
+      position: new window.kakao.maps.LatLng(userPos.lat, userPos.lng),
+      content: el,
+      xAnchor: 0.5,
+      yAnchor: 0.5,
+      zIndex: 100,
+    });
+    userLocationOverlayRef.current = ov;
+
+    return () => {
+      if (userLocationOverlayRef.current) {
+        userLocationOverlayRef.current.setMap(null);
+        userLocationOverlayRef.current = null;
+      }
+    };
+  }, [mapReady, userPos]);
+
   // ── 활동 지역 Circle 오버레이 ──
   useEffect(() => {
     if (!mapReady || !window.kakao) return;
@@ -1165,6 +1227,7 @@ export default function MapPage() {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
+        setUserPos({ lat: latitude, lng: longitude });
         if (mapInstanceRef.current && window.kakao) {
           mapInstanceRef.current.setCenter(new window.kakao.maps.LatLng(latitude, longitude));
           mapInstanceRef.current.setLevel(4);
@@ -1642,14 +1705,35 @@ export default function MapPage() {
           >
             <LocateFixed size={18} style={{ color: "#C47E5A" }} strokeWidth={2.2} />
           </button>
-          <button
-            onClick={handleAddClick}
-            className="w-13 h-13 rounded-[18px] bg-primary flex items-center justify-center fab-shadow active:scale-90 transition-transform"
-            style={{ width: 52, height: 52 }}
-            aria-label="고양이 등록"
-          >
-            <Plus size={26} color="#fff" strokeWidth={2.5} />
-          </button>
+          <div className="relative">
+            {/* 고양이 0마리 유저한텐 펄스 링으로 강조 */}
+            {isLoggedIn && !cats.some((c) => c.caretaker_id === user?.id) && (
+              <>
+                <span
+                  className="absolute inset-0 rounded-[18px] animate-ping"
+                  style={{ background: "rgba(196,126,90,0.45)" }}
+                  aria-hidden="true"
+                />
+                <span
+                  className="absolute -top-1.5 -right-1.5 text-[9px] font-extrabold px-1.5 py-0.5 rounded-full text-white z-10"
+                  style={{
+                    background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)",
+                    boxShadow: "0 2px 6px rgba(216,85,119,0.4)",
+                  }}
+                >
+                  NEW
+                </span>
+              </>
+            )}
+            <button
+              onClick={handleAddClick}
+              className="relative w-13 h-13 rounded-[18px] bg-primary flex items-center justify-center fab-shadow active:scale-90 transition-transform"
+              style={{ width: 52, height: 52 }}
+              aria-label="고양이 등록"
+            >
+              <Plus size={26} color="#fff" strokeWidth={2.5} />
+            </button>
+          </div>
           <div
             className="px-3 py-2 rounded-2xl max-w-[180px] text-right"
             style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "0 2px 10px rgba(0,0,0,0.08)" }}
