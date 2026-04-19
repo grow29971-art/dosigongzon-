@@ -794,7 +794,9 @@ export interface MyActivitySummary {
   alertCount: number;
   likesReceived: number;
   careLogCount: number;
-  inviteCount: number; // 내가 초대해서 가입한 친구 수
+  inviteCount: number;        // 내가 초대해서 가입한 친구 수
+  currentStreak: number;      // 현재 연속 돌봄 일수
+  weeklyGoalAchieved: boolean; // 이번 주 7일 모두 돌봄 기록 있음
 }
 
 // ── 레벨 시스템 ──
@@ -870,7 +872,17 @@ export function computeScore(summary: MyActivitySummary): number {
   const fromCats = summary.catCount * 10;
   const fromLikes = summary.likesReceived * 2;
   const fromCareLogs = summary.careLogCount * 2; // 돌봄 일지 1건당 2점
-  return base + fromCats + fromLikes + fromCareLogs;
+  const fromInvites = summary.inviteCount * 15;  // 친구 1명 초대 15점 (강한 보상)
+
+  // streak 보너스 — 누적 아님, 현재 streak에 따라 "지금 이 순간" 부여되는 가산
+  let streakBonus = 0;
+  if (summary.currentStreak >= 100) streakBonus = 100;
+  else if (summary.currentStreak >= 30) streakBonus = 30;
+  else if (summary.currentStreak >= 7) streakBonus = 10;
+  // 이번 주 7/7 달성 시 추가 5점
+  if (summary.weeklyGoalAchieved) streakBonus += 5;
+
+  return base + fromCats + fromLikes + fromCareLogs + fromInvites + streakBonus;
 }
 
 // 레벨별 표시 색 (뱃지 등)
@@ -917,9 +929,14 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user)
-    return { catCount: 0, commentCount: 0, alertCount: 0, likesReceived: 0, careLogCount: 0, inviteCount: 0 };
+    return {
+      catCount: 0, commentCount: 0, alertCount: 0, likesReceived: 0,
+      careLogCount: 0, inviteCount: 0, currentStreak: 0, weeklyGoalAchieved: false,
+    };
 
-  const [catsRes, commentsRes, alertsRes, likeSumRes, careLogsRes, invitesRes] = await Promise.all([
+  const since60 = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString();
+
+  const [catsRes, commentsRes, alertsRes, likeSumRes, careLogsRes, invitesRes, recentCareRes] = await Promise.all([
     supabase
       .from("cats")
       .select("id", { count: "exact", head: true })
@@ -941,16 +958,27 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
       .from("care_logs")
       .select("id", { count: "exact", head: true })
       .eq("author_id", user.id),
-    // 내가 초대한 친구 수
     supabase
       .from("invite_events")
       .select("id", { count: "exact", head: true })
       .eq("inviter_id", user.id),
+    // 최근 60일 돌봄 기록 — streak / 주간 목표 계산용
+    supabase
+      .from("care_logs")
+      .select("logged_at")
+      .eq("author_id", user.id)
+      .gte("logged_at", since60)
+      .order("logged_at", { ascending: false }),
   ]);
 
   const likesReceived = (
     (likeSumRes.data ?? []) as { like_count: number }[]
   ).reduce((sum, r) => sum + (r.like_count ?? 0), 0);
+
+  // streak / 이번 주 목표 달성 집계
+  const { currentStreak, weeklyGoalAchieved } = computeStreakAndWeekly(
+    (recentCareRes.data ?? []) as { logged_at: string }[],
+  );
 
   return {
     catCount: catsRes.count ?? 0,
@@ -959,7 +987,49 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
     likesReceived,
     careLogCount: careLogsRes.count ?? 0,
     inviteCount: invitesRes.count ?? 0,
+    currentStreak,
+    weeklyGoalAchieved,
   };
+}
+
+/** streak / 이번 주 7일 달성 여부 계산 (KST). */
+function computeStreakAndWeekly(rows: { logged_at: string }[]): { currentStreak: number; weeklyGoalAchieved: boolean } {
+  if (rows.length === 0) return { currentStreak: 0, weeklyGoalAchieved: false };
+
+  const toKst = (iso: string) =>
+    new Date(iso).toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
+
+  const daysSet = new Set<string>();
+  for (const r of rows) daysSet.add(toKst(r.logged_at));
+
+  const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
+  const hasToday = daysSet.has(today);
+
+  let streak = 0;
+  const cursor = new Date();
+  if (!hasToday) cursor.setDate(cursor.getDate() - 1);
+  for (let i = 0; i < 366; i++) {
+    const key = cursor.toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
+    if (daysSet.has(key)) {
+      streak += 1;
+      cursor.setDate(cursor.getDate() - 1);
+    } else break;
+  }
+
+  // 이번 주 월~일 모든 요일에 기록 있는지
+  const kstNow = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
+  const day = kstNow.getDay();
+  const daysSinceMonday = (day + 6) % 7;
+  let achieved = true;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(kstNow);
+    d.setDate(d.getDate() - daysSinceMonday + i);
+    if (d > kstNow) { achieved = false; break; } // 미래 요일은 아직 달성 불가
+    const key = d.toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
+    if (!daysSet.has(key)) { achieved = false; break; }
+  }
+
+  return { currentStreak: streak, weeklyGoalAchieved: achieved };
 }
 
 // ── 고양이 정보 수정 (본인 또는 admin) ──

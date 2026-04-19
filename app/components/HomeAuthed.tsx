@@ -55,6 +55,7 @@ import {
 import { getRecentFeed, type FeedItem } from "@/lib/live-feed-repo";
 import { getTodayAnniversaries, type Anniversary } from "@/lib/anniversaries-repo";
 import OnboardingCard from "@/app/components/OnboardingCard";
+import FeatureTipsCard from "@/app/components/FeatureTipsCard";
 import type { Post } from "@/lib/types";
 import { listCats, type Cat } from "@/lib/cats-repo";
 import {
@@ -458,6 +459,11 @@ export default function HomeAuthed() {
         />
       )}
 
+      {/* ══════ 기능 가이드 팁 (개인화) ══════ */}
+      {user && activity && onboardingDismissed && (
+        <FeatureTipsCard activity={activity} regions={myRegions} />
+      )}
+
       {/* ══════ 돌봄 연속 일수 + 이번 주 ══════ */}
       {user && streakInfo && (streakInfo.streak > 0 || streakInfo.weekly.count > 0 || !streakInfo.hasToday) && (() => {
         const s = streakInfo.streak;
@@ -581,6 +587,24 @@ export default function HomeAuthed() {
                       </div>
                     );
                   })}
+                </div>
+
+                {/* 보상 힌트 */}
+                <div
+                  className="mt-3 px-3 py-2 rounded-lg flex items-center justify-between"
+                  style={{ background: `${accent}12` }}
+                >
+                  <span className="text-[10.5px] font-bold" style={{ color: accent }}>
+                    {progress >= 100
+                      ? "🏆 주간 개근 달성! +5점 · 업적 잠금 해제"
+                      : s >= 100
+                      ? "👑 100일 연속 · +100점 유지 중"
+                      : s >= 30
+                      ? "🔥🔥 30일 연속 · +30점 · 다음 목표: 100일"
+                      : s >= 7
+                      ? "🔥 7일 연속 · +10점 · 다음 목표: 30일"
+                      : `7일 연속 달성 시 🔥 +10점 · 주간 개근 +5점`}
+                  </span>
                 </div>
               </div>
             </div>

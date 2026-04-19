@@ -6,7 +6,7 @@
 
 import type { MyActivitySummary } from "@/lib/cats-repo";
 
-export type TitleCategory = "register" | "record" | "alert" | "popular" | "invite";
+export type TitleCategory = "register" | "record" | "alert" | "popular" | "invite" | "streak";
 
 export interface TitleDef {
   id: string;
@@ -112,6 +112,44 @@ export const TITLES: TitleDef[] = [
     progress: (s) => clamp01(s.alertCount / 15),
   },
 
+  // ── 꾸준함 (streak) ──
+  {
+    id: "week_streak",
+    name: "한 주의 약속",
+    emoji: "🔥",
+    category: "streak",
+    description: "7일 연속 돌봄을 이어갔어요",
+    unlocked: (s) => s.currentStreak >= 7,
+    progress: (s) => clamp01(s.currentStreak / 7),
+  },
+  {
+    id: "weekly_perfect",
+    name: "주간 개근",
+    emoji: "📅",
+    category: "streak",
+    description: "이번 주 월~일 모두 돌봄을 기록했어요",
+    unlocked: (s) => s.weeklyGoalAchieved,
+    progress: (s) => s.weeklyGoalAchieved ? 1 : clamp01(s.currentStreak / 7),
+  },
+  {
+    id: "month_streak",
+    name: "한 달의 약속",
+    emoji: "🔥🔥",
+    category: "streak",
+    description: "30일 연속 돌봄을 이어갔어요",
+    unlocked: (s) => s.currentStreak >= 30,
+    progress: (s) => clamp01(s.currentStreak / 30),
+  },
+  {
+    id: "hundred_streak",
+    name: "한결같은 마음",
+    emoji: "🏆",
+    category: "streak",
+    description: "100일 연속 돌봄 — 진정한 수호자",
+    unlocked: (s) => s.currentStreak >= 100,
+    progress: (s) => clamp01(s.currentStreak / 100),
+  },
+
   // ── 초대 (inviteCount) ──
   {
     id: "first_invite",
@@ -177,6 +215,7 @@ export const CATEGORY_LABELS: Record<TitleCategory, string> = {
   alert: "경보",
   popular: "공감",
   invite: "초대",
+  streak: "꾸준함",
 };
 
 export const CATEGORY_COLORS: Record<TitleCategory, string> = {
@@ -185,6 +224,7 @@ export const CATEGORY_COLORS: Record<TitleCategory, string> = {
   alert: "#D85555",
   popular: "#C9A961",
   invite: "#E86B8C",
+  streak: "#E88D5A",
 };
 
 export interface TitleStatus extends TitleDef {

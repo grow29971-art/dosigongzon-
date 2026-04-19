@@ -5,6 +5,7 @@ import { AuthProvider } from "@/lib/auth-context";
 import PushSubscriber from "@/app/components/PushSubscriber";
 import PwaInstallPrompt from "@/app/components/PwaInstallPrompt";
 import PendingInviteApplier from "@/app/components/PendingInviteApplier";
+import SignupNudgeBar from "@/app/components/SignupNudgeBar";
 import "./globals.css";
 
 const SITE_URL = "https://dosigongzon.com";
@@ -156,6 +157,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <PushSubscriber />
           <PwaInstallPrompt />
           <PendingInviteApplier />
+          <SignupNudgeBar />
         </AuthProvider>
         <Analytics />
         <SpeedInsights />
