@@ -32,7 +32,10 @@ export async function GET(request: Request) {
     try {
       // 사용자의 실제 IP 가져오기 (Vercel이 전달하는 헤더)
       const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "";
-      const ipParam = clientIp && clientIp !== "::1" && clientIp !== "127.0.0.1" ? `/${clientIp}` : "";
+      // IPv4/IPv6 형식 검증 (path injection 방어)
+      const ipValid = /^[0-9.:a-fA-F]+$/.test(clientIp) && clientIp !== "::1" && clientIp !== "127.0.0.1";
+      const ipParam = ipValid ? `/${clientIp}` : "";
+      // ip-api는 https 유료 플랜만 지원. 무료 HTTP 유지하되 응답 검증만 강화.
       const ipRes = await fetch(`http://ip-api.com/json${ipParam}?fields=lat,lon,city,regionName&lang=ko`);
       const ipData = await ipRes.json();
 
@@ -56,12 +59,9 @@ export async function GET(request: Request) {
 
   try {
     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=kr&appid=${apiKey}`;
-    console.log("[Weather API] 요청:", { lat, lon });
 
     const res = await fetch(url);
     const data = await res.json();
-
-    console.log("[Weather API] 응답:", res.status, data.name || data.message);
 
     if (!res.ok) {
       console.error("[Weather API] upstream error:", res.status, data?.message);

@@ -35,8 +35,12 @@ export default function FindAccountPage() {
         body: JSON.stringify({ nickname: nickname.trim() }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setFoundEmail(data.email);
+      if (data?.email) {
+        setFoundEmail(data.email);
+      } else {
+        // 존재·미존재 동일 메시지 (열거 공격 방어)
+        setEmailError("해당 닉네임으로 가입된 계정을 찾을 수 없어요. 잠시 뒤 다시 시도해주세요.");
+      }
     } catch (err) {
       setEmailError(err instanceof Error ? err.message : "조회에 실패했어요.");
     } finally {

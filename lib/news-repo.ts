@@ -64,13 +64,42 @@ export interface NewsItem {
   description: string | null;
   image_url: string | null;
   date_label: string | null;
-  dday: string | null;
+  dday: string | null;                // 기존 수동 텍스트 폴백 (event_date 없을 때)
+  event_date: string | null;          // 신규: "YYYY-MM-DD". 있으면 자동 D-Day 계산
   body: string | null;
   external_url: string | null;
   external_label: string | null;
   pinned: boolean;
   created_at: string;
   updated_at: string;
+}
+
+/**
+ * event_date와 현재(KST) 날짜로 D-Day 라벨 자동 계산.
+ * - 미래: "D-N"
+ * - 당일: "D-day"
+ * - 과거: "종료"
+ * event_date가 없으면 null 반환 (UI에서 item.dday 텍스트로 폴백).
+ */
+export function computeDday(eventDate: string | null): string | null {
+  if (!eventDate) return null;
+  try {
+    // KST 기준 오늘 자정
+    const kstToday = new Date(new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" }));
+    const target = new Date(eventDate); // "YYYY-MM-DD" 로컬 00:00로 해석
+    const diffMs = target.getTime() - kstToday.getTime();
+    const diffDays = Math.round(diffMs / (24 * 60 * 60 * 1000));
+    if (diffDays > 0) return `D-${diffDays}`;
+    if (diffDays === 0) return "D-day";
+    return "종료";
+  } catch {
+    return null;
+  }
+}
+
+/** 최종 표시용 D-Day 라벨 (event_date 우선, 없으면 dday 텍스트). */
+export function resolveDdayLabel(item: Pick<NewsItem, "dday" | "event_date">): string | null {
+  return computeDday(item.event_date) ?? item.dday;
 }
 
 // 배지 타입별 프리셋 (색상/그라데이션/한국어 라벨)

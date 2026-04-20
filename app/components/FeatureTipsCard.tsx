@@ -139,7 +139,7 @@ const TIPS: Tip[] = [
     iconColor: "#4A7BA8",
     iconBg: "rgba(74,123,168,0.12)",
     title: "보호 가이드 읽기",
-    desc: "응급처치 · TNR · 먹이 · 겨울 쉼터까지. 수의사 감수 자료로 확인 가능.",
+    desc: "응급처치 · TNR · 먹이 · 겨울 쉼터까지. 공공기관 자료 기반으로 정리된 가이드.",
     ctaLabel: "가이드 보기",
     href: "/protection",
     show: () => true, // fallback

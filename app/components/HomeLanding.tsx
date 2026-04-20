@@ -8,6 +8,7 @@ import { SEOUL_GUS } from "@/lib/seoul-regions";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import LandingOnboardingGate from "@/app/components/LandingOnboardingGate";
 import ShareAreaButton from "@/app/components/ShareAreaButton";
+import TodayVisitors from "@/app/components/TodayVisitors";
 
 const SITE_URL = "https://dosigongzon.com";
 
@@ -128,30 +129,101 @@ export default async function HomeLanding() {
           캣맘·캣대디의 손으로 실시간 공유되고 있어요.
         </p>
 
-        {/* CTA */}
+        {/* 방문자 수 실시간 (client) */}
+        <TodayVisitors />
+
+        {/* CTA — primary + ghost 대비 */}
         <div className="flex gap-2 mt-5">
           <Link
             href="/map"
-            className="flex-1 flex items-center justify-center gap-1.5 py-3.5 rounded-2xl bg-primary text-white active:scale-[0.98] transition-transform"
-            style={{ boxShadow: "0 6px 18px rgba(196,126,90,0.32)" }}
+            className="flex-[1.4] flex items-center justify-center gap-1.5 py-4 rounded-2xl text-white active:scale-[0.98] transition-transform"
+            style={{
+              background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+              boxShadow: "0 8px 22px rgba(196,126,90,0.38), 0 2px 6px rgba(168,104,74,0.22)",
+            }}
           >
             <PawPrint size={15} />
-            <span className="text-[13.5px] font-extrabold">지도 바로 보기</span>
+            <span className="text-[14px] font-extrabold tracking-tight">지도 바로 보기</span>
           </Link>
           <Link
             href="/signup"
-            className="flex-1 flex items-center justify-center py-3.5 rounded-2xl active:scale-[0.98] transition-transform"
-            style={{ backgroundColor: "#FFF", color: "#C47E5A", border: "1.5px solid #E8D4BD", fontSize: 13.5, fontWeight: 800 }}
+            className="flex-1 flex items-center justify-center py-4 rounded-2xl active:scale-[0.98] transition-transform"
+            style={{
+              background: "transparent",
+              color: "#C47E5A",
+              border: "1.5px solid rgba(196,126,90,0.35)",
+              fontSize: 13,
+              fontWeight: 700,
+            }}
           >
             돌봄 시작하기
           </Link>
         </div>
+      </section>
 
-        {/* 핵심 신뢰 지표 */}
-        <div className="grid grid-cols-3 gap-2 mt-5">
-          <TrustStat emoji="🐾" value={data.catCount} label="등록 고양이" color="#C47E5A" />
-          <TrustStat emoji="❤️" value={data.userCount} label="동네 이웃" color="#E86B8C" />
-          <TrustStat emoji="🏥" value={data.hospitalCount} label="치료 병원" color="#22B573" />
+      {/* 감성 인용 — 철학적 질문 */}
+      <section className="px-5 mt-8">
+        <div
+          className="relative rounded-3xl px-6 py-7 overflow-hidden"
+          style={{
+            background: "linear-gradient(135deg, #FDF7EE 0%, #F6E8D4 100%)",
+            border: "1px solid rgba(196,126,90,0.18)",
+          }}
+        >
+          <span
+            aria-hidden="true"
+            className="absolute -top-2 left-4 select-none"
+            style={{
+              fontSize: 60,
+              lineHeight: 1,
+              fontFamily: "serif",
+              color: "rgba(196,126,90,0.25)",
+            }}
+          >
+            “
+          </span>
+          <p
+            className="text-[14.5px] leading-[1.9] text-text-main relative z-10"
+            style={{ fontFamily: "serif" }}
+          >
+            우리는 <b style={{ color: "#C47E5A" }}>길 위의 아이들</b>의 삶을
+            <br />
+            얼마나 이해하고 있을까요?
+            <br />
+            <span className="text-text-sub">
+              사실, 우리는 잘 모릅니다.
+            </span>
+          </p>
+          <p
+            className="text-[12.5px] leading-relaxed text-text-sub mt-4 relative z-10"
+          >
+            어느 골목에서 자는지, 오늘 밥은 먹었는지,
+            <br />
+            몇 마리가 한 가족인지도 모릅니다.
+            <br />
+            그래서 <b className="text-text-main">서로의 눈</b>이 되어,
+            <br />
+            한 줄씩 기록을 나눠요.
+          </p>
+          <p
+            className="text-[12.5px] leading-relaxed text-text-sub mt-4 relative z-10"
+          >
+            누군가 그들을 <b style={{ color: "#D85555" }}>해치려 할 때</b>
+            <br />
+            먼저 알아차릴 수 있는 건
+            <br />
+            매일 얼굴을 아는 이웃뿐이에요.
+            <br />
+            <span className="text-text-main">
+              작은 기록 한 줄이, 어느 날 아이를 지키는 단서가 됩니다.
+            </span>
+          </p>
+          <p
+            className="text-[11px] font-extrabold tracking-[0.15em] mt-5 relative z-10"
+            style={{ color: "#C47E5A" }}
+          >
+            — 도시공존
+          </p>
         </div>
       </section>
 
@@ -246,8 +318,26 @@ export default async function HomeLanding() {
         </Link>
       </section>
 
-      {/* 핵심 가치 */}
+      {/* 숫자로 보는 도시공존 — 컴팩트한 통계 스트립 */}
       <section className="px-5 mt-8">
+        <div
+          className="rounded-2xl px-4 py-3 flex items-center justify-around"
+          style={{
+            background: "#FFFFFF",
+            boxShadow: "0 4px 14px rgba(0,0,0,0.05)",
+            border: "1px solid rgba(0,0,0,0.04)",
+          }}
+        >
+          <TrustInline emoji="🐾" value={data.catCount} label="등록" color="#C47E5A" />
+          <span className="w-px h-8" style={{ background: "rgba(0,0,0,0.06)" }} />
+          <TrustInline emoji="❤️" value={data.userCount} label="이웃" color="#E86B8C" />
+          <span className="w-px h-8" style={{ background: "rgba(0,0,0,0.06)" }} />
+          <TrustInline emoji="🏥" value={data.hospitalCount} label="병원" color="#22B573" />
+        </div>
+      </section>
+
+      {/* 핵심 가치 */}
+      <section className="px-5 mt-6">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#6B8E6F" }} />
           <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">왜 도시공존인가요?</h2>
@@ -336,17 +426,16 @@ export default async function HomeLanding() {
   );
 }
 
-function TrustStat({ emoji, value, label, color }: { emoji: string; value: number; label: string; color: string }) {
+function TrustInline({ emoji, value, label, color }: { emoji: string; value: number; label: string; color: string }) {
   return (
-    <div
-      className="bg-white rounded-2xl py-3 flex flex-col items-center"
-      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}
-    >
+    <div className="flex items-center gap-2">
       <span style={{ fontSize: 18 }}>{emoji}</span>
-      <span className="text-[16px] font-extrabold mt-0.5" style={{ color }}>
-        {value.toLocaleString()}
-      </span>
-      <span className="text-[9.5px] text-text-sub font-semibold mt-0.5">{label}</span>
+      <div className="flex flex-col leading-tight">
+        <span className="text-[15px] font-extrabold" style={{ color }}>
+          {value.toLocaleString()}
+        </span>
+        <span className="text-[9.5px] text-text-sub font-semibold">{label}</span>
+      </div>
     </div>
   );
 }

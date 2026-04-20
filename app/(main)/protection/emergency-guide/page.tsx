@@ -497,15 +497,14 @@ export default function EmergencyGuidePage() {
 
       {/* 신뢰 출처 */}
       <section className="mb-8 rounded-2xl p-4" style={{ background: "#F6F1EA", border: "1px solid rgba(0,0,0,0.04)" }}>
-        <h3 className="text-[13px] font-bold text-text-main mb-2">참고한 출처</h3>
+        <h3 className="text-[13px] font-bold text-text-main mb-2">참고한 공공 자료</h3>
         <ul className="text-[12px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
-          <li>한국고양이수의사회 응급처치 가이드라인</li>
-          <li>동물보호관리시스템 (농림축산식품부)</li>
-          <li>카라(KARA) 구조 매뉴얼</li>
-          <li>한국로드킬예방협회</li>
+          <li>동물보호관리시스템 (animal.go.kr) — 농림축산식품부</li>
+          <li>동물보호법 및 시행령</li>
+          <li>국민재난안전포털 (safekorea.go.kr)</li>
         </ul>
         <p className="text-[11px] text-text-light mt-3 leading-relaxed">
-          이 가이드는 응급 상황 대응 참고용이며 <strong>수의사의 진단·처방을 대체하지 않습니다</strong>.
+          이 가이드는 공개된 일반 정보를 정리한 참고 자료이며 <strong>수의사의 진단·처방을 대체하지 않습니다</strong>.
           생명이 위급할 땐 반드시 가장 가까운 24시간 동물병원에 즉시 연락·이송하세요.
         </p>
       </section>

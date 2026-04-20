@@ -31,10 +31,19 @@ export async function sendDM(receiverId: string, receiverName: string, body: str
   const trimmed = body.trim();
   if (!trimmed && !photoUrl) throw new Error("내용을 입력해주세요.");
 
+  // 보안: user_metadata는 유저가 조작 가능. profiles 테이블에서 실제 스냅샷 조회 (위조 방어)
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("nickname, avatar_url")
+    .eq("id", user.id)
+    .maybeSingle();
+  const senderName = (profile?.nickname as string | null) ?? getDisplayName(user);
+  const senderAvatar = (profile?.avatar_url as string | null) ?? null;
+
   const { error } = await supabase.from("direct_messages").insert({
     sender_id: user.id,
-    sender_name: getDisplayName(user),
-    sender_avatar_url: user.user_metadata?.avatar_url ?? null,
+    sender_name: senderName,
+    sender_avatar_url: senderAvatar,
     receiver_id: receiverId,
     receiver_name: receiverName,
     body: trimmed || (photoUrl ? "📷 사진" : ""),
@@ -54,7 +63,7 @@ export async function sendDM(receiverId: string, receiverName: string, body: str
       headers,
       body: JSON.stringify({
         userId: receiverId,
-        title: `${getDisplayName(user)}님의 쪽지`,
+        title: `${senderName}님의 쪽지`,
         body: trimmed.length > 50 ? trimmed.slice(0, 50) + "…" : trimmed,
         url: "/messages",
       }),

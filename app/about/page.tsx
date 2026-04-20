@@ -150,7 +150,7 @@ export default async function AboutPage() {
               <b className="text-text-main">중립적 기록.</b> 특정 단체·정당과 무관하며 시민 누구나 참여할 수 있는 열린 플랫폼입니다.
             </li>
             <li>
-              <b className="text-text-main">검증된 정보.</b> 보호 지침, 약품 정보는 수의사 감수를 거친 자료를 기준으로 제공합니다.
+              <b className="text-text-main">공신력 있는 자료 기반.</b> 보호 지침과 약품 정보는 농림축산식품부, 동물보호관리시스템 등 공공기관 공개 자료와 동물약국 표시사항을 바탕으로 정리하며, 긴급·의료 판단은 반드시 실제 수의사와 상의해주세요.
             </li>
             <li>
               <b className="text-text-main">비영리 운영.</b> 광고·수익 모델 없이 서울 시민의 자발적 기록으로 운영됩니다.

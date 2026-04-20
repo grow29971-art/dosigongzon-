@@ -4,8 +4,9 @@
 
 import { createClient } from "@supabase/supabase-js";
 
+// LOCALDATA가 https 지원 — MITM 변조 방지 위해 https 사용
 const LOCALDATA_API_URL =
-  "http://www.localdata.go.kr/platform/rest/02_03_02_P/openDataApi";
+  "https://www.localdata.go.kr/platform/rest/02_03_02_P/openDataApi";
 
 interface LocalDataRow {
   rowNum: string;

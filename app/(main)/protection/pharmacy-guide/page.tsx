@@ -518,15 +518,14 @@ export default async function PharmacyGuidePage() {
 
       {/* 신뢰 출처 */}
       <section className="mt-6 rounded-2xl p-4" style={{ background: "#F6F1EA", border: "1px solid rgba(0,0,0,0.04)" }}>
-        <h3 className="text-[13px] font-bold text-text-main mb-2">참고한 출처</h3>
+        <h3 className="text-[13px] font-bold text-text-main mb-2">참고한 공공 자료</h3>
         <ul className="text-[12px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
-          <li>한국고양이수의사회 권장 투약 지침</li>
-          <li>대한약사회 동물약국 가이드</li>
-          <li>ASPCA (American Society for the Prevention of Cruelty to Animals) Toxicology Center</li>
-          <li>VCA Animal Hospitals 고양이 약물 안내</li>
+          <li>식품의약품안전처 동물용의약품 공개 자료</li>
+          <li>국가동물의약품관리정보시스템 (EMAH)</li>
+          <li>동물약국 표시사항 · 사용설명서</li>
         </ul>
         <p className="text-[11px] text-text-light mt-3 leading-relaxed">
-          본 가이드는 일반 참고용이며 <strong>수의사의 처방·진단을 대체하지 않습니다</strong>.
+          본 가이드는 공개된 일반 정보를 정리한 참고 자료이며 <strong>수의사의 처방·진단을 대체하지 않습니다</strong>.
           개별 고양이의 건강 상태·알레르기·동반 질환에 따라 권장 약품이 달라지니 반드시 수의사 상담 후 사용하세요.
         </p>
       </section>

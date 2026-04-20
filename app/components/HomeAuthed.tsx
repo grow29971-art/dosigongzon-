@@ -33,6 +33,7 @@ import { createClient } from "@/lib/supabase/client";
 import {
   listNews,
   BADGE_PRESETS,
+  resolveDdayLabel,
   type NewsItem,
 } from "@/lib/news-repo";
 import {
@@ -1502,7 +1503,10 @@ export default function HomeAuthed() {
           )}
           {newsItems.map((item) => {
             const preset = BADGE_PRESETS[item.badge_type];
-            const isDday = item.dday?.startsWith("D-") ?? false;
+            const ddayLabel = resolveDdayLabel(item);
+            const isUpcoming = !!ddayLabel && ddayLabel.startsWith("D-") && ddayLabel !== "D-day";
+            const isToday = ddayLabel === "D-day";
+            const isEnded = ddayLabel === "종료";
             return (
               <Link
                 key={item.id}
@@ -1540,15 +1544,21 @@ export default function HomeAuthed() {
                     {preset.label}
                   </span>
                   {/* D-Day 뱃지 (우상단) */}
-                  {item.dday && (
+                  {ddayLabel && (
                     <span
                       className="absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-xl backdrop-blur-sm"
                       style={{
-                        color: isDday ? "#B84545" : "#6B8E6F",
-                        backgroundColor: isDday ? "rgba(238,227,222,0.9)" : "rgba(232,236,229,0.9)",
+                        color: isEnded ? "#8B7562" : isToday ? "#fff" : isUpcoming ? "#B84545" : "#6B8E6F",
+                        backgroundColor: isEnded
+                          ? "rgba(230,222,214,0.9)"
+                          : isToday
+                          ? "rgba(216,85,85,0.95)"
+                          : isUpcoming
+                          ? "rgba(238,227,222,0.9)"
+                          : "rgba(232,236,229,0.9)",
                       }}
                     >
-                      {item.dday}
+                      {ddayLabel}
                     </span>
                   )}
                   {/* 이미지 위 설명 */}

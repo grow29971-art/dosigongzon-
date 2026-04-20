@@ -1,39 +1,49 @@
 import { createClient } from "@supabase/supabase-js";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
-// 인메모리 Rate limiting (IP당 1분에 5회)
-const RATE_LIMIT = 5;
-const RATE_WINDOW_MS = 60_000;
-const rateBuckets = new Map<string, { count: number; resetAt: number }>();
+/**
+ * 닉네임으로 마스킹된 이메일 조회.
+ * 보안 고려:
+ * - 존재/미존재 응답 시간·형식 동일 (타이밍/응답 분기 공격 방어)
+ * - IP+nickname 조합 rate limit (사전 공격 방어)
+ * - 최소 지연 삽입으로 DB 응답 편차 숨김
+ */
 
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const bucket = rateBuckets.get(ip);
-  if (!bucket || now > bucket.resetAt) {
-    rateBuckets.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
-    return true;
+const MIN_RESPONSE_MS = 350;
+
+async function uniformDelay(startedAt: number): Promise<void> {
+  const elapsed = Date.now() - startedAt;
+  const remaining = MIN_RESPONSE_MS - elapsed;
+  if (remaining > 0) {
+    await new Promise((r) => setTimeout(r, remaining));
   }
-  if (bucket.count >= RATE_LIMIT) return false;
-  bucket.count++;
-  return true;
 }
 
 export async function POST(request: Request) {
-  // Rate limiting
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  if (!checkRateLimit(ip)) {
-    return Response.json({ error: "요청이 너무 많아요. 잠시 후 다시 시도해주세요." }, { status: 429 });
-  }
+  const startedAt = Date.now();
+  const ip = getClientIp(request);
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseServiceKey) {
-    return Response.json({ error: "서버 설정 미완료" }, { status: 500 });
+    await uniformDelay(startedAt);
+    return Response.json({ email: null }, { status: 200 });
   }
 
-  const { nickname } = await request.json();
-  if (!nickname?.trim()) {
-    return Response.json({ error: "닉네임을 입력해주세요." }, { status: 400 });
+  const { nickname } = await request.json().catch(() => ({ nickname: null }));
+  const trimmed = nickname?.trim();
+
+  // Rate limit: IP+닉네임 조합으로 분당 5회 — 사전 공격 방어
+  const rlKey = `find-email:${ip}:${trimmed ?? ""}`;
+  if (!rateLimit(rlKey, { max: 5, windowMs: 60_000 })) {
+    await uniformDelay(startedAt);
+    return Response.json({ email: null }, { status: 200 });
+  }
+
+  if (!trimmed || trimmed.length < 2) {
+    await uniformDelay(startedAt);
+    return Response.json({ email: null }, { status: 200 });
   }
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -41,21 +51,20 @@ export async function POST(request: Request) {
   const { data, error } = await supabase
     .from("profiles")
     .select("email")
-    .eq("nickname", nickname.trim())
+    .eq("nickname", trimmed)
     .maybeSingle();
 
-  // 존재 여부와 관계없이 동일한 응답 시간 (타이밍 공격 방지)
-  if (error || !data?.email) {
-    return Response.json({ error: "해당 닉네임으로 가입된 계정을 찾을 수 없어요." }, { status: 404 });
+  // 에러·없음·존재 모두 동일한 형식의 200 응답 반환 — 분기 추론 차단
+  let maskedEmail: string | null = null;
+  if (!error && data?.email) {
+    const email = data.email as string;
+    const [local, domain] = email.split("@");
+    maskedEmail =
+      local.length <= 2
+        ? local[0] + "*".repeat(Math.max(0, local.length - 1)) + `@${domain}`
+        : local[0] + local[1] + "*".repeat(local.length - 3) + local[local.length - 1] + `@${domain}`;
   }
 
-  // 이메일 마스킹: grow29971@gmail.com → gr*****1@gmail.com
-  const email = data.email as string;
-  const [local, domain] = email.split("@");
-  const masked =
-    local.length <= 2
-      ? local[0] + "*".repeat(local.length - 1)
-      : local[0] + local[1] + "*".repeat(local.length - 3) + local[local.length - 1];
-
-  return Response.json({ email: `${masked}@${domain}` });
+  await uniformDelay(startedAt);
+  return Response.json({ email: maskedEmail }, { status: 200 });
 }

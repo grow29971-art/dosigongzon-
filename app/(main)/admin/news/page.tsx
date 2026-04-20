@@ -23,6 +23,7 @@ import {
   uploadNewsImage,
   isCurrentUserAdmin,
   BADGE_PRESETS,
+  resolveDdayLabel,
   type NewsItem,
   type NewsBadgeType,
   type NewsInput,
@@ -37,6 +38,7 @@ const EMPTY_DRAFT: NewsInput = {
   image_url: null,
   date_label: null,
   dday: null,
+  event_date: null,
   body: null,
   external_url: null,
   external_label: null,
@@ -96,6 +98,7 @@ export default function AdminNewsPage() {
       image_url: item.image_url,
       date_label: item.date_label,
       dday: item.dday,
+      event_date: item.event_date,
       body: item.body,
       external_url: item.external_url,
       external_label: item.external_label,
@@ -342,7 +345,7 @@ export default function AdminNewsPage() {
             )}
           </div>
 
-          {/* 날짜 + D-Day */}
+          {/* 날짜 표시 + 이벤트 날짜(자동 D-Day) */}
           <div className="grid grid-cols-2 gap-2">
             <div>
               <Label>날짜 표시</Label>
@@ -353,13 +356,31 @@ export default function AdminNewsPage() {
               />
             </div>
             <div>
-              <Label>D-Day</Label>
-              <Input
-                value={draft.dday ?? ""}
-                onChange={(v) => setDraft((d) => ({ ...d, dday: v || null }))}
-                placeholder="예: D-38 / 시행중"
+              <Label>이벤트 날짜 (자동 D-Day)</Label>
+              <input
+                type="date"
+                value={draft.event_date ?? ""}
+                onChange={(e) =>
+                  setDraft((d) => ({ ...d, event_date: e.target.value || null }))
+                }
+                className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none"
+                style={{
+                  backgroundColor: "#F6F1EA",
+                  color: "#2A2A28",
+                  border: "1px solid #E3DCD3",
+                }}
               />
             </div>
+          </div>
+
+          {/* D-Day 수동 폴백 (이벤트 날짜 없을 때만 사용됨) */}
+          <div>
+            <Label>D-Day 수동 입력 (폴백용)</Label>
+            <Input
+              value={draft.dday ?? ""}
+              onChange={(v) => setDraft((d) => ({ ...d, dday: v || null }))}
+              placeholder="예: 시행중 · 상시모집 — 이벤트 날짜가 있으면 자동 계산됨"
+            />
           </div>
 
           {/* 본문 */}
@@ -491,11 +512,12 @@ export default function AdminNewsPage() {
                           <Pin size={10} /> 고정
                         </span>
                       )}
-                      {item.dday && (
-                        <span className="text-[10px] text-text-light">
-                          · {item.dday}
-                        </span>
-                      )}
+                      {(() => {
+                        const label = resolveDdayLabel(item);
+                        return label ? (
+                          <span className="text-[10px] text-text-light">· {label}</span>
+                        ) : null;
+                      })()}
                     </div>
                     <p className="text-[14px] font-extrabold text-text-main leading-tight truncate">
                       {item.title}

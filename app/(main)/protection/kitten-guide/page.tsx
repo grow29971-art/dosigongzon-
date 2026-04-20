@@ -453,16 +453,15 @@ export default function KittenGuidePage() {
       <section className="mb-8 rounded-2xl p-4" style={{ background: "#F6F1EA", border: "1px solid rgba(0,0,0,0.04)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2 flex items-center gap-1.5">
           <Heart size={14} color="#C47E5A" />
-          참고한 출처
+          참고한 공공 자료
         </h3>
         <ul className="text-[12px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
-          <li>동물보호관리시스템 (농림축산식품부)</li>
-          <li>카라(KARA) 새끼 고양이 구조 매뉴얼</li>
-          <li>동물자유연대 길고양이 보호 가이드</li>
-          <li>한국고양이수의사회 응급처치 가이드라인</li>
+          <li>동물보호관리시스템 (animal.go.kr) — 농림축산식품부</li>
+          <li>동물보호법 및 시행령</li>
+          <li>동물보호상담센터 (1577-0954) 안내 자료</li>
         </ul>
         <p className="text-[11px] text-text-light mt-3 leading-relaxed">
-          이 가이드는 일반 돌봄 참고용이며 <strong>수의사의 진단·처방을 대체하지 않습니다</strong>.
+          이 가이드는 공개된 일반 정보를 정리한 참고 자료이며 <strong>수의사의 진단·처방을 대체하지 않습니다</strong>.
           위급 상황에서는 반드시 동물병원·동물보호상담센터(1577-0954)에 연락하세요.
         </p>
       </section>

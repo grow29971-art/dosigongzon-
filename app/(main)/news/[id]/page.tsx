@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import { ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
-import { getNewsById, BADGE_PRESETS, type NewsItem } from "@/lib/news-repo";
+import { getNewsById, BADGE_PRESETS, resolveDdayLabel, type NewsItem } from "@/lib/news-repo";
 import { sanitizeHttpUrl } from "@/lib/url-validate";
 
 export default function NewsDetailPage({
@@ -53,7 +53,10 @@ export default function NewsDetailPage({
   }
 
   const preset = BADGE_PRESETS[news.badge_type];
-  const isDday = news.dday?.startsWith("D-") ?? false;
+  const ddayLabel = resolveDdayLabel(news);
+  const isUpcoming = !!ddayLabel && ddayLabel.startsWith("D-") && ddayLabel !== "D-day";
+  const isToday = ddayLabel === "D-day";
+  const isEnded = ddayLabel === "종료";
 
   return (
     <div className="pb-8">
@@ -87,18 +90,22 @@ export default function NewsDetailPage({
         </button>
 
         {/* D-Day 뱃지 */}
-        {news.dday && (
+        {ddayLabel && (
           <div className="absolute top-12 right-4">
             <span
               className="text-[12px] font-bold px-3 py-1.5 rounded-xl backdrop-blur-sm"
               style={{
-                color: isDday ? "#B84545" : "#6B8E6F",
-                backgroundColor: isDday
+                color: isEnded ? "#8B7562" : isToday ? "#fff" : isUpcoming ? "#B84545" : "#6B8E6F",
+                backgroundColor: isEnded
+                  ? "rgba(230,222,214,0.9)"
+                  : isToday
+                  ? "rgba(216,85,85,0.95)"
+                  : isUpcoming
                   ? "rgba(238,227,222,0.9)"
                   : "rgba(232,236,229,0.9)",
               }}
             >
-              {news.dday}
+              {ddayLabel}
             </span>
           </div>
         )}
