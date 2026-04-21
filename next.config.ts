@@ -61,6 +61,8 @@ const nextConfig: NextConfig = {
     root: "C:\\Users\\acer\\city",
   },
   allowedDevOrigins: ["192.168.0.2", "localhost"],
+  // 기술 스택 정보 노출 차단 — X-Powered-By: Next.js 헤더 제거
+  poweredByHeader: false,
   async headers() {
     return [
       {
