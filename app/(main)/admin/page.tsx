@@ -21,6 +21,7 @@ import {
   Ban,
   ChevronRight,
   RefreshCcw,
+  MapPin as MapPinIcon,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { getAdminStats, type AdminStats } from "@/lib/admin-stats";
@@ -136,6 +137,13 @@ export default function AdminDashboardPage() {
       subtitle: "전체 사용자에게 공지",
       Icon: Bell,
       color: "#C47E5A",
+    },
+    {
+      href: "/admin/location-logs",
+      title: "위치 변경 이력",
+      subtitle: "고양이 좌표 변경 감지",
+      Icon: MapPinIcon,
+      color: "#5A8AC4",
     },
   ];
 
