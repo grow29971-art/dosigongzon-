@@ -168,10 +168,19 @@ export default function TermsPage() {
         <div className="text-[14px] font-extrabold text-primary pt-2">제5장 게시물</div>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제12조 (게시물의 저작권)</h2>
+          <h2 className="text-[14px] font-bold text-text-main mb-2">제12조 (게시물의 저작권 및 이용 허락)</h2>
           <ol className="list-decimal pl-5 space-y-1">
-            <li>회원이 서비스 내에 게시한 게시물의 저작권은 해당 회원에게 귀속됩니다.</li>
-            <li>회사는 서비스의 운영, 홍보 등의 목적으로 회원의 게시물을 서비스 내에서 노출할 수 있으며, 필요한 범위 내에서 수정·복제·편집할 수 있습니다.</li>
+            <li>회원이 서비스 내에 게시한 게시물(글, 사진, 고양이 프로필, 돌봄 기록 등)의 저작권은 해당 회원에게 귀속됩니다.</li>
+            <li>회원은 서비스 가입 시 다음 범위 내에서 회사가 게시물을 이용할 수 있도록 <b>비독점적·무상·무기한</b>의 이용을 허락합니다.
+              <ul className="list-disc pl-4 mt-1 space-y-0.5">
+                <li>서비스 내 표시·공유·검색 노출</li>
+                <li>SNS 공유 카드·OpenGraph 미리보기 등 외부 링크 공유 기능</li>
+                <li>서비스 홍보·언론 보도 시 일부 인용(개인 식별 정보 제외, 또는 회원 동의를 받은 경우에 한함)</li>
+                <li>서비스 개선·기술적 필요 범위 내 수정·복제·편집 (형식 변환·썸네일 생성 등)</li>
+              </ul>
+            </li>
+            <li>회원은 본인이 권리를 보유하지 않은 저작물(타인의 사진·글 등)을 무단으로 게시해서는 안 됩니다. 이로 인해 제3자와 분쟁이 발생한 경우 <b>해당 게시 회원이 직접 책임</b>지며, 회사는 분쟁에 개입할 의무가 없습니다.</li>
+            <li>회원은 언제든지 자신의 게시물을 삭제할 수 있으며, 탈퇴 시 회원의 게시물은 원칙적으로 함께 삭제됩니다. 다만 다른 회원의 기록(예: 공동 돌봄 기록)과 결합된 경우 익명화 처리 후 유지될 수 있습니다.</li>
           </ol>
         </section>
 
@@ -226,7 +235,7 @@ export default function TermsPage() {
           style={{ backgroundColor: "#F5F3EE", border: "1px solid rgba(0,0,0,0.06)" }}
         >
           <p className="text-[11px] text-text-light"><b>부칙</b></p>
-          <p className="text-[11px] text-text-light mt-1">제1조 (시행일) 이 약관은 2026년 4월 15일부터 시행합니다.</p>
+          <p className="text-[11px] text-text-light mt-1">제1조 (시행일) 이 약관은 2026년 4월 20일부터 시행합니다.</p>
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Send, Loader2, Mail, ChevronRight, Camera, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import FollowButton from "@/app/components/FollowButton";
+import PageIntroBanner from "@/app/components/PageIntroBanner";
 import {
   getConversations,
   getMessagesWithUser,
@@ -272,6 +273,17 @@ function MessagesPage() {
           <ArrowLeft size={24} className="text-text-main" />
         </button>
         <h1 className="text-[20px] font-extrabold text-text-main">쪽지함</h1>
+      </div>
+
+      <div className="px-4 mb-3">
+        <PageIntroBanner
+          id="messages"
+          title="이웃과 1:1 쪽지"
+          description="커뮤니티 글·댓글·프로필에서 쪽지 버튼을 누르면 대화가 시작돼요. 사진도 첨부 가능. 받은 쪽지는 푸시·알림 센터로 바로 알려드려요."
+          ctaLabel="전체 기능 보기"
+          ctaHref="/guide"
+          accent="#E86B8C"
+        />
       </div>
 
       {loading ? (

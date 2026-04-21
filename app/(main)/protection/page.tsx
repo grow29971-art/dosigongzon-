@@ -18,10 +18,22 @@ import {
   Home as HomeIcon,
 } from "lucide-react";
 
+/* ═══ 상황 라벨 메타 ═══ */
+type Situation = "emergency" | "beginner" | "advanced" | "contact" | "seasonal";
+const SITUATION_META: Record<Situation, { label: string; emoji: string; color: string; bg: string }> = {
+  emergency: { label: "응급",   emoji: "🚨", color: "#B84545", bg: "#FBEAEA" },
+  beginner:  { label: "초보",   emoji: "🌱", color: "#3F6B1F", bg: "#F1F8E9" },
+  advanced:  { label: "심화",   emoji: "📚", color: "#5B4EA8", bg: "#EAE6F5" },
+  contact:   { label: "연락처", emoji: "📞", color: "#1E5B8C", bg: "#E3F2FD" },
+  seasonal:  { label: "상시",   emoji: "🏠", color: "#B56A1A", bg: "#FFF3E0" },
+};
+
 /* ═══ 카드 데이터 ═══ */
 const cards: {
   title: string;
   subtitle: string;
+  whenToUse: string;      // 언제 봐야 하는지 한 줄
+  situation: Situation;    // 상황 라벨
   Icon: typeof BookOpenText;
   iconBg: string;
   iconColor: string;
@@ -35,6 +47,8 @@ const cards: {
   {
     title: "돌봄 가이드",
     subtitle: "농림축산식품부 공식 PDF 매뉴얼",
+    whenToUse: "처음이시라면 공식 매뉴얼부터 — 길고양이 돌봄의 기본",
+    situation: "beginner",
     Icon: BookOpenText,
     iconBg: "#4A7BA8",
     iconColor: "#FFFFFF",
@@ -47,6 +61,8 @@ const cards: {
   {
     title: "구청 연락처",
     subtitle: "시·군·구별 동물보호 담당부서",
+    whenToUse: "학대 신고·TNR 신청·구조 요청 전 반드시 확인",
+    situation: "contact",
     Icon: Phone,
     iconBg: "#5BA876",
     iconColor: "#FFFFFF",
@@ -57,6 +73,8 @@ const cards: {
   {
     title: "병원 찾기",
     subtitle: "근처 협력병원 검색",
+    whenToUse: "응급 구조·TNR 수술 시 근처 동물병원 찾기",
+    situation: "contact",
     Icon: BriefcaseMedical,
     iconBg: "#E88D5A",
     iconColor: "#FFFFFF",
@@ -67,6 +85,8 @@ const cards: {
   {
     title: "TNR 신청",
     subtitle: "국가동물보호정보시스템 바로가기",
+    whenToUse: "중성화 수술 공식 신청 창구 (animal.go.kr)",
+    situation: "contact",
     Icon: Globe,
     iconBg: "#48A59E",
     iconColor: "#FFFFFF",
@@ -78,6 +98,8 @@ const cards: {
   {
     title: "법률 가이드",
     subtitle: "동물보호법 · 학대/훼손 대응 매뉴얼",
+    whenToUse: "학대·훼손 목격 시 정확한 대응 절차",
+    situation: "advanced",
     Icon: ShieldCheck,
     iconBg: "#8B65B8",
     iconColor: "#FFFFFF",
@@ -89,6 +111,8 @@ const cards: {
   {
     title: "냥줍 가이드",
     subtitle: "관찰 · 체온 · 급여 3단계",
+    whenToUse: "새끼 고양이 혼자 있는 걸 발견했을 때",
+    situation: "beginner",
     Icon: Cat,
     iconBg: "#E8B040",
     iconColor: "#FFFFFF",
@@ -99,6 +123,8 @@ const cards: {
   {
     title: "응급 구조 가이드",
     subtitle: "안전확보 · 지혈 · 이송 절차",
+    whenToUse: "다친 아이 발견 즉시 — 분 단위 생존율",
+    situation: "emergency",
     Icon: BriefcaseMedical,
     iconBg: "#D85555",
     iconColor: "#FFFFFF",
@@ -110,6 +136,8 @@ const cards: {
   {
     title: "포획 가이드",
     subtitle: "준비물 · 설치 · 대기 · 주의사항",
+    whenToUse: "중성화 수술 전 안전 포획 전 과정",
+    situation: "advanced",
     Icon: Hand,
     iconBg: "#8BA86B",
     iconColor: "#FFFFFF",
@@ -121,6 +149,8 @@ const cards: {
   {
     title: "약품 가이드",
     subtitle: "동물약국 영양제 · 구충제 · 상처 관리",
+    whenToUse: "구충제·영양제 구매 전 · 상처 발견 시",
+    situation: "seasonal",
     Icon: Pill,
     iconBg: "#D4708F",
     iconColor: "#FFFFFF",
@@ -133,6 +163,8 @@ const cards: {
   {
     title: "먹이 가이드",
     subtitle: "주면 안 되는 음식 · 안전한 급식 원칙",
+    whenToUse: "급식 시작 전 · 우유·참치 등 위험 음식 확인",
+    situation: "beginner",
     Icon: Utensils,
     iconBg: "#E88D5A",
     iconColor: "#FFFFFF",
@@ -144,6 +176,8 @@ const cards: {
   {
     title: "쉼터 · 겨울나기",
     subtitle: "숨숨집 DIY · 설치 원칙 · 계절 운영",
+    whenToUse: "겨울 동사 예방 · 여름 그늘 쉼터 — 계절 전환기",
+    situation: "seasonal",
     Icon: HomeIcon,
     iconBg: "#4A7BA8",
     iconColor: "#FFFFFF",
@@ -170,7 +204,7 @@ function InfoCard({ card }: { card: (typeof cards)[number] }) {
           : "1px solid rgba(0,0,0,0.04)",
       }}
     >
-      <div className="flex items-center gap-4 relative z-10">
+      <div className="flex items-start gap-4 relative z-10">
         {/* 아이콘: 컬러 bg + 광택 + glow */}
         <div
           className="w-[48px] h-[48px] rounded-2xl flex items-center justify-center shrink-0 relative dark-icon-box"
@@ -179,14 +213,30 @@ function InfoCard({ card }: { card: (typeof cards)[number] }) {
           <card.Icon size={22} color={card.iconBg} strokeWidth={2} />
         </div>
         <div className="flex-1 min-w-0">
+          {/* 상황 라벨 */}
+          {(() => {
+            const sit = SITUATION_META[card.situation];
+            return (
+              <span
+                className="inline-flex items-center gap-1 text-[10px] font-extrabold px-2 py-0.5 rounded-md mb-1"
+                style={{ backgroundColor: sit.bg, color: sit.color }}
+              >
+                <span style={{ fontSize: 10 }}>{sit.emoji}</span>
+                {sit.label}
+              </span>
+            );
+          })()}
           <p className="text-[15.5px] font-extrabold text-text-main tracking-tight leading-tight">
             {card.title}
+          </p>
+          <p className="text-[11.5px] text-text-sub mt-1 leading-snug">
+            {card.whenToUse}
           </p>
         </div>
         <ChevronRight
           size={18}
           strokeWidth={2.5}
-          className="shrink-0"
+          className="shrink-0 mt-1"
           style={{ color: card.iconBg, opacity: 0.7 }}
         />
       </div>
@@ -241,6 +291,26 @@ export default function ProtectionPage() {
         <p className="text-[12.5px] text-text-sub leading-relaxed">
           길고양이 보호에 필요한 모든 정보를 한 곳에
         </p>
+      </div>
+
+      {/* ── 상황별 라벨 범례 ── */}
+      <div
+        className="rounded-2xl px-4 py-3 mb-5"
+        style={{
+          background: "linear-gradient(135deg, #FFF9F0 0%, #FFF3DF 100%)",
+          border: "1px solid rgba(196,126,90,0.18)",
+        }}
+      >
+        <p className="text-[11px] font-extrabold text-text-sub mb-2 tracking-[0.1em]">
+          언제 무엇을 볼까요?
+        </p>
+        <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[11px] leading-snug">
+          <span><span style={{ color: SITUATION_META.emergency.color }}>🚨 응급</span> — 다친 아이 발견 즉시</span>
+          <span><span style={{ color: SITUATION_META.beginner.color }}>🌱 초보</span> — 돌봄 시작 전 필수</span>
+          <span><span style={{ color: SITUATION_META.contact.color }}>📞 연락처</span> — 전화·신고 전</span>
+          <span><span style={{ color: SITUATION_META.advanced.color }}>📚 심화</span> — 법·TNR 등 경험자용</span>
+          <span className="col-span-2"><span style={{ color: SITUATION_META.seasonal.color }}>🏠 상시</span> — 계절·일상 운영</span>
+        </div>
       </div>
 
       {/* ── 벤토 그리드 ── */}

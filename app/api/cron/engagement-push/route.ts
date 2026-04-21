@@ -52,8 +52,20 @@ export async function POST(request: Request) {
 
   const url = "/map";
 
-  // 구독자 전체 조회
-  const { data: subs } = await supabase.from("push_subscriptions").select("*");
+  // 마케팅 푸시 동의한 유저만 대상 (정보통신망법 옵트인)
+  const { data: optedIn } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("marketing_push_enabled", true);
+  const optedInIds = new Set(((optedIn ?? []) as { id: string }[]).map((p) => p.id));
+  if (optedInIds.size === 0) {
+    return Response.json({ ok: true, sent: 0, total: 0, reason: "no opt-in users" });
+  }
+
+  const { data: subs } = await supabase
+    .from("push_subscriptions")
+    .select("*")
+    .in("user_id", Array.from(optedInIds));
   if (!subs || subs.length === 0) {
     return Response.json({ ok: true, sent: 0, total: 0, reason: "no subscribers" });
   }

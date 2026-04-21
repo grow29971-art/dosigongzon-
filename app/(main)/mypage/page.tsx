@@ -21,11 +21,14 @@ import {
   Stethoscope,
   Pill,
   Bell,
+  BookOpen,
 } from "lucide-react";
 import InquiryModal from "@/app/components/InquiryModal";
 import InstallAppMenuItem from "@/app/components/InstallAppMenuItem";
 import InviteSection from "@/app/components/InviteSection";
 import EmailDigestToggle from "@/app/components/EmailDigestToggle";
+import MarketingPushToggle from "@/app/components/MarketingPushToggle";
+import PageIntroBanner from "@/app/components/PageIntroBanner";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -251,6 +254,17 @@ export default function MyPage() {
         <p className="text-[12.5px] text-text-sub leading-relaxed">
           내 활동 기록과 계정 정보
         </p>
+      </div>
+
+      <div className="mb-3">
+        <PageIntroBanner
+          id="mypage"
+          title="내 활동 · 보상 · 설정"
+          description="레벨·업적·streak으로 활동이 보상돼요. 친구 초대(+15점), 주간 이메일, 앱 설치, 동네 푸시도 여기서 켜고 끌 수 있어요."
+          ctaLabel="전체 기능 안내"
+          ctaHref="/guide"
+          accent="#C47E5A"
+        />
       </div>
 
       {loading ? (
@@ -795,6 +809,35 @@ export default function MyPage() {
             </Link>
             <InstallAppMenuItem />
             <EmailDigestToggle />
+            <MarketingPushToggle />
+
+            {/* 사용 가이드 링크 */}
+            <Link
+              href="/guide"
+              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
+              style={{
+                background: "#FFFFFF",
+                borderRadius: 16,
+                boxShadow: "0 4px 14px rgba(139,101,184,0.10), 0 1px 2px rgba(0,0,0,0.02)",
+                border: "1px solid rgba(0,0,0,0.04)",
+              }}
+            >
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                style={{ backgroundColor: "rgba(139,101,184,0.12)" }}
+              >
+                <BookOpen size={18} color="#8B65B8" strokeWidth={2} />
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+                  사용 가이드
+                </p>
+                <p className="text-[11px] text-text-sub mt-0.5">
+                  10가지 핵심 기능 설명을 한눈에
+                </p>
+              </div>
+              <ChevronRight size={16} className="shrink-0" style={{ color: "#8B65B8", opacity: 0.7 }} />
+            </Link>
           </div>
 
           {/* ── 지원 / 문의 ── */}

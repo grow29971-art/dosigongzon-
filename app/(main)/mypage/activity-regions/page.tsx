@@ -62,6 +62,7 @@ export default function ActivityRegionsPage() {
   const otherCircleRef = useRef<any>(null);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [mapReady, setMapReady] = useState(false);
+  const [mapError, setMapError] = useState("");
 
   // 주소 검색
   const [searchQ, setSearchQ] = useState("");
@@ -101,31 +102,46 @@ export default function ActivityRegionsPage() {
     const existing = document.querySelector<HTMLScriptElement>(
       'script[data-kakao-sdk="true"]',
     );
+    let cancelled = false;
     const waitForSdk = () => {
       const check = setInterval(() => {
+        if (cancelled) { clearInterval(check); return; }
         if (window.kakao?.maps) {
           clearInterval(check);
           setScriptLoaded(true);
         }
       }, 100);
+      // 15초 timeout — 네트워크 실패/차단 대비
+      setTimeout(() => {
+        clearInterval(check);
+        if (!cancelled && !window.kakao?.maps) {
+          setMapError("지도 로드가 오래 걸려요. 새로고침 해주세요.");
+        }
+      }, 15000);
     };
     if (existing) {
       waitForSdk();
-      return;
+      return () => { cancelled = true; };
     }
     const s = document.createElement("script");
     s.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false&libraries=services`;
     s.async = true;
     s.dataset.kakaoSdk = "true";
     s.onload = waitForSdk;
+    s.onerror = () => {
+      if (!cancelled) setMapError("지도를 불러올 수 없어요. 네트워크를 확인해주세요.");
+    };
     document.head.appendChild(s);
+    return () => { cancelled = true; };
   }, [apiKey]);
 
   // ── 지도 초기화 ──
   useEffect(() => {
     if (!scriptLoaded || !mapContainerRef.current) return;
     window.kakao.maps.load(() => {
-      const map = new window.kakao.maps.Map(mapContainerRef.current, {
+      const container = mapContainerRef.current;
+      if (!container) return;
+      const map = new window.kakao.maps.Map(container, {
         center: new window.kakao.maps.LatLng(lat, lng),
         level: 5,
       });
@@ -139,6 +155,29 @@ export default function ActivityRegionsPage() {
         setLng(ll.getLng());
         reverseGeocode(ll.getLat(), ll.getLng());
       });
+
+      // 컨테이너 크기가 늦게 잡히는 경우 타일이 안 그려질 수 있음 → 강제 리레이아웃
+      // 여러 시점에 호출해서 빈 회색 화면 방어
+      const triggerRelayout = () => {
+        try { map.relayout(); map.setCenter(new window.kakao.maps.LatLng(lat, lng)); } catch {}
+      };
+      setTimeout(triggerRelayout, 150);
+      setTimeout(triggerRelayout, 500);
+      setTimeout(triggerRelayout, 1500);
+
+      // ResizeObserver — 컨테이너 크기 변화 감지 시 리레이아웃
+      if (typeof ResizeObserver !== "undefined") {
+        const ro = new ResizeObserver(() => {
+          try { map.relayout(); } catch {}
+        });
+        ro.observe(container);
+        // cleanup은 스크립트 언마운트 시 어차피 GC됨
+      }
+
+      // 창 리사이즈·주소창 접힘 대응
+      const onResize = () => { try { map.relayout(); } catch {} };
+      window.addEventListener("resize", onResize);
+      window.addEventListener("orientationchange", onResize);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scriptLoaded]);
@@ -443,7 +482,38 @@ export default function ActivityRegionsPage() {
             boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
           }}
         >
-          <div ref={mapContainerRef} className="w-full h-full" style={{ background: "#EEEAE2" }} />
+          <div
+            ref={mapContainerRef}
+            className="w-full h-full"
+            style={{ background: "#EEEAE2", minHeight: 280 }}
+          />
+
+          {/* 지도 로딩/에러 오버레이 */}
+          {(!mapReady || mapError) && (
+            <div
+              className="absolute inset-0 flex items-center justify-center z-[5] pointer-events-none"
+              style={{ background: "rgba(238,234,226,0.85)" }}
+            >
+              {mapError ? (
+                <div
+                  className="pointer-events-auto mx-4 rounded-2xl px-4 py-3 text-center"
+                  style={{ background: "#FFFFFF", boxShadow: "0 2px 10px rgba(0,0,0,0.1)" }}
+                >
+                  <p className="text-[12px] font-bold text-text-main mb-1">⚠️ 지도 로드 실패</p>
+                  <p className="text-[11px] text-text-sub mb-2">{mapError}</p>
+                  <button
+                    type="button"
+                    onClick={() => window.location.reload()}
+                    className="text-[11px] font-extrabold text-primary"
+                  >
+                    새로고침
+                  </button>
+                </div>
+              ) : (
+                <Loader2 size={24} className="animate-spin text-primary" />
+              )}
+            </div>
+          )}
 
           {/* 검색바 */}
           <div className="absolute top-3 left-3 right-3 z-10">

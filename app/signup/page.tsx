@@ -38,6 +38,9 @@ function SignupContent() {
   const [captchaSkipped, setCaptchaSkipped] = useState(false);
   const captchaRequired = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
+  // 마케팅 이메일 수신 동의 (정보통신망법 사전 동의 옵트인, 기본 OFF)
+  const [emailOptIn, setEmailOptIn] = useState(false);
+
   // 초대 코드 (URL ?invite=XXX 우선, 없으면 유저 수동 입력)
   const [inviteCode, setInviteCode] = useState("");
   const [inviteLocked, setInviteLocked] = useState(false); // URL로 자동 채워진 경우 잠금
@@ -114,7 +117,12 @@ function SignupContent() {
       email,
       password,
       options: {
-        data: { nickname, terms_agreed_at: new Date().toISOString() },
+        data: {
+          nickname,
+          terms_agreed_at: new Date().toISOString(),
+          email_opt_in: emailOptIn,
+          email_opt_in_at: emailOptIn ? new Date().toISOString() : null,
+        },
       },
     });
 
@@ -343,6 +351,26 @@ function SignupContent() {
               만 14세 이상입니다 <span className="text-[11px] text-text-light">(개인정보보호법 제22조)</span>
             </span>
           </button>
+
+          {/* 선택 동의 — 마케팅 이메일 수신 (옵트인, 기본 OFF) */}
+          <button
+            type="button"
+            onClick={() => setEmailOptIn(!emailOptIn)}
+            className="flex items-start gap-2.5"
+          >
+            <div
+              className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
+                emailOptIn ? "bg-primary border-primary" : "border-border"
+              }`}
+            >
+              {emailOptIn && <Check size={12} color="white" strokeWidth={3} />}
+            </div>
+            <span className="text-[13px] text-text-sub text-left leading-relaxed">
+              <span className="text-[11px] font-bold" style={{ color: "#A38E7A" }}>(선택)</span>{" "}
+              도시공존 이메일 소식 받기 <span className="text-[11px] text-text-light">— 이번 주 동네 새 소식 · 긴급 돌봄 · 월 1~2회 · 언제든 해지 가능</span>
+            </span>
+          </button>
+
           {errors.agree && <p className="text-[11px] text-error mt-1 ml-8">{errors.agree}</p>}
         </div>
 

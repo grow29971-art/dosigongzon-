@@ -66,6 +66,8 @@ import {
 import Link from "next/link";
 import { shareToKakao } from "@/lib/kakao-share";
 import MapCoachmark from "@/app/components/MapCoachmark";
+import ReactionBar from "@/app/components/ReactionBar";
+import { listReactionsBatch, type ReactionSummary } from "@/lib/reactions-repo";
 
 const CAT_TAG_OPTIONS = [
   "TNR 완료","TNR 필요","이어팁","사람 친화","겁 많음","성묘",
@@ -279,6 +281,8 @@ export default function MapPage() {
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   // 내 투표 상태 Map<commentId, 1|-1>
   const [myVotes, setMyVotes] = useState<Map<string, 1 | -1>>(new Map());
+  // 댓글 이모지 리액션: comment_id → summary
+  const [commentReactions, setCommentReactions] = useState<Map<string, ReactionSummary>>(new Map());
   // 신고 모달
   const [reportTarget, setReportTarget] = useState<{
     id: string;
@@ -331,6 +335,13 @@ export default function MapPage() {
           if (!cancelled) setMyVotes(votes);
         } else {
           setMyVotes(new Map());
+        }
+        // 이모지 리액션 배치 조회 (로그인 여부와 무관, 카운트는 공개)
+        if (list.length > 0) {
+          const reactions = await listReactionsBatch("cat_comment", list.map((c) => c.id));
+          if (!cancelled) setCommentReactions(reactions);
+        } else {
+          setCommentReactions(new Map());
         }
       })
       .catch((err) => {
@@ -2644,6 +2655,28 @@ export default function MapPage() {
                             />
                           </button>
                         )}
+                        {/* 이모지 리액션 */}
+                        <div className="mt-2">
+                          <ReactionBar
+                            targetType="cat_comment"
+                            targetId={c.id}
+                            summary={commentReactions.get(c.id)}
+                            isLoggedIn={isLoggedIn}
+                            onChange={(id, next) => {
+                              setCommentReactions((prev) => {
+                                const m = new Map(prev);
+                                m.set(id, next);
+                                return m;
+                              });
+                            }}
+                            onRequireLogin={() => {
+                              if (confirm("로그인하면 반응을 남길 수 있어요. 로그인할까요?")) {
+                                window.location.href = "/login";
+                              }
+                            }}
+                          />
+                        </div>
+
                         {/* 좋아요/싫어요 버튼 */}
                         <div className="flex items-center gap-1.5 mt-2">
                           {(() => {

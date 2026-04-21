@@ -25,6 +25,8 @@ import type { Post } from "@/lib/types";
 import { CATEGORY_MAP } from "@/lib/types";
 import { getPostById, formatRelativeTime, incrementPostViewCount, updatePostVote } from "@/lib/posts-repo";
 import { shareToKakao } from "@/lib/kakao-share";
+import ReactionBar from "@/app/components/ReactionBar";
+import { listReactionsBatch, type ReactionSummary } from "@/lib/reactions-repo";
 import { getLevelColor } from "@/lib/cats-repo";
 import { getMyPostVotes, setMyPostVote, type PostVote } from "@/lib/store";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
@@ -53,6 +55,7 @@ export default function PostDetailPage({
 
   // 댓글 상태
   const [comments, setComments] = useState<PostComment[]>([]);
+  const [reactionMap, setReactionMap] = useState<Map<string, ReactionSummary>>(new Map());
   const [commentsLoading, setCommentsLoading] = useState(true);
   const [commentText, setCommentText] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -160,10 +163,16 @@ export default function PostDetailPage({
     });
     isCurrentUserAdmin().then(setIsAdmin);
 
-    // 댓글 로드
+    // 댓글 로드 + 이모지 리액션 배치 조회
     setCommentsLoading(true);
     listPostComments(id)
-      .then(setComments)
+      .then(async (list) => {
+        setComments(list);
+        if (list.length > 0) {
+          const reactions = await listReactionsBatch("post_comment", list.map((c) => c.id));
+          setReactionMap(reactions);
+        }
+      })
       .finally(() => setCommentsLoading(false));
   }, [id, user]);
 
@@ -466,6 +475,14 @@ export default function PostDetailPage({
                   <CommentItem
                     c={c}
                     user={user}
+                    reactionSummary={reactionMap.get(c.id)}
+                    onReactionChange={(id, next) =>
+                      setReactionMap((prev) => {
+                        const m = new Map(prev);
+                        m.set(id, next);
+                        return m;
+                      })
+                    }
                     onReply={() => setReplyTo({ id: c.id, name: c.author_name ?? "익명" })}
                     onReport={() => setReportTarget({ type: "post_comment", id: c.id, snapshot: c.body.slice(0, 150) })}
                   />
@@ -478,6 +495,14 @@ export default function PostDetailPage({
                       <CommentItem
                         c={r}
                         user={user}
+                        reactionSummary={reactionMap.get(r.id)}
+                        onReactionChange={(id, next) =>
+                          setReactionMap((prev) => {
+                            const m = new Map(prev);
+                            m.set(id, next);
+                            return m;
+                          })
+                        }
                         onReply={() => setReplyTo({ id: c.id, name: r.author_name ?? "익명" })}
                         onReport={() => setReportTarget({ type: "post_comment", id: r.id, snapshot: r.body.slice(0, 150) })}
                         isReply
@@ -572,12 +597,16 @@ export default function PostDetailPage({
 function CommentItem({
   c,
   user,
+  reactionSummary,
+  onReactionChange,
   onReply,
   onReport,
   isReply,
 }: {
   c: PostComment;
   user: { id: string } | null;
+  reactionSummary: ReactionSummary | undefined;
+  onReactionChange: (id: string, next: ReactionSummary) => void;
   onReply: () => void;
   onReport: () => void;
   isReply?: boolean;
@@ -634,6 +663,23 @@ function CommentItem({
       <p className="text-[13px] text-text-sub leading-relaxed pl-8 whitespace-pre-wrap">
         {c.body}
       </p>
+
+      {/* 이모지 리액션 */}
+      <div className="pl-8 mt-2">
+        <ReactionBar
+          targetType="post_comment"
+          targetId={c.id}
+          summary={reactionSummary}
+          isLoggedIn={!!user}
+          onChange={onReactionChange}
+          onRequireLogin={() => {
+            if (confirm("로그인하면 반응을 남길 수 있어요. 로그인할까요?")) {
+              window.location.href = "/login";
+            }
+          }}
+        />
+      </div>
+
       {/* 답글 버튼 */}
       {user && !isReply && (
         <button

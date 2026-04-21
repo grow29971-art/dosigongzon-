@@ -22,6 +22,7 @@ import {
 import { MapPin } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import LoginRequired from "@/app/components/LoginRequired";
+import PageIntroBanner from "@/app/components/PageIntroBanner";
 
 /* ═══ 카테고리 카드 데이터 ═══ */
 type CategoryCard = {
@@ -207,6 +208,18 @@ export default function CommunityPage() {
             동네 이웃들과 함께 만드는 공간
           </p>
         </div>
+      </div>
+
+      {/* 페이지 사용법 안내 (dismiss 가능) */}
+      <div className="mb-4">
+        <PageIntroBanner
+          id="community"
+          title="커뮤니티에서 할 수 있는 것"
+          description="긴급 구조·임보 요청·입양 공고·용품 나눔·일상 대화까지. 카테고리별로 구별되니 찾기 쉬워요. 우측 하단 + 버튼으로 글쓰기."
+          ctaLabel="자세한 사용법"
+          ctaHref="/guide"
+          accent="#8B65B8"
+        />
       </div>
 
       {/* ── 오늘 방문자 (누적 총 방문자 수) ── */}

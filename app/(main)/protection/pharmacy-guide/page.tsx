@@ -525,7 +525,8 @@ export default async function PharmacyGuidePage() {
           <li>동물약국 표시사항 · 사용설명서</li>
         </ul>
         <p className="text-[11px] text-text-light mt-3 leading-relaxed">
-          본 가이드는 공개된 일반 정보를 정리한 참고 자료이며 <strong>수의사의 처방·진단을 대체하지 않습니다</strong>.
+          본 가이드는 공개된 일반 정보를 정리한 <b>참고 자료</b>이며, 특정 제품·제조사를 홍보하거나 판매를 유도하는
+          <b> 광고가 아닙니다</b>. <strong>수의사의 처방·진단을 대체하지 않으며</strong>,
           개별 고양이의 건강 상태·알레르기·동반 질환에 따라 권장 약품이 달라지니 반드시 수의사 상담 후 사용하세요.
         </p>
       </section>

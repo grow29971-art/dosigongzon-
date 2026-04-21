@@ -69,10 +69,20 @@ export async function POST(request: Request) {
     }
   }
 
-  // 3. 푸시 구독 맵 — user_id별 subscription 여러개
-  const { data: subs } = await supabase
-    .from("push_subscriptions")
-    .select("id, user_id, endpoint, p256dh, auth");
+  // 마케팅 푸시 동의한 유저만 (정보통신망법 옵트인)
+  const { data: optedIn } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("marketing_push_enabled", true);
+  const optedInIds = new Set(((optedIn ?? []) as { id: string }[]).map((p) => p.id));
+
+  // 3. 푸시 구독 맵 — user_id별 subscription 여러개 (옵트인 유저만)
+  const { data: subs } = optedInIds.size > 0
+    ? await supabase
+        .from("push_subscriptions")
+        .select("id, user_id, endpoint, p256dh, auth")
+        .in("user_id", Array.from(optedInIds))
+    : { data: [] };
   const subsByUser = new Map<string, Array<{ id: string; endpoint: string; p256dh: string; auth: string }>>();
   for (const s of (subs ?? []) as Array<{ id: string; user_id: string; endpoint: string; p256dh: string; auth: string }>) {
     if (!subsByUser.has(s.user_id)) subsByUser.set(s.user_id, []);

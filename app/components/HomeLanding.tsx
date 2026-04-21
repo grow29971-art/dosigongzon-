@@ -159,6 +159,16 @@ export default async function HomeLanding() {
             돌봄 시작하기
           </Link>
         </div>
+
+        {/* 처음이신가요? 가이드 링크 */}
+        <Link
+          href="/guide"
+          className="mt-3 flex items-center justify-center gap-1.5 text-[12px] font-bold active:scale-[0.98] transition-transform"
+          style={{ color: "#8B7562" }}
+        >
+          <span>처음이신가요? 10가지 기능 한눈에 보기</span>
+          <ArrowRight size={12} />
+        </Link>
       </section>
 
       {/* 감성 인용 — 철학적 질문 */}

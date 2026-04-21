@@ -81,6 +81,8 @@ export async function GET(request: Request) {
       const meta = user.user_metadata ?? {};
       const isFirstLogin = !meta.nickname_set;
       const userProvider = user.app_metadata?.provider;
+      // 가입 폼의 선택 동의 값 — 명시적 true일 때만 적용 (기본은 false 유지)
+      const emailOptIn = meta.email_opt_in === true;
 
       if (isFirstLogin && userProvider && userProvider !== "email") {
         const nickname = generateNickname();
@@ -95,7 +97,12 @@ export async function GET(request: Request) {
 
         await supabase
           .from("profiles")
-          .update({ nickname, terms_agreed_at: new Date().toISOString(), admin_title: earlyTitle })
+          .update({
+            nickname,
+            terms_agreed_at: new Date().toISOString(),
+            admin_title: earlyTitle,
+            email_digest_enabled: emailOptIn,
+          })
           .eq("id", user.id);
       } else {
         const { count } = await supabase
@@ -108,9 +115,16 @@ export async function GET(request: Request) {
           .update({
             terms_agreed_at: new Date().toISOString(),
             ...(earlyTitle ? { admin_title: earlyTitle } : {}),
+            // 이메일 가입 최초 인증 완료 시점에 한해 동의 반영 (중복 업데이트 방지)
+            ...(isFirstLogin ? { email_digest_enabled: emailOptIn } : {}),
           })
           .eq("id", user.id)
           .is("admin_title", null);
+
+        // nickname_set 마킹 — 첫 인증 한 번만 opt-in 적용되도록
+        if (isFirstLogin && userProvider === "email") {
+          await supabase.auth.updateUser({ data: { nickname_set: true } });
+        }
       }
     }
     return NextResponse.redirect(`${origin}${next}`);

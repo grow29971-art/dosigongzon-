@@ -62,6 +62,9 @@ export default function AdminInboxPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(true);
+  // 답변 draft — inquiry id → 작성 중 메시지
+  const [replyDrafts, setReplyDrafts] = useState<Record<string, string>>({});
+  const [replying, setReplying] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -177,6 +180,28 @@ export default function AdminInboxPage() {
       await refresh();
     } catch (err) {
       alert(err instanceof Error ? err.message : "상태 변경 실패");
+    }
+  };
+
+  const handleSendReply = async (id: string) => {
+    const body = (replyDrafts[id] ?? "").trim();
+    if (!body) {
+      alert("답변 내용을 입력해주세요.");
+      return;
+    }
+    setReplying(id);
+    try {
+      await updateInquiryStatus(id, "replied", body);
+      setReplyDrafts((d) => {
+        const next = { ...d };
+        delete next[id];
+        return next;
+      });
+      await refresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "답변 저장 실패");
+    } finally {
+      setReplying(null);
     }
   };
 
@@ -411,15 +436,65 @@ export default function AdminInboxPage() {
                 >
                   {i.body}
                 </div>
+
+                {/* 기존 답변(있으면) — 수정 가능하게 prefill */}
+                {i.admin_note && (
+                  <div className="mt-3">
+                    <p className="text-[10.5px] font-bold text-text-light tracking-[0.1em] mb-1.5">
+                      기존 답변
+                    </p>
+                    <div
+                      className="text-[12px] leading-relaxed p-3 rounded-lg whitespace-pre-wrap"
+                      style={{
+                        backgroundColor: "#E8F5E9",
+                        border: "1px solid #CDE5CF",
+                        color: "#2E4A31",
+                      }}
+                    >
+                      {i.admin_note}
+                    </div>
+                  </div>
+                )}
+
+                {/* 답변 작성 */}
+                <div className="mt-3">
+                  <p className="text-[10.5px] font-bold text-text-light tracking-[0.1em] mb-1.5">
+                    {i.admin_note ? "답변 수정" : "답변 작성"}
+                  </p>
+                  <textarea
+                    value={replyDrafts[i.id] ?? i.admin_note ?? ""}
+                    onChange={(e) =>
+                      setReplyDrafts((d) => ({ ...d, [i.id]: e.target.value }))
+                    }
+                    rows={3}
+                    placeholder="유저에게 보낼 답변 내용을 작성하세요..."
+                    className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none resize-none"
+                    style={{
+                      backgroundColor: "#FFFFFF",
+                      color: "#2A2A28",
+                      border: "1px solid #E3DCD3",
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleSendReply(i.id)}
+                    disabled={replying === i.id}
+                    className="mt-2 w-full py-2.5 rounded-xl text-white text-[12.5px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-60"
+                    style={{
+                      background: "linear-gradient(135deg, #6B8E6F 0%, #4F6E53 100%)",
+                      boxShadow: "0 3px 10px rgba(107,142,111,0.25)",
+                    }}
+                  >
+                    {replying === i.id
+                      ? "저장 중..."
+                      : i.admin_note
+                      ? "답변 수정 · 답변됨 처리"
+                      : "답변 보내기 · 답변됨 처리"}
+                  </button>
+                </div>
+
                 {/* 액션 */}
                 <div className="flex gap-1.5 mt-3 pt-2.5 border-t border-divider">
-                  <ActionBtn
-                    label="답변됨"
-                    onClick={() => handleInquiryStatus(i.id, "replied")}
-                    Icon={Check}
-                    bg="#6B8E6F"
-                    disabled={i.status === "replied"}
-                  />
                   <ActionBtn
                     label="종료"
                     onClick={() => handleInquiryStatus(i.id, "closed")}
