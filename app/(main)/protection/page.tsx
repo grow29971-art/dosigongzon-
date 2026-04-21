@@ -16,6 +16,7 @@ import {
   HeartHandshake,
   Utensils,
   Home as HomeIcon,
+  Stethoscope,
 } from "lucide-react";
 
 /* ═══ 카드 데이터 ═══ */
@@ -117,6 +118,18 @@ const cards: {
     type: "link",
     href: "/protection/trapping-guide",
     full: true,
+  },
+  {
+    title: "질병 가이드",
+    subtitle: "길고양이 흔한 10가지 질병 · 증상·대응·예방",
+    Icon: Stethoscope,
+    iconBg: "#D85555",
+    iconColor: "#FFFFFF",
+    glowColor: "216,85,85",
+    type: "link",
+    href: "/protection/disease-guide",
+    wide: true,
+    highlight: true,
   },
   {
     title: "약품 가이드",
