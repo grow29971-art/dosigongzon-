@@ -28,6 +28,8 @@ import {
 } from "lucide-react";
 import AIChatModal from "@/app/components/AIChatModal";
 import SocialProofStrip from "@/app/components/SocialProofStrip";
+import AchievementToast, { type ToastData } from "@/app/components/AchievementToast";
+import { TITLES, CATEGORY_COLORS } from "@/lib/titles";
 import SplashLoading from "@/app/components/SplashLoading";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
@@ -167,6 +169,7 @@ export default function HomeAuthed() {
   const [weatherError, setWeatherError] = useState("");
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [activity, setActivity] = useState<MyActivitySummary | null>(null);
+  const [achievementToasts, setAchievementToasts] = useState<ToastData[]>([]);
   const [levelInfo, setLevelInfo] = useState<LevelInfo | null>(null);
   const [popularPosts, setPopularPosts] = useState<Post[]>([]);
   const [allPosts, setAllPosts] = useState<Post[]>([]);
@@ -341,10 +344,61 @@ export default function HomeAuthed() {
     setMounted(true);
     setFact(CAT_FACTS[Math.floor(Math.random() * CAT_FACTS.length)]);
 
-    // 내 활동 요약 + 레벨
+    // 내 활동 요약 + 레벨 + 레벨업/업적 해제 감지
     getMyActivitySummary().then((s) => {
       setActivity(s);
-      setLevelInfo(computeLevel(computeScore(s)));
+      const lvl = computeLevel(computeScore(s));
+      setLevelInfo(lvl);
+
+      // 축하 토스트 큐
+      const newToasts: ToastData[] = [];
+
+      // 1) 레벨업 감지
+      try {
+        const prevKey = `last-seen-level:${user.id}`;
+        const prev = Number(localStorage.getItem(prevKey) ?? "0");
+        if (lvl.level > prev && prev > 0) {
+          newToasts.push({
+            id: `lvl-${lvl.level}`,
+            kind: "level_up",
+            emoji: lvl.emoji,
+            title: `Lv.${lvl.level} ${lvl.title}`,
+            subtitle: "레벨이 올랐어요! 새 혜택을 확인해보세요",
+            color: "#C47E5A",
+          });
+        }
+        localStorage.setItem(prevKey, String(lvl.level));
+      } catch {}
+
+      // 2) 새 업적 잠금 해제 감지
+      try {
+        const key = `unlocked-titles:${user.id}`;
+        const prevRaw = localStorage.getItem(key);
+        const prevSet = new Set<string>(prevRaw ? JSON.parse(prevRaw) : []);
+        const currentUnlocked = TITLES.filter((t) => t.unlocked(s));
+        const newlyUnlocked = currentUnlocked.filter((t) => !prevSet.has(t.id));
+        // 최초 로드(prevRaw 없음) 시에는 토스트 띄우지 않음 — 과거 업적 몰아치기 방지
+        if (prevRaw !== null) {
+          for (const t of newlyUnlocked) {
+            newToasts.push({
+              id: `title-${t.id}`,
+              kind: "title_unlock",
+              emoji: t.emoji,
+              title: t.name,
+              subtitle: t.description,
+              color: CATEGORY_COLORS[t.category],
+            });
+          }
+        }
+        localStorage.setItem(
+          key,
+          JSON.stringify(currentUnlocked.map((t) => t.id)),
+        );
+      } catch {}
+
+      if (newToasts.length > 0) {
+        setAchievementToasts((prev) => [...prev, ...newToasts]);
+      }
     });
 
     // 날씨 가져오기
@@ -411,6 +465,29 @@ export default function HomeAuthed() {
               FOR STRAY CATS
             </span>
           </div>
+          {/* 개인화 인사 — 시간대 + 이름 */}
+          {user && (() => {
+            const h = new Date(
+              new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }),
+            ).getHours();
+            const greet =
+              h < 5 ? "늦은 밤에도 수고 많으세요"
+              : h < 11 ? "좋은 아침이에요"
+              : h < 14 ? "점심은 드셨어요?"
+              : h < 18 ? "오늘도 고생하세요"
+              : h < 22 ? "좋은 저녁이에요"
+              : "편안한 밤 되세요";
+            const name =
+              (user.user_metadata?.nickname as string | undefined) ??
+              (user.user_metadata?.full_name as string | undefined) ??
+              user.email?.split("@")[0] ??
+              "";
+            return (
+              <p className="text-[11.5px] font-bold text-text-sub mt-2 tracking-tight">
+                {greet}{name ? `, ${name}님` : ""} 💛
+              </p>
+            );
+          })()}
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -1081,6 +1158,14 @@ export default function HomeAuthed() {
       </div>
 
       <AIChatModal open={chatOpen} onClose={() => setChatOpen(false)} />
+
+      {/* 레벨업 / 업적 잠금 해제 토스트 */}
+      <AchievementToast
+        toasts={achievementToasts}
+        onDismiss={(id) =>
+          setAchievementToasts((prev) => prev.filter((t) => t.id !== id))
+        }
+      />
 
       {/* ══════ 내 동네 소식 ══════ */}
       {user && (

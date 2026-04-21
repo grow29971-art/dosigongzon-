@@ -6,6 +6,7 @@ import Link from "next/link";
 import { X, Camera, MapPin, Loader2, Plus, Lock } from "lucide-react";
 import { createCat, uploadCatPhoto, type Cat, type CatGender, type CatHealthStatus, GENDER_MAP, HEALTH_MAP } from "@/lib/cats-repo";
 import { useAuth } from "@/lib/auth-context";
+import CatRegistrationCelebration from "@/app/components/CatRegistrationCelebration";
 
 interface AddCatModalProps {
   open: boolean;
@@ -57,6 +58,13 @@ export default function AddCatModal({
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  // 등록 직후 축하 모달
+  const [celebration, setCelebration] = useState<{
+    open: boolean;
+    catName: string;
+    isFirstEver: boolean;
+    cat: Cat | null;
+  }>({ open: false, catName: "", isFirstEver: false, cat: null });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // portal root
@@ -200,8 +208,21 @@ export default function AddCatModal({
         health_status: healthStatus,
       });
 
-      onCreated(newCat);
-      onClose();
+      // 첫 등록 감지 — localStorage 기반 (유저별)
+      const firstKey = user ? `first-cat-registered:${user.id}` : "first-cat-registered";
+      let isFirstEver = false;
+      try {
+        isFirstEver = !localStorage.getItem(firstKey);
+        if (isFirstEver) localStorage.setItem(firstKey, "1");
+      } catch {}
+
+      setCelebration({
+        open: true,
+        catName: newCat.name,
+        isFirstEver,
+        cat: newCat,
+      });
+      setSubmitting(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : "등록에 실패했어요.");
       setSubmitting(false);
@@ -561,6 +582,18 @@ export default function AddCatModal({
           </button>
         </div>
       </div>
+
+      {/* 등록 직후 축하 peak-end */}
+      <CatRegistrationCelebration
+        open={celebration.open}
+        catName={celebration.catName}
+        isFirstEver={celebration.isFirstEver}
+        onClose={() => {
+          setCelebration((prev) => ({ ...prev, open: false }));
+          if (celebration.cat) onCreated(celebration.cat);
+          onClose();
+        }}
+      />
     </div>,
     portalRoot,
   );
