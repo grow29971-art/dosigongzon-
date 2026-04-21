@@ -30,6 +30,8 @@ import AIChatModal from "@/app/components/AIChatModal";
 import SocialProofStrip from "@/app/components/SocialProofStrip";
 import AchievementToast, { type ToastData } from "@/app/components/AchievementToast";
 import { TITLES, CATEGORY_COLORS } from "@/lib/titles";
+import TodayChecklist from "@/app/components/TodayChecklist";
+import RescueBanner from "@/app/components/RescueBanner";
 import SplashLoading from "@/app/components/SplashLoading";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
@@ -170,6 +172,7 @@ export default function HomeAuthed() {
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [activity, setActivity] = useState<MyActivitySummary | null>(null);
   const [achievementToasts, setAchievementToasts] = useState<ToastData[]>([]);
+  const [rescueCount, setRescueCount] = useState(0);
   const [levelInfo, setLevelInfo] = useState<LevelInfo | null>(null);
   const [popularPosts, setPopularPosts] = useState<Post[]>([]);
   const [allPosts, setAllPosts] = useState<Post[]>([]);
@@ -343,6 +346,14 @@ export default function HomeAuthed() {
 
     setMounted(true);
     setFact(CAT_FACTS[Math.floor(Math.random() * CAT_FACTS.length)]);
+
+    // 긴급 구조 피드 카운트 (체크리스트용)
+    fetch("/api/social-proof")
+      .then((r) => r.json())
+      .then((d) => {
+        if (typeof d?.rescueCount === "number") setRescueCount(d.rescueCount);
+      })
+      .catch(() => {});
 
     // 내 활동 요약 + 레벨 + 레벨업/업적 해제 감지
     getMyActivitySummary().then((s) => {
@@ -530,6 +541,19 @@ export default function HomeAuthed() {
 
       {/* ══════ 사회적 증명 (오늘 활동 이웃 수) ══════ */}
       <SocialProofStrip />
+
+      {/* ══════ 긴급 구조 배너 (scarcity/urgency) ══════ */}
+      {user && rescueCount > 0 && <RescueBanner count={rescueCount} />}
+
+      {/* ══════ 오늘 해볼 것 체크리스트 (Zeigarnik) ══════ */}
+      {user && activity && (
+        <TodayChecklist
+          activity={activity}
+          hasTodayCare={streakInfo?.hasToday ?? false}
+          unreadCount={unreadCount}
+          rescueCount={rescueCount}
+        />
+      )}
 
       {/* ══════ 온보딩 가이드 (신규 유저용) ══════ */}
       {user && activity && !onboardingDismissed && (

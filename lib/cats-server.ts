@@ -52,6 +52,25 @@ export interface CatCommunityStats {
   likeUserCount: number;            // 좋아요한 unique 유저 수 (사회적 증명용)
 }
 
+/**
+ * 긴급 구조 피드 — health_status='danger' 고양이만.
+ * /rescue 페이지용.
+ */
+export async function getRescueCatsServer(limit: number = 50): Promise<Cat[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("cats")
+    .select("*")
+    .eq("health_status", "danger")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) {
+    console.error("[cats-server] getRescueCatsServer failed:", error);
+    return [];
+  }
+  return (data ?? []) as Cat[];
+}
+
 export async function getCatCommunityStatsServer(
   catId: string,
 ): Promise<CatCommunityStats> {

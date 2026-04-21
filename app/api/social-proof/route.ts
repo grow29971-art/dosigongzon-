@@ -44,7 +44,7 @@ export async function GET(request: Request) {
   const mondayUtcMs = mondayKst.getTime() - 9 * 60 * 60 * 1000;
   const mondayUtc = new Date(mondayUtcMs).toISOString();
 
-  const [caretakersRes, newCatsRes, totalCatsRes] = await Promise.all([
+  const [caretakersRes, newCatsRes, totalCatsRes, rescueRes] = await Promise.all([
     // 오늘 KST 돌봄 기록 있는 유저 — author_id 전부 가져와서 set 크기로 unique 카운트
     supabase
       .from("care_logs")
@@ -60,6 +60,11 @@ export async function GET(request: Request) {
     supabase
       .from("cats")
       .select("*", { count: "exact", head: true }),
+    // 위험(긴급 구조) 상태 고양이 수
+    supabase
+      .from("cats")
+      .select("*", { count: "exact", head: true })
+      .eq("health_status", "danger"),
   ]);
 
   const uniqueCaretakers = new Set(
@@ -72,5 +77,6 @@ export async function GET(request: Request) {
     activeCaretakersToday: uniqueCaretakers,
     newCatsThisWeek: newCatsRes.count ?? 0,
     totalCats: totalCatsRes.count ?? 0,
+    rescueCount: rescueRes.count ?? 0,
   });
 }
