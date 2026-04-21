@@ -108,8 +108,21 @@ export async function getConversations(): Promise<Conversation[]> {
 
   if (error || !data) return [];
 
+  // SELECT로 가져온 컬럼만 엄밀하게 타입 지정 — photo_url 같은 DirectMessage 전체 필드 캐스팅은 오도.
+  type ConvRow = Pick<
+    DirectMessage,
+    | "sender_id"
+    | "receiver_id"
+    | "sender_name"
+    | "receiver_name"
+    | "sender_avatar_url"
+    | "body"
+    | "is_read"
+    | "created_at"
+  >;
+
   const convMap = new Map<string, Conversation>();
-  for (const msg of data as DirectMessage[]) {
+  for (const msg of data as ConvRow[]) {
     const partnerId = msg.sender_id === user.id ? msg.receiver_id : msg.sender_id;
     const partnerName = msg.sender_id === user.id
       ? (msg.receiver_name ?? "익명")

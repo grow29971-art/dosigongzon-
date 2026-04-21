@@ -156,23 +156,27 @@ export async function getMyCareDashboard(): Promise<MyCareDashboard> {
   const rows = data as { cat_id: string; care_type: CareType; logged_at: string }[];
   if (rows.length === 0) return empty;
 
-  // KST 시각 파싱 헬퍼
+  // KST 시각 파싱 — Intl.DateTimeFormat.formatToParts로 로케일 변종에 의존하지 않게
+  const kstFormatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
   const getKstParts = (iso: string) => {
-    // 'en-GB' 로케일에서 24h 포맷 안정
-    const parts = new Date(iso).toLocaleString("en-GB", {
-      timeZone: "Asia/Seoul",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-    // "DD/MM/YYYY, HH:mm"
-    const [date, time] = parts.split(", ");
-    const [dd, mm, yyyy] = date.split("/");
-    const [hh] = time.split(":");
-    return { year: Number(yyyy), month: Number(mm), hour: Number(hh) };
+    const parts = kstFormatter.formatToParts(new Date(iso));
+    let year = 0, month = 0, hour = 0;
+    for (const p of parts) {
+      if (p.type === "year") year = Number(p.value);
+      else if (p.type === "month") month = Number(p.value);
+      else if (p.type === "hour") hour = Number(p.value);
+    }
+    // 일부 환경에서 hour가 24로 나올 수 있음 → 0으로 보정
+    if (hour === 24) hour = 0;
+    return { year, month, hour };
   };
 
   const now = new Date();
