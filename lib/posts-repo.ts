@@ -52,13 +52,17 @@ function rowToPost(row: PostRow): Post {
 }
 
 // ── 읽기 ──
-export async function listPosts(category?: PostCategory): Promise<Post[]> {
+export async function listPosts(
+  category?: PostCategory,
+  limit: number = 100,
+): Promise<Post[]> {
   const supabase = createClient();
   let query = supabase
     .from("posts")
     .select("*")
     .order("is_pinned", { ascending: false })
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(limit);
 
   if (category) {
     query = query.eq("category", category);

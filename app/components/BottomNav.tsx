@@ -41,6 +41,8 @@ export default function BottomNav() {
             <Link
               key={href}
               href={href}
+              aria-label={showBadge ? `${label} · 읽지 않음 ${unreadCount}개` : label}
+              aria-current={on ? "page" : undefined}
               className={`relative flex flex-col items-center gap-0.5 px-3 py-1 transition-colors ${
                 on ? "text-primary" : "text-text-muted"
               }`}
@@ -49,6 +51,7 @@ export default function BottomNav() {
                 <Icon size={22} strokeWidth={on ? 2.5 : 1.8} />
                 {showBadge && (
                   <span
+                    aria-hidden="true"
                     className="absolute -top-1.5 -right-2 min-w-[16px] h-4 rounded-full flex items-center justify-center text-[9px] font-bold text-white px-1"
                     style={{ backgroundColor: "#D85555" }}
                   >

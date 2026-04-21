@@ -74,6 +74,9 @@ export default function ReportModal({
       className="fixed inset-0 z-[70] flex items-center justify-center p-4"
       style={{ backgroundColor: "rgba(0,0,0,0.55)" }}
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="report-modal-title"
     >
       <div
         className="w-full max-w-sm relative"
@@ -96,13 +99,17 @@ export default function ReportModal({
             >
               <Flag size={14} color="#fff" strokeWidth={2.5} />
             </div>
-            <h2 className="text-[16px] font-extrabold text-text-main tracking-tight">
+            <h2
+              id="report-modal-title"
+              className="text-[16px] font-extrabold text-text-main tracking-tight"
+            >
               신고하기
             </h2>
           </div>
           <button
             onClick={onClose}
             disabled={submitting}
+            aria-label="신고 창 닫기"
             className="w-7 h-7 rounded-lg flex items-center justify-center active:scale-90"
             style={{ backgroundColor: "#EEE8E0" }}
           >

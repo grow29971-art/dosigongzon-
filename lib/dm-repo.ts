@@ -95,11 +95,16 @@ export async function getConversations(): Promise<Conversation[]> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return [];
 
+  // 목록 표시에 필요한 컬럼만 — photo_url 같은 무거운 필드는 제외.
+  // 최근 500건 기준으로 대화방 집계 (대부분의 유저는 이 범위로 충분).
   const { data, error } = await supabase
     .from("direct_messages")
-    .select("*")
+    .select(
+      "id, sender_id, receiver_id, sender_name, receiver_name, sender_avatar_url, body, is_read, created_at",
+    )
     .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(500);
 
   if (error || !data) return [];
 

@@ -1426,7 +1426,9 @@ export default function MapPage() {
                   color: catFilter !== "all" || showFilterPanel ? "#fff" : "#A38E7A",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
                 }}
-                aria-label="필터"
+                aria-label="고양이 필터"
+                aria-expanded={showFilterPanel}
+                aria-controls="cat-filter-panel"
               >
                 <SlidersHorizontal size={14} />
               </button>
@@ -1434,7 +1436,7 @@ export default function MapPage() {
 
             {/* 속성 필터 칩 */}
             {showFilterPanel && (
-              <div className="flex gap-1.5 mt-2 overflow-x-auto scrollbar-hide">
+              <div id="cat-filter-panel" className="flex gap-1.5 mt-2 overflow-x-auto scrollbar-hide">
                 {([
                   { key: "all",             label: "🌍 전체",       color: "#2C2C2C" },
                   { key: "alert",           label: "⚠️ 학대 경보",   color: "#D85555" },

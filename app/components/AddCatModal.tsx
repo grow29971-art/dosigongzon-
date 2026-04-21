@@ -247,7 +247,12 @@ export default function AddCatModal({
 
   // ── 등록 폼 ──
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex flex-col">
+    <div
+      className="fixed inset-0 z-[100] flex flex-col"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="add-cat-modal-title"
+    >
       <div className="absolute inset-0 bg-black/40" onClick={() => !submitting && onClose()} />
 
       <div
@@ -262,7 +267,12 @@ export default function AddCatModal({
         {/* 헤더 */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-divider">
           <div>
-            <h2 className="text-[17px] font-extrabold text-text-main">우리 동네 아이 등록</h2>
+            <h2
+              id="add-cat-modal-title"
+              className="text-[17px] font-extrabold text-text-main"
+            >
+              우리 동네 아이 등록
+            </h2>
             <p className="text-[11px] text-text-sub mt-0.5">
               사진과 위치, 한 줄 소개로 충분해요
             </p>
@@ -270,6 +280,7 @@ export default function AddCatModal({
           <button
             onClick={onClose}
             disabled={submitting}
+            aria-label="등록 창 닫기"
             className="w-9 h-9 rounded-full bg-surface-alt flex items-center justify-center active:scale-90 transition-transform disabled:opacity-50"
           >
             <X size={18} className="text-text-sub" />
