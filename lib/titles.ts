@@ -149,6 +149,24 @@ export const TITLES: TitleDef[] = [
     unlocked: (s) => s.currentStreak >= 100,
     progress: (s) => clamp01(s.currentStreak / 100),
   },
+  {
+    id: "longest_14",
+    name: "2주의 기록",
+    emoji: "📅",
+    category: "streak",
+    description: "역대 최장 14일 연속 돌봄을 이뤄냈어요",
+    unlocked: (s) => s.longestStreak >= 14,
+    progress: (s) => clamp01(s.longestStreak / 14),
+  },
+  {
+    id: "longest_50",
+    name: "기록의 주인",
+    emoji: "🥇",
+    category: "streak",
+    description: "역대 최장 50일 연속 돌봄 — 시간을 쌓은 사람",
+    unlocked: (s) => s.longestStreak >= 50,
+    progress: (s) => clamp01(s.longestStreak / 50),
+  },
 
   // ── 초대 (inviteCount) ──
   {

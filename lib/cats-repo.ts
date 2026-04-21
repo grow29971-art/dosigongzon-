@@ -796,6 +796,7 @@ export interface MyActivitySummary {
   careLogCount: number;
   inviteCount: number;        // 내가 초대해서 가입한 친구 수
   currentStreak: number;      // 현재 연속 돌봄 일수
+  longestStreak: number;      // 역대 최장 연속 돌봄 일수
   weeklyGoalAchieved: boolean; // 이번 주 7일 모두 돌봄 기록 있음
 }
 
@@ -931,10 +932,9 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
   if (!user)
     return {
       catCount: 0, commentCount: 0, alertCount: 0, likesReceived: 0,
-      careLogCount: 0, inviteCount: 0, currentStreak: 0, weeklyGoalAchieved: false,
+      careLogCount: 0, inviteCount: 0,
+      currentStreak: 0, longestStreak: 0, weeklyGoalAchieved: false,
     };
-
-  const since60 = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString();
 
   const [catsRes, commentsRes, alertsRes, likeSumRes, careLogsRes, invitesRes, recentCareRes] = await Promise.all([
     supabase
@@ -962,13 +962,13 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
       .from("invite_events")
       .select("id", { count: "exact", head: true })
       .eq("inviter_id", user.id),
-    // 최근 60일 돌봄 기록 — streak / 주간 목표 계산용
+    // 전체 기간 돌봄 날짜 — current/longest streak + 주간 목표 계산 (최대 1000건)
     supabase
       .from("care_logs")
       .select("logged_at")
       .eq("author_id", user.id)
-      .gte("logged_at", since60)
-      .order("logged_at", { ascending: false }),
+      .order("logged_at", { ascending: false })
+      .limit(1000),
   ]);
 
   const likesReceived = (
@@ -976,7 +976,7 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
   ).reduce((sum, r) => sum + (r.like_count ?? 0), 0);
 
   // streak / 이번 주 목표 달성 집계
-  const { currentStreak, weeklyGoalAchieved } = computeStreakAndWeekly(
+  const { currentStreak, longestStreak, weeklyGoalAchieved } = computeStreakAndWeekly(
     (recentCareRes.data ?? []) as { logged_at: string }[],
   );
 
@@ -988,13 +988,19 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
     careLogCount: careLogsRes.count ?? 0,
     inviteCount: invitesRes.count ?? 0,
     currentStreak,
+    longestStreak,
     weeklyGoalAchieved,
   };
 }
 
-/** streak / 이번 주 7일 달성 여부 계산 (KST). */
-function computeStreakAndWeekly(rows: { logged_at: string }[]): { currentStreak: number; weeklyGoalAchieved: boolean } {
-  if (rows.length === 0) return { currentStreak: 0, weeklyGoalAchieved: false };
+/** streak / 역대 최장 / 이번 주 7일 달성 여부 계산 (KST). */
+function computeStreakAndWeekly(rows: { logged_at: string }[]): {
+  currentStreak: number;
+  longestStreak: number;
+  weeklyGoalAchieved: boolean;
+} {
+  if (rows.length === 0)
+    return { currentStreak: 0, longestStreak: 0, weeklyGoalAchieved: false };
 
   const toKst = (iso: string) =>
     new Date(iso).toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
@@ -1005,6 +1011,7 @@ function computeStreakAndWeekly(rows: { logged_at: string }[]): { currentStreak:
   const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
   const hasToday = daysSet.has(today);
 
+  // 현재 streak
   let streak = 0;
   const cursor = new Date();
   if (!hasToday) cursor.setDate(cursor.getDate() - 1);
@@ -1014,6 +1021,26 @@ function computeStreakAndWeekly(rows: { logged_at: string }[]): { currentStreak:
       streak += 1;
       cursor.setDate(cursor.getDate() - 1);
     } else break;
+  }
+
+  // 역대 최장 streak — 오름차순 스캔
+  const sortedDays = Array.from(daysSet).sort();
+  let longest = 0;
+  let runLen = 0;
+  let prevDay: string | null = null;
+  for (const day of sortedDays) {
+    if (prevDay === null) {
+      runLen = 1;
+    } else {
+      const diffDays = Math.round(
+        (new Date(day + "T00:00:00").getTime() -
+          new Date(prevDay + "T00:00:00").getTime()) /
+          (24 * 60 * 60 * 1000),
+      );
+      runLen = diffDays === 1 ? runLen + 1 : 1;
+    }
+    if (runLen > longest) longest = runLen;
+    prevDay = day;
   }
 
   // 이번 주 월~일 모든 요일에 기록 있는지
@@ -1029,7 +1056,7 @@ function computeStreakAndWeekly(rows: { logged_at: string }[]): { currentStreak:
     if (!daysSet.has(key)) { achieved = false; break; }
   }
 
-  return { currentStreak: streak, weeklyGoalAchieved: achieved };
+  return { currentStreak: streak, longestStreak: longest, weeklyGoalAchieved: achieved };
 }
 
 // ── 고양이 정보 수정 (본인 또는 admin) ──

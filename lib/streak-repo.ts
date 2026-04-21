@@ -9,6 +9,9 @@ export interface StreakInfo {
   streak: number;            // 오늘(또는 어제)부터 거슬러 올라간 연속 일수
   hasToday: boolean;         // 오늘 돌봄 기록 있음
   lastCareDate: string | null; // "YYYY-MM-DD" (KST)
+  longestStreak: number;     // 역대 최장 연속 일수
+  longestStreakEndDate: string | null; // 역대 최장 기록이 끝난 날 (YYYY-MM-DD KST)
+  isRecord: boolean;         // 현재 streak이 역대 최장과 동률인지 (진행 중 신기록)
   weekly: {
     count: number;           // 이번 주 월~일 돌봄 횟수
     goal: number;            // 목표 (기본 7)
@@ -45,6 +48,9 @@ export async function getMyStreakInfo(weeklyGoal = 7): Promise<StreakInfo> {
     streak: 0,
     hasToday: false,
     lastCareDate: null,
+    longestStreak: 0,
+    longestStreakEndDate: null,
+    isRecord: false,
     weekly: { count: 0, goal: weeklyGoal, byDay: [false, false, false, false, false, false, false] },
   };
 
@@ -52,14 +58,14 @@ export async function getMyStreakInfo(weeklyGoal = 7): Promise<StreakInfo> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return empty;
 
-  // 최근 60일치 돌봄 기록 가져와서 클라이언트에서 집계
-  const since = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString();
+  // 전체 기간 돌봄 기록 (역대 최장 계산용) — 최근 1000건 제한.
+  // 하루에 여러 건 있어도 날짜만 쓰므로 충분히 많은 날을 커버함.
   const { data, error } = await supabase
     .from("care_logs")
     .select("logged_at")
     .eq("author_id", user.id)
-    .gte("logged_at", since)
-    .order("logged_at", { ascending: false });
+    .order("logged_at", { ascending: false })
+    .limit(1000);
 
   if (error || !data) return empty;
 
@@ -73,7 +79,7 @@ export async function getMyStreakInfo(weeklyGoal = 7): Promise<StreakInfo> {
   const today = toKstDate(new Date());
   const hasToday = daysSet.has(today);
 
-  // streak: 오늘(있으면) 또는 어제부터 거슬러
+  // 현재 streak: 오늘(있으면) 또는 어제부터 거슬러
   let streak = 0;
   const cursor = new Date();
   if (!hasToday) cursor.setDate(cursor.getDate() - 1);
@@ -84,6 +90,34 @@ export async function getMyStreakInfo(weeklyGoal = 7): Promise<StreakInfo> {
     } else {
       break;
     }
+  }
+
+  // 역대 최장 streak: 날짜 오름차순으로 스캔하며 연속 구간 길이 중 최대
+  const sortedDays = Array.from(daysSet).sort(); // "YYYY-MM-DD" 오름차순
+  let longestStreak = 0;
+  let longestEnd: string | null = null;
+  let runLen = 0;
+  let prevDay: string | null = null;
+  for (const day of sortedDays) {
+    if (prevDay === null) {
+      runLen = 1;
+    } else {
+      const prev = new Date(prevDay + "T00:00:00");
+      const curr = new Date(day + "T00:00:00");
+      const diffDays = Math.round(
+        (curr.getTime() - prev.getTime()) / (24 * 60 * 60 * 1000),
+      );
+      if (diffDays === 1) {
+        runLen += 1;
+      } else {
+        runLen = 1;
+      }
+    }
+    if (runLen > longestStreak) {
+      longestStreak = runLen;
+      longestEnd = day;
+    }
+    prevDay = day;
   }
 
   // 이번 주(월~일) 집계
@@ -100,13 +134,19 @@ export async function getMyStreakInfo(weeklyGoal = 7): Promise<StreakInfo> {
     if (diffDays >= 0 && diffDays < 7) byDay[diffDays] = true;
   }
 
-  // 최신 돌봄 날짜
-  const sorted = Array.from(daysSet).sort().reverse();
+  // 최신 돌봄 날짜 (최장 end와 다를 수 있음)
+  const lastCareDate = sortedDays[sortedDays.length - 1] ?? null;
+
+  // 현재 streak이 역대 최장과 같으면 = 신기록 진행 중
+  const isRecord = streak > 0 && streak >= longestStreak;
 
   return {
     streak,
     hasToday,
-    lastCareDate: sorted[0] ?? null,
+    lastCareDate,
+    longestStreak,
+    longestStreakEndDate: longestEnd,
+    isRecord,
     weekly: { count, goal: weeklyGoal, byDay },
   };
 }

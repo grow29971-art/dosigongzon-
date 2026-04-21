@@ -590,6 +590,32 @@ export default function HomeAuthed() {
                   })}
                 </div>
 
+                {/* 역대 최장 기록 */}
+                {streakInfo.longestStreak >= 2 && (
+                  <div
+                    className="mt-3 px-3 py-2 rounded-lg flex items-center justify-between"
+                    style={{
+                      background: streakInfo.isRecord
+                        ? "linear-gradient(135deg, #FFF4DC 0%, #FFE9C5 100%)"
+                        : "rgba(0,0,0,0.035)",
+                      border: streakInfo.isRecord
+                        ? "1px solid #E8B84A55"
+                        : "none",
+                    }}
+                  >
+                    <span
+                      className="text-[10.5px] font-bold"
+                      style={{
+                        color: streakInfo.isRecord ? "#A67B1E" : "#8C7B6A",
+                      }}
+                    >
+                      {streakInfo.isRecord
+                        ? `🎉 역대 최장 기록 갱신 중! (${streakInfo.longestStreak}일)`
+                        : `🏆 역대 최장 ${streakInfo.longestStreak}일 · 돌파까지 ${streakInfo.longestStreak - s + 1}일`}
+                    </span>
+                  </div>
+                )}
+
                 {/* 보상 힌트 */}
                 <div
                   className="mt-3 px-3 py-2 rounded-lg flex items-center justify-between"
