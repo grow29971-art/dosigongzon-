@@ -21,6 +21,8 @@ import {
   type CareLogStats,
 } from "@/lib/care-logs-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import CareLogCelebration from "@/app/components/CareLogCelebration";
+import { getMyStreakInfo } from "@/lib/streak-repo";
 
 interface Props {
   catId: string;
@@ -42,6 +44,12 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  // 축하 모달 상태
+  const [celebration, setCelebration] = useState<{
+    open: boolean;
+    isFirstEver: boolean;
+    streak: number;
+  }>({ open: false, isFirstEver: false, streak: 0 });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -87,6 +95,21 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
       setPhotoFile(null);
       setPhotoPreview(null);
       setShowForm(false);
+
+      // peak-end 축하 연출
+      const firstEverKey = "care-log-first-ever-dismissed";
+      const isFirstEver = typeof window !== "undefined" && !localStorage.getItem(firstEverKey);
+      // 최신 streak 조회 (이번 제출 반영)
+      getMyStreakInfo()
+        .then((info) => {
+          setCelebration({ open: true, isFirstEver, streak: info.streak });
+          if (isFirstEver) {
+            try { localStorage.setItem(firstEverKey, "1"); } catch {}
+          }
+        })
+        .catch(() => {
+          setCelebration({ open: true, isFirstEver, streak: 0 });
+        });
     } catch (err) {
       setError(err instanceof Error ? err.message : "기록 실패");
     } finally {
@@ -331,6 +354,15 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
           )}
         </div>
       )}
+
+      {/* 돌봄 기록 후 peak-end 축하 + commitment */}
+      <CareLogCelebration
+        open={celebration.open}
+        catName={"이 아이"}
+        isFirstEver={celebration.isFirstEver}
+        streak={celebration.streak}
+        onClose={() => setCelebration({ ...celebration, open: false })}
+      />
     </div>
   );
 }

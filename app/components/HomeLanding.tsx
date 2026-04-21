@@ -9,6 +9,7 @@ import { sanitizeImageUrl } from "@/lib/url-validate";
 import LandingOnboardingGate from "@/app/components/LandingOnboardingGate";
 import ShareAreaButton from "@/app/components/ShareAreaButton";
 import TodayVisitors from "@/app/components/TodayVisitors";
+import SocialProofStrip from "@/app/components/SocialProofStrip";
 
 const SITE_URL = "https://dosigongzon.com";
 
@@ -131,6 +132,9 @@ export default async function HomeLanding() {
 
         {/* 방문자 수 실시간 (client) */}
         <TodayVisitors />
+
+        {/* 사회적 증명 — 오늘 활동 유저 + 이번 주 신규 */}
+        <SocialProofStrip />
 
         {/* CTA — primary + ghost 대비 */}
         <div className="flex gap-2 mt-5">

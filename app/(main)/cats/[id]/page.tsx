@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, Heart, MessageCircle, PawPrint, CalendarDays } from "lucide-react";
-import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer } from "@/lib/cats-server";
+import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer, getCatCommunityStatsServer } from "@/lib/cats-server";
 import { GENDER_MAP, HEALTH_MAP } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import FollowButton from "@/app/components/FollowButton";
@@ -60,9 +60,10 @@ export default async function CatDetailPage({ params }: { params: Params }) {
   const cat = await getCatByIdServer(id);
   if (!cat) notFound();
 
-  const [commentCount, careCount] = await Promise.all([
+  const [commentCount, careCount, communityStats] = await Promise.all([
     getCatCommentsCountServer(cat.id),
     getCatCareLogsCountServer(cat.id),
+    getCatCommunityStatsServer(cat.id),
   ]);
 
   const photo = sanitizeImageUrl(cat.photo_url, "https://placehold.co/800x800/EEEAE2/2A2A28?text=%3F");
@@ -180,6 +181,88 @@ export default async function CatDetailPage({ params }: { params: Params }) {
         <StatCard emoji="🐾" label="돌봄 일지" value={careCount} color="#6B8E6F" />
         <StatCard emoji="💬" label="댓글" value={commentCount} color="#4A7BA8" />
       </div>
+
+      {/* 사회적 증명 — 이 아이를 함께 돌보는 이웃 */}
+      {(communityStats.uniqueCaretakers > 0 || communityStats.likeUserCount > 0) && (
+        <div className="px-4 mt-3">
+          <div
+            className="rounded-2xl px-4 py-3 flex items-center gap-3"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(196,126,90,0.08) 0%, rgba(232,107,140,0.06) 100%)",
+              border: "1px solid rgba(196,126,90,0.18)",
+            }}
+          >
+            {/* 돌봄 이웃 아바타 스택 */}
+            {communityStats.recentCaretakers.length > 0 && (
+              <div className="flex -space-x-2 shrink-0">
+                {communityStats.recentCaretakers.map((c) => (
+                  <div
+                    key={c.authorId}
+                    className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center"
+                    style={{
+                      background: "#EEE8E0",
+                      border: "2px solid #fff",
+                    }}
+                    title={c.name}
+                  >
+                    {c.avatarUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={sanitizeImageUrl(c.avatarUrl, "")}
+                        alt={c.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-[11px] font-extrabold" style={{ color: "#A38E7A" }}>
+                        {c.name.charAt(0)}
+                      </span>
+                    )}
+                  </div>
+                ))}
+                {communityStats.uniqueCaretakers > 3 && (
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-extrabold"
+                    style={{
+                      background: "#C47E5A",
+                      color: "#fff",
+                      border: "2px solid #fff",
+                    }}
+                  >
+                    +{communityStats.uniqueCaretakers - 3}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="flex-1 min-w-0">
+              <p className="text-[12.5px] font-extrabold text-text-main tracking-tight leading-tight">
+                {communityStats.uniqueCaretakers > 0 ? (
+                  <>
+                    이웃{" "}
+                    <span style={{ color: "#C47E5A" }}>
+                      {communityStats.uniqueCaretakers}명
+                    </span>
+                    이 {cat.name}을(를) 함께 돌보고 있어요
+                  </>
+                ) : (
+                  <>
+                    <span style={{ color: "#E86B8C" }}>
+                      {communityStats.likeUserCount}명
+                    </span>
+                    이 이 아이를 지켜보고 있어요
+                  </>
+                )}
+              </p>
+              {communityStats.uniqueCaretakers > 0 && communityStats.likeUserCount > 0 && (
+                <p className="text-[10.5px] text-text-sub mt-0.5 leading-tight">
+                  좋아요 {communityStats.likeUserCount}명 · 최근 30일 기록
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 프로필 뱃지 */}
       <div className="px-4 mt-4">

@@ -27,6 +27,7 @@ import {
   Bell,
 } from "lucide-react";
 import AIChatModal from "@/app/components/AIChatModal";
+import SocialProofStrip from "@/app/components/SocialProofStrip";
 import SplashLoading from "@/app/components/SplashLoading";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
@@ -450,6 +451,9 @@ export default function HomeAuthed() {
 
 
 
+      {/* ══════ 사회적 증명 (오늘 활동 이웃 수) ══════ */}
+      <SocialProofStrip />
+
       {/* ══════ 온보딩 가이드 (신규 유저용) ══════ */}
       {user && activity && !onboardingDismissed && (
         <OnboardingCard
@@ -481,19 +485,29 @@ export default function HomeAuthed() {
           : hasToday
             ? `${s}일 연속 돌봄 중!`
             : `${s}일 연속 — 오늘도 이어가볼까요?`;
+        const kstHourForSubline = new Date(
+          new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }),
+        ).getHours();
+        const urgentSubline = !hasToday && s >= 2 && kstHourForSubline >= 18;
         const subline = s === 0
           ? "1건만 기록해도 연속 일수가 시작돼요"
-          : !hasToday
-            ? "아직 오늘 기록이 없어요. 끊기지 않게 💛"
-            : s >= 7
-              ? "대단해요! 꾸준함이 아이들을 지켜요"
-              : "매일 조금씩이 가장 큰 힘이에요";
+          : urgentSubline
+            ? `${s}일 연속 기록이 오늘 끊길 수 있어요. 한 줄이면 돼요!`
+            : !hasToday
+              ? "아직 오늘 기록이 없어요. 끊기지 않게 💛"
+              : s >= 7
+                ? "대단해요! 꾸준함이 아이들을 지켜요"
+                : "매일 조금씩이 가장 큰 힘이에요";
 
         const dayLabels = ["월", "화", "수", "목", "금", "토", "일"];
-        const todayIdx = (() => {
-          const kst = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
-          return (kst.getDay() + 6) % 7;
-        })();
+        const kstNowForStreak = new Date(
+          new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }),
+        );
+        const todayIdx = (kstNowForStreak.getDay() + 6) % 7;
+        const kstHour = kstNowForStreak.getHours();
+        // 손실 회피 강화: streak >= 2, 오늘 안 함, 18시 이후 → 위험 상태
+        const atRisk = !hasToday && s >= 2 && kstHour >= 18;
+        const hoursLeft = atRisk ? Math.max(1, 24 - kstHour) : 0;
 
         return (
           <Link
@@ -501,16 +515,40 @@ export default function HomeAuthed() {
             className="block mb-4 active:scale-[0.99] transition-transform"
           >
             <div
-              className="p-5"
+              className="p-5 relative"
               style={{
-                background: hasToday
-                  ? `linear-gradient(135deg, ${accent}18 0%, ${accent}08 100%)`
-                  : "#FFFFFF",
+                background: atRisk
+                  ? "linear-gradient(135deg, #FFF1F1 0%, #FFE5E5 100%)"
+                  : hasToday
+                    ? `linear-gradient(135deg, ${accent}18 0%, ${accent}08 100%)`
+                    : "#FFFFFF",
                 borderRadius: 22,
-                border: `1px solid ${hasToday ? `${accent}30` : "rgba(0,0,0,0.05)"}`,
-                boxShadow: "0 4px 16px rgba(0,0,0,0.05)",
+                border: atRisk
+                  ? "1.5px solid #D85555"
+                  : `1px solid ${hasToday ? `${accent}30` : "rgba(0,0,0,0.05)"}`,
+                boxShadow: atRisk
+                  ? "0 4px 16px rgba(216,85,85,0.18)"
+                  : "0 4px 16px rgba(0,0,0,0.05)",
               }}
             >
+              {/* 위험 배지 — 끊기 직전 */}
+              {atRisk && (
+                <div
+                  className="absolute -top-2 right-4 px-2.5 py-1 rounded-full flex items-center gap-1"
+                  style={{
+                    background: "linear-gradient(135deg, #E85555 0%, #C43838 100%)",
+                    boxShadow: "0 4px 10px rgba(216,85,85,0.45)",
+                  }}
+                >
+                  <span
+                    className="w-1.5 h-1.5 rounded-full animate-pulse"
+                    style={{ background: "#FFF" }}
+                  />
+                  <span className="text-[10px] font-extrabold text-white tracking-tight">
+                    ⏰ {hoursLeft}시간 남음
+                  </span>
+                </div>
+              )}
               <div className="flex items-start gap-3 mb-3">
                 <div
                   className="flex items-center justify-center shrink-0"

@@ -42,6 +42,66 @@ export async function getCatCareLogsCountServer(id: string): Promise<number> {
   return count ?? 0;
 }
 
+export interface CatCommunityStats {
+  uniqueCaretakers: number;         // 이 고양이를 돌본 unique 유저 수
+  recentCaretakers: {               // 최근 돌본 이웃 프로필 (최대 3명)
+    authorId: string;
+    name: string;
+    avatarUrl: string | null;
+  }[];
+  likeUserCount: number;            // 좋아요한 unique 유저 수 (사회적 증명용)
+}
+
+export async function getCatCommunityStatsServer(
+  catId: string,
+): Promise<CatCommunityStats> {
+  const supabase = await createClient();
+
+  // 최근 30일치 돌봄 기록의 author 정보 — 최대 100건
+  const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const [logsRes, likeRes] = await Promise.all([
+    supabase
+      .from("care_logs")
+      .select("author_id, author_name, author_avatar_url, logged_at")
+      .eq("cat_id", catId)
+      .gte("logged_at", since)
+      .order("logged_at", { ascending: false })
+      .limit(100),
+    supabase
+      .from("cat_likes")
+      .select("*", { count: "exact", head: true })
+      .eq("cat_id", catId),
+  ]);
+
+  const rows = (logsRes.data ?? []) as {
+    author_id: string | null;
+    author_name: string | null;
+    author_avatar_url: string | null;
+    logged_at: string;
+  }[];
+
+  // unique 유저 추출 — 같은 author가 여러 번 기록했으면 최신 1건만
+  const seen = new Set<string>();
+  const recent: CatCommunityStats["recentCaretakers"] = [];
+  for (const r of rows) {
+    if (!r.author_id || seen.has(r.author_id)) continue;
+    seen.add(r.author_id);
+    if (recent.length < 3) {
+      recent.push({
+        authorId: r.author_id,
+        name: r.author_name ?? "익명",
+        avatarUrl: r.author_avatar_url,
+      });
+    }
+  }
+
+  return {
+    uniqueCaretakers: seen.size,
+    recentCaretakers: recent,
+    likeUserCount: likeRes.count ?? 0,
+  };
+}
+
 /**
  * 특정 구/동 리스트에 해당하는 고양이를 최신순으로 조회 (SEO 랜딩용).
  * region은 자유 입력 필드라 gu 이름과 dongs를 OR 조건으로 ilike 매칭.
