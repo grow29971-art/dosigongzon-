@@ -54,6 +54,22 @@ const securityHeaders = [
     key: "Strict-Transport-Security",
     value: "max-age=31536000; includeSubDomains",
   },
+  // 레거시 XSS 필터는 비활성(0)이 현대 권장 — CSP가 대체. 활성(1) 필터는
+  // 오히려 공격 벡터가 되는 사례가 있어 OWASP도 0을 권고.
+  {
+    key: "X-XSS-Protection",
+    value: "0",
+  },
+  // cross-origin 리소스 도용 차단 (Spectre/사이드채널 방어)
+  {
+    key: "Cross-Origin-Resource-Policy",
+    value: "same-origin",
+  },
+  // 다른 오리진 팝업과의 상호작용 제한 (타이밍 공격 차단)
+  {
+    key: "Cross-Origin-Opener-Policy",
+    value: "same-origin",
+  },
 ];
 
 const nextConfig: NextConfig = {

@@ -24,8 +24,42 @@ function checkGlobalRate(ip: string): boolean {
   return true;
 }
 
+// 봇 프로빙 경로 — PHP/WordPress 취약점 스캐너가 때리는 경로.
+// 이 프로젝트(Next.js)엔 해당 없음. 403 대신 404로 존재 자체 부정.
+const BOT_PROBE_PATTERNS = [
+  /^\/adminer(\.php)?$/i,
+  /^\/phpmyadmin/i,
+  /^\/pma\//i,
+  /^\/wp-admin/i,
+  /^\/wp-login(\.php)?$/i,
+  /^\/wp-content/i,
+  /^\/wp-includes/i,
+  /^\/xmlrpc\.php$/i,
+  /^\/\.env(\.|$)/i,
+  /^\/\.git\//i,
+  /^\/config\.php$/i,
+  /^\/shell\.php$/i,
+  /^\/\.aws\//i,
+  /^\/\.ssh\//i,
+  /\.(asp|aspx|jsp|cgi)$/i,
+];
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // 봇 프로빙 → 404 (세션 업데이트·rate limit 낭비 방지)
+  for (const pattern of BOT_PROBE_PATTERNS) {
+    if (pattern.test(pathname)) {
+      return new NextResponse("Not Found", {
+        status: 404,
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "Cache-Control": "public, max-age=86400",
+          "X-Robots-Tag": "noindex, nofollow",
+        },
+      });
+    }
+  }
 
   // API 라우트에 전역 rate limiting
   if (pathname.startsWith("/api/")) {
