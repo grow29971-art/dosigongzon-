@@ -118,6 +118,125 @@ export async function getCareLogStats(
   };
 }
 
+// ── 내 개인 활동 대시보드 통계 ──
+export interface MyCareDashboard {
+  thisMonthCount: number;                   // 이번 달(KST) 돌봄 횟수
+  lastMonthCount: number;                   // 지난 달 (변동률 표시용)
+  topCats: { catId: string; catName: string; photoUrl: string | null; count: number }[];
+  byHour: number[];                          // [0..23] 시간대별 돌봄 횟수 (전체 기간, 최대 1000건)
+  peakHour: number | null;                   // byHour 최빈 시간
+  byType: Partial<Record<CareType, number>>; // 돌봄 유형 분포
+  totalAllTime: number;
+}
+
+export async function getMyCareDashboard(): Promise<MyCareDashboard> {
+  const empty: MyCareDashboard = {
+    thisMonthCount: 0,
+    lastMonthCount: 0,
+    topCats: [],
+    byHour: new Array(24).fill(0),
+    peakHour: null,
+    byType: {},
+    totalAllTime: 0,
+  };
+
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return empty;
+
+  // 최근 1000건 전부 — 이미 조회하는 쿼리와 중복 우려 있지만 대시보드는 mypage 진입 시에만
+  const { data, error } = await supabase
+    .from("care_logs")
+    .select("cat_id, care_type, logged_at")
+    .eq("author_id", user.id)
+    .order("logged_at", { ascending: false })
+    .limit(1000);
+
+  if (error || !data) return empty;
+  const rows = data as { cat_id: string; care_type: CareType; logged_at: string }[];
+  if (rows.length === 0) return empty;
+
+  // KST 시각 파싱 헬퍼
+  const getKstParts = (iso: string) => {
+    // 'en-GB' 로케일에서 24h 포맷 안정
+    const parts = new Date(iso).toLocaleString("en-GB", {
+      timeZone: "Asia/Seoul",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    // "DD/MM/YYYY, HH:mm"
+    const [date, time] = parts.split(", ");
+    const [dd, mm, yyyy] = date.split("/");
+    const [hh] = time.split(":");
+    return { year: Number(yyyy), month: Number(mm), hour: Number(hh) };
+  };
+
+  const now = new Date();
+  const nowKst = getKstParts(now.toISOString());
+  const thisY = nowKst.year;
+  const thisM = nowKst.month;
+  const lastM = thisM === 1 ? 12 : thisM - 1;
+  const lastY = thisM === 1 ? thisY - 1 : thisY;
+
+  let thisMonthCount = 0;
+  let lastMonthCount = 0;
+  const byHour = new Array(24).fill(0);
+  const byType: Partial<Record<CareType, number>> = {};
+  const catCounts = new Map<string, number>();
+
+  for (const r of rows) {
+    const p = getKstParts(r.logged_at);
+    if (p.year === thisY && p.month === thisM) thisMonthCount += 1;
+    else if (p.year === lastY && p.month === lastM) lastMonthCount += 1;
+    if (p.hour >= 0 && p.hour < 24) byHour[p.hour] += 1;
+    byType[r.care_type] = (byType[r.care_type] ?? 0) + 1;
+    catCounts.set(r.cat_id, (catCounts.get(r.cat_id) ?? 0) + 1);
+  }
+
+  const peakHour =
+    byHour.every((n) => n === 0)
+      ? null
+      : byHour.reduce((maxIdx, v, i, arr) => (v > arr[maxIdx] ? i : maxIdx), 0);
+
+  // TOP 3 cats
+  const topCatIds = Array.from(catCounts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+  let topCats: MyCareDashboard["topCats"] = [];
+  if (topCatIds.length > 0) {
+    const ids = topCatIds.map(([id]) => id);
+    const { data: cats } = await supabase
+      .from("cats")
+      .select("id, name, photo_url")
+      .in("id", ids);
+    const catMap = new Map(
+      ((cats ?? []) as { id: string; name: string; photo_url: string | null }[])
+        .map((c) => [c.id, c]),
+    );
+    topCats = topCatIds
+      .map(([catId, count]) => {
+        const c = catMap.get(catId);
+        if (!c) return null;
+        return { catId, catName: c.name, photoUrl: c.photo_url, count };
+      })
+      .filter((x): x is NonNullable<typeof x> => x !== null);
+  }
+
+  return {
+    thisMonthCount,
+    lastMonthCount,
+    topCats,
+    byHour,
+    peakHour,
+    byType,
+    totalAllTime: rows.length,
+  };
+}
+
 // ── 생성 ──
 export async function createCareLog(
   input: CreateCareLogInput,

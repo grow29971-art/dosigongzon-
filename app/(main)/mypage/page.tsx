@@ -29,6 +29,7 @@ import InviteSection from "@/app/components/InviteSection";
 import EmailDigestToggle from "@/app/components/EmailDigestToggle";
 import MarketingPushToggle from "@/app/components/MarketingPushToggle";
 import PageIntroBanner from "@/app/components/PageIntroBanner";
+import MyActivityDashboard from "@/app/components/MyActivityDashboard";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -537,6 +538,9 @@ export default function MyPage() {
               loading={dataLoading}
             />
           </div>
+
+          {/* ── 내 활동 대시보드 (이번 달·최다 고양이·시간대) ── */}
+          <MyActivityDashboard />
 
           {/* ── 업적 (타이틀) ── */}
           {summary && (
