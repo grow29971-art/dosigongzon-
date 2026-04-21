@@ -45,3 +45,6 @@ next-env.d.ts
 
 .vercel
 .env*.local
+
+# DB 백업 (개인정보 포함 — 로컬 보관만)
+/box/backups/
