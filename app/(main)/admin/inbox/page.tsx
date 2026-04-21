@@ -158,10 +158,18 @@ export default function AdminInboxPage() {
       "7",
     );
     if (days === null) return;
-    const parsedDays = days.trim() === "" ? null : parseInt(days, 10);
-    if (parsedDays !== null && (isNaN(parsedDays) || parsedDays <= 0)) {
-      alert("유효한 숫자를 입력해주세요.");
-      return;
+    const trimmed = days.trim();
+    let parsedDays: number | null = null;
+    if (trimmed !== "") {
+      if (!/^\d+$/.test(trimmed)) {
+        alert("숫자만 입력해주세요.");
+        return;
+      }
+      parsedDays = parseInt(trimmed, 10);
+      if (parsedDays <= 0 || parsedDays > 3650) {
+        alert("1 이상 3650 이하 숫자를 입력해주세요.");
+        return;
+      }
     }
     const reason = prompt("정지 사유:", "허위/악성 신고");
     if (reason === null) return;

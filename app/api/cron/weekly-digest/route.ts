@@ -55,7 +55,8 @@ export async function POST(request: Request) {
         html,
         text,
         headers: {
-          "List-Unsubscribe": `<https://dosigongzon.com/mypage#email-digest>`,
+          "List-Unsubscribe": `<https://dosigongzon.com/mypage?unsub=1#email-digest>`,
+          "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
         },
       });
       await markDigestSent(r.id);

@@ -73,7 +73,7 @@ export default async function HomeLanding() {
         name: "도시공존은 무엇인가요?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "서울 전역의 길고양이를 시민이 함께 기록하고 돌보는 비영리 참여 플랫폼입니다. 캣맘·캣대디가 지도 위에 TNR·급식·건강 기록을 남기고, 긴급 구조가 필요한 아이에게 이웃이 빠르게 닿을 수 있게 돕습니다.",
+          text: "서울 전역의 길고양이를 시민이 함께 기록하고 돌보는 시민 참여 플랫폼입니다. 캣맘·캣대디가 지도 위에 TNR·급식·건강 기록을 남기고, 긴급 구조가 필요한 아이에게 이웃이 빠르게 닿을 수 있게 돕습니다.",
         },
       },
       {
@@ -89,7 +89,7 @@ export default async function HomeLanding() {
         name: "무료인가요?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "네. 광고 없이 무료로 운영되는 비영리 서비스입니다. 서울 시민의 자발적 기록으로 유지됩니다.",
+          text: "네. 광고 없이 무료로 운영되며 이익을 목적으로 하지 않습니다. 서울 시민의 자발적 기록으로 유지됩니다.",
         },
       },
       {
@@ -366,7 +366,7 @@ export default async function HomeLanding() {
           <ValueRow
             icon={<Sparkles size={17} style={{ color: "#E8B040" }} />}
             title="무료 · 광고 없음"
-            desc="비영리 오픈 플랫폼. 시민의 자발적 기록으로 운영됩니다."
+            desc="광고 없는 무료 서비스. 시민의 자발적 기록으로 운영됩니다."
           />
           <ValueRow
             icon={<Download size={17} style={{ color: "#4A7BA8" }} />}
@@ -385,13 +385,13 @@ export default async function HomeLanding() {
         <div className="space-y-2">
           <FaqRow
             q="도시공존은 무엇인가요?"
-            a="서울 전역의 길고양이를 시민이 함께 기록하고 돌보는 비영리 참여 플랫폼입니다. 캣맘·캣대디가 지도 위에 TNR·급식·건강 기록을 남기고, 긴급 구조가 필요한 아이에게 이웃이 빠르게 닿을 수 있게 돕습니다."
+            a="서울 전역의 길고양이를 시민이 함께 기록하고 돌보는 시민 참여 플랫폼입니다. 캣맘·캣대디가 지도 위에 TNR·급식·건강 기록을 남기고, 긴급 구조가 필요한 아이에게 이웃이 빠르게 닿을 수 있게 돕습니다."
           />
           <FaqRow
             q="급식소 정확한 위치가 공개되나요?"
             a="공개되지 않습니다. 정확한 좌표는 로그인 유저에게만 근사치로 제공되며, 일반 랜딩에서는 구·동 단위로만 표시됩니다."
           />
-          <FaqRow q="무료인가요?" a="네. 광고 없이 무료로 운영되는 비영리 서비스입니다." />
+          <FaqRow q="무료인가요?" a="네. 광고 없이 무료로 운영되며 이익을 목적으로 하지 않습니다." />
           <FaqRow
             q="카카오톡에서 로그인이 안 돼요"
             a="카카오톡 인앱 브라우저에서는 OAuth 정책상 소셜 로그인이 차단됩니다. 크롬·사파리 등 일반 브라우저로 열어주세요."
@@ -432,6 +432,20 @@ export default async function HomeLanding() {
           <ArrowRight size={16} className="text-text-light" />
         </Link>
       </section>
+
+      {/* 저작권 푸터 */}
+      <footer className="px-5 mt-8 pb-6 text-center space-y-1">
+        <div className="flex items-center justify-center gap-3 text-[10.5px] text-text-light">
+          <Link href="/terms" className="hover:underline">이용약관</Link>
+          <span>·</span>
+          <Link href="/privacy" className="hover:underline">개인정보처리방침</Link>
+          <span>·</span>
+          <Link href="/about" className="hover:underline">문의</Link>
+        </div>
+        <p className="text-[10px] text-text-light">
+          © 2026 도시공존 · 운영자 김성우 · dosigongzon.com
+        </p>
+      </footer>
     </div>
   );
 }

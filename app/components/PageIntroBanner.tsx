@@ -38,7 +38,11 @@ export default function PageIntroBanner({
       const raw = localStorage.getItem(`dosigongzon_intro_${id}`);
       if (raw) {
         const ts = parseInt(raw, 10);
-        if (!isNaN(ts) && Date.now() - ts < 7 * 24 * 60 * 60 * 1000) return;
+        const now = Date.now();
+        // 미래 timestamp/비정상 값 배제 (영구 숨김 악용 방지)
+        if (!isNaN(ts) && ts > 0 && ts <= now && now - ts < 7 * 24 * 60 * 60 * 1000) {
+          return;
+        }
       }
     } catch { /* no-op */ }
     setVisible(true);

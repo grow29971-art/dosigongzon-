@@ -963,6 +963,20 @@ export default function MyPage() {
             회원탈퇴
           </button>
 
+          {/* ── 푸터 ── */}
+          <footer className="mt-8 text-center space-y-1 pb-2">
+            <div className="flex items-center justify-center gap-3 text-[10px] text-text-light">
+              <Link href="/terms" className="hover:underline">이용약관</Link>
+              <span>·</span>
+              <Link href="/privacy" className="hover:underline">개인정보처리방침</Link>
+              <span>·</span>
+              <Link href="/guide" className="hover:underline">사용 가이드</Link>
+            </div>
+            <p className="text-[10px] text-text-light">
+              © 2026 도시공존 · 운영자 김성우
+            </p>
+          </footer>
+
           {/* 탈퇴 확인 모달 */}
           {deleteConfirmOpen && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center px-5">

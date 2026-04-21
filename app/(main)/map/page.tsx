@@ -68,6 +68,7 @@ import { shareToKakao } from "@/lib/kakao-share";
 import MapCoachmark from "@/app/components/MapCoachmark";
 import ReactionBar from "@/app/components/ReactionBar";
 import { listReactionsBatch, type ReactionSummary } from "@/lib/reactions-repo";
+import CatLocationPicker from "@/app/components/CatLocationPicker";
 
 const CAT_TAG_OPTIONS = [
   "TNR 완료","TNR 필요","이어팁","사람 친화","겁 많음","성묘",
@@ -727,9 +728,38 @@ export default function MapPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scriptLoaded]);
 
-  // ── 지도 초기화 후에 GPS가 뒤늦게 도착하면 중심 이동 ──
+  // ?cat=xxx 쿼리로 특정 고양이에 포커스 (고양이 상세 → 지도에서 돌봄하기)
+  const catFocusHandledRef = useRef(false);
+  useEffect(() => {
+    if (catFocusHandledRef.current) return;
+    if (!mapReady || !mapInstanceRef.current || !window.kakao) return;
+    if (cats.length === 0) return;
+
+    const url = new URL(window.location.href);
+    const catId = url.searchParams.get("cat");
+    if (!catId) return;
+
+    const cat = cats.find((c) => c.id === catId);
+    if (!cat) return;
+
+    catFocusHandledRef.current = true;
+
+    const coord = getDisplayCoord(cat, isLoggedIn);
+    const map = mapInstanceRef.current;
+    map.setCenter(new window.kakao.maps.LatLng(coord.lat, coord.lng));
+    map.setLevel(3);
+    setSelectedCat(cat);
+    setCatCardTab("carelog");
+
+    // 쿼리 제거 — 다음 렌더에서 재실행 방지 + 뒤로가기 깔끔
+    url.searchParams.delete("cat");
+    window.history.replaceState({}, "", url.toString());
+  }, [mapReady, cats, isLoggedIn]);
+
+  // ── 지도 초기화 후에 GPS가 뒤늦게 도착하면 중심 이동 (단, cat 포커스 중이면 스킵) ──
   useEffect(() => {
     if (!mapReady || !userPos || !mapInstanceRef.current || !window.kakao) return;
+    if (catFocusHandledRef.current) return;
     const map = mapInstanceRef.current;
     map.setCenter(new window.kakao.maps.LatLng(userPos.lat, userPos.lng));
   }, [mapReady, userPos]);
@@ -849,6 +879,10 @@ export default function MapPage() {
   const [editNeutered, setEditNeutered] = useState<boolean | null>(null);
   const [editHealth, setEditHealth] = useState<CatHealthStatus>("good");
   const [editSaving, setEditSaving] = useState(false);
+  // 위치 변경 (편집 모드에서 지도 picker로 갱신)
+  const [editLat, setEditLat] = useState<number | null>(null);
+  const [editLng, setEditLng] = useState<number | null>(null);
+  const [pickingLocation, setPickingLocation] = useState(false);
 
   // ── 동(region) 선택 시 해당 동 고양이 목록 ──
   const [selectedDong, setSelectedDong] = useState<string | null>(null);
@@ -2157,6 +2191,8 @@ export default function MapPage() {
                       setEditGender(selectedCat.gender ?? "unknown");
                       setEditNeutered(selectedCat.neutered ?? null);
                       setEditHealth(selectedCat.health_status ?? "good");
+                      setEditLat(null);
+                      setEditLng(null);
                     }}
                     className="w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform shadow-md"
                   >
@@ -2180,7 +2216,7 @@ export default function MapPage() {
                 </>
               )}
               <button
-                onClick={() => { setSelectedCat(null); setEditingCat(false); }}
+                onClick={() => { setSelectedCat(null); setEditingCat(false); setEditLat(null); setEditLng(null); }}
                 className="w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform shadow-md"
               >
                 <X size={18} className="text-text-sub" />
@@ -2242,6 +2278,32 @@ export default function MapPage() {
                     <input type="text" value={editRegion} onChange={(e) => setEditRegion(e.target.value)} maxLength={20}
                       className="w-full px-3 py-2 rounded-xl text-[13px] outline-none" style={{ backgroundColor: "#F6F1EA", border: "1px solid #E3DCD3" }} />
                   </div>
+
+                  {/* 위치 변경 (등록자 본인만) */}
+                  {user?.id === selectedCat.caretaker_id && (
+                    <div>
+                      <label className="text-[11px] font-bold text-text-sub mb-1 block">지도 위치</label>
+                      <button
+                        type="button"
+                        onClick={() => setPickingLocation(true)}
+                        className="w-full px-3 py-2.5 rounded-xl text-[13px] font-bold flex items-center justify-between active:scale-[0.98]"
+                        style={{
+                          backgroundColor: editLat !== null ? "#FFF2E8" : "#F6F1EA",
+                          border: editLat !== null ? "1px solid #C47E5A" : "1px solid #E3DCD3",
+                          color: editLat !== null ? "#C47E5A" : "#A38E7A",
+                        }}
+                      >
+                        <span className="flex items-center gap-1.5">
+                          <MapPin size={14} />
+                          {editLat !== null ? "새 위치 선택됨 (저장 시 반영)" : "📍 지도에서 위치 변경"}
+                        </span>
+                        <ChevronRight size={14} />
+                      </button>
+                      <p className="text-[10px] text-text-light mt-1">
+                        동 단위로 위치를 옮길 수 있어요. 동이 바뀌면 새 동네 이름이 자동으로 입력돼요.
+                      </p>
+                    </div>
+                  )}
                   <div>
                     <label className="text-[11px] font-bold text-text-sub mb-1 block">태그</label>
                     <div className="flex flex-wrap gap-1.5">
@@ -2293,6 +2355,9 @@ export default function MapPage() {
                             gender: editGender,
                             neutered: editNeutered,
                             health_status: editHealth,
+                            ...(editLat !== null && editLng !== null
+                              ? { lat: editLat, lng: editLng }
+                              : {}),
                           });
                           setSelectedCat(updated);
                           setCats((prev) => prev.map((c) => c.id === updated.id ? updated : c));
@@ -2308,7 +2373,7 @@ export default function MapPage() {
                     >
                       {editSaving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} 저장
                     </button>
-                    <button onClick={() => setEditingCat(false)} className="px-5 py-2.5 rounded-xl text-[13px] font-bold" style={{ backgroundColor: "#EEE8E0", color: "#A38E7A" }}>
+                    <button onClick={() => { setEditingCat(false); setEditLat(null); setEditLng(null); }} className="px-5 py-2.5 rounded-xl text-[13px] font-bold" style={{ backgroundColor: "#EEE8E0", color: "#A38E7A" }}>
                       취소
                     </button>
                   </div>
@@ -2885,6 +2950,24 @@ export default function MapPage() {
         initialLat={pickedCoord?.lat}
         initialLng={pickedCoord?.lng}
       />
+
+      {/* 고양이 위치 변경 Picker (등록자 본인만) */}
+      {selectedCat && user?.id === selectedCat.caretaker_id && (
+        <CatLocationPicker
+          open={pickingLocation}
+          initialLat={editLat ?? selectedCat.lat}
+          initialLng={editLng ?? selectedCat.lng}
+          initialRegion={editRegion || selectedCat.region || null}
+          catName={editName || selectedCat.name}
+          onCancel={() => setPickingLocation(false)}
+          onConfirm={({ lat, lng, region }) => {
+            setEditLat(lat);
+            setEditLng(lng);
+            setEditRegion(region);
+            setPickingLocation(false);
+          }}
+        />
+      )}
 
       <style jsx>{`
         @keyframes slide-up {

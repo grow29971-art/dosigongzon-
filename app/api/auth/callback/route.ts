@@ -90,6 +90,14 @@ export async function GET(request: Request) {
           data: { nickname, nickname_set: true, full_name: nickname, name: nickname },
         });
 
+        // 관리자가 미리 부여한 admin_title이 있는지 확인 (덮어쓰기 방지)
+        const { data: existing } = await supabase
+          .from("profiles")
+          .select("admin_title")
+          .eq("id", user.id)
+          .maybeSingle();
+        const alreadyHasTitle = !!(existing?.admin_title);
+
         const { count } = await supabase
           .from("profiles")
           .select("*", { count: "exact", head: true });
@@ -100,7 +108,7 @@ export async function GET(request: Request) {
           .update({
             nickname,
             terms_agreed_at: new Date().toISOString(),
-            admin_title: earlyTitle,
+            ...(alreadyHasTitle || !earlyTitle ? {} : { admin_title: earlyTitle }),
             email_digest_enabled: emailOptIn,
           })
           .eq("id", user.id);

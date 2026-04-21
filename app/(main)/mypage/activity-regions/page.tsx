@@ -138,7 +138,13 @@ export default function ActivityRegionsPage() {
   // ── 지도 초기화 ──
   useEffect(() => {
     if (!scriptLoaded || !mapContainerRef.current) return;
+    let unmounted = false;
+    const timeoutIds: ReturnType<typeof setTimeout>[] = [];
+    let ro: ResizeObserver | null = null;
+    let onResize: (() => void) | null = null;
+
     window.kakao.maps.load(() => {
+      if (unmounted) return;
       const container = mapContainerRef.current;
       if (!container) return;
       const map = new window.kakao.maps.Map(container, {
@@ -148,7 +154,6 @@ export default function ActivityRegionsPage() {
       mapInstanceRef.current = map;
       setMapReady(true);
 
-      // 지도 클릭 → 중심 이동
       window.kakao.maps.event.addListener(map, "click", (e: any) => {
         const ll = e.latLng;
         setLat(ll.getLat());
@@ -156,29 +161,35 @@ export default function ActivityRegionsPage() {
         reverseGeocode(ll.getLat(), ll.getLng());
       });
 
-      // 컨테이너 크기가 늦게 잡히는 경우 타일이 안 그려질 수 있음 → 강제 리레이아웃
-      // 여러 시점에 호출해서 빈 회색 화면 방어
+      // 컨테이너 크기 늦게 잡히는 경우 타일이 안 그려짐 → 여러 시점에 강제 리레이아웃
       const triggerRelayout = () => {
         try { map.relayout(); map.setCenter(new window.kakao.maps.LatLng(lat, lng)); } catch {}
       };
-      setTimeout(triggerRelayout, 150);
-      setTimeout(triggerRelayout, 500);
-      setTimeout(triggerRelayout, 1500);
+      timeoutIds.push(setTimeout(triggerRelayout, 150));
+      timeoutIds.push(setTimeout(triggerRelayout, 500));
+      timeoutIds.push(setTimeout(triggerRelayout, 1500));
 
-      // ResizeObserver — 컨테이너 크기 변화 감지 시 리레이아웃
       if (typeof ResizeObserver !== "undefined") {
-        const ro = new ResizeObserver(() => {
+        ro = new ResizeObserver(() => {
           try { map.relayout(); } catch {}
         });
         ro.observe(container);
-        // cleanup은 스크립트 언마운트 시 어차피 GC됨
       }
 
-      // 창 리사이즈·주소창 접힘 대응
-      const onResize = () => { try { map.relayout(); } catch {} };
+      onResize = () => { try { map.relayout(); } catch {} };
       window.addEventListener("resize", onResize);
       window.addEventListener("orientationchange", onResize);
     });
+
+    return () => {
+      unmounted = true;
+      for (const id of timeoutIds) clearTimeout(id);
+      if (ro) ro.disconnect();
+      if (onResize) {
+        window.removeEventListener("resize", onResize);
+        window.removeEventListener("orientationchange", onResize);
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scriptLoaded]);
 

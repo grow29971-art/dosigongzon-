@@ -153,7 +153,7 @@ export default async function AboutPage() {
               <b className="text-text-main">공신력 있는 자료 기반.</b> 보호 지침과 약품 정보는 농림축산식품부, 동물보호관리시스템 등 공공기관 공개 자료와 동물약국 표시사항을 바탕으로 정리하며, 긴급·의료 판단은 반드시 실제 수의사와 상의해주세요.
             </li>
             <li>
-              <b className="text-text-main">비영리 운영.</b> 광고·수익 모델 없이 서울 시민의 자발적 기록으로 운영됩니다.
+              <b className="text-text-main">광고 없는 무료 운영.</b> 광고·수익 모델 없이 서울 시민의 자발적 기록으로 유지됩니다.
             </li>
           </ul>
         </div>

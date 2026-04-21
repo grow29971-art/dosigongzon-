@@ -1035,9 +1035,22 @@ function computeStreakAndWeekly(rows: { logged_at: string }[]): { currentStreak:
 // ── 고양이 정보 수정 (본인 또는 admin) ──
 export async function updateCat(
   catId: string,
-  input: Partial<Pick<Cat, "name" | "description" | "region" | "tags" | "photo_url" | "photo_urls" | "gender" | "neutered" | "health_status">>,
+  input: Partial<Pick<Cat, "name" | "description" | "region" | "tags" | "photo_url" | "photo_urls" | "gender" | "neutered" | "health_status" | "lat" | "lng">>,
 ): Promise<Cat> {
   const supabase = createClient();
+
+  // 위치 변경 시 좌표 유효성 검증 (한반도 영역)
+  if (input.lat !== undefined) {
+    if (typeof input.lat !== "number" || input.lat < 33 || input.lat > 39) {
+      throw new Error("위도(lat)가 유효하지 않아요.");
+    }
+  }
+  if (input.lng !== undefined) {
+    if (typeof input.lng !== "number" || input.lng < 124 || input.lng > 132) {
+      throw new Error("경도(lng)가 유효하지 않아요.");
+    }
+  }
+
   const { data, error } = await supabase
     .from("cats")
     .update(input)

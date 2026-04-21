@@ -207,20 +207,25 @@ export function renderDigestHtml(
 
     <!-- footer -->
     <div style="text-align:center;font-size:11px;color:#A38E7A;line-height:1.7;padding:16px;">
-      도시공존은 광고 없는 비영리 시민 플랫폼이에요 🐾<br/>
-      <a href="${SITE_URL}/mypage?utm_source=email&utm_medium=digest#email-digest"
-         style="color:#A38E7A;text-decoration:underline;">
-        이메일 수신 설정
+      <b style="color:#8B7562;">(광고)</b> 도시공존 주간 동네 소식 —
+      수신 동의하신 분께만 발송되는 메일이에요 🐾<br/>
+      <a href="${SITE_URL}/mypage?utm_source=email&utm_medium=digest&unsub=1#email-digest"
+         style="color:#8B7562;text-decoration:underline;font-weight:700;">
+        수신 거부
       </a>
       &nbsp;·&nbsp;
       <a href="${SITE_URL}/about" style="color:#A38E7A;text-decoration:underline;">도시공존 소개</a>
+      <br/>
+      <span style="color:#C0B3A0;font-size:10px;">
+        원하지 않으시면 위 '수신 거부' 링크를 눌러 즉시 차단할 수 있어요.
+      </span>
     </div>
   </div>
 </body>
 </html>`;
 
   const text = `
-${displayName} 님, 이번 주 도시공존 소식이에요.
+(광고) ${displayName} 님, 이번 주 도시공존 소식이에요.
 
 이번 주 서울에서
 - 새 고양이 ${content.newCatsThisWeek}마리 등록
@@ -229,8 +234,8 @@ ${content.urgentCats.length > 0 ? `- 🚨 지금 도움이 필요한 아이 ${co
 
 지도 바로 열기: ${SITE_URL}/map?utm_source=email&utm_medium=digest
 
-수신 설정: ${SITE_URL}/mypage
-도시공존 — 광고 없는 비영리 시민 플랫폼
+수신 거부: ${SITE_URL}/mypage#email-digest
+도시공존 — 광고 없는 무료 시민 서비스
 `.trim();
 
   return { subject, html, text };

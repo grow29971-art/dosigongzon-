@@ -119,11 +119,13 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2 className="text-[15px] font-bold text-text-main mb-2">제6조 (이용자의 권리)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제6조 (이용자의 권리 및 행사 방법)</h2>
           <ul className="list-disc pl-4 space-y-1">
-            <li>이용자는 언제든지 자신의 개인정보를 조회, 수정할 수 있습니다.</li>
-            <li>회원 탈퇴를 통해 개인정보 삭제를 요청할 수 있습니다.</li>
-            <li>푸시 알림은 브라우저 설정에서 직접 해제할 수 있습니다.</li>
+            <li>이용자는 언제든지 자신의 개인정보를 <b>조회·수정·삭제</b>할 수 있습니다.</li>
+            <li>마이페이지에서 프로필·활동 기록을 직접 수정할 수 있으며, 회원 탈퇴를 통해 전체 데이터 삭제를 요청할 수 있습니다.</li>
+            <li>별도 조회·정정·삭제·처리정지 요청은 제10조의 연락처로 접수 시 <b>10일 이내</b> 처리 후 결과를 통지합니다. 불가피한 경우 사유와 예정 처리일을 안내합니다.</li>
+            <li>처리 결과에 이의가 있는 경우 통지일로부터 <b>30일 이내</b>에 이의를 제기할 수 있습니다.</li>
+            <li>푸시 알림은 브라우저/OS 설정에서, 이메일 수신은 마이페이지 "주간 이메일 받기" 토글 또는 메일 하단 "수신 거부" 링크로 즉시 해제할 수 있습니다.</li>
           </ul>
         </section>
 
@@ -152,13 +154,31 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2 className="text-[15px] font-bold text-text-main mb-2">제10조 (문의)</h2>
-          <p>
-            개인정보 관련 문의는 서비스 내 신고/건의 기능 또는 관리자에게 연락해주세요.
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제10조 (개인정보 보호책임자 및 문의)</h2>
+          <p className="mb-2">
+            본 서비스는 개인정보 처리에 관한 업무를 총괄하여 처리하는 책임자를 아래와 같이 지정하고 있습니다.
           </p>
+          <ul className="list-disc pl-4 space-y-1">
+            <li><b>개인정보 보호책임자</b>: 김성우 (운영자)</li>
+            <li><b>이메일</b>: grow29971@gmail.com</li>
+            <li><b>서비스 내 접수</b>: 마이페이지 → 문의하기</li>
+          </ul>
         </section>
 
-        <p className="text-[11px] text-text-light pt-4">시행일: 2026년 4월 20일</p>
+        <section>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제11조 (권익침해 구제방법)</h2>
+          <p className="mb-2">
+            개인정보 침해로 인한 피해 구제·상담은 아래 기관에 문의하실 수 있습니다.
+          </p>
+          <ul className="list-disc pl-4 space-y-1">
+            <li>개인정보 분쟁조정위원회: <b>1833-6972</b> (www.kopico.go.kr)</li>
+            <li>개인정보침해신고센터: <b>118</b> (privacy.kisa.or.kr)</li>
+            <li>대검찰청 사이버수사과: <b>1301</b> (spo.go.kr)</li>
+            <li>경찰청 사이버수사국: <b>182</b> (ecrm.police.go.kr)</li>
+          </ul>
+        </section>
+
+        <p className="text-[11px] text-text-light pt-4">시행일: 2026년 4월 21일</p>
       </div>
     </div>
   );

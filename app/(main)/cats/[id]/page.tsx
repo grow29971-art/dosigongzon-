@@ -258,7 +258,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           />
         )}
         <Link
-          href="/map"
+          href={`/map?cat=${cat.id}`}
           className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary text-white active:scale-[0.98] transition-transform"
           style={{ boxShadow: "0 6px 20px rgba(196,126,90,0.3)" }}
         >

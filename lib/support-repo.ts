@@ -215,11 +215,18 @@ export async function updateInquiryStatus(
 ): Promise<void> {
   await requireAdmin();
   const supabase = createClient();
+
+  // admin_note 길이 제한 (5000자) — 과도하게 긴 메시지로 발송 페이로드·DB 팽창 방지
+  let note: string | null | undefined = adminNote;
+  if (typeof note === "string") {
+    note = note.trim().slice(0, 5000);
+  }
+
   const patch: { status: InquiryStatus; updated_at: string; admin_note?: string | null } = {
     status,
     updated_at: new Date().toISOString(),
   };
-  if (adminNote !== undefined) patch.admin_note = adminNote;
+  if (note !== undefined) patch.admin_note = note;
 
   const { error } = await supabase
     .from("inquiries")
