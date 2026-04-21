@@ -13,7 +13,8 @@ export type NotificationType =
   | "comment_on_my_post"  // 내 커뮤니티 글에 댓글
   | "inquiry_updated"     // 내 문의 처리됨
   | "following_activity"  // 팔로우한 유저의 돌봄·댓글
-  | "invite_accepted";    // 내 초대 코드로 친구가 가입
+  | "invite_accepted"     // 내 초대 코드로 친구가 가입
+  | "cat_moved";          // 좋아요한 고양이가 다른 동으로 이사
 
 export interface NotificationItem {
   id: string;
@@ -246,6 +247,72 @@ export async function getNotifications(limit = 30): Promise<NotificationItem[]> 
     }
   }
 
+  // 4.7. 좋아요한 고양이의 동 이동 (최근 30일)
+  const since30 = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const { data: myLikes } = await supabase
+    .from("cat_likes")
+    .select("cat_id")
+    .eq("user_id", user.id)
+    .limit(500);
+  const likedCatIds = ((myLikes ?? []) as { cat_id: string }[]).map(
+    (r) => r.cat_id,
+  );
+  if (likedCatIds.length > 0) {
+    const { data: moves } = await supabase
+      .from("cat_location_history")
+      .select(
+        "id, cat_id, changed_by, changed_by_name, old_region, new_region, created_at",
+      )
+      .in("cat_id", likedCatIds)
+      .neq("changed_by", user.id)
+      .gte("created_at", since30)
+      .order("created_at", { ascending: false })
+      .limit(limit);
+
+    const moveRows = (moves ?? []) as {
+      id: string;
+      cat_id: string;
+      changed_by: string | null;
+      changed_by_name: string | null;
+      old_region: string | null;
+      new_region: string | null;
+      created_at: string;
+    }[];
+
+    // 동이 실제로 바뀐 것만
+    const regionChanges = moveRows.filter(
+      (m) => (m.old_region ?? "") !== (m.new_region ?? ""),
+    );
+
+    if (regionChanges.length > 0) {
+      const moveCatIds = Array.from(new Set(regionChanges.map((m) => m.cat_id)));
+      const { data: movedCats } = await supabase
+        .from("cats")
+        .select("id, name, photo_url")
+        .in("id", moveCatIds);
+      const movedCatMap = new Map(
+        ((movedCats ?? []) as { id: string; name: string; photo_url: string | null }[])
+          .map((c) => [c.id, c]),
+      );
+
+      for (const m of regionChanges) {
+        const cat = movedCatMap.get(m.cat_id);
+        if (!cat) continue;
+        items.push({
+          id: `cat_moved_${m.id}`,
+          type: "cat_moved",
+          actorName: m.changed_by_name ?? "돌보미",
+          actorAvatar: cat.photo_url,
+          message: `📍 ${m.old_region ?? "?"} → ${m.new_region ?? "?"}로 옮겨졌어요`,
+          targetId: m.cat_id,
+          targetName: cat.name,
+          createdAt: m.created_at,
+          isRead: false,
+        });
+      }
+    }
+  }
+
   // 5. 받은 쪽지 (읽지 않은 것 우선)
   const { data: dms } = await supabase
     .from("direct_messages")
@@ -355,5 +422,27 @@ export async function getUnreadNotificationCount(): Promise<number> {
     .eq("inviter_id", user.id)
     .gte("created_at", d7);
 
-  return (dmCount ?? 0) + catActivity + postCommentCount + (inqCount ?? 0) + followActivity + (inviteCount ?? 0);
+  // 7) 좋아요한 고양이의 동 이동 (최근 24h, 본인 변경 제외)
+  let movedCount = 0;
+  const { data: myLikes2 } = await supabase
+    .from("cat_likes")
+    .select("cat_id")
+    .eq("user_id", user.id)
+    .limit(500);
+  const likedIds2 = ((myLikes2 ?? []) as { cat_id: string }[]).map((r) => r.cat_id);
+  if (likedIds2.length > 0) {
+    const { data: recentMoves } = await supabase
+      .from("cat_location_history")
+      .select("old_region, new_region, changed_by")
+      .in("cat_id", likedIds2)
+      .neq("changed_by", user.id)
+      .gte("created_at", h24);
+    movedCount = ((recentMoves ?? []) as {
+      old_region: string | null;
+      new_region: string | null;
+      changed_by: string | null;
+    }[]).filter((m) => (m.old_region ?? "") !== (m.new_region ?? "")).length;
+  }
+
+  return (dmCount ?? 0) + catActivity + postCommentCount + (inqCount ?? 0) + followActivity + (inviteCount ?? 0) + movedCount;
 }

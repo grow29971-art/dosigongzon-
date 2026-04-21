@@ -13,6 +13,7 @@ import {
   CheckCircle2,
   UserPlus,
   Gift,
+  MapPin,
 } from "lucide-react";
 import {
   getNotifications,
@@ -29,6 +30,7 @@ const TYPE_CONFIG: Record<NotificationType, { icon: typeof Bell; color: string; 
   inquiry_updated:     { icon: CheckCircle2,  color: "#48A59E", bg: "#48A59E15" },
   following_activity:  { icon: UserPlus,      color: "#E8B040", bg: "#E8B04015" },
   invite_accepted:     { icon: Gift,          color: "#E86B8C", bg: "#E86B8C15" },
+  cat_moved:           { icon: MapPin,        color: "#5A8AC4", bg: "#5A8AC415" },
 };
 
 function formatTime(iso: string): string {
@@ -96,6 +98,8 @@ export default function NotificationsPage() {
                 ? `/cats/${item.targetId}`
                 : item.type === "invite_accepted"
                 ? `/users/${item.targetId}`
+                : item.type === "cat_moved"
+                ? `/map?cat=${item.targetId}`
                 : "/map";
 
             return (
@@ -141,6 +145,8 @@ export default function NotificationsPage() {
                         ? ` 에 ${item.message}`
                         : item.type === "invite_accepted"
                         ? ` — ${item.message}`
+                        : item.type === "cat_moved"
+                        ? ` ${item.message}`
                         : ` 에 ${item.message}`}
                     </p>
                     <p className="text-[10px] text-text-light mt-1">{formatTime(item.createdAt)}</p>
