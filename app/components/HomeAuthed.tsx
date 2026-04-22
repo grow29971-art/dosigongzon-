@@ -500,6 +500,33 @@ export default function HomeAuthed({ hotSlot }: { hotSlot?: React.ReactNode } = 
               </p>
             );
           })()}
+          {/* 레벨 진행률 미니 바 — sunk cost 원리로 투자감 시각화 */}
+          {user && levelInfo && (
+            <div className="mt-2 flex items-center gap-2 max-w-[220px]">
+              <span
+                className="text-[10px] font-extrabold tracking-tight shrink-0 flex items-center gap-0.5"
+                style={{ color: "#C47E5A" }}
+              >
+                <span>{levelInfo.emoji}</span>
+                <span>Lv.{levelInfo.level}</span>
+              </span>
+              <div
+                className="flex-1 h-1.5 rounded-full overflow-hidden"
+                style={{ background: "rgba(196,126,90,0.15)" }}
+              >
+                <div
+                  className="h-full rounded-full transition-all"
+                  style={{
+                    width: `${Math.max(levelInfo.progress * 100, 4)}%`,
+                    background: "linear-gradient(90deg, #C47E5A 0%, #E8B040 100%)",
+                  }}
+                />
+              </div>
+              <span className="text-[9.5px] font-bold text-text-light shrink-0">
+                {levelInfo.next ? `${levelInfo.next - levelInfo.score}점` : "MAX"}
+              </span>
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <button
