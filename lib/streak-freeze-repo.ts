@@ -68,7 +68,7 @@ export async function getMyFreezeStatus(): Promise<FreezeStatus> {
 /**
  * 오늘 KST 날짜를 얼린다. 서버 RPC 호출 (주간 제약·중복 검사 원자적).
  */
-export async function useFreezeToday(): Promise<{ ok: boolean; error?: string }> {
+export async function applyFreezeToday(): Promise<{ ok: boolean; error?: string }> {
   const supabase = createClient();
   const today = toKstDate(new Date());
   const { data, error } = await supabase.rpc("use_streak_freeze", { p_date: today });

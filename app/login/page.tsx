@@ -265,7 +265,7 @@ function LoginContent() {
                 <p className="font-bold mb-1">주소가 복사됐어요 ✓</p>
                 <p>
                   사파리(iOS) 또는 크롬(Android)을 직접 열고 주소창에 붙여넣어주세요.
-                  또는 공유 메뉴 → "사파리로 열기"를 이용할 수 있어요.
+                  또는 공유 메뉴 → &quot;사파리로 열기&quot;를 이용할 수 있어요.
                 </p>
               </div>
             )}

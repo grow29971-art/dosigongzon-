@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Snowflake, Loader2, Check } from "lucide-react";
 import {
   getMyFreezeStatus,
-  useFreezeToday,
+  applyFreezeToday,
   type FreezeStatus,
 } from "@/lib/streak-freeze-repo";
 
@@ -45,7 +45,7 @@ export default function StreakFreezeButton({ streak, hasToday, onUsed }: Props) 
     setBusy(true);
     setError("");
     try {
-      const res = await useFreezeToday();
+      const res = await applyFreezeToday();
       if (!res.ok) {
         setError(res.error ?? "사용에 실패했어요");
         setBusy(false);
@@ -86,7 +86,7 @@ export default function StreakFreezeButton({ streak, hasToday, onUsed }: Props) 
           🧊 오늘을 건너뛸까요? (주 1회 한정)
         </p>
         <p className="text-[10.5px] text-text-sub mb-2.5 leading-snug">
-          스트릭이 끊기지 않도록 오늘을 '있었던 날'로 처리해요.
+          스트릭이 끊기지 않도록 오늘을 &lsquo;있었던 날&rsquo;로 처리해요.
           내일부터는 다시 기록해야 이어져요.
         </p>
         <div className="flex gap-2">
