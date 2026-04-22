@@ -44,7 +44,7 @@ async function getLandingData() {
   }
 }
 
-export default async function HomeLanding() {
+export default async function HomeLanding({ hotSlot }: { hotSlot?: React.ReactNode } = {}) {
   const data = await getLandingData();
   const featuredGus = ["gangnam", "mapo", "songpa", "yongsan", "seongdong", "gwanak"];
   const featured = SEOUL_GUS.filter((g) => featuredGus.includes(g.slug));
@@ -349,6 +349,13 @@ export default async function HomeLanding() {
           <TrustInline emoji="🏥" value={data.hospitalCount} label="병원" color="#22B573" />
         </div>
       </section>
+
+      {/* 이번 주 HOT 게시글 */}
+      {hotSlot && (
+        <section className="px-5 mt-6">
+          {hotSlot}
+        </section>
+      )}
 
       {/* 핵심 가치 */}
       <section className="px-5 mt-6">

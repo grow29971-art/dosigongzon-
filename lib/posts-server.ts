@@ -64,3 +64,41 @@ export async function getPostByIdServer(id: string): Promise<Post | null> {
   }
   return data ? rowToPost(data as PostRow) : null;
 }
+
+/**
+ * 이번 주 HOT 게시글 TOP N.
+ * 점수 = view_count × 1 + like_count × 3 + comment_count × 2
+ * 이번 주 월요일 00:00 KST부터 작성된 글 대상.
+ */
+export async function getWeeklyHotPostsServer(limit: number = 3): Promise<Post[]> {
+  // 이번 주 월요일 00:00 KST → UTC 변환
+  const kstNowStr = new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" });
+  const kstNow = new Date(kstNowStr);
+  const daysSinceMonday = (kstNow.getDay() + 6) % 7;
+  const mondayKst = new Date(kstNow);
+  mondayKst.setHours(0, 0, 0, 0);
+  mondayKst.setDate(mondayKst.getDate() - daysSinceMonday);
+  const mondayUtc = new Date(mondayKst.getTime() - 9 * 60 * 60 * 1000).toISOString();
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("hidden", false)
+    .gte("created_at", mondayUtc)
+    .limit(50); // 후보 50개 → 점수 매긴 뒤 상위 N
+
+  if (error || !data) return [];
+
+  const scored = (data as PostRow[])
+    .map((r) => ({
+      post: rowToPost(r),
+      score: (r.view_count ?? 0) + (r.like_count ?? 0) * 3 + (r.comment_count ?? 0) * 2,
+    }))
+    .filter((x) => x.score > 0) // 관심 지표가 0인 글은 HOT이 아님
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((x) => x.post);
+
+  return scored;
+}

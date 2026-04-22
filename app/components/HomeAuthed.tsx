@@ -142,7 +142,7 @@ interface WeatherData {
 }
 
 /* ═══ 로그인 유저 홈(대시보드) ═══ */
-export default function HomeAuthed() {
+export default function HomeAuthed({ hotSlot }: { hotSlot?: React.ReactNode } = {}) {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [mounted, setMounted] = useState(false);
@@ -554,6 +554,9 @@ export default function HomeAuthed() {
           rescueCount={rescueCount}
         />
       )}
+
+      {/* ══════ 이번 주 HOT 게시글 (SSR) ══════ */}
+      {hotSlot}
 
       {/* ══════ 온보딩 가이드 (신규 유저용) ══════ */}
       {user && activity && !onboardingDismissed && (
