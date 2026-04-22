@@ -936,7 +936,7 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
       currentStreak: 0, longestStreak: 0, weeklyGoalAchieved: false,
     };
 
-  const [catsRes, commentsRes, alertsRes, likeSumRes, careLogsRes, invitesRes, recentCareRes] = await Promise.all([
+  const [catsRes, commentsRes, alertsRes, likeSumRes, careLogsRes, invitesRes, recentCareRes, freezesRes] = await Promise.all([
     supabase
       .from("cats")
       .select("id", { count: "exact", head: true })
@@ -969,15 +969,21 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
       .eq("author_id", user.id)
       .order("logged_at", { ascending: false })
       .limit(1000),
+    // 스트릭 프리즈(건너뛰기 쿠폰) 사용 이력 — streak 계산에 병합
+    supabase
+      .from("streak_freezes")
+      .select("freeze_date")
+      .eq("user_id", user.id),
   ]);
 
   const likesReceived = (
     (likeSumRes.data ?? []) as { like_count: number }[]
   ).reduce((sum, r) => sum + (r.like_count ?? 0), 0);
 
-  // streak / 이번 주 목표 달성 집계
+  // streak / 이번 주 목표 달성 집계 (freeze는 있었던 날로 취급)
   const { currentStreak, longestStreak, weeklyGoalAchieved } = computeStreakAndWeekly(
     (recentCareRes.data ?? []) as { logged_at: string }[],
+    ((freezesRes.data ?? []) as { freeze_date: string }[]).map((r) => r.freeze_date),
   );
 
   return {
@@ -993,13 +999,17 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
   };
 }
 
-/** streak / 역대 최장 / 이번 주 7일 달성 여부 계산 (KST). */
-function computeStreakAndWeekly(rows: { logged_at: string }[]): {
+/** streak / 역대 최장 / 이번 주 7일 달성 여부 계산 (KST).
+ *  freezeDates: 사용한 프리즈 쿠폰 날짜 배열 — "있었던 날"처럼 취급. */
+function computeStreakAndWeekly(
+  rows: { logged_at: string }[],
+  freezeDates: string[] = [],
+): {
   currentStreak: number;
   longestStreak: number;
   weeklyGoalAchieved: boolean;
 } {
-  if (rows.length === 0)
+  if (rows.length === 0 && freezeDates.length === 0)
     return { currentStreak: 0, longestStreak: 0, weeklyGoalAchieved: false };
 
   const toKst = (iso: string) =>
@@ -1007,6 +1017,8 @@ function computeStreakAndWeekly(rows: { logged_at: string }[]): {
 
   const daysSet = new Set<string>();
   for (const r of rows) daysSet.add(toKst(r.logged_at));
+  // freeze 날짜를 합집합에 추가 (streak 연속성 유지)
+  for (const d of freezeDates) daysSet.add(d);
 
   const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
   const hasToday = daysSet.has(today);

@@ -32,6 +32,7 @@ import AchievementToast, { type ToastData } from "@/app/components/AchievementTo
 import { TITLES, CATEGORY_COLORS } from "@/lib/titles";
 import TodayChecklist from "@/app/components/TodayChecklist";
 import RescueBanner from "@/app/components/RescueBanner";
+import StreakFreezeButton from "@/app/components/StreakFreezeButton";
 import SplashLoading from "@/app/components/SplashLoading";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
@@ -681,6 +682,15 @@ export default function HomeAuthed({ hotSlot }: { hotSlot?: React.ReactNode } = 
                   <p className="text-[11.5px] text-text-sub mt-1 leading-snug">
                     {subline}
                   </p>
+                  {/* 스트릭 프리즈 쿠폰 (streak ≥ 2 + 오늘 미기록 조건 내부에서 필터) */}
+                  <StreakFreezeButton
+                    streak={s}
+                    hasToday={hasToday}
+                    onUsed={() => {
+                      // 재조회해서 카드 즉시 갱신
+                      getMyStreakInfo().then(setStreakInfo).catch(() => {});
+                    }}
+                  />
                 </div>
               </div>
 

@@ -58,21 +58,30 @@ export async function getMyStreakInfo(weeklyGoal = 7): Promise<StreakInfo> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return empty;
 
-  // 전체 기간 돌봄 기록 (역대 최장 계산용) — 최근 1000건 제한.
-  // 하루에 여러 건 있어도 날짜만 쓰므로 충분히 많은 날을 커버함.
-  const { data, error } = await supabase
-    .from("care_logs")
-    .select("logged_at")
-    .eq("author_id", user.id)
-    .order("logged_at", { ascending: false })
-    .limit(1000);
+  // care_logs + streak_freezes 병렬 조회
+  const [logsRes, freezesRes] = await Promise.all([
+    supabase
+      .from("care_logs")
+      .select("logged_at")
+      .eq("author_id", user.id)
+      .order("logged_at", { ascending: false })
+      .limit(1000),
+    supabase
+      .from("streak_freezes")
+      .select("freeze_date")
+      .eq("user_id", user.id),
+  ]);
 
-  if (error || !data) return empty;
+  if (logsRes.error || !logsRes.data) return empty;
 
-  // KST 날짜별 set
+  // KST 날짜별 set — care_logs + 얼린 날짜 합집합
   const daysSet = new Set<string>();
-  for (const row of data as { logged_at: string }[]) {
+  for (const row of logsRes.data as { logged_at: string }[]) {
     daysSet.add(toKstDate(row.logged_at));
+  }
+  // freeze도 "돌봄 있었던 날"처럼 취급해 연속성 유지
+  for (const row of (freezesRes.data ?? []) as { freeze_date: string }[]) {
+    daysSet.add(row.freeze_date);
   }
   if (daysSet.size === 0) return empty;
 
@@ -120,22 +129,26 @@ export async function getMyStreakInfo(weeklyGoal = 7): Promise<StreakInfo> {
     prevDay = day;
   }
 
-  // 이번 주(월~일) 집계
+  // 이번 주(월~일) 집계 — 돌봄 기록 기준 (freeze는 제외)
   const mondayIso = thisMondayKstISO();
   const mondayMs = new Date(mondayIso).getTime();
   const byDay = [false, false, false, false, false, false, false];
   let count = 0;
-  for (const row of data as { logged_at: string }[]) {
+  for (const row of logsRes.data as { logged_at: string }[]) {
     const t = new Date(row.logged_at).getTime();
     if (t < mondayMs) continue;
     count += 1;
-    // 월요일 00:00부터 몇 일째인지
     const diffDays = Math.floor((t - mondayMs) / (24 * 60 * 60 * 1000));
     if (diffDays >= 0 && diffDays < 7) byDay[diffDays] = true;
   }
 
-  // 최신 돌봄 날짜 (최장 end와 다를 수 있음)
-  const lastCareDate = sortedDays[sortedDays.length - 1] ?? null;
+  // 최신 "실제 돌봄" 날짜 — freeze는 제외 (오도 방지)
+  const careOnly = new Set<string>();
+  for (const row of logsRes.data as { logged_at: string }[]) {
+    careOnly.add(toKstDate(row.logged_at));
+  }
+  const sortedCare = Array.from(careOnly).sort();
+  const lastCareDate = sortedCare[sortedCare.length - 1] ?? null;
 
   // 현재 streak이 역대 최장과 같으면 = 신기록 진행 중
   const isRecord = streak > 0 && streak >= longestStreak;
