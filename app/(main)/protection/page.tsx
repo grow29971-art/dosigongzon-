@@ -228,6 +228,15 @@ function InfoCard({ card }: { card: (typeof cards)[number] }) {
   );
 }
 
+const breadcrumbLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "도시공존", item: "https://dosigongzon.com" },
+    { "@type": "ListItem", position: 2, name: "보호지침", item: "https://dosigongzon.com/protection" },
+  ],
+};
+
 /* ═══ 페이지 ═══ */
 export default function ProtectionPage() {
   const row1 = cards.slice(0, 1);
@@ -241,6 +250,10 @@ export default function ProtectionPage() {
 
   return (
     <div className="px-4 pt-14 pb-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       {/* ── 헤더 ── */}
       <div className="mb-6 px-1">
         <div className="flex items-baseline gap-2 mb-1">

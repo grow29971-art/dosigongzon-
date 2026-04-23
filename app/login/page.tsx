@@ -416,7 +416,7 @@ function LoginContent() {
             </div>
             <span className="text-[13px] text-text-sub">로그인 상태 유지</span>
           </button>
-          <Link href="/find-account" className="text-[13px] text-text-sub">
+          <Link href="/find-account" className="text-[13px] font-semibold text-primary underline underline-offset-2">
             아이디 · 비밀번호 찾기
           </Link>
         </div>

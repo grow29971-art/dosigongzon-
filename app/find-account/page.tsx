@@ -56,7 +56,7 @@ export default function FindAccountPage() {
 
     try {
       const { error } = await createClient().auth.resetPasswordForEmail(resetEmail.trim(), {
-        redirectTo: `${window.location.origin}/login`,
+        redirectTo: `${window.location.origin}/api/auth/callback?next=/reset-password`,
       });
       if (error) throw error;
       setResetSent(true);

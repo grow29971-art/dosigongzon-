@@ -118,6 +118,16 @@ const faqSchema = {
   ],
 };
 
+const breadcrumbLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "도시공존", item: SITE_URL },
+    { "@type": "ListItem", position: 2, name: "보호지침", item: `${SITE_URL}/protection` },
+    { "@type": "ListItem", position: 3, name: "응급 구조 가이드", item: `${SITE_URL}/protection/emergency-guide` },
+  ],
+};
+
 const EMERGENCY_SIGNS = [
   { emoji: "🩸", title: "대량 출혈", desc: "분홍빛 이상 피가 흐르거나 옷·지면에 번질 정도" },
   { emoji: "🤕", title: "골절·움직임 이상", desc: "다리 각도가 부자연스럽거나 한쪽을 전혀 못 씀" },
@@ -139,6 +149,10 @@ export default function EmergencyGuidePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
       <div className="flex items-center gap-3 mb-6">

@@ -121,6 +121,16 @@ const faqSchema = {
   ],
 };
 
+const breadcrumbLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "도시공존", item: SITE_URL },
+    { "@type": "ListItem", position: 2, name: "보호지침", item: `${SITE_URL}/protection` },
+    { "@type": "ListItem", position: 3, name: "냥줍 가이드", item: `${SITE_URL}/protection/kitten-guide` },
+  ],
+};
+
 export default function KittenGuidePage() {
   return (
     <div className="px-5 pt-14 pb-16 max-w-[720px] mx-auto">
@@ -131,6 +141,10 @@ export default function KittenGuidePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
       <div className="flex items-center gap-3 mb-6">

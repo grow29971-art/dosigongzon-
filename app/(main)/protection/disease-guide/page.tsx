@@ -36,6 +36,16 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+const breadcrumbLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "도시공존", item: SITE_URL },
+    { "@type": "ListItem", position: 2, name: "보호지침", item: `${SITE_URL}/protection` },
+    { "@type": "ListItem", position: 3, name: "질병 가이드", item: `${SITE_URL}/protection/disease-guide` },
+  ],
+};
+
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
@@ -540,6 +550,7 @@ export default function DiseaseGuidePage() {
     <div className="px-5 pt-12 pb-16 max-w-3xl mx-auto">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
 
       {/* 헤더 */}
       <div className="flex items-center gap-2 mb-5">

@@ -24,6 +24,16 @@ export const metadata: Metadata = {
   },
 };
 
+const breadcrumbLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "도시공존", item: "https://dosigongzon.com" },
+    { "@type": "ListItem", position: 2, name: "보호지침", item: "https://dosigongzon.com/protection" },
+    { "@type": "ListItem", position: 3, name: "법률 가이드", item: "https://dosigongzon.com/protection/legal" },
+  ],
+};
+
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -135,6 +145,10 @@ export default function LegalGuidePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
       <div className="flex items-center gap-3 mb-6">

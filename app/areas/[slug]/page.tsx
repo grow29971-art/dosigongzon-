@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, Heart, PawPrint, Stethoscope } from "lucide-react";
@@ -96,11 +97,25 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
     },
   };
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "도시공존", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "지역", item: `${SITE_URL}/areas` },
+      { "@type": "ListItem", position: 3, name: gu.name, item: `${SITE_URL}/areas/${slug}` },
+    ],
+  };
+
   return (
     <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
       {/* 헤더 */}
@@ -186,18 +201,17 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
                   className="block rounded-2xl overflow-hidden bg-white active:scale-[0.98] transition-transform"
                   style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.06)" }}
                 >
-                  <div
-                    className="relative"
-                    style={{
-                      aspectRatio: "1 / 1",
-                      backgroundImage: `url('${photo}')`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  >
+                  <div className="relative" style={{ aspectRatio: "1 / 1" }}>
+                    <Image
+                      src={photo}
+                      alt={c.name}
+                      fill
+                      sizes="(max-width: 640px) 50vw, 200px"
+                      style={{ objectFit: "cover" }}
+                    />
                     {urgent && (
                       <span
-                        className="absolute top-2 left-2 text-[10px] font-extrabold px-2 py-0.5 rounded-lg text-white"
+                        className="absolute top-2 left-2 text-[10px] font-extrabold px-2 py-0.5 rounded-lg text-white z-10"
                         style={{ backgroundColor: HEALTH_MAP.danger.color }}
                       >
                         🚨 긴급
