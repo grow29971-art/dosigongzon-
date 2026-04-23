@@ -56,16 +56,14 @@ create index if not exists user_activity_regions_user_idx
 create index if not exists auth_error_logs_created_idx
   on public.auth_error_logs (created_at desc);
 
--- ── profiles ──
--- 레벨 리더보드 — 상위 유저 조회
--- .order("level desc").limit(X)  ← 실제로 쓰이면 유용
-create index if not exists profiles_level_idx
-  on public.profiles (level desc nulls last);
+-- ── user_suspensions ──
+-- is_user_not_suspended() 함수에서 활성 정지 조회
+-- where user_id = xxx and (suspended_until is null or suspended_until > now())
+create index if not exists user_suspensions_user_active_idx
+  on public.user_suspensions (user_id, suspended_until);
 
--- 정지 유저 필터 (is_user_not_suspended 함수)
-create index if not exists profiles_suspended_idx
-  on public.profiles (suspended)
-  where suspended = true;
+-- 주: profiles.level / profiles.suspended 컬럼은 존재하지 않음
+-- (레벨은 care_logs 등으로 런타임 계산, 정지는 user_suspensions 뷰로 판별)
 
 -- ══════════════════════════════════════════
 -- 실행 후 확인:
