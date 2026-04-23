@@ -21,6 +21,7 @@ import {
   ChevronRight,
   RefreshCcw,
   MapPin as MapPinIcon,
+  BarChart3,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { getAdminStats, type AdminStats } from "@/lib/admin-stats";
@@ -86,6 +87,13 @@ export default function AdminDashboardPage() {
   }
 
   const menus: MenuItem[] = [
+    {
+      href: "/admin/insights",
+      title: "분석 대시보드",
+      subtitle: "가입·활동·인기 지표",
+      Icon: BarChart3,
+      color: "#5BA876",
+    },
     {
       href: "/admin/inbox",
       title: "신고·문의 관리",
