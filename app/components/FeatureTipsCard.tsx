@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
-  MapPin, PawPrint, Pencil, Gift, MessageSquare, BookOpen, X,
-  Heart, Users, Bell, MessageCircle, Plus,
+  MapPin, PawPrint, Pencil, Gift, BookOpen, X,
+  Heart, Users, MessageCircle, Plus,
 } from "lucide-react";
 import type { MyActivitySummary } from "@/lib/cats-repo";
 import type { ActivityRegion } from "@/lib/activity-regions-repo";

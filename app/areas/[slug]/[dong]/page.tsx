@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, Heart, PawPrint, Stethoscope } from "lucide-react";
-import { SEOUL_GUS, findGuBySlug } from "@/lib/seoul-regions";
+import { findGuBySlug } from "@/lib/seoul-regions";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { createAnonClient } from "@/lib/supabase/anon";
 import { HEALTH_MAP } from "@/lib/cats-repo";

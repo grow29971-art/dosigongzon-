@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
-  ArrowLeft, Eye, Thermometer, Milk, Stethoscope, Home, HelpCircle,
+  ArrowLeft, Thermometer, Milk, Stethoscope, Home, HelpCircle,
   AlertTriangle, Clock, Heart, BookOpen,
 } from "lucide-react";
 

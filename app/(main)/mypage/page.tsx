@@ -16,12 +16,8 @@ import {
   Pencil,
   Check,
   X,
-  Newspaper,
   MessageSquare,
   Inbox,
-  Stethoscope,
-  Pill,
-  Bell,
   BookOpen,
 } from "lucide-react";
 import InquiryModal from "@/app/components/InquiryModal";
@@ -58,7 +54,6 @@ import {
   CATEGORY_LABELS,
   CATEGORY_COLORS,
   TITLES,
-  ADMIN_TITLES,
   findAdminTitle,
   type TitleStatus,
 } from "@/lib/titles";

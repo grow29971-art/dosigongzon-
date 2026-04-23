@@ -10,21 +10,16 @@ import {
   Heart,
   MessageCircle,
   Plus,
-  MapPin,
-  ImageIcon,
   Siren,
   Home,
   ShoppingBag,
   MessagesSquare,
   ThumbsUp,
-  ThumbsDown,
   Pin,
   Megaphone,
 } from "lucide-react";
 import type { Post, PostCategory } from "@/lib/types";
-import { CATEGORY_MAP } from "@/lib/types";
 import { listPosts, formatRelativeTime, updatePostVote } from "@/lib/posts-repo";
-import TitleBadge from "@/app/components/TitleBadge";
 import { getLevelColor } from "@/lib/cats-repo";
 import {
   getMyPostVotes,

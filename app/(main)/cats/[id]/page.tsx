@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, MapPin, Heart, MessageCircle, PawPrint, CalendarDays } from "lucide-react";
+import { ArrowLeft, MapPin, PawPrint, CalendarDays } from "lucide-react";
 import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer, getCatCommunityStatsServer } from "@/lib/cats-server";
 import { GENDER_MAP, HEALTH_MAP } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";

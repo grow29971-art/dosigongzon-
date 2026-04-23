@@ -18,7 +18,6 @@ import {
   MessageSquare,
   Eye,
   Users as UsersIcon,
-  Ban,
   ChevronRight,
   RefreshCcw,
   MapPin as MapPinIcon,

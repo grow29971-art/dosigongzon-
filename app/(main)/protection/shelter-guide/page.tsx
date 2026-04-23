@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
-  ArrowLeft, Home, Snowflake, Thermometer, Wrench, AlertTriangle,
-  HelpCircle, BookOpen, Hammer, Cat, MapPin,
+  ArrowLeft, Thermometer, Wrench, AlertTriangle,
+  HelpCircle, Hammer, Cat,
 } from "lucide-react";
 
 const SITE_URL = "https://dosigongzon.com";
