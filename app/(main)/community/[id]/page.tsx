@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { use } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -299,8 +300,7 @@ export default function PostDetailPage({
         {/* 작성자 정보 */}
         <div className="flex items-center gap-2 mt-3 mb-5">
           {post.authorAvatarUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={post.authorAvatarUrl} alt="" className="w-8 h-8 rounded-full object-cover shrink-0" />
+            <Image src={post.authorAvatarUrl} alt="" width={32} height={32} className="rounded-full object-cover shrink-0" style={{ width: 32, height: 32 }} />
           ) : (
             <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center">
               <User size={16} className="text-primary" />
@@ -342,14 +342,19 @@ export default function PostDetailPage({
           {post.images.length > 0 && (
             <div className="mt-4 grid grid-cols-2 gap-2">
               {post.images.map((url) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <div
                   key={url}
-                  src={url}
-                  alt=""
-                  className="w-full aspect-square object-cover rounded-xl"
+                  className="relative w-full aspect-square rounded-xl overflow-hidden"
                   style={{ border: "1px solid #E3DCD3" }}
-                />
+                >
+                  <Image
+                    src={url}
+                    alt=""
+                    fill
+                    sizes="(max-width: 720px) 50vw, 360px"
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
               ))}
             </div>
           )}
@@ -619,7 +624,7 @@ function CommentItem({
       <div className="flex items-center justify-between mb-1.5">
         <div className="flex items-center gap-2">
           {c.author_avatar_url ? (
-            <img src={c.author_avatar_url} alt="" className="w-6 h-6 rounded-full object-cover" />
+            <Image src={c.author_avatar_url} alt="" width={24} height={24} className="rounded-full object-cover" style={{ width: 24, height: 24 }} />
           ) : (
             <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center">
               <span className="text-[10px] font-extrabold text-primary">

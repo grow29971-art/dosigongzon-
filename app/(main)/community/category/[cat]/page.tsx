@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import {
@@ -274,11 +275,10 @@ export default function CategoryPage() {
             >
               {/* 썸네일 (이미지 있을 때만) */}
               {post.images.length > 0 ? (
-                <div className="relative shrink-0">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={post.images[0]} alt="" className="w-14 h-14 rounded-xl object-cover" />
+                <div className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 56, height: 56 }}>
+                  <Image src={post.images[0]} alt="" fill sizes="56px" style={{ objectFit: "cover" }} />
                   {post.images.length > 1 && (
-                    <span className="absolute bottom-0.5 right-0.5 text-[8px] font-bold px-1 rounded-md" style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}>
+                    <span className="absolute bottom-0.5 right-0.5 text-[8px] font-bold px-1 rounded-md z-10" style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}>
                       +{post.images.length - 1}
                     </span>
                   )}
@@ -296,8 +296,7 @@ export default function CategoryPage() {
                 <div className="flex items-center gap-2 mt-1.5">
                   {/* 아바타 */}
                   {post.authorAvatarUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={post.authorAvatarUrl} alt="" className="w-4 h-4 rounded-full object-cover" />
+                    <Image src={post.authorAvatarUrl} alt="" width={16} height={16} className="rounded-full object-cover" style={{ width: 16, height: 16 }} />
                   ) : (
                     <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: `${meta.color}1A` }}>
                       <span className="text-[7px] font-bold" style={{ color: meta.color }}>{post.authorName.charAt(0)}</span>

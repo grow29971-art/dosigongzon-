@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, Heart, PawPrint, Stethoscope } from "lucide-react";
@@ -13,13 +14,11 @@ export const revalidate = 3600;
 
 type Params = Promise<{ slug: string; dong: string }>;
 
-/**
- * 구·동 정적 파라미터 생성. 400여 페이지가 생기지만 Next.js가 lazy + ISR로 처리.
- */
+// 동별 페이지 400여 개를 빌드 시 미리 만들면 5~7분 걸림.
+// 빈 배열 반환 → 첫 방문 시 ISR로 생성 + revalidate(3600) 캐시 → 빌드 30초.
+// sitemap.ts에 모든 URL이 들어가 있어 SEO 색인은 그대로.
 export async function generateStaticParams() {
-  return SEOUL_GUS.flatMap((g) =>
-    g.dongs.map((d) => ({ slug: g.slug, dong: d })),
-  );
+  return [];
 }
 
 async function getDongData(guName: string, dongName: string) {
@@ -222,18 +221,17 @@ export default async function AreaDongPage({ params }: { params: Params }) {
                   className="block rounded-2xl overflow-hidden bg-white active:scale-[0.98] transition-transform"
                   style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.06)" }}
                 >
-                  <div
-                    className="relative"
-                    style={{
-                      aspectRatio: "1 / 1",
-                      backgroundImage: `url('${photo}')`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  >
+                  <div className="relative" style={{ aspectRatio: "1 / 1" }}>
+                    <Image
+                      src={photo}
+                      alt={c.name}
+                      fill
+                      sizes="(max-width: 640px) 50vw, 200px"
+                      style={{ objectFit: "cover" }}
+                    />
                     {urgent && (
                       <span
-                        className="absolute top-2 left-2 text-[10px] font-extrabold px-2 py-0.5 rounded-lg text-white"
+                        className="absolute top-2 left-2 text-[10px] font-extrabold px-2 py-0.5 rounded-lg text-white z-10"
                         style={{ backgroundColor: HEALTH_MAP.danger.color }}
                       >
                         🚨 긴급

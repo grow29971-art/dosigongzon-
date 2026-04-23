@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, Heart, MessageCircle, PawPrint, CalendarDays } from "lucide-react";
@@ -124,16 +125,18 @@ export default async function CatDetailPage({ params }: { params: Params }) {
       {/* 커버 이미지 */}
       <div
         className="relative mx-4 mt-2 rounded-3xl overflow-hidden"
-        style={{
-          aspectRatio: "4 / 3",
-          boxShadow: "0 10px 28px rgba(0,0,0,0.12)",
-          backgroundImage: `url('${photo}')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
+        style={{ aspectRatio: "4 / 3", boxShadow: "0 10px 28px rgba(0,0,0,0.12)" }}
       >
+        <Image
+          src={photo}
+          alt={cat.name}
+          fill
+          priority
+          sizes="(max-width: 720px) 100vw, 720px"
+          style={{ objectFit: "cover" }}
+        />
         <div
-          className="absolute inset-x-0 bottom-0 p-4"
+          className="absolute inset-x-0 bottom-0 p-4 z-10"
           style={{
             background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 100%)",
           }}
@@ -152,25 +155,35 @@ export default async function CatDetailPage({ params }: { params: Params }) {
       {cat.photo_urls && cat.photo_urls.length > 1 && (
         <div className="px-4 mt-3">
           <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-            {cat.photo_urls.map((url, idx) => (
-              <a
-                key={idx}
-                href={sanitizeImageUrl(url, "")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="shrink-0 rounded-xl overflow-hidden active:scale-[0.97]"
-                style={{
-                  width: 72,
-                  height: 72,
-                  backgroundImage: `url('${sanitizeImageUrl(url, "")}')`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  border: idx === 0 ? "2px solid #C47E5A" : "1.5px solid rgba(0,0,0,0.06)",
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
-                }}
-                aria-label={`사진 ${idx + 1}`}
-              />
-            ))}
+            {cat.photo_urls.map((url, idx) => {
+              const safeUrl = sanitizeImageUrl(url, "");
+              return (
+                <a
+                  key={idx}
+                  href={safeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 rounded-xl overflow-hidden active:scale-[0.97] relative"
+                  style={{
+                    width: 72,
+                    height: 72,
+                    border: idx === 0 ? "2px solid #C47E5A" : "1.5px solid rgba(0,0,0,0.06)",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+                  }}
+                  aria-label={`사진 ${idx + 1}`}
+                >
+                  {safeUrl && (
+                    <Image
+                      src={safeUrl}
+                      alt={`사진 ${idx + 1}`}
+                      fill
+                      sizes="72px"
+                      style={{ objectFit: "cover" }}
+                    />
+                  )}
+                </a>
+              );
+            })}
           </div>
         </div>
       )}

@@ -1,4 +1,12 @@
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
+
 export async function GET(request: Request) {
+  // IP당 분당 10회 — OpenWeatherMap 무료 quota(분당 60) 보호
+  const ip = getClientIp(request);
+  if (!rateLimit(`weather:${ip}`, { max: 10, windowMs: 60_000 })) {
+    return Response.json({ error: "잠시 후 다시 시도해주세요." }, { status: 429 });
+  }
+
   const apiKey = process.env.OPENWEATHERMAP_API_KEY;
   if (!apiKey) {
     return Response.json(

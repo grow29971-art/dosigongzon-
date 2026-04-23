@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -1735,10 +1736,12 @@ export default function HomeAuthed({ hotSlot }: { hotSlot?: React.ReactNode } = 
                 {/* 이미지 영역 (16:9) */}
                 <div className="relative aspect-[16/9] overflow-hidden" style={{ background: preset.gradient }}>
                   {item.image_url && (
-                    <img
+                    <Image
                       src={item.image_url}
                       alt={item.title}
-                      className="w-full h-full object-cover"
+                      fill
+                      sizes="(max-width: 720px) 100vw, 600px"
+                      style={{ objectFit: "cover" }}
                     />
                   )}
                   {/* 하단 그라데이션 오버레이 */}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { TrendingUp, Crown, Clock } from "lucide-react";
 import {
@@ -144,12 +145,11 @@ export default function MyActivityDashboard() {
                   }}
                 >
                   <div
-                    className="w-8 h-8 rounded-full overflow-hidden shrink-0"
+                    className="relative w-8 h-8 rounded-full overflow-hidden shrink-0"
                     style={{ background: "#EEE8E0" }}
                   >
                     {c.photoUrl && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={c.photoUrl} alt={c.catName} className="w-full h-full object-cover" />
+                      <Image src={c.photoUrl} alt={c.catName} fill sizes="32px" style={{ objectFit: "cover" }} />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRef } from "react";
+import Image from "next/image";
 import {
   User,
   LogOut,
@@ -297,7 +298,7 @@ export default function MyPage() {
               aria-label="프로필 사진 변경"
             >
               {avatarUrl ? (
-                <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
+                <Image src={avatarUrl} alt="" fill sizes="64px" style={{ objectFit: "cover" }} />
               ) : (
                 <User size={32} color="#fff" strokeWidth={2} />
               )}
@@ -760,9 +761,11 @@ export default function MyPage() {
                         </p>
                       )}
                       {c.photo_url && (
-                        <img
+                        <Image
                           src={c.photo_url}
                           alt=""
+                          width={120}
+                          height={90}
                           className="mt-2 rounded-lg object-cover"
                           style={{ width: 120, height: 90 }}
                         />

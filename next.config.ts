@@ -79,6 +79,18 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["192.168.0.2", "localhost"],
   // 기술 스택 정보 노출 차단 — X-Powered-By: Next.js 헤더 제거
   poweredByHeader: false,
+  // next/image 설정 — Vercel Image Optimization quota 이슈로 unoptimized 모드.
+  // lazy loading·sizes 등 next/image 기본 기능은 유지, 자동 WebP 변환만 비활성.
+  // quota 확보 후 unoptimized: false + remotePatterns로 전환 검토.
+  images: {
+    unoptimized: true,
+    remotePatterns: [
+      { protocol: "https", hostname: "*.supabase.co" },
+      { protocol: "https", hostname: "placehold.co" },
+      { protocol: "https", hostname: "lh3.googleusercontent.com" },
+      { protocol: "https", hostname: "k.kakaocdn.net" },
+    ],
+  },
   async headers() {
     return [
       {
