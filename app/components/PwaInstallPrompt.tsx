@@ -11,10 +11,10 @@ interface BeforeInstallPromptEvent extends Event {
 
 const DISMISS_KEY = "dosigongzon_pwa_dismissed";
 const VISITS_KEY = "dosigongzon_visits";
-const DISMISS_TTL_DAYS = 14;
-// 노출 조건: 2회차 이상 방문 AND 현재 세션에서 10초 이상 체류
-const MIN_VISITS = 2;
-const DWELL_MS = 10_000;
+const DISMISS_TTL_DAYS = 3;
+// 노출 조건: 첫 방문부터 AND 현재 세션에서 5초 이상 체류 (자주 노출 모드)
+const MIN_VISITS = 1;
+const DWELL_MS = 5_000;
 
 function isDismissedRecently(): boolean {
   try {
