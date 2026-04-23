@@ -16,6 +16,9 @@ const DISALLOWED_PATHS = [
   // 긴급 구조 피드 — 실시간·민감 정보라 검색 노출 안 함
   "/rescue",
   "/rescue/",
+  // 검색 페이지 — 파라미터 기반 동적 결과라 색인 가치 낮음
+  "/search",
+  "/search/",
   // 로그인 가드 걸린 경로 — 크롤러가 접근해도 로그인 화면만 보임
   "/community",
   "/community/",

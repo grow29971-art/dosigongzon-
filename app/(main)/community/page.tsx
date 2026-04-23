@@ -12,6 +12,7 @@ import {
   TrendingUp,
   Plus,
   Eye,
+  Search,
 } from "lucide-react";
 import type { Post, PostCategory } from "@/lib/types";
 import { listPosts, formatRelativeTime } from "@/lib/posts-repo";
@@ -208,6 +209,14 @@ export default function CommunityPage() {
             동네 이웃들과 함께 만드는 공간
           </p>
         </div>
+        <Link
+          href="/search"
+          className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center active:scale-90 transition-transform"
+          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+          aria-label="통합 검색"
+        >
+          <Search size={18} className="text-text-sub" />
+        </Link>
       </div>
 
       {/* 페이지 사용법 안내 (dismiss 가능) */}

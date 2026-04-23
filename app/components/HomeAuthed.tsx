@@ -26,6 +26,7 @@ import {
   Moon,
   SunMedium,
   Bell,
+  Search,
 } from "lucide-react";
 import AIChatModal from "@/app/components/AIChatModal";
 import SocialProofStrip from "@/app/components/SocialProofStrip";
@@ -530,6 +531,13 @@ export default function HomeAuthed({ hotSlot }: { hotSlot?: React.ReactNode } = 
           )}
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            href="/search"
+            className="w-10 h-10 rounded-2xl bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
+            aria-label="통합 검색"
+          >
+            <Search size={18} className="text-text-sub" />
+          </Link>
           <button
             onClick={toggleDark}
             className="w-10 h-10 rounded-2xl bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
