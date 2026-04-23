@@ -43,6 +43,17 @@ export function explainAuthError(
     };
   }
 
+  // ── 이메일 링크 만료 / 재사용 (비밀번호 재설정·매직링크) ──
+  // access_denied보다 먼저 체크 — Supabase가 otp_expired도 access_denied로 감싸서 보냄
+  if (c === "otp_expired" || d.includes("otp_expired") || d.includes("email link is invalid") || d.includes("has expired")) {
+    return {
+      title: "재설정 링크가 만료됐어요",
+      body: "메일 링크는 받은 후 1시간 동안, 한 번만 사용할 수 있어요.",
+      tip: "비밀번호 찾기에서 메일을 다시 받아주세요.",
+      severity: "warn",
+    };
+  }
+
   // ── OAuth 표준 에러 ──
   if (c === "redirect_uri_mismatch" || d.includes("redirect_uri_mismatch")) {
     return {
