@@ -10,16 +10,13 @@ import { HEALTH_MAP } from "@/lib/cats-repo";
 
 const SITE_URL = "https://dosigongzon.com";
 
-export const revalidate = 3600;
+// 동 이름이 한글(예: "역삼동")인데 Next.js ISR이 cache tag를 HTTP 헤더에 set하면서
+// 비ASCII 문자로 인해 ERR_INVALID_CHAR 발생 → 24개 동이 5xx로 떨어졌음.
+// force-dynamic으로 매 요청 SSR → cache tag 자체를 안 만들어 회피.
+// 데이터는 항상 fresh, 매 요청 Supabase 쿼리 3건. 트래픽 적은 동별 페이지라 부담 작음.
+export const dynamic = "force-dynamic";
 
 type Params = Promise<{ slug: string; dong: string }>;
-
-// 동별 페이지 400여 개를 빌드 시 미리 만들면 5~7분 걸림.
-// 빈 배열 반환 → 첫 방문 시 ISR로 생성 + revalidate(3600) 캐시 → 빌드 30초.
-// sitemap.ts에 모든 URL이 들어가 있어 SEO 색인은 그대로.
-export async function generateStaticParams() {
-  return [];
-}
 
 type DongCat = {
   id: string;
