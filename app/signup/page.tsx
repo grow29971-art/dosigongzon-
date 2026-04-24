@@ -29,6 +29,7 @@ export default function SignupPage() {
 function SignupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const eventParam = searchParams.get("event"); // "keyring" 등
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState<"kakao" | "google" | null>(null);
   const [error, setError] = useState("");
@@ -57,7 +58,9 @@ function SignupContent() {
 
     const rawNext = searchParams.get("next");
     const safeNext = rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
-    const callbackUrl = `${window.location.origin}/api/auth/callback?provider=${provider}&next=${encodeURIComponent(safeNext)}`;
+    // event 파라미터를 callback URL에 전달 — 가입 완료 시 admin 알림 트리거
+    const eventQuery = eventParam ? `&event=${encodeURIComponent(eventParam)}` : "";
+    const callbackUrl = `${window.location.origin}/api/auth/callback?provider=${provider}&next=${encodeURIComponent(safeNext)}${eventQuery}`;
     const oauthOptions: { redirectTo: string; scopes?: string } = { redirectTo: callbackUrl };
     if (provider === "kakao") {
       oauthOptions.scopes = "account_email profile_nickname profile_image";
@@ -113,17 +116,39 @@ function SignupContent() {
         )}
 
         {/* 로고 */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-[28px] bg-primary/10 mb-4">
             <PawPrint size={40} className="text-primary" strokeWidth={1.8} />
           </div>
           <h1 className="text-[26px] font-extrabold text-text-main tracking-tight">
-            도시공존에 합류하기
+            {eventParam === "keyring" ? "이벤트 응모 가입" : "도시공존에 합류하기"}
           </h1>
           <p className="text-[13.5px] text-text-sub mt-2 leading-relaxed">
             카카오 또는 구글 계정으로 1초 가입
           </p>
         </div>
+
+        {/* 이벤트 컨텍스트 카드 (응모하기로 들어왔을 때만) */}
+        {eventParam === "keyring" && (
+          <div
+            className="mb-4 rounded-2xl p-4"
+            style={{
+              background: "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
+              border: "1.5px solid rgba(196,126,90,0.30)",
+            }}
+          >
+            <p className="text-[10.5px] font-extrabold tracking-[0.12em] mb-1.5" style={{ color: "#C47E5A" }}>
+              🎁 1000명 이벤트 응모
+            </p>
+            <p className="text-[13px] font-extrabold text-text-main leading-tight mb-1">
+              가입하면 자동 응모 완료!
+            </p>
+            <p className="text-[11.5px] text-text-sub leading-relaxed">
+              가입자 1,000명 달성 시 추첨으로 20명에게 길고양이 모양의 아크릴 키링을 보내드려요.
+              가입만 해도 응모는 자동.
+            </p>
+          </div>
+        )}
 
         {/* 이메일 가입 중단 안내 */}
         <div

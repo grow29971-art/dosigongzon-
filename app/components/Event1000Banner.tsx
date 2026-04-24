@@ -108,14 +108,14 @@ export default async function Event1000Banner() {
             </div>
           </div>
 
-          {/* CTA — 비로그인이면 가입 유도, 로그인이면 친구 초대 */}
+          {/* CTA — 응모 페이지로. 비로그인이면 거기서 로그인 유도 */}
           {!reached && (
             <Link
-              href="/signup"
+              href="/event/keyring"
               className="mt-4 w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-extrabold active:scale-[0.97] transition-transform"
               style={{ background: "#FFFFFF", color: "#A8684A" }}
             >
-              지금 가입하고 응모하기
+              응모하기
               <ArrowRight size={14} />
             </Link>
           )}
