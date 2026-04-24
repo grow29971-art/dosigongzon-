@@ -40,12 +40,15 @@ function MessagesPage() {
   const photoInputRef = useRef<HTMLInputElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
-  // URL 파라미터로 바로 쪽지 보내기 (?to=userId&name=이름)
+  // URL 파라미터로 바로 쪽지 보내기 (?to=userId&name=이름&preset=메시지)
+  // preset이 있으면 입력창에 미리 채워 — 입양 문의 버튼 등에서 활용.
   useEffect(() => {
     const toId = searchParams.get("to");
     const toName = searchParams.get("name");
+    const preset = searchParams.get("preset");
     if (toId && toName) {
       setSelectedPartner({ id: toId, name: toName });
+      if (preset) setMsgText(preset);
     }
   }, [searchParams]);
 

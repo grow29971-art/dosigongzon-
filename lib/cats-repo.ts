@@ -8,6 +8,8 @@ import { isSafeImageUrl } from "@/lib/url-validate";
 
 export type CatGender = "male" | "female" | "unknown";
 export type CatHealthStatus = "good" | "caution" | "danger";
+// 입양·임시보호 매칭 상태. null = 해당 없음.
+export type AdoptionStatus = "seeking_home" | "temp_care" | "both" | null;
 
 export interface Cat {
   id: string;
@@ -22,11 +24,21 @@ export interface Cat {
   gender: CatGender;
   neutered: boolean | null;
   health_status: CatHealthStatus;
+  adoption_status: AdoptionStatus;
   caretaker_id: string | null;
   caretaker_name: string | null;
   like_count: number;
   created_at: string;
 }
+
+export const ADOPTION_MAP: Record<
+  Exclude<AdoptionStatus, null>,
+  { label: string; emoji: string; color: string; short: string }
+> = {
+  seeking_home: { label: "입양처 찾는 중", short: "입양", emoji: "🏡", color: "#C47E5A" },
+  temp_care: { label: "임시보호 필요", short: "임보", emoji: "🤝", color: "#4A7BA8" },
+  both: { label: "입양·임보 모두", short: "입양·임보", emoji: "💛", color: "#8B65B8" },
+};
 
 export const GENDER_MAP: Record<CatGender, { label: string; emoji: string }> = {
   male: { label: "수컷", emoji: "♂️" },
@@ -52,6 +64,7 @@ export interface CreateCatInput {
   gender?: CatGender;
   neutered?: boolean | null;
   health_status?: CatHealthStatus;
+  adoption_status?: AdoptionStatus;
   caretaker_name?: string;
 }
 
@@ -1074,7 +1087,7 @@ function computeStreakAndWeekly(
 // ── 고양이 정보 수정 (본인 또는 admin) ──
 export async function updateCat(
   catId: string,
-  input: Partial<Pick<Cat, "name" | "description" | "region" | "tags" | "photo_url" | "photo_urls" | "gender" | "neutered" | "health_status" | "lat" | "lng">>,
+  input: Partial<Pick<Cat, "name" | "description" | "region" | "tags" | "photo_url" | "photo_urls" | "gender" | "neutered" | "health_status" | "adoption_status" | "lat" | "lng">>,
 ): Promise<Cat> {
   const supabase = createClient();
 

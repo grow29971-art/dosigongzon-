@@ -57,7 +57,7 @@ import { listRescueHospitals, type RescueHospital } from "@/lib/hospitals-repo";
 import type { Post } from "@/lib/types";
 import { createClient as createSupabaseClient } from "@/lib/supabase/client";
 import CareLogTab from "@/app/components/CareLogTab";
-import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, toggleCatLike, listMyLikedCatIds, GENDER_MAP, HEALTH_MAP, type CatGender, type CatHealthStatus } from "@/lib/cats-repo";
+import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, toggleCatLike, listMyLikedCatIds, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, type CatGender, type CatHealthStatus, type AdoptionStatus } from "@/lib/cats-repo";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import {
   listMyActivityRegions,
@@ -878,6 +878,7 @@ export default function MapPage() {
   const [editGender, setEditGender] = useState<CatGender>("unknown");
   const [editNeutered, setEditNeutered] = useState<boolean | null>(null);
   const [editHealth, setEditHealth] = useState<CatHealthStatus>("good");
+  const [editAdoption, setEditAdoption] = useState<AdoptionStatus>(null);
   const [editSaving, setEditSaving] = useState(false);
   // 위치 변경 (편집 모드에서 지도 picker로 갱신)
   const [editLat, setEditLat] = useState<number | null>(null);
@@ -2193,6 +2194,7 @@ export default function MapPage() {
                       setEditGender(selectedCat.gender ?? "unknown");
                       setEditNeutered(selectedCat.neutered ?? null);
                       setEditHealth(selectedCat.health_status ?? "good");
+                      setEditAdoption(selectedCat.adoption_status ?? null);
                       setEditLat(null);
                       setEditLng(null);
                     }}
@@ -2343,6 +2345,30 @@ export default function MapPage() {
                       </button>
                     ))}
                   </div>
+                  {/* 입양·임시보호 상태 */}
+                  <div className="flex gap-1.5 flex-wrap items-center pt-1">
+                    <span className="text-[11px] font-bold text-text-sub mr-1">입양·임보</span>
+                    <button type="button" onClick={() => setEditAdoption(null)}
+                      className="text-[11px] font-bold px-2.5 py-1.5 rounded-lg"
+                      style={{
+                        backgroundColor: editAdoption === null ? "#EEE8E0" : undefined,
+                        color: editAdoption === null ? "#6B5043" : "#A38E7A",
+                        border: editAdoption === null ? "1px solid #C47E5A" : "1px solid #E3DCD3",
+                      }}>
+                      해당 없음
+                    </button>
+                    {(Object.entries(ADOPTION_MAP) as [Exclude<AdoptionStatus, null>, typeof ADOPTION_MAP["seeking_home"]][]).map(([k, info]) => (
+                      <button key={k} type="button" onClick={() => setEditAdoption(k)}
+                        className="text-[11px] font-bold px-2.5 py-1.5 rounded-lg"
+                        style={{
+                          backgroundColor: editAdoption === k ? info.color : undefined,
+                          color: editAdoption === k ? "#fff" : info.color,
+                          border: editAdoption === k ? "none" : `1px solid ${info.color}40`,
+                        }}>
+                        {info.emoji} {info.short}
+                      </button>
+                    ))}
+                  </div>
                   <div className="flex gap-2 pt-1">
                     <button
                       onClick={async () => {
@@ -2357,6 +2383,7 @@ export default function MapPage() {
                             gender: editGender,
                             neutered: editNeutered,
                             health_status: editHealth,
+                            adoption_status: editAdoption,
                             ...(editLat !== null && editLng !== null
                               ? { lat: editLat, lng: editLng }
                               : {}),

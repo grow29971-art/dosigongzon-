@@ -6,8 +6,10 @@ import { ArrowLeft, MapPin, PawPrint, CalendarDays } from "lucide-react";
 import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer, getCatCommunityStatsServer } from "@/lib/cats-server";
 import { GENDER_MAP, HEALTH_MAP } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import { createClient } from "@/lib/supabase/server";
 import FollowButton from "@/app/components/FollowButton";
 import ShareCatButton from "@/app/components/ShareCatButton";
+import { AdoptionBadge, AdoptionInquireButton } from "@/app/components/AdoptionBadge";
 
 const SITE_URL = "https://dosigongzon.com";
 
@@ -60,6 +62,11 @@ export default async function CatDetailPage({ params }: { params: Params }) {
   const { id } = await params;
   const cat = await getCatByIdServer(id);
   if (!cat) notFound();
+
+  // 입양·임보 문의 버튼에서 본인 고양이인지 판별하는 용도
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const currentUserId = user?.id ?? null;
 
   const [commentCount, careCount, communityStats] = await Promise.all([
     getCatCommentsCountServer(cat.id),
@@ -141,6 +148,11 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 100%)",
           }}
         >
+          {cat.adoption_status && (
+            <div className="mb-1.5">
+              <AdoptionBadge status={cat.adoption_status} size="md" />
+            </div>
+          )}
           <h1 className="text-[28px] font-extrabold text-white tracking-tight drop-shadow">
             {cat.name}
           </h1>
@@ -150,6 +162,19 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           </div>
         </div>
       </div>
+
+      {/* 입양·임보 문의 CTA (상태 있고 본인 고양이 아닐 때) */}
+      {cat.adoption_status && (
+        <div className="px-4 mt-3">
+          <AdoptionInquireButton
+            status={cat.adoption_status}
+            caretakerId={cat.caretaker_id}
+            caretakerName={cat.caretaker_name}
+            catName={cat.name}
+            currentUserId={currentUserId}
+          />
+        </div>
+      )}
 
       {/* 갤러리 썸네일 (사진 2장 이상일 때) */}
       {cat.photo_urls && cat.photo_urls.length > 1 && (

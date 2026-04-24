@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { X, Camera, MapPin, Loader2, Plus, Lock } from "lucide-react";
-import { createCat, uploadCatPhoto, type Cat, type CatGender, type CatHealthStatus, GENDER_MAP, HEALTH_MAP } from "@/lib/cats-repo";
+import { createCat, uploadCatPhoto, type Cat, type CatGender, type CatHealthStatus, type AdoptionStatus, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP } from "@/lib/cats-repo";
 import { useAuth } from "@/lib/auth-context";
 import CatRegistrationCelebration from "@/app/components/CatRegistrationCelebration";
 
@@ -51,6 +51,7 @@ export default function AddCatModal({
   const [gender, setGender] = useState<CatGender>("unknown");
   const [neutered, setNeutered] = useState<boolean | null>(null);
   const [healthStatus, setHealthStatus] = useState<CatHealthStatus>("good");
+  const [adoptionStatus, setAdoptionStatus] = useState<AdoptionStatus>(null);
   // 최대 5장까지 다중 업로드
   const MAX_PHOTOS = 5;
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
@@ -210,6 +211,7 @@ export default function AddCatModal({
         gender,
         neutered,
         health_status: healthStatus,
+        adoption_status: adoptionStatus,
       });
 
       // 첫 등록 감지 — localStorage 기반 (유저별)
@@ -538,6 +540,45 @@ export default function AddCatModal({
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* 입양·임시보호 매칭 (선택) */}
+          <div>
+            <label className="text-[12px] font-bold text-text-main mb-2 block">
+              입양·임시보호 <span className="text-text-light font-normal">(선택)</span>
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setAdoptionStatus(null)}
+                className="py-2.5 rounded-2xl text-[12.5px] font-bold transition-all active:scale-95 col-span-2"
+                style={{
+                  backgroundColor: adoptionStatus === null ? "#EEE8E0" : undefined,
+                  color: adoptionStatus === null ? "#6B5043" : "#A38E7A",
+                  border: adoptionStatus === null ? "1.5px solid #C47E5A" : "1.5px solid #E3DCD3",
+                }}
+              >
+                해당 없음
+              </button>
+              {(Object.entries(ADOPTION_MAP) as [Exclude<AdoptionStatus, null>, typeof ADOPTION_MAP["seeking_home"]][]).map(([key, info]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setAdoptionStatus(key)}
+                  className="py-2.5 rounded-2xl text-[12px] font-bold transition-all active:scale-95"
+                  style={{
+                    backgroundColor: adoptionStatus === key ? info.color : undefined,
+                    color: adoptionStatus === key ? "#fff" : info.color,
+                    border: adoptionStatus === key ? "none" : `1.5px solid ${info.color}40`,
+                  }}
+                >
+                  {info.emoji} {info.short}
+                </button>
+              ))}
+            </div>
+            <p className="text-[10.5px] text-text-light mt-1.5 leading-relaxed px-1">
+              설정하면 고양이 상세 페이지에 배지와 문의 버튼이 생겨 다른 사용자가 쪽지로 연락할 수 있어요.
+            </p>
           </div>
 
           {/* 안내: 하루 1마리 제한 */}
