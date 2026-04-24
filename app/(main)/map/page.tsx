@@ -1358,7 +1358,7 @@ export default function MapPage() {
             {todayVisit != null && (
               <>
                 <span className="w-px h-3 mx-0.5" style={{ backgroundColor: "#E0DBD3" }} />
-                <span className="text-[10px] font-bold text-text-light">오늘 방문자 {todayVisit.toLocaleString()}명</span>
+                <span className="text-[10px] font-bold text-text-light">방문자 {todayVisit.toLocaleString()}명</span>
               </>
             )}
           </div>
