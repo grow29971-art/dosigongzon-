@@ -56,7 +56,7 @@ export default async function Event1000Banner() {
             {reached ? (
               <>가입자 1,000명 달성!<br />20명 추첨 곧 발표</>
             ) : (
-              <>가입자 1,000명 달성하면<br />20명에게 길고양이 키링 🐾</>
+              <>가입자 1,000명 달성하면<br />20명에게 아크릴 키링 🐾</>
             )}
           </h2>
 
@@ -64,7 +64,7 @@ export default async function Event1000Banner() {
           <p className="text-[12px] mt-2 leading-relaxed text-white/90">
             {reached
               ? "당첨자에게 등록된 이메일·쪽지로 곧 안내드릴게요."
-              : "여러분이 돌보는 길고양이 모양의 핸드메이드 키링을 추첨으로 보내드려요. 무료 가입만 해도 자동 응모 ✨"}
+              : "여러분이 돌보는 길고양이 모양의 아크릴 키링을 추첨으로 보내드려요. 무료 가입만 해도 자동 응모 ✨"}
           </p>
 
           {/* 진행률 */}
@@ -100,7 +100,7 @@ export default async function Event1000Banner() {
             <Gift size={18} className="shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[12px] font-extrabold leading-tight">
-                길고양이 키링 · {PRIZES}명 추첨
+                길고양이 아크릴 키링 · {PRIZES}명 추첨
               </p>
               <p className="text-[10.5px] mt-0.5 leading-snug opacity-90">
                 내가 등록·돌본 길고양이 모양으로 제작
