@@ -47,7 +47,8 @@ async function getLandingData() {
 export default async function HomeLanding({
   hotSlot,
   adoptionSlot,
-}: { hotSlot?: React.ReactNode; adoptionSlot?: React.ReactNode } = {}) {
+  eventSlot,
+}: { hotSlot?: React.ReactNode; adoptionSlot?: React.ReactNode; eventSlot?: React.ReactNode } = {}) {
   const data = await getLandingData();
   const featuredGus = ["gangnam", "mapo", "songpa", "yongsan", "seongdong", "gwanak"];
   const featured = SEOUL_GUS.filter((g) => featuredGus.includes(g.slug));
@@ -177,6 +178,9 @@ export default async function HomeLanding({
           <ArrowRight size={12} />
         </Link>
       </section>
+
+      {/* 1000명 이벤트 배너 — 가입 전환 강력 트리거 */}
+      {eventSlot}
 
       {/* 감성 인용 — 철학적 질문 */}
       <section className="px-5 mt-8">

@@ -148,7 +148,8 @@ interface WeatherData {
 export default function HomeAuthed({
   hotSlot,
   adoptionSlot,
-}: { hotSlot?: React.ReactNode; adoptionSlot?: React.ReactNode } = {}) {
+  eventSlot,
+}: { hotSlot?: React.ReactNode; adoptionSlot?: React.ReactNode; eventSlot?: React.ReactNode } = {}) {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [mounted, setMounted] = useState(false);
@@ -579,6 +580,9 @@ export default function HomeAuthed({
       </div>
 
 
+
+      {/* ══════ 1000명 이벤트 배너 (SSR) ══════ */}
+      {eventSlot}
 
       {/* ══════ 사회적 증명 (오늘 활동 이웃 수) ══════ */}
       <SocialProofStrip />

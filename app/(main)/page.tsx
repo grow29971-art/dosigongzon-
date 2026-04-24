@@ -6,15 +6,17 @@ import HomeAuthed from "@/app/components/HomeAuthed";
 import HomeLanding from "@/app/components/HomeLanding";
 import WeeklyHotPosts from "@/app/components/WeeklyHotPosts";
 import AdoptionSeekingSection from "@/app/components/AdoptionSeekingSection";
+import Event1000Banner from "@/app/components/Event1000Banner";
 
 export default async function HomePage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  // HOT 게시글 + 입양·임보 찾는 아이들 — 서버에서 SSR → client에서 즉시 렌더.
+  // HOT 게시글 + 입양·임보 + 1000명 이벤트 — 서버 SSR → client 즉시 렌더.
   const hotSlot = <WeeklyHotPosts />;
   const adoptionSlot = <AdoptionSeekingSection />;
+  const eventSlot = <Event1000Banner />;
   if (user) {
-    return <HomeAuthed hotSlot={hotSlot} adoptionSlot={adoptionSlot} />;
+    return <HomeAuthed hotSlot={hotSlot} adoptionSlot={adoptionSlot} eventSlot={eventSlot} />;
   }
-  return <HomeLanding hotSlot={hotSlot} adoptionSlot={adoptionSlot} />;
+  return <HomeLanding hotSlot={hotSlot} adoptionSlot={adoptionSlot} eventSlot={eventSlot} />;
 }
