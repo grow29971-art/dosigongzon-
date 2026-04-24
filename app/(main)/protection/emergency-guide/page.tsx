@@ -4,6 +4,7 @@ import {
   ArrowLeft, AlertTriangle, Shield, Stethoscope, Phone, Car,
   HelpCircle, BookOpen, Flame, Droplet,
 } from "lucide-react";
+import ShareGuideButton from "@/app/components/ShareGuideButton";
 
 const SITE_URL = "https://dosigongzon.com";
 const LAST_UPDATED = "2026-04-19";
@@ -521,6 +522,15 @@ export default function EmergencyGuidePage() {
           이 가이드는 공개된 일반 정보를 정리한 참고 자료이며 <strong>수의사의 진단·처방을 대체하지 않습니다</strong>.
           생명이 위급할 땐 반드시 가장 가까운 24시간 동물병원에 즉시 연락·이송하세요.
         </p>
+      </section>
+
+      <section className="mt-8">
+        <ShareGuideButton
+          slug="emergency-guide"
+          title="길고양이 응급 구조·응급처치 완벽 가이드 | 도시공존"
+          description="로드킬·출혈·골절·중독 상황별 대응. 안전하게 구조하고 병원으로 이송하는 방법."
+          accent="#D85555"
+        />
       </section>
     </div>
   );

@@ -4,6 +4,7 @@ import {
   ArrowLeft, Thermometer, Milk, Stethoscope, Home, HelpCircle,
   AlertTriangle, Clock, Heart, BookOpen,
 } from "lucide-react";
+import ShareGuideButton from "@/app/components/ShareGuideButton";
 
 const SITE_URL = "https://dosigongzon.com";
 const LAST_UPDATED = "2026-04-19";
@@ -478,6 +479,15 @@ export default function KittenGuidePage() {
           이 가이드는 공개된 일반 정보를 정리한 참고 자료이며 <strong>수의사의 진단·처방을 대체하지 않습니다</strong>.
           위급 상황에서는 반드시 동물병원·동물보호상담센터(1577-0954)에 연락하세요.
         </p>
+      </section>
+
+      <section className="mt-8">
+        <ShareGuideButton
+          slug="kitten-guide"
+          title="새끼 고양이(냥줍) 발견했을 때 완벽 가이드 | 도시공존"
+          description="관찰·체온·분유 3단계. 어미 고양이와 분리 판단부터 응급 케어까지."
+          accent="#E8B040"
+        />
       </section>
     </div>
   );

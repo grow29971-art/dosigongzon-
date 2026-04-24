@@ -11,6 +11,7 @@ import {
   Activity,
   Search,
 } from "lucide-react";
+import ShareGuideButton from "@/app/components/ShareGuideButton";
 
 const SITE_URL = "https://dosigongzon.com";
 const LAST_UPDATED = "2026-04-21";
@@ -953,6 +954,15 @@ export default function DiseaseGuidePage() {
         ⓘ 본 가이드는 공공기관·수의 자료를 바탕으로 일반 정보를 제공합니다. 개별 진단·처방은 반드시 동물병원을 통해 확인해주세요.
         특정 제품·제조사의 광고나 판매 유도와 무관합니다.
       </p>
+
+      <div className="mt-8">
+        <ShareGuideButton
+          slug="disease-guide"
+          title="길고양이 질병 가이드 — 10가지 흔한 병 완전 정리 | 도시공존"
+          description="길고양이 감기부터 범백·FIP·피부병·신장질환까지. 증상·대응·예방을 한눈에."
+          accent="#D85555"
+        />
+      </div>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import {
   HelpCircle, BookOpen, Scale, Gavel, FileText, Scroll,
 } from "lucide-react";
 import LegalChecklist, { type ChecklistItem } from "@/app/components/LegalChecklist";
+import ShareGuideButton from "@/app/components/ShareGuideButton";
 
 const LAST_UPDATED = "2026-04-19";
 
@@ -523,6 +524,15 @@ export default function LegalGuidePage() {
           본 내용은 법률 정보 제공 목적이며 <strong>법적 조언이 아닙니다</strong>.
           구체적 사건은 반드시 전문 변호사·동물보호단체 법률 지원팀에 상담하세요.
         </p>
+      </section>
+
+      <section className="mt-8">
+        <ShareGuideButton
+          slug="legal"
+          title="길고양이 학대 신고·동물보호법 완벽 가이드 | 도시공존"
+          description="증거 수집 · 112 신고 · 동물보호법 처벌 조항 · 민사·행정 대응까지."
+          accent="#8B65B8"
+        />
       </section>
     </div>
   );
