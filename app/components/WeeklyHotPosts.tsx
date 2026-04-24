@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Flame, Eye, Heart, MessageSquare } from "lucide-react";
+import { Flame, Eye, Heart, MessageSquare, ChevronRight } from "lucide-react";
 import { getWeeklyHotPostsServer } from "@/lib/posts-server";
 import { CATEGORY_MAP } from "@/lib/types";
 
@@ -20,9 +20,12 @@ export default async function WeeklyHotPosts() {
           <Flame size={14} style={{ color: "#E86B8C" }} />
           이번 주 HOT
         </h2>
-        <span className="text-[9px] font-bold tracking-[0.1em] text-text-light ml-auto">
-          WEEKLY TOP {posts.length}
-        </span>
+        <Link
+          href="/community/popular"
+          className="ml-auto flex items-center gap-0.5 text-[11px] font-semibold text-primary"
+        >
+          전체보기 <ChevronRight size={12} />
+        </Link>
       </div>
 
       <div className="space-y-2">

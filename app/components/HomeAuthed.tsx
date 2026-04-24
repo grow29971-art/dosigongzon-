@@ -1655,7 +1655,7 @@ export default function HomeAuthed({
               </h2>
             </div>
             <Link
-              href="/community"
+              href="/community/popular"
               className="flex items-center gap-0.5 text-[12px] font-semibold text-primary"
             >
               전체보기 <ChevronRight size={14} />
