@@ -1709,7 +1709,7 @@ export default function HomeAuthed({
             </span>
           </div>
           <Link
-            href="/community"
+            href="/news"
             className="flex items-center gap-0.5 text-[12px] font-semibold text-primary"
           >
             전체보기 <ChevronRight size={14} />
