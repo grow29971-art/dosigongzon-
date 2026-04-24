@@ -21,49 +21,75 @@ export async function generateStaticParams() {
   return [];
 }
 
+type DongCat = {
+  id: string;
+  name: string;
+  region: string | null;
+  photo_url: string | null;
+  like_count: number | null;
+  health_status: string;
+  created_at: string;
+  description: string | null;
+};
+type DongHospital = {
+  id: string;
+  name: string;
+  address: string | null;
+  phone: string | null;
+};
+
+// 한 쿼리가 실패해도 500으로 터지지 않도록 Promise.allSettled + try/catch.
+// SSG/ISR에서 한 번 500이 나면 해당 URL이 stale한 500 상태로 캐시되어
+// Google Search Console에 5xx 리포트가 남는다(실제로 2026-04 초 발견).
 async function getDongData(guName: string, dongName: string) {
-  const supabase = createAnonClient();
-  const pattern = `%${dongName}%`;
+  try {
+    const supabase = createAnonClient();
+    const pattern = `%${dongName}%`;
 
-  const [catsRes, countRes, hospitalsRes] = await Promise.all([
-    supabase
-      .from("cats")
-      .select("id, name, region, photo_url, like_count, health_status, created_at, description")
-      .ilike("region", pattern)
-      .order("created_at", { ascending: false })
-      .limit(24),
-    supabase
-      .from("cats")
-      .select("*", { count: "exact", head: true })
-      .ilike("region", pattern),
-    supabase
-      .from("rescue_hospitals")
-      .select("id, name, address, phone")
-      .eq("district", guName)
-      .eq("hidden", false)
-      .order("pinned", { ascending: false })
-      .limit(4),
-  ]);
+    const [catsRes, countRes, hospitalsRes] = await Promise.allSettled([
+      supabase
+        .from("cats")
+        .select("id, name, region, photo_url, like_count, health_status, created_at, description")
+        .eq("hidden", false)
+        .ilike("region", pattern)
+        .order("created_at", { ascending: false })
+        .limit(24),
+      supabase
+        .from("cats")
+        .select("*", { count: "exact", head: true })
+        .eq("hidden", false)
+        .ilike("region", pattern),
+      supabase
+        .from("rescue_hospitals")
+        .select("id, name, address, phone")
+        .eq("district", guName)
+        .eq("hidden", false)
+        .order("pinned", { ascending: false })
+        .limit(4),
+    ]);
 
-  return {
-    cats: (catsRes.data ?? []) as Array<{
-      id: string;
-      name: string;
-      region: string | null;
-      photo_url: string | null;
-      like_count: number | null;
-      health_status: string;
-      created_at: string;
-      description: string | null;
-    }>,
-    catCount: countRes.count ?? 0,
-    hospitals: (hospitalsRes.data ?? []) as Array<{
-      id: string;
-      name: string;
-      address: string | null;
-      phone: string | null;
-    }>,
-  };
+    const catsData =
+      catsRes.status === "fulfilled" ? (catsRes.value.data as DongCat[] | null) : null;
+    const countData = countRes.status === "fulfilled" ? countRes.value.count : null;
+    const hospitalsData =
+      hospitalsRes.status === "fulfilled"
+        ? (hospitalsRes.value.data as DongHospital[] | null)
+        : null;
+
+    // 개별 에러 로깅 (Vercel 로그에서 원인 추적 가능)
+    if (catsRes.status === "rejected") console.error("[dong] cats query failed", catsRes.reason);
+    if (countRes.status === "rejected") console.error("[dong] count query failed", countRes.reason);
+    if (hospitalsRes.status === "rejected") console.error("[dong] hospitals query failed", hospitalsRes.reason);
+
+    return {
+      cats: catsData ?? [],
+      catCount: countData ?? 0,
+      hospitals: hospitalsData ?? [],
+    };
+  } catch (err) {
+    console.error("[dong] getDongData unexpected error", { guName, dongName, err });
+    return { cats: [] as DongCat[], catCount: 0, hospitals: [] as DongHospital[] };
+  }
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
