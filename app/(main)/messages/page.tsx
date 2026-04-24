@@ -138,7 +138,7 @@ function MessagesPage() {
           </button>
           <div className="flex-1 min-w-0">
             <p className="text-[15px] font-extrabold text-text-main truncate">{selectedPartner.name}</p>
-            <p className="text-[10px] text-text-light">1:1 쪽지</p>
+            <p className="text-[10px] text-text-light">1:1 쪽지 · 읽고 7일 후 자동 삭제</p>
           </div>
           <FollowButton userId={selectedPartner.id} size="sm" />
         </div>
