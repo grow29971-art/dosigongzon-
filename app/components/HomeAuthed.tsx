@@ -447,7 +447,8 @@ export default function HomeAuthed({
         // GPS 거부 → IP 기반으로 서버에서 처리
         fetchWeather();
       },
-      { timeout: 5000 },
+      // maximumAge 10분 — 홈 다시 진입 시 매번 권한 재확인 팝업 뜨지 않게
+      { timeout: 5000, maximumAge: 10 * 60 * 1000 },
     );
   }, [onboardingChecked, authLoading, user]);
 

@@ -316,7 +316,8 @@ export default function ActivityRegionsPage() {
         reverseGeocode(pos.coords.latitude, pos.coords.longitude);
       },
       () => alert("위치 권한을 허용해주세요."),
-      { enableHighAccuracy: true, timeout: 8000 },
+      // 사용자 명시 클릭이지만 60초 캐시 — 연속 클릭 시 권한 팝업 반복 방지
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60_000 },
     );
   }
 
