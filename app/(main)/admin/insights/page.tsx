@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import type { InsightsSnapshot } from "@/lib/insights-repo";
+import { SkeletonStatCard, SkeletonListRow } from "@/app/components/Skeleton";
 
 export default function AdminInsightsPage() {
   const router = useRouter();
@@ -86,8 +87,16 @@ export default function AdminInsightsPage() {
       </div>
 
       {loading && (
-        <div className="py-20 flex justify-center">
-          <Loader2 size={22} className="animate-spin text-primary" />
+        <div className="px-4 space-y-5">
+          <div className="grid grid-cols-2 gap-2.5">
+            {Array.from({ length: 4 }).map((_, i) => <SkeletonStatCard key={i} />)}
+          </div>
+          <div className="grid grid-cols-2 gap-2.5">
+            {Array.from({ length: 4 }).map((_, i) => <SkeletonStatCard key={i} />)}
+          </div>
+          <div className="space-y-1.5">
+            {Array.from({ length: 5 }).map((_, i) => <SkeletonListRow key={i} />)}
+          </div>
         </div>
       )}
 

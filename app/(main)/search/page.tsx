@@ -5,11 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  ArrowLeft, Search, X, Loader2, Cat as CatIcon, MessageSquare,
+  ArrowLeft, Search, X, Cat as CatIcon, MessageSquare,
   Stethoscope, BookOpenText, MapPin, Phone,
 } from "lucide-react";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { HEALTH_MAP } from "@/lib/cats-repo";
+import { SkeletonCatCard, SkeletonPostCard, SkeletonHospitalCard } from "@/app/components/Skeleton";
 
 type SearchTab = "all" | "cats" | "posts" | "hospitals" | "guides";
 
@@ -177,8 +178,19 @@ function SearchPageInner() {
       {/* ── 결과 영역 ── */}
       <div className="px-4 pt-4">
         {loading && (
-          <div className="py-20 flex justify-center">
-            <Loader2 size={24} className="animate-spin" style={{ color: "#C47E5A" }} />
+          <div className="space-y-5">
+            {/* 고양이 카드 그리드 스켈레톤 */}
+            <div className="grid grid-cols-2 gap-2.5">
+              {Array.from({ length: 4 }).map((_, i) => <SkeletonCatCard key={i} />)}
+            </div>
+            {/* 게시글 카드 스켈레톤 */}
+            <div className="space-y-2">
+              {Array.from({ length: 3 }).map((_, i) => <SkeletonPostCard key={i} />)}
+            </div>
+            {/* 병원 카드 스켈레톤 */}
+            <div className="space-y-2">
+              {Array.from({ length: 2 }).map((_, i) => <SkeletonHospitalCard key={i} />)}
+            </div>
           </div>
         )}
 
