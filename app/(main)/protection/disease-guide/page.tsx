@@ -681,16 +681,18 @@ export default function DiseaseGuidePage() {
           {DISEASES.map((d) => {
             const sev = SEVERITY_META[d.severity];
             return (
-              <article
+              <details
                 key={d.id}
                 id={d.id}
-                className="rounded-2xl bg-white p-5 scroll-mt-20"
+                className="group rounded-2xl bg-white scroll-mt-20 overflow-hidden"
                 style={{
                   boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
                   border: `1px solid ${sev.color}25`,
                 }}
               >
-                <div className="flex items-start gap-3 mb-3">
+                <summary
+                  className="list-none cursor-pointer p-5 flex items-start gap-3 active:bg-black/[0.02] transition-colors"
+                >
                   <span style={{ fontSize: 32, lineHeight: 1 }} className="shrink-0">
                     {d.emoji}
                   </span>
@@ -706,8 +708,21 @@ export default function DiseaseGuidePage() {
                         {sev.label}
                       </span>
                     </div>
+                    <p className="text-[10.5px] text-text-light mt-1 group-open:hidden">
+                      탭해서 자세히 보기 →
+                    </p>
                   </div>
-                </div>
+                  <svg
+                    className="shrink-0 mt-1 transition-transform group-open:rotate-180"
+                    width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke={sev.color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </summary>
+                <div className="px-5 pb-5">
+                  <div className="h-px mb-4" style={{ background: `${sev.color}20` }} />
 
                 {/* 증상 — 단계별 상세 */}
                 <div className="mb-4">
@@ -848,7 +863,8 @@ export default function DiseaseGuidePage() {
                   </div>
                   <p className="text-[12.5px] leading-relaxed text-text-sub">{d.prevention}</p>
                 </div>
-              </article>
+                </div>
+              </details>
             );
           })}
         </div>
