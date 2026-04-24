@@ -292,14 +292,17 @@ export default function ActivityRegionsPage() {
   }
 
   // ── 역지오코딩: 좌표 → 동 이름 ──
+  // 행정동(H) 우선 — 사용자는 행정동 이름으로 동네 인식
   function reverseGeocode(la: number, ln: number) {
     if (!window.kakao?.maps?.services) return;
     const geocoder = new window.kakao.maps.services.Geocoder();
     geocoder.coord2RegionCode(ln, la, (result: any, status: any) => {
-      if (status === window.kakao.maps.services.Status.OK && result[0]) {
-        const dong = result[0].region_3depth_name || result[0].region_2depth_name;
-        if (dong && !name.trim()) setName(dong);
-      }
+      if (status !== window.kakao.maps.services.Status.OK || !Array.isArray(result)) return;
+      const admin = result.find((r: any) => r?.region_type === "H");
+      const target = admin ?? result[0];
+      if (!target) return;
+      const dong = target.region_3depth_name || target.region_2depth_name;
+      if (dong && !name.trim()) setName(dong);
     });
   }
 

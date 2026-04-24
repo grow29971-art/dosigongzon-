@@ -124,14 +124,19 @@ export default function CatLocationPicker({
   }, [open]);
 
   // ── 역지오코딩: 좌표 → 동 ──
+  // Kakao API는 같은 좌표에 대해 [0]법정동(B) + [1]행정동(H) 두 가지를 반환.
+  // 사용자는 보통 행정동 이름으로 동네를 인식 (예: 수원시 장안구 장안동 28-7 →
+  // 법정동은 "송죽동", 행정동은 "장안동"). 행정동 우선, 없으면 법정동 폴백.
   function reverseGeocode(la: number, ln: number) {
     if (!window.kakao?.maps?.services) return;
     const geocoder = new window.kakao.maps.services.Geocoder();
     geocoder.coord2RegionCode(ln, la, (result: any, status: any) => {
-      if (status === window.kakao.maps.services.Status.OK && result[0]) {
-        const dong = result[0].region_3depth_name || result[0].region_2depth_name || "";
-        if (dong) setRegion(dong);
-      }
+      if (status !== window.kakao.maps.services.Status.OK || !Array.isArray(result)) return;
+      const admin = result.find((r: any) => r?.region_type === "H");
+      const legal = result.find((r: any) => r?.region_type === "B");
+      const target = admin ?? legal ?? result[0];
+      const dong = target?.region_3depth_name || target?.region_2depth_name || "";
+      if (dong) setRegion(dong);
     });
   }
 
