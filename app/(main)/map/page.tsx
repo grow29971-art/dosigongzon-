@@ -2873,8 +2873,30 @@ export default function MapPage() {
                   onChange={handleCommentPhotoPick}
                 />
 
+                {/* 모드 안내 — alert 모드 켜졌을 때 강조 박스 */}
+                {commentKind === "alert" ? (
+                  <div
+                    className="mt-3 rounded-xl px-3 py-2.5"
+                    style={{ backgroundColor: "#FBEAEA", border: "1.5px solid #D85555" }}
+                  >
+                    <p className="text-[11.5px] font-extrabold leading-snug" style={{ color: "#B84545" }}>
+                      🚨 학대·위험 신고 모드
+                    </p>
+                    <p className="text-[10.5px] leading-relaxed mt-0.5" style={{ color: "#8B2F2F" }}>
+                      지금 남기는 기록은 <b>학대/위험 신고</b>로 표시돼요. 2건 이상 쌓이면 마커에 경보 라벨이 뜨고,
+                      112·동물보호상담센터 연락·신고 기록 복사 버튼이 자동 활성화돼요. 일반 돌봄 기록은 왼쪽 ⚠️
+                      버튼을 다시 눌러 해제.
+                    </p>
+                  </div>
+                ) : (
+                  <p className="mt-3 text-[10.5px] text-text-light leading-relaxed px-1">
+                    💡 왼쪽 <b style={{ color: "#B84545" }}>⚠️</b> 버튼을 누르면 <b>학대·위험 신고 모드</b>로 바뀌어요.
+                    신고 누적 시 동네 이웃에게 즉시 알리는 용도.
+                  </p>
+                )}
+
                 {/* 댓글 입력 */}
-                <div className="mt-3 flex items-center gap-2">
+                <div className="mt-2 flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() =>
@@ -2885,8 +2907,10 @@ export default function MapPage() {
                       backgroundColor:
                         commentKind === "alert" ? "#FBEAEA" : "#EEE8E0",
                       color: commentKind === "alert" ? "#B84545" : "#A38E7A",
+                      border: commentKind === "alert" ? "1.5px solid #D85555" : "none",
                     }}
-                    title={commentKind === "alert" ? "학대 신고 모드" : "일반 기록"}
+                    aria-label={commentKind === "alert" ? "학대 신고 모드 해제" : "학대 신고 모드로 전환"}
+                    title={commentKind === "alert" ? "학대 신고 모드 (끄려면 클릭)" : "학대·위험 신고 모드로 전환"}
                   >
                     <AlertTriangle size={14} />
                   </button>
