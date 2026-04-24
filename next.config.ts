@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 // ══════════════════════════════════════════
 // 보안 헤더
@@ -111,4 +112,19 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Sentry 통합 — source map 업로드 + 클라이언트 번들 자동 instrument.
+// SENTRY_AUTH_TOKEN이 있을 때만 source map 업로드 (없으면 런타임 추적은 됨, 심볼 없는 stacktrace).
+export default withSentryConfig(nextConfig, {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  // 무료 플랜 대응: 로그 최소
+  silent: !process.env.CI,
+  // 클라이언트 번들 크기 최적화
+  widenClientFileUpload: true,
+  // Ad blocker·privacy 툴 우회를 위해 자체 도메인에 /monitoring 터널 설정
+  tunnelRoute: "/monitoring",
+  // Vercel Cron 등 서버 전용 실행에서 불필요한 경고 제거
+  disableLogger: true,
+  // React 컴포넌트 소스맵 활성화
+  reactComponentAnnotation: { enabled: true },
+});
