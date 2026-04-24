@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import {
   detectInAppBrowser,
   detectOS,
+  detectSamsungInternet,
   inAppBrowserLabel,
   openInExternalBrowser,
   type InAppBrowser,
@@ -65,8 +66,10 @@ function LoginContent() {
   // 인앱 브라우저 감지 (카톡/페북/인스타 등)
   const [inApp, setInApp] = useState<InAppBrowser>(null);
   const [showIosCopyHint, setShowIosCopyHint] = useState(false);
+  const [isSamsung, setIsSamsung] = useState(false);
   useEffect(() => {
     setInApp(detectInAppBrowser());
+    setIsSamsung(detectSamsungInternet());
   }, []);
 
   const handleOpenExternal = async () => {
@@ -202,16 +205,20 @@ function LoginContent() {
     router.refresh();
   };
 
-  const handleSocialLogin = async (provider: "google") => {
+  const handleSocialLogin = async (provider: "google" | "kakao") => {
     setSocialLoading(provider);
     const rawNext = searchParams.get("next");
     const safeNext = rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
     const callbackUrl = `${window.location.origin}/api/auth/callback?provider=${provider}&next=${encodeURIComponent(safeNext)}`;
+    // 카카오는 비즈 앱 전환 후 account_email을 필수 동의로 받을 수 있음.
+    // scopes 명시는 콘솔 동의 항목과 일치해야 카카오 측에서 reject 안 됨.
+    const oauthOptions: { redirectTo: string; scopes?: string } = { redirectTo: callbackUrl };
+    if (provider === "kakao") {
+      oauthOptions.scopes = "account_email profile_nickname profile_image";
+    }
     const { error } = await createClient().auth.signInWithOAuth({
       provider,
-      options: {
-        redirectTo: callbackUrl,
-      },
+      options: oauthOptions,
     });
     if (error) {
       setSocialLoading(null);
@@ -481,8 +488,38 @@ function LoginContent() {
           </button>
         </div>
 
+        {/* 삼성 인터넷 KOE205 경고 — 쿠키 drop으로 카카오 state 검증 실패 자주 발생 */}
+        {isSamsung && !inApp && (
+          <div
+            className="mb-3 rounded-xl px-3.5 py-2.5 flex items-start gap-2"
+            style={{ backgroundColor: "#FFF4E0", border: "1px solid #F5DAB0" }}
+          >
+            <span className="text-[14px] mt-0.5">⚠️</span>
+            <p className="text-[11.5px] leading-relaxed" style={{ color: "#6F4910" }}>
+              <b>삼성 인터넷</b>에서는 카카오 로그인이 자주 실패해요 (KOE205).
+              <b>크롬·사파리</b>로 열면 안정적이에요.
+            </p>
+          </div>
+        )}
+
         {/* ══════ 소셜 로그인 ══════ */}
         <div className="space-y-2.5">
+          {/* 카카오 (비즈 앱 전환 후 복구 — 한국 사용자 친화적) */}
+          <button
+            onClick={() => inApp ? handleOpenExternal() : socialAgree ? handleSocialLogin("kakao") : setErrors({ general: "약관에 동의해주세요." })}
+            disabled={!!socialLoading}
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-extrabold active:scale-[0.97] transition-transform disabled:opacity-60"
+            style={{ backgroundColor: "#FEE500", color: "#191919", opacity: (socialAgree || inApp) ? 1 : 0.6 }}
+          >
+            {socialLoading === "kakao" ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                <path d="M9 1.5C4.582 1.5 1 4.262 1 7.668c0 2.219 1.51 4.166 3.788 5.272-.167.625-.604 2.265-.69 2.617-.108.438.16.43.336.314.138-.092 2.198-1.5 3.083-2.107.49.073.99.111 1.483.111 4.418 0 8-2.762 8-6.207C17 4.262 13.418 1.5 9 1.5z" fill="#191919" />
+              </svg>
+            )}
+            카카오로 시작하기
+          </button>
           {/* 구글 */}
           <button
             onClick={() => inApp ? handleOpenExternal() : socialAgree ? handleSocialLogin("google") : setErrors({ general: "약관에 동의해주세요." })}
