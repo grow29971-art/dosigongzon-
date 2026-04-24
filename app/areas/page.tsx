@@ -142,7 +142,28 @@ export default async function AreasIndexPage() {
         </div>
       </section>
 
+      {/* 다른 도시 진입점 */}
       <section className="px-5 mt-7">
+        <Link
+          href="/regions"
+          className="block rounded-2xl p-4 active:scale-[0.98] transition-transform"
+          style={{
+            background: "linear-gradient(135deg, #FFF8F2 0%, #F7F4EE 100%)",
+            border: "1.5px solid rgba(196,126,90,0.25)",
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] font-bold tracking-[0.12em]" style={{ color: "#C47E5A" }}>NATIONWIDE</p>
+              <p className="text-[15px] font-extrabold text-text-main mt-0.5">서울 외 다른 도시도 보기</p>
+              <p className="text-[11.5px] text-text-sub mt-0.5">부산·인천·대구·대전·광주·울산·세종·제주·경기</p>
+            </div>
+            <span className="text-[18px]" style={{ color: "#C47E5A" }}>→</span>
+          </div>
+        </Link>
+      </section>
+
+      <section className="px-5 mt-5">
         <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
           <p className="text-[12.5px] text-text-sub leading-relaxed">
             <b className="text-text-main">도시공존</b>은 서울 전역의 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다.

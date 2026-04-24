@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { SEOUL_GUS } from "@/lib/seoul-regions";
+import { KOREA_SIDOS } from "@/lib/korea-regions";
 
 const SITE_URL = "https://dosigongzon.com";
 
@@ -19,6 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/",                             priority: 1.0,  changeFrequency: "daily" },
     { path: "/map",                          priority: 0.95, changeFrequency: "hourly" },
     { path: "/areas",                        priority: 0.9,  changeFrequency: "daily" },
+    { path: "/regions",                      priority: 0.85, changeFrequency: "daily" },
     { path: "/about",                        priority: 0.8,  changeFrequency: "monthly" },
     { path: "/guide",                        priority: 0.85, changeFrequency: "monthly" },
     { path: "/hospitals",                    priority: 0.8,  changeFrequency: "weekly" },
@@ -45,6 +47,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: r.changeFrequency,
     priority: r.priority,
   }));
+
+  // 전국 광역시·세종·제주·경기도 시·도 단위 SEO 랜딩
+  for (const s of KOREA_SIDOS) {
+    entries.push({
+      url: `${SITE_URL}/regions/${s.slug}`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.75,
+    });
+  }
 
   // 서울 25개 구 SEO 랜딩
   for (const g of SEOUL_GUS) {

@@ -37,6 +37,7 @@ export default function CatLocationPicker({
   const [lat, setLat] = useState(initialLat);
   const [lng, setLng] = useState(initialLng);
   const [region, setRegion] = useState(initialRegion ?? "");
+  const [fullAddress, setFullAddress] = useState("");
   const [locating, setLocating] = useState(false);
 
   // 모달 열릴 때마다 초기값으로 리셋
@@ -45,6 +46,7 @@ export default function CatLocationPicker({
       setLat(initialLat);
       setLng(initialLng);
       setRegion(initialRegion ?? "");
+      setFullAddress("");
       setMapError("");
     }
   }, [open, initialLat, initialLng, initialRegion]);
@@ -136,7 +138,13 @@ export default function CatLocationPicker({
       const legal = result.find((r: any) => r?.region_type === "B");
       const target = admin ?? legal ?? result[0];
       const dong = target?.region_3depth_name || target?.region_2depth_name || "";
-      if (dong) setRegion(dong);
+      const gu = target?.region_2depth_name || "";
+      const sido = (target?.region_1depth_name || "")
+        .replace(/(특별시|광역시|특별자치시|특별자치도|도)$/, "");
+      if (dong) {
+        setRegion(dong);
+        setFullAddress([sido, gu, dong].filter(Boolean).join(" "));
+      }
     });
   }
 
@@ -263,27 +271,38 @@ export default function CatLocationPicker({
         style={{ boxShadow: "0 -4px 14px rgba(0,0,0,0.08)" }}
       >
         <div
-          className="rounded-2xl px-4 py-3 mb-3 flex items-center gap-3"
-          style={{ background: "#F7F4EE" }}
+          className="rounded-2xl px-4 py-3.5 mb-2.5"
+          style={{
+            background: "linear-gradient(135deg, #FFF8F2 0%, #F7F4EE 100%)",
+            border: "1.5px solid rgba(196,126,90,0.25)",
+          }}
         >
-          <div
-            className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: "rgba(196,126,90,0.15)" }}
-          >
-            <MapPin size={16} className="text-primary" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-bold text-text-sub">감지된 동</p>
-            <p className="text-[15px] font-extrabold text-text-main truncate">
-              {region || "동 정보를 감지하는 중…"}
-            </p>
-            {regionChanged && initialRegion && (
-              <p className="text-[10px] text-text-light mt-0.5">
-                이전: {initialRegion}
+          <div className="flex items-center gap-3">
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+              style={{ background: "rgba(196,126,90,0.15)" }}
+            >
+              <MapPin size={18} className="text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] font-bold text-primary tracking-[0.05em]">자동 감지된 위치</p>
+              <p className="text-[18px] font-extrabold text-text-main truncate leading-tight mt-0.5">
+                {region || "감지 중…"}
               </p>
-            )}
+              {fullAddress && (
+                <p className="text-[11px] text-text-sub truncate mt-0.5">{fullAddress}</p>
+              )}
+              {regionChanged && initialRegion && (
+                <p className="text-[10px] text-text-light mt-0.5">
+                  이전: {initialRegion}
+                </p>
+              )}
+            </div>
           </div>
         </div>
+        <p className="text-[10.5px] text-text-light leading-relaxed mb-3 px-1">
+          💡 동 이름이 익숙한 이름과 다르면 다음 화면 &ldquo;동네&rdquo; 칸에서 직접 고칠 수 있어요. (행정동·법정동 차이로 다르게 보일 수 있음)
+        </p>
 
         <button
           type="button"
