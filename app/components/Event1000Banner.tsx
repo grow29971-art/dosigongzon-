@@ -54,9 +54,9 @@ export default async function Event1000Banner() {
           {/* 메인 카피 */}
           <h2 className="text-[19px] font-extrabold tracking-tight leading-tight">
             {reached ? (
-              <>가입자 1,000명 달성!<br />20명 추첨 곧 발표</>
+              <>가입자 1,000명 달성!<br />추첨 곧 발표</>
             ) : (
-              <>가입자 1,000명 달성하면<br />20명에게 아크릴 키링 🐾</>
+              <>가입자 1,000명 달성하면<br />아크릴 키링 🐾</>
             )}
           </h2>
 
