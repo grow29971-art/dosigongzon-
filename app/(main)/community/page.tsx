@@ -13,6 +13,7 @@ import {
   Plus,
   Eye,
   Search,
+  Flame,
 } from "lucide-react";
 import type { Post, PostCategory } from "@/lib/types";
 import { listPosts, formatRelativeTime } from "@/lib/posts-repo";
@@ -27,7 +28,8 @@ import PageIntroBanner from "@/app/components/PageIntroBanner";
 
 /* ═══ 카테고리 카드 데이터 ═══ */
 type CategoryCard = {
-  key: PostCategory;
+  // "popular"은 가상 카테고리 — DB에는 없고 /community/popular로 라우팅
+  key: PostCategory | "popular";
   title: string;
   subtitle: string;
   Icon: typeof Siren;
@@ -78,6 +80,16 @@ const CATEGORIES: CategoryCard[] = [
     iconBg: "#8B65B8",
     glowColor: "139,101,184",
   },
+  // 가상 카테고리 — 실제 PostCategory에는 없고 /community/popular로 라우팅
+  {
+    key: "popular",
+    title: "인기 게시물",
+    subtitle: "최근 30일 가장 반응 많은 글",
+    Icon: Flame,
+    iconBg: "#E55A3C",
+    glowColor: "229,90,60",
+    highlight: true,
+  },
 ];
 
 /* ═══ 카테고리 카드 컴포넌트 ═══ */
@@ -88,9 +100,10 @@ function CategoryCardItem({
   card: CategoryCard;
   count: number;
 }) {
+  const href = card.key === "popular" ? "/community/popular" : `/community/category/${card.key}`;
   return (
     <Link
-      href={`/community/category/${card.key}`}
+      href={href}
       className="block active:scale-[0.98] transition-transform"
     >
       <div
@@ -299,6 +312,9 @@ export default function CommunityPage() {
       <div className="space-y-3">
         {/* Row 1: 긴급 (wide, highlight) */}
         <CategoryCardItem card={CATEGORIES[0]} count={countByCat("emergency")} />
+
+        {/* Row 1.5: 인기 게시물 (wide, highlight) */}
+        <CategoryCardItem card={CATEGORIES[5]} count={0} />
 
         {/* Row 2: 임보 | 입양 */}
         <div className="grid grid-cols-2 gap-3">

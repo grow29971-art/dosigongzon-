@@ -70,6 +70,33 @@ export async function getPostByIdServer(id: string): Promise<Post | null> {
  * 점수 = view_count × 1 + like_count × 3 + comment_count × 2
  * 이번 주 월요일 00:00 KST부터 작성된 글 대상.
  */
+/**
+ * 누적 인기글 — 최근 30일 기준, 점수 정렬.
+ * /community/popular 페이지용.
+ */
+export async function getPopularPostsServer(limit: number = 30): Promise<Post[]> {
+  const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("hidden", false)
+    .gte("created_at", since)
+    .limit(200);
+
+  if (error || !data) return [];
+
+  return (data as PostRow[])
+    .map((r) => ({
+      post: rowToPost(r),
+      score: (r.view_count ?? 0) + (r.like_count ?? 0) * 3 + (r.comment_count ?? 0) * 2,
+    }))
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((x) => x.post);
+}
+
 export async function getWeeklyHotPostsServer(limit: number = 3): Promise<Post[]> {
   // 이번 주 월요일 00:00 KST → UTC 변환
   const kstNowStr = new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" });
