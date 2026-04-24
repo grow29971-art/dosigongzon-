@@ -145,7 +145,10 @@ interface WeatherData {
 }
 
 /* ═══ 로그인 유저 홈(대시보드) ═══ */
-export default function HomeAuthed({ hotSlot }: { hotSlot?: React.ReactNode } = {}) {
+export default function HomeAuthed({
+  hotSlot,
+  adoptionSlot,
+}: { hotSlot?: React.ReactNode; adoptionSlot?: React.ReactNode } = {}) {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [mounted, setMounted] = useState(false);
@@ -594,6 +597,9 @@ export default function HomeAuthed({ hotSlot }: { hotSlot?: React.ReactNode } = 
 
       {/* ══════ 이번 주 HOT 게시글 (SSR) ══════ */}
       {hotSlot}
+
+      {/* ══════ 입양·임보 기다리는 아이들 (SSR) ══════ */}
+      {adoptionSlot}
 
       {/* ══════ 온보딩 가이드 (신규 유저용) ══════ */}
       {user && activity && !onboardingDismissed && (

@@ -44,7 +44,10 @@ async function getLandingData() {
   }
 }
 
-export default async function HomeLanding({ hotSlot }: { hotSlot?: React.ReactNode } = {}) {
+export default async function HomeLanding({
+  hotSlot,
+  adoptionSlot,
+}: { hotSlot?: React.ReactNode; adoptionSlot?: React.ReactNode } = {}) {
   const data = await getLandingData();
   const featuredGus = ["gangnam", "mapo", "songpa", "yongsan", "seongdong", "gwanak"];
   const featured = SEOUL_GUS.filter((g) => featuredGus.includes(g.slug));
@@ -356,6 +359,9 @@ export default async function HomeLanding({ hotSlot }: { hotSlot?: React.ReactNo
           {hotSlot}
         </section>
       )}
+
+      {/* 입양·임보 기다리는 아이들 */}
+      {adoptionSlot}
 
       {/* 핵심 가치 */}
       <section className="px-5 mt-6">

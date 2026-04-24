@@ -50,6 +50,7 @@ import {
   type VoteValue,
 } from "@/lib/cats-repo";
 import { useAuth } from "@/lib/auth-context";
+import { useToast } from "@/app/components/Toast";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import TitleBadge from "@/app/components/TitleBadge";
 import SendDMButton from "@/app/components/SendDMButton";
@@ -96,6 +97,7 @@ function formatRelativeTime(iso: string): string {
 
 export default function MapPage() {
   const { user } = useAuth();
+  const toast = useToast();
   const isLoggedIn = !!user;
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -204,7 +206,7 @@ export default function MapPage() {
     } catch (err) {
       // 실패 시 낙관적 메시지 제거
       setChatMessages((prev) => prev.filter((m) => m.id !== tempId));
-      alert(err instanceof Error ? err.message : "메시지 전송 실패");
+      toast.error(err instanceof Error ? err.message : "메시지 전송 실패");
     } finally {
       setChatSending(false);
     }
@@ -555,7 +557,7 @@ export default function MapPage() {
       });
       setSelectedCat((prev) => prev && prev.id === catId ? { ...prev, like_count: currentCount } : prev);
       setCats((prev) => prev.map((c) => c.id === catId ? { ...c, like_count: currentCount } : c));
-      alert(err instanceof Error ? err.message : "좋아요 실패");
+      toast.error(err instanceof Error ? err.message : "좋아요 실패");
     } finally {
       setLikingCat(false);
     }
@@ -2155,13 +2157,13 @@ export default function MapPage() {
                       });
                       const d = await res.json();
                       if (res.ok) {
-                        alert(d.message);
+                        toast.info(d.message);
                         setSelectedHospital(null);
                         setHospitals((prev) => prev.filter((h) => h.id !== selectedHospital.id));
                       } else {
-                        alert(d.error || "신고 실패");
+                        toast.error(d.error ?? "신고 실패");
                       }
-                    } catch { alert("신고 처리 중 오류가 발생했어요"); }
+                    } catch { toast.error("신고 처리 중 오류가 발생했어요"); }
                   }}
                   className="flex items-center justify-center gap-1.5 w-full py-2.5 rounded-2xl text-[12px] font-bold active:scale-[0.97] transition-transform"
                   style={{ backgroundColor: "#F5F0EB", color: "#A38E7A" }}
@@ -2210,7 +2212,7 @@ export default function MapPage() {
                         setCats((prev) => prev.filter((c) => c.id !== selectedCat.id));
                         setSelectedCat(null);
                       } catch (err) {
-                        alert(err instanceof Error ? err.message : "삭제 실패");
+                        toast.error(err instanceof Error ? err.message : "삭제 실패");
                       }
                     }}
                     className="w-9 h-9 rounded-full bg-red-500/90 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform shadow-md"
@@ -2392,7 +2394,7 @@ export default function MapPage() {
                           setCats((prev) => prev.map((c) => c.id === updated.id ? updated : c));
                           setEditingCat(false);
                         } catch (err) {
-                          alert(err instanceof Error ? err.message : "수정 실패");
+                          toast.error(err instanceof Error ? err.message : "수정 실패");
                         } finally {
                           setEditSaving(false);
                         }
@@ -2713,7 +2715,7 @@ export default function MapPage() {
                                 try {
                                   await deleteComment(c.id);
                                   setComments((prev) => prev.filter((cm) => cm.id !== c.id));
-                                } catch { alert("삭제 실패"); }
+                                } catch { toast.error("삭제 실패"); }
                               }}
                               className="ml-1 text-text-light active:scale-90"
                             >

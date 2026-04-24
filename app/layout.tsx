@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AuthProvider } from "@/lib/auth-context";
+import { ToastProvider } from "@/app/components/Toast";
 import PushSubscriber from "@/app/components/PushSubscriber";
 import PwaInstallPrompt from "@/app/components/PwaInstallPrompt";
 import PendingInviteApplier from "@/app/components/PendingInviteApplier";
@@ -156,11 +157,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <AuthProvider>
-          {children}
-          <PushSubscriber />
-          <PwaInstallPrompt />
-          <PendingInviteApplier />
-          <SignupNudgeBar />
+          <ToastProvider>
+            {children}
+            <PushSubscriber />
+            <PwaInstallPrompt />
+            <PendingInviteApplier />
+            <SignupNudgeBar />
+          </ToastProvider>
         </AuthProvider>
         <Analytics />
         <SpeedInsights />

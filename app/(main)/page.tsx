@@ -5,15 +5,16 @@ import { createClient } from "@/lib/supabase/server";
 import HomeAuthed from "@/app/components/HomeAuthed";
 import HomeLanding from "@/app/components/HomeLanding";
 import WeeklyHotPosts from "@/app/components/WeeklyHotPosts";
+import AdoptionSeekingSection from "@/app/components/AdoptionSeekingSection";
 
 export default async function HomePage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  // HOT 게시글은 서버에서 계산해서 양쪽 모두에 내려줌 (client 컴포넌트에서
-  // 추가 API 라운드트립 없이 SSR 결과를 바로 렌더).
+  // HOT 게시글 + 입양·임보 찾는 아이들 — 서버에서 SSR → client에서 즉시 렌더.
   const hotSlot = <WeeklyHotPosts />;
+  const adoptionSlot = <AdoptionSeekingSection />;
   if (user) {
-    return <HomeAuthed hotSlot={hotSlot} />;
+    return <HomeAuthed hotSlot={hotSlot} adoptionSlot={adoptionSlot} />;
   }
-  return <HomeLanding hotSlot={hotSlot} />;
+  return <HomeLanding hotSlot={hotSlot} adoptionSlot={adoptionSlot} />;
 }
