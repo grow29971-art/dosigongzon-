@@ -1,16 +1,22 @@
 "use client";
 
+// 이메일·비밀번호 회원가입은 중단됨 (2026-04-24).
+// 이 페이지는 외부 링크 호환성(/signup 경로 유지) + 카카오·구글 안내 용도.
+// 가입은 로그인 페이지의 카카오·구글 버튼으로 통일.
+
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { PawPrint, Mail, Lock, User, Eye, EyeOff, ArrowLeft, Check, Loader2, Gift } from "lucide-react";
+import { PawPrint, Check, Loader2, AlertCircle, ExternalLink } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import TurnstileWidget from "@/app/components/TurnstileWidget";
-import { setPendingInviteCode, isValidInviteCodeFormat } from "@/lib/invites-repo";
-
-function isValidEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
+import {
+  detectInAppBrowser,
+  detectOS,
+  detectSamsungInternet,
+  inAppBrowserLabel,
+  openInExternalBrowser,
+  type InAppBrowser,
+} from "@/lib/in-app-browser";
 
 export default function SignupPage() {
   return (
@@ -23,413 +29,204 @@ export default function SignupPage() {
 function SignupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [nickname, setNickname] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [showPw, setShowPw] = useState(false);
-  const [agree, setAgree] = useState(false);
-  const [ageConfirm, setAgeConfirm] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [pressing, setPressing] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const [captchaSkipped, setCaptchaSkipped] = useState(false);
-  const captchaRequired = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const [agreed, setAgreed] = useState(false);
+  const [loading, setLoading] = useState<"kakao" | "google" | null>(null);
+  const [error, setError] = useState("");
 
-  // 마케팅 이메일 수신 동의 (정보통신망법 사전 동의 옵트인, 기본 OFF)
-  const [emailOptIn, setEmailOptIn] = useState(false);
-
-  // 초대 코드 (URL ?invite=XXX 우선, 없으면 유저 수동 입력)
-  const [inviteCode, setInviteCode] = useState("");
-  const [inviteLocked, setInviteLocked] = useState(false); // URL로 자동 채워진 경우 잠금
+  const [inApp, setInApp] = useState<InAppBrowser>(null);
+  const [isSamsung, setIsSamsung] = useState(false);
+  const [showIosCopyHint, setShowIosCopyHint] = useState(false);
   useEffect(() => {
-    const fromUrl = (searchParams.get("invite") || searchParams.get("i") || "").trim().toUpperCase();
-    if (fromUrl && isValidInviteCodeFormat(fromUrl)) {
-      setInviteCode(fromUrl);
-      setInviteLocked(true);
-      setPendingInviteCode(fromUrl);
-    }
-  }, [searchParams]);
+    setInApp(detectInAppBrowser());
+    setIsSamsung(detectSamsungInternet());
+  }, []);
 
-  const validate = async () => {
-    const next: Record<string, string> = {};
-    if (!nickname.trim()) next.nickname = "닉네임을 입력해주세요.";
-    else if (nickname.length < 2) next.nickname = "닉네임은 2자 이상이어야 합니다.";
-    else {
-      try {
-        const res = await fetch("/api/check-nickname", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nickname: nickname.trim() }),
-        });
-        const data = await res.json();
-        if (!data.available) next.nickname = "이미 사용 중인 닉네임이에요.";
-      } catch {}
+  const handleOpenExternal = async () => {
+    const success = openInExternalBrowser();
+    if (!success) {
+      try { await navigator.clipboard.writeText(window.location.href); } catch {}
+      setShowIosCopyHint(true);
     }
-    if (!email) next.email = "이메일을 입력해주세요.";
-    else if (!isValidEmail(email)) next.email = "올바른 이메일 형식이 아닙니다.";
-    if (!password) next.password = "비밀번호를 입력해주세요.";
-    else if (password.length < 6) next.password = "비밀번호는 6자 이상이어야 합니다.";
-    if (password !== passwordConfirm) next.passwordConfirm = "비밀번호가 일치하지 않습니다.";
-    if (!agree || !ageConfirm) next.agree = !agree ? "약관에 동의해주세요." : "만 14세 이상 확인이 필요해요.";
-    if (captchaRequired && !captchaToken && !captchaSkipped) next.captcha = "봇 방어 확인이 필요해요.";
-    setErrors(next);
-    return Object.keys(next).length === 0;
   };
 
-  const handleSignup = async () => {
-    if (!(await validate())) return;
-    setLoading(true);
-    setErrors({});
+  const handleSignup = async (provider: "kakao" | "google") => {
+    if (inApp) { handleOpenExternal(); return; }
+    if (!agreed) { setError("약관에 동의해주세요."); return; }
+    setError("");
+    setLoading(provider);
 
-    // Turnstile 토큰 서버 검증
-    if (captchaRequired && captchaToken && !captchaSkipped) {
-      try {
-        const res = await fetch("/api/turnstile-verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token: captchaToken }),
-        });
-        const data = await res.json();
-        if (!data.success) {
-          setLoading(false);
-          setErrors({ captcha: "봇 방어 검증에 실패했어요. 다시 시도해주세요." });
-          setCaptchaToken(null);
-          return;
-        }
-      } catch {
-        setLoading(false);
-        setErrors({ captcha: "봇 방어 검증 중 문제가 발생했어요." });
-        return;
-      }
+    const rawNext = searchParams.get("next");
+    const safeNext = rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
+    const callbackUrl = `${window.location.origin}/api/auth/callback?provider=${provider}&next=${encodeURIComponent(safeNext)}`;
+    const oauthOptions: { redirectTo: string; scopes?: string } = { redirectTo: callbackUrl };
+    if (provider === "kakao") {
+      oauthOptions.scopes = "account_email profile_nickname profile_image";
     }
-
-    // 유효한 초대 코드가 있으면 localStorage에 저장
-    // 이메일 인증 후 세션이 열리면 PendingInviteApplier가 자동 적용
-    const trimmedCode = inviteCode.trim().toUpperCase();
-    if (trimmedCode && isValidInviteCodeFormat(trimmedCode)) {
-      setPendingInviteCode(trimmedCode);
-    }
-
-    const { error } = await createClient().auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          nickname,
-          terms_agreed_at: new Date().toISOString(),
-          email_opt_in: emailOptIn,
-          email_opt_in_at: emailOptIn ? new Date().toISOString() : null,
-        },
-      },
+    const { error: oauthError } = await createClient().auth.signInWithOAuth({
+      provider,
+      options: oauthOptions,
     });
-
-    if (error) {
-      setLoading(false);
-      if (error.message.includes("already registered")) {
-        setErrors({ email: "이미 가입된 이메일입니다." });
-      } else {
-        setErrors({ email: error.message });
-      }
-      return;
+    if (oauthError) {
+      setLoading(null);
+      setError(oauthError.message);
     }
-
-    setLoading(false);
-    setEmailSent(true);
   };
-
-  const pwStrength =
-    password.length === 0
-      ? 0
-      : password.length < 6
-        ? 1
-        : password.length < 10
-          ? 2
-          : 3;
-  const pwColors = ["", "#B84545", "#C47E5A", "#6B8E6F"];
-  const pwLabels = ["", "약함", "보통", "강함"];
 
   return (
     <div className="min-h-dvh bg-warm-white flex flex-col">
-      <div className="flex-1 overflow-y-auto px-6 py-8 max-w-lg mx-auto w-full">
-        {/* ══════ 헤더 ══════ */}
-        <div className="flex items-center gap-3 mb-8">
-          <button
-            onClick={() => router.back()}
-            className="p-2 -ml-2 active:scale-90 transition-transform"
+      <div className="flex-1 overflow-y-auto px-6 py-12 flex flex-col justify-center max-w-lg mx-auto w-full">
+        {/* 인앱 브라우저 경고 */}
+        {inApp && (
+          <div
+            className="mb-6 rounded-2xl p-4"
+            style={{ backgroundColor: "#FBEAEA", border: "1px solid #E8C5C5" }}
           >
-            <ArrowLeft size={24} className="text-text-main" />
-          </button>
-          <h1 className="text-[20px] font-extrabold text-text-main">회원가입</h1>
-        </div>
-
-        {/* ══════ 로고 ══════ */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-[22px] bg-primary/10 mb-3">
-            <PawPrint size={32} className="text-primary" strokeWidth={1.8} />
+            <div className="flex items-start gap-2.5 mb-3">
+              <AlertCircle size={18} className="mt-0.5 shrink-0" style={{ color: "#B84545" }} />
+              <div className="min-w-0">
+                <p className="text-[13px] font-extrabold" style={{ color: "#B84545" }}>
+                  {inAppBrowserLabel(inApp)}에서는 가입이 안 돼요
+                </p>
+                <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#8B2F2F" }}>
+                  OAuth 보안 정책으로 인앱 브라우저에서 가입이 차단돼요. 크롬·사파리로 열어주세요.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleOpenExternal}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-[13px] text-white active:scale-95"
+              style={{ backgroundColor: "#B84545" }}
+            >
+              <ExternalLink size={14} />
+              {detectOS() === "ios" && inApp !== "kakaotalk"
+                ? "주소 복사하고 사파리에서 열기"
+                : "크롬/사파리에서 열기"}
+            </button>
+            {showIosCopyHint && (
+              <div className="mt-3 rounded-xl p-3 text-[11px] leading-relaxed" style={{ backgroundColor: "#FFF", color: "#6B5043" }}>
+                <p className="font-bold mb-1">주소가 복사됐어요 ✓</p>
+                <p>사파리(iOS) 또는 크롬(Android)을 열고 주소창에 붙여넣어주세요.</p>
+              </div>
+            )}
           </div>
-          <p className="text-[14px] text-text-sub leading-relaxed">
-            도시공존 멤버가 되어주세요
+        )}
+
+        {/* 로고 */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-[28px] bg-primary/10 mb-4">
+            <PawPrint size={40} className="text-primary" strokeWidth={1.8} />
+          </div>
+          <h1 className="text-[26px] font-extrabold text-text-main tracking-tight">
+            도시공존에 합류하기
+          </h1>
+          <p className="text-[13.5px] text-text-sub mt-2 leading-relaxed">
+            카카오 또는 구글 계정으로 1초 가입
           </p>
         </div>
 
-        {/* ══════ 이메일 인증 안내 ══════ */}
-        {emailSent && (
-          <div className="rounded-2xl p-6 text-center mb-6" style={{ backgroundColor: "#E8ECE5", border: "1px solid #D6DCD2" }}>
-            <Mail size={32} className="mx-auto mb-3" style={{ color: "#6B8E6F" }} />
-            <p className="text-[16px] font-bold text-text-main mb-2">인증 메일을 보냈습니다!</p>
-            <p className="text-[13px] text-text-sub leading-relaxed">
-              <strong>{email}</strong>로 인증 링크를 보냈어요.<br />
-              메일함을 확인하고 링크를 클릭하면 가입이 완료됩니다.
+        {/* 이메일 가입 중단 안내 */}
+        <div
+          className="mb-4 rounded-xl px-3.5 py-3"
+          style={{ backgroundColor: "#F6F1EA", border: "1px solid #E5E0D6" }}
+        >
+          <p className="text-[12px] font-extrabold text-text-main mb-0.5">
+            💡 이메일 가입은 지원하지 않아요
+          </p>
+          <p className="text-[11px] leading-relaxed" style={{ color: "#6B5043" }}>
+            비밀번호 관리 부담을 줄이고 계정 복구를 쉽게 하기 위해
+            카카오·구글 로그인만 제공해요. 한 번 연결하면 다음부터 1클릭 로그인.
+          </p>
+        </div>
+
+        {/* 삼성 인터넷 경고 */}
+        {isSamsung && !inApp && (
+          <div
+            className="mb-3 rounded-xl px-3.5 py-2.5 flex items-start gap-2"
+            style={{ backgroundColor: "#FFF4E0", border: "1px solid #F5DAB0" }}
+          >
+            <span className="text-[14px] mt-0.5">⚠️</span>
+            <p className="text-[11.5px] leading-relaxed" style={{ color: "#6F4910" }}>
+              <b>삼성 인터넷</b>에서는 카카오 가입이 자주 실패해요 (KOE205).
+              <b>크롬·사파리</b>로 열면 안정적이에요.
             </p>
-            <Link
-              href="/login"
-              className="inline-block mt-4 px-6 py-2.5 rounded-xl bg-primary text-white text-[14px] font-bold"
-            >
-              로그인 페이지로
-            </Link>
           </div>
         )}
 
-        {/* ══════ 입력 폼 ══════ */}
-        {!emailSent && <><div className="space-y-3 mb-6">
-          {/* 닉네임 */}
-          <div>
-            <div
-              className={`flex items-center gap-3 bg-white rounded-xl px-4 py-3.5 border transition-colors ${
-                errors.nickname ? "border-error" : "border-border focus-within:border-primary"
-              }`}
-            >
-              <User size={18} className="text-text-muted shrink-0" />
-              <input
-                value={nickname}
-                onChange={(e) => { setNickname(e.target.value); setErrors((p) => ({ ...p, nickname: "" })); }}
-                placeholder="닉네임 (2자 이상)"
-                className="flex-1 text-[14px] text-text-main bg-transparent outline-none placeholder:text-text-muted"
-              />
-            </div>
-            {errors.nickname && <p className="text-[11px] text-error mt-1 ml-1">{errors.nickname}</p>}
+        {/* 에러 */}
+        {error && (
+          <div className="rounded-xl px-4 py-3 mb-4" style={{ backgroundColor: "#FBEAEA" }}>
+            <p className="text-[13px] font-semibold" style={{ color: "#B84545" }}>{error}</p>
           </div>
+        )}
 
-          {/* 이메일 */}
-          <div>
-            <div
-              className={`flex items-center gap-3 bg-white rounded-xl px-4 py-3.5 border transition-colors ${
-                errors.email ? "border-error" : "border-border focus-within:border-primary"
-              }`}
-            >
-              <Mail size={18} className="text-text-muted shrink-0" />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => { setEmail(e.target.value); setErrors((p) => ({ ...p, email: "" })); }}
-                placeholder="이메일"
-                className="flex-1 text-[14px] text-text-main bg-transparent outline-none placeholder:text-text-muted"
-              />
-            </div>
-            {errors.email && <p className="text-[11px] text-error mt-1 ml-1">{errors.email}</p>}
-          </div>
-
-          {/* 비밀번호 */}
-          <div>
-            <div
-              className={`flex items-center gap-3 bg-white rounded-xl px-4 py-3.5 border transition-colors ${
-                errors.password ? "border-error" : "border-border focus-within:border-primary"
-              }`}
-            >
-              <Lock size={18} className="text-text-muted shrink-0" />
-              <input
-                type={showPw ? "text" : "password"}
-                value={password}
-                onChange={(e) => { setPassword(e.target.value); setErrors((p) => ({ ...p, password: "" })); }}
-                placeholder="비밀번호 (6자 이상)"
-                className="flex-1 text-[14px] text-text-main bg-transparent outline-none placeholder:text-text-muted"
-              />
-              <button type="button" onClick={() => setShowPw(!showPw)} className="shrink-0 p-0.5">
-                {showPw ? <EyeOff size={18} className="text-text-muted" /> : <Eye size={18} className="text-text-muted" />}
-              </button>
-            </div>
-            {errors.password && <p className="text-[11px] text-error mt-1 ml-1">{errors.password}</p>}
-            {/* 비밀번호 강도 */}
-            {password.length > 0 && (
-              <div className="flex items-center gap-2 mt-2 ml-1">
-                <div className="flex gap-1 flex-1">
-                  {[1, 2, 3].map((level) => (
-                    <div
-                      key={level}
-                      className="h-1 flex-1 rounded-full transition-colors"
-                      style={{
-                        backgroundColor: pwStrength >= level ? pwColors[pwStrength] : "#E5E0D6",
-                      }}
-                    />
-                  ))}
-                </div>
-                <span className="text-[11px] font-semibold" style={{ color: pwColors[pwStrength] }}>
-                  {pwLabels[pwStrength]}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* 비밀번호 확인 */}
-          <div>
-            <div
-              className={`flex items-center gap-3 bg-white rounded-xl px-4 py-3.5 border transition-colors ${
-                errors.passwordConfirm ? "border-error" : "border-border focus-within:border-primary"
-              }`}
-            >
-              <Lock size={18} className="text-text-muted shrink-0" />
-              <input
-                type={showPw ? "text" : "password"}
-                value={passwordConfirm}
-                onChange={(e) => { setPasswordConfirm(e.target.value); setErrors((p) => ({ ...p, passwordConfirm: "" })); }}
-                placeholder="비밀번호 확인"
-                className="flex-1 text-[14px] text-text-main bg-transparent outline-none placeholder:text-text-muted"
-              />
-              {passwordConfirm && password === passwordConfirm && (
-                <Check size={18} className="text-[#6B8E6F] shrink-0" />
-              )}
-            </div>
-            {errors.passwordConfirm && <p className="text-[11px] text-error mt-1 ml-1">{errors.passwordConfirm}</p>}
-          </div>
-
-          {/* 초대 코드 (선택) */}
-          <div>
-            <div
-              className="flex items-center gap-3 bg-white rounded-xl px-4 py-3.5 border border-border focus-within:border-primary transition-colors"
-              style={{ background: inviteLocked ? "rgba(196,126,90,0.06)" : "#fff" }}
-            >
-              <Gift size={18} style={{ color: inviteLocked ? "#C47E5A" : "#A38E7A" }} className="shrink-0" />
-              <input
-                value={inviteCode}
-                onChange={(e) => {
-                  if (inviteLocked) return;
-                  const v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
-                  setInviteCode(v);
-                }}
-                disabled={inviteLocked}
-                placeholder="초대 코드 (선택)"
-                maxLength={10}
-                className="flex-1 text-[14px] tracking-[0.15em] font-bold bg-transparent outline-none placeholder:text-text-muted placeholder:tracking-normal placeholder:font-normal disabled:text-[#C47E5A]"
-              />
-              {inviteLocked && (
-                <span className="text-[10px] font-bold" style={{ color: "#C47E5A" }}>자동 입력</span>
-              )}
-            </div>
-            <p className="text-[10.5px] text-text-light mt-1 ml-1">
-              친구에게 받은 코드가 있나요? 입력하면 서로 연결돼요.
-            </p>
-          </div>
-        </div>
-
-        {/* ══════ 약관 동의 + 14세 이상 확인 ══════ */}
-        <div className="mb-6 space-y-3">
-          <button onClick={() => { setAgree(!agree); setErrors((p) => ({ ...p, agree: "" })); }} className="flex items-start gap-2.5">
-            <div
-              className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
-                agree ? "bg-primary border-primary" : errors.agree ? "border-error" : "border-border"
-              }`}
-            >
-              {agree && <Check size={12} color="white" strokeWidth={3} />}
-            </div>
-            <span className="text-[13px] text-text-sub text-left leading-relaxed">
-              <Link href="/terms" className="font-bold text-primary underline" onClick={(e) => e.stopPropagation()}>이용약관</Link> 및{" "}
-              <Link href="/privacy" className="font-bold text-primary underline" onClick={(e) => e.stopPropagation()}>개인정보처리방침</Link>에 동의합니다
-            </span>
-          </button>
-          <button onClick={() => { setAgeConfirm(!ageConfirm); setErrors((p) => ({ ...p, agree: "" })); }} className="flex items-start gap-2.5">
-            <div
-              className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
-                ageConfirm ? "bg-primary border-primary" : errors.agree ? "border-error" : "border-border"
-              }`}
-            >
-              {ageConfirm && <Check size={12} color="white" strokeWidth={3} />}
-            </div>
-            <span className="text-[13px] text-text-sub text-left leading-relaxed">
-              만 14세 이상입니다 <span className="text-[11px] text-text-light">(개인정보보호법 제22조)</span>
-            </span>
-          </button>
-
-          {/* 선택 동의 — 마케팅 이메일 수신 (옵트인, 기본 OFF) */}
+        {/* 약관 동의 */}
+        <div className="mb-4">
           <button
             type="button"
-            onClick={() => setEmailOptIn(!emailOptIn)}
-            className="flex items-start gap-2.5"
+            onClick={() => setAgreed(!agreed)}
+            className="flex items-start gap-2.5 text-left w-full"
           >
             <div
               className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
-                emailOptIn ? "bg-primary border-primary" : "border-border"
+                agreed ? "bg-primary border-primary" : "border-border"
               }`}
             >
-              {emailOptIn && <Check size={12} color="white" strokeWidth={3} />}
+              {agreed && <Check size={12} color="white" strokeWidth={3} />}
             </div>
-            <span className="text-[13px] text-text-sub text-left leading-relaxed">
-              <span className="text-[11px] font-bold" style={{ color: "#A38E7A" }}>(선택)</span>{" "}
-              도시공존 이메일 소식 받기 <span className="text-[11px] text-text-light">— 이번 주 동네 새 소식 · 긴급 돌봄 · 월 1~2회 · 언제든 해지 가능</span>
+            <span className="text-[12.5px] text-text-sub leading-relaxed">
+              <Link href="/terms" className="font-bold text-primary underline">이용약관</Link> 및{" "}
+              <Link href="/privacy" className="font-bold text-primary underline">개인정보처리방침</Link>에 동의하며, 만 14세 이상입니다
             </span>
           </button>
-
-          {errors.agree && <p className="text-[11px] text-error mt-1 ml-8">{errors.agree}</p>}
         </div>
 
-        {/* ══════ Turnstile (봇 방어) ══════ */}
-        {captchaRequired && !captchaSkipped && (
-          <div className="mb-4">
-            <TurnstileWidget
-              onVerify={(token) => {
-                setCaptchaToken(token);
-                setErrors((p) => ({ ...p, captcha: "" }));
-              }}
-              onExpire={() => setCaptchaToken(null)}
-              onError={() => setCaptchaSkipped(true)}
-            />
-            {errors.captcha && (
-              <div className="text-center">
-                <p className="text-[11px] text-error">{errors.captcha}</p>
-                <button
-                  type="button"
-                  onClick={() => { setCaptchaSkipped(true); setErrors((p) => ({ ...p, captcha: "" })); }}
-                  className="text-[11px] text-text-sub underline mt-1"
-                >
-                  봇 방어를 건너뛰고 가입하기
-                </button>
-              </div>
+        {/* 가입 버튼 */}
+        <div className="space-y-2.5">
+          {/* 카카오 */}
+          <button
+            onClick={() => handleSignup("kakao")}
+            disabled={!!loading}
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-extrabold active:scale-[0.97] transition-transform disabled:opacity-60"
+            style={{ backgroundColor: "#FEE500", color: "#191919", opacity: (agreed || inApp) ? 1 : 0.6 }}
+          >
+            {loading === "kakao" ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                <path d="M9 1.5C4.582 1.5 1 4.262 1 7.668c0 2.219 1.51 4.166 3.788 5.272-.167.625-.604 2.265-.69 2.617-.108.438.16.43.336.314.138-.092 2.198-1.5 3.083-2.107.49.073.99.111 1.483.111 4.418 0 8-2.762 8-6.207C17 4.262 13.418 1.5 9 1.5z" fill="#191919" />
+              </svg>
             )}
-          </div>
-        )}
+            카카오로 가입하기
+          </button>
+          {/* 구글 */}
+          <button
+            onClick={() => handleSignup("google")}
+            disabled={!!loading}
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.97] transition-transform border border-[#E0E0E0] disabled:opacity-60"
+            style={{ backgroundColor: "#FFFFFF", color: "#2A2A28", opacity: (agreed || inApp) ? 1 : 0.6 }}
+          >
+            {loading === "google" ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 18 18">
+                <path d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.79 2.71v2.26h2.9c1.7-1.56 2.68-3.86 2.68-6.61z" fill="#4285F4" />
+                <path d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.8.54-1.83.86-3.05.86-2.34 0-4.33-1.58-5.04-3.71H.96v2.33A9 9 0 0 0 9 18z" fill="#34A853" />
+                <path d="M3.96 10.71A5.41 5.41 0 0 1 3.68 9c0-.59.1-1.17.28-1.71V4.96H.96A9 9 0 0 0 0 9c0 1.45.35 2.82.96 4.04l3-2.33z" fill="#FBBC05" />
+                <path d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.59C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.96l3 2.33C4.67 5.16 6.66 3.58 9 3.58z" fill="#EA4335" />
+              </svg>
+            )}
+            Google로 가입하기
+          </button>
+        </div>
 
-        {/* ══════ 가입 버튼 ══════ */}
-        <button
-          onPointerDown={() => setPressing(true)}
-          onPointerUp={() => setPressing(false)}
-          onPointerLeave={() => setPressing(false)}
-          onClick={handleSignup}
-          disabled={loading}
-          className="w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold transition-transform duration-100 disabled:opacity-60"
-          style={{
-            transform: pressing ? "scale(0.97)" : "scale(1)",
-            boxShadow: pressing
-              ? "0 2px 8px rgba(196,126,90,0.2)"
-              : "0 6px 20px rgba(196,126,90,0.3)",
-          }}
-        >
-          {loading ? (
-            <Loader2 size={20} className="animate-spin mx-auto" />
-          ) : (
-            "가입하기"
-          )}
-        </button>
-
-        {/* ══════ 로그인 링크 ══════ */}
-        <div className="text-center mt-6 pb-4">
+        {/* 로그인 안내 */}
+        <div className="text-center mt-8">
           <span className="text-[13px] text-text-sub">이미 계정이 있으신가요? </span>
           <Link href="/login" className="text-[13px] font-bold text-primary">
             로그인
           </Link>
         </div>
-        </>}
       </div>
     </div>
   );
