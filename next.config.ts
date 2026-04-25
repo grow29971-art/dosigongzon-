@@ -80,11 +80,12 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["192.168.0.2", "localhost"],
   // 기술 스택 정보 노출 차단 — X-Powered-By: Next.js 헤더 제거
   poweredByHeader: false,
-  // next/image 설정 — Vercel Image Optimization quota 이슈로 unoptimized 모드.
-  // lazy loading·sizes 등 next/image 기본 기능은 유지, 자동 WebP 변환만 비활성.
-  // quota 확보 후 unoptimized: false + remotePatterns로 전환 검토.
+  // next/image — Vercel Image Optimization 활성. 자동 WebP/AVIF + 디바이스별 리사이즈.
+  // 서드파티 아바타(Google/Kakao)는 이미 CDN 최적화 상태라 개별 컴포넌트에서 unoptimized 유지.
+  // quota 한계: Hobby 1000 source images/month (현재 사용 << 한계).
   images: {
-    unoptimized: true,
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 60 * 60 * 24 * 30, // 30일 — Storage 사진 거의 안 바뀜
     remotePatterns: [
       { protocol: "https", hostname: "*.supabase.co" },
       { protocol: "https", hostname: "placehold.co" },

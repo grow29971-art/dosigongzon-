@@ -129,11 +129,12 @@ export default function TodayChecklist({
       }}
     >
       <div
-        className="px-4 py-3 flex items-center gap-2"
+        className={`px-4 py-3 flex items-center gap-2 ${
+          allDone
+            ? "bg-[linear-gradient(135deg,#E8F4E8_0%,#D5EDD5_100%)] dark:bg-[linear-gradient(135deg,#1F2E20_0%,#1A2A1C_100%)]"
+            : "bg-[linear-gradient(135deg,#FFF9EF_0%,#FFF4E0_100%)] dark:bg-[linear-gradient(135deg,#2A2410_0%,#2C2510_100%)]"
+        }`}
         style={{
-          background: allDone
-            ? "linear-gradient(135deg, #E8F4E8 0%, #D5EDD5 100%)"
-            : "linear-gradient(135deg, #FFF9EF 0%, #FFF4E0 100%)",
           borderBottom: "1px solid rgba(0,0,0,0.04)",
         }}
       >

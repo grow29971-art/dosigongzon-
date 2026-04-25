@@ -31,8 +31,10 @@ import {
   Search,
   SlidersHorizontal,
 } from "lucide-react";
-import AddCatModal from "@/app/components/AddCatModal";
-import ReportModal from "@/app/components/ReportModal";
+import dynamic from "next/dynamic";
+// 모달·고급 패널은 첫 페인트 후로 코드 스플리팅 (열기 전엔 다운로드 안 함)
+const AddCatModal = dynamic(() => import("@/app/components/AddCatModal"), { ssr: false });
+const ReportModal = dynamic(() => import("@/app/components/ReportModal"), { ssr: false });
 import {
   listCats,
   listComments,
@@ -57,7 +59,7 @@ import SendDMButton from "@/app/components/SendDMButton";
 import { listRescueHospitals, type RescueHospital } from "@/lib/hospitals-repo";
 import type { Post } from "@/lib/types";
 import { createClient as createSupabaseClient } from "@/lib/supabase/client";
-import CareLogTab from "@/app/components/CareLogTab";
+const CareLogTab = dynamic(() => import("@/app/components/CareLogTab"), { ssr: false });
 import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, toggleCatLike, listMyLikedCatIds, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, type CatGender, type CatHealthStatus, type AdoptionStatus } from "@/lib/cats-repo";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import {
@@ -69,7 +71,7 @@ import { shareToKakao } from "@/lib/kakao-share";
 import MapCoachmark from "@/app/components/MapCoachmark";
 import ReactionBar from "@/app/components/ReactionBar";
 import { listReactionsBatch, type ReactionSummary } from "@/lib/reactions-repo";
-import CatLocationPicker from "@/app/components/CatLocationPicker";
+const CatLocationPicker = dynamic(() => import("@/app/components/CatLocationPicker"), { ssr: false });
 
 const CAT_TAG_OPTIONS = [
   "TNR 완료","TNR 필요","이어팁","사람 친화","겁 많음","성묘",
@@ -93,6 +95,13 @@ function formatRelativeTime(iso: string): string {
   const day = Math.floor(hr / 24);
   if (day < 7) return `${day}일 전`;
   return new Date(iso).toLocaleDateString("ko-KR", { month: "short", day: "numeric" });
+}
+
+// 지도 마커 캐시 (sessionStorage). 변경 발생 시 invalidate해서 stale 데이터 방지.
+const MAP_CATS_CACHE_KEY = "dosi_map_cats_v1";
+const MAP_CATS_CACHE_TTL_MS = 5 * 60 * 1000;
+function invalidateMapCatsCache() {
+  try { sessionStorage.removeItem(MAP_CATS_CACHE_KEY); } catch {}
 }
 
 export default function MapPage() {
@@ -123,6 +132,11 @@ export default function MapPage() {
 
   // ── 검색 / 필터 ──
   const [searchQ, setSearchQ] = useState("");
+  const [searchQDebounced, setSearchQDebounced] = useState("");
+  useEffect(() => {
+    const id = setTimeout(() => setSearchQDebounced(searchQ), 200);
+    return () => clearTimeout(id);
+  }, [searchQ]);
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   type CatFilter = "all" | "tnr_needed" | "neutered" | "health_concern" | "alert";
   const [catFilter, setCatFilter] = useState<CatFilter>("all");
@@ -467,10 +481,8 @@ export default function MapPage() {
 
   const apiKey = process.env.NEXT_PUBLIC_KAKAO_MAP_KEY;
 
-  // ── DB에서 고양이 목록 + 학대 신고 목록 불러오기 ──
-  const fetchCats = useCallback(async () => {
-    setLoadingCats(true);
-    setCatsError("");
+  // ── DB에서 고양이 목록 + 학대 신고 목록 불러오기 (sessionStorage 5분 캐시) ──
+  const fetchFresh = useCallback(async () => {
     try {
       const [data, alertedIds] = await Promise.all([
         listCats(),
@@ -478,6 +490,13 @@ export default function MapPage() {
       ]);
       setCats(data);
       setAlertedCats(alertedIds);
+      try {
+        sessionStorage.setItem(MAP_CATS_CACHE_KEY, JSON.stringify({
+          ts: Date.now(),
+          data,
+          alerted: Array.from(alertedIds),
+        }));
+      } catch {}
     } catch (err) {
       setCatsError(err instanceof Error ? err.message : "불러오기 실패");
     } finally {
@@ -485,13 +504,38 @@ export default function MapPage() {
     }
   }, []);
 
+  const fetchCats = useCallback(async () => {
+    setCatsError("");
+    // 캐시 즉시 적용 → 첫 페인트 빠르게
+    try {
+      const cached = sessionStorage.getItem(MAP_CATS_CACHE_KEY);
+      if (cached) {
+        const { ts, data, alerted } = JSON.parse(cached);
+        if (Date.now() - ts < MAP_CATS_CACHE_TTL_MS) {
+          setCats(data);
+          setAlertedCats(new Set(alerted));
+          setLoadingCats(false);
+          // 백그라운드에서 새로고침 (stale-while-revalidate)
+          setTimeout(() => fetchFresh(), 200);
+          return;
+        }
+      }
+    } catch {}
+    setLoadingCats(true);
+    await fetchFresh();
+  }, [fetchFresh]);
+
   useEffect(() => {
     fetchCats();
     listRescueHospitals().then(setHospitals).catch(() => {});
-    isCurrentUserAdmin().then(setIsAdmin).catch(() => {});
-    // 방문자 카운트 (비회원 포함)
-    fetch("/api/visit", { method: "POST" }).catch(() => {});
-    fetch("/api/visit").then((r) => r.json()).then((d) => setTodayVisit(d.today)).catch(() => {});
+
+    // 비크리티컬: 첫 페인트 후로 지연
+    const idle = (window as any).requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 800));
+    idle(() => {
+      isCurrentUserAdmin().then(setIsAdmin).catch(() => {});
+      fetch("/api/visit", { method: "POST" }).catch(() => {});
+      fetch("/api/visit").then((r) => r.json()).then((d) => setTodayVisit(d.today)).catch(() => {});
+    });
   }, [fetchCats]);
 
   // ── 활동 지역 로드 (로그인 유저만) ──
@@ -893,17 +937,25 @@ export default function MapPage() {
     ? cats.filter((c) => c.region === selectedDong)
     : [];
 
-  // ── cats를 동 단위로 그룹화 → 클러스터 마커 ──
+  // ── cats를 동 단위로 그룹화 → 클러스터 마커 (뷰포트 기반) ──
+  const catIdleListenerRef = useRef<any>(null);
   useEffect(() => {
-    if (!mapReady || !mapInstanceRef.current || !window.kakao) return;
-
+    // 기존 마커/리스너 정리
     overlaysRef.current.forEach((ov) => ov.setMap(null));
     overlaysRef.current = [];
+    if (catIdleListenerRef.current && mapInstanceRef.current && window.kakao) {
+      window.kakao.maps.event.removeListener(mapInstanceRef.current, "idle", catIdleListenerRef.current);
+      catIdleListenerRef.current = null;
+    }
 
+    if (!mapReady || !mapInstanceRef.current || !window.kakao) return;
     if (!showCats) return;
 
-    // 검색어 + 속성 필터 적용
-    const q = searchQ.trim().toLowerCase();
+    const map = mapInstanceRef.current;
+    const MAX_CAT_OVERLAYS = 80; // DOM 폭주 방지
+
+    // 검색어 + 속성 필터 적용 (뷰포트 무관 — 한 번만 계산)
+    const q = searchQDebounced.trim().toLowerCase();
     const filtered = cats.filter((c) => {
       if (q) {
         const hay = [
@@ -928,7 +980,7 @@ export default function MapPage() {
       }
     });
 
-    // region(동)별 그룹핑 — 고양이는 전부 표시 (활동 지역은 Circle 시각 표시만)
+    // region(동)별 그룹핑 — 한 번만 (뷰포트 변해도 재그룹 불필요)
     const groups = new Map<string, Cat[]>();
     filtered.forEach((cat) => {
       const dong = cat.region || "기타";
@@ -940,7 +992,51 @@ export default function MapPage() {
       ? new window.kakao.maps.services.Geocoder()
       : null;
 
-    groups.forEach((dongCats, dong) => {
+    // 뷰포트 내 그룹만 렌더하는 함수 (idle마다 호출)
+    function renderVisibleCats() {
+      // 기존 마커 제거
+      overlaysRef.current.forEach((ov) => ov.setMap(null));
+      overlaysRef.current = [];
+
+      const bounds = map.getBounds();
+      if (!bounds) return;
+      const sw = bounds.getSouthWest();
+      const ne = bounds.getNorthEast();
+      const minLat = sw.getLat();
+      const maxLat = ne.getLat();
+      const minLng = sw.getLng();
+      const maxLng = ne.getLng();
+
+      // 뷰포트 안의 그룹만 필터 (대표 좌표 기준)
+      const visibleGroups: Array<[string, Cat[]]> = [];
+      groups.forEach((dongCats, dong) => {
+        const repCat = dongCats[0];
+        const coord = getDisplayCoord(repCat, isLoggedIn);
+        if (
+          coord.lat >= minLat &&
+          coord.lat <= maxLat &&
+          coord.lng >= minLng &&
+          coord.lng <= maxLng
+        ) {
+          visibleGroups.push([dong, dongCats]);
+        }
+      });
+
+      // 너무 많으면 우선순위 (학대경보 > 마릿수) 후 상한
+      visibleGroups.sort((a, b) => {
+        const aAlert = a[1].some((c) => alertedCats.has(c.id)) ? 1 : 0;
+        const bAlert = b[1].some((c) => alertedCats.has(c.id)) ? 1 : 0;
+        if (aAlert !== bAlert) return bAlert - aAlert;
+        return b[1].length - a[1].length;
+      });
+      const toRender = visibleGroups.slice(0, MAX_CAT_OVERLAYS);
+
+      toRender.forEach(([dong, dongCats]) => {
+        renderGroup(dong, dongCats);
+      });
+    }
+
+    function renderGroup(dong: string, dongCats: Cat[]) {
       if (dong === "기타" || !geocoder) {
         // region이 없는 고양이는 원래 좌표 사용 (개별 마커)
         dongCats.forEach((cat) => {
@@ -1014,8 +1110,19 @@ export default function MapPage() {
         zIndex: 10,
       });
       overlaysRef.current.push(ov);
-    });
-  }, [cats, mapReady, isLoggedIn, alertedCats, showCats, activityRegions, regionFilter, searchQ, catFilter]);
+    }
+
+    // 초기 렌더 + idle 리스너 등록
+    renderVisibleCats();
+    catIdleListenerRef.current = renderVisibleCats;
+    window.kakao.maps.event.addListener(map, "idle", renderVisibleCats);
+
+    return () => {
+      if (catIdleListenerRef.current && map && window.kakao) {
+        window.kakao.maps.event.removeListener(map, "idle", catIdleListenerRef.current);
+      }
+    };
+  }, [cats, mapReady, isLoggedIn, alertedCats, showCats, activityRegions, regionFilter, searchQDebounced, catFilter]);
 
   // ── 병원 마커 (뷰포트 기반 + 좌표 없으면 Geocoder 변환) ──
   const hospitalIdleListenerRef = useRef<any>(null);
@@ -1148,7 +1255,8 @@ export default function MapPage() {
       hospitalOverlaysRef.current = [];
 
       const level = map.getLevel();
-      // 줌 레벨별 표시: 6~7 약국만, 8+ 전부, 9+ 숨김 없음(전부 표시)
+      // 줌 레벨별 표시: 약국은 가까이 줌해야만 (병원 등장 임계와 동일).
+      // 넓게 보면 고양이만 깔끔하게 보이도록.
       if (level >= 12) return; // 너무 넓으면 전부 숨김
 
       const bounds = map.getBounds();
@@ -1163,15 +1271,18 @@ export default function MapPage() {
         if (isPharm && !showPharmacies) return false;
         if (!isPharm && !showHospitals) return false;
 
-        // 줌 레벨별 단계 표시
+        // 약국: 동네 줌(level < 7)에서만 표시 — 일반 병원이 모두 보이는 시점
+        if (isPharm && level >= 7) return false;
+
+        // 줌 레벨별 단계 표시 (병원)
         if (level >= 9) {
-          // 넓은 범위: 수동 등록(약국 포함)만
+          // 넓은 범위: 수동 등록 병원만 (약국은 위에서 걸러짐)
           if (!isManual) return false;
         } else if (level >= 7) {
           // 중간 범위: 수동 + pinned 병원만
           if (!isManual && !h.pinned) return false;
         }
-        // level < 7: 전부 표시
+        // level < 7: 전부 표시 (약국 포함)
 
         const coord = getCoord(h);
         if (!coord) return false;
@@ -1224,6 +1335,7 @@ export default function MapPage() {
 
   const handleCatCreated = (newCat: Cat) => {
     setCats((prev) => [newCat, ...prev]);
+    invalidateMapCatsCache();
     setSelectedCat(newCat);
     // 지도 중심을 새 핀으로 이동 (본인이 방금 등록한 거라 정확 좌표 OK)
     if (mapInstanceRef.current && window.kakao) {
@@ -2212,6 +2324,7 @@ export default function MapPage() {
                     try {
                       await deleteCat(selectedCat.id);
                       setCats((prev) => prev.filter((c) => c.id !== selectedCat.id));
+                      invalidateMapCatsCache();
                       setSelectedCat(null);
                     } catch (err) {
                       toast.error(err instanceof Error ? err.message : "삭제 실패");
@@ -2400,6 +2513,7 @@ export default function MapPage() {
                           });
                           setSelectedCat(updated);
                           setCats((prev) => prev.map((c) => c.id === updated.id ? updated : c));
+                          invalidateMapCatsCache();
                           setEditingCat(false);
                         } catch (err) {
                           toast.error(err instanceof Error ? err.message : "수정 실패");

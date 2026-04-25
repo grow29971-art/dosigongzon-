@@ -18,9 +18,7 @@ export default function KeyringEventPage() {
   const { user, loading: authLoading } = useAuth();
   const toast = useToast();
 
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
+  const [catName, setCatName] = useState("");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -63,8 +61,8 @@ export default function KeyringEventPage() {
 
   const handleSubmit = async () => {
     if (!user) return;
-    if (!name.trim() || !address.trim() || !phone.trim() || !photoFile) {
-      setError("모든 항목을 입력하고 사진도 첨부해주세요.");
+    if (!catName.trim() || !photoFile) {
+      setError("고양이 이름과 사진을 입력해주세요.");
       return;
     }
     setError("");
@@ -91,9 +89,7 @@ export default function KeyringEventPage() {
           Authorization: `Bearer ${session?.access_token ?? ""}`,
         },
         body: JSON.stringify({
-          name: name.trim(),
-          address: address.trim(),
-          phone: phone.trim(),
+          cat_name: catName.trim(),
           cat_photo_url,
         }),
       });
@@ -197,48 +193,16 @@ export default function KeyringEventPage() {
           </div>
         ) : (
           <div className="space-y-3">
-            {/* 이름 */}
+            {/* 고양이 이름 */}
             <div>
               <label className="text-[12px] font-bold text-text-main mb-1.5 block">
-                이름 (수령자) <span className="text-error">*</span>
+                고양이 이름 <span className="text-error">*</span>
               </label>
               <input
                 type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="홍길동"
-                maxLength={20}
-                className="w-full px-4 py-3 rounded-xl text-[14px] outline-none"
-                style={{ background: "#FFFFFF", border: "1px solid #E3DCD3" }}
-              />
-            </div>
-
-            {/* 주소 */}
-            <div>
-              <label className="text-[12px] font-bold text-text-main mb-1.5 block">
-                배송 주소 <span className="text-error">*</span>
-              </label>
-              <textarea
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="우편번호 + 도로명주소 + 상세 주소"
-                rows={2}
-                maxLength={200}
-                className="w-full px-4 py-3 rounded-xl text-[14px] outline-none resize-none"
-                style={{ background: "#FFFFFF", border: "1px solid #E3DCD3" }}
-              />
-            </div>
-
-            {/* 전화번호 */}
-            <div>
-              <label className="text-[12px] font-bold text-text-main mb-1.5 block">
-                전화번호 <span className="text-error">*</span>
-              </label>
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="010-1234-5678"
+                value={catName}
+                onChange={(e) => setCatName(e.target.value)}
+                placeholder="예: 까망이, 치즈, 나비"
                 maxLength={20}
                 className="w-full px-4 py-3 rounded-xl text-[14px] outline-none"
                 style={{ background: "#FFFFFF", border: "1px solid #E3DCD3" }}
@@ -301,7 +265,7 @@ export default function KeyringEventPage() {
             {/* 제출 */}
             <button
               onClick={handleSubmit}
-              disabled={submitting || !name.trim() || !address.trim() || !phone.trim() || !photoFile}
+              disabled={submitting || !catName.trim() || !photoFile}
               className="w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold disabled:opacity-50 active:scale-[0.97] flex items-center justify-center gap-2"
               style={{ boxShadow: "0 6px 20px rgba(196,126,90,0.30)" }}
             >
@@ -310,7 +274,7 @@ export default function KeyringEventPage() {
             </button>
 
             <p className="text-[10.5px] text-text-light text-center leading-relaxed pt-2">
-              · 입력 정보는 키링 제작·배송 목적으로만 사용되며 추첨 종료 후 자동 폐기됩니다.<br />
+              · 추첨되시면 쪽지로 배송 정보를 따로 여쭤볼게요.<br />
               · 한 분당 1회만 응모 가능합니다.
             </p>
           </div>

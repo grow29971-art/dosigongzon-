@@ -64,6 +64,8 @@ function MessagesPage() {
     let active = true;
 
     const fetchMsgs = async () => {
+      // 백그라운드 탭에선 폴링 스킵 (배터리·서버 부하 절감)
+      if (document.visibilityState === "hidden") return;
       const data = await getMessagesWithUser(selectedPartner.id);
       if (!active) return;
       setMessages((prev) => {
@@ -75,8 +77,16 @@ function MessagesPage() {
     };
 
     fetchMsgs();
-    const interval = setInterval(fetchMsgs, 1500);
-    return () => { active = false; clearInterval(interval); };
+    // 1.5s → 3s. UX 거의 동일하지만 요청 수 절반.
+    const interval = setInterval(fetchMsgs, 3000);
+    // 탭이 다시 활성화되면 즉시 한 번 동기화 (지연 만회)
+    const onVis = () => { if (document.visibilityState === "visible") fetchMsgs(); };
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      active = false;
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVis);
+    };
   }, [selectedPartner]);
 
   const handleSend = async () => {

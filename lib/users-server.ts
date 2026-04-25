@@ -258,6 +258,112 @@ export async function getUserRecentActivityServer(
     .slice(0, limit);
 }
 
+// ── 동네 캣맘 매칭 ──
+
+export interface NearbyCaretaker {
+  id: string;
+  nickname: string;
+  avatar_url: string | null;
+  admin_title: string | null;
+  catCount: number;
+  careLogCount: number;
+  lastCareAt: string | null;
+  sharedRegions: string[];
+}
+
+/**
+ * 같은 활동 지역(region name 매칭)에 등록된 다른 사용자 목록.
+ * 정지 유저 제외, 본인 제외. 활동 많은 순(최근 돌봄 → 고양이 수)으로 정렬.
+ */
+export async function listNearbyCaretakersServer(myId: string): Promise<NearbyCaretaker[]> {
+  const supabase = await createClient();
+
+  const { data: myRegions } = await supabase
+    .from("user_activity_regions")
+    .select("name")
+    .eq("user_id", myId);
+  const myNames = Array.from(new Set((myRegions ?? []).map((r) => (r as { name: string }).name).filter(Boolean)));
+  if (myNames.length === 0) return [];
+
+  const { data: matches } = await supabase
+    .from("user_activity_regions")
+    .select("user_id, name")
+    .in("name", myNames)
+    .neq("user_id", myId);
+
+  const regionsByUser = new Map<string, Set<string>>();
+  for (const m of (matches ?? []) as { user_id: string; name: string }[]) {
+    if (!regionsByUser.has(m.user_id)) regionsByUser.set(m.user_id, new Set());
+    regionsByUser.get(m.user_id)!.add(m.name);
+  }
+  const userIds = Array.from(regionsByUser.keys());
+  if (userIds.length === 0) return [];
+
+  const [profilesRes, catsRes, caresRes] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("id, nickname, email, avatar_url, admin_title, suspended")
+      .in("id", userIds),
+    supabase
+      .from("cats")
+      .select("caretaker_id")
+      .in("caretaker_id", userIds),
+    // 최근 돌봄 1건씩만 필요 — 1000건 가져와서 user별 첫 항목 추출
+    supabase
+      .from("care_logs")
+      .select("author_id, logged_at")
+      .in("author_id", userIds)
+      .order("logged_at", { ascending: false })
+      .limit(1000),
+  ]);
+
+  const catCounts = new Map<string, number>();
+  for (const c of (catsRes.data ?? []) as { caretaker_id: string }[]) {
+    catCounts.set(c.caretaker_id, (catCounts.get(c.caretaker_id) ?? 0) + 1);
+  }
+  const careCounts = new Map<string, number>();
+  const lastCare = new Map<string, string>();
+  for (const r of (caresRes.data ?? []) as { author_id: string; logged_at: string }[]) {
+    careCounts.set(r.author_id, (careCounts.get(r.author_id) ?? 0) + 1);
+    if (!lastCare.has(r.author_id)) lastCare.set(r.author_id, r.logged_at);
+  }
+
+  const list: NearbyCaretaker[] = [];
+  for (const p of (profilesRes.data ?? []) as {
+    id: string;
+    nickname: string | null;
+    email: string | null;
+    avatar_url: string | null;
+    admin_title: string | null;
+    suspended: boolean | null;
+  }[]) {
+    if (p.suspended) continue;
+    list.push({
+      id: p.id,
+      nickname: p.nickname ?? p.email?.split("@")[0] ?? "익명",
+      avatar_url: p.avatar_url,
+      admin_title: p.admin_title,
+      catCount: catCounts.get(p.id) ?? 0,
+      careLogCount: careCounts.get(p.id) ?? 0,
+      lastCareAt: lastCare.get(p.id) ?? null,
+      sharedRegions: Array.from(regionsByUser.get(p.id) ?? []),
+    });
+  }
+
+  // 정렬: 최근 돌봄 시각 desc → 고양이 수 desc → 닉네임
+  list.sort((a, b) => {
+    if (a.lastCareAt && b.lastCareAt) {
+      return new Date(b.lastCareAt).getTime() - new Date(a.lastCareAt).getTime();
+    }
+    if (a.lastCareAt) return -1;
+    if (b.lastCareAt) return 1;
+    if (a.catCount !== b.catCount) return b.catCount - a.catCount;
+    return a.nickname.localeCompare(b.nickname);
+  });
+
+  return list;
+}
+
 /** 유저의 활동 지역 (user_activity_regions). */
 export async function getUserRegionsServer(
   id: string,

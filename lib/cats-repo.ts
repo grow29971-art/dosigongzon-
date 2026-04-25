@@ -227,6 +227,15 @@ export async function listCats(): Promise<Cat[]> {
   return (data ?? []) as Cat[];
 }
 
+// ── Supabase Storage 썸네일 변환 (이미지 변환 활성 시) ──
+// 마커용 60-120px 썸네일로 대역폭 절감. 실패 시 원본 폴백.
+export function thumbnailUrl(url: string | null | undefined, size = 120): string | null {
+  if (!url) return null;
+  if (!url.includes("/storage/v1/object/public/")) return url;
+  const transformed = url.replace("/object/public/", "/render/image/public/");
+  return `${transformed}?width=${size}&height=${size}&resize=cover&quality=70`;
+}
+
 // ── 고양이 등록 제한 상수 (SQL 마이그레이션과 값이 일치해야 함) ──
 // supabase_cats_write_limits_migration.sql 참조.
 // ── 고양이 등록 (인증 필요, 레벨별 제한) ──

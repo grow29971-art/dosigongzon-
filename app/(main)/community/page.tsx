@@ -93,13 +93,7 @@ const CATEGORIES: CategoryCard[] = [
 ];
 
 /* ═══ 카테고리 카드 컴포넌트 ═══ */
-function CategoryCardItem({
-  card,
-  count,
-}: {
-  card: CategoryCard;
-  count: number;
-}) {
+function CategoryCardItem({ card }: { card: CategoryCard }) {
   const href = card.key === "popular" ? "/community/popular" : `/community/category/${card.key}`;
   return (
     <Link
@@ -127,19 +121,9 @@ function CategoryCardItem({
             <card.Icon size={22} color={card.iconBg} strokeWidth={2} />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-baseline gap-2">
-              <p className="text-[15.5px] font-extrabold text-text-main tracking-tight leading-tight">
-                {card.title}
-              </p>
-              {count > 0 && (
-                <span
-                  className="text-[11px] font-bold tabular-nums"
-                  style={{ color: card.iconBg }}
-                >
-                  {count}
-                </span>
-              )}
-            </div>
+            <p className="text-[15.5px] font-extrabold text-text-main tracking-tight leading-tight">
+              {card.title}
+            </p>
             <p className="text-[11.5px] text-text-sub mt-1 leading-snug truncate">
               {card.subtitle}
             </p>
@@ -169,12 +153,32 @@ export default function CommunityPage() {
   useEffect(() => {
     setMounted(true);
     if (!user) return;
-    listPosts().then(setPosts);
-    fetch("/api/visit").then((r) => r.json()).then((d) => {
-      setTodayVisit(d.today);
-      setTotalUsers(d.total);
-    }).catch(() => {});
-    listMyActivityRegions().then(setMyRegions).catch(() => {});
+
+    // sessionStorage 5분 캐시 → 즉시 표시 후 백그라운드 새로고침
+    const CACHE_KEY = "dosi_community_posts_v1";
+    const TTL = 5 * 60 * 1000;
+    try {
+      const cached = sessionStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { ts, data } = JSON.parse(cached);
+        if (Date.now() - ts < TTL) setPosts(data);
+      }
+    } catch {}
+    listPosts().then((data) => {
+      setPosts(data);
+      try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {}
+    });
+
+    // 비크리티컬: 첫 페인트 후로
+    const idle = (window as unknown as { requestIdleCallback?: (cb: () => void) => void }).requestIdleCallback
+      ?? ((cb: () => void) => setTimeout(cb, 800));
+    idle(() => {
+      fetch("/api/visit").then((r) => r.json()).then((d) => {
+        setTodayVisit(d.today);
+        setTotalUsers(d.total);
+      }).catch(() => {});
+      listMyActivityRegions().then(setMyRegions).catch(() => {});
+    });
   }, [user]);
 
   // 비로그인 가드
@@ -192,9 +196,6 @@ export default function CommunityPage() {
   const visiblePosts = neighborhoodOnly ? posts.filter(filterByNeighborhood) : posts;
 
   if (!mounted) return null;
-
-  const countByCat = (key: PostCategory) =>
-    visiblePosts.filter((p) => p.category === key).length;
 
   // 인기 게시글 3건 — 좋아요 + 댓글 + 조회수 가중 합산
   const popularPosts = [...visiblePosts]
@@ -254,7 +255,7 @@ export default function CommunityPage() {
           }}
         >
           <Eye size={14} className="text-primary" />
-          <span className="text-[12px] text-text-sub">오늘 방문자</span>
+          <span className="text-[12px] text-text-sub">방문자</span>
           <span className="text-[14px] font-extrabold text-primary">{todayVisit.toLocaleString()}</span>
           <span className="text-[12px] text-text-sub">명</span>
         </div>
@@ -311,10 +312,10 @@ export default function CommunityPage() {
       {/* ── 카테고리 벤토 그리드 ── */}
       <div className="space-y-3">
         {/* Row 1: 긴급 (wide, highlight) */}
-        <CategoryCardItem card={CATEGORIES[0]} count={countByCat("emergency")} />
+        <CategoryCardItem card={CATEGORIES[0]} />
 
         {/* Row 1.5: 인기 게시물 (wide, highlight) */}
-        <CategoryCardItem card={CATEGORIES[5]} count={0} />
+        <CategoryCardItem card={CATEGORIES[5]} />
 
         {/* Row 2: 임보 | 입양 */}
         <div className="grid grid-cols-2 gap-3">
@@ -322,21 +323,21 @@ export default function CommunityPage() {
             href={`/community/category/${CATEGORIES[1].key}`}
             className="block active:scale-[0.98] transition-transform"
           >
-            <CompactCard card={CATEGORIES[1]} count={countByCat("foster")} />
+            <CompactCard card={CATEGORIES[1]} />
           </Link>
           <Link
             href={`/community/category/${CATEGORIES[2].key}`}
             className="block active:scale-[0.98] transition-transform"
           >
-            <CompactCard card={CATEGORIES[2]} count={countByCat("adoption")} />
+            <CompactCard card={CATEGORIES[2]} />
           </Link>
         </div>
 
         {/* Row 3: 중고마켓 */}
-        <CategoryCardItem card={CATEGORIES[3]} count={countByCat("market")} />
+        <CategoryCardItem card={CATEGORIES[3]} />
 
         {/* Row 4: 자유게시판 */}
-        <CategoryCardItem card={CATEGORIES[4]} count={countByCat("free")} />
+        <CategoryCardItem card={CATEGORIES[4]} />
       </div>
 
       {/* ── 인기 글 ── */}
@@ -405,7 +406,7 @@ export default function CommunityPage() {
 }
 
 /* ═══ 2칸 그리드용 컴팩트 카드 ═══ */
-function CompactCard({ card, count }: { card: CategoryCard; count: number }) {
+function CompactCard({ card }: { card: CategoryCard }) {
   return (
     <div
       className="relative overflow-hidden px-4 py-[18px]"
@@ -422,19 +423,9 @@ function CompactCard({ card, count }: { card: CategoryCard; count: number }) {
       >
         <card.Icon size={20} color={card.iconBg} strokeWidth={2} />
       </div>
-      <div className="flex items-baseline gap-1.5">
-        <p className="text-[15px] font-extrabold text-text-main tracking-tight">
-          {card.title}
-        </p>
-        {count > 0 && (
-          <span
-            className="text-[11px] font-bold tabular-nums"
-            style={{ color: card.iconBg }}
-          >
-            {count}
-          </span>
-        )}
-      </div>
+      <p className="text-[15px] font-extrabold text-text-main tracking-tight">
+        {card.title}
+      </p>
       <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
         {card.subtitle}
       </p>
