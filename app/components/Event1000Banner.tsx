@@ -100,7 +100,7 @@ export default async function Event1000Banner() {
             <Gift size={18} className="shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[12px] font-extrabold leading-tight">
-                길고양이 아크릴 키링 · {PRIZES}명 추첨
+                길고양이 아크릴 키링
               </p>
               <p className="text-[10.5px] mt-0.5 leading-snug opacity-90">
                 내가 등록·돌본 길고양이 모양으로 제작
