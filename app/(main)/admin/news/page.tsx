@@ -375,12 +375,22 @@ export default function AdminNewsPage() {
 
           {/* D-Day 수동 폴백 (이벤트 날짜 없을 때만 사용됨) */}
           <div>
-            <Label>D-Day 수동 입력 (폴백용)</Label>
+            <Label>
+              D-Day 수동 입력 {draft.event_date ? "— 비활성 (이벤트 날짜가 우선)" : "(폴백용)"}
+            </Label>
             <Input
               value={draft.dday ?? ""}
               onChange={(v) => setDraft((d) => ({ ...d, dday: v || null }))}
-              placeholder="예: 시행중 · 상시모집 — 이벤트 날짜가 있으면 자동 계산됨"
+              placeholder={draft.event_date
+                ? "이벤트 날짜가 있어 자동 계산됩니다"
+                : "예: 상시모집 · 시행중 (D-숫자는 자동 갱신 안 되니 위 날짜를 쓰세요)"}
+              disabled={!!draft.event_date}
             />
+            {draft.event_date && draft.dday && (
+              <p className="text-[10.5px] mt-1.5" style={{ color: "#B07A1C" }}>
+                ⚠️ 이벤트 날짜가 우선 표시돼요. 위 수동 입력값은 무시됩니다.
+              </p>
+            )}
           </div>
 
           {/* 본문 */}
@@ -574,10 +584,12 @@ function Input({
   value,
   onChange,
   placeholder,
+  disabled,
 }: {
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;
+  disabled?: boolean;
 }) {
   return (
     <input
@@ -585,7 +597,8 @@ function Input({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-1"
+      disabled={disabled}
+      className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-1 disabled:opacity-50 disabled:cursor-not-allowed"
       style={{
         backgroundColor: "#F6F1EA",
         color: "#2A2A28",
