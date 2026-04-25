@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Send, ImagePlus, X, Loader2 } from "lucide-react";
+import { ArrowLeft, Send, ImagePlus, X, Loader2, PawPrint, ArrowRight } from "lucide-react";
 import type { PostCategory } from "@/lib/types";
 import { CATEGORY_MAP } from "@/lib/types";
 import { createPost } from "@/lib/posts-repo";
 import { uploadCatPhoto } from "@/lib/cats-repo";
 import { useAuth } from "@/lib/auth-context";
+import { createClient } from "@/lib/supabase/client";
 
 const CATEGORIES = Object.entries(CATEGORY_MAP) as [PostCategory, typeof CATEGORY_MAP[PostCategory]][];
 
@@ -23,6 +25,19 @@ export default function WritePage() {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
+  // 첫 글 안내 — 등록한 고양이 0마리이면 부드러운 권유 (강제 차단 X)
+  const [hasNoCats, setHasNoCats] = useState(false);
+  useEffect(() => {
+    if (!user) return;
+    const supabase = createClient();
+    supabase
+      .from("cats")
+      .select("id", { head: true, count: "exact" })
+      .eq("caretaker_id", user.id)
+      .then((res: { count: number | null }) => {
+        if ((res.count ?? 0) === 0) setHasNoCats(true);
+      });
+  }, [user]);
 
   const canSubmit = title.trim().length > 0 && content.trim().length > 0 && !uploading;
 
@@ -101,6 +116,43 @@ export default function WritePage() {
       </div>
 
       <div className="px-5 space-y-5">
+        {/* 첫 글 안내 — 동네 고양이 0마리 유저에게 부드러운 권유 */}
+        {hasNoCats && (
+          <div
+            className="rounded-2xl p-4"
+            style={{
+              background: "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
+              border: "1.5px solid rgba(196,126,90,0.25)",
+            }}
+          >
+            <div className="flex items-start gap-2.5">
+              <div
+                className="w-9 h-9 rounded-xl shrink-0 flex items-center justify-center"
+                style={{ background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)" }}
+              >
+                <PawPrint size={17} color="#fff" strokeWidth={2.3} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[12.5px] font-extrabold text-text-main leading-tight mb-1">
+                  첫 동네 고양이부터 등록해보세요
+                </p>
+                <p className="text-[11px] text-text-sub leading-relaxed">
+                  지도에 한 마리 등록한 후 글을 쓰면 동네 캣맘들이 더 잘 알아봐요.
+                  글은 지금도 쓸 수 있지만, 등록 먼저면 답글·반응이 훨씬 빨라요.
+                </p>
+                <Link
+                  href="/map"
+                  className="inline-flex items-center gap-1 mt-2 text-[11.5px] font-extrabold"
+                  style={{ color: "#A8684A" }}
+                >
+                  지도로 가서 등록하기
+                  <ArrowRight size={11} />
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* ── 카테고리 선택 ── */}
         <div>
           <label className="text-[13px] font-bold text-text-sub mb-2 block">카테고리</label>

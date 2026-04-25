@@ -7,7 +7,7 @@ import type { MyActivitySummary } from "@/lib/cats-repo";
 
 interface Props {
   activity: MyActivitySummary | null;
-  hasTodayCare: boolean;      // 오늘 돌봄 기록 있음 (streakInfo.hasToday)
+  hasTodayCare: boolean;      // 오늘 돌봄 기록 있음 (streakInfo.hasToday, DB 기반)
   unreadCount: number;
   rescueCount?: number;       // /rescue 대기중 고양이 수
 }
@@ -18,11 +18,14 @@ interface Item {
   href: string;
   done: boolean;
   emoji: string;
+  storageKey?: string;        // 클릭 시 localStorage에 today 기록할 키
 }
 
+const KST_TODAY = () => new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
+
 /**
- * Zeigarnik 효과 — 미완료 작업은 마음에 남는다.
- * 오늘 해볼 법한 3가지 작은 동작을 체크리스트로 제시.
+ * Zeigarnik 효과 + 3축 균형(지도·커뮤니티·보호지침).
+ * 핵심 3개 기능을 매일 골고루 사용하도록 의도적 분배.
  */
 export default function TodayChecklist({
   activity,
@@ -31,36 +34,56 @@ export default function TodayChecklist({
   rescueCount = 0,
 }: Props) {
   const [dismissed, setDismissed] = useState(false);
+  const [communityDone, setCommunityDone] = useState(false);
+  const [protectionDone, setProtectionDone] = useState(false);
 
+  // dismiss 상태 + localStorage 기반 done 동기화
   useEffect(() => {
     try {
-      const key = "today-checklist-dismissed";
-      const val = localStorage.getItem(key);
-      if (val) {
-        // KST 날짜가 같으면 dismiss 유지
-        const today = new Date().toLocaleDateString("en-CA", {
-          timeZone: "Asia/Seoul",
-        });
-        if (val === today) setDismissed(true);
-      }
+      const today = KST_TODAY();
+      const dis = localStorage.getItem("today-checklist-dismissed");
+      if (dis === today) setDismissed(true);
+      if (localStorage.getItem("today-community-viewed") === today) setCommunityDone(true);
+      if (localStorage.getItem("today-protection-viewed") === today) setProtectionDone(true);
     } catch {}
   }, []);
 
   if (dismissed || !activity) return null;
 
-  // 체크리스트 구성 — 상황에 따라 동적 선택
-  const items: Item[] = [];
+  const markViewed = (key: string) => {
+    try { localStorage.setItem(key, KST_TODAY()); } catch {}
+  };
 
-  // 1) 오늘 돌봄 기록
-  items.push({
-    id: "care_today",
-    label: "오늘 돌봄 기록 한 줄 남기기",
-    href: "/map",
-    done: hasTodayCare,
-    emoji: "📝",
-  });
+  // ── 핵심 3축 — 매일 균형 사용 유도 ──
+  const items: Item[] = [
+    {
+      id: "care_map",
+      label: activity.catCount === 0
+        ? "지도에서 첫 고양이 등록하기"
+        : "오늘 돌봄 기록 한 줄 남기기",
+      href: "/map",
+      done: hasTodayCare,
+      emoji: "🗺️",
+    },
+    {
+      id: "community_today",
+      label: "동네 이야기 한 편 읽기",
+      href: "/community",
+      done: communityDone,
+      emoji: "💬",
+      storageKey: "today-community-viewed",
+    },
+    {
+      id: "protection_today",
+      label: "보호지침 가이드 한 개 보기",
+      href: "/protection",
+      done: protectionDone,
+      emoji: "📖",
+      storageKey: "today-protection-viewed",
+    },
+  ];
 
-  // 2) 조건부 — 긴급 고양이 있음
+  // ── 조건부 4번 항목 — 긴급·알림 ──
   if (rescueCount > 0) {
     items.push({
       id: "rescue",
@@ -72,37 +95,10 @@ export default function TodayChecklist({
   } else if (unreadCount > 0) {
     items.push({
       id: "notifications",
-      label: `알림 ${unreadCount}개 확인`,
+      label: `읽지 않은 알림 ${unreadCount}개`,
       href: "/notifications",
       done: false,
       emoji: "🔔",
-    });
-  } else {
-    items.push({
-      id: "explore_map",
-      label: "동네 지도 한번 둘러보기",
-      href: "/map",
-      done: false,
-      emoji: "🗺️",
-    });
-  }
-
-  // 3) 조건부 — 고양이 없으면 등록 / 있으면 커뮤니티 구경
-  if (activity.catCount === 0) {
-    items.push({
-      id: "first_cat",
-      label: "우리 동네 첫 아이 등록하기",
-      href: "/map",
-      done: false,
-      emoji: "🐱",
-    });
-  } else {
-    items.push({
-      id: "community",
-      label: "이웃 이야기 한 편 읽어보기",
-      href: "/community",
-      done: false,
-      emoji: "💬",
     });
   }
 
@@ -110,13 +106,17 @@ export default function TodayChecklist({
   const allDone = doneCount === items.length;
 
   const handleDismiss = () => {
-    try {
-      const today = new Date().toLocaleDateString("en-CA", {
-        timeZone: "Asia/Seoul",
-      });
-      localStorage.setItem("today-checklist-dismissed", today);
-    } catch {}
+    try { localStorage.setItem("today-checklist-dismissed", KST_TODAY()); } catch {}
     setDismissed(true);
+  };
+
+  const handleClick = (item: Item) => {
+    if (item.storageKey) {
+      markViewed(item.storageKey);
+      // 즉시 UI 반영 (페이지 떠나기 전)
+      if (item.id === "community_today") setCommunityDone(true);
+      if (item.id === "protection_today") setProtectionDone(true);
+    }
   };
 
   return (
@@ -139,7 +139,7 @@ export default function TodayChecklist({
       >
         <Sparkles size={14} style={{ color: allDone ? "#3F5B42" : "#C47E5A" }} />
         <p className="text-[12px] font-extrabold tracking-tight" style={{ color: allDone ? "#3F5B42" : "#A67B1E" }}>
-          {allDone ? "오늘 할 일 모두 완료! 🎉" : `오늘 해볼 것 ${doneCount}/${items.length}`}
+          {allDone ? "오늘 완벽한 하루! 🎉" : `오늘의 균형 ${doneCount}/${items.length}`}
         </p>
         <button
           type="button"
@@ -155,6 +155,7 @@ export default function TodayChecklist({
           <Link
             key={item.id}
             href={item.href}
+            onClick={() => handleClick(item)}
             className="flex items-center gap-3 px-4 py-3 active:bg-surface-alt transition-colors"
           >
             <div className="shrink-0">
