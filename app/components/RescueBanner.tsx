@@ -37,14 +37,14 @@ export default function RescueBanner({ count }: { count: number }) {
           />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#B84545" }}>
+          <p className="text-[10px] font-extrabold tracking-[0.12em] text-[#B84545] dark:text-[#FF9090]">
             URGENT · 지금 돌봄 필요
           </p>
-          <p className="text-[13.5px] font-extrabold text-text-main tracking-tight leading-tight mt-0.5">
-            위험 상태 아이 <span style={{ color: "#D85555" }}>{count}마리</span>가 기다리고 있어요
+          <p className="text-[13.5px] font-extrabold tracking-tight leading-tight mt-0.5 text-[#3A1F1F] dark:text-[#FFE0E0]">
+            위험 상태 아이 <span className="text-[#D85555] dark:text-[#FF8585]">{count}마리</span>가 기다리고 있어요
           </p>
         </div>
-        <ChevronRight size={18} style={{ color: "#D85555" }} />
+        <ChevronRight size={18} className="text-[#D85555] dark:text-[#FF8585]" />
       </div>
     </Link>
   );

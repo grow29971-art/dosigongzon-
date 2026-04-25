@@ -137,8 +137,8 @@ export default function TodayChecklist({
           borderBottom: "1px solid rgba(0,0,0,0.04)",
         }}
       >
-        <Sparkles size={14} style={{ color: allDone ? "#3F5B42" : "#C47E5A" }} />
-        <p className="text-[12px] font-extrabold tracking-tight" style={{ color: allDone ? "#3F5B42" : "#A67B1E" }}>
+        <Sparkles size={14} className={allDone ? "text-[#3F5B42] dark:text-[#A8E0A8]" : "text-[#C47E5A] dark:text-[#E8B57E]"} />
+        <p className={`text-[12px] font-extrabold tracking-tight ${allDone ? "text-[#3F5B42] dark:text-[#A8E0A8]" : "text-[#A67B1E] dark:text-[#FFD68A]"}`}>
           {allDone ? "오늘 완벽한 하루! 🎉" : `오늘의 균형 ${doneCount}/${items.length}`}
         </p>
         <button
@@ -167,11 +167,9 @@ export default function TodayChecklist({
             </div>
             <span className="text-[14px] shrink-0">{item.emoji}</span>
             <span
-              className="flex-1 text-[12.5px] font-bold leading-tight"
-              style={{
-                color: item.done ? "#A38E7A" : "#2A2A28",
-                textDecoration: item.done ? "line-through" : "none",
-              }}
+              className={`flex-1 text-[12.5px] font-bold leading-tight ${
+                item.done ? "text-text-light line-through" : "text-text-main"
+              }`}
             >
               {item.label}
             </span>
