@@ -22,6 +22,7 @@ import {
   RefreshCcw,
   MapPin as MapPinIcon,
   BarChart3,
+  Gift,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { getAdminStats, type AdminStats } from "@/lib/admin-stats";
@@ -87,6 +88,13 @@ export default function AdminDashboardPage() {
   }
 
   const menus: MenuItem[] = [
+    {
+      href: "/admin/event-keyring",
+      title: "이벤트 응모자",
+      subtitle: "1000명 키링 추첨 응모 관리",
+      Icon: Gift,
+      color: "#C47E5A",
+    },
     {
       href: "/admin/insights",
       title: "분석 대시보드",
