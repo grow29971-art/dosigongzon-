@@ -715,7 +715,7 @@ export default function MapPage() {
     }
 
     const script = document.createElement("script");
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false&libraries=services`;
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false&libraries=services,clusterer`;
     script.async = true;
     script.dataset.kakaoSdk = "true";
     script.onload = () => waitForSdk();
@@ -1011,6 +1011,16 @@ export default function MapPage() {
       ? new window.kakao.maps.services.Geocoder()
       : null;
 
+    // 줌 티어 결정 (Kakao: 작은 숫자 = 가까운 줌)
+    // tier=1: 작은 dot + count (광역 뷰)
+    // tier=2: 사진 1장 + count (중간 뷰)
+    // tier=3: 풀 마커 (사진 3 + dong + count) (동네 뷰)
+    function getTier(level: number): 1 | 2 | 3 {
+      if (level >= 9) return 1;
+      if (level >= 6) return 2;
+      return 3;
+    }
+
     // 뷰포트 내 그룹만 렌더하는 함수 (idle마다 호출)
     function renderVisibleCats() {
       // 기존 마커 제거
@@ -1025,6 +1035,10 @@ export default function MapPage() {
       const maxLat = ne.getLat();
       const minLng = sw.getLng();
       const maxLng = ne.getLng();
+
+      const tier = getTier(map.getLevel());
+      // 광역 뷰는 마커 한도를 더 늘려도 되고(가벼우니), 가까운 뷰는 줄임
+      const maxOverlays = tier === 1 ? 200 : tier === 2 ? 120 : 80;
 
       // 뷰포트 안의 그룹만 필터 (대표 좌표 기준)
       const visibleGroups: Array<[string, Cat[]]> = [];
@@ -1048,30 +1062,45 @@ export default function MapPage() {
         if (aAlert !== bAlert) return bAlert - aAlert;
         return b[1].length - a[1].length;
       });
-      const toRender = visibleGroups.slice(0, MAX_CAT_OVERLAYS);
+      const toRender = visibleGroups.slice(0, maxOverlays);
 
       toRender.forEach(([dong, dongCats]) => {
-        renderGroup(dong, dongCats);
+        renderGroup(dong, dongCats, tier);
       });
     }
 
-    function renderGroup(dong: string, dongCats: Cat[]) {
+    // 마커용 썸네일 URL — Vercel Image Optimization 거쳐 작게 받기.
+    // 1280px webp 원본 → 64~120px로 다운사이즈, 대역폭 ~10배 절감.
+    function thumb(url: string | null | undefined, size: number): string {
+      const safe = sanitizeImageUrl(url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
+      // /_next/image는 절대 URL 인코딩 + width 지정
+      return `/_next/image?url=${encodeURIComponent(safe)}&w=${size}&q=70`;
+    }
+
+    function renderGroup(dong: string, dongCats: Cat[], tier: 1 | 2 | 3) {
       if (dong === "기타" || !geocoder) {
         // region이 없는 고양이는 원래 좌표 사용 (개별 마커)
         dongCats.forEach((cat) => {
           const coord = getDisplayCoord(cat, isLoggedIn);
           const pos = new window.kakao.maps.LatLng(coord.lat, coord.lng);
-          const photoUrl = sanitizeImageUrl(cat.photo_url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
+          const photoUrl = thumb(cat.photo_url, 64);
           const isAlerted = alertedCats.has(cat.id);
           const borderColor = isAlerted ? "#D85555" : "#C47E5A";
 
           const el = document.createElement("div");
-          el.innerHTML = `
-            <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;">
-              <div style="width:48px;height:48px;border-radius:50%;border:3px solid ${borderColor};background:white;box-shadow:0 4px 12px ${borderColor}55;overflow:hidden;background-image:url('${photoUrl}');background-size:cover;background-position:center;"></div>
-              <div style="width:10px;height:10px;background:${borderColor};transform:rotate(45deg);margin-top:-7px;"></div>
-            </div>
-          `;
+          // tier 1·2: 작은 dot, tier 3: 사진 마커
+          if (tier <= 2) {
+            el.innerHTML = `
+              <div style="transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:${borderColor};border:2px solid #fff;box-shadow:0 2px 6px ${borderColor}66;cursor:pointer;"></div>
+            `;
+          } else {
+            el.innerHTML = `
+              <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;">
+                <div style="width:48px;height:48px;border-radius:50%;border:3px solid ${borderColor};background:white;box-shadow:0 4px 12px ${borderColor}55;overflow:hidden;background-image:url('${photoUrl}');background-size:cover;background-position:center;"></div>
+                <div style="width:10px;height:10px;background:${borderColor};transform:rotate(45deg);margin-top:-7px;"></div>
+              </div>
+            `;
+          }
           el.onclick = () => {
             if (!isLoggedIn) { if (confirm("로그인하면 고양이 정보를 볼 수 있어요. 로그인할까요?")) window.location.href = "/login"; return; }
             setSelectedCat(cat); setCatCardTab("carelog");
@@ -1093,10 +1122,32 @@ export default function MapPage() {
       const repCoord = getDisplayCoord(repCat, isLoggedIn);
       const pos = new window.kakao.maps.LatLng(repCoord.lat, repCoord.lng);
 
-      // 대표 사진 (최대 3개)
-      const photos = dongCats.slice(0, 3).map((c) =>
-        sanitizeImageUrl(c.photo_url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F")
-      );
+      // tier 별 분기 — 사진 로드 절감
+      if (tier === 1) {
+        // 광역 뷰: 작은 dot + 카운트만 (사진 0)
+        const el = document.createElement("div");
+        el.innerHTML = `
+          <div style="transform:translate(-50%,-50%);display:flex;align-items:center;gap:4px;cursor:pointer;">
+            <div style="width:18px;height:18px;border-radius:50%;background:${clusterColor};border:2px solid #fff;box-shadow:0 2px 6px ${clusterColor}66;"></div>
+            ${count > 1 ? `<span style="background:${clusterColor};color:#fff;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:800;box-shadow:0 1px 4px ${clusterColor}66;">${count}</span>` : ""}
+          </div>
+        `;
+        el.onclick = () => {
+          if (!isLoggedIn) { if (confirm("로그인하면 고양이 정보를 볼 수 있어요. 로그인할까요?")) window.location.href = "/login"; return; }
+          setSelectedDong(dong);
+          setSelectedCat(null);
+        };
+        const ov = new window.kakao.maps.CustomOverlay({
+          map: mapInstanceRef.current, position: pos, content: el, yAnchor: 0.5, zIndex: 10,
+        });
+        overlaysRef.current.push(ov);
+        return;
+      }
+
+      // tier 2·3 — 사진 마커 (2는 1장, 3은 3장). 64~96px 썸네일.
+      const photoLimit = tier === 2 ? 1 : 3;
+      const thumbSize = tier === 2 ? 64 : 96;
+      const photos = dongCats.slice(0, photoLimit).map((c) => thumb(c.photo_url, thumbSize));
 
       const el = document.createElement("div");
       el.innerHTML = `
@@ -1131,12 +1182,21 @@ export default function MapPage() {
       overlaysRef.current.push(ov);
     }
 
-    // 초기 렌더 + idle 리스너 등록
+    // 초기 렌더 + idle 리스너 (200ms 디바운스 — panning 중 중복 호출 절감)
     renderVisibleCats();
-    catIdleListenerRef.current = renderVisibleCats;
-    window.kakao.maps.event.addListener(map, "idle", renderVisibleCats);
+    let debounceId: ReturnType<typeof setTimeout> | null = null;
+    const debouncedRender = () => {
+      if (debounceId) clearTimeout(debounceId);
+      debounceId = setTimeout(() => {
+        debounceId = null;
+        renderVisibleCats();
+      }, 200);
+    };
+    catIdleListenerRef.current = debouncedRender;
+    window.kakao.maps.event.addListener(map, "idle", debouncedRender);
 
     return () => {
+      if (debounceId) clearTimeout(debounceId);
       if (catIdleListenerRef.current && map && window.kakao) {
         window.kakao.maps.event.removeListener(map, "idle", catIdleListenerRef.current);
       }

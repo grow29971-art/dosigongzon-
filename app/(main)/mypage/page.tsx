@@ -20,6 +20,7 @@ import {
   Inbox,
   BookOpen,
   UserPlus,
+  Sparkles,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 const InquiryModal = dynamic(() => import("@/app/components/InquiryModal"), { ssr: false });
@@ -786,8 +787,34 @@ export default function MyPage() {
               </h2>
             </div>
             <Link
-              href="/mypage/activity-regions"
+              href="/mypage/journey"
               className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
+              style={{
+                background: "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
+                borderRadius: 16,
+                boxShadow: "0 4px 14px rgba(196,126,90,0.15), 0 1px 2px rgba(0,0,0,0.02)",
+                border: "1px solid rgba(196,126,90,0.20)",
+              }}
+            >
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                style={{ backgroundColor: "#FFFFFF" }}
+              >
+                <Sparkles size={18} color="#C47E5A" strokeWidth={2} />
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+                  당신의 여정
+                </p>
+                <p className="text-[11px] text-text-sub mt-0.5">
+                  쌓아온 발자취와 따뜻한 순간들 보기
+                </p>
+              </div>
+              <ChevronRight size={16} className="shrink-0" style={{ color: "#C47E5A", opacity: 0.7 }} />
+            </Link>
+            <Link
+              href="/mypage/activity-regions"
+              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
               style={{
                 background: "#FFFFFF",
                 borderRadius: 16,

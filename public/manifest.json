@@ -1,12 +1,16 @@
 {
-  "name": "도시공존",
+  "name": "도시공존 — 길고양이 돌봄 시민 플랫폼",
   "short_name": "도시공존",
-  "description": "길고양이 돌봄 시민 참여 플랫폼",
+  "description": "우리 동네 길고양이 지도·돌봄 일지·TNR·병원 정보를 한 곳에. 이웃과 함께 만드는 따뜻한 돌봄 커뮤니티.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#F5F3EE",
   "theme_color": "#C47E5A",
   "orientation": "portrait",
+  "lang": "ko-KR",
+  "dir": "ltr",
+  "categories": ["lifestyle", "social", "utilities"],
   "icons": [
     {
       "src": "/icons/icon-192.png",
@@ -30,6 +34,29 @@
       "src": "/icons/apple-touch-icon.png",
       "sizes": "180x180",
       "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "지도",
+      "short_name": "지도",
+      "description": "우리 동네 길고양이 지도",
+      "url": "/map",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "커뮤니티",
+      "short_name": "커뮤니티",
+      "description": "이웃 캣맘과 이야기 나누기",
+      "url": "/community",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "보호지침",
+      "short_name": "지침",
+      "description": "응급·먹이·TNR 가이드",
+      "url": "/protection",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

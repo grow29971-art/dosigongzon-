@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.dosigongzon.app",
+      "sha256_cert_fingerprints": [
+        "BE:C4:A5:02:F2:4D:38:34:F2:4C:C9:53:C7:D5:06:DA:C2:1C:E7:B2:A5:A4:AF:A1:D7:BD:D3:B0:52:23:FC:D3"
+      ]
+    }
+  }
+]
