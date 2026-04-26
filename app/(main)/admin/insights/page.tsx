@@ -168,6 +168,33 @@ export default function AdminInsightsPage() {
             </div>
           </Section>
 
+          {/* ── 위급 알림 (health-alert-push cron) ── */}
+          <Section icon={<AlertTriangle size={14} />} label="위급 알림">
+            <div className="grid grid-cols-2 gap-2.5 mb-2">
+              <StatCard
+                icon={<AlertTriangle size={16} />}
+                label="현재 위급"
+                value={data.urgentCatsTotal}
+                delta={0}
+                accent="#D85555"
+              />
+              <StatCard
+                icon={<AlertTriangle size={16} />}
+                label="3일+ 부재"
+                value={data.urgentCatsStale}
+                delta={0}
+                accent="#E88D5A"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-2.5">
+              <MiniCard label="7일 푸시 발송" value={data.alertPushesWeek} />
+              <MiniCard label="7일 수신 유저" value={data.alertPushedUsersWeek} />
+            </div>
+            <p className="mt-2 px-1 text-[10.5px] text-text-light leading-relaxed">
+              "3일+ 부재"가 cron 타깃. dedup 적용으로 같은 (유저·고양이) 페어는 24h당 1회만 발송.
+            </p>
+          </Section>
+
           {/* ── 인기 고양이 TOP 5 ── */}
           <Section icon={<Crown size={14} />} label="인기 고양이 TOP 5">
             {data.topCats.length === 0 ? (

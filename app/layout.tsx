@@ -138,9 +138,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko">
       <head>
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-        {/* 폰트 CDN preconnect — DNS·TLS 핸드셰이크 미리 끝내 FOIT 감소 */}
+        {/* 외부 의존성 preconnect — DNS·TLS 핸드셰이크 미리 끝내 첫 요청 단축 */}
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+        <link rel="preconnect" href="https://sozxbnvgsougkliibnxl.supabase.co" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://sozxbnvgsougkliibnxl.supabase.co" />
+        <link rel="dns-prefetch" href="https://dapi.kakao.com" />
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"

@@ -21,7 +21,8 @@ import {
   BookOpen,
   UserPlus,
 } from "lucide-react";
-import InquiryModal from "@/app/components/InquiryModal";
+import dynamic from "next/dynamic";
+const InquiryModal = dynamic(() => import("@/app/components/InquiryModal"), { ssr: false });
 import InstallAppMenuItem from "@/app/components/InstallAppMenuItem";
 import InviteSection from "@/app/components/InviteSection";
 import EmailDigestToggle from "@/app/components/EmailDigestToggle";

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
+import GuideReadMarker from "@/app/components/GuideReadMarker";
 import {
   AlertTriangle, HelpCircle, BookOpen, Pill, Shield, Stethoscope,
   Droplets, Bug, Eye, Heart,
@@ -200,6 +202,7 @@ export default async function PharmacyGuidePage() {
 
   return (
     <div className="px-4 pt-14 pb-24 max-w-[720px] mx-auto">
+      <GuideReadMarker slug="pharmacy-guide" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
@@ -391,8 +394,15 @@ export default async function PharmacyGuidePage() {
               }}
             >
               {p.image_url && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={p.image_url} alt={p.name} className="w-full h-48 object-cover" />
+                <div className="relative w-full h-48">
+                  <Image
+                    src={p.image_url}
+                    alt={p.name}
+                    fill
+                    sizes="(max-width: 720px) 100vw, 360px"
+                    className="object-cover"
+                  />
+                </div>
               )}
               {!p.image_url && (
                 <div

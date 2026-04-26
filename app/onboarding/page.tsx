@@ -11,6 +11,10 @@ import {
   Heart,
   PawPrint,
   ChevronRight,
+  MapPin,
+  MessageCircle,
+  BookOpen,
+  Compass,
 } from "lucide-react";
 
 /* ═══ 슬라이드 데이터 ═══ */
@@ -94,125 +98,196 @@ export default function OnboardingPage() {
     try { localStorage.setItem("dosigongzon_onboarded", "true"); } catch {}
   };
 
+  const goAndComplete = (path: string) => {
+    setHeartbeat(true);
+    completeOnboarding();
+    setTimeout(() => router.push(path), 400);
+  };
+
   const handleNext = () => {
     if (isLast) {
-      setHeartbeat(true);
-      completeOnboarding();
-      setTimeout(() => {
-        router.push("/map");
-      }, 600);
-    } else {
+      // 마지막 슬라이드 → 시작점 선택 화면(4번째)으로
+      goTo(current + 1);
+    } else if (current < SLIDES.length - 1) {
       goTo(current + 1);
     }
   };
 
+  // 4번째: "이렇게 시작해보세요" 액션 카드 화면
+  const isPicker = current === SLIDES.length;
+  const pickerSlide = {
+    bg: "linear-gradient(170deg, #C47E5A 0%, #D4956F 50%, #F5F0E8 100%)",
+    accentColor: "#C47E5A",
+    dotActive: "#C47E5A",
+  };
+  const activeBg = isPicker ? pickerSlide.bg : slide.bg;
+  const activeAccent = isPicker ? pickerSlide.accentColor : slide.accentColor;
+  const activeDot = isPicker ? pickerSlide.dotActive : slide.dotActive;
+
   return (
-    <div className="fixed inset-0 overflow-hidden" style={{ background: slide.bg, transition: "background 0.8s ease" }}>
+    <div className="fixed inset-0 overflow-hidden" style={{ background: activeBg, transition: "background 0.8s ease" }}>
       {/* ── 건너뛰기 ── */}
       <button
         onClick={() => { completeOnboarding(); router.push("/map"); }}
         className="absolute top-12 right-5 z-20 text-[13px] font-medium px-3 py-1.5 rounded-full active:opacity-50 transition-opacity"
-        style={{ color: "rgba(255,255,255,0.5)" }}
+        style={{ color: isPicker ? "rgba(0,0,0,0.45)" : "rgba(255,255,255,0.5)" }}
       >
         건너뛰기
       </button>
 
-      {/* ── 배경 파티클 아이콘 ── */}
-      <div className="absolute inset-0 z-0 transition-opacity duration-700" style={{ opacity: fading ? 0 : 1 }}>
-        {slide.floats.map((f, i) => (
+      {/* ── 배경 파티클 아이콘 (감성 슬라이드만) ── */}
+      {!isPicker && (
+        <div className="absolute inset-0 z-0 transition-opacity duration-700" style={{ opacity: fading ? 0 : 1 }}>
+          {slide.floats.map((f, i) => (
+            <div
+              key={`${current}-${i}`}
+              className="absolute"
+              style={{
+                left: f.x,
+                top: f.y,
+                opacity: f.opacity,
+                transform: `rotate(${f.rotate}deg)`,
+              }}
+            >
+              <f.Icon size={f.size} color={slide.accentColor} strokeWidth={1.2} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ── 메인 콘텐츠 ── */}
+      {isPicker ? (
+        <div
+          className="relative z-10 flex flex-col items-center justify-center h-full px-6 transition-opacity duration-400"
+          style={{ opacity: fading ? 0 : 1 }}
+        >
           <div
-            key={`${current}-${i}`}
-            className="absolute"
+            className="w-20 h-20 rounded-[28px] flex items-center justify-center mb-6"
             style={{
-              left: f.x,
-              top: f.y,
-              opacity: f.opacity,
-              transform: `rotate(${f.rotate}deg)`,
+              backgroundColor: "rgba(255,255,255,0.45)",
+              backdropFilter: "blur(8px)",
+              border: "1px solid rgba(255,255,255,0.5)",
             }}
           >
-            <f.Icon size={f.size} color={slide.accentColor} strokeWidth={1.2} />
+            <Compass size={38} color="#FFFFFF" strokeWidth={1.6} />
           </div>
-        ))}
-      </div>
+          <h1 className="text-[22px] font-extrabold text-center text-white tracking-tight mb-2">
+            어디부터 시작해볼까요?
+          </h1>
+          <p className="text-[13px] text-center text-white/85 mb-8">
+            관심 가는 곳부터 천천히 둘러보세요
+          </p>
 
-      {/* ── 메인 콘텐츠 (페이드 전환) ── */}
-      <div
-        className="relative z-10 flex flex-col items-center justify-center h-full px-8 transition-opacity duration-400"
-        style={{ opacity: fading ? 0 : 1 }}
-      >
-        {/* 메인 아이콘 */}
-        <div
-          className="w-24 h-24 rounded-[32px] flex items-center justify-center mb-10"
-          style={{
-            backgroundColor: "rgba(255,255,255,0.1)",
-            backdropFilter: "blur(8px)",
-            border: "1px solid rgba(255,255,255,0.1)",
-          }}
-        >
-          <slide.MainIcon size={44} color={slide.accentColor} strokeWidth={1.4} />
+          {/* 3 액션 카드 */}
+          <div className="w-full max-w-[360px] space-y-2.5">
+            <ActionCard
+              icon={<MapPin size={20} color="#C47E5A" strokeWidth={2.2} />}
+              title="지도에서 동네 친구 찾기"
+              desc="우리 동네 길고양이를 만나고 등록"
+              onClick={() => goAndComplete("/map")}
+            />
+            <ActionCard
+              icon={<MessageCircle size={20} color="#8B65B8" strokeWidth={2.2} />}
+              title="커뮤니티 둘러보기"
+              desc="이웃 캣맘과 정보·일상 나누기"
+              onClick={() => goAndComplete("/community")}
+            />
+            <ActionCard
+              icon={<BookOpen size={20} color="#5BA876" strokeWidth={2.2} />}
+              title="보호지침 익히기"
+              desc="응급·먹이·TNR·임시보호 가이드"
+              onClick={() => goAndComplete("/protection")}
+            />
+          </div>
+
+          <button
+            onClick={() => goAndComplete("/map")}
+            className="mt-6 text-[12px] font-bold text-white/80 underline underline-offset-4"
+          >
+            전체 둘러보기
+          </button>
         </div>
-
-        {/* 제목 */}
-        <h1
-          className="text-[24px] font-extrabold text-center leading-[1.5] tracking-tight mb-6 whitespace-pre-line"
-          style={{ color: "rgba(255,255,255,0.95)" }}
+      ) : (
+        <div
+          className="relative z-10 flex flex-col items-center justify-center h-full px-8 transition-opacity duration-400"
+          style={{ opacity: fading ? 0 : 1 }}
         >
-          {slide.title}
-        </h1>
+          <div
+            className="w-24 h-24 rounded-[32px] flex items-center justify-center mb-10"
+            style={{
+              backgroundColor: "rgba(255,255,255,0.1)",
+              backdropFilter: "blur(8px)",
+              border: "1px solid rgba(255,255,255,0.1)",
+            }}
+          >
+            <slide.MainIcon size={44} color={slide.accentColor} strokeWidth={1.4} />
+          </div>
 
-        {/* 본문 */}
-        <p
-          className="text-[15px] text-center leading-[2] whitespace-pre-line max-w-[300px]"
-          style={{ color: "rgba(255,255,255,0.6)" }}
-        >
-          {slide.body}
-        </p>
-      </div>
+          <h1
+            className="text-[24px] font-extrabold text-center leading-[1.5] tracking-tight mb-6 whitespace-pre-line"
+            style={{ color: "rgba(255,255,255,0.95)" }}
+          >
+            {slide.title}
+          </h1>
+
+          <p
+            className="text-[15px] text-center leading-[2] whitespace-pre-line max-w-[300px]"
+            style={{ color: "rgba(255,255,255,0.6)" }}
+          >
+            {slide.body}
+          </p>
+        </div>
+      )}
 
       {/* ── 하단 컨트롤 ── */}
       <div className="absolute bottom-0 left-0 right-0 z-20 px-6 pb-10">
-        {/* 인디케이터 */}
+        {/* 인디케이터 — 4점 (감성 3 + picker 1) */}
         <div className="flex items-center justify-center gap-2.5 mb-6">
-          {SLIDES.map((s, i) => (
+          {[...SLIDES.map((s) => s.dotActive), pickerSlide.dotActive].map((color, i) => (
             <button
               key={i}
-              onClick={() => goTo(i)}
+              onClick={() => {
+                if (i < SLIDES.length) goTo(i);
+                // picker 인덱스로는 next로만 이동 (이전 슬라이드에서)
+              }}
               className="transition-all duration-500 ease-out"
               style={{
                 width: i === current ? 28 : 8,
                 height: 8,
                 borderRadius: 4,
-                backgroundColor: i === current ? s.dotActive : "rgba(255,255,255,0.2)",
+                backgroundColor: i === current ? color : isPicker ? "rgba(0,0,0,0.15)" : "rgba(255,255,255,0.2)",
               }}
             />
           ))}
         </div>
 
-        {/* 버튼 */}
-        <button
-          onClick={handleNext}
-          className="w-full py-4.5 rounded-2xl text-[16px] font-bold flex items-center justify-center gap-2"
-          style={{
-            backgroundColor: slide.accentColor,
-            color: isLast ? "#fff" : "#2A2A28",
-            boxShadow: `0 8px 24px ${slide.accentColor}44`,
-            transform: heartbeat ? "scale(1.05)" : "scale(1)",
-            transition: "transform 0.3s ease, background-color 0.8s ease, box-shadow 0.8s ease",
-            animation: heartbeat ? "heartbeat 0.6s ease" : "none",
-          }}
-        >
-          {isLast ? (
-            <>
-              <PawPrint size={20} />
-              다정한 공존 시작하기
-            </>
-          ) : (
-            <>
-              다음
-              <ChevronRight size={18} />
-            </>
-          )}
-        </button>
+        {/* 버튼 — picker일 땐 숨김 (카드 선택이 진행 액션) */}
+        {!isPicker && (
+          <button
+            onClick={handleNext}
+            className="w-full py-4.5 rounded-2xl text-[16px] font-bold flex items-center justify-center gap-2"
+            style={{
+              backgroundColor: activeAccent,
+              color: isLast ? "#fff" : "#2A2A28",
+              boxShadow: `0 8px 24px ${activeAccent}44`,
+              transform: heartbeat ? "scale(1.05)" : "scale(1)",
+              transition: "transform 0.3s ease, background-color 0.8s ease, box-shadow 0.8s ease",
+              animation: heartbeat ? "heartbeat 0.6s ease" : "none",
+            }}
+          >
+            {isLast ? (
+              <>
+                <PawPrint size={20} />
+                다정한 공존 시작하기
+              </>
+            ) : (
+              <>
+                다음
+                <ChevronRight size={18} />
+              </>
+            )}
+          </button>
+        )}
       </div>
 
       {/* ── 하트비트 애니메이션 ── */}
@@ -226,5 +301,43 @@ export default function OnboardingPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+function ActionCard({
+  icon,
+  title,
+  desc,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl active:scale-[0.98] transition-transform"
+      style={{
+        background: "rgba(255,255,255,0.95)",
+        boxShadow: "0 6px 20px rgba(0,0,0,0.10)",
+        border: "1px solid rgba(255,255,255,0.6)",
+      }}
+    >
+      <div
+        className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+        style={{ background: "rgba(255,255,255,0.95)", border: "1px solid rgba(0,0,0,0.05)" }}
+      >
+        {icon}
+      </div>
+      <div className="flex-1 min-w-0 text-left">
+        <p className="text-[14.5px] font-extrabold text-text-main tracking-tight leading-tight">
+          {title}
+        </p>
+        <p className="text-[11.5px] text-text-sub mt-0.5 truncate">{desc}</p>
+      </div>
+      <ChevronRight size={16} className="shrink-0 text-text-light" />
+    </button>
   );
 }

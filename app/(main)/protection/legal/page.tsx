@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import GuideReadMarker from "@/app/components/GuideReadMarker";
 import {
   ArrowLeft, ShieldCheck, CircleAlert, Home, Phone,
   HelpCircle, BookOpen, Scale, Gavel, FileText, Scroll,
@@ -143,6 +144,7 @@ const ABUSE_CHECKLIST: ChecklistItem[] = [
 export default function LegalGuidePage() {
   return (
     <div className="px-5 pt-14 pb-16 max-w-[720px] mx-auto">
+      <GuideReadMarker slug="legal" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}

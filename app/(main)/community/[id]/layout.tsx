@@ -110,7 +110,7 @@ export default async function PostLayout({
       },
     ],
     ...(post.images && post.images.length > 0
-      ? { image: post.images.slice(0, 5) }
+      ? { image: post.images.filter((u) => typeof u === "string" && /^https?:\/\//.test(u)).slice(0, 5) }
       : {}),
     ...(post.region ? { contentLocation: { "@type": "Place", name: post.region } } : {}),
   };

@@ -271,7 +271,7 @@ export default function CategoryPage() {
               {/* 썸네일 (이미지 있을 때만) */}
               {post.images.length > 0 ? (
                 <div className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 56, height: 56 }}>
-                  <Image src={post.images[0]} alt="" fill sizes="56px" style={{ objectFit: "cover" }} />
+                  <Image src={post.images[0]} alt={post.title} fill sizes="56px" style={{ objectFit: "cover" }} />
                   {post.images.length > 1 && (
                     <span className="absolute bottom-0.5 right-0.5 text-[8px] font-bold px-1 rounded-md z-10" style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}>
                       +{post.images.length - 1}

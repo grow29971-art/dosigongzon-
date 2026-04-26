@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Phone, Search, Building2 } from "lucide-react";
+import GuideReadMarker from "@/app/components/GuideReadMarker";
 
 interface Contact {
   region: string;
@@ -130,6 +131,7 @@ export default function DistrictContactsPage() {
 
   return (
     <div className="px-5 pt-14 pb-8">
+      <GuideReadMarker slug="district-contacts" />
       {/* 헤더 */}
       <div className="flex items-center gap-3 mb-5">
         <Link

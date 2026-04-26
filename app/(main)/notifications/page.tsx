@@ -31,6 +31,7 @@ const TYPE_CONFIG: Record<NotificationType, { icon: typeof Bell; color: string; 
   following_activity:  { icon: UserPlus,      color: "#E8B040", bg: "#E8B04015" },
   invite_accepted:     { icon: Gift,          color: "#E86B8C", bg: "#E86B8C15" },
   cat_moved:           { icon: MapPin,        color: "#5A8AC4", bg: "#5A8AC415" },
+  urgent_in_area:      { icon: AlertTriangle, color: "#D85555", bg: "#FBEAEA" },
 };
 
 function formatTime(iso: string): string {
@@ -100,6 +101,8 @@ export default function NotificationsPage() {
                 ? `/users/${item.targetId}`
                 : item.type === "cat_moved"
                 ? `/map?cat=${item.targetId}`
+                : item.type === "urgent_in_area"
+                ? `/cats/${item.targetId}`
                 : "/map";
 
             return (

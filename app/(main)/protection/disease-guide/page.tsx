@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import GuideReadMarker from "@/app/components/GuideReadMarker";
 import {
   ArrowLeft,
   AlertTriangle,
@@ -549,6 +550,7 @@ const SEVERITY_META = {
 export default function DiseaseGuidePage() {
   return (
     <div className="px-5 pt-12 pb-16 max-w-3xl mx-auto">
+      <GuideReadMarker slug="disease-guide" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />

@@ -14,7 +14,8 @@ export type NotificationType =
   | "inquiry_updated"     // 내 문의 처리됨
   | "following_activity"  // 팔로우한 유저의 돌봄·댓글
   | "invite_accepted"     // 내 초대 코드로 친구가 가입
-  | "cat_moved";          // 좋아요한 고양이가 다른 동으로 이사
+  | "cat_moved"           // 좋아요한 고양이가 다른 동으로 이사
+  | "urgent_in_area";     // 내 동네에 위급 상태 + 돌봄 부재 고양이 (cron 푸시와 짝)
 
 export interface NotificationItem {
   id: string;
@@ -313,6 +314,68 @@ export async function getNotifications(limit = 30): Promise<NotificationItem[]> 
     }
   }
 
+  // 4.8. 내 활동 지역의 위급 + 돌봄 부재 고양이 (health-alert-push cron과 짝)
+  const STALE_DAYS = 3;
+  const staleAt = new Date(Date.now() - STALE_DAYS * 24 * 60 * 60 * 1000).toISOString();
+  const { data: myRegions } = await supabase
+    .from("user_activity_regions")
+    .select("name")
+    .eq("user_id", user.id);
+  const myRegionNames = Array.from(new Set(((myRegions ?? []) as { name: string }[]).map((r) => r.name).filter(Boolean)));
+  if (myRegionNames.length > 0) {
+    const { data: urgentCats } = await supabase
+      .from("cats")
+      .select("id, name, region, photo_url, health_status, caretaker_id, created_at")
+      .in("health_status", ["caution", "danger"])
+      .in("region", myRegionNames)
+      .neq("caretaker_id", user.id) // 내 고양이는 위 1·2번에서 처리
+      .order("created_at", { ascending: false })
+      .limit(20);
+
+    const urgentRows = (urgentCats ?? []) as {
+      id: string; name: string; region: string | null; photo_url: string | null;
+      health_status: string; caretaker_id: string | null; created_at: string;
+    }[];
+
+    if (urgentRows.length > 0) {
+      // 각 고양이의 마지막 돌봄 조회
+      const urgentIds = urgentRows.map((c) => c.id);
+      const { data: lastCares } = await supabase
+        .from("care_logs")
+        .select("cat_id, logged_at")
+        .in("cat_id", urgentIds)
+        .order("logged_at", { ascending: false });
+      const lastCareMap = new Map<string, string>();
+      for (const r of (lastCares ?? []) as { cat_id: string; logged_at: string }[]) {
+        if (!lastCareMap.has(r.cat_id)) lastCareMap.set(r.cat_id, r.logged_at);
+      }
+
+      for (const c of urgentRows) {
+        const last = lastCareMap.get(c.id);
+        // 최근 3일 내 돌봄 있으면 스킵 (이미 누가 챙김)
+        if (last && last >= staleAt) continue;
+        const severity = c.health_status === "danger" ? "위험" : "주의";
+        // createdAt을 "위급 진입 시점"으로 고정 → 매일 알림이 새 항목으로 뜨지 않음.
+        // last_care + 3일 = 위급으로 진입한 시각. 돌봄 없으면 cat.created_at + 3일.
+        const baseTs = last ? new Date(last).getTime() : new Date(c.created_at).getTime();
+        const urgentSinceIso = new Date(baseTs + STALE_DAYS * 24 * 60 * 60 * 1000).toISOString();
+        items.push({
+          id: `urgent_${c.id}`,
+          type: "urgent_in_area",
+          actorName: c.region ?? "동네",
+          actorAvatar: c.photo_url,
+          message: last
+            ? `🚨 ${severity} 상태 — ${Math.floor((Date.now() - new Date(last).getTime()) / 86400000)}일째 안부 없어요`
+            : `🚨 ${severity} 상태인데 아직 돌봄 기록이 없어요`,
+          targetId: c.id,
+          targetName: c.name,
+          createdAt: urgentSinceIso,
+          isRead: false,
+        });
+      }
+    }
+  }
+
   // 5. 받은 쪽지 (읽지 않은 것 우선)
   const { data: dms } = await supabase
     .from("direct_messages")
@@ -444,5 +507,34 @@ export async function getUnreadNotificationCount(): Promise<number> {
     }[]).filter((m) => (m.old_region ?? "") !== (m.new_region ?? "")).length;
   }
 
-  return (dmCount ?? 0) + catActivity + postCommentCount + (inqCount ?? 0) + followActivity + (inviteCount ?? 0) + movedCount;
+  // 8) 내 활동 지역의 위급 + 돌봄 부재 고양이
+  let urgentCount = 0;
+  const { data: regionsForCount } = await supabase
+    .from("user_activity_regions")
+    .select("name")
+    .eq("user_id", user.id);
+  const regionNamesForCount = Array.from(new Set(((regionsForCount ?? []) as { name: string }[]).map((r) => r.name).filter(Boolean)));
+  if (regionNamesForCount.length > 0) {
+    const STALE = 3 * 24 * 60 * 60 * 1000;
+    const staleAtIso = new Date(Date.now() - STALE).toISOString();
+    const { data: urgentInArea } = await supabase
+      .from("cats")
+      .select("id, caretaker_id")
+      .in("health_status", ["caution", "danger"])
+      .in("region", regionNamesForCount)
+      .neq("caretaker_id", user.id)
+      .limit(50);
+    const urgentInAreaIds = ((urgentInArea ?? []) as { id: string; caretaker_id: string | null }[]).map((c) => c.id);
+    if (urgentInAreaIds.length > 0) {
+      const { data: recentCares } = await supabase
+        .from("care_logs")
+        .select("cat_id")
+        .in("cat_id", urgentInAreaIds)
+        .gte("logged_at", staleAtIso);
+      const recentlyCared = new Set(((recentCares ?? []) as { cat_id: string }[]).map((r) => r.cat_id));
+      urgentCount = urgentInAreaIds.filter((id) => !recentlyCared.has(id)).length;
+    }
+  }
+
+  return (dmCount ?? 0) + catActivity + postCommentCount + (inqCount ?? 0) + followActivity + (inviteCount ?? 0) + movedCount + urgentCount;
 }

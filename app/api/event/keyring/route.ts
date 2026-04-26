@@ -22,30 +22,10 @@ export async function POST(request: Request) {
     return Response.json({ error: "인증 실패" }, { status: 401 });
   }
 
-  // 입력 검증 (단순화: 고양이 이름 + 사진만)
-  let body: { cat_name?: string; cat_photo_url?: string };
-  try {
-    body = await request.json();
-  } catch {
-    return Response.json({ error: "요청 형식 오류" }, { status: 400 });
-  }
-  const cat_name = body.cat_name?.trim();
-  const cat_photo_url = body.cat_photo_url?.trim();
-  if (!cat_name || !cat_photo_url) {
-    return Response.json({ error: "고양이 이름과 사진이 필요해요" }, { status: 400 });
-  }
-  if (cat_name.length > 20) {
-    return Response.json({ error: "이름은 20자 이내" }, { status: 400 });
-  }
-  // 사진 URL 화이트리스트 (Supabase Storage)
-  if (!cat_photo_url.startsWith(`${supabaseUrl}/storage/v1/object/public/`)) {
-    return Response.json({ error: "사진 URL이 유효하지 않아요" }, { status: 400 });
-  }
-
-  // INSERT — name 컬럼에 고양이 이름 저장 (스키마 재사용), address/phone NULL
+  // 입력 없이 user_id만으로 INSERT (단순 응모)
   const { error: insertErr } = await supabase
     .from("event_keyring_entries")
-    .insert({ user_id: user.id, name: cat_name, cat_photo_url });
+    .insert({ user_id: user.id });
   if (insertErr) {
     if (insertErr.code === "23505") {
       return Response.json({ error: "이미 응모하셨어요" }, { status: 409 });
@@ -63,7 +43,7 @@ export async function POST(request: Request) {
     await supabase.from("inquiries").insert({
       user_id: user.id,
       subject: `[1000명 이벤트] ${nickname} 키링 응모`,
-      body: `고양이 이름: ${cat_name}\n사진: ${cat_photo_url}`,
+      body: `${nickname} 님이 키링 추첨에 응모했어요. (당첨되면 쪽지로 사진·배송정보 별도 수집)`,
       status: "pending",
     });
   } catch (err) {

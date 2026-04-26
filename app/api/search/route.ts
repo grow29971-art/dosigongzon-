@@ -7,7 +7,7 @@
 import { createAnonClient } from "@/lib/supabase/anon";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
-type SearchType = "all" | "cats" | "posts" | "hospitals" | "guides";
+type SearchType = "all" | "cats" | "posts" | "hospitals" | "guides" | "users";
 
 // ilike 패턴용 이스케이프 (% _ 문자를 literal로)
 function escapeForIlike(raw: string): string {
@@ -67,8 +67,9 @@ export async function GET(request: Request) {
   const includePosts = type === "all" || type === "posts";
   const includeHospitals = type === "all" || type === "hospitals";
   const includeGuides = type === "all" || type === "guides";
+  const includeUsers = type === "all" || type === "users";
 
-  const [catsRes, postsRes, hospitalsRes] = await Promise.all([
+  const [catsRes, postsRes, hospitalsRes, usersRes] = await Promise.all([
     includeCats
       ? supabase
           .from("cats")
@@ -96,11 +97,25 @@ export async function GET(request: Request) {
           .order("pinned", { ascending: false })
           .limit(20)
       : Promise.resolve({ data: [] as Array<{ id: string; name: string; address: string | null; district: string | null; phone: string | null }>, error: null }),
+    includeUsers
+      ? supabase
+          .from("profiles")
+          .select("id, nickname, avatar_url, admin_title")
+          .eq("suspended", false)
+          .ilike("nickname", ilikePattern)
+          .limit(15)
+      : Promise.resolve({ data: [] as Array<{ id: string; nickname: string | null; avatar_url: string | null; admin_title: string | null }>, error: null }),
   ]);
 
   const cats = catsRes.data ?? [];
   const posts = postsRes.data ?? [];
   const hospitals = hospitalsRes.data ?? [];
+  const users = (usersRes.data ?? []).map((u) => ({
+    id: u.id,
+    nickname: u.nickname ?? "익명",
+    avatar_url: u.avatar_url,
+    admin_title: u.admin_title,
+  }));
   const guides = includeGuides ? searchGuides(query) : [];
 
   // 게시글 본문은 일부만 반환 (성능)
@@ -109,17 +124,27 @@ export async function GET(request: Request) {
     content: p.content.length > 150 ? p.content.slice(0, 150) + "…" : p.content,
   }));
 
-  return Response.json({
-    query,
-    cats,
-    posts: trimmedPosts,
-    hospitals,
-    guides,
-    counts: {
-      cats: cats.length,
-      posts: posts.length,
-      hospitals: hospitals.length,
-      guides: guides.length,
+  return Response.json(
+    {
+      query,
+      cats,
+      posts: trimmedPosts,
+      hospitals,
+      users,
+      guides,
+      counts: {
+        cats: cats.length,
+        posts: posts.length,
+        hospitals: hospitals.length,
+        users: users.length,
+        guides: guides.length,
+      },
     },
-  });
+    {
+      headers: {
+        // 같은 쿼리는 5분간 캐시. q는 query string에 들어가 자동 키.
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+      },
+    },
+  );
 }

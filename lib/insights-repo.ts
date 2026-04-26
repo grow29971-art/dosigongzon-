@@ -32,6 +32,11 @@ export interface InsightsSnapshot {
   topCats: Array<{ id: string; name: string; like_count: number; region: string | null }>;
   // 활성 유저 TOP 5 (최근 7일 care_logs 많이 쓴 사람)
   topCaretakers: Array<{ user_id: string; name: string; count: number }>;
+  // 위급 알림 (health-alert-push cron 가시성)
+  urgentCatsTotal: number;       // 현재 caution/danger 상태 고양이 총수
+  urgentCatsStale: number;       // 그중 3일 이상 돌봄 부재
+  alertPushesWeek: number;       // 최근 7일 push_alert_log 발송 건수
+  alertPushedUsersWeek: number;  // 최근 7일 unique 수신 유저 수
 }
 
 function startOfKstToday(): string {
@@ -150,6 +155,47 @@ export async function getInsightsSnapshot(): Promise<InsightsSnapshot> {
     .slice(0, 5)
     .map(([user_id, { name, count }]) => ({ user_id, name, count }));
 
+  // ── 위급 알림 통계 (health-alert-push cron 가시성) ──
+  const STALE_DAYS = 3;
+  const staleAt = new Date(Date.now() - STALE_DAYS * 24 * 60 * 60 * 1000).toISOString();
+  const week7Ago = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+  const [{ count: urgentCatsTotal }, urgentCatsRes, alertLogsRes] = await Promise.all([
+    supabase
+      .from("cats")
+      .select("*", { count: "exact", head: true })
+      .in("health_status", ["caution", "danger"]),
+    supabase
+      .from("cats")
+      .select("id")
+      .in("health_status", ["caution", "danger"])
+      .not("region", "is", null),
+    // push_alert_log 테이블이 없으면 빈 응답으로 폴백
+    supabase
+      .from("push_alert_log")
+      .select("user_id, cat_id, sent_at")
+      .gte("sent_at", week7Ago)
+      .limit(5000),
+  ]);
+
+  // urgentCatsStale 계산
+  const urgentIds = ((urgentCatsRes.data ?? []) as { id: string }[]).map((c) => c.id);
+  let urgentCatsStale = 0;
+  if (urgentIds.length > 0) {
+    const { data: recent } = await supabase
+      .from("care_logs")
+      .select("cat_id")
+      .in("cat_id", urgentIds)
+      .gte("logged_at", staleAt);
+    const recentSet = new Set(((recent ?? []) as { cat_id: string }[]).map((r) => r.cat_id));
+    urgentCatsStale = urgentIds.filter((id) => !recentSet.has(id)).length;
+  }
+
+  // 알림 통계 (테이블 없으면 0)
+  const alertRows = (alertLogsRes.data ?? []) as { user_id: string; cat_id: string; sent_at: string }[];
+  const alertPushesWeek = alertRows.length;
+  const alertPushedUsersWeek = new Set(alertRows.map((r) => r.user_id)).size;
+
   return {
     totalUsers, totalCats, totalPosts, totalCareLogs,
     newUsersToday, newCatsToday, newPostsToday, newCareLogsToday,
@@ -157,5 +203,9 @@ export async function getInsightsSnapshot(): Promise<InsightsSnapshot> {
     visitsToday, visitsWeek,
     authErrorsWeek, authErrorTopCodes,
     topCats, topCaretakers,
+    urgentCatsTotal: urgentCatsTotal ?? 0,
+    urgentCatsStale,
+    alertPushesWeek,
+    alertPushedUsersWeek,
   };
 }

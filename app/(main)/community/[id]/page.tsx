@@ -38,7 +38,8 @@ import {
   type PostComment,
 } from "@/lib/post-comments-repo";
 import { useAuth } from "@/lib/auth-context";
-import ReportModal from "@/app/components/ReportModal";
+import dynamic from "next/dynamic";
+const ReportModal = dynamic(() => import("@/app/components/ReportModal"), { ssr: false });
 import TitleBadge from "@/app/components/TitleBadge";
 import SendDMButton from "@/app/components/SendDMButton";
 import LoginRequired from "@/app/components/LoginRequired";
@@ -165,16 +166,43 @@ export default function PostDetailPage({
     isCurrentUserAdmin().then(setIsAdmin);
 
     // 댓글 로드 + 이모지 리액션 배치 조회
+    let cancelled = false;
     setCommentsLoading(true);
-    listPostComments(id)
-      .then(async (list) => {
+    const reload = async () => {
+      try {
+        const list = await listPostComments(id);
+        if (cancelled) return;
         setComments(list);
         if (list.length > 0) {
           const reactions = await listReactionsBatch("post_comment", list.map((c) => c.id));
-          setReactionMap(reactions);
+          if (!cancelled) setReactionMap(reactions);
         }
-      })
-      .finally(() => setCommentsLoading(false));
+      } finally {
+        if (!cancelled) setCommentsLoading(false);
+      }
+    };
+    reload();
+
+    // Realtime — post_comments INSERT/UPDATE/DELETE 감지
+    const sb = createClient();
+    const channel = sb
+      .channel(`post-comments-${id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "post_comments",
+          filter: `post_id=eq.${id}`,
+        },
+        () => { if (!cancelled) reload(); },
+      )
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      sb.removeChannel(channel);
+    };
   }, [id, user]);
 
   const handleSubmitComment = async () => {
@@ -341,7 +369,7 @@ export default function PostDetailPage({
 
           {post.images.length > 0 && (
             <div className="mt-4 grid grid-cols-2 gap-2">
-              {post.images.map((url) => (
+              {post.images.map((url, i) => (
                 <div
                   key={url}
                   className="relative w-full aspect-square rounded-xl overflow-hidden"
@@ -353,6 +381,7 @@ export default function PostDetailPage({
                     fill
                     sizes="(max-width: 720px) 50vw, 360px"
                     style={{ objectFit: "cover" }}
+                    priority={i === 0}
                   />
                 </div>
               ))}

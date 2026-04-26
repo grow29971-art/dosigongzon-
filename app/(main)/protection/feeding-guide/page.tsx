@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import GuideReadMarker from "@/app/components/GuideReadMarker";
 import {
   ArrowLeft, Utensils, AlertTriangle, Clock, MapPin, Droplet,
   HelpCircle, BookOpen, Ban, Cat, Scale,
@@ -154,6 +155,7 @@ const breadcrumbLd = {
 export default function FeedingGuidePage() {
   return (
     <div className="px-5 pt-12 pb-16 max-w-3xl mx-auto">
+      <GuideReadMarker slug="feeding-guide" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />

@@ -73,10 +73,17 @@ export async function GET(request: Request) {
       .filter((v): v is string => !!v),
   ).size;
 
-  return Response.json({
-    activeCaretakersToday: uniqueCaretakers,
-    newCatsThisWeek: newCatsRes.count ?? 0,
-    totalCats: totalCatsRes.count ?? 0,
-    rescueCount: rescueRes.count ?? 0,
-  });
+  return Response.json(
+    {
+      activeCaretakersToday: uniqueCaretakers,
+      newCatsThisWeek: newCatsRes.count ?? 0,
+      totalCats: totalCatsRes.count ?? 0,
+      rescueCount: rescueRes.count ?? 0,
+    },
+    {
+      headers: {
+        "Cache-Control": "public, s-maxage=120, stale-while-revalidate=300",
+      },
+    },
+  );
 }

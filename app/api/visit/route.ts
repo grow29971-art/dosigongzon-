@@ -102,8 +102,16 @@ export async function GET() {
     .from("profiles")
     .select("*", { count: "exact", head: true });
 
-  return Response.json({
-    today: totalVisits,
-    total: totalUsers ?? 0,
-  });
+  return Response.json(
+    {
+      today: totalVisits,
+      total: totalUsers ?? 0,
+    },
+    {
+      headers: {
+        // 60초 캐시 + 1분 stale-while-revalidate. 방문자 수는 실시간 정확도 불필요.
+        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=60",
+      },
+    },
+  );
 }

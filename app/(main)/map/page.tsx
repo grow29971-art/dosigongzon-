@@ -330,7 +330,7 @@ export default function MapPage() {
     setCommentPhotoPreview(null);
   };
 
-  // 선택된 고양이 변경 시 댓글 로드
+  // 선택된 고양이 변경 시 댓글 로드 + Realtime 구독
   useEffect(() => {
     if (!selectedCat) {
       setComments([]);
@@ -342,35 +342,54 @@ export default function MapPage() {
     let cancelled = false;
     setCommentsLoading(true);
     setCommentsError("");
-    listComments(selectedCat.id)
-      .then(async (list) => {
+
+    const reload = async () => {
+      try {
+        const list = await listComments(selectedCat.id);
         if (cancelled) return;
         setComments(list);
-        // 내가 누른 투표들 로드
         if (isLoggedIn && list.length > 0) {
           const votes = await getMyCommentVotes(list.map((c) => c.id));
           if (!cancelled) setMyVotes(votes);
         } else {
           setMyVotes(new Map());
         }
-        // 이모지 리액션 배치 조회 (로그인 여부와 무관, 카운트는 공개)
         if (list.length > 0) {
           const reactions = await listReactionsBatch("cat_comment", list.map((c) => c.id));
           if (!cancelled) setCommentReactions(reactions);
         } else {
           setCommentReactions(new Map());
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         if (!cancelled) {
           setCommentsError(err instanceof Error ? err.message : "불러오기 실패");
         }
-      })
-      .finally(() => {
+      } finally {
         if (!cancelled) setCommentsLoading(false);
-      });
+      }
+    };
+
+    reload();
+
+    // Realtime — 같은 cat_id에 대한 새 댓글·삭제 감지
+    const supabaseRt = createSupabaseClient();
+    const channel = supabaseRt
+      .channel(`cat-comments-${selectedCat.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "cat_comments",
+          filter: `cat_id=eq.${selectedCat.id}`,
+        },
+        () => { if (!cancelled) reload(); },
+      )
+      .subscribe();
+
     return () => {
       cancelled = true;
+      supabaseRt.removeChannel(channel);
     };
   }, [selectedCat, isLoggedIn]);
 

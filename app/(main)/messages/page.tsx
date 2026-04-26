@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Send, Loader2, Mail, ChevronRight, Camera, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { createClient } from "@/lib/supabase/client";
 import FollowButton from "@/app/components/FollowButton";
 import PageIntroBanner from "@/app/components/PageIntroBanner";
 import {
@@ -60,12 +61,10 @@ function MessagesPage() {
 
   // 대화 상대 선택 시 메시지 로드 + 1초 폴링
   useEffect(() => {
-    if (!selectedPartner) return;
+    if (!selectedPartner || !user) return;
     let active = true;
 
     const fetchMsgs = async () => {
-      // 백그라운드 탭에선 폴링 스킵 (배터리·서버 부하 절감)
-      if (document.visibilityState === "hidden") return;
       const data = await getMessagesWithUser(selectedPartner.id);
       if (!active) return;
       setMessages((prev) => {
@@ -76,18 +75,57 @@ function MessagesPage() {
       });
     };
 
+    // 1) 진입 시 1회 즉시 로드
     fetchMsgs();
-    // 1.5s → 3s. UX 거의 동일하지만 요청 수 절반.
-    const interval = setInterval(fetchMsgs, 3000);
-    // 탭이 다시 활성화되면 즉시 한 번 동기화 (지연 만회)
+
+    // 2) Supabase Realtime — 새 메시지 INSERT 감지하면 다시 로드
+    //    (단일 메시지만 받으면 sender_name·avatar 등 조인이 안 돼서 재조회가 안전)
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`dm-${user.id}-${selectedPartner.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "direct_messages",
+          // 본인이 받거나 보낸 메시지만 (RLS와 별개로 클라 필터)
+          filter: `receiver_id=eq.${user.id}`,
+        },
+        (payload: { new: Record<string, unknown> }) => {
+          if ((payload.new as { sender_id?: string }).sender_id === selectedPartner.id) fetchMsgs();
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "direct_messages",
+          filter: `sender_id=eq.${user.id}`,
+        },
+        (payload: { new: Record<string, unknown> }) => {
+          if ((payload.new as { receiver_id?: string }).receiver_id === selectedPartner.id) fetchMsgs();
+        },
+      )
+      .subscribe();
+
+    // 3) 폴백 폴링 — Realtime 연결 끊겼거나 채널 누락 메시지 대비. 30초마다.
+    const fallbackInterval = setInterval(() => {
+      if (document.visibilityState === "visible") fetchMsgs();
+    }, 30000);
+
+    // 4) 탭 다시 활성화 시 즉시 동기화
     const onVis = () => { if (document.visibilityState === "visible") fetchMsgs(); };
     document.addEventListener("visibilitychange", onVis);
+
     return () => {
       active = false;
-      clearInterval(interval);
+      clearInterval(fallbackInterval);
+      supabase.removeChannel(channel);
       document.removeEventListener("visibilitychange", onVis);
     };
-  }, [selectedPartner]);
+  }, [selectedPartner, user]);
 
   const handleSend = async () => {
     if (!selectedPartner || (!msgText.trim() && !photoFile) || sending) return;

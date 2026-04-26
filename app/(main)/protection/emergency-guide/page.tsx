@@ -5,6 +5,7 @@ import {
   HelpCircle, BookOpen, Flame, Droplet,
 } from "lucide-react";
 import ShareGuideButton from "@/app/components/ShareGuideButton";
+import GuideReadMarker from "@/app/components/GuideReadMarker";
 
 const SITE_URL = "https://dosigongzon.com";
 const LAST_UPDATED = "2026-04-19";
@@ -143,6 +144,7 @@ const EMERGENCY_SIGNS = [
 export default function EmergencyGuidePage() {
   return (
     <div className="px-5 pt-14 pb-16 max-w-[720px] mx-auto">
+      <GuideReadMarker slug="emergency-guide" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}

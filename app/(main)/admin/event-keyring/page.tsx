@@ -20,13 +20,18 @@ type EntryStatus = "pending" | "selected" | "shipped" | "rejected";
 interface Entry {
   id: string;
   user_id: string;
-  name: string;
-  address: string;
-  phone: string;
-  cat_photo_url: string;
+  name: string | null;          // 단순화 후 NULL 가능
+  address: string | null;
+  phone: string | null;
+  cat_photo_url: string | null;
   status: EntryStatus;
   admin_note: string | null;
   created_at: string;
+}
+
+interface UserMini {
+  nickname: string;
+  avatar_url: string | null;
 }
 
 const STATUS_META: Record<EntryStatus, { label: string; color: string; bg: string; emoji: string }> = {
@@ -43,6 +48,7 @@ export default function AdminEventKeyringPage() {
   const [authChecked, setAuthChecked] = useState(false);
   const [authorized, setAuthorized] = useState(false);
   const [entries, setEntries] = useState<Entry[]>([]);
+  const [profiles, setProfiles] = useState<Record<string, UserMini>>({});
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<EntryStatus | "all">("all");
 
@@ -63,7 +69,25 @@ export default function AdminEventKeyringPage() {
         .from("event_keyring_entries")
         .select("*")
         .order("created_at", { ascending: false });
-      setEntries((data ?? []) as Entry[]);
+      const list = (data ?? []) as Entry[];
+      setEntries(list);
+
+      // 응모자 닉네임/아바타 일괄 조회
+      const userIds = Array.from(new Set(list.map((e) => e.user_id)));
+      if (userIds.length > 0) {
+        const { data: profs } = await supabase
+          .from("profiles")
+          .select("id, nickname, email, avatar_url")
+          .in("id", userIds);
+        const map: Record<string, UserMini> = {};
+        for (const p of (profs ?? []) as { id: string; nickname: string | null; email: string | null; avatar_url: string | null }[]) {
+          map[p.id] = {
+            nickname: p.nickname ?? p.email?.split("@")[0] ?? "익명",
+            avatar_url: p.avatar_url,
+          };
+        }
+        setProfiles(map);
+      }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "목록 로드 실패");
     } finally {
@@ -107,13 +131,15 @@ export default function AdminEventKeyringPage() {
 
   const exportCsv = () => {
     const visible = filter === "all" ? entries : entries.filter((e) => e.status === filter);
-    const header = ["이름", "전화", "주소", "상태", "메모", "응모일시"].join(",");
+    const esc = (v: string | null) => `"${(v ?? "").replace(/"/g, '""')}"`;
+    const header = ["응모자", "이름(구)", "전화", "주소", "상태", "메모", "응모일시"].join(",");
     const rows = visible.map((e) => [
-      `"${e.name.replace(/"/g, '""')}"`,
-      `"${e.phone.replace(/"/g, '""')}"`,
-      `"${e.address.replace(/"/g, '""')}"`,
+      esc(profiles[e.user_id]?.nickname ?? null),
+      esc(e.name),
+      esc(e.phone),
+      esc(e.address),
       STATUS_META[e.status].label,
-      `"${(e.admin_note ?? "").replace(/"/g, '""')}"`,
+      esc(e.admin_note),
       new Date(e.created_at).toLocaleString("ko-KR"),
     ].join(","));
     const csv = "﻿" + [header, ...rows].join("\n");
@@ -206,7 +232,13 @@ export default function AdminEventKeyringPage() {
           </div>
         )}
         {!loading && visible.map((entry) => (
-          <EntryCard key={entry.id} entry={entry} onStatus={updateStatus} onNote={updateNote} />
+          <EntryCard
+            key={entry.id}
+            entry={entry}
+            profile={profiles[entry.user_id]}
+            onStatus={updateStatus}
+            onNote={updateNote}
+          />
         ))}
       </div>
     </div>
@@ -214,9 +246,10 @@ export default function AdminEventKeyringPage() {
 }
 
 function EntryCard({
-  entry, onStatus, onNote,
+  entry, profile, onStatus, onNote,
 }: {
   entry: Entry;
+  profile: UserMini | undefined;
   onStatus: (id: string, status: EntryStatus) => void;
   onNote: (id: string, note: string) => void;
 }) {
@@ -231,14 +264,28 @@ function EntryCard({
     setSavingNote(false);
   };
 
+  const displayName = profile?.nickname ?? entry.name ?? "익명";
+  const isSimpleEntry = !entry.cat_photo_url && !entry.phone && !entry.address;
+
   return (
     <div className="rounded-2xl bg-white p-4" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)", border: `1px solid ${meta.color}25` }}>
       <div className="flex items-start gap-3">
-        {/* 사진 */}
-        <a href={entry.cat_photo_url} target="_blank" rel="noopener noreferrer"
-          className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 80, height: 80 }}>
-          <Image src={entry.cat_photo_url} alt="" fill sizes="80px" style={{ objectFit: "cover" }} />
-        </a>
+        {/* 사진 — 고양이 사진 또는 응모자 아바타 폴백 */}
+        {entry.cat_photo_url ? (
+          <a href={entry.cat_photo_url} target="_blank" rel="noopener noreferrer"
+            className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 80, height: 80 }}>
+            <Image src={entry.cat_photo_url} alt="" fill sizes="80px" style={{ objectFit: "cover" }} />
+          </a>
+        ) : profile?.avatar_url ? (
+          <div className="relative shrink-0 rounded-xl overflow-hidden bg-surface-alt" style={{ width: 80, height: 80 }}>
+            <Image src={profile.avatar_url} alt="" fill sizes="80px" style={{ objectFit: "cover" }} />
+          </div>
+        ) : (
+          <div className="shrink-0 rounded-xl flex items-center justify-center bg-surface-alt"
+            style={{ width: 80, height: 80 }}>
+            <Gift size={28} className="text-text-light" />
+          </div>
+        )}
         {/* 정보 */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-1">
@@ -250,15 +297,24 @@ function EntryCard({
               {new Date(entry.created_at).toLocaleDateString("ko-KR")}
             </span>
           </div>
-          <p className="text-[14.5px] font-extrabold text-text-main truncate">{entry.name}</p>
-          <a href={`tel:${entry.phone}`} className="flex items-center gap-1 mt-0.5 text-[12px] font-bold" style={{ color: "#22B573" }}>
-            <Phone size={11} />
-            {entry.phone}
-          </a>
-          <p className="flex items-start gap-1 mt-1 text-[11.5px] text-text-sub leading-snug">
-            <MapPin size={11} className="shrink-0 mt-0.5" />
-            <span>{entry.address}</span>
-          </p>
+          <p className="text-[14.5px] font-extrabold text-text-main truncate">{displayName}</p>
+          {entry.phone && (
+            <a href={`tel:${entry.phone}`} className="flex items-center gap-1 mt-0.5 text-[12px] font-bold" style={{ color: "#22B573" }}>
+              <Phone size={11} />
+              {entry.phone}
+            </a>
+          )}
+          {entry.address && (
+            <p className="flex items-start gap-1 mt-1 text-[11.5px] text-text-sub leading-snug">
+              <MapPin size={11} className="shrink-0 mt-0.5" />
+              <span>{entry.address}</span>
+            </p>
+          )}
+          {isSimpleEntry && (
+            <p className="mt-1 text-[11px] text-text-light leading-snug">
+              사진·연락처 미수집 — 추첨 후 쪽지로 별도 안내 예정
+            </p>
+          )}
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import GuideReadMarker from "@/app/components/GuideReadMarker";
 import {
   ArrowLeft, Thermometer, Wrench, AlertTriangle,
   HelpCircle, Hammer, Cat,
@@ -160,6 +161,7 @@ const CAUTIONS = [
 export default function ShelterGuidePage() {
   return (
     <div className="px-5 pt-12 pb-16 max-w-3xl mx-auto">
+      <GuideReadMarker slug="shelter-guide" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />

@@ -6,13 +6,13 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeft, Search, X, Cat as CatIcon, MessageSquare,
-  Stethoscope, BookOpenText, MapPin, Phone,
+  Stethoscope, BookOpenText, MapPin, Phone, User,
 } from "lucide-react";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { HEALTH_MAP } from "@/lib/cats-repo";
 import { SkeletonCatCard, SkeletonPostCard, SkeletonHospitalCard } from "@/app/components/Skeleton";
 
-type SearchTab = "all" | "cats" | "posts" | "hospitals" | "guides";
+type SearchTab = "all" | "cats" | "posts" | "hospitals" | "users" | "guides";
 
 interface CatHit {
   id: string;
@@ -40,6 +40,12 @@ interface HospitalHit {
   district: string | null;
   phone: string | null;
 }
+interface UserHit {
+  id: string;
+  nickname: string;
+  avatar_url: string | null;
+  admin_title: string | null;
+}
 interface GuideHit {
   slug: string;
   title: string;
@@ -50,15 +56,16 @@ interface SearchResponse {
   cats: CatHit[];
   posts: PostHit[];
   hospitals: HospitalHit[];
+  users: UserHit[];
   guides: GuideHit[];
-  counts: { cats: number; posts: number; hospitals: number; guides: number };
+  counts: { cats: number; posts: number; hospitals: number; users: number; guides: number };
   tooShort?: boolean;
 }
 
 const EMPTY_RESPONSE: SearchResponse = {
   query: "",
-  cats: [], posts: [], hospitals: [], guides: [],
-  counts: { cats: 0, posts: 0, hospitals: 0, guides: 0 },
+  cats: [], posts: [], hospitals: [], users: [], guides: [],
+  counts: { cats: 0, posts: 0, hospitals: 0, users: 0, guides: 0 },
 };
 
 function SearchPageInner() {
@@ -156,6 +163,7 @@ function SearchPageInner() {
               { key: "cats", label: "고양이", count: data.counts.cats },
               { key: "posts", label: "게시글", count: data.counts.posts },
               { key: "hospitals", label: "병원", count: data.counts.hospitals },
+              { key: "users", label: "캣맘", count: data.counts.users },
               { key: "guides", label: "가이드", count: data.counts.guides },
             ] as { key: SearchTab; label: string; count: number }[]).map((t) => (
               <button
@@ -231,6 +239,9 @@ function SearchPageInner() {
             )}
             {(tab === "all" || tab === "hospitals") && data.hospitals.length > 0 && (
               <SectionHospitals items={data.hospitals} />
+            )}
+            {(tab === "all" || tab === "users") && data.users.length > 0 && (
+              <SectionUsers items={data.users} />
             )}
           </div>
         )}
@@ -379,6 +390,52 @@ function SectionHospitals({ items }: { items: HospitalHit[] }) {
             )}
           </div>
         ))}
+      </div>
+    </section>
+  );
+}
+
+/* ═══ 섹션: 캣맘(유저) ═══ */
+function SectionUsers({ items }: { items: UserHit[] }) {
+  return (
+    <section>
+      <SectionHeader icon={<User size={14} />} label="캣맘 / 유저" count={items.length} />
+      <div className="space-y-2">
+        {items.map((u) => {
+          const avatar = sanitizeImageUrl(u.avatar_url, "");
+          return (
+            <Link
+              key={u.id}
+              href={`/users/${u.id}`}
+              className="flex items-center gap-3 rounded-2xl bg-white p-3 active:scale-[0.99] transition-transform"
+              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+            >
+              <div
+                className="shrink-0 w-10 h-10 rounded-full overflow-hidden bg-surface-alt flex items-center justify-center"
+                style={{ border: "1.5px solid #E5E0D6" }}
+              >
+                {avatar ? (
+                  <Image src={avatar} alt={u.nickname} width={40} height={40} className="object-cover w-full h-full" />
+                ) : (
+                  <User size={18} className="text-text-light" />
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <p className="text-[13.5px] font-extrabold text-text-main truncate">{u.nickname}</p>
+                  {u.admin_title && (
+                    <span
+                      className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md shrink-0"
+                      style={{ background: "#C47E5A", color: "#fff" }}
+                    >
+                      {u.admin_title}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );

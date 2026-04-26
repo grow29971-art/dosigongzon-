@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   BookOpenText,
@@ -17,7 +18,13 @@ import {
   Utensils,
   Home as HomeIcon,
   Stethoscope,
+  CheckCircle2,
+  Sparkles,
+  AlertTriangle,
+  Baby,
+  Scissors,
 } from "lucide-react";
+import { getProgress, getReadSlugs } from "@/lib/protection-progress";
 
 /* ═══ 카드 데이터 ═══ */
 const cards: {
@@ -168,7 +175,7 @@ const cards: {
 ];
 
 /* ═══ 카드 컴포넌트 ═══ */
-function InfoCard({ card }: { card: (typeof cards)[number] }) {
+function InfoCard({ card, isRead }: { card: (typeof cards)[number]; isRead?: boolean }) {
   const inner = (
     <div
       className="relative overflow-hidden px-5 py-[18px]"
@@ -190,6 +197,14 @@ function InfoCard({ card }: { card: (typeof cards)[number] }) {
           style={{ backgroundColor: `${card.iconBg}15` }}
         >
           <card.Icon size={22} color={card.iconBg} strokeWidth={2} />
+          {isRead && (
+            <div
+              className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"
+              style={{ background: "#5BA876", border: "1.5px solid #fff" }}
+            >
+              <CheckCircle2 size={10} color="#fff" strokeWidth={3} />
+            </div>
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[15.5px] font-extrabold text-text-main tracking-tight leading-tight">
@@ -237,8 +252,42 @@ const breadcrumbLd = {
   ],
 };
 
+/* ═══ 상황별 빠른 진입 칩 ═══ */
+const QUICK_SITUATIONS = [
+  { label: "다친 아이 발견", icon: AlertTriangle, color: "#D85555", href: "/protection/emergency-guide" },
+  { label: "새끼를 봤어요", icon: Baby, color: "#E8B040", href: "/protection/kitten-guide" },
+  { label: "먹이 줘도 되나?", icon: Utensils, color: "#E88D5A", href: "/protection/feeding-guide" },
+  { label: "TNR 알아보기", icon: Scissors, color: "#8BA86B", href: "/protection/trapping-guide" },
+  { label: "쉼터 만들기", icon: HomeIcon, color: "#4A7BA8", href: "/protection/shelter-guide" },
+  { label: "약·영양제", icon: Pill, color: "#D4708F", href: "/protection/pharmacy-guide" },
+];
+
+// href에서 slug 추출 ("/protection/foo" → "foo")
+function slugFromHref(href: string): string | null {
+  const m = href.match(/^\/protection\/([^/]+)$/);
+  return m ? m[1] : null;
+}
+
 /* ═══ 페이지 ═══ */
 export default function ProtectionPage() {
+  const [readSet, setReadSet] = useState<Set<string>>(new Set());
+  const [progress, setProgress] = useState({ read: 0, total: 9, percent: 0 });
+
+  useEffect(() => {
+    const sync = () => {
+      setReadSet(getReadSlugs());
+      setProgress(getProgress());
+    };
+    sync();
+    window.addEventListener("protection-progress-changed", sync);
+    return () => window.removeEventListener("protection-progress-changed", sync);
+  }, []);
+
+  const isRead = (href: string) => {
+    const slug = slugFromHref(href);
+    return slug ? readSet.has(slug) : false;
+  };
+
   const row1 = cards.slice(0, 1);
   const row2 = cards.slice(1, 3);
   const row3 = cards.slice(3, 4);
@@ -255,7 +304,7 @@ export default function ProtectionPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
       {/* ── 헤더 ── */}
-      <div className="mb-6 px-1">
+      <div className="mb-4 px-1">
         <div className="flex items-baseline gap-2 mb-1">
           <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
             보호지침
@@ -269,45 +318,103 @@ export default function ProtectionPage() {
         </p>
       </div>
 
+      {/* ── 상황별 빠른 선택 ── */}
+      <div className="mb-4">
+        <p className="text-[11px] font-bold text-text-sub mb-2 px-1">지금 어떤 상황인가요?</p>
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
+          {QUICK_SITUATIONS.map((s) => {
+            const Icon = s.icon;
+            return (
+              <Link
+                key={s.label}
+                href={s.href}
+                className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full active:scale-95 transition-transform"
+                style={{
+                  background: `${s.color}10`,
+                  border: `1px solid ${s.color}30`,
+                }}
+              >
+                <Icon size={13} color={s.color} strokeWidth={2.4} />
+                <span className="text-[12px] font-bold" style={{ color: s.color }}>
+                  {s.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── 학습 진행률 ── */}
+      <div
+        className="mb-5 rounded-2xl px-4 py-3 flex items-center gap-3"
+        style={{
+          background: progress.read === progress.total
+            ? "linear-gradient(135deg, #E8F4E8 0%, #D5EDD5 100%)"
+            : "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
+          border: `1px solid ${progress.read === progress.total ? "#5BA87633" : "rgba(196,126,90,0.18)"}`,
+        }}
+      >
+        <Sparkles size={16} className={progress.read === progress.total ? "text-[#3F5B42]" : "text-[#C47E5A]"} />
+        <div className="flex-1 min-w-0">
+          <p className="text-[12px] font-extrabold text-text-main">
+            {progress.read === progress.total
+              ? "9개 가이드 모두 학습 완료! 🎉"
+              : `9개 중 ${progress.read}개 학습`}
+          </p>
+          <div className="mt-1.5 h-1.5 rounded-full bg-white/60 overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${progress.percent}%`,
+                background: progress.read === progress.total ? "#5BA876" : "#C47E5A",
+              }}
+            />
+          </div>
+        </div>
+        <span className="text-[12px] font-extrabold tabular-nums" style={{ color: progress.read === progress.total ? "#3F5B42" : "#C47E5A" }}>
+          {progress.percent}%
+        </span>
+      </div>
+
       {/* ── 벤토 그리드 ── */}
       <div className="space-y-3">
         {row1.map((c) => (
-          <InfoCard key={c.title} card={c} />
+          <InfoCard key={c.title} card={c} isRead={isRead(c.href)} />
         ))}
 
         <div className="grid grid-cols-2 gap-3">
           {row2.map((c) => (
-            <InfoCard key={c.title} card={c} />
+            <InfoCard key={c.title} card={c} isRead={isRead(c.href)} />
           ))}
         </div>
 
         {row3.map((c) => (
-          <InfoCard key={c.title} card={c} />
+          <InfoCard key={c.title} card={c} isRead={isRead(c.href)} />
         ))}
 
         {row4.map((c) => (
-          <InfoCard key={c.title} card={c} />
+          <InfoCard key={c.title} card={c} isRead={isRead(c.href)} />
         ))}
 
         <div className="grid grid-cols-5 gap-3">
           <div className="col-span-2">
             {row5a.map((c) => (
-              <InfoCard key={c.title} card={c} />
+              <InfoCard key={c.title} card={c} isRead={isRead(c.href)} />
             ))}
           </div>
           <div className="col-span-3">
             {row5b.map((c) => (
-              <InfoCard key={c.title} card={c} />
+              <InfoCard key={c.title} card={c} isRead={isRead(c.href)} />
             ))}
           </div>
         </div>
 
         {row6.map((c) => (
-          <InfoCard key={c.title} card={c} />
+          <InfoCard key={c.title} card={c} isRead={isRead(c.href)} />
         ))}
 
         {row7.map((c) => (
-          <InfoCard key={c.title} card={c} />
+          <InfoCard key={c.title} card={c} isRead={isRead(c.href)} />
         ))}
       </div>
 

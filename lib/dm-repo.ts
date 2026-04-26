@@ -160,7 +160,7 @@ export async function getMessagesWithUser(partnerId: string): Promise<DirectMess
 
   const { data, error } = await supabase
     .from("direct_messages")
-    .select("*")
+    .select("id, sender_id, sender_name, sender_avatar_url, receiver_id, receiver_name, body, photo_url, is_read, created_at")
     .or(
       `and(sender_id.eq.${user.id},receiver_id.eq.${partnerId}),and(sender_id.eq.${partnerId},receiver_id.eq.${user.id})`,
     )

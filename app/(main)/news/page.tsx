@@ -96,7 +96,7 @@ export default async function NewsIndexPage() {
               >
                 {photo && (
                   <div className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 72, height: 72 }}>
-                    <Image src={photo} alt="" fill sizes="72px" style={{ objectFit: "cover" }} />
+                    <Image src={photo} alt={item.title} fill sizes="72px" style={{ objectFit: "cover" }} />
                   </div>
                 )}
                 <div className="flex-1 min-w-0">

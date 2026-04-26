@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import { ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
@@ -66,10 +67,13 @@ export default function NewsDetailPage({
         style={{ background: preset.gradient }}
       >
         {news.image_url && (
-          <img
+          <Image
             src={news.image_url}
             alt={news.title}
-            className="w-full h-full object-cover"
+            fill
+            priority
+            sizes="(max-width: 720px) 100vw, 720px"
+            style={{ objectFit: "cover" }}
           />
         )}
         {/* 하단 그라데이션 */}

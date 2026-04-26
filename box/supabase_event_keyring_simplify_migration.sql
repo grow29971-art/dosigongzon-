@@ -4,15 +4,15 @@
 -- 실행: Supabase SQL Editor
 -- ══════════════════════════════════════════
 
--- name 컬럼을 "고양이 이름"으로 의미 재사용. address/phone 옵션화.
+-- 응모 폼 완전 단순화 — 이제 버튼 한 번 = 응모 기록만.
+-- 모든 부가 정보는 추첨 후 쪽지로 별도 수집.
 alter table public.event_keyring_entries
+  alter column name drop not null,
   alter column address drop not null,
-  alter column phone drop not null;
+  alter column phone drop not null,
+  alter column cat_photo_url drop not null;
 
--- 기존 코멘트 갱신 (선택)
 comment on column public.event_keyring_entries.name
-  is '고양이 이름 (이전엔 수령자 이름이었음 — 2026-04-25 단순화)';
-comment on column public.event_keyring_entries.address
-  is '배송 주소 (옵션 — 추첨 후 별도 안내)';
-comment on column public.event_keyring_entries.phone
-  is '전화번호 (옵션 — 추첨 후 별도 안내)';
+  is '응모자 닉네임 스냅샷 (옵션) — 2026-04-26 단순화';
+comment on column public.event_keyring_entries.cat_photo_url
+  is '고양이 사진 (옵션) — 2026-04-26 단순화';

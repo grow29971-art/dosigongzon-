@@ -27,6 +27,14 @@
     {
       "path": "/api/cron/onboarding-nudge",
       "schedule": "0 2 * * 6"
+    },
+    {
+      "path": "/api/cron/health-alert-push",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/cleanup-area-chats",
+      "schedule": "0 19 * * 0"
     }
   ]
 }

@@ -79,15 +79,23 @@ export async function GET(request: Request) {
       );
     }
 
-    return Response.json({
-      city: data.name,
-      temp: Math.round(data.main.temp),
-      feelsLike: Math.round(data.main.feels_like),
-      humidity: data.main.humidity,
-      weatherMain: data.weather?.[0]?.main ?? "Clear",
-      weatherDesc: data.weather?.[0]?.description ?? "",
-      windSpeed: data.wind?.speed ?? 0,
-    });
+    return Response.json(
+      {
+        city: data.name,
+        temp: Math.round(data.main.temp),
+        feelsLike: Math.round(data.main.feels_like),
+        humidity: data.main.humidity,
+        weatherMain: data.weather?.[0]?.main ?? "Clear",
+        weatherDesc: data.weather?.[0]?.description ?? "",
+        windSpeed: data.wind?.speed ?? 0,
+      },
+      {
+        headers: {
+          // 날씨는 10분 단위로도 충분. quota 보호 + 함수 호출 절감.
+          "Cache-Control": "public, s-maxage=600, stale-while-revalidate=1800",
+        },
+      },
+    );
   } catch (err) {
     console.error("[Weather API] 호출 실패:", err);
     return Response.json(

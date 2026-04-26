@@ -28,9 +28,13 @@ import {
   Bell,
   Search,
 } from "lucide-react";
-import AIChatModal from "@/app/components/AIChatModal";
+import dynamic from "next/dynamic";
+// AI 챗봇 모달 — 버튼 누르기 전엔 다운로드 안 함
+const AIChatModal = dynamic(() => import("@/app/components/AIChatModal"), { ssr: false });
+// 업적 토스트 — 업적 잠금 해제 시에만 보임. ssr 끄고 lazy.
+const AchievementToast = dynamic(() => import("@/app/components/AchievementToast"), { ssr: false });
+import type { ToastData } from "@/app/components/AchievementToast";
 import SocialProofStrip from "@/app/components/SocialProofStrip";
-import AchievementToast, { type ToastData } from "@/app/components/AchievementToast";
 import { TITLES, CATEGORY_COLORS } from "@/lib/titles";
 import TodayChecklist from "@/app/components/TodayChecklist";
 import RescueBanner from "@/app/components/RescueBanner";

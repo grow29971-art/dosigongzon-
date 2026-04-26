@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import GuideReadMarker from "@/app/components/GuideReadMarker";
 import {
   ArrowLeft, Scissors, Package, MapPin, Clock, AlertTriangle,
   HelpCircle, BookOpen, Stethoscope, Info, CheckCircle2,
@@ -132,6 +133,7 @@ const faqSchema = {
 export default function TrappingGuidePage() {
   return (
     <div className="px-5 pt-14 pb-16 max-w-[720px] mx-auto">
+      <GuideReadMarker slug="trapping-guide" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
