@@ -1,9 +1,11 @@
 "use client";
 
+// 카카오·구글 OAuth 전용 로그인. 이메일/비밀번호 가입은 2026-04-27 폐지.
+
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { PawPrint, Mail, Lock, Eye, EyeOff, Check, ChevronRight, Loader2, ExternalLink, AlertCircle, Sparkles } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { PawPrint, Check, Loader2, ExternalLink, AlertCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
   detectInAppBrowser,
@@ -15,7 +17,6 @@ import {
 } from "@/lib/in-app-browser";
 import { explainAuthError } from "@/lib/auth-errors";
 
-// 로그인 에러를 서버에 로깅 (best-effort, 실패해도 무시)
 function logAuthError(payload: {
   provider?: string | null;
   stage?: string;
@@ -35,11 +36,6 @@ function logAuthError(payload: {
   } catch { /* no-op */ }
 }
 
-/* ═══ 이메일 유효성 검사 ═══ */
-function isValidEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
 export default function LoginPage() {
   return (
     <Suspense>
@@ -48,53 +44,30 @@ export default function LoginPage() {
   );
 }
 
-/* ═══ 페이지 ═══ */
 function LoginContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPw, setShowPw] = useState(false);
-  const [keepLogin, setKeepLogin] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
-  const [pressing, setPressing] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [socialLoading, setSocialLoading] = useState<string | null>(null);
-  const [socialAgree, setSocialAgree] = useState(false);
+  const [agreed, setAgreed] = useState(false);
+  const [socialLoading, setSocialLoading] = useState<"kakao" | "google" | null>(null);
+  const [error, setError] = useState("");
 
-  // 인앱 브라우저 감지 (카톡/페북/인스타 등)
   const [inApp, setInApp] = useState<InAppBrowser>(null);
-  const [showIosCopyHint, setShowIosCopyHint] = useState(false);
   const [isSamsung, setIsSamsung] = useState(false);
+  const [showIosCopyHint, setShowIosCopyHint] = useState(false);
   useEffect(() => {
     setInApp(detectInAppBrowser());
     setIsSamsung(detectSamsungInternet());
   }, []);
-
-  const handleOpenExternal = async () => {
-    const success = openInExternalBrowser();
-    if (!success) {
-      // iOS 카톡 외 인앱: URL 복사로 안내
-      try {
-        await navigator.clipboard.writeText(window.location.href);
-      } catch {}
-      setShowIosCopyHint(true);
-    }
-  };
 
   const authError = searchParams.get("error");
   const authErrorCode = searchParams.get("error_code");
   const authErrorDesc = searchParams.get("error_description");
   const authProvider = searchParams.get("provider");
 
-  // 콜백으로 돌아온 에러를 가이드 객체로 변환
   const oauthGuide = (authError || authErrorDesc)
     ? explainAuthError(authErrorCode || authError, authErrorDesc, authProvider)
     : null;
 
-  // 페이지에 에러 파라미터 들고 돌아왔을 때 한 번 로깅
-  // (콜백에서 이미 로깅했지만, 클라이언트 환경 정보가 추가로 필요할 때를 위해)
   useEffect(() => {
     if (!authError && !authErrorDesc) return;
     logAuthError({
@@ -103,131 +76,42 @@ function LoginContent() {
       error_code: authErrorCode || authError,
       error_desc: authErrorDesc,
     });
-    // 한 번만
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 매직링크
-  const [magicEmail, setMagicEmail] = useState("");
-  const [magicSent, setMagicSent] = useState(false);
-  const [magicSending, setMagicSending] = useState(false);
-  const [magicErr, setMagicErr] = useState("");
-  const [showMagic, setShowMagic] = useState(false);
-
-  const handleMagicLink = async () => {
-    setMagicErr("");
-    if (!isValidEmail(magicEmail)) {
-      setMagicErr("올바른 이메일을 입력해주세요.");
-      return;
+  const handleOpenExternal = async () => {
+    const success = openInExternalBrowser();
+    if (!success) {
+      try { await navigator.clipboard.writeText(window.location.href); } catch {}
+      setShowIosCopyHint(true);
     }
-    setMagicSending(true);
-    const { error } = await createClient().auth.signInWithOtp({
-      email: magicEmail,
-      options: {
-        emailRedirectTo: `${window.location.origin}/api/auth/callback`,
-      },
-    });
-    setMagicSending(false);
-    if (error) {
-      setMagicErr(error.message);
-      logAuthError({
-        provider: "magic_link",
-        stage: "client",
-        error_code: "otp_failed",
-        error_desc: error.message,
-      });
-      return;
-    }
-    setMagicSent(true);
   };
 
-  const validate = () => {
-    const next: typeof errors = {};
-    if (!email) next.email = "이메일을 입력해주세요.";
-    else if (!isValidEmail(email)) next.email = "올바른 이메일 형식이 아닙니다.";
-    if (!password) next.password = "비밀번호를 입력해주세요.";
-    else if (password.length < 6) next.password = "비밀번호는 6자 이상이어야 합니다.";
-    setErrors(next);
-    return Object.keys(next).length === 0;
-  };
-
-  // 브루트포스 방어: 5회 실패 시 60초 잠금
-  const [loginAttempts, setLoginAttempts] = useState(0);
-  const [lockedUntil, setLockedUntil] = useState(0);
-
-  const handleLogin = async () => {
-    if (!validate()) return;
-
-    // 잠금 확인
-    if (lockedUntil > Date.now()) {
-      const remain = Math.ceil((lockedUntil - Date.now()) / 1000);
-      setErrors({ general: `로그인 시도가 너무 많습니다. ${remain}초 후 다시 시도해주세요.` });
-      return;
-    }
-
-    setLoading(true);
-    setErrors({});
-
-    const { error } = await createClient().auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      setLoading(false);
-      const attempts = loginAttempts + 1;
-      setLoginAttempts(attempts);
-
-      // 5회 실패 시 60초 잠금
-      if (attempts >= 5) {
-        setLockedUntil(Date.now() + 60000);
-        setLoginAttempts(0);
-        setErrors({ general: "로그인 시도가 5회 실패했습니다. 1분 후 다시 시도해주세요." });
-        return;
-      }
-
-      if (error.message.includes("Invalid login credentials")) {
-        setErrors({ general: `이메일 또는 비밀번호가 올바르지 않습니다. (${attempts}/5)` });
-      } else if (error.message.includes("Email not confirmed")) {
-        setErrors({ general: "이메일 인증을 완료해주세요. 메일함을 확인해주세요." });
-      } else {
-        setErrors({ general: error.message });
-      }
-      return;
-    }
-
-    setLoginAttempts(0);
-
-    // next 파라미터 있으면 해당 경로로, 없으면 홈
-    const rawNext = searchParams.get("next");
-    const safeNext = rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
-    router.push(safeNext);
-    router.refresh();
-  };
-
-  const handleSocialLogin = async (provider: "google" | "kakao") => {
+  const handleSocial = async (provider: "kakao" | "google") => {
+    if (inApp) { handleOpenExternal(); return; }
+    if (!agreed) { setError("약관에 동의해주세요."); return; }
+    setError("");
     setSocialLoading(provider);
+
     const rawNext = searchParams.get("next");
     const safeNext = rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
     const callbackUrl = `${window.location.origin}/api/auth/callback?provider=${provider}&next=${encodeURIComponent(safeNext)}`;
-    // 카카오는 비즈 앱 전환 후 account_email을 필수 동의로 받을 수 있음.
-    // scopes 명시는 콘솔 동의 항목과 일치해야 카카오 측에서 reject 안 됨.
     const oauthOptions: { redirectTo: string; scopes?: string } = { redirectTo: callbackUrl };
     if (provider === "kakao") {
       oauthOptions.scopes = "account_email profile_nickname profile_image";
     }
-    const { error } = await createClient().auth.signInWithOAuth({
+    const { error: oauthError } = await createClient().auth.signInWithOAuth({
       provider,
       options: oauthOptions,
     });
-    if (error) {
+    if (oauthError) {
       setSocialLoading(null);
-      setErrors({ general: error.message });
+      setError(oauthError.message);
       logAuthError({
         provider,
         stage: "client",
         error_code: "signin_with_oauth_failed",
-        error_desc: error.message,
+        error_desc: oauthError.message,
       });
     }
   };
@@ -235,7 +119,7 @@ function LoginContent() {
   return (
     <div className="min-h-dvh bg-warm-white flex flex-col">
       <div className="flex-1 overflow-y-auto px-6 py-12 flex flex-col justify-center max-w-lg mx-auto w-full">
-        {/* ══════ 인앱 브라우저 경고 (카톡/페북/인스타 등에서 Google OAuth 차단) ══════ */}
+        {/* 인앱 브라우저 경고 */}
         {inApp && (
           <div
             className="mb-6 rounded-2xl p-4"
@@ -248,8 +132,7 @@ function LoginContent() {
                   {inAppBrowserLabel(inApp)} 안에서는 소셜 로그인이 안 돼요
                 </p>
                 <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#8B2F2F" }}>
-                  Google 보안 정책으로 인앱 브라우저에서 OAuth가 차단됩니다.
-                  일반 브라우저로 열어주세요.
+                  보안 정책으로 인앱 브라우저에서 OAuth가 차단됩니다. 일반 브라우저로 열어주세요.
                 </p>
               </div>
             </div>
@@ -265,34 +148,26 @@ function LoginContent() {
                 : "크롬/사파리에서 열기"}
             </button>
             {showIosCopyHint && (
-              <div
-                className="mt-3 rounded-xl p-3 text-[11px] leading-relaxed"
-                style={{ backgroundColor: "#FFF", color: "#6B5043" }}
-              >
+              <div className="mt-3 rounded-xl p-3 text-[11px] leading-relaxed" style={{ backgroundColor: "#FFF", color: "#6B5043" }}>
                 <p className="font-bold mb-1">주소가 복사됐어요 ✓</p>
-                <p>
-                  사파리(iOS) 또는 크롬(Android)을 직접 열고 주소창에 붙여넣어주세요.
-                  또는 공유 메뉴 → &quot;사파리로 열기&quot;를 이용할 수 있어요.
-                </p>
+                <p>사파리(iOS) 또는 크롬(Android)을 직접 열고 주소창에 붙여넣어주세요.</p>
               </div>
             )}
           </div>
         )}
 
-        {/* ══════ 로고 섹션 ══════ */}
-        <div className="text-center mb-10">
+        {/* 로고 */}
+        <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-[28px] bg-primary/10 mb-4">
             <PawPrint size={40} className="text-primary" strokeWidth={1.8} />
           </div>
-          <h1 className="text-[28px] font-extrabold text-text-main tracking-tight">
-            도시공존
-          </h1>
-          <p className="text-[14px] text-text-sub mt-2 leading-relaxed">
-            길 위의 생명과 함께 걷는 따뜻한 한 걸음
+          <h1 className="text-[26px] font-extrabold text-text-main tracking-tight">도시공존</h1>
+          <p className="text-[13.5px] text-text-sub mt-2 leading-relaxed">
+            카카오 또는 구글로 1초 만에 시작하기
           </p>
         </div>
 
-        {/* ══════ OAuth 에러 가이드 카드 (redirect 후 돌아왔을 때) ══════ */}
+        {/* OAuth 에러 가이드 */}
         {oauthGuide && (
           <div
             className="rounded-2xl p-4 mb-4"
@@ -342,153 +217,48 @@ function LoginContent() {
           </div>
         )}
 
-        {/* ══════ 일반 에러 메시지 (비밀번호 로그인 실패 등) ══════ */}
-        {errors.general && (
-          <div className="rounded-xl px-4 py-3 mb-4" style={{ backgroundColor: "#EEE3DE", border: "1px solid #E3D2CC" }}>
-            <p className="text-[13px]" style={{ color: "#B84545" }}>
-              {errors.general}
+        {/* 일반 에러 */}
+        {error && (
+          <div className="rounded-xl px-4 py-3 mb-4" style={{ backgroundColor: "#FBEAEA" }}>
+            <p className="text-[13px] font-semibold" style={{ color: "#B84545" }}>{error}</p>
+          </div>
+        )}
+
+        {/* 인앱 외 일반 환경에서의 안내 */}
+        {!inApp && (
+          <div
+            className="mb-4 rounded-xl px-4 py-2.5 flex items-start gap-2"
+            style={{ backgroundColor: "#F6F1EA", border: "1px solid #E5E0D6" }}
+          >
+            <span className="text-[13px] mt-0.5">💡</span>
+            <p className="text-[11.5px] text-text-sub leading-relaxed">
+              가입과 로그인이 같아요. 처음이시면 그냥 카카오 또는 구글 버튼을 눌러주세요.
             </p>
           </div>
         )}
 
-        {/* ══════ 입력 폼 ══════ */}
-        <div className="space-y-3 mb-4">
-          {/* 이메일 */}
-          <div>
-            <div
-              className={`flex items-center gap-3 bg-white rounded-xl px-4 py-3.5 border transition-colors ${
-                errors.email ? "border-error" : "border-border focus-within:border-primary"
-              }`}
-            >
-              <Mail size={18} className="text-text-muted shrink-0" />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => { setEmail(e.target.value); setErrors((p) => ({ ...p, email: undefined })); }}
-                placeholder="이메일"
-                className="flex-1 text-[14px] text-text-main bg-transparent outline-none placeholder:text-text-muted"
-              />
-            </div>
-            {errors.email && (
-              <p className="text-[11px] text-error mt-1 ml-1">{errors.email}</p>
-            )}
-          </div>
-
-          {/* 비밀번호 */}
-          <div>
-            <div
-              className={`flex items-center gap-3 bg-white rounded-xl px-4 py-3.5 border transition-colors ${
-                errors.password ? "border-error" : "border-border focus-within:border-primary"
-              }`}
-            >
-              <Lock size={18} className="text-text-muted shrink-0" />
-              <input
-                type={showPw ? "text" : "password"}
-                value={password}
-                onChange={(e) => { setPassword(e.target.value); setErrors((p) => ({ ...p, password: undefined })); }}
-                placeholder="비밀번호"
-                className="flex-1 text-[14px] text-text-main bg-transparent outline-none placeholder:text-text-muted"
-                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPw(!showPw)}
-                className="shrink-0 p-0.5"
-              >
-                {showPw ? (
-                  <EyeOff size={18} className="text-text-muted" />
-                ) : (
-                  <Eye size={18} className="text-text-muted" />
-                )}
-              </button>
-            </div>
-            {errors.password && (
-              <p className="text-[11px] text-error mt-1 ml-1">{errors.password}</p>
-            )}
-          </div>
-        </div>
-
-        {/* ══════ 로그인 유지 + 비밀번호 찾기 ══════ */}
-        <div className="flex items-center justify-between mb-6">
-          <button
-            onClick={() => setKeepLogin(!keepLogin)}
-            className="flex items-center gap-2"
-          >
-            <div
-              className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
-                keepLogin ? "bg-primary border-primary" : "border-border"
-              }`}
-            >
-              {keepLogin && <Check size={12} color="white" strokeWidth={3} />}
-            </div>
-            <span className="text-[13px] text-text-sub">로그인 상태 유지</span>
-          </button>
-          <Link href="/find-account" className="text-[13px] font-semibold text-primary underline underline-offset-2">
-            아이디 · 비밀번호 찾기
-          </Link>
-        </div>
-
-        {/* ══════ 로그인 버튼 ══════ */}
-        <button
-          onPointerDown={() => setPressing(true)}
-          onPointerUp={() => setPressing(false)}
-          onPointerLeave={() => setPressing(false)}
-          onClick={handleLogin}
-          disabled={loading}
-          className="w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold transition-transform duration-100 disabled:opacity-60"
-          style={{
-            transform: pressing ? "scale(0.97)" : "scale(1)",
-            boxShadow: pressing
-              ? "0 2px 8px rgba(196,126,90,0.2)"
-              : "0 6px 20px rgba(196,126,90,0.3)",
-          }}
-        >
-          {loading ? (
-            <Loader2 size={20} className="animate-spin mx-auto" />
-          ) : (
-            "로그인"
-          )}
-        </button>
-
-        {/* ══════ 구분선 ══════ */}
-        <div className="flex items-center gap-4 my-7">
-          <div className="flex-1 h-px bg-border" />
-          <span className="text-[12px] text-text-muted">또는</span>
-          <div className="flex-1 h-px bg-border" />
-        </div>
-
-        {/* 소셜 로그인 안내 */}
-        <div
-          className="mb-3 rounded-xl px-4 py-2.5 flex items-start gap-2"
-          style={{ backgroundColor: "#F6F1EA", border: "1px solid #E5E0D6" }}
-        >
-          <span className="text-[13px] mt-0.5">💡</span>
-          <p className="text-[11px] text-text-sub leading-relaxed">
-            소셜 로그인은 <b>크롬 · 사파리</b>에서 접속해주세요. 카카오톡/인스타 등 앱 내 브라우저에서는 OAuth가 차단돼요.
-          </p>
-        </div>
-
-        {/* ══════ 소셜 로그인 약관 동의 ══════ */}
+        {/* 약관 동의 */}
         <div className="mb-4">
           <button
-            onClick={() => setSocialAgree(!socialAgree)}
-            className="flex items-start gap-2.5"
+            type="button"
+            onClick={() => setAgreed(!agreed)}
+            className="flex items-start gap-2.5 text-left w-full"
           >
             <div
               className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
-                socialAgree ? "bg-primary border-primary" : "border-border"
+                agreed ? "bg-primary border-primary" : "border-border"
               }`}
             >
-              {socialAgree && <Check size={12} color="white" strokeWidth={3} />}
+              {agreed && <Check size={12} color="white" strokeWidth={3} />}
             </div>
-            <span className="text-[12px] text-text-sub text-left leading-relaxed">
+            <span className="text-[12.5px] text-text-sub leading-relaxed">
               <Link href="/terms" className="font-bold text-primary underline">이용약관</Link> 및{" "}
               <Link href="/privacy" className="font-bold text-primary underline">개인정보처리방침</Link>에 동의하며, 만 14세 이상입니다
             </span>
           </button>
         </div>
 
-        {/* 삼성 인터넷 KOE205 경고 — 쿠키 drop으로 카카오 state 검증 실패 자주 발생 */}
+        {/* 삼성 인터넷 경고 */}
         {isSamsung && !inApp && (
           <div
             className="mb-3 rounded-xl px-3.5 py-2.5 flex items-start gap-2"
@@ -502,14 +272,13 @@ function LoginContent() {
           </div>
         )}
 
-        {/* ══════ 소셜 로그인 ══════ */}
+        {/* 소셜 버튼 */}
         <div className="space-y-2.5">
-          {/* 카카오 (비즈 앱 전환 후 복구 — 한국 사용자 친화적) */}
           <button
-            onClick={() => inApp ? handleOpenExternal() : socialAgree ? handleSocialLogin("kakao") : setErrors({ general: "약관에 동의해주세요." })}
+            onClick={() => handleSocial("kakao")}
             disabled={!!socialLoading}
             className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-extrabold active:scale-[0.97] transition-transform disabled:opacity-60"
-            style={{ backgroundColor: "#FEE500", color: "#191919", opacity: (socialAgree || inApp) ? 1 : 0.6 }}
+            style={{ backgroundColor: "#FEE500", color: "#191919", opacity: (agreed || inApp) ? 1 : 0.6 }}
           >
             {socialLoading === "kakao" ? (
               <Loader2 size={18} className="animate-spin" />
@@ -520,12 +289,11 @@ function LoginContent() {
             )}
             카카오로 시작하기
           </button>
-          {/* 구글 */}
           <button
-            onClick={() => inApp ? handleOpenExternal() : socialAgree ? handleSocialLogin("google") : setErrors({ general: "약관에 동의해주세요." })}
+            onClick={() => handleSocial("google")}
             disabled={!!socialLoading}
             className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.97] transition-transform border border-[#E0E0E0] disabled:opacity-60"
-            style={{ backgroundColor: "#FFFFFF", color: "#2A2A28", opacity: (socialAgree || inApp) ? 1 : 0.6 }}
+            style={{ backgroundColor: "#FFFFFF", color: "#2A2A28", opacity: (agreed || inApp) ? 1 : 0.6 }}
           >
             {socialLoading === "google" ? (
               <Loader2 size={18} className="animate-spin" />
@@ -541,107 +309,10 @@ function LoginContent() {
           </button>
         </div>
 
-        {/* ══════ 매직링크 (이메일로 로그인 링크 받기) ══════ */}
-        <div className="mt-5">
-          {!showMagic ? (
-            <button
-              type="button"
-              onClick={() => setShowMagic(true)}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-[12.5px] font-semibold text-text-sub active:scale-[0.98] transition-transform"
-              style={{ backgroundColor: "#F6F1EA", border: "1px dashed #D6CCBF" }}
-            >
-              <Sparkles size={14} className="text-primary" />
-              소셜 로그인이 안 되면 이메일로 로그인 링크 받기
-            </button>
-          ) : magicSent ? (
-            <div
-              className="rounded-2xl p-4"
-              style={{ backgroundColor: "#E8F4E8", border: "1px solid #C8E0C8" }}
-            >
-              <p className="text-[13px] font-extrabold" style={{ color: "#3F5B42" }}>
-                📨 메일을 보냈어요!
-              </p>
-              <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#5A7A5E" }}>
-                <b>{magicEmail}</b> 메일함을 확인해주세요. 링크를 누르면 바로 로그인돼요.
-                <br />스팸함도 확인해보세요.
-              </p>
-              <button
-                type="button"
-                onClick={() => { setMagicSent(false); setShowMagic(false); setMagicEmail(""); }}
-                className="mt-2 text-[11px] font-bold text-primary"
-              >
-                다른 이메일로 다시 보내기
-              </button>
-            </div>
-          ) : (
-            <div
-              className="rounded-2xl p-4"
-              style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E0D6" }}
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <Sparkles size={14} className="text-primary" />
-                <p className="text-[12.5px] font-extrabold text-text-main">
-                  이메일 로그인 링크
-                </p>
-              </div>
-              <p className="text-[11px] text-text-sub mb-3 leading-relaxed">
-                비밀번호 없이 메일로 받은 링크만 누르면 로그인돼요. 소셜 로그인이 안 될 때 가장 확실한 방법이에요.
-              </p>
-              <div
-                className={`flex items-center gap-2 bg-[#F6F1EA] rounded-xl px-3 py-2.5 border ${
-                  magicErr ? "border-error" : "border-border"
-                }`}
-              >
-                <Mail size={15} className="text-text-muted shrink-0" />
-                <input
-                  type="email"
-                  value={magicEmail}
-                  onChange={(e) => { setMagicEmail(e.target.value); setMagicErr(""); }}
-                  placeholder="이메일 주소"
-                  className="flex-1 text-[13px] bg-transparent outline-none placeholder:text-text-muted"
-                  onKeyDown={(e) => e.key === "Enter" && handleMagicLink()}
-                />
-              </div>
-              {magicErr && (
-                <p className="text-[11px] text-error mt-1">{magicErr}</p>
-              )}
-              <div className="flex gap-2 mt-3">
-                <button
-                  type="button"
-                  onClick={() => { setShowMagic(false); setMagicErr(""); }}
-                  className="px-3 py-2 rounded-xl text-[12px] font-bold text-text-sub"
-                  style={{ backgroundColor: "#F6F1EA" }}
-                >
-                  닫기
-                </button>
-                <button
-                  type="button"
-                  onClick={handleMagicLink}
-                  disabled={magicSending}
-                  className="flex-1 py-2 rounded-xl text-[12px] font-extrabold text-white active:scale-[0.98] disabled:opacity-60"
-                  style={{ backgroundColor: "#C47E5A" }}
-                >
-                  {magicSending ? (
-                    <Loader2 size={14} className="animate-spin mx-auto" />
-                  ) : (
-                    "로그인 링크 받기"
-                  )}
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ══════ 회원가입 링크 ══════ */}
-        <div className="text-center mt-8">
-          <span className="text-[13px] text-text-sub">아직 계정이 없으신가요? </span>
-          <Link
-            href="/signup"
-            className="text-[13px] font-bold text-primary inline-flex items-center gap-0.5"
-          >
-            회원가입 <ChevronRight size={14} />
-          </Link>
-        </div>
+        <p className="text-[11.5px] text-text-light text-center mt-6 leading-relaxed">
+          한 번 연결하면 다음부터 1클릭 로그인 ·<br />
+          광고 없음 · 무료
+        </p>
       </div>
     </div>
   );

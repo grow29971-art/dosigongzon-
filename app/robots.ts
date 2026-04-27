@@ -10,7 +10,6 @@ const DISALLOWED_PATHS = [
   "/messages/",
   "/notifications/",
   "/onboarding/",
-  "/find-account/",
   // 개인 프로필 — metadata에 noindex 있지만 봇 낭비 방지
   "/users/",
   // 긴급 구조 피드 — 실시간·민감 정보라 검색 노출 안 함

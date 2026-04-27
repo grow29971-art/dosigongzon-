@@ -1,12 +1,11 @@
 "use client";
 
-// 이메일·비밀번호 회원가입은 중단됨 (2026-04-24).
-// 이 페이지는 외부 링크 호환성(/signup 경로 유지) + 카카오·구글 안내 용도.
-// 가입은 로그인 페이지의 카카오·구글 버튼으로 통일.
+// 카카오·구글 OAuth 전용 가입. 이메일/비밀번호 가입은 2026-04-27 폐지.
+// /signup 라우트는 외부 링크 호환성과 가입 컨텍스트(이벤트 응모 등)를 위해 유지.
 
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { PawPrint, Check, Loader2, AlertCircle, ExternalLink } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -27,9 +26,8 @@ export default function SignupPage() {
 }
 
 function SignupContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const eventParam = searchParams.get("event"); // "keyring" 등
+  const eventParam = searchParams.get("event");
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState<"kakao" | "google" | null>(null);
   const [error, setError] = useState("");
@@ -58,7 +56,6 @@ function SignupContent() {
 
     const rawNext = searchParams.get("next");
     const safeNext = rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
-    // event 파라미터를 callback URL에 전달 — 가입 완료 시 admin 알림 트리거
     const eventQuery = eventParam ? `&event=${encodeURIComponent(eventParam)}` : "";
     const callbackUrl = `${window.location.origin}/api/auth/callback?provider=${provider}&next=${encodeURIComponent(safeNext)}${eventQuery}`;
     const oauthOptions: { redirectTo: string; scopes?: string } = { redirectTo: callbackUrl };
@@ -124,11 +121,11 @@ function SignupContent() {
             {eventParam === "keyring" ? "이벤트 응모 가입" : "도시공존에 합류하기"}
           </h1>
           <p className="text-[13.5px] text-text-sub mt-2 leading-relaxed">
-            카카오 또는 구글 계정으로 1초 가입
+            카카오 또는 구글로 1초 가입 · 광고 없음 · 무료
           </p>
         </div>
 
-        {/* 이벤트 컨텍스트 카드 (응모하기로 들어왔을 때만) */}
+        {/* 이벤트 컨텍스트 */}
         {eventParam === "keyring" && (
           <div
             className="mb-4 rounded-2xl p-4"
@@ -145,24 +142,9 @@ function SignupContent() {
             </p>
             <p className="text-[11.5px] text-text-sub leading-relaxed">
               가입자 1,000명 달성 시 추첨으로 20명에게 길고양이 모양의 아크릴 키링을 보내드려요.
-              가입만 해도 응모는 자동.
             </p>
           </div>
         )}
-
-        {/* 이메일 가입 중단 안내 */}
-        <div
-          className="mb-4 rounded-xl px-3.5 py-3"
-          style={{ backgroundColor: "#F6F1EA", border: "1px solid #E5E0D6" }}
-        >
-          <p className="text-[12px] font-extrabold text-text-main mb-0.5">
-            💡 이메일 가입은 지원하지 않아요
-          </p>
-          <p className="text-[11px] leading-relaxed" style={{ color: "#6B5043" }}>
-            비밀번호 관리 부담을 줄이고 계정 복구를 쉽게 하기 위해
-            카카오·구글 로그인만 제공해요. 한 번 연결하면 다음부터 1클릭 로그인.
-          </p>
-        </div>
 
         {/* 삼성 인터넷 경고 */}
         {isSamsung && !inApp && (
@@ -208,7 +190,6 @@ function SignupContent() {
 
         {/* 가입 버튼 */}
         <div className="space-y-2.5">
-          {/* 카카오 */}
           <button
             onClick={() => handleSignup("kakao")}
             disabled={!!loading}
@@ -222,9 +203,8 @@ function SignupContent() {
                 <path d="M9 1.5C4.582 1.5 1 4.262 1 7.668c0 2.219 1.51 4.166 3.788 5.272-.167.625-.604 2.265-.69 2.617-.108.438.16.43.336.314.138-.092 2.198-1.5 3.083-2.107.49.073.99.111 1.483.111 4.418 0 8-2.762 8-6.207C17 4.262 13.418 1.5 9 1.5z" fill="#191919" />
               </svg>
             )}
-            카카오로 가입하기
+            카카오로 시작하기
           </button>
-          {/* 구글 */}
           <button
             onClick={() => handleSignup("google")}
             disabled={!!loading}
@@ -245,13 +225,9 @@ function SignupContent() {
           </button>
         </div>
 
-        {/* 로그인 안내 */}
-        <div className="text-center mt-8">
-          <span className="text-[13px] text-text-sub">이미 계정이 있으신가요? </span>
-          <Link href="/login" className="text-[13px] font-bold text-primary">
-            로그인
-          </Link>
-        </div>
+        <p className="text-[11.5px] text-text-light text-center mt-6">
+          이미 계정이 있으면 같은 방법으로 다시 누르면 로그인돼요.
+        </p>
       </div>
     </div>
   );

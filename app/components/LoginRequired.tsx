@@ -39,18 +39,11 @@ export default function LoginRequired({
           style={{ boxShadow: "0 6px 20px rgba(196,126,90,0.3)" }}
         >
           <LogIn size={16} strokeWidth={2.5} />
-          로그인하기
-        </Link>
-        <Link
-          href="/signup"
-          className="py-3 rounded-2xl bg-white text-text-main text-[13px] font-bold active:scale-[0.98] transition-transform"
-          style={{ border: "1px solid rgba(0,0,0,0.08)" }}
-        >
-          회원가입
+          카카오 · 구글로 시작하기
         </Link>
       </div>
       <p className="text-[11px] text-text-light mt-5">
-        구글 로그인 · 이메일 로그인 · 매직링크 지원
+        가입과 로그인이 같아요 · 1초 가입 · 광고 없음
       </p>
     </div>
   );
