@@ -77,12 +77,15 @@ export async function GET(request: Request) {
     }
 
     const { data: { user } } = await supabase.auth.getUser();
+    let firstSocialSignup = false;
     if (user) {
       const meta = user.user_metadata ?? {};
       const isFirstLogin = !meta.nickname_set;
       const userProvider = user.app_metadata?.provider;
       // 가입 폼의 선택 동의 값 — 명시적 true일 때만 적용 (기본은 false 유지)
       const emailOptIn = meta.email_opt_in === true;
+      // 소셜 첫 가입자는 /welcome 환영 화면을 거쳐가도록 표시
+      firstSocialSignup = isFirstLogin && !!userProvider && userProvider !== "email";
 
       if (isFirstLogin && userProvider && userProvider !== "email") {
         const nickname = generateNickname();
@@ -135,7 +138,11 @@ export async function GET(request: Request) {
         }
       }
     }
-    return NextResponse.redirect(`${origin}${next}`);
+    // 첫 가입자(소셜)는 환영 페이지를 한 번 거치게 — next는 보존
+    const dest = firstSocialSignup
+      ? `/welcome?next=${encodeURIComponent(next)}`
+      : next;
+    return NextResponse.redirect(`${origin}${dest}`);
   }
 
   return NextResponse.redirect(`${origin}/login?error=auth_failed`);

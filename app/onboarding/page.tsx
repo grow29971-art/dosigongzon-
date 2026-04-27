@@ -12,9 +12,10 @@ import {
   PawPrint,
   ChevronRight,
   MapPin,
-  MessageCircle,
   BookOpen,
   Compass,
+  UserPlus,
+  Sparkles,
 } from "lucide-react";
 
 /* ═══ 슬라이드 데이터 ═══ */
@@ -178,33 +179,28 @@ export default function OnboardingPage() {
             관심 가는 곳부터 천천히 둘러보세요
           </p>
 
-          {/* 3 액션 카드 */}
+          {/* 액션 카드 — 가입 유도 우선 */}
           <div className="w-full max-w-[360px] space-y-2.5">
+            <SignupActionCard onClick={() => goAndComplete("/signup")} />
             <ActionCard
               icon={<MapPin size={20} color="#C47E5A" strokeWidth={2.2} />}
-              title="지도에서 동네 친구 찾기"
-              desc="우리 동네 길고양이를 만나고 등록"
+              title="가입 없이 지도부터 보기"
+              desc="구경만 해도 OK — 나중에 가입할 수 있어요"
               onClick={() => goAndComplete("/map")}
             />
             <ActionCard
-              icon={<MessageCircle size={20} color="#8B65B8" strokeWidth={2.2} />}
-              title="커뮤니티 둘러보기"
-              desc="이웃 캣맘과 정보·일상 나누기"
-              onClick={() => goAndComplete("/community")}
-            />
-            <ActionCard
               icon={<BookOpen size={20} color="#5BA876" strokeWidth={2.2} />}
-              title="보호지침 익히기"
+              title="보호지침 먼저 익히기"
               desc="응급·먹이·TNR·임시보호 가이드"
               onClick={() => goAndComplete("/protection")}
             />
           </div>
 
           <button
-            onClick={() => goAndComplete("/map")}
+            onClick={() => goAndComplete("/login")}
             className="mt-6 text-[12px] font-bold text-white/80 underline underline-offset-4"
           >
-            전체 둘러보기
+            이미 계정이 있어요 — 로그인
           </button>
         </div>
       ) : (
@@ -301,6 +297,50 @@ export default function OnboardingPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+function SignupActionCard({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl active:scale-[0.98] transition-transform relative overflow-hidden"
+      style={{
+        background: "linear-gradient(135deg, #2A2A28 0%, #4A3F36 100%)",
+        boxShadow: "0 10px 28px rgba(0,0,0,0.28)",
+        border: "1px solid rgba(255,247,196,0.25)",
+      }}
+    >
+      <span
+        aria-hidden="true"
+        className="absolute -top-3 -right-3 w-16 h-16 rounded-full"
+        style={{ background: "rgba(255,247,196,0.10)", filter: "blur(8px)" }}
+      />
+      <div
+        className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 relative z-10"
+        style={{
+          background: "linear-gradient(135deg, #FFF7C4 0%, #E8B040 100%)",
+          boxShadow: "0 4px 12px rgba(232,176,64,0.35)",
+        }}
+      >
+        <UserPlus size={22} color="#2A2A28" strokeWidth={2.4} />
+      </div>
+      <div className="flex-1 min-w-0 text-left relative z-10">
+        <div className="flex items-center gap-1 mb-0.5">
+          <Sparkles size={10} color="#FFF7C4" />
+          <p className="text-[9.5px] font-extrabold tracking-[0.14em]" style={{ color: "#FFF7C4" }}>
+            추천 · 1초 가입
+          </p>
+        </div>
+        <p className="text-[14.5px] font-extrabold text-white tracking-tight leading-tight">
+          지금 가입하고 함께 시작하기
+        </p>
+        <p className="text-[11px] mt-0.5 truncate" style={{ color: "rgba(255,255,255,0.7)" }}>
+          카카오·구글로 1초 · 광고 없음 · 무료
+        </p>
+      </div>
+      <ChevronRight size={16} className="shrink-0 relative z-10" color="#FFF7C4" />
+    </button>
   );
 }
 
