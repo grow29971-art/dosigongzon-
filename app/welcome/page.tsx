@@ -51,6 +51,11 @@ function WelcomeContent() {
     }
   }, [user, authLoading, router]);
 
+  // 진입한 순간 "한 번 봤음" 마킹 — 중간 이탈해도 다시 강제 노출되지 않게.
+  useEffect(() => {
+    try { localStorage.setItem("dosigongzon_welcome_seen", "true"); } catch {}
+  }, []);
+
   // early_supporter 타이틀 조회
   useEffect(() => {
     if (!user) return;
