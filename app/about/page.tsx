@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, Mail, Heart, MapPin, Sparkles, Shield, Users } from "lucide-react";
+import { ArrowLeft, Mail, Heart, MapPin, Sparkles, Shield, Users, Newspaper } from "lucide-react";
 import { createAnonClient } from "@/lib/supabase/anon";
+import MediaKit from "@/app/components/MediaKit";
 
 const SITE_URL = "https://dosigongzon.com";
 const CONTACT_EMAIL = "grow29971@gmail.com";
@@ -157,6 +158,18 @@ export default async function AboutPage() {
             </li>
           </ul>
         </div>
+      </section>
+
+      {/* 미디어 키트 — 언론·블로거 즉시 활용 */}
+      <section className="px-5 mt-8">
+        <h2 className="text-[16px] font-extrabold text-text-main mb-1 flex items-center gap-1.5">
+          <Newspaper size={15} style={{ color: "#C47E5A" }} />
+          미디어 키트 · 보도 자료
+        </h2>
+        <p className="text-[11.5px] text-text-sub mb-3 leading-relaxed">
+          블로그·트위터·기사에 도시공존을 소개할 때 그대로 복사해서 쓰실 수 있어요.
+        </p>
+        <MediaKit cats={stats.cats} users={stats.users} hospitals={stats.hospitals} />
       </section>
 
       {/* 파트너십/문의 */}

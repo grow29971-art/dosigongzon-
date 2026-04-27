@@ -35,7 +35,10 @@ export default function ShareAreaButton({ guName, slug, catCount, urgentCount }:
         ? `서울 전역 길고양이 ${catCount}마리의 돌봄 기록을 시민이 함께 남기고 있어요 🐾`
         : `${guName}에 등록된 길고양이 ${catCount}마리의 돌봄 기록.`
       : `${guName} 동네 길고양이를 함께 돌봐주세요 🐾`;
-    const imageUrl = `${origin}/opengraph-image`;
+    // 지역 페이지면 그 지역 동적 OG, 홈이면 전체 OG
+    const imageUrl = isRoot
+      ? `${origin}/opengraph-image`
+      : `${origin}/areas/${slug}/opengraph-image`;
 
     const ok = await shareToKakao({
       title,

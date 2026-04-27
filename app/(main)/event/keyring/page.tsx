@@ -7,10 +7,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, Gift, Check } from "lucide-react";
+import { ArrowLeft, Loader2, Gift, Check, Users, TrendingUp } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/app/components/Toast";
+import InviteSection from "@/app/components/InviteSection";
 
 export default function KeyringEventPage() {
   const router = useRouter();
@@ -21,6 +22,16 @@ export default function KeyringEventPage() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
   const [alreadyEntered, setAlreadyEntered] = useState(false);
+  const [memberCount, setMemberCount] = useState<number | null>(null);
+
+  // 가입자 수(이벤트 진행률용) — 1000명 달성 시각화
+  useEffect(() => {
+    const supabase = createClient();
+    supabase
+      .from("profiles")
+      .select("*", { count: "exact", head: true })
+      .then((res: { count: number | null }) => setMemberCount(res.count ?? 0));
+  }, []);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -119,6 +130,41 @@ export default function KeyringEventPage() {
         </div>
       </div>
 
+      {/* 진행률 — 1000명 목표 시각화 */}
+      {memberCount !== null && memberCount < 1000 && (
+        <div className="px-4 mb-4">
+          <div
+            className="rounded-2xl p-4"
+            style={{ background: "#FFF", border: "1px solid rgba(196,126,90,0.18)", boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-1.5">
+                <TrendingUp size={13} style={{ color: "#C47E5A" }} />
+                <span className="text-[12px] font-extrabold text-text-main">이벤트 진행도</span>
+              </div>
+              <span className="text-[11px] font-extrabold" style={{ color: "#C47E5A" }}>
+                {memberCount.toLocaleString()} / 1,000명
+              </span>
+            </div>
+            <div
+              className="w-full h-2 rounded-full overflow-hidden"
+              style={{ background: "rgba(196,126,90,0.15)" }}
+            >
+              <div
+                className="h-full rounded-full transition-all"
+                style={{
+                  width: `${Math.min((memberCount / 1000) * 100, 100)}%`,
+                  background: "linear-gradient(90deg, #C47E5A 0%, #E88D5A 100%)",
+                }}
+              />
+            </div>
+            <p className="text-[10.5px] text-text-sub mt-2 leading-relaxed">
+              {1000 - memberCount}명만 더 모이면 추첨이 시작돼요. 친구를 초대하면 더 빨리 달성해요 🎁
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* 본문 */}
       <div className="px-4">
         {done || alreadyEntered ? (
@@ -140,6 +186,10 @@ export default function KeyringEventPage() {
             <p className="text-[13px] text-text-sub leading-relaxed">
               가입자 1,000명 달성 시 추첨해서 쪽지로 안내드릴게요.
             </p>
+            <div className="flex items-center justify-center gap-1.5 mt-3 text-[11.5px]" style={{ color: "#C47E5A" }}>
+              <Users size={12} />
+              <b>친구를 초대하면 추첨이 더 빨리 시작돼요!</b>
+            </div>
             <Link
               href="/"
               className="inline-block mt-4 px-6 py-2.5 rounded-xl bg-primary text-white text-[14px] font-bold"
@@ -171,6 +221,18 @@ export default function KeyringEventPage() {
             </p>
           </div>
         )}
+      </div>
+
+      {/* 친구 초대 — 이벤트 빨리 끝내기 */}
+      <div className="px-4 mt-6">
+        <div className="mb-2 flex items-start gap-2">
+          <span className="text-[14px]">📣</span>
+          <p className="text-[11.5px] text-text-sub leading-relaxed">
+            <b className="text-text-main">친구를 초대해주세요.</b> 가입자 1,000명이 빨리 모일수록 추첨이 빨라지고,
+            친구가 많으면 동네 길고양이가 더 안전해져요.
+          </p>
+        </div>
+        <InviteSection />
       </div>
     </div>
   );
