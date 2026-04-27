@@ -1069,12 +1069,10 @@ export default function MapPage() {
       });
     }
 
-    // 마커용 썸네일 URL — Vercel Image Optimization 거쳐 작게 받기.
-    // 1280px webp 원본 → 64~120px로 다운사이즈, 대역폭 ~10배 절감.
-    function thumb(url: string | null | undefined, size: number): string {
-      const safe = sanitizeImageUrl(url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
-      // /_next/image는 절대 URL 인코딩 + width 지정
-      return `/_next/image?url=${encodeURIComponent(safe)}&w=${size}&q=70`;
+    // 마커용 사진 URL — 원본 그대로. (Vercel Image Optimization은 background-image에선 400 발생)
+    function thumb(url: string | null | undefined, _size: number): string {
+      void _size;
+      return sanitizeImageUrl(url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
     }
 
     function renderGroup(dong: string, dongCats: Cat[], tier: 1 | 2 | 3) {
