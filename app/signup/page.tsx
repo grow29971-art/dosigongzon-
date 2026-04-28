@@ -138,10 +138,10 @@ function SignupContent() {
               🎁 1000명 이벤트 응모
             </p>
             <p className="text-[13px] font-extrabold text-text-main leading-tight mb-1">
-              가입하면 자동 응모 완료!
+              가입 후 돌보는 아이 등록 → 응모!
             </p>
             <p className="text-[11.5px] text-text-sub leading-relaxed">
-              가입자 1,000명 달성 시 추첨으로 20명에게 길고양이 모양의 아크릴 키링을 보내드려요.
+              1,000명 달성 시 추첨으로 20명에게 <b>당신이 돌보는 아이 모양</b>의 커스텀 아크릴 키링을 보내드려요.
             </p>
           </div>
         )}

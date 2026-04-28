@@ -64,7 +64,7 @@ export default async function Event1000Banner() {
           <p className="text-[12px] mt-2 leading-relaxed text-white/90">
             {reached
               ? "당첨자에게 등록된 이메일·쪽지로 곧 안내드릴게요."
-              : "여러분이 돌보는 길고양이 모양의 아크릴 키링을 추첨으로 보내드려요. 무료 가입만 해도 자동 응모 ✨"}
+              : "당신이 돌보는 길고양이를 등록하고 응모하면, 그 아이 모양 아크릴 키링을 추첨으로 보내드려요 ✨"}
           </p>
 
           {/* 진행률 */}
