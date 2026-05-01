@@ -301,7 +301,7 @@ export default function ProtectionPage() {
     <div className="px-4 pt-14 pb-8">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, "\\u003c") }}
       />
       {/* ── 헤더 ── */}
       <div className="mb-4 px-1">

@@ -5,6 +5,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAnonClient } from "@/lib/supabase/anon";
 import type { Cat } from "@/lib/cats-repo";
+import { isSafeImageUrl } from "@/lib/url-validate";
 
 export async function getCatByIdServer(id: string): Promise<Cat | null> {
   // UUID 형식이 아니면 즉시 null (400 회피)
@@ -40,6 +41,59 @@ export async function getCatCareLogsCountServer(id: string): Promise<number> {
     .select("*", { count: "exact", head: true })
     .eq("cat_id", id);
   return count ?? 0;
+}
+
+// ── 고양이 다이어리: 사진이 첨부된 cat_comments를 시간순으로 모음 ──
+export interface DiaryEntry {
+  id: string;
+  photo_url: string;
+  body: string;
+  author_name: string | null;
+  author_avatar_url: string | null;
+  created_at: string;
+}
+
+export interface CatDiary {
+  entries: DiaryEntry[];
+  totalPhotos: number;     // 사진이 달린 댓글 총 수 (limit 무관 전체 카운트)
+  uniqueDays: number;      // 사진이 올라온 고유 날짜 수 (KST)
+}
+
+export async function getCatDiaryServer(catId: string, limit = 60): Promise<CatDiary> {
+  if (!/^[0-9a-fA-F-]{32,36}$/.test(catId)) {
+    return { entries: [], totalPhotos: 0, uniqueDays: 0 };
+  }
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("cat_comments")
+    .select("id, photo_url, body, author_name, author_avatar_url, created_at")
+    .eq("cat_id", catId)
+    .not("photo_url", "is", null)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error("[cats-server] getCatDiaryServer failed:", error);
+    return { entries: [], totalPhotos: 0, uniqueDays: 0 };
+  }
+
+  // 안전한 URL만 통과 — 카운트와 그리드가 일치하도록 같은 필터 적용
+  const entries = ((data ?? []) as DiaryEntry[]).filter((e) => isSafeImageUrl(e.photo_url));
+
+  // 고유 날짜 수 (KST 기준)
+  const dayKeys = new Set(
+    entries.map((e) =>
+      new Date(e.created_at).toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" }),
+    ),
+  );
+
+  return {
+    entries,
+    totalPhotos: entries.length,
+    uniqueDays: dayKeys.size,
+  };
 }
 
 export interface CatCommunityStats {

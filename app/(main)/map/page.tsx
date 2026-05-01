@@ -30,6 +30,8 @@ import {
   Share2,
   Search,
   SlidersHorizontal,
+  BookOpen,
+  Sparkles,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 // 모달·고급 패널은 첫 페인트 후로 코드 스플리팅 (열기 전엔 다운로드 안 함)
@@ -2464,6 +2466,63 @@ export default function MapPage() {
 
             {/* 정보 */}
             <div className="px-5 py-4">
+              {/* 📸 오늘의 사진 안내 — 패널 열리자마자 보이게 */}
+              {!editingCat && (() => {
+                const todayKst = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
+                const todayPhotoCount = comments.filter(
+                  (c) => c.photo_url && new Date(c.created_at).toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" }) === todayKst,
+                ).length;
+                const hasTodayPhoto = todayPhotoCount > 0;
+                return (
+                  <Link
+                    href={`/cats/${selectedCat.id}`}
+                    className="block mb-3 rounded-2xl px-3.5 py-3 active:scale-[0.99] transition-transform"
+                    style={{
+                      background: hasTodayPhoto
+                        ? "linear-gradient(135deg, rgba(91,168,118,0.14) 0%, rgba(107,142,111,0.10) 100%)"
+                        : "linear-gradient(135deg, rgba(196,126,90,0.16) 0%, rgba(232,176,64,0.10) 100%)",
+                      border: hasTodayPhoto
+                        ? "1.5px solid rgba(91,168,118,0.35)"
+                        : "1.5px dashed rgba(196,126,90,0.40)",
+                    }}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div
+                        className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+                        style={{
+                          background: hasTodayPhoto ? "rgba(91,168,118,0.22)" : "rgba(196,126,90,0.18)",
+                        }}
+                      >
+                        {hasTodayPhoto ? (
+                          <Sparkles size={16} style={{ color: "#5BA876" }} />
+                        ) : (
+                          <Camera size={16} style={{ color: "#C47E5A" }} />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p
+                          className="text-[12.5px] font-extrabold leading-tight"
+                          style={{ color: hasTodayPhoto ? "#3F6B4E" : "#8E5440" }}
+                        >
+                          {hasTodayPhoto
+                            ? `오늘 ${todayPhotoCount}장 채워졌어요 ✨`
+                            : `오늘의 ${selectedCat.name} 사진을 올려주세요`}
+                        </p>
+                        <p
+                          className="text-[10.5px] mt-0.5 leading-snug"
+                          style={{ color: hasTodayPhoto ? "#5F8F73" : "#A8684A" }}
+                        >
+                          {hasTodayPhoto
+                            ? "다이어리에 차곡차곡 쌓이고 있어요"
+                            : "아래 댓글창에서 📷 버튼으로 첨부해보세요"}
+                        </p>
+                      </div>
+                      <BookOpen size={13} className="shrink-0" style={{ color: hasTodayPhoto ? "#5BA876" : "#C47E5A" }} />
+                    </div>
+                  </Link>
+                );
+              })()}
+
               {editingCat ? (
                 /* ═══ 수정 모드 ═══ */
                 <div className="space-y-3">
@@ -3133,7 +3192,7 @@ export default function MapPage() {
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") handleSubmitComment();
+                      if (e.key === "Enter" && !e.nativeEvent.isComposing) handleSubmitComment();
                     }}
                     placeholder={
                       commentKind === "alert"

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, MapPin, PawPrint, CalendarDays } from "lucide-react";
-import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer, getCatCommunityStatsServer } from "@/lib/cats-server";
+import { ArrowLeft, MapPin, PawPrint, CalendarDays, Camera, BookOpen, Sparkles } from "lucide-react";
+import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer, getCatCommunityStatsServer, getCatDiaryServer } from "@/lib/cats-server";
 import { GENDER_MAP, HEALTH_MAP } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { createClient } from "@/lib/supabase/server";
@@ -68,10 +68,11 @@ export default async function CatDetailPage({ params }: { params: Params }) {
   const { data: { user } } = await supabase.auth.getUser();
   const currentUserId = user?.id ?? null;
 
-  const [commentCount, careCount, communityStats] = await Promise.all([
+  const [commentCount, careCount, communityStats, diary] = await Promise.all([
     getCatCommentsCountServer(cat.id),
     getCatCareLogsCountServer(cat.id),
     getCatCommunityStatsServer(cat.id),
+    getCatDiaryServer(cat.id, 60),
   ]);
 
   const photo = sanitizeImageUrl(cat.photo_url, "https://placehold.co/800x800/EEEAE2/2A2A28?text=%3F");
@@ -113,7 +114,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
     <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
 
       {/* 헤더 (뒤로 가기) */}
@@ -365,6 +366,168 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             )}
           </div>
         </div>
+      </div>
+
+      {/* 📸 다이어리 — 시간이 쌓인 사진 갤러리 */}
+      <div className="px-4 mt-5">
+        <div className="flex items-center justify-between mb-2.5 px-1">
+          <div className="flex items-center gap-1.5">
+            <BookOpen size={16} style={{ color: "#C47E5A" }} />
+            <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+              {cat.name}의 다이어리
+            </h2>
+          </div>
+          {diary.totalPhotos > 0 && (
+            <span className="text-[10.5px] font-bold text-text-sub tabular-nums">
+              {diary.uniqueDays}일 · {diary.totalPhotos}장
+            </span>
+          )}
+        </div>
+
+        {/* 📅 오늘 상태 안내 — 오늘 사진 있으면 칭찬, 없으면 유도 */}
+        {(() => {
+          const todayKst = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
+          const todayCount = diary.entries.filter(
+            (e) => new Date(e.created_at).toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" }) === todayKst,
+          ).length;
+          const hasTodayPhoto = todayCount > 0;
+          return (
+            <Link
+              href={`/map?cat=${cat.id}`}
+              className="block mb-3 rounded-xl px-3.5 py-3 active:scale-[0.99] transition-transform"
+              style={{
+                background: hasTodayPhoto
+                  ? "linear-gradient(135deg, rgba(91,168,118,0.14) 0%, rgba(107,142,111,0.10) 100%)"
+                  : "linear-gradient(135deg, rgba(196,126,90,0.16) 0%, rgba(232,176,64,0.10) 100%)",
+                border: hasTodayPhoto
+                  ? "1.5px solid rgba(91,168,118,0.35)"
+                  : "1.5px dashed rgba(196,126,90,0.40)",
+              }}
+            >
+              <div className="flex items-center gap-2.5">
+                <div
+                  className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+                  style={{
+                    background: hasTodayPhoto ? "rgba(91,168,118,0.22)" : "rgba(196,126,90,0.18)",
+                  }}
+                >
+                  {hasTodayPhoto ? (
+                    <Sparkles size={16} style={{ color: "#5BA876" }} />
+                  ) : (
+                    <Camera size={16} style={{ color: "#C47E5A" }} />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p
+                    className="text-[12.5px] font-extrabold leading-tight"
+                    style={{ color: hasTodayPhoto ? "#3F6B4E" : "#8E5440" }}
+                  >
+                    {hasTodayPhoto
+                      ? `오늘 ${todayCount}장 채워졌어요 ✨`
+                      : `오늘의 ${cat.name} 사진을 올려주세요`}
+                  </p>
+                  <p
+                    className="text-[10.5px] mt-0.5 leading-snug"
+                    style={{ color: hasTodayPhoto ? "#5F8F73" : "#A8684A" }}
+                  >
+                    {hasTodayPhoto
+                      ? "한 장 더 남기면 다이어리가 더 두꺼워져요"
+                      : "지도에서 사진과 함께 돌봄 기록을 남겨보세요"}
+                  </p>
+                </div>
+                <Camera size={13} className="shrink-0" style={{ color: hasTodayPhoto ? "#5BA876" : "#C47E5A" }} />
+              </div>
+            </Link>
+          );
+        })()}
+
+        {diary.entries.length === 0 ? (
+          // 빈 상태 — 첫 사진 유도
+          <div
+            className="rounded-2xl p-5 text-center"
+            style={{
+              background: "linear-gradient(135deg, #FFF9F2 0%, #FCE7D2 100%)",
+              border: "1.5px dashed rgba(196,126,90,0.35)",
+            }}
+          >
+            <Sparkles size={20} className="mx-auto mb-1.5" style={{ color: "#C47E5A" }} />
+            <p className="text-[13px] font-extrabold text-text-main leading-tight">
+              {cat.name}의 다이어리가 비어 있어요
+            </p>
+            <p className="text-[11.5px] text-text-sub mt-1.5 leading-relaxed">
+              지도에서 사진을 한 장 올려주세요.
+              <br />
+              매일 한 장씩 모이면 시간을 담은 다이어리가 돼요 🐾
+            </p>
+            <Link
+              href={`/map?cat=${cat.id}`}
+              className="inline-flex items-center gap-1.5 mt-3 px-4 py-2 rounded-xl text-white text-[12px] font-extrabold active:scale-[0.97] transition-transform"
+              style={{
+                background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+                boxShadow: "0 6px 18px rgba(196,126,90,0.35)",
+              }}
+            >
+              <Camera size={13} />
+              첫 사진 올리기
+            </Link>
+          </div>
+        ) : (
+          <>
+            {/* 사진 그리드 — 3열 */}
+            <div className="grid grid-cols-3 gap-1.5">
+              {diary.entries.map((e) => {
+                const safe = sanitizeImageUrl(e.photo_url, "");
+                if (!safe) return null;
+                const dateLabel = new Date(e.created_at).toLocaleDateString("ko-KR", {
+                  month: "numeric",
+                  day: "numeric",
+                  timeZone: "Asia/Seoul",
+                });
+                return (
+                  <a
+                    key={e.id}
+                    href={safe}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block rounded-xl overflow-hidden relative active:scale-[0.97] transition-transform"
+                    style={{ aspectRatio: "1/1", background: "#EEE8E0" }}
+                  >
+                    <Image
+                      src={safe}
+                      alt={`${cat.name} 다이어리 — ${dateLabel}`}
+                      fill
+                      sizes="(max-width: 480px) 33vw, 160px"
+                      style={{ objectFit: "cover" }}
+                      unoptimized
+                    />
+                    <div
+                      className="absolute bottom-0 left-0 right-0 px-1.5 py-0.5 text-[10px] font-extrabold text-white tabular-nums"
+                      style={{
+                        background: "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 100%)",
+                      }}
+                    >
+                      {dateLabel}
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+
+            {/* 더 올리기 CTA — 작게 */}
+            <Link
+              href={`/map?cat=${cat.id}`}
+              className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12px] font-bold active:scale-[0.98] transition-transform"
+              style={{
+                background: "#FFFFFF",
+                color: "#C47E5A",
+                border: "1px solid #E8D4BD",
+              }}
+            >
+              <Camera size={12} />
+              오늘의 사진 추가하기
+            </Link>
+          </>
+        )}
       </div>
 
       {/* CTA */}

@@ -541,7 +541,7 @@ export default function ActivityRegionsPage() {
                 type="text"
                 value={searchQ}
                 onChange={(e) => setSearchQ(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                onKeyDown={(e) => e.key === "Enter" && !e.nativeEvent.isComposing && handleSearch()}
                 placeholder="주소·장소 검색 (예: 남동구청)"
                 className="flex-1 bg-transparent text-[12px] font-semibold outline-none"
               />

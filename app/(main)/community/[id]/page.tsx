@@ -595,7 +595,7 @@ export default function PostDetailPage({
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") handleSubmitComment();
+                if (e.key === "Enter" && !e.nativeEvent.isComposing) handleSubmitComment();
               }}
               placeholder={
                 replyTo ? `${replyTo.name}에게 답글...` : user ? "댓글을 입력하세요..." : "로그인 후 댓글을 작성할 수 있어요"

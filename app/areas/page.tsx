@@ -85,7 +85,7 @@ export default async function AreasIndexPage() {
     <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
 
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">

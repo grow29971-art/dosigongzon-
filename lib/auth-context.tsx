@@ -27,7 +27,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    let unsub: (() => void) | null = null;
+    let cancelled = false;
+
     import("@/lib/supabase/client").then(({ createClient }) => {
+      if (cancelled) return;
       const supabase = createClient();
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
         (_event: string, session: { user: User | null } | null) => {
@@ -35,9 +39,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setLoading(false);
         }
       );
-
-      return () => subscription.unsubscribe();
+      unsub = () => subscription.unsubscribe();
     });
+
+    return () => {
+      cancelled = true;
+      unsub?.();
+    };
   }, []);
 
   const signOut = async () => {

@@ -5,26 +5,30 @@
 // - 1000명 달성 후엔 "추첨 진행 중" 모드로 자동 전환
 
 import Link from "next/link";
-import { Gift, Sparkles, ArrowRight } from "lucide-react";
+import { Gift, Sparkles, ArrowRight, Users } from "lucide-react";
 import { createAnonClient } from "@/lib/supabase/anon";
 
 const TARGET = 1000;
 const PRIZES = 20;
 
-async function getUserCount(): Promise<number> {
+async function getCounts(): Promise<{ userCount: number; entryCount: number }> {
   try {
     const supabase = createAnonClient();
-    const { count } = await supabase
-      .from("profiles")
-      .select("*", { count: "exact", head: true });
-    return count ?? 0;
+    const [users, entries] = await Promise.all([
+      supabase.from("profiles").select("*", { count: "exact", head: true }),
+      supabase.from("event_keyring_entries").select("*", { count: "exact", head: true }),
+    ]);
+    return {
+      userCount: users.count ?? 0,
+      entryCount: entries.count ?? 0,
+    };
   } catch {
-    return 0;
+    return { userCount: 0, entryCount: 0 };
   }
 }
 
 export default async function Event1000Banner() {
-  const userCount = await getUserCount();
+  const { userCount, entryCount } = await getCounts();
   const reached = userCount >= TARGET;
   const remaining = Math.max(0, TARGET - userCount);
   const percent = Math.min(100, Math.round((userCount / TARGET) * 100));
@@ -106,6 +110,17 @@ export default async function Event1000Banner() {
                 내가 등록·돌본 길고양이 모양으로 제작
               </p>
             </div>
+            {entryCount > 0 && (
+              <div
+                className="shrink-0 flex items-center gap-1 px-2 py-1 rounded-lg"
+                style={{ background: "rgba(255,255,255,0.22)" }}
+              >
+                <Users size={11} />
+                <span className="text-[11px] font-extrabold tabular-nums">
+                  {entryCount.toLocaleString()}명
+                </span>
+              </div>
+            )}
           </div>
 
           {/* CTA — 응모 페이지로. 비로그인이면 거기서 로그인 유도 */}

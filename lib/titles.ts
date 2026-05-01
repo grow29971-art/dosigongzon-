@@ -6,7 +6,7 @@
 
 import type { MyActivitySummary } from "@/lib/cats-repo";
 
-export type TitleCategory = "register" | "record" | "alert" | "popular" | "invite" | "streak";
+export type TitleCategory = "register" | "record" | "alert" | "popular" | "invite" | "streak" | "carelog";
 
 export interface TitleDef {
   id: string;
@@ -197,6 +197,35 @@ export const TITLES: TitleDef[] = [
     progress: (s) => clamp01(s.inviteCount / 10),
   },
 
+  // ── 돌봄 일지 (careLogCount) ──
+  {
+    id: "first_meal",
+    name: "첫 식사",
+    emoji: "🍚",
+    category: "carelog",
+    description: "첫 번째 돌봄 일지를 남겼어요",
+    unlocked: (s) => s.careLogCount >= 1,
+    progress: (s) => clamp01(s.careLogCount / 1),
+  },
+  {
+    id: "regular_caregiver",
+    name: "단골 캣맘",
+    emoji: "🥣",
+    category: "carelog",
+    description: "10번의 돌봄 일지로 정성을 쌓았어요",
+    unlocked: (s) => s.careLogCount >= 10,
+    progress: (s) => clamp01(s.careLogCount / 10),
+  },
+  {
+    id: "hundred_meals",
+    name: "100끼의 정성",
+    emoji: "🍱",
+    category: "carelog",
+    description: "100번의 돌봄 — 변함없는 마음의 증거",
+    unlocked: (s) => s.careLogCount >= 100,
+    progress: (s) => clamp01(s.careLogCount / 100),
+  },
+
   // ── 공감 (likesReceived) ──
   {
     id: "loved",
@@ -234,6 +263,7 @@ export const CATEGORY_LABELS: Record<TitleCategory, string> = {
   popular: "공감",
   invite: "초대",
   streak: "꾸준함",
+  carelog: "돌봄 일지",
 };
 
 export const CATEGORY_COLORS: Record<TitleCategory, string> = {
@@ -243,6 +273,7 @@ export const CATEGORY_COLORS: Record<TitleCategory, string> = {
   popular: "#C9A961",
   invite: "#E86B8C",
   streak: "#E88D5A",
+  carelog: "#A57C52",
 };
 
 export interface TitleStatus extends TitleDef {

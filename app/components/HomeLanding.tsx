@@ -2,7 +2,23 @@
 // 서버 컴포넌트로 풍부한 HTML을 첫 바이트에 실어 보냄.
 
 import Link from "next/link";
-import { MapPin, Heart, Sparkles, ShieldCheck, ArrowRight, PawPrint, Bell, Download } from "lucide-react";
+import {
+  MapPin,
+  Heart,
+  Sparkles,
+  ShieldCheck,
+  ArrowRight,
+  PawPrint,
+  Bell,
+  Download,
+  BriefcaseMedical,
+  Cat as CatIcon,
+  Stethoscope,
+  Pill,
+  Utensils,
+  Home as HomeIcon,
+  Hand,
+} from "lucide-react";
 import { createAnonClient } from "@/lib/supabase/anon";
 import { SEOUL_GUS } from "@/lib/seoul-regions";
 import { sanitizeImageUrl } from "@/lib/url-validate";
@@ -16,7 +32,7 @@ const SITE_URL = "https://dosigongzon.com";
 async function getLandingData() {
   try {
     const supabase = createAnonClient();
-    const [catsRes, recentCatsRes, hospitalsRes, profilesRes] = await Promise.all([
+    const [catsRes, recentCatsRes, hospitalsRes, profilesRes, regionsRes] = await Promise.all([
       supabase.from("cats").select("*", { count: "exact", head: true }),
       supabase
         .from("cats")
@@ -25,7 +41,18 @@ async function getLandingData() {
         .limit(6),
       supabase.from("rescue_hospitals").select("*", { count: "exact", head: true }).eq("hidden", false),
       supabase.from("profiles").select("*", { count: "exact", head: true }),
+      supabase.from("cats").select("region").limit(50000),
     ]);
+
+    // 등록 고양이 수 상위 구 6개를 자동 선택 (모든 구가 노출 기회를 받게)
+    const guCounts: Record<string, number> = {};
+    for (const row of (regionsRes.data ?? []) as { region: string | null }[]) {
+      if (!row.region) continue;
+      const matched = SEOUL_GUS.find((g) => row.region!.includes(g.name))
+        ?? SEOUL_GUS.find((g) => g.dongs.some((d) => row.region!.includes(d)));
+      if (matched) guCounts[matched.slug] = (guCounts[matched.slug] ?? 0) + 1;
+    }
+
     return {
       catCount: catsRes.count ?? 0,
       hospitalCount: hospitalsRes.count ?? 0,
@@ -38,9 +65,10 @@ async function getLandingData() {
         health_status: string;
         created_at: string;
       }>,
+      guCounts,
     };
   } catch {
-    return { catCount: 0, hospitalCount: 0, userCount: 0, recentCats: [] };
+    return { catCount: 0, hospitalCount: 0, userCount: 0, recentCats: [], guCounts: {} };
   }
 }
 
@@ -50,8 +78,15 @@ export default async function HomeLanding({
   eventSlot,
 }: { hotSlot?: React.ReactNode; adoptionSlot?: React.ReactNode; eventSlot?: React.ReactNode } = {}) {
   const data = await getLandingData();
-  const featuredGus = ["gangnam", "mapo", "songpa", "yongsan", "seongdong", "gwanak"];
-  const featured = SEOUL_GUS.filter((g) => featuredGus.includes(g.slug));
+  // 등록 고양이 상위 6개 구. 데이터 없으면 인구 많은 대표 구 폴백.
+  const FALLBACK_FEATURED = ["gangnam", "mapo", "songpa", "yongsan", "seongdong", "gwanak"];
+  const sortedSlugs = Object.entries(data.guCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([slug]) => slug);
+  const featuredSlugs = sortedSlugs.length >= 6 ? sortedSlugs.slice(0, 6) : FALLBACK_FEATURED;
+  const featured = featuredSlugs
+    .map((s) => SEOUL_GUS.find((g) => g.slug === s))
+    .filter((g): g is (typeof SEOUL_GUS)[number] => Boolean(g));
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -62,11 +97,6 @@ export default async function HomeLanding({
     applicationCategory: "SocialNetworkingApplication",
     operatingSystem: "Web, iOS, Android (PWA)",
     offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" },
-    aggregateRating: data.catCount > 0 ? {
-      "@type": "AggregateRating",
-      ratingValue: "4.8",
-      reviewCount: Math.max(data.userCount, 10),
-    } : undefined,
   };
 
   const faqJsonLd = {
@@ -110,8 +140,8 @@ export default async function HomeLanding({
 
   return (
     <div className="pb-6">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }} />
       <LandingOnboardingGate />
 
       {/* 히어로 */}
@@ -357,6 +387,85 @@ export default async function HomeLanding({
         </div>
       </section>
 
+      {/* 캣맘 필수 가이드 8종 — 보호지침 허브로 유도 (SEO + 체류시간) */}
+      <section className="px-5 mt-8">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#D85555" }} />
+            <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+              캣맘 필수 가이드 8종
+            </h2>
+          </div>
+          <Link
+            href="/protection"
+            className="flex items-center gap-0.5 text-[12px] font-semibold text-primary"
+          >
+            전체보기 <ArrowRight size={12} />
+          </Link>
+        </div>
+        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+          공공기관 자료 기반의 응급·돌봄·법률 가이드. 동네에서 다친 아이를 만났을 때 바로 펼쳐보세요.
+        </p>
+        <div className="grid grid-cols-2 gap-2">
+          <GuideCard
+            href="/protection/emergency-guide"
+            icon={<BriefcaseMedical size={18} color="#D85555" />}
+            iconBg="#D8555515"
+            title="응급 구조"
+            sub="안전확보·지혈·이송"
+          />
+          <GuideCard
+            href="/protection/disease-guide"
+            icon={<Stethoscope size={18} color="#D85555" />}
+            iconBg="#D8555515"
+            title="질병 가이드"
+            sub="흔한 10가지 질병"
+          />
+          <GuideCard
+            href="/protection/kitten-guide"
+            icon={<CatIcon size={18} color="#E8B040" />}
+            iconBg="#E8B04015"
+            title="냥줍 가이드"
+            sub="관찰·체온·급여"
+          />
+          <GuideCard
+            href="/protection/feeding-guide"
+            icon={<Utensils size={18} color="#E88D5A" />}
+            iconBg="#E88D5A15"
+            title="먹이 가이드"
+            sub="주면 안 되는 음식"
+          />
+          <GuideCard
+            href="/protection/pharmacy-guide"
+            icon={<Pill size={18} color="#D4708F" />}
+            iconBg="#D4708F15"
+            title="약품 가이드"
+            sub="영양제·구충·상처"
+          />
+          <GuideCard
+            href="/protection/shelter-guide"
+            icon={<HomeIcon size={18} color="#4A7BA8" />}
+            iconBg="#4A7BA815"
+            title="쉼터·겨울나기"
+            sub="숨숨집 DIY"
+          />
+          <GuideCard
+            href="/protection/trapping-guide"
+            icon={<Hand size={18} color="#8BA86B" />}
+            iconBg="#8BA86B15"
+            title="포획 가이드"
+            sub="설치·대기·주의"
+          />
+          <GuideCard
+            href="/protection/legal"
+            icon={<ShieldCheck size={18} color="#8B65B8" />}
+            iconBg="#8B65B815"
+            title="법률 가이드"
+            sub="학대 대응 매뉴얼"
+          />
+        </div>
+      </section>
+
       {/* 이번 주 HOT 게시글 */}
       {hotSlot && (
         <section className="px-5 mt-6">
@@ -497,6 +606,41 @@ function ValueRow({ icon, title, desc }: { icon: React.ReactNode; title: string;
         <p className="text-[11.5px] text-text-sub mt-0.5 leading-relaxed">{desc}</p>
       </div>
     </div>
+  );
+}
+
+function GuideCard({
+  href,
+  icon,
+  iconBg,
+  title,
+  sub,
+}: {
+  href: string;
+  icon: React.ReactNode;
+  iconBg: string;
+  title: string;
+  sub: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="block bg-white rounded-2xl p-3 active:scale-[0.98] transition-transform"
+      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}
+    >
+      <div className="flex items-center gap-2.5">
+        <div
+          className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+          style={{ backgroundColor: iconBg }}
+        >
+          {icon}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[12.5px] font-extrabold text-text-main truncate">{title}</p>
+          <p className="text-[10.5px] text-text-sub truncate mt-0.5">{sub}</p>
+        </div>
+      </div>
+    </Link>
   );
 }
 

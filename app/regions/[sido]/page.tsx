@@ -149,8 +149,8 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
 
   return (
     <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, "\\u003c") }} />
 
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link

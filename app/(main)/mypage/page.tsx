@@ -21,6 +21,7 @@ import {
   BookOpen,
   UserPlus,
   Sparkles,
+  Trophy,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 const InquiryModal = dynamic(() => import("@/app/components/InquiryModal"), { ssr: false });
@@ -338,7 +339,7 @@ export default function MyPage() {
                       value={nickDraft}
                       onChange={(e) => setNickDraft(e.target.value)}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter") handleSaveNick();
+                        if (e.key === "Enter" && !e.nativeEvent.isComposing) handleSaveNick();
                         if (e.key === "Escape") handleCancelEditNick();
                       }}
                       maxLength={20}
@@ -863,6 +864,32 @@ export default function MyPage() {
                 </p>
               </div>
               <ChevronRight size={16} className="shrink-0" style={{ color: "#6B8E6F", opacity: 0.7 }} />
+            </Link>
+            <Link
+              href="/ranking"
+              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
+              style={{
+                background: "#FFFFFF",
+                borderRadius: 16,
+                boxShadow: "0 4px 14px rgba(201,169,97,0.12), 0 1px 2px rgba(0,0,0,0.02)",
+                border: "1px solid rgba(0,0,0,0.04)",
+              }}
+            >
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                style={{ backgroundColor: "rgba(201,169,97,0.14)" }}
+              >
+                <Trophy size={18} color="#C9A961" strokeWidth={2} />
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+                  캣맘 활동 랭킹
+                </p>
+                <p className="text-[11px] text-text-sub mt-0.5">
+                  내 활동 점수와 동네 캣맘 순위를 확인해요
+                </p>
+              </div>
+              <ChevronRight size={16} className="shrink-0" style={{ color: "#C9A961", opacity: 0.7 }} />
             </Link>
             <InstallAppMenuItem />
             <EmailDigestToggle />
