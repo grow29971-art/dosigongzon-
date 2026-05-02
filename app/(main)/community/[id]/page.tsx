@@ -77,6 +77,32 @@ export default function PostDetailPage({
 
   const handleVote = async (next: PostVote) => {
     if (!post) return;
+
+    // 관리자: 토글 없이 매 클릭마다 +1 누적
+    if (isAdmin) {
+      const dLike: -1 | 0 | 1 = next === 1 ? 1 : 0;
+      const dDislike: -1 | 0 | 1 = next === -1 ? 1 : 0;
+      setPost({
+        ...post,
+        likeCount: Math.max(0, post.likeCount + dLike),
+        dislikeCount: Math.max(0, post.dislikeCount + dDislike),
+      });
+      try {
+        await updatePostVote(id, dLike, dDislike);
+      } catch {
+        setPost((p) =>
+          p
+            ? {
+                ...p,
+                likeCount: Math.max(0, p.likeCount - dLike),
+                dislikeCount: Math.max(0, p.dislikeCount - dDislike),
+              }
+            : p,
+        );
+      }
+      return;
+    }
+
     const prev = myVote;
     const newVote: PostVote | 0 = prev === next ? 0 : next;
 

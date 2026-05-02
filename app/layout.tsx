@@ -106,15 +106,22 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: SITE_NAME,
-  alternateName: "DosiGongzon",
+  alternateName: ["도시공존", "DosiGongzon", "도시 공존"],
   url: SITE_URL,
   logo: `${SITE_URL}/icons/icon-512.png`,
+  image: `${SITE_URL}/icons/icon-512.png`,
   description: SITE_DESCRIPTION,
+  email: "grow29971@gmail.com",
+  brand: {
+    "@type": "Brand",
+    name: "도시공존",
+  },
   sameAs: [] as string[],
   areaServed: {
     "@type": "Country",
     name: "대한민국",
   },
+  knowsLanguage: ["ko", "ko-KR"],
   knowsAbout: [
     "길고양이 돌봄",
     "TNR",
@@ -123,15 +130,28 @@ const jsonLd = {
     "임시보호",
     "중성화",
   ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: "grow29971@gmail.com",
+    contactType: "customer support",
+    availableLanguage: ["Korean", "ko"],
+  },
 };
 
 const jsonLdWebsite = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: SITE_NAME,
+  alternateName: "도시공존",
   url: SITE_URL,
   inLanguage: "ko-KR",
   description: SITE_DESCRIPTION,
+  publisher: {
+    "@type": "Organization",
+    name: SITE_NAME,
+    url: SITE_URL,
+    logo: `${SITE_URL}/icons/icon-512.png`,
+  },
   potentialAction: {
     "@type": "SearchAction",
     target: `${SITE_URL}/community?q={search_term_string}`,

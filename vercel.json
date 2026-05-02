@@ -39,6 +39,14 @@
     {
       "path": "/api/cron/weekly-postcard-push",
       "schedule": "0 11 * * 0"
+    },
+    {
+      "path": "/api/cron/news-crawl",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/like-digest",
+      "schedule": "0 3 * * *"
     }
   ]
 }

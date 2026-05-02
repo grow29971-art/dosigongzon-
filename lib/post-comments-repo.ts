@@ -80,7 +80,85 @@ export async function createPostComment(
     throw new Error(`댓글 작성 실패: ${error.message}`);
   }
 
+  // 알림 발송 (실패해도 댓글 작성은 성공)
+  void notifyOnComment({
+    postId,
+    parentId: parentId ?? null,
+    senderId: user.id,
+    senderName: getDisplayName(user),
+    body: trimmed,
+  });
+
   return data as PostComment;
+}
+
+// 댓글 작성 시 푸시 알림.
+// - 글 작성자에게 항상 (자기 자신 글/익명 글이면 스킵)
+// - 답글이면 부모 댓글 작성자에게도 (글 작성자와 중복이면 한 번만, 자기 자신이면 스킵)
+async function notifyOnComment(args: {
+  postId: string;
+  parentId: string | null;
+  senderId: string;
+  senderName: string;
+  body: string;
+}): Promise<void> {
+  const { postId, parentId, senderId, senderName, body } = args;
+  try {
+    const supabase = createClient();
+
+    const { data: post } = await supabase
+      .from("posts")
+      .select("author_id")
+      .eq("id", postId)
+      .maybeSingle();
+    const postAuthorId =
+      (post as { author_id: string | null } | null)?.author_id ?? null;
+
+    let parentAuthorId: string | null = null;
+    if (parentId) {
+      const { data: parent } = await supabase
+        .from("post_comments")
+        .select("author_id")
+        .eq("id", parentId)
+        .maybeSingle();
+      parentAuthorId =
+        (parent as { author_id: string | null } | null)?.author_id ?? null;
+    }
+
+    // 보낼 대상 모음 (중복/자기 자신 제거)
+    const recipients = new Set<string>();
+    if (postAuthorId && postAuthorId !== senderId) recipients.add(postAuthorId);
+    if (parentAuthorId && parentAuthorId !== senderId) {
+      recipients.add(parentAuthorId);
+    }
+    if (recipients.size === 0) return;
+
+    const { data: { session } } = await supabase.auth.getSession();
+    const accessToken = session?.access_token;
+    if (!accessToken) return;
+
+    const preview = body.length > 80 ? `${body.slice(0, 80)}…` : body;
+    const url = `/community/${postId}`;
+
+    await Promise.all(
+      Array.from(recipients).map((userId) => {
+        const isReplyToParent = userId === parentAuthorId;
+        const title = isReplyToParent
+          ? `${senderName}님이 답글을 달았어요`
+          : `${senderName}님이 댓글을 남겼어요`;
+        return fetch("/api/push/send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ userId, title, body: preview, url }),
+        }).catch(() => {});
+      }),
+    );
+  } catch {
+    // 푸시 실패는 무시
+  }
 }
 
 // ── 본인 댓글 삭제 ──

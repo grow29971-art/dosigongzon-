@@ -149,7 +149,7 @@ export default async function HomeLanding({
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 mb-3">
           <Heart size={12} style={{ color: "#C47E5A" }} />
           <span className="text-[11px] font-extrabold" style={{ color: "#C47E5A" }}>
-            {data.userCount > 0
+            도시공존 · {data.userCount > 0
               ? `${data.userCount.toLocaleString()}명의 이웃과 함께`
               : "서울 시민 참여 플랫폼"}
           </span>
@@ -159,9 +159,10 @@ export default async function HomeLanding({
           <span className="text-primary">함께 기록하고 지켜요.</span>
         </h1>
         <p className="text-[13.5px] text-text-sub mt-3 leading-relaxed">
-          서울 전역 길고양이 <b className="text-text-main">{data.catCount.toLocaleString()}마리</b>의 돌봄 기록이
+          <b className="text-text-main">도시공존</b>은 서울 전역 길고양이 <b className="text-text-main">{data.catCount.toLocaleString()}마리</b>의
+          돌봄 기록을 캣맘·캣대디가 실시간으로 함께 만들어가는
           <br />
-          캣맘·캣대디의 손으로 실시간 공유되고 있어요.
+          길고양이 돌봄 시민 참여 플랫폼이에요.
         </p>
 
         {/* 방문자 수 실시간 (client) */}

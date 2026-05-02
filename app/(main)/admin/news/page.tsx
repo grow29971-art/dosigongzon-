@@ -43,6 +43,9 @@ const EMPTY_DRAFT: NewsInput = {
   external_url: null,
   external_label: null,
   pinned: false,
+  source_url: null,
+  source_name: null,
+  auto_imported: false,
 };
 
 export default function AdminNewsPage() {
@@ -103,6 +106,9 @@ export default function AdminNewsPage() {
       external_url: item.external_url,
       external_label: item.external_label,
       pinned: item.pinned,
+      source_url: item.source_url,
+      source_name: item.source_name,
+      auto_imported: item.auto_imported,
     });
     setEditingId(item.id);
     setError("");
@@ -510,7 +516,7 @@ export default function AdminNewsPage() {
                     />
                   )}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5 mb-1">
+                    <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                       <span
                         className="text-[10px] font-bold px-2 py-0.5 rounded-md"
                         style={{ color: preset.color, backgroundColor: preset.bg }}
@@ -520,6 +526,14 @@ export default function AdminNewsPage() {
                       {item.pinned && (
                         <span className="text-[10px] font-bold text-primary flex items-center gap-0.5">
                           <Pin size={10} /> 고정
+                        </span>
+                      )}
+                      {item.auto_imported && (
+                        <span
+                          className="text-[10px] font-bold px-1.5 py-0.5 rounded-md"
+                          style={{ color: "#7A6B8E", backgroundColor: "#EAE6E8" }}
+                        >
+                          자동수집
                         </span>
                       )}
                       {(() => {
@@ -535,6 +549,11 @@ export default function AdminNewsPage() {
                     {item.description && (
                       <p className="text-[11px] text-text-sub mt-0.5 truncate">
                         {item.description}
+                      </p>
+                    )}
+                    {item.auto_imported && item.source_name && (
+                      <p className="text-[10px] text-text-light mt-0.5 truncate">
+                        출처: {item.source_name}
                       </p>
                     )}
                   </div>

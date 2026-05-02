@@ -9,6 +9,9 @@ export default function PushSubscriber() {
   useEffect(() => {
     if (!user) return;
     if (!("serviceWorker" in navigator) || !("PushManager" in window)) return;
+    // 권한이 이미 granted인 사용자만 자동 구독.
+    // default/denied 상태에서 권한 prompt는 PushOptInCard의 명시적 클릭으로 띄움.
+    if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
 
     const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
     if (!vapidKey) return;
@@ -17,10 +20,7 @@ export default function PushSubscriber() {
       try {
         const reg = await navigator.serviceWorker.ready;
         const existing = await reg.pushManager.getSubscription();
-        if (existing) return; // 이미 구독됨
-
-        const permission = await Notification.requestPermission();
-        if (permission !== "granted") return;
+        if (existing) return;
 
         const sub = await reg.pushManager.subscribe({
           userVisibleOnly: true,

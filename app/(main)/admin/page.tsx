@@ -23,6 +23,7 @@ import {
   MapPin as MapPinIcon,
   BarChart3,
   Gift,
+  CalendarClock,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { getAdminStats, type AdminStats } from "@/lib/admin-stats";
@@ -131,6 +132,13 @@ export default function AdminDashboardPage() {
       subtitle: "홈 화면 소식·일정",
       Icon: Newspaper,
       color: "#7A6B8E",
+    },
+    {
+      href: "/admin/weekly-issues",
+      title: "이번 주 이슈",
+      subtitle: "주간 동네 이슈 큐레이션",
+      Icon: CalendarClock,
+      color: "#5B7A8F",
     },
     {
       href: "/admin/hospitals",

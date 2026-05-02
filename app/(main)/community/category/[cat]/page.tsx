@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import type { Post, PostCategory } from "@/lib/types";
 import { listPosts, formatRelativeTime, updatePostVote } from "@/lib/posts-repo";
+import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { getLevelColor } from "@/lib/cats-repo";
 import {
   getMyPostVotes,
@@ -80,12 +81,14 @@ export default function CategoryPage() {
   const [mounted, setMounted] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [myVotes, setMyVotes] = useState<Record<string, PostVote>>({});
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     if (!user) return;
     listPosts(cat).then(setPosts);
     setMyVotes(getMyPostVotes());
+    isCurrentUserAdmin().then(setIsAdmin);
   }, [cat, user]);
 
   // 비로그인 가드
@@ -96,6 +99,39 @@ export default function CategoryPage() {
   const handleVote = async (postId: string, next: PostVote, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // 관리자: 토글 없이 매 클릭마다 +1 누적
+    if (isAdmin) {
+      const dLike: -1 | 0 | 1 = next === 1 ? 1 : 0;
+      const dDislike: -1 | 0 | 1 = next === -1 ? 1 : 0;
+      setPosts((prevPosts) =>
+        prevPosts.map((p) =>
+          p.id === postId
+            ? {
+                ...p,
+                likeCount: Math.max(0, p.likeCount + dLike),
+                dislikeCount: Math.max(0, p.dislikeCount + dDislike),
+              }
+            : p,
+        ),
+      );
+      try {
+        await updatePostVote(postId, dLike, dDislike);
+      } catch {
+        setPosts((prevPosts) =>
+          prevPosts.map((p) =>
+            p.id === postId
+              ? {
+                  ...p,
+                  likeCount: Math.max(0, p.likeCount - dLike),
+                  dislikeCount: Math.max(0, p.dislikeCount - dDislike),
+                }
+              : p,
+          ),
+        );
+      }
+      return;
+    }
 
     const prev = myVotes[postId] ?? 0;
     // 같은 걸 다시 누르면 취소, 반대면 전환

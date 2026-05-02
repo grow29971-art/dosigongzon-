@@ -57,6 +57,10 @@ import {
   type LevelInfo,
 } from "@/lib/cats-repo";
 import { listPosts, formatRelativeTime } from "@/lib/posts-repo";
+import {
+  listCurrentWeekIssues,
+  type WeeklyIssue,
+} from "@/lib/weekly-issues-repo";
 import { getUnreadNotificationCount } from "@/lib/notifications-repo";
 import { getMyStreakInfo, type StreakInfo } from "@/lib/streak-repo";
 import {
@@ -69,6 +73,7 @@ import { getRecentFeed, type FeedItem } from "@/lib/live-feed-repo";
 import { getTodayAnniversaries, type Anniversary } from "@/lib/anniversaries-repo";
 import OnboardingCard from "@/app/components/OnboardingCard";
 import FeatureTipsCard from "@/app/components/FeatureTipsCard";
+import PushOptInCard from "@/app/components/PushOptInCard";
 import type { Post } from "@/lib/types";
 import { listCats, type Cat } from "@/lib/cats-repo";
 import {
@@ -196,10 +201,43 @@ export default function HomeAuthed({
   const [feed, setFeed] = useState<FeedItem[]>([]);
   const [anniversaries, setAnniversaries] = useState<Anniversary[]>([]);
   const [onboardingDismissed, setOnboardingDismissed] = useState(false);
+  const [lastVisitAt, setLastVisitAt] = useState<number | null>(null);
+  const [newPostsCount, setNewPostsCount] = useState(0);
+  const [weeklyIssues, setWeeklyIssues] = useState<WeeklyIssue[]>([]);
+
+  // 마지막 방문 시각 — 진입 시 비교용으로 저장된 값 복원, 즉시 현재 시각으로 갱신.
+  // 다음 방문 시 "지난 방문 이후 새 글 N개" 카운트의 기준이 됨.
+  useEffect(() => {
+    if (!user) return;
+    const key = `dosigongzon_home_lastvisit_${user.id}`;
+    try {
+      const stored = localStorage.getItem(key);
+      if (stored) {
+        const last = parseInt(stored, 10);
+        if (Number.isFinite(last)) setLastVisitAt(last);
+      }
+      localStorage.setItem(key, String(Date.now()));
+    } catch {
+      // localStorage 차단 등 무시
+    }
+  }, [user]);
+
+  // allPosts 또는 lastVisitAt 갱신 시 새 글 개수 재계산
+  useEffect(() => {
+    if (lastVisitAt === null || allPosts.length === 0) {
+      setNewPostsCount(0);
+      return;
+    }
+    const cnt = allPosts.filter(
+      (p) => new Date(p.createdAt).getTime() > lastVisitAt,
+    ).length;
+    setNewPostsCount(cnt);
+  }, [lastVisitAt, allPosts]);
 
   // 데이터 로드
   useEffect(() => {
     listNews().then(setNewsItems);
+    listCurrentWeekIssues().then(setWeeklyIssues).catch(() => {});
     listPosts().then((posts) => {
       setAllPosts(posts);
       const sorted = [...posts].sort(
@@ -1650,6 +1688,111 @@ export default function HomeAuthed({
             ))}
           </div>
         </div>
+      )}
+
+      {/* ══════ 푸시 권한 권유 (default 권한일 때만) ══════ */}
+      <PushOptInCard />
+
+      {/* ══════ 이번 주 동네 이슈 ══════ */}
+      {weeklyIssues.length > 0 && (
+        <div className="mb-5">
+          <div className="flex items-center gap-2 px-1 mb-3">
+            <div
+              className="w-1 h-4 rounded-full"
+              style={{ backgroundColor: "#5B7A8F" }}
+            />
+            <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+              이번 주 동네 이슈
+            </h2>
+            <span
+              className="text-[9px] font-bold tracking-[0.15em]"
+              style={{ color: "#5B7A8F", opacity: 0.6 }}
+            >
+              THIS WEEK
+            </span>
+          </div>
+          <div className="space-y-2">
+            {weeklyIssues.map((issue) => {
+              const card = (
+                <div
+                  className="flex items-start gap-3 px-4 py-3"
+                  style={{
+                    background: "#FFFFFF",
+                    borderRadius: 16,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)",
+                    border: "1px solid rgba(91,122,143,0.18)",
+                  }}
+                >
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center text-[18px] shrink-0"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #F0F4F8 0%, #DCE4EE 100%)",
+                    }}
+                  >
+                    {issue.emoji ?? "📰"}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-bold text-text-main leading-tight">
+                      {issue.title}
+                    </p>
+                    {issue.body && (
+                      <p className="text-[11px] text-text-sub mt-0.5 line-clamp-2">
+                        {issue.body}
+                      </p>
+                    )}
+                    {issue.external_url && issue.external_label && (
+                      <p className="text-[10.5px] mt-1 font-bold" style={{ color: "#5B7A8F" }}>
+                        {issue.external_label} →
+                      </p>
+                    )}
+                  </div>
+                </div>
+              );
+              return issue.external_url ? (
+                <a
+                  key={issue.id}
+                  href={issue.external_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block active:scale-[0.99] transition-transform"
+                >
+                  {card}
+                </a>
+              ) : (
+                <div key={issue.id}>{card}</div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ══════ 지난 방문 이후 새 글 배지 ══════ */}
+      {newPostsCount > 0 && (
+        <Link
+          href="/community"
+          className="block mb-3 active:scale-[0.99] transition-transform"
+        >
+          <div
+            className="flex items-center justify-between px-4 py-2.5"
+            style={{
+              background: "linear-gradient(135deg, #FFF6EE 0%, #FFE9D2 100%)",
+              borderRadius: 14,
+              border: "1px solid #F2D6B6",
+            }}
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <Sparkles size={14} style={{ color: "#C47E5A" }} />
+              <span
+                className="text-[12px] font-bold truncate"
+                style={{ color: "#8C5A37" }}
+              >
+                지난 방문 이후 새 글 {newPostsCount}개
+              </span>
+            </div>
+            <ChevronRight size={14} style={{ color: "#C47E5A" }} />
+          </div>
+        </Link>
       )}
 
       {/* ══════ 인기 커뮤니티 글 ══════ */}

@@ -70,6 +70,9 @@ export interface NewsItem {
   external_url: string | null;
   external_label: string | null;
   pinned: boolean;
+  source_url: string | null;          // 자동수집 시 원문 URL (UNIQUE — 중복 방지)
+  source_name: string | null;         // 자동수집 시 출처명
+  auto_imported: boolean;             // true면 RSS 크롤러가 넣은 글
   created_at: string;
   updated_at: string;
 }
