@@ -74,9 +74,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  turbopack: {
-    root: "C:\\Users\\acer\\city",
-  },
+  // turbopack.root는 모노레포에서만 필요. 단일 프로젝트는 자동 감지.
   allowedDevOrigins: ["192.168.0.2", "localhost"],
   // 기술 스택 정보 노출 차단 — X-Powered-By: Next.js 헤더 제거
   poweredByHeader: false,

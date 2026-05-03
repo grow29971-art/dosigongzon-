@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { SEOUL_GUS } from "@/lib/seoul-regions";
 import { KOREA_SIDOS } from "@/lib/korea-regions";
+import { listAllPublishedSlugsServer } from "@/lib/tips-repo";
 
 const SITE_URL = "https://dosigongzon.com";
 
@@ -35,6 +36,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/protection/feeding-guide",     priority: 0.75, changeFrequency: "monthly" },
     { path: "/protection/shelter-guide",     priority: 0.75, changeFrequency: "monthly" },
     { path: "/protection/disease-guide",     priority: 0.8,  changeFrequency: "monthly" },
+    { path: "/tips",                         priority: 0.9,  changeFrequency: "daily" },
+    { path: "/news",                         priority: 0.85, changeFrequency: "daily" },
     { path: "/login",                        priority: 0.3,  changeFrequency: "yearly" },
     { path: "/signup",                       priority: 0.3,  changeFrequency: "yearly" },
     { path: "/privacy",                      priority: 0.2,  changeFrequency: "yearly" },
@@ -92,6 +95,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(c.created_at),
         changeFrequency: "weekly",
         priority: 0.5,
+      });
+    }
+  } catch {
+    // DB 접근 실패해도 정적 경로는 제공
+  }
+
+  // 동적 꿀팁 — /tips/[slug] (발행된 글만)
+  try {
+    const tipSlugs = await listAllPublishedSlugsServer();
+    for (const t of tipSlugs) {
+      entries.push({
+        url: `${SITE_URL}/tips/${t.slug}`,
+        lastModified: new Date(t.updated_at),
+        changeFrequency: "weekly",
+        priority: 0.75,
       });
     }
   } catch {

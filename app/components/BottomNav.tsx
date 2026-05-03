@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Users, Map, Mail, BookOpen, User } from "lucide-react";
+import { Home, Users, Map, Mail, BookOpen, User, Sparkles } from "lucide-react";
 import { getUnreadCount } from "@/lib/dm-repo";
 
 const tabs = [
   { href: "/", label: "홈", Icon: Home },
+  { href: "/tips", label: "꿀팁", Icon: Sparkles },
   { href: "/community", label: "커뮤니티", Icon: Users },
   { href: "/map", label: "지도", Icon: Map },
   { href: "/messages", label: "쪽지", Icon: Mail },
@@ -43,7 +44,7 @@ export default function BottomNav() {
               href={href}
               aria-label={showBadge ? `${label} · 읽지 않음 ${unreadCount}개` : label}
               aria-current={on ? "page" : undefined}
-              className={`relative flex flex-col items-center gap-0.5 px-3 py-1 transition-colors ${
+              className={`relative flex flex-col items-center gap-0.5 px-2 py-1 transition-colors ${
                 on ? "text-primary" : "text-text-muted"
               }`}
             >

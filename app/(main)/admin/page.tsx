@@ -24,6 +24,7 @@ import {
   BarChart3,
   Gift,
   CalendarClock,
+  Sparkles,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { getAdminStats, type AdminStats } from "@/lib/admin-stats";
@@ -132,6 +133,13 @@ export default function AdminDashboardPage() {
       subtitle: "홈 화면 소식·일정",
       Icon: Newspaper,
       color: "#7A6B8E",
+    },
+    {
+      href: "/admin/tips",
+      title: "꿀팁게시판 관리",
+      subtitle: "정보글 작성·발행·수정",
+      Icon: Sparkles,
+      color: "#C47E5A",
     },
     {
       href: "/admin/weekly-issues",

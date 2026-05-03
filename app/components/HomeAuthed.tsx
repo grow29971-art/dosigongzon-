@@ -1847,6 +1847,32 @@ export default function HomeAuthed({
         </div>
       )}
 
+      {/* ══════ 꿀팁게시판 진입 카드 ══════ */}
+      <Link
+        href="/tips"
+        className="flex items-center gap-3 p-4 mb-4 active:scale-[0.99] transition-transform"
+        style={{
+          background: "linear-gradient(135deg, #FBF8F3 0%, #F2EBE0 100%)",
+          borderRadius: 22,
+          boxShadow: "0 4px 16px rgba(196,126,90,0.10), 0 1px 3px rgba(0,0,0,0.03)",
+          border: "1px solid rgba(196,126,90,0.18)",
+        }}
+      >
+        <div
+          className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
+          style={{ background: "rgba(196,126,90,0.15)" }}
+        >
+          <Sparkles size={22} className="text-primary" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[14px] font-extrabold text-text-main">꿀팁게시판</p>
+          <p className="text-[11.5px] text-text-sub mt-0.5">
+            길고양이 돌봄·TNR·구조 정보글 모음
+          </p>
+        </div>
+        <ChevronRight size={16} className="text-primary opacity-70" />
+      </Link>
+
       {/* ══════ 고양이 사회 소식 & 일정 ══════ */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-3">

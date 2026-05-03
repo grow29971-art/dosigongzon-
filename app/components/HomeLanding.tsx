@@ -22,6 +22,7 @@ import {
 import { createAnonClient } from "@/lib/supabase/anon";
 import { SEOUL_GUS } from "@/lib/seoul-regions";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import { listPublishedTipsServer, type Tip } from "@/lib/tips-repo";
 import LandingOnboardingGate from "@/app/components/LandingOnboardingGate";
 import ShareAreaButton from "@/app/components/ShareAreaButton";
 import TodayVisitors from "@/app/components/TodayVisitors";
@@ -77,7 +78,10 @@ export default async function HomeLanding({
   adoptionSlot,
   eventSlot,
 }: { hotSlot?: React.ReactNode; adoptionSlot?: React.ReactNode; eventSlot?: React.ReactNode } = {}) {
-  const data = await getLandingData();
+  const [data, tips] = await Promise.all([
+    getLandingData(),
+    listPublishedTipsServer(6),
+  ]);
   // 등록 고양이 상위 6개 구. 데이터 없으면 인구 많은 대표 구 폴백.
   const FALLBACK_FEATURED = ["gangnam", "mapo", "songpa", "yongsan", "seongdong", "gwanak"];
   const sortedSlugs = Object.entries(data.guCounts)
@@ -467,6 +471,35 @@ export default async function HomeLanding({
         </div>
       </section>
 
+      {/* 꿀팁게시판 — 정보글 큐레이션 (SEO 강화) */}
+      {tips.length > 0 && (
+        <section className="px-5 mt-8">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C47E5A" }} />
+              <h2 className="text-[15px] font-extrabold text-text-main tracking-tight flex items-center gap-1">
+                <Sparkles size={15} className="text-primary" />
+                꿀팁게시판
+              </h2>
+            </div>
+            <Link
+              href="/tips"
+              className="flex items-center gap-0.5 text-[12px] font-semibold text-primary"
+            >
+              전체보기 <ArrowRight size={12} />
+            </Link>
+          </div>
+          <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+            길고양이 돌봄·TNR·중성화·구조에 도움되는 정보글. 도시공존이 큐레이션해 모았어요.
+          </p>
+          <div className="space-y-2">
+            {tips.slice(0, 4).map((tip) => (
+              <TipsRow key={tip.id} tip={tip} />
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* 이번 주 HOT 게시글 */}
       {hotSlot && (
         <section className="px-5 mt-6">
@@ -640,6 +673,59 @@ function GuideCard({
           <p className="text-[12.5px] font-extrabold text-text-main truncate">{title}</p>
           <p className="text-[10.5px] text-text-sub truncate mt-0.5">{sub}</p>
         </div>
+      </div>
+    </Link>
+  );
+}
+
+function TipsRow({ tip }: { tip: Tip }) {
+  const photo = sanitizeImageUrl(tip.thumbnail_url, "");
+  return (
+    <Link
+      href={`/tips/${tip.slug}`}
+      className="flex gap-3 p-3 bg-white rounded-2xl active:scale-[0.99] transition-transform"
+      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+    >
+      {photo ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={photo}
+          alt={tip.title}
+          width={64}
+          height={64}
+          loading="lazy"
+          className="w-16 h-16 rounded-xl object-cover shrink-0"
+        />
+      ) : (
+        <div
+          className="w-16 h-16 rounded-xl flex items-center justify-center shrink-0"
+          style={{ background: "#F2EBE0" }}
+        >
+          <Sparkles size={20} className="text-primary opacity-60" />
+        </div>
+      )}
+      <div className="flex-1 min-w-0">
+        {tip.tags.length > 0 && (
+          <div className="flex gap-1 mb-0.5">
+            {tip.tags.slice(0, 2).map((t) => (
+              <span
+                key={t}
+                className="text-[9.5px] font-bold px-1.5 py-0.5 rounded-md"
+                style={{ background: "#F2EBE0", color: "#8B6F4E" }}
+              >
+                #{t}
+              </span>
+            ))}
+          </div>
+        )}
+        <p className="text-[13px] font-extrabold text-text-main leading-snug line-clamp-2">
+          {tip.title}
+        </p>
+        {tip.description && (
+          <p className="text-[11px] text-text-sub line-clamp-1 mt-0.5">
+            {tip.description}
+          </p>
+        )}
       </div>
     </Link>
   );
