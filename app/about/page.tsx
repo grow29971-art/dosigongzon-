@@ -1,6 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, Mail, Heart, MapPin, Sparkles, Shield, Users, Newspaper } from "lucide-react";
+import {
+  ArrowLeft,
+  Mail,
+  Heart,
+  MapPin,
+  Sparkles,
+  Shield,
+  Users,
+  Newspaper,
+  Code2,
+  Bot,
+  Lock,
+  Radio,
+  ShieldCheck,
+  Download,
+} from "lucide-react";
 import { createAnonClient } from "@/lib/supabase/anon";
 import MediaKit from "@/app/components/MediaKit";
 
@@ -87,15 +102,19 @@ export default async function AboutPage() {
       <section className="px-5 pt-4">
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 mb-3">
           <Heart size={12} style={{ color: "#C47E5A" }} />
-          <span className="text-[11px] font-extrabold" style={{ color: "#C47E5A" }}>시민 참여 플랫폼</span>
+          <span className="text-[11px] font-extrabold" style={{ color: "#C47E5A" }}>
+            서울 25개 구 · 비영리 시민 참여 플랫폼
+          </span>
         </div>
         <h1 className="text-[26px] font-extrabold text-text-main leading-tight tracking-tight">
-          길 위의 생명과 함께 걷는 <br />따뜻한 한 걸음
+          서울 길고양이 <span style={{ color: "#C47E5A" }}>{stats.cats.toLocaleString()}마리</span>의<br />
+          돌봄 기록을 한 화면에.
         </h1>
         <p className="text-[13.5px] text-text-sub mt-3 leading-relaxed">
-          <b className="text-text-main">도시공존</b>은 서울 전역의 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다.
-          캣맘·캣대디가 실시간으로 TNR 상태, 건강, 급식 기록을 공유하고,
-          긴급 구조가 필요한 아이에게 동네 이웃이 빠르게 달려갈 수 있도록 돕습니다.
+          <b className="text-text-main">도시공존</b>은 캣맘·캣대디가
+          <b className="text-text-main"> TNR·건강·급식</b> 기록을 실시간으로 남기고,
+          긴급 구조가 필요한 아이에게 동네 이웃이 빠르게 닿을 수 있도록 잇는
+          서울 25개 구 길고양이 돌봄 지도입니다.
         </p>
       </section>
 
@@ -157,6 +176,97 @@ export default async function AboutPage() {
               <b className="text-text-main">광고 없는 무료 운영.</b> 광고·수익 모델 없이 서울 시민의 자발적 기록으로 유지됩니다.
             </li>
           </ul>
+        </div>
+      </section>
+
+      {/* 만든 사람 — 1인 운영자 정체성 */}
+      <section className="px-5 mt-8">
+        <h2 className="text-[16px] font-extrabold text-text-main mb-3">만든 사람</h2>
+        <div
+          className="rounded-3xl p-5"
+          style={{
+            background: "linear-gradient(135deg, #FFF9F2 0%, #F4E8D8 100%)",
+            border: "1px solid rgba(196,126,90,0.20)",
+          }}
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
+              style={{ background: "rgba(196,126,90,0.15)" }}
+            >
+              <Code2 size={22} style={{ color: "#A8684A" }} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[10.5px] font-extrabold tracking-[0.12em]" style={{ color: "#A8684A" }}>
+                MADE BY ONE NEIGHBOR
+              </p>
+              <p className="text-[15px] font-extrabold text-text-main">김성우 · 1인 풀스택 개발자</p>
+            </div>
+          </div>
+          <p className="text-[12.5px] leading-[1.9] text-text-sub">
+            도시공존은 <b className="text-text-main">캣맘·캣대디 한 분의 손이 헛되지 않게</b>,
+            그리고 길 위의 아이들이 매일 다시 보일 수 있게 하고 싶어
+            한 명의 개발자가 직접 설계·개발·운영하는 비영리 플랫폼이에요.
+          </p>
+          <p className="text-[12.5px] leading-[1.9] text-text-sub mt-3">
+            <b className="text-text-main">광고도, 유료 구독도, 데이터 판매도 없이</b>
+            서버·도메인·AI 사용료까지 운영자가 자비로 부담하며 굴리고 있습니다.
+            서비스가 단체나 정당과 무관하게 중립을 지킬 수 있는 이유이기도 해요.
+          </p>
+          <a
+            href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("[도시공존] 안녕하세요")}`}
+            className="mt-4 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12.5px] font-extrabold text-white active:scale-[0.98] transition-transform"
+            style={{
+              background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+              boxShadow: "0 4px 12px rgba(196,126,90,0.3)",
+            }}
+          >
+            <Mail size={13} />
+            <span>운영자에게 직접 메일 보내기</span>
+          </a>
+        </div>
+      </section>
+
+      {/* 기술 자산 — 어떻게 만들어졌나 */}
+      <section className="px-5 mt-8">
+        <h2 className="text-[16px] font-extrabold text-text-main mb-1">
+          이 플랫폼은 어떻게 만들어졌나요
+        </h2>
+        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+          기록 한 줄이 헛되이 흘러가지 않게, 그리고 아이들의 좌표가 오용되지 않게.
+          도시공존은 안전과 정확성을 1순위로 두고 직접 짠 시스템 위에서 돌아갑니다.
+        </p>
+        <div className="space-y-2">
+          <TechRow
+            icon={<MapPin size={18} style={{ color: "#C47E5A" }} />}
+            title="서울 25개 구 자체 좌표 매핑"
+            desc="구·동 단위 좌표를 직접 정리한 자체 데이터셋. 외부 행정 API 없이도 한 화면에 모든 자치구가 즉시 뜹니다."
+          />
+          <TechRow
+            icon={<Bot size={18} style={{ color: "#8B65B8" }} />}
+            title="AI 집사 챗봇 (Google Gemini)"
+            desc="응급·구조·식이 질문에 즉시 답하는 캣맘 보조 AI. 호칭과 상황을 사용자에 맞춰 실시간 생성합니다."
+          />
+          <TechRow
+            icon={<Radio size={18} style={{ color: "#22B573" }} />}
+            title="실시간 동기화 (Supabase Realtime)"
+            desc="누군가 새 기록을 남기면 같은 동네 캣맘 화면에 즉시 반영. 1:1 쪽지·구조 신호도 같은 채널로 흐릅니다."
+          />
+          <TechRow
+            icon={<Lock size={18} style={{ color: "#6B8E6F" }} />}
+            title="좌표 비공개 — DB 레벨 권한 분리 (RLS)"
+            desc="급식소 정확 좌표는 클라이언트로 절대 내려가지 않습니다. Supabase Row Level Security로 DB가 직접 거절합니다."
+          />
+          <TechRow
+            icon={<ShieldCheck size={18} style={{ color: "#4A7BA8" }} />}
+            title="봇·어뷰징 방어 (Cloudflare Turnstile)"
+            desc="회원가입과 민감 액션에 캡차를 걸어 사료 광고·악성 도배·계정 양산을 차단합니다."
+          />
+          <TechRow
+            icon={<Download size={18} style={{ color: "#E8B040" }} />}
+            title="앱 설치 없이 PWA"
+            desc="크롬·사파리에서 홈 화면에 추가하면 별도 앱처럼 열려요. Android는 Play Store 배포도 함께 진행 중입니다."
+          />
         </div>
       </section>
 
@@ -245,6 +355,21 @@ function FeatureRow({ icon, title, desc }: { icon: React.ReactNode; title: strin
       <div className="min-w-0">
         <p className="text-[13.5px] font-extrabold text-text-main">{title}</p>
         <p className="text-[12px] text-text-sub mt-1 leading-relaxed">{desc}</p>
+      </div>
+    </div>
+  );
+}
+
+function TechRow({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
+  return (
+    <div
+      className="bg-white rounded-2xl p-4 flex items-start gap-3"
+      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+    >
+      <div className="shrink-0 mt-0.5">{icon}</div>
+      <div className="min-w-0">
+        <p className="text-[13px] font-extrabold text-text-main">{title}</p>
+        <p className="text-[11.5px] text-text-sub mt-1 leading-relaxed">{desc}</p>
       </div>
     </div>
   );

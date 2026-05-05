@@ -38,6 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/protection/disease-guide",     priority: 0.8,  changeFrequency: "monthly" },
     { path: "/tips",                         priority: 0.9,  changeFrequency: "daily" },
     { path: "/news",                         priority: 0.85, changeFrequency: "daily" },
+    { path: "/shorts",                       priority: 0.85, changeFrequency: "daily" },
     { path: "/login",                        priority: 0.3,  changeFrequency: "yearly" },
     { path: "/signup",                       priority: 0.3,  changeFrequency: "yearly" },
     { path: "/privacy",                      priority: 0.2,  changeFrequency: "yearly" },
@@ -110,6 +111,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(t.updated_at),
         changeFrequency: "weekly",
         priority: 0.75,
+      });
+    }
+  } catch {
+    // DB 접근 실패해도 정적 경로는 제공
+  }
+
+  // 동적 숏폼 — /shorts/[id] (발행된 영상만)
+  try {
+    const supabase = await createClient();
+    const { data: shorts } = await supabase
+      .from("shorts")
+      .select("id, updated_at")
+      .eq("published", true)
+      .order("published_at", { ascending: false })
+      .limit(5000);
+
+    for (const s of (shorts ?? []) as { id: string; updated_at: string }[]) {
+      entries.push({
+        url: `${SITE_URL}/shorts/${s.id}`,
+        lastModified: new Date(s.updated_at),
+        changeFrequency: "monthly",
+        priority: 0.6,
       });
     }
   } catch {

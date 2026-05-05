@@ -18,6 +18,11 @@ import {
   Utensils,
   Home as HomeIcon,
   Hand,
+  Code2,
+  Bot,
+  Lock,
+  Radio,
+  Mail,
 } from "lucide-react";
 import { createAnonClient } from "@/lib/supabase/anon";
 import { SEOUL_GUS } from "@/lib/seoul-regions";
@@ -153,20 +158,24 @@ export default async function HomeLanding({
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 mb-3">
           <Heart size={12} style={{ color: "#C47E5A" }} />
           <span className="text-[11px] font-extrabold" style={{ color: "#C47E5A" }}>
-            도시공존 · {data.userCount > 0
-              ? `${data.userCount.toLocaleString()}명의 이웃과 함께`
-              : "서울 시민 참여 플랫폼"}
+            서울 25개 구 · {data.userCount > 0
+              ? `${data.userCount.toLocaleString()}명의 캣맘·캣대디`
+              : "캣맘·캣대디 시민 참여 플랫폼"}
           </span>
         </div>
         <h1 className="text-[30px] font-black text-text-main leading-[1.15] tracking-tight">
-          우리 동네 길고양이, <br />
-          <span className="text-primary">함께 기록하고 지켜요.</span>
+          서울 길고양이 <span className="text-primary">{data.catCount.toLocaleString()}마리</span>,<br />
+          <span className="text-primary">한 화면에서 함께 돌봐요.</span>
         </h1>
         <p className="text-[13.5px] text-text-sub mt-3 leading-relaxed">
-          <b className="text-text-main">도시공존</b>은 서울 전역 길고양이 <b className="text-text-main">{data.catCount.toLocaleString()}마리</b>의
-          돌봄 기록을 캣맘·캣대디가 실시간으로 함께 만들어가는
+          <b className="text-text-main">도시공존</b>은 캣맘·캣대디가 길고양이의
+          <b className="text-text-main"> TNR·건강·급식</b> 기록을 실시간으로 남기고,
+          긴급한 아이를 동네 이웃과 빠르게 잇는
           <br />
-          길고양이 돌봄 시민 참여 플랫폼이에요.
+          서울 25개 구 길고양이 돌봄 지도예요.
+        </p>
+        <p className="text-[12px] mt-2 leading-relaxed" style={{ color: "#8B7562" }}>
+          급식소 정확 좌표는 <b style={{ color: "#6B8E6F" }}>비공개</b> · 광고 없는 무료 운영 · PWA 지원
         </p>
 
         {/* 방문자 수 실시간 (client) */}
@@ -210,6 +219,53 @@ export default async function HomeLanding({
           style={{ color: "#8B7562" }}
         >
           <span>처음이신가요? 10가지 기능 한눈에 보기</span>
+          <ArrowRight size={12} />
+        </Link>
+      </section>
+
+      {/* 이렇게 시작해보세요 — 3단계 액션 가이드 */}
+      <section className="px-5 mt-6">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C47E5A" }} />
+          <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+            이렇게 시작해보세요
+          </h2>
+          <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#C47E5A", opacity: 0.6 }}>
+            3 STEPS
+          </span>
+        </div>
+        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+          처음이라도 괜찮아요. 1분이면 첫 한 줄을 남길 수 있어요.
+        </p>
+        <div className="space-y-2">
+          <StartStep
+            n={1}
+            href="/signup"
+            color="#C47E5A"
+            title="1초 가입 — 카카오·구글로"
+            desc="이메일 따로 안 적어도 돼요. 닉네임만 정하면 끝."
+          />
+          <StartStep
+            n={2}
+            href="/map"
+            color="#4A7BA8"
+            title="우리 동네 지도에서 아이들 찾기"
+            desc="구·동을 누르면 그 동네 길고양이만 모아 보여줘요."
+          />
+          <StartStep
+            n={3}
+            href="/map"
+            color="#E86B8C"
+            title="오른쪽 + 버튼으로 첫 한 줄 남기기"
+            desc="사진·이름·건강 상태 한 번에. 위치는 자동으로 흐리게 처리돼요."
+          />
+        </div>
+        <Link
+          href="/guide"
+          className="mt-3 flex items-center justify-center gap-1 text-[12px] font-bold py-2.5 rounded-xl active:scale-[0.98] transition-transform"
+          style={{ background: "#FFFFFF", color: "#8B7562", border: "1px solid #E8DED0" }}
+        >
+          <span>10가지 기능 한 화면에서 보기</span>
           <ArrowRight size={12} />
         </Link>
       </section>
@@ -582,19 +638,115 @@ export default async function HomeLanding({
         </div>
       </section>
 
-      {/* 소개 링크 */}
-      <section className="px-5 mt-6">
-        <Link
-          href="/about"
-          className="flex items-center justify-between px-4 py-3.5 rounded-2xl bg-white"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+      {/* 기술 자산 — 어떻게 만들어졌나 */}
+      <section className="px-5 mt-8">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4A7BA8" }} />
+          <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+            도시공존은 이렇게 만들어져요
+          </h2>
+        </div>
+        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+          기록 한 줄이 헛되이 흘러가지 않게, 안전하게 오래 쌓일 수 있게 직접 짠 시스템 위에서 돌아갑니다.
+        </p>
+        <div className="grid grid-cols-2 gap-2">
+          <TechCard
+            icon={<MapPin size={16} color="#C47E5A" />}
+            iconBg="#C47E5A15"
+            title="서울 25개 구 자체 매핑"
+            sub="구·동 단위 좌표 직접 정리"
+          />
+          <TechCard
+            icon={<Bot size={16} color="#8B65B8" />}
+            iconBg="#8B65B815"
+            title="AI 집사 챗봇"
+            sub="Google Gemini 기반"
+          />
+          <TechCard
+            icon={<Radio size={16} color="#22B573" />}
+            iconBg="#22B57315"
+            title="실시간 동기화"
+            sub="Supabase Realtime"
+          />
+          <TechCard
+            icon={<Lock size={16} color="#6B8E6F" />}
+            iconBg="#6B8E6F15"
+            title="좌표 비공개 RLS"
+            sub="DB 레벨 권한 분리"
+          />
+          <TechCard
+            icon={<ShieldCheck size={16} color="#4A7BA8" />}
+            iconBg="#4A7BA815"
+            title="봇·어뷰징 방어"
+            sub="Cloudflare Turnstile"
+          />
+          <TechCard
+            icon={<Download size={16} color="#E8B040" />}
+            iconBg="#E8B04015"
+            title="앱 설치 없이 PWA"
+            sub="홈 화면 추가 지원"
+          />
+        </div>
+      </section>
+
+      {/* 만든 사람 — 1인 운영자 정체성 */}
+      <section className="px-5 mt-8">
+        <div
+          className="rounded-3xl p-5"
+          style={{
+            background: "linear-gradient(135deg, #FFF9F2 0%, #F4E8D8 100%)",
+            border: "1px solid rgba(196,126,90,0.20)",
+          }}
         >
-          <div>
-            <p className="text-[13px] font-extrabold text-text-main">도시공존에 대해 더 알아보기</p>
-            <p className="text-[11px] text-text-sub mt-0.5">제휴·언론·블로그 문의 환영</p>
+          <div className="flex items-center gap-2 mb-2">
+            <div
+              className="w-9 h-9 rounded-2xl flex items-center justify-center"
+              style={{ background: "rgba(196,126,90,0.15)" }}
+            >
+              <Code2 size={18} style={{ color: "#A8684A" }} />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[10.5px] font-extrabold tracking-[0.12em]" style={{ color: "#A8684A" }}>
+                MADE BY ONE NEIGHBOR
+              </p>
+              <p className="text-[14px] font-extrabold text-text-main">
+                만든 사람 · 김성우
+              </p>
+            </div>
           </div>
-          <ArrowRight size={16} className="text-text-light" />
-        </Link>
+          <p className="text-[12.5px] leading-[1.85] text-text-sub">
+            도시공존은 <b className="text-text-main">캣맘·캣대디 한 분 한 분의 손이 헛되지 않게 하고 싶다</b>는 마음으로
+            1인 개발자가 직접 설계하고 운영하는 비영리 플랫폼이에요.
+            <br />
+            광고도, 수익 모델도 없이 자비로 굴러갑니다.
+            서버·도메인·AI 비용까지 전부요.
+          </p>
+          <div className="flex gap-2 mt-4">
+            <Link
+              href="/about"
+              className="flex-1 flex items-center justify-center gap-1 py-2.5 rounded-xl text-[12px] font-extrabold active:scale-[0.98] transition-transform"
+              style={{
+                background: "#FFFFFF",
+                color: "#A8684A",
+                border: "1px solid rgba(196,126,90,0.25)",
+              }}
+            >
+              <span>운영 이야기 보기</span>
+              <ArrowRight size={12} />
+            </Link>
+            <a
+              href="mailto:grow29971@gmail.com?subject=%5B%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%A1%B4%5D%20%EC%A0%9C%ED%9C%B4%2F%EB%AC%B8%EC%9D%98"
+              className="flex items-center justify-center gap-1 px-4 py-2.5 rounded-xl text-[12px] font-extrabold text-white active:scale-[0.98] transition-transform"
+              style={{
+                background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+                boxShadow: "0 4px 12px rgba(196,126,90,0.3)",
+              }}
+            >
+              <Mail size={12} />
+              <span>제휴 문의</span>
+            </a>
+          </div>
+        </div>
       </section>
 
       {/* 저작권 푸터 */}
@@ -606,9 +758,7 @@ export default async function HomeLanding({
           <span>·</span>
           <Link href="/about" className="hover:underline">문의</Link>
         </div>
-        <p className="text-[10px] text-text-light">
-          © 2026 도시공존 · 운영자 김성우 · dosigongzon.com
-        </p>
+        <p className="text-[10px] text-text-light">© 2026 도시공존 · dosigongzon.com</p>
       </footer>
     </div>
   );
@@ -728,6 +878,76 @@ function TipsRow({ tip }: { tip: Tip }) {
         )}
       </div>
     </Link>
+  );
+}
+
+function StartStep({
+  n,
+  href,
+  color,
+  title,
+  desc,
+}: {
+  n: number;
+  href: string;
+  color: string;
+  title: string;
+  desc: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="flex items-center gap-3 px-3.5 py-3 rounded-2xl bg-white active:scale-[0.99] transition-transform"
+      style={{
+        boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+        border: `1px solid ${color}25`,
+      }}
+    >
+      <div
+        className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-white text-[13px] font-extrabold"
+        style={{
+          background: `linear-gradient(135deg, ${color} 0%, ${color}CC 100%)`,
+          boxShadow: `0 3px 8px ${color}40`,
+        }}
+      >
+        {n}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-[13px] font-extrabold text-text-main truncate">{title}</p>
+        <p className="text-[11px] text-text-sub mt-0.5 leading-snug">{desc}</p>
+      </div>
+      <ArrowRight size={14} style={{ color, opacity: 0.5 }} className="shrink-0" />
+    </Link>
+  );
+}
+
+function TechCard({
+  icon,
+  iconBg,
+  title,
+  sub,
+}: {
+  icon: React.ReactNode;
+  iconBg: string;
+  title: string;
+  sub: string;
+}) {
+  return (
+    <div
+      className="bg-white rounded-2xl p-3 flex items-center gap-2.5"
+      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}
+    >
+      <div
+        className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+        style={{ backgroundColor: iconBg }}
+      >
+        {icon}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-[12.5px] font-extrabold text-text-main truncate">{title}</p>
+        <p className="text-[10.5px] text-text-sub truncate mt-0.5">{sub}</p>
+      </div>
+    </div>
   );
 }
 

@@ -27,6 +27,7 @@ import {
   type TipInput,
 } from "@/lib/tips-repo";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
+import { revalidateTips } from "./actions";
 
 const EMPTY_DRAFT: TipInput = {
   slug: "",
@@ -183,6 +184,8 @@ export default function AdminTipsPage() {
       } else if (editingId) {
         await updateTip(editingId, draft);
       }
+      // ISR 캐시 즉시 무효화 — /tips 와 해당 글 새로고침
+      await revalidateTips(draft.slug).catch(() => {});
       await refresh();
       handleCancel();
     } catch (err) {
@@ -196,6 +199,7 @@ export default function AdminTipsPage() {
     if (!confirm(`"${item.title}" 삭제할까요?`)) return;
     try {
       await deleteTip(item.id);
+      await revalidateTips(item.slug).catch(() => {});
       await refresh();
     } catch (err) {
       alert(err instanceof Error ? err.message : "삭제 실패");

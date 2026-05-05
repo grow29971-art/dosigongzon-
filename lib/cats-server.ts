@@ -177,17 +177,23 @@ export async function getCatCommunityStatsServer(
 
 /**
  * 특정 구/동 리스트에 해당하는 고양이를 최신순으로 조회 (SEO 랜딩용).
- * region은 자유 입력 필드라 gu 이름과 dongs를 OR 조건으로 ilike 매칭.
+ * region은 자유 입력 필드라 gu/dong을 ilike 매칭하되,
+ * 서울 외 지역의 동명이 substring으로 잡히는 false positive 방지를 위해
+ * "서울" 포함을 AND 조건으로 강제 (예: '구로구 궁동' vs '수원 행궁동').
+ *
+ * 단, 사용자가 region에 구 이름만 정확히 적은 경우(예: "구로구")는
+ * "서울" 단어가 없어도 잡히도록 gu 이름 매치는 OR로 별도 추가.
  */
 export async function getCatsByRegionServer(
   guName: string,
   dongs: string[],
   limit = 24,
 ): Promise<Array<Pick<Cat, "id" | "name" | "region" | "photo_url" | "like_count" | "health_status" | "created_at" | "description">>> {
-  // ISR/SSG 호환을 위해 cookie-less anon 클라이언트 사용
   const supabase = createAnonClient();
-  const terms = [guName, ...dongs];
-  const orClauses = terms.map((t) => `region.ilike.%${t}%`).join(",");
+  // 구 이름은 서울 25개 구가 모두 unique → context 없이도 단독 매치 안전.
+  // 동 이름은 substring 충돌이 흔해 "서울"과 AND 조건으로만 매치.
+  const dongClauses = dongs.map((d) => `and(region.ilike.%서울%,region.ilike.%${d}%)`);
+  const orClauses = [`region.ilike.%${guName}%`, ...dongClauses].join(",");
   const { data, error } = await supabase
     .from("cats")
     .select("id, name, region, photo_url, like_count, health_status, created_at, description")
@@ -206,8 +212,8 @@ export async function getCatCountByRegionServer(
   dongs: string[],
 ): Promise<number> {
   const supabase = createAnonClient();
-  const terms = [guName, ...dongs];
-  const orClauses = terms.map((t) => `region.ilike.%${t}%`).join(",");
+  const dongClauses = dongs.map((d) => `and(region.ilike.%서울%,region.ilike.%${d}%)`);
+  const orClauses = [`region.ilike.%${guName}%`, ...dongClauses].join(",");
   const { count } = await supabase
     .from("cats")
     .select("*", { count: "exact", head: true })

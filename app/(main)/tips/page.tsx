@@ -5,10 +5,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Sparkles, ChevronRight, Eye, Clock, ExternalLink } from "lucide-react";
+import { ArrowLeft, Sparkles, ChevronRight, Eye, Clock, ExternalLink, Pin } from "lucide-react";
 import { listPublishedTipsServer, type Tip } from "@/lib/tips-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { estimateReadingMinutes } from "@/lib/html-sanitize";
+import TipsAdminFab from "./TipsAdminFab";
+import TipsAIChatCard from "./TipsAIChatCard";
 
 export const revalidate = 600;
 
@@ -49,11 +51,6 @@ function formatDate(iso: string): string {
 export default async function TipsIndexPage() {
   const items = await listPublishedTipsServer(50);
 
-  // featured (큰 카드) / 일반 (게시판형) 분리
-  const featured = items.filter((t) => t.featured).slice(0, 2);
-  const featuredIds = new Set(featured.map((t) => t.id));
-  const regular = items.filter((t) => !featuredIds.has(t.id));
-
   // 태그 통계 (필터칩용)
   const tagCount = new Map<string, number>();
   for (const t of items) {
@@ -87,6 +84,9 @@ export default async function TipsIndexPage() {
           __html: JSON.stringify(itemListLd).replace(/</g, "\\u003c"),
         }}
       />
+
+      {/* 관리자 전용 작성 FAB (비관리자에겐 안 보임) */}
+      <TipsAdminFab />
 
       {/* ── 헤더 ── */}
       <div className="px-4 pt-12 pb-4 flex items-center gap-3">
@@ -124,6 +124,11 @@ export default async function TipsIndexPage() {
         </div>
       )}
 
+      {/* ── AI 집사 (꿀팁 페이지 상단 진입점) ── */}
+      <div className="px-4 mb-4">
+        <TipsAIChatCard />
+      </div>
+
       {/* ── 본문 ── */}
       <div className="px-4">
         {items.length === 0 ? (
@@ -138,35 +143,11 @@ export default async function TipsIndexPage() {
             </p>
           </div>
         ) : (
-          <>
-            {/* ── Featured (큰 카드) ── */}
-            {featured.length > 0 && (
-              <div className="space-y-3 mb-5">
-                {featured.map((tip) => (
-                  <FeaturedCard key={tip.id} tip={tip} />
-                ))}
-              </div>
-            )}
-
-            {/* ── 게시판형 리스트 ── */}
-            {regular.length > 0 && (
-              <>
-                {featured.length > 0 && (
-                  <h2 className="text-[13px] font-extrabold text-text-main mt-2 mb-2 px-1">
-                    전체 글
-                  </h2>
-                )}
-                <div
-                  className="bg-white rounded-2xl overflow-hidden"
-                  style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
-                >
-                  {regular.map((tip, idx) => (
-                    <BoardRow key={tip.id} tip={tip} isLast={idx === regular.length - 1} />
-                  ))}
-                </div>
-              </>
-            )}
-          </>
+          <div className="space-y-3">
+            {items.map((tip) => (
+              <TipCard key={tip.id} tip={tip} />
+            ))}
+          </div>
         )}
 
         {/* ── 도시공존 미니 소개 ── */}
@@ -195,8 +176,8 @@ export default async function TipsIndexPage() {
   );
 }
 
-// ── 컴포넌트들 ──
-function FeaturedCard({ tip }: { tip: Tip }) {
+// 모든 글에 동일한 큰 카드. featured/pinned는 뱃지로만 구분.
+function TipCard({ tip }: { tip: Tip }) {
   const photo = sanitizeImageUrl(tip.thumbnail_url, "");
   const reading = estimateReadingMinutes(tip.body);
 
@@ -206,8 +187,8 @@ function FeaturedCard({ tip }: { tip: Tip }) {
         className="rounded-2xl overflow-hidden bg-white active:scale-[0.99] transition-transform"
         style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.06)" }}
       >
-        {photo && (
-          <div className="relative w-full aspect-[16/9] bg-[#EEE8E0]">
+        <div className="relative w-full aspect-[16/9] bg-[#EEE8E0]">
+          {photo ? (
             <Image
               src={photo}
               alt={tip.title}
@@ -215,19 +196,25 @@ function FeaturedCard({ tip }: { tip: Tip }) {
               sizes="(max-width: 720px) 100vw, 720px"
               style={{ objectFit: "cover" }}
             />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Sparkles size={42} strokeWidth={1.4} className="text-primary opacity-40" />
+            </div>
+          )}
+          {tip.featured && (
             <span
               className="absolute top-3 left-3 text-[10px] font-extrabold px-2 py-0.5 rounded-md text-white"
               style={{ background: "rgba(196,126,90,0.95)" }}
             >
               ✨ 추천
             </span>
-            {tip.pinned && (
-              <span className="absolute top-3 right-3 text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-white/90 text-primary">
-                📌 고정
-              </span>
-            )}
-          </div>
-        )}
+          )}
+          {tip.pinned && (
+            <span className="absolute top-3 right-3 text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-white/90 text-primary inline-flex items-center gap-0.5">
+              <Pin size={10} /> 고정
+            </span>
+          )}
+        </div>
         <div className="p-4">
           {tip.tags.length > 0 && (
             <div className="flex gap-1 mb-1.5 flex-wrap">
@@ -269,65 +256,6 @@ function FeaturedCard({ tip }: { tip: Tip }) {
           </div>
         </div>
       </article>
-    </Link>
-  );
-}
-
-function BoardRow({ tip, isLast }: { tip: Tip; isLast: boolean }) {
-  const photo = sanitizeImageUrl(tip.thumbnail_url, "");
-
-  return (
-    <Link
-      href={`/tips/${tip.slug}`}
-      className="flex gap-3 p-3.5 active:bg-[#FBF8F3] transition-colors"
-      style={{ borderBottom: isLast ? "none" : "1px solid rgba(0,0,0,0.04)" }}
-    >
-      {photo ? (
-        <div className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 64, height: 64 }}>
-          <Image src={photo} alt={tip.title} fill sizes="64px" style={{ objectFit: "cover" }} />
-        </div>
-      ) : (
-        <div
-          className="shrink-0 rounded-xl flex items-center justify-center"
-          style={{ width: 64, height: 64, background: "#F2EBE0" }}
-        >
-          <Sparkles size={20} className="text-primary opacity-50" />
-        </div>
-      )}
-      <div className="flex-1 min-w-0">
-        {tip.tags.length > 0 && (
-          <div className="flex gap-1 mb-0.5 flex-wrap">
-            {tip.tags.slice(0, 2).map((tag) => (
-              <span
-                key={tag}
-                className="text-[9.5px] font-bold px-1.5 py-0.5 rounded-md"
-                style={{ background: "#F2EBE0", color: "#8B6F4E" }}
-              >
-                #{tag}
-              </span>
-            ))}
-            {tip.pinned && (
-              <span className="text-[9.5px] font-extrabold text-primary">📌</span>
-            )}
-          </div>
-        )}
-        <p className="text-[13.5px] font-extrabold text-text-main leading-snug line-clamp-1">
-          {tip.title}
-        </p>
-        {tip.description && (
-          <p className="text-[11.5px] text-text-sub line-clamp-1 mt-0.5">
-            {tip.description}
-          </p>
-        )}
-        <div className="flex items-center gap-1.5 mt-1 text-[10px] text-text-light">
-          <span>{formatDate(tip.published_at)}</span>
-          <span>·</span>
-          <span className="inline-flex items-center gap-0.5">
-            <Eye size={10} /> {tip.view_count}
-          </span>
-        </div>
-      </div>
-      <ChevronRight size={14} className="text-text-light self-center shrink-0" />
     </Link>
   );
 }

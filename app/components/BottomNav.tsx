@@ -3,16 +3,17 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Users, Map, Mail, BookOpen, User, Sparkles } from "lucide-react";
+import { Home, Users, Map, Mail, BookOpen, User, Sparkles, Film } from "lucide-react";
 import { getUnreadCount } from "@/lib/dm-repo";
 
 const tabs = [
   { href: "/", label: "홈", Icon: Home },
+  { href: "/shorts", label: "냥숏츠", Icon: Film },
   { href: "/tips", label: "꿀팁", Icon: Sparkles },
   { href: "/community", label: "커뮤니티", Icon: Users },
   { href: "/map", label: "지도", Icon: Map },
   { href: "/messages", label: "쪽지", Icon: Mail },
-  { href: "/protection", label: "보호지침", Icon: BookOpen },
+  { href: "/protection", label: "지침", Icon: BookOpen },
   { href: "/mypage", label: "마이", Icon: User },
 ];
 

@@ -36,6 +36,34 @@ function isSafeUrl(url: string): boolean {
   return false;
 }
 
+// 블록 레벨 태그가 하나도 없으면 평문(plain text)으로 간주.
+// 어드민이 그냥 복붙한 텍스트일 가능성이 높음.
+const BLOCK_TAG_RE = /<(p|h[1-6]|ul|ol|li|blockquote|pre|table|div|figure|article|section|hr)\b/i;
+
+/**
+ * 평문 → HTML 자동 래핑.
+ * 빈 줄로 단락 구분, 단일 줄바꿈은 <br>.
+ * 이미 블록 태그(<p>/<h2>/<ul>/...)가 들어있으면 그대로 둠.
+ */
+function autoWrapPlainText(input: string): string {
+  if (!input) return input;
+  if (BLOCK_TAG_RE.test(input)) return input; // 이미 HTML 구조가 있음
+
+  // zero-width 문자(​-‍, ﻿) 정리 — 네이버 블로그 등에서 복붙 시 흔함
+  const cleaned = input.replace(/[​-‍﻿]/g, "");
+
+  const paragraphs = cleaned
+    .split(/\n\s*\n+/) // 빈 줄(연속 줄바꿈) = 단락 구분
+    .map((p) => p.trim())
+    .filter((p) => p.length > 0);
+
+  if (paragraphs.length === 0) return input;
+
+  return paragraphs
+    .map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`)
+    .join("\n");
+}
+
 /**
  * HTML 문자열을 화이트리스트 기반으로 정리.
  * 1) script/style/iframe 등 위험 태그는 내용까지 제거
@@ -45,7 +73,9 @@ function isSafeUrl(url: string): boolean {
  */
 export function sanitizeTipBody(input: string): string {
   if (typeof input !== "string") return "";
-  let html = input;
+
+  // 0단계: 평문이면 단락/줄바꿈 자동 래핑 (다닥다닥 붙는 현상 방지)
+  let html = autoWrapPlainText(input);
 
   // 1단계: 위험 태그 통째로 제거 (열림 태그~닫힘 태그 사이 모두)
   for (const tag of DANGEROUS_TAGS) {

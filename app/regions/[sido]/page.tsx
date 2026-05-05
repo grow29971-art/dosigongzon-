@@ -36,13 +36,33 @@ type SidoHospital = {
   district: string | null;
 };
 
-async function getSidoData(matchKeywords: string[]) {
+/**
+ * primary 키워드는 단독 OR로 매칭 (인천/부산/수원 등 unique).
+ * district 키워드는 sido shortName과 AND로 묶어 매칭 — 다른 광역시 같은 동명에 잡히는 false positive 차단.
+ *  예) 대전 클릭 → "동구"만으로 매칭하면 부산 동구 cats도 잡힘 → "대전 AND 동구"로 한정.
+ */
+function buildRegionFilter(
+  primary: string[],
+  districts: string[],
+  sidoShort: string,
+  field: "region" | "address",
+): string {
+  const primaryClauses = primary.map((kw) => `${field}.ilike.%${kw}%`);
+  const districtClauses = districts.map(
+    (kw) => `and(${field}.ilike.%${sidoShort}%,${field}.ilike.%${kw}%)`,
+  );
+  return [...primaryClauses, ...districtClauses].join(",");
+}
+
+async function getSidoData(
+  primary: string[],
+  districts: string[],
+  sidoShort: string,
+) {
   try {
     const supabase = createAnonClient();
-    // region에 매칭 키워드 중 하나라도 포함된 cats
-    const orFilter = matchKeywords
-      .map((kw) => `region.ilike.%${kw}%`)
-      .join(",");
+    const orFilter = buildRegionFilter(primary, districts, sidoShort, "region");
+    const orHospitalFilter = buildRegionFilter(primary, districts, sidoShort, "address");
 
     const [catsRes, countRes, hospitalsRes] = await Promise.allSettled([
       supabase
@@ -61,7 +81,7 @@ async function getSidoData(matchKeywords: string[]) {
         .from("rescue_hospitals")
         .select("id, name, address, phone, district")
         .eq("hidden", false)
-        .or(matchKeywords.map((kw) => `address.ilike.%${kw}%`).join(","))
+        .or(orHospitalFilter)
         .order("pinned", { ascending: false })
         .limit(6),
     ]);
@@ -85,7 +105,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     return { title: "지역을 찾을 수 없어요", robots: { index: false, follow: false } };
   }
 
-  const { catCount } = await getSidoData(region.matchKeywords);
+  const { catCount } = await getSidoData(region.primaryKeywords, region.districtKeywords, region.shortName);
   const title = `${region.shortName} 길고양이 돌봄 지도`;
   const description = catCount > 0
     ? `${region.name}에 등록된 길고양이 ${catCount}마리의 돌봄 기록. 동네 캣맘·캣대디와 함께 TNR·구조·급식을 실시간 공유하는 도시공존.`
@@ -120,7 +140,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
   const region = findSidoBySlug(sido);
   if (!region) notFound();
 
-  const { cats, catCount, hospitals } = await getSidoData(region.matchKeywords);
+  const { cats, catCount, hospitals } = await getSidoData(region.primaryKeywords, region.districtKeywords, region.shortName);
   const urgent = cats.filter((c) => c.health_status === "danger").length;
 
   const jsonLd = {
