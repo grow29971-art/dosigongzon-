@@ -10,6 +10,7 @@ import {
   Send,
   AlertTriangle,
   MessageCircle,
+  Globe,
   Shield,
   Phone,
   Copy,
@@ -164,6 +165,8 @@ export default function MapPage() {
   // 현재 구 감지 + 채팅
   const [currentGu, setCurrentGu] = useState("");
   const [chatOpen, setChatOpen] = useState(false);
+  // 채팅 스코프 — currentGu(동네) 또는 "전체"(global). "전체"는 모든 지역이 함께 쓰는 방.
+  const [chatArea, setChatArea] = useState("");
   const [chatMessages, setChatMessages] = useState<{id:string;area:string;author_id:string|null;author_name:string|null;author_avatar_url?:string|null;author_level?:number|null;body:string;created_at:string}[]>([]);
   const [chatText, setChatText] = useState("");
   const [chatSending, setChatSending] = useState(false);
@@ -171,7 +174,7 @@ export default function MapPage() {
 
   // 채팅 메시지 전송: 즉시 화면 표시 + DB 저장
   const handleChatSend = async () => {
-    if (!currentGu || !chatText.trim() || chatSending || !user) return;
+    if (!chatArea || !chatText.trim() || chatSending || !user) return;
     const body = chatText.trim();
     setChatText("");
     setChatSending(true);
@@ -180,7 +183,7 @@ export default function MapPage() {
     const tempId = `temp-${Date.now()}`;
     const optimisticMsg = {
       id: tempId,
-      area: currentGu,
+      area: chatArea,
       author_id: user.id,
       author_name: getChatDisplayName(user),
       body,
@@ -202,7 +205,7 @@ export default function MapPage() {
       const { data, error } = await supabase
         .from("area_chats")
         .insert({
-          area: currentGu,
+          area: chatArea,
           author_id: user.id,
           author_name: getChatDisplayName(user),
           author_avatar_url: user.user_metadata?.avatar_url ?? null,
@@ -230,13 +233,13 @@ export default function MapPage() {
 
   // 채팅방: 히스토리 로드 + 1초 폴링 (다른 사람 메시지 실시간 수신)
   useEffect(() => {
-    if (!chatOpen || !currentGu) return;
+    if (!chatOpen || !chatArea) return;
 
-    // ★ 구가 바뀌면 이전 구 메시지를 즉시 비운다 (크로스 구 유출 방지)
+    // ★ 채팅 스코프(동네/전체)가 바뀌면 이전 메시지를 즉시 비운다 (크로스 영역 유출 방지)
     setChatMessages([]);
 
     const supabase = createSupabaseClient();
-    const fetchArea = currentGu; // 이 effect가 담당하는 구 — 폴링 중 값 고정
+    const fetchArea = chatArea; // 이 effect가 담당하는 area — 폴링 중 값 고정
     let active = true;
     let firstFetchDone = false;
     let lastCount = -1;
@@ -251,8 +254,8 @@ export default function MapPage() {
         .limit(50) as { data: any };
 
       if (!active) return;
-      // 혹시 모를 경쟁 상태: 응답이 도착했을 때 이미 다른 구로 바뀌었다면 무시
-      if (fetchArea !== currentGu) return;
+      // 혹시 모를 경쟁 상태: 응답이 도착했을 때 이미 다른 area로 바뀌었다면 무시
+      if (fetchArea !== chatArea) return;
 
       const msgs: any[] = (data ?? []).filter((m: any) => m.area === fetchArea);
 
@@ -265,7 +268,7 @@ export default function MapPage() {
       lastId = newLastId;
 
       setChatMessages((prev) => {
-        // temp- 메시지(낙관적)는 아직 DB에 없고 현재 구에 속한 것만 유지
+        // temp- 메시지(낙관적)는 아직 DB에 없고 현재 area에 속한 것만 유지
         const tempMsgs = prev.filter((m) => m.id.startsWith("temp-") && m.area === fetchArea);
         const remainingTemp = tempMsgs.filter(
           (t) => !msgs.some((m: any) => m.author_id === t.author_id && m.body === t.body),
@@ -282,7 +285,7 @@ export default function MapPage() {
       active = false;
       clearInterval(interval);
     };
-  }, [chatOpen, currentGu]);
+  }, [chatOpen, chatArea]);
 
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [pickedCoord, setPickedCoord] = useState<{ lat: number; lng: number } | undefined>();
@@ -1914,36 +1917,79 @@ export default function MapPage() {
         </div>
       )}
 
-      {/* 현재 구 채팅 FAB + 안내 */}
-      {currentGu && !selectedCat && !selectedHospital && !chatOpen && !selectedDong && (
+      {/* 채팅 FAB — 전체 채팅(위) + 동네 채팅(아래) + 안내 */}
+      {!selectedCat && !selectedHospital && !chatOpen && !selectedDong && (
         <div className="absolute bottom-6 left-4 z-30 flex flex-col items-start gap-1.5">
+          {/* 전체 채팅 — 모든 지역이 함께 쓰는 방 */}
           <button
             type="button"
-            onClick={() => { if (!isLoggedIn) { if (confirm("로그인하면 동네 채팅을 사용할 수 있어요. 로그인할까요?")) window.location.href = "/login"; return; } setChatOpen(true); }}
+            onClick={() => {
+              if (!isLoggedIn) {
+                if (confirm("로그인하면 전체 채팅을 사용할 수 있어요. 로그인할까요?")) window.location.href = "/login";
+                return;
+              }
+              setChatArea("전체");
+              setChatOpen(true);
+            }}
             className="flex items-center gap-2.5 pl-3 pr-4 py-2.5 active:scale-[0.95] transition-transform"
             style={{
-              background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+              background: "linear-gradient(135deg, #48A59E 0%, #3D8B85 100%)",
               borderRadius: 22,
-              boxShadow: "0 6px 20px rgba(196,126,90,0.45), 0 0 0 2px rgba(255,255,255,0.8)",
+              boxShadow: "0 6px 20px rgba(72,165,158,0.45), 0 0 0 2px rgba(255,255,255,0.8)",
             }}
           >
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center"
               style={{ backgroundColor: "rgba(255,255,255,0.25)" }}
             >
-              <MessageCircle size={16} color="#fff" strokeWidth={2.5} />
+              <Globe size={16} color="#fff" strokeWidth={2.5} />
             </div>
             <div>
-              <p className="text-[12px] font-extrabold text-white leading-tight">{currentGu}</p>
-              <p className="text-[9px] font-semibold" style={{ color: "rgba(255,255,255,0.7)" }}>동네 채팅</p>
+              <p className="text-[12px] font-extrabold text-white leading-tight">전체</p>
+              <p className="text-[9px] font-semibold" style={{ color: "rgba(255,255,255,0.7)" }}>전체 채팅</p>
             </div>
           </button>
-          <div
-            className="px-3 py-2 rounded-2xl max-w-[160px]"
-            style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "0 2px 10px rgba(0,0,0,0.08)" }}
-          >
-            <p className="text-[9.5px] font-semibold text-text-main leading-snug">동네 채팅에 참여해보세요 💬</p>
-          </div>
+
+          {/* 동네 채팅 — 현재 보고 있는 구 한정 */}
+          {currentGu && (
+            <button
+              type="button"
+              onClick={() => {
+                if (!isLoggedIn) {
+                  if (confirm("로그인하면 동네 채팅을 사용할 수 있어요. 로그인할까요?")) window.location.href = "/login";
+                  return;
+                }
+                setChatArea(currentGu);
+                setChatOpen(true);
+              }}
+              className="flex items-center gap-2.5 pl-3 pr-4 py-2.5 active:scale-[0.95] transition-transform"
+              style={{
+                background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+                borderRadius: 22,
+                boxShadow: "0 6px 20px rgba(196,126,90,0.45), 0 0 0 2px rgba(255,255,255,0.8)",
+              }}
+            >
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: "rgba(255,255,255,0.25)" }}
+              >
+                <MessageCircle size={16} color="#fff" strokeWidth={2.5} />
+              </div>
+              <div>
+                <p className="text-[12px] font-extrabold text-white leading-tight">{currentGu}</p>
+                <p className="text-[9px] font-semibold" style={{ color: "rgba(255,255,255,0.7)" }}>동네 채팅</p>
+              </div>
+            </button>
+          )}
+
+          {currentGu && (
+            <div
+              className="px-3 py-2 rounded-2xl max-w-[160px]"
+              style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "0 2px 10px rgba(0,0,0,0.08)" }}
+            >
+              <p className="text-[9.5px] font-semibold text-text-main leading-snug">전국 또는 동네 채팅에 참여해보세요 💬</p>
+            </div>
+          )}
         </div>
       )}
 
@@ -2009,8 +2055,8 @@ export default function MapPage() {
         />
       )}
 
-      {/* 구 채팅방 */}
-      {chatOpen && currentGu && (
+      {/* 채팅방 — 동네(현재 구) 또는 전체 */}
+      {chatOpen && chatArea && (
         <div className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none">
           <div
             className="pointer-events-auto animate-slide-up mx-4 mb-4 flex flex-col"
@@ -2024,8 +2070,12 @@ export default function MapPage() {
           >
             {/* 헤더 */}
             <div className="flex items-center gap-3 px-5 pt-4 pb-3 border-b border-divider shrink-0">
-              <MessageCircle size={16} className="text-primary" />
-              <span className="text-[14px] font-extrabold text-text-main flex-1">{currentGu} 채팅</span>
+              {chatArea === "전체"
+                ? <Globe size={16} style={{ color: "#48A59E" }} />
+                : <MessageCircle size={16} className="text-primary" />}
+              <span className="text-[14px] font-extrabold text-text-main flex-1">
+                {chatArea === "전체" ? "전체 채팅" : `${chatArea} 채팅`}
+              </span>
               <span className="text-[10px] text-text-light">{chatMessages.length}개 메시지</span>
               <button onClick={() => setChatOpen(false)} className="w-8 h-8 rounded-full bg-surface-alt flex items-center justify-center active:scale-90">
                 <X size={16} className="text-text-sub" />

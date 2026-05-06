@@ -20,11 +20,34 @@ interface Props {
 }
 
 export default function ShortsFeed({ initialItems }: Props) {
-  const [items] = useState<Short[]>(initialItems);
+  // items: 사용자가 카드를 볼 때마다 그 다음 부분을 재셔플 → "한 영상 볼 때마다 무작위" 효과.
+  // 이미 본 카드(currentIndex 이하)는 위치 고정, 안 본 카드만 매번 셔플.
+  const [items, setItems] = useState<Short[]>(initialItems);
+  const currentIndexRef = useRef(0);
   // muted: 진입 직후엔 true (브라우저 자동재생 정책상 muted 만 자동재생 허용).
   // 사용자가 한 번이라도 탭/스크롤하면 false로 바뀌고 모든 영상이 소리 재생.
   const [muted, setMuted] = useState(true);
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  // 카드가 새로 보이게 되면 호출 — 그 카드 이후 부분을 재셔플
+  const handleVisible = useCallback((index: number) => {
+    // 뒤로 스크롤(이미 본 카드 재시청)일 땐 셔플 X
+    if (index <= currentIndexRef.current) {
+      currentIndexRef.current = index;
+      return;
+    }
+    currentIndexRef.current = index;
+    setItems((prev) => {
+      const head = prev.slice(0, index + 1);
+      const tail = [...prev.slice(index + 1)];
+      // Fisher-Yates
+      for (let i = tail.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [tail[i], tail[j]] = [tail[j], tail[i]];
+      }
+      return [...head, ...tail];
+    });
+  }, []);
 
   // 방문자 카운터 — /shorts 진입도 사이트 방문으로 집계 (IP 기준 하루 1회 dedup)
   useEffect(() => {
@@ -132,16 +155,18 @@ export default function ShortsFeed({ initialItems }: Props) {
         </div>
       )}
 
-      {items.map((s, i) => (
-        s.youtube_video_id
-          ? <YouTubeShortCard key={s.id} short={s} muted={muted} index={i} onEnded={advanceNext} />
-          : <ShortCard key={s.id} short={s} muted={muted} index={i} onEnded={advanceNext} />
-      ))}
+      {items.map((s, i) => {
+        // 복합 키 — 같은 short.id가 여러 사이클에 반복 등장해도 React key 충돌 방지
+        const key = `${i}-${s.id}`;
+        return s.youtube_video_id
+          ? <YouTubeShortCard key={key} short={s} muted={muted} index={i} onEnded={advanceNext} onVisible={handleVisible} />
+          : <ShortCard key={key} short={s} muted={muted} index={i} onEnded={advanceNext} onVisible={handleVisible} />;
+      })}
     </div>
   );
 }
 
-function ShortCard({ short, muted, index, onEnded }: { short: Short; muted: boolean; index: number; onEnded: (cardEl: HTMLElement | null) => void }) {
+function ShortCard({ short, muted, index, onEnded, onVisible }: { short: Short; muted: boolean; index: number; onEnded: (cardEl: HTMLElement | null) => void; onVisible: (index: number) => void }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
   const viewCountedRef = useRef(false);
@@ -177,6 +202,8 @@ function ShortCard({ short, muted, index, onEnded }: { short: Short; muted: bool
       ([entry]) => {
         if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
           video.play().catch(() => { /* 자동재생 실패 무시 */ });
+          // 보이는 카드 알림 → ShortsFeed에서 다음 부분 재셔플
+          onVisible(index);
           // 1초 이상 보면 조회수 1회 카운트
           if (!viewCountedRef.current) {
             viewCountedRef.current = true;
@@ -191,7 +218,7 @@ function ShortCard({ short, muted, index, onEnded }: { short: Short; muted: bool
     );
     io.observe(card);
     return () => io.disconnect();
-  }, [short.id]);
+  }, [short.id, index, onVisible]);
 
   // 음소거 동기화
   useEffect(() => {
@@ -415,7 +442,7 @@ function ActionButton({
 // YouTube 임베드 카드 — youtube_video_id 있을 때
 // IFrame Player API의 postMessage로 play/pause/mute 제어
 // ══════════════════════════════════════════
-function YouTubeShortCard({ short, muted, index, onEnded }: { short: Short; muted: boolean; index: number; onEnded: (cardEl: HTMLElement | null) => void }) {
+function YouTubeShortCard({ short, muted, index, onEnded, onVisible }: { short: Short; muted: boolean; index: number; onEnded: (cardEl: HTMLElement | null) => void; onVisible: (index: number) => void }) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
   const viewCountedRef = useRef(false);
@@ -548,6 +575,8 @@ function YouTubeShortCard({ short, muted, index, onEnded }: { short: Short; mute
           if (iframeLoadedRef.current) {
             sendCommand("playVideo");
           }
+          // 보이는 카드 알림 → ShortsFeed에서 다음 부분 재셔플
+          onVisible(index);
           if (!viewCountedRef.current) {
             viewCountedRef.current = true;
             window.setTimeout(() => maybeCountView(short.id), 1000);
@@ -561,7 +590,7 @@ function YouTubeShortCard({ short, muted, index, onEnded }: { short: Short; mute
     );
     io.observe(card);
     return () => io.disconnect();
-  }, [short.id, sendCommand]);
+  }, [short.id, sendCommand, index, onVisible]);
 
   // 음소거 동기화
   useEffect(() => {

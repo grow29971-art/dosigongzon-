@@ -27,15 +27,33 @@ export const metadata: Metadata = {
   },
 };
 
-// Fisher-Yates 셔플 — 매 진입마다 새 순서. 핀고정 영상은 위치 유지.
+// Fisher-Yates 셔플
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// 첫 사이클 — 핀고정은 맨 위, 나머지 셔플
 function shuffleNonPinned(items: Short[]): Short[] {
   const pinned = items.filter((s) => s.pinned);
   const rest = items.filter((s) => !s.pinned);
-  for (let i = rest.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [rest[i], rest[j]] = [rest[j], rest[i]];
+  return [...pinned, ...shuffle(rest)];
+}
+
+// 3사이클 무한-무작위 피드 — 끝나면 다시 다른 셔플로 이어짐.
+// 사용자 입장: 30개 다 봐도 또 다른 무작위 순서로 30개 더 → 다시 또 30개.
+// 같은 영상이 여러 사이클에서 반복돼도 매번 다른 위치에 등장 → 진짜 무작위 느낌.
+function buildInfiniteShuffle(items: Short[], cycles = 3): Short[] {
+  const result: Short[] = [];
+  for (let i = 0; i < cycles; i++) {
+    // 첫 사이클만 핀고정 위치 유지, 이후 사이클은 모두 셔플
+    result.push(...(i === 0 ? shuffleNonPinned(items) : shuffle(items)));
   }
-  return [...pinned, ...rest];
+  return result;
 }
 
 export default async function ShortsPage() {
@@ -80,7 +98,7 @@ export default async function ShortsPage() {
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
       />
-      <ShortsFeed initialItems={shuffleNonPinned(items)} />
+      <ShortsFeed initialItems={buildInfiniteShuffle(items)} />
     </>
   );
 }

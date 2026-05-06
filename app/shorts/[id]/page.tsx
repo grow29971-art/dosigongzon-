@@ -66,10 +66,16 @@ export default async function ShortByIdPage({ params }: Props) {
   const all = await listPublishedShortsServer(30);
   const rest = all.filter((s) => s.id !== id);
   const pinned = rest.filter((s) => s.pinned);
-  const others = shuffleArray(rest.filter((s) => !s.pinned));
+  const others = rest.filter((s) => !s.pinned);
 
-  // target을 맨 앞에 두고 → 핀고정 → 셔플된 나머지
-  const items: Short[] = [target, ...pinned, ...others];
+  // target 첫 카드 + 핀고정 + 3사이클 무작위 — 무한-무작위 느낌
+  const items: Short[] = [
+    target,
+    ...pinned,
+    ...shuffleArray(others),
+    ...shuffleArray([...pinned, ...others]),  // 2사이클: target 빼고 다시 섞음
+    ...shuffleArray([...pinned, ...others]),  // 3사이클
+  ];
 
   // VideoObject JSON-LD — Google 검색 결과 영상 카드(Rich Result) 노출용
   const videoJsonLd = {

@@ -1,0 +1,73 @@
+{
+  "packageId": "kr.dosigongzon.app",
+  "host": "dosigongzon.com",
+  "name": "kr.dosigongzon.app",
+  "launcherName": "도시공존",
+  "display": "standalone",
+  "themeColor": "#C47E5A",
+  "themeColorDark": "#000000",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#F5F3EE",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://dosigongzon.com/icons/icon-512.png",
+  "maskableIconUrl": "https://dosigongzon.com/icons/icon-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "uni2997!",
+    "alias": "비밀번호"
+  },
+  "appVersionName": "1",
+  "appVersionCode": 1,
+  "shortcuts": [
+    {
+      "name": "지도",
+      "shortName": "지도",
+      "url": "https://dosigongzon.com/map",
+      "chosenIconUrl": "https://dosigongzon.com/icons/icon-192.png"
+    },
+    {
+      "name": "커뮤니티",
+      "shortName": "커뮤니티",
+      "url": "https://dosigongzon.com/community",
+      "chosenIconUrl": "https://dosigongzon.com/icons/icon-192.png"
+    },
+    {
+      "name": "보호지침",
+      "shortName": "지침",
+      "url": "https://dosigongzon.com/protection",
+      "chosenIconUrl": "https://dosigongzon.com/icons/icon-192.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://dosigongzon.com/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {
+    "playBilling": {
+      "enabled": true
+    },
+    "locationDelegation": {
+      "enabled": true
+    }
+  },
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://dosigongzon.com/",
+  "minSdkVersion": 21,
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "protocolHandlers": [],
+  "fileHandlers": [],
+  "launchHandlerClientMode": "",
+  "displayOverride": [],
+  "appVersion": "1"
+}
