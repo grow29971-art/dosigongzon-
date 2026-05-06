@@ -72,6 +72,7 @@ import {
 import Link from "next/link";
 import { shareToKakao } from "@/lib/kakao-share";
 import MapCoachmark from "@/app/components/MapCoachmark";
+import MapChatGuideModal from "@/app/components/MapChatGuideModal";
 import ReactionBar from "@/app/components/ReactionBar";
 import { listReactionsBatch, type ReactionSummary } from "@/lib/reactions-repo";
 const CatLocationPicker = dynamic(() => import("@/app/components/CatLocationPicker"), { ssr: false });
@@ -2054,6 +2055,9 @@ export default function MapPage() {
           hasMyCat={cats.some((c) => c.caretaker_id === user?.id)}
         />
       )}
+
+      {/* 첫 진입 시 동네/전체 채팅 사용법 안내 (30일 dismiss) */}
+      <MapChatGuideModal />
 
       {/* 채팅방 — 동네(현재 구) 또는 전체 */}
       {chatOpen && chatArea && (
