@@ -55,16 +55,16 @@ export default function ShortsFeed({ initialItems }: Props) {
   }, []);
 
   // 첫 인터랙션 시 자동 unmute (브라우저 정책상 사용자 제스처가 있어야 소리 재생 가능)
-  // ⚠ 음소거 버튼 자체 탭은 제외 — 그렇지 않으면 자동 unmute와 버튼 토글이 같은 탭에서
-  //    같이 발동해 서로 상쇄됨 (단일 탭이 무효화되는 버그).
+  // ⚠ data-no-unmute 표시된 요소(음소거 버튼, 뒤로가기 버튼)는 제외.
+  //    뒤로가기를 제외 안 하면 탭 → setMuted(false) → iframe unMute → 네비게이션 직전에
+  //    소리가 잠깐 켜지는 버그가 발생함.
   // ⚠ YouTube iframe 내부 탭은 cross-origin이라 어차피 이 리스너에 안 잡힘.
   //    화면 영역 대부분이 iframe이라 자동 unmute는 스와이프(scroll)로 주로 발동.
   useEffect(() => {
     if (!muted) return;
     const enable = (e: Event) => {
       const target = e.target as HTMLElement | null;
-      // 음소거 버튼 탭은 무시 — 버튼이 직접 toggle 처리
-      if (target?.closest("[data-mute-toggle]")) return;
+      if (target?.closest("[data-no-unmute]")) return;
       setMuted(false);
       cleanup();
     };
@@ -113,6 +113,7 @@ export default function ShortsFeed({ initialItems }: Props) {
       <div className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 pt-12 pb-3 pointer-events-none">
         <Link
           href="/"
+          data-no-unmute="true"
           className="w-10 h-10 rounded-full flex items-center justify-center active:scale-90 pointer-events-auto"
           style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(8px)" }}
           aria-label="닫기"
@@ -127,7 +128,7 @@ export default function ShortsFeed({ initialItems }: Props) {
         </div>
         <button
           type="button"
-          data-mute-toggle="true"
+          data-no-unmute="true"
           onClick={() => setMuted((m) => !m)}
           className="w-10 h-10 rounded-full flex items-center justify-center active:scale-90 pointer-events-auto"
           style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(8px)" }}

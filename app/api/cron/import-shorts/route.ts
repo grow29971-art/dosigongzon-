@@ -1,5 +1,6 @@
 // ══════════════════════════════════════════
-// 길고양이 YouTube shorts 자동 임포트
+// 동물 YouTube shorts 자동 임포트
+// (길고양이 사이트지만 모든 동물 숏츠를 폭넓게 수집해 둠 — 도시공존 컨셉)
 // Vercel Cron: 매일 09:00 KST (= 0:00 UTC)
 // 수동 호출: 관리자 로그인 상태에서 GET 호출 가능
 // ══════════════════════════════════════════
@@ -12,85 +13,205 @@ export const maxDuration = 60;
 
 // 검색어 풀 — 매 호출마다 랜덤으로 N개 골라서 검색.
 // 같은 키워드를 반복하지 않아 매번 다른 결과가 나오게 함.
-// 카테고리: 한국어 일반 / 행동 / 품종·외모 / 감정 / 영어 일반 / 영어 변형
+// 카테고리: 동물별(고양이/강아지/소동물/야생/조류/농장/수생/파충류) × 감정(귀여운/웃긴/슬픈/밈)
+//          + 동물 일반 키워드(모든 동물 폭넓게)
 const QUERY_POOL = [
-  // ── 한국어 일반 ──
+  // ── 고양이 (사이트 메인 컨셉 — 비중 유지) ──
   "고양이 shorts",
   "길고양이 shorts",
+  "새끼고양이 shorts",
+  "아기고양이 shorts",
   "냥이 shorts",
   "야옹이 shorts",
-  "아기고양이 shorts",
-  "새끼고양이 shorts",
-  "고양이 영상 shorts",
-  "고양이 일상 shorts",
   "냥스타그램 shorts",
-
-  // ── 한국어 행동/상황 ──
-  "고양이 박스 shorts",
-  "고양이 꾹꾹이 shorts",
-  "고양이 식빵 shorts",
-  "고양이 츄르 shorts",
-  "고양이 골골송 shorts",
-  "고양이 우다다 shorts",
-  "고양이 잠자는 shorts",
-  "고양이 놀이 shorts",
-  "고양이 점프 shorts",
-  "고양이 사냥 shorts",
-  "고양이 그루밍 shorts",
-  "고양이 캣타워 shorts",
-
-  // ── 한국어 품종/외모 ──
-  "코리안숏헤어 shorts",
+  "귀여운 고양이 shorts",
+  "웃긴 고양이 shorts",
+  "슬픈 고양이 shorts",
+  "고양이 밈 shorts",
+  "고양이 짤 shorts",
   "치즈고양이 shorts",
   "삼색이 shorts",
   "고등어 고양이 shorts",
-  "검은 고양이 shorts",
   "턱시도 고양이 shorts",
-  "노랑이 shorts",
+  "검은 고양이 shorts",
   "스코티시폴드 shorts",
   "랙돌 고양이 shorts",
   "먼치킨 shorts",
   "페르시안 shorts",
-
-  // ── 한국어 감정 ──
-  "고양이 귀여운 shorts",
-  "고양이 웃긴 shorts",
-  "고양이 화난 shorts",
-  "고양이 사랑스러운 shorts",
-  "고양이 똑똑한 shorts",
-  "고양이 신기한 shorts",
-  "고양이 짤 shorts",
-
-  // ── 영어 일반 ──
   "cat shorts",
   "kitten shorts",
-  "kitty shorts",
-  "cats shorts",
-
-  // ── 영어 행동/감정 ──
   "cute cat shorts",
   "funny cat shorts",
-  "silly cat shorts",
-  "sleeping cat shorts",
-  "playful kitten shorts",
-  "smart cat shorts",
-  "purring cat shorts",
-  "meowing cat shorts",
-
-  // ── 영어 상황 ──
+  "sad cat shorts",
+  "cat meme shorts",
   "stray cat shorts",
   "rescue cat shorts",
-  "adopted kitten shorts",
-  "cat reaction shorts",
-  "cat fail shorts",
 
-  // ── 영어 품종 ──
-  "orange cat shorts",
-  "black cat shorts",
-  "scottish fold shorts",
-  "ragdoll cat shorts",
-  "munchkin cat shorts",
-  "maine coon shorts",
+  // ── 강아지/개 ──
+  "강아지 shorts",
+  "댕댕이 shorts",
+  "아기 강아지 shorts",
+  "퍼피 shorts",
+  "멍멍이 shorts",
+  "귀여운 강아지 shorts",
+  "웃긴 강아지 shorts",
+  "슬픈 강아지 shorts",
+  "강아지 밈 shorts",
+  "유기견 shorts",
+  "포메라니안 shorts",
+  "시바견 shorts",
+  "말티즈 shorts",
+  "리트리버 shorts",
+  "푸들 shorts",
+  "dog shorts",
+  "puppy shorts",
+  "cute dog shorts",
+  "funny dog shorts",
+  "sad dog shorts",
+  "dog meme shorts",
+  "rescue dog shorts",
+
+  // ── 소동물 (햄스터/토끼/고슴도치/기니피그/페럿/친칠라) ──
+  "햄스터 shorts",
+  "햄찌 shorts",
+  "귀여운 햄스터 shorts",
+  "웃긴 햄스터 shorts",
+  "햄스터 밈 shorts",
+  "hamster shorts",
+  "cute hamster shorts",
+  "토끼 shorts",
+  "아기 토끼 shorts",
+  "귀여운 토끼 shorts",
+  "토끼 밈 shorts",
+  "bunny shorts",
+  "rabbit shorts",
+  "고슴도치 shorts",
+  "hedgehog shorts",
+  "기니피그 shorts",
+  "guinea pig shorts",
+  "페럿 shorts",
+  "ferret shorts",
+  "친칠라 shorts",
+  "chinchilla shorts",
+
+  // ── 야생/이국적 (다람쥐·너구리·카피바라·미어캣·코알라·판다·여우·곰·사자·호랑이·수달) ──
+  "다람쥐 shorts",
+  "squirrel shorts",
+  "너구리 shorts",
+  "raccoon shorts",
+  "라쿤 밈 shorts",
+  "카피바라 shorts",
+  "카피바라 밈 shorts",
+  "capybara shorts",
+  "capybara meme shorts",
+  "미어캣 shorts",
+  "meerkat shorts",
+  "코알라 shorts",
+  "koala shorts",
+  "판다 shorts",
+  "아기 판다 shorts",
+  "레서판다 shorts",
+  "panda shorts",
+  "red panda shorts",
+  "수달 shorts",
+  "otter shorts",
+  "여우 shorts",
+  "fox shorts",
+  "늑대 shorts",
+  "wolf shorts",
+  "곰 shorts",
+  "아기 곰 shorts",
+  "bear cub shorts",
+  "호랑이 shorts",
+  "tiger shorts",
+  "사자 shorts",
+  "lion shorts",
+  "코끼리 shorts",
+  "elephant shorts",
+  "기린 shorts",
+  "원숭이 shorts",
+  "monkey shorts",
+
+  // ── 조류 (앵무새·올빼미·병아리·오리·펭귄) ──
+  "앵무새 shorts",
+  "잉꼬 shorts",
+  "parrot shorts",
+  "부엉이 shorts",
+  "올빼미 shorts",
+  "owl shorts",
+  "병아리 shorts",
+  "chick shorts",
+  "오리 shorts",
+  "아기 오리 shorts",
+  "duck shorts",
+  "duckling shorts",
+  "펭귄 shorts",
+  "아기 펭귄 shorts",
+  "penguin shorts",
+
+  // ── 농장/대형 (돼지·양·염소·소·말·알파카·라마) ──
+  "돼지 shorts",
+  "아기 돼지 shorts",
+  "미니피그 shorts",
+  "pig shorts",
+  "piglet shorts",
+  "양 shorts",
+  "아기 양 shorts",
+  "sheep shorts",
+  "lamb shorts",
+  "염소 shorts",
+  "아기 염소 shorts",
+  "goat shorts",
+  "baby goat shorts",
+  "소 shorts",
+  "송아지 shorts",
+  "cow shorts",
+  "calf shorts",
+  "말 shorts",
+  "조랑말 shorts",
+  "horse shorts",
+  "pony shorts",
+  "알파카 shorts",
+  "라마 shorts",
+  "alpaca shorts",
+  "llama shorts",
+
+  // ── 수생/파충류 (돌고래·물범·거북이·악솔로틀·도마뱀·개구리) ──
+  "돌고래 shorts",
+  "dolphin shorts",
+  "물범 shorts",
+  "바다표범 shorts",
+  "seal shorts",
+  "거북이 shorts",
+  "turtle shorts",
+  "악솔로틀 shorts",
+  "axolotl shorts",
+  "도마뱀 shorts",
+  "gecko shorts",
+  "개구리 shorts",
+  "frog shorts",
+
+  // ── 동물 일반 / 감정 / 밈 (모든 동물 폭넓게) ──
+  "귀여운 동물 shorts",
+  "웃긴 동물 shorts",
+  "슬픈 동물 shorts",
+  "동물 밈 shorts",
+  "동물 짤 shorts",
+  "동물 영상 shorts",
+  "동물 모음 shorts",
+  "동물 친구 shorts",
+  "동물 우정 shorts",
+  "아기 동물 shorts",
+  "동물 구조 shorts",
+  "유기동물 shorts",
+  "baby animal shorts",
+  "cute animal shorts",
+  "funny animal shorts",
+  "sad animal shorts",
+  "animal meme shorts",
+  "animal compilation shorts",
+  "animal rescue shorts",
+  "animal friendship shorts",
 ];
 
 // 정렬 옵션 풀 — 매 호출마다 랜덤 선택. 동일 키워드라도 정렬 다르면 결과 달라짐.
@@ -162,19 +283,27 @@ async function handle(request: Request): Promise<Response> {
   const supabase = createServiceClient(supabaseUrl, supabaseServiceKey);
 
   // 기존 video_id 수집 → 중복 차단
-  const { data: existing, error: existingErr } = await supabase
-    .from("shorts")
-    .select("youtube_video_id")
-    .not("youtube_video_id", "is", null);
-  if (existingErr) {
-    console.error("[import-shorts] existing fetch failed:", existingErr);
-    return Response.json({ error: "기존 영상 조회 실패" }, { status: 500 });
+  // PostgREST 기본 limit이 1000이라 페이지네이션으로 전부 가져와야 함.
+  // (안 그러면 1000번째 이후 영상이 "신규"로 판단되어 중복 insert → unique constraint 충돌)
+  const existingIds = new Set<string>();
+  const PAGE_SIZE = 1000;
+  for (let from = 0; ; from += PAGE_SIZE) {
+    const { data: page, error: existingErr } = await supabase
+      .from("shorts")
+      .select("youtube_video_id")
+      .not("youtube_video_id", "is", null)
+      .range(from, from + PAGE_SIZE - 1);
+    if (existingErr) {
+      console.error("[import-shorts] existing fetch failed:", existingErr);
+      return Response.json({ error: "기존 영상 조회 실패" }, { status: 500 });
+    }
+    if (!page || page.length === 0) break;
+    for (const row of page) {
+      const id = row.youtube_video_id as string | null;
+      if (id) existingIds.add(id);
+    }
+    if (page.length < PAGE_SIZE) break;
   }
-  const existingIds = new Set(
-    (existing ?? [])
-      .map((s) => s.youtube_video_id as string | null)
-      .filter((id): id is string => !!id),
-  );
 
   let totalAdded = 0;
   const queryResults: {

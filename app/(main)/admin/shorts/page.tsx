@@ -27,10 +27,8 @@ import {
   uploadShortThumbnail,
   parseYouTubeId,
   youTubeThumbnailUrl,
-  getShortsAdminStats,
   type Short,
   type ShortInput,
-  type ShortsAdminStats,
 } from "@/lib/shorts-repo";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { sanitizeImageUrl, sanitizeHttpUrl } from "@/lib/url-validate";
@@ -70,7 +68,6 @@ export default function AdminShortsPage() {
   const [error, setError] = useState("");
   const [importing, setImporting] = useState(false);
   const [importMsg, setImportMsg] = useState<string>("");
-  const [stats, setStats] = useState<ShortsAdminStats | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -79,12 +76,6 @@ export default function AdminShortsPage() {
         if (cancelled) return;
         setIsAdmin(admin);
         setItems(list);
-        // admin 확인된 후에만 통계 조회 (RLS가 anon은 select 차단)
-        if (admin) {
-          getShortsAdminStats()
-            .then((s) => { if (!cancelled) setStats(s); })
-            .catch(() => {});
-        }
       })
       .finally(() => {
         if (cancelled) return;
@@ -95,12 +86,8 @@ export default function AdminShortsPage() {
   }, []);
 
   const refresh = async () => {
-    const [list, s] = await Promise.all([
-      listAllShorts(),
-      getShortsAdminStats().catch(() => null),
-    ]);
+    const list = await listAllShorts();
     setItems(list);
-    if (s) setStats(s);
   };
 
   const handleNew = () => {
@@ -230,7 +217,7 @@ export default function AdminShortsPage() {
 
   const handleImport = async () => {
     if (importing) return;
-    if (!confirm("YouTube에서 길고양이 shorts를 자동으로 가져옵니다. 시작할까요?")) return;
+    if (!confirm("YouTube에서 다양한 동물 shorts(고양이·강아지·소동물·야생·조류·농장·수생 등)를 자동으로 가져옵니다. 시작할까요?")) return;
     setImporting(true);
     setImportMsg("");
     try {
@@ -328,50 +315,6 @@ export default function AdminShortsPage() {
           <div>
             <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#C47E5A" }}>ADMIN</p>
             <h1 className="text-[18px] font-extrabold text-text-main tracking-tight">숏폼 영상 관리</h1>
-            {!loading && (
-              <p className="text-[11px] text-text-sub mt-0.5">
-                전체 <span className="font-extrabold text-text-main">{items.length}</span>개
-                {items.length > 0 && (
-                  <>
-                    <span className="text-text-light"> · </span>
-                    발행 <span className="font-extrabold" style={{ color: "#3F5B42" }}>
-                      {items.filter((s) => s.published).length}
-                    </span>
-                    {items.some((s) => !s.published) && (
-                      <>
-                        <span className="text-text-light"> · </span>
-                        숨김 <span className="font-extrabold text-text-light">
-                          {items.filter((s) => !s.published).length}
-                        </span>
-                      </>
-                    )}
-                    {items.some((s) => s.pinned) && (
-                      <>
-                        <span className="text-text-light"> · </span>
-                        고정 <span className="font-extrabold" style={{ color: "#A6841E" }}>
-                          {items.filter((s) => s.pinned).length}
-                        </span>
-                      </>
-                    )}
-                  </>
-                )}
-              </p>
-            )}
-            {/* 시청 통계 */}
-            {stats && (
-              <p className="text-[11px] text-text-sub mt-1">
-                <span className="font-extrabold" style={{ color: "#48A59E" }}>
-                  {stats.totalViewers.toLocaleString()}
-                </span>명이
-                <span className="font-extrabold" style={{ color: "#48A59E" }}>
-                  {" "}{stats.totalViewPairs.toLocaleString()}
-                </span>편 시청
-                <span className="text-text-light"> · </span>
-                누적 <span className="font-extrabold text-text-main">
-                  {stats.totalViewCount.toLocaleString()}
-                </span>회
-              </p>
-            )}
           </div>
         </div>
         {!editing && (
@@ -381,7 +324,7 @@ export default function AdminShortsPage() {
               disabled={importing}
               className="flex items-center gap-1 px-3 py-2 rounded-xl active:scale-95 disabled:opacity-50"
               style={{ background: "rgba(196,126,90,0.12)", color: "#A8684A" }}
-              title="YouTube에서 길고양이 shorts 자동 가져오기"
+              title="YouTube에서 다양한 동물 shorts 자동 가져오기"
             >
               {importing ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
               <span className="text-[12px] font-extrabold">

@@ -203,6 +203,7 @@ export async function getPublishedShortServer(id: string): Promise<Short | null>
 }
 
 // ── 읽기 (클라이언트: 어드민 페이지) ──
+// PostgREST 기본 limit이 1000이라 명시적으로 range를 줘야 1000개 이상 표시됨.
 export async function listAllShorts(): Promise<Short[]> {
   const supabase = createClient();
   const { data, error } = await supabase
@@ -210,7 +211,8 @@ export async function listAllShorts(): Promise<Short[]> {
     .select("*")
     .order("pinned", { ascending: false })
     .order("sort_order", { ascending: false })
-    .order("published_at", { ascending: false });
+    .order("published_at", { ascending: false })
+    .range(0, 9999);
   if (error) {
     console.error("[shorts-repo] listAllShorts failed:", error);
     return [];

@@ -1525,6 +1525,10 @@ export default function MapPage() {
         // 100dvh가 부정확한 기기 대비 vh 폴백 + 최소 높이 보장
         height: "calc(100dvh - 5rem)",
         minHeight: "calc(100vh - 5rem)",
+        // 부모 layout의 max-w-lg(512px) 제약을 깨고 화면 전체를 채움.
+        // 갤럭시 폴드 펼친 상태(>512px)에서 양 옆이 비는 이슈 해결.
+        width: "100vw",
+        marginLeft: "calc(50% - 50vw)",
       }}
     >
       {/* 헤더 (슬림 — 호갱노노 스타일) */}
