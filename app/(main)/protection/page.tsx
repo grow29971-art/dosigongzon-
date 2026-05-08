@@ -426,7 +426,7 @@ export default function ProtectionPage() {
             긴급 연락처
           </h2>
         </div>
-        <div className="grid grid-cols-3 gap-2.5">
+        <div className="grid grid-cols-2 gap-2.5">
           {EMERGENCY_CONTACTS.map((c) => {
             const Icon = c.icon;
             return (
@@ -530,5 +530,11 @@ const EMERGENCY_CONTACTS = [
     tel: "02-313-8886",
     icon: HeartHandshake,
     accent: "#E88D5A",
+  },
+  {
+    label: "고보협",
+    tel: "070-7426-4888",
+    icon: Cat,
+    accent: "#8B6FB8",
   },
 ];
