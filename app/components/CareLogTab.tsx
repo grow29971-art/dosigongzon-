@@ -7,6 +7,7 @@ import {
   Camera,
   Trash2,
   X,
+  Send,
 } from "lucide-react";
 import {
   listCareLogs,
@@ -286,14 +287,20 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                 />
               )}
 
-              {/* 메모 + 사진 + 전송 */}
+              {/* 메모 + 사진 */}
               <div className="flex items-center gap-2">
                 <input
                   type="text"
                   value={memo}
                   onChange={(e) => setMemo(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.nativeEvent.isComposing && careType && !submitting) {
+                      e.preventDefault();
+                      handleSubmit();
+                    }
+                  }}
                   placeholder="메모 (선택)"
-                  className="flex-1 px-3 py-2 rounded-xl text-[12px] outline-none"
+                  className="flex-1 min-w-0 px-3 py-2 rounded-xl text-[12px] outline-none"
                   style={{ backgroundColor: "#fff", border: "1px solid #E5E0D6", color: "#2A2A28" }}
                 />
                 <input
@@ -306,24 +313,32 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-9 h-9 rounded-xl flex items-center justify-center active:scale-90"
+                  className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center active:scale-90"
                   style={{ backgroundColor: photoFile ? "#6B8E6F" : "#fff", border: "1px solid #E5E0D6" }}
                 >
                   <Camera size={14} style={{ color: photoFile ? "#fff" : "#A38E7A" }} />
                 </button>
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={submitting || !careType}
-                  className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center disabled:opacity-40 active:scale-90"
-                >
-                  {submitting ? (
-                    <Loader2 size={14} className="animate-spin text-white" />
-                  ) : (
-                    <Plus size={16} color="#fff" strokeWidth={2.5} />
-                  )}
-                </button>
               </div>
+
+              {/* 등록 버튼 — 한 줄 전체 폭으로 명확하게 */}
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={submitting || !careType}
+                className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-extrabold disabled:opacity-40 active:scale-[0.97] transition-all"
+              >
+                {submitting ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin" />
+                    등록 중...
+                  </>
+                ) : (
+                  <>
+                    <Send size={14} strokeWidth={2.5} />
+                    돌봄 기록 등록
+                  </>
+                )}
+              </button>
 
               {/* 사진 미리보기 */}
               {photoPreview && (
