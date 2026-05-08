@@ -2073,7 +2073,7 @@ export default function MapPage() {
               borderRadius: 28,
               boxShadow: "0 -4px 24px rgba(0,0,0,0.12)",
               border: "1px solid rgba(0,0,0,0.06)",
-              height: "55vh",
+              height: "65dvh",
             }}
           >
             {/* 헤더 */}
@@ -2196,7 +2196,7 @@ export default function MapPage() {
               borderRadius: 28,
               boxShadow: "0 -4px 24px rgba(196,126,90,0.15), 0 2px 8px rgba(0,0,0,0.06)",
               border: "1.5px solid rgba(196,126,90,0.2)",
-              maxHeight: "60vh",
+              maxHeight: "70dvh",
             }}
           >
             <button
@@ -2220,7 +2220,7 @@ export default function MapPage() {
               <p className="text-[11px] text-text-sub">고양이를 탭하면 상세 정보를 볼 수 있어요</p>
             </div>
 
-            <div className="overflow-y-auto px-3 pb-4" style={{ maxHeight: "calc(60vh - 80px)" }}>
+            <div className="overflow-y-auto px-3 pb-4" style={{ maxHeight: "calc(70dvh - 80px)" }}>
               {selectedDongCats.map((cat) => {
                 const photoUrl = sanitizeImageUrl(cat.photo_url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
                 const isAlerted = alertedCats.has(cat.id);
@@ -2485,7 +2485,7 @@ export default function MapPage() {
             </button>
           </div>
 
-          <div className="relative bg-white rounded-[28px] overflow-hidden shadow-[0_-4px_24px_rgba(0,0,0,0.12)] pointer-events-auto animate-slide-up max-h-[72vh] overflow-y-auto">
+          <div className="relative bg-white rounded-[28px] overflow-hidden shadow-[0_-4px_24px_rgba(0,0,0,0.12)] pointer-events-auto animate-slide-up max-h-[85dvh] overflow-y-auto">
 
             {/* 사진 */}
             <div className="relative aspect-[4/3] overflow-hidden bg-surface-alt">
