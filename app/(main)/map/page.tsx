@@ -232,15 +232,15 @@ export default function MapPage() {
     }
   };
 
-  // 채팅방: 히스토리 로드 + 1초 폴링 (다른 사람 메시지 실시간 수신)
+  // 채팅방: Realtime 구독 + 30초 폴백 (탭 활성화 시에만)
+  // ※ 이전: 1초 폴링 → egress 폭증 (50메시지 × 1Hz = 1.3GB/일/유저). 2026-05-09 변경.
   useEffect(() => {
     if (!chatOpen || !chatArea) return;
 
-    // ★ 채팅 스코프(동네/전체)가 바뀌면 이전 메시지를 즉시 비운다 (크로스 영역 유출 방지)
     setChatMessages([]);
 
     const supabase = createSupabaseClient();
-    const fetchArea = chatArea; // 이 effect가 담당하는 area — 폴링 중 값 고정
+    const fetchArea = chatArea;
     let active = true;
     let firstFetchDone = false;
     let lastCount = -1;
@@ -255,7 +255,6 @@ export default function MapPage() {
         .limit(50) as { data: any };
 
       if (!active) return;
-      // 혹시 모를 경쟁 상태: 응답이 도착했을 때 이미 다른 area로 바뀌었다면 무시
       if (fetchArea !== chatArea) return;
 
       const msgs: any[] = (data ?? []).filter((m: any) => m.area === fetchArea);
@@ -269,7 +268,6 @@ export default function MapPage() {
       lastId = newLastId;
 
       setChatMessages((prev) => {
-        // temp- 메시지(낙관적)는 아직 DB에 없고 현재 area에 속한 것만 유지
         const tempMsgs = prev.filter((m) => m.id.startsWith("temp-") && m.area === fetchArea);
         const remainingTemp = tempMsgs.filter(
           (t) => !msgs.some((m: any) => m.author_id === t.author_id && m.body === t.body),
@@ -279,12 +277,40 @@ export default function MapPage() {
       setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
     };
 
+    // 1) 초기 로드
     fetchMessages();
-    const interval = setInterval(fetchMessages, 1000);
+
+    // 2) Realtime — 새 메시지 즉시 수신 (egress 거의 없음, websocket 단일 연결)
+    const channel = supabase
+      .channel(`area-chats-${fetchArea}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "area_chats",
+          filter: `area=eq.${fetchArea}`,
+        },
+        () => { if (active && document.visibilityState === "visible") fetchMessages(); },
+      )
+      .subscribe();
+
+    // 3) 폴백 — Realtime 끊김 대비, 30초마다 + 탭 활성 시에만
+    const fallbackInterval = setInterval(() => {
+      if (active && document.visibilityState === "visible") fetchMessages();
+    }, 30000);
+
+    // 4) 탭 다시 활성화 시 즉시 동기화
+    const onVis = () => {
+      if (active && document.visibilityState === "visible") fetchMessages();
+    };
+    document.addEventListener("visibilitychange", onVis);
 
     return () => {
       active = false;
-      clearInterval(interval);
+      clearInterval(fallbackInterval);
+      supabase.removeChannel(channel);
+      document.removeEventListener("visibilitychange", onVis);
     };
   }, [chatOpen, chatArea]);
 
