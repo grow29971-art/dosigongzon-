@@ -48,6 +48,8 @@ import {
   voteComment,
   getMyCommentVotes,
   getLevelColor,
+  thumbnailUrl,
+  optimizedImageUrl,
   MAP_CENTER,
   type Cat,
   type CatComment,
@@ -1101,10 +1103,19 @@ export default function MapPage() {
       });
     }
 
-    // 마커용 사진 URL — 원본 그대로. (Vercel Image Optimization은 background-image에선 400 발생)
-    function thumb(url: string | null | undefined, _size: number): string {
-      void _size;
-      return sanitizeImageUrl(url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
+    // 마커용 사진 URL — Supabase Storage 이미지 변환으로 썸네일화 (egress 절감).
+    // 200마리 × 4MB 원본 → 200마리 × ~10KB 썸네일 = 99% 절감.
+    // ※ Supabase Pro의 image transformation API는 background-image에서도 정상 동작
+    //   (이전 주석은 Vercel Image Optimization 한정 이슈였음).
+    function thumb(url: string | null | undefined, size: number): string {
+      const safe = sanitizeImageUrl(url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
+      // Supabase Storage 공개 URL이면 변환 endpoint로 라우팅
+      if (safe.includes("/storage/v1/object/public/")) {
+        const transformed = safe.replace("/object/public/", "/render/image/public/");
+        // size는 디바이스 픽셀 비율 고려해 2배까지 (retina 대응)
+        return `${transformed}?width=${size * 2}&height=${size * 2}&resize=cover&quality=70`;
+      }
+      return safe;
     }
 
     function renderGroup(dong: string, dongCats: Cat[], tier: 1 | 2 | 3) {
@@ -2132,7 +2143,7 @@ export default function MapPage() {
                     {!isMe && (
                       msg.author_avatar_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={msg.author_avatar_url} alt="" className="w-7 h-7 rounded-full object-cover shrink-0 mt-0.5" />
+                        <img src={thumbnailUrl(msg.author_avatar_url, 56) ?? msg.author_avatar_url} alt="" loading="lazy" decoding="async" className="w-7 h-7 rounded-full object-cover shrink-0 mt-0.5" />
                       ) : (
                         <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
                           <span className="text-[10px] font-bold text-primary">{(msg.author_name ?? "?")[0]}</span>
@@ -2248,7 +2259,9 @@ export default function MapPage() {
 
             <div className="overflow-y-auto px-3 pb-4" style={{ maxHeight: "calc(70dvh - 80px)" }}>
               {selectedDongCats.map((cat) => {
-                const photoUrl = sanitizeImageUrl(cat.photo_url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
+                // 48px 썸네일 — 변환 endpoint로 egress 절감 (원본 4MB → ~10KB)
+                const photoUrl = thumbnailUrl(cat.photo_url, 96)
+                  ?? sanitizeImageUrl(cat.photo_url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
                 const isAlerted = alertedCats.has(cat.id);
                 return (
                   <button
@@ -2513,13 +2526,14 @@ export default function MapPage() {
 
           <div className="relative bg-white rounded-[28px] overflow-hidden shadow-[0_-4px_24px_rgba(0,0,0,0.12)] pointer-events-auto animate-slide-up max-h-[85dvh] overflow-y-auto">
 
-            {/* 사진 */}
+            {/* 사진 — 변환 endpoint로 모바일 폭에 맞춰 리사이즈 (원본 4MB → ~50KB) */}
             <div className="relative aspect-[4/3] overflow-hidden bg-surface-alt">
               {selectedCat.photo_url ? (
                 <img
-                  src={selectedCat.photo_url}
+                  src={optimizedImageUrl(selectedCat.photo_url, 800) ?? selectedCat.photo_url}
                   alt={selectedCat.name}
                   className="w-full h-full object-cover"
+                  decoding="async"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-text-light">
@@ -3004,8 +3018,10 @@ export default function MapPage() {
                           {/* 작성자 아바타 */}
                           {c.author_avatar_url ? (
                             <img
-                              src={c.author_avatar_url}
+                              src={thumbnailUrl(c.author_avatar_url, 40) ?? c.author_avatar_url}
                               alt=""
+                              loading="lazy"
+                              decoding="async"
                               className="w-5 h-5 rounded-full object-cover shrink-0"
                               style={{ border: "1.5px solid #fff", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}
                             />
@@ -3086,10 +3102,11 @@ export default function MapPage() {
                             }}
                           >
                             <img
-                              src={c.photo_url}
+                              src={thumbnailUrl(c.photo_url, 440) ?? c.photo_url}
                               alt="돌봄 기록 사진"
                               className="w-full h-full object-cover"
                               loading="lazy"
+                              decoding="async"
                             />
                           </button>
                         )}
@@ -3314,9 +3331,10 @@ export default function MapPage() {
           onClick={() => setLightboxUrl(null)}
         >
           <img
-            src={lightboxUrl}
+            src={optimizedImageUrl(lightboxUrl, 1200, 80) ?? lightboxUrl}
             alt="확대 사진"
             className="max-w-full max-h-full rounded-2xl"
+            decoding="async"
             onClick={(e) => e.stopPropagation()}
           />
           <button

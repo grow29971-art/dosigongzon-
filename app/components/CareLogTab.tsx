@@ -207,14 +207,23 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                   {log.memo && (
                     <p className="text-[12px] text-text-main mt-1 leading-snug">{log.memo}</p>
                   )}
-                  {log.photo_url && (
+                  {log.photo_url && (() => {
+                    // 작은 썸네일(max-h-28 ≈ 112px)이라 작게 변환
+                    const safe = sanitizeImageUrl(log.photo_url, "");
+                    const optimized = safe.includes("/storage/v1/object/public/")
+                      ? `${safe.replace("/object/public/", "/render/image/public/")}?width=300&quality=70`
+                      : safe;
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={sanitizeImageUrl(log.photo_url, "")}
-                      alt=""
-                      className="mt-1.5 rounded-lg max-h-28 object-cover"
-                    />
-                  )}
+                    return (
+                      <img
+                        src={optimized}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        className="mt-1.5 rounded-lg max-h-28 object-cover"
+                      />
+                    );
+                  })()}
                   <div className="flex items-center gap-1.5 mt-1">
                     <span className="text-[10px] text-text-light">
                       {log.author_name ?? "익명"}
