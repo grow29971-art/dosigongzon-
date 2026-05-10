@@ -12,9 +12,9 @@ import { searchShorts, getVideoStats, YouTubeApiError, type YouTubeSearchItem } 
 export const maxDuration = 60;
 
 // 검색어 풀 — 매 호출마다 랜덤으로 N개 골라서 검색.
-// 같은 키워드를 반복하지 않아 매번 다른 결과가 나오게 함.
-// 카테고리: 동물별(고양이/강아지/소동물/야생/조류/농장/수생/파충류) × 감정(귀여운/웃긴/슬픈/밈)
-//          + 동물 일반 키워드(모든 동물 폭넓게)
+// ⚠ 한국 채널/한국어 영상만 임포트하는 게 목적이라 한국어 키워드만 사용.
+//   영문 키워드는 regionCode=KR 무시되고 글로벌 결과가 자주 나와서 제외함.
+//   추가 안전장치로 아래 hasKorean() 필터에서 한글 없는 영상은 컷.
 const QUERY_POOL = [
   // ── 고양이 (사이트 메인 컨셉 — 비중 유지) ──
   "고양이 shorts",
@@ -27,6 +27,9 @@ const QUERY_POOL = [
   "귀여운 고양이 shorts",
   "웃긴 고양이 shorts",
   "슬픈 고양이 shorts",
+  "신기한 고양이 shorts",
+  "이상한 고양이 shorts",
+  "재밌는 고양이 shorts",
   "고양이 밈 shorts",
   "고양이 짤 shorts",
   "치즈고양이 shorts",
@@ -38,14 +41,6 @@ const QUERY_POOL = [
   "랙돌 고양이 shorts",
   "먼치킨 shorts",
   "페르시안 shorts",
-  "cat shorts",
-  "kitten shorts",
-  "cute cat shorts",
-  "funny cat shorts",
-  "sad cat shorts",
-  "cat meme shorts",
-  "stray cat shorts",
-  "rescue cat shorts",
 
   // ── 강아지/개 ──
   "강아지 shorts",
@@ -56,6 +51,8 @@ const QUERY_POOL = [
   "귀여운 강아지 shorts",
   "웃긴 강아지 shorts",
   "슬픈 강아지 shorts",
+  "신기한 강아지 shorts",
+  "재밌는 강아지 shorts",
   "강아지 밈 shorts",
   "유기견 shorts",
   "포메라니안 shorts",
@@ -63,13 +60,6 @@ const QUERY_POOL = [
   "말티즈 shorts",
   "리트리버 shorts",
   "푸들 shorts",
-  "dog shorts",
-  "puppy shorts",
-  "cute dog shorts",
-  "funny dog shorts",
-  "sad dog shorts",
-  "dog meme shorts",
-  "rescue dog shorts",
 
   // ── 소동물 (햄스터/토끼/고슴도치/기니피그/페럿/친칠라) ──
   "햄스터 shorts",
@@ -77,124 +67,79 @@ const QUERY_POOL = [
   "귀여운 햄스터 shorts",
   "웃긴 햄스터 shorts",
   "햄스터 밈 shorts",
-  "hamster shorts",
-  "cute hamster shorts",
   "토끼 shorts",
   "아기 토끼 shorts",
   "귀여운 토끼 shorts",
   "토끼 밈 shorts",
-  "bunny shorts",
-  "rabbit shorts",
   "고슴도치 shorts",
-  "hedgehog shorts",
   "기니피그 shorts",
-  "guinea pig shorts",
   "페럿 shorts",
-  "ferret shorts",
   "친칠라 shorts",
-  "chinchilla shorts",
 
-  // ── 야생/이국적 (다람쥐·너구리·카피바라·미어캣·코알라·판다·여우·곰·사자·호랑이·수달) ──
+  // ── 야생/이국적 ──
   "다람쥐 shorts",
-  "squirrel shorts",
   "너구리 shorts",
-  "raccoon shorts",
   "라쿤 밈 shorts",
   "카피바라 shorts",
   "카피바라 밈 shorts",
-  "capybara shorts",
-  "capybara meme shorts",
   "미어캣 shorts",
-  "meerkat shorts",
   "코알라 shorts",
-  "koala shorts",
   "판다 shorts",
   "아기 판다 shorts",
   "레서판다 shorts",
-  "panda shorts",
-  "red panda shorts",
   "수달 shorts",
-  "otter shorts",
   "여우 shorts",
-  "fox shorts",
   "늑대 shorts",
-  "wolf shorts",
   "곰 shorts",
   "아기 곰 shorts",
-  "bear cub shorts",
   "호랑이 shorts",
-  "tiger shorts",
   "사자 shorts",
-  "lion shorts",
   "코끼리 shorts",
-  "elephant shorts",
   "기린 shorts",
   "원숭이 shorts",
-  "monkey shorts",
 
-  // ── 조류 (앵무새·올빼미·병아리·오리·펭귄) ──
+  // ── 조류 ──
   "앵무새 shorts",
   "잉꼬 shorts",
-  "parrot shorts",
   "부엉이 shorts",
   "올빼미 shorts",
-  "owl shorts",
   "병아리 shorts",
-  "chick shorts",
   "오리 shorts",
   "아기 오리 shorts",
-  "duck shorts",
-  "duckling shorts",
   "펭귄 shorts",
   "아기 펭귄 shorts",
-  "penguin shorts",
 
-  // ── 농장/대형 (돼지·양·염소·소·말·알파카·라마) ──
+  // ── 농장/대형 ──
   "돼지 shorts",
   "아기 돼지 shorts",
   "미니피그 shorts",
-  "pig shorts",
-  "piglet shorts",
   "양 shorts",
   "아기 양 shorts",
-  "sheep shorts",
-  "lamb shorts",
   "염소 shorts",
   "아기 염소 shorts",
-  "goat shorts",
-  "baby goat shorts",
   "소 shorts",
   "송아지 shorts",
-  "cow shorts",
-  "calf shorts",
   "말 shorts",
   "조랑말 shorts",
-  "horse shorts",
-  "pony shorts",
   "알파카 shorts",
   "라마 shorts",
-  "alpaca shorts",
-  "llama shorts",
 
-  // ── 수생/파충류 (돌고래·물범·거북이·악솔로틀·도마뱀·개구리) ──
+  // ── 수생/파충류 ──
   "돌고래 shorts",
-  "dolphin shorts",
   "물범 shorts",
   "바다표범 shorts",
-  "seal shorts",
   "거북이 shorts",
-  "turtle shorts",
   "악솔로틀 shorts",
-  "axolotl shorts",
   "도마뱀 shorts",
-  "gecko shorts",
   "개구리 shorts",
-  "frog shorts",
 
-  // ── 동물 일반 / 감정 / 밈 (모든 동물 폭넓게) ──
+  // ── 동물 일반 / 감정 / 밈 ──
   "귀여운 동물 shorts",
   "웃긴 동물 shorts",
   "슬픈 동물 shorts",
+  "이상한 동물 shorts",
+  "신기한 동물 shorts",
+  "재밌는 동물 shorts",
   "동물 밈 shorts",
   "동물 짤 shorts",
   "동물 영상 shorts",
@@ -204,15 +149,15 @@ const QUERY_POOL = [
   "아기 동물 shorts",
   "동물 구조 shorts",
   "유기동물 shorts",
-  "baby animal shorts",
-  "cute animal shorts",
-  "funny animal shorts",
-  "sad animal shorts",
-  "animal meme shorts",
-  "animal compilation shorts",
-  "animal rescue shorts",
-  "animal friendship shorts",
+  "동물농장 shorts",
+  "TV 동물농장 shorts",
 ];
+
+// 한글 자/모음 또는 완성형 음절 1자 이상 포함 여부.
+// 결과 후처리 필터 — 제목·채널명 둘 다 한글 없으면 외국 영상으로 보고 컷.
+function hasKorean(text: string): boolean {
+  return /[ㄱ-ㆎ가-힣]/.test(text);
+}
 
 // 정렬 옵션 풀 — 매 호출마다 랜덤 선택. 동일 키워드라도 정렬 다르면 결과 달라짐.
 const ORDER_POOL: Array<"date" | "viewCount" | "relevance"> = [
@@ -310,6 +255,7 @@ async function handle(request: Request): Promise<Response> {
     query: string;
     found: number;
     newAfterDedup: number;
+    passedKoreanFilter: number;
     passedViewFilter: number;
     added: number;
     error?: string;
@@ -326,13 +272,18 @@ async function handle(request: Request): Promise<Response> {
       // 1) DB 중복 제외
       const newOnes = items.filter((it) => !existingIds.has(it.videoId));
 
+      // 2) 한국 영상만 — 제목 또는 채널명에 한글 1자 이상
+      const koreanOnly = newOnes.filter(
+        (it) => hasKorean(it.title) || hasKorean(it.channelTitle),
+      );
+
       let passedViewFilter = 0;
       let qualified: YouTubeSearchItem[] = [];
 
-      if (newOnes.length > 0) {
-        // 2) 조회수 일괄 조회 후 MIN_VIEW_COUNT 미만 필터링
-        const stats = await getVideoStats(newOnes.map((it) => it.videoId));
-        qualified = newOnes.filter((it) => {
+      if (koreanOnly.length > 0) {
+        // 3) 조회수 일괄 조회 후 MIN_VIEW_COUNT 미만 필터링
+        const stats = await getVideoStats(koreanOnly.map((it) => it.videoId));
+        qualified = koreanOnly.filter((it) => {
           const s = stats.get(it.videoId);
           return s && s.viewCount >= MIN_VIEW_COUNT;
         });
@@ -367,6 +318,7 @@ async function handle(request: Request): Promise<Response> {
             query,
             found: items.length,
             newAfterDedup: newOnes.length,
+            passedKoreanFilter: koreanOnly.length,
             passedViewFilter,
             added: 0,
             error: insertErr.message,
@@ -380,6 +332,7 @@ async function handle(request: Request): Promise<Response> {
         query,
         found: items.length,
         newAfterDedup: newOnes.length,
+        passedKoreanFilter: koreanOnly.length,
         passedViewFilter,
         added: qualified.length,
       });
@@ -389,7 +342,8 @@ async function handle(request: Request): Promise<Response> {
         : "알 수 없는 오류";
       console.error(`[import-shorts] query "${query}" failed:`, err);
       queryResults.push({
-        query, found: 0, newAfterDedup: 0, passedViewFilter: 0, added: 0, error: msg,
+        query, found: 0, newAfterDedup: 0,
+        passedKoreanFilter: 0, passedViewFilter: 0, added: 0, error: msg,
       });
     }
   }
