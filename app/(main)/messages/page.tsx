@@ -15,6 +15,7 @@ import {
   type Conversation,
   type DirectMessage,
 } from "@/lib/dm-repo";
+import { thumbnailUrl, optimizedImageUrl } from "@/lib/cats-repo";
 
 export default function MessagesPageWrapper() {
   return (
@@ -206,7 +207,7 @@ function MessagesPage() {
                 {!isMe && (
                   msg.sender_avatar_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={msg.sender_avatar_url} alt="" className="w-7 h-7 rounded-full object-cover shrink-0 mt-0.5" />
+                    <img src={thumbnailUrl(msg.sender_avatar_url, 56) ?? msg.sender_avatar_url} alt="" loading="lazy" decoding="async" className="w-7 h-7 rounded-full object-cover shrink-0 mt-0.5" />
                   ) : (
                     <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
                       <span className="text-[10px] font-bold text-primary">{(selectedPartner.name)[0]}</span>
@@ -223,7 +224,7 @@ function MessagesPage() {
                   >
                     {msg.photo_url && (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={msg.photo_url} alt="" className="max-w-full max-h-48 object-cover" />
+                      <img src={optimizedImageUrl(msg.photo_url, 600) ?? msg.photo_url} alt="" loading="lazy" decoding="async" className="max-w-full max-h-48 object-cover" />
                     )}
                     {msg.body && msg.body !== "📷 사진" && (
                       <p className="px-3.5 py-2 text-[13px] leading-relaxed" style={{ color: isMe ? "#fff" : "#2A2A28" }}>
@@ -361,7 +362,7 @@ function MessagesPage() {
             >
               {c.partnerAvatar ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={c.partnerAvatar} alt="" className="w-10 h-10 rounded-full object-cover shrink-0" />
+                <img src={thumbnailUrl(c.partnerAvatar, 80) ?? c.partnerAvatar} alt="" loading="lazy" decoding="async" className="w-10 h-10 rounded-full object-cover shrink-0" />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <span className="text-[14px] font-extrabold text-primary">{c.partnerName[0]}</span>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, PawPrint, CalendarDays, Camera, BookOpen, Sparkles } from "lucide-react";
 import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer, getCatCommunityStatsServer, getCatDiaryServer } from "@/lib/cats-server";
-import { GENDER_MAP, HEALTH_MAP } from "@/lib/cats-repo";
+import { GENDER_MAP, HEALTH_MAP, thumbnailUrl, optimizedImageUrl } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { createClient } from "@/lib/supabase/server";
 import FollowButton from "@/app/components/FollowButton";
@@ -248,8 +248,10 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                     {c.avatarUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={sanitizeImageUrl(c.avatarUrl, "")}
+                        src={thumbnailUrl(sanitizeImageUrl(c.avatarUrl, ""), 64) ?? sanitizeImageUrl(c.avatarUrl, "")}
                         alt={c.name}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -493,7 +495,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                     style={{ aspectRatio: "1/1", background: "#EEE8E0" }}
                   >
                     <Image
-                      src={safe}
+                      src={thumbnailUrl(safe, 240) ?? safe}
                       alt={`${cat.name} 다이어리 — ${dateLabel}`}
                       fill
                       sizes="(max-width: 480px) 33vw, 160px"

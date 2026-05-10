@@ -287,24 +287,30 @@ export default function HomeAuthed({
     getTodayAnniversaries().then(setAnniversaries).catch(() => {});
   }, []);
 
-  // 실시간 피드 로드 + 60초 폴링
+  // 실시간 피드 로드 + 5분 폴링 (탭 활성 시에만)
+  // 이전: 60초 폴링 무조건 실행 → 백그라운드 탭에서도 egress 소모.
   useEffect(() => {
     const primary = myRegions.find((r) => r.is_primary) ?? myRegions[0] ?? null;
     let cancelled = false;
     const refresh = () => {
+      if (document.visibilityState !== "visible") return;
       getRecentFeed({ region: primary, limit: 10, hours: 24 })
         .then((list) => { if (!cancelled) setFeed(list); })
         .catch(() => {});
     };
     refresh();
-    const interval = setInterval(refresh, 60_000);
+    const interval = setInterval(refresh, 300_000); // 5분
+    const onVis = () => { if (document.visibilityState === "visible") refresh(); };
+    document.addEventListener("visibilitychange", onVis);
     return () => {
       cancelled = true;
       clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVis);
     };
   }, [myRegions]);
 
-  // 알림 카운트 로드 + 30초 폴링
+  // 알림 카운트 로드 + 2분 폴링 (탭 활성 시에만)
+  // 이전: 30초 폴링 무조건. BottomNav가 이미 폴링하므로 빈도 절감 가능.
   useEffect(() => {
     if (!user) {
       setUnreadCount(0);
@@ -312,15 +318,19 @@ export default function HomeAuthed({
     }
     let cancelled = false;
     const refresh = () => {
+      if (document.visibilityState !== "visible") return;
       getUnreadNotificationCount()
         .then((n) => { if (!cancelled) setUnreadCount(n); })
         .catch(() => {});
     };
     refresh();
-    const interval = setInterval(refresh, 30_000);
+    const interval = setInterval(refresh, 120_000); // 2분
+    const onVis = () => { if (document.visibilityState === "visible") refresh(); };
+    document.addEventListener("visibilitychange", onVis);
     return () => {
       cancelled = true;
       clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVis);
     };
   }, [user]);
 

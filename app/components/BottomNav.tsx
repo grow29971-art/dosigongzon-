@@ -25,12 +25,23 @@ export default function BottomNav() {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    getUnreadCount().then(setUnreadCount).catch(() => {});
-    // 30초마다 갱신
-    const interval = setInterval(() => {
-      getUnreadCount().then(setUnreadCount).catch(() => {});
-    }, 30000);
-    return () => clearInterval(interval);
+    let cancelled = false;
+    const refresh = () => {
+      if (document.visibilityState !== "visible") return;
+      getUnreadCount()
+        .then((n) => { if (!cancelled) setUnreadCount(n); })
+        .catch(() => {});
+    };
+    refresh();
+    // 60초마다 + 탭 활성 시에만 (이전 30초 무조건 → egress 절감)
+    const interval = setInterval(refresh, 60000);
+    const onVis = () => { if (document.visibilityState === "visible") refresh(); };
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVis);
+    };
   }, []);
 
   return (

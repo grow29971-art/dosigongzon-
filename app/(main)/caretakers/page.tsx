@@ -6,6 +6,7 @@ import { ArrowLeft, MapPin, PawPrint, MessageCircle, Sparkles, UserPlus } from "
 import { createClient } from "@/lib/supabase/server";
 import { listNearbyCaretakersServer } from "@/lib/users-server";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import { thumbnailUrl } from "@/lib/cats-repo";
 
 export const metadata: Metadata = {
   title: "동네 캣맘 찾기",
@@ -101,7 +102,8 @@ function CaretakerCard({
 }: {
   caretaker: Awaited<ReturnType<typeof listNearbyCaretakersServer>>[number];
 }) {
-  const avatar = sanitizeImageUrl(caretaker.avatar_url, "");
+  const rawAvatar = sanitizeImageUrl(caretaker.avatar_url, "");
+  const avatar = thumbnailUrl(rawAvatar, 96) ?? rawAvatar;
   const presetMsg = encodeURIComponent(
     `안녕하세요! 같은 동네에서 길고양이 챙기시는 것 같아 인사드려요. 같이 정보 나누면 좋을 것 같습니다.`,
   );

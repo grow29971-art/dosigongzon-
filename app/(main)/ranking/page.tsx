@@ -8,7 +8,7 @@ import Image from "next/image";
 import { ArrowLeft, Trophy, Medal, Award, PawPrint, MessageCircle, Heart } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getTopCaretakersServer, getMyRankServer, type RankingRow } from "@/lib/ranking-repo";
-import { computeLevel, getLevelColor } from "@/lib/cats-repo";
+import { computeLevel, getLevelColor, thumbnailUrl } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 
 export const metadata: Metadata = {
@@ -159,7 +159,8 @@ export default async function RankingPage() {
 // ── Top 3 시상대 카드 ──
 function PodiumCard({ row, place, height }: { row: RankingRow; place: 1 | 2 | 3; height: number }) {
   const level = computeLevel(row.score);
-  const photo = sanitizeImageUrl(row.avatar_url, "");
+  const rawPhoto = sanitizeImageUrl(row.avatar_url, "");
+  const photo = thumbnailUrl(rawPhoto, 96) ?? rawPhoto;
   const medal = place === 1 ? "🥇" : place === 2 ? "🥈" : "🥉";
   const bg =
     place === 1
@@ -228,7 +229,8 @@ function PodiumCard({ row, place, height }: { row: RankingRow; place: 1 | 2 | 3;
 // ── 4위 이하 일반 행 ──
 function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
   const level = computeLevel(row.score);
-  const photo = sanitizeImageUrl(row.avatar_url, "");
+  const rawPhoto = sanitizeImageUrl(row.avatar_url, "");
+  const photo = thumbnailUrl(rawPhoto, 72) ?? rawPhoto;
   return (
     <Link
       href={`/users/${row.user_id}`}
