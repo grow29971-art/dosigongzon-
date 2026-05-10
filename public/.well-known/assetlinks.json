@@ -5,7 +5,8 @@
       "namespace": "android_app",
       "package_name": "kr.dosigongzon.app",
       "sha256_cert_fingerprints": [
-        "BE:C4:A5:02:F2:4D:38:34:F2:4C:C9:53:C7:D5:06:DA:C2:1C:E7:B2:A5:A4:AF:A1:D7:BD:D3:B0:52:23:FC:D3"
+        "BE:C4:A5:02:F2:4D:38:34:F2:4C:C9:53:C7:D5:06:DA:C2:1C:E7:B2:A5:A4:AF:A1:D7:BD:D3:B0:52:23:FC:D3",
+        "A1:C5:5E:50:5F:26:DA:DF:FF:63:F8:8A:D1:7D:C9:23:46:D8:A7:0B:91:65:E9:C9:FF:04:B8:8B:AF:AF:67:F6"
       ]
     }
   }

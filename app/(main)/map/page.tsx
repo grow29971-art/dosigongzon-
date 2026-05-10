@@ -59,6 +59,7 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/app/components/Toast";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import { getMyBlockedIdSet } from "@/lib/blocks-repo";
 import TitleBadge from "@/app/components/TitleBadge";
 import SendDMButton from "@/app/components/SendDMButton";
 import { listRescueHospitals, type RescueHospital } from "@/lib/hospitals-repo";
@@ -381,17 +382,24 @@ export default function MapPage() {
 
     const reload = async () => {
       try {
-        const list = await listComments(selectedCat.id);
+        const [list, blocked] = await Promise.all([
+          listComments(selectedCat.id),
+          getMyBlockedIdSet(),
+        ]);
         if (cancelled) return;
-        setComments(list);
-        if (isLoggedIn && list.length > 0) {
-          const votes = await getMyCommentVotes(list.map((c) => c.id));
+        // 차단한 유저의 댓글은 가림
+        const filtered = blocked.size === 0
+          ? list
+          : list.filter((c) => !c.author_id || !blocked.has(c.author_id));
+        setComments(filtered);
+        if (isLoggedIn && filtered.length > 0) {
+          const votes = await getMyCommentVotes(filtered.map((c) => c.id));
           if (!cancelled) setMyVotes(votes);
         } else {
           setMyVotes(new Map());
         }
-        if (list.length > 0) {
-          const reactions = await listReactionsBatch("cat_comment", list.map((c) => c.id));
+        if (filtered.length > 0) {
+          const reactions = await listReactionsBatch("cat_comment", filtered.map((c) => c.id));
           if (!cancelled) setCommentReactions(reactions);
         } else {
           setCommentReactions(new Map());

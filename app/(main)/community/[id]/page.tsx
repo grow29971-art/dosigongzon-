@@ -38,6 +38,7 @@ import {
   type PostComment,
 } from "@/lib/post-comments-repo";
 import { useAuth } from "@/lib/auth-context";
+import { getMyBlockedIdSet } from "@/lib/blocks-repo";
 import dynamic from "next/dynamic";
 const ReportModal = dynamic(() => import("@/app/components/ReportModal"), { ssr: false });
 import TitleBadge from "@/app/components/TitleBadge";
@@ -198,11 +199,18 @@ export default function PostDetailPage({
     setCommentsLoading(true);
     const reload = async () => {
       try {
-        const list = await listPostComments(id);
+        const [list, blocked] = await Promise.all([
+          listPostComments(id),
+          getMyBlockedIdSet(),
+        ]);
         if (cancelled) return;
-        setComments(list);
-        if (list.length > 0) {
-          const reactions = await listReactionsBatch("post_comment", list.map((c) => c.id));
+        // 차단한 유저의 댓글은 가림
+        const filtered = blocked.size === 0
+          ? list
+          : list.filter((c) => !c.author_id || !blocked.has(c.author_id));
+        setComments(filtered);
+        if (filtered.length > 0) {
+          const reactions = await listReactionsBatch("post_comment", filtered.map((c) => c.id));
           if (!cancelled) setReactionMap(reactions);
         }
       } finally {
