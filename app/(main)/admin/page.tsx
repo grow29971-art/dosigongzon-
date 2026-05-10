@@ -25,7 +25,6 @@ import {
   Gift,
   CalendarClock,
   Sparkles,
-  Film,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { getAdminStats, type AdminStats } from "@/lib/admin-stats";
@@ -141,13 +140,6 @@ export default function AdminDashboardPage() {
       subtitle: "정보글 작성·발행·수정",
       Icon: Sparkles,
       color: "#C47E5A",
-    },
-    {
-      href: "/admin/shorts",
-      title: "숏폼 영상 관리",
-      subtitle: "영상 업로드·정렬·발행",
-      Icon: Film,
-      color: "#A8684A",
     },
     {
       href: "/admin/weekly-issues",

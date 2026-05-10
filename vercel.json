@@ -47,10 +47,6 @@
     {
       "path": "/api/cron/like-digest",
       "schedule": "0 3 * * *"
-    },
-    {
-      "path": "/api/cron/import-shorts",
-      "schedule": "0 0 * * *"
     }
   ]
 }
