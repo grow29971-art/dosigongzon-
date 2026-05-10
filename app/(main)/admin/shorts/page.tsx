@@ -227,12 +227,12 @@ export default function AdminShortsPage() {
       if (!res.ok || !data.ok) {
         throw new Error(data.error || "임포트 실패");
       }
-      // 상세 결과 메시지 — 검색별 found / dedupNew / passedView / added
+      // 상세 결과 메시지 — 검색별 found / dedupNew / passedLike / added
       type QR = {
         query: string;
         found: number;
         newAfterDedup: number;
-        passedViewFilter: number;
+        passedLikeFilter: number;
         added: number;
         error?: string;
       };
@@ -253,15 +253,15 @@ export default function AdminShortsPage() {
         .map((r: QR) =>
           r.error
             ? `· "${r.query}" — ❌ ${r.error}`
-            : `· "${r.query}" — 검색 ${r.found} → 신규 ${r.newAfterDedup} → 조회수 통과 ${r.passedViewFilter} → 추가 ${r.added}`,
+            : `· "${r.query}" — 검색 ${r.found} → 신규 ${r.newAfterDedup} → 좋아요 통과 ${r.passedLikeFilter} → 추가 ${r.added}`,
         )
         .join("\n");
       const orderLabel = data.order === "date" ? "최신순"
         : data.order === "viewCount" ? "조회순"
         : data.order === "relevance" ? "관련도순" : "?";
-      const minViews = (data.minViewCount ?? 0).toLocaleString();
+      const minLikes = (data.minLikeCount ?? 0).toLocaleString();
       setImportMsg(
-        `✅ 총 ${data.totalAdded}개 추가 (정렬: ${orderLabel} · 최소 조회수: ${minViews})\n${breakdown}`,
+        `✅ 총 ${data.totalAdded}개 추가 (정렬: ${orderLabel} · 최소 좋아요: ${minLikes})\n${breakdown}`,
       );
       await revalidateShorts();
       await refresh();

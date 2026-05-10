@@ -172,8 +172,9 @@ const ORDER_POOL: Array<"date" | "viewCount" | "relevance"> = [
 const QUERIES_PER_CALL = 3;
 const PER_QUERY_LIMIT = 30;
 
-// 최소 조회수 기준 — 이 미만은 임포트 스킵 (퀄리티 통제)
-const MIN_VIEW_COUNT = 10_000;
+// 최소 좋아요 기준 — 이 미만은 임포트 스킵 (퀄리티 통제)
+// 좋아요 1만 = 일반적으로 조회수 수십만 이상의 검증된 영상
+const MIN_LIKE_COUNT = 10_000;
 
 function pickRandom<T>(arr: readonly T[], n: number): T[] {
   const copy = [...arr];
@@ -256,7 +257,7 @@ async function handle(request: Request): Promise<Response> {
     found: number;
     newAfterDedup: number;
     passedKoreanFilter: number;
-    passedViewFilter: number;
+    passedLikeFilter: number;
     added: number;
     error?: string;
   }[] = [];
@@ -277,17 +278,18 @@ async function handle(request: Request): Promise<Response> {
         (it) => hasKorean(it.title) || hasKorean(it.channelTitle),
       );
 
-      let passedViewFilter = 0;
+      let passedLikeFilter = 0;
       let qualified: YouTubeSearchItem[] = [];
 
       if (koreanOnly.length > 0) {
-        // 3) 조회수 일괄 조회 후 MIN_VIEW_COUNT 미만 필터링
+        // 3) 좋아요 일괄 조회 후 MIN_LIKE_COUNT 미만 필터링
+        // 좋아요 비공개 영상(likeCount 없음)도 자동 컷.
         const stats = await getVideoStats(koreanOnly.map((it) => it.videoId));
         qualified = koreanOnly.filter((it) => {
           const s = stats.get(it.videoId);
-          return s && s.viewCount >= MIN_VIEW_COUNT;
+          return s && s.likeCount >= MIN_LIKE_COUNT;
         });
-        passedViewFilter = qualified.length;
+        passedLikeFilter = qualified.length;
       }
 
       if (qualified.length > 0) {
@@ -319,7 +321,7 @@ async function handle(request: Request): Promise<Response> {
             found: items.length,
             newAfterDedup: newOnes.length,
             passedKoreanFilter: koreanOnly.length,
-            passedViewFilter,
+            passedLikeFilter,
             added: 0,
             error: insertErr.message,
           });
@@ -333,7 +335,7 @@ async function handle(request: Request): Promise<Response> {
         found: items.length,
         newAfterDedup: newOnes.length,
         passedKoreanFilter: koreanOnly.length,
-        passedViewFilter,
+        passedLikeFilter,
         added: qualified.length,
       });
     } catch (err) {
@@ -343,7 +345,7 @@ async function handle(request: Request): Promise<Response> {
       console.error(`[import-shorts] query "${query}" failed:`, err);
       queryResults.push({
         query, found: 0, newAfterDedup: 0,
-        passedKoreanFilter: 0, passedViewFilter: 0, added: 0, error: msg,
+        passedKoreanFilter: 0, passedLikeFilter: 0, added: 0, error: msg,
       });
     }
   }
@@ -352,7 +354,7 @@ async function handle(request: Request): Promise<Response> {
     ok: true,
     totalAdded,
     order,
-    minViewCount: MIN_VIEW_COUNT,
+    minLikeCount: MIN_LIKE_COUNT,
     queryResults,
     timestamp: new Date().toISOString(),
   });
