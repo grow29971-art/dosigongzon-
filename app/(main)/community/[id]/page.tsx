@@ -178,6 +178,8 @@ export default function PostDetailPage({
     type: "post" | "post_comment";
     id: string;
     snapshot: string;
+    authorUserId?: string | null;
+    authorName?: string | null;
   } | null>(null);
 
   useEffect(() => {
@@ -497,6 +499,8 @@ export default function PostDetailPage({
                   type: "post",
                   id: post.id,
                   snapshot: `${post.title} — ${post.content.slice(0, 150)}`,
+                  authorUserId: post.authorId ?? null,
+                  authorName: post.authorName ?? null,
                 })
               }
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] active:scale-95 transition-transform"
@@ -544,7 +548,7 @@ export default function PostDetailPage({
                       })
                     }
                     onReply={() => setReplyTo({ id: c.id, name: c.author_name ?? "익명" })}
-                    onReport={() => setReportTarget({ type: "post_comment", id: c.id, snapshot: c.body.slice(0, 150) })}
+                    onReport={() => setReportTarget({ type: "post_comment", id: c.id, snapshot: c.body.slice(0, 150), authorUserId: c.author_id ?? null, authorName: c.author_name ?? null })}
                   />
                   {/* 대댓글 */}
                   {replies.map((r) => (
@@ -564,7 +568,7 @@ export default function PostDetailPage({
                           })
                         }
                         onReply={() => setReplyTo({ id: c.id, name: r.author_name ?? "익명" })}
-                        onReport={() => setReportTarget({ type: "post_comment", id: r.id, snapshot: r.body.slice(0, 150) })}
+                        onReport={() => setReportTarget({ type: "post_comment", id: r.id, snapshot: r.body.slice(0, 150), authorUserId: r.author_id ?? null, authorName: r.author_name ?? null })}
                         isReply
                       />
                     </div>
@@ -583,6 +587,8 @@ export default function PostDetailPage({
         targetType={reportTarget?.type ?? "post"}
         targetId={reportTarget?.id ?? ""}
         targetSnapshot={reportTarget?.snapshot}
+        authorUserId={reportTarget?.authorUserId ?? null}
+        authorName={reportTarget?.authorName ?? null}
       />
 
       {/* ── 댓글 입력 (하단 고정, BottomNav 위) ── */}

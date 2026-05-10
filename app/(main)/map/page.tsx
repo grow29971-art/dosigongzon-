@@ -339,6 +339,8 @@ export default function MapPage() {
     id: string;
     type: "comment" | "cat";
     snapshot: string;
+    authorUserId?: string | null;
+    authorName?: string | null;
   } | null>(null);
 
   // 댓글 사진 프리뷰 URL 정리 (메모리 누수 방지)
@@ -3179,6 +3181,8 @@ export default function MapPage() {
                                       id: c.id,
                                       type: "comment",
                                       snapshot: c.body?.slice(0, 200) ?? "",
+                                      authorUserId: c.author_id ?? null,
+                                      authorName: c.author_name ?? null,
                                     })
                                   }
                                   className="ml-auto flex items-center justify-center w-7 h-7 rounded-lg active:scale-90 transition-transform"
@@ -3355,6 +3359,8 @@ export default function MapPage() {
         targetType={reportTarget?.type ?? "comment"}
         targetId={reportTarget?.id ?? ""}
         targetSnapshot={reportTarget?.snapshot}
+        authorUserId={reportTarget?.authorUserId ?? null}
+        authorName={reportTarget?.authorName ?? null}
       />
 
       {/* 등록 모달 */}

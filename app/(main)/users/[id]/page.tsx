@@ -17,6 +17,7 @@ import { findAdminTitle, TITLES, CATEGORY_COLORS } from "@/lib/titles";
 import { computeLevel, computeScore } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import FollowButton from "@/app/components/FollowButton";
+import BlockUserButton from "@/app/components/BlockUserButton";
 
 const SITE_URL = "https://dosigongzon.com";
 
@@ -158,8 +159,9 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                 <CalendarDays size={11} />
                 {joinedAt} 가입
               </p>
-              <div className="mt-3">
+              <div className="mt-3 flex items-center gap-2 flex-wrap">
                 <FollowButton userId={profile.id} size="md" />
+                <BlockUserButton userId={profile.id} userName={profile.nickname ?? undefined} size="md" />
               </div>
             </div>
           </div>

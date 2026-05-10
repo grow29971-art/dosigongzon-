@@ -1,20 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Flag, Loader2, Check } from "lucide-react";
+import { X, Flag, Loader2, Check, Ban } from "lucide-react";
 import {
   createReport,
   REPORT_REASON_LABELS,
   type ReportReason,
   type ReportTargetType,
 } from "@/lib/support-repo";
+import { blockUser } from "@/lib/blocks-repo";
+import { useAuth } from "@/lib/auth-context";
 
 interface Props {
   open: boolean;
   onClose: () => void;
   targetType: ReportTargetType;
   targetId: string;
-  targetSnapshot?: string; // 대상 내용 일부 (삭제돼도 확인 가능)
+  targetSnapshot?: string;
+  // 신고와 함께 차단할 작성자 ID (선택). 본인이거나 비어있으면 차단 옵션 숨김.
+  authorUserId?: string | null;
+  authorName?: string | null;
 }
 
 const REASONS: ReportReason[] = [
@@ -31,17 +36,25 @@ export default function ReportModal({
   targetType,
   targetId,
   targetSnapshot,
+  authorUserId,
+  authorName,
 }: Props) {
+  const { user } = useAuth();
   const [reason, setReason] = useState<ReportReason>("abuse");
   const [description, setDescription] = useState("");
+  const [alsoBlock, setAlsoBlock] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
+
+  // 본인 콘텐츠는 차단 의미 없음
+  const canBlock = !!authorUserId && !!user && user.id !== authorUserId;
 
   useEffect(() => {
     if (open) {
       setReason("abuse");
       setDescription("");
+      setAlsoBlock(false);
       setError("");
       setDone(false);
     }
@@ -58,6 +71,10 @@ export default function ReportModal({
         reason,
         description,
       });
+      // 차단 옵션이 켜져 있으면 함께 처리 (실패해도 신고는 이미 접수)
+      if (alsoBlock && canBlock && authorUserId) {
+        try { await blockUser(authorUserId); } catch { /* 신고는 성공이므로 무시 */ }
+      }
       setDone(true);
       setTimeout(onClose, 1500);
     } catch (err) {
@@ -181,6 +198,43 @@ export default function ReportModal({
                 }}
               />
             </div>
+
+            {/* 차단도 함께 (작성자 정보 있을 때만) */}
+            {canBlock && (
+              <div className="px-5 pb-3">
+                <label
+                  className="flex items-start gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer active:scale-[0.99] transition-transform"
+                  style={{ backgroundColor: alsoBlock ? "#FBEAEA" : "#F6F1EA", border: `1.5px solid ${alsoBlock ? "#E8C5C5" : "#E3DCD3"}` }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={alsoBlock}
+                    onChange={(e) => setAlsoBlock(e.target.checked)}
+                    className="sr-only"
+                  />
+                  <div
+                    className="w-4 h-4 rounded mt-0.5 shrink-0 flex items-center justify-center"
+                    style={{
+                      backgroundColor: alsoBlock ? "#B84545" : "#FFFFFF",
+                      border: `1.5px solid ${alsoBlock ? "#B84545" : "#C3BCB3"}`,
+                    }}
+                  >
+                    {alsoBlock && <Check size={11} color="#FFFFFF" strokeWidth={3} />}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-1">
+                      <Ban size={11} style={{ color: "#B84545" }} />
+                      <span className="text-[12px] font-extrabold" style={{ color: "#4A3F35" }}>
+                        {authorName ? `${authorName}님 차단` : "이 사용자 차단"}
+                      </span>
+                    </div>
+                    <p className="text-[10.5px] mt-0.5" style={{ color: "#A38E7A" }}>
+                      서로 메시지·댓글이 안 보여요. 마이페이지에서 해제 가능.
+                    </p>
+                  </div>
+                </label>
+              </div>
+            )}
 
             {error && (
               <p className="px-5 text-[11px]" style={{ color: "#B84545" }}>
