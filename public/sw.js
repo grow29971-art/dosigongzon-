@@ -1,4 +1,4 @@
-const CACHE_NAME = "dosigongzon-v4";
+const CACHE_NAME = "dosigongzon-v5";
 
 self.addEventListener("install", (e) => {
   // 이전 캐시 즉시 삭제
@@ -27,13 +27,20 @@ self.addEventListener("fetch", (e) => {
     !e.request.url.startsWith(self.location.origin)
   ) return;
 
+  // 캐시 안전 조건 — GET + 정상 응답 + same-origin basic 응답만 저장.
+  // POST/PUT/DELETE는 cache.put이 throw, opaque/error 응답은 캐시해도 의미 없음.
+  const cacheable = (req, res) =>
+    req.method === "GET" && res.ok && (res.type === "basic" || res.type === "default");
+
   // HTML 페이지 요청 → 네트워크 우선 (실패 시 캐시)
   if (e.request.mode === "navigate") {
     e.respondWith(
       fetch(e.request)
         .then((res) => {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+          if (cacheable(e.request, res)) {
+            const clone = res.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone)).catch(() => {});
+          }
           return res;
         })
         .catch(() => caches.match(e.request))
@@ -45,8 +52,10 @@ self.addEventListener("fetch", (e) => {
   e.respondWith(
     fetch(e.request)
       .then((res) => {
-        const clone = res.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+        if (cacheable(e.request, res)) {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone)).catch(() => {});
+        }
         return res;
       })
       .catch(() => caches.match(e.request))
