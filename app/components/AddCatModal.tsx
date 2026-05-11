@@ -260,7 +260,7 @@ export default function AddCatModal({
             오래 이어갈 수 있어요.
           </p>
           <Link
-            href="/login"
+            href="/login?next=%2Fmap"
             onClick={onClose}
             className="block w-full py-3.5 rounded-2xl bg-primary text-white text-[14px] font-bold text-center active:scale-[0.97] transition-transform"
           >

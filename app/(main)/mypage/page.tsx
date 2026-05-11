@@ -1141,7 +1141,7 @@ export default function MyPage() {
         <>
           {/* 비로그인 */}
           <Link
-            href="/login"
+            href="/login?next=%2Fmypage"
             className="flex items-center gap-4 px-5 py-5 mb-4 active:scale-[0.98] transition-transform"
             style={{
               background: "#FFFFFF",

@@ -42,7 +42,7 @@ export default function MyInquiriesPage() {
     return (
       <div className="px-5 pt-20 text-center">
         <p className="text-[14px] text-text-sub">로그인이 필요해요.</p>
-        <Link href="/login" className="inline-block mt-4 text-[13px] font-bold text-primary">
+        <Link href="/login?next=%2Fmypage%2Finquiries" className="inline-block mt-4 text-[13px] font-bold text-primary">
           로그인하기
         </Link>
       </div>

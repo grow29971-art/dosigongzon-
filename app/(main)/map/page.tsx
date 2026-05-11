@@ -1813,7 +1813,7 @@ export default function MapPage() {
               </p>
             </div>
             <a
-              href="/login"
+              href="/login?next=%2Fmap"
               className="shrink-0 px-3 py-1.5 rounded-xl text-[11px] font-bold active:scale-95"
               style={{ backgroundColor: "#fff", color: "#C47E5A" }}
             >
