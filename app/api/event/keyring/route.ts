@@ -3,6 +3,7 @@
 // 입력: { cat_id } — 본인이 돌보는 고양이 ID. 그 아이 모양으로 커스텀 키링 제작.
 
 import { createClient } from "@supabase/supabase-js";
+import { reportError } from "@/lib/error-report";
 
 export async function POST(request: Request) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -78,7 +79,7 @@ export async function POST(request: Request) {
       status: "pending",
     });
   } catch (err) {
-    console.error("[event/keyring] admin notification failed:", err);
+    reportError("event/keyring/admin-notify", err);
   }
 
   return Response.json({ ok: true, cat: { id: cat.id, name: cat.name } });

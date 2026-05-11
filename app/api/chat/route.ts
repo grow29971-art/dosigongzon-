@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/lib/supabase/server";
+import { reportError } from "@/lib/error-report";
 
 // ── 유저당 레이트리밋 (인메모리, 인스턴스별) ──
 // 분산 환경에선 Redis 권장. 지금은 단일 서버 MVP 기준.
@@ -243,7 +244,6 @@ export async function POST(request: Request) {
     return Response.json({ reply: offlineReply, model: "offline" });
   } catch (err: unknown) {
     const rawMessage = err instanceof Error ? err.message : String(err);
-    console.error("Gemini API error:", rawMessage);
 
     const isQuota =
       rawMessage.includes("429") ||
@@ -251,6 +251,8 @@ export async function POST(request: Request) {
       rawMessage.includes("RESOURCE_EXHAUSTED");
 
     if (isQuota) {
+      // quota는 예측되는 상황 — 로컬 로그만, Sentry는 노이즈 방지 위해 스킵
+      console.warn("[chat] Gemini quota 초과:", rawMessage);
       return Response.json(
         {
           error:
@@ -260,6 +262,7 @@ export async function POST(request: Request) {
       );
     }
 
+    reportError("chat", err);
     return Response.json(
       { error: "AI 응답 중 문제가 발생했습니다." },
       { status: 500 },

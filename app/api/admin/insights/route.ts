@@ -3,6 +3,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { getInsightsSnapshot } from "@/lib/insights-repo";
+import { reportError } from "@/lib/error-report";
 
 export async function GET() {
   const supabase = await createClient();
@@ -27,7 +28,7 @@ export async function GET() {
     const snapshot = await getInsightsSnapshot();
     return Response.json(snapshot);
   } catch (err) {
-    console.error("[admin/insights] snapshot failed:", err);
+    reportError("admin/insights", err);
     return Response.json({ error: "집계 실패" }, { status: 500 });
   }
 }

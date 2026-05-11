@@ -2,6 +2,7 @@
 // area_chats 테이블 전체 비움. 사용자 요청: 일주일마다 채팅 전부 새로고침.
 
 import { createClient } from "@supabase/supabase-js";
+import { reportError } from "@/lib/error-report";
 
 export const maxDuration = 60;
 
@@ -32,7 +33,7 @@ export async function POST(request: Request) {
     .not("id", "is", null);
 
   if (error) {
-    console.error("[cleanup-area-chats] failed:", error);
+    reportError("cron/cleanup-area-chats", error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 

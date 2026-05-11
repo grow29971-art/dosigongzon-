@@ -1,4 +1,5 @@
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
+import { reportError } from "@/lib/error-report";
 
 export async function GET(request: Request) {
   // IP당 분당 10회 — OpenWeatherMap 무료 quota(분당 60) 보호
@@ -97,7 +98,7 @@ export async function GET(request: Request) {
       },
     );
   } catch (err) {
-    console.error("[Weather API] 호출 실패:", err);
+    reportError("weather", err);
     return Response.json(
       { error: "날씨 API 호출 실패" },
       { status: 500 },

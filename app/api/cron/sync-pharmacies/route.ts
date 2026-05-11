@@ -3,6 +3,7 @@
 // 수동 호출: POST /api/cron/sync-pharmacies (admin만)
 
 import { createClient } from "@supabase/supabase-js";
+import { reportError } from "@/lib/error-report";
 
 // LOCALDATA가 https 지원 — MITM 변조 방지 위해 https 사용
 const LOCALDATA_API_URL =
@@ -171,7 +172,7 @@ export async function POST(request: Request) {
       pages: page - 1,
     });
   } catch (err) {
-    console.error("[sync-pharmacies] Error:", err);
+    reportError("cron/sync-pharmacies", err);
     return Response.json(
       {
         error: "동기화 실패",

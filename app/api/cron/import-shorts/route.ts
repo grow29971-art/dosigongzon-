@@ -8,6 +8,7 @@
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { searchShorts, getVideoStats, YouTubeApiError, type YouTubeSearchItem } from "@/lib/youtube-api";
+import { reportError } from "@/lib/error-report";
 
 export const maxDuration = 60;
 
@@ -205,7 +206,7 @@ async function isAuthorized(request: Request): Promise<{ ok: boolean; reason?: s
     if (data) return { ok: true };
     return { ok: false, reason: "관리자만 접근할 수 있어요." };
   } catch (err) {
-    console.error("[import-shorts] auth check failed:", err);
+    reportError("cron/import-shorts/auth", err);
     return { ok: false, reason: "인증 확인 중 오류가 발생했어요." };
   }
 }
@@ -342,7 +343,13 @@ async function handle(request: Request): Promise<Response> {
       const msg = err instanceof YouTubeApiError ? err.message
         : err instanceof Error ? err.message
         : "알 수 없는 오류";
-      console.error(`[import-shorts] query "${query}" failed:`, err);
+      // quota 초과는 예상되는 상황 — Sentry 노이즈 방지 위해 로컬 로그만
+      const isQuota = err instanceof YouTubeApiError && err.message.includes("quota");
+      if (isQuota) {
+        console.warn(`[import-shorts] query "${query}" quota:`, msg);
+      } else {
+        reportError("cron/import-shorts/query", err, { query });
+      }
       queryResults.push({
         query, found: 0, newAfterDedup: 0,
         passedKoreanFilter: 0, passedLikeFilter: 0, added: 0, error: msg,

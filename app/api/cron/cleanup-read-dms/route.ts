@@ -8,6 +8,7 @@
 // - privacy 정책에 명시 (TODO: privacy 페이지 업데이트)
 
 import { createClient } from "@supabase/supabase-js";
+import { reportError } from "@/lib/error-report";
 
 export const maxDuration = 60;
 
@@ -43,7 +44,7 @@ export async function POST(request: Request) {
     .lt("read_at", cutoff);
 
   if (deleteError) {
-    console.error("[cleanup-read-dms] delete failed:", deleteError);
+    reportError("cron/cleanup-read-dms", deleteError);
     return Response.json({ error: deleteError.message }, { status: 500 });
   }
 

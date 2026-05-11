@@ -1,6 +1,8 @@
 // Cloudflare Turnstile 토큰 서버 검증.
 // TURNSTILE_SECRET_KEY 미설정 시 bypass 모드로 동작 (graceful fallback).
 
+import { reportError } from "@/lib/error-report";
+
 export async function POST(request: Request) {
   const secret = process.env.TURNSTILE_SECRET_KEY;
 
@@ -52,7 +54,7 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   } catch (err) {
-    console.error("[turnstile] upstream error:", err);
+    reportError("turnstile", err);
     return Response.json(
       { success: false, error: "upstream_error" },
       { status: 500 },

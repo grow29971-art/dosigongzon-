@@ -4,6 +4,7 @@
 
 import { createClient } from "@supabase/supabase-js";
 import { crawlAll } from "@/lib/news-crawler";
+import { reportError } from "@/lib/error-report";
 
 export const maxDuration = 300;
 
@@ -94,7 +95,7 @@ async function handle(request: Request): Promise<Response> {
       deleted: deleted ?? 0,
     });
   } catch (err) {
-    console.error("[news-crawl] error:", err);
+    reportError("cron/news-crawl", err);
     return Response.json(
       {
         error: "크롤링 실패",

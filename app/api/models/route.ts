@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { reportError } from "@/lib/error-report";
 
 export async function GET() {
   // admin 전용 디버그 엔드포인트
@@ -45,7 +46,7 @@ export async function GET() {
 
     return Response.json({ count: models.length, models });
   } catch (err) {
-    console.error("[models] fetch failed:", err);
+    reportError("models", err);
     return Response.json({ error: "모델 조회 실패" }, { status: 500 });
   }
 }
