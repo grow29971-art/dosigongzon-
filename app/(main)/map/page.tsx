@@ -65,6 +65,18 @@ import SendDMButton from "@/app/components/SendDMButton";
 import { listRescueHospitals, type RescueHospital } from "@/lib/hospitals-repo";
 import type { Post } from "@/lib/types";
 import type { KakaoMapMouseEvent } from "@/lib/kakao-types";
+
+// area_chats 행 — temp- 접두사 id는 낙관적 메시지(아직 서버 미반영)
+type AreaChat = {
+  id: string;
+  area: string;
+  author_id: string | null;
+  author_name: string | null;
+  author_avatar_url?: string | null;
+  author_level?: number | null;
+  body: string;
+  created_at: string;
+};
 import { createClient as createSupabaseClient } from "@/lib/supabase/client";
 const CareLogTab = dynamic(() => import("@/app/components/CareLogTab"), { ssr: false });
 import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, toggleCatLike, listMyLikedCatIds, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, type CatGender, type CatHealthStatus, type AdoptionStatus } from "@/lib/cats-repo";
@@ -166,7 +178,7 @@ export default function MapPage() {
   const [chatOpen, setChatOpen] = useState(false);
   // 채팅 스코프 — currentGu(동네) 또는 "전체"(global). "전체"는 모든 지역이 함께 쓰는 방.
   const [chatArea, setChatArea] = useState("");
-  const [chatMessages, setChatMessages] = useState<{id:string;area:string;author_id:string|null;author_name:string|null;author_avatar_url?:string|null;author_level?:number|null;body:string;created_at:string}[]>([]);
+  const [chatMessages, setChatMessages] = useState<AreaChat[]>([]);
   const [chatText, setChatText] = useState("");
   const [chatSending, setChatSending] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -250,12 +262,12 @@ export default function MapPage() {
         .select("*")
         .eq("area", fetchArea)
         .order("created_at", { ascending: true })
-        .limit(50) as { data: any };
+        .limit(50);
 
       if (!active) return;
       if (fetchArea !== chatArea) return;
 
-      const msgs: any[] = (data ?? []).filter((m: any) => m.area === fetchArea);
+      const msgs: AreaChat[] = ((data ?? []) as AreaChat[]).filter((m) => m.area === fetchArea);
 
       const newLastId = msgs.length > 0 ? msgs[msgs.length - 1].id : "";
       const needsUpdate = !firstFetchDone || msgs.length !== lastCount || newLastId !== lastId;
@@ -268,7 +280,7 @@ export default function MapPage() {
       setChatMessages((prev) => {
         const tempMsgs = prev.filter((m) => m.id.startsWith("temp-") && m.area === fetchArea);
         const remainingTemp = tempMsgs.filter(
-          (t) => !msgs.some((m: any) => m.author_id === t.author_id && m.body === t.body),
+          (t) => !msgs.some((m) => m.author_id === t.author_id && m.body === t.body),
         );
         return [...msgs, ...remainingTemp];
       });
@@ -588,7 +600,9 @@ export default function MapPage() {
     listRescueHospitals().then(setHospitals).catch(() => {});
 
     // 비크리티컬: 첫 페인트 후로 지연
-    const idle = (window as any).requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 800));
+    const idle: (cb: () => void) => void =
+      (window as Window & { requestIdleCallback?: (cb: () => void) => void }).requestIdleCallback
+      ?? ((cb) => { setTimeout(cb, 800); });
     idle(() => {
       isCurrentUserAdmin().then(setIsAdmin).catch(() => {});
       fetch("/api/visit", { method: "POST" }).catch(() => {});

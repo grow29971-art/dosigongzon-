@@ -1,5 +1,5 @@
 import webpush from "web-push";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { rateLimit } from "@/lib/rate-limit";
 
 /**
@@ -93,9 +93,8 @@ export async function POST(request: Request) {
  * - 최근 24시간 내 sender가 recipient의 커뮤니티 글에 댓글 남김
  * - 초대 이벤트 (sender가 recipient를 초대했거나 반대)
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function hasLegitRelation(
-  supabase: any,
+  supabase: SupabaseClient,
   senderId: string,
   recipientId: string,
 ): Promise<boolean> {
