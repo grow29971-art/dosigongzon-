@@ -24,12 +24,7 @@ import {
   type RegionSlot,
 } from "@/lib/activity-regions-repo";
 import { MAP_CENTER } from "@/lib/cats-repo";
-
-declare global {
-  interface Window {
-    kakao: any;
-  }
-}
+import type { KakaoMap, KakaoMapMouseEvent, KakaoPlaceResult, KakaoOverlay, KakaoCircle } from "@/lib/kakao-types";
 
 const SLOT_COLORS: Record<RegionSlot, string> = {
   1: "#C47E5A",
@@ -56,17 +51,17 @@ export default function ActivityRegionsPage() {
 
   // Kakao 지도
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const centerMarkerRef = useRef<any>(null);
-  const circleRef = useRef<any>(null);
-  const otherCircleRef = useRef<any>(null);
+  const mapInstanceRef = useRef<KakaoMap | null>(null);
+  const centerMarkerRef = useRef<KakaoOverlay | null>(null);
+  const circleRef = useRef<KakaoCircle | null>(null);
+  const otherCircleRef = useRef<KakaoCircle | null>(null);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [mapError, setMapError] = useState("");
 
   // 주소 검색
   const [searchQ, setSearchQ] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<KakaoPlaceResult[]>([]);
   const [searching, setSearching] = useState(false);
 
   const apiKey = process.env.NEXT_PUBLIC_KAKAO_MAP_KEY;
@@ -154,7 +149,7 @@ export default function ActivityRegionsPage() {
       mapInstanceRef.current = map;
       setMapReady(true);
 
-      window.kakao.maps.event.addListener(map, "click", (e: any) => {
+      window.kakao.maps.event.addListener<KakaoMapMouseEvent>(map, "click", (e) => {
         const ll = e.latLng;
         setLat(ll.getLat());
         setLng(ll.getLng());
@@ -258,7 +253,9 @@ export default function ActivityRegionsPage() {
   // ── 중심 좌표 변경 시 지도 이동 (검색/GPS 결과 반영) ──
   useEffect(() => {
     if (!mapReady || !window.kakao) return;
-    mapInstanceRef.current.setCenter(new window.kakao.maps.LatLng(lat, lng));
+    const map = mapInstanceRef.current;
+    if (!map) return;
+    map.setCenter(new window.kakao.maps.LatLng(lat, lng));
   }, [mapReady, lat, lng]);
 
   // ── 슬롯 전환 ──
@@ -296,9 +293,9 @@ export default function ActivityRegionsPage() {
   function reverseGeocode(la: number, ln: number) {
     if (!window.kakao?.maps?.services) return;
     const geocoder = new window.kakao.maps.services.Geocoder();
-    geocoder.coord2RegionCode(ln, la, (result: any, status: any) => {
+    geocoder.coord2RegionCode(ln, la, (result, status) => {
       if (status !== window.kakao.maps.services.Status.OK || !Array.isArray(result)) return;
-      const admin = result.find((r: any) => r?.region_type === "H");
+      const admin = result.find((r) => r?.region_type === "H");
       const target = admin ?? result[0];
       if (!target) return;
       const dong = target.region_3depth_name || target.region_2depth_name;
@@ -326,7 +323,7 @@ export default function ActivityRegionsPage() {
     if (!searchQ.trim() || !window.kakao?.maps?.services) return;
     setSearching(true);
     const places = new window.kakao.maps.services.Places();
-    places.keywordSearch(searchQ.trim(), (data: any, status: any) => {
+    places.keywordSearch(searchQ.trim(), (data, status) => {
       setSearching(false);
       if (status === window.kakao.maps.services.Status.OK) {
         setSearchResults(data.slice(0, 5));
@@ -336,7 +333,7 @@ export default function ActivityRegionsPage() {
     });
   }
 
-  function pickSearchResult(r: any) {
+  function pickSearchResult(r: KakaoPlaceResult) {
     const la = parseFloat(r.y);
     const ln = parseFloat(r.x);
     setLat(la);

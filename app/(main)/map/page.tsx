@@ -64,6 +64,7 @@ import TitleBadge from "@/app/components/TitleBadge";
 import SendDMButton from "@/app/components/SendDMButton";
 import { listRescueHospitals, type RescueHospital } from "@/lib/hospitals-repo";
 import type { Post } from "@/lib/types";
+import type { KakaoMapMouseEvent } from "@/lib/kakao-types";
 import { createClient as createSupabaseClient } from "@/lib/supabase/client";
 const CareLogTab = dynamic(() => import("@/app/components/CareLogTab"), { ssr: false });
 import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, toggleCatLike, listMyLikedCatIds, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, type CatGender, type CatHealthStatus, type AdoptionStatus } from "@/lib/cats-repo";
@@ -84,12 +85,6 @@ const CAT_TAG_OPTIONS = [
   "TNR 완료","TNR 필요","이어팁","사람 친화","겁 많음","성묘",
   "어린 고양이","새끼 동반","야행성","온순","예민","식탐 많음",
 ];
-
-declare global {
-  interface Window {
-    kakao: any;
-  }
-}
 
 function formatRelativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -805,7 +800,7 @@ export default function MapPage() {
 
       // 지도 길게 누르기 → 좌표 추출 → 등록 모달 열기
       // (kakao.maps에는 longpress 이벤트가 없어서 클릭으로 대체)
-      window.kakao.maps.event.addListener(map, "rightclick", (e: any) => {
+      window.kakao.maps.event.addListener<KakaoMapMouseEvent>(map, "rightclick", (e) => {
         const latlng = e.latLng;
         setPickedCoord({ lat: latlng.getLat(), lng: latlng.getLng() });
         setAddModalOpen(true);
@@ -816,7 +811,7 @@ export default function MapPage() {
         if (!window.kakao?.maps?.services) return;
         const center = map.getCenter();
         const geocoder = new window.kakao.maps.services.Geocoder();
-        geocoder.coord2RegionCode(center.getLng(), center.getLat(), (result: any, status: any) => {
+        geocoder.coord2RegionCode(center.getLng(), center.getLat(), (result, status) => {
           if (status === window.kakao.maps.services.Status.OK && result[0]) {
             const sido = (result[0].region_1depth_name || "")
               .replace(/(특별시|광역시|특별자치시|특별자치도|도)$/, "");
@@ -1283,7 +1278,7 @@ export default function MapPage() {
       if (geocodedCoordsRef.current.has(h.id)) continue;
       const addr = h.address || `${h.city} ${h.district}`;
       if (!geocoder || !addr) continue;
-      geocoder.addressSearch(addr, (result: any, status: any) => {
+      geocoder.addressSearch(addr, (result, status) => {
         if (status === window.kakao.maps.services.Status.OK && result[0]) {
           geocodedCoordsRef.current.set(h.id, {
             lat: parseFloat(result[0].y),

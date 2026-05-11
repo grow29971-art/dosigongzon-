@@ -81,10 +81,10 @@ export default function AddCatModal({
       const resolveRegion = (lat: number, lng: number) => {
         if (!window.kakao?.maps?.services) return;
         const geocoder = new window.kakao.maps.services.Geocoder();
-        geocoder.coord2RegionCode(lng, lat, (result: any, status: any) => {
+        geocoder.coord2RegionCode(lng, lat, (result, status) => {
           if (status !== window.kakao.maps.services.Status.OK || !Array.isArray(result)) return;
           // 행정동(H) 우선 — 사용자는 행정동 이름으로 동네 인식
-          const admin = result.find((r: any) => r?.region_type === "H");
+          const admin = result.find((r) => r?.region_type === "H");
           const target = admin ?? result[0];
           if (!target) return;
           const gu = target.region_2depth_name || "";

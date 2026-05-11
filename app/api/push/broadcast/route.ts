@@ -64,8 +64,9 @@ export async function POST(request: Request) {
         JSON.stringify({ title: title || "도시공존", body, url: url || "/" }),
       );
       sent++;
-    } catch (err: any) {
-      if (err.statusCode === 410 || err.statusCode === 404) {
+    } catch (err: unknown) {
+      const statusCode = (err as { statusCode?: number })?.statusCode;
+      if (statusCode === 410 || statusCode === 404) {
         await supabase.from("push_subscriptions").delete().eq("id", sub.id);
       }
     }

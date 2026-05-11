@@ -2,12 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { X, LocateFixed, Loader2, MapPin, Check } from "lucide-react";
-
-declare global {
-  interface Window {
-    kakao: any;
-  }
-}
+import type { KakaoMap } from "@/lib/kakao-types";
 
 type Props = {
   open: boolean;
@@ -29,8 +24,8 @@ export default function CatLocationPicker({
   onConfirm,
 }: Props) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const centerOverlayRef = useRef<any>(null);
+  const mapInstanceRef = useRef<KakaoMap | null>(null);
+  const centerOverlayRef = useRef<unknown>(null);
 
   const [mapReady, setMapReady] = useState(false);
   const [mapError, setMapError] = useState("");
@@ -132,10 +127,10 @@ export default function CatLocationPicker({
   function reverseGeocode(la: number, ln: number) {
     if (!window.kakao?.maps?.services) return;
     const geocoder = new window.kakao.maps.services.Geocoder();
-    geocoder.coord2RegionCode(ln, la, (result: any, status: any) => {
+    geocoder.coord2RegionCode(ln, la, (result, status) => {
       if (status !== window.kakao.maps.services.Status.OK || !Array.isArray(result)) return;
-      const admin = result.find((r: any) => r?.region_type === "H");
-      const legal = result.find((r: any) => r?.region_type === "B");
+      const admin = result.find((r) => r?.region_type === "H");
+      const legal = result.find((r) => r?.region_type === "B");
       const target = admin ?? legal ?? result[0];
       const dong = target?.region_3depth_name || target?.region_2depth_name || "";
       const gu = target?.region_2depth_name || "";
