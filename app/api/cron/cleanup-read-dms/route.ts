@@ -5,7 +5,7 @@
 // 보관 기간 7일 정한 이유:
 // - 분쟁·신고 대응 시 최소한의 컨텍스트 보존
 // - 무한 보관은 user privacy/DB 비용 부담
-// - privacy 정책에 명시 (TODO: privacy 페이지 업데이트)
+// - privacy 정책 제3조에 명시됨 (/privacy)
 
 import { createClient } from "@supabase/supabase-js";
 import { reportError } from "@/lib/error-report";

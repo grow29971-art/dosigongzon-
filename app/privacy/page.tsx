@@ -52,6 +52,14 @@ export default function PrivacyPage() {
             <li>단, 관련 법령에 의해 보존이 필요한 경우 해당 기간 동안 보관합니다.</li>
             <li>부정 이용 기록: 1년</li>
           </ul>
+
+          <p className="text-[12px] font-bold text-text-sub mt-3 mb-1">자동 정리 정책</p>
+          <p className="mb-2">아래 항목은 별도의 탈퇴 요청 없이도 정해진 주기로 자동 삭제됩니다.</p>
+          <ul className="list-disc pl-4 space-y-1">
+            <li><b>1:1 쪽지</b>: 수신자가 읽은 시점으로부터 <b>7일</b> 경과 시 자동 삭제. (분쟁·신고 대응을 위한 최소 보존 후 프라이버시 보호 목적)</li>
+            <li><b>동네 채팅</b>: 매주 월요일 04:00 KST에 전체 메시지가 일괄 삭제됩니다. (휘발성 일주일 단위 채팅)</li>
+            <li><b>자동 수집 뉴스</b>: 외부 RSS에서 자동 수집된 뉴스는 등록일로부터 <b>30일</b> 경과 시 정리됩니다. (운영자가 직접 등록한 뉴스는 제외)</li>
+          </ul>
         </section>
 
         <section>
@@ -178,7 +186,7 @@ export default function PrivacyPage() {
           </ul>
         </section>
 
-        <p className="text-[11px] text-text-light pt-4">시행일: 2026년 4월 21일</p>
+        <p className="text-[11px] text-text-light pt-4">시행일: 2026년 4월 21일 · 최종 개정일: 2026년 5월 11일 (자동 정리 정책 명시)</p>
       </div>
     </div>
   );
