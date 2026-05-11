@@ -30,6 +30,13 @@ export default function InquiryModal({ open, onClose }: Props) {
     setError("");
     try {
       await createInquiry({ subject, body });
+      // admin 이메일 알림 — 본 흐름과 분리, 실패해도 사용자에게 영향 없음
+      fetch("/api/admin/notify-inquiry", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ type: "inquiry", subject, body }),
+        keepalive: true,
+      }).catch(() => { /* no-op */ });
       setDone(true);
       setTimeout(onClose, 1500);
     } catch (err) {
@@ -97,7 +104,7 @@ export default function InquiryModal({ open, onClose }: Props) {
               문의가 전송됐어요
             </p>
             <p className="text-[11.5px] text-text-sub">
-              관리자가 확인 후 답변드릴게요
+              보통 24시간 내에 마이페이지 &gt; 내 문의 보기로 답변드려요
             </p>
           </div>
         ) : (

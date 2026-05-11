@@ -12,7 +12,6 @@ import {
   MapPin,
   PawPrint,
   Heart,
-  MessageCircle,
   ChevronRight,
   ChevronLeft,
 } from "lucide-react";
@@ -32,6 +31,18 @@ function safeNext(raw: string | null): string {
   if (!raw.startsWith("/")) return "/";
   if (raw.startsWith("//") || raw.startsWith("/\\")) return "/";
   return raw;
+}
+
+// 마지막 슬라이드 CTA — next가 어디로 가는지에 따라 라벨 변경
+function finalCtaLabel(next: string): string {
+  if (next === "/" || next === "/map" || next.startsWith("/map?") || next.startsWith("/map#")) {
+    return "지도로 시작하기";
+  }
+  if (next.startsWith("/community")) return "커뮤니티로 가기";
+  if (next.startsWith("/messages")) return "쪽지로 가기";
+  if (next.startsWith("/mypage")) return "마이페이지로 가기";
+  if (next.startsWith("/protection")) return "보호지침으로 가기";
+  return "시작하기";
 }
 
 function WelcomeContent() {
@@ -246,7 +257,7 @@ function WelcomeContent() {
             {isLast ? (
               <>
                 <PawPrint size={17} />
-                지도로 시작하기
+                {finalCtaLabel(next)}
               </>
             ) : (
               <>
@@ -261,6 +272,8 @@ function WelcomeContent() {
   );
 }
 
+// 슬라이드 3개로 압축 (이전 5개 → 환영 / 지도+등록 / 돌봄+커뮤니티)
+// 테스터 피드백상 5개는 끝까지 보지 않는 경우가 있어 핵심 메시지만 남김.
 const SLIDES = [
   {
     bg: "linear-gradient(170deg, #C47E5A 0%, #D4956F 50%, #E8B07C 100%)",
@@ -273,28 +286,14 @@ const SLIDES = [
     bg: "linear-gradient(170deg, #4A7BA8 0%, #6B9BC4 60%, #A8C7E0 100%)",
     accent: "#3A6086",
     Icon: MapPin,
-    title: "지도에서\n동네 길고양이를 만나보세요",
-    body: "서울 전역의 길고양이 위치·건강 상태가\n한 화면에 모여 있어요.\n\n구·동을 누르면 해당 지역 아이들만 모아 볼 수 있고,\n긴급 표시가 뜬 아이는 빠른 도움이 필요해요.",
-  },
-  {
-    bg: "linear-gradient(170deg, #C47E5A 0%, #E88D5A 60%, #F4B58C 100%)",
-    accent: "#A8684A",
-    Icon: PawPrint,
-    title: "처음 본 아이는\n+ 버튼으로 등록해요",
-    body: "지도 우하단의 + 버튼을 누르면\n사진·이름·건강 상태를 한 번에 남길 수 있어요.\n\n비슷한 위치의 기존 아이가 있으면\n자동으로 합쳐서 중복을 막아드려요.",
+    title: "지도에서 만나고\n+ 버튼으로 등록해요",
+    body: "서울 전역의 길고양이 위치·건강이\n한 화면에 모여 있어요.\n\n처음 본 아이는 우하단 + 버튼으로\n사진·이름·건강을 한 번에 남길 수 있어요.",
   },
   {
     bg: "linear-gradient(170deg, #6B8E6F 0%, #8FAE92 50%, #BFD4C2 100%)",
     accent: "#4F6E53",
     Icon: Heart,
-    title: "돌봄 한 줄,\n그게 가장 큰 힘이에요",
-    body: "밥·물·건강 체크 한 번이면\n다른 이웃에게 \"오늘 이 아이 잘 있어요\"가 전해져요.\n\n돌봄을 자주 남기면 업적과 레벨이 오르고,\n첫 등록 시 어얼리 서포터 뱃지도 드려요.",
-  },
-  {
-    bg: "linear-gradient(170deg, #8B65B8 0%, #B091D4 50%, #D4BFE8 100%)",
-    accent: "#6B4D94",
-    Icon: MessageCircle,
-    title: "혼자가 아니에요\n커뮤니티에서 같이 해요",
-    body: "동네 캣맘·캣대디들과 정보를 나누고,\n위급한 아이를 함께 구조하고,\n쪽지로 직접 연락도 할 수 있어요.\n\n준비 다 됐어요. 지금 시작해볼까요?",
+    title: "돌봄과 이웃,\n혼자가 아니에요",
+    body: "밥·물·건강 한 줄이면 다른 이웃에게\n\"오늘 이 아이 잘 있어요\"가 전해져요.\n\n동네 캣맘·캣대디와 정보를 나누고,\n쪽지로 직접 연락도 할 수 있어요.",
   },
 ];

@@ -71,6 +71,17 @@ export default function ReportModal({
         reason,
         description,
       });
+      // admin 이메일 알림 — 본 흐름과 분리, 실패해도 사용자에게 영향 없음
+      fetch("/api/admin/notify-inquiry", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          type: "report",
+          subject: `${REPORT_REASON_LABELS[reason]} (${targetType})${authorName ? ` - 작성자 ${authorName}` : ""}`,
+          body: `${description || "(추가 설명 없음)"}\n\n대상: ${targetSnapshot ?? "(스냅샷 없음)"}\n대상 id: ${targetId}`,
+        }),
+        keepalive: true,
+      }).catch(() => { /* no-op */ });
       // 차단 옵션이 켜져 있으면 함께 처리 (실패해도 신고는 이미 접수)
       if (alsoBlock && canBlock && authorUserId) {
         try { await blockUser(authorUserId); } catch { /* 신고는 성공이므로 무시 */ }
