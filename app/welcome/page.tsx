@@ -156,11 +156,15 @@ function WelcomeContent() {
               </div>
             )}
 
-            <h1 className="text-[26px] font-extrabold text-center text-white tracking-tight leading-[1.3] mb-3">
+            <h1 className="text-[26px] font-extrabold text-center text-white tracking-tight leading-[1.3] mb-2">
               <span className="opacity-90">환영합니다,</span>
               <br />
               <span style={{ color: "#FFF7C4" }}>{nickname}</span>님 🐾
             </h1>
+            {/* 닉네임 변경 가능 힌트 — 신규 가입자가 random nickname을 마음에 안 들어도 모르는 경우 방지 */}
+            <p className="text-[11.5px] text-white/65 mb-4 leading-snug text-center">
+              ✏️ 마이페이지에서 언제든 다른 닉네임으로 바꿀 수 있어요
+            </p>
             <p className="text-[14px] text-center text-white/85 leading-[1.85] max-w-[300px]">
               도시공존의 새로운 이웃이 되어주셔서 정말 고마워요.
               {earlySupporter && (
