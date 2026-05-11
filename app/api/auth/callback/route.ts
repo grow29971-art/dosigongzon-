@@ -1,5 +1,22 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+
+// callback 시점 진단 — exchange 실패 원인 추적용.
+// PKCE code verifier 쿠키 존재 여부가 핵심: 없으면 "쿠키 손실"(시크릿 모드, 컨텍스트 전환,
+// SameSite 차단 등), 있는데 실패면 "Supabase 측 검증 실패"(code 만료/재사용, 키 불일치).
+async function getDiagSuffix(): Promise<string> {
+  try {
+    const cookieStore = await cookies();
+    const all = cookieStore.getAll();
+    const hasVerifier = all.some(
+      (c) => c.name.includes("code-verifier") || c.name.includes("auth-token-code-verifier"),
+    );
+    return ` [diag:verifier=${hasVerifier ? "yes" : "no"};cookies=${all.length}]`;
+  } catch {
+    return " [diag:unavailable]";
+  }
+}
 
 function safeNextPath(raw: string | null): string {
   if (!raw) return "/";
@@ -60,12 +77,17 @@ export async function GET(request: Request) {
     const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
 
     if (exchangeError) {
+      const diag = await getDiagSuffix();
+      // Supabase AuthError에는 status/code/name이 추가로 들어있음 — message에 안 담기면 함께 기록
+      const errCode = (exchangeError as { code?: string }).code;
+      const errStatus = (exchangeError as { status?: number }).status;
+      const fullDesc = `${exchangeError.message}${errCode ? ` (code:${errCode})` : ""}${errStatus ? ` (status:${errStatus})` : ""}${diag}`;
       try {
         await supabase.from("auth_error_logs").insert({
           provider: providerParam,
           stage: "exchange",
           error_code: "exchange_failed",
-          error_desc: exchangeError.message,
+          error_desc: fullDesc.slice(0, 2000),
           user_agent: ua,
           url: request.url.slice(0, 1000),
           referrer: ref,
@@ -145,5 +167,19 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}${dest}`);
   }
 
+  // code도 없고 oauthError도 없는 비정상 진입 (직접 URL 방문, refresh 후 code 소실 등)
+  try {
+    const supabase = await createClient();
+    const diag = await getDiagSuffix();
+    await supabase.from("auth_error_logs").insert({
+      provider: providerParam,
+      stage: "callback_no_code",
+      error_code: "auth_failed",
+      error_desc: `code 파라미터 없음${diag}`,
+      user_agent: ua,
+      url: request.url.slice(0, 1000),
+      referrer: ref,
+    });
+  } catch { /* 로깅 실패 무시 */ }
   return NextResponse.redirect(`${origin}/login?error=auth_failed`);
 }

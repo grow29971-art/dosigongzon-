@@ -4,8 +4,8 @@
 
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { PawPrint, Check, Loader2, ExternalLink, AlertCircle } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { PawPrint, Check, Loader2, ExternalLink, AlertCircle, RotateCcw } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
   detectInAppBrowser,
@@ -45,6 +45,7 @@ export default function LoginPage() {
 }
 
 function LoginContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   const [agreed, setAgreed] = useState(false);
@@ -207,6 +208,25 @@ function LoginContent() {
                     💡 {oauthGuide.tip}
                   </p>
                 )}
+                {/* 다시 시도 — 에러 쿼리만 제거해 깨끗한 로그인 상태로. next는 보존. */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = searchParams.get("next");
+                    router.replace(next && next.startsWith("/") && !next.startsWith("//") ? `/login?next=${encodeURIComponent(next)}` : "/login");
+                  }}
+                  className="mt-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-bold active:scale-95"
+                  style={{
+                    backgroundColor: "rgba(255,255,255,0.7)",
+                    color:
+                      oauthGuide.severity === "danger" ? "#8B2F2F" :
+                      oauthGuide.severity === "warn" ? "#6F4910" : "#22457A",
+                    border: "1px solid rgba(0,0,0,0.08)",
+                  }}
+                >
+                  <RotateCcw size={11} />
+                  다시 시도
+                </button>
                 {(authErrorCode || authError) && (
                   <p className="text-[10px] mt-2 font-mono" style={{ color: "#9A8A7A" }}>
                     코드: {authErrorCode || authError}
