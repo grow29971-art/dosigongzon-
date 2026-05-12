@@ -303,6 +303,7 @@ export interface AdminTitle {
 }
 
 export const ADMIN_TITLES: AdminTitle[] = [
+  { id: "founding_member", name: "창립 멤버", emoji: "✨", color: "#C47E5A", description: "정식 오픈(2026-05-20) 전 도시공존을 함께 시작한 초기 멤버" },
   { id: "official_volunteer", name: "공식 봉사자", emoji: "💛", color: "#C9A961", description: "공식 인증된 길고양이 봉사 활동가" },
   { id: "tnr_expert", name: "TNR 전문가", emoji: "✂️", color: "#8B65B8", description: "TNR 활동에 적극 기여한 시민" },
   { id: "rescue_hero", name: "구조 영웅", emoji: "🦸", color: "#D85555", description: "위기 상황에서 고양이를 구조한 시민" },
