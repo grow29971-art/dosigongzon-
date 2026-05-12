@@ -24,17 +24,21 @@
 -- 정식 오픈 시각: 2026-05-20 00:00 KST = 2026-05-19 15:00:00 UTC
 --
 -- ⚠ profiles 테이블엔 BEFORE UPDATE trg_guard_profile_sensitive 트리거가 있어
---   admin_title 변경을 일반 사용자에겐 막음. SQL Editor는 postgres 슈퍼유저로 실행되므로
---   auth.role() != 'service_role' 판정으로 차단됨. set local role로 service_role
---   권한으로 transaction 안에서만 변경.
+--   admin_title 변경을 일반 사용자에겐 막음. SQL Editor는 postgres 슈퍼유저로 실행되지만
+--   Supabase의 auth.role() JWT 함수는 PostgreSQL role과 별개라 set local role로도
+--   통과 안 됨. trigger를 transaction 안에서 일시 disable 후 update 끝나면 즉시 enable.
+--   ALTER TABLE이 ACCESS EXCLUSIVE LOCK을 잡아 그동안 다른 connection은 대기 → 안전.
 
 begin;
-set local role service_role;
+
+alter table public.profiles disable trigger trg_guard_profile_sensitive;
 
 update public.profiles
 set admin_title = 'founding_member'
 where created_at < '2026-05-19 15:00:00+00:00'::timestamptz
   and admin_title is null;
+
+alter table public.profiles enable trigger trg_guard_profile_sensitive;
 
 commit;
 
