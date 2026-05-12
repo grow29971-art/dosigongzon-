@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
   const url = `https://dosigongzon.com/shorts/${id}`;
-  const description = target.description || "도시공존이 큐레이션한 길고양이 짧은 이야기.";
+  const description = target.description || "도시공존이 큐레이션한 동물 짧은 이야기.";
   const ogImage = target.thumbnail_url || undefined;
   return {
     title: `${target.title} — 도시공존 영상`,

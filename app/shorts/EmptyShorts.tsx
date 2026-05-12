@@ -30,7 +30,7 @@ export default function EmptyShorts() {
       <p className="text-[13px] leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
         운영자가 직접 찍거나 큐레이션한
         <br />
-        길고양이 영상이 차곡차곡 쌓일 자리예요.
+        고양이·강아지 영상이 차곡차곡 쌓일 자리예요.
       </p>
       <Link
         href="/"
