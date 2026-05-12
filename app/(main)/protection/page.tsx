@@ -23,6 +23,7 @@ import {
   AlertTriangle,
   Baby,
   Scissors,
+  HelpCircle,
 } from "lucide-react";
 import { getProgress, getReadSlugs } from "@/lib/protection-progress";
 
@@ -170,6 +171,17 @@ const cards: {
     glowColor: "74,123,168",
     type: "link",
     href: "/protection/shelter-guide",
+    wide: true,
+  },
+  {
+    title: "자주 묻는 질문",
+    subtitle: "발견·구조·TNR·입양·법 — 30문 정리",
+    Icon: HelpCircle,
+    iconBg: "#6B8DAE",
+    iconColor: "#FFFFFF",
+    glowColor: "107,141,174",
+    type: "link",
+    href: "/faq",
     wide: true,
   },
 ];
