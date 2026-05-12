@@ -227,11 +227,19 @@ export async function listCats(): Promise<Cat[]> {
   return (data ?? []) as Cat[];
 }
 
+// ── Supabase Storage image transformation 토글 ──
+// false: 원본 URL 그대로 반환 (transformation 기능이 tenant에 비활성된 상태).
+// true: /render/image/public/?width=... 변환 endpoint 사용.
+// Dashboard → Storage → Settings 에서 Image Transformation 활성화 후 true로.
+// ※ 업로드 시 클라가 이미 1280px/WebP로 압축하므로(convertImageToWebp) 원본도 200-500KB.
+const SUPABASE_IMAGE_TRANSFORM_ENABLED = false;
+
 // ── Supabase Storage 썸네일 변환 (이미지 변환 활성 시) ──
-// 마커용 60-120px 썸네일로 대역폭 절감. 실패 시 원본 폴백.
-// ※ Pro 플랜 image transformation 사용. 외부(google/kakao) URL은 그대로 반환.
+// 마커용 60-120px 썸네일로 대역폭 절감. 비활성 시 원본 폴백.
+// 외부(google/kakao) URL은 그대로 반환.
 export function thumbnailUrl(url: string | null | undefined, size = 120): string | null {
   if (!url) return null;
+  if (!SUPABASE_IMAGE_TRANSFORM_ENABLED) return url;
   if (!url.includes("/storage/v1/object/public/")) return url;
   const transformed = url.replace("/object/public/", "/render/image/public/");
   return `${transformed}?width=${size}&height=${size}&resize=cover&quality=70`;
@@ -244,6 +252,7 @@ export function optimizedImageUrl(
   quality = 75,
 ): string | null {
   if (!url) return null;
+  if (!SUPABASE_IMAGE_TRANSFORM_ENABLED) return url;
   if (!url.includes("/storage/v1/object/public/")) return url;
   const transformed = url.replace("/object/public/", "/render/image/public/");
   return `${transformed}?width=${width}&quality=${quality}`;

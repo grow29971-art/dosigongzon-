@@ -1123,16 +1123,16 @@ export default function MapPage() {
       });
     }
 
-    // 마커용 사진 URL — Supabase Storage 이미지 변환으로 썸네일화 (egress 절감).
-    // 200마리 × 4MB 원본 → 200마리 × ~10KB 썸네일 = 99% 절감.
-    // ※ Supabase Pro의 image transformation API는 background-image에서도 정상 동작
-    //   (이전 주석은 Vercel Image Optimization 한정 이슈였음).
+    // 마커용 사진 URL — image transformation 활성 시 변환 endpoint, 아니면 원본.
+    // 업로드 시 클라가 1280px WebP로 압축하므로(convertImageToWebp) 원본도 ~200-500KB.
+    // Dashboard에서 Image Transformation 켜면 cats-repo의 SUPABASE_IMAGE_TRANSFORM_ENABLED와
+    // 함께 변환 활성. 두 곳을 같이 토글해야 함.
+    const TRANSFORM_ENABLED = false;
     function thumb(url: string | null | undefined, size: number): string {
       const safe = sanitizeImageUrl(url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
-      // Supabase Storage 공개 URL이면 변환 endpoint로 라우팅
+      if (!TRANSFORM_ENABLED) return safe;
       if (safe.includes("/storage/v1/object/public/")) {
         const transformed = safe.replace("/object/public/", "/render/image/public/");
-        // size는 디바이스 픽셀 비율 고려해 2배까지 (retina 대응)
         return `${transformed}?width=${size * 2}&height=${size * 2}&resize=cover&quality=70`;
       }
       return safe;
