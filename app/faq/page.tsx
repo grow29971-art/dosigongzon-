@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     description:
       "발견·구조·TNR·임시보호·입양·학대 신고까지. 시민이 가장 자주 묻는 30개 질문에 답해드려요.",
     url: `${SITE_URL}/faq`,
-    images: [{ url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630 }],
+    images: [{ url: `${SITE_URL}/faq/opengraph-image`, width: 1200, height: 630 }],
   },
 };
 

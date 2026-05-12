@@ -164,6 +164,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko">
       <head>
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        {/* RSS 자동 발견 — Feedly·NetNewsWire 같은 reader가 사이트 URL만으로 피드 인식 */}
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="도시공존 — 전체 콘텐츠"
+          href="/feed.xml"
+        />
         {/* 외부 의존성 preconnect — DNS·TLS 핸드셰이크 미리 끝내 첫 요청 단축 */}
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
