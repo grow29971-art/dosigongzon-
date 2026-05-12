@@ -6,6 +6,7 @@ import { use, useEffect, useState } from "react";
 import { ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
 import { getNewsById, BADGE_PRESETS, resolveDdayLabel, type NewsItem } from "@/lib/news-repo";
 import { sanitizeHttpUrl } from "@/lib/url-validate";
+import ShareNewsButton from "@/app/components/ShareNewsButton";
 
 export default function NewsDetailPage({
   params,
@@ -157,6 +158,16 @@ export default function NewsDetailPage({
             </div>
           </div>
         )}
+
+        {/* 카톡 공유 */}
+        <div className="mb-4">
+          <ShareNewsButton
+            newsId={news.id}
+            title={news.title}
+            description={news.description}
+            badgeLabel={preset.label}
+          />
+        </div>
 
         {/* 외부 링크 */}
         {news.external_url && sanitizeHttpUrl(news.external_url) && (
