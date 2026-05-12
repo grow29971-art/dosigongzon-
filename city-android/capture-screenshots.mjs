@@ -25,7 +25,7 @@ const VIEWPORT = {
 
 // 캡쳐할 페이지 목록 (공개 페이지만)
 const PAGES = [
-  { path: "/shorts",                       file: "01-shorts.png",         label: "냥숏츠 — 큐레이션된 길고양이 영상 피드", waitFor: 2500 },
+  { path: "/shorts",                       file: "01-shorts.png",         label: "동물숏츠 — 큐레이션된 길고양이 영상 피드", waitFor: 2500 },
   { path: "/",                             file: "02-home-landing.png",   label: "도시공존 — 길고양이와 함께 사는 도시",   waitFor: 2000 },
   { path: "/protection",                   file: "03-protection.png",     label: "보호지침 — 응급·새끼·TNR·약품 가이드",   waitFor: 1500 },
   { path: "/protection/emergency-guide",   file: "04-emergency-guide.png",label: "응급 처치 가이드 — 발견 시 첫 30분",     waitFor: 1500 },
