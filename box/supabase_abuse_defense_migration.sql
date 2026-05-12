@@ -79,7 +79,7 @@ create policy reports_insert_auth
   to authenticated
   with check (
     reporter_id = auth.uid()
-    and public.is_user_not_suspended()
+    and public.is_user_not_suspended(auth.uid())
   );
 
 
