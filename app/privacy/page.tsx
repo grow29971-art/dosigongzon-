@@ -127,6 +127,21 @@ export default function PrivacyPage() {
         </section>
 
         <section>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제5조의4 (만 14세 미만 아동의 개인정보 처리)</h2>
+          <p className="mb-2">
+            도시공존은 정보통신망법 시행령 제16조에 따라 만 14세 미만 아동의 개인정보를 처리하지 않습니다.
+            회원가입 시 만 14세 이상임을 확인하는 절차를 거치며, 만 14세 미만으로 확인된 경우 가입을 거절합니다.
+          </p>
+          <ul className="list-disc pl-4 space-y-1">
+            <li>만 14세 미만 아동이 도시공존을 이용하고자 하는 경우, <b>법정대리인(보호자)이 직접 운영자에게 가입을 신청</b>해야 합니다.
+              신청은 grow29971@gmail.com으로 보호자 동의 의사를 명시한 메일을 보내주세요.</li>
+            <li>운영자는 보호자의 동의 의사를 확인한 후 가입을 처리하며, 이때 수집하는 개인정보는 만 14세 이상 회원과 동일한 범위로 한정됩니다.</li>
+            <li>법정대리인은 언제든지 아동의 개인정보 열람·정정·삭제·처리정지를 요청할 수 있으며, 운영자는 즉시 처리합니다.</li>
+            <li>만 14세 미만임이 사후 확인된 경우 운영자는 즉시 회원자격을 해지하고 개인정보를 파기합니다.</li>
+          </ul>
+        </section>
+
+        <section>
           <h2 className="text-[15px] font-bold text-text-main mb-2">제6조 (이용자의 권리 및 행사 방법)</h2>
           <ul className="list-disc pl-4 space-y-1">
             <li>이용자는 언제든지 자신의 개인정보를 <b>조회·수정·삭제</b>할 수 있습니다.</li>

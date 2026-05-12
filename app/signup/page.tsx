@@ -29,6 +29,7 @@ function SignupContent() {
   const searchParams = useSearchParams();
   const eventParam = searchParams.get("event");
   const [agreed, setAgreed] = useState(false);
+  const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [loading, setLoading] = useState<"kakao" | "google" | null>(null);
   const [error, setError] = useState("");
 
@@ -53,6 +54,17 @@ function SignupContent() {
     if (!agreed) { setError("약관에 동의해주세요."); return; }
     setError("");
     setLoading(provider);
+
+    // 마케팅 수신 동의 의도를 sessionStorage에 저장 — OAuth callback 후 MarketingConsentApplier가 처리
+    try {
+      if (marketingOptIn) {
+        sessionStorage.setItem("dosigongzon_pending_marketing_consent", "1");
+      } else {
+        sessionStorage.removeItem("dosigongzon_pending_marketing_consent");
+      }
+    } catch {
+      // sessionStorage 차단 환경 — 기능 손실 없이 진행
+    }
 
     const rawNext = searchParams.get("next");
     const safeNext = rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
@@ -167,8 +179,8 @@ function SignupContent() {
           </div>
         )}
 
-        {/* 약관 동의 */}
-        <div className="mb-4">
+        {/* 약관 동의 (필수) */}
+        <div className="mb-2">
           <button
             type="button"
             onClick={() => setAgreed(!agreed)}
@@ -182,10 +194,47 @@ function SignupContent() {
               {agreed && <Check size={12} color="white" strokeWidth={3} />}
             </div>
             <span className="text-[12.5px] text-text-sub leading-relaxed">
+              <span className="font-bold text-primary">[필수]</span>{" "}
               <Link href="/terms" className="font-bold text-primary underline">이용약관</Link> 및{" "}
               <Link href="/privacy" className="font-bold text-primary underline">개인정보처리방침</Link>에 동의하며, 만 14세 이상입니다
             </span>
           </button>
+        </div>
+
+        {/* 마케팅·이벤트 알림 수신 동의 (선택) — 정보통신망법 §22 개별 명시적 동의 */}
+        <div className="mb-2">
+          <button
+            type="button"
+            onClick={() => setMarketingOptIn(!marketingOptIn)}
+            className="flex items-start gap-2.5 text-left w-full"
+          >
+            <div
+              className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
+                marketingOptIn ? "bg-primary border-primary" : "border-border"
+              }`}
+            >
+              {marketingOptIn && <Check size={12} color="white" strokeWidth={3} />}
+            </div>
+            <span className="text-[12.5px] text-text-sub leading-relaxed">
+              <span className="font-bold" style={{ color: "rgba(60,46,35,0.55)" }}>[선택]</span>{" "}
+              동네 소식·이벤트·캠페인 안내 푸시 알림 수신에 동의합니다 (마이페이지에서 언제든 끌 수 있어요)
+            </span>
+          </button>
+        </div>
+
+        {/* 14세 미만 보호자 동의 안내 — 정보통신망법 시행령 §16 */}
+        <div className="mb-4 pl-7">
+          <p className="text-[10.5px] leading-relaxed" style={{ color: "rgba(60,46,35,0.5)" }}>
+            ※ 만 14세 미만은 직접 가입할 수 없어요. 보호자와 함께{" "}
+            <a
+              href="mailto:grow29971@gmail.com?subject=%5B%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%A1%B4%5D%2014%EC%84%B8%20%EB%AF%B8%EB%A7%8C%20%EA%B0%80%EC%9E%85%20%EC%8B%A0%EC%B2%AD&body=%EB%B3%B4%ED%98%B8%EC%9E%90%20%EC%84%B1%ED%95%A8%3A%0A%EC%9E%90%EB%85%80%20%EB%8B%89%EB%84%A4%EC%9E%84%3A%0A%EC%9E%90%EB%85%80%20%EB%82%98%EC%9D%B4%3A%0A%EC%97%B0%EB%9D%BD%EC%B2%98%3A%0A%0A%E2%96%B2%20%EB%B3%B4%ED%98%B8%EC%9E%90%EB%A1%9C%EC%84%9C%20%EC%9E%90%EB%85%80%EC%9D%98%20%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%A1%B4%20%EA%B0%80%EC%9E%85%EC%97%90%20%EB%8F%99%EC%9D%98%ED%95%A9%EB%8B%88%EB%8B%A4."
+              className="underline font-semibold"
+              style={{ color: "#A8684A" }}
+            >
+              grow29971@gmail.com
+            </a>
+            으로 보호자 동의 메일을 보내주세요.
+          </p>
         </div>
 
         {/* 가입 버튼 */}

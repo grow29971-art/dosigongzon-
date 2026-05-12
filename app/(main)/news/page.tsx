@@ -129,8 +129,12 @@ export default async function NewsIndexPage() {
                       {item.description}
                     </p>
                   )}
-                  {item.date_label && (
-                    <p className="text-[10px] text-text-light mt-1">{item.date_label}</p>
+                  {(item.date_label || item.source_name) && (
+                    <p className="text-[10px] text-text-light mt-1">
+                      {item.date_label}
+                      {item.date_label && item.source_name && " · "}
+                      {item.source_name && <>출처 {item.source_name}</>}
+                    </p>
                   )}
                 </div>
                 <div className="shrink-0 self-center">

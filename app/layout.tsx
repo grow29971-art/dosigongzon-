@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AuthProvider } from "@/lib/auth-context";
 import { ToastProvider } from "@/app/components/Toast";
 import PushSubscriber from "@/app/components/PushSubscriber";
 import PwaInstallPrompt from "@/app/components/PwaInstallPrompt";
 import PendingInviteApplier from "@/app/components/PendingInviteApplier";
+import MarketingConsentApplier from "@/app/components/MarketingConsentApplier";
 import SignupNudgeBar from "@/app/components/SignupNudgeBar";
+import ConsentManager from "@/app/components/ConsentManager";
 import "./globals.css";
 
 const SITE_URL = "https://dosigongzon.com";
@@ -198,11 +198,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <PushSubscriber />
             <PwaInstallPrompt />
             <PendingInviteApplier />
+            <MarketingConsentApplier />
             <SignupNudgeBar />
           </ToastProvider>
         </AuthProvider>
-        <Analytics />
-        <SpeedInsights />
+        {/* 쿠키 동의 배너 + 동의 시에만 Vercel Analytics·SpeedInsights 로드 */}
+        <ConsentManager />
         <script
           dangerouslySetInnerHTML={{
             __html: `if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js");if(localStorage.getItem("dosigongzon_dark")==="1")document.documentElement.classList.add("dark")`,
