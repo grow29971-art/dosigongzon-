@@ -26,6 +26,7 @@ import {
   CalendarClock,
   Sparkles,
   Film,
+  Activity,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { getAdminStats, type AdminStats } from "@/lib/admin-stats";
@@ -119,6 +120,13 @@ export default function AdminDashboardPage() {
       subtitle: "전체 회원 조회·정지 현황",
       Icon: UserIcon,
       color: "#4A7BA8",
+    },
+    {
+      href: "/admin/activation",
+      title: "활성도 코호트",
+      subtitle: "활성·휴면·이탈·첫 등록 미완료 분류",
+      Icon: Activity,
+      color: "#5BA876",
     },
     {
       href: "/admin/auth-errors",
