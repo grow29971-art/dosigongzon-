@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, MapPin } from "lucide-react";
 import { SEOUL_GUS } from "@/lib/seoul-regions";
-import { createAnonClient } from "@/lib/supabase/anon";
+import { getGuCounts } from "@/lib/region-counts";
 
 const SITE_URL = "https://dosigongzon.com";
 
@@ -32,40 +32,8 @@ export const metadata: Metadata = {
   },
 };
 
-async function getCountsByGu(): Promise<Record<string, number>> {
-  try {
-    const supabase = createAnonClient();
-    // 모든 cats의 region만 뽑아서 구별로 카운트
-    const { data } = await supabase
-      .from("cats")
-      .select("region")
-      .limit(50000);
-
-    const counts: Record<string, number> = {};
-    for (const row of (data ?? []) as { region: string | null }[]) {
-      if (!row.region) continue;
-      // gu 이름이 직접 포함된 경우 (최우선)
-      const matchedGu = SEOUL_GUS.find((g) => row.region!.includes(g.name));
-      if (matchedGu) {
-        counts[matchedGu.slug] = (counts[matchedGu.slug] ?? 0) + 1;
-        continue;
-      }
-      // dong 이름으로 매칭
-      for (const g of SEOUL_GUS) {
-        if (g.dongs.some((d) => row.region!.includes(d))) {
-          counts[g.slug] = (counts[g.slug] ?? 0) + 1;
-          break;
-        }
-      }
-    }
-    return counts;
-  } catch {
-    return {};
-  }
-}
-
 export default async function AreasIndexPage() {
-  const counts = await getCountsByGu();
+  const counts = await getGuCounts();
   const total = Object.values(counts).reduce((a, b) => a + b, 0);
 
   const jsonLd = {

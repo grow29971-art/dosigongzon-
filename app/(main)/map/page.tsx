@@ -87,8 +87,9 @@ import {
 } from "@/lib/activity-regions-repo";
 import Link from "next/link";
 import { shareToKakao } from "@/lib/kakao-share";
-import MapCoachmark from "@/app/components/MapCoachmark";
-import MapChatGuideModal from "@/app/components/MapChatGuideModal";
+// 코치마크/채팅 가이드는 첫 진입 시점에만 일시 노출. 첫 페인트 이후 lazy 로드.
+const MapCoachmark = dynamic(() => import("@/app/components/MapCoachmark"), { ssr: false });
+const MapChatGuideModal = dynamic(() => import("@/app/components/MapChatGuideModal"), { ssr: false });
 import ReactionBar from "@/app/components/ReactionBar";
 import { listReactionsBatch, type ReactionSummary } from "@/lib/reactions-repo";
 const CatLocationPicker = dynamic(() => import("@/app/components/CatLocationPicker"), { ssr: false });

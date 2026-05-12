@@ -2,6 +2,8 @@
 // 서버 컴포넌트로 풍부한 HTML을 첫 바이트에 실어 보냄.
 
 import Link from "next/link";
+import Image from "next/image";
+import { thumbnailUrl } from "@/lib/cats-repo";
 import {
   MapPin,
   Heart,
@@ -26,6 +28,7 @@ import {
 } from "lucide-react";
 import { createAnonClient } from "@/lib/supabase/anon";
 import { SEOUL_GUS } from "@/lib/seoul-regions";
+import { getGuCounts } from "@/lib/region-counts";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { listPublishedTipsServer, type Tip } from "@/lib/tips-repo";
 import LandingOnboardingGate from "@/app/components/LandingOnboardingGate";
@@ -38,7 +41,7 @@ const SITE_URL = "https://dosigongzon.com";
 async function getLandingData() {
   try {
     const supabase = createAnonClient();
-    const [catsRes, recentCatsRes, hospitalsRes, profilesRes, regionsRes] = await Promise.all([
+    const [catsRes, recentCatsRes, hospitalsRes, profilesRes, guCounts] = await Promise.all([
       supabase.from("cats").select("*", { count: "exact", head: true }),
       supabase
         .from("cats")
@@ -47,17 +50,8 @@ async function getLandingData() {
         .limit(6),
       supabase.from("rescue_hospitals").select("*", { count: "exact", head: true }).eq("hidden", false),
       supabase.from("profiles").select("*", { count: "exact", head: true }),
-      supabase.from("cats").select("region").limit(50000),
+      getGuCounts(),
     ]);
-
-    // 등록 고양이 수 상위 구 6개를 자동 선택 (모든 구가 노출 기회를 받게)
-    const guCounts: Record<string, number> = {};
-    for (const row of (regionsRes.data ?? []) as { region: string | null }[]) {
-      if (!row.region) continue;
-      const matched = SEOUL_GUS.find((g) => row.region!.includes(g.name))
-        ?? SEOUL_GUS.find((g) => g.dongs.some((d) => row.region!.includes(d)));
-      if (matched) guCounts[matched.slug] = (guCounts[matched.slug] ?? 0) + 1;
-    }
 
     return {
       catCount: catsRes.count ?? 0,
@@ -353,7 +347,8 @@ export default async function HomeLanding({
           </div>
           <div className="grid grid-cols-2 gap-2">
             {data.recentCats.slice(0, 4).map((c) => {
-              const photo = sanitizeImageUrl(c.photo_url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
+              const safe = sanitizeImageUrl(c.photo_url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
+              const photo = thumbnailUrl(safe, 400) ?? safe;
               const urgent = c.health_status === "danger";
               return (
                 <Link
@@ -362,15 +357,14 @@ export default async function HomeLanding({
                   className="block rounded-2xl overflow-hidden bg-white active:scale-[0.98] transition-transform"
                   style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.06)" }}
                 >
-                  <div
-                    className="relative"
-                    style={{
-                      aspectRatio: "4/3",
-                      backgroundImage: `url('${photo}')`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  >
+                  <div className="relative" style={{ aspectRatio: "4/3" }}>
+                    <Image
+                      src={photo}
+                      alt={c.name}
+                      fill
+                      sizes="(max-width: 640px) 50vw, 240px"
+                      style={{ objectFit: "cover" }}
+                    />
                     {urgent && (
                       <span
                         className="absolute top-2 left-2 text-[10px] font-extrabold px-2 py-0.5 rounded-lg text-white"
