@@ -27,6 +27,7 @@ import {
   Sparkles,
   Film,
   Activity,
+  Megaphone,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { getAdminStats, type AdminStats } from "@/lib/admin-stats";
@@ -127,6 +128,13 @@ export default function AdminDashboardPage() {
       subtitle: "활성·휴면·이탈·첫 등록 미완료 분류",
       Icon: Activity,
       color: "#5BA876",
+    },
+    {
+      href: "/admin/broadcast",
+      title: "전체 쪽지 발송",
+      subtitle: "코호트별 일괄 환영·재참여 메시지",
+      Icon: Megaphone,
+      color: "#C47E5A",
     },
     {
       href: "/admin/auth-errors",
