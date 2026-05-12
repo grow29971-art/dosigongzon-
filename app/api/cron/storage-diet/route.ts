@@ -52,6 +52,12 @@ export async function POST(request: Request) {
         .lt(column, cutoffIso);
 
       if (error) {
+        // 테이블이 마이그레이션 안 된 환경에서는 PGRST205 (schema cache miss) 발생.
+        // SQL의 to_regclass 가드와 동일하게 조용히 skip.
+        if (error.code === "PGRST205" || error.message?.includes("schema cache")) {
+          results[table] = { deleted: 0, error: "table not found (skipped)" };
+          continue;
+        }
         hasError = true;
         reportError(`cron/storage-diet/${table}`, new Error(error.message));
         results[table] = { deleted: 0, error: error.message };

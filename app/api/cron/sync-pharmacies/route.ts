@@ -80,6 +80,15 @@ export async function POST(request: Request) {
         break;
       }
 
+      // LOCALDATA가 점검·에러 시 200 + HTML을 리턴하는 경우가 있어 JSON 파싱 전 가드.
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.includes("json")) {
+        console.warn(
+          `[sync-pharmacies] Non-JSON response on page ${page} (content-type=${contentType}). 다음 실행에서 재시도.`,
+        );
+        break;
+      }
+
       const data = (await res.json()) as LocalDataResponse;
       const rows = data?.result?.body?.rows?.row ?? [];
       const totalCount = parseInt(
