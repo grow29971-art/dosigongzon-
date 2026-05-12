@@ -2,7 +2,6 @@
 // 서버 컴포넌트로 풍부한 HTML을 첫 바이트에 실어 보냄.
 
 import Link from "next/link";
-import Image from "next/image";
 import { thumbnailUrl } from "@/lib/cats-repo";
 import {
   MapPin,
@@ -358,12 +357,13 @@ export default async function HomeLanding({
                   style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.06)" }}
                 >
                   <div className="relative" style={{ aspectRatio: "4/3" }}>
-                    <Image
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
                       src={photo}
                       alt={c.name}
-                      fill
-                      sizes="(max-width: 640px) 50vw, 240px"
-                      style={{ objectFit: "cover" }}
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
                     {urgent && (
                       <span

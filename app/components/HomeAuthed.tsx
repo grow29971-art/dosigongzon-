@@ -72,7 +72,7 @@ import OnboardingCard from "@/app/components/OnboardingCard";
 import FeatureTipsCard from "@/app/components/FeatureTipsCard";
 import PushOptInCard from "@/app/components/PushOptInCard";
 import type { Post } from "@/lib/types";
-import { listCats, type Cat } from "@/lib/cats-repo";
+import { listCats, thumbnailUrl, type Cat } from "@/lib/cats-repo";
 import {
   listMyActivityRegions,
   distanceMeters,
@@ -1318,18 +1318,23 @@ export default function HomeAuthed({
                       </span>
                     </div>
                     <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
-                      {neighborhoodCats.map((c) => (
+                      {neighborhoodCats.map((c) => {
+                        const safe = sanitizeImageUrl(c.photo_url, "https://placehold.co/100x100/EEEAE2/2A2A28?text=%3F");
+                        const avatar = thumbnailUrl(safe, 100) ?? safe;
+                        return (
                         <div
                           key={c.id}
                           className="shrink-0 text-center"
                           style={{ width: 56 }}
                         >
-                          <div
-                            className="w-12 h-12 rounded-full mx-auto"
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={avatar}
+                            alt={c.name}
+                            loading="lazy"
+                            decoding="async"
+                            className="w-12 h-12 rounded-full mx-auto object-cover"
                             style={{
-                              backgroundImage: `url('${sanitizeImageUrl(c.photo_url, "https://placehold.co/100x100/EEEAE2/2A2A28?text=%3F")}')`,
-                              backgroundSize: "cover",
-                              backgroundPosition: "center",
                               border: "2px solid #fff",
                               boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
                             }}
@@ -1338,7 +1343,8 @@ export default function HomeAuthed({
                             {c.name}
                           </p>
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 </Link>
