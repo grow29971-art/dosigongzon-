@@ -22,11 +22,21 @@
 -- ══════════════════════════════════════════════════════════════
 -- admin_title이 이미 다른 값이면 덮어쓰지 않음 (admin이 미리 다른 타이틀 부여한 경우 존중)
 -- 정식 오픈 시각: 2026-05-20 00:00 KST = 2026-05-19 15:00:00 UTC
+--
+-- ⚠ profiles 테이블엔 BEFORE UPDATE trg_guard_profile_sensitive 트리거가 있어
+--   admin_title 변경을 일반 사용자에겐 막음. SQL Editor는 postgres 슈퍼유저로 실행되므로
+--   auth.role() != 'service_role' 판정으로 차단됨. set local role로 service_role
+--   권한으로 transaction 안에서만 변경.
+
+begin;
+set local role service_role;
 
 update public.profiles
 set admin_title = 'founding_member'
 where created_at < '2026-05-19 15:00:00+00:00'::timestamptz
   and admin_title is null;
+
+commit;
 
 -- 적용 건수 확인 (info)
 -- select count(*) as founding_members from public.profiles where admin_title = 'founding_member';
