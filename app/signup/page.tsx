@@ -16,6 +16,7 @@ import {
   openInExternalBrowser,
   type InAppBrowser,
 } from "@/lib/in-app-browser";
+import TurnstileWidget from "@/app/components/TurnstileWidget";
 
 export default function SignupPage() {
   return (
@@ -32,6 +33,9 @@ function SignupContent() {
   const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [loading, setLoading] = useState<"kakao" | "google" | null>(null);
   const [error, setError] = useState("");
+  // Cloudflare Turnstile — site key 설정된 환경에서만 활성. 미설정이면 OAuth만 (개발 환경).
+  const turnstileRequired = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const [inApp, setInApp] = useState<InAppBrowser>(null);
   const [isSamsung, setIsSamsung] = useState(false);
@@ -59,8 +63,34 @@ function SignupContent() {
   const handleSignup = async (provider: "kakao" | "google") => {
     if (inApp) { handleOpenExternal(); return; }
     if (!agreed) { setError("약관에 동의해주세요."); return; }
+    if (turnstileRequired && !turnstileToken) {
+      setError("봇 방지 확인을 완료해주세요.");
+      return;
+    }
     setError("");
     setLoading(provider);
+
+    // Turnstile 토큰 서버 검증 — 봇·자동화 차단.
+    if (turnstileRequired && turnstileToken) {
+      try {
+        const verifyRes = await fetch("/api/turnstile-verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: turnstileToken }),
+        });
+        const verifyData = (await verifyRes.json()) as { success: boolean };
+        if (!verifyData.success) {
+          setError("봇 방지 확인에 실패했어요. 페이지를 새로고침 후 다시 시도해주세요.");
+          setLoading(null);
+          setTurnstileToken(null);
+          return;
+        }
+      } catch {
+        setError("봇 방지 확인 중 오류가 발생했어요. 다시 시도해주세요.");
+        setLoading(null);
+        return;
+      }
+    }
 
     // 마케팅 수신 동의 의도를 sessionStorage에 저장 — OAuth callback 후 MarketingConsentApplier가 처리.
     // 항상 명시적으로 set/remove — 이전 사용자가 남긴 stale 값이 다음 가입자에게 적용되는 사고 방지.
@@ -229,6 +259,17 @@ function SignupContent() {
             </span>
           </button>
         </div>
+
+        {/* Cloudflare Turnstile — 봇 방어. site key 없으면 자체적으로 null 렌더 (개발 환경) */}
+        {turnstileRequired && (
+          <div className="mb-2">
+            <TurnstileWidget
+              onVerify={(token) => setTurnstileToken(token)}
+              onExpire={() => setTurnstileToken(null)}
+              onError={() => setTurnstileToken(null)}
+            />
+          </div>
+        )}
 
         {/* 14세 미만 보호자 동의 안내 — 정보통신망법 시행령 §16 */}
         <div className="mb-4 pl-7">
