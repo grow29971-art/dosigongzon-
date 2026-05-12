@@ -177,11 +177,34 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://sozxbnvgsougkliibnxl.supabase.co" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://sozxbnvgsougkliibnxl.supabase.co" />
         <link rel="dns-prefetch" href="https://dapi.kakao.com" />
+        {/* Pretendard CSS — render-blocking 방지: preload 시작 + media=print로 비동기 적용.
+            font-display: swap이 이미 적용돼 시스템 폰트로 즉시 렌더 → 폰트 로드 후 swap.
+            인라인 스크립트가 로드 직후 media=all로 전환. JS 꺼진 브라우저는 noscript 폴백. */}
         <link
-          rel="stylesheet"
+          rel="preload"
+          as="style"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
           crossOrigin="anonymous"
         />
+        <link
+          id="pretendard-css"
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+          crossOrigin="anonymous"
+          media="print"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "var l=document.getElementById('pretendard-css');if(l){l.onload=function(){this.media='all'};if(l.sheet)l.media='all'}",
+          }}
+        />
+        <noscript>
+          <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+            crossOrigin="anonymous"
+          />
+        </noscript>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
