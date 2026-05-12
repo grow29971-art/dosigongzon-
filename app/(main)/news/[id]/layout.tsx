@@ -29,7 +29,15 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       description,
       url: `${SITE_URL}/news/${news.id}`,
       publishedTime: news.created_at,
-      ...(news.image_url ? { images: [{ url: news.image_url, alt: news.title }] } : {}),
+      // 동적 OG (헤드라인·이미지·뱃지가 합성된 풍부한 미리보기) — opengraph-image.tsx 위임
+      images: [
+        {
+          url: `${SITE_URL}/news/${news.id}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: news.title,
+        },
+      ],
     },
   };
 }

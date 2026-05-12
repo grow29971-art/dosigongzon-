@@ -26,7 +26,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
   const url = `https://dosigongzon.com/shorts/${id}`;
   const description = target.description || "도시공존이 큐레이션한 동물 짧은 이야기.";
-  const ogImage = target.thumbnail_url || undefined;
+  // 동적 OG (썸네일 풀스크린 + 제목·조회수·좋아요 합성) — opengraph-image.tsx 위임
+  const ogImage = `${url}/opengraph-image`;
   return {
     title: `${target.title} — 도시공존 영상`,
     description,
@@ -35,14 +36,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: target.title,
       description,
       url,
-      images: ogImage ? [{ url: ogImage }] : undefined,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: target.title }],
       type: "video.other",
     },
     twitter: {
-      card: ogImage ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       title: target.title,
       description,
-      images: ogImage ? [ogImage] : undefined,
+      images: [ogImage],
     },
   };
 }
