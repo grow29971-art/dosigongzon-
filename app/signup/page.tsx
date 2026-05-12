@@ -39,6 +39,13 @@ function SignupContent() {
   useEffect(() => {
     setInApp(detectInAppBrowser());
     setIsSamsung(detectSamsungInternet());
+    // signup 페이지 진입 시 이전 가입 시도의 잔여 마케팅 동의 의도 클리어.
+    // 사용자 A가 가입 도중 cancel하고 사용자 B가 같은 탭에서 가입 시작할 때 데이터 격리.
+    try {
+      sessionStorage.removeItem("dosigongzon_pending_marketing_consent");
+    } catch {
+      // sessionStorage 차단 환경 — 무시
+    }
   }, []);
 
   const handleOpenExternal = async () => {
@@ -55,7 +62,8 @@ function SignupContent() {
     setError("");
     setLoading(provider);
 
-    // 마케팅 수신 동의 의도를 sessionStorage에 저장 — OAuth callback 후 MarketingConsentApplier가 처리
+    // 마케팅 수신 동의 의도를 sessionStorage에 저장 — OAuth callback 후 MarketingConsentApplier가 처리.
+    // 항상 명시적으로 set/remove — 이전 사용자가 남긴 stale 값이 다음 가입자에게 적용되는 사고 방지.
     try {
       if (marketingOptIn) {
         sessionStorage.setItem("dosigongzon_pending_marketing_consent", "1");

@@ -12,7 +12,13 @@ type Params = Promise<{ id: string }>;
 
 export default async function ShortOGImage({ params }: { params: Params }) {
   const { id } = await params;
-  const short = await getPublishedShortServer(id);
+  // 데이터 fetch 실패해도 빈 OG는 렌더 — 삭제·미발행 영상 공유 시 500 방지.
+  let short: Awaited<ReturnType<typeof getPublishedShortServer>> = null;
+  try {
+    short = await getPublishedShortServer(id);
+  } catch {
+    short = null;
+  }
 
   const title = short?.title ?? "동물숏츠";
   const description =

@@ -42,10 +42,11 @@ function toRfc822(iso: string): string {
 
 async function fetchAllItems(): Promise<FeedItem[]> {
   const items: FeedItem[] = [];
+  // 클라이언트 한 번만 생성 — 뉴스/숏츠 호출에서 재활용. connection pool 절약.
+  const supabase = await createClient();
 
   // 1) 뉴스
   try {
-    const supabase = await createClient();
     const { data: news } = await supabase
       .from("news")
       .select("id, title, description, body, image_url, created_at, updated_at, badge_type")
@@ -100,7 +101,6 @@ async function fetchAllItems(): Promise<FeedItem[]> {
 
   // 3) 동물숏츠 (최근 20개)
   try {
-    const supabase = await createClient();
     const { data: shorts } = await supabase
       .from("shorts")
       .select("id, title, description, thumbnail_url, youtube_video_id, published_at, created_at")

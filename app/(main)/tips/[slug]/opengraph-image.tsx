@@ -12,7 +12,13 @@ type Params = Promise<{ slug: string }>;
 
 export default async function TipOGImage({ params }: { params: Params }) {
   const { slug } = await params;
-  const tip = await getTipBySlugServer(slug);
+  // 데이터 fetch 실패해도 빈 OG는 렌더 — 삭제된 글 공유 시 500 방지.
+  let tip: Awaited<ReturnType<typeof getTipBySlugServer>> = null;
+  try {
+    tip = await getTipBySlugServer(slug);
+  } catch {
+    tip = null;
+  }
 
   const title = tip?.title ?? "도시공존 꿀팁";
   const description =

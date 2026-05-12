@@ -21,9 +21,15 @@ const BADGE_LABELS: Record<string, { label: string; color: string }> = {
 
 export default async function NewsOGImage({ params }: { params: Params }) {
   const { id } = await params;
-  const supabase = await createClient();
-  const { data } = await supabase.from("news").select("*").eq("id", id).maybeSingle();
-  const news = (data ?? null) as NewsItem | null;
+  // 데이터 fetch 실패해도 빈 OG는 렌더 — 삭제된 글 공유 시 500 방지.
+  let news: NewsItem | null = null;
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase.from("news").select("*").eq("id", id).maybeSingle();
+    news = (data ?? null) as NewsItem | null;
+  } catch {
+    news = null;
+  }
 
   const title = news?.title ?? "도시공존 소식";
   const description =

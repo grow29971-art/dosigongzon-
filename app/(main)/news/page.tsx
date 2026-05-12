@@ -130,7 +130,7 @@ export default async function NewsIndexPage() {
                     </p>
                   )}
                   {(item.date_label || item.source_name) && (
-                    <p className="text-[10px] text-text-light mt-1">
+                    <p className="text-[10px] text-text-light mt-1 line-clamp-1">
                       {item.date_label}
                       {item.date_label && item.source_name && " · "}
                       {item.source_name && <>출처 {item.source_name}</>}

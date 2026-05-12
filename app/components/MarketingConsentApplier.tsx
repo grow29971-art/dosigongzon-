@@ -7,6 +7,7 @@
 import { useEffect, useRef } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
+import { reportError } from "@/lib/error-report";
 
 const STORAGE_KEY = "dosigongzon_pending_marketing_consent";
 
@@ -31,12 +32,18 @@ export default function MarketingConsentApplier() {
         .from("profiles")
         .update({ marketing_push_enabled: true })
         .eq("id", user.id);
-      if (!error) {
-        try {
-          sessionStorage.removeItem(STORAGE_KEY);
-        } catch {
-          // ignore
-        }
+      // 성공·실패 무관 sessionStorage는 무조건 제거.
+      // 실패해도 다음 세션에서 재시도 안 함 — 무한 retry로 RLS·네트워크 에러 누적 방지.
+      // 실패 시엔 Sentry로 보고하고 유저는 마이페이지에서 수동 토글 가능.
+      try {
+        sessionStorage.removeItem(STORAGE_KEY);
+      } catch {
+        // ignore
+      }
+      if (error) {
+        reportError("marketing-consent-applier", new Error(error.message), {
+          userId: user.id,
+        });
       }
     })();
   }, [user]);

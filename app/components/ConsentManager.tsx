@@ -9,12 +9,14 @@ import Link from "next/link";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-type Consent = "accepted" | "rejected" | "pending" | "loading";
+type Consent = "accepted" | "rejected" | "pending";
 
 const STORAGE_KEY = "dosigongzon_cookie_consent";
 
 export default function ConsentManager() {
-  const [consent, setConsent] = useState<Consent>("loading");
+  // mounted 가드 — SSR과 hydration 사이엔 아무것도 렌더하지 않아 mismatch 회피.
+  const [mounted, setMounted] = useState(false);
+  const [consent, setConsent] = useState<Consent>("pending");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -29,6 +31,7 @@ export default function ConsentManager() {
       // localStorage 차단된 환경 — 그냥 배너 노출
       setConsent("pending");
     }
+    setMounted(true);
   }, []);
 
   const handleAccept = () => {
@@ -48,6 +51,9 @@ export default function ConsentManager() {
     }
     setConsent("rejected");
   };
+
+  // hydration 완료 전엔 아무것도 렌더하지 않음
+  if (!mounted) return null;
 
   return (
     <>
