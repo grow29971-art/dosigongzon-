@@ -278,7 +278,7 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
       )}
 
       {/* 주요 동네 */}
-      <section className="px-5 mt-7">
+      <section className="px-5 mt-7 cv-auto">
         <h2 className="text-[16px] font-extrabold text-text-main mb-3">
           {gu.name} 주요 동네
         </h2>
@@ -296,7 +296,7 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
       </section>
 
       {/* 다른 구로 이동 */}
-      <section className="px-5 mt-8">
+      <section className="px-5 mt-8 cv-auto">
         <h2 className="text-[14px] font-extrabold text-text-main mb-2.5">
           다른 지역도 살펴보기
         </h2>
@@ -324,7 +324,7 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
       </section>
 
       {/* 하단 설명 (SEO 본문) */}
-      <section className="px-5 mt-8">
+      <section className="px-5 mt-8 cv-auto">
         <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
           <p className="text-[12.5px] text-text-sub leading-relaxed">
             <b className="text-text-main">도시공존</b>은 {gu.name}을 포함한 서울 전역의 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다.
