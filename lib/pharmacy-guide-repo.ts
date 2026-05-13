@@ -83,7 +83,7 @@ export async function uploadGuideImage(file: File): Promise<string> {
   const { error } = await supabase.storage
     .from("cat-photos")
     .upload(fileName, webpFile, {
-      cacheControl: "3600",
+      cacheControl: "2592000",
       upsert: false,
       contentType: "image/webp",
     });

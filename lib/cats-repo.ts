@@ -409,7 +409,7 @@ export async function uploadCatPhoto(file: File): Promise<string> {
   const { error: uploadError } = await supabase.storage
     .from("cat-photos")
     .upload(fileName, webpFile, {
-      cacheControl: "3600",
+      cacheControl: "2592000",
       upsert: false,
       contentType: "image/webp",
     });
@@ -604,7 +604,7 @@ export async function uploadAvatar(file: File): Promise<string> {
   const { error: uploadError } = await supabase.storage
     .from("cat-photos")
     .upload(fileName, webpFile, {
-      cacheControl: "3600",
+      cacheControl: "2592000",
       upsert: false,
       contentType: "image/webp",
     });
@@ -672,7 +672,7 @@ export async function uploadCommentPhoto(file: File): Promise<string> {
   const { error: uploadError } = await supabase.storage
     .from("cat-photos")
     .upload(fileName, webpFile, {
-      cacheControl: "3600",
+      cacheControl: "2592000",
       upsert: false,
       contentType: "image/webp",
     });

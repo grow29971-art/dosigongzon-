@@ -26,28 +26,39 @@ if (!url || !key) {
 
 const supabase = createClient(url, key);
 const BUCKET = "cat-photos";
-const PREFIX = "dummy-real";
-const MIN_SIZE = 500 * 1024; // 500KB 이상만 압축
+const MIN_SIZE = 100 * 1024; // 100KB 이상은 점검 대상 (압축 또는 cacheControl 갱신)
 const MAX_DIMENSION = 1280;
 const JPEG_QUALITY = 82;
 
-console.log(`🔍 ${BUCKET}/${PREFIX}/ 스캔 중...`);
+console.log(`🔍 ${BUCKET}/ 전체 스캔 중...`);
 
-const { data: files, error: listError } = await supabase.storage
+// 루트의 폴더(유저 UUID, dummy-real, guide 등) 모두 순회
+const { data: rootEntries, error: rootError } = await supabase.storage
   .from(BUCKET)
-  .list(PREFIX, { limit: 1000, sortBy: { column: "name", order: "asc" } });
+  .list("", { limit: 1000 });
 
-if (listError) {
-  console.error("❌ list 실패:", listError.message);
+if (rootError) {
+  console.error("❌ root list 실패:", rootError.message);
   process.exit(1);
 }
 
-const candidates = (files ?? []).filter((f) => {
-  const sz = f.metadata?.size ?? 0;
-  return sz >= MIN_SIZE;
-});
+const folders = (rootEntries ?? []).filter((e) => e.metadata === null).map((e) => e.name);
+console.log(`📁 폴더 ${folders.length}개`);
 
-console.log(`📊 전체 ${files?.length ?? 0}개 중 ${candidates.length}개가 ${MIN_SIZE / 1024}KB 이상\n`);
+const candidates = []; // { path, size }
+for (const folder of folders) {
+  const { data: items } = await supabase.storage
+    .from(BUCKET)
+    .list(folder, { limit: 1000 });
+  for (const it of items ?? []) {
+    const sz = it.metadata?.size ?? 0;
+    if (sz >= MIN_SIZE) {
+      candidates.push({ path: `${folder}/${it.name}`, size: sz, name: it.name });
+    }
+  }
+}
+
+console.log(`📊 ${MIN_SIZE / 1024}KB 이상 파일: ${candidates.length}개\n`);
 
 let processed = 0;
 let totalBefore = 0;
@@ -55,8 +66,8 @@ let totalAfter = 0;
 let failed = 0;
 
 for (const file of candidates) {
-  const path = `${PREFIX}/${file.name}`;
-  const sizeBefore = file.metadata.size;
+  const path = file.path;
+  const sizeBefore = file.size;
   totalBefore += sizeBefore;
 
   try {
@@ -72,16 +83,23 @@ for (const file of candidates) {
       .jpeg({ quality: JPEG_QUALITY, mozjpeg: true })
       .toBuffer();
 
-    // 효과가 미미하면 (10% 이내 감소) 건너뛰기 (이미 잘 압축된 파일)
+    // 효과가 미미하면 (10% 이내 감소) 새 인코딩은 버리되 cacheControl 갱신을 위해
+    // 원본을 그대로 다시 업로드. 이미 압축된 파일도 cache-control 30일로 갱신됨.
     if (compressed.length > sizeBefore * 0.9) {
-      console.log(`  ⏭️  SKIP ${path}: ${(sizeBefore / 1024).toFixed(0)}KB → ${(compressed.length / 1024).toFixed(0)}KB (감소 미미)`);
+      const { error: cErr } = await supabase.storage.from(BUCKET).upload(path, buf, {
+        cacheControl: "2592000",
+        upsert: true,
+        contentType: blob.type || "image/jpeg",
+      });
+      if (cErr) throw cErr;
+      console.log(`  🔄 ${path}: ${(sizeBefore / 1024).toFixed(0)}KB (cacheControl 갱신만)`);
       totalAfter += sizeBefore;
       continue;
     }
 
-    // 3. upsert 업로드 (같은 경로 덮어쓰기)
+    // 3. upsert 업로드 (같은 경로 덮어쓰기). cacheControl 30일 — 클라 캐시 충분히 길게.
     const { error: upErr } = await supabase.storage.from(BUCKET).upload(path, compressed, {
-      cacheControl: "3600",
+      cacheControl: "2592000",
       upsert: true,
       contentType: "image/jpeg",
     });

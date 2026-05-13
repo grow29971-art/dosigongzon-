@@ -83,7 +83,7 @@ export async function uploadDMPhoto(file: File): Promise<string> {
 
   const { error } = await supabase.storage
     .from("cat-photos")
-    .upload(fileName, webpFile, { cacheControl: "3600", upsert: false, contentType: "image/webp" });
+    .upload(fileName, webpFile, { cacheControl: "2592000", upsert: false, contentType: "image/webp" });
   if (error) throw new Error(`업로드 실패: ${error.message}`);
 
   const { data: urlData } = supabase.storage.from("cat-photos").getPublicUrl(fileName);

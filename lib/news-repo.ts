@@ -29,7 +29,7 @@ export async function uploadNewsImage(file: File): Promise<string> {
   const { error: uploadError } = await supabase.storage
     .from("cat-photos")
     .upload(fileName, webpFile, {
-      cacheControl: "3600",
+      cacheControl: "2592000",
       upsert: false,
       contentType: "image/webp",
     });
