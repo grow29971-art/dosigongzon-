@@ -1494,7 +1494,7 @@ export default function HomeAuthed({
 
       {/* ══════ 이번 주 돌봄 왕 TOP 3 ══════ */}
       {caretakerRank.length > 0 && (
-        <div className="mb-5">
+        <div className="mb-5 cv-auto">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 px-1">
               <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E8B040" }} />
@@ -1571,7 +1571,7 @@ export default function HomeAuthed({
 
       {/* ══════ 이번 주 인기 고양이 TOP 5 ══════ */}
       {popularCats.length > 0 && (
-        <div className="mb-5">
+        <div className="mb-5 cv-auto">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 px-1">
               <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E86B8C" }} />
@@ -1754,7 +1754,7 @@ export default function HomeAuthed({
 
       {/* ══════ 인기 커뮤니티 글 ══════ */}
       {popularPosts.length > 0 && (
-        <div className="mb-5">
+        <div className="mb-5 cv-auto">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 px-1">
               <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E88D5A" }} />
@@ -1831,7 +1831,7 @@ export default function HomeAuthed({
       </Link>
 
       {/* ══════ 고양이 사회 소식 & 일정 ══════ */}
-      <div className="mb-4">
+      <div className="mb-4 cv-auto">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2 px-1">
             <div className="w-1 h-4 rounded-full bg-primary" />

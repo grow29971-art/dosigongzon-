@@ -327,7 +327,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
       )}
 
       {/* 다른 시·도 */}
-      <section className="px-5 mt-8">
+      <section className="px-5 mt-8 cv-auto">
         <h2 className="text-[14px] font-extrabold text-text-main mb-2.5">다른 지역도 살펴보기</h2>
         <div className="grid grid-cols-3 gap-1.5">
           {KOREA_SIDOS.filter((s) => s.slug !== sido)
@@ -353,7 +353,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
       </section>
 
       {/* 하단 SEO 본문 */}
-      <section className="px-5 mt-8">
+      <section className="px-5 mt-8 cv-auto">
         <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
           <p className="text-[12.5px] text-text-sub leading-relaxed">
             <b className="text-text-main">도시공존</b>은 {region.name}을 포함한 전국의 길고양이를 기록하고
