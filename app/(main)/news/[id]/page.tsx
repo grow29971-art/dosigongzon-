@@ -88,7 +88,9 @@ export default function NewsDetailPage({
 
         {/* 뒤로가기 */}
         <button
+          type="button"
           onClick={() => router.back()}
+          aria-label="뒤로가기"
           className="absolute top-12 left-4 w-10 h-10 rounded-2xl bg-white/70 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform"
         >
           <ArrowLeft size={20} className="text-text-main" />

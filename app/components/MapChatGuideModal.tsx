@@ -45,6 +45,7 @@ export default function MapChatGuideModal() {
       onClick={dismiss}
       role="dialog"
       aria-modal="true"
+      aria-label="지도 채팅 사용법 안내"
     >
       <div
         className="bg-white w-full max-w-md rounded-3xl p-5 relative animate-slide-up"

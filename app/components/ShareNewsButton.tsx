@@ -75,9 +75,8 @@ export default function ShareNewsButton({ newsId, title, description, badgeLabel
             ? "0 4px 14px rgba(254,229,0,0.35)"
             : "0 2px 8px rgba(46,125,50,0.18)",
       }}
-      aria-label="카카오톡으로 소식 공유"
     >
-      {status === "idle" ? <Share2 size={16} /> : <Check size={16} />}
+      {status === "idle" ? <Share2 size={16} aria-hidden="true" /> : <Check size={16} aria-hidden="true" />}
       <span className="text-[13.5px] font-extrabold">{label}</span>
     </button>
   );
