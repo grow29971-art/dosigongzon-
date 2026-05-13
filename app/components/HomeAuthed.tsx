@@ -70,7 +70,8 @@ import { getRecentFeed, type FeedItem } from "@/lib/live-feed-repo";
 import { getTodayAnniversaries, type Anniversary } from "@/lib/anniversaries-repo";
 import OnboardingCard from "@/app/components/OnboardingCard";
 import FeatureTipsCard from "@/app/components/FeatureTipsCard";
-import PushOptInCard from "@/app/components/PushOptInCard";
+// 푸시 옵트인 카드는 페이지 하단 — 첫 페인트엔 viewport 밖. lazy 안전.
+const PushOptInCard = dynamic(() => import("@/app/components/PushOptInCard"), { ssr: false });
 import type { Post } from "@/lib/types";
 import { listCats, thumbnailUrl, type Cat } from "@/lib/cats-repo";
 import {
