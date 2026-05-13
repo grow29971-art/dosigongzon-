@@ -11,6 +11,8 @@ interface TurnstileGlobal {
       "error-callback"?: () => void;
       "expired-callback"?: () => void;
       theme?: "light" | "dark" | "auto";
+      appearance?: "always" | "execute" | "interaction-only";
+      size?: "normal" | "compact" | "flexible";
     },
   ) => string;
   remove: (widgetId: string) => void;
@@ -58,8 +60,12 @@ export default function TurnstileWidget({ onVerify, onExpire, onError }: Props) 
           "expired-callback": () => onExpireRef.current?.(),
           "error-callback": () => onErrorRef.current?.(),
           theme: "light",
+          // managed/invisible 모드여도 시각 위젯을 강제 노출 — 사용자에게 봇 검증 진행 가시화.
+          appearance: "always",
+          size: "normal",
         });
-      } catch {
+      } catch (err) {
+        console.error("[turnstile] render failed:", err);
         onErrorRef.current?.();
       }
     };
