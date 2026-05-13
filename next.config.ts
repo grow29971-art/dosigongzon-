@@ -78,6 +78,11 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["192.168.0.2", "localhost"],
   // 기술 스택 정보 노출 차단 — X-Powered-By: Next.js 헤더 제거
   poweredByHeader: false,
+  // 패키지 import 최적화 — 명시 named import만 번들 (lucide-react 150+개 아이콘 중 사용분만).
+  // Next 16 기본 리스트는 ["geist"] 뿐. lucide는 별도 추가 필요.
+  experimental: {
+    optimizePackageImports: ["lucide-react"],
+  },
   // next/image — Vercel Image Optimization 활성. 자동 WebP/AVIF + 디바이스별 리사이즈.
   // 서드파티 아바타(Google/Kakao)는 이미 CDN 최적화 상태라 개별 컴포넌트에서 unoptimized 유지.
   // quota 한계: Hobby 1000 source images/month (현재 사용 << 한계).

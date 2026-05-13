@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/client";
 import { requireAdmin } from "@/lib/admin-guard";
+import { convertImageToWebp } from "@/lib/cats-repo";
 
 export interface PharmacyGuideItem {
   id: string;
@@ -75,22 +76,16 @@ export async function uploadGuideImage(file: File): Promise<string> {
   if (file.size > 10 * 1024 * 1024) throw new Error("10MB 이하만 업로드 가능해요.");
   if (!file.type.startsWith("image/")) throw new Error("이미지 파일만 가능해요.");
 
-  // 확장자는 MIME 타입에서만 유도 (파일명 인젝션 방어)
-  const mimeToExt: Record<string, string> = {
-    "image/jpeg": "jpg",
-    "image/png": "png",
-    "image/webp": "webp",
-    "image/gif": "gif",
-  };
-  const ext = mimeToExt[file.type] ?? "bin";
-  const fileName = `guide/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  // 다른 업로드 경로와 일관 — 1280px WebP로 압축 후 업로드 (egress·Storage 절감).
+  const webpFile = await convertImageToWebp(file);
+  const fileName = `guide/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.webp`;
 
   const { error } = await supabase.storage
     .from("cat-photos")
-    .upload(fileName, file, {
+    .upload(fileName, webpFile, {
       cacheControl: "3600",
       upsert: false,
-      contentType: file.type,
+      contentType: "image/webp",
     });
 
   if (error) throw new Error(`업로드 실패: ${error.message}`);
