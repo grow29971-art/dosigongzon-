@@ -111,7 +111,7 @@ export default async function AreasIndexPage() {
       </section>
 
       {/* 다른 도시 진입점 */}
-      <section className="px-5 mt-7">
+      <section className="px-5 mt-7 cv-auto">
         <Link
           href="/regions"
           className="block rounded-2xl p-4 active:scale-[0.98] transition-transform"
@@ -131,7 +131,7 @@ export default async function AreasIndexPage() {
         </Link>
       </section>
 
-      <section className="px-5 mt-5">
+      <section className="px-5 mt-5 cv-auto">
         <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
           <p className="text-[12.5px] text-text-sub leading-relaxed">
             <b className="text-text-main">도시공존</b>은 서울 전역의 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다.

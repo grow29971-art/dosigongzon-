@@ -99,7 +99,7 @@ export default function ConsentManager() {
                 <Link
                   href="/privacy"
                   className="underline"
-                  style={{ color: "#A8684A" }}
+                  style={{ color: "#8B5A3C" }}
                 >
                   개인정보처리방침
                 </Link>

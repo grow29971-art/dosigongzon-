@@ -242,6 +242,9 @@ export default function OnboardingPage() {
           {[...SLIDES.map((s) => s.dotActive), pickerSlide.dotActive].map((color, i) => (
             <button
               key={i}
+              type="button"
+              aria-label={`슬라이드 ${i + 1}로 이동`}
+              aria-current={i === current ? "step" : undefined}
               onClick={() => {
                 if (i < SLIDES.length) goTo(i);
                 // picker 인덱스로는 next로만 이동 (이전 슬라이드에서)
