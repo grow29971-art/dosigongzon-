@@ -110,11 +110,26 @@ export default async function CatDetailPage({ params }: { params: Params }) {
     description: cat.description ?? `${region}에 사는 길고양이 ${cat.name}`,
   };
 
+  // BreadcrumbList — 검색 결과에서 경로 빵부스러기 표시
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "홈", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "지도", item: `${SITE_URL}/map` },
+      { "@type": "ListItem", position: 3, name: cat.name, item: `${SITE_URL}/cats/${cat.id}` },
+    ],
+  };
+
   return (
     <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, "\\u003c") }}
       />
 
       {/* 헤더 (뒤로 가기) */}

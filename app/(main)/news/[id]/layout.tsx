@@ -84,11 +84,26 @@ export default async function NewsLayout({
     ...(news.body ? { articleBody: news.body.slice(0, 5000) } : {}),
   };
 
+  // BreadcrumbList — 홈 > 소식 > 제목
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "홈", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "소식", item: `${SITE_URL}/news` },
+      { "@type": "ListItem", position: 3, name: news.title, item: `${SITE_URL}/news/${news.id}` },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, "\\u003c") }}
       />
       {children}
     </>

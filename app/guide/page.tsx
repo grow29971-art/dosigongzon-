@@ -283,8 +283,21 @@ const SECTIONS: FeatureSection[] = [
 ];
 
 export default function GuidePage() {
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "홈", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "가이드", item: `${SITE_URL}/guide` },
+    ],
+  };
+
   return (
     <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, "\\u003c") }}
+      />
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
