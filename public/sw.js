@@ -1,4 +1,4 @@
-const CACHE_NAME = "dosigongzon-v5";
+const CACHE_NAME = "dosigongzon-v6";
 
 self.addEventListener("install", (e) => {
   // 이전 캐시 즉시 삭제
@@ -48,7 +48,25 @@ self.addEventListener("fetch", (e) => {
     return;
   }
 
-  // 정적 자원 → 네트워크 우선 (실패 시 캐시)
+  // /_next/static/ — content-hashed immutable. cache-first로 2nd 페이지뷰 LCP 단축.
+  // (해시가 바뀌면 새 URL이 되어 새로 fetch)
+  if (e.request.url.includes("/_next/static/")) {
+    e.respondWith(
+      caches.match(e.request).then((cached) => {
+        if (cached) return cached;
+        return fetch(e.request).then((res) => {
+          if (cacheable(e.request, res)) {
+            const clone = res.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone)).catch(() => {});
+          }
+          return res;
+        });
+      }),
+    );
+    return;
+  }
+
+  // 기타 정적 자원 → 네트워크 우선 (실패 시 캐시)
   e.respondWith(
     fetch(e.request)
       .then((res) => {
