@@ -43,7 +43,8 @@ export default function TurnstileWidget({ onVerify, onExpire, onError }: Props) 
     onErrorRef.current = onError;
   });
 
-  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  // Vercel·.env 값에 trailing \n 포함된 케이스 방어. Cloudflare가 "Invalid sitekey"로 reject.
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim();
 
   useEffect(() => {
     if (!siteKey || !containerRef.current) return;
