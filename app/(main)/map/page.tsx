@@ -1124,10 +1124,8 @@ export default function MapPage() {
     }
 
     // 마커용 사진 URL — image transformation 활성 시 변환 endpoint, 아니면 원본.
-    // 업로드 시 클라가 1280px WebP로 압축하므로(convertImageToWebp) 원본도 ~200-500KB.
-    // Dashboard에서 Image Transformation 켜면 cats-repo의 SUPABASE_IMAGE_TRANSFORM_ENABLED와
-    // 함께 변환 활성. 두 곳을 같이 토글해야 함.
-    const TRANSFORM_ENABLED = false;
+    // 2026-05-13 Dashboard Storage Settings에서 Image Transformation 활성화 완료.
+    const TRANSFORM_ENABLED = true;
     function thumb(url: string | null | undefined, size: number): string {
       const safe = sanitizeImageUrl(url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
       if (!TRANSFORM_ENABLED) return safe;
