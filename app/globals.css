@@ -412,3 +412,14 @@ body {
 .dark .tip-body pre { background: #0D0D0D; color: #E8E8E8; }
 .dark .tip-body th { background: #2C2C2E; }
 .dark .tip-body th, .dark .tip-body td { border-color: #363636; }
+
+/* ══════════════════════════════════════════
+   Performance — content-visibility utility
+   ══════════════════════════════════════════ */
+/* viewport에 보이지 않는 섹션의 layout 계산을 브라우저가 스킵.
+   첫 페인트 Style & Layout 시간 큰 감소. Chrome/Edge/Safari18+ 지원.
+   contain-intrinsic-size로 스크롤 위치 안정화 (실제 섹션 평균 높이 근사). */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}

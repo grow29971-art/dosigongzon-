@@ -334,7 +334,7 @@ export default async function HomeLanding({
 
       {/* 최근 등록된 고양이들 */}
       {data.recentCats.length > 0 && (
-        <section className="px-5 mt-6">
+        <section className="px-5 mt-6 cv-auto">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C47E5A" }} />
@@ -389,7 +389,7 @@ export default async function HomeLanding({
       )}
 
       {/* 내 동네 찾기 */}
-      <section className="px-5 mt-8">
+      <section className="px-5 mt-8 cv-auto">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4A7BA8" }} />
           <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">서울 구별 지도</h2>
@@ -425,7 +425,7 @@ export default async function HomeLanding({
       </section>
 
       {/* 숫자로 보는 도시공존 — 컴팩트한 통계 스트립 */}
-      <section className="px-5 mt-8">
+      <section className="px-5 mt-8 cv-auto">
         <div
           className="rounded-2xl px-4 py-3 flex items-center justify-around"
           style={{
@@ -443,7 +443,7 @@ export default async function HomeLanding({
       </section>
 
       {/* 캣맘 필수 가이드 8종 — 보호지침 허브로 유도 (SEO + 체류시간) */}
-      <section className="px-5 mt-8">
+      <section className="px-5 mt-8 cv-auto">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#D85555" }} />
@@ -523,7 +523,7 @@ export default async function HomeLanding({
 
       {/* 꿀팁게시판 — 정보글 큐레이션 (SEO 강화) */}
       {tips.length > 0 && (
-        <section className="px-5 mt-8">
+        <section className="px-5 mt-8 cv-auto">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C47E5A" }} />
@@ -561,7 +561,7 @@ export default async function HomeLanding({
       {adoptionSlot}
 
       {/* 핵심 가치 */}
-      <section className="px-5 mt-6">
+      <section className="px-5 mt-6 cv-auto">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#6B8E6F" }} />
           <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">왜 도시공존인가요?</h2>
@@ -591,7 +591,7 @@ export default async function HomeLanding({
       </section>
 
       {/* FAQ (SEO 본문) */}
-      <section className="px-5 mt-8">
+      <section className="px-5 mt-8 cv-auto">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#8B65B8" }} />
           <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">자주 묻는 질문</h2>
@@ -614,7 +614,7 @@ export default async function HomeLanding({
       </section>
 
       {/* 공유 CTA */}
-      <section className="px-5 mt-8">
+      <section className="px-5 mt-8 cv-auto">
         <div
           className="rounded-2xl p-5"
           style={{
@@ -633,7 +633,7 @@ export default async function HomeLanding({
       </section>
 
       {/* 기술 자산 — 어떻게 만들어졌나 */}
-      <section className="px-5 mt-8">
+      <section className="px-5 mt-8 cv-auto">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4A7BA8" }} />
           <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
@@ -684,7 +684,7 @@ export default async function HomeLanding({
       </section>
 
       {/* 만든 사람 — 1인 운영자 정체성 */}
-      <section className="px-5 mt-8">
+      <section className="px-5 mt-8 cv-auto">
         <div
           className="rounded-3xl p-5"
           style={{
