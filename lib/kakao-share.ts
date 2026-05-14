@@ -72,10 +72,13 @@ function loadSdk(): Promise<boolean> {
 
 function getKey(): string | null {
   // JavaScript 전용 키가 있으면 그걸 우선, 없으면 Maps 키로 폴백
-  const k =
+  const raw = (
     process.env.NEXT_PUBLIC_KAKAO_JS_KEY ||
     process.env.NEXT_PUBLIC_KAKAO_MAP_KEY ||
-    "";
+    ""
+  ).trim();
+  // .env.local 값이 따옴표로 감싸진 채 Vercel로 옮겨진 경우 대비
+  const k = raw.replace(/^["']|["']$/g, "");
   return k || null;
 }
 

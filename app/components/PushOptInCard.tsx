@@ -60,7 +60,7 @@ export default function PushOptInCard() {
         handleDismiss();
         return;
       }
-      const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+      const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY?.trim();
       if (!vapidKey) {
         setShow(false);
         return;

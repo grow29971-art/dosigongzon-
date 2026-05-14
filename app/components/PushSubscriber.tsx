@@ -13,7 +13,7 @@ export default function PushSubscriber() {
     // default/denied 상태에서 권한 prompt는 PushOptInCard의 명시적 클릭으로 띄움.
     if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
 
-    const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+    const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY?.trim();
     if (!vapidKey) return;
 
     (async () => {
