@@ -18,6 +18,8 @@ const DISALLOWED_PATHS = [
   // 검색 페이지 — 파라미터 기반 동적 결과라 색인 가치 낮음
   "/search",
   "/search/",
+  // Sentry 디버그 페이지 — 운영자 전용, 색인 가치 0
+  "/sentry-example-page",
   // 로그인 가드 걸린 경로 — 크롤러가 접근해도 로그인 화면만 보임
   "/community",
   "/community/",
