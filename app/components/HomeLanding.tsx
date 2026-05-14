@@ -2,6 +2,7 @@
 // 서버 컴포넌트로 풍부한 HTML을 첫 바이트에 실어 보냄.
 
 import Link from "next/link";
+import { unstable_cache } from "next/cache";
 import { thumbnailUrl } from "@/lib/cats-repo";
 import {
   MapPin,
@@ -9,6 +10,7 @@ import {
   Sparkles,
   ShieldCheck,
   ArrowRight,
+  ChevronRight,
   PawPrint,
   Bell,
   Download,
@@ -24,16 +26,25 @@ import {
   Lock,
   Radio,
   Mail,
+  Trophy,
 } from "lucide-react";
 import { createAnonClient } from "@/lib/supabase/anon";
 import { SEOUL_GUS } from "@/lib/seoul-regions";
 import { getGuCounts } from "@/lib/region-counts";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { listPublishedTipsServer, type Tip } from "@/lib/tips-repo";
+import { getTopCaretakersServer, type RankingRow } from "@/lib/ranking-repo";
 import LandingOnboardingGate from "@/app/components/LandingOnboardingGate";
 import ShareAreaButton from "@/app/components/ShareAreaButton";
 import TodayVisitors from "@/app/components/TodayVisitors";
 import SocialProofStrip from "@/app/components/SocialProofStrip";
+
+// 활동 캣맘 TOP 3 — 광고 LP에 강력한 사회적 증명. 10분 캐시(egress 절감).
+const getCachedTopCaretakers = unstable_cache(
+  async (): Promise<RankingRow[]> => getTopCaretakersServer(3),
+  ["landing-top-caretakers"],
+  { revalidate: 600, tags: ["landing-top-caretakers"] },
+);
 
 const SITE_URL = "https://dosigongzon.com";
 
@@ -76,9 +87,10 @@ export default async function HomeLanding({
   adoptionSlot,
   eventSlot,
 }: { hotSlot?: React.ReactNode; adoptionSlot?: React.ReactNode; eventSlot?: React.ReactNode } = {}) {
-  const [data, tips] = await Promise.all([
+  const [data, tips, topCaretakers] = await Promise.all([
     getLandingData(),
     listPublishedTipsServer(6),
+    getCachedTopCaretakers(),
   ]);
   // 등록 고양이 상위 6개 구. 데이터 없으면 인구 많은 대표 구 폴백.
   const FALLBACK_FEATURED = ["gangnam", "mapo", "songpa", "yongsan", "seongdong", "gwanak"];
@@ -269,6 +281,67 @@ export default async function HomeLanding({
 
       {/* 1000명 이벤트 배너 — 가입 전환 강력 트리거 */}
       {eventSlot}
+
+      {/* 이번 주 활동 캣맘 TOP 3 — 살아있는 커뮤니티 사회적 증명 */}
+      {topCaretakers.length > 0 && (
+        <section className="px-5 mt-6">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C9A961" }} />
+            <h2 className="text-[15px] font-extrabold text-text-main tracking-tight inline-flex items-center gap-1.5">
+              <Trophy size={14} style={{ color: "#C9A961" }} />
+              이번 주 활동 캣맘 TOP 3
+            </h2>
+            <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#C9A961", opacity: 0.6 }}>
+              LEADERBOARD
+            </span>
+          </div>
+          <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+            지금 실제로 동네 길고양이를 돌보고 있는 분들이에요.
+          </p>
+          <div className="space-y-2">
+            {topCaretakers.map((c, idx) => (
+              <Link
+                key={c.user_id}
+                href="/ranking"
+                className="flex items-center gap-3 p-3.5 rounded-2xl bg-white active:scale-[0.99] transition-transform"
+                style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+              >
+                <div
+                  className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-white font-extrabold text-[13px]"
+                  style={{
+                    background:
+                      idx === 0
+                        ? "linear-gradient(135deg, #C9A961 0%, #A88A45 100%)"
+                        : idx === 1
+                        ? "linear-gradient(135deg, #B8B8B8 0%, #999999 100%)"
+                        : "linear-gradient(135deg, #C08860 0%, #8B5A3C 100%)",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+                  }}
+                >
+                  {idx + 1}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-extrabold text-text-main truncate">
+                    {c.nickname || "익명 캣맘"}
+                  </p>
+                  <p className="text-[11px] text-text-sub mt-0.5">
+                    🐱 {c.cat_count}마리 · 💛 돌봄 {c.care_count}회 · {c.score}점
+                  </p>
+                </div>
+                <ChevronRight size={16} className="text-text-light shrink-0" />
+              </Link>
+            ))}
+          </div>
+          <Link
+            href="/ranking"
+            className="mt-3 flex items-center justify-center gap-1 text-[12px] font-bold py-2.5 rounded-xl active:scale-[0.98] transition-transform"
+            style={{ background: "#FFFFFF", color: "#8B7562", border: "1px solid #E8DED0" }}
+          >
+            <span>전체 랭킹 보기</span>
+            <ArrowRight size={12} />
+          </Link>
+        </section>
+      )}
 
       {/* 감성 인용 — 철학적 질문 */}
       <section className="px-5 mt-8">
