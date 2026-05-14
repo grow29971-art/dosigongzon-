@@ -1351,7 +1351,7 @@ export default function HomeAuthed({
                 </Link>
               ) : (
                 <div
-                  className="px-4 py-3 text-center"
+                  className="px-4 py-4"
                   style={{
                     background: "#FFFFFF",
                     borderRadius: 18,
@@ -1359,9 +1359,80 @@ export default function HomeAuthed({
                     border: "1px solid rgba(0,0,0,0.04)",
                   }}
                 >
-                  <p className="text-[11.5px] text-text-sub">
-                    아직 우리 동네에 등록된 고양이가 없어요 🐾
-                  </p>
+                  <div className="flex items-start gap-3 mb-3">
+                    <div
+                      className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 text-[18px]"
+                      style={{ backgroundColor: "rgba(196,126,90,0.15)" }}
+                    >
+                      🐾
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-extrabold text-text-main mb-0.5">
+                        {primaryRegion.name}의 첫 등록자가 되어주세요
+                      </p>
+                      <p className="text-[11.5px] text-text-sub leading-relaxed">
+                        첫 한 마리를 등록하면 동네 이웃이 함께 돌볼 수 있어요.
+                      </p>
+                    </div>
+                  </div>
+
+                  {popularCats.length > 0 && (
+                    <div
+                      className="pt-3 mb-3"
+                      style={{ borderTop: "1px dashed rgba(0,0,0,0.06)" }}
+                    >
+                      <p className="text-[10.5px] text-text-light font-bold mb-2">
+                        다른 동네 인기 고양이 둘러보기
+                      </p>
+                      <div className="flex gap-1.5">
+                        {popularCats.slice(0, 4).map((c) => {
+                          const safe = sanitizeImageUrl(
+                            c.photo_url,
+                            "https://placehold.co/100x100/EEEAE2/2A2A28?text=%3F",
+                          );
+                          const avatar = thumbnailUrl(safe, 100) ?? safe;
+                          return (
+                            <Link
+                              key={c.id}
+                              href={`/cats/${c.id}`}
+                              className="shrink-0 text-center active:scale-[0.97] transition-transform"
+                              style={{ width: 56 }}
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={avatar}
+                                alt={c.name}
+                                loading="lazy"
+                                decoding="async"
+                                className="w-12 h-12 rounded-full mx-auto object-cover"
+                                style={{
+                                  border: "2px solid #fff",
+                                  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                                }}
+                              />
+                              <p className="text-[10px] font-bold text-text-main mt-1 truncate">
+                                {c.name}
+                              </p>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <Link
+                    href="/map"
+                    className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white active:scale-[0.98] transition-transform"
+                    style={{
+                      background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+                      boxShadow: "0 4px 12px rgba(196,126,90,0.3)",
+                    }}
+                  >
+                    <span className="text-[12.5px] font-extrabold tracking-tight">
+                      지도에서 첫 등록 시작
+                    </span>
+                    <ChevronRight size={14} />
+                  </Link>
                 </div>
               )}
 
