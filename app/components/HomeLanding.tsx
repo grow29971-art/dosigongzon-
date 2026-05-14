@@ -192,16 +192,20 @@ export default async function HomeLanding({
           </Link>
           <Link
             href="/signup"
-            className="flex-1 flex items-center justify-center py-4 rounded-2xl active:scale-[0.98] transition-transform"
+            className="flex-1 flex flex-col items-center justify-center py-3 rounded-2xl active:scale-[0.98] transition-transform"
             style={{
-              background: "transparent",
+              background: "rgba(196,126,90,0.09)",
               color: "#C47E5A",
-              border: "1.5px solid rgba(196,126,90,0.35)",
-              fontSize: 13,
-              fontWeight: 700,
+              border: "1.5px solid rgba(196,126,90,0.45)",
             }}
           >
-            돌봄 시작하기
+            <span className="inline-flex items-center gap-1">
+              <Sparkles size={13} />
+              <span className="text-[13.5px] font-extrabold tracking-tight">돌봄 시작하기</span>
+            </span>
+            <span className="text-[10px] font-bold mt-0.5" style={{ color: "rgba(196,126,90,0.7)" }}>
+              10초 가입 · 무료
+            </span>
           </Link>
         </div>
 
