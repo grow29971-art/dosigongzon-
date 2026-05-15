@@ -96,7 +96,29 @@ export default function MapChatGuideModal() {
           </div>
         </div>
 
-        {/* 동네 채팅 카드 — 가입자 늘면 재활성화 예정이라 일시 숨김 */}
+        {/* 동네 채팅 카드 — 일시 숨김 (가입자 늘면 아래 false→true로 복원) */}
+        {false && (
+          <div
+            className="rounded-2xl p-3.5 mb-4 flex items-start gap-3"
+            style={{
+              background: "linear-gradient(135deg, rgba(196,126,90,0.08) 0%, rgba(196,126,90,0.04) 100%)",
+              border: "1px solid rgba(196,126,90,0.18)",
+            }}
+          >
+            <div
+              className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
+              style={{ background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)" }}
+            >
+              <MessageCircle size={18} color="#FFFFFF" strokeWidth={2.4} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[13.5px] font-extrabold text-text-main">💬 동네 채팅</p>
+              <p className="text-[11.5px] text-text-sub mt-1 leading-relaxed">
+                <span className="font-bold" style={{ color: "#A8684A" }}>현재 보고 있는 구</span> 단위 채팅방. 같은 동네 캣맘·캣대디끼리 실시간 정보 교환. 지도 위치를 옮기면 그 동네 채팅방으로 자동 연결.
+              </p>
+            </div>
+          </div>
+        )}
 
         <p className="text-[10.5px] text-text-light mb-3 px-1">
           💡 매일 새벽 4시 자동 정리되어 새로 시작해요
