@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import MetaPixel from "@/app/components/MetaPixel";
 
 type Consent = "accepted" | "rejected" | "pending";
 
@@ -57,11 +58,12 @@ export default function ConsentManager() {
 
   return (
     <>
-      {/* 동의한 경우만 분석 로드 — Vercel Analytics·SpeedInsights는 쿠키·식별자 사용 */}
+      {/* 동의한 경우만 분석·광고 픽셀 로드 — Vercel Analytics·SpeedInsights·Meta Pixel은 쿠키·식별자 사용 */}
       {consent === "accepted" && (
         <>
           <Analytics />
           <SpeedInsights />
+          <MetaPixel />
         </>
       )}
 
@@ -94,7 +96,7 @@ export default function ConsentManager() {
                 className="text-[12px] leading-relaxed"
                 style={{ color: "rgba(60,46,35,0.7)" }}
               >
-                도시공존은 서비스 개선을 위해 익명 방문 통계(Vercel Analytics·SpeedInsights)를 수집해요.
+                도시공존은 서비스 개선을 위해 익명 방문 통계(Vercel Analytics·SpeedInsights)와 광고 효과 측정(Meta 픽셀)을 수집해요.
                 동의하지 않아도 모든 기능은 그대로 이용 가능합니다.{" "}
                 <Link
                   href="/privacy"

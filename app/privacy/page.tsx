@@ -78,6 +78,7 @@ export default function PrivacyPage() {
           <ul className="list-disc pl-4 space-y-1">
             <li><b>Supabase(Supabase Inc, 미국)</b> — 데이터베이스·인증·파일 저장소. 전송 항목: 수집하는 모든 서비스 데이터</li>
             <li><b>Vercel(Vercel Inc, 미국)</b> — 웹 서비스 호스팅·Analytics. 전송 항목: 접속 로그, 기기·브라우저 정보</li>
+            <li><b>Meta Platforms, Inc.(미국)</b> — 광고 효과 측정용 Meta 픽셀. 쿠키 동의 시에만 로드되며, 거부하면 절대 호출되지 않습니다. 전송 항목: 페이지 방문, 가입 의향(Lead), 가입 완료(CompleteRegistration) 이벤트. 사용자 식별 정보(이름·이메일·생년월일 등)는 전송하지 않습니다.</li>
           </ul>
 
           <p className="text-[12px] font-bold text-text-sub mt-3 mb-1">나. 이메일 발송</p>

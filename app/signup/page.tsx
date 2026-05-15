@@ -17,6 +17,7 @@ import {
   type InAppBrowser,
 } from "@/lib/in-app-browser";
 import TurnstileWidget from "@/app/components/TurnstileWidget";
+import { trackPixelEvent } from "@/lib/meta-pixel";
 
 export default function SignupPage() {
   return (
@@ -112,6 +113,11 @@ function SignupContent() {
     if (provider === "kakao") {
       oauthOptions.scopes = "account_email profile_nickname profile_image";
     }
+
+    // Meta Pixel: 가입 의향 측정 — OAuth로 redirect되기 직전 발사.
+    // CompleteRegistration은 가입 성공 후 welcome 페이지에서 발사.
+    trackPixelEvent("Lead", { content_name: `signup_${provider}` });
+
     const { error: oauthError } = await createClient().auth.signInWithOAuth({
       provider,
       options: oauthOptions,
