@@ -2122,7 +2122,7 @@ export default function MapPage() {
               style={{ background: "rgba(196,126,90,0.06)", borderBottom: "1px solid rgba(0,0,0,0.04)" }}
             >
               <span>🕓</span>
-              <span>채팅은 <b className="text-text-main">매일 새벽 4시</b>에 모두 정리돼요.</span>
+              <span>채팅은 <b className="text-text-main">매일 새벽 4시</b>에 모두 정리됩니다 서버비 감당이안돼서요 ㅠㅠ</span>
             </div>
 
             {/* 메시지 목록 */}
