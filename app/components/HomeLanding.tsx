@@ -232,57 +232,7 @@ export default async function HomeLanding({
         </Link>
       </section>
 
-      {/* 이렇게 시작해보세요 — 3단계 액션 가이드 */}
-      <section className="px-5 mt-6">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C47E5A" }} />
-          <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
-            이렇게 시작해보세요
-          </h2>
-          <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#C47E5A", opacity: 0.6 }}>
-            3 STEPS
-          </span>
-        </div>
-        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
-          처음이라도 괜찮아요. 1분이면 첫 한 줄을 남길 수 있어요.
-        </p>
-        <div className="space-y-2">
-          <StartStep
-            n={1}
-            href="/signup"
-            color="#C47E5A"
-            title="1초 가입 — 카카오·구글로"
-            desc="이메일 따로 안 적어도 돼요. 닉네임만 정하면 끝."
-          />
-          <StartStep
-            n={2}
-            href="/map"
-            color="#4A7BA8"
-            title="우리 동네 지도에서 아이들 찾기"
-            desc="구·동을 누르면 그 동네 길고양이만 모아 보여줘요."
-          />
-          <StartStep
-            n={3}
-            href="/map"
-            color="#E86B8C"
-            title="오른쪽 + 버튼으로 첫 한 줄 남기기"
-            desc="사진·이름·건강 상태 한 번에. 위치는 자동으로 흐리게 처리돼요."
-          />
-        </div>
-        <Link
-          href="/guide"
-          className="mt-3 flex items-center justify-center gap-1 text-[12px] font-bold py-2.5 rounded-xl active:scale-[0.98] transition-transform"
-          style={{ background: "#FFFFFF", color: "#8B7562", border: "1px solid #E8DED0" }}
-        >
-          <span>10가지 기능 한 화면에서 보기</span>
-          <ArrowRight size={12} />
-        </Link>
-      </section>
-
-      {/* 1000명 이벤트 배너 — 가입 전환 강력 트리거 */}
-      {eventSlot}
-
-      {/* 왜 길고양이를 돌봐야 하나 — 비캣맘 도시민에게 어필 (동네 환경 가치) */}
+      {/* 왜 길고양이를 돌봐야 하나 — 히어로 직후 최상단. 비캣맘 도시민 어필 핵심 카드. */}
       <section className="px-5 mt-6">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#6B8E6F" }} />
@@ -360,6 +310,56 @@ export default async function HomeLanding({
           </p>
         </div>
       </section>
+
+      {/* 이렇게 시작해보세요 — 3단계 액션 가이드 */}
+      <section className="px-5 mt-6">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C47E5A" }} />
+          <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+            이렇게 시작해보세요
+          </h2>
+          <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#C47E5A", opacity: 0.6 }}>
+            3 STEPS
+          </span>
+        </div>
+        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+          처음이라도 괜찮아요. 1분이면 첫 한 줄을 남길 수 있어요.
+        </p>
+        <div className="space-y-2">
+          <StartStep
+            n={1}
+            href="/signup"
+            color="#C47E5A"
+            title="1초 가입 — 카카오·구글로"
+            desc="이메일 따로 안 적어도 돼요. 닉네임만 정하면 끝."
+          />
+          <StartStep
+            n={2}
+            href="/map"
+            color="#4A7BA8"
+            title="우리 동네 지도에서 아이들 찾기"
+            desc="구·동을 누르면 그 동네 길고양이만 모아 보여줘요."
+          />
+          <StartStep
+            n={3}
+            href="/map"
+            color="#E86B8C"
+            title="오른쪽 + 버튼으로 첫 한 줄 남기기"
+            desc="사진·이름·건강 상태 한 번에. 위치는 자동으로 흐리게 처리돼요."
+          />
+        </div>
+        <Link
+          href="/guide"
+          className="mt-3 flex items-center justify-center gap-1 text-[12px] font-bold py-2.5 rounded-xl active:scale-[0.98] transition-transform"
+          style={{ background: "#FFFFFF", color: "#8B7562", border: "1px solid #E8DED0" }}
+        >
+          <span>10가지 기능 한 화면에서 보기</span>
+          <ArrowRight size={12} />
+        </Link>
+      </section>
+
+      {/* 1000명 이벤트 배너 — 가입 전환 강력 트리거 */}
+      {eventSlot}
 
       {/* 이번 주 활동 캣맘 TOP 3 — 살아있는 커뮤니티 사회적 증명 */}
       {topCaretakers.length > 0 && (
