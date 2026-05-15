@@ -1,5 +1,6 @@
-// 동네 채팅 주간 정리 — 매주 월요일 04:00 KST (일요일 19:00 UTC).
-// area_chats 테이블 전체 비움. 사용자 요청: 일주일마다 채팅 전부 새로고침.
+// 동네 채팅 매일 정리 — 매일 04:00 KST (19:00 UTC).
+// area_chats 테이블 전체 비움. 사용자 요청: 하루마다 채팅 전부 새로고침.
+// 채팅 UI에서도 "매일 새벽 4시 정리" 안내 노출.
 
 import { createClient } from "@supabase/supabase-js";
 import { reportError } from "@/lib/error-report";

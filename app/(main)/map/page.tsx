@@ -2145,6 +2145,15 @@ export default function MapPage() {
               </button>
             </div>
 
+            {/* 일일 정리 안내 — 사용자가 메시지 사라지는 이유 알 수 있게 */}
+            <div
+              className="px-5 py-2 text-[10.5px] text-text-sub flex items-center gap-1.5 shrink-0"
+              style={{ background: "rgba(196,126,90,0.06)", borderBottom: "1px solid rgba(0,0,0,0.04)" }}
+            >
+              <span>🕓</span>
+              <span>채팅은 <b className="text-text-main">매일 새벽 4시</b>에 모두 정리돼요.</span>
+            </div>
+
             {/* 메시지 목록 */}
             <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
               {chatMessages.length === 0 && (
