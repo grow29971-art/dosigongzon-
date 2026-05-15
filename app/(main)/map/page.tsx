@@ -1977,7 +1977,7 @@ export default function MapPage() {
         </div>
       )}
 
-      {/* 채팅 FAB — 전체 채팅(위) + 동네 채팅(아래) + 안내 */}
+      {/* 채팅 FAB — 전체 채팅만 활성. 동네 채팅은 가입자 늘면 재활성화 예정. */}
       {!selectedCat && !selectedHospital && !chatOpen && !selectedDong && (
         <div className="absolute bottom-6 left-4 z-30 flex flex-col items-start gap-1.5">
           {/* 전체 채팅 — 모든 지역이 함께 쓰는 방 */}
@@ -2010,44 +2010,15 @@ export default function MapPage() {
             </div>
           </button>
 
-          {/* 동네 채팅 — 현재 보고 있는 구 한정 */}
-          {currentGu && (
-            <button
-              type="button"
-              onClick={() => {
-                if (!isLoggedIn) {
-                  if (confirm("로그인하면 동네 채팅을 사용할 수 있어요. 로그인할까요?")) window.location.href = "/login";
-                  return;
-                }
-                setChatArea(currentGu);
-                setChatOpen(true);
-              }}
-              className="flex items-center gap-2.5 pl-3 pr-4 py-2.5 active:scale-[0.95] transition-transform"
-              style={{
-                background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
-                borderRadius: 22,
-                boxShadow: "0 6px 20px rgba(196,126,90,0.45), 0 0 0 2px rgba(255,255,255,0.8)",
-              }}
-            >
-              <div
-                className="w-8 h-8 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: "rgba(255,255,255,0.25)" }}
-              >
-                <MessageCircle size={16} color="#fff" strokeWidth={2.5} />
-              </div>
-              <div>
-                <p className="text-[12px] font-extrabold text-white leading-tight">{currentGu}</p>
-                <p className="text-[9px] font-semibold" style={{ color: "rgba(255,255,255,0.7)" }}>동네 채팅</p>
-              </div>
-            </button>
-          )}
+          {/* 동네 채팅 잠시 숨김 — 가입자가 적어 동네별로 분산되면 빈 채팅방이라 비활성. */}
+          {/* 출시 후 동네별 가입자 늘면 다시 활성화 (block 통째로 복원). */}
 
           {currentGu && (
             <div
               className="px-3 py-2 rounded-2xl max-w-[160px]"
               style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "0 2px 10px rgba(0,0,0,0.08)" }}
             >
-              <p className="text-[9.5px] font-semibold text-text-main leading-snug">전국 또는 동네 채팅에 참여해보세요 💬</p>
+              <p className="text-[9.5px] font-semibold text-text-main leading-snug">전체 채팅에서 동네 이웃을 만나보세요 💬</p>
             </div>
           )}
         </div>
