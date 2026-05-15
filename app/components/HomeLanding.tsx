@@ -282,6 +282,85 @@ export default async function HomeLanding({
       {/* 1000명 이벤트 배너 — 가입 전환 강력 트리거 */}
       {eventSlot}
 
+      {/* 왜 길고양이를 돌봐야 하나 — 비캣맘 도시민에게 어필 (동네 환경 가치) */}
+      <section className="px-5 mt-6">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#6B8E6F" }} />
+          <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+            왜 함께 돌봐야 할까요?
+          </h2>
+          <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#6B8E6F", opacity: 0.6 }}>
+            FOR THE CITY
+          </span>
+        </div>
+        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+          관리되는 길고양이는 동네 환경도 함께 지켜요.
+        </p>
+        <div
+          className="rounded-2xl p-4"
+          style={{
+            background: "linear-gradient(135deg, rgba(107,142,111,0.07) 0%, rgba(107,142,111,0.03) 100%)",
+            border: "1px solid rgba(107,142,111,0.18)",
+          }}
+        >
+          <ul className="space-y-2.5">
+            <li className="flex items-start gap-2.5">
+              <span
+                className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white mt-0.5"
+                style={{ background: "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)" }}
+              >
+                ✓
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-[13px] font-extrabold text-text-main leading-snug">
+                  쓰레기봉투를 안 찢어요
+                </p>
+                <p className="text-[11.5px] text-text-sub leading-relaxed mt-0.5">
+                  꾸준한 급식으로 음식물 쓰레기를 뒤지지 않아요.
+                </p>
+              </div>
+            </li>
+            <li className="flex items-start gap-2.5">
+              <span
+                className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white mt-0.5"
+                style={{ background: "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)" }}
+              >
+                ✓
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-[13px] font-extrabold text-text-main leading-snug">
+                  자동차 안에 들어가지 않아요
+                </p>
+                <p className="text-[11.5px] text-text-sub leading-relaxed mt-0.5">
+                  안전한 쉼터가 있으면 차 엔진룸에 숨지 않아요.
+                </p>
+              </div>
+            </li>
+            <li className="flex items-start gap-2.5">
+              <span
+                className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white mt-0.5"
+                style={{ background: "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)" }}
+              >
+                ✓
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-[13px] font-extrabold text-text-main leading-snug">
+                  울음소리가 줄어들어요
+                </p>
+                <p className="text-[11.5px] text-text-sub leading-relaxed mt-0.5">
+                  TNR(중성화)로 발정기 울음과 영역 다툼이 사라져요.
+                </p>
+              </div>
+            </li>
+          </ul>
+          <p className="text-[11px] text-text-sub mt-3 pt-3 leading-relaxed text-center" style={{ borderTop: "1px dashed rgba(107,142,111,0.2)" }}>
+            <b className="text-text-main">관리</b>가 곧 <b style={{ color: "#6B8E6F" }}>도시의 평화</b>.
+            <br />
+            도시공존은 그 관리를 시민이 함께 합니다.
+          </p>
+        </div>
+      </section>
+
       {/* 이번 주 활동 캣맘 TOP 3 — 살아있는 커뮤니티 사회적 증명 */}
       {topCaretakers.length > 0 && (
         <section className="px-5 mt-6">
