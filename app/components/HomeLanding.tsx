@@ -233,81 +233,128 @@ export default async function HomeLanding({
       </section>
 
       {/* 왜 길고양이를 돌봐야 하나 — 히어로 직후 최상단. 비캣맘 도시민 어필 핵심 카드. */}
-      <section className="px-5 mt-6">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#6B8E6F" }} />
-          <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
-            왜 함께 돌봐야 할까요?
-          </h2>
-          <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#6B8E6F", opacity: 0.6 }}>
+      <section className="px-5 mt-8">
+        {/* 상단 라벨 */}
+        <div className="flex justify-center mb-3">
+          <span
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold tracking-[0.18em]"
+            style={{
+              background: "linear-gradient(135deg, rgba(107,142,111,0.14) 0%, rgba(79,107,83,0.10) 100%)",
+              color: "#4F6B53",
+              border: "1px solid rgba(107,142,111,0.25)",
+            }}
+          >
             FOR THE CITY
           </span>
         </div>
-        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
-          관리되는 길고양이는 동네 환경도 함께 지켜요.
+
+        {/* 임팩트 헤드라인 */}
+        <h2
+          className="text-center text-[24px] font-extrabold leading-[1.3] tracking-tight mb-2"
+          style={{ color: "#3D2F25" }}
+        >
+          왜 <span style={{ color: "#4F6B53" }}>함께 돌봐야</span> 할까요?
+        </h2>
+        <p className="text-center text-[12.5px] text-text-sub mb-5 leading-relaxed">
+          관리되는 길고양이 한 마리가
+          <br />
+          <b style={{ color: "#4F6B53" }}>동네 전체의 평화</b>를 바꿔요.
         </p>
+
+        {/* 메인 카드 — 솔리드 그린 배경으로 임팩트 강화 */}
         <div
-          className="rounded-2xl p-4"
+          className="rounded-[24px] overflow-hidden"
           style={{
-            background: "linear-gradient(135deg, rgba(107,142,111,0.07) 0%, rgba(107,142,111,0.03) 100%)",
-            border: "1px solid rgba(107,142,111,0.18)",
+            background: "linear-gradient(160deg, #4F6B53 0%, #6B8E6F 65%, #8FAE92 100%)",
+            boxShadow: "0 14px 40px rgba(79,107,83,0.28), 0 4px 12px rgba(79,107,83,0.18)",
           }}
         >
-          <ul className="space-y-2.5">
-            <li className="flex items-start gap-2.5">
+          <ul className="p-5 space-y-4">
+            <li className="flex items-start gap-3">
               <span
-                className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white mt-0.5"
-                style={{ background: "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)" }}
+                className="shrink-0 w-9 h-9 rounded-2xl flex items-center justify-center text-[12px] font-extrabold mt-0.5"
+                style={{
+                  background: "rgba(255,255,255,0.95)",
+                  color: "#4F6B53",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+                }}
               >
-                ✓
+                01
               </span>
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-extrabold text-text-main leading-snug">
+              <div className="flex-1 min-w-0 pt-1">
+                <p className="text-[15px] font-extrabold text-white leading-snug tracking-tight">
                   쓰레기봉투를 안 찢어요
                 </p>
-                <p className="text-[11.5px] text-text-sub leading-relaxed mt-0.5">
+                <p className="text-[12px] leading-relaxed mt-1" style={{ color: "rgba(255,255,255,0.82)" }}>
                   꾸준한 급식으로 음식물 쓰레기를 뒤지지 않아요.
                 </p>
               </div>
             </li>
-            <li className="flex items-start gap-2.5">
+            <li
+              className="h-px"
+              style={{ background: "rgba(255,255,255,0.18)" }}
+              aria-hidden="true"
+            />
+            <li className="flex items-start gap-3">
               <span
-                className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white mt-0.5"
-                style={{ background: "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)" }}
+                className="shrink-0 w-9 h-9 rounded-2xl flex items-center justify-center text-[12px] font-extrabold mt-0.5"
+                style={{
+                  background: "rgba(255,255,255,0.95)",
+                  color: "#4F6B53",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+                }}
               >
-                ✓
+                02
               </span>
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-extrabold text-text-main leading-snug">
+              <div className="flex-1 min-w-0 pt-1">
+                <p className="text-[15px] font-extrabold text-white leading-snug tracking-tight">
                   자동차 안에 들어가지 않아요
                 </p>
-                <p className="text-[11.5px] text-text-sub leading-relaxed mt-0.5">
+                <p className="text-[12px] leading-relaxed mt-1" style={{ color: "rgba(255,255,255,0.82)" }}>
                   안전한 쉼터가 있으면 차 엔진룸에 숨지 않아요.
                 </p>
               </div>
             </li>
-            <li className="flex items-start gap-2.5">
+            <li
+              className="h-px"
+              style={{ background: "rgba(255,255,255,0.18)" }}
+              aria-hidden="true"
+            />
+            <li className="flex items-start gap-3">
               <span
-                className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white mt-0.5"
-                style={{ background: "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)" }}
+                className="shrink-0 w-9 h-9 rounded-2xl flex items-center justify-center text-[12px] font-extrabold mt-0.5"
+                style={{
+                  background: "rgba(255,255,255,0.95)",
+                  color: "#4F6B53",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+                }}
               >
-                ✓
+                03
               </span>
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-extrabold text-text-main leading-snug">
+              <div className="flex-1 min-w-0 pt-1">
+                <p className="text-[15px] font-extrabold text-white leading-snug tracking-tight">
                   울음소리가 줄어들어요
                 </p>
-                <p className="text-[11.5px] text-text-sub leading-relaxed mt-0.5">
+                <p className="text-[12px] leading-relaxed mt-1" style={{ color: "rgba(255,255,255,0.82)" }}>
                   TNR(중성화)로 발정기 울음과 영역 다툼이 사라져요.
                 </p>
               </div>
             </li>
           </ul>
-          <p className="text-[11px] text-text-sub mt-3 pt-3 leading-relaxed text-center" style={{ borderTop: "1px dashed rgba(107,142,111,0.2)" }}>
-            <b className="text-text-main">관리</b>가 곧 <b style={{ color: "#6B8E6F" }}>도시의 평화</b>.
-            <br />
-            도시공존은 그 관리를 시민이 함께 합니다.
-          </p>
+
+          {/* 풋터 강조 메시지 */}
+          <div
+            className="px-5 py-4 text-center"
+            style={{ background: "rgba(0,0,0,0.16)", backdropFilter: "blur(4px)" }}
+          >
+            <p className="text-[13.5px] font-extrabold text-white leading-[1.55] tracking-tight">
+              <span style={{ color: "#FFF7C4" }}>관리</span>는 곧{" "}
+              <span style={{ color: "#FFF7C4" }}>도시의 평화</span>입니다.
+            </p>
+            <p className="text-[11.5px] mt-1.5 leading-relaxed" style={{ color: "rgba(255,255,255,0.78)" }}>
+              도시공존은 그 관리를 <b className="text-white">시민이 함께</b> 합니다.
+            </p>
+          </div>
         </div>
       </section>
 
