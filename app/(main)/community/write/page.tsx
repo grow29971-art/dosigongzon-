@@ -137,7 +137,7 @@ export default function WritePage() {
                   첫 동네 고양이부터 등록해보세요
                 </p>
                 <p className="text-[11px] text-text-sub leading-relaxed">
-                  지도에 한 마리 등록한 후 글을 쓰면 동네 캣맘들이 더 잘 알아봐요.
+                  지도에 한 마리 등록한 후 글을 쓰면 동네 케어테이커들이 더 잘 알아봐요.
                   글은 지금도 쓸 수 있지만, 등록 먼저면 답글·반응이 훨씬 빨라요.
                 </p>
                 <Link

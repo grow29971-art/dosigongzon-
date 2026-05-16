@@ -108,7 +108,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { catCount } = await getSidoData(region.primaryKeywords, region.districtKeywords, region.shortName);
   const title = `${region.shortName} 길고양이 돌봄 지도`;
   const description = catCount > 0
-    ? `${region.name}에 등록된 길고양이 ${catCount}마리의 돌봄 기록. 동네 캣맘·캣대디와 함께 TNR·구조·급식을 실시간 공유하는 도시공존.`
+    ? `${region.name}에 등록된 길고양이 ${catCount}마리의 돌봄 기록. 동네 케어테이커와 함께 TNR·구조·급식을 실시간 공유하는 도시공존.`
     : `${region.name} 길고양이 돌봄 지도. 첫 돌봄 기록을 남겨보세요.`;
 
   return {
@@ -117,7 +117,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     alternates: { canonical: `/regions/${sido}` },
     keywords: [
       `${region.shortName} 길고양이`,
-      `${region.shortName} 캣맘`,
+      `${region.shortName} 케어테이커`,
       `${region.shortName} TNR`,
       `${region.shortName} 길고양이 구조`,
       `${region.name} 길고양이`,

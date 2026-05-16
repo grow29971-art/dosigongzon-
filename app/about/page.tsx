@@ -31,13 +31,13 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "도시공존 소개 — 길고양이와 함께 걷는 시민 참여 플랫폼",
   description:
-    "도시공존은 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다. 전국 캣맘·캣대디가 실시간으로 돌봄 기록을 공유하고 긴급 구조를 돕습니다. 제휴·언론·블로그 문의 환영.",
+    "도시공존은 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다. 전국 케어테이커가 실시간으로 돌봄 기록을 공유하고 긴급 구조를 돕습니다. 제휴·언론·블로그 문의 환영.",
   alternates: { canonical: "/about" },
   keywords: [
     "도시공존",
     "길고양이 플랫폼",
     "TNR 지도",
-    "캣맘 커뮤니티",
+    "케어테이커 커뮤니티",
     "길고양이 돌봄",
     "시민 참여 플랫폼",
     "동물보호 플랫폼",
@@ -128,7 +128,7 @@ export default async function AboutPage() {
           돌봄 기록을 한 화면에.
         </h1>
         <p className="text-[13.5px] text-text-sub mt-3 leading-relaxed">
-          <b className="text-text-main">도시공존</b>은 캣맘·캣대디가
+          <b className="text-text-main">도시공존</b>은 케어테이커가
           <b className="text-text-main"> TNR·건강·급식</b> 기록을 실시간으로 남기고,
           긴급 구조가 필요한 아이에게 동네 이웃이 빠르게 닿을 수 있도록 잇는
           전국 길고양이 돌봄 지도입니다.
@@ -163,12 +163,12 @@ export default async function AboutPage() {
           <FeatureRow
             icon={<Users size={18} style={{ color: "#4A7BA8" }} />}
             title="동네 커뮤니티"
-            desc="캣맘·캣대디끼리 실시간 채팅, 커뮤니티 게시판, 1:1 쪽지로 정보와 안부를 나눠요."
+            desc="케어테이커끼리 실시간 채팅, 커뮤니티 게시판, 1:1 쪽지로 정보와 안부를 나눠요."
           />
           <FeatureRow
             icon={<Shield size={18} style={{ color: "#6B8E6F" }} />}
             title="보호 지침 · 약품 가이드"
-            desc="초보 캣맘을 위한 응급처치, TNR, 새끼 구조, 법률 가이드를 한 곳에."
+            desc="초보 케어테이커를 위한 응급처치, TNR, 새끼 구조, 법률 가이드를 한 곳에."
           />
         </div>
       </section>
@@ -321,7 +321,7 @@ export default async function AboutPage() {
             </div>
           </div>
           <p className="text-[12.5px] leading-[1.9] text-text-sub">
-            도시공존은 <b className="text-text-main">캣맘·캣대디 한 분의 손이 헛되지 않게</b>,
+            도시공존은 <b className="text-text-main">케어테이커 한 분의 손이 헛되지 않게</b>,
             그리고 길 위의 아이들이 매일 다시 보일 수 있게 하고 싶어
             한 명의 개발자가 직접 설계·개발·운영하는 비영리 플랫폼이에요.
           </p>
@@ -362,12 +362,12 @@ export default async function AboutPage() {
           <TechRow
             icon={<Bot size={18} style={{ color: "#8B65B8" }} />}
             title="AI 집사 챗봇 (Google Gemini)"
-            desc="응급·구조·식이 질문에 즉시 답하는 캣맘 보조 AI. 호칭과 상황을 사용자에 맞춰 실시간 생성합니다."
+            desc="응급·구조·식이 질문에 즉시 답하는 케어테이커 보조 AI. 호칭과 상황을 사용자에 맞춰 실시간 생성합니다."
           />
           <TechRow
             icon={<Radio size={18} style={{ color: "#22B573" }} />}
             title="실시간 동기화 (Supabase Realtime)"
-            desc="누군가 새 기록을 남기면 같은 동네 캣맘 화면에 즉시 반영. 1:1 쪽지·구조 신호도 같은 채널로 흐릅니다."
+            desc="누군가 새 기록을 남기면 같은 동네 케어테이커 화면에 즉시 반영. 1:1 쪽지·구조 신호도 같은 채널로 흐릅니다."
           />
           <TechRow
             icon={<Lock size={18} style={{ color: "#6B8E6F" }} />}

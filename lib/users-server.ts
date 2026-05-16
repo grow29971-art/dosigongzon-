@@ -258,7 +258,7 @@ export async function getUserRecentActivityServer(
     .slice(0, limit);
 }
 
-// ── 동네 캣맘 매칭 ──
+// ── 동네 케어테이커 매칭 ──
 
 export interface NearbyCaretaker {
   id: string;

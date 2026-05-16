@@ -70,7 +70,7 @@ export default function MapChatGuideModal() {
             지도에서 다른 사람들과 대화해보세요
           </h2>
           <p className="text-[12px] text-text-sub mt-1.5 leading-relaxed">
-            지도 좌하단의 두 가지 채팅 버튼으로 다른 캣맘·캣대디들과 실시간 소통할 수 있어요.
+            지도 좌하단의 두 가지 채팅 버튼으로 다른 케어테이커들과 실시간 소통할 수 있어요.
           </p>
         </div>
 
@@ -114,7 +114,7 @@ export default function MapChatGuideModal() {
             <div className="min-w-0 flex-1">
               <p className="text-[13.5px] font-extrabold text-text-main">💬 동네 채팅</p>
               <p className="text-[11.5px] text-text-sub mt-1 leading-relaxed">
-                <span className="font-bold" style={{ color: "#A8684A" }}>현재 보고 있는 구</span> 단위 채팅방. 같은 동네 캣맘·캣대디끼리 실시간 정보 교환. 지도 위치를 옮기면 그 동네 채팅방으로 자동 연결.
+                <span className="font-bold" style={{ color: "#A8684A" }}>현재 보고 있는 구</span> 단위 채팅방. 같은 동네 케어테이커끼리 실시간 정보 교환. 지도 위치를 옮기면 그 동네 채팅방으로 자동 연결.
               </p>
             </div>
           </div>

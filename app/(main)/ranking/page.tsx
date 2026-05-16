@@ -1,4 +1,4 @@
-// 캣맘 활동 랭킹 페이지
+// 케어테이커 활동 랭킹 페이지
 // 활동 점수: cat * 10 + comment + alert * 2 + likes_received * 2 + care_log * 2
 // Top 50 + 본인 순위 (50위 밖이면 별도 표시)
 
@@ -12,8 +12,8 @@ import { computeLevel, getLevelColor, thumbnailUrl } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 
 export const metadata: Metadata = {
-  title: "캣맘 활동 랭킹",
-  description: "도시공존 전체 캣맘·캣대디 활동 점수 순위. 등록·기록·돌봄 점수 합산.",
+  title: "케어테이커 활동 랭킹",
+  description: "도시공존 전체 케어테이커 활동 점수 순위. 등록·기록·돌봄 점수 합산.",
   robots: { index: false, follow: false },
 };
 
@@ -41,11 +41,11 @@ export default async function RankingPage() {
         <div className="flex items-baseline gap-2 mb-1">
           <Trophy size={20} style={{ color: "#C9A961" }} />
           <h1 className="text-[22px] font-extrabold tracking-tight text-text-main">
-            캣맘 활동 랭킹
+            케어테이커 활동 랭킹
           </h1>
         </div>
         <p className="text-[12.5px] text-text-sub leading-relaxed">
-          등록·돌봄 기록·좋아요로 점수가 쌓여요. 매일 새로운 동네 캣맘을 만나보세요.
+          등록·돌봄 기록·좋아요로 점수가 쌓여요. 매일 새로운 동네 케어테이커를 만나보세요.
         </p>
       </div>
 
@@ -193,7 +193,7 @@ function PodiumCard({ row, place, height }: { row: RankingRow; place: 1 | 2 | 3;
         {photo ? (
           <Image
             src={photo}
-            alt={row.nickname ?? "캣맘"}
+            alt={row.nickname ?? "케어테이커"}
             width={48}
             height={48}
             className="rounded-full object-cover"
@@ -250,7 +250,7 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
       {photo ? (
         <Image
           src={photo}
-          alt={row.nickname ?? "캣맘"}
+          alt={row.nickname ?? "케어테이커"}
           width={36}
           height={36}
           className="rounded-full object-cover shrink-0"

@@ -61,7 +61,7 @@ export function AdoptionInquireButton({
     const preset = buildPresetMessage(status, catName);
     const params = new URLSearchParams({
       to: caretakerId,
-      name: caretakerName ?? "캣맘·캣대디",
+      name: caretakerName ?? "케어테이커",
       preset,
     });
     router.push(`/messages?${params.toString()}`);

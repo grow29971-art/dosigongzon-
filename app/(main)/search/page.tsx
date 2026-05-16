@@ -163,7 +163,7 @@ function SearchPageInner() {
               { key: "cats", label: "고양이", count: data.counts.cats },
               { key: "posts", label: "게시글", count: data.counts.posts },
               { key: "hospitals", label: "병원", count: data.counts.hospitals },
-              { key: "users", label: "캣맘", count: data.counts.users },
+              { key: "users", label: "케어테이커", count: data.counts.users },
               { key: "guides", label: "가이드", count: data.counts.guides },
             ] as { key: SearchTab; label: string; count: number }[]).map((t) => (
               <button
@@ -395,11 +395,11 @@ function SectionHospitals({ items }: { items: HospitalHit[] }) {
   );
 }
 
-/* ═══ 섹션: 캣맘(유저) ═══ */
+/* ═══ 섹션: 케어테이커(유저) ═══ */
 function SectionUsers({ items }: { items: UserHit[] }) {
   return (
     <section>
-      <SectionHeader icon={<User size={14} />} label="캣맘 / 유저" count={items.length} />
+      <SectionHeader icon={<User size={14} />} label="케어테이커 / 유저" count={items.length} />
       <div className="space-y-2">
         {items.map((u) => {
           const avatar = sanitizeImageUrl(u.avatar_url, "");

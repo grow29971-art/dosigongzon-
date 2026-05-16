@@ -1,5 +1,5 @@
 // "지금 활발한 동네 TOP" 산출.
-// 메트릭 3종 (이번 주 신규 등록 / 활동 캣맘 / 치료 병원) 결합 점수로 랭킹.
+// 메트릭 3종 (이번 주 신규 등록 / 활동 케어테이커 / 치료 병원) 결합 점수로 랭킹.
 // HomeLanding(비로그인 랜딩)에서 사용. 10분 캐시로 anon 방문자 전체 공유.
 
 import { unstable_cache } from "next/cache";
@@ -12,7 +12,7 @@ export interface RegionActivity {
   name: string;
   totalCats: number;
   recentCats: number;       // 최근 7일 신규 등록
-  activeCaretakers: number; // 최근 7일 활동 캣맘 (distinct)
+  activeCaretakers: number; // 최근 7일 활동 케어테이커 (distinct)
   hospitals: number;        // 등록 치료 병원
   score: number;
 }
@@ -73,7 +73,7 @@ async function fetchActiveRegions(): Promise<RegionActivity[]> {
       const recentCats = r?.count ?? 0;
       const activeCaretakers = r?.caretakers.size ?? 0;
       const hospitals = hospitalsByGu[g.slug] ?? 0;
-      // 최근 활동 가중치 가장 높게, 캣맘 다음, 병원·누적은 보조 시그널.
+      // 최근 활동 가중치 가장 높게, 케어테이커 다음, 병원·누적은 보조 시그널.
       const score = recentCats * 5 + activeCaretakers * 3 + hospitals * 1 + total * 0.1;
       return { slug: g.slug, name: g.name, totalCats: total, recentCats, activeCaretakers, hospitals, score };
     });

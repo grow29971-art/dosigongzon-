@@ -127,7 +127,7 @@ const TIPS: Tip[] = [
     iconColor: "#8B65B8",
     iconBg: "rgba(139,101,184,0.12)",
     title: "커뮤니티에서 이웃 만나기",
-    desc: "긴급·임보·입양·나눔까지. 근처 캣맘 · 캣대디와 직접 이야기를 나눌 수 있어요.",
+    desc: "긴급·임보·입양·나눔까지. 근처 케어테이커와 직접 이야기를 나눌 수 있어요.",
     ctaLabel: "커뮤니티 열기",
     href: "/community",
     show: ({ activity }) => activity.catCount > 0 && activity.commentCount >= 3,

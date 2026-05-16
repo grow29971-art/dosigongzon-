@@ -13,7 +13,7 @@ const TOPICS: Array<{ label: string; emoji: string; color: string }> = [
   { label: "임시보호·입양", emoji: "🏠", color: "#7AAE82" },
   { label: "응급·치료", emoji: "🏥", color: "#D85555" },
   { label: "법·신고", emoji: "⚖️", color: "#5F7A8E" },
-  { label: "캣맘 활동", emoji: "❤️", color: "#9D7AB8" },
+  { label: "케어테이커 활동", emoji: "❤️", color: "#9D7AB8" },
 ];
 
 export default function FaqOGImage() {

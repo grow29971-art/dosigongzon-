@@ -11,7 +11,7 @@ interface Props {
 
 export default function LoginRequired({
   title = "로그인이 필요해요",
-  description = "커뮤니티 글은 이웃 캣맘들의 소중한 정보라 로그인 후 확인할 수 있어요.",
+  description = "커뮤니티 글은 이웃 케어테이커들의 소중한 정보라 로그인 후 확인할 수 있어요.",
   from,
 }: Props) {
   const loginHref = from ? `/login?next=${encodeURIComponent(from)}` : "/login";

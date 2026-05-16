@@ -381,7 +381,7 @@ export default function AdminHospitalsPage() {
             value={draft.note ?? ""}
             onChange={(e) => setDraft((d) => ({ ...d, note: e.target.value || null }))}
             rows={3}
-            placeholder="구조자/캣맘에게 도움될 정보 (할인 조건, 응급 대응 가능 시간 등)"
+            placeholder="구조자/케어테이커에게 도움될 정보 (할인 조건, 응급 대응 가능 시간 등)"
             className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-3 resize-none"
             style={{
               backgroundColor: "#F6F1EA",

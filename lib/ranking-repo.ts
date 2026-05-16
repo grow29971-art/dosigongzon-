@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════
-// 도시공존 — 캣맘 활동 랭킹 Repository
+// 도시공존 — 케어테이커 활동 랭킹 Repository
 // Supabase RPC: get_top_caretakers, get_caretaker_rank
 // 활동 점수: cat * 10 + comment + alert * 2 + likes_received * 2 + care_log * 2
 // ══════════════════════════════════════════

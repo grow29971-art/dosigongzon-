@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/protection/pharmacy-guide" },
   openGraph: {
     title: "길고양이 약품·영양제 가이드 | 도시공존",
-    description: "구충제부터 영양제·응급약까지. 캣맘이 알아야 할 동물약국 필수 정보.",
+    description: "구충제부터 영양제·응급약까지. 케어테이커가 알아야 할 동물약국 필수 정보.",
   },
 };
 
@@ -329,7 +329,7 @@ export default async function PharmacyGuidePage() {
           ⛔ 절대 주면 안 되는 사람 약·물질
         </h2>
         <p className="text-[13.5px] text-text-main leading-relaxed mb-3">
-          많은 캣맘이 "도와주려다" 치명적 실수를 합니다. 아래 목록은 소량만으로도 중독·사망 가능성이 높은 것들이에요.
+          많은 케어테이커가 "도와주려다" 치명적 실수를 합니다. 아래 목록은 소량만으로도 중독·사망 가능성이 높은 것들이에요.
         </p>
         <div
           className="rounded-2xl overflow-hidden"

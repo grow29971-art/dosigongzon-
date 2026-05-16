@@ -369,7 +369,7 @@ export default function AdminTipsPage() {
           <Input
             value={tagsInput}
             onChange={handleTagsChange}
-            placeholder="예: TNR, 캣맘, 겨울철 돌봄"
+            placeholder="예: TNR, 케어테이커, 겨울철 돌봄"
           />
 
           {/* 본문 */}

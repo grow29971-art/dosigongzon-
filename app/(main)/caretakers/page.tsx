@@ -9,8 +9,8 @@ import { sanitizeImageUrl } from "@/lib/url-validate";
 import { thumbnailUrl } from "@/lib/cats-repo";
 
 export const metadata: Metadata = {
-  title: "동네 캣맘 찾기",
-  description: "내 활동 지역에서 함께 활동하는 캣맘·캣대디를 만나보세요.",
+  title: "동네 케어테이커 찾기",
+  description: "내 활동 지역에서 함께 활동하는 케어테이커를 만나보세요.",
   robots: { index: false, follow: false },
 };
 
@@ -55,7 +55,7 @@ export default async function CaretakersPage() {
         <div className="flex items-baseline gap-2 mb-1">
           <UserPlus size={20} className="text-primary" />
           <h1 className="text-[22px] font-extrabold tracking-tight text-text-main">
-            동네 캣맘 찾기
+            동네 케어테이커 찾기
           </h1>
         </div>
         <p className="text-[12.5px] text-text-sub leading-relaxed">
@@ -219,7 +219,7 @@ function EmptyNoRegion() {
         먼저 활동 지역을 등록해주세요
       </p>
       <p className="text-[12px] text-text-sub leading-relaxed mb-4">
-        활동 지역을 설정하면 같은 동네 캣맘 분들을 찾아드려요.
+        활동 지역을 설정하면 같은 동네 케어테이커를 찾아드려요.
       </p>
       <Link
         href="/mypage/activity-regions"
@@ -243,7 +243,7 @@ function EmptyNoMatch({ myRegions }: { myRegions: string[] }) {
     >
       <UserPlus size={32} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
       <p className="text-[14px] font-extrabold text-text-main mb-1.5">
-        아직 같은 동네 캣맘이 없어요
+        아직 같은 동네 케어테이커가 없어요
       </p>
       <p className="text-[12px] text-text-sub leading-relaxed mb-2">
         {myRegions.join(", ")} 지역에 등록된 다른 분이 없어요.

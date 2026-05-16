@@ -10,7 +10,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "전국 길고양이 돌봄 지도 — 시·도별 현황",
   description:
-    "서울·부산·인천·대구·대전·광주·울산·세종·제주·경기 등 전국 광역시·도 길고양이 돌봄 현황. 내 지역 캣맘·캣대디와 함께 만드는 도시공존.",
+    "서울·부산·인천·대구·대전·광주·울산·세종·제주·경기 등 전국 광역시·도 길고양이 돌봄 현황. 내 지역 케어테이커와 함께 만드는 도시공존.",
   alternates: { canonical: "/regions" },
   keywords: [
     "전국 길고양이 지도",
@@ -91,7 +91,7 @@ export default function RegionsIndexPage() {
         </h1>
         <p className="text-[13px] text-text-sub mt-2 leading-relaxed">
           서울 외 광역시·세종·제주·경기 사용자들도 함께해요.
-          내 지역을 눌러 등록된 고양이와 캣맘·캣대디 활동을 확인하세요.
+          내 지역을 눌러 등록된 고양이와 케어테이커 활동을 확인하세요.
         </p>
       </section>
 

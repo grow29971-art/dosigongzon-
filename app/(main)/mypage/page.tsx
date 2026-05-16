@@ -858,7 +858,7 @@ export default function MyPage() {
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                  동네 캣맘 찾기
+                  동네 케어테이커 찾기
                 </p>
                 <p className="text-[11px] text-text-sub mt-0.5">
                   같은 동네에서 활동하는 분들과 연결돼요
@@ -884,10 +884,10 @@ export default function MyPage() {
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                  캣맘 활동 랭킹
+                  케어테이커 활동 랭킹
                 </p>
                 <p className="text-[11px] text-text-sub mt-0.5">
-                  내 활동 점수와 동네 캣맘 순위를 확인해요
+                  내 활동 점수와 동네 케어테이커 순위를 확인해요
                 </p>
               </div>
               <ChevronRight size={16} className="shrink-0" style={{ color: "#C9A961", opacity: 0.7 }} />

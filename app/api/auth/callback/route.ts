@@ -27,7 +27,7 @@ function safeNextPath(raw: string | null): string {
 
 // 랜덤 닉네임 생성 (소셜 로그인 시 실명 대체)
 const ADJECTIVES = ["귀여운","용감한","따뜻한","다정한","씩씩한","부지런한","행복한","포근한","착한","똑똑한","수줍은","느긋한","활발한","조용한","밝은"];
-const NOUNS = ["집사","냥이","고양이","캣맘","캣대디","돌보미","지킴이","친구","이웃","시민","봉사자","수호자","파수꾼","동반자","벗"];
+const NOUNS = ["집사","냥이","고양이","케어테이커","돌보미","지킴이","친구","이웃","시민","봉사자","수호자","파수꾼","동반자","벗"];
 
 function generateNickname(): string {
   const adj = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];

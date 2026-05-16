@@ -46,7 +46,7 @@ const SEED_POSTS: Post[] = [
     title: "마포구 새끼 고양이 3마리 임시보호 구합니다",
     content: "아파트 주차장에서 발견된 생후 약 3주 된 아기 고양이들입니다. 엄마가 보이지 않아 임시보호가 시급합니다.",
     authorId: "user-1",
-    authorName: "캣맘서울",
+    authorName: "케어테이커서울",
     region: "합정동",
     images: [],
     isPinned: false,

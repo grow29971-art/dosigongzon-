@@ -76,7 +76,7 @@ export async function POST(request: Request) {
 
   // 4) 발송
   const title = "🐾 도시공존";
-  const body = "동네 캣맘·캣대디들이 기다리고 있어요. 첫 길고양이 등록은 1분이면 끝나요.";
+  const body = "동네 케어테이커들이 기다리고 있어요. 첫 길고양이 등록은 1분이면 끝나요.";
   const url = "/map";
 
   let sent = 0;

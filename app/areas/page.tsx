@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/areas" },
   keywords: [
     "서울 길고양이 지도",
-    "서울 캣맘",
+    "서울 케어테이커",
     "강남구 길고양이",
     "마포구 길고양이",
     "서초구 길고양이",

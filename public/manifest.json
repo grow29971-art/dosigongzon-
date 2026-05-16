@@ -48,7 +48,7 @@
     {
       "name": "커뮤니티",
       "short_name": "커뮤니티",
-      "description": "이웃 캣맘과 이야기 나누기",
+      "description": "이웃 케어테이커와 이야기 나누기",
       "url": "/community",
       "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     },

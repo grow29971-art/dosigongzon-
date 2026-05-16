@@ -19,12 +19,12 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
     {
       id: "short",
       label: "한 줄 (트위터·인용용)",
-      text: `도시공존은 전국 시민이 함께 만드는 길고양이 돌봄 지도예요. 캣맘·캣대디 ${users.toLocaleString()}명이 ${cats.toLocaleString()}마리의 기록을 공유합니다. https://dosigongzon.com`,
+      text: `도시공존은 전국 시민이 함께 만드는 길고양이 돌봄 지도예요. 케어테이커 ${users.toLocaleString()}명이 ${cats.toLocaleString()}마리의 기록을 공유합니다. https://dosigongzon.com`,
     },
     {
       id: "medium",
       label: "두 문단 (블로그·보도용)",
-      text: `도시공존(dosigongzon.com)은 전국 길고양이를 시민이 함께 기록하고 돌보는 비영리 시민 참여 플랫폼입니다. 캣맘·캣대디가 지도 위에 TNR 상태, 건강, 급식 기록을 실시간으로 남기고, 긴급 구조가 필요한 아이에게 동네 이웃이 빠르게 닿을 수 있도록 돕습니다.\n\n현재 ${cats.toLocaleString()}마리의 길고양이가 등록되어 있고, ${users.toLocaleString()}명의 시민이 동네 단위로 돌봄을 기록하고 있습니다. 길고양이 안전을 위해 급식소 정확 좌표는 비공개이며, 광고 없는 무료 운영을 원칙으로 합니다.`,
+      text: `도시공존(dosigongzon.com)은 전국 길고양이를 시민이 함께 기록하고 돌보는 비영리 시민 참여 플랫폼입니다. 케어테이커가 지도 위에 TNR 상태, 건강, 급식 기록을 실시간으로 남기고, 긴급 구조가 필요한 아이에게 동네 이웃이 빠르게 닿을 수 있도록 돕습니다.\n\n현재 ${cats.toLocaleString()}마리의 길고양이가 등록되어 있고, ${users.toLocaleString()}명의 시민이 동네 단위로 돌봄을 기록하고 있습니다. 길고양이 안전을 위해 급식소 정확 좌표는 비공개이며, 광고 없는 무료 운영을 원칙으로 합니다.`,
     },
     {
       id: "factsheet",
