@@ -6,6 +6,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { isSafeImageUrl } from "@/lib/url-validate";
 import { findLocationViolations, formatViolationMessage } from "@/lib/location-patterns";
+import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 
 export type CatGender = "male" | "female" | "unknown";
 export type CatHealthStatus = "good" | "caution" | "danger";
@@ -300,9 +301,20 @@ export async function createCat(input: CreateCatInput): Promise<Cat> {
 
   // description 위치 식별 키워드 차단 — 클라이언트 우회 방어 (defense in depth).
   if (input.description) {
-    const violations = findLocationViolations(input.description);
-    if (violations.length > 0) {
-      throw new Error(formatViolationMessage(violations));
+    const locViolations = findLocationViolations(input.description);
+    if (locViolations.length > 0) {
+      throw new Error(formatViolationMessage(locViolations));
+    }
+    const abuseViolations = findAbuseViolations(input.description);
+    if (abuseViolations.length > 0) {
+      throw new Error(formatAbuseMessage(abuseViolations));
+    }
+  }
+  // 이름에도 동일 abuse 검증 (욕설 닉네임 방어)
+  if (input.name) {
+    const nameAbuse = findAbuseViolations(input.name);
+    if (nameAbuse.length > 0) {
+      throw new Error(formatAbuseMessage(nameAbuse));
     }
   }
 
@@ -714,6 +726,12 @@ export async function createComment(
   const trimmed = body.trim();
   if (!trimmed && !photoUrl) {
     throw new Error("내용이나 사진 중 하나는 있어야 해요.");
+  }
+
+  // 어뷰징 검증
+  if (trimmed) {
+    const abuse = findAbuseViolations(trimmed);
+    if (abuse.length > 0) throw new Error(formatAbuseMessage(abuse));
   }
 
   // photo_url 검증
@@ -1144,9 +1162,19 @@ export async function updateCat(
 
   // description 위치 식별 키워드 차단 — 수정 시에도 동일 가드.
   if (input.description) {
-    const violations = findLocationViolations(input.description);
-    if (violations.length > 0) {
-      throw new Error(formatViolationMessage(violations));
+    const locViolations = findLocationViolations(input.description);
+    if (locViolations.length > 0) {
+      throw new Error(formatViolationMessage(locViolations));
+    }
+    const abuseViolations = findAbuseViolations(input.description);
+    if (abuseViolations.length > 0) {
+      throw new Error(formatAbuseMessage(abuseViolations));
+    }
+  }
+  if (input.name) {
+    const nameAbuse = findAbuseViolations(input.name);
+    if (nameAbuse.length > 0) {
+      throw new Error(formatAbuseMessage(nameAbuse));
     }
   }
 

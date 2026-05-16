@@ -4,6 +4,7 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { isSafeImageUrl } from "@/lib/url-validate";
+import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 import type { Post, PostCategory } from "@/lib/types";
 import { getDisplayName, getMyActivitySummary, computeScore, computeLevel } from "@/lib/cats-repo";
 
@@ -109,6 +110,12 @@ export async function createPost(input: CreatePostInput): Promise<Post> {
   const content = input.content.trim();
   if (!title) throw new Error("제목을 입력해주세요.");
   if (!content) throw new Error("내용을 입력해주세요.");
+
+  // 어뷰징 검증 — 개인정보·욕설·동물 위협 표현 차단
+  const titleAbuse = findAbuseViolations(title);
+  if (titleAbuse.length > 0) throw new Error(formatAbuseMessage(titleAbuse));
+  const contentAbuse = findAbuseViolations(content);
+  if (contentAbuse.length > 0) throw new Error(formatAbuseMessage(contentAbuse));
 
   // 이미지 URL 검증
   const safeImages = (input.images ?? []).filter(isSafeImageUrl);

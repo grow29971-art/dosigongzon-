@@ -5,6 +5,7 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { getDisplayName, getMyActivitySummary, computeScore, computeLevel } from "@/lib/cats-repo";
+import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 
 export interface PostComment {
   id: string;
@@ -48,6 +49,10 @@ export async function createPostComment(
 
   const trimmed = body.trim();
   if (!trimmed) throw new Error("내용을 입력해주세요.");
+
+  // 어뷰징 검증
+  const abuse = findAbuseViolations(trimmed);
+  if (abuse.length > 0) throw new Error(formatAbuseMessage(abuse));
 
   const equippedTitle =
     (user.user_metadata?.equipped_title as string | undefined) ?? null;
