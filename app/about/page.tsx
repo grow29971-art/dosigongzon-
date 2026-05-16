@@ -15,6 +15,10 @@ import {
   Radio,
   ShieldCheck,
   Download,
+  Compass,
+  Eye,
+  Wind,
+  HandHeart,
 } from "lucide-react";
 import { createAnonClient } from "@/lib/supabase/anon";
 import MediaKit from "@/app/components/MediaKit";
@@ -165,6 +169,106 @@ export default async function AboutPage() {
             icon={<Shield size={18} style={{ color: "#6B8E6F" }} />}
             title="보호 지침 · 약품 가이드"
             desc="초보 캣맘을 위한 응급처치, TNR, 새끼 구조, 법률 가이드를 한 곳에."
+          />
+        </div>
+      </section>
+
+      {/* 철학 — Mission / Vision / Values */}
+      <section className="px-5 mt-8">
+        <h2 className="text-[16px] font-extrabold text-text-main mb-3">철학과 가치</h2>
+
+        {/* Mission */}
+        <div
+          className="rounded-3xl p-5 mb-3"
+          style={{
+            background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)",
+            border: "1px solid rgba(196,126,90,0.20)",
+          }}
+        >
+          <div className="flex items-center gap-1.5 mb-3">
+            <Compass size={14} style={{ color: "#C47E5A" }} />
+            <span
+              className="text-[10px] font-extrabold tracking-[0.18em]"
+              style={{ color: "#C47E5A" }}
+            >
+              MISSION
+            </span>
+          </div>
+          <p className="text-[15.5px] font-extrabold text-text-main leading-[1.55] mb-2.5 tracking-tight">
+            언제나 어디서든 모두가<br />
+            느낄 수 있는 새로운 형태의 자연을 제공합니다.
+          </p>
+          <p className="text-[12.5px] text-text-sub leading-relaxed">
+            우리는 자연을 과학과 접목하여 발전시키고, 자연의 사전적 의미를 재정립합니다.
+          </p>
+        </div>
+
+        {/* Vision */}
+        <div
+          className="rounded-3xl p-5 mb-3"
+          style={{
+            background: "linear-gradient(135deg, #F2F7F0 0%, #E5EDDD 100%)",
+            border: "1px solid rgba(107,142,111,0.22)",
+          }}
+        >
+          <div className="flex items-center gap-1.5 mb-3">
+            <Eye size={14} style={{ color: "#4F6B53" }} />
+            <span
+              className="text-[10px] font-extrabold tracking-[0.18em]"
+              style={{ color: "#4F6B53" }}
+            >
+              VISION
+            </span>
+          </div>
+          <p className="text-[12.5px] text-text-sub leading-[1.95]">
+            현재 인류에게는 자연이 주는 <b className="text-text-main">정서적 안정</b>이 필요합니다.
+            지금까지 인류는 발전을 위해 자연을 정복하고 파괴해왔습니다.
+            이제는 자연과 <b className="text-text-main">균형과 조화</b>를 맞춰야 할 때입니다.
+          </p>
+          <p className="text-[12.5px] text-text-sub leading-[1.95] mt-3">
+            자연은 우리 삶의 기초가 되는 터전이며, 우리의 모든 것은 자연에서 시작되었습니다.
+            자연이 주는 즐거움과 안정감을 함께 함으로써 자연과 인류 간 조화로운 미래를 만들기 위해,
+            혁신적인 제품을 연구하고 사람들에게 제공하여 자연에 대한 이해와 경험을 모두와 나누고자 합니다.
+          </p>
+          <p className="text-[12.5px] text-text-sub leading-[1.95] mt-3">
+            우리는 <b className="text-text-main">자연친화적인 세상</b>을 만들어 인류사회에 공헌합니다.
+          </p>
+        </div>
+
+        {/* Values — 3 핵심 가치 */}
+        <div className="flex items-center gap-1.5 mb-2 ml-1 mt-4">
+          <Sparkles size={14} style={{ color: "#A8684A" }} />
+          <span
+            className="text-[10px] font-extrabold tracking-[0.18em]"
+            style={{ color: "#A8684A" }}
+          >
+            VALUES
+          </span>
+        </div>
+        <div className="space-y-2">
+          <ValueCard
+            n={1}
+            icon={<Users size={16} color="#FFFFFF" />}
+            accent="#C47E5A"
+            accentDark="#A8684A"
+            title="연대"
+            body="우리는 저마다 다른 문화·환경에서 각기 다른 삶을 살아왔지만, 인류라는 공통점을 가진 형제들이다. 항상 서로의 생각·개성·성향을 존중하고 형제애를 중요시한다."
+          />
+          <ValueCard
+            n={2}
+            icon={<Wind size={16} color="#FFFFFF" />}
+            accent="#4A7BA8"
+            accentDark="#3A6086"
+            title="자유와 몰입"
+            body="새로운 생각을 가로막는 고정 관념·관습·틀에서 벗어나 자연의 일부가 되어 한계를 초월하고 자유롭게 사고하며, 자연의 천재지변과 같이 매섭게 행동한다."
+          />
+          <ValueCard
+            n={3}
+            icon={<HandHeart size={16} color="#FFFFFF" />}
+            accent="#6B8E6F"
+            accentDark="#4F6B53"
+            title="봉사"
+            body="우리는 지구촌 형제들의 보급선이다. 우리는 모두에게 형제를 대하는 마음으로 서비스와 제품을 제공한다."
           />
         </div>
       </section>
@@ -383,6 +487,48 @@ function TechRow({ icon, title, desc }: { icon: React.ReactNode; title: string; 
       <div className="min-w-0">
         <p className="text-[13px] font-extrabold text-text-main">{title}</p>
         <p className="text-[11.5px] text-text-sub mt-1 leading-relaxed">{desc}</p>
+      </div>
+    </div>
+  );
+}
+
+function ValueCard({
+  n,
+  icon,
+  accent,
+  accentDark,
+  title,
+  body,
+}: {
+  n: number;
+  icon: React.ReactNode;
+  accent: string;
+  accentDark: string;
+  title: string;
+  body: string;
+}) {
+  return (
+    <div
+      className="rounded-2xl p-4 flex items-start gap-3 bg-white"
+      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+    >
+      <div
+        className="shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center"
+        style={{ background: `linear-gradient(135deg, ${accent} 0%, ${accentDark} 100%)` }}
+      >
+        {icon}
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2 mb-1">
+          <span
+            className="text-[10px] font-extrabold tracking-[0.12em]"
+            style={{ color: accentDark }}
+          >
+            0{n}
+          </span>
+          <p className="text-[14px] font-extrabold text-text-main tracking-tight">{title}</p>
+        </div>
+        <p className="text-[12px] text-text-sub leading-relaxed">{body}</p>
       </div>
     </div>
   );
