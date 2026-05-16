@@ -34,6 +34,7 @@ import { getGuCounts } from "@/lib/region-counts";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { listPublishedTipsServer, type Tip } from "@/lib/tips-repo";
 import { getTopCaretakersServer, type RankingRow } from "@/lib/ranking-repo";
+import { getActiveRegionsTop3 } from "@/lib/region-activity";
 import LandingOnboardingGate from "@/app/components/LandingOnboardingGate";
 import ShareAreaButton from "@/app/components/ShareAreaButton";
 import TodayVisitors from "@/app/components/TodayVisitors";
@@ -87,10 +88,11 @@ export default async function HomeLanding({
   adoptionSlot,
   eventSlot,
 }: { hotSlot?: React.ReactNode; adoptionSlot?: React.ReactNode; eventSlot?: React.ReactNode } = {}) {
-  const [data, tips, topCaretakers] = await Promise.all([
+  const [data, tips, topCaretakers, activeRegions] = await Promise.all([
     getLandingData(),
     listPublishedTipsServer(6),
     getCachedTopCaretakers(),
+    getActiveRegionsTop3(),
   ]);
   // 등록 고양이 상위 6개 구. 데이터 없으면 인구 많은 대표 구 폴백.
   const FALLBACK_FEATURED = ["gangnam", "mapo", "songpa", "yongsan", "seongdong", "gwanak"];
@@ -353,6 +355,85 @@ export default async function HomeLanding({
           </div>
         </div>
       </section>
+
+      {/* 지금 활발한 동네 TOP 3 — 사회적 증명 + 지역 호기심 자극 */}
+      {activeRegions.length > 0 && (
+        <section className="px-5 mt-10">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E86B8C" }} />
+            <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+              지금 활발한 동네
+            </h2>
+            <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#E86B8C", opacity: 0.7 }}>
+              LIVE · TOP {activeRegions.length}
+            </span>
+          </div>
+          <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+            이번 주 새 친구·캣맘·치료 병원이 가장 많이 모이는 동네예요.
+          </p>
+          <div className="space-y-2">
+            {activeRegions.map((r, idx) => (
+              <Link
+                key={r.slug}
+                href={`/areas/${r.slug}`}
+                className="block rounded-2xl bg-white p-4 active:scale-[0.98] transition-transform"
+                style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.05)", border: "1px solid #F0E6D8" }}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center text-[13px] font-extrabold text-white"
+                    style={{
+                      background:
+                        idx === 0
+                          ? "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)"
+                          : idx === 1
+                          ? "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)"
+                          : "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)",
+                    }}
+                  >
+                    {idx === 0 ? "🔥" : `#${idx + 1}`}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[15px] font-extrabold text-text-main tracking-tight">{r.name}</p>
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1 text-[11.5px]">
+                      {r.recentCats > 0 && (
+                        <span style={{ color: "#E86B8C" }}>
+                          <b>이번 주 +{r.recentCats}</b>마리
+                        </span>
+                      )}
+                      {r.activeCaretakers > 0 && (
+                        <>
+                          <span className="text-text-light">·</span>
+                          <span style={{ color: "#C47E5A" }}>
+                            캣맘 <b>{r.activeCaretakers}</b>명
+                          </span>
+                        </>
+                      )}
+                      {r.hospitals > 0 && (
+                        <>
+                          <span className="text-text-light">·</span>
+                          <span style={{ color: "#4F6B53" }}>
+                            병원 <b>{r.hospitals}</b>곳
+                          </span>
+                        </>
+                      )}
+                      {r.totalCats > 0 && (
+                        <>
+                          <span className="text-text-light">·</span>
+                          <span className="text-text-light">
+                            누적 {r.totalCats.toLocaleString()}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <ChevronRight size={16} className="shrink-0 text-text-light" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* 이렇게 시작해보세요 — 3단계 액션 가이드 */}
       <section className="px-5 mt-10">
