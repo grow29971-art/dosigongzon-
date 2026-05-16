@@ -327,7 +327,7 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
       <section className="px-5 mt-8 cv-auto">
         <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
           <p className="text-[12.5px] text-text-sub leading-relaxed">
-            <b className="text-text-main">도시공존</b>은 {gu.name}을 포함한 서울 전역의 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다.
+            <b className="text-text-main">도시공존</b>은 {gu.name}을 포함한 전국 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다.
             캣맘·캣대디가 실시간으로 TNR 상태, 급식소 위치(비공개), 건강 상태를 공유하고,
             긴급 구조가 필요한 아이에게는 동네 이웃이 빠르게 달려갈 수 있도록 돕습니다.
             {gu.name} 주민이라면 회원가입 후 동네 고양이를 등록해주세요. 정확한 위치는 보안을 위해 공개되지 않습니다.

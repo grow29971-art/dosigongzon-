@@ -144,7 +144,7 @@ export default async function OpengraphImage() {
               lineHeight: 1.4,
             }}
           >
-            서울 시민이 만든 길고양이 지도 · 돌봄 일지 · 긴급 구조
+            전국 시민이 만든 길고양이 지도 · 돌봄 일지 · 긴급 구조
           </p>
         </div>
 

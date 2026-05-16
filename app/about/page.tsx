@@ -27,7 +27,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "도시공존 소개 — 길고양이와 함께 걷는 시민 참여 플랫폼",
   description:
-    "도시공존은 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다. 서울 전역의 캣맘·캣대디가 실시간으로 돌봄 기록을 공유하고 긴급 구조를 돕습니다. 제휴·언론·블로그 문의 환영.",
+    "도시공존은 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다. 전국 캣맘·캣대디가 실시간으로 돌봄 기록을 공유하고 긴급 구조를 돕습니다. 제휴·언론·블로그 문의 환영.",
   alternates: { canonical: "/about" },
   keywords: [
     "도시공존",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     title: "도시공존 소개 | 길고양이와 함께 걷는 한 걸음",
-    description: "서울 전역의 길고양이를 기록·돌봄하는 시민 참여 플랫폼.",
+    description: "전국 길고양이를 기록·돌봄하는 시민 참여 플랫폼.",
     url: `${SITE_URL}/about`,
     images: [{ url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630 }],
   },
@@ -76,7 +76,7 @@ export default async function AboutPage() {
     logo: `${SITE_URL}/icons/icon-512.png`,
     description: "길고양이를 기록하고 돌보는 시민 참여 플랫폼",
     email: CONTACT_EMAIL,
-    areaServed: { "@type": "City", name: "서울특별시" },
+    areaServed: { "@type": "Country", name: "대한민국" },
   };
 
   const breadcrumbLd = {

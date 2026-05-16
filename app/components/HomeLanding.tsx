@@ -107,7 +107,7 @@ export default async function HomeLanding({
     "@type": "WebApplication",
     name: "도시공존",
     url: SITE_URL,
-    description: "길고양이 돌봄 시민 참여 플랫폼. 서울 전역의 TNR·돌봄·구조 기록을 지도 위에서 함께 남깁니다.",
+    description: "길고양이 돌봄 시민 참여 플랫폼. 전국 TNR·돌봄·구조 기록을 지도 위에서 함께 남깁니다.",
     applicationCategory: "SocialNetworkingApplication",
     operatingSystem: "Web, iOS, Android (PWA)",
     offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" },
@@ -122,7 +122,7 @@ export default async function HomeLanding({
         name: "도시공존은 무엇인가요?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "서울 전역의 길고양이를 시민이 함께 기록하고 돌보는 시민 참여 플랫폼입니다. 캣맘·캣대디가 지도 위에 TNR·급식·건강 기록을 남기고, 긴급 구조가 필요한 아이에게 이웃이 빠르게 닿을 수 있게 돕습니다.",
+          text: "전국 길고양이를 시민이 함께 기록하고 돌보는 시민 참여 플랫폼입니다. 캣맘·캣대디가 지도 위에 TNR·급식·건강 기록을 남기고, 긴급 구조가 필요한 아이에게 이웃이 빠르게 닿을 수 있게 돕습니다.",
         },
       },
       {
@@ -138,7 +138,7 @@ export default async function HomeLanding({
         name: "무료인가요?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "네. 광고 없이 무료로 운영되며 이익을 목적으로 하지 않습니다. 서울 시민의 자발적 기록으로 유지됩니다.",
+          text: "네. 광고 없이 무료로 운영되며 이익을 목적으로 하지 않습니다. 전국 시민의 자발적 기록으로 유지됩니다.",
         },
       },
       {
@@ -595,9 +595,9 @@ export default async function HomeLanding({
       <section className="px-5 mt-8 cv-auto">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4A7BA8" }} />
-          <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">서울 구별 지도</h2>
+          <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">동네별 길고양이 지도</h2>
           <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#4A7BA8", opacity: 0.6 }}>
-            25 DISTRICTS
+            BY DISTRICTS
           </span>
         </div>
         <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
@@ -802,7 +802,7 @@ export default async function HomeLanding({
         <div className="space-y-2">
           <FaqRow
             q="도시공존은 무엇인가요?"
-            a="서울 전역의 길고양이를 시민이 함께 기록하고 돌보는 시민 참여 플랫폼입니다. 캣맘·캣대디가 지도 위에 TNR·급식·건강 기록을 남기고, 긴급 구조가 필요한 아이에게 이웃이 빠르게 닿을 수 있게 돕습니다."
+            a="전국 길고양이를 시민이 함께 기록하고 돌보는 시민 참여 플랫폼입니다. 캣맘·캣대디가 지도 위에 TNR·급식·건강 기록을 남기고, 긴급 구조가 필요한 아이에게 이웃이 빠르게 닿을 수 있게 돕습니다."
           />
           <FaqRow
             q="급식소 정확한 위치가 공개되나요?"
@@ -831,7 +831,7 @@ export default async function HomeLanding({
           <p className="text-[11.5px] text-text-sub mb-3 leading-relaxed">
             아이들을 지켜줄 이웃이 한 명 더 늘어납니다.
           </p>
-          <ShareAreaButton guName="서울" slug="" catCount={data.catCount} urgentCount={0} />
+          <ShareAreaButton guName="전국" slug="" catCount={data.catCount} urgentCount={0} />
         </div>
       </section>
 

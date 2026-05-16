@@ -32,7 +32,7 @@ export default function ShareAreaButton({ guName, slug, catCount, urgentCount }:
       ? `${guName}에서 지금 도움이 필요한 아이 ${urgentCount}마리. 동네 이웃이 함께 지켜요 🐾`
       : catCount > 0
       ? isRoot
-        ? `서울 전역 길고양이 ${catCount}마리의 돌봄 기록을 시민이 함께 남기고 있어요 🐾`
+        ? `전국 길고양이 ${catCount}마리의 돌봄 기록을 시민이 함께 남기고 있어요 🐾`
         : `${guName}에 등록된 길고양이 ${catCount}마리의 돌봄 기록.`
       : `${guName} 동네 길고양이를 함께 돌봐주세요 🐾`;
     // 지역 페이지면 그 지역 동적 OG, 홈이면 전체 OG
