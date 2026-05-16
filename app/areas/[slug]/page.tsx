@@ -319,7 +319,7 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
           className="block text-center text-[12px] font-bold mt-3"
           style={{ color: "#C47E5A" }}
         >
-          서울 25개 구 전체 보기 →
+          전국 구·동별 길고양이 지도 →
         </Link>
       </section>
 

@@ -116,18 +116,18 @@ export default async function AboutPage() {
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 mb-3">
           <Heart size={12} style={{ color: "#C47E5A" }} />
           <span className="text-[11px] font-extrabold" style={{ color: "#C47E5A" }}>
-            서울 25개 구 · 비영리 시민 참여 플랫폼
+            전국 · 비영리 시민 참여 플랫폼
           </span>
         </div>
         <h1 className="text-[26px] font-extrabold text-text-main leading-tight tracking-tight">
-          서울 길고양이 <span style={{ color: "#C47E5A" }}>{stats.cats.toLocaleString()}마리</span>의<br />
+          전국 길고양이 <span style={{ color: "#C47E5A" }}>{stats.cats.toLocaleString()}마리</span>의<br />
           돌봄 기록을 한 화면에.
         </h1>
         <p className="text-[13.5px] text-text-sub mt-3 leading-relaxed">
           <b className="text-text-main">도시공존</b>은 캣맘·캣대디가
           <b className="text-text-main"> TNR·건강·급식</b> 기록을 실시간으로 남기고,
           긴급 구조가 필요한 아이에게 동네 이웃이 빠르게 닿을 수 있도록 잇는
-          서울 25개 구 길고양이 돌봄 지도입니다.
+          전국 길고양이 돌봄 지도입니다.
         </p>
       </section>
 
@@ -186,7 +186,7 @@ export default async function AboutPage() {
               <b className="text-text-main">공신력 있는 자료 기반.</b> 보호 지침과 약품 정보는 농림축산식품부, 동물보호관리시스템 등 공공기관 공개 자료와 동물약국 표시사항을 바탕으로 정리하며, 긴급·의료 판단은 반드시 실제 수의사와 상의해주세요.
             </li>
             <li>
-              <b className="text-text-main">광고 없는 무료 운영.</b> 광고·수익 모델 없이 서울 시민의 자발적 기록으로 유지됩니다.
+              <b className="text-text-main">광고 없는 무료 운영.</b> 광고·수익 모델 없이 전국 시민의 자발적 기록으로 유지됩니다.
             </li>
           </ul>
         </div>
@@ -252,7 +252,7 @@ export default async function AboutPage() {
         <div className="space-y-2">
           <TechRow
             icon={<MapPin size={18} style={{ color: "#C47E5A" }} />}
-            title="서울 25개 구 자체 좌표 매핑"
+            title="전국 구·동 자체 좌표 매핑"
             desc="구·동 단위 좌표를 직접 정리한 자체 데이터셋. 외부 행정 API 없이도 한 화면에 모든 자치구가 즉시 뜹니다."
           />
           <TechRow

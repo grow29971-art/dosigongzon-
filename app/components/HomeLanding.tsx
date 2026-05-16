@@ -163,13 +163,13 @@ export default async function HomeLanding({
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 mb-3">
           <Heart size={12} style={{ color: "#C47E5A" }} />
           <span className="text-[11px] font-extrabold" style={{ color: "#C47E5A" }}>
-            서울 25개 구 · {data.userCount > 0
+            전국 · {data.userCount > 0
               ? `${data.userCount.toLocaleString()}명의 캣맘·캣대디`
               : "캣맘·캣대디 시민 참여 플랫폼"}
           </span>
         </div>
         <h1 className="text-[30px] font-black text-text-main leading-[1.15] tracking-tight">
-          서울 길고양이 <span className="text-primary">{data.catCount.toLocaleString()}마리</span>,<br />
+          전국 길고양이 <span className="text-primary">{data.catCount.toLocaleString()}마리</span>,<br />
           <span className="text-primary">한 화면에서 함께 돌봐요.</span>
         </h1>
         <p className="text-[13.5px] text-text-sub mt-3 leading-relaxed">
@@ -177,7 +177,7 @@ export default async function HomeLanding({
           <b className="text-text-main"> TNR·건강·급식</b> 기록을 실시간으로 남기고,
           긴급한 아이를 동네 이웃과 빠르게 잇는
           <br />
-          서울 25개 구 길고양이 돌봄 지도예요.
+          전국 길고양이 돌봄 지도예요.
         </p>
         <p className="text-[12px] mt-2 leading-relaxed" style={{ color: "#8B7562" }}>
           급식소 정확 좌표는 <b style={{ color: "#6B8E6F" }}>비공개</b> · 광고 없는 무료 운영 · PWA 지원
@@ -623,7 +623,7 @@ export default async function HomeLanding({
           className="block text-center text-[12.5px] font-bold py-2.5 rounded-xl"
           style={{ backgroundColor: "#FFF", color: "#C47E5A", border: "1px solid #E8D4BD" }}
         >
-          서울 25개 구 전체 보기 →
+          전국 구·동별 길고양이 지도 →
         </Link>
       </section>
 
@@ -850,7 +850,7 @@ export default async function HomeLanding({
           <TechCard
             icon={<MapPin size={16} color="#C47E5A" />}
             iconBg="#C47E5A15"
-            title="서울 25개 구 자체 매핑"
+            title="전국 구·동 자체 매핑"
             sub="구·동 단위 좌표 직접 정리"
           />
           <TechCard

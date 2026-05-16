@@ -274,7 +274,7 @@ const SECTIONS: FeatureSection[] = [
         iconColor: "#22B573",
         iconBg: "rgba(34,181,115,0.12)",
         title: "지역별 랜딩",
-        desc: "서울 25개 구 · 276개 동별 전용 페이지. 검색에서 '○○구 길고양이' 검색 시 바로 도착.",
+        desc: "전국 구·동별 전용 페이지. 검색에서 '○○구 길고양이' 검색 시 바로 도착.",
         href: "/areas",
         hrefLabel: "구별 지도 보기",
       },

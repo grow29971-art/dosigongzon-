@@ -9,9 +9,9 @@ const SITE_URL = "https://dosigongzon.com";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "서울 길고양이 돌봄 지도 — 25개 구별 현황",
+  title: "전국 길고양이 돌봄 지도 — 구·동별 현황",
   description:
-    "서울특별시 25개 자치구의 길고양이 돌봄 현황을 한눈에. 강남구·서초구·마포구 등 구별 등록 고양이 수, 긴급 돌봄 필요 아이, 구조동물 치료 병원을 확인하세요.",
+    "전국 길고양이 돌봄 현황을 한눈에. 강남구·서초구·마포구 등 구·동별 등록 고양이 수, 긴급 돌봄 필요 아이, 구조동물 치료 병원을 확인하세요.",
   alternates: { canonical: "/areas" },
   keywords: [
     "서울 길고양이 지도",
@@ -25,8 +25,8 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     type: "website",
-    title: "서울 25개 구 길고양이 돌봄 지도 | 도시공존",
-    description: "서울 전역의 길고양이 돌봄 현황을 구별로 확인하세요.",
+    title: "전국 길고양이 돌봄 지도 | 도시공존",
+    description: "전국 길고양이 돌봄 현황을 구·동별로 확인하세요.",
     url: `${SITE_URL}/areas`,
     images: [{ url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630 }],
   },
@@ -39,7 +39,7 @@ export default async function AreasIndexPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "서울 25개 구 길고양이 돌봄 지도",
+    name: "전국 길고양이 돌봄 지도",
     numberOfItems: SEOUL_GUS.length,
     itemListElement: SEOUL_GUS.map((g, i) => ({
       "@type": "ListItem",
@@ -71,10 +71,10 @@ export default async function AreasIndexPage() {
       <section className="px-5 pt-4">
         <div className="flex items-center gap-1.5 mb-1.5">
           <MapPin size={14} style={{ color: "#C47E5A" }} />
-          <span className="text-[11.5px] font-bold" style={{ color: "#C47E5A" }}>서울특별시</span>
+          <span className="text-[11.5px] font-bold" style={{ color: "#C47E5A" }}>전국</span>
         </div>
         <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight">
-          서울 25개 구 <br />길고양이 돌봄 지도
+          전국 <br />길고양이 돌봄 지도
         </h1>
         <p className="text-[13px] text-text-sub mt-2 leading-relaxed">
           전체 등록 고양이 <b style={{ color: "#C47E5A" }}>{total.toLocaleString()}마리</b>.

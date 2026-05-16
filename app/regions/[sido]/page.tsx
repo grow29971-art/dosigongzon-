@@ -348,7 +348,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
           className="block text-center text-[12px] font-bold mt-3"
           style={{ color: "#C47E5A" }}
         >
-          서울 25개 구 보기 →
+          전국 구·동별 지도 보기 →
         </Link>
       </section>
 
