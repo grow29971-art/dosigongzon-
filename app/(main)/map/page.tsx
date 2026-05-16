@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import {
   X,
   MapPin,
@@ -59,6 +59,7 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/app/components/Toast";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import { findLocationViolations } from "@/lib/location-patterns";
 import { getMyBlockedIdSet } from "@/lib/blocks-repo";
 import TitleBadge from "@/app/components/TitleBadge";
 import SendDMButton from "@/app/components/SendDMButton";
@@ -992,6 +993,8 @@ export default function MapPage() {
   const [editingCat, setEditingCat] = useState(false);
   const [editName, setEditName] = useState("");
   const [editDesc, setEditDesc] = useState("");
+  // 위치 식별 키워드 실시간 검출
+  const editDescViolations = useMemo(() => findLocationViolations(editDesc), [editDesc]);
   const [editRegion, setEditRegion] = useState("");
   const [editTags, setEditTags] = useState<string[]>([]);
   const [editGender, setEditGender] = useState<CatGender>("unknown");
@@ -2629,8 +2632,20 @@ export default function MapPage() {
                   </div>
                   <div>
                     <label className="text-[11px] font-bold text-text-sub mb-1 block">설명</label>
+                    <p className="text-[10.5px] leading-relaxed mb-1.5" style={{ color: "#4F6B53" }}>
+                      🛡 안전을 위해 정확한 위치(역·출구·시장·공원·아파트·주소 등)는 적지 마세요.
+                    </p>
                     <textarea value={editDesc} onChange={(e) => setEditDesc(e.target.value)} rows={3} maxLength={200}
-                      className="w-full px-3 py-2 rounded-xl text-[13px] outline-none resize-none" style={{ backgroundColor: "#F6F1EA", border: "1px solid #E3DCD3" }} />
+                      className="w-full px-3 py-2 rounded-xl text-[13px] outline-none resize-none"
+                      style={{
+                        backgroundColor: editDescViolations.length > 0 ? "#FBEAEA" : "#F6F1EA",
+                        border: `1px solid ${editDescViolations.length > 0 ? "#E8C5C5" : "#E3DCD3"}`,
+                      }} />
+                    {editDescViolations.length > 0 && (
+                      <p className="text-[10.5px] mt-1 leading-relaxed" style={{ color: "#B84545" }}>
+                        ⚠ {editDescViolations.map((v) => `${v.label}(${v.match})`).join(", ")} — 일반 표현으로 바꿔주세요.
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label className="text-[11px] font-bold text-text-sub mb-1 block">동네</label>
@@ -2753,7 +2768,7 @@ export default function MapPage() {
                           setEditSaving(false);
                         }
                       }}
-                      disabled={editSaving || !editName.trim()}
+                      disabled={editSaving || !editName.trim() || editDescViolations.length > 0}
                       className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 active:scale-[0.97] transition-all"
                     >
                       {editSaving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} 저장

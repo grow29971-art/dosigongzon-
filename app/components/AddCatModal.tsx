@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { X, Camera, MapPin, Loader2, Plus, Lock } from "lucide-react";
+import { X, Camera, MapPin, Loader2, Plus, Lock, ShieldAlert } from "lucide-react";
 import { createCat, uploadCatPhoto, type Cat, type CatGender, type CatHealthStatus, type AdoptionStatus, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP } from "@/lib/cats-repo";
 import { useAuth } from "@/lib/auth-context";
 import CatRegistrationCelebration from "@/app/components/CatRegistrationCelebration";
+import { findLocationViolations, formatViolationMessage } from "@/lib/location-patterns";
 
 interface AddCatModalProps {
   open: boolean;
@@ -47,6 +48,8 @@ export default function AddCatModal({
   const [selectedDong, setSelectedDong] = useState("");
   const [editingDong, setEditingDong] = useState(false);
   const [description, setDescription] = useState("");
+  // 한 줄 소개 위치 특정 키워드 실시간 검출 — 길고양이 안전 가드.
+  const descLocationViolations = useMemo(() => findLocationViolations(description), [description]);
   const [tags, setTags] = useState<string[]>([]);
   const [gender, setGender] = useState<CatGender>("unknown");
   const [neutered, setNeutered] = useState<boolean | null>(null);
@@ -183,6 +186,12 @@ export default function AddCatModal({
     if (!name.trim()) return setError("이름을 입력해주세요.");
     if (!selectedDong.trim()) return setError("동네를 입력해주세요.");
     if (initialLat === undefined || initialLng === undefined) return setError("위치 정보가 없어요. 다시 시도해주세요.");
+
+    // 한 줄 소개에 위치 식별 키워드 들어있으면 차단 — 길고양이 안전 보호.
+    const descViolations = findLocationViolations(description);
+    if (descViolations.length > 0) {
+      return setError(formatViolationMessage(descViolations));
+    }
 
     setSubmitting(true);
     try {
@@ -442,15 +451,43 @@ export default function AddCatModal({
           {/* 한 줄 소개 */}
           <div>
             <label className="text-[12px] font-bold text-text-main mb-2 block">한 줄 소개</label>
+
+            {/* 안내 — 위치 특정 금지 */}
+            <div
+              className="mb-2 rounded-xl px-3 py-2.5 flex items-start gap-2"
+              style={{ background: "rgba(107,142,111,0.08)", border: "1px solid rgba(107,142,111,0.22)" }}
+            >
+              <ShieldAlert size={14} className="shrink-0 mt-0.5" style={{ color: "#4F6B53" }} />
+              <p className="text-[11.5px] leading-relaxed" style={{ color: "#3C5A40" }}>
+                <b>길고양이 안전을 위해</b> 정확한 위치를 알 수 있는 표현은 적지 마세요.
+                <br />
+                <span style={{ color: "rgba(60,90,64,0.78)" }}>
+                  예: 역 이름·출구 번호·시장·공원·아파트·도로 주소·학교
+                </span>
+              </p>
+            </div>
+
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="예: 만수동 골목의 터줏대감. 사람을 봐도 도망가지 않아요."
+              placeholder="예: 우리 동네 터줏대감. 사람을 봐도 도망가지 않아요."
               maxLength={120}
               rows={3}
-              className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[14px] text-text-main outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted resize-none"
+              className={`w-full px-4 py-3 rounded-2xl text-[14px] text-text-main outline-none transition-all placeholder:text-text-muted resize-none ${
+                descLocationViolations.length > 0
+                  ? "bg-red-50 ring-2 ring-red-200 focus:ring-red-300"
+                  : "bg-surface-alt focus:bg-white focus:ring-2 focus:ring-primary/20"
+              }`}
             />
-            <p className="text-[10px] text-text-light mt-1 text-right">{description.length}/120</p>
+            <div className="flex items-start justify-between gap-2 mt-1">
+              {descLocationViolations.length > 0 ? (
+                <p className="text-[10.5px] leading-relaxed flex-1" style={{ color: "#B84545" }}>
+                  ⚠ {descLocationViolations.map((v) => `${v.label}(${v.match})`).join(", ")} —
+                  일반적인 표현(우리 동네·골목·근처)으로 바꿔주세요.
+                </p>
+              ) : <span />}
+              <p className="text-[10px] text-text-light shrink-0">{description.length}/120</p>
+            </div>
           </div>
 
           {/* 태그 */}

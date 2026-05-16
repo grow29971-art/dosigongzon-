@@ -5,6 +5,7 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { isSafeImageUrl } from "@/lib/url-validate";
+import { findLocationViolations, formatViolationMessage } from "@/lib/location-patterns";
 
 export type CatGender = "male" | "female" | "unknown";
 export type CatHealthStatus = "good" | "caution" | "danger";
@@ -295,6 +296,14 @@ export async function createCat(input: CreateCatInput): Promise<Cat> {
     : null;
   if (input.photo_url && !safePhotoUrl) {
     throw new Error("사진 URL 형식이 올바르지 않아요.");
+  }
+
+  // description 위치 식별 키워드 차단 — 클라이언트 우회 방어 (defense in depth).
+  if (input.description) {
+    const violations = findLocationViolations(input.description);
+    if (violations.length > 0) {
+      throw new Error(formatViolationMessage(violations));
+    }
   }
 
   const { data, error } = await supabase
@@ -1130,6 +1139,14 @@ export async function updateCat(
   if (input.lng !== undefined) {
     if (typeof input.lng !== "number" || input.lng < 124 || input.lng > 132) {
       throw new Error("경도(lng)가 유효하지 않아요.");
+    }
+  }
+
+  // description 위치 식별 키워드 차단 — 수정 시에도 동일 가드.
+  if (input.description) {
+    const violations = findLocationViolations(input.description);
+    if (violations.length > 0) {
+      throw new Error(formatViolationMessage(violations));
     }
   }
 
