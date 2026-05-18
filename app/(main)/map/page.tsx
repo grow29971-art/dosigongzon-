@@ -2841,6 +2841,22 @@ export default function MapPage() {
                       </span>
                     )}
                   </div>
+                  {/* 공개 범위 배지 — 본인 핀일 때만 노출 (다른 사람에겐 의미 없음) */}
+                  {user?.id === selectedCat.caretaker_id && selectedCat.visibility && selectedCat.visibility !== "public" && (
+                    <div className="mb-2">
+                      <span
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10.5px] font-extrabold"
+                        style={{
+                          background: `${VISIBILITY_MAP[selectedCat.visibility].color}15`,
+                          color: VISIBILITY_MAP[selectedCat.visibility].color,
+                          border: `1px solid ${VISIBILITY_MAP[selectedCat.visibility].color}40`,
+                        }}
+                      >
+                        <span>{VISIBILITY_MAP[selectedCat.visibility].emoji}</span>
+                        <span>{VISIBILITY_MAP[selectedCat.visibility].label}</span>
+                      </span>
+                    </div>
+                  )}
 
                   {/* 좋아요 버튼 */}
                   <div className="flex items-center gap-2 mb-2.5">

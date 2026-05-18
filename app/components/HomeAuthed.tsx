@@ -38,6 +38,7 @@ import StreakFreezeButton from "@/app/components/StreakFreezeButton";
 import SplashLoading from "@/app/components/SplashLoading";
 import FoundingMemberBanner from "@/app/components/FoundingMemberBanner";
 import PatchUpdateBanner518 from "@/app/components/PatchUpdateBanner518";
+import { countMyAcceptedCircleMembers } from "@/lib/circles-repo";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -185,6 +186,7 @@ export default function HomeAuthed({
   const [weatherError, setWeatherError] = useState("");
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [activity, setActivity] = useState<MyActivitySummary | null>(null);
+  const [circleMemberCount, setCircleMemberCount] = useState(0);
   const [achievementToasts, setAchievementToasts] = useState<ToastData[]>([]);
   const [rescueCount, setRescueCount] = useState(0);
   const [levelInfo, setLevelInfo] = useState<LevelInfo | null>(null);
@@ -412,6 +414,9 @@ export default function HomeAuthed({
         if (typeof d?.rescueCount === "number") setRescueCount(d.rescueCount);
       })
       .catch(() => {});
+
+    // 내 서클 멤버 수 (서클 단계 표시용)
+    countMyAcceptedCircleMembers().then(setCircleMemberCount).catch(() => {});
 
     // 내 활동 요약 + 레벨 + 레벨업/업적 해제 감지
     getMyActivitySummary().then((s) => {
@@ -653,6 +658,7 @@ export default function HomeAuthed({
           hasActivityRegion={myRegions.length > 0}
           hasMyCat={activity.catCount > 0}
           hasCareLog={activity.careLogCount > 0}
+          hasCircleMember={circleMemberCount > 0}
           onDismiss={handleDismissOnboarding}
         />
       )}

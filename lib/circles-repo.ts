@@ -58,6 +58,30 @@ export async function getOrCreateMyCircle(): Promise<Circle> {
   return data as Circle;
 }
 
+/** 내 서클의 수락 멤버 수만 빠르게 조회 (홈·마이페이지 카운트 뱃지용). 서클이 없으면 0. */
+export async function countMyAcceptedCircleMembers(): Promise<number> {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return 0;
+
+  // 서클 조회 (없으면 생성하지 않고 0 반환)
+  const { data: circle } = await supabase
+    .from("caretaker_circles")
+    .select("id")
+    .eq("owner_id", user.id)
+    .maybeSingle();
+  if (!circle) return 0;
+
+  const { count } = await supabase
+    .from("circle_members")
+    .select("*", { count: "exact", head: true })
+    .eq("circle_id", (circle as { id: string }).id)
+    .eq("status", "accepted");
+  return count ?? 0;
+}
+
 /** 내 서클 멤버 목록 (status별). 멤버의 닉네임·아바타 포함. */
 export async function listMyCircleMembers(): Promise<CircleMember[]> {
   const supabase = createClient();

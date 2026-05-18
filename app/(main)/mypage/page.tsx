@@ -65,6 +65,7 @@ import {
 } from "@/lib/titles";
 import { createClient } from "@/lib/supabase/client";
 import { getUnreadCount } from "@/lib/dm-repo";
+import { countMyAcceptedCircleMembers } from "@/lib/circles-repo";
 
 function formatRelative(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -92,6 +93,7 @@ export default function MyPage() {
   const [dataLoading, setDataLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [unreadDM, setUnreadDM] = useState(0);
+  const [circleMemberCount, setCircleMemberCount] = useState(0);
   const [adminTitle, setAdminTitle] = useState<string | null>(null);
   const [inquiryOpen, setInquiryOpen] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
@@ -189,8 +191,9 @@ export default function MyPage() {
       isCurrentUserAdmin(),
       getUnreadCount(),
       createClient().from("profiles").select("admin_title").eq("id", user.id).maybeSingle(),
+      countMyAcceptedCircleMembers(),
     ])
-      .then(([s, cats, liked, comments, admin, unread, profileRes]) => {
+      .then(([s, cats, liked, comments, admin, unread, profileRes, circleCount]) => {
         if (cancelled) return;
         setSummary(s);
         setMyCats(cats);
@@ -199,6 +202,7 @@ export default function MyPage() {
         setIsAdmin(admin);
         setUnreadDM(unread);
         setAdminTitle((profileRes.data as { admin_title: string | null } | null)?.admin_title ?? null);
+        setCircleMemberCount(circleCount);
       })
       .finally(() => {
         if (!cancelled) setDataLoading(false);
@@ -1004,11 +1008,21 @@ export default function MyPage() {
                 <ShieldCheck size={18} color="#4F6B53" strokeWidth={2} />
               </div>
               <div className="flex-1 min-w-0 text-left">
-                <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                  내 서클 (Private Circle)
-                </p>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+                    내 서클
+                  </p>
+                  <span
+                    className="text-[10.5px] font-extrabold px-1.5 py-0.5 rounded-full"
+                    style={{ background: "#4F6B53", color: "#FFF" }}
+                  >
+                    {circleMemberCount}
+                  </span>
+                </div>
                 <p className="text-[11px] text-text-sub mt-0.5">
-                  믿는 이웃에게만 보이는 핀 그룹 관리
+                  {circleMemberCount > 0
+                    ? `${circleMemberCount}명의 이웃과 함께 안전하게 돌봐요`
+                    : "믿는 이웃을 초대해 안전한 돌봄 시작하기"}
                 </p>
               </div>
               <ChevronRight size={16} className="shrink-0" style={{ color: "#4F6B53", opacity: 0.7 }} />

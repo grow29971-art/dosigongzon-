@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { MapPin, PawPrint, Heart, Check, X, Sparkles } from "lucide-react";
+import { MapPin, PawPrint, Heart, Check, X, Sparkles, ShieldCheck } from "lucide-react";
 
 interface OnboardingCardProps {
   hasActivityRegion: boolean;   // 활동 지역 설정 완료
   hasMyCat: boolean;            // 내가 등록한 고양이 있음
   hasCareLog: boolean;          // 돌봄 일지 작성 경험
+  hasCircleMember?: boolean;    // 내 서클에 1명 이상 멤버 (선택)
   onDismiss?: () => void;       // "나중에" 버튼
 }
 
@@ -25,6 +26,7 @@ export default function OnboardingCard({
   hasActivityRegion,
   hasMyCat,
   hasCareLog,
+  hasCircleMember = false,
   onDismiss,
 }: OnboardingCardProps) {
   const steps: Step[] = useMemo(() => [
@@ -55,7 +57,16 @@ export default function OnboardingCard({
       Icon: Heart,
       color: "#E86B8C",
     },
-  ], [hasActivityRegion, hasMyCat, hasCareLog]);
+    {
+      key: "circle",
+      done: hasCircleMember,
+      title: "믿는 이웃 초대",
+      subtitle: "내 서클로 안전한 돌봄 시작 (선택)",
+      href: "/mypage/circle",
+      Icon: ShieldCheck,
+      color: "#6B8E6F",
+    },
+  ], [hasActivityRegion, hasMyCat, hasCareLog, hasCircleMember]);
 
   const doneCount = steps.filter((s) => s.done).length;
   const total = steps.length;
@@ -97,7 +108,7 @@ export default function OnboardingCard({
             시작 가이드 <span style={{ color: "#C47E5A" }}>{doneCount}/{total}</span>
           </p>
           <p className="text-[11.5px] text-text-sub mt-1 leading-snug">
-            3단계만 거치면 바로 돌봄 시작!
+            마지막은 선택 — 믿는 이웃과 안전한 돌봄까지!
           </p>
         </div>
         {onDismiss && (

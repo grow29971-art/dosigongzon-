@@ -16,8 +16,11 @@ import {
   Check,
   Mail,
   ShieldCheck,
+  Link2,
+  Copy,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { shareToKakao } from "@/lib/kakao-share";
 import {
   listMyCircleMembers,
   listMyPendingInvitations,
@@ -45,6 +48,37 @@ export default function CirclePage() {
   const [searchResults, setSearchResults] = useState<SearchUser[]>([]);
   const [searching, setSearching] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const inviteUrl = user ? `https://dosigongzon.com/circle/join/${user.id}` : "";
+
+  const handleCopyInviteUrl = async () => {
+    if (!inviteUrl) return;
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.prompt("초대 링크를 복사해주세요:", inviteUrl);
+    }
+  };
+
+  const handleKakaoShare = async () => {
+    if (!user) return;
+    const myNickname = (user.user_metadata?.nickname as string | undefined) ?? "이웃";
+    const ok = await shareToKakao({
+      title: `🛡 ${myNickname}님의 도시공존 서클 초대`,
+      description: "내 서클에 합류하면 함께 길고양이를 안전하게 돌볼 수 있어요.",
+      imageUrl: "https://dosigongzon.com/opengraph-image",
+      url: inviteUrl,
+      buttonText: "초대 수락하기",
+    });
+    if (!ok) {
+      // 폴백: 클립보드 복사
+      await handleCopyInviteUrl();
+      alert("카카오톡 공유가 작동하지 않아 링크를 복사했어요. 카톡에 붙여넣기 해주세요.");
+    }
+  };
 
   const loadAll = async () => {
     setLoading(true);
@@ -235,11 +269,50 @@ export default function CirclePage() {
             </section>
           )}
 
-          {/* 멤버 초대 */}
+          {/* 카카오톡 초대 링크 */}
+          <section className="px-5 mt-6">
+            <div className="flex items-center gap-2 mb-3">
+              <Link2 size={14} style={{ color: "#FEE500" }} />
+              <h2 className="text-[14px] font-extrabold text-text-main">초대 링크</h2>
+              <span className="text-[9px] font-extrabold tracking-[0.15em] px-1.5 py-0.5 rounded-full" style={{ background: "#FEE500", color: "#191919" }}>
+                빠른 초대
+              </span>
+            </div>
+            <div
+              className="rounded-2xl p-3"
+              style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)", background: "linear-gradient(135deg, #FFFEF5 0%, #FFF8DC 100%)", border: "1px solid rgba(254,229,0,0.4)" }}
+            >
+              <p className="text-[11.5px] leading-relaxed mb-2.5" style={{ color: "#6B5916" }}>
+                링크 한 번이면 친한 이웃을 바로 서클에 초대할 수 있어요. 카카오톡으로 공유 → 받는 사람이 수락하면 즉시 멤버.
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleKakaoShare}
+                  className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-extrabold active:scale-95"
+                  style={{ background: "#FEE500", color: "#191919" }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 18 18" aria-hidden="true">
+                    <path d="M9 1.5C4.582 1.5 1 4.262 1 7.668c0 2.219 1.51 4.166 3.788 5.272-.167.625-.604 2.265-.69 2.617-.108.438.16.43.336.314.138-.092 2.198-1.5 3.083-2.107.49.073.99.111 1.483.111 4.418 0 8-2.762 8-6.207C17 4.262 13.418 1.5 9 1.5z" fill="#191919" />
+                  </svg>
+                  카카오톡 공유
+                </button>
+                <button
+                  onClick={handleCopyInviteUrl}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12px] font-bold active:scale-95"
+                  style={{ background: "#FFFFFF", color: "#6B5916", border: "1px solid rgba(254,229,0,0.5)" }}
+                >
+                  {copied ? <Check size={12} /> : <Copy size={12} />}
+                  {copied ? "복사됨" : "링크 복사"}
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* 닉네임 검색 초대 */}
           <section className="px-5 mt-6">
             <div className="flex items-center gap-2 mb-3">
               <UserPlus size={14} style={{ color: "#4A7BA8" }} />
-              <h2 className="text-[14px] font-extrabold text-text-main">멤버 초대</h2>
+              <h2 className="text-[14px] font-extrabold text-text-main">닉네임 검색 초대</h2>
             </div>
             <div className="bg-white rounded-2xl p-3" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
               <div className="flex items-center gap-2">
