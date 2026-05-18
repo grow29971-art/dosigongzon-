@@ -357,7 +357,7 @@ export default async function TipDetailPage({ params }: Params) {
         >
           <p className="text-[12px] font-extrabold text-primary mb-1.5">도시공존이란?</p>
           <p className="text-[13px] text-text-main leading-relaxed mb-3">
-            우리 동네 길고양이 지도, 돌봄 일지, TNR 신청, 동네 채팅을 한곳에서
+            우리 동네 길고양이 지도, 돌봄다이어리, TNR 신청, 동네 채팅을 한곳에서
             할 수 있는 시민 참여 플랫폼이에요. 길고양이와 시민이 함께 살아가는
             도시를 만듭니다.
           </p>

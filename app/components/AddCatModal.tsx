@@ -215,9 +215,10 @@ export default function AddCatModal({
       const photoUrl = uploaded[0]; // 대표 사진 = 첫 번째
       const photoUrls = uploaded; // 전체 배열
 
-      // 지도 중심 좌표에 약간의 랜덤 오프셋 (마커 겹침 방지)
-      const offsetLat = initialLat + (Math.random() - 0.5) * 0.004;
-      const offsetLng = initialLng + (Math.random() - 0.5) * 0.004;
+      // 좌표 보호: ±444m 랜덤 오프셋 (실제 위치 추적 차단 + 마커 겹침 방지).
+      // 0.008deg 위도 ≈ ±444m. 서울 위도(37.5)에서 경도는 cos 보정해 ±350m 정도.
+      const offsetLat = initialLat + (Math.random() - 0.5) * 0.008;
+      const offsetLng = initialLng + (Math.random() - 0.5) * 0.008;
 
       const newCat = await createCat({
         name: name.trim(),

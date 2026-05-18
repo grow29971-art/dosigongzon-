@@ -63,7 +63,7 @@ const TIPS: Tip[] = [
     icon: Pencil,
     iconColor: "#48A59E",
     iconBg: "rgba(72,165,158,0.12)",
-    title: "돌봄 일지 남기기",
+    title: "돌봄다이어리 남기기",
     desc: "밥·물·간식·건강체크 등을 기록하면 다른 이웃도 아이 상태를 알 수 있어요. 연속 기록은 포인트 보너스도 있어요!",
     ctaLabel: "고양이 보러 가기",
     href: "/map",

@@ -232,7 +232,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
       {/* 카운트 스탯 */}
       <div className="grid grid-cols-3 gap-2 px-4 mt-4">
         <StatCard emoji="❤️" label="좋아요" value={cat.like_count ?? 0} color="#E86B8C" />
-        <StatCard emoji="🐾" label="돌봄 일지" value={careCount} color="#6B8E6F" />
+        <StatCard emoji="🐾" label="돌봄다이어리" value={careCount} color="#6B8E6F" />
         <StatCard emoji="💬" label="댓글" value={commentCount} color="#4A7BA8" />
       </div>
 

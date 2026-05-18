@@ -197,13 +197,13 @@ export const TITLES: TitleDef[] = [
     progress: (s) => clamp01(s.inviteCount / 10),
   },
 
-  // ── 돌봄 일지 (careLogCount) ──
+  // ── 돌봄다이어리 (careLogCount) ──
   {
     id: "first_meal",
     name: "첫 식사",
     emoji: "🍚",
     category: "carelog",
-    description: "첫 번째 돌봄 일지를 남겼어요",
+    description: "첫 번째 돌봄다이어리를 남겼어요",
     unlocked: (s) => s.careLogCount >= 1,
     progress: (s) => clamp01(s.careLogCount / 1),
   },
@@ -212,7 +212,7 @@ export const TITLES: TitleDef[] = [
     name: "단골 케어테이커",
     emoji: "🥣",
     category: "carelog",
-    description: "10번의 돌봄 일지로 정성을 쌓았어요",
+    description: "10번의 돌봄다이어리로 정성을 쌓았어요",
     unlocked: (s) => s.careLogCount >= 10,
     progress: (s) => clamp01(s.careLogCount / 10),
   },
@@ -263,7 +263,7 @@ export const CATEGORY_LABELS: Record<TitleCategory, string> = {
   popular: "공감",
   invite: "초대",
   streak: "꾸준함",
-  carelog: "돌봄 일지",
+  carelog: "돌봄다이어리",
 };
 
 export const CATEGORY_COLORS: Record<TitleCategory, string> = {

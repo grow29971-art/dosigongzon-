@@ -183,7 +183,7 @@ export default function AccountDeletionPage() {
           <ul className="space-y-2 text-[12.5px] leading-relaxed" style={{ color: "#4A3F35" }}>
             <li>· 계정 정보 (이메일, 닉네임, 프로필 사진)</li>
             <li>· 등록한 길고양이 정보 및 사진</li>
-            <li>· 작성한 게시글, 댓글, 돌봄 일지</li>
+            <li>· 작성한 게시글, 댓글, 돌봄다이어리</li>
             <li>· 주고받은 1:1 쪽지</li>
             <li>· 활동 지역 설정, 좋아요·팔로우 관계</li>
             <li>· 차단·신고 기록</li>

@@ -64,7 +64,7 @@ export default async function RankingPage() {
             <li>· 돌봄 기록 (댓글) — 1건 +1점</li>
             <li>· 위급 경보 — 1건 +2점 추가</li>
             <li>· 받은 좋아요 — 1개 +2점</li>
-            <li>· 돌봄 일지 — 1건 +2점</li>
+            <li>· 돌봄다이어리 — 1건 +2점</li>
           </ul>
         </details>
       </div>

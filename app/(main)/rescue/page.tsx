@@ -193,7 +193,7 @@ export default async function RescuePage() {
               를 보며 단계별 대응
             </li>
             <li>필요 시 구조 지원 병원 연락 (지도 → 구조동물 도움 병원)</li>
-            <li>돌봄 일지로 현재 상태 공유 — 다른 이웃도 이어서 챙길 수 있어요</li>
+            <li>돌봄다이어리로 현재 상태 공유 — 다른 이웃도 이어서 챙길 수 있어요</li>
           </ol>
         </div>
       </div>

@@ -203,14 +203,15 @@ export function fuzzCoord(
 
 /**
  * 뷰어 권한에 따라 실제 또는 퍼징된 좌표 반환.
- * 로그인 유저 = 정확 / 게스트 = 퍼징 70m.
+ * 로그인 유저 = 정확 / 게스트 = 퍼징 500m (DB 저장 시 이미 ±444m 오프셋 적용된 상태이므로,
+ * 게스트는 합산 최대 ±900m 정도로 dong 내부 어디인지 식별 불가).
  */
 export function getDisplayCoord(
   cat: Pick<Cat, "id" | "lat" | "lng">,
   isLoggedIn: boolean,
 ): { lat: number; lng: number } {
   if (isLoggedIn) return { lat: cat.lat, lng: cat.lng };
-  return fuzzCoord(cat.lat, cat.lng, cat.id, 70);
+  return fuzzCoord(cat.lat, cat.lng, cat.id, 500);
 }
 
 // ── 모든 고양이 조회 (지도 핀용) ──

@@ -99,7 +99,7 @@ export default function CatRegistrationCelebration({
                 💡 다음 단계 힌트
               </p>
               <p>
-                돌봄 일지 한 줄을 남기면 레벨·업적이 시작돼요. 근처 이웃에게
+                돌봄다이어리 한 줄을 남기면 레벨·업적이 시작돼요. 근처 이웃에게
                 알림도 함께 전달됩니다.
               </p>
             </div>

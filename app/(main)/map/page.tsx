@@ -1095,7 +1095,9 @@ export default function MapPage() {
       const minLng = sw.getLng();
       const maxLng = ne.getLng();
 
-      const tier = getTier(map.getLevel());
+      // 비로그인 시 사진·동 이름 노출 차단 — tier 1(도트 + 카운트)으로 강제.
+      // 로그인 유저는 줌 레벨 기반 정상 tier.
+      const tier = isLoggedIn ? getTier(map.getLevel()) : 1;
       // 광역 뷰는 마커 한도를 더 늘려도 되고(가벼우니), 가까운 뷰는 줄임
       const maxOverlays = tier === 1 ? 200 : tier === 2 ? 120 : 80;
 
@@ -2974,7 +2976,7 @@ export default function MapPage() {
                 </div>
               )}
 
-              {/* ══ 탭: 돌봄 일지 | 커뮤니티 ══ */}
+              {/* ══ 탭: 돌봄다이어리 | 커뮤니티 ══ */}
               <div className="mt-4 pt-3 border-t" style={{ borderColor: "#EEE8E0" }}>
                 <div className="flex gap-1 mb-3 px-1">
                   <button
@@ -2986,7 +2988,7 @@ export default function MapPage() {
                       color: catCardTab === "carelog" ? "#fff" : "#A38E7A",
                     }}
                   >
-                    🐾 돌봄 일지
+                    🐾 돌봄다이어리
                   </button>
                   <button
                     type="button"
@@ -3001,7 +3003,7 @@ export default function MapPage() {
                   </button>
                 </div>
 
-                {/* 돌봄 일지 탭 */}
+                {/* 돌봄다이어리 탭 */}
                 {catCardTab === "carelog" && (
                   <CareLogTab catId={selectedCat.id} isLoggedIn={isLoggedIn} currentUserId={user?.id} />
                 )}
