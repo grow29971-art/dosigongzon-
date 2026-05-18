@@ -108,12 +108,13 @@ export default function TermsPage() {
           <ol className="list-decimal pl-5 space-y-1">
             <li>운영자는 다음과 같은 서비스를 제공합니다.
               <ul className="list-disc pl-4 mt-1 space-y-0.5">
-                <li>길고양이 위치 등록 및 지도 서비스</li>
+                <li>길고양이 위치 등록 및 지도 서비스 (공개 범위: 전체 / 내 서클 / 나만 보기)</li>
+                <li>Private Circle — 회원이 직접 승인한 이웃에게만 핀을 노출하는 서클 관리</li>
                 <li>돌봄 커뮤니티 (게시판, 댓글, 1:1 쪽지)</li>
                 <li>보호지침, 약품 가이드 등 돌봄 정보 제공</li>
                 <li>동물병원·약국 위치 정보 제공</li>
                 <li>학대 경보 및 긴급 신고 연계</li>
-                <li>AI 집사 챗봇 상담</li>
+                <li>AI 집사 챗봇 상담 (참고용 정보 제공)</li>
                 <li>푸시 알림 서비스</li>
               </ul>
             </li>
@@ -132,9 +133,23 @@ export default function TermsPage() {
         <section>
           <h2 className="text-[14px] font-bold text-text-main mb-2">제9조 (위치정보의 이용)</h2>
           <ol className="list-decimal pl-5 space-y-1">
-            <li>서비스는 동물 보호를 목적으로 고양이 위치를 동(洞) 단위로 표기하며, 정확한 좌표는 로그인한 회원에게만 제공됩니다.</li>
-            <li>비회원에게는 약 70m의 오차가 적용된 위치가 표시됩니다.</li>
+            <li>서비스는 동물 보호를 목적으로 길고양이 위치를 <b>동(洞) 단위</b>로만 표기합니다. 정확한 골목·건물 단위 좌표는 회원에게도 제공되지 않습니다.</li>
+            <li>등록 시 입력된 좌표에는 자동으로 <b>약 ±444m의 랜덤 오프셋</b>이 적용되어 저장되며, 비로그인 외부인에게는 추가로 <b>약 ±500m</b>의 결정적 퍼징이 적용됩니다(합산 최대 약 ±944m).</li>
+            <li>비로그인 외부인에게는 개별 핀의 사진·이름·동 이름이 노출되지 않고, 동 단위 카운트만 표시됩니다.</li>
+            <li>회원은 등록 시 공개 범위를 <b>전체 공개·내 서클·나만 보기</b> 중 선택할 수 있으며, 등록 후에도 본인 핀을 통해 언제든지 변경할 수 있습니다.</li>
+            <li>업로드되는 사진은 EXIF(GPS 메타데이터 포함) 정보가 자동으로 제거된 후 저장됩니다.</li>
             <li>회원은 고양이의 정확한 위치 정보를 외부에 무단 공유하여 동물의 안전을 위험에 빠뜨리는 행위를 하여서는 안 됩니다.</li>
+            <li><b>사용자 본인의 위치(GPS)</b>는 지도 화면 표시 등 클라이언트 측 기능에만 사용되며 서버에 저장되지 않습니다. 단, 사용자가 직접 입력한 활동 지역명(동·구) 등 비위치 데이터는 별도 저장될 수 있습니다.</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2 className="text-[14px] font-bold text-text-main mb-2">제9조의2 (AI 집사 챗봇)</h2>
+          <ol className="list-decimal pl-5 space-y-1">
+            <li>AI 집사 챗봇은 Google Gemini 기반 자동 응답 시스템으로, <b>참고용 정보 제공만을 목적</b>으로 합니다.</li>
+            <li>AI 응답은 <b>의료 진단·법률 자문이 아니며</b>, 응급·의료·법률 사안은 반드시 자격 있는 수의사·변호사 등 전문가의 직접 판단을 받아야 합니다.</li>
+            <li>AI 응답의 정확성·완전성에 대해 운영자는 보증하지 않으며, 회원이 AI 응답을 신뢰하여 발생한 결과에 대한 책임은 회원 본인에게 있습니다.</li>
+            <li>대화 내용은 응답 품질 개선과 어뷰징 탐지 목적으로 일정 기간 보관될 수 있습니다(상세는 개인정보처리방침 참조).</li>
           </ol>
         </section>
 
@@ -206,6 +221,24 @@ export default function TermsPage() {
           </ol>
         </section>
 
+        <section>
+          <h2 className="text-[14px] font-bold text-text-main mb-2">제13조의2 (저작권 침해 신고 절차)</h2>
+          <ol className="list-decimal pl-5 space-y-1">
+            <li>본인의 저작물이 회원에 의해 무단으로 게시되었다고 판단되는 권리자는 「저작권법」 제103조에 따라 운영자에게 해당 게시물의 게시중단(전송 중단)을 요청할 수 있습니다.</li>
+            <li>요청 시 다음 정보를 <b>grow29971@gmail.com</b>으로 보내주십시오.
+              <ul className="list-disc pl-4 mt-1 space-y-0.5">
+                <li>침해받은 저작물의 정보(제목·URL·캡처 등)</li>
+                <li>도시공존 내 침해 게시물의 URL 또는 식별 가능한 정보</li>
+                <li>권리자 본인임을 증명할 수 있는 자료(주민등록증/등기·등록증명서 등 일부)</li>
+                <li>침해 사실에 대한 진정한 신고임을 확인하는 서명·날인</li>
+              </ul>
+            </li>
+            <li>운영자는 접수일로부터 <b>지체 없이(원칙 3영업일 이내)</b> 해당 게시물을 게시중단하고 권리자·게시자 양측에 통지합니다.</li>
+            <li>게시자는 「저작권법」 제103조 제3항에 따라 정당한 권리가 있음을 소명하여 <b>재개 요청</b>을 할 수 있으며, 운영자는 권리자에게 통지 후 적법 절차에 따라 처리합니다.</li>
+            <li>허위 신고로 타인에게 손해를 입힌 자는 「저작권법」 제103조 제6항에 따라 민·형사상 책임을 질 수 있습니다.</li>
+          </ol>
+        </section>
+
         {/* 제6장 손해배상 및 면책 */}
         <div className="text-[14px] font-extrabold text-primary pt-2">제6장 손해배상 및 면책</div>
 
@@ -241,6 +274,7 @@ export default function TermsPage() {
         >
           <p className="text-[11px] text-text-light"><b>부칙</b></p>
           <p className="text-[11px] text-text-light mt-1">제1조 (시행일) 이 약관은 2026년 4월 20일부터 시행합니다.</p>
+          <p className="text-[11px] text-text-light mt-1">제2조 (개정) 2026년 5월 18일자로 위치정보 처리 기준 명확화, Private Circle 추가, AI 챗봇 면책 조항 신설, 저작권 침해 신고 절차 명시.</p>
         </div>
       </div>
     </div>
