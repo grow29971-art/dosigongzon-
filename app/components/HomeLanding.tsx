@@ -39,6 +39,7 @@ import LandingOnboardingGate from "@/app/components/LandingOnboardingGate";
 import ShareAreaButton from "@/app/components/ShareAreaButton";
 import TodayVisitors from "@/app/components/TodayVisitors";
 import SocialProofStrip from "@/app/components/SocialProofStrip";
+import LaunchCountdown from "@/app/components/LaunchCountdown";
 
 // 활동 케어테이커 TOP 3 — 광고 LP에 강력한 사회적 증명. 10분 캐시(egress 절감).
 const getCachedTopCaretakers = unstable_cache(
@@ -159,6 +160,7 @@ export default async function HomeLanding({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }} />
       <LandingOnboardingGate />
+      <LaunchCountdown />
 
       {/* 히어로 */}
       <section className="px-5 pt-14 pb-8" style={{ background: "linear-gradient(180deg, #FFF9F2 0%, #F7F4EE 100%)" }}>
