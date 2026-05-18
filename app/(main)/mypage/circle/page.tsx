@@ -18,6 +18,8 @@ import {
   ShieldCheck,
   Link2,
   Copy,
+  MessageCircle,
+  ChevronRight,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { shareToKakao } from "@/lib/kakao-share";
@@ -28,9 +30,11 @@ import {
   inviteToCircle,
   removeCircleMember,
   respondToInvitation,
+  getOrCreateMyCircle,
   type CircleMember,
   type PendingInvitation,
 } from "@/lib/circles-repo";
+import { listJoinedCircles, type JoinedCircle } from "@/lib/circle-chat-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { thumbnailUrl } from "@/lib/cats-repo";
 
@@ -49,6 +53,8 @@ export default function CirclePage() {
   const [searching, setSearching] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [myCircleId, setMyCircleId] = useState<string | null>(null);
+  const [joinedCircles, setJoinedCircles] = useState<JoinedCircle[]>([]);
 
   const inviteUrl = user ? `https://dosigongzon.com/circle/join/${user.id}` : "";
 
@@ -83,9 +89,16 @@ export default function CirclePage() {
   const loadAll = async () => {
     setLoading(true);
     try {
-      const [m, inv] = await Promise.all([listMyCircleMembers(), listMyPendingInvitations()]);
+      const [m, inv, circle, joined] = await Promise.all([
+        listMyCircleMembers(),
+        listMyPendingInvitations(),
+        getOrCreateMyCircle(),
+        listJoinedCircles(),
+      ]);
       setMembers(m);
       setInvitations(inv);
+      setMyCircleId(circle.id);
+      setJoinedCircles(joined);
     } catch (e) {
       console.error(e);
     } finally {
@@ -266,6 +279,69 @@ export default function CirclePage() {
                   </div>
                 ))}
               </div>
+            </section>
+          )}
+
+          {/* 서클 채팅 진입 */}
+          {myCircleId && (
+            <section className="px-5 mt-6">
+              <div className="flex items-center gap-2 mb-3">
+                <MessageCircle size={14} style={{ color: "#C47E5A" }} />
+                <h2 className="text-[14px] font-extrabold text-text-main">서클 채팅</h2>
+              </div>
+              <Link
+                href={`/circle/${myCircleId}/chat`}
+                className="w-full block rounded-2xl p-4 active:scale-[0.99] transition-transform"
+                style={{
+                  background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)",
+                  border: "1px solid rgba(196,126,90,0.22)",
+                  boxShadow: "0 2px 10px rgba(196,126,90,0.10)",
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+                    style={{ background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)" }}
+                  >
+                    <MessageCircle size={20} color="#fff" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-extrabold text-text-main">내 서클 채팅방 열기</p>
+                    <p className="text-[11px] text-text-sub mt-0.5">
+                      멤버끼리 한 채팅방에서 대화 · 실시간 동기화
+                    </p>
+                  </div>
+                  <ChevronRight size={16} className="shrink-0" style={{ color: "#C47E5A", opacity: 0.7 }} />
+                </div>
+              </Link>
+
+              {/* 참여 중인 다른 서클 (멤버로 들어가 있는 곳) */}
+              {joinedCircles.filter((c) => c.role === "member").length > 0 && (
+                <div className="mt-3">
+                  <p className="text-[11px] text-text-light mb-2 ml-1">참여 중인 다른 서클</p>
+                  <div className="space-y-1.5">
+                    {joinedCircles
+                      .filter((c) => c.role === "member")
+                      .map((c) => (
+                        <Link
+                          key={c.circle_id}
+                          href={`/circle/${c.circle_id}/chat`}
+                          className="flex items-center gap-3 p-3 rounded-xl bg-white active:scale-[0.99]"
+                          style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)", border: "1px solid #F0E6D8" }}
+                        >
+                          <Avatar url={c.owner_avatar_url} size={36} />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[13px] font-extrabold text-text-main truncate">
+                              {c.owner_nickname ?? "익명"}님의 서클
+                            </p>
+                            <p className="text-[10.5px] text-text-light">멤버 {c.member_count + 1}명</p>
+                          </div>
+                          <ChevronRight size={14} className="shrink-0 text-text-light" />
+                        </Link>
+                      ))}
+                  </div>
+                </div>
+              )}
             </section>
           )}
 
