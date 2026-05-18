@@ -2,11 +2,13 @@
 
 // 출시 카운트다운 배너 — HomeLanding 최상단에 표시.
 // 신청·앱 출시 D-Day 기준일: 2026-05-28 (KST).
+// CLS 방어: useEffect 전에도 같은 높이 placeholder 렌더.
 
 import { useEffect, useState } from "react";
 import { Rocket, Sparkles } from "lucide-react";
 
 const LAUNCH_DATE = new Date("2026-05-28T00:00:00+09:00");
+const BANNER_HEIGHT = 38; // py-2.5 + 12.5px line-height ≈ 38px
 
 export default function LaunchCountdown() {
   const [days, setDays] = useState<number | null>(null);
@@ -24,7 +26,18 @@ export default function LaunchCountdown() {
     return () => clearInterval(id);
   }, []);
 
-  if (days === null) return null;
+  // SSR/하이드레이션 직후엔 빈 div로 자리 reserve — 콘텐츠 mount 시 페이지 점프 방지 (CLS=0)
+  if (days === null) {
+    return (
+      <div
+        aria-hidden="true"
+        style={{
+          height: BANNER_HEIGHT,
+          background: "linear-gradient(90deg, #C47E5A 0%, #E86B8C 50%, #C47E5A 100%)",
+        }}
+      />
+    );
+  }
 
   // D-Day 또는 이후
   if (days <= 0) {
