@@ -12,16 +12,17 @@ export const revalidate = 1800;
 async function getStats() {
   try {
     const supabase = createAnonClient();
-    const [catsRes, profilesRes, urgentRes, hospitalsRes] = await Promise.all([
-      supabase.from("cats").select("*", { count: "exact", head: true }),
+    const [catsRpc, profilesRes, urgentRpc, hospitalsRes] = await Promise.all([
+      // private/circle 포함 전체 카운트
+      supabase.rpc("total_cat_count"),
       supabase.from("profiles").select("*", { count: "exact", head: true }),
-      supabase.from("cats").select("*", { count: "exact", head: true }).eq("health_status", "danger"),
+      supabase.rpc("total_danger_cat_count"),
       supabase.from("rescue_hospitals").select("*", { count: "exact", head: true }).eq("hidden", false),
     ]);
     return {
-      cats: catsRes.count ?? 0,
+      cats: Number(catsRpc.data ?? 0),
       users: profilesRes.count ?? 0,
-      urgent: urgentRes.count ?? 0,
+      urgent: Number(urgentRpc.data ?? 0),
       hospitals: hospitalsRes.count ?? 0,
     };
   } catch {

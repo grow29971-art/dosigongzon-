@@ -54,13 +54,14 @@ export const metadata: Metadata = {
 async function getStats() {
   try {
     const supabase = createAnonClient();
-    const [catsRes, hospitalsRes, profilesRes] = await Promise.all([
-      supabase.from("cats").select("*", { count: "exact", head: true }),
+    const [catsRpc, hospitalsRes, profilesRes] = await Promise.all([
+      // private/circle 모두 포함한 전체 카운트
+      supabase.rpc("total_cat_count"),
       supabase.from("rescue_hospitals").select("*", { count: "exact", head: true }).eq("hidden", false),
       supabase.from("profiles").select("*", { count: "exact", head: true }),
     ]);
     return {
-      cats: catsRes.count ?? 0,
+      cats: Number(catsRpc.data ?? 0),
       hospitals: hospitalsRes.count ?? 0,
       users: profilesRes.count ?? 0,
     };

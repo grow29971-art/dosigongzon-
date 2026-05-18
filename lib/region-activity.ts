@@ -34,29 +34,27 @@ async function fetchActiveRegions(): Promise<RegionActivity[]> {
     const supabase = createAnonClient();
     const since = new Date(Date.now() - RECENT_DAYS * 24 * 60 * 60 * 1000).toISOString();
 
-    const [totalCounts, recentRes, hospitalsRes] = await Promise.all([
+    const [totalCounts, recentRpcRes, hospitalsRes] = await Promise.all([
       getGuCounts(),
-      supabase
-        .from("cats")
-        .select("region, caretaker_id")
-        .gte("created_at", since),
+      // RPC SECURITY DEFINER로 visibility 무관 카운트
+      supabase.rpc("recent_cat_count_by_region", { days: RECENT_DAYS }),
       supabase
         .from("rescue_hospitals")
         .select("region")
         .eq("hidden", false),
     ]);
 
-    type RecentRow = { region: string | null; caretaker_id: string | null };
+    type RecentRpcRow = { region: string | null; recent_count: number; active_caretakers: number };
     type HospitalRow = { region: string | null };
 
-    const recentByGu: Record<string, { count: number; caretakers: Set<string> }> = {};
-    for (const row of (recentRes.data ?? []) as RecentRow[]) {
+    const recentByGu: Record<string, { count: number; caretakers: number }> = {};
+    for (const row of (recentRpcRes.data ?? []) as RecentRpcRow[]) {
       if (!row.region) continue;
       const slug = regionToGuSlug(row.region);
       if (!slug) continue;
-      const e = recentByGu[slug] ?? (recentByGu[slug] = { count: 0, caretakers: new Set() });
-      e.count++;
-      if (row.caretaker_id) e.caretakers.add(row.caretaker_id);
+      const e = recentByGu[slug] ?? (recentByGu[slug] = { count: 0, caretakers: 0 });
+      e.count += Number(row.recent_count) || 0;
+      e.caretakers += Number(row.active_caretakers) || 0;
     }
 
     const hospitalsByGu: Record<string, number> = {};
@@ -71,7 +69,7 @@ async function fetchActiveRegions(): Promise<RegionActivity[]> {
       const total = totalCounts[g.slug] ?? 0;
       const r = recentByGu[g.slug];
       const recentCats = r?.count ?? 0;
-      const activeCaretakers = r?.caretakers.size ?? 0;
+      const activeCaretakers = r?.caretakers ?? 0;
       const hospitals = hospitalsByGu[g.slug] ?? 0;
       // 최근 활동 가중치 가장 높게, 케어테이커 다음, 병원·누적은 보조 시그널.
       const score = recentCats * 5 + activeCaretakers * 3 + hospitals * 1 + total * 0.1;

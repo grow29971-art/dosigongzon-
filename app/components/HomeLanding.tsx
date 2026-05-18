@@ -53,8 +53,9 @@ const SITE_URL = "https://dosigongzon.com";
 async function getLandingData() {
   try {
     const supabase = createAnonClient();
-    const [catsRes, recentCatsRes, hospitalsRes, profilesRes, guCounts] = await Promise.all([
-      supabase.from("cats").select("*", { count: "exact", head: true }),
+    const [catsRpcRes, recentCatsRes, hospitalsRes, profilesRes, guCounts] = await Promise.all([
+      // visibility 무관 전체 카운트 (RPC SECURITY DEFINER) — private도 통계에는 포함
+      supabase.rpc("total_cat_count"),
       supabase
         .from("cats")
         .select("id, name, region, photo_url, health_status, created_at")
@@ -66,7 +67,7 @@ async function getLandingData() {
     ]);
 
     return {
-      catCount: catsRes.count ?? 0,
+      catCount: Number(catsRpcRes.data ?? 0),
       hospitalCount: hospitalsRes.count ?? 0,
       userCount: profilesRes.count ?? 0,
       recentCats: (recentCatsRes.data ?? []) as Array<{
