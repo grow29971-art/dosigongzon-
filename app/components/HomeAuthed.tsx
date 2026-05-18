@@ -37,6 +37,7 @@ import RescueBanner from "@/app/components/RescueBanner";
 import StreakFreezeButton from "@/app/components/StreakFreezeButton";
 import SplashLoading from "@/app/components/SplashLoading";
 import FoundingMemberBanner from "@/app/components/FoundingMemberBanner";
+import PatchUpdateBanner518 from "@/app/components/PatchUpdateBanner518";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -639,6 +640,9 @@ export default function HomeAuthed({
 
       {/* ══════ 긴급 구조 배너 (scarcity/urgency) ══════ */}
       {user && rescueCount > 0 && <RescueBanner count={rescueCount} />}
+
+      {/* ══════ 5/18 패치 안내 — Private Circle (영구 dismiss) ══════ */}
+      {user && <PatchUpdateBanner518 />}
 
       {/* ══════ 창립 멤버 환영 배너 (5/20 전 가입자 영구 자부심) ══════ */}
       {user && <FoundingMemberBanner />}
