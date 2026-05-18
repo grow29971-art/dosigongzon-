@@ -435,6 +435,98 @@ export default async function HomeLanding({
         </section>
       )}
 
+      {/* 안전 정책 — 가입 직전 신뢰 봉합. 학대 우려 케어테이커 대상 핵심 메시지. */}
+      <section className="px-5 mt-10">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4A7BA8" }} />
+          <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+            고양이 위치, 어떻게 지키나요?
+          </h2>
+          <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#4A7BA8", opacity: 0.7 }}>
+            SAFETY
+          </span>
+        </div>
+
+        {/* 핵심 메시지 카드 */}
+        <div
+          className="rounded-2xl p-4 mb-3"
+          style={{
+            background: "linear-gradient(135deg, rgba(74,123,168,0.10) 0%, rgba(74,123,168,0.04) 100%)",
+            border: "1px solid rgba(74,123,168,0.22)",
+          }}
+        >
+          <div className="flex items-start gap-2.5">
+            <ShieldCheck size={22} className="shrink-0 mt-0.5" style={{ color: "#4A7BA8" }} />
+            <div className="min-w-0">
+              <p className="text-[14.5px] font-extrabold text-text-main leading-snug mb-1 tracking-tight">
+                정확한 자리는 누구도 모릅니다
+              </p>
+              <p className="text-[12px] text-text-sub leading-relaxed">
+                좌표는 <b className="text-text-main">동(洞) 단위</b>까지만 처리됩니다.
+                여러 겹의 방어로 더 좁힐 수 없게 막아두었어요.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 5개 보호 레이어 */}
+        <div className="space-y-1.5 mb-3">
+          <SafetyRow
+            icon="🎲"
+            title="등록 시 좌표 자체를 흐리게"
+            body="같은 자리를 두 번 찍어도 매번 다른 값으로 저장돼요. 본인도 역추적 불가."
+          />
+          <SafetyRow
+            icon="👻"
+            title="비로그인 외부인 = 도트와 카운트만"
+            body="사진·이름·동 이름 일절 비공개. 동 단위 N마리 신호만 노출."
+          />
+          <SafetyRow
+            icon="🚫"
+            title="위치 단어 자동 차단"
+            body="역·출구·시장·공원·아파트·도로명·학교 등 11종 패턴 등록 차단."
+          />
+          <SafetyRow
+            icon="📷"
+            title="사진 GPS 메타데이터 자동 제거"
+            body="업로드 시 WebP 재인코딩으로 EXIF 전부 삭제. 좌표 추출 불가."
+          />
+          <SafetyRow
+            icon="🔒"
+            title="DB 권한 격리 (RLS)"
+            body="본인이 등록한 핀만 수정·삭제. 코드 우회 시도도 DB가 거부."
+          />
+        </div>
+
+        {/* 정직한 한계 + 철학 */}
+        <div
+          className="rounded-2xl p-4 mb-3"
+          style={{
+            background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)",
+            border: "1px solid rgba(196,126,90,0.20)",
+          }}
+        >
+          <p className="text-[12px] text-text-sub leading-[1.85]">
+            <b className="text-text-main">한계도 솔직히 말씀드려요.</b> 100% 안전은 없습니다.
+            하지만 학대자들은 도시공존이 있든 없든 골목을 답사합니다.
+            가장 위험한 환경은 <b className="text-text-main">동네가 무관심한 상태</b>예요.
+          </p>
+          <p className="text-[12px] text-text-sub leading-[1.85] mt-2">
+            <b style={{ color: "#A8684A" }}>시민의 시선이 모이는 것</b> — 그게 학대자에게 가장
+            강한 억제력입니다. 도시공존은 그 시선을 모으려고 만들어진 도구예요.
+          </p>
+        </div>
+
+        {/* 등록 안 할 자유 */}
+        <div className="rounded-xl px-3.5 py-3 flex items-start gap-2" style={{ background: "rgba(232,107,140,0.08)", border: "1px solid rgba(232,107,140,0.18)" }}>
+          <Heart size={14} className="shrink-0 mt-0.5" style={{ color: "#E86B8C" }} />
+          <p className="text-[11.5px] text-text-sub leading-relaxed">
+            너무 걱정되는 아이는 <b className="text-text-main">등록 안 하셔도 됩니다.</b>{" "}
+            지도 보기·커뮤니티·돌봄다이어리·이웃 쪽지 등 모든 기능은 등록 없이도 쓸 수 있어요.
+          </p>
+        </div>
+      </section>
+
       {/* 이렇게 시작해보세요 — 3단계 액션 가이드 */}
       <section className="px-5 mt-10">
         <div className="flex items-center gap-2 mb-3">
@@ -1237,5 +1329,20 @@ function FaqRow({ q, a }: { q: string; a: string }) {
       </summary>
       <p className="text-[12px] text-text-sub mt-2.5 leading-relaxed">{a}</p>
     </details>
+  );
+}
+
+function SafetyRow({ icon, title, body }: { icon: string; title: string; body: string }) {
+  return (
+    <div
+      className="bg-white rounded-xl p-3 flex items-start gap-2.5"
+      style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)", border: "1px solid #E8DED0" }}
+    >
+      <span className="text-[18px] shrink-0 leading-none mt-0.5">{icon}</span>
+      <div className="min-w-0 flex-1">
+        <p className="text-[12.5px] font-extrabold text-text-main leading-snug tracking-tight">{title}</p>
+        <p className="text-[11px] text-text-sub leading-relaxed mt-0.5">{body}</p>
+      </div>
+    </div>
   );
 }
