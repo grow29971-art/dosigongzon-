@@ -561,14 +561,6 @@ export default async function HomeLanding({
           </p>
         </div>
 
-        {/* 등록 안 할 자유 */}
-        <div className="rounded-xl px-3.5 py-3 flex items-start gap-2" style={{ background: "rgba(232,107,140,0.08)", border: "1px solid rgba(232,107,140,0.18)" }}>
-          <Heart size={14} className="shrink-0 mt-0.5" style={{ color: "#E86B8C" }} />
-          <p className="text-[11.5px] text-text-sub leading-relaxed">
-            너무 걱정되는 아이는 <b className="text-text-main">등록 안 하셔도 됩니다.</b>{" "}
-            지도 보기·커뮤니티·돌봄다이어리·이웃 쪽지 등 모든 기능은 등록 없이도 쓸 수 있어요.
-          </p>
-        </div>
       </section>
 
       {/* 이렇게 시작해보세요 — 3단계 액션 가이드 */}
