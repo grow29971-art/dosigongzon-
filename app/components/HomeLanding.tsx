@@ -556,7 +556,7 @@ export default async function HomeLanding({
             가장 위험한 환경은 <b className="text-text-main">동네가 무관심한 상태</b>예요.
           </p>
           <p className="text-[12px] text-text-sub leading-[1.85] mt-2">
-            <b style={{ color: "#A8684A" }}>시민의 시선이 모이는 것</b> — 그게 학대자에게 가장
+            <b style={{ color: "#A8684A" }}>케어테이커와 시민의 시선이 모이는 것</b> — 그게 학대자에게 가장
             강한 억제력입니다. 도시공존은 그 시선을 모으려고 만들어진 도구예요.
           </p>
         </div>
