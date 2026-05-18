@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { X, Camera, MapPin, Loader2, Plus, Lock, ShieldAlert } from "lucide-react";
-import { createCat, uploadCatPhoto, type Cat, type CatGender, type CatHealthStatus, type AdoptionStatus, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP } from "@/lib/cats-repo";
+import { createCat, uploadCatPhoto, type Cat, type CatGender, type CatHealthStatus, type AdoptionStatus, type CatVisibility, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, VISIBILITY_MAP } from "@/lib/cats-repo";
 import { useAuth } from "@/lib/auth-context";
 import CatRegistrationCelebration from "@/app/components/CatRegistrationCelebration";
 import { findLocationViolations, formatViolationMessage } from "@/lib/location-patterns";
@@ -57,6 +57,7 @@ export default function AddCatModal({
   const [neutered, setNeutered] = useState<boolean | null>(null);
   const [healthStatus, setHealthStatus] = useState<CatHealthStatus>("good");
   const [adoptionStatus, setAdoptionStatus] = useState<AdoptionStatus>(null);
+  const [visibility, setVisibility] = useState<CatVisibility>("public");
   // 최대 5장까지 다중 업로드
   const MAX_PHOTOS = 5;
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
@@ -233,6 +234,7 @@ export default function AddCatModal({
         neutered,
         health_status: healthStatus,
         adoption_status: adoptionStatus,
+        visibility,
       });
 
       // 첫 등록 감지 — localStorage 기반 (유저별)
@@ -634,6 +636,47 @@ export default function AddCatModal({
             </div>
             <p className="text-[10.5px] text-text-light mt-1.5 leading-relaxed px-1">
               설정하면 고양이 상세 페이지에 배지와 문의 버튼이 생겨 다른 사용자가 쪽지로 연락할 수 있어요.
+            </p>
+          </div>
+
+          {/* 공개 범위 — Private Circle */}
+          <div>
+            <label className="text-[12px] font-bold text-text-main mb-2 block">
+              공개 범위 <span className="text-text-light font-normal">(보안)</span>
+            </label>
+            <div className="space-y-1.5">
+              {(Object.entries(VISIBILITY_MAP) as [CatVisibility, typeof VISIBILITY_MAP["public"]][]).map(([key, info]) => {
+                const active = visibility === key;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setVisibility(key)}
+                    className="w-full p-3 rounded-2xl text-left flex items-start gap-2.5 transition-all active:scale-[0.99]"
+                    style={{
+                      backgroundColor: active ? `${info.color}15` : "#F9F6F1",
+                      border: `1.5px solid ${active ? info.color : "#E3DCD3"}`,
+                    }}
+                  >
+                    <span className="text-[18px] leading-none mt-0.5">{info.emoji}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-extrabold" style={{ color: active ? info.color : "#3D2F25" }}>
+                        {info.label}
+                      </p>
+                      <p className="text-[11px] mt-0.5 leading-relaxed" style={{ color: active ? info.color : "#8B7562", opacity: active ? 0.85 : 1 }}>
+                        {info.description}
+                      </p>
+                    </div>
+                    {active && <span className="text-[14px] shrink-0" style={{ color: info.color }}>✓</span>}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-[10.5px] text-text-light mt-1.5 leading-relaxed px-1">
+              학대 우려가 큰 아이는 <b>내 서클</b>이나 <b>나만 보기</b>로 설정하세요.{" "}
+              <Link href="/mypage/circle" className="underline" style={{ color: "#6B8E6F" }}>
+                서클 멤버 관리
+              </Link>
             </p>
           </div>
 

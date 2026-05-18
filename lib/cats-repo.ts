@@ -13,6 +13,8 @@ export type CatHealthStatus = "good" | "caution" | "danger";
 // 입양·임시보호 매칭 상태. null = 해당 없음.
 export type AdoptionStatus = "seeking_home" | "temp_care" | "both" | null;
 
+export type CatVisibility = "public" | "private" | "circle";
+
 export interface Cat {
   id: string;
   name: string;
@@ -27,11 +29,33 @@ export interface Cat {
   neutered: boolean | null;
   health_status: CatHealthStatus;
   adoption_status: AdoptionStatus;
+  visibility: CatVisibility;
   caretaker_id: string | null;
   caretaker_name: string | null;
   like_count: number;
   created_at: string;
 }
+
+export const VISIBILITY_MAP: Record<CatVisibility, { label: string; emoji: string; color: string; description: string }> = {
+  public: {
+    label: "전체 공개",
+    emoji: "🌍",
+    color: "#4A7BA8",
+    description: "모든 가입자에게 동(洞) 단위로 노출돼요.",
+  },
+  circle: {
+    label: "내 서클",
+    emoji: "🤝",
+    color: "#6B8E6F",
+    description: "내가 승인한 서클 멤버에게만 보여요.",
+  },
+  private: {
+    label: "나만 보기",
+    emoji: "🔒",
+    color: "#A8684A",
+    description: "본인만 볼 수 있어요. 지도·통계 모두 제외.",
+  },
+};
 
 export const ADOPTION_MAP: Record<
   Exclude<AdoptionStatus, null>,
@@ -67,6 +91,7 @@ export interface CreateCatInput {
   neutered?: boolean | null;
   health_status?: CatHealthStatus;
   adoption_status?: AdoptionStatus;
+  visibility?: CatVisibility;
   caretaker_name?: string;
 }
 
@@ -1145,7 +1170,7 @@ function computeStreakAndWeekly(
 // ── 고양이 정보 수정 (본인 또는 admin) ──
 export async function updateCat(
   catId: string,
-  input: Partial<Pick<Cat, "name" | "description" | "region" | "tags" | "photo_url" | "photo_urls" | "gender" | "neutered" | "health_status" | "adoption_status" | "lat" | "lng">>,
+  input: Partial<Pick<Cat, "name" | "description" | "region" | "tags" | "photo_url" | "photo_urls" | "gender" | "neutered" | "health_status" | "adoption_status" | "visibility" | "lat" | "lng">>,
 ): Promise<Cat> {
   const supabase = createClient();
 

@@ -23,6 +23,7 @@ import {
   Sparkles,
   Trophy,
   Ban,
+  ShieldCheck,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 const InquiryModal = dynamic(() => import("@/app/components/InquiryModal"), { ssr: false });
@@ -985,6 +986,32 @@ export default function MyPage() {
                 </p>
               </div>
               <ChevronRight size={16} className="shrink-0" style={{ color: "#48A59E", opacity: 0.7 }} />
+            </Link>
+            <Link
+              href="/mypage/circle"
+              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
+              style={{
+                background: "#FFFFFF",
+                borderRadius: 16,
+                boxShadow: "0 4px 14px rgba(107,142,111,0.10), 0 1px 2px rgba(0,0,0,0.02)",
+                border: "1px solid rgba(0,0,0,0.04)",
+              }}
+            >
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                style={{ backgroundColor: "rgba(107,142,111,0.12)" }}
+              >
+                <ShieldCheck size={18} color="#4F6B53" strokeWidth={2} />
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+                  내 서클 (Private Circle)
+                </p>
+                <p className="text-[11px] text-text-sub mt-0.5">
+                  믿는 이웃에게만 보이는 핀 그룹 관리
+                </p>
+              </div>
+              <ChevronRight size={16} className="shrink-0" style={{ color: "#4F6B53", opacity: 0.7 }} />
             </Link>
             <Link
               href="/mypage/blocked-users"
