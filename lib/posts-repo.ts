@@ -5,6 +5,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { isSafeImageUrl } from "@/lib/url-validate";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
+import { enforceUserActionLimit } from "@/lib/rate-limit";
 import type { Post, PostCategory } from "@/lib/types";
 import { getDisplayName, getMyActivitySummary, computeScore, computeLevel } from "@/lib/cats-repo";
 
@@ -116,6 +117,16 @@ export async function createPost(input: CreatePostInput): Promise<Post> {
   if (titleAbuse.length > 0) throw new Error(formatAbuseMessage(titleAbuse));
   const contentAbuse = findAbuseViolations(content);
   if (contentAbuse.length > 0) throw new Error(formatAbuseMessage(contentAbuse));
+
+  // Rate limit — 분당 5건, 일당 30건
+  await enforceUserActionLimit(supabase, {
+    table: "posts",
+    userColumn: "author_id",
+    userId: user.id,
+    perMinute: 5,
+    perDay: 30,
+    label: "게시글",
+  });
 
   // 이미지 URL 검증
   const safeImages = (input.images ?? []).filter(isSafeImageUrl);

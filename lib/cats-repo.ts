@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { isSafeImageUrl } from "@/lib/url-validate";
 import { findLocationViolations, formatViolationMessage } from "@/lib/location-patterns";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
+import { enforceUserActionLimit } from "@/lib/rate-limit";
 
 export type CatGender = "male" | "female" | "unknown";
 export type CatHealthStatus = "good" | "caution" | "danger";
@@ -759,6 +760,16 @@ export async function createComment(
     const abuse = findAbuseViolations(trimmed);
     if (abuse.length > 0) throw new Error(formatAbuseMessage(abuse));
   }
+
+  // Rate limit — 분당 30건, 일당 200건
+  await enforceUserActionLimit(supabase, {
+    table: "cat_comments",
+    userColumn: "author_id",
+    userId: user.id,
+    perMinute: 30,
+    perDay: 200,
+    label: "댓글",
+  });
 
   // photo_url 검증
   const safePhotoUrl = photoUrl && isSafeImageUrl(photoUrl) ? photoUrl : null;

@@ -6,6 +6,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { getDisplayName, getMyActivitySummary, computeScore, computeLevel } from "@/lib/cats-repo";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
+import { enforceUserActionLimit } from "@/lib/rate-limit";
 
 export interface PostComment {
   id: string;
@@ -53,6 +54,16 @@ export async function createPostComment(
   // 어뷰징 검증
   const abuse = findAbuseViolations(trimmed);
   if (abuse.length > 0) throw new Error(formatAbuseMessage(abuse));
+
+  // Rate limit — 분당 30건, 일당 200건
+  await enforceUserActionLimit(supabase, {
+    table: "post_comments",
+    userColumn: "author_id",
+    userId: user.id,
+    perMinute: 30,
+    perDay: 200,
+    label: "댓글",
+  });
 
   const equippedTitle =
     (user.user_metadata?.equipped_title as string | undefined) ?? null;

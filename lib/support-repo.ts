@@ -6,6 +6,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { getDisplayName } from "@/lib/cats-repo";
 import { requireAdmin } from "@/lib/admin-guard";
+import { enforceUserActionLimit } from "@/lib/rate-limit";
 
 // ══ 신고 ══
 export type ReportTargetType = "comment" | "cat" | "post" | "post_comment";
@@ -71,6 +72,16 @@ export async function createReport(input: CreateReportInput): Promise<void> {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("로그인이 필요해요.");
+
+  // Rate limit — 분당 10건, 일당 50건 (신고 도배 방어)
+  await enforceUserActionLimit(supabase, {
+    table: "reports",
+    userColumn: "reporter_id",
+    userId: user.id,
+    perMinute: 10,
+    perDay: 50,
+    label: "신고",
+  });
 
   const { error } = await supabase.from("reports").insert({
     reporter_id: user.id,

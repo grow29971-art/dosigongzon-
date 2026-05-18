@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { getDisplayName, convertImageToWebp } from "@/lib/cats-repo";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
+import { enforceUserActionLimit } from "@/lib/rate-limit";
 
 export interface DirectMessage {
   id: string;
@@ -32,11 +33,21 @@ export async function sendDM(receiverId: string, receiverName: string, body: str
   const trimmed = body.trim();
   if (!trimmed && !photoUrl) throw new Error("내용을 입력해주세요.");
 
-  // 어뷰징 검증 — DM도 욕설·위협 차단 (rate limit·신고는 별도 작업)
+  // 어뷰징 검증 — DM도 욕설·위협 차단
   if (trimmed) {
     const abuse = findAbuseViolations(trimmed);
     if (abuse.length > 0) throw new Error(formatAbuseMessage(abuse));
   }
+
+  // Rate limit — 도배 방어 (분당 10건, 일당 100건)
+  await enforceUserActionLimit(supabase, {
+    table: "direct_messages",
+    userColumn: "sender_id",
+    userId: user.id,
+    perMinute: 10,
+    perDay: 100,
+    label: "쪽지",
+  });
 
   // 보안: user_metadata는 유저가 조작 가능. profiles 테이블에서 실제 스냅샷 조회 (위조 방어)
   const { data: profile } = await supabase
