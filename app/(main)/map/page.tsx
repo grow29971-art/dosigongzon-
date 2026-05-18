@@ -37,6 +37,7 @@ import {
 import dynamic from "next/dynamic";
 // 모달·고급 패널은 첫 페인트 후로 코드 스플리팅 (열기 전엔 다운로드 안 함)
 const AddCatModal = dynamic(() => import("@/app/components/AddCatModal"), { ssr: false });
+const VisibilityIntroSheet = dynamic(() => import("@/app/components/VisibilityIntroSheet"), { ssr: false });
 const ReportModal = dynamic(() => import("@/app/components/ReportModal"), { ssr: false });
 import {
   listCats,
@@ -328,6 +329,9 @@ export default function MapPage() {
   }, [chatOpen, chatArea]);
 
   const [addModalOpen, setAddModalOpen] = useState(false);
+  // 등록 시작 전 공개 범위 안내 시트 + 선택된 visibility (시트 → 모달로 전달)
+  const [visibilityIntroOpen, setVisibilityIntroOpen] = useState(false);
+  const [pickedVisibility, setPickedVisibility] = useState<CatVisibility>("public");
   const [pickedCoord, setPickedCoord] = useState<{ lat: number; lng: number } | undefined>();
 
   // ── 댓글 상태 ──
@@ -820,7 +824,7 @@ export default function MapPage() {
       window.kakao.maps.event.addListener<KakaoMapMouseEvent>(map, "rightclick", (e) => {
         const latlng = e.latLng;
         setPickedCoord({ lat: latlng.getLat(), lng: latlng.getLng() });
-        setAddModalOpen(true);
+        setVisibilityIntroOpen(true);
       });
 
       // 지도 이동/줌 끝날 때 현재 구 감지 (시·도 + 구 조합으로 유니크하게)
@@ -1554,7 +1558,7 @@ export default function MapPage() {
     } else {
       setPickedCoord(MAP_CENTER);
     }
-    setAddModalOpen(true);
+    setVisibilityIntroOpen(true);
   };
 
   // ── API 키 미설정 ──
@@ -3440,6 +3444,17 @@ export default function MapPage() {
         authorName={reportTarget?.authorName ?? null}
       />
 
+      {/* 등록 시작 전 공개 범위 안내 시트 — 매번 노출 */}
+      <VisibilityIntroSheet
+        open={visibilityIntroOpen}
+        onClose={() => setVisibilityIntroOpen(false)}
+        onPick={(v) => {
+          setPickedVisibility(v);
+          setVisibilityIntroOpen(false);
+          setAddModalOpen(true);
+        }}
+      />
+
       {/* 등록 모달 */}
       <AddCatModal
         open={addModalOpen}
@@ -3447,6 +3462,7 @@ export default function MapPage() {
         onCreated={handleCatCreated}
         initialLat={pickedCoord?.lat}
         initialLng={pickedCoord?.lng}
+        initialVisibility={pickedVisibility}
       />
 
       {/* 고양이 위치 변경 Picker (등록자 본인만) */}

@@ -17,6 +17,8 @@ interface AddCatModalProps {
   // 지도 클릭으로 전달된 좌표 (없으면 유저가 입력)
   initialLat?: number;
   initialLng?: number;
+  // 등록 시작 전 시트에서 선택한 visibility (없으면 public)
+  initialVisibility?: CatVisibility;
 }
 
 const TAG_PRESETS = [
@@ -40,6 +42,7 @@ export default function AddCatModal({
   onCreated,
   initialLat,
   initialLng,
+  initialVisibility = "public",
 }: AddCatModalProps) {
   const { user } = useAuth();
   const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
@@ -57,7 +60,11 @@ export default function AddCatModal({
   const [neutered, setNeutered] = useState<boolean | null>(null);
   const [healthStatus, setHealthStatus] = useState<CatHealthStatus>("good");
   const [adoptionStatus, setAdoptionStatus] = useState<AdoptionStatus>(null);
-  const [visibility, setVisibility] = useState<CatVisibility>("public");
+  const [visibility, setVisibility] = useState<CatVisibility>(initialVisibility);
+  // initialVisibility prop이 바뀌면 state 동기화 (모달 재오픈 시)
+  useEffect(() => {
+    if (open) setVisibility(initialVisibility);
+  }, [open, initialVisibility]);
   // 최대 5장까지 다중 업로드
   const MAX_PHOTOS = 5;
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
