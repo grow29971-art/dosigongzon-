@@ -81,7 +81,7 @@ type AreaChat = {
 };
 import { createClient as createSupabaseClient } from "@/lib/supabase/client";
 const CareLogTab = dynamic(() => import("@/app/components/CareLogTab"), { ssr: false });
-import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, toggleCatLike, listMyLikedCatIds, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, type CatGender, type CatHealthStatus, type AdoptionStatus } from "@/lib/cats-repo";
+import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, toggleCatLike, listMyLikedCatIds, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, VISIBILITY_MAP, type CatGender, type CatHealthStatus, type AdoptionStatus, type CatVisibility } from "@/lib/cats-repo";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import {
   listMyActivityRegions,
@@ -1003,6 +1003,7 @@ export default function MapPage() {
   const [editNeutered, setEditNeutered] = useState<boolean | null>(null);
   const [editHealth, setEditHealth] = useState<CatHealthStatus>("good");
   const [editAdoption, setEditAdoption] = useState<AdoptionStatus>(null);
+  const [editVisibility, setEditVisibility] = useState<CatVisibility>("public");
   const [editSaving, setEditSaving] = useState(false);
   // 위치 변경 (편집 모드에서 지도 picker로 갱신)
   const [editLat, setEditLat] = useState<number | null>(null);
@@ -2474,8 +2475,11 @@ export default function MapPage() {
 
       {/* 선택된 고양이 카드 */}
       {selectedCat && (
-        <div className="absolute bottom-0 left-0 right-0 z-20 px-4 pb-4 pointer-events-none">
-          {/* 카드 바깥 floating 컨트롤 — 스크롤과 무관하게 항상 보임 */}
+        <div
+          className="absolute bottom-0 left-0 right-0 z-20 px-4 pb-4 pointer-events-none"
+          style={{ paddingTop: "max(env(safe-area-inset-top), 12px)" }}
+        >
+          {/* 카드 바깥 floating 컨트롤 — 스크롤과 무관하게 항상 보임. 상단 safe area 위에 위치. */}
           <div className="flex justify-end items-center gap-2 mb-2 pr-1 pointer-events-auto">
             {(user?.id === selectedCat.caretaker_id || isAdmin) && !editingCat && (
               <>
@@ -2490,6 +2494,7 @@ export default function MapPage() {
                     setEditNeutered(selectedCat.neutered ?? null);
                     setEditHealth(selectedCat.health_status ?? "good");
                     setEditAdoption(selectedCat.adoption_status ?? null);
+                    setEditVisibility(selectedCat.visibility ?? "public");
                     setEditLat(null);
                     setEditLng(null);
                   }}
@@ -2529,7 +2534,10 @@ export default function MapPage() {
             </button>
           </div>
 
-          <div className="relative bg-white rounded-[28px] overflow-hidden shadow-[0_-4px_24px_rgba(0,0,0,0.12)] pointer-events-auto animate-slide-up max-h-[85dvh] overflow-y-auto">
+          <div
+            className="relative bg-white rounded-[28px] overflow-hidden shadow-[0_-4px_24px_rgba(0,0,0,0.12)] pointer-events-auto animate-slide-up overflow-y-auto"
+            style={{ maxHeight: "calc(100dvh - max(env(safe-area-inset-top), 12px) - 80px)" }}
+          >
 
             {/* 사진 — 변환 endpoint로 모바일 폭에 맞춰 리사이즈 (원본 4MB → ~50KB) */}
             <div className="relative aspect-[4/3] overflow-hidden bg-surface-alt">
@@ -2748,6 +2756,38 @@ export default function MapPage() {
                       </button>
                     ))}
                   </div>
+                  {/* 공개 범위 (Private Circle) */}
+                  <div className="pt-2">
+                    <label className="text-[11px] font-bold text-text-sub mb-1.5 block">공개 범위</label>
+                    <div className="space-y-1">
+                      {(Object.entries(VISIBILITY_MAP) as [CatVisibility, typeof VISIBILITY_MAP["public"]][]).map(([k, info]) => {
+                        const active = editVisibility === k;
+                        return (
+                          <button
+                            key={k}
+                            type="button"
+                            onClick={() => setEditVisibility(k)}
+                            className="w-full p-2.5 rounded-xl text-left flex items-start gap-2 transition-all active:scale-[0.99]"
+                            style={{
+                              backgroundColor: active ? `${info.color}15` : "#F9F6F1",
+                              border: `1.5px solid ${active ? info.color : "#E3DCD3"}`,
+                            }}
+                          >
+                            <span className="text-[15px] leading-none mt-0.5">{info.emoji}</span>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[12px] font-extrabold" style={{ color: active ? info.color : "#3D2F25" }}>
+                                {info.label}
+                              </p>
+                              <p className="text-[10.5px] mt-0.5 leading-relaxed" style={{ color: active ? info.color : "#8B7562", opacity: active ? 0.85 : 1 }}>
+                                {info.description}
+                              </p>
+                            </div>
+                            {active && <span className="text-[12px] shrink-0" style={{ color: info.color }}>✓</span>}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                   <div className="flex gap-2 pt-1">
                     <button
                       onClick={async () => {
@@ -2763,6 +2803,7 @@ export default function MapPage() {
                             neutered: editNeutered,
                             health_status: editHealth,
                             adoption_status: editAdoption,
+                            visibility: editVisibility,
                             ...(editLat !== null && editLng !== null
                               ? { lat: editLat, lng: editLng }
                               : {}),
