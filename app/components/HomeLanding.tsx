@@ -469,6 +469,47 @@ export default async function HomeLanding({
           </div>
         </div>
 
+        {/* 🔥 Private Circle — 가장 강한 신뢰 도구. 학대 공포 원천 차단. */}
+        <div
+          className="rounded-2xl overflow-hidden mb-3"
+          style={{
+            background: "linear-gradient(160deg, #4F6B53 0%, #6B8E6F 70%, #8FAE92 100%)",
+            boxShadow: "0 10px 28px rgba(79,107,83,0.22), 0 3px 8px rgba(79,107,83,0.14)",
+          }}
+        >
+          <div className="p-4">
+            <div className="flex items-center gap-1.5 mb-2">
+              <Lock size={13} color="#FFF7C4" />
+              <span className="text-[10px] font-extrabold tracking-[0.18em]" style={{ color: "#FFF7C4" }}>
+                PRIVATE CIRCLE
+              </span>
+              <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full" style={{ background: "#FFF7C4", color: "#4F6B53" }}>
+                NEW
+              </span>
+            </div>
+            <p className="text-[15px] font-extrabold text-white leading-snug mb-2 tracking-tight">
+              가장 무서운 건 가입자 중에 학대자가 있을까봐?
+            </p>
+            <p className="text-[12.5px] leading-[1.85]" style={{ color: "rgba(255,255,255,0.92)" }}>
+              그 공포에 대한 답이 <b style={{ color: "#FFF7C4" }}>Private Circle</b>입니다.
+              걱정되는 아이는 <b style={{ color: "#FFF7C4" }}>"내 서클"</b>로 설정하면,
+              내가 직접 승인한 이웃에게만 보입니다.
+            </p>
+            <p className="text-[12px] leading-relaxed mt-2" style={{ color: "rgba(255,255,255,0.78)" }}>
+              일반 가입자에게도 보이지 않고, 외부인에게는 존재 자체가 노출되지 않습니다.
+              믿는 사람들 사이에서만 조용히 함께 돌볼 수 있어요.
+            </p>
+          </div>
+          <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: "rgba(0,0,0,0.18)" }}>
+            <span className="text-[11px] font-bold flex-1" style={{ color: "rgba(255,255,255,0.88)" }}>
+              등록 시 공개 범위 3단계 · 마이페이지에서 서클 관리
+            </span>
+            <span className="text-[11px] font-extrabold px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.92)", color: "#4F6B53" }}>
+              가입 후 사용
+            </span>
+          </div>
+        </div>
+
         {/* 5개 보호 레이어 */}
         <div className="space-y-1.5 mb-3">
           <SafetyRow
