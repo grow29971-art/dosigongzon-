@@ -401,6 +401,7 @@ export default async function PharmacyGuidePage() {
                     fill
                     sizes="(max-width: 720px) 100vw, 360px"
                     className="object-cover"
+                    unoptimized
                   />
                 </div>
               )}

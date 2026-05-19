@@ -64,7 +64,8 @@ export default function ActivityRegionsPage() {
   const [searchResults, setSearchResults] = useState<KakaoPlaceResult[]>([]);
   const [searching, setSearching] = useState(false);
 
-  const apiKey = process.env.NEXT_PUBLIC_KAKAO_MAP_KEY;
+  // env 오염 방어: trim + 양쪽 따옴표 제거 ([[project_dosigongzon_env_trim]])
+  const apiKey = (process.env.NEXT_PUBLIC_KAKAO_MAP_KEY ?? "").trim().replace(/^["']|["']$/g, "") || null;
 
   // ── 비로그인 가드 ──
   useEffect(() => {
@@ -138,7 +139,9 @@ export default function ActivityRegionsPage() {
     let ro: ResizeObserver | null = null;
     let onResize: (() => void) | null = null;
 
-    window.kakao.maps.load(() => {
+    // SDK가 이미 완전히 로드된 경우(다른 페이지에서) kakao.maps.load 콜백이 안 불릴 수 있음 →
+    // Map 생성자가 이미 정의돼 있으면 직접 init, 아니면 load() 호출.
+    const initMap = () => {
       if (unmounted) return;
       const container = mapContainerRef.current;
       if (!container) return;
@@ -174,7 +177,14 @@ export default function ActivityRegionsPage() {
       onResize = () => { try { map.relayout(); } catch {} };
       window.addEventListener("resize", onResize);
       window.addEventListener("orientationchange", onResize);
-    });
+    };
+
+    // Map 생성자가 이미 존재 → 즉시 init, 아니면 load() 호출
+    if (window.kakao.maps && typeof (window.kakao.maps as unknown as { Map?: unknown }).Map === "function") {
+      initMap();
+    } else {
+      window.kakao.maps.load(initMap);
+    }
 
     return () => {
       unmounted = true;
