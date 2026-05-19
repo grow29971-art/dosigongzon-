@@ -7,7 +7,7 @@
 import { useEffect, useState } from "react";
 import { Rocket, Sparkles } from "lucide-react";
 
-const LAUNCH_DATE = new Date("2026-05-28T00:00:00+09:00");
+const LAUNCH_DATE = new Date("2026-05-25T00:00:00+09:00");
 const BANNER_HEIGHT = 38; // py-2.5 + 12.5px line-height ≈ 38px
 
 export default function LaunchCountdown() {
