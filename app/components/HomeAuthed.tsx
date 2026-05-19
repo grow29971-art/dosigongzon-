@@ -38,6 +38,7 @@ import StreakFreezeButton from "@/app/components/StreakFreezeButton";
 import SplashLoading from "@/app/components/SplashLoading";
 import FoundingMemberBanner from "@/app/components/FoundingMemberBanner";
 import PatchUpdateBanner518 from "@/app/components/PatchUpdateBanner518";
+import MyCircleQuickEntry from "@/app/components/MyCircleQuickEntry";
 import { countMyAcceptedCircleMembers } from "@/lib/circles-repo";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
@@ -648,6 +649,9 @@ export default function HomeAuthed({
 
       {/* ══════ 5/18 패치 안내 — Private Circle (영구 dismiss) ══════ */}
       {user && <PatchUpdateBanner518 />}
+
+      {/* ══════ 내 서클 빠른 진입 (영구) — 채팅·관리 한 번에 ══════ */}
+      {user && <MyCircleQuickEntry />}
 
       {/* ══════ 창립 멤버 환영 배너 (5/20 전 가입자 영구 자부심) ══════ */}
       {user && <FoundingMemberBanner />}
