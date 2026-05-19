@@ -7,15 +7,16 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Send, Loader2, Trash2, Users } from "lucide-react";
+import { ArrowLeft, Send, Loader2, Trash2, Users, Image as ImageIcon, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import { sanitizeImageUrl } from "@/lib/url-validate";
-import { thumbnailUrl } from "@/lib/cats-repo";
+import { thumbnailUrl, optimizedImageUrl } from "@/lib/cats-repo";
 import {
   listCircleMessages,
   sendCircleMessage,
   deleteCircleMessage,
+  uploadCircleChatImage,
   type CircleMessage,
 } from "@/lib/circle-chat-repo";
 
@@ -41,8 +42,11 @@ export default function CircleChatPage() {
   const [error, setError] = useState("");
   const [ownerInfo, setOwnerInfo] = useState<{ nickname: string | null; ownerId: string } | null>(null);
   const [memberCount, setMemberCount] = useState(0);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // 메시지 초기 로드 + Realtime 구독
   useEffect(() => {
@@ -133,22 +137,51 @@ export default function CircleChatPage() {
   }, [messages]);
 
   const handleSend = async () => {
-    if (!input.trim() || sending) return;
+    if ((!input.trim() && !photoFile) || sending) return;
     setSending(true);
     setError("");
     try {
-      const sent = await sendCircleMessage(circleId, input);
+      let imageUrl: string | null = null;
+      if (photoFile) {
+        imageUrl = await uploadCircleChatImage(photoFile);
+      }
+      const sent = await sendCircleMessage(circleId, input, imageUrl);
       // 낙관적 추가 (RT가 도착 전이라도 즉시 표시)
       setMessages((prev) => {
         if (prev.some((m) => m.id === sent.id)) return prev;
         return [...prev, sent];
       });
       setInput("");
+      setPhotoFile(null);
+      setPhotoPreview(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "전송 실패");
     } finally {
       setSending(false);
     }
+  };
+
+  const handlePickPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setError("이미지 파일만 첨부할 수 있어요.");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setError("10MB 이하 사진만 가능해요.");
+      return;
+    }
+    setPhotoFile(file);
+    setPhotoPreview(URL.createObjectURL(file));
+    setError("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleClearPhoto = () => {
+    if (photoPreview) URL.revokeObjectURL(photoPreview);
+    setPhotoFile(null);
+    setPhotoPreview(null);
   };
 
   const handleDelete = async (id: string) => {
@@ -256,16 +289,35 @@ export default function CircleChatPage() {
                           {m.sender_name ?? "익명"}
                         </p>
                       )}
-                      <div
-                        className={`px-3 py-2 rounded-2xl text-[13.5px] leading-relaxed whitespace-pre-wrap break-words ${isMine ? "rounded-tr-sm" : "rounded-tl-sm"}`}
-                        style={{
-                          background: isMine ? "#C47E5A" : "#FFFFFF",
-                          color: isMine ? "#FFFFFF" : "#3D2F25",
-                          boxShadow: isMine ? "0 2px 6px rgba(196,126,90,0.25)" : "0 1px 3px rgba(0,0,0,0.05)",
-                        }}
-                      >
-                        {m.body}
-                      </div>
+                      {m.image_url && (
+                        <a
+                          href={m.image_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`block mb-1 rounded-2xl overflow-hidden ${isMine ? "rounded-tr-sm" : "rounded-tl-sm"}`}
+                          style={{ maxWidth: 220, boxShadow: "0 2px 6px rgba(0,0,0,0.10)" }}
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={optimizedImageUrl(m.image_url, 480, 70) ?? m.image_url}
+                            alt=""
+                            loading="lazy"
+                            className="w-full h-auto block"
+                          />
+                        </a>
+                      )}
+                      {m.body && (
+                        <div
+                          className={`px-3 py-2 rounded-2xl text-[13.5px] leading-relaxed whitespace-pre-wrap break-words ${isMine ? "rounded-tr-sm" : "rounded-tl-sm"}`}
+                          style={{
+                            background: isMine ? "#C47E5A" : "#FFFFFF",
+                            color: isMine ? "#FFFFFF" : "#3D2F25",
+                            boxShadow: isMine ? "0 2px 6px rgba(196,126,90,0.25)" : "0 1px 3px rgba(0,0,0,0.05)",
+                          }}
+                        >
+                          {m.body}
+                        </div>
+                      )}
                       <div className="flex items-center gap-1.5 mt-0.5 px-1">
                         <span className="text-[10px] text-text-light">{formatTime(m.created_at)}</span>
                         {isMine && (
@@ -300,7 +352,40 @@ export default function CircleChatPage() {
         {error && (
           <p className="text-[10.5px] mb-1.5 px-1" style={{ color: "#B84545" }}>{error}</p>
         )}
+        {/* 사진 미리보기 */}
+        {photoPreview && (
+          <div className="mb-2 relative inline-block">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={photoPreview} alt="" className="rounded-xl max-h-32 object-cover" style={{ maxWidth: 120 }} />
+            <button
+              type="button"
+              onClick={handleClearPhoto}
+              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center"
+              style={{ background: "#2A2A28", color: "#fff" }}
+              aria-label="사진 제거"
+            >
+              <X size={11} strokeWidth={3} />
+            </button>
+          </div>
+        )}
         <div className="flex items-center gap-2">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handlePickPhoto}
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={sending || !!photoPreview}
+            className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 active:scale-90 disabled:opacity-40"
+            style={{ background: "#F6F1EA", color: "#8B7562" }}
+            aria-label="사진 첨부"
+          >
+            <ImageIcon size={17} />
+          </button>
           <input
             type="text"
             value={input}
@@ -308,7 +393,7 @@ export default function CircleChatPage() {
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.nativeEvent.isComposing) handleSend();
             }}
-            placeholder="메시지를 입력하세요"
+            placeholder={photoPreview ? "사진과 함께 보낼 메시지 (선택)" : "메시지를 입력하세요"}
             maxLength={1000}
             disabled={sending}
             className="flex-1 rounded-2xl px-4 py-2.5 text-[14px] outline-none disabled:opacity-50"
@@ -316,7 +401,7 @@ export default function CircleChatPage() {
           />
           <button
             onClick={handleSend}
-            disabled={!input.trim() || sending}
+            disabled={(!input.trim() && !photoFile) || sending}
             className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 active:scale-90 disabled:opacity-40"
             style={{ background: "#C47E5A" }}
             aria-label="전송"

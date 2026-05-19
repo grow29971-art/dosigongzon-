@@ -4,6 +4,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 import { enforceUserActionLimit } from "@/lib/rate-limit";
+import { convertImageToWebp } from "@/lib/cats-repo";
 
 export interface CircleMessage {
   id: string;
@@ -12,7 +13,29 @@ export interface CircleMessage {
   sender_name: string | null;
   sender_avatar_url: string | null;
   body: string;
+  image_url: string | null;
   created_at: string;
+}
+
+/** 서클 채팅 사진 업로드 → 공개 URL 반환 (cat-photos 버킷 재사용) */
+export async function uploadCircleChatImage(file: File): Promise<string> {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("로그인이 필요해요.");
+
+  const webpFile = await convertImageToWebp(file, 1024, 0.8);
+  const ts = Date.now();
+  const rand = Math.random().toString(36).slice(2, 8);
+  const fileName = `circle/${user.id}/${ts}-${rand}.webp`;
+  const { error: uploadErr } = await supabase.storage
+    .from("cat-photos")
+    .upload(fileName, webpFile, { contentType: "image/webp" });
+  if (uploadErr) throw new Error(`사진 업로드 실패: ${uploadErr.message}`);
+
+  const { data } = supabase.storage.from("cat-photos").getPublicUrl(fileName);
+  return data.publicUrl;
 }
 
 /** 채팅 메시지 목록 (최근 → 과거 100개). */
@@ -30,7 +53,11 @@ export async function listCircleMessages(circleId: string, limit = 100): Promise
 }
 
 /** 메시지 전송. RLS가 권한 검증. abuse + rate limit 적용. */
-export async function sendCircleMessage(circleId: string, body: string): Promise<CircleMessage> {
+export async function sendCircleMessage(
+  circleId: string,
+  body: string,
+  imageUrl?: string | null,
+): Promise<CircleMessage> {
   const supabase = createClient();
   const {
     data: { user },
@@ -38,12 +65,15 @@ export async function sendCircleMessage(circleId: string, body: string): Promise
   if (!user) throw new Error("로그인이 필요해요.");
 
   const trimmed = body.trim();
-  if (!trimmed) throw new Error("내용을 입력해주세요.");
+  const hasImage = !!imageUrl;
+  if (!trimmed && !hasImage) throw new Error("내용 또는 사진을 입력해주세요.");
   if (trimmed.length > 1000) throw new Error("1000자 이내로 작성해주세요.");
 
-  // 어뷰징 검증
-  const abuse = findAbuseViolations(trimmed);
-  if (abuse.length > 0) throw new Error(formatAbuseMessage(abuse));
+  // 어뷰징 검증 (텍스트 있을 때만)
+  if (trimmed) {
+    const abuse = findAbuseViolations(trimmed);
+    if (abuse.length > 0) throw new Error(formatAbuseMessage(abuse));
+  }
 
   // Rate limit — 분당 30건, 일당 300건 (단체 채팅이라 DM보다 약간 여유)
   await enforceUserActionLimit(supabase, {
@@ -72,10 +102,32 @@ export async function sendCircleMessage(circleId: string, body: string): Promise
       sender_name: senderName,
       sender_avatar_url: senderAvatar,
       body: trimmed,
+      image_url: imageUrl ?? null,
     })
     .select()
     .single();
   if (error) throw new Error(`전송 실패: ${error.message}`);
+
+  // 푸시 알림 — 다른 멤버에게 fire-and-forget
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.access_token) {
+      void fetch("/api/circle/notify-message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          circleId,
+          messagePreview: trimmed ? trimmed.slice(0, 60) : "📷 사진",
+        }),
+      });
+    }
+  } catch {
+    // 푸시 실패해도 메시지 전송 자체는 성공
+  }
+
   return data as CircleMessage;
 }
 
