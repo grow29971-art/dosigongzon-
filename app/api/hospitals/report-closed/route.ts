@@ -70,19 +70,48 @@ export async function POST(request: Request) {
     return Response.json({ error: "이미 신고된 병원이에요" }, { status: 409 });
   }
 
-  // 숨김 처리
-  const { error } = await supabase
-    .from("rescue_hospitals")
-    .update({ hidden: true })
-    .eq("id", hospitalId);
-
-  if (error) {
+  // 신고를 reports 테이블에 누적 — 1유저가 즉시 hidden 처리하던 abuse vector 차단.
+  // 동일 hospitalId에 3명 이상 신고가 누적되면 admin이 검토 후 처리하는 큐로 운영.
+  const { error: reportInsertErr } = await supabase.from("reports").insert({
+    reporter_id: user.id,
+    reporter_email: null,
+    reporter_name: "익명 신고자",
+    target_type: "hospital_closed",
+    target_id: hospitalId,
+    target_snapshot: null,
+    reason: "closed",
+    description: "병원 폐업 신고",
+  });
+  if (reportInsertErr) {
+    // 동일 유저 중복 신고 등 UNIQUE 위반 — 부드럽게 처리
+    if ((reportInsertErr as { code?: string }).code === "23505") {
+      return Response.json({ error: "이미 신고하셨어요" }, { status: 409 });
+    }
     return Response.json({ error: "처리 실패" }, { status: 500 });
   }
 
-  // 성공 → 로그 기록
+  // 누적 신고 수 확인 — 3건 이상이면 자동 숨김
+  const { count } = await supabase
+    .from("reports")
+    .select("*", { count: "exact", head: true })
+    .eq("target_type", "hospital_closed")
+    .eq("target_id", hospitalId)
+    .neq("status", "dismissed");
+
+  const HIDE_THRESHOLD = 3;
+  if ((count ?? 0) >= HIDE_THRESHOLD) {
+    await supabase.from("rescue_hospitals").update({ hidden: true }).eq("id", hospitalId);
+  }
+
+  // 성공 → in-memory rate-limit 카운터 기록
   userLog.push(now);
   reportLog.set(user.id, userLog);
 
-  return Response.json({ ok: true, message: "폐업 신고가 접수되었어요" });
+  return Response.json({
+    ok: true,
+    message:
+      (count ?? 0) >= HIDE_THRESHOLD
+        ? "신고가 접수돼 자동으로 숨김 처리됐어요"
+        : `신고가 접수됐어요 (${count}/${HIDE_THRESHOLD}건 누적, ${HIDE_THRESHOLD}건부터 자동 숨김)`,
+  });
 }
