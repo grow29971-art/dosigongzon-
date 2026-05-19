@@ -1125,7 +1125,7 @@ export default async function HomeLanding({
           </p>
           <div className="flex gap-2 mt-4">
             <Link
-              href="/about"
+              href="/maker"
               className="flex-1 flex items-center justify-center gap-1 py-2.5 rounded-xl text-[12px] font-extrabold active:scale-[0.98] transition-transform"
               style={{
                 background: "#FFFFFF",
