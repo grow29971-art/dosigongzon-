@@ -132,7 +132,10 @@ export default function ActivityRegionsPage() {
   }, [apiKey]);
 
   // ── 지도 초기화 ──
+  // loading=true일 땐 페이지가 spinner만 렌더해 mapContainerRef.current가 null.
+  // loading=false 된 후 컨테이너가 마운트되므로 deps에 loading 포함 필요.
   useEffect(() => {
+    if (loading) return;
     if (!scriptLoaded || !mapContainerRef.current) return;
     let unmounted = false;
     const timeoutIds: ReturnType<typeof setTimeout>[] = [];
@@ -225,7 +228,7 @@ export default function ActivityRegionsPage() {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scriptLoaded]);
+  }, [scriptLoaded, loading]);
 
   // ── 중심/반경/다른 슬롯 변경 시 오버레이 갱신 ──
   useEffect(() => {
