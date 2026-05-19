@@ -131,6 +131,42 @@ export async function sendCircleMessage(
   return data as CircleMessage;
 }
 
+/** 채팅방 진입 시 호출 — 현재 시각으로 last_read_at upsert. */
+export async function markCircleRead(circleId: string): Promise<void> {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+  await supabase
+    .from("circle_read_marks")
+    .upsert(
+      { user_id: user.id, circle_id: circleId, last_read_at: new Date().toISOString() },
+      { onConflict: "user_id,circle_id" },
+    );
+}
+
+export interface UnreadCircle {
+  circle_id: string;
+  unread_count: number;
+  last_message_at: string;
+}
+
+/** 내 모든 서클의 안 읽음 카운트. */
+export async function listMyUnreadCircles(): Promise<UnreadCircle[]> {
+  const supabase = createClient();
+  const { data, error } = await supabase.rpc("my_unread_circle_messages");
+  if (error) {
+    console.error("[listMyUnreadCircles]", error.message);
+    return [];
+  }
+  return ((data ?? []) as Array<{ circle_id: string; unread_count: number; last_message_at: string }>).map((r) => ({
+    circle_id: r.circle_id,
+    unread_count: Number(r.unread_count) || 0,
+    last_message_at: r.last_message_at,
+  }));
+}
+
 /** 메시지 삭제 — 본인 메시지 또는 서클 owner */
 export async function deleteCircleMessage(messageId: string): Promise<void> {
   const supabase = createClient();

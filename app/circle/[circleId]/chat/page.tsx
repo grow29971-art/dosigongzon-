@@ -17,6 +17,7 @@ import {
   sendCircleMessage,
   deleteCircleMessage,
   uploadCircleChatImage,
+  markCircleRead,
   type CircleMessage,
 } from "@/lib/circle-chat-repo";
 
@@ -52,6 +53,9 @@ export default function CircleChatPage() {
   useEffect(() => {
     if (!user || !circleId) return;
     let cancelled = false;
+
+    // 채팅방 진입 즉시 읽음 마킹 (fire-and-forget)
+    void markCircleRead(circleId);
 
     listCircleMessages(circleId)
       .then((msgs) => {
@@ -110,6 +114,8 @@ export default function CircleChatPage() {
             if (prev.some((m) => m.id === newMsg.id)) return prev;
             return [...prev, newMsg];
           });
+          // 채팅방 보고 있는 동안 새 메시지 받으면 즉시 읽음 처리
+          if (newMsg.sender_id !== user.id) void markCircleRead(circleId);
         },
       )
       .on(

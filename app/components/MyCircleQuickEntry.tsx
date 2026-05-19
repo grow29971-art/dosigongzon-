@@ -8,11 +8,13 @@ import Link from "next/link";
 import { ShieldCheck, MessageCircle, Users, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { getOrCreateMyCircle, countMyAcceptedCircleMembers } from "@/lib/circles-repo";
+import { listMyUnreadCircles } from "@/lib/circle-chat-repo";
 
 export default function MyCircleQuickEntry() {
   const { user } = useAuth();
   const [circleId, setCircleId] = useState<string | null>(null);
   const [memberCount, setMemberCount] = useState(0);
+  const [unreadTotal, setUnreadTotal] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,11 +23,16 @@ export default function MyCircleQuickEntry() {
       return;
     }
     let cancelled = false;
-    Promise.all([getOrCreateMyCircle(), countMyAcceptedCircleMembers()])
-      .then(([circle, count]) => {
+    Promise.all([
+      getOrCreateMyCircle(),
+      countMyAcceptedCircleMembers(),
+      listMyUnreadCircles(),
+    ])
+      .then(([circle, count, unread]) => {
         if (cancelled) return;
         setCircleId(circle.id);
         setMemberCount(count);
+        setUnreadTotal(unread.reduce((sum, u) => sum + u.unread_count, 0));
       })
       .catch(() => {})
       .finally(() => {
@@ -76,11 +83,19 @@ export default function MyCircleQuickEntry() {
         <div className="flex gap-2">
           <Link
             href={circleId ? `/circle/${circleId}/chat` : "/mypage/circle"}
-            className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12.5px] font-extrabold text-white active:scale-[0.97] transition-transform"
+            className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12.5px] font-extrabold text-white active:scale-[0.97] transition-transform relative"
             style={{ background: "linear-gradient(135deg, #4F6B53 0%, #6B8E6F 100%)", boxShadow: "0 3px 10px rgba(79,107,83,0.25)" }}
           >
             <MessageCircle size={13} />
             <span>채팅방 열기</span>
+            {unreadTotal > 0 && (
+              <span
+                className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-extrabold leading-none"
+                style={{ background: "#FFF7C4", color: "#4F6B53" }}
+              >
+                {unreadTotal > 99 ? "99+" : unreadTotal}
+              </span>
+            )}
           </Link>
           <Link
             href="/mypage/circle"

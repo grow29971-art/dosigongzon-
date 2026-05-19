@@ -34,7 +34,7 @@ import {
   type CircleMember,
   type PendingInvitation,
 } from "@/lib/circles-repo";
-import { listJoinedCircles, type JoinedCircle } from "@/lib/circle-chat-repo";
+import { listJoinedCircles, listMyUnreadCircles, type JoinedCircle, type UnreadCircle } from "@/lib/circle-chat-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { thumbnailUrl } from "@/lib/cats-repo";
 
@@ -55,6 +55,7 @@ export default function CirclePage() {
   const [copied, setCopied] = useState(false);
   const [myCircleId, setMyCircleId] = useState<string | null>(null);
   const [joinedCircles, setJoinedCircles] = useState<JoinedCircle[]>([]);
+  const [unreadMap, setUnreadMap] = useState<Map<string, number>>(new Map());
 
   const inviteUrl = user ? `https://dosigongzon.com/circle/join/${user.id}` : "";
 
@@ -89,16 +90,20 @@ export default function CirclePage() {
   const loadAll = async () => {
     setLoading(true);
     try {
-      const [m, inv, circle, joined] = await Promise.all([
+      const [m, inv, circle, joined, unread] = await Promise.all([
         listMyCircleMembers(),
         listMyPendingInvitations(),
         getOrCreateMyCircle(),
         listJoinedCircles(),
+        listMyUnreadCircles(),
       ]);
       setMembers(m);
       setInvitations(inv);
       setMyCircleId(circle.id);
       setJoinedCircles(joined);
+      const map = new Map<string, number>();
+      for (const u of unread) map.set(u.circle_id, u.unread_count);
+      setUnreadMap(map);
     } catch (e) {
       console.error(e);
     } finally {
@@ -322,23 +327,34 @@ export default function CirclePage() {
                   <div className="space-y-1.5">
                     {joinedCircles
                       .filter((c) => c.role === "member")
-                      .map((c) => (
-                        <Link
-                          key={c.circle_id}
-                          href={`/circle/${c.circle_id}/chat`}
-                          className="flex items-center gap-3 p-3 rounded-xl bg-white active:scale-[0.99]"
-                          style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)", border: "1px solid #F0E6D8" }}
-                        >
-                          <Avatar url={c.owner_avatar_url} size={36} />
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[13px] font-extrabold text-text-main truncate">
-                              {c.owner_nickname ?? "익명"}님의 서클
-                            </p>
-                            <p className="text-[10.5px] text-text-light">멤버 {c.member_count + 1}명</p>
-                          </div>
-                          <ChevronRight size={14} className="shrink-0 text-text-light" />
-                        </Link>
-                      ))}
+                      .map((c) => {
+                        const unread = unreadMap.get(c.circle_id) ?? 0;
+                        return (
+                          <Link
+                            key={c.circle_id}
+                            href={`/circle/${c.circle_id}/chat`}
+                            className="flex items-center gap-3 p-3 rounded-xl bg-white active:scale-[0.99]"
+                            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)", border: "1px solid #F0E6D8" }}
+                          >
+                            <Avatar url={c.owner_avatar_url} size={36} />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[13px] font-extrabold text-text-main truncate">
+                                {c.owner_nickname ?? "익명"}님의 서클
+                              </p>
+                              <p className="text-[10.5px] text-text-light">멤버 {c.member_count + 1}명</p>
+                            </div>
+                            {unread > 0 && (
+                              <span
+                                className="shrink-0 px-2 py-0.5 rounded-full text-[10.5px] font-extrabold leading-none"
+                                style={{ background: "#D85555", color: "#FFF" }}
+                              >
+                                {unread > 99 ? "99+" : unread}
+                              </span>
+                            )}
+                            <ChevronRight size={14} className="shrink-0 text-text-light" />
+                          </Link>
+                        );
+                      })}
                   </div>
                 </div>
               )}
