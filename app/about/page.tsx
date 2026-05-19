@@ -19,6 +19,10 @@ import {
   Eye,
   Wind,
   HandHeart,
+  Cpu,
+  CircuitBoard,
+  Box,
+  Wrench,
 } from "lucide-react";
 import { createAnonClient } from "@/lib/supabase/anon";
 import MediaKit from "@/app/components/MediaKit";
@@ -318,19 +322,73 @@ export default async function AboutPage() {
               <p className="text-[10.5px] font-extrabold tracking-[0.12em]" style={{ color: "#A8684A" }}>
                 MADE BY ONE NEIGHBOR
               </p>
-              <p className="text-[15px] font-extrabold text-text-main">김성우 · 1인 풀스택 개발자</p>
+              <p className="text-[15px] font-extrabold text-text-main">김성우 · 1인 풀스택 메이커</p>
+              <p className="text-[10.5px] text-text-sub mt-0.5">
+                Software · Hardware · Product · Operations
+              </p>
             </div>
           </div>
+
           <p className="text-[12.5px] leading-[1.9] text-text-sub">
             도시공존은 <b className="text-text-main">케어테이커 한 분의 손이 헛되지 않게</b>,
-            그리고 길 위의 아이들이 매일 다시 보일 수 있게 하고 싶어
-            한 명의 개발자가 직접 설계·개발·운영하는 비영리 플랫폼이에요.
+            그리고 길 위의 아이들이 매일 다시 보일 수 있게 하고 싶어,
+            한 명이 직접 <b className="text-text-main">설계·개발·운영</b>까지 모두 떠안고 굴리는
+            비영리 플랫폼이에요.
           </p>
+
           <p className="text-[12.5px] leading-[1.9] text-text-sub mt-3">
-            <b className="text-text-main">광고도, 유료 구독도, 데이터 판매도 없이</b>
-            서버·도메인·AI 사용료까지 운영자가 자비로 부담하며 굴리고 있습니다.
-            서비스가 단체나 정당과 무관하게 중립을 지킬 수 있는 이유이기도 해요.
+            소프트웨어만 다루지 않습니다. <b className="text-text-main">물리적인 손이 닿는 영역</b>까지
+            직접 만들 줄 알기 때문에, 화면 너머 길 위의 문제를 도구로 해결하는 데 익숙해요.
+            "코드로 끝나지 않는 서비스"를 만들 수 있는 이유이기도 합니다.
           </p>
+
+          {/* 메이커 역량 4 카드 */}
+          <div className="grid grid-cols-2 gap-2 mt-4">
+            <SkillBadge
+              icon={<Code2 size={13} />}
+              title="풀스택 개발"
+              sub="웹·앱·API·DB·인프라"
+            />
+            <SkillBadge
+              icon={<Cpu size={13} />}
+              title="임베디드·IoT"
+              sub="Arduino·ESP·센서·통신"
+            />
+            <SkillBadge
+              icon={<CircuitBoard size={13} />}
+              title="PCB·회로"
+              sub="설계·납땜·디버깅"
+            />
+            <SkillBadge
+              icon={<Box size={13} />}
+              title="3D 프린팅·CAD"
+              sub="외형·케이스·프로토타입"
+            />
+            <SkillBadge
+              icon={<Wrench size={13} />}
+              title="기구·메카트로닉스"
+              sub="모터·액츄에이터·조립"
+            />
+            <SkillBadge
+              icon={<Bot size={13} />}
+              title="AI 통합"
+              sub="LLM·비전·자동화"
+            />
+          </div>
+
+          <p className="text-[12.5px] leading-[1.9] text-text-sub mt-4">
+            <b className="text-text-main">광고도, 유료 구독도, 데이터 판매도 없이</b>{" "}
+            서버·도메인·AI 사용료·하드웨어 부품비까지 모두 운영자가 자비로 부담하며
+            굴리고 있습니다. 서비스가 단체·정당·기업과 무관하게 중립을 지킬 수 있는
+            이유이기도 해요.
+          </p>
+
+          <p className="text-[12.5px] leading-[1.9] text-text-sub mt-3">
+            소프트웨어 한 줄, 회로 한 가닥, 도면 한 장이 모여
+            길 위의 아이들에게 닿을 수 있다고 믿어요.
+            이 플랫폼은 그 믿음에서 출발했습니다.
+          </p>
+
           <a
             href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("[도시공존] 안녕하세요")}`}
             className="mt-4 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12.5px] font-extrabold text-white active:scale-[0.98] transition-transform"
@@ -489,6 +547,29 @@ function TechRow({ icon, title, desc }: { icon: React.ReactNode; title: string; 
         <p className="text-[13px] font-extrabold text-text-main">{title}</p>
         <p className="text-[11.5px] text-text-sub mt-1 leading-relaxed">{desc}</p>
       </div>
+    </div>
+  );
+}
+
+function SkillBadge({
+  icon,
+  title,
+  sub,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  sub: string;
+}) {
+  return (
+    <div
+      className="rounded-xl p-2.5 bg-white"
+      style={{ border: "1px solid rgba(196,126,90,0.18)" }}
+    >
+      <div className="flex items-center gap-1.5 mb-0.5" style={{ color: "#A8684A" }}>
+        {icon}
+        <p className="text-[11.5px] font-extrabold tracking-tight text-text-main">{title}</p>
+      </div>
+      <p className="text-[10px] text-text-sub leading-tight">{sub}</p>
     </div>
   );
 }
