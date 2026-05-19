@@ -2845,9 +2845,9 @@ export default function MapPage() {
                       </span>
                     )}
                   </div>
-                  {/* 공개 범위 배지 — 본인 핀일 때만 노출 (다른 사람에겐 의미 없음) */}
-                  {user?.id === selectedCat.caretaker_id && selectedCat.visibility && selectedCat.visibility !== "public" && (
-                    <div className="mb-2">
+                  {/* 공개 범위 배지 */}
+                  {selectedCat.visibility && selectedCat.visibility !== "public" && (
+                    <div className="mb-2 flex items-center gap-1.5 flex-wrap">
                       <span
                         className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10.5px] font-extrabold"
                         style={{
@@ -2859,6 +2859,15 @@ export default function MapPage() {
                         <span>{VISIBILITY_MAP[selectedCat.visibility].emoji}</span>
                         <span>{VISIBILITY_MAP[selectedCat.visibility].label}</span>
                       </span>
+                      {/* circle 핀 + 본인 아닌 viewer = 서클 공동 돌봄 안내 */}
+                      {selectedCat.visibility === "circle" && user?.id !== selectedCat.caretaker_id && (
+                        <span
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10.5px] font-extrabold"
+                          style={{ background: "rgba(107,142,111,0.12)", color: "#4F6B53", border: "1px solid rgba(107,142,111,0.30)" }}
+                        >
+                          🤝 함께 돌볼 수 있어요
+                        </span>
+                      )}
                     </div>
                   )}
 
