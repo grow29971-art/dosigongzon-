@@ -10,8 +10,14 @@ import { rateLimit, getClientIp } from "@/lib/rate-limit";
 type SearchType = "all" | "cats" | "posts" | "hospitals" | "guides" | "users";
 
 // ilike 패턴용 이스케이프 (% _ 문자를 literal로)
+// + PostgREST 메타문자(,()) 제거 — .or() 절 parsing 깨짐·500 에러 방지
 function escapeForIlike(raw: string): string {
-  return raw.replace(/[\\%_]/g, (ch) => `\\${ch}`);
+  return raw
+    // PostgREST .or() 절에서 콤마는 OR 구분자, 괄호는 그룹 — 사용자 입력에 들어가면 parse 깨짐
+    .replace(/[,()]/g, " ")
+    // ilike % _ 와이드카드는 literal로
+    .replace(/[\\%_]/g, (ch) => `\\${ch}`)
+    .trim();
 }
 
 // 하드코딩된 보호지침 가이드 — 정적 매핑
