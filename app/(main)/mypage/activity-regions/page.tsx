@@ -179,16 +179,45 @@ export default function ActivityRegionsPage() {
       window.addEventListener("orientationchange", onResize);
     };
 
-    // Map 생성자가 이미 존재 → 즉시 init, 아니면 load() 호출
-    if (window.kakao.maps && typeof (window.kakao.maps as unknown as { Map?: unknown }).Map === "function") {
+    // 안전한 초기화: load() 콜백 + 1.5초 후 폴백 폴링 + Map 즉시 가능 여부 체크
+    let inited = false;
+    const wrappedInit = () => {
+      if (inited || unmounted) return;
+      inited = true;
       initMap();
+    };
+
+    // (1) Map 생성자가 이미 존재 → 즉시
+    const MapsObj = window.kakao.maps as unknown as { Map?: unknown; load?: (cb: () => void) => void };
+    if (typeof MapsObj.Map === "function") {
+      wrappedInit();
+    } else if (typeof MapsObj.load === "function") {
+      // (2) load() 호출 — 콜백 정상 동작 시 즉시 init
+      try { MapsObj.load(wrappedInit); } catch {}
+      // (3) 폴백: 콜백이 안 오는 케이스 대비 폴링 (최대 5초)
+      const start = Date.now();
+      const poll = setInterval(() => {
+        if (inited || unmounted) { clearInterval(poll); return; }
+        const M = (window.kakao?.maps as unknown as { Map?: unknown })?.Map;
+        if (typeof M === "function") {
+          clearInterval(poll);
+          wrappedInit();
+        } else if (Date.now() - start > 5000) {
+          clearInterval(poll);
+          if (!inited && !unmounted) setMapError("지도 초기화 실패. 새로고침 해주세요.");
+        }
+      }, 200);
+      timeoutIds.push(poll as unknown as ReturnType<typeof setTimeout>);
     } else {
-      window.kakao.maps.load(initMap);
+      setMapError("Kakao Maps SDK 미준비. 새로고침 해주세요.");
     }
 
     return () => {
       unmounted = true;
-      for (const id of timeoutIds) clearTimeout(id);
+      for (const id of timeoutIds) {
+        clearTimeout(id);
+        clearInterval(id as unknown as number);
+      }
       if (ro) ro.disconnect();
       if (onResize) {
         window.removeEventListener("resize", onResize);
