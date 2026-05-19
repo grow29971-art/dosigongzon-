@@ -14,6 +14,7 @@ import {
   Heart,
   ChevronRight,
   ChevronLeft,
+  ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
@@ -303,5 +304,12 @@ const SLIDES = [
     Icon: Heart,
     title: "돌봄과 이웃,\n혼자가 아니에요",
     body: "밥·물·건강 한 줄이면 다른 이웃에게\n\"오늘 이 아이 잘 있어요\"가 전해져요.\n\n동네 케어테이커와 정보를 나누고,\n쪽지로 직접 연락도 할 수 있어요.",
+  },
+  {
+    bg: "linear-gradient(170deg, #4F6B53 0%, #6B8E6F 60%, #8FAE92 100%)",
+    accent: "#3D5640",
+    Icon: ShieldCheck,
+    title: "걱정되는 아이는\n내 서클에만 보여줘요",
+    body: "학대 우려가 큰 아이는 \"내 서클\"로 등록하면\n내가 승인한 이웃에게만 보여요.\n\n외부인에게도 일반 가입자에게도\n존재 자체가 노출되지 않아요. 🛡",
   },
 ];
