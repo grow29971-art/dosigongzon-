@@ -7,9 +7,13 @@ import { rateLimit, getClientIp } from "@/lib/rate-limit";
 // RLS 정책(insert: anyone) 이 이미 있으므로 anon 클라이언트로 충분.
 
 export async function POST(request: Request) {
-  // IP당 분당 20회 — 봇 폭격으로 auth_error_logs 누수 방지
+  // IP당 분당 5회 + 전역 분당 100회 — 봇넷 IP rotate 폭격으로 auth_error_logs 누수 방지
   const ip = getClientIp(request);
-  if (!rateLimit(`log-error:${ip}`, { max: 20, windowMs: 60_000 })) {
+  if (!rateLimit(`log-error:${ip}`, { max: 5, windowMs: 60_000 })) {
+    return NextResponse.json({ ok: false }, { status: 429 });
+  }
+  // 전역 캡 — 단일 인스턴스 기준 분당 100 (멀티 인스턴스에선 인스턴스당 100)
+  if (!rateLimit(`log-error:global`, { max: 100, windowMs: 60_000 })) {
     return NextResponse.json({ ok: false }, { status: 429 });
   }
 
