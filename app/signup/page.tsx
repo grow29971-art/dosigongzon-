@@ -17,6 +17,7 @@ import {
   type InAppBrowser,
 } from "@/lib/in-app-browser";
 import TurnstileWidget from "@/app/components/TurnstileWidget";
+import LaunchCountdown from "@/app/components/LaunchCountdown";
 import { trackPixelEventAsync } from "@/lib/meta-pixel";
 
 export default function SignupPage() {
@@ -131,6 +132,8 @@ function SignupContent() {
 
   return (
     <div className="min-h-dvh bg-warm-white flex flex-col">
+      {/* 정식 출시 D-day 카운트다운 */}
+      <LaunchCountdown />
       <div className="flex-1 overflow-y-auto px-6 py-12 flex flex-col justify-center max-w-lg mx-auto w-full">
         {/* 인앱 브라우저 경고 */}
         {inApp && (

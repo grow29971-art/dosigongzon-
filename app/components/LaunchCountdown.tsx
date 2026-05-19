@@ -70,7 +70,7 @@ export default function LaunchCountdown() {
     >
       <Rocket size={14} className="shrink-0" />
       <span className="text-[12.5px] font-extrabold tracking-tight whitespace-nowrap">
-        도시공존 신청 · 앱 출시 <span className="mx-0.5 px-1.5 py-0.5 rounded-md" style={{ background: "rgba(255,255,255,0.22)" }}>D-{days}</span>
+        {isUrgent ? "🔥 " : ""}도시공존 정식 출시 <span className="mx-0.5 px-1.5 py-0.5 rounded-md" style={{ background: "rgba(255,255,255,0.22)" }}>D-{days}</span>
       </span>
       <Sparkles size={11} className="shrink-0" style={{ color: "#FFF7C4" }} />
     </div>
