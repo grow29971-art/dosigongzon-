@@ -18,7 +18,7 @@ export default function LaunchCountdown() {
     const calc = () => {
       const now = new Date();
       const diff = LAUNCH_DATE.getTime() - now.getTime();
-      // 일자 ceil — 5/28 0시 기준 5/27 23:59면 D-1로 표시
+      // 일자 ceil — 5/25 0시 기준 5/24 23:59면 D-1로 표시
       const d = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
       setDays(d);
     };
