@@ -9,7 +9,7 @@ import { requireAdmin } from "@/lib/admin-guard";
 import { enforceUserActionLimit } from "@/lib/rate-limit";
 
 // ══ 신고 ══
-export type ReportTargetType = "comment" | "cat" | "post" | "post_comment";
+export type ReportTargetType = "comment" | "cat" | "post" | "post_comment" | "hospital_closed";
 export type ReportReason =
   | "spam"
   | "abuse"
@@ -390,5 +390,34 @@ export async function deletePostCommentByAdmin(commentId: string): Promise<void>
   if (error) {
     console.error("[support-repo] deletePostCommentByAdmin failed:", error);
     throw new Error(`커뮤니티 댓글 삭제 실패: ${error.message}`);
+  }
+}
+
+// admin이 병원을 hidden 처리(폐업/오류 신고에 따른 숨김).
+// 데이터 삭제가 아닌 hidden=true 토글 — 추후 오신고 확인 시 되돌릴 수 있게.
+export async function hideHospitalByAdmin(hospitalId: string): Promise<void> {
+  await requireAdmin();
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("rescue_hospitals")
+    .update({ hidden: true })
+    .eq("id", hospitalId);
+  if (error) {
+    console.error("[support-repo] hideHospitalByAdmin failed:", error);
+    throw new Error(`병원 숨김 실패: ${error.message}`);
+  }
+}
+
+// admin이 hidden 상태 병원을 복원(오신고 확인 시).
+export async function restoreHospitalByAdmin(hospitalId: string): Promise<void> {
+  await requireAdmin();
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("rescue_hospitals")
+    .update({ hidden: false })
+    .eq("id", hospitalId);
+  if (error) {
+    console.error("[support-repo] restoreHospitalByAdmin failed:", error);
+    throw new Error(`병원 복원 실패: ${error.message}`);
   }
 }

@@ -24,6 +24,8 @@ import {
   deleteCommentByAdmin,
   deleteCatByAdmin,
   deletePostCommentByAdmin,
+  hideHospitalByAdmin,
+  restoreHospitalByAdmin,
   suspendUser,
   REPORT_REASON_LABELS,
   REPORT_STATUS_LABELS,
@@ -118,6 +120,25 @@ export default function AdminInboxPage() {
       );
       return;
     }
+    // 병원 폐업 신고: 삭제 대신 hidden 토글. 라벨·확인 메시지·액션 모두 분기.
+    if (report.target_type === "hospital_closed") {
+      if (!confirm("이 병원을 지도에서 숨길까요?\n(데이터 삭제는 아님 — 오신고 시 복원 가능)")) return;
+      try {
+        await hideHospitalByAdmin(report.target_id);
+        // 같은 hospitalId에 대한 pending 신고를 모두 resolved로 마킹
+        const sameTargetReports = reports.filter(
+          (r) => r.target_type === "hospital_closed" && r.target_id === report.target_id && r.status === "pending",
+        );
+        for (const r of sameTargetReports) {
+          await updateReportStatus(r.id, "resolved");
+        }
+        await refresh();
+        alert("병원이 숨김 처리됐어요.");
+      } catch (err) {
+        alert(err instanceof Error ? err.message : "숨김 실패");
+      }
+      return;
+    }
     const label =
       report.target_type === "comment"
         ? "이 고양이 댓글"
@@ -139,6 +160,26 @@ export default function AdminInboxPage() {
       alert("대상이 삭제됐어요.");
     } catch (err) {
       alert(err instanceof Error ? err.message : "삭제 실패");
+    }
+  };
+
+  // 병원 신고 반려 시 — 신고만 dismiss할 게 아니라, 이미 hidden된 병원을 복원할 수도 있게.
+  const handleRestoreHospital = async (report: Report) => {
+    if (report.target_type !== "hospital_closed") return;
+    if (!confirm("이 병원을 다시 표시할까요? (오신고 처리)")) return;
+    try {
+      await restoreHospitalByAdmin(report.target_id);
+      // 같은 hospitalId 신고들을 모두 dismissed로
+      const sameTargetReports = reports.filter(
+        (r) => r.target_type === "hospital_closed" && r.target_id === report.target_id,
+      );
+      for (const r of sameTargetReports) {
+        await updateReportStatus(r.id, "dismissed");
+      }
+      await refresh();
+      alert("병원이 복원됐어요.");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "복원 실패");
     }
   };
 
@@ -357,18 +398,27 @@ export default function AdminInboxPage() {
                 {/* 관리자 액션 — 상단 행(대상 처리) */}
                 <div className="flex gap-1.5 mt-3 pt-2.5 border-t border-divider">
                   <ActionBtn
-                    label="대상 삭제"
+                    label={r.target_type === "hospital_closed" ? "병원 숨김" : "대상 삭제"}
                     onClick={() => handleDeleteTarget(r)}
                     Icon={Eraser}
                     bg="#B84545"
                     disabled={r.target_type === "post"}
                   />
-                  <ActionBtn
-                    label="신고자 정지"
-                    onClick={() => handleSuspendReporter(r)}
-                    Icon={Ban}
-                    bg="#8B65B8"
-                  />
+                  {r.target_type === "hospital_closed" ? (
+                    <ActionBtn
+                      label="병원 복원"
+                      onClick={() => handleRestoreHospital(r)}
+                      Icon={Check}
+                      bg="#6B8E6F"
+                    />
+                  ) : (
+                    <ActionBtn
+                      label="신고자 정지"
+                      onClick={() => handleSuspendReporter(r)}
+                      Icon={Ban}
+                      bg="#8B65B8"
+                    />
+                  )}
                 </div>
                 {/* 관리자 액션 — 하단 행(상태 변경) */}
                 <div className="flex gap-1.5 mt-1.5">
