@@ -38,6 +38,7 @@ import dynamic from "next/dynamic";
 // 모달·고급 패널은 첫 페인트 후로 코드 스플리팅 (열기 전엔 다운로드 안 함)
 const AddCatModal = dynamic(() => import("@/app/components/AddCatModal"), { ssr: false });
 const VisibilityIntroSheet = dynamic(() => import("@/app/components/VisibilityIntroSheet"), { ssr: false });
+const CatQRModal = dynamic(() => import("@/app/components/CatQRModal"), { ssr: false });
 const ReportModal = dynamic(() => import("@/app/components/ReportModal"), { ssr: false });
 import {
   listCats,
@@ -332,6 +333,7 @@ export default function MapPage() {
   // 등록 시작 전 공개 범위 안내 시트 + 선택된 visibility (시트 → 모달로 전달)
   const [visibilityIntroOpen, setVisibilityIntroOpen] = useState(false);
   const [pickedVisibility, setPickedVisibility] = useState<CatVisibility>("public");
+  const [qrModalOpen, setQrModalOpen] = useState(false);
   const [pickedCoord, setPickedCoord] = useState<{ lat: number; lng: number } | undefined>();
 
   // ── 댓글 상태 ──
@@ -2946,6 +2948,17 @@ export default function MapPage() {
                           </>
                         )}
                       </button>
+                      {/* QR 코드 — 종이로 인쇄해 동네 오프라인 공유 */}
+                      <button
+                        type="button"
+                        onClick={() => setQrModalOpen(true)}
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-2xl active:scale-95 transition-transform"
+                        style={{ background: "#3D2F25", color: "#fff", boxShadow: "0 1px 4px rgba(0,0,0,0.10)" }}
+                        aria-label="QR 코드"
+                      >
+                        <span style={{ fontSize: 12 }}>▦</span>
+                        <span className="text-[10.5px] font-extrabold">QR</span>
+                      </button>
                     </div>
                   </div>
 
@@ -3473,6 +3486,16 @@ export default function MapPage() {
         initialLng={pickedCoord?.lng}
         initialVisibility={pickedVisibility}
       />
+
+      {/* QR 코드 모달 — 오프라인 공유 */}
+      {selectedCat && (
+        <CatQRModal
+          open={qrModalOpen}
+          onClose={() => setQrModalOpen(false)}
+          catId={selectedCat.id}
+          catName={selectedCat.name}
+        />
+      )}
 
       {/* 고양이 위치 변경 Picker (등록자 본인만) */}
       {selectedCat && user?.id === selectedCat.caretaker_id && (

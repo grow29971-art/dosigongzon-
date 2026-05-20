@@ -103,6 +103,11 @@ export default function MyPage() {
   const [avatarError, setAvatarError] = useState("");
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
+  // 함께한 N일 — 가입일부터 매일 +1 (자부심 카운터)
+  const joinedDays = user?.created_at
+    ? Math.max(1, Math.floor((Date.now() - new Date(user.created_at).getTime()) / 86_400_000) + 1)
+    : 0;
+
   // 닉네임 편집
   const [editingNick, setEditingNick] = useState(false);
   const [nickDraft, setNickDraft] = useState("");
@@ -406,6 +411,14 @@ export default function MyPage() {
                     </button>
                   </div>
                   <p className="text-[12px] text-text-light mt-0.5 truncate">{email}</p>
+                  {joinedDays > 0 && (
+                    <span
+                      className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-full text-[10.5px] font-extrabold"
+                      style={{ background: "rgba(196,126,90,0.12)", color: "#A8684A" }}
+                    >
+                      🐾 도시공존과 함께한 {joinedDays}일
+                    </span>
+                  )}
                   {avatarError && (
                     <p className="text-[11px] mt-1" style={{ color: "#B84545" }}>
                       {avatarError}
