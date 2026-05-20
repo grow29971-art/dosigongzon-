@@ -1,7 +1,7 @@
 "use client";
 
 // 출시 카운트다운 배너 — HomeLanding 최상단에 표시.
-// 신청·앱 출시 D-Day 기준일: 2026-05-28 (KST).
+// 정식 출시 D-Day 기준일: 2026-05-25 (KST).
 // CLS 방어: useEffect 전에도 같은 높이 placeholder 렌더.
 
 import { useEffect, useState } from "react";

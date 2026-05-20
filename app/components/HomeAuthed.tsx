@@ -641,23 +641,15 @@ export default function HomeAuthed({
       {/* ══════ 1000명 이벤트 배너 (SSR) ══════ */}
       {eventSlot}
 
-      {/* ══════ 사회적 증명 (오늘 활동 이웃 수) ══════ */}
-      <SocialProofStrip />
-
-      {/* ══════ 긴급 구조 배너 (scarcity/urgency) ══════ */}
+      {/* ══════ 긴급 구조 배너 (scarcity/urgency) — 항상 우선 ══════ */}
       {user && rescueCount > 0 && <RescueBanner count={rescueCount} />}
 
-      {/* ══════ 5/18 패치 안내 — Private Circle (영구 dismiss) ══════ */}
-      {user && <PatchUpdateBanner518 />}
-
-      {/* ══════ 내 서클 빠른 진입 (영구) — 채팅·관리 한 번에 ══════ */}
-      {user && <MyCircleQuickEntry />}
-
-      {/* ══════ 창립 멤버 환영 배너 (5/20 전 가입자 영구 자부심) ══════ */}
-      {user && <FoundingMemberBanner />}
-
-      {/* ══════ 시작 가이드 — 신규 유저는 가장 먼저 ══════ */}
-      {user && activity && !onboardingDismissed && (
+      {/*
+        신규 가입자(아직 첫 등록 안 한 유저) → 시작 가이드만 노출
+        기존 유저(첫 등록 완료) → 내 서클 빠른 진입만 노출
+        창립 멤버 배너는 신규/기존 무관 활동 지역 있는 유저만
+      */}
+      {user && activity && !onboardingDismissed && activity.catCount === 0 ? (
         <OnboardingCard
           hasActivityRegion={myRegions.length > 0}
           hasMyCat={activity.catCount > 0}
@@ -665,7 +657,15 @@ export default function HomeAuthed({
           hasCircleMember={circleMemberCount > 0}
           onDismiss={handleDismissOnboarding}
         />
+      ) : (
+        <>
+          {user && <MyCircleQuickEntry />}
+          {user && myRegions.length > 0 && <FoundingMemberBanner />}
+        </>
       )}
+
+      {/* ══════ 사회적 증명 (오늘 활동 이웃 수) ══════ */}
+      <SocialProofStrip />
 
       {/* ══════ 오늘 해볼 것 체크리스트 (Zeigarnik) ══════ */}
       {user && activity && (

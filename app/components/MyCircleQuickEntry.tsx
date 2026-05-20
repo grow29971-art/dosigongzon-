@@ -46,7 +46,7 @@ export default function MyCircleQuickEntry() {
   if (!user) return null;
 
   return (
-    <section className="px-5 mt-3">
+    <section className="mt-3">
       <div
         className="rounded-2xl p-4"
         style={{

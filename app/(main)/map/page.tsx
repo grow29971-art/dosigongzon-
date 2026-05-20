@@ -793,8 +793,8 @@ export default function MapPage() {
       (pos) => {
         setUserPos({ lat: pos.coords.latitude, lng: pos.coords.longitude });
       },
-      (err) => {
-        console.log("[map] geolocation denied or failed:", err.message);
+      () => {
+        // geolocation 거부·실패 시 기본 중심 좌표 사용 (조용히)
       },
       { enableHighAccuracy: true, timeout: 8000, maximumAge: 60_000 },
     );
