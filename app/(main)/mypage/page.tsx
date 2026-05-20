@@ -103,10 +103,14 @@ export default function MyPage() {
   const [avatarError, setAvatarError] = useState("");
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
-  // 함께한 N일 — 가입일부터 매일 +1 (자부심 카운터)
-  const joinedDays = user?.created_at
-    ? Math.max(1, Math.floor((Date.now() - new Date(user.created_at).getTime()) / 86_400_000) + 1)
-    : 0;
+  // 함께한 N일 — 첫 고양이 등록일부터 매일 +1 (자부심 카운터)
+  // 등록한 고양이 0건이면 0 (표시 안 됨)
+  const joinedDays = (() => {
+    if (myCats.length === 0) return 0;
+    const oldestMs = Math.min(...myCats.map((c) => new Date(c.created_at).getTime()));
+    if (!Number.isFinite(oldestMs)) return 0;
+    return Math.max(1, Math.floor((Date.now() - oldestMs) / 86_400_000) + 1);
+  })();
 
   // 닉네임 편집
   const [editingNick, setEditingNick] = useState(false);
@@ -416,7 +420,7 @@ export default function MyPage() {
                       className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-full text-[10.5px] font-extrabold"
                       style={{ background: "rgba(196,126,90,0.12)", color: "#A8684A" }}
                     >
-                      🐾 도시공존과 함께한 {joinedDays}일
+                      🐾 첫 등록 후 {joinedDays}일째 함께 돌봐요
                     </span>
                   )}
                   {avatarError && (
