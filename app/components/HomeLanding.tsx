@@ -1153,12 +1153,14 @@ export default async function HomeLanding({
 
       {/* 저작권 푸터 */}
       <footer className="px-5 mt-8 pb-6 text-center space-y-1">
-        <div className="flex items-center justify-center gap-3 text-[10.5px] text-text-light">
+        <div className="flex items-center justify-center gap-3 text-[10.5px] text-text-light flex-wrap">
           <Link href="/terms" className="hover:underline">이용약관</Link>
           <span>·</span>
           <Link href="/privacy" className="hover:underline">개인정보처리방침</Link>
           <span>·</span>
-          <Link href="/about" className="hover:underline">문의</Link>
+          <Link href="/about" className="hover:underline">소개</Link>
+          <span>·</span>
+          <Link href="/maker" className="hover:underline">만든 사람</Link>
         </div>
         <p className="text-[10px] text-text-light">© 2026 도시공존 · dosigongzon.com</p>
       </footer>
