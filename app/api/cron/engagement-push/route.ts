@@ -31,10 +31,10 @@ export async function POST(request: Request) {
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-  // 이번 주 신규 고양이·긴급 돌봄 수 집계
+  // 이번 주 신규 고양이·긴급 돌봄 수 집계 — service-role이 RLS 우회하므로 hidden 명시 필터
   const [newCatsRes, urgentRes] = await Promise.all([
-    supabase.from("cats").select("*", { count: "exact", head: true }).gte("created_at", weekAgo),
-    supabase.from("cats").select("*", { count: "exact", head: true }).eq("health_status", "danger"),
+    supabase.from("cats").select("*", { count: "exact", head: true }).eq("hidden", false).gte("created_at", weekAgo),
+    supabase.from("cats").select("*", { count: "exact", head: true }).eq("hidden", false).eq("health_status", "danger"),
   ]);
 
   const newCats = newCatsRes.count ?? 0;

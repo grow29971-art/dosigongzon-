@@ -51,19 +51,22 @@ export async function GET(request: Request) {
       .select("author_id")
       .gte("logged_at", todayStartUtc)
       .limit(2000),
-    // 이번 주 신규 등록된 고양이
+    // 이번 주 신규 등록된 고양이 — service-role이 RLS 우회하므로 hidden 명시 필터 필요
     supabase
       .from("cats")
       .select("*", { count: "exact", head: true })
+      .eq("hidden", false)
       .gte("created_at", mondayUtc),
     // 전체 고양이 수
     supabase
       .from("cats")
-      .select("*", { count: "exact", head: true }),
+      .select("*", { count: "exact", head: true })
+      .eq("hidden", false),
     // 위험(긴급 구조) 상태 고양이 수
     supabase
       .from("cats")
       .select("*", { count: "exact", head: true })
+      .eq("hidden", false)
       .eq("health_status", "danger"),
   ]);
 

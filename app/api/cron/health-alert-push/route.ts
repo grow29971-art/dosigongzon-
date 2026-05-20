@@ -37,10 +37,11 @@ export async function POST(request: Request) {
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
   const staleAt = new Date(Date.now() - STALE_DAYS * 24 * 60 * 60 * 1000).toISOString();
 
-  // 1) 위급 상태 고양이
+  // 1) 위급 상태 고양이 — hidden 제외 (서비스키 RLS 우회)
   const { data: cats } = await supabase
     .from("cats")
     .select("id, name, region, health_status, caretaker_id")
+    .eq("hidden", false)
     .in("health_status", ["caution", "danger"])
     .not("region", "is", null)
     .order("created_at", { ascending: false })
