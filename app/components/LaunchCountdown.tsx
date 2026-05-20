@@ -5,6 +5,7 @@
 // CLS 방어: useEffect 전에도 같은 높이 placeholder 렌더.
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Rocket, Sparkles } from "lucide-react";
 
 const LAUNCH_DATE = new Date("2026-05-25T00:00:00+09:00");
@@ -39,20 +40,22 @@ export default function LaunchCountdown() {
     );
   }
 
-  // D-Day 또는 이후
+  // D-Day 또는 이후 — /celebrate 페이지로 링크
   if (days <= 0) {
     return (
-      <div
-        className="px-5 py-2.5 flex items-center justify-center gap-2 text-white"
+      <Link
+        href="/celebrate"
+        className="block px-5 py-2.5 flex items-center justify-center gap-2 text-white active:scale-[0.99] transition-transform"
         style={{
           background: "linear-gradient(90deg, #C47E5A 0%, #E86B8C 50%, #C47E5A 100%)",
         }}
       >
         <Rocket size={14} />
         <span className="text-[12.5px] font-extrabold tracking-tight">
-          🎉 도시공존 앱 정식 출시!
+          🎉 도시공존 정식 출시 — 축하 페이지 보기
         </span>
-      </div>
+        <Sparkles size={11} style={{ color: "#FFF7C4" }} />
+      </Link>
     );
   }
 
