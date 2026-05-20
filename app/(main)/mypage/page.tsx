@@ -810,6 +810,10 @@ export default function MyPage() {
                 내 설정
               </h2>
             </div>
+            {/* 활동 그룹 */}
+            <p className="text-[10.5px] font-extrabold tracking-[0.15em] mb-2 ml-1" style={{ color: "rgba(196,126,90,0.65)" }}>
+              ACTIVITY
+            </p>
             <Link
               href="/mypage/journey"
               className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
@@ -914,11 +918,18 @@ export default function MyPage() {
               </div>
               <ChevronRight size={16} className="shrink-0" style={{ color: "#C9A961", opacity: 0.7 }} />
             </Link>
+            {/* 설정 그룹 */}
+            <p className="text-[10.5px] font-extrabold tracking-[0.15em] mt-4 mb-2 ml-1" style={{ color: "rgba(196,126,90,0.65)" }}>
+              SETTINGS
+            </p>
             <InstallAppMenuItem />
             <EmailDigestToggle />
             <MarketingPushToggle />
 
-            {/* 사용 가이드 링크 */}
+            {/* 도움말 그룹 */}
+            <p className="text-[10.5px] font-extrabold tracking-[0.15em] mt-4 mb-2 ml-1" style={{ color: "rgba(196,126,90,0.65)" }}>
+              HELP
+            </p>
             <Link
               href="/guide"
               className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
