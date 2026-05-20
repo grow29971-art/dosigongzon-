@@ -26,9 +26,7 @@ export async function uploadCircleChatImage(file: File): Promise<string> {
   if (!user) throw new Error("로그인이 필요해요.");
 
   const webpFile = await convertImageToWebp(file, 1024, 0.8);
-  const ts = Date.now();
-  const rand = Math.random().toString(36).slice(2, 8);
-  const fileName = `circle/${user.id}/${ts}-${rand}.webp`;
+  const fileName = `circle/${user.id}/${crypto.randomUUID()}.webp`;
   const { error: uploadErr } = await supabase.storage
     .from("cat-photos")
     .upload(fileName, webpFile, { contentType: "image/webp" });

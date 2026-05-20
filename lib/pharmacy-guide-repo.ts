@@ -78,7 +78,7 @@ export async function uploadGuideImage(file: File): Promise<string> {
 
   // 다른 업로드 경로와 일관 — 1280px WebP로 압축 후 업로드 (egress·Storage 절감).
   const webpFile = await convertImageToWebp(file);
-  const fileName = `guide/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.webp`;
+  const fileName = `guide/${crypto.randomUUID()}.webp`;
 
   const { error } = await supabase.storage
     .from("cat-photos")

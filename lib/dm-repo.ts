@@ -97,7 +97,7 @@ export async function uploadDMPhoto(file: File): Promise<string> {
   if (!file.type.startsWith("image/")) throw new Error("이미지 파일만 가능해요.");
 
   const webpFile = await convertImageToWebp(file, 1024, 0.8);
-  const fileName = `${user.id}/dm_${Date.now()}.webp`;
+  const fileName = `${user.id}/dm_${crypto.randomUUID()}.webp`;
 
   const { error } = await supabase.storage
     .from("cat-photos")

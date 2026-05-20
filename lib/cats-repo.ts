@@ -451,7 +451,7 @@ export async function uploadCatPhoto(file: File): Promise<string> {
   const webpFile = await convertImageToWebp(file);
 
   // 파일명: {userId}/{timestamp}.webp
-  const fileName = `${user.id}/${Date.now()}.webp`;
+  const fileName = `${user.id}/${crypto.randomUUID()}.webp`;
 
   const { error: uploadError } = await supabase.storage
     .from("cat-photos")
@@ -646,7 +646,7 @@ export async function uploadAvatar(file: File): Promise<string> {
   // 아바타는 작게: 512px, 품질 0.85
   const webpFile = await convertImageToWebp(file, 512, 0.85);
 
-  const fileName = `${user.id}/avatar_${Date.now()}.webp`;
+  const fileName = `${user.id}/avatar_${crypto.randomUUID()}.webp`;
 
   const { error: uploadError } = await supabase.storage
     .from("cat-photos")
@@ -714,7 +714,7 @@ export async function uploadCommentPhoto(file: File): Promise<string> {
   const webpFile = await convertImageToWebp(file, 1024, 0.8);
 
   // 경로: {userId}/comment_{timestamp}.webp — 삭제 정책 {userId} prefix 유지
-  const fileName = `${user.id}/comment_${Date.now()}.webp`;
+  const fileName = `${user.id}/comment_${crypto.randomUUID()}.webp`;
 
   const { error: uploadError } = await supabase.storage
     .from("cat-photos")
