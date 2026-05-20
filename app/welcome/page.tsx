@@ -67,12 +67,16 @@ function WelcomeContent() {
   // 진입한 순간 "한 번 봤음" 마킹 — 중간 이탈해도 다시 강제 노출되지 않게.
   // Meta Pixel: 가입 완료 이벤트 — welcome은 신규 가입자만 거치므로 컨버전 발사 최적 위치.
   // userId 기반 dedup 키로 동일 사용자가 다시 봐도 중복 발사 X.
+  // eventID=user.id로 서버 CAPI 이벤트와 dedup — 양쪽 발사돼도 한 번만 카운트.
   useEffect(() => {
     try { localStorage.setItem("dosigongzon_welcome_seen", "true"); } catch {}
     if (user?.id) {
-      trackPixelOnce(`fbq_signup_fired_${user.id}`, "CompleteRegistration", {
-        content_name: "signup_complete",
-      });
+      trackPixelOnce(
+        `fbq_signup_fired_${user.id}`,
+        "CompleteRegistration",
+        { content_name: "signup_complete" },
+        user.id,
+      );
     }
   }, [user?.id]);
 

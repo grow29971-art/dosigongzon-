@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import { sendMetaCAPIEvent } from "@/lib/meta-capi";
 
 // callback 시점 진단 — exchange 실패 원인 추적용.
 // PKCE code verifier 쿠키 존재 여부가 핵심: 없으면 "쿠키 손실"(시크릿 모드, 컨텍스트 전환,
@@ -160,6 +161,33 @@ export async function GET(request: Request) {
         }
       }
     }
+    // Meta Pixel CAPI — 소셜 첫 가입자 CompleteRegistration 서버사이드 전송.
+    // 쿠키 동의 거부·iOS ATT·광고 차단기 환경에서도 전환 잡힘.
+    // 클라이언트 fbq의 eventID와 user.id로 dedup → 동의 사용자도 중복 카운트 안 됨.
+    if (firstSocialSignup && user) {
+      const fbp = request.headers.get("cookie")?.match(/_fbp=([^;]+)/)?.[1] ?? null;
+      const fbc = request.headers.get("cookie")?.match(/_fbc=([^;]+)/)?.[1] ?? null;
+      const ipHeader = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+        ?? request.headers.get("x-real-ip")
+        ?? null;
+      // fire-and-forget — 응답 지연 막기
+      sendMetaCAPIEvent({
+        eventName: "CompleteRegistration",
+        eventId: user.id,
+        userId: user.id,
+        userEmail: user.email ?? null,
+        url: `${origin}/welcome`,
+        userAgent: ua,
+        ip: ipHeader,
+        fbp,
+        fbc,
+        customData: {
+          content_name: "social_signup",
+          status: "completed",
+        },
+      }).catch(() => { /* 무시 */ });
+    }
+
     // 첫 가입자(소셜)는 환영 페이지를 한 번 거치게 — next는 보존
     const dest = firstSocialSignup
       ? `/welcome?next=${encodeURIComponent(next)}`

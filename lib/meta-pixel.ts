@@ -23,6 +23,7 @@ declare global {
       command: "track" | "trackCustom" | "init",
       eventName: string,
       params?: Record<string, unknown>,
+      options?: { eventID?: string },
     ) => void;
   }
 }
@@ -102,11 +103,15 @@ export function trackPixelCustom(
  * localStorage dedup으로 1회만 발사. fbq 로드 대기 후 발사하므로
  * mount 직후 fbq 미준비 상태여도 drop 안 됨.
  * fbq 발사 성공 후에만 dedup 마킹 — fbq timeout 시 다음 방문에 재시도 가능.
+ *
+ * eventID 지정 시 Meta CAPI 서버 이벤트와 deduplication — 양쪽에서 같은 eventID로 보내면
+ * 한쪽만 카운트. 가입 완료처럼 클라이언트(fbq) + 서버(CAPI) 양쪽 발사하는 케이스에 사용.
  */
 export function trackPixelOnce(
   storageKey: string,
   event: FbqStandardEvent,
   params?: Record<string, unknown>,
+  eventID?: string,
 ): void {
   if (typeof window === "undefined") return;
   try {
@@ -118,7 +123,11 @@ export function trackPixelOnce(
   void whenFbqReady().then((ready) => {
     if (!ready) return;
     try {
-      window.fbq!("track", event, params);
+      if (eventID) {
+        window.fbq!("track", event, params, { eventID });
+      } else {
+        window.fbq!("track", event, params);
+      }
       try {
         localStorage.setItem(storageKey, "1");
       } catch {
