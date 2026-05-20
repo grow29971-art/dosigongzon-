@@ -101,6 +101,7 @@ export async function GET(request: Request) {
 
     const { data: { user } } = await supabase.auth.getUser();
     let firstSocialSignup = false;
+    let firstSignup = false; // 이메일·소셜 무관, 첫 가입(닉네임 세팅 전) — CAPI 발사 조건
     if (user) {
       const meta = user.user_metadata ?? {};
       const isFirstLogin = !meta.nickname_set;
@@ -109,6 +110,7 @@ export async function GET(request: Request) {
       const emailOptIn = meta.email_opt_in === true;
       // 소셜 첫 가입자는 /welcome 환영 화면을 거쳐가도록 표시
       firstSocialSignup = isFirstLogin && !!userProvider && userProvider !== "email";
+      firstSignup = isFirstLogin && !!userProvider;
 
       if (isFirstLogin && userProvider && userProvider !== "email") {
         const nickname = generateNickname();
@@ -161,28 +163,30 @@ export async function GET(request: Request) {
         }
       }
     }
-    // Meta Pixel CAPI — 소셜 첫 가입자 CompleteRegistration 서버사이드 전송.
-    // 쿠키 동의 거부·iOS ATT·광고 차단기 환경에서도 전환 잡힘.
-    // 클라이언트 fbq의 eventID와 user.id로 dedup → 동의 사용자도 중복 카운트 안 됨.
-    if (firstSocialSignup && user) {
+    // Meta Pixel CAPI — 첫 가입자 CompleteRegistration 서버사이드 전송.
+    // 소셜·이메일 가입자 모두 포함. 이메일 가입자는 welcome을 거치지 않으므로
+    // 클라이언트 fbq가 발사 안 됨 → 서버에서만 발사 (dedup 안 필요).
+    // 소셜 가입자는 welcome의 trackPixelOnce(eventID=user.id)와 dedup됨.
+    if (firstSignup && user) {
       const fbp = request.headers.get("cookie")?.match(/_fbp=([^;]+)/)?.[1] ?? null;
       const fbc = request.headers.get("cookie")?.match(/_fbc=([^;]+)/)?.[1] ?? null;
       const ipHeader = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
         ?? request.headers.get("x-real-ip")
         ?? null;
+      const userProviderForCapi = user.app_metadata?.provider ?? "unknown";
       // fire-and-forget — 응답 지연 막기
       sendMetaCAPIEvent({
         eventName: "CompleteRegistration",
         eventId: user.id,
         userId: user.id,
         userEmail: user.email ?? null,
-        url: `${origin}/welcome`,
+        url: `${origin}${firstSocialSignup ? "/welcome" : next}`,
         userAgent: ua,
         ip: ipHeader,
         fbp,
         fbc,
         customData: {
-          content_name: "social_signup",
+          content_name: `signup_${userProviderForCapi}`,
           status: "completed",
         },
       }).catch(() => { /* 무시 */ });
