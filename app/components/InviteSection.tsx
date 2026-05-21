@@ -42,7 +42,7 @@ export default function InviteSection() {
     try { track("invite_share_kakao_started"); } catch {}
 
     const origin = typeof window !== "undefined" ? window.location.origin : "https://dosigongzon.com";
-    const url = `${origin}/signup?invite=${info.inviteCode}&utm_source=kakao&utm_medium=invite`;
+    const url = `${origin}/signup?invite=${info.inviteCode}&utm_source=kakao&utm_medium=invite&utm_campaign=mypage`;
     const title = "도시공존에 초대해요 🐾";
     const description = `동네 길고양이 돌봄 지도에 함께해요. 초대 코드: ${info.inviteCode}`;
     const imageUrl = `${origin}/opengraph-image`;

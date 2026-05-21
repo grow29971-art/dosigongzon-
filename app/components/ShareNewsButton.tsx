@@ -23,7 +23,7 @@ export default function ShareNewsButton({ newsId, title, description, badgeLabel
     setLoading(true);
 
     const origin = window.location.origin;
-    const url = `${origin}/news/${newsId}`;
+    const url = `${origin}/news/${newsId}?utm_source=kakao&utm_medium=share&utm_campaign=news_share`;
     const imageUrl = `${origin}/news/${newsId}/opengraph-image`;
     const desc =
       (description ?? "").slice(0, 100) ||

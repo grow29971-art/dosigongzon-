@@ -23,7 +23,7 @@ export default function ShareGuideButton({ slug, title, description, accent }: P
     setLoading(true);
 
     const origin = window.location.origin;
-    const url = `${origin}/protection/${slug}`;
+    const url = `${origin}/protection/${slug}?utm_source=kakao&utm_medium=share&utm_campaign=guide_share`;
     const imageUrl = `${origin}/protection/${slug}/opengraph-image`;
 
     const ok = await shareToKakao({

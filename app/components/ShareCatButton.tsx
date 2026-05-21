@@ -21,7 +21,11 @@ export default function ShareCatButton({ catId, name, region, description, urgen
     setLoading(true);
 
     const origin = window.location.origin;
-    const url = `${origin}/cats/${catId}`;
+    // utm 부여 — 외부 클립보드 폴백·카카오 공유 둘 다 추적 가능
+    const utm = urgent
+      ? "utm_source=kakao&utm_medium=share&utm_campaign=cat_urgent"
+      : "utm_source=kakao&utm_medium=share&utm_campaign=cat_share";
+    const url = `${origin}/cats/${catId}?${utm}`;
     const title = urgent
       ? `🚨 긴급 돌봄 필요: ${name} · ${region}`
       : `${name} · ${region}`;
