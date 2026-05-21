@@ -68,11 +68,13 @@ export default async function CatDetailPage({ params }: { params: Params }) {
   const { data: { user } } = await supabase.auth.getUser();
   const currentUserId = user?.id ?? null;
 
-  const [commentCount, careCount, communityStats, diary] = await Promise.all([
+  const [commentCount, careCount, communityStats, diary, totalCatsForNudge] = await Promise.all([
     getCatCommentsCountServer(cat.id),
     getCatCareLogsCountServer(cat.id),
     getCatCommunityStatsServer(cat.id),
     getCatDiaryServer(cat.id, 60),
+    // 비로그인 회원가입 nudge용 — 누적 등록 수
+    currentUserId ? Promise.resolve(0) : supabase.rpc("total_cat_count").then((r) => Number(r.data ?? 0)),
   ]);
 
   const photo = sanitizeImageUrl(cat.photo_url, "https://placehold.co/800x800/EEEAE2/2A2A28?text=%3F");
@@ -132,17 +134,17 @@ export default async function CatDetailPage({ params }: { params: Params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, "\\u003c") }}
       />
 
-      {/* 헤더 (뒤로 가기) */}
+      {/* 헤더 (뒤로 가기) — 비로그인 진입자는 외부 공유로 들어온 경우가 많아 홈으로 */}
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
-          href="/map"
+          href={currentUserId ? "/map" : "/"}
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
           style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
-          aria-label="지도로 돌아가기"
+          aria-label={currentUserId ? "지도로 돌아가기" : "홈으로 가기"}
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
-        <span className="text-[12px] font-semibold text-text-sub">지도</span>
+        <span className="text-[12px] font-semibold text-text-sub">{currentUserId ? "지도" : "도시공존"}</span>
       </div>
 
       {/* 커버 이미지 */}
@@ -315,6 +317,66 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                   좋아요 {communityStats.likeUserCount}명 · 최근 30일 기록
                 </p>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 비로그인 진입자 회원가입 nudge — SNS 공유로 들어온 사람이 매력 느낄 자리 */}
+      {!currentUserId && (
+        <div className="px-4 mt-3">
+          <div
+            className="rounded-2xl p-4 relative overflow-hidden"
+            style={{
+              background: "linear-gradient(135deg, #FFF6E8 0%, #FCE7D2 50%, #F8D9BE 100%)",
+              border: "1.5px solid rgba(196,126,90,0.30)",
+              boxShadow: "0 6px 18px rgba(196,126,90,0.18)",
+            }}
+          >
+            <div
+              aria-hidden
+              style={{
+                position: "absolute",
+                top: -40,
+                right: -30,
+                width: 140,
+                height: 140,
+                borderRadius: "50%",
+                background: "radial-gradient(circle, rgba(232,141,90,0.18) 0%, rgba(232,141,90,0) 70%)",
+              }}
+            />
+            <p className="text-[14.5px] font-extrabold text-text-main leading-tight tracking-tight mb-1.5">
+              🐾 우리 동네 길고양이도 같이 돌봐요
+            </p>
+            <p className="text-[11.5px] leading-relaxed mb-3" style={{ color: "rgba(92,74,62,0.85)" }}>
+              도시공존은 광고 없는 무료 시민 참여 길고양이 지도예요.
+              {totalCatsForNudge > 0 && (
+                <>
+                  {" "}전국 <b style={{ color: "#A8684A" }}>{totalCatsForNudge.toLocaleString()}마리</b>가 이미 등록돼 함께 돌봐지고 있어요.
+                </>
+              )}
+            </p>
+            <div className="flex gap-2">
+              <Link
+                href={`/signup?next=${encodeURIComponent(`/cats/${cat.id}`)}`}
+                className="flex-[1.6] flex items-center justify-center py-2.5 rounded-xl text-white text-[12.5px] font-extrabold active:scale-[0.98] transition-transform"
+                style={{
+                  background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+                  boxShadow: "0 4px 14px rgba(196,126,90,0.35)",
+                }}
+              >
+                무료로 시작하기
+              </Link>
+              <Link
+                href="/"
+                className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.98] transition-transform bg-white"
+                style={{
+                  color: "#A8684A",
+                  border: "1px solid rgba(196,126,90,0.30)",
+                }}
+              >
+                더 둘러보기
+              </Link>
             </div>
           </div>
         </div>
