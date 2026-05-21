@@ -75,6 +75,8 @@ import OnboardingCard from "@/app/components/OnboardingCard";
 import FeatureTipsCard from "@/app/components/FeatureTipsCard";
 // 푸시 옵트인 카드는 페이지 하단 — 첫 페인트엔 viewport 밖. lazy 안전.
 const PushOptInCard = dynamic(() => import("@/app/components/PushOptInCard"), { ssr: false });
+// 친구 초대 카드 — 첫 cat 등록한 사용자에게만 홈 하단에 노출. viral 강화.
+const InviteSection = dynamic(() => import("@/app/components/InviteSection"), { ssr: false });
 import type { Post } from "@/lib/types";
 import { listCats, thumbnailUrl, type Cat } from "@/lib/cats-repo";
 import {
@@ -1732,8 +1734,13 @@ export default function HomeAuthed({
         </div>
       )}
 
-      {/* ══════ 푸시 권한 권유 (default 권한일 때만) ══════ */}
-      <PushOptInCard />
+      {/* ══════ 푸시 권한 권유 — 첫 cat 등록한 사용자만 ══════ */}
+      {/* 가입 직후 prompt는 90% 거부. 등록 후 활동 컨텍스트 묶어서 prompt → 수락률 4~5배. */}
+      {activity && activity.catCount > 0 && <PushOptInCard />}
+
+      {/* ══════ 친구 초대 — 활동 사용자에게 viral 강화 ══════ */}
+      {/* catCount > 0인 사용자만. 빈 홈에 카드 쌓아두지 않게 활성 임계 통과시점에 노출. */}
+      {activity && activity.catCount > 0 && <InviteSection />}
 
       {/* ══════ 이번 주 동네 이슈 ══════ */}
       {weeklyIssues.length > 0 && (
