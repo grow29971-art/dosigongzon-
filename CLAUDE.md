@@ -64,6 +64,14 @@ box/                 — SQL 마이그레이션 + 개발일지 (배포 안 함)
 - 환경변수는 Vercel Dashboard에서 관리
 - SQL 마이그레이션은 Supabase SQL Editor에서 수동 실행
 
+### 환경변수 핵심
+- `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+- `NEXT_PUBLIC_KAKAO_MAP_KEY`, `NEXT_PUBLIC_KAKAO_JS_KEY`(공유)
+- `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`
+- `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_EMAIL`
+- `NEXT_PUBLIC_META_PIXEL_ID`(클라이언트 fbq), `META_PIXEL_ACCESS_TOKEN`(서버 CAPI — 미설정 시 lib/meta-capi.ts는 silent skip)
+- `GEMINI_API_KEY`(AI 챗봇), `CRON_SECRET`(/api/cron/*)
+
 ## 자주 쓰는 명령
 ```bash
 npm run dev          # 개발 서버
