@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import dynamic from "next/dynamic";
 const InquiryModal = dynamic(() => import("@/app/components/InquiryModal"), { ssr: false });
+const ActivityFeedPreview = dynamic(() => import("@/app/components/ActivityFeedPreview"), { ssr: false });
 import InstallAppMenuItem from "@/app/components/InstallAppMenuItem";
 import InviteSection from "@/app/components/InviteSection";
 import EmailDigestToggle from "@/app/components/EmailDigestToggle";
@@ -432,6 +433,10 @@ export default function MyPage() {
               )}
             </div>
           </div>
+
+          {/* ── 활동 피드 미리보기 — 재방문 트리거 ── */}
+          {/* /notifications 최근 4건 카드. 비어있으면 첫 등록 유도. */}
+          <ActivityFeedPreview hasMyCat={myCats.length > 0} />
 
           {/* ── 레벨 카드 ── */}
           {summary && (() => {
