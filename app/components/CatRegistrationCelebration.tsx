@@ -1,6 +1,10 @@
 "use client";
 
-import { Sparkles, PawPrint, Heart } from "lucide-react";
+import { useState } from "react";
+import { Sparkles, PawPrint, Heart, Share2 } from "lucide-react";
+import { getMyInviteInfo } from "@/lib/invites-repo";
+import { shareToKakao } from "@/lib/kakao-share";
+import { track } from "@vercel/analytics";
 
 type Props = {
   open: boolean;
@@ -20,7 +24,40 @@ export default function CatRegistrationCelebration({
   isFirstEver,
   onClose,
 }: Props) {
+  const [inviting, setInviting] = useState(false);
+
   if (!open) return null;
+
+  // peak-end 시점에 viral 트리거 — cat 등록 직후가 사용자 만족 최고점.
+  // 첫 등록(isFirstEver)일 때만 노출 — 매 등록마다 권유하면 피로감.
+  const handleInvite = async () => {
+    if (inviting) return;
+    setInviting(true);
+    try {
+      const info = await getMyInviteInfo();
+      if (!info?.inviteCode) {
+        setInviting(false);
+        return;
+      }
+      const origin = typeof window !== "undefined" ? window.location.origin : "https://dosigongzon.com";
+      const url = `${origin}/signup?invite=${info.inviteCode}&utm_source=kakao&utm_medium=invite&utm_campaign=first_cat`;
+      try { track("invite_from_first_cat_started"); } catch {}
+      const ok = await shareToKakao({
+        title: `${catName}을(를) 동네에 등록했어요 🐾`,
+        description: "이 아이를 같이 돌볼 수 있게 도시공존에 함께해주세요. 광고 없는 무료 시민 참여 길고양이 지도예요.",
+        imageUrl: `${origin}/opengraph-image`,
+        url,
+        buttonText: "초대 수락하고 함께 돌보기",
+      });
+      if (ok) {
+        try { track("invite_from_first_cat_sent"); } catch {}
+      }
+    } catch {
+      // 무시 — 사용자가 invite 보내고 싶지 않거나 카카오 실패
+    } finally {
+      setInviting(false);
+    }
+  };
 
   const headline = isFirstEver
     ? `${catName}이(가) 지도에 올라왔어요! 🎉`
@@ -115,6 +152,22 @@ export default function CatRegistrationCelebration({
           >
             확인
           </button>
+          {isFirstEver && (
+            <button
+              type="button"
+              onClick={handleInvite}
+              disabled={inviting}
+              className="w-full mt-2 py-2.5 rounded-2xl text-[12px] font-extrabold flex items-center justify-center gap-1.5 active:scale-[0.98] disabled:opacity-60"
+              style={{
+                backgroundColor: "#FEE500",
+                color: "#191919",
+                boxShadow: "0 3px 10px rgba(254,229,0,0.30)",
+              }}
+            >
+              <Share2 size={13} />
+              {inviting ? "잠시만요…" : `이웃과 ${catName} 함께 돌보기`}
+            </button>
+          )}
         </div>
       </div>
     </div>
