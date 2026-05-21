@@ -234,14 +234,58 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
         </h2>
         {cats.length === 0 ? (
           <div
-            className="py-10 text-center text-[13px] text-text-light bg-white rounded-2xl"
-            style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+            className="relative overflow-hidden rounded-2xl p-5 text-center"
+            style={{
+              background: "linear-gradient(135deg, #FFF6E8 0%, #FCE7D2 60%, #F8D9BE 100%)",
+              border: "1.5px solid rgba(196,126,90,0.30)",
+              boxShadow: "0 6px 18px rgba(196,126,90,0.18)",
+            }}
           >
-            아직 {region.shortName}에 등록된 아이가 없어요.
-            <br />
-            <Link href="/login?next=/map" className="font-bold mt-2 inline-block" style={{ color: "#C47E5A" }}>
-              첫 번째 돌봄 기록 남기기 →
-            </Link>
+            <div
+              aria-hidden
+              style={{
+                position: "absolute",
+                top: -50,
+                right: -40,
+                width: 160,
+                height: 160,
+                borderRadius: "50%",
+                background: "radial-gradient(circle, rgba(232,141,90,0.22) 0%, rgba(232,141,90,0) 70%)",
+              }}
+            />
+            <p className="text-[28px] leading-none mb-2" aria-hidden>🐾</p>
+            <p className="text-[15px] font-extrabold text-text-main leading-tight tracking-tight mb-1.5">
+              {region.shortName}의 첫 번째 케어테이커가 되어주세요
+            </p>
+            <p className="text-[12px] leading-relaxed mb-4" style={{ color: "rgba(92,74,62,0.85)" }}>
+              아직 비어있어요. 한 번의 돌봄 기록이 이웃을 부르고,
+              <br />
+              곧 {region.shortName}에도 따뜻한 지도가 생겨요.
+              <br />
+              <b style={{ color: "#A8684A" }}>5/25 정식 출시 이전 가입자에겐 창립 멤버 타이틀 영구 부여.</b>
+            </p>
+            <div className="flex gap-2">
+              <Link
+                href={`/signup?next=${encodeURIComponent(`/regions/${sido}`)}`}
+                className="flex-[1.5] flex items-center justify-center py-2.5 rounded-xl text-white text-[12.5px] font-extrabold active:scale-[0.98] transition-transform"
+                style={{
+                  background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+                  boxShadow: "0 4px 14px rgba(196,126,90,0.35)",
+                }}
+              >
+                무료로 시작하기
+              </Link>
+              <Link
+                href="/regions"
+                className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.98] transition-transform bg-white"
+                style={{
+                  color: "#A8684A",
+                  border: "1px solid rgba(196,126,90,0.30)",
+                }}
+              >
+                다른 시·도
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-2.5">
