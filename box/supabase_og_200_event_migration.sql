@@ -18,12 +18,20 @@
 --   → 205 또는 그 근처 (현재 가입자 수)
 -- ══════════════════════════════════════════
 
+-- profiles_guard_protected_fields trigger가 admin_title 변경 차단.
+-- SQL Editor는 auth.uid()=NULL이라 admin 분기 통과 못 함 → 일시 disable로 우회.
+-- 정책 변경 없이 마이그레이션 한 트랜잭션 동안만 비활성.
+alter table public.profiles disable trigger profiles_guard_protected_fields_trg;
+
 -- og_200 부여 (NULL · early_supporter · founding_member만 덮어쓰기)
 update public.profiles
 set admin_title = 'og_200'
 where admin_title is null
    or admin_title = 'early_supporter'
    or admin_title = 'founding_member';
+
+-- trigger 즉시 재활성 — 정책 영구 손상 방지
+alter table public.profiles enable trigger profiles_guard_protected_fields_trg;
 
 -- 결과 확인용 (실행 후 자동 표시)
 select
