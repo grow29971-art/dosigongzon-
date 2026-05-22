@@ -7,6 +7,7 @@ import PendingInviteApplier from "@/app/components/PendingInviteApplier";
 import MarketingConsentApplier from "@/app/components/MarketingConsentApplier";
 import SignupNudgeBar from "@/app/components/SignupNudgeBar";
 import ConsentManager from "@/app/components/ConsentManager";
+import Og200EventModal from "@/app/components/Og200EventModal";
 import "./globals.css";
 
 const SITE_URL = "https://dosigongzon.com";
@@ -223,6 +224,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <PendingInviteApplier />
             <MarketingConsentApplier />
             <SignupNudgeBar />
+            <Og200EventModal />
           </ToastProvider>
         </AuthProvider>
         {/* 쿠키 동의 배너 + 동의 시에만 Vercel Analytics·SpeedInsights 로드 */}

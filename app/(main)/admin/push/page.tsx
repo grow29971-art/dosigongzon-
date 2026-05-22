@@ -110,6 +110,31 @@ export default function AdminPushPage() {
         </div>
       </div>
 
+      {/* 이벤트 quick-fill — 5/25 출시 이후 자동 비활성 (수동 삭제) */}
+      <div className="mb-5">
+        <p className="text-[10px] font-extrabold tracking-[0.15em] text-text-light mb-1.5">EVENT QUICK-FILL</p>
+        <button
+          type="button"
+          onClick={() => {
+            setTitle("🌟 초기 200 타이틀 도착");
+            setBody("정식 출시 D-3 — 처음부터 함께한 205명에게 영구 한정 타이틀을 부여했어요. 마이페이지에서 장착해보세요.");
+            setUrl("/mypage");
+          }}
+          className="w-full text-left px-4 py-2.5 rounded-xl active:scale-[0.99] transition-transform"
+          style={{
+            background: "linear-gradient(135deg, #FFE8C2 0%, #FFCFB5 100%)",
+            border: "1px solid rgba(196,126,90,0.30)",
+          }}
+        >
+          <p className="text-[12.5px] font-extrabold" style={{ color: "#7A4F30" }}>
+            🌟 초기 200 이벤트 안내 (출시 D-3)
+          </p>
+          <p className="text-[10.5px] mt-0.5" style={{ color: "#8E5430" }}>
+            제목·본문·이동경로 자동 채움. 클릭 후 발송 버튼만 누르세요.
+          </p>
+        </button>
+      </div>
+
       {/* 폼 */}
       <div className="space-y-4">
         <div>
