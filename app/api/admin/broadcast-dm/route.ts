@@ -128,7 +128,8 @@ export async function POST(request: Request) {
     return Response.json({ ok: true, sent: 0, failed: 0, totalTargets: 0 });
   }
 
-  // 일괄 insert — 한 번에 1000건씩 청크
+  // 일괄 insert — direct_messages 스키마에 맞춰 필드 정리
+  // (photo_url 컬럼은 존재하지 않음 — 텍스트 DM만 지원)
   const rows = targets.map((u) => ({
     sender_id: adminId,
     sender_name: senderName,
@@ -136,12 +137,10 @@ export async function POST(request: Request) {
     receiver_id: u.id,
     receiver_name: u.nickname ?? "회원",
     body: message,
-    photo_url: null,
   }));
 
-  // 진단용 — chunk 1로 줄이고 첫 에러 메시지를 응답에 포함.
-  // 출시 직후 평상시 운영 안정화되면 다시 CHUNK=500으로 복원 권장.
-  const CHUNK = 1;
+  // 한 번에 500건씩 청크 발송. 실패 시 첫 에러 메시지를 응답에 포함(진단용).
+  const CHUNK = 500;
   let sent = 0;
   let failed = 0;
   let firstErrorMessage: string | null = null;
