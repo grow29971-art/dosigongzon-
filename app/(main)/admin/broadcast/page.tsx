@@ -96,7 +96,7 @@ export default function AdminBroadcastPage() {
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState<
-    | { ok: boolean; sent: number; failed: number; totalTargets: number; cohort: string }
+    | { ok: boolean; sent: number; failed: number; totalTargets: number; cohort: string; firstError?: string | null }
     | null
   >(null);
   const [error, setError] = useState("");
@@ -318,6 +318,14 @@ export default function AdminBroadcastPage() {
           <p>
             대상 {result.totalTargets}명 · 성공 {result.sent}건 · 실패 {result.failed}건
           </p>
+          {result.firstError && (
+            <p
+              className="mt-2 px-2.5 py-1.5 rounded-lg text-[11.5px] font-mono break-all"
+              style={{ background: "rgba(0,0,0,0.06)", color: "#5C3F0A" }}
+            >
+              첫 에러: {result.firstError}
+            </p>
+          )}
         </div>
       )}
 

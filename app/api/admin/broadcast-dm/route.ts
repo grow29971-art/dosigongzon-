@@ -139,14 +139,18 @@ export async function POST(request: Request) {
     photo_url: null,
   }));
 
-  const CHUNK = 500;
+  // 진단용 — chunk 1로 줄이고 첫 에러 메시지를 응답에 포함.
+  // 출시 직후 평상시 운영 안정화되면 다시 CHUNK=500으로 복원 권장.
+  const CHUNK = 1;
   let sent = 0;
   let failed = 0;
+  let firstErrorMessage: string | null = null;
   for (let i = 0; i < rows.length; i += CHUNK) {
     const chunk = rows.slice(i, i + CHUNK);
     const { error: insertErr } = await service.from("direct_messages").insert(chunk);
     if (insertErr) {
       failed += chunk.length;
+      if (!firstErrorMessage) firstErrorMessage = insertErr.message;
       reportError("broadcast-dm/insert-chunk", new Error(insertErr.message), {
         chunkStart: i,
         chunkSize: chunk.length,
@@ -162,5 +166,6 @@ export async function POST(request: Request) {
     failed,
     totalTargets: targets.length,
     cohort,
+    firstError: firstErrorMessage,
   });
 }
