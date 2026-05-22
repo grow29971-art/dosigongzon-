@@ -55,7 +55,7 @@ export default function MyCircleQuickEntry() {
         }}
       >
         {/* 헤더 */}
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-start gap-2 mb-3">
           <div
             className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0"
             style={{ background: "linear-gradient(135deg, #4F6B53 0%, #6B8E6F 100%)" }}
@@ -63,10 +63,21 @@ export default function MyCircleQuickEntry() {
             <ShieldCheck size={17} color="#fff" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[13.5px] font-extrabold text-text-main tracking-tight">
-              내 서클
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <p className="text-[13.5px] font-extrabold text-text-main tracking-tight">
+                내 서클
+              </p>
+              <span
+                className="text-[9.5px] font-extrabold px-1.5 py-0.5 rounded-md tracking-wider"
+                style={{ background: "rgba(79,107,83,0.15)", color: "#4F6B53" }}
+              >
+                PRIVATE
+              </span>
+            </div>
+            <p className="text-[10.5px] mt-0.5 leading-snug" style={{ color: "rgba(60,46,35,0.65)" }}>
+              걱정되는 아이를 내가 초대한 이웃에게만 보여줘요
             </p>
-            <div className="flex items-center gap-1 mt-0.5">
+            <div className="flex items-center gap-1 mt-1">
               <Users size={10} style={{ color: "#4F6B53" }} />
               {loading ? (
                 <Loader2 size={10} className="animate-spin" style={{ color: "#4F6B53" }} />
