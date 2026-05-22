@@ -111,7 +111,7 @@ export default function AdminPushPage() {
       </div>
 
       {/* 이벤트 quick-fill — 5/25 출시 이후 자동 비활성 (수동 삭제) */}
-      <div className="mb-5">
+      <div className="mb-5 space-y-2">
         <p className="text-[10px] font-extrabold tracking-[0.15em] text-text-light mb-1.5">EVENT QUICK-FILL</p>
         <button
           type="button"
@@ -131,6 +131,48 @@ export default function AdminPushPage() {
           </p>
           <p className="text-[10.5px] mt-0.5" style={{ color: "#8E5430" }}>
             제목·본문·이동경로 자동 채움. 클릭 후 발송 버튼만 누르세요.
+          </p>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setTitle("🎉 도시공존 정식 출시");
+            setBody("오늘 도시공존이 정식 출시됐어요. 처음부터 함께해 주셔서 진심으로 감사합니다. 누적 기록과 감사 메시지를 확인해보세요.");
+            setUrl("/celebrate");
+          }}
+          className="w-full text-left px-4 py-2.5 rounded-xl active:scale-[0.99] transition-transform"
+          style={{
+            background: "linear-gradient(135deg, #FFD6E4 0%, #FFB99B 100%)",
+            border: "1px solid rgba(232,107,140,0.30)",
+          }}
+        >
+          <p className="text-[12.5px] font-extrabold" style={{ color: "#A8395B" }}>
+            🎉 정식 출시 D-Day (5/25 당일 발송)
+          </p>
+          <p className="text-[10.5px] mt-0.5" style={{ color: "#B5546F" }}>
+            /celebrate 페이지로 안내. 출시일 한 번만 발송.
+          </p>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setTitle("🌱 도시공존 출시 첫 주");
+            setBody("정식 출시 후 일주일 — 새로 합류한 이웃 소식과 다음 주 업데이트를 확인해보세요.");
+            setUrl("/");
+          }}
+          className="w-full text-left px-4 py-2.5 rounded-xl active:scale-[0.99] transition-transform"
+          style={{
+            background: "linear-gradient(135deg, #E4F2E4 0%, #C9E5C9 100%)",
+            border: "1px solid rgba(107,142,111,0.30)",
+          }}
+        >
+          <p className="text-[12.5px] font-extrabold" style={{ color: "#3F6B4E" }}>
+            🌱 출시 +7일 회고 (6/1 발송)
+          </p>
+          <p className="text-[10.5px] mt-0.5" style={{ color: "#5F8F73" }}>
+            첫 주 통계·회고. 출시 다음 주말 발송 권장.
           </p>
         </button>
       </div>
