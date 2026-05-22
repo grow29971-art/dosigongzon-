@@ -117,7 +117,7 @@ export default function AdminPushPage() {
           type="button"
           onClick={() => {
             setTitle("🌟 초기 200 타이틀 도착");
-            setBody("정식 출시 D-3 — 처음부터 함께한 205명에게 영구 한정 타이틀을 부여했어요. 마이페이지에서 장착해보세요.");
+            setBody("정식 출시 D-3 — 초기 합류 멤버에게 영구 한정 타이틀을 부여했어요. 마이페이지에서 장착해보세요.");
             setUrl("/mypage");
           }}
           className="w-full text-left px-4 py-2.5 rounded-xl active:scale-[0.99] transition-transform"

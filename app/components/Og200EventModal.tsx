@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Sparkles, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { createClient } from "@/lib/supabase/client";
 
 const DISMISS_KEY = "dosigongzon_og200_seen";
 // 5/25 정식 출시 자정까지 노출. 이후 모달 자동 비활성(영구 dismiss와 동일 효과).
@@ -31,9 +32,33 @@ export default function Og200EventModal() {
     } catch {
       return;
     }
-    // 첫 진입 약간 지연 — 다른 모달·hydration과 충돌 방지
-    const t = setTimeout(() => setOpen(true), 600);
-    return () => clearTimeout(t);
+
+    // og_200 보유자에게만 노출 — 운영자 부여 타이틀(official_volunteer 등)
+    // 보유자는 더 영예로운 타이틀 보존하므로 모달 노출 안 함.
+    let cancelled = false;
+    (async () => {
+      try {
+        const sb = createClient();
+        const { data } = await sb
+          .from("profiles")
+          .select("admin_title")
+          .eq("id", user.id)
+          .maybeSingle();
+        if (cancelled) return;
+        const title = (data as { admin_title?: string | null } | null)?.admin_title;
+        if (title !== "og_200") return;
+        // 첫 진입 약간 지연 — 다른 모달·hydration과 충돌 방지
+        setTimeout(() => {
+          if (!cancelled) setOpen(true);
+        }, 600);
+      } catch {
+        /* 무시 — 모달 안 띄움 */
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [user]);
 
   const dismiss = () => {
@@ -106,7 +131,7 @@ export default function Og200EventModal() {
         <div className="px-6 pt-5 pb-6">
           <p className="text-[13px] leading-relaxed text-text-main mb-4">
             정식 출시(<b>5/25</b>) 직전, 도시공존에 가장 먼저 합류한
-            {" "}<b style={{ color: "#A8684A" }}>205명</b>에게만 영구 한정 타이틀
+            {" "}초기 멤버에게만 영구 한정 타이틀
             {" "}<b style={{ color: "#A8684A" }}>🌟 초기 200</b>이 자동 부여됐어요.
           </p>
 
