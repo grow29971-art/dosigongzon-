@@ -247,9 +247,77 @@ export default function AdminDashboardPage() {
         </p>
       </div>
 
+      {/* 출시 D-day 카운트다운 카드 + 오늘 추이 */}
+      {stats && (
+        <div className="px-4 -mt-6 mb-2">
+          <div
+            className="rounded-2xl p-4 relative overflow-hidden"
+            style={{
+              background:
+                stats.daysUntilLaunch > 0
+                  ? "linear-gradient(135deg, #FFE8C2 0%, #FFCFB5 60%, #FFB99B 100%)"
+                  : "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)",
+              boxShadow: "0 8px 24px rgba(196,126,90,0.20)",
+            }}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p
+                  className="text-[10px] font-extrabold tracking-[0.20em] mb-1"
+                  style={{ color: stats.daysUntilLaunch > 0 ? "#8E5430" : "rgba(255,255,255,0.85)" }}
+                >
+                  {stats.daysUntilLaunch > 0 ? "OFFICIAL LAUNCH" : "POST-LAUNCH"}
+                </p>
+                <p
+                  className="text-[22px] font-extrabold tracking-tight leading-tight"
+                  style={{ color: stats.daysUntilLaunch > 0 ? "#5C3A1E" : "#FFFFFF" }}
+                >
+                  {stats.daysUntilLaunch > 0
+                    ? `2026-05-25 D-${stats.daysUntilLaunch}`
+                    : stats.daysUntilLaunch === 0
+                      ? "🎉 D-Day"
+                      : `출시 +${Math.abs(stats.daysUntilLaunch)}일`}
+                </p>
+              </div>
+              <div
+                className="rounded-2xl px-3 py-2 text-center shrink-0"
+                style={{
+                  background: stats.daysUntilLaunch > 0 ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.18)",
+                }}
+              >
+                <p
+                  className="text-[9px] font-extrabold tracking-[0.15em]"
+                  style={{ color: stats.daysUntilLaunch > 0 ? "#8E5430" : "rgba(255,255,255,0.85)" }}
+                >
+                  TODAY
+                </p>
+                <p
+                  className="text-[18px] font-extrabold tabular-nums tracking-tight"
+                  style={{ color: stats.daysUntilLaunch > 0 ? "#5C3A1E" : "#FFFFFF" }}
+                >
+                  +{stats.newUsersToday}
+                </p>
+                <p
+                  className="text-[9.5px] font-bold tabular-nums"
+                  style={{ color: stats.daysUntilLaunch > 0 ? "#8E5430" : "rgba(255,255,255,0.75)" }}
+                >
+                  어제 +{stats.newUsersYesterday}
+                </p>
+              </div>
+            </div>
+            <p
+              className="text-[11px] mt-3 leading-snug"
+              style={{ color: stats.daysUntilLaunch > 0 ? "rgba(92,58,30,0.80)" : "rgba(255,255,255,0.85)" }}
+            >
+              가입자 <b>{stats.totalUsers}</b>명 · 오늘 신규 등록 고양이 <b>{stats.newCatsToday}</b>마리
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* 통계 카드 */}
       {stats && (
-        <div className="px-4 -mt-6 mb-5 grid grid-cols-2 gap-2">
+        <div className="px-4 mb-5 grid grid-cols-2 gap-2">
           <StatCard
             Icon={UsersIcon}
             label="전체 가입자"

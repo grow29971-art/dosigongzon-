@@ -16,7 +16,15 @@ export interface AdminStats {
   totalUsers: number; // profiles 기준
   suspendedUsers: number;
   errors7d: number;
+  // 출시 D-day & 일별 가입 추이
+  daysUntilLaunch: number; // 5/25까지 남은 일수, 음수면 출시 후
+  newUsersToday: number;
+  newUsersYesterday: number;
+  newCatsToday: number;
 }
+
+// 정식 출시 D-day — LaunchCountdown과 동일
+const LAUNCH_DATE = new Date("2026-05-25T00:00:00+09:00");
 
 async function safeCount(
   supabase: ReturnType<typeof createClient>,
@@ -37,6 +45,8 @@ export async function getAdminStats(): Promise<AdminStats> {
   const supabase = createClient();
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
+  const yesterdayStart = new Date(todayStart);
+  yesterdayStart.setDate(yesterdayStart.getDate() - 1);
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   const [
@@ -49,6 +59,9 @@ export async function getAdminStats(): Promise<AdminStats> {
     suspendedUsers,
     todayErrors,
     errors7d,
+    newUsersToday,
+    newUsersYesterday,
+    newCatsToday,
   ] = await Promise.all([
     safeCount(supabase, "cats"),
     safeCount(supabase, "posts"),
@@ -59,7 +72,16 @@ export async function getAdminStats(): Promise<AdminStats> {
     safeCount(supabase, "profiles", (q) => q.not("suspended_until", "is", null)),
     safeCount(supabase, "auth_error_logs", (q) => q.gte("created_at", todayStart.toISOString())),
     safeCount(supabase, "auth_error_logs", (q) => q.gte("created_at", weekAgo.toISOString())),
+    safeCount(supabase, "profiles", (q) => q.gte("created_at", todayStart.toISOString())),
+    safeCount(supabase, "profiles", (q) =>
+      q.gte("created_at", yesterdayStart.toISOString()).lt("created_at", todayStart.toISOString()),
+    ),
+    safeCount(supabase, "cats", (q) => q.gte("created_at", todayStart.toISOString())),
   ]);
+
+  // 출시까지 남은 일수 (음수면 출시 후 경과일)
+  const diffMs = LAUNCH_DATE.getTime() - Date.now();
+  const daysUntilLaunch = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 
   // 오늘 방문자는 별도 API 사용
   let todayVisits = 0;
@@ -82,5 +104,9 @@ export async function getAdminStats(): Promise<AdminStats> {
     totalUsers,
     suspendedUsers,
     errors7d,
+    daysUntilLaunch,
+    newUsersToday,
+    newUsersYesterday,
+    newCatsToday,
   };
 }
