@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ShieldCheck, MessageCircle, Users, Loader2 } from "lucide-react";
+import { ShieldCheck, MessageCircle, Users, Loader2, UserPlus } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { getOrCreateMyCircle, countMyAcceptedCircleMembers } from "@/lib/circles-repo";
 import { listMyUnreadCircles } from "@/lib/circle-chat-repo";
@@ -90,32 +90,45 @@ export default function MyCircleQuickEntry() {
           </div>
         </div>
 
-        {/* 2 버튼 */}
-        <div className="flex gap-2">
-          <Link
-            href={circleId ? `/circle/${circleId}/chat` : "/mypage/circle"}
-            className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12.5px] font-extrabold text-white active:scale-[0.97] transition-transform relative"
-            style={{ background: "linear-gradient(135deg, #4F6B53 0%, #6B8E6F 100%)", boxShadow: "0 3px 10px rgba(79,107,83,0.25)" }}
-          >
-            <MessageCircle size={13} />
-            <span>채팅방 열기</span>
-            {unreadTotal > 0 && (
-              <span
-                className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-extrabold leading-none"
-                style={{ background: "#FFF7C4", color: "#4F6B53" }}
-              >
-                {unreadTotal > 99 ? "99+" : unreadTotal}
-              </span>
-            )}
-          </Link>
+        {/* 버튼 — 멤버 유무로 분기 */}
+        {memberCount === 0 ? (
+          /* 멤버 0명: 초대를 강조. 채팅방은 본인만 있어서 의미 적음 → 아래 작은 라벨로 */
           <Link
             href="/mypage/circle"
-            className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.97] transition-transform bg-white"
-            style={{ color: "#4F6B53", border: "1px solid rgba(79,107,83,0.30)" }}
+            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-extrabold text-white active:scale-[0.97] transition-transform"
+            style={{ background: "linear-gradient(135deg, #4F6B53 0%, #6B8E6F 100%)", boxShadow: "0 4px 12px rgba(79,107,83,0.30)" }}
           >
-            관리
+            <UserPlus size={14} />
+            <span>이웃 초대 시작하기</span>
           </Link>
-        </div>
+        ) : (
+          /* 멤버 있음: 채팅방 + 관리 두 버튼 */
+          <div className="flex gap-2">
+            <Link
+              href={circleId ? `/circle/${circleId}/chat` : "/mypage/circle"}
+              className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12.5px] font-extrabold text-white active:scale-[0.97] transition-transform relative"
+              style={{ background: "linear-gradient(135deg, #4F6B53 0%, #6B8E6F 100%)", boxShadow: "0 3px 10px rgba(79,107,83,0.25)" }}
+            >
+              <MessageCircle size={13} />
+              <span>채팅방 열기</span>
+              {unreadTotal > 0 && (
+                <span
+                  className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-extrabold leading-none"
+                  style={{ background: "#FFF7C4", color: "#4F6B53" }}
+                >
+                  {unreadTotal > 99 ? "99+" : unreadTotal}
+                </span>
+              )}
+            </Link>
+            <Link
+              href="/mypage/circle"
+              className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.97] transition-transform bg-white"
+              style={{ color: "#4F6B53", border: "1px solid rgba(79,107,83,0.30)" }}
+            >
+              관리
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );
