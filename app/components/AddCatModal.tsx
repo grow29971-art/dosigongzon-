@@ -77,8 +77,9 @@ export default function AddCatModal({
     open: boolean;
     catName: string;
     isFirstEver: boolean;
+    registrationCount: number;
     cat: Cat | null;
-  }>({ open: false, catName: "", isFirstEver: false, cat: null });
+  }>({ open: false, catName: "", isFirstEver: false, registrationCount: 0, cat: null });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // portal root
@@ -244,18 +245,24 @@ export default function AddCatModal({
         visibility,
       });
 
-      // 첫 등록 감지 — localStorage 기반 (유저별)
+      // 첫 등록 감지 + 등록 횟수 카운터 — localStorage 기반 (유저별)
       const firstKey = user ? `first-cat-registered:${user.id}` : "first-cat-registered";
+      const countKey = user ? `cat-register-count:${user.id}` : "cat-register-count";
       let isFirstEver = false;
+      let registrationCount = 1;
       try {
         isFirstEver = !localStorage.getItem(firstKey);
         if (isFirstEver) localStorage.setItem(firstKey, "1");
+        const prev = Number(localStorage.getItem(countKey) ?? "0");
+        registrationCount = (Number.isFinite(prev) ? prev : 0) + 1;
+        localStorage.setItem(countKey, String(registrationCount));
       } catch {}
 
       setCelebration({
         open: true,
         catName: newCat.name,
         isFirstEver,
+        registrationCount,
         cat: newCat,
       });
       setSubmitting(false);
@@ -739,6 +746,7 @@ export default function AddCatModal({
         open={celebration.open}
         catName={celebration.catName}
         isFirstEver={celebration.isFirstEver}
+        registrationCount={celebration.registrationCount}
         onClose={() => {
           setCelebration((prev) => ({ ...prev, open: false }));
           if (celebration.cat) onCreated(celebration.cat);

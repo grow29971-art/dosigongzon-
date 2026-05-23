@@ -10,6 +10,7 @@ type Props = {
   open: boolean;
   catName: string;
   isFirstEver: boolean;
+  registrationCount?: number; // 누적 등록 N마리째 — milestone(5/10/20) 인식용
   onClose: () => void;
 };
 
@@ -22,6 +23,7 @@ export default function CatRegistrationCelebration({
   open,
   catName,
   isFirstEver,
+  registrationCount = 0,
   onClose,
 }: Props) {
   const [inviting, setInviting] = useState(false);
@@ -59,13 +61,28 @@ export default function CatRegistrationCelebration({
     }
   };
 
+  // milestone 인식 — 5/10/20/50 마리째 등록 시 특별 메시지
+  // 그 외 일반 등록은 단순 확인 + N마리째 카운터 노출(누적감)
+  const milestoneInfo = ((): { headline: string; subline: string } | null => {
+    if (isFirstEver) return null;
+    if (registrationCount === 50) return { headline: `🥇 50마리째! ${catName}`, subline: "동네의 절반을 알게 된 진정한 케어테이커예요" };
+    if (registrationCount === 20) return { headline: `👑 20마리째! ${catName}`, subline: "마을의 눈 — 동네 길잡이가 되셨어요" };
+    if (registrationCount === 10) return { headline: `🏡 10마리째! ${catName}`, subline: "두 자릿수 케어테이커 영역에 들어왔어요" };
+    if (registrationCount === 5) return { headline: `🐾 5마리째! ${catName}`, subline: "부지런한 집사 영역에 들어왔어요" };
+    if (registrationCount === 3) return { headline: `🌱 3마리째! ${catName}`, subline: "동네 지도가 점점 두꺼워져요" };
+    return null;
+  })();
+
   const headline = isFirstEver
     ? `${catName}이(가) 지도에 올라왔어요! 🎉`
-    : `${catName} 등록 완료`;
+    : milestoneInfo?.headline ?? `${catName} 등록 완료`;
 
   const subline = isFirstEver
     ? "이 아이의 첫 기록자가 되어주셨어요"
-    : "이웃들이 함께 돌볼 수 있도록 공유됐어요";
+    : milestoneInfo?.subline
+      ?? (registrationCount > 0
+        ? `${registrationCount}마리째 친구가 합류했어요`
+        : "이웃들이 함께 돌볼 수 있도록 공유됐어요");
 
   return (
     <div
