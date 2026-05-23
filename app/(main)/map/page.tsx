@@ -1138,8 +1138,8 @@ export default function MapPage() {
     }
 
     // 마커용 사진 URL — image transformation 활성 시 변환 endpoint, 아니면 원본.
-    // 2026-05-13 Dashboard Storage Settings에서 Image Transformation 활성화 완료.
-    const TRANSFORM_ENABLED = true;
+    // 2026-05-23 출시 D-2 사용자 보고 "사진이 안 보임" 핫픽스로 비활성. 원본 URL 사용.
+    const TRANSFORM_ENABLED = false;
     function thumb(url: string | null | undefined, size: number): string {
       const safe = sanitizeImageUrl(url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
       if (!TRANSFORM_ENABLED) return safe;

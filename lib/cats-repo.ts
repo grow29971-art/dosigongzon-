@@ -259,8 +259,10 @@ export async function listCats(): Promise<Cat[]> {
 // ── Supabase Storage image transformation 토글 ──
 // true: /render/image/public/?width=... 변환 endpoint 사용 (Pro 플랜 + Dashboard 활성 필요).
 // false: 원본 URL 그대로 반환 (기능 비활성 시 fallback).
-// 2026-05-13 Dashboard Storage Settings에서 Image Transformation 활성화 완료.
-const SUPABASE_IMAGE_TRANSFORM_ENABLED = true;
+// 2026-05-13 활성화 → 2026-05-23 출시 D-2 사용자 보고 "사진이 안 보임" 핫픽스로 비활성.
+// 원인 가설: 변환 쿼터 초과 또는 일부 변환 endpoint 응답 깨짐.
+// 원본 URL은 RLS·public 버킷이라 항상 보장됨.
+const SUPABASE_IMAGE_TRANSFORM_ENABLED = false;
 
 // ── Supabase Storage 썸네일 변환 (이미지 변환 활성 시) ──
 // 마커용 60-120px 썸네일로 대역폭 절감. 비활성 시 원본 폴백.

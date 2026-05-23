@@ -208,11 +208,8 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                     <p className="text-[12px] text-text-main mt-1 leading-snug">{log.memo}</p>
                   )}
                   {log.photo_url && (() => {
-                    // 작은 썸네일(max-h-28 ≈ 112px)이라 작게 변환
-                    const safe = sanitizeImageUrl(log.photo_url, "");
-                    const optimized = safe.includes("/storage/v1/object/public/")
-                      ? `${safe.replace("/object/public/", "/render/image/public/")}?width=300&quality=70`
-                      : safe;
+                    // 2026-05-23 핫픽스: Image Transformation 비활성 — 원본 URL 사용.
+                    const optimized = sanitizeImageUrl(log.photo_url, "");
                     // eslint-disable-next-line @next/next/no-img-element
                     return (
                       <img
