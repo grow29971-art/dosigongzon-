@@ -40,9 +40,9 @@ export default function CatStyleLabPage() {
     setOutputUrl(null);
     try {
       const supabase = createClient();
-      // 단순화: 같은 cat-photos bucket의 lab 하위 경로
+      // Storage RLS: 첫 segment가 user.id여야 함. user.id 먼저, 그 다음 lab 하위.
       const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
-      const path = `lab/${user.id}/${crypto.randomUUID()}.${ext}`;
+      const path = `${user.id}/lab/${crypto.randomUUID()}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from(CAT_PHOTOS_BUCKET)
         .upload(path, file, { upsert: false, cacheControl: "3600" });
