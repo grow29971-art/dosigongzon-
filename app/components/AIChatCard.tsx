@@ -7,8 +7,8 @@ import { Bot, Send } from "lucide-react";
 // AI 집사 모달 — 버튼 누르기 전엔 다운로드 안 함
 const AIChatModal = dynamic(() => import("@/app/components/AIChatModal"), { ssr: false });
 
-// 홈에서 옮겨온 AI 집사 카드. 꿀팁게시판 상단 진입점에 배치.
-export default function TipsAIChatCard() {
+// AI 집사 채팅 진입 카드. 현재는 /lab/cat-style(AI 변환) 페이지 하단에 배치 — AI 기능 모음.
+export default function AIChatCard() {
   const [chatOpen, setChatOpen] = useState(false);
 
   return (

@@ -10,6 +10,7 @@ import { ArrowLeft, Upload, Sparkles, Download, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import { STYLE_DEFS, type CatStyle } from "@/lib/cat-style-transform";
+import AIChatCard from "@/app/components/AIChatCard";
 
 const CAT_PHOTOS_BUCKET = "cat-photos"; // 기존 cat 등록과 동일 bucket 사용
 
@@ -95,9 +96,14 @@ export default function CatStyleLabPage() {
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
         <div>
-          <h1 className="text-[20px] font-extrabold text-text-main">고양이 사진 변환 (베타)</h1>
-          <p className="text-[10.5px] text-text-sub">사진 한 장으로 4가지 스타일</p>
+          <h1 className="text-[20px] font-extrabold text-text-main">AI 도구</h1>
+          <p className="text-[10.5px] text-text-sub">사진 변환 · AI 집사 채팅</p>
         </div>
+      </div>
+
+      {/* AI 집사 채팅 카드 — 변환 전 또는 사용 안 할 때 진입 */}
+      <div className="px-4 mt-1 mb-3">
+        <AIChatCard />
       </div>
 
       {/* 1) 업로드 영역 */}
