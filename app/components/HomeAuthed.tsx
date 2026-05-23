@@ -25,6 +25,8 @@ import {
   SunMedium,
   Bell,
   Search,
+  Flame,
+  Trophy,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 // 업적 토스트 — 업적 잠금 해제 시에만 보임. ssr 끄고 lazy.
@@ -32,7 +34,7 @@ const AchievementToast = dynamic(() => import("@/app/components/AchievementToast
 import type { ToastData } from "@/app/components/AchievementToast";
 import SocialProofStrip from "@/app/components/SocialProofStrip";
 import LaunchCountdown from "@/app/components/LaunchCountdown";
-import { TITLES, CATEGORY_COLORS } from "@/lib/titles";
+import { TITLES, CATEGORY_COLORS, countUnlocked } from "@/lib/titles";
 import TodayChecklist from "@/app/components/TodayChecklist";
 import RescueBanner from "@/app/components/RescueBanner";
 import StreakFreezeButton from "@/app/components/StreakFreezeButton";
@@ -649,6 +651,61 @@ export default function HomeAuthed({
 
       {/* ══════ 긴급 구조 배너 (scarcity/urgency) — 항상 우선 ══════ */}
       {user && rescueCount > 0 && <RescueBanner count={rescueCount} />}
+
+      {/* ══════ 내 진척 mini strip — 활성 사용자만 ══════ */}
+      {/* 레벨·streak·업적 한 줄로 항상 viewport에. 클릭 시 마이페이지 — retention 자극. */}
+      {user && activity && activity.catCount > 0 && levelInfo && (() => {
+        const streak = streakInfo?.streak ?? 0;
+        const unlocked = countUnlocked(activity);
+        return (
+          <Link
+            href="/mypage"
+            className="block mb-3 active:scale-[0.99] transition-transform"
+            style={{
+              background: "linear-gradient(135deg, #FFFFFF 0%, #FCF6EC 100%)",
+              borderRadius: 18,
+              padding: "12px 14px",
+              border: "1px solid rgba(196,126,90,0.18)",
+              boxShadow: "0 4px 14px rgba(196,126,90,0.08), 0 1px 2px rgba(0,0,0,0.02)",
+            }}
+          >
+            <div className="flex items-center gap-3">
+              {/* 레벨 emoji 큰 원 */}
+              <div
+                className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 text-xl"
+                style={{ background: "rgba(196,126,90,0.12)" }}
+              >
+                {levelInfo.emoji}
+              </div>
+              {/* 텍스트 — 3분할 */}
+              <div className="flex-1 min-w-0 flex items-center gap-3">
+                <div className="min-w-0">
+                  <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#A8684A" }}>
+                    LV.{levelInfo.level}
+                  </p>
+                  <p className="text-[12px] font-extrabold text-text-main truncate leading-tight">
+                    {levelInfo.title}
+                  </p>
+                </div>
+                <div className="w-px h-7 shrink-0" style={{ background: "rgba(196,126,90,0.18)" }} />
+                <div className="flex items-center gap-1 shrink-0">
+                  <Flame size={12} style={{ color: streak > 0 ? "#E88D5A" : "#C2B5A8" }} />
+                  <span className="text-[12px] font-extrabold tabular-nums" style={{ color: streak > 0 ? "#A8684A" : "#8C7B6A" }}>
+                    {streak}일
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <Trophy size={12} style={{ color: unlocked > 0 ? "#C9A961" : "#C2B5A8" }} />
+                  <span className="text-[12px] font-extrabold tabular-nums" style={{ color: unlocked > 0 ? "#8C7B16" : "#8C7B6A" }}>
+                    {unlocked}
+                  </span>
+                </div>
+              </div>
+              <ChevronRight size={14} style={{ color: "#A8684A" }} className="shrink-0" />
+            </div>
+          </Link>
+        );
+      })()}
 
       {/*
         신규 가입자(아직 첫 등록 안 한 유저) → 시작 가이드만 노출
