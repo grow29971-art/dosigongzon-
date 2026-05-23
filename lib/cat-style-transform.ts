@@ -1,11 +1,16 @@
-// 고양이 사진 스타일 변환 — Replicate API 연동
+// 고양이 사진 스타일 변환 — Cloudflare Workers AI (무료 tier)
 // 4가지 스타일: anime / watercolor / embroidery / sticker
 //
-// 활성 조건: REPLICATE_API_TOKEN 환경변수 설정
-// 미설정 시 호출하면 명시적 에러 반환 — silent fail 안 함(운영자가 누락 즉시 감지).
+// 활성 조건:
+//  - CLOUDFLARE_ACCOUNT_ID 환경변수
+//  - CLOUDFLARE_API_TOKEN 환경변수 (Workers AI 권한 포함)
 //
-// 비용: 약 $0.01~0.04/회 (스타일별, Replicate price 변동 가능)
-// rate limit은 호출 전 별도 enforce (DB 카운터 or rate-limit-repo)
+// 모델: @cf/runwayml/stable-diffusion-v1-5-img2img (img2img 지원, 무료 tier에서 가장 안정)
+// 무료 한도: 일 10,000 neurons (~수십 회 분량). 카드 등록 불필요.
+// 비용: 한도 내 무료. 초과 시 카드 등록 필요(neuron당 약 $0.011/1000 neurons).
+//
+// 응답: 원본 이미지를 fetch → bytes → Cloudflare img2img → binary PNG 응답.
+//        base64 data URL로 변환해 클라이언트에 전달(임시 표시).
 
 export type CatStyle = "anime" | "watercolor" | "embroidery" | "sticker";
 
@@ -14,11 +19,9 @@ export interface StyleDef {
   name: string;
   emoji: string;
   description: string;
-  // 프롬프트 — 모델·튜닝 후 조정. img2img 시 strength도 함께 조정.
   prompt: string;
   negativePrompt: string;
-  // img2img strength (0=원본 유지, 1=완전 새로 생성). 고양이 형태 유지 위해 0.55~0.75 권장.
-  strength: number;
+  strength: number; // img2img strength (0=원본 유지, 1=완전 새 생성). 고양이 형태 유지 위해 0.5~0.7.
 }
 
 export const STYLE_DEFS: StyleDef[] = [
@@ -27,27 +30,27 @@ export const STYLE_DEFS: StyleDef[] = [
     name: "애니메 그림체",
     emoji: "🌸",
     description: "지브리 톤 일본 애니메 스타일",
-    prompt: "studio ghibli anime style cute cat illustration, soft pastel colors, anime drawing, hand-drawn, warm lighting, detailed eyes, fluffy fur",
+    prompt: "studio ghibli anime style cute cat illustration, soft pastel colors, hand-drawn, warm lighting, detailed fluffy fur, big eyes",
     negativePrompt: "realistic, photograph, 3d, low quality, distorted, ugly, deformed, text, watermark",
-    strength: 0.65,
+    strength: 0.6,
   },
   {
     id: "watercolor",
     name: "수채화",
     emoji: "🎨",
     description: "부드러운 붓터치 수채화 일러스트",
-    prompt: "watercolor painting of a cute cat, soft brush strokes, warm color palette, paper texture, gentle bleeding edges, traditional art, illustration",
+    prompt: "watercolor painting of a cute cat, soft brush strokes, warm color palette, paper texture, traditional art illustration, gentle bleeding edges",
     negativePrompt: "photograph, realistic, 3d, sharp edges, digital, low quality, text, watermark",
-    strength: 0.7,
+    strength: 0.65,
   },
   {
     id: "embroidery",
     name: "실뜨기·자수",
     emoji: "🧵",
     description: "수공예 자수·실뜨기 텍스처",
-    prompt: "cute cat embroidered with colorful threads, cross stitch, woolen yarn texture, handmade craft, soft fabric background, detailed embroidery pattern, top view",
+    prompt: "cute cat embroidered with colorful threads, cross stitch pattern, woolen yarn texture, handmade craft, soft fabric background, detailed embroidery",
     negativePrompt: "photograph, realistic, 3d, smooth, digital art, anime, low quality, text, watermark",
-    strength: 0.75,
+    strength: 0.7,
   },
   {
     id: "sticker",
@@ -56,7 +59,7 @@ export const STYLE_DEFS: StyleDef[] = [
     description: "둥글둥글 귀여운 캐릭터 스티커",
     prompt: "cute kawaii cat character sticker, simple cartoon style, big eyes, rounded shape, vibrant solid colors, white background, vector art, chibi proportions",
     negativePrompt: "realistic, photograph, 3d, complex background, dark, scary, low quality, text, watermark, signature",
-    strength: 0.7,
+    strength: 0.65,
   },
 ];
 
@@ -64,102 +67,99 @@ export function findStyleDef(id: string): StyleDef | null {
   return STYLE_DEFS.find((s) => s.id === id) ?? null;
 }
 
-// Replicate SDXL img2img — 모델 버전 ID는 운영 환경에서 가장 안정된 것으로 고정.
-// stability-ai/sdxl 또는 변환 특화 모델로 변경 가능.
-// 이 값은 환경변수로 빼서 운영 중 모델 교체 가능하게 함.
-const DEFAULT_MODEL_VERSION = "39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b";
-// ↑ stability-ai/sdxl 의 한 안정 버전. 운영 시점에 latest로 교체 권장.
+const DEFAULT_MODEL = "@cf/runwayml/stable-diffusion-v1-5-img2img";
 
 export interface TransformResult {
   ok: boolean;
-  outputUrl?: string;
+  outputDataUrl?: string; // base64 data URL — 클라이언트에서 직접 표시·다운로드
   error?: string;
-  predictionId?: string;
 }
 
 /**
- * Replicate 변환 호출 (비동기 polling).
- * 입력: 원본 이미지 URL(공개 접근 가능해야 함 — Supabase Storage public 버킷 OK)
- * 출력: 변환된 이미지 URL(Replicate CDN)
- *
- * 호출 흐름: prediction 생성 → 완료까지 polling → output URL 반환
- * 시간: 보통 15~40초. timeout 60초.
+ * Cloudflare Workers AI img2img 호출.
+ * 입력: 공개 접근 가능한 원본 이미지 URL.
+ * 출력: 변환된 PNG의 base64 data URL.
  */
 export async function transformCatImage(opts: {
   imageUrl: string;
   style: CatStyle;
-  width?: number;
-  height?: number;
 }): Promise<TransformResult> {
-  const token = (process.env.REPLICATE_API_TOKEN ?? "").trim();
-  if (!token) {
-    return { ok: false, error: "REPLICATE_API_TOKEN 환경변수가 설정되지 않았어요." };
+  const accountId = (process.env.CLOUDFLARE_ACCOUNT_ID ?? "").trim();
+  const apiToken = (process.env.CLOUDFLARE_API_TOKEN ?? "").trim();
+  if (!accountId) {
+    return { ok: false, error: "CLOUDFLARE_ACCOUNT_ID 환경변수가 설정되지 않았어요." };
   }
-  const modelVersion = (process.env.REPLICATE_MODEL_VERSION ?? "").trim() || DEFAULT_MODEL_VERSION;
+  if (!apiToken) {
+    return { ok: false, error: "CLOUDFLARE_API_TOKEN 환경변수가 설정되지 않았어요." };
+  }
+  const model = (process.env.CLOUDFLARE_AI_MODEL ?? "").trim() || DEFAULT_MODEL;
 
   const def = findStyleDef(opts.style);
-  if (!def) {
-    return { ok: false, error: "스타일을 찾을 수 없어요." };
+  if (!def) return { ok: false, error: "스타일을 찾을 수 없어요." };
+
+  // 1) 원본 이미지 fetch → bytes
+  let imageBytes: number[];
+  try {
+    const imgRes = await fetch(opts.imageUrl, { signal: AbortSignal.timeout(10_000) });
+    if (!imgRes.ok) {
+      return { ok: false, error: `원본 이미지 다운로드 실패: ${imgRes.status}` };
+    }
+    const buf = await imgRes.arrayBuffer();
+    // 너무 큰 파일 차단 (~5MB 이상)
+    if (buf.byteLength > 5 * 1024 * 1024) {
+      return { ok: false, error: "원본 이미지가 5MB를 초과해요. 더 작은 사진을 사용해주세요." };
+    }
+    imageBytes = Array.from(new Uint8Array(buf));
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? `원본 fetch 실패: ${e.message}` : "원본 fetch 실패" };
   }
 
+  // 2) Cloudflare Workers AI 호출
   try {
-    // 1) prediction 생성
-    const createRes = await fetch("https://api.replicate.com/v1/predictions", {
+    const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`;
+    const res = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${apiToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        version: modelVersion,
-        input: {
-          image: opts.imageUrl,
-          prompt: def.prompt,
-          negative_prompt: def.negativePrompt,
-          prompt_strength: def.strength,
-          width: opts.width ?? 768,
-          height: opts.height ?? 768,
-          num_inference_steps: 25,
-          guidance_scale: 7.5,
-          scheduler: "K_EULER",
-        },
+        prompt: def.prompt,
+        negative_prompt: def.negativePrompt,
+        image: imageBytes,
+        strength: def.strength,
+        num_steps: 20,
+        guidance: 7.5,
       }),
-      signal: AbortSignal.timeout(10_000),
+      signal: AbortSignal.timeout(60_000),
     });
 
-    if (!createRes.ok) {
-      const err = await createRes.text().catch(() => "");
-      return { ok: false, error: `Replicate 호출 실패: ${createRes.status} ${err.slice(0, 200)}` };
+    if (!res.ok) {
+      const err = await res.text().catch(() => "");
+      return { ok: false, error: `Cloudflare AI 호출 실패: ${res.status} ${err.slice(0, 200)}` };
     }
-    const created = (await createRes.json()) as { id: string; status: string; urls?: { get?: string } };
-    const predictionId = created.id;
-    const pollUrl = created.urls?.get ?? `https://api.replicate.com/v1/predictions/${predictionId}`;
 
-    // 2) polling — 최대 60초 (2초 간격 × 30회)
-    for (let i = 0; i < 30; i++) {
-      await new Promise((r) => setTimeout(r, 2000));
-      const pollRes = await fetch(pollUrl, {
-        headers: { Authorization: `Bearer ${token}` },
-        signal: AbortSignal.timeout(5_000),
-      });
-      if (!pollRes.ok) continue;
-      const poll = (await pollRes.json()) as {
-        status: string;
-        output?: string | string[];
-        error?: string;
-      };
-      if (poll.status === "succeeded") {
-        const outputUrl = Array.isArray(poll.output) ? poll.output[0] : poll.output;
-        if (!outputUrl) {
-          return { ok: false, error: "변환 결과가 비어있어요.", predictionId };
-        }
-        return { ok: true, outputUrl, predictionId };
+    // 응답이 binary PNG일 수도, JSON일 수도 있음(모델별 차이).
+    const contentType = res.headers.get("content-type") ?? "";
+    let pngBuffer: ArrayBuffer;
+    if (contentType.includes("application/json")) {
+      const json = (await res.json()) as { result?: { image?: string }; errors?: unknown };
+      const b64 = json.result?.image;
+      if (!b64) {
+        return { ok: false, error: `Cloudflare 응답 비어있음: ${JSON.stringify(json).slice(0, 200)}` };
       }
-      if (poll.status === "failed" || poll.status === "canceled") {
-        return { ok: false, error: poll.error ?? "변환 실패", predictionId };
-      }
+      // JSON 응답의 image는 base64 문자열
+      const binStr = atob(b64);
+      const bytes = new Uint8Array(binStr.length);
+      for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
+      pngBuffer = bytes.buffer;
+    } else {
+      pngBuffer = await res.arrayBuffer();
     }
-    return { ok: false, error: "변환 시간이 초과됐어요(60초). 잠시 후 다시 시도해주세요.", predictionId };
+
+    // 3) base64 data URL 변환
+    const base64 = Buffer.from(new Uint8Array(pngBuffer)).toString("base64");
+    return { ok: true, outputDataUrl: `data:image/png;base64,${base64}` };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "알 수 없는 오류" };
   }

@@ -19,7 +19,7 @@ export default function CatStyleLabPage() {
   const [sourceUrl, setSourceUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [style, setStyle] = useState<CatStyle>("anime");
-  const [outputUrl, setOutputUrl] = useState<string | null>(null);
+  const [outputDataUrl, setOutputUrl] = useState<string | null>(null);
   const [transforming, setTransforming] = useState(false);
   const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -77,7 +77,7 @@ export default function CatStyleLabPage() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "변환 실패");
-      setOutputUrl(json.outputUrl);
+      setOutputUrl(json.outputDataUrl);
     } catch (e) {
       setError(e instanceof Error ? e.message : "변환 실패");
     } finally {
@@ -217,15 +217,15 @@ export default function CatStyleLabPage() {
       )}
 
       {/* 4) 결과 */}
-      {outputUrl && (
+      {outputDataUrl && (
         <section className="px-5 mt-6">
           <p className="text-[10px] font-extrabold tracking-[0.18em] mb-1.5" style={{ color: "#6B8E6F" }}>RESULT</p>
           <div className="relative rounded-2xl overflow-hidden" style={{ aspectRatio: "1/1", background: "#EEE8E0", boxShadow: "0 8px 24px rgba(196,126,90,0.20)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={outputUrl} alt="변환 결과" className="w-full h-full object-cover" />
+            <img src={outputDataUrl} alt="변환 결과" className="w-full h-full object-cover" />
           </div>
           <a
-            href={outputUrl}
+            href={outputDataUrl}
             download={`dosigongzon-${style}-${Date.now()}.png`}
             target="_blank"
             rel="noopener noreferrer"
