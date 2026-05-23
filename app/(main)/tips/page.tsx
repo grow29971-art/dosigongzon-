@@ -5,7 +5,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Sparkles, ChevronRight, Eye, Clock, ExternalLink, Pin, BookOpen, Siren, Baby, Stethoscope, Snowflake, Pill } from "lucide-react";
+import { ArrowLeft, Sparkles, ChevronRight, Eye, Clock, ExternalLink, Pin, BookOpen, Siren, Baby, Stethoscope, Snowflake, Pill, Heart, Phone, Scale, AlertTriangle } from "lucide-react";
 import { listPublishedTipsServer, type Tip } from "@/lib/tips-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { estimateReadingMinutes } from "@/lib/html-sanitize";
@@ -129,53 +129,101 @@ export default async function TipsIndexPage() {
         <TipsAIChatCard />
       </div>
 
-      {/* ── 보호지침 카테고리 (꿀팁과 통합) ── */}
+      {/* ── 🚨 보호지침 매뉴얼 (꿀팁과 통합) — 위급할 땐 여기 펼치기 ── */}
       <div className="px-4 mb-5">
-        <div className="flex items-center justify-between mb-2.5 px-1">
-          <div className="flex items-center gap-1.5">
-            <BookOpen size={14} className="text-primary" />
-            <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
-              보호지침
-            </h2>
+        <div
+          className="relative overflow-hidden p-4 pt-4"
+          style={{
+            background: "linear-gradient(135deg, #FFE6E0 0%, #FFCFB5 50%, #FFD9A8 100%)",
+            borderRadius: 22,
+            border: "1.5px solid rgba(216,85,85,0.25)",
+            boxShadow: "0 8px 24px rgba(216,85,85,0.15), 0 2px 6px rgba(196,126,90,0.10)",
+          }}
+        >
+          <div
+            aria-hidden
+            style={{
+              position: "absolute",
+              top: -40,
+              right: -30,
+              width: 160,
+              height: 160,
+              borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(216,85,85,0.18) 0%, rgba(216,85,85,0) 70%)",
+            }}
+          />
+
+          {/* 헤더 */}
+          <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center gap-1.5">
+              <AlertTriangle size={15} style={{ color: "#B83A2A" }} />
+              <h2 className="text-[15px] font-extrabold tracking-tight" style={{ color: "#5C2A1E" }}>
+                위급할 땐 여기로
+              </h2>
+            </div>
+            <span
+              className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md tracking-wider"
+              style={{ background: "rgba(216,85,85,0.18)", color: "#A8392A" }}
+            >
+              구조 매뉴얼
+            </span>
           </div>
+          <p className="text-[11.5px] leading-snug mb-3" style={{ color: "rgba(92,42,30,0.80)" }}>
+            응급·새끼 발견·TNR·법률까지 — 한 발 빠른 대처가 한 생명을 살려요
+          </p>
+
+          {/* 3×3 카테고리 grid */}
+          <div className="grid grid-cols-3 gap-2 mb-3">
+            {[
+              { href: "/protection/emergency-guide", label: "응급처치", sub: "다쳤을 때", Icon: Siren, color: "#D85555" },
+              { href: "/protection/kitten-guide", label: "새끼 발견", sub: "이런 땐 데려와요", Icon: Baby, color: "#E88D5A" },
+              { href: "/protection/disease-guide", label: "질병 신호", sub: "증상 체크", Icon: Heart, color: "#E86B8C" },
+              { href: "/protection/trapping-guide", label: "TNR·포획", sub: "안전한 절차", Icon: Stethoscope, color: "#8B65B8" },
+              { href: "/protection/feeding-guide", label: "밥주기", sub: "올바른 방법", Icon: Sparkles, color: "#48A59E" },
+              { href: "/protection/shelter-guide", label: "겨울 쉼터", sub: "지금 만들기", Icon: Snowflake, color: "#5A8AC4" },
+              { href: "/protection/pharmacy-guide", label: "약품 안내", sub: "주변 약국", Icon: Pill, color: "#6B8E6F" },
+              { href: "/protection/district-contacts", label: "지자체 연락", sub: "전국 240+ 곳", Icon: Phone, color: "#A8684A" },
+              { href: "/protection/legal", label: "법률·신고", sub: "학대 대응", Icon: Scale, color: "#7A6B8E" },
+            ].map((cat) => (
+              <Link
+                key={cat.href}
+                href={cat.href}
+                className="rounded-2xl px-2 py-2.5 flex flex-col items-center gap-1 active:scale-[0.96] transition-transform"
+                style={{
+                  background: "#FFFFFF",
+                  boxShadow: "0 3px 10px rgba(0,0,0,0.06)",
+                  border: "1px solid rgba(255,255,255,0.6)",
+                }}
+              >
+                <div
+                  className="w-9 h-9 rounded-xl flex items-center justify-center"
+                  style={{ background: `${cat.color}18` }}
+                >
+                  <cat.Icon size={16} style={{ color: cat.color }} strokeWidth={2.3} />
+                </div>
+                <span className="text-[11px] font-extrabold text-text-main leading-none">
+                  {cat.label}
+                </span>
+                <span className="text-[9.5px] font-bold text-text-light leading-none">
+                  {cat.sub}
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          {/* 강한 CTA — 무조건 누를 수 있는 톤 */}
           <Link
             href="/protection"
-            className="flex items-center gap-0.5 text-[11px] font-bold text-primary active:opacity-70"
+            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-extrabold text-white active:scale-[0.98] transition-transform"
+            style={{
+              background: "linear-gradient(135deg, #D85555 0%, #B83A2A 100%)",
+              boxShadow: "0 6px 18px rgba(216,85,85,0.35)",
+            }}
           >
-            전체 보기
-            <ChevronRight size={11} />
+            <BookOpen size={14} />
+            구조 매뉴얼 전체 펼치기
+            <ChevronRight size={13} />
           </Link>
-        </div>
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { href: "/protection/emergency-guide", label: "응급처치", Icon: Siren, color: "#D85555" },
-            { href: "/protection/kitten-guide", label: "새끼 발견", Icon: Baby, color: "#E88D5A" },
-            { href: "/protection/trapping-guide", label: "TNR·포획", Icon: Stethoscope, color: "#8B65B8" },
-            { href: "/protection/feeding-guide", label: "밥주기", Icon: Sparkles, color: "#48A59E" },
-            { href: "/protection/shelter-guide", label: "겨울 쉼터", Icon: Snowflake, color: "#5A8AC4" },
-            { href: "/protection/pharmacy-guide", label: "약품 안내", Icon: Pill, color: "#6B8E6F" },
-          ].map((cat) => (
-            <Link
-              key={cat.href}
-              href={cat.href}
-              className="rounded-2xl p-2.5 flex flex-col items-center gap-1 active:scale-[0.97] transition-transform"
-              style={{
-                background: "#FFFFFF",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                border: "1px solid rgba(0,0,0,0.04)",
-              }}
-            >
-              <div
-                className="w-9 h-9 rounded-xl flex items-center justify-center"
-                style={{ background: `${cat.color}15` }}
-              >
-                <cat.Icon size={16} style={{ color: cat.color }} strokeWidth={2.2} />
-              </div>
-              <span className="text-[11px] font-extrabold text-text-main">
-                {cat.label}
-              </span>
-            </Link>
-          ))}
         </div>
       </div>
 
