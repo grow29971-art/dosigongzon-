@@ -38,6 +38,7 @@ import { TITLES, CATEGORY_COLORS, countUnlocked } from "@/lib/titles";
 import TodayChecklist from "@/app/components/TodayChecklist";
 import RescueBanner from "@/app/components/RescueBanner";
 import StreakFreezeButton from "@/app/components/StreakFreezeButton";
+import StreakAtRiskAlert from "@/app/components/StreakAtRiskAlert";
 import SplashLoading from "@/app/components/SplashLoading";
 import FoundingMemberBanner from "@/app/components/FoundingMemberBanner";
 import PatchUpdateBanner518 from "@/app/components/PatchUpdateBanner518";
@@ -651,6 +652,16 @@ export default function HomeAuthed({
 
       {/* ══════ 긴급 구조 배너 (scarcity/urgency) — 항상 우선 ══════ */}
       {user && rescueCount > 0 && <RescueBanner count={rescueCount} />}
+
+      {/* ══════ streak 위험 hero — 활성·연속 3일+·오늘 미기록 ══════ */}
+      {/* 손실 회피 동기 자극. dismiss 시 오늘 다시 안 보임. */}
+      {user && activity && streakInfo && (
+        <StreakAtRiskAlert
+          streak={streakInfo.streak}
+          hasToday={streakInfo.hasToday}
+          catCount={activity.catCount}
+        />
+      )}
 
       {/* ══════ 내 진척 mini strip — 활성 사용자만 ══════ */}
       {/* 레벨·streak·업적 한 줄로 항상 viewport에. 클릭 시 마이페이지 — retention 자극. */}
