@@ -201,17 +201,18 @@ export default function CatStyleLabPage() {
             {transforming ? (
               <>
                 <Loader2 size={16} className="animate-spin" />
-                변환 중… (보통 15~40초)
+                생성 중… (첫 호출은 최대 40초 cold start)
               </>
             ) : (
               <>
                 <Sparkles size={15} />
-                변환하기
+                생성하기
               </>
             )}
           </button>
-          <p className="text-[10.5px] text-center mt-2 text-text-light">
-            일일 3회 제한 · 결과는 자동 저장되지 않아요(다운로드 필요)
+          <p className="text-[10.5px] text-center mt-2 text-text-light leading-relaxed">
+            🆓 무료 베타 · 일 3회 제한 · 결과 다운로드해서 보관해주세요
+            <br />원본 사진을 그대로 변환하지 않고, 같은 스타일의 고양이 일러스트를 생성해요
           </p>
         </section>
       )}
