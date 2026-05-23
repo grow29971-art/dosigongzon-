@@ -5,7 +5,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Sparkles, ChevronRight, Eye, Clock, ExternalLink, Pin } from "lucide-react";
+import { ArrowLeft, Sparkles, ChevronRight, Eye, Clock, ExternalLink, Pin, BookOpen, Siren, Baby, Stethoscope, Snowflake, Pill } from "lucide-react";
 import { listPublishedTipsServer, type Tip } from "@/lib/tips-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { estimateReadingMinutes } from "@/lib/html-sanitize";
@@ -100,10 +100,10 @@ export default async function TipsIndexPage() {
         </Link>
         <div>
           <h1 className="text-[20px] font-extrabold text-text-main tracking-tight flex items-center gap-1.5">
-            <Sparkles size={18} className="text-primary" />
-            꿀팁게시판
+            <BookOpen size={18} className="text-primary" />
+            가이드
           </h1>
-          <p className="text-[11px] text-text-sub">길고양이 돌봄에 도움되는 정보글</p>
+          <p className="text-[11px] text-text-sub">길고양이 돌봄 꿀팁 + 보호지침을 한곳에서</p>
         </div>
       </div>
 
@@ -127,6 +127,66 @@ export default async function TipsIndexPage() {
       {/* ── AI 집사 (꿀팁 페이지 상단 진입점) ── */}
       <div className="px-4 mb-4">
         <TipsAIChatCard />
+      </div>
+
+      {/* ── 보호지침 카테고리 (꿀팁과 통합) ── */}
+      <div className="px-4 mb-5">
+        <div className="flex items-center justify-between mb-2.5 px-1">
+          <div className="flex items-center gap-1.5">
+            <BookOpen size={14} className="text-primary" />
+            <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+              보호지침
+            </h2>
+          </div>
+          <Link
+            href="/protection"
+            className="flex items-center gap-0.5 text-[11px] font-bold text-primary active:opacity-70"
+          >
+            전체 보기
+            <ChevronRight size={11} />
+          </Link>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { href: "/protection/emergency-guide", label: "응급처치", Icon: Siren, color: "#D85555" },
+            { href: "/protection/kitten-guide", label: "새끼 발견", Icon: Baby, color: "#E88D5A" },
+            { href: "/protection/trapping-guide", label: "TNR·포획", Icon: Stethoscope, color: "#8B65B8" },
+            { href: "/protection/feeding-guide", label: "밥주기", Icon: Sparkles, color: "#48A59E" },
+            { href: "/protection/shelter-guide", label: "겨울 쉼터", Icon: Snowflake, color: "#5A8AC4" },
+            { href: "/protection/pharmacy-guide", label: "약품 안내", Icon: Pill, color: "#6B8E6F" },
+          ].map((cat) => (
+            <Link
+              key={cat.href}
+              href={cat.href}
+              className="rounded-2xl p-2.5 flex flex-col items-center gap-1 active:scale-[0.97] transition-transform"
+              style={{
+                background: "#FFFFFF",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                border: "1px solid rgba(0,0,0,0.04)",
+              }}
+            >
+              <div
+                className="w-9 h-9 rounded-xl flex items-center justify-center"
+                style={{ background: `${cat.color}15` }}
+              >
+                <cat.Icon size={16} style={{ color: cat.color }} strokeWidth={2.2} />
+              </div>
+              <span className="text-[11px] font-extrabold text-text-main">
+                {cat.label}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* ── 꿀팁 헤더 ── */}
+      <div className="px-4 mb-2.5">
+        <div className="flex items-center gap-1.5 px-1">
+          <Sparkles size={14} className="text-primary" />
+          <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+            꿀팁
+          </h2>
+        </div>
       </div>
 
       {/* ── 본문 ── */}
