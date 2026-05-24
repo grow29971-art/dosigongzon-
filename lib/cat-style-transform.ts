@@ -61,20 +61,69 @@ export interface TransformResult {
 }
 
 /**
+ * 한국어/자유 텍스트 prompt → 영어 image generation prompt로 Gemini 번역·강화.
+ * Gemini 미설정 시 원본 그대로 반환 (silent fallback).
+ */
+async function enhancePromptWithGemini(userPrompt: string): Promise<string> {
+  const key = (process.env.GEMINI_API_KEY ?? "").trim();
+  if (!key) return userPrompt;
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(key)}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{
+            role: "user",
+            parts: [{
+              text:
+                "You are an image generation prompt engineer. Translate the user's Korean/free-form request into a concise English prompt for FLUX text-to-image. Focus on a single cute cat as the main subject. Add helpful style/lighting/quality keywords. No explanation, output ONLY the english prompt in one line.\n\nUser: " +
+                userPrompt.slice(0, 500),
+            }],
+          }],
+          generationConfig: { temperature: 0.7, maxOutputTokens: 200 },
+        }),
+        signal: AbortSignal.timeout(8_000),
+      },
+    );
+    if (!res.ok) return userPrompt;
+    const json = (await res.json()) as {
+      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+    };
+    const out = json.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    return out && out.length > 5 ? out : userPrompt;
+  } catch {
+    return userPrompt;
+  }
+}
+
+/**
  * Pollinations.ai 호출 — text-to-image, 가입·토큰 불필요.
- * imageUrl은 향후 img2img 모델 통합 시 사용 예정(현재는 무시).
+ * style: 미리 정의된 4 스타일 중 하나 또는 "custom" (사용자 직접 프롬프트)
+ * customPrompt: style="custom"일 때 사용자 한국어 자유 입력. Gemini로 영어 변환.
  */
 export async function transformCatImage(opts: {
   imageUrl: string;
-  style: CatStyle;
+  style: CatStyle | "custom";
+  customPrompt?: string;
 }): Promise<TransformResult> {
-  const def = findStyleDef(opts.style);
-  if (!def) return { ok: false, error: "스타일을 찾을 수 없어요." };
+  let finalPrompt: string;
+  if (opts.style === "custom") {
+    const raw = (opts.customPrompt ?? "").trim();
+    if (!raw) return { ok: false, error: "프롬프트를 입력해주세요." };
+    if (raw.length > 500) return { ok: false, error: "프롬프트는 500자 이내로 작성해주세요." };
+    finalPrompt = await enhancePromptWithGemini(raw);
+  } else {
+    const def = findStyleDef(opts.style);
+    if (!def) return { ok: false, error: "스타일을 찾을 수 없어요." };
+    finalPrompt = def.prompt;
+  }
 
   // seed로 매번 다른 결과 생성 (cache hit 방지)
   const seed = Math.floor(Math.random() * 1_000_000);
   const url =
-    `https://image.pollinations.ai/prompt/${encodeURIComponent(def.prompt)}` +
+    `https://image.pollinations.ai/prompt/${encodeURIComponent(finalPrompt)}` +
     `?width=768&height=768&model=flux&nologo=true&enhance=true&seed=${seed}`;
 
   try {

@@ -18,7 +18,8 @@ export default function CatStyleLabPage() {
   const { user } = useAuth();
   const [sourceUrl, setSourceUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [style, setStyle] = useState<CatStyle>("anime");
+  const [style, setStyle] = useState<CatStyle | "custom">("anime");
+  const [customPrompt, setCustomPrompt] = useState("");
   const [outputDataUrl, setOutputUrl] = useState<string | null>(null);
   const [transforming, setTransforming] = useState(false);
   const [error, setError] = useState("");
@@ -73,7 +74,7 @@ export default function CatStyleLabPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ imageUrl: sourceUrl, style }),
+        body: JSON.stringify({ imageUrl: sourceUrl, style, customPrompt: style === "custom" ? customPrompt : undefined }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "변환 실패");
@@ -181,7 +182,46 @@ export default function CatStyleLabPage() {
                 </p>
               </button>
             ))}
+            {/* 5번째: 직접 작성 */}
+            <button
+              type="button"
+              onClick={() => setStyle("custom")}
+              className="text-left px-3.5 py-3 rounded-2xl active:scale-[0.97] transition-transform col-span-2"
+              style={{
+                background: style === "custom" ? "linear-gradient(135deg, #8B65B8 0%, #6B4FA8 100%)" : "#FFFFFF",
+                color: style === "custom" ? "#FFFFFF" : "#2C2C2C",
+                border: style === "custom" ? "1.5px solid #6B4FA8" : "1px solid rgba(0,0,0,0.06)",
+                boxShadow: style === "custom" ? "0 4px 14px rgba(139,101,184,0.35)" : "0 2px 6px rgba(0,0,0,0.03)",
+              }}
+            >
+              <p className="text-[16px] mb-0.5">✍️ <span className="text-[13px] font-extrabold tracking-tight">직접 작성</span><span className="ml-1.5 text-[9px] font-bold tracking-[0.12em] opacity-70">AI 번역</span></p>
+              <p className="text-[10.5px]" style={{ color: style === "custom" ? "rgba(255,255,255,0.80)" : "rgba(60,46,35,0.65)" }}>
+                한국어로 자유 입력 — Gemini가 영어 image prompt로 변환
+              </p>
+            </button>
           </div>
+
+          {/* custom 모드 — textarea */}
+          {style === "custom" && (
+            <div className="mt-3">
+              <textarea
+                value={customPrompt}
+                onChange={(e) => setCustomPrompt(e.target.value)}
+                placeholder="예) 우주복 입고 별빛 사이를 떠다니는 검은 고양이, 신비로운 분위기"
+                rows={3}
+                maxLength={500}
+                className="w-full px-3.5 py-2.5 rounded-xl text-[13px] outline-none resize-none focus:ring-2 focus:ring-primary/30"
+                style={{
+                  background: "#FFFFFF",
+                  color: "#2C2C2C",
+                  border: "1.5px solid rgba(139,101,184,0.25)",
+                }}
+              />
+              <p className="text-[10px] text-text-light mt-1 text-right tabular-nums">
+                {customPrompt.length}/500
+              </p>
+            </div>
+          )}
         </section>
       )}
 

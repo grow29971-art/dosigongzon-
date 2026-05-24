@@ -52,7 +52,7 @@ export async function POST(request: Request) {
   const isAdmin = !!adminRow;
 
   // 입력
-  let body: { imageUrl?: unknown; style?: unknown };
+  let body: { imageUrl?: unknown; style?: unknown; customPrompt?: unknown };
   try {
     body = await request.json();
   } catch {
@@ -60,14 +60,16 @@ export async function POST(request: Request) {
   }
   const imageUrl = typeof body.imageUrl === "string" ? body.imageUrl.trim() : "";
   const styleRaw = typeof body.style === "string" ? body.style : "";
-  const validStyles: CatStyle[] = ["anime", "watercolor", "embroidery", "sticker"];
+  const customPrompt = typeof body.customPrompt === "string" ? body.customPrompt : undefined;
+  const validStyles = ["anime", "watercolor", "embroidery", "sticker", "custom"] as const;
+  type StyleInput = (typeof validStyles)[number];
   if (!imageUrl || !/^https?:\/\//.test(imageUrl)) {
     return Response.json({ error: "이미지 URL이 필요해요." }, { status: 400 });
   }
-  if (!validStyles.includes(styleRaw as CatStyle)) {
+  if (!validStyles.includes(styleRaw as StyleInput)) {
     return Response.json({ error: "스타일이 올바르지 않아요." }, { status: 400 });
   }
-  const style = styleRaw as CatStyle;
+  const style = styleRaw as StyleInput;
 
   // 일일 quota 검사 (admin 면제)
   if (!isAdmin) {
@@ -84,8 +86,8 @@ export async function POST(request: Request) {
     }
   }
 
-  // Cloudflare Workers AI 호출
-  const result = await transformCatImage({ imageUrl, style });
+  // Pollinations.ai 호출 (custom 스타일은 Gemini 번역 후)
+  const result = await transformCatImage({ imageUrl, style, customPrompt });
   if (!result.ok) {
     return Response.json({ error: result.error ?? "변환 실패" }, { status: 502 });
   }
