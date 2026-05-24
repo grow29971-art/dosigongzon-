@@ -10,6 +10,7 @@ import { listPublishedTipsServer, type Tip } from "@/lib/tips-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { estimateReadingMinutes } from "@/lib/html-sanitize";
 import TipsAdminFab from "./TipsAdminFab";
+import AIChatCard from "@/app/components/AIChatCard";
 
 export const revalidate = 600;
 
@@ -122,6 +123,11 @@ export default async function TipsIndexPage() {
           </div>
         </div>
       )}
+
+      {/* ── AI 집사 (가이드 페이지 상단 진입점) ── */}
+      <div className="px-4 mb-4">
+        <AIChatCard />
+      </div>
 
       {/* ── 🚨 보호지침 매뉴얼 (꿀팁과 통합) — 위급할 땐 여기 펼치기 ── */}
       <div className="px-4 mb-5">
