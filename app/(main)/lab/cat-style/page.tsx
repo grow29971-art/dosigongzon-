@@ -1,13 +1,30 @@
-// AI 집사 페이지 — /lab/cat-style (URL 그대로 유지 — BottomNav 호환)
-// 사진 변환 기능은 잠시 보류(이미지 생성 모델 호환성 이슈). AI 집사 채팅만 노출.
-// 코드는 lib/cat-style-transform.ts·api/cat-style/transform에 남아있어 재도입 가능.
+// AI 집사 페이지 — /lab/cat-style (BottomNav AI집사 탭 진입점)
+// 사진 변환 기능은 보류. AI 집사 채팅 + 풍부한 진입 콘텐츠.
 
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Bot } from "lucide-react";
+import { ArrowLeft, Bot, MessageCircle, Siren, Baby, Stethoscope, Snowflake, Pill, BookOpen, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import AIChatCard from "@/app/components/AIChatCard";
+
+const QUICK_QUESTIONS: Array<{ emoji: string; question: string }> = [
+  { emoji: "🍼", question: "새끼 고양이 발견했어요" },
+  { emoji: "🩺", question: "TNR 신청은 어떻게 하나요" },
+  { emoji: "🚨", question: "다친 고양이 응급처치 방법" },
+  { emoji: "❄️", question: "겨울 쉼터 만드는 법" },
+  { emoji: "⚖️", question: "동네 길고양이 밥 주는 게 위법인가요" },
+  { emoji: "🥣", question: "사료는 어떤 게 좋아요" },
+];
+
+const GUIDE_LINKS: Array<{ href: string; label: string; Icon: typeof Siren; color: string }> = [
+  { href: "/protection/emergency-guide", label: "응급처치", Icon: Siren, color: "#D85555" },
+  { href: "/protection/kitten-guide", label: "새끼 발견", Icon: Baby, color: "#E88D5A" },
+  { href: "/protection/trapping-guide", label: "TNR·포획", Icon: Stethoscope, color: "#8B65B8" },
+  { href: "/protection/shelter-guide", label: "겨울 쉼터", Icon: Snowflake, color: "#5A8AC4" },
+  { href: "/protection/pharmacy-guide", label: "약품", Icon: Pill, color: "#6B8E6F" },
+  { href: "/tips", label: "전체 가이드", Icon: BookOpen, color: "#A8684A" },
+];
 
 export default function AICatSitterPage() {
   const { user } = useAuth();
@@ -15,16 +32,25 @@ export default function AICatSitterPage() {
   if (!user) {
     return (
       <div className="min-h-dvh px-5 pt-20 text-center" style={{ background: "#F7F4EE" }}>
-        <p className="text-[14px] font-bold text-text-main mb-2">로그인이 필요해요</p>
-        <Link href="/login?next=/lab/cat-style" className="text-[13px] font-bold text-primary">
-          로그인하기 →
+        <Bot size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
+        <p className="text-[14px] font-bold text-text-main mb-1">AI 집사는 로그인 후 이용 가능해요</p>
+        <Link
+          href="/login?next=/lab/cat-style"
+          className="inline-block mt-3 px-5 py-2.5 rounded-2xl text-white text-[13px] font-extrabold"
+          style={{
+            background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+            boxShadow: "0 4px 14px rgba(196,126,90,0.35)",
+          }}
+        >
+          로그인하기
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-20" style={{ background: "#F7F4EE" }}>
+      {/* 헤더 */}
       <div className="px-4 pt-12 pb-3 flex items-center gap-2">
         <Link
           href="/"
@@ -37,16 +63,76 @@ export default function AICatSitterPage() {
           <h1 className="text-[20px] font-extrabold text-text-main flex items-center gap-1.5">
             <Bot size={18} className="text-primary" />
             AI 집사
+            <span className="text-[9px] font-bold tracking-[0.15em] ml-0.5" style={{ color: "#C47E5A", opacity: 0.55 }}>BETA</span>
           </h1>
-          <p className="text-[10.5px] text-text-sub">길고양이 돌봄이 궁금할 땐 여기에 물어보세요</p>
+          <p className="text-[10.5px] text-text-sub">길고양이 돌봄, 뭐든 물어보세요</p>
         </div>
       </div>
 
-      <div className="px-4 mt-3">
+      {/* AI 집사 채팅 진입 카드 */}
+      <div className="px-4 mt-2">
         <AIChatCard />
       </div>
 
-      <div className="px-5 mt-6">
+      {/* 빠른 질문 chips */}
+      <section className="px-4 mt-5">
+        <div className="flex items-center gap-1.5 mb-2 px-1">
+          <Sparkles size={13} className="text-primary" />
+          <h2 className="text-[13px] font-extrabold text-text-main tracking-tight">자주 묻는 질문</h2>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {QUICK_QUESTIONS.map((q) => (
+            <div
+              key={q.question}
+              className="px-3 py-2.5 rounded-2xl flex items-center gap-2"
+              style={{
+                background: "#FFFFFF",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                border: "1px solid rgba(0,0,0,0.04)",
+              }}
+            >
+              <span className="text-[16px] shrink-0">{q.emoji}</span>
+              <p className="text-[11.5px] font-bold text-text-main leading-tight">{q.question}</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-[10px] text-text-light mt-1.5 px-1 leading-snug">
+          위 채팅창에 자유롭게 입력하시거나, 위 예시를 참고하세요
+        </p>
+      </section>
+
+      {/* 정확한 답이 필요할 땐 — 가이드 진입 */}
+      <section className="px-4 mt-6">
+        <div className="flex items-center gap-1.5 mb-2 px-1">
+          <BookOpen size={13} className="text-primary" />
+          <h2 className="text-[13px] font-extrabold text-text-main tracking-tight">정확한 매뉴얼이 필요할 땐</h2>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {GUIDE_LINKS.map((g) => (
+            <Link
+              key={g.href}
+              href={g.href}
+              className="rounded-2xl px-2 py-2.5 flex flex-col items-center gap-1 active:scale-[0.96] transition-transform"
+              style={{
+                background: "#FFFFFF",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                border: "1px solid rgba(0,0,0,0.04)",
+              }}
+            >
+              <div
+                className="w-9 h-9 rounded-xl flex items-center justify-center"
+                style={{ background: `${g.color}15` }}
+              >
+                <g.Icon size={15} style={{ color: g.color }} strokeWidth={2.3} />
+              </div>
+              <span className="text-[11px] font-extrabold text-text-main">{g.label}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* AI 집사가 잘하는 것 */}
+      <section className="px-4 mt-6">
         <div
           className="rounded-2xl p-4"
           style={{
@@ -54,19 +140,24 @@ export default function AICatSitterPage() {
             border: "1px solid rgba(196,126,90,0.15)",
           }}
         >
-          <p className="text-[12px] font-extrabold text-primary mb-1.5">💡 이런 질문 좋아요</p>
-          <ul className="text-[12.5px] text-text-main leading-relaxed space-y-1 pl-1">
-            <li>· 새끼 고양이 발견했어요. 어떻게 해야 하나요?</li>
-            <li>· 우리 동네 길고양이 밥 주는 게 위법인가요?</li>
-            <li>· TNR 신청은 어디로 어떻게 하나요?</li>
-            <li>· 겨울 쉼터 만들기 좋은 위치는?</li>
-            <li>· 다친 고양이 응급처치 방법</li>
+          <p className="text-[12px] font-extrabold text-primary mb-2 flex items-center gap-1">
+            <MessageCircle size={12} />
+            AI 집사가 도와드릴 수 있는 일
+          </p>
+          <ul className="text-[12px] text-text-main leading-relaxed space-y-1 pl-1">
+            <li>· 위급 상황 1차 대응 가이드</li>
+            <li>· 동네 케어테이커가 자주 묻는 질문 답변</li>
+            <li>· TNR·중성화·임시보호 절차 안내</li>
+            <li>· 길고양이 행동·건강 신호 해석</li>
+            <li>· 도시공존 사용법 안내</li>
           </ul>
         </div>
-      </div>
+      </section>
 
+      {/* 면책 */}
       <p className="text-center text-[10.5px] text-text-light mt-6 px-6 leading-relaxed">
-        🤖 AI 응답은 참고용이에요. 위급 상황은 가이드 → 보호지침에서 정확한 매뉴얼 확인해주세요.
+        🤖 AI 응답은 참고용이에요. 위급 상황은 위의 매뉴얼 또는<br />
+        가까운 동물병원에 직접 연락해주세요.
       </p>
     </div>
   );
