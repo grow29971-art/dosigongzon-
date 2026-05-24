@@ -70,7 +70,7 @@ box/                 — SQL 마이그레이션 + 개발일지 (배포 안 함)
 - `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`
 - `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_EMAIL`
 - `NEXT_PUBLIC_META_PIXEL_ID`(클라이언트 fbq), `META_PIXEL_ACCESS_TOKEN`(서버 CAPI — 미설정 시 lib/meta-capi.ts는 silent skip)
-- `GEMINI_API_KEY`(AI 챗봇), `CRON_SECRET`(/api/cron/*)
+- `GOOGLE_GENERATIVE_AI_API_KEY`(Gemini AI 챗봇·이미지 변환), `CRON_SECRET`(/api/cron/*)
 
 ## 자주 쓰는 명령
 ```bash

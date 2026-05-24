@@ -78,9 +78,10 @@ export async function transformCatImage(opts: {
   style: CatStyle | "custom";
   customPrompt?: string;
 }): Promise<TransformResult> {
-  const key = (process.env.GEMINI_API_KEY ?? "").trim();
+  // 도시공존 기존 코드와 동일 변수명 (CLAUDE.md docs는 GEMINI_API_KEY로 적혀있었지만 실제는 이것)
+  const key = (process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? process.env.GEMINI_API_KEY ?? "").trim();
   if (!key) {
-    return { ok: false, error: "GEMINI_API_KEY 환경변수가 설정되지 않았어요." };
+    return { ok: false, error: "GOOGLE_GENERATIVE_AI_API_KEY 환경변수가 설정되지 않았어요." };
   }
   const model = (process.env.GEMINI_IMAGE_MODEL ?? "").trim() || DEFAULT_MODEL;
 
