@@ -64,7 +64,9 @@ export function findStyleDef(id: string): StyleDef | null {
   return STYLE_DEFS.find((s) => s.id === id) ?? null;
 }
 
-const DEFAULT_MODEL = "stabilityai/stable-diffusion-xl-base-1.0";
+// FLUX.1-schnell — 무료 tier에서 가장 안정. 4 step 생성, cold start 빠름.
+// 대안: runwayml/stable-diffusion-v1-5 (검증된 클래식)
+const DEFAULT_MODEL = "black-forest-labs/FLUX.1-schnell";
 
 export interface TransformResult {
   ok: boolean;
@@ -101,9 +103,8 @@ export async function transformCatImage(opts: {
       body: JSON.stringify({
         inputs: def.prompt,
         parameters: {
-          negative_prompt: def.negativePrompt,
-          num_inference_steps: 25,
-          guidance_scale: 7.5,
+          // FLUX는 4 step. SD는 25 step. 모델 자동 감지 못 하니 4로 통일(빠르고 일반 호환).
+          num_inference_steps: 4,
         },
         options: {
           wait_for_model: true, // cold start 시 자동 대기 (서버 sleep 깨우기)
@@ -134,6 +135,11 @@ export async function transformCatImage(opts: {
     const base64 = Buffer.from(new Uint8Array(buf)).toString("base64");
     return { ok: true, outputDataUrl: `data:image/png;base64,${base64}` };
   } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : "알 수 없는 오류" };
+    // Node fetch 내부 에러는 cause에 자세한 정보. e.message는 보통 "fetch failed"만.
+    const baseMsg = e instanceof Error ? e.message : String(e);
+    const cause = e instanceof Error && "cause" in e ? String((e as Error & { cause?: unknown }).cause).slice(0, 200) : "";
+    const fullMsg = cause ? `${baseMsg} — ${cause}` : baseMsg;
+    console.error("[cat-style-transform] fetch error:", fullMsg, e);
+    return { ok: false, error: `[HF] ${fullMsg}` };
   }
 }
