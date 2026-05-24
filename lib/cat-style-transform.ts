@@ -59,7 +59,15 @@ export function findStyleDef(id: string): StyleDef | null {
   return STYLE_DEFS.find((s) => s.id === id) ?? null;
 }
 
-const DEFAULT_MODEL = "gemini-2.0-flash-preview-image-generation";
+// 이미지 생성을 지원하는 Gemini 모델은 시점·region별 명칭이 자주 바뀜.
+// 후보 순서대로 시도. 첫 성공한 모델 사용.
+const MODEL_CANDIDATES = [
+  "gemini-2.5-flash-image-preview",
+  "gemini-2.0-flash-exp-image-generation",
+  "gemini-2.0-flash-exp",
+  "gemini-2.0-flash-preview-image-generation",
+];
+const DEFAULT_MODEL = MODEL_CANDIDATES[0];
 
 export interface TransformResult {
   ok: boolean;
@@ -83,7 +91,9 @@ export async function transformCatImage(opts: {
   if (!key) {
     return { ok: false, error: "GOOGLE_GENERATIVE_AI_API_KEY 환경변수가 설정되지 않았어요." };
   }
-  const model = (process.env.GEMINI_IMAGE_MODEL ?? "").trim() || DEFAULT_MODEL;
+  // 환경변수 GEMINI_IMAGE_MODEL이 있으면 그것만 사용. 없으면 후보 순서대로 시도.
+  const envModel = (process.env.GEMINI_IMAGE_MODEL ?? "").trim();
+  const modelsToTry = envModel ? [envModel] : MODEL_CANDIDATES;
 
   // instruction 결정
   let instruction: string;
@@ -117,33 +127,55 @@ export async function transformCatImage(opts: {
     return { ok: false, error: e instanceof Error ? `원본 fetch 실패: ${e.message}` : "원본 fetch 실패" };
   }
 
-  // 2) Gemini Image Generation 호출
-  try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{
-          role: "user",
-          parts: [
-            { text: instruction },
-            { inline_data: { mime_type: imageMime, data: imageBase64 } },
-          ],
-        }],
-        generationConfig: {
-          responseModalities: ["TEXT", "IMAGE"],
-          temperature: 0.8,
-        },
-      }),
-      signal: AbortSignal.timeout(90_000),
-    });
+  // 2) Gemini Image Generation 호출 — 후보 모델 순차 시도
+  const requestBody = JSON.stringify({
+    contents: [{
+      role: "user",
+      parts: [
+        { text: instruction },
+        { inline_data: { mime_type: imageMime, data: imageBase64 } },
+      ],
+    }],
+    generationConfig: {
+      responseModalities: ["TEXT", "IMAGE"],
+      temperature: 0.8,
+    },
+  });
 
-    if (!res.ok) {
-      const errTxt = await res.text().catch(() => "");
-      return { ok: false, error: `Gemini 호출 실패: ${res.status} ${errTxt.slice(0, 300)}` };
+  let lastError = "";
+  let res: Response | null = null;
+  for (const m of modelsToTry) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(key)}`;
+      const r = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: requestBody,
+        signal: AbortSignal.timeout(90_000),
+      });
+      if (r.ok) {
+        res = r;
+        break;
+      }
+      // 404(모델 없음)는 다음 후보 시도. 그 외(400/403/500)는 즉시 중단
+      if (r.status !== 404) {
+        const errTxt = await r.text().catch(() => "");
+        return { ok: false, error: `Gemini 호출 실패(${m}): ${r.status} ${errTxt.slice(0, 200)}` };
+      }
+      const errTxt = await r.text().catch(() => "");
+      lastError = `${m} 404`;
+      console.error(`[cat-style-transform] model ${m} not found, trying next. ${errTxt.slice(0, 100)}`);
+    } catch (e) {
+      lastError = e instanceof Error ? e.message : "fetch failed";
+      console.error(`[cat-style-transform] model ${m} fetch error:`, lastError);
     }
+  }
 
+  if (!res) {
+    return { ok: false, error: `사용 가능한 Gemini 이미지 생성 모델을 찾지 못했어요. 마지막 시도: ${lastError}` };
+  }
+
+  try {
     const json = (await res.json()) as {
       candidates?: Array<{
         content?: {
