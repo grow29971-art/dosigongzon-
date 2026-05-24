@@ -1,13 +1,13 @@
-// 고양이 사진 스타일 변환 — Pollinations.ai (영구 무료, 가입·토큰 X)
+// 고양이 사진 스타일 변환 — Gemini 2.0 Flash Image Generation (진짜 img2img)
 //
-// 모델: FLUX (default). 가장 단순한 무료 image generation 서비스.
-// API: GET https://image.pollinations.ai/prompt/{prompt}?width=...&height=...&model=flux
-// 응답: binary PNG
+// 모델: gemini-2.0-flash-preview-image-generation (베타, 2025-05 시점)
+//  - 이미지 + 텍스트 input → 이미지 + 텍스트 output
+//  - 원본 사진을 정확히 변환 (text-to-image와 달리)
 //
-// 제약:
-// - text-to-image (원본 사진 그대로 변환 X)
-// - 무료 tier rate limit 있지만 도시공존 베타 트래픽엔 충분
-// - 외부 서비스 의존 (장애 시 변환 불가)
+// 활성 조건: GEMINI_API_KEY 환경변수 (도시공존 기본 보유)
+//
+// 무료 tier: RPM·RPD 제한 있음. 상세는 https://ai.google.dev/pricing
+// 베타 모델이라 일부 region에서 제한 가능. 모델 ID는 GEMINI_IMAGE_MODEL 환경변수로 교체 가능.
 
 export type CatStyle = "anime" | "watercolor" | "embroidery" | "sticker";
 
@@ -16,7 +16,8 @@ export interface StyleDef {
   name: string;
   emoji: string;
   description: string;
-  prompt: string;
+  // Gemini가 사진을 변환할 때 사용하는 지시문 (한국어 OK — Gemini가 이해)
+  instruction: string;
 }
 
 export const STYLE_DEFS: StyleDef[] = [
@@ -25,34 +26,40 @@ export const STYLE_DEFS: StyleDef[] = [
     name: "애니메 그림체",
     emoji: "🌸",
     description: "지브리 톤 일본 애니메 스타일",
-    prompt: "studio ghibli anime style cute cat illustration, soft pastel colors, hand-drawn, warm lighting, fluffy fur, big sparkling eyes, detailed art",
+    instruction:
+      "Transform this cat photo into a Studio Ghibli anime illustration. Keep the cat's pose, body shape, fur color, and surroundings, but redraw everything in soft pastel anime style with hand-drawn lines, warm lighting, and big sparkling eyes. Preserve the original composition.",
   },
   {
     id: "watercolor",
     name: "수채화",
     emoji: "🎨",
     description: "부드러운 붓터치 수채화 일러스트",
-    prompt: "watercolor painting of a cute cat, soft brush strokes, warm color palette, paper texture, traditional art illustration, gentle bleeding edges",
+    instruction:
+      "Transform this cat photo into a soft watercolor painting. Keep the cat's pose, fur pattern, and background composition, but redraw with watercolor brush strokes, paper texture, warm color palette, and gentle bleeding edges. Preserve the original scene.",
   },
   {
     id: "embroidery",
     name: "실뜨기·자수",
     emoji: "🧵",
     description: "수공예 자수·실뜨기 텍스처",
-    prompt: "cute cat made of colorful embroidery threads, cross stitch pattern, woolen yarn texture, handmade craft, soft fabric background, detailed embroidery art",
+    instruction:
+      "Transform this cat photo into a handcrafted embroidery artwork made of colorful threads and cross-stitch patterns. Keep the cat's pose, body shape, and major colors, but render everything as woolen yarn texture on a soft fabric background. Preserve the original composition.",
   },
   {
     id: "sticker",
     name: "캐릭터 스티커",
     emoji: "✨",
     description: "둥글둥글 귀여운 캐릭터 스티커",
-    prompt: "cute kawaii cat character sticker, simple cartoon style, big eyes, rounded shape, vibrant solid colors, white background, vector art, chibi style",
+    instruction:
+      "Transform this cat photo into a cute kawaii sticker character. Keep the cat's recognizable features (fur color, ear shape) but redraw in simple cartoon style with rounded shape, big eyes, vibrant solid colors, and a clean white background. Chibi proportions.",
   },
 ];
 
 export function findStyleDef(id: string): StyleDef | null {
   return STYLE_DEFS.find((s) => s.id === id) ?? null;
 }
+
+const DEFAULT_MODEL = "gemini-2.0-flash-preview-image-generation";
 
 export interface TransformResult {
   ok: boolean;
@@ -61,92 +68,121 @@ export interface TransformResult {
 }
 
 /**
- * 한국어/자유 텍스트 prompt → 영어 image generation prompt로 Gemini 번역·강화.
- * Gemini 미설정 시 원본 그대로 반환 (silent fallback).
- */
-async function enhancePromptWithGemini(userPrompt: string): Promise<string> {
-  const key = (process.env.GEMINI_API_KEY ?? "").trim();
-  if (!key) return userPrompt;
-  try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(key)}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{
-            role: "user",
-            parts: [{
-              text:
-                "You are an image generation prompt engineer. Translate the user's Korean/free-form request into a concise English prompt for FLUX text-to-image. Focus on a single cute cat as the main subject. Add helpful style/lighting/quality keywords. No explanation, output ONLY the english prompt in one line.\n\nUser: " +
-                userPrompt.slice(0, 500),
-            }],
-          }],
-          generationConfig: { temperature: 0.7, maxOutputTokens: 200 },
-        }),
-        signal: AbortSignal.timeout(8_000),
-      },
-    );
-    if (!res.ok) return userPrompt;
-    const json = (await res.json()) as {
-      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
-    };
-    const out = json.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-    return out && out.length > 5 ? out : userPrompt;
-  } catch {
-    return userPrompt;
-  }
-}
-
-/**
- * Pollinations.ai 호출 — text-to-image, 가입·토큰 불필요.
- * style: 미리 정의된 4 스타일 중 하나 또는 "custom" (사용자 직접 프롬프트)
- * customPrompt: style="custom"일 때 사용자 한국어 자유 입력. Gemini로 영어 변환.
+ * Gemini 2.0 Flash Image Generation 호출.
+ * 원본 사진 + 변환 지시문 → 변환된 이미지.
+ *
+ * customPrompt가 있으면 style 무시하고 그것 사용 (자유 입력 모드).
  */
 export async function transformCatImage(opts: {
   imageUrl: string;
   style: CatStyle | "custom";
   customPrompt?: string;
 }): Promise<TransformResult> {
-  let finalPrompt: string;
+  const key = (process.env.GEMINI_API_KEY ?? "").trim();
+  if (!key) {
+    return { ok: false, error: "GEMINI_API_KEY 환경변수가 설정되지 않았어요." };
+  }
+  const model = (process.env.GEMINI_IMAGE_MODEL ?? "").trim() || DEFAULT_MODEL;
+
+  // instruction 결정
+  let instruction: string;
   if (opts.style === "custom") {
     const raw = (opts.customPrompt ?? "").trim();
     if (!raw) return { ok: false, error: "프롬프트를 입력해주세요." };
     if (raw.length > 500) return { ok: false, error: "프롬프트는 500자 이내로 작성해주세요." };
-    finalPrompt = await enhancePromptWithGemini(raw);
+    instruction = `Transform this cat photo following the user's request: "${raw}". Keep the cat as the main subject. Apply the requested style.`;
   } else {
     const def = findStyleDef(opts.style);
     if (!def) return { ok: false, error: "스타일을 찾을 수 없어요." };
-    finalPrompt = def.prompt;
+    instruction = def.instruction;
   }
 
-  // seed로 매번 다른 결과 생성 (cache hit 방지)
-  const seed = Math.floor(Math.random() * 1_000_000);
-  const url =
-    `https://image.pollinations.ai/prompt/${encodeURIComponent(finalPrompt)}` +
-    `?width=768&height=768&model=flux&nologo=true&enhance=true&seed=${seed}`;
-
+  // 1) 원본 이미지 fetch → base64 + mime type
+  let imageBase64: string;
+  let imageMime: string;
   try {
+    const imgRes = await fetch(opts.imageUrl, { signal: AbortSignal.timeout(10_000) });
+    if (!imgRes.ok) {
+      return { ok: false, error: `원본 이미지 다운로드 실패: ${imgRes.status}` };
+    }
+    const buf = await imgRes.arrayBuffer();
+    if (buf.byteLength > 5 * 1024 * 1024) {
+      return { ok: false, error: "원본 이미지가 5MB를 초과해요. 더 작은 사진을 사용해주세요." };
+    }
+    imageBase64 = Buffer.from(new Uint8Array(buf)).toString("base64");
+    imageMime = imgRes.headers.get("content-type") ?? "image/jpeg";
+    if (!imageMime.startsWith("image/")) imageMime = "image/jpeg";
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? `원본 fetch 실패: ${e.message}` : "원본 fetch 실패" };
+  }
+
+  // 2) Gemini Image Generation 호출
+  try {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
     const res = await fetch(url, {
-      signal: AbortSignal.timeout(90_000), // 첫 호출 cold start 대비 90초
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{
+          role: "user",
+          parts: [
+            { text: instruction },
+            { inline_data: { mime_type: imageMime, data: imageBase64 } },
+          ],
+        }],
+        generationConfig: {
+          responseModalities: ["TEXT", "IMAGE"],
+          temperature: 0.8,
+        },
+      }),
+      signal: AbortSignal.timeout(90_000),
     });
 
     if (!res.ok) {
       const errTxt = await res.text().catch(() => "");
-      return { ok: false, error: `Pollinations 호출 실패: ${res.status} ${errTxt.slice(0, 200)}` };
+      return { ok: false, error: `Gemini 호출 실패: ${res.status} ${errTxt.slice(0, 300)}` };
     }
 
-    const buf = await res.arrayBuffer();
-    if (buf.byteLength < 1000) {
-      return { ok: false, error: `응답이 너무 작아요(${buf.byteLength}b). 잠시 후 다시 시도해주세요.` };
+    const json = (await res.json()) as {
+      candidates?: Array<{
+        content?: {
+          parts?: Array<{
+            text?: string;
+            inline_data?: { mime_type?: string; data?: string };
+            inlineData?: { mimeType?: string; data?: string }; // 일부 클라이언트 camelCase
+          }>;
+        };
+      }>;
+      promptFeedback?: { blockReason?: string };
+    };
+
+    const block = json.promptFeedback?.blockReason;
+    if (block) {
+      return { ok: false, error: `Gemini 안전 정책으로 차단됨: ${block}` };
     }
-    const base64 = Buffer.from(new Uint8Array(buf)).toString("base64");
-    return { ok: true, outputDataUrl: `data:image/png;base64,${base64}` };
+
+    // 응답에서 image part 추출 (snake_case와 camelCase 둘 다 대응)
+    const parts = json.candidates?.[0]?.content?.parts ?? [];
+    for (const p of parts) {
+      const data = p.inline_data?.data ?? p.inlineData?.data;
+      const mime = p.inline_data?.mime_type ?? p.inlineData?.mimeType ?? "image/png";
+      if (data) {
+        return { ok: true, outputDataUrl: `data:${mime};base64,${data}` };
+      }
+    }
+    // 이미지 없으면 텍스트 응답 확인
+    const textOnly = parts.map((p) => p.text).filter(Boolean).join(" ").slice(0, 200);
+    return {
+      ok: false,
+      error: textOnly
+        ? `Gemini가 이미지 대신 텍스트로 응답: ${textOnly}`
+        : "Gemini 응답에 이미지가 없어요. 다른 사진/스타일로 다시 시도해주세요.",
+    };
   } catch (e) {
     const baseMsg = e instanceof Error ? e.message : String(e);
     const cause = e instanceof Error && "cause" in e ? String((e as Error & { cause?: unknown }).cause).slice(0, 200) : "";
     const fullMsg = cause ? `${baseMsg} — ${cause}` : baseMsg;
-    console.error("[cat-style-transform] fetch error:", fullMsg, e);
-    return { ok: false, error: `[Pollinations] ${fullMsg}` };
+    console.error("[cat-style-transform] Gemini error:", fullMsg, e);
+    return { ok: false, error: `[Gemini] ${fullMsg}` };
   }
 }
