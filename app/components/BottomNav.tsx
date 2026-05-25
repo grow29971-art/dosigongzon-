@@ -8,7 +8,7 @@ const tabs = [
   { href: "/", label: "홈", Icon: Home },
   { href: "/shorts", label: "동물숏츠", Icon: Film },
   { href: "/tips", label: "가이드", Icon: BookOpen },
-  { href: "/lab/cat-style", label: "AI도구", Icon: Bot },
+  { href: "/lab/cat-style", label: "AI집사", Icon: Bot },
   { href: "/community", label: "커뮤니티", Icon: Users },
   { href: "/map", label: "지도", Icon: Map },
   { href: "/mypage", label: "마이", Icon: User },

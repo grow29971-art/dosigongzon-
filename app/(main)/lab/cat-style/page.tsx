@@ -1,34 +1,39 @@
-// AI 도구 페이지 — /lab/cat-style
-// AI 집사 채팅 + 고양이 사진 스타일 변환 (Replicate img2img)
+// AI 집사 페이지 — /lab/cat-style
+// 사진 변환 기능 완전 제거됨. AI 집사 채팅만.
 
 "use client";
 
-import { useState, useRef } from "react";
 import Link from "next/link";
-import { ArrowLeft, Bot, Upload, Sparkles, Download, Loader2, Wand2 } from "lucide-react";
+import { ArrowLeft, Bot, Sparkles, BookOpen, Siren, Baby, Stethoscope, Snowflake, Pill } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-import { createClient } from "@/lib/supabase/client";
-import { STYLE_DEFS, type CatStyle } from "@/lib/cat-style-transform";
 import AIChatCard from "@/app/components/AIChatCard";
 
-const CAT_PHOTOS_BUCKET = "cat-photos";
+const QUICK_QUESTIONS: Array<{ emoji: string; question: string }> = [
+  { emoji: "🍼", question: "새끼 고양이 발견했어요" },
+  { emoji: "🩺", question: "TNR 신청은 어떻게 하나요" },
+  { emoji: "🚨", question: "다친 고양이 응급처치 방법" },
+  { emoji: "❄️", question: "겨울 쉼터 만드는 법" },
+  { emoji: "⚖️", question: "동네 길고양이 밥 주는 게 위법인가요" },
+  { emoji: "🥣", question: "사료는 어떤 게 좋아요" },
+];
 
-export default function AIToolsPage() {
+const GUIDE_LINKS: Array<{ href: string; label: string; Icon: typeof Siren; color: string }> = [
+  { href: "/protection/emergency-guide", label: "응급처치", Icon: Siren, color: "#D85555" },
+  { href: "/protection/kitten-guide", label: "새끼 발견", Icon: Baby, color: "#E88D5A" },
+  { href: "/protection/trapping-guide", label: "TNR·포획", Icon: Stethoscope, color: "#8B65B8" },
+  { href: "/protection/shelter-guide", label: "겨울 쉼터", Icon: Snowflake, color: "#5A8AC4" },
+  { href: "/protection/pharmacy-guide", label: "약품", Icon: Pill, color: "#6B8E6F" },
+  { href: "/tips", label: "전체 가이드", Icon: BookOpen, color: "#A8684A" },
+];
+
+export default function AICatSitterPage() {
   const { user } = useAuth();
-  const [sourceUrl, setSourceUrl] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [style, setStyle] = useState<CatStyle | "custom">("anime");
-  const [customPrompt, setCustomPrompt] = useState("");
-  const [outputUrl, setOutputUrl] = useState<string | null>(null);
-  const [transforming, setTransforming] = useState(false);
-  const [error, setError] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!user) {
     return (
       <div className="min-h-dvh px-5 pt-20 text-center" style={{ background: "#F7F4EE" }}>
         <Bot size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[14px] font-bold text-text-main mb-1">AI 도구는 로그인 후 이용 가능해요</p>
+        <p className="text-[14px] font-bold text-text-main mb-1">AI 집사는 로그인 후 이용 가능해요</p>
         <Link
           href="/login?next=/lab/cat-style"
           className="inline-block mt-3 px-5 py-2.5 rounded-2xl text-white text-[13px] font-extrabold"
@@ -43,61 +48,8 @@ export default function AIToolsPage() {
     );
   }
 
-  const handleUpload = async (file: File) => {
-    setUploading(true);
-    setError("");
-    setOutputUrl(null);
-    try {
-      const supabase = createClient();
-      const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
-      const path = `${user.id}/lab/${crypto.randomUUID()}.${ext}`;
-      const { error: upErr } = await supabase.storage
-        .from(CAT_PHOTOS_BUCKET)
-        .upload(path, file, { upsert: false, cacheControl: "3600" });
-      if (upErr) throw new Error(upErr.message);
-      const { data: pub } = supabase.storage.from(CAT_PHOTOS_BUCKET).getPublicUrl(path);
-      setSourceUrl(pub.publicUrl);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "업로드 실패");
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleTransform = async () => {
-    if (!sourceUrl) return;
-    setTransforming(true);
-    setError("");
-    setOutputUrl(null);
-    try {
-      const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error("세션 만료. 다시 로그인해주세요.");
-      const res = await fetch("/api/cat-style/transform", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({
-          imageUrl: sourceUrl,
-          style,
-          customPrompt: style === "custom" ? customPrompt : undefined,
-        }),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "변환 실패");
-      setOutputUrl(json.outputUrl);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "변환 실패");
-    } finally {
-      setTransforming(false);
-    }
-  };
-
   return (
     <div className="min-h-dvh pb-20" style={{ background: "#F7F4EE" }}>
-      {/* 헤더 */}
       <div className="px-4 pt-12 pb-3 flex items-center gap-2">
         <Link
           href="/"
@@ -109,207 +61,76 @@ export default function AIToolsPage() {
         <div>
           <h1 className="text-[20px] font-extrabold text-text-main flex items-center gap-1.5">
             <Bot size={18} className="text-primary" />
-            AI 도구
+            AI 집사
             <span className="text-[9px] font-bold tracking-[0.15em] ml-0.5" style={{ color: "#C47E5A", opacity: 0.55 }}>BETA</span>
           </h1>
-          <p className="text-[10.5px] text-text-sub">AI 집사 채팅 · 사진 스타일 변환</p>
+          <p className="text-[10.5px] text-text-sub">길고양이 돌봄, 뭐든 물어보세요</p>
         </div>
       </div>
 
-      {/* AI 집사 채팅 카드 */}
-      <div className="px-4 mt-2 mb-6">
+      <div className="px-4 mt-2">
         <AIChatCard />
       </div>
 
-      {/* 사진 변환 섹션 */}
-      <div className="px-4 mb-3">
-        <div className="flex items-center gap-1.5 px-1">
-          <Wand2 size={14} className="text-primary" />
-          <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
-            사진 스타일 변환
-          </h2>
-          <span className="text-[9px] font-bold tracking-[0.12em] ml-0.5" style={{ color: "#8B65B8" }}>
-            IMG2IMG
-          </span>
+      <section className="px-4 mt-5">
+        <div className="flex items-center gap-1.5 mb-2 px-1">
+          <Sparkles size={13} className="text-primary" />
+          <h2 className="text-[13px] font-extrabold text-text-main tracking-tight">자주 묻는 질문</h2>
         </div>
-      </div>
-
-      {/* STEP 1 — 업로드 */}
-      <section className="px-5">
-        <p className="text-[10px] font-extrabold tracking-[0.18em] text-text-light mb-1.5">STEP 1 · UPLOAD</p>
-        {!sourceUrl ? (
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
-            className="w-full py-10 rounded-2xl flex flex-col items-center justify-center gap-2 active:scale-[0.99] transition-transform disabled:opacity-60"
-            style={{
-              background: "#FFFFFF",
-              border: "2px dashed rgba(196,126,90,0.35)",
-              boxShadow: "0 2px 10px rgba(0,0,0,0.03)",
-            }}
-          >
-            {uploading ? (
-              <Loader2 size={22} className="animate-spin text-primary" />
-            ) : (
-              <>
-                <Upload size={22} style={{ color: "#C47E5A" }} />
-                <p className="text-[13px] font-extrabold text-text-main">사진 선택하기</p>
-                <p className="text-[10.5px] text-text-sub">고양이 사진 1장 (JPG·PNG)</p>
-              </>
-            )}
-          </button>
-        ) : (
-          <div className="relative rounded-2xl overflow-hidden" style={{ aspectRatio: "1/1", background: "#EEE8E0" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={sourceUrl} alt="원본" className="w-full h-full object-cover" />
-            <button
-              type="button"
-              onClick={() => { setSourceUrl(null); setOutputUrl(null); }}
-              className="absolute top-2 right-2 px-3 py-1.5 rounded-xl text-[11px] font-extrabold text-white"
-              style={{ background: "rgba(0,0,0,0.55)" }}
-            >
-              다시 선택
-            </button>
-          </div>
-        )}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) handleUpload(f);
-          }}
-        />
-      </section>
-
-      {/* STEP 2 — 스타일 */}
-      {sourceUrl && (
-        <section className="px-5 mt-5">
-          <p className="text-[10px] font-extrabold tracking-[0.18em] text-text-light mb-1.5">STEP 2 · STYLE</p>
-          <div className="grid grid-cols-2 gap-2">
-            {STYLE_DEFS.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => setStyle(s.id)}
-                className="text-left px-3.5 py-3 rounded-2xl active:scale-[0.97] transition-transform"
-                style={{
-                  background: style === s.id ? "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)" : "#FFFFFF",
-                  color: style === s.id ? "#FFFFFF" : "#2C2C2C",
-                  border: style === s.id ? "1.5px solid #A8684A" : "1px solid rgba(0,0,0,0.06)",
-                  boxShadow: style === s.id ? "0 4px 14px rgba(196,126,90,0.35)" : "0 2px 6px rgba(0,0,0,0.03)",
-                }}
-              >
-                <p className="text-[16px] mb-0.5">{s.emoji} <span className="text-[13px] font-extrabold tracking-tight">{s.name}</span></p>
-                <p className="text-[10.5px]" style={{ color: style === s.id ? "rgba(255,255,255,0.80)" : "rgba(60,46,35,0.65)" }}>
-                  {s.description}
-                </p>
-              </button>
-            ))}
-            {/* 5번째: 직접 작성 */}
-            <button
-              type="button"
-              onClick={() => setStyle("custom")}
-              className="text-left px-3.5 py-3 rounded-2xl active:scale-[0.97] transition-transform col-span-2"
+        <div className="grid grid-cols-2 gap-2">
+          {QUICK_QUESTIONS.map((q) => (
+            <div
+              key={q.question}
+              className="px-3 py-2.5 rounded-2xl flex items-center gap-2"
               style={{
-                background: style === "custom" ? "linear-gradient(135deg, #8B65B8 0%, #6B4FA8 100%)" : "#FFFFFF",
-                color: style === "custom" ? "#FFFFFF" : "#2C2C2C",
-                border: style === "custom" ? "1.5px solid #6B4FA8" : "1px solid rgba(0,0,0,0.06)",
-                boxShadow: style === "custom" ? "0 4px 14px rgba(139,101,184,0.35)" : "0 2px 6px rgba(0,0,0,0.03)",
+                background: "#FFFFFF",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                border: "1px solid rgba(0,0,0,0.04)",
               }}
             >
-              <p className="text-[16px] mb-0.5">✍️ <span className="text-[13px] font-extrabold tracking-tight">직접 작성</span></p>
-              <p className="text-[10.5px]" style={{ color: style === "custom" ? "rgba(255,255,255,0.80)" : "rgba(60,46,35,0.65)" }}>
-                원하는 스타일을 자유 입력 (영문 권장)
-              </p>
-            </button>
-          </div>
-
-          {style === "custom" && (
-            <div className="mt-3">
-              <textarea
-                value={customPrompt}
-                onChange={(e) => setCustomPrompt(e.target.value)}
-                placeholder="예) studio ghibli anime cat, soft pastel colors, watercolor"
-                rows={3}
-                maxLength={500}
-                className="w-full px-3.5 py-2.5 rounded-xl text-[13px] outline-none resize-none focus:ring-2 focus:ring-primary/30"
-                style={{
-                  background: "#FFFFFF",
-                  color: "#2C2C2C",
-                  border: "1.5px solid rgba(139,101,184,0.25)",
-                }}
-              />
-              <p className="text-[10px] text-text-light mt-1 text-right tabular-nums">
-                {customPrompt.length}/500
-              </p>
+              <span className="text-[16px] shrink-0">{q.emoji}</span>
+              <p className="text-[11.5px] font-bold text-text-main leading-tight">{q.question}</p>
             </div>
-          )}
-        </section>
-      )}
-
-      {/* STEP 3 — 변환 */}
-      {sourceUrl && (
-        <section className="px-5 mt-5">
-          <button
-            type="button"
-            onClick={handleTransform}
-            disabled={transforming}
-            className="w-full py-3.5 rounded-2xl text-white text-[14px] font-extrabold flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60"
-            style={{
-              background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
-              boxShadow: "0 6px 18px rgba(196,126,90,0.35)",
-            }}
-          >
-            {transforming ? (
-              <>
-                <Loader2 size={16} className="animate-spin" />
-                변환 중… (20~40초)
-              </>
-            ) : (
-              <>
-                <Sparkles size={15} />
-                변환하기
-              </>
-            )}
-          </button>
-          <p className="text-[10.5px] text-center mt-2 text-text-light leading-relaxed">
-            🆓 일 3회 제한 · 결과는 다운로드해서 보관해주세요
-            <br />원본 사진을 유지하며 선택한 스타일로 변환됩니다
-          </p>
-        </section>
-      )}
-
-      {/* 결과 */}
-      {outputUrl && (
-        <section className="px-5 mt-6">
-          <p className="text-[10px] font-extrabold tracking-[0.18em] mb-1.5" style={{ color: "#6B8E6F" }}>RESULT</p>
-          <div className="relative rounded-2xl overflow-hidden" style={{ aspectRatio: "1/1", background: "#EEE8E0", boxShadow: "0 8px 24px rgba(196,126,90,0.20)" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={outputUrl} alt="변환 결과" className="w-full h-full object-cover" />
-          </div>
-          <a
-            href={outputUrl}
-            download={`dosigongzon-${style}-${Date.now()}.png`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-3 w-full flex items-center justify-center gap-2 py-3 rounded-2xl text-[13px] font-extrabold bg-white active:scale-[0.98]"
-            style={{ color: "#A8684A", border: "1.5px solid rgba(196,126,90,0.30)" }}
-          >
-            <Download size={14} />
-            결과 다운로드
-          </a>
-        </section>
-      )}
-
-      {error && (
-        <div className="mx-5 mt-4 rounded-2xl px-4 py-3" style={{ background: "#FBEAEA" }}>
-          <p className="text-[12.5px] font-semibold whitespace-pre-wrap" style={{ color: "#B84545" }}>{error}</p>
+          ))}
         </div>
-      )}
+        <p className="text-[10px] text-text-light mt-1.5 px-1 leading-snug">
+          위 채팅창에 자유롭게 입력하시거나, 위 예시를 참고하세요
+        </p>
+      </section>
+
+      <section className="px-4 mt-6">
+        <div className="flex items-center gap-1.5 mb-2 px-1">
+          <BookOpen size={13} className="text-primary" />
+          <h2 className="text-[13px] font-extrabold text-text-main tracking-tight">정확한 매뉴얼이 필요할 땐</h2>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {GUIDE_LINKS.map((g) => (
+            <Link
+              key={g.href}
+              href={g.href}
+              className="rounded-2xl px-2 py-2.5 flex flex-col items-center gap-1 active:scale-[0.96] transition-transform"
+              style={{
+                background: "#FFFFFF",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                border: "1px solid rgba(0,0,0,0.04)",
+              }}
+            >
+              <div
+                className="w-9 h-9 rounded-xl flex items-center justify-center"
+                style={{ background: `${g.color}15` }}
+              >
+                <g.Icon size={15} style={{ color: g.color }} strokeWidth={2.3} />
+              </div>
+              <span className="text-[11px] font-extrabold text-text-main">{g.label}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <p className="text-center text-[10.5px] text-text-light mt-6 px-6 leading-relaxed">
+        🤖 AI 응답은 참고용이에요. 위급 상황은 위의 매뉴얼 또는<br />
+        가까운 동물병원에 직접 연락해주세요.
+      </p>
     </div>
   );
 }
