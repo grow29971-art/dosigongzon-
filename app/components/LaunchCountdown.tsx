@@ -1,14 +1,14 @@
 "use client";
 
 // 출시 카운트다운 배너 — HomeLanding 최상단에 표시.
-// 정식 출시 D-Day 기준일: 2026-05-25 (KST).
+// 정식 출시 D-Day 기준일: 2026-06-01 (KST). 5/25 → 6/1로 7일 연장.
 // CLS 방어: useEffect 전에도 같은 높이 placeholder 렌더.
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Rocket, Sparkles } from "lucide-react";
 
-const LAUNCH_DATE = new Date("2026-05-25T00:00:00+09:00");
+const LAUNCH_DATE = new Date("2026-06-01T00:00:00+09:00");
 const BANNER_HEIGHT = 38; // py-2.5 + 12.5px line-height ≈ 38px
 
 export default function LaunchCountdown() {
@@ -18,7 +18,7 @@ export default function LaunchCountdown() {
     const calc = () => {
       const now = new Date();
       const diff = LAUNCH_DATE.getTime() - now.getTime();
-      // 일자 ceil — 5/25 0시 기준 5/24 23:59면 D-1로 표시
+      // 일자 ceil — 6/1 0시 기준 5/31 23:59면 D-1로 표시
       const d = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
       setDays(d);
     };

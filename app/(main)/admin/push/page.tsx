@@ -110,7 +110,7 @@ export default function AdminPushPage() {
         </div>
       </div>
 
-      {/* 이벤트 quick-fill — 5/25 출시 이후 자동 비활성 (수동 삭제) */}
+      {/* 이벤트 quick-fill — 6/1 출시 이후 자동 비활성 (수동 삭제) */}
       <div className="mb-5 space-y-2">
         <p className="text-[10px] font-extrabold tracking-[0.15em] text-text-light mb-1.5">EVENT QUICK-FILL</p>
         <button
@@ -148,7 +148,7 @@ export default function AdminPushPage() {
           }}
         >
           <p className="text-[12.5px] font-extrabold" style={{ color: "#A8395B" }}>
-            🎉 정식 출시 D-Day (5/25 당일 발송)
+            🎉 정식 출시 D-Day (6/1 당일 발송)
           </p>
           <p className="text-[10.5px] mt-0.5" style={{ color: "#B5546F" }}>
             /celebrate 페이지로 안내. 출시일 한 번만 발송.

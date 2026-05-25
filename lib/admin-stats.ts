@@ -24,7 +24,7 @@ export interface AdminStats {
 }
 
 // 정식 출시 D-day — LaunchCountdown과 동일
-const LAUNCH_DATE = new Date("2026-05-25T00:00:00+09:00");
+const LAUNCH_DATE = new Date("2026-06-01T00:00:00+09:00");
 
 async function safeCount(
   supabase: ReturnType<typeof createClient>,

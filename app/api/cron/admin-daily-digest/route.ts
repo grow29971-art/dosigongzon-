@@ -86,7 +86,7 @@ export async function POST(request: Request) {
   const authErrors7d = pick(authErrorsRes);
 
   // 출시 D-day
-  const LAUNCH_DATE = new Date("2026-05-25T00:00:00+09:00");
+  const LAUNCH_DATE = new Date("2026-06-01T00:00:00+09:00");
   const daysToLaunch = Math.ceil((LAUNCH_DATE.getTime() - Date.now()) / 86400000);
 
   const yesterdayLabel = toKstDate(new Date(yesterdayUtcMs));

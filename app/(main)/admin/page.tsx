@@ -273,7 +273,7 @@ export default function AdminDashboardPage() {
                   style={{ color: stats.daysUntilLaunch > 0 ? "#5C3A1E" : "#FFFFFF" }}
                 >
                   {stats.daysUntilLaunch > 0
-                    ? `2026-05-25 D-${stats.daysUntilLaunch}`
+                    ? `2026-06-01 D-${stats.daysUntilLaunch}`
                     : stats.daysUntilLaunch === 0
                       ? "🎉 D-Day"
                       : `출시 +${Math.abs(stats.daysUntilLaunch)}일`}

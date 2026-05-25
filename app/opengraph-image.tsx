@@ -30,8 +30,8 @@ async function getStats() {
   }
 }
 
-// 정식 출시 D-day — 5/25까지 OG 우상단에 카운트다운 배지. 이후 자동 제거.
-const LAUNCH_DATE = new Date("2026-05-25T00:00:00+09:00");
+// 정식 출시 D-day — 6/1까지 OG 우상단에 카운트다운 배지. 이후 자동 제거.
+const LAUNCH_DATE = new Date("2026-06-01T00:00:00+09:00");
 function daysToLaunch(): number {
   const diff = LAUNCH_DATE.getTime() - Date.now();
   return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));

@@ -7,7 +7,7 @@
 // 노출 조건:
 //  - 로그인 사용자
 //  - 미dismiss
-//  - 캠페인 종료(5/25 자정) 전까지
+//  - 캠페인 종료(6/1 자정) 전까지
 // 종료 후 자동 비활성 — 코드 변경 없이 자연 소멸.
 
 import { useEffect, useState } from "react";
@@ -17,8 +17,8 @@ import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 
 const DISMISS_KEY = "dosigongzon_og200_seen";
-// 5/25 정식 출시 자정까지 노출. 이후 모달 자동 비활성(영구 dismiss와 동일 효과).
-const CAMPAIGN_END = new Date("2026-05-26T00:00:00+09:00").getTime();
+// 6/1 정식 출시 자정까지 노출. 이후 모달 자동 비활성(영구 dismiss와 동일 효과).
+const CAMPAIGN_END = new Date("2026-06-02T00:00:00+09:00").getTime();
 
 export default function Og200EventModal() {
   const { user } = useAuth();
@@ -130,7 +130,7 @@ export default function Og200EventModal() {
         {/* 본문 */}
         <div className="px-6 pt-5 pb-6">
           <p className="text-[13px] leading-relaxed text-text-main mb-4">
-            정식 출시(<b>5/25</b>) 직전, 도시공존에 가장 먼저 합류한
+            정식 출시(<b>6/1</b>) 직전, 도시공존에 가장 먼저 합류한
             {" "}초기 멤버에게만 영구 한정 타이틀
             {" "}<b style={{ color: "#A8684A" }}>🌟 초기 200</b>이 자동 부여됐어요.
           </p>

@@ -8,7 +8,7 @@ const SITE_URL = "https://dosigongzon.com";
 export const metadata: Metadata = {
   title: "🎉 도시공존 정식 출시 — 처음부터 함께해 주셔서 감사합니다",
   description:
-    "2026년 5월 25일 도시공존 정식 출시. 길고양이 한 마리를 위한 시민의 손길이 함께 모인 시간들. 케어테이커·시민 여러분, 진심으로 감사드립니다.",
+    "2026년 6월 1일 도시공존 정식 출시. 길고양이 한 마리를 위한 시민의 손길이 함께 모인 시간들. 케어테이커·시민 여러분, 진심으로 감사드립니다.",
   alternates: { canonical: "/celebrate" },
   openGraph: {
     type: "website",
@@ -60,7 +60,7 @@ export default async function CelebratePage() {
       <section className="px-5 pt-8 text-center">
         <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mb-4" style={{ background: "rgba(196,126,90,0.12)", color: "#A8684A" }}>
           <Sparkles size={12} />
-          <span className="text-[10.5px] font-extrabold tracking-[0.18em]">OFFICIAL LAUNCH · 2026.05.25</span>
+          <span className="text-[10.5px] font-extrabold tracking-[0.18em]">OFFICIAL LAUNCH · 2026.06.01</span>
         </div>
         <h1 className="text-[32px] font-extrabold text-text-main leading-tight tracking-tight">
           🎉 도시공존<br />
@@ -133,7 +133,7 @@ export default async function CelebratePage() {
         </div>
       </section>
 
-      {/* 창립 멤버 안내 — 5/25 전 가입자 */}
+      {/* 창립 멤버 안내 — 6/1 전 가입자 */}
       <section className="px-5 mt-6">
         <div
           className="rounded-2xl p-5 text-center"
@@ -147,7 +147,7 @@ export default async function CelebratePage() {
             창립 멤버 (Founding Member)
           </p>
           <p className="text-[12px] text-text-sub leading-relaxed">
-            5월 25일 이전 가입하신 케어테이커는<br />
+            6월 1일 이전 가입하신 케어테이커는<br />
             <b className="text-text-main">FOUNDING MEMBER 타이틀</b>이 영구 부여됐어요.
             <br />
             마이페이지에서 확인하실 수 있어요.
