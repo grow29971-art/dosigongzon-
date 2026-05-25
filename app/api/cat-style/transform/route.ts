@@ -86,24 +86,24 @@ export async function POST(request: Request) {
     }
   }
 
-  // Pollinations.ai 호출 (custom 스타일은 Gemini 번역 후)
+  // Replicate img2img 호출
   const result = await transformCatImage({ imageUrl, style, customPrompt });
   if (!result.ok) {
     return Response.json({ error: result.error ?? "변환 실패" }, { status: 502 });
   }
 
-  // 사용 기록 — quota 카운터. base64 data URL은 너무 커서 source_url만 기록.
+  // 사용 기록 — quota 카운터·비용 추적
   await service.from("cat_style_transforms").insert({
     user_id: user.id,
     style,
     source_url: imageUrl,
-    output_url: null, // data URL은 저장 X. 사용자가 직접 다운로드.
-    prediction_id: null,
+    output_url: result.outputUrl,
+    prediction_id: result.predictionId,
   });
 
   return Response.json({
     ok: true,
-    outputDataUrl: result.outputDataUrl,
+    outputUrl: result.outputUrl,
     style,
   });
 }
