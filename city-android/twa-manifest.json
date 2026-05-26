@@ -20,8 +20,8 @@
     "path": "uni2997!",
     "alias": "비밀번호"
   },
-  "appVersionName": "1",
-  "appVersionCode": 1,
+  "appVersionName": "1.1",
+  "appVersionCode": 10,
   "shortcuts": [
     {
       "name": "지도",
@@ -69,5 +69,5 @@
   "fileHandlers": [],
   "launchHandlerClientMode": "",
   "displayOverride": [],
-  "appVersion": "1"
+  "appVersion": "1.1"
 }
