@@ -39,6 +39,7 @@ import TodayChecklist from "@/app/components/TodayChecklist";
 import RescueBanner from "@/app/components/RescueBanner";
 import StreakFreezeButton from "@/app/components/StreakFreezeButton";
 import StreakAtRiskAlert from "@/app/components/StreakAtRiskAlert";
+import PlayStoreBanner from "@/app/components/PlayStoreBanner";
 import SplashLoading from "@/app/components/SplashLoading";
 import FoundingMemberBanner from "@/app/components/FoundingMemberBanner";
 import PatchUpdateBanner518 from "@/app/components/PatchUpdateBanner518";
@@ -652,6 +653,9 @@ export default function HomeAuthed({
 
       {/* ══════ 긴급 구조 배너 (scarcity/urgency) — 항상 우선 ══════ */}
       {user && rescueCount > 0 && <RescueBanner count={rescueCount} />}
+
+      {/* ══════ Play 스토어 앱 출시 안내 — 안드로이드 + 비-TWA만 ══════ */}
+      {user && <PlayStoreBanner />}
 
       {/* ══════ streak 위험 hero — 활성·연속 3일+·오늘 미기록 ══════ */}
       {/* 손실 회피 동기 자극. dismiss 시 오늘 다시 안 보임. */}
