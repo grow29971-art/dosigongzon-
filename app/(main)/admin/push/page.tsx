@@ -137,6 +137,27 @@ export default function AdminPushPage() {
         <button
           type="button"
           onClick={() => {
+            setTitle("📱 안드로이드 앱 출시");
+            setBody("Play 스토어에서 도시공존 앱을 만나보세요. 더 빠른 알림, 한 번에 진입.");
+            setUrl("https://play.google.com/store/apps/details?id=kr.dosigongzon.app");
+          }}
+          className="w-full text-left px-4 py-2.5 rounded-xl active:scale-[0.99] transition-transform"
+          style={{
+            background: "linear-gradient(135deg, #DCEAF6 0%, #B5D2EC 100%)",
+            border: "1px solid rgba(74,123,168,0.30)",
+          }}
+        >
+          <p className="text-[12.5px] font-extrabold" style={{ color: "#2C5A85" }}>
+            📱 Play 스토어 앱 출시 안내
+          </p>
+          <p className="text-[10.5px] mt-0.5" style={{ color: "#3F6B8E" }}>
+            Play 스토어 설치 URL로 외부 이동. 마케팅 옵트인자 대상.
+          </p>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
             setTitle("🎉 도시공존 정식 출시");
             setBody("오늘 도시공존이 정식 출시됐어요. 처음부터 함께해 주셔서 진심으로 감사합니다. 누적 기록과 감사 메시지를 확인해보세요.");
             setUrl("/celebrate");
