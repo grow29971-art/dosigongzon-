@@ -258,7 +258,7 @@ const HTML = `<!DOCTYPE html>
         <div class="feature-tag">🗺️ 동네 지도</div>
         <div class="feature-tag">🚨 긴급 구조</div>
         <div class="feature-tag">🏠 임시보호·입양</div>
-        <div class="feature-tag">🎬 동물숏츠</div>
+        <div class="feature-tag">🎬 냥숏츠</div>
       </div>
     </div>
 

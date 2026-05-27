@@ -1,10 +1,10 @@
-// 동물숏츠 영상별 동적 OG 이미지 — 카톡·SNS 공유 시 매력적 미리보기
+// 냥숏츠 영상별 동적 OG 이미지 — 카톡·SNS 공유 시 매력적 미리보기
 import { ImageResponse } from "next/og";
 import { getPublishedShortServer, youTubeThumbnailUrl } from "@/lib/shorts-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 
 export const runtime = "nodejs";
-export const alt = "도시공존 — 동물숏츠";
+export const alt = "도시공존 — 냥숏츠";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -20,7 +20,7 @@ export default async function ShortOGImage({ params }: { params: Params }) {
     short = null;
   }
 
-  const title = short?.title ?? "동물숏츠";
+  const title = short?.title ?? "냥숏츠";
   const description =
     short?.description?.slice(0, 80) ??
     "고양이·강아지·동물 짧은 영상 모음 — 도시공존이 큐레이션";
@@ -124,7 +124,7 @@ export default async function ShortOGImage({ params }: { params: Params }) {
               textShadow: "0 2px 6px rgba(0,0,0,0.6)",
             }}
           >
-            동물숏츠 · 도시공존
+            냥숏츠 · 도시공존
           </span>
         </div>
 

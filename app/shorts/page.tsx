@@ -9,12 +9,12 @@ import EmptyShorts from "./EmptyShorts";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "동물숏츠 — 고양이·강아지 짧은 영상 모음 | 도시공존",
+  title: "냥숏츠 — 고양이·강아지 짧은 영상 모음 | 도시공존",
   description: "도시공존이 큐레이션한 고양이·강아지·소동물 짧은 영상 피드. 위로 스와이프하면 다음 영상이 이어져요. 무료로 즐기는 동물 쇼츠.",
   keywords: ["동물숏츠", "동물 쇼츠", "동물 영상", "고양이", "강아지", "댕댕이", "길고양이", "햄스터", "토끼", "도시공존"],
   alternates: { canonical: "/shorts" },
   openGraph: {
-    title: "동물숏츠 — 고양이·강아지 짧은 영상",
+    title: "냥숏츠 — 고양이·강아지 짧은 영상",
     description: "고양이·강아지·동물의 짧은 순간들을 한 화면에서. 도시공존이 큐레이션.",
     url: "https://dosigongzon.com/shorts",
     type: "website",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "동물숏츠 — 고양이·강아지 짧은 영상",
+    title: "냥숏츠 — 고양이·강아지 짧은 영상",
     description: "고양이·강아지·동물의 짧은 순간들을 한 화면에서.",
   },
 };
@@ -64,7 +64,7 @@ export default async function ShortsPage() {
   const itemListJsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "동물숏츠 — 고양이·강아지 짧은 영상",
+    name: "냥숏츠 — 고양이·강아지 짧은 영상",
     description: "도시공존이 큐레이션한 고양이·강아지·동물 짧은 영상 모음.",
     itemListElement: items.slice(0, 20).map((s, idx) => ({
       "@type": "ListItem",

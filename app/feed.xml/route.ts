@@ -1,5 +1,5 @@
 // RSS 2.0 피드 — 외부 reader, IFTTT 자동화, 다른 사이트 임베드용
-// 도시공존 전체 콘텐츠(뉴스 + 꿀팁 + 동물숏츠) 최신순 합본.
+// 도시공존 전체 콘텐츠(뉴스 + 꿀팁 + 냥숏츠) 최신순 합본.
 // 카테고리별 RSS는 /news/feed.xml, /tips/feed.xml, /shorts/feed.xml 별도.
 
 import { createClient } from "@/lib/supabase/server";
@@ -99,7 +99,7 @@ async function fetchAllItems(): Promise<FeedItem[]> {
     // skip
   }
 
-  // 3) 동물숏츠 (최근 20개)
+  // 3) 냥숏츠 (최근 20개)
   try {
     const { data: shorts } = await supabase
       .from("shorts")
@@ -130,7 +130,7 @@ async function fetchAllItems(): Promise<FeedItem[]> {
           "도시공존이 큐레이션한 고양이·강아지·동물 짧은 영상",
         pubDate: toRfc822(s.published_at || s.created_at),
         guid: `${SITE_URL}/shorts/${s.id}`,
-        category: "동물숏츠",
+        category: "냥숏츠",
         imageUrl: thumb,
       });
     }
@@ -166,7 +166,7 @@ function buildXml(items: FeedItem[]): string {
   <channel>
     <title>도시공존 — 길고양이 돌봄 시민 참여 플랫폼</title>
     <link>${SITE_URL}</link>
-    <description>우리 동네 길고양이를 기록하고 돌보는 시민 참여 플랫폼. 소식·꿀팁·동물숏츠를 한 곳에서.</description>
+    <description>우리 동네 길고양이를 기록하고 돌보는 시민 참여 플랫폼. 소식·꿀팁·냥숏츠를 한 곳에서.</description>
     <language>ko-KR</language>
     <lastBuildDate>${buildDate}</lastBuildDate>
     <atom:link href="${SITE_URL}/feed.xml" rel="self" type="application/rss+xml" />
