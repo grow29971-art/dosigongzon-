@@ -545,14 +545,24 @@ const CATEGORIES: FaqCategory[] = [
       {
         q: "안드로이드 앱은 어디서 받을 수 있나요?",
         answer:
-          "현재 PWA(웹앱)로 제공돼요. 모바일 브라우저에서 dosigongzon.com에 접속한 후 '홈 화면에 추가'를 누르면 앱처럼 사용할 수 있어요. 안드로이드 정식 출시는 2026년 5월 20일 신청 시작 예정입니다.",
+          "이제 Play 스토어에서 '도시공존'을 검색하거나 https://play.google.com/store/apps/details?id=kr.dosigongzon.app 에서 바로 설치할 수 있어요. iOS 등 다른 기기는 모바일 브라우저에서 dosigongzon.com에 접속한 후 '홈 화면에 추가'를 누르면 앱처럼 사용할 수 있어요.",
         answerHtml: (
           <>
-            현재 PWA(웹앱)로 제공돼요. 모바일 브라우저에서{" "}
+            이제{" "}
+            <a
+              href="https://play.google.com/store/apps/details?id=kr.dosigongzon.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+              style={{ color: "#A8684A" }}
+            >
+              Play 스토어
+            </a>
+            에서 &lsquo;도시공존&rsquo;을 설치할 수 있어요. iOS 등 다른 기기는 모바일 브라우저에서{" "}
             <Link href="/" className="underline" style={{ color: "#A8684A" }}>
               dosigongzon.com
             </Link>
-            에 접속한 후 &lsquo;홈 화면에 추가&rsquo;를 누르면 앱처럼 사용할 수 있어요. 안드로이드 정식 출시는 2026년 5월 20일 신청 시작 예정입니다.
+            에 접속한 후 &lsquo;홈 화면에 추가&rsquo;를 누르면 앱처럼 사용할 수 있어요.
           </>
         ),
       },

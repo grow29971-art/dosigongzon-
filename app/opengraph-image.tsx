@@ -30,19 +30,17 @@ async function getStats() {
   }
 }
 
-// 정식 출시 D-day — 6/1까지 OG 우상단에 카운트다운 배지. 이후 자동 제거.
-const LAUNCH_DATE = new Date("2026-06-01T00:00:00+09:00");
-function daysToLaunch(): number {
-  const diff = LAUNCH_DATE.getTime() - Date.now();
-  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+// 정식 출시 배지 — 출시 후 일정 기간 OG 우상단에 노출, 2026-06-15 이후 자동 제거.
+const LAUNCH_BADGE_UNTIL = new Date("2026-06-15T00:00:00+09:00").getTime();
+function showLaunchBadge(): boolean {
+  return Date.now() < LAUNCH_BADGE_UNTIL;
 }
 
 export default async function OpengraphImage() {
   const s = await getStats();
   const hasUrgent = s.urgent > 0;
-  const dDay = daysToLaunch();
-  // 출시 7일 전 ~ 당일까지만 표시. 긴급 배지가 있으면 D-day 배지 양보(자리 안 겹치게).
-  const showDDay = dDay > 0 && dDay <= 7 && !hasUrgent;
+  // 출시 배지 노출. 긴급 배지가 있으면 양보(자리 안 겹치게).
+  const showLaunch = showLaunchBadge() && !hasUrgent;
 
   return new ImageResponse(
     (
@@ -128,7 +126,7 @@ export default async function OpengraphImage() {
               🚨 도움이 필요한 아이 {s.urgent}마리
             </div>
           )}
-          {showDDay && (
+          {showLaunch && (
             <div
               style={{
                 display: "flex",
@@ -143,7 +141,7 @@ export default async function OpengraphImage() {
                 boxShadow: "0 8px 24px rgba(196,126,90,0.40)",
               }}
             >
-              🚀 정식 출시 D-{dDay}
+              🚀 정식 출시!
             </div>
           )}
         </div>

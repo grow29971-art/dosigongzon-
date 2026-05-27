@@ -116,7 +116,7 @@ export default function Og200EventModal() {
             <span className="text-[34px] leading-none">🌟</span>
           </div>
           <p className="text-center text-[10px] font-extrabold tracking-[0.25em] mb-1" style={{ color: "#8E5430" }}>
-            LIMITED · OFFICIAL LAUNCH D-3
+            LIMITED · OFFICIAL LAUNCH 🎉
           </p>
           <h2
             id="og200-title"
@@ -130,7 +130,7 @@ export default function Og200EventModal() {
         {/* 본문 */}
         <div className="px-6 pt-5 pb-6">
           <p className="text-[13px] leading-relaxed text-text-main mb-4">
-            정식 출시(<b>6/1</b>) 직전, 도시공존에 가장 먼저 합류한
+            정식 출시 전, 도시공존에 가장 먼저 합류한
             {" "}초기 멤버에게만 영구 한정 타이틀
             {" "}<b style={{ color: "#A8684A" }}>🌟 초기 200</b>이 자동 부여됐어요.
           </p>

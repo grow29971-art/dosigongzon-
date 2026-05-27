@@ -262,7 +262,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
               <br />
               곧 {region.shortName}에도 따뜻한 지도가 생겨요.
               <br />
-              <b style={{ color: "#A8684A" }}>6/1 정식 출시 이전 가입자에겐 창립 멤버 타이틀 영구 부여.</b>
+              <b style={{ color: "#A8684A" }}>출시 기념 — 지금 합류하시면 창립 멤버 타이틀을 영구 드려요.</b>
             </p>
             <div className="flex gap-2">
               <Link
