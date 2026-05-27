@@ -1,81 +1,33 @@
-"use client";
+// 정식 출시 배너 — HomeLanding·HomeAuthed·signup 최상단에 표시.
+// 2026-06-01 정식 출시. 안드로이드 앱이 Play 스토어에 올라가 다운로드 링크로 연결.
+// 정적 배너라 시간 계산·CLS placeholder 불필요.
 
-// 출시 카운트다운 배너 — HomeLanding 최상단에 표시.
-// 정식 출시 D-Day 기준일: 2026-06-01 (KST). 5/25 → 6/1로 7일 연장.
-// CLS 방어: useEffect 전에도 같은 높이 placeholder 렌더.
-
-import { useEffect, useState } from "react";
-import Link from "next/link";
 import { Rocket, Sparkles } from "lucide-react";
 
-const LAUNCH_DATE = new Date("2026-06-01T00:00:00+09:00");
-const BANNER_HEIGHT = 38; // py-2.5 + 12.5px line-height ≈ 38px
+const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=kr.dosigongzon.app";
 
 export default function LaunchCountdown() {
-  const [days, setDays] = useState<number | null>(null);
-
-  useEffect(() => {
-    const calc = () => {
-      const now = new Date();
-      const diff = LAUNCH_DATE.getTime() - now.getTime();
-      // 일자 ceil — 6/1 0시 기준 5/31 23:59면 D-1로 표시
-      const d = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
-      setDays(d);
-    };
-    calc();
-    const id = setInterval(calc, 60_000); // 1분마다 재계산
-    return () => clearInterval(id);
-  }, []);
-
-  // SSR/하이드레이션 직후엔 빈 div로 자리 reserve — 콘텐츠 mount 시 페이지 점프 방지 (CLS=0)
-  if (days === null) {
-    return (
-      <div
-        aria-hidden="true"
-        style={{
-          height: BANNER_HEIGHT,
-          background: "linear-gradient(90deg, #C47E5A 0%, #E86B8C 50%, #C47E5A 100%)",
-        }}
-      />
-    );
-  }
-
-  // D-Day 또는 이후 — /celebrate 페이지로 링크
-  if (days <= 0) {
-    return (
-      <Link
-        href="/celebrate"
-        className="block px-5 py-2.5 flex items-center justify-center gap-2 text-white active:scale-[0.99] transition-transform"
-        style={{
-          background: "linear-gradient(90deg, #C47E5A 0%, #E86B8C 50%, #C47E5A 100%)",
-        }}
-      >
-        <Rocket size={14} />
-        <span className="text-[12.5px] font-extrabold tracking-tight">
-          🎉 도시공존 정식 출시 — 축하 페이지 보기
-        </span>
-        <Sparkles size={11} style={{ color: "#FFF7C4" }} />
-      </Link>
-    );
-  }
-
-  // D-1 ~ D-3 — 긴급 톤 (펄스 애니메이션)
-  const isUrgent = days <= 3;
-
   return (
-    <div
-      className={`px-5 py-2.5 flex items-center justify-center gap-2 text-white ${isUrgent ? "animate-pulse-soft" : ""}`}
+    <a
+      href={PLAY_STORE_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block px-5 py-2.5 flex items-center justify-center gap-2 text-white active:scale-[0.99] transition-transform"
       style={{
-        background: isUrgent
-          ? "linear-gradient(90deg, #D85555 0%, #E86B8C 50%, #D85555 100%)"
-          : "linear-gradient(90deg, #C47E5A 0%, #E86B8C 50%, #C47E5A 100%)",
+        background: "linear-gradient(90deg, #C47E5A 0%, #E86B8C 50%, #C47E5A 100%)",
       }}
     >
       <Rocket size={14} className="shrink-0" />
       <span className="text-[12.5px] font-extrabold tracking-tight whitespace-nowrap">
-        {isUrgent ? "🔥 " : ""}도시공존 정식 출시 <span className="mx-0.5 px-1.5 py-0.5 rounded-md" style={{ background: "rgba(255,255,255,0.22)" }}>D-{days}</span>
+        🎉 도시공존 출시!{" "}
+        <span
+          className="mx-0.5 px-1.5 py-0.5 rounded-md"
+          style={{ background: "rgba(255,255,255,0.22)" }}
+        >
+          Play 스토어에서 다운로드
+        </span>
       </span>
       <Sparkles size={11} className="shrink-0" style={{ color: "#FFF7C4" }} />
-    </div>
+    </a>
   );
 }
