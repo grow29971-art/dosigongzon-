@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getTopCaretakersServer, getMyRankServer, type RankingRow } from "@/lib/ranking-repo";
 import { computeLevel, getLevelColor, thumbnailUrl } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import RankShareButton from "@/app/components/RankShareButton";
 
 export const metadata: Metadata = {
   title: "케어테이커 활동 랭킹",
@@ -26,6 +27,12 @@ export default async function RankingPage() {
   const top = await getTopCaretakersServer(50);
   const myRank = user ? await getMyRankServer(user.id) : null;
   const inTop = top.some((r) => r.user_id === user?.id);
+
+  // 내 순위 자랑 배너용 — Top50 안이면 그 행, 밖이면 myRank
+  const myRow = user ? top.find((r) => r.user_id === user.id) : undefined;
+  const myRankNumber = myRow?.rank ?? myRank?.rank ?? null;
+  const myScore = myRow?.score ?? myRank?.score ?? 0;
+  const isTop3 = myRankNumber !== null && myRankNumber <= 3;
 
   return (
     <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
@@ -79,6 +86,32 @@ export default async function RankingPage() {
             <PodiumCard row={top[0]} place={1} height={155} />
             {/* 3위 */}
             <PodiumCard row={top[2]} place={3} height={115} />
+          </div>
+        </div>
+      )}
+
+      {/* 내 순위 + 자랑하기 배너 */}
+      {user && myRankNumber !== null && (
+        <div className="px-4 mb-4">
+          <div
+            className="rounded-2xl px-4 py-3.5 flex items-center gap-3"
+            style={{
+              background: isTop3 ? "linear-gradient(135deg, #FFF6D6 0%, #F7E69C 100%)" : "#FFFFFF",
+              border: isTop3 ? "1.5px solid rgba(201,169,97,0.55)" : "1px solid rgba(0,0,0,0.05)",
+              boxShadow: isTop3 ? "0 6px 18px rgba(201,169,97,0.25)" : "0 4px 14px rgba(0,0,0,0.05)",
+            }}
+          >
+            <div className="text-[26px] leading-none shrink-0">{isTop3 ? "🎉" : "🐾"}</div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] font-extrabold tracking-[0.15em]" style={{ color: isTop3 ? "#A9851F" : "#A8684A" }}>
+                이번 주 내 순위
+              </p>
+              <p className="text-[15px] font-extrabold text-text-main leading-tight mt-0.5">
+                {myRankNumber}위{isTop3 ? " · TOP 3 🏆" : ""}
+                <span className="text-[12px] font-bold text-text-sub"> · {myScore.toLocaleString()}점</span>
+              </p>
+            </div>
+            <RankShareButton rank={myRankNumber} score={myScore} top3={isTop3} />
           </div>
         </div>
       )}
