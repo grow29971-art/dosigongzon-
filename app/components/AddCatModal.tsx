@@ -69,6 +69,8 @@ export default function AddCatModal({
   const MAX_PHOTOS = 5;
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  // 추가 정보(선택) 펼침 — 기본은 이름·동네만 보여 마찰 최소화
+  const [showMore, setShowMore] = useState(false);
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -134,6 +136,7 @@ export default function AddCatModal({
       setPhotoPreviews([]);
       setError("");
       setSubmitting(false);
+      setShowMore(false);
     }
     return () => { document.body.style.overflow = ""; };
   }, [open, initialLat, initialLng]);
@@ -338,7 +341,7 @@ export default function AddCatModal({
               우리 동네 아이 등록
             </h2>
             <p className="text-[11px] text-text-sub mt-0.5">
-              사진과 위치, 한 줄 소개로 충분해요
+              이름과 동네만 있으면 바로 등록돼요 · 사진·소개는 선택
             </p>
           </div>
           <button
@@ -357,7 +360,7 @@ export default function AddCatModal({
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-[12px] font-bold text-text-main">
-                사진 <span className="text-text-light font-normal">· 첫 장이 대표</span>
+                사진 <span className="text-text-light font-normal">(선택) · 첫 장이 대표</span>
               </label>
               <span className="text-[10.5px] text-text-light">
                 {photoFiles.length}/{MAX_PHOTOS}
@@ -476,6 +479,18 @@ export default function AddCatModal({
             )}
           </div>
 
+          {/* 추가 정보 토글 — 기본은 이름·동네만, 나머지는 접어서 마찰 최소화 */}
+          <button
+            type="button"
+            onClick={() => setShowMore((v) => !v)}
+            className="w-full flex items-center justify-center gap-1 py-2.5 rounded-2xl text-[12.5px] font-bold transition-all active:scale-[0.99]"
+            style={{ background: "#F7F2EA", color: "#8B6B52", border: "1px dashed rgba(196,126,90,0.35)" }}
+          >
+            {showMore ? "추가 정보 접기 ▴" : "한 줄 소개·성별·건강 등 추가 (선택) ▾"}
+          </button>
+
+          {showMore && (
+          <>
           {/* 한 줄 소개 */}
           <div>
             <label className="text-[12px] font-bold text-text-main mb-2 block">한 줄 소개</label>
@@ -652,6 +667,8 @@ export default function AddCatModal({
               설정하면 고양이 상세 페이지에 배지와 문의 버튼이 생겨 다른 사용자가 쪽지로 연락할 수 있어요.
             </p>
           </div>
+          </>
+          )}
 
           {/* 공개 범위 — Private Circle */}
           <div>
