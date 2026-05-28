@@ -81,6 +81,7 @@ import { getTodayAnniversaries, type Anniversary } from "@/lib/anniversaries-rep
 import OnboardingCard from "@/app/components/OnboardingCard";
 import HomeReengageCard from "@/app/components/HomeReengageCard";
 import DailyCatBox from "@/app/components/DailyCatBox";
+import FirstCheerCard from "@/app/components/FirstCheerCard";
 import FeatureTipsCard from "@/app/components/FeatureTipsCard";
 // 푸시 옵트인 카드는 페이지 하단 — 첫 페인트엔 viewport 밖. lazy 안전.
 const PushOptInCard = dynamic(() => import("@/app/components/PushOptInCard"), { ssr: false });
@@ -335,6 +336,11 @@ export default function HomeAuthed({
           primaryRegion.radius_m,
       ).length
     : 0;
+
+  // 신규 첫 응원 후보 — 동네 고양이 우선, 없으면 최근 공개 고양이 중 사진 있는 3마리
+  const cheerCats = (neighborhoodCats.length > 0 ? neighborhoodCats : allCats)
+    .filter((c) => c.photo_url)
+    .slice(0, 3);
 
   // 내 동네 글 (region 이름이 활동 지역 이름과 일치하는 것)
   const neighborhoodPosts = primaryRegion
@@ -704,6 +710,11 @@ export default function HomeAuthed({
           </Link>
         );
       })()}
+
+      {/* ══════ 첫 응원 카드 — 활성화 1단: 1탭 응원 → 등록 escalation (catCount===0) ══════ */}
+      {user && activity && activity.catCount === 0 && cheerCats.length > 0 && (
+        <FirstCheerCard cats={cheerCats} regionName={primaryRegion?.name ?? null} />
+      )}
 
       {/*
         신규 가입자(아직 첫 등록 안 한 유저) → 시작 가이드만 노출
