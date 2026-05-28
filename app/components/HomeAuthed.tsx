@@ -55,11 +55,13 @@ import {
 } from "@/lib/news-repo";
 import {
   getMyActivitySummary,
+  getMyQuietestCat,
   computeScore,
   computeLevel,
   getLevelColor,
   type MyActivitySummary,
   type LevelInfo,
+  type QuietCat,
 } from "@/lib/cats-repo";
 import { listPosts, formatRelativeTime } from "@/lib/posts-repo";
 import {
@@ -77,6 +79,7 @@ import {
 import { getRecentFeed, type FeedItem } from "@/lib/live-feed-repo";
 import { getTodayAnniversaries, type Anniversary } from "@/lib/anniversaries-repo";
 import OnboardingCard from "@/app/components/OnboardingCard";
+import HomeReengageCard from "@/app/components/HomeReengageCard";
 import FeatureTipsCard from "@/app/components/FeatureTipsCard";
 // 푸시 옵트인 카드는 페이지 하단 — 첫 페인트엔 viewport 밖. lazy 안전.
 const PushOptInCard = dynamic(() => import("@/app/components/PushOptInCard"), { ssr: false });
@@ -212,6 +215,7 @@ export default function HomeAuthed({
   const [lastVisitAt, setLastVisitAt] = useState<number | null>(null);
   const [newPostsCount, setNewPostsCount] = useState(0);
   const [weeklyIssues, setWeeklyIssues] = useState<WeeklyIssue[]>([]);
+  const [quietCat, setQuietCat] = useState<QuietCat | null>(null);
 
   // 마지막 방문 시각 — 진입 시 비교용으로 저장된 값 복원, 즉시 현재 시각으로 갱신.
   // 다음 방문 시 "지난 방문 이후 새 글 N개" 카운트의 기준이 됨.
@@ -359,6 +363,15 @@ export default function HomeAuthed({
         .slice(0, 6)
     : [];
 
+  // 우리 동네 고양이 누적 수 (재참여 카드 — slice 전 전체 카운트)
+  const neighborhoodCatCount = primaryRegion
+    ? allCats.filter(
+        (c) =>
+          distanceMeters({ lat: c.lat, lng: c.lng }, { lat: primaryRegion.lat, lng: primaryRegion.lng }) <=
+          primaryRegion.radius_m,
+      ).length
+    : 0;
+
   // 내 동네 글 (region 이름이 활동 지역 이름과 일치하는 것)
   const neighborhoodPosts = primaryRegion
     ? allPosts
@@ -425,6 +438,9 @@ export default function HomeAuthed({
 
     // 내 서클 멤버 수 (서클 단계 표시용)
     countMyAcceptedCircleMembers().then(setCircleMemberCount).catch(() => {});
+
+    // 돌봄이 끊긴 내 고양이 (홈 재참여 카드용) — 마운트 1회
+    getMyQuietestCat().then(setQuietCat).catch(() => {});
 
     // 내 활동 요약 + 레벨 + 레벨업/업적 해제 감지
     getMyActivitySummary().then((s) => {
@@ -740,6 +756,16 @@ export default function HomeAuthed({
           {user && <MyCircleQuickEntry />}
           {user && myRegions.length > 0 && <FoundingMemberBanner />}
         </>
+      )}
+
+      {/* ══════ 홈 재참여 카드 — 돌봄 끊긴 고양이 안부 OR 우리 동네 소식 (catCount>0) ══════ */}
+      {user && activity && activity.catCount > 0 && (
+        <HomeReengageCard
+          quietCat={quietCat}
+          regionName={primaryRegion?.name ?? null}
+          neighborhoodCatCount={neighborhoodCatCount}
+          latestPost={neighborhoodPosts[0] ?? allPosts[0] ?? null}
+        />
       )}
 
       {/* ══════ 사회적 증명 (오늘 활동 이웃 수) ══════ */}

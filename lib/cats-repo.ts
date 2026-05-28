@@ -1108,6 +1108,58 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
   };
 }
 
+export interface QuietCat {
+  id: string;
+  name: string;
+  daysSince: number | null; // null = 아직 돌봄 기록이 한 번도 없음
+}
+
+/** 내가 등록한 고양이 중 돌봄 기록이 가장 오래 끊긴 아이 1마리.
+ *  staleDays일 이상(또는 한 번도) 기록이 없을 때만 반환 — 아니면 null.
+ *  고양이 0마리면 null(신규 유저는 OnboardingCard가 담당). 홈 재활성화 카드용. */
+export async function getMyQuietestCat(staleDays = 4): Promise<QuietCat | null> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data: myCats } = await supabase
+    .from("cats")
+    .select("id, name")
+    .eq("caretaker_id", user.id)
+    .limit(200);
+  if (!myCats || myCats.length === 0) return null;
+
+  const ids = (myCats as { id: string; name: string }[]).map((c) => c.id);
+  // 내 고양이들의 돌봄 기록(최신순) — cat_id별 첫 등장이 가장 최근 기록.
+  const { data: logs } = await supabase
+    .from("care_logs")
+    .select("cat_id, logged_at")
+    .in("cat_id", ids)
+    .order("logged_at", { ascending: false })
+    .limit(1000);
+
+  const lastByCat = new Map<string, string>();
+  for (const l of (logs ?? []) as { cat_id: string; logged_at: string }[]) {
+    if (!lastByCat.has(l.cat_id)) lastByCat.set(l.cat_id, l.logged_at);
+  }
+
+  const now = Date.now();
+  const DAY = 86_400_000;
+  let worst: QuietCat | null = null;
+  let worstScore = -1; // 클수록 더 오래 방치된 아이
+  for (const c of myCats as { id: string; name: string }[]) {
+    const last = lastByCat.get(c.id);
+    const daysSince = last ? Math.floor((now - new Date(last).getTime()) / DAY) : null;
+    const score = daysSince === null ? Number.MAX_SAFE_INTEGER : daysSince;
+    if (score > worstScore) {
+      worstScore = score;
+      worst = { id: c.id, name: c.name, daysSince };
+    }
+  }
+  if (worst && (worst.daysSince === null || worst.daysSince >= staleDays)) return worst;
+  return null;
+}
+
 /** streak / 역대 최장 / 이번 주 7일 달성 여부 계산 (KST).
  *  freezeDates: 사용한 프리즈 쿠폰 날짜 배열 — "있었던 날"처럼 취급. */
 function computeStreakAndWeekly(
