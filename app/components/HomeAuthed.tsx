@@ -82,6 +82,7 @@ import OnboardingCard from "@/app/components/OnboardingCard";
 import HomeReengageCard from "@/app/components/HomeReengageCard";
 import DailyCatBox from "@/app/components/DailyCatBox";
 import FirstCheerCard from "@/app/components/FirstCheerCard";
+import AppOpenGuideModal from "@/app/components/AppOpenGuideModal";
 import FeatureTipsCard from "@/app/components/FeatureTipsCard";
 // 푸시 옵트인 카드는 페이지 하단 — 첫 페인트엔 viewport 밖. lazy 안전.
 const PushOptInCard = dynamic(() => import("@/app/components/PushOptInCard"), { ssr: false });
@@ -1363,6 +1364,11 @@ export default function HomeAuthed({
           setAchievementToasts((prev) => prev.filter((t) => t.id !== id))
         }
       />
+
+      {/* 앱 열 때마다(세션 1회) 안내 모달 — 오늘 이거 해보세요 + 기능 탐색 */}
+      {user && activity && (
+        <AppOpenGuideModal hasCat={activity.catCount > 0} hasRegion={myRegions.length > 0} />
+      )}
 
       {/* ══════ 내 동네 소식 ══════ */}
       {user && (
