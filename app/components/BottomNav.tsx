@@ -6,11 +6,11 @@ import { Home, Users, Map, BookOpen, User, Film, Bot } from "lucide-react";
 
 const tabs = [
   { href: "/", label: "홈", Icon: Home },
-  { href: "/shorts", label: "냥숏츠", Icon: Film },
+  { href: "/map", label: "지도", Icon: Map },
   { href: "/tips", label: "가이드", Icon: BookOpen },
   { href: "/lab/cat-style", label: "AI집사", Icon: Bot },
   { href: "/community", label: "커뮤니티", Icon: Users },
-  { href: "/map", label: "지도", Icon: Map },
+  { href: "/shorts", label: "냥숏츠", Icon: Film },
   { href: "/mypage", label: "마이", Icon: User },
 ];
 
