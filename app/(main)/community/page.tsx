@@ -25,6 +25,7 @@ import { MapPin } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import LoginRequired from "@/app/components/LoginRequired";
 import PageIntroBanner from "@/app/components/PageIntroBanner";
+import CommunityWritePrompt from "@/app/components/CommunityWritePrompt";
 
 /* ═══ 카테고리 카드 데이터 ═══ */
 type CategoryCard = {
@@ -244,6 +245,9 @@ export default function CommunityPage() {
           accent="#8B65B8"
         />
       </div>
+
+      {/* 글쓰기 유도 — 글감 프롬프트 (빈 페이지 공포 ↓) */}
+      <CommunityWritePrompt />
 
       {/* ── 오늘 방문자 (누적 총 방문자 수) ── */}
       {todayVisit !== null && (

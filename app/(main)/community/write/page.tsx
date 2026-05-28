@@ -39,6 +39,19 @@ export default function WritePage() {
       });
   }, [user]);
 
+  // 글감 프롬프트에서 넘어온 카테고리·제목 프리필 (window 사용 — Suspense 불필요)
+  useEffect(() => {
+    try {
+      const sp = new URLSearchParams(window.location.search);
+      const cat = sp.get("category");
+      if (cat && cat in CATEGORY_MAP) setCategory(cat as PostCategory);
+      const t = sp.get("t");
+      if (t) setTitle(t.slice(0, 50));
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
   const canSubmit = title.trim().length > 0 && content.trim().length > 0 && !uploading;
 
   const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
