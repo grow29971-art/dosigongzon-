@@ -3,13 +3,13 @@
 // 앱 열 때마다(세션 1회) 뜨는 안내 모달. (HomeAuthed, 로그인 유저)
 //  - "오늘 이거 해보세요": 다음 행동 추천 (신규=동네설정/첫응원, 기존=기능 순환 강조)
 //  - "이런 기능 있어요": 기능 칩으로 빠른 탐색
-// sessionStorage로 세션당 1회 → 앱을 다시 켜면 또 보임("매 접속마다"). 매번 강조 기능 순환.
+// localStorage에 마지막 노출 날짜(KST) 저장 → 하루 1회만. 날짜 바뀌면 다시 + 강조 기능 순환.
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { X, ChevronRight } from "lucide-react";
 
-const SESSION_KEY = "dg_open_guide_session"; // 세션당 1회 게이트
+const LAST_KEY = "dg_open_guide_last"; // 마지막 노출 날짜(KST) — 하루 1회 게이트
 const IDX_KEY = "dg_open_guide_idx"; // 강조 기능 순환 인덱스
 
 interface Spot {
@@ -44,8 +44,9 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
   const [spot, setSpot] = useState<Spot | null>(null);
 
   useEffect(() => {
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
     try {
-      if (sessionStorage.getItem(SESSION_KEY)) return; // 이번 세션 이미 봄
+      if (localStorage.getItem(LAST_KEY) === today) return; // 오늘 이미 봄
     } catch {
       return;
     }
@@ -69,7 +70,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
     // 다른 모달(Og200 등)과 안 겹치게 약간 지연
     const t = setTimeout(() => {
       setOpen(true);
-      try { sessionStorage.setItem(SESSION_KEY, "1"); } catch { /* ignore */ }
+      try { localStorage.setItem(LAST_KEY, today); } catch { /* ignore */ }
     }, 900);
     return () => clearTimeout(t);
   }, [hasCat, hasRegion]);
