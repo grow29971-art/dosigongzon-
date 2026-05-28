@@ -735,6 +735,30 @@ export default function HomeAuthed({
         />
       )}
 
+      {/* ══════ 우리 동네 고양이 도감 entry (catCount>0) ══════ */}
+      {user && activity && activity.catCount > 0 && (
+        <Link
+          href="/collection"
+          className="block mb-3 active:scale-[0.99] transition-transform"
+          style={{
+            background: "linear-gradient(135deg, #FFFFFF 0%, #FCF6EC 100%)",
+            borderRadius: 18,
+            padding: "12px 14px",
+            border: "1px solid rgba(196,126,90,0.18)",
+            boxShadow: "0 4px 14px rgba(196,126,90,0.08)",
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 text-lg" style={{ background: "rgba(196,126,90,0.12)" }}>📖</div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#A8684A" }}>우리 동네 고양이 도감</p>
+              <p className="text-[13.5px] font-extrabold text-text-main leading-tight mt-0.5 truncate">만난 고양이를 모아보세요</p>
+            </div>
+            <ChevronRight size={14} style={{ color: "#A8684A" }} className="shrink-0" />
+          </div>
+        </Link>
+      )}
+
       {/* ══════ 사회적 증명 (오늘 활동 이웃 수) ══════ */}
       <SocialProofStrip />
 
