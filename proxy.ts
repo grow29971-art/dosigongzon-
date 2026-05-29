@@ -7,7 +7,10 @@ const GLOBAL_LIMIT = 120; // IP당 1분에 120요청
 const WINDOW_MS = 60_000;
 
 function getIP(req: NextRequest): string {
-  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+  // Cloudflare 프록시 통과 시 실제 클라이언트 IP 우선 (프록시 OFF면 헤더 없음 → 폴백).
+  // ⚠ 안 하면 프록시 켰을 때 모든 요청이 클플 IP 몇 개로 보여 전역 레이트리밋에 떼로 걸림.
+  return req.headers.get("cf-connecting-ip")?.trim()
+    ?? req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
     ?? req.headers.get("x-real-ip")
     ?? "unknown";
 }

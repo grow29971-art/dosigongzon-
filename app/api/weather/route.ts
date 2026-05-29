@@ -39,8 +39,8 @@ export async function GET(request: Request) {
   // GPS 좌표가 없으면 클라이언트 IP 기반 위치 추정
   if (lat === null || lon === null) {
     try {
-      // 사용자의 실제 IP 가져오기 (Vercel이 전달하는 헤더)
-      const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "";
+      // 사용자의 실제 IP 가져오기 (Cloudflare 프록시 우선, 없으면 Vercel 헤더)
+      const clientIp = request.headers.get("cf-connecting-ip")?.trim() || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "";
       // IPv4/IPv6 형식 검증 (path injection 방어)
       const ipValid = /^[0-9.:a-fA-F]+$/.test(clientIp) && clientIp !== "::1" && clientIp !== "127.0.0.1";
       const ipParam = ipValid ? `/${clientIp}` : "";

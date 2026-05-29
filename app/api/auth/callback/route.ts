@@ -170,7 +170,8 @@ export async function GET(request: Request) {
     if (firstSignup && user) {
       const fbp = request.headers.get("cookie")?.match(/_fbp=([^;]+)/)?.[1] ?? null;
       const fbc = request.headers.get("cookie")?.match(/_fbc=([^;]+)/)?.[1] ?? null;
-      const ipHeader = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+      const ipHeader = request.headers.get("cf-connecting-ip")?.trim()
+        ?? request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
         ?? request.headers.get("x-real-ip")
         ?? null;
       const userProviderForCapi = user.app_metadata?.provider ?? "unknown";

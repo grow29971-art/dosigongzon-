@@ -38,6 +38,8 @@ export function cleanupRateLimitBuckets(): void {
 /** 클라이언트 IP 추출 */
 export function getClientIp(request: Request): string {
   return (
+    // Cloudflare 프록시 통과 시 실제 클라이언트 IP (프록시 OFF면 헤더 없음 → 폴백)
+    request.headers.get("cf-connecting-ip")?.trim() ||
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     request.headers.get("x-real-ip") ||
     "unknown"
