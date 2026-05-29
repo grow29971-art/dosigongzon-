@@ -29,6 +29,20 @@ interface LocalDataResponse {
   };
 }
 
+// 외부 공공데이터 API 일시 장애(연결 타임아웃 등) 흡수 — 2회 시도, 각 15s 타임아웃.
+async function fetchLocalData(url: string, attempts = 2): Promise<Response> {
+  let lastErr: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await fetch(url, { signal: AbortSignal.timeout(15000) });
+    } catch (e) {
+      lastErr = e;
+      if (i < attempts - 1) await new Promise((r) => setTimeout(r, 1500));
+    }
+  }
+  throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
+}
+
 export async function POST(request: Request) {
   // Admin 체크 (Cron 호출 시에는 CRON_SECRET으로 인증)
   const authHeader = request.headers.get("authorization");
@@ -74,7 +88,19 @@ export async function POST(request: Request) {
 
       console.log(`[sync-pharmacies] Fetching page ${page}...`);
 
-      const res = await fetch(url.toString());
+      let res: Response;
+      try {
+        res = await fetchLocalData(url.toString());
+      } catch (fetchErr) {
+        // 외부 공공데이터 API 일시 불가(연결 타임아웃 등) — 비-JSON 가드와 동일하게
+        // Sentry 알림 없이 조용히 스킵. 다음 날 크론에서 재시도되므로 데이터 손실 없음.
+        console.warn(
+          `[sync-pharmacies] 외부 API fetch 실패 (page ${page}), 이번 실행 스킵: ${
+            fetchErr instanceof Error ? fetchErr.message : String(fetchErr)
+          }`,
+        );
+        break;
+      }
       if (!res.ok) {
         console.error(`[sync-pharmacies] API error: ${res.status}`);
         break;
