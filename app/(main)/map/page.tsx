@@ -1589,7 +1589,7 @@ export default function MapPage() {
 
   return (
     <div
-      className="relative no-dark"
+      className="app-no-zoom relative no-dark"
       style={{
         // 100dvh가 부정확한 기기 대비 vh 폴백 + 최소 높이 보장
         height: "calc(100dvh - 5rem)",

@@ -132,7 +132,7 @@ function WelcomeContent() {
 
   return (
     <div
-      className="fixed inset-0 overflow-hidden flex flex-col"
+      className="app-no-zoom fixed inset-0 overflow-hidden flex flex-col"
       style={{ background: slide.bg, transition: "background 0.6s ease" }}
     >
       {/* 건너뛰기 */}

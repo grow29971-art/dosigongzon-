@@ -95,7 +95,7 @@ export default function ShortsFeed({ initialItems }: Props) {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 overflow-y-scroll"
+      className="app-no-zoom fixed inset-0 overflow-y-scroll"
       style={{
         background: "#000000",
         scrollSnapType: "y mandatory",

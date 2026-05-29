@@ -285,6 +285,17 @@ body {
   animation: confetti-fall 1.15s ease-out forwards;
 }
 
+/* ── 전역 UI/글자 살짝 확대 (5%) ──
+   글자 크기가 px로 하드코딩돼 있어 rem 스케일이 안 먹혀서 zoom으로 전체를 키움.
+   풀스크린(100dvh·스크롤스냅·지도·100vw 풀블리드)은 .app-no-zoom으로 상쇄(net 1.0)해
+   오버플로/스냅/지도 좌표 깨짐 방지 — 해당 화면은 현재와 동일하게 렌더된다. */
+body {
+  zoom: 1.05;
+}
+.app-no-zoom {
+  zoom: calc(1 / 1.05);
+}
+
 /* ── 로딩 스켈레톤 shimmer 애니메이션 ── */
 @keyframes skeleton-shimmer {
   0% { background-position: 200% 0; }
