@@ -56,6 +56,8 @@ function WelcomeContent() {
   const [step, setStep] = useState(0);
   const [fading, setFading] = useState(false);
   const [earlySupporter, setEarlySupporter] = useState(false);
+  // 마지막 슬라이드 후 의도 picker(audience 흡수)
+  const [showIntent, setShowIntent] = useState(false);
 
   // 비로그인 시 홈으로
   useEffect(() => {
@@ -111,6 +113,9 @@ function WelcomeContent() {
   const handleNext = () => {
     if (step < SLIDES.length - 1) {
       goTo(step + 1);
+    } else if (next === "/") {
+      // 기본 목적지일 때만 의도 picker — 가입 전 명시적 URL이 있으면 그대로 존중
+      setShowIntent(true);
     } else {
       router.replace(next);
     }
@@ -118,10 +123,93 @@ function WelcomeContent() {
 
   const handleSkip = () => router.replace(next);
 
+  // 의도 1문항 — user_metadata.intent에 저장 + 의도별 첫 화면 라우팅.
+  // 광고로 들어온 broad audience를 앱 내부에서 흡수하기 위함.
+  const pickIntent = async (intent: "caretaker" | "interested" | "browsing", target: string) => {
+    try {
+      const sb = createClient();
+      await sb.auth.updateUser({ data: { intent } });
+    } catch {
+      /* 분류 저장 실패해도 라우팅은 진행 */
+    }
+    router.replace(target);
+  };
+
   if (authLoading || !user) {
     return (
       <div className="fixed inset-0 flex items-center justify-center" style={{ background: "#FFF9F2" }}>
         <Sparkles size={28} className="animate-pulse" style={{ color: "#C47E5A" }} />
+      </div>
+    );
+  }
+
+  // 마지막 슬라이드 후 의도 picker — 3-way 선택으로 audience 흡수.
+  if (showIntent) {
+    return (
+      <div
+        className="app-no-zoom fixed inset-0 overflow-hidden flex flex-col"
+        style={{ background: "linear-gradient(170deg, #4F6B53 0%, #6B8E6F 60%, #8FAE92 100%)" }}
+      >
+        <button
+          onClick={handleSkip}
+          className="absolute top-12 right-5 z-20 text-[13px] font-medium px-3 py-1.5 rounded-full active:opacity-50"
+          style={{ color: "rgba(255,255,255,0.75)" }}
+        >
+          건너뛰기
+        </button>
+
+        <div className="flex-1 flex flex-col items-center justify-center px-7">
+          <h2 className="text-[22px] font-extrabold text-center text-white tracking-tight leading-[1.4] mb-2">
+            어떻게 시작해볼까요?
+          </h2>
+          <p className="text-[13px] text-center text-white/85 mb-7 leading-relaxed">
+            당신에게 맞는 첫 화면을 보여드릴게요
+          </p>
+
+          <div className="w-full max-w-sm flex flex-col gap-2.5">
+            <button
+              type="button"
+              onClick={() => pickIntent("caretaker", "/map")}
+              className="px-4 py-4 rounded-2xl flex items-center gap-3 active:scale-[0.98] transition-transform"
+              style={{ background: "rgba(255,255,255,0.96)", boxShadow: "0 8px 22px rgba(0,0,0,0.18)" }}
+            >
+              <span className="text-[26px] shrink-0">🐾</span>
+              <div className="text-left flex-1 min-w-0">
+                <p className="text-[14.5px] font-extrabold text-text-main leading-tight">이미 돌보고 있어요</p>
+                <p className="text-[11.5px] text-text-sub mt-0.5">지도·돌봄일지로 바로</p>
+              </div>
+              <ChevronRight size={16} className="text-text-sub shrink-0" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => pickIntent("interested", "/")}
+              className="px-4 py-4 rounded-2xl flex items-center gap-3 active:scale-[0.98] transition-transform"
+              style={{ background: "rgba(255,255,255,0.96)", boxShadow: "0 8px 22px rgba(0,0,0,0.18)" }}
+            >
+              <span className="text-[26px] shrink-0">💛</span>
+              <div className="text-left flex-1 min-w-0">
+                <p className="text-[14.5px] font-extrabold text-text-main leading-tight">관심 있어 들어왔어요</p>
+                <p className="text-[11.5px] text-text-sub mt-0.5">동네 둘러보면서 천천히</p>
+              </div>
+              <ChevronRight size={16} className="text-text-sub shrink-0" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => pickIntent("browsing", "/shorts")}
+              className="px-4 py-4 rounded-2xl flex items-center gap-3 active:scale-[0.98] transition-transform"
+              style={{ background: "rgba(255,255,255,0.96)", boxShadow: "0 8px 22px rgba(0,0,0,0.18)" }}
+            >
+              <span className="text-[26px] shrink-0">🎬</span>
+              <div className="text-left flex-1 min-w-0">
+                <p className="text-[14.5px] font-extrabold text-text-main leading-tight">그냥 구경하러</p>
+                <p className="text-[11.5px] text-text-sub mt-0.5">귀여운 영상부터 (냥숏츠)</p>
+              </div>
+              <ChevronRight size={16} className="text-text-sub shrink-0" />
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
