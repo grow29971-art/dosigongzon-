@@ -84,6 +84,7 @@ import DailyCatBox from "@/app/components/DailyCatBox";
 import FirstCheerCard from "@/app/components/FirstCheerCard";
 import AppOpenGuideModal from "@/app/components/AppOpenGuideModal";
 import MyCatsQuickCare from "@/app/components/MyCatsQuickCare";
+import PushCareCueOptIn from "@/app/components/PushCareCueOptIn";
 import FeatureTipsCard from "@/app/components/FeatureTipsCard";
 // 푸시 옵트인 카드는 페이지 하단 — 첫 페인트엔 viewport 밖. lazy 안전.
 const PushOptInCard = dynamic(() => import("@/app/components/PushOptInCard"), { ssr: false });
@@ -712,6 +713,9 @@ export default function HomeAuthed({
           </Link>
         );
       })()}
+
+      {/* ══════ 돌봄 cue 푸시 옵트인 — 고양이 보유 + 미구독만 (14일 dismiss) ══════ */}
+      {user && activity && <PushCareCueOptIn hasCat={activity.catCount > 0} />}
 
       {/* ══════ 내 아이 오늘 한 끼 — 1탭 돌봄 로깅, 핵심 루프 마찰 직격 (catCount>0) ══════ */}
       {user && activity && activity.catCount > 0 && <MyCatsQuickCare />}
