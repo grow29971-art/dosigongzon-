@@ -43,15 +43,15 @@ const cards: {
 }[] = [
   {
     title: "돌봄 가이드",
-    subtitle: "국가동물보호정보시스템 — 농식품부 공식 매뉴얼",
+    subtitle: "2026 개정 — 농림축산식품부 공식 PDF",
     Icon: BookOpenText,
     iconBg: "#4A7BA8",
     iconColor: "#FFFFFF",
     glowColor: "74,123,168",
     type: "external",
-    // ⚠ 이전 농식품부 게시판 번호(795/577856)가 농지법 PDF로 재활용돼 길고양이가 아닌 자료가 노출되던 버그.
-    // 공식 추천 다운로드처인 국가동물보호정보시스템(animal.go.kr)으로 우회. 최신 2026-03-22 개정 가이드라인 포함.
-    href: "https://www.animal.go.kr/front/community/show.do?boardId=boardID07&menuNo=7000000008&seq=300108",
+    // 농식품부 동물복지정책과 「개정 길고양이 돌봄 가이드라인(수정)」 2026-05-19 게시본.
+    // 이전 링크(795/577856)는 농식품부가 다른 자료로 슬롯 재활용해 농지법 PDF로 잘못 노출되던 버그였음.
+    href: "https://www.mafra.go.kr/bbs/home/791/597438/download.do",
     wide: true,
     highlight: true,
   },
