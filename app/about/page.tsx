@@ -23,6 +23,11 @@ import {
   CircuitBoard,
   Box,
   Wrench,
+  Home,
+  Flame,
+  Thermometer,
+  Video,
+  BellRing,
 } from "lucide-react";
 import { createAnonClient } from "@/lib/supabase/anon";
 import MediaKit from "@/app/components/MediaKit";
@@ -35,7 +40,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "도시공존 소개 — 길고양이와 함께 걷는 시민 참여 플랫폼",
   description:
-    "도시공존은 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다. 전국 케어테이커가 실시간으로 돌봄 기록을 공유하고 긴급 구조를 돕습니다. 제휴·언론·블로그 문의 환영.",
+    "도시공존은 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다. 전국 케어테이커가 실시간으로 돌봄 기록을 공유하고, IoT 스마트쉼터·고양이난로 같은 돌봄 하드웨어로 길 위의 위험까지 직접 막습니다. 제휴·언론·블로그 문의 환영.",
   alternates: { canonical: "/about" },
   keywords: [
     "도시공존",
@@ -403,6 +408,63 @@ export default async function AboutPage() {
         </div>
       </section>
 
+      {/* 직접 만드는 돌봄 하드웨어 */}
+      <section className="px-5 mt-8">
+        <h2 className="text-[16px] font-extrabold text-text-main mb-1">
+          화면 밖에서도, 직접 만듭니다
+        </h2>
+        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+          겨울철 동사, 차량 사고처럼 코드만으로는 닿지 않는 길 위의 위험이 있어요.
+          그래서 도시공존은 소프트웨어를 넘어, 아이들을 실제로 지켜줄
+          <b className="text-text-main"> 돌봄 하드웨어</b>를 직접 설계하고 만들고 있습니다.
+        </p>
+        <div className="space-y-2.5">
+          <ProductCard
+            icon={<Home size={22} color="#FFFFFF" />}
+            accent="#4A7BA8"
+            accentDark="#3A6086"
+            badge="IoT · 개발 중"
+            title="IoT 스마트쉼터"
+            desc={
+              <>
+                추위와 위험으로부터 아이들을 지키는 <b className="text-text-main">발열 IoT 쉼터</b>예요.
+                내부 온도를 따뜻하게 유지하고, 카메라·센서로 출입과 이상을 감지해
+                도시공존 앱으로 실시간 알림을 보냅니다. 운영자 한 명이 감시하는 게 아니라,
+                <b className="text-text-main"> 같은 동네 케어테이커가 직접 모니터링</b>하는 구조로 설계했어요.
+              </>
+            }
+            pills={[
+              { icon: <Thermometer size={11} />, label: "발열 보온" },
+              { icon: <Video size={11} />, label: "CCTV 모니터링" },
+              { icon: <Cpu size={11} />, label: "출입·이상 감지" },
+              { icon: <BellRing size={11} />, label: "실시간 알림" },
+            ]}
+          />
+          <ProductCard
+            icon={<Flame size={22} color="#FFFFFF" />}
+            accent="#C47E5A"
+            accentDark="#A8684A"
+            badge="개발 중"
+            title="고양이난로"
+            desc={
+              <>
+                혹한에 길 위의 아이들이 얼지 않도록 만드는 <b className="text-text-main">저전력 전자 온열 기구</b>예요.
+                스마트쉼터보다 가볍게, 급식소나 숨숨집 곁에 두고 쓸 수 있게 설계하고 있어요.
+                안전한 발열과 과열 차단을 1순위로, <b className="text-text-main">겨울철 동사를 막는 가장 작은 한 걸음</b>을 목표로 합니다.
+              </>
+            }
+            pills={[
+              { icon: <Thermometer size={11} />, label: "저전력 발열" },
+              { icon: <Box size={11} />, label: "급식소 곁 설치" },
+              { icon: <Wrench size={11} />, label: "과열 차단 안전 설계" },
+            ]}
+          />
+        </div>
+        <p className="text-[11.5px] text-text-light mt-3 leading-relaxed">
+          ※ 하드웨어는 현재 설계·시제품 단계이며, KC 인증을 거쳐 순차적으로 선보일 예정이에요.
+        </p>
+      </section>
+
       {/* 기술 자산 — 어떻게 만들어졌나 */}
       <section className="px-5 mt-8">
         <h2 className="text-[16px] font-extrabold text-text-main mb-1">
@@ -546,6 +608,64 @@ function TechRow({ icon, title, desc }: { icon: React.ReactNode; title: string; 
       <div className="min-w-0">
         <p className="text-[13px] font-extrabold text-text-main">{title}</p>
         <p className="text-[11.5px] text-text-sub mt-1 leading-relaxed">{desc}</p>
+      </div>
+    </div>
+  );
+}
+
+function ProductCard({
+  icon,
+  accent,
+  accentDark,
+  badge,
+  title,
+  desc,
+  pills,
+}: {
+  icon: React.ReactNode;
+  accent: string;
+  accentDark: string;
+  badge: string;
+  title: string;
+  desc: React.ReactNode;
+  pills: { icon: React.ReactNode; label: string }[];
+}) {
+  return (
+    <div
+      className="rounded-3xl p-5 bg-white"
+      style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.05)", border: `1px solid ${accent}26` }}
+    >
+      <div className="flex items-center gap-3 mb-3">
+        <div
+          className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
+          style={{ background: `linear-gradient(135deg, ${accent} 0%, ${accentDark} 100%)` }}
+        >
+          {icon}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <p className="text-[15px] font-extrabold text-text-main">{title}</p>
+            <span
+              className="px-1.5 py-0.5 rounded-full text-[9px] font-extrabold tracking-tight"
+              style={{ background: `${accent}1A`, color: accentDark }}
+            >
+              {badge}
+            </span>
+          </div>
+        </div>
+      </div>
+      <p className="text-[12.5px] leading-[1.9] text-text-sub">{desc}</p>
+      <div className="flex flex-wrap gap-1.5 mt-3">
+        {pills.map((p, i) => (
+          <span
+            key={i}
+            className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10.5px] font-bold"
+            style={{ background: `${accent}12`, color: accentDark }}
+          >
+            {p.icon}
+            {p.label}
+          </span>
+        ))}
       </div>
     </div>
   );
