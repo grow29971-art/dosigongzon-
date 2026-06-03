@@ -28,6 +28,9 @@ import {
   Thermometer,
   Video,
   BellRing,
+  Puzzle,
+  HeartCrack,
+  Hammer,
 } from "lucide-react";
 import { createAnonClient } from "@/lib/supabase/anon";
 import MediaKit from "@/app/components/MediaKit";
@@ -151,6 +154,47 @@ export default async function AboutPage() {
           <StatCard value={stats.cats} label="등록 고양이" color="#C47E5A" emoji="🐾" />
           <StatCard value={stats.users} label="동네 이웃" color="#E86B8C" emoji="❤️" />
           <StatCard value={stats.hospitals} label="치료 병원" color="#22B573" emoji="🏥" />
+        </div>
+      </section>
+
+      {/* 왜 만들었나 — 문제의식 */}
+      <section className="px-5 mt-8">
+        <h2 className="text-[16px] font-extrabold text-text-main mb-1">
+          왜 도시공존을 만들었을까요
+        </h2>
+        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+          길 위의 아이들을 돌보는 일은 따뜻하지만, 돌보는 사람은 늘 외롭고 막막했어요.
+          그 막막함의 정체를 들여다보니 세 가지 문제가 있었습니다.
+        </p>
+        <div className="space-y-2.5">
+          <ProblemRow
+            n={1}
+            icon={<Puzzle size={18} color="#FFFFFF" />}
+            title="정보의 파편화"
+            desc="어느 골목 어떤 아이가 TNR이 됐는지, 어디가 급식소인지, 가까운 병원·약국은 어딘지 — 정작 필요한 정보는 카페 글, 단톡방, 누군가의 메모장에 흩어져 매번 처음부터 다시 찾아야 했어요."
+          />
+          <ProblemRow
+            n={2}
+            icon={<HeartCrack size={18} color="#FFFFFF" />}
+            title="활동의 외로움"
+            desc="대부분의 케어테이커는 혼자 묵묵히 길을 돕니다. 같은 동네에 누가 함께 돌보는지 몰라 손길이 겹치거나 비고, 힘든 순간에 기대고 안부를 나눌 이웃이 곁에 없어 쉽게 지쳤어요."
+          />
+          <ProblemRow
+            n={3}
+            icon={<Hammer size={18} color="#FFFFFF" />}
+            title="도구의 부재"
+            desc="기록은 종이와 기억에, 위급 상황은 발 빠른 운에 기대야 했어요. 흩어진 마음을 모으고 길 위의 위험을 실제로 막아줄, 손에 쥘 제대로 된 도구가 없었습니다."
+          />
+        </div>
+        <div
+          className="rounded-2xl p-4 mt-3 flex items-start gap-2.5"
+          style={{ background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)", border: "1px solid rgba(196,126,90,0.20)" }}
+        >
+          <Heart size={15} style={{ color: "#C47E5A" }} className="shrink-0 mt-0.5" />
+          <p className="text-[12.5px] leading-relaxed text-text-sub">
+            <b className="text-text-main">그래서 도시공존을 만들었어요.</b> 흩어진 정보를 한 화면에 모으고,
+            혼자였던 케어테이커를 같은 동네 이웃과 잇고, 화면 안팎으로 길 위의 아이들을 지킬 도구가 되기 위해서요.
+          </p>
         </div>
       </section>
 
@@ -608,6 +652,41 @@ function TechRow({ icon, title, desc }: { icon: React.ReactNode; title: string; 
       <div className="min-w-0">
         <p className="text-[13px] font-extrabold text-text-main">{title}</p>
         <p className="text-[11.5px] text-text-sub mt-1 leading-relaxed">{desc}</p>
+      </div>
+    </div>
+  );
+}
+
+function ProblemRow({
+  n,
+  icon,
+  title,
+  desc,
+}: {
+  n: number;
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+}) {
+  return (
+    <div
+      className="bg-white rounded-2xl p-4 flex items-start gap-3"
+      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+    >
+      <div
+        className="shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center"
+        style={{ background: "linear-gradient(135deg, #8A94A6 0%, #6B7689 100%)" }}
+      >
+        {icon}
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#6B7689" }}>
+            0{n}
+          </span>
+          <p className="text-[13.5px] font-extrabold text-text-main">{title}</p>
+        </div>
+        <p className="text-[12px] text-text-sub leading-relaxed">{desc}</p>
       </div>
     </div>
   );
