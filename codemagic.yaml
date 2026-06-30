@@ -9,10 +9,8 @@ workflows:
         distribution_type: app_store
         bundle_identifier: kr.dosigongzon.app
       vars:
-        XCODE_PROJECT: "city-ios/도시공존.xcodeproj"
+        XCODE_WORKSPACE: "city-ios/도시공존.xcworkspace"
         XCODE_SCHEME: "도시공존"
-        BUNDLE_ID: "kr.dosigongzon.app"
-        APP_STORE_APPLE_ID: 6745678900  # App Store Connect 앱 등록 후 업데이트
 
     scripts:
       - name: CocoaPods 설치
@@ -23,25 +21,10 @@ workflows:
       - name: iOS 빌드
         script: |
           xcode-project use-profiles
-          xcodebuild \
-            -workspace "city-ios/도시공존.xcworkspace" \
-            -scheme "$XCODE_SCHEME" \
-            -configuration Release \
-            -archivePath build/도시공존.xcarchive \
-            archive
-
-      - name: IPA 내보내기
-        script: |
           xcode-project build-ipa \
-            --workspace "city-ios/도시공존.xcworkspace" \
+            --workspace "$XCODE_WORKSPACE" \
             --scheme "$XCODE_SCHEME"
 
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
-
-    publishing:
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
-        submit_to_app_store: false
