@@ -67,16 +67,16 @@ func parseSubscribeMessage(message: WKScriptMessage) -> [SubscribeMessage] {
 func returnPermissionResult(isGranted: Bool){
     DispatchQueue.main.async(execute: {
         if (isGranted){
-            webView.evaluateJavaScript("this.dispatchEvent(new CustomEvent('push-permission-request', { detail: 'granted' }))")
+            gWebView.evaluateJavaScript("this.dispatchEvent(new CustomEvent('push-permission-request', { detail: 'granted' }))")
         }
         else {
-            webView.evaluateJavaScript("this.dispatchEvent(new CustomEvent('push-permission-request', { detail: 'denied' }))")
+            gWebView.evaluateJavaScript("this.dispatchEvent(new CustomEvent('push-permission-request', { detail: 'denied' }))")
         }
     })
 }
 func returnPermissionState(state: String){
     DispatchQueue.main.async(execute: {
-        webView.evaluateJavaScript("this.dispatchEvent(new CustomEvent('push-permission-state', { detail: '\(state)' }))")
+        gWebView.evaluateJavaScript("this.dispatchEvent(new CustomEvent('push-permission-state', { detail: '\(state)' }))")
     })
 }
 
@@ -134,9 +134,9 @@ func handlePushState() {
 }
 
 func checkViewAndEvaluate(event: String, detail: String) {
-    if (!webView.isHidden && !webView.isLoading ) {
+    if (!gWebView.isHidden && !gWebView.isLoading ) {
         DispatchQueue.main.async(execute: {
-            webView.evaluateJavaScript("this.dispatchEvent(new CustomEvent('\(event)', { detail: \(detail) }))")
+            gWebView.evaluateJavaScript("this.dispatchEvent(new CustomEvent('\(event)', { detail: \(detail) }))")
         })
     }
     else {
