@@ -21,8 +21,6 @@ import {
   WifiOff,
   ChevronRight,
   Sparkles,
-  Moon,
-  SunMedium,
   Bell,
   Search,
   Flame,
@@ -143,23 +141,6 @@ export default function HomeAuthed({
   const [mounted, setMounted] = useState(false);
   const [onboardingChecked, setOnboardingChecked] = useState(false);
   const [fact, setFact] = useState("");
-  const [isDark, setIsDark] = useState(false);
-
-  // 다크모드 초기화
-  useEffect(() => {
-    const saved = localStorage.getItem("dosigongzon_dark");
-    if (saved === "1") {
-      document.documentElement.classList.add("dark");
-      setIsDark(true);
-    }
-  }, []);
-
-  const toggleDark = () => {
-    const next = !isDark;
-    setIsDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("dosigongzon_dark", next ? "1" : "0");
-  };
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [weatherLoading, setWeatherLoading] = useState(true);
   const [weatherError, setWeatherError] = useState("");
@@ -599,13 +580,6 @@ export default function HomeAuthed({
           >
             <Search size={18} className="text-text-sub" />
           </Link>
-          <button
-            onClick={toggleDark}
-            className="w-10 h-10 rounded-2xl bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
-            aria-label="다크모드 전환"
-          >
-            {isDark ? <SunMedium size={18} className="text-warning" /> : <Moon size={18} className="text-text-sub" />}
-          </button>
           {user && (
             <Link
               href="/notifications"
