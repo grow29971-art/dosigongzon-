@@ -11,6 +11,7 @@ workflows:
       vars:
         XCODE_WORKSPACE: "city-ios/도시공존.xcworkspace"
         XCODE_SCHEME: "도시공존"
+        APP_STORE_APPLE_ID: "6786105879"
 
     scripts:
       - name: CocoaPods 설치
