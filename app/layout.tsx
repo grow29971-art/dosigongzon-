@@ -231,7 +231,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ConsentManager />
         <script
           dangerouslySetInnerHTML={{
-            __html: `if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js")`,
+            __html: `if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js");localStorage.removeItem("dosigongzon_dark");document.documentElement.classList.remove("dark")`,
           }}
         />
       </body>
