@@ -15,5 +15,10 @@ post_install do |installer|
     target.build_configurations.each do |config|
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
     end
+    if target.name == 'Pods-도시공존'
+      target.build_configurations.each do |config|
+        config.build_settings['PRODUCT_NAME'] = 'Pods_____'
+      end
+    end
   end
 end
