@@ -51,6 +51,9 @@ function LoginContent() {
   const [agreed, setAgreed] = useState(false);
   const [socialLoading, setSocialLoading] = useState<"kakao" | "google" | null>(null);
   const [error, setError] = useState("");
+  const [emailInput, setEmailInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
+  const [emailLoading, setEmailLoading] = useState(false);
 
   const [inApp, setInApp] = useState<InAppBrowser>(null);
   const [isSamsung, setIsSamsung] = useState(false);
@@ -333,6 +336,51 @@ function LoginContent() {
           한 번 연결하면 다음부터 1클릭 로그인 ·<br />
           광고 없음 · 무료
         </p>
+
+        {/* 이메일 로그인 */}
+        <div className="mt-5 pt-5 border-t border-border">
+          <p className="text-[12px] text-text-sub text-center mb-3">이메일로 로그인</p>
+          <div className="space-y-2">
+            <input
+              type="email"
+              placeholder="이메일"
+              value={emailInput}
+              onChange={e => setEmailInput(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border border-border text-[14px] outline-none focus:border-primary"
+              style={{ backgroundColor: "#fff" }}
+            />
+            <input
+              type="password"
+              placeholder="비밀번호"
+              value={passwordInput}
+              onChange={e => setPasswordInput(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border border-border text-[14px] outline-none focus:border-primary"
+              style={{ backgroundColor: "#fff" }}
+            />
+            <button
+              type="button"
+              disabled={emailLoading || !emailInput || !passwordInput}
+              onClick={async () => {
+                setEmailLoading(true);
+                setError("");
+                const { error: signInError } = await createClient().auth.signInWithPassword({
+                  email: emailInput.trim(),
+                  password: passwordInput,
+                });
+                setEmailLoading(false);
+                if (signInError) {
+                  setError("이메일 또는 비밀번호가 올바르지 않아요.");
+                } else {
+                  window.location.href = "/";
+                }
+              }}
+              className="w-full py-3 rounded-xl text-[14px] font-bold text-white disabled:opacity-50"
+              style={{ backgroundColor: "#C47E5A" }}
+            >
+              {emailLoading ? <Loader2 size={16} className="animate-spin mx-auto" /> : "로그인"}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
