@@ -1,5 +1,4 @@
 import WebKit
-import FirebaseMessaging
 
 class SubscribeMessage {
     var topic  = ""
@@ -25,20 +24,7 @@ class SubscribeMessage {
 }
 
 func handleSubscribeTouch(message: WKScriptMessage) {
-  // [START subscribe_topic]
-    let subscribeMessages = parseSubscribeMessage(message: message)
-    if (subscribeMessages.count > 0){
-        let _message = subscribeMessages[0]
-        if (_message.unsubscribe) {
-            Messaging.messaging().unsubscribe(fromTopic: _message.topic) { error in }
-        }
-        else {
-            Messaging.messaging().subscribe(toTopic: _message.topic) { error in }
-        }
-    }
-    
-
-  // [END subscribe_topic]
+    // Firebase Messaging not configured — topic subscription skipped
 }
 
 func parseSubscribeMessage(message: WKScriptMessage) -> [SubscribeMessage] {
@@ -147,17 +133,7 @@ func checkViewAndEvaluate(event: String, detail: String) {
 }
 
 func handleFCMToken(){
-    DispatchQueue.main.async(execute: {
-        Messaging.messaging().token { token, error in
-            if let error = error {
-                print("Error fetching FCM registration token: \(error)")
-                checkViewAndEvaluate(event: "push-token", detail: "ERROR GET TOKEN")
-            } else if let token = token {
-                print("FCM registration token: \(token)")
-                checkViewAndEvaluate(event: "push-token", detail: "'\(token)'")
-            }
-        }   
-    })
+    // Firebase Messaging not configured — FCM token unavailable
 }
 
 func sendPushToWebView(userInfo: [AnyHashable: Any]){
