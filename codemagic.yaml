@@ -23,6 +23,12 @@ workflows:
           cd city-ios
           pod install
 
+      - name: 빌드 번호 증가
+        script: |
+          BUILD_NUMBER=$(($(app-store-connect get-latest-build-number "$APP_STORE_APPLE_ID") + 1))
+          cd city-ios
+          agvtool new-version -all "$BUILD_NUMBER"
+
       - name: iOS 빌드
         script: |
           xcode-project use-profiles
