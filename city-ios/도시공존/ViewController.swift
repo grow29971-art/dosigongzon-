@@ -50,7 +50,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
         }
 
         view.addSubview(gWebView)
-        gWebView.load(URLRequest(url: URL(string: "https://dosigongzon.com")!))
+        gWebView.load(URLRequest(url: URL(string: "https://dosigongzon.com?ios=1")!))
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {

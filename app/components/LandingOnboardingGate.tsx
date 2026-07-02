@@ -12,8 +12,10 @@ export default function LandingOnboardingGate() {
   const router = useRouter();
   useEffect(() => {
     try {
-      // iOS 앱 감지: User-Agent(PWAShell) 또는 쿠키
+      // iOS 앱 감지: URL 파라미터(최우선) → UA → 쿠키 순서
+      const params = new URLSearchParams(window.location.search);
       const isIOSApp =
+        params.get("ios") === "1" ||
         navigator.userAgent.includes("PWAShell") ||
         document.cookie.includes("app-platform=iOS App Store");
       if (isIOSApp) {
