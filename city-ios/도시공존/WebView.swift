@@ -26,7 +26,11 @@ extension ViewController: WKUIDelegate {
             decisionHandler(.cancel)
             return
         }
-        if url.scheme == "about" || url.host?.contains("dosigongzon.com") == true {
+        // 앱 도메인 + OAuth 공급자는 WKWebView 안에서 처리
+        // (SFSafariViewController로 보내면 localStorage가 달라 PKCE 검증 실패)
+        let inAppHosts = ["dosigongzon.com", "supabase.co",
+                          "accounts.google.com", "kauth.kakao.com", "accounts.kakao.com"]
+        if url.scheme == "about" || inAppHosts.contains(where: { url.host?.contains($0) == true }) {
             decisionHandler(.allow)
             return
         }
