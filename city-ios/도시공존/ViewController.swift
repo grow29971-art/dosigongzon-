@@ -38,6 +38,7 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         initWebView()
         initToolbarView()
         loadRootUrl()
@@ -87,16 +88,14 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
     }
 
     func createToolbarView() -> UIToolbar{
-        let winScene = UIApplication.shared.connectedScenes.first
-        let windowScene = winScene as! UIWindowScene
-        var statusBarHeight = windowScene.statusBarManager?.statusBarFrame.height ?? 60
-        
+        var statusBarHeight: CGFloat = (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.statusBarManager?.statusBarFrame.height ?? 60
+
         #if targetEnvironment(macCatalyst)
         if (statusBarHeight == 0){
             statusBarHeight = 30
         }
         #endif
-        
+
         let toolbarView = UIToolbar(frame: CGRect(x: 0, y: 0, width: webviewView.frame.width, height: 0))
         toolbarView.sizeToFit()
         toolbarView.frame = CGRect(x: 0, y: 0, width: webviewView.frame.width, height: toolbarView.frame.height + statusBarHeight)
