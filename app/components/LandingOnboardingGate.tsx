@@ -12,6 +12,12 @@ export default function LandingOnboardingGate() {
   const router = useRouter();
   useEffect(() => {
     try {
+      // iOS 앱에서는 온보딩 스킵 — 어두운 슬라이드가 OLED에서 검정으로 보임
+      const isIOSApp = document.cookie.includes("app-platform=iOS App Store");
+      if (isIOSApp) {
+        localStorage.setItem("dosigongzon_onboarded", "true");
+        return;
+      }
       if (!localStorage.getItem("dosigongzon_onboarded")) {
         router.replace("/onboarding");
       }
