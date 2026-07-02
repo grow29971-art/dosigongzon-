@@ -22,7 +22,7 @@ import {
 const SLIDES = [
   {
     /* 어둠 — 차가운 밤 */
-    bg: "linear-gradient(170deg, #1a1a2e 0%, #2d2b55 40%, #4a3f6b 100%)",
+    bg: "linear-gradient(170deg, #2e2760 0%, #443e8a 40%, #6155a6 100%)",
     particleColor: "rgba(255,255,255,0.06)",
     accentColor: "#C4B5FD",
     dotActive: "#C4B5FD",
