@@ -31,7 +31,6 @@ import dynamic from "next/dynamic";
 const AchievementToast = dynamic(() => import("@/app/components/AchievementToast"), { ssr: false });
 import type { ToastData } from "@/app/components/AchievementToast";
 import SocialProofStrip from "@/app/components/SocialProofStrip";
-import LaunchCountdown from "@/app/components/LaunchCountdown";
 import { TITLES, CATEGORY_COLORS, countUnlocked } from "@/lib/titles";
 import TodayChecklist from "@/app/components/TodayChecklist";
 import RescueBanner from "@/app/components/RescueBanner";
@@ -493,8 +492,6 @@ export default function HomeAuthed({
 
   return (
     <>
-      {/* ══════ 출시 카운트다운 — 로그인·비로그인 동일 노출 ══════ */}
-      <LaunchCountdown />
     <div className="px-5 pt-5 pb-4">
       {/* ══════ 헤더 ══════ */}
       <div className="flex items-start justify-between mb-7">
