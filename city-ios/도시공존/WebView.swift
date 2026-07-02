@@ -15,6 +15,14 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     userContentController.add(WKSMH, name: "push-permission-state")
     userContentController.add(WKSMH, name: "push-token")
 
+    // 온보딩 스킵 — 서비스워커 캐시를 우회해 document 시작 시점에 localStorage 세팅
+    let skipOnboardingScript = WKUserScript(
+        source: "try{localStorage.setItem('dosigongzon_onboarded','true');}catch(e){}",
+        injectionTime: .atDocumentStart,
+        forMainFrameOnly: true
+    )
+    userContentController.addUserScript(skipOnboardingScript)
+
     config.userContentController = userContentController
 
     config.limitsNavigationsToAppBoundDomains = true;
@@ -28,6 +36,9 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     webView.backgroundColor = .white
     webView.scrollView.backgroundColor = .white
+    if #available(iOS 15.0, *) {
+        webView.underPageBackgroundColor = .white
+    }
     webView.isHidden = true;
     webView.navigationDelegate = WKND
     webView.scrollView.bounces = false
