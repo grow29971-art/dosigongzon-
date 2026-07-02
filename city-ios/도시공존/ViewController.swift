@@ -3,6 +3,7 @@ import WebKit
 
 var gWebView: WKWebView! = nil
 
+@objc(ViewController)
 class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteractionControllerDelegate {
     enum LoadingMode {
         case defaultCachePolicy
