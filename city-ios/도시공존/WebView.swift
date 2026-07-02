@@ -17,6 +17,11 @@ extension ViewController: WKUIDelegate {
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
                  decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        // iframe 등 서브프레임은 모두 허용 (Turnstile, 카카오맵 등 외부 위젯)
+        if navigationAction.targetFrame?.isMainFrame == false {
+            decisionHandler(.allow)
+            return
+        }
         guard let url = navigationAction.request.url else {
             decisionHandler(.cancel)
             return
