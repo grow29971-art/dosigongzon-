@@ -26,6 +26,8 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     setCustomCookie(webView: webView)
 
     webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    webView.backgroundColor = .white
+    webView.scrollView.backgroundColor = .white
     webView.isHidden = true;
     webView.navigationDelegate = WKND
     webView.scrollView.bounces = false
