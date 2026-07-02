@@ -11,10 +11,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        FirebaseApp.configure()
+        // FirebaseApp.configure()  // GoogleService-Info.plist 실제 설정 전까지 비활성
 
         // [START set_messaging_delegate]
-        Messaging.messaging().delegate = self
+        // Messaging.messaging().delegate = self  // Firebase 미설정으로 비활성
         // [END set_messaging_delegate]
         // Register for remote notifications. This shows a permission dialog on first run, to
         // show the dialog at a more appropriate time move this registration accordingly.
