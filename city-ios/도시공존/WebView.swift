@@ -39,7 +39,7 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     if #available(iOS 15.0, *) {
         webView.underPageBackgroundColor = .white
     }
-    webView.isHidden = true;
+    webView.isOpaque = true
     webView.navigationDelegate = WKND
     webView.scrollView.bounces = false
     webView.scrollView.contentInsetAdjustmentBehavior = .never

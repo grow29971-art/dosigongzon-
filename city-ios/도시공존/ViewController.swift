@@ -153,11 +153,8 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
         self.animateConnectionProblem(false)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-            gWebView.isHidden = false
             self.loadingView.isHidden = true
-           
             self.setProgress(0.0, false)
-            
             self.overrideUIStyle()
         }
     }
@@ -169,7 +166,6 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
         if (error as NSError)._code == 102 { return }
         
         self.overrideUIStyle(toDefault: true);
-        gWebView.isHidden = true;
         loadingView.isHidden = false;
 
         if loadingMode == LoadingMode.defaultCachePolicy {
