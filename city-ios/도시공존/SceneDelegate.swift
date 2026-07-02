@@ -1,41 +1,38 @@
 import UIKit
 
+@objc(SceneDelegate)
 @available(iOS 13.0, *)
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-    // If our app is launched with a universal link, we'll store it in this variable
-    static var universalLinkToLaunch: URL? = nil; 
+    static var universalLinkToLaunch: URL? = nil
     static var shortcutLinkToLaunch: URL? = nil
 
-
-    // This function is called when your app launches.
-    // Check to see if we were launched via a universal link or a shortcut.
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // See if our app is being launched via universal link.
-        // If so, store that link so we can navigate to it once our gWebView is initialized.
+        guard let windowScene = scene as? UIWindowScene else { return }
+
+        // 윈도우를 명시적으로 생성 — 모듈명 불일치로 SceneDelegate를 못 찾는 경우에도 안전
+        let win = UIWindow(windowScene: windowScene)
+        win.backgroundColor = .white
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        win.rootViewController = storyboard.instantiateInitialViewController()
+        win.makeKeyAndVisible()
+        self.window = win
+
         for userActivity in connectionOptions.userActivities {
             if let universalLink = userActivity.webpageURL {
-                SceneDelegate.universalLinkToLaunch = universalLink;
+                SceneDelegate.universalLinkToLaunch = universalLink
                 break
             }
         }
-
-        // See if we were launched via shortcut
-        if let shortcutUrl = connectionOptions.shortcutItem?.type {            
-            SceneDelegate.shortcutLinkToLaunch = URL.init(string: shortcutUrl)
+        if let shortcutUrl = connectionOptions.shortcutItem?.type {
+            SceneDelegate.shortcutLinkToLaunch = URL(string: shortcutUrl)
         }
-        
-        // See if we were launched via scheme URL
         if let schemeUrl = connectionOptions.urlContexts.first?.url {
-            // Convert scheme://url to a https://url
             var comps = URLComponents(url: schemeUrl, resolvingAgainstBaseURL: false)
             comps?.scheme = "https"
-            
-            if let url = comps?.url {
-                SceneDelegate.universalLinkToLaunch = url;
-            }
+            if let url = comps?.url { SceneDelegate.universalLinkToLaunch = url }
         }
     }
     
