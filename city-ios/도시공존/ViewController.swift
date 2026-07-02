@@ -34,6 +34,8 @@ class ViewController: UIViewController, WKNavigationDelegate {
         if #available(iOS 15.0, *) {
             gWebView.underPageBackgroundColor = .white
         }
+        // PWAShell 포함 UA → 웹앱이 iOS 앱임을 감지해 온보딩 스킵
+        gWebView.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1 PWAShell"
 
         // 플랫폼 쿠키
         if let host = URL(string: "https://dosigongzon.com")?.host,
