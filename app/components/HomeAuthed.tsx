@@ -37,7 +37,6 @@ import TodayChecklist from "@/app/components/TodayChecklist";
 import RescueBanner from "@/app/components/RescueBanner";
 import StreakFreezeButton from "@/app/components/StreakFreezeButton";
 import StreakAtRiskAlert from "@/app/components/StreakAtRiskAlert";
-import PlayStoreBanner from "@/app/components/PlayStoreBanner";
 import SplashLoading from "@/app/components/SplashLoading";
 import FoundingMemberBanner from "@/app/components/FoundingMemberBanner";
 import PatchUpdateBanner518 from "@/app/components/PatchUpdateBanner518";
@@ -618,7 +617,6 @@ export default function HomeAuthed({
       {user && rescueCount > 0 && <RescueBanner count={rescueCount} />}
 
       {/* ══════ Play 스토어 앱 출시 안내 — 안드로이드 + 비-TWA만 ══════ */}
-      {user && <PlayStoreBanner />}
 
       {/* ══════ 오늘의 냥 상자 — 일일 출석 리추얼 (전원) ══════ */}
       {user && <DailyCatBox />}
