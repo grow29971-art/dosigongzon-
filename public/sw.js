@@ -1,4 +1,4 @@
-const CACHE_NAME = "dosigongzon-v6";
+const CACHE_NAME = "dosigongzon-v7";
 
 self.addEventListener("install", (e) => {
   // 이전 캐시 즉시 삭제
