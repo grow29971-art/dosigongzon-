@@ -62,8 +62,6 @@ class ViewController: UIViewController, WKNavigationDelegate, UIDocumentInteract
         webviewView.addSubview(gWebView);
         
         gWebView.uiDelegate = self;
-        
-        gWebView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
 
         if(pullToRefresh){
             let refreshControl = UIRefreshControl()

@@ -28,7 +28,6 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     config.limitsNavigationsToAppBoundDomains = true;
     config.allowsInlineMediaPlayback = true
     config.preferences.javaScriptCanOpenWindowsAutomatically = true
-    config.preferences.setValue(true, forKey: "standalone")
     
     let webView = WKWebView(frame: calcWebviewFrame(webviewView: container, toolbarView: nil), configuration: config)
     setCustomCookie(webView: webView)
