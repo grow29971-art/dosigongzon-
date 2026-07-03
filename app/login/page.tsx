@@ -49,7 +49,7 @@ function LoginContent() {
   const searchParams = useSearchParams();
 
   const [agreed, setAgreed] = useState(false);
-  const [socialLoading, setSocialLoading] = useState<"kakao" | "google" | null>(null);
+  const [socialLoading, setSocialLoading] = useState<"kakao" | "google" | "apple" | null>(null);
   const [error, setError] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
@@ -91,7 +91,7 @@ function LoginContent() {
     }
   };
 
-  const handleSocial = async (provider: "kakao" | "google") => {
+  const handleSocial = async (provider: "kakao" | "google" | "apple") => {
     if (inApp) { handleOpenExternal(); return; }
     if (!agreed) { setError("약관에 동의해주세요."); return; }
     setError("");
@@ -103,6 +103,9 @@ function LoginContent() {
     const oauthOptions: { redirectTo: string; scopes?: string } = { redirectTo: callbackUrl };
     if (provider === "kakao") {
       oauthOptions.scopes = "account_email profile_nickname profile_image";
+    }
+    if (provider === "apple") {
+      oauthOptions.scopes = "name email";
     }
     const { error: oauthError } = await createClient().auth.signInWithOAuth({
       provider,
@@ -329,6 +332,21 @@ function LoginContent() {
               </svg>
             )}
             Google로 시작하기
+          </button>
+          <button
+            onClick={() => handleSocial("apple")}
+            disabled={!!socialLoading}
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.97] transition-transform disabled:opacity-60"
+            style={{ backgroundColor: "#000000", color: "#FFFFFF", opacity: (agreed || inApp) ? 1 : 0.6 }}
+          >
+            {socialLoading === "apple" ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <svg width="16" height="20" viewBox="0 0 16 20" aria-hidden="true">
+                <path d="M13.067 10.667c-.02-2.16 1.76-3.2 1.84-3.253-1.007-1.467-2.567-1.667-3.12-1.693-1.32-.133-2.587.78-3.253.78-.667 0-1.68-.76-2.76-.74-1.413.02-2.72.827-3.447 2.093C.787 10.36 1.72 14.8 3.227 17.12c.747 1.08 1.633 2.293 2.8 2.253 1.12-.04 1.547-.72 2.9-.72 1.347 0 1.733.72 2.907.693 1.213-.02 1.973-1.1 2.72-2.18.853-1.247 1.2-2.453 1.22-2.52-.027-.013-2.34-.893-2.36-3.56l-.347-.42zM10.8 3.293C11.387 2.573 11.8 1.6 11.68.56c-.84.04-1.867.56-2.467 1.267-.54.633-1.013 1.64-.84 2.6.933.073 1.88-.48 2.427-1.133z" fill="currentColor" />
+              </svg>
+            )}
+            Apple로 시작하기
           </button>
         </div>
 

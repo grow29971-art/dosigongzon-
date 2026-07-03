@@ -27,6 +27,8 @@ function PixelPageView() {
 
 export default function MetaPixel() {
   if (!META_PIXEL_ID) return null;
+  // iOS 앱(PWAShell) 에서는 Meta Pixel 비활성 — ATT 미구현으로 Apple 가이드라인 5.1.2 위반 방지
+  if (typeof navigator !== "undefined" && navigator.userAgent.includes("PWAShell")) return null;
 
   return (
     <>

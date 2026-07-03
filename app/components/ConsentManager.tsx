@@ -21,6 +21,12 @@ export default function ConsentManager() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    // iOS 앱(PWAShell)에서는 추적 없이 자동 거부 처리 — ATT 미구현으로 Apple 5.1.2 위반 방지
+    if (navigator.userAgent.includes("PWAShell")) {
+      setConsent("rejected");
+      setMounted(true);
+      return;
+    }
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored === "accepted" || stored === "rejected") {
@@ -29,7 +35,6 @@ export default function ConsentManager() {
         setConsent("pending");
       }
     } catch {
-      // localStorage 차단된 환경 — 그냥 배너 노출
       setConsent("pending");
     }
     setMounted(true);

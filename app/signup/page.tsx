@@ -32,7 +32,7 @@ function SignupContent() {
   const eventParam = searchParams.get("event");
   const [agreed, setAgreed] = useState(false);
   const [marketingOptIn, setMarketingOptIn] = useState(false);
-  const [loading, setLoading] = useState<"kakao" | "google" | null>(null);
+  const [loading, setLoading] = useState<"kakao" | "google" | "apple" | null>(null);
   const [error, setError] = useState("");
   // Cloudflare Turnstile — site key 설정된 환경에서만 활성. 미설정이면 OAuth만 (개발 환경).
   const turnstileRequired = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
@@ -64,7 +64,7 @@ function SignupContent() {
     }
   };
 
-  const handleSignup = async (provider: "kakao" | "google") => {
+  const handleSignup = async (provider: "kakao" | "google" | "apple") => {
     if (inApp) { handleOpenExternal(); return; }
     if (!agreed) { setError("약관에 동의해주세요."); return; }
     if (turnstileRequired && !turnstileToken) {
@@ -115,6 +115,9 @@ function SignupContent() {
     const oauthOptions: { redirectTo: string; scopes?: string } = { redirectTo: callbackUrl };
     if (provider === "kakao") {
       oauthOptions.scopes = "account_email profile_nickname profile_image";
+    }
+    if (provider === "apple") {
+      oauthOptions.scopes = "name email";
     }
 
     // Meta Pixel: 가입 의향 측정 — OAuth로 redirect되기 직전 발사.
@@ -330,6 +333,21 @@ function SignupContent() {
               </svg>
             )}
             Google로 가입하기
+          </button>
+          <button
+            onClick={() => handleSignup("apple")}
+            disabled={!!loading}
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.97] transition-transform disabled:opacity-60"
+            style={{ backgroundColor: "#000000", color: "#FFFFFF", opacity: (agreed || inApp) ? 1 : 0.6 }}
+          >
+            {loading === "apple" ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <svg width="16" height="20" viewBox="0 0 16 20" aria-hidden="true">
+                <path d="M13.067 10.667c-.02-2.16 1.76-3.2 1.84-3.253-1.007-1.467-2.567-1.667-3.12-1.693-1.32-.133-2.587.78-3.253.78-.667 0-1.68-.76-2.76-.74-1.413.02-2.72.827-3.447 2.093C.787 10.36 1.72 14.8 3.227 17.12c.747 1.08 1.633 2.293 2.8 2.253 1.12-.04 1.547-.72 2.9-.72 1.347 0 1.733.72 2.907.693 1.213-.02 1.973-1.1 2.72-2.18.853-1.247 1.2-2.453 1.22-2.52-.027-.013-2.34-.893-2.36-3.56l-.347-.42zM10.8 3.293C11.387 2.573 11.8 1.6 11.68.56c-.84.04-1.867.56-2.467 1.267-.54.633-1.013 1.64-.84 2.6.933.073 1.88-.48 2.427-1.133z" fill="currentColor" />
+              </svg>
+            )}
+            Apple로 시작하기
           </button>
         </div>
 
