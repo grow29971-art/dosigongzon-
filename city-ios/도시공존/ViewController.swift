@@ -73,11 +73,16 @@ class ViewController: UIViewController, WKNavigationDelegate, WKScriptMessageHan
                 callbackURLScheme: "dosigongzon"
             ) { callbackURL, error in
                 DispatchQueue.main.async {
-                    if let callbackURL = callbackURL {
-                        let escaped = callbackURL.absoluteString
-                            .replacingOccurrences(of: "\\", with: "\\\\")
+                    if let callbackURL = callbackURL,
+                       let comps = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false),
+                       let code = comps.queryItems?.first(where: { $0.name == "code" })?.value,
+                       let targetURL = URL(string: "https://dosigongzon.com/api/auth/callback?code=\(code)&provider=apple&next=%2F") {
+                        gWebView.load(URLRequest(url: targetURL))
+                    } else if callbackURL != nil {
+                        // code 파라미터 없음 — 에러 처리
+                        let escaped = (callbackURL?.absoluteString ?? "no_url")
                             .replacingOccurrences(of: "'", with: "\\'")
-                        gWebView.evaluateJavaScript("window.__appleOAuthCallback('\(escaped)')", completionHandler: nil)
+                        gWebView.evaluateJavaScript("window.__appleSignInError('callback_no_code: \(escaped)')", completionHandler: nil)
                     } else {
                         let msg = (error?.localizedDescription ?? "cancelled")
                             .replacingOccurrences(of: "'", with: "\\'")

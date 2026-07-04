@@ -52,32 +52,10 @@ function LoginContent() {
   const [socialLoading, setSocialLoading] = useState<"kakao" | "google" | "apple" | null>(null);
   const [error, setError] = useState("");
 
-  // iOS ASWebAuthenticationSession Apple 로그인 콜백 등록
+  // iOS ASWebAuthenticationSession 에러 콜백 등록 (성공은 서버 callback 라우트가 처리)
   useEffect(() => {
     const w = window as typeof window & {
-      __appleOAuthCallback?: (callbackUrl: string) => void;
       __appleSignInError?: (msg: string) => void;
-    };
-    w.__appleOAuthCallback = async (callbackUrl: string) => {
-      try {
-        const url = new URL(callbackUrl);
-        const code = url.searchParams.get("code");
-        if (!code) {
-          setError("Apple 로그인 콜백에 코드가 없어요.");
-          setSocialLoading(null);
-          return;
-        }
-        const { error: signInError } = await createClient().auth.exchangeCodeForSession(code);
-        if (signInError) {
-          setError("Apple 로그인에 실패했어요: " + signInError.message);
-          setSocialLoading(null);
-        } else {
-          window.location.href = "/";
-        }
-      } catch (e) {
-        setError("Apple 로그인 중 오류가 발생했어요.");
-        setSocialLoading(null);
-      }
     };
     w.__appleSignInError = (msg: string) => {
       setSocialLoading(null);
@@ -86,7 +64,6 @@ function LoginContent() {
       }
     };
     return () => {
-      delete w.__appleOAuthCallback;
       delete w.__appleSignInError;
     };
   }, []);
