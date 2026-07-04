@@ -51,6 +51,38 @@ function LoginContent() {
   const [agreed, setAgreed] = useState(false);
   const [socialLoading, setSocialLoading] = useState<"kakao" | "google" | "apple" | null>(null);
   const [error, setError] = useState("");
+
+  // iOS 네이티브 Apple Sign In 콜백 등록
+  useEffect(() => {
+    const w = window as typeof window & {
+      __appleSignInSuccess?: (token: string, nonce: string) => void;
+      __appleSignInError?: (msg: string) => void;
+    };
+    w.__appleSignInSuccess = async (identityToken: string, nonce: string) => {
+      const { createClient } = await import("@/lib/supabase/client");
+      const { error: signInError } = await createClient().auth.signInWithIdToken({
+        provider: "apple",
+        token: identityToken,
+        nonce,
+      });
+      setSocialLoading(null);
+      if (signInError) {
+        setError("Apple 로그인에 실패했어요. 다시 시도해주세요.");
+      } else {
+        window.location.href = "/";
+      }
+    };
+    w.__appleSignInError = (msg: string) => {
+      setSocialLoading(null);
+      if (!msg.includes("cancel") && !msg.includes("Cancel")) {
+        setError("Apple 로그인이 취소됐거나 실패했어요.");
+      }
+    };
+    return () => {
+      delete w.__appleSignInSuccess;
+      delete w.__appleSignInError;
+    };
+  }, []);
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [emailLoading, setEmailLoading] = useState(false);
@@ -105,6 +137,15 @@ function LoginContent() {
       oauthOptions.scopes = "account_email profile_nickname profile_image";
     }
     if (provider === "apple") {
+      // iOS 앱(PWAShell)에서는 네이티브 ASAuthorizationAppleIDProvider 사용
+      const isNativeApp = typeof window !== "undefined" &&
+        (window as typeof window & { webkit?: { messageHandlers?: { nativeAppleSignIn?: unknown } } })
+          .webkit?.messageHandlers?.nativeAppleSignIn;
+      if (isNativeApp) {
+        (window as typeof window & { webkit: { messageHandlers: { nativeAppleSignIn: { postMessage: (v: null) => void } } } })
+          .webkit.messageHandlers.nativeAppleSignIn.postMessage(null);
+        return; // loading 상태 유지 — Swift 콜백이 setSocialLoading(null) 처리
+      }
       oauthOptions.scopes = "name email";
     }
     const { error: oauthError } = await createClient().auth.signInWithOAuth({
