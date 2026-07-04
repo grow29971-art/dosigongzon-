@@ -11,6 +11,7 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: kr.dosigongzon.app
+        provisioning_profile_name: "dosigongzon AppStore v2"
       vars:
         XCODE_WORKSPACE: "city-ios/도시공존.xcworkspace"
         XCODE_SCHEME: "도시공존"
