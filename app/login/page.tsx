@@ -59,23 +59,27 @@ function LoginContent() {
       __appleSignInError?: (msg: string) => void;
     };
     w.__appleSignInSuccess = async (identityToken: string, nonce: string) => {
-      const { createClient } = await import("@/lib/supabase/client");
-      const { error: signInError } = await createClient().auth.signInWithIdToken({
-        provider: "apple",
-        token: identityToken,
-        nonce,
-      });
-      setSocialLoading(null);
-      if (signInError) {
-        setError("Apple 로그인에 실패했어요. 다시 시도해주세요.");
-      } else {
-        window.location.href = "/";
+      try {
+        const { error: signInError } = await createClient().auth.signInWithIdToken({
+          provider: "apple",
+          token: identityToken,
+          nonce,
+        });
+        if (signInError) {
+          setError("Apple 로그인에 실패했어요: " + signInError.message);
+        } else {
+          window.location.href = "/";
+          return;
+        }
+      } catch (e) {
+        setError("Apple 로그인 중 오류가 발생했어요.");
       }
+      setSocialLoading(null);
     };
     w.__appleSignInError = (msg: string) => {
       setSocialLoading(null);
-      if (!msg.includes("cancel") && !msg.includes("Cancel")) {
-        setError("Apple 로그인이 취소됐거나 실패했어요.");
+      if (!msg.toLowerCase().includes("cancel") && !msg.includes("1001")) {
+        setError("Apple 로그인이 실패했어요: " + msg);
       }
     };
     return () => {
