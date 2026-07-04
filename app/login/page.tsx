@@ -52,29 +52,32 @@ function LoginContent() {
   const [socialLoading, setSocialLoading] = useState<"kakao" | "google" | "apple" | null>(null);
   const [error, setError] = useState("");
 
-  // iOS 네이티브 Apple Sign In 콜백 등록
+  // iOS ASWebAuthenticationSession Apple 로그인 콜백 등록
   useEffect(() => {
     const w = window as typeof window & {
-      __appleSignInSuccess?: (token: string, nonce: string) => void;
+      __appleOAuthCallback?: (callbackUrl: string) => void;
       __appleSignInError?: (msg: string) => void;
     };
-    w.__appleSignInSuccess = async (identityToken: string, nonce: string) => {
+    w.__appleOAuthCallback = async (callbackUrl: string) => {
       try {
-        const { error: signInError } = await createClient().auth.signInWithIdToken({
-          provider: "apple",
-          token: identityToken,
-          nonce,
-        });
+        const url = new URL(callbackUrl);
+        const code = url.searchParams.get("code");
+        if (!code) {
+          setError("Apple 로그인 콜백에 코드가 없어요.");
+          setSocialLoading(null);
+          return;
+        }
+        const { error: signInError } = await createClient().auth.exchangeCodeForSession(code);
         if (signInError) {
           setError("Apple 로그인에 실패했어요: " + signInError.message);
+          setSocialLoading(null);
         } else {
           window.location.href = "/";
-          return;
         }
       } catch (e) {
         setError("Apple 로그인 중 오류가 발생했어요.");
+        setSocialLoading(null);
       }
-      setSocialLoading(null);
     };
     w.__appleSignInError = (msg: string) => {
       setSocialLoading(null);
@@ -83,7 +86,7 @@ function LoginContent() {
       }
     };
     return () => {
-      delete w.__appleSignInSuccess;
+      delete w.__appleOAuthCallback;
       delete w.__appleSignInError;
     };
   }, []);
@@ -141,14 +144,27 @@ function LoginContent() {
       oauthOptions.scopes = "account_email profile_nickname profile_image";
     }
     if (provider === "apple") {
-      // iOS 앱(PWAShell)에서는 네이티브 ASAuthorizationAppleIDProvider 사용
+      // iOS 앱(PWAShell)에서는 ASWebAuthenticationSession으로 Apple OAuth 처리
       const isNativeApp = typeof window !== "undefined" &&
         (window as typeof window & { webkit?: { messageHandlers?: { nativeAppleSignIn?: unknown } } })
           .webkit?.messageHandlers?.nativeAppleSignIn;
       if (isNativeApp) {
-        (window as typeof window & { webkit: { messageHandlers: { nativeAppleSignIn: { postMessage: (v: null) => void } } } })
-          .webkit.messageHandlers.nativeAppleSignIn.postMessage(null);
-        return; // loading 상태 유지 — Swift 콜백이 setSocialLoading(null) 처리
+        const { data, error: oauthErr } = await createClient().auth.signInWithOAuth({
+          provider: "apple",
+          options: {
+            skipBrowserRedirect: true,
+            redirectTo: "dosigongzon://auth",
+            scopes: "name email",
+          },
+        });
+        if (oauthErr || !data?.url) {
+          setSocialLoading(null);
+          setError("Apple 로그인을 시작할 수 없어요.");
+          return;
+        }
+        (window as typeof window & { webkit: { messageHandlers: { nativeAppleSignIn: { postMessage: (v: string) => void } } } })
+          .webkit.messageHandlers.nativeAppleSignIn.postMessage(data.url);
+        return; // loading 상태 유지 — __appleOAuthCallback이 처리
       }
       oauthOptions.scopes = "name email";
     }
