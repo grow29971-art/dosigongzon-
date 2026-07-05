@@ -11,7 +11,7 @@ interface Props {
   previewFile?: File;
 }
 
-type CamState = "requesting" | "ready" | "denied" | "error" | "preview";
+type CamState = "requesting" | "ready" | "denied" | "blocked" | "error" | "preview";
 
 export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery, previewFile }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -50,7 +50,17 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
       setCamState("ready");
     } catch (e) {
       const name = e instanceof Error ? e.name : "";
-      setCamState(name === "NotAllowedError" ? "denied" : "error");
+      if (name === "NotAllowedError") {
+        // Permissions API로 영구 차단 여부 확인
+        try {
+          const perm = await navigator.permissions.query({ name: "camera" as PermissionName });
+          setCamState(perm.state === "denied" ? "blocked" : "denied");
+        } catch {
+          setCamState("denied");
+        }
+      } else {
+        setCamState("error");
+      }
     }
   }, []);
 
@@ -145,7 +155,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
         </div>
       )}
 
-      {/* 권한 거부됨 */}
+      {/* 권한 미결정 — 재시도하면 팝업 뜸 */}
       {camState === "denied" && (
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center px-8">
@@ -159,6 +169,41 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
                 style={{ background: "linear-gradient(135deg, #FFD700, #FF8C00)", boxShadow: "0 0 20px rgba(255,215,0,0.4)" }}
               >
                 카메라 허용하기
+              </button>
+              {onFallbackGallery && (
+                <button
+                  onClick={() => { streamRef.current?.getTracks().forEach(t => t.stop()); onFallbackGallery(); }}
+                  className="px-6 py-3 rounded-2xl font-bold text-[13px]"
+                  style={{ background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }}
+                >
+                  갤러리에서 선택하기
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 영구 차단 — 브라우저 설정에서 직접 변경해야 함 */}
+      {camState === "blocked" && (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center px-8">
+            <p className="text-[48px] mb-4">🚫</p>
+            <p className="text-white text-[16px] font-bold mb-2">카메라가 차단됐어요</p>
+            <div className="rounded-2xl px-4 py-3 mb-5 text-left" style={{ background: "rgba(255,255,255,0.08)" }}>
+              <p className="text-gray-300 text-[13px] leading-relaxed">
+                브라우저 주소창 왼쪽 🔒 아이콘을 탭하거나,{"\n"}
+                <span className="text-yellow-300">설정 → 사이트 설정 → 카메라</span>에서{"\n"}
+                dosigongzon.com을 허용으로 변경해주세요
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={startCamera}
+                className="px-6 py-3 rounded-2xl font-bold text-[14px] text-black"
+                style={{ background: "#FFD700" }}
+              >
+                다시 시도
               </button>
               {onFallbackGallery && (
                 <button
