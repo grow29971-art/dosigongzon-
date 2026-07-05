@@ -19,6 +19,15 @@ const BATTLE_ENVS = {
 type BattleEnvKey = keyof typeof BATTLE_ENVS;
 const ENV_KEYS = Object.keys(BATTLE_ENVS) as BattleEnvKey[];
 
+// 환경별 배경 (레이어드 그라디언트, 이미지 없이 CSS만으로)
+const ENV_BACKGROUNDS: Record<BattleEnvKey, string> = {
+  night: "radial-gradient(circle at 18% 12%, rgba(150,170,255,0.16), transparent 38%), radial-gradient(circle at 78% 8%, rgba(210,210,255,0.10), transparent 32%), linear-gradient(180deg, #05060F 0%, #150A28 55%, #1A0A2E 100%)",
+  noon:  "radial-gradient(circle at 50% -5%, rgba(255,205,100,0.28), transparent 45%), linear-gradient(180deg, #3A2408 0%, #241033 55%, #1A0A2E 100%)",
+  rain:  "repeating-linear-gradient(112deg, rgba(150,190,255,0.06) 0px, rgba(150,190,255,0.06) 1px, transparent 1px, transparent 13px), linear-gradient(180deg, #071620 0%, #0d1a30 55%, #1A0A2E 100%)",
+  heat:  "radial-gradient(circle at 50% 105%, rgba(255,90,30,0.28), transparent 50%), linear-gradient(180deg, #300D05 0%, #200A20 55%, #1A0A2E 100%)",
+  fog:   "linear-gradient(180deg, rgba(205,210,220,0.14), transparent 42%), linear-gradient(180deg, #1B1E26 0%, #221830 55%, #1A0A2E 100%)",
+};
+
 // 스킬별 쿨다운 턴수 [normal, heavy, guard, special]
 const SKILL_COOLDOWNS = [0, 2, 1, 2];
 
@@ -605,6 +614,11 @@ export default function BattlePage() {
   const oppDanger = oppHp/Math.max(1,oppMaxHp)<0.25;
   const isFightPhase = ["player_choose","animating","opp_thinking"].includes(phase);
 
+  const dangerTint = myDanger&&!oppDanger ? "rgba(255,40,40,0.22)" : oppDanger&&!myDanger ? "rgba(60,255,110,0.14)" : "rgba(0,0,0,0)";
+  const rootBg = battleEnv
+    ? `linear-gradient(180deg, ${dangerTint} 0%, transparent 30%), ${ENV_BACKGROUNDS[battleEnv]}`
+    : `linear-gradient(180deg,${myDanger&&!oppDanger?"#2A0A0A":oppDanger&&!myDanger?"#0A1A0A":"#0A0A18"} 0%,#1A0A2E 100%)`;
+
   return (
     <>
       <style>{`
@@ -618,7 +632,7 @@ export default function BattlePage() {
 
       {critFlash && <div style={{position:"fixed",inset:0,zIndex:999,background:"rgba(255,200,0,0.3)",pointerEvents:"none"}}/>}
 
-      <div className="min-h-dvh flex flex-col" style={{ background:`linear-gradient(180deg,${myDanger&&!oppDanger?"#2A0A0A":oppDanger&&!myDanger?"#0A1A0A":"#0A0A18"} 0%,#1A0A2E 100%)`, transition:"background 1.2s" }}>
+      <div className="min-h-dvh flex flex-col" style={{ background:rootBg, transition:"background 1.2s" }}>
 
         {/* 헤더 */}
         <div className="flex items-center gap-3 px-4 pt-safe pt-4 pb-3 shrink-0" style={{background:"rgba(10,10,24,0.85)",backdropFilter:"blur(12px)"}}>
