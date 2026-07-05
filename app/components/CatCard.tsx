@@ -13,6 +13,8 @@ export interface CatCardData {
   card_stats: { cuteness: number; wildness: number; sociability: number; mysteriousness: number } | null;
   card_flavor: string | null;
   card_generated_at?: string | null;
+  card_level?: number | null;
+  card_exp?: number | null;
 }
 
 interface CatCardProps {
@@ -35,7 +37,7 @@ const CFG = {
     typeBg: "#3A7028",
     accent: "#AAEE66",
     glow: "0 0 12px rgba(100,190,60,0.35)",
-    label: "기본",
+    label: "일반",
     rarity: "◆",
     holoClass: "",
   },
@@ -50,7 +52,7 @@ const CFG = {
     typeBg: "#2458A0",
     accent: "#80CCFF",
     glow: "0 0 14px rgba(60,130,230,0.40)",
-    label: "언커먼",
+    label: "희귀",
     rarity: "◆◆",
     holoClass: "",
   },
@@ -80,7 +82,7 @@ const CFG = {
     typeBg: "#A06000",
     accent: "#FFE066",
     glow: "0 0 28px rgba(255,180,0,0.80), 0 0 55px rgba(255,180,0,0.35)",
-    label: "전설 EX",
+    label: "레전드",
     rarity: "◆◆◆◆",
     holoClass: "holo-legendary",
   },
@@ -99,16 +101,22 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
   const isSm = size === "sm";
   const isLg = size === "lg";
 
+  const lv = Math.max(1, Math.min(10, card.card_level ?? 1));
+  const lvBonus = lv - 1; // 레벨 1 = 보너스 없음
+
   const hp = card.card_stats
-    ? Math.round(card.card_stats.cuteness * 0.8 + card.card_stats.wildness * 0.4) + 40
-    : 60;
+    ? Math.round(card.card_stats.cuteness * 0.8 + card.card_stats.wildness * 0.4) + 40 + lvBonus * 10
+    : 60 + lvBonus * 10;
   const hpDisplay = Math.round(hp / 10) * 10;
 
   const traits = card.card_traits ?? [];
   const move1 = traits[0] ?? "야생의 눈빛";
   const move2 = traits[1] ?? "부드러운 발걸음";
-  const move1Power = card.card_stats ? Math.round(card.card_stats.wildness * 0.8 + 20) : 40;
-  const move2Power = card.card_stats ? Math.round(card.card_stats.mysteriousness * 0.5 + 15) : 20;
+  const move1Power = (card.card_stats ? Math.round(card.card_stats.wildness * 0.8 + 20) : 40) + lvBonus * 5;
+  const move2Power = (card.card_stats ? Math.round(card.card_stats.mysteriousness * 0.5 + 15) : 20) + lvBonus * 3;
+
+  // 레벨 5+ 글로우 강화
+  const extraGlow = lv >= 10 ? ", 0 0 60px currentColor" : lv >= 5 ? ", 0 0 30px currentColor" : "";
 
   // 카드 크기
   const W = isLg ? 300 : isSm ? 130 : 190;
@@ -183,9 +191,21 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
             {cfg.label}
           </span>
         </div>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 2, flexShrink: 0 }}>
-          <span style={{ fontSize: fs.label - 1, color: "rgba(255,255,255,0.65)", fontWeight: 700 }}>HP</span>
-          <span style={{ fontSize: fs.hp, color: cfg.hpColor, fontWeight: 900, lineHeight: 1 }}>{hpDisplay}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
+          {/* 레벨 뱃지 */}
+          <span style={{
+            fontSize: fs.label - 1, fontWeight: 900,
+            background: lv >= 10 ? "linear-gradient(135deg,#FFD700,#FF8C00)" : lv >= 5 ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.15)",
+            color: lv >= 5 ? "#fff" : "rgba(255,255,255,0.8)",
+            borderRadius: 99, padding: "1px 5px", lineHeight: 1.4,
+            border: lv >= 10 ? "1px solid #FFD700" : "none",
+          }}>
+            Lv.{lv}
+          </span>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 2 }}>
+            <span style={{ fontSize: fs.label - 1, color: "rgba(255,255,255,0.65)", fontWeight: 700 }}>HP</span>
+            <span style={{ fontSize: fs.hp, color: cfg.hpColor, fontWeight: 900, lineHeight: 1 }}>{hpDisplay}</span>
+          </div>
         </div>
       </div>
 

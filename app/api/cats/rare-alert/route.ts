@@ -64,7 +64,7 @@ export async function POST(request: Request) {
   );
 
   const rarityEmoji = cat.card_rarity === "legendary" ? "🌟" : "✨";
-  const rarityLabel = cat.card_rarity === "legendary" ? "레전더리" : "레어";
+  const rarityLabel = cat.card_rarity === "legendary" ? "레전드" : "레어";
   const title = `${rarityEmoji} ${rarityLabel} 고양이 출현!`;
   const body = `${cat.region ?? "동네"}에 ${cat.card_name ?? cat.name} 카드가 등장했어요`;
 

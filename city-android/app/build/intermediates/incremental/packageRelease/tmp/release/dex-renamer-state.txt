@@ -1,0 +1,4 @@
+#Tue May 26 13:40:13 KST 2026
+base.0=C\:\\Users\\1\\city\\city-android\\app\\build\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
+renamed.0=classes.dex
+path.0=classes.dex

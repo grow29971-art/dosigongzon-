@@ -512,11 +512,6 @@ export default function MyPage() {
                       <p className="text-[10px] font-bold text-text-light mb-2">Lv.{lv.level} 혜택</p>
                       <div className="grid grid-cols-2 gap-1.5">
                         <div className="flex items-center gap-1.5 text-[10.5px]">
-                          <span>🐱</span>
-                          <span className="text-text-sub">하루 등록</span>
-                          <span className="font-bold text-text-main ml-auto">{perks.dailyCatLimit}마리</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-[10.5px]">
                           <span>🤖</span>
                           <span className="text-text-sub">AI 대화</span>
                           <span className="font-bold text-text-main ml-auto">{perks.aiChatPerMinute}회/분</span>

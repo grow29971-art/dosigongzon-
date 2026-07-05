@@ -47,6 +47,8 @@ export default function WritePage() {
       if (cat && cat in CATEGORY_MAP) setCategory(cat as PostCategory);
       const t = sp.get("t");
       if (t) setTitle(t.slice(0, 50));
+      const c = sp.get("content");
+      if (c) setContent(c.slice(0, 500));
     } catch {
       /* ignore */
     }

@@ -52,21 +52,6 @@ function LoginContent() {
   const [socialLoading, setSocialLoading] = useState<"kakao" | "google" | "apple" | null>(null);
   const [error, setError] = useState("");
 
-  // iOS ASWebAuthenticationSession 에러 콜백 등록 (성공은 서버 callback 라우트가 처리)
-  useEffect(() => {
-    const w = window as typeof window & {
-      __appleSignInError?: (msg: string) => void;
-    };
-    w.__appleSignInError = (msg: string) => {
-      setSocialLoading(null);
-      if (!msg.toLowerCase().includes("cancel") && !msg.includes("1001")) {
-        setError("Apple 로그인이 실패했어요: " + msg);
-      }
-    };
-    return () => {
-      delete w.__appleSignInError;
-    };
-  }, []);
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [emailLoading, setEmailLoading] = useState(false);
@@ -121,28 +106,6 @@ function LoginContent() {
       oauthOptions.scopes = "account_email profile_nickname profile_image";
     }
     if (provider === "apple") {
-      // iOS 앱(PWAShell)에서는 ASWebAuthenticationSession으로 Apple OAuth 처리
-      const isNativeApp = typeof window !== "undefined" &&
-        (window as typeof window & { webkit?: { messageHandlers?: { nativeAppleSignIn?: unknown } } })
-          .webkit?.messageHandlers?.nativeAppleSignIn;
-      if (isNativeApp) {
-        const { data, error: oauthErr } = await createClient().auth.signInWithOAuth({
-          provider: "apple",
-          options: {
-            skipBrowserRedirect: true,
-            redirectTo: "dosigongzon://auth",
-            scopes: "name email",
-          },
-        });
-        if (oauthErr || !data?.url) {
-          setSocialLoading(null);
-          setError("Apple 로그인을 시작할 수 없어요.");
-          return;
-        }
-        (window as typeof window & { webkit: { messageHandlers: { nativeAppleSignIn: { postMessage: (v: string) => void } } } })
-          .webkit.messageHandlers.nativeAppleSignIn.postMessage(data.url);
-        return; // loading 상태 유지 — __appleOAuthCallback이 처리
-      }
       oauthOptions.scopes = "name email";
     }
     const { error: oauthError } = await createClient().auth.signInWithOAuth({

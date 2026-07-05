@@ -41,6 +41,18 @@ export interface Cat {
   card_stats: { cuteness: number; wildness: number; sociability: number; mysteriousness: number } | null;
   card_flavor: string | null;
   card_generated_at: string | null;
+  card_level: number;
+  card_exp: number;
+}
+
+// 카드 레벨 임계값 (누적 XP)
+export const CARD_LEVEL_XP = [0, 50, 120, 220, 350, 520, 730, 990, 1300, 1670] as const;
+export function getCardLevelProgress(exp: number, level: number) {
+  const current = CARD_LEVEL_XP[Math.min(level - 1, 9)] ?? 0;
+  const next    = CARD_LEVEL_XP[Math.min(level, 9)] ?? 1670;
+  const gained  = exp - current;
+  const needed  = next - current;
+  return { gained, needed, pct: Math.min(gained / needed, 1) };
 }
 
 export const VISIBILITY_MAP: Record<CatVisibility, { label: string; emoji: string; color: string; description: string }> = {
@@ -304,26 +316,6 @@ export async function createCat(input: CreateCatInput): Promise<Cat> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     throw new Error("로그인이 필요해요.");
-  }
-
-  // 레벨별 등록 제한 계산
-  const summary = await getMyActivitySummary();
-  const level = computeLevel(computeScore(summary)).level;
-  const perks = getLevelPerks(level);
-
-  // 레이트리밋: 최근 24시간 등록 수 조회
-  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-
-  const { count: dailyCount } = await supabase
-    .from("cats")
-    .select("*", { count: "exact", head: true })
-    .eq("caretaker_id", user.id)
-    .gte("created_at", oneDayAgo);
-
-  if ((dailyCount ?? 0) >= perks.dailyCatLimit) {
-    throw new Error(
-      `하루에 최대 ${perks.dailyCatLimit}마리까지 등록할 수 있어요. (Lv.${level}) 레벨을 올리면 더 많이 등록할 수 있어요!`,
-    );
   }
 
   // photo_url 검증: Storage URL 외의 값(XSS 탈출 시도 등) 차단

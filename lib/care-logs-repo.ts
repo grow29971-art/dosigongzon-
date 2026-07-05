@@ -292,6 +292,20 @@ export async function createCareLog(
     throw new Error(`기록 실패: ${error.message}`);
   }
 
+  // 카드 EXP 추가 (fire-and-forget, 실패해도 무시)
+  supabase.rpc("add_cat_card_exp", { p_cat_id: input.cat_id, p_amount: 10 })
+    .then(({ data }: { data: { leveled_up?: boolean; level?: number } | null }) => {
+      if (data?.leveled_up) {
+        // 레벨업 이벤트 — 컴포넌트에서 감지할 수 있도록 CustomEvent 발행
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("cat-card-levelup", {
+            detail: { cat_id: input.cat_id, level: data.level },
+          }));
+        }
+      }
+    })
+    .catch(() => {});
+
   // 푸시 알림: 고양이 주인이 본인 아닌 경우
   try {
     const { data: cat } = await supabase
