@@ -7,13 +7,15 @@ interface Props {
   onCapture: (file: File) => void;
   onClose: () => void;
   onFallbackGallery?: () => void;
+  /** 카메라 차단 시 네이티브 카메라(capture=environment)로 전환 */
+  onFallbackCapture?: () => void;
   /** 갤러리에서 선택한 파일 — 제공 시 카메라 대신 이 사진으로 포획 화면 */
   previewFile?: File;
 }
 
 type CamState = "requesting" | "ready" | "denied" | "blocked" | "error" | "preview";
 
-export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery, previewFile }: Props) {
+export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery, onFallbackCapture, previewFile }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -184,27 +186,23 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
         </div>
       )}
 
-      {/* 영구 차단 — 브라우저 설정에서 직접 변경해야 함 */}
+      {/* 영구 차단 — 네이티브 카메라 앱으로 우회 */}
       {camState === "blocked" && (
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center px-8">
-            <p className="text-[48px] mb-4">🚫</p>
-            <p className="text-white text-[16px] font-bold mb-2">카메라가 차단됐어요</p>
-            <div className="rounded-2xl px-4 py-3 mb-5 text-left" style={{ background: "rgba(255,255,255,0.08)" }}>
-              <p className="text-gray-300 text-[13px] leading-relaxed">
-                브라우저 주소창 왼쪽 🔒 아이콘을 탭하거나,{"\n"}
-                <span className="text-yellow-300">설정 → 사이트 설정 → 카메라</span>에서{"\n"}
-                dosigongzon.com을 허용으로 변경해주세요
-              </p>
-            </div>
+            <p className="text-[48px] mb-4">📸</p>
+            <p className="text-white text-[16px] font-bold mb-2">카메라를 열 수 없어요</p>
+            <p className="text-gray-400 text-[13px] mb-6">기본 카메라 앱으로 사진을 찍어서 포획할 수 있어요</p>
             <div className="flex flex-col gap-2">
-              <button
-                onClick={startCamera}
-                className="px-6 py-3 rounded-2xl font-bold text-[14px] text-black"
-                style={{ background: "#FFD700" }}
-              >
-                다시 시도
-              </button>
+              {onFallbackCapture && (
+                <button
+                  onClick={() => { streamRef.current?.getTracks().forEach(t => t.stop()); onFallbackCapture(); }}
+                  className="px-6 py-3 rounded-2xl font-bold text-[15px] text-black"
+                  style={{ background: "linear-gradient(135deg, #FFD700, #FF8C00)", boxShadow: "0 0 20px rgba(255,215,0,0.4)" }}
+                >
+                  📷 카메라로 찍기
+                </button>
+              )}
               {onFallbackGallery && (
                 <button
                   onClick={() => { streamRef.current?.getTracks().forEach(t => t.stop()); onFallbackGallery(); }}

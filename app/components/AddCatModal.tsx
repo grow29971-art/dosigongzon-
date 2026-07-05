@@ -111,6 +111,7 @@ export default function AddCatModal({
     card: CatCardData | null;
   }>({ open: false, catName: "", isFirstEver: false, registrationCount: 0, cat: null, card: null });
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const captureInputRef = useRef<HTMLInputElement>(null);
 
   // portal root
   useEffect(() => {
@@ -437,7 +438,7 @@ export default function AddCatModal({
               <div className="flex flex-col gap-2">
                 <button
                   type="button"
-                  onClick={() => setShowCamera(true)}
+                  onClick={() => captureInputRef.current?.click()}
                   className="relative w-full aspect-[4/3] rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-2 active:scale-[0.99] transition-transform overflow-hidden"
                   style={{ background: "linear-gradient(135deg, #0F0F1A 0%, #1A1A2E 100%)", borderColor: "#6366F1" }}
                 >
@@ -446,6 +447,20 @@ export default function AddCatModal({
                   <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.5)" }}>카메라로 직접 찍어서 카드 발급</p>
                   <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[9px] font-bold text-white" style={{ background: "#6366F1" }}>CatchCat</div>
                 </button>
+                <input
+                  ref={captureInputRef}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    if (e.target) e.target.value = "";
+                    setPendingGalleryFiles([file]);
+                    setShowCamera(true);
+                  }}
+                />
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
@@ -866,6 +881,7 @@ export default function AddCatModal({
           onCapture={handleCameraCapture}
           onClose={() => { setShowCamera(false); setPendingGalleryFiles([]); }}
           onFallbackGallery={() => { setShowCamera(false); setPendingGalleryFiles([]); fileInputRef.current?.click(); }}
+          onFallbackCapture={() => { setShowCamera(false); setPendingGalleryFiles([]); captureInputRef.current?.click(); }}
           previewFile={pendingGalleryFiles[0]}
         />,
         document.body,
