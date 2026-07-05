@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, X, Swords, BookOpen, Star, Zap, Share2 } from "lucide-react";
+import { ArrowLeft, Loader2, X, Swords, Trophy, Coins, Star, Zap, Share2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
@@ -123,16 +123,21 @@ export default function MyCardsPage() {
 
         <div className="px-4 pb-28">
           {/* 빠른 메뉴 */}
-          <div className="grid grid-cols-2 gap-2 mb-4">
+          <div className="grid grid-cols-3 gap-2 mb-4">
             <Link href="/mypage/cards/battle"
-              className="flex items-center gap-2 p-3 rounded-2xl font-bold text-[13px] text-white"
+              className="flex items-center justify-center gap-1.5 p-3 rounded-2xl font-bold text-[12px] text-white"
               style={{ background: "linear-gradient(135deg,#6030A8,#A050E0)" }}>
-              <Swords size={16} /> 카드 배틀
+              <Swords size={15} /> 배틀
             </Link>
-            <Link href="/mypage/cards/pokedex"
-              className="flex items-center gap-2 p-3 rounded-2xl font-bold text-[13px] text-white"
+            <Link href="/mypage/cards/ranking"
+              className="flex items-center justify-center gap-1.5 p-3 rounded-2xl font-bold text-[12px] text-white"
               style={{ background: "linear-gradient(135deg,#1A5080,#2878B8)" }}>
-              <BookOpen size={16} /> 지역 도감
+              <Trophy size={15} /> 랭킹
+            </Link>
+            <Link href="/mypage/shop"
+              className="flex items-center justify-center gap-1.5 p-3 rounded-2xl font-bold text-[12px] text-white"
+              style={{ background: "linear-gradient(135deg,#B87000,#FFA020)" }}>
+              <Coins size={15} /> 상점
             </Link>
           </div>
 

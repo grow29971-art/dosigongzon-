@@ -117,3 +117,6 @@ export async function getWeeklyPopularCats(limit = 5): Promise<PopularCat[]> {
   // score > 0 만 랭킹
   return ranked.filter((r) => r.score > 0).sort((a, b) => b.score - a.score).slice(0, limit);
 }
+
+// 카드 배틀 주간 랭킹은 card_battles의 RLS("본인 배틀만 조회")로 인해
+// 클라이언트에서 직접 집계할 수 없음 — /api/cats/battle-ranking (service_role) 참고.

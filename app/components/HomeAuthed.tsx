@@ -181,6 +181,12 @@ export default function HomeAuthed({
     }
   }, [user]);
 
+  // 로그인 코인 보너스 (1일 1회, fire-and-forget)
+  useEffect(() => {
+    if (!user) return;
+    fetch("/api/coins/daily-login", { method: "POST" }).catch(() => {});
+  }, [user]);
+
   // allPosts 또는 lastVisitAt 갱신 시 새 글 개수 재계산
   useEffect(() => {
     if (lastVisitAt === null || allPosts.length === 0) {

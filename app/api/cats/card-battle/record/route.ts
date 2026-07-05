@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
+import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE } from "@/lib/shop-config";
 
 function computeLevel(exp: number) {
   const thresholds = [0, 90, 210, 380, 610, 900, 1260, 1690, 2200, 2800];
@@ -37,9 +38,14 @@ export async function POST(req: Request) {
   const myNewExp = (myCat.card_exp ?? 0) + (iWon ? winnerExp : loserExp);
   const oppNewExp = oppCat ? ((oppCat.card_exp ?? 0) + (iWon ? loserExp : winnerExp)) : 0;
 
+  const { data: myProfile } = await svc.from("profiles").select("coins").eq("id", user.id).maybeSingle();
+  const coinsGained = iWon ? COINS_BATTLE_WIN : COINS_BATTLE_LOSE;
+  const newCoins = (myProfile?.coins ?? 0) + coinsGained;
+
   await Promise.all([
     svc.from("cats").update({ card_exp: myNewExp, card_level: computeLevel(myNewExp) }).eq("id", my_cat_id),
     oppCat && svc.from("cats").update({ card_exp: oppNewExp, card_level: computeLevel(oppNewExp) }).eq("id", opp_cat_id),
+    svc.from("profiles").update({ coins: newCoins }).eq("id", user.id),
     svc.from("card_battles").insert({
       challenger_id: user.id,
       challenger_cat_id: my_cat_id,
@@ -58,5 +64,7 @@ export async function POST(req: Request) {
     my_new_exp: myNewExp,
     my_new_level: computeLevel(myNewExp),
     leveled_up: computeLevel(myNewExp) > (myCat.card_level ?? 1),
+    coins_gained: coinsGained,
+    coins_total: newCoins,
   });
 }

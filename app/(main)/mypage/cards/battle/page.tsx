@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
 import { SPECIAL_SKILLS } from "@/lib/battle-config";
+import { SHOP_ITEMS, SHOP_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-config";
 
 /* ──────────── 배틀 환경 ──────────── */
 const BATTLE_ENVS = {
@@ -30,6 +31,10 @@ const ENV_BACKGROUNDS: Record<BattleEnvKey, string> = {
 
 // 스킬별 쿨다운 턴수 [normal, heavy, guard, special]
 const SKILL_COOLDOWNS = [0, 2, 1, 2];
+
+// 기본공격/방어 자세 배틀당 사용 가능 횟수
+const NORMAL_ATTACK_USES = 8;
+const GUARD_USES = 5;
 
 // 등급별 상성 타입 (카드에 표시되는 "약점" 아이콘과 동일한 4각 상성)
 // 🌿 풀 → 🔥 불에 약함 / 🔥 불 → 💧 물에 약함 / 💧 물 → ⚡ 전기에 약함 / ⚡ 전기 → 🌿 풀에 약함
@@ -130,10 +135,11 @@ function HpBar({ current, max }: { current:number; max:number }) {
 }
 
 /* ──────────── 기술 버튼 ──────────── */
-function SkillBtn({ skill, idx, disabled, cooldown=0, onPick }: { skill:Skill; idx:number; disabled:boolean; cooldown?:number; onPick:(i:number)=>void }) {
+function SkillBtn({ skill, idx, disabled, cooldown=0, usesLeft, onPick }: { skill:Skill; idx:number; disabled:boolean; cooldown?:number; usesLeft?:number; onPick:(i:number)=>void }) {
   const icons = [<Swords key={0} size={14}/>, <Zap key={1} size={14}/>, <Shield key={2} size={14}/>, <Sparkles key={3} size={14}/>];
   const isCd = cooldown > 0;
-  const isOff = disabled || isCd;
+  const isExhausted = usesLeft !== undefined && usesLeft <= 0;
+  const isOff = disabled || isCd || isExhausted;
   return (
     <button onClick={() => !isOff && onPick(idx)} disabled={isOff}
       style={{
@@ -153,10 +159,20 @@ function SkillBtn({ skill, idx, disabled, cooldown=0, onPick }: { skill:Skill; i
         {skill.name}
       </span>
       <span style={{ fontSize:9, color:"rgba(255,255,255,0.4)", textAlign:"center" }}>{skill.desc}</span>
+      {usesLeft !== undefined && !isCd && (
+        <span style={{ position:"absolute", top:3, right:5, fontSize:8, fontWeight:800, color: isExhausted?"#FF8080":"rgba(255,255,255,0.4)" }}>
+          {usesLeft}회
+        </span>
+      )}
       {isCd && (
         <div style={{ position:"absolute", inset:0, borderRadius:14, background:"rgba(0,0,0,0.65)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:1 }}>
           <span style={{ fontSize:18, fontWeight:900, color:"#FF8888" }}>{cooldown}</span>
           <span style={{ fontSize:8, color:"rgba(255,180,180,0.8)" }}>쿨다운</span>
+        </div>
+      )}
+      {isExhausted && !isCd && (
+        <div style={{ position:"absolute", inset:0, borderRadius:14, background:"rgba(0,0,0,0.65)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <span style={{ fontSize:9, fontWeight:800, color:"#FF8888" }}>소진</span>
         </div>
       )}
     </button>
@@ -199,8 +215,8 @@ export default function BattlePage() {
   // 상태이상 (기절/방어)
   const myGuardRef = useRef(false);
   const oppGuardRef = useRef(false);
-  const myStunnedRef = useRef(false);
-  const oppStunnedRef = useRef(false);
+  const myStunnedRef = useRef(0);   // 남은 기절 턴수
+  const oppStunnedRef = useRef(0);
   const [myGuardVis, setMyGuardVis] = useState(false);
   const [oppGuardVis, setOppGuardVis] = useState(false);
   const [myStunVis, setMyStunVis] = useState(false);
@@ -211,14 +227,29 @@ export default function BattlePage() {
   const oppPoisonRef = useRef(0);
   const myBleedRef   = useRef(0);   // 남은 출혈 턴수
   const oppBleedRef  = useRef(0);
-  const myBoundRef   = useRef(false);  // 속박(회피 불가)
-  const oppBoundRef  = useRef(false);
+  const myBoundRef   = useRef(0);   // 남은 속박 턴수 (회피 불가)
+  const oppBoundRef  = useRef(0);
   const [myStatusBadges,  setMyStatusBadges]  = useState<string[]>([]);
   const [oppStatusBadges, setOppStatusBadges] = useState<string[]>([]);
 
   // 스킬 쿨다운 [normal, heavy, guard, special]
   const mySkillCdRef = useRef([0,0,0,0]);
   const [mySkillCd,  setMySkillCd]  = useState([0,0,0,0]);
+
+  // 기본공격/방어 사용 횟수 제한
+  const myNormalUsesRef = useRef(NORMAL_ATTACK_USES);
+  const myGuardUsesRef  = useRef(GUARD_USES);
+  const [myNormalUses, setMyNormalUses] = useState(NORMAL_ATTACK_USES);
+  const [myGuardUses,  setMyGuardUses]  = useState(GUARD_USES);
+
+  // 아이템 효과 상태 (전부 나 자신에게만 적용 — 아이템은 플레이어만 사용 가능)
+  const myShieldRef = useRef(false);          // 방어막: 다음 피해 완전 무효화
+  const myPowerBuffRef = useRef(false);       // 파워업 캔: 다음 공격 피해 +30%
+  const myDodgeGuaranteedRef = useRef(false); // 행운의 부적: 상대 다음 공격 100% 회피
+
+  // 아이템 인벤토리
+  const [inventory, setInventory] = useState<Record<string, number>>({});
+  const [itemPanelOpen, setItemPanelOpen] = useState(false);
 
   // 애니메이션
   const [myAnim, setMyAnim] = useState<CardAnim>("idle");
@@ -252,6 +283,17 @@ export default function BattlePage() {
       .eq("caretaker_id", user.id).not("card_generated_at","is",null)
       .order("card_level",{ascending:false})
       .then(({ data }:{ data:BattleCat[]|null }) => { if(mounted.current) setMyCats(data??[]); });
+  }, [user, authLoading]);
+
+  useEffect(() => {
+    if (authLoading || !user) return;
+    createClient().from("user_items").select("item_key,quantity").eq("user_id", user.id)
+      .then(({ data }: { data: { item_key:string; quantity:number }[]|null }) => {
+        if (!mounted.current) return;
+        const map: Record<string, number> = {};
+        for (const it of data ?? []) map[it.item_key] = it.quantity;
+        setInventory(map);
+      });
   }, [user, authLoading]);
 
   /* ── 타이머 ── */
@@ -310,14 +352,17 @@ export default function BattlePage() {
       setMyHp(ms.hp); setOppHp(os.hp);
       setMyMaxHp(ms.hp); setOppMaxHp(os.hp);
       myGuardRef.current=false; oppGuardRef.current=false;
-      myStunnedRef.current=false; oppStunnedRef.current=false;
+      myStunnedRef.current=0; oppStunnedRef.current=0;
       setMyGuardVis(false); setOppGuardVis(false);
       setMyStunVis(false); setOppStunVis(false);
       myPoisonRef.current=0; oppPoisonRef.current=0;
       myBleedRef.current=0; oppBleedRef.current=0;
-      myBoundRef.current=false; oppBoundRef.current=false;
+      myBoundRef.current=0; oppBoundRef.current=0;
       setMyStatusBadges([]); setOppStatusBadges([]);
       mySkillCdRef.current=[0,0,0,0]; setMySkillCd([0,0,0,0]);
+      myNormalUsesRef.current=NORMAL_ATTACK_USES; setMyNormalUses(NORMAL_ATTACK_USES);
+      myGuardUsesRef.current=GUARD_USES; setMyGuardUses(GUARD_USES);
+      myShieldRef.current=false; myPowerBuffRef.current=false; myDodgeGuaranteedRef.current=false;
     } else {
       // 자동 전투
       const r = json.result as AutoResult;
@@ -420,7 +465,10 @@ export default function BattlePage() {
     const atkType = RARITY_TYPE[attacker.card_rarity] ?? "grass";
     const defType = RARITY_TYPE[defender.card_rarity] ?? "grass";
     const isEffective = WEAK_TO[defType] === atkType;
-    const envDmgMult = (env?.dmgMult ?? 1.0) * (isEffective ? 2.0 : 1.0);
+    // 파워업 캔 효과 (내 다음 공격 한정, 즉시 소모)
+    const powerBuffMult = (isPlayer && myPowerBuffRef.current) ? 1.3 : 1.0;
+    if (isPlayer && myPowerBuffRef.current) myPowerBuffRef.current = false;
+    const envDmgMult = (env?.dmgMult ?? 1.0) * (isEffective ? 2.0 : 1.0) * powerBuffMult;
 
     // 이번에 사용할 스킬 ID 미리 확인 (야습의 회피 무시 판정에 필요)
     const usedSkillId = skill.type === "special" ? (attacker.battle_special ?? "sharp_claws")
@@ -428,13 +476,18 @@ export default function BattlePage() {
                       : null;
     const forceHit = usedSkillId === "night_prowl";
 
-    // 속박 체크 (속박 상태면 회피 불가)
-    const defBound = isPlayer ? oppBoundRef.current : myBoundRef.current;
-    if (isPlayer) oppBoundRef.current = false; else myBoundRef.current = false;
+    // 속박 체크 (속박 남은 턴수 > 0 이면 회피 불가, 대상 공격당 1턴씩 소모)
+    const defBound = (isPlayer ? oppBoundRef.current : myBoundRef.current) > 0;
+    if (isPlayer) oppBoundRef.current = Math.max(0, oppBoundRef.current - 1);
+    else myBoundRef.current = Math.max(0, myBoundRef.current - 1);
 
-    // 회피 체크 (공격 전, 속박/야습 시 무조건 맞음)
+    // 행운의 부적 효과 (내가 방어자일 때 상대 공격 무조건 회피, 즉시 소모)
+    const forceDodge = !isPlayer && myDodgeGuaranteedRef.current;
+    if (!isPlayer) myDodgeGuaranteedRef.current = false;
+
+    // 회피 체크 (공격 전, 속박/야습 시 무조건 맞음, 행운의 부적 시 무조건 회피)
     const defEva = (defender.battle_eva ?? 8) + envEvaBonus;
-    if(!defBound && !forceHit && skill.type !== "guard" && checkEvasion(defEva)) {
+    if(!defBound && !forceHit && skill.type !== "guard" && (forceDodge || checkEvasion(defEva))) {
       if(isPlayer){ setOppAnim("dodge"); } else { setMyAnim("dodge"); }
       setTimeout(()=>{ setMyAnim("idle"); setOppAnim("idle"); }, 350);
       return { dmg:0, isCrit:false, msg:"💨 회피!", dodged:true };
@@ -451,36 +504,63 @@ export default function BattlePage() {
         case "sharp_claws": { const r=calcDmg(atkSt.atk,defSt.def,1.4*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="🐾 날카로운 발톱!"; break; }
         case "quick_dodge":   sMsg="💨 재빠른 도약!"; if(isPlayer){myGuardRef.current=true;setMyGuardVis(true);}else{oppGuardRef.current=true;setOppGuardVis(true);} break;
         case "focus":        { const r=calcDmg(atkSt.atk,defSt.def,1.0*envDmgMult,100); sDmg=r.dmg; sCrit=true; sMsg="👁️ 집중! 크리티컬 확정"; break; }
-        case "intimidate_sm": { const r=calcDmg(atkSt.atk*0.6,defSt.def,1.0,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer){oppBoundRef.current=true;}else{myBoundRef.current=true;} sMsg="😠 견제! 다음 공격 회피 불가"; break; }
+        case "intimidate_sm": {
+          const r=calcDmg(atkSt.atk*0.6,defSt.def,1.0,atkCrit); sDmg=r.dmg; sCrit=r.isCrit;
+          if(Math.random()<0.3){ if(isPlayer){oppBoundRef.current=2;}else{myBoundRef.current=2;} sMsg="😠 견제! 2턴 속박(회피 불가)"; }
+          else sMsg="😠 견제! (속박 실패)";
+          break;
+        }
         case "hiss":
-          if(Math.random()<0.4){ if(isPlayer){oppStunnedRef.current=true;setOppStunVis(true);}else{myStunnedRef.current=true;setMyStunVis(true);} sMsg="😾 하악 위협! 기절"; }
+          if(Math.random()<0.3){ if(isPlayer){oppStunnedRef.current=2;setOppStunVis(true);}else{myStunnedRef.current=2;setMyStunVis(true);} sMsg="😾 하악 위협! 2턴 기절"; }
           else sMsg="😾 하악... 실패";
           break;
         case "grooming":   { const heal=Math.round(ownMaxHp*0.10); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`🧼 그루밍! +${heal}HP 회복`; break; }
         case "warm_nap":   { const heal=Math.round(ownMaxHp*0.08); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`😴 따뜻한 낮잠! +${heal}HP 회복`; break; }
         case "tail_whip":  { const r=calcDmg(atkSt.atk,defSt.def*0.7,1.0*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="🐈 꼬리 치기! 방어 일부 무시"; break; }
+        case "claw_flurry": {
+          const r1=calcDmg(atkSt.atk,defSt.def,0.6*envDmgMult,atkCrit);
+          const r2=calcDmg(atkSt.atk,defSt.def,0.6*envDmgMult,atkCrit);
+          sDmg=r1.dmg+r2.dmg; sCrit=r1.isCrit||r2.isCrit;
+          sMsg=`🐾 발톱 연타! ${r1.dmg}+${r2.dmg}`;
+          break;
+        }
+        case "body_slam":  { const r=calcDmg(atkSt.atk,defSt.def,1.3*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="💥 몸통 박치기!"; break; }
         case "freeze":
-          if(Math.random()<0.6){ if(isPlayer){oppStunnedRef.current=true;setOppStunVis(true);}else{myStunnedRef.current=true;setMyStunVis(true);} sMsg="❄️ 얼리기 성공! 기절"; }
+          if(Math.random()<0.45){ if(isPlayer){oppStunnedRef.current=2;setOppStunVis(true);}else{myStunnedRef.current=2;setMyStunVis(true);} sMsg="❄️ 얼리기 성공! 2턴 기절"; }
           else sMsg="❄️ 얼리기... 저항!";
           break;
-        case "scratch":    { const r=calcDmg(atkSt.atk,defSt.def,0.8*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer)oppBleedRef.current=2;else myBleedRef.current=2; sMsg="🩸 할퀴기! 출혈 2턴"; break; }
-        case "intimidate":  { if(isPlayer){oppStunnedRef.current=true;setOppStunVis(true);}else{myStunnedRef.current=true;setMyStunVis(true);} sMsg="😱 공포의 눈빛! 기절"; break; }
+        case "scratch":    { const r=calcDmg(atkSt.atk,defSt.def,0.8*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer)oppBleedRef.current=3;else myBleedRef.current=3; sMsg="🩸 할퀴기! 출혈 3턴"; break; }
+        case "intimidate":
+          if(Math.random()<0.55){ if(isPlayer){oppStunnedRef.current=2;setOppStunVis(true);}else{myStunnedRef.current=2;setMyStunVis(true);} sMsg="😱 공포의 눈빛! 2턴 기절"; }
+          else sMsg="😱 공포의 눈빛... 실패";
+          break;
         case "pounce":     { const r=calcDmg(atkSt.atk,5,1.1*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="🦘 도약 강타! 방어 무시"; break; }
         case "ambush":     { const r=calcDmg(atkSt.atk,defSt.def,1.2*envDmgMult,100); sDmg=r.dmg; sCrit=true; sMsg="🌑 급습! 크리티컬 확정"; break; }
         case "static_shock":
-          if(Math.random()<0.4){ if(isPlayer){oppStunnedRef.current=true;setOppStunVis(true);}else{myStunnedRef.current=true;setMyStunVis(true);} sMsg="⚡ 정전기! 기절"; }
+          if(Math.random()<0.3){ if(isPlayer){oppStunnedRef.current=2;setOppStunVis(true);}else{myStunnedRef.current=2;setMyStunVis(true);} sMsg="⚡ 정전기! 2턴 기절"; }
           else sMsg="⚡ 정전기... 실패";
           break;
         case "night_prowl": { const r=calcDmg(atkSt.atk,defSt.def,1.1*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="🌌 야습! 회피 불가 관통"; break; }
         case "thunderclap": {
           const r=calcDmg(atkSt.atk,defSt.def,0.6*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit;
-          if(Math.random()<0.35){ if(isPlayer){oppStunnedRef.current=true;setOppStunVis(true);}else{myStunnedRef.current=true;setMyStunVis(true);} sMsg="🌩️ 천둥벽력! 기절"; }
+          if(Math.random()<0.25){ if(isPlayer){oppStunnedRef.current=2;setOppStunVis(true);}else{myStunnedRef.current=2;setMyStunVis(true);} sMsg="🌩️ 천둥벽력! 2턴 기절"; }
           else sMsg="🌩️ 천둥벽력!";
           break;
         }
-        case "poison":     { const r=calcDmg(atkSt.atk,defSt.def,0.7*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer)oppPoisonRef.current=3;else myPoisonRef.current=3; sMsg="☠️ 독 중독! 3턴 지속"; break; }
-        case "bind":       { if(isPlayer)oppBoundRef.current=true;else myBoundRef.current=true; sMsg="⛓️ 속박! 다음 공격 회피 불가"; break; }
-        case "slow":       { if(isPlayer){oppStunnedRef.current=true;setOppStunVis(true);}else{myStunnedRef.current=true;setMyStunVis(true);} sMsg="🐌 느리게! 1턴 스킵"; break; }
+        case "cold_glare":
+          if(Math.random()<0.3){ if(isPlayer){oppStunnedRef.current=2;setOppStunVis(true);}else{myStunnedRef.current=2;setMyStunVis(true);} sMsg="🥶 차가운 눈초리! 2턴 기절"; }
+          else sMsg="🥶 차가운 눈초리... 실패";
+          break;
+        case "dash_strike": { const r=calcDmg(atkSt.atk,defSt.def,1.5*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="💨 돌진!"; break; }
+        case "poison":     { const r=calcDmg(atkSt.atk,defSt.def,0.7*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer)oppPoisonRef.current=4;else myPoisonRef.current=4; sMsg="☠️ 독 중독! 4턴 지속"; break; }
+        case "bind":
+          if(Math.random()<0.65){ if(isPlayer)oppBoundRef.current=3;else myBoundRef.current=3; sMsg="⛓️ 속박! 3턴 회피 불가"; }
+          else sMsg="⛓️ 속박... 실패";
+          break;
+        case "slow":
+          if(Math.random()<0.6){ if(isPlayer){oppStunnedRef.current=2;setOppStunVis(true);}else{myStunnedRef.current=2;setMyStunVis(true);} sMsg="🐌 느리게! 2턴 스킵"; }
+          else sMsg="🐌 느리게... 실패";
+          break;
         case "double_strike": {
           const r1=calcDmg(atkSt.atk,defSt.def,0.8*envDmgMult,atkCrit);
           const r2=calcDmg(atkSt.atk,defSt.def,0.8*envDmgMult,atkCrit);
@@ -488,26 +568,41 @@ export default function BattlePage() {
           sMsg=`⚡ 연속 공격! ${r1.dmg}+${r2.dmg}`;
           break;
         }
-        case "rend":       { const r=calcDmg(atkSt.atk,5,1.0*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer)oppBleedRef.current=2;else myBleedRef.current=2; sMsg="🗡️ 찢기! 방어 무시+출혈"; break; }
-        case "howl":       { if(isPlayer)oppBoundRef.current=true;else myBoundRef.current=true; sMsg="🐺 하울링! 속박"; break; }
+        case "rend":       { const r=calcDmg(atkSt.atk,5,1.0*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer)oppBleedRef.current=3;else myBleedRef.current=3; sMsg="🗡️ 찢기! 방어 무시+출혈"; break; }
+        case "howl":
+          if(Math.random()<0.65){ if(isPlayer)oppBoundRef.current=3;else myBoundRef.current=3; sMsg="🐺 하울링! 3턴 속박"; }
+          else sMsg="🐺 하울링... 실패";
+          break;
         case "frenzy":     { const r=calcDmg(atkSt.atk,defSt.def,1.6*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="🔱 맹공!"; break; }
-        case "curse":      { const r=calcDmg(atkSt.atk,defSt.def,0.7*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer)oppPoisonRef.current=4;else myPoisonRef.current=4; sMsg="👹 저주! 4턴 지속"; break; }
+        case "curse":      { const r=calcDmg(atkSt.atk,defSt.def,0.7*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer)oppPoisonRef.current=5;else myPoisonRef.current=5; sMsg="👹 저주! 5턴 지속"; break; }
+        case "venom_fang": { const r=calcDmg(atkSt.atk,defSt.def,1.1*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer)oppPoisonRef.current=4;else myPoisonRef.current=4; sMsg="🦷 맹독니! 4턴 중독"; break; }
+        case "shockwave":  { const r=calcDmg(atkSt.atk,defSt.def,1.7*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="💥 충격파!"; break; }
         case "vampirism":  { const r=calcDmg(atkSt.atk,defSt.def,1.2*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; const heal=Math.round(sDmg*0.3); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`🧛 흡혈! +${heal}HP 흡수`; break; }
         case "invincible": { if(isPlayer){myGuardRef.current=true;setMyGuardVis(true);}else{oppGuardRef.current=true;setOppGuardVis(true);} sMsg="✨ 무적 발동! 다음 피해 무효"; break; }
-        case "dominate":   { const r=calcDmg(atkSt.atk*1.2,5,1.0*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer){oppBoundRef.current=true;oppPoisonRef.current=2;}else{myBoundRef.current=true;myPoisonRef.current=2;} sMsg="👑 지배! 속박+독"; break; }
+        case "dominate":   { const r=calcDmg(atkSt.atk*1.2,5,1.0*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer){oppBoundRef.current=3;oppPoisonRef.current=3;}else{myBoundRef.current=3;myPoisonRef.current=3;} sMsg="👑 지배! 3턴 속박+3턴 중독"; break; }
         case "regen":      { const heal=Math.round(ownMaxHp*0.12); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`💚 재생! +${heal}HP`; break; }
         case "eclipse":    { const r=calcDmg(atkSt.atk,defSt.def,1.3*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; const heal=Math.round(ownMaxHp*0.15); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`🌘 월식! +${heal}HP 회복`; break; }
         case "overdrive":  { const r=calcDmg(atkSt.atk,defSt.def,1.8*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; const recoil=Math.round(ownMaxHp*0.08); if(isPlayer)setMyHp(Math.max(0,myHpRef.current-recoil));else setOppHp(Math.max(0,oppHpRef.current-recoil)); sMsg=`💢 폭주! 반동 -${recoil}HP`; break; }
         case "meteor":     { const r=calcDmg(atkSt.atk,defSt.def,2.0*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="☄️ 메테오!"; break; }
+        case "judgment": {
+          const r=calcDmg(atkSt.atk,defSt.def,1.2*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit;
+          if(Math.random()<0.55){
+            if(isPlayer){oppBoundRef.current=2;oppStunnedRef.current=2;setOppStunVis(true);}
+            else{myBoundRef.current=2;myStunnedRef.current=2;setMyStunVis(true);}
+            sMsg="⚡ 천벌! 2턴 속박+기절";
+          } else sMsg="⚡ 천벌!";
+          break;
+        }
+        case "apocalypse_strike": { const r=calcDmg(atkSt.atk,defSt.def,2.2*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="🌋 종말의 일격!"; break; }
         case "cleanse": {
           const heal=Math.round(ownMaxHp*0.10);
           if(isPlayer){
-            myPoisonRef.current=0; myBleedRef.current=0; myBoundRef.current=false;
-            myStunnedRef.current=false; setMyStunVis(false); setMyStatusBadges([]);
+            myPoisonRef.current=0; myBleedRef.current=0; myBoundRef.current=0;
+            myStunnedRef.current=0; setMyStunVis(false); setMyStatusBadges([]);
             setMyHp(Math.min(myMaxH,myHpRef.current+heal));
           } else {
-            oppPoisonRef.current=0; oppBleedRef.current=0; oppBoundRef.current=false;
-            oppStunnedRef.current=false; setOppStunVis(false); setOppStatusBadges([]);
+            oppPoisonRef.current=0; oppBleedRef.current=0; oppBoundRef.current=0;
+            oppStunnedRef.current=0; setOppStunVis(false); setOppStatusBadges([]);
             setOppHp(Math.min(oppMaxH,oppHpRef.current+heal));
           }
           sMsg=`💫 정화! 상태이상 해제 +${heal}HP`;
@@ -533,6 +628,13 @@ export default function BattlePage() {
     // 상성 우위 표시
     if(dmg>0 && isEffective) {
       msg = msg ? `${msg} · 효과는 굉장했다!` : "효과는 굉장했다!";
+    }
+
+    // 방어막 아이템 (내가 방어자일 때 이번 피해 완전 무효화, 최우선 적용)
+    if(dmg>0 && !isPlayer && myShieldRef.current) {
+      dmg = 0;
+      myShieldRef.current = false;
+      msg = "🛡️ 방어막이 피해를 완전히 막았다!";
     }
 
     // 방어 적용
@@ -571,8 +673,10 @@ export default function BattlePage() {
     const oppBadges: string[] = [];
     if(myPoisonRef.current>0) myBadges.push(`☠️${myPoisonRef.current}`);
     if(myBleedRef.current>0) myBadges.push(`🩸${myBleedRef.current}`);
+    if(myBoundRef.current>0) myBadges.push(`⛓️${myBoundRef.current}`);
     if(oppPoisonRef.current>0) oppBadges.push(`☠️${oppPoisonRef.current}`);
     if(oppBleedRef.current>0) oppBadges.push(`🩸${oppBleedRef.current}`);
+    if(oppBoundRef.current>0) oppBadges.push(`⛓️${oppBoundRef.current}`);
     setMyStatusBadges(myBadges);
     setOppStatusBadges(oppBadges);
 
@@ -587,22 +691,26 @@ export default function BattlePage() {
     return false;
   }, []); // eslint-disable-line
 
-  const pickSkill = useCallback((skillIdx: number | null) => {
+  const pickSkill = useCallback((skillIdx: number | null, forfeitMsg?: string) => {
     if(!myStats || !oppStats || !selected || !opponent || !mounted.current) return;
     if(skillIdx !== null && mySkillCdRef.current[skillIdx] > 0) return;
+    if(skillIdx === 0 && myNormalUsesRef.current <= 0) return;
+    if(skillIdx === 2 && myGuardUsesRef.current <= 0) return;
     clearTimer();
     setPhase("animating");
 
     let dmg = 0, isCrit = false, msg = "";
     if(skillIdx === null) {
-      // 타임오버: 아무 행동 없이 턴 패스
-      msg = "⏰ 시간 초과! 턴 패스";
+      // 타임오버 또는 아이템 사용: 공격 없이 턴 진행
+      msg = forfeitMsg ?? "⏰ 시간 초과! 턴 패스";
       setActionMsg(msg);
     } else {
       if(SKILL_COOLDOWNS[skillIdx] > 0) {
         mySkillCdRef.current[skillIdx] = SKILL_COOLDOWNS[skillIdx];
         setMySkillCd([...mySkillCdRef.current]);
       }
+      if(skillIdx === 0) { myNormalUsesRef.current--; setMyNormalUses(myNormalUsesRef.current); }
+      if(skillIdx === 2) { myGuardUsesRef.current--; setMyGuardUses(myGuardUsesRef.current); }
       const r = applySkill(skillIdx, true, myStats, oppStats, myMaxHp, oppMaxHp, selected, opponent);
       dmg = r.dmg; isCrit = r.isCrit; msg = r.msg;
       const skill = mySkills[skillIdx];
@@ -630,17 +738,23 @@ export default function BattlePage() {
 
         // 상대 턴
         setPhase("opp_thinking");
-        const isStunned = oppStunnedRef.current;
+        const isStunned = oppStunnedRef.current > 0;
         setActionMsg(isStunned ? `${opponent.name}는 기절해서 움직일 수 없다!` : `${opponent.name}가 기술을 선택 중...`);
-        if(isStunned) oppStunnedRef.current=false;
+        if(isStunned) {
+          oppStunnedRef.current = Math.max(0, oppStunnedRef.current - 1);
+          if(oppStunnedRef.current === 0) setOppStunVis(false);
+        }
 
         setTimeout(() => {
           if(!mounted.current) return;
           if(isStunned) {
             setTurnCount(t=>t+1);
-            setOppStunVis(false);
             if(applyDotTick()) return;
-            if(myStunnedRef.current) { myStunnedRef.current=false; setMyStunVis(false); setActionMsg("기절해서 행동할 수 없다!"); setTimeout(()=>{ if(mounted.current){ setActionMsg("기술을 선택하세요!"); setPhase("player_choose"); }}, 1200); }
+            if(myStunnedRef.current > 0) {
+              myStunnedRef.current = Math.max(0, myStunnedRef.current - 1);
+              if(myStunnedRef.current === 0) setMyStunVis(false);
+              setActionMsg("기절해서 행동할 수 없다!"); setTimeout(()=>{ if(mounted.current){ setActionMsg("기술을 선택하세요!"); setPhase("player_choose"); }}, 1200);
+            }
             else { setActionMsg("기술을 선택하세요!"); setPhase("player_choose"); }
             return;
           }
@@ -672,8 +786,9 @@ export default function BattlePage() {
 
               setTurnCount(t=>t+1);
               if(applyDotTick()) return;
-              if(myStunnedRef.current) {
-                myStunnedRef.current=false; setMyStunVis(false);
+              if(myStunnedRef.current > 0) {
+                myStunnedRef.current = Math.max(0, myStunnedRef.current - 1);
+                if(myStunnedRef.current === 0) setMyStunVis(false);
                 setActionMsg("기절해서 행동할 수 없다!");
                 setTimeout(()=>{ if(mounted.current){ setTurnCount(t=>t+1); setActionMsg("기술을 선택하세요!"); setPhase("player_choose"); }}, 1300);
               } else {
@@ -686,6 +801,35 @@ export default function BattlePage() {
       }, 620);
     }, 380);
   }, [myStats, oppStats, selected, opponent, mySkills, oppSkills, myMaxHp, oppMaxHp]); // eslint-disable-line
+
+  /* ── 아이템 사용 (내 턴 소모) ── */
+  const useItem = useCallback(async (key: ShopItemKey) => {
+    if (phase !== "player_choose" || !mounted.current) return;
+    if ((inventory[key] ?? 0) <= 0) return;
+    setItemPanelOpen(false);
+
+    const res = await fetch("/api/shop/use-item", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ item_key: key }),
+    });
+    if (!res.ok || !mounted.current) return;
+    setInventory(prev => ({ ...prev, [key]: Math.max(0, (prev[key] ?? 1) - 1) }));
+
+    let msg = "";
+    switch (key) {
+      case "heal_potion": { const heal = Math.round(myMaxHp*0.20); setMyHp(Math.min(myMaxHp, myHpRef.current+heal)); msg = `🧪 치료 물약! +${heal}HP 회복`; break; }
+      case "shield":         myShieldRef.current = true; msg = "🛡️ 방어막 전개! 다음 피해 무효화"; break;
+      case "cleanse_potion": {
+        myPoisonRef.current=0; myBleedRef.current=0; myBoundRef.current=0;
+        myStunnedRef.current=0; setMyStunVis(false); setMyStatusBadges([]);
+        msg = "💊 정화제! 모든 상태이상 해제"; break;
+      }
+      case "skill_recharge": mySkillCdRef.current=[0,0,0,0]; setMySkillCd([0,0,0,0]); msg = "🔋 스킬 충전! 쿨다운 초기화"; break;
+      case "power_up":       myPowerBuffRef.current = true; msg = "🥫 파워업! 다음 공격 피해 +30%"; break;
+      case "lucky_charm":    myDodgeGuaranteedRef.current = true; msg = "🍀 행운의 부적! 상대 다음 공격 회피"; break;
+    }
+    pickSkill(null, msg);
+  }, [phase, inventory, myMaxHp, pickSkill]); // eslint-disable-line
 
   /* ── 배틀 종료 ── */
   const endBattle = useCallback(async (winner:"me"|"opponent") => {
@@ -950,9 +1094,39 @@ export default function BattlePage() {
                 )}
                 <div className="flex gap-2">
                   {mySkills.map((sk,i)=>(
-                    <SkillBtn key={i} skill={sk} idx={i} disabled={phase!=="player_choose"} cooldown={mySkillCd[i]} onPick={pickSkill}/>
+                    <SkillBtn key={i} skill={sk} idx={i} disabled={phase!=="player_choose"} cooldown={mySkillCd[i]}
+                      usesLeft={i===0?myNormalUses:i===2?myGuardUses:undefined} onPick={pickSkill}/>
                   ))}
                 </div>
+
+                {/* 아이템 사용 */}
+                {phase==="player_choose"&&(
+                  <div className="mt-2">
+                    <button onClick={()=>setItemPanelOpen(o=>!o)}
+                      className="w-full py-2 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1.5"
+                      style={{ background:"rgba(255,180,0,0.14)", color:"#FFCC66" }}>
+                      🎒 아이템 사용 {itemPanelOpen?"▲":"▼"}
+                    </button>
+                    {itemPanelOpen && (
+                      <div className="grid grid-cols-3 gap-1.5 mt-2">
+                        {SHOP_ITEM_KEYS.map(key=>{
+                          const item = SHOP_ITEMS[key];
+                          const qty = inventory[key] ?? 0;
+                          return (
+                            <button key={key} onClick={()=>qty>0&&useItem(key)} disabled={qty<=0}
+                              className="rounded-xl p-2 flex flex-col items-center gap-0.5"
+                              style={{ background:"rgba(255,255,255,0.06)", opacity: qty>0?1:0.35 }}>
+                              <span style={{ fontSize:18 }}>{item.icon}</span>
+                              <span className="text-[9px] font-bold text-white text-center leading-tight">{item.name}</span>
+                              <span className="text-[8px] text-gray-500">보유 {qty}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {phase==="opp_thinking"&&(
                   <p className="text-center text-[11px] text-gray-500 mt-2 animate-pulse">{actionMsg}</p>
                 )}

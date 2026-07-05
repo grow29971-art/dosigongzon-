@@ -303,6 +303,9 @@ export async function createCareLog(
     })
     .catch(() => {});
 
+  // 돌봄 활동 코인 지급 (일 5회 제한, fire-and-forget)
+  fetch("/api/coins/care-bonus", { method: "POST" }).catch(() => {});
+
   // 돌봄 횟수 → 카드 등급 진화 체크 (fire-and-forget)
   fetch("/api/cats/check-rarity-upgrade", {
     method: "POST",

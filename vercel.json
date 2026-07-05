@@ -67,6 +67,10 @@
     {
       "path": "/api/cron/care-cue",
       "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/weekly-battle-payout",
+      "schedule": "0 23 * * 0"
     }
   ]
 }
