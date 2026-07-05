@@ -14,6 +14,12 @@ interface Props {
 type CamState = "requesting" | "ready" | "denied" | "blocked" | "error" | "preview";
 type ThrowState = "idle" | "pulling" | "flying" | "hit" | "miss";
 
+// 조준 판정 튜닝값
+const MIN_PULL_Y = 50;    // 이 이상 위로 당겨야 실제 투척으로 인정
+const MAX_PULL_Y = 150;
+const MAX_DRAG_X = 130;
+const LANDING_MULT = 2.35; // 좌우로 당긴 거리 → 실제 도착 지점 오프셋 배율
+
 export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery, onFallbackCapture, previewFile }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -27,10 +33,17 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
 
   // 투척 상태
   const [throwState, setThrowState] = useState<ThrowState>("idle");
-  const [pullY, setPullY] = useState(0); // 당긴 거리 (px)
-  const [churuX, setChuruX] = useState(0); // 좌우 조준
+  const [pullY, setPullY] = useState(0);       // 당긴 거리 (px)
+  const [churuX, setChuruX] = useState(0);     // 좌우 드래그 원본값 (츄르가 손가락을 따라감)
+  const [aimOk, setAimOk] = useState(true);    // 지금 놓으면 명중권인지 실시간 판정
+  const [landingDx, setLandingDx] = useState(0); // 실제 비행 애니메이션에 쓸 최종 도착 오프셋
   const touchStartRef = useRef({ x: 0, y: 0 });
-  const throwCount = useRef(0); // 몇 번 던졌는지
+  const missStreak = useRef(0); // 연속 실패 횟수 (너무 안 잡히면 판정 살짝 관대하게)
+
+  const getTolerance = useCallback(() => {
+    const base = (typeof window !== "undefined" ? window.innerWidth : 375) * 0.13;
+    return missStreak.current >= 2 ? base * 1.7 : base;
+  }, []);
 
   // 스캔 애니메이션 (idle 상태에서 고양이 좌우 흔들기)
   const [catWiggle, setCatWiggle] = useState(0);
@@ -118,81 +131,102 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
     }, 900);
   }, [previewFile, onCapture, capturePhoto]);
 
-  // 츄르 던지기 - 터치 이벤트
+  // 츄르 던지기 - 터치 이벤트 (드래그로 직접 조준 → 놓으면 투척)
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (throwState !== "idle" || caught) return;
     const t = e.touches[0];
     touchStartRef.current = { x: t.clientX, y: t.clientY };
     setPullY(0);
     setChuruX(0);
+    setAimOk(true);
   }, [throwState, caught]);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (throwState !== "idle" || caught) return;
+    if ((throwState !== "idle" && throwState !== "pulling") || caught) return;
     e.preventDefault();
     const t = e.touches[0];
     const dy = touchStartRef.current.y - t.clientY; // 위로 당길수록 +
-    const dx = t.clientX - touchStartRef.current.x;
+    const dx = Math.max(-MAX_DRAG_X, Math.min(MAX_DRAG_X, t.clientX - touchStartRef.current.x));
     if (dy > 5) {
       setThrowState("pulling");
-      setPullY(Math.min(dy, 140));
+      setPullY(Math.min(dy, MAX_PULL_Y));
       setChuruX(dx);
+      const projected = dx * LANDING_MULT;
+      setAimOk(Math.abs(projected) <= getTolerance());
     }
-  }, [throwState, caught]);
+  }, [throwState, caught, getTolerance]);
 
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
     if (caught) return;
     const t = e.changedTouches[0];
     const dy = touchStartRef.current.y - t.clientY;
-    const speed = dy;
+    const dx = Math.max(-MAX_DRAG_X, Math.min(MAX_DRAG_X, t.clientX - touchStartRef.current.x));
 
-    if (speed > 40) {
-      throwCount.current += 1;
+    if (dy > MIN_PULL_Y) {
+      const landing = dx * LANDING_MULT;
+      const isHit = Math.abs(landing) <= getTolerance();
+      setLandingDx(landing);
       setThrowState("flying");
-      // 3번 이내엔 랜덤 성공, 실제론 항상 성공 (게임 재미)
-      const willHit = true;
 
       setTimeout(() => {
-        if (willHit) {
+        if (isHit) {
+          missStreak.current = 0;
           setThrowState("hit");
           finishCapture();
         } else {
+          missStreak.current += 1;
           setThrowState("miss");
-          setTimeout(() => { setThrowState("idle"); setPullY(0); setChuruX(0); }, 800);
+          setTimeout(() => { setThrowState("idle"); setPullY(0); setChuruX(0); }, 850);
         }
-      }, 700);
+      }, 620);
     } else {
       setThrowState("idle");
       setPullY(0);
       setChuruX(0);
     }
-  }, [caught, finishCapture]);
+  }, [caught, finishCapture, getTolerance]);
 
   // 배경 (카메라 or 갤러리 사진)
   const showBg = camState === "ready" || camState === "preview";
   const isLive = camState === "ready";
 
-  // 츄르 던지기 오프셋 계산
-  const flyDx = churuX * 1.5;
+  // 츄르 던지기 비행 궤적 계산
+  const flyDx = throwState === "flying" || throwState === "hit" || throwState === "miss" ? landingDx : churuX * LANDING_MULT;
   const flyDy = -(typeof window !== "undefined" ? window.innerHeight * 0.55 : 400);
+  const isMissThrow = throwState === "miss";
+  // 빗나갔을 땐 조준한 방향으로 화면 밖까지 더 날아가도록
+  const missFlyDx = flyDx + Math.sign(flyDx || 1) * 90;
+
+  // 실시간 조준선 각도/길이 (당기는 중 손끝 → 예상 도착 방향)
+  const aimAngle = Math.atan2(churuX, Math.max(pullY * 1.8, 1)) * (180 / Math.PI);
+  const aimLen = Math.min(Math.sqrt(churuX ** 2 + (pullY * 1.8) ** 2), 210);
 
   return (
     <>
       {/* CSS 애니메이션 */}
       <style>{`
-        @keyframes churu-fly {
+        @keyframes churu-fly-hit {
           0%   { transform: translate(0,0) rotate(0deg) scale(1); opacity:1; }
-          60%  { transform: translate(${flyDx * 0.6}px,${flyDy * 0.7}px) rotate(-540deg) scale(0.7); opacity:1; }
-          85%  { transform: translate(${flyDx}px,${flyDy}px) rotate(-720deg) scale(0.5); opacity:1; }
-          100% { transform: translate(${flyDx}px,${flyDy}px) rotate(-720deg) scale(0.2); opacity:0; }
+          55%  { transform: translate(${flyDx * 0.6}px,${flyDy * 0.68}px) rotate(-460deg) scale(0.75); opacity:1; }
+          85%  { transform: translate(${flyDx}px,${flyDy}px) rotate(-640deg) scale(0.48); opacity:1; }
+          100% { transform: translate(${flyDx}px,${flyDy}px) rotate(-640deg) scale(0.2); opacity:0; }
         }
-        @keyframes cat-hit {
-          0%   { transform: translateX(0) scale(1); }
-          20%  { transform: translateX(-12px) scale(1.15); }
-          40%  { transform: translateX(12px) scale(0.9); }
-          60%  { transform: translateX(-8px) scale(1.1); }
-          80%  { transform: translateX(8px) scale(0.95); }
-          100% { transform: translateX(0) scale(1); }
+        @keyframes churu-fly-miss {
+          0%   { transform: translate(0,0) rotate(0deg) scale(1); opacity:1; }
+          55%  { transform: translate(${missFlyDx * 0.55}px,${flyDy * 0.75}px) rotate(-420deg) scale(0.8); opacity:1; }
+          100% { transform: translate(${missFlyDx}px,${flyDy * 0.92}px) rotate(-680deg) scale(0.55); opacity:0; }
+        }
+        @keyframes cat-flinch {
+          0%   { transform: translateX(0) scale(1); filter:brightness(1); }
+          20%  { transform: translateX(-10px) scale(1.03); filter:brightness(1.3); }
+          45%  { transform: translateX(9px) scale(0.99); filter:brightness(1.1); }
+          70%  { transform: translateX(-5px) scale(1.01); filter:brightness(1.05); }
+          100% { transform: translateX(0) scale(1); filter:brightness(1); }
+        }
+        @keyframes cat-dodge {
+          0%   { transform: translateX(0) rotate(0deg); }
+          30%  { transform: translateX(${churuX > 0 ? -14 : 14}px) rotate(${churuX > 0 ? -3 : 3}deg); }
+          100% { transform: translateX(0) rotate(0deg); }
         }
         @keyframes caught-flash {
           0%   { opacity:0; transform:scale(0.5); }
@@ -203,9 +237,22 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           0%   { opacity:1; transform:scale(0) rotate(0deg); }
           100% { opacity:0; transform:scale(2) rotate(45deg); }
         }
+        @keyframes capture-ring {
+          0%   { opacity:0.9; transform:scale(0.3); border-width:6px; }
+          100% { opacity:0; transform:scale(2.6); border-width:1px; }
+        }
         @keyframes pull-wiggle {
           0%,100% { transform: rotate(-5deg); }
           50%     { transform: rotate(5deg); }
+        }
+        @keyframes reticle-pulse {
+          0%,100% { transform: scale(1); opacity:0.55; }
+          50%     { transform: scale(1.12); opacity:0.85; }
+        }
+        @keyframes miss-text-pop {
+          0%   { opacity:0; transform:translateY(6px) scale(0.85); }
+          30%  { opacity:1; transform:translateY(0) scale(1.08); }
+          100% { opacity:1; transform:translateY(0) scale(1); }
         }
       `}</style>
 
@@ -223,9 +270,11 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
         {/* 상단 안내 */}
         {showBg && !caught && (
           <div className="absolute top-5 left-0 right-0 flex justify-center z-10 pointer-events-none">
-            <div className="px-4 py-1.5 rounded-full text-[12px] font-extrabold text-white"
+            <div className="px-4 py-1.5 rounded-full text-[12px] font-extrabold text-white text-center"
               style={{ background: "rgba(0,0,0,0.55)" }}>
-              츄르를 위로 던져서 포획하세요!
+              {throwState === "pulling"
+                ? (aimOk ? "🎯 조준 완료! 손을 떼서 던지세요" : "⚠️ 가운데를 조준하세요!")
+                : "츄르를 당겼다 놓아서 가운데로 던지세요!"}
             </div>
           </div>
         )}
@@ -233,18 +282,23 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
         {/* 배경 */}
         {showBg && (
           <div className="absolute inset-0">
-            {isLive ? (
-              <video ref={videoRef} playsInline muted
-                className="w-full h-full object-cover"
-                style={{ opacity: caught ? 0.25 : 1, transition: "opacity 0.4s" }} />
-            ) : (
-              previewUrl && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={previewUrl} alt="포획 대상"
+            <div style={{
+              width: "100%", height: "100%",
+              animation: throwState === "hit" ? "cat-flinch 0.5s ease" : throwState === "miss" ? "cat-dodge 0.4s ease" : undefined,
+            }}>
+              {isLive ? (
+                <video ref={videoRef} playsInline muted
                   className="w-full h-full object-cover"
                   style={{ opacity: caught ? 0.25 : 1, transition: "opacity 0.4s" }} />
-              )
-            )}
+              ) : (
+                previewUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={previewUrl} alt="포획 대상"
+                    className="w-full h-full object-cover"
+                    style={{ opacity: caught ? 0.25 : 1, transition: "opacity 0.4s" }} />
+                )
+              )}
+            </div>
             <canvas ref={canvasRef} className="hidden" />
             {/* 비네팅 */}
             <div className="absolute inset-0 pointer-events-none"
@@ -302,10 +356,26 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           <div className="absolute inset-0 flex flex-col items-center justify-between pb-14 pt-16 z-10 pointer-events-none">
 
             {/* 고양이 영역 (상단 60%) */}
-            <div className="flex-1 flex items-center justify-center w-full">
-              {/* 포획 성공 별 폭발 */}
+            <div className="flex-1 flex items-center justify-center w-full relative">
+
+              {/* 명중 조준 링 (항상 중앙 표시, 드래그 중엔 조준 상태로 색이 바뀜) */}
+              {!caught && throwState !== "hit" && (
+                <div className="absolute" style={{
+                  width: 92, height: 92, borderRadius: "50%",
+                  border: `3px solid ${throwState === "pulling" ? (aimOk ? "rgba(120,255,140,0.9)" : "rgba(255,90,90,0.9)") : "rgba(255,255,255,0.35)"}`,
+                  animation: "reticle-pulse 1.6s ease-in-out infinite",
+                  transition: "border-color 0.15s",
+                }} />
+              )}
+
+              {/* 포획 성공 캡처 링 + 별 폭발 */}
               {throwState === "hit" && (
                 <>
+                  <div className="absolute" style={{
+                    width: 100, height: 100, borderRadius: "50%",
+                    border: "6px solid rgba(255,220,80,0.9)",
+                    animation: "capture-ring 0.6s ease-out forwards",
+                  }} />
                   {["✦","★","✦","★","✦"].map((s, i) => (
                     <span key={i} className="absolute text-yellow-300 text-[24px] font-black pointer-events-none"
                       style={{
@@ -329,18 +399,21 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
 
               {/* 미스 */}
               {throwState === "miss" && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none text-center"
+                  style={{ animation: "miss-text-pop 0.35s ease-out forwards" }}>
                   <p className="text-red-400 text-[28px] font-black">빗나갔다!</p>
+                  <p className="text-white/70 text-[12px] font-bold mt-1">가운데 조준 링을 맞춰보세요</p>
                 </div>
               )}
             </div>
 
-            {/* HP 바 스타일 던지기 횟수 */}
-            {!caught && throwState === "idle" && (
-              <div className="flex gap-1 mb-2">
+            {/* 실패 스트릭 표시 */}
+            {!caught && throwState === "idle" && missStreak.current > 0 && (
+              <div className="flex gap-1 mb-2 items-center">
+                <span className="text-[10px] text-white/50 font-bold mr-1">{missStreak.current}회 실패</span>
                 {[0,1,2].map(i => (
-                  <div key={i} className="w-8 h-2 rounded-full"
-                    style={{ background: throwCount.current > i ? "rgba(255,255,255,0.2)" : "#FFD700" }} />
+                  <div key={i} className="w-6 h-1.5 rounded-full"
+                    style={{ background: missStreak.current > i ? "#FF6B6B" : "rgba(255,255,255,0.2)" }} />
                 ))}
               </div>
             )}
@@ -352,20 +425,24 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           <div
             ref={throwAreaRef}
             className="absolute bottom-0 left-0 right-0 z-20 flex flex-col items-center"
-            style={{ height: "35%", touchAction: "none" }}
+            style={{ height: "38%", touchAction: "none" }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            {/* 조준선 */}
-            {throwState === "pulling" && pullY > 10 && (
-              <div className="absolute inset-0 pointer-events-none flex items-end justify-center pb-20">
+            {/* 실시간 조준선 (손끝 방향 → 예상 진로) */}
+            {throwState === "pulling" && pullY > 8 && (
+              <div className="absolute bottom-16 pointer-events-none" style={{ left: "50%" }}>
                 <div style={{
-                  width: 2,
-                  height: Math.min(pullY * 1.8, 200),
-                  background: "linear-gradient(to top, rgba(255,215,0,0.8), transparent)",
-                  borderRadius: 2,
-                  transform: `translateX(${churuX * 0.3}px)`,
+                  position: "absolute", left: 0, bottom: 0,
+                  width: 3, height: aimLen,
+                  background: aimOk
+                    ? "linear-gradient(to top, rgba(120,255,140,0.9), rgba(120,255,140,0.05))"
+                    : "linear-gradient(to top, rgba(255,90,90,0.9), rgba(255,90,90,0.05))",
+                  borderRadius: 3,
+                  transformOrigin: "bottom center",
+                  transform: `translateX(-1.5px) rotate(${aimAngle}deg)`,
+                  boxShadow: aimOk ? "0 0 10px rgba(120,255,140,0.6)" : "0 0 10px rgba(255,90,90,0.6)",
                 }} />
               </div>
             )}
@@ -374,20 +451,22 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
             <div className="absolute bottom-10 flex flex-col items-center gap-1 pointer-events-none"
               style={{
                 transform: throwState === "pulling"
-                  ? `translateY(${pullY * 0.3}px) translateX(${churuX * 0.15}px)`
+                  ? `translateY(${pullY * 0.55}px) translateX(${churuX}px) scale(${1 + pullY / 400}) rotate(${-churuX * 0.15}deg)`
                   : "none",
-                transition: throwState === "idle" ? "transform 0.2s" : "none",
+                transition: throwState === "idle" ? "transform 0.25s cubic-bezier(0.34,1.56,0.64,1)" : "none",
                 animation: throwState === "flying"
-                  ? "churu-fly 0.7s cubic-bezier(0.2,0.8,0.4,1) forwards"
-                  : throwState === "idle"
-                    ? "pull-wiggle 2s ease-in-out infinite"
-                    : "none",
+                  ? "churu-fly-hit 0.62s cubic-bezier(0.25,0.65,0.35,1) forwards"
+                  : throwState === "miss"
+                    ? "churu-fly-miss 0.62s cubic-bezier(0.25,0.65,0.35,1) forwards"
+                    : throwState === "idle"
+                      ? "pull-wiggle 2s ease-in-out infinite"
+                      : "none",
               }}
             >
               {/* 츄르 튜브 */}
               <div className="relative flex flex-col items-center">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center text-[28px]"
-                  style={{ filter: "drop-shadow(0 0 8px rgba(255,200,50,0.8))" }}>
+                  style={{ filter: `drop-shadow(0 0 ${8 + pullY / 12}px rgba(255,200,50,0.85))` }}>
                   🐟
                 </div>
                 <div className="rounded-full px-3 py-1 text-[11px] font-black text-black mt-0.5"
@@ -400,7 +479,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
             {/* 힌트 */}
             {throwState === "idle" && (
               <div className="absolute bottom-1 text-center pointer-events-none">
-                <p className="text-[11px] font-bold text-white/60">위로 스와이프해서 던지세요</p>
+                <p className="text-[11px] font-bold text-white/60">츄르를 잡고 당겼다가 놓아보세요</p>
               </div>
             )}
           </div>
