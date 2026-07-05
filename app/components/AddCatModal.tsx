@@ -380,7 +380,7 @@ export default function AddCatModal({
   }
 
   // ── 등록 폼 ──
-  return createPortal(
+  const portal = createPortal(
     <div
       className="fixed inset-0 z-[100] flex flex-col"
       role="dialog"
@@ -853,16 +853,23 @@ export default function AddCatModal({
         }}
       />
 
-      {/* 포켓몬GO 스타일 포획 카메라 */}
-      {showCamera && (
+    </div>,
+    portalRoot,
+  );
+
+  // CatCaptureCamera는 modal stacking context 밖, body에 직접 마운트
+  return (
+    <>
+      {portal}
+      {showCamera && portalRoot && createPortal(
         <CatCaptureCamera
           onCapture={handleCameraCapture}
           onClose={() => { setShowCamera(false); setPendingGalleryFiles([]); }}
           onFallbackGallery={() => { setShowCamera(false); setPendingGalleryFiles([]); fileInputRef.current?.click(); }}
           previewFile={pendingGalleryFiles[0]}
-        />
+        />,
+        document.body,
       )}
-    </div>,
-    portalRoot,
+    </>
   );
 }
