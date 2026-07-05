@@ -22,7 +22,7 @@ interface CardCat {
 }
 
 // 등급별 HP 보너스: 일반→레전드로 갈수록 체력이 두껍게
-const RARITY_HP_BONUS: Record<string, number> = { common:0, uncommon:70, rare:150, legendary:250 };
+const RARITY_HP_BONUS: Record<string, number> = { common:0, uncommon:50, rare:105, legendary:175 };
 
 function calcStats(cat: CardCat) {
   const lv = cat.card_level ?? 1;
@@ -31,7 +31,7 @@ function calcStats(cat: CardCat) {
   const baseAtk = cat.battle_atk ?? Math.round(s.wildness * 0.8 + 20);
   const baseDef = cat.battle_def ?? Math.round(s.mysteriousness * 0.5 + 15);
   return {
-    hp:   Math.round(s.cuteness * 1.8 + s.wildness * 0.9) + 180 + hpBonus + (lv - 1) * 25,
+    hp:   Math.round(s.cuteness * 1.8 + s.wildness * 0.9) + 135 + hpBonus + (lv - 1) * 19,
     atk:  baseAtk + (lv - 1) * 3,
     def:  baseDef + (lv - 1) * 2,
     spd:  Math.round(s.sociability * 0.5 + 20) + lv,
