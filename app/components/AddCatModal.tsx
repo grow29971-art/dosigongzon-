@@ -39,6 +39,28 @@ const TAG_PRESETS = [
   "식탐 많음",
 ];
 
+// 이미지를 maxPx 폭으로 리사이즈 후 JPEG base64 반환 (요청 크기 제한 대응)
+function resizeToBase64(file: File, maxPx = 800): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const scale = Math.min(1, maxPx / Math.max(img.width, img.height));
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext("2d")!.drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.88);
+      resolve(dataUrl.split(",")[1]);
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
 export default function AddCatModal({
   open,
   onClose,
@@ -280,20 +302,15 @@ export default function AddCatModal({
         localStorage.setItem(countKey, String(registrationCount));
       } catch {}
 
-      // CatchCat 카드 생성 — 첫 번째 사진을 base64로 직접 전송 (서버 URL fetch 의존 제거)
+      // CatchCat 카드 생성 — 첫 번째 사진을 800px로 리사이즈 후 base64 전송
       let generatedCard: CatCardData | null = null;
       if (photoFiles[0] && newCat.id) {
         try {
-          const b64 = await new Promise<string>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve((reader.result as string).split(",")[1]);
-            reader.onerror = reject;
-            reader.readAsDataURL(photoFiles[0]);
-          });
+          const b64 = await resizeToBase64(photoFiles[0], 800);
           const cardRes = await fetch("/api/cats/generate-card", {
             method: "POST",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ cat_id: newCat.id, image_base64: b64, mime_type: photoFiles[0].type || "image/jpeg" }),
+            body: JSON.stringify({ cat_id: newCat.id, image_base64: b64, mime_type: "image/jpeg" }),
           });
           if (cardRes.ok) {
             const { card } = await cardRes.json();
