@@ -303,20 +303,23 @@ export default function AddCatModal({
         localStorage.setItem(countKey, String(registrationCount));
       } catch {}
 
-      // CatchCat 카드 생성 — 첫 번째 사진을 800px로 리사이즈 후 base64 전송
+      // CatchCat 카드 생성 — 사진 있으면 base64, 없으면 API가 랜덤 생성
       let generatedCard: CatCardData | null = null;
-      if (photoFiles[0] && newCat.id) {
+      if (newCat.id) {
         try {
-          const b64 = await resizeToBase64(photoFiles[0], 800);
+          let body: Record<string, string> = { cat_id: newCat.id };
+          if (photoFiles[0]) {
+            const b64 = await resizeToBase64(photoFiles[0], 800);
+            body = { ...body, image_base64: b64, mime_type: "image/jpeg" };
+          }
           const cardRes = await fetch("/api/cats/generate-card", {
             method: "POST",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ cat_id: newCat.id, image_base64: b64, mime_type: "image/jpeg" }),
+            body: JSON.stringify(body),
           });
           const cardJson = await cardRes.json();
           if (cardRes.ok && cardJson.card) {
             generatedCard = cardJson.card;
-            // rare/legendary면 근처 유저 알림 발사 (fire-and-forget)
             if (["rare", "legendary"].includes(generatedCard?.card_rarity ?? "")) {
               fetch("/api/cats/rare-alert", {
                 method: "POST",
@@ -330,8 +333,6 @@ export default function AddCatModal({
         } catch (err) {
           console.error("[CatchCat] 카드 생성 예외:", err);
         }
-      } else {
-        console.warn("[CatchCat] 사진 없음 또는 cat_id 없음", { hasPhoto: !!photoFiles[0], catId: newCat?.id });
       }
 
       setCelebration({
