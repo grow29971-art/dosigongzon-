@@ -19,13 +19,13 @@ const BATTLE_ENVS = {
 type BattleEnvKey = keyof typeof BATTLE_ENVS;
 const ENV_KEYS = Object.keys(BATTLE_ENVS) as BattleEnvKey[];
 
-// 환경별 배경 (레이어드 그라디언트, 이미지 없이 CSS만으로)
+// 환경별 배경 (레이어드 그라디언트, 이미지 없이 CSS만으로 — 뚜렷하게 구분되도록 채도/명도 차이를 크게)
 const ENV_BACKGROUNDS: Record<BattleEnvKey, string> = {
-  night: "radial-gradient(circle at 18% 12%, rgba(150,170,255,0.16), transparent 38%), radial-gradient(circle at 78% 8%, rgba(210,210,255,0.10), transparent 32%), linear-gradient(180deg, #05060F 0%, #150A28 55%, #1A0A2E 100%)",
-  noon:  "radial-gradient(circle at 50% -5%, rgba(255,205,100,0.28), transparent 45%), linear-gradient(180deg, #3A2408 0%, #241033 55%, #1A0A2E 100%)",
-  rain:  "repeating-linear-gradient(112deg, rgba(150,190,255,0.06) 0px, rgba(150,190,255,0.06) 1px, transparent 1px, transparent 13px), linear-gradient(180deg, #071620 0%, #0d1a30 55%, #1A0A2E 100%)",
-  heat:  "radial-gradient(circle at 50% 105%, rgba(255,90,30,0.28), transparent 50%), linear-gradient(180deg, #300D05 0%, #200A20 55%, #1A0A2E 100%)",
-  fog:   "linear-gradient(180deg, rgba(205,210,220,0.14), transparent 42%), linear-gradient(180deg, #1B1E26 0%, #221830 55%, #1A0A2E 100%)",
+  night: "radial-gradient(circle at 20% 10%, rgba(160,180,255,0.35), transparent 30%), radial-gradient(circle at 82% 6%, rgba(220,220,255,0.22), transparent 22%), radial-gradient(circle at 60% 20%, rgba(140,160,255,0.15), transparent 18%), linear-gradient(180deg, #04051C 0%, #0C1042 45%, #1A0A2E 100%)",
+  noon:  "radial-gradient(circle at 50% -8%, rgba(255,210,110,0.55), transparent 42%), radial-gradient(circle at 50% 10%, rgba(255,170,60,0.25), transparent 55%), linear-gradient(180deg, #8A5416 0%, #4A2A10 42%, #1A0A2E 100%)",
+  rain:  "repeating-linear-gradient(112deg, rgba(160,210,255,0.16) 0px, rgba(160,210,255,0.16) 2px, transparent 2px, transparent 11px), linear-gradient(180deg, #062838 0%, #0A3350 42%, #1A0A2E 100%)",
+  heat:  "radial-gradient(circle at 50% 100%, rgba(255,110,30,0.55), transparent 55%), radial-gradient(circle at 50% 30%, rgba(255,60,20,0.18), transparent 50%), linear-gradient(180deg, #601505 0%, #380D08 42%, #1A0A2E 100%)",
+  fog:   "linear-gradient(180deg, rgba(215,220,230,0.42), transparent 48%), linear-gradient(180deg, #4A4D58 0%, #33303F 42%, #1A0A2E 100%)",
 };
 
 // 스킬별 쿨다운 턴수 [normal, heavy, guard, special]
