@@ -24,6 +24,7 @@ interface CardCat {
   battle_special2: string | null;
   battle_special3: string | null;
   battle_special4: string | null;
+  win_streak: number | null;
 }
 
 // 등급별 HP 보너스: 일반→레전드로 갈수록 체력이 두껍게
@@ -47,6 +48,45 @@ function calcStats(cat: CardCat) {
 
 function rnd(min: number, max: number) {
   return min + Math.random() * (max - min);
+}
+
+// 매칭용 승률 추정 — 실제 대미지식으로 가볍게 여러 번 모의 전투해서 내 승률을 근사
+function quickSimWin(mine: ReturnType<typeof calcStats>, opp: ReturnType<typeof calcStats>): boolean {
+  let aHp = mine.hp, dHp = opp.hp;
+  let aTurn = mine.spd >= opp.spd;
+  for (let turn = 0; turn < 30 && aHp > 0 && dHp > 0; turn++) {
+    if (aTurn) {
+      const isDodge = Math.random() * 100 < opp.eva;
+      if (!isDodge) {
+        const isCrit = Math.random() * 100 < mine.crit;
+        const dmg = Math.max(5, Math.round((mine.atk - opp.def * 0.4) * rnd(0.85, 1.2) * (isCrit ? 1.8 : 1)));
+        dHp = Math.max(0, dHp - dmg);
+      }
+    } else {
+      const isDodge = Math.random() * 100 < mine.eva;
+      if (!isDodge) {
+        const isCrit = Math.random() * 100 < opp.crit;
+        const dmg = Math.max(5, Math.round((opp.atk - mine.def * 0.4) * rnd(0.85, 1.2) * (isCrit ? 1.8 : 1)));
+        aHp = Math.max(0, aHp - dmg);
+      }
+    }
+    aTurn = !aTurn;
+  }
+  return aHp >= dHp;
+}
+function estimateWinRate(mine: CardCat, opp: CardCat, trials = 20): number {
+  const mineStats = calcStats(mine);
+  const oppStats = calcStats(opp);
+  let wins = 0;
+  for (let i = 0; i < trials; i++) if (quickSimWin(mineStats, oppStats)) wins++;
+  return wins / trials;
+}
+function pickByTargetWinRate(mine: CardCat, candidates: CardCat[], target: number): CardCat {
+  const scored = candidates
+    .map(o => ({ o, diff: Math.abs(estimateWinRate(mine, o) - target) }))
+    .sort((a, b) => a.diff - b.diff);
+  const closePicks = scored.slice(0, Math.max(1, Math.ceil(scored.length * 0.25)));
+  return closePicks[Math.floor(Math.random() * closePicks.length)].o;
 }
 
 function simulateBattle(attacker: CardCat, defender: CardCat) {
@@ -103,7 +143,7 @@ export async function POST(req: Request) {
   // 내 카드 조회
   const { data: myCat } = await supabase
     .from("cats")
-    .select("id,name,photo_url,caretaker_id,card_level,card_exp,card_rarity,card_name,card_traits,card_stats,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4")
+    .select("id,name,photo_url,caretaker_id,card_level,card_exp,card_rarity,card_name,card_traits,card_stats,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4,win_streak")
     .eq("id", my_cat_id)
     .eq("caretaker_id", user.id)
     .not("card_generated_at", "is", null)
@@ -111,28 +151,50 @@ export async function POST(req: Request) {
 
   if (!myCat) return NextResponse.json({ error: "cat not found" }, { status: 404 });
 
-  // 상대 랜덤 선택 (같은 희귀도 또는 인근 등급, 내 고양이 제외)
-  const rarities: Record<string, string[]> = {
+  // 상대 선택 — 가능하면 같은 등급으로, 없으면 인근 등급으로 확대
+  const NEARBY_RARITIES: Record<string, string[]> = {
     common: ["common", "uncommon"],
     uncommon: ["common", "uncommon", "rare"],
     rare: ["uncommon", "rare", "legendary"],
     legendary: ["rare", "legendary"],
   };
-  const matchRarities = rarities[myCat.card_rarity ?? "common"] ?? ["common"];
+  const myRarity = myCat.card_rarity ?? "common";
+  const OPP_COLS = "id,name,photo_url,caretaker_id,card_level,card_exp,card_rarity,card_name,card_traits,card_stats,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4,win_streak";
 
-  const { data: opponents } = await supabase
+  const { data: sameRarityOpponents } = await supabase
     .from("cats")
-    .select("id,name,photo_url,caretaker_id,card_level,card_exp,card_rarity,card_name,card_traits,card_stats,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4")
+    .select(OPP_COLS)
     .neq("caretaker_id", user.id)
-    .in("card_rarity", matchRarities)
+    .eq("card_rarity", myRarity)
     .not("card_generated_at", "is", null)
     .limit(50);
+
+  let opponents = sameRarityOpponents;
+  if (!opponents || opponents.length === 0) {
+    const matchRarities = NEARBY_RARITIES[myRarity] ?? ["common"];
+    const { data: nearbyOpponents } = await supabase
+      .from("cats")
+      .select(OPP_COLS)
+      .neq("caretaker_id", user.id)
+      .in("card_rarity", matchRarities)
+      .not("card_generated_at", "is", null)
+      .limit(50);
+    opponents = nearbyOpponents;
+  }
 
   if (!opponents || opponents.length === 0) {
     return NextResponse.json({ error: "no_opponents" }, { status: 404 });
   }
 
-  const opponent = opponents[Math.floor(Math.random() * opponents.length)] as CardCat;
+  // 자동전투는 항상 승률 45%를 노려 매칭(무관심 파밍 방지), 수동은 3연승부터 승률 50%로 매칭
+  let opponent: CardCat;
+  if (mode === "auto") {
+    opponent = pickByTargetWinRate(myCat as CardCat, opponents as CardCat[], 0.45);
+  } else if ((myCat.win_streak ?? 0) >= 3) {
+    opponent = pickByTargetWinRate(myCat as CardCat, opponents as CardCat[], 0.50);
+  } else {
+    opponent = opponents[Math.floor(Math.random() * opponents.length)] as CardCat;
+  }
 
   // 수동 배틀: 스탯만 반환 (시뮬레이션 없음)
   if (mode === "manual") {
@@ -168,10 +230,12 @@ export async function POST(req: Request) {
   const { data: myProfile } = await svc.from("profiles").select("coins").eq("id", user.id).maybeSingle();
   const coinsGained = result.attackerWins ? COINS_BATTLE_WIN : COINS_BATTLE_LOSE;
   const newCoins = (myProfile?.coins ?? 0) + coinsGained;
+  const myNewStreak  = result.attackerWins ? (myCat.win_streak ?? 0) + 1 : 0;
+  const oppNewStreak = result.attackerWins ? 0 : (opponent.win_streak ?? 0) + 1;
 
   await Promise.all([
-    svc.from("cats").update({ card_exp: myNewExp,  card_level: computeLevel(myNewExp)  }).eq("id", myCat.id),
-    svc.from("cats").update({ card_exp: oppNewExp, card_level: computeLevel(oppNewExp) }).eq("id", opponent.id),
+    svc.from("cats").update({ card_exp: myNewExp,  card_level: computeLevel(myNewExp),  win_streak: myNewStreak  }).eq("id", myCat.id),
+    svc.from("cats").update({ card_exp: oppNewExp, card_level: computeLevel(oppNewExp), win_streak: oppNewStreak }).eq("id", opponent.id),
     svc.from("profiles").update({ coins: newCoins }).eq("id", user.id),
     svc.from("card_battles").insert({
       challenger_id:     user.id,

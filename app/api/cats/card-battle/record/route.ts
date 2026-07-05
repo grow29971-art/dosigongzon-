@@ -19,13 +19,13 @@ export async function POST(req: Request) {
   const { my_cat_id, opp_cat_id, opp_caretaker_id, winner, rounds, my_hp_left, opp_hp_left } = await req.json();
 
   const { data: myCat } = await supabase
-    .from("cats").select("id,card_exp,card_level,caretaker_id")
+    .from("cats").select("id,card_exp,card_level,caretaker_id,win_streak")
     .eq("id", my_cat_id).eq("caretaker_id", user.id).maybeSingle();
 
   if (!myCat) return NextResponse.json({ error: "cat not found" }, { status: 404 });
 
   const { data: oppCat } = await supabase
-    .from("cats").select("id,card_exp,card_level")
+    .from("cats").select("id,card_exp,card_level,win_streak")
     .eq("id", opp_cat_id).maybeSingle();
 
   const svc = serviceClient(
@@ -41,10 +41,12 @@ export async function POST(req: Request) {
   const { data: myProfile } = await svc.from("profiles").select("coins").eq("id", user.id).maybeSingle();
   const coinsGained = iWon ? COINS_BATTLE_WIN : COINS_BATTLE_LOSE;
   const newCoins = (myProfile?.coins ?? 0) + coinsGained;
+  const myNewStreak  = iWon ? (myCat.win_streak ?? 0) + 1 : 0;
+  const oppNewStreak = iWon ? 0 : (oppCat?.win_streak ?? 0) + 1;
 
   await Promise.all([
-    svc.from("cats").update({ card_exp: myNewExp, card_level: computeLevel(myNewExp) }).eq("id", my_cat_id),
-    oppCat && svc.from("cats").update({ card_exp: oppNewExp, card_level: computeLevel(oppNewExp) }).eq("id", opp_cat_id),
+    svc.from("cats").update({ card_exp: myNewExp, card_level: computeLevel(myNewExp), win_streak: myNewStreak }).eq("id", my_cat_id),
+    oppCat && svc.from("cats").update({ card_exp: oppNewExp, card_level: computeLevel(oppNewExp), win_streak: oppNewStreak }).eq("id", opp_cat_id),
     svc.from("profiles").update({ coins: newCoins }).eq("id", user.id),
     svc.from("card_battles").insert({
       challenger_id: user.id,

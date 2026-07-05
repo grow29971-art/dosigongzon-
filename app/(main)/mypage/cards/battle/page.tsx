@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
 import { SPECIAL_SKILLS } from "@/lib/battle-config";
-import { SHOP_ITEMS, SHOP_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-config";
+import { SHOP_ITEMS, BATTLE_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-config";
 
 /* ──────────── 배틀 환경 ──────────── */
 const BATTLE_ENVS = {
@@ -206,6 +206,7 @@ export default function BattlePage() {
   const [mode, setMode] = useState<Mode>("manual");
   const [phase, setPhase] = useState<Phase>("select");
   const [autoPilot, setAutoPilot] = useState(false); // 수동 배틀 중 자동전투 전환
+  const [autoUseItems, setAutoUseItems] = useState(false); // 자동전투 중 아이템도 자동 사용할지
   const [error, setError] = useState("");
   const [countdown, setCountdown] = useState(3);
 
@@ -333,11 +334,21 @@ export default function BattlePage() {
     if(phase !== "player_choose") { clearTimer(); return; }
     if(autoPilot) {
       clearTimer();
-      const t = setTimeout(() => { if(mounted.current) pickSkill(oppAI(myHpRef.current, myMaxHp)); }, 500);
+      const t = setTimeout(() => {
+        if(!mounted.current) return;
+        if(autoUseItems) {
+          const hpRatio = myHpRef.current / Math.max(1, myMaxHp);
+          const debuffed = myStunnedRef.current>0 || myPoisonRef.current>0 || myBleedRef.current>0 || myBoundRef.current>0;
+          if(hpRatio < 0.35 && (inventory.heal_potion ?? 0) > 0) { useItem("heal_potion"); return; }
+          if(debuffed && (inventory.cleanse_potion ?? 0) > 0) { useItem("cleanse_potion"); return; }
+          if(hpRatio < 0.5 && !myShieldRef.current && (inventory.shield ?? 0) > 0) { useItem("shield"); return; }
+        }
+        pickSkill(oppAI(myHpRef.current, myMaxHp));
+      }, 500);
       return () => clearTimeout(t);
     }
     startTimer();
-  }, [phase, autoPilot]); // eslint-disable-line
+  }, [phase, autoPilot, autoUseItems]); // eslint-disable-line
 
   /* ── 배틀 시작 ── */
   const startBattle = async () => {
@@ -1023,6 +1034,17 @@ export default function BattlePage() {
                   }}>
                   ⚡ 자동전투 {autoPilot?"ON":"OFF"}
                 </button>
+                {autoPilot && (
+                  <button onClick={()=>setAutoUseItems(a=>!a)}
+                    style={{
+                      fontSize:10, fontWeight:900, padding:"4px 9px", borderRadius:99, whiteSpace:"nowrap",
+                      background: autoUseItems ? "linear-gradient(135deg,#B87000,#FFA020)" : "rgba(255,255,255,0.08)",
+                      color: autoUseItems ? "white" : "rgba(255,255,255,0.5)",
+                      border: autoUseItems ? "1px solid transparent" : "1px solid rgba(255,255,255,0.15)",
+                    }}>
+                    🎒 자동아이템 {autoUseItems?"ON":"OFF"}
+                  </button>
+                )}
                 <div style={{flex:1, height:4, borderRadius:99, background:"rgba(255,255,255,0.08)"}}>
                   {!autoPilot && (
                     <div style={{height:"100%",borderRadius:99,width:`${(timerLeft/6)*100}%`,transition:"width 0.9s linear",background:timerLeft<=2?"#FF4444":timerLeft<=4?"#FFAA22":"#44AAFF",boxShadow:timerLeft<=2?"0 0 8px #FF4444":undefined,animation:timerLeft<=2?"pulse 0.6s infinite":undefined}}/>
@@ -1130,7 +1152,7 @@ export default function BattlePage() {
                     </button>
                     {itemPanelOpen && (
                       <div className="grid grid-cols-3 gap-1.5 mt-2">
-                        {SHOP_ITEM_KEYS.map(key=>{
+                        {BATTLE_ITEM_KEYS.map(key=>{
                           const item = SHOP_ITEMS[key];
                           const qty = inventory[key] ?? 0;
                           return (

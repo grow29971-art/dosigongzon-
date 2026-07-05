@@ -63,7 +63,7 @@ export const SPECIAL_SKILLS: Record<SpecialSkillId, SpecialSkill> = {
   apocalypse_strike: { id:"apocalypse_strike", name:"종말의 일격", desc:"필살 강타 (2.2×)", icon:"🌋", rarity:"legendary" },
 };
 
-const SKILL_POOL: Record<string, SpecialSkillId[]> = {
+export const SKILL_POOL: Record<string, SpecialSkillId[]> = {
   common:    ["sharp_claws", "quick_dodge", "focus", "intimidate_sm", "hiss", "grooming", "warm_nap", "tail_whip", "claw_flurry", "body_slam"],
   uncommon:  ["freeze", "scratch", "intimidate", "pounce", "ambush", "static_shock", "night_prowl", "thunderclap", "cold_glare", "dash_strike"],
   rare:      ["poison", "bind", "slow", "double_strike", "rend", "howl", "frenzy", "curse", "venom_fang", "shockwave"],

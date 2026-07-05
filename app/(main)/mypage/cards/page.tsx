@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, X, Swords, Trophy, Coins, Star, Zap, Share2 } from "lucide-react";
+import { ArrowLeft, Loader2, X, Swords, Trophy, Coins, Star, Zap, Share2, Scroll } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
+import { SPECIAL_SKILLS } from "@/lib/battle-config";
 import Link from "next/link";
 
 interface CardCat {
@@ -20,6 +21,10 @@ interface CardCat {
   card_generated_at: string;
   card_level: number;
   card_exp: number;
+  battle_special: string | null;
+  battle_special2: string | null;
+  battle_special3: string | null;
+  battle_special4: string | null;
 }
 
 const RARITY_ORDER: CardRarity[] = ["legendary", "rare", "uncommon", "common"];
@@ -38,21 +43,27 @@ export default function MyCardsPage() {
   const [repCardId, setRepCardId] = useState<string | null>(null);
   const [synthLoading, setSynthLoading] = useState(false);
   const [synthMsg, setSynthMsg] = useState("");
+  const [relearnQty, setRelearnQty] = useState(0);
+  const [relearnLoading, setRelearnLoading] = useState(false);
+  const [relearnMsg, setRelearnMsg] = useState("");
 
   const loadCats = async (uid: string) => {
-    const [{ data }, { data: profile }] = await Promise.all([
+    const [{ data }, { data: profile }, { data: relearnItem }] = await Promise.all([
       createClient()
         .from("cats")
-        .select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_generated_at,card_level,card_exp")
+        .select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_generated_at,card_level,card_exp,battle_special,battle_special2,battle_special3,battle_special4")
         .eq("caretaker_id", uid)
         .not("card_generated_at", "is", null)
         .order("card_level", { ascending: false })
         .order("card_generated_at", { ascending: false }),
       createClient()
         .from("profiles").select("rep_card_cat_id").eq("id", uid).maybeSingle(),
+      createClient()
+        .from("user_items").select("quantity").eq("user_id", uid).eq("item_key", "skill_relearn").maybeSingle(),
     ]);
     setCats((data ?? []) as CardCat[]);
     setRepCardId((profile as { rep_card_cat_id?: string | null } | null)?.rep_card_cat_id ?? null);
+    setRelearnQty((relearnItem as { quantity?: number } | null)?.quantity ?? 0);
     setLoading(false);
   };
 
@@ -64,7 +75,7 @@ export default function MyCardsPage() {
 
   useEffect(() => {
     if (selected) document.body.style.overflow = "hidden";
-    else { document.body.style.overflow = ""; setSynthMsg(""); }
+    else { document.body.style.overflow = ""; setSynthMsg(""); setRelearnMsg(""); }
     return () => { document.body.style.overflow = ""; };
   }, [selected]);
 
@@ -98,6 +109,27 @@ export default function MyCardsPage() {
       setSelected(prev => prev ? { ...prev, card_rarity: json.new_rarity as CardRarity, card_name: json.new_card_name ?? prev.card_name } : null);
     } else {
       setSynthMsg(json.error === "insufficient_level" ? `레벨 부족 (Lv.${json.have}/${json.need})` : "오류 발생");
+    }
+  };
+
+  const doRelearn = async (slot: number) => {
+    if (!selected || relearnQty <= 0 || relearnLoading) return;
+    setRelearnLoading(true);
+    setRelearnMsg("");
+    const res = await fetch("/api/shop/relearn-skill", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ cat_id: selected.id, slot }),
+    });
+    const json = await res.json();
+    setRelearnLoading(false);
+    if (res.ok) {
+      setRelearnQty(json.remaining);
+      const key = (["battle_special", "battle_special2", "battle_special3", "battle_special4"] as const)[slot];
+      setSelected(prev => prev ? { ...prev, [key]: json.new_skill_id } : null);
+      setCats(prev => prev.map(c => c.id === selected.id ? { ...c, [key]: json.new_skill_id } : c));
+      setRelearnMsg(`📜 스킬 ${slot + 1}이(가) "${json.new_skill_name}"(으)로 바뀌었어요!`);
+    } else {
+      setRelearnMsg(json.error === "no_stock" ? "머신이 없어요. 상점에서 구매해주세요." : "오류 발생");
     }
   };
 
@@ -241,6 +273,39 @@ export default function MyCardsPage() {
                 {synthMsg}
               </p>
             )}
+
+            {/* 기술 다시 배우기 */}
+            <div className="w-full rounded-2xl p-3" style={{ background: "rgba(255,255,255,0.05)" }}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[12px] font-bold text-white flex items-center gap-1.5">
+                  <Scroll size={13} /> 기술 다시 배우기
+                </span>
+                <span className="text-[11px] font-bold" style={{ color: relearnQty > 0 ? "#FFCC44" : "rgba(255,255,255,0.35)" }}>
+                  머신 보유 {relearnQty}개
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-1.5">
+                {([selected.battle_special, selected.battle_special2, selected.battle_special3, selected.battle_special4]).map((id, i) => {
+                  const skill = SPECIAL_SKILLS[id as keyof typeof SPECIAL_SKILLS];
+                  return (
+                    <button key={i} onClick={() => doRelearn(i)} disabled={relearnQty <= 0 || relearnLoading}
+                      className="rounded-xl px-2 py-1.5 text-left flex items-center gap-1.5"
+                      style={{ background: "rgba(255,255,255,0.06)", opacity: relearnQty > 0 ? 1 : 0.4 }}>
+                      <span style={{ fontSize: 14 }}>{skill?.icon ?? "❔"}</span>
+                      <span className="text-[10.5px] font-bold text-white truncate">{skill?.name ?? "?"}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              {relearnQty <= 0 && (
+                <p className="text-[10px] text-gray-500 mt-1.5">상점에서 &quot;기술 다시 배우기 머신&quot;을 구매하면 스킬을 눌러 재배정할 수 있어요.</p>
+              )}
+              {relearnMsg && (
+                <p className="text-[11px] font-bold text-center mt-1.5" style={{ color: relearnMsg.includes("오류") || relearnMsg.includes("없어요") ? "#FF8080" : "#80FF80" }}>
+                  {relearnMsg}
+                </p>
+              )}
+            </div>
 
             {/* 자랑하기 */}
             <button onClick={() => shareCard(selected)}
