@@ -8,6 +8,20 @@ import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
 import { SPECIAL_SKILLS } from "@/lib/battle-config";
 
+/* ──────────── 배틀 환경 ──────────── */
+const BATTLE_ENVS = {
+  night:  { emoji:"🌙", name:"심야 골목",  desc:"회피+15%",         evaBonus:15,  critBonus:0,   dmgMult:1.0,  dotMult:1.0 },
+  noon:   { emoji:"☀️", name:"한낮 광장",  desc:"크리티컬+10%",     evaBonus:0,   critBonus:10,  dmgMult:1.0,  dotMult:1.0 },
+  rain:   { emoji:"🌧️", name:"빗속 골목", desc:"독·출혈 피해 2배",  evaBonus:0,   critBonus:0,   dmgMult:1.0,  dotMult:2.0 },
+  heat:   { emoji:"🔥", name:"여름 골목",  desc:"데미지+15%",        evaBonus:0,   critBonus:0,   dmgMult:1.15, dotMult:1.0 },
+  fog:    { emoji:"🌫️", name:"안개 골목", desc:"회피+20%/크리티컬↓", evaBonus:20,  critBonus:-10, dmgMult:1.0,  dotMult:1.0 },
+} as const;
+type BattleEnvKey = keyof typeof BATTLE_ENVS;
+const ENV_KEYS = Object.keys(BATTLE_ENVS) as BattleEnvKey[];
+
+// 스킬별 쿨다운 턴수 [normal, heavy, guard, special]
+const SKILL_COOLDOWNS = [0, 2, 1, 2];
+
 /* ──────────── 타입 ──────────── */
 interface BattleCat {
   id: string; name: string; photo_url: string | null;
@@ -69,19 +83,21 @@ function HpBar({ current, max }: { current:number; max:number }) {
 }
 
 /* ──────────── 기술 버튼 ──────────── */
-function SkillBtn({ skill, idx, disabled, onPick }: { skill:Skill; idx:number; disabled:boolean; onPick:(i:number)=>void }) {
+function SkillBtn({ skill, idx, disabled, cooldown=0, onPick }: { skill:Skill; idx:number; disabled:boolean; cooldown?:number; onPick:(i:number)=>void }) {
   const icons = [<Swords key={0} size={14}/>, <Zap key={1} size={14}/>, <Shield key={2} size={14}/>, <Sparkles key={3} size={14}/>];
+  const isCd = cooldown > 0;
+  const isOff = disabled || isCd;
   return (
-    <button onClick={() => !disabled && onPick(idx)} disabled={disabled}
+    <button onClick={() => !isOff && onPick(idx)} disabled={isOff}
       style={{
         flex:1, minWidth:0, display:"flex", flexDirection:"column", alignItems:"center", gap:3,
         padding:"10px 4px", borderRadius:14, border:`1.5px solid ${skill.color}44`,
-        background: disabled ? "rgba(255,255,255,0.04)" : `${skill.color}22`,
-        opacity: disabled ? 0.4 : 1, cursor: disabled?"default":"pointer",
-        transition:"transform 0.1s, opacity 0.2s",
+        background: isOff ? "rgba(255,255,255,0.04)" : `${skill.color}22`,
+        opacity: isOff ? 0.45 : 1, cursor: isOff?"default":"pointer",
+        transition:"transform 0.1s, opacity 0.2s", position:"relative",
         WebkitTapHighlightColor:"transparent",
       }}
-      onPointerDown={e => { if (!disabled) (e.currentTarget as HTMLButtonElement).style.transform="scale(0.93)"; }}
+      onPointerDown={e => { if (!isOff) (e.currentTarget as HTMLButtonElement).style.transform="scale(0.93)"; }}
       onPointerUp={e => { (e.currentTarget as HTMLButtonElement).style.transform="scale(1)"; }}>
       <span style={{ color:skill.color, display:"flex", alignItems:"center", gap:3, fontSize:13, fontWeight:900 }}>
         {icons[idx]} {skill.icon}
@@ -90,6 +106,12 @@ function SkillBtn({ skill, idx, disabled, onPick }: { skill:Skill; idx:number; d
         {skill.name}
       </span>
       <span style={{ fontSize:9, color:"rgba(255,255,255,0.4)", textAlign:"center" }}>{skill.desc}</span>
+      {isCd && (
+        <div style={{ position:"absolute", inset:0, borderRadius:14, background:"rgba(0,0,0,0.65)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:1 }}>
+          <span style={{ fontSize:18, fontWeight:900, color:"#FF8888" }}>{cooldown}</span>
+          <span style={{ fontSize:8, color:"rgba(255,180,180,0.8)" }}>쿨다운</span>
+        </div>
+      )}
     </button>
   );
 }
@@ -122,7 +144,11 @@ export default function BattlePage() {
   const setMyHp = (v:number) => { myHpRef.current=v; if(mounted.current)_setMyHp(v); };
   const setOppHp = (v:number) => { oppHpRef.current=v; if(mounted.current)_setOppHp(v); };
 
-  // 상태이상
+  // 배틀 환경
+  const [battleEnv, setBattleEnv] = useState<BattleEnvKey|null>(null);
+  const battleEnvRef = useRef<BattleEnvKey|null>(null);
+
+  // 상태이상 (기절/방어)
   const myGuardRef = useRef(false);
   const oppGuardRef = useRef(false);
   const myStunnedRef = useRef(false);
@@ -131,6 +157,20 @@ export default function BattlePage() {
   const [oppGuardVis, setOppGuardVis] = useState(false);
   const [myStunVis, setMyStunVis] = useState(false);
   const [oppStunVis, setOppStunVis] = useState(false);
+
+  // 지속 상태이상 DoT/속박
+  const myPoisonRef  = useRef(0);   // 남은 독 턴수
+  const oppPoisonRef = useRef(0);
+  const myBleedRef   = useRef(0);   // 남은 출혈 턴수
+  const oppBleedRef  = useRef(0);
+  const myBoundRef   = useRef(false);  // 속박(회피 불가)
+  const oppBoundRef  = useRef(false);
+  const [myStatusBadges,  setMyStatusBadges]  = useState<string[]>([]);
+  const [oppStatusBadges, setOppStatusBadges] = useState<string[]>([]);
+
+  // 스킬 쿨다운 [normal, heavy, guard, special]
+  const mySkillCdRef = useRef([0,0,0,0]);
+  const [mySkillCd,  setMySkillCd]  = useState([0,0,0,0]);
 
   // 애니메이션
   const [myAnim, setMyAnim] = useState<CardAnim>("idle");
@@ -206,6 +246,10 @@ export default function BattlePage() {
     const opp = json.opponent as BattleCat;
     setOpponent(opp);
 
+    // 랜덤 배틀 환경 선택
+    const envKey = ENV_KEYS[Math.floor(Math.random() * ENV_KEYS.length)];
+    setBattleEnv(envKey); battleEnvRef.current = envKey;
+
     if(mode === "manual") {
       const ms = json.my_stats as BattleStats;
       const os = json.opp_stats as BattleStats;
@@ -216,6 +260,11 @@ export default function BattlePage() {
       myStunnedRef.current=false; oppStunnedRef.current=false;
       setMyGuardVis(false); setOppGuardVis(false);
       setMyStunVis(false); setOppStunVis(false);
+      myPoisonRef.current=0; oppPoisonRef.current=0;
+      myBleedRef.current=0; oppBleedRef.current=0;
+      myBoundRef.current=false; oppBoundRef.current=false;
+      setMyStatusBadges([]); setOppStatusBadges([]);
+      mySkillCdRef.current=[0,0,0,0]; setMySkillCd([0,0,0,0]);
     } else {
       // 자동 전투
       const r = json.result as AutoResult;
@@ -309,20 +358,30 @@ export default function BattlePage() {
     const myGuard  = myGuardRef.current;
     const oppGuard = oppGuardRef.current;
 
-    // 회피 체크 (공격 전)
-    const defEva = defender.battle_eva ?? 8;
-    if(skill.type !== "guard" && checkEvasion(defEva)) {
+    // 환경 보정
+    const env = battleEnvRef.current ? BATTLE_ENVS[battleEnvRef.current] : null;
+    const envEvaBonus  = env?.evaBonus  ?? 0;
+    const envCritBonus = env?.critBonus ?? 0;
+    const envDmgMult   = env?.dmgMult   ?? 1.0;
+
+    // 속박 체크 (속박 상태면 회피 불가)
+    const defBound = isPlayer ? oppBoundRef.current : myBoundRef.current;
+    if (isPlayer) oppBoundRef.current = false; else myBoundRef.current = false;
+
+    // 회피 체크 (공격 전, 속박 시 무조건 맞음)
+    const defEva = (defender.battle_eva ?? 8) + envEvaBonus;
+    if(!defBound && skill.type !== "guard" && checkEvasion(defEva)) {
       if(isPlayer){ setOppAnim("dodge"); } else { setMyAnim("dodge"); }
       setTimeout(()=>{ setMyAnim("idle"); setOppAnim("idle"); }, 350);
       return { dmg:0, isCrit:false, msg:"💨 회피!", dodged:true };
     }
 
-    const atkCrit = attacker.battle_crit ?? 8;
+    const atkCrit = (attacker.battle_crit ?? 8) + envCritBonus;
     let dmg=0, isCrit=false, msg="";
 
     switch(skill.type) {
-      case "normal": { const r=calcDmg(atkSt.atk,defSt.def,1.0,atkCrit); dmg=r.dmg; isCrit=r.isCrit; break; }
-      case "heavy":  { const r=calcDmg(atkSt.atk,defSt.def,1.5,atkCrit); dmg=r.dmg; isCrit=r.isCrit; break; }
+      case "normal": { const r=calcDmg(atkSt.atk,defSt.def,1.0*envDmgMult,atkCrit); dmg=r.dmg; isCrit=r.isCrit; break; }
+      case "heavy":  { const r=calcDmg(atkSt.atk,defSt.def,1.5*envDmgMult,atkCrit); dmg=r.dmg; isCrit=r.isCrit; break; }
       case "guard": {
         if(isPlayer){ myGuardRef.current=true; setMyGuardVis(true); }
         else { oppGuardRef.current=true; setOppGuardVis(true); }
@@ -333,32 +392,32 @@ export default function BattlePage() {
         // 카드 고유 특수 스킬 사용
         const skillId = attacker.battle_special ?? "sharp_claws";
         switch(skillId) {
-          case "sharp_claws": { const r=calcDmg(atkSt.atk,defSt.def,1.4,atkCrit); dmg=r.dmg; isCrit=r.isCrit; msg="🐾 날카로운 발톱!"; break; }
-          case "quick_dodge":   msg="💨 재빠른 도약!"; if(isPlayer) setMyGuardVis(true); else setOppGuardVis(true); break;
-          case "focus":        { const r=calcDmg(atkSt.atk,defSt.def,1.0,100); dmg=r.dmg; isCrit=true; msg="👁️ 집중! 크리티컬 확정"; break; }
-          case "intimidate_sm": msg="😠 견제! 상대 공격력↓"; break;
+          case "sharp_claws": { const r=calcDmg(atkSt.atk,defSt.def,1.4*envDmgMult,atkCrit); dmg=r.dmg; isCrit=r.isCrit; msg="🐾 날카로운 발톱!"; break; }
+          case "quick_dodge":   msg="💨 재빠른 도약!"; if(isPlayer){myGuardRef.current=true;setMyGuardVis(true);}else{oppGuardRef.current=true;setOppGuardVis(true);} break;
+          case "focus":        { const r=calcDmg(atkSt.atk,defSt.def,1.0*envDmgMult,100); dmg=r.dmg; isCrit=true; msg="👁️ 집중! 크리티컬 확정"; break; }
+          case "intimidate_sm": { const r=calcDmg(atkSt.atk*0.6,defSt.def,1.0,atkCrit); dmg=r.dmg; isCrit=r.isCrit; if(isPlayer){oppBoundRef.current=true;}else{myBoundRef.current=true;} msg="😠 견제! 다음 공격 회피 불가"; break; }
           case "freeze":
-            if(Math.random()<0.6){ if(isPlayer){oppStunnedRef.current=true;setOppStunVis(true);} else {myStunnedRef.current=true;setMyStunVis(true);} msg="❄️ 얼리기! 기절"; }
-            else msg="❄️ 얼리기... 실패";
+            if(Math.random()<0.6){ if(isPlayer){oppStunnedRef.current=true;setOppStunVis(true);}else{myStunnedRef.current=true;setMyStunVis(true);} msg="❄️ 얼리기 성공! 기절"; }
+            else msg="❄️ 얼리기... 저항!";
             break;
-          case "scratch":    { const r=calcDmg(atkSt.atk,defSt.def,0.8,atkCrit); dmg=r.dmg; isCrit=r.isCrit; msg="🩸 할퀴기! 출혈"; break; }
-          case "intimidate":  msg="😱 공포의 눈빛! 상대 공격↓↓"; break;
-          case "pounce":     { const r=calcDmg(atkSt.atk,5,1.1,atkCrit); dmg=r.dmg; isCrit=r.isCrit; msg="🦘 도약 강타! 방어 무시"; break; }
-          case "poison":     { const r=calcDmg(atkSt.atk,defSt.def,0.7,atkCrit); dmg=r.dmg; isCrit=r.isCrit; msg="☠️ 독! 지속 피해"; break; }
-          case "bind":       { msg="⛓️ 속박! 상대 회피 0%"; break; }
-          case "slow":       { if(isPlayer){oppStunnedRef.current=true;setOppStunVis(true);} else {myStunnedRef.current=true;setMyStunVis(true);} msg="🐌 느리게! 선제권 박탈"; break; }
+          case "scratch":    { const r=calcDmg(atkSt.atk,defSt.def,0.8*envDmgMult,atkCrit); dmg=r.dmg; isCrit=r.isCrit; if(isPlayer)oppBleedRef.current=2;else myBleedRef.current=2; msg="🩸 할퀴기! 출혈 2턴"; break; }
+          case "intimidate":  { if(isPlayer){oppStunnedRef.current=true;setOppStunVis(true);}else{myStunnedRef.current=true;setMyStunVis(true);} msg="😱 공포의 눈빛! 기절"; break; }
+          case "pounce":     { const r=calcDmg(atkSt.atk,5,1.1*envDmgMult,atkCrit); dmg=r.dmg; isCrit=r.isCrit; msg="🦘 도약 강타! 방어 무시"; break; }
+          case "poison":     { const r=calcDmg(atkSt.atk,defSt.def,0.7*envDmgMult,atkCrit); dmg=r.dmg; isCrit=r.isCrit; if(isPlayer)oppPoisonRef.current=3;else myPoisonRef.current=3; msg="☠️ 독 중독! 3턴 지속"; break; }
+          case "bind":       { if(isPlayer)oppBoundRef.current=true;else myBoundRef.current=true; msg="⛓️ 속박! 다음 공격 회피 불가"; break; }
+          case "slow":       { if(isPlayer){oppStunnedRef.current=true;setOppStunVis(true);}else{myStunnedRef.current=true;setMyStunVis(true);} msg="🐌 느리게! 1턴 스킵"; break; }
           case "double_strike": {
-            const r1=calcDmg(atkSt.atk,defSt.def,0.8,atkCrit);
-            const r2=calcDmg(atkSt.atk,defSt.def,0.8,atkCrit);
+            const r1=calcDmg(atkSt.atk,defSt.def,0.8*envDmgMult,atkCrit);
+            const r2=calcDmg(atkSt.atk,defSt.def,0.8*envDmgMult,atkCrit);
             dmg=r1.dmg+r2.dmg; isCrit=r1.isCrit||r2.isCrit;
             msg=`⚡ 연속 공격! ${r1.dmg}+${r2.dmg}`;
             break;
           }
-          case "vampirism":  { const r=calcDmg(atkSt.atk,defSt.def,1.2,atkCrit); dmg=r.dmg; isCrit=r.isCrit; const heal=Math.round(dmg*0.3); if(isPlayer) setMyHp(Math.min(myMaxH,myHpRef.current+heal)); else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); msg=`🧛 흡혈! +${heal}HP 흡수`; break; }
-          case "invincible": { if(isPlayer){myGuardRef.current=true;setMyGuardVis(true);} else {oppGuardRef.current=true;setOppGuardVis(true);} msg="✨ 무적 발동! 다음 피해 무효"; break; }
-          case "dominate":   { const r=calcDmg(atkSt.atk*1.2,5,1.0,atkCrit); dmg=r.dmg; isCrit=r.isCrit; msg="👑 지배! 상대 전 스탯↓↓↓"; break; }
-          case "regen":      { const heal=Math.round(myMaxH*0.08); if(isPlayer) setMyHp(Math.min(myMaxH,myHpRef.current+heal)); else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); msg=`💚 재생! +${heal}HP`; break; }
-          default:           { const r=calcDmg(atkSt.atk,defSt.def,1.3,atkCrit); dmg=r.dmg; isCrit=r.isCrit; break; }
+          case "vampirism":  { const r=calcDmg(atkSt.atk,defSt.def,1.2*envDmgMult,atkCrit); dmg=r.dmg; isCrit=r.isCrit; const heal=Math.round(dmg*0.3); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); msg=`🧛 흡혈! +${heal}HP 흡수`; break; }
+          case "invincible": { if(isPlayer){myGuardRef.current=true;setMyGuardVis(true);}else{oppGuardRef.current=true;setOppGuardVis(true);} msg="✨ 무적 발동! 다음 피해 무효"; break; }
+          case "dominate":   { const r=calcDmg(atkSt.atk*1.2,5,1.0*envDmgMult,atkCrit); dmg=r.dmg; isCrit=r.isCrit; if(isPlayer){oppBoundRef.current=true;oppPoisonRef.current=2;}else{myBoundRef.current=true;myPoisonRef.current=2;} msg="👑 지배! 속박+독"; break; }
+          case "regen":      { const heal=Math.round(myMaxH*0.12); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); msg=`💚 재생! +${heal}HP`; break; }
+          default:           { const r=calcDmg(atkSt.atk,defSt.def,1.3*envDmgMult,atkCrit); dmg=r.dmg; isCrit=r.isCrit; break; }
         }
         break;
       }
@@ -383,10 +442,48 @@ export default function BattlePage() {
     return { dmg, isCrit, msg, dodged:false };
   };
 
+  /* ── 라운드 종료: 독/출혈 틱 + 쿨다운 감소 ── */
+  const applyDotTick = useCallback((): boolean => {
+    const env = battleEnvRef.current ? BATTLE_ENVS[battleEnvRef.current] : null;
+    const dotMult = env?.dotMult ?? 1.0;
+
+    let myNewHp = myHpRef.current;
+    let oppNewHp = oppHpRef.current;
+
+    if(myPoisonRef.current > 0) { myNewHp = Math.max(0, myNewHp - Math.round(8*dotMult)); myPoisonRef.current--; }
+    if(myBleedRef.current > 0) { myNewHp = Math.max(0, myNewHp - Math.round(5*dotMult)); myBleedRef.current--; }
+    if(oppPoisonRef.current > 0) { oppNewHp = Math.max(0, oppNewHp - Math.round(8*dotMult)); oppPoisonRef.current--; }
+    if(oppBleedRef.current > 0) { oppNewHp = Math.max(0, oppNewHp - Math.round(5*dotMult)); oppBleedRef.current--; }
+
+    const myBadges: string[] = [];
+    const oppBadges: string[] = [];
+    if(myPoisonRef.current>0) myBadges.push(`☠️${myPoisonRef.current}`);
+    if(myBleedRef.current>0) myBadges.push(`🩸${myBleedRef.current}`);
+    if(oppPoisonRef.current>0) oppBadges.push(`☠️${oppPoisonRef.current}`);
+    if(oppBleedRef.current>0) oppBadges.push(`🩸${oppBleedRef.current}`);
+    setMyStatusBadges(myBadges);
+    setOppStatusBadges(oppBadges);
+
+    setMyHp(myNewHp);
+    setOppHp(oppNewHp);
+
+    mySkillCdRef.current = mySkillCdRef.current.map(c => Math.max(0, c-1));
+    setMySkillCd([...mySkillCdRef.current]);
+
+    if(myNewHp<=0) { endBattle("opponent"); return true; }
+    if(oppNewHp<=0) { endBattle("me"); return true; }
+    return false;
+  }, []); // eslint-disable-line
+
   const pickSkill = useCallback((skillIdx: number) => {
     if(!myStats || !oppStats || !selected || !opponent || !mounted.current) return;
+    if(mySkillCdRef.current[skillIdx] > 0) return;
     clearTimer();
     setPhase("animating");
+    if(SKILL_COOLDOWNS[skillIdx] > 0) {
+      mySkillCdRef.current[skillIdx] = SKILL_COOLDOWNS[skillIdx];
+      setMySkillCd([...mySkillCdRef.current]);
+    }
 
     const { dmg, isCrit, msg } = applySkill(skillIdx, true, myStats, oppStats, myMaxHp, oppMaxHp, selected, opponent);
     const skill = mySkills[skillIdx];
@@ -421,9 +518,10 @@ export default function BattlePage() {
           if(!mounted.current) return;
           if(isStunned) {
             setTurnCount(t=>t+1);
+            setOppStunVis(false);
+            if(applyDotTick()) return;
             if(myStunnedRef.current) { myStunnedRef.current=false; setMyStunVis(false); setActionMsg("기절해서 행동할 수 없다!"); setTimeout(()=>{ if(mounted.current){ setActionMsg("기술을 선택하세요!"); setPhase("player_choose"); }}, 1200); }
             else { setActionMsg("기술을 선택하세요!"); setPhase("player_choose"); }
-            setOppStunVis(false);
             return;
           }
 
@@ -453,6 +551,7 @@ export default function BattlePage() {
               if(myHpRef.current<=0) { endBattle("opponent"); return; }
 
               setTurnCount(t=>t+1);
+              if(applyDotTick()) return;
               if(myStunnedRef.current) {
                 myStunnedRef.current=false; setMyStunVis(false);
                 setActionMsg("기절해서 행동할 수 없다!");
@@ -580,6 +679,13 @@ export default function BattlePage() {
         {(isFightPhase||phase==="animating") && selected && opponent && (
           <div className="flex-1 flex flex-col px-4 gap-3" style={{paddingTop:12,paddingBottom:8}}>
 
+            {/* 배틀 환경 */}
+            {battleEnv && (
+              <div className="text-center" style={{fontSize:11,fontWeight:800,color:"rgba(255,255,255,0.6)"}}>
+                {BATTLE_ENVS[battleEnv].emoji} {BATTLE_ENVS[battleEnv].name} · {BATTLE_ENVS[battleEnv].desc}
+              </div>
+            )}
+
             {/* 수동: 타이머 바 */}
             {mode==="manual"&&(
               <div style={{height:4,borderRadius:99,background:"rgba(255,255,255,0.08)"}}>
@@ -594,6 +700,11 @@ export default function BattlePage() {
                 <div style={{position:"relative"}}>
                   {myDanger&&<div style={{position:"absolute",top:-8,left:"50%",transform:"translateX(-50%)",zIndex:10,background:"#FF3333",color:"white",fontSize:9,fontWeight:900,padding:"2px 6px",borderRadius:99,whiteSpace:"nowrap"}}>⚠️ 위기</div>}
                   {myStunVis&&<div style={{position:"absolute",top:-8,left:"50%",transform:"translateX(-50%)",zIndex:10,background:"#8800CC",color:"white",fontSize:9,fontWeight:900,padding:"2px 6px",borderRadius:99,whiteSpace:"nowrap"}}>💫 기절</div>}
+                  {myStatusBadges.length>0&&(
+                    <div style={{position:"absolute",top:-8,right:-4,zIndex:10,display:"flex",flexDirection:"column",gap:2}}>
+                      {myStatusBadges.map((b,i)=>(<span key={i} style={{background:"rgba(0,0,0,0.75)",color:"#FFAA88",fontSize:9,fontWeight:900,padding:"1px 5px",borderRadius:99,whiteSpace:"nowrap"}}>{b}</span>))}
+                    </div>
+                  )}
                   <div style={cardStyle(myAnim,"left")}><CatCard name={selected.name} photoUrl={selected.photo_url} card={toCard(selected)} size="sm"/></div>
                   {dmgPopup?.target==="me"&&(
                     <div key={`me${Date.now()}`} style={{position:"absolute",top:"25%",left:"50%",transform:"translateX(-50%)",fontWeight:900,color:dmgPopup.isCrit?"#FFD700":"white",fontSize:dmgPopup.msg?13:18,textShadow:"0 2px 8px rgba(0,0,0,0.9)",animation:"dPop 0.8s ease forwards",pointerEvents:"none",whiteSpace:"nowrap"}}>
@@ -623,6 +734,11 @@ export default function BattlePage() {
                 <div style={{position:"relative"}}>
                   {oppDanger&&<div style={{position:"absolute",top:-8,left:"50%",transform:"translateX(-50%)",zIndex:10,background:"#FF3333",color:"white",fontSize:9,fontWeight:900,padding:"2px 6px",borderRadius:99,whiteSpace:"nowrap"}}>⚠️ 위기</div>}
                   {oppStunVis&&<div style={{position:"absolute",top:-8,left:"50%",transform:"translateX(-50%)",zIndex:10,background:"#8800CC",color:"white",fontSize:9,fontWeight:900,padding:"2px 6px",borderRadius:99,whiteSpace:"nowrap"}}>💫 기절</div>}
+                  {oppStatusBadges.length>0&&(
+                    <div style={{position:"absolute",top:-8,right:-4,zIndex:10,display:"flex",flexDirection:"column",gap:2}}>
+                      {oppStatusBadges.map((b,i)=>(<span key={i} style={{background:"rgba(0,0,0,0.75)",color:"#FFAA88",fontSize:9,fontWeight:900,padding:"1px 5px",borderRadius:99,whiteSpace:"nowrap"}}>{b}</span>))}
+                    </div>
+                  )}
                   <div style={cardStyle(oppAnim,"right")}><CatCard name={opponent.name} photoUrl={opponent.photo_url} card={toCard(opponent)} size="sm"/></div>
                   {dmgPopup?.target==="opp"&&(
                     <div key={`op${Date.now()}`} style={{position:"absolute",top:"25%",left:"50%",transform:"translateX(-50%)",fontWeight:900,color:dmgPopup.isCrit?"#FFD700":"white",fontSize:dmgPopup.msg?13:18,textShadow:"0 2px 8px rgba(0,0,0,0.9)",animation:"dPop 0.8s ease forwards",pointerEvents:"none",whiteSpace:"nowrap"}}>
@@ -653,7 +769,7 @@ export default function BattlePage() {
                 )}
                 <div className="flex gap-2">
                   {mySkills.map((sk,i)=>(
-                    <SkillBtn key={i} skill={sk} idx={i} disabled={phase!=="player_choose"} onPick={pickSkill}/>
+                    <SkillBtn key={i} skill={sk} idx={i} disabled={phase!=="player_choose"} cooldown={mySkillCd[i]} onPick={pickSkill}/>
                   ))}
                 </div>
                 {phase==="opp_thinking"&&(
