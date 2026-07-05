@@ -313,9 +313,9 @@ export default function AddCatModal({
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ cat_id: newCat.id, image_base64: b64, mime_type: "image/jpeg" }),
           });
-          if (cardRes.ok) {
-            const { card } = await cardRes.json();
-            generatedCard = card ?? null;
+          const cardJson = await cardRes.json();
+          if (cardRes.ok && cardJson.card) {
+            generatedCard = cardJson.card;
             // rare/legendary면 근처 유저 알림 발사 (fire-and-forget)
             if (["rare", "legendary"].includes(generatedCard?.card_rarity ?? "")) {
               fetch("/api/cats/rare-alert", {
@@ -324,8 +324,14 @@ export default function AddCatModal({
                 body: JSON.stringify({ cat_id: newCat.id }),
               }).catch(() => {});
             }
+          } else {
+            console.warn("[CatchCat] 카드 생성 실패:", cardJson);
           }
-        } catch { /* 카드 생성 실패해도 등록은 정상 완료 */ }
+        } catch (err) {
+          console.error("[CatchCat] 카드 생성 예외:", err);
+        }
+      } else {
+        console.warn("[CatchCat] 사진 없음 또는 cat_id 없음", { hasPhoto: !!photoFiles[0], catId: newCat?.id });
       }
 
       setCelebration({

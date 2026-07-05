@@ -94,7 +94,8 @@ export async function POST(request: Request) {
     await supabase.from("cats").update(card).eq("id", cat_id).eq("caretaker_id", user.id);
 
     return NextResponse.json({ card });
-  } catch {
-    return NextResponse.json({ error: "generation_failed" }, { status: 500 });
+  } catch (err) {
+    console.error("[generate-card] 실패:", err);
+    return NextResponse.json({ error: "generation_failed", detail: String(err) }, { status: 500 });
   }
 }
