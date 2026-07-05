@@ -7,21 +7,32 @@ interface Props {
   onCapture: (file: File) => void;
   onClose: () => void;
   onFallbackGallery?: () => void;
+  /** 갤러리에서 선택한 파일 — 제공 시 카메라 대신 이 사진으로 포획 화면 */
+  previewFile?: File;
 }
 
-type CamState = "requesting" | "ready" | "denied" | "error";
+type CamState = "requesting" | "ready" | "denied" | "error" | "preview";
 
-export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery }: Props) {
+export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery, previewFile }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const animRef = useRef<number>(0);
 
-  const [camState, setCamState] = useState<CamState>("requesting");
+  const [camState, setCamState] = useState<CamState>(previewFile ? "preview" : "requesting");
   const [capturing, setCapturing] = useState(false);
   const [caught, setCaught] = useState(false);
   const [scanAngle, setScanAngle] = useState(0);
   const [pulseScale, setPulseScale] = useState(1);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+
+  // 갤러리 파일 미리보기 URL 생성
+  useEffect(() => {
+    if (!previewFile) return;
+    const url = URL.createObjectURL(previewFile);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [previewFile]);
 
   const startCamera = useCallback(async () => {
     setCamState("requesting");
@@ -44,16 +55,17 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   }, []);
 
   useEffect(() => {
+    if (previewFile) return; // 갤러리 모드면 카메라 시작 안 함
     startCamera();
     return () => {
       streamRef.current?.getTracks().forEach(t => t.stop());
       cancelAnimationFrame(animRef.current);
     };
-  }, [startCamera]);
+  }, [startCamera, previewFile]);
 
   // 스캔 애니메이션
   useEffect(() => {
-    if (camState !== "ready") return;
+    if (camState !== "ready" && camState !== "preview") return;
     let t = 0;
     const animate = () => {
       t += 0.04;
@@ -66,7 +78,17 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   }, [camState]);
 
   const handleCapture = useCallback(() => {
-    if (!videoRef.current || !canvasRef.current || camState !== "ready" || capturing) return;
+    if (capturing) return;
+
+    // 갤러리 미리보기 모드 — 파일 그대로 반환
+    if (camState === "preview" && previewFile) {
+      setCapturing(true);
+      setCaught(true);
+      setTimeout(() => { onCapture(previewFile); }, 800);
+      return;
+    }
+
+    if (!videoRef.current || !canvasRef.current || camState !== "ready") return;
     setCapturing(true);
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -84,7 +106,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
         onCapture(file);
       }, 800);
     }, "image/jpeg", 0.92);
-  }, [camState, capturing, onCapture]);
+  }, [camState, capturing, previewFile, onCapture]);
 
   const size = 220;
   const cx = size / 2;
@@ -176,6 +198,53 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
         </div>
       )}
 
+      {/* 갤러리 미리보기 피드 */}
+      {camState === "preview" && previewUrl && (
+        <div className="flex-1 relative overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={previewUrl}
+            alt="선택한 사진"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ opacity: caught ? 0.3 : 1, transition: "opacity 0.3s" }}
+          />
+          <canvas ref={canvasRef} className="hidden" />
+          {caught && (
+            <div className="absolute inset-0 flex items-center justify-center z-20">
+              <div className="text-center">
+                <p className="text-white text-[36px] font-black drop-shadow-lg animate-bounce">포획!</p>
+                <p className="text-yellow-300 text-[16px] font-bold mt-1">🐱 고양이 카드 생성 중...</p>
+              </div>
+            </div>
+          )}
+          {!caught && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <svg width={size} height={size} style={{ transform: `scale(${pulseScale})` }}>
+                <circle cx={cx} cy={cy} r={r + 20} stroke="rgba(255,255,255,0.15)" strokeWidth="1" fill="none" />
+                <circle cx={cx} cy={cy} r={r} stroke="rgba(255,255,255,0.6)" strokeWidth="2" fill="none" />
+                {[0, 90, 180, 270].map(deg => {
+                  const rad = (deg * Math.PI) / 180;
+                  const mx = cx + Math.cos(rad) * r;
+                  const my = cy + Math.sin(rad) * r;
+                  return (
+                    <g key={deg} transform={`translate(${mx},${my}) rotate(${deg + 45})`}>
+                      <line x1="-10" y1="0" x2="10" y2="0" stroke="#FFD700" strokeWidth="3" strokeLinecap="round" />
+                      <line x1="0" y1="-10" x2="0" y2="10" stroke="#FFD700" strokeWidth="3" strokeLinecap="round" />
+                    </g>
+                  );
+                })}
+                <line x1={cx} y1={cy} x2={cx + Math.cos(scanAngle) * r} y2={cy + Math.sin(scanAngle) * r}
+                  stroke="rgba(99,255,180,0.7)" strokeWidth="2" />
+                <text x={cx} y={cy + 8} textAnchor="middle" fontSize="24" fill="rgba(255,255,255,0.9)">🐾</text>
+                <circle cx={cx} cy={cy - r - 10} r="5" fill="#00FF88" style={{ filter: "drop-shadow(0 0 4px #00FF88)" }} />
+              </svg>
+            </div>
+          )}
+          <div className="absolute inset-0 pointer-events-none"
+            style={{ background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.5) 100%)" }} />
+        </div>
+      )}
+
       {/* 카메라 피드 */}
       {(camState === "ready" || camState === "requesting") && (
         <div className={`flex-1 relative overflow-hidden ${camState === "requesting" ? "hidden" : ""}`}>
@@ -229,7 +298,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
       )}
 
       {/* 하단 포획 버튼 */}
-      {camState === "ready" && !caught && (
+      {(camState === "ready" || camState === "preview") && !caught && (
         <div className="pb-12 pt-6 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.7)" }}>
           <button
             onClick={handleCapture}

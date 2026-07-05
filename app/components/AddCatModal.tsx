@@ -78,6 +78,7 @@ export default function AddCatModal({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [showCamera, setShowCamera] = useState(false);
+  const [pendingGalleryFiles, setPendingGalleryFiles] = useState<File[]>([]);
   // 등록 직후 축하 모달
   const [celebration, setCelebration] = useState<{
     open: boolean;
@@ -148,14 +149,26 @@ export default function AddCatModal({
 
   const handleCameraCapture = (file: File) => {
     setShowCamera(false);
+    // 갤러리 모드면 pendingGalleryFiles 전체 추가, 카메라 모드면 file만 추가
+    const filesToAdd = pendingGalleryFiles.length > 0 ? pendingGalleryFiles : [file];
+    setPendingGalleryFiles([]);
     const available = MAX_PHOTOS - photoFiles.length;
-    if (available <= 0) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      setPhotoFiles(prev => [...prev, file]);
-      setPhotoPreviews(prev => [...prev, ev.target?.result as string]);
-    };
-    reader.readAsDataURL(file);
+    const toAdd = filesToAdd.slice(0, available);
+    if (toAdd.length === 0) return;
+    const newPreviews: string[] = [];
+    let loaded = 0;
+    toAdd.forEach((f, idx) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        newPreviews[idx] = ev.target?.result as string;
+        loaded++;
+        if (loaded === toAdd.length) {
+          setPhotoFiles(prev => [...prev, ...toAdd]);
+          setPhotoPreviews(prev => [...prev, ...newPreviews]);
+        }
+      };
+      reader.readAsDataURL(f);
+    });
   };
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -181,20 +194,9 @@ export default function AddCatModal({
     }
 
     setError("");
-    const newPreviews: string[] = [];
-    let loaded = 0;
-    toAdd.forEach((file, idx) => {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        newPreviews[idx] = ev.target?.result as string;
-        loaded += 1;
-        if (loaded === toAdd.length) {
-          setPhotoFiles((prev) => [...prev, ...toAdd]);
-          setPhotoPreviews((prev) => [...prev, ...newPreviews]);
-        }
-      };
-      reader.readAsDataURL(file);
-    });
+    // 첫 번째 사진은 포획 화면으로 — 나머지는 포획 완료 후 한꺼번에 추가
+    setPendingGalleryFiles(toAdd);
+    setShowCamera(true);
 
     // 같은 파일 다시 선택 가능하게 리셋
     if (e.target) e.target.value = "";
@@ -838,8 +840,9 @@ export default function AddCatModal({
       {showCamera && (
         <CatCaptureCamera
           onCapture={handleCameraCapture}
-          onClose={() => setShowCamera(false)}
-          onFallbackGallery={() => { setShowCamera(false); fileInputRef.current?.click(); }}
+          onClose={() => { setShowCamera(false); setPendingGalleryFiles([]); }}
+          onFallbackGallery={() => { setShowCamera(false); setPendingGalleryFiles([]); fileInputRef.current?.click(); }}
+          previewFile={pendingGalleryFiles[0]}
         />
       )}
     </div>,
