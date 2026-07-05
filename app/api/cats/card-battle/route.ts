@@ -36,30 +36,45 @@ function simulateBattle(attacker: CardCat, defender: CardCat) {
   const as = calcStats(attacker);
   const ds = calcStats(defender);
   let aHp = as.hp, dHp = ds.hp;
-  const log: { turn: number; actor: string; dmg: number; aHp: number; dHp: number }[] = [];
+  const aMaxHp = as.hp, dMaxHp = ds.hp;
+  const log: { turn: number; actor: string; dmg: number; aHp: number; dHp: number; isCritical: boolean; isDodge: boolean; isCounterAttack: boolean; skillName: string }[] = [];
   let turn = 0;
-  const MAX_TURNS = 20;
+  const MAX_TURNS = 30;
 
-  // 속도 높은 쪽 먼저
+  const SKILLS_A = attacker.card_traits?.slice(0, 3) ?? ["야생의 눈빛", "날카로운 발톱", "신비로운 시선"];
+  const SKILLS_D = defender.card_traits?.slice(0, 3) ?? ["야생의 눈빛", "날카로운 발톱", "신비로운 시선"];
+
   let aTurn = as.spd >= ds.spd;
 
   while (aHp > 0 && dHp > 0 && turn < MAX_TURNS) {
     turn++;
+
     if (aTurn) {
-      const dmg = Math.max(5, Math.round((as.atk - ds.def * 0.4) * rnd(0.85, 1.2)));
+      // 위기 반격: HP 25% 이하면 공격력 +30%
+      const counterBoost = aHp < aMaxHp * 0.25 ? 1.3 : 1.0;
+      const isCritical = Math.random() < 0.08;
+      // 전설 카드 회피 15%
+      const isDodge = defender.card_rarity === "legendary" && Math.random() < 0.15;
+      const baseDmg = Math.max(5, Math.round((as.atk - ds.def * 0.4) * rnd(0.85, 1.2) * counterBoost));
+      const dmg = isDodge ? 0 : Math.round(baseDmg * (isCritical ? 1.8 : 1.0));
       dHp = Math.max(0, dHp - dmg);
-      log.push({ turn, actor: attacker.name, dmg, aHp, dHp });
+      const skillName = SKILLS_A[turn % SKILLS_A.length] ?? "공격";
+      log.push({ turn, actor: attacker.name, dmg, aHp, dHp, isCritical, isDodge, isCounterAttack: counterBoost > 1, skillName });
     } else {
-      const dmg = Math.max(5, Math.round((ds.atk - as.def * 0.4) * rnd(0.85, 1.2)));
+      const counterBoost = dHp < dMaxHp * 0.25 ? 1.3 : 1.0;
+      const isCritical = Math.random() < 0.08;
+      const isDodge = attacker.card_rarity === "legendary" && Math.random() < 0.15;
+      const baseDmg = Math.max(5, Math.round((ds.atk - as.def * 0.4) * rnd(0.85, 1.2) * counterBoost));
+      const dmg = isDodge ? 0 : Math.round(baseDmg * (isCritical ? 1.8 : 1.0));
       aHp = Math.max(0, aHp - dmg);
-      log.push({ turn, actor: defender.name, dmg, aHp, dHp });
+      const skillName = SKILLS_D[turn % SKILLS_D.length] ?? "공격";
+      log.push({ turn, actor: defender.name, dmg, aHp, dHp, isCritical, isDodge, isCounterAttack: counterBoost > 1, skillName });
     }
     aTurn = !aTurn;
   }
 
-  // 무승부면 HP 더 남은 쪽 승리
   const attackerWins = aHp >= dHp;
-  return { attackerWins, aHp, dHp, rounds: turn, log };
+  return { attackerWins, aHp, dHp, aMaxHp, dMaxHp, rounds: turn, log };
 }
 
 export async function POST(req: Request) {
@@ -148,6 +163,8 @@ export async function POST(req: Request) {
       winner: result.attackerWins ? "me" : "opponent",
       my_hp_left: result.aHp,
       opp_hp_left: result.dHp,
+      my_max_hp: result.aMaxHp,
+      opp_max_hp: result.dMaxHp,
       rounds: result.rounds,
       log: result.log,
       exp_gained: result.attackerWins ? winnerExp : loserExp,
