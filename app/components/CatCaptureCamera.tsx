@@ -6,9 +6,10 @@ import { X, Zap } from "lucide-react";
 interface Props {
   onCapture: (file: File) => void;
   onClose: () => void;
+  onFallbackGallery?: () => void;
 }
 
-export default function CatCaptureCamera({ onCapture, onClose }: Props) {
+export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -36,8 +37,12 @@ export default function CatCaptureCamera({ onCapture, onClose }: Props) {
           await videoRef.current.play();
           setReady(true);
         }
-      } catch {
-        if (!cancelled) setError("카메라를 열 수 없어요. 권한을 확인해주세요.");
+      } catch (e) {
+        if (!cancelled) {
+          const msg = e instanceof Error ? e.name : "";
+          if (msg === "NotAllowedError") setError("카메라 권한이 거부됐어요. 설정 → 개인 정보 보호 → 카메라에서 도시공존을 허용해주세요.");
+          else setError("카메라를 열 수 없어요. 갤러리에서 선택해주세요.");
+        }
       }
     })();
     return () => {
@@ -111,13 +116,26 @@ export default function CatCaptureCamera({ onCapture, onClose }: Props) {
       {error ? (
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center px-8">
-            <p className="text-white text-[16px] font-bold mb-4">{error}</p>
-            <button
-              onClick={() => { streamRef.current?.getTracks().forEach(t => t.stop()); onClose(); }}
-              className="px-6 py-3 rounded-2xl bg-white text-black font-bold text-[14px]"
-            >
-              돌아가기
-            </button>
+            <p className="text-[32px] mb-3">📷</p>
+            <p className="text-white text-[15px] font-bold mb-2">{error}</p>
+            <div className="flex flex-col gap-2 mt-4">
+              {onFallbackGallery && (
+                <button
+                  onClick={() => { streamRef.current?.getTracks().forEach(t => t.stop()); onFallbackGallery(); }}
+                  className="px-6 py-3 rounded-2xl font-bold text-[14px] text-black"
+                  style={{ background: "#FFD700" }}
+                >
+                  갤러리에서 선택하기
+                </button>
+              )}
+              <button
+                onClick={() => { streamRef.current?.getTracks().forEach(t => t.stop()); onClose(); }}
+                className="px-6 py-3 rounded-2xl font-bold text-[14px]"
+                style={{ background: "rgba(255,255,255,0.15)", color: "white" }}
+              >
+                돌아가기
+              </button>
+            </div>
           </div>
         </div>
       ) : (

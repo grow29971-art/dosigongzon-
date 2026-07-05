@@ -831,6 +831,7 @@ export default function AddCatModal({
         <CatCaptureCamera
           onCapture={handleCameraCapture}
           onClose={() => setShowCamera(false)}
+          onFallbackGallery={() => { setShowCamera(false); fileInputRef.current?.click(); }}
         />
       )}
     </div>,

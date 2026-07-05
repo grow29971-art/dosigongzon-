@@ -15,6 +15,16 @@ extension ViewController: WKUIDelegate {
         return nil
     }
 
+    // WKWebView에서 getUserMedia 카메라/마이크 권한 요청 → 자동 승인 (iOS 15+)
+    @available(iOS 15.0, *)
+    func webView(_ webView: WKWebView,
+                 requestMediaCapturePermissionFor origin: WKSecurityOrigin,
+                 initiatedByFrame frame: WKFrameInfo,
+                 type: WKMediaCaptureType,
+                 decisionHandler: @escaping (WKPermissionDecision) -> Void) {
+        decisionHandler(.grant)
+    }
+
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
                  decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         // iframe 등 서브프레임은 모두 허용 (Turnstile, 카카오맵 등 외부 위젯)

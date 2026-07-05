@@ -21,6 +21,7 @@ class ViewController: UIViewController, WKNavigationDelegate, WKScriptMessageHan
 
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
+        config.mediaTypesRequiringUserActionForPlayback = []
 
         let onboardingScript = WKUserScript(
             source: "try{localStorage.setItem('dosigongzon_onboarded','true');}catch(e){}",
@@ -35,6 +36,7 @@ class ViewController: UIViewController, WKNavigationDelegate, WKScriptMessageHan
         gWebView.backgroundColor = .white
         gWebView.scrollView.backgroundColor = .white
         gWebView.navigationDelegate = self
+        gWebView.uiDelegate = self
         if #available(iOS 15.0, *) {
             gWebView.underPageBackgroundColor = .white
         }
