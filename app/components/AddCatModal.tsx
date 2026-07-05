@@ -8,6 +8,8 @@ import { createCat, uploadCatPhoto, type Cat, type CatGender, type CatHealthStat
 import { useAuth } from "@/lib/auth-context";
 import CatRegistrationCelebration from "@/app/components/CatRegistrationCelebration";
 import type { CatCardData } from "@/app/components/CatCard";
+import dynamic from "next/dynamic";
+const CatCaptureCamera = dynamic(() => import("@/app/components/CatCaptureCamera"), { ssr: false });
 import { findLocationViolations, formatViolationMessage } from "@/lib/location-patterns";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 
@@ -75,6 +77,7 @@ export default function AddCatModal({
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [showCamera, setShowCamera] = useState(false);
   // 등록 직후 축하 모달
   const [celebration, setCelebration] = useState<{
     open: boolean;
@@ -142,6 +145,18 @@ export default function AddCatModal({
     }
     return () => { document.body.style.overflow = ""; };
   }, [open, initialLat, initialLng]);
+
+  const handleCameraCapture = (file: File) => {
+    setShowCamera(false);
+    const available = MAX_PHOTOS - photoFiles.length;
+    if (available <= 0) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setPhotoFiles(prev => [...prev, file]);
+      setPhotoPreviews(prev => [...prev, ev.target?.result as string]);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files ?? []);
@@ -263,14 +278,20 @@ export default function AddCatModal({
         localStorage.setItem(countKey, String(registrationCount));
       } catch {}
 
-      // CatchCat 카드 생성 (사진 있으면 Gemini로 비동기 생성, 실패해도 무관)
+      // CatchCat 카드 생성 — 첫 번째 사진을 base64로 직접 전송 (서버 URL fetch 의존 제거)
       let generatedCard: CatCardData | null = null;
-      if (photoUrl) {
+      if (photoFiles[0] && newCat.id) {
         try {
+          const b64 = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve((reader.result as string).split(",")[1]);
+            reader.onerror = reject;
+            reader.readAsDataURL(photoFiles[0]);
+          });
           const cardRes = await fetch("/api/cats/generate-card", {
             method: "POST",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ cat_id: newCat.id, photo_url: photoUrl }),
+            body: JSON.stringify({ cat_id: newCat.id, image_base64: b64, mime_type: photoFiles[0].type || "image/jpeg" }),
           });
           if (cardRes.ok) {
             const { card } = await cardRes.json();
@@ -386,15 +407,28 @@ export default function AddCatModal({
               </span>
             </div>
             {photoPreviews.length === 0 ? (
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="relative w-full aspect-[4/3] rounded-2xl bg-surface-alt border-2 border-dashed border-border flex flex-col items-center justify-center gap-2 active:scale-[0.99] transition-transform overflow-hidden"
-              >
-                <Camera size={28} className="text-text-light" strokeWidth={1.5} />
-                <p className="text-[12px] text-text-sub font-medium">사진 추가하기</p>
-                <p className="text-[10px] text-text-light">720p WebP로 자동 변환 · 최대 {MAX_PHOTOS}장</p>
-              </button>
+              <div className="flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCamera(true)}
+                  className="relative w-full aspect-[4/3] rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-2 active:scale-[0.99] transition-transform overflow-hidden"
+                  style={{ background: "linear-gradient(135deg, #0F0F1A 0%, #1A1A2E 100%)", borderColor: "#6366F1" }}
+                >
+                  <span className="text-[36px]">🐾</span>
+                  <p className="text-[14px] font-extrabold text-white">고양이 포획하기</p>
+                  <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.5)" }}>카메라로 직접 찍어서 카드 발급</p>
+                  <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[9px] font-bold text-white" style={{ background: "#6366F1" }}>CatchCat</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full py-2.5 rounded-xl border border-dashed border-border flex items-center justify-center gap-2 active:scale-[0.99]"
+                  style={{ background: "#F8F6F3" }}
+                >
+                  <Camera size={15} className="text-text-light" strokeWidth={1.5} />
+                  <p className="text-[12px] text-text-sub">갤러리에서 선택</p>
+                </button>
+              </div>
             ) : (
               <div className="grid grid-cols-3 gap-2">
                 {photoPreviews.map((src, idx) => (
@@ -791,6 +825,14 @@ export default function AddCatModal({
           onClose();
         }}
       />
+
+      {/* 포켓몬GO 스타일 포획 카메라 */}
+      {showCamera && (
+        <CatCaptureCamera
+          onCapture={handleCameraCapture}
+          onClose={() => setShowCamera(false)}
+        />
+      )}
     </div>,
     portalRoot,
   );
