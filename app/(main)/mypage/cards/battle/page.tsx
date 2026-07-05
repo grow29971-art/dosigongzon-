@@ -230,7 +230,7 @@ export default function BattlePage() {
       if(mounted.current) setTimerLeft(t);
       if(t <= 0) {
         clearTimer();
-        if(mounted.current) pickSkill(0); // 타임오버 → 기본 공격
+        if(mounted.current) pickSkill(null); // 타임오버 → 턴 패스 (상대에게 넘어감)
       }
     }, 1000);
   }, []); // eslint-disable-line
@@ -509,20 +509,28 @@ export default function BattlePage() {
     return false;
   }, []); // eslint-disable-line
 
-  const pickSkill = useCallback((skillIdx: number) => {
+  const pickSkill = useCallback((skillIdx: number | null) => {
     if(!myStats || !oppStats || !selected || !opponent || !mounted.current) return;
-    if(mySkillCdRef.current[skillIdx] > 0) return;
+    if(skillIdx !== null && mySkillCdRef.current[skillIdx] > 0) return;
     clearTimer();
     setPhase("animating");
-    if(SKILL_COOLDOWNS[skillIdx] > 0) {
-      mySkillCdRef.current[skillIdx] = SKILL_COOLDOWNS[skillIdx];
-      setMySkillCd([...mySkillCdRef.current]);
-    }
 
-    const { dmg, isCrit, msg } = applySkill(skillIdx, true, myStats, oppStats, myMaxHp, oppMaxHp, selected, opponent);
-    const skill = mySkills[skillIdx];
-    setActionMsg(`${selected.name}의 ${skill.name}!${isCrit?" 💥 크리티컬!":""}${msg?" "+msg:""}`);
-    setMyAnim("attack");
+    let dmg = 0, isCrit = false, msg = "";
+    if(skillIdx === null) {
+      // 타임오버: 아무 행동 없이 턴 패스
+      msg = "⏰ 시간 초과! 턴 패스";
+      setActionMsg(msg);
+    } else {
+      if(SKILL_COOLDOWNS[skillIdx] > 0) {
+        mySkillCdRef.current[skillIdx] = SKILL_COOLDOWNS[skillIdx];
+        setMySkillCd([...mySkillCdRef.current]);
+      }
+      const r = applySkill(skillIdx, true, myStats, oppStats, myMaxHp, oppMaxHp, selected, opponent);
+      dmg = r.dmg; isCrit = r.isCrit; msg = r.msg;
+      const skill = mySkills[skillIdx];
+      setActionMsg(`${selected.name}의 ${skill.name}!${isCrit?" 💥 크리티컬!":""}${msg?" "+msg:""}`);
+      setMyAnim("attack");
+    }
 
     setTimeout(() => {
       if(!mounted.current) return;
