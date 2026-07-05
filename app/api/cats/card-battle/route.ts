@@ -15,16 +15,28 @@ interface CardCat {
   card_name: string | null;
   card_traits: string[] | null;
   card_stats: { cuteness: number; wildness: number; sociability: number; mysteriousness: number } | null;
+  battle_atk: number | null;
+  battle_def: number | null;
+  battle_eva: number | null;
+  battle_crit: number | null;
 }
+
+// 등급별 HP 보너스: 일반→레전드로 갈수록 체력이 두껍게
+const RARITY_HP_BONUS: Record<string, number> = { common:0, uncommon:70, rare:150, legendary:250 };
 
 function calcStats(cat: CardCat) {
   const lv = cat.card_level ?? 1;
   const s = cat.card_stats ?? { cuteness: 50, wildness: 50, sociability: 50, mysteriousness: 50 };
+  const hpBonus = RARITY_HP_BONUS[cat.card_rarity ?? "common"] ?? 0;
+  const baseAtk = cat.battle_atk ?? Math.round(s.wildness * 0.8 + 20);
+  const baseDef = cat.battle_def ?? Math.round(s.mysteriousness * 0.5 + 15);
   return {
-    hp:      Math.round(s.cuteness * 0.8 + s.wildness * 0.4) + 40 + (lv - 1) * 10,
-    atk:     Math.round(s.wildness * 0.8 + 20) + (lv - 1) * 5,
-    def:     Math.round(s.mysteriousness * 0.3 + 10),
-    spd:     Math.round(s.sociability * 0.5 + 20) + lv,
+    hp:   Math.round(s.cuteness * 1.8 + s.wildness * 0.9) + 180 + hpBonus + (lv - 1) * 25,
+    atk:  baseAtk + (lv - 1) * 3,
+    def:  baseDef + (lv - 1) * 2,
+    spd:  Math.round(s.sociability * 0.5 + 20) + lv,
+    eva:  Math.min(45, cat.battle_eva ?? 8),
+    crit: Math.min(45, cat.battle_crit ?? 8),
   };
 }
 
@@ -50,11 +62,9 @@ function simulateBattle(attacker: CardCat, defender: CardCat) {
     turn++;
 
     if (aTurn) {
-      // 위기 반격: HP 25% 이하면 공격력 +30%
       const counterBoost = aHp < aMaxHp * 0.25 ? 1.3 : 1.0;
-      const isCritical = Math.random() < 0.08;
-      // 전설 카드 회피 15%
-      const isDodge = defender.card_rarity === "legendary" && Math.random() < 0.15;
+      const isCritical = Math.random() * 100 < as.crit;
+      const isDodge = Math.random() * 100 < ds.eva;
       const baseDmg = Math.max(5, Math.round((as.atk - ds.def * 0.4) * rnd(0.85, 1.2) * counterBoost));
       const dmg = isDodge ? 0 : Math.round(baseDmg * (isCritical ? 1.8 : 1.0));
       dHp = Math.max(0, dHp - dmg);
@@ -62,8 +72,8 @@ function simulateBattle(attacker: CardCat, defender: CardCat) {
       log.push({ turn, actor: attacker.name, dmg, aHp, dHp, isCritical, isDodge, isCounterAttack: counterBoost > 1, skillName });
     } else {
       const counterBoost = dHp < dMaxHp * 0.25 ? 1.3 : 1.0;
-      const isCritical = Math.random() < 0.08;
-      const isDodge = attacker.card_rarity === "legendary" && Math.random() < 0.15;
+      const isCritical = Math.random() * 100 < ds.crit;
+      const isDodge = Math.random() * 100 < as.eva;
       const baseDmg = Math.max(5, Math.round((ds.atk - as.def * 0.4) * rnd(0.85, 1.2) * counterBoost));
       const dmg = isDodge ? 0 : Math.round(baseDmg * (isCritical ? 1.8 : 1.0));
       aHp = Math.max(0, aHp - dmg);
@@ -88,7 +98,7 @@ export async function POST(req: Request) {
   // 내 카드 조회
   const { data: myCat } = await supabase
     .from("cats")
-    .select("id,name,photo_url,caretaker_id,card_level,card_exp,card_rarity,card_name,card_traits,card_stats")
+    .select("id,name,photo_url,caretaker_id,card_level,card_exp,card_rarity,card_name,card_traits,card_stats,battle_atk,battle_def,battle_eva,battle_crit")
     .eq("id", my_cat_id)
     .eq("caretaker_id", user.id)
     .not("card_generated_at", "is", null)
@@ -107,7 +117,7 @@ export async function POST(req: Request) {
 
   const { data: opponents } = await supabase
     .from("cats")
-    .select("id,name,photo_url,caretaker_id,card_level,card_exp,card_rarity,card_name,card_traits,card_stats")
+    .select("id,name,photo_url,caretaker_id,card_level,card_exp,card_rarity,card_name,card_traits,card_stats,battle_atk,battle_def,battle_eva,battle_crit")
     .neq("caretaker_id", user.id)
     .in("card_rarity", matchRarities)
     .not("card_generated_at", "is", null)
