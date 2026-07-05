@@ -31,6 +31,11 @@ const ENV_BACKGROUNDS: Record<BattleEnvKey, string> = {
 // 스킬별 쿨다운 턴수 [normal, heavy, guard, special]
 const SKILL_COOLDOWNS = [0, 2, 1, 2];
 
+// 등급별 상성 타입 (카드에 표시되는 "약점" 아이콘과 동일한 4각 상성)
+// 🌿 풀 → 🔥 불에 약함 / 🔥 불 → 💧 물에 약함 / 💧 물 → ⚡ 전기에 약함 / ⚡ 전기 → 🌿 풀에 약함
+const RARITY_TYPE: Record<string, string> = { common: "grass", uncommon: "water", rare: "electric", legendary: "fire" };
+const WEAK_TO: Record<string, string> = { grass: "fire", fire: "water", water: "electric", electric: "grass" };
+
 /* ──────────── 타입 ──────────── */
 interface BattleCat {
   id: string; name: string; photo_url: string | null;
@@ -379,15 +384,26 @@ export default function BattlePage() {
     const env = battleEnvRef.current ? BATTLE_ENVS[battleEnvRef.current] : null;
     const envEvaBonus  = env?.evaBonus  ?? 0;
     const envCritBonus = env?.critBonus ?? 0;
-    const envDmgMult   = env?.dmgMult   ?? 1.0;
+
+    // 상성 보정 (카드 등급 = 타입, 카드에 표시된 "약점" 그대로 적용)
+    const atkType = RARITY_TYPE[attacker.card_rarity] ?? "grass";
+    const defType = RARITY_TYPE[defender.card_rarity] ?? "grass";
+    const isEffective = WEAK_TO[defType] === atkType;
+    const envDmgMult = (env?.dmgMult ?? 1.0) * (isEffective ? 2.0 : 1.0);
+
+    // 이번에 사용할 스킬 ID 미리 확인 (야습의 회피 무시 판정에 필요)
+    const usedSkillId = skill.type === "special" ? (attacker.battle_special ?? "sharp_claws")
+                      : skill.type === "heavy"   ? (attacker.battle_special2 ?? "scratch")
+                      : null;
+    const forceHit = usedSkillId === "night_prowl";
 
     // 속박 체크 (속박 상태면 회피 불가)
     const defBound = isPlayer ? oppBoundRef.current : myBoundRef.current;
     if (isPlayer) oppBoundRef.current = false; else myBoundRef.current = false;
 
-    // 회피 체크 (공격 전, 속박 시 무조건 맞음)
+    // 회피 체크 (공격 전, 속박/야습 시 무조건 맞음)
     const defEva = (defender.battle_eva ?? 8) + envEvaBonus;
-    if(!defBound && skill.type !== "guard" && checkEvasion(defEva)) {
+    if(!defBound && !forceHit && skill.type !== "guard" && checkEvasion(defEva)) {
       if(isPlayer){ setOppAnim("dodge"); } else { setMyAnim("dodge"); }
       setTimeout(()=>{ setMyAnim("idle"); setOppAnim("idle"); }, 350);
       return { dmg:0, isCrit:false, msg:"💨 회피!", dodged:true };
@@ -410,6 +426,8 @@ export default function BattlePage() {
           else sMsg="😾 하악... 실패";
           break;
         case "grooming":   { const heal=Math.round(ownMaxHp*0.10); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`🧼 그루밍! +${heal}HP 회복`; break; }
+        case "warm_nap":   { const heal=Math.round(ownMaxHp*0.08); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`😴 따뜻한 낮잠! +${heal}HP 회복`; break; }
+        case "tail_whip":  { const r=calcDmg(atkSt.atk,defSt.def*0.7,1.0*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="🐈 꼬리 치기! 방어 일부 무시"; break; }
         case "freeze":
           if(Math.random()<0.6){ if(isPlayer){oppStunnedRef.current=true;setOppStunVis(true);}else{myStunnedRef.current=true;setMyStunVis(true);} sMsg="❄️ 얼리기 성공! 기절"; }
           else sMsg="❄️ 얼리기... 저항!";
@@ -422,6 +440,13 @@ export default function BattlePage() {
           if(Math.random()<0.4){ if(isPlayer){oppStunnedRef.current=true;setOppStunVis(true);}else{myStunnedRef.current=true;setMyStunVis(true);} sMsg="⚡ 정전기! 기절"; }
           else sMsg="⚡ 정전기... 실패";
           break;
+        case "night_prowl": { const r=calcDmg(atkSt.atk,defSt.def,1.1*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="🌌 야습! 회피 불가 관통"; break; }
+        case "thunderclap": {
+          const r=calcDmg(atkSt.atk,defSt.def,0.6*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit;
+          if(Math.random()<0.35){ if(isPlayer){oppStunnedRef.current=true;setOppStunVis(true);}else{myStunnedRef.current=true;setMyStunVis(true);} sMsg="🌩️ 천둥벽력! 기절"; }
+          else sMsg="🌩️ 천둥벽력!";
+          break;
+        }
         case "poison":     { const r=calcDmg(atkSt.atk,defSt.def,0.7*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer)oppPoisonRef.current=3;else myPoisonRef.current=3; sMsg="☠️ 독 중독! 3턴 지속"; break; }
         case "bind":       { if(isPlayer)oppBoundRef.current=true;else myBoundRef.current=true; sMsg="⛓️ 속박! 다음 공격 회피 불가"; break; }
         case "slow":       { if(isPlayer){oppStunnedRef.current=true;setOppStunVis(true);}else{myStunnedRef.current=true;setMyStunVis(true);} sMsg="🐌 느리게! 1턴 스킵"; break; }
@@ -434,12 +459,29 @@ export default function BattlePage() {
         }
         case "rend":       { const r=calcDmg(atkSt.atk,5,1.0*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer)oppBleedRef.current=2;else myBleedRef.current=2; sMsg="🗡️ 찢기! 방어 무시+출혈"; break; }
         case "howl":       { if(isPlayer)oppBoundRef.current=true;else myBoundRef.current=true; sMsg="🐺 하울링! 속박"; break; }
+        case "frenzy":     { const r=calcDmg(atkSt.atk,defSt.def,1.6*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="🔱 맹공!"; break; }
+        case "curse":      { const r=calcDmg(atkSt.atk,defSt.def,0.7*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer)oppPoisonRef.current=4;else myPoisonRef.current=4; sMsg="👹 저주! 4턴 지속"; break; }
         case "vampirism":  { const r=calcDmg(atkSt.atk,defSt.def,1.2*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; const heal=Math.round(sDmg*0.3); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`🧛 흡혈! +${heal}HP 흡수`; break; }
         case "invincible": { if(isPlayer){myGuardRef.current=true;setMyGuardVis(true);}else{oppGuardRef.current=true;setOppGuardVis(true);} sMsg="✨ 무적 발동! 다음 피해 무효"; break; }
         case "dominate":   { const r=calcDmg(atkSt.atk*1.2,5,1.0*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer){oppBoundRef.current=true;oppPoisonRef.current=2;}else{myBoundRef.current=true;myPoisonRef.current=2;} sMsg="👑 지배! 속박+독"; break; }
         case "regen":      { const heal=Math.round(ownMaxHp*0.12); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`💚 재생! +${heal}HP`; break; }
         case "eclipse":    { const r=calcDmg(atkSt.atk,defSt.def,1.3*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; const heal=Math.round(ownMaxHp*0.15); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`🌘 월식! +${heal}HP 회복`; break; }
         case "overdrive":  { const r=calcDmg(atkSt.atk,defSt.def,1.8*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; const recoil=Math.round(ownMaxHp*0.08); if(isPlayer)setMyHp(Math.max(0,myHpRef.current-recoil));else setOppHp(Math.max(0,oppHpRef.current-recoil)); sMsg=`💢 폭주! 반동 -${recoil}HP`; break; }
+        case "meteor":     { const r=calcDmg(atkSt.atk,defSt.def,2.0*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="☄️ 메테오!"; break; }
+        case "cleanse": {
+          const heal=Math.round(ownMaxHp*0.10);
+          if(isPlayer){
+            myPoisonRef.current=0; myBleedRef.current=0; myBoundRef.current=false;
+            myStunnedRef.current=false; setMyStunVis(false); setMyStatusBadges([]);
+            setMyHp(Math.min(myMaxH,myHpRef.current+heal));
+          } else {
+            oppPoisonRef.current=0; oppBleedRef.current=0; oppBoundRef.current=false;
+            oppStunnedRef.current=false; setOppStunVis(false); setOppStatusBadges([]);
+            setOppHp(Math.min(oppMaxH,oppHpRef.current+heal));
+          }
+          sMsg=`💫 정화! 상태이상 해제 +${heal}HP`;
+          break;
+        }
         default:           { const r=calcDmg(atkSt.atk,defSt.def,1.3*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; break; }
       }
       return { dmg:sDmg, isCrit:sCrit, msg:sMsg };
@@ -455,6 +497,11 @@ export default function BattlePage() {
         break;
       }
       case "special": { const r=runSpecial(attacker.battle_special ?? "sharp_claws"); dmg=r.dmg; isCrit=r.isCrit; msg=r.msg; break; }
+    }
+
+    // 상성 우위 표시
+    if(dmg>0 && isEffective) {
+      msg = msg ? `${msg} · 효과는 굉장했다!` : "효과는 굉장했다!";
     }
 
     // 방어 적용

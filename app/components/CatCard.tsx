@@ -39,7 +39,7 @@ const CFG = {
     glow: "0 0 10px rgba(100,190,60,0.30)",
     label: "일반",
     rarity: "◆",
-    weak: "💧",
+    weak: "🔥",
     holo: "none",
   },
   uncommon: {

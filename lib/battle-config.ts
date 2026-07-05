@@ -1,8 +1,8 @@
 export type SpecialSkillId =
-  | "sharp_claws" | "quick_dodge" | "focus" | "intimidate_sm" | "hiss" | "grooming"
-  | "freeze" | "scratch" | "intimidate" | "pounce" | "ambush" | "static_shock"
-  | "poison" | "bind" | "slow" | "double_strike" | "rend" | "howl"
-  | "vampirism" | "invincible" | "dominate" | "regen" | "eclipse" | "overdrive";
+  | "sharp_claws" | "quick_dodge" | "focus" | "intimidate_sm" | "hiss" | "grooming" | "warm_nap" | "tail_whip"
+  | "freeze" | "scratch" | "intimidate" | "pounce" | "ambush" | "static_shock" | "night_prowl" | "thunderclap"
+  | "poison" | "bind" | "slow" | "double_strike" | "rend" | "howl" | "frenzy" | "curse"
+  | "vampirism" | "invincible" | "dominate" | "regen" | "eclipse" | "overdrive" | "meteor" | "cleanse";
 
 export interface SpecialSkill {
   id: SpecialSkillId;
@@ -20,6 +20,8 @@ export const SPECIAL_SKILLS: Record<SpecialSkillId, SpecialSkill> = {
   intimidate_sm: { id:"intimidate_sm", name:"견제",           desc:"상대 공격력 -15% (1턴)",icon:"😠", rarity:"common" },
   hiss:          { id:"hiss",          name:"하악 위협",      desc:"40% 확률로 1턴 기절",   icon:"😾", rarity:"common" },
   grooming:      { id:"grooming",      name:"그루밍",         desc:"HP 10% 회복",           icon:"🧼", rarity:"common" },
+  warm_nap:      { id:"warm_nap",      name:"따뜻한 낮잠",    desc:"HP 8% 회복",            icon:"😴", rarity:"common" },
+  tail_whip:     { id:"tail_whip",     name:"꼬리 치기",      desc:"상대 방어 30% 무시 공격", icon:"🐈", rarity:"common" },
   // 희귀
   freeze:       { id:"freeze",       name:"얼리기",      desc:"상대 60% 확률 1턴 빙결",   icon:"❄️", rarity:"uncommon" },
   scratch:      { id:"scratch",      name:"할퀴기",      desc:"2턴 출혈 (-5HP/턴)",       icon:"🩸", rarity:"uncommon" },
@@ -27,6 +29,8 @@ export const SPECIAL_SKILLS: Record<SpecialSkillId, SpecialSkill> = {
   pounce:       { id:"pounce",       name:"도약 강타",   desc:"방어 무시 강타",            icon:"🦘", rarity:"uncommon" },
   ambush:       { id:"ambush",       name:"급습",        desc:"+20% 피해, 치명타 확정",    icon:"🌑", rarity:"uncommon" },
   static_shock: { id:"static_shock", name:"정전기 충격", desc:"40% 확률로 1턴 기절",       icon:"⚡", rarity:"uncommon" },
+  night_prowl:  { id:"night_prowl",  name:"야습",        desc:"회피 불가 관통 +10% 피해",  icon:"🌌", rarity:"uncommon" },
+  thunderclap:  { id:"thunderclap",  name:"천둥벽력",    desc:"소량 피해 + 35% 확률 기절",  icon:"🌩️", rarity:"uncommon" },
   // 레어
   poison:        { id:"poison",        name:"독",       desc:"3턴 중독 (-8HP/턴)",        icon:"☠️", rarity:"rare" },
   bind:          { id:"bind",          name:"속박",     desc:"상대 회피율 0% (2턴)",       icon:"⛓️", rarity:"rare" },
@@ -34,6 +38,8 @@ export const SPECIAL_SKILLS: Record<SpecialSkillId, SpecialSkill> = {
   double_strike: { id:"double_strike", name:"연속 공격",desc:"이번 턴 2번 연속 공격",      icon:"⚡", rarity:"rare" },
   rend:          { id:"rend",          name:"찢기",     desc:"방어 무시 강타 + 2턴 출혈",  icon:"🗡️", rarity:"rare" },
   howl:          { id:"howl",          name:"하울링",   desc:"상대 회피율 0% (2턴)",       icon:"🐺", rarity:"rare" },
+  frenzy:        { id:"frenzy",        name:"맹공",     desc:"강타 (1.6×)",                icon:"🔱", rarity:"rare" },
+  curse:         { id:"curse",         name:"저주",     desc:"4턴 저주 (-8HP/턴)",         icon:"👹", rarity:"rare" },
   // 레전드
   vampirism:  { id:"vampirism",  name:"흡혈",  desc:"가한 피해 30% 흡수",            icon:"🧛", rarity:"legendary" },
   invincible: { id:"invincible", name:"무적",  desc:"다음 피해 완전 무효화",          icon:"✨", rarity:"legendary" },
@@ -41,13 +47,15 @@ export const SPECIAL_SKILLS: Record<SpecialSkillId, SpecialSkill> = {
   regen:      { id:"regen",      name:"재생",  desc:"매 턴 최대 HP 5% 회복 (패시브)", icon:"💚", rarity:"legendary" },
   eclipse:    { id:"eclipse",    name:"월식",  desc:"강타 + HP 15% 회복",            icon:"🌘", rarity:"legendary" },
   overdrive:  { id:"overdrive",  name:"폭주",  desc:"피해 2배, 반동 8%",             icon:"💢", rarity:"legendary" },
+  meteor:     { id:"meteor",     name:"메테오", desc:"필살 강타 (2.0×)",             icon:"☄️", rarity:"legendary" },
+  cleanse:    { id:"cleanse",    name:"정화",  desc:"상태이상 해제 + HP 10% 회복",   icon:"💫", rarity:"legendary" },
 };
 
 const SKILL_POOL: Record<string, SpecialSkillId[]> = {
-  common:    ["sharp_claws", "quick_dodge", "focus", "intimidate_sm", "hiss", "grooming"],
-  uncommon:  ["freeze", "scratch", "intimidate", "pounce", "ambush", "static_shock"],
-  rare:      ["poison", "bind", "slow", "double_strike", "rend", "howl"],
-  legendary: ["vampirism", "invincible", "dominate", "regen", "eclipse", "overdrive"],
+  common:    ["sharp_claws", "quick_dodge", "focus", "intimidate_sm", "hiss", "grooming", "warm_nap", "tail_whip"],
+  uncommon:  ["freeze", "scratch", "intimidate", "pounce", "ambush", "static_shock", "night_prowl", "thunderclap"],
+  rare:      ["poison", "bind", "slow", "double_strike", "rend", "howl", "frenzy", "curse"],
+  legendary: ["vampirism", "invincible", "dominate", "regen", "eclipse", "overdrive", "meteor", "cleanse"],
 };
 
 const STAT_RANGE: Record<string, { atk:[number,number]; def:[number,number]; eva:[number,number]; crit:[number,number] }> = {
