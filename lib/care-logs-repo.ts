@@ -292,16 +292,29 @@ export async function createCareLog(
     throw new Error(`기록 실패: ${error.message}`);
   }
 
-  // 카드 EXP 추가 (fire-and-forget, 실패해도 무시)
+  // 카드 EXP 추가 (fire-and-forget)
   supabase.rpc("add_cat_card_exp", { p_cat_id: input.cat_id, p_amount: 10 })
     .then(({ data }: { data: { leveled_up?: boolean; level?: number } | null }) => {
-      if (data?.leveled_up) {
-        // 레벨업 이벤트 — 컴포넌트에서 감지할 수 있도록 CustomEvent 발행
-        if (typeof window !== "undefined") {
-          window.dispatchEvent(new CustomEvent("cat-card-levelup", {
-            detail: { cat_id: input.cat_id, level: data.level },
-          }));
-        }
+      if (data?.leveled_up && typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("cat-card-levelup", {
+          detail: { cat_id: input.cat_id, level: data.level },
+        }));
+      }
+    })
+    .catch(() => {});
+
+  // 돌봄 횟수 → 카드 등급 진화 체크 (fire-and-forget)
+  fetch("/api/cats/check-rarity-upgrade", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ cat_id: input.cat_id }),
+  })
+    .then(r => r.json())
+    .then((d: { upgraded?: boolean; old_rarity?: string; new_rarity?: string; new_card_name?: string }) => {
+      if (d.upgraded && typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("cat-card-rarity-upgrade", {
+          detail: { cat_id: input.cat_id, old_rarity: d.old_rarity, new_rarity: d.new_rarity, card_name: d.new_card_name },
+        }));
       }
     })
     .catch(() => {});
