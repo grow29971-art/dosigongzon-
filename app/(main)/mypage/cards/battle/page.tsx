@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Swords, Zap, Shield, Sparkles } from "lucide-react";
+import { ArrowLeft, Swords, Zap, Shield, Sparkles, Flame, Star } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
@@ -29,8 +29,12 @@ const ENV_BACKGROUNDS: Record<BattleEnvKey, string> = {
   fog:   "linear-gradient(180deg, rgba(215,220,230,0.42), transparent 48%), linear-gradient(180deg, #4A4D58 0%, #33303F 42%, #1A0A2E 100%)",
 };
 
-// 스킬별 쿨다운 턴수 [normal, heavy, guard, special]
-const SKILL_COOLDOWNS = [0, 2, 1, 2];
+// 액션 슬롯 순서: [기본공격, 방어, 스킬1, 스킬2, 스킬3, 스킬4]
+// 스킬별 쿨다운 턴수
+const SKILL_COOLDOWNS = [0, 1, 2, 2, 2, 2];
+const NORMAL_IDX = 0;
+const GUARD_IDX = 1;
+const SKILL_START_IDX = 2; // 스킬1의 인덱스, 스킬n = SKILL_START_IDX + slot
 
 // 기본공격/방어 자세 배틀당 사용 가능 횟수
 const NORMAL_ATTACK_USES = 8;
@@ -51,9 +55,10 @@ interface BattleCat {
   battle_atk: number | null; battle_def: number | null;
   battle_eva: number | null; battle_crit: number | null;
   battle_special: string | null; battle_special2: string | null;
+  battle_special3: string | null; battle_special4: string | null;
 }
 interface BattleStats { hp: number; atk: number; def: number; spd: number; }
-interface Skill { name: string; icon: string; type: "normal"|"heavy"|"guard"|"special"; desc: string; color: string; }
+interface Skill { name: string; icon: string; type: "normal"|"guard"|"special"; slot?: number; desc: string; color: string; }
 type Phase = "select"|"loading"|"countdown"|"player_choose"|"animating"|"opp_thinking"|"result";
 type Mode = "manual"|"auto";
 type CardAnim = "idle"|"attack"|"hit"|"dodge";
@@ -62,17 +67,26 @@ interface AutoLogEntry { turn:number; actor:string; dmg:number; aHp:number; dHp:
 interface AutoResult { winner:"me"|"opponent"; my_hp_left:number; opp_hp_left:number; my_max_hp:number; opp_max_hp:number; rounds:number; log:AutoLogEntry[]; exp_gained:number; my_new_level:number; leveled_up:boolean; }
 
 /* ──────────── 헬퍼 ──────────── */
+const SKILL_SLOT_COLORS = ["#DD4422", "#CC8822", "#22AACC", "#9933CC"];
+function getSlotSkillId(cat: BattleCat, slot: number): string {
+  const fallback = ["sharp_claws", "scratch", "sharp_claws", "scratch"];
+  const raw = slot === 0 ? cat.battle_special
+            : slot === 1 ? cat.battle_special2
+            : slot === 2 ? cat.battle_special3
+            : cat.battle_special4;
+  return raw ?? fallback[slot] ?? "sharp_claws";
+}
 function buildSkills(cat: BattleCat): Skill[] {
-  const specialId  = cat.battle_special  ?? "sharp_claws";
-  const special2Id = cat.battle_special2 ?? "scratch";
-  const special  = SPECIAL_SKILLS[specialId  as keyof typeof SPECIAL_SKILLS] ?? SPECIAL_SKILLS.sharp_claws;
-  const special2 = SPECIAL_SKILLS[special2Id as keyof typeof SPECIAL_SKILLS] ?? SPECIAL_SKILLS.scratch;
-  return [
-    { name: "기본 공격", icon:"⚔️", type:"normal",  desc:`공격 (ATK ${cat.battle_atk??40})`, color:"#7070AA" },
-    { name: special2.name, icon:special2.icon, type:"heavy",   desc:special2.desc, color:"#DD4422" },
-    { name: "방어 자세", icon:"🛡️", type:"guard",   desc:`방어 (DEF ${cat.battle_def??25})`, color:"#2255CC" },
-    { name: special.name,  icon:special.icon,  type:"special", desc:special.desc,  color:"#9933CC" },
+  const skills: Skill[] = [
+    { name: "기본 공격", icon:"⚔️", type:"normal", desc:`공격 (ATK ${cat.battle_atk??40})`, color:"#7070AA" },
+    { name: "방어 자세", icon:"🛡️", type:"guard",  desc:`방어 (DEF ${cat.battle_def??25})`, color:"#2255CC" },
   ];
+  for (let slot = 0; slot < 4; slot++) {
+    const id = getSlotSkillId(cat, slot);
+    const special = SPECIAL_SKILLS[id as keyof typeof SPECIAL_SKILLS] ?? SPECIAL_SKILLS.sharp_claws;
+    skills.push({ name: special.name, icon: special.icon, type: "special", slot, desc: special.desc, color: SKILL_SLOT_COLORS[slot] });
+  }
+  return skills;
 }
 function calcDmg(atk: number, def: number, mult: number, critChance: number) {
   const base = Math.max(5, (atk - def * 0.4) * (0.85 + Math.random() * 0.35));
@@ -82,11 +96,13 @@ function calcDmg(atk: number, def: number, mult: number, critChance: number) {
 function checkEvasion(evaChance: number): boolean {
   return Math.random() * 100 < evaChance;
 }
-function oppAI(skill: number, hp: number, maxHp: number): number {
+// 인덱스: 0=기본공격, 1=방어, 2~5=스킬1~4
+function oppAI(hp: number, maxHp: number): number {
   const ratio = hp / maxHp;
-  if (ratio < 0.25) return Math.random() < 0.55 ? 3 : 1; // 특수기 or 강공격
-  if (ratio < 0.55) return [1,1,0,2][Math.floor(Math.random()*4)];
-  return Math.floor(Math.random() * 4);
+  const skillIdx = () => SKILL_START_IDX + Math.floor(Math.random() * 4);
+  if (ratio < 0.25) return Math.random() < 0.7 ? skillIdx() : GUARD_IDX;
+  if (ratio < 0.55) return Math.random() < 0.55 ? skillIdx() : (Math.random() < 0.5 ? NORMAL_IDX : GUARD_IDX);
+  return Math.random() < 0.4 ? skillIdx() : NORMAL_IDX;
 }
 function toCard(cat: BattleCat): CatCardData {
   return { card_rarity:cat.card_rarity, card_name:cat.card_name, card_traits:cat.card_traits??[], card_stats:cat.card_stats, card_flavor:cat.card_flavor, card_level:cat.card_level, card_exp:cat.card_exp };
@@ -136,7 +152,7 @@ function HpBar({ current, max }: { current:number; max:number }) {
 
 /* ──────────── 기술 버튼 ──────────── */
 function SkillBtn({ skill, idx, disabled, cooldown=0, usesLeft, onPick }: { skill:Skill; idx:number; disabled:boolean; cooldown?:number; usesLeft?:number; onPick:(i:number)=>void }) {
-  const icons = [<Swords key={0} size={14}/>, <Zap key={1} size={14}/>, <Shield key={2} size={14}/>, <Sparkles key={3} size={14}/>];
+  const icons = [<Swords key={0} size={14}/>, <Shield key={1} size={14}/>, <Zap key={2} size={14}/>, <Sparkles key={3} size={14}/>, <Flame key={4} size={14}/>, <Star key={5} size={14}/>];
   const isCd = cooldown > 0;
   const isExhausted = usesLeft !== undefined && usesLeft <= 0;
   const isOff = disabled || isCd || isExhausted;
@@ -232,9 +248,9 @@ export default function BattlePage() {
   const [myStatusBadges,  setMyStatusBadges]  = useState<string[]>([]);
   const [oppStatusBadges, setOppStatusBadges] = useState<string[]>([]);
 
-  // 스킬 쿨다운 [normal, heavy, guard, special]
-  const mySkillCdRef = useRef([0,0,0,0]);
-  const [mySkillCd,  setMySkillCd]  = useState([0,0,0,0]);
+  // 스킬 쿨다운 [normal, guard, skill1, skill2, skill3, skill4]
+  const mySkillCdRef = useRef([0,0,0,0,0,0]);
+  const [mySkillCd,  setMySkillCd]  = useState([0,0,0,0,0,0]);
 
   // 기본공격/방어 사용 횟수 제한
   const myNormalUsesRef = useRef(NORMAL_ATTACK_USES);
@@ -279,7 +295,7 @@ export default function BattlePage() {
   useEffect(() => {
     if (authLoading || !user) return;
     createClient().from("cats")
-      .select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_level,card_exp,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2")
+      .select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_level,card_exp,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4")
       .eq("caretaker_id", user.id).not("card_generated_at","is",null)
       .order("card_level",{ascending:false})
       .then(({ data }:{ data:BattleCat[]|null }) => { if(mounted.current) setMyCats(data??[]); });
@@ -317,7 +333,7 @@ export default function BattlePage() {
     if(phase !== "player_choose") { clearTimer(); return; }
     if(autoPilot) {
       clearTimer();
-      const t = setTimeout(() => { if(mounted.current) pickSkill(oppAI(0, myHpRef.current, myMaxHp)); }, 500);
+      const t = setTimeout(() => { if(mounted.current) pickSkill(oppAI(myHpRef.current, myMaxHp)); }, 500);
       return () => clearTimeout(t);
     }
     startTimer();
@@ -359,7 +375,7 @@ export default function BattlePage() {
       myBleedRef.current=0; oppBleedRef.current=0;
       myBoundRef.current=0; oppBoundRef.current=0;
       setMyStatusBadges([]); setOppStatusBadges([]);
-      mySkillCdRef.current=[0,0,0,0]; setMySkillCd([0,0,0,0]);
+      mySkillCdRef.current=[0,0,0,0,0,0]; setMySkillCd([0,0,0,0,0,0]);
       myNormalUsesRef.current=NORMAL_ATTACK_USES; setMyNormalUses(NORMAL_ATTACK_USES);
       myGuardUsesRef.current=GUARD_USES; setMyGuardUses(GUARD_USES);
       myShieldRef.current=false; myPowerBuffRef.current=false; myDodgeGuaranteedRef.current=false;
@@ -471,9 +487,7 @@ export default function BattlePage() {
     const envDmgMult = (env?.dmgMult ?? 1.0) * (isEffective ? 2.0 : 1.0) * powerBuffMult;
 
     // 이번에 사용할 스킬 ID 미리 확인 (야습의 회피 무시 판정에 필요)
-    const usedSkillId = skill.type === "special" ? (attacker.battle_special ?? "sharp_claws")
-                      : skill.type === "heavy"   ? (attacker.battle_special2 ?? "scratch")
-                      : null;
+    const usedSkillId = skill.type === "special" && skill.slot !== undefined ? getSlotSkillId(attacker, skill.slot) : null;
     const forceHit = usedSkillId === "night_prowl";
 
     // 속박 체크 (속박 남은 턴수 > 0 이면 회피 불가, 대상 공격당 1턴씩 소모)
@@ -615,14 +629,13 @@ export default function BattlePage() {
 
     switch(skill.type) {
       case "normal": { const r=calcDmg(atkSt.atk,defSt.def,1.0*envDmgMult,atkCrit); dmg=r.dmg; isCrit=r.isCrit; break; }
-      case "heavy":  { const r=runSpecial(attacker.battle_special2 ?? "scratch"); dmg=r.dmg; isCrit=r.isCrit; msg=r.msg; break; }
       case "guard": {
         if(isPlayer){ myGuardRef.current=true; setMyGuardVis(true); }
         else { oppGuardRef.current=true; setOppGuardVis(true); }
         msg="🛡️ 방어 자세!";
         break;
       }
-      case "special": { const r=runSpecial(attacker.battle_special ?? "sharp_claws"); dmg=r.dmg; isCrit=r.isCrit; msg=r.msg; break; }
+      case "special": { const r=runSpecial(usedSkillId ?? "sharp_claws"); dmg=r.dmg; isCrit=r.isCrit; msg=r.msg; break; }
     }
 
     // 상성 우위 표시
@@ -694,8 +707,8 @@ export default function BattlePage() {
   const pickSkill = useCallback((skillIdx: number | null, forfeitMsg?: string) => {
     if(!myStats || !oppStats || !selected || !opponent || !mounted.current) return;
     if(skillIdx !== null && mySkillCdRef.current[skillIdx] > 0) return;
-    if(skillIdx === 0 && myNormalUsesRef.current <= 0) return;
-    if(skillIdx === 2 && myGuardUsesRef.current <= 0) return;
+    if(skillIdx === NORMAL_IDX && myNormalUsesRef.current <= 0) return;
+    if(skillIdx === GUARD_IDX && myGuardUsesRef.current <= 0) return;
     clearTimer();
     setPhase("animating");
 
@@ -709,8 +722,8 @@ export default function BattlePage() {
         mySkillCdRef.current[skillIdx] = SKILL_COOLDOWNS[skillIdx];
         setMySkillCd([...mySkillCdRef.current]);
       }
-      if(skillIdx === 0) { myNormalUsesRef.current--; setMyNormalUses(myNormalUsesRef.current); }
-      if(skillIdx === 2) { myGuardUsesRef.current--; setMyGuardUses(myGuardUsesRef.current); }
+      if(skillIdx === NORMAL_IDX) { myNormalUsesRef.current--; setMyNormalUses(myNormalUsesRef.current); }
+      if(skillIdx === GUARD_IDX) { myGuardUsesRef.current--; setMyGuardUses(myGuardUsesRef.current); }
       const r = applySkill(skillIdx, true, myStats, oppStats, myMaxHp, oppMaxHp, selected, opponent);
       dmg = r.dmg; isCrit = r.isCrit; msg = r.msg;
       const skill = mySkills[skillIdx];
@@ -760,7 +773,7 @@ export default function BattlePage() {
           }
 
           // AI 기술 선택
-          const aiSkillIdx = oppAI(0, oppHpRef.current, oppMaxHp);
+          const aiSkillIdx = oppAI(oppHpRef.current, oppMaxHp);
           const { dmg:od, isCrit:oc, msg:om } = applySkill(aiSkillIdx, false, myStats, oppStats, myMaxHp, oppMaxHp, selected, opponent);
           const oppSkill = oppSkills[aiSkillIdx];
           setActionMsg(`${opponent.name}의 ${oppSkill.name}!${oc?" 💥 크리티컬!":""}${om?" "+om:""}`);
@@ -824,7 +837,7 @@ export default function BattlePage() {
         myStunnedRef.current=0; setMyStunVis(false); setMyStatusBadges([]);
         msg = "💊 정화제! 모든 상태이상 해제"; break;
       }
-      case "skill_recharge": mySkillCdRef.current=[0,0,0,0]; setMySkillCd([0,0,0,0]); msg = "🔋 스킬 충전! 쿨다운 초기화"; break;
+      case "skill_recharge": mySkillCdRef.current=[0,0,0,0,0,0]; setMySkillCd([0,0,0,0,0,0]); msg = "🔋 스킬 충전! 쿨다운 초기화"; break;
       case "power_up":       myPowerBuffRef.current = true; msg = "🥫 파워업! 다음 공격 피해 +30%"; break;
       case "lucky_charm":    myDodgeGuaranteedRef.current = true; msg = "🍀 행운의 부적! 상대 다음 공격 회피"; break;
     }
@@ -853,7 +866,7 @@ export default function BattlePage() {
     setMyStats(null); setOppStats(null); setAutoResult(null);
     setBattleResult(null); setTurnCount(0); setActionMsg("");
     setMyAnim("idle"); setOppAnim("idle"); setDmgPopup(null); setCritFlash(false);
-    if(user) createClient().from("cats").select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_level,card_exp,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2").eq("caretaker_id",user.id).not("card_generated_at","is",null).order("card_level",{ascending:false}).then(({data}:{data:BattleCat[]|null})=>{ if(mounted.current) setMyCats(data??[]); });
+    if(user) createClient().from("cats").select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_level,card_exp,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4").eq("caretaker_id",user.id).not("card_generated_at","is",null).order("card_level",{ascending:false}).then(({data}:{data:BattleCat[]|null})=>{ if(mounted.current) setMyCats(data??[]); });
   };
 
   /* ── 카드 애니 스타일 ── */
@@ -1092,10 +1105,18 @@ export default function BattlePage() {
                     {!autoPilot && <span className="text-[13px] font-black" style={{color:timerLeft<=2?"#FF4444":timerLeft<=4?"#FFAA22":"#88CCFF"}}>{timerLeft}s</span>}
                   </div>
                 )}
+                <div className="flex gap-2 mb-2">
+                  {mySkills.slice(SKILL_START_IDX).map((sk,j)=>{
+                    const i = SKILL_START_IDX + j;
+                    return (
+                      <SkillBtn key={i} skill={sk} idx={i} disabled={phase!=="player_choose"} cooldown={mySkillCd[i]} onPick={pickSkill}/>
+                    );
+                  })}
+                </div>
                 <div className="flex gap-2">
-                  {mySkills.map((sk,i)=>(
+                  {mySkills.slice(0, SKILL_START_IDX).map((sk,i)=>(
                     <SkillBtn key={i} skill={sk} idx={i} disabled={phase!=="player_choose"} cooldown={mySkillCd[i]}
-                      usesLeft={i===0?myNormalUses:i===2?myGuardUses:undefined} onPick={pickSkill}/>
+                      usesLeft={i===NORMAL_IDX?myNormalUses:i===GUARD_IDX?myGuardUses:undefined} onPick={pickSkill}/>
                   ))}
                 </div>
 

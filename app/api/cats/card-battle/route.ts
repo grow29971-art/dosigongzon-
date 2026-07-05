@@ -22,6 +22,8 @@ interface CardCat {
   battle_crit: number | null;
   battle_special: string | null;
   battle_special2: string | null;
+  battle_special3: string | null;
+  battle_special4: string | null;
 }
 
 // 등급별 HP 보너스: 일반→레전드로 갈수록 체력이 두껍게
@@ -101,7 +103,7 @@ export async function POST(req: Request) {
   // 내 카드 조회
   const { data: myCat } = await supabase
     .from("cats")
-    .select("id,name,photo_url,caretaker_id,card_level,card_exp,card_rarity,card_name,card_traits,card_stats,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2")
+    .select("id,name,photo_url,caretaker_id,card_level,card_exp,card_rarity,card_name,card_traits,card_stats,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4")
     .eq("id", my_cat_id)
     .eq("caretaker_id", user.id)
     .not("card_generated_at", "is", null)
@@ -120,7 +122,7 @@ export async function POST(req: Request) {
 
   const { data: opponents } = await supabase
     .from("cats")
-    .select("id,name,photo_url,caretaker_id,card_level,card_exp,card_rarity,card_name,card_traits,card_stats,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2")
+    .select("id,name,photo_url,caretaker_id,card_level,card_exp,card_rarity,card_name,card_traits,card_stats,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4")
     .neq("caretaker_id", user.id)
     .in("card_rarity", matchRarities)
     .not("card_generated_at", "is", null)

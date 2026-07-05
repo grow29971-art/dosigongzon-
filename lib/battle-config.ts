@@ -81,19 +81,27 @@ function ri(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// 등급 풀에서 서로 다른 스킬 n개를 뽑음 (풀이 더 작아도 안전하게 순환)
+function pickDistinct(pool: SpecialSkillId[], n: number): SpecialSkillId[] {
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  const picked: SpecialSkillId[] = [];
+  for (let i = 0; i < n; i++) picked.push(shuffled[i % shuffled.length]);
+  return picked;
+}
+
 export function generateBattleStats(rarity: string) {
   const range = STAT_RANGE[rarity] ?? STAT_RANGE.common;
   const pool  = SKILL_POOL[rarity] ?? SKILL_POOL.common;
-  const idx1 = Math.floor(Math.random() * pool.length);
-  let idx2 = Math.floor(Math.random() * pool.length);
-  if (pool.length > 1 && idx2 === idx1) idx2 = (idx2 + 1) % pool.length;
+  const [s1, s2, s3, s4] = pickDistinct(pool, 4);
   return {
     battle_atk:      ri(...range.atk),
     battle_def:      ri(...range.def),
     battle_eva:      ri(...range.eva),
     battle_crit:     ri(...range.crit),
-    battle_special:  pool[idx1],
-    battle_special2: pool[idx2],
+    battle_special:  s1,
+    battle_special2: s2,
+    battle_special3: s3,
+    battle_special4: s4,
   };
 }
 
