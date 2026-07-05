@@ -32,7 +32,7 @@ function makeRandomCard(catName: string) {
   const flavors = ["골목의 철학자, 오늘도 세상을 관찰한다", "밥만 있으면 세상이 내 것", "내 페이스대로 살아갈 뿐", "이 동네의 진짜 주인은 나야", "경계는 잠깐, 츄르는 영원히", "낮에는 잠, 밤에는 탐험", "나만의 길을 걷는 자유로운 영혼", "두 눈에 별빛을 담고 태어난 아이", "골목대장의 위엄이 느껴지는가", "먹고 자고 버티는 것이 삶", "세상 모든 종이봉투는 내 것", "햇볕 한 줌이면 충분해", "마음을 열기까지 시간이 필요할 뿐", "이 동네 소문은 나한테 물어봐", "눈빛만으로 모든 걸 말한다", "차갑지만 누구보다 따뜻한 아이", "모든 상자는 내 집이 된다", "비가 와도 내 자리는 내가 지킨다"];
 
   const r = Math.random();
-  const rarity = r < 0.55 ? "common" : r < 0.80 ? "uncommon" : r < 0.93 ? "rare" : "legendary";
+  const rarity = r < 0.70 ? "common" : r < 0.94 ? "uncommon" : r < 0.99 ? "rare" : "legendary";
   const pick = <T,>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
   const shuffled = [...traitPool].sort(() => Math.random() - 0.5).slice(0, 3);
 
