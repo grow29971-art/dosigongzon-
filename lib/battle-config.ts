@@ -1,8 +1,8 @@
 export type SpecialSkillId =
-  | "sharp_claws" | "quick_dodge" | "focus" | "intimidate_sm"
-  | "freeze" | "scratch" | "intimidate" | "pounce"
-  | "poison" | "bind" | "slow" | "double_strike"
-  | "vampirism" | "invincible" | "dominate" | "regen";
+  | "sharp_claws" | "quick_dodge" | "focus" | "intimidate_sm" | "hiss" | "grooming"
+  | "freeze" | "scratch" | "intimidate" | "pounce" | "ambush" | "static_shock"
+  | "poison" | "bind" | "slow" | "double_strike" | "rend" | "howl"
+  | "vampirism" | "invincible" | "dominate" | "regen" | "eclipse" | "overdrive";
 
 export interface SpecialSkill {
   id: SpecialSkillId;
@@ -18,28 +18,36 @@ export const SPECIAL_SKILLS: Record<SpecialSkillId, SpecialSkill> = {
   quick_dodge:   { id:"quick_dodge",   name:"재빠른 도약",   desc:"이번 턴 회피율 +35%",  icon:"💨", rarity:"common" },
   focus:         { id:"focus",         name:"집중의 눈빛",   desc:"이번 공격 치명타 확정", icon:"👁️", rarity:"common" },
   intimidate_sm: { id:"intimidate_sm", name:"견제",           desc:"상대 공격력 -15% (1턴)",icon:"😠", rarity:"common" },
+  hiss:          { id:"hiss",          name:"하악 위협",      desc:"40% 확률로 1턴 기절",   icon:"😾", rarity:"common" },
+  grooming:      { id:"grooming",      name:"그루밍",         desc:"HP 10% 회복",           icon:"🧼", rarity:"common" },
   // 희귀
-  freeze:     { id:"freeze",    name:"얼리기",      desc:"상대 60% 확률 1턴 빙결",   icon:"❄️", rarity:"uncommon" },
-  scratch:    { id:"scratch",   name:"할퀴기",      desc:"2턴 출혈 (-5HP/턴)",       icon:"🩸", rarity:"uncommon" },
-  intimidate: { id:"intimidate",name:"공포의 눈빛", desc:"상대 공격력 -25% (2턴)",   icon:"😱", rarity:"uncommon" },
-  pounce:     { id:"pounce",    name:"도약 강타",   desc:"방어 무시 강타",            icon:"🦘", rarity:"uncommon" },
+  freeze:       { id:"freeze",       name:"얼리기",      desc:"상대 60% 확률 1턴 빙결",   icon:"❄️", rarity:"uncommon" },
+  scratch:      { id:"scratch",      name:"할퀴기",      desc:"2턴 출혈 (-5HP/턴)",       icon:"🩸", rarity:"uncommon" },
+  intimidate:   { id:"intimidate",   name:"공포의 눈빛", desc:"상대 공격력 -25% (2턴)",   icon:"😱", rarity:"uncommon" },
+  pounce:       { id:"pounce",       name:"도약 강타",   desc:"방어 무시 강타",            icon:"🦘", rarity:"uncommon" },
+  ambush:       { id:"ambush",       name:"급습",        desc:"+20% 피해, 치명타 확정",    icon:"🌑", rarity:"uncommon" },
+  static_shock: { id:"static_shock", name:"정전기 충격", desc:"40% 확률로 1턴 기절",       icon:"⚡", rarity:"uncommon" },
   // 레어
   poison:        { id:"poison",        name:"독",       desc:"3턴 중독 (-8HP/턴)",        icon:"☠️", rarity:"rare" },
   bind:          { id:"bind",          name:"속박",     desc:"상대 회피율 0% (2턴)",       icon:"⛓️", rarity:"rare" },
   slow:          { id:"slow",          name:"느리게",   desc:"상대 선제권 박탈 (2턴)",     icon:"🐌", rarity:"rare" },
   double_strike: { id:"double_strike", name:"연속 공격",desc:"이번 턴 2번 연속 공격",      icon:"⚡", rarity:"rare" },
+  rend:          { id:"rend",          name:"찢기",     desc:"방어 무시 강타 + 2턴 출혈",  icon:"🗡️", rarity:"rare" },
+  howl:          { id:"howl",          name:"하울링",   desc:"상대 회피율 0% (2턴)",       icon:"🐺", rarity:"rare" },
   // 레전드
   vampirism:  { id:"vampirism",  name:"흡혈",  desc:"가한 피해 30% 흡수",            icon:"🧛", rarity:"legendary" },
   invincible: { id:"invincible", name:"무적",  desc:"다음 피해 완전 무효화",          icon:"✨", rarity:"legendary" },
   dominate:   { id:"dominate",   name:"지배",  desc:"상대 전 스탯 -20% (3턴)",       icon:"👑", rarity:"legendary" },
   regen:      { id:"regen",      name:"재생",  desc:"매 턴 최대 HP 5% 회복 (패시브)", icon:"💚", rarity:"legendary" },
+  eclipse:    { id:"eclipse",    name:"월식",  desc:"강타 + HP 15% 회복",            icon:"🌘", rarity:"legendary" },
+  overdrive:  { id:"overdrive",  name:"폭주",  desc:"피해 2배, 반동 8%",             icon:"💢", rarity:"legendary" },
 };
 
 const SKILL_POOL: Record<string, SpecialSkillId[]> = {
-  common:    ["sharp_claws", "quick_dodge", "focus", "intimidate_sm"],
-  uncommon:  ["freeze", "scratch", "intimidate", "pounce"],
-  rare:      ["poison", "bind", "slow", "double_strike"],
-  legendary: ["vampirism", "invincible", "dominate", "regen"],
+  common:    ["sharp_claws", "quick_dodge", "focus", "intimidate_sm", "hiss", "grooming"],
+  uncommon:  ["freeze", "scratch", "intimidate", "pounce", "ambush", "static_shock"],
+  rare:      ["poison", "bind", "slow", "double_strike", "rend", "howl"],
+  legendary: ["vampirism", "invincible", "dominate", "regen", "eclipse", "overdrive"],
 };
 
 const STAT_RANGE: Record<string, { atk:[number,number]; def:[number,number]; eva:[number,number]; crit:[number,number] }> = {
@@ -56,12 +64,16 @@ function ri(min: number, max: number) {
 export function generateBattleStats(rarity: string) {
   const range = STAT_RANGE[rarity] ?? STAT_RANGE.common;
   const pool  = SKILL_POOL[rarity] ?? SKILL_POOL.common;
+  const idx1 = Math.floor(Math.random() * pool.length);
+  let idx2 = Math.floor(Math.random() * pool.length);
+  if (pool.length > 1 && idx2 === idx1) idx2 = (idx2 + 1) % pool.length;
   return {
-    battle_atk:     ri(...range.atk),
-    battle_def:     ri(...range.def),
-    battle_eva:     ri(...range.eva),
-    battle_crit:    ri(...range.crit),
-    battle_special: pool[Math.floor(Math.random() * pool.length)],
+    battle_atk:      ri(...range.atk),
+    battle_def:      ri(...range.def),
+    battle_eva:      ri(...range.eva),
+    battle_crit:     ri(...range.crit),
+    battle_special:  pool[idx1],
+    battle_special2: pool[idx2],
   };
 }
 
