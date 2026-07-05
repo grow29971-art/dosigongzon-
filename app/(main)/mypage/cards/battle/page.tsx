@@ -87,6 +87,37 @@ function toCard(cat: BattleCat): CatCardData {
   return { card_rarity:cat.card_rarity, card_name:cat.card_name, card_traits:cat.card_traits??[], card_stats:cat.card_stats, card_flavor:cat.card_flavor, card_level:cat.card_level, card_exp:cat.card_exp };
 }
 
+/* ──────────── 환경 씬 (달/해/별/비/안개/불씨 + 골목 스카이라인 실루엣) ──────────── */
+const SKYLINE_CLIP = "polygon(0% 100%,0% 62%,7% 62%,7% 42%,15% 42%,15% 68%,24% 68%,24% 30%,33% 30%,33% 58%,42% 58%,42% 20%,50% 20%,50% 66%,60% 66%,60% 44%,68% 44%,68% 76%,78% 76%,78% 36%,87% 36%,87% 60%,100% 60%,100% 100%)";
+const SKYLINE_COLOR: Record<BattleEnvKey, string> = {
+  night: "rgba(6,8,30,0.55)", noon: "rgba(80,50,15,0.30)", rain: "rgba(4,18,26,0.60)",
+  heat: "rgba(60,15,5,0.45)", fog: "rgba(30,32,40,0.35)",
+};
+function EnvScene({ env }: { env: BattleEnvKey | null }) {
+  if (!env) return null;
+  return (
+    <div style={{ position:"absolute", inset:0, zIndex:-1, overflow:"hidden", pointerEvents:"none" }}>
+      {env === "night" && (
+        <>
+          <div style={{ position:"absolute", top:"6%", right:"12%", width:52, height:52, borderRadius:"50%",
+            background:"radial-gradient(circle, #FFF8D8 0%, #FFE9A0 55%, transparent 75%)",
+            boxShadow:"0 0 40px 14px rgba(255,240,180,0.35)" }} />
+          <div className="env-stars" />
+        </>
+      )}
+      {env === "noon" && (
+        <div style={{ position:"absolute", top:"-6%", left:"50%", transform:"translateX(-50%)", width:150, height:150, borderRadius:"50%",
+          background:"radial-gradient(circle, rgba(255,230,150,0.9) 0%, rgba(255,190,80,0.5) 40%, transparent 72%)",
+          boxShadow:"0 0 70px 30px rgba(255,200,90,0.30)" }} />
+      )}
+      {env === "rain" && <div className="env-rain" />}
+      {env === "heat" && <div className="env-embers" />}
+      {env === "fog" && <div className="env-fog" />}
+      <div style={{ position:"absolute", left:0, right:0, bottom:0, height:110, clipPath:SKYLINE_CLIP, background:SKYLINE_COLOR[env] }} />
+    </div>
+  );
+}
+
 /* ──────────── HP 바 ──────────── */
 function HpBar({ current, max }: { current:number; max:number }) {
   const pct = Math.max(0, Math.min(100, (current/max)*100));
@@ -708,11 +739,54 @@ export default function BattlePage() {
         @keyframes msgIn { 0%{opacity:0;transform:translateY(5px)}100%{opacity:1;transform:translateY(0)} }
         @keyframes resIn { 0%{opacity:0;transform:scale(0.6)}65%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)} }
         @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,50,50,0.5)}50%{box-shadow:0 0 0 6px rgba(255,50,50,0)} }
+
+        /* 환경 씬 애니메이션 */
+        .env-stars {
+          position:absolute; inset:0;
+          background-image:
+            radial-gradient(circle, rgba(255,255,255,0.85) 1px, transparent 1.4px),
+            radial-gradient(circle, rgba(255,255,255,0.55) 1px, transparent 1.3px);
+          background-size: 90px 90px, 130px 130px;
+          background-position: 10px 20px, 60px 80px;
+          animation: star-twinkle 3.2s ease-in-out infinite alternate;
+        }
+        @keyframes star-twinkle { 0%{opacity:0.35} 100%{opacity:0.9} }
+
+        .env-rain {
+          position:absolute; inset:-40px 0 0 0;
+          background-image: repeating-linear-gradient(112deg,
+            rgba(180,215,255,0.28) 0px, rgba(180,215,255,0.28) 2px,
+            transparent 2px, transparent 16px);
+          background-size: 100% 140%;
+          animation: rain-fall 0.55s linear infinite;
+        }
+        @keyframes rain-fall { 0%{background-position:0 -40px} 100%{background-position:-30px 40px} }
+
+        .env-embers {
+          position:absolute; inset:0;
+          background-image:
+            radial-gradient(circle, rgba(255,150,60,0.9) 1.5px, transparent 2px),
+            radial-gradient(circle, rgba(255,100,30,0.7) 1.5px, transparent 2px);
+          background-size: 70px 120px, 100px 160px;
+          background-position: 15px 100%, 55px 100%;
+          animation: ember-rise 4.5s linear infinite;
+        }
+        @keyframes ember-rise { 0%{background-position:15px 100%, 55px 100%; opacity:0.9} 100%{background-position:15px -20%, 55px -20%; opacity:0.2} }
+
+        .env-fog {
+          position:absolute; inset:0;
+          background-image:
+            radial-gradient(ellipse 60% 30% at 20% 40%, rgba(220,224,232,0.35), transparent 70%),
+            radial-gradient(ellipse 55% 25% at 80% 55%, rgba(220,224,232,0.28), transparent 70%);
+          animation: fog-drift 8s ease-in-out infinite alternate;
+        }
+        @keyframes fog-drift { 0%{transform:translateX(-4%)} 100%{transform:translateX(4%)} }
       `}</style>
 
       {critFlash && <div style={{position:"fixed",inset:0,zIndex:999,background:"rgba(255,200,0,0.3)",pointerEvents:"none"}}/>}
 
-      <div className="min-h-dvh flex flex-col" style={{ background:rootBg, transition:"background 1.2s" }}>
+      <div className="min-h-dvh flex flex-col" style={{ background:rootBg, transition:"background 1.2s", position:"relative", zIndex:0 }}>
+        <EnvScene env={battleEnv} />
 
         {/* 헤더 */}
         <div className="flex items-center gap-3 px-4 pt-safe pt-4 pb-3 shrink-0" style={{background:"rgba(10,10,24,0.85)",backdropFilter:"blur(12px)"}}>
