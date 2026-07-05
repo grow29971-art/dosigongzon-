@@ -24,7 +24,8 @@ interface CardCat {
 
 const RARITY_ORDER: CardRarity[] = ["legendary", "rare", "uncommon", "common"];
 const RARITY_LABELS: Record<CardRarity, string> = { legendary: "레전드", rare: "레어", uncommon: "희귀", common: "일반" };
-const SYNTHESIS_COST: Record<string, number> = { common: 300, uncommon: 600, rare: 1200 };
+// 등급 승급에 필요한 최소 레벨 (일반Lv5→희귀, 희귀Lv10→레어, 레어Lv15→레전드)
+const LEVEL_GATE: Record<string, number> = { common: 5, uncommon: 10, rare: 15 };
 const SYNTHESIS_RESULT: Record<string, string> = { common: "희귀", uncommon: "레어", rare: "레전드" };
 
 export default function MyCardsPage() {
@@ -78,10 +79,10 @@ export default function MyCardsPage() {
 
   const doSynthesis = async () => {
     if (!selected || !user) return;
-    const cost = SYNTHESIS_COST[selected.card_rarity];
-    if (!cost) { setSynthMsg("이미 최고 등급이에요!"); return; }
-    if ((selected.card_exp ?? 0) < cost) {
-      setSynthMsg(`XP가 부족해요. (${selected.card_exp} / ${cost} XP 필요)`);
+    const needLevel = LEVEL_GATE[selected.card_rarity];
+    if (!needLevel) { setSynthMsg("이미 최고 등급이에요!"); return; }
+    if ((selected.card_level ?? 1) < needLevel) {
+      setSynthMsg(`레벨이 부족해요. (Lv.${selected.card_level} / Lv.${needLevel} 필요)`);
       return;
     }
     setSynthLoading(true);
@@ -94,9 +95,9 @@ export default function MyCardsPage() {
     if (res.ok) {
       setSynthMsg(`✨ ${SYNTHESIS_RESULT[selected.card_rarity]} 등급으로 승급했어요!`);
       await loadCats(user.id);
-      setSelected(prev => prev ? { ...prev, card_rarity: json.new_rarity as CardRarity, card_exp: json.exp_remaining } : null);
+      setSelected(prev => prev ? { ...prev, card_rarity: json.new_rarity as CardRarity, card_name: json.new_card_name ?? prev.card_name } : null);
     } else {
-      setSynthMsg(json.error === "insufficient_exp" ? `XP 부족 (${json.have}/${json.need})` : "오류 발생");
+      setSynthMsg(json.error === "insufficient_level" ? `레벨 부족 (Lv.${json.have}/${json.need})` : "오류 발생");
     }
   };
 
@@ -222,11 +223,11 @@ export default function MyCardsPage() {
               </button>
             </div>
 
-            {/* 합성 비용 안내 */}
+            {/* 합성 조건 안내 */}
             {selected.card_rarity !== "legendary" && (
               <p className="text-[11px] text-gray-500 text-center">
-                {RARITY_LABELS[selected.card_rarity]} → {SYNTHESIS_RESULT[selected.card_rarity]} 합성 비용: {SYNTHESIS_COST[selected.card_rarity]} XP
-                <br />현재 보유: <span style={{ color: (selected.card_exp ?? 0) >= SYNTHESIS_COST[selected.card_rarity] ? "#FFCC44" : "#FF6060" }}>{selected.card_exp ?? 0} XP</span>
+                {RARITY_LABELS[selected.card_rarity]} → {SYNTHESIS_RESULT[selected.card_rarity]} 합성 조건: Lv.{LEVEL_GATE[selected.card_rarity]} 이상
+                <br />현재 레벨: <span style={{ color: (selected.card_level ?? 1) >= LEVEL_GATE[selected.card_rarity] ? "#FFCC44" : "#FF6060" }}>Lv.{selected.card_level ?? 1}</span>
               </p>
             )}
 
