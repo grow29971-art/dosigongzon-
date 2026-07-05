@@ -35,6 +35,12 @@ export interface Cat {
   caretaker_name: string | null;
   like_count: number;
   created_at: string;
+  card_rarity: string | null;
+  card_name: string | null;
+  card_traits: string[] | null;
+  card_stats: { cuteness: number; wildness: number; sociability: number; mysteriousness: number } | null;
+  card_flavor: string | null;
+  card_generated_at: string | null;
 }
 
 export const VISIBILITY_MAP: Record<CatVisibility, { label: string; emoji: string; color: string; description: string }> = {

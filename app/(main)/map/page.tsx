@@ -83,6 +83,7 @@ type AreaChat = {
 };
 import { createClient as createSupabaseClient } from "@/lib/supabase/client";
 const CareLogTab = dynamic(() => import("@/app/components/CareLogTab"), { ssr: false });
+const CatCard = dynamic(() => import("@/app/components/CatCard"), { ssr: false });
 import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, toggleCatLike, listMyLikedCatIds, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, VISIBILITY_MAP, type CatGender, type CatHealthStatus, type AdoptionStatus, type CatVisibility } from "@/lib/cats-repo";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import {
@@ -135,7 +136,7 @@ export default function MapPage() {
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [selectedCat, setSelectedCat] = useState<Cat | null>(null);
-  const [catCardTab, setCatCardTab] = useState<"carelog" | "community">("carelog");
+  const [catCardTab, setCatCardTab] = useState<"carelog" | "community" | "card">("carelog");
   const [showCats, setShowCats] = useState(true);
   const [todayVisit, setTodayVisit] = useState<number | null>(null);
   const [showHospitals, setShowHospitals] = useState(true);
@@ -3084,11 +3085,42 @@ export default function MapPage() {
                   >
                     💬 커뮤니티 {comments.length > 0 && `· ${comments.length}`}
                   </button>
+                  {selectedCat.card_generated_at && (
+                    <button
+                      type="button"
+                      onClick={() => setCatCardTab("card")}
+                      className="flex-1 py-2 rounded-xl text-[12px] font-bold transition-all"
+                      style={{
+                        backgroundColor: catCardTab === "card" ? "#6366F1" : "#F0F0FF",
+                        color: catCardTab === "card" ? "#fff" : "#6366F1",
+                      }}
+                    >
+                      🃏 카드
+                    </button>
+                  )}
                 </div>
 
                 {/* 돌봄다이어리 탭 */}
                 {catCardTab === "carelog" && (
                   <CareLogTab catId={selectedCat.id} isLoggedIn={isLoggedIn} currentUserId={user?.id} />
+                )}
+
+                {/* CatchCat 카드 탭 */}
+                {catCardTab === "card" && selectedCat.card_generated_at && (
+                  <div className="flex flex-col items-center py-3">
+                    <CatCard
+                      name={selectedCat.name}
+                      photoUrl={selectedCat.photo_url}
+                      card={{
+                        card_rarity: (selectedCat.card_rarity ?? "common") as import("@/app/components/CatCard").CardRarity,
+                        card_name: selectedCat.card_name,
+                        card_traits: selectedCat.card_traits ?? [],
+                        card_stats: selectedCat.card_stats,
+                        card_flavor: selectedCat.card_flavor,
+                      }}
+                      size="md"
+                    />
+                  </div>
                 )}
 
                 {/* 커뮤니티 탭 (기존 댓글) */}

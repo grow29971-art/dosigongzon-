@@ -296,6 +296,14 @@ export default function AddCatModal({
           if (cardRes.ok) {
             const { card } = await cardRes.json();
             generatedCard = card ?? null;
+            // rare/legendary면 근처 유저 알림 발사 (fire-and-forget)
+            if (["rare", "legendary"].includes(generatedCard?.card_rarity ?? "")) {
+              fetch("/api/cats/rare-alert", {
+                method: "POST",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({ cat_id: newCat.id }),
+              }).catch(() => {});
+            }
           }
         } catch { /* 카드 생성 실패해도 등록은 정상 완료 */ }
       }
