@@ -7,6 +7,7 @@ import { X, Camera, MapPin, Loader2, Plus, Lock, ShieldAlert } from "lucide-reac
 import { createCat, uploadCatPhoto, type Cat, type CatGender, type CatHealthStatus, type AdoptionStatus, type CatVisibility, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, VISIBILITY_MAP } from "@/lib/cats-repo";
 import { useAuth } from "@/lib/auth-context";
 import CatRegistrationCelebration from "@/app/components/CatRegistrationCelebration";
+import type { CatCardData } from "@/app/components/CatCard";
 import { findLocationViolations, formatViolationMessage } from "@/lib/location-patterns";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 
@@ -81,7 +82,8 @@ export default function AddCatModal({
     isFirstEver: boolean;
     registrationCount: number;
     cat: Cat | null;
-  }>({ open: false, catName: "", isFirstEver: false, registrationCount: 0, cat: null });
+    card: CatCardData | null;
+  }>({ open: false, catName: "", isFirstEver: false, registrationCount: 0, cat: null, card: null });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // portal root
@@ -261,12 +263,29 @@ export default function AddCatModal({
         localStorage.setItem(countKey, String(registrationCount));
       } catch {}
 
+      // CatchCat 카드 생성 (사진 있으면 Gemini로 비동기 생성, 실패해도 무관)
+      let generatedCard: CatCardData | null = null;
+      if (photoUrl) {
+        try {
+          const cardRes = await fetch("/api/cats/generate-card", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ cat_id: newCat.id, photo_url: photoUrl }),
+          });
+          if (cardRes.ok) {
+            const { card } = await cardRes.json();
+            generatedCard = card ?? null;
+          }
+        } catch { /* 카드 생성 실패해도 등록은 정상 완료 */ }
+      }
+
       setCelebration({
         open: true,
         catName: newCat.name,
         isFirstEver,
         registrationCount,
         cat: newCat,
+        card: generatedCard,
       });
       setSubmitting(false);
     } catch (err) {
@@ -764,6 +783,8 @@ export default function AddCatModal({
         catName={celebration.catName}
         isFirstEver={celebration.isFirstEver}
         registrationCount={celebration.registrationCount}
+        cat={celebration.cat}
+        card={celebration.card}
         onClose={() => {
           setCelebration((prev) => ({ ...prev, open: false }));
           if (celebration.cat) onCreated(celebration.cat);

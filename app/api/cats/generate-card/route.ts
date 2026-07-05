@@ -1,0 +1,89 @@
+import { NextResponse } from "next/server";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createClient } from "@/lib/supabase/server";
+
+export const maxDuration = 30;
+
+export async function POST(request: Request) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+
+  const { cat_id, photo_url } = await request.json();
+  if (!cat_id || !photo_url) return NextResponse.json({ error: "missing params" }, { status: 400 });
+
+  // 이미 생성된 카드면 반환
+  const { data: existing } = await supabase
+    .from("cats")
+    .select("card_rarity,card_name,card_traits,card_stats,card_flavor,card_generated_at")
+    .eq("id", cat_id)
+    .eq("caretaker_id", user.id)
+    .maybeSingle();
+
+  if (existing?.card_generated_at) {
+    return NextResponse.json({ card: existing });
+  }
+
+  const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+  if (!apiKey) return NextResponse.json({ error: "no api key" }, { status: 500 });
+
+  try {
+    // 이미지 fetch → base64
+    const imgRes = await fetch(photo_url);
+    if (!imgRes.ok) throw new Error("image fetch failed");
+    const imgBuf = await imgRes.arrayBuffer();
+    const imgB64 = Buffer.from(imgBuf).toString("base64");
+    const mimeType = imgRes.headers.get("content-type") ?? "image/jpeg";
+
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+    const prompt = `이 고양이 사진을 분석해서 CatchCat 스타일의 캐릭터 카드를 생성해주세요.
+
+다음 JSON만 반환 (마크다운 없이):
+{
+  "rarity": "common|uncommon|rare|legendary",
+  "card_name": "한국어 별명 (예: 철학자 나비, 용감한 순이, 탐험가 고구마)",
+  "traits": ["성격1", "성격2", "성격3"],
+  "stats": { "cuteness": 0-100, "wildness": 0-100, "sociability": 0-100, "mysteriousness": 0-100 },
+  "flavor": "캐릭터를 표현하는 짧은 한 줄 (20자 이내)",
+  "is_real_cat": true
+}
+
+희귀도 기준:
+- common: 줄무늬·단색 일반 고양이
+- uncommon: 흑백, 이색 눈, 특이한 점박이
+- rare: 드문 색상(크림·연회색·은회색), 독특한 무늬
+- legendary: 순백, 삼색(칼리코), 불꽃색, 아주 특별한 외모
+
+고양이가 아닌 사진이면 is_real_cat을 false로.
+stats는 외모와 분위기에서 추정. 모두 합이 정확히 100일 필요 없음.`;
+
+    const result = await model.generateContent([
+      prompt,
+      { inlineData: { data: imgB64, mimeType } },
+    ]);
+
+    const raw = result.response.text().trim().replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(raw);
+
+    if (!parsed.is_real_cat) {
+      return NextResponse.json({ error: "not_a_cat" }, { status: 422 });
+    }
+
+    const card = {
+      card_rarity: parsed.rarity ?? "common",
+      card_name: parsed.card_name ?? null,
+      card_traits: Array.isArray(parsed.traits) ? parsed.traits.slice(0, 4) : [],
+      card_stats: parsed.stats ?? null,
+      card_flavor: parsed.flavor ?? null,
+      card_generated_at: new Date().toISOString(),
+    };
+
+    await supabase.from("cats").update(card).eq("id", cat_id).eq("caretaker_id", user.id);
+
+    return NextResponse.json({ card });
+  } catch {
+    return NextResponse.json({ error: "generation_failed" }, { status: 500 });
+  }
+}

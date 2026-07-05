@@ -820,6 +820,25 @@ export default function MyPage() {
               ACTIVITY
             </p>
             <Link
+              href="/mypage/cards"
+              className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform mb-2"
+              style={{
+                background: "linear-gradient(135deg, #1A1A2E 0%, #16213E 100%)",
+                borderRadius: 16,
+                boxShadow: "0 4px 14px rgba(99,102,241,0.25)",
+                border: "1px solid rgba(99,102,241,0.30)",
+              }}
+            >
+              <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(99,102,241,0.15)" }}>
+                <span className="text-[20px]">🃏</span>
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-[13px] font-extrabold text-white">내 고양이 카드</p>
+                <p className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>CatchCat — 등록한 고양이 카드 컬렉션</p>
+              </div>
+              <ChevronRight size={16} style={{ color: "rgba(255,255,255,0.3)" }} />
+            </Link>
+            <Link
               href="/mypage/journey"
               className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
               style={{

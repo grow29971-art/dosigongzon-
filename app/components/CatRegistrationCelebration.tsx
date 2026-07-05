@@ -5,12 +5,16 @@ import { Sparkles, PawPrint, Heart, Share2 } from "lucide-react";
 import { getMyInviteInfo } from "@/lib/invites-repo";
 import { shareToKakao } from "@/lib/kakao-share";
 import { track } from "@vercel/analytics";
+import CatCard, { type CatCardData } from "@/app/components/CatCard";
+import type { Cat } from "@/lib/cats-repo";
 
 type Props = {
   open: boolean;
   catName: string;
   isFirstEver: boolean;
-  registrationCount?: number; // 누적 등록 N마리째 — milestone(5/10/20) 인식용
+  registrationCount?: number;
+  cat?: Cat | null;
+  card?: CatCardData | null;
   onClose: () => void;
 };
 
@@ -24,6 +28,8 @@ export default function CatRegistrationCelebration({
   catName,
   isFirstEver,
   registrationCount = 0,
+  cat = null,
+  card = null,
   onClose,
 }: Props) {
   const [inviting, setInviting] = useState(false);
@@ -144,7 +150,20 @@ export default function CatRegistrationCelebration({
         </div>
 
         <div className="px-6 pb-6 pt-4">
-          {isFirstEver && (
+          {/* CatchCat 카드 */}
+          {card && (
+            <div className="flex flex-col items-center mb-4">
+              <p className="text-[11px] font-bold text-gray-400 mb-2 tracking-widest uppercase">✦ 고양이 카드 획득 ✦</p>
+              <CatCard
+                name={catName}
+                photoUrl={cat?.photo_url ?? null}
+                card={card}
+                size="md"
+              />
+              <p className="text-[10px] text-gray-400 mt-2">마이페이지 → 내 카드에서 확인할 수 있어요</p>
+            </div>
+          )}
+          {isFirstEver && !card && (
             <div
               className="rounded-2xl px-4 py-3 mb-3 text-[11.5px] leading-snug"
               style={{ background: "#FFF9EF", color: "#7A5F3F" }}
