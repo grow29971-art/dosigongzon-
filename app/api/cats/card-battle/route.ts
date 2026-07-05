@@ -82,7 +82,7 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  const { my_cat_id } = await req.json();
+  const { my_cat_id, mode = "auto" } = await req.json();
   if (!my_cat_id) return NextResponse.json({ error: "my_cat_id required" }, { status: 400 });
 
   // 내 카드 조회
@@ -119,7 +119,17 @@ export async function POST(req: Request) {
 
   const opponent = opponents[Math.floor(Math.random() * opponents.length)] as CardCat;
 
-  // 배틀 시뮬레이션
+  // 수동 배틀: 스탯만 반환 (시뮬레이션 없음)
+  if (mode === "manual") {
+    return NextResponse.json({
+      my_cat: myCat,
+      opponent,
+      my_stats: calcStats(myCat as CardCat),
+      opp_stats: calcStats(opponent),
+    });
+  }
+
+  // 자동 배틀 시뮬레이션
   const result = simulateBattle(myCat as CardCat, opponent);
 
   // EXP 지급
