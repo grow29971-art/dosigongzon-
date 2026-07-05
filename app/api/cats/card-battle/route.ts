@@ -148,12 +148,12 @@ export async function POST(req: Request) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
   );
 
-  const winnerExp = 25, loserExp = 8;
+  const winnerExp = 14, loserExp = 5;
   const myNewExp  = (myCat.card_exp ?? 0) + (result.attackerWins ? winnerExp : loserExp);
   const oppNewExp = (opponent.card_exp ?? 0) + (result.attackerWins ? loserExp : winnerExp);
 
   function computeLevel(exp: number) {
-    const thresholds = [0, 50, 120, 220, 350, 520, 730, 990, 1300, 1670];
+    const thresholds = [0, 90, 210, 380, 610, 900, 1260, 1690, 2200, 2800];
     for (let i = thresholds.length - 1; i >= 0; i--) {
       if (exp >= thresholds[i]) return i + 1;
     }

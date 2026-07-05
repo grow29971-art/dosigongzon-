@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
 
 function computeLevel(exp: number) {
-  const thresholds = [0, 50, 120, 220, 350, 520, 730, 990, 1300, 1670];
+  const thresholds = [0, 90, 210, 380, 610, 900, 1260, 1690, 2200, 2800];
   for (let i = thresholds.length - 1; i >= 0; i--) {
     if (exp >= thresholds[i]) return i + 1;
   }
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
   );
 
-  const winnerExp = 28, loserExp = 10;
+  const winnerExp = 15, loserExp = 6;
   const iWon = winner === "me";
   const myNewExp = (myCat.card_exp ?? 0) + (iWon ? winnerExp : loserExp);
   const oppNewExp = oppCat ? ((oppCat.card_exp ?? 0) + (iWon ? loserExp : winnerExp)) : 0;

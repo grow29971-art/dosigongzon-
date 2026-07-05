@@ -189,7 +189,7 @@ export default function MyCardsPage() {
               </div>
               <div className="h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.1)" }}>
                 <div className="h-full rounded-full" style={{
-                  width: `${Math.min(((selected.card_exp ?? 0) / ([0,50,120,220,350,520,730,990,1300,1670][Math.min(selected.card_level ?? 1, 9)] || 1670)) * 100, 100)}%`,
+                  width: `${Math.min(((selected.card_exp ?? 0) / ([0,90,210,380,610,900,1260,1690,2200,2800][Math.min(selected.card_level ?? 1, 9)] || 2800)) * 100, 100)}%`,
                   background: "linear-gradient(90deg,#A060FF,#FF80C0)",
                 }} />
               </div>
