@@ -1386,9 +1386,10 @@ export default function BattlePage() {
             {error&&<p className="text-red-400 text-[13px] mb-3 text-center">{error}</p>}
             <div className="grid grid-cols-2 gap-3 mb-6">
               {myCats.map(cat=>(
-                <div key={cat.id} onClick={()=>phase==="select"&&setSelected(s=>s?.id===cat.id?null:cat)}
-                  style={{cursor:"pointer",outline:selected?.id===cat.id?"3px solid #C080FF":"2px solid transparent",borderRadius:16,transition:"transform 0.12s",transform:selected?.id===cat.id?"scale(1.04)":"scale(1)"}}>
-                  <CatCard name={cat.name} photoUrl={cat.photo_url} card={toCard(cat)} size="sm"/>
+                <div key={cat.id}
+                  style={{outline:selected?.id===cat.id?"3px solid #C080FF":"2px solid transparent",borderRadius:16,transition:"transform 0.12s",transform:selected?.id===cat.id?"scale(1.04)":"scale(1)"}}>
+                  <CatCard name={cat.name} photoUrl={cat.photo_url} card={toCard(cat)} size="sm"
+                    onClick={()=>phase==="select"&&setSelected(s=>s?.id===cat.id?null:cat)}/>
                   {selected?.id===cat.id&&<div className="text-center text-[10px] text-purple-300 font-bold mt-1">✓ 선택됨</div>}
                 </div>
               ))}

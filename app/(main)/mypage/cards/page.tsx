@@ -194,11 +194,10 @@ export default function MyCardsPage() {
           ) : (
             <div className="grid grid-cols-2 gap-4">
               {filtered.map((cat) => (
-                <div key={cat.id} className="flex flex-col items-center gap-1"
-                  onClick={() => setSelected(cat)} style={{ cursor: "pointer" }}>
+                <div key={cat.id} className="flex flex-col items-center gap-1">
                   <CatCard name={cat.name} photoUrl={cat.photo_url}
                     card={{ card_rarity: cat.card_rarity, card_name: cat.card_name, card_traits: cat.card_traits ?? [], card_stats: cat.card_stats, card_flavor: cat.card_flavor, card_level: cat.card_level, card_exp: cat.card_exp }}
-                    size="sm" />
+                    size="sm" onClick={() => setSelected(cat)} />
                   {repCardId === cat.id && (
                     <span className="text-[9px] text-yellow-400 font-bold">★ 대표 카드</span>
                   )}
