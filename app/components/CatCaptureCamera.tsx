@@ -47,7 +47,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   // 투척 상태
   const [throwState, setThrowState] = useState<ThrowState>("idle");
   const [pullY, setPullY] = useState(0);       // 당긴 거리 (px)
-  const [churuX, setChuruX] = useState(0);     // 좌우 드래그 원본값 (츄르가 손가락을 따라감, 비행 연출용)
+  const [churuX, setChuruX] = useState(0);     // 좌우 드래그 원본값 (캔이 손가락을 따라감, 비행 연출용)
   const [landingDx, setLandingDx] = useState(0);
   const touchStartRef = useRef({ x: 0, y: 0 });
 
@@ -165,7 +165,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
     }, 1300);
   }, [previewFile, onCapture, capturePhoto]);
 
-  // 츄르 던지기 - 터치 이벤트 (당겼다 놓는 제스처 + 놓는 순간의 타이밍으로 성공 판정)
+  // 고양이 캔 던지기 - 터치 이벤트 (당겼다 놓는 제스처 + 놓는 순간의 타이밍으로 성공 판정)
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (throwState !== "idle" || caught) return;
     const t = e.touches[0];
@@ -232,7 +232,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   const showBg = camState === "ready" || camState === "preview";
   const isLive = camState === "ready";
 
-  // 츄르 던지기 비행 궤적 계산 (방향은 드래그, 명중 여부는 타이밍 바로 결정)
+  // 고양이 캔 던지기 비행 궤적 계산 (방향은 드래그, 명중 여부는 타이밍 바로 결정)
   const flyDx = throwState === "flying" || throwState === "hit" || throwState === "miss" ? landingDx : churuX * 2.2;
   const flyDy = -(typeof window !== "undefined" ? window.innerHeight * 0.55 : 400);
   const missFlyDx = flyDx + Math.sign(flyDx || 1) * 90;
@@ -308,7 +308,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           <div className="absolute top-4 left-0 right-0 flex justify-center z-20 pointer-events-none">
             <div className="px-3 py-1 rounded-full text-[12px] font-black text-white flex items-center gap-1.5"
               style={{ background: "rgba(0,0,0,0.55)" }}>
-              🐟 {attemptsLeft} / {TOTAL_TRIES} 기회
+              🥫 {attemptsLeft} / {TOTAL_TRIES} 기회
             </div>
           </div>
         )}
@@ -488,7 +488,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           </div>
         )}
 
-        {/* 츄르 투척 존 (하단) */}
+        {/* 고양이 캔 투척 존 (하단) */}
         {showBg && !caught && (
           <div
             ref={throwAreaRef}
@@ -498,7 +498,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            {/* 츄르 */}
+            {/* 고양이 캔 */}
             <div className="absolute bottom-10 flex flex-col items-center gap-1 pointer-events-none"
               style={{
                 transform: throwState === "pulling"
@@ -514,23 +514,38 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
                       : "none",
               }}
             >
-              {/* 츄르 튜브 */}
-              <div className="relative flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center text-[28px]"
-                  style={{ filter: `drop-shadow(0 0 ${8 + pullY / 12}px rgba(255,200,50,0.85))` }}>
-                  🐟
+              {/* 고양이 캔 (몬스터볼처럼 던지는 아이템) */}
+              <div className="relative flex flex-col items-center"
+                style={{ filter: `drop-shadow(0 3px ${6 + pullY / 15}px rgba(0,0,0,0.45))` }}>
+                {/* 캔 뚜껑 */}
+                <div style={{
+                  width: 36, height: 13, borderRadius: "50%",
+                  background: "radial-gradient(ellipse at 35% 30%, #FFFFFF 0%, #E4E4E4 35%, #A8A8A8 70%, #808080 100%)",
+                  boxShadow: "inset 0 -2px 3px rgba(0,0,0,0.3)",
+                  position: "relative", zIndex: 2,
+                }} />
+                {/* 캔 몸통 */}
+                <div style={{
+                  width: 36, height: 32, marginTop: -5, borderRadius: 3,
+                  background: "linear-gradient(180deg, #FF8A3D 0%, #FF6B1A 55%, #E8540A 100%)",
+                  position: "relative", overflow: "hidden",
+                  boxShadow: "inset -5px 0 7px rgba(0,0,0,0.28), inset 4px 0 6px rgba(255,255,255,0.18)",
+                }}>
+                  <div style={{ position: "absolute", left: 4, top: 0, bottom: 0, width: 5, background: "rgba(255,255,255,0.25)", borderRadius: 2 }} />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center leading-none">
+                    <span style={{ fontSize: 8, fontWeight: 900, color: "white", letterSpacing: 0.5, textShadow: "0 1px 1px rgba(0,0,0,0.35)" }}>CAT</span>
+                    <span style={{ fontSize: 8, fontWeight: 900, color: "white", letterSpacing: 0.5, textShadow: "0 1px 1px rgba(0,0,0,0.35)" }}>FOOD</span>
+                  </div>
                 </div>
-                <div className="rounded-full px-3 py-1 text-[11px] font-black text-black mt-0.5"
-                  style={{ background: "linear-gradient(135deg, #FFE066, #FF9900)", boxShadow: "0 2px 8px rgba(255,150,0,0.5)" }}>
-                  츄~르
-                </div>
+                {/* 캔 바닥 그림자 */}
+                <div style={{ width: 34, height: 4, marginTop: -2, borderRadius: "50%", background: "rgba(0,0,0,0.22)" }} />
               </div>
             </div>
 
             {/* 힌트 */}
             {throwState === "idle" && (
               <div className="absolute bottom-1 text-center pointer-events-none">
-                <p className="text-[11px] font-bold text-white/60">츄르를 잡고 당겼다가 놓아보세요</p>
+                <p className="text-[11px] font-bold text-white/60">고양이 캔을 잡고 당겼다가 놓아보세요</p>
               </div>
             )}
           </div>
