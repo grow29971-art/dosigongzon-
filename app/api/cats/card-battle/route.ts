@@ -34,7 +34,7 @@ const RARITY_HP_BONUS: Record<string, number> = { common:0, uncommon:35, rare:73
 // 고양이학대범(로켓단) 랜덤 보스 조우 — 실제 유저 카드 대신 등장하는 스크립트 상대.
 // DB에 존재하지 않는 고정 id라서 결과 기록 시 상대 카드/유저 업데이트는 건너뛴다.
 const BOSS_CAT_ID = "00000000-0000-0000-0000-0000000000b0";
-const BOSS_ENCOUNTER_CHANCE = 0.08;
+const BOSS_ENCOUNTER_CHANCE = 1.0; // TEMP: 확인용 100% — 확인 후 0.08로 되돌릴 것
 
 function makeBossOpponent(myCat: CardCat): CardCat {
   const baseAtk = myCat.battle_atk ?? 40;
