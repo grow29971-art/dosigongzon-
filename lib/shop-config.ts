@@ -31,6 +31,10 @@ export const COINS_CARE_DAILY_CAP = 5; // 하루 최대 지급 횟수 (총 10코
 export const COINS_BATTLE_WIN = 3;
 export const COINS_BATTLE_LOSE = 1;
 
+// 고양이학대범 보스 조우 전용 보상 — 이기면 훨씬 크게, 지면 보유 코인 일부를 뺏김(전액 X)
+export const COINS_BOSS_WIN = 20;
+export const COINS_BOSS_STEAL_RATE = 0.2;
+
 // 주간 배틀 랭킹 코인 보상 (1~10등)
 export const WEEKLY_RANK_REWARDS = [200, 150, 120, 100, 80, 60, 50, 40, 30, 20];
 

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
-import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE } from "@/lib/shop-config";
+import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BOSS_WIN, COINS_BOSS_STEAL_RATE } from "@/lib/shop-config";
 
 export const maxDuration = 15;
 
@@ -269,8 +269,11 @@ export async function POST(req: Request) {
   }
 
   const { data: myProfile } = await svc.from("profiles").select("coins").eq("id", user.id).maybeSingle();
-  const coinsGained = result.attackerWins ? COINS_BATTLE_WIN : COINS_BATTLE_LOSE;
-  const newCoins = (myProfile?.coins ?? 0) + coinsGained;
+  const myCoinsNow = myProfile?.coins ?? 0;
+  const coinsGained = isBossEncounter
+    ? (result.attackerWins ? COINS_BOSS_WIN : -Math.round(myCoinsNow * COINS_BOSS_STEAL_RATE))
+    : (result.attackerWins ? COINS_BATTLE_WIN : COINS_BATTLE_LOSE);
+  const newCoins = Math.max(0, myCoinsNow + coinsGained);
   const myNewStreak  = result.attackerWins ? (myCat.win_streak ?? 0) + 1 : 0;
   const oppNewStreak = result.attackerWins ? 0 : (opponent.win_streak ?? 0) + 1;
 

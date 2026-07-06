@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
-import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE } from "@/lib/shop-config";
+import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BOSS_WIN, COINS_BOSS_STEAL_RATE } from "@/lib/shop-config";
 
 function computeLevel(exp: number) {
   const thresholds = [0, 90, 210, 380, 610, 900, 1260, 1690, 2200, 2800];
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  const { my_cat_id, opp_cat_id, opp_caretaker_id, winner, rounds, my_hp_left, opp_hp_left } = await req.json();
+  const { my_cat_id, opp_cat_id, opp_caretaker_id, winner, rounds, my_hp_left, opp_hp_left, is_boss } = await req.json();
 
   const { data: myCat } = await supabase
     .from("cats").select("id,card_exp,card_level,caretaker_id,win_streak")
@@ -39,8 +39,11 @@ export async function POST(req: Request) {
   const oppNewExp = oppCat ? ((oppCat.card_exp ?? 0) + (iWon ? loserExp : winnerExp)) : 0;
 
   const { data: myProfile } = await svc.from("profiles").select("coins").eq("id", user.id).maybeSingle();
-  const coinsGained = iWon ? COINS_BATTLE_WIN : COINS_BATTLE_LOSE;
-  const newCoins = (myProfile?.coins ?? 0) + coinsGained;
+  const myCoinsNow = myProfile?.coins ?? 0;
+  const coinsGained = is_boss
+    ? (iWon ? COINS_BOSS_WIN : -Math.round(myCoinsNow * COINS_BOSS_STEAL_RATE))
+    : (iWon ? COINS_BATTLE_WIN : COINS_BATTLE_LOSE);
+  const newCoins = Math.max(0, myCoinsNow + coinsGained);
   const myNewStreak  = iWon ? (myCat.win_streak ?? 0) + 1 : 0;
   const oppNewStreak = iWon ? 0 : (oppCat?.win_streak ?? 0) + 1;
 

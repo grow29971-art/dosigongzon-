@@ -67,7 +67,7 @@ type Mode = "manual"|"auto";
 type CardAnim = "idle"|"attack"|"hit"|"dodge";
 
 interface AutoLogEntry { turn:number; actor:string; dmg:number; aHp:number; dHp:number; isCritical:boolean; isDodge:boolean; isCounterAttack:boolean; skillName:string; }
-interface AutoResult { winner:"me"|"opponent"; my_hp_left:number; opp_hp_left:number; my_max_hp:number; opp_max_hp:number; rounds:number; log:AutoLogEntry[]; exp_gained:number; my_new_level:number; leveled_up:boolean; }
+interface AutoResult { winner:"me"|"opponent"; my_hp_left:number; opp_hp_left:number; my_max_hp:number; opp_max_hp:number; rounds:number; log:AutoLogEntry[]; exp_gained:number; my_new_level:number; leveled_up:boolean; coins_gained?:number; }
 
 /* ──────────── 헬퍼 ──────────── */
 const SKILL_SLOT_COLORS = ["#DD4422", "#CC8822", "#22AACC", "#9933CC"];
@@ -427,7 +427,7 @@ export default function BattlePage() {
   const pickSkillRef = useRef<(skillIdx: number | null, forfeitMsg?: string) => void>(() => {});
 
   // 결과
-  const [battleResult, setBattleResult] = useState<{winner:"me"|"opponent"; exp:number; newLevel:number; leveledUp:boolean}|null>(null);
+  const [battleResult, setBattleResult] = useState<{winner:"me"|"opponent"; exp:number; newLevel:number; leveledUp:boolean; coinsGained?:number}|null>(null);
 
   // 고양이학대범 랜덤 보스 조우
   const [isBossBattle, setIsBossBattle] = useState(false);
@@ -600,7 +600,7 @@ export default function BattlePage() {
       if(i >= log.length) {
         setTimeout(() => {
           if(!mounted.current) return;
-          setBattleResult({ winner:r.winner, exp:r.exp_gained, newLevel:r.my_new_level, leveledUp:r.leveled_up });
+          setBattleResult({ winner:r.winner, exp:r.exp_gained, newLevel:r.my_new_level, leveledUp:r.leveled_up, coinsGained:r.coins_gained });
           setPhase("result");
         }, 600);
         return;
@@ -1081,15 +1081,15 @@ export default function BattlePage() {
     try {
       const res = await fetch("/api/cats/card-battle/record", {
         method:"POST", headers:{"content-type":"application/json"},
-        body: JSON.stringify({ my_cat_id:selected.id, opp_cat_id:opponent.id, opp_caretaker_id:opponent.caretaker_id, winner, rounds:turnCount, my_hp_left:myHpRef.current, opp_hp_left:oppHpRef.current }),
+        body: JSON.stringify({ my_cat_id:selected.id, opp_cat_id:opponent.id, opp_caretaker_id:opponent.caretaker_id, winner, rounds:turnCount, my_hp_left:myHpRef.current, opp_hp_left:oppHpRef.current, is_boss:isBossBattle }),
       });
       const json = await res.json();
-      if(mounted.current) setBattleResult({ winner, exp:json.exp_gained??0, newLevel:json.my_new_level??1, leveledUp:json.leveled_up??false });
+      if(mounted.current) setBattleResult({ winner, exp:json.exp_gained??0, newLevel:json.my_new_level??1, leveledUp:json.leveled_up??false, coinsGained:json.coins_gained });
     } catch {
       // 기록 저장 API가 실패/네트워크 오류여도 결과 화면은 항상 떠야 함 (안 그러면 빈 화면에 멈춤)
       if(mounted.current) setBattleResult({ winner, exp:0, newLevel:selected.card_level, leveledUp:false });
     }
-  }, [selected, opponent, turnCount]);
+  }, [selected, opponent, turnCount, isBossBattle]);
 
   /* ── 리셋 ── */
   const reset = () => {
@@ -1503,6 +1503,11 @@ export default function BattlePage() {
               </p>
               {isBossBattle && battleResult.winner==="me" && (
                 <p className="text-[12px] text-yellow-300 font-bold -mt-2">🐾 갇혀있던 고양이를 구했다!</p>
+              )}
+              {isBossBattle && typeof battleResult.coinsGained==="number" && (
+                battleResult.winner==="me"
+                  ? <p className="text-[13px] font-bold -mt-1" style={{color:"#FFD700"}}>💰 코인 +{battleResult.coinsGained}</p>
+                  : <p className="text-[13px] font-bold -mt-1" style={{color:"#FF8080"}}>💸 학대범에게 코인 {Math.abs(battleResult.coinsGained)}개를 뺏겼다...</p>
               )}
               <p className="text-[13px] text-gray-400">
                 {turnCount}턴 · EXP +{battleResult.exp}
