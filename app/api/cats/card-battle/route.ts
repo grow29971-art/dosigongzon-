@@ -27,8 +27,8 @@ interface CardCat {
   win_streak: number | null;
 }
 
-// 등급별 HP 보너스: 일반→레전드로 갈수록 체력이 두껍게
-const RARITY_HP_BONUS: Record<string, number> = { common:0, uncommon:50, rare:105, legendary:175 };
+// 등급별 HP 보너스: 일반→레전드로 갈수록 체력이 두껍게 (전투가 늘어지지 않도록 전체적으로 하향)
+const RARITY_HP_BONUS: Record<string, number> = { common:0, uncommon:35, rare:73, legendary:122 };
 
 function calcStats(cat: CardCat) {
   const lv = cat.card_level ?? 1;
@@ -37,7 +37,7 @@ function calcStats(cat: CardCat) {
   const baseAtk = cat.battle_atk ?? Math.round(s.wildness * 0.8 + 20);
   const baseDef = cat.battle_def ?? Math.round(s.mysteriousness * 0.5 + 15);
   return {
-    hp:   Math.round(s.cuteness * 1.8 + s.wildness * 0.9) + 135 + hpBonus + (lv - 1) * 19,
+    hp:   Math.round(s.cuteness * 1.3 + s.wildness * 0.65) + 95 + hpBonus + (lv - 1) * 13,
     atk:  baseAtk + (lv - 1) * 3,
     def:  baseDef + (lv - 1) * 2,
     spd:  Math.round(s.sociability * 0.5 + 20) + lv,
@@ -59,14 +59,14 @@ function quickSimWin(mine: ReturnType<typeof calcStats>, opp: ReturnType<typeof 
       const isDodge = Math.random() * 100 < opp.eva;
       if (!isDodge) {
         const isCrit = Math.random() * 100 < mine.crit;
-        const dmg = Math.max(5, Math.round((mine.atk - opp.def * 0.4) * rnd(0.85, 1.2) * (isCrit ? 1.8 : 1)));
+        const dmg = Math.max(5, Math.round((mine.atk - opp.def * 0.4) * rnd(0.80, 1.30) * (isCrit ? 2.0 : 1)));
         dHp = Math.max(0, dHp - dmg);
       }
     } else {
       const isDodge = Math.random() * 100 < mine.eva;
       if (!isDodge) {
         const isCrit = Math.random() * 100 < opp.crit;
-        const dmg = Math.max(5, Math.round((opp.atk - mine.def * 0.4) * rnd(0.85, 1.2) * (isCrit ? 1.8 : 1)));
+        const dmg = Math.max(5, Math.round((opp.atk - mine.def * 0.4) * rnd(0.80, 1.30) * (isCrit ? 2.0 : 1)));
         aHp = Math.max(0, aHp - dmg);
       }
     }
@@ -110,8 +110,8 @@ function simulateBattle(attacker: CardCat, defender: CardCat) {
       const counterBoost = aHp < aMaxHp * 0.25 ? 1.3 : 1.0;
       const isCritical = Math.random() * 100 < as.crit;
       const isDodge = Math.random() * 100 < ds.eva;
-      const baseDmg = Math.max(5, Math.round((as.atk - ds.def * 0.4) * rnd(0.85, 1.2) * counterBoost));
-      const dmg = isDodge ? 0 : Math.round(baseDmg * (isCritical ? 1.8 : 1.0));
+      const baseDmg = Math.max(5, Math.round((as.atk - ds.def * 0.4) * rnd(0.80, 1.30) * counterBoost));
+      const dmg = isDodge ? 0 : Math.round(baseDmg * (isCritical ? 2.0 : 1.0));
       dHp = Math.max(0, dHp - dmg);
       const skillName = SKILLS_A[turn % SKILLS_A.length] ?? "공격";
       log.push({ turn, actor: attacker.name, dmg, aHp, dHp, isCritical, isDodge, isCounterAttack: counterBoost > 1, skillName });
@@ -119,8 +119,8 @@ function simulateBattle(attacker: CardCat, defender: CardCat) {
       const counterBoost = dHp < dMaxHp * 0.25 ? 1.3 : 1.0;
       const isCritical = Math.random() * 100 < ds.crit;
       const isDodge = Math.random() * 100 < as.eva;
-      const baseDmg = Math.max(5, Math.round((ds.atk - as.def * 0.4) * rnd(0.85, 1.2) * counterBoost));
-      const dmg = isDodge ? 0 : Math.round(baseDmg * (isCritical ? 1.8 : 1.0));
+      const baseDmg = Math.max(5, Math.round((ds.atk - as.def * 0.4) * rnd(0.80, 1.30) * counterBoost));
+      const dmg = isDodge ? 0 : Math.round(baseDmg * (isCritical ? 2.0 : 1.0));
       aHp = Math.max(0, aHp - dmg);
       const skillName = SKILLS_D[turn % SKILLS_D.length] ?? "공격";
       log.push({ turn, actor: defender.name, dmg, aHp, dHp, isCritical, isDodge, isCounterAttack: counterBoost > 1, skillName });

@@ -30,8 +30,8 @@ const ENV_BACKGROUNDS: Record<BattleEnvKey, string> = {
 };
 
 // 액션 슬롯 순서: [기본공격, 방어, 스킬1, 스킬2, 스킬3, 스킬4]
-// 스킬별 쿨다운 턴수
-const SKILL_COOLDOWNS = [0, 1, 2, 2, 2, 2];
+// 스킬별 쿨다운 턴수 (스킬만 연타하는 단조로움을 줄이려고 기본공격/방어 섞도록 쿨다운 늘림)
+const SKILL_COOLDOWNS = [0, 1, 3, 3, 3, 3];
 const NORMAL_IDX = 0;
 const GUARD_IDX = 1;
 const SKILL_START_IDX = 2; // 스킬1의 인덱스, 스킬n = SKILL_START_IDX + slot
@@ -89,9 +89,10 @@ function buildSkills(cat: BattleCat): Skill[] {
   return skills;
 }
 function calcDmg(atk: number, def: number, mult: number, critChance: number) {
-  const base = Math.max(5, (atk - def * 0.4) * (0.85 + Math.random() * 0.35));
+  // 매 타격 변동폭을 넓혀서(0.80~1.30) 전개가 더 다채롭고 예측하기 어렵게
+  const base = Math.max(5, (atk - def * 0.4) * (0.80 + Math.random() * 0.50));
   const isCrit = Math.random() * 100 < critChance;
-  return { dmg: Math.round(base * mult * (isCrit ? 1.8 : 1)), isCrit };
+  return { dmg: Math.round(base * mult * (isCrit ? 2.0 : 1)), isCrit };
 }
 function checkEvasion(evaChance: number): boolean {
   return Math.random() * 100 < evaChance;
@@ -275,10 +276,17 @@ export default function BattlePage() {
   const [dmgPopup, setDmgPopup] = useState<{target:"me"|"opp"; val:number; isCrit:boolean; msg?:string}|null>(null);
   const [actionMsg, setActionMsg] = useState("");
   const [turnCount, setTurnCount] = useState(0);
+  // applySkill/pickSkill은 첫 배틀 시작 시 한 번 얼려진 클로저를 계속 쓰므로(스킬/스탯이 안 바뀌면
+  // useCallback deps가 안 바뀜) turnCount state를 직접 읽으면 항상 0으로 고정됨 — ref로 최신값 참조
+  const turnCountRef = useRef(0);
+  useEffect(() => { turnCountRef.current = turnCount; }, [turnCount]);
 
   // 타이머
   const [timerLeft, setTimerLeft] = useState(6);
   const timerRef = useRef<ReturnType<typeof setInterval>|null>(null);
+  // pickSkill은 매 렌더 새 클로저를 갖는데, startTimer는 deps=[]라 최초 클로저(스탯이 null이던 시점)를
+  // 영원히 붙잡고 있어서 시간초과 시 턴이 안 넘어가는 버그가 있었음 — ref로 항상 최신 함수를 참조
+  const pickSkillRef = useRef<(skillIdx: number | null, forfeitMsg?: string) => void>(() => {});
 
   // 결과
   const [battleResult, setBattleResult] = useState<{winner:"me"|"opponent"; exp:number; newLevel:number; leveledUp:boolean}|null>(null);
@@ -325,7 +333,7 @@ export default function BattlePage() {
       if(mounted.current) setTimerLeft(t);
       if(t <= 0) {
         clearTimer();
-        if(mounted.current) pickSkill(null); // 타임오버 → 턴 패스 (상대에게 넘어감)
+        if(mounted.current) pickSkillRef.current(null); // 타임오버 → 턴 패스 (상대에게 넘어감)
       }
     }, 1000);
   }, []); // eslint-disable-line
@@ -495,7 +503,17 @@ export default function BattlePage() {
     // 파워업 캔 효과 (내 다음 공격 한정, 즉시 소모)
     const powerBuffMult = (isPlayer && myPowerBuffRef.current) ? 1.3 : 1.0;
     if (isPlayer && myPowerBuffRef.current) myPowerBuffRef.current = false;
-    const envDmgMult = (env?.dmgMult ?? 1.0) * (isEffective ? 2.0 : 1.0) * powerBuffMult;
+
+    // 필사의 역전 — 공격자 체력이 30% 미만이면 피해량·크리티컬 확률 보너스 (역전 가능성↑)
+    const atkHpRatio = (isPlayer ? myHpRef.current : oppHpRef.current) / (isPlayer ? myMaxH : oppMaxH);
+    const comebackActive = atkHpRatio < 0.3;
+    const comebackDmgMult = comebackActive ? 1.15 : 1.0;
+    const comebackCritBonus = comebackActive ? 15 : 0;
+
+    // 장기전 방지 — 10턴을 넘기면 매 턴 피해량이 조금씩 증가해 긴박감을 줌 (최대 +25%)
+    const escalationMult = 1 + Math.min(0.25, Math.max(0, (turnCountRef.current - 10) * 0.025));
+
+    const envDmgMult = (env?.dmgMult ?? 1.0) * (isEffective ? 2.0 : 1.0) * powerBuffMult * comebackDmgMult * escalationMult;
 
     // 이번에 사용할 스킬 ID 미리 확인 (야습의 회피 무시 판정에 필요)
     const usedSkillId = skill.type === "special" && skill.slot !== undefined ? getSlotSkillId(attacker, skill.slot) : null;
@@ -518,7 +536,7 @@ export default function BattlePage() {
       return { dmg:0, isCrit:false, msg:"💨 회피!", dodged:true };
     }
 
-    const atkCrit = (attacker.battle_crit ?? 8) + envCritBonus;
+    const atkCrit = (attacker.battle_crit ?? 8) + envCritBonus + comebackCritBonus;
     const ownMaxHp = isPlayer ? myMaxH : oppMaxH;
     let dmg=0, isCrit=false, msg="";
 
@@ -825,6 +843,8 @@ export default function BattlePage() {
       }, 620);
     }, 380);
   }, [myStats, oppStats, selected, opponent, mySkills, oppSkills, myMaxHp, oppMaxHp]); // eslint-disable-line
+
+  useEffect(() => { pickSkillRef.current = pickSkill; }, [pickSkill]);
 
   /* ── 아이템 사용 (내 턴 소모) ── */
   const useItem = useCallback(async (key: ShopItemKey) => {

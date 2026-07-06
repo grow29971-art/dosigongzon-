@@ -41,7 +41,7 @@ const RARITY_ORDER = ["common", "uncommon", "rare", "legendary"] as const;
 type Rarity = typeof RARITY_ORDER[number];
 
 // 포획 게임에서 "완벽 포획" 성공 시 한 단계 업그레이드될 확률
-const PERFECT_CATCH_UPGRADE_CHANCE = 0.35;
+const PERFECT_CATCH_UPGRADE_CHANCE = 0.20;
 
 function upgradeRarity(rarity: string): Rarity {
   const idx = RARITY_ORDER.indexOf(rarity as Rarity);
@@ -52,10 +52,10 @@ function upgradeRarity(rarity: string): Rarity {
 // 랜덤 카드 생성 (Gemini 폴백 or 사진 없을 때)
 function makeRandomCard(catName: string, perfectCatch: boolean) {
   const r = Math.random();
-  // 완벽 포획이면 높은 등급 쪽으로 기울어진 분포 사용
+  // 완벽 포획이면 높은 등급 쪽으로 살짝 기울어진 분포 사용 (레어/레전드는 낮게 유지)
   const rarity = perfectCatch
-    ? (r < 0.40 ? "common" : r < 0.75 ? "uncommon" : r < 0.93 ? "rare" : "legendary")
-    : (r < 0.70 ? "common" : r < 0.94 ? "uncommon" : r < 0.99 ? "rare" : "legendary");
+    ? (r < 0.55 ? "common" : r < 0.85 ? "uncommon" : r < 0.97 ? "rare" : "legendary")
+    : (r < 0.78 ? "common" : r < 0.965 ? "uncommon" : r < 0.995 ? "rare" : "legendary");
   const pick = <T,>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
   const shuffled = [...TRAITS].sort(() => Math.random() - 0.5).slice(0, 3);
 
