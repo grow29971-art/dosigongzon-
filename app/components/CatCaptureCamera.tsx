@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { X } from "lucide-react";
 
 interface Props {
-  onCapture: (file: File) => void;
+  onCapture: (file: File, isPerfectCatch: boolean) => void;
   onClose: () => void;
   onFallbackGallery?: () => void;
   onFallbackCapture?: () => void;
@@ -152,15 +152,15 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   }, []);
 
   // 포획 완료 처리
-  const finishCapture = useCallback(async () => {
+  const finishCapture = useCallback(async (isPerfect: boolean) => {
     setCaught(true);
     setTimeout(async () => {
       if (previewFile) {
-        onCapture(previewFile);
+        onCapture(previewFile, isPerfect);
       } else {
         const file = await capturePhoto();
         streamRef.current?.getTracks().forEach(t => t.stop());
-        if (file) onCapture(file);
+        if (file) onCapture(file, isPerfect);
       }
     }, 1300);
   }, [previewFile, onCapture, capturePhoto]);
@@ -206,7 +206,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           setPerfectCatch(isPerfect);
           if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(isPerfect ? [30, 40, 60] : 40);
           setThrowState("hit");
-          finishCapture();
+          finishCapture(isPerfect);
         } else {
           if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(15);
           const remaining = attemptsLeftRef.current - 1;

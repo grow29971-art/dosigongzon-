@@ -96,6 +96,8 @@ export default function AddCatModal({
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
   // 추가 정보(선택) 펼침 — 기본은 이름·동네만 보여 마찰 최소화
   const [showMore, setShowMore] = useState(false);
+  // 포획 게임에서 "완벽 포획"으로 잡았는지 — 카드 생성 시 높은 등급 확률 보너스에 사용
+  const [perfectCatch, setPerfectCatch] = useState(false);
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -166,12 +168,14 @@ export default function AddCatModal({
       setError("");
       setSubmitting(false);
       setShowMore(false);
+      setPerfectCatch(false);
     }
     return () => { document.body.style.overflow = ""; };
   }, [open, initialLat, initialLng]);
 
-  const handleCameraCapture = (file: File) => {
+  const handleCameraCapture = (file: File, isPerfectCatch: boolean) => {
     setShowCamera(false);
+    setPerfectCatch(isPerfectCatch);
     // 갤러리 모드면 pendingGalleryFiles 전체 추가, 카메라 모드면 file만 추가
     const filesToAdd = pendingGalleryFiles.length > 0 ? pendingGalleryFiles : [file];
     setPendingGalleryFiles([]);
@@ -307,7 +311,7 @@ export default function AddCatModal({
       let generatedCard: CatCardData | null = null;
       if (newCat.id) {
         try {
-          let body: Record<string, string> = { cat_id: newCat.id };
+          let body: Record<string, string | boolean> = { cat_id: newCat.id, perfect_catch: perfectCatch };
           if (photoFiles[0]) {
             const b64 = await resizeToBase64(photoFiles[0], 800);
             body = { ...body, image_base64: b64, mime_type: "image/jpeg" };

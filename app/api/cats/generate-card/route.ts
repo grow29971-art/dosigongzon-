@@ -37,10 +37,25 @@ traits(기술) 예시 — 포켓몬 기술처럼 속성+동작 조합, 성격 �
 stats는 외모와 분위기에서 추정. 합이 100일 필요 없음.`;
 
 
+const RARITY_ORDER = ["common", "uncommon", "rare", "legendary"] as const;
+type Rarity = typeof RARITY_ORDER[number];
+
+// 포획 게임에서 "완벽 포획" 성공 시 한 단계 업그레이드될 확률
+const PERFECT_CATCH_UPGRADE_CHANCE = 0.35;
+
+function upgradeRarity(rarity: string): Rarity {
+  const idx = RARITY_ORDER.indexOf(rarity as Rarity);
+  if (idx < 0 || idx >= RARITY_ORDER.length - 1) return (rarity as Rarity) ?? "common";
+  return Math.random() < PERFECT_CATCH_UPGRADE_CHANCE ? RARITY_ORDER[idx + 1] : (rarity as Rarity);
+}
+
 // 랜덤 카드 생성 (Gemini 폴백 or 사진 없을 때)
-function makeRandomCard(catName: string) {
+function makeRandomCard(catName: string, perfectCatch: boolean) {
   const r = Math.random();
-  const rarity = r < 0.70 ? "common" : r < 0.94 ? "uncommon" : r < 0.99 ? "rare" : "legendary";
+  // 완벽 포획이면 높은 등급 쪽으로 기울어진 분포 사용
+  const rarity = perfectCatch
+    ? (r < 0.40 ? "common" : r < 0.75 ? "uncommon" : r < 0.93 ? "rare" : "legendary")
+    : (r < 0.70 ? "common" : r < 0.94 ? "uncommon" : r < 0.99 ? "rare" : "legendary");
   const pick = <T,>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
   const shuffled = [...TRAITS].sort(() => Math.random() - 0.5).slice(0, 3);
 
@@ -66,7 +81,8 @@ export async function POST(request: Request) {
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   const body = await request.json();
-  const { cat_id, image_base64, mime_type, photo_url } = body;
+  const { cat_id, image_base64, mime_type, photo_url, perfect_catch } = body;
+  const perfectCatch = perfect_catch === true;
   if (!cat_id) return NextResponse.json({ error: "missing cat_id" }, { status: 400 });
 
   // 이미 생성된 카드면 반환
@@ -112,7 +128,8 @@ export async function POST(request: Request) {
         const parsed = JSON.parse(raw);
 
         if (parsed.is_real_cat) {
-          const geminiRarity = parsed.rarity ?? "common";
+          // 완벽 포획 보너스 — 사진 기반 등급 위에 확률적으로 한 단계 업그레이드
+          const geminiRarity = perfectCatch ? upgradeRarity(parsed.rarity ?? "common") : (parsed.rarity ?? "common");
           const card = {
             card_rarity: geminiRarity,
             card_name: parsed.card_name ?? `신비로운 ${catName}`,
@@ -133,7 +150,7 @@ export async function POST(request: Request) {
   }
 
   // 랜덤 카드 폴백 (사진 없음 / Gemini 실패 / API 키 없음)
-  const card = makeRandomCard(catName);
+  const card = makeRandomCard(catName, perfectCatch);
   await supabase.from("cats").update(card).eq("id", cat_id).eq("caretaker_id", user.id);
   return NextResponse.json({ card });
 }
