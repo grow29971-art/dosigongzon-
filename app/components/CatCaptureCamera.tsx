@@ -159,7 +159,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
         streamRef.current?.getTracks().forEach(t => t.stop());
         if (file) onCapture(file);
       }
-    }, 900);
+    }, 1300);
   }, [previewFile, onCapture, capturePhoto]);
 
   // 츄르 던지기 - 터치 이벤트 (당겼다 놓는 제스처 + 놓는 순간의 타이밍으로 성공 판정)
@@ -316,13 +316,13 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
               {isLive ? (
                 <video ref={videoRef} playsInline muted
                   className="w-full h-full object-cover"
-                  style={{ opacity: caught ? 0.25 : 1, transition: "opacity 0.4s" }} />
+                  style={{ opacity: caught ? 0.55 : 1, filter: caught ? "blur(7px) brightness(0.55)" : "none", transition: "opacity 0.6s, filter 0.6s" }} />
               ) : (
                 previewUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={previewUrl} alt="포획 대상"
                     className="w-full h-full object-cover"
-                    style={{ opacity: caught ? 0.25 : 1, transition: "opacity 0.4s" }} />
+                    style={{ opacity: caught ? 0.55 : 1, filter: caught ? "blur(7px) brightness(0.55)" : "none", transition: "opacity 0.6s, filter 0.6s" }} />
                 )
               )}
             </div>
@@ -443,10 +443,20 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
                 </>
               )}
 
-              {/* 포획 완료 메시지 */}
+              {/* 포획 완료 연출 (스포트라이트 + 반짝임) */}
               {caught && (
-                <div className="text-center" style={{ animation: "caught-flash 0.5s ease-out" }}>
-                  <p className="text-white text-[42px] font-black drop-shadow-lg leading-none">포획!</p>
+                <div className="text-center relative" style={{ animation: "caught-flash 0.5s ease-out" }}>
+                  {["✦","★","✦","★","✦","★"].map((s, i) => (
+                    <span key={i} className="absolute text-yellow-300 text-[20px] font-black pointer-events-none"
+                      style={{
+                        left: `${-40 + i * 26}%`, top: `${-70 + (i % 2) * 130}%`,
+                        animation: "stars-burst 0.9s ease-out infinite",
+                        animationDelay: `${i * 0.12}s`,
+                      }}>
+                      {s}
+                    </span>
+                  ))}
+                  <p className="text-white text-[42px] font-black drop-shadow-lg leading-none">포획 완료!</p>
                   <p className="text-yellow-300 text-[16px] font-bold mt-2">🐱 고양이 카드 생성 중...</p>
                 </div>
               )}
