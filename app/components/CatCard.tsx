@@ -394,8 +394,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
         )}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1 }}>
           <span style={{ fontSize: fs.bottom - 1, color: "rgba(255,255,255,0.4)" }}>후퇴</span>
-          <span className={rarity === "rare" || rarity === "legendary" ? "rarity-glow" : undefined}
-            style={{ fontSize: fs.bottom + 1, color: cfg.accent, letterSpacing: 1, textShadow: `0 0 6px ${cfg.accent}` }}>{cfg.rarity}</span>
+          <span style={{ fontSize: fs.bottom + 1, color: cfg.accent, letterSpacing: 1, textShadow: `0 0 6px ${cfg.accent}` }}>{cfg.rarity}</span>
         </div>
       </div>
     </div>
@@ -509,21 +508,22 @@ export default function CatCard({ name, photoUrl, card, size = "md", onClick }: 
           background-image: repeating-radial-gradient(circle at 50% 130%, rgba(255,255,255,0.20) 0 2px, transparent 2px 20px);
           background-size: 160% 160%;
           background-position: 50% 100%;
-          opacity: 0.42;
-          animation: ripple-pulse 3.2s ease-in-out infinite;
+          opacity: 0.38;
+          animation: ripple-drift 4.5s ease-in-out infinite;
         }
-        @keyframes ripple-pulse {
-          0%, 100% { background-position: 50% 100%; opacity: 0.42; }
-          50%      { background-position: 50% 88%; opacity: 0.22; }
+        @keyframes ripple-drift {
+          0%, 100% { background-position: 50% 100%; }
+          50%      { background-position: 50% 88%; }
         }
         .type-pattern-electric {
-          background-image: repeating-linear-gradient(68deg, rgba(255,255,255,0.24) 0 1.5px, transparent 1.5px 16px);
-          opacity: 0.42;
-          animation: spark-flicker 1.1s steps(2) infinite;
+          background-image: repeating-linear-gradient(68deg, rgba(255,255,255,0.22) 0 1.5px, transparent 1.5px 16px);
+          background-position: 0 0;
+          opacity: 0.36;
+          animation: spark-drift 2.4s linear infinite;
         }
-        @keyframes spark-flicker {
-          0%, 100% { opacity: 0.42; }
-          50%      { opacity: 0.14; }
+        @keyframes spark-drift {
+          0%   { background-position: 0 0; }
+          100% { background-position: 32px 0; }
         }
         .type-pattern-fire {
           background-image:
@@ -540,16 +540,7 @@ export default function CatCard({ name, photoUrl, card, size = "md", onClick }: 
         }
         .shimmer-text {
           background-size: 250% 100%;
-          animation: shimmer-sweep 2.6s ease-in-out infinite;
-        }
-        @keyframes shimmer-sweep {
-          0%   { background-position: 200% center; }
-          100% { background-position: -200% center; }
-        }
-        .rarity-glow { animation: rarity-pulse 1.8s ease-in-out infinite; }
-        @keyframes rarity-pulse {
-          0%,100% { filter: brightness(1); }
-          50%     { filter: brightness(1.5); }
+          background-position: 30% center;
         }
         .cat-card-btn { cursor: pointer; transition: transform 0.18s, filter 0.18s; display: inline-flex; }
         .cat-card-btn:active { transform: scale(0.96); }
