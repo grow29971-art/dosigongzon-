@@ -506,15 +506,15 @@ export default function CatCard({ name, photoUrl, card, size = "md", onClick }: 
           100% { background-position: -40px 30px, 46px 40px; }
         }
         .type-pattern-water {
-          background-image: repeating-radial-gradient(circle at 50% 115%, rgba(255,255,255,0.18) 0 2px, transparent 2px 20px);
-          background-size: 140% 140%;
-          background-position: center bottom;
-          opacity: 0.5;
+          background-image: repeating-radial-gradient(circle at 50% 130%, rgba(255,255,255,0.20) 0 2px, transparent 2px 20px);
+          background-size: 160% 160%;
+          background-position: 50% 100%;
+          opacity: 0.42;
           animation: ripple-pulse 3.2s ease-in-out infinite;
         }
         @keyframes ripple-pulse {
-          0%, 100% { background-size: 140% 140%; opacity: 0.5; }
-          50%      { background-size: 175% 175%; opacity: 0.26; }
+          0%, 100% { background-position: 50% 100%; opacity: 0.42; }
+          50%      { background-position: 50% 88%; opacity: 0.22; }
         }
         .type-pattern-electric {
           background-image: repeating-linear-gradient(68deg, rgba(255,255,255,0.24) 0 1.5px, transparent 1.5px 16px);
@@ -580,15 +580,17 @@ export default function CatCard({ name, photoUrl, card, size = "md", onClick }: 
           style={{
             position: "fixed", inset: 0, zIndex: 500,
             background: "rgba(0,0,0,0.82)",
-            display: "flex", alignItems: "center", justifyContent: "center",
+            display: "flex", flexDirection: "column", alignItems: "center",
             backdropFilter: "blur(8px)",
             WebkitBackdropFilter: "blur(8px)",
+            overflowY: "auto", WebkitOverflowScrolling: "touch",
+            padding: "20px 0",
           }}
           onClick={() => setModalOpen(false)}
         >
           <div
             className="card-modal-anim"
-            style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}
+            style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, margin: "auto 0" }}
             onClick={e => e.stopPropagation()}
           >
             {/* 희귀도 빛 효과 */}
