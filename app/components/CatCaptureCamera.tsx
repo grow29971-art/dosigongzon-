@@ -43,6 +43,8 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   const [caught, setCaught] = useState(false);
   const [previewUrl, setPreviewUrl] = useState("");
   const [perfectCatch, setPerfectCatch] = useState(false);
+  // 타격감 연출 — 화면 흔들림 (0=없음, 1=미스, 2=명중, 3=완벽 포획)
+  const [impactShake, setImpactShake] = useState<0|1|2|3>(0);
 
   // 투척 상태
   const [throwState, setThrowState] = useState<ThrowState>("idle");
@@ -206,6 +208,8 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           setPerfectCatch(isPerfect);
           if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(isPerfect ? [30, 40, 60] : 40);
           setThrowState("hit");
+          setImpactShake(isPerfect ? 3 : 2);
+          setTimeout(() => setImpactShake(0), isPerfect ? 700 : 450);
           finishCapture(isPerfect);
         } else {
           if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(15);
@@ -218,6 +222,8 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           }
           setSweetSpot(randomSweetSpot(roundsFailedRef.current >= 2));
           setThrowState("miss");
+          setImpactShake(1);
+          setTimeout(() => setImpactShake(0), 350);
           setTimeout(() => { setThrowState("idle"); setPullY(0); setChuruX(0); }, 800);
         }
       }, 600);
@@ -290,9 +296,44 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           0%,100% { box-shadow: 0 0 8px 2px rgba(255,210,60,0.8); }
           50%     { box-shadow: 0 0 14px 5px rgba(255,210,60,0.95); }
         }
+        @keyframes cam-shake-small {
+          0%,100% { transform:translate(0,0); }
+          25% { transform:translate(-3px,2px); }
+          50% { transform:translate(3px,-2px); }
+          75% { transform:translate(-2px,1px); }
+        }
+        @keyframes cam-shake-big {
+          0%,100% { transform:translate(0,0) rotate(0deg); }
+          15% { transform:translate(-6px,4px) rotate(-0.5deg); }
+          30% { transform:translate(6px,-4px) rotate(0.5deg); }
+          45% { transform:translate(-5px,3px); }
+          60% { transform:translate(5px,-3px); }
+          80% { transform:translate(-2px,1px); }
+        }
+        @keyframes flash-fade {
+          0% { opacity:0; }
+          15% { opacity:1; }
+          100% { opacity:0; }
+        }
       `}</style>
 
-      <div className="fixed inset-0 z-[300] bg-black flex flex-col overflow-hidden select-none">
+      {impactShake === 1 && (
+        <div className="fixed inset-0 z-[350] pointer-events-none" style={{ background:"rgba(255,50,50,0.28)", animation:"flash-fade 0.35s ease-out" }} />
+      )}
+      {(impactShake === 2 || impactShake === 3) && (
+        <div className="fixed inset-0 z-[350] pointer-events-none" style={{
+          background: impactShake===3
+            ? "radial-gradient(ellipse at center, rgba(255,255,255,0.55) 0%, rgba(255,220,80,0.35) 45%, transparent 75%)"
+            : "radial-gradient(ellipse at center, rgba(255,255,255,0.35) 0%, transparent 70%)",
+          animation:"flash-fade 0.4s ease-out",
+        }} />
+      )}
+
+      <div className="fixed inset-0 z-[300] bg-black flex flex-col overflow-hidden select-none"
+        style={{
+          animation: impactShake===3 ? "cam-shake-big 0.6s ease" : impactShake===2 ? "cam-shake-big 0.4s ease" : impactShake===1 ? "cam-shake-small 0.3s ease" : undefined,
+        }}
+      >
 
         {/* 닫기 */}
         <button
@@ -498,11 +539,24 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
+            {/* 비행 궤적 잔상 (모션 트레일) */}
+            {(throwState === "flying" || throwState === "miss") && [0, 1].map(i => (
+              <div key={i} className="absolute bottom-10 rounded-full pointer-events-none"
+                style={{
+                  width: 24, height: 24, marginBottom: 4,
+                  background: "radial-gradient(circle, rgba(255,140,40,0.55) 0%, transparent 70%)",
+                  filter: `blur(${2 + i * 1.5}px)`,
+                  opacity: 0.5 - i * 0.18,
+                  animation: `${throwState === "flying" ? "churu-fly-hit" : "churu-fly-miss"} 0.6s cubic-bezier(0.25,0.65,0.35,1) forwards`,
+                  animationDelay: `${70 + i * 70}ms`,
+                }} />
+            ))}
+
             {/* 고양이 캔 */}
             <div className="absolute bottom-10 flex flex-col items-center gap-1 pointer-events-none"
               style={{
                 transform: throwState === "pulling"
-                  ? `translateY(${pullY * 0.55}px) translateX(${churuX}px) scale(${1 + pullY / 400}) rotate(${-churuX * 0.15}deg)`
+                  ? `translateY(${pullY * 0.55}px) translateX(${churuX}px) scaleY(${1 + pullY / 300}) scaleX(${1 - pullY / 900}) rotate(${-churuX * 0.15}deg)`
                   : "none",
                 transition: throwState === "idle" ? "transform 0.25s cubic-bezier(0.34,1.56,0.64,1)" : "none",
                 animation: throwState === "flying"

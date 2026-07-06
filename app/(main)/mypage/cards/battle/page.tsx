@@ -273,6 +273,16 @@ export default function BattlePage() {
   const [myAnim, setMyAnim] = useState<CardAnim>("idle");
   const [oppAnim, setOppAnim] = useState<CardAnim>("idle");
   const [critFlash, setCritFlash] = useState(false);
+  // 임팩트 연출 — 타격감을 위한 화면 흔들림 + 충격파 (0=없음, 1=일반타격, 2=크리티컬)
+  const [screenShake, setScreenShake] = useState<0|1|2>(0);
+  const [impactBurst, setImpactBurst] = useState<{ side:"me"|"opp"; big:boolean } | null>(null);
+  const shakeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const triggerImpact = (side:"me"|"opp", isCrit: boolean) => {
+    setScreenShake(isCrit ? 2 : 1);
+    setImpactBurst({ side, big: isCrit });
+    if (shakeTimerRef.current) clearTimeout(shakeTimerRef.current);
+    shakeTimerRef.current = setTimeout(() => { setScreenShake(0); setImpactBurst(null); }, isCrit ? 480 : 320);
+  };
   const [dmgPopup, setDmgPopup] = useState<{target:"me"|"opp"; val:number; isCrit:boolean; msg?:string}|null>(null);
   const [actionMsg, setActionMsg] = useState("");
   const [turnCount, setTurnCount] = useState(0);
@@ -298,7 +308,7 @@ export default function BattlePage() {
 
   useEffect(() => {
     mounted.current = true;
-    return () => { mounted.current = false; clearTimer(); if(autoTimerRef.current) clearTimeout(autoTimerRef.current); };
+    return () => { mounted.current = false; clearTimer(); if(autoTimerRef.current) clearTimeout(autoTimerRef.current); if(shakeTimerRef.current) clearTimeout(shakeTimerRef.current); };
   }, []);
 
   useEffect(() => {
@@ -457,6 +467,7 @@ export default function BattlePage() {
         if(!e.isDodge && e.dmg>0) {
           if(isMe){ setOppAnim("hit"); setOppHp(e.dHp); }
           else { setMyAnim("hit"); setMyHp(e.aHp); }
+          triggerImpact(isMe?"opp":"me", e.isCritical);
           setDmgPopup({ target:isMe?"opp":"me", val:e.dmg, isCrit:e.isCritical });
           if(e.isCritical){ setCritFlash(true); navigator.vibrate?.([80,30,80]); }
           else navigator.vibrate?.(30);
@@ -765,6 +776,7 @@ export default function BattlePage() {
       setMyAnim("idle");
       if(dmg>0) {
         setOppAnim("hit");
+        triggerImpact("opp", isCrit);
         setDmgPopup({ target:"opp", val:dmg, isCrit, msg:msg||undefined });
         if(isCrit){ setCritFlash(true); navigator.vibrate?.([80,30,80]); }
         else navigator.vibrate?.(35);
@@ -813,6 +825,7 @@ export default function BattlePage() {
             setOppAnim("idle");
             if(od>0) {
               setMyAnim("hit");
+              triggerImpact("me", oc);
               setDmgPopup({ target:"me", val:od, isCrit:oc, msg:om||undefined });
               if(oc){ setCritFlash(true); navigator.vibrate?.([80,30,80]); }
               else navigator.vibrate?.(30);
@@ -897,15 +910,16 @@ export default function BattlePage() {
     setMyStats(null); setOppStats(null); setAutoResult(null);
     setBattleResult(null); setTurnCount(0); setActionMsg("");
     setMyAnim("idle"); setOppAnim("idle"); setDmgPopup(null); setCritFlash(false);
+    setScreenShake(0); setImpactBurst(null);
     if(user) createClient().from("cats").select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_level,card_exp,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4").eq("caretaker_id",user.id).not("card_generated_at","is",null).order("card_level",{ascending:false}).then(({data}:{data:BattleCat[]|null})=>{ if(mounted.current) setMyCats(data??[]); });
   };
 
   /* ── 카드 애니 스타일 ── */
   const cardStyle = (anim:CardAnim, side:"left"|"right"): React.CSSProperties => {
     const d = side==="left"?1:-1;
-    if(anim==="attack") return { transform:`translateX(${d*20}px) scale(1.07)`, transition:"transform 0.18s ease-out", filter:"brightness(1.25)" };
-    if(anim==="hit") return { animation:"bHit 0.35s ease" };
-    if(anim==="dodge") return { transform:`translateY(-16px) rotate(${d*-6}deg)`, transition:"transform 0.22s", opacity:0.55 };
+    if(anim==="attack") return { ["--d" as string]:d, animation:"bAttack 0.42s cubic-bezier(0.25,0.6,0.35,1)", filter:"brightness(1.3)" } as React.CSSProperties;
+    if(anim==="hit") return { animation:"bHit 0.4s ease" };
+    if(anim==="dodge") return { ["--d" as string]:d, animation:"bDodge 0.32s ease-out", opacity:0.5 } as React.CSSProperties;
     return { transform:"translateX(0) scale(1)", transition:"transform 0.22s" };
   };
 
@@ -921,7 +935,22 @@ export default function BattlePage() {
   return (
     <>
       <style>{`
+        @keyframes bAttack {
+          0%   { transform:translateX(0) scale(1); }
+          30%  { transform:translateX(calc(var(--d) * -7px)) scale(0.95); }
+          60%  { transform:translateX(calc(var(--d) * 28px)) scale(1.14); }
+          100% { transform:translateX(calc(var(--d) * 20px)) scale(1.07); }
+        }
+        @keyframes bDodge {
+          0%   { transform:translateY(0) rotate(0deg); filter:blur(0px); }
+          35%  { filter:blur(3px); }
+          100% { transform:translateY(-18px) rotate(calc(var(--d) * -7deg)); filter:blur(0px); }
+        }
         @keyframes bHit { 0%{transform:translateX(0)}20%{transform:translateX(-10px) rotate(-3deg)}50%{transform:translateX(9px) rotate(2.5deg)}75%{transform:translateX(-5px)}100%{transform:translateX(0)} }
+        @keyframes shakeScreen { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-3px,2px)} 40%{transform:translate(3px,-2px)} 60%{transform:translate(-2px,1px)} 80%{transform:translate(2px,-1px)} }
+        @keyframes shakeScreenBig { 0%,100%{transform:translate(0,0) rotate(0deg)} 15%{transform:translate(-7px,4px) rotate(-0.4deg)} 30%{transform:translate(7px,-4px) rotate(0.4deg)} 45%{transform:translate(-5px,3px)} 60%{transform:translate(5px,-3px)} 75%{transform:translate(-2px,1px)} }
+        @keyframes impactBurst { 0%{opacity:0.95; transform:scale(0.2);} 100%{opacity:0; transform:scale(1.9);} }
+        @keyframes critFlashFade { 0%{opacity:0;} 15%{opacity:1;} 100%{opacity:0;} }
         @keyframes dPop { 0%{opacity:1;transform:translateY(0)scale(1)}60%{opacity:1;transform:translateY(-26px)scale(1.25)}100%{opacity:0;transform:translateY(-42px)scale(0.9)} }
         @keyframes cdPop { 0%{opacity:0;transform:scale(0.3)}45%{opacity:1;transform:scale(1.18)}70%{transform:scale(0.94)}100%{transform:scale(1)} }
         @keyframes msgIn { 0%{opacity:0;transform:translateY(5px)}100%{opacity:1;transform:translateY(0)} }
@@ -971,9 +1000,12 @@ export default function BattlePage() {
         @keyframes fog-drift { 0%{transform:translateX(-4%)} 100%{transform:translateX(4%)} }
       `}</style>
 
-      {critFlash && <div style={{position:"fixed",inset:0,zIndex:999,background:"rgba(255,200,0,0.3)",pointerEvents:"none"}}/>}
+      {critFlash && <div style={{position:"fixed",inset:0,zIndex:999,background:"radial-gradient(ellipse at center, rgba(255,220,80,0.55) 0%, rgba(255,200,0,0.22) 55%, transparent 80%)",pointerEvents:"none",animation:"critFlashFade 0.45s ease-out"}}/>}
 
-      <div className="min-h-dvh flex flex-col" style={{ background:rootBg, transition:"background 1.2s", position:"relative", zIndex:0 }}>
+      <div className="min-h-dvh flex flex-col" style={{
+        background:rootBg, transition:"background 1.2s", position:"relative", zIndex:0,
+        animation: screenShake===2 ? "shakeScreenBig 0.45s ease" : screenShake===1 ? "shakeScreen 0.3s ease" : undefined,
+      }}>
         <EnvScene env={battleEnv} />
 
         {/* 헤더 */}
@@ -1086,6 +1118,15 @@ export default function BattlePage() {
                     </div>
                   )}
                   <div style={cardStyle(myAnim,"left")}><CatCard name={selected.name} photoUrl={selected.photo_url} card={toCard(selected)} size="sm"/></div>
+                  {impactBurst?.side==="me" && (
+                    <div style={{
+                      position:"absolute", inset:"-14px", zIndex:8, pointerEvents:"none", borderRadius:"50%",
+                      background: impactBurst.big
+                        ? "radial-gradient(circle, rgba(255,220,80,0.9) 0%, rgba(255,150,0,0.5) 45%, transparent 72%)"
+                        : "radial-gradient(circle, rgba(255,255,255,0.85) 0%, transparent 68%)",
+                      animation:"impactBurst 0.35s ease-out forwards",
+                    }}/>
+                  )}
                   {dmgPopup?.target==="me"&&(
                     <div key={`me${Date.now()}`} style={{position:"absolute",top:"25%",left:"50%",transform:"translateX(-50%)",fontWeight:900,color:dmgPopup.isCrit?"#FFD700":"white",fontSize:dmgPopup.msg?13:18,textShadow:"0 2px 8px rgba(0,0,0,0.9)",animation:"dPop 0.8s ease forwards",pointerEvents:"none",whiteSpace:"nowrap"}}>
                       {dmgPopup.msg||(dmgPopup.val>0?`-${dmgPopup.val}`:"")}
@@ -1120,6 +1161,15 @@ export default function BattlePage() {
                     </div>
                   )}
                   <div style={cardStyle(oppAnim,"right")}><CatCard name={opponent.name} photoUrl={opponent.photo_url} card={toCard(opponent)} size="sm"/></div>
+                  {impactBurst?.side==="opp" && (
+                    <div style={{
+                      position:"absolute", inset:"-14px", zIndex:8, pointerEvents:"none", borderRadius:"50%",
+                      background: impactBurst.big
+                        ? "radial-gradient(circle, rgba(255,220,80,0.9) 0%, rgba(255,150,0,0.5) 45%, transparent 72%)"
+                        : "radial-gradient(circle, rgba(255,255,255,0.85) 0%, transparent 68%)",
+                      animation:"impactBurst 0.35s ease-out forwards",
+                    }}/>
+                  )}
                   {dmgPopup?.target==="opp"&&(
                     <div key={`op${Date.now()}`} style={{position:"absolute",top:"25%",left:"50%",transform:"translateX(-50%)",fontWeight:900,color:dmgPopup.isCrit?"#FFD700":"white",fontSize:dmgPopup.msg?13:18,textShadow:"0 2px 8px rgba(0,0,0,0.9)",animation:"dPop 0.8s ease forwards",pointerEvents:"none",whiteSpace:"nowrap"}}>
                       {dmgPopup.msg||(dmgPopup.val>0?`-${dmgPopup.val}`:"")}
