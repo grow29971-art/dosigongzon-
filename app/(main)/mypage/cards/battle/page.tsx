@@ -105,6 +105,24 @@ function oppAI(hp: number, maxHp: number): number {
   if (ratio < 0.55) return Math.random() < 0.55 ? skillIdx() : (Math.random() < 0.5 ? NORMAL_IDX : GUARD_IDX);
   return Math.random() < 0.4 ? skillIdx() : NORMAL_IDX;
 }
+// 자동전투용 — oppAI는 쿨다운/사용횟수를 모르고 그냥 랜덤으로 골라서, 하필 쿨다운 중이거나
+// 소진된 행동을 고르면 pickSkill이 조용히 무시해버려 "가끔 자동전투가 안 먹는" 버그가 있었음.
+// 실제로 지금 쓸 수 있는 행동인지 확인하고, 막혀있으면 다른 가능한 행동으로 대체한다.
+function pickAvailableAutoAction(hp: number, maxHp: number, skillCds: number[], normalLeft: number, guardLeft: number): number | null {
+  const preferred = oppAI(hp, maxHp);
+  const isUsable = (idx: number) => {
+    if (idx === NORMAL_IDX) return normalLeft > 0;
+    if (idx === GUARD_IDX) return guardLeft > 0;
+    return (skillCds[idx] ?? 0) === 0;
+  };
+  if (isUsable(preferred)) return preferred;
+
+  const availableSkills = [2, 3, 4, 5].filter(i => (skillCds[i] ?? 0) === 0);
+  if (availableSkills.length > 0) return availableSkills[Math.floor(Math.random() * availableSkills.length)];
+  if (normalLeft > 0) return NORMAL_IDX;
+  if (guardLeft > 0) return GUARD_IDX;
+  return null; // 정말 아무것도 못 쓰는 극단적인 경우 — 턴 패스로 처리
+}
 function toCard(cat: BattleCat): CatCardData {
   return { card_rarity:cat.card_rarity, card_name:cat.card_name, card_traits:cat.card_traits??[], card_stats:cat.card_stats, card_flavor:cat.card_flavor, card_level:cat.card_level, card_exp:cat.card_exp };
 }
@@ -361,7 +379,8 @@ export default function BattlePage() {
           if(debuffed && (inventory.cleanse_potion ?? 0) > 0) { useItem("cleanse_potion"); return; }
           if(hpRatio < 0.5 && !myShieldRef.current && (inventory.shield ?? 0) > 0) { useItem("shield"); return; }
         }
-        pickSkill(oppAI(myHpRef.current, myMaxHp));
+        const action = pickAvailableAutoAction(myHpRef.current, myMaxHp, mySkillCdRef.current, myNormalUsesRef.current, myGuardUsesRef.current);
+        pickSkill(action, action === null ? "⏳ 쓸 수 있는 행동이 없어 턴 패스" : undefined);
       }, 500);
       return () => clearTimeout(t);
     }
