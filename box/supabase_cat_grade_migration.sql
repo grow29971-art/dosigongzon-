@@ -1,11 +1,13 @@
 -- 고양이 카드 등급 산정 시스템 — cats 테이블에 규칙 기반 등급 필드 추가
 --
--- 기존 card_rarity(text, CHECK IN common/uncommon/rare/legendary)는 Gemini 프롬프트가
--- 등급까지 직접 말해주는 기존 카드 생성 플로우(app/api/cats/generate-card)에서 쓰던 컬럼이라
--- 그대로 둔다. 이번에 추가하는 grade 계열 컬럼은 lib/cat-grade.ts의 calculateCatGrade()가
--- "실제 무늬/색/형질 룰"로 산정한 결과를 저장하는 별도 필드다 — 두 시스템을 같은 컬럼에
--- 억지로 합치지 않고 나란히 두었다가, 실제 AI 개체인식 모듈이 준비되면 어느 쪽을
--- card_rarity의 진실 공급원으로 쓸지 그때 정리하는 편이 안전하다.
+-- app/api/cats/generate-card는 이제 Gemini가 등급을 직접 말하지 않는다 — Gemini는
+-- 사진에서 보이는 특징(colors/pattern/traits/sex/confidence)만 추출하고, 그 결과를
+-- lib/cat-grade.ts의 calculateCatGrade()에 대입해 나온 등급이 card_rarity(화면에 보이는
+-- 등급, 전투 스탯 근거)의 실제 소스가 된다. grade 계열 컬럼은 그 산정 과정의 원본 근거
+-- (원본 features, 산정 점수, 근거 문장, 신뢰도)를 남겨서 나중에 룰이 바뀌면 재산정할 수
+-- 있게 하는 감사(audit)용 필드다. 단, grade='pending'(신뢰도 미달)은 card_rarity에는
+-- 못 쓰는 임시값이라 그 경우 card_rarity는 일단 common으로 내려서 저장된다 — grade
+-- 컬럼에는 pending이 그대로 남아있으니, 나중에 재판정 배치를 돌리면 실제 등급으로 갱신된다.
 
 ALTER TABLE cats ADD COLUMN IF NOT EXISTS grade text
   CHECK (grade IN ('common', 'uncommon', 'rare', 'legendary', 'pending'));
