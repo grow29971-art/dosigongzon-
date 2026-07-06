@@ -9,6 +9,8 @@ import CatCard, { type CatCardData, type CardRarity } from "@/app/components/Cat
 import { SPECIAL_SKILLS } from "@/lib/battle-config";
 import { SHOP_ITEMS, BATTLE_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-config";
 import ParticleCanvas, { type ParticleCanvasHandle } from "@/app/components/ParticleCanvas";
+import SfxToggle from "@/app/components/SfxToggle";
+import { sfx, primeSfx } from "@/lib/sfx";
 
 /* ──────────── 배틀 환경 ──────────── */
 const BATTLE_ENVS = {
@@ -272,7 +274,7 @@ function SkillBtn({ skill, idx, disabled, cooldown=0, usesLeft, onPick }: { skil
   const isExhausted = usesLeft !== undefined && usesLeft <= 0;
   const isOff = disabled || isCd || isExhausted;
   return (
-    <button onClick={() => !isOff && onPick(idx)} disabled={isOff}
+    <button onClick={() => { if (isOff) return; primeSfx(); sfx.click(); onPick(idx); }} disabled={isOff}
       style={{
         flex:1, minWidth:0, display:"flex", flexDirection:"column", alignItems:"center", gap:3,
         padding:"10px 4px", borderRadius:14, border:`1.5px solid ${skill.color}44`,
@@ -404,6 +406,7 @@ export default function BattlePage() {
     const c = color ?? (isCrit ? "255,220,80" : "255,255,255");
     pref.current?.burst(0.5, 0.4, "spark", isCrit ? 20 : 9, c);
     if (isCrit) pref.current?.burst(0.5, 0.4, "shockwave", 1, c);
+    if (isCrit) sfx.crit(); else sfx.hit();
   };
   const [dmgPopup, setDmgPopup] = useState<{target:"me"|"opp"; val:number; isCrit:boolean; msg?:string}|null>(null);
   const [actionMsg, setActionMsg] = useState("");
@@ -673,6 +676,7 @@ export default function BattlePage() {
     const defEva = (defender.battle_eva ?? 8) + envEvaBonus;
     if(!defBound && !forceHit && skill.type !== "guard" && (forceDodge || checkEvasion(defEva))) {
       if(isPlayer){ setOppAnim("dodge"); } else { setMyAnim("dodge"); }
+      sfx.dodge();
       setTimeout(()=>{ setMyAnim("idle"); setOppAnim("idle"); }, 350);
       return { dmg:0, isCrit:false, msg:"💨 회피!", dodged:true, skillId: usedSkillId };
     }
@@ -1051,6 +1055,7 @@ export default function BattlePage() {
     if(!selected || !opponent) return;
     setPhase("result");
     setActionMsg(winner==="me"?"🏆 승리!":"💔 패배...");
+    if(winner==="me") sfx.win(); else sfx.lose();
 
     try {
       const res = await fetch("/api/cats/card-battle/record", {
@@ -1204,6 +1209,7 @@ export default function BattlePage() {
           </button>
           <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><Swords size={18}/> 카드 배틀</h1>
           {isFightPhase && <span className="ml-auto text-[12px] text-gray-500 font-bold">{turnCount}턴</span>}
+          <SfxToggle style={isFightPhase ? undefined : { marginLeft: "auto" }}/>
         </div>
 
         {/* ──────── 선택 화면 ──────── */}

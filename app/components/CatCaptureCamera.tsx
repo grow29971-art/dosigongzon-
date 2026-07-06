@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { X } from "lucide-react";
 import ParticleCanvas, { type ParticleCanvasHandle } from "@/app/components/ParticleCanvas";
+import SfxToggle from "@/app/components/SfxToggle";
+import { sfx, primeSfx } from "@/lib/sfx";
 
 interface Props {
   onCapture: (file: File, isPerfectCatch: boolean) => void;
@@ -189,6 +191,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   // 고양이 캔 던지기 - 터치 이벤트 (당겼다 놓는 제스처 + 놓는 순간의 타이밍으로 성공 판정)
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (throwState !== "idle" || caught) return;
+    primeSfx();
     const t = e.touches[0];
     touchStartRef.current = { x: t.clientX, y: t.clientY };
     setPullY(0);
@@ -220,6 +223,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
       const isPerfect = isHit && finalPos >= sweetSpot.perfectStart && finalPos <= sweetSpot.perfectEnd;
       setLandingDx(dx * 2.2);
       setThrowState("flying");
+      sfx.throwCan();
       emitThrowTrail(dx * 2.2, -(window.innerHeight * 0.55));
 
       setTimeout(() => {
@@ -234,6 +238,8 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           particleRef.current?.burst(0.5, 0.38, "star", isPerfect ? 22 : 12, burstColor);
           particleRef.current?.burst(0.5, 0.38, "shockwave", 1, burstColor);
           if (isPerfect) particleRef.current?.burst(0.5, 0.38, "spark", 16, "255,215,120");
+          sfx.catchHit();
+          if (isPerfect) setTimeout(() => sfx.perfect(), 120);
           finishCapture(isPerfect);
         } else {
           if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(15);
@@ -247,6 +253,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           setSweetSpot(randomSweetSpot(roundsFailedRef.current >= 2));
           setThrowState("miss");
           setImpactShake(1);
+          sfx.miss();
           particleRef.current?.burst(0.5, 0.55, "spark", 6, "180,180,180");
           setTimeout(() => setImpactShake(0), 350);
           setTimeout(() => { setThrowState("idle"); setPullY(0); setChuruX(0); }, 800);
@@ -370,6 +377,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
         >
           <X size={20} color="white" />
         </button>
+        <SfxToggle style={{ position: "absolute", top: 16, right: 62, zIndex: 20 }} />
 
         {/* 남은 기회 */}
         {showBg && !caught && (
