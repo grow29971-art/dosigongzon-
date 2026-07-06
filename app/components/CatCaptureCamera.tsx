@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { X } from "lucide-react";
+import ParticleCanvas, { type ParticleCanvasHandle } from "@/app/components/ParticleCanvas";
 
 interface Props {
   onCapture: (file: File, isPerfectCatch: boolean) => void;
@@ -38,6 +39,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   const streamRef = useRef<MediaStream | null>(null);
   const animRef = useRef<number>(0);
   const throwAreaRef = useRef<HTMLDivElement>(null);
+  const particleRef = useRef<ParticleCanvasHandle>(null);
 
   const [camState, setCamState] = useState<CamState>(previewFile ? "preview" : "requesting");
   const [caught, setCaught] = useState(false);
@@ -153,9 +155,26 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
     });
   }, []);
 
+  // 캔 던지는 궤적을 따라 스파크 잔상을 뿌린다 (실제 비행 물리 느낌)
+  const emitThrowTrail = useCallback((dxTotal: number, dyTotal: number) => {
+    const steps = 6;
+    for (let i = 1; i <= steps; i++) {
+      const p = i / steps;
+      setTimeout(() => {
+        const w = window.innerWidth, h = window.innerHeight;
+        const x = 0.5 + (dxTotal * p) / w;
+        const y = 0.83 + (dyTotal * p) / h;
+        particleRef.current?.burst(x, y, "spark", 2, "255,170,60");
+      }, p * 550);
+    }
+  }, []);
+
   // 포획 완료 처리
   const finishCapture = useCallback(async (isPerfect: boolean) => {
     setCaught(true);
+    setTimeout(() => {
+      particleRef.current?.burst(0.5, 0.42, "star", isPerfect ? 26 : 14, isPerfect ? "255,225,90" : "255,255,255");
+    }, 250);
     setTimeout(async () => {
       if (previewFile) {
         onCapture(previewFile, isPerfect);
@@ -201,6 +220,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
       const isPerfect = isHit && finalPos >= sweetSpot.perfectStart && finalPos <= sweetSpot.perfectEnd;
       setLandingDx(dx * 2.2);
       setThrowState("flying");
+      emitThrowTrail(dx * 2.2, -(window.innerHeight * 0.55));
 
       setTimeout(() => {
         if (isHit) {
@@ -210,6 +230,10 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           setThrowState("hit");
           setImpactShake(isPerfect ? 3 : 2);
           setTimeout(() => setImpactShake(0), isPerfect ? 700 : 450);
+          const burstColor = isPerfect ? "255,225,90" : "255,255,255";
+          particleRef.current?.burst(0.5, 0.38, "star", isPerfect ? 22 : 12, burstColor);
+          particleRef.current?.burst(0.5, 0.38, "shockwave", 1, burstColor);
+          if (isPerfect) particleRef.current?.burst(0.5, 0.38, "spark", 16, "255,215,120");
           finishCapture(isPerfect);
         } else {
           if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(15);
@@ -223,6 +247,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           setSweetSpot(randomSweetSpot(roundsFailedRef.current >= 2));
           setThrowState("miss");
           setImpactShake(1);
+          particleRef.current?.burst(0.5, 0.55, "spark", 6, "180,180,180");
           setTimeout(() => setImpactShake(0), 350);
           setTimeout(() => { setThrowState("idle"); setPullY(0); setChuruX(0); }, 800);
         }
@@ -232,7 +257,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
       setPullY(0);
       setChuruX(0);
     }
-  }, [caught, finishCapture, sweetSpot]);
+  }, [caught, finishCapture, sweetSpot, emitThrowTrail]);
 
   // 배경 (카메라 or 갤러리 사진)
   const showBg = camState === "ready" || camState === "preview";
@@ -334,6 +359,8 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           animation: impactShake===3 ? "cam-shake-big 0.6s ease" : impactShake===2 ? "cam-shake-big 0.4s ease" : impactShake===1 ? "cam-shake-small 0.3s ease" : undefined,
         }}
       >
+
+        <ParticleCanvas ref={particleRef} zIndex={22} />
 
         {/* 닫기 */}
         <button

@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
 import { SPECIAL_SKILLS } from "@/lib/battle-config";
 import { SHOP_ITEMS, BATTLE_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-config";
+import ParticleCanvas, { type ParticleCanvasHandle } from "@/app/components/ParticleCanvas";
 
 /* ──────────── 배틀 환경 ──────────── */
 const BATTLE_ENVS = {
@@ -168,6 +169,12 @@ const SKYLINE_COLOR: Record<BattleEnvKey, string> = {
   heat: "rgba(60,15,5,0.45)", fog: "rgba(30,32,40,0.35)",
 };
 function EnvScene({ env }: { env: BattleEnvKey | null }) {
+  const particleRef = useRef<ParticleCanvasHandle>(null);
+  useEffect(() => {
+    if (env === "rain") particleRef.current?.setAmbient("rain", "190,220,255", 1);
+    else if (env === "heat") particleRef.current?.setAmbient("ember", "255,140,50", 1);
+    else particleRef.current?.setAmbient(null);
+  }, [env]);
   if (!env) return null;
   return (
     <div style={{ position:"absolute", inset:0, zIndex:-1, overflow:"hidden", pointerEvents:"none" }}>
@@ -184,9 +191,8 @@ function EnvScene({ env }: { env: BattleEnvKey | null }) {
           background:"radial-gradient(circle, rgba(255,230,150,0.9) 0%, rgba(255,190,80,0.5) 40%, transparent 72%)",
           boxShadow:"0 0 70px 30px rgba(255,200,90,0.30)" }} />
       )}
-      {env === "rain" && <div className="env-rain" />}
-      {env === "heat" && <div className="env-embers" />}
       {env === "fog" && <div className="env-fog" />}
+      {(env === "rain" || env === "heat") && <ParticleCanvas ref={particleRef} />}
       <div style={{ position:"absolute", left:0, right:0, bottom:0, height:110, clipPath:SKYLINE_CLIP, background:SKYLINE_COLOR[env] }} />
     </div>
   );
@@ -387,11 +393,17 @@ export default function BattlePage() {
   const [screenShake, setScreenShake] = useState<0|1|2>(0);
   const [impactBurst, setImpactBurst] = useState<{ side:"me"|"opp"; big:boolean; color?:string } | null>(null);
   const shakeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const myParticleRef = useRef<ParticleCanvasHandle>(null);
+  const oppParticleRef = useRef<ParticleCanvasHandle>(null);
   const triggerImpact = (side:"me"|"opp", isCrit: boolean, color?: string) => {
     setScreenShake(isCrit ? 2 : 1);
     setImpactBurst({ side, big: isCrit, color });
     if (shakeTimerRef.current) clearTimeout(shakeTimerRef.current);
     shakeTimerRef.current = setTimeout(() => { setScreenShake(0); setImpactBurst(null); }, isCrit ? 480 : 320);
+    const pref = side === "me" ? myParticleRef : oppParticleRef;
+    const c = color ?? (isCrit ? "255,220,80" : "255,255,255");
+    pref.current?.burst(0.5, 0.4, "spark", isCrit ? 20 : 9, c);
+    if (isCrit) pref.current?.burst(0.5, 0.4, "shockwave", 1, c);
   };
   const [dmgPopup, setDmgPopup] = useState<{target:"me"|"opp"; val:number; isCrit:boolean; msg?:string}|null>(null);
   const [actionMsg, setActionMsg] = useState("");
@@ -1167,27 +1179,6 @@ export default function BattlePage() {
         }
         @keyframes star-twinkle { 0%{opacity:0.35} 100%{opacity:0.9} }
 
-        .env-rain {
-          position:absolute; inset:-40px 0 0 0;
-          background-image: repeating-linear-gradient(112deg,
-            rgba(180,215,255,0.28) 0px, rgba(180,215,255,0.28) 2px,
-            transparent 2px, transparent 16px);
-          background-size: 100% 140%;
-          animation: rain-fall 0.55s linear infinite;
-        }
-        @keyframes rain-fall { 0%{background-position:0 -40px} 100%{background-position:-30px 40px} }
-
-        .env-embers {
-          position:absolute; inset:0;
-          background-image:
-            radial-gradient(circle, rgba(255,150,60,0.9) 1.5px, transparent 2px),
-            radial-gradient(circle, rgba(255,100,30,0.7) 1.5px, transparent 2px);
-          background-size: 70px 120px, 100px 160px;
-          background-position: 15px 100%, 55px 100%;
-          animation: ember-rise 4.5s linear infinite;
-        }
-        @keyframes ember-rise { 0%{background-position:15px 100%, 55px 100%; opacity:0.9} 100%{background-position:15px -20%, 55px -20%; opacity:0.2} }
-
         .env-fog {
           position:absolute; inset:0;
           background-image:
@@ -1317,6 +1308,7 @@ export default function BattlePage() {
                   )}
                   <div style={cardStyle(myAnim,"left")}><CatCard name={selected.name} photoUrl={selected.photo_url} card={toCard(selected)} size="sm"/></div>
                   <StatusFx frozen={myFrozen} feared={myFeared} shocked={myShocked} sleepy={mySleepy} poisoned={myPoisoned} bleeding={myBleeding} bound={myBound}/>
+                  <ParticleCanvas ref={myParticleRef} zIndex={9}/>
                   {impactBurst?.side==="me" && (
                     <div style={{
                       position:"absolute", inset:"-14px", zIndex:8, pointerEvents:"none", borderRadius:"50%",
@@ -1363,6 +1355,7 @@ export default function BattlePage() {
                   )}
                   <div style={cardStyle(oppAnim,"right")}><CatCard name={opponent.name} photoUrl={opponent.photo_url} card={toCard(opponent)} size="sm"/></div>
                   <StatusFx frozen={oppFrozen} feared={oppFeared} shocked={oppShocked} sleepy={oppSleepy} poisoned={oppPoisoned} bleeding={oppBleeding} bound={oppBound}/>
+                  <ParticleCanvas ref={oppParticleRef} zIndex={9}/>
                   {impactBurst?.side==="opp" && (
                     <div style={{
                       position:"absolute", inset:"-14px", zIndex:8, pointerEvents:"none", borderRadius:"50%",
