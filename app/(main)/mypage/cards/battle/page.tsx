@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Swords, Zap, Shield, Sparkles, Flame, Star } from "lucide-react";
+import { ArrowLeft, Swords, Zap, Shield, Sparkles, Flame, Star, ChevronDown } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
@@ -283,44 +283,76 @@ function StatusFx({ frozen, feared, shocked, sleepy, poisoned, bleeding, bound }
 }
 
 /* ──────────── 기술 버튼 ──────────── */
-function SkillBtn({ skill, idx, disabled, cooldown=0, usesLeft, onPick }: { skill:Skill; idx:number; disabled:boolean; cooldown?:number; usesLeft?:number; onPick:(i:number)=>void }) {
-  const icons = [<Swords key={0} size={14}/>, <Shield key={1} size={14}/>, <Zap key={2} size={14}/>, <Sparkles key={3} size={14}/>, <Flame key={4} size={14}/>, <Star key={5} size={14}/>];
+// variant "primary" = 기본공격/방어 (크고 가로형, 항상 눈에 잘 띄어야 함)
+// variant "compact" = 스킬 1~4 (2x2 그리드, 아이콘+이름 위주로 깔끔하게)
+function SkillBtn({ skill, idx, disabled, cooldown=0, usesLeft, onPick, variant="compact" }: { skill:Skill; idx:number; disabled:boolean; cooldown?:number; usesLeft?:number; onPick:(i:number)=>void; variant?:"primary"|"compact" }) {
+  const isPrimary = variant === "primary";
+  const icons = [<Swords key={0} size={isPrimary?19:14}/>, <Shield key={1} size={isPrimary?19:14}/>, <Zap key={2} size={14}/>, <Sparkles key={3} size={14}/>, <Flame key={4} size={14}/>, <Star key={5} size={14}/>];
   const isCd = cooldown > 0;
   const isExhausted = usesLeft !== undefined && usesLeft <= 0;
   const isOff = disabled || isCd || isExhausted;
+  const radius = isPrimary ? 18 : 16;
   return (
     <button onClick={() => { if (isOff) return; primeSfx(); sfx.click(); onPick(idx); }} disabled={isOff}
       style={{
-        flex:1, minWidth:0, display:"flex", flexDirection:"column", alignItems:"center", gap:3,
-        padding:"10px 4px", borderRadius:14, border:`1.5px solid ${skill.color}44`,
-        background: isOff ? "rgba(255,255,255,0.04)" : `${skill.color}22`,
-        opacity: isOff ? 0.45 : 1, cursor: isOff?"default":"pointer",
-        transition:"transform 0.1s, opacity 0.2s", position:"relative",
+        position:"relative", overflow:"hidden", flex:1, minWidth:0,
+        display:"flex", flexDirection: isPrimary ? "row" : "column",
+        alignItems:"center", justifyContent: isPrimary ? "flex-start" : "center",
+        gap: isPrimary ? 10 : 4,
+        padding: isPrimary ? "12px 14px" : "12px 4px 9px",
+        borderRadius: radius, border:`1.5px solid ${skill.color}55`,
+        background: isOff
+          ? "rgba(255,255,255,0.045)"
+          : isPrimary
+            ? `linear-gradient(135deg, ${skill.color}40, ${skill.color}14)`
+            : `${skill.color}1e`,
+        opacity: isOff ? 0.42 : 1, cursor: isOff?"default":"pointer",
+        transition:"transform 0.12s, opacity 0.2s",
         WebkitTapHighlightColor:"transparent",
       }}
-      onPointerDown={e => { if (!isOff) (e.currentTarget as HTMLButtonElement).style.transform="scale(0.93)"; }}
-      onPointerUp={e => { (e.currentTarget as HTMLButtonElement).style.transform="scale(1)"; }}>
-      <span style={{ color:skill.color, display:"flex", alignItems:"center", gap:3, fontSize:13, fontWeight:900 }}>
-        {icons[idx]} {skill.icon}
+      onPointerDown={e => { if (!isOff) (e.currentTarget as HTMLButtonElement).style.transform="scale(0.94)"; }}
+      onPointerUp={e => { (e.currentTarget as HTMLButtonElement).style.transform="scale(1)"; }}
+      onPointerLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform="scale(1)"; }}>
+      {/* 아이콘 배지 */}
+      <span style={{
+        flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center",
+        width: isPrimary?38:30, height: isPrimary?38:30, borderRadius:"50%",
+        background:`${skill.color}33`, border:`1.5px solid ${skill.color}80`, color:skill.color,
+      }}>
+        {isPrimary ? icons[idx] : <span style={{ fontSize:15 }}>{skill.icon}</span>}
       </span>
-      <span style={{ fontSize:10, fontWeight:800, color:"rgba(255,255,255,0.85)", textAlign:"center", lineHeight:1.2, maxWidth:70 }}>
-        {skill.name}
+
+      <span style={{ display:"flex", flexDirection:"column", alignItems: isPrimary?"flex-start":"center", gap:1, minWidth:0, flex: isPrimary?1:undefined }}>
+        <span style={{
+          fontSize: isPrimary?13.5:10.5, fontWeight:900, color:"rgba(255,255,255,0.92)",
+          whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis", maxWidth: isPrimary?"100%":72,
+        }}>
+          {skill.name}
+        </span>
+        {isPrimary && (
+          <span style={{ fontSize:10.5, color:"rgba(255,255,255,0.5)", fontWeight:700 }}>{skill.desc}</span>
+        )}
       </span>
-      <span style={{ fontSize:9, color:"rgba(255,255,255,0.4)", textAlign:"center" }}>{skill.desc}</span>
+
       {usesLeft !== undefined && !isCd && (
-        <span style={{ position:"absolute", top:3, right:5, fontSize:8, fontWeight:800, color: isExhausted?"#FF8080":"rgba(255,255,255,0.4)" }}>
+        <span style={{
+          position:"absolute", top: isPrimary?9:4, right: isPrimary?11:5,
+          fontSize:9.5, fontWeight:900, padding:"1.5px 6px", borderRadius:99,
+          background: isExhausted ? "rgba(255,90,90,0.2)" : "rgba(255,255,255,0.1)",
+          color: isExhausted ? "#FF9090" : "rgba(255,255,255,0.55)",
+        }}>
           {usesLeft}회
         </span>
       )}
       {isCd && (
-        <div style={{ position:"absolute", inset:0, borderRadius:14, background:"rgba(0,0,0,0.65)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:1 }}>
-          <span style={{ fontSize:18, fontWeight:900, color:"#FF8888" }}>{cooldown}</span>
-          <span style={{ fontSize:8, color:"rgba(255,180,180,0.8)" }}>쿨다운</span>
+        <div style={{ position:"absolute", inset:0, borderRadius:radius, background:"rgba(8,8,18,0.74)", display:"flex", flexDirection: isPrimary?"row":"column", alignItems:"center", justifyContent:"center", gap: isPrimary?6:1 }}>
+          <span style={{ fontSize:isPrimary?20:18, fontWeight:900, color:"#FF9090" }}>{cooldown}</span>
+          <span style={{ fontSize:isPrimary?11:8.5, color:"rgba(255,180,180,0.8)", fontWeight:700 }}>턴 남음</span>
         </div>
       )}
       {isExhausted && !isCd && (
-        <div style={{ position:"absolute", inset:0, borderRadius:14, background:"rgba(0,0,0,0.65)", display:"flex", alignItems:"center", justifyContent:"center" }}>
-          <span style={{ fontSize:9, fontWeight:800, color:"#FF8888" }}>소진</span>
+        <div style={{ position:"absolute", inset:0, borderRadius:radius, background:"rgba(8,8,18,0.74)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <span style={{ fontSize:isPrimary?12:10, fontWeight:900, color:"#FF9090" }}>소진</span>
         </div>
       )}
     </button>
@@ -1281,6 +1313,7 @@ export default function BattlePage() {
         @keyframes dPop { 0%{opacity:1;transform:translateY(0)scale(1)}60%{opacity:1;transform:translateY(-26px)scale(1.25)}100%{opacity:0;transform:translateY(-42px)scale(0.9)} }
         @keyframes cdPop { 0%{opacity:0;transform:scale(0.3)}45%{opacity:1;transform:scale(1.18)}70%{transform:scale(0.94)}100%{transform:scale(1)} }
         @keyframes msgIn { 0%{opacity:0;transform:translateY(5px)}100%{opacity:1;transform:translateY(0)} }
+        @keyframes itemPanelIn { 0%{opacity:0;transform:translateY(-6px)}100%{opacity:1;transform:translateY(0)} }
         @keyframes resIn { 0%{opacity:0;transform:scale(0.6)}65%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)} }
         @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,50,50,0.5)}50%{box-shadow:0 0 0 6px rgba(255,50,50,0)} }
 
@@ -1557,7 +1590,7 @@ export default function BattlePage() {
                     {!autoPilot && <span className="text-[13px] font-black" style={{color:timerLeft<=2?"#FF4444":timerLeft<=4?"#FFAA22":"#88CCFF"}}>{timerLeft}s</span>}
                   </div>
                 )}
-                <div className="flex gap-2 mb-2">
+                <div className="grid grid-cols-2 gap-2 mb-2.5">
                   {mySkills.slice(SKILL_START_IDX).map((sk,j)=>{
                     const i = SKILL_START_IDX + j;
                     return (
@@ -1568,30 +1601,37 @@ export default function BattlePage() {
                 <div className="flex gap-2">
                   {mySkills.slice(0, SKILL_START_IDX).map((sk,i)=>(
                     <SkillBtn key={i} skill={sk} idx={i} disabled={phase!=="player_choose"} cooldown={mySkillCd[i]}
-                      usesLeft={i===NORMAL_IDX?myNormalUses:i===GUARD_IDX?myGuardUses:undefined} onPick={pickSkill}/>
+                      usesLeft={i===NORMAL_IDX?myNormalUses:i===GUARD_IDX?myGuardUses:undefined} onPick={pickSkill} variant="primary"/>
                   ))}
                 </div>
 
                 {/* 아이템 사용 */}
                 {phase==="player_choose"&&(
-                  <div className="mt-2">
+                  <div className="mt-2.5">
                     <button onClick={()=>{ sfx.click(); setItemPanelOpen(o=>!o); }}
-                      className="w-full py-2 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1.5"
-                      style={{ background:"rgba(255,180,0,0.14)", color:"#FFCC66" }}>
-                      🎒 아이템 사용 {itemPanelOpen?"▲":"▼"}
+                      className="w-full py-2.5 rounded-2xl text-[12px] font-bold flex items-center justify-center gap-2 transition-transform active:scale-[0.98]"
+                      style={{ background:"linear-gradient(135deg, rgba(255,180,0,0.24), rgba(255,140,0,0.10))", color:"#FFCC66", border:"1px solid rgba(255,180,0,0.28)" }}>
+                      <span style={{ fontSize:15 }}>🎒</span> 아이템 사용
+                      <ChevronDown size={14} style={{ transition:"transform 0.2s", transform: itemPanelOpen?"rotate(180deg)":"rotate(0)" }}/>
                     </button>
                     {itemPanelOpen && (
-                      <div className="grid grid-cols-3 gap-1.5 mt-2">
+                      <div className="grid grid-cols-3 gap-2 mt-2" style={{animation:"itemPanelIn 0.22s ease"}}>
                         {BATTLE_ITEM_KEYS.map(key=>{
                           const item = SHOP_ITEMS[key];
                           const qty = inventory[key] ?? 0;
                           return (
                             <button key={key} onClick={()=>qty>0&&useItem(key)} disabled={qty<=0}
-                              className="rounded-xl p-2 flex flex-col items-center gap-0.5"
-                              style={{ background:"rgba(255,255,255,0.06)", opacity: qty>0?1:0.35 }}>
-                              <span style={{ fontSize:18 }}>{item.icon}</span>
-                              <span className="text-[9px] font-bold text-white text-center leading-tight">{item.name}</span>
-                              <span className="text-[8px] text-gray-500">보유 {qty}</span>
+                              className="relative rounded-2xl p-2.5 flex flex-col items-center gap-1 transition-transform active:scale-95"
+                              style={{ background: qty>0?"rgba(255,255,255,0.075)":"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.09)", opacity: qty>0?1:0.4 }}>
+                              <span style={{ fontSize:22 }}>{item.icon}</span>
+                              <span className="text-[9.5px] font-bold text-white text-center leading-tight">{item.name}</span>
+                              <span style={{
+                                position:"absolute", top:4, right:5, fontSize:8.5, fontWeight:900, padding:"1px 5px", borderRadius:99,
+                                background: qty>0?"rgba(255,204,102,0.2)":"rgba(255,255,255,0.06)",
+                                color: qty>0?"#FFCC66":"rgba(255,255,255,0.35)",
+                              }}>
+                                {qty}
+                              </span>
                             </button>
                           );
                         })}
@@ -1608,8 +1648,11 @@ export default function BattlePage() {
 
             {/* 자동: 액션 메시지 */}
             {mode==="auto"&&actionMsg&&(
-              <div className="rounded-2xl px-4 py-2.5 text-center" style={{background:"rgba(255,255,255,0.05)"}}>
-                <p key={actionMsg} className="text-[12px] text-gray-200 font-semibold" style={{animation:"msgIn 0.25s ease"}}>{actionMsg}</p>
+              <div className="rounded-2xl px-4 py-3 text-center" style={{
+                background:"linear-gradient(135deg, rgba(160,80,255,0.16), rgba(255,255,255,0.04))",
+                border:"1px solid rgba(160,80,255,0.24)",
+              }}>
+                <p key={actionMsg} className="text-[13px] text-gray-100 font-bold" style={{animation:"msgIn 0.3s ease"}}>{actionMsg}</p>
               </div>
             )}
           </div>
