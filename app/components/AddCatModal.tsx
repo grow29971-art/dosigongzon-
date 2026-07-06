@@ -397,33 +397,69 @@ export default function AddCatModal({
     >
       <div className="absolute inset-0 bg-black/40" onClick={() => !submitting && onClose()} />
 
+      <style>{`
+        @keyframes addcat-holo-sweep {
+          0%   { background-position: -220% center; }
+          100% { background-position: 220% center; }
+        }
+      `}</style>
+
       <div
-        className="relative mt-auto w-full bg-white rounded-t-[32px] flex flex-col"
-        style={{ maxHeight: "92dvh" }}
+        className="relative mt-auto w-full rounded-t-[32px] flex flex-col overflow-hidden"
+        style={{
+          maxHeight: "92dvh",
+          background: "linear-gradient(165deg, #241748 0%, #1A1030 45%, #12081F 100%)",
+          border: "1px solid rgba(99,102,241,0.35)",
+          borderBottom: "none",
+          boxShadow: "0 -10px 40px rgba(99,102,241,0.22), inset 0 1px 0 rgba(255,255,255,0.08)",
+          ["--color-primary" as string]: "#6366F1",
+          ["--color-primary-light" as string]: "#818CF8",
+          ["--color-primary-dark" as string]: "#4F46E5",
+          ["--color-surface-alt" as string]: "rgba(255,255,255,0.07)",
+          ["--color-text-main" as string]: "#FFFFFF",
+          ["--color-text-sub" as string]: "rgba(255,255,255,0.62)",
+          ["--color-text-light" as string]: "rgba(255,255,255,0.42)",
+          ["--color-text-muted" as string]: "rgba(255,255,255,0.30)",
+          ["--color-border" as string]: "rgba(255,255,255,0.16)",
+          ["--color-divider" as string]: "rgba(255,255,255,0.12)",
+        } as React.CSSProperties}
       >
+        {/* 카드 홀로그램 스윕 */}
+        <div className="pointer-events-none absolute inset-0" style={{
+          background: "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.06) 48%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.06) 52%, transparent 70%)",
+          backgroundSize: "260% 100%",
+          animation: "addcat-holo-sweep 3.2s ease-in-out infinite",
+        }} />
+
         {/* 핸들 바 */}
-        <div className="flex justify-center pt-3 pb-1">
+        <div className="relative flex justify-center pt-3 pb-1">
           <div className="w-10 h-1 rounded-full bg-border" />
         </div>
 
         {/* 헤더 */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-divider">
-          <div>
-            <h2
-              id="add-cat-modal-title"
-              className="text-[17px] font-extrabold text-text-main"
-            >
-              우리 동네 아이 등록
-            </h2>
-            <p className="text-[11px] text-text-sub mt-0.5">
-              이름과 동네만 있으면 바로 등록돼요 · 사진·소개는 선택
-            </p>
+        <div className="relative flex items-center justify-between px-5 py-3 border-b border-divider">
+          <div className="flex items-center gap-2.5">
+            <span className="w-8 h-8 rounded-xl flex items-center justify-center text-[16px] shrink-0"
+              style={{ background: "linear-gradient(135deg,#6366F1,#818CF8)", boxShadow: "0 2px 10px rgba(99,102,241,0.5)" }}>
+              🃏
+            </span>
+            <div>
+              <h2
+                id="add-cat-modal-title"
+                className="text-[17px] font-extrabold text-text-main"
+              >
+                우리 동네 아이 등록
+              </h2>
+              <p className="text-[11px] text-text-sub mt-0.5">
+                이름과 동네만 있으면 바로 등록돼요 · 사진·소개는 선택
+              </p>
+            </div>
           </div>
           <button
             onClick={onClose}
             disabled={submitting}
             aria-label="등록 창 닫기"
-            className="w-9 h-9 rounded-full bg-surface-alt flex items-center justify-center active:scale-90 transition-transform disabled:opacity-50"
+            className="w-9 h-9 rounded-full bg-surface-alt flex items-center justify-center active:scale-90 transition-transform disabled:opacity-50 shrink-0"
           >
             <X size={18} className="text-text-sub" />
           </button>
@@ -472,7 +508,7 @@ export default function AddCatModal({
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   className="w-full py-2.5 rounded-xl border border-dashed border-border flex items-center justify-center gap-2 active:scale-[0.99]"
-                  style={{ background: "#F8F6F3" }}
+                  style={{ background: "rgba(255,255,255,0.06)" }}
                 >
                   <Camera size={15} className="text-text-light" strokeWidth={1.5} />
                   <p className="text-[12px] text-text-sub">갤러리에서 선택</p>
@@ -484,13 +520,13 @@ export default function AddCatModal({
                   <div
                     key={idx}
                     className="relative aspect-square rounded-xl overflow-hidden"
-                    style={{ border: idx === 0 ? "2px solid #C47E5A" : "1px solid #E3DCD3" }}
+                    style={{ border: idx === 0 ? "2px solid #6366F1" : "1px solid rgba(255,255,255,0.16)" }}
                   >
                     <img src={src} alt={`미리보기 ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" />
                     {idx === 0 && (
                       <span
                         className="absolute top-1 left-1 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md text-white"
-                        style={{ background: "#C47E5A" }}
+                        style={{ background: "#6366F1" }}
                       >
                         대표
                       </span>
@@ -539,7 +575,7 @@ export default function AddCatModal({
               onChange={(e) => setName(e.target.value)}
               placeholder="예: 까망이, 치즈, 삼색이"
               maxLength={20}
-              className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[14px] text-text-main outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted"
+              className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[14px] text-text-main outline-none focus:bg-white/10 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted"
             />
           </div>
 
@@ -576,7 +612,7 @@ export default function AddCatModal({
                 autoFocus={editingDong}
                 placeholder="예: 구월동, 역삼동, 해운대동"
                 maxLength={20}
-                className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[14px] text-text-main outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted"
+                className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[14px] text-text-main outline-none focus:bg-white/10 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted"
               />
             )}
           </div>
@@ -586,7 +622,7 @@ export default function AddCatModal({
             type="button"
             onClick={() => setShowMore((v) => !v)}
             className="w-full flex items-center justify-center gap-1 py-2.5 rounded-2xl text-[12.5px] font-bold transition-all active:scale-[0.99]"
-            style={{ background: "#F7F2EA", color: "#8B6B52", border: "1px dashed rgba(196,126,90,0.35)" }}
+            style={{ background: "rgba(99,102,241,0.10)", color: "#B4B8FF", border: "1px dashed rgba(129,140,248,0.4)" }}
           >
             {showMore ? "추가 정보 접기 ▴" : "한 줄 소개·성별·건강 등 추가 (선택) ▾"}
           </button>
@@ -600,13 +636,13 @@ export default function AddCatModal({
             {/* 안내 — 위치 특정 금지 */}
             <div
               className="mb-2 rounded-xl px-3 py-2.5 flex items-start gap-2"
-              style={{ background: "rgba(107,142,111,0.08)", border: "1px solid rgba(107,142,111,0.22)" }}
+              style={{ background: "rgba(120,200,140,0.10)", border: "1px solid rgba(120,200,140,0.28)" }}
             >
-              <ShieldAlert size={14} className="shrink-0 mt-0.5" style={{ color: "#4F6B53" }} />
-              <p className="text-[11.5px] leading-relaxed" style={{ color: "#3C5A40" }}>
+              <ShieldAlert size={14} className="shrink-0 mt-0.5" style={{ color: "#8FE0A8" }} />
+              <p className="text-[11.5px] leading-relaxed" style={{ color: "#B8EFC8" }}>
                 <b>길고양이 안전을 위해</b> 정확한 위치를 알 수 있는 표현은 적지 마세요.
                 <br />
-                <span style={{ color: "rgba(60,90,64,0.78)" }}>
+                <span style={{ color: "rgba(184,239,200,0.75)" }}>
                   예: 역 이름·출구 번호·시장·공원·아파트·도로 주소·학교
                 </span>
               </p>
@@ -620,8 +656,8 @@ export default function AddCatModal({
               rows={3}
               className={`w-full px-4 py-3 rounded-2xl text-[14px] text-text-main outline-none transition-all placeholder:text-text-muted resize-none ${
                 descLocationViolations.length > 0 || descAbuseViolations.length > 0
-                  ? "bg-red-50 ring-2 ring-red-200 focus:ring-red-300"
-                  : "bg-surface-alt focus:bg-white focus:ring-2 focus:ring-primary/20"
+                  ? "bg-red-500/10 ring-2 ring-red-400/40 focus:ring-red-400/60"
+                  : "bg-surface-alt focus:bg-white/10 focus:ring-2 focus:ring-primary/20"
               }`}
             />
             <div className="flex items-start justify-between gap-2 mt-1">
@@ -742,9 +778,9 @@ export default function AddCatModal({
                 onClick={() => setAdoptionStatus(null)}
                 className="py-2.5 rounded-2xl text-[12.5px] font-bold transition-all active:scale-95 col-span-2"
                 style={{
-                  backgroundColor: adoptionStatus === null ? "#EEE8E0" : undefined,
-                  color: adoptionStatus === null ? "#6B5043" : "#A38E7A",
-                  border: adoptionStatus === null ? "1.5px solid #C47E5A" : "1.5px solid #E3DCD3",
+                  backgroundColor: adoptionStatus === null ? "rgba(99,102,241,0.14)" : undefined,
+                  color: adoptionStatus === null ? "#C7CAFF" : "rgba(255,255,255,0.5)",
+                  border: adoptionStatus === null ? "1.5px solid #6366F1" : "1.5px solid rgba(255,255,255,0.16)",
                 }}
               >
                 해당 없음
@@ -787,16 +823,16 @@ export default function AddCatModal({
                     onClick={() => setVisibility(key)}
                     className="w-full p-3 rounded-2xl text-left flex items-start gap-2.5 transition-all active:scale-[0.99]"
                     style={{
-                      backgroundColor: active ? `${info.color}15` : "#F9F6F1",
-                      border: `1.5px solid ${active ? info.color : "#E3DCD3"}`,
+                      backgroundColor: active ? `${info.color}22` : "rgba(255,255,255,0.05)",
+                      border: `1.5px solid ${active ? info.color : "rgba(255,255,255,0.16)"}`,
                     }}
                   >
                     <span className="text-[18px] leading-none mt-0.5">{info.emoji}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-extrabold" style={{ color: active ? info.color : "#3D2F25" }}>
+                      <p className="text-[13px] font-extrabold" style={{ color: active ? info.color : "rgba(255,255,255,0.85)" }}>
                         {info.label}
                       </p>
-                      <p className="text-[11px] mt-0.5 leading-relaxed" style={{ color: active ? info.color : "#8B7562", opacity: active ? 0.85 : 1 }}>
+                      <p className="text-[11px] mt-0.5 leading-relaxed" style={{ color: active ? info.color : "rgba(255,255,255,0.5)", opacity: active ? 0.85 : 1 }}>
                         {info.description}
                       </p>
                     </div>
@@ -815,8 +851,8 @@ export default function AddCatModal({
 
           {/* 에러 메시지 */}
           {error && (
-            <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: "#EEE3DE" }}>
-              <p className="text-[13px] font-semibold" style={{ color: "#B84545" }}>
+            <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: "rgba(220,80,80,0.14)", border: "1px solid rgba(220,80,80,0.3)" }}>
+              <p className="text-[13px] font-semibold" style={{ color: "#FF8A8A" }}>
                 {error}
               </p>
             </div>
@@ -825,14 +861,17 @@ export default function AddCatModal({
 
         {/* 하단 버튼 */}
         <div
-          className="px-5 py-3 border-t border-divider"
+          className="relative px-5 py-3 border-t border-divider"
           style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
         >
           <button
             onClick={handleSubmit}
             disabled={submitting}
-            className="w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.97] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
-            style={{ boxShadow: "0 6px 20px rgba(196,126,90,0.3)" }}
+            className="w-full py-4 rounded-2xl text-white text-[15px] font-bold active:scale-[0.97] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
+            style={{
+              background: "linear-gradient(135deg, #6366F1, #818CF8)",
+              boxShadow: "0 6px 24px rgba(99,102,241,0.45), 0 0 0 1px rgba(255,255,255,0.15) inset",
+            }}
           >
             {submitting ? (
               <>
