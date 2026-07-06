@@ -77,7 +77,7 @@ interface AutoResult { winner:"me"|"opponent"; my_hp_left:number; opp_hp_left:nu
 const SKILL_SLOT_COLORS = ["#DD4422", "#CC8822", "#22AACC", "#9933CC"];
 
 // 스킬별 "성격" — 상태이상 계열을 색/연출로 구분해 전투 액션을 다채롭게 만든다
-type FxFlavor = "ice"|"fear"|"shock"|"sleep"|"poison"|"bleed"|"bind"|"life";
+type FxFlavor = "ice"|"fear"|"shock"|"sleep"|"poison"|"bleed"|"bind"|"life"|"impact";
 const SKILL_FLAVOR: Partial<Record<string, FxFlavor>> = {
   freeze:"ice", cold_glare:"ice",
   hiss:"fear", intimidate:"fear",
@@ -87,10 +87,13 @@ const SKILL_FLAVOR: Partial<Record<string, FxFlavor>> = {
   scratch:"bleed", rend:"bleed",
   bind:"bind", howl:"bind", intimidate_sm:"bind",
   grooming:"life", warm_nap:"life", regen:"life", eclipse:"life", cleanse:"life", vampirism:"life",
+  // 순수 고배율 데미지 궁극기 — 흰색/금색 대신 폭발 톤으로 임팩트를 살린다
+  dash_strike:"impact", frenzy:"impact", shockwave:"impact", overdrive:"impact", meteor:"impact", apocalypse_strike:"impact",
 };
 const FX_COLOR: Record<FxFlavor,string> = {
   ice:"140,215,255", fear:"190,120,255", shock:"255,220,50", sleep:"170,175,255",
   poison:"130,240,110", bleed:"255,70,90", bind:"205,150,90", life:"150,255,190",
+  impact:"255,110,40",
 };
 const STUN_LABEL: Partial<Record<FxFlavor,string>> = { ice:"❄️ 빙결", fear:"😱 공포", shock:"⚡ 감전", sleep:"😴 수면" };
 function flavorForId(id: string | null): FxFlavor | undefined {
@@ -102,7 +105,7 @@ function flavorColorForId(id: string | null): string | undefined {
 }
 const FLAVOR_SFX: Record<FxFlavor, () => void> = {
   ice: sfx.ice, fear: sfx.fear, shock: sfx.shock, sleep: sfx.sleep,
-  poison: sfx.poison, bleed: sfx.bleed, bind: sfx.bind, life: sfx.life,
+  poison: sfx.poison, bleed: sfx.bleed, bind: sfx.bind, life: sfx.life, impact: sfx.impact,
 };
 // 자신에게만 적용되는 스킬 — 0피해로 성공해도 상대는 아무 반응이 없어야 함 (회복/버프류)
 const SELF_TARGET_IDS = new Set(["quick_dodge","grooming","warm_nap","regen","eclipse","cleanse","invincible"]);

@@ -169,6 +169,12 @@ export const sfx = {
   life: () => {
     [440, 554, 659].forEach((f, i) => tone({ freq: f, duration: 0.15, type: "triangle", volume: 0.11, delay: i * 0.06 }));
   },
+  // 순수 고배율 궁극기(메테오/종말의 일격 등) 전용 — 묵직한 저음 폭발 + 크랙
+  impact: () => {
+    tone({ freq: 80, duration: 0.22, type: "sawtooth", volume: 0.2, slideTo: 40 });
+    tone({ freq: 1400, duration: 0.05, type: "square", volume: 0.13, delay: 0.02 });
+    tone({ freq: 900, duration: 0.08, type: "square", volume: 0.1, delay: 0.06 });
+  },
 
   // 매 턴 도트(독/출혈) 틱 — 위 효과음보다 훨씬 작고 짧게
   poisonTick: () => tone({ freq: 300, duration: 0.12, type: "sawtooth", volume: 0.06, slideTo: 200 }),
