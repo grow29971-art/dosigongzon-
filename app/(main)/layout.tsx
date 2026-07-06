@@ -1,5 +1,6 @@
 import BottomNav from "@/app/components/BottomNav";
 import WelcomeGate from "@/app/components/WelcomeGate";
+import FeatureTourGate from "@/app/components/FeatureTourGate";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   // overflow-x-hidden은 map 페이지의 absolute positioning + 100dvh 계산을
@@ -8,6 +9,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-dvh bg-warm-white">
       <WelcomeGate />
+      <FeatureTourGate />
       <main className="pb-20 mx-auto w-full max-w-lg">{children}</main>
       <BottomNav />
     </div>
