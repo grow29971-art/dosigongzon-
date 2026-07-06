@@ -16,6 +16,7 @@ interface CardCat {
   card_name: string | null;
   card_traits: string[] | null;
   card_stats: { cuteness: number; wildness: number; sociability: number; mysteriousness: number } | null;
+  card_flavor?: string | null;
   battle_atk: number | null;
   battle_def: number | null;
   battle_eva: number | null;
@@ -29,6 +30,38 @@ interface CardCat {
 
 // 등급별 HP 보너스: 일반→레전드로 갈수록 체력이 두껍게 (전투가 늘어지지 않도록 전체적으로 하향)
 const RARITY_HP_BONUS: Record<string, number> = { common:0, uncommon:35, rare:73, legendary:122 };
+
+// 고양이학대범(로켓단) 랜덤 보스 조우 — 실제 유저 카드 대신 등장하는 스크립트 상대.
+// DB에 존재하지 않는 고정 id라서 결과 기록 시 상대 카드/유저 업데이트는 건너뛴다.
+const BOSS_CAT_ID = "00000000-0000-0000-0000-0000000000b0";
+const BOSS_ENCOUNTER_CHANCE = 0.08;
+
+function makeBossOpponent(myCat: CardCat): CardCat {
+  const baseAtk = myCat.battle_atk ?? 40;
+  const baseDef = myCat.battle_def ?? 25;
+  return {
+    id: BOSS_CAT_ID,
+    name: "고양이학대범",
+    photo_url: "/boss/villain-card.jpg",
+    caretaker_id: BOSS_CAT_ID,
+    card_level: myCat.card_level ?? 1,
+    card_exp: 0,
+    card_rarity: myCat.card_rarity ?? "common",
+    card_name: "로켓단 학대범",
+    card_traits: ["그물 던지기", "위협하기", "괴롭히기"],
+    card_stats: { cuteness: 20, wildness: 75, sociability: 15, mysteriousness: 65 },
+    card_flavor: "길고양이를 괴롭히는 나쁜 사람. 반드시 혼내줘야 한다!",
+    battle_atk: Math.round(baseAtk * 1.12) + 4,
+    battle_def: Math.round(baseDef * 1.08) + 2,
+    battle_eva: 10,
+    battle_crit: 14,
+    battle_special: "bind",
+    battle_special2: "intimidate",
+    battle_special3: "curse",
+    battle_special4: "dominate",
+    win_streak: 0,
+  };
+}
 
 function calcStats(cat: CardCat) {
   const lv = cat.card_level ?? 1;
@@ -151,49 +184,56 @@ export async function POST(req: Request) {
 
   if (!myCat) return NextResponse.json({ error: "cat not found" }, { status: 404 });
 
-  // 상대 선택 — 가능하면 같은 등급으로, 없으면 인근 등급으로 확대
-  const NEARBY_RARITIES: Record<string, string[]> = {
-    common: ["common", "uncommon"],
-    uncommon: ["common", "uncommon", "rare"],
-    rare: ["uncommon", "rare", "legendary"],
-    legendary: ["rare", "legendary"],
-  };
-  const myRarity = myCat.card_rarity ?? "common";
-  const OPP_COLS = "id,name,photo_url,caretaker_id,card_level,card_exp,card_rarity,card_name,card_traits,card_stats,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4,win_streak";
+  // 랜덤 보스 조우 — 실제 상대 매칭 대신 고양이학대범이 등장
+  const isBossEncounter = Math.random() < BOSS_ENCOUNTER_CHANCE;
+  let opponent: CardCat;
 
-  const { data: sameRarityOpponents } = await supabase
-    .from("cats")
-    .select(OPP_COLS)
-    .neq("caretaker_id", user.id)
-    .eq("card_rarity", myRarity)
-    .not("card_generated_at", "is", null)
-    .limit(50);
+  if (isBossEncounter) {
+    opponent = makeBossOpponent(myCat as CardCat);
+  } else {
+    // 상대 선택 — 가능하면 같은 등급으로, 없으면 인근 등급으로 확대
+    const NEARBY_RARITIES: Record<string, string[]> = {
+      common: ["common", "uncommon"],
+      uncommon: ["common", "uncommon", "rare"],
+      rare: ["uncommon", "rare", "legendary"],
+      legendary: ["rare", "legendary"],
+    };
+    const myRarity = myCat.card_rarity ?? "common";
+    const OPP_COLS = "id,name,photo_url,caretaker_id,card_level,card_exp,card_rarity,card_name,card_traits,card_stats,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4,win_streak";
 
-  let opponents = sameRarityOpponents;
-  if (!opponents || opponents.length === 0) {
-    const matchRarities = NEARBY_RARITIES[myRarity] ?? ["common"];
-    const { data: nearbyOpponents } = await supabase
+    const { data: sameRarityOpponents } = await supabase
       .from("cats")
       .select(OPP_COLS)
       .neq("caretaker_id", user.id)
-      .in("card_rarity", matchRarities)
+      .eq("card_rarity", myRarity)
       .not("card_generated_at", "is", null)
       .limit(50);
-    opponents = nearbyOpponents;
-  }
 
-  if (!opponents || opponents.length === 0) {
-    return NextResponse.json({ error: "no_opponents" }, { status: 404 });
-  }
+    let opponents = sameRarityOpponents;
+    if (!opponents || opponents.length === 0) {
+      const matchRarities = NEARBY_RARITIES[myRarity] ?? ["common"];
+      const { data: nearbyOpponents } = await supabase
+        .from("cats")
+        .select(OPP_COLS)
+        .neq("caretaker_id", user.id)
+        .in("card_rarity", matchRarities)
+        .not("card_generated_at", "is", null)
+        .limit(50);
+      opponents = nearbyOpponents;
+    }
 
-  // 자동전투는 항상 승률 45%를 노려 매칭(무관심 파밍 방지), 수동은 3연승부터 승률 50%로 매칭
-  let opponent: CardCat;
-  if (mode === "auto") {
-    opponent = pickByTargetWinRate(myCat as CardCat, opponents as CardCat[], 0.45);
-  } else if ((myCat.win_streak ?? 0) >= 3) {
-    opponent = pickByTargetWinRate(myCat as CardCat, opponents as CardCat[], 0.50);
-  } else {
-    opponent = opponents[Math.floor(Math.random() * opponents.length)] as CardCat;
+    if (!opponents || opponents.length === 0) {
+      return NextResponse.json({ error: "no_opponents" }, { status: 404 });
+    }
+
+    // 자동전투는 항상 승률 45%를 노려 매칭(무관심 파밍 방지), 수동은 3연승부터 승률 50%로 매칭
+    if (mode === "auto") {
+      opponent = pickByTargetWinRate(myCat as CardCat, opponents as CardCat[], 0.45);
+    } else if ((myCat.win_streak ?? 0) >= 3) {
+      opponent = pickByTargetWinRate(myCat as CardCat, opponents as CardCat[], 0.50);
+    } else {
+      opponent = opponents[Math.floor(Math.random() * opponents.length)] as CardCat;
+    }
   }
 
   // 수동 배틀: 스탯만 반환 (시뮬레이션 없음)
@@ -203,6 +243,7 @@ export async function POST(req: Request) {
       opponent,
       my_stats: calcStats(myCat as CardCat),
       opp_stats: calcStats(opponent),
+      is_boss: isBossEncounter,
     });
   }
 
@@ -235,9 +276,9 @@ export async function POST(req: Request) {
 
   await Promise.all([
     svc.from("cats").update({ card_exp: myNewExp,  card_level: computeLevel(myNewExp),  win_streak: myNewStreak  }).eq("id", myCat.id),
-    svc.from("cats").update({ card_exp: oppNewExp, card_level: computeLevel(oppNewExp), win_streak: oppNewStreak }).eq("id", opponent.id),
+    isBossEncounter ? Promise.resolve() : svc.from("cats").update({ card_exp: oppNewExp, card_level: computeLevel(oppNewExp), win_streak: oppNewStreak }).eq("id", opponent.id),
     svc.from("profiles").update({ coins: newCoins }).eq("id", user.id),
-    svc.from("card_battles").insert({
+    isBossEncounter ? Promise.resolve() : svc.from("card_battles").insert({
       challenger_id:     user.id,
       challenger_cat_id: myCat.id,
       opponent_id:       opponent.caretaker_id,
@@ -253,6 +294,7 @@ export async function POST(req: Request) {
   return NextResponse.json({
     my_cat: myCat,
     opponent,
+    is_boss: isBossEncounter,
     result: {
       winner: result.attackerWins ? "me" : "opponent",
       my_hp_left: result.aHp,

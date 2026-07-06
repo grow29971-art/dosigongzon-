@@ -429,6 +429,10 @@ export default function BattlePage() {
   // 결과
   const [battleResult, setBattleResult] = useState<{winner:"me"|"opponent"; exp:number; newLevel:number; leveledUp:boolean}|null>(null);
 
+  // 고양이학대범 랜덤 보스 조우
+  const [isBossBattle, setIsBossBattle] = useState(false);
+  const [showBossIntro, setShowBossIntro] = useState(false);
+
   // 자동 전투용
   const [autoResult, setAutoResult] = useState<AutoResult|null>(null);
   const [autoLogIdx, setAutoLogIdx] = useState(0);
@@ -514,9 +518,11 @@ export default function BattlePage() {
 
     const opp = json.opponent as BattleCat;
     setOpponent(opp);
+    const isBoss = !!json.is_boss;
+    setIsBossBattle(isBoss);
 
-    // 랜덤 배틀 환경 선택
-    const envKey = ENV_KEYS[Math.floor(Math.random() * ENV_KEYS.length)];
+    // 랜덤 배틀 환경 선택 (보스 조우는 항상 심야 골목으로 고정)
+    const envKey = isBoss ? "night" : ENV_KEYS[Math.floor(Math.random() * ENV_KEYS.length)];
     setBattleEnv(envKey); battleEnvRef.current = envKey;
 
     if(mode === "manual") {
@@ -547,29 +553,41 @@ export default function BattlePage() {
     }
 
     // 카운트다운
-    setPhase("countdown"); setCountdown(3);
-    let cd = 3;
-    const cdTick = () => {
-      cd--;
+    const beginCountdown = () => {
       if(!mounted.current) return;
-      setCountdown(cd);
-      navigator.vibrate?.(40);
-      if(cd > 0) { setTimeout(cdTick, 650); }
-      else {
-        setTimeout(() => {
-          if(!mounted.current) return;
-          if(mode==="manual") {
-            setTurnCount(1);
-            setActionMsg("기술을 선택하세요!");
-            setPhase("player_choose");
-          } else {
-            setPhase("animating");
-            replayAuto(json.result as AutoResult, selected.name, opp.name);
-          }
-        }, 500);
-      }
+      setShowBossIntro(false);
+      setPhase("countdown"); setCountdown(3);
+      let cd = 3;
+      const cdTick = () => {
+        cd--;
+        if(!mounted.current) return;
+        setCountdown(cd);
+        navigator.vibrate?.(40);
+        if(cd > 0) { setTimeout(cdTick, 650); }
+        else {
+          setTimeout(() => {
+            if(!mounted.current) return;
+            if(mode==="manual") {
+              setTurnCount(1);
+              setActionMsg("기술을 선택하세요!");
+              setPhase("player_choose");
+            } else {
+              setPhase("animating");
+              replayAuto(json.result as AutoResult, selected.name, opp.name);
+            }
+          }, 500);
+        }
+      };
+      setTimeout(cdTick, 700);
     };
-    setTimeout(cdTick, 700);
+
+    if(isBoss) {
+      setShowBossIntro(true);
+      navigator.vibrate?.([50, 60, 50, 60, 120]);
+      setTimeout(beginCountdown, 2200);
+    } else {
+      beginCountdown();
+    }
   };
 
   /* ── 자동 배틀 재생 ── */
@@ -1082,6 +1100,7 @@ export default function BattlePage() {
     setBattleResult(null); setTurnCount(0); setActionMsg("");
     setMyAnim("idle"); setOppAnim("idle"); setDmgPopup(null); setCritFlash(false);
     setScreenShake(0); setImpactBurst(null);
+    setIsBossBattle(false); setShowBossIntro(false);
     if(user) createClient().from("cats").select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_level,card_exp,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4").eq("caretaker_id",user.id).not("card_generated_at","is",null).order("card_level",{ascending:false}).then(({data}:{data:BattleCat[]|null})=>{ if(mounted.current) setMyCats(data??[]); });
   };
 
@@ -1137,6 +1156,7 @@ export default function BattlePage() {
         @keyframes shakeScreenBig { 0%,100%{transform:translate(0,0) rotate(0deg)} 15%{transform:translate(-7px,4px) rotate(-0.4deg)} 30%{transform:translate(7px,-4px) rotate(0.4deg)} 45%{transform:translate(-5px,3px)} 60%{transform:translate(5px,-3px)} 75%{transform:translate(-2px,1px)} }
         @keyframes impactBurst { 0%{opacity:0.95; transform:scale(0.2);} 100%{opacity:0; transform:scale(1.9);} }
         @keyframes critFlashFade { 0%{opacity:0;} 15%{opacity:1;} 100%{opacity:0;} }
+        @keyframes bossIntroIn { 0%{opacity:0; transform:scale(1.04);} 100%{opacity:1; transform:scale(1);} }
         @keyframes dPop { 0%{opacity:1;transform:translateY(0)scale(1)}60%{opacity:1;transform:translateY(-26px)scale(1.25)}100%{opacity:0;transform:translateY(-42px)scale(0.9)} }
         @keyframes cdPop { 0%{opacity:0;transform:scale(0.3)}45%{opacity:1;transform:scale(1.18)}70%{transform:scale(0.94)}100%{transform:scale(1)} }
         @keyframes msgIn { 0%{opacity:0;transform:translateY(5px)}100%{opacity:1;transform:translateY(0)} }
@@ -1198,6 +1218,13 @@ export default function BattlePage() {
       `}</style>
 
       {critFlash && <div style={{position:"fixed",inset:0,zIndex:999,background:"radial-gradient(ellipse at center, rgba(255,220,80,0.55) 0%, rgba(255,200,0,0.22) 55%, transparent 80%)",pointerEvents:"none",animation:"critFlashFade 0.45s ease-out"}}/>}
+
+      {showBossIntro && (
+        <div style={{ position:"fixed", inset:0, zIndex:998, background:"#000", animation:"bossIntroIn 0.4s ease" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/boss/villain-intro.jpg" alt="고양이학대범 등장" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+        </div>
+      )}
 
       <div className="min-h-dvh flex flex-col" style={{
         background:rootBg, transition:"background 1.2s", position:"relative", zIndex:0,
@@ -1383,7 +1410,7 @@ export default function BattlePage() {
                   )}
                   {oppGuardVis&&<div style={{position:"absolute",bottom:-4,left:"50%",transform:"translateX(-50%)",fontSize:9,color:"#4488FF",fontWeight:900,whiteSpace:"nowrap"}}>🛡️ 방어중</div>}
                 </div>
-                <span className="text-[10px] text-gray-400 font-bold">상대방</span>
+                <span className="text-[10px] font-bold" style={{color:isBossBattle?"#FF6666":"#9CA3AF"}}>{isBossBattle?"😾 고양이학대범":"상대방"}</span>
                 <div style={{width:"100%",maxWidth:130}}>
                   <div className="flex justify-between text-[9px] mb-0.5">
                     <span style={{color:oppDanger?"#FF6060":"#88CC88",fontWeight:700}}>HP</span>
@@ -1465,10 +1492,13 @@ export default function BattlePage() {
         {phase==="result"&&selected&&opponent&&battleResult&&(
           <div className="flex-1 flex flex-col items-center justify-center px-4 gap-4">
             <div style={{animation:"resIn 0.5s ease forwards",display:"flex",flexDirection:"column",alignItems:"center",gap:12,width:"100%",maxWidth:340}}>
-              <div style={{fontSize:64}}>{battleResult.winner==="me"?"🏆":"💔"}</div>
+              <div style={{fontSize:64}}>{battleResult.winner==="me"?(isBossBattle?"🐱":"🏆"):"💔"}</div>
               <p style={{fontSize:26,fontWeight:900,color:battleResult.winner==="me"?"#44FF88":"#FF6060",textShadow:`0 0 24px ${battleResult.winner==="me"?"#44FF88":"#FF6060"}`}}>
-                {battleResult.winner==="me"?"승리!":"패배..."}
+                {battleResult.winner==="me"?(isBossBattle?"고양이학대범 격퇴!":"승리!"):(isBossBattle?"학대범에게 당했다...":"패배...")}
               </p>
+              {isBossBattle && battleResult.winner==="me" && (
+                <p className="text-[12px] text-yellow-300 font-bold -mt-2">🐾 갇혀있던 고양이를 구했다!</p>
+              )}
               <p className="text-[13px] text-gray-400">
                 {turnCount}턴 · EXP +{battleResult.exp}
                 {battleResult.leveledUp&&<span style={{color:"#FFD700",fontWeight:800,marginLeft:8}}>⬆ Lv.{battleResult.newLevel}!</span>}

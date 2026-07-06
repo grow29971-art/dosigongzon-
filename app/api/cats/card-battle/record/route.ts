@@ -48,7 +48,8 @@ export async function POST(req: Request) {
     svc.from("cats").update({ card_exp: myNewExp, card_level: computeLevel(myNewExp), win_streak: myNewStreak }).eq("id", my_cat_id),
     oppCat && svc.from("cats").update({ card_exp: oppNewExp, card_level: computeLevel(oppNewExp), win_streak: oppNewStreak }).eq("id", opp_cat_id),
     svc.from("profiles").update({ coins: newCoins }).eq("id", user.id),
-    svc.from("card_battles").insert({
+    // oppCat이 없으면(보스 조우 등 DB에 없는 상대) FK 제약 위반이 나므로 기록을 건너뜀
+    oppCat ? svc.from("card_battles").insert({
       challenger_id: user.id,
       challenger_cat_id: my_cat_id,
       opponent_id: opp_caretaker_id ?? user.id,
@@ -58,7 +59,7 @@ export async function POST(req: Request) {
       opponent_hp_left: opp_hp_left ?? 0,
       rounds: rounds ?? 0,
       battle_log: [],
-    }),
+    }) : Promise.resolve(),
   ]);
 
   return NextResponse.json({
