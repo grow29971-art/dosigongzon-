@@ -2536,15 +2536,20 @@ export default function MapPage() {
                 </button>
               </>
             )}
-            <button
-              onClick={() => { setSelectedCat(null); setEditingCat(false); setEditLat(null); setEditLng(null); }}
-              className="w-11 h-11 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
-              style={{ boxShadow: "0 4px 14px rgba(0,0,0,0.18)" }}
-              aria-label="닫기"
-            >
-              <X size={20} className="text-text-main" strokeWidth={2.5} />
-            </button>
           </div>
+
+          {/* 닫기 버튼 — 카드 높이와 무관하게 항상 화면 우측 상단에 고정 */}
+          <button
+            onClick={() => { setSelectedCat(null); setEditingCat(false); setEditLat(null); setEditLng(null); }}
+            className="fixed w-11 h-11 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform pointer-events-auto"
+            style={{
+              top: "calc(env(safe-area-inset-top) + 12px)", right: 16, zIndex: 30,
+              boxShadow: "0 4px 14px rgba(0,0,0,0.18)",
+            }}
+            aria-label="닫기"
+          >
+            <X size={20} className="text-text-main" strokeWidth={2.5} />
+          </button>
 
           <div
             className="relative bg-white rounded-[28px] overflow-hidden pointer-events-auto animate-slide-up overflow-y-auto"
