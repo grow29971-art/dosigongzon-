@@ -204,18 +204,17 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
       {/* 반짝임 입자 */}
       {cfg.sparkle !== "none" && <div className={`holo-sparkle ${cfg.sparkle === "sparse" ? "holo-sparkle-sparse" : ""}`} style={{ borderRadius: radius }} />}
 
-      {/* ── 상단 바: 등급 + 이름 + HP ── */}
+      {/* ── 상단 바: 등급 + HP (1줄) / 이름 (줄바꿈 허용, 안 잘림) ── */}
       <div
         style={{
-          height: topBarPx,
           background: cfg.topBar,
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          paddingInline: isLg ? 11 : 7, gap: 5,
+          paddingInline: isLg ? 11 : 7,
+          paddingBlock: isLg ? 5 : 3,
           position: "relative", zIndex: 2,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 5, minWidth: 0 }}>
-          <span style={{
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 5, minHeight: topBarPx - (isLg ? 10 : 6) }}>
+        <span style={{
             background: cfg.typeBg, borderRadius: 6,
             padding: isLg ? "2px 6px" : "1px 4px",
             fontSize: fs.label, fontWeight: 800, color: "rgba(255,255,255,0.85)",
@@ -223,23 +222,6 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
           }}>
             {cfg.label}
           </span>
-          <span
-            className={cfg.nameFill ? "shimmer-text" : undefined}
-            style={cfg.nameFill ? {
-              fontSize: fs.name, fontWeight: 900, lineHeight: 1.1,
-              overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-              backgroundImage: `linear-gradient(100deg, #fff 0%, ${cfg.accent} 25%, #fff 50%, ${cfg.accent} 75%, #fff 100%)`,
-              WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent",
-              filter: `drop-shadow(0 1px 2px rgba(0,0,0,0.5))`,
-            } : {
-              fontSize: fs.name, color: "#fff", fontWeight: 900, lineHeight: 1.1,
-              overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-              textShadow: `0 1px 3px rgba(0,0,0,0.45), 0 0 10px ${cfg.accent}66`,
-            }}
-          >
-            {card.card_name ?? name}
-          </span>
-        </div>
         <div style={{ display: "flex", alignItems: "baseline", gap: 2, flexShrink: 0 }}>
           <span style={{ fontSize: fs.label - 1, color: "rgba(255,255,255,0.7)", fontWeight: 800 }}>HP</span>
           <span style={{ fontSize: fs.hp, color: cfg.hpColor, fontWeight: 900, lineHeight: 1, textShadow: "0 1px 2px rgba(0,0,0,0.4)" }}>{hpDisplay}</span>
@@ -273,6 +255,27 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
                 {cfg.typeIcon}
               </span>
             )}
+          </span>
+        </div>
+        </div>
+        <div style={{ marginTop: isLg ? 2 : 1 }}>
+          <span
+            className={cfg.nameFill ? "shimmer-text" : undefined}
+            style={cfg.nameFill ? {
+              fontSize: fs.name, fontWeight: 900, lineHeight: 1.18,
+              display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
+              overflow: "hidden", textOverflow: "ellipsis",
+              backgroundImage: `linear-gradient(100deg, #fff 0%, ${cfg.accent} 25%, #fff 50%, ${cfg.accent} 75%, #fff 100%)`,
+              WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent",
+              filter: `drop-shadow(0 1px 2px rgba(0,0,0,0.5))`,
+            } : {
+              fontSize: fs.name, color: "#fff", fontWeight: 900, lineHeight: 1.18,
+              display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
+              overflow: "hidden", textOverflow: "ellipsis",
+              textShadow: `0 1px 3px rgba(0,0,0,0.45), 0 0 10px ${cfg.accent}66`,
+            }}
+          >
+            {card.card_name ?? name}
           </span>
         </div>
       </div>
