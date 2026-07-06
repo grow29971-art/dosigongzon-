@@ -14,11 +14,22 @@ interface Props {
 type CamState = "requesting" | "ready" | "denied" | "blocked" | "error" | "preview";
 type ThrowState = "idle" | "pulling" | "flying" | "hit" | "miss";
 
-// 조준 판정 튜닝값
-const MIN_PULL_Y = 50;    // 이 이상 위로 당겨야 실제 투척으로 인정
+// 투척 튜닝값
+const MIN_PULL_Y = 40;    // 이 이상 위로 당겨야 실제 투척으로 인정
 const MAX_PULL_Y = 150;
 const MAX_DRAG_X = 130;
-const LANDING_MULT = 2.35; // 좌우로 당긴 거리 → 실제 도착 지점 오프셋 배율
+
+// 타이밍 바 튜닝값 (좌우로 오가는 구슬을 정해진 구간에 맞춰 던져야 포획)
+const BAR_MIN = 6, BAR_MAX = 94;       // 구슬 이동 범위 (%)
+const SWEET_WIDTH_BASE = 16;           // 성공 구간 기본 폭 (%)
+const SWEEP_MS_BASE = 1050;            // 구슬 한 방향 이동에 걸리는 시간(ms) — 시도마다 조금씩 빨라짐
+const TOTAL_TRIES = 3;
+
+function randomSweetSpot(widen: boolean) {
+  const width = widen ? SWEET_WIDTH_BASE * 1.7 : SWEET_WIDTH_BASE;
+  const start = BAR_MIN + Math.random() * (BAR_MAX - BAR_MIN - width);
+  return { start, end: start + width };
+}
 
 export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery, onFallbackCapture, previewFile }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -34,29 +45,22 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   // 투척 상태
   const [throwState, setThrowState] = useState<ThrowState>("idle");
   const [pullY, setPullY] = useState(0);       // 당긴 거리 (px)
-  const [churuX, setChuruX] = useState(0);     // 좌우 드래그 원본값 (츄르가 손가락을 따라감)
-  const [aimOk, setAimOk] = useState(true);    // 지금 놓으면 명중권인지 실시간 판정
-  const [landingDx, setLandingDx] = useState(0); // 실제 비행 애니메이션에 쓸 최종 도착 오프셋
+  const [churuX, setChuruX] = useState(0);     // 좌우 드래그 원본값 (츄르가 손가락을 따라감, 비행 연출용)
+  const [landingDx, setLandingDx] = useState(0);
   const touchStartRef = useRef({ x: 0, y: 0 });
-  const missStreak = useRef(0); // 연속 실패 횟수 (너무 안 잡히면 판정 살짝 관대하게)
 
-  const getTolerance = useCallback(() => {
-    const base = (typeof window !== "undefined" ? window.innerWidth : 375) * 0.13;
-    return missStreak.current >= 2 ? base * 1.7 : base;
-  }, []);
+  // 타이밍 바 (구슬 위치 + 성공 구간 + 남은 기회)
+  const markerPosRef = useRef(BAR_MIN);
+  const markerDirRef = useRef(1);
+  const [markerPos, setMarkerPos] = useState(BAR_MIN);
+  const [sweetSpot, setSweetSpot] = useState(() => randomSweetSpot(false));
+  const attemptsLeftRef = useRef(TOTAL_TRIES);
+  const [attemptsLeft, setAttemptsLeftState] = useState(TOTAL_TRIES);
+  const roundsFailedRef = useRef(0);
+  const throwStateRef = useRef<ThrowState>("idle");
+  const sweepAnimRef = useRef<number>(0);
 
-  // 스캔 애니메이션 (idle 상태에서 고양이 좌우 흔들기)
-  const [catWiggle, setCatWiggle] = useState(0);
-  useEffect(() => {
-    let t = 0;
-    const loop = () => {
-      t += 0.04;
-      setCatWiggle(Math.sin(t * 1.5) * 4);
-      animRef.current = requestAnimationFrame(loop);
-    };
-    animRef.current = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(animRef.current);
-  }, []);
+  const setAttemptsLeft = (v: number) => { attemptsLeftRef.current = v; setAttemptsLeftState(v); };
 
   // 갤러리 URL
   useEffect(() => {
@@ -101,6 +105,33 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
     };
   }, [startCamera, previewFile]);
 
+  // 타이밍 바 구슬 애니메이션 — idle/pulling일 때만 좌우로 왕복
+  useEffect(() => {
+    throwStateRef.current = throwState;
+  }, [throwState]);
+
+  useEffect(() => {
+    if (caught) { cancelAnimationFrame(sweepAnimRef.current); return; }
+    let last = performance.now();
+    const loop = (t: number) => {
+      const dt = t - last;
+      last = t;
+      const s = throwStateRef.current;
+      if (s === "idle" || s === "pulling") {
+        const sweepMs = Math.max(650, SWEEP_MS_BASE - roundsFailedRef.current * 60);
+        const speed = (BAR_MAX - BAR_MIN) / sweepMs; // %/ms
+        let pos = markerPosRef.current + markerDirRef.current * speed * dt;
+        if (pos >= BAR_MAX) { pos = BAR_MAX; markerDirRef.current = -1; }
+        if (pos <= BAR_MIN) { pos = BAR_MIN; markerDirRef.current = 1; }
+        markerPosRef.current = pos;
+        setMarkerPos(pos);
+      }
+      sweepAnimRef.current = requestAnimationFrame(loop);
+    };
+    sweepAnimRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(sweepAnimRef.current);
+  }, [caught]);
+
   // 사진 캡처 (카메라 모드)
   const capturePhoto = useCallback((): Promise<File | null> => {
     if (!videoRef.current || !canvasRef.current) return Promise.resolve(null);
@@ -131,30 +162,27 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
     }, 900);
   }, [previewFile, onCapture, capturePhoto]);
 
-  // 츄르 던지기 - 터치 이벤트 (드래그로 직접 조준 → 놓으면 투척)
+  // 츄르 던지기 - 터치 이벤트 (당겼다 놓는 제스처 + 놓는 순간의 타이밍으로 성공 판정)
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (throwState !== "idle" || caught) return;
     const t = e.touches[0];
     touchStartRef.current = { x: t.clientX, y: t.clientY };
     setPullY(0);
     setChuruX(0);
-    setAimOk(true);
   }, [throwState, caught]);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if ((throwState !== "idle" && throwState !== "pulling") || caught) return;
     e.preventDefault();
     const t = e.touches[0];
-    const dy = touchStartRef.current.y - t.clientY; // 위로 당길수록 +
+    const dy = touchStartRef.current.y - t.clientY;
     const dx = Math.max(-MAX_DRAG_X, Math.min(MAX_DRAG_X, t.clientX - touchStartRef.current.x));
     if (dy > 5) {
       setThrowState("pulling");
       setPullY(Math.min(dy, MAX_PULL_Y));
       setChuruX(dx);
-      const projected = dx * LANDING_MULT;
-      setAimOk(Math.abs(projected) <= getTolerance());
     }
-  }, [throwState, caught, getTolerance]);
+  }, [throwState, caught]);
 
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
     if (caught) return;
@@ -163,43 +191,44 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
     const dx = Math.max(-MAX_DRAG_X, Math.min(MAX_DRAG_X, t.clientX - touchStartRef.current.x));
 
     if (dy > MIN_PULL_Y) {
-      const landing = dx * LANDING_MULT;
-      const isHit = Math.abs(landing) <= getTolerance();
-      setLandingDx(landing);
+      const finalPos = markerPosRef.current;
+      const isHit = finalPos >= sweetSpot.start && finalPos <= sweetSpot.end;
+      setLandingDx(dx * 2.2);
       setThrowState("flying");
 
       setTimeout(() => {
         if (isHit) {
-          missStreak.current = 0;
+          roundsFailedRef.current = 0;
           setThrowState("hit");
           finishCapture();
         } else {
-          missStreak.current += 1;
+          const remaining = attemptsLeftRef.current - 1;
+          if (remaining <= 0) {
+            roundsFailedRef.current += 1;
+            setAttemptsLeft(TOTAL_TRIES);
+          } else {
+            setAttemptsLeft(remaining);
+          }
+          setSweetSpot(randomSweetSpot(roundsFailedRef.current >= 2));
           setThrowState("miss");
-          setTimeout(() => { setThrowState("idle"); setPullY(0); setChuruX(0); }, 850);
+          setTimeout(() => { setThrowState("idle"); setPullY(0); setChuruX(0); }, 800);
         }
-      }, 620);
+      }, 600);
     } else {
       setThrowState("idle");
       setPullY(0);
       setChuruX(0);
     }
-  }, [caught, finishCapture, getTolerance]);
+  }, [caught, finishCapture, sweetSpot]);
 
   // 배경 (카메라 or 갤러리 사진)
   const showBg = camState === "ready" || camState === "preview";
   const isLive = camState === "ready";
 
-  // 츄르 던지기 비행 궤적 계산
-  const flyDx = throwState === "flying" || throwState === "hit" || throwState === "miss" ? landingDx : churuX * LANDING_MULT;
+  // 츄르 던지기 비행 궤적 계산 (방향은 드래그, 명중 여부는 타이밍 바로 결정)
+  const flyDx = throwState === "flying" || throwState === "hit" || throwState === "miss" ? landingDx : churuX * 2.2;
   const flyDy = -(typeof window !== "undefined" ? window.innerHeight * 0.55 : 400);
-  const isMissThrow = throwState === "miss";
-  // 빗나갔을 땐 조준한 방향으로 화면 밖까지 더 날아가도록
   const missFlyDx = flyDx + Math.sign(flyDx || 1) * 90;
-
-  // 실시간 조준선 각도/길이 (당기는 중 손끝 → 예상 도착 방향)
-  const aimAngle = Math.atan2(churuX, Math.max(pullY * 1.8, 1)) * (180 / Math.PI);
-  const aimLen = Math.min(Math.sqrt(churuX ** 2 + (pullY * 1.8) ** 2), 210);
 
   return (
     <>
@@ -245,14 +274,14 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           0%,100% { transform: rotate(-5deg); }
           50%     { transform: rotate(5deg); }
         }
-        @keyframes reticle-pulse {
-          0%,100% { transform: scale(1); opacity:0.55; }
-          50%     { transform: scale(1.12); opacity:0.85; }
-        }
         @keyframes miss-text-pop {
           0%   { opacity:0; transform:translateY(6px) scale(0.85); }
           30%  { opacity:1; transform:translateY(0) scale(1.08); }
           100% { opacity:1; transform:translateY(0) scale(1); }
+        }
+        @keyframes marker-glow {
+          0%,100% { box-shadow: 0 0 8px 2px rgba(255,210,60,0.8); }
+          50%     { box-shadow: 0 0 14px 5px rgba(255,210,60,0.95); }
         }
       `}</style>
 
@@ -267,14 +296,12 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           <X size={20} color="white" />
         </button>
 
-        {/* 상단 안내 */}
+        {/* 남은 기회 */}
         {showBg && !caught && (
-          <div className="absolute top-5 left-0 right-0 flex justify-center z-10 pointer-events-none">
-            <div className="px-4 py-1.5 rounded-full text-[12px] font-extrabold text-white text-center"
+          <div className="absolute top-4 left-0 right-0 flex justify-center z-20 pointer-events-none">
+            <div className="px-3 py-1 rounded-full text-[12px] font-black text-white flex items-center gap-1.5"
               style={{ background: "rgba(0,0,0,0.55)" }}>
-              {throwState === "pulling"
-                ? (aimOk ? "🎯 조준 완료! 손을 떼서 던지세요" : "⚠️ 가운데를 조준하세요!")
-                : "츄르를 당겼다 놓아서 가운데로 던지세요!"}
+              🐟 {attemptsLeft} / {TOTAL_TRIES} 기회
             </div>
           </div>
         )}
@@ -303,6 +330,19 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
             {/* 비네팅 */}
             <div className="absolute inset-0 pointer-events-none"
               style={{ background: "radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.55) 100%)" }} />
+            {/* AR 가이드 프레임 (네 모서리 브래킷) */}
+            {!caught && (
+              <div className="absolute pointer-events-none" style={{ inset: "18% 10% 34% 10%" }}>
+                {[
+                  { top: 0, left: 0, borderWidth: "3px 0 0 3px" },
+                  { top: 0, right: 0, borderWidth: "3px 3px 0 0" },
+                  { bottom: 0, left: 0, borderWidth: "0 0 3px 3px" },
+                  { bottom: 0, right: 0, borderWidth: "0 3px 3px 0" },
+                ].map((s, i) => (
+                  <div key={i} style={{ position: "absolute", width: 26, height: 26, borderColor: "#FF9500", borderStyle: "solid", ...s }} />
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -351,23 +391,37 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           </div>
         )}
 
+        {/* 타이밍 바 */}
+        {showBg && !caught && (
+          <div className="absolute left-0 right-0 z-20 px-6" style={{ top: "13%" }}>
+            <p className="text-center text-[11.5px] font-extrabold text-white/85 mb-1.5" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
+              {throwState === "miss" ? "⚠️ 타이밍이 안 맞았어요!" : "노란 구간에 맞춰서 던지세요!"}
+            </p>
+            <div className="relative w-full" style={{ height: 16, borderRadius: 99, background: "rgba(0,0,0,0.45)", border: "1px solid rgba(255,255,255,0.15)" }}>
+              {/* 성공 구간 */}
+              <div className="absolute top-0 bottom-0" style={{
+                left: `${sweetSpot.start}%`, width: `${sweetSpot.end - sweetSpot.start}%`,
+                background: "linear-gradient(90deg, rgba(120,255,140,0.55), rgba(255,220,80,0.75))",
+                borderRadius: 99,
+              }} />
+              {/* 움직이는 구슬 */}
+              <div className="absolute" style={{
+                top: -3, left: `${markerPos}%`, width: 22, height: 22, borderRadius: "50%",
+                background: "radial-gradient(circle at 35% 30%, #FFF6D0, #FFD700 55%, #E09000 100%)",
+                transform: "translateX(-50%)",
+                animation: (throwState === "idle" || throwState === "pulling") ? "marker-glow 0.5s ease-in-out infinite" : undefined,
+                transition: "top 0.15s",
+              }} />
+            </div>
+          </div>
+        )}
+
         {/* 게임 UI */}
         {showBg && (
           <div className="absolute inset-0 flex flex-col items-center justify-between pb-14 pt-16 z-10 pointer-events-none">
 
-            {/* 고양이 영역 (상단 60%) */}
+            {/* 고양이 영역 */}
             <div className="flex-1 flex items-center justify-center w-full relative">
-
-              {/* 명중 조준 링 (항상 중앙 표시, 드래그 중엔 조준 상태로 색이 바뀜) */}
-              {!caught && throwState !== "hit" && (
-                <div className="absolute" style={{
-                  width: 92, height: 92, borderRadius: "50%",
-                  border: `3px solid ${throwState === "pulling" ? (aimOk ? "rgba(120,255,140,0.9)" : "rgba(255,90,90,0.9)") : "rgba(255,255,255,0.35)"}`,
-                  animation: "reticle-pulse 1.6s ease-in-out infinite",
-                  transition: "border-color 0.15s",
-                }} />
-              )}
-
               {/* 포획 성공 캡처 링 + 별 폭발 */}
               {throwState === "hit" && (
                 <>
@@ -402,21 +456,9 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none text-center"
                   style={{ animation: "miss-text-pop 0.35s ease-out forwards" }}>
                   <p className="text-red-400 text-[28px] font-black">빗나갔다!</p>
-                  <p className="text-white/70 text-[12px] font-bold mt-1">가운데 조준 링을 맞춰보세요</p>
                 </div>
               )}
             </div>
-
-            {/* 실패 스트릭 표시 */}
-            {!caught && throwState === "idle" && missStreak.current > 0 && (
-              <div className="flex gap-1 mb-2 items-center">
-                <span className="text-[10px] text-white/50 font-bold mr-1">{missStreak.current}회 실패</span>
-                {[0,1,2].map(i => (
-                  <div key={i} className="w-6 h-1.5 rounded-full"
-                    style={{ background: missStreak.current > i ? "#FF6B6B" : "rgba(255,255,255,0.2)" }} />
-                ))}
-              </div>
-            )}
           </div>
         )}
 
@@ -430,23 +472,6 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            {/* 실시간 조준선 (손끝 방향 → 예상 진로) */}
-            {throwState === "pulling" && pullY > 8 && (
-              <div className="absolute bottom-16 pointer-events-none" style={{ left: "50%" }}>
-                <div style={{
-                  position: "absolute", left: 0, bottom: 0,
-                  width: 3, height: aimLen,
-                  background: aimOk
-                    ? "linear-gradient(to top, rgba(120,255,140,0.9), rgba(120,255,140,0.05))"
-                    : "linear-gradient(to top, rgba(255,90,90,0.9), rgba(255,90,90,0.05))",
-                  borderRadius: 3,
-                  transformOrigin: "bottom center",
-                  transform: `translateX(-1.5px) rotate(${aimAngle}deg)`,
-                  boxShadow: aimOk ? "0 0 10px rgba(120,255,140,0.6)" : "0 0 10px rgba(255,90,90,0.6)",
-                }} />
-              </div>
-            )}
-
             {/* 츄르 */}
             <div className="absolute bottom-10 flex flex-col items-center gap-1 pointer-events-none"
               style={{
@@ -455,9 +480,9 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
                   : "none",
                 transition: throwState === "idle" ? "transform 0.25s cubic-bezier(0.34,1.56,0.64,1)" : "none",
                 animation: throwState === "flying"
-                  ? "churu-fly-hit 0.62s cubic-bezier(0.25,0.65,0.35,1) forwards"
+                  ? "churu-fly-hit 0.6s cubic-bezier(0.25,0.65,0.35,1) forwards"
                   : throwState === "miss"
-                    ? "churu-fly-miss 0.62s cubic-bezier(0.25,0.65,0.35,1) forwards"
+                    ? "churu-fly-miss 0.6s cubic-bezier(0.25,0.65,0.35,1) forwards"
                     : throwState === "idle"
                       ? "pull-wiggle 2s ease-in-out infinite"
                       : "none",
