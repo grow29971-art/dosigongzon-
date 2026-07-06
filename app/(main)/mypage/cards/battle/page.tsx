@@ -175,6 +175,9 @@ function EnvScene({ env }: { env: BattleEnvKey | null }) {
   useEffect(() => {
     if (env === "rain") particleRef.current?.setAmbient("rain", "190,220,255", 1);
     else if (env === "heat") particleRef.current?.setAmbient("ember", "255,140,50", 1);
+    else if (env === "night") particleRef.current?.setAmbient("firefly", "255,225,170", 1);
+    else if (env === "noon") particleRef.current?.setAmbient("dust", "255,240,190", 1);
+    else if (env === "fog") particleRef.current?.setAmbient("mist", "225,230,238", 1);
     else particleRef.current?.setAmbient(null);
   }, [env]);
   if (!env) return null;
@@ -194,7 +197,7 @@ function EnvScene({ env }: { env: BattleEnvKey | null }) {
           boxShadow:"0 0 70px 30px rgba(255,200,90,0.30)" }} />
       )}
       {env === "fog" && <div className="env-fog" />}
-      {(env === "rain" || env === "heat") && <ParticleCanvas ref={particleRef} />}
+      <ParticleCanvas ref={particleRef} />
       <div style={{ position:"absolute", left:0, right:0, bottom:0, height:110, clipPath:SKYLINE_CLIP, background:SKYLINE_COLOR[env] }} />
     </div>
   );
