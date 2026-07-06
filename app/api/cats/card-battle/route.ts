@@ -226,13 +226,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "no_opponents" }, { status: 404 });
     }
 
-    // 자동전투는 항상 승률 45%를 노려 매칭(무관심 파밍 방지), 수동은 3연승부터 승률 50%로 매칭
+    // 자동전투는 승률 45%를 노려 매칭(무관심 파밍 방지). 수동은 예전엔 3연승 전까진 완전 랜덤 매칭이라
+    // 어쩌다 훨씬 약한 상대를 만나면 그냥 쉬웠음 — 항상 타겟 승률로 매칭하고, 연승할수록 더 세게 붙는다.
     if (mode === "auto") {
       opponent = pickByTargetWinRate(myCat as CardCat, opponents as CardCat[], 0.45);
-    } else if ((myCat.win_streak ?? 0) >= 3) {
-      opponent = pickByTargetWinRate(myCat as CardCat, opponents as CardCat[], 0.50);
     } else {
-      opponent = opponents[Math.floor(Math.random() * opponents.length)] as CardCat;
+      const winStreak = myCat.win_streak ?? 0;
+      const target = winStreak >= 3 ? 0.55 : 0.48;
+      opponent = pickByTargetWinRate(myCat as CardCat, opponents as CardCat[], target);
     }
   }
 

@@ -143,9 +143,13 @@ function checkEvasion(evaChance: number): boolean {
   return Math.random() * 100 < evaChance;
 }
 // 인덱스: 0=기본공격, 1=방어, 2~5=스킬1~4
-function oppAI(hp: number, maxHp: number): number {
+// targetHpRatio/targetVulnerable — 상대(피격자) 상태를 봐서 마무리 타이밍이나 회피불가 순간을
+// 적극적으로 노리도록 함 (예전엔 자기 체력만 보고 판단해서 상대가 빈사 상태여도 그냥 기본공격만 함)
+function oppAI(hp: number, maxHp: number, targetHpRatio = 1, targetVulnerable = false): number {
   const ratio = hp / maxHp;
   const skillIdx = () => SKILL_START_IDX + Math.floor(Math.random() * 4);
+  // 상대가 회피 불가(속박) 상태거나 빈사 상태면 기본공격 대신 스킬로 확실히 압박
+  if (targetVulnerable || targetHpRatio < 0.3) return Math.random() < 0.85 ? skillIdx() : NORMAL_IDX;
   if (ratio < 0.25) return Math.random() < 0.7 ? skillIdx() : GUARD_IDX;
   if (ratio < 0.55) return Math.random() < 0.55 ? skillIdx() : (Math.random() < 0.5 ? NORMAL_IDX : GUARD_IDX);
   return Math.random() < 0.4 ? skillIdx() : NORMAL_IDX;
@@ -153,8 +157,8 @@ function oppAI(hp: number, maxHp: number): number {
 // 자동전투용 — oppAI는 쿨다운/사용횟수를 모르고 그냥 랜덤으로 골라서, 하필 쿨다운 중이거나
 // 소진된 행동을 고르면 pickSkill이 조용히 무시해버려 "가끔 자동전투가 안 먹는" 버그가 있었음.
 // 실제로 지금 쓸 수 있는 행동인지 확인하고, 막혀있으면 다른 가능한 행동으로 대체한다.
-function pickAvailableAutoAction(hp: number, maxHp: number, skillCds: number[], normalLeft: number, guardLeft: number): number | null {
-  const preferred = oppAI(hp, maxHp);
+function pickAvailableAutoAction(hp: number, maxHp: number, skillCds: number[], normalLeft: number, guardLeft: number, targetHpRatio = 1, targetVulnerable = false): number | null {
+  const preferred = oppAI(hp, maxHp, targetHpRatio, targetVulnerable);
   // 방어는 총 사용 횟수 제한(guardLeft)과 별개로 1턴 쿨다운도 있어서 둘 다 확인해야 함
   const isUsable = (idx: number) => {
     if (idx === NORMAL_IDX) return normalLeft > 0;
@@ -505,7 +509,9 @@ export default function BattlePage() {
           if(debuffed && (inventory.cleanse_potion ?? 0) > 0) { useItem("cleanse_potion"); return; }
           if(hpRatio < 0.5 && !myShieldRef.current && (inventory.shield ?? 0) > 0) { useItem("shield"); return; }
         }
-        const action = pickAvailableAutoAction(myHpRef.current, myMaxHp, mySkillCdRef.current, myNormalUsesRef.current, myGuardUsesRef.current);
+        const oppHpRatio = oppHpRef.current / Math.max(1, oppMaxHp);
+        const oppVulnerable = oppStunnedRef.current > 0 || oppBoundRef.current > 0;
+        const action = pickAvailableAutoAction(myHpRef.current, myMaxHp, mySkillCdRef.current, myNormalUsesRef.current, myGuardUsesRef.current, oppHpRatio, oppVulnerable);
         pickSkill(action, action === null ? "⏳ 쓸 수 있는 행동이 없어 턴 패스" : undefined);
       }, 500);
       return () => clearTimeout(t);
@@ -992,8 +998,10 @@ export default function BattlePage() {
             return;
           }
 
-          // AI 기술 선택
-          const aiSkillIdx = oppAI(oppHpRef.current, oppMaxHp);
+          // AI 기술 선택 — 내(플레이어) 체력비/회피불가 상태를 보고 마무리 타이밍을 노림
+          const myHpRatioForAi = myHpRef.current / Math.max(1, myMaxHp);
+          const myVulnerableForAi = myStunnedRef.current > 0 || myBoundRef.current > 0;
+          const aiSkillIdx = oppAI(oppHpRef.current, oppMaxHp, myHpRatioForAi, myVulnerableForAi);
           const { dmg:od, isCrit:oc, msg:om, skillId:aiSkillId } = applySkill(aiSkillIdx, false, myStats, oppStats, myMaxHp, oppMaxHp, selected, opponent);
           const oppSkill = oppSkills[aiSkillIdx];
           setActionMsg(`${opponent.name}의 ${oppSkill.name}!${oc?" 💥 크리티컬!":""}${om?" "+om:""}`);
