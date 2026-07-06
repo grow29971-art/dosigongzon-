@@ -579,6 +579,19 @@ export default function CatCard({ name, photoUrl, card, size = "md", onClick }: 
           }}
           onClick={() => setModalOpen(false)}
         >
+          <button
+            onClick={() => setModalOpen(false)}
+            style={{
+              position: "fixed", top: "calc(env(safe-area-inset-top) + 14px)", right: 16, zIndex: 501,
+              width: 40, height: 40, borderRadius: 99,
+              background: "rgba(255,255,255,0.15)",
+              border: "1px solid rgba(255,255,255,0.25)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              color: "#fff", cursor: "pointer",
+            }}
+          >
+            <X size={20} />
+          </button>
           <div
             className="card-modal-anim"
             style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, margin: "auto 0" }}
@@ -595,18 +608,6 @@ export default function CatCard({ name, photoUrl, card, size = "md", onClick }: 
               pointerEvents: "none",
             }} />
             <CardFace name={name} photoUrl={photoUrl} card={card} size="lg" />
-            <button
-              onClick={() => setModalOpen(false)}
-              style={{
-                width: 44, height: 44, borderRadius: 99,
-                background: "rgba(255,255,255,0.15)",
-                border: "1px solid rgba(255,255,255,0.25)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                color: "#fff", cursor: "pointer",
-              }}
-            >
-              <X size={20} />
-            </button>
           </div>
         </div>,
         document.body,

@@ -212,6 +212,15 @@ export default function MyCardsPage() {
       {selected && (
         <div style={{ position: "fixed", inset: 0, zIndex: 200, background: "rgba(0,0,0,0.90)", display: "flex", flexDirection: "column", alignItems: "center", padding: "20px 20px calc(20px + env(safe-area-inset-bottom))", gap: 12, overflowY: "auto", WebkitOverflowScrolling: "touch" }}
           onClick={() => setSelected(null)}>
+          <button onClick={() => setSelected(null)}
+            style={{
+              position: "fixed", top: "calc(env(safe-area-inset-top) + 14px)", right: 16, zIndex: 201,
+              width: 40, height: 40, borderRadius: 99,
+              background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)",
+              display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", cursor: "pointer",
+            }}>
+            <X size={20} />
+          </button>
           <div onClick={e => e.stopPropagation()} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, width: "100%", maxWidth: 340, margin: "auto 0" }}>
 
             <CatCard name={selected.name} photoUrl={selected.photo_url}
@@ -311,11 +320,6 @@ export default function MyCardsPage() {
               className="w-full py-2.5 rounded-xl text-[12px] font-bold flex items-center justify-center gap-2"
               style={{ background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.6)" }}>
               <Share2 size={13} /> 커뮤니티에 자랑하기
-            </button>
-
-            <button onClick={() => setSelected(null)}
-              style={{ width: 44, height: 44, borderRadius: 99, background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", cursor: "pointer" }}>
-              <X size={20} />
             </button>
           </div>
         </div>
