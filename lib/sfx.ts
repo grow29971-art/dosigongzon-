@@ -127,4 +127,18 @@ export const sfx = {
     tone({ freq: 2400, duration: 0.02, type: "square", volume: 0.16 });
     tone({ freq: 1100, duration: 0.03, type: "square", volume: 0.12, delay: 0.03 });
   },
+
+  // 긴장감 연출 — 위기 진입 스팅어 + 위기 상태 지속 하트비트
+  danger: () => {
+    tone({ freq: 300, duration: 0.18, type: "sawtooth", volume: 0.13, slideTo: 160 });
+    tone({ freq: 220, duration: 0.26, type: "sawtooth", volume: 0.11, slideTo: 110, delay: 0.12 });
+  },
+  heartbeat: () => {
+    tone({ freq: 90, duration: 0.09, type: "sine", volume: 0.09 });
+    tone({ freq: 80, duration: 0.09, type: "sine", volume: 0.07, delay: 0.16 });
+  },
+  comeback: () => {
+    tone({ freq: 200, duration: 0.1, type: "sawtooth", volume: 0.12 });
+    tone({ freq: 500, duration: 0.18, type: "triangle", volume: 0.14, delay: 0.08, slideTo: 700 });
+  },
 };

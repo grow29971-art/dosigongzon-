@@ -860,6 +860,12 @@ export default function BattlePage() {
       msg = msg ? `${msg} · 효과는 굉장했다!` : "효과는 굉장했다!";
     }
 
+    // 필사의 역전 발동 알림 — 조용히 계산만 하지 않고 확실히 티를 낸다
+    if(dmg>0 && comebackActive) {
+      msg = msg ? `${msg} · 🔥 필사의 역전!` : "🔥 필사의 역전!";
+      sfx.comeback();
+    }
+
     // 방어막 아이템 (내가 방어자일 때 이번 피해 완전 무효화, 최우선 적용)
     if(dmg>0 && !isPlayer && myShieldRef.current) {
       dmg = 0;
@@ -1141,6 +1147,24 @@ export default function BattlePage() {
   const myDanger = myHp/Math.max(1,myMaxHp)<0.25;
   const oppDanger = oppHp/Math.max(1,oppMaxHp)<0.25;
   const isFightPhase = ["player_choose","animating","opp_thinking"].includes(phase);
+
+  // 위기 진입 스팅어 — 체력이 처음 25% 밑으로 떨어지는 그 순간에만 한 번 울림
+  const myDangerRef = useRef(false);
+  const oppDangerRef = useRef(false);
+  useEffect(() => {
+    if (myDanger && !myDangerRef.current) sfx.danger();
+    myDangerRef.current = myDanger;
+  }, [myDanger]);
+  useEffect(() => {
+    if (oppDanger && !oppDangerRef.current) sfx.danger();
+    oppDangerRef.current = oppDanger;
+  }, [oppDanger]);
+  // 누군가 위기 상태인 동안 계속되는 하트비트로 긴장감 유지
+  useEffect(() => {
+    if (!isFightPhase || (!myDanger && !oppDanger)) return;
+    const id = setInterval(() => sfx.heartbeat(), 1100);
+    return () => clearInterval(id);
+  }, [isFightPhase, myDanger, oppDanger]);
 
   const myFrozen  = myStunVis && myStunFlavor==="ice";
   const myFeared  = myStunVis && myStunFlavor==="fear";

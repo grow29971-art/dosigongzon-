@@ -226,14 +226,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "no_opponents" }, { status: 404 });
     }
 
-    // 자동전투는 승률 45%를 노려 매칭(무관심 파밍 방지). 수동은 예전엔 3연승 전까진 완전 랜덤 매칭이라
-    // 어쩌다 훨씬 약한 상대를 만나면 그냥 쉬웠음 — 항상 타겟 승률로 매칭하고, 연승할수록 더 세게 붙는다.
+    // 자동전투는 승률 45%를 노려 매칭(무관심 파밍 방지). 수동은 매칭을 예측 가능하게 조작하지 않고
+    // 완전 랜덤으로 뽑아서 상대가 셀지 약할지 모르는 데서 오는 긴장감을 살린다 — 대신 실제 전투
+    // 자체(AI 판단력·역전 기믹 등)를 더 팽팽하게 만드는 쪽으로 난이도를 잡는다.
     if (mode === "auto") {
       opponent = pickByTargetWinRate(myCat as CardCat, opponents as CardCat[], 0.45);
     } else {
-      const winStreak = myCat.win_streak ?? 0;
-      const target = winStreak >= 3 ? 0.55 : 0.48;
-      opponent = pickByTargetWinRate(myCat as CardCat, opponents as CardCat[], target);
+      opponent = opponents[Math.floor(Math.random() * opponents.length)] as CardCat;
     }
   }
 
