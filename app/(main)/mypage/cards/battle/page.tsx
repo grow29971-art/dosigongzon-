@@ -68,6 +68,39 @@ interface AutoResult { winner:"me"|"opponent"; my_hp_left:number; opp_hp_left:nu
 
 /* ──────────── 헬퍼 ──────────── */
 const SKILL_SLOT_COLORS = ["#DD4422", "#CC8822", "#22AACC", "#9933CC"];
+
+// 스킬별 "성격" — 상태이상 계열을 색/연출로 구분해 전투 액션을 다채롭게 만든다
+type FxFlavor = "ice"|"fear"|"shock"|"sleep"|"poison"|"bleed"|"bind"|"life";
+const SKILL_FLAVOR: Partial<Record<string, FxFlavor>> = {
+  freeze:"ice", cold_glare:"ice",
+  hiss:"fear", intimidate:"fear",
+  static_shock:"shock", thunderclap:"shock", judgment:"shock",
+  slow:"sleep",
+  poison:"poison", venom_fang:"poison", curse:"poison", dominate:"poison",
+  scratch:"bleed", rend:"bleed",
+  bind:"bind", howl:"bind", intimidate_sm:"bind",
+  grooming:"life", warm_nap:"life", regen:"life", eclipse:"life", cleanse:"life", vampirism:"life",
+};
+const FX_COLOR: Record<FxFlavor,string> = {
+  ice:"140,215,255", fear:"190,120,255", shock:"255,220,50", sleep:"170,175,255",
+  poison:"130,240,110", bleed:"255,70,90", bind:"205,150,90", life:"150,255,190",
+};
+const STUN_LABEL: Partial<Record<FxFlavor,string>> = { ice:"❄️ 빙결", fear:"😱 공포", shock:"⚡ 감전", sleep:"😴 수면" };
+function flavorColorForId(id: string | null): string | undefined {
+  if (!id) return undefined;
+  const f = SKILL_FLAVOR[id];
+  return f ? FX_COLOR[f] : undefined;
+}
+// 자동전투 로그는 스킬 이름만 갖고 있어서, 이름 → id 역매핑을 통해 같은 색상 연출을 재사용한다
+const SKILL_NAME_TO_ID: Record<string,string> = Object.fromEntries(Object.entries(SPECIAL_SKILLS).map(([id,s])=>[s.name,id]));
+function flavorColorForName(name: string): string | undefined {
+  return flavorColorForId(SKILL_NAME_TO_ID[name] ?? null);
+}
+// 자신에게만 적용되는 스킬 — 0피해로 성공해도 상대는 아무 반응이 없어야 함 (회복/버프류)
+const SELF_TARGET_IDS = new Set(["quick_dodge","grooming","warm_nap","regen","eclipse","cleanse","invincible"]);
+function isSelfTargetSkill(id: string | null): boolean {
+  return id !== null && SELF_TARGET_IDS.has(id);
+}
 function getSlotSkillId(cat: BattleCat, slot: number): string {
   const fallback = ["sharp_claws", "scratch", "sharp_claws", "scratch"];
   const raw = slot === 0 ? cat.battle_special
@@ -170,6 +203,62 @@ function HpBar({ current, max }: { current:number; max:number }) {
   );
 }
 
+/* ──────────── 상태이상 비주얼 (카드 위 오버레이) ──────────── */
+function StatusFx({ frozen, feared, shocked, sleepy, poisoned, bleeding, bound }: {
+  frozen:boolean; feared:boolean; shocked:boolean; sleepy:boolean;
+  poisoned:boolean; bleeding:boolean; bound:boolean;
+}) {
+  if(!frozen && !feared && !shocked && !sleepy && !poisoned && !bleeding && !bound) return null;
+  return (
+    <>
+      {frozen && (
+        <div style={{ position:"absolute", inset:0, zIndex:7, borderRadius:13, pointerEvents:"none", overflow:"hidden" }}>
+          <div style={{ position:"absolute", inset:0, background:"linear-gradient(160deg, rgba(190,230,255,0.55), rgba(120,190,255,0.22) 55%, rgba(90,170,255,0.4))", mixBlendMode:"screen" }} />
+          <div style={{ position:"absolute", inset:0, background:"repeating-linear-gradient(115deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 9px)", animation:"iceShimmer 2.4s ease-in-out infinite" }} />
+          <div style={{ position:"absolute", inset:0, border:"2px solid rgba(160,225,255,0.85)", borderRadius:13, boxShadow:"inset 0 0 14px rgba(140,210,255,0.7), 0 0 10px rgba(140,210,255,0.6)" }} />
+          <span style={{ position:"absolute", top:1, left:2, fontSize:13 }}>❄️</span>
+        </div>
+      )}
+      {shocked && (
+        <div style={{ position:"absolute", inset:0, zIndex:7, borderRadius:13, pointerEvents:"none", overflow:"hidden" }}>
+          <div style={{ position:"absolute", inset:0, background:"rgba(255,230,60,0.24)", animation:"shockFlicker 0.35s steps(2) infinite" }} />
+          <div style={{ position:"absolute", inset:0, border:"2px solid rgba(255,225,60,0.85)", borderRadius:13, boxShadow:"0 0 10px rgba(255,220,60,0.7)", animation:"shockFlicker 0.35s steps(2) infinite" }} />
+          <span style={{ position:"absolute", top:1, right:2, fontSize:13 }}>⚡</span>
+        </div>
+      )}
+      {poisoned && (
+        <div style={{ position:"absolute", inset:0, zIndex:7, borderRadius:13, pointerEvents:"none", overflow:"hidden" }}>
+          <div style={{ position:"absolute", inset:0, background:"rgba(120,220,60,0.24)", mixBlendMode:"multiply", animation:"poisonPulse 1.6s ease-in-out infinite" }} />
+          <div className="poison-bubbles" />
+          <div style={{ position:"absolute", inset:0, border:"2px solid rgba(140,230,80,0.55)", borderRadius:13 }} />
+        </div>
+      )}
+      {bleeding && (
+        <div style={{ position:"absolute", inset:0, zIndex:7, borderRadius:13, pointerEvents:"none", overflow:"hidden" }}>
+          <div className="bleed-drips" />
+          <div style={{ position:"absolute", inset:0, boxShadow:"inset 0 -22px 18px -10px rgba(200,20,30,0.45)" }} />
+        </div>
+      )}
+      {bound && (
+        <div style={{ position:"absolute", inset:0, zIndex:7, borderRadius:13, pointerEvents:"none", overflow:"hidden" }}>
+          <div style={{ position:"absolute", inset:0, background:"repeating-linear-gradient(135deg, rgba(120,90,50,0.4) 0px, rgba(120,90,50,0.4) 5px, transparent 5px, transparent 16px)" }} />
+          <span style={{ position:"absolute", bottom:1, left:2, fontSize:11 }}>⛓️</span>
+        </div>
+      )}
+      {feared && (
+        <div style={{ position:"absolute", top:-15, left:"50%", zIndex:11, pointerEvents:"none", animation:"fearSwirl 1.4s linear infinite" }}>
+          <span style={{ fontSize:13 }}>💫</span>
+        </div>
+      )}
+      {sleepy && (
+        <div style={{ position:"absolute", top:-14, right:2, zIndex:11, pointerEvents:"none" }}>
+          <span style={{ fontSize:12, animation:"sleepFloat 1.8s ease-in-out infinite" }}>💤</span>
+        </div>
+      )}
+    </>
+  );
+}
+
 /* ──────────── 기술 버튼 ──────────── */
 function SkillBtn({ skill, idx, disabled, cooldown=0, usesLeft, onPick }: { skill:Skill; idx:number; disabled:boolean; cooldown?:number; usesLeft?:number; onPick:(i:number)=>void }) {
   const icons = [<Swords key={0} size={14}/>, <Shield key={1} size={14}/>, <Zap key={2} size={14}/>, <Sparkles key={3} size={14}/>, <Flame key={4} size={14}/>, <Star key={5} size={14}/>];
@@ -258,6 +347,8 @@ export default function BattlePage() {
   const [oppGuardVis, setOppGuardVis] = useState(false);
   const [myStunVis, setMyStunVis] = useState(false);
   const [oppStunVis, setOppStunVis] = useState(false);
+  const [myStunFlavor, setMyStunFlavor] = useState<FxFlavor|null>(null);
+  const [oppStunFlavor, setOppStunFlavor] = useState<FxFlavor|null>(null);
 
   // 지속 상태이상 DoT/속박
   const myPoisonRef  = useRef(0);   // 남은 독 턴수
@@ -294,11 +385,11 @@ export default function BattlePage() {
   const [critFlash, setCritFlash] = useState(false);
   // 임팩트 연출 — 타격감을 위한 화면 흔들림 + 충격파 (0=없음, 1=일반타격, 2=크리티컬)
   const [screenShake, setScreenShake] = useState<0|1|2>(0);
-  const [impactBurst, setImpactBurst] = useState<{ side:"me"|"opp"; big:boolean } | null>(null);
+  const [impactBurst, setImpactBurst] = useState<{ side:"me"|"opp"; big:boolean; color?:string } | null>(null);
   const shakeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const triggerImpact = (side:"me"|"opp", isCrit: boolean) => {
+  const triggerImpact = (side:"me"|"opp", isCrit: boolean, color?: string) => {
     setScreenShake(isCrit ? 2 : 1);
-    setImpactBurst({ side, big: isCrit });
+    setImpactBurst({ side, big: isCrit, color });
     if (shakeTimerRef.current) clearTimeout(shakeTimerRef.current);
     shakeTimerRef.current = setTimeout(() => { setScreenShake(0); setImpactBurst(null); }, isCrit ? 480 : 320);
   };
@@ -420,6 +511,7 @@ export default function BattlePage() {
       myStunnedRef.current=0; oppStunnedRef.current=0;
       setMyGuardVis(false); setOppGuardVis(false);
       setMyStunVis(false); setOppStunVis(false);
+      setMyStunFlavor(null); setOppStunFlavor(null);
       myPoisonRef.current=0; oppPoisonRef.current=0;
       myBleedRef.current=0; oppBleedRef.current=0;
       myBoundRef.current=0; oppBoundRef.current=0;
@@ -487,7 +579,7 @@ export default function BattlePage() {
         if(!e.isDodge && e.dmg>0) {
           if(isMe){ setOppAnim("hit"); setOppHp(e.dHp); }
           else { setMyAnim("hit"); setMyHp(e.aHp); }
-          triggerImpact(isMe?"opp":"me", e.isCritical);
+          triggerImpact(isMe?"opp":"me", e.isCritical, flavorColorForName(e.skillName));
           setDmgPopup({ target:isMe?"opp":"me", val:e.dmg, isCrit:e.isCritical });
           if(e.isCritical){ setCritFlash(true); navigator.vibrate?.([80,30,80]); }
           else navigator.vibrate?.(30);
@@ -521,6 +613,12 @@ export default function BattlePage() {
     const defSt    = isPlayer ? oppSt  : mySt;
     const myGuard  = myGuardRef.current;
     const oppGuard = oppGuardRef.current;
+
+    // 기절 부여 헬퍼 — 스킬마다 "성격"(얼음/공포/전기/수면)을 함께 기록해 시각 연출에 사용
+    const setStun = (turns: number, flavor: FxFlavor) => {
+      if (isPlayer) { oppStunnedRef.current = turns; setOppStunVis(true); setOppStunFlavor(flavor); }
+      else { myStunnedRef.current = turns; setMyStunVis(true); setMyStunFlavor(flavor); }
+    };
 
     // 환경 보정
     const env = battleEnvRef.current ? BATTLE_ENVS[battleEnvRef.current] : null;
@@ -564,7 +662,7 @@ export default function BattlePage() {
     if(!defBound && !forceHit && skill.type !== "guard" && (forceDodge || checkEvasion(defEva))) {
       if(isPlayer){ setOppAnim("dodge"); } else { setMyAnim("dodge"); }
       setTimeout(()=>{ setMyAnim("idle"); setOppAnim("idle"); }, 350);
-      return { dmg:0, isCrit:false, msg:"💨 회피!", dodged:true };
+      return { dmg:0, isCrit:false, msg:"💨 회피!", dodged:true, skillId: usedSkillId };
     }
 
     const atkCrit = (attacker.battle_crit ?? 8) + envCritBonus + comebackCritBonus;
@@ -585,7 +683,7 @@ export default function BattlePage() {
           break;
         }
         case "hiss":
-          if(Math.random()<0.3){ if(isPlayer){oppStunnedRef.current=2;setOppStunVis(true);}else{myStunnedRef.current=2;setMyStunVis(true);} sMsg="😾 하악 위협! 2턴 기절"; }
+          if(Math.random()<0.3){ setStun(2,"fear"); sMsg="😾 하악 위협! 2턴 기절"; }
           else sMsg="😾 하악... 실패";
           break;
         case "grooming":   { const heal=Math.round(ownMaxHp*0.10); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`🧼 그루밍! +${heal}HP 회복`; break; }
@@ -600,29 +698,29 @@ export default function BattlePage() {
         }
         case "body_slam":  { const r=calcDmg(atkSt.atk,defSt.def,1.3*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="💥 몸통 박치기!"; break; }
         case "freeze":
-          if(Math.random()<0.45){ if(isPlayer){oppStunnedRef.current=2;setOppStunVis(true);}else{myStunnedRef.current=2;setMyStunVis(true);} sMsg="❄️ 얼리기 성공! 2턴 기절"; }
+          if(Math.random()<0.45){ setStun(2,"ice"); sMsg="❄️ 얼리기 성공! 2턴 기절"; }
           else sMsg="❄️ 얼리기... 저항!";
           break;
         case "scratch":    { const r=calcDmg(atkSt.atk,defSt.def,0.8*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer)oppBleedRef.current=3;else myBleedRef.current=3; sMsg="🩸 할퀴기! 출혈 3턴"; break; }
         case "intimidate":
-          if(Math.random()<0.55){ if(isPlayer){oppStunnedRef.current=2;setOppStunVis(true);}else{myStunnedRef.current=2;setMyStunVis(true);} sMsg="😱 공포의 눈빛! 2턴 기절"; }
+          if(Math.random()<0.55){ setStun(2,"fear"); sMsg="😱 공포의 눈빛! 2턴 기절"; }
           else sMsg="😱 공포의 눈빛... 실패";
           break;
         case "pounce":     { const r=calcDmg(atkSt.atk,5,1.1*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="🦘 도약 강타! 방어 무시"; break; }
         case "ambush":     { const r=calcDmg(atkSt.atk,defSt.def,1.2*envDmgMult,100); sDmg=r.dmg; sCrit=true; sMsg="🌑 급습! 크리티컬 확정"; break; }
         case "static_shock":
-          if(Math.random()<0.3){ if(isPlayer){oppStunnedRef.current=2;setOppStunVis(true);}else{myStunnedRef.current=2;setMyStunVis(true);} sMsg="⚡ 정전기! 2턴 기절"; }
+          if(Math.random()<0.3){ setStun(2,"shock"); sMsg="⚡ 정전기! 2턴 기절"; }
           else sMsg="⚡ 정전기... 실패";
           break;
         case "night_prowl": { const r=calcDmg(atkSt.atk,defSt.def,1.1*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="🌌 야습! 회피 불가 관통"; break; }
         case "thunderclap": {
           const r=calcDmg(atkSt.atk,defSt.def,0.6*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit;
-          if(Math.random()<0.25){ if(isPlayer){oppStunnedRef.current=2;setOppStunVis(true);}else{myStunnedRef.current=2;setMyStunVis(true);} sMsg="🌩️ 천둥벽력! 2턴 기절"; }
+          if(Math.random()<0.25){ setStun(2,"shock"); sMsg="🌩️ 천둥벽력! 2턴 기절"; }
           else sMsg="🌩️ 천둥벽력!";
           break;
         }
         case "cold_glare":
-          if(Math.random()<0.3){ if(isPlayer){oppStunnedRef.current=2;setOppStunVis(true);}else{myStunnedRef.current=2;setMyStunVis(true);} sMsg="🥶 차가운 눈초리! 2턴 기절"; }
+          if(Math.random()<0.3){ setStun(2,"ice"); sMsg="🥶 차가운 눈초리! 2턴 기절"; }
           else sMsg="🥶 차가운 눈초리... 실패";
           break;
         case "dash_strike": { const r=calcDmg(atkSt.atk,defSt.def,1.5*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="💨 돌진!"; break; }
@@ -632,7 +730,7 @@ export default function BattlePage() {
           else sMsg="⛓️ 속박... 실패";
           break;
         case "slow":
-          if(Math.random()<0.6){ if(isPlayer){oppStunnedRef.current=2;setOppStunVis(true);}else{myStunnedRef.current=2;setMyStunVis(true);} sMsg="🐌 느리게! 2턴 스킵"; }
+          if(Math.random()<0.6){ setStun(2,"sleep"); sMsg="🐌 느리게! 2턴 스킵"; }
           else sMsg="🐌 느리게... 실패";
           break;
         case "double_strike": {
@@ -661,8 +759,8 @@ export default function BattlePage() {
         case "judgment": {
           const r=calcDmg(atkSt.atk,defSt.def,1.2*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit;
           if(Math.random()<0.55){
-            if(isPlayer){oppBoundRef.current=2;oppStunnedRef.current=2;setOppStunVis(true);}
-            else{myBoundRef.current=2;myStunnedRef.current=2;setMyStunVis(true);}
+            if(isPlayer){oppBoundRef.current=2;}else{myBoundRef.current=2;}
+            setStun(2,"shock");
             sMsg="⚡ 천벌! 2턴 속박+기절";
           } else sMsg="⚡ 천벌!";
           break;
@@ -672,11 +770,11 @@ export default function BattlePage() {
           const heal=Math.round(ownMaxHp*0.10);
           if(isPlayer){
             myPoisonRef.current=0; myBleedRef.current=0; myBoundRef.current=0;
-            myStunnedRef.current=0; setMyStunVis(false); setMyStatusBadges([]);
+            myStunnedRef.current=0; setMyStunVis(false); setMyStunFlavor(null); setMyStatusBadges([]);
             setMyHp(Math.min(myMaxH,myHpRef.current+heal));
           } else {
             oppPoisonRef.current=0; oppBleedRef.current=0; oppBoundRef.current=0;
-            oppStunnedRef.current=0; setOppStunVis(false); setOppStatusBadges([]);
+            oppStunnedRef.current=0; setOppStunVis(false); setOppStunFlavor(null); setOppStatusBadges([]);
             setOppHp(Math.min(oppMaxH,oppHpRef.current+heal));
           }
           sMsg=`💫 정화! 상태이상 해제 +${heal}HP`;
@@ -726,7 +824,7 @@ export default function BattlePage() {
       else { const h=Math.max(0,myHpRef.current-dmg); setMyHp(h); }
     }
 
-    return { dmg, isCrit, msg, dodged:false };
+    return { dmg, isCrit, msg, dodged:false, skillId: usedSkillId };
   };
 
   /* ── 라운드 종료: 독/출혈 틱 + 쿨다운 감소 ── */
@@ -773,6 +871,7 @@ export default function BattlePage() {
     setPhase("animating");
 
     let dmg = 0, isCrit = false, msg = "";
+    let castSkillId: string | null = null;
     if(skillIdx === null) {
       // 타임오버 또는 아이템 사용: 공격 없이 턴 진행
       msg = forfeitMsg ?? "⏰ 시간 초과! 턴 패스";
@@ -785,7 +884,7 @@ export default function BattlePage() {
       if(skillIdx === NORMAL_IDX) { myNormalUsesRef.current--; setMyNormalUses(myNormalUsesRef.current); }
       if(skillIdx === GUARD_IDX) { myGuardUsesRef.current--; setMyGuardUses(myGuardUsesRef.current); }
       const r = applySkill(skillIdx, true, myStats, oppStats, myMaxHp, oppMaxHp, selected, opponent);
-      dmg = r.dmg; isCrit = r.isCrit; msg = r.msg;
+      dmg = r.dmg; isCrit = r.isCrit; msg = r.msg; castSkillId = r.skillId;
       const skill = mySkills[skillIdx];
       setActionMsg(`${selected.name}의 ${skill.name}!${isCrit?" 💥 크리티컬!":""}${msg?" "+msg:""}`);
       setMyAnim("attack");
@@ -796,12 +895,19 @@ export default function BattlePage() {
       setMyAnim("idle");
       if(dmg>0) {
         setOppAnim("hit");
-        triggerImpact("opp", isCrit);
+        triggerImpact("opp", isCrit, flavorColorForId(castSkillId));
         setDmgPopup({ target:"opp", val:dmg, isCrit, msg:msg||undefined });
         if(isCrit){ setCritFlash(true); navigator.vibrate?.([80,30,80]); }
         else navigator.vibrate?.(35);
       } else if(msg) {
-        setDmgPopup({ target:"me", val:0, isCrit:false, msg });
+        if(isSelfTargetSkill(castSkillId)) {
+          setDmgPopup({ target:"me", val:0, isCrit:false, msg });
+        } else {
+          // 0피해라도 상대에게 걸리는 효과(빙결/속박/독 등)면 상대 쪽에 반응을 준다
+          setOppAnim("hit");
+          triggerImpact("opp", false, flavorColorForId(castSkillId));
+          setDmgPopup({ target:"opp", val:0, isCrit:false, msg });
+        }
       }
 
       setTimeout(() => {
@@ -816,7 +922,7 @@ export default function BattlePage() {
         setActionMsg(isStunned ? `${opponent.name}는 기절해서 움직일 수 없다!` : `${opponent.name}가 기술을 선택 중...`);
         if(isStunned) {
           oppStunnedRef.current = Math.max(0, oppStunnedRef.current - 1);
-          if(oppStunnedRef.current === 0) setOppStunVis(false);
+          if(oppStunnedRef.current === 0) { setOppStunVis(false); setOppStunFlavor(null); }
         }
 
         setTimeout(() => {
@@ -826,7 +932,7 @@ export default function BattlePage() {
             if(applyDotTick()) return;
             if(myStunnedRef.current > 0) {
               myStunnedRef.current = Math.max(0, myStunnedRef.current - 1);
-              if(myStunnedRef.current === 0) setMyStunVis(false);
+              if(myStunnedRef.current === 0) { setMyStunVis(false); setMyStunFlavor(null); }
               setActionMsg("기절해서 행동할 수 없다!"); setTimeout(()=>{ if(mounted.current){ setActionMsg("기술을 선택하세요!"); setPhase("player_choose"); }}, 1200);
             }
             else { setActionMsg("기술을 선택하세요!"); setPhase("player_choose"); }
@@ -835,7 +941,7 @@ export default function BattlePage() {
 
           // AI 기술 선택
           const aiSkillIdx = oppAI(oppHpRef.current, oppMaxHp);
-          const { dmg:od, isCrit:oc, msg:om } = applySkill(aiSkillIdx, false, myStats, oppStats, myMaxHp, oppMaxHp, selected, opponent);
+          const { dmg:od, isCrit:oc, msg:om, skillId:aiSkillId } = applySkill(aiSkillIdx, false, myStats, oppStats, myMaxHp, oppMaxHp, selected, opponent);
           const oppSkill = oppSkills[aiSkillIdx];
           setActionMsg(`${opponent.name}의 ${oppSkill.name}!${oc?" 💥 크리티컬!":""}${om?" "+om:""}`);
           setOppAnim("attack");
@@ -845,12 +951,18 @@ export default function BattlePage() {
             setOppAnim("idle");
             if(od>0) {
               setMyAnim("hit");
-              triggerImpact("me", oc);
+              triggerImpact("me", oc, flavorColorForId(aiSkillId));
               setDmgPopup({ target:"me", val:od, isCrit:oc, msg:om||undefined });
               if(oc){ setCritFlash(true); navigator.vibrate?.([80,30,80]); }
               else navigator.vibrate?.(30);
             } else if(om) {
-              setDmgPopup({ target:"opp", val:0, isCrit:false, msg:om });
+              if(isSelfTargetSkill(aiSkillId)) {
+                setDmgPopup({ target:"opp", val:0, isCrit:false, msg:om });
+              } else {
+                setMyAnim("hit");
+                triggerImpact("me", false, flavorColorForId(aiSkillId));
+                setDmgPopup({ target:"me", val:0, isCrit:false, msg:om });
+              }
             }
 
             setTimeout(() => {
@@ -863,7 +975,7 @@ export default function BattlePage() {
               if(applyDotTick()) return;
               if(myStunnedRef.current > 0) {
                 myStunnedRef.current = Math.max(0, myStunnedRef.current - 1);
-                if(myStunnedRef.current === 0) setMyStunVis(false);
+                if(myStunnedRef.current === 0) { setMyStunVis(false); setMyStunFlavor(null); }
                 setActionMsg("기절해서 행동할 수 없다!");
                 setTimeout(()=>{ if(mounted.current){ setTurnCount(t=>t+1); setActionMsg("기술을 선택하세요!"); setPhase("player_choose"); }}, 1300);
               } else {
@@ -912,7 +1024,7 @@ export default function BattlePage() {
       case "shield":         myShieldRef.current = true; msg = "🛡️ 방어막 전개! 다음 피해 무효화"; break;
       case "cleanse_potion": {
         myPoisonRef.current=0; myBleedRef.current=0; myBoundRef.current=0;
-        myStunnedRef.current=0; setMyStunVis(false); setMyStatusBadges([]);
+        myStunnedRef.current=0; setMyStunVis(false); setMyStunFlavor(null); setMyStatusBadges([]);
         msg = "💊 정화제! 모든 상태이상 해제"; break;
       }
       case "skill_recharge": mySkillCdRef.current=[0,0,0,0,0,0]; setMySkillCd([0,0,0,0,0,0]); msg = "🔋 스킬 충전! 쿨다운 초기화"; break;
@@ -966,6 +1078,21 @@ export default function BattlePage() {
   const oppDanger = oppHp/Math.max(1,oppMaxHp)<0.25;
   const isFightPhase = ["player_choose","animating","opp_thinking"].includes(phase);
 
+  const myFrozen  = myStunVis && myStunFlavor==="ice";
+  const myFeared  = myStunVis && myStunFlavor==="fear";
+  const myShocked = myStunVis && myStunFlavor==="shock";
+  const mySleepy  = myStunVis && myStunFlavor==="sleep";
+  const myPoisoned = myStatusBadges.some(b=>b.startsWith("☠️"));
+  const myBleeding = myStatusBadges.some(b=>b.startsWith("🩸"));
+  const myBound    = myStatusBadges.some(b=>b.startsWith("⛓️"));
+  const oppFrozen  = oppStunVis && oppStunFlavor==="ice";
+  const oppFeared  = oppStunVis && oppStunFlavor==="fear";
+  const oppShocked = oppStunVis && oppStunFlavor==="shock";
+  const oppSleepy  = oppStunVis && oppStunFlavor==="sleep";
+  const oppPoisoned = oppStatusBadges.some(b=>b.startsWith("☠️"));
+  const oppBleeding = oppStatusBadges.some(b=>b.startsWith("🩸"));
+  const oppBound    = oppStatusBadges.some(b=>b.startsWith("⛓️"));
+
   const dangerTint = myDanger&&!oppDanger ? "rgba(255,40,40,0.22)" : oppDanger&&!myDanger ? "rgba(60,255,110,0.14)" : "rgba(0,0,0,0)";
   const rootBg = battleEnv
     ? `linear-gradient(180deg, ${dangerTint} 0%, transparent 30%), ${ENV_BACKGROUNDS[battleEnv]}`
@@ -995,6 +1122,38 @@ export default function BattlePage() {
         @keyframes msgIn { 0%{opacity:0;transform:translateY(5px)}100%{opacity:1;transform:translateY(0)} }
         @keyframes resIn { 0%{opacity:0;transform:scale(0.6)}65%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)} }
         @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,50,50,0.5)}50%{box-shadow:0 0 0 6px rgba(255,50,50,0)} }
+
+        /* 상태이상 연출 */
+        @keyframes iceShimmer { 0%,100%{opacity:0.28; transform:translateX(-6%)} 50%{opacity:0.5; transform:translateX(6%)} }
+        @keyframes shockFlicker { 0%,100%{opacity:1} 50%{opacity:0.3} }
+        @keyframes fearSwirl {
+          0%   { transform:translateX(-50%) rotate(0deg) translateY(0); }
+          50%  { transform:translateX(-50%) rotate(180deg) translateY(-4px); }
+          100% { transform:translateX(-50%) rotate(360deg) translateY(0); }
+        }
+        @keyframes sleepFloat { 0%{transform:translateY(0); opacity:0.9} 100%{transform:translateY(-10px); opacity:0} }
+        @keyframes poisonPulse { 0%,100%{opacity:0.5} 50%{opacity:0.85} }
+        .poison-bubbles {
+          position:absolute; inset:0;
+          background-image:
+            radial-gradient(circle, rgba(150,255,120,0.9) 2px, transparent 2.5px),
+            radial-gradient(circle, rgba(90,220,80,0.8) 1.5px, transparent 2px);
+          background-size: 26px 40px, 20px 30px;
+          background-position: 22% 100%, 68% 100%;
+          animation: bubble-rise 2.1s linear infinite;
+        }
+        @keyframes bubble-rise { 0%{background-position:22% 100%,68% 100%; opacity:0.9} 100%{background-position:22% -20%,68% -20%; opacity:0.15} }
+        .bleed-drips {
+          position:absolute; inset:0;
+          background-image:
+            linear-gradient(180deg, rgba(220,20,40,0.85), transparent 55%),
+            linear-gradient(180deg, rgba(200,10,30,0.7), transparent 40%);
+          background-size: 3px 22px, 3px 16px;
+          background-repeat: no-repeat;
+          background-position: 32% 0%, 66% 0%;
+          animation: drip-fall 1.3s ease-in infinite;
+        }
+        @keyframes drip-fall { 0%{background-position:32% -12%,66% -16%; opacity:0} 30%{opacity:1} 100%{background-position:32% 42%,66% 48%; opacity:0} }
 
         /* 환경 씬 애니메이션 */
         .env-stars {
@@ -1150,19 +1309,22 @@ export default function BattlePage() {
               <div className="flex flex-col items-center gap-1.5" style={{flex:1}}>
                 <div style={{position:"relative"}}>
                   {myDanger&&<div style={{position:"absolute",top:-8,left:"50%",transform:"translateX(-50%)",zIndex:10,background:"#FF3333",color:"white",fontSize:9,fontWeight:900,padding:"2px 6px",borderRadius:99,whiteSpace:"nowrap"}}>⚠️ 위기</div>}
-                  {myStunVis&&<div style={{position:"absolute",top:-8,left:"50%",transform:"translateX(-50%)",zIndex:10,background:"#8800CC",color:"white",fontSize:9,fontWeight:900,padding:"2px 6px",borderRadius:99,whiteSpace:"nowrap"}}>💫 기절</div>}
+                  {myStunVis&&<div style={{position:"absolute",top:-8,left:"50%",transform:"translateX(-50%)",zIndex:10,background:"#8800CC",color:"white",fontSize:9,fontWeight:900,padding:"2px 6px",borderRadius:99,whiteSpace:"nowrap"}}>{(myStunFlavor && STUN_LABEL[myStunFlavor]) || "💫 기절"}</div>}
                   {myStatusBadges.length>0&&(
                     <div style={{position:"absolute",top:-8,right:-4,zIndex:10,display:"flex",flexDirection:"column",gap:2}}>
                       {myStatusBadges.map((b,i)=>(<span key={i} style={{background:"rgba(0,0,0,0.75)",color:"#FFAA88",fontSize:9,fontWeight:900,padding:"1px 5px",borderRadius:99,whiteSpace:"nowrap"}}>{b}</span>))}
                     </div>
                   )}
                   <div style={cardStyle(myAnim,"left")}><CatCard name={selected.name} photoUrl={selected.photo_url} card={toCard(selected)} size="sm"/></div>
+                  <StatusFx frozen={myFrozen} feared={myFeared} shocked={myShocked} sleepy={mySleepy} poisoned={myPoisoned} bleeding={myBleeding} bound={myBound}/>
                   {impactBurst?.side==="me" && (
                     <div style={{
                       position:"absolute", inset:"-14px", zIndex:8, pointerEvents:"none", borderRadius:"50%",
-                      background: impactBurst.big
-                        ? "radial-gradient(circle, rgba(255,220,80,0.9) 0%, rgba(255,150,0,0.5) 45%, transparent 72%)"
-                        : "radial-gradient(circle, rgba(255,255,255,0.85) 0%, transparent 68%)",
+                      background: impactBurst.color
+                        ? `radial-gradient(circle, rgba(${impactBurst.color},0.95) 0%, rgba(${impactBurst.color},0.5) 45%, transparent 72%)`
+                        : impactBurst.big
+                          ? "radial-gradient(circle, rgba(255,220,80,0.9) 0%, rgba(255,150,0,0.5) 45%, transparent 72%)"
+                          : "radial-gradient(circle, rgba(255,255,255,0.85) 0%, transparent 68%)",
                       animation:"impactBurst 0.35s ease-out forwards",
                     }}/>
                   )}
@@ -1193,19 +1355,22 @@ export default function BattlePage() {
               <div className="flex flex-col items-center gap-1.5" style={{flex:1}}>
                 <div style={{position:"relative"}}>
                   {oppDanger&&<div style={{position:"absolute",top:-8,left:"50%",transform:"translateX(-50%)",zIndex:10,background:"#FF3333",color:"white",fontSize:9,fontWeight:900,padding:"2px 6px",borderRadius:99,whiteSpace:"nowrap"}}>⚠️ 위기</div>}
-                  {oppStunVis&&<div style={{position:"absolute",top:-8,left:"50%",transform:"translateX(-50%)",zIndex:10,background:"#8800CC",color:"white",fontSize:9,fontWeight:900,padding:"2px 6px",borderRadius:99,whiteSpace:"nowrap"}}>💫 기절</div>}
+                  {oppStunVis&&<div style={{position:"absolute",top:-8,left:"50%",transform:"translateX(-50%)",zIndex:10,background:"#8800CC",color:"white",fontSize:9,fontWeight:900,padding:"2px 6px",borderRadius:99,whiteSpace:"nowrap"}}>{(oppStunFlavor && STUN_LABEL[oppStunFlavor]) || "💫 기절"}</div>}
                   {oppStatusBadges.length>0&&(
                     <div style={{position:"absolute",top:-8,right:-4,zIndex:10,display:"flex",flexDirection:"column",gap:2}}>
                       {oppStatusBadges.map((b,i)=>(<span key={i} style={{background:"rgba(0,0,0,0.75)",color:"#FFAA88",fontSize:9,fontWeight:900,padding:"1px 5px",borderRadius:99,whiteSpace:"nowrap"}}>{b}</span>))}
                     </div>
                   )}
                   <div style={cardStyle(oppAnim,"right")}><CatCard name={opponent.name} photoUrl={opponent.photo_url} card={toCard(opponent)} size="sm"/></div>
+                  <StatusFx frozen={oppFrozen} feared={oppFeared} shocked={oppShocked} sleepy={oppSleepy} poisoned={oppPoisoned} bleeding={oppBleeding} bound={oppBound}/>
                   {impactBurst?.side==="opp" && (
                     <div style={{
                       position:"absolute", inset:"-14px", zIndex:8, pointerEvents:"none", borderRadius:"50%",
-                      background: impactBurst.big
-                        ? "radial-gradient(circle, rgba(255,220,80,0.9) 0%, rgba(255,150,0,0.5) 45%, transparent 72%)"
-                        : "radial-gradient(circle, rgba(255,255,255,0.85) 0%, transparent 68%)",
+                      background: impactBurst.color
+                        ? `radial-gradient(circle, rgba(${impactBurst.color},0.95) 0%, rgba(${impactBurst.color},0.5) 45%, transparent 72%)`
+                        : impactBurst.big
+                          ? "radial-gradient(circle, rgba(255,220,80,0.9) 0%, rgba(255,150,0,0.5) 45%, transparent 72%)"
+                          : "radial-gradient(circle, rgba(255,255,255,0.85) 0%, transparent 68%)",
                       animation:"impactBurst 0.35s ease-out forwards",
                     }}/>
                   )}
