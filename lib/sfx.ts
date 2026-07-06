@@ -21,6 +21,19 @@ function getCtx(): AudioContext | null {
 // 이후 setTimeout 등에서의 재생도 막히지 않는다. 터치 시작 시점에 미리 호출해 준비.
 export function primeSfx() { getCtx(); }
 
+// 앱을 백그라운드로 보내거나 화면을 꺼도 환경음(루프)이 계속 재생되던 문제 방지 —
+// 탭이 숨겨지면 오디오 컨텍스트 자체를 suspend해서 모든 소리를 멈추고, 돌아오면 이어서 재생.
+if (typeof window !== "undefined") {
+  document.addEventListener("visibilitychange", () => {
+    if (!ctx) return;
+    if (document.visibilityState === "hidden") {
+      if (ctx.state === "running") ctx.suspend();
+    } else if (ctx.state === "suspended") {
+      ctx.resume();
+    }
+  });
+}
+
 export function isSfxMuted(): boolean {
   if (typeof window === "undefined") return false;
   return localStorage.getItem(MUTE_KEY) === "1";

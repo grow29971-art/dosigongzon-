@@ -1177,6 +1177,7 @@ export default function BattlePage() {
     if(!selected || !opponent) return;
     setPhase("result");
     setActionMsg(winner==="me"?"🏆 승리!":"💔 패배...");
+    stopAmbient();
     if(winner==="me") { sfx.win(); navigator.vibrate?.([40,40,40,40,100]); } else { sfx.lose(); navigator.vibrate?.(150); }
 
     try {
