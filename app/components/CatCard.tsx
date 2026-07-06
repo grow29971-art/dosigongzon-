@@ -25,7 +25,7 @@ interface CatCardProps {
   onClick?: () => void;
 }
 
-const CFG = {
+export const CARD_THEME = {
   common: {
     bg: "linear-gradient(155deg, #82CC5E 0%, #5AA040 42%, #3E7A2A 75%, #2E5E1E 100%)",
     frameOuter: "#2E5A20",
@@ -106,7 +106,7 @@ function pickIcon(seed: string) {
   for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
   return MOVE_ICONS[h % MOVE_ICONS.length];
 }
-function pseudoDexNo(seed: string) {
+export function pseudoDexNo(seed: string) {
   let h = 0;
   for (let i = 0; i < seed.length; i++) h = (h * 37 + seed.charCodeAt(i)) >>> 0;
   return String((h % 220) + 1).padStart(3, "0");
@@ -114,7 +114,7 @@ function pseudoDexNo(seed: string) {
 
 function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> & { size: "sm" | "md" | "lg" }) {
   const rarity = (card.card_rarity ?? "common") as CardRarity;
-  const cfg = CFG[rarity] ?? CFG.common;
+  const cfg = CARD_THEME[rarity] ?? CARD_THEME.common;
   const isSm = size === "sm";
   const isLg = size === "lg";
 
@@ -350,7 +350,7 @@ export default function CatCard({ name, photoUrl, card, size = "md", onClick }: 
   };
 
   const rarity = (card.card_rarity ?? "common") as CardRarity;
-  const cfg = CFG[rarity] ?? CFG.common;
+  const cfg = CARD_THEME[rarity] ?? CARD_THEME.common;
 
   return (
     <>

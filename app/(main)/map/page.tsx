@@ -35,6 +35,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import dynamic from "next/dynamic";
+import { CARD_THEME, pseudoDexNo, type CardRarity } from "@/app/components/CatCard";
 // 모달·고급 패널은 첫 페인트 후로 코드 스플리팅 (열기 전엔 다운로드 안 함)
 const AddCatModal = dynamic(() => import("@/app/components/AddCatModal"), { ssr: false });
 const VisibilityIntroSheet = dynamic(() => import("@/app/components/VisibilityIntroSheet"), { ssr: false });
@@ -137,6 +138,10 @@ export default function MapPage() {
   const [mapReady, setMapReady] = useState(false);
   const [selectedCat, setSelectedCat] = useState<Cat | null>(null);
   const [catCardTab, setCatCardTab] = useState<"carelog" | "community" | "card">("carelog");
+  // 선택된 고양이의 포획 카드 등급에 맞춰 상세 패널을 카드처럼 테마링
+  const catRarity = (selectedCat?.card_rarity ?? "common") as CardRarity;
+  const catCardTheme = CARD_THEME[catRarity] ?? CARD_THEME.common;
+  const catDexNo = selectedCat ? pseudoDexNo(selectedCat.card_name ?? selectedCat.name) : "000";
   const [showCats, setShowCats] = useState(true);
   const [todayVisit, setTodayVisit] = useState<number | null>(null);
   const [showHospitals, setShowHospitals] = useState(true);
@@ -2542,42 +2547,89 @@ export default function MapPage() {
           </div>
 
           <div
-            className="relative bg-white rounded-[28px] overflow-hidden shadow-[0_-4px_24px_rgba(0,0,0,0.12)] pointer-events-auto animate-slide-up overflow-y-auto"
-            style={{ maxHeight: "calc(100dvh - max(env(safe-area-inset-top), 12px) - 80px)" }}
+            className="relative bg-white rounded-[28px] overflow-hidden pointer-events-auto animate-slide-up overflow-y-auto"
+            style={{
+              maxHeight: "calc(100dvh - max(env(safe-area-inset-top), 12px) - 80px)",
+              border: `2.5px solid ${catCardTheme.frameOuter}`,
+              boxShadow: `${catCardTheme.glow}, 0 -4px 24px rgba(0,0,0,0.12)`,
+            }}
           >
 
-            {/* 사진 — 변환 endpoint로 모바일 폭에 맞춰 리사이즈 (원본 4MB → ~50KB) */}
-            <div className="relative aspect-[4/3] overflow-hidden bg-surface-alt">
-              {selectedCat.photo_url ? (
-                <img
-                  src={optimizedImageUrl(selectedCat.photo_url, 800) ?? selectedCat.photo_url}
-                  alt={selectedCat.name}
-                  className="w-full h-full object-cover"
-                  decoding="async"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-text-light">
-                  <MapPin size={48} strokeWidth={1.2} />
-                </div>
-              )}
+            {/* 카드 페이스 — 포획 카드 등급 색상으로 테마링된 상단 영역 */}
+            <div style={{ background: catCardTheme.bg }}>
+              {/* 등급 바: 등급 뱃지 · 레벨 · 도감번호 */}
               <div
-                className="absolute inset-0"
-                style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 50%)" }}
-              />
-              <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
-                {selectedCat.region && (
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm">
-                    <MapPin size={12} className="text-primary" />
-                    <span className="text-[12px] font-bold text-text-main">{selectedCat.region}</span>
-                  </div>
-                )}
-                {selectedCat.caretaker_name && (
-                  <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm ml-auto">
-                    <Heart size={11} className="text-primary" fill="currentColor" />
-                    <span className="text-[11px] font-semibold text-text-sub">
-                      {selectedCat.caretaker_name} 돌봄중
+                className="flex items-center justify-between px-3.5"
+                style={{ height: 30, background: catCardTheme.topBar }}
+              >
+                <span
+                  className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-extrabold tracking-wide"
+                  style={{ background: catCardTheme.typeBg, color: "rgba(255,255,255,0.9)" }}
+                >
+                  <span>{catCardTheme.typeIcon}</span>
+                  <span>{catCardTheme.label}</span>
+                </span>
+                <div className="flex items-center gap-2">
+                  {selectedCat.card_level != null && selectedCat.card_level > 1 && (
+                    <span
+                      className="rounded-full px-2 py-0.5 text-[10px] font-black"
+                      style={{ background: "rgba(255,255,255,0.18)", color: catCardTheme.hpColor }}
+                    >
+                      Lv.{selectedCat.card_level}
                     </span>
+                  )}
+                  <span className="text-[10px] font-bold" style={{ color: "rgba(255,255,255,0.6)" }}>
+                    No.{catDexNo}
+                  </span>
+                </div>
+              </div>
+
+              {/* 사진 — 변환 endpoint로 모바일 폭에 맞춰 리사이즈 (원본 4MB → ~50KB), 등급 색상 액자 프레임 */}
+              <div className="px-2.5 pt-2.5 pb-3">
+                <div
+                  className="relative aspect-[4/3] overflow-hidden bg-surface-alt rounded-2xl"
+                  style={{ boxShadow: `inset 0 0 0 2.5px ${catCardTheme.frameInner}bb` }}
+                >
+                  {selectedCat.photo_url ? (
+                    <img
+                      src={optimizedImageUrl(selectedCat.photo_url, 800) ?? selectedCat.photo_url}
+                      alt={selectedCat.name}
+                      className="w-full h-full object-cover"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-text-light">
+                      <MapPin size={48} strokeWidth={1.2} />
+                    </div>
+                  )}
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 50%)" }}
+                  />
+                  <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
+                    {selectedCat.region && (
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm">
+                        <MapPin size={12} className="text-primary" />
+                        <span className="text-[12px] font-bold text-text-main">{selectedCat.region}</span>
+                      </div>
+                    )}
+                    {selectedCat.caretaker_name && (
+                      <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm ml-auto">
+                        <Heart size={11} className="text-primary" fill="currentColor" />
+                        <span className="text-[11px] font-semibold text-text-sub">
+                          {selectedCat.caretaker_name} 돌봄중
+                        </span>
+                      </div>
+                    )}
                   </div>
+                </div>
+                {selectedCat.card_flavor && (
+                  <p
+                    className="text-[11px] italic leading-relaxed px-1.5 py-2.5"
+                    style={{ color: "rgba(255,255,255,0.85)", borderLeft: `2px solid ${catCardTheme.accent}`, margin: "8px 2px 0" }}
+                  >
+                    &ldquo;{selectedCat.card_flavor}&rdquo;
+                  </p>
                 )}
               </div>
             </div>
