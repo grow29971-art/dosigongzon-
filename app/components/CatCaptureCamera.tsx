@@ -21,14 +21,15 @@ const MAX_DRAG_X = 130;
 
 // 타이밍 바 튜닝값 (좌우로 오가는 구슬을 정해진 구간에 맞춰 던져야 포획)
 const BAR_MIN = 6, BAR_MAX = 94;       // 구슬 이동 범위 (%)
-const SWEET_WIDTH_BASE = 16;           // 성공 구간 기본 폭 (%)
+const SWEET_WIDTH_MIN = 11, SWEET_WIDTH_MAX = 21; // 시도마다 폭이 랜덤 (쉬울 때/빡빡할 때 섞임)
 const SWEEP_MS_BASE = 1050;            // 구슬 한 방향 이동에 걸리는 시간(ms) — 시도마다 조금씩 빨라짐
 const TOTAL_TRIES = 3;
 
 function randomSweetSpot(widen: boolean) {
-  const width = widen ? SWEET_WIDTH_BASE * 1.7 : SWEET_WIDTH_BASE;
+  const width = (SWEET_WIDTH_MIN + Math.random() * (SWEET_WIDTH_MAX - SWEET_WIDTH_MIN)) * (widen ? 1.6 : 1);
   const start = BAR_MIN + Math.random() * (BAR_MAX - BAR_MIN - width);
-  return { start, end: start + width };
+  const perfectMargin = width * 0.3; // 중앙 40%는 "완벽 포획" 구간
+  return { start, end: start + width, perfectStart: start + perfectMargin, perfectEnd: start + width - perfectMargin };
 }
 
 export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery, onFallbackCapture, previewFile }: Props) {
@@ -41,6 +42,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   const [camState, setCamState] = useState<CamState>(previewFile ? "preview" : "requesting");
   const [caught, setCaught] = useState(false);
   const [previewUrl, setPreviewUrl] = useState("");
+  const [perfectCatch, setPerfectCatch] = useState(false);
 
   // 투척 상태
   const [throwState, setThrowState] = useState<ThrowState>("idle");
@@ -52,6 +54,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   // 타이밍 바 (구슬 위치 + 성공 구간 + 남은 기회)
   const markerPosRef = useRef(BAR_MIN);
   const markerDirRef = useRef(1);
+  const speedMultRef = useRef(1);
   const [markerPos, setMarkerPos] = useState(BAR_MIN);
   const [sweetSpot, setSweetSpot] = useState(() => randomSweetSpot(false));
   const attemptsLeftRef = useRef(TOTAL_TRIES);
@@ -119,10 +122,10 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
       const s = throwStateRef.current;
       if (s === "idle" || s === "pulling") {
         const sweepMs = Math.max(650, SWEEP_MS_BASE - roundsFailedRef.current * 60);
-        const speed = (BAR_MAX - BAR_MIN) / sweepMs; // %/ms
+        const speed = ((BAR_MAX - BAR_MIN) / sweepMs) * speedMultRef.current; // %/ms
         let pos = markerPosRef.current + markerDirRef.current * speed * dt;
-        if (pos >= BAR_MAX) { pos = BAR_MAX; markerDirRef.current = -1; }
-        if (pos <= BAR_MIN) { pos = BAR_MIN; markerDirRef.current = 1; }
+        if (pos >= BAR_MAX) { pos = BAR_MAX; markerDirRef.current = -1; speedMultRef.current = 0.75 + Math.random() * 0.6; }
+        if (pos <= BAR_MIN) { pos = BAR_MIN; markerDirRef.current = 1; speedMultRef.current = 0.75 + Math.random() * 0.6; }
         markerPosRef.current = pos;
         setMarkerPos(pos);
       }
@@ -193,15 +196,19 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
     if (dy > MIN_PULL_Y) {
       const finalPos = markerPosRef.current;
       const isHit = finalPos >= sweetSpot.start && finalPos <= sweetSpot.end;
+      const isPerfect = isHit && finalPos >= sweetSpot.perfectStart && finalPos <= sweetSpot.perfectEnd;
       setLandingDx(dx * 2.2);
       setThrowState("flying");
 
       setTimeout(() => {
         if (isHit) {
           roundsFailedRef.current = 0;
+          setPerfectCatch(isPerfect);
+          if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(isPerfect ? [30, 40, 60] : 40);
           setThrowState("hit");
           finishCapture();
         } else {
+          if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(15);
           const remaining = attemptsLeftRef.current - 1;
           if (remaining <= 0) {
             roundsFailedRef.current += 1;
@@ -395,13 +402,19 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
         {showBg && !caught && (
           <div className="absolute left-0 right-0 z-20 px-6" style={{ top: "13%" }}>
             <p className="text-center text-[11.5px] font-extrabold text-white/85 mb-1.5" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
-              {throwState === "miss" ? "⚠️ 타이밍이 안 맞았어요!" : "노란 구간에 맞춰서 던지세요!"}
+              {throwState === "miss" ? "⚠️ 타이밍이 안 맞았어요!" : "가운데 하얀 구간에 맞추면 완벽 포획!"}
             </p>
             <div className="relative w-full" style={{ height: 16, borderRadius: 99, background: "rgba(0,0,0,0.45)", border: "1px solid rgba(255,255,255,0.15)" }}>
               {/* 성공 구간 */}
               <div className="absolute top-0 bottom-0" style={{
                 left: `${sweetSpot.start}%`, width: `${sweetSpot.end - sweetSpot.start}%`,
                 background: "linear-gradient(90deg, rgba(120,255,140,0.55), rgba(255,220,80,0.75))",
+                borderRadius: 99,
+              }} />
+              {/* 완벽 포획 구간 (성공 구간 중앙) */}
+              <div className="absolute top-0 bottom-0" style={{
+                left: `${sweetSpot.perfectStart}%`, width: `${sweetSpot.perfectEnd - sweetSpot.perfectStart}%`,
+                background: "rgba(255,255,255,0.85)",
                 borderRadius: 99,
               }} />
               {/* 움직이는 구슬 */}
@@ -443,19 +456,22 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
                 </>
               )}
 
-              {/* 포획 완료 연출 (스포트라이트 + 반짝임) */}
+              {/* 포획 완료 연출 (스포트라이트 + 반짝임, 완벽 포획이면 더 화려하게) */}
               {caught && (
                 <div className="text-center relative" style={{ animation: "caught-flash 0.5s ease-out" }}>
-                  {["✦","★","✦","★","✦","★"].map((s, i) => (
-                    <span key={i} className="absolute text-yellow-300 text-[20px] font-black pointer-events-none"
+                  {(perfectCatch ? ["✦","★","✦","★","✦","★","✦","★"] : ["✦","★","✦","★","✦","★"]).map((s, i) => (
+                    <span key={i} className={perfectCatch ? "absolute text-yellow-200 text-[26px] font-black pointer-events-none" : "absolute text-yellow-300 text-[20px] font-black pointer-events-none"}
                       style={{
-                        left: `${-40 + i * 26}%`, top: `${-70 + (i % 2) * 130}%`,
+                        left: `${-40 + i * (perfectCatch ? 20 : 26)}%`, top: `${-70 + (i % 2) * 130}%`,
                         animation: "stars-burst 0.9s ease-out infinite",
-                        animationDelay: `${i * 0.12}s`,
+                        animationDelay: `${i * 0.1}s`,
                       }}>
                       {s}
                     </span>
                   ))}
+                  {perfectCatch && (
+                    <p className="text-yellow-300 text-[18px] font-black mb-1" style={{ animation: "miss-text-pop 0.3s ease-out forwards" }}>✨ 완벽 포획! ✨</p>
+                  )}
                   <p className="text-white text-[42px] font-black drop-shadow-lg leading-none">포획 완료!</p>
                   <p className="text-yellow-300 text-[16px] font-bold mt-2">🐱 고양이 카드 생성 중...</p>
                 </div>
