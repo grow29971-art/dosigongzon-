@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Swords, Zap, Shield, Sparkles, Flame, Star, ChevronDown } from "lucide-react";
+import { ArrowLeft, Swords, Zap, Shield, Sparkles, Flame, Star, ChevronDown, FlaskConical, ShieldCheck, Wand2, BatteryCharging, Rocket, Clover, Backpack, type LucideIcon } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
@@ -75,6 +75,17 @@ interface AutoResult { winner:"me"|"opponent"; my_hp_left:number; opp_hp_left:nu
 
 /* ──────────── 헬퍼 ──────────── */
 const SKILL_SLOT_COLORS = ["#DD4422", "#CC8822", "#22AACC", "#9933CC"];
+
+// 배틀 아이템 패널 아이콘 — 플랫폼마다 다르게 보이는 이모지 대신 통일된 lucide 아이콘 + 색 배지로 표시
+const ITEM_ICON_META: Record<ShopItemKey, { Icon: LucideIcon; color: string }> = {
+  heal_potion:    { Icon: FlaskConical,    color: "#4ECC7A" },
+  shield:         { Icon: ShieldCheck,     color: "#4488FF" },
+  cleanse_potion: { Icon: Wand2,           color: "#4ED8CC" },
+  skill_recharge: { Icon: BatteryCharging, color: "#FFCC44" },
+  power_up:       { Icon: Rocket,          color: "#FF7744" },
+  lucky_charm:    { Icon: Clover,          color: "#8CDD55" },
+  skill_relearn:  { Icon: Wand2,           color: "#CC99FF" },
+};
 
 // 스킬별 "성격" — 상태이상 계열을 색/연출로 구분해 전투 액션을 다채롭게 만든다
 type FxFlavor = "ice"|"fear"|"shock"|"sleep"|"poison"|"bleed"|"bind"|"life"|"impact";
@@ -322,16 +333,19 @@ function SkillBtn({ skill, idx, disabled, cooldown=0, usesLeft, onPick, variant=
         {isPrimary ? icons[idx] : <span style={{ fontSize:15 }}>{skill.icon}</span>}
       </span>
 
-      <span style={{ display:"flex", flexDirection:"column", alignItems: isPrimary?"flex-start":"center", gap:1, minWidth:0, flex: isPrimary?1:undefined }}>
+      <span style={{ display:"flex", flexDirection:"column", alignItems: isPrimary?"flex-start":"center", gap:1, minWidth:0, flex: isPrimary?1:undefined, width: isPrimary?undefined:"100%" }}>
         <span style={{
           fontSize: isPrimary?13.5:10.5, fontWeight:900, color:"rgba(255,255,255,0.92)",
-          whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis", maxWidth: isPrimary?"100%":72,
+          whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis", maxWidth: isPrimary?"100%":"100%",
         }}>
           {skill.name}
         </span>
-        {isPrimary && (
-          <span style={{ fontSize:10.5, color:"rgba(255,255,255,0.5)", fontWeight:700 }}>{skill.desc}</span>
-        )}
+        <span style={{
+          fontSize: isPrimary?10.5:9, color:"rgba(255,255,255,0.5)", fontWeight:700, textAlign: isPrimary?"left":"center",
+          whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis", maxWidth:"100%",
+        }}>
+          {skill.desc}
+        </span>
       </span>
 
       {usesLeft !== undefined && !isCd && (
@@ -1611,7 +1625,7 @@ export default function BattlePage() {
                     <button onClick={()=>{ sfx.click(); setItemPanelOpen(o=>!o); }}
                       className="w-full py-2.5 rounded-2xl text-[12px] font-bold flex items-center justify-center gap-2 transition-transform active:scale-[0.98]"
                       style={{ background:"linear-gradient(135deg, rgba(255,180,0,0.24), rgba(255,140,0,0.10))", color:"#FFCC66", border:"1px solid rgba(255,180,0,0.28)" }}>
-                      <span style={{ fontSize:15 }}>🎒</span> 아이템 사용
+                      <Backpack size={15}/> 아이템 사용
                       <ChevronDown size={14} style={{ transition:"transform 0.2s", transform: itemPanelOpen?"rotate(180deg)":"rotate(0)" }}/>
                     </button>
                     {itemPanelOpen && (
@@ -1619,11 +1633,18 @@ export default function BattlePage() {
                         {BATTLE_ITEM_KEYS.map(key=>{
                           const item = SHOP_ITEMS[key];
                           const qty = inventory[key] ?? 0;
+                          const { Icon, color } = ITEM_ICON_META[key];
                           return (
                             <button key={key} onClick={()=>qty>0&&useItem(key)} disabled={qty<=0}
-                              className="relative rounded-2xl p-2.5 flex flex-col items-center gap-1 transition-transform active:scale-95"
+                              className="relative rounded-2xl p-2.5 flex flex-col items-center gap-1.5 transition-transform active:scale-95"
                               style={{ background: qty>0?"rgba(255,255,255,0.075)":"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.09)", opacity: qty>0?1:0.4 }}>
-                              <span style={{ fontSize:22 }}>{item.icon}</span>
+                              <span style={{
+                                display:"flex", alignItems:"center", justifyContent:"center",
+                                width:34, height:34, borderRadius:"50%",
+                                background:`${color}2e`, border:`1.5px solid ${color}80`, color,
+                              }}>
+                                <Icon size={17} strokeWidth={2.2}/>
+                              </span>
                               <span className="text-[9.5px] font-bold text-white text-center leading-tight">{item.name}</span>
                               <span style={{
                                 position:"absolute", top:4, right:5, fontSize:8.5, fontWeight:900, padding:"1px 5px", borderRadius:99,
