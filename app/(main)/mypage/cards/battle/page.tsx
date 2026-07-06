@@ -1220,9 +1220,14 @@ export default function BattlePage() {
       {critFlash && <div style={{position:"fixed",inset:0,zIndex:999,background:"radial-gradient(ellipse at center, rgba(255,220,80,0.55) 0%, rgba(255,200,0,0.22) 55%, transparent 80%)",pointerEvents:"none",animation:"critFlashFade 0.45s ease-out"}}/>}
 
       {showBossIntro && (
-        <div style={{ position:"fixed", inset:0, zIndex:998, background:"#000", animation:"bossIntroIn 0.4s ease" }}>
+        <div style={{ position:"fixed", inset:0, zIndex:998, background:"#0A0A18", animation:"bossIntroIn 0.4s ease", display:"flex", flexDirection:"column" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/boss/villain-intro.jpg" alt="고양이학대범 등장" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+          <img src="/boss/villain-intro.jpg" alt="고양이학대범 등장" style={{ flex:1, width:"100%", minHeight:0, objectFit:"contain" }} />
+          <div style={{ marginLeft:16, marginRight:16, marginBottom:"max(24px, env(safe-area-inset-bottom))", padding:"16px 18px", borderRadius:14, background:"rgba(20,20,28,0.96)", border:"2px solid #CC3333", boxShadow:"0 0 24px rgba(200,40,40,0.35)" }}>
+            <p style={{ color:"white", fontWeight:800, fontSize:15, lineHeight:1.6, margin:0 }}>
+              고양이학대범이 승부를 걸어왔다!
+            </p>
+          </div>
         </div>
       )}
 

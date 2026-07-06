@@ -31,7 +31,7 @@ interface CardCat {
 // 등급별 HP 보너스: 일반→레전드로 갈수록 체력이 두껍게 (전투가 늘어지지 않도록 전체적으로 하향)
 const RARITY_HP_BONUS: Record<string, number> = { common:0, uncommon:35, rare:73, legendary:122 };
 
-// 고양이학대범(로켓단) 랜덤 보스 조우 — 실제 유저 카드 대신 등장하는 스크립트 상대.
+// 고양이학대범 랜덤 보스 조우 — 실제 유저 카드 대신 등장하는 스크립트 상대.
 // DB에 존재하지 않는 고정 id라서 결과 기록 시 상대 카드/유저 업데이트는 건너뛴다.
 const BOSS_CAT_ID = "00000000-0000-0000-0000-0000000000b0";
 const BOSS_ENCOUNTER_CHANCE = 1.0; // TEMP: 확인용 100% — 확인 후 0.08로 되돌릴 것
@@ -47,7 +47,7 @@ function makeBossOpponent(myCat: CardCat): CardCat {
     card_level: myCat.card_level ?? 1,
     card_exp: 0,
     card_rarity: myCat.card_rarity ?? "common",
-    card_name: "로켓단 학대범",
+    card_name: "고양이 학대범",
     card_traits: ["그물 던지기", "위협하기", "괴롭히기"],
     card_stats: { cuteness: 20, wildness: 75, sociability: 15, mysteriousness: 65 },
     card_flavor: "길고양이를 괴롭히는 나쁜 사람. 반드시 혼내줘야 한다!",
