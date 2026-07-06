@@ -79,6 +79,7 @@ import HomeReengageCard from "@/app/components/HomeReengageCard";
 import DailyCatBox from "@/app/components/DailyCatBox";
 import FirstCheerCard from "@/app/components/FirstCheerCard";
 import AppOpenGuideModal from "@/app/components/AppOpenGuideModal";
+import FeatureTourModal from "@/app/components/FeatureTourModal";
 import MyCatsQuickCare from "@/app/components/MyCatsQuickCare";
 import PushCareCueOptIn from "@/app/components/PushCareCueOptIn";
 import FeatureTipsCard from "@/app/components/FeatureTipsCard";
@@ -163,6 +164,10 @@ export default function HomeAuthed({
   const [newPostsCount, setNewPostsCount] = useState(0);
   const [weeklyIssues, setWeeklyIssues] = useState<WeeklyIssue[]>([]);
   const [quietCat, setQuietCat] = useState<QuietCat | null>(null);
+  // 기능 웰컴 투어(FeatureTourModal) — 로그인 후 최초 1회만. "show"인 세션엔
+  // AppOpenGuideModal과 같은 세션에서 겹쳐 뜨지 않도록 tourShownThisSession으로 억제.
+  const [featureTourStatus, setFeatureTourStatus] = useState<"loading" | "show" | "hidden">("loading");
+  const [tourShownThisSession, setTourShownThisSession] = useState(false);
 
   // 마지막 방문 시각 — 진입 시 비교용으로 저장된 값 복원, 즉시 현재 시각으로 갱신.
   // 다음 방문 시 "지난 방문 이후 새 글 N개" 카운트의 기준이 됨.
@@ -239,6 +244,25 @@ export default function HomeAuthed({
       const key = `dosigongzon_onboarding_dismissed_${user.id}`;
       setOnboardingDismissed(localStorage.getItem(key) === "1");
     } catch { /* localStorage 차단 등 무시 */ }
+  }, [user]);
+
+  // 기능 웰컴 투어 완료 여부 확인 — 로그인 유저당 1회만 조회
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    createClient()
+      .from("profiles")
+      .select("feature_tour_completed_at")
+      .eq("id", user.id)
+      .maybeSingle()
+      .then(({ data }: { data: { feature_tour_completed_at?: string | null } | null }) => {
+        if (cancelled) return;
+        const seen = !!data?.feature_tour_completed_at;
+        if (!seen) setTourShownThisSession(true);
+        setFeatureTourStatus(seen ? "hidden" : "show");
+      })
+      .catch(() => { if (!cancelled) setFeatureTourStatus("hidden"); });
+    return () => { cancelled = true; };
   }, [user]);
 
   const handleDismissOnboarding = () => {
@@ -1348,8 +1372,16 @@ export default function HomeAuthed({
         }
       />
 
+      {/* 기능 웰컴 투어 — 로그인 후 최초 1회. AppOpenGuideModal과 같은 세션에 안 겹치게 함 */}
+      {user && featureTourStatus === "show" && (
+        <FeatureTourModal
+          hasRegion={myRegions.length > 0}
+          onDone={() => setFeatureTourStatus("hidden")}
+        />
+      )}
+
       {/* 앱 열 때마다(세션 1회) 안내 모달 — 오늘 이거 해보세요 + 기능 탐색 */}
-      {user && activity && (
+      {user && activity && featureTourStatus === "hidden" && !tourShownThisSession && (
         <AppOpenGuideModal hasCat={activity.catCount > 0} hasRegion={myRegions.length > 0} />
       )}
 
