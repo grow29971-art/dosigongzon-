@@ -120,4 +120,11 @@ export const sfx = {
     tone({ freq: 110, duration: 0.5, type: "sawtooth", volume: 0.15, slideTo: 70 });
     tone({ freq: 220, duration: 0.4, type: "square", volume: 0.09, slideTo: 140, delay: 0.05 });
   },
+
+  // 포획 미니게임 전용
+  chargeUp: () => tone({ freq: 220, duration: 0.35, type: "sawtooth", volume: 0.07, slideTo: 520 }),
+  shutter: () => {
+    tone({ freq: 2400, duration: 0.02, type: "square", volume: 0.16 });
+    tone({ freq: 1100, duration: 0.03, type: "square", volume: 0.12, delay: 0.03 });
+  },
 };

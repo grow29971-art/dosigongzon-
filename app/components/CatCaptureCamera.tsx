@@ -49,6 +49,8 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   const [perfectCatch, setPerfectCatch] = useState(false);
   // 타격감 연출 — 화면 흔들림 (0=없음, 1=미스, 2=명중, 3=완벽 포획)
   const [impactShake, setImpactShake] = useState<0|1|2|3>(0);
+  const [shutterFlash, setShutterFlash] = useState(false);
+  const chargeSoundPlayedRef = useRef(false);
 
   // 투척 상태
   const [throwState, setThrowState] = useState<ThrowState>("idle");
@@ -178,6 +180,9 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
       particleRef.current?.burst(0.5, 0.42, "star", isPerfect ? 26 : 14, isPerfect ? "255,225,90" : "255,255,255");
     }, 250);
     setTimeout(async () => {
+      sfx.shutter();
+      setShutterFlash(true);
+      setTimeout(() => setShutterFlash(false), 180);
       if (previewFile) {
         onCapture(previewFile, isPerfect);
       } else {
@@ -192,6 +197,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (throwState !== "idle" || caught) return;
     primeSfx();
+    chargeSoundPlayedRef.current = false;
     const t = e.touches[0];
     touchStartRef.current = { x: t.clientX, y: t.clientY };
     setPullY(0);
@@ -205,6 +211,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
     const dy = touchStartRef.current.y - t.clientY;
     const dx = Math.max(-MAX_DRAG_X, Math.min(MAX_DRAG_X, t.clientX - touchStartRef.current.x));
     if (dy > 5) {
+      if (!chargeSoundPlayedRef.current) { chargeSoundPlayedRef.current = true; sfx.chargeUp(); }
       setThrowState("pulling");
       setPullY(Math.min(dy, MAX_PULL_Y));
       setChuruX(dx);
@@ -347,6 +354,18 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           15% { opacity:1; }
           100% { opacity:0; }
         }
+        @keyframes shutter-fade {
+          0% { opacity:0.95; }
+          100% { opacity:0; }
+        }
+        @keyframes sweet-pulse {
+          0%,100% { filter:brightness(1); }
+          50%     { filter:brightness(1.35); }
+        }
+        @keyframes charge-ring-pulse {
+          0%,100% { opacity:0.55; transform:scale(1); }
+          50%     { opacity:0.9; transform:scale(1.08); }
+        }
       `}</style>
 
       {impactShake === 1 && (
@@ -359,6 +378,9 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
             : "radial-gradient(ellipse at center, rgba(255,255,255,0.35) 0%, transparent 70%)",
           animation:"flash-fade 0.4s ease-out",
         }} />
+      )}
+      {shutterFlash && (
+        <div className="fixed inset-0 z-[360] pointer-events-none" style={{ background:"white", animation:"shutter-fade 0.18s ease-out" }} />
       )}
 
       <div className="fixed inset-0 z-[300] bg-black flex flex-col overflow-hidden select-none"
@@ -486,12 +508,15 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
                 left: `${sweetSpot.start}%`, width: `${sweetSpot.end - sweetSpot.start}%`,
                 background: "linear-gradient(90deg, rgba(120,255,140,0.55), rgba(255,220,80,0.75))",
                 borderRadius: 99,
+                animation: "sweet-pulse 0.9s ease-in-out infinite",
               }} />
               {/* 완벽 포획 구간 (성공 구간 중앙) */}
               <div className="absolute top-0 bottom-0" style={{
                 left: `${sweetSpot.perfectStart}%`, width: `${sweetSpot.perfectEnd - sweetSpot.perfectStart}%`,
                 background: "rgba(255,255,255,0.85)",
                 borderRadius: 99,
+                boxShadow: "0 0 10px 2px rgba(255,255,255,0.6)",
+                animation: "sweet-pulse 0.9s ease-in-out infinite",
               }} />
               {/* 움직이는 구슬 */}
               <div className="absolute" style={{
@@ -603,6 +628,16 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
                       : "none",
               }}
             >
+              {/* 충전 글로우 링 — 당긴 만큼 밝아지고 커짐 */}
+              {throwState === "pulling" && pullY > 8 && (
+                <div className="absolute rounded-full pointer-events-none" style={{
+                  width: 60 + (pullY / MAX_PULL_Y) * 40,
+                  height: 60 + (pullY / MAX_PULL_Y) * 40,
+                  top: -8, left: "50%", transform: "translateX(-50%)",
+                  background: `radial-gradient(circle, rgba(255,180,60,${0.15 + (pullY / MAX_PULL_Y) * 0.35}) 0%, transparent 70%)`,
+                  animation: "charge-ring-pulse 0.5s ease-in-out infinite",
+                }} />
+              )}
               {/* 고양이 캔 (몬스터볼처럼 던지는 아이템) */}
               <div className="relative flex flex-col items-center"
                 style={{ filter: `drop-shadow(0 3px ${6 + pullY / 15}px rgba(0,0,0,0.45))` }}>
