@@ -89,16 +89,25 @@ const FX_COLOR: Record<FxFlavor,string> = {
   poison:"130,240,110", bleed:"255,70,90", bind:"205,150,90", life:"150,255,190",
 };
 const STUN_LABEL: Partial<Record<FxFlavor,string>> = { ice:"❄️ 빙결", fear:"😱 공포", shock:"⚡ 감전", sleep:"😴 수면" };
+function flavorForId(id: string | null): FxFlavor | undefined {
+  return id ? SKILL_FLAVOR[id] : undefined;
+}
 function flavorColorForId(id: string | null): string | undefined {
-  if (!id) return undefined;
-  const f = SKILL_FLAVOR[id];
+  const f = flavorForId(id);
   return f ? FX_COLOR[f] : undefined;
 }
-// 자동전투 로그는 스킬 이름만 갖고 있어서, 이름 → id 역매핑을 통해 같은 색상 연출을 재사용한다
+// 자동전투 로그는 스킬 이름만 갖고 있어서, 이름 → id 역매핑을 통해 같은 색상/효과음 연출을 재사용한다
 const SKILL_NAME_TO_ID: Record<string,string> = Object.fromEntries(Object.entries(SPECIAL_SKILLS).map(([id,s])=>[s.name,id]));
+function flavorForName(name: string): FxFlavor | undefined {
+  return flavorForId(SKILL_NAME_TO_ID[name] ?? null);
+}
 function flavorColorForName(name: string): string | undefined {
   return flavorColorForId(SKILL_NAME_TO_ID[name] ?? null);
 }
+const FLAVOR_SFX: Record<FxFlavor, () => void> = {
+  ice: sfx.ice, fear: sfx.fear, shock: sfx.shock, sleep: sfx.sleep,
+  poison: sfx.poison, bleed: sfx.bleed, bind: sfx.bind, life: sfx.life,
+};
 // 자신에게만 적용되는 스킬 — 0피해로 성공해도 상대는 아무 반응이 없어야 함 (회복/버프류)
 const SELF_TARGET_IDS = new Set(["quick_dodge","grooming","warm_nap","regen","eclipse","cleanse","invincible"]);
 function isSelfTargetSkill(id: string | null): boolean {
@@ -400,7 +409,7 @@ export default function BattlePage() {
   const shakeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const myParticleRef = useRef<ParticleCanvasHandle>(null);
   const oppParticleRef = useRef<ParticleCanvasHandle>(null);
-  const triggerImpact = (side:"me"|"opp", isCrit: boolean, color?: string) => {
+  const triggerImpact = (side:"me"|"opp", isCrit: boolean, color?: string, flavor?: FxFlavor) => {
     setScreenShake(isCrit ? 2 : 1);
     setImpactBurst({ side, big: isCrit, color });
     if (shakeTimerRef.current) clearTimeout(shakeTimerRef.current);
@@ -409,7 +418,9 @@ export default function BattlePage() {
     const c = color ?? (isCrit ? "255,220,80" : "255,255,255");
     pref.current?.burst(0.5, 0.4, "spark", isCrit ? 20 : 9, c);
     if (isCrit) pref.current?.burst(0.5, 0.4, "shockwave", 1, c);
-    if (isCrit) sfx.crit(); else sfx.hit();
+    if (flavor) FLAVOR_SFX[flavor]();
+    else if (isCrit) sfx.crit();
+    else sfx.hit();
   };
   const [dmgPopup, setDmgPopup] = useState<{target:"me"|"opp"; val:number; isCrit:boolean; msg?:string}|null>(null);
   const [actionMsg, setActionMsg] = useState("");
@@ -428,6 +439,7 @@ export default function BattlePage() {
 
   // 결과
   const [battleResult, setBattleResult] = useState<{winner:"me"|"opponent"; exp:number; newLevel:number; leveledUp:boolean; coinsGained?:number}|null>(null);
+  useEffect(() => { if (battleResult?.leveledUp) sfx.levelUp(); }, [battleResult]);
 
   // 고양이학대범 랜덤 보스 조우
   const [isBossBattle, setIsBossBattle] = useState(false);
@@ -557,14 +569,16 @@ export default function BattlePage() {
       if(!mounted.current) return;
       setShowBossIntro(false);
       setPhase("countdown"); setCountdown(3);
+      sfx.countdownTick();
       let cd = 3;
       const cdTick = () => {
         cd--;
         if(!mounted.current) return;
         setCountdown(cd);
         navigator.vibrate?.(40);
-        if(cd > 0) { setTimeout(cdTick, 650); }
+        if(cd > 0) { sfx.countdownTick(); setTimeout(cdTick, 650); }
         else {
+          sfx.countdownGo();
           setTimeout(() => {
             if(!mounted.current) return;
             if(mode==="manual") {
@@ -584,6 +598,7 @@ export default function BattlePage() {
     if(isBoss) {
       setShowBossIntro(true);
       navigator.vibrate?.([50, 60, 50, 60, 120]);
+      sfx.bossAppear();
       setTimeout(beginCountdown, 2200);
     } else {
       beginCountdown();
@@ -615,7 +630,7 @@ export default function BattlePage() {
         if(!e.isDodge && e.dmg>0) {
           if(isMe){ setOppAnim("hit"); setOppHp(e.dHp); }
           else { setMyAnim("hit"); setMyHp(e.aHp); }
-          triggerImpact(isMe?"opp":"me", e.isCritical, flavorColorForName(e.skillName));
+          triggerImpact(isMe?"opp":"me", e.isCritical, flavorColorForName(e.skillName), flavorForName(e.skillName));
           setDmgPopup({ target:isMe?"opp":"me", val:e.dmg, isCrit:e.isCritical });
           if(e.isCritical){ setCritFlash(true); navigator.vibrate?.([80,30,80]); }
           else navigator.vibrate?.(30);
@@ -711,7 +726,7 @@ export default function BattlePage() {
       let sDmg=0, sCrit=false, sMsg="";
       switch(skillId) {
         case "sharp_claws": { const r=calcDmg(atkSt.atk,defSt.def,1.4*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="🐾 날카로운 발톱!"; break; }
-        case "quick_dodge":   sMsg="💨 재빠른 도약!"; if(isPlayer){myGuardRef.current=true;setMyGuardVis(true);}else{oppGuardRef.current=true;setOppGuardVis(true);} break;
+        case "quick_dodge":   sMsg="💨 재빠른 도약!"; if(isPlayer){myGuardRef.current=true;setMyGuardVis(true);}else{oppGuardRef.current=true;setOppGuardVis(true);} sfx.guard(); break;
         case "focus":        { const r=calcDmg(atkSt.atk,defSt.def,1.0*envDmgMult,100); sDmg=r.dmg; sCrit=true; sMsg="👁️ 집중! 크리티컬 확정"; break; }
         case "intimidate_sm": {
           const r=calcDmg(atkSt.atk*0.6,defSt.def,1.0,atkCrit); sDmg=r.dmg; sCrit=r.isCrit;
@@ -787,7 +802,7 @@ export default function BattlePage() {
         case "venom_fang": { const r=calcDmg(atkSt.atk,defSt.def,1.1*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer)oppPoisonRef.current=4;else myPoisonRef.current=4; sMsg="🦷 맹독니! 4턴 중독"; break; }
         case "shockwave":  { const r=calcDmg(atkSt.atk,defSt.def,1.7*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="💥 충격파!"; break; }
         case "vampirism":  { const r=calcDmg(atkSt.atk,defSt.def,1.2*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; const heal=Math.round(sDmg*0.3); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`🧛 흡혈! +${heal}HP 흡수`; break; }
-        case "invincible": { if(isPlayer){myGuardRef.current=true;setMyGuardVis(true);}else{oppGuardRef.current=true;setOppGuardVis(true);} sMsg="✨ 무적 발동! 다음 피해 무효"; break; }
+        case "invincible": { if(isPlayer){myGuardRef.current=true;setMyGuardVis(true);}else{oppGuardRef.current=true;setOppGuardVis(true);} sfx.guard(); sMsg="✨ 무적 발동! 다음 피해 무효"; break; }
         case "dominate":   { const r=calcDmg(atkSt.atk*1.2,5,1.0*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer){oppBoundRef.current=3;oppPoisonRef.current=3;}else{myBoundRef.current=3;myPoisonRef.current=3;} sMsg="👑 지배! 3턴 속박+3턴 중독"; break; }
         case "regen":      { const heal=Math.round(ownMaxHp*0.12); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`💚 재생! +${heal}HP`; break; }
         case "eclipse":    { const r=calcDmg(atkSt.atk,defSt.def,1.3*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; const heal=Math.round(ownMaxHp*0.15); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`🌘 월식! +${heal}HP 회복`; break; }
@@ -827,6 +842,7 @@ export default function BattlePage() {
       case "guard": {
         if(isPlayer){ myGuardRef.current=true; setMyGuardVis(true); }
         else { oppGuardRef.current=true; setOppGuardVis(true); }
+        sfx.guard();
         msg="🛡️ 방어 자세!";
         break;
       }
@@ -872,10 +888,10 @@ export default function BattlePage() {
     let myNewHp = myHpRef.current;
     let oppNewHp = oppHpRef.current;
 
-    if(myPoisonRef.current > 0) { myNewHp = Math.max(0, myNewHp - Math.round(8*dotMult)); myPoisonRef.current--; }
-    if(myBleedRef.current > 0) { myNewHp = Math.max(0, myNewHp - Math.round(5*dotMult)); myBleedRef.current--; }
-    if(oppPoisonRef.current > 0) { oppNewHp = Math.max(0, oppNewHp - Math.round(8*dotMult)); oppPoisonRef.current--; }
-    if(oppBleedRef.current > 0) { oppNewHp = Math.max(0, oppNewHp - Math.round(5*dotMult)); oppBleedRef.current--; }
+    if(myPoisonRef.current > 0) { myNewHp = Math.max(0, myNewHp - Math.round(8*dotMult)); myPoisonRef.current--; sfx.poisonTick(); }
+    if(myBleedRef.current > 0) { myNewHp = Math.max(0, myNewHp - Math.round(5*dotMult)); myBleedRef.current--; sfx.bleedTick(); }
+    if(oppPoisonRef.current > 0) { oppNewHp = Math.max(0, oppNewHp - Math.round(8*dotMult)); oppPoisonRef.current--; sfx.poisonTick(); }
+    if(oppBleedRef.current > 0) { oppNewHp = Math.max(0, oppNewHp - Math.round(5*dotMult)); oppBleedRef.current--; sfx.bleedTick(); }
 
     const myBadges: string[] = [];
     const oppBadges: string[] = [];
@@ -932,7 +948,7 @@ export default function BattlePage() {
       setMyAnim("idle");
       if(dmg>0) {
         setOppAnim("hit");
-        triggerImpact("opp", isCrit, flavorColorForId(castSkillId));
+        triggerImpact("opp", isCrit, flavorColorForId(castSkillId), flavorForId(castSkillId));
         setDmgPopup({ target:"opp", val:dmg, isCrit, msg:msg||undefined });
         if(isCrit){ setCritFlash(true); navigator.vibrate?.([80,30,80]); }
         else navigator.vibrate?.(35);
@@ -942,7 +958,7 @@ export default function BattlePage() {
         } else {
           // 0피해라도 상대에게 걸리는 효과(빙결/속박/독 등)면 상대 쪽에 반응을 준다
           setOppAnim("hit");
-          triggerImpact("opp", false, flavorColorForId(castSkillId));
+          triggerImpact("opp", false, flavorColorForId(castSkillId), flavorForId(castSkillId));
           setDmgPopup({ target:"opp", val:0, isCrit:false, msg });
         }
       }
@@ -988,7 +1004,7 @@ export default function BattlePage() {
             setOppAnim("idle");
             if(od>0) {
               setMyAnim("hit");
-              triggerImpact("me", oc, flavorColorForId(aiSkillId));
+              triggerImpact("me", oc, flavorColorForId(aiSkillId), flavorForId(aiSkillId));
               setDmgPopup({ target:"me", val:od, isCrit:oc, msg:om||undefined });
               if(oc){ setCritFlash(true); navigator.vibrate?.([80,30,80]); }
               else navigator.vibrate?.(30);
@@ -997,7 +1013,7 @@ export default function BattlePage() {
                 setDmgPopup({ target:"opp", val:0, isCrit:false, msg:om });
               } else {
                 setMyAnim("hit");
-                triggerImpact("me", false, flavorColorForId(aiSkillId));
+                triggerImpact("me", false, flavorColorForId(aiSkillId), flavorForId(aiSkillId));
                 setDmgPopup({ target:"me", val:0, isCrit:false, msg:om });
               }
             }
@@ -1047,6 +1063,7 @@ export default function BattlePage() {
     if (phase !== "player_choose" || !mounted.current) return;
     if ((inventory[key] ?? 0) <= 0) return;
     setItemPanelOpen(false);
+    sfx.itemUse();
 
     const res = await fetch("/api/shop/use-item", {
       method: "POST", headers: { "content-type": "application/json" },
