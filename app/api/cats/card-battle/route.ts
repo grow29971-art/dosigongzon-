@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
 import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BOSS_WIN, COINS_BOSS_STEAL_RATE } from "@/lib/shop-config";
+import { SPECIAL_SKILLS, type SpecialSkillId } from "@/lib/battle-config";
 
 export const maxDuration = 15;
 
@@ -122,42 +123,191 @@ function pickByTargetWinRate(mine: CardCat, candidates: CardCat[], target: numbe
   return closePicks[Math.floor(Math.random() * closePicks.length)].o;
 }
 
+interface AutoLogEntry {
+  turn: number; actor: string; dmg: number; aHp: number; dHp: number;
+  isCritical: boolean; isDodge: boolean; isCounterAttack: boolean;
+  skillName: string; skillId?: string; isDot?: boolean; isStunSkip?: boolean;
+  // 이번 턴에 상대에게 새로 걸린 상태이상 — 클라이언트가 리플레이 중 실제 이펙트를 띄우는 데 사용
+  statusType?: "stun" | "poison" | "bleed" | "bind"; statusTurns?: number;
+}
+
+// 자동전투 전용 스킬 효과표 — 실제 수동 배틀 로직(applySkill/runSpecial)의 축약판.
+// 수동 쪽 숫자와 100% 동일하진 않지만(자동전투는 원래 별도 EXP/코인 체계라 이미 다름),
+// "실제로 그 카드가 가진 4개 스킬을 쓰고 상태이상도 진짜로 걸린다"는 핵심만 살린다.
+interface AutoSkillFx {
+  dmgMult: number; hits?: number; ignoreDef?: boolean; guaranteedCrit?: boolean;
+  statusType?: "stun" | "poison" | "bleed" | "bind";
+  statusChance?: number; statusTurns?: number;
+  healPct?: number; cleanse?: boolean; lifestealPct?: number;
+}
+const AUTO_SKILL_FX: Partial<Record<SpecialSkillId, AutoSkillFx>> = {
+  sharp_claws:   { dmgMult: 1.4 },
+  quick_dodge:   { dmgMult: 0 },
+  focus:         { dmgMult: 1.0, guaranteedCrit: true },
+  intimidate_sm: { dmgMult: 0.6, statusType: "bind", statusChance: 0.3, statusTurns: 2 },
+  hiss:          { dmgMult: 0, statusType: "stun", statusChance: 0.3, statusTurns: 2 },
+  grooming:      { dmgMult: 0, healPct: 0.10 },
+  warm_nap:      { dmgMult: 0, healPct: 0.08 },
+  tail_whip:     { dmgMult: 1.0, ignoreDef: true },
+  claw_flurry:   { dmgMult: 0.6, hits: 2 },
+  body_slam:     { dmgMult: 1.3 },
+  freeze:        { dmgMult: 0, statusType: "stun", statusChance: 0.45, statusTurns: 2 },
+  scratch:       { dmgMult: 0.8, statusType: "bleed", statusChance: 1, statusTurns: 3 },
+  intimidate:    { dmgMult: 0, statusType: "stun", statusChance: 0.55, statusTurns: 2 },
+  pounce:        { dmgMult: 1.1, ignoreDef: true },
+  ambush:        { dmgMult: 1.2, guaranteedCrit: true },
+  static_shock:  { dmgMult: 0, statusType: "stun", statusChance: 0.3, statusTurns: 2 },
+  night_prowl:   { dmgMult: 1.1 },
+  thunderclap:   { dmgMult: 0.6, statusType: "stun", statusChance: 0.25, statusTurns: 2 },
+  cold_glare:    { dmgMult: 0, statusType: "stun", statusChance: 0.3, statusTurns: 2 },
+  dash_strike:   { dmgMult: 1.5 },
+  poison:        { dmgMult: 0.7, statusType: "poison", statusChance: 1, statusTurns: 4 },
+  bind:          { dmgMult: 0, statusType: "bind", statusChance: 0.65, statusTurns: 3 },
+  slow:          { dmgMult: 0, statusType: "stun", statusChance: 0.6, statusTurns: 2 },
+  double_strike: { dmgMult: 0.8, hits: 2 },
+  rend:          { dmgMult: 1.0, ignoreDef: true, statusType: "bleed", statusChance: 1, statusTurns: 3 },
+  howl:          { dmgMult: 0, statusType: "bind", statusChance: 0.65, statusTurns: 3 },
+  frenzy:        { dmgMult: 1.6 },
+  curse:         { dmgMult: 0.7, statusType: "poison", statusChance: 1, statusTurns: 5 },
+  venom_fang:    { dmgMult: 1.1, statusType: "poison", statusChance: 1, statusTurns: 4 },
+  shockwave:     { dmgMult: 1.7 },
+  vampirism:     { dmgMult: 1.2, lifestealPct: 0.3 },
+  invincible:    { dmgMult: 0 },
+  dominate:      { dmgMult: 1.0, ignoreDef: true, statusType: "bind", statusChance: 1, statusTurns: 3 },
+  regen:         { dmgMult: 0, healPct: 0.12 },
+  eclipse:       { dmgMult: 1.3, healPct: 0.15 },
+  overdrive:     { dmgMult: 1.8 },
+  meteor:        { dmgMult: 2.0 },
+  cleanse:       { dmgMult: 0, healPct: 0.10, cleanse: true },
+  judgment:      { dmgMult: 1.2, statusType: "stun", statusChance: 0.55, statusTurns: 2 },
+  apocalypse_strike: { dmgMult: 2.2 },
+};
+const DEFAULT_FX: AutoSkillFx = { dmgMult: 1.2 };
+
+interface AutoSideState { stun: number; poison: number; bleed: number; bind: number; cds: Record<string, number>; }
+
+function pickAutoSkill(skills: string[], cds: Record<string, number>, hpRatio: number, targetVulnerable: boolean): string {
+  const available = skills.filter(id => (cds[id] ?? 0) === 0);
+  const pool = available.length > 0 ? available : skills;
+
+  if (hpRatio < 0.35) {
+    const heal = pool.find(id => (AUTO_SKILL_FX[id as SpecialSkillId]?.healPct ?? 0) > 0);
+    if (heal && Math.random() < 0.6) return heal;
+  }
+  if (!targetVulnerable) {
+    const cc = pool.filter(id => AUTO_SKILL_FX[id as SpecialSkillId]?.statusType);
+    if (cc.length > 0 && Math.random() < 0.35) return cc[Math.floor(Math.random() * cc.length)];
+  }
+  const weighted = pool.map(id => ({ id, w: Math.max(0.3, AUTO_SKILL_FX[id as SpecialSkillId]?.dmgMult ?? 1) }));
+  const total = weighted.reduce((s, w) => s + w.w, 0);
+  let r = Math.random() * total;
+  for (const w of weighted) { r -= w.w; if (r <= 0) return w.id; }
+  return weighted[0]?.id ?? pool[0];
+}
+
 function simulateBattle(attacker: CardCat, defender: CardCat) {
   const as = calcStats(attacker);
   const ds = calcStats(defender);
   let aHp = as.hp, dHp = ds.hp;
   const aMaxHp = as.hp, dMaxHp = ds.hp;
-  const log: { turn: number; actor: string; dmg: number; aHp: number; dHp: number; isCritical: boolean; isDodge: boolean; isCounterAttack: boolean; skillName: string }[] = [];
+  const log: AutoLogEntry[] = [];
   let turn = 0;
-  const MAX_TURNS = 30;
+  const MAX_TURNS = 40; // 상태이상으로 기절 턴이 끼어들 수 있어 여유 있게
 
-  const SKILLS_A = attacker.card_traits?.slice(0, 3) ?? ["야생의 눈빛", "날카로운 발톱", "신비로운 시선"];
-  const SKILLS_D = defender.card_traits?.slice(0, 3) ?? ["야생의 눈빛", "날카로운 발톱", "신비로운 시선"];
+  const aSkills = [attacker.battle_special, attacker.battle_special2, attacker.battle_special3, attacker.battle_special4]
+    .map(id => id ?? "sharp_claws");
+  const dSkills = [defender.battle_special, defender.battle_special2, defender.battle_special3, defender.battle_special4]
+    .map(id => id ?? "sharp_claws");
+
+  const aState: AutoSideState = { stun: 0, poison: 0, bleed: 0, bind: 0, cds: {} };
+  const dState: AutoSideState = { stun: 0, poison: 0, bleed: 0, bind: 0, cds: {} };
 
   let aTurn = as.spd >= ds.spd;
 
   while (aHp > 0 && dHp > 0 && turn < MAX_TURNS) {
     turn++;
+    const actorIsA = aTurn;
+    const atkSt = actorIsA ? as : ds;
+    const defSt = actorIsA ? ds : as;
+    const atkState = actorIsA ? aState : dState;
+    const defState = actorIsA ? dState : aState;
+    const atkSkills = actorIsA ? aSkills : dSkills;
+    const atkName = actorIsA ? attacker.name : defender.name;
+    const atkMaxHp = actorIsA ? aMaxHp : dMaxHp;
+    const atkHp = actorIsA ? aHp : dHp;
 
-    if (aTurn) {
-      const counterBoost = aHp < aMaxHp * 0.25 ? 1.3 : 1.0;
-      const isCritical = Math.random() * 100 < as.crit;
-      const isDodge = Math.random() * 100 < ds.eva;
-      const baseDmg = Math.max(5, Math.round((as.atk - ds.def * 0.4) * rnd(0.80, 1.30) * counterBoost));
-      const dmg = isDodge ? 0 : Math.round(baseDmg * (isCritical ? 2.0 : 1.0));
-      dHp = Math.max(0, dHp - dmg);
-      const skillName = SKILLS_A[turn % SKILLS_A.length] ?? "공격";
-      log.push({ turn, actor: attacker.name, dmg, aHp, dHp, isCritical, isDodge, isCounterAttack: counterBoost > 1, skillName });
-    } else {
-      const counterBoost = dHp < dMaxHp * 0.25 ? 1.3 : 1.0;
-      const isCritical = Math.random() * 100 < ds.crit;
-      const isDodge = Math.random() * 100 < as.eva;
-      const baseDmg = Math.max(5, Math.round((ds.atk - as.def * 0.4) * rnd(0.80, 1.30) * counterBoost));
-      const dmg = isDodge ? 0 : Math.round(baseDmg * (isCritical ? 2.0 : 1.0));
-      aHp = Math.max(0, aHp - dmg);
-      const skillName = SKILLS_D[turn % SKILLS_D.length] ?? "공격";
-      log.push({ turn, actor: defender.name, dmg, aHp, dHp, isCritical, isDodge, isCounterAttack: counterBoost > 1, skillName });
+    if (atkState.stun > 0) {
+      atkState.stun--;
+      log.push({ turn, actor: atkName, dmg: 0, aHp, dHp, isCritical: false, isDodge: false, isCounterAttack: false, skillName: "기절", isDot: false, isStunSkip: true });
+      aTurn = !aTurn;
+      continue;
     }
+
+    const skillId = pickAutoSkill(atkSkills, atkState.cds, atkHp / atkMaxHp, defState.stun > 0 || defState.bind > 0);
+    const fx = AUTO_SKILL_FX[skillId as SpecialSkillId] ?? DEFAULT_FX;
+    atkState.cds[skillId] = 3;
+
+    // 속박 소모(회피 불가) — 새 속박 적용보다 먼저 처리
+    const wasBound = defState.bind > 0;
+    if (defState.bind > 0) defState.bind--;
+
+    const isDodge = !wasBound && Math.random() * 100 < defSt.eva;
+    let dmg = 0, isCritical = false;
+    if (!isDodge && fx.dmgMult > 0) {
+      const counterBoost = atkHp < atkMaxHp * 0.25 ? 1.3 : 1.0;
+      const hits = fx.hits ?? 1;
+      const def = fx.ignoreDef ? defSt.def * 0.3 : defSt.def;
+      for (let h = 0; h < hits; h++) {
+        const hitCrit = fx.guaranteedCrit || Math.random() * 100 < atkSt.crit;
+        if (hitCrit) isCritical = true;
+        const base = Math.max(5, Math.round((atkSt.atk - def * 0.4) * rnd(0.80, 1.30) * counterBoost));
+        dmg += Math.round(base * fx.dmgMult * (hitCrit ? 2.0 : 1.0));
+      }
+    }
+
+    let appliedStatus: { type: "stun"|"poison"|"bleed"|"bind"; turns: number } | null = null;
+    if (!isDodge && fx.statusType && Math.random() < (fx.statusChance ?? 1)) {
+      const turns = fx.statusTurns ?? (fx.statusType === "poison" ? 4 : fx.statusType === "bleed" ? 3 : 2);
+      if (fx.statusType === "stun") defState.stun = turns;
+      else if (fx.statusType === "bind") defState.bind = turns;
+      else if (fx.statusType === "poison") defState.poison = turns;
+      else if (fx.statusType === "bleed") defState.bleed = turns;
+      appliedStatus = { type: fx.statusType, turns };
+    }
+
+    if (dmg > 0) { if (actorIsA) dHp = Math.max(0, dHp - dmg); else aHp = Math.max(0, aHp - dmg); }
+    if (fx.healPct) {
+      const heal = Math.round(atkMaxHp * fx.healPct);
+      if (actorIsA) aHp = Math.min(aMaxHp, aHp + heal); else dHp = Math.min(dMaxHp, dHp + heal);
+    }
+    if (fx.lifestealPct && dmg > 0) {
+      const heal = Math.round(dmg * fx.lifestealPct);
+      if (actorIsA) aHp = Math.min(aMaxHp, aHp + heal); else dHp = Math.min(dMaxHp, dHp + heal);
+    }
+    if (fx.cleanse) { atkState.poison = 0; atkState.bleed = 0; atkState.bind = 0; atkState.stun = 0; }
+
+    log.push({
+      turn, actor: atkName, dmg, aHp, dHp, isCritical, isDodge,
+      isCounterAttack: atkHp < atkMaxHp * 0.25,
+      skillName: SPECIAL_SKILLS[skillId as SpecialSkillId]?.name ?? "공격",
+      skillId, isDot: false,
+      statusType: appliedStatus?.type, statusTurns: appliedStatus?.turns,
+    });
+
+    // 한 라운드(양쪽 모두 행동) 종료 시 도트 틱 + 쿨다운 감소
+    if (turn % 2 === 0) {
+      let aDot = 0, dDot = 0;
+      if (aState.poison > 0) { aDot += 8; aState.poison--; }
+      if (aState.bleed  > 0) { aDot += 5; aState.bleed--; }
+      if (dState.poison > 0) { dDot += 8; dState.poison--; }
+      if (dState.bleed  > 0) { dDot += 5; dState.bleed--; }
+      if (aDot > 0) { aHp = Math.max(0, aHp - aDot); log.push({ turn, actor: attacker.name, dmg: aDot, aHp, dHp, isCritical:false, isDodge:false, isCounterAttack:false, skillName: "☠️ 상태이상 피해", isDot: true }); }
+      if (dDot > 0) { dHp = Math.max(0, dHp - dDot); log.push({ turn, actor: defender.name, dmg: dDot, aHp, dHp, isCritical:false, isDodge:false, isCounterAttack:false, skillName: "☠️ 상태이상 피해", isDot: true }); }
+      for (const k in aState.cds) aState.cds[k] = Math.max(0, aState.cds[k] - 1);
+      for (const k in dState.cds) dState.cds[k] = Math.max(0, dState.cds[k] - 1);
+      if (aHp <= 0 || dHp <= 0) break;
+    }
+
     aTurn = !aTurn;
   }
 

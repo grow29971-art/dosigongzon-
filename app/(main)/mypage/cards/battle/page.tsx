@@ -66,7 +66,11 @@ type Phase = "select"|"loading"|"countdown"|"player_choose"|"animating"|"opp_thi
 type Mode = "manual"|"auto";
 type CardAnim = "idle"|"attack"|"hit"|"dodge";
 
-interface AutoLogEntry { turn:number; actor:string; dmg:number; aHp:number; dHp:number; isCritical:boolean; isDodge:boolean; isCounterAttack:boolean; skillName:string; }
+interface AutoLogEntry {
+  turn:number; actor:string; dmg:number; aHp:number; dHp:number; isCritical:boolean; isDodge:boolean; isCounterAttack:boolean; skillName:string;
+  skillId?:string; isDot?:boolean; isStunSkip?:boolean;
+  statusType?:"stun"|"poison"|"bleed"|"bind"; statusTurns?:number;
+}
 interface AutoResult { winner:"me"|"opponent"; my_hp_left:number; opp_hp_left:number; my_max_hp:number; opp_max_hp:number; rounds:number; log:AutoLogEntry[]; exp_gained:number; my_new_level:number; leveled_up:boolean; coins_gained?:number; }
 
 /* ──────────── 헬퍼 ──────────── */
@@ -95,14 +99,6 @@ function flavorForId(id: string | null): FxFlavor | undefined {
 function flavorColorForId(id: string | null): string | undefined {
   const f = flavorForId(id);
   return f ? FX_COLOR[f] : undefined;
-}
-// 자동전투 로그는 스킬 이름만 갖고 있어서, 이름 → id 역매핑을 통해 같은 색상/효과음 연출을 재사용한다
-const SKILL_NAME_TO_ID: Record<string,string> = Object.fromEntries(Object.entries(SPECIAL_SKILLS).map(([id,s])=>[s.name,id]));
-function flavorForName(name: string): FxFlavor | undefined {
-  return flavorForId(SKILL_NAME_TO_ID[name] ?? null);
-}
-function flavorColorForName(name: string): string | undefined {
-  return flavorColorForId(SKILL_NAME_TO_ID[name] ?? null);
 }
 const FLAVOR_SFX: Record<FxFlavor, () => void> = {
   ice: sfx.ice, fear: sfx.fear, shock: sfx.shock, sleep: sfx.sleep,
@@ -564,11 +560,18 @@ export default function BattlePage() {
       myGuardUsesRef.current=GUARD_USES; setMyGuardUses(GUARD_USES);
       myShieldRef.current=false; myPowerBuffRef.current=false; myDodgeGuaranteedRef.current=false;
     } else {
-      // 자동 전투
+      // 자동 전투 — 리플레이 중 실제 상태이상을 반영하므로 이전 배틀의 잔여 상태를 초기화
       const r = json.result as AutoResult;
       setAutoResult(r); setAutoLogIdx(0);
       setMyHp(r.my_max_hp); setOppHp(r.opp_max_hp);
       setMyMaxHp(r.my_max_hp); setOppMaxHp(r.opp_max_hp);
+      myStunnedRef.current=0; oppStunnedRef.current=0;
+      setMyStunVis(false); setOppStunVis(false);
+      setMyStunFlavor(null); setOppStunFlavor(null);
+      myPoisonRef.current=0; oppPoisonRef.current=0;
+      myBleedRef.current=0; oppBleedRef.current=0;
+      myBoundRef.current=0; oppBoundRef.current=0;
+      setMyStatusBadges([]); setOppStatusBadges([]);
     }
 
     // 카운트다운
@@ -594,7 +597,7 @@ export default function BattlePage() {
               setPhase("player_choose");
             } else {
               setPhase("animating");
-              replayAuto(json.result as AutoResult, selected.name, opp.name);
+              replayAuto(json.result as AutoResult, selected.name);
             }
           }, 500);
         }
@@ -613,7 +616,7 @@ export default function BattlePage() {
   };
 
   /* ── 자동 배틀 재생 ── */
-  const replayAuto = (r: AutoResult, myName: string, oppName: string) => {
+  const replayAuto = (r: AutoResult, myName: string) => {
     const log = r.log;
     let i = 0;
     const TICK = 1100;
@@ -629,20 +632,79 @@ export default function BattlePage() {
       }
       const e = log[i++];
       const isMe = e.actor===myName;
+
+      // 도트(독/출혈) 틱 — 공격 모션 없이 HP만 갱신하고 짧게 표시
+      if(e.isDot) {
+        setMyHp(e.aHp); setOppHp(e.dHp);
+        setDmgPopup({ target:isMe?"me":"opp", val:e.dmg, isCrit:false, msg:"☠️ 상태이상 피해" });
+        sfx.poisonTick();
+        autoTimerRef.current = setTimeout(() => { if(!mounted.current) return; setDmgPopup(null); tick(); }, TICK*0.55);
+        return;
+      }
+
+      // 기절로 행동 불가한 턴
+      if(e.isStunSkip) {
+        setActionMsg(`${e.actor}는 기절해서 움직일 수 없다!`);
+        if(isMe) { myStunnedRef.current = Math.max(0, myStunnedRef.current-1); if(myStunnedRef.current===0){ setMyStunVis(false); setMyStunFlavor(null); } }
+        else { oppStunnedRef.current = Math.max(0, oppStunnedRef.current-1); if(oppStunnedRef.current===0){ setOppStunVis(false); setOppStunFlavor(null); } }
+        autoTimerRef.current = setTimeout(tick, TICK);
+        return;
+      }
+
+      const flavor = flavorForId(e.skillId ?? null);
+      const color = flavor ? FX_COLOR[flavor] : undefined;
       setActionMsg(`${e.actor}의 ${e.skillName}!${e.isCritical?" 💥 크리티컬!":""}${e.isCounterAttack?" ⚡ 위기반격!":""}`);
       if(isMe){ setMyAnim("attack"); } else { setOppAnim("attack"); }
+
+      // 속박 소모(회피 불가) — 공격받는 쪽 카운트를 먼저 줄이고, 새 상태이상은 아래서 덮어씀
+      if(isMe) oppBoundRef.current = Math.max(0, oppBoundRef.current-1);
+      else myBoundRef.current = Math.max(0, myBoundRef.current-1);
+
+      // 이번 턴에 상대에게 새로 걸린 상태이상 반영
+      if(e.statusType) {
+        const targetIsMe = !isMe;
+        const turns = e.statusTurns ?? 2;
+        if(e.statusType==="stun") {
+          if(targetIsMe) { myStunnedRef.current=turns; setMyStunVis(true); setMyStunFlavor(flavor ?? null); }
+          else { oppStunnedRef.current=turns; setOppStunVis(true); setOppStunFlavor(flavor ?? null); }
+        } else if(e.statusType==="bind") {
+          if(targetIsMe) myBoundRef.current=turns; else oppBoundRef.current=turns;
+        } else if(e.statusType==="poison") {
+          if(targetIsMe) myPoisonRef.current=turns; else oppPoisonRef.current=turns;
+        } else if(e.statusType==="bleed") {
+          if(targetIsMe) myBleedRef.current=turns; else oppBleedRef.current=turns;
+        }
+      }
+      const mb: string[] = [];
+      if(myPoisonRef.current>0) mb.push(`☠️${myPoisonRef.current}`);
+      if(myBleedRef.current>0) mb.push(`🩸${myBleedRef.current}`);
+      if(myBoundRef.current>0) mb.push(`⛓️${myBoundRef.current}`);
+      setMyStatusBadges(mb);
+      const ob: string[] = [];
+      if(oppPoisonRef.current>0) ob.push(`☠️${oppPoisonRef.current}`);
+      if(oppBleedRef.current>0) ob.push(`🩸${oppBleedRef.current}`);
+      if(oppBoundRef.current>0) ob.push(`⛓️${oppBoundRef.current}`);
+      setOppStatusBadges(ob);
+
       setTimeout(() => {
         if(!mounted.current) return;
         setMyAnim("idle"); setOppAnim("idle");
+        setMyHp(e.aHp); setOppHp(e.dHp);
         if(!e.isDodge && e.dmg>0) {
-          if(isMe){ setOppAnim("hit"); setOppHp(e.dHp); }
-          else { setMyAnim("hit"); setMyHp(e.aHp); }
-          triggerImpact(isMe?"opp":"me", e.isCritical, flavorColorForName(e.skillName), flavorForName(e.skillName));
+          if(isMe){ setOppAnim("hit"); } else { setMyAnim("hit"); }
+          triggerImpact(isMe?"opp":"me", e.isCritical, color, flavor);
           setDmgPopup({ target:isMe?"opp":"me", val:e.dmg, isCrit:e.isCritical });
           if(e.isCritical){ setCritFlash(true); navigator.vibrate?.([80,30,80]); }
           else navigator.vibrate?.(30);
         } else if(e.isDodge) {
+          sfx.dodge();
           setDmgPopup({ target:isMe?"opp":"me", val:0, isCrit:false, msg:"회피!" });
+        } else if(e.statusType) {
+          const targetSide = isMe ? "opp" : "me";
+          if(targetSide==="opp") setOppAnim("hit"); else setMyAnim("hit");
+          triggerImpact(targetSide, false, color, flavor);
+          const label = (flavor && STUN_LABEL[flavor]) ? `${STUN_LABEL[flavor]} 성공!` : e.statusType==="bind" ? "⛓️ 속박!" : e.statusType==="poison" ? "☠️ 중독!" : "🩸 출혈!";
+          setDmgPopup({ target:targetSide, val:0, isCrit:false, msg:label });
         }
         setTimeout(() => {
           if(!mounted.current) return;
