@@ -110,9 +110,10 @@ function oppAI(hp: number, maxHp: number): number {
 // 실제로 지금 쓸 수 있는 행동인지 확인하고, 막혀있으면 다른 가능한 행동으로 대체한다.
 function pickAvailableAutoAction(hp: number, maxHp: number, skillCds: number[], normalLeft: number, guardLeft: number): number | null {
   const preferred = oppAI(hp, maxHp);
+  // 방어는 총 사용 횟수 제한(guardLeft)과 별개로 1턴 쿨다운도 있어서 둘 다 확인해야 함
   const isUsable = (idx: number) => {
     if (idx === NORMAL_IDX) return normalLeft > 0;
-    if (idx === GUARD_IDX) return guardLeft > 0;
+    if (idx === GUARD_IDX) return guardLeft > 0 && (skillCds[GUARD_IDX] ?? 0) === 0;
     return (skillCds[idx] ?? 0) === 0;
   };
   if (isUsable(preferred)) return preferred;
@@ -120,7 +121,7 @@ function pickAvailableAutoAction(hp: number, maxHp: number, skillCds: number[], 
   const availableSkills = [2, 3, 4, 5].filter(i => (skillCds[i] ?? 0) === 0);
   if (availableSkills.length > 0) return availableSkills[Math.floor(Math.random() * availableSkills.length)];
   if (normalLeft > 0) return NORMAL_IDX;
-  if (guardLeft > 0) return GUARD_IDX;
+  if (isUsable(GUARD_IDX)) return GUARD_IDX;
   return null; // 정말 아무것도 못 쓰는 극단적인 경우 — 턴 패스로 처리
 }
 function toCard(cat: BattleCat): CatCardData {
@@ -878,6 +879,20 @@ export default function BattlePage() {
 
   useEffect(() => { pickSkillRef.current = pickSkill; }, [pickSkill]);
 
+  // 워치독 — 턴 연출 중 중첩 setTimeout 체인이 아주 드물게(브라우저 타이머 스케줄링 이슈로 추정)
+  // 콜백이 발화되지 않아 게임이 영원히 멈추는 경우가 있었음. 정상 진행이면 아래 6초 타이머는
+  // phase가 바뀌면서 항상 정리되어 절대 발동하지 않고, 진짜로 멈췄을 때만 강제 복구한다.
+  useEffect(() => {
+    if (phase !== "animating" && phase !== "opp_thinking") return;
+    const watchdog = setTimeout(() => {
+      if (!mounted.current) return;
+      setMyAnim("idle"); setOppAnim("idle"); setDmgPopup(null); setCritFlash(false);
+      setActionMsg("기술을 선택하세요!");
+      setPhase("player_choose");
+    }, 6000);
+    return () => clearTimeout(watchdog);
+  }, [phase]);
+
   /* ── 아이템 사용 (내 턴 소모) ── */
   const useItem = useCallback(async (key: ShopItemKey) => {
     if (phase !== "player_choose" || !mounted.current) return;
@@ -913,12 +928,17 @@ export default function BattlePage() {
     setPhase("result");
     setActionMsg(winner==="me"?"🏆 승리!":"💔 패배...");
 
-    const res = await fetch("/api/cats/card-battle/record", {
-      method:"POST", headers:{"content-type":"application/json"},
-      body: JSON.stringify({ my_cat_id:selected.id, opp_cat_id:opponent.id, opp_caretaker_id:opponent.caretaker_id, winner, rounds:turnCount, my_hp_left:myHpRef.current, opp_hp_left:oppHpRef.current }),
-    });
-    const json = await res.json();
-    if(mounted.current) setBattleResult({ winner, exp:json.exp_gained??0, newLevel:json.my_new_level??1, leveledUp:json.leveled_up??false });
+    try {
+      const res = await fetch("/api/cats/card-battle/record", {
+        method:"POST", headers:{"content-type":"application/json"},
+        body: JSON.stringify({ my_cat_id:selected.id, opp_cat_id:opponent.id, opp_caretaker_id:opponent.caretaker_id, winner, rounds:turnCount, my_hp_left:myHpRef.current, opp_hp_left:oppHpRef.current }),
+      });
+      const json = await res.json();
+      if(mounted.current) setBattleResult({ winner, exp:json.exp_gained??0, newLevel:json.my_new_level??1, leveledUp:json.leveled_up??false });
+    } catch {
+      // 기록 저장 API가 실패/네트워크 오류여도 결과 화면은 항상 떠야 함 (안 그러면 빈 화면에 멈춤)
+      if(mounted.current) setBattleResult({ winner, exp:0, newLevel:selected.card_level, leveledUp:false });
+    }
   }, [selected, opponent, turnCount]);
 
   /* ── 리셋 ── */
