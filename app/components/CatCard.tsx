@@ -25,6 +25,22 @@ interface CatCardProps {
   onClick?: () => void;
 }
 
+// 속성별 배지 클립 경로 (원형 대신 타입 고유 실루엣)
+const BADGE_CLIP = {
+  hexagon: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
+  droplet: "", // 별도 border-radius+rotate 처리
+  bolt: "polygon(60% 0%, 20% 55%, 45% 55%, 35% 100%, 85% 40%, 55% 40%)",
+  star: "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)",
+} as const;
+
+// 속성별 구획선(사진↔도감 스트립 사이) 클립 경로 — 잎맥/파도/번개/불꽃 실루엣
+const DIVIDER_CLIP = {
+  grass: "polygon(0% 100%, 0% 55%, 7% 5%, 14% 55%, 21% 5%, 29% 55%, 36% 5%, 43% 55%, 50% 5%, 57% 55%, 64% 5%, 71% 55%, 79% 5%, 86% 55%, 93% 5%, 100% 55%, 100% 100%)",
+  water: "polygon(0% 100%, 0% 60%, 6% 35%, 12% 15%, 18% 10%, 24% 20%, 30% 45%, 36% 70%, 42% 85%, 48% 90%, 54% 80%, 60% 55%, 66% 30%, 72% 15%, 78% 10%, 84% 22%, 90% 48%, 96% 72%, 100% 85%, 100% 100%)",
+  electric: "polygon(0% 100%, 0% 30%, 10% 65%, 22% 5%, 34% 75%, 46% 15%, 58% 85%, 68% 25%, 80% 70%, 90% 10%, 100% 50%, 100% 100%)",
+  fire: "polygon(0% 100%, 0% 45%, 6% 75%, 13% 0%, 22% 60%, 30% 20%, 40% 70%, 50% 5%, 62% 65%, 72% 25%, 82% 75%, 90% 15%, 100% 55%, 100% 100%)",
+} as const;
+
 export const CARD_THEME = {
   common: {
     bg: "linear-gradient(155deg, #82CC5E 0%, #5AA040 42%, #3E7A2A 75%, #2E5E1E 100%)",
@@ -43,6 +59,9 @@ export const CARD_THEME = {
     holo: "sheen",
     sparkle: "none",
     nameFill: false,
+    typeKey: "grass",
+    badgeShape: "hexagon" as const,
+    radiusMult: 1,
   },
   uncommon: {
     bg: "linear-gradient(155deg, #6EC0FF 0%, #3488E0 42%, #1C5CBC 75%, #123E88 100%)",
@@ -61,6 +80,9 @@ export const CARD_THEME = {
     holo: "cool",
     sparkle: "none",
     nameFill: false,
+    typeKey: "water",
+    badgeShape: "droplet" as const,
+    radiusMult: 1.3,
   },
   rare: {
     bg: "linear-gradient(155deg, #D0A0FF 0%, #9C58EC 38%, #7028C8 70%, #4C1690 100%)",
@@ -79,6 +101,9 @@ export const CARD_THEME = {
     holo: "prism",
     sparkle: "sparse",
     nameFill: true,
+    typeKey: "electric",
+    badgeShape: "bolt" as const,
+    radiusMult: 0.55,
   },
   legendary: {
     bg: "linear-gradient(155deg, #FFEA98 0%, #FFB730 30%, #F08010 55%, #C05A00 80%, #FFEA98 100%)",
@@ -97,6 +122,9 @@ export const CARD_THEME = {
     holo: "rainbow",
     sparkle: "dense",
     nameFill: true,
+    typeKey: "fire",
+    badgeShape: "star" as const,
+    radiusMult: 1,
   },
 };
 
@@ -139,7 +167,9 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
   const W = isLg ? 300 : isSm ? 130 : 190;
   const photoH = isLg ? 180 : isSm ? 78 : 114;
   const topBarPx = isLg ? 34 : isSm ? 22 : 27;
-  const radius = isLg ? 20 : isSm ? 13 : 15;
+  const radius = Math.round((isLg ? 20 : isSm ? 13 : 15) * cfg.radiusMult);
+  const dividerH = isLg ? 13 : isSm ? 8 : 10;
+  const inset = isLg ? 8 : isSm ? 5 : 6;
 
   const fs = {
     label: isLg ? 9 : isSm ? 7 : 8,
@@ -167,6 +197,8 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
         userSelect: "none",
       }}
     >
+      {/* 속성 텍스처 (잎맥/물결/스파크/불티 — 등급마다 다른 패턴) */}
+      <div className={`type-pattern type-pattern-${cfg.typeKey}`} style={{ borderRadius: radius }} />
       {/* 홀로그램 스윕 (전 등급, 강도 차등) */}
       <div className={`holo-overlay holo-${cfg.holo}`} style={{ borderRadius: radius }} />
       {/* 반짝임 입자 */}
@@ -220,14 +252,27 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
               position: "absolute", inset: 0, borderRadius: "50%",
               background: `repeating-conic-gradient(${cfg.accent}99 0deg 12deg, transparent 12deg 30deg)`,
             }} />
-            <span style={{
-              position: "relative", background: cfg.typeBg, borderRadius: 99,
-              width: isLg ? 17 : isSm ? 12 : 14, height: isLg ? 17 : isSm ? 12 : 14,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: isLg ? 9 : 7.5, border: `1px solid ${cfg.frameInner}bb`,
-            }}>
-              {cfg.typeIcon}
-            </span>
+            {cfg.badgeShape === "droplet" ? (
+              <span style={{
+                position: "relative", background: cfg.typeBg,
+                width: isLg ? 15 : isSm ? 10.5 : 12.5, height: isLg ? 15 : isSm ? 10.5 : 12.5,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                border: `1px solid ${cfg.frameInner}bb`,
+                borderRadius: "50% 50% 50% 0%", transform: "rotate(-45deg)",
+              }}>
+                <span style={{ fontSize: isLg ? 9 : 7.5, transform: "rotate(45deg)" }}>{cfg.typeIcon}</span>
+              </span>
+            ) : (
+              <span style={{
+                position: "relative", background: cfg.typeBg,
+                width: isLg ? 17 : isSm ? 12 : 14, height: isLg ? 17 : isSm ? 12 : 14,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: isLg ? 9 : 7.5, border: `1px solid ${cfg.frameInner}bb`,
+                clipPath: BADGE_CLIP[cfg.badgeShape],
+              }}>
+                {cfg.typeIcon}
+              </span>
+            )}
           </span>
         </div>
       </div>
@@ -249,13 +294,32 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
             ) : (
               <div style={{ width: "100%", height: "100%", background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: isSm ? 28 : 42, color: "rgba(255,255,255,0.35)" }}>🐱</div>
             )}
+            {/* 속성 워터마크 (사진 프레임 안, 은은하게) */}
+            <span style={{
+              position: "absolute", right: -6, bottom: -10,
+              fontSize: isLg ? 64 : isSm ? 34 : 46,
+              opacity: 0.16, filter: "grayscale(0.2)",
+              transform: "rotate(-8deg)", pointerEvents: "none",
+            }}>
+              {cfg.typeIcon}
+            </span>
           </div>
         </div>
       </div>
 
+      {/* ── 속성 구획선 (등급마다 다른 실루엣: 잎맥/파도/번개/불꽃) ── */}
+      <div style={{
+        margin: `${isSm ? 3 : 4}px ${inset}px 0`,
+        height: dividerH,
+        background: cfg.accent,
+        clipPath: DIVIDER_CLIP[cfg.typeKey as keyof typeof DIVIDER_CLIP],
+        opacity: 0.65,
+        position: "relative", zIndex: 2,
+      }} />
+
       {/* ── 도감 정보 스트립 ── */}
       <div style={{
-        margin: `${isSm ? 4 : 6}px ${isLg ? 8 : isSm ? 5 : 6}px 0`,
+        margin: `0 ${isLg ? 8 : isSm ? 5 : 6}px 0`,
         background: cfg.panelBg, borderRadius: 5,
         padding: isLg ? "3px 8px" : "2px 6px",
         display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -426,6 +490,53 @@ export default function CatCard({ name, photoUrl, card, size = "md", onClick }: 
         @keyframes sparkle-drift {
           0%   { background-position: 0 0, 12px 18px; }
           100% { background-position: 60px 90px, 72px 108px; }
+        }
+        .type-pattern { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+        .type-pattern-grass {
+          background-image:
+            repeating-linear-gradient(115deg, rgba(255,255,255,0.10) 0 2px, transparent 2px 22px),
+            radial-gradient(circle, rgba(255,255,255,0.55) 1px, transparent 1.6px);
+          background-size: auto, 26px 26px;
+          background-position: 0 0, 6px 10px;
+          opacity: 0.5;
+          animation: leaf-drift 9s linear infinite;
+        }
+        @keyframes leaf-drift {
+          0%   { background-position: 0 0, 6px 10px; }
+          100% { background-position: -40px 30px, 46px 40px; }
+        }
+        .type-pattern-water {
+          background-image: repeating-radial-gradient(circle at 50% 115%, rgba(255,255,255,0.18) 0 2px, transparent 2px 20px);
+          background-size: 140% 140%;
+          background-position: center bottom;
+          opacity: 0.5;
+          animation: ripple-pulse 3.2s ease-in-out infinite;
+        }
+        @keyframes ripple-pulse {
+          0%, 100% { background-size: 140% 140%; opacity: 0.5; }
+          50%      { background-size: 175% 175%; opacity: 0.26; }
+        }
+        .type-pattern-electric {
+          background-image: repeating-linear-gradient(68deg, rgba(255,255,255,0.24) 0 1.5px, transparent 1.5px 16px);
+          opacity: 0.42;
+          animation: spark-flicker 1.1s steps(2) infinite;
+        }
+        @keyframes spark-flicker {
+          0%, 100% { opacity: 0.42; }
+          50%      { opacity: 0.14; }
+        }
+        .type-pattern-fire {
+          background-image:
+            radial-gradient(circle, rgba(255,224,160,0.9) 1px, transparent 1.6px),
+            radial-gradient(circle, rgba(255,160,60,0.75) 1px, transparent 1.4px);
+          background-size: 24px 24px, 34px 34px;
+          background-position: 0 0, 10px 16px;
+          opacity: 0.42;
+          animation: ember-rise 4.5s linear infinite;
+        }
+        @keyframes ember-rise {
+          0%   { background-position: 0 0, 10px 16px; }
+          100% { background-position: -14px -60px, 4px -80px; }
         }
         .shimmer-text {
           background-size: 250% 100%;
