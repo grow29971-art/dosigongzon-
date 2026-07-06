@@ -10,7 +10,7 @@ import { SPECIAL_SKILLS } from "@/lib/battle-config";
 import { SHOP_ITEMS, BATTLE_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-config";
 import ParticleCanvas, { type ParticleCanvasHandle } from "@/app/components/ParticleCanvas";
 import SfxToggle from "@/app/components/SfxToggle";
-import { sfx, primeSfx } from "@/lib/sfx";
+import { sfx, primeSfx, setAmbientEnv, stopAmbient } from "@/lib/sfx";
 
 /* ──────────── 배틀 환경 ──────────── */
 const BATTLE_ENVS = {
@@ -443,7 +443,7 @@ export default function BattlePage() {
 
   // 결과
   const [battleResult, setBattleResult] = useState<{winner:"me"|"opponent"; exp:number; newLevel:number; leveledUp:boolean; coinsGained?:number}|null>(null);
-  useEffect(() => { if (battleResult?.leveledUp) sfx.levelUp(); }, [battleResult]);
+  useEffect(() => { if (battleResult?.leveledUp) { sfx.levelUp(); navigator.vibrate?.([30,30,30,30,60]); } }, [battleResult]);
 
   // 고양이학대범 랜덤 보스 조우
   const [isBossBattle, setIsBossBattle] = useState(false);
@@ -456,7 +456,7 @@ export default function BattlePage() {
 
   useEffect(() => {
     mounted.current = true;
-    return () => { mounted.current = false; clearTimer(); if(autoTimerRef.current) clearTimeout(autoTimerRef.current); if(shakeTimerRef.current) clearTimeout(shakeTimerRef.current); };
+    return () => { mounted.current = false; clearTimer(); if(autoTimerRef.current) clearTimeout(autoTimerRef.current); if(shakeTimerRef.current) clearTimeout(shakeTimerRef.current); stopAmbient(); };
   }, []);
 
   useEffect(() => {
@@ -542,6 +542,7 @@ export default function BattlePage() {
     // 랜덤 배틀 환경 선택 (보스 조우는 항상 심야 골목으로 고정)
     const envKey = isBoss ? "night" : ENV_KEYS[Math.floor(Math.random() * ENV_KEYS.length)];
     setBattleEnv(envKey); battleEnvRef.current = envKey;
+    setAmbientEnv(envKey);
 
     if(mode === "manual") {
       const ms = json.my_stats as BattleStats;
@@ -719,6 +720,7 @@ export default function BattlePage() {
     if(!defBound && !forceHit && skill.type !== "guard" && (forceDodge || checkEvasion(defEva))) {
       if(isPlayer){ setOppAnim("dodge"); } else { setMyAnim("dodge"); }
       sfx.dodge();
+      navigator.vibrate?.(20);
       setTimeout(()=>{ setMyAnim("idle"); setOppAnim("idle"); }, 350);
       return { dmg:0, isCrit:false, msg:"💨 회피!", dodged:true, skillId: usedSkillId };
     }
@@ -732,7 +734,7 @@ export default function BattlePage() {
       let sDmg=0, sCrit=false, sMsg="";
       switch(skillId) {
         case "sharp_claws": { const r=calcDmg(atkSt.atk,defSt.def,1.4*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="🐾 날카로운 발톱!"; break; }
-        case "quick_dodge":   sMsg="💨 재빠른 도약!"; if(isPlayer){myGuardRef.current=true;setMyGuardVis(true);}else{oppGuardRef.current=true;setOppGuardVis(true);} sfx.guard(); break;
+        case "quick_dodge":   sMsg="💨 재빠른 도약!"; if(isPlayer){myGuardRef.current=true;setMyGuardVis(true);}else{oppGuardRef.current=true;setOppGuardVis(true);} sfx.guard(); navigator.vibrate?.(25); break;
         case "focus":        { const r=calcDmg(atkSt.atk,defSt.def,1.0*envDmgMult,100); sDmg=r.dmg; sCrit=true; sMsg="👁️ 집중! 크리티컬 확정"; break; }
         case "intimidate_sm": {
           const r=calcDmg(atkSt.atk*0.6,defSt.def,1.0,atkCrit); sDmg=r.dmg; sCrit=r.isCrit;
@@ -808,7 +810,7 @@ export default function BattlePage() {
         case "venom_fang": { const r=calcDmg(atkSt.atk,defSt.def,1.1*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer)oppPoisonRef.current=4;else myPoisonRef.current=4; sMsg="🦷 맹독니! 4턴 중독"; break; }
         case "shockwave":  { const r=calcDmg(atkSt.atk,defSt.def,1.7*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; sMsg="💥 충격파!"; break; }
         case "vampirism":  { const r=calcDmg(atkSt.atk,defSt.def,1.2*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; const heal=Math.round(sDmg*0.3); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`🧛 흡혈! +${heal}HP 흡수`; break; }
-        case "invincible": { if(isPlayer){myGuardRef.current=true;setMyGuardVis(true);}else{oppGuardRef.current=true;setOppGuardVis(true);} sfx.guard(); sMsg="✨ 무적 발동! 다음 피해 무효"; break; }
+        case "invincible": { if(isPlayer){myGuardRef.current=true;setMyGuardVis(true);}else{oppGuardRef.current=true;setOppGuardVis(true);} sfx.guard(); navigator.vibrate?.(25); sMsg="✨ 무적 발동! 다음 피해 무효"; break; }
         case "dominate":   { const r=calcDmg(atkSt.atk*1.2,5,1.0*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; if(isPlayer){oppBoundRef.current=3;oppPoisonRef.current=3;}else{myBoundRef.current=3;myPoisonRef.current=3;} sMsg="👑 지배! 3턴 속박+3턴 중독"; break; }
         case "regen":      { const heal=Math.round(ownMaxHp*0.12); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`💚 재생! +${heal}HP`; break; }
         case "eclipse":    { const r=calcDmg(atkSt.atk,defSt.def,1.3*envDmgMult,atkCrit); sDmg=r.dmg; sCrit=r.isCrit; const heal=Math.round(ownMaxHp*0.15); if(isPlayer)setMyHp(Math.min(myMaxH,myHpRef.current+heal));else setOppHp(Math.min(oppMaxH,oppHpRef.current+heal)); sMsg=`🌘 월식! +${heal}HP 회복`; break; }
@@ -849,6 +851,7 @@ export default function BattlePage() {
         if(isPlayer){ myGuardRef.current=true; setMyGuardVis(true); }
         else { oppGuardRef.current=true; setOppGuardVis(true); }
         sfx.guard();
+        navigator.vibrate?.(25);
         msg="🛡️ 방어 자세!";
         break;
       }
@@ -864,6 +867,7 @@ export default function BattlePage() {
     if(dmg>0 && comebackActive) {
       msg = msg ? `${msg} · 🔥 필사의 역전!` : "🔥 필사의 역전!";
       sfx.comeback();
+      navigator.vibrate?.([40,40,80]);
     }
 
     // 방어막 아이템 (내가 방어자일 때 이번 피해 완전 무효화, 최우선 적용)
@@ -1078,6 +1082,7 @@ export default function BattlePage() {
     if ((inventory[key] ?? 0) <= 0) return;
     setItemPanelOpen(false);
     sfx.itemUse();
+    navigator.vibrate?.(20);
 
     const res = await fetch("/api/shop/use-item", {
       method: "POST", headers: { "content-type": "application/json" },
@@ -1107,7 +1112,7 @@ export default function BattlePage() {
     if(!selected || !opponent) return;
     setPhase("result");
     setActionMsg(winner==="me"?"🏆 승리!":"💔 패배...");
-    if(winner==="me") sfx.win(); else sfx.lose();
+    if(winner==="me") { sfx.win(); navigator.vibrate?.([40,40,40,40,100]); } else { sfx.lose(); navigator.vibrate?.(150); }
 
     try {
       const res = await fetch("/api/cats/card-battle/record", {
@@ -1126,6 +1131,7 @@ export default function BattlePage() {
   const reset = () => {
     clearTimer();
     if(autoTimerRef.current) clearTimeout(autoTimerRef.current);
+    stopAmbient();
     setPhase("select"); setSelected(null); setOpponent(null);
     setMyStats(null); setOppStats(null); setAutoResult(null);
     setBattleResult(null); setTurnCount(0); setActionMsg("");
@@ -1152,7 +1158,7 @@ export default function BattlePage() {
   const myDangerRef = useRef(false);
   const oppDangerRef = useRef(false);
   useEffect(() => {
-    if (myDanger && !myDangerRef.current) sfx.danger();
+    if (myDanger && !myDangerRef.current) { sfx.danger(); navigator.vibrate?.([60,50,60]); }
     myDangerRef.current = myDanger;
   }, [myDanger]);
   useEffect(() => {
@@ -1502,7 +1508,7 @@ export default function BattlePage() {
                 {/* 아이템 사용 */}
                 {phase==="player_choose"&&(
                   <div className="mt-2">
-                    <button onClick={()=>setItemPanelOpen(o=>!o)}
+                    <button onClick={()=>{ sfx.click(); setItemPanelOpen(o=>!o); }}
                       className="w-full py-2 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1.5"
                       style={{ background:"rgba(255,180,0,0.14)", color:"#FFCC66" }}>
                       🎒 아이템 사용 {itemPanelOpen?"▲":"▼"}

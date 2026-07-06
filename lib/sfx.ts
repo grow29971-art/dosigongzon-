@@ -28,6 +28,77 @@ export function isSfxMuted(): boolean {
 export function setSfxMuted(muted: boolean) {
   if (typeof window === "undefined") return;
   localStorage.setItem(MUTE_KEY, muted ? "1" : "0");
+  if (ambientGain) {
+    const ac = ambientGain.context;
+    ambientGain.gain.cancelScheduledValues(ac.currentTime);
+    ambientGain.gain.linearRampToValueAtTime(muted ? 0 : ambientTargetVolume, ac.currentTime + 0.3);
+  }
+}
+
+// ── 환경 배경음(루프) ── 타격음과 별개로 배틀 배경(비/불씨/안개 등) 분위기를 계속 깔아준다.
+// 오디오 파일 없이 화이트노이즈 버퍼 + 밴드패스 필터로 합성 — 환경마다 주파수 대역만 다르게.
+let ambientNoiseBuffer: AudioBuffer | null = null;
+let ambientSource: AudioBufferSourceNode | null = null;
+let ambientGain: GainNode | null = null;
+let ambientTargetVolume = 0;
+
+function getNoiseBuffer(audioCtx: AudioContext): AudioBuffer {
+  if (ambientNoiseBuffer) return ambientNoiseBuffer;
+  const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+  ambientNoiseBuffer = buffer;
+  return buffer;
+}
+
+export function stopAmbient() {
+  if (ambientGain) {
+    const ac = ambientGain.context;
+    ambientGain.gain.cancelScheduledValues(ac.currentTime);
+    ambientGain.gain.linearRampToValueAtTime(0, ac.currentTime + 0.35);
+  }
+  const src = ambientSource;
+  if (src) setTimeout(() => { try { src.stop(); } catch { /* 이미 멈췄으면 무시 */ } }, 400);
+  ambientSource = null;
+  ambientGain = null;
+}
+
+export type AmbientEnv = "night" | "noon" | "rain" | "heat" | "fog";
+const AMBIENT_PRESET: Record<AmbientEnv, { freq: number; q: number; vol: number }> = {
+  rain:  { freq: 3200, q: 0.6, vol: 0.05 },
+  heat:  { freq: 900,  q: 1.2, vol: 0.035 },
+  fog:   { freq: 500,  q: 1.5, vol: 0.03 },
+  night: { freq: 700,  q: 2.0, vol: 0.022 },
+  noon:  { freq: 1600, q: 0.8, vol: 0.02 },
+};
+
+export function setAmbientEnv(env: AmbientEnv | null) {
+  stopAmbient();
+  if (!env) return;
+  const audioCtx = getCtx();
+  if (!audioCtx) return;
+
+  const src = audioCtx.createBufferSource();
+  src.buffer = getNoiseBuffer(audioCtx);
+  src.loop = true;
+
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = "bandpass";
+  const preset = AMBIENT_PRESET[env];
+  filter.frequency.value = preset.freq;
+  filter.Q.value = preset.q;
+
+  const gain = audioCtx.createGain();
+  gain.gain.value = 0;
+
+  src.connect(filter).connect(gain).connect(audioCtx.destination);
+  src.start();
+
+  ambientTargetVolume = preset.vol;
+  if (!isSfxMuted()) gain.gain.linearRampToValueAtTime(preset.vol, audioCtx.currentTime + 0.6);
+
+  ambientSource = src;
+  ambientGain = gain;
 }
 
 interface ToneOpts {
