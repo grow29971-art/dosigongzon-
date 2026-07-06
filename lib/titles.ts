@@ -6,7 +6,7 @@
 
 import type { MyActivitySummary } from "@/lib/cats-repo";
 
-export type TitleCategory = "register" | "record" | "alert" | "popular" | "invite" | "streak" | "carelog";
+export type TitleCategory = "register" | "record" | "alert" | "popular" | "invite" | "streak" | "carelog" | "battle";
 
 export interface TitleDef {
   id: string;
@@ -254,6 +254,89 @@ export const TITLES: TitleDef[] = [
     unlocked: (s) => s.likesReceived >= 200,
     progress: (s) => clamp01(s.likesReceived / 200),
   },
+
+  // ── 배틀/포획 (bossDefeats, bestWinStreak, perfectCatchCount) ──
+  {
+    id: "boss_slayer_1",
+    name: "고양이 구조자",
+    emoji: "🐱",
+    category: "battle",
+    description: "고양이학대범을 처음으로 격퇴했어요",
+    unlocked: (s) => s.bossDefeats >= 1,
+    progress: (s) => clamp01(s.bossDefeats / 1),
+  },
+  {
+    id: "boss_slayer_5",
+    name: "학대범의 천적",
+    emoji: "😾",
+    category: "battle",
+    description: "고양이학대범을 5번 격퇴했어요",
+    unlocked: (s) => s.bossDefeats >= 5,
+    progress: (s) => clamp01(s.bossDefeats / 5),
+  },
+  {
+    id: "boss_slayer_20",
+    name: "정의의 사도",
+    emoji: "⚔️",
+    category: "battle",
+    description: "고양이학대범을 20번 이상 격퇴한 수호자",
+    unlocked: (s) => s.bossDefeats >= 20,
+    progress: (s) => clamp01(s.bossDefeats / 20),
+  },
+  {
+    id: "win_streak_3",
+    name: "떠오르는 강자",
+    emoji: "🔥",
+    category: "battle",
+    description: "카드 배틀 3연승을 달성했어요",
+    unlocked: (s) => s.bestWinStreak >= 3,
+    progress: (s) => clamp01(s.bestWinStreak / 3),
+  },
+  {
+    id: "win_streak_10",
+    name: "무패의 기록",
+    emoji: "🏅",
+    category: "battle",
+    description: "카드 배틀 10연승을 달성했어요",
+    unlocked: (s) => s.bestWinStreak >= 10,
+    progress: (s) => clamp01(s.bestWinStreak / 10),
+  },
+  {
+    id: "win_streak_20",
+    name: "전투의 화신",
+    emoji: "🐉",
+    category: "battle",
+    description: "카드 배틀 20연승 — 누구도 막을 수 없는 기록",
+    unlocked: (s) => s.bestWinStreak >= 20,
+    progress: (s) => clamp01(s.bestWinStreak / 20),
+  },
+  {
+    id: "perfect_catch_1",
+    name: "포획의 감각",
+    emoji: "🥫",
+    category: "battle",
+    description: "완벽 포획을 처음 성공했어요",
+    unlocked: (s) => s.perfectCatchCount >= 1,
+    progress: (s) => clamp01(s.perfectCatchCount / 1),
+  },
+  {
+    id: "perfect_catch_10",
+    name: "포획의 달인",
+    emoji: "🎯",
+    category: "battle",
+    description: "완벽 포획을 10번 성공했어요",
+    unlocked: (s) => s.perfectCatchCount >= 10,
+    progress: (s) => clamp01(s.perfectCatchCount / 10),
+  },
+  {
+    id: "perfect_catch_30",
+    name: "포획의 전설",
+    emoji: "🌟",
+    category: "battle",
+    description: "완벽 포획 30번 — 손이 곧 눈인 사람",
+    unlocked: (s) => s.perfectCatchCount >= 30,
+    progress: (s) => clamp01(s.perfectCatchCount / 30),
+  },
 ];
 
 export const CATEGORY_LABELS: Record<TitleCategory, string> = {
@@ -264,6 +347,7 @@ export const CATEGORY_LABELS: Record<TitleCategory, string> = {
   invite: "초대",
   streak: "꾸준함",
   carelog: "돌봄다이어리",
+  battle: "배틀",
 };
 
 export const CATEGORY_COLORS: Record<TitleCategory, string> = {
@@ -274,6 +358,7 @@ export const CATEGORY_COLORS: Record<TitleCategory, string> = {
   invite: "#E86B8C",
   streak: "#E88D5A",
   carelog: "#A57C52",
+  battle: "#8B3A3A",
 };
 
 export interface TitleStatus extends TitleDef {

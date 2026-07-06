@@ -427,10 +427,17 @@ export async function POST(req: Request) {
   const myNewStreak  = result.attackerWins ? (myCat.win_streak ?? 0) + 1 : 0;
   const oppNewStreak = result.attackerWins ? 0 : (opponent.win_streak ?? 0) + 1;
 
+  // 배틀 타이틀 카운터 — box/supabase_battle_titles_migration.sql 실행 전이면 조용히 0으로 취급될 뿐,
+  // 코인 지급(위 newCoins)과는 완전히 분리된 쿼리라 마이그레이션 여부와 무관하게 안전함
+  const { data: battleProfile } = await svc.from("profiles").select("boss_defeats,best_win_streak").eq("id", user.id).maybeSingle();
+  const newBossDefeats = (battleProfile?.boss_defeats ?? 0) + (isBossEncounter && result.attackerWins ? 1 : 0);
+  const newBestStreak = Math.max(battleProfile?.best_win_streak ?? 0, myNewStreak);
+
   await Promise.all([
     svc.from("cats").update({ card_exp: myNewExp,  card_level: computeLevel(myNewExp),  win_streak: myNewStreak  }).eq("id", myCat.id),
     isBossEncounter ? Promise.resolve() : svc.from("cats").update({ card_exp: oppNewExp, card_level: computeLevel(oppNewExp), win_streak: oppNewStreak }).eq("id", opponent.id),
     svc.from("profiles").update({ coins: newCoins }).eq("id", user.id),
+    svc.from("profiles").update({ boss_defeats: newBossDefeats, best_win_streak: newBestStreak }).eq("id", user.id),
     isBossEncounter ? Promise.resolve() : svc.from("card_battles").insert({
       challenger_id:     user.id,
       challenger_cat_id: myCat.id,
