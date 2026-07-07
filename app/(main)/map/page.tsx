@@ -1698,7 +1698,7 @@ export default function MapPage() {
           <div className="mt-2 pointer-events-auto">
             <div className="flex items-center gap-1.5">
               <div
-                className="flex-1 flex items-center gap-2 px-3 py-2 rounded-2xl"
+                className="flex-1 flex items-center gap-2 px-3.5 py-2 rounded-full"
                 style={{
                   background: "rgba(255,255,255,0.95)",
                   backdropFilter: "blur(8px)",
@@ -1727,7 +1727,7 @@ export default function MapPage() {
               <button
                 type="button"
                 onClick={() => setShowFilterPanel((v) => !v)}
-                className="w-9 h-9 rounded-2xl flex items-center justify-center active:scale-90 shrink-0"
+                className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90 shrink-0"
                 style={{
                   background: catFilter !== "all" || showFilterPanel
                     ? "#5C8DEE"
@@ -2096,7 +2096,7 @@ export default function MapPage() {
         <div className="absolute bottom-6 right-4 z-30 flex flex-col gap-2.5 items-end">
           <button
             onClick={handleLocateMe}
-            className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center active:scale-90 transition-transform"
+            className="w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
             style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.12)" }}
             aria-label="내 위치"
           >
@@ -2107,7 +2107,7 @@ export default function MapPage() {
             {isLoggedIn && !cats.some((c) => c.caretaker_id === user?.id) && (
               <>
                 <span
-                  className="absolute inset-0 rounded-[18px] animate-ping"
+                  className="absolute inset-0 rounded-full animate-ping"
                   style={{ background: "rgba(92,141,238,0.45)" }}
                   aria-hidden="true"
                 />
@@ -2124,8 +2124,8 @@ export default function MapPage() {
             )}
             <button
               onClick={handleAddClick}
-              className="relative w-13 h-13 rounded-[18px] bg-primary flex items-center justify-center fab-shadow active:scale-90 transition-transform"
-              style={{ width: 52, height: 52 }}
+              className="relative rounded-full bg-primary flex items-center justify-center fab-shadow active:scale-90 transition-transform"
+              style={{ width: 56, height: 56, boxShadow: "0 4px 16px rgba(92,141,238,0.45), 0 0 0 4px #fff" }}
               aria-label="고양이 등록"
             >
               <Plus size={26} color="#fff" strokeWidth={2.5} />
@@ -2610,16 +2610,16 @@ export default function MapPage() {
             }}
           >
 
-            {/* 카드 페이스 — 포획 카드 등급 색상으로 테마링된 상단 영역 */}
-            <div style={{ background: catCardTheme.bg }}>
-              {/* 등급 바: 등급 뱃지 · 레벨 · 도감번호 */}
+            {/* 카드 페이스 — 포켓몬GO식 "인카운터" 헤더: 속성 컬러 리본 + 원형 사진 */}
+            <div style={{ background: "#fff" }}>
+              {/* 속성 리본: 등급 뱃지 · 레벨 · 도감번호 — 진한 속성색 배경(GO 인카운터 카드 톤) */}
               <div
                 className="flex items-center justify-between px-3.5"
-                style={{ height: 30, background: catCardTheme.topBar }}
+                style={{ height: 34, background: catCardTheme.typeBg }}
               >
                 <span
-                  className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-extrabold tracking-wide"
-                  style={{ background: catCardTheme.typeBg, color: "rgba(255,255,255,0.9)" }}
+                  className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-extrabold tracking-wide"
+                  style={{ background: "rgba(255,255,255,0.25)", color: "#fff" }}
                 >
                   <span>{catCardTheme.typeIcon}</span>
                   <span>{catCardTheme.label}</span>
@@ -2628,22 +2628,22 @@ export default function MapPage() {
                   {selectedCat.card_level != null && selectedCat.card_level > 1 && (
                     <span
                       className="rounded-full px-2 py-0.5 text-[10px] font-black"
-                      style={{ background: "rgba(255,255,255,0.18)", color: catCardTheme.hpColor }}
+                      style={{ background: "rgba(255,255,255,0.25)", color: "#fff" }}
                     >
                       Lv.{selectedCat.card_level}
                     </span>
                   )}
-                  <span className="text-[10px] font-bold" style={{ color: "rgba(255,255,255,0.6)" }}>
+                  <span className="text-[10px] font-bold" style={{ color: "rgba(255,255,255,0.85)" }}>
                     No.{catDexNo}
                   </span>
                 </div>
               </div>
 
-              {/* 사진 — 변환 endpoint로 모바일 폭에 맞춰 리사이즈 (원본 4MB → ~50KB), 등급 색상 액자 프레임 */}
-              <div className="px-2.5 pt-2.5 pb-3">
+              {/* 사진 — 둥근 원형 프레임(도감 인카운터 느낌), 흰 배경 위에 살짝 띄워서 */}
+              <div className="px-4 pt-4 pb-1 flex justify-center" style={{ background: `linear-gradient(180deg, ${catCardTheme.typeBg}22, transparent 70%)` }}>
                 <div
-                  className="relative aspect-[4/3] overflow-hidden bg-surface-alt rounded-2xl"
-                  style={{ boxShadow: `inset 0 0 0 2.5px ${catCardTheme.frameInner}bb` }}
+                  className="relative overflow-hidden bg-surface-alt rounded-full"
+                  style={{ width: 148, height: 148, boxShadow: `0 0 0 5px #fff, 0 0 0 8px ${catCardTheme.typeBg}, 0 8px 20px rgba(0,0,0,0.15)` }}
                 >
                   {selectedCat.photo_url ? (
                     <img
@@ -2654,39 +2654,37 @@ export default function MapPage() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-text-light">
-                      <MapPin size={48} strokeWidth={1.2} />
+                      <MapPin size={40} strokeWidth={1.2} />
                     </div>
                   )}
-                  <div
-                    className="absolute inset-0"
-                    style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 50%)" }}
-                  />
-                  <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
-                    {selectedCat.region && (
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm">
-                        <MapPin size={12} className="text-primary" />
-                        <span className="text-[12px] font-bold text-text-main">{selectedCat.region}</span>
-                      </div>
-                    )}
-                    {selectedCat.caretaker_name && (
-                      <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm ml-auto">
-                        <Heart size={11} className="text-primary" fill="currentColor" />
-                        <span className="text-[11px] font-semibold text-text-sub">
-                          {selectedCat.caretaker_name} 돌봄중
-                        </span>
-                      </div>
-                    )}
-                  </div>
                 </div>
-                {selectedCat.card_flavor && (
-                  <p
-                    className="text-[11px] italic leading-relaxed px-1.5 py-2.5"
-                    style={{ color: "rgba(255,255,255,0.85)", borderLeft: `2px solid ${catCardTheme.accent}`, margin: "8px 2px 0" }}
-                  >
-                    &ldquo;{selectedCat.card_flavor}&rdquo;
-                  </p>
+              </div>
+
+              <div className="px-4 pb-2 flex items-center justify-center gap-2 flex-wrap">
+                {selectedCat.region && (
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: "#F1F0F5" }}>
+                    <MapPin size={12} className="text-primary" />
+                    <span className="text-[12px] font-bold text-text-main">{selectedCat.region}</span>
+                  </div>
+                )}
+                {selectedCat.caretaker_name && (
+                  <div className="flex items-center gap-1 px-3 py-1.5 rounded-full" style={{ background: "#F1F0F5" }}>
+                    <Heart size={11} className="text-primary" fill="currentColor" />
+                    <span className="text-[11px] font-semibold text-text-sub">
+                      {selectedCat.caretaker_name} 돌봄중
+                    </span>
+                  </div>
                 )}
               </div>
+
+              {selectedCat.card_flavor && (
+                <p
+                  className="text-[11px] italic leading-relaxed px-4 py-2.5 text-center"
+                  style={{ color: "#8A8598" }}
+                >
+                  &ldquo;{selectedCat.card_flavor}&rdquo;
+                </p>
+              )}
             </div>
 
             {/* 정보 */}
