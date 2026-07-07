@@ -2491,52 +2491,55 @@ export default function MapPage() {
           className="absolute bottom-0 left-0 right-0 z-20 px-4 pb-4 pointer-events-none"
           style={{ paddingTop: "max(env(safe-area-inset-top), 12px)" }}
         >
-          {/* 카드 바깥 floating 컨트롤 — 스크롤과 무관하게 항상 보임. 상단 safe area 위에 위치. */}
-          <div className="flex justify-end items-center gap-2 mb-2 pr-1 pointer-events-auto">
-            {(user?.id === selectedCat.caretaker_id || isAdmin) && !editingCat && (
-              <>
-                <button
-                  onClick={() => {
-                    setEditingCat(true);
-                    setEditName(selectedCat.name);
-                    setEditDesc(selectedCat.description ?? "");
-                    setEditRegion(selectedCat.region ?? "");
-                    setEditTags(selectedCat.tags ?? []);
-                    setEditGender(selectedCat.gender ?? "unknown");
-                    setEditNeutered(selectedCat.neutered ?? null);
-                    setEditHealth(selectedCat.health_status ?? "good");
-                    setEditAdoption(selectedCat.adoption_status ?? null);
-                    setEditVisibility(selectedCat.visibility ?? "public");
-                    setEditLat(null);
-                    setEditLng(null);
-                  }}
-                  className="w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
-                  style={{ boxShadow: "0 4px 14px rgba(0,0,0,0.18)" }}
-                  aria-label="수정"
-                >
-                  <Pencil size={17} className="text-primary" />
-                </button>
-                <button
-                  onClick={async () => {
-                    if (!confirm(`"${selectedCat.name}" 을(를) 삭제할까요?`)) return;
-                    try {
-                      await deleteCat(selectedCat.id);
-                      setCats((prev) => prev.filter((c) => c.id !== selectedCat.id));
-                      invalidateMapCatsCache();
-                      setSelectedCat(null);
-                    } catch (err) {
-                      toast.error(err instanceof Error ? err.message : "삭제 실패");
-                    }
-                  }}
-                  className="w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-transform"
-                  style={{ background: "#D85555", boxShadow: "0 4px 14px rgba(216,85,85,0.40)" }}
-                  aria-label="삭제"
-                >
-                  <Trash2 size={17} color="#fff" />
-                </button>
-              </>
-            )}
-          </div>
+          {/* 본인 고양이면 수정/삭제 — 닫기 버튼과 마찬가지로 카드 높이와 무관하게
+              항상 화면 상단에 고정(예전엔 카드 내부 흐름에 있어서 내용이 짧으면
+              화면 아래쪽에 묻혀 안 보이거나 놓치기 쉬웠음) */}
+          {(user?.id === selectedCat.caretaker_id || isAdmin) && !editingCat && (
+            <div
+              className="fixed flex items-center gap-2 pointer-events-auto"
+              style={{ top: "calc(env(safe-area-inset-top) + 12px)", left: 16, zIndex: 30 }}
+            >
+              <button
+                onClick={() => {
+                  setEditingCat(true);
+                  setEditName(selectedCat.name);
+                  setEditDesc(selectedCat.description ?? "");
+                  setEditRegion(selectedCat.region ?? "");
+                  setEditTags(selectedCat.tags ?? []);
+                  setEditGender(selectedCat.gender ?? "unknown");
+                  setEditNeutered(selectedCat.neutered ?? null);
+                  setEditHealth(selectedCat.health_status ?? "good");
+                  setEditAdoption(selectedCat.adoption_status ?? null);
+                  setEditVisibility(selectedCat.visibility ?? "public");
+                  setEditLat(null);
+                  setEditLng(null);
+                }}
+                className="w-11 h-11 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
+                style={{ boxShadow: "0 4px 14px rgba(0,0,0,0.18)" }}
+                aria-label="수정"
+              >
+                <Pencil size={17} className="text-primary" />
+              </button>
+              <button
+                onClick={async () => {
+                  if (!confirm(`"${selectedCat.name}" 을(를) 삭제할까요?`)) return;
+                  try {
+                    await deleteCat(selectedCat.id);
+                    setCats((prev) => prev.filter((c) => c.id !== selectedCat.id));
+                    invalidateMapCatsCache();
+                    setSelectedCat(null);
+                  } catch (err) {
+                    toast.error(err instanceof Error ? err.message : "삭제 실패");
+                  }
+                }}
+                className="w-11 h-11 rounded-full flex items-center justify-center active:scale-90 transition-transform"
+                style={{ background: "#D85555", boxShadow: "0 4px 14px rgba(216,85,85,0.40)" }}
+                aria-label="삭제"
+              >
+                <Trash2 size={17} color="#fff" />
+              </button>
+            </div>
+          )}
 
           {/* 닫기 버튼 — 카드 높이와 무관하게 항상 화면 우측 상단에 고정 */}
           <button
