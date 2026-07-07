@@ -195,7 +195,7 @@ export default function KeyringEventPage() {
                 className="h-full rounded-full transition-all"
                 style={{
                   width: `${Math.min((memberCount / 1000) * 100, 100)}%`,
-                  background: "linear-gradient(90deg, #4C82BC 0%, #E88D5A 100%)",
+                  background: "linear-gradient(90deg, #4C82BC 0%, #5BC4C4 100%)",
                 }}
               />
             </div>

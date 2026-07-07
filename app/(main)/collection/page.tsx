@@ -70,7 +70,7 @@ export default function CollectionPage() {
                 </p>
               </div>
               <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "rgba(76,130,188,0.15)" }}>
-                <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: "linear-gradient(90deg, #4C82BC 0%, #E88D5A 100%)" }} />
+                <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: "linear-gradient(90deg, #4C82BC 0%, #5BC4C4 100%)" }} />
               </div>
               <p className="text-[11px] text-text-sub mt-2 leading-snug">
                 만난 고양이는 컬러로, 아직 못 만난 아이는 실루엣으로 보여요. 돌봄·댓글을 남기면 도감이 채워져요 🐾

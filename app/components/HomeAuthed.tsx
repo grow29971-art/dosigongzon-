@@ -585,7 +585,7 @@ export default function HomeAuthed({
                   className="h-full rounded-full transition-all"
                   style={{
                     width: `${Math.max(levelInfo.progress * 100, 4)}%`,
-                    background: "linear-gradient(90deg, #4C82BC 0%, #E8B040 100%)",
+                    background: "linear-gradient(90deg, #4C82BC 0%, #5BC4C4 100%)",
                   }}
                 />
               </div>

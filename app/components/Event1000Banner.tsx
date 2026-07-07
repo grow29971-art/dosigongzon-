@@ -40,7 +40,7 @@ export default async function Event1000Banner() {
         style={{
           background: reached
             ? "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)"
-            : "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 50%, #8E5440 100%)",
+            : "linear-gradient(135deg, #5C93D8 0%, #4C82BC 55%, #3E6FA8 100%)",
           boxShadow: reached
             ? "0 12px 32px rgba(107,142,111,0.30)"
             : "0 12px 32px rgba(76,130,188,0.30)",

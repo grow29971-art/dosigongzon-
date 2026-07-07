@@ -493,13 +493,13 @@ export default function MyPage() {
                   </div>
                   <div
                     className="h-2 rounded-full overflow-hidden"
-                    style={{ backgroundColor: "#EEE8E0" }}
+                    style={{ backgroundColor: "#EAF0FB" }}
                   >
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
                         width: `${lv.progress * 100}%`,
-                        background: "linear-gradient(90deg, #4C82BC 0%, #E88D5A 100%)",
+                        background: "linear-gradient(90deg, #4C82BC 0%, #5BC4C4 100%)",
                         boxShadow: "0 0 8px rgba(76,130,188,0.5)",
                       }}
                     />
