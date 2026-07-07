@@ -101,7 +101,7 @@ export default function RegionsIndexPage() {
           href={SEOUL_HIGHLIGHT.href}
           className="block rounded-2xl p-4 active:scale-[0.98] transition-transform"
           style={{
-            background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+            background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
             boxShadow: "0 8px 24px rgba(92,141,238,0.30)",
           }}
         >

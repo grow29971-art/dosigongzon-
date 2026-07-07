@@ -103,7 +103,7 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
         <Link
           href="/map"
           className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white text-[13px] font-extrabold active:scale-[0.98] transition-transform"
-          style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
+          style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)" }}
         >
           <PawPrint size={14} /> 우리 동네 고양이 등록하기 <ChevronRight size={13} />
         </Link>

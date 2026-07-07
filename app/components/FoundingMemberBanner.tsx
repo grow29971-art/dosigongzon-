@@ -71,12 +71,12 @@ export default function FoundingMemberBanner() {
         style={{ background: "rgba(92,141,238,0.10)" }}
         aria-label="배너 닫기"
       >
-        <X size={14} color="#A8684A" />
+        <X size={14} color="#8B6FE0" />
       </button>
       <div className="flex items-start gap-3 pr-7">
         <div
           className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-          style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
+          style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)" }}
         >
           <Sparkles size={20} color="#FFFFFF" />
         </div>

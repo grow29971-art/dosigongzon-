@@ -143,7 +143,7 @@ export default function WritePage() {
             <div className="flex items-start gap-2.5">
               <div
                 className="w-9 h-9 rounded-xl shrink-0 flex items-center justify-center"
-                style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
+                style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)" }}
               >
                 <PawPrint size={17} color="#fff" strokeWidth={2.3} />
               </div>
@@ -158,7 +158,7 @@ export default function WritePage() {
                 <Link
                   href="/map"
                   className="inline-flex items-center gap-1 mt-2 text-[11.5px] font-extrabold"
-                  style={{ color: "#A8684A" }}
+                  style={{ color: "#8B6FE0" }}
                 >
                   지도로 가서 등록하기
                   <ArrowRight size={11} />

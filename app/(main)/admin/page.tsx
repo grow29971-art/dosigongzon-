@@ -163,7 +163,7 @@ export default function AdminDashboardPage() {
       title: "숏폼 영상 관리",
       subtitle: "영상 업로드·정렬·발행",
       Icon: Film,
-      color: "#A8684A",
+      color: "#8B6FE0",
     },
     {
       href: "/admin/weekly-issues",

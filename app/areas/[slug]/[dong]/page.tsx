@@ -254,14 +254,14 @@ export default async function AreaDongPage({ params }: { params: Params }) {
               <br />
               곧 {dongName}에도 따뜻한 지도가 생겨요.
               <br />
-              <b style={{ color: "#A8684A" }}>출시 기념 — 지금 합류하시면 창립 멤버 타이틀을 영구 드려요.</b>
+              <b style={{ color: "#8B6FE0" }}>출시 기념 — 지금 합류하시면 창립 멤버 타이틀을 영구 드려요.</b>
             </p>
             <div className="flex gap-2">
               <Link
                 href={`/signup?next=${encodeURIComponent(`/areas/${slug}/${encodeURIComponent(dongName)}`)}`}
                 className="flex-[1.5] flex items-center justify-center py-2.5 rounded-xl text-white text-[12.5px] font-extrabold active:scale-[0.98] transition-transform"
                 style={{
-                  background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                  background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
                   boxShadow: "0 4px 14px rgba(92,141,238,0.35)",
                 }}
               >
@@ -271,7 +271,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
                 href={`/areas/${slug}`}
                 className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.98] transition-transform bg-white"
                 style={{
-                  color: "#A8684A",
+                  color: "#8B6FE0",
                   border: "1px solid rgba(92,141,238,0.30)",
                 }}
               >

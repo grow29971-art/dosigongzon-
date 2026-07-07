@@ -308,7 +308,7 @@ export default function MyPage() {
               disabled={avatarUploading}
               className="relative w-16 h-16 rounded-[20px] flex items-center justify-center shrink-0 overflow-hidden active:scale-95 transition-transform"
               style={{
-                background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
                 boxShadow: "0 6px 14px rgba(92,141,238,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",
               }}
               aria-label="프로필 사진 변경"
@@ -420,7 +420,7 @@ export default function MyPage() {
                   {joinedDays > 0 && (
                     <span
                       className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-full text-[10.5px] font-extrabold"
-                      style={{ background: "rgba(92,141,238,0.12)", color: "#A8684A" }}
+                      style={{ background: "rgba(92,141,238,0.12)", color: "#8B6FE0" }}
                     >
                       🐾 첫 등록 후 {joinedDays}일째 함께 돌봐요
                     </span>
@@ -466,7 +466,7 @@ export default function MyPage() {
                     <div className="flex items-baseline gap-2">
                       <span
                         className="text-[11px] font-extrabold tracking-wider"
-                        style={{ color: "#A8684A" }}
+                        style={{ color: "#8B6FE0" }}
                       >
                         LV.{lv.level}
                       </span>
@@ -1268,7 +1268,7 @@ export default function MyPage() {
             <div
               className="w-14 h-14 rounded-[18px] flex items-center justify-center shrink-0"
               style={{
-                background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
                 boxShadow: "0 6px 14px rgba(92,141,238,0.35)",
               }}
             >

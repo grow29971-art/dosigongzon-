@@ -26,7 +26,7 @@ export default function AIChatCard() {
           <div
             className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
             style={{
-              background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+              background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
               boxShadow: "0 5px 12px rgba(92,141,238,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)",
             }}
           >
@@ -62,7 +62,7 @@ export default function AIChatCard() {
             aria-label="AI 집사에게 질문하기"
             className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 active:scale-90 transition-transform"
             style={{
-              background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+              background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
               boxShadow: "0 4px 10px rgba(92,141,238,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",
             }}
           >

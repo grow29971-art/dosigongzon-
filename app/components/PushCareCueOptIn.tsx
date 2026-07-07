@@ -94,7 +94,7 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
           <Bell size={17} color="#fff" strokeWidth={2.3} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#A8684A" }}>매일 6시 알림</p>
+          <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#8B6FE0" }}>매일 6시 알림</p>
           <p className="text-[13px] font-extrabold text-text-main leading-tight mt-0.5">
             🍚 내 아이 한 끼 챙길 시간, 알려드릴까요?
           </p>

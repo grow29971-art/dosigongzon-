@@ -291,10 +291,10 @@ export default async function AboutPage() {
 
         {/* Values — 3 핵심 가치 */}
         <div className="flex items-center gap-1.5 mb-2 ml-1 mt-4">
-          <Sparkles size={14} style={{ color: "#A8684A" }} />
+          <Sparkles size={14} style={{ color: "#8B6FE0" }} />
           <span
             className="text-[10px] font-extrabold tracking-[0.18em]"
-            style={{ color: "#A8684A" }}
+            style={{ color: "#8B6FE0" }}
           >
             VALUES
           </span>
@@ -304,7 +304,7 @@ export default async function AboutPage() {
             n={1}
             icon={<Users size={16} color="#FFFFFF" />}
             accent="#5C8DEE"
-            accentDark="#A8684A"
+            accentDark="#8B6FE0"
             title="연대"
             body="우리는 저마다 다른 문화·환경에서 각기 다른 삶을 살아왔지만, 인류라는 공통점을 가진 형제들이다. 항상 서로의 생각·개성·성향을 존중하고 형제애를 중요시한다."
           />
@@ -365,10 +365,10 @@ export default async function AboutPage() {
               className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
               style={{ background: "rgba(92,141,238,0.15)" }}
             >
-              <Code2 size={22} style={{ color: "#A8684A" }} />
+              <Code2 size={22} style={{ color: "#8B6FE0" }} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[10.5px] font-extrabold tracking-[0.12em]" style={{ color: "#A8684A" }}>
+              <p className="text-[10.5px] font-extrabold tracking-[0.12em]" style={{ color: "#8B6FE0" }}>
                 MADE BY ONE NEIGHBOR
               </p>
               <p className="text-[15px] font-extrabold text-text-main">김성우 · 1인 풀스택 메이커</p>
@@ -442,7 +442,7 @@ export default async function AboutPage() {
             href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("[도시공존] 안녕하세요")}`}
             className="mt-4 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12.5px] font-extrabold text-white active:scale-[0.98] transition-transform"
             style={{
-              background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+              background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
               boxShadow: "0 4px 12px rgba(92,141,238,0.3)",
             }}
           >
@@ -487,7 +487,7 @@ export default async function AboutPage() {
           <ProductCard
             icon={<Flame size={22} color="#FFFFFF" />}
             accent="#5C8DEE"
-            accentDark="#A8684A"
+            accentDark="#8B6FE0"
             badge="개발 중"
             title="고양이난로"
             desc={
@@ -764,7 +764,7 @@ function SkillBadge({
       className="rounded-xl p-2.5 bg-white"
       style={{ border: "1px solid rgba(92,141,238,0.18)" }}
     >
-      <div className="flex items-center gap-1.5 mb-0.5" style={{ color: "#A8684A" }}>
+      <div className="flex items-center gap-1.5 mb-0.5" style={{ color: "#8B6FE0" }}>
         {icon}
         <p className="text-[11.5px] font-extrabold tracking-tight text-text-main">{title}</p>
       </div>

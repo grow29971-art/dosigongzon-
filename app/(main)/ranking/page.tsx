@@ -103,7 +103,7 @@ export default async function RankingPage() {
           >
             <div className="text-[26px] leading-none shrink-0">{isTop3 ? "🎉" : "🐾"}</div>
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-extrabold tracking-[0.15em]" style={{ color: isTop3 ? "#A9851F" : "#A8684A" }}>
+              <p className="text-[10px] font-extrabold tracking-[0.15em]" style={{ color: isTop3 ? "#A9851F" : "#8B6FE0" }}>
                 이번 주 내 순위
               </p>
               <p className="text-[15px] font-extrabold text-text-main leading-tight mt-0.5">

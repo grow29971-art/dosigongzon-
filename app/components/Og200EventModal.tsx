@@ -132,14 +132,14 @@ export default function Og200EventModal() {
           <p className="text-[13px] leading-relaxed text-text-main mb-4">
             정식 출시 전, 도시공존에 가장 먼저 합류한
             {" "}초기 멤버에게만 영구 한정 타이틀
-            {" "}<b style={{ color: "#A8684A" }}>🌟 초기 200</b>이 자동 부여됐어요.
+            {" "}<b style={{ color: "#8B6FE0" }}>🌟 초기 200</b>이 자동 부여됐어요.
           </p>
 
           <div
             className="rounded-2xl px-4 py-3 mb-4 text-[11.5px] leading-relaxed"
             style={{ background: "#FFF9EF", color: "#7A5F3F" }}
           >
-            <p className="font-extrabold mb-1" style={{ color: "#A8684A" }}>
+            <p className="font-extrabold mb-1" style={{ color: "#8B6FE0" }}>
               💎 이런 의미예요
             </p>
             <ul className="space-y-1 pl-1">
@@ -161,7 +161,7 @@ export default function Og200EventModal() {
               onClick={dismiss}
               className="flex-[1.4] flex items-center justify-center py-3 rounded-2xl text-white text-[13px] font-extrabold active:scale-[0.98]"
               style={{
-                background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
                 boxShadow: "0 4px 14px rgba(92,141,238,0.4)",
               }}
             >
@@ -171,7 +171,7 @@ export default function Og200EventModal() {
               type="button"
               onClick={dismiss}
               className="flex-1 py-3 rounded-2xl text-[13px] font-extrabold active:scale-[0.98] bg-white"
-              style={{ color: "#A8684A", border: "1.5px solid rgba(92,141,238,0.30)" }}
+              style={{ color: "#8B6FE0", border: "1.5px solid rgba(92,141,238,0.30)" }}
             >
               나중에
             </button>

@@ -89,7 +89,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
           >
             🐾
           </div>
-          <span style={{ fontSize: 24, fontWeight: 800, color: "#A8684A" }}>도시공존</span>
+          <span style={{ fontSize: 24, fontWeight: 800, color: "#8B6FE0" }}>도시공존</span>
         </div>
 
         {/* 메인 — 지역명 강조 */}

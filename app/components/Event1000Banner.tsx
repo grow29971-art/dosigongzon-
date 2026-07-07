@@ -40,7 +40,7 @@ export default async function Event1000Banner() {
         style={{
           background: reached
             ? "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)"
-            : "linear-gradient(135deg, #5C8DEE 0%, #A8684A 50%, #8E5440 100%)",
+            : "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 50%, #8E5440 100%)",
           boxShadow: reached
             ? "0 12px 32px rgba(107,142,111,0.30)"
             : "0 12px 32px rgba(92,141,238,0.30)",
@@ -128,7 +128,7 @@ export default async function Event1000Banner() {
             <Link
               href="/event/keyring"
               className="mt-4 w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-extrabold active:scale-[0.97] transition-transform"
-              style={{ background: "#FFFFFF", color: "#A8684A" }}
+              style={{ background: "#FFFFFF", color: "#8B6FE0" }}
             >
               응모하기
               <ArrowRight size={14} />

@@ -17,7 +17,7 @@ export default function SplashLoading() {
       <div
         className="relative w-[88px] h-[88px] rounded-[28px] flex items-center justify-center mb-5"
         style={{
-          background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+          background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
           boxShadow:
             "0 16px 40px rgba(92,141,238,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -3px 6px rgba(0,0,0,0.1)",
           animation: "splash-pulse 1.8s ease-in-out infinite",

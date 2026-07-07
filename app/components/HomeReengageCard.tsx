@@ -85,11 +85,11 @@ export default function HomeReengageCard({ quietCat, regionName, neighborhoodCat
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 text-xl" style={{ background: "rgba(92,141,238,0.12)" }}>🗺️</div>
           <div className="flex-1 min-w-0">
-            <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#A8684A" }}>우리 동네</p>
+            <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#8B6FE0" }}>우리 동네</p>
             <p className="text-[13.5px] font-extrabold text-text-main leading-tight mt-0.5">활동 지역을 설정해보세요</p>
             <p className="text-[11px] text-text-sub mt-0.5 truncate">우리 동네 고양이·소식을 모아드려요</p>
           </div>
-          <ChevronRight size={14} style={{ color: "#A8684A" }} className="shrink-0" />
+          <ChevronRight size={14} style={{ color: "#8B6FE0" }} className="shrink-0" />
         </div>
       </Link>
     );
@@ -103,7 +103,7 @@ export default function HomeReengageCard({ quietCat, regionName, neighborhoodCat
       <Link href="/map" className="flex items-center gap-3 px-3.5 py-3 active:scale-[0.99] transition-transform">
         <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-lg" style={{ background: "rgba(92,141,238,0.12)" }}>🗺️</div>
         <div className="flex-1 min-w-0">
-          <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#A8684A" }}>우리 동네 · {regionName}</p>
+          <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#8B6FE0" }}>우리 동네 · {regionName}</p>
           <p className="text-[13.5px] font-extrabold text-text-main leading-tight mt-0.5 truncate">
             {neighborhoodCatCount > 0 ? (
               <>돌보는 고양이 <b style={{ color: "#5C8DEE" }}>{neighborhoodCatCount}마리</b> 지도에서 보기</>

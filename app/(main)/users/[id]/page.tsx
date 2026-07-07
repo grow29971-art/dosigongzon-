@@ -111,7 +111,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
               style={{
                 background: profile.avatar_url
                   ? `url('${profile.avatar_url}') center/cover`
-                  : "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                  : "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
                 border: "3px solid #fff",
                 boxShadow: "0 6px 16px rgba(0,0,0,0.1)",
               }}

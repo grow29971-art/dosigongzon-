@@ -1852,7 +1852,7 @@ export default function MapPage() {
                 href="/mypage/activity-regions"
                 className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-all shrink-0"
                 style={{
-                  background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                  background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
                   color: "#fff",
                   boxShadow: "0 2px 8px rgba(92,141,238,0.35)",
                 }}
@@ -2733,7 +2733,7 @@ export default function MapPage() {
                         </p>
                         <p
                           className="text-[10.5px] mt-0.5 leading-snug"
-                          style={{ color: hasTodayPhoto ? "#5F8F73" : "#A8684A" }}
+                          style={{ color: hasTodayPhoto ? "#5F8F73" : "#8B6FE0" }}
                         >
                           {hasTodayPhoto
                             ? "다이어리에 차곡차곡 쌓이고 있어요"

@@ -58,7 +58,7 @@ export default async function CelebratePage() {
 
       {/* 히어로 — 출시 축하 */}
       <section className="px-5 pt-8 text-center">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mb-4" style={{ background: "rgba(92,141,238,0.12)", color: "#A8684A" }}>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mb-4" style={{ background: "rgba(92,141,238,0.12)", color: "#8B6FE0" }}>
           <Sparkles size={12} />
           <span className="text-[10.5px] font-extrabold tracking-[0.18em]">OFFICIAL LAUNCH · 2026.06.01</span>
         </div>
@@ -75,7 +75,7 @@ export default async function CelebratePage() {
 
       {/* 누적 통계 */}
       <section className="px-5 mt-8">
-        <p className="text-[10.5px] font-extrabold tracking-[0.18em] text-center mb-3" style={{ color: "#A8684A" }}>
+        <p className="text-[10.5px] font-extrabold tracking-[0.18em] text-center mb-3" style={{ color: "#8B6FE0" }}>
           THIS FAR, TOGETHER
         </p>
         <div className="grid grid-cols-3 gap-2">
@@ -84,7 +84,7 @@ export default async function CelebratePage() {
             value={stats.cats.toLocaleString()}
             label="등록된 아이들"
             color="#5C8DEE"
-            accent="#A8684A"
+            accent="#8B6FE0"
           />
           <StatBlock
             icon={<Users size={18} color="#fff" />}
@@ -127,7 +127,7 @@ export default async function CelebratePage() {
             앞으로도 한 분 한 분의 손이 헛되지 않게,
             끝까지 함께하겠습니다.
           </p>
-          <p className="text-[12px] mt-5 text-right" style={{ color: "#A8684A" }}>
+          <p className="text-[12px] mt-5 text-right" style={{ color: "#8B6FE0" }}>
             — 도시공존 운영자 김성우 드림 🐾
           </p>
         </div>
@@ -161,7 +161,7 @@ export default async function CelebratePage() {
           href="/map"
           className="block w-full text-center py-3.5 rounded-2xl text-[14px] font-extrabold text-white active:scale-[0.98] transition-transform"
           style={{
-            background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+            background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
             boxShadow: "0 6px 18px rgba(92,141,238,0.35)",
           }}
         >
@@ -170,7 +170,7 @@ export default async function CelebratePage() {
         <Link
           href="/maker"
           className="block w-full text-center py-2.5 rounded-2xl text-[12.5px] font-bold mt-2 active:scale-[0.98]"
-          style={{ background: "#FFFFFF", color: "#A8684A", border: "1px solid rgba(92,141,238,0.25)" }}
+          style={{ background: "#FFFFFF", color: "#8B6FE0", border: "1px solid rgba(92,141,238,0.25)" }}
         >
           운영 이야기 보기
         </Link>

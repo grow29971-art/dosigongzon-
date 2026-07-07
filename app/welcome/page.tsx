@@ -378,7 +378,7 @@ function WelcomeContent() {
 const SLIDES = [
   {
     bg: "linear-gradient(170deg, #5C8DEE 0%, #8AAEF5 50%, #E8B07C 100%)",
-    accent: "#A8684A",
+    accent: "#8B6FE0",
     Icon: PartyPopper,
     title: "",
     body: "",

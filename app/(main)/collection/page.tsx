@@ -27,7 +27,7 @@ export default function CollectionPage() {
       {/* 헤더 */}
       <div className="sticky top-0 z-10 flex items-center gap-2 px-4 py-3" style={{ background: "rgba(255,253,248,0.92)", backdropFilter: "blur(8px)", borderBottom: "1px solid rgba(92,141,238,0.12)" }}>
         <Link href="/" className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform" style={{ background: "rgba(92,141,238,0.1)" }} aria-label="홈으로">
-          <ChevronLeft size={18} style={{ color: "#A8684A" }} />
+          <ChevronLeft size={18} style={{ color: "#8B6FE0" }} />
         </Link>
         <h1 className="text-[16px] font-extrabold text-text-main tracking-tight">우리 동네 고양이 도감</h1>
       </div>
@@ -62,7 +62,7 @@ export default function CollectionPage() {
             {/* 진행률 */}
             <div className="mb-5 p-4 rounded-2xl" style={{ background: "linear-gradient(135deg, #FFFFFF 0%, #FCF6EC 100%)", border: "1px solid rgba(92,141,238,0.18)", boxShadow: "0 4px 14px rgba(92,141,238,0.08)" }}>
               <div className="flex items-baseline justify-between mb-2">
-                <p className="text-[12px] font-extrabold" style={{ color: "#A8684A" }}>
+                <p className="text-[12px] font-extrabold" style={{ color: "#8B6FE0" }}>
                   {data.regionName} 도감
                 </p>
                 <p className="text-[13px] font-extrabold text-text-main">
@@ -121,7 +121,7 @@ export default function CollectionPage() {
               <Link
                 href="/map"
                 className="mt-5 flex items-center justify-center gap-2 py-3 rounded-2xl text-white text-[13.5px] font-extrabold active:scale-[0.98] transition-transform"
-                style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)", boxShadow: "0 4px 14px rgba(92,141,238,0.35)" }}
+                style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)", boxShadow: "0 4px 14px rgba(92,141,238,0.35)" }}
               >
                 <MapPin size={15} /> 지도에서 못 만난 고양이 만나러 가기
               </Link>
@@ -142,7 +142,7 @@ function EmptyPrompt({ emoji, title, desc, ctaLabel, href }: { emoji: string; ti
       <Link
         href={href}
         className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-white text-[13.5px] font-extrabold active:scale-[0.98] transition-transform"
-        style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)", boxShadow: "0 4px 14px rgba(92,141,238,0.35)" }}
+        style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)", boxShadow: "0 4px 14px rgba(92,141,238,0.35)" }}
       >
         {ctaLabel}
       </Link>

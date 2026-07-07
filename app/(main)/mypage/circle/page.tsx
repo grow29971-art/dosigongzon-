@@ -306,7 +306,7 @@ export default function CirclePage() {
                 <div className="flex items-center gap-3">
                   <div
                     className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-                    style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
+                    style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)" }}
                   >
                     <MessageCircle size={20} color="#fff" />
                   </div>
@@ -505,7 +505,7 @@ function Avatar({ url, size = 40 }: { url: string | null; size?: number }) {
     return (
       <div
         className="shrink-0 rounded-full flex items-center justify-center text-white text-[13px] font-extrabold"
-        style={{ width: size, height: size, background: "linear-gradient(135deg, #5C8DEE, #A8684A)" }}
+        style={{ width: size, height: size, background: "linear-gradient(135deg, #5C8DEE, #8B6FE0)" }}
       >
         🐾
       </div>

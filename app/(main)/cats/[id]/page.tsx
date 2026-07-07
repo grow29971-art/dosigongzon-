@@ -352,7 +352,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
               도시공존은 광고 없는 무료 시민 참여 길고양이 지도예요.
               {totalCatsForNudge > 0 && (
                 <>
-                  {" "}전국 <b style={{ color: "#A8684A" }}>{totalCatsForNudge.toLocaleString()}마리</b>가 이미 등록돼 함께 돌봐지고 있어요.
+                  {" "}전국 <b style={{ color: "#8B6FE0" }}>{totalCatsForNudge.toLocaleString()}마리</b>가 이미 등록돼 함께 돌봐지고 있어요.
                 </>
               )}
             </p>
@@ -361,7 +361,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                 href={`/signup?next=${encodeURIComponent(`/cats/${cat.id}`)}`}
                 className="flex-[1.6] flex items-center justify-center py-2.5 rounded-xl text-white text-[12.5px] font-extrabold active:scale-[0.98] transition-transform"
                 style={{
-                  background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                  background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
                   boxShadow: "0 4px 14px rgba(92,141,238,0.35)",
                 }}
               >
@@ -371,7 +371,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                 href="/"
                 className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.98] transition-transform bg-white"
                 style={{
-                  color: "#A8684A",
+                  color: "#8B6FE0",
                   border: "1px solid rgba(92,141,238,0.30)",
                 }}
               >
@@ -507,7 +507,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                   </p>
                   <p
                     className="text-[10.5px] mt-0.5 leading-snug"
-                    style={{ color: hasTodayPhoto ? "#5F8F73" : "#A8684A" }}
+                    style={{ color: hasTodayPhoto ? "#5F8F73" : "#8B6FE0" }}
                   >
                     {hasTodayPhoto
                       ? "한 장 더 남기면 다이어리가 더 두꺼워져요"
@@ -542,7 +542,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
               href={`/map?cat=${cat.id}`}
               className="inline-flex items-center gap-1.5 mt-3 px-4 py-2 rounded-xl text-white text-[12px] font-extrabold active:scale-[0.97] transition-transform"
               style={{
-                background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
                 boxShadow: "0 6px 18px rgba(92,141,238,0.35)",
               }}
             >

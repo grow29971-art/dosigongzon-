@@ -61,7 +61,7 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
               className="flex items-center gap-1 px-2.5 py-1 rounded-lg active:scale-95 transition-transform"
               style={{
                 background: copiedId === b.id ? "#E8F5E9" : "rgba(92,141,238,0.10)",
-                color: copiedId === b.id ? "#2E7D32" : "#A8684A",
+                color: copiedId === b.id ? "#2E7D32" : "#8B6FE0",
               }}
             >
               {copiedId === b.id ? <Check size={11} /> : <Copy size={11} />}

@@ -176,7 +176,7 @@ export default async function TipsIndexPage() {
               { href: "/protection/feeding-guide", label: "밥주기", sub: "올바른 방법", Icon: Sparkles, color: "#48A59E" },
               { href: "/protection/shelter-guide", label: "겨울 쉼터", sub: "지금 만들기", Icon: Snowflake, color: "#5A8AC4" },
               { href: "/protection/pharmacy-guide", label: "약품 안내", sub: "주변 약국", Icon: Pill, color: "#6B8E6F" },
-              { href: "/protection/district-contacts", label: "지자체 연락", sub: "전국 240+ 곳", Icon: Phone, color: "#A8684A" },
+              { href: "/protection/district-contacts", label: "지자체 연락", sub: "전국 240+ 곳", Icon: Phone, color: "#8B6FE0" },
               { href: "/protection/legal", label: "법률·신고", sub: "학대 대응", Icon: Scale, color: "#7A6B8E" },
             ].map((cat) => (
               <Link

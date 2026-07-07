@@ -100,7 +100,7 @@ export default async function OpengraphImage() {
               🐾
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 20, fontWeight: 700, color: "#A8684A", letterSpacing: 3 }}>
+              <span style={{ fontSize: 20, fontWeight: 700, color: "#8B6FE0", letterSpacing: 3 }}>
                 DOSI GONGZON
               </span>
               <span style={{ fontSize: 38, fontWeight: 900, color: "#2C2C2C", marginTop: -2 }}>

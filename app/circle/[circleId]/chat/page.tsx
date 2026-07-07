@@ -426,7 +426,7 @@ function Avatar({ url, size = 32 }: { url: string | null; size?: number }) {
     return (
       <div
         className="shrink-0 rounded-full flex items-center justify-center text-white text-[13px] font-extrabold"
-        style={{ width: size, height: size, background: "linear-gradient(135deg, #5C8DEE, #A8684A)" }}
+        style={{ width: size, height: size, background: "linear-gradient(135deg, #5C8DEE, #8B6FE0)" }}
       >
         🐾
       </div>

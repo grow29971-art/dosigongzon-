@@ -249,7 +249,7 @@ export default function ShelterGuidePage() {
             >
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-white text-[13px] font-extrabold"
-                style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
+                style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)" }}
               >
                 {i + 1}
               </div>

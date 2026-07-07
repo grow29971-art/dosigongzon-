@@ -683,7 +683,7 @@ export default function HomeAuthed({
               {/* 텍스트 — 3분할 */}
               <div className="flex-1 min-w-0 flex items-center gap-3">
                 <div className="min-w-0">
-                  <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#A8684A" }}>
+                  <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#8B6FE0" }}>
                     LV.{levelInfo.level}
                   </p>
                   <p className="text-[12px] font-extrabold text-text-main truncate leading-tight">
@@ -693,7 +693,7 @@ export default function HomeAuthed({
                 <div className="w-px h-7 shrink-0" style={{ background: "rgba(92,141,238,0.18)" }} />
                 <div className="flex items-center gap-1 shrink-0">
                   <Flame size={12} style={{ color: streak > 0 ? "#E88D5A" : "#C2B5A8" }} />
-                  <span className="text-[12px] font-extrabold tabular-nums" style={{ color: streak > 0 ? "#A8684A" : "#8C7B6A" }}>
+                  <span className="text-[12px] font-extrabold tabular-nums" style={{ color: streak > 0 ? "#8B6FE0" : "#8C7B6A" }}>
                     {streak}일
                   </span>
                 </div>
@@ -704,7 +704,7 @@ export default function HomeAuthed({
                   </span>
                 </div>
               </div>
-              <ChevronRight size={14} style={{ color: "#A8684A" }} className="shrink-0" />
+              <ChevronRight size={14} style={{ color: "#8B6FE0" }} className="shrink-0" />
             </div>
           </Link>
         );
@@ -767,10 +767,10 @@ export default function HomeAuthed({
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-lg" style={{ background: "rgba(92,141,238,0.12)" }}>📖</div>
             <div className="flex-1 min-w-0">
-              <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#A8684A" }}>우리 동네 고양이 도감</p>
+              <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#8B6FE0" }}>우리 동네 고양이 도감</p>
               <p className="text-[13.5px] font-extrabold text-text-main leading-tight mt-0.5 truncate">만난 고양이를 모아보세요</p>
             </div>
-            <ChevronRight size={14} style={{ color: "#A8684A" }} className="shrink-0" />
+            <ChevronRight size={14} style={{ color: "#8B6FE0" }} className="shrink-0" />
           </div>
         </Link>
       )}
@@ -1555,7 +1555,7 @@ export default function HomeAuthed({
                     href="/map"
                     className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white active:scale-[0.98] transition-transform"
                     style={{
-                      background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                      background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
                       boxShadow: "0 4px 12px rgba(92,141,238,0.3)",
                     }}
                   >
@@ -1744,7 +1744,7 @@ export default function HomeAuthed({
                       style={{
                         background: r.avatarUrl
                           ? `url('${r.avatarUrl}') center/cover`
-                          : "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                          : "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
                         border: "2px solid #fff",
                         boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
                       }}

@@ -9,7 +9,7 @@ export const contentType = "image/png";
 const TOPICS: Array<{ label: string; emoji: string; color: string }> = [
   { label: "발견·신고", emoji: "🚨", color: "#5C8DEE" },
   { label: "새끼고양이", emoji: "🍼", color: "#E8B57E" },
-  { label: "TNR·중성화", emoji: "✂️", color: "#A8684A" },
+  { label: "TNR·중성화", emoji: "✂️", color: "#8B6FE0" },
   { label: "임시보호·입양", emoji: "🏠", color: "#7AAE82" },
   { label: "응급·치료", emoji: "🏥", color: "#D85555" },
   { label: "법·신고", emoji: "⚖️", color: "#5F7A8E" },

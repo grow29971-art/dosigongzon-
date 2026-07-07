@@ -196,7 +196,7 @@ export default async function HomeLanding({
             href="/map"
             className="flex-[1.4] flex items-center justify-center gap-1.5 py-4 rounded-2xl text-white active:scale-[0.98] transition-transform"
             style={{
-              background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+              background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
               boxShadow: "0 8px 22px rgba(92,141,238,0.38), 0 2px 6px rgba(168,104,74,0.22)",
             }}
           >
@@ -388,7 +388,7 @@ export default async function HomeLanding({
                         idx === 0
                           ? "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)"
                           : idx === 1
-                          ? "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)"
+                          ? "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)"
                           : "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)",
                     }}
                   >
@@ -554,7 +554,7 @@ export default async function HomeLanding({
             가장 위험한 환경은 <b className="text-text-main">동네가 무관심한 상태</b>예요.
           </p>
           <p className="text-[12px] text-text-sub leading-[1.85] mt-2">
-            <b style={{ color: "#A8684A" }}>케어테이커와 시민의 시선이 모이는 것</b> — 그게 학대자에게 가장
+            <b style={{ color: "#8B6FE0" }}>케어테이커와 시민의 시선이 모이는 것</b> — 그게 학대자에게 가장
             강한 억제력입니다. 도시공존은 그 시선을 모으려고 만들어진 도구예요.
           </p>
         </div>
@@ -1103,10 +1103,10 @@ export default async function HomeLanding({
               className="w-9 h-9 rounded-full flex items-center justify-center"
               style={{ background: "rgba(92,141,238,0.15)" }}
             >
-              <Code2 size={18} style={{ color: "#A8684A" }} />
+              <Code2 size={18} style={{ color: "#8B6FE0" }} />
             </div>
             <div className="min-w-0">
-              <p className="text-[10.5px] font-extrabold tracking-[0.12em]" style={{ color: "#A8684A" }}>
+              <p className="text-[10.5px] font-extrabold tracking-[0.12em]" style={{ color: "#8B6FE0" }}>
                 MADE BY ONE NEIGHBOR
               </p>
               <p className="text-[14px] font-extrabold text-text-main">
@@ -1127,7 +1127,7 @@ export default async function HomeLanding({
               className="flex-1 flex items-center justify-center gap-1 py-2.5 rounded-xl text-[12px] font-extrabold active:scale-[0.98] transition-transform"
               style={{
                 background: "#FFFFFF",
-                color: "#A8684A",
+                color: "#8B6FE0",
                 border: "1px solid rgba(92,141,238,0.25)",
               }}
             >
@@ -1138,7 +1138,7 @@ export default async function HomeLanding({
               href="mailto:grow29971@gmail.com?subject=%5B%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%A1%B4%5D%20%EC%A0%9C%ED%9C%B4%2F%EB%AC%B8%EC%9D%98"
               className="flex items-center justify-center gap-1 px-4 py-2.5 rounded-xl text-[12px] font-extrabold text-white active:scale-[0.98] transition-transform"
               style={{
-                background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
                 boxShadow: "0 4px 12px rgba(92,141,238,0.3)",
               }}
             >

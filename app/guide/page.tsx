@@ -434,7 +434,7 @@ export default function GuidePage() {
         <div
           className="rounded-3xl p-5 text-center"
           style={{
-            background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+            background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
             boxShadow: "0 8px 24px rgba(92,141,238,0.3)",
           }}
         >

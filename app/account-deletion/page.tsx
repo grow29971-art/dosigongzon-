@@ -59,7 +59,7 @@ export default function AccountDeletionPage() {
           <div className="flex items-center gap-2 mb-3">
             <div
               className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
+              style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)" }}
             >
               <Trash2 size={16} color="#fff" strokeWidth={2.5} />
             </div>
@@ -110,7 +110,7 @@ export default function AccountDeletionPage() {
             href="/mypage"
             className="mt-5 flex items-center justify-between w-full px-4 py-3 rounded-xl active:scale-[0.99] transition-transform"
             style={{
-              background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+              background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
               boxShadow: "0 6px 16px rgba(92,141,238,0.3)",
             }}
           >

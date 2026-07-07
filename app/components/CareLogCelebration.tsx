@@ -150,7 +150,7 @@ export default function CareLogCelebration({
                   onClick={handleCommit}
                   className="flex-1 py-3 rounded-2xl text-[13px] font-extrabold text-white active:scale-[0.98]"
                   style={{
-                    background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                    background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
                     boxShadow: "0 4px 14px rgba(92,141,238,0.45)",
                   }}
                 >

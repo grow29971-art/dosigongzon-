@@ -107,14 +107,14 @@ export default function MapChatGuideModal() {
           >
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
+              style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)" }}
             >
               <MessageCircle size={18} color="#FFFFFF" strokeWidth={2.4} />
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-[13.5px] font-extrabold text-text-main">💬 동네 채팅</p>
               <p className="text-[11.5px] text-text-sub mt-1 leading-relaxed">
-                <span className="font-bold" style={{ color: "#A8684A" }}>현재 보고 있는 구</span> 단위 채팅방. 같은 동네 케어테이커끼리 실시간 정보 교환. 지도 위치를 옮기면 그 동네 채팅방으로 자동 연결.
+                <span className="font-bold" style={{ color: "#8B6FE0" }}>현재 보고 있는 구</span> 단위 채팅방. 같은 동네 케어테이커끼리 실시간 정보 교환. 지도 위치를 옮기면 그 동네 채팅방으로 자동 연결.
               </p>
             </div>
           </div>
@@ -128,7 +128,7 @@ export default function MapChatGuideModal() {
           type="button"
           onClick={dismiss}
           className="w-full py-3 rounded-2xl text-white text-[13px] font-extrabold active:scale-[0.99] transition-transform"
-          style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
+          style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)" }}
         >
           알겠어요
         </button>

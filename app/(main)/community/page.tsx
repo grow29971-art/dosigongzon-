@@ -116,8 +116,8 @@ function CategoryCardItem({ card }: { card: CategoryCard }) {
       >
         <div className="flex items-center gap-4">
           <div
-            className="w-[48px] h-[48px] rounded-2xl flex items-center justify-center shrink-0 dark-icon-box"
-            style={{ backgroundColor: `${card.iconBg}15` }}
+            className="w-[48px] h-[48px] rounded-full flex items-center justify-center shrink-0 dark-icon-box"
+            style={{ backgroundColor: `${card.iconBg}15`, boxShadow: `0 0 0 2px ${card.iconBg}22` }}
           >
             <card.Icon size={22} color={card.iconBg} strokeWidth={2} />
           </div>
@@ -286,7 +286,7 @@ export default function CommunityPage() {
             className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-transform flex items-center gap-1"
             style={{
               background: neighborhoodOnly
-                ? "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)"
+                ? "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)"
                 : "rgba(255,255,255,0.9)",
               color: neighborhoodOnly ? "#fff" : "#666",
               boxShadow: neighborhoodOnly
@@ -401,7 +401,8 @@ export default function CommunityPage() {
       {/* ── FAB ── */}
       <Link
         href="/community/write"
-        className="fixed bottom-24 right-5 w-14 h-14 rounded-[20px] bg-primary flex items-center justify-center fab-shadow active:scale-90 transition-transform z-40"
+        className="fixed bottom-24 right-5 w-14 h-14 rounded-full bg-primary flex items-center justify-center fab-shadow active:scale-90 transition-transform z-40"
+        style={{ boxShadow: "0 4px 16px rgba(92,141,238,0.45), 0 0 0 4px #fff" }}
       >
         <Plus size={28} color="#fff" strokeWidth={2.5} />
       </Link>
@@ -422,8 +423,8 @@ function CompactCard({ card }: { card: CategoryCard }) {
       }}
     >
       <div
-        className="w-[44px] h-[44px] rounded-2xl flex items-center justify-center mb-3 dark-icon-box"
-        style={{ backgroundColor: `${card.iconBg}15` }}
+        className="w-[44px] h-[44px] rounded-full flex items-center justify-center mb-3 dark-icon-box"
+        style={{ backgroundColor: `${card.iconBg}15`, boxShadow: `0 0 0 2px ${card.iconBg}22` }}
       >
         <card.Icon size={20} color={card.iconBg} strokeWidth={2} />
       </div>

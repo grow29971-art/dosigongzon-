@@ -23,7 +23,7 @@ const GUIDE_LINKS: Array<{ href: string; label: string; Icon: typeof Siren; colo
   { href: "/protection/trapping-guide", label: "TNR·포획", Icon: Stethoscope, color: "#8B65B8" },
   { href: "/protection/shelter-guide", label: "겨울 쉼터", Icon: Snowflake, color: "#5A8AC4" },
   { href: "/protection/pharmacy-guide", label: "약품", Icon: Pill, color: "#6B8E6F" },
-  { href: "/tips", label: "전체 가이드", Icon: BookOpen, color: "#A8684A" },
+  { href: "/tips", label: "전체 가이드", Icon: BookOpen, color: "#8B6FE0" },
 ];
 
 export default function AICatSitterPage() {
@@ -38,7 +38,7 @@ export default function AICatSitterPage() {
           href="/login?next=/lab/cat-style"
           className="inline-block mt-3 px-5 py-2.5 rounded-2xl text-white text-[13px] font-extrabold"
           style={{
-            background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+            background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
             boxShadow: "0 4px 14px rgba(92,141,238,0.35)",
           }}
         >

@@ -83,7 +83,7 @@ const STEPS: TourStep[] = [
   },
   {
     Icon: BookOpen,
-    color: "#A8684A",
+    color: "#8B6FE0",
     eyebrow: "가이드",
     title: "언제든 다시 볼 수 있는 가이드",
     body: "응급처치·새끼 발견·TNR·겨울 쉼터까지, 필요할 때마다 꺼내볼 수 있는 가이드가 준비돼 있어요.",

@@ -119,7 +119,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
             style={{
-              background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+              background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
               boxShadow: "0 4px 12px rgba(92,141,238,0.30)",
             }}
           >
@@ -158,7 +158,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
           </h2>
           <span
             className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md tabular-nums"
-            style={{ background: "#5C8DEE22", color: "#A8684A" }}
+            style={{ background: "#5C8DEE22", color: "#8B6FE0" }}
           >
             {items.length}
           </span>
@@ -166,7 +166,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
         <Link
           href="/notifications"
           className="flex items-center gap-0.5 text-[11px] font-bold active:opacity-70"
-          style={{ color: "#A8684A" }}
+          style={{ color: "#8B6FE0" }}
         >
           모두 보기
           <ChevronRight size={12} />

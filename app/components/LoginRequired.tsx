@@ -20,7 +20,7 @@ export default function LoginRequired({
       <div
         className="w-16 h-16 rounded-3xl flex items-center justify-center mb-4"
         style={{
-          background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+          background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
           boxShadow: "0 10px 28px rgba(92,141,238,0.35)",
         }}
       >
