@@ -10,7 +10,7 @@ const tabs = [
   { href: "/tips", label: "가이드", Icon: BookOpen },
   { href: "/lab/cat-style", label: "AI집사", Icon: Bot },
   { href: "/community", label: "커뮤니티", Icon: Users },
-  { href: "/mypage/cards", label: "카드", Icon: Layers },
+  { href: "/mypage/cards", label: "카드게임", Icon: Layers },
   { href: "/mypage", label: "마이", Icon: User },
 ];
 
