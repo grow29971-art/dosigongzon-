@@ -195,10 +195,10 @@ const PVE_PHOTO_KEYS = new Set([
   "boar", "deer", "badger", "marten", "mole",
 ]);
 
-// 20%는 고양이학대범(최종 빌런), 80%는 야생동물 로스터 중 무작위 — 매번 같은 상대만
+// 15%는 고양이학대범(최상위 보스), 85%는 야생동물 로스터 중 무작위 — 매번 같은 상대만
 // 반복하지 않게 다양성을 주되, 진짜 "혼내줘야 할 사람"이라는 임팩트는 남겨둔다.
 function makePveOpponent(myCat: CardCat): CardCat {
-  if (Math.random() < 0.2) return makeBossOpponent(myCat);
+  if (Math.random() < 0.15) return makeBossOpponent(myCat);
 
   const c = PVE_ROSTER[Math.floor(Math.random() * PVE_ROSTER.length)];
   const baseAtk = myCat.battle_atk ?? 40;
