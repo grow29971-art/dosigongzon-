@@ -194,10 +194,10 @@ function SignupContent() {
             className="mb-4 rounded-2xl p-4"
             style={{
               background: "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
-              border: "1.5px solid rgba(196,126,90,0.30)",
+              border: "1.5px solid rgba(92,141,238,0.30)",
             }}
           >
-            <p className="text-[10.5px] font-extrabold tracking-[0.12em] mb-1.5" style={{ color: "#C47E5A" }}>
+            <p className="text-[10.5px] font-extrabold tracking-[0.12em] mb-1.5" style={{ color: "#5C8DEE" }}>
               🎁 1000명 이벤트 응모
             </p>
             <p className="text-[13px] font-extrabold text-text-main leading-tight mb-1">
@@ -393,7 +393,7 @@ function SignupContent() {
                 }
               }}
               className="w-full py-3 rounded-xl text-[14px] font-bold text-white disabled:opacity-50"
-              style={{ backgroundColor: "#C47E5A" }}
+              style={{ backgroundColor: "#5C8DEE" }}
             >
               {emailLoading ? <Loader2 size={16} className="animate-spin mx-auto" /> : "로그인"}
             </button>

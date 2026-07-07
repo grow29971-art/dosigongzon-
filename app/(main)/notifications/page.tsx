@@ -22,7 +22,7 @@ import {
 } from "@/lib/notifications-repo";
 
 const TYPE_CONFIG: Record<NotificationType, { icon: typeof Bell; color: string; bg: string }> = {
-  comment_on_my_cat:   { icon: MessageCircle, color: "#C47E5A", bg: "#C47E5A15" },
+  comment_on_my_cat:   { icon: MessageCircle, color: "#5C8DEE", bg: "#5C8DEE15" },
   carelog_on_my_cat:   { icon: Heart,         color: "#6B8E6F", bg: "#6B8E6F15" },
   dm_received:         { icon: MessageCircle, color: "#4A7BA8", bg: "#4A7BA815" },
   alert_on_my_cat:     { icon: AlertTriangle, color: "#D85555", bg: "#D8555515" },

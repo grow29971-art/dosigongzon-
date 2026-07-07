@@ -104,7 +104,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
           </button>
           <p className="text-[10px] font-extrabold tracking-[0.2em] mb-2" style={{ color: "#A8684A" }}>오늘 이거 해보세요</p>
           <div className="flex items-center gap-3">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 text-3xl" style={{ background: "#FFFFFF", boxShadow: "0 4px 14px rgba(196,126,90,0.25)" }}>
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 text-3xl" style={{ background: "#FFFFFF", boxShadow: "0 4px 14px rgba(92,141,238,0.25)" }}>
               {spot.emoji}
             </div>
             <div className="min-w-0">
@@ -120,7 +120,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
             href={spot.href}
             onClick={close}
             className="flex items-center justify-center gap-1.5 py-3.5 rounded-2xl text-white text-[14px] font-extrabold active:scale-[0.98] transition-transform"
-            style={{ background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)", boxShadow: "0 4px 14px rgba(196,126,90,0.4)" }}
+            style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)", boxShadow: "0 4px 14px rgba(92,141,238,0.4)" }}
           >
             {spot.cta} <ChevronRight size={15} />
           </Link>
@@ -133,7 +133,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
                 href={c.href}
                 onClick={close}
                 className="flex flex-col items-center gap-1 py-2.5 rounded-xl active:scale-[0.97] transition-transform"
-                style={{ background: "#FAF5EE", border: "1px solid rgba(196,126,90,0.12)" }}
+                style={{ background: "#FAF5EE", border: "1px solid rgba(92,141,238,0.12)" }}
               >
                 <span className="text-xl">{c.emoji}</span>
                 <span className="text-[11px] font-bold" style={{ color: "#5C4A3E" }}>{c.label}</span>

@@ -76,14 +76,14 @@ export default function DailyCatBox() {
           background: "linear-gradient(135deg, #FFF1D9 0%, #FFE0C0 100%)",
           borderRadius: 18,
           padding: "14px 16px",
-          border: "1px solid rgba(196,126,90,0.22)",
-          boxShadow: "0 4px 14px rgba(196,126,90,0.14)",
+          border: "1px solid rgba(92,141,238,0.22)",
+          boxShadow: "0 4px 14px rgba(92,141,238,0.14)",
         }}
       >
         <div className="flex items-center gap-3">
           <div
             className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-2xl"
-            style={{ background: "linear-gradient(135deg, #E88D5A 0%, #C47E5A 100%)", boxShadow: "0 4px 12px rgba(196,126,90,0.4)" }}
+            style={{ background: "linear-gradient(135deg, #E88D5A 0%, #5C8DEE 100%)", boxShadow: "0 4px 12px rgba(92,141,238,0.4)" }}
           >
             🎁
           </div>
@@ -106,8 +106,8 @@ export default function DailyCatBox() {
         background: "linear-gradient(135deg, #FFFDF8 0%, #FFF4E4 100%)",
         borderRadius: 18,
         padding: "14px 16px",
-        border: "1px solid rgba(196,126,90,0.2)",
-        boxShadow: "0 4px 14px rgba(196,126,90,0.1)",
+        border: "1px solid rgba(92,141,238,0.2)",
+        boxShadow: "0 4px 14px rgba(92,141,238,0.1)",
       }}
     >
       <div className="flex items-center justify-between mb-2">

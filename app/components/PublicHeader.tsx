@@ -23,7 +23,7 @@ export default async function PublicHeader() {
       className="sticky top-0 z-30 backdrop-blur-md"
       style={{
         background: "rgba(255, 253, 248, 0.88)",
-        borderBottom: "1px solid rgba(196,126,90,0.12)",
+        borderBottom: "1px solid rgba(92,141,238,0.12)",
       }}
     >
       <div className="max-w-lg mx-auto px-4 h-12 flex items-center justify-between">
@@ -31,7 +31,7 @@ export default async function PublicHeader() {
         <Link href="/" className="flex items-center gap-1.5 active:scale-95 transition-transform">
           <div
             className="w-7 h-7 rounded-xl flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)" }}
+            style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
           >
             <PawPrint size={15} color="#fff" strokeWidth={2.3} />
           </div>
@@ -45,7 +45,7 @@ export default async function PublicHeader() {
           <Link
             href="/mypage"
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11.5px] font-bold active:scale-95 transition-transform"
-            style={{ background: "rgba(196,126,90,0.12)", color: "#C47E5A" }}
+            style={{ background: "rgba(92,141,238,0.12)", color: "#5C8DEE" }}
             aria-label="마이페이지"
           >
             <UserIcon size={12} />
@@ -65,8 +65,8 @@ export default async function PublicHeader() {
               href="/signup"
               className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[11.5px] font-extrabold active:scale-95 transition-transform text-white"
               style={{
-                background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
-                boxShadow: "0 2px 8px rgba(196,126,90,0.35)",
+                background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                boxShadow: "0 2px 8px rgba(92,141,238,0.35)",
               }}
             >
               시작하기

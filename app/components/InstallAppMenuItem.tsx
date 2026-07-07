@@ -113,12 +113,12 @@ export default function InstallAppMenuItem() {
       >
         <div
           className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-          style={{ backgroundColor: installed ? "rgba(46,125,50,0.1)" : "rgba(196,126,90,0.1)" }}
+          style={{ backgroundColor: installed ? "rgba(46,125,50,0.1)" : "rgba(92,141,238,0.1)" }}
         >
           {installed ? (
             <Check size={18} color="#2E7D32" strokeWidth={2.2} />
           ) : (
-            <Download size={18} color="#C47E5A" strokeWidth={2.2} />
+            <Download size={18} color="#5C8DEE" strokeWidth={2.2} />
           )}
         </div>
         <div className="flex-1 min-w-0 text-left">
@@ -128,7 +128,7 @@ export default function InstallAppMenuItem() {
           <p className="text-[11px] text-text-sub mt-0.5">{subtitle}</p>
         </div>
         {!installed && (
-          <ChevronRight size={16} className="shrink-0" style={{ color: "#C47E5A", opacity: 0.7 }} />
+          <ChevronRight size={16} className="shrink-0" style={{ color: "#5C8DEE", opacity: 0.7 }} />
         )}
       </button>
 
@@ -157,14 +157,14 @@ export default function InstallAppMenuItem() {
               <div
                 className="w-11 h-11 rounded-2xl flex items-center justify-center"
                 style={{
-                  background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
-                  boxShadow: "0 4px 12px rgba(196,126,90,0.35)",
+                  background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                  boxShadow: "0 4px 12px rgba(92,141,238,0.35)",
                 }}
               >
                 <Download size={19} color="#fff" strokeWidth={2.2} />
               </div>
               <div>
-                <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#C47E5A" }}>
+                <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#5C8DEE" }}>
                   INSTALL
                 </p>
                 <p className="text-[15px] font-extrabold text-text-main tracking-tight">
@@ -181,23 +181,23 @@ export default function InstallAppMenuItem() {
                   <li className="flex items-center gap-2">
                     <span
                       className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white shrink-0"
-                      style={{ background: "#C47E5A" }}
+                      style={{ background: "#5C8DEE" }}
                     >1</span>
-                    <Share size={14} style={{ color: "#C47E5A" }} />
+                    <Share size={14} style={{ color: "#5C8DEE" }} />
                     <span>사파리 하단 공유 아이콘 탭</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span
                       className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white shrink-0"
-                      style={{ background: "#C47E5A" }}
+                      style={{ background: "#5C8DEE" }}
                     >2</span>
-                    <PlusSquare size={14} style={{ color: "#C47E5A" }} />
+                    <PlusSquare size={14} style={{ color: "#5C8DEE" }} />
                     <span>"홈 화면에 추가" 선택</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span
                       className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white shrink-0"
-                      style={{ background: "#C47E5A" }}
+                      style={{ background: "#5C8DEE" }}
                     >3</span>
                     <span>우측 상단 "추가" 버튼</span>
                   </li>

@@ -100,8 +100,8 @@ export default async function UserProfilePage({ params }: { params: Params }) {
           className="rounded-3xl p-5"
           style={{
             background: "linear-gradient(135deg, #FFFFFF 0%, #FFF9F0 100%)",
-            boxShadow: "0 8px 24px rgba(196,126,90,0.15)",
-            border: "1px solid rgba(196,126,90,0.1)",
+            boxShadow: "0 8px 24px rgba(92,141,238,0.15)",
+            border: "1px solid rgba(92,141,238,0.1)",
           }}
         >
           <div className="flex items-start gap-4">
@@ -111,7 +111,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
               style={{
                 background: profile.avatar_url
                   ? `url('${profile.avatar_url}') center/cover`
-                  : "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+                  : "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
                 border: "3px solid #fff",
                 boxShadow: "0 6px 16px rgba(0,0,0,0.1)",
               }}
@@ -173,7 +173,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
           <div className="grid grid-cols-4 gap-2 mt-5">
             <StatBox label="팔로워" value={counts.followers} color="#4A7BA8" />
             <StatBox label="팔로잉" value={counts.following} color="#8B65B8" />
-            <StatBox label="등록 고양이" value={cats.length} color="#C47E5A" />
+            <StatBox label="등록 고양이" value={cats.length} color="#5C8DEE" />
             <StatBox label="돌봄 기록" value={careLogCount} color="#6B8E6F" />
           </div>
 
@@ -187,7 +187,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                   key={r.name}
                   className="px-2 py-0.5 rounded-lg text-[10.5px] font-extrabold"
                   style={{
-                    background: r.is_primary ? "#C47E5A" : "#F7F4EE",
+                    background: r.is_primary ? "#5C8DEE" : "#F7F4EE",
                     color: r.is_primary ? "#fff" : "#A38E7A",
                   }}
                 >
@@ -272,7 +272,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                   <div className="shrink-0">{icon}</div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[11.5px] font-bold text-text-main truncate">
-                      <span style={{ color: "#C47E5A" }}>{item.targetName}</span>
+                      <span style={{ color: "#5C8DEE" }}>{item.targetName}</span>
                       <span className="mx-1 text-text-light">·</span>
                       <span className="text-text-sub font-semibold">{item.summary}</span>
                     </p>
@@ -288,7 +288,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
       {/* 등록한 고양이 */}
       <div className="px-4 mt-5">
         <div className="flex items-center gap-2 mb-3 px-1">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C47E5A" }} />
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#5C8DEE" }} />
           <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
             등록한 고양이
           </h2>
@@ -325,7 +325,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                 >
                   {!c.photo_url && (
                     <div className="w-full h-full flex items-center justify-center">
-                      <PawPrint size={22} style={{ color: "#C47E5A" }} />
+                      <PawPrint size={22} style={{ color: "#5C8DEE" }} />
                     </div>
                   )}
                 </div>

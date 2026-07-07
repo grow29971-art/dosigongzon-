@@ -83,8 +83,8 @@ export default function ErrorPage({
               onClick={() => reset()}
               className="w-full py-3 rounded-2xl text-[14px] font-extrabold text-white active:scale-[0.98] transition-transform"
               style={{
-                background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
-                boxShadow: "0 4px 14px rgba(196,126,90,0.4)",
+                background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                boxShadow: "0 4px 14px rgba(92,141,238,0.4)",
               }}
             >
               🔄 다시 시도

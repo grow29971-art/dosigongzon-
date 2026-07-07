@@ -137,7 +137,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
             onClick={handleDownload}
             disabled={!dataUrl}
             className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-extrabold text-white active:scale-[0.97] disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)" }}
+            style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
           >
             <Download size={14} />
             <span>이미지 저장</span>
@@ -147,7 +147,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
             onClick={handlePrint}
             disabled={!dataUrl}
             className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-extrabold active:scale-[0.97] disabled:opacity-50"
-            style={{ background: "#FFFFFF", color: "#A8684A", border: "1.5px solid rgba(196,126,90,0.30)" }}
+            style={{ background: "#FFFFFF", color: "#A8684A", border: "1.5px solid rgba(92,141,238,0.30)" }}
           >
             <Printer size={14} />
             <span>인쇄하기</span>

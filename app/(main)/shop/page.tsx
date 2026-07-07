@@ -12,7 +12,7 @@ export default function ShopPage() {
         className="w-20 h-20 rounded-full flex items-center justify-center mb-6"
         style={{ background: "linear-gradient(135deg, #f5e6d8 0%, #e8c9a8 100%)" }}
       >
-        <ShoppingBag size={36} style={{ color: "#C47E5A" }} />
+        <ShoppingBag size={36} style={{ color: "#5C8DEE" }} />
       </div>
       <h1 className="text-[22px] font-extrabold text-text-main mb-3">쇼핑몰 준비 중</h1>
       <p className="text-[14px] text-text-sub leading-relaxed">

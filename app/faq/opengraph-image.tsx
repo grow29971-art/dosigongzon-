@@ -7,7 +7,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const TOPICS: Array<{ label: string; emoji: string; color: string }> = [
-  { label: "발견·신고", emoji: "🚨", color: "#C47E5A" },
+  { label: "발견·신고", emoji: "🚨", color: "#5C8DEE" },
   { label: "새끼고양이", emoji: "🍼", color: "#E8B57E" },
   { label: "TNR·중성화", emoji: "✂️", color: "#A8684A" },
   { label: "임시보호·입양", emoji: "🏠", color: "#7AAE82" },
@@ -42,7 +42,7 @@ export default function FaqOGImage() {
             height: 480,
             borderRadius: "50%",
             background:
-              "radial-gradient(circle, rgba(196,126,90,0.22) 0%, rgba(196,126,90,0) 70%)",
+              "radial-gradient(circle, rgba(92,141,238,0.22) 0%, rgba(92,141,238,0) 70%)",
             display: "flex",
           }}
         />
@@ -74,7 +74,7 @@ export default function FaqOGImage() {
               width: 52,
               height: 52,
               borderRadius: 16,
-              background: "#C47E5A",
+              background: "#5C8DEE",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -104,7 +104,7 @@ export default function FaqOGImage() {
             }}
           >
             <span>길고양이 자주 묻는</span>
-            <span style={{ color: "#C47E5A" }}>30개 질문</span>
+            <span style={{ color: "#5C8DEE" }}>30개 질문</span>
           </div>
           <p
             style={{
@@ -159,7 +159,7 @@ export default function FaqOGImage() {
               color: "#8B5A3C",
               fontSize: 20,
               fontWeight: 800,
-              border: "2px solid rgba(196,126,90,0.3)",
+              border: "2px solid rgba(92,141,238,0.3)",
               marginLeft: "auto",
             }}
           >

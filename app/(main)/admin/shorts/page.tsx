@@ -288,7 +288,7 @@ export default function AdminShortsPage() {
   if (!authChecked) {
     return (
       <div className="min-h-dvh flex items-center justify-center" style={{ background: "#F7F4EE" }}>
-        <Loader2 className="animate-spin" size={24} style={{ color: "#C47E5A" }} />
+        <Loader2 className="animate-spin" size={24} style={{ color: "#5C8DEE" }} />
       </div>
     );
   }
@@ -313,7 +313,7 @@ export default function AdminShortsPage() {
             <ArrowLeft size={18} className="text-text-main" />
           </Link>
           <div>
-            <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#C47E5A" }}>ADMIN</p>
+            <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#5C8DEE" }}>ADMIN</p>
             <h1 className="text-[18px] font-extrabold text-text-main tracking-tight">숏폼 영상 관리</h1>
           </div>
         </div>
@@ -323,7 +323,7 @@ export default function AdminShortsPage() {
               onClick={handleImport}
               disabled={importing}
               className="flex items-center gap-1 px-3 py-2 rounded-xl active:scale-95 disabled:opacity-50"
-              style={{ background: "rgba(196,126,90,0.12)", color: "#A8684A" }}
+              style={{ background: "rgba(92,141,238,0.12)", color: "#A8684A" }}
               title="YouTube에서 다양한 동물 shorts 자동 가져오기"
             >
               {importing ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
@@ -331,7 +331,7 @@ export default function AdminShortsPage() {
                 {importing ? "가져오는 중..." : "YouTube 임포트"}
               </span>
             </button>
-            <button onClick={handleNew} className="flex items-center gap-1 px-3 py-2 rounded-xl text-white active:scale-95" style={{ background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)" }}>
+            <button onClick={handleNew} className="flex items-center gap-1 px-3 py-2 rounded-xl text-white active:scale-95" style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}>
               <Plus size={14} />
               <span className="text-[12px] font-extrabold">새 영상</span>
             </button>
@@ -440,7 +440,7 @@ export default function AdminShortsPage() {
           {!draft.youtube_video_id && (
             <Field label="또는 영상 파일 직접 업로드 (mp4 · webm · mov · 50MB 이하)">
               <label className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-surface-alt cursor-pointer active:scale-[0.99]" style={{ background: "#FFF8F2", border: "1px dashed #E8C9A8" }}>
-                {uploadingVideo ? <Loader2 size={16} className="animate-spin" style={{ color: "#C47E5A" }} /> : <Film size={16} style={{ color: "#C47E5A" }} />}
+                {uploadingVideo ? <Loader2 size={16} className="animate-spin" style={{ color: "#5C8DEE" }} /> : <Film size={16} style={{ color: "#5C8DEE" }} />}
                 <span className="text-[12.5px] font-bold" style={{ color: "#A8684A" }}>
                   {uploadingVideo ? "업로드 중..." : draft.video_url ? "영상 다시 선택" : "영상 파일 선택"}
                 </span>
@@ -478,7 +478,7 @@ export default function AdminShortsPage() {
           {/* 썸네일 (옵션) */}
           <Field label="썸네일 이미지 (옵션 · jpg/png/webp · 5MB 이하)">
             <label className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-surface-alt cursor-pointer active:scale-[0.99]" style={{ background: "#FFF8F2", border: "1px dashed #E8C9A8" }}>
-              {uploadingThumb ? <Loader2 size={16} className="animate-spin" style={{ color: "#C47E5A" }} /> : <ImagePlus size={16} style={{ color: "#C47E5A" }} />}
+              {uploadingThumb ? <Loader2 size={16} className="animate-spin" style={{ color: "#5C8DEE" }} /> : <ImagePlus size={16} style={{ color: "#5C8DEE" }} />}
               <span className="text-[12.5px] font-bold" style={{ color: "#A8684A" }}>
                 {uploadingThumb ? "업로드 중..." : draft.thumbnail_url ? "썸네일 변경" : "썸네일 선택"}
               </span>
@@ -558,7 +558,7 @@ export default function AdminShortsPage() {
             onClick={handleSave}
             disabled={saving}
             className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-white text-[13px] font-extrabold active:scale-[0.99] disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)" }}
+            style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
           >
             {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
             <span>{saving ? "저장 중..." : "저장"}</span>
@@ -570,12 +570,12 @@ export default function AdminShortsPage() {
       <div className="px-4">
         {loading ? (
           <div className="py-10 flex justify-center">
-            <Loader2 className="animate-spin" size={20} style={{ color: "#C47E5A" }} />
+            <Loader2 className="animate-spin" size={20} style={{ color: "#5C8DEE" }} />
           </div>
         ) : items.length === 0 ? (
           <div className="py-12 text-center">
             <div className="w-14 h-14 rounded-2xl mx-auto mb-3 flex items-center justify-center" style={{ background: "#F2EBE0" }}>
-              <Film size={24} style={{ color: "#C47E5A", opacity: 0.7 }} />
+              <Film size={24} style={{ color: "#5C8DEE", opacity: 0.7 }} />
             </div>
             <p className="text-[13px] font-extrabold text-text-main mb-1">아직 영상이 없어요</p>
             <p className="text-[11.5px] text-text-sub">우상단 “새 영상”을 눌러 첫 영상을 올려보세요.</p>
@@ -636,7 +636,7 @@ function ShortRow({
           </span>
         )}
         {s.pinned && (
-          <span className="absolute top-1 right-1 w-5 h-5 rounded-full flex items-center justify-center" style={{ background: "rgba(196,126,90,0.95)" }} aria-label="고정">
+          <span className="absolute top-1 right-1 w-5 h-5 rounded-full flex items-center justify-center" style={{ background: "rgba(92,141,238,0.95)" }} aria-label="고정">
             <Pin size={10} color="#FFFFFF" fill="#FFFFFF" />
           </span>
         )}
@@ -654,7 +654,7 @@ function ShortRow({
         </p>
 
         <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-          <button onClick={onEdit} className="text-[10.5px] font-bold px-2 py-1 rounded-md" style={{ background: "rgba(196,126,90,0.12)", color: "#A8684A" }}>편집</button>
+          <button onClick={onEdit} className="text-[10.5px] font-bold px-2 py-1 rounded-md" style={{ background: "rgba(92,141,238,0.12)", color: "#A8684A" }}>편집</button>
           <button onClick={onTogglePublished} className="text-[10.5px] font-bold px-2 py-1 rounded-md flex items-center gap-1" style={{ background: s.published ? "rgba(107,142,111,0.12)" : "rgba(0,0,0,0.06)", color: s.published ? "#3F5B42" : "#666" }}>
             {s.published ? <Eye size={11} /> : <EyeOff size={11} />}
             {s.published ? "발행됨" : "숨김"}

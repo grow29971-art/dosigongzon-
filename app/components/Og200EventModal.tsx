@@ -109,8 +109,8 @@ export default function Og200EventModal() {
           <div
             className="w-[68px] h-[68px] mx-auto rounded-full flex items-center justify-center mb-3"
             style={{
-              background: "linear-gradient(135deg, #E88D5A 0%, #C47E5A 100%)",
-              boxShadow: "0 8px 24px rgba(196,126,90,0.45)",
+              background: "linear-gradient(135deg, #E88D5A 0%, #5C8DEE 100%)",
+              boxShadow: "0 8px 24px rgba(92,141,238,0.45)",
             }}
           >
             <span className="text-[34px] leading-none">🌟</span>
@@ -161,8 +161,8 @@ export default function Og200EventModal() {
               onClick={dismiss}
               className="flex-[1.4] flex items-center justify-center py-3 rounded-2xl text-white text-[13px] font-extrabold active:scale-[0.98]"
               style={{
-                background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
-                boxShadow: "0 4px 14px rgba(196,126,90,0.4)",
+                background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                boxShadow: "0 4px 14px rgba(92,141,238,0.4)",
               }}
             >
               내 타이틀 보러가기
@@ -171,7 +171,7 @@ export default function Og200EventModal() {
               type="button"
               onClick={dismiss}
               className="flex-1 py-3 rounded-2xl text-[13px] font-extrabold active:scale-[0.98] bg-white"
-              style={{ color: "#A8684A", border: "1.5px solid rgba(196,126,90,0.30)" }}
+              style={{ color: "#A8684A", border: "1.5px solid rgba(92,141,238,0.30)" }}
             >
               나중에
             </button>

@@ -182,7 +182,7 @@ export default function AdminWeeklyIssuesPage() {
           <button
             onClick={handleCreate}
             className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center active:scale-95 transition-transform"
-            style={{ boxShadow: "0 6px 14px rgba(196,126,90,0.35)" }}
+            style={{ boxShadow: "0 6px 14px rgba(92,141,238,0.35)" }}
             aria-label="새 이슈 작성"
           >
             <Plus size={20} color="#fff" strokeWidth={2.5} />
@@ -196,8 +196,8 @@ export default function AdminWeeklyIssuesPage() {
           style={{
             background: "#FFFFFF",
             borderRadius: 20,
-            boxShadow: "0 8px 24px rgba(196,126,90,0.14), 0 1px 3px rgba(0,0,0,0.03)",
-            border: "1.5px solid rgba(196,126,90,0.2)",
+            boxShadow: "0 8px 24px rgba(92,141,238,0.14), 0 1px 3px rgba(0,0,0,0.03)",
+            border: "1.5px solid rgba(92,141,238,0.2)",
           }}
         >
           <div className="flex items-center justify-between mb-3">
@@ -362,7 +362,7 @@ export default function AdminWeeklyIssuesPage() {
                   <button
                     onClick={() => handleEdit(item)}
                     className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold"
-                    style={{ backgroundColor: "#EEE8E0", color: "#C47E5A" }}
+                    style={{ backgroundColor: "#EEE8E0", color: "#5C8DEE" }}
                   >
                     <Pencil size={12} /> 수정
                   </button>

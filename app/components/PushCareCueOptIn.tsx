@@ -89,7 +89,7 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
       <div className="flex items-center gap-3">
         <div
           className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
-          style={{ background: "linear-gradient(135deg, #E88D5A 0%, #C47E5A 100%)", boxShadow: "0 3px 10px rgba(196,126,90,0.35)" }}
+          style={{ background: "linear-gradient(135deg, #E88D5A 0%, #5C8DEE 100%)", boxShadow: "0 3px 10px rgba(92,141,238,0.35)" }}
         >
           <Bell size={17} color="#fff" strokeWidth={2.3} />
         </div>
@@ -108,7 +108,7 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
             onClick={enable}
             disabled={busy}
             className="h-8 px-3 rounded-full text-white text-[11.5px] font-extrabold active:scale-95 transition-transform disabled:opacity-60"
-            style={{ background: "#C47E5A", boxShadow: "0 3px 8px rgba(196,126,90,0.3)" }}
+            style={{ background: "#5C8DEE", boxShadow: "0 3px 8px rgba(92,141,238,0.3)" }}
           >
             {busy ? "..." : "켜기"}
           </button>

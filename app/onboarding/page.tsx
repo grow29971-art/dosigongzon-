@@ -60,8 +60,8 @@ const SLIDES = [
     /* 새벽 — 희망의 빛 */
     bg: "linear-gradient(170deg, #5a3e22 0%, #b87050 25%, #d4906a 50%, #e8c4a8 75%, #f5f0e8 100%)",
     particleColor: "rgba(212,149,111,0.08)",
-    accentColor: "#C47E5A",
-    dotActive: "#C47E5A",
+    accentColor: "#5C8DEE",
+    dotActive: "#5C8DEE",
     title: "이제 '도시공존'이\n당신의 든든한 쉼터가\n되어드릴게요.",
     body: "혼자 하는 돌봄이 외롭지 않도록,\n당신의 진심이 지치지 않도록.\n우리가 곁에서 정보를 나누고\n진심을 더하겠습니다.\n\n함께 공존의 길을 걸어봐요.",
     MainIcon: Handshake,
@@ -117,9 +117,9 @@ export default function OnboardingPage() {
   // 4번째: "이렇게 시작해보세요" 액션 카드 화면
   const isPicker = current === SLIDES.length;
   const pickerSlide = {
-    bg: "linear-gradient(170deg, #C47E5A 0%, #D4956F 50%, #F5F0E8 100%)",
-    accentColor: "#C47E5A",
-    dotActive: "#C47E5A",
+    bg: "linear-gradient(170deg, #5C8DEE 0%, #8AAEF5 50%, #F5F0E8 100%)",
+    accentColor: "#5C8DEE",
+    dotActive: "#5C8DEE",
   };
   const activeBg = isPicker ? pickerSlide.bg : slide.bg;
   const activeAccent = isPicker ? pickerSlide.accentColor : slide.accentColor;
@@ -183,7 +183,7 @@ export default function OnboardingPage() {
           <div className="w-full max-w-[360px] space-y-2.5">
             <SignupActionCard onClick={() => goAndComplete("/signup")} />
             <ActionCard
-              icon={<MapPin size={20} color="#C47E5A" strokeWidth={2.2} />}
+              icon={<MapPin size={20} color="#5C8DEE" strokeWidth={2.2} />}
               title="가입 없이 지도부터 보기"
               desc="구경만 해도 OK — 나중에 가입할 수 있어요"
               onClick={() => goAndComplete("/map")}

@@ -82,7 +82,7 @@ export default function LocationLogsPage() {
       {/* 요약 */}
       <div className="px-4 -mt-6 mb-5 grid grid-cols-3 gap-2">
         <SummaryCard label="전체" value={rows.length} color="#4A7BA8" />
-        <SummaryCard label="동 이동" value={dongMoves.length} color="#C47E5A" />
+        <SummaryCard label="동 이동" value={dongMoves.length} color="#5C8DEE" />
         <SummaryCard
           label="500m↑ 이동"
           value={longMoves.length}
@@ -158,7 +158,7 @@ export default function LocationLogsPage() {
                       className="px-2 py-1 rounded-lg font-bold"
                       style={{
                         background: dongChanged ? "#FFF2E8" : "#F6F1EA",
-                        color: dongChanged ? "#C47E5A" : "#A38E7A",
+                        color: dongChanged ? "#5C8DEE" : "#A38E7A",
                       }}
                     >
                       {r.new_region ?? "?"}

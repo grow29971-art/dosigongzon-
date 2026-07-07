@@ -49,8 +49,8 @@ const COHORT_META: Record<CohortId, {
     label: "신규",
     description: "최근 24시간 안에 가입",
     Icon: Sparkles,
-    color: "#C47E5A",
-    bg: "rgba(196,126,90,0.10)",
+    color: "#5C8DEE",
+    bg: "rgba(92,141,238,0.10)",
   },
   active: {
     label: "활성",
@@ -330,7 +330,7 @@ export default function AdminActivationPage() {
                         href={`/messages?to=${u.id}`}
                         className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-extrabold active:scale-[0.97]"
                         style={{
-                          background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
+                          background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
                           color: "#fff",
                         }}
                         aria-label="쪽지 보내기"

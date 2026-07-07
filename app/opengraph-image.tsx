@@ -66,7 +66,7 @@ export default async function OpengraphImage() {
             width: 420,
             height: 420,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(196,126,90,0.22) 0%, rgba(196,126,90,0) 70%)",
+            background: "radial-gradient(circle, rgba(92,141,238,0.22) 0%, rgba(92,141,238,0) 70%)",
           }}
         />
         <div
@@ -89,12 +89,12 @@ export default async function OpengraphImage() {
                 width: 64,
                 height: 64,
                 borderRadius: 20,
-                background: "#C47E5A",
+                background: "#5C8DEE",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontSize: 38,
-                boxShadow: "0 10px 30px rgba(196,126,90,0.3)",
+                boxShadow: "0 10px 30px rgba(92,141,238,0.3)",
               }}
             >
               🐾
@@ -134,11 +134,11 @@ export default async function OpengraphImage() {
                 gap: 10,
                 padding: "12px 22px",
                 borderRadius: 999,
-                background: "linear-gradient(135deg, #C47E5A 0%, #E86B8C 100%)",
+                background: "linear-gradient(135deg, #5C8DEE 0%, #E86B8C 100%)",
                 color: "#FFFFFF",
                 fontSize: 22,
                 fontWeight: 900,
-                boxShadow: "0 8px 24px rgba(196,126,90,0.40)",
+                boxShadow: "0 8px 24px rgba(92,141,238,0.40)",
               }}
             >
               🚀 정식 출시!
@@ -160,7 +160,7 @@ export default async function OpengraphImage() {
             }}
           >
             <span>우리 동네 길고양이,</span>
-            <span style={{ color: "#C47E5A" }}>함께 기록하고 지켜요.</span>
+            <span style={{ color: "#5C8DEE" }}>함께 기록하고 지켜요.</span>
           </div>
           <p
             style={{
@@ -184,7 +184,7 @@ export default async function OpengraphImage() {
             paddingTop: 28,
           }}
         >
-          <StatCard emoji="🐾" value={s.cats} label="등록된 아이" color="#C47E5A" />
+          <StatCard emoji="🐾" value={s.cats} label="등록된 아이" color="#5C8DEE" />
           <StatCard emoji="❤️" value={s.users} label="동네 이웃" color="#E86B8C" />
           <StatCard emoji="🏥" value={s.hospitals} label="치료 병원" color="#22B573" />
         </div>
@@ -215,7 +215,7 @@ function StatCard({
         display: "flex",
         flexDirection: "column",
         gap: 4,
-        border: "2px solid rgba(196,126,90,0.20)",
+        border: "2px solid rgba(92,141,238,0.20)",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>

@@ -138,7 +138,7 @@ function WelcomeContent() {
   if (authLoading || !user) {
     return (
       <div className="fixed inset-0 flex items-center justify-center" style={{ background: "#FFF9F2" }}>
-        <Sparkles size={28} className="animate-pulse" style={{ color: "#C47E5A" }} />
+        <Sparkles size={28} className="animate-pulse" style={{ color: "#5C8DEE" }} />
       </div>
     );
   }
@@ -377,7 +377,7 @@ function WelcomeContent() {
 // 테스터 피드백상 5개는 끝까지 보지 않는 경우가 있어 핵심 메시지만 남김.
 const SLIDES = [
   {
-    bg: "linear-gradient(170deg, #C47E5A 0%, #D4956F 50%, #E8B07C 100%)",
+    bg: "linear-gradient(170deg, #5C8DEE 0%, #8AAEF5 50%, #E8B07C 100%)",
     accent: "#A8684A",
     Icon: PartyPopper,
     title: "",

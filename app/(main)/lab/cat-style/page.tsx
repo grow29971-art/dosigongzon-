@@ -38,8 +38,8 @@ export default function AICatSitterPage() {
           href="/login?next=/lab/cat-style"
           className="inline-block mt-3 px-5 py-2.5 rounded-2xl text-white text-[13px] font-extrabold"
           style={{
-            background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
-            boxShadow: "0 4px 14px rgba(196,126,90,0.35)",
+            background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+            boxShadow: "0 4px 14px rgba(92,141,238,0.35)",
           }}
         >
           로그인하기
@@ -62,7 +62,7 @@ export default function AICatSitterPage() {
           <h1 className="text-[20px] font-extrabold text-text-main flex items-center gap-1.5">
             <Bot size={18} className="text-primary" />
             AI 집사
-            <span className="text-[9px] font-bold tracking-[0.15em] ml-0.5" style={{ color: "#C47E5A", opacity: 0.55 }}>BETA</span>
+            <span className="text-[9px] font-bold tracking-[0.15em] ml-0.5" style={{ color: "#5C8DEE", opacity: 0.55 }}>BETA</span>
           </h1>
           <p className="text-[10.5px] text-text-sub">길고양이 돌봄, 뭐든 물어보세요</p>
         </div>

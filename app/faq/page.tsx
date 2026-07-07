@@ -74,8 +74,8 @@ const CATEGORIES: FaqCategory[] = [
     id: "discover",
     label: "길고양이를 발견했어요",
     Icon: AlertCircle,
-    color: "#C47E5A",
-    bg: "rgba(196,126,90,0.12)",
+    color: "#5C8DEE",
+    bg: "rgba(92,141,238,0.12)",
     items: [
       {
         q: "길고양이를 처음 발견했어요. 어떻게 해야 하나요?",
@@ -668,7 +668,7 @@ export default function FaqPage() {
         <nav
           aria-label="카테고리 목차"
           className="mb-7 rounded-2xl border p-4"
-          style={{ borderColor: "rgba(196,126,90,0.18)", background: "rgba(255,253,250,0.7)" }}
+          style={{ borderColor: "rgba(92,141,238,0.18)", background: "rgba(255,253,250,0.7)" }}
         >
           <p
             className="mb-3 text-[12px] font-bold tracking-wide"
@@ -716,7 +716,7 @@ export default function FaqPage() {
                   <details
                     key={idx}
                     className="group rounded-2xl border bg-white px-4 py-3 transition-shadow open:shadow-md"
-                    style={{ borderColor: "rgba(196,126,90,0.15)" }}
+                    style={{ borderColor: "rgba(92,141,238,0.15)" }}
                   >
                     <summary
                       className="flex cursor-pointer list-none items-start justify-between gap-3 text-[14px] font-semibold leading-snug"
@@ -745,8 +745,8 @@ export default function FaqPage() {
         <section
           className="mt-10 rounded-2xl p-5"
           style={{
-            background: "linear-gradient(135deg, rgba(196,126,90,0.08) 0%, rgba(232,181,126,0.12) 100%)",
-            border: "1px solid rgba(196,126,90,0.18)",
+            background: "linear-gradient(135deg, rgba(92,141,238,0.08) 0%, rgba(232,181,126,0.12) 100%)",
+            border: "1px solid rgba(92,141,238,0.18)",
           }}
         >
           <h3
@@ -765,21 +765,21 @@ export default function FaqPage() {
             <Link
               href="/protection"
               className="rounded-full px-4 py-2 text-[12.5px] font-extrabold text-white shadow-sm active:scale-[0.98]"
-              style={{ background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)" }}
+              style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
             >
               보호 지침 전체 보기
             </Link>
             <Link
               href="/guide"
               className="rounded-full border bg-white px-4 py-2 text-[12.5px] font-extrabold active:scale-[0.98]"
-              style={{ borderColor: "rgba(196,126,90,0.3)", color: "#A8684A" }}
+              style={{ borderColor: "rgba(92,141,238,0.3)", color: "#A8684A" }}
             >
               앱 사용 가이드
             </Link>
             <a
               href="mailto:grow29971@gmail.com"
               className="rounded-full border bg-white px-4 py-2 text-[12.5px] font-extrabold active:scale-[0.98]"
-              style={{ borderColor: "rgba(196,126,90,0.3)", color: "#A8684A" }}
+              style={{ borderColor: "rgba(92,141,238,0.3)", color: "#A8684A" }}
             >
               메일로 문의
             </a>

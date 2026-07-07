@@ -63,7 +63,7 @@ export default function MapChatGuideModal() {
         </button>
 
         <div className="mb-4 pr-8">
-          <p className="text-[10.5px] font-extrabold tracking-[0.12em] mb-1" style={{ color: "#C47E5A" }}>
+          <p className="text-[10.5px] font-extrabold tracking-[0.12em] mb-1" style={{ color: "#5C8DEE" }}>
             CHAT GUIDE
           </p>
           <h2 className="text-[18px] font-extrabold text-text-main tracking-tight leading-tight">
@@ -101,13 +101,13 @@ export default function MapChatGuideModal() {
           <div
             className="rounded-2xl p-3.5 mb-4 flex items-start gap-3"
             style={{
-              background: "linear-gradient(135deg, rgba(196,126,90,0.08) 0%, rgba(196,126,90,0.04) 100%)",
-              border: "1px solid rgba(196,126,90,0.18)",
+              background: "linear-gradient(135deg, rgba(92,141,238,0.08) 0%, rgba(92,141,238,0.04) 100%)",
+              border: "1px solid rgba(92,141,238,0.18)",
             }}
           >
             <div
               className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
-              style={{ background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)" }}
+              style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
             >
               <MessageCircle size={18} color="#FFFFFF" strokeWidth={2.4} />
             </div>
@@ -128,7 +128,7 @@ export default function MapChatGuideModal() {
           type="button"
           onClick={dismiss}
           className="w-full py-3 rounded-2xl text-white text-[13px] font-extrabold active:scale-[0.99] transition-transform"
-          style={{ background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)" }}
+          style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
         >
           알겠어요
         </button>

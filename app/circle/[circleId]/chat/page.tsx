@@ -316,9 +316,9 @@ export default function CircleChatPage() {
                         <div
                           className={`px-3 py-2 rounded-2xl text-[13.5px] leading-relaxed whitespace-pre-wrap break-words ${isMine ? "rounded-tr-sm" : "rounded-tl-sm"}`}
                           style={{
-                            background: isMine ? "#C47E5A" : "#FFFFFF",
+                            background: isMine ? "#5C8DEE" : "#FFFFFF",
                             color: isMine ? "#FFFFFF" : "#3D2F25",
-                            boxShadow: isMine ? "0 2px 6px rgba(196,126,90,0.25)" : "0 1px 3px rgba(0,0,0,0.05)",
+                            boxShadow: isMine ? "0 2px 6px rgba(92,141,238,0.25)" : "0 1px 3px rgba(0,0,0,0.05)",
                           }}
                         >
                           {m.body}
@@ -409,7 +409,7 @@ export default function CircleChatPage() {
             onClick={handleSend}
             disabled={(!input.trim() && !photoFile) || sending}
             className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 active:scale-90 disabled:opacity-40"
-            style={{ background: "#C47E5A" }}
+            style={{ background: "#5C8DEE" }}
             aria-label="전송"
           >
             {sending ? <Loader2 size={16} className="animate-spin text-white" /> : <Send size={17} color="#fff" />}
@@ -426,7 +426,7 @@ function Avatar({ url, size = 32 }: { url: string | null; size?: number }) {
     return (
       <div
         className="shrink-0 rounded-full flex items-center justify-center text-white text-[13px] font-extrabold"
-        style={{ width: size, height: size, background: "linear-gradient(135deg, #C47E5A, #A8684A)" }}
+        style={{ width: size, height: size, background: "linear-gradient(135deg, #5C8DEE, #A8684A)" }}
       >
         🐾
       </div>

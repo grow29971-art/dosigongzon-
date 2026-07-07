@@ -16,7 +16,7 @@ import {
 } from "@/lib/pharmacy-guide-repo";
 
 const COLORS = [
-  { label: "갈색", value: "#C47E5A" },
+  { label: "갈색", value: "#5C8DEE" },
   { label: "초록", value: "#6B8E6F" },
   { label: "빨강", value: "#D85555" },
   { label: "파랑", value: "#4A7BA8" },
@@ -27,7 +27,7 @@ const COLORS = [
 ];
 
 const EMPTY: PharmacyGuideInput = {
-  name: "", brand: null, category: "", color: "#C47E5A",
+  name: "", brand: null, category: "", color: "#5C8DEE",
   image_url: null, description: "", usage_info: null, tip: null, price: null, sort_order: 0,
 };
 
@@ -118,7 +118,7 @@ export default function AdminPharmacyGuidePage() {
             <h1 className="text-[22px] font-extrabold text-text-main tracking-tight">약품 가이드 관리</h1>
             <p className="text-[12px] text-text-sub">약품·영양제 정보를 추가·수정·삭제</p>
           </div>
-          <button onClick={handleCreate} className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center active:scale-95 transition-transform" style={{ boxShadow: "0 6px 14px rgba(196,126,90,0.35)" }}>
+          <button onClick={handleCreate} className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center active:scale-95 transition-transform" style={{ boxShadow: "0 6px 14px rgba(92,141,238,0.35)" }}>
             <Plus size={20} color="#fff" strokeWidth={2.5} />
           </button>
         </div>
@@ -126,7 +126,7 @@ export default function AdminPharmacyGuidePage() {
 
       {/* 편집 폼 */}
       {editingId && (
-        <div className="mb-5 p-4" style={{ background: "#FFFFFF", borderRadius: 20, boxShadow: "0 8px 24px rgba(196,126,90,0.14)", border: "1.5px solid rgba(196,126,90,0.2)" }}>
+        <div className="mb-5 p-4" style={{ background: "#FFFFFF", borderRadius: 20, boxShadow: "0 8px 24px rgba(92,141,238,0.14)", border: "1.5px solid rgba(92,141,238,0.2)" }}>
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-[14px] font-extrabold text-text-main">{editingId === "new" ? "새 약품 추가" : "약품 수정"}</h2>
             <button onClick={handleCancel} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#EEE8E0" }}>
@@ -213,7 +213,7 @@ export default function AdminPharmacyGuidePage() {
               </div>
             </div>
             <div className="flex gap-1.5 mt-3 pt-3 border-t border-divider">
-              <button onClick={() => handleEdit(item)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold" style={{ backgroundColor: "#EEE8E0", color: "#C47E5A" }}>
+              <button onClick={() => handleEdit(item)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold" style={{ backgroundColor: "#EEE8E0", color: "#5C8DEE" }}>
                 <Pencil size={12} /> 수정
               </button>
               <button onClick={() => handleDelete(item)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold" style={{ backgroundColor: "#FBEAEA", color: "#D85555" }}>

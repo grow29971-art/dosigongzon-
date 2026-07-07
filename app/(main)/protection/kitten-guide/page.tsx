@@ -268,8 +268,8 @@ export default function KittenGuidePage() {
       {/* Step 3 */}
       <section id="step-3" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <Thermometer size={20} color="#C47E5A" />
-          <span className="w-7 h-7 rounded-full bg-[#C47E5A] text-white text-[12px] font-extrabold flex items-center justify-center">3</span>
+          <Thermometer size={20} color="#5C8DEE" />
+          <span className="w-7 h-7 rounded-full bg-[#5C8DEE] text-white text-[12px] font-extrabold flex items-center justify-center">3</span>
           체온 유지 — 36.5도 만들기
         </h2>
         <p className="text-[14px] text-text-main leading-relaxed mb-3">
@@ -426,7 +426,7 @@ export default function KittenGuidePage() {
       {/* 관련 가이드 */}
       <section className="mb-8">
         <h2 className="flex items-center gap-2 text-[16px] font-extrabold text-text-main mb-3">
-          <BookOpen size={18} color="#C47E5A" />
+          <BookOpen size={18} color="#5C8DEE" />
           관련 가이드
         </h2>
         <div className="space-y-2">
@@ -469,7 +469,7 @@ export default function KittenGuidePage() {
       {/* 신뢰 출처 */}
       <section className="mb-8 rounded-2xl p-4" style={{ background: "#F6F1EA", border: "1px solid rgba(0,0,0,0.04)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2 flex items-center gap-1.5">
-          <Heart size={14} color="#C47E5A" />
+          <Heart size={14} color="#5C8DEE" />
           참고한 공공 자료
         </h3>
         <ul className="text-[12px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">

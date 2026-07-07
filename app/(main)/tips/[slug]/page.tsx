@@ -352,7 +352,7 @@ export default async function TipDetailPage({ params }: Params) {
           className="p-5 rounded-2xl"
           style={{
             background: "linear-gradient(135deg, #FBF8F3 0%, #F2EBE0 100%)",
-            border: "1px solid rgba(196,126,90,0.15)",
+            border: "1px solid rgba(92,141,238,0.15)",
           }}
         >
           <p className="text-[12px] font-extrabold text-primary mb-1.5">도시공존이란?</p>

@@ -130,7 +130,7 @@ export default async function RankingPage() {
             <Link
               href="/map"
               className="inline-block mt-3 px-4 py-2 rounded-xl text-[12px] font-extrabold text-white"
-              style={{ background: "#C47E5A" }}
+              style={{ background: "#5C8DEE" }}
             >
               지도로 가기
             </Link>
@@ -206,7 +206,7 @@ function PodiumCard({ row, place, height }: { row: RankingRow; place: 1 | 2 | 3;
       ? "rgba(201,169,97,0.6)"
       : place === 2
         ? "rgba(160,160,160,0.6)"
-        : "rgba(196,126,90,0.5)";
+        : "rgba(92,141,238,0.5)";
 
   return (
     <Link

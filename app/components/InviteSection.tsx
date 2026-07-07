@@ -164,7 +164,7 @@ export default function InviteSection() {
 
             {info.invitedByCode && (
               <p className="text-[10.5px] text-text-light text-center mt-3">
-                ✨ <b style={{ color: "#C47E5A" }}>{info.invitedByCode}</b> 코드로 가입했어요
+                ✨ <b style={{ color: "#5C8DEE" }}>{info.invitedByCode}</b> 코드로 가입했어요
               </p>
             )}
           </>

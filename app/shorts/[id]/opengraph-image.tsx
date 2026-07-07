@@ -106,7 +106,7 @@ export default async function ShortOGImage({ params }: { params: Params }) {
               width: 44,
               height: 44,
               borderRadius: 14,
-              background: "#C47E5A",
+              background: "#5C8DEE",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",

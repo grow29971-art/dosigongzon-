@@ -41,7 +41,7 @@ const COHORT_OPTIONS: Array<{
     label: "창립 멤버",
     description: "5/20 전 가입한 founding_member 타이틀 보유자",
     Icon: Sparkles,
-    color: "#C47E5A",
+    color: "#5C8DEE",
   },
   {
     id: "no_cat",
@@ -260,9 +260,9 @@ export default function AdminBroadcastPage() {
               onClick={() => setMessage(t.text)}
               className="text-[11px] px-3 py-1.5 rounded-full font-semibold active:scale-[0.97]"
               style={{
-                background: "rgba(196,126,90,0.10)",
+                background: "rgba(92,141,238,0.10)",
                 color: "#A8684A",
-                border: "1px solid rgba(196,126,90,0.22)",
+                border: "1px solid rgba(92,141,238,0.22)",
               }}
             >
               {t.label}
@@ -298,8 +298,8 @@ export default function AdminBroadcastPage() {
         disabled={sending || !message.trim()}
         className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[14px] font-extrabold active:scale-[0.98] disabled:opacity-60"
         style={{
-          background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
-          boxShadow: "0 6px 18px rgba(196,126,90,0.28)",
+          background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+          boxShadow: "0 6px 18px rgba(92,141,238,0.28)",
         }}
       >
         {sending ? (

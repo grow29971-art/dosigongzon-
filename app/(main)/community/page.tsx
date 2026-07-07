@@ -254,8 +254,8 @@ export default function CommunityPage() {
         <div
           className="mb-4 flex items-center justify-center gap-2 py-2.5 rounded-2xl"
           style={{
-            background: "rgba(196,126,90,0.08)",
-            border: "1px solid rgba(196,126,90,0.12)",
+            background: "rgba(92,141,238,0.08)",
+            border: "1px solid rgba(92,141,238,0.12)",
           }}
         >
           <Eye size={14} className="text-primary" />
@@ -286,11 +286,11 @@ export default function CommunityPage() {
             className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-transform flex items-center gap-1"
             style={{
               background: neighborhoodOnly
-                ? "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)"
+                ? "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)"
                 : "rgba(255,255,255,0.9)",
               color: neighborhoodOnly ? "#fff" : "#666",
               boxShadow: neighborhoodOnly
-                ? "0 2px 8px rgba(196,126,90,0.35)"
+                ? "0 2px 8px rgba(92,141,238,0.35)"
                 : "0 2px 6px rgba(0,0,0,0.05)",
             }}
           >

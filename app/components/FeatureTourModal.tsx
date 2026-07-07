@@ -34,7 +34,7 @@ interface TourStep {
 const STEPS: TourStep[] = [
   {
     Icon: PawPrint,
-    color: "#C47E5A",
+    color: "#5C8DEE",
     eyebrow: "WELCOME",
     title: "처음 오셨어요?",
     body: "우리 동네 길 위의 아이들, 함께 알아가 볼까요?",

@@ -23,8 +23,8 @@ interface Props {
 const cardBox: CSSProperties = {
   background: "linear-gradient(135deg, #FFFFFF 0%, #FCF6EC 100%)",
   borderRadius: 18,
-  border: "1px solid rgba(196,126,90,0.18)",
-  boxShadow: "0 4px 14px rgba(196,126,90,0.08)",
+  border: "1px solid rgba(92,141,238,0.18)",
+  boxShadow: "0 4px 14px rgba(92,141,238,0.08)",
 };
 
 export default function HomeReengageCard({ quietCat, regionName, neighborhoodCatCount, latestPost }: Props) {
@@ -83,7 +83,7 @@ export default function HomeReengageCard({ quietCat, regionName, neighborhoodCat
         style={{ ...cardBox, padding: "13px 14px" }}
       >
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 text-xl" style={{ background: "rgba(196,126,90,0.12)" }}>🗺️</div>
+          <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 text-xl" style={{ background: "rgba(92,141,238,0.12)" }}>🗺️</div>
           <div className="flex-1 min-w-0">
             <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#A8684A" }}>우리 동네</p>
             <p className="text-[13.5px] font-extrabold text-text-main leading-tight mt-0.5">활동 지역을 설정해보세요</p>
@@ -101,23 +101,23 @@ export default function HomeReengageCard({ quietCat, regionName, neighborhoodCat
     <div className="mb-3" style={{ ...cardBox, overflow: "hidden" }}>
       {/* 우리 동네 고양이 → 지도 */}
       <Link href="/map" className="flex items-center gap-3 px-3.5 py-3 active:scale-[0.99] transition-transform">
-        <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 text-lg" style={{ background: "rgba(196,126,90,0.12)" }}>🗺️</div>
+        <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 text-lg" style={{ background: "rgba(92,141,238,0.12)" }}>🗺️</div>
         <div className="flex-1 min-w-0">
           <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#A8684A" }}>우리 동네 · {regionName}</p>
           <p className="text-[13.5px] font-extrabold text-text-main leading-tight mt-0.5 truncate">
             {neighborhoodCatCount > 0 ? (
-              <>돌보는 고양이 <b style={{ color: "#C47E5A" }}>{neighborhoodCatCount}마리</b> 지도에서 보기</>
+              <>돌보는 고양이 <b style={{ color: "#5C8DEE" }}>{neighborhoodCatCount}마리</b> 지도에서 보기</>
             ) : (
               <>내 주변 고양이 지도 둘러보기</>
             )}
           </p>
         </div>
-        <MapPin size={15} style={{ color: "#C47E5A" }} className="shrink-0" />
+        <MapPin size={15} style={{ color: "#5C8DEE" }} className="shrink-0" />
       </Link>
 
       {latestPost && cat && (
         <>
-          <div className="h-px mx-3.5" style={{ background: "rgba(196,126,90,0.14)" }} />
+          <div className="h-px mx-3.5" style={{ background: "rgba(92,141,238,0.14)" }} />
           {/* 커뮤니티 최근 글 → 글 상세 */}
           <Link href={`/community/${latestPost.id}`} className="flex items-center gap-3 px-3.5 py-3 active:scale-[0.99] transition-transform">
             <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 text-base" style={{ background: `${cat.color}1A` }}>{cat.emoji}</div>

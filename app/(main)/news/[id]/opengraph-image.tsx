@@ -12,7 +12,7 @@ export const contentType = "image/png";
 type Params = Promise<{ id: string }>;
 
 const BADGE_LABELS: Record<string, { label: string; color: string }> = {
-  notice: { label: "공지", color: "#C47E5A" },
+  notice: { label: "공지", color: "#5C8DEE" },
   event: { label: "행사", color: "#5BA876" },
   policy: { label: "정책", color: "#4A7BA8" },
   rescue: { label: "구조", color: "#D85555" },
@@ -61,7 +61,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
             width: 420,
             height: 420,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(196,126,90,0.25) 0%, rgba(196,126,90,0) 70%)",
+            background: "radial-gradient(circle, rgba(92,141,238,0.25) 0%, rgba(92,141,238,0) 70%)",
           }}
         />
 
@@ -125,7 +125,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
                 width: 44,
                 height: 44,
                 borderRadius: 14,
-                background: "#C47E5A",
+                background: "#5C8DEE",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -196,7 +196,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
                   alignItems: "center",
                   padding: "8px 16px",
                   borderRadius: 999,
-                  background: "rgba(196,126,90,0.18)",
+                  background: "rgba(92,141,238,0.18)",
                   color: "#8B5A3C",
                   fontSize: 18,
                   fontWeight: 700,
@@ -215,7 +215,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
                 color: "#8B5A3C",
                 fontSize: 18,
                 fontWeight: 800,
-                border: "2px solid rgba(196,126,90,0.3)",
+                border: "2px solid rgba(92,141,238,0.3)",
                 marginLeft: "auto",
               }}
             >

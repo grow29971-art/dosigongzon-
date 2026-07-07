@@ -365,10 +365,10 @@ export default function ProtectionPage() {
           background: progress.read === progress.total
             ? "linear-gradient(135deg, #E8F4E8 0%, #D5EDD5 100%)"
             : "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
-          border: `1px solid ${progress.read === progress.total ? "#5BA87633" : "rgba(196,126,90,0.18)"}`,
+          border: `1px solid ${progress.read === progress.total ? "#5BA87633" : "rgba(92,141,238,0.18)"}`,
         }}
       >
-        <Sparkles size={16} className={progress.read === progress.total ? "text-[#3F5B42]" : "text-[#C47E5A]"} />
+        <Sparkles size={16} className={progress.read === progress.total ? "text-[#3F5B42]" : "text-[#5C8DEE]"} />
         <div className="flex-1 min-w-0">
           <p className="text-[12px] font-extrabold text-text-main">
             {progress.read === progress.total
@@ -380,12 +380,12 @@ export default function ProtectionPage() {
               className="h-full rounded-full transition-all duration-500"
               style={{
                 width: `${progress.percent}%`,
-                background: progress.read === progress.total ? "#5BA876" : "#C47E5A",
+                background: progress.read === progress.total ? "#5BA876" : "#5C8DEE",
               }}
             />
           </div>
         </div>
-        <span className="text-[12px] font-extrabold tabular-nums" style={{ color: progress.read === progress.total ? "#3F5B42" : "#C47E5A" }}>
+        <span className="text-[12px] font-extrabold tabular-nums" style={{ color: progress.read === progress.total ? "#3F5B42" : "#5C8DEE" }}>
           {progress.percent}%
         </span>
       </div>

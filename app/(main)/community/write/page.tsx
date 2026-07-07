@@ -137,13 +137,13 @@ export default function WritePage() {
             className="rounded-2xl p-4"
             style={{
               background: "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
-              border: "1.5px solid rgba(196,126,90,0.25)",
+              border: "1.5px solid rgba(92,141,238,0.25)",
             }}
           >
             <div className="flex items-start gap-2.5">
               <div
                 className="w-9 h-9 rounded-xl shrink-0 flex items-center justify-center"
-                style={{ background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)" }}
+                style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
               >
                 <PawPrint size={17} color="#fff" strokeWidth={2.3} />
               </div>
@@ -313,7 +313,7 @@ export default function WritePage() {
               ? "bg-primary text-white"
               : "bg-border text-text-muted"
           }`}
-          style={canSubmit ? { boxShadow: "0 6px 20px rgba(196,126,90,0.3)" } : undefined}
+          style={canSubmit ? { boxShadow: "0 6px 20px rgba(92,141,238,0.3)" } : undefined}
         >
           {submitting ? (
             <Loader2 size={18} className="animate-spin" />

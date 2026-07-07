@@ -254,7 +254,7 @@ export default function AdminHospitalsPage() {
             <button
               onClick={handleCreate}
               className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center active:scale-95 transition-transform"
-              style={{ boxShadow: "0 6px 14px rgba(196,126,90,0.35)" }}
+              style={{ boxShadow: "0 6px 14px rgba(92,141,238,0.35)" }}
               aria-label="새 병원 추가"
             >
               <Plus size={20} color="#fff" strokeWidth={2.5} />
@@ -300,8 +300,8 @@ export default function AdminHospitalsPage() {
           style={{
             background: "#FFFFFF",
             borderRadius: 20,
-            boxShadow: "0 8px 24px rgba(196,126,90,0.14), 0 1px 3px rgba(0,0,0,0.03)",
-            border: "1.5px solid rgba(196,126,90,0.2)",
+            boxShadow: "0 8px 24px rgba(92,141,238,0.14), 0 1px 3px rgba(0,0,0,0.03)",
+            border: "1.5px solid rgba(92,141,238,0.2)",
           }}
         >
           <div className="flex items-center justify-between mb-3">
@@ -462,7 +462,7 @@ export default function AdminHospitalsPage() {
               <div className="flex items-center gap-2 mb-2 px-1">
                 <div
                   className="w-1 h-4 rounded-full"
-                  style={{ backgroundColor: "#C47E5A" }}
+                  style={{ backgroundColor: "#5C8DEE" }}
                 />
                 <h2 className="text-[13px] font-extrabold text-text-main tracking-tight">
                   {group.city}
@@ -483,10 +483,10 @@ export default function AdminHospitalsPage() {
                             background: "#FFFFFF",
                             borderRadius: 14,
                             boxShadow: h.pinned
-                              ? "0 4px 14px rgba(196,126,90,0.12), 0 1px 2px rgba(0,0,0,0.02)"
+                              ? "0 4px 14px rgba(92,141,238,0.12), 0 1px 2px rgba(0,0,0,0.02)"
                               : "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)",
                             border: h.pinned
-                              ? "1.5px solid rgba(196,126,90,0.25)"
+                              ? "1.5px solid rgba(92,141,238,0.25)"
                               : "1px solid rgba(0,0,0,0.04)",
                           }}
                         >
@@ -494,7 +494,7 @@ export default function AdminHospitalsPage() {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5 mb-0.5">
                                 {h.pinned && (
-                                  <Pin size={10} style={{ color: "#C47E5A" }} />
+                                  <Pin size={10} style={{ color: "#5C8DEE" }} />
                                 )}
                                 <p className="text-[13px] font-extrabold text-text-main truncate">
                                   {h.name}
@@ -513,7 +513,7 @@ export default function AdminHospitalsPage() {
                                 style={{ backgroundColor: "#EEE8E0" }}
                                 aria-label="수정"
                               >
-                                <Pencil size={12} style={{ color: "#C47E5A" }} strokeWidth={2.3} />
+                                <Pencil size={12} style={{ color: "#5C8DEE" }} strokeWidth={2.3} />
                               </button>
                               <button
                                 onClick={() => handleDelete(h)}

@@ -281,7 +281,7 @@ export default function MyPage() {
           description="레벨·업적·streak으로 활동이 보상돼요. 친구 초대(+15점), 주간 이메일, 앱 설치, 동네 푸시도 여기서 켜고 끌 수 있어요."
           ctaLabel="전체 기능 안내"
           ctaHref="/guide"
-          accent="#C47E5A"
+          accent="#5C8DEE"
         />
       </div>
 
@@ -297,7 +297,7 @@ export default function MyPage() {
             style={{
               background: "#FFFFFF",
               borderRadius: 22,
-              boxShadow: "0 6px 20px rgba(196,126,90,0.10), 0 1px 3px rgba(0,0,0,0.03)",
+              boxShadow: "0 6px 20px rgba(92,141,238,0.10), 0 1px 3px rgba(0,0,0,0.03)",
               border: "1px solid rgba(0,0,0,0.04)",
             }}
           >
@@ -308,8 +308,8 @@ export default function MyPage() {
               disabled={avatarUploading}
               className="relative w-16 h-16 rounded-[20px] flex items-center justify-center shrink-0 overflow-hidden active:scale-95 transition-transform"
               style={{
-                background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
-                boxShadow: "0 6px 14px rgba(196,126,90,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",
+                background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                boxShadow: "0 6px 14px rgba(92,141,238,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",
               }}
               aria-label="프로필 사진 변경"
             >
@@ -328,9 +328,9 @@ export default function MyPage() {
                 }}
               >
                 {avatarUploading ? (
-                  <Loader2 size={11} className="animate-spin" style={{ color: "#C47E5A" }} />
+                  <Loader2 size={11} className="animate-spin" style={{ color: "#5C8DEE" }} />
                 ) : (
-                  <Camera size={11} style={{ color: "#C47E5A" }} strokeWidth={2.5} />
+                  <Camera size={11} style={{ color: "#5C8DEE" }} strokeWidth={2.5} />
                 )}
               </div>
               {/* 업로드 중 오버레이 */}
@@ -420,7 +420,7 @@ export default function MyPage() {
                   {joinedDays > 0 && (
                     <span
                       className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-full text-[10.5px] font-extrabold"
-                      style={{ background: "rgba(196,126,90,0.12)", color: "#A8684A" }}
+                      style={{ background: "rgba(92,141,238,0.12)", color: "#A8684A" }}
                     >
                       🐾 첫 등록 후 {joinedDays}일째 함께 돌봐요
                     </span>
@@ -449,15 +449,15 @@ export default function MyPage() {
                 style={{
                   background: "linear-gradient(135deg, #FFFFFF 0%, #FDF9F2 100%)",
                   borderRadius: 22,
-                  boxShadow: "0 8px 24px rgba(196,126,90,0.12), 0 1px 3px rgba(0,0,0,0.03)",
-                  border: "1.5px solid rgba(196,126,90,0.18)",
+                  boxShadow: "0 8px 24px rgba(92,141,238,0.12), 0 1px 3px rgba(0,0,0,0.03)",
+                  border: "1.5px solid rgba(92,141,238,0.18)",
                 }}
               >
                 <div className="flex items-center gap-4 mb-3">
                   <div
                     className="w-[48px] h-[48px] rounded-full flex items-center justify-center shrink-0 text-2xl"
                     style={{
-                      backgroundColor: "rgba(196,126,90,0.12)",
+                      backgroundColor: "rgba(92,141,238,0.12)",
                     }}
                   >
                     {lv.emoji}
@@ -485,7 +485,7 @@ export default function MyPage() {
                     <span className="text-[10.5px] text-text-sub font-semibold">
                       다음 레벨까지
                     </span>
-                    <span className="text-[10.5px] font-bold tabular-nums" style={{ color: "#C47E5A" }}>
+                    <span className="text-[10.5px] font-bold tabular-nums" style={{ color: "#5C8DEE" }}>
                       {lv.next
                         ? `${lv.score} / ${lv.next}`
                         : "MAX"}
@@ -499,8 +499,8 @@ export default function MyPage() {
                       className="h-full rounded-full transition-all duration-500"
                       style={{
                         width: `${lv.progress * 100}%`,
-                        background: "linear-gradient(90deg, #C47E5A 0%, #E88D5A 100%)",
-                        boxShadow: "0 0 8px rgba(196,126,90,0.5)",
+                        background: "linear-gradient(90deg, #5C8DEE 0%, #E88D5A 100%)",
+                        boxShadow: "0 0 8px rgba(92,141,238,0.5)",
                       }}
                     />
                   </div>
@@ -541,8 +541,8 @@ export default function MyPage() {
               Icon={CatIcon}
               label="등록 고양이"
               value={summary?.catCount ?? 0}
-              color="#C47E5A"
-              glow="196,126,90"
+              color="#5C8DEE"
+              glow="92,141,238"
               loading={dataLoading}
             />
             <StatCard
@@ -580,7 +580,7 @@ export default function MyPage() {
           {/* ── 내가 등록한 고양이 ── */}
           <div className="mb-5">
             <div className="flex items-center gap-2 mb-3 px-1">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C47E5A" }} />
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#5C8DEE" }} />
               <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
                 내가 등록한 고양이 {myCats.length > 0 && `· ${myCats.length}`}
               </h2>
@@ -623,7 +623,7 @@ export default function MyPage() {
                     >
                       {!cat.photo_url && (
                         <div className="w-full h-full flex items-center justify-center">
-                          <CatIcon size={18} style={{ color: "#C47E5A" }} strokeWidth={2} />
+                          <CatIcon size={18} style={{ color: "#5C8DEE" }} strokeWidth={2} />
                         </div>
                       )}
                     </div>
@@ -681,7 +681,7 @@ export default function MyPage() {
                     >
                       {!cat.photo_url && (
                         <div className="w-full h-full flex items-center justify-center">
-                          <CatIcon size={24} style={{ color: "#C47E5A" }} strokeWidth={2} />
+                          <CatIcon size={24} style={{ color: "#5C8DEE" }} strokeWidth={2} />
                         </div>
                       )}
                       <div
@@ -750,7 +750,7 @@ export default function MyPage() {
                         )}
                         <span
                           className="text-[11px] font-extrabold"
-                          style={{ color: isAlert ? "#D85555" : "#C47E5A" }}
+                          style={{ color: isAlert ? "#D85555" : "#5C8DEE" }}
                         >
                           {c.cat?.name ?? "알 수 없는 고양이"}
                         </span>
@@ -806,13 +806,13 @@ export default function MyPage() {
           {/* ── 내 설정 ── */}
           <div className="mb-3">
             <div className="flex items-center gap-2 mb-3 px-1">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C47E5A" }} />
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#5C8DEE" }} />
               <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
                 내 설정
               </h2>
             </div>
             {/* 활동 그룹 */}
-            <p className="text-[10.5px] font-extrabold tracking-[0.15em] mb-2 ml-1" style={{ color: "rgba(196,126,90,0.65)" }}>
+            <p className="text-[10.5px] font-extrabold tracking-[0.15em] mb-2 ml-1" style={{ color: "rgba(92,141,238,0.65)" }}>
               ACTIVITY
             </p>
             <Link
@@ -840,15 +840,15 @@ export default function MyPage() {
               style={{
                 background: "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
                 borderRadius: 16,
-                boxShadow: "0 4px 14px rgba(196,126,90,0.15), 0 1px 2px rgba(0,0,0,0.02)",
-                border: "1px solid rgba(196,126,90,0.20)",
+                boxShadow: "0 4px 14px rgba(92,141,238,0.15), 0 1px 2px rgba(0,0,0,0.02)",
+                border: "1px solid rgba(92,141,238,0.20)",
               }}
             >
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                 style={{ backgroundColor: "#FFFFFF" }}
               >
-                <Sparkles size={18} color="#C47E5A" strokeWidth={2} />
+                <Sparkles size={18} color="#5C8DEE" strokeWidth={2} />
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <p className="text-[14px] font-extrabold text-text-main tracking-tight">
@@ -858,7 +858,7 @@ export default function MyPage() {
                   쌓아온 발자취와 따뜻한 순간들 보기
                 </p>
               </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "#C47E5A", opacity: 0.7 }} />
+              <ChevronRight size={16} className="shrink-0" style={{ color: "#5C8DEE", opacity: 0.7 }} />
             </Link>
             <Link
               href="/mypage/monthly-report"
@@ -892,15 +892,15 @@ export default function MyPage() {
               style={{
                 background: "#FFFFFF",
                 borderRadius: 16,
-                boxShadow: "0 4px 14px rgba(196,126,90,0.10), 0 1px 2px rgba(0,0,0,0.02)",
+                boxShadow: "0 4px 14px rgba(92,141,238,0.10), 0 1px 2px rgba(0,0,0,0.02)",
                 border: "1px solid rgba(0,0,0,0.04)",
               }}
             >
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ backgroundColor: "rgba(196,126,90,0.1)" }}
+                style={{ backgroundColor: "rgba(92,141,238,0.1)" }}
               >
-                <MapPin size={18} color="#C47E5A" strokeWidth={2} />
+                <MapPin size={18} color="#5C8DEE" strokeWidth={2} />
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <p className="text-[14px] font-extrabold text-text-main tracking-tight">
@@ -910,7 +910,7 @@ export default function MyPage() {
                   최대 2곳까지 내 동네를 지정할 수 있어요
                 </p>
               </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "#C47E5A", opacity: 0.7 }} />
+              <ChevronRight size={16} className="shrink-0" style={{ color: "#5C8DEE", opacity: 0.7 }} />
             </Link>
             <Link
               href="/caretakers"
@@ -965,7 +965,7 @@ export default function MyPage() {
               <ChevronRight size={16} className="shrink-0" style={{ color: "#C9A961", opacity: 0.7 }} />
             </Link>
             {/* 설정 그룹 */}
-            <p className="text-[10.5px] font-extrabold tracking-[0.15em] mt-4 mb-2 ml-1" style={{ color: "rgba(196,126,90,0.65)" }}>
+            <p className="text-[10.5px] font-extrabold tracking-[0.15em] mt-4 mb-2 ml-1" style={{ color: "rgba(92,141,238,0.65)" }}>
               SETTINGS
             </p>
             <InstallAppMenuItem />
@@ -973,7 +973,7 @@ export default function MyPage() {
             <MarketingPushToggle />
 
             {/* 도움말 그룹 */}
-            <p className="text-[10.5px] font-extrabold tracking-[0.15em] mt-4 mb-2 ml-1" style={{ color: "rgba(196,126,90,0.65)" }}>
+            <p className="text-[10.5px] font-extrabold tracking-[0.15em] mt-4 mb-2 ml-1" style={{ color: "rgba(92,141,238,0.65)" }}>
               HELP
             </p>
             <Link
@@ -1261,15 +1261,15 @@ export default function MyPage() {
             style={{
               background: "#FFFFFF",
               borderRadius: 22,
-              boxShadow: "0 6px 20px rgba(196,126,90,0.10), 0 1px 3px rgba(0,0,0,0.03)",
+              boxShadow: "0 6px 20px rgba(92,141,238,0.10), 0 1px 3px rgba(0,0,0,0.03)",
               border: "1px solid rgba(0,0,0,0.04)",
             }}
           >
             <div
               className="w-14 h-14 rounded-[18px] flex items-center justify-center shrink-0"
               style={{
-                background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
-                boxShadow: "0 6px 14px rgba(196,126,90,0.35)",
+                background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                boxShadow: "0 6px 14px rgba(92,141,238,0.35)",
               }}
             >
               <User size={28} color="#fff" strokeWidth={2} />

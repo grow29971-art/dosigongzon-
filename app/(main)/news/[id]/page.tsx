@@ -178,7 +178,7 @@ export default function NewsDetailPage({
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.97] transition-transform"
-            style={{ boxShadow: "0 6px 20px rgba(196,126,90,0.3)" }}
+            style={{ boxShadow: "0 6px 20px rgba(92,141,238,0.3)" }}
           >
             <ExternalLink size={18} />
             {news.external_label || "관련 홈페이지 바로가기"}

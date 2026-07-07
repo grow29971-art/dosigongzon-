@@ -186,14 +186,14 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
 
       <section className="px-5 pt-4">
         <div className="flex items-center gap-1.5 mb-1.5">
-          <MapPin size={14} style={{ color: "#C47E5A" }} />
-          <span className="text-[11.5px] font-bold" style={{ color: "#C47E5A" }}>{region.name}</span>
+          <MapPin size={14} style={{ color: "#5C8DEE" }} />
+          <span className="text-[11.5px] font-bold" style={{ color: "#5C8DEE" }}>{region.name}</span>
         </div>
         <h1 className="text-[26px] font-extrabold text-text-main leading-tight tracking-tight">
           {region.shortName} 길고양이 돌봄 지도
         </h1>
         <p className="text-[13.5px] text-text-sub mt-2 leading-relaxed">
-          {region.name}에 등록된 길고양이 <b style={{ color: "#C47E5A" }}>{catCount}마리</b>의 돌봄 기록.
+          {region.name}에 등록된 길고양이 <b style={{ color: "#5C8DEE" }}>{catCount}마리</b>의 돌봄 기록.
           {urgent > 0 && (
             <> 지금 도움이 필요한 아이 <b style={{ color: "#D85555" }}>{urgent}마리</b>.</>
           )}
@@ -203,7 +203,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
           <Link
             href="/map"
             className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-primary text-white active:scale-[0.98] transition-transform"
-            style={{ boxShadow: "0 4px 14px rgba(196,126,90,0.3)" }}
+            style={{ boxShadow: "0 4px 14px rgba(92,141,238,0.3)" }}
           >
             <PawPrint size={14} />
             <span className="text-[13px] font-extrabold">지도에서 보기</span>
@@ -211,7 +211,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
           <Link
             href="/signup"
             className="flex-1 flex items-center justify-center py-3 rounded-2xl active:scale-[0.98] transition-transform"
-            style={{ backgroundColor: "#FFF", color: "#C47E5A", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 800 }}
+            style={{ backgroundColor: "#FFF", color: "#5C8DEE", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 800 }}
           >
             돌봄 시작하기
           </Link>
@@ -237,8 +237,8 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
             className="relative overflow-hidden rounded-2xl p-5 text-center"
             style={{
               background: "linear-gradient(135deg, #FFF6E8 0%, #FCE7D2 60%, #F8D9BE 100%)",
-              border: "1.5px solid rgba(196,126,90,0.30)",
-              boxShadow: "0 6px 18px rgba(196,126,90,0.18)",
+              border: "1.5px solid rgba(92,141,238,0.30)",
+              boxShadow: "0 6px 18px rgba(92,141,238,0.18)",
             }}
           >
             <div
@@ -269,8 +269,8 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
                 href={`/signup?next=${encodeURIComponent(`/regions/${sido}`)}`}
                 className="flex-[1.5] flex items-center justify-center py-2.5 rounded-xl text-white text-[12.5px] font-extrabold active:scale-[0.98] transition-transform"
                 style={{
-                  background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)",
-                  boxShadow: "0 4px 14px rgba(196,126,90,0.35)",
+                  background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
+                  boxShadow: "0 4px 14px rgba(92,141,238,0.35)",
                 }}
               >
                 무료로 시작하기
@@ -280,7 +280,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
                 className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.98] transition-transform bg-white"
                 style={{
                   color: "#A8684A",
-                  border: "1px solid rgba(196,126,90,0.30)",
+                  border: "1px solid rgba(92,141,238,0.30)",
                 }}
               >
                 다른 시·도
@@ -363,7 +363,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
           <Link
             href="/hospitals"
             className="block text-center text-[12px] font-bold mt-3"
-            style={{ color: "#C47E5A" }}
+            style={{ color: "#5C8DEE" }}
           >
             전체 병원 보기 →
           </Link>
@@ -390,7 +390,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
         <Link
           href="/areas"
           className="block text-center text-[12px] font-bold mt-3"
-          style={{ color: "#C47E5A" }}
+          style={{ color: "#5C8DEE" }}
         >
           전국 구·동별 지도 보기 →
         </Link>

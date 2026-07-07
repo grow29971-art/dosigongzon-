@@ -237,7 +237,7 @@ export default function ShelterGuidePage() {
       {/* 제작법 */}
       <section id="how" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <Hammer size={20} color="#C47E5A" />
+          <Hammer size={20} color="#5C8DEE" />
           5단계 제작법
         </h2>
         <div className="space-y-2">
@@ -249,7 +249,7 @@ export default function ShelterGuidePage() {
             >
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-white text-[13px] font-extrabold"
-                style={{ background: "linear-gradient(135deg, #C47E5A 0%, #A8684A 100%)" }}
+                style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
               >
                 {i + 1}
               </div>
@@ -372,7 +372,7 @@ export default function ShelterGuidePage() {
         <Link
           href="/map"
           className="block text-center py-4 rounded-2xl bg-primary text-white text-[14px] font-extrabold active:scale-[0.98]"
-          style={{ boxShadow: "0 6px 20px rgba(196,126,90,0.3)" }}
+          style={{ boxShadow: "0 6px 20px rgba(92,141,238,0.3)" }}
         >
           <Cat size={16} className="inline mr-1.5 -mt-0.5" />
           우리 동네 지도에서 돌봄 시작하기
