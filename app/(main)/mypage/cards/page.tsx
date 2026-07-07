@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, X, Swords, Trophy, Coins, Star, Zap, Share2, Scroll, BookMarked } from "lucide-react";
+import { ArrowLeft, Loader2, X, Swords, Trophy, Coins, Star, Zap, Share2, Scroll, BookMarked, Gem } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
 import { SPECIAL_SKILLS } from "@/lib/battle-config";
 import { PVE_BESTIARY } from "@/lib/pve-bestiary";
+import { SHOP_ITEMS, EQUIP_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-config";
 import Link from "next/link";
 
 interface CardCat {
@@ -28,6 +29,7 @@ interface CardCat {
   battle_special2: string | null;
   battle_special3: string | null;
   battle_special4: string | null;
+  equipped_item_key?: string | null;
 }
 
 const RARITY_ORDER: CardRarity[] = ["legendary", "rare", "uncommon", "common"];
@@ -50,6 +52,9 @@ export default function MyCardsPage() {
   const [relearnLoading, setRelearnLoading] = useState(false);
   const [relearnMsg, setRelearnMsg] = useState("");
   const [seenKeys, setSeenKeys] = useState<string[]>([]);
+  const [ownedEquip, setOwnedEquip] = useState<Record<string, number>>({});
+  const [equipLoading, setEquipLoading] = useState(false);
+  const [equipMsg, setEquipMsg] = useState("");
 
   const loadCats = async (uid: string) => {
     const [{ data }, { data: profile }, { data: relearnItem }] = await Promise.all([
@@ -65,7 +70,8 @@ export default function MyCardsPage() {
       createClient()
         .from("user_items").select("quantity").eq("user_id", uid).eq("item_key", "skill_relearn").maybeSingle(),
     ]);
-    setCats((data ?? []) as CardCat[]);
+    const loadedCats = (data ?? []) as CardCat[];
+    setCats(loadedCats);
     setRepCardId((profile as { rep_card_cat_id?: string | null } | null)?.rep_card_cat_id ?? null);
     setRelearnQty((relearnItem as { quantity?: number } | null)?.quantity ?? 0);
     setLoading(false);
@@ -77,6 +83,47 @@ export default function MyCardsPage() {
         .from("profiles").select("pve_seen_keys").eq("id", uid).maybeSingle();
       setSeenKeys((bestiary as { pve_seen_keys?: string[] } | null)?.pve_seen_keys ?? []);
     } catch { /* 마이그레이션 전이면 조용히 무시 */ }
+
+    // 장착 아이템 — box/supabase_equip_item_migration.sql 실행 전이면 컬럼이 없어
+    // 이 쿼리만 조용히 실패(전부 미장착으로 처리)하고 나머지 페이지는 정상 동작.
+    try {
+      const { data: eqRows } = await createClient()
+        .from("cats").select("id,equipped_item_key").eq("caretaker_id", uid);
+      const eqMap = new Map(((eqRows ?? []) as { id: string; equipped_item_key: string | null }[]).map(r => [r.id, r.equipped_item_key]));
+      setCats(loadedCats.map(c => ({ ...c, equipped_item_key: eqMap.get(c.id) ?? null })));
+    } catch { /* 마이그레이션 전이면 조용히 무시 */ }
+
+    const { data: itemRows } = await createClient()
+      .from("user_items").select("item_key,quantity").eq("user_id", uid).in("item_key", EQUIP_ITEM_KEYS);
+    const owned: Record<string, number> = {};
+    for (const it of (itemRows ?? []) as { item_key: string; quantity: number }[]) owned[it.item_key] = it.quantity;
+    setOwnedEquip(owned);
+  };
+
+  const doEquip = async (catId: string, itemKey: string | null) => {
+    if (equipLoading) return;
+    setEquipLoading(true);
+    setEquipMsg("");
+    const res = await fetch("/api/cats/equip-item", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ cat_id: catId, item_key: itemKey }),
+    });
+    const json = await res.json();
+    setEquipLoading(false);
+    if (res.ok) {
+      setCats(prev => prev.map(c => c.id === catId ? { ...c, equipped_item_key: itemKey } : c));
+      setSelected(prev => prev && prev.id === catId ? { ...prev, equipped_item_key: itemKey } : prev);
+      if (user) {
+        const { data: itemRows } = await createClient()
+          .from("user_items").select("item_key,quantity").eq("user_id", user.id).in("item_key", EQUIP_ITEM_KEYS);
+        const owned: Record<string, number> = {};
+        for (const it of (itemRows ?? []) as { item_key: string; quantity: number }[]) owned[it.item_key] = it.quantity;
+        setOwnedEquip(owned);
+      }
+      setEquipMsg(itemKey ? `${SHOP_ITEMS[itemKey as ShopItemKey].name} 장착 완료!` : "장착 해제했어요.");
+    } else {
+      setEquipMsg(json.error === "no_stock" ? "보유 수량이 없어요. 상점에서 구매해주세요." : "처리 실패");
+    }
   };
 
   useEffect(() => {
@@ -339,6 +386,51 @@ export default function MyCardsPage() {
               {relearnMsg && (
                 <p className="text-[11px] font-bold text-center mt-1.5" style={{ color: relearnMsg.includes("오류") || relearnMsg.includes("없어요") ? "#E1505F" : "#3FCB6B" }}>
                   {relearnMsg}
+                </p>
+              )}
+            </div>
+
+            {/* 장착 아이템 */}
+            <div className="w-full rounded-2xl p-3" style={{ background: "#fff" }}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[12px] font-bold flex items-center gap-1.5" style={{ color: "#2B2B3D" }}>
+                  <Gem size={13} /> 장착 아이템
+                </span>
+                {selected.equipped_item_key && (
+                  <button onClick={() => doEquip(selected.id, null)} disabled={equipLoading}
+                    className="text-[10.5px] font-bold px-2 py-1 rounded-full" style={{ background: "#FDECEC", color: "#E1505F" }}>
+                    해제
+                  </button>
+                )}
+              </div>
+              {selected.equipped_item_key ? (
+                <div className="flex items-center gap-2 rounded-xl px-2.5 py-2 mb-2" style={{ background: "#E3EEF9" }}>
+                  <span style={{ fontSize: 18 }}>{SHOP_ITEMS[selected.equipped_item_key as ShopItemKey]?.icon}</span>
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-bold truncate" style={{ color: "#2F5E93" }}>{SHOP_ITEMS[selected.equipped_item_key as ShopItemKey]?.name}</p>
+                    <p className="text-[10px] truncate" style={{ color: "#6B8FB5" }}>{SHOP_ITEMS[selected.equipped_item_key as ShopItemKey]?.desc}</p>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-[10px] mb-2" style={{ color: "#9A94A8" }}>장착한 아이템이 없어요.</p>
+              )}
+              <div className="grid grid-cols-2 gap-1.5">
+                {EQUIP_ITEM_KEYS.filter(k => k !== selected.equipped_item_key).map((key) => {
+                  const item = SHOP_ITEMS[key];
+                  const qty = ownedEquip[key] ?? 0;
+                  return (
+                    <button key={key} onClick={() => doEquip(selected.id, key)} disabled={qty <= 0 || equipLoading}
+                      className="rounded-xl px-2 py-1.5 text-left flex items-center gap-1.5"
+                      style={{ background: "#F6F5FA", opacity: qty > 0 ? 1 : 0.4 }}>
+                      <span style={{ fontSize: 14 }}>{item.icon}</span>
+                      <span className="text-[10px] font-bold truncate" style={{ color: "#2B2B3D" }}>{item.name} ({qty})</span>
+                    </button>
+                  );
+                })}
+              </div>
+              {equipMsg && (
+                <p className="text-[11px] font-bold text-center mt-1.5" style={{ color: equipMsg.includes("실패") || equipMsg.includes("없어요") ? "#E1505F" : "#3FCB6B" }}>
+                  {equipMsg}
                 </p>
               )}
             </div>

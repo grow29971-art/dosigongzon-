@@ -6,6 +6,7 @@ import { ArrowLeft, BookMarked, Share2, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import { PVE_BESTIARY, PVE_BOSS, bestiaryPhotoUrl, type BestiaryEntry } from "@/lib/pve-bestiary";
+import StickerIcon from "@/app/components/StickerIcon";
 
 export default function BestiaryPage() {
   const { user, loading: authLoading } = useAuth();
@@ -44,7 +45,7 @@ export default function BestiaryPage() {
         <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>
           <ArrowLeft size={18} className="text-white" />
         </button>
-        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><BookMarked size={18} /> 동네 도감</h1>
+        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><StickerIcon icon={BookMarked} color="#4FAF63" size={30} /> 동네 도감</h1>
         {seenCount > 0 && (
           <button onClick={share} className="ml-auto flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-bold"
             style={{ background: "rgba(255,255,255,0.08)", color: "#B4AFC2" }}>

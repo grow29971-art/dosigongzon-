@@ -10,6 +10,7 @@ import { SPECIAL_SKILLS } from "@/lib/battle-config";
 import { SHOP_ITEMS, BATTLE_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-config";
 import ParticleCanvas, { type ParticleCanvasHandle } from "@/app/components/ParticleCanvas";
 import SfxToggle from "@/app/components/SfxToggle";
+import StickerIcon from "@/app/components/StickerIcon";
 import { sfx, primeSfx, setAmbientEnv, stopAmbient } from "@/lib/sfx";
 
 /* ──────────── 배틀 환경 ──────────── */
@@ -83,7 +84,7 @@ interface AutoResult { winner:"me"|"opponent"; my_hp_left:number; opp_hp_left:nu
 const SKILL_SLOT_COLORS = ["#DD4422", "#CC8822", "#22AACC", "#9933CC"];
 
 // 배틀 아이템 패널 아이콘 — 플랫폼마다 다르게 보이는 이모지 대신 통일된 lucide 아이콘 + 색 배지로 표시
-const ITEM_ICON_META: Record<ShopItemKey, { Icon: LucideIcon; color: string }> = {
+const ITEM_ICON_META: Partial<Record<ShopItemKey, { Icon: LucideIcon; color: string }>> = {
   heal_potion:    { Icon: FlaskConical,    color: "#4ECC7A" },
   shield:         { Icon: ShieldCheck,     color: "#4488FF" },
   cleanse_potion: { Icon: Wand2,           color: "#4ED8CC" },
@@ -1446,7 +1447,7 @@ export default function BattlePage() {
           <button onClick={()=>{reset();router.back();}} className="w-9 h-9 rounded-full flex items-center justify-center" style={{background:"rgba(255,255,255,0.7)",boxShadow:"0 2px 6px rgba(60,50,90,0.1)"}}>
             <ArrowLeft size={18} color="#2B2B3D"/>
           </button>
-          {!isFightPhase && <h1 className="text-[17px] font-extrabold flex items-center gap-2" style={{color:"#2B2B3D"}}><Swords size={18}/> 카드 배틀</h1>}
+          {!isFightPhase && <h1 className="text-[17px] font-extrabold flex items-center gap-2" style={{color:"#2B2B3D"}}><StickerIcon icon={Swords} color="#7A5AE0" size={30}/> 카드 배틀</h1>}
           {isFightPhase && mode==="auto" && (
             <button onClick={()=>{ sfx.click(); setAutoSpeed(s=>s===1?2:s===2?3:1); }}
               className="ml-auto"
@@ -1752,7 +1753,7 @@ export default function BattlePage() {
                         {BATTLE_ITEM_KEYS.map(key=>{
                           const item = SHOP_ITEMS[key];
                           const qty = inventory[key] ?? 0;
-                          const { Icon, color } = ITEM_ICON_META[key];
+                          const { Icon, color } = ITEM_ICON_META[key]!;
                           return (
                             <button key={key} onClick={()=>qty>0&&useItem(key)} disabled={qty<=0}
                               className="relative flex flex-col items-center gap-1.5"

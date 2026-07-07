@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
-import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BOSS_WIN, COINS_BOSS_LOSE } from "@/lib/shop-config";
+import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BOSS_WIN, COINS_BOSS_LOSE, applyEquipBonus } from "@/lib/shop-config";
 import { SPECIAL_SKILLS, type SpecialSkillId } from "@/lib/battle-config";
 import { recordPveEncounter } from "@/lib/pve-bestiary";
 
@@ -33,6 +33,8 @@ interface CardCat {
   pve_win_count?: number | null;
   // PVE 상대(고양이학대범 이외의 야생동물)는 실제 사진이 없어 이모지로 표시 — 진짜 고양이 카드는 항상 null.
   placeholder_emoji?: string | null;
+  // 장착 아이템(box/supabase_equip_item_migration.sql) — PVE 합성 상대는 항상 null.
+  equipped_item_key?: string | null;
 }
 
 // 등급별 HP 보너스: 일반→레전드로 갈수록 체력이 두껍게 (전투가 늘어지지 않도록 전체적으로 하향)
@@ -235,14 +237,15 @@ function calcStats(cat: CardCat) {
   const hpBonus = RARITY_HP_BONUS[cat.card_rarity ?? "common"] ?? 0;
   const baseAtk = cat.battle_atk ?? Math.round(s.wildness * 0.8 + 20);
   const baseDef = cat.battle_def ?? Math.round(s.mysteriousness * 0.5 + 15);
-  return {
+  const base = {
     hp:   Math.round(s.cuteness * 1.3 + s.wildness * 0.65) + 95 + hpBonus + (lv - 1) * 13,
     atk:  baseAtk + (lv - 1) * 3,
     def:  baseDef + (lv - 1) * 2,
-    spd:  Math.round(s.sociability * 0.5 + 20) + lv,
     eva:  Math.min(45, cat.battle_eva ?? 8),
     crit: Math.min(45, cat.battle_crit ?? 8),
   };
+  const { hp, atk, def, eva, crit } = applyEquipBonus(base, cat.equipped_item_key);
+  return { hp, atk, def, eva, crit, spd: Math.round(s.sociability * 0.5 + 20) + lv };
 }
 
 function rnd(min: number, max: number) {
@@ -509,6 +512,13 @@ export async function POST(req: Request) {
 
   if (!myCat) return NextResponse.json({ error: "cat not found" }, { status: 404 });
 
+  // 장착 아이템 조회 — box/supabase_equip_item_migration.sql 실행 전이면 컬럼이 없어
+  // 이 조회만 조용히 실패(장착 없음으로 처리)하고 배틀 자체는 그대로 진행되게 분리.
+  try {
+    const { data: eq } = await supabase.from("cats").select("equipped_item_key").eq("id", my_cat_id).maybeSingle();
+    (myCat as CardCat).equipped_item_key = (eq as { equipped_item_key?: string | null } | null)?.equipped_item_key ?? null;
+  } catch { /* 마이그레이션 전이면 무시 */ }
+
   // PVE("평소에" 하는 기본 모드) → 항상 고양이학대범과 대결. PVP는 실제 다른 유저 카드와 매칭.
   const isBossEncounter = battle_type === "pve";
   let opponent: CardCat;
@@ -551,12 +561,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "no_opponents" }, { status: 404 });
     }
 
+    // 장착 아이템 일괄 조회 — 위와 동일하게 마이그레이션 전이면 조용히 스킵
+    let opponentsWithEquip = opponents as CardCat[];
+    try {
+      const ids = opponentsWithEquip.map((o) => o.id);
+      const { data: eqRows } = await supabase.from("cats").select("id,equipped_item_key").in("id", ids);
+      const eqMap = new Map(((eqRows ?? []) as { id: string; equipped_item_key: string | null }[]).map((r) => [r.id, r.equipped_item_key]));
+      opponentsWithEquip = opponentsWithEquip.map((o) => ({ ...o, equipped_item_key: eqMap.get(o.id) ?? null }));
+    } catch { /* 마이그레이션 전이면 무시 */ }
+
     // 승률 50%(팽팽한 접전)를 노려 매칭. 예전엔 자동전투만 45%(무관심 파밍 방지 목적)로
     // 일부러 불리하게, 수동은 완전 랜덤으로 뽑았는데 — 실측해보니 자동전투는 "너무 자주 짐",
     // 수동은 상대 뽑기 운에 따라 압승/완패가 갈리는 문제가 있었음("적당히 밸런스" 피드백).
     // 이제 둘 다 같은 방식으로 매칭하되, 상위 25% 후보 중 랜덤 선택은 유지해서
     // (pickByTargetWinRate 내부) 매번 100% 예측 가능한 접전이 되진 않게 약간의 변수는 남겨둔다.
-    opponent = pickByTargetWinRate(myCat as CardCat, opponents as CardCat[], 0.50);
+    opponent = pickByTargetWinRate(myCat as CardCat, opponentsWithEquip, 0.50);
   }
 
   // 수동 배틀: 스탯만 반환 (시뮬레이션 없음)

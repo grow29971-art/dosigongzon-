@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Coins } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
-import { SHOP_ITEMS, SHOP_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-config";
+import { SHOP_ITEMS, SHOP_ITEM_KEYS, EQUIP_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-config";
+import StickerIcon from "@/app/components/StickerIcon";
 
 export default function ShopPage() {
   const { user, loading: authLoading } = useAuth();
@@ -60,7 +61,7 @@ export default function ShopPage() {
         <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>
           <ArrowLeft size={18} className="text-white" />
         </button>
-        <h1 className="text-[17px] font-extrabold text-white">상점</h1>
+        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><StickerIcon icon={Coins} color="#FFA030" size={30} /> 상점</h1>
         <div className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: "rgba(255,204,68,0.15)" }}>
           <Coins size={14} color="#FFCC44" />
           <span className="text-[13px] font-black" style={{ color: "#FFCC44" }}>{coins}</span>
@@ -83,38 +84,76 @@ export default function ShopPage() {
             <div className="w-7 h-7 rounded-full border-2 border-gray-600 border-t-white animate-spin" />
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
-            {SHOP_ITEM_KEYS.map((key) => {
-              const item = SHOP_ITEMS[key];
-              const canAfford = coins >= item.price;
-              return (
-                <div key={key} className="rounded-2xl p-3 flex flex-col gap-2" style={{ background: "rgba(255,255,255,0.05)" }}>
-                  <div className="flex items-center justify-between">
-                    <span style={{ fontSize: 28 }}>{item.icon}</span>
-                    {owned[key] > 0 && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }}>
-                        보유 {owned[key]}
-                      </span>
-                    )}
+          <>
+            <p className="text-[11px] font-extrabold mb-2" style={{ color: "#6FA0D8" }}>⚔️ 전투 소모품</p>
+            <div className="grid grid-cols-2 gap-3 mb-5">
+              {SHOP_ITEM_KEYS.filter(k => !SHOP_ITEMS[k].equip).map((key) => {
+                const item = SHOP_ITEMS[key];
+                const canAfford = coins >= item.price;
+                return (
+                  <div key={key} className="rounded-2xl p-3 flex flex-col gap-2" style={{ background: "rgba(255,255,255,0.05)" }}>
+                    <div className="flex items-center justify-between">
+                      <span style={{ fontSize: 28 }}>{item.icon}</span>
+                      {owned[key] > 0 && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }}>
+                          보유 {owned[key]}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[13px] font-bold text-white">{item.name}</span>
+                    <span className="text-[11px] text-gray-400 leading-snug">{item.desc}</span>
+                    <button
+                      onClick={() => buy(key)}
+                      disabled={!canAfford || buyingKey === key}
+                      className="mt-1 py-2 rounded-xl text-[12px] font-black flex items-center justify-center gap-1"
+                      style={{
+                        background: canAfford ? "linear-gradient(135deg,#FFB020,#FF8020)" : "rgba(255,255,255,0.06)",
+                        color: canAfford ? "white" : "rgba(255,255,255,0.3)",
+                        opacity: buyingKey === key ? 0.6 : 1,
+                      }}
+                    >
+                      <Coins size={12} /> {item.price}
+                    </button>
                   </div>
-                  <span className="text-[13px] font-bold text-white">{item.name}</span>
-                  <span className="text-[11px] text-gray-400 leading-snug">{item.desc}</span>
-                  <button
-                    onClick={() => buy(key)}
-                    disabled={!canAfford || buyingKey === key}
-                    className="mt-1 py-2 rounded-xl text-[12px] font-black flex items-center justify-center gap-1"
-                    style={{
-                      background: canAfford ? "linear-gradient(135deg,#FFB020,#FF8020)" : "rgba(255,255,255,0.06)",
-                      color: canAfford ? "white" : "rgba(255,255,255,0.3)",
-                      opacity: buyingKey === key ? 0.6 : 1,
-                    }}
-                  >
-                    <Coins size={12} /> {item.price}
-                  </button>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+
+            <p className="text-[11px] font-extrabold mb-2" style={{ color: "#9CC0E8" }}>💎 장착 아이템 — 카드에 계속 장착돼요</p>
+            <div className="grid grid-cols-2 gap-3">
+              {EQUIP_ITEM_KEYS.map((key) => {
+                const item = SHOP_ITEMS[key];
+                const canAfford = coins >= item.price;
+                return (
+                  <div key={key} className="rounded-2xl p-3 flex flex-col gap-2" style={{ background: "rgba(255,255,255,0.05)" }}>
+                    <div className="flex items-center justify-between">
+                      <span style={{ fontSize: 28 }}>{item.icon}</span>
+                      {owned[key] > 0 && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }}>
+                          보유 {owned[key]}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[13px] font-bold text-white">{item.name}</span>
+                    <span className="text-[11px] text-gray-400 leading-snug">{item.desc}</span>
+                    <button
+                      onClick={() => buy(key)}
+                      disabled={!canAfford || buyingKey === key}
+                      className="mt-1 py-2 rounded-xl text-[12px] font-black flex items-center justify-center gap-1"
+                      style={{
+                        background: canAfford ? "linear-gradient(135deg,#6FA0D8,#3E6FA8)" : "rgba(255,255,255,0.06)",
+                        color: canAfford ? "white" : "rgba(255,255,255,0.3)",
+                        opacity: buyingKey === key ? 0.6 : 1,
+                      }}
+                    >
+                      <Coins size={12} /> {item.price}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-[10px] text-gray-500 mt-3">구매한 개수만큼 카드에 나눠 장착할 수 있어요. 카드창고 → 카드 탭 → 장착 아이템에서 끼우고 뺄 수 있어요.</p>
+          </>
         )}
       </div>
     </div>

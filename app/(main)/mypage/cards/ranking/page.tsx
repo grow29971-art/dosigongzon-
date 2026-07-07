@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, Trophy } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { WEEKLY_RANK_REWARDS } from "@/lib/shop-config";
+import StickerIcon from "@/app/components/StickerIcon";
 
 const RANK_MEDAL = ["🥇", "🥈", "🥉"];
 
@@ -39,7 +40,7 @@ export default function BattleRankingPage() {
         <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>
           <ArrowLeft size={18} className="text-white" />
         </button>
-        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><Trophy size={18} /> 주간 배틀 랭킹</h1>
+        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><StickerIcon icon={Trophy} color="#E8B040" size={30} /> 주간 배틀 랭킹</h1>
       </div>
 
       <div className="px-4 pb-10">
