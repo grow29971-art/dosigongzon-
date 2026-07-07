@@ -254,7 +254,7 @@ export default function KeyringEventPage() {
             style={{ background: "#FFF", border: "1px dashed rgba(92,141,238,0.35)" }}
           >
             <div
-              className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-3"
+              className="w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-3"
               style={{ background: "rgba(92,141,238,0.12)" }}
             >
               <PawPrint size={26} style={{ color: "#5C8DEE" }} />

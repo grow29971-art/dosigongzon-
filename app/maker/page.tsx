@@ -402,7 +402,7 @@ function ValueCard({
       style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
     >
       <div
-        className="shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center"
+        className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
         style={{ background: `linear-gradient(135deg, ${accent} 0%, ${accentDark} 100%)` }}
       >
         {icon}

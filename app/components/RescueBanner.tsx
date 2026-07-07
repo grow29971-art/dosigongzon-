@@ -22,7 +22,7 @@ export default function RescueBanner({ count }: { count: number }) {
         }}
       >
         <div
-          className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 relative"
+          className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 relative"
           style={{
             background: "linear-gradient(135deg, #E85555 0%, #C43838 100%)",
             boxShadow: "0 4px 12px rgba(216,85,85,0.4)",

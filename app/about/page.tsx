@@ -362,7 +362,7 @@ export default async function AboutPage() {
         >
           <div className="flex items-center gap-3 mb-3">
             <div
-              className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
+              className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
               style={{ background: "rgba(92,141,238,0.15)" }}
             >
               <Code2 size={22} style={{ color: "#A8684A" }} />
@@ -674,7 +674,7 @@ function ProblemRow({
       style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
     >
       <div
-        className="shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center"
+        className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
         style={{ background: "linear-gradient(135deg, #8A94A6 0%, #6B7689 100%)" }}
       >
         {icon}
@@ -716,7 +716,7 @@ function ProductCard({
     >
       <div className="flex items-center gap-3 mb-3">
         <div
-          className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
+          className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
           style={{ background: `linear-gradient(135deg, ${accent} 0%, ${accentDark} 100%)` }}
         >
           {icon}
@@ -794,7 +794,7 @@ function ValueCard({
       style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
     >
       <div
-        className="shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center"
+        className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
         style={{ background: `linear-gradient(135deg, ${accent} 0%, ${accentDark} 100%)` }}
       >
         {icon}

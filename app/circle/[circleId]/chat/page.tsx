@@ -386,7 +386,7 @@ export default function CircleChatPage() {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={sending || !!photoPreview}
-            className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 active:scale-90 disabled:opacity-40"
+            className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 active:scale-90 disabled:opacity-40"
             style={{ background: "#F6F1EA", color: "#8B7562" }}
             aria-label="사진 첨부"
           >
@@ -408,7 +408,7 @@ export default function CircleChatPage() {
           <button
             onClick={handleSend}
             disabled={(!input.trim() && !photoFile) || sending}
-            className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 active:scale-90 disabled:opacity-40"
+            className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 active:scale-90 disabled:opacity-40"
             style={{ background: "#5C8DEE" }}
             aria-label="전송"
           >

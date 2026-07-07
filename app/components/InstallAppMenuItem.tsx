@@ -155,7 +155,7 @@ export default function InstallAppMenuItem() {
             </button>
             <div className="flex items-center gap-3 mb-3">
               <div
-                className="w-11 h-11 rounded-2xl flex items-center justify-center"
+                className="w-11 h-11 rounded-full flex items-center justify-center"
                 style={{
                   background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
                   boxShadow: "0 4px 12px rgba(92,141,238,0.35)",

@@ -91,7 +91,7 @@ export default function MyActivityDashboard() {
           }}
         >
           <div
-            className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+            className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
             style={{ background: "#48A59E", boxShadow: "0 4px 12px #48A59E55" }}
           >
             <TrendingUp size={18} color="#fff" strokeWidth={2.5} />

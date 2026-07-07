@@ -88,7 +88,7 @@ export default function PlayStoreBanner() {
       </button>
       <div className="flex items-center gap-3 px-4 py-3.5 pr-9">
         <div
-          className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+          className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
           style={{
             background: "linear-gradient(135deg, #4A7BA8 0%, #2C5A85 100%)",
             boxShadow: "0 4px 12px rgba(74,123,168,0.40)",

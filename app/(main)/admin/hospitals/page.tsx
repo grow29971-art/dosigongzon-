@@ -238,7 +238,7 @@ export default function AdminHospitalsPage() {
             <button
               onClick={handleSync}
               disabled={syncing}
-              className="w-11 h-11 rounded-2xl flex items-center justify-center active:scale-95 transition-transform disabled:opacity-40"
+              className="w-11 h-11 rounded-full flex items-center justify-center active:scale-95 transition-transform disabled:opacity-40"
               style={{
                 backgroundColor: "#22B573",
                 boxShadow: "0 6px 14px rgba(34,181,115,0.35)",
@@ -253,7 +253,7 @@ export default function AdminHospitalsPage() {
             </button>
             <button
               onClick={handleCreate}
-              className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center active:scale-95 transition-transform"
+              className="w-11 h-11 rounded-full bg-primary flex items-center justify-center active:scale-95 transition-transform"
               style={{ boxShadow: "0 6px 14px rgba(92,141,238,0.35)" }}
               aria-label="새 병원 추가"
             >

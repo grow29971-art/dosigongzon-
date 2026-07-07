@@ -181,7 +181,7 @@ export default function AdminWeeklyIssuesPage() {
           </div>
           <button
             onClick={handleCreate}
-            className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center active:scale-95 transition-transform"
+            className="w-11 h-11 rounded-full bg-primary flex items-center justify-center active:scale-95 transition-transform"
             style={{ boxShadow: "0 6px 14px rgba(92,141,238,0.35)" }}
             aria-label="새 이슈 작성"
           >

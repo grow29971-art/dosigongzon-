@@ -598,7 +598,7 @@ export default function HomeAuthed({
         <div className="flex items-center gap-2">
           <Link
             href="/search"
-            className="w-10 h-10 rounded-2xl bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
+            className="w-10 h-10 rounded-full bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
             aria-label="통합 검색"
           >
             <Search size={18} className="text-text-sub" />
@@ -606,7 +606,7 @@ export default function HomeAuthed({
           {user && (
             <Link
               href="/notifications"
-              className="relative w-10 h-10 rounded-2xl bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
+              className="relative w-10 h-10 rounded-full bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
               aria-label="알림"
             >
               <Bell size={18} className={unreadCount > 0 ? "text-primary" : "text-text-sub"} />
@@ -625,7 +625,7 @@ export default function HomeAuthed({
           )}
           <Link
             href="/mypage"
-            className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center active:scale-90 transition-transform"
+            className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center active:scale-90 transition-transform"
           >
             <User size={20} className="text-primary" />
           </Link>
@@ -675,7 +675,7 @@ export default function HomeAuthed({
             <div className="flex items-center gap-3">
               {/* 레벨 emoji 큰 원 */}
               <div
-                className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 text-xl"
+                className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 text-xl"
                 style={{ background: "rgba(92,141,238,0.12)" }}
               >
                 {levelInfo.emoji}
@@ -765,7 +765,7 @@ export default function HomeAuthed({
           }}
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 text-lg" style={{ background: "rgba(92,141,238,0.12)" }}>📖</div>
+            <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-lg" style={{ background: "rgba(92,141,238,0.12)" }}>📖</div>
             <div className="flex-1 min-w-0">
               <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#A8684A" }}>우리 동네 고양이 도감</p>
               <p className="text-[13.5px] font-extrabold text-text-main leading-tight mt-0.5 truncate">만난 고양이를 모아보세요</p>
@@ -1119,7 +1119,7 @@ export default function HomeAuthed({
             {/* 레벨 + 이름 */}
             <div className="flex items-center gap-3.5 mb-4">
               <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
+                className="w-14 h-14 rounded-full flex items-center justify-center shrink-0"
                 style={{ background: `linear-gradient(135deg, ${lc}20 0%, ${lc}10 100%)`, border: `2px solid ${lc}30` }}
               >
                 <span className="text-[28px]">{levelInfo.emoji}</span>
@@ -1196,7 +1196,7 @@ export default function HomeAuthed({
         ) : weatherError ? (
           /* 에러 */
           <div className="flex items-center gap-3 py-3">
-            <div className="w-10 h-10 rounded-2xl bg-surface-alt flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-full bg-surface-alt flex items-center justify-center shrink-0">
               <WifiOff size={18} className="text-text-muted" />
             </div>
             <div className="flex-1">
@@ -1412,7 +1412,7 @@ export default function HomeAuthed({
                 }}
               >
                 <div
-                  className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
+                  className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                   style={{ backgroundColor: "rgba(92,141,238,0.15)" }}
                 >
                   <MapPin size={18} color="#5C8DEE" strokeWidth={2} />
@@ -1492,7 +1492,7 @@ export default function HomeAuthed({
                 >
                   <div className="flex items-start gap-3 mb-3">
                     <div
-                      className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 text-[18px]"
+                      className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-[18px]"
                       style={{ backgroundColor: "rgba(92,141,238,0.15)" }}
                     >
                       🐾
@@ -2023,7 +2023,7 @@ export default function HomeAuthed({
         }}
       >
         <div
-          className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
+          className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
           style={{ background: "rgba(92,141,238,0.15)" }}
         >
           <Sparkles size={22} className="text-primary" />

@@ -1608,7 +1608,7 @@ export default function MapPage() {
           우리 동네 시민참여 돌봄 고양이
         </h1>
         <div className="card p-6 mt-6">
-          <div className="w-12 h-12 rounded-2xl bg-warning/20 flex items-center justify-center mb-3">
+          <div className="w-12 h-12 rounded-full bg-warning/20 flex items-center justify-center mb-3">
             <MapPin size={22} className="text-warning" />
           </div>
           <p className="text-[15px] font-bold text-text-main mb-2">
@@ -2276,7 +2276,7 @@ export default function MapPage() {
                   type="button"
                   onClick={handleChatSend}
                   disabled={chatSending || !chatText.trim()}
-                  className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center disabled:opacity-40 active:scale-90 transition-transform"
+                  className="w-10 h-10 rounded-full bg-primary flex items-center justify-center disabled:opacity-40 active:scale-90 transition-transform"
                 >
                   {chatSending ? <Loader2 size={16} className="animate-spin text-white" /> : <Send size={16} color="#fff" />}
                 </button>

@@ -50,7 +50,7 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
       }}
     >
       <div className="flex items-start gap-2.5 mb-3">
-        <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 text-lg" style={{ background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)" }}>
+        <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-lg" style={{ background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)" }}>
           🐾
         </div>
         <div className="flex-1 min-w-0">

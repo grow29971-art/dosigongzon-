@@ -149,7 +149,7 @@ export default function AIChatModal({
         <div className="flex items-center justify-between px-5 py-3 border-b border-divider">
           <div className="flex items-center gap-3">
             <div
-              className="w-10 h-10 rounded-2xl flex items-center justify-center"
+              className="w-10 h-10 rounded-full flex items-center justify-center"
               style={{ backgroundColor: "rgba(92,141,238,0.1)" }}
             >
               <Bot size={20} color="#5C8DEE" />
@@ -281,7 +281,7 @@ export default function AIChatModal({
             <button
               onClick={() => send()}
               disabled={!input.trim() || loading}
-              className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 active:scale-90 transition-transform disabled:opacity-40"
+              className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 active:scale-90 transition-transform disabled:opacity-40"
               style={{ backgroundColor: "#5C8DEE" }}
             >
               <Send size={18} color="white" />

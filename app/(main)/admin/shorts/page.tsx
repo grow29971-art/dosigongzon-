@@ -574,7 +574,7 @@ export default function AdminShortsPage() {
           </div>
         ) : items.length === 0 ? (
           <div className="py-12 text-center">
-            <div className="w-14 h-14 rounded-2xl mx-auto mb-3 flex items-center justify-center" style={{ background: "#F2EBE0" }}>
+            <div className="w-14 h-14 rounded-full mx-auto mb-3 flex items-center justify-center" style={{ background: "#F2EBE0" }}>
               <Film size={24} style={{ color: "#5C8DEE", opacity: 0.7 }} />
             </div>
             <p className="text-[13px] font-extrabold text-text-main mb-1">아직 영상이 없어요</p>

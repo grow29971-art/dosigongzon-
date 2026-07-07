@@ -199,7 +199,7 @@ export default function FeatureTourModal({
               <button
                 type="button"
                 onClick={() => setStep((s) => Math.max(0, s - 1))}
-                className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 active:scale-95"
+                className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 active:scale-95"
                 style={{ background: "rgba(0,0,0,0.05)" }}
                 aria-label="이전"
               >

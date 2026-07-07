@@ -57,7 +57,7 @@ export default function MyCircleQuickEntry() {
         {/* 헤더 */}
         <div className="flex items-start gap-2 mb-3">
           <div
-            className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0"
+            className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
             style={{ background: "linear-gradient(135deg, #4F6B53 0%, #6B8E6F 100%)" }}
           >
             <ShieldCheck size={17} color="#fff" />

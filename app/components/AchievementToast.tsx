@@ -117,7 +117,7 @@ export default function AchievementToast({
         }}
       >
         <div
-          className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 text-[22px]"
+          className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 text-[22px]"
           style={{
             background: `linear-gradient(135deg, ${current.color} 0%, ${current.color}DD 100%)`,
             boxShadow: `0 4px 14px ${current.color}55`,

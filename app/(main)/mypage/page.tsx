@@ -1148,7 +1148,7 @@ export default function MyPage() {
                 }}
               >
                 <div
-                  className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+                  className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
                   style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
                 >
                   <User size={19} color="#fff" strokeWidth={2.2} />
@@ -1401,7 +1401,7 @@ function TitleSection({
             }}
           >
             <div
-              className="w-12 h-12 rounded-2xl flex items-center justify-center text-[24px]"
+              className="w-12 h-12 rounded-full flex items-center justify-center text-[24px]"
               style={{ backgroundColor: `${myAdminTitle.color}15` }}
             >
               {myAdminTitle.emoji}

@@ -122,7 +122,7 @@ export default function NotificationsPage() {
                 >
                   {/* 아이콘 */}
                   <div
-                    className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
+                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                     style={{ backgroundColor: config.bg }}
                   >
                     <Icon size={18} style={{ color: config.color }} />

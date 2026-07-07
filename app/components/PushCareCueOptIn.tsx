@@ -88,7 +88,7 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
     >
       <div className="flex items-center gap-3">
         <div
-          className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
+          className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
           style={{ background: "linear-gradient(135deg, #E88D5A 0%, #5C8DEE 100%)", boxShadow: "0 3px 10px rgba(92,141,238,0.35)" }}
         >
           <Bell size={17} color="#fff" strokeWidth={2.3} />

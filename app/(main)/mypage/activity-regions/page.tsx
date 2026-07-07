@@ -614,7 +614,7 @@ export default function ActivityRegionsPage() {
           <button
             type="button"
             onClick={handleLocateMe}
-            className="absolute bottom-3 right-3 z-10 w-10 h-10 rounded-2xl bg-white flex items-center justify-center active:scale-90"
+            className="absolute bottom-3 right-3 z-10 w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90"
             style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.15)" }}
             aria-label="내 위치"
           >

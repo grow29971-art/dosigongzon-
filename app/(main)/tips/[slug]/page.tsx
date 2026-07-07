@@ -196,7 +196,7 @@ export default async function TipDetailPage({ params }: Params) {
           />
           <Link
             href="/tips"
-            className="absolute top-12 left-4 w-10 h-10 rounded-2xl bg-white/70 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform"
+            className="absolute top-12 left-4 w-10 h-10 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform"
             aria-label="꿀팁게시판"
           >
             <ArrowLeft size={20} className="text-text-main" />

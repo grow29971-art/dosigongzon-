@@ -248,7 +248,7 @@ export default function CatLocationPicker({
           type="button"
           onClick={handleLocateMe}
           disabled={locating}
-          className="absolute bottom-4 right-4 z-10 w-11 h-11 rounded-2xl bg-white flex items-center justify-center active:scale-90 disabled:opacity-60"
+          className="absolute bottom-4 right-4 z-10 w-11 h-11 rounded-full bg-white flex items-center justify-center active:scale-90 disabled:opacity-60"
           style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.18)" }}
           aria-label="내 위치"
         >

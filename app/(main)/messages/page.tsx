@@ -285,7 +285,7 @@ function MessagesPage() {
           <button
             type="button"
             onClick={() => photoInputRef.current?.click()}
-            className="w-10 h-10 rounded-2xl flex items-center justify-center active:scale-90 transition-transform shrink-0"
+            className="w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-transform shrink-0"
             style={{ backgroundColor: photoFile ? "#6B8E6F" : "#F6F1EA", border: "1px solid #E3DCD3" }}
           >
             <Camera size={18} style={{ color: photoFile ? "#fff" : "#A38E7A" }} />
@@ -307,7 +307,7 @@ function MessagesPage() {
           <button
             onClick={handleSend}
             disabled={sending || (!msgText.trim() && !photoFile)}
-            className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center disabled:opacity-40 active:scale-90 transition-transform shrink-0"
+            className="w-10 h-10 rounded-full bg-primary flex items-center justify-center disabled:opacity-40 active:scale-90 transition-transform shrink-0"
           >
             <Send size={16} color="#fff" />
           </button>

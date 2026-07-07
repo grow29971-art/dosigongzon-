@@ -271,7 +271,7 @@ export default async function HomeLanding({
           <ul className="p-5 space-y-4">
             <li className="flex items-start gap-3">
               <span
-                className="shrink-0 w-9 h-9 rounded-2xl flex items-center justify-center text-[12px] font-extrabold mt-0.5"
+                className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-[12px] font-extrabold mt-0.5"
                 style={{
                   background: "rgba(255,255,255,0.95)",
                   color: "#4F6B53",
@@ -296,7 +296,7 @@ export default async function HomeLanding({
             />
             <li className="flex items-start gap-3">
               <span
-                className="shrink-0 w-9 h-9 rounded-2xl flex items-center justify-center text-[12px] font-extrabold mt-0.5"
+                className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-[12px] font-extrabold mt-0.5"
                 style={{
                   background: "rgba(255,255,255,0.95)",
                   color: "#4F6B53",
@@ -321,7 +321,7 @@ export default async function HomeLanding({
             />
             <li className="flex items-start gap-3">
               <span
-                className="shrink-0 w-9 h-9 rounded-2xl flex items-center justify-center text-[12px] font-extrabold mt-0.5"
+                className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-[12px] font-extrabold mt-0.5"
                 style={{
                   background: "rgba(255,255,255,0.95)",
                   color: "#4F6B53",
@@ -382,7 +382,7 @@ export default async function HomeLanding({
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className="shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center text-[13px] font-extrabold text-white"
+                    className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-[13px] font-extrabold text-white"
                     style={{
                       background:
                         idx === 0
@@ -1100,7 +1100,7 @@ export default async function HomeLanding({
         >
           <div className="flex items-center gap-2 mb-2">
             <div
-              className="w-9 h-9 rounded-2xl flex items-center justify-center"
+              className="w-9 h-9 rounded-full flex items-center justify-center"
               style={{ background: "rgba(92,141,238,0.15)" }}
             >
               <Code2 size={18} style={{ color: "#A8684A" }} />

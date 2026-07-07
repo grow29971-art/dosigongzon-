@@ -226,7 +226,7 @@ export default function CommunityPage() {
         </div>
         <Link
           href="/search"
-          className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center active:scale-90 transition-transform"
+          className="w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
           style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
           aria-label="통합 검색"
         >

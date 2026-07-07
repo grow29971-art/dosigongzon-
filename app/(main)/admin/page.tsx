@@ -389,7 +389,7 @@ export default function AdminDashboardPage() {
               }}
             >
               <div
-                className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+                className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
                 style={{ backgroundColor: `${m.color}15` }}
               >
                 <m.Icon size={19} color={m.color} strokeWidth={2} />

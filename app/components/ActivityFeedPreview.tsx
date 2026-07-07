@@ -117,7 +117,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
       >
         <div className="flex items-center gap-2.5">
           <div
-            className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0"
+            className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
             style={{
               background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)",
               boxShadow: "0 4px 12px rgba(92,141,238,0.30)",

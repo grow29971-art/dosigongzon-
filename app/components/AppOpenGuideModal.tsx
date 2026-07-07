@@ -104,7 +104,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
           </button>
           <p className="text-[10px] font-extrabold tracking-[0.2em] mb-2" style={{ color: "#A8684A" }}>오늘 이거 해보세요</p>
           <div className="flex items-center gap-3">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 text-3xl" style={{ background: "#FFFFFF", boxShadow: "0 4px 14px rgba(92,141,238,0.25)" }}>
+            <div className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 text-3xl" style={{ background: "#FFFFFF", boxShadow: "0 4px 14px rgba(92,141,238,0.25)" }}>
               {spot.emoji}
             </div>
             <div className="min-w-0">

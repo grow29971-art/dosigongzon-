@@ -90,7 +90,7 @@ export default function VisibilityIntroSheet({ open, onClose, onPick }: Visibili
                 }}
               >
                 <div
-                  className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 text-[20px]"
+                  className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 text-[20px]"
                   style={{ background: `${info.color}25` }}
                 >
                   {info.emoji}

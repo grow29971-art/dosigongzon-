@@ -262,7 +262,7 @@ export default function NeighborhoodPage() {
             </button>
 
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-warning/20 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-warning/20 flex items-center justify-center">
                 <ShieldAlert size={24} className="text-warning" />
               </div>
               <div>

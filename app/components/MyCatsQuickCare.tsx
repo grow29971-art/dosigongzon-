@@ -103,7 +103,7 @@ export default function MyCatsQuickCare() {
             <div key={c.id} className="shrink-0 w-[80px] flex flex-col items-center">
               <Link href={`/cats/${c.id}`} className="block">
                 <div
-                  className="w-14 h-14 rounded-2xl overflow-hidden flex items-center justify-center"
+                  className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center"
                   style={{
                     background: "#F4E6CE",
                     border: c.fedToday ? "2px solid #6B8E6F" : "2px solid rgba(92,141,238,0.3)",

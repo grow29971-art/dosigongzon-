@@ -82,7 +82,7 @@ export default function DailyCatBox() {
       >
         <div className="flex items-center gap-3">
           <div
-            className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-2xl"
+            className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 text-2xl"
             style={{ background: "linear-gradient(135deg, #E88D5A 0%, #5C8DEE 100%)", boxShadow: "0 4px 12px rgba(92,141,238,0.4)" }}
           >
             🎁

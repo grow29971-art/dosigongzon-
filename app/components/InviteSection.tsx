@@ -87,7 +87,7 @@ export default function InviteSection() {
       >
         <div className="flex items-center gap-3 mb-4">
           <div
-            className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+            className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
             style={{
               background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)",
               boxShadow: "0 4px 12px rgba(232,107,140,0.35)",

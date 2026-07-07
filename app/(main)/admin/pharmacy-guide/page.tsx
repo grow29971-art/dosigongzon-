@@ -118,7 +118,7 @@ export default function AdminPharmacyGuidePage() {
             <h1 className="text-[22px] font-extrabold text-text-main tracking-tight">약품 가이드 관리</h1>
             <p className="text-[12px] text-text-sub">약품·영양제 정보를 추가·수정·삭제</p>
           </div>
-          <button onClick={handleCreate} className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center active:scale-95 transition-transform" style={{ boxShadow: "0 6px 14px rgba(92,141,238,0.35)" }}>
+          <button onClick={handleCreate} className="w-11 h-11 rounded-full bg-primary flex items-center justify-center active:scale-95 transition-transform" style={{ boxShadow: "0 6px 14px rgba(92,141,238,0.35)" }}>
             <Plus size={20} color="#fff" strokeWidth={2.5} />
           </button>
         </div>

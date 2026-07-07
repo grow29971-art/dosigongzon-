@@ -83,7 +83,7 @@ export default function MapChatGuideModal() {
           }}
         >
           <div
-            className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
+            className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
             style={{ background: "linear-gradient(135deg, #48A59E 0%, #3D8B85 100%)" }}
           >
             <Globe size={18} color="#FFFFFF" strokeWidth={2.4} />
@@ -106,7 +106,7 @@ export default function MapChatGuideModal() {
             }}
           >
             <div
-              className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
+              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
               style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #A8684A 100%)" }}
             >
               <MessageCircle size={18} color="#FFFFFF" strokeWidth={2.4} />

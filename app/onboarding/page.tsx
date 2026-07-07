@@ -320,7 +320,7 @@ function SignupActionCard({ onClick }: { onClick: () => void }) {
         style={{ background: "rgba(255,247,196,0.10)", filter: "blur(8px)" }}
       />
       <div
-        className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 relative z-10"
+        className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 relative z-10"
         style={{
           background: "linear-gradient(135deg, #FFF7C4 0%, #E8B040 100%)",
           boxShadow: "0 4px 12px rgba(232,176,64,0.35)",
@@ -369,7 +369,7 @@ function ActionCard({
       }}
     >
       <div
-        className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+        className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
         style={{ background: "rgba(255,255,255,0.95)", border: "1px solid rgba(0,0,0,0.05)" }}
       >
         {icon}
