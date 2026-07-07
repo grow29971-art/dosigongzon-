@@ -111,6 +111,18 @@ const PVE_ROSTER: PveCreature[] = [
     atkMult: 1.0, defMult: 0.70, eva: 9, crit: 8,
     traits: ["묵직한 몸통박치기", "날카로운 발톱"], stats: { cuteness: 30, wildness: 60, sociability: 20, mysteriousness: 40 },
     skills: ["body_slam", "claw_flurry", "intimidate", "frenzy"] },
+  { key: "spider", name: "거미", emoji: "🕷️", flavor: "구석에 거미줄을 친 작은 사냥꾼",
+    atkMult: 0.38, defMult: 0.26, eva: 26, crit: 10,
+    traits: ["거미줄 치기", "살금살금 접근"], stats: { cuteness: 8, wildness: 20, sociability: 5, mysteriousness: 35 },
+    skills: ["bind", "quick_dodge", "sharp_claws", "scratch"] },
+  { key: "weasel", name: "족제비", emoji: "🦡", flavor: "밤에만 움직이는 날렵한 침입자",
+    atkMult: 0.85, defMult: 0.55, eva: 20, crit: 14,
+    traits: ["날렵한 몸놀림", "기습 발톱"], stats: { cuteness: 25, wildness: 55, sociability: 15, mysteriousness: 45 },
+    skills: ["dash_strike", "claw_flurry", "ambush", "night_prowl"] },
+  { key: "hawk", name: "황조롱이", emoji: "🦅", flavor: "하늘에서 노려보는 진짜 위협 — 사냥하는 입장이 뒤바뀌는 상대",
+    atkMult: 0.88, defMult: 0.50, eva: 15, crit: 13,
+    traits: ["급강하 발톱", "매서운 눈매"], stats: { cuteness: 15, wildness: 65, sociability: 10, mysteriousness: 55 },
+    skills: ["pounce", "ambush", "dash_strike", "judgment"] },
 ];
 
 // 20%는 고양이학대범(최종 빌런), 80%는 야생동물 로스터 중 무작위 — 매번 같은 상대만
