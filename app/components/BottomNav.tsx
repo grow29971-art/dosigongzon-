@@ -44,13 +44,13 @@ export default function BottomNav() {
               <span
                 className="flex items-center justify-center rounded-2xl transition-all"
                 style={{
-                  width: 36, height: 36,
+                  width: 44, height: 44,
                   background: on ? "rgba(255,255,255,0.22)" : "transparent",
                   transform: on ? "scale(1.06)" : "scale(1)",
                   opacity: on ? 1 : 0.82,
                 }}
               >
-                <Icon size={22} />
+                <Icon size={28} />
               </span>
               <span
                 className="text-[10px] font-extrabold"
