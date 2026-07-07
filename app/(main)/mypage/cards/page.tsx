@@ -216,7 +216,7 @@ export default function MyCardsPage() {
                         >
                           {seen && photo ? (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={photo} alt={entry.name} className="w-full h-full object-cover"
+                            <img src={photo} alt={entry.name} className="w-full h-full object-cover" loading="lazy" decoding="async"
                               style={{ filter: defeated ? undefined : "grayscale(0.3)" }} />
                           ) : (
                             <span style={{ fontSize: 20, opacity: 0.35 }}>❔</span>
