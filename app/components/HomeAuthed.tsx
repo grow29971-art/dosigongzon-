@@ -77,6 +77,7 @@ import { getTodayAnniversaries, type Anniversary } from "@/lib/anniversaries-rep
 import OnboardingCard from "@/app/components/OnboardingCard";
 import HomeReengageCard from "@/app/components/HomeReengageCard";
 import DailyCatBox from "@/app/components/DailyCatBox";
+import DailyCheckinModal from "@/app/components/DailyCheckinModal";
 import FirstCheerCard from "@/app/components/FirstCheerCard";
 import AppOpenGuideModal from "@/app/components/AppOpenGuideModal";
 import MyCatsQuickCare from "@/app/components/MyCatsQuickCare";
@@ -644,6 +645,9 @@ export default function HomeAuthed({
 
       {/* ══════ 오늘의 냥 상자 — 일일 출석 리추얼 (전원) ══════ */}
       {user && <DailyCatBox />}
+
+      {/* ══════ 일일 출석체크 모달 — 코인·카드 EXP·계정 레벨 보상 ══════ */}
+      {user && <DailyCheckinModal />}
 
       {/* ══════ streak 위험 hero — 활성·연속 3일+·오늘 미기록 ══════ */}
       {/* 손실 회피 동기 자극. dismiss 시 오늘 다시 안 보임. */}
