@@ -173,6 +173,14 @@ const PVE_ROSTER: PveCreature[] = [
     skills: ["dash_strike", "ambush", "night_prowl", "sharp_claws"] },
 ];
 
+// 실제 사진이 준비된 PVE 로스터 키 — public/pve/{key}.jpg 로 존재. 아직 사진이 없는
+// 종(예: 쥐)은 이 목록에서 빠져 기존처럼 placeholder_emoji로 표시된다.
+const PVE_PHOTO_KEYS = new Set([
+  "mosquito", "fly", "centipede", "slug", "ant", "roach", "mouse", "pigeon",
+  "wasp", "crow", "raccoon", "spider", "weasel", "hawk", "owl", "snake",
+  "boar", "deer", "badger", "marten", "mole",
+]);
+
 // 20%는 고양이학대범(최종 빌런), 80%는 야생동물 로스터 중 무작위 — 매번 같은 상대만
 // 반복하지 않게 다양성을 주되, 진짜 "혼내줘야 할 사람"이라는 임팩트는 남겨둔다.
 function makePveOpponent(myCat: CardCat): CardCat {
@@ -184,7 +192,7 @@ function makePveOpponent(myCat: CardCat): CardCat {
   return {
     id: `pve-${c.key}`,
     name: c.name,
-    photo_url: null,
+    photo_url: PVE_PHOTO_KEYS.has(c.key) ? `/pve/${c.key}.jpg` : null,
     placeholder_emoji: c.emoji,
     caretaker_id: BOSS_CAT_ID,
     card_level: myCat.card_level ?? 1,
