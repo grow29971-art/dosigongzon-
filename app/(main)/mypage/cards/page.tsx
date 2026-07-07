@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, X, Swords, Trophy, Coins, Star, Zap, Share2, Scroll } from "lucide-react";
+import { ArrowLeft, Loader2, X, Swords, Trophy, Coins, Star, Zap, Share2, Scroll, BookMarked } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
 import { SPECIAL_SKILLS } from "@/lib/battle-config";
-import { PVE_BESTIARY, PVE_BOSS, bestiaryPhotoUrl } from "@/lib/pve-bestiary";
+import { PVE_BESTIARY } from "@/lib/pve-bestiary";
 import Link from "next/link";
 
 interface CardCat {
@@ -50,7 +50,6 @@ export default function MyCardsPage() {
   const [relearnLoading, setRelearnLoading] = useState(false);
   const [relearnMsg, setRelearnMsg] = useState("");
   const [seenKeys, setSeenKeys] = useState<string[]>([]);
-  const [defeatedKeys, setDefeatedKeys] = useState<string[]>([]);
 
   const loadCats = async (uid: string) => {
     const [{ data }, { data: profile }, { data: relearnItem }] = await Promise.all([
@@ -71,13 +70,12 @@ export default function MyCardsPage() {
     setRelearnQty((relearnItem as { quantity?: number } | null)?.quantity ?? 0);
     setLoading(false);
 
-    // 도감 — box/supabase_pve_bestiary_migration.sql 실행 전이면 컬럼이 없어 이 쿼리만
-    // 조용히 실패(빈 배열 유지)하고 나머지 페이지는 정상 동작하도록 완전히 분리해서 조회.
+    // 도감 진행 개수(4번째 빠른메뉴 배지용) — box/supabase_pve_bestiary_migration.sql 실행 전이면
+    // 컬럼이 없어 이 쿼리만 조용히 실패(빈 배열 유지)하고 나머지 페이지는 정상 동작.
     try {
       const { data: bestiary } = await createClient()
-        .from("profiles").select("pve_seen_keys,pve_defeated_keys").eq("id", uid).maybeSingle();
+        .from("profiles").select("pve_seen_keys").eq("id", uid).maybeSingle();
       setSeenKeys((bestiary as { pve_seen_keys?: string[] } | null)?.pve_seen_keys ?? []);
-      setDefeatedKeys((bestiary as { pve_defeated_keys?: string[] } | null)?.pve_defeated_keys ?? []);
     } catch { /* 마이그레이션 전이면 조용히 무시 */ }
   };
 
@@ -152,10 +150,6 @@ export default function MyCardsPage() {
     router.push(`/community/write?t=${encodeURIComponent(text.slice(0, 50))}&content=${encodeURIComponent(text)}`);
   };
 
-  const shareBestiary = (seenCount: number, total: number) => {
-    const text = `동네 도감 ${seenCount}/${total}마리 발견! 🐾 도시공존에서 PVE 배틀하면서 동네 불청객 도감 채우는 중이에요.`;
-    router.push(`/community/write?t=${encodeURIComponent(text.slice(0, 50))}&content=${encodeURIComponent(text)}`);
-  };
 
   const filtered = filter === "all" ? cats : cats.filter(c => c.card_rarity === filter);
   const counts = RARITY_ORDER.reduce((acc, r) => { acc[r] = cats.filter(c => c.card_rarity === r).length; return acc; }, {} as Record<CardRarity, number>);
@@ -174,78 +168,38 @@ export default function MyCardsPage() {
 
         <div className="px-4 pb-28">
           {/* 빠른 메뉴 */}
-          <div className="grid grid-cols-3 gap-2 mb-4 mt-3">
+          <div className="grid grid-cols-4 gap-2 mb-4 mt-3">
             <Link href="/mypage/cards/battle"
-              className="flex items-center justify-center gap-1.5 p-3 rounded-2xl font-bold text-[12px] text-white"
+              className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[11px] text-white"
               style={{ background: "linear-gradient(135deg,#9F85F0,#7A5AE0)", boxShadow: "0 4px 12px rgba(122,90,224,0.3)" }}>
-              <Swords size={15} /> 배틀
+              <Swords size={16} /> 배틀
             </Link>
             <Link href="/mypage/cards/ranking"
-              className="flex items-center justify-center gap-1.5 p-3 rounded-2xl font-bold text-[12px] text-white"
+              className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[11px] text-white"
               style={{ background: "linear-gradient(135deg,#8FC0FF,#5C93F0)", boxShadow: "0 4px 12px rgba(92,147,240,0.3)" }}>
-              <Trophy size={15} /> 랭킹
+              <Trophy size={16} /> 랭킹
             </Link>
             <Link href="/mypage/shop"
-              className="flex items-center justify-center gap-1.5 p-3 rounded-2xl font-bold text-[12px] text-white"
+              className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[11px] text-white"
               style={{ background: "linear-gradient(135deg,#FFC15E,#FFA030)", boxShadow: "0 4px 12px rgba(255,160,48,0.3)" }}>
-              <Coins size={15} /> 상점
+              <Coins size={16} /> 상점
+            </Link>
+            <Link href="/mypage/cards/bestiary"
+              className="relative flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[11px] text-white"
+              style={{ background: "linear-gradient(135deg,#7FCB8A,#4FAF63)", boxShadow: "0 4px 12px rgba(79,175,99,0.3)" }}>
+              <BookMarked size={16} /> 도감
+              {(() => {
+                const total = PVE_BESTIARY.length + 1;
+                const seenCount = seenKeys.length;
+                return seenCount > 0 ? (
+                  <span className="absolute -top-1.5 -right-1.5 rounded-full text-[9px] font-extrabold px-1.5 py-0.5"
+                    style={{ background: "#fff", color: "#4FAF63", boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}>
+                    {seenCount}/{total}
+                  </span>
+                ) : null;
+              })()}
             </Link>
           </div>
-
-          {/* ── 도감(컬렉션 진행률) ── */}
-          {(() => {
-            const all = [...PVE_BESTIARY, PVE_BOSS];
-            const seenCount = all.filter(e => seenKeys.includes(e.key)).length;
-            return (
-              <div className="mb-5">
-                <div className="flex items-center justify-between mb-2 px-1">
-                  <span className="text-[13px] font-extrabold" style={{ color: "#2B2B3D" }}>🐾 동네 도감</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-bold" style={{ color: "#8A8598" }}>{seenCount}/{all.length}마리 발견</span>
-                    {seenCount > 0 && (
-                      <button onClick={() => shareBestiary(seenCount, all.length)}
-                        className="flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold active:scale-95"
-                        style={{ background: "#EFE9FD", color: "#7A5AE0" }}>
-                        <Share2 size={10} /> 자랑하기
-                      </button>
-                    )}
-                  </div>
-                </div>
-                <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-                  {all.map((entry) => {
-                    const seen = seenKeys.includes(entry.key);
-                    const defeated = defeatedKeys.includes(entry.key);
-                    const photo = bestiaryPhotoUrl(entry);
-                    return (
-                      <div key={entry.key} className="shrink-0 flex flex-col items-center gap-1" style={{ width: 56 }}>
-                        <div
-                          className="relative rounded-full overflow-hidden flex items-center justify-center"
-                          style={{
-                            width: 52, height: 52,
-                            background: seen ? "#fff" : "#E9E7F0",
-                            boxShadow: seen
-                              ? `0 0 0 2px #fff, 0 0 0 4px ${defeated ? "#FFC15E" : "#5C8DEE"}, 0 3px 8px rgba(0,0,0,0.1)`
-                              : "inset 0 0 0 2px rgba(0,0,0,0.05)",
-                          }}
-                        >
-                          {seen && photo ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={photo} alt={entry.name} className="w-full h-full object-cover" loading="lazy" decoding="async"
-                              style={{ filter: defeated ? undefined : "grayscale(0.3)" }} />
-                          ) : (
-                            <span style={{ fontSize: 20, opacity: 0.35 }}>❔</span>
-                          )}
-                        </div>
-                        <span className="text-[9px] font-bold truncate w-full text-center" style={{ color: seen ? "#6B6578" : "#B4AFC2" }}>
-                          {seen ? entry.name : "???"}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })()}
 
           {/* 희귀도 필터 */}
           <div className="flex gap-2 mb-5 overflow-x-auto pb-1 no-scrollbar">

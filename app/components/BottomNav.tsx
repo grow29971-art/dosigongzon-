@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Users, Map, BookOpen, User, Bot } from "lucide-react";
+import { Home, Users, Map, BookOpen, User, Bot, Layers } from "lucide-react";
 
 const tabs = [
   { href: "/", label: "홈", Icon: Home },
@@ -10,7 +10,7 @@ const tabs = [
   { href: "/tips", label: "가이드", Icon: BookOpen },
   { href: "/lab/cat-style", label: "AI집사", Icon: Bot },
   { href: "/community", label: "커뮤니티", Icon: Users },
-  { href: "/mypage/cards", label: "카드", Icon: null },
+  { href: "/mypage/cards", label: "카드", Icon: Layers },
   { href: "/mypage", label: "마이", Icon: User },
 ];
 
@@ -42,11 +42,7 @@ export default function BottomNav() {
                   color: on ? "#fff" : "#B4AFC2",
                 }}
               >
-                {isCard ? (
-                  <span className="text-[18px] leading-none">🃏</span>
-                ) : (
-                  Icon && <Icon size={19} strokeWidth={on ? 2.5 : 1.8} />
-                )}
+                <Icon size={19} strokeWidth={on ? 2.5 : 1.8} />
               </span>
               <span className="text-[10px] font-semibold" style={{ color: on ? dotColor : "#B4AFC2" }}>{label}</span>
             </Link>
