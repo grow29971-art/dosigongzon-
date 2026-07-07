@@ -127,6 +127,14 @@ const PVE_ROSTER: PveCreature[] = [
     atkMult: 0.72, defMult: 0.35, eva: 20, crit: 12,
     traits: ["스르륵 접근", "독니 물기"], stats: { cuteness: 10, wildness: 50, sociability: 5, mysteriousness: 40 },
     skills: ["venom_fang", "poison", "bind", "ambush"] },
+  { key: "boar", name: "멧돼지", emoji: "🐗", flavor: "산에서 마을로 내려온 묵직한 돌진꾼",
+    atkMult: 1.15, defMult: 0.85, eva: 6, crit: 10,
+    traits: ["묵직한 돌진", "날카로운 엄니"], stats: { cuteness: 15, wildness: 80, sociability: 10, mysteriousness: 30 },
+    skills: ["body_slam", "rend", "frenzy", "intimidate"] },
+  { key: "deer", name: "고라니", emoji: "🦌", flavor: "도로 위로 불쑥 튀어나오는 의외의 복병 — 뜻밖의 송곳니를 숨기고 있다",
+    atkMult: 0.75, defMult: 0.40, eva: 25, crit: 11,
+    traits: ["껑충 도약", "숨겨진 송곳니"], stats: { cuteness: 45, wildness: 45, sociability: 15, mysteriousness: 35 },
+    skills: ["dash_strike", "pounce", "quick_dodge", "ambush"] },
 ];
 
 // 20%는 고양이학대범(최종 빌런), 80%는 야생동물 로스터 중 무작위 — 매번 같은 상대만
