@@ -19,13 +19,13 @@ export async function POST(req: Request) {
   const { my_cat_id, opp_cat_id, opp_caretaker_id, winner, rounds, my_hp_left, opp_hp_left, is_boss } = await req.json();
 
   const { data: myCat } = await supabase
-    .from("cats").select("id,card_exp,card_level,caretaker_id,win_streak")
+    .from("cats").select("id,card_exp,card_level,caretaker_id,win_streak,best_win_streak,pve_win_count")
     .eq("id", my_cat_id).eq("caretaker_id", user.id).maybeSingle();
 
   if (!myCat) return NextResponse.json({ error: "cat not found" }, { status: 404 });
 
   const { data: oppCat } = await supabase
-    .from("cats").select("id,card_exp,card_level,win_streak")
+    .from("cats").select("id,card_exp,card_level,win_streak,best_win_streak")
     .eq("id", opp_cat_id).maybeSingle();
 
   const svc = serviceClient(
@@ -46,6 +46,10 @@ export async function POST(req: Request) {
   const newCoins = Math.max(0, myCoinsNow + coinsGained);
   const myNewStreak  = iWon ? (myCat.win_streak ?? 0) + 1 : 0;
   const oppNewStreak = iWon ? 0 : (oppCat?.win_streak ?? 0) + 1;
+  // 카드 훈장(성장 스티커)용 all-time 기록 — win_streak과 달리 지더라도 절대 줄어들지 않는다.
+  const myNewBestStreak = Math.max(myCat.best_win_streak ?? 0, myNewStreak);
+  const oppNewBestStreak = Math.max(oppCat?.best_win_streak ?? 0, oppNewStreak);
+  const myNewPveWins = (myCat.pve_win_count ?? 0) + (is_boss && iWon ? 1 : 0);
 
   // 배틀 타이틀 카운터 — 코인 지급과 완전히 분리된 쿼리 (마이그레이션 전이어도 코인엔 영향 없음)
   const { data: battleProfile } = await svc.from("profiles").select("boss_defeats,best_win_streak").eq("id", user.id).maybeSingle();
@@ -53,8 +57,8 @@ export async function POST(req: Request) {
   const newBestStreak = Math.max(battleProfile?.best_win_streak ?? 0, myNewStreak);
 
   await Promise.all([
-    svc.from("cats").update({ card_exp: myNewExp, card_level: computeLevel(myNewExp), win_streak: myNewStreak }).eq("id", my_cat_id),
-    oppCat && svc.from("cats").update({ card_exp: oppNewExp, card_level: computeLevel(oppNewExp), win_streak: oppNewStreak }).eq("id", opp_cat_id),
+    svc.from("cats").update({ card_exp: myNewExp, card_level: computeLevel(myNewExp), win_streak: myNewStreak, best_win_streak: myNewBestStreak, pve_win_count: myNewPveWins }).eq("id", my_cat_id),
+    oppCat && svc.from("cats").update({ card_exp: oppNewExp, card_level: computeLevel(oppNewExp), win_streak: oppNewStreak, best_win_streak: oppNewBestStreak }).eq("id", opp_cat_id),
     svc.from("profiles").update({ coins: newCoins }).eq("id", user.id),
     svc.from("profiles").update({ boss_defeats: newBossDefeats, best_win_streak: newBestStreak }).eq("id", user.id),
     // oppCat이 없으면(보스 조우 등 DB에 없는 상대) FK 제약 위반이 나므로 기록을 건너뜀

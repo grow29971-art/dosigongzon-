@@ -20,6 +20,9 @@ export interface CatCardData {
   // 사진이 없을 때 기본 🐱 대신 보여줄 이모지 — PVE 배틀 상대(바퀴벌레·쥐 등 야생동물)처럼
   // 진짜 고양이가 아닌 카드를 표시할 때 씀. 일반 고양이 카드는 항상 undefined.
   placeholder_emoji?: string | null;
+  // 카드 훈장(성장 스티커) + 프레임 숙련도 승급 계산용 — 전부 리셋되지 않는 all-time 누적치.
+  best_win_streak?: number | null;
+  pve_win_count?: number | null;
 }
 
 interface CatCardProps {
@@ -129,6 +132,40 @@ export function pseudoDexNo(seed: string) {
   return String((h % 220) + 1).padStart(3, "0");
 }
 
+// ── 성장 훈장 스티커 ──
+// "한 번 얻으면 절대 사라지지 않는" all-time 기록만 조건으로 씀 — 리셋되는 값(현재 연승 등)은 제외.
+// 기준이 바뀌면 이 배열만 고치면 되고, 별도 "획득 여부" 컬럼은 두지 않는다(cat-grade와 동일 설계).
+interface BadgeDef { emoji: string; label: string; unlocked: (c: CatCardData) => boolean; }
+const CARD_BADGES: BadgeDef[] = [
+  { emoji: "🎖️", label: "만렙 달성", unlocked: (c) => (c.card_level ?? 1) >= 10 },
+  { emoji: "🔥", label: "5연승 달성", unlocked: (c) => (c.best_win_streak ?? 0) >= 5 },
+  { emoji: "🛡️", label: "PVE 10승 달성", unlocked: (c) => (c.pve_win_count ?? 0) >= 10 },
+  { emoji: "🌱", label: "함께한 지 30일+", unlocked: (c) => {
+      if (!c.card_generated_at) return false;
+      const days = (Date.now() - new Date(c.card_generated_at).getTime()) / 86400000;
+      return days >= 30;
+    } },
+];
+
+// ── 프레임 숙련도 승급 ──
+// 등급(rarity)과는 별개의 축 — 만렙(Lv10) 이후로도 계속 쌓이는 card_exp를 근거로,
+// 시간과 노력을 들인 카드일수록 프레임에 은은한 광채가 더해진다.
+export type PrestigeTier = "none" | "silver" | "gold" | "prismatic";
+export function prestigeTier(exp: number | null | undefined): PrestigeTier {
+  const e = exp ?? 0;
+  if (e >= 7000) return "prismatic";
+  if (e >= 3500) return "gold";
+  if (e >= 1670) return "silver";
+  return "none";
+}
+const PRESTIGE_GLOW: Record<PrestigeTier, string> = {
+  none: "",
+  silver: "drop-shadow(0 0 5px rgba(210,220,230,0.9)) drop-shadow(0 0 11px rgba(210,220,230,0.55))",
+  gold: "drop-shadow(0 0 6px rgba(255,215,60,0.95)) drop-shadow(0 0 13px rgba(255,180,0,0.6))",
+  prismatic: "drop-shadow(0 0 6px rgba(255,80,80,0.95)) drop-shadow(0 0 13px rgba(255,80,80,0.6))",
+};
+const PRESTIGE_LABEL: Record<PrestigeTier, string> = { none: "", silver: "은빛 숙련", gold: "금빛 숙련", prismatic: "무지개 숙련" };
+
 function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> & { size: "sm" | "md" | "lg" }) {
   const rarity = (card.card_rarity ?? "common") as CardRarity;
   const cfg = CARD_THEME[rarity] ?? CARD_THEME.common;
@@ -137,6 +174,8 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
 
   const lv = Math.max(1, Math.min(10, card.card_level ?? 1));
   const lvBonus = lv - 1;
+  const tier = prestigeTier(card.card_exp);
+  const badges = CARD_BADGES.map((b) => ({ ...b, isUnlocked: b.unlocked(card) }));
 
   const hp = card.card_stats
     ? Math.round(card.card_stats.cuteness * 0.8 + card.card_stats.wildness * 0.4) + 40 + lvBonus * 10
@@ -174,15 +213,17 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
 
   return (
     <div
+      className={tier === "prismatic" ? "prestige-prismatic" : undefined}
       style={{
         width: W,
         clipPath: clip,
-        filter: `drop-shadow(${shadowOffset}px ${shadowOffset}px 0 rgba(0,0,0,0.45))`,
+        filter: `drop-shadow(${shadowOffset}px ${shadowOffset}px 0 rgba(0,0,0,0.45))${PRESTIGE_GLOW[tier] ? " " + PRESTIGE_GLOW[tier] : ""}`,
         overflow: "hidden",
         flexShrink: 0,
         position: "relative",
         userSelect: "none",
-      }}
+        ["--shadow-offset" as string]: `${shadowOffset}px`,
+      } as React.CSSProperties}
     >
       {/* 픽셀 프레임 테두리 (2겹, 블러 없는 인셋) */}
       <div
@@ -321,6 +362,38 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
           }}>
             Lv.{lv}
           </span>
+        </div>
+
+        {/* ── 성장 훈장 스티커 (영구 기록 — 한 번 켜지면 절대 꺼지지 않음) ── */}
+        <div style={{
+          margin: `${isSm ? 2 : 3}px ${isLg ? 8 : isSm ? 5 : 6}px 0`,
+          display: "flex", alignItems: "center", gap: isSm ? 3 : 4,
+          position: "relative", zIndex: 2,
+        }}>
+          {badges.map((b) => (
+            <span key={b.label} title={b.label} style={{
+              width: isLg ? 20 : isSm ? 14 : 17, height: isLg ? 20 : isSm ? 14 : 17,
+              borderRadius: "50%",
+              background: b.isUnlocked ? cfg.typeBg : "rgba(0,0,0,0.3)",
+              border: `1.5px solid ${b.isUnlocked ? cfg.accent : "rgba(255,255,255,0.18)"}`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: isLg ? 11 : isSm ? 7.5 : 9,
+              filter: b.isUnlocked ? undefined : "grayscale(1)",
+              opacity: b.isUnlocked ? 1 : 0.35,
+              flexShrink: 0,
+            }}>
+              {b.emoji}
+            </span>
+          ))}
+          {tier !== "none" && (
+            <span className={gameFont.className} style={{
+              marginLeft: "auto", fontSize: fs.dex - 1,
+              color: tier === "gold" ? "#FFD700" : tier === "prismatic" ? "#FF80C0" : "#D8E4EE",
+              letterSpacing: "0.02em", flexShrink: 0,
+            }}>
+              {PRESTIGE_LABEL[tier]}
+            </span>
+          )}
         </div>
 
         {/* ── 카드 본문 (플레이버 + 기술) ── */}
@@ -463,6 +536,16 @@ export default function CatCard({ name, photoUrl, card, size = "md", onClick }: 
         .card-modal-anim { animation: card-modal-in 0.2s ease-out both; }
         @keyframes modal-bg-in { from { opacity:0; } to { opacity:1; } }
         .card-modal-bg { animation: modal-bg-in 0.2s ease both; }
+        /* 프레임 숙련도 "무지개" 등급 — 만렙 이후로도 오래 쌓인 카드에만 붙는 은은한 색상 순환 광채 */
+        @keyframes prestige-rainbow {
+          0%   { filter: drop-shadow(var(--shadow-offset) var(--shadow-offset) 0 rgba(0,0,0,0.45)) drop-shadow(0 0 6px rgba(255,80,80,0.95)) drop-shadow(0 0 13px rgba(255,80,80,0.6)); }
+          20%  { filter: drop-shadow(var(--shadow-offset) var(--shadow-offset) 0 rgba(0,0,0,0.45)) drop-shadow(0 0 6px rgba(255,210,60,0.95)) drop-shadow(0 0 13px rgba(255,210,60,0.6)); }
+          40%  { filter: drop-shadow(var(--shadow-offset) var(--shadow-offset) 0 rgba(0,0,0,0.45)) drop-shadow(0 0 6px rgba(120,255,140,0.95)) drop-shadow(0 0 13px rgba(120,255,140,0.6)); }
+          60%  { filter: drop-shadow(var(--shadow-offset) var(--shadow-offset) 0 rgba(0,0,0,0.45)) drop-shadow(0 0 6px rgba(100,180,255,0.95)) drop-shadow(0 0 13px rgba(100,180,255,0.6)); }
+          80%  { filter: drop-shadow(var(--shadow-offset) var(--shadow-offset) 0 rgba(0,0,0,0.45)) drop-shadow(0 0 6px rgba(210,120,255,0.95)) drop-shadow(0 0 13px rgba(210,120,255,0.6)); }
+          100% { filter: drop-shadow(var(--shadow-offset) var(--shadow-offset) 0 rgba(0,0,0,0.45)) drop-shadow(0 0 6px rgba(255,80,80,0.95)) drop-shadow(0 0 13px rgba(255,80,80,0.6)); }
+        }
+        .prestige-prismatic { animation: prestige-rainbow 4s linear infinite; }
       `}</style>
 
       <div

@@ -21,6 +21,8 @@ interface CardCat {
   card_generated_at: string;
   card_level: number;
   card_exp: number;
+  best_win_streak?: number | null;
+  pve_win_count?: number | null;
   battle_special: string | null;
   battle_special2: string | null;
   battle_special3: string | null;
@@ -51,7 +53,7 @@ export default function MyCardsPage() {
     const [{ data }, { data: profile }, { data: relearnItem }] = await Promise.all([
       createClient()
         .from("cats")
-        .select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_generated_at,card_level,card_exp,battle_special,battle_special2,battle_special3,battle_special4")
+        .select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_generated_at,card_level,card_exp,best_win_streak,pve_win_count,battle_special,battle_special2,battle_special3,battle_special4")
         .eq("caretaker_id", uid)
         .not("card_generated_at", "is", null)
         .order("card_level", { ascending: false })
@@ -196,7 +198,7 @@ export default function MyCardsPage() {
               {filtered.map((cat) => (
                 <div key={cat.id} className="flex flex-col items-center gap-1">
                   <CatCard name={cat.name} photoUrl={cat.photo_url}
-                    card={{ card_rarity: cat.card_rarity, card_name: cat.card_name, card_traits: cat.card_traits ?? [], card_stats: cat.card_stats, card_flavor: cat.card_flavor, card_level: cat.card_level, card_exp: cat.card_exp }}
+                    card={{ card_rarity: cat.card_rarity, card_name: cat.card_name, card_traits: cat.card_traits ?? [], card_stats: cat.card_stats, card_flavor: cat.card_flavor, card_level: cat.card_level, card_exp: cat.card_exp, card_generated_at: cat.card_generated_at, best_win_streak: cat.best_win_streak, pve_win_count: cat.pve_win_count }}
                     size="sm" onClick={() => setSelected(cat)} />
                   {repCardId === cat.id && (
                     <span className="text-[9px] text-yellow-400 font-bold">★ 대표 카드</span>
@@ -224,7 +226,7 @@ export default function MyCardsPage() {
           <div onClick={e => e.stopPropagation()} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, width: "100%", maxWidth: 340, margin: "auto 0" }}>
 
             <CatCard name={selected.name} photoUrl={selected.photo_url}
-              card={{ card_rarity: selected.card_rarity, card_name: selected.card_name, card_traits: selected.card_traits ?? [], card_stats: selected.card_stats, card_flavor: selected.card_flavor, card_level: selected.card_level, card_exp: selected.card_exp }}
+              card={{ card_rarity: selected.card_rarity, card_name: selected.card_name, card_traits: selected.card_traits ?? [], card_stats: selected.card_stats, card_flavor: selected.card_flavor, card_level: selected.card_level, card_exp: selected.card_exp, card_generated_at: selected.card_generated_at, best_win_streak: selected.best_win_streak, pve_win_count: selected.pve_win_count }}
               size="lg" />
 
             {/* XP 바 */}

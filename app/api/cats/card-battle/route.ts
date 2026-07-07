@@ -27,6 +27,9 @@ interface CardCat {
   battle_special3: string | null;
   battle_special4: string | null;
   win_streak: number | null;
+  // 카드 훈장(성장 스티커) 계산용 — 리셋 없는 all-time 기록. 훈장 조건은 CatCard.tsx에서 계산.
+  best_win_streak?: number | null;
+  pve_win_count?: number | null;
   // PVE 상대(고양이학대범 이외의 야생동물)는 실제 사진이 없어 이모지로 표시 — 진짜 고양이 카드는 항상 null.
   placeholder_emoji?: string | null;
 }
@@ -415,7 +418,7 @@ export async function POST(req: Request) {
   // 내 카드 조회
   const { data: myCat } = await supabase
     .from("cats")
-    .select("id,name,photo_url,caretaker_id,card_level,card_exp,card_rarity,card_name,card_traits,card_stats,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4,win_streak")
+    .select("id,name,photo_url,caretaker_id,card_level,card_exp,card_rarity,card_name,card_traits,card_stats,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4,win_streak,best_win_streak,pve_win_count")
     .eq("id", my_cat_id)
     .eq("caretaker_id", user.id)
     .not("card_generated_at", "is", null)
@@ -513,6 +516,10 @@ export async function POST(req: Request) {
   const newCoins = Math.max(0, myCoinsNow + coinsGained);
   const myNewStreak  = result.attackerWins ? (myCat.win_streak ?? 0) + 1 : 0;
   const oppNewStreak = result.attackerWins ? 0 : (opponent.win_streak ?? 0) + 1;
+  // 카드 훈장(성장 스티커)용 all-time 기록 — win_streak과 달리 지더라도 절대 줄어들지 않는다.
+  const myNewBestStreak = Math.max(myCat.best_win_streak ?? 0, myNewStreak);
+  const oppNewBestStreak = Math.max(opponent.best_win_streak ?? 0, oppNewStreak);
+  const myNewPveWins = (myCat.pve_win_count ?? 0) + (isBossEncounter && result.attackerWins ? 1 : 0);
 
   // 배틀 타이틀 카운터 — box/supabase_battle_titles_migration.sql 실행 전이면 조용히 0으로 취급될 뿐,
   // 코인 지급(위 newCoins)과는 완전히 분리된 쿼리라 마이그레이션 여부와 무관하게 안전함
@@ -521,8 +528,8 @@ export async function POST(req: Request) {
   const newBestStreak = Math.max(battleProfile?.best_win_streak ?? 0, myNewStreak);
 
   await Promise.all([
-    svc.from("cats").update({ card_exp: myNewExp,  card_level: computeLevel(myNewExp),  win_streak: myNewStreak  }).eq("id", myCat.id),
-    isBossEncounter ? Promise.resolve() : svc.from("cats").update({ card_exp: oppNewExp, card_level: computeLevel(oppNewExp), win_streak: oppNewStreak }).eq("id", opponent.id),
+    svc.from("cats").update({ card_exp: myNewExp,  card_level: computeLevel(myNewExp),  win_streak: myNewStreak, best_win_streak: myNewBestStreak, pve_win_count: myNewPveWins }).eq("id", myCat.id),
+    isBossEncounter ? Promise.resolve() : svc.from("cats").update({ card_exp: oppNewExp, card_level: computeLevel(oppNewExp), win_streak: oppNewStreak, best_win_streak: oppNewBestStreak }).eq("id", opponent.id),
     svc.from("profiles").update({ coins: newCoins }).eq("id", user.id),
     svc.from("profiles").update({ boss_defeats: newBossDefeats, best_win_streak: newBestStreak }).eq("id", user.id),
     isBossEncounter ? Promise.resolve() : svc.from("card_battles").insert({

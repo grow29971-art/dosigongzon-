@@ -43,6 +43,8 @@ export interface Cat {
   card_generated_at: string | null;
   card_level: number;
   card_exp: number;
+  best_win_streak?: number | null;
+  pve_win_count?: number | null;
 }
 
 // 카드 레벨 임계값 (누적 XP)

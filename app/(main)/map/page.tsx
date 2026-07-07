@@ -3177,6 +3177,11 @@ export default function MapPage() {
                         card_traits: selectedCat.card_traits ?? [],
                         card_stats: selectedCat.card_stats,
                         card_flavor: selectedCat.card_flavor,
+                        card_level: selectedCat.card_level,
+                        card_exp: selectedCat.card_exp,
+                        card_generated_at: selectedCat.card_generated_at,
+                        best_win_streak: selectedCat.best_win_streak,
+                        pve_win_count: selectedCat.pve_win_count,
                       }}
                       size="md"
                     />
