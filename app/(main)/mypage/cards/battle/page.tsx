@@ -64,6 +64,7 @@ interface BattleCat {
   battle_special3: string | null; battle_special4: string | null;
   placeholder_emoji?: string | null; // PVE 야생동물 상대(사진 없음) 표시용
   card_generated_at?: string | null; best_win_streak?: number | null; pve_win_count?: number | null;
+  win_streak?: number | null;
 }
 interface BattleStats { hp: number; atk: number; def: number; spd: number; }
 interface Skill { name: string; icon: string; type: "normal"|"guard"|"special"; slot?: number; desc: string; color: string; }
@@ -398,6 +399,11 @@ export default function BattlePage() {
   const [phase, setPhase] = useState<Phase>("select");
   const [autoPilot, setAutoPilot] = useState(false); // 수동 배틀 중 자동전투 전환
   const [autoUseItems, setAutoUseItems] = useState(false); // 자동전투 중 아이템도 자동 사용할지
+  // 자동전투(mode==="auto") 재생 배속 — 반복 파밍할 때 답답하지 않게. ref로도 들고 있어서
+  // 재생 도중 배속을 바꿔도(진행 중인 setTimeout 루프가) 즉시 새 값을 반영한다.
+  const [autoSpeed, setAutoSpeed] = useState<1|2|3>(1);
+  const autoSpeedRef = useRef<1|2|3>(1);
+  useEffect(() => { autoSpeedRef.current = autoSpeed; }, [autoSpeed]);
   const [error, setError] = useState("");
   const [countdown, setCountdown] = useState(3);
 
@@ -522,7 +528,7 @@ export default function BattlePage() {
   useEffect(() => {
     if (authLoading || !user) return;
     createClient().from("cats")
-      .select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_level,card_exp,card_generated_at,best_win_streak,pve_win_count,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4")
+      .select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_level,card_exp,card_generated_at,best_win_streak,pve_win_count,win_streak,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4")
       .eq("caretaker_id", user.id).not("card_generated_at","is",null)
       .order("card_level",{ascending:false})
       .then(({ data }:{ data:BattleCat[]|null }) => { if(mounted.current) setMyCats(data??[]); });
@@ -683,9 +689,9 @@ export default function BattlePage() {
   const replayAuto = (r: AutoResult, myName: string) => {
     const log = r.log;
     let i = 0;
-    const TICK = 1100;
     const tick = () => {
       if(!mounted.current) return;
+      const TICK = 1100 / autoSpeedRef.current;
       if(i >= log.length) {
         setTimeout(() => {
           if(!mounted.current) return;
@@ -773,9 +779,9 @@ export default function BattlePage() {
         setTimeout(() => {
           if(!mounted.current) return;
           setMyAnim("idle"); setOppAnim("idle"); setDmgPopup(null); setCritFlash(false);
-          autoTimerRef.current = setTimeout(tick, 100);
-        }, 650);
-      }, 380);
+          autoTimerRef.current = setTimeout(tick, 100 / autoSpeedRef.current);
+        }, 650 / autoSpeedRef.current);
+      }, 380 / autoSpeedRef.current);
     };
     autoTimerRef.current = setTimeout(tick, 300);
   };
@@ -1268,7 +1274,7 @@ export default function BattlePage() {
     setMyAnim("idle"); setOppAnim("idle"); setDmgPopup(null); setCritFlash(false);
     setScreenShake(0); setImpactBurst(null);
     setIsBossBattle(false); setShowBossIntro(false);
-    if(user) createClient().from("cats").select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_level,card_exp,card_generated_at,best_win_streak,pve_win_count,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4").eq("caretaker_id",user.id).not("card_generated_at","is",null).order("card_level",{ascending:false}).then(({data}:{data:BattleCat[]|null})=>{ if(mounted.current) setMyCats(data??[]); });
+    if(user) createClient().from("cats").select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_level,card_exp,card_generated_at,best_win_streak,pve_win_count,win_streak,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4").eq("caretaker_id",user.id).not("card_generated_at","is",null).order("card_level",{ascending:false}).then(({data}:{data:BattleCat[]|null})=>{ if(mounted.current) setMyCats(data??[]); });
   };
 
   /* ── 카드 애니 스타일 ── */
@@ -1441,7 +1447,14 @@ export default function BattlePage() {
             <ArrowLeft size={18} color="#2B2B3D"/>
           </button>
           {!isFightPhase && <h1 className="text-[17px] font-extrabold flex items-center gap-2" style={{color:"#2B2B3D"}}><Swords size={18}/> 카드 배틀</h1>}
-          {isFightPhase && <span className="ml-auto text-[12px] font-bold" style={{color:"#6B6578"}}>{turnCount}턴</span>}
+          {isFightPhase && mode==="auto" && (
+            <button onClick={()=>{ sfx.click(); setAutoSpeed(s=>s===1?2:s===2?3:1); }}
+              className="ml-auto"
+              style={{ fontSize:11, fontWeight:800, padding:"4px 10px", borderRadius:999, color:"#8B6FE0", background:"#EFE9FD" }}>
+              {autoSpeed}배속
+            </button>
+          )}
+          {isFightPhase && mode!=="auto" && <span className="ml-auto text-[12px] font-bold" style={{color:"#6B6578"}}>{turnCount}턴</span>}
           <SfxToggle style={isFightPhase ? undefined : { marginLeft: "auto" }}/>
         </div>
 
@@ -1607,7 +1620,7 @@ export default function BattlePage() {
                     }}/>
                   )}
                   {dmgPopup?.target==="me"&&(
-                    <div key={`me${Date.now()}`} style={{position:"absolute",top:"25%",left:"50%",transform:"translateX(-50%)",fontWeight:900,color:dmgPopup.isCrit?"#FFD700":"white",fontSize:dmgPopup.msg?13:18,textShadow:"0 2px 8px rgba(0,0,0,0.9)",animation:"dPop 0.8s ease forwards",pointerEvents:"none",whiteSpace:"nowrap"}}>
+                    <div key={`me${Date.now()}`} style={{position:"absolute",top:"25%",left:"50%",transform:"translateX(-50%)",fontWeight:900,color:dmgPopup.msg?.includes("효과는 굉장했다")?"#FF7A3C":dmgPopup.isCrit?"#FFD700":"white",fontSize:dmgPopup.msg?.includes("효과는 굉장했다")?14.5:dmgPopup.msg?13:18,textShadow:"0 2px 8px rgba(0,0,0,0.9)",animation:"dPop 0.8s ease forwards",pointerEvents:"none",whiteSpace:"nowrap"}}>
                       {dmgPopup.msg||(dmgPopup.val>0?`-${dmgPopup.val}`:"")}
                     </div>
                   )}
@@ -1655,7 +1668,7 @@ export default function BattlePage() {
                     }}/>
                   )}
                   {dmgPopup?.target==="opp"&&(
-                    <div key={`op${Date.now()}`} style={{position:"absolute",top:"25%",left:"50%",transform:"translateX(-50%)",fontWeight:900,color:dmgPopup.isCrit?"#FFD700":"white",fontSize:dmgPopup.msg?13:18,textShadow:"0 2px 8px rgba(0,0,0,0.9)",animation:"dPop 0.8s ease forwards",pointerEvents:"none",whiteSpace:"nowrap"}}>
+                    <div key={`op${Date.now()}`} style={{position:"absolute",top:"25%",left:"50%",transform:"translateX(-50%)",fontWeight:900,color:dmgPopup.msg?.includes("효과는 굉장했다")?"#FF7A3C":dmgPopup.isCrit?"#FFD700":"white",fontSize:dmgPopup.msg?.includes("효과는 굉장했다")?14.5:dmgPopup.msg?13:18,textShadow:"0 2px 8px rgba(0,0,0,0.9)",animation:"dPop 0.8s ease forwards",pointerEvents:"none",whiteSpace:"nowrap"}}>
                       {dmgPopup.msg||(dmgPopup.val>0?`-${dmgPopup.val}`:"")}
                     </div>
                   )}
@@ -1666,7 +1679,14 @@ export default function BattlePage() {
 
             {/* 카드 닉네임 줄 — 내 카드 / VS / 상대 이름 */}
             <div className="flex items-center justify-between px-1">
-              <span className="text-[10px] font-bold" style={{color:"#8B6FE0"}}>내 카드</span>
+              <span className="flex items-center gap-1">
+                <span className="text-[10px] font-bold" style={{color:"#8B6FE0"}}>내 카드</span>
+                {(selected?.win_streak ?? 0) > 0 && (
+                  <span className="flex items-center gap-0.5" style={{fontSize:9.5,fontWeight:800,color:"#FF7A3C"}}>
+                    🔥{selected!.win_streak}연승
+                  </span>
+                )}
+              </span>
               <span style={{fontSize:11,fontWeight:900,color:"#B4AFC2"}}>VS</span>
               <span className="text-[10px] font-bold" style={{color:isBossBattle?"#E1505F":"#8A8598"}}>{isBossBattle?`${opponent?.placeholder_emoji??"😾"} ${opponent?.name??"고양이학대범"}`:"상대방"}</span>
             </div>
