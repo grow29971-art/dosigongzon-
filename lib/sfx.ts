@@ -13,7 +13,10 @@ function getCtx(): AudioContext | null {
     if (!Ctor) return null;
     ctx = new Ctor();
   }
-  if (ctx.state === "suspended") ctx.resume();
+  // 백그라운드에서 타이머 기반 효과음(하트비트/도트 틱 등)이 단 한 번만 걸려도
+  // 여기서 무조건 resume()해버리면 suspend()가 무효화된다 — 화면이 실제로
+  // 보이는 상태일 때만 resume해서, 숨겨진 동안엔 어떤 sfx 호출이 와도 계속 무음이게 한다.
+  if (ctx.state === "suspended" && document.visibilityState === "visible") ctx.resume();
   return ctx;
 }
 
