@@ -28,6 +28,9 @@ const SWEET_WIDTH_MIN = 11, SWEET_WIDTH_MAX = 21; // 시도마다 폭이 랜덤 
 const SWEEP_MS_BASE = 1050;            // 구슬 한 방향 이동에 걸리는 시간(ms) — 시도마다 조금씩 빨라짐
 const TOTAL_TRIES = 3;
 
+// 미스 리액션 문구 — 매번 "빗나갔다!" 하나만 뜨면 단조로워서 랜덤하게 섞음
+const MISS_REACTIONS = ["빗나갔다!", "아쉽다!", "타이밍이 살짝 빗나갔어요", "다시 한 번!", "조금만 더!"];
+
 function randomSweetSpot(widen: boolean) {
   const width = (SWEET_WIDTH_MIN + Math.random() * (SWEET_WIDTH_MAX - SWEET_WIDTH_MIN)) * (widen ? 1.6 : 1);
   const start = BAR_MIN + Math.random() * (BAR_MAX - BAR_MIN - width);
@@ -47,6 +50,12 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   const [caught, setCaught] = useState(false);
   const [previewUrl, setPreviewUrl] = useState("");
   const [perfectCatch, setPerfectCatch] = useState(false);
+  // 완벽 포획 콤보 — 이 게임은 한 마리당 한 번만 성공하면 끝나서(재시도 반복이 아니라)
+  // 세션 내 연속이 아니라 "등록할 때마다 완벽 포획을 몇 번 연속으로 냈는지"를
+  // localStorage에 걸쳐 누적한다. 완벽 포획 아니면 0으로 리셋.
+  const [comboStreak, setComboStreak] = useState(0);
+  // 미스 리액션 문구 다양화 — 매번 "빗나갔다!" 하나만 뜨면 단조로워서 여러 개 중 랜덤.
+  const [missReaction, setMissReaction] = useState("빗나갔다!");
   // 타격감 연출 — 화면 흔들림 (0=없음, 1=미스, 2=명중, 3=완벽 포획)
   const [impactShake, setImpactShake] = useState<0|1|2|3>(0);
   const [shutterFlash, setShutterFlash] = useState(false);
@@ -175,6 +184,12 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
 
   // 포획 완료 처리
   const finishCapture = useCallback(async (isPerfect: boolean) => {
+    try {
+      const prev = Number(localStorage.getItem("perfect_catch_streak") ?? "0");
+      const next = isPerfect ? (Number.isFinite(prev) ? prev : 0) + 1 : 0;
+      localStorage.setItem("perfect_catch_streak", String(next));
+      setComboStreak(next);
+    } catch { /* localStorage 막힌 환경이면 콤보 표시만 조용히 생략 */ }
     setCaught(true);
     setTimeout(() => {
       particleRef.current?.burst(0.5, 0.42, "star", isPerfect ? 26 : 14, isPerfect ? "255,225,90" : "255,255,255");
@@ -257,6 +272,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
             setAttemptsLeft(remaining);
           }
           setSweetSpot(randomSweetSpot(roundsFailedRef.current >= 2));
+          setMissReaction(MISS_REACTIONS[Math.floor(Math.random() * MISS_REACTIONS.length)]);
           setThrowState("miss");
           setImpactShake(1);
           sfx.miss();
@@ -572,6 +588,11 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
                   {perfectCatch && (
                     <p className="text-yellow-300 text-[18px] font-black mb-1" style={{ animation: "miss-text-pop 0.3s ease-out forwards" }}>✨ 완벽 포획! ✨</p>
                   )}
+                  {perfectCatch && comboStreak >= 2 && (
+                    <p className="font-black mb-1" style={{ fontSize: comboStreak >= 4 ? 22 : 17, color: "#FF7A3C", animation: "miss-text-pop 0.35s ease-out forwards", textShadow: "0 2px 8px rgba(255,120,40,0.6)" }}>
+                      🔥 {comboStreak}연속 완벽 포획!
+                    </p>
+                  )}
                   <p className="text-white text-[42px] font-black drop-shadow-lg leading-none">포획 완료!</p>
                   <p className="text-yellow-300 text-[16px] font-bold mt-2">🐱 고양이 카드 생성 중...</p>
                 </div>
@@ -581,7 +602,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
               {throwState === "miss" && (
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none text-center"
                   style={{ animation: "miss-text-pop 0.35s ease-out forwards" }}>
-                  <p className="text-red-400 text-[28px] font-black">빗나갔다!</p>
+                  <p className="text-red-400 text-[28px] font-black">{missReaction}</p>
                 </div>
               )}
             </div>
