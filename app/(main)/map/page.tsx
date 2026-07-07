@@ -176,6 +176,19 @@ export default function MapPage() {
   const [loadingCats, setLoadingCats] = useState(true);
   const [catsError, setCatsError] = useState("");
   const [alertedCats, setAlertedCats] = useState<Set<string>>(new Set());
+
+  // 검색어 매칭 개수 — "등록했는데 안 보인다" 문의 방지용 피드백.
+  // 매칭이 있으면 지도가 자동으로 그쪽으로 이동하고(마커 렌더 useEffect), 없으면
+  // "검색 결과가 없어요"를 보여줘서 등록 자체가 잘못됐는지 바로 알 수 있게 함.
+  const searchMatchCount = useMemo(() => {
+    const q = searchQDebounced.trim().toLowerCase();
+    if (!q) return null;
+    return cats.filter((c) => {
+      const hay = [c.name, c.region ?? "", c.description ?? "", ...(c.tags ?? [])].join(" ").toLowerCase();
+      return hay.includes(q);
+    }).length;
+  }, [cats, searchQDebounced]);
+
   const [abuseCardExpanded, setAbuseCardExpanded] = useState(false);
   const [userPos, setUserPos] = useState<{ lat: number; lng: number } | null>(null);
 
@@ -1030,6 +1043,10 @@ export default function MapPage() {
 
   // ── cats를 동 단위로 그룹화 → 클러스터 마커 (뷰포트 기반) ──
   const catIdleListenerRef = useRef<any>(null);
+  // 검색으로 찾은 고양이가 현재 뷰포트 밖에 있으면 필터링만 되고 아무것도
+  // 안 보여서 "등록했는데 안 보인다"는 문의로 이어졌음 — 검색어가 바뀔 때마다
+  // 매칭된 고양이들이 전부 보이도록 지도를 자동으로 이동/줌아웃한다.
+  const lastPannedSearchRef = useRef<string>("");
   useEffect(() => {
     // 기존 마커/리스너 정리
     overlaysRef.current.forEach((ov) => ov.setMap(null));
@@ -1070,6 +1087,20 @@ export default function MapPage() {
           return true;
       }
     });
+
+    // 검색어가 바뀌었고 매칭 결과가 있으면, 그 결과들이 전부 보이도록 지도 이동/줌아웃.
+    // (뷰포트 밖에 있으면 필터만 되고 마커가 하나도 안 그려져서 "안 보인다"는 문의로 이어짐)
+    if (q && q !== lastPannedSearchRef.current && filtered.length > 0) {
+      lastPannedSearchRef.current = q;
+      const bounds = new window.kakao.maps.LatLngBounds();
+      filtered.forEach((c) => {
+        const coord = getDisplayCoord(c, isLoggedIn);
+        bounds.extend(new window.kakao.maps.LatLng(coord.lat, coord.lng));
+      });
+      map.setBounds(bounds, 80, 80, 80, 80);
+    } else if (!q) {
+      lastPannedSearchRef.current = "";
+    }
 
     // region(동)별 그룹핑 — 한 번만 (뷰포트 변해도 재그룹 불필요)
     const groups = new Map<string, Cat[]>();
@@ -1711,6 +1742,22 @@ export default function MapPage() {
                 <SlidersHorizontal size={14} />
               </button>
             </div>
+
+            {/* 검색 결과 피드백 — 매칭 있으면 지도가 자동 이동하고, 없으면 바로 알려줌 */}
+            {searchMatchCount !== null && (
+              <div className="mt-1.5 pointer-events-none">
+                <span
+                  className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold"
+                  style={{
+                    background: searchMatchCount > 0 ? "rgba(255,255,255,0.95)" : "rgba(216,85,85,0.92)",
+                    color: searchMatchCount > 0 ? "#5C8DEE" : "#fff",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                  }}
+                >
+                  {searchMatchCount > 0 ? `🐾 ${searchMatchCount}마리 찾음 — 지도로 이동할게요` : "검색 결과가 없어요"}
+                </span>
+              </div>
+            )}
 
             {/* 속성 필터 칩 */}
             {showFilterPanel && (

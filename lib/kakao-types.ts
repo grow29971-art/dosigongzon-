@@ -9,6 +9,12 @@ export interface KakaoLatLng {
   getLng(): number;
 }
 
+export interface KakaoLatLngBounds {
+  extend(latlng: KakaoLatLng): void;
+  getSouthWest(): KakaoLatLng;
+  getNorthEast(): KakaoLatLng;
+}
+
 export interface KakaoMap {
   getCenter(): KakaoLatLng;
   setCenter(latlng: KakaoLatLng): void;
@@ -155,6 +161,7 @@ export interface KakaoMaps {
   load(callback: () => void): void;
   Map: new (container: HTMLElement, options: KakaoMapOptions) => KakaoMap;
   LatLng: new (lat: number, lng: number) => KakaoLatLng;
+  LatLngBounds: new () => KakaoLatLngBounds;
   CustomOverlay: new (options: KakaoCustomOverlayOptions) => KakaoOverlay;
   Circle: new (options: KakaoCircleOptions) => KakaoCircle;
   event: KakaoMapsEvent;
