@@ -1506,14 +1506,17 @@ export default function BattlePage() {
             {myCats.length===0&&<div className="text-center py-16"><p className="text-[14px]" style={{color:"#9A94A8"}}>카드가 없어요. 고양이를 등록하면 카드가 생성돼요!</p></div>}
             {selected&&(
               <button onClick={startBattle} disabled={phase==="loading"}
-                className="w-full"
+                className="w-full relative overflow-hidden"
                 style={{
                   padding:"16px 0", fontSize:17, fontWeight:800, color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", gap:8,
-                  borderRadius:20, background:"linear-gradient(135deg,#9F85F0,#7A5AE0)",
-                  boxShadow:"0 6px 16px rgba(122,90,224,0.35)",
+                  borderRadius:20, background:"linear-gradient(160deg,#C4B2FF 0%,#9F85F0 40%,#7A5AE0 100%)",
+                  boxShadow:"0 6px 16px rgba(122,90,224,0.4), 0 2px 4px rgba(122,90,224,0.3), inset 0 -3px 6px rgba(60,30,140,0.3)",
                   opacity:phase==="loading"?0.6:1,
                 }}>
+                <span aria-hidden="true" style={{ position:"absolute", inset:0, top:0, height:"50%", background:"linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 100%)" }} />
+                <span style={{ position:"relative", display:"flex", alignItems:"center", gap:8, textShadow:"0 1px 2px rgba(50,20,110,0.35)" }}>
                 {phase==="loading"?<span className="animate-pulse">상대 찾는 중...</span>:<><Swords size={18}/> 배틀 시작!</>}
+                </span>
               </button>
             )}
           </div>
@@ -1615,11 +1618,15 @@ export default function BattlePage() {
               {/* 중앙 메시지 — 사진 중앙 높이에 겹치도록 배치(카드 상단 배지+이름 높이만큼 내려서) */}
               <div className="flex flex-col items-center shrink-0" style={{minWidth:48, marginTop:72}}>
                 <span style={{
-                  width:38, height:38, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center",
+                  position:"relative", overflow:"hidden",
+                  width:40, height:40, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center",
                   fontSize:13, fontWeight:900, color:"#fff", letterSpacing:0.5, flexShrink:0,
-                  background:"linear-gradient(135deg,#8FC0FF,#5C93F0)",
-                  boxShadow:"0 0 0 3px rgba(255,255,255,0.6), 0 4px 12px rgba(80,120,220,0.35)",
-                }}>VS</span>
+                  background:"linear-gradient(160deg,#A9CCFF 0%,#5C93F0 45%,#3D6BC9 100%)",
+                  boxShadow:"0 0 0 3px #fff, 0 4px 10px rgba(61,107,201,0.45), 0 1px 3px rgba(61,107,201,0.3), inset 0 -2px 4px rgba(30,50,110,0.35)",
+                }}>
+                  <span aria-hidden="true" style={{ position:"absolute", inset:0, top:0, height:"55%", background:"linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%)", borderRadius:"999px 999px 0 0" }} />
+                  <span style={{ position:"relative", textShadow:"0 1px 2px rgba(20,40,100,0.4)" }}>VS</span>
+                </span>
                 {actionMsg&&<div key={actionMsg} style={{fontSize:9,fontWeight:800,color:"#8B6FE0",textAlign:"center",maxWidth:60,lineHeight:1.3,marginTop:4,animation:"msgIn 0.3s ease"}}>{actionMsg}</div>}
               </div>
 

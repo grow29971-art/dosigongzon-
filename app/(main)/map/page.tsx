@@ -2096,11 +2096,17 @@ export default function MapPage() {
         <div className="absolute bottom-6 right-4 z-30 flex flex-col gap-2.5 items-end">
           <button
             onClick={handleLocateMe}
-            className="w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
-            style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.12)" }}
+            className="relative w-11 h-11 rounded-full flex items-center justify-center active:scale-90 transition-transform overflow-hidden"
+            style={{
+              background: "linear-gradient(180deg, #FFFFFF 0%, #F2F4FA 100%)",
+              boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 -3px 6px rgba(60,70,110,0.08) inset, 0 3px 8px rgba(30,40,80,0.14), 0 8px 18px rgba(30,40,80,0.10)",
+            }}
             aria-label="내 위치"
           >
-            <LocateFixed size={18} style={{ color: "#5C8DEE" }} strokeWidth={2.2} />
+            {/* 유리질 광택 하이라이트 */}
+            <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1/2 rounded-t-full pointer-events-none"
+              style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 100%)" }} />
+            <LocateFixed size={18} style={{ color: "#5C8DEE" }} strokeWidth={2.4} className="relative" />
           </button>
           <div className="relative">
             {/* 고양이 0마리 유저한텐 펄스 링으로 강조 */}
@@ -2124,11 +2130,21 @@ export default function MapPage() {
             )}
             <button
               onClick={handleAddClick}
-              className="relative rounded-full bg-primary flex items-center justify-center fab-shadow active:scale-90 transition-transform"
-              style={{ width: 56, height: 56, boxShadow: "0 4px 16px rgba(92,141,238,0.45), 0 0 0 4px #fff" }}
+              className="relative rounded-full flex items-center justify-center active:scale-90 transition-transform overflow-hidden"
+              style={{
+                width: 58, height: 58,
+                background: "linear-gradient(160deg, #7CACFF 0%, #5C8DEE 45%, #3D6BC9 100%)",
+                boxShadow: "0 0 0 4px #fff, 0 6px 14px rgba(61,107,201,0.45), 0 2px 4px rgba(61,107,201,0.3), inset 0 -3px 6px rgba(30,50,110,0.35)",
+              }}
               aria-label="고양이 등록"
             >
-              <Plus size={26} color="#fff" strokeWidth={2.5} />
+              {/* 유리질 광택 하이라이트 (상단) */}
+              <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1/2 pointer-events-none"
+                style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 100%)", borderRadius: "999px 999px 0 0" }} />
+              {/* 바닥 접지 그림자용 살짝 어두운 하단 테두리 */}
+              <span aria-hidden="true" className="absolute inset-x-2 bottom-0 h-2 rounded-full pointer-events-none"
+                style={{ background: "rgba(20,35,90,0.25)", filter: "blur(3px)" }} />
+              <Plus size={26} color="#fff" strokeWidth={2.5} className="relative" style={{ filter: "drop-shadow(0 1px 1px rgba(20,40,100,0.35))" }} />
             </button>
           </div>
           <div

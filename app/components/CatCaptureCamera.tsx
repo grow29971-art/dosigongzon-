@@ -501,7 +501,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
             <p className="text-center text-[11.5px] font-extrabold text-white/85 mb-1.5" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
               {throwState === "miss" ? "⚠️ 타이밍이 안 맞았어요!" : "가운데 하얀 구간에 맞추면 완벽 포획!"}
             </p>
-            <div className="relative w-full" style={{ height: 16, borderRadius: 99, background: "rgba(0,0,0,0.45)", border: "1px solid rgba(255,255,255,0.15)" }}>
+            <div className="relative w-full" style={{ height: 16, borderRadius: 99, background: "rgba(0,0,0,0.45)", border: "1px solid rgba(255,255,255,0.15)", boxShadow: "inset 0 2px 4px rgba(0,0,0,0.5), inset 0 -1px 0 rgba(255,255,255,0.08)" }}>
               {/* 성공 구간 */}
               <div className="absolute top-0 bottom-0" style={{
                 left: `${sweetSpot.start}%`, width: `${sweetSpot.end - sweetSpot.start}%`,
