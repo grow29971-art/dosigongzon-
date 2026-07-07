@@ -1,7 +1,15 @@
 export type ShopItemKey =
   | "heal_potion" | "shield" | "cleanse_potion" | "skill_recharge" | "power_up" | "lucky_charm"
   | "skill_relearn"
-  | "atk_charm" | "def_charm" | "crit_charm" | "eva_charm" | "hp_charm";
+  | "atk_charm" | "def_charm" | "crit_charm" | "eva_charm" | "hp_charm"
+  | "border_rainbow" | "border_gold" | "border_holo" | "border_sparkle" | "border_neon_blue"
+  | "border_neon_pink" | "border_fire" | "border_ice" | "border_starlight" | "border_shadow";
+
+// 카드 테두리 코스메틱 — 순수 시각 효과, 전투에 아무 영향 없음.
+// 실제 CSS 애니메이션은 app/components/CatCard.tsx의 BORDER_FX에서 정의.
+export type BorderFxKey =
+  | "rainbow" | "gold" | "holo" | "sparkle" | "neon_blue"
+  | "neon_pink" | "fire" | "ice" | "starlight" | "shadow";
 
 // 장착 아이템(포켓몬 지닌 도구 스타일) 효과 — 퍼센트/포인트 전부 한 자릿수대로
 // 낮게 잡아서 "장착하면 유리하지만 안 해도 이길 수 있는" 수준으로 제한.
@@ -22,6 +30,7 @@ export interface ShopItem {
   price: number;
   usableInBattle: boolean; // false면 카드 관리 화면에서만 사용 (전투 중 사용 아이템 아님)
   equip?: EquipEffect;     // 있으면 "장착 아이템" — 소모되지 않고 카드에 계속 장착됨
+  borderFx?: BorderFxKey;  // 있으면 "테두리 코스메틱" — 스탯 영향 없이 카드 외형만 바꿈
 }
 
 export const SHOP_ITEMS: Record<ShopItemKey, ShopItem> = {
@@ -39,11 +48,24 @@ export const SHOP_ITEMS: Record<ShopItemKey, ShopItem> = {
   hp_charm:   { key: "hp_charm",   name: "생명의 부적", desc: "장착 시 최대 체력 +8%",      icon: "❤️", price: 85, usableInBattle: false, equip: { hpPct: 0.08 } },
   crit_charm: { key: "crit_charm", name: "급소의 렌즈", desc: "장착 시 크리티컬 확률 +5%p", icon: "🎯", price: 90, usableInBattle: false, equip: { critAdd: 5 } },
   eva_charm:  { key: "eva_charm",  name: "바람의 깃털", desc: "장착 시 회피율 +5%p",        icon: "🍃", price: 90, usableInBattle: false, equip: { evaAdd: 5 } },
+
+  // ── 테두리 코스메틱 — 전투 능력치엔 영향 없이 카드를 레어해 보이게 꾸며줌 ──
+  border_rainbow:   { key: "border_rainbow",   name: "무지개 테두리", desc: "테두리가 무지개색으로 빙글빙글 돈다",     icon: "🌈", price: 120, usableInBattle: false, borderFx: "rainbow" },
+  border_gold:      { key: "border_gold",      name: "골드 샤인",    desc: "황금빛 광택이 테두리를 스윽 훑고 지나간다", icon: "✨", price: 120, usableInBattle: false, borderFx: "gold" },
+  border_holo:      { key: "border_holo",      name: "홀로그램",    desc: "보는 각도에 따라 색이 바뀌는 홀로 효과",   icon: "💿", price: 140, usableInBattle: false, borderFx: "holo" },
+  border_sparkle:   { key: "border_sparkle",   name: "반짝이 가루",  desc: "테두리에 작은 반짝임이 계속 터진다",       icon: "💫", price: 110, usableInBattle: false, borderFx: "sparkle" },
+  border_neon_blue: { key: "border_neon_blue", name: "네온 블루",    desc: "파란 네온 빛이 은은하게 맥박친다",         icon: "🔵", price: 100, usableInBattle: false, borderFx: "neon_blue" },
+  border_neon_pink: { key: "border_neon_pink", name: "네온 핑크",    desc: "핑크 네온 빛이 은은하게 맥박친다",         icon: "🌸", price: 100, usableInBattle: false, borderFx: "neon_pink" },
+  border_fire:      { key: "border_fire",      name: "불꽃 오라",    desc: "테두리가 이글이글 타오르는 불꽃빛",        icon: "🔥", price: 130, usableInBattle: false, borderFx: "fire" },
+  border_ice:       { key: "border_ice",       name: "얼음 오라",    desc: "테두리가 서늘한 얼음빛으로 반짝인다",      icon: "❄️", price: 130, usableInBattle: false, borderFx: "ice" },
+  border_starlight: { key: "border_starlight", name: "별빛 가루",    desc: "작은 별들이 테두리 위에서 반짝인다",       icon: "⭐", price: 140, usableInBattle: false, borderFx: "starlight" },
+  border_shadow:    { key: "border_shadow",    name: "다크 오라",    desc: "보랏빛 어둠의 기운이 은은하게 감돈다",     icon: "🌑", price: 130, usableInBattle: false, borderFx: "shadow" },
 };
 
 export const SHOP_ITEM_KEYS = Object.keys(SHOP_ITEMS) as ShopItemKey[];
 export const BATTLE_ITEM_KEYS = SHOP_ITEM_KEYS.filter(k => SHOP_ITEMS[k].usableInBattle);
 export const EQUIP_ITEM_KEYS = SHOP_ITEM_KEYS.filter(k => !!SHOP_ITEMS[k].equip);
+export const BORDER_FX_ITEM_KEYS = SHOP_ITEM_KEYS.filter(k => !!SHOP_ITEMS[k].borderFx);
 
 // 장착된 아이템의 보너스를 스탯에 적용 — calcStats(route.ts)에서 사용.
 // itemKey가 없거나(마이그레이션 전 포함) 알 수 없는 키면 원본 스탯 그대로 반환.

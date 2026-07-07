@@ -21,6 +21,9 @@ export interface CatCardData {
   // 카드 훈장(성장 스티커) + 프레임 숙련도 승급 계산용 — 전부 리셋되지 않는 all-time 누적치.
   best_win_streak?: number | null;
   pve_win_count?: number | null;
+  // 상점에서 산 테두리 코스메틱(lib/shop-config.ts BorderFxKey) — 전투 능력치엔 영향 없음.
+  // 있으면 프레임 숙련도 광채보다 우선 표시(둘 다 필터 애니메이션이라 섞으면 지저분해짐).
+  equipped_border_key?: string | null;
 }
 
 interface CatCardProps {
@@ -222,15 +225,19 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
     bottom: isLg ? 9 : isBattle ? 8 : 8,
   };
 
+  // 테두리 코스메틱이 장착돼 있으면 프레임 숙련도 광채보다 우선 표시
+  const borderFxKey = card.equipped_border_key;
+  const borderFxClass = borderFxKey ? `border-fx-${borderFxKey}` : (tier === "prismatic" ? "prestige-prismatic" : undefined);
+
   return (
     <div
-      className={tier === "prismatic" ? "prestige-prismatic" : undefined}
+      className={borderFxClass}
       style={{
         width: W,
         borderRadius: radius,
         background: cfg.shellBg,
         boxShadow: `0 ${isLg?8:5}px ${shadowBlur}px rgba(70,60,40,0.14), inset 0 0 0 2px #fff, inset 0 0 0 4px ${cfg.frameOuter}`,
-        filter: PRESTIGE_GLOW[tier] || undefined,
+        filter: borderFxKey ? undefined : (PRESTIGE_GLOW[tier] || undefined),
         overflow: "visible",
         flexShrink: 0,
         position: "relative",
@@ -449,6 +456,74 @@ export default function CatCard({ name, photoUrl, card, size = "md", onClick }: 
           100% { filter: drop-shadow(var(--shadow-offset) var(--shadow-offset) 0 rgba(0,0,0,0.45)) drop-shadow(0 0 6px rgba(255,80,80,0.95)) drop-shadow(0 0 13px rgba(255,80,80,0.6)); }
         }
         .prestige-prismatic { animation: prestige-rainbow 4s linear infinite; }
+
+        /* ── 상점 테두리 코스메틱 10종 — 순수 시각 효과, 프레임 숙련도와 같은
+           drop-shadow 필터 애니메이션 기법을 재사용해 카드 모양은 안 건드림 ── */
+        @keyframes fx-rainbow {
+          0%   { filter: drop-shadow(0 0 6px rgba(255,80,80,0.95)) drop-shadow(0 0 14px rgba(255,80,80,0.6)); }
+          20%  { filter: drop-shadow(0 0 6px rgba(255,210,60,0.95)) drop-shadow(0 0 14px rgba(255,210,60,0.6)); }
+          40%  { filter: drop-shadow(0 0 6px rgba(120,255,140,0.95)) drop-shadow(0 0 14px rgba(120,255,140,0.6)); }
+          60%  { filter: drop-shadow(0 0 6px rgba(100,180,255,0.95)) drop-shadow(0 0 14px rgba(100,180,255,0.6)); }
+          80%  { filter: drop-shadow(0 0 6px rgba(210,120,255,0.95)) drop-shadow(0 0 14px rgba(210,120,255,0.6)); }
+          100% { filter: drop-shadow(0 0 6px rgba(255,80,80,0.95)) drop-shadow(0 0 14px rgba(255,80,80,0.6)); }
+        }
+        .border-fx-rainbow { animation: fx-rainbow 3s linear infinite; }
+
+        @keyframes fx-gold {
+          0%,100% { filter: drop-shadow(0 0 6px rgba(255,215,60,0.95)) drop-shadow(0 0 14px rgba(255,180,0,0.65)); }
+          50% { filter: drop-shadow(0 0 10px rgba(255,235,140,1)) drop-shadow(0 0 20px rgba(255,200,40,0.85)); }
+        }
+        .border-fx-gold { animation: fx-gold 2.2s ease-in-out infinite; }
+
+        @keyframes fx-holo {
+          0% { filter: drop-shadow(0 0 7px rgba(120,220,255,0.9)) drop-shadow(0 0 14px rgba(120,220,255,0.5)); }
+          33% { filter: drop-shadow(0 0 7px rgba(255,120,220,0.9)) drop-shadow(0 0 14px rgba(255,120,220,0.5)); }
+          66% { filter: drop-shadow(0 0 7px rgba(255,235,120,0.9)) drop-shadow(0 0 14px rgba(255,235,120,0.5)); }
+          100% { filter: drop-shadow(0 0 7px rgba(120,220,255,0.9)) drop-shadow(0 0 14px rgba(120,220,255,0.5)); }
+        }
+        .border-fx-holo { animation: fx-holo 3s ease-in-out infinite; }
+
+        @keyframes fx-sparkle {
+          0%,100% { filter: drop-shadow(0 0 4px rgba(255,255,255,0.9)) drop-shadow(0 0 9px rgba(255,255,255,0.5)); }
+          50% { filter: drop-shadow(0 0 11px rgba(255,255,255,1)) drop-shadow(0 0 22px rgba(255,255,255,0.85)); }
+        }
+        .border-fx-sparkle { animation: fx-sparkle 1.1s ease-in-out infinite; }
+
+        @keyframes fx-neon_blue {
+          0%,100% { filter: drop-shadow(0 0 5px rgba(80,160,255,0.9)) drop-shadow(0 0 12px rgba(80,160,255,0.55)); }
+          50% { filter: drop-shadow(0 0 9px rgba(120,190,255,1)) drop-shadow(0 0 18px rgba(80,160,255,0.8)); }
+        }
+        .border-fx-neon_blue { animation: fx-neon_blue 1.8s ease-in-out infinite; }
+
+        @keyframes fx-neon_pink {
+          0%,100% { filter: drop-shadow(0 0 5px rgba(255,100,190,0.9)) drop-shadow(0 0 12px rgba(255,100,190,0.55)); }
+          50% { filter: drop-shadow(0 0 9px rgba(255,150,210,1)) drop-shadow(0 0 18px rgba(255,100,190,0.8)); }
+        }
+        .border-fx-neon_pink { animation: fx-neon_pink 1.8s ease-in-out infinite; }
+
+        @keyframes fx-fire {
+          0%,100% { filter: drop-shadow(0 0 6px rgba(255,120,40,0.95)) drop-shadow(0 0 13px rgba(255,60,20,0.65)); }
+          50% { filter: drop-shadow(0 0 10px rgba(255,180,60,1)) drop-shadow(0 0 20px rgba(255,90,20,0.85)); }
+        }
+        .border-fx-fire { animation: fx-fire 0.9s ease-in-out infinite; }
+
+        @keyframes fx-ice {
+          0%,100% { filter: drop-shadow(0 0 6px rgba(160,230,255,0.9)) drop-shadow(0 0 13px rgba(120,210,255,0.55)); }
+          50% { filter: drop-shadow(0 0 10px rgba(220,250,255,1)) drop-shadow(0 0 20px rgba(160,230,255,0.8)); }
+        }
+        .border-fx-ice { animation: fx-ice 2.5s ease-in-out infinite; }
+
+        @keyframes fx-starlight {
+          0%,100% { filter: drop-shadow(0 0 5px rgba(255,245,200,0.85)) drop-shadow(0 0 12px rgba(255,220,140,0.5)); }
+          50% { filter: drop-shadow(0 0 9px rgba(255,250,220,1)) drop-shadow(0 0 18px rgba(255,230,160,0.75)); }
+        }
+        .border-fx-starlight { animation: fx-starlight 2.6s ease-in-out infinite; }
+
+        @keyframes fx-shadow {
+          0%,100% { filter: drop-shadow(0 0 6px rgba(110,60,160,0.8)) drop-shadow(0 0 14px rgba(40,20,60,0.6)); }
+          50% { filter: drop-shadow(0 0 10px rgba(150,90,200,0.9)) drop-shadow(0 0 20px rgba(60,30,90,0.8)); }
+        }
+        .border-fx-shadow { animation: fx-shadow 2.8s ease-in-out infinite; }
       `}</style>
 
       <div

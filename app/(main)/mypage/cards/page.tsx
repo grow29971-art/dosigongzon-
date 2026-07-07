@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, X, Swords, Trophy, Coins, Star, Zap, Share2, Scroll, BookMarked, Gem } from "lucide-react";
+import { ArrowLeft, Loader2, X, Swords, Trophy, Coins, Star, Zap, Share2, Scroll, BookMarked, Gem, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
 import { SPECIAL_SKILLS } from "@/lib/battle-config";
 import { PVE_BESTIARY } from "@/lib/pve-bestiary";
-import { SHOP_ITEMS, EQUIP_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-config";
+import { SHOP_ITEMS, EQUIP_ITEM_KEYS, BORDER_FX_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-config";
 import Link from "next/link";
 
 interface CardCat {
@@ -30,6 +30,7 @@ interface CardCat {
   battle_special3: string | null;
   battle_special4: string | null;
   equipped_item_key?: string | null;
+  equipped_border_key?: string | null;
 }
 
 const RARITY_ORDER: CardRarity[] = ["legendary", "rare", "uncommon", "common"];
@@ -84,38 +85,42 @@ export default function MyCardsPage() {
       setSeenKeys((bestiary as { pve_seen_keys?: string[] } | null)?.pve_seen_keys ?? []);
     } catch { /* 마이그레이션 전이면 조용히 무시 */ }
 
-    // 장착 아이템 — box/supabase_equip_item_migration.sql 실행 전이면 컬럼이 없어
-    // 이 쿼리만 조용히 실패(전부 미장착으로 처리)하고 나머지 페이지는 정상 동작.
+    // 장착 아이템/테두리 — box/supabase_equip_item_migration.sql,
+    // box/supabase_border_fx_migration.sql 실행 전이면 컬럼이 없어 이 쿼리만
+    // 조용히 실패(전부 미장착으로 처리)하고 나머지 페이지는 정상 동작.
     try {
       const { data: eqRows } = await createClient()
-        .from("cats").select("id,equipped_item_key").eq("caretaker_id", uid);
-      const eqMap = new Map(((eqRows ?? []) as { id: string; equipped_item_key: string | null }[]).map(r => [r.id, r.equipped_item_key]));
-      setCats(loadedCats.map(c => ({ ...c, equipped_item_key: eqMap.get(c.id) ?? null })));
+        .from("cats").select("id,equipped_item_key,equipped_border_key").eq("caretaker_id", uid);
+      const eqMap = new Map(((eqRows ?? []) as { id: string; equipped_item_key: string | null; equipped_border_key: string | null }[]).map(r => [r.id, r]));
+      setCats(loadedCats.map(c => ({ ...c, equipped_item_key: eqMap.get(c.id)?.equipped_item_key ?? null, equipped_border_key: eqMap.get(c.id)?.equipped_border_key ?? null })));
     } catch { /* 마이그레이션 전이면 조용히 무시 */ }
 
+    const allCosmeticKeys = [...EQUIP_ITEM_KEYS, ...BORDER_FX_ITEM_KEYS];
     const { data: itemRows } = await createClient()
-      .from("user_items").select("item_key,quantity").eq("user_id", uid).in("item_key", EQUIP_ITEM_KEYS);
+      .from("user_items").select("item_key,quantity").eq("user_id", uid).in("item_key", allCosmeticKeys);
     const owned: Record<string, number> = {};
     for (const it of (itemRows ?? []) as { item_key: string; quantity: number }[]) owned[it.item_key] = it.quantity;
     setOwnedEquip(owned);
   };
 
-  const doEquip = async (catId: string, itemKey: string | null) => {
+  const doEquip = async (catId: string, itemKey: string | null, slot: "equip" | "border" = "equip") => {
     if (equipLoading) return;
     setEquipLoading(true);
     setEquipMsg("");
     const res = await fetch("/api/cats/equip-item", {
       method: "POST", headers: { "content-type": "application/json" },
-      body: JSON.stringify({ cat_id: catId, item_key: itemKey }),
+      body: JSON.stringify({ cat_id: catId, item_key: itemKey, slot }),
     });
     const json = await res.json();
     setEquipLoading(false);
+    const field = slot === "border" ? "equipped_border_key" : "equipped_item_key";
     if (res.ok) {
-      setCats(prev => prev.map(c => c.id === catId ? { ...c, equipped_item_key: itemKey } : c));
-      setSelected(prev => prev && prev.id === catId ? { ...prev, equipped_item_key: itemKey } : prev);
+      setCats(prev => prev.map(c => c.id === catId ? { ...c, [field]: itemKey } : c));
+      setSelected(prev => prev && prev.id === catId ? { ...prev, [field]: itemKey } : prev);
       if (user) {
+        const allCosmeticKeys = [...EQUIP_ITEM_KEYS, ...BORDER_FX_ITEM_KEYS];
         const { data: itemRows } = await createClient()
-          .from("user_items").select("item_key,quantity").eq("user_id", user.id).in("item_key", EQUIP_ITEM_KEYS);
+          .from("user_items").select("item_key,quantity").eq("user_id", user.id).in("item_key", allCosmeticKeys);
         const owned: Record<string, number> = {};
         for (const it of (itemRows ?? []) as { item_key: string; quantity: number }[]) owned[it.item_key] = it.quantity;
         setOwnedEquip(owned);
@@ -271,7 +276,7 @@ export default function MyCardsPage() {
               {filtered.map((cat) => (
                 <div key={cat.id} className="flex flex-col items-center gap-1">
                   <CatCard name={cat.name} photoUrl={cat.photo_url}
-                    card={{ card_rarity: cat.card_rarity, card_name: cat.card_name, card_traits: cat.card_traits ?? [], card_stats: cat.card_stats, card_flavor: cat.card_flavor, card_level: cat.card_level, card_exp: cat.card_exp, card_generated_at: cat.card_generated_at, best_win_streak: cat.best_win_streak, pve_win_count: cat.pve_win_count }}
+                    card={{ card_rarity: cat.card_rarity, card_name: cat.card_name, card_traits: cat.card_traits ?? [], card_stats: cat.card_stats, card_flavor: cat.card_flavor, card_level: cat.card_level, card_exp: cat.card_exp, card_generated_at: cat.card_generated_at, best_win_streak: cat.best_win_streak, pve_win_count: cat.pve_win_count, equipped_border_key: cat.equipped_border_key }}
                     size="sm" onClick={() => setSelected(cat)} />
                   {repCardId === cat.id && (
                     <span className="text-[9px] text-yellow-400 font-bold">★ 대표 카드</span>
@@ -299,7 +304,7 @@ export default function MyCardsPage() {
           <div onClick={e => e.stopPropagation()} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, width: "100%", maxWidth: 340, margin: "auto 0" }}>
 
             <CatCard name={selected.name} photoUrl={selected.photo_url}
-              card={{ card_rarity: selected.card_rarity, card_name: selected.card_name, card_traits: selected.card_traits ?? [], card_stats: selected.card_stats, card_flavor: selected.card_flavor, card_level: selected.card_level, card_exp: selected.card_exp, card_generated_at: selected.card_generated_at, best_win_streak: selected.best_win_streak, pve_win_count: selected.pve_win_count }}
+              card={{ card_rarity: selected.card_rarity, card_name: selected.card_name, card_traits: selected.card_traits ?? [], card_stats: selected.card_stats, card_flavor: selected.card_flavor, card_level: selected.card_level, card_exp: selected.card_exp, card_generated_at: selected.card_generated_at, best_win_streak: selected.best_win_streak, pve_win_count: selected.pve_win_count, equipped_border_key: selected.equipped_border_key }}
               size="lg" />
 
             {/* XP 바 */}
@@ -433,6 +438,46 @@ export default function MyCardsPage() {
                   {equipMsg}
                 </p>
               )}
+            </div>
+
+            {/* 테두리 코스메틱 */}
+            <div className="w-full rounded-2xl p-3" style={{ background: "#fff" }}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[12px] font-bold flex items-center gap-1.5" style={{ color: "#2B2B3D" }}>
+                  <Sparkles size={13} /> 테두리 코스메틱
+                </span>
+                {selected.equipped_border_key && (
+                  <button onClick={() => doEquip(selected.id, null, "border")} disabled={equipLoading}
+                    className="text-[10.5px] font-bold px-2 py-1 rounded-full" style={{ background: "#FDECEC", color: "#E1505F" }}>
+                    해제
+                  </button>
+                )}
+              </div>
+              {selected.equipped_border_key ? (
+                <div className="flex items-center gap-2 rounded-xl px-2.5 py-2 mb-2" style={{ background: "#FFF3D6" }}>
+                  <span style={{ fontSize: 18 }}>{SHOP_ITEMS[selected.equipped_border_key as ShopItemKey]?.icon}</span>
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-bold truncate" style={{ color: "#C98A1E" }}>{SHOP_ITEMS[selected.equipped_border_key as ShopItemKey]?.name}</p>
+                    <p className="text-[10px] truncate" style={{ color: "#B4966B" }}>{SHOP_ITEMS[selected.equipped_border_key as ShopItemKey]?.desc}</p>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-[10px] mb-2" style={{ color: "#9A94A8" }}>장착한 테두리가 없어요.</p>
+              )}
+              <div className="grid grid-cols-2 gap-1.5">
+                {BORDER_FX_ITEM_KEYS.filter(k => k !== selected.equipped_border_key).map((key) => {
+                  const item = SHOP_ITEMS[key];
+                  const qty = ownedEquip[key] ?? 0;
+                  return (
+                    <button key={key} onClick={() => doEquip(selected.id, key, "border")} disabled={qty <= 0 || equipLoading}
+                      className="rounded-xl px-2 py-1.5 text-left flex items-center gap-1.5"
+                      style={{ background: "#F6F5FA", opacity: qty > 0 ? 1 : 0.4 }}>
+                      <span style={{ fontSize: 14 }}>{item.icon}</span>
+                      <span className="text-[10px] font-bold truncate" style={{ color: "#2B2B3D" }}>{item.name} ({qty})</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* 자랑하기 */}
