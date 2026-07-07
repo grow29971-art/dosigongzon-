@@ -121,11 +121,39 @@ export function setAmbientEnv(env: AmbientEnv | null) {
   ambientGain = gain;
 }
 
+// ── 짧은 합성 리버브 — 감쇠하는 노이즈를 임펄스 응답으로 써서 "공간감"을 준다.
+// 단일 오실레이터 삐-소리가 저렴하게 들리는 가장 큰 이유가 이 공간감 부재라서,
+// 타격/포획 계열 효과음은 이 send를 살짝 섞어 방 안에서 울리는 느낌을 낸다.
+let reverbNode: ConvolverNode | null = null;
+function getReverb(audioCtx: AudioContext): ConvolverNode {
+  if (reverbNode) return reverbNode;
+  const len = Math.floor(audioCtx.sampleRate * 0.55);
+  const buffer = audioCtx.createBuffer(2, len, audioCtx.sampleRate);
+  for (let ch = 0; ch < 2; ch++) {
+    const data = buffer.getChannelData(ch);
+    for (let i = 0; i < len; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.2);
+    }
+  }
+  reverbNode = audioCtx.createConvolver();
+  reverbNode.buffer = buffer;
+  return reverbNode;
+}
+// 드라이(직접음) + 리버브 센드를 함께 목적지에 연결하는 공용 라우팅
+function routeOut(audioCtx: AudioContext, node: AudioNode, wetAmount = 0) {
+  node.connect(audioCtx.destination);
+  if (wetAmount > 0) {
+    const send = audioCtx.createGain();
+    send.gain.value = wetAmount;
+    node.connect(send).connect(getReverb(audioCtx)).connect(audioCtx.destination);
+  }
+}
+
 interface ToneOpts {
   freq: number; duration: number; type?: OscillatorType; volume?: number;
-  slideTo?: number; delay?: number;
+  slideTo?: number; delay?: number; detune?: number; reverb?: number;
 }
-function tone({ freq, duration, type = "sine", volume = 0.18, slideTo, delay = 0 }: ToneOpts) {
+function tone({ freq, duration, type = "sine", volume = 0.18, slideTo, delay = 0, detune = 0, reverb = 0 }: ToneOpts) {
   if (isSfxMuted()) return;
   const audioCtx = getCtx();
   if (!audioCtx) return;
@@ -134,39 +162,100 @@ function tone({ freq, duration, type = "sine", volume = 0.18, slideTo, delay = 0
   const gain = audioCtx.createGain();
   osc.type = type;
   osc.frequency.setValueAtTime(freq, t0);
+  if (detune) osc.detune.setValueAtTime(detune, t0);
   if (slideTo) osc.frequency.exponentialRampToValueAtTime(Math.max(1, slideTo), t0 + duration);
   gain.gain.setValueAtTime(0, t0);
   gain.gain.linearRampToValueAtTime(volume, t0 + 0.008);
   gain.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
-  osc.connect(gain).connect(audioCtx.destination);
+  osc.connect(gain);
+  routeOut(audioCtx, gain, reverb);
   osc.start(t0);
   osc.stop(t0 + duration + 0.02);
 }
 
+// 살짝 디튠된 오실레이터 2~3개를 겹쳐서 얇은 단일 삐-소리 대신 풍성한 화음을 낸다
+// (신스 유니즌 기법 — 진짜 신스/게임 음악에서 두께감을 낼 때 쓰는 표준 트릭).
+function richTone({ freq, duration, type = "triangle", volume = 0.16, delay = 0, reverb = 0.35 }: ToneOpts) {
+  tone({ freq, duration, type, volume: volume * 0.7, delay, detune: -9, reverb });
+  tone({ freq, duration, type, volume, delay, detune: 0, reverb });
+  tone({ freq, duration, type, volume: volume * 0.7, delay, detune: 9, reverb });
+}
+
+// ── 노이즈 버스트 — 필터링된 화이트노이즈. 타격/충격/포획 성공음의 "퍽/파삭"하는
+// 질감은 순수 톤만으로는 절대 안 나오고 노이즈 레이어가 있어야 진짜 손맛이 남.
+interface NoiseOpts {
+  duration: number; volume?: number; delay?: number;
+  filterType?: BiquadFilterType; filterFreq?: number; filterQ?: number; reverb?: number;
+}
+function noiseBurst({ duration, volume = 0.2, delay = 0, filterType = "bandpass", filterFreq = 1800, filterQ = 1, reverb = 0 }: NoiseOpts) {
+  if (isSfxMuted()) return;
+  const audioCtx = getCtx();
+  if (!audioCtx) return;
+  const t0 = audioCtx.currentTime + delay;
+  const len = Math.max(1, Math.floor(audioCtx.sampleRate * duration));
+  const buffer = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+  const src = audioCtx.createBufferSource();
+  src.buffer = buffer;
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = filterType;
+  filter.frequency.value = filterFreq;
+  filter.Q.value = filterQ;
+  const gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(volume, t0);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+  src.connect(filter).connect(gain);
+  routeOut(audioCtx, gain, reverb);
+  src.start(t0);
+  src.stop(t0 + duration + 0.02);
+}
+
+// ── 퍼커시브 펀치 — 피치가 뚝 떨어지는 저음 오실레이터(몸통) + 노이즈 크랙(어택)을
+// 동시에 터뜨려서 "퍽!" 하는 실제 타격감을 만든다. hit/impact/catchHit 계열의 뼈대.
+function punch({ volume = 0.22, freq = 150, duration = 0.16, delay = 0, crackFreq = 2200, reverb = 0.25 }:
+  { volume?: number; freq?: number; duration?: number; delay?: number; crackFreq?: number; reverb?: number }) {
+  tone({ freq, duration, type: "square", volume, slideTo: freq * 0.35, delay, reverb });
+  noiseBurst({ duration: Math.min(0.05, duration * 0.4), volume: volume * 0.9, delay, filterFreq: crackFreq, filterQ: 0.7, reverb });
+}
+
 export const sfx = {
-  click: () => tone({ freq: 520, duration: 0.05, type: "square", volume: 0.08 }),
-  hit: () => tone({ freq: 160, duration: 0.09, type: "square", volume: 0.16, slideTo: 70 }),
-  crit: () => {
-    tone({ freq: 220, duration: 0.09, type: "square", volume: 0.2, slideTo: 90 });
-    tone({ freq: 880, duration: 0.14, type: "triangle", volume: 0.14, delay: 0.05 });
+  click: () => {
+    tone({ freq: 700, duration: 0.035, type: "sine", volume: 0.07 });
+    noiseBurst({ duration: 0.02, volume: 0.05, filterFreq: 3200, filterQ: 1.2 });
   },
-  dodge: () => tone({ freq: 600, duration: 0.08, type: "sine", volume: 0.1, slideTo: 900 }),
+  hit: () => punch({ freq: 150, duration: 0.13, volume: 0.24, crackFreq: 2000, reverb: 0.2 }),
+  crit: () => {
+    punch({ freq: 130, duration: 0.16, volume: 0.3, crackFreq: 2600, reverb: 0.3 });
+    richTone({ freq: 990, duration: 0.18, type: "triangle", volume: 0.16, delay: 0.06, reverb: 0.4 });
+  },
+  dodge: () => {
+    tone({ freq: 600, duration: 0.09, type: "sine", volume: 0.09, slideTo: 950 });
+    noiseBurst({ duration: 0.12, volume: 0.06, filterType: "highpass", filterFreq: 2600, filterQ: 0.5 });
+  },
   status: () => tone({ freq: 700, duration: 0.14, type: "triangle", volume: 0.12, slideTo: 420 }),
   win: () => {
-    [523, 659, 784, 1047].forEach((f, i) => tone({ freq: f, duration: 0.22, type: "triangle", volume: 0.16, delay: i * 0.11 }));
+    [523, 659, 784, 1047].forEach((f, i) => richTone({ freq: f, duration: 0.24, type: "triangle", volume: 0.15, delay: i * 0.11, reverb: 0.4 }));
   },
   lose: () => {
-    [392, 330, 262].forEach((f, i) => tone({ freq: f, duration: 0.28, type: "sine", volume: 0.15, delay: i * 0.14 }));
+    [392, 330, 262].forEach((f, i) => richTone({ freq: f, duration: 0.3, type: "sine", volume: 0.14, delay: i * 0.14, reverb: 0.35 }));
   },
-  throwCan: () => tone({ freq: 280, duration: 0.35, type: "sine", volume: 0.12, slideTo: 520 }),
+  throwCan: () => {
+    tone({ freq: 280, duration: 0.35, type: "sine", volume: 0.1, slideTo: 520 });
+    noiseBurst({ duration: 0.3, volume: 0.05, filterType: "bandpass", filterFreq: 1400, filterQ: 0.4, delay: 0.02 });
+  },
   catchHit: () => {
-    tone({ freq: 180, duration: 0.12, type: "square", volume: 0.2 });
-    tone({ freq: 900, duration: 0.1, type: "sine", volume: 0.12, delay: 0.03 });
+    punch({ freq: 170, duration: 0.14, volume: 0.24, crackFreq: 2400, reverb: 0.3 });
+    richTone({ freq: 980, duration: 0.14, type: "sine", volume: 0.13, delay: 0.04, reverb: 0.35 });
   },
   perfect: () => {
-    [660, 880, 1108, 1320].forEach((f, i) => tone({ freq: f, duration: 0.16, type: "triangle", volume: 0.17, delay: i * 0.08 }));
+    [660, 880, 1108, 1320].forEach((f, i) => richTone({ freq: f, duration: 0.18, type: "triangle", volume: 0.16, delay: i * 0.08, reverb: 0.45 }));
+    noiseBurst({ duration: 0.4, volume: 0.05, filterType: "highpass", filterFreq: 5000, filterQ: 0.4, delay: 0.02 });
   },
-  miss: () => tone({ freq: 260, duration: 0.18, type: "sine", volume: 0.12, slideTo: 120 }),
+  miss: () => {
+    tone({ freq: 260, duration: 0.18, type: "sine", volume: 0.1, slideTo: 120 });
+    noiseBurst({ duration: 0.1, volume: 0.08, filterType: "lowpass", filterFreq: 500, filterQ: 0.6 });
+  },
 
   // 상태이상 성향별 효과음 — 카드 위 시각 이펙트(StatusFx)의 색상 체계와 짝을 맞춤
   ice: () => {
@@ -191,9 +280,8 @@ export const sfx = {
   },
   // 순수 고배율 궁극기(메테오/종말의 일격 등) 전용 — 묵직한 저음 폭발 + 크랙
   impact: () => {
-    tone({ freq: 80, duration: 0.22, type: "sawtooth", volume: 0.2, slideTo: 40 });
-    tone({ freq: 1400, duration: 0.05, type: "square", volume: 0.13, delay: 0.02 });
-    tone({ freq: 900, duration: 0.08, type: "square", volume: 0.1, delay: 0.06 });
+    punch({ freq: 75, duration: 0.28, volume: 0.28, crackFreq: 2600, reverb: 0.4 });
+    noiseBurst({ duration: 0.18, volume: 0.12, filterType: "lowpass", filterFreq: 700, filterQ: 0.5, delay: 0.02, reverb: 0.3 });
   },
 
   // 매 턴 도트(독/출혈) 틱 — 위 효과음보다 훨씬 작고 짧게
@@ -201,28 +289,37 @@ export const sfx = {
   bleedTick: () => tone({ freq: 700, duration: 0.05, type: "sawtooth", volume: 0.07, slideTo: 300 }),
 
   guard: () => {
-    tone({ freq: 150, duration: 0.12, type: "sine", volume: 0.13 });
-    tone({ freq: 400, duration: 0.08, type: "triangle", volume: 0.07, delay: 0.02 });
+    tone({ freq: 150, duration: 0.12, type: "sine", volume: 0.12 });
+    noiseBurst({ duration: 0.06, volume: 0.1, filterType: "bandpass", filterFreq: 3000, filterQ: 3, reverb: 0.15 });
+    tone({ freq: 900, duration: 0.05, type: "sine", volume: 0.06, delay: 0.02 });
   },
-  itemUse: () => tone({ freq: 700, duration: 0.1, type: "triangle", volume: 0.12, slideTo: 1000 }),
-  countdownTick: () => tone({ freq: 440, duration: 0.08, type: "square", volume: 0.1 }),
+  itemUse: () => richTone({ freq: 700, duration: 0.14, type: "triangle", volume: 0.12, reverb: 0.3 }),
+  countdownTick: () => {
+    tone({ freq: 440, duration: 0.06, type: "square", volume: 0.09 });
+    noiseBurst({ duration: 0.02, volume: 0.04, filterFreq: 3000, filterQ: 1 });
+  },
   countdownGo: () => {
-    tone({ freq: 660, duration: 0.1, type: "square", volume: 0.15 });
-    tone({ freq: 880, duration: 0.15, type: "square", volume: 0.15, delay: 0.09 });
+    punch({ freq: 220, duration: 0.1, volume: 0.18, crackFreq: 3000, reverb: 0.25 });
+    richTone({ freq: 880, duration: 0.16, type: "triangle", volume: 0.15, delay: 0.09, reverb: 0.35 });
   },
   levelUp: () => {
-    [523, 659, 784, 1047, 1319].forEach((f, i) => tone({ freq: f, duration: 0.15, type: "triangle", volume: 0.14, delay: i * 0.07 }));
+    [523, 659, 784, 1047, 1319].forEach((f, i) => richTone({ freq: f, duration: 0.16, type: "triangle", volume: 0.14, delay: i * 0.07, reverb: 0.4 }));
+    noiseBurst({ duration: 0.3, volume: 0.04, filterType: "highpass", filterFreq: 6000, filterQ: 0.4, delay: 0.28 });
   },
   bossAppear: () => {
-    tone({ freq: 110, duration: 0.5, type: "sawtooth", volume: 0.15, slideTo: 70 });
-    tone({ freq: 220, duration: 0.4, type: "square", volume: 0.09, slideTo: 140, delay: 0.05 });
+    punch({ freq: 90, duration: 0.5, volume: 0.24, crackFreq: 900, reverb: 0.45 });
+    tone({ freq: 220, duration: 0.4, type: "square", volume: 0.08, slideTo: 140, delay: 0.05 });
   },
 
   // 포획 미니게임 전용
-  chargeUp: () => tone({ freq: 220, duration: 0.35, type: "sawtooth", volume: 0.07, slideTo: 520 }),
+  chargeUp: () => {
+    tone({ freq: 220, duration: 0.35, type: "sawtooth", volume: 0.06, slideTo: 520 });
+    noiseBurst({ duration: 0.32, volume: 0.03, filterType: "bandpass", filterFreq: 900, filterQ: 0.5, delay: 0.02 });
+  },
   shutter: () => {
-    tone({ freq: 2400, duration: 0.02, type: "square", volume: 0.16 });
-    tone({ freq: 1100, duration: 0.03, type: "square", volume: 0.12, delay: 0.03 });
+    noiseBurst({ duration: 0.03, volume: 0.14, filterType: "highpass", filterFreq: 3500, filterQ: 0.6 });
+    tone({ freq: 2400, duration: 0.02, type: "square", volume: 0.1 });
+    noiseBurst({ duration: 0.02, volume: 0.1, filterType: "bandpass", filterFreq: 1200, filterQ: 2, delay: 0.03 });
   },
 
   // 긴장감 연출 — 위기 진입 스팅어 + 위기 상태 지속 하트비트
