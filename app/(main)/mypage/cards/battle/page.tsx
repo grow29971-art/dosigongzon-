@@ -1496,7 +1496,7 @@ export default function BattlePage() {
             <div className="grid grid-cols-2 gap-3 mb-6">
               {myCats.map(cat=>(
                 <div key={cat.id}
-                  style={{outline:selected?.id===cat.id?"3px solid #8B6FE0":"2px solid transparent",outlineOffset:2,borderRadius:20,transition:"transform 0.12s",transform:selected?.id===cat.id?"scale(1.04)":"scale(1)"}}>
+                  style={{justifySelf:"start",display:"inline-block",outline:selected?.id===cat.id?"3px solid #8B6FE0":"2px solid transparent",outlineOffset:2,borderRadius:20,transition:"transform 0.12s",transform:selected?.id===cat.id?"scale(1.04)":"scale(1)"}}>
                   <CatCard name={cat.name} photoUrl={cat.photo_url} card={toCard(cat)} size="sm"
                     onClick={()=>phase==="select"&&setSelected(s=>s?.id===cat.id?null:cat)}/>
                   {selected?.id===cat.id&&<div className="text-center text-[10px] font-bold mt-1" style={{color:"#8B6FE0"}}>✓ 선택됨</div>}
