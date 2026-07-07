@@ -79,6 +79,49 @@ export const CARD_THEME = {
   },
 };
 
+// ── 성격 스탯 레이더 차트 (귀여움/야생성/사교성/신비로움 4축) ──
+// lg 사이즈(확대 모달)에서만 보여줌 — 그리드에 여러 장 깔리는 sm/md/battle은
+// 차트가 너무 작아져 안 보이므로 기존 아이콘+숫자 한 줄이 더 적합.
+function RadarChart({ stats, color }: { stats: { cuteness: number; wildness: number; sociability: number; mysteriousness: number }; color: string }) {
+  const size = 132;
+  const cx = size / 2, cy = size / 2, maxR = 48;
+  const axes = [
+    { key: "cuteness", label: "🐾", value: stats.cuteness, angle: -90 },
+    { key: "wildness", label: "🔥", value: stats.wildness, angle: 0 },
+    { key: "sociability", label: "🌿", value: stats.sociability, angle: 90 },
+    { key: "mysteriousness", label: "✨", value: stats.mysteriousness, angle: 180 },
+  ];
+  const pt = (angleDeg: number, r: number) => {
+    const rad = (angleDeg * Math.PI) / 180;
+    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+  };
+  const dataPoints = axes.map(a => pt(a.angle, (Math.max(0, Math.min(100, a.value)) / 100) * maxR));
+  const dataPath = dataPoints.map(p => `${p.x},${p.y}`).join(" ");
+  const gridLevels = [0.33, 0.66, 1];
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      {gridLevels.map((lv, i) => {
+        const ring = axes.map(a => pt(a.angle, maxR * lv)).map(p => `${p.x},${p.y}`).join(" ");
+        return <polygon key={i} points={ring} fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth={1} />;
+      })}
+      {axes.map((a, i) => {
+        const edge = pt(a.angle, maxR);
+        return <line key={i} x1={cx} y1={cy} x2={edge.x} y2={edge.y} stroke="rgba(0,0,0,0.08)" strokeWidth={1} />;
+      })}
+      <polygon points={dataPath} fill={`${color}33`} stroke={color} strokeWidth={2} strokeLinejoin="round" />
+      {dataPoints.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r={2.5} fill={color} />)}
+      {axes.map((a, i) => {
+        const labelPt = pt(a.angle, maxR + 14);
+        return (
+          <text key={i} x={labelPt.x} y={labelPt.y + 4} textAnchor="middle" fontSize={13}>
+            {a.label}
+          </text>
+        );
+      })}
+    </svg>
+  );
+}
+
 const MOVE_ICONS = ["⚡", "🌿", "💧", "🔥", "✨", "🌙", "☀️", "❄️"];
 function pickIcon(seed: string) {
   let h = 0;
@@ -269,16 +312,21 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
         </span>
       </div>
 
-      {/* ── 성격 스탯 아이콘 (귀여움/야생성/사교성/신비로움) ── */}
-      {!isSm && (
+      {/* ── 성격 스탯 — lg(확대 모달)는 레이더 차트, md는 기존 아이콘+숫자 한 줄 ── */}
+      {isLg && (
+        <div style={{ display: "flex", justifyContent: "center", marginTop: 8 }}>
+          <RadarChart stats={stats} color={cfg.accent} />
+        </div>
+      )}
+      {!isSm && !isLg && (
         <div style={{
-          display: "flex", justifyContent: "space-between", marginTop: isLg ? 8 : 6,
-          background: "#fff", borderRadius: 14, padding: isLg ? "7px 10px" : "5px 6px",
+          display: "flex", justifyContent: "space-between", marginTop: 6,
+          background: "#fff", borderRadius: 14, padding: "5px 6px",
           boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.05)",
         }}>
           {statRow.map((s, i) => (
             <span key={i} style={{ display: "flex", alignItems: "center", gap: 3, fontSize: fs.bottom }}>
-              <span style={{ fontSize: isLg ? 13 : 11 }}>{s.icon}</span>
+              <span style={{ fontSize: 11 }}>{s.icon}</span>
               <span style={{ fontWeight: 700, color: "#5A554C" }}>{s.value}</span>
             </span>
           ))}
