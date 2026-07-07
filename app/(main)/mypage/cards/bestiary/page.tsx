@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, BookMarked, Share2, Loader2 } from "lucide-react";
+import { ArrowLeft, BookMarked, Share2, Loader2, Lock } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
-import { PVE_BESTIARY, PVE_BOSS, bestiaryPhotoUrl, type BestiaryEntry } from "@/lib/pve-bestiary";
+import { PVE_BESTIARY, PVE_BOSS, bestiaryPhotoUrl, dexNoLabel, type BestiaryEntry } from "@/lib/pve-bestiary";
 import StickerIcon from "@/app/components/StickerIcon";
 
 export default function BestiaryPage() {
@@ -29,7 +29,7 @@ export default function BestiaryPage() {
       });
   }, [user, authLoading, router]);
 
-  const all = [...PVE_BESTIARY, PVE_BOSS];
+  const all = [...PVE_BESTIARY, PVE_BOSS].sort((a, b) => a.dexNo - b.dexNo);
   const seenCount = all.filter(e => seenKeys.includes(e.key)).length;
   const defeatedCount = all.filter(e => defeatedKeys.includes(e.key)).length;
   const pct = Math.round((seenCount / all.length) * 100);
@@ -38,6 +38,9 @@ export default function BestiaryPage() {
     const text = `동네 도감 ${seenCount}/${all.length}마리 발견! 🐾 도시공존에서 PVE 배틀하면서 동네 불청객 도감 채우는 중이에요.`;
     router.push(`/community/write?t=${encodeURIComponent(text.slice(0, 50))}&content=${encodeURIComponent(text)}`);
   };
+
+  const selectedSeen = selected ? seenKeys.includes(selected.key) : false;
+  const selectedDefeated = selected ? defeatedKeys.includes(selected.key) : false;
 
   return (
     <div className="min-h-dvh" style={{ background: "#0F0F1A" }}>
@@ -74,19 +77,23 @@ export default function BestiaryPage() {
               const seen = seenKeys.includes(entry.key);
               const defeated = defeatedKeys.includes(entry.key);
               const photo = bestiaryPhotoUrl(entry);
+              const ringColor = defeated ? entry.categoryColor : seen ? "#565266" : "transparent";
               return (
                 <button
                   key={entry.key}
                   onClick={() => seen && setSelected(entry)}
-                  className="flex flex-col items-center gap-1.5 py-3 rounded-2xl active:scale-95 transition-transform"
+                  className="relative flex flex-col items-center gap-1.5 py-3 rounded-2xl active:scale-95 transition-transform"
                   style={{ background: "rgba(255,255,255,0.05)", cursor: seen ? "pointer" : "default" }}
                 >
+                  <span className="absolute top-1.5 left-2 text-[8.5px] font-black tabular-nums" style={{ color: "#565266" }}>
+                    {dexNoLabel(entry.dexNo)}
+                  </span>
                   <div
-                    className="relative rounded-full overflow-hidden flex items-center justify-center"
+                    className="relative rounded-full overflow-hidden flex items-center justify-center mt-2.5"
                     style={{
                       width: 56, height: 56,
                       background: seen ? "#1A1A2A" : "rgba(255,255,255,0.06)",
-                      boxShadow: seen ? `0 0 0 2px ${defeated ? "#FFC15E" : "#4C82BC"}` : "none",
+                      boxShadow: `0 0 0 2px ${ringColor}`,
                     }}
                   >
                     {seen && photo ? (
@@ -101,7 +108,8 @@ export default function BestiaryPage() {
                     {seen ? entry.name : "???"}
                   </span>
                   {seen && (
-                    <span className="text-[8.5px] font-bold" style={{ color: defeated ? "#FFC15E" : "#6B6578" }}>
+                    <span className="flex items-center gap-0.5 text-[8.5px] font-bold" style={{ color: defeated ? entry.categoryColor : "#6B6578" }}>
+                      {!defeated && <Lock size={8} />}
                       {defeated ? "승리" : "조우"}
                     </span>
                   )}
@@ -112,19 +120,60 @@ export default function BestiaryPage() {
         )}
       </div>
 
-      {/* 상세 모달 */}
+      {/* 상세 모달 — 포켓몬 도감 스타일 */}
       {selected && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-6" style={{ background: "rgba(0,0,0,0.7)" }} onClick={() => setSelected(null)}>
           <div onClick={(e) => e.stopPropagation()} className="w-full max-w-xs rounded-3xl overflow-hidden" style={{ background: "#1A1A2A" }}>
-            {bestiaryPhotoUrl(selected) && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={bestiaryPhotoUrl(selected)!} alt={selected.name} className="w-full aspect-square object-cover" />
-            )}
-            <div className="p-5 text-center">
-              <p className="text-white text-[20px] font-black mb-1">{selected.emoji} {selected.name}</p>
-              <p className="text-[12px] font-bold" style={{ color: defeatedKeys.includes(selected.key) ? "#FFC15E" : "#8A8598" }}>
-                {defeatedKeys.includes(selected.key) ? "🏆 승리한 적 있어요" : "👀 조우했지만 아직 못 이겼어요"}
-              </p>
+            <div className="relative">
+              {bestiaryPhotoUrl(selected) && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={bestiaryPhotoUrl(selected)!} alt={selected.name} className="w-full aspect-square object-cover"
+                  style={{ filter: selectedDefeated ? undefined : "grayscale(0.35) brightness(0.8)" }} />
+              )}
+              <span className="absolute top-3 left-3 px-2 py-1 rounded-lg text-[11px] font-black tabular-nums text-white"
+                style={{ background: "rgba(0,0,0,0.5)" }}>
+                {dexNoLabel(selected.dexNo)}
+              </span>
+            </div>
+            <div className="p-5">
+              <div className="flex items-center gap-2 mb-1">
+                <p className="text-white text-[20px] font-black">{selected.emoji} {selected.name}</p>
+              </div>
+              <span className="inline-block px-2.5 py-1 rounded-full text-[10.5px] font-extrabold text-white mb-3"
+                style={{ background: selected.categoryColor }}>
+                {selected.category}
+              </span>
+
+              {selectedDefeated ? (
+                <>
+                  <div className="flex gap-1.5 mb-3">
+                    {selected.traits.map((t) => (
+                      <span key={t} className="px-2 py-1 rounded-lg text-[10px] font-bold" style={{ background: "rgba(255,255,255,0.08)", color: "#B4AFC2" }}>
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-[11px] font-bold mb-1.5" style={{ color: selected.categoryColor }}>
+                    성격 · {selected.personality}
+                  </p>
+                  <p className="text-[12.5px] leading-relaxed" style={{ color: "#D5D3DE" }}>
+                    {selected.story}
+                  </p>
+                  <p className="text-[11px] font-bold mt-3" style={{ color: "#FFC15E" }}>🏆 승리한 적 있어요</p>
+                </>
+              ) : (
+                <>
+                  <div className="rounded-2xl px-4 py-5 text-center" style={{ background: "rgba(255,255,255,0.04)" }}>
+                    <Lock size={20} className="mx-auto mb-2" style={{ color: "#565266" }} />
+                    <p className="text-[13px] font-black tracking-widest" style={{ color: "#565266" }}>????</p>
+                    <p className="text-[11px] mt-1.5" style={{ color: "#6B6578" }}>
+                      이 녀석을 배틀에서 이기면<br />성격·특징·이야기가 공개돼요
+                    </p>
+                  </div>
+                  <p className="text-[11px] font-bold mt-3" style={{ color: "#8A8598" }}>👀 조우했지만 아직 못 이겼어요</p>
+                </>
+              )}
+
               <button onClick={() => setSelected(null)} className="mt-4 w-full py-2.5 rounded-xl text-[13px] font-extrabold text-white"
                 style={{ background: "linear-gradient(135deg,#4C82BC,#3E6FA8)" }}>
                 닫기
