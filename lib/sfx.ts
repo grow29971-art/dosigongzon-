@@ -23,15 +23,19 @@ export function primeSfx() { getCtx(); }
 
 // 앱을 백그라운드로 보내거나 화면을 꺼도 환경음(루프)이 계속 재생되던 문제 방지 —
 // 탭이 숨겨지면 오디오 컨텍스트 자체를 suspend해서 모든 소리를 멈추고, 돌아오면 이어서 재생.
+// visibilitychange 하나만 걸어뒀더니 카카오톡 인앱브라우저 등 일부 모바일 웹뷰에서
+// 홈 화면으로 나갈 때 이 이벤트가 안 붙는 경우가 있어(webview lifecycle이 표준과 다름),
+// window blur/pagehide를 보조 신호로 같이 걸어 이중으로 막는다.
 if (typeof window !== "undefined") {
+  const suspendNow = () => { if (ctx && ctx.state === "running") ctx.suspend(); };
+  const resumeIfVisible = () => { if (ctx && ctx.state === "suspended" && document.visibilityState === "visible") ctx.resume(); };
   document.addEventListener("visibilitychange", () => {
-    if (!ctx) return;
-    if (document.visibilityState === "hidden") {
-      if (ctx.state === "running") ctx.suspend();
-    } else if (ctx.state === "suspended") {
-      ctx.resume();
-    }
+    if (document.visibilityState === "hidden") suspendNow(); else resumeIfVisible();
   });
+  window.addEventListener("pagehide", suspendNow);
+  window.addEventListener("blur", suspendNow);
+  window.addEventListener("focus", resumeIfVisible);
+  window.addEventListener("pageshow", resumeIfVisible);
 }
 
 export function isSfxMuted(): boolean {
