@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
 import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BOSS_WIN, COINS_BOSS_LOSE } from "@/lib/shop-config";
+import { recordPveEncounter } from "@/lib/pve-bestiary";
 
 function computeLevel(exp: number) {
   const thresholds = [0, 90, 210, 380, 610, 900, 1260, 1690, 2200, 2800];
@@ -75,18 +76,10 @@ export async function POST(req: Request) {
     }) : Promise.resolve(),
   ]);
 
-  // 도감(컬렉션) 진행률 — box/supabase_pve_bestiary_migration.sql 실행 전이면 컬럼이 없어
-  // 이 블록만 조용히 실패하고 넘어간다(위 코인/경험치 지급과 완전히 분리).
+  // 도감(컬렉션) 진행률 — 위 코인/경험치 지급과 완전히 분리해서 처리
+  // (마이그레이션 전이면 recordPveEncounter가 던지는 에러를 여기서만 조용히 무시).
   try {
-    const pveKey = is_boss ? "boss" : String(opp_cat_id ?? "").replace(/^pve-/, "");
-    if (pveKey) {
-      const { data: bestiary } = await svc.from("profiles").select("pve_seen_keys,pve_defeated_keys").eq("id", user.id).maybeSingle();
-      const seenSet = new Set(bestiary?.pve_seen_keys ?? []);
-      const defeatedSet = new Set(bestiary?.pve_defeated_keys ?? []);
-      seenSet.add(pveKey);
-      if (iWon) defeatedSet.add(pveKey);
-      await svc.from("profiles").update({ pve_seen_keys: Array.from(seenSet), pve_defeated_keys: Array.from(defeatedSet) }).eq("id", user.id);
-    }
+    await recordPveEncounter(svc, user.id, String(opp_cat_id ?? ""), Boolean(is_boss), iWon);
   } catch { /* 마이그레이션 전이면 여기서만 조용히 무시 */ }
 
   return NextResponse.json({

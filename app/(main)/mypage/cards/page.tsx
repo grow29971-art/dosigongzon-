@@ -152,6 +152,11 @@ export default function MyCardsPage() {
     router.push(`/community/write?t=${encodeURIComponent(text.slice(0, 50))}&content=${encodeURIComponent(text)}`);
   };
 
+  const shareBestiary = (seenCount: number, total: number) => {
+    const text = `동네 도감 ${seenCount}/${total}마리 발견! 🐾 도시공존에서 PVE 배틀하면서 동네 불청객 도감 채우는 중이에요.`;
+    router.push(`/community/write?t=${encodeURIComponent(text.slice(0, 50))}&content=${encodeURIComponent(text)}`);
+  };
+
   const filtered = filter === "all" ? cats : cats.filter(c => c.card_rarity === filter);
   const counts = RARITY_ORDER.reduce((acc, r) => { acc[r] = cats.filter(c => c.card_rarity === r).length; return acc; }, {} as Record<CardRarity, number>);
 
@@ -195,7 +200,16 @@ export default function MyCardsPage() {
               <div className="mb-5">
                 <div className="flex items-center justify-between mb-2 px-1">
                   <span className="text-[13px] font-extrabold" style={{ color: "#2B2B3D" }}>🐾 동네 도감</span>
-                  <span className="text-[11px] font-bold" style={{ color: "#8A8598" }}>{seenCount}/{all.length}마리 발견</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-bold" style={{ color: "#8A8598" }}>{seenCount}/{all.length}마리 발견</span>
+                    {seenCount > 0 && (
+                      <button onClick={() => shareBestiary(seenCount, all.length)}
+                        className="flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold active:scale-95"
+                        style={{ background: "#EFE9FD", color: "#7A5AE0" }}>
+                        <Share2 size={10} /> 자랑하기
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
                   {all.map((entry) => {

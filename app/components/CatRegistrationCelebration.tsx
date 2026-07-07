@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, PawPrint, Heart, Share2 } from "lucide-react";
+import { Sparkles, PawPrint, Heart, Share2, Swords } from "lucide-react";
+import Link from "next/link";
 import { getMyInviteInfo } from "@/lib/invites-repo";
 import { shareToKakao } from "@/lib/kakao-share";
 import { track } from "@vercel/analytics";
@@ -162,6 +163,19 @@ export default function CatRegistrationCelebration({
               />
               <p className="text-[10px] text-gray-400 mt-2">마이페이지 → 내 카드에서 확인할 수 있어요</p>
             </div>
+          )}
+          {/* 배틀 시스템 온보딩 — 카드가 막 생겼을 때(초반 1~2번째 등록)만 살짝 소개.
+              매번 뜨면 피로감이라 registrationCount<=2로 제한 */}
+          {card && registrationCount <= 2 && (
+            <Link
+              href="/mypage/cards/battle"
+              onClick={onClose}
+              className="flex items-center justify-center gap-1.5 rounded-2xl px-4 py-2.5 mb-3 text-[11.5px] font-extrabold active:scale-[0.98]"
+              style={{ background: "#EFE9FD", color: "#7A5AE0" }}
+            >
+              <Swords size={14} />
+              이 카드로 동네 불청객과 배틀해보기
+            </Link>
           )}
           {isFirstEver && !card && (
             <div
