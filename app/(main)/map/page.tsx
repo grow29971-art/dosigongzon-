@@ -2556,7 +2556,7 @@ export default function MapPage() {
             style={{
               maxHeight: "calc(100dvh - max(env(safe-area-inset-top), 12px) - 80px)",
               border: `2.5px solid ${catCardTheme.frameOuter}`,
-              boxShadow: `${catCardTheme.glow}, 0 -4px 24px rgba(0,0,0,0.12)`,
+              boxShadow: `0 0 20px ${catCardTheme.accent}66, 0 -4px 24px rgba(0,0,0,0.12)`,
             }}
           >
 
