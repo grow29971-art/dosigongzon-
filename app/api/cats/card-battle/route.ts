@@ -84,35 +84,14 @@ function rnd(min: number, max: number) {
   return min + Math.random() * (max - min);
 }
 
-// 매칭용 승률 추정 — 실제 대미지식으로 가볍게 여러 번 모의 전투해서 내 승률을 근사
-function quickSimWin(mine: ReturnType<typeof calcStats>, opp: ReturnType<typeof calcStats>): boolean {
-  let aHp = mine.hp, dHp = opp.hp;
-  let aTurn = mine.spd >= opp.spd;
-  for (let turn = 0; turn < 30 && aHp > 0 && dHp > 0; turn++) {
-    if (aTurn) {
-      const isDodge = Math.random() * 100 < opp.eva;
-      if (!isDodge) {
-        const isCrit = Math.random() * 100 < mine.crit;
-        const dmg = Math.max(5, Math.round((mine.atk - opp.def * 0.4) * rnd(0.80, 1.30) * (isCrit ? 2.0 : 1)));
-        dHp = Math.max(0, dHp - dmg);
-      }
-    } else {
-      const isDodge = Math.random() * 100 < mine.eva;
-      if (!isDodge) {
-        const isCrit = Math.random() * 100 < opp.crit;
-        const dmg = Math.max(5, Math.round((opp.atk - mine.def * 0.4) * rnd(0.80, 1.30) * (isCrit ? 2.0 : 1)));
-        aHp = Math.max(0, aHp - dmg);
-      }
-    }
-    aTurn = !aTurn;
-  }
-  return aHp >= dHp;
-}
-function estimateWinRate(mine: CardCat, opp: CardCat, trials = 20): number {
-  const mineStats = calcStats(mine);
-  const oppStats = calcStats(opp);
+// 매칭용 승률 추정 — 실제 배틀 시뮬레이션(simulateBattle)을 그대로 여러 번 돌려서 승률을 근사.
+// 예전엔 스킬/상태이상을 빼고 순수 기본공격만 도는 단순 모델(quickSimWin)로 추정했는데,
+// 실제 승부는 스킬·상태이상까지 다 들어가다 보니 추정치와 실제 승률이 꽤 어긋났었다
+// (목표 45% 매칭인데 실측하면 43%, 목표 50%인데 실측 46% 식으로 항상 낮게 나옴).
+// 실제 로직을 그대로 재사용하면 이 괴리가 구조적으로 없어진다.
+function estimateWinRate(mine: CardCat, opp: CardCat, trials = 40): number {
   let wins = 0;
-  for (let i = 0; i < trials; i++) if (quickSimWin(mineStats, oppStats)) wins++;
+  for (let i = 0; i < trials; i++) if (simulateBattle(mine, opp).attackerWins) wins++;
   return wins / trials;
 }
 function pickByTargetWinRate(mine: CardCat, candidates: CardCat[], target: number): CardCat {
@@ -407,14 +386,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "no_opponents" }, { status: 404 });
     }
 
-    // 자동전투는 승률 45%를 노려 매칭(무관심 파밍 방지). 수동은 매칭을 예측 가능하게 조작하지 않고
-    // 완전 랜덤으로 뽑아서 상대가 셀지 약할지 모르는 데서 오는 긴장감을 살린다 — 대신 실제 전투
-    // 자체(AI 판단력·역전 기믹 등)를 더 팽팽하게 만드는 쪽으로 난이도를 잡는다.
-    if (mode === "auto") {
-      opponent = pickByTargetWinRate(myCat as CardCat, opponents as CardCat[], 0.45);
-    } else {
-      opponent = opponents[Math.floor(Math.random() * opponents.length)] as CardCat;
-    }
+    // 승률 50%(팽팽한 접전)를 노려 매칭. 예전엔 자동전투만 45%(무관심 파밍 방지 목적)로
+    // 일부러 불리하게, 수동은 완전 랜덤으로 뽑았는데 — 실측해보니 자동전투는 "너무 자주 짐",
+    // 수동은 상대 뽑기 운에 따라 압승/완패가 갈리는 문제가 있었음("적당히 밸런스" 피드백).
+    // 이제 둘 다 같은 방식으로 매칭하되, 상위 25% 후보 중 랜덤 선택은 유지해서
+    // (pickByTargetWinRate 내부) 매번 100% 예측 가능한 접전이 되진 않게 약간의 변수는 남겨둔다.
+    opponent = pickByTargetWinRate(myCat as CardCat, opponents as CardCat[], 0.50);
   }
 
   // 수동 배틀: 스탯만 반환 (시뮬레이션 없음)
