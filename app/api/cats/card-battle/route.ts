@@ -83,6 +83,14 @@ interface PveCreature {
   skills: [string, string, string, string];
 }
 const PVE_ROSTER: PveCreature[] = [
+  { key: "mosquito", name: "모기", emoji: "🦟", flavor: "귓가에서 앵앵대다 따끔하게 무는 작은 불청객",
+    atkMult: 0.35, defMult: 0.18, eva: 34, crit: 9,
+    traits: ["앵앵 소리", "따끔한 침"], stats: { cuteness: 5, wildness: 10, sociability: 5, mysteriousness: 15 },
+    skills: ["quick_dodge", "venom_fang", "tail_whip", "sharp_claws"] },
+  { key: "fly", name: "파리", emoji: "🪰", flavor: "밥상 위를 맴돌며 성가시게 구는 잽싼 불청객",
+    atkMult: 0.40, defMult: 0.22, eva: 32, crit: 8,
+    traits: ["잽싼 날갯짓", "성가신 맴돌기"], stats: { cuteness: 5, wildness: 12, sociability: 8, mysteriousness: 10 },
+    skills: ["quick_dodge", "dash_strike", "tail_whip", "sharp_claws"] },
   { key: "roach", name: "바퀴벌레", emoji: "🪳", flavor: "부엌을 어지럽히던 잽싼 침입자",
     atkMult: 0.42, defMult: 0.30, eva: 30, crit: 8,
     traits: ["잽싼 발놀림", "깜짝 도주"], stats: { cuteness: 10, wildness: 15, sociability: 5, mysteriousness: 10 },
