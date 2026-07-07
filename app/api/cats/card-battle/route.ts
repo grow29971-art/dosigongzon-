@@ -184,25 +184,48 @@ const AUTO_SKILL_FX: Partial<Record<SpecialSkillId, AutoSkillFx>> = {
 };
 const DEFAULT_FX: AutoSkillFx = { dmgMult: 1.2 };
 
-interface AutoSideState { stun: number; poison: number; bleed: number; bind: number; cds: Record<string, number>; }
+// 기본공격/방어 가상 액션 ID — 실제 SpecialSkillId가 아니라 자체 예약어.
+const AUTO_NORMAL = "__normal__";
+const AUTO_GUARD = "__guard__";
+const AUTO_GUARD_USES = 5; // 수동 배틀의 GUARD_USES와 동일 — 방어는 배틀당 5회로 제한
 
-function pickAutoSkill(skills: string[], cds: Record<string, number>, hpRatio: number, targetVulnerable: boolean): string {
-  const available = skills.filter(id => (cds[id] ?? 0) === 0);
-  const pool = available.length > 0 ? available : skills;
+interface AutoSideState {
+  stun: number; poison: number; bleed: number; bind: number;
+  cds: Record<string, number>;
+  guarding: boolean; // 이번에 방어를 써서 다음에 맞을 때 피해 감소가 적용될 차례
+  guardUses: number;
+}
+
+// 스킬 4개가 전부 쿨다운 중이면(또는 방어를 골랐으면) 기본공격/방어로 대체한다.
+// 예전엔 "쿨다운 중인 스킬 전부"를 그냥 무시하고 스킬 풀 전체에서 다시 뽑아버려서
+// 쿨다운이 사실상 의미가 없었고, 기본공격/방어 개념 자체가 없어 자동전투에서
+// 둘 다 한 번도 안 쓰이는 문제가 있었음.
+function pickAutoAction(skills: string[], state: AutoSideState, hpRatio: number, targetVulnerable: boolean): string {
+  const available = skills.filter(id => (state.cds[id] ?? 0) === 0);
 
   if (hpRatio < 0.35) {
-    const heal = pool.find(id => (AUTO_SKILL_FX[id as SpecialSkillId]?.healPct ?? 0) > 0);
+    const heal = available.find(id => (AUTO_SKILL_FX[id as SpecialSkillId]?.healPct ?? 0) > 0);
     if (heal && Math.random() < 0.6) return heal;
   }
   if (!targetVulnerable) {
-    const cc = pool.filter(id => AUTO_SKILL_FX[id as SpecialSkillId]?.statusType);
+    const cc = available.filter(id => AUTO_SKILL_FX[id as SpecialSkillId]?.statusType);
     if (cc.length > 0 && Math.random() < 0.35) return cc[Math.floor(Math.random() * cc.length)];
   }
-  const weighted = pool.map(id => ({ id, w: Math.max(0.3, AUTO_SKILL_FX[id as SpecialSkillId]?.dmgMult ?? 1) }));
-  const total = weighted.reduce((s, w) => s + w.w, 0);
-  let r = Math.random() * total;
-  for (const w of weighted) { r -= w.w; if (r <= 0) return w.id; }
-  return weighted[0]?.id ?? pool[0];
+
+  // 체력이 애매하게 낮고 상대를 확실히 끝낼 타이밍이 아니면, 가끔 방어로 버틴다.
+  const guardReady = state.guardUses > 0 && (state.cds[AUTO_GUARD] ?? 0) === 0;
+  if (guardReady && hpRatio < 0.55 && !targetVulnerable && Math.random() < 0.25) return AUTO_GUARD;
+
+  if (available.length > 0) {
+    const weighted = available.map(id => ({ id, w: Math.max(0.3, AUTO_SKILL_FX[id as SpecialSkillId]?.dmgMult ?? 1) }));
+    const total = weighted.reduce((s, w) => s + w.w, 0);
+    let r = Math.random() * total;
+    for (const w of weighted) { r -= w.w; if (r <= 0) return w.id; }
+    return weighted[0].id;
+  }
+
+  // 스킬이 전부 쿨다운 중이면 기본공격(무제한, 항상 가능)으로
+  return AUTO_NORMAL;
 }
 
 function simulateBattle(attacker: CardCat, defender: CardCat) {
@@ -219,8 +242,8 @@ function simulateBattle(attacker: CardCat, defender: CardCat) {
   const dSkills = [defender.battle_special, defender.battle_special2, defender.battle_special3, defender.battle_special4]
     .map(id => id ?? "sharp_claws");
 
-  const aState: AutoSideState = { stun: 0, poison: 0, bleed: 0, bind: 0, cds: {} };
-  const dState: AutoSideState = { stun: 0, poison: 0, bleed: 0, bind: 0, cds: {} };
+  const aState: AutoSideState = { stun: 0, poison: 0, bleed: 0, bind: 0, cds: {}, guarding: false, guardUses: AUTO_GUARD_USES };
+  const dState: AutoSideState = { stun: 0, poison: 0, bleed: 0, bind: 0, cds: {}, guarding: false, guardUses: AUTO_GUARD_USES };
 
   let aTurn = as.spd >= ds.spd;
 
@@ -243,15 +266,21 @@ function simulateBattle(attacker: CardCat, defender: CardCat) {
       continue;
     }
 
-    const skillId = pickAutoSkill(atkSkills, atkState.cds, atkHp / atkMaxHp, defState.stun > 0 || defState.bind > 0);
-    const fx = AUTO_SKILL_FX[skillId as SpecialSkillId] ?? DEFAULT_FX;
-    atkState.cds[skillId] = 3;
+    const skillId = pickAutoAction(atkSkills, atkState, atkHp / atkMaxHp, defState.stun > 0 || defState.bind > 0);
+    const isGuardAction = skillId === AUTO_GUARD;
+    const isNormalAction = skillId === AUTO_NORMAL;
+    const fx: AutoSkillFx = isGuardAction || isNormalAction
+      ? { dmgMult: isNormalAction ? 1.0 : 0 }
+      : (AUTO_SKILL_FX[skillId as SpecialSkillId] ?? DEFAULT_FX);
+    // 스킬만 쿨다운 — 기본공격은 무제한, 방어는 횟수+쿨다운 둘 다 소모
+    if (!isGuardAction && !isNormalAction) atkState.cds[skillId] = 5;
+    if (isGuardAction) { atkState.guarding = true; atkState.guardUses--; atkState.cds[AUTO_GUARD] = 3; }
 
     // 속박 소모(회피 불가) — 새 속박 적용보다 먼저 처리
     const wasBound = defState.bind > 0;
     if (defState.bind > 0) defState.bind--;
 
-    const isDodge = !wasBound && Math.random() * 100 < defSt.eva;
+    const isDodge = !wasBound && !isGuardAction && Math.random() * 100 < defSt.eva;
     let dmg = 0, isCritical = false;
     if (!isDodge && fx.dmgMult > 0) {
       const counterBoost = atkHp < atkMaxHp * 0.25 ? 1.3 : 1.0;
@@ -263,6 +292,8 @@ function simulateBattle(attacker: CardCat, defender: CardCat) {
         const base = Math.max(5, Math.round((atkSt.atk - def * 0.4) * rnd(0.80, 1.30) * counterBoost));
         dmg += Math.round(base * fx.dmgMult * (hitCrit ? 2.0 : 1.0));
       }
+      // 상대가 방어 중이면 이번 피해 40% 감소 (수동 배틀과 동일한 배율)
+      if (dmg > 0 && defState.guarding) { dmg = Math.round(dmg * 0.6); defState.guarding = false; }
     }
 
     let appliedStatus: { type: "stun"|"poison"|"bleed"|"bind"; turns: number } | null = null;
@@ -289,7 +320,7 @@ function simulateBattle(attacker: CardCat, defender: CardCat) {
     log.push({
       turn, actor: atkName, dmg, aHp, dHp, isCritical, isDodge,
       isCounterAttack: atkHp < atkMaxHp * 0.25,
-      skillName: SPECIAL_SKILLS[skillId as SpecialSkillId]?.name ?? "공격",
+      skillName: isNormalAction ? "기본 공격" : isGuardAction ? "🛡️ 방어 자세" : (SPECIAL_SKILLS[skillId as SpecialSkillId]?.name ?? "공격"),
       skillId, isDot: false,
       statusType: appliedStatus?.type, statusTurns: appliedStatus?.turns,
     });

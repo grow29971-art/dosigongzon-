@@ -35,14 +35,17 @@ const ENV_BACKGROUNDS: Record<BattleEnvKey, string> = {
 };
 
 // 액션 슬롯 순서: [기본공격, 방어, 스킬1, 스킬2, 스킬3, 스킬4]
-// 스킬별 쿨다운 턴수 (스킬만 연타하는 단조로움을 줄이려고 기본공격/방어 섞도록 쿨다운 늘림)
-const SKILL_COOLDOWNS = [0, 1, 3, 3, 3, 3];
+// 스킬별 쿨다운 턴수. 스킬이 4개면 쿨다운이 4 이하일 때 계속 로테이션 돌려서
+// 기본공격/방어를 한 번도 안 써도 되는 문제가 있었음(3턴 쿨다운 시절 실측 피드백).
+// N개 스킬을 빈틈없이 순환하려면 쿨다운 <= N이어야 하므로, N=4보다 큰 5로 올려서
+// 5턴마다 최소 1턴은 스킬이 전부 막혀 기본공격/방어를 쓸 수밖에 없게 만듦.
+const SKILL_COOLDOWNS = [0, 1, 5, 5, 5, 5];
 const NORMAL_IDX = 0;
 const GUARD_IDX = 1;
 const SKILL_START_IDX = 2; // 스킬1의 인덱스, 스킬n = SKILL_START_IDX + slot
 
-// 기본공격/방어 자세 배틀당 사용 가능 횟수
-const NORMAL_ATTACK_USES = 8;
+// 방어 자세 배틀당 사용 가능 횟수. 기본공격은 의도적으로 무제한(항상 쓸 수 있는 안전판) —
+// 스킬 쿨다운으로 강제된 턴에 "쓸 게 아예 없어서 턴 패스"가 되면 재미없으니 기본공격은 안 막는다.
 const GUARD_USES = 5;
 
 // 등급별 상성 타입 (카드에 표시되는 "약점" 아이콘과 동일한 4각 상성)
@@ -169,11 +172,11 @@ function oppAI(hp: number, maxHp: number, targetHpRatio = 1, targetVulnerable = 
 // 자동전투용 — oppAI는 쿨다운/사용횟수를 모르고 그냥 랜덤으로 골라서, 하필 쿨다운 중이거나
 // 소진된 행동을 고르면 pickSkill이 조용히 무시해버려 "가끔 자동전투가 안 먹는" 버그가 있었음.
 // 실제로 지금 쓸 수 있는 행동인지 확인하고, 막혀있으면 다른 가능한 행동으로 대체한다.
-function pickAvailableAutoAction(hp: number, maxHp: number, skillCds: number[], normalLeft: number, guardLeft: number, targetHpRatio = 1, targetVulnerable = false): number | null {
+function pickAvailableAutoAction(hp: number, maxHp: number, skillCds: number[], guardLeft: number, targetHpRatio = 1, targetVulnerable = false): number {
   const preferred = oppAI(hp, maxHp, targetHpRatio, targetVulnerable);
-  // 방어는 총 사용 횟수 제한(guardLeft)과 별개로 1턴 쿨다운도 있어서 둘 다 확인해야 함
+  // 기본공격은 무제한이라 항상 usable. 방어는 총 사용 횟수 제한(guardLeft)과 별개로
+  // 1턴 쿨다운도 있어서 둘 다 확인해야 함
   const isUsable = (idx: number) => {
-    if (idx === NORMAL_IDX) return normalLeft > 0;
     if (idx === GUARD_IDX) return guardLeft > 0 && (skillCds[GUARD_IDX] ?? 0) === 0;
     return (skillCds[idx] ?? 0) === 0;
   };
@@ -181,9 +184,8 @@ function pickAvailableAutoAction(hp: number, maxHp: number, skillCds: number[], 
 
   const availableSkills = [2, 3, 4, 5].filter(i => (skillCds[i] ?? 0) === 0);
   if (availableSkills.length > 0) return availableSkills[Math.floor(Math.random() * availableSkills.length)];
-  if (normalLeft > 0) return NORMAL_IDX;
   if (isUsable(GUARD_IDX)) return GUARD_IDX;
-  return null; // 정말 아무것도 못 쓰는 극단적인 경우 — 턴 패스로 처리
+  return NORMAL_IDX; // 스킬 전부 쿨다운 + 방어도 못 쓰면 무제한인 기본공격으로
 }
 function toCard(cat: BattleCat): CatCardData {
   return { card_rarity:cat.card_rarity, card_name:cat.card_name, card_traits:cat.card_traits??[], card_stats:cat.card_stats, card_flavor:cat.card_flavor, card_level:cat.card_level, card_exp:cat.card_exp };
@@ -435,11 +437,13 @@ export default function BattlePage() {
   // 스킬 쿨다운 [normal, guard, skill1, skill2, skill3, skill4]
   const mySkillCdRef = useRef([0,0,0,0,0,0]);
   const [mySkillCd,  setMySkillCd]  = useState([0,0,0,0,0,0]);
+  // 상대(수동 배틀 라이브 상대)도 같은 쿨다운/방어 제한을 받아야 스킬만 계속 쓰지 않음 —
+  // 예전엔 상대는 oppAI()를 아무 제약 없이 직접 불러서 사실상 매턴 아무 스킬이나 스팸 가능했음.
+  const oppSkillCdRef = useRef([0,0,0,0,0,0]);
+  const oppGuardUsesRef = useRef(GUARD_USES);
 
-  // 기본공격/방어 사용 횟수 제한
-  const myNormalUsesRef = useRef(NORMAL_ATTACK_USES);
+  // 방어 사용 횟수 제한 (기본공격은 무제한이라 카운터 없음)
   const myGuardUsesRef  = useRef(GUARD_USES);
-  const [myNormalUses, setMyNormalUses] = useState(NORMAL_ATTACK_USES);
   const [myGuardUses,  setMyGuardUses]  = useState(GUARD_USES);
 
   // 아이템 효과 상태 (전부 나 자신에게만 적용 — 아이템은 플레이어만 사용 가능)
@@ -559,8 +563,8 @@ export default function BattlePage() {
         }
         const oppHpRatio = oppHpRef.current / Math.max(1, oppMaxHp);
         const oppVulnerable = oppStunnedRef.current > 0 || oppBoundRef.current > 0;
-        const action = pickAvailableAutoAction(myHpRef.current, myMaxHp, mySkillCdRef.current, myNormalUsesRef.current, myGuardUsesRef.current, oppHpRatio, oppVulnerable);
-        pickSkill(action, action === null ? "⏳ 쓸 수 있는 행동이 없어 턴 패스" : undefined);
+        const action = pickAvailableAutoAction(myHpRef.current, myMaxHp, mySkillCdRef.current, myGuardUsesRef.current, oppHpRatio, oppVulnerable);
+        pickSkill(action);
       }, 500);
       return () => clearTimeout(t);
     }
@@ -608,7 +612,7 @@ export default function BattlePage() {
       myBoundRef.current=0; oppBoundRef.current=0;
       setMyStatusBadges([]); setOppStatusBadges([]);
       mySkillCdRef.current=[0,0,0,0,0,0]; setMySkillCd([0,0,0,0,0,0]);
-      myNormalUsesRef.current=NORMAL_ATTACK_USES; setMyNormalUses(NORMAL_ATTACK_USES);
+      oppSkillCdRef.current=[0,0,0,0,0,0]; oppGuardUsesRef.current=GUARD_USES;
       myGuardUsesRef.current=GUARD_USES; setMyGuardUses(GUARD_USES);
       myShieldRef.current=false; myPowerBuffRef.current=false; myDodgeGuaranteedRef.current=false;
     } else {
@@ -1039,6 +1043,7 @@ export default function BattlePage() {
 
     mySkillCdRef.current = mySkillCdRef.current.map(c => Math.max(0, c-1));
     setMySkillCd([...mySkillCdRef.current]);
+    oppSkillCdRef.current = oppSkillCdRef.current.map(c => Math.max(0, c-1));
 
     if(myNewHp<=0) { endBattle("opponent"); return true; }
     if(oppNewHp<=0) { endBattle("me"); return true; }
@@ -1048,7 +1053,6 @@ export default function BattlePage() {
   const pickSkill = useCallback((skillIdx: number | null, forfeitMsg?: string) => {
     if(!myStats || !oppStats || !selected || !opponent || !mounted.current) return;
     if(skillIdx !== null && mySkillCdRef.current[skillIdx] > 0) return;
-    if(skillIdx === NORMAL_IDX && myNormalUsesRef.current <= 0) return;
     if(skillIdx === GUARD_IDX && myGuardUsesRef.current <= 0) return;
     clearTimer();
     setPhase("animating");
@@ -1064,7 +1068,6 @@ export default function BattlePage() {
         mySkillCdRef.current[skillIdx] = SKILL_COOLDOWNS[skillIdx];
         setMySkillCd([...mySkillCdRef.current]);
       }
-      if(skillIdx === NORMAL_IDX) { myNormalUsesRef.current--; setMyNormalUses(myNormalUsesRef.current); }
       if(skillIdx === GUARD_IDX) { myGuardUsesRef.current--; setMyGuardUses(myGuardUsesRef.current); }
       const r = applySkill(skillIdx, true, myStats, oppStats, myMaxHp, oppMaxHp, selected, opponent);
       dmg = r.dmg; isCrit = r.isCrit; msg = r.msg; castSkillId = r.skillId;
@@ -1122,10 +1125,14 @@ export default function BattlePage() {
             return;
           }
 
-          // AI 기술 선택 — 내(플레이어) 체력비/회피불가 상태를 보고 마무리 타이밍을 노림
+          // AI 기술 선택 — 내(플레이어) 체력비/회피불가 상태를 보고 마무리 타이밍을 노림.
+          // 상대도 나와 동일하게 쿨다운/방어 횟수 제한을 받아야 스킬만 계속 못 씀 —
+          // pickAvailableAutoAction으로 오프AI 선호를 실제로 쓸 수 있는지 검증해서 고른다.
           const myHpRatioForAi = myHpRef.current / Math.max(1, myMaxHp);
           const myVulnerableForAi = myStunnedRef.current > 0 || myBoundRef.current > 0;
-          const aiSkillIdx = oppAI(oppHpRef.current, oppMaxHp, myHpRatioForAi, myVulnerableForAi);
+          const aiSkillIdx = pickAvailableAutoAction(oppHpRef.current, oppMaxHp, oppSkillCdRef.current, oppGuardUsesRef.current, myHpRatioForAi, myVulnerableForAi);
+          if (SKILL_COOLDOWNS[aiSkillIdx] > 0) oppSkillCdRef.current[aiSkillIdx] = SKILL_COOLDOWNS[aiSkillIdx];
+          if (aiSkillIdx === GUARD_IDX) oppGuardUsesRef.current--;
           const { dmg:od, isCrit:oc, msg:om, skillId:aiSkillId } = applySkill(aiSkillIdx, false, myStats, oppStats, myMaxHp, oppMaxHp, selected, opponent);
           const oppSkill = oppSkills[aiSkillIdx];
           setActionMsg(`${opponent.name}의 ${oppSkill.name}!${oc?" 💥 크리티컬!":""}${om?" "+om:""}`);
@@ -1640,7 +1647,7 @@ export default function BattlePage() {
                 <div className="flex gap-2">
                   {mySkills.slice(0, SKILL_START_IDX).map((sk,i)=>(
                     <SkillBtn key={i} skill={sk} idx={i} disabled={phase!=="player_choose"} cooldown={mySkillCd[i]}
-                      usesLeft={i===NORMAL_IDX?myNormalUses:i===GUARD_IDX?myGuardUses:undefined} onPick={pickSkill} variant="primary"/>
+                      usesLeft={i===GUARD_IDX?myGuardUses:undefined} onPick={pickSkill} variant="primary"/>
                   ))}
                 </div>
 
