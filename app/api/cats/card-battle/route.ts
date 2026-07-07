@@ -115,7 +115,7 @@ const PVE_ROSTER: PveCreature[] = [
     atkMult: 0.38, defMult: 0.26, eva: 26, crit: 10,
     traits: ["거미줄 치기", "살금살금 접근"], stats: { cuteness: 8, wildness: 20, sociability: 5, mysteriousness: 35 },
     skills: ["bind", "quick_dodge", "sharp_claws", "scratch"] },
-  { key: "weasel", name: "족제비", emoji: "🦡", flavor: "밤에만 움직이는 날렵한 침입자",
+  { key: "weasel", name: "족제비", emoji: "🐿️", flavor: "밤에만 움직이는 날렵한 침입자",
     atkMult: 0.85, defMult: 0.55, eva: 20, crit: 14,
     traits: ["날렵한 몸놀림", "기습 발톱"], stats: { cuteness: 25, wildness: 55, sociability: 15, mysteriousness: 45 },
     skills: ["dash_strike", "claw_flurry", "ambush", "night_prowl"] },
@@ -135,6 +135,14 @@ const PVE_ROSTER: PveCreature[] = [
     atkMult: 0.75, defMult: 0.40, eva: 25, crit: 11,
     traits: ["껑충 도약", "숨겨진 송곳니"], stats: { cuteness: 45, wildness: 45, sociability: 15, mysteriousness: 35 },
     skills: ["dash_strike", "pounce", "quick_dodge", "ambush"] },
+  { key: "badger", name: "오소리", emoji: "🦡", flavor: "땅을 파헤치며 버티는 억센 불청객",
+    atkMult: 0.95, defMult: 0.75, eva: 10, crit: 9,
+    traits: ["억센 발톱", "질긴 가죽"], stats: { cuteness: 20, wildness: 60, sociability: 15, mysteriousness: 35 },
+    skills: ["claw_flurry", "rend", "body_slam", "intimidate"] },
+  { key: "marten", name: "담비", emoji: "🦫", flavor: "나뭇가지 사이를 날렵하게 넘나드는 재빠른 사냥꾼",
+    atkMult: 0.82, defMult: 0.45, eva: 24, crit: 15,
+    traits: ["날쌘 도약", "예리한 이빨"], stats: { cuteness: 30, wildness: 55, sociability: 10, mysteriousness: 40 },
+    skills: ["dash_strike", "ambush", "night_prowl", "sharp_claws"] },
 ];
 
 // 20%는 고양이학대범(최종 빌런), 80%는 야생동물 로스터 중 무작위 — 매번 같은 상대만
