@@ -75,6 +75,20 @@ export async function POST(req: Request) {
     }) : Promise.resolve(),
   ]);
 
+  // 도감(컬렉션) 진행률 — box/supabase_pve_bestiary_migration.sql 실행 전이면 컬럼이 없어
+  // 이 블록만 조용히 실패하고 넘어간다(위 코인/경험치 지급과 완전히 분리).
+  try {
+    const pveKey = is_boss ? "boss" : String(opp_cat_id ?? "").replace(/^pve-/, "");
+    if (pveKey) {
+      const { data: bestiary } = await svc.from("profiles").select("pve_seen_keys,pve_defeated_keys").eq("id", user.id).maybeSingle();
+      const seenSet = new Set(bestiary?.pve_seen_keys ?? []);
+      const defeatedSet = new Set(bestiary?.pve_defeated_keys ?? []);
+      seenSet.add(pveKey);
+      if (iWon) defeatedSet.add(pveKey);
+      await svc.from("profiles").update({ pve_seen_keys: Array.from(seenSet), pve_defeated_keys: Array.from(defeatedSet) }).eq("id", user.id);
+    }
+  } catch { /* 마이그레이션 전이면 여기서만 조용히 무시 */ }
+
   return NextResponse.json({
     exp_gained: iWon ? winnerExp : loserExp,
     my_new_exp: myNewExp,

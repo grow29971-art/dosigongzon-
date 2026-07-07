@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
 import { SPECIAL_SKILLS } from "@/lib/battle-config";
+import { PVE_BESTIARY, PVE_BOSS, bestiaryPhotoUrl } from "@/lib/pve-bestiary";
 import Link from "next/link";
 
 interface CardCat {
@@ -48,6 +49,8 @@ export default function MyCardsPage() {
   const [relearnQty, setRelearnQty] = useState(0);
   const [relearnLoading, setRelearnLoading] = useState(false);
   const [relearnMsg, setRelearnMsg] = useState("");
+  const [seenKeys, setSeenKeys] = useState<string[]>([]);
+  const [defeatedKeys, setDefeatedKeys] = useState<string[]>([]);
 
   const loadCats = async (uid: string) => {
     const [{ data }, { data: profile }, { data: relearnItem }] = await Promise.all([
@@ -67,6 +70,15 @@ export default function MyCardsPage() {
     setRepCardId((profile as { rep_card_cat_id?: string | null } | null)?.rep_card_cat_id ?? null);
     setRelearnQty((relearnItem as { quantity?: number } | null)?.quantity ?? 0);
     setLoading(false);
+
+    // 도감 — box/supabase_pve_bestiary_migration.sql 실행 전이면 컬럼이 없어 이 쿼리만
+    // 조용히 실패(빈 배열 유지)하고 나머지 페이지는 정상 동작하도록 완전히 분리해서 조회.
+    try {
+      const { data: bestiary } = await createClient()
+        .from("profiles").select("pve_seen_keys,pve_defeated_keys").eq("id", uid).maybeSingle();
+      setSeenKeys((bestiary as { pve_seen_keys?: string[] } | null)?.pve_seen_keys ?? []);
+      setDefeatedKeys((bestiary as { pve_defeated_keys?: string[] } | null)?.pve_defeated_keys ?? []);
+    } catch { /* 마이그레이션 전이면 조용히 무시 */ }
   };
 
   useEffect(() => {
@@ -174,6 +186,52 @@ export default function MyCardsPage() {
               <Coins size={15} /> 상점
             </Link>
           </div>
+
+          {/* ── 도감(컬렉션 진행률) ── */}
+          {(() => {
+            const all = [...PVE_BESTIARY, PVE_BOSS];
+            const seenCount = all.filter(e => seenKeys.includes(e.key)).length;
+            return (
+              <div className="mb-5">
+                <div className="flex items-center justify-between mb-2 px-1">
+                  <span className="text-[13px] font-extrabold" style={{ color: "#2B2B3D" }}>🐾 동네 도감</span>
+                  <span className="text-[11px] font-bold" style={{ color: "#8A8598" }}>{seenCount}/{all.length}마리 발견</span>
+                </div>
+                <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+                  {all.map((entry) => {
+                    const seen = seenKeys.includes(entry.key);
+                    const defeated = defeatedKeys.includes(entry.key);
+                    const photo = bestiaryPhotoUrl(entry);
+                    return (
+                      <div key={entry.key} className="shrink-0 flex flex-col items-center gap-1" style={{ width: 56 }}>
+                        <div
+                          className="relative rounded-full overflow-hidden flex items-center justify-center"
+                          style={{
+                            width: 52, height: 52,
+                            background: seen ? "#fff" : "#E9E7F0",
+                            boxShadow: seen
+                              ? `0 0 0 2px #fff, 0 0 0 4px ${defeated ? "#FFC15E" : "#5C8DEE"}, 0 3px 8px rgba(0,0,0,0.1)`
+                              : "inset 0 0 0 2px rgba(0,0,0,0.05)",
+                          }}
+                        >
+                          {seen && photo ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={photo} alt={entry.name} className="w-full h-full object-cover"
+                              style={{ filter: defeated ? undefined : "grayscale(0.3)" }} />
+                          ) : (
+                            <span style={{ fontSize: 20, opacity: 0.35 }}>❔</span>
+                          )}
+                        </div>
+                        <span className="text-[9px] font-bold truncate w-full text-center" style={{ color: seen ? "#6B6578" : "#B4AFC2" }}>
+                          {seen ? entry.name : "???"}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
 
           {/* 희귀도 필터 */}
           <div className="flex gap-2 mb-5 overflow-x-auto pb-1 no-scrollbar">
