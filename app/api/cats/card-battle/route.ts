@@ -176,7 +176,7 @@ const PVE_ROSTER: PveCreature[] = [
 // 실제 사진이 준비된 PVE 로스터 키 — public/pve/{key}.jpg 로 존재. 아직 사진이 없는
 // 종(예: 쥐)은 이 목록에서 빠져 기존처럼 placeholder_emoji로 표시된다.
 const PVE_PHOTO_KEYS = new Set([
-  "mosquito", "fly", "centipede", "slug", "ant", "roach", "mouse", "pigeon",
+  "mosquito", "fly", "centipede", "slug", "ant", "roach", "mouse", "rat", "pigeon",
   "wasp", "crow", "raccoon", "spider", "weasel", "hawk", "owl", "snake",
   "boar", "deer", "badger", "marten", "mole",
 ]);
