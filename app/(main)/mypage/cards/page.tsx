@@ -145,32 +145,32 @@ export default function MyCardsPage() {
 
   return (
     <>
-      <div className="min-h-dvh" style={{ background: "#0F0F1A" }}>
+      <div className="min-h-dvh" style={{ background: "radial-gradient(circle at 50% 0%, #EEF4FF, #F4F7FC 40%)" }}>
         {/* 헤더 */}
-        <div className="sticky top-0 z-10 px-4 pt-safe pt-4 pb-3 flex items-center gap-3" style={{ background: "#0F0F1A" }}>
-          <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>
-            <ArrowLeft size={18} className="text-white" />
+        <div className="sticky top-0 z-10 px-4 pt-safe pt-4 pb-3 flex items-center gap-3" style={{ background: "rgba(255,255,255,0.7)", backdropFilter: "blur(12px)" }}>
+          <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "#fff", boxShadow: "0 2px 6px rgba(60,50,90,0.1)" }}>
+            <ArrowLeft size={18} style={{ color: "#2B2B3D" }} />
           </button>
-          <h1 className="text-[17px] font-extrabold text-white">내 고양이 카드</h1>
-          <span className="text-[13px] text-gray-400 ml-auto">{cats.length}장</span>
+          <h1 className="text-[17px] font-extrabold" style={{ color: "#2B2B3D" }}>내 고양이 카드</h1>
+          <span className="text-[13px] font-semibold ml-auto" style={{ color: "#8A8598" }}>{cats.length}장</span>
         </div>
 
         <div className="px-4 pb-28">
           {/* 빠른 메뉴 */}
-          <div className="grid grid-cols-3 gap-2 mb-4">
+          <div className="grid grid-cols-3 gap-2 mb-4 mt-3">
             <Link href="/mypage/cards/battle"
               className="flex items-center justify-center gap-1.5 p-3 rounded-2xl font-bold text-[12px] text-white"
-              style={{ background: "linear-gradient(135deg,#6030A8,#A050E0)" }}>
+              style={{ background: "linear-gradient(135deg,#9F85F0,#7A5AE0)", boxShadow: "0 4px 12px rgba(122,90,224,0.3)" }}>
               <Swords size={15} /> 배틀
             </Link>
             <Link href="/mypage/cards/ranking"
               className="flex items-center justify-center gap-1.5 p-3 rounded-2xl font-bold text-[12px] text-white"
-              style={{ background: "linear-gradient(135deg,#1A5080,#2878B8)" }}>
+              style={{ background: "linear-gradient(135deg,#8FC0FF,#5C93F0)", boxShadow: "0 4px 12px rgba(92,147,240,0.3)" }}>
               <Trophy size={15} /> 랭킹
             </Link>
             <Link href="/mypage/shop"
               className="flex items-center justify-center gap-1.5 p-3 rounded-2xl font-bold text-[12px] text-white"
-              style={{ background: "linear-gradient(135deg,#B87000,#FFA020)" }}>
+              style={{ background: "linear-gradient(135deg,#FFC15E,#FFA030)", boxShadow: "0 4px 12px rgba(255,160,48,0.3)" }}>
               <Coins size={15} /> 상점
             </Link>
           </div>
@@ -180,18 +180,18 @@ export default function MyCardsPage() {
             {(["all", ...RARITY_ORDER] as const).map((r) => (
               <button key={r} onClick={() => setFilter(r)}
                 className="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all"
-                style={{ background: filter === r ? "white" : "rgba(255,255,255,0.08)", color: filter === r ? "#0F0F1A" : "rgba(255,255,255,0.6)" }}>
+                style={{ background: filter === r ? "#5C8DEE" : "#fff", color: filter === r ? "#fff" : "#8A8598", boxShadow: filter === r ? "0 2px 8px rgba(92,141,238,0.35)" : "0 1px 4px rgba(60,50,90,0.06)" }}>
                 {r === "all" ? `전체 ${cats.length}` : `${RARITY_LABELS[r]} ${counts[r]}`}
               </button>
             ))}
           </div>
 
           {loading ? (
-            <div className="flex justify-center py-20"><Loader2 size={28} className="animate-spin text-gray-500" /></div>
+            <div className="flex justify-center py-20"><Loader2 size={28} className="animate-spin" style={{ color: "#B4AFC2" }} /></div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-[32px] mb-3">🃏</p>
-              <p className="text-gray-500 text-[14px]">{filter === "all" ? "아직 카드가 없어요" : `${RARITY_LABELS[filter as CardRarity]} 카드가 없어요`}</p>
+              <p className="text-[14px] font-semibold" style={{ color: "#9A94A8" }}>{filter === "all" ? "아직 카드가 없어요" : `${RARITY_LABELS[filter as CardRarity]} 카드가 없어요`}</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-4">
@@ -212,14 +212,14 @@ export default function MyCardsPage() {
 
       {/* 카드 상세 모달 */}
       {selected && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 200, background: "rgba(0,0,0,0.90)", display: "flex", flexDirection: "column", alignItems: "center", padding: "20px 20px calc(20px + env(safe-area-inset-bottom))", gap: 12, overflowY: "auto", WebkitOverflowScrolling: "touch" }}
+        <div style={{ position: "fixed", inset: 0, zIndex: 200, background: "rgba(30,28,45,0.72)", backdropFilter: "blur(4px)", display: "flex", flexDirection: "column", alignItems: "center", padding: "20px 20px calc(20px + env(safe-area-inset-bottom))", gap: 12, overflowY: "auto", WebkitOverflowScrolling: "touch" }}
           onClick={() => setSelected(null)}>
           <button onClick={() => setSelected(null)}
             style={{
               position: "fixed", top: "calc(env(safe-area-inset-top) + 14px)", right: 16, zIndex: 201,
               width: 40, height: 40, borderRadius: 99,
-              background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)",
-              display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", cursor: "pointer",
+              background: "#fff", boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+              display: "flex", alignItems: "center", justifyContent: "center", color: "#2B2B3D", cursor: "pointer",
             }}>
             <X size={20} />
           </button>
@@ -230,15 +230,15 @@ export default function MyCardsPage() {
               size="lg" />
 
             {/* XP 바 */}
-            <div className="w-full px-1">
-              <div className="flex justify-between text-[11px] text-gray-400 mb-1">
+            <div className="w-full px-1 rounded-2xl p-3" style={{ background: "#fff" }}>
+              <div className="flex justify-between text-[11px] font-semibold mb-1" style={{ color: "#8A8598" }}>
                 <span>EXP</span>
                 <span>{selected.card_exp} XP</span>
               </div>
-              <div className="h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.1)" }}>
+              <div className="h-1.5 rounded-full" style={{ background: "#EEEDF4" }}>
                 <div className="h-full rounded-full" style={{
                   width: `${Math.min(((selected.card_exp ?? 0) / ([0,90,210,380,610,900,1260,1690,2200,2800][Math.min(selected.card_level ?? 1, 9)] || 2800)) * 100, 100)}%`,
-                  background: "linear-gradient(90deg,#A060FF,#FF80C0)",
+                  background: "linear-gradient(90deg,#9F85F0,#FF9CC6)",
                 }} />
               </div>
             </div>
@@ -248,7 +248,7 @@ export default function MyCardsPage() {
               {/* 대표 카드 설정 */}
               <button onClick={() => setRepCard(repCardId === selected.id ? null : selected.id)}
                 className="py-2.5 rounded-xl text-[11px] font-bold flex flex-col items-center gap-1"
-                style={{ background: repCardId === selected.id ? "rgba(255,215,0,0.2)" : "rgba(255,255,255,0.08)", color: repCardId === selected.id ? "#FFD700" : "rgba(255,255,255,0.7)" }}>
+                style={{ background: repCardId === selected.id ? "#FFF3D6" : "#fff", color: repCardId === selected.id ? "#C98A1E" : "#6B6578" }}>
                 <Star size={14} />
                 {repCardId === selected.id ? "대표 해제" : "대표 설정"}
               </button>
@@ -256,7 +256,7 @@ export default function MyCardsPage() {
               {/* 배틀 */}
               <Link href="/mypage/cards/battle"
                 className="py-2.5 rounded-xl text-[11px] font-bold flex flex-col items-center gap-1"
-                style={{ background: "rgba(160,80,255,0.2)", color: "#C090FF", textDecoration: "none" }}>
+                style={{ background: "#EFE9FD", color: "#7A5AE0", textDecoration: "none" }}>
                 <Swords size={14} />
                 배틀
               </Link>
@@ -264,7 +264,7 @@ export default function MyCardsPage() {
               {/* 합성 */}
               <button onClick={doSynthesis} disabled={synthLoading || selected.card_rarity === "legendary"}
                 className="py-2.5 rounded-xl text-[11px] font-bold flex flex-col items-center gap-1"
-                style={{ background: selected.card_rarity === "legendary" ? "rgba(255,255,255,0.04)" : "rgba(255,160,0,0.2)", color: selected.card_rarity === "legendary" ? "rgba(255,255,255,0.2)" : "#FFCC44", opacity: synthLoading ? 0.6 : 1 }}>
+                style={{ background: selected.card_rarity === "legendary" ? "#F1F0F5" : "#FFF3D6", color: selected.card_rarity === "legendary" ? "#C4C0CE" : "#C98A1E", opacity: synthLoading ? 0.6 : 1 }}>
                 <Zap size={14} />
                 합성
               </button>
@@ -272,25 +272,25 @@ export default function MyCardsPage() {
 
             {/* 합성 조건 안내 */}
             {selected.card_rarity !== "legendary" && (
-              <p className="text-[11px] text-gray-500 text-center">
+              <p className="text-[11px] text-center font-semibold" style={{ color: "#EDEBF7" }}>
                 {RARITY_LABELS[selected.card_rarity]} → {SYNTHESIS_RESULT[selected.card_rarity]} 합성 조건: Lv.{LEVEL_GATE[selected.card_rarity]} 이상
-                <br />현재 레벨: <span style={{ color: (selected.card_level ?? 1) >= LEVEL_GATE[selected.card_rarity] ? "#FFCC44" : "#FF6060" }}>Lv.{selected.card_level ?? 1}</span>
+                <br />현재 레벨: <span style={{ color: (selected.card_level ?? 1) >= LEVEL_GATE[selected.card_rarity] ? "#FFD76A" : "#FF9C9C" }}>Lv.{selected.card_level ?? 1}</span>
               </p>
             )}
 
             {synthMsg && (
-              <p className="text-[13px] font-bold text-center" style={{ color: synthMsg.includes("부족") || synthMsg.includes("오류") ? "#FF8080" : "#80FF80" }}>
+              <p className="text-[13px] font-bold text-center" style={{ color: synthMsg.includes("부족") || synthMsg.includes("오류") ? "#FF9C9C" : "#9CF0B4" }}>
                 {synthMsg}
               </p>
             )}
 
             {/* 기술 다시 배우기 */}
-            <div className="w-full rounded-2xl p-3" style={{ background: "rgba(255,255,255,0.05)" }}>
+            <div className="w-full rounded-2xl p-3" style={{ background: "#fff" }}>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[12px] font-bold text-white flex items-center gap-1.5">
+                <span className="text-[12px] font-bold flex items-center gap-1.5" style={{ color: "#2B2B3D" }}>
                   <Scroll size={13} /> 기술 다시 배우기
                 </span>
-                <span className="text-[11px] font-bold" style={{ color: relearnQty > 0 ? "#FFCC44" : "rgba(255,255,255,0.35)" }}>
+                <span className="text-[11px] font-bold" style={{ color: relearnQty > 0 ? "#C98A1E" : "#C4C0CE" }}>
                   머신 보유 {relearnQty}개
                 </span>
               </div>
@@ -300,18 +300,18 @@ export default function MyCardsPage() {
                   return (
                     <button key={i} onClick={() => doRelearn(i)} disabled={relearnQty <= 0 || relearnLoading}
                       className="rounded-xl px-2 py-1.5 text-left flex items-center gap-1.5"
-                      style={{ background: "rgba(255,255,255,0.06)", opacity: relearnQty > 0 ? 1 : 0.4 }}>
+                      style={{ background: "#F6F5FA", opacity: relearnQty > 0 ? 1 : 0.4 }}>
                       <span style={{ fontSize: 14 }}>{skill?.icon ?? "❔"}</span>
-                      <span className="text-[10.5px] font-bold text-white truncate">{skill?.name ?? "?"}</span>
+                      <span className="text-[10.5px] font-bold truncate" style={{ color: "#2B2B3D" }}>{skill?.name ?? "?"}</span>
                     </button>
                   );
                 })}
               </div>
               {relearnQty <= 0 && (
-                <p className="text-[10px] text-gray-500 mt-1.5">상점에서 &quot;기술 다시 배우기 머신&quot;을 구매하면 스킬을 눌러 재배정할 수 있어요.</p>
+                <p className="text-[10px] mt-1.5" style={{ color: "#9A94A8" }}>상점에서 &quot;기술 다시 배우기 머신&quot;을 구매하면 스킬을 눌러 재배정할 수 있어요.</p>
               )}
               {relearnMsg && (
-                <p className="text-[11px] font-bold text-center mt-1.5" style={{ color: relearnMsg.includes("오류") || relearnMsg.includes("없어요") ? "#FF8080" : "#80FF80" }}>
+                <p className="text-[11px] font-bold text-center mt-1.5" style={{ color: relearnMsg.includes("오류") || relearnMsg.includes("없어요") ? "#E1505F" : "#3FCB6B" }}>
                   {relearnMsg}
                 </p>
               )}
@@ -320,7 +320,7 @@ export default function MyCardsPage() {
             {/* 자랑하기 */}
             <button onClick={() => shareCard(selected)}
               className="w-full py-2.5 rounded-xl text-[12px] font-bold flex items-center justify-center gap-2"
-              style={{ background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.6)" }}>
+              style={{ background: "#fff", color: "#6B6578" }}>
               <Share2 size={13} /> 커뮤니티에 자랑하기
             </button>
           </div>
