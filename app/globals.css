@@ -6,33 +6,33 @@
    ══════════════════════════════════════════ */
 
 @theme inline {
-  /* Primary — 번트 클레이 */
-  --color-primary: #C47E5A;
-  --color-primary-light: #D4956F;
-  --color-primary-dark: #A06541;
+  /* Primary — 배틀화면 파스텔 블루/퍼플 톤 */
+  --color-primary: #5C8DEE;
+  --color-primary-light: #8AAEF5;
+  --color-primary-dark: #3D6BC9;
 
-  /* Background — 웜 오프화이트 */
-  --color-warm-white: #F5F3EE;
+  /* Background — 쿨 오프화이트 (하늘색 톤과 어울리게) */
+  --color-warm-white: #F4F7FC;
   --color-surface: #FFFFFF;
-  --color-surface-alt: #EEEAE2;
+  --color-surface-alt: #EAF0FB;
 
   /* Text */
-  --color-text-main: #1A1A19;
-  --color-text-sub: #6B665F;
-  --color-text-light: #948F88;
-  --color-text-muted: #B0AAA2;
+  --color-text-main: #262A38;
+  --color-text-sub: #5C6270;
+  --color-text-light: #8A90A0;
+  --color-text-muted: #AEB4C2;
 
   /* Accents */
-  --color-sage: #6B8E6F;
-  --color-mint: #6B8E6F;
-  --color-clay: #D4A590;
-  --color-coral: #D4A590;
-  --color-error: #B84545;
-  --color-warning: #C9A961;
+  --color-sage: #4FAD6E;
+  --color-mint: #4FAD6E;
+  --color-clay: #8B6FE0;
+  --color-coral: #8B6FE0;
+  --color-error: #E1505F;
+  --color-warning: #E0A030;
 
   /* Border */
-  --color-border: #E5E0D6;
-  --color-divider: #EEEAE2;
+  --color-border: #E2E6F0;
+  --color-divider: #EDF1F9;
 
   /* Font */
   --font-sans: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -81,7 +81,7 @@ body {
 }
 
 .nav-shadow { box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03); }
-.fab-shadow { box-shadow: 0 6px 20px rgba(196, 126, 90, 0.3); }
+.fab-shadow { box-shadow: 0 6px 20px rgba(92, 141, 238, 0.3); }
 
 /* ── 태그 ── */
 .tag {
@@ -216,7 +216,7 @@ body {
 .tip-body blockquote {
   border-left: 3px solid var(--color-primary);
   padding: 0.6em 0 0.6em 1.1em;
-  background: #FBF8F3;
+  background: #F1F5FC;
   border-radius: 0 12px 12px 0;
   color: var(--color-text-sub);
   font-style: normal;
@@ -226,8 +226,8 @@ body {
 .tip-body code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.92em;
-  background: #F2EBE0;
-  color: #8B6F4E;
+  background: #E7EEFA;
+  color: #4A5578;
   padding: 0.15em 0.45em;
   border-radius: 6px;
 }
@@ -274,7 +274,7 @@ body {
   text-align: left;
 }
 .tip-body th {
-  background: #FBF8F3;
+  background: #F1F5FC;
   font-weight: 700;
 }
 .tip-body hr {

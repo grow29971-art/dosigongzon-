@@ -1434,12 +1434,13 @@ export default function BattlePage() {
       }}>
         <EnvScene env={battleEnv} />
 
-        {/* 헤더 */}
-        <div className="flex items-center gap-3 px-4 pt-safe pt-4 pb-3 shrink-0" style={{background:"rgba(255,255,255,0.55)",backdropFilter:"blur(12px)"}}>
+        {/* 헤더 — 배틀 중엔 목업처럼 상단 바 없이 떠 있는 아이콘만 남기고 최소화 */}
+        <div className={`flex items-center gap-3 px-4 shrink-0 ${isFightPhase ? "pt-safe pt-3 pb-1" : "pt-safe pt-4 pb-3"}`}
+          style={isFightPhase ? undefined : {background:"rgba(255,255,255,0.55)",backdropFilter:"blur(12px)"}}>
           <button onClick={()=>{reset();router.back();}} className="w-9 h-9 rounded-full flex items-center justify-center" style={{background:"rgba(255,255,255,0.7)",boxShadow:"0 2px 6px rgba(60,50,90,0.1)"}}>
             <ArrowLeft size={18} color="#2B2B3D"/>
           </button>
-          <h1 className="text-[17px] font-extrabold flex items-center gap-2" style={{color:"#2B2B3D"}}><Swords size={18}/> 카드 배틀</h1>
+          {!isFightPhase && <h1 className="text-[17px] font-extrabold flex items-center gap-2" style={{color:"#2B2B3D"}}><Swords size={18}/> 카드 배틀</h1>}
           {isFightPhase && <span className="ml-auto text-[12px] font-bold" style={{color:"#6B6578"}}>{turnCount}턴</span>}
           <SfxToggle style={isFightPhase ? undefined : { marginLeft: "auto" }}/>
         </div>
@@ -1576,7 +1577,7 @@ export default function BattlePage() {
             )}
 
             {/* 양쪽 카드 */}
-            <div className="flex items-end justify-center gap-2" style={{minHeight:210}}>
+            <div className="flex items-end justify-center gap-1" style={{minHeight:250}}>
               {/* 내 카드 */}
               <div className="flex flex-col items-center gap-1.5" style={{flex:1}}>
                 <div style={{position:"relative"}}>
@@ -1587,7 +1588,7 @@ export default function BattlePage() {
                       {myStatusBadges.map((b,i)=>(<span key={i} style={{background:"rgba(0,0,0,0.75)",color:"#FFAA88",fontSize:9,fontWeight:900,padding:"1px 5px",borderRadius:99,whiteSpace:"nowrap"}}>{b}</span>))}
                     </div>
                   )}
-                  <div style={cardStyle(myAnim,"left")}><CatCard name={selected.name} photoUrl={selected.photo_url} card={toCard(selected)} size="sm"/></div>
+                  <div style={cardStyle(myAnim,"left")}><CatCard name={selected.name} photoUrl={selected.photo_url} card={toCard(selected)} size="battle"/></div>
                   <StatusFx frozen={myFrozen} feared={myFeared} shocked={myShocked} sleepy={mySleepy} poisoned={myPoisoned} bleeding={myBleeding} bound={myBound}/>
                   <ParticleCanvas ref={myParticleRef} zIndex={9}/>
                   {impactBurst?.side==="me" && (
@@ -1621,10 +1622,10 @@ export default function BattlePage() {
               {/* 중앙 메시지 */}
               <div className="flex flex-col items-center shrink-0" style={{minWidth:48}}>
                 <span style={{
-                  width:44, height:44, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center",
-                  fontSize:14, fontWeight:900, color:"#fff", letterSpacing:0.5,
+                  width:38, height:38, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center",
+                  fontSize:13, fontWeight:900, color:"#fff", letterSpacing:0.5, flexShrink:0,
                   background:"linear-gradient(135deg,#8FC0FF,#5C93F0)",
-                  boxShadow:"0 0 0 4px rgba(255,255,255,0.6), 0 4px 12px rgba(80,120,220,0.35)",
+                  boxShadow:"0 0 0 3px rgba(255,255,255,0.6), 0 4px 12px rgba(80,120,220,0.35)",
                 }}>VS</span>
                 {actionMsg&&<div key={actionMsg} style={{fontSize:9,fontWeight:800,color:"#8B6FE0",textAlign:"center",maxWidth:60,lineHeight:1.3,marginTop:4,animation:"msgIn 0.3s ease"}}>{actionMsg}</div>}
               </div>
@@ -1639,7 +1640,7 @@ export default function BattlePage() {
                       {oppStatusBadges.map((b,i)=>(<span key={i} style={{background:"rgba(0,0,0,0.75)",color:"#FFAA88",fontSize:9,fontWeight:900,padding:"1px 5px",borderRadius:99,whiteSpace:"nowrap"}}>{b}</span>))}
                     </div>
                   )}
-                  <div style={cardStyle(oppAnim,"right")}><CatCard name={opponent.name} photoUrl={opponent.photo_url} card={toCard(opponent)} size="sm"/></div>
+                  <div style={cardStyle(oppAnim,"right")}><CatCard name={opponent.name} photoUrl={opponent.photo_url} card={toCard(opponent)} size="battle"/></div>
                   <StatusFx frozen={oppFrozen} feared={oppFeared} shocked={oppShocked} sleepy={oppSleepy} poisoned={oppPoisoned} bleeding={oppBleeding} bound={oppBound}/>
                   <ParticleCanvas ref={oppParticleRef} zIndex={9}/>
                   {impactBurst?.side==="opp" && (

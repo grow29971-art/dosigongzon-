@@ -27,7 +27,8 @@ interface CatCardProps {
   name: string;
   photoUrl: string | null;
   card: CatCardData;
-  size?: "sm" | "md" | "lg";
+  // "battle" = 배틀 화면 1:1 대결 카드 전용 크기 (sm보다 큼, 기술 미리보기 생략)
+  size?: "sm" | "md" | "lg" | "battle";
   onClick?: () => void;
 }
 
@@ -157,12 +158,14 @@ const PRESTIGE_GLOW: Record<PrestigeTier, string> = {
 };
 const PRESTIGE_LABEL: Record<PrestigeTier, string> = { none: "", silver: "은빛 숙련", gold: "금빛 숙련", prismatic: "무지개 숙련" };
 
-function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> & { size: "sm" | "md" | "lg" }) {
+function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> & { size: "sm" | "md" | "lg" | "battle" }) {
   const rarity = (card.card_rarity ?? "common") as CardRarity;
   const cfg = CARD_THEME[rarity] ?? CARD_THEME.common;
   const soft = SOFT_THEME[rarity] ?? SOFT_THEME.common;
   const isSm = size === "sm";
   const isLg = size === "lg";
+  const isBattle = size === "battle";
+  const compact = isSm || isBattle; // 기술 미리보기 등 부가 정보를 생략하는 좁은 카드 공통 처리
 
   const lv = Math.max(1, Math.min(10, card.card_level ?? 1));
   const lvBonus = lv - 1;
@@ -191,22 +194,23 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
   const dexNo = pseudoDexNo(card.card_name ?? name);
 
   // 카드 크기
-  const W = isLg ? 300 : isSm ? 130 : 190;
-  const photoH = isLg ? 180 : isSm ? 78 : 114;
-  const radius = isLg ? 26 : isSm ? 16 : 20;
+  const W = isLg ? 300 : isBattle ? 138 : isSm ? 130 : 190;
+  const photoH = isLg ? 180 : isBattle ? 96 : isSm ? 78 : 114;
+  const radius = isLg ? 26 : isBattle ? 18 : isSm ? 16 : 20;
   const innerRadius = Math.max(10, radius - 8);
-  const pad = isLg ? 12 : isSm ? 8 : 10;
+  const pad = isLg ? 12 : isBattle ? 9 : isSm ? 8 : 10;
   const shadowBlur = isLg ? 22 : isSm ? 12 : 16;
 
   const fs = {
-    label: isLg ? 10 : isSm ? 8 : 9,
-    name: isLg ? 16 : isSm ? 11 : 13,
-    hp: isLg ? 15 : isSm ? 11 : 13,
+    label: isLg ? 10 : isBattle ? 8.5 : isSm ? 8 : 9,
+    name: isLg ? 16 : isBattle ? 12.5 : isSm ? 11 : 13,
+    hp: isLg ? 15 : isBattle ? 12.5 : isSm ? 11 : 13,
     flavor: isLg ? 10.5 : 9,
-    dex: isLg ? 9 : isSm ? 7 : 8,
+    dex: isLg ? 9 : isBattle ? 7.5 : isSm ? 7 : 8,
+    subtitle: isLg ? 9.5 : isBattle ? 8 : 7.5,
     moveName: isLg ? 11.5 : 9,
     movePow: isLg ? 15 : isSm ? 11 : 13,
-    bottom: isLg ? 9 : 8,
+    bottom: isLg ? 9 : isBattle ? 8 : 8,
   };
 
   return (
@@ -226,20 +230,8 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
         ["--shadow-offset" as string]: "0px",
       } as React.CSSProperties}
     >
-      {/* 모서리 다이아몬드 장식 */}
-      {(["-6px,-6px", "-6px,calc(100% - 6px)", "calc(100% - 6px),-6px", "calc(100% - 6px),calc(100% - 6px)"]).map((pos) => {
-        const [top, left] = pos.split(",");
-        return (
-          <span key={pos} style={{
-            position: "absolute", top, left, width: isLg ? 11 : 8, height: isLg ? 11 : 8,
-            background: soft.frameOuter, transform: "translate(-50%,-50%) rotate(45deg)",
-            borderRadius: 2, zIndex: 3, boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
-          }} />
-        );
-      })}
-
       {/* ── 상단 리본: 등급 + HP ── */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 5, marginBottom: isSm ? 5 : 7 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 5, marginBottom: isSm ? 5 : 6 }}>
         <span style={{
           background: "#fff", borderRadius: 999,
           padding: isLg ? "3px 10px" : "2px 7px",
@@ -259,6 +251,24 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
         </span>
       </div>
 
+      {/* ── 부제(플레이버) + 이름 — 사진 위 ── */}
+      <div style={{ marginBottom: isSm ? 4 : 5 }}>
+        {!isSm && card.card_flavor && (
+          <div style={{
+            fontSize: fs.subtitle, color: "#9A958A", fontWeight: 600, lineHeight: 1.25,
+            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+          }}>
+            {card.card_flavor}
+          </div>
+        )}
+        <div style={{
+          fontSize: fs.name, fontWeight: 800, color: "#3A3630", lineHeight: 1.2,
+          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+        }}>
+          {card.card_name ?? name}
+        </div>
+      </div>
+
       {/* ── 사진 프레임 ── */}
       <div style={{
         borderRadius: innerRadius, overflow: "hidden", position: "relative",
@@ -276,17 +286,14 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
         </div>
       </div>
 
-      {/* ── 이름 + 도감번호 + 레벨 ── */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6, marginTop: isSm ? 6 : 8 }}>
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: fs.dex, color: "#A6A196", fontWeight: 600 }}>No.{dexNo}</div>
-          <div style={{
-            fontSize: fs.name, fontWeight: 800, color: "#3A3630", lineHeight: 1.2,
-            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-          }}>
-            {card.card_name ?? name}
-          </div>
-        </div>
+      {/* ── 도감번호 + 이름(축약) + 레벨 — 사진 아래 ── */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6, marginTop: isSm ? 5 : 7 }}>
+        <span style={{
+          fontSize: fs.dex, color: "#9A958A", fontWeight: 600,
+          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0,
+        }}>
+          No.{dexNo} · {name}
+        </span>
         <span style={{
           background: lv >= 10 ? "linear-gradient(135deg,#FFD76A,#FFA83A)" : "#FF6B81",
           color: "#fff", fontWeight: 800, borderRadius: 999,
@@ -300,7 +307,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
       {!isSm && (
         <div style={{
           display: "flex", justifyContent: "space-between", marginTop: isLg ? 8 : 6,
-          background: "#fff", borderRadius: 14, padding: isLg ? "7px 10px" : "5px 8px",
+          background: "#fff", borderRadius: 14, padding: isLg ? "7px 10px" : "5px 6px",
           boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.05)",
         }}>
           {statRow.map((s, i) => (
@@ -312,46 +319,38 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
         </div>
       )}
 
-      {/* ── 성장 훈장 스티커 (영구 기록) ── */}
-      <div style={{ display: "flex", alignItems: "center", gap: isSm ? 3 : 4, marginTop: isSm ? 5 : 7 }}>
-        {badges.map((b) => (
-          <span key={b.label} title={b.label} style={{
-            width: isLg ? 20 : isSm ? 14 : 17, height: isLg ? 20 : isSm ? 14 : 17,
-            borderRadius: "50%",
-            background: b.isUnlocked ? soft.typeBg : "#EFEDE6",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: isLg ? 11 : isSm ? 7.5 : 9,
-            filter: b.isUnlocked ? undefined : "grayscale(1)",
-            opacity: b.isUnlocked ? 1 : 0.4,
-            flexShrink: 0,
-          }}>
-            {b.emoji}
-          </span>
-        ))}
-        {tier !== "none" && (
-          <span style={{
-            marginLeft: "auto", fontSize: fs.dex - 1, fontWeight: 700,
-            color: tier === "gold" ? "#C98A1E" : tier === "prismatic" ? "#E0508A" : "#8A96A6",
-            flexShrink: 0,
-          }}>
-            {PRESTIGE_LABEL[tier]}
-          </span>
-        )}
-      </div>
-
-      {/* ── 카드 본문 (플레이버 + 기술) ── */}
-      {!isSm && (
-        <div style={{ display: "flex", flexDirection: "column", gap: isLg ? 6 : 4, marginTop: isLg ? 8 : 6 }}>
-          {card.card_flavor && (
-            <p style={{
-              fontSize: fs.flavor, color: "#8A8578", fontStyle: "italic",
-              lineHeight: 1.35, borderLeft: `3px solid ${soft.frameOuter}`, paddingLeft: 6,
-              overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0,
+      {/* ── 성장 훈장 스티커 (영구 기록) — 배틀 카드는 공간상 생략 ── */}
+      {!isBattle && (
+        <div style={{ display: "flex", alignItems: "center", gap: isSm ? 3 : 4, marginTop: isSm ? 5 : 7 }}>
+          {badges.map((b) => (
+            <span key={b.label} title={b.label} style={{
+              width: isLg ? 20 : isSm ? 14 : 17, height: isLg ? 20 : isSm ? 14 : 17,
+              borderRadius: "50%",
+              background: b.isUnlocked ? soft.typeBg : "#EFEDE6",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: isLg ? 11 : isSm ? 7.5 : 9,
+              filter: b.isUnlocked ? undefined : "grayscale(1)",
+              opacity: b.isUnlocked ? 1 : 0.4,
+              flexShrink: 0,
             }}>
-              &ldquo;{card.card_flavor}&rdquo;
-            </p>
+              {b.emoji}
+            </span>
+          ))}
+          {tier !== "none" && (
+            <span style={{
+              marginLeft: "auto", fontSize: fs.dex - 1, fontWeight: 700,
+              color: tier === "gold" ? "#C98A1E" : tier === "prismatic" ? "#E0508A" : "#8A96A6",
+              flexShrink: 0,
+            }}>
+              {PRESTIGE_LABEL[tier]}
+            </span>
           )}
+        </div>
+      )}
 
+      {/* ── 카드 본문 (기술) — 배틀 카드는 생략(하단 스킬 버튼과 중복) ── */}
+      {!compact && (
+        <div style={{ display: "flex", flexDirection: "column", gap: isLg ? 6 : 4, marginTop: isLg ? 8 : 6 }}>
           <div style={{
             background: "#fff", borderRadius: 12, padding: isLg ? "6px 9px" : "4px 7px",
             display: "flex", alignItems: "center", justifyContent: "space-between",
