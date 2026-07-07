@@ -64,6 +64,7 @@ interface BattleCat {
   battle_eva: number | null; battle_crit: number | null;
   battle_special: string | null; battle_special2: string | null;
   battle_special3: string | null; battle_special4: string | null;
+  placeholder_emoji?: string | null; // PVE 야생동물 상대(사진 없음) 표시용
 }
 interface BattleStats { hp: number; atk: number; def: number; spd: number; }
 interface Skill { name: string; icon: string; type: "normal"|"guard"|"special"; slot?: number; desc: string; color: string; }
@@ -188,7 +189,7 @@ function pickAvailableAutoAction(hp: number, maxHp: number, skillCds: number[], 
   return NORMAL_IDX; // 스킬 전부 쿨다운 + 방어도 못 쓰면 무제한인 기본공격으로
 }
 function toCard(cat: BattleCat): CatCardData {
-  return { card_rarity:cat.card_rarity, card_name:cat.card_name, card_traits:cat.card_traits??[], card_stats:cat.card_stats, card_flavor:cat.card_flavor, card_level:cat.card_level, card_exp:cat.card_exp };
+  return { card_rarity:cat.card_rarity, card_name:cat.card_name, card_traits:cat.card_traits??[], card_stats:cat.card_stats, card_flavor:cat.card_flavor, card_level:cat.card_level, card_exp:cat.card_exp, placeholder_emoji:cat.placeholder_emoji };
 }
 
 /* ──────────── 환경 씬 (달/해/별/비/안개/불씨 + 골목 스카이라인 실루엣) ──────────── */
@@ -386,8 +387,8 @@ export default function BattlePage() {
 
   const [myCats, setMyCats] = useState<BattleCat[]>([]);
   const [selected, setSelected] = useState<BattleCat | null>(null);
-  // 누구와 싸울지(PVE=고양이학대범 / PVP=다른 유저 카드)와 어떻게 싸울지(수동/자동)는
-  // 서로 다른 축이다. "평소엔 PVE"가 기본값 — 실제 길고양이끼리 싸우게 하는 PVP는
+  // 누구와 싸울지(PVE=동네 불청객들·가끔 고양이학대범 / PVP=다른 유저 카드)와
+  // 어떻게 싸울지(수동/자동)는 서로 다른 축이다. "평소엔 PVE"가 기본값 — 실제 길고양이끼리 싸우게 하는 PVP는
   // 원하는 사람만 선택하는 옵션으로 내림.
   const [battleType, setBattleType] = useState<"pve"|"pvp">("pve");
   const [mode, setMode] = useState<Mode>("manual");
@@ -501,7 +502,7 @@ export default function BattlePage() {
   const [battleResult, setBattleResult] = useState<{winner:"me"|"opponent"; exp:number; newLevel:number; leveledUp:boolean; coinsGained?:number}|null>(null);
   useEffect(() => { if (battleResult?.leveledUp) { sfx.levelUp(); navigator.vibrate?.([30,30,30,30,60]); } }, [battleResult]);
 
-  // 고양이학대범 랜덤 보스 조우
+  // PVE 조우 여부(동네 불청객 야생동물 또는 고양이학대범) — 서버가 is_boss로 알려줌
   const [isBossBattle, setIsBossBattle] = useState(false);
   const [showBossIntro, setShowBossIntro] = useState(false);
 
@@ -1411,11 +1412,17 @@ export default function BattlePage() {
 
       {showBossIntro && (
         <div style={{ position:"fixed", inset:0, zIndex:998, background:"#0A0A18", animation:"bossIntroIn 0.4s ease", display:"flex", flexDirection:"column" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/boss/villain-intro.jpg" alt="고양이학대범 등장" style={{ flex:1, width:"100%", minHeight:0, objectFit:"contain" }} />
+          {opponent?.photo_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={opponent.photo_url} alt={opponent.name} style={{ flex:1, width:"100%", minHeight:0, objectFit:"contain" }} />
+          ) : (
+            <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center" }}>
+              <span style={{ fontSize:140 }}>{opponent?.placeholder_emoji ?? "❓"}</span>
+            </div>
+          )}
           <div style={{ marginLeft:16, marginRight:16, marginBottom:"max(24px, env(safe-area-inset-bottom))", padding:"16px 18px", borderRadius:14, background:"rgba(20,20,28,0.96)", border:"2px solid #CC3333", boxShadow:"0 0 24px rgba(200,40,40,0.35)" }}>
             <p style={{ color:"white", fontWeight:800, fontSize:15, lineHeight:1.6, margin:0 }}>
-              동네를 어슬렁대는 고양이학대범을 발견했다!
+              {opponent?.name ?? "적"} 등장!
             </p>
           </div>
         </div>
@@ -1440,10 +1447,10 @@ export default function BattlePage() {
         {/* ──────── 선택 화면 ──────── */}
         {(phase==="select"||phase==="loading") && (
           <div className="flex-1 overflow-y-auto px-4 pb-6">
-            {/* 누구와 싸울지 — PVE(고양이학대범) 기본, PVP(다른 유저)는 선택 */}
+            {/* 누구와 싸울지 — PVE(동네 불청객들: 바퀴벌레·쥐·너구리 등 + 가끔 고양이학대범) 기본, PVP(다른 유저)는 선택 */}
             <div className="flex gap-2 mt-4 mb-2.5">
               {([
-                { key:"pve" as const, label:"🐾 고양이학대범과 대결", color:"#E85555" },
+                { key:"pve" as const, label:"🐾 동네 불청객과 대결", color:"#E85555" },
                 { key:"pvp" as const, label:"⚔️ 다른 유저와 대결", color:"#5A8AC4" },
               ]).map(bt=>(
                 <button key={bt.key} onClick={()=>setBattleType(bt.key)}
@@ -1645,7 +1652,7 @@ export default function BattlePage() {
                   )}
                   {oppGuardVis&&<div style={{position:"absolute",bottom:-4,left:"50%",transform:"translateX(-50%)",fontSize:9,color:"#4488FF",fontWeight:900,whiteSpace:"nowrap"}}>🛡️ 방어중</div>}
                 </div>
-                <span className="text-[10px] font-bold" style={{color:isBossBattle?"#FF6666":"#9CA3AF"}}>{isBossBattle?"😾 고양이학대범":"상대방"}</span>
+                <span className="text-[10px] font-bold" style={{color:isBossBattle?"#FF6666":"#9CA3AF"}}>{isBossBattle?`${opponent?.placeholder_emoji??"😾"} ${opponent?.name??"고양이학대범"}`:"상대방"}</span>
                 <div style={{width:"100%",maxWidth:130}}>
                   <div className="flex justify-between text-[9px] mb-0.5">
                     <span style={{color:oppDanger?"#FF6060":"#88CC88",fontWeight:700}}>HP</span>
@@ -1754,17 +1761,17 @@ export default function BattlePage() {
         {phase==="result"&&selected&&opponent&&battleResult&&(
           <div className="flex-1 flex flex-col items-center justify-center px-4 gap-4">
             <div style={{animation:"resIn 0.5s ease forwards",display:"flex",flexDirection:"column",alignItems:"center",gap:12,width:"100%",maxWidth:340}}>
-              <div style={{fontSize:64}}>{battleResult.winner==="me"?(isBossBattle?"🐱":"🏆"):"💔"}</div>
+              <div style={{fontSize:64}}>{battleResult.winner==="me"?(isBossBattle?"🎉":"🏆"):"💔"}</div>
               <p className={gameFont.className} style={{fontSize:28,color:battleResult.winner==="me"?"#44FF88":"#FF6060",textShadow:pixelOutline("#000",3)}}>
-                {battleResult.winner==="me"?(isBossBattle?"고양이학대범 격퇴!":"승리!"):(isBossBattle?"학대범에게 당했다...":"패배...")}
+                {isBossBattle
+                  ? (battleResult.winner==="me" ? `${opponent?.name??"적"} 격퇴!` : `${opponent?.name??"적"}에게 당했다...`)
+                  : (battleResult.winner==="me" ? "승리!" : "패배...")}
               </p>
-              {isBossBattle && battleResult.winner==="me" && (
+              {isBossBattle && !!opponent?.photo_url && battleResult.winner==="me" && (
                 <p className="text-[12px] text-yellow-300 font-bold -mt-2">🐾 갇혀있던 고양이를 구했다!</p>
               )}
               {isBossBattle && typeof battleResult.coinsGained==="number" && (
-                battleResult.winner==="me"
-                  ? <p className="text-[13px] font-bold -mt-1" style={{color:"#FFD700"}}>💰 코인 +{battleResult.coinsGained}</p>
-                  : <p className="text-[13px] font-bold -mt-1" style={{color:"#FF8080"}}>💸 학대범에게 코인 {Math.abs(battleResult.coinsGained)}개를 뺏겼다...</p>
+                <p className="text-[13px] font-bold -mt-1" style={{color:"#FFD700"}}>💰 코인 +{battleResult.coinsGained}</p>
               )}
               <p className="text-[13px] text-gray-400">
                 {turnCount}턴 · EXP +{battleResult.exp}

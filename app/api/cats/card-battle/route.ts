@@ -27,6 +27,8 @@ interface CardCat {
   battle_special3: string | null;
   battle_special4: string | null;
   win_streak: number | null;
+  // PVE 상대(고양이학대범 이외의 야생동물)는 실제 사진이 없어 이모지로 표시 — 진짜 고양이 카드는 항상 null.
+  placeholder_emoji?: string | null;
 }
 
 // 등급별 HP 보너스: 일반→레전드로 갈수록 체력이 두껍게 (전투가 늘어지지 않도록 전체적으로 하향)
@@ -63,6 +65,80 @@ function makeBossOpponent(myCat: CardCat): CardCat {
     battle_special2: "intimidate",
     battle_special3: "curse",
     battle_special4: "dominate",
+    win_streak: 0,
+  };
+}
+
+// PVE 야생동물 로스터 — "고양이학대범 한 종류만 계속" 대신, 우리 동네 아이가 실제로
+// 마주칠 법한 잡다한 불청객들과도 붙어보게 다양성을 줌. 사진 에셋이 없어 이모지로
+// 표시하고(placeholder_emoji), 체력/공격력은 내 카드 스탯 대비 상대 배율로 스케일한다.
+// 학대범(사람)만 진짜 "빌런" 취급이라 사진이 있고 별도로 더 강하게 잡아둔다.
+interface PveCreature {
+  key: string; name: string; emoji: string; flavor: string;
+  atkMult: number; defMult: number; eva: number; crit: number;
+  traits: [string, string]; stats: { cuteness: number; wildness: number; sociability: number; mysteriousness: number };
+  skills: [string, string, string, string];
+}
+const PVE_ROSTER: PveCreature[] = [
+  { key: "roach", name: "바퀴벌레", emoji: "🪳", flavor: "부엌을 어지럽히던 잽싼 침입자",
+    atkMult: 0.42, defMult: 0.30, eva: 30, crit: 8,
+    traits: ["잽싼 발놀림", "깜짝 도주"], stats: { cuteness: 10, wildness: 15, sociability: 5, mysteriousness: 10 },
+    skills: ["quick_dodge", "tail_whip", "claw_flurry", "sharp_claws"] },
+  { key: "mouse", name: "생쥐", emoji: "🐭", flavor: "찬장 밑에서 튀어나온 작은 도둑",
+    atkMult: 0.50, defMult: 0.35, eva: 24, crit: 8,
+    traits: ["살금살금", "작은 이빨"], stats: { cuteness: 20, wildness: 20, sociability: 10, mysteriousness: 15 },
+    skills: ["quick_dodge", "scratch", "tail_whip", "sharp_claws"] },
+  { key: "rat", name: "쥐", emoji: "🐀", flavor: "하수구를 누비는 덩치 큰 쥐",
+    atkMult: 0.65, defMult: 0.45, eva: 16, crit: 10,
+    traits: ["날카로운 이빨", "질긴 생명력"], stats: { cuteness: 15, wildness: 35, sociability: 10, mysteriousness: 20 },
+    skills: ["venom_fang", "scratch", "rend", "body_slam"] },
+  { key: "pigeon", name: "비둘기", emoji: "🐦", flavor: "전깃줄 위의 뻔뻔한 불청객",
+    atkMult: 0.60, defMult: 0.40, eva: 28, crit: 10,
+    traits: ["푸드덕 날갯짓", "부리 쪼기"], stats: { cuteness: 25, wildness: 30, sociability: 20, mysteriousness: 15 },
+    skills: ["quick_dodge", "pounce", "tail_whip", "dash_strike"] },
+  { key: "wasp", name: "말벌", emoji: "🐝", flavor: "건드리면 위험한 노란 침입자",
+    atkMult: 0.70, defMult: 0.30, eva: 22, crit: 16,
+    traits: ["따끔한 침", "윙윙 위협"], stats: { cuteness: 5, wildness: 45, sociability: 5, mysteriousness: 30 },
+    skills: ["venom_fang", "poison", "static_shock", "dash_strike"] },
+  { key: "crow", name: "까마귀", emoji: "🐦‍⬛", flavor: "영리하게 약 올리는 검은 그림자",
+    atkMult: 0.80, defMult: 0.50, eva: 18, crit: 12,
+    traits: ["약 올리는 울음", "급강하 공격"], stats: { cuteness: 20, wildness: 40, sociability: 15, mysteriousness: 50 },
+    skills: ["intimidate", "hiss", "ambush", "thunderclap"] },
+  { key: "raccoon", name: "너구리", emoji: "🦝", flavor: "쓰레기통을 뒤지는 덩치 큰 불청객",
+    atkMult: 1.0, defMult: 0.70, eva: 9, crit: 8,
+    traits: ["묵직한 몸통박치기", "날카로운 발톱"], stats: { cuteness: 30, wildness: 60, sociability: 20, mysteriousness: 40 },
+    skills: ["body_slam", "claw_flurry", "intimidate", "frenzy"] },
+];
+
+// 20%는 고양이학대범(최종 빌런), 80%는 야생동물 로스터 중 무작위 — 매번 같은 상대만
+// 반복하지 않게 다양성을 주되, 진짜 "혼내줘야 할 사람"이라는 임팩트는 남겨둔다.
+function makePveOpponent(myCat: CardCat): CardCat {
+  if (Math.random() < 0.2) return makeBossOpponent(myCat);
+
+  const c = PVE_ROSTER[Math.floor(Math.random() * PVE_ROSTER.length)];
+  const baseAtk = myCat.battle_atk ?? 40;
+  const baseDef = myCat.battle_def ?? 25;
+  return {
+    id: `pve-${c.key}`,
+    name: c.name,
+    photo_url: null,
+    placeholder_emoji: c.emoji,
+    caretaker_id: BOSS_CAT_ID,
+    card_level: myCat.card_level ?? 1,
+    card_exp: 0,
+    card_rarity: myCat.card_rarity ?? "common",
+    card_name: c.name,
+    card_traits: c.traits,
+    card_stats: c.stats,
+    card_flavor: c.flavor,
+    battle_atk: Math.max(5, Math.round(baseAtk * c.atkMult)),
+    battle_def: Math.max(3, Math.round(baseDef * c.defMult)),
+    battle_eva: c.eva,
+    battle_crit: c.crit,
+    battle_special: c.skills[0],
+    battle_special2: c.skills[1],
+    battle_special3: c.skills[2],
+    battle_special4: c.skills[3],
     win_streak: 0,
   };
 }
@@ -352,7 +428,7 @@ export async function POST(req: Request) {
   let opponent: CardCat;
 
   if (isBossEncounter) {
-    opponent = makeBossOpponent(myCat as CardCat);
+    opponent = makePveOpponent(myCat as CardCat);
   } else {
     // 상대 선택 — 가능하면 같은 등급으로, 없으면 인근 등급으로 확대
     const NEARBY_RARITIES: Record<string, string[]> = {

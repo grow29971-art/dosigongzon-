@@ -17,6 +17,9 @@ export interface CatCardData {
   card_generated_at?: string | null;
   card_level?: number | null;
   card_exp?: number | null;
+  // 사진이 없을 때 기본 🐱 대신 보여줄 이모지 — PVE 배틀 상대(바퀴벌레·쥐 등 야생동물)처럼
+  // 진짜 고양이가 아닌 카드를 표시할 때 씀. 일반 고양이 카드는 항상 undefined.
+  placeholder_emoji?: string | null;
 }
 
 interface CatCardProps {
@@ -275,7 +278,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
                 <img src={photoUrl} alt={name}
                   style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               ) : (
-                <div style={{ width: "100%", height: "100%", background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: isSm ? 28 : 42, color: "rgba(255,255,255,0.35)" }}>🐱</div>
+                <div style={{ width: "100%", height: "100%", background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: isSm ? 28 : 42, color: "rgba(255,255,255,0.35)" }}>{card.placeholder_emoji ?? "🐱"}</div>
               )}
               {/* 속성 워터마크 (사진 프레임 안, 은은하게) */}
               <span style={{
