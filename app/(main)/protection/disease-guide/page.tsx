@@ -729,8 +729,8 @@ export default function DiseaseGuidePage() {
                 {/* 증상 — 단계별 상세 */}
                 <div className="mb-4">
                   <div className="flex items-center gap-1.5 mb-2">
-                    <Eye size={12} style={{ color: "#5C8DEE" }} />
-                    <p className="text-[11px] font-extrabold tracking-[0.1em]" style={{ color: "#5C8DEE" }}>
+                    <Eye size={12} style={{ color: "#4C82BC" }} />
+                    <p className="text-[11px] font-extrabold tracking-[0.1em]" style={{ color: "#4C82BC" }}>
                       SYMPTOMS · 증상
                     </p>
                   </div>
@@ -947,7 +947,7 @@ export default function DiseaseGuidePage() {
         <Link
           href="/protection/emergency-guide"
           className="px-3 py-2 rounded-xl text-[12px] font-bold active:scale-95"
-          style={{ background: "#FFF1E6", color: "#5C8DEE", border: "1px solid rgba(92,141,238,0.25)" }}
+          style={{ background: "#FFF1E6", color: "#4C82BC", border: "1px solid rgba(76,130,188,0.25)" }}
         >
           🚑 응급 구조 가이드
         </Link>

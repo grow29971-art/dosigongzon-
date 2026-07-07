@@ -75,8 +75,8 @@ export default async function CaretakersPage() {
             <div
               className="mb-3 px-3 py-2.5 rounded-xl flex items-center gap-2"
               style={{
-                background: "rgba(92,141,238,0.08)",
-                border: "1px solid rgba(92,141,238,0.15)",
+                background: "rgba(76,130,188,0.08)",
+                border: "1px solid rgba(76,130,188,0.15)",
               }}
             >
               <Sparkles size={13} className="text-primary shrink-0" />
@@ -145,7 +145,7 @@ function CaretakerCard({
             {caretaker.admin_title && (
               <span
                 className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md shrink-0"
-                style={{ background: "#5C8DEE", color: "#fff" }}
+                style={{ background: "#4C82BC", color: "#fff" }}
               >
                 {caretaker.admin_title}
               </span>
@@ -184,9 +184,9 @@ function CaretakerCard({
           href={`/users/${caretaker.id}`}
           className="flex-1 py-2 rounded-xl text-center text-[12.5px] font-bold active:scale-[0.97] transition-transform"
           style={{
-            background: "rgba(92,141,238,0.08)",
-            color: "#5C8DEE",
-            border: "1px solid rgba(92,141,238,0.18)",
+            background: "rgba(76,130,188,0.08)",
+            color: "#4C82BC",
+            border: "1px solid rgba(76,130,188,0.18)",
           }}
         >
           프로필 보기
@@ -194,7 +194,7 @@ function CaretakerCard({
         <Link
           href={`/messages?to=${caretaker.id}&name=${encodeURIComponent(caretaker.nickname)}&preset=${presetMsg}`}
           className="flex-1 py-2 rounded-xl text-center text-[12.5px] font-bold text-white active:scale-[0.97] transition-transform inline-flex items-center justify-center gap-1.5"
-          style={{ background: "#5C8DEE" }}
+          style={{ background: "#4C82BC" }}
         >
           <MessageCircle size={13} />
           쪽지 보내기

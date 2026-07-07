@@ -69,7 +69,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
             borderRadius: "50%",
             background: hasUrgent
               ? "radial-gradient(circle, rgba(216,85,85,0.22) 0%, rgba(216,85,85,0) 70%)"
-              : "radial-gradient(circle, rgba(92,141,238,0.22) 0%, rgba(92,141,238,0) 70%)",
+              : "radial-gradient(circle, rgba(76,130,188,0.22) 0%, rgba(76,130,188,0) 70%)",
           }}
         />
 
@@ -80,7 +80,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
               width: 52,
               height: 52,
               borderRadius: 16,
-              background: "#5C8DEE",
+              background: "#4C82BC",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -89,7 +89,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
           >
             🐾
           </div>
-          <span style={{ fontSize: 24, fontWeight: 800, color: "#8B6FE0" }}>도시공존</span>
+          <span style={{ fontSize: 24, fontWeight: 800, color: "#3E6FA8" }}>도시공존</span>
         </div>
 
         {/* 메인 — 지역명 강조 */}
@@ -110,7 +110,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
               fontWeight: 900,
               lineHeight: 1,
               letterSpacing: -3,
-              color: hasUrgent ? "#B53D3D" : "#5C8DEE",
+              color: hasUrgent ? "#B53D3D" : "#4C82BC",
               display: "flex",
             }}
           >
@@ -155,7 +155,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
             emoji="🐾"
             value={catCount}
             label={`${guName}에 등록된 아이`}
-            color="#5C8DEE"
+            color="#4C82BC"
           />
           {hasUrgent ? (
             <Stat
@@ -203,7 +203,7 @@ function Stat({
         display: "flex",
         flexDirection: "column",
         gap: 2,
-        border: urgent ? "none" : "2px solid rgba(92,141,238,0.20)",
+        border: urgent ? "none" : "2px solid rgba(76,130,188,0.20)",
         boxShadow: urgent ? "0 12px 32px rgba(216,85,85,0.35)" : "none",
       }}
     >

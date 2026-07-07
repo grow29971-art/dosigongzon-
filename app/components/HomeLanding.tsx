@@ -164,8 +164,8 @@ export default async function HomeLanding({
       {/* 히어로 */}
       <section className="px-5 pt-14 pb-8" style={{ background: "linear-gradient(180deg, #FFF9F2 0%, #F7F4EE 100%)" }}>
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 mb-3">
-          <Heart size={12} style={{ color: "#5C8DEE" }} />
-          <span className="text-[11px] font-extrabold" style={{ color: "#5C8DEE" }}>
+          <Heart size={12} style={{ color: "#4C82BC" }} />
+          <span className="text-[11px] font-extrabold" style={{ color: "#4C82BC" }}>
             전국 · {data.userCount > 0
               ? `${data.userCount.toLocaleString()}명의 케어테이커`
               : "케어테이커 시민 참여 플랫폼"}
@@ -196,8 +196,8 @@ export default async function HomeLanding({
             href="/map"
             className="flex-[1.4] flex items-center justify-center gap-1.5 py-4 rounded-2xl text-white active:scale-[0.98] transition-transform"
             style={{
-              background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
-              boxShadow: "0 8px 22px rgba(92,141,238,0.38), 0 2px 6px rgba(168,104,74,0.22)",
+              background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
+              boxShadow: "0 8px 22px rgba(76,130,188,0.38), 0 2px 6px rgba(168,104,74,0.22)",
             }}
           >
             <PawPrint size={15} />
@@ -207,16 +207,16 @@ export default async function HomeLanding({
             href="/signup"
             className="flex-1 flex items-center justify-center gap-1.5 py-4 rounded-2xl active:scale-[0.98] transition-transform"
             style={{
-              background: "rgba(92,141,238,0.09)",
-              color: "#5C8DEE",
-              border: "1.5px solid rgba(92,141,238,0.45)",
+              background: "rgba(76,130,188,0.09)",
+              color: "#4C82BC",
+              border: "1.5px solid rgba(76,130,188,0.45)",
             }}
           >
             <Sparkles size={14} />
             <span className="text-[14px] font-extrabold tracking-tight">돌봄 시작하기</span>
           </Link>
         </div>
-        <p className="mt-2 text-center text-[11px] font-bold" style={{ color: "rgba(92,141,238,0.7)" }}>
+        <p className="mt-2 text-center text-[11px] font-bold" style={{ color: "rgba(76,130,188,0.7)" }}>
           10초 가입 · 광고 없는 무료 운영
         </p>
 
@@ -388,7 +388,7 @@ export default async function HomeLanding({
                         idx === 0
                           ? "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)"
                           : idx === 1
-                          ? "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)"
+                          ? "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)"
                           : "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)",
                     }}
                   >
@@ -405,7 +405,7 @@ export default async function HomeLanding({
                       {r.activeCaretakers > 0 && (
                         <>
                           <span className="text-text-light">·</span>
-                          <span style={{ color: "#5C8DEE" }}>
+                          <span style={{ color: "#4C82BC" }}>
                             케어테이커 <b>{r.activeCaretakers}</b>명
                           </span>
                         </>
@@ -545,7 +545,7 @@ export default async function HomeLanding({
           className="rounded-2xl p-4 mb-3"
           style={{
             background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)",
-            border: "1px solid rgba(92,141,238,0.20)",
+            border: "1px solid rgba(76,130,188,0.20)",
           }}
         >
           <p className="text-[12px] text-text-sub leading-[1.85]">
@@ -554,7 +554,7 @@ export default async function HomeLanding({
             가장 위험한 환경은 <b className="text-text-main">동네가 무관심한 상태</b>예요.
           </p>
           <p className="text-[12px] text-text-sub leading-[1.85] mt-2">
-            <b style={{ color: "#8B6FE0" }}>케어테이커와 시민의 시선이 모이는 것</b> — 그게 학대자에게 가장
+            <b style={{ color: "#3E6FA8" }}>케어테이커와 시민의 시선이 모이는 것</b> — 그게 학대자에게 가장
             강한 억제력입니다. 도시공존은 그 시선을 모으려고 만들어진 도구예요.
           </p>
         </div>
@@ -564,11 +564,11 @@ export default async function HomeLanding({
       {/* 이렇게 시작해보세요 — 3단계 액션 가이드 */}
       <section className="px-5 mt-10">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#5C8DEE" }} />
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4C82BC" }} />
           <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
             이렇게 시작해보세요
           </h2>
-          <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#5C8DEE", opacity: 0.6 }}>
+          <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#4C82BC", opacity: 0.6 }}>
             3 STEPS
           </span>
         </div>
@@ -579,7 +579,7 @@ export default async function HomeLanding({
           <StartStep
             n={1}
             href="/signup"
-            color="#5C8DEE"
+            color="#4C82BC"
             title="1초 가입 — 카카오·구글로"
             desc="이메일 따로 안 적어도 돼요. 닉네임만 정하면 끝."
           />
@@ -678,7 +678,7 @@ export default async function HomeLanding({
           className="relative rounded-3xl px-6 py-7 overflow-hidden"
           style={{
             background: "linear-gradient(135deg, #FDF7EE 0%, #F6E8D4 100%)",
-            border: "1px solid rgba(92,141,238,0.18)",
+            border: "1px solid rgba(76,130,188,0.18)",
           }}
         >
           <span
@@ -688,7 +688,7 @@ export default async function HomeLanding({
               fontSize: 60,
               lineHeight: 1,
               fontFamily: "serif",
-              color: "rgba(92,141,238,0.25)",
+              color: "rgba(76,130,188,0.25)",
             }}
           >
             “
@@ -697,7 +697,7 @@ export default async function HomeLanding({
             className="text-[14.5px] leading-[1.9] text-text-main relative z-10"
             style={{ fontFamily: "serif" }}
           >
-            우리는 <b style={{ color: "#5C8DEE" }}>길 위의 아이들</b>의 삶을
+            우리는 <b style={{ color: "#4C82BC" }}>길 위의 아이들</b>의 삶을
             <br />
             얼마나 이해하고 있을까요?
             <br />
@@ -731,7 +731,7 @@ export default async function HomeLanding({
           </p>
           <p
             className="text-[11px] font-extrabold tracking-[0.15em] mt-5 relative z-10"
-            style={{ color: "#5C8DEE" }}
+            style={{ color: "#4C82BC" }}
           >
             — 도시공존
           </p>
@@ -743,7 +743,7 @@ export default async function HomeLanding({
         <section className="px-5 mt-6 cv-auto">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#5C8DEE" }} />
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4C82BC" }} />
               <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">최근 등록된 아이들</h2>
             </div>
             <Link href="/map" className="flex items-center gap-0.5 text-[12px] font-semibold text-primary">
@@ -824,7 +824,7 @@ export default async function HomeLanding({
         <Link
           href="/areas"
           className="block text-center text-[12.5px] font-bold py-2.5 rounded-xl"
-          style={{ backgroundColor: "#FFF", color: "#5C8DEE", border: "1px solid #E8D4BD" }}
+          style={{ backgroundColor: "#FFF", color: "#4C82BC", border: "1px solid #E8D4BD" }}
         >
           전국 구·동별 길고양이 지도 →
         </Link>
@@ -840,7 +840,7 @@ export default async function HomeLanding({
             border: "1px solid rgba(0,0,0,0.04)",
           }}
         >
-          <TrustInline emoji="🐾" value={data.catCount} label="등록" color="#5C8DEE" />
+          <TrustInline emoji="🐾" value={data.catCount} label="등록" color="#4C82BC" />
           <span className="w-px h-8" style={{ background: "rgba(0,0,0,0.06)" }} />
           <TrustInline emoji="❤️" value={data.userCount} label="이웃" color="#E86B8C" />
           <span className="w-px h-8" style={{ background: "rgba(0,0,0,0.06)" }} />
@@ -932,7 +932,7 @@ export default async function HomeLanding({
         <section className="px-5 mt-8 cv-auto">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#5C8DEE" }} />
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4C82BC" }} />
               <h2 className="text-[15px] font-extrabold text-text-main tracking-tight flex items-center gap-1">
                 <Sparkles size={15} className="text-primary" />
                 꿀팁게시판
@@ -1051,8 +1051,8 @@ export default async function HomeLanding({
         </p>
         <div className="grid grid-cols-2 gap-2">
           <TechCard
-            icon={<MapPin size={16} color="#5C8DEE" />}
-            iconBg="#5C8DEE15"
+            icon={<MapPin size={16} color="#4C82BC" />}
+            iconBg="#4C82BC15"
             title="전국 구·동 자체 매핑"
             sub="구·동 단위 좌표 직접 정리"
           />
@@ -1095,18 +1095,18 @@ export default async function HomeLanding({
           className="rounded-3xl p-5"
           style={{
             background: "linear-gradient(135deg, #FFF9F2 0%, #F4E8D8 100%)",
-            border: "1px solid rgba(92,141,238,0.20)",
+            border: "1px solid rgba(76,130,188,0.20)",
           }}
         >
           <div className="flex items-center gap-2 mb-2">
             <div
               className="w-9 h-9 rounded-full flex items-center justify-center"
-              style={{ background: "rgba(92,141,238,0.15)" }}
+              style={{ background: "rgba(76,130,188,0.15)" }}
             >
-              <Code2 size={18} style={{ color: "#8B6FE0" }} />
+              <Code2 size={18} style={{ color: "#3E6FA8" }} />
             </div>
             <div className="min-w-0">
-              <p className="text-[10.5px] font-extrabold tracking-[0.12em]" style={{ color: "#8B6FE0" }}>
+              <p className="text-[10.5px] font-extrabold tracking-[0.12em]" style={{ color: "#3E6FA8" }}>
                 MADE BY ONE NEIGHBOR
               </p>
               <p className="text-[14px] font-extrabold text-text-main">
@@ -1127,8 +1127,8 @@ export default async function HomeLanding({
               className="flex-1 flex items-center justify-center gap-1 py-2.5 rounded-xl text-[12px] font-extrabold active:scale-[0.98] transition-transform"
               style={{
                 background: "#FFFFFF",
-                color: "#8B6FE0",
-                border: "1px solid rgba(92,141,238,0.25)",
+                color: "#3E6FA8",
+                border: "1px solid rgba(76,130,188,0.25)",
               }}
             >
               <span>운영 이야기 보기</span>
@@ -1138,8 +1138,8 @@ export default async function HomeLanding({
               href="mailto:grow29971@gmail.com?subject=%5B%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%A1%B4%5D%20%EC%A0%9C%ED%9C%B4%2F%EB%AC%B8%EC%9D%98"
               className="flex items-center justify-center gap-1 px-4 py-2.5 rounded-xl text-[12px] font-extrabold text-white active:scale-[0.98] transition-transform"
               style={{
-                background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
-                boxShadow: "0 4px 12px rgba(92,141,238,0.3)",
+                background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
+                boxShadow: "0 4px 12px rgba(76,130,188,0.3)",
               }}
             >
               <Mail size={12} />

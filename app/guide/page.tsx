@@ -47,12 +47,12 @@ interface Feature {
 const SECTIONS: FeatureSection[] = [
   {
     groupLabel: "지도와 고양이",
-    groupColor: "#5C8DEE",
+    groupColor: "#4C82BC",
     features: [
       {
         icon: MapPin,
-        iconColor: "#5C8DEE",
-        iconBg: "rgba(92,141,238,0.12)",
+        iconColor: "#4C82BC",
+        iconBg: "rgba(76,130,188,0.12)",
         title: "동네 길고양이 지도",
         desc: "우리 동네에 등록된 길고양이를 지도에서 한눈에. 고양이·병원·약국을 색깔로 구분해서 보여줘요.",
         steps: [
@@ -258,8 +258,8 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Download,
-        iconColor: "#5C8DEE",
-        iconBg: "rgba(92,141,238,0.12)",
+        iconColor: "#4C82BC",
+        iconBg: "rgba(76,130,188,0.12)",
         title: "앱으로 설치 (PWA)",
         desc: "홈 화면에 설치하면 브라우저 탭 없이 앱처럼 열려요. 푸시 알림도 더 안정적.",
         steps: [
@@ -314,8 +314,8 @@ export default function GuidePage() {
       {/* 히어로 */}
       <section className="px-5 pt-4">
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 mb-3">
-          <Heart size={12} style={{ color: "#5C8DEE" }} />
-          <span className="text-[11px] font-extrabold" style={{ color: "#5C8DEE" }}>
+          <Heart size={12} style={{ color: "#4C82BC" }} />
+          <span className="text-[11px] font-extrabold" style={{ color: "#4C82BC" }}>
             HOW TO USE
           </span>
         </div>
@@ -332,7 +332,7 @@ export default function GuidePage() {
           <Link
             href="/map"
             className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-primary text-white active:scale-[0.98] transition-transform"
-            style={{ boxShadow: "0 4px 14px rgba(92,141,238,0.3)" }}
+            style={{ boxShadow: "0 4px 14px rgba(76,130,188,0.3)" }}
           >
             <MapPin size={14} />
             <span className="text-[13px] font-extrabold">지도 먼저 가볼래요</span>
@@ -340,7 +340,7 @@ export default function GuidePage() {
           <Link
             href="/signup"
             className="flex-1 flex items-center justify-center py-3 rounded-2xl active:scale-[0.98] transition-transform"
-            style={{ backgroundColor: "#FFF", color: "#5C8DEE", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 800 }}
+            style={{ backgroundColor: "#FFF", color: "#4C82BC", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 800 }}
           >
             가입하고 시작
           </Link>
@@ -434,8 +434,8 @@ export default function GuidePage() {
         <div
           className="rounded-3xl p-5 text-center"
           style={{
-            background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
-            boxShadow: "0 8px 24px rgba(92,141,238,0.3)",
+            background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
+            boxShadow: "0 8px 24px rgba(76,130,188,0.3)",
           }}
         >
           <p className="text-[16px] font-extrabold text-white leading-snug">
@@ -445,7 +445,7 @@ export default function GuidePage() {
           <Link
             href="/map"
             className="inline-block mt-4 bg-white text-[13px] font-extrabold px-6 py-3 rounded-2xl active:scale-95 transition-transform"
-            style={{ color: "#5C8DEE" }}
+            style={{ color: "#4C82BC" }}
           >
             지도 열기 →
           </Link>

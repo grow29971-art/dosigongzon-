@@ -302,8 +302,8 @@ export default function AdminAuthErrorsPage() {
                   onClick={() => setCodeFilter(active ? null : s.error_code)}
                   className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl active:scale-[0.99] text-left"
                   style={{
-                    backgroundColor: active ? "rgba(92,141,238,0.12)" : "#F7F4EE",
-                    border: active ? "1px solid rgba(92,141,238,0.3)" : "1px solid transparent",
+                    backgroundColor: active ? "rgba(76,130,188,0.12)" : "#F7F4EE",
+                    border: active ? "1px solid rgba(76,130,188,0.3)" : "1px solid transparent",
                   }}
                 >
                   <span

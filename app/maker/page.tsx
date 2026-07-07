@@ -55,13 +55,13 @@ export default function MakerPage() {
 
       {/* 히어로 */}
       <section className="px-5 pt-6">
-        <p className="text-[10.5px] font-extrabold tracking-[0.18em] mb-2" style={{ color: "#8B6FE0" }}>
+        <p className="text-[10.5px] font-extrabold tracking-[0.18em] mb-2" style={{ color: "#3E6FA8" }}>
           MADE BY ONE NEIGHBOR
         </p>
         <h1 className="text-[26px] font-extrabold text-text-main leading-tight tracking-tight">
           이 플랫폼,
           <br />
-          <span style={{ color: "#8B6FE0" }}>한 사람이 직접 만들었어요.</span>
+          <span style={{ color: "#3E6FA8" }}>한 사람이 직접 만들었어요.</span>
         </h1>
         <p className="text-[13.5px] text-text-sub mt-3 leading-relaxed">
           <b className="text-text-main">김성우</b> · 1인 풀스택 메이커
@@ -73,7 +73,7 @@ export default function MakerPage() {
       {/* 철학과 가치 — Mission / Vision / Values */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <Sparkles size={14} style={{ color: "#8B6FE0" }} />
+          <Sparkles size={14} style={{ color: "#3E6FA8" }} />
           <h2 className="text-[14px] font-extrabold text-text-main">철학과 가치</h2>
         </div>
 
@@ -82,12 +82,12 @@ export default function MakerPage() {
           className="rounded-3xl p-5 mb-3"
           style={{
             background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)",
-            border: "1px solid rgba(92,141,238,0.20)",
+            border: "1px solid rgba(76,130,188,0.20)",
           }}
         >
           <div className="flex items-center gap-1.5 mb-3">
-            <Compass size={14} style={{ color: "#5C8DEE" }} />
-            <span className="text-[10px] font-extrabold tracking-[0.18em]" style={{ color: "#5C8DEE" }}>
+            <Compass size={14} style={{ color: "#4C82BC" }} />
+            <span className="text-[10px] font-extrabold tracking-[0.18em]" style={{ color: "#4C82BC" }}>
               MISSION
             </span>
           </div>
@@ -131,8 +131,8 @@ export default function MakerPage() {
 
         {/* Values 3카드 */}
         <div className="flex items-center gap-1.5 mb-2 ml-1 mt-4">
-          <Sparkles size={14} style={{ color: "#8B6FE0" }} />
-          <span className="text-[10px] font-extrabold tracking-[0.18em]" style={{ color: "#8B6FE0" }}>
+          <Sparkles size={14} style={{ color: "#3E6FA8" }} />
+          <span className="text-[10px] font-extrabold tracking-[0.18em]" style={{ color: "#3E6FA8" }}>
             VALUES
           </span>
         </div>
@@ -140,8 +140,8 @@ export default function MakerPage() {
           <ValueCard
             n={1}
             icon={<Users size={16} color="#FFFFFF" />}
-            accent="#5C8DEE"
-            accentDark="#8B6FE0"
+            accent="#4C82BC"
+            accentDark="#3E6FA8"
             title="연대"
             body="우리는 저마다 다른 문화·환경에서 각기 다른 삶을 살아왔지만, 인류라는 공통점을 가진 형제들이다. 항상 서로의 생각·개성·성향을 존중하고 형제애를 중요시한다."
           />
@@ -174,7 +174,7 @@ export default function MakerPage() {
           className="rounded-3xl p-5"
           style={{
             background: "linear-gradient(135deg, #FFF9F2 0%, #F4E8D8 100%)",
-            border: "1px solid rgba(92,141,238,0.20)",
+            border: "1px solid rgba(76,130,188,0.20)",
           }}
         >
           <p className="text-[13px] leading-[2] text-text-sub">
@@ -196,7 +196,7 @@ export default function MakerPage() {
       {/* 만드는 방식 — 한 사람 풀스택 */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <Sparkles size={14} style={{ color: "#5C8DEE" }} />
+          <Sparkles size={14} style={{ color: "#4C82BC" }} />
           <h2 className="text-[14px] font-extrabold text-text-main">어떻게 만드나</h2>
         </div>
         <div className="bg-white rounded-3xl p-5" style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
@@ -288,7 +288,7 @@ export default function MakerPage() {
       {/* 케어테이커에게 전하는 말 */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <Hand size={14} style={{ color: "#5C8DEE" }} />
+          <Hand size={14} style={{ color: "#4C82BC" }} />
           <h2 className="text-[14px] font-extrabold text-text-main">케어테이커님께</h2>
         </div>
         <div
@@ -329,8 +329,8 @@ export default function MakerPage() {
             href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("[도시공존] 안녕하세요")}`}
             className="flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-extrabold text-white active:scale-[0.98] transition-transform"
             style={{
-              background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
-              boxShadow: "0 4px 14px rgba(92,141,238,0.30)",
+              background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
+              boxShadow: "0 4px 14px rgba(76,130,188,0.30)",
             }}
           >
             <Mail size={14} />
@@ -346,15 +346,15 @@ export default function MakerPage() {
       <section className="px-5 mt-7 text-center">
         <p className="text-[11px] text-text-light leading-relaxed">
           더 자세한 서비스 소개는{" "}
-          <Link href="/about" className="underline" style={{ color: "#8B6FE0" }}>
+          <Link href="/about" className="underline" style={{ color: "#3E6FA8" }}>
             소개 페이지
           </Link>
           {" · "}이용약관·개인정보처리방침은{" "}
-          <Link href="/terms" className="underline" style={{ color: "#8B6FE0" }}>
+          <Link href="/terms" className="underline" style={{ color: "#3E6FA8" }}>
             약관
           </Link>
           {" · "}
-          <Link href="/privacy" className="underline" style={{ color: "#8B6FE0" }}>
+          <Link href="/privacy" className="underline" style={{ color: "#3E6FA8" }}>
             처리방침
           </Link>
         </p>
@@ -369,10 +369,10 @@ function SkillCard({ icon, title, sub }: { icon: React.ReactNode; title: string;
       className="rounded-xl p-3"
       style={{
         background: "linear-gradient(135deg, #FFF9F2 0%, #F4E8D8 100%)",
-        border: "1px solid rgba(92,141,238,0.18)",
+        border: "1px solid rgba(76,130,188,0.18)",
       }}
     >
-      <div className="flex items-center gap-1.5 mb-1" style={{ color: "#8B6FE0" }}>
+      <div className="flex items-center gap-1.5 mb-1" style={{ color: "#3E6FA8" }}>
         {icon}
         <p className="text-[12px] font-extrabold tracking-tight text-text-main">{title}</p>
       </div>

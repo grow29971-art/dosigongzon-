@@ -301,7 +301,7 @@ export default function LegalGuidePage() {
       {/* 2024 개정 */}
       <section id="changes-2024" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <Gavel size={20} color="#5C8DEE" />
+          <Gavel size={20} color="#4C82BC" />
           2024년 개정 내용 — 무엇이 강해졌나
         </h2>
         <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
@@ -472,7 +472,7 @@ export default function LegalGuidePage() {
       {/* 관련 가이드 */}
       <section className="mb-8">
         <h2 className="flex items-center gap-2 text-[16px] font-extrabold text-text-main mb-3">
-          <BookOpen size={18} color="#5C8DEE" />
+          <BookOpen size={18} color="#4C82BC" />
           관련 가이드
         </h2>
         <div className="space-y-2">

@@ -18,8 +18,8 @@ export default function EmptyShorts() {
       <div
         className="w-20 h-20 rounded-3xl flex items-center justify-center mb-5"
         style={{
-          background: "rgba(92,141,238,0.18)",
-          border: "1px solid rgba(92,141,238,0.35)",
+          background: "rgba(76,130,188,0.18)",
+          border: "1px solid rgba(76,130,188,0.35)",
         }}
       >
         <Film size={38} color="#E8B57E" strokeWidth={1.5} />
@@ -36,9 +36,9 @@ export default function EmptyShorts() {
         href="/"
         className="mt-7 px-5 py-2.5 rounded-full text-[12.5px] font-extrabold active:scale-[0.98] transition-transform"
         style={{
-          background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
+          background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
           color: "#FFFFFF",
-          boxShadow: "0 8px 22px rgba(92,141,238,0.35)",
+          boxShadow: "0 8px 22px rgba(76,130,188,0.35)",
         }}
       >
         홈으로 돌아가기

@@ -23,7 +23,7 @@ export default function SentryTestPage() {
   return (
     <div className="min-h-dvh flex items-center justify-center px-6" style={{ background: "#F7F4EE" }}>
       <div className="w-full max-w-sm bg-white rounded-3xl p-6" style={{ boxShadow: "0 12px 36px rgba(0,0,0,0.08)" }}>
-        <p className="text-[11px] font-bold tracking-[0.12em] mb-2" style={{ color: "#5C8DEE" }}>
+        <p className="text-[11px] font-bold tracking-[0.12em] mb-2" style={{ color: "#4C82BC" }}>
           SENTRY TEST
         </p>
         <h1 className="text-[20px] font-extrabold text-text-main mb-4">에러 수집 테스트</h1>

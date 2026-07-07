@@ -37,7 +37,7 @@ export default function OnboardingCard({
       subtitle: "우리 동네를 먼저 정해주세요",
       href: "/mypage/activity-regions",
       Icon: MapPin,
-      color: "#5C8DEE",
+      color: "#4C82BC",
     },
     {
       key: "cat",
@@ -85,8 +85,8 @@ export default function OnboardingCard({
       style={{
         background: "linear-gradient(135deg, #FFF9F0 0%, #FFF2DF 100%)",
         borderRadius: 22,
-        border: "1px solid rgba(92,141,238,0.2)",
-        boxShadow: "0 6px 20px rgba(92,141,238,0.12)",
+        border: "1px solid rgba(76,130,188,0.2)",
+        boxShadow: "0 6px 20px rgba(76,130,188,0.12)",
       }}
     >
       {/* 헤더 */}
@@ -94,18 +94,18 @@ export default function OnboardingCard({
         <div
           className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
           style={{
-            background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
-            boxShadow: "0 4px 12px rgba(92,141,238,0.35)",
+            background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
+            boxShadow: "0 4px 12px rgba(76,130,188,0.35)",
           }}
         >
           <Sparkles size={19} color="#fff" strokeWidth={2.3} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#5C8DEE" }}>
+          <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#4C82BC" }}>
             WELCOME
           </p>
           <p className="text-[15px] font-extrabold text-text-main tracking-tight leading-tight mt-0.5">
-            시작 가이드 <span style={{ color: "#5C8DEE" }}>{doneCount}/{total}</span>
+            시작 가이드 <span style={{ color: "#4C82BC" }}>{doneCount}/{total}</span>
           </p>
           <p className="text-[11.5px] text-text-sub mt-1 leading-snug">
             마지막은 선택 — 믿는 이웃과 안전한 돌봄까지!
@@ -127,13 +127,13 @@ export default function OnboardingCard({
       {/* 진행률 바 */}
       <div
         className="w-full h-1.5 rounded-full overflow-hidden mb-4"
-        style={{ background: "rgba(92,141,238,0.15)" }}
+        style={{ background: "rgba(76,130,188,0.15)" }}
       >
         <div
           className="h-full rounded-full transition-all"
           style={{
             width: `${progress}%`,
-            background: "linear-gradient(90deg, #5C8DEE 0%, #E88D5A 100%)",
+            background: "linear-gradient(90deg, #4C82BC 0%, #E88D5A 100%)",
           }}
         />
       </div>

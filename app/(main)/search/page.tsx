@@ -171,9 +171,9 @@ function SearchPageInner() {
                 onClick={() => setTab(t.key)}
                 className="shrink-0 px-3 py-1.5 rounded-full text-[12px] font-bold active:scale-95 transition-transform"
                 style={{
-                  background: tab === t.key ? "#5C8DEE" : "#FFFFFF",
+                  background: tab === t.key ? "#4C82BC" : "#FFFFFF",
                   color: tab === t.key ? "#FFFFFF" : "#6B5043",
-                  border: tab === t.key ? "1px solid #5C8DEE" : "1px solid rgba(0,0,0,0.05)",
+                  border: tab === t.key ? "1px solid #4C82BC" : "1px solid rgba(0,0,0,0.05)",
                 }}
               >
                 {t.label} {t.count > 0 && <span className="ml-0.5 opacity-80">{t.count}</span>}
@@ -204,7 +204,7 @@ function SearchPageInner() {
 
         {!loading && !data.query && (
           <EmptyState
-            icon={<Search size={28} style={{ color: "#5C8DEE" }} />}
+            icon={<Search size={28} style={{ color: "#4C82BC" }} />}
             title="무엇을 찾고 있나요?"
             desc="고양이 이름·지역·게시글·병원·가이드를 한 번에 검색해요."
           />
@@ -212,7 +212,7 @@ function SearchPageInner() {
 
         {!loading && data.tooShort && (
           <EmptyState
-            icon={<Search size={28} style={{ color: "#5C8DEE" }} />}
+            icon={<Search size={28} style={{ color: "#4C82BC" }} />}
             title="2자 이상 입력해주세요"
             desc="너무 짧은 검색어는 결과가 너무 많아 정확도가 떨어져요."
           />
@@ -220,7 +220,7 @@ function SearchPageInner() {
 
         {!loading && data.query && !data.tooShort && totalCount === 0 && (
           <EmptyState
-            icon={<Search size={28} style={{ color: "#5C8DEE" }} />}
+            icon={<Search size={28} style={{ color: "#4C82BC" }} />}
             title={`"${data.query}" 결과 없음`}
             desc="다른 검색어로 시도해보세요."
           />
@@ -267,7 +267,7 @@ function EmptyState({ icon, title, desc }: { icon: React.ReactNode; title: strin
     >
       <div
         className="w-14 h-14 rounded-full flex items-center justify-center mb-3"
-        style={{ background: "rgba(92,141,238,0.12)" }}
+        style={{ background: "rgba(76,130,188,0.12)" }}
       >
         {icon}
       </div>
@@ -426,7 +426,7 @@ function SectionUsers({ items }: { items: UserHit[] }) {
                   {u.admin_title && (
                     <span
                       className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md shrink-0"
-                      style={{ background: "#5C8DEE", color: "#fff" }}
+                      style={{ background: "#4C82BC", color: "#fff" }}
                     >
                       {u.admin_title}
                     </span>
@@ -468,7 +468,7 @@ function SectionGuides({ items }: { items: GuideHit[] }) {
 function SectionHeader({ icon, label, count }: { icon: React.ReactNode; label: string; count: number }) {
   return (
     <div className="flex items-center gap-1.5 mb-2.5 px-1">
-      <span style={{ color: "#5C8DEE" }}>{icon}</span>
+      <span style={{ color: "#4C82BC" }}>{icon}</span>
       <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">{label}</h2>
       <span className="text-[11px] font-bold text-text-light">{count}</span>
     </div>

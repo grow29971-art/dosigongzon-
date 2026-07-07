@@ -348,8 +348,8 @@ export default function EmergencyGuidePage() {
       {/* Step 3 */}
       <section id="step-3" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <Droplet size={20} color="#5C8DEE" />
-          <span className="w-7 h-7 rounded-full bg-[#5C8DEE] text-white text-[12px] font-extrabold flex items-center justify-center">3</span>
+          <Droplet size={20} color="#4C82BC" />
+          <span className="w-7 h-7 rounded-full bg-[#4C82BC] text-white text-[12px] font-extrabold flex items-center justify-center">3</span>
           응급처치 (상황별)
         </h2>
         <p className="text-[14px] text-text-main leading-relaxed mb-3">
@@ -472,7 +472,7 @@ export default function EmergencyGuidePage() {
       {/* 관련 가이드 */}
       <section className="mb-8">
         <h2 className="flex items-center gap-2 text-[16px] font-extrabold text-text-main mb-3">
-          <BookOpen size={18} color="#5C8DEE" />
+          <BookOpen size={18} color="#4C82BC" />
           관련 가이드
         </h2>
         <div className="space-y-2">

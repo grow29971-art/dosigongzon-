@@ -138,7 +138,7 @@ export default function TodayChecklist({
           borderBottom: "1px solid rgba(0,0,0,0.04)",
         }}
       >
-        <Sparkles size={14} className={allDone ? "text-[#3F5B42] dark:text-[#A8E0A8]" : "text-[#5C8DEE] dark:text-[#E8B57E]"} />
+        <Sparkles size={14} className={allDone ? "text-[#3F5B42] dark:text-[#A8E0A8]" : "text-[#4C82BC] dark:text-[#E8B57E]"} />
         <p className={`text-[12px] font-extrabold tracking-tight ${allDone ? "text-[#3F5B42] dark:text-[#A8E0A8]" : "text-[#A67B1E] dark:text-[#FFD68A]"}`}>
           {allDone ? "오늘 완벽한 하루! 🎉" : `오늘의 균형 ${doneCount}/${items.length}`}
         </p>

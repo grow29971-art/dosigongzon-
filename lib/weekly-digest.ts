@@ -163,12 +163,12 @@ export function renderDigestHtml(
   <div style="max-width:560px;margin:0 auto;padding:24px 16px;">
     <!-- 헤더 -->
     <div style="background:#fff;border-radius:20px;padding:24px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,0.05);">
-      <div style="font-size:11px;font-weight:800;color:#5C8DEE;letter-spacing:0.15em;">WEEKLY DIGEST</div>
+      <div style="font-size:11px;font-weight:800;color:#4C82BC;letter-spacing:0.15em;">WEEKLY DIGEST</div>
       <div style="font-size:24px;font-weight:900;color:#2A2A28;margin-top:6px;letter-spacing:-0.02em;">
-        ${displayName} 님, <br/>이번 주 <span style="color:#5C8DEE;">도시공존</span> 소식이에요
+        ${displayName} 님, <br/>이번 주 <span style="color:#4C82BC;">도시공존</span> 소식이에요
       </div>
       <div style="font-size:13px;color:#8B7562;margin-top:10px;line-height:1.6;">
-        서울 전역에 <b style="color:#5C8DEE;">새 고양이 ${content.newCatsThisWeek}마리</b>가 등록됐고,
+        서울 전역에 <b style="color:#4C82BC;">새 고양이 ${content.newCatsThisWeek}마리</b>가 등록됐고,
         <b style="color:#E86B8C;">${content.newUsersThisWeek}명</b>의 새 이웃이 합류했어요.
         ${content.myCatCount > 0 ? `당신이 돌보는 아이 <b>${content.myCatCount}마리</b>도 기다리고 있어요.` : ""}
       </div>
@@ -195,12 +195,12 @@ export function renderDigestHtml(
     ` : ""}
 
     <!-- CTA -->
-    <div style="background:linear-gradient(135deg,#5C8DEE 0%,#A8684A 100%);border-radius:18px;padding:20px;text-align:center;margin-bottom:14px;">
+    <div style="background:linear-gradient(135deg,#4C82BC 0%,#A8684A 100%);border-radius:18px;padding:20px;text-align:center;margin-bottom:14px;">
       <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:10px;">
         오늘 동네 아이들 안부 확인하러 가볼까요?
       </div>
       <a href="${SITE_URL}/map?utm_source=email&utm_medium=digest&utm_campaign=weekly"
-         style="display:inline-block;background:#fff;color:#5C8DEE;font-size:13px;font-weight:800;padding:12px 24px;border-radius:999px;text-decoration:none;">
+         style="display:inline-block;background:#fff;color:#4C82BC;font-size:13px;font-weight:800;padding:12px 24px;border-radius:999px;text-decoration:none;">
         지도 바로 열기 →
       </a>
     </div>

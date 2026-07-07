@@ -60,7 +60,7 @@ export default function MapCoachmark({ hasMyCat, isLoggedIn }: Props) {
           className="relative rounded-2xl px-4 py-3"
           style={{
             background: "linear-gradient(135deg, #FFFFFF 0%, #FFF9F0 100%)",
-            boxShadow: "0 12px 28px rgba(0,0,0,0.25), 0 2px 6px rgba(92,141,238,0.2)",
+            boxShadow: "0 12px 28px rgba(0,0,0,0.25), 0 2px 6px rgba(76,130,188,0.2)",
             maxWidth: 240,
           }}
         >
@@ -75,7 +75,7 @@ export default function MapCoachmark({ hasMyCat, isLoggedIn }: Props) {
           </button>
           <div className="flex items-center gap-1.5 mb-1 pr-6">
             <span style={{ fontSize: 16 }}>🐾</span>
-            <p className="text-[12px] font-extrabold" style={{ color: "#5C8DEE" }}>
+            <p className="text-[12px] font-extrabold" style={{ color: "#4C82BC" }}>
               첫 고양이 등록하기
             </p>
           </div>
@@ -106,7 +106,7 @@ export default function MapCoachmark({ hasMyCat, isLoggedIn }: Props) {
           {/* 펄스 링 */}
           <div
             className="absolute inset-2 rounded-[22px] animate-ping"
-            style={{ background: "rgba(92,141,238,0.35)" }}
+            style={{ background: "rgba(76,130,188,0.35)" }}
           />
           <ArrowDownRight
             size={32}

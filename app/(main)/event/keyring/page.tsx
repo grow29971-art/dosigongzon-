@@ -144,7 +144,7 @@ export default function KeyringEventPage() {
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
         <h1 className="text-[18px] font-extrabold text-text-main flex items-center gap-1.5">
-          <Gift size={16} style={{ color: "#5C8DEE" }} />
+          <Gift size={16} style={{ color: "#4C82BC" }} />
           1000명 이벤트 응모
         </h1>
       </div>
@@ -155,10 +155,10 @@ export default function KeyringEventPage() {
           className="rounded-2xl p-4"
           style={{
             background: "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
-            border: "1.5px solid rgba(92,141,238,0.25)",
+            border: "1.5px solid rgba(76,130,188,0.25)",
           }}
         >
-          <p className="text-[10.5px] font-extrabold tracking-[0.12em] mb-1" style={{ color: "#5C8DEE" }}>
+          <p className="text-[10.5px] font-extrabold tracking-[0.12em] mb-1" style={{ color: "#4C82BC" }}>
             🎁 내가 돌보는 아이 모양 커스텀 키링
           </p>
           <p className="text-[13.5px] font-extrabold text-text-main leading-tight mb-1">
@@ -176,26 +176,26 @@ export default function KeyringEventPage() {
         <div className="px-4 mb-4">
           <div
             className="rounded-2xl p-4"
-            style={{ background: "#FFF", border: "1px solid rgba(92,141,238,0.18)", boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+            style={{ background: "#FFF", border: "1px solid rgba(76,130,188,0.18)", boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-1.5">
-                <TrendingUp size={13} style={{ color: "#5C8DEE" }} />
+                <TrendingUp size={13} style={{ color: "#4C82BC" }} />
                 <span className="text-[12px] font-extrabold text-text-main">이벤트 진행도</span>
               </div>
-              <span className="text-[11px] font-extrabold" style={{ color: "#5C8DEE" }}>
+              <span className="text-[11px] font-extrabold" style={{ color: "#4C82BC" }}>
                 {memberCount.toLocaleString()} / 1,000명
               </span>
             </div>
             <div
               className="w-full h-2 rounded-full overflow-hidden"
-              style={{ background: "rgba(92,141,238,0.15)" }}
+              style={{ background: "rgba(76,130,188,0.15)" }}
             >
               <div
                 className="h-full rounded-full transition-all"
                 style={{
                   width: `${Math.min((memberCount / 1000) * 100, 100)}%`,
-                  background: "linear-gradient(90deg, #5C8DEE 0%, #E88D5A 100%)",
+                  background: "linear-gradient(90deg, #4C82BC 0%, #E88D5A 100%)",
                 }}
               />
             </div>
@@ -225,14 +225,14 @@ export default function KeyringEventPage() {
               {done ? "응모 완료!" : "이미 응모하셨어요"}
             </p>
             {enteredCatName && (
-              <p className="text-[13px] font-bold mb-1" style={{ color: "#5C8DEE" }}>
+              <p className="text-[13px] font-bold mb-1" style={{ color: "#4C82BC" }}>
                 🐾 {enteredCatName} 모양 키링 응모
               </p>
             )}
             <p className="text-[13px] text-text-sub leading-relaxed">
               가입자 1,000명 달성 시 추첨해서 쪽지로 안내드릴게요.
             </p>
-            <div className="flex items-center justify-center gap-1.5 mt-3 text-[11.5px]" style={{ color: "#5C8DEE" }}>
+            <div className="flex items-center justify-center gap-1.5 mt-3 text-[11.5px]" style={{ color: "#4C82BC" }}>
               <Users size={12} />
               <b>친구를 초대하면 추첨이 더 빨리 시작돼요!</b>
             </div>
@@ -251,13 +251,13 @@ export default function KeyringEventPage() {
           // 자격 미달: 등록한 고양이 0마리
           <div
             className="rounded-2xl p-6 text-center"
-            style={{ background: "#FFF", border: "1px dashed rgba(92,141,238,0.35)" }}
+            style={{ background: "#FFF", border: "1px dashed rgba(76,130,188,0.35)" }}
           >
             <div
               className="w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-3"
-              style={{ background: "rgba(92,141,238,0.12)" }}
+              style={{ background: "rgba(76,130,188,0.12)" }}
             >
-              <PawPrint size={26} style={{ color: "#5C8DEE" }} />
+              <PawPrint size={26} style={{ color: "#4C82BC" }} />
             </div>
             <p className="text-[15px] font-extrabold text-text-main mb-1.5">
               먼저 돌보는 아이를 등록해주세요
@@ -270,7 +270,7 @@ export default function KeyringEventPage() {
             <Link
               href="/map"
               className="inline-flex items-center gap-1.5 px-5 py-3 rounded-2xl bg-primary text-white text-[14px] font-extrabold active:scale-[0.97] transition-transform"
-              style={{ boxShadow: "0 6px 20px rgba(92,141,238,0.30)" }}
+              style={{ boxShadow: "0 6px 20px rgba(76,130,188,0.30)" }}
             >
               <PlusCircle size={16} />
               지도에서 첫 아이 등록하기
@@ -287,7 +287,7 @@ export default function KeyringEventPage() {
             {/* 고양이 선택 */}
             <div>
               <p className="text-[12px] font-extrabold text-text-main mb-2 flex items-center gap-1.5">
-                <PawPrint size={13} style={{ color: "#5C8DEE" }} />
+                <PawPrint size={13} style={{ color: "#4C82BC" }} />
                 키링으로 만들 아이를 골라주세요
               </p>
               <div className="grid grid-cols-2 gap-2">
@@ -305,9 +305,9 @@ export default function KeyringEventPage() {
                       className="relative block rounded-2xl overflow-hidden bg-white text-left active:scale-[0.98] transition-transform"
                       style={{
                         boxShadow: selected
-                          ? "0 8px 22px rgba(92,141,238,0.35)"
+                          ? "0 8px 22px rgba(76,130,188,0.35)"
                           : "0 2px 10px rgba(0,0,0,0.06)",
-                        border: selected ? "2.5px solid #5C8DEE" : "2.5px solid transparent",
+                        border: selected ? "2.5px solid #4C82BC" : "2.5px solid transparent",
                       }}
                     >
                       <div className="relative" style={{ aspectRatio: "1 / 1" }}>
@@ -321,7 +321,7 @@ export default function KeyringEventPage() {
                         {selected && (
                           <div
                             className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full flex items-center justify-center"
-                            style={{ background: "#5C8DEE", boxShadow: "0 2px 8px rgba(92,141,238,0.5)" }}
+                            style={{ background: "#4C82BC", boxShadow: "0 2px 8px rgba(76,130,188,0.5)" }}
                           >
                             <Check size={13} color="#fff" strokeWidth={3} />
                           </div>
@@ -349,7 +349,7 @@ export default function KeyringEventPage() {
               onClick={handleSubmit}
               disabled={submitting || !selectedCatId}
               className="w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold disabled:opacity-50 active:scale-[0.97] flex items-center justify-center gap-2"
-              style={{ boxShadow: "0 6px 20px rgba(92,141,238,0.30)" }}
+              style={{ boxShadow: "0 6px 20px rgba(76,130,188,0.30)" }}
             >
               {submitting ? <Loader2 size={18} className="animate-spin" /> : <Gift size={18} />}
               {submitting

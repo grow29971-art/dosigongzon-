@@ -218,7 +218,7 @@ function MessagesPage() {
                   <div
                     className="overflow-hidden"
                     style={{
-                      backgroundColor: isMe ? "#5C8DEE" : "#F6F1EA",
+                      backgroundColor: isMe ? "#4C82BC" : "#F6F1EA",
                       borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
                     }}
                   >
@@ -357,7 +357,7 @@ function MessagesPage() {
                 background: c.unreadCount > 0 ? "linear-gradient(135deg, #FDF9F2, #FFF)" : "#FFFFFF",
                 borderRadius: 16,
                 boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
-                border: c.unreadCount > 0 ? "1.5px solid rgba(92,141,238,0.2)" : "1px solid rgba(0,0,0,0.04)",
+                border: c.unreadCount > 0 ? "1.5px solid rgba(76,130,188,0.2)" : "1px solid rgba(0,0,0,0.04)",
               }}
             >
               {c.partnerAvatar ? (

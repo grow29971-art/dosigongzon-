@@ -648,7 +648,7 @@ export default function PostDetailPage({
               disabled={!commentText.trim() || submitting || !user}
               className="w-10 h-10 rounded-full flex items-center justify-center transition-all disabled:opacity-40"
               style={{
-                backgroundColor: commentText.trim() && user ? "#5C8DEE" : "#E3DCD3",
+                backgroundColor: commentText.trim() && user ? "#4C82BC" : "#E3DCD3",
               }}
             >
               {submitting ? (

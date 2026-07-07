@@ -100,9 +100,9 @@ export default function PushOptInCard() {
       <div className="flex items-center gap-2.5">
         <div
           className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-          style={{ backgroundColor: "rgba(92,141,238,0.15)" }}
+          style={{ backgroundColor: "rgba(76,130,188,0.15)" }}
         >
-          <Bell size={16} style={{ color: "#5C8DEE" }} />
+          <Bell size={16} style={{ color: "#4C82BC" }} />
         </div>
         <div className="flex-1 min-w-0">
           <p
@@ -122,7 +122,7 @@ export default function PushOptInCard() {
           onClick={handleEnable}
           disabled={busy}
           className="px-3 py-1.5 rounded-lg text-[11px] font-bold shrink-0 active:scale-95 transition-transform disabled:opacity-50"
-          style={{ backgroundColor: "#5C8DEE", color: "#fff" }}
+          style={{ backgroundColor: "#4C82BC", color: "#fff" }}
         >
           {busy ? "..." : "켜기"}
         </button>

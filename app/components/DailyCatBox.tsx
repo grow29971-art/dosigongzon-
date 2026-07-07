@@ -76,19 +76,19 @@ export default function DailyCatBox() {
           background: "linear-gradient(135deg, #FFF1D9 0%, #FFE0C0 100%)",
           borderRadius: 18,
           padding: "14px 16px",
-          border: "1px solid rgba(92,141,238,0.22)",
-          boxShadow: "0 4px 14px rgba(92,141,238,0.14)",
+          border: "1px solid rgba(76,130,188,0.22)",
+          boxShadow: "0 4px 14px rgba(76,130,188,0.14)",
         }}
       >
         <div className="flex items-center gap-3">
           <div
             className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 text-2xl"
-            style={{ background: "linear-gradient(135deg, #E88D5A 0%, #5C8DEE 100%)", boxShadow: "0 4px 12px rgba(92,141,238,0.4)" }}
+            style={{ background: "linear-gradient(135deg, #E88D5A 0%, #4C82BC 100%)", boxShadow: "0 4px 12px rgba(76,130,188,0.4)" }}
           >
             🎁
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-extrabold tracking-[0.15em]" style={{ color: "#8B6FE0" }}>오늘의 냥 상자</p>
+            <p className="text-[10px] font-extrabold tracking-[0.15em]" style={{ color: "#3E6FA8" }}>오늘의 냥 상자</p>
             <p className="text-[14px] font-extrabold text-text-main leading-tight mt-0.5">탭해서 오늘의 냥식을 열어보세요</p>
             <p className="text-[11px] text-text-sub mt-0.5">매일 새로운 고양이 이야기 · 출석 도장 🐾</p>
           </div>
@@ -106,12 +106,12 @@ export default function DailyCatBox() {
         background: "linear-gradient(135deg, #FFFDF8 0%, #FFF4E4 100%)",
         borderRadius: 18,
         padding: "14px 16px",
-        border: "1px solid rgba(92,141,238,0.2)",
-        boxShadow: "0 4px 14px rgba(92,141,238,0.1)",
+        border: "1px solid rgba(76,130,188,0.2)",
+        boxShadow: "0 4px 14px rgba(76,130,188,0.1)",
       }}
     >
       <div className="flex items-center justify-between mb-2">
-        <p className="text-[10px] font-extrabold tracking-[0.15em] flex items-center gap-1" style={{ color: "#8B6FE0" }}>
+        <p className="text-[10px] font-extrabold tracking-[0.15em] flex items-center gap-1" style={{ color: "#3E6FA8" }}>
           <PawPrint size={11} /> 오늘의 냥
         </p>
         {streak > 0 && (
@@ -124,7 +124,7 @@ export default function DailyCatBox() {
       {isBonus && (
         <div className="mt-2.5 flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: "rgba(232,141,90,0.12)" }}>
           <Gift size={14} style={{ color: "#D8743C" }} className="shrink-0" />
-          <p className="text-[11.5px] font-extrabold leading-snug" style={{ color: "#8B6FE0" }}>
+          <p className="text-[11.5px] font-extrabold leading-snug" style={{ color: "#3E6FA8" }}>
             오늘은 행운의 날! 길고양이에게 따뜻한 한 끼 어때요 🐾
           </p>
         </div>

@@ -74,14 +74,14 @@ export default function HospitalsPage() {
         <div className="flex items-center gap-2">
           <div
             className="w-5 h-[2px] rounded-full"
-            style={{ backgroundColor: "#5C8DEE", opacity: 0.6 }}
+            style={{ backgroundColor: "#4C82BC", opacity: 0.6 }}
           />
           <p className="text-[12px] font-bold text-text-sub">
             길 위의 아이들 치료를 도와주시는 병원
           </p>
           <span
             className="text-[9px] font-bold tracking-[0.15em]"
-            style={{ color: "#5C8DEE", opacity: 0.5 }}
+            style={{ color: "#4C82BC", opacity: 0.5 }}
           >
             RESCUE VETS
           </span>
@@ -118,10 +118,10 @@ export default function HospitalsPage() {
                 onClick={() => setCityFilter(c)}
                 className="shrink-0 px-4 py-2 rounded-full text-[12.5px] font-bold transition-all"
                 style={{
-                  backgroundColor: active ? "#5C8DEE" : "#FFFFFF",
+                  backgroundColor: active ? "#4C82BC" : "#FFFFFF",
                   color: active ? "#FFFFFF" : "#A38E7A",
-                  border: `1.5px solid ${active ? "#5C8DEE" : "#E3DCD3"}`,
-                  boxShadow: active ? "0 4px 12px rgba(92,141,238,0.35)" : "0 1px 3px rgba(0,0,0,0.03)",
+                  border: `1.5px solid ${active ? "#4C82BC" : "#E3DCD3"}`,
+                  boxShadow: active ? "0 4px 12px rgba(76,130,188,0.35)" : "0 1px 3px rgba(0,0,0,0.03)",
                 }}
               >
                 {c}
@@ -162,7 +162,7 @@ export default function HospitalsPage() {
               <div className="flex items-center gap-2 mb-3 px-1">
                 <div
                   className="w-1 h-4 rounded-full"
-                  style={{ backgroundColor: "#5C8DEE" }}
+                  style={{ backgroundColor: "#4C82BC" }}
                 />
                 <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
                   {group.city}
@@ -209,10 +209,10 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
         background: "#FFFFFF",
         borderRadius: 18,
         boxShadow: hospital.pinned
-          ? "0 8px 24px rgba(92,141,238,0.14), 0 1px 3px rgba(0,0,0,0.03)"
+          ? "0 8px 24px rgba(76,130,188,0.14), 0 1px 3px rgba(0,0,0,0.03)"
           : "0 4px 16px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02)",
         border: hospital.pinned
-          ? "1.5px solid rgba(92,141,238,0.25)"
+          ? "1.5px solid rgba(76,130,188,0.25)"
           : "1px solid rgba(0,0,0,0.04)",
       }}
     >
@@ -223,7 +223,7 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
             {hospital.pinned && (
               <span
                 className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md flex items-center gap-0.5"
-                style={{ backgroundColor: "#EEE8E0", color: "#5C8DEE" }}
+                style={{ backgroundColor: "#EEE8E0", color: "#4C82BC" }}
               >
                 <Pin size={9} /> 추천
               </span>

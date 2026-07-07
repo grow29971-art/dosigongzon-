@@ -6,10 +6,10 @@
    ══════════════════════════════════════════ */
 
 @theme inline {
-  /* Primary — 배틀화면 파스텔 블루/퍼플 톤 */
-  --color-primary: #5C8DEE;
-  --color-primary-light: #8AAEF5;
-  --color-primary-dark: #3D6BC9;
+  /* Primary — 하단 네비게이션 파란 톤과 통일 */
+  --color-primary: #4C82BC;
+  --color-primary-light: #6FA0D8;
+  --color-primary-dark: #3E6FA8;
 
   /* Background — 쿨 오프화이트 (하늘색 톤과 어울리게) */
   --color-warm-white: #F4F7FC;
@@ -25,8 +25,8 @@
   /* Accents */
   --color-sage: #4FAD6E;
   --color-mint: #4FAD6E;
-  --color-clay: #8B6FE0;
-  --color-coral: #8B6FE0;
+  --color-clay: #3E6FA8;
+  --color-coral: #3E6FA8;
   --color-error: #E1505F;
   --color-warning: #E0A030;
 

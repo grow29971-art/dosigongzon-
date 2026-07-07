@@ -51,8 +51,8 @@ export default function MainError({
             onClick={reset}
             className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-white text-[13px] font-extrabold active:scale-[0.98] transition-transform"
             style={{
-              background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
-              boxShadow: "0 4px 14px rgba(92,141,238,0.35)",
+              background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
+              boxShadow: "0 4px 14px rgba(76,130,188,0.35)",
             }}
           >
             <RotateCcw size={14} />
@@ -63,7 +63,7 @@ export default function MainError({
             className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-extrabold active:scale-[0.98] transition-transform"
             style={{
               backgroundColor: "#FFF",
-              color: "#5C8DEE",
+              color: "#4C82BC",
               border: "1.5px solid #E8D4BD",
             }}
           >

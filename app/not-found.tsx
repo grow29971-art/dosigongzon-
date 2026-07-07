@@ -33,7 +33,7 @@ export default function NotFound() {
             height: 180,
             borderRadius: "50%",
             background:
-              "radial-gradient(circle, rgba(92,141,238,0.15) 0%, rgba(92,141,238,0) 70%)",
+              "radial-gradient(circle, rgba(76,130,188,0.15) 0%, rgba(76,130,188,0) 70%)",
           }}
         />
         <div
@@ -56,7 +56,7 @@ export default function NotFound() {
           </div>
           <p
             className="text-[14px] font-extrabold tracking-[0.3em] mb-4"
-            style={{ color: "#5C8DEE" }}
+            style={{ color: "#4C82BC" }}
           >
             404
           </p>
@@ -76,8 +76,8 @@ export default function NotFound() {
               href="/"
               className="w-full py-3 rounded-2xl text-[14px] font-extrabold text-white active:scale-[0.98] transition-transform"
               style={{
-                background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
-                boxShadow: "0 4px 14px rgba(92,141,238,0.4)",
+                background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
+                boxShadow: "0 4px 14px rgba(76,130,188,0.4)",
               }}
             >
               🏠 홈으로 가기

@@ -32,7 +32,7 @@ export default function TipsAdminFab() {
       style={{
         right: 16,
         bottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)",
-        boxShadow: "0 8px 24px rgba(92,141,238,0.45), 0 2px 6px rgba(0,0,0,0.1)",
+        boxShadow: "0 8px 24px rgba(76,130,188,0.45), 0 2px 6px rgba(0,0,0,0.1)",
       }}
     >
       <Plus size={18} strokeWidth={3} />

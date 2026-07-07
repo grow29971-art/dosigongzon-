@@ -61,7 +61,7 @@ export default function BestiaryPage() {
             <span className="text-[11px] font-bold text-gray-500">이겨본 개체 {defeatedCount}마리</span>
           </div>
           <div className="h-2 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
-            <div className="h-full rounded-full" style={{ width: `${pct}%`, background: "linear-gradient(90deg,#5C8DEE,#8B6FE0)", transition: "width 0.4s ease" }} />
+            <div className="h-full rounded-full" style={{ width: `${pct}%`, background: "linear-gradient(90deg,#4C82BC,#3E6FA8)", transition: "width 0.4s ease" }} />
           </div>
         </div>
 
@@ -85,7 +85,7 @@ export default function BestiaryPage() {
                     style={{
                       width: 56, height: 56,
                       background: seen ? "#1A1A2A" : "rgba(255,255,255,0.06)",
-                      boxShadow: seen ? `0 0 0 2px ${defeated ? "#FFC15E" : "#5C8DEE"}` : "none",
+                      boxShadow: seen ? `0 0 0 2px ${defeated ? "#FFC15E" : "#4C82BC"}` : "none",
                     }}
                   >
                     {seen && photo ? (
@@ -125,7 +125,7 @@ export default function BestiaryPage() {
                 {defeatedKeys.includes(selected.key) ? "🏆 승리한 적 있어요" : "👀 조우했지만 아직 못 이겼어요"}
               </p>
               <button onClick={() => setSelected(null)} className="mt-4 w-full py-2.5 rounded-xl text-[13px] font-extrabold text-white"
-                style={{ background: "linear-gradient(135deg,#5C8DEE,#8B6FE0)" }}>
+                style={{ background: "linear-gradient(135deg,#4C82BC,#3E6FA8)" }}>
                 닫기
               </button>
             </div>

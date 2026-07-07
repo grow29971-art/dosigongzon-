@@ -389,7 +389,7 @@ export interface AdminTitle {
 
 export const ADMIN_TITLES: AdminTitle[] = [
   { id: "og_200", name: "초기 200", emoji: "🌟", color: "#E88D5A", description: "정식 출시 전 도시공존에 합류한 처음 200명에게 영구 부여되는 한정 타이틀" },
-  { id: "founding_member", name: "창립 멤버", emoji: "✨", color: "#5C8DEE", description: "정식 오픈(2026-06-01) 전 도시공존을 함께 시작한 초기 멤버" },
+  { id: "founding_member", name: "창립 멤버", emoji: "✨", color: "#4C82BC", description: "정식 오픈(2026-06-01) 전 도시공존을 함께 시작한 초기 멤버" },
   { id: "official_volunteer", name: "공식 봉사자", emoji: "💛", color: "#C9A961", description: "공식 인증된 길고양이 봉사 활동가" },
   { id: "tnr_expert", name: "TNR 전문가", emoji: "✂️", color: "#8B65B8", description: "TNR 활동에 적극 기여한 시민" },
   { id: "rescue_hero", name: "구조 영웅", emoji: "🦸", color: "#D85555", description: "위기 상황에서 고양이를 구조한 시민" },

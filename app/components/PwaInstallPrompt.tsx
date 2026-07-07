@@ -159,22 +159,22 @@ export default function PwaInstallPrompt() {
         style={{
           maxWidth: 420,
           background: "linear-gradient(135deg, #FFFFFF 0%, #FFF9F0 100%)",
-          boxShadow: "0 12px 36px rgba(92,141,238,0.25), 0 2px 8px rgba(0,0,0,0.08)",
-          border: "1px solid rgba(92,141,238,0.25)",
+          boxShadow: "0 12px 36px rgba(76,130,188,0.25), 0 2px 8px rgba(0,0,0,0.08)",
+          border: "1px solid rgba(76,130,188,0.25)",
         }}
       >
         <div className="flex items-start gap-3">
           <div
             className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
             style={{
-              background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
-              boxShadow: "0 4px 12px rgba(92,141,238,0.35)",
+              background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
+              boxShadow: "0 4px 12px rgba(76,130,188,0.35)",
             }}
           >
             <Download size={19} color="#fff" strokeWidth={2.3} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#5C8DEE" }}>
+            <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#4C82BC" }}>
               INSTALL
             </p>
             <p className="text-[14.5px] font-extrabold text-text-main tracking-tight leading-tight mt-0.5">
@@ -197,17 +197,17 @@ export default function PwaInstallPrompt() {
 
         {/* iOS 안내 */}
         {showIosHint && (
-          <div className="mt-3 rounded-xl p-3" style={{ background: "rgba(92,141,238,0.08)" }}>
+          <div className="mt-3 rounded-xl p-3" style={{ background: "rgba(76,130,188,0.08)" }}>
             <p className="text-[11.5px] text-text-main leading-relaxed mb-2 font-semibold">
               사파리 하단 공유 버튼을 눌러주세요:
             </p>
             <ol className="space-y-1 text-[11.5px] text-text-sub leading-relaxed pl-1">
               <li className="flex items-center gap-1.5">
-                <Share size={13} style={{ color: "#5C8DEE" }} />
+                <Share size={13} style={{ color: "#4C82BC" }} />
                 <span>공유 아이콘 탭</span>
               </li>
               <li className="flex items-center gap-1.5">
-                <PlusSquare size={13} style={{ color: "#5C8DEE" }} />
+                <PlusSquare size={13} style={{ color: "#4C82BC" }} />
                 <span>"홈 화면에 추가" 선택</span>
               </li>
             </ol>
@@ -221,8 +221,8 @@ export default function PwaInstallPrompt() {
             onClick={install}
             className="w-full mt-3 py-2.5 rounded-xl text-[13px] font-extrabold text-white active:scale-[0.98] transition-transform"
             style={{
-              background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
-              boxShadow: "0 4px 12px rgba(92,141,238,0.35)",
+              background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
+              boxShadow: "0 4px 12px rgba(76,130,188,0.35)",
             }}
           >
             홈 화면에 추가

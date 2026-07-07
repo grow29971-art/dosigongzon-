@@ -70,14 +70,14 @@ export default async function AreasIndexPage() {
 
       <section className="px-5 pt-4">
         <div className="flex items-center gap-1.5 mb-1.5">
-          <MapPin size={14} style={{ color: "#5C8DEE" }} />
-          <span className="text-[11.5px] font-bold" style={{ color: "#5C8DEE" }}>전국</span>
+          <MapPin size={14} style={{ color: "#4C82BC" }} />
+          <span className="text-[11.5px] font-bold" style={{ color: "#4C82BC" }}>전국</span>
         </div>
         <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight">
           전국 <br />길고양이 돌봄 지도
         </h1>
         <p className="text-[13px] text-text-sub mt-2 leading-relaxed">
-          전체 등록 고양이 <b style={{ color: "#5C8DEE" }}>{total.toLocaleString()}마리</b>.
+          전체 등록 고양이 <b style={{ color: "#4C82BC" }}>{total.toLocaleString()}마리</b>.
           내 동네를 눌러 돌봄 기록과 긴급 구조가 필요한 아이를 확인하세요.
         </p>
       </section>
@@ -96,7 +96,7 @@ export default async function AreasIndexPage() {
                 <div className="flex items-baseline justify-between">
                   <span className="text-[14px] font-extrabold text-text-main">{g.name}</span>
                   {n > 0 && (
-                    <span className="text-[11px] font-bold" style={{ color: "#5C8DEE" }}>
+                    <span className="text-[11px] font-bold" style={{ color: "#4C82BC" }}>
                       {n}마리
                     </span>
                   )}
@@ -117,16 +117,16 @@ export default async function AreasIndexPage() {
           className="block rounded-2xl p-4 active:scale-[0.98] transition-transform"
           style={{
             background: "linear-gradient(135deg, #FFF8F2 0%, #F7F4EE 100%)",
-            border: "1.5px solid rgba(92,141,238,0.25)",
+            border: "1.5px solid rgba(76,130,188,0.25)",
           }}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-bold tracking-[0.12em]" style={{ color: "#5C8DEE" }}>NATIONWIDE</p>
+              <p className="text-[10px] font-bold tracking-[0.12em]" style={{ color: "#4C82BC" }}>NATIONWIDE</p>
               <p className="text-[15px] font-extrabold text-text-main mt-0.5">다른 광역시·도 보기</p>
               <p className="text-[11.5px] text-text-sub mt-0.5">부산·인천·대구·대전·광주·울산·세종·제주·경기</p>
             </div>
-            <span className="text-[18px]" style={{ color: "#5C8DEE" }}>→</span>
+            <span className="text-[18px]" style={{ color: "#4C82BC" }}>→</span>
           </div>
         </Link>
       </section>

@@ -35,8 +35,8 @@ export default function AccountDeletionPage() {
         {/* 타이틀 */}
         <header className="mb-6">
           <div className="flex items-center gap-2 mb-2">
-            <Cat size={16} style={{ color: "#5C8DEE" }} />
-            <span className="text-[12px] font-bold" style={{ color: "#5C8DEE" }}>도시공존</span>
+            <Cat size={16} style={{ color: "#4C82BC" }} />
+            <span className="text-[12px] font-bold" style={{ color: "#4C82BC" }}>도시공존</span>
           </div>
           <h1 className="text-[26px] font-extrabold text-text-main tracking-tight leading-tight">
             계정 삭제 안내
@@ -59,7 +59,7 @@ export default function AccountDeletionPage() {
           <div className="flex items-center gap-2 mb-3">
             <div
               className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)" }}
+              style={{ background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)" }}
             >
               <Trash2 size={16} color="#fff" strokeWidth={2.5} />
             </div>
@@ -72,12 +72,12 @@ export default function AccountDeletionPage() {
             <li className="flex gap-3">
               <span
                 className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white"
-                style={{ background: "#5C8DEE" }}
+                style={{ background: "#4C82BC" }}
               >
                 1
               </span>
               <span className="text-[13.5px] text-text-main leading-relaxed">
-                <Link href="/login" className="font-bold underline" style={{ color: "#5C8DEE" }}>로그인</Link>
+                <Link href="/login" className="font-bold underline" style={{ color: "#4C82BC" }}>로그인</Link>
                 {" "}후 우측 하단{" "}
                 <strong>마이</strong>{" "}탭 진입
               </span>
@@ -85,7 +85,7 @@ export default function AccountDeletionPage() {
             <li className="flex gap-3">
               <span
                 className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white"
-                style={{ background: "#5C8DEE" }}
+                style={{ background: "#4C82BC" }}
               >
                 2
               </span>
@@ -96,7 +96,7 @@ export default function AccountDeletionPage() {
             <li className="flex gap-3">
               <span
                 className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white"
-                style={{ background: "#5C8DEE" }}
+                style={{ background: "#4C82BC" }}
               >
                 3
               </span>
@@ -110,8 +110,8 @@ export default function AccountDeletionPage() {
             href="/mypage"
             className="mt-5 flex items-center justify-between w-full px-4 py-3 rounded-xl active:scale-[0.99] transition-transform"
             style={{
-              background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
-              boxShadow: "0 6px 16px rgba(92,141,238,0.3)",
+              background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
+              boxShadow: "0 6px 16px rgba(76,130,188,0.3)",
             }}
           >
             <span className="text-[13px] font-extrabold text-white">

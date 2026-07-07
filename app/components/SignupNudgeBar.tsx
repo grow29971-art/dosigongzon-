@@ -73,8 +73,8 @@ export default function SignupNudgeBar() {
         className={`pointer-events-auto mx-auto mx-4 max-w-md rounded-2xl px-4 py-3 flex items-center gap-3 transition-all ${shown ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
         style={{
           background: "linear-gradient(135deg, #FFFFFF 0%, #FFF9F0 100%)",
-          boxShadow: "0 12px 36px rgba(92,141,238,0.28), 0 2px 6px rgba(0,0,0,0.08)",
-          border: "1px solid rgba(92,141,238,0.25)",
+          boxShadow: "0 12px 36px rgba(76,130,188,0.28), 0 2px 6px rgba(0,0,0,0.08)",
+          border: "1px solid rgba(76,130,188,0.25)",
           marginLeft: 12,
           marginRight: 12,
         }}
@@ -82,8 +82,8 @@ export default function SignupNudgeBar() {
         <div
           className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
           style={{
-            background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
-            boxShadow: "0 3px 8px rgba(92,141,238,0.35)",
+            background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
+            boxShadow: "0 3px 8px rgba(76,130,188,0.35)",
           }}
         >
           <Sparkles size={16} color="#fff" strokeWidth={2.3} />
@@ -100,8 +100,8 @@ export default function SignupNudgeBar() {
           href={`/signup?next=${next}`}
           className="shrink-0 flex items-center gap-1 px-3 py-2 rounded-xl text-white text-[12px] font-extrabold active:scale-95 transition-transform"
           style={{
-            background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
-            boxShadow: "0 3px 8px rgba(92,141,238,0.35)",
+            background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
+            boxShadow: "0 3px 8px rgba(76,130,188,0.35)",
           }}
         >
           가입

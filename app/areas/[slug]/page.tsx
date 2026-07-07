@@ -134,14 +134,14 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
       {/* 히어로 */}
       <section className="px-5 pt-4">
         <div className="flex items-center gap-1.5 mb-1.5">
-          <MapPin size={14} style={{ color: "#5C8DEE" }} />
-          <span className="text-[11.5px] font-bold" style={{ color: "#5C8DEE" }}>서울특별시 {gu.name}</span>
+          <MapPin size={14} style={{ color: "#4C82BC" }} />
+          <span className="text-[11.5px] font-bold" style={{ color: "#4C82BC" }}>서울특별시 {gu.name}</span>
         </div>
         <h1 className="text-[26px] font-extrabold text-text-main leading-tight tracking-tight">
           {gu.name} 길고양이 돌봄 지도
         </h1>
         <p className="text-[13.5px] text-text-sub mt-2 leading-relaxed">
-          {gu.name}에 등록된 길고양이 <b style={{ color: "#5C8DEE" }}>{catCount}마리</b>의 돌봄 기록.
+          {gu.name}에 등록된 길고양이 <b style={{ color: "#4C82BC" }}>{catCount}마리</b>의 돌봄 기록.
           {urgent > 0 && (
             <> 지금 도움이 필요한 아이 <b style={{ color: "#D85555" }}>{urgent}마리</b>.</>
           )}
@@ -152,7 +152,7 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
           <Link
             href="/map"
             className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-primary text-white active:scale-[0.98] transition-transform"
-            style={{ boxShadow: "0 4px 14px rgba(92,141,238,0.3)" }}
+            style={{ boxShadow: "0 4px 14px rgba(76,130,188,0.3)" }}
           >
             <PawPrint size={14} />
             <span className="text-[13px] font-extrabold">지도에서 보기</span>
@@ -160,7 +160,7 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
           <Link
             href="/signup"
             className="flex-1 flex items-center justify-center py-3 rounded-2xl active:scale-[0.98] transition-transform"
-            style={{ backgroundColor: "#FFF", color: "#5C8DEE", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 800 }}
+            style={{ backgroundColor: "#FFF", color: "#4C82BC", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 800 }}
           >
             돌봄 시작하기
           </Link>
@@ -186,8 +186,8 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
             className="relative overflow-hidden rounded-2xl p-5 text-center"
             style={{
               background: "linear-gradient(135deg, #FFF6E8 0%, #FCE7D2 60%, #F8D9BE 100%)",
-              border: "1.5px solid rgba(92,141,238,0.30)",
-              boxShadow: "0 6px 18px rgba(92,141,238,0.18)",
+              border: "1.5px solid rgba(76,130,188,0.30)",
+              boxShadow: "0 6px 18px rgba(76,130,188,0.18)",
             }}
           >
             <div
@@ -211,15 +211,15 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
               <br />
               곧 {gu.name}에도 따뜻한 지도가 생겨요.
               <br />
-              <b style={{ color: "#8B6FE0" }}>출시 기념 — 지금 합류하시면 창립 멤버 타이틀을 영구 드려요.</b>
+              <b style={{ color: "#3E6FA8" }}>출시 기념 — 지금 합류하시면 창립 멤버 타이틀을 영구 드려요.</b>
             </p>
             <div className="flex gap-2">
               <Link
                 href={`/signup?next=${encodeURIComponent(`/areas/${slug}`)}`}
                 className="flex-[1.5] flex items-center justify-center py-2.5 rounded-xl text-white text-[12.5px] font-extrabold active:scale-[0.98] transition-transform"
                 style={{
-                  background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
-                  boxShadow: "0 4px 14px rgba(92,141,238,0.35)",
+                  background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
+                  boxShadow: "0 4px 14px rgba(76,130,188,0.35)",
                 }}
               >
                 무료로 시작하기
@@ -228,8 +228,8 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
                 href="/areas"
                 className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.98] transition-transform bg-white"
                 style={{
-                  color: "#8B6FE0",
-                  border: "1px solid rgba(92,141,238,0.30)",
+                  color: "#3E6FA8",
+                  border: "1px solid rgba(76,130,188,0.30)",
                 }}
               >
                 서울 다른 구
@@ -317,7 +317,7 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
           <Link
             href="/hospitals"
             className="block text-center text-[12px] font-bold mt-3"
-            style={{ color: "#5C8DEE" }}
+            style={{ color: "#4C82BC" }}
           >
             전체 병원 보기 →
           </Link>
@@ -364,7 +364,7 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
         <Link
           href="/areas"
           className="block text-center text-[12px] font-bold mt-3"
-          style={{ color: "#5C8DEE" }}
+          style={{ color: "#4C82BC" }}
         >
           전국 구·동별 길고양이 지도 →
         </Link>

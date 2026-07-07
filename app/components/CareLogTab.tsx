@@ -159,7 +159,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
               );
             },
           )}
-          <span className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold" style={{ backgroundColor: "#5C8DEE15", color: "#5C8DEE" }}>
+          <span className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold" style={{ backgroundColor: "#4C82BC15", color: "#4C82BC" }}>
             돌보미 {stats.caretakerCount}명
           </span>
         </div>
@@ -250,7 +250,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
               type="button"
               onClick={() => setShowForm(true)}
               className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12px] font-bold active:scale-[0.97] transition-transform"
-              style={{ backgroundColor: "#F6F1EA", color: "#5C8DEE" }}
+              style={{ backgroundColor: "#F6F1EA", color: "#4C82BC" }}
             >
               <Plus size={14} />
               돌봄 기록 추가

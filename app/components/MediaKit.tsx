@@ -53,15 +53,15 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
           style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-extrabold tracking-[0.1em] uppercase" style={{ color: "#5C8DEE" }}>
+            <span className="text-[11px] font-extrabold tracking-[0.1em] uppercase" style={{ color: "#4C82BC" }}>
               {b.label}
             </span>
             <button
               onClick={() => handleCopy(b.id, b.text)}
               className="flex items-center gap-1 px-2.5 py-1 rounded-lg active:scale-95 transition-transform"
               style={{
-                background: copiedId === b.id ? "#E8F5E9" : "rgba(92,141,238,0.10)",
-                color: copiedId === b.id ? "#2E7D32" : "#8B6FE0",
+                background: copiedId === b.id ? "#E8F5E9" : "rgba(76,130,188,0.10)",
+                color: copiedId === b.id ? "#2E7D32" : "#3E6FA8",
               }}
             >
               {copiedId === b.id ? <Check size={11} /> : <Copy size={11} />}
@@ -81,7 +81,7 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
         className="bg-white rounded-2xl p-4"
         style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
       >
-        <p className="text-[11px] font-extrabold tracking-[0.1em] uppercase mb-2.5" style={{ color: "#5C8DEE" }}>
+        <p className="text-[11px] font-extrabold tracking-[0.1em] uppercase mb-2.5" style={{ color: "#4C82BC" }}>
           로고 · 아이콘 다운로드
         </p>
         <div className="grid grid-cols-3 gap-2">
@@ -103,7 +103,7 @@ function LogoCard({ href, label, filename }: { href: string; label: string; file
       href={href}
       download={filename}
       className="flex flex-col items-center gap-1 py-3 rounded-xl active:scale-95 transition-transform"
-      style={{ background: "#FFF8F2", border: "1px solid rgba(92,141,238,0.20)" }}
+      style={{ background: "#FFF8F2", border: "1px solid rgba(76,130,188,0.20)" }}
     >
       <div
         className="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -116,7 +116,7 @@ function LogoCard({ href, label, filename }: { href: string; label: string; file
       <span className="text-[10px] font-extrabold mt-0.5" style={{ color: "#8B5A3C" }}>
         {label}
       </span>
-      <Download size={10} style={{ color: "#5C8DEE" }} />
+      <Download size={10} style={{ color: "#4C82BC" }} />
     </a>
   );
 }

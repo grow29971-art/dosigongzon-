@@ -1450,7 +1450,7 @@ export default function BattlePage() {
           {isFightPhase && mode==="auto" && (
             <button onClick={()=>{ sfx.click(); setAutoSpeed(s=>s===1?2:s===2?3:1); }}
               className="ml-auto"
-              style={{ fontSize:11, fontWeight:800, padding:"4px 10px", borderRadius:999, color:"#8B6FE0", background:"#EFE9FD" }}>
+              style={{ fontSize:11, fontWeight:800, padding:"4px 10px", borderRadius:999, color:"#3E6FA8", background:"#E3EEF9" }}>
               {autoSpeed}배속
             </button>
           )}
@@ -1492,8 +1492,8 @@ export default function BattlePage() {
                   className="flex-1"
                   style={{
                     padding:"12px 0", fontSize:13, fontWeight:800, borderRadius:16,
-                    background: mode===m ? "#8B6FE0" : "#fff",
-                    border: `2px solid ${mode===m ? "#8B6FE0" : "#E3E1EC"}`,
+                    background: mode===m ? "#3E6FA8" : "#fff",
+                    border: `2px solid ${mode===m ? "#3E6FA8" : "#E3E1EC"}`,
                     color: mode===m?"#fff":"#9A94A8",
                     boxShadow: mode===m ? "0 3px 10px rgba(60,50,90,0.12)" : "none",
                     transition:"transform 0.08s",
@@ -1509,10 +1509,10 @@ export default function BattlePage() {
             <div className="grid grid-cols-2 gap-3 mb-6">
               {myCats.map(cat=>(
                 <div key={cat.id}
-                  style={{justifySelf:"start",display:"inline-block",outline:selected?.id===cat.id?"3px solid #8B6FE0":"2px solid transparent",outlineOffset:2,borderRadius:20,transition:"transform 0.12s",transform:selected?.id===cat.id?"scale(1.04)":"scale(1)"}}>
+                  style={{justifySelf:"start",display:"inline-block",outline:selected?.id===cat.id?"3px solid #3E6FA8":"2px solid transparent",outlineOffset:2,borderRadius:20,transition:"transform 0.12s",transform:selected?.id===cat.id?"scale(1.04)":"scale(1)"}}>
                   <CatCard name={cat.name} photoUrl={cat.photo_url} card={toCard(cat)} size="sm"
                     onClick={()=>phase==="select"&&setSelected(s=>s?.id===cat.id?null:cat)}/>
-                  {selected?.id===cat.id&&<div className="text-center text-[10px] font-bold mt-1" style={{color:"#8B6FE0"}}>✓ 선택됨</div>}
+                  {selected?.id===cat.id&&<div className="text-center text-[10px] font-bold mt-1" style={{color:"#3E6FA8"}}>✓ 선택됨</div>}
                 </div>
               ))}
             </div>
@@ -1522,8 +1522,8 @@ export default function BattlePage() {
                 className="w-full relative overflow-hidden"
                 style={{
                   padding:"16px 0", fontSize:17, fontWeight:800, color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", gap:8,
-                  borderRadius:20, background:"linear-gradient(160deg,#C4B2FF 0%,#9F85F0 40%,#7A5AE0 100%)",
-                  boxShadow:"0 6px 16px rgba(122,90,224,0.4), 0 2px 4px rgba(122,90,224,0.3), inset 0 -3px 6px rgba(60,30,140,0.3)",
+                  borderRadius:20, background:"linear-gradient(160deg,#C4B2FF 0%,#6FA0D8 40%,#2F5E93 100%)",
+                  boxShadow:"0 6px 16px rgba(47,94,147,0.4), 0 2px 4px rgba(47,94,147,0.3), inset 0 -3px 6px rgba(60,30,140,0.3)",
                   opacity:phase==="loading"?0.6:1,
                 }}>
                 <span aria-hidden="true" style={{ position:"absolute", inset:0, top:0, height:"50%", background:"linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 100%)" }} />
@@ -1567,9 +1567,9 @@ export default function BattlePage() {
                 <button onClick={()=>setAutoPilot(a=>!a)}
                   style={{
                     fontSize:9.5, fontWeight:800, padding:"5px 10px", whiteSpace:"nowrap", borderRadius:999,
-                    background: autoPilot ? "#8B6FE0" : "rgba(255,255,255,0.75)",
+                    background: autoPilot ? "#3E6FA8" : "rgba(255,255,255,0.75)",
                     color: autoPilot ? "#fff" : "#8A8598",
-                    boxShadow: autoPilot ? "0 2px 8px rgba(139,111,224,0.35)" : "none",
+                    boxShadow: autoPilot ? "0 2px 8px rgba(62,111,168,0.35)" : "none",
                   }}>
                   ⚡ 자동전투 {autoPilot?"ON":"OFF"}
                 </button>
@@ -1634,13 +1634,13 @@ export default function BattlePage() {
                   position:"relative", overflow:"hidden",
                   width:40, height:40, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center",
                   fontSize:13, fontWeight:900, color:"#fff", letterSpacing:0.5, flexShrink:0,
-                  background:"linear-gradient(160deg,#A9CCFF 0%,#5C93F0 45%,#3D6BC9 100%)",
-                  boxShadow:"0 0 0 3px #fff, 0 4px 10px rgba(61,107,201,0.45), 0 1px 3px rgba(61,107,201,0.3), inset 0 -2px 4px rgba(30,50,110,0.35)",
+                  background:"linear-gradient(160deg,#A9CCFF 0%,#5C93F0 45%,#3E6FA8 100%)",
+                  boxShadow:"0 0 0 3px #fff, 0 4px 10px rgba(62,111,168,0.45), 0 1px 3px rgba(62,111,168,0.3), inset 0 -2px 4px rgba(30,50,110,0.35)",
                 }}>
                   <span aria-hidden="true" style={{ position:"absolute", inset:0, top:0, height:"55%", background:"linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%)", borderRadius:"999px 999px 0 0" }} />
                   <span style={{ position:"relative", textShadow:"0 1px 2px rgba(20,40,100,0.4)" }}>VS</span>
                 </span>
-                {actionMsg&&<div key={actionMsg} style={{fontSize:9,fontWeight:800,color:"#8B6FE0",textAlign:"center",maxWidth:60,lineHeight:1.3,marginTop:4,animation:"msgIn 0.3s ease"}}>{actionMsg}</div>}
+                {actionMsg&&<div key={actionMsg} style={{fontSize:9,fontWeight:800,color:"#3E6FA8",textAlign:"center",maxWidth:60,lineHeight:1.3,marginTop:4,animation:"msgIn 0.3s ease"}}>{actionMsg}</div>}
               </div>
 
               {/* 상대 카드 */}
@@ -1680,7 +1680,7 @@ export default function BattlePage() {
             {/* 카드 닉네임 줄 — 내 카드 / VS / 상대 이름 */}
             <div className="flex items-center justify-between px-1">
               <span className="flex items-center gap-1">
-                <span className="text-[10px] font-bold" style={{color:"#8B6FE0"}}>내 카드</span>
+                <span className="text-[10px] font-bold" style={{color:"#3E6FA8"}}>내 카드</span>
                 {(selected?.win_streak ?? 0) > 0 && (
                   <span className="flex items-center gap-0.5" style={{fontSize:9.5,fontWeight:800,color:"#FF7A3C"}}>
                     🔥{selected!.win_streak}연승
@@ -1824,7 +1824,7 @@ export default function BattlePage() {
               </p>
               <div className="w-full space-y-2 p-3" style={{ borderRadius:18, background:"rgba(255,255,255,0.85)", boxShadow:"0 3px 10px rgba(60,50,90,0.08)" }}>
                 <div className="flex gap-3 items-center">
-                  <span className="text-[11px] font-bold shrink-0 w-14 truncate" style={{color:"#8B6FE0"}}>{selected.name}</span>
+                  <span className="text-[11px] font-bold shrink-0 w-14 truncate" style={{color:"#3E6FA8"}}>{selected.name}</span>
                   <div style={{flex:1}}><HpBar current={myHp} max={myMaxHp}/></div>
                   <span className="text-[10px] shrink-0" style={{color:"#8A8598"}}>{myHp}/{myMaxHp}</span>
                 </div>
@@ -1840,7 +1840,7 @@ export default function BattlePage() {
                   다시 선택
                 </button>
                 <button onClick={startBattle} className="flex-1"
-                  style={{ padding:"12px 0", fontSize:13, fontWeight:800, color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", gap:6, borderRadius:16, background:"linear-gradient(135deg,#9F85F0,#7A5AE0)", boxShadow:"0 4px 12px rgba(122,90,224,0.35)" }}>
+                  style={{ padding:"12px 0", fontSize:13, fontWeight:800, color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", gap:6, borderRadius:16, background:"linear-gradient(135deg,#6FA0D8,#2F5E93)", boxShadow:"0 4px 12px rgba(47,94,147,0.35)" }}>
                   <Swords size={14}/> 재도전
                 </button>
               </div>

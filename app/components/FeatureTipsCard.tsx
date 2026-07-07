@@ -37,8 +37,8 @@ const TIPS: Tip[] = [
   {
     id: "set_region",
     icon: MapPin,
-    iconColor: "#5C8DEE",
-    iconBg: "rgba(92,141,238,0.12)",
+    iconColor: "#4C82BC",
+    iconBg: "rgba(76,130,188,0.12)",
     title: "활동 지역 설정하기",
     desc: "내 동네를 지정하면 홈에 그 지역 고양이 · 새 소식만 모아서 보여줘요.",
     ctaLabel: "지금 설정",

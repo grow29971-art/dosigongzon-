@@ -120,7 +120,7 @@ export default async function MonthlyReportPage({
             </p>
 
             <div className="grid grid-cols-2 gap-3 mb-5">
-              <StatTile icon={<BookOpen size={18} color="#5C8DEE" />} label="돌봄다이어리" value={report.careLogCount} unit="회" tint="#FFF5E0" />
+              <StatTile icon={<BookOpen size={18} color="#4C82BC" />} label="돌봄다이어리" value={report.careLogCount} unit="회" tint="#FFF5E0" />
               <StatTile icon={<CatIcon size={18} color="#5BA876" />} label="새로 등록한 고양이" value={report.newCatCount} unit="마리" tint="#EAF6EF" />
               <StatTile icon={<MessageSquare size={18} color="#4A7BA8" />} label="커뮤니티 기록" value={report.commentCount} unit="건" tint="#E5EDF5" />
               <StatTile icon={<Swords size={18} color="#8B3A3A" />} label="PVP 승리" value={report.battleWinCount} unit="회" tint="#FBE5DC" />

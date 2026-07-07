@@ -171,7 +171,7 @@ export default function MyCardsPage() {
           <div className="grid grid-cols-4 gap-2 mb-4 mt-3">
             <Link href="/mypage/cards/battle"
               className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[11px] text-white"
-              style={{ background: "linear-gradient(135deg,#9F85F0,#7A5AE0)", boxShadow: "0 4px 12px rgba(122,90,224,0.3)" }}>
+              style={{ background: "linear-gradient(135deg,#6FA0D8,#2F5E93)", boxShadow: "0 4px 12px rgba(47,94,147,0.3)" }}>
               <Swords size={16} /> 배틀
             </Link>
             <Link href="/mypage/cards/ranking"
@@ -206,7 +206,7 @@ export default function MyCardsPage() {
             {(["all", ...RARITY_ORDER] as const).map((r) => (
               <button key={r} onClick={() => setFilter(r)}
                 className="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all"
-                style={{ background: filter === r ? "#5C8DEE" : "#fff", color: filter === r ? "#fff" : "#8A8598", boxShadow: filter === r ? "0 2px 8px rgba(92,141,238,0.35)" : "0 1px 4px rgba(60,50,90,0.06)" }}>
+                style={{ background: filter === r ? "#4C82BC" : "#fff", color: filter === r ? "#fff" : "#8A8598", boxShadow: filter === r ? "0 2px 8px rgba(76,130,188,0.35)" : "0 1px 4px rgba(60,50,90,0.06)" }}>
                 {r === "all" ? `전체 ${cats.length}` : `${RARITY_LABELS[r]} ${counts[r]}`}
               </button>
             ))}
@@ -264,7 +264,7 @@ export default function MyCardsPage() {
               <div className="h-1.5 rounded-full" style={{ background: "#EEEDF4" }}>
                 <div className="h-full rounded-full" style={{
                   width: `${Math.min(((selected.card_exp ?? 0) / ([0,90,210,380,610,900,1260,1690,2200,2800][Math.min(selected.card_level ?? 1, 9)] || 2800)) * 100, 100)}%`,
-                  background: "linear-gradient(90deg,#9F85F0,#FF9CC6)",
+                  background: "linear-gradient(90deg,#6FA0D8,#FF9CC6)",
                 }} />
               </div>
             </div>
@@ -282,7 +282,7 @@ export default function MyCardsPage() {
               {/* 배틀 */}
               <Link href="/mypage/cards/battle"
                 className="py-2.5 rounded-xl text-[11px] font-bold flex flex-col items-center gap-1"
-                style={{ background: "#EFE9FD", color: "#7A5AE0", textDecoration: "none" }}>
+                style={{ background: "#E3EEF9", color: "#2F5E93", textDecoration: "none" }}>
                 <Swords size={14} />
                 배틀
               </Link>

@@ -20,8 +20,8 @@ export default function LoginRequired({
       <div
         className="w-16 h-16 rounded-3xl flex items-center justify-center mb-4"
         style={{
-          background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
-          boxShadow: "0 10px 28px rgba(92,141,238,0.35)",
+          background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
+          boxShadow: "0 10px 28px rgba(76,130,188,0.35)",
         }}
       >
         <MessagesSquare size={28} color="#fff" strokeWidth={2.2} />
@@ -36,7 +36,7 @@ export default function LoginRequired({
         <Link
           href={loginHref}
           className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary text-white text-[14px] font-extrabold active:scale-[0.98] transition-transform"
-          style={{ boxShadow: "0 6px 20px rgba(92,141,238,0.3)" }}
+          style={{ boxShadow: "0 6px 20px rgba(76,130,188,0.3)" }}
         >
           <LogIn size={16} strokeWidth={2.5} />
           카카오 · 구글로 시작하기

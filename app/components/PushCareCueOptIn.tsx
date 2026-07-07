@@ -89,12 +89,12 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
       <div className="flex items-center gap-3">
         <div
           className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-          style={{ background: "linear-gradient(135deg, #E88D5A 0%, #5C8DEE 100%)", boxShadow: "0 3px 10px rgba(92,141,238,0.35)" }}
+          style={{ background: "linear-gradient(135deg, #E88D5A 0%, #4C82BC 100%)", boxShadow: "0 3px 10px rgba(76,130,188,0.35)" }}
         >
           <Bell size={17} color="#fff" strokeWidth={2.3} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#8B6FE0" }}>매일 6시 알림</p>
+          <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#3E6FA8" }}>매일 6시 알림</p>
           <p className="text-[13px] font-extrabold text-text-main leading-tight mt-0.5">
             🍚 내 아이 한 끼 챙길 시간, 알려드릴까요?
           </p>
@@ -108,7 +108,7 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
             onClick={enable}
             disabled={busy}
             className="h-8 px-3 rounded-full text-white text-[11.5px] font-extrabold active:scale-95 transition-transform disabled:opacity-60"
-            style={{ background: "#5C8DEE", boxShadow: "0 3px 8px rgba(92,141,238,0.3)" }}
+            style={{ background: "#4C82BC", boxShadow: "0 3px 8px rgba(76,130,188,0.3)" }}
           >
             {busy ? "..." : "켜기"}
           </button>
