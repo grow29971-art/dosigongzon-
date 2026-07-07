@@ -30,7 +30,7 @@ export default function BottomNav() {
         boxShadow: "0 -4px 16px rgba(20,40,70,0.25)",
       }}
     >
-      <div className="mx-auto max-w-lg flex justify-around px-1 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+      <div className="mx-auto max-w-lg flex px-1 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         {tabs.map(({ href, label, Icon }) => {
           const on = isActive(href);
           return (
@@ -39,21 +39,21 @@ export default function BottomNav() {
               href={href}
               aria-label={label}
               aria-current={on ? "page" : undefined}
-              className="relative flex flex-col items-center gap-0.5 px-2 py-1"
+              className="relative flex flex-1 min-w-0 flex-col items-center gap-0.5 px-0.5 py-1"
             >
               <span
-                className="flex items-center justify-center rounded-2xl transition-all"
+                className="flex items-center justify-center rounded-2xl transition-all shrink-0"
                 style={{
-                  width: 44, height: 44,
+                  width: 40, height: 40,
                   background: on ? "rgba(255,255,255,0.22)" : "transparent",
                   transform: on ? "scale(1.06)" : "scale(1)",
                   opacity: on ? 1 : 0.82,
                 }}
               >
-                <Icon size={28} />
+                <Icon size={25} />
               </span>
               <span
-                className="text-[10px] font-extrabold"
+                className="text-[10px] font-extrabold w-full text-center truncate"
                 style={{
                   color: "#fff",
                   opacity: on ? 1 : 0.75,

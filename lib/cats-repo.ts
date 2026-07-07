@@ -683,14 +683,23 @@ export async function updateMyAvatar(avatarUrl: string): Promise<void> {
 }
 
 // ── 닉네임 갱신 ──
+// auth.users.user_metadata.nickname(대부분의 화면이 useAuth()의 user로 읽는 값)와
+// profiles.nickname(배틀 랭킹·전체 랭킹이 읽는 값)이 서로 다른 곳이라 하나만
+// 갱신하면 랭킹 쪽에 옛날 닉네임이 남는 문제가 있었음 — 둘 다 같이 갱신.
 export async function updateMyNickname(nickname: string): Promise<void> {
   const supabase = createClient();
-  const { error } = await supabase.auth.updateUser({
+  const { data: { user }, error: authError } = await supabase.auth.updateUser({
     data: { nickname },
   });
-  if (error) {
-    console.error("[cats-repo] updateMyNickname failed:", error);
-    throw new Error(`닉네임 저장에 실패했어요: ${error.message}`);
+  if (authError) {
+    console.error("[cats-repo] updateMyNickname failed:", authError);
+    throw new Error(`닉네임 저장에 실패했어요: ${authError.message}`);
+  }
+  if (user) {
+    const { error: profileError } = await supabase.from("profiles").update({ nickname }).eq("id", user.id);
+    if (profileError) {
+      console.error("[cats-repo] updateMyNickname profiles sync failed:", profileError);
+    }
   }
 }
 
