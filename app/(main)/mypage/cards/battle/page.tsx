@@ -11,8 +11,6 @@ import { SHOP_ITEMS, BATTLE_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-confi
 import ParticleCanvas, { type ParticleCanvasHandle } from "@/app/components/ParticleCanvas";
 import SfxToggle from "@/app/components/SfxToggle";
 import { sfx, primeSfx, setAmbientEnv, stopAmbient } from "@/lib/sfx";
-import { gameFont } from "@/lib/fonts";
-import { notchClip, pixelOutline } from "@/lib/pixel-ui";
 
 /* ──────────── 배틀 환경 ──────────── */
 const BATTLE_ENVS = {
@@ -25,13 +23,13 @@ const BATTLE_ENVS = {
 type BattleEnvKey = keyof typeof BATTLE_ENVS;
 const ENV_KEYS = Object.keys(BATTLE_ENVS) as BattleEnvKey[];
 
-// 환경별 배경 (레이어드 그라디언트, 이미지 없이 CSS만으로 — 뚜렷하게 구분되도록 채도/명도 차이를 크게)
+// 환경별 배경 — 파스텔 하늘 톤 그라디언트 (다크 판타지 톤 대신 포근한 가챠게임 톤)
 const ENV_BACKGROUNDS: Record<BattleEnvKey, string> = {
-  night: "radial-gradient(circle at 20% 10%, rgba(160,180,255,0.35), transparent 30%), radial-gradient(circle at 82% 6%, rgba(220,220,255,0.22), transparent 22%), radial-gradient(circle at 60% 20%, rgba(140,160,255,0.15), transparent 18%), linear-gradient(180deg, #04051C 0%, #0C1042 45%, #1A0A2E 100%)",
-  noon:  "radial-gradient(circle at 50% -8%, rgba(255,210,110,0.55), transparent 42%), radial-gradient(circle at 50% 10%, rgba(255,170,60,0.25), transparent 55%), linear-gradient(180deg, #8A5416 0%, #4A2A10 42%, #1A0A2E 100%)",
-  rain:  "repeating-linear-gradient(112deg, rgba(160,210,255,0.16) 0px, rgba(160,210,255,0.16) 2px, transparent 2px, transparent 11px), linear-gradient(180deg, #062838 0%, #0A3350 42%, #1A0A2E 100%)",
-  heat:  "radial-gradient(circle at 50% 100%, rgba(255,110,30,0.55), transparent 55%), radial-gradient(circle at 50% 30%, rgba(255,60,20,0.18), transparent 50%), linear-gradient(180deg, #601505 0%, #380D08 42%, #1A0A2E 100%)",
-  fog:   "linear-gradient(180deg, rgba(215,220,230,0.42), transparent 48%), linear-gradient(180deg, #4A4D58 0%, #33303F 42%, #1A0A2E 100%)",
+  night: "radial-gradient(circle at 50% 34%, rgba(255,255,255,0.55), transparent 46%), linear-gradient(180deg, #E4EEFF 0%, #C9DEFF 45%, #AFCBFF 100%)",
+  noon:  "radial-gradient(circle at 50% 34%, rgba(255,255,255,0.6), transparent 46%), linear-gradient(180deg, #FFF6DE 0%, #FFE7B8 45%, #FFD48F 100%)",
+  rain:  "radial-gradient(circle at 50% 34%, rgba(255,255,255,0.55), transparent 46%), linear-gradient(180deg, #E1F0FB 0%, #C3DFEF 45%, #A6CCE1 100%)",
+  heat:  "radial-gradient(circle at 50% 34%, rgba(255,255,255,0.55), transparent 46%), linear-gradient(180deg, #FFE9DC 0%, #FFCFB6 45%, #FFB393 100%)",
+  fog:   "radial-gradient(circle at 50% 34%, rgba(255,255,255,0.6), transparent 46%), linear-gradient(180deg, #EDEBF7 0%, #D8D6E9 45%, #C4C2D9 100%)",
 };
 
 // 액션 슬롯 순서: [기본공격, 방어, 스킬1, 스킬2, 스킬3, 스킬4]
@@ -193,41 +191,48 @@ function toCard(cat: BattleCat): CatCardData {
   return { card_rarity:cat.card_rarity, card_name:cat.card_name, card_traits:cat.card_traits??[], card_stats:cat.card_stats, card_flavor:cat.card_flavor, card_level:cat.card_level, card_exp:cat.card_exp, placeholder_emoji:cat.placeholder_emoji, card_generated_at:cat.card_generated_at, best_win_streak:cat.best_win_streak, pve_win_count:cat.pve_win_count };
 }
 
-/* ──────────── 환경 씬 (달/해/별/비/안개/불씨 + 골목 스카이라인 실루엣) ──────────── */
-const SKYLINE_CLIP = "polygon(0% 100%,0% 62%,7% 62%,7% 42%,15% 42%,15% 68%,24% 68%,24% 30%,33% 30%,33% 58%,42% 58%,42% 20%,50% 20%,50% 66%,60% 66%,60% 44%,68% 44%,68% 76%,78% 76%,78% 36%,87% 36%,87% 60%,100% 60%,100% 100%)";
-const SKYLINE_COLOR: Record<BattleEnvKey, string> = {
-  night: "rgba(6,8,30,0.55)", noon: "rgba(80,50,15,0.30)", rain: "rgba(4,18,26,0.60)",
-  heat: "rgba(60,15,5,0.45)", fog: "rgba(30,32,40,0.35)",
-};
+/* ──────────── 환경 씬 (만다라 링 + 해/달/안개 + 파티클) ──────────── */
 function EnvScene({ env }: { env: BattleEnvKey | null }) {
   const particleRef = useRef<ParticleCanvasHandle>(null);
   useEffect(() => {
-    if (env === "rain") particleRef.current?.setAmbient("rain", "190,220,255", 1);
-    else if (env === "heat") particleRef.current?.setAmbient("ember", "255,140,50", 1);
-    else if (env === "night") particleRef.current?.setAmbient("firefly", "255,225,170", 1);
-    else if (env === "noon") particleRef.current?.setAmbient("dust", "255,240,190", 1);
-    else if (env === "fog") particleRef.current?.setAmbient("mist", "225,230,238", 1);
+    if (env === "rain") particleRef.current?.setAmbient("rain", "120,170,230", 1);
+    else if (env === "heat") particleRef.current?.setAmbient("ember", "255,150,90", 1);
+    else if (env === "night") particleRef.current?.setAmbient("firefly", "255,235,180", 1);
+    else if (env === "noon") particleRef.current?.setAmbient("dust", "255,220,150", 1);
+    else if (env === "fog") particleRef.current?.setAmbient("mist", "180,180,210", 1);
     else particleRef.current?.setAmbient(null);
   }, [env]);
   if (!env) return null;
   return (
     <div style={{ position:"absolute", inset:0, zIndex:-1, overflow:"hidden", pointerEvents:"none" }}>
+      {/* 만다라 링 — 화면 중앙 뒤에 은은하게 깔리는 원형 장식 패턴 */}
+      <div style={{ position:"absolute", top:"30%", left:"50%", transform:"translate(-50%,-50%)", width:280, height:280 }}>
+        {[280, 220, 165].map((size) => (
+          <div key={size} style={{
+            position:"absolute", top:"50%", left:"50%", width:size, height:size,
+            transform:"translate(-50%,-50%)", borderRadius:"50%",
+            border:"1px solid rgba(255,255,255,0.35)",
+          }} />
+        ))}
+      </div>
       {env === "night" && (
         <>
           <div style={{ position:"absolute", top:"6%", right:"12%", width:52, height:52, borderRadius:"50%",
-            background:"radial-gradient(circle, #FFF8D8 0%, #FFE9A0 55%, transparent 75%)",
-            boxShadow:"0 0 40px 14px rgba(255,240,180,0.35)" }} />
+            background:"radial-gradient(circle, #FFFCEF 0%, #FFEFB8 55%, transparent 75%)",
+            boxShadow:"0 0 40px 14px rgba(255,240,180,0.4)" }} />
           <div className="env-stars" />
         </>
       )}
       {env === "noon" && (
         <div style={{ position:"absolute", top:"-6%", left:"50%", transform:"translateX(-50%)", width:150, height:150, borderRadius:"50%",
-          background:"radial-gradient(circle, rgba(255,230,150,0.9) 0%, rgba(255,190,80,0.5) 40%, transparent 72%)",
-          boxShadow:"0 0 70px 30px rgba(255,200,90,0.30)" }} />
+          background:"radial-gradient(circle, rgba(255,240,190,0.95) 0%, rgba(255,205,120,0.55) 40%, transparent 72%)",
+          boxShadow:"0 0 70px 30px rgba(255,210,120,0.30)" }} />
       )}
       {env === "fog" && <div className="env-fog" />}
       <ParticleCanvas ref={particleRef} />
-      <div style={{ position:"absolute", left:0, right:0, bottom:0, height:110, clipPath:SKYLINE_CLIP, background:SKYLINE_COLOR[env] }} />
+      {/* 바닥 아레나 — 부드러운 타원형 플로어 글로우 */}
+      <div style={{ position:"absolute", left:"50%", bottom:"6%", width:"120%", height:130, transform:"translateX(-50%)",
+        borderRadius:"50%", background:"radial-gradient(ellipse, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.18) 55%, transparent 75%)" }} />
     </div>
   );
 }
@@ -235,12 +240,11 @@ function EnvScene({ env }: { env: BattleEnvKey | null }) {
 /* ──────────── HP 바 ──────────── */
 function HpBar({ current, max }: { current:number; max:number }) {
   const pct = Math.max(0, Math.min(100, (current/max)*100));
-  const col = pct>50?"#44DD66":pct>25?"#FFCC22":"#FF3333";
+  const grad = pct>50 ? "linear-gradient(90deg,#7CE38F,#3FCB6B)" : pct>25 ? "linear-gradient(90deg,#FFDA7C,#FFB93F)" : "linear-gradient(90deg,#FF9C9C,#FF5C5C)";
   return (
-    <div style={{ height:10, background:"#000", border:"2px solid #000", boxShadow:"inset 0 0 0 1px rgba(255,255,255,0.15)", overflow:"hidden" }}>
+    <div style={{ height:9, borderRadius:99, background:"rgba(0,0,0,0.08)", overflow:"hidden" }}>
       <div style={{
-        height:"100%", width:`${pct}%`, background:col, transition:"width 0.45s steps(10), background 0.45s",
-        backgroundImage: "repeating-linear-gradient(90deg, rgba(255,255,255,0.25) 0 2px, transparent 2px 4px)",
+        height:"100%", width:`${pct}%`, background:grad, borderRadius:99, transition:"width 0.45s ease, background 0.45s",
         animation: pct<25 ? "pulse 0.6s infinite" : undefined,
       }} />
     </div>
@@ -308,47 +312,45 @@ function StatusFx({ frozen, feared, shocked, sleepy, poisoned, bleeding, bound }
 // variant "compact" = 스킬 1~4 (2x2 그리드, 아이콘+이름 위주로 깔끔하게)
 function SkillBtn({ skill, idx, disabled, cooldown=0, usesLeft, onPick, variant="compact" }: { skill:Skill; idx:number; disabled:boolean; cooldown?:number; usesLeft?:number; onPick:(i:number)=>void; variant?:"primary"|"compact" }) {
   const isPrimary = variant === "primary";
-  const icons = [<Swords key={0} size={isPrimary?19:14}/>, <Shield key={1} size={isPrimary?19:14}/>, <Zap key={2} size={14}/>, <Sparkles key={3} size={14}/>, <Flame key={4} size={14}/>, <Star key={5} size={14}/>];
+  const icons = [<Swords key={0} size={isPrimary?18:15}/>, <Shield key={1} size={isPrimary?18:15}/>, <Zap key={2} size={15}/>, <Sparkles key={3} size={15}/>, <Flame key={4} size={15}/>, <Star key={5} size={15}/>];
   const isCd = cooldown > 0;
   const isExhausted = usesLeft !== undefined && usesLeft <= 0;
   const isOff = disabled || isCd || isExhausted;
-  const clip = notchClip(isPrimary ? 4 : 3);
-  const shadowOff = isOff ? 0 : (isPrimary ? 4 : 3);
   return (
     <button onClick={() => { if (isOff) return; primeSfx(); sfx.click(); onPick(idx); }} disabled={isOff}
-      className="pixel-btn"
       style={{
         position:"relative", flex:1, minWidth:0,
         display:"flex", flexDirection: isPrimary ? "row" : "column",
         alignItems:"center", justifyContent: isPrimary ? "flex-start" : "center",
         gap: isPrimary ? 10 : 4,
-        padding: isPrimary ? "12px 14px" : "12px 4px 9px",
-        clipPath: clip,
-        boxShadow: `inset 0 0 0 2px #000, inset 0 0 0 ${isPrimary?5:4}px ${isOff ? "#333" : skill.color}`,
-        background: isOff ? "#1c1c26" : "#000",
-        filter: shadowOff ? `drop-shadow(${shadowOff}px ${shadowOff}px 0 rgba(0,0,0,0.55))` : undefined,
-        opacity: isOff ? 0.55 : 1, cursor: isOff?"default":"pointer",
+        padding: isPrimary ? "13px 15px" : "12px 6px 10px",
+        borderRadius: 18,
+        border: `2px solid ${isOff ? "#E3E1EC" : skill.color + "88"}`,
+        background: isOff ? "#F1F0F5" : "#fff",
+        boxShadow: isOff ? "none" : "0 3px 10px rgba(60,50,90,0.08)",
+        transition:"transform 0.08s",
+        opacity: isOff ? 0.6 : 1, cursor: isOff?"default":"pointer",
         WebkitTapHighlightColor:"transparent",
+        textAlign: isPrimary ? "left" : "center",
       }}>
       {/* 아이콘 배지 */}
       <span style={{
         flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center",
-        width: isPrimary?36:28, height: isPrimary?36:28,
-        clipPath: notchClip(2),
-        background: skill.color, border:"2px solid #000", color:"#000",
+        width: isPrimary?38:32, height: isPrimary?38:32, borderRadius:"50%",
+        background: isOff ? "#E3E1EC" : `${skill.color}22`, color: isOff ? "#B4B0C2" : skill.color,
       }}>
-        {isPrimary ? icons[idx] : <span style={{ fontSize:15 }}>{skill.icon}</span>}
+        {isPrimary ? icons[idx] : <span style={{ fontSize:16 }}>{skill.icon}</span>}
       </span>
 
       <span style={{ display:"flex", flexDirection:"column", alignItems: isPrimary?"flex-start":"center", gap:1, minWidth:0, flex: isPrimary?1:undefined, width: isPrimary?undefined:"100%" }}>
-        <span className={gameFont.className} style={{
-          fontSize: isPrimary?13.5:10.5, color:"#fff", textShadow: pixelOutline("#000", 1.2),
-          whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis", maxWidth: isPrimary?"100%":"100%",
+        <span style={{
+          fontSize: isPrimary?14:11.5, fontWeight:800, color:"#2B2B3D",
+          whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis", maxWidth: "100%",
         }}>
           {skill.name}
         </span>
         <span style={{
-          fontSize: isPrimary?10.5:9, color:"rgba(255,255,255,0.55)", fontWeight:700, textAlign: isPrimary?"left":"center",
+          fontSize: isPrimary?11:9.5, color:"#8A8598", fontWeight:600, textAlign: isPrimary?"left":"center",
           whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis", maxWidth:"100%",
         }}>
           {skill.desc}
@@ -356,24 +358,24 @@ function SkillBtn({ skill, idx, disabled, cooldown=0, usesLeft, onPick, variant=
       </span>
 
       {usesLeft !== undefined && !isCd && (
-        <span className={gameFont.className} style={{
-          position:"absolute", top: isPrimary?9:4, right: isPrimary?11:5,
-          fontSize:10, padding:"1.5px 6px",
-          background: isExhausted ? "#500" : "#000", border: `1.5px solid ${isExhausted ? "#FF9090" : "rgba(255,255,255,0.4)"}`,
-          color: isExhausted ? "#FF9090" : "rgba(255,255,255,0.7)",
+        <span style={{
+          position:"absolute", top: isPrimary?10:6, right: isPrimary?12:7,
+          fontSize:10, fontWeight:800, padding:"2px 7px", borderRadius:999,
+          background: isExhausted ? "#FFE1E4" : "#EEF1FF",
+          color: isExhausted ? "#E1505F" : "#5C6BC0",
         }}>
           {usesLeft}회
         </span>
       )}
       {isCd && (
-        <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.82)", display:"flex", flexDirection: isPrimary?"row":"column", alignItems:"center", justifyContent:"center", gap: isPrimary?6:1 }}>
-          <span className={gameFont.className} style={{ fontSize:isPrimary?22:18, color:"#FF9090" }}>{cooldown}</span>
-          <span style={{ fontSize:isPrimary?11:8.5, color:"rgba(255,180,180,0.8)", fontWeight:700 }}>턴 남음</span>
+        <div style={{ position:"absolute", inset:0, borderRadius:18, background:"rgba(255,255,255,0.92)", display:"flex", flexDirection: isPrimary?"row":"column", alignItems:"center", justifyContent:"center", gap: isPrimary?6:1 }}>
+          <span style={{ fontSize:isPrimary?20:17, fontWeight:800, color:"#E1505F" }}>{cooldown}</span>
+          <span style={{ fontSize:isPrimary?11:8.5, color:"#C98088", fontWeight:700 }}>턴 남음</span>
         </div>
       )}
       {isExhausted && !isCd && (
-        <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.82)", display:"flex", alignItems:"center", justifyContent:"center" }}>
-          <span className={gameFont.className} style={{ fontSize:isPrimary?13:11, color:"#FF9090" }}>소진</span>
+        <div style={{ position:"absolute", inset:0, borderRadius:18, background:"rgba(255,255,255,0.92)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <span style={{ fontSize:isPrimary?13:11, fontWeight:800, color:"#E1505F" }}>소진</span>
         </div>
       )}
     </button>
@@ -1315,10 +1317,10 @@ export default function BattlePage() {
   const oppBleeding = oppStatusBadges.some(b=>b.startsWith("🩸"));
   const oppBound    = oppStatusBadges.some(b=>b.startsWith("⛓️"));
 
-  const dangerTint = myDanger&&!oppDanger ? "rgba(255,40,40,0.22)" : oppDanger&&!myDanger ? "rgba(60,255,110,0.14)" : "rgba(0,0,0,0)";
+  const dangerTint = myDanger&&!oppDanger ? "rgba(255,70,70,0.16)" : oppDanger&&!myDanger ? "rgba(60,220,120,0.14)" : "rgba(0,0,0,0)";
   const rootBg = battleEnv
     ? `linear-gradient(180deg, ${dangerTint} 0%, transparent 30%), ${ENV_BACKGROUNDS[battleEnv]}`
-    : `linear-gradient(180deg,${myDanger&&!oppDanger?"#2A0A0A":oppDanger&&!myDanger?"#0A1A0A":"#0A0A18"} 0%,#1A0A2E 100%)`;
+    : "radial-gradient(circle at 50% 34%, rgba(255,255,255,0.55), transparent 46%), linear-gradient(180deg, #E4EEFF 0%, #C9DEFF 45%, #AFCBFF 100%)";
 
   return (
     <>
@@ -1400,9 +1402,6 @@ export default function BattlePage() {
         }
         @keyframes fog-drift { 0%{transform:translateX(-4%)} 100%{transform:translateX(4%)} }
 
-        /* 픽셀 게임풍 버튼 — 오프셋 하드섀도우 + 눌림 = 이동, 부드러운 스케일 대신 */
-        .pixel-btn { transition: transform 0.04s linear; }
-        .pixel-btn:active:not(:disabled) { transform: translate(3px, 3px) !important; filter: none !important; }
         .pixel-scanlines {
           position:absolute; inset:0; pointer-events:none; z-index:1;
           background-image: repeating-linear-gradient(0deg, rgba(0,0,0,0.14) 0px, rgba(0,0,0,0.14) 1px, transparent 1px, transparent 3px);
@@ -1436,12 +1435,12 @@ export default function BattlePage() {
         <EnvScene env={battleEnv} />
 
         {/* 헤더 */}
-        <div className="flex items-center gap-3 px-4 pt-safe pt-4 pb-3 shrink-0" style={{background:"rgba(10,10,24,0.85)",backdropFilter:"blur(12px)"}}>
-          <button onClick={()=>{reset();router.back();}} className="w-9 h-9 rounded-full flex items-center justify-center" style={{background:"rgba(255,255,255,0.08)"}}>
-            <ArrowLeft size={18} color="white"/>
+        <div className="flex items-center gap-3 px-4 pt-safe pt-4 pb-3 shrink-0" style={{background:"rgba(255,255,255,0.55)",backdropFilter:"blur(12px)"}}>
+          <button onClick={()=>{reset();router.back();}} className="w-9 h-9 rounded-full flex items-center justify-center" style={{background:"rgba(255,255,255,0.7)",boxShadow:"0 2px 6px rgba(60,50,90,0.1)"}}>
+            <ArrowLeft size={18} color="#2B2B3D"/>
           </button>
-          <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><Swords size={18}/> 카드 배틀</h1>
-          {isFightPhase && <span className="ml-auto text-[12px] text-gray-500 font-bold">{turnCount}턴</span>}
+          <h1 className="text-[17px] font-extrabold flex items-center gap-2" style={{color:"#2B2B3D"}}><Swords size={18}/> 카드 배틀</h1>
+          {isFightPhase && <span className="ml-auto text-[12px] font-bold" style={{color:"#6B6578"}}>{turnCount}턴</span>}
           <SfxToggle style={isFightPhase ? undefined : { marginLeft: "auto" }}/>
         </div>
 
@@ -1455,21 +1454,20 @@ export default function BattlePage() {
                 { key:"pvp" as const, label:"⚔️ 다른 유저와 대결", color:"#5A8AC4" },
               ]).map(bt=>(
                 <button key={bt.key} onClick={()=>setBattleType(bt.key)}
-                  className={`pixel-btn flex-1 ${gameFont.className}`}
+                  className="flex-1"
                   style={{
-                    padding:"11px 4px", fontSize:12.5, clipPath: notchClip(3),
-                    background:"#000",
-                    boxShadow: battleType===bt.key
-                      ? `inset 0 0 0 2px #000, inset 0 0 0 4px ${bt.color}`
-                      : "inset 0 0 0 2px #000, inset 0 0 0 4px #333",
-                    color: battleType===bt.key?"#fff":"rgba(255,255,255,0.4)",
-                    filter: battleType===bt.key ? `drop-shadow(3px 3px 0 ${bt.color}66)` : undefined,
+                    padding:"12px 4px", fontSize:12.5, fontWeight:800, borderRadius:16,
+                    background: battleType===bt.key ? bt.color : "#fff",
+                    border: `2px solid ${battleType===bt.key ? bt.color : "#E3E1EC"}`,
+                    color: battleType===bt.key?"#fff":"#9A94A8",
+                    boxShadow: battleType===bt.key ? "0 3px 10px rgba(60,50,90,0.12)" : "none",
+                    transition:"transform 0.08s",
                   }}>
                   {bt.label}
                 </button>
               ))}
             </div>
-            <p className="text-[11px] text-center mb-4" style={{ color: battleType==="pve" ? "#FF9090" : "#8AB4E0" }}>
+            <p className="text-[11px] text-center mb-4 font-semibold" style={{ color: battleType==="pve" ? "#E85555" : "#5A8AC4" }}>
               {battleType==="pve" ? "언제든 도전할 수 있는 PVE — 이겨도 져도 코인은 받아요" : "실제 다른 유저의 고양이 카드와 겨루는 PVP"}
             </p>
 
@@ -1477,43 +1475,41 @@ export default function BattlePage() {
             <div className="flex gap-2 mb-4">
               {(["manual","auto"] as Mode[]).map(m=>(
                 <button key={m} onClick={()=>setMode(m)}
-                  className={`pixel-btn flex-1 ${gameFont.className}`}
+                  className="flex-1"
                   style={{
-                    padding:"11px 0", fontSize:13, clipPath: notchClip(3),
-                    background:"#000",
-                    boxShadow: mode===m
-                      ? "inset 0 0 0 2px #000, inset 0 0 0 4px #C060FF"
-                      : "inset 0 0 0 2px #000, inset 0 0 0 4px #333",
-                    color: mode===m?"#fff":"rgba(255,255,255,0.4)",
-                    filter: mode===m ? "drop-shadow(3px 3px 0 rgba(160,80,255,0.4))" : undefined,
+                    padding:"12px 0", fontSize:13, fontWeight:800, borderRadius:16,
+                    background: mode===m ? "#8B6FE0" : "#fff",
+                    border: `2px solid ${mode===m ? "#8B6FE0" : "#E3E1EC"}`,
+                    color: mode===m?"#fff":"#9A94A8",
+                    boxShadow: mode===m ? "0 3px 10px rgba(60,50,90,0.12)" : "none",
+                    transition:"transform 0.08s",
                   }}>
                   {m==="manual"?"🎮 수동 전투":"⚡ 자동 전투"}
                 </button>
               ))}
             </div>
-            {mode==="manual"&&<p className="text-[11px] text-gray-500 text-center mb-4">턴마다 기술을 직접 선택! 6초 안에 고르세요</p>}
+            {mode==="manual"&&<p className="text-[11px] text-center mb-4 font-semibold" style={{color:"#9A94A8"}}>턴마다 기술을 직접 선택! 6초 안에 고르세요</p>}
 
-            <p className="text-gray-400 text-[13px] mb-3">출전할 고양이 선택</p>
-            {error&&<p className="text-red-400 text-[13px] mb-3 text-center">{error}</p>}
+            <p className="text-[13px] mb-3 font-bold" style={{color:"#6B6578"}}>출전할 고양이 선택</p>
+            {error&&<p className="text-[13px] mb-3 text-center font-semibold" style={{color:"#E1505F"}}>{error}</p>}
             <div className="grid grid-cols-2 gap-3 mb-6">
               {myCats.map(cat=>(
                 <div key={cat.id}
-                  style={{outline:selected?.id===cat.id?"3px solid #C080FF":"2px solid transparent",transition:"transform 0.12s",transform:selected?.id===cat.id?"scale(1.04)":"scale(1)"}}>
+                  style={{outline:selected?.id===cat.id?"3px solid #8B6FE0":"2px solid transparent",outlineOffset:2,borderRadius:20,transition:"transform 0.12s",transform:selected?.id===cat.id?"scale(1.04)":"scale(1)"}}>
                   <CatCard name={cat.name} photoUrl={cat.photo_url} card={toCard(cat)} size="sm"
                     onClick={()=>phase==="select"&&setSelected(s=>s?.id===cat.id?null:cat)}/>
-                  {selected?.id===cat.id&&<div className="text-center text-[10px] text-purple-300 font-bold mt-1">✓ 선택됨</div>}
+                  {selected?.id===cat.id&&<div className="text-center text-[10px] font-bold mt-1" style={{color:"#8B6FE0"}}>✓ 선택됨</div>}
                 </div>
               ))}
             </div>
-            {myCats.length===0&&<div className="text-center py-16"><p className="text-gray-500 text-[14px]">카드가 없어요. 고양이를 등록하면 카드가 생성돼요!</p></div>}
+            {myCats.length===0&&<div className="text-center py-16"><p className="text-[14px]" style={{color:"#9A94A8"}}>카드가 없어요. 고양이를 등록하면 카드가 생성돼요!</p></div>}
             {selected&&(
               <button onClick={startBattle} disabled={phase==="loading"}
-                className={`pixel-btn w-full ${gameFont.className}`}
+                className="w-full"
                 style={{
-                  padding:"15px 0", fontSize:17, color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", gap:8,
-                  clipPath: notchClip(4), background:"#000",
-                  boxShadow:"inset 0 0 0 2px #000, inset 0 0 0 5px #C060FF",
-                  filter:"drop-shadow(4px 4px 0 rgba(160,80,255,0.45))",
+                  padding:"16px 0", fontSize:17, fontWeight:800, color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", gap:8,
+                  borderRadius:20, background:"linear-gradient(135deg,#9F85F0,#7A5AE0)",
+                  boxShadow:"0 6px 16px rgba(122,90,224,0.35)",
                   opacity:phase==="loading"?0.6:1,
                 }}>
                 {phase==="loading"?<span className="animate-pulse">상대 찾는 중...</span>:<><Swords size={18}/> 배틀 시작!</>}
@@ -1525,7 +1521,7 @@ export default function BattlePage() {
         {/* ──────── 카운트다운 ──────── */}
         {phase==="countdown"&&(
           <div className="flex-1 flex flex-col items-center justify-center">
-            <div key={countdown} className={gameFont.className} style={{fontSize:countdown===0?64:100,color:countdown===0?"#FFD700":"white",textShadow:pixelOutline("#000", countdown===0?5:6),animation:"cdPop 0.55s ease forwards"}}>
+            <div key={countdown} style={{fontSize:countdown===0?64:100,fontWeight:900,color:countdown===0?"#FFA726":"#4A4460",textShadow:"0 4px 14px rgba(60,50,90,0.25)",animation:"cdPop 0.55s ease forwards"}}>
               {countdown===0?"GO!":countdown}
             </div>
           </div>
@@ -1537,37 +1533,43 @@ export default function BattlePage() {
 
             {/* 배틀 환경 */}
             {battleEnv && (
-              <div className="text-center" style={{fontSize:11,fontWeight:800,color:"rgba(255,255,255,0.6)"}}>
-                {BATTLE_ENVS[battleEnv].emoji} {BATTLE_ENVS[battleEnv].name} · {BATTLE_ENVS[battleEnv].desc}
+              <div className="text-center" style={{display:"flex", justifyContent:"center"}}>
+                <span style={{
+                  fontSize:11, fontWeight:800, color:"#5A5468",
+                  background:"rgba(255,255,255,0.75)", borderRadius:999, padding:"5px 14px",
+                  boxShadow:"0 2px 8px rgba(60,50,90,0.08)",
+                }}>
+                  {BATTLE_ENVS[battleEnv].emoji} {BATTLE_ENVS[battleEnv].name} · {BATTLE_ENVS[battleEnv].desc}
+                </span>
               </div>
             )}
 
             {/* 수동: 자동전투 토글 + 타이머 바 */}
             {mode==="manual"&&(
               <div className="flex items-center gap-2">
-                <button onClick={()=>setAutoPilot(a=>!a)} className={`pixel-btn ${gameFont.className}`}
+                <button onClick={()=>setAutoPilot(a=>!a)}
                   style={{
-                    fontSize:9.5, padding:"4px 9px", whiteSpace:"nowrap", clipPath: notchClip(1.5),
-                    background:"#000",
-                    boxShadow: autoPilot ? "inset 0 0 0 1.5px #000, inset 0 0 0 2.5px #C060FF" : "inset 0 0 0 1.5px #000, inset 0 0 0 2.5px #444",
-                    color: autoPilot ? "white" : "rgba(255,255,255,0.5)",
+                    fontSize:9.5, fontWeight:800, padding:"5px 10px", whiteSpace:"nowrap", borderRadius:999,
+                    background: autoPilot ? "#8B6FE0" : "rgba(255,255,255,0.75)",
+                    color: autoPilot ? "#fff" : "#8A8598",
+                    boxShadow: autoPilot ? "0 2px 8px rgba(139,111,224,0.35)" : "none",
                   }}>
                   ⚡ 자동전투 {autoPilot?"ON":"OFF"}
                 </button>
                 {autoPilot && (
-                  <button onClick={()=>setAutoUseItems(a=>!a)} className={`pixel-btn ${gameFont.className}`}
+                  <button onClick={()=>setAutoUseItems(a=>!a)}
                     style={{
-                      fontSize:9.5, padding:"4px 9px", whiteSpace:"nowrap", clipPath: notchClip(1.5),
-                      background:"#000",
-                      boxShadow: autoUseItems ? "inset 0 0 0 1.5px #000, inset 0 0 0 2.5px #FFA020" : "inset 0 0 0 1.5px #000, inset 0 0 0 2.5px #444",
-                      color: autoUseItems ? "white" : "rgba(255,255,255,0.5)",
+                      fontSize:9.5, fontWeight:800, padding:"5px 10px", whiteSpace:"nowrap", borderRadius:999,
+                      background: autoUseItems ? "#FFA84D" : "rgba(255,255,255,0.75)",
+                      color: autoUseItems ? "#fff" : "#8A8598",
+                      boxShadow: autoUseItems ? "0 2px 8px rgba(255,168,77,0.35)" : "none",
                     }}>
                     🎒 자동아이템 {autoUseItems?"ON":"OFF"}
                   </button>
                 )}
-                <div style={{flex:1, height:6, background:"#000", boxShadow:"inset 0 0 0 1px rgba(255,255,255,0.15)"}}>
+                <div style={{flex:1, height:6, borderRadius:999, background:"rgba(255,255,255,0.6)", overflow:"hidden"}}>
                   {!autoPilot && (
-                    <div style={{height:"100%",width:`${(timerLeft/6)*100}%`,transition:"width 0.9s linear",background:timerLeft<=2?"#FF4444":timerLeft<=4?"#FFAA22":"#44AAFF",animation:timerLeft<=2?"pulse 0.6s infinite":undefined}}/>
+                    <div style={{height:"100%",width:`${(timerLeft/6)*100}%`,borderRadius:999,transition:"width 0.9s linear",background:timerLeft<=2?"#FF6B6B":timerLeft<=4?"#FFB84D":"#5CA8F5",animation:timerLeft<=2?"pulse 0.6s infinite":undefined}}/>
                   )}
                 </div>
               </div>
@@ -1606,11 +1608,11 @@ export default function BattlePage() {
                   )}
                   {myGuardVis&&<div style={{position:"absolute",bottom:-4,left:"50%",transform:"translateX(-50%)",fontSize:9,color:"#4488FF",fontWeight:900,whiteSpace:"nowrap"}}>🛡️ 방어중</div>}
                 </div>
-                <span className="text-[10px] text-purple-300 font-bold">내 카드</span>
+                <span className="text-[10px] font-bold" style={{color:"#8B6FE0"}}>내 카드</span>
                 <div style={{width:"100%",maxWidth:130}}>
                   <div className="flex justify-between text-[9px] mb-0.5">
-                    <span style={{color:myDanger?"#FF6060":"#88CC88",fontWeight:700}}>HP</span>
-                    <span style={{color:myDanger?"#FF6060":"rgba(255,255,255,0.55)",fontWeight:700}}>{myHp}/{myMaxHp}</span>
+                    <span style={{color:myDanger?"#E1505F":"#5A5468",fontWeight:700}}>HP</span>
+                    <span style={{color:myDanger?"#E1505F":"#8A8598",fontWeight:700}}>{myHp}/{myMaxHp}</span>
                   </div>
                   <HpBar current={myHp} max={myMaxHp}/>
                 </div>
@@ -1618,8 +1620,13 @@ export default function BattlePage() {
 
               {/* 중앙 메시지 */}
               <div className="flex flex-col items-center shrink-0" style={{minWidth:48}}>
-                <span style={{fontSize:18,fontWeight:900,color:"rgba(255,255,255,0.2)"}}>VS</span>
-                {actionMsg&&<div key={actionMsg} style={{fontSize:9,fontWeight:800,color:"#FFD700",textAlign:"center",maxWidth:60,lineHeight:1.3,marginTop:4,animation:"msgIn 0.3s ease"}}>{actionMsg}</div>}
+                <span style={{
+                  width:44, height:44, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center",
+                  fontSize:14, fontWeight:900, color:"#fff", letterSpacing:0.5,
+                  background:"linear-gradient(135deg,#8FC0FF,#5C93F0)",
+                  boxShadow:"0 0 0 4px rgba(255,255,255,0.6), 0 4px 12px rgba(80,120,220,0.35)",
+                }}>VS</span>
+                {actionMsg&&<div key={actionMsg} style={{fontSize:9,fontWeight:800,color:"#8B6FE0",textAlign:"center",maxWidth:60,lineHeight:1.3,marginTop:4,animation:"msgIn 0.3s ease"}}>{actionMsg}</div>}
               </div>
 
               {/* 상대 카드 */}
@@ -1653,11 +1660,11 @@ export default function BattlePage() {
                   )}
                   {oppGuardVis&&<div style={{position:"absolute",bottom:-4,left:"50%",transform:"translateX(-50%)",fontSize:9,color:"#4488FF",fontWeight:900,whiteSpace:"nowrap"}}>🛡️ 방어중</div>}
                 </div>
-                <span className="text-[10px] font-bold" style={{color:isBossBattle?"#FF6666":"#9CA3AF"}}>{isBossBattle?`${opponent?.placeholder_emoji??"😾"} ${opponent?.name??"고양이학대범"}`:"상대방"}</span>
+                <span className="text-[10px] font-bold" style={{color:isBossBattle?"#E1505F":"#8A8598"}}>{isBossBattle?`${opponent?.placeholder_emoji??"😾"} ${opponent?.name??"고양이학대범"}`:"상대방"}</span>
                 <div style={{width:"100%",maxWidth:130}}>
                   <div className="flex justify-between text-[9px] mb-0.5">
-                    <span style={{color:oppDanger?"#FF6060":"#88CC88",fontWeight:700}}>HP</span>
-                    <span style={{color:oppDanger?"#FF6060":"rgba(255,255,255,0.55)",fontWeight:700}}>{oppHp}/{oppMaxHp}</span>
+                    <span style={{color:oppDanger?"#E1505F":"#5A5468",fontWeight:700}}>HP</span>
+                    <span style={{color:oppDanger?"#E1505F":"#8A8598",fontWeight:700}}>{oppHp}/{oppMaxHp}</span>
                   </div>
                   <HpBar current={oppHp} max={oppMaxHp}/>
                 </div>
@@ -1669,8 +1676,8 @@ export default function BattlePage() {
               <div>
                 {phase==="player_choose"&&(
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[11px] text-gray-500">{autoPilot?"자동으로 선택 중...":"기술 선택"}</span>
-                    {!autoPilot && <span className="text-[13px] font-black" style={{color:timerLeft<=2?"#FF4444":timerLeft<=4?"#FFAA22":"#88CCFF"}}>{timerLeft}s</span>}
+                    <span className="text-[11px] font-bold" style={{color:"#6B6578"}}>{autoPilot?"자동으로 선택 중...":"기술 선택"}</span>
+                    {!autoPilot && <span className="text-[13px] font-black" style={{color:timerLeft<=2?"#FF6B6B":timerLeft<=4?"#FFB84D":"#5CA8F5"}}>{timerLeft}s</span>}
                   </div>
                 )}
                 <div className="grid grid-cols-2 gap-2 mb-2.5">
@@ -1692,12 +1699,11 @@ export default function BattlePage() {
                 {phase==="player_choose"&&(
                   <div className="mt-2.5">
                     <button onClick={()=>{ sfx.click(); setItemPanelOpen(o=>!o); }}
-                      className={`pixel-btn ${gameFont.className}`}
                       style={{
-                        width:"100%", padding:"9px 0", fontSize:13, display:"flex", alignItems:"center", justifyContent:"center", gap:8,
-                        clipPath: notchClip(3), background:"#000", color:"#FFCC66",
-                        boxShadow:"inset 0 0 0 2px #000, inset 0 0 0 4px #C68B00",
-                        filter:"drop-shadow(3px 3px 0 rgba(0,0,0,0.5))",
+                        width:"100%", padding:"10px 0", fontSize:13, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center", gap:8,
+                        borderRadius:16, background:"#fff", color:"#C68B00",
+                        border:"2px solid #F0D9A0",
+                        boxShadow:"0 3px 10px rgba(60,50,90,0.06)",
                       }}>
                       <Backpack size={15}/> 아이템 사용
                       <ChevronDown size={14} style={{ transition:"transform 0.2s", transform: itemPanelOpen?"rotate(180deg)":"rotate(0)" }}/>
@@ -1710,25 +1716,24 @@ export default function BattlePage() {
                           const { Icon, color } = ITEM_ICON_META[key];
                           return (
                             <button key={key} onClick={()=>qty>0&&useItem(key)} disabled={qty<=0}
-                              className="pixel-btn relative flex flex-col items-center gap-1.5"
+                              className="relative flex flex-col items-center gap-1.5"
                               style={{
-                                padding:"10px 4px", clipPath: notchClip(2.5),
-                                background:"#000", boxShadow:`inset 0 0 0 2px #000, inset 0 0 0 3px ${qty>0?color:"#333"}`,
+                                padding:"10px 4px", borderRadius:16,
+                                background:"#fff", border:`2px solid ${qty>0?color+"66":"#E3E1EC"}`,
+                                boxShadow: qty>0 ? "0 3px 10px rgba(60,50,90,0.08)" : "none",
                                 opacity: qty>0?1:0.5,
-                                filter: qty>0 ? "drop-shadow(2px 2px 0 rgba(0,0,0,0.5))" : undefined,
                               }}>
                               <span style={{
                                 display:"flex", alignItems:"center", justifyContent:"center",
-                                width:30, height:30, clipPath: notchClip(1.5),
-                                background: color, border:"2px solid #000", color:"#000",
+                                width:30, height:30, borderRadius:"50%",
+                                background: `${color}22`, color,
                               }}>
                                 <Icon size={16} strokeWidth={2.4}/>
                               </span>
-                              <span className="text-[9.5px] font-bold text-white text-center leading-tight">{item.name}</span>
-                              <span className={gameFont.className} style={{
-                                position:"absolute", top:2, right:2, fontSize:9.5, padding:"0px 4px",
-                                background: qty>0?"#FFCC66":"#000", color: qty>0?"#000":"rgba(255,255,255,0.35)",
-                                border: `1.5px solid ${qty>0?"#000":"rgba(255,255,255,0.2)"}`,
+                              <span className="text-[9.5px] font-bold text-center leading-tight" style={{color:"#4A4460"}}>{item.name}</span>
+                              <span style={{
+                                position:"absolute", top:2, right:2, fontSize:9.5, fontWeight:800, padding:"1px 5px", borderRadius:999,
+                                background: qty>0?"#FFF3D6":"#F1F0F5", color: qty>0?"#C68B00":"#B4B0C2",
                               }}>
                                 {qty}
                               </span>
@@ -1741,7 +1746,7 @@ export default function BattlePage() {
                 )}
 
                 {phase==="opp_thinking"&&(
-                  <p className="text-center text-[11px] text-gray-500 mt-2 animate-pulse">{actionMsg}</p>
+                  <p className="text-center text-[11px] mt-2 animate-pulse font-semibold" style={{color:"#8A8598"}}>{actionMsg}</p>
                 )}
               </div>
             )}
@@ -1749,10 +1754,10 @@ export default function BattlePage() {
             {/* 자동: 액션 메시지 */}
             {mode==="auto"&&actionMsg&&(
               <div style={{
-                padding:"11px 16px", textAlign:"center", clipPath: notchClip(3),
-                background:"#000", boxShadow:"inset 0 0 0 2px #000, inset 0 0 0 4px #8040D0",
+                padding:"11px 16px", textAlign:"center", borderRadius:16,
+                background:"rgba(255,255,255,0.85)", boxShadow:"0 3px 10px rgba(60,50,90,0.08)",
               }}>
-                <p key={actionMsg} className={gameFont.className} style={{ fontSize:13.5, color:"#fff", letterSpacing:0.2, animation:"msgIn 0.3s ease" }}>{actionMsg}</p>
+                <p key={actionMsg} style={{ fontSize:13.5, fontWeight:700, color:"#4A4460", letterSpacing:0.2, animation:"msgIn 0.3s ease" }}>{actionMsg}</p>
               </div>
             )}
           </div>
@@ -1763,40 +1768,40 @@ export default function BattlePage() {
           <div className="flex-1 flex flex-col items-center justify-center px-4 gap-4">
             <div style={{animation:"resIn 0.5s ease forwards",display:"flex",flexDirection:"column",alignItems:"center",gap:12,width:"100%",maxWidth:340}}>
               <div style={{fontSize:64}}>{battleResult.winner==="me"?(isBossBattle?"🎉":"🏆"):"💔"}</div>
-              <p className={gameFont.className} style={{fontSize:28,color:battleResult.winner==="me"?"#44FF88":"#FF6060",textShadow:pixelOutline("#000",3)}}>
+              <p style={{fontSize:26,fontWeight:900,color:battleResult.winner==="me"?"#3FCB6B":"#E1505F"}}>
                 {isBossBattle
                   ? (battleResult.winner==="me" ? `${opponent?.name??"적"} 격퇴!` : `${opponent?.name??"적"}에게 당했다...`)
                   : (battleResult.winner==="me" ? "승리!" : "패배...")}
               </p>
               {isBossBattle && !!opponent?.photo_url && battleResult.winner==="me" && (
-                <p className="text-[12px] text-yellow-300 font-bold -mt-2">🐾 갇혀있던 고양이를 구했다!</p>
+                <p className="text-[12px] font-bold -mt-2" style={{color:"#C68B00"}}>🐾 갇혀있던 고양이를 구했다!</p>
               )}
               {isBossBattle && typeof battleResult.coinsGained==="number" && (
-                <p className="text-[13px] font-bold -mt-1" style={{color:"#FFD700"}}>💰 코인 +{battleResult.coinsGained}</p>
+                <p className="text-[13px] font-bold -mt-1" style={{color:"#C68B00"}}>💰 코인 +{battleResult.coinsGained}</p>
               )}
-              <p className="text-[13px] text-gray-400">
+              <p className="text-[13px] font-semibold" style={{color:"#8A8598"}}>
                 {turnCount}턴 · EXP +{battleResult.exp}
-                {battleResult.leveledUp&&<span style={{color:"#FFD700",fontWeight:800,marginLeft:8}}>⬆ Lv.{battleResult.newLevel}!</span>}
+                {battleResult.leveledUp&&<span style={{color:"#C68B00",fontWeight:800,marginLeft:8}}>⬆ Lv.{battleResult.newLevel}!</span>}
               </p>
-              <div className="w-full space-y-2 p-3" style={{ clipPath: notchClip(3), background:"#000", boxShadow:"inset 0 0 0 2px #000, inset 0 0 0 3px rgba(255,255,255,0.15)" }}>
+              <div className="w-full space-y-2 p-3" style={{ borderRadius:18, background:"rgba(255,255,255,0.85)", boxShadow:"0 3px 10px rgba(60,50,90,0.08)" }}>
                 <div className="flex gap-3 items-center">
-                  <span className="text-[11px] text-purple-300 font-bold shrink-0 w-14 truncate">{selected.name}</span>
+                  <span className="text-[11px] font-bold shrink-0 w-14 truncate" style={{color:"#8B6FE0"}}>{selected.name}</span>
                   <div style={{flex:1}}><HpBar current={myHp} max={myMaxHp}/></div>
-                  <span className="text-[10px] text-gray-500 shrink-0">{myHp}/{myMaxHp}</span>
+                  <span className="text-[10px] shrink-0" style={{color:"#8A8598"}}>{myHp}/{myMaxHp}</span>
                 </div>
                 <div className="flex gap-3 items-center">
-                  <span className="text-[11px] text-gray-400 font-bold shrink-0 w-14 truncate">{opponent.name}</span>
+                  <span className="text-[11px] font-bold shrink-0 w-14 truncate" style={{color:"#6B6578"}}>{opponent.name}</span>
                   <div style={{flex:1}}><HpBar current={oppHp} max={oppMaxHp}/></div>
-                  <span className="text-[10px] text-gray-500 shrink-0">{oppHp}/{oppMaxHp}</span>
+                  <span className="text-[10px] shrink-0" style={{color:"#8A8598"}}>{oppHp}/{oppMaxHp}</span>
                 </div>
               </div>
               <div className="flex gap-2 w-full">
-                <button onClick={reset} className={`pixel-btn flex-1 ${gameFont.className}`}
-                  style={{ padding:"11px 0", fontSize:13, color:"#fff", clipPath: notchClip(3), background:"#000", boxShadow:"inset 0 0 0 2px #000, inset 0 0 0 4px #555", filter:"drop-shadow(3px 3px 0 rgba(0,0,0,0.4))" }}>
+                <button onClick={reset} className="flex-1"
+                  style={{ padding:"12px 0", fontSize:13, fontWeight:800, color:"#6B6578", borderRadius:16, background:"#fff", border:"2px solid #E3E1EC" }}>
                   다시 선택
                 </button>
-                <button onClick={startBattle} className={`pixel-btn flex-1 ${gameFont.className}`}
-                  style={{ padding:"11px 0", fontSize:13, color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", gap:6, clipPath: notchClip(3), background:"#000", boxShadow:"inset 0 0 0 2px #000, inset 0 0 0 4px #C060FF", filter:"drop-shadow(3px 3px 0 rgba(160,80,255,0.45))" }}>
+                <button onClick={startBattle} className="flex-1"
+                  style={{ padding:"12px 0", fontSize:13, fontWeight:800, color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", gap:6, borderRadius:16, background:"linear-gradient(135deg,#9F85F0,#7A5AE0)", boxShadow:"0 4px 12px rgba(122,90,224,0.35)" }}>
                   <Swords size={14}/> 재도전
                 </button>
               </div>

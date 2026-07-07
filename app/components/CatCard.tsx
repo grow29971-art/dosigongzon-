@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { X } from "lucide-react";
-import { gameFont } from "@/lib/fonts";
-import { notchClip, pixelOutline } from "@/lib/pixel-ui";
+import { X, Heart } from "lucide-react";
 
 export type CardRarity = "common" | "uncommon" | "rare" | "legendary";
 
@@ -32,22 +30,6 @@ interface CatCardProps {
   size?: "sm" | "md" | "lg";
   onClick?: () => void;
 }
-
-// 속성별 배지 클립 경로 (원형 대신 타입 고유 실루엣)
-const BADGE_CLIP = {
-  hexagon: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
-  droplet: "", // 별도 border-radius+rotate 처리
-  bolt: "polygon(60% 0%, 20% 55%, 45% 55%, 35% 100%, 85% 40%, 55% 40%)",
-  star: "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)",
-} as const;
-
-// 속성별 구획선(사진↔도감 스트립 사이) 클립 경로 — 잎맥/파도/번개/불꽃 실루엣
-const DIVIDER_CLIP = {
-  grass: "polygon(0% 100%, 0% 55%, 7% 5%, 14% 55%, 21% 5%, 29% 55%, 36% 5%, 43% 55%, 50% 5%, 57% 55%, 64% 5%, 71% 55%, 79% 5%, 86% 55%, 93% 5%, 100% 55%, 100% 100%)",
-  water: "polygon(0% 100%, 0% 60%, 6% 35%, 12% 15%, 18% 10%, 24% 20%, 30% 45%, 36% 70%, 42% 85%, 48% 90%, 54% 80%, 60% 55%, 66% 30%, 72% 15%, 78% 10%, 84% 22%, 90% 48%, 96% 72%, 100% 85%, 100% 100%)",
-  electric: "polygon(0% 100%, 0% 30%, 10% 65%, 22% 5%, 34% 75%, 46% 15%, 58% 85%, 68% 25%, 80% 70%, 90% 10%, 100% 50%, 100% 100%)",
-  fire: "polygon(0% 100%, 0% 45%, 6% 75%, 13% 0%, 22% 60%, 30% 20%, 40% 70%, 50% 5%, 62% 65%, 72% 25%, 82% 75%, 90% 15%, 100% 55%, 100% 100%)",
-} as const;
 
 export const CARD_THEME = {
   common: {
@@ -120,6 +102,15 @@ export const CARD_THEME = {
   },
 };
 
+// 카드 프레임의 파스텔 색상 팔레트 — CARD_THEME(map/page.tsx 등 다른 화면의 진한 색 패널이
+// 아직 이 값을 그대로 쓰고 있어서 못 바꿈)과는 별개로, 이 컴포넌트의 크림/골드 톤 프레임 전용.
+const SOFT_THEME: Record<CardRarity, { shellBg: string; frameOuter: string; accent: string; typeBg: string }> = {
+  common:    { shellBg: "linear-gradient(160deg,#FBFEF7,#F1F8E8)", frameOuter: "#A9D488", accent: "#5FA83D", typeBg: "#7BC957" },
+  uncommon:  { shellBg: "linear-gradient(160deg,#FAFDFF,#EAF4FF)", frameOuter: "#8FC1F5", accent: "#3D7FC9", typeBg: "#5F9DE8" },
+  rare:      { shellBg: "linear-gradient(160deg,#FCFAFF,#F1E9FF)", frameOuter: "#C1A6F0", accent: "#7D53C9", typeBg: "#A47BEE" },
+  legendary: { shellBg: "linear-gradient(160deg,#FFFCF2,#FFF1D2)", frameOuter: "#EFC15E", accent: "#C98A1E", typeBg: "#EFAF3A" },
+};
+
 const MOVE_ICONS = ["⚡", "🌿", "💧", "🔥", "✨", "🌙", "☀️", "❄️"];
 function pickIcon(seed: string) {
   let h = 0;
@@ -169,6 +160,7 @@ const PRESTIGE_LABEL: Record<PrestigeTier, string> = { none: "", silver: "은빛
 function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> & { size: "sm" | "md" | "lg" }) {
   const rarity = (card.card_rarity ?? "common") as CardRarity;
   const cfg = CARD_THEME[rarity] ?? CARD_THEME.common;
+  const soft = SOFT_THEME[rarity] ?? SOFT_THEME.common;
   const isSm = size === "sm";
   const isLg = size === "lg";
 
@@ -182,6 +174,14 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
     : 60 + lvBonus * 10;
   const hpDisplay = Math.round(hp / 10) * 10;
 
+  const stats = card.card_stats ?? { cuteness: 50, wildness: 50, sociability: 50, mysteriousness: 50 };
+  const statRow = [
+    { icon: "🐾", value: stats.cuteness },
+    { icon: "🔥", value: stats.wildness },
+    { icon: "🌿", value: stats.sociability },
+    { icon: "✨", value: stats.mysteriousness },
+  ];
+
   const traits = card.card_traits ?? [];
   const move1 = traits[0] ?? "야생의 눈빛";
   const move2 = traits[1] ?? "부드러운 발걸음";
@@ -193,21 +193,19 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
   // 카드 크기
   const W = isLg ? 300 : isSm ? 130 : 190;
   const photoH = isLg ? 180 : isSm ? 78 : 114;
-  const topBarPx = isLg ? 34 : isSm ? 22 : 27;
-  const notchStep = Math.max(2, Math.round((isLg ? 7 : isSm ? 3 : 5) * cfg.notchMult));
-  const clip = notchClip(notchStep);
-  const dividerH = isLg ? 13 : isSm ? 8 : 10;
-  const inset = isLg ? 8 : isSm ? 5 : 6;
-  const shadowOffset = isLg ? 6 : isSm ? 3 : 4;
+  const radius = isLg ? 26 : isSm ? 16 : 20;
+  const innerRadius = Math.max(10, radius - 8);
+  const pad = isLg ? 12 : isSm ? 8 : 10;
+  const shadowBlur = isLg ? 22 : isSm ? 12 : 16;
 
   const fs = {
-    label: isLg ? 9 : isSm ? 7 : 8,
-    name: isLg ? 18 : isSm ? 11 : 14,
-    hp: isLg ? 20 : isSm ? 13 : 16,
+    label: isLg ? 10 : isSm ? 8 : 9,
+    name: isLg ? 16 : isSm ? 11 : 13,
+    hp: isLg ? 15 : isSm ? 11 : 13,
     flavor: isLg ? 10.5 : 9,
     dex: isLg ? 9 : isSm ? 7 : 8,
     moveName: isLg ? 11.5 : 9,
-    movePow: isLg ? 18 : isSm ? 11 : 14,
+    movePow: isLg ? 15 : isSm ? 11 : 13,
     bottom: isLg ? 9 : 8,
   };
 
@@ -216,245 +214,186 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
       className={tier === "prismatic" ? "prestige-prismatic" : undefined}
       style={{
         width: W,
-        clipPath: clip,
-        filter: `drop-shadow(${shadowOffset}px ${shadowOffset}px 0 rgba(0,0,0,0.45))${PRESTIGE_GLOW[tier] ? " " + PRESTIGE_GLOW[tier] : ""}`,
-        overflow: "hidden",
+        borderRadius: radius,
+        background: soft.shellBg,
+        boxShadow: `0 ${isLg?8:5}px ${shadowBlur}px rgba(70,60,40,0.14), inset 0 0 0 2px #fff, inset 0 0 0 4px ${soft.frameOuter}`,
+        filter: PRESTIGE_GLOW[tier] || undefined,
+        overflow: "visible",
         flexShrink: 0,
         position: "relative",
         userSelect: "none",
-        ["--shadow-offset" as string]: `${shadowOffset}px`,
+        padding: pad,
+        ["--shadow-offset" as string]: "0px",
       } as React.CSSProperties}
     >
-      {/* 픽셀 프레임 테두리 (2겹, 블러 없는 인셋) */}
-      <div
-        style={{
-          position: "absolute", inset: 0, zIndex: 20, pointerEvents: "none",
-          boxShadow: `inset 0 0 0 ${isLg ? 4 : 3}px ${cfg.frameOuter}, inset 0 0 0 ${isLg ? 7 : 5}px ${cfg.frameInner}`,
-        }}
-      />
+      {/* 모서리 다이아몬드 장식 */}
+      {(["-6px,-6px", "-6px,calc(100% - 6px)", "calc(100% - 6px),-6px", "calc(100% - 6px),calc(100% - 6px)"]).map((pos) => {
+        const [top, left] = pos.split(",");
+        return (
+          <span key={pos} style={{
+            position: "absolute", top, left, width: isLg ? 11 : 8, height: isLg ? 11 : 8,
+            background: soft.frameOuter, transform: "translate(-50%,-50%) rotate(45deg)",
+            borderRadius: 2, zIndex: 3, boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
+          }} />
+        );
+      })}
 
-      <div style={{ background: cfg.bg, position: "relative" }}>
-        {/* 속성 텍스처 (잎맥/물결/스파크/불티 — 등급마다 다른 패턴) */}
-        <div className={`type-pattern type-pattern-${cfg.typeKey}`} />
-        {/* 스캔라인 텍스처 — 부드러운 홀로그램 스윕 대신 하드 CRT 느낌 */}
-        <div className="scanlines" />
+      {/* ── 상단 리본: 등급 + HP ── */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 5, marginBottom: isSm ? 5 : 7 }}>
+        <span style={{
+          background: "#fff", borderRadius: 999,
+          padding: isLg ? "3px 10px" : "2px 7px",
+          fontSize: fs.label, fontWeight: 800, color: soft.accent,
+          boxShadow: "0 1px 4px rgba(0,0,0,0.12)", flexShrink: 0,
+        }}>
+          {cfg.label}
+        </span>
+        <span style={{
+          display: "flex", alignItems: "center", gap: 3,
+          background: "#fff", borderRadius: 999,
+          padding: isLg ? "3px 9px" : "2px 6px",
+          boxShadow: "0 1px 4px rgba(0,0,0,0.12)", flexShrink: 0,
+        }}>
+          <Heart size={fs.hp - 2} fill="#FF6B81" color="#FF6B81" />
+          <span style={{ fontSize: fs.hp, fontWeight: 800, color: "#2B2B3D", lineHeight: 1 }}>{hpDisplay}</span>
+        </span>
+      </div>
 
-        {/* ── 상단 바: 등급 + HP (1줄) / 이름 (줄바꿈 허용, 안 잘림) ── */}
-        <div
-          style={{
-            background: cfg.topBar,
-            paddingInline: isLg ? 11 : 7,
-            paddingBlock: isLg ? 5 : 3,
-            position: "relative", zIndex: 2,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 5, minHeight: topBarPx - (isLg ? 10 : 6) }}>
-          <span style={{
-              background: "#000", border: `2px solid ${cfg.accent}`,
-              padding: isLg ? "2px 6px" : "1px 4px",
-              fontSize: fs.label, fontWeight: 800, color: cfg.accent,
-              flexShrink: 0, letterSpacing: "0.02em",
-            }}>
-              {cfg.label}
-            </span>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 2, flexShrink: 0 }}>
-            <span className={gameFont.className} style={{ fontSize: fs.label + 1, color: "rgba(255,255,255,0.7)" }}>HP</span>
-            <span className={gameFont.className} style={{ fontSize: fs.hp, color: cfg.hpColor, lineHeight: 1, textShadow: pixelOutline("#000", 1.5) }}>{hpDisplay}</span>
-            <span style={{
-              marginLeft: 3, position: "relative",
-              width: isLg ? 20 : isSm ? 15 : 17, height: isLg ? 20 : isSm ? 15 : 17,
-              display: "flex", alignItems: "center", justifyContent: "center",
-            }}>
-              {cfg.badgeShape === "droplet" ? (
-                <span style={{
-                  position: "relative", background: cfg.typeBg,
-                  width: isLg ? 16 : isSm ? 11.5 : 13.5, height: isLg ? 16 : isSm ? 11.5 : 13.5,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  border: `2px solid #000`,
-                  borderRadius: "50% 50% 50% 0%", transform: "rotate(-45deg)",
-                }}>
-                  <span style={{ fontSize: isLg ? 9 : 7.5, transform: "rotate(45deg)" }}>{cfg.typeIcon}</span>
-                </span>
-              ) : (
-                <span style={{
-                  position: "relative", background: cfg.typeBg,
-                  width: isLg ? 19 : isSm ? 14 : 16, height: isLg ? 19 : isSm ? 14 : 16,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: isLg ? 9 : 7.5,
-                  clipPath: BADGE_CLIP[cfg.badgeShape],
-                }}>
-                  {cfg.typeIcon}
-                </span>
-              )}
-            </span>
-          </div>
-          </div>
-          <div style={{ marginTop: isLg ? 2 : 1 }}>
-            <span
-              className={gameFont.className}
-              style={{
-                fontSize: fs.name, color: "#fff", lineHeight: 1.22,
-                display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
-                overflow: "hidden", textOverflow: "ellipsis",
-                textShadow: pixelOutline("#000", isLg ? 2.5 : 1.8),
-              }}
-            >
-              {card.card_name ?? name}
-            </span>
-          </div>
+      {/* ── 사진 프레임 ── */}
+      <div style={{
+        borderRadius: innerRadius, overflow: "hidden", position: "relative",
+        boxShadow: `inset 0 0 0 2px #fff, inset 0 0 0 4px ${soft.frameOuter}`,
+        background: "#fff",
+      }}>
+        <div style={{ height: photoH, overflow: "hidden", position: "relative", background: "#F3F1EA" }}>
+          {photoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={photoUrl} alt={name}
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+          ) : (
+            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: isSm ? 30 : 46 }}>{card.placeholder_emoji ?? "🐱"}</div>
+          )}
         </div>
+      </div>
 
-        {/* ── 사진 프레임 (픽셀 액자) ── */}
-        <div style={{ padding: `0 ${isLg ? 8 : isSm ? 5 : 6}px`, position: "relative", zIndex: 2 }}>
+      {/* ── 이름 + 도감번호 + 레벨 ── */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6, marginTop: isSm ? 6 : 8 }}>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontSize: fs.dex, color: "#A6A196", fontWeight: 600 }}>No.{dexNo}</div>
           <div style={{
-            background: "#000", padding: isLg ? 3 : 2,
-            border: `2px solid ${cfg.frameInner}`,
+            fontSize: fs.name, fontWeight: 800, color: "#3A3630", lineHeight: 1.2,
+            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
           }}>
-            <div style={{
-              height: photoH, overflow: "hidden", position: "relative",
-              background: "#1a1a1a",
-            }}>
-              {photoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={photoUrl} alt={name}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-              ) : (
-                <div style={{ width: "100%", height: "100%", background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: isSm ? 28 : 42, color: "rgba(255,255,255,0.35)" }}>{card.placeholder_emoji ?? "🐱"}</div>
-              )}
-              {/* 속성 워터마크 (사진 프레임 안, 은은하게) */}
-              <span style={{
-                position: "absolute", right: -6, bottom: -10,
-                fontSize: isLg ? 64 : isSm ? 34 : 46,
-                opacity: 0.16, filter: "grayscale(0.2)",
-                transform: "rotate(-8deg)", pointerEvents: "none",
-              }}>
-                {cfg.typeIcon}
-              </span>
-            </div>
+            {card.card_name ?? name}
           </div>
         </div>
-
-        {/* ── 속성 구획선 (등급마다 다른 실루엣: 잎맥/파도/번개/불꽃) ── */}
-        <div style={{
-          margin: `${isSm ? 3 : 4}px ${inset}px 0`,
-          height: dividerH,
-          background: cfg.accent,
-          clipPath: DIVIDER_CLIP[cfg.typeKey as keyof typeof DIVIDER_CLIP],
-          position: "relative", zIndex: 2,
-        }} />
-
-        {/* ── 도감 정보 스트립 ── */}
-        <div style={{
-          margin: `0 ${isLg ? 8 : isSm ? 5 : 6}px 0`,
-          background: cfg.panelBg, border: "1px solid rgba(255,255,255,0.12)",
-          padding: isLg ? "3px 8px" : "2px 6px",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          position: "relative", zIndex: 2,
+        <span style={{
+          background: lv >= 10 ? "linear-gradient(135deg,#FFD76A,#FFA83A)" : "#FF6B81",
+          color: "#fff", fontWeight: 800, borderRadius: 999,
+          padding: isLg ? "3px 10px" : "2px 7px", fontSize: fs.dex + 1, flexShrink: 0,
         }}>
-          <span style={{ fontSize: fs.dex, color: "rgba(255,255,255,0.6)", fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-            No.{dexNo} · {name}
-          </span>
-          <span className={gameFont.className} style={{
-            fontSize: fs.dex + 1, flexShrink: 0, marginLeft: 4,
-            background: lv >= 10 ? "#FFD700" : "#000", border: `1.5px solid ${lv >= 10 ? "#000" : cfg.accent}`,
-            color: lv >= 10 ? "#000" : cfg.accent,
-            padding: "1px 5px",
-          }}>
-            Lv.{lv}
-          </span>
-        </div>
+          Lv.{lv}
+        </span>
+      </div>
 
-        {/* ── 성장 훈장 스티커 (영구 기록 — 한 번 켜지면 절대 꺼지지 않음) ── */}
+      {/* ── 성격 스탯 아이콘 (귀여움/야생성/사교성/신비로움) ── */}
+      {!isSm && (
         <div style={{
-          margin: `${isSm ? 2 : 3}px ${isLg ? 8 : isSm ? 5 : 6}px 0`,
-          display: "flex", alignItems: "center", gap: isSm ? 3 : 4,
-          position: "relative", zIndex: 2,
+          display: "flex", justifyContent: "space-between", marginTop: isLg ? 8 : 6,
+          background: "#fff", borderRadius: 14, padding: isLg ? "7px 10px" : "5px 8px",
+          boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.05)",
         }}>
-          {badges.map((b) => (
-            <span key={b.label} title={b.label} style={{
-              width: isLg ? 20 : isSm ? 14 : 17, height: isLg ? 20 : isSm ? 14 : 17,
-              borderRadius: "50%",
-              background: b.isUnlocked ? cfg.typeBg : "rgba(0,0,0,0.3)",
-              border: `1.5px solid ${b.isUnlocked ? cfg.accent : "rgba(255,255,255,0.18)"}`,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: isLg ? 11 : isSm ? 7.5 : 9,
-              filter: b.isUnlocked ? undefined : "grayscale(1)",
-              opacity: b.isUnlocked ? 1 : 0.35,
-              flexShrink: 0,
-            }}>
-              {b.emoji}
+          {statRow.map((s, i) => (
+            <span key={i} style={{ display: "flex", alignItems: "center", gap: 3, fontSize: fs.bottom }}>
+              <span style={{ fontSize: isLg ? 13 : 11 }}>{s.icon}</span>
+              <span style={{ fontWeight: 700, color: "#5A554C" }}>{s.value}</span>
             </span>
           ))}
-          {tier !== "none" && (
-            <span className={gameFont.className} style={{
-              marginLeft: "auto", fontSize: fs.dex - 1,
-              color: tier === "gold" ? "#FFD700" : tier === "prismatic" ? "#FF80C0" : "#D8E4EE",
-              letterSpacing: "0.02em", flexShrink: 0,
-            }}>
-              {PRESTIGE_LABEL[tier]}
-            </span>
-          )}
         </div>
+      )}
 
-        {/* ── 카드 본문 (플레이버 + 기술) ── */}
-        {!isSm && (
-          <div style={{ padding: isLg ? "7px 10px 2px" : "5px 7px 1px", display: "flex", flexDirection: "column", gap: isLg ? 6 : 4, position: "relative", zIndex: 2 }}>
-            {card.card_flavor && (
-              <p style={{
-                fontSize: fs.flavor, color: "rgba(255,255,255,0.72)", fontStyle: "italic",
-                lineHeight: 1.35, borderLeft: `3px solid ${cfg.accent}`, paddingLeft: 5,
-                overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-              }}>
-                &ldquo;{card.card_flavor}&rdquo;
-              </p>
-            )}
-
-            <div style={{
-              background: cfg.panelBg, border: "1px solid rgba(255,255,255,0.12)", padding: isLg ? "5px 8px" : "3px 6px",
-              display: "flex", alignItems: "center", justifyContent: "space-between",
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
-                <span style={{ fontSize: isLg ? 11 : 9, flexShrink: 0 }}>{pickIcon(move1)}</span>
-                <span style={{ fontSize: fs.moveName, color: "#fff", fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{move1}</span>
-              </div>
-              <span className={gameFont.className} style={{ fontSize: fs.movePow, color: cfg.accent, flexShrink: 0, marginLeft: 4 }}>{move1Power}</span>
-            </div>
-
-            <div style={{
-              background: cfg.panelBg, border: "1px solid rgba(255,255,255,0.12)", padding: isLg ? "5px 8px" : "3px 6px",
-              display: "flex", alignItems: "center", justifyContent: "space-between",
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
-                <span style={{ fontSize: isLg ? 11 : 9, flexShrink: 0 }}>{pickIcon(move2)}</span>
-                <span style={{ fontSize: fs.moveName, color: "rgba(255,255,255,0.82)", fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{move2}</span>
-              </div>
-              <span className={gameFont.className} style={{ fontSize: fs.movePow - 2, color: "rgba(255,255,255,0.68)", flexShrink: 0, marginLeft: 4 }}>{move2Power}</span>
-            </div>
-          </div>
+      {/* ── 성장 훈장 스티커 (영구 기록) ── */}
+      <div style={{ display: "flex", alignItems: "center", gap: isSm ? 3 : 4, marginTop: isSm ? 5 : 7 }}>
+        {badges.map((b) => (
+          <span key={b.label} title={b.label} style={{
+            width: isLg ? 20 : isSm ? 14 : 17, height: isLg ? 20 : isSm ? 14 : 17,
+            borderRadius: "50%",
+            background: b.isUnlocked ? soft.typeBg : "#EFEDE6",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: isLg ? 11 : isSm ? 7.5 : 9,
+            filter: b.isUnlocked ? undefined : "grayscale(1)",
+            opacity: b.isUnlocked ? 1 : 0.4,
+            flexShrink: 0,
+          }}>
+            {b.emoji}
+          </span>
+        ))}
+        {tier !== "none" && (
+          <span style={{
+            marginLeft: "auto", fontSize: fs.dex - 1, fontWeight: 700,
+            color: tier === "gold" ? "#C98A1E" : tier === "prismatic" ? "#E0508A" : "#8A96A6",
+            flexShrink: 0,
+          }}>
+            {PRESTIGE_LABEL[tier]}
+          </span>
         )}
+      </div>
 
-        {/* ── 하단 스탯 바 (약점/저항력/후퇴) ── */}
-        <div style={{
-          display: "flex", alignItems: "center",
-          margin: `${isSm ? 4 : 6}px ${isLg ? 8 : isSm ? 5 : 6}px`,
-          borderTop: `2px solid ${cfg.frameInner}55`, paddingTop: isSm ? 3 : 5,
-          position: "relative", zIndex: 2,
-        }}>
-          <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 1 }}>
-            <span style={{ fontSize: fs.bottom - 1, color: "rgba(255,255,255,0.4)" }}>약점</span>
-            <span style={{ fontSize: fs.bottom + 1 }}>{cfg.weak}<span style={{ fontSize: fs.bottom - 1, color: "rgba(255,255,255,0.5)" }}>×2</span></span>
-          </div>
-          {!isSm && (
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
-              <span style={{ fontSize: fs.bottom - 1, color: "rgba(255,255,255,0.4)" }}>저항력</span>
-              <span style={{ fontSize: fs.bottom, color: "rgba(255,255,255,0.5)" }}>—</span>
-            </div>
+      {/* ── 카드 본문 (플레이버 + 기술) ── */}
+      {!isSm && (
+        <div style={{ display: "flex", flexDirection: "column", gap: isLg ? 6 : 4, marginTop: isLg ? 8 : 6 }}>
+          {card.card_flavor && (
+            <p style={{
+              fontSize: fs.flavor, color: "#8A8578", fontStyle: "italic",
+              lineHeight: 1.35, borderLeft: `3px solid ${soft.frameOuter}`, paddingLeft: 6,
+              overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", margin: 0,
+            }}>
+              &ldquo;{card.card_flavor}&rdquo;
+            </p>
           )}
-          <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1 }}>
-            <span style={{ fontSize: fs.bottom - 1, color: "rgba(255,255,255,0.4)" }}>후퇴</span>
-            <span style={{ fontSize: fs.bottom + 1, color: cfg.accent, letterSpacing: 1 }}>{cfg.rarity}</span>
+
+          <div style={{
+            background: "#fff", borderRadius: 12, padding: isLg ? "6px 9px" : "4px 7px",
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.05)",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
+              <span style={{ fontSize: isLg ? 11 : 9, flexShrink: 0 }}>{pickIcon(move1)}</span>
+              <span style={{ fontSize: fs.moveName, color: "#3A3630", fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{move1}</span>
+            </div>
+            <span style={{ fontSize: fs.movePow, fontWeight: 800, color: soft.accent, flexShrink: 0, marginLeft: 4 }}>{move1Power}</span>
+          </div>
+
+          <div style={{
+            background: "#fff", borderRadius: 12, padding: isLg ? "6px 9px" : "4px 7px",
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.05)",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
+              <span style={{ fontSize: isLg ? 11 : 9, flexShrink: 0 }}>{pickIcon(move2)}</span>
+              <span style={{ fontSize: fs.moveName, color: "#6B665C", fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{move2}</span>
+            </div>
+            <span style={{ fontSize: fs.movePow - 2, fontWeight: 700, color: "#9A958A", flexShrink: 0, marginLeft: 4 }}>{move2Power}</span>
           </div>
         </div>
+      )}
+
+      {/* ── 하단: 속성 + 약점 ── */}
+      <div style={{
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        marginTop: isSm ? 5 : 7, paddingTop: isSm ? 5 : 7,
+        borderTop: `1.5px dashed ${soft.frameOuter}66`,
+      }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: fs.bottom, color: "#9A958A", fontWeight: 600 }}>
+          <span style={{
+            width: 15, height: 15, borderRadius: "50%", background: soft.typeBg,
+            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8.5,
+          }}>{cfg.typeIcon}</span>
+          속성
+        </span>
+        <span style={{ fontSize: fs.bottom, color: "#9A958A", fontWeight: 600 }}>
+          약점 {cfg.weak}×2
+        </span>
       </div>
     </div>
   );
@@ -475,58 +414,6 @@ export default function CatCard({ name, photoUrl, card, size = "md", onClick }: 
     <>
       {/* 인라인 CSS */}
       <style>{`
-        .scanlines {
-          position: absolute; inset: 0; pointer-events: none; z-index: 1;
-          background-image: repeating-linear-gradient(0deg, rgba(0,0,0,0.16) 0px, rgba(0,0,0,0.16) 1px, transparent 1px, transparent 3px);
-        }
-        .type-pattern { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
-        .type-pattern-grass {
-          background-image:
-            repeating-linear-gradient(115deg, rgba(255,255,255,0.10) 0 2px, transparent 2px 22px),
-            radial-gradient(circle, rgba(255,255,255,0.55) 1px, transparent 1.6px);
-          background-size: auto, 26px 26px;
-          background-position: 0 0, 6px 10px;
-          opacity: 0.5;
-          animation: leaf-drift 9s linear infinite;
-        }
-        @keyframes leaf-drift {
-          0%   { background-position: 0 0, 6px 10px; }
-          100% { background-position: -40px 30px, 46px 40px; }
-        }
-        .type-pattern-water {
-          background-image: repeating-radial-gradient(circle at 50% 130%, rgba(255,255,255,0.20) 0 2px, transparent 2px 20px);
-          background-size: 160% 160%;
-          background-position: 50% 100%;
-          opacity: 0.38;
-          animation: ripple-drift 4.5s ease-in-out infinite;
-        }
-        @keyframes ripple-drift {
-          0%, 100% { background-position: 50% 100%; }
-          50%      { background-position: 50% 88%; }
-        }
-        .type-pattern-electric {
-          background-image: repeating-linear-gradient(68deg, rgba(255,255,255,0.22) 0 1.5px, transparent 1.5px 16px);
-          background-position: 0 0;
-          opacity: 0.36;
-          animation: spark-drift 2.4s linear infinite;
-        }
-        @keyframes spark-drift {
-          0%   { background-position: 0 0; }
-          100% { background-position: 32px 0; }
-        }
-        .type-pattern-fire {
-          background-image:
-            radial-gradient(circle, rgba(255,224,160,0.9) 1px, transparent 1.6px),
-            radial-gradient(circle, rgba(255,160,60,0.75) 1px, transparent 1.4px);
-          background-size: 24px 24px, 34px 34px;
-          background-position: 0 0, 10px 16px;
-          opacity: 0.42;
-          animation: ember-rise 4.5s linear infinite;
-        }
-        @keyframes ember-rise {
-          0%   { background-position: 0 0, 10px 16px; }
-          100% { background-position: -14px -60px, 4px -80px; }
-        }
         .cat-card-btn { cursor: pointer; transition: transform 0.1s; display: inline-flex; }
         .cat-card-btn:active { transform: translate(2px, 2px); }
         @keyframes card-modal-in {
