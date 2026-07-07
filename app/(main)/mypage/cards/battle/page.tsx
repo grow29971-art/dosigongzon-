@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Swords, Zap, Shield, Sparkles, Flame, Star, ChevronDown, FlaskConical, ShieldCheck, Wand2, BatteryCharging, Rocket, Clover, Backpack, type LucideIcon } from "lucide-react";
+import { ArrowLeft, Swords, Zap, Shield, Sparkles, Flame, Star, ChevronDown, FlaskConical, ShieldCheck, Wand2, BatteryCharging, Rocket, Clover, Backpack, Heart, type LucideIcon } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
@@ -1568,16 +1568,17 @@ export default function BattlePage() {
                     🎒 자동아이템 {autoUseItems?"ON":"OFF"}
                   </button>
                 )}
-                <div style={{flex:1, height:6, borderRadius:999, background:"rgba(255,255,255,0.6)", overflow:"hidden"}}>
+                <div style={{flex:1, height:16, borderRadius:999, background:"rgba(255,255,255,0.6)", overflow:"hidden", position:"relative", display:"flex", alignItems:"center"}}>
                   {!autoPilot && (
-                    <div style={{height:"100%",width:`${(timerLeft/6)*100}%`,borderRadius:999,transition:"width 0.9s linear",background:timerLeft<=2?"#FF6B6B":timerLeft<=4?"#FFB84D":"#5CA8F5",animation:timerLeft<=2?"pulse 0.6s infinite":undefined}}/>
+                    <div style={{height:"100%",width:`${(timerLeft/6)*100}%`,borderRadius:999,transition:"width 0.9s linear",background:timerLeft<=2?"linear-gradient(90deg,#FF9C9C,#FF6B6B)":timerLeft<=4?"linear-gradient(90deg,#FFDA7C,#FFB84D)":"linear-gradient(90deg,#FF9CB8,#FF6B94)",animation:timerLeft<=2?"pulse 0.6s infinite":undefined}}/>
                   )}
+                  <Heart size={11} fill="#fff" color="#fff" style={{position:"absolute", left:"50%", top:"50%", transform:"translate(-50%,-50%)", filter:"drop-shadow(0 1px 2px rgba(0,0,0,0.25))"}}/>
                 </div>
               </div>
             )}
 
             {/* 양쪽 카드 */}
-            <div className="flex items-end justify-center gap-1" style={{minHeight:250}}>
+            <div className="flex items-start justify-center gap-1" style={{minHeight:250}}>
               {/* 내 카드 */}
               <div className="flex flex-col items-center gap-1.5" style={{flex:1}}>
                 <div style={{position:"relative"}}>
@@ -1609,18 +1610,10 @@ export default function BattlePage() {
                   )}
                   {myGuardVis&&<div style={{position:"absolute",bottom:-4,left:"50%",transform:"translateX(-50%)",fontSize:9,color:"#4488FF",fontWeight:900,whiteSpace:"nowrap"}}>🛡️ 방어중</div>}
                 </div>
-                <span className="text-[10px] font-bold" style={{color:"#8B6FE0"}}>내 카드</span>
-                <div style={{width:"100%",maxWidth:130}}>
-                  <div className="flex justify-between text-[9px] mb-0.5">
-                    <span style={{color:myDanger?"#E1505F":"#5A5468",fontWeight:700}}>HP</span>
-                    <span style={{color:myDanger?"#E1505F":"#8A8598",fontWeight:700}}>{myHp}/{myMaxHp}</span>
-                  </div>
-                  <HpBar current={myHp} max={myMaxHp}/>
-                </div>
               </div>
 
-              {/* 중앙 메시지 */}
-              <div className="flex flex-col items-center shrink-0" style={{minWidth:48}}>
+              {/* 중앙 메시지 — 사진 중앙 높이에 겹치도록 배치(카드 상단 배지+이름 높이만큼 내려서) */}
+              <div className="flex flex-col items-center shrink-0" style={{minWidth:48, marginTop:72}}>
                 <span style={{
                   width:38, height:38, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center",
                   fontSize:13, fontWeight:900, color:"#fff", letterSpacing:0.5, flexShrink:0,
@@ -1661,14 +1654,32 @@ export default function BattlePage() {
                   )}
                   {oppGuardVis&&<div style={{position:"absolute",bottom:-4,left:"50%",transform:"translateX(-50%)",fontSize:9,color:"#4488FF",fontWeight:900,whiteSpace:"nowrap"}}>🛡️ 방어중</div>}
                 </div>
-                <span className="text-[10px] font-bold" style={{color:isBossBattle?"#E1505F":"#8A8598"}}>{isBossBattle?`${opponent?.placeholder_emoji??"😾"} ${opponent?.name??"고양이학대범"}`:"상대방"}</span>
-                <div style={{width:"100%",maxWidth:130}}>
-                  <div className="flex justify-between text-[9px] mb-0.5">
-                    <span style={{color:oppDanger?"#E1505F":"#5A5468",fontWeight:700}}>HP</span>
-                    <span style={{color:oppDanger?"#E1505F":"#8A8598",fontWeight:700}}>{oppHp}/{oppMaxHp}</span>
-                  </div>
-                  <HpBar current={oppHp} max={oppMaxHp}/>
+              </div>
+            </div>
+
+            {/* 카드 닉네임 줄 — 내 카드 / VS / 상대 이름 */}
+            <div className="flex items-center justify-between px-1">
+              <span className="text-[10px] font-bold" style={{color:"#8B6FE0"}}>내 카드</span>
+              <span style={{fontSize:11,fontWeight:900,color:"#B4AFC2"}}>VS</span>
+              <span className="text-[10px] font-bold" style={{color:isBossBattle?"#E1505F":"#8A8598"}}>{isBossBattle?`${opponent?.placeholder_emoji??"😾"} ${opponent?.name??"고양이학대범"}`:"상대방"}</span>
+            </div>
+
+            {/* HP 바 줄 — 양쪽 HP + 가운데 안내 문구 */}
+            <div className="flex items-center gap-2">
+              <div style={{flex:1}}>
+                <div className="flex justify-between text-[9px] mb-0.5">
+                  <span style={{color:myDanger?"#E1505F":"#5A5468",fontWeight:700}}>HP</span>
+                  <span style={{color:myDanger?"#E1505F":"#8A8598",fontWeight:700}}>{myHp}/{myMaxHp}</span>
                 </div>
+                <HpBar current={myHp} max={myMaxHp}/>
+              </div>
+              <span style={{fontSize:9,fontWeight:700,color:"#9A94A8",flexShrink:0,whiteSpace:"nowrap"}}>기술을 선택하세요!</span>
+              <div style={{flex:1}}>
+                <div className="flex justify-between text-[9px] mb-0.5">
+                  <span style={{color:oppDanger?"#E1505F":"#5A5468",fontWeight:700}}>HP</span>
+                  <span style={{color:oppDanger?"#E1505F":"#8A8598",fontWeight:700}}>{oppHp}/{oppMaxHp}</span>
+                </div>
+                <HpBar current={oppHp} max={oppMaxHp}/>
               </div>
             </div>
 

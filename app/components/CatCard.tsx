@@ -377,7 +377,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
         </div>
       )}
 
-      {/* ── 하단: 속성 + 약점 ── */}
+      {/* ── 하단: 속성(+약점) / 후퇴 ── */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
         marginTop: isSm ? 5 : 7, paddingTop: isSm ? 5 : 7,
@@ -389,9 +389,12 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
             display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8.5,
           }}>{cfg.typeIcon}</span>
           속성
+          <span style={{ color: "#C4BFB2" }}>·</span>
+          {cfg.weak}×2
         </span>
-        <span style={{ fontSize: fs.bottom, color: "#9A958A", fontWeight: 600 }}>
-          약점 {cfg.weak}×2
+        <span style={{ fontSize: fs.bottom, color: "#9A958A", fontWeight: 600, display: "flex", alignItems: "center", gap: 3 }}>
+          후퇴
+          <span style={{ color: soft.accent, letterSpacing: 1 }}>{cfg.rarity}</span>
         </span>
       </div>
     </div>
