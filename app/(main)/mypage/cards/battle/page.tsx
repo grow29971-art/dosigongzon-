@@ -386,6 +386,10 @@ export default function BattlePage() {
 
   const [myCats, setMyCats] = useState<BattleCat[]>([]);
   const [selected, setSelected] = useState<BattleCat | null>(null);
+  // 누구와 싸울지(PVE=고양이학대범 / PVP=다른 유저 카드)와 어떻게 싸울지(수동/자동)는
+  // 서로 다른 축이다. "평소엔 PVE"가 기본값 — 실제 길고양이끼리 싸우게 하는 PVP는
+  // 원하는 사람만 선택하는 옵션으로 내림.
+  const [battleType, setBattleType] = useState<"pve"|"pvp">("pve");
   const [mode, setMode] = useState<Mode>("manual");
   const [phase, setPhase] = useState<Phase>("select");
   const [autoPilot, setAutoPilot] = useState(false); // 수동 배틀 중 자동전투 전환
@@ -578,7 +582,7 @@ export default function BattlePage() {
 
     const res = await fetch("/api/cats/card-battle", {
       method:"POST", headers:{"content-type":"application/json"},
-      body: JSON.stringify({ my_cat_id: selected.id, mode }),
+      body: JSON.stringify({ my_cat_id: selected.id, mode, battle_type: battleType }),
     });
     const json = await res.json();
     if(!res.ok) {
@@ -1411,7 +1415,7 @@ export default function BattlePage() {
           <img src="/boss/villain-intro.jpg" alt="고양이학대범 등장" style={{ flex:1, width:"100%", minHeight:0, objectFit:"contain" }} />
           <div style={{ marginLeft:16, marginRight:16, marginBottom:"max(24px, env(safe-area-inset-bottom))", padding:"16px 18px", borderRadius:14, background:"rgba(20,20,28,0.96)", border:"2px solid #CC3333", boxShadow:"0 0 24px rgba(200,40,40,0.35)" }}>
             <p style={{ color:"white", fontWeight:800, fontSize:15, lineHeight:1.6, margin:0 }}>
-              고양이학대범이 승부를 걸어왔다!
+              동네를 어슬렁대는 고양이학대범을 발견했다!
             </p>
           </div>
         </div>
@@ -1436,8 +1440,33 @@ export default function BattlePage() {
         {/* ──────── 선택 화면 ──────── */}
         {(phase==="select"||phase==="loading") && (
           <div className="flex-1 overflow-y-auto px-4 pb-6">
-            {/* 모드 토글 */}
-            <div className="flex gap-2 mt-4 mb-4">
+            {/* 누구와 싸울지 — PVE(고양이학대범) 기본, PVP(다른 유저)는 선택 */}
+            <div className="flex gap-2 mt-4 mb-2.5">
+              {([
+                { key:"pve" as const, label:"🐾 고양이학대범과 대결", color:"#E85555" },
+                { key:"pvp" as const, label:"⚔️ 다른 유저와 대결", color:"#5A8AC4" },
+              ]).map(bt=>(
+                <button key={bt.key} onClick={()=>setBattleType(bt.key)}
+                  className={`pixel-btn flex-1 ${gameFont.className}`}
+                  style={{
+                    padding:"11px 4px", fontSize:12.5, clipPath: notchClip(3),
+                    background:"#000",
+                    boxShadow: battleType===bt.key
+                      ? `inset 0 0 0 2px #000, inset 0 0 0 4px ${bt.color}`
+                      : "inset 0 0 0 2px #000, inset 0 0 0 4px #333",
+                    color: battleType===bt.key?"#fff":"rgba(255,255,255,0.4)",
+                    filter: battleType===bt.key ? `drop-shadow(3px 3px 0 ${bt.color}66)` : undefined,
+                  }}>
+                  {bt.label}
+                </button>
+              ))}
+            </div>
+            <p className="text-[11px] text-center mb-4" style={{ color: battleType==="pve" ? "#FF9090" : "#8AB4E0" }}>
+              {battleType==="pve" ? "언제든 도전할 수 있는 PVE — 이겨도 져도 코인은 받아요" : "실제 다른 유저의 고양이 카드와 겨루는 PVP"}
+            </p>
+
+            {/* 어떻게 싸울지 — 수동(직접 조작)/자동(시뮬레이션) */}
+            <div className="flex gap-2 mb-4">
               {(["manual","auto"] as Mode[]).map(m=>(
                 <button key={m} onClick={()=>setMode(m)}
                   className={`pixel-btn flex-1 ${gameFont.className}`}

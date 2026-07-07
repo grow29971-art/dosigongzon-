@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
-import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BOSS_WIN, COINS_BOSS_STEAL_RATE } from "@/lib/shop-config";
+import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BOSS_WIN, COINS_BOSS_LOSE } from "@/lib/shop-config";
 import { SPECIAL_SKILLS, type SpecialSkillId } from "@/lib/battle-config";
 
 export const maxDuration = 15;
@@ -32,10 +32,13 @@ interface CardCat {
 // 등급별 HP 보너스: 일반→레전드로 갈수록 체력이 두껍게 (전투가 늘어지지 않도록 전체적으로 하향)
 const RARITY_HP_BONUS: Record<string, number> = { common:0, uncommon:35, rare:73, legendary:122 };
 
-// 고양이학대범 랜덤 보스 조우 — 실제 유저 카드 대신 등장하는 스크립트 상대.
+// 고양이학대범(PVE) — 실제 유저 카드 대신 등장하는 스크립트 상대.
 // DB에 존재하지 않는 고정 id라서 결과 기록 시 상대 카드/유저 업데이트는 건너뛴다.
+// 예전엔 12% 확률로만 랜덤하게 마주치는 이벤트였는데, 이제 PVE 모드를 선택하면
+// 항상 이 빌런과 붙는다 — "평소엔 PVE, 다른 유저와 직접 겨루고 싶을 때만 PVP"로
+// 재구성. 실제 고양이끼리 싸우게 하는 게 이 앱 톤(우리 동네 아이 존중)과 안 맞는다는
+// 판단 아래, 기본 배틀 상대를 "빌런"으로 바꾸고 PVP는 선택 옵션으로 남겨둠.
 const BOSS_CAT_ID = "00000000-0000-0000-0000-0000000000b0";
-const BOSS_ENCOUNTER_CHANCE = 0.12;
 
 function makeBossOpponent(myCat: CardCat): CardCat {
   const baseAtk = myCat.battle_atk ?? 40;
@@ -330,7 +333,7 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  const { my_cat_id, mode = "auto" } = await req.json();
+  const { my_cat_id, mode = "auto", battle_type = "pve" } = await req.json();
   if (!my_cat_id) return NextResponse.json({ error: "my_cat_id required" }, { status: 400 });
 
   // 내 카드 조회
@@ -344,8 +347,8 @@ export async function POST(req: Request) {
 
   if (!myCat) return NextResponse.json({ error: "cat not found" }, { status: 404 });
 
-  // 랜덤 보스 조우 — 실제 상대 매칭 대신 고양이학대범이 등장
-  const isBossEncounter = Math.random() < BOSS_ENCOUNTER_CHANCE;
+  // PVE("평소에" 하는 기본 모드) → 항상 고양이학대범과 대결. PVP는 실제 다른 유저 카드와 매칭.
+  const isBossEncounter = battle_type === "pve";
   let opponent: CardCat;
 
   if (isBossEncounter) {
@@ -429,7 +432,7 @@ export async function POST(req: Request) {
   const { data: myProfile } = await svc.from("profiles").select("coins").eq("id", user.id).maybeSingle();
   const myCoinsNow = myProfile?.coins ?? 0;
   const coinsGained = isBossEncounter
-    ? (result.attackerWins ? COINS_BOSS_WIN : -Math.round(myCoinsNow * COINS_BOSS_STEAL_RATE))
+    ? (result.attackerWins ? COINS_BOSS_WIN : COINS_BOSS_LOSE)
     : (result.attackerWins ? COINS_BATTLE_WIN : COINS_BATTLE_LOSE);
   const newCoins = Math.max(0, myCoinsNow + coinsGained);
   const myNewStreak  = result.attackerWins ? (myCat.win_streak ?? 0) + 1 : 0;

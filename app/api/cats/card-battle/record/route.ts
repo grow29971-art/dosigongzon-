@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
-import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BOSS_WIN, COINS_BOSS_STEAL_RATE } from "@/lib/shop-config";
+import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BOSS_WIN, COINS_BOSS_LOSE } from "@/lib/shop-config";
 
 function computeLevel(exp: number) {
   const thresholds = [0, 90, 210, 380, 610, 900, 1260, 1690, 2200, 2800];
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
   const { data: myProfile } = await svc.from("profiles").select("coins").eq("id", user.id).maybeSingle();
   const myCoinsNow = myProfile?.coins ?? 0;
   const coinsGained = is_boss
-    ? (iWon ? COINS_BOSS_WIN : -Math.round(myCoinsNow * COINS_BOSS_STEAL_RATE))
+    ? (iWon ? COINS_BOSS_WIN : COINS_BOSS_LOSE)
     : (iWon ? COINS_BATTLE_WIN : COINS_BATTLE_LOSE);
   const newCoins = Math.max(0, myCoinsNow + coinsGained);
   const myNewStreak  = iWon ? (myCat.win_streak ?? 0) + 1 : 0;
