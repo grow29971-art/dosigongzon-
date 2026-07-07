@@ -18,6 +18,10 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   const { my_cat_id, opp_cat_id, opp_caretaker_id, winner, rounds, my_hp_left, opp_hp_left, is_boss } = await req.json();
+  // is_boss는 "진짜 보스(고양이학대범)냐"만 뜻함(카드-배틀 route.ts에서 정확히 내려줌).
+  // "PVE 10승" 배지처럼 일반 동물 승리도 세야 하는 값은 opp_cat_id가 "pve-" 접두사를
+  // 갖는지(합성 PVE 상대인지)로 따로 판별한다 — PVP는 실제 cat UUID라 여기 안 걸림.
+  const isPveEncounter = Boolean(is_boss) || String(opp_cat_id ?? "").startsWith("pve-");
 
   const { data: myCat } = await supabase
     .from("cats").select("id,card_exp,card_level,caretaker_id,win_streak,best_win_streak,pve_win_count")
@@ -50,7 +54,7 @@ export async function POST(req: Request) {
   // 카드 훈장(성장 스티커)용 all-time 기록 — win_streak과 달리 지더라도 절대 줄어들지 않는다.
   const myNewBestStreak = Math.max(myCat.best_win_streak ?? 0, myNewStreak);
   const oppNewBestStreak = Math.max(oppCat?.best_win_streak ?? 0, oppNewStreak);
-  const myNewPveWins = (myCat.pve_win_count ?? 0) + (is_boss && iWon ? 1 : 0);
+  const myNewPveWins = (myCat.pve_win_count ?? 0) + (isPveEncounter && iWon ? 1 : 0);
 
   // 배틀 타이틀 카운터 — 코인 지급과 완전히 분리된 쿼리 (마이그레이션 전이어도 코인엔 영향 없음)
   const { data: battleProfile } = await svc.from("profiles").select("boss_defeats,best_win_streak").eq("id", user.id).maybeSingle();
@@ -76,11 +80,13 @@ export async function POST(req: Request) {
     }) : Promise.resolve(),
   ]);
 
-  // 도감(컬렉션) 진행률 — 위 코인/경험치 지급과 완전히 분리해서 처리
+  // 도감(컬렉션) 진행률 — 위 코인/경험치 지급과 완전히 분리해서 처리, PVP는 대상 아님
   // (마이그레이션 전이면 recordPveEncounter가 던지는 에러를 여기서만 조용히 무시).
-  try {
-    await recordPveEncounter(svc, user.id, String(opp_cat_id ?? ""), Boolean(is_boss), iWon);
-  } catch { /* 마이그레이션 전이면 여기서만 조용히 무시 */ }
+  if (isPveEncounter) {
+    try {
+      await recordPveEncounter(svc, user.id, String(opp_cat_id ?? ""), Boolean(is_boss), iWon);
+    } catch { /* 마이그레이션 전이면 여기서만 조용히 무시 */ }
+  }
 
   return NextResponse.json({
     exp_gained: iWon ? winnerExp : loserExp,

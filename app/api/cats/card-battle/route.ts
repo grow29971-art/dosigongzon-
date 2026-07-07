@@ -578,6 +578,11 @@ export async function POST(req: Request) {
     opponent = pickByTargetWinRate(myCat as CardCat, opponentsWithEquip, 0.50);
   }
 
+  // isBossEncounter는 "PVE 모드냐"는 뜻이라 항상 true — 실제로 "진짜 보스(고양이학대범)와
+  // 마주쳤는지"는 opponent.id로 따로 판별해야 한다. 클라이언트에도 이 정확한 값을 내려줘야
+  // 도감 기록·UI 표시가 둘 다 맞게 동작한다(안 그러면 일반 동물도 전부 "보스"로 잡힘).
+  const isActualBoss = isBossEncounter && opponent.id === BOSS_CAT_ID;
+
   // 수동 배틀: 스탯만 반환 (시뮬레이션 없음)
   if (mode === "manual") {
     return NextResponse.json({
@@ -585,7 +590,7 @@ export async function POST(req: Request) {
       opponent,
       my_stats: calcStats(myCat as CardCat),
       opp_stats: calcStats(opponent),
-      is_boss: isBossEncounter,
+      is_boss: isActualBoss,
     });
   }
 
@@ -612,7 +617,9 @@ export async function POST(req: Request) {
 
   const { data: myProfile } = await svc.from("profiles").select("coins").eq("id", user.id).maybeSingle();
   const myCoinsNow = myProfile?.coins ?? 0;
-  const coinsGained = isBossEncounter
+  // 코인 보상은 "진짜 보스냐"로 갈라야 한다 — isBossEncounter는 PVE 모드 전체를 뜻해서
+  // 이걸로 나누면 모기 한 마리 이겨도 보스급 보상(8코인)이 나가는 버그가 있었음.
+  const coinsGained = isActualBoss
     ? (result.attackerWins ? COINS_BOSS_WIN : COINS_BOSS_LOSE)
     : (result.attackerWins ? COINS_BATTLE_WIN : COINS_BATTLE_LOSE);
   const newCoins = Math.max(0, myCoinsNow + coinsGained);
@@ -621,12 +628,15 @@ export async function POST(req: Request) {
   // 카드 훈장(성장 스티커)용 all-time 기록 — win_streak과 달리 지더라도 절대 줄어들지 않는다.
   const myNewBestStreak = Math.max(myCat.best_win_streak ?? 0, myNewStreak);
   const oppNewBestStreak = Math.max(opponent.best_win_streak ?? 0, oppNewStreak);
+  // "PVE 10승 달성" 배지는 상대가 보스든 일반 동물이든 PVE 승리 전체를 세는 게 맞아서
+  // 여기는 그대로 isBossEncounter(=PVE 모드 여부) 사용.
   const myNewPveWins = (myCat.pve_win_count ?? 0) + (isBossEncounter && result.attackerWins ? 1 : 0);
 
   // 배틀 타이틀 카운터 — box/supabase_battle_titles_migration.sql 실행 전이면 조용히 0으로 취급될 뿐,
-  // 코인 지급(위 newCoins)과는 완전히 분리된 쿼리라 마이그레이션 여부와 무관하게 안전함
+  // 코인 지급(위 newCoins)과는 완전히 분리된 쿼리라 마이그레이션 여부와 무관하게 안전함.
+  // boss_defeats는 진짜 보스(고양이학대범)만 세야 하므로 isActualBoss 사용.
   const { data: battleProfile } = await svc.from("profiles").select("boss_defeats,best_win_streak").eq("id", user.id).maybeSingle();
-  const newBossDefeats = (battleProfile?.boss_defeats ?? 0) + (isBossEncounter && result.attackerWins ? 1 : 0);
+  const newBossDefeats = (battleProfile?.boss_defeats ?? 0) + (isActualBoss && result.attackerWins ? 1 : 0);
   const newBestStreak = Math.max(battleProfile?.best_win_streak ?? 0, myNewStreak);
 
   await Promise.all([
@@ -647,16 +657,18 @@ export async function POST(req: Request) {
     }),
   ]);
 
-  // 도감(컬렉션) 진행률 — 코인/경험치 등 위 핵심 보상 로직과 완전히 분리해서 처리
+  // 도감(컬렉션) 진행률 — 코인/경험치 등 위 핵심 보상 로직과 완전히 분리해서 처리, PVP는 대상 아님
   // (마이그레이션 전이면 recordPveEncounter가 던지는 에러를 여기서만 조용히 무시).
-  try {
-    await recordPveEncounter(svc, user.id, opponent.id, isBossEncounter, result.attackerWins);
-  } catch { /* 마이그레이션 전이면 여기서만 조용히 무시 */ }
+  if (isBossEncounter) {
+    try {
+      await recordPveEncounter(svc, user.id, opponent.id, isActualBoss, result.attackerWins);
+    } catch { /* 마이그레이션 전이면 여기서만 조용히 무시 */ }
+  }
 
   return NextResponse.json({
     my_cat: myCat,
     opponent,
-    is_boss: isBossEncounter,
+    is_boss: isActualBoss,
     result: {
       winner: result.attackerWins ? "me" : "opponent",
       my_hp_left: result.aHp,
