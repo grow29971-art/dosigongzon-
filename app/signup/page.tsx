@@ -177,7 +177,7 @@ function SignupContent() {
 
         {/* 로고 */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-[28px] bg-primary/10 mb-4">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4">
             <PawPrint size={40} className="text-primary" strokeWidth={1.8} />
           </div>
           <h1 className="text-[26px] font-extrabold text-text-main tracking-tight">

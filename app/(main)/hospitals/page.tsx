@@ -229,7 +229,7 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
               </span>
             )}
             <div
-              className="w-6 h-6 rounded-[8px] flex items-center justify-center"
+              className="w-6 h-6 rounded-full flex items-center justify-center"
               style={{
                 background: "linear-gradient(135deg, #E86B8C 0%, #C55374 100%)",
                 boxShadow: "0 3px 8px rgba(232,107,140,0.3), inset 0 1px 0 rgba(255,255,255,0.4)",

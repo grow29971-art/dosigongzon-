@@ -241,7 +241,7 @@ function WelcomeContent() {
         {isFirst ? (
           <>
             <div
-              className="w-24 h-24 rounded-[32px] flex items-center justify-center mb-6"
+              className="w-24 h-24 rounded-full flex items-center justify-center mb-6"
               style={{
                 background: "rgba(255,255,255,0.18)",
                 backdropFilter: "blur(10px)",
@@ -292,7 +292,7 @@ function WelcomeContent() {
         ) : (
           <>
             <div
-              className="w-20 h-20 rounded-[26px] flex items-center justify-center mb-7"
+              className="w-20 h-20 rounded-full flex items-center justify-center mb-7"
               style={{
                 background: "rgba(255,255,255,0.18)",
                 backdropFilter: "blur(10px)",

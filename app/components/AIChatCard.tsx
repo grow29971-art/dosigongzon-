@@ -24,7 +24,7 @@ export default function AIChatCard() {
       >
         <div className="flex items-center gap-3.5 mb-3.5">
           <div
-            className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
+            className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
             style={{
               background: "linear-gradient(135deg, #5C8DEE 0%, #8B6FE0 100%)",
               boxShadow: "0 5px 12px rgba(92,141,238,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)",

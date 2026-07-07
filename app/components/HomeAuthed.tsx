@@ -1343,7 +1343,7 @@ export default function HomeAuthed({
         }}
       >
         <div
-          className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
+          className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
           style={{
             background: "linear-gradient(135deg, #E8B040 0%, #C9A961 100%)",
             boxShadow: "0 5px 12px rgba(232,176,64,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)",

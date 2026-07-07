@@ -177,7 +177,7 @@ export default async function PopularPostsPage() {
       {/* FAB */}
       <Link
         href="/community/write"
-        className="fixed bottom-24 right-5 w-14 h-14 rounded-[20px] flex items-center justify-center active:scale-90 transition-transform z-40"
+        className="fixed bottom-24 right-5 w-14 h-14 rounded-full flex items-center justify-center active:scale-90 transition-transform z-40"
         style={{
           background: `linear-gradient(135deg, ${ACCENT} 0%, ${ACCENT}DD 100%)`,
           boxShadow: `0 10px 24px rgba(${GLOW},0.40), inset 0 1px 0 rgba(255,255,255,0.3)`,

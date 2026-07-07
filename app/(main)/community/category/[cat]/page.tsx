@@ -362,7 +362,7 @@ export default function CategoryPage() {
       {/* ── FAB ── */}
       <Link
         href={`/community/write?category=${cat}`}
-        className="fixed bottom-24 right-5 w-14 h-14 rounded-[20px] flex items-center justify-center active:scale-90 transition-transform z-40"
+        className="fixed bottom-24 right-5 w-14 h-14 rounded-full flex items-center justify-center active:scale-90 transition-transform z-40"
         style={{
           background: `linear-gradient(135deg, ${meta.color} 0%, ${meta.color}DD 100%)`,
           boxShadow: `0 10px 24px rgba(${meta.glow},0.40), inset 0 1px 0 rgba(255,255,255,0.3)`,

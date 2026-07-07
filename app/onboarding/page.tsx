@@ -163,7 +163,7 @@ export default function OnboardingPage() {
           style={{ opacity: fading ? 0 : 1 }}
         >
           <div
-            className="w-20 h-20 rounded-[28px] flex items-center justify-center mb-6"
+            className="w-20 h-20 rounded-full flex items-center justify-center mb-6"
             style={{
               backgroundColor: "rgba(255,255,255,0.45)",
               backdropFilter: "blur(8px)",
@@ -209,7 +209,7 @@ export default function OnboardingPage() {
           style={{ opacity: fading ? 0 : 1 }}
         >
           <div
-            className="w-24 h-24 rounded-[32px] flex items-center justify-center mb-10"
+            className="w-24 h-24 rounded-full flex items-center justify-center mb-10"
             style={{
               backgroundColor: "rgba(255,255,255,0.1)",
               backdropFilter: "blur(8px)",

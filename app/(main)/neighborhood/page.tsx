@@ -194,7 +194,7 @@ export default function NeighborhoodPage() {
       {region && (
         <button
           onClick={handleWrite}
-          className="fixed bottom-24 right-5 w-14 h-14 rounded-[20px] bg-primary flex items-center justify-center fab-shadow active:scale-90 transition-transform z-40"
+          className="fixed bottom-24 right-5 w-14 h-14 rounded-full bg-primary flex items-center justify-center fab-shadow active:scale-90 transition-transform z-40"
         >
           <Plus size={28} color="#fff" strokeWidth={2.5} />
         </button>
