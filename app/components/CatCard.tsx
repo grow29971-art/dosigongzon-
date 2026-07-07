@@ -32,84 +32,51 @@ interface CatCardProps {
   onClick?: () => void;
 }
 
+// 등급별 테마 — CatCard(파스텔 카드 프레임)와 map/page.tsx(고양이 상세 팝업)가
+// 공유하는 단일 소스. 예전엔 이 둘이 CARD_THEME(진한 원색)/SOFT_THEME(파스텔)로
+// 나뉘어 있었는데, map 팝업도 이미 파스텔 톤으로 옮겨가면서 진한 버전을 쓰는 곳이
+// 하나도 안 남아 하나로 합침.
 export const CARD_THEME = {
   common: {
-    bg: "linear-gradient(155deg, #82CC5E 0%, #5AA040 42%, #3E7A2A 75%, #2E5E1E 100%)",
-    frameOuter: "#2E5A20",
-    frameInner: "#B8FF8C",
-    topBar: "rgba(0,0,0,0.42)",
-    panelBg: "rgba(0,0,0,0.36)",
-    hpColor: "#D8FFB0",
+    shellBg: "linear-gradient(160deg,#FBFEF7,#F1F8E8)",
+    frameOuter: "#A9D488",
+    accent: "#5FA83D",
     typeIcon: "🌿",
-    typeBg: "#3A7028",
-    accent: "#AAEE66",
+    typeBg: "#7BC957",
     label: "일반",
     rarity: "◆",
     weak: "🔥",
-    typeKey: "grass",
-    badgeShape: "hexagon" as const,
-    notchMult: 1,
   },
   uncommon: {
-    bg: "linear-gradient(155deg, #6EC0FF 0%, #3488E0 42%, #1C5CBC 75%, #123E88 100%)",
-    frameOuter: "#153E78",
-    frameInner: "#B8E4FF",
-    topBar: "rgba(0,0,0,0.42)",
-    panelBg: "rgba(0,0,0,0.36)",
-    hpColor: "#C8E8FF",
+    shellBg: "linear-gradient(160deg,#FAFDFF,#EAF4FF)",
+    frameOuter: "#8FC1F5",
+    accent: "#3D7FC9",
     typeIcon: "💧",
-    typeBg: "#1E56A0",
-    accent: "#80CCFF",
+    typeBg: "#5F9DE8",
     label: "희귀",
     rarity: "◆◆",
     weak: "⚡",
-    typeKey: "water",
-    badgeShape: "droplet" as const,
-    notchMult: 1.3,
   },
   rare: {
-    bg: "linear-gradient(155deg, #D0A0FF 0%, #9C58EC 38%, #7028C8 70%, #4C1690 100%)",
-    frameOuter: "#3C1478",
-    frameInner: "#F0D8FF",
-    topBar: "rgba(0,0,0,0.46)",
-    panelBg: "rgba(0,0,0,0.4)",
-    hpColor: "#F0DCFF",
+    shellBg: "linear-gradient(160deg,#FCFAFF,#F1E9FF)",
+    frameOuter: "#C1A6F0",
+    accent: "#7D53C9",
     typeIcon: "⚡",
-    typeBg: "#5C24B0",
-    accent: "#E0B8FF",
+    typeBg: "#A47BEE",
     label: "레어",
     rarity: "◆◆◆",
     weak: "🌿",
-    typeKey: "electric",
-    badgeShape: "bolt" as const,
-    notchMult: 0.6,
   },
   legendary: {
-    bg: "linear-gradient(155deg, #FFEA98 0%, #FFB730 30%, #F08010 55%, #C05A00 80%, #FFEA98 100%)",
-    frameOuter: "#8A4E00",
-    frameInner: "#FFF6D0",
-    topBar: "rgba(0,0,0,0.4)",
-    panelBg: "rgba(0,0,0,0.34)",
-    hpColor: "#FFF9C8",
+    shellBg: "linear-gradient(160deg,#FFFCF2,#FFF1D2)",
+    frameOuter: "#EFC15E",
+    accent: "#C98A1E",
     typeIcon: "🔥",
-    typeBg: "#9A5800",
-    accent: "#FFE680",
+    typeBg: "#EFAF3A",
     label: "레전드",
     rarity: "◆◆◆◆",
     weak: "💧",
-    typeKey: "fire",
-    badgeShape: "star" as const,
-    notchMult: 1,
   },
-};
-
-// 카드 프레임의 파스텔 색상 팔레트 — CARD_THEME(map/page.tsx 등 다른 화면의 진한 색 패널이
-// 아직 이 값을 그대로 쓰고 있어서 못 바꿈)과는 별개로, 이 컴포넌트의 크림/골드 톤 프레임 전용.
-const SOFT_THEME: Record<CardRarity, { shellBg: string; frameOuter: string; accent: string; typeBg: string }> = {
-  common:    { shellBg: "linear-gradient(160deg,#FBFEF7,#F1F8E8)", frameOuter: "#A9D488", accent: "#5FA83D", typeBg: "#7BC957" },
-  uncommon:  { shellBg: "linear-gradient(160deg,#FAFDFF,#EAF4FF)", frameOuter: "#8FC1F5", accent: "#3D7FC9", typeBg: "#5F9DE8" },
-  rare:      { shellBg: "linear-gradient(160deg,#FCFAFF,#F1E9FF)", frameOuter: "#C1A6F0", accent: "#7D53C9", typeBg: "#A47BEE" },
-  legendary: { shellBg: "linear-gradient(160deg,#FFFCF2,#FFF1D2)", frameOuter: "#EFC15E", accent: "#C98A1E", typeBg: "#EFAF3A" },
 };
 
 const MOVE_ICONS = ["⚡", "🌿", "💧", "🔥", "✨", "🌙", "☀️", "❄️"];
@@ -161,7 +128,6 @@ const PRESTIGE_LABEL: Record<PrestigeTier, string> = { none: "", silver: "은빛
 function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> & { size: "sm" | "md" | "lg" | "battle" }) {
   const rarity = (card.card_rarity ?? "common") as CardRarity;
   const cfg = CARD_THEME[rarity] ?? CARD_THEME.common;
-  const soft = SOFT_THEME[rarity] ?? SOFT_THEME.common;
   const isSm = size === "sm";
   const isLg = size === "lg";
   const isBattle = size === "battle";
@@ -219,8 +185,8 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
       style={{
         width: W,
         borderRadius: radius,
-        background: soft.shellBg,
-        boxShadow: `0 ${isLg?8:5}px ${shadowBlur}px rgba(70,60,40,0.14), inset 0 0 0 2px #fff, inset 0 0 0 4px ${soft.frameOuter}`,
+        background: cfg.shellBg,
+        boxShadow: `0 ${isLg?8:5}px ${shadowBlur}px rgba(70,60,40,0.14), inset 0 0 0 2px #fff, inset 0 0 0 4px ${cfg.frameOuter}`,
         filter: PRESTIGE_GLOW[tier] || undefined,
         overflow: "visible",
         flexShrink: 0,
@@ -235,7 +201,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
         <span style={{
           background: "#fff", borderRadius: 999,
           padding: isLg ? "3px 10px" : "2px 7px",
-          fontSize: fs.label, fontWeight: 800, color: soft.accent,
+          fontSize: fs.label, fontWeight: 800, color: cfg.accent,
           boxShadow: "0 1px 4px rgba(0,0,0,0.12)", flexShrink: 0,
         }}>
           {cfg.label}
@@ -272,7 +238,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
       {/* ── 사진 프레임 ── */}
       <div style={{
         borderRadius: innerRadius, overflow: "hidden", position: "relative",
-        boxShadow: `inset 0 0 0 2px #fff, inset 0 0 0 4px ${soft.frameOuter}`,
+        boxShadow: `inset 0 0 0 2px #fff, inset 0 0 0 4px ${cfg.frameOuter}`,
         background: "#fff",
       }}>
         <div style={{ height: photoH, overflow: "hidden", position: "relative", background: "#F3F1EA" }}>
@@ -326,7 +292,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
             <span key={b.label} title={b.label} style={{
               width: isLg ? 20 : isSm ? 14 : 17, height: isLg ? 20 : isSm ? 14 : 17,
               borderRadius: "50%",
-              background: b.isUnlocked ? soft.typeBg : "#EFEDE6",
+              background: b.isUnlocked ? cfg.typeBg : "#EFEDE6",
               display: "flex", alignItems: "center", justifyContent: "center",
               fontSize: isLg ? 11 : isSm ? 7.5 : 9,
               filter: b.isUnlocked ? undefined : "grayscale(1)",
@@ -360,7 +326,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
               <span style={{ fontSize: isLg ? 11 : 9, flexShrink: 0 }}>{pickIcon(move1)}</span>
               <span style={{ fontSize: fs.moveName, color: "#3A3630", fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{move1}</span>
             </div>
-            <span style={{ fontSize: fs.movePow, fontWeight: 800, color: soft.accent, flexShrink: 0, marginLeft: 4 }}>{move1Power}</span>
+            <span style={{ fontSize: fs.movePow, fontWeight: 800, color: cfg.accent, flexShrink: 0, marginLeft: 4 }}>{move1Power}</span>
           </div>
 
           <div style={{
@@ -381,11 +347,11 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
         marginTop: isSm ? 5 : 7, paddingTop: isSm ? 5 : 7,
-        borderTop: `1.5px dashed ${soft.frameOuter}66`,
+        borderTop: `1.5px dashed ${cfg.frameOuter}66`,
       }}>
         <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: fs.bottom, color: "#9A958A", fontWeight: 600 }}>
           <span style={{
-            width: 15, height: 15, borderRadius: "50%", background: soft.typeBg,
+            width: 15, height: 15, borderRadius: "50%", background: cfg.typeBg,
             display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8.5,
           }}>{cfg.typeIcon}</span>
           속성
@@ -394,7 +360,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
         </span>
         <span style={{ fontSize: fs.bottom, color: "#9A958A", fontWeight: 600, display: "flex", alignItems: "center", gap: 3 }}>
           후퇴
-          <span style={{ color: soft.accent, letterSpacing: 1 }}>{cfg.rarity}</span>
+          <span style={{ color: cfg.accent, letterSpacing: 1 }}>{cfg.rarity}</span>
         </span>
       </div>
     </div>
