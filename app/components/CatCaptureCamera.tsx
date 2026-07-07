@@ -164,23 +164,23 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
     }, 1300);
   }, [previewFile, onCapture, capturePhoto]);
 
-  // 고양이 캔 던지기 - 터치 이벤트 (좌우로 당긴 각도=조준, 위로 당긴 거리=파워가 실제 명중을 결정)
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+  // 고양이 캔 던지기 - 포인터 이벤트 (터치+마우스+펜 공통. 좌우로 당긴 각도=조준, 위로 당긴 거리=파워가 실제 명중을 결정)
+  // 예전엔 TouchEvent만 처리해서 PC(마우스)에서는 아예 반응이 없었음 — Pointer Event로 통합.
+  const handleTouchStart = useCallback((e: React.PointerEvent) => {
     if (throwState !== "idle" || caught) return;
     primeSfx();
     chargeSoundPlayedRef.current = false;
-    const t = e.touches[0];
-    touchStartRef.current = { x: t.clientX, y: t.clientY };
+    e.currentTarget.setPointerCapture(e.pointerId);
+    touchStartRef.current = { x: e.clientX, y: e.clientY };
     setPullY(0);
     setChuruX(0);
   }, [throwState, caught]);
 
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+  const handleTouchMove = useCallback((e: React.PointerEvent) => {
     if ((throwState !== "idle" && throwState !== "pulling") || caught) return;
     e.preventDefault();
-    const t = e.touches[0];
-    const dy = touchStartRef.current.y - t.clientY;
-    const dx = Math.max(-MAX_DRAG_X, Math.min(MAX_DRAG_X, t.clientX - touchStartRef.current.x));
+    const dy = touchStartRef.current.y - e.clientY;
+    const dx = Math.max(-MAX_DRAG_X, Math.min(MAX_DRAG_X, e.clientX - touchStartRef.current.x));
     if (dy > 5) {
       if (!chargeSoundPlayedRef.current) { chargeSoundPlayedRef.current = true; sfx.chargeUp(); }
       setThrowState("pulling");
@@ -189,11 +189,10 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
     }
   }, [throwState, caught]);
 
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+  const handleTouchEnd = useCallback((e: React.PointerEvent) => {
     if (caught) return;
-    const t = e.changedTouches[0];
-    const dy = touchStartRef.current.y - t.clientY;
-    const dx = Math.max(-MAX_DRAG_X, Math.min(MAX_DRAG_X, t.clientX - touchStartRef.current.x));
+    const dy = touchStartRef.current.y - e.clientY;
+    const dx = Math.max(-MAX_DRAG_X, Math.min(MAX_DRAG_X, e.clientX - touchStartRef.current.x));
 
     if (dy > MIN_PULL_Y) {
       const finalPullY = Math.min(dy, MAX_PULL_Y);
@@ -574,9 +573,10 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
             ref={throwAreaRef}
             className="absolute bottom-0 left-0 right-0 z-20 flex flex-col items-center"
             style={{ height: "38%", touchAction: "none" }}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
+            onPointerDown={handleTouchStart}
+            onPointerMove={handleTouchMove}
+            onPointerUp={handleTouchEnd}
+            onPointerCancel={handleTouchEnd}
           >
             {/* 비행 궤적 잔상 (모션 트레일) */}
             {(throwState === "flying" || throwState === "miss") && [0, 1].map(i => (
