@@ -3,6 +3,11 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
 import { SHOP_ITEMS, type ShopItemKey } from "@/lib/shop-config";
 
+// box/supabase_shop_buy_rpc_migration.sql의 buy_shop_item_atomic() DB 함수로
+// 코인 검증·차감·아이템 지급을 하나의 트랜잭션(행 잠금)으로 처리 — 예전엔
+// 이걸 별도 쿼리로 나눠서 처리해서 동시 구매 요청 시 코인보다 많은 아이템을
+// 살 수 있는 경쟁 상태가 있었음. RPC가 아직 없으면(마이그레이션 전) 이전
+// 방식으로 자동 폴백(기능은 그대로, 경쟁 상태 방지만 빠짐).
 export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -12,6 +17,27 @@ export async function POST(req: Request) {
   const item = SHOP_ITEMS[item_key as ShopItemKey];
   if (!item) return NextResponse.json({ error: "invalid_item" }, { status: 400 });
 
+  const svc = serviceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
+
+  const { data: rpcData, error: rpcError } = await svc.rpc("buy_shop_item_atomic", {
+    p_user_id: user.id,
+    p_item_key: item.key,
+    p_price: item.price,
+  });
+
+  if (!rpcError) {
+    const result = rpcData as { ok?: boolean; error?: string; need?: number; have?: number; coins?: number; item_key?: string; quantity?: number };
+    if (result?.error === "insufficient_coins") {
+      return NextResponse.json({ error: "insufficient_coins", need: result.need, have: result.have }, { status: 400 });
+    }
+    if (result?.error) return NextResponse.json({ error: result.error }, { status: 400 });
+    return NextResponse.json({ ok: true, coins: result.coins, item_key: result.item_key, quantity: result.quantity });
+  }
+
+  // RPC 미배포 시(마이그레이션 전) 이전 다단계 방식으로 폴백
   const { data: profile } = await supabase
     .from("profiles")
     .select("coins")
@@ -22,11 +48,6 @@ export async function POST(req: Request) {
   if (coins < item.price) {
     return NextResponse.json({ error: "insufficient_coins", need: item.price, have: coins }, { status: 400 });
   }
-
-  const svc = serviceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
 
   const { data: existing } = await svc
     .from("user_items")
