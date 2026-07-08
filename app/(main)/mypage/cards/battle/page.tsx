@@ -66,6 +66,7 @@ interface BattleCat {
   placeholder_emoji?: string | null; // PVE 야생동물 상대(사진 없음) 표시용
   card_generated_at?: string | null; best_win_streak?: number | null; pve_win_count?: number | null;
   win_streak?: number | null;
+  equipped_border_key?: string | null;
 }
 interface BattleStats { hp: number; atk: number; def: number; spd: number; }
 interface Skill { name: string; icon: string; type: "normal"|"guard"|"special"; slot?: number; desc: string; color: string; }
@@ -190,7 +191,7 @@ function pickAvailableAutoAction(hp: number, maxHp: number, skillCds: number[], 
   return NORMAL_IDX; // 스킬 전부 쿨다운 + 방어도 못 쓰면 무제한인 기본공격으로
 }
 function toCard(cat: BattleCat): CatCardData {
-  return { card_rarity:cat.card_rarity, card_name:cat.card_name, card_traits:cat.card_traits??[], card_stats:cat.card_stats, card_flavor:cat.card_flavor, card_level:cat.card_level, card_exp:cat.card_exp, placeholder_emoji:cat.placeholder_emoji, card_generated_at:cat.card_generated_at, best_win_streak:cat.best_win_streak, pve_win_count:cat.pve_win_count };
+  return { card_rarity:cat.card_rarity, card_name:cat.card_name, card_traits:cat.card_traits??[], card_stats:cat.card_stats, card_flavor:cat.card_flavor, card_level:cat.card_level, card_exp:cat.card_exp, placeholder_emoji:cat.placeholder_emoji, card_generated_at:cat.card_generated_at, best_win_streak:cat.best_win_streak, pve_win_count:cat.pve_win_count, equipped_border_key:cat.equipped_border_key };
 }
 
 /* ──────────── 환경 씬 (만다라 링 + 해/달/안개 + 파티클) ──────────── */
@@ -529,7 +530,7 @@ export default function BattlePage() {
   useEffect(() => {
     if (authLoading || !user) return;
     createClient().from("cats")
-      .select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_level,card_exp,card_generated_at,best_win_streak,pve_win_count,win_streak,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4")
+      .select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_level,card_exp,card_generated_at,best_win_streak,pve_win_count,win_streak,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4,equipped_border_key")
       .eq("caretaker_id", user.id).not("card_generated_at","is",null)
       .order("card_level",{ascending:false})
       .then(({ data }:{ data:BattleCat[]|null }) => { if(mounted.current) setMyCats(data??[]); });
@@ -1279,7 +1280,7 @@ export default function BattlePage() {
     setMyAnim("idle"); setOppAnim("idle"); setDmgPopup(null); setCritFlash(false);
     setScreenShake(0); setImpactBurst(null);
     setIsBossBattle(false); setShowBossIntro(false);
-    if(user) createClient().from("cats").select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_level,card_exp,card_generated_at,best_win_streak,pve_win_count,win_streak,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4").eq("caretaker_id",user.id).not("card_generated_at","is",null).order("card_level",{ascending:false}).then(({data}:{data:BattleCat[]|null})=>{ if(mounted.current) setMyCats(data??[]); });
+    if(user) createClient().from("cats").select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_level,card_exp,card_generated_at,best_win_streak,pve_win_count,win_streak,battle_atk,battle_def,battle_eva,battle_crit,battle_special,battle_special2,battle_special3,battle_special4,equipped_border_key").eq("caretaker_id",user.id).not("card_generated_at","is",null).order("card_level",{ascending:false}).then(({data}:{data:BattleCat[]|null})=>{ if(mounted.current) setMyCats(data??[]); });
   };
 
   /* ── 카드 애니 스타일 ── */

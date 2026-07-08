@@ -35,6 +35,8 @@ interface CardCat {
   placeholder_emoji?: string | null;
   // 부위별 장착 아이템(box/supabase_equip_slots_migration.sql) — PVE 합성 상대는 항상 빈 객체.
   equipped_slots?: EquippedSlots | null;
+  // 테두리 코스메틱 — 스탯엔 영향 없고 배틀 화면 카드 표시용. PVE 합성 상대는 항상 null.
+  equipped_border_key?: string | null;
 }
 
 // 등급별 HP 보너스: 일반→레전드로 갈수록 체력이 두껍게 (전투가 늘어지지 않도록 전체적으로 하향)
@@ -515,8 +517,10 @@ export async function POST(req: Request) {
   // 부위별 장착 아이템 조회 — box/supabase_equip_slots_migration.sql 실행 전이면 컬럼이
   // 없어 이 조회만 조용히 실패(장착 없음으로 처리)하고 배틀 자체는 그대로 진행되게 분리.
   try {
-    const { data: eq } = await supabase.from("cats").select("equipped_slots").eq("id", my_cat_id).maybeSingle();
-    (myCat as CardCat).equipped_slots = (eq as { equipped_slots?: EquippedSlots | null } | null)?.equipped_slots ?? {};
+    const { data: eq } = await supabase.from("cats").select("equipped_slots,equipped_border_key").eq("id", my_cat_id).maybeSingle();
+    const eqRow = eq as { equipped_slots?: EquippedSlots | null; equipped_border_key?: string | null } | null;
+    (myCat as CardCat).equipped_slots = eqRow?.equipped_slots ?? {};
+    (myCat as CardCat).equipped_border_key = eqRow?.equipped_border_key ?? null;
   } catch { /* 마이그레이션 전이면 무시 */ }
 
   // PVE("평소에" 하는 기본 모드) → 항상 고양이학대범과 대결. PVP는 실제 다른 유저 카드와 매칭.
@@ -561,13 +565,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "no_opponents" }, { status: 404 });
     }
 
-    // 부위별 장착 아이템 일괄 조회 — 위와 동일하게 마이그레이션 전이면 조용히 스킵
+    // 부위별 장착 아이템 + 테두리 일괄 조회 — 위와 동일하게 마이그레이션 전이면 조용히 스킵
     let opponentsWithEquip = opponents as CardCat[];
     try {
       const ids = opponentsWithEquip.map((o) => o.id);
-      const { data: eqRows } = await supabase.from("cats").select("id,equipped_slots").in("id", ids);
-      const eqMap = new Map(((eqRows ?? []) as { id: string; equipped_slots: EquippedSlots | null }[]).map((r) => [r.id, r.equipped_slots]));
-      opponentsWithEquip = opponentsWithEquip.map((o) => ({ ...o, equipped_slots: eqMap.get(o.id) ?? {} }));
+      const { data: eqRows } = await supabase.from("cats").select("id,equipped_slots,equipped_border_key").in("id", ids);
+      const eqMap = new Map(((eqRows ?? []) as { id: string; equipped_slots: EquippedSlots | null; equipped_border_key: string | null }[]).map((r) => [r.id, r]));
+      opponentsWithEquip = opponentsWithEquip.map((o) => ({ ...o, equipped_slots: eqMap.get(o.id)?.equipped_slots ?? {}, equipped_border_key: eqMap.get(o.id)?.equipped_border_key ?? null }));
     } catch { /* 마이그레이션 전이면 무시 */ }
 
     // 승률 50%(팽팽한 접전)를 노려 매칭. 예전엔 자동전투만 45%(무관심 파밍 방지 목적)로
