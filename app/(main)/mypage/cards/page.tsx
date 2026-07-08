@@ -77,30 +77,34 @@ export default function MyCardsPage() {
     setRelearnQty((relearnItem as { quantity?: number } | null)?.quantity ?? 0);
     setLoading(false);
 
-    // 도감 진행 개수(4번째 빠른메뉴 배지용) — box/supabase_pve_bestiary_migration.sql 실행 전이면
-    // 컬럼이 없어 이 쿼리만 조용히 실패(빈 배열 유지)하고 나머지 페이지는 정상 동작.
-    try {
-      const { data: bestiary } = await createClient()
-        .from("profiles").select("pve_seen_keys").eq("id", uid).maybeSingle();
-      setSeenKeys((bestiary as { pve_seen_keys?: string[] } | null)?.pve_seen_keys ?? []);
-    } catch { /* 마이그레이션 전이면 조용히 무시 */ }
-
-    // 부위별 장착 아이템/테두리 — box/supabase_equip_slots_migration.sql,
-    // box/supabase_border_fx_migration.sql 실행 전이면 컬럼이 없어 이 쿼리만
-    // 조용히 실패(전부 미장착으로 처리)하고 나머지 페이지는 정상 동작.
-    try {
-      const { data: eqRows } = await createClient()
-        .from("cats").select("id,equipped_slots,equipped_border_key").eq("caretaker_id", uid);
-      const eqMap = new Map(((eqRows ?? []) as { id: string; equipped_slots: EquippedSlots | null; equipped_border_key: string | null }[]).map(r => [r.id, r]));
-      setCats(loadedCats.map(c => ({ ...c, equipped_slots: eqMap.get(c.id)?.equipped_slots ?? {}, equipped_border_key: eqMap.get(c.id)?.equipped_border_key ?? null })));
-    } catch { /* 마이그레이션 전이면 조용히 무시 */ }
-
+    // 도감/장착 아이템/보유 아이템 — 예전엔 이 3개를 순차로 하나씩 기다려서
+    // (하나 끝나야 다음 게 시작) 왕복이 그대로 더해지고 있었음. allSettled로
+    // 한 번에 병렬 실행 — 마이그레이션 전 컬럼이 없어 실패하는 항목이 있어도
+    // 나머지는 그대로 반영되게 개별 결과를 따로 처리.
     const allCosmeticKeys = [...EQUIP_ITEM_KEYS, ...BORDER_FX_ITEM_KEYS];
-    const { data: itemRows } = await createClient()
-      .from("user_items").select("item_key,quantity").eq("user_id", uid).in("item_key", allCosmeticKeys);
-    const owned: Record<string, number> = {};
-    for (const it of (itemRows ?? []) as { item_key: string; quantity: number }[]) owned[it.item_key] = it.quantity;
-    setOwnedEquip(owned);
+    const [bestiaryRes, eqRes, itemsRes] = await Promise.allSettled([
+      createClient().from("profiles").select("pve_seen_keys").eq("id", uid).maybeSingle(),
+      createClient().from("cats").select("id,equipped_slots,equipped_border_key").eq("caretaker_id", uid),
+      createClient().from("user_items").select("item_key,quantity").eq("user_id", uid).in("item_key", allCosmeticKeys),
+    ]);
+
+    if (bestiaryRes.status === "fulfilled") {
+      const bestiary = bestiaryRes.value.data as { pve_seen_keys?: string[] } | null;
+      setSeenKeys(bestiary?.pve_seen_keys ?? []);
+    }
+
+    if (eqRes.status === "fulfilled") {
+      const eqRows = (eqRes.value.data ?? []) as { id: string; equipped_slots: EquippedSlots | null; equipped_border_key: string | null }[];
+      const eqMap = new Map(eqRows.map(r => [r.id, r]));
+      setCats(loadedCats.map(c => ({ ...c, equipped_slots: eqMap.get(c.id)?.equipped_slots ?? {}, equipped_border_key: eqMap.get(c.id)?.equipped_border_key ?? null })));
+    }
+
+    if (itemsRes.status === "fulfilled") {
+      const itemRows = (itemsRes.value.data ?? []) as { item_key: string; quantity: number }[];
+      const owned: Record<string, number> = {};
+      for (const it of itemRows) owned[it.item_key] = it.quantity;
+      setOwnedEquip(owned);
+    }
   };
 
   const doEquip = async (catId: string, itemKey: string | null, slot: BodySlot | "border") => {
