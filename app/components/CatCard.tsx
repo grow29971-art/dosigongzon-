@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, Heart } from "lucide-react";
+import { SHOP_ITEMS, type ShopItemKey } from "@/lib/shop-config";
 
 export type CardRarity = "common" | "uncommon" | "rare" | "legendary";
 
@@ -233,9 +234,13 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
     bottom: isLg ? 9 : isBattle ? 8 : 8,
   };
 
-  // 테두리 코스메틱이 장착돼 있으면 프레임 숙련도 광채보다 우선 표시
+  // 테두리 코스메틱이 장착돼 있으면 프레임 숙련도 광채보다 우선 표시.
+  // card.equipped_border_key는 상점 아이템 키("border_gold")가 그대로 들어있어서
+  // CSS 클래스명(.border-fx-gold)과 안 맞았던 버그가 있었음 — SHOP_ITEMS에서
+  // 실제 이펙트 접미사("gold")를 찾아서 써야 클래스가 정확히 매칭된다.
   const borderFxKey = card.equipped_border_key;
-  const borderFxClass = borderFxKey ? `border-fx-${borderFxKey}` : (tier === "prismatic" ? "prestige-prismatic" : undefined);
+  const borderFx = borderFxKey ? SHOP_ITEMS[borderFxKey as ShopItemKey]?.borderFx : undefined;
+  const borderFxClass = borderFx ? `border-fx-${borderFx}` : (tier === "prismatic" ? "prestige-prismatic" : undefined);
 
   return (
     <div
@@ -431,29 +436,29 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
           gold/holo/rainbow = 광택이 대각선으로 스윽 훑고 지나감
           sparkle/starlight = 카드 둘레에서 반짝임이 팝팝 터짐
           그 외(neon_*, fire, ice, shadow) = 아래 border-fx-* 클래스의 은은한 맥박 그대로 */}
-      {(borderFxKey === "gold" || borderFxKey === "holo" || borderFxKey === "rainbow") && (
+      {(borderFx === "gold" || borderFx === "holo" || borderFx === "rainbow") && (
         <div style={{ position: "absolute", inset: 0, borderRadius: radius, overflow: "hidden", pointerEvents: "none", zIndex: 40 }}>
           <div style={{
             position: "absolute", top: "-60%", left: "-60%", width: "220%", height: "220%",
-            background: borderFxKey === "gold"
+            background: borderFx === "gold"
               ? "linear-gradient(112deg, transparent 44%, rgba(255,240,170,0.9) 50%, transparent 56%)"
-              : borderFxKey === "holo"
+              : borderFx === "holo"
                 ? "linear-gradient(112deg, transparent 38%, rgba(120,220,255,0.55) 45%, rgba(255,120,220,0.55) 50%, rgba(255,235,120,0.55) 55%, transparent 62%)"
                 : "conic-gradient(from 0deg, #FF5050, #FFD23C, #78FF8C, #64B4FF, #D278FF, #FF5050)",
-            opacity: borderFxKey === "rainbow" ? 0.35 : 1,
-            animation: borderFxKey === "rainbow" ? "border-sweep-spin 3.5s linear infinite" : "border-sweep-move 2.4s ease-in-out infinite",
+            opacity: borderFx === "rainbow" ? 0.35 : 1,
+            animation: borderFx === "rainbow" ? "border-sweep-spin 3.5s linear infinite" : "border-sweep-move 2.4s ease-in-out infinite",
           }} />
         </div>
       )}
-      {(borderFxKey === "sparkle" || borderFxKey === "starlight") && (
+      {(borderFx === "sparkle" || borderFx === "starlight") && (
         <div style={{ position: "absolute", inset: -3, pointerEvents: "none", zIndex: 40 }}>
           {SPARKLE_POS.map((p, i) => (
             <span key={i} style={{
               position: "absolute", left: `${p.x}%`, top: `${p.y}%`, transform: "translate(-50%,-50%)",
-              fontSize: borderFxKey === "starlight" ? 11 : 8,
-              animation: `sparkle-twinkle ${borderFxKey === "starlight" ? 2.2 : 1.3}s ease-in-out infinite`,
+              fontSize: borderFx === "starlight" ? 11 : 8,
+              animation: `sparkle-twinkle ${borderFx === "starlight" ? 2.2 : 1.3}s ease-in-out infinite`,
               animationDelay: `${p.delay}s`,
-            }}>{borderFxKey === "starlight" ? "✨" : "･"}</span>
+            }}>{borderFx === "starlight" ? "✨" : "･"}</span>
           ))}
         </div>
       )}
