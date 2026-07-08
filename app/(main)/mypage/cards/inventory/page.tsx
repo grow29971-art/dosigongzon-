@@ -31,6 +31,18 @@ const SLOT_THEME: Record<BodySlot, string> = {
   foot: "#5BC48A",
 };
 
+// 디아블로식 장비창 — 8각형 소켓을 캐릭터 초상화 둘레에 6각 배치(부위 5개 + 테두리).
+// clip-path로 각진 소켓 모양을 내고, 이중 테두리 + 베벨 그림자로 "박힌 보석" 느낌을 냄.
+const SOCKET_CLIP = "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%, 71% 100%, 29% 100%, 0% 71%, 0% 29%)";
+const HEX_POS: Record<BodySlot | "border", React.CSSProperties> = {
+  head: { top: "6%", left: "50%" },
+  body: { top: "29%", left: "9%" },
+  arm: { top: "29%", left: "91%" },
+  foot: { top: "76%", left: "9%" },
+  leg: { top: "76%", left: "91%" },
+  border: { top: "93%", left: "50%" },
+};
+
 type Tab = "all" | "consumable" | "equip" | "border";
 const TABS: { key: Tab; label: string }[] = [
   { key: "all", label: "전체" },
@@ -179,36 +191,34 @@ export default function InventoryPage() {
             {/* ── 상단: 장비칸(인형) / 하단: 소지품 목록 — 폰 비율에 맞게 세로 배치 ── */}
             {activeCat && (
               <>
-                {/* 상단 장비 패널 — 사진 히어로 + 부위별 컬러 그리드(3행 2열, 마지막 칸은 테두리) */}
-                <div className="rounded-3xl p-4 mb-3 relative overflow-hidden" style={{
-                  background: "linear-gradient(165deg, #1C1C30 0%, #121220 100%)",
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 20px rgba(0,0,0,0.28)",
+                {/* 상단 장비 패널 — 디아블로식: 초상화를 중심에 두고 8각 소켓 6개를 육각 배치 */}
+                <div className="rounded-3xl pt-7 pb-10 px-4 mb-3 relative overflow-hidden" style={{
+                  background: "radial-gradient(ellipse at 50% 30%, #241F38 0%, #100E1A 75%)",
+                  boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06), inset 0 2px 12px rgba(0,0,0,0.4), 0 8px 20px rgba(0,0,0,0.3)",
                 }}>
-                  <div className="absolute pointer-events-none" style={{
-                    width: 220, height: 220, top: -100, left: "50%", transform: "translateX(-50%)",
-                    background: "radial-gradient(circle, rgba(124,90,224,0.22), transparent 70%)",
-                  }} />
+                  <p className="text-[10px] font-extrabold text-center mb-4 tracking-widest" style={{ color: "#6B6580" }}>EQUIPMENT</p>
 
-                  <div className="relative flex flex-col items-center mb-4">
-                    <div className="rounded-full flex items-center justify-center shrink-0" style={{
-                      width: 92, height: 92, padding: 3,
-                      background: "linear-gradient(135deg,#4C82BC,#7A5AE0)",
-                      boxShadow: "0 6px 18px rgba(76,80,188,0.35)",
+                  <div className="relative mx-auto" style={{ width: 250, height: 250 }}>
+                    {/* 초상화 — 금속 링 프레임 */}
+                    <div className="absolute rounded-full flex items-center justify-center" style={{
+                      width: 100, height: 100, top: "50%", left: "50%", transform: "translate(-50%,-50%)",
+                      padding: 4,
+                      background: "conic-gradient(from 180deg, #8A6FE8, #4C82BC, #E8B040, #8A6FE8)",
+                      boxShadow: "0 0 22px rgba(124,90,224,0.4), 0 4px 14px rgba(0,0,0,0.45)",
                     }}>
-                      <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center" style={{ background: "#14141F" }}>
+                      <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center" style={{ background: "#14121E", boxShadow: "inset 0 3px 8px rgba(0,0,0,0.6)" }}>
                         {activeCat.photo_url ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={activeCat.photo_url} alt={activeCat.name} className="w-full h-full object-cover" />
                         ) : (
-                          <span className="text-[38px]">🐱</span>
+                          <span className="text-[36px]">🐱</span>
                         )}
                       </div>
                     </div>
-                    <p className="text-white text-[13px] font-extrabold mt-2">{activeCat.name}</p>
-                    <p className="text-[10px] font-bold" style={{ color: "#8A8598" }}>Lv.{activeCat.card_level}</p>
-                  </div>
+                    <p className="absolute text-white text-[11px] font-extrabold text-center w-full truncate" style={{ top: "50%", marginTop: 34 }}>
+                      {activeCat.name} <span style={{ color: "#8A8598", fontWeight: 700 }}>Lv.{activeCat.card_level}</span>
+                    </p>
 
-                  <div className="relative grid grid-cols-2 gap-2">
                     {BODY_SLOTS.map((slot) => {
                       const slotItemKey = EQUIP_ITEM_KEYS.find(k => SHOP_ITEMS[k].bodySlot === slot);
                       if (!slotItemKey) return null;
@@ -218,45 +228,40 @@ export default function InventoryPage() {
                       const color = SLOT_THEME[slot];
                       return (
                         <button key={slot} onClick={() => tapSlot(slot)} disabled={equipLoading}
-                          className="flex items-center gap-2.5 rounded-2xl px-2.5 py-2.5 text-left transition-transform active:scale-[0.97]"
-                          style={{
-                            background: equipped ? `${color}22` : "rgba(255,255,255,0.035)",
-                            boxShadow: equipped ? `0 0 0 1.5px ${color}88, inset 0 1px 0 rgba(255,255,255,0.06)` : "inset 0 1px 0 rgba(255,255,255,0.04)",
+                          className="absolute flex flex-col items-center gap-1.5" style={{ ...HEX_POS[slot], transform: "translate(-50%,-50%)" }}>
+                          <div style={{
+                            width: 54, height: 54, clipPath: SOCKET_CLIP,
+                            background: equipped ? `linear-gradient(150deg, ${color}, ${color}99)` : "linear-gradient(150deg, #2A2438, #19141F)",
+                            boxShadow: equipped
+                              ? `0 0 0 2px #4A4460, 0 0 14px ${color}80, inset 0 2px 3px rgba(255,255,255,0.35), inset 0 -4px 6px rgba(0,0,0,0.4)`
+                              : "0 0 0 2px #35304A, inset 0 3px 6px rgba(0,0,0,0.6), inset 0 -1px 0 rgba(255,255,255,0.05)",
+                            display: "flex", alignItems: "center", justifyContent: "center",
                           }}>
-                          <div className="rounded-xl flex items-center justify-center shrink-0" style={{
-                            width: 36, height: 36,
-                            background: equipped ? color : "rgba(255,255,255,0.07)",
-                            boxShadow: equipped ? `0 3px 10px ${color}55` : "none",
-                          }}>
-                            <span style={{ fontSize: 16, filter: equipped ? "none" : "grayscale(0.5) opacity(0.75)" }}>{item.icon}</span>
+                            <span style={{ fontSize: 21, filter: equipped ? "none" : qty > 0 ? "grayscale(0.4) opacity(0.85)" : "grayscale(1) opacity(0.3)" }}>{item.icon}</span>
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-[9px] font-bold truncate" style={{ color: equipped ? color : "#75718A" }}>{BODY_SLOT_LABELS[slot].label}</p>
-                            <p className="text-[10.5px] font-extrabold text-white truncate">{equipped ? item.name : qty > 0 ? "탭해서 장착" : "미보유"}</p>
-                          </div>
+                          <span className="text-[8px] font-extrabold px-1.5 py-[1px] rounded-full whitespace-nowrap" style={{ background: "rgba(8,8,14,0.85)", color: equipped ? color : "#7A7590" }}>
+                            {BODY_SLOT_LABELS[slot].label}
+                          </span>
                         </button>
                       );
                     })}
-                    {/* 테두리(오라) 슬롯 — 그리드 6번째 칸, 골드 테마 */}
+
+                    {/* 테두리(오라) 소켓 — 골드 테마, 하단 중앙 */}
                     <button onClick={() => setBorderPicker(true)}
-                      className="flex items-center gap-2.5 rounded-2xl px-2.5 py-2.5 text-left transition-transform active:scale-[0.97]"
-                      style={{
-                        background: activeCat.equipped_border_key ? "rgba(232,176,64,0.18)" : "rgba(255,255,255,0.035)",
-                        boxShadow: activeCat.equipped_border_key ? "0 0 0 1.5px rgba(232,176,64,0.7), inset 0 1px 0 rgba(255,255,255,0.06)" : "inset 0 1px 0 rgba(255,255,255,0.04)",
+                      className="absolute flex flex-col items-center gap-1.5" style={{ ...HEX_POS.border, transform: "translate(-50%,-50%)" }}>
+                      <div style={{
+                        width: 54, height: 54, clipPath: SOCKET_CLIP,
+                        background: activeCat.equipped_border_key ? "linear-gradient(150deg, #E8B040, #C4881F)" : "linear-gradient(150deg, #2A2438, #19141F)",
+                        boxShadow: activeCat.equipped_border_key
+                          ? "0 0 0 2px #4A4460, 0 0 14px rgba(232,176,64,0.8), inset 0 2px 3px rgba(255,255,255,0.35), inset 0 -4px 6px rgba(0,0,0,0.4)"
+                          : "0 0 0 2px #35304A, inset 0 3px 6px rgba(0,0,0,0.6), inset 0 -1px 0 rgba(255,255,255,0.05)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
                       }}>
-                      <div className="rounded-xl flex items-center justify-center shrink-0" style={{
-                        width: 36, height: 36,
-                        background: activeCat.equipped_border_key ? "#E8B040" : "rgba(255,255,255,0.07)",
-                        boxShadow: activeCat.equipped_border_key ? "0 3px 10px rgba(232,176,64,0.55)" : "none",
-                      }}>
-                        <span style={{ fontSize: 16 }}>{activeCat.equipped_border_key ? SHOP_ITEMS[activeCat.equipped_border_key as ShopItemKey]?.icon : "✨"}</span>
+                        <span style={{ fontSize: 21 }}>{activeCat.equipped_border_key ? SHOP_ITEMS[activeCat.equipped_border_key as ShopItemKey]?.icon : "✨"}</span>
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[9px] font-bold truncate" style={{ color: activeCat.equipped_border_key ? "#E8B040" : "#75718A" }}>테두리</p>
-                        <p className="text-[10.5px] font-extrabold text-white truncate">
-                          {activeCat.equipped_border_key ? SHOP_ITEMS[activeCat.equipped_border_key as ShopItemKey]?.name : "탭해서 선택"}
-                        </p>
-                      </div>
+                      <span className="text-[8px] font-extrabold px-1.5 py-[1px] rounded-full whitespace-nowrap" style={{ background: "rgba(8,8,14,0.85)", color: activeCat.equipped_border_key ? "#E8B040" : "#7A7590" }}>
+                        테두리
+                      </span>
                     </button>
                   </div>
                 </div>
