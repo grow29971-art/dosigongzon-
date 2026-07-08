@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/lib/supabase/server";
 import { reportError } from "@/lib/error-report";
+import { computeLevel } from "@/lib/cats-repo";
 
 // ── 유저당 레이트리밋 (인메모리, 인스턴스별) ──
 // 분산 환경에선 Redis 권장. 지금은 단일 서버 MVP 기준.
@@ -155,12 +156,14 @@ export async function POST(request: Request) {
     return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
   }
 
-  // 레이트리밋 (요청 body에서 레벨 받거나 기본값 사용)
-  let userLevel = 1;
-  try {
-    const body = await request.clone().json();
-    if (body.level && typeof body.level === "number") userLevel = body.level;
-  } catch {}
+  // 레이트리밋 — 예전엔 요청 body의 level을 그대로 신뢰해서 아무 계정이나
+  // {level:999}만 보내면 최고 등급 한도(분당 30회)를 받아갈 수 있었음(API
+  // 크레딧 비용 문제). 카드 등록 수(catCount*10)만으로 계산한 하한 점수를
+  // 서버에서 직접 조회해서 씀 — 돌봄일지·초대 등은 빼서 항상 과소평가만
+  // 하니 실제 등급보다 낮게 잡힐 순 있어도 스푸핑으로 높게 받을 순 없음.
+  const { count: catCount } = await supabase
+    .from("cats").select("id", { count: "exact", head: true }).eq("caretaker_id", user.id);
+  const userLevel = computeLevel((catCount ?? 0) * 10).level;
   const rl = checkRateLimit(user.id, getRateLimit(userLevel));
   if (!rl.ok) {
     return Response.json(
