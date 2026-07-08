@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
-import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BOSS_WIN, COINS_BOSS_LOSE, applyEquipBonuses, type EquippedSlots } from "@/lib/shop-config";
+import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BATTLE_DRAW, COINS_BOSS_WIN, COINS_BOSS_LOSE, COINS_BOSS_DRAW, applyEquipBonuses, type EquippedSlots } from "@/lib/shop-config";
 import { SPECIAL_SKILLS, type SpecialSkillId } from "@/lib/battle-config";
 import { recordPveEncounter } from "@/lib/pve-bestiary";
 import { signBattleToken } from "@/lib/battle-token";
@@ -32,6 +32,12 @@ interface CardCat {
   // 카드 훈장(성장 스티커) 계산용 — 리셋 없는 all-time 기록. 훈장 조건은 CatCard.tsx에서 계산.
   best_win_streak?: number | null;
   pve_win_count?: number | null;
+  // PVP/PVE 승·패·무 전적(box/supabase_battle_record_draw_migration.sql) — 카드 상세에 표시.
+  pvp_wins?: number | null;
+  pvp_losses?: number | null;
+  pvp_draws?: number | null;
+  pve_losses?: number | null;
+  pve_draws?: number | null;
   // PVE 상대(고양이학대범 이외의 야생동물)는 실제 사진이 없어 이모지로 표시 — 진짜 고양이 카드는 항상 null.
   placeholder_emoji?: string | null;
   // 부위별 장착 아이템(box/supabase_equip_slots_migration.sql) — PVE 합성 상대는 항상 빈 객체.
@@ -492,8 +498,11 @@ function simulateBattle(attacker: CardCat, defender: CardCat) {
     aTurn = !aTurn;
   }
 
-  const attackerWins = aHp >= dHp;
-  return { attackerWins, aHp, dHp, aMaxHp, dMaxHp, rounds: turn, log };
+  // 도트 틱으로 양쪽이 동시에 0이 되거나, MAX_TURNS까지 승부가 안 갈리고 체력이
+  // 정확히 같으면 무승부 — 예전엔 이 경우도 그냥 공격자 승리로 처리했음.
+  const isDraw = aHp === dHp;
+  const attackerWins = aHp > dHp;
+  return { attackerWins, isDraw, aHp, dHp, aMaxHp, dMaxHp, rounds: turn, log };
 }
 
 export async function POST(req: Request) {
@@ -522,6 +531,14 @@ export async function POST(req: Request) {
     const eqRow = eq as { equipped_slots?: EquippedSlots | null; equipped_border_key?: string | null } | null;
     (myCat as CardCat).equipped_slots = eqRow?.equipped_slots ?? {};
     (myCat as CardCat).equipped_border_key = eqRow?.equipped_border_key ?? null;
+  } catch { /* 마이그레이션 전이면 무시 */ }
+
+  // PVP/PVE 승·패·무 전적 — box/supabase_battle_record_draw_migration.sql 실행 전이면
+  // 컬럼이 없어 이 조회만 조용히 실패(전적 0으로 처리)하고 배틀 자체는 그대로 진행.
+  try {
+    const { data: rec } = await supabase.from("cats")
+      .select("pvp_wins,pvp_losses,pvp_draws,pve_losses,pve_draws").eq("id", my_cat_id).maybeSingle();
+    Object.assign(myCat as CardCat, rec ?? {});
   } catch { /* 마이그레이션 전이면 무시 */ }
 
   // PVE("평소에" 하는 기본 모드) → 항상 고양이학대범과 대결. PVP는 실제 다른 유저 카드와 매칭.
@@ -593,6 +610,13 @@ export async function POST(req: Request) {
     // 이제 둘 다 같은 방식으로 매칭하되, 상위 25% 후보 중 랜덤 선택은 유지해서
     // (pickByTargetWinRate 내부) 매번 100% 예측 가능한 접전이 되진 않게 약간의 변수는 남겨둔다.
     opponent = pickByTargetWinRate(myCat as CardCat, opponentsWithEquip, 0.50);
+
+    // 최종 매칭된 상대의 PVP 전적만 조회(후보 50마리 전부는 불필요) — 마이그레이션 전이면 조용히 스킵
+    try {
+      const { data: rec } = await supabase.from("cats")
+        .select("pvp_wins,pvp_losses,pvp_draws").eq("id", opponent.id).maybeSingle();
+      Object.assign(opponent as CardCat, rec ?? {});
+    } catch { /* 마이그레이션 전이면 무시 */ }
   }
 
   // isBossEncounter는 "PVE 모드냐"는 뜻이라 항상 true — 실제로 "진짜 보스(고양이학대범)와
@@ -626,9 +650,11 @@ export async function POST(req: Request) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
   );
 
-  const winnerExp = 14, loserExp = 5;
-  const myNewExp  = (myCat.card_exp ?? 0) + (result.attackerWins ? winnerExp : loserExp);
-  const oppNewExp = (opponent.card_exp ?? 0) + (result.attackerWins ? loserExp : winnerExp);
+  const winnerExp = 14, loserExp = 5, drawExp = 9;
+  const myExpGained = result.isDraw ? drawExp : result.attackerWins ? winnerExp : loserExp;
+  const oppExpGained = result.isDraw ? drawExp : result.attackerWins ? loserExp : winnerExp;
+  const myNewExp  = (myCat.card_exp ?? 0) + myExpGained;
+  const oppNewExp = (opponent.card_exp ?? 0) + oppExpGained;
 
   function computeLevel(exp: number) {
     const thresholds = [0, 90, 210, 380, 610, 900, 1260, 1690, 2200, 2800];
@@ -642,18 +668,33 @@ export async function POST(req: Request) {
   const myCoinsNow = myProfile?.coins ?? 0;
   // 코인 보상은 "진짜 보스냐"로 갈라야 한다 — isBossEncounter는 PVE 모드 전체를 뜻해서
   // 이걸로 나누면 모기 한 마리 이겨도 보스급 보상(8코인)이 나가는 버그가 있었음.
-  const coinsGained = isActualBoss
-    ? (result.attackerWins ? COINS_BOSS_WIN : COINS_BOSS_LOSE)
-    : (result.attackerWins ? COINS_BATTLE_WIN : COINS_BATTLE_LOSE);
+  const coinsGained = result.isDraw
+    ? (isActualBoss ? COINS_BOSS_DRAW : COINS_BATTLE_DRAW)
+    : isActualBoss
+      ? (result.attackerWins ? COINS_BOSS_WIN : COINS_BOSS_LOSE)
+      : (result.attackerWins ? COINS_BATTLE_WIN : COINS_BATTLE_LOSE);
   const newCoins = Math.max(0, myCoinsNow + coinsGained);
+  // 무승부는 승패 어느 쪽도 아니라서 연승 기록은 그대로 끊김(0으로) — 이긴 것도 아닌데
+  // 스트릭이 유지되면 이상하니까.
   const myNewStreak  = result.attackerWins ? (myCat.win_streak ?? 0) + 1 : 0;
-  const oppNewStreak = result.attackerWins ? 0 : (opponent.win_streak ?? 0) + 1;
+  const oppNewStreak = result.attackerWins ? 0 : result.isDraw ? 0 : (opponent.win_streak ?? 0) + 1;
   // 카드 훈장(성장 스티커)용 all-time 기록 — win_streak과 달리 지더라도 절대 줄어들지 않는다.
   const myNewBestStreak = Math.max(myCat.best_win_streak ?? 0, myNewStreak);
   const oppNewBestStreak = Math.max(opponent.best_win_streak ?? 0, oppNewStreak);
   // "PVE 10승 달성" 배지는 상대가 보스든 일반 동물이든 PVE 승리 전체를 세는 게 맞아서
   // 여기는 그대로 isBossEncounter(=PVE 모드 여부) 사용.
   const myNewPveWins = (myCat.pve_win_count ?? 0) + (isBossEncounter && result.attackerWins ? 1 : 0);
+  // PVP/PVE 전적(승/패/무) — 카드에 표시할 용도. box/supabase_battle_record_draw_migration.sql
+  // 실행 전이면 이 컬럼들이 없어 update 자체가 조용히 실패할 뿐, 위 핵심 보상 로직엔 영향 없음.
+  const myCatRec = myCat as CardCat;
+  const myNewPvpWins   = (myCatRec.pvp_wins ?? 0)   + (!isBossEncounter && result.attackerWins ? 1 : 0);
+  const myNewPvpLosses = (myCatRec.pvp_losses ?? 0) + (!isBossEncounter && !result.attackerWins && !result.isDraw ? 1 : 0);
+  const myNewPvpDraws  = (myCatRec.pvp_draws ?? 0)  + (!isBossEncounter && result.isDraw ? 1 : 0);
+  const myNewPveLosses = (myCatRec.pve_losses ?? 0) + (isBossEncounter && !result.attackerWins && !result.isDraw ? 1 : 0);
+  const myNewPveDraws  = (myCatRec.pve_draws ?? 0)  + (isBossEncounter && result.isDraw ? 1 : 0);
+  const oppNewPvpWins   = (opponent.pvp_wins ?? 0)   + (!isBossEncounter && !result.attackerWins && !result.isDraw ? 1 : 0);
+  const oppNewPvpLosses = (opponent.pvp_losses ?? 0) + (!isBossEncounter && result.attackerWins ? 1 : 0);
+  const oppNewPvpDraws  = (opponent.pvp_draws ?? 0)  + (!isBossEncounter && result.isDraw ? 1 : 0);
 
   // 배틀 타이틀 카운터 — box/supabase_battle_titles_migration.sql 실행 전이면 조용히 0으로 취급될 뿐,
   // 코인 지급(위 newCoins)과는 완전히 분리된 쿼리라 마이그레이션 여부와 무관하게 안전함.
@@ -672,7 +713,7 @@ export async function POST(req: Request) {
       challenger_cat_id: myCat.id,
       opponent_id:       opponent.caretaker_id,
       opponent_cat_id:   opponent.id,
-      winner_id:         result.attackerWins ? user.id : opponent.caretaker_id,
+      winner_id:         result.isDraw ? null : result.attackerWins ? user.id : opponent.caretaker_id,
       challenger_hp_left: result.aHp,
       opponent_hp_left:   result.dHp,
       rounds:             result.rounds,
@@ -688,19 +729,33 @@ export async function POST(req: Request) {
     } catch { /* 마이그레이션 전이면 여기서만 조용히 무시 */ }
   }
 
+  // PVP/PVE 승·패·무 전적 — box/supabase_battle_record_draw_migration.sql 실행 전이면
+  // 이 업데이트만 조용히 실패하고 위 핵심 보상(코인·경험치·연승)엔 전혀 영향 없음.
+  try {
+    await Promise.all([
+      svc.from("cats").update({
+        pvp_wins: myNewPvpWins, pvp_losses: myNewPvpLosses, pvp_draws: myNewPvpDraws,
+        pve_losses: myNewPveLosses, pve_draws: myNewPveDraws,
+      }).eq("id", myCat.id),
+      isBossEncounter ? Promise.resolve() : svc.from("cats").update({
+        pvp_wins: oppNewPvpWins, pvp_losses: oppNewPvpLosses, pvp_draws: oppNewPvpDraws,
+      }).eq("id", opponent.id),
+    ]);
+  } catch { /* 마이그레이션 전이면 조용히 무시 */ }
+
   return NextResponse.json({
     my_cat: myCat,
     opponent,
     is_boss: isActualBoss,
     result: {
-      winner: result.attackerWins ? "me" : "opponent",
+      winner: result.isDraw ? "draw" : result.attackerWins ? "me" : "opponent",
       my_hp_left: result.aHp,
       opp_hp_left: result.dHp,
       my_max_hp: result.aMaxHp,
       opp_max_hp: result.dMaxHp,
       rounds: result.rounds,
       log: result.log,
-      exp_gained: result.attackerWins ? winnerExp : loserExp,
+      exp_gained: myExpGained,
       my_new_level: computeLevel(myNewExp),
       leveled_up: computeLevel(myNewExp) > (myCat.card_level ?? 1),
       coins_gained: coinsGained,

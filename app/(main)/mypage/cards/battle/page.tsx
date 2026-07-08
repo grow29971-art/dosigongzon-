@@ -79,7 +79,7 @@ interface AutoLogEntry {
   skillId?:string; isDot?:boolean; isStunSkip?:boolean;
   statusType?:"stun"|"poison"|"bleed"|"bind"; statusTurns?:number;
 }
-interface AutoResult { winner:"me"|"opponent"; my_hp_left:number; opp_hp_left:number; my_max_hp:number; opp_max_hp:number; rounds:number; log:AutoLogEntry[]; exp_gained:number; my_new_level:number; leveled_up:boolean; coins_gained?:number; }
+interface AutoResult { winner:"me"|"opponent"|"draw"; my_hp_left:number; opp_hp_left:number; my_max_hp:number; opp_max_hp:number; rounds:number; log:AutoLogEntry[]; exp_gained:number; my_new_level:number; leveled_up:boolean; coins_gained?:number; }
 
 /* ──────────── 헬퍼 ──────────── */
 const SKILL_SLOT_COLORS = ["#DD4422", "#CC8822", "#22AACC", "#9933CC"];
@@ -513,7 +513,7 @@ export default function BattlePage() {
   const pickSkillRef = useRef<(skillIdx: number | null, forfeitMsg?: string) => void>(() => {});
 
   // 결과
-  const [battleResult, setBattleResult] = useState<{winner:"me"|"opponent"; exp:number; newLevel:number; leveledUp:boolean; coinsGained?:number}|null>(null);
+  const [battleResult, setBattleResult] = useState<{winner:"me"|"opponent"|"draw"; exp:number; newLevel:number; leveledUp:boolean; coinsGained?:number}|null>(null);
   useEffect(() => { if (battleResult?.leveledUp) { sfx.levelUp(); navigator.vibrate?.([30,30,30,30,60]); } }, [battleResult]);
 
   // PVE 조우 여부(동네 불청객 야생동물 또는 고양이학대범) — 서버가 is_boss로 알려줌
@@ -1069,6 +1069,10 @@ export default function BattlePage() {
     setMySkillCd([...mySkillCdRef.current]);
     oppSkillCdRef.current = oppSkillCdRef.current.map(c => Math.max(0, c-1));
 
+    // 독/출혈 도트가 양쪽에 동시에 걸려있으면 같은 틱에서 둘 다 0이 될 수 있음 —
+    // 예전엔 내 HP 체크가 먼저라 이 경우 항상 "패배"로 처리됐는데, 실제로는 동시에
+    // 쓰러진 거라 무승부가 맞음.
+    if(myNewHp<=0 && oppNewHp<=0) { endBattle("draw"); return true; }
     if(myNewHp<=0) { endBattle("opponent"); return true; }
     if(oppNewHp<=0) { endBattle("me"); return true; }
     return false;
@@ -1253,12 +1257,14 @@ export default function BattlePage() {
   }, [phase, inventory, myMaxHp, pickSkill]); // eslint-disable-line
 
   /* ── 배틀 종료 ── */
-  const endBattle = useCallback(async (winner:"me"|"opponent") => {
+  const endBattle = useCallback(async (winner:"me"|"opponent"|"draw") => {
     if(!selected || !opponent) return;
     setPhase("result");
-    setActionMsg(winner==="me"?"🏆 승리!":"💔 패배...");
+    setActionMsg(winner==="me"?"🏆 승리!":winner==="draw"?"🤝 무승부!":"💔 패배...");
     stopAmbient();
-    if(winner==="me") { sfx.win(); navigator.vibrate?.([40,40,40,40,100]); } else { sfx.lose(); navigator.vibrate?.(150); }
+    if(winner==="me") { sfx.win(); navigator.vibrate?.([40,40,40,40,100]); }
+    else if(winner==="draw") { sfx.lose(); navigator.vibrate?.([60,60,60]); }
+    else { sfx.lose(); navigator.vibrate?.(150); }
 
     try {
       const res = await fetch("/api/cats/card-battle/record", {
@@ -1816,11 +1822,13 @@ export default function BattlePage() {
         {phase==="result"&&selected&&opponent&&battleResult&&(
           <div className="flex-1 flex flex-col items-center justify-center px-4 gap-4">
             <div style={{animation:"resIn 0.5s ease forwards",display:"flex",flexDirection:"column",alignItems:"center",gap:12,width:"100%",maxWidth:340}}>
-              <div style={{fontSize:64}}>{battleResult.winner==="me"?(isBossBattle?"🎉":"🏆"):"💔"}</div>
-              <p style={{fontSize:26,fontWeight:900,color:battleResult.winner==="me"?"#3FCB6B":"#E1505F"}}>
-                {isBossBattle
-                  ? (battleResult.winner==="me" ? `${opponent?.name??"적"} 격퇴!` : `${opponent?.name??"적"}에게 당했다...`)
-                  : (battleResult.winner==="me" ? "승리!" : "패배...")}
+              <div style={{fontSize:64}}>{battleResult.winner==="me"?(isBossBattle?"🎉":"🏆"):battleResult.winner==="draw"?"🤝":"💔"}</div>
+              <p style={{fontSize:26,fontWeight:900,color:battleResult.winner==="me"?"#3FCB6B":battleResult.winner==="draw"?"#C68B00":"#E1505F"}}>
+                {battleResult.winner==="draw"
+                  ? (isBossBattle ? `${opponent?.name??"적"}과 무승부...` : "무승부!")
+                  : isBossBattle
+                    ? (battleResult.winner==="me" ? `${opponent?.name??"적"} 격퇴!` : `${opponent?.name??"적"}에게 당했다...`)
+                    : (battleResult.winner==="me" ? "승리!" : "패배...")}
               </p>
               {isBossBattle && !!opponent?.photo_url && battleResult.winner==="me" && (
                 <p className="text-[12px] font-bold -mt-2" style={{color:"#C68B00"}}>🐾 갇혀있던 고양이를 구했다!</p>

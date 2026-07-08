@@ -34,6 +34,11 @@ interface CardCat {
   card_exp: number;
   best_win_streak?: number | null;
   pve_win_count?: number | null;
+  pvp_wins?: number | null;
+  pvp_losses?: number | null;
+  pvp_draws?: number | null;
+  pve_losses?: number | null;
+  pve_draws?: number | null;
   battle_special: string | null;
   battle_special2: string | null;
   battle_special3: string | null;
@@ -86,15 +91,18 @@ export default function MyCardsPage() {
     setRelearnQty((relearnItem as { quantity?: number } | null)?.quantity ?? 0);
     setLoading(false);
 
-    // 도감/장착 아이템/보유 아이템 — 예전엔 이 3개를 순차로 하나씩 기다려서
-    // (하나 끝나야 다음 게 시작) 왕복이 그대로 더해지고 있었음. allSettled로
+    // 도감/장착 아이템/보유 아이템/PVP·PVE 전적 — 예전엔 이런 항목들을 순차로 하나씩
+    // 기다려서(하나 끝나야 다음 게 시작) 왕복이 그대로 더해지고 있었음. allSettled로
     // 한 번에 병렬 실행 — 마이그레이션 전 컬럼이 없어 실패하는 항목이 있어도
-    // 나머지는 그대로 반영되게 개별 결과를 따로 처리.
+    // 나머지는 그대로 반영되게 개별 결과를 따로 처리. eqRes/recordRes 둘 다 cats 상태를
+    // 건드리므로 각자 따로 setCats 하지 않고 한 번에 합쳐서 반영(안 그러면 나중 호출이
+    // 앞선 호출의 병합 결과를 덮어써버림).
     const allCosmeticKeys = [...EQUIP_ITEM_KEYS, ...BORDER_FX_ITEM_KEYS];
-    const [bestiaryRes, eqRes, itemsRes] = await Promise.allSettled([
+    const [bestiaryRes, eqRes, itemsRes, recordRes] = await Promise.allSettled([
       createClient().from("profiles").select("pve_seen_keys").eq("id", uid).maybeSingle(),
       createClient().from("cats").select("id,equipped_slots,equipped_border_key").eq("caretaker_id", uid),
       createClient().from("user_items").select("item_key,quantity").eq("user_id", uid).in("item_key", allCosmeticKeys),
+      createClient().from("cats").select("id,pvp_wins,pvp_losses,pvp_draws,pve_losses,pve_draws").eq("caretaker_id", uid),
     ]);
 
     if (bestiaryRes.status === "fulfilled") {
@@ -102,10 +110,21 @@ export default function MyCardsPage() {
       setSeenKeys(bestiary?.pve_seen_keys ?? []);
     }
 
-    if (eqRes.status === "fulfilled") {
-      const eqRows = (eqRes.value.data ?? []) as { id: string; equipped_slots: EquippedSlots | null; equipped_border_key: string | null }[];
-      const eqMap = new Map(eqRows.map(r => [r.id, r]));
-      setCats(loadedCats.map(c => ({ ...c, equipped_slots: eqMap.get(c.id)?.equipped_slots ?? {}, equipped_border_key: eqMap.get(c.id)?.equipped_border_key ?? null })));
+    const eqMap = eqRes.status === "fulfilled"
+      ? new Map(((eqRes.value.data ?? []) as { id: string; equipped_slots: EquippedSlots | null; equipped_border_key: string | null }[]).map(r => [r.id, r]))
+      : null;
+    const recordMap = recordRes.status === "fulfilled"
+      ? new Map(((recordRes.value.data ?? []) as { id: string; pvp_wins: number; pvp_losses: number; pvp_draws: number; pve_losses: number; pve_draws: number }[]).map(r => [r.id, r]))
+      : null;
+    if (eqMap || recordMap) {
+      setCats(loadedCats.map(c => ({
+        ...c,
+        ...(eqMap ? { equipped_slots: eqMap.get(c.id)?.equipped_slots ?? {}, equipped_border_key: eqMap.get(c.id)?.equipped_border_key ?? null } : {}),
+        ...(recordMap ? {
+          pvp_wins: recordMap.get(c.id)?.pvp_wins ?? 0, pvp_losses: recordMap.get(c.id)?.pvp_losses ?? 0, pvp_draws: recordMap.get(c.id)?.pvp_draws ?? 0,
+          pve_losses: recordMap.get(c.id)?.pve_losses ?? 0, pve_draws: recordMap.get(c.id)?.pve_draws ?? 0,
+        } : {}),
+      })));
     }
 
     if (itemsRes.status === "fulfilled") {
@@ -327,7 +346,7 @@ export default function MyCardsPage() {
           <div onClick={e => e.stopPropagation()} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, width: "100%", maxWidth: 340, margin: "auto 0" }}>
 
             <CatCard name={selected.name} photoUrl={selected.photo_url}
-              card={{ card_rarity: selected.card_rarity, card_name: selected.card_name, card_traits: selected.card_traits ?? [], card_stats: selected.card_stats, card_flavor: selected.card_flavor, card_level: selected.card_level, card_exp: selected.card_exp, card_generated_at: selected.card_generated_at, best_win_streak: selected.best_win_streak, pve_win_count: selected.pve_win_count, equipped_border_key: selected.equipped_border_key }}
+              card={{ card_rarity: selected.card_rarity, card_name: selected.card_name, card_traits: selected.card_traits ?? [], card_stats: selected.card_stats, card_flavor: selected.card_flavor, card_level: selected.card_level, card_exp: selected.card_exp, card_generated_at: selected.card_generated_at, best_win_streak: selected.best_win_streak, pve_win_count: selected.pve_win_count, pvp_wins: selected.pvp_wins, pvp_losses: selected.pvp_losses, pvp_draws: selected.pvp_draws, pve_losses: selected.pve_losses, pve_draws: selected.pve_draws, equipped_border_key: selected.equipped_border_key }}
               size="lg" />
 
             {/* XP 바 */}

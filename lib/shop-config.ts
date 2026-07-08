@@ -116,6 +116,7 @@ export const COINS_CARE_PER_LOG = 2;
 export const COINS_CARE_DAILY_CAP = 5; // 하루 최대 지급 횟수 (총 10코인)
 export const COINS_BATTLE_WIN = 3;
 export const COINS_BATTLE_LOSE = 1;
+export const COINS_BATTLE_DRAW = 2; // 승/패의 중간 — 무승부는 이겼다고도 졌다고도 하기 애매하니까
 
 // 고양이학대범 PVE 보상 — 예전엔 12% 확률로만 만나는 희귀 이벤트라 이기면 크게(20)
 // 지면 보유 코인 20%를 뺏기는 화끈한 하이리스크·하이리턴이었음. 이제 PVE가 "평소에" 하는
@@ -123,6 +124,7 @@ export const COINS_BATTLE_LOSE = 1;
 // 이기면 PVP보다 조금 더(코인 8), 져도 페널티 없이 PVP 패배와 동일한 소액 위로(1)만 지급.
 export const COINS_BOSS_WIN = 8;
 export const COINS_BOSS_LOSE = 1;
+export const COINS_BOSS_DRAW = 3;
 
 // 주간 배틀 랭킹 코인 보상 (1~10등)
 export const WEEKLY_RANK_REWARDS = [200, 150, 120, 100, 80, 60, 50, 40, 30, 20];

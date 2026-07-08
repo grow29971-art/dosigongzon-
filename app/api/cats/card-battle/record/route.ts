@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
-import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BOSS_WIN, COINS_BOSS_LOSE } from "@/lib/shop-config";
+import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BATTLE_DRAW, COINS_BOSS_WIN, COINS_BOSS_LOSE, COINS_BOSS_DRAW } from "@/lib/shop-config";
 import { recordPveEncounter } from "@/lib/pve-bestiary";
 import { verifyBattleToken } from "@/lib/battle-token";
 
@@ -34,6 +34,8 @@ export async function POST(req: Request) {
   // "PVE 10승" 배지처럼 일반 동물 승리도 세야 하는 값은 opp_cat_id가 "pve-" 접두사를
   // 갖는지(합성 PVE 상대인지)로 따로 판별한다 — PVP는 실제 cat UUID라 여기 안 걸림.
   const isPveEncounter = Boolean(is_boss) || String(opp_cat_id ?? "").startsWith("pve-");
+  const isDraw = winner === "draw";
+  const iWon = winner === "me";
 
   const { data: myCat } = await supabase
     .from("cats").select("id,card_exp,card_level,caretaker_id,win_streak,best_win_streak,pve_win_count")
@@ -50,19 +52,23 @@ export async function POST(req: Request) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
   );
 
-  const winnerExp = 15, loserExp = 6;
-  const iWon = winner === "me";
-  const myNewExp = (myCat.card_exp ?? 0) + (iWon ? winnerExp : loserExp);
-  const oppNewExp = oppCat ? ((oppCat.card_exp ?? 0) + (iWon ? loserExp : winnerExp)) : 0;
+  const winnerExp = 15, loserExp = 6, drawExp = 10;
+  const myExpGained = isDraw ? drawExp : iWon ? winnerExp : loserExp;
+  const oppExpGained = isDraw ? drawExp : iWon ? loserExp : winnerExp;
+  const myNewExp = (myCat.card_exp ?? 0) + myExpGained;
+  const oppNewExp = oppCat ? ((oppCat.card_exp ?? 0) + oppExpGained) : 0;
 
   const { data: myProfile } = await svc.from("profiles").select("coins").eq("id", user.id).maybeSingle();
   const myCoinsNow = myProfile?.coins ?? 0;
-  const coinsGained = is_boss
-    ? (iWon ? COINS_BOSS_WIN : COINS_BOSS_LOSE)
-    : (iWon ? COINS_BATTLE_WIN : COINS_BATTLE_LOSE);
+  const coinsGained = isDraw
+    ? (is_boss ? COINS_BOSS_DRAW : COINS_BATTLE_DRAW)
+    : is_boss
+      ? (iWon ? COINS_BOSS_WIN : COINS_BOSS_LOSE)
+      : (iWon ? COINS_BATTLE_WIN : COINS_BATTLE_LOSE);
   const newCoins = Math.max(0, myCoinsNow + coinsGained);
+  // 무승부는 이긴 것도 아니라서 연승 기록은 그대로 끊김(0으로)
   const myNewStreak  = iWon ? (myCat.win_streak ?? 0) + 1 : 0;
-  const oppNewStreak = iWon ? 0 : (oppCat?.win_streak ?? 0) + 1;
+  const oppNewStreak = iWon ? 0 : isDraw ? 0 : (oppCat?.win_streak ?? 0) + 1;
   // 카드 훈장(성장 스티커)용 all-time 기록 — win_streak과 달리 지더라도 절대 줄어들지 않는다.
   const myNewBestStreak = Math.max(myCat.best_win_streak ?? 0, myNewStreak);
   const oppNewBestStreak = Math.max(oppCat?.best_win_streak ?? 0, oppNewStreak);
@@ -84,7 +90,7 @@ export async function POST(req: Request) {
       challenger_cat_id: my_cat_id,
       opponent_id: opp_caretaker_id ?? user.id,
       opponent_cat_id: opp_cat_id,
-      winner_id: iWon ? user.id : (opp_caretaker_id ?? user.id),
+      winner_id: isDraw ? null : iWon ? user.id : (opp_caretaker_id ?? user.id),
       challenger_hp_left: my_hp_left ?? 0,
       opponent_hp_left: opp_hp_left ?? 0,
       rounds: rounds ?? 0,
@@ -100,8 +106,34 @@ export async function POST(req: Request) {
     } catch { /* 마이그레이션 전이면 여기서만 조용히 무시 */ }
   }
 
+  // PVP/PVE 승·패·무 전적 — box/supabase_battle_record_draw_migration.sql 실행 전이면
+  // 이 업데이트만 조용히 실패하고 위 핵심 보상(코인·경험치·연승)엔 전혀 영향 없음.
+  try {
+    const { data: myRec } = await svc.from("cats").select("pvp_wins,pvp_losses,pvp_draws,pve_losses,pve_draws").eq("id", my_cat_id).maybeSingle();
+    const myPatch = isPveEncounter
+      ? {
+          pve_losses: (myRec?.pve_losses ?? 0) + (!iWon && !isDraw ? 1 : 0),
+          pve_draws: (myRec?.pve_draws ?? 0) + (isDraw ? 1 : 0),
+        }
+      : {
+          pvp_wins: (myRec?.pvp_wins ?? 0) + (iWon ? 1 : 0),
+          pvp_losses: (myRec?.pvp_losses ?? 0) + (!iWon && !isDraw ? 1 : 0),
+          pvp_draws: (myRec?.pvp_draws ?? 0) + (isDraw ? 1 : 0),
+        };
+    const jobs: PromiseLike<unknown>[] = [svc.from("cats").update(myPatch).eq("id", my_cat_id)];
+    if (oppCat && !isPveEncounter) {
+      const { data: oppRec } = await svc.from("cats").select("pvp_wins,pvp_losses,pvp_draws").eq("id", opp_cat_id).maybeSingle();
+      jobs.push(svc.from("cats").update({
+        pvp_wins: (oppRec?.pvp_wins ?? 0) + (!iWon && !isDraw ? 1 : 0),
+        pvp_losses: (oppRec?.pvp_losses ?? 0) + (iWon ? 1 : 0),
+        pvp_draws: (oppRec?.pvp_draws ?? 0) + (isDraw ? 1 : 0),
+      }).eq("id", opp_cat_id));
+    }
+    await Promise.all(jobs);
+  } catch { /* 마이그레이션 전이면 조용히 무시 */ }
+
   return NextResponse.json({
-    exp_gained: iWon ? winnerExp : loserExp,
+    exp_gained: myExpGained,
     my_new_exp: myNewExp,
     my_new_level: computeLevel(myNewExp),
     leveled_up: computeLevel(myNewExp) > (myCat.card_level ?? 1),

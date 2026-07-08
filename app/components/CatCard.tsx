@@ -30,6 +30,12 @@ export interface CatCardData {
   // 카드 훈장(성장 스티커) + 프레임 숙련도 승급 계산용 — 전부 리셋되지 않는 all-time 누적치.
   best_win_streak?: number | null;
   pve_win_count?: number | null;
+  // PVP/PVE 승·패·무 전적(box/supabase_battle_record_draw_migration.sql) — 카드 상세 표시용.
+  pvp_wins?: number | null;
+  pvp_losses?: number | null;
+  pvp_draws?: number | null;
+  pve_losses?: number | null;
+  pve_draws?: number | null;
   // 상점에서 산 테두리 코스메틱(lib/shop-config.ts BorderFxKey) — 전투 능력치엔 영향 없음.
   // 있으면 프레임 숙련도 광채보다 우선 표시(둘 다 필터 애니메이션이라 섞으면 지저분해짐).
   equipped_border_key?: string | null;
@@ -384,6 +390,28 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
               {PRESTIGE_LABEL[tier]}
             </span>
           )}
+        </div>
+      )}
+
+      {/* ── PVP/PVE 전적 — 카드 공간이 넉넉한 확대 보기(lg)에서만 표시 ── */}
+      {isLg && (
+        <div style={{
+          display: "flex", flexDirection: "column", gap: 3, marginTop: 6,
+          background: "#fff", borderRadius: 12, padding: "7px 10px",
+          boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.05)",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+            <span style={{ fontWeight: 800, color: "#3E6FA8", flexShrink: 0 }}>⚔️ PVP</span>
+            <span style={{ color: "#5A554C", fontWeight: 600 }}>
+              {card.pvp_wins ?? 0}승 {card.pvp_losses ?? 0}패 {card.pvp_draws ?? 0}무
+            </span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+            <span style={{ fontWeight: 800, color: "#5FA83D", flexShrink: 0 }}>🐾 PVE</span>
+            <span style={{ color: "#5A554C", fontWeight: 600 }}>
+              {card.pve_win_count ?? 0}승 {card.pve_losses ?? 0}패 {card.pve_draws ?? 0}무
+            </span>
+          </div>
         </div>
       )}
 
