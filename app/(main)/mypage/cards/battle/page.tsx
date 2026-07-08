@@ -676,10 +676,14 @@ export default function BattlePage() {
       setTimeout(cdTick, 700);
     };
 
-    if(isBoss) {
+    // "OOO 등장!" 인트로 화면 — 진짜 보스(고양이학대범)뿐 아니라 PVE로 마주치는
+    // 모든 야생동물에게도 똑같이 보여준다(예전엔 isBoss로만 걸려있어서 일반 동물은
+    // 인트로 없이 바로 시작했는데, 그게 실제로는 다들 기대하던 연출이었음).
+    // 보스는 진동·사운드를 더 세게 줘서 그래도 특별하게 느껴지게 함.
+    if(battleType === "pve") {
       setShowBossIntro(true);
-      navigator.vibrate?.([50, 60, 50, 60, 120]);
-      sfx.bossAppear();
+      if (isBoss) { navigator.vibrate?.([50, 60, 50, 60, 120]); sfx.bossAppear(); }
+      else { navigator.vibrate?.(40); sfx.bossAppear(); }
       setTimeout(beginCountdown, 2200);
     } else {
       beginCountdown();
