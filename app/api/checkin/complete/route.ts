@@ -7,11 +7,11 @@ function kstToday(): string {
   return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
 }
 
-const TASK_CARE_TYPE: Record<string, { care_type: string; note: string }> = {
-  water: { care_type: "water", note: "일일 출석체크 — 물 갈아줬어요" },
-  feed: { care_type: "feed", note: "일일 출석체크 — 밥 줬어요" },
-  clean: { care_type: "other", note: "일일 출석체크 — 화장실/집 청소했어요" },
-  health: { care_type: "health", note: "일일 출석체크 — 건강 상태 확인했어요" },
+const TASK_CARE_TYPE: Record<string, { care_type: string; memo: string }> = {
+  water: { care_type: "water", memo: "일일 출석체크 — 물 갈아줬어요" },
+  feed: { care_type: "feed", memo: "일일 출석체크 — 밥 줬어요" },
+  clean: { care_type: "other", memo: "일일 출석체크 — 화장실/집 청소했어요" },
+  health: { care_type: "health", memo: "일일 출석체크 — 건강 상태 확인했어요" },
 };
 const CHECKIN_COINS = 50;
 const CHECKIN_CARD_EXP = 50;
@@ -61,12 +61,17 @@ export async function POST(req: Request) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const jobs: PromiseLike<any>[] = [];
 
-  // 체크한 항목마다 실제 돌봄일지 기록 생성 — 계정 레벨 점수·연속 돌봄 스트릭에도 자연히 반영됨
+  // 체크한 항목마다 실제 돌봄일지 기록 생성 — 계정 레벨 점수·연속 돌봄 스트릭에도 자연히 반영됨.
+  // author_name/avatar는 다른 곳(createCareLog)과 동일하게 가입 당시 스냅샷 규칙을 따름.
   if (targetCatId) {
+    const meta = user.user_metadata ?? {};
+    const authorName = meta.nickname ?? meta.full_name ?? meta.name ?? user.email?.split("@")[0] ?? "익명";
+    const authorAvatar = meta.avatar_url ?? null;
     for (const key of taskKeys) {
       const t = TASK_CARE_TYPE[key];
       jobs.push(svc.from("care_logs").insert({
-        cat_id: targetCatId, author_id: user.id, care_type: t.care_type, note: t.note,
+        cat_id: targetCatId, author_id: user.id, author_name: authorName, author_avatar_url: authorAvatar,
+        care_type: t.care_type, memo: t.memo,
       }));
     }
 
