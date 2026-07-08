@@ -68,6 +68,14 @@ export async function POST(req: Request) {
   }
   const ownerId = (circleRow as { owner_id: string }).owner_id;
   const memberIds = ((members ?? []) as { member_id: string }[]).map((m) => m.member_id);
+
+  // 호출한 유저가 이 서클의 오너/수락된 멤버인지 확인 — 이게 없으면 아무 계정이나
+  // 임의의 circleId로 남의 서클 멤버들에게 가짜 알림(제목=본인 닉네임, 내용=임의 텍스트)을
+  // 보낼 수 있었음(스팸/사회공학 벡터).
+  if (senderId !== ownerId && !memberIds.includes(senderId)) {
+    return NextResponse.json({ ok: false, error: "not_a_member" }, { status: 403 });
+  }
+
   const allUserIds = Array.from(new Set([ownerId, ...memberIds])).filter((id) => id !== senderId);
   if (allUserIds.length === 0) {
     return NextResponse.json({ ok: true, sent: 0, total: 0 });
