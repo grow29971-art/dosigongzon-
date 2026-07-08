@@ -137,6 +137,10 @@ export default function MapPage() {
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [selectedCat, setSelectedCat] = useState<Cat | null>(null);
+  // 상세 패널 메인 사진 로드 실패 시(스토리지 삭제·네트워크 오류) 깨진 이미지 아이콘 대신
+  // placeholder로 대체 — 다른 고양이를 선택하면 다시 시도.
+  const [selectedCatPhotoFailed, setSelectedCatPhotoFailed] = useState(false);
+  useEffect(() => { setSelectedCatPhotoFailed(false); }, [selectedCat?.id]);
   const [catCardTab, setCatCardTab] = useState<"carelog" | "community" | "card">("carelog");
   // 선택된 고양이의 포획 카드 등급에 맞춰 상세 패널을 카드처럼 테마링
   const catRarity = (selectedCat?.card_rarity ?? "common") as CardRarity;
@@ -2661,12 +2665,13 @@ export default function MapPage() {
                   className="relative overflow-hidden bg-surface-alt rounded-full"
                   style={{ width: 148, height: 148, boxShadow: `0 0 0 5px #fff, 0 0 0 8px ${catCardTheme.typeBg}, 0 8px 20px rgba(0,0,0,0.15)` }}
                 >
-                  {selectedCat.photo_url ? (
+                  {selectedCat.photo_url && !selectedCatPhotoFailed ? (
                     <img
                       src={optimizedImageUrl(selectedCat.photo_url, 800) ?? selectedCat.photo_url}
                       alt={selectedCat.name}
                       className="w-full h-full object-cover"
                       decoding="async"
+                      onError={() => setSelectedCatPhotoFailed(true)}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-text-light">
