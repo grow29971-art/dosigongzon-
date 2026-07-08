@@ -219,8 +219,64 @@ export default function InventoryPage() {
               </div>
             )}
 
+            {/* 🗡️ 장비(무기·방어구) — 5부위 스탯 아이템, 보유분 전부 표시 + 여기서 바로 장착/해제 가능 */}
+            {activeCat && EQUIP_ITEM_KEYS.some(k => (owned[k] ?? 0) > 0 || Object.values(activeCat.equipped_slots ?? {}).includes(k)) && (
+              <div className="mb-5">
+                <p className="text-[11px] font-extrabold mb-2" style={{ color: "#9CC0E8" }}>🗡️ 장비 (무기·방어구)</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {EQUIP_ITEM_KEYS.filter(k => (owned[k] ?? 0) > 0 || activeCat.equipped_slots?.[SHOP_ITEMS[k].bodySlot!] === k).map((key) => {
+                    const item = SHOP_ITEMS[key];
+                    const slot = item.bodySlot!;
+                    const equipped = activeCat.equipped_slots?.[slot] === key;
+                    const qty = owned[key] ?? 0;
+                    return (
+                      <button key={key} onClick={() => tapSlot(slot)} disabled={equipLoading}
+                        className="rounded-2xl p-3 flex flex-col gap-1.5 text-left" style={{ background: equipped ? "rgba(76,130,188,0.2)" : "rgba(255,255,255,0.05)" }}>
+                        <div className="flex items-center justify-between">
+                          <span style={{ fontSize: 26 }}>{item.icon}</span>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: equipped ? "#4C82BC" : "rgba(255,255,255,0.12)", color: equipped ? "white" : "rgba(255,255,255,0.7)" }}>
+                            {equipped ? "장착중" : `보유 ${qty}`}
+                          </span>
+                        </div>
+                        <span className="text-[12.5px] font-bold text-white">{item.name}</span>
+                        <span className="text-[10.5px] text-gray-400 leading-snug">{item.desc} · {BODY_SLOT_LABELS[slot].label} 부위</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* ✨ 테두리 — 보유분 전부 표시 + 여기서 바로 장착/해제 가능 */}
+            {activeCat && BORDER_FX_ITEM_KEYS.some(k => (owned[k] ?? 0) > 0 || activeCat.equipped_border_key === k) && (
+              <div className="mb-5">
+                <p className="text-[11px] font-extrabold mb-2" style={{ color: "#E8B040" }}>✨ 테두리 코스메틱</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {BORDER_FX_ITEM_KEYS.filter(k => (owned[k] ?? 0) > 0 || activeCat.equipped_border_key === k).map((key) => {
+                    const item = SHOP_ITEMS[key];
+                    const equipped = activeCat.equipped_border_key === key;
+                    const qty = owned[key] ?? 0;
+                    return (
+                      <button key={key} onClick={() => doEquip(equipped ? null : key, "border")} disabled={equipLoading || (!equipped && qty <= 0)}
+                        className="rounded-2xl p-3 flex flex-col gap-1.5 text-left" style={{ background: equipped ? "rgba(232,176,64,0.2)" : "rgba(255,255,255,0.05)" }}>
+                        <div className="flex items-center justify-between">
+                          <span style={{ fontSize: 26 }}>{item.icon}</span>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: equipped ? "#E8B040" : "rgba(255,255,255,0.12)", color: equipped ? "white" : "rgba(255,255,255,0.7)" }}>
+                            {equipped ? "장착중" : `보유 ${qty}`}
+                          </span>
+                        </div>
+                        <span className="text-[12.5px] font-bold text-white">{item.name}</span>
+                        <span className="text-[10.5px] text-gray-400 leading-snug">{item.desc}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {consumableKeys.length === 0 && Object.keys(owned).length === 0 && (
               <div className="text-center py-6">
+                <p className="text-gray-400 text-[12px] mb-3">가방이 비어있어요</p>
                 <Link href="/mypage/shop"
                   className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-[13px] font-extrabold text-white"
                   style={{ background: "linear-gradient(135deg,#FFB020,#FF8020)" }}>
