@@ -6,6 +6,14 @@ import { X, Heart } from "lucide-react";
 
 export type CardRarity = "common" | "uncommon" | "rare" | "legendary";
 
+// 반짝이 가루 / 별빛 가루 테두리 코스메틱용 — 매 렌더마다 랜덤이면 깜빡이는 위치가
+// 계속 바뀌어 어수선해 보여서, 고정된 배치를 카드 둘레에 고르게 흩어놓고 딜레이만 다르게 줌.
+const SPARKLE_POS = [
+  { x: 8, y: 12, delay: 0 }, { x: 88, y: 8, delay: 0.3 }, { x: 95, y: 45, delay: 0.7 },
+  { x: 85, y: 88, delay: 0.15 }, { x: 50, y: 96, delay: 0.5 }, { x: 12, y: 85, delay: 0.9 },
+  { x: 3, y: 50, delay: 1.1 }, { x: 30, y: 4, delay: 1.3 },
+];
+
 export interface CatCardData {
   card_rarity: CardRarity | string | null;
   card_name: string | null;
@@ -418,6 +426,37 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
           <span style={{ color: cfg.accent, letterSpacing: 1 }}>{cfg.rarity}</span>
         </span>
       </div>
+
+      {/* ── 테두리 코스메틱 오버레이 — 이름이 약속하는 느낌에 맞게 기법을 나눔 ──
+          gold/holo/rainbow = 광택이 대각선으로 스윽 훑고 지나감
+          sparkle/starlight = 카드 둘레에서 반짝임이 팝팝 터짐
+          그 외(neon_*, fire, ice, shadow) = 아래 border-fx-* 클래스의 은은한 맥박 그대로 */}
+      {(borderFxKey === "gold" || borderFxKey === "holo" || borderFxKey === "rainbow") && (
+        <div style={{ position: "absolute", inset: 0, borderRadius: radius, overflow: "hidden", pointerEvents: "none", zIndex: 40 }}>
+          <div style={{
+            position: "absolute", top: "-60%", left: "-60%", width: "220%", height: "220%",
+            background: borderFxKey === "gold"
+              ? "linear-gradient(112deg, transparent 44%, rgba(255,240,170,0.9) 50%, transparent 56%)"
+              : borderFxKey === "holo"
+                ? "linear-gradient(112deg, transparent 38%, rgba(120,220,255,0.55) 45%, rgba(255,120,220,0.55) 50%, rgba(255,235,120,0.55) 55%, transparent 62%)"
+                : "conic-gradient(from 0deg, #FF5050, #FFD23C, #78FF8C, #64B4FF, #D278FF, #FF5050)",
+            opacity: borderFxKey === "rainbow" ? 0.35 : 1,
+            animation: borderFxKey === "rainbow" ? "border-sweep-spin 3.5s linear infinite" : "border-sweep-move 2.4s ease-in-out infinite",
+          }} />
+        </div>
+      )}
+      {(borderFxKey === "sparkle" || borderFxKey === "starlight") && (
+        <div style={{ position: "absolute", inset: -3, pointerEvents: "none", zIndex: 40 }}>
+          {SPARKLE_POS.map((p, i) => (
+            <span key={i} style={{
+              position: "absolute", left: `${p.x}%`, top: `${p.y}%`, transform: "translate(-50%,-50%)",
+              fontSize: borderFxKey === "starlight" ? 11 : 8,
+              animation: `sparkle-twinkle ${borderFxKey === "starlight" ? 2.2 : 1.3}s ease-in-out infinite`,
+              animationDelay: `${p.delay}s`,
+            }}>{borderFxKey === "starlight" ? "✨" : "･"}</span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -524,6 +563,23 @@ export default function CatCard({ name, photoUrl, card, size = "md", onClick }: 
           50% { filter: drop-shadow(0 0 10px rgba(150,90,200,0.9)) drop-shadow(0 0 20px rgba(60,30,90,0.8)); }
         }
         .border-fx-shadow { animation: fx-shadow 2.8s ease-in-out infinite; }
+
+        /* 골드 샤인 / 홀로그램 — 대각선 광택 밴드가 카드를 스윽 훑고 지나감 */
+        @keyframes border-sweep-move {
+          0%   { transform: translate(-30%, -30%); }
+          50%  { transform: translate(30%, 30%); }
+          100% { transform: translate(-30%, -30%); }
+        }
+        /* 무지개 테두리 — 링 자체가 실제로 빙글빙글 회전 */
+        @keyframes border-sweep-spin {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
+        }
+        /* 반짝이 가루 / 별빛 가루 — 카드 둘레에서 팝팝 터지듯 반짝임 */
+        @keyframes sparkle-twinkle {
+          0%, 100% { opacity: 0; transform: translate(-50%,-50%) scale(0.4); }
+          50%      { opacity: 1; transform: translate(-50%,-50%) scale(1.15); }
+        }
       `}</style>
 
       <div
