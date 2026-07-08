@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
-import { SHOP_ITEMS, BODY_SLOTS, type ShopItemKey, type BodySlot, type EquippedSlots } from "@/lib/shop-config";
+import { SHOP_ITEMS, BODY_SLOTS, type ShopItemKey, type BodySlot } from "@/lib/shop-config";
 
 // 카드에 아이템을 끼우거나(item_key) 빼는(item_key: null) API.
 // slot="head"|"arm"|"body"|"leg"|"foot" — 디아블로식 부위별 장비창, 5칸 동시 장착.
 // slot="border" — 테두리 코스메틱, 부위 슬롯과 별개(equipped_border_key 컬럼).
-// 전부 소모품이 아니라 "보유 개수 중 1개를 이 카드에 물려두는" 방식이라
-// user_items.quantity를 실제로 증감시킨다(장착=차감, 해제=반환).
-// 예전엔 재고 조회·갱신을 항목마다 따로 순차 쿼리해서 최대 6번 왕복했는데,
-// 관련 item_key(기존 것+새 것)를 한 번에 조회하고 쓰기 작업은 Promise.all로
-// 병렬 처리해서 장착 반응 속도를 눈에 띄게 줄임.
+//
+// box/supabase_equip_item_rpc_migration.sql의 equip_item_atomic() DB 함수 하나로
+// 소유권 확인·재고 조회·카드/재고 갱신을 전부 처리 — 예전엔 이걸 API 라우트에서
+// 여러 번 나눠 왕복해서(최소 3~4번) 반응이 느렸는데, 왕복을 1번으로 줄임.
+// RPC가 아직 없으면(마이그레이션 전) 예전 방식(여러 쿼리)으로 자동 폴백.
 export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -28,6 +28,27 @@ export async function POST(req: Request) {
     if (!ok) return NextResponse.json({ error: "invalid_item" }, { status: 400 });
   }
 
+  const svc = serviceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
+
+  const { data: rpcData, error: rpcError } = await svc.rpc("equip_item_atomic", {
+    p_user_id: user.id,
+    p_cat_id: cat_id,
+    p_slot: slot,
+    p_item_key: item_key,
+  });
+
+  if (!rpcError) {
+    const result = rpcData as { ok?: boolean; error?: string; slot?: string; item_key?: string | null };
+    if (result?.error === "cat_not_found") return NextResponse.json({ error: "cat not found" }, { status: 404 });
+    if (result?.error === "no_stock") return NextResponse.json({ error: "no_stock" }, { status: 400 });
+    return NextResponse.json({ ok: true, slot, item_key });
+  }
+
+  // RPC가 아직 배포 전(box/supabase_equip_item_rpc_migration.sql 미실행)이면
+  // 이전 다단계 방식으로 조용히 폴백 — 기능은 그대로, 속도만 느림.
   const { data: cat } = await supabase
     .from("cats")
     .select("id,caretaker_id,equipped_slots,equipped_border_key")
@@ -36,12 +57,8 @@ export async function POST(req: Request) {
     .maybeSingle();
   if (!cat) return NextResponse.json({ error: "cat not found" }, { status: 404 });
 
-  const svc = serviceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
-
-  const currentSlots = ((cat as { equipped_slots?: EquippedSlots | null }).equipped_slots ?? {}) as EquippedSlots;
+  type EquippedSlotsLoose = Record<string, string | null>;
+  const currentSlots = ((cat as { equipped_slots?: EquippedSlotsLoose | null }).equipped_slots ?? {}) as EquippedSlotsLoose;
   const currentKey = isBodySlot ? (currentSlots[slot as BodySlot] ?? null) : ((cat as { equipped_border_key?: string | null }).equipped_border_key ?? null);
 
   const patch = isBodySlot
@@ -49,11 +66,9 @@ export async function POST(req: Request) {
     : { equipped_border_key: item_key };
 
   if (currentKey === item_key) {
-    // 같은 걸 다시 누른 경우(사실상 no-op) — 재고 쿼리 없이 바로 반환
     return NextResponse.json({ ok: true, slot, item_key });
   }
 
-  // 관련된 item_key(기존 장착템 + 새로 낄 아이템) 재고를 한 번에 조회
   const keysToCheck = Array.from(new Set([currentKey, item_key].filter((k): k is string => !!k)));
   const { data: ownedRows } = keysToCheck.length > 0
     ? await svc.from("user_items").select("item_key,quantity").eq("user_id", user.id).in("item_key", keysToCheck)
