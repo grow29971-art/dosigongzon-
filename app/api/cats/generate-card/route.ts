@@ -100,7 +100,7 @@ export async function POST(request: Request) {
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   const body = await request.json();
-  const { cat_id, image_base64, mime_type, photo_url, perfect_catch } = body;
+  const { cat_id, image_base64, mime_type, perfect_catch } = body;
   const perfectCatch = perfect_catch === true;
   if (!cat_id) return NextResponse.json({ error: "missing cat_id" }, { status: 400 });
 
@@ -126,22 +126,15 @@ export async function POST(request: Request) {
   const catName = existing?.name ?? "고양이";
 
   // Gemini 시도 (이미지 있을 때만)
-  if (image_base64 || photo_url) {
+  // 예전엔 클라이언트가 보낸 photo_url을 서버가 그대로 fetch해서 SSRF(내부망 주소로
+  // 서버가 요청하게 만들 수 있는) 위험이 있었음. 실제 호출부(AddCatModal)는 image_base64만
+  // 쓰고 photo_url은 아무 데서도 안 써서, 그냥 이 경로 자체를 제거함.
+  if (image_base64) {
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (apiKey) {
       try {
-        let imgB64: string;
-        let mimeType: string;
-
-        if (image_base64) {
-          imgB64 = image_base64;
-          mimeType = mime_type ?? "image/jpeg";
-        } else {
-          const imgRes = await fetch(photo_url);
-          if (!imgRes.ok) throw new Error("image fetch failed");
-          imgB64 = Buffer.from(await imgRes.arrayBuffer()).toString("base64");
-          mimeType = imgRes.headers.get("content-type") ?? "image/jpeg";
-        }
+        const imgB64 = image_base64;
+        const mimeType = mime_type ?? "image/jpeg";
 
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
