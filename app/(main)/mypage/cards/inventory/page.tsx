@@ -22,6 +22,15 @@ interface MyCat {
   equipped_border_key: string | null;
 }
 
+// 인형(paper-doll) 배치 — 고양이 사진을 중심에 두고 5부위를 오각형으로 둘러쌈
+const SLOT_POS: Record<BodySlot, React.CSSProperties> = {
+  head: { top: 0, left: "50%", transform: "translateX(-50%)" },
+  arm: { top: "34%", left: 0 },
+  leg: { top: "34%", right: 0 },
+  body: { bottom: 6, left: "12%" },
+  foot: { bottom: 6, right: "12%" },
+};
+
 type Tab = "all" | "consumable" | "equip" | "border";
 const TABS: { key: Tab; label: string }[] = [
   { key: "all", label: "전체" },
@@ -153,21 +162,22 @@ export default function InventoryPage() {
               ))}
             </div>
 
-            {/* ── 좌: 장비칸 / 우: 소지품 목록 — 나란히 ── */}
+            {/* ── 상단: 장비칸(인형) / 하단: 소지품 목록 — 폰 비율에 맞게 세로 배치 ── */}
             {activeCat && (
-              <div className="flex gap-2.5 items-start" style={{ minHeight: 420 }}>
-                {/* 좌측 장비 패널 */}
-                <div className="shrink-0 rounded-2xl p-2.5" style={{ width: 108, background: "rgba(255,255,255,0.04)" }}>
-                  <p className="text-[9.5px] font-extrabold text-center mb-2" style={{ color: "#8A8598" }}>캐릭터 장비</p>
-                  <div className="rounded-xl overflow-hidden mb-2 mx-auto flex items-center justify-center" style={{ width: 68, height: 68, background: "rgba(255,255,255,0.06)" }}>
-                    {activeCat.photo_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={activeCat.photo_url} alt={activeCat.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <span style={{ fontSize: 30 }}>🐱</span>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-1.5">
+              <>
+                {/* 상단 장비 패널 — 캐릭터 사진 중심에 5부위를 오각형으로 둘러쌈 */}
+                <div className="rounded-2xl p-3 mb-3" style={{ background: "rgba(255,255,255,0.04)" }}>
+                  <p className="text-[10.5px] font-extrabold text-center mb-2" style={{ color: "#8A8598" }}>캐릭터 장비</p>
+                  <div className="relative mx-auto" style={{ width: 240, height: 240 }}>
+                    <div className="absolute rounded-full overflow-hidden flex items-center justify-center"
+                      style={{ width: 108, height: 108, top: "50%", left: "50%", transform: "translate(-50%,-50%)", boxShadow: "0 0 0 3px rgba(255,255,255,0.12)" }}>
+                      {activeCat.photo_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={activeCat.photo_url} alt={activeCat.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-[38px]" style={{ background: "rgba(255,255,255,0.06)" }}>🐱</div>
+                      )}
+                    </div>
                     {BODY_SLOTS.map((slot) => {
                       const slotItemKey = EQUIP_ITEM_KEYS.find(k => SHOP_ITEMS[k].bodySlot === slot);
                       if (!slotItemKey) return null;
@@ -176,46 +186,51 @@ export default function InventoryPage() {
                       const qty = owned[slotItemKey] ?? 0;
                       return (
                         <button key={slot} onClick={() => tapSlot(slot)} disabled={equipLoading}
-                          className="flex items-center gap-1.5 rounded-lg px-1.5 py-1"
-                          style={{ background: equipped ? "rgba(76,130,188,0.28)" : "rgba(255,255,255,0.05)" }}>
-                          <span className="rounded-md flex items-center justify-center shrink-0" style={{
-                            width: 22, height: 22, fontSize: 13,
-                            background: equipped ? "rgba(76,130,188,0.4)" : "rgba(255,255,255,0.06)",
+                          className="absolute flex flex-col items-center gap-0.5" style={SLOT_POS[slot]}>
+                          <div className="rounded-2xl flex items-center justify-center" style={{
+                            width: 46, height: 46,
+                            background: equipped ? "rgba(76,130,188,0.3)" : "rgba(255,255,255,0.06)",
+                            boxShadow: equipped ? "0 0 0 2px #4C82BC" : qty > 0 ? "0 0 0 1.5px rgba(255,255,255,0.25)" : "0 0 0 1px rgba(255,255,255,0.08)",
                             opacity: qty > 0 || equipped ? 1 : 0.4,
-                          }}>{item.icon}</span>
-                          <span className="text-[8.5px] font-bold truncate" style={{ color: equipped ? "#8FC0FF" : "#75718A" }}>
+                          }}>
+                            <span style={{ fontSize: 19 }}>{item.icon}</span>
+                          </div>
+                          <span className="text-[8.5px] font-bold" style={{ color: equipped ? "#6FA0D8" : "#75718A" }}>
                             {BODY_SLOT_LABELS[slot].label}
                           </span>
                         </button>
                       );
                     })}
-                    <button onClick={() => setBorderPicker(true)}
-                      className="flex items-center gap-1.5 rounded-lg px-1.5 py-1"
-                      style={{ background: activeCat.equipped_border_key ? "rgba(232,176,64,0.25)" : "rgba(255,255,255,0.05)" }}>
-                      <span className="rounded-md flex items-center justify-center shrink-0" style={{
-                        width: 22, height: 22, fontSize: 13,
-                        background: activeCat.equipped_border_key ? "rgba(232,176,64,0.35)" : "rgba(255,255,255,0.06)",
-                      }}>{activeCat.equipped_border_key ? SHOP_ITEMS[activeCat.equipped_border_key as ShopItemKey]?.icon : "✨"}</span>
-                      <span className="text-[8.5px] font-bold truncate" style={{ color: activeCat.equipped_border_key ? "#E8B040" : "#75718A" }}>테두리</span>
-                    </button>
                   </div>
+                  {/* 테두리(오라) 슬롯 */}
+                  <button onClick={() => setBorderPicker(true)}
+                    className="w-full flex items-center gap-3 rounded-2xl px-3 py-2.5 mt-2"
+                    style={{ background: activeCat.equipped_border_key ? "rgba(232,176,64,0.18)" : "rgba(255,255,255,0.05)" }}>
+                    <span style={{ fontSize: 20 }}>{activeCat.equipped_border_key ? SHOP_ITEMS[activeCat.equipped_border_key as ShopItemKey]?.icon : "✨"}</span>
+                    <div className="min-w-0 flex-1 text-left">
+                      <p className="text-[11.5px] font-bold" style={{ color: activeCat.equipped_border_key ? "#E8B040" : "white" }}>
+                        {activeCat.equipped_border_key ? SHOP_ITEMS[activeCat.equipped_border_key as ShopItemKey]?.name : "테두리 오라 — 미장착"}
+                      </p>
+                      <p className="text-[9.5px] text-gray-500">탭해서 바꾸기</p>
+                    </div>
+                  </button>
                 </div>
 
-                {/* 우측 소지품 목록 */}
-                <div className="flex-1 min-w-0 rounded-2xl p-2.5" style={{ background: "rgba(255,255,255,0.04)" }}>
-                  <div className="flex gap-1 mb-2 overflow-x-auto no-scrollbar">
+                {/* 하단 소지품 목록 */}
+                <div className="rounded-2xl p-3" style={{ background: "rgba(255,255,255,0.04)" }}>
+                  <div className="flex gap-1.5 mb-2.5">
                     {TABS.map((t) => (
                       <button key={t.key} onClick={() => setTab(t.key)}
-                        className="shrink-0 px-2.5 py-1 rounded-full text-[10px] font-bold"
+                        className="px-3 py-1.5 rounded-full text-[11px] font-bold"
                         style={{ background: tab === t.key ? "#4C82BC" : "rgba(255,255,255,0.06)", color: tab === t.key ? "white" : "#8A8598" }}>
                         {t.label}
                       </button>
                     ))}
                   </div>
                   {listKeys.length === 0 ? (
-                    <p className="text-[11px] text-gray-500 text-center py-10">보유한 아이템이 없어요</p>
+                    <p className="text-[12px] text-gray-500 text-center py-10">보유한 아이템이 없어요</p>
                   ) : (
-                    <div className="flex flex-col gap-1.5" style={{ maxHeight: 380, overflowY: "auto" }}>
+                    <div className="grid grid-cols-2 gap-2">
                       {listKeys.map((key) => {
                         const item = SHOP_ITEMS[key];
                         const isEquipped = item.bodySlot
@@ -224,9 +239,9 @@ export default function InventoryPage() {
                         const qty = owned[key] ?? 0;
                         return (
                           <button key={key} onClick={() => rowTap(key)}
-                            className="flex items-center gap-2 rounded-xl px-2 py-1.5 text-left"
+                            className="flex items-center gap-2 rounded-xl px-2.5 py-2 text-left"
                             style={{ background: isEquipped ? "rgba(76,130,188,0.18)" : "rgba(255,255,255,0.03)" }}>
-                            <span className="rounded-lg flex items-center justify-center shrink-0" style={{ width: 30, height: 30, fontSize: 16, background: "rgba(255,255,255,0.06)" }}>
+                            <span className="rounded-lg flex items-center justify-center shrink-0" style={{ width: 32, height: 32, fontSize: 17, background: "rgba(255,255,255,0.06)" }}>
                               {item.icon}
                             </span>
                             <div className="min-w-0 flex-1">
@@ -240,7 +255,7 @@ export default function InventoryPage() {
                     </div>
                   )}
                 </div>
-              </div>
+              </>
             )}
 
             {totalOwnedCount === 0 && (
