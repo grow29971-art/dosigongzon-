@@ -11,6 +11,15 @@ import { PVE_BESTIARY } from "@/lib/pve-bestiary";
 import { SHOP_ITEMS, EQUIP_ITEM_KEYS, BORDER_FX_ITEM_KEYS, BODY_SLOTS, BODY_SLOT_LABELS, type ShopItemKey, type BodySlot, type EquippedSlots } from "@/lib/shop-config";
 import Link from "next/link";
 
+// 슬롯별 테마 색상 — 가방(인벤토리) 페이지와 동일한 배색으로 통일
+const SLOT_THEME: Record<BodySlot, string> = {
+  head: "#B18CE8",
+  arm: "#FF8B6B",
+  body: "#FF6B8A",
+  leg: "#6FA0D8",
+  foot: "#5BC48A",
+};
+
 interface CardCat {
   id: string;
   name: string;
@@ -422,19 +431,23 @@ export default function MyCardsPage() {
                   const equippedHere = selected.equipped_slots?.[slot] === slotItem;
                   const qty = ownedEquip[slotItem] ?? 0;
                   const canEquip = qty > 0 || equippedHere;
+                  const color = SLOT_THEME[slot];
                   return (
                     <button key={slot} onClick={() => canEquip && doEquip(selected.id, equippedHere ? null : slotItem, slot)}
                       disabled={!canEquip || equipLoading}
                       className="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-left"
-                      style={{ background: equippedHere ? "#E3EEF9" : "#F6F5FA", opacity: canEquip ? 1 : 0.45 }}>
-                      <span className="w-7 text-center" style={{ fontSize: 15 }}>{BODY_SLOT_LABELS[slot].emoji}</span>
-                      <span className="text-[10px] font-bold shrink-0" style={{ color: "#9A94A8", width: 28 }}>{BODY_SLOT_LABELS[slot].label}</span>
-                      <span style={{ fontSize: 16 }}>{item.icon}</span>
+                      style={{ background: equippedHere ? `${color}1A` : "#F6F5FA", boxShadow: equippedHere ? `0 0 0 1.5px ${color}66` : "none", opacity: canEquip ? 1 : 0.45 }}>
+                      <span className="rounded-lg flex items-center justify-center shrink-0" style={{
+                        width: 30, height: 30, fontSize: 15,
+                        background: equippedHere ? color : "#EAE7F2",
+                        boxShadow: equippedHere ? `0 2px 6px ${color}55` : "none",
+                      }}>{item.icon}</span>
+                      <span className="text-[10px] font-bold shrink-0" style={{ color: equippedHere ? color : "#9A94A8", width: 28 }}>{BODY_SLOT_LABELS[slot].label}</span>
                       <div className="min-w-0 flex-1">
                         <p className="text-[11px] font-bold truncate" style={{ color: equippedHere ? "#2F5E93" : "#2B2B3D" }}>{item.name}</p>
                         <p className="text-[9.5px] truncate" style={{ color: "#9A94A8" }}>{item.desc}</p>
                       </div>
-                      <span className="text-[10px] font-extrabold shrink-0" style={{ color: equippedHere ? "#4C82BC" : canEquip ? "#B4AFC2" : "#D8D5E0" }}>
+                      <span className="text-[10px] font-extrabold shrink-0" style={{ color: equippedHere ? color : canEquip ? "#B4AFC2" : "#D8D5E0" }}>
                         {equippedHere ? "장착중" : canEquip ? `장착 (${qty})` : "미보유"}
                       </span>
                     </button>
