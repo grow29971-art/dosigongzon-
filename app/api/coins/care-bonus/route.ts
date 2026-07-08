@@ -22,6 +22,23 @@ export async function POST() {
     return NextResponse.json({ awarded: false, reason: "daily_cap_reached", coins: profile?.coins ?? 0 });
   }
 
+  // 실제로 오늘 돌봄일지를 남겼는지 서버에서 직접 확인 — 예전엔 이 확인 없이 그냥
+  // POST만 오면 지급해서, 돌봄일지 한 번도 안 쓰고 이 엔드포인트만 반복 호출하면
+  // 하루 최대 10코인을 공짜로 받아갈 수 있었음.
+  const dayStart = new Date(`${today}T00:00:00+09:00`).toISOString();
+  const dayEnd = new Date(`${today}T23:59:59.999+09:00`).toISOString();
+  const { count: realCareCount } = await supabase
+    .from("care_logs")
+    .select("id", { count: "exact", head: true })
+    .eq("author_id", user.id)
+    .gte("logged_at", dayStart)
+    .lte("logged_at", dayEnd);
+
+  const eligibleCount = Math.min(realCareCount ?? 0, COINS_CARE_DAILY_CAP);
+  if (eligibleCount <= countToday) {
+    return NextResponse.json({ awarded: false, reason: "no_new_care_log", coins: profile?.coins ?? 0 });
+  }
+
   const newCoins = (profile?.coins ?? 0) + COINS_CARE_PER_LOG;
   const svc = serviceClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

@@ -6,6 +6,9 @@ import { TITLES, FLAVORS } from "@/lib/battle-card-titles";
 
 export async function POST(req: Request) {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+
   const { cat_id } = await req.json();
   if (!cat_id) return NextResponse.json({ upgraded: false });
 
