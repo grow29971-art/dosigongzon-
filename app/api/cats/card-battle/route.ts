@@ -561,6 +561,18 @@ export async function POST(req: Request) {
       opponents = nearbyOpponents;
     }
 
+    // 등급 근처에도 상대가 없으면(예: 레전드가 아직 별로 없는 초기 단계) 등급 무시하고
+    // 아무 상대나 매칭 — "상대가 없어서 PVP 자체를 못 한다"보다는 매칭 자체가 되는 게 우선.
+    if (!opponents || opponents.length === 0) {
+      const { data: anyOpponents } = await supabase
+        .from("cats")
+        .select(OPP_COLS)
+        .neq("caretaker_id", user.id)
+        .not("card_generated_at", "is", null)
+        .limit(50);
+      opponents = anyOpponents;
+    }
+
     if (!opponents || opponents.length === 0) {
       return NextResponse.json({ error: "no_opponents" }, { status: 404 });
     }
