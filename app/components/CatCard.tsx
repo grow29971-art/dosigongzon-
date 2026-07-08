@@ -181,6 +181,11 @@ const PRESTIGE_GLOW: Record<PrestigeTier, string> = {
 const PRESTIGE_LABEL: Record<PrestigeTier, string> = { none: "", silver: "은빛 숙련", gold: "금빛 숙련", prismatic: "무지개 숙련" };
 
 function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> & { size: "sm" | "md" | "lg" | "battle" }) {
+  // 스토리지에서 사진이 삭제됐거나 네트워크 오류로 로드 실패하면 깨진 이미지 아이콘
+  // 대신 이모지 placeholder로 대체 — photoUrl이 바뀌면(다른 카드로 교체) 다시 시도.
+  const [photoFailed, setPhotoFailed] = useState(false);
+  useEffect(() => { setPhotoFailed(false); }, [photoUrl]);
+
   const rarity = (card.card_rarity ?? "common") as CardRarity;
   const cfg = CARD_THEME[rarity] ?? CARD_THEME.common;
   const isSm = size === "sm";
@@ -305,9 +310,9 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
         background: "#fff",
       }}>
         <div style={{ height: photoH, overflow: "hidden", position: "relative", background: "#F3F1EA" }}>
-          {photoUrl ? (
+          {photoUrl && !photoFailed ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={photoUrl} alt={name}
+            <img src={photoUrl} alt={name} onError={() => setPhotoFailed(true)}
               style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
           ) : (
             <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: isSm ? 30 : 46 }}>{card.placeholder_emoji ?? "🐱"}</div>
