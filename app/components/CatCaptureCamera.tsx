@@ -18,7 +18,10 @@ type CamState = "requesting" | "ready" | "denied" | "blocked" | "error" | "previ
 type ThrowState = "idle" | "pulling" | "flying" | "hit" | "miss";
 
 // 투척 튜닝값
-const MIN_PULL_Y = 40;    // 이 이상 위로 당겨야 실제 투척으로 인정
+// 예전엔 40px 이상 당겨야 던지기로 인정했는데, 빠르게 톡 튕기는 자연스러운
+// 플릭 제스처가 이 기준에 못 미쳐 조용히 무시되는 경우가 많아 "터치가 잘
+// 안 된다"는 체감으로 이어짐 — 좀 더 관대하게 낮춤.
+const MIN_PULL_Y = 24;    // 이 이상 위로 당겨야 실제 투척으로 인정
 const MAX_PULL_Y = 150;
 const MAX_DRAG_X = 130;
 
@@ -67,6 +70,10 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   const [churuX, setChuruX] = useState(0);     // 좌우 드래그 원본값 (캔이 손가락을 따라감, 비행 연출용)
   const [landingDx, setLandingDx] = useState(0);
   const touchStartRef = useRef({ x: 0, y: 0 });
+  // 미스 후 자동으로 idle로 되돌리는 예약 타이머 — 사용자가 그 전에 다시 터치를
+  // 시작하면 이 타이머를 취소해야, 늦게 발화한 리셋이 새로 시작한 당기기 상태를
+  // 덮어써서 "터치했는데 캔이 안 움직인다"처럼 보이는 문제를 막을 수 있다.
+  const missResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // 타이밍 바 (구슬 위치 + 성공 구간 + 남은 기회)
   const markerPosRef = useRef(BAR_MIN);
@@ -122,6 +129,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
     return () => {
       streamRef.current?.getTracks().forEach(t => t.stop());
       cancelAnimationFrame(animRef.current);
+      if (missResetTimeoutRef.current) clearTimeout(missResetTimeoutRef.current);
     };
   }, [startCamera, previewFile]);
 
@@ -211,11 +219,15 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   // 고양이 캔 던지기 - 포인터 이벤트 (터치+마우스+펜 공통. 당겼다 놓는 제스처 + 놓는 순간의 타이밍으로 성공 판정)
   // TouchEvent만 처리하면 터치스크린 없는 PC에서는 마우스 드래그에 반응하지 않아 Pointer Event로 통합.
   const handleTouchStart = useCallback((e: React.PointerEvent) => {
-    if (throwState !== "idle" || caught) return;
+    // "miss" 표시 중에도 다시 터치를 시작하면 바로 새 시도로 받아준다 — 안 그러면
+    // 미스 직후 800ms 동안 재시도 터치가 전부 씹혀서 "터치가 잘 안 된다"고 느껴짐.
+    if ((throwState !== "idle" && throwState !== "miss") || caught) return;
+    if (missResetTimeoutRef.current) { clearTimeout(missResetTimeoutRef.current); missResetTimeoutRef.current = null; }
     primeSfx();
     chargeSoundPlayedRef.current = false;
     e.currentTarget.setPointerCapture(e.pointerId);
     touchStartRef.current = { x: e.clientX, y: e.clientY };
+    setThrowState("idle");
     setPullY(0);
     setChuruX(0);
   }, [throwState, caught]);
@@ -225,7 +237,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
     e.preventDefault();
     const dy = touchStartRef.current.y - e.clientY;
     const dx = Math.max(-MAX_DRAG_X, Math.min(MAX_DRAG_X, e.clientX - touchStartRef.current.x));
-    if (dy > 5) {
+    if (dy > 2) {
       if (!chargeSoundPlayedRef.current) { chargeSoundPlayedRef.current = true; sfx.chargeUp(); }
       setThrowState("pulling");
       setPullY(Math.min(dy, MAX_PULL_Y));
@@ -278,7 +290,7 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
           sfx.miss();
           particleRef.current?.burst(0.5, 0.55, "spark", 6, "180,180,180");
           setTimeout(() => setImpactShake(0), 350);
-          setTimeout(() => { setThrowState("idle"); setPullY(0); setChuruX(0); }, 800);
+          missResetTimeoutRef.current = setTimeout(() => { setThrowState("idle"); setPullY(0); setChuruX(0); missResetTimeoutRef.current = null; }, 800);
         }
       }, 600);
     } else {
