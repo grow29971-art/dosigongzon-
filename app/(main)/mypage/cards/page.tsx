@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, X, Swords, Trophy, Coins, Star, Zap, Share2, Scroll, BookMarked, Gem, Sparkles } from "lucide-react";
+import { ArrowLeft, Loader2, X, Swords, Trophy, Coins, Star, Zap, Share2, Scroll, BookMarked, Gem, Sparkles, Backpack } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
@@ -220,26 +220,26 @@ export default function MyCardsPage() {
 
         <div className="px-4 pb-28">
           {/* 빠른 메뉴 */}
-          <div className="grid grid-cols-4 gap-2 mb-4 mt-3">
+          <div className="grid grid-cols-5 gap-1.5 mb-4 mt-3">
             <Link href="/mypage/cards/battle"
-              className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[11px] text-white"
+              className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[10.5px] text-white"
               style={{ background: "linear-gradient(135deg,#6FA0D8,#2F5E93)", boxShadow: "0 4px 12px rgba(47,94,147,0.3)" }}>
-              <Swords size={16} /> 배틀
+              <Swords size={15} /> 배틀
             </Link>
             <Link href="/mypage/cards/ranking"
-              className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[11px] text-white"
+              className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[10.5px] text-white"
               style={{ background: "linear-gradient(135deg,#8FC0FF,#5C93F0)", boxShadow: "0 4px 12px rgba(92,147,240,0.3)" }}>
-              <Trophy size={16} /> 랭킹
+              <Trophy size={15} /> 랭킹
             </Link>
             <Link href="/mypage/shop"
-              className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[11px] text-white"
+              className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[10.5px] text-white"
               style={{ background: "linear-gradient(135deg,#FFC15E,#FFA030)", boxShadow: "0 4px 12px rgba(255,160,48,0.3)" }}>
-              <Coins size={16} /> 상점
+              <Coins size={15} /> 상점
             </Link>
             <Link href="/mypage/cards/bestiary"
-              className="relative flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[11px] text-white"
+              className="relative flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[10.5px] text-white"
               style={{ background: "linear-gradient(135deg,#7FCB8A,#4FAF63)", boxShadow: "0 4px 12px rgba(79,175,99,0.3)" }}>
-              <BookMarked size={16} /> 도감
+              <BookMarked size={15} /> 도감
               {(() => {
                 const total = PVE_BESTIARY.length + 1;
                 const seenCount = seenKeys.length;
@@ -250,6 +250,11 @@ export default function MyCardsPage() {
                   </span>
                 ) : null;
               })()}
+            </Link>
+            <Link href="/mypage/cards/inventory"
+              className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[10.5px] text-white"
+              style={{ background: "linear-gradient(135deg,#B08FE0,#7A5AE0)", boxShadow: "0 4px 12px rgba(122,90,224,0.3)" }}>
+              <Backpack size={15} /> 가방
             </Link>
           </div>
 
