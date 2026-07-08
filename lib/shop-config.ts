@@ -22,6 +22,18 @@ export interface EquipEffect {
   evaAdd?: number;  // 회피율 +N%p
 }
 
+// 디아블로식 장비창 — 카드(고양이) 하나당 부위별로 5개를 동시에 낄 수 있음.
+// 부위마다 아이템이 정확히 1개씩만 대응(머리=크리, 팔=공격, 몸통=체력, 다리=방어, 발=회피).
+export type BodySlot = "head" | "arm" | "body" | "leg" | "foot";
+export const BODY_SLOTS: BodySlot[] = ["head", "arm", "body", "leg", "foot"];
+export const BODY_SLOT_LABELS: Record<BodySlot, { label: string; emoji: string }> = {
+  head: { label: "머리", emoji: "🎯" },
+  arm: { label: "팔", emoji: "🗡️" },
+  body: { label: "몸통", emoji: "❤️" },
+  leg: { label: "다리", emoji: "🛡️" },
+  foot: { label: "발", emoji: "🍃" },
+};
+
 export interface ShopItem {
   key: ShopItemKey;
   name: string;
@@ -30,6 +42,7 @@ export interface ShopItem {
   price: number;
   usableInBattle: boolean; // false면 카드 관리 화면에서만 사용 (전투 중 사용 아이템 아님)
   equip?: EquipEffect;     // 있으면 "장착 아이템" — 소모되지 않고 카드에 계속 장착됨
+  bodySlot?: BodySlot;     // equip 아이템이 낄 부위 (장비창 UI용)
   borderFx?: BorderFxKey;  // 있으면 "테두리 코스메틱" — 스탯 영향 없이 카드 외형만 바꿈
 }
 
@@ -42,12 +55,12 @@ export const SHOP_ITEMS: Record<ShopItemKey, ShopItem> = {
   lucky_charm:    { key: "lucky_charm",    name: "행운의 부적", desc: "상대 다음 공격 100% 회피",  icon: "🍀", price: 35, usableInBattle: true },
   skill_relearn:  { key: "skill_relearn",  name: "기술 다시 배우기 머신", desc: "카드 스킬 1개를 새 스킬로 재배정", icon: "📜", price: 60, usableInBattle: false },
 
-  // ── 장착 아이템 — 카드 하나에 1개씩 장착, 구매 수량만큼 여러 카드에 나눠 장착 가능 ──
-  atk_charm:  { key: "atk_charm",  name: "공격의 발톱", desc: "장착 시 공격력 +6%",        icon: "🗡️", price: 80, usableInBattle: false, equip: { atkPct: 0.06 } },
-  def_charm:  { key: "def_charm",  name: "수호의 목걸이", desc: "장착 시 방어력 +6%",       icon: "🛡️", price: 80, usableInBattle: false, equip: { defPct: 0.06 } },
-  hp_charm:   { key: "hp_charm",   name: "생명의 부적", desc: "장착 시 최대 체력 +8%",      icon: "❤️", price: 85, usableInBattle: false, equip: { hpPct: 0.08 } },
-  crit_charm: { key: "crit_charm", name: "급소의 렌즈", desc: "장착 시 크리티컬 확률 +5%p", icon: "🎯", price: 90, usableInBattle: false, equip: { critAdd: 5 } },
-  eva_charm:  { key: "eva_charm",  name: "바람의 깃털", desc: "장착 시 회피율 +5%p",        icon: "🍃", price: 90, usableInBattle: false, equip: { evaAdd: 5 } },
+  // ── 장착 아이템 — 부위별 5칸(머리/팔/몸통/다리/발)에 각각 동시 장착 가능 ──
+  crit_charm: { key: "crit_charm", name: "급소의 렌즈", desc: "장착 시 크리티컬 확률 +5%p", icon: "🎯", price: 90, usableInBattle: false, equip: { critAdd: 5 }, bodySlot: "head" },
+  atk_charm:  { key: "atk_charm",  name: "공격의 발톱", desc: "장착 시 공격력 +6%",        icon: "🗡️", price: 80, usableInBattle: false, equip: { atkPct: 0.06 }, bodySlot: "arm" },
+  hp_charm:   { key: "hp_charm",   name: "생명의 부적", desc: "장착 시 최대 체력 +8%",      icon: "❤️", price: 85, usableInBattle: false, equip: { hpPct: 0.08 }, bodySlot: "body" },
+  def_charm:  { key: "def_charm",  name: "수호의 정강이받이", desc: "장착 시 방어력 +6%",   icon: "🦵", price: 80, usableInBattle: false, equip: { defPct: 0.06 }, bodySlot: "leg" },
+  eva_charm:  { key: "eva_charm",  name: "바람의 깃털", desc: "장착 시 회피율 +5%p",        icon: "🍃", price: 90, usableInBattle: false, equip: { evaAdd: 5 }, bodySlot: "foot" },
 
   // ── 테두리 코스메틱 — 전투 능력치엔 영향 없이 카드를 레어해 보이게 꾸며줌 ──
   border_rainbow:   { key: "border_rainbow",   name: "무지개 테두리", desc: "테두리가 무지개색으로 빙글빙글 돈다",     icon: "🌈", price: 120, usableInBattle: false, borderFx: "rainbow" },
@@ -67,20 +80,33 @@ export const BATTLE_ITEM_KEYS = SHOP_ITEM_KEYS.filter(k => SHOP_ITEMS[k].usableI
 export const EQUIP_ITEM_KEYS = SHOP_ITEM_KEYS.filter(k => !!SHOP_ITEMS[k].equip);
 export const BORDER_FX_ITEM_KEYS = SHOP_ITEM_KEYS.filter(k => !!SHOP_ITEMS[k].borderFx);
 
-// 장착된 아이템의 보너스를 스탯에 적용 — calcStats(route.ts)에서 사용.
-// itemKey가 없거나(마이그레이션 전 포함) 알 수 없는 키면 원본 스탯 그대로 반환.
-export function applyEquipBonus(
+export type EquippedSlots = Partial<Record<BodySlot, string | null>>;
+
+// 부위별로 장착된 아이템 최대 5개의 보너스를 전부 합산해서 스탯에 적용 —
+// calcStats(route.ts)에서 사용. slots가 없거나(마이그레이션 전 포함) 비어있으면
+// 원본 스탯 그대로 반환. 각 효과가 이미 한 자릿수대로 작아서 5개를 다 합쳐도
+// 과하지 않은 수준(예: 공격+6%, 방어+6%, 체력+8%, 크리+5%p, 회피+5%p)에서 그침.
+export function applyEquipBonuses(
   stats: { hp: number; atk: number; def: number; eva: number; crit: number },
-  itemKey: string | null | undefined,
+  slots: EquippedSlots | null | undefined,
 ): typeof stats {
-  const eq = itemKey ? SHOP_ITEMS[itemKey as ShopItemKey]?.equip : undefined;
-  if (!eq) return stats;
+  if (!slots) return stats;
+  let atkPct = 0, defPct = 0, hpPct = 0, critAdd = 0, evaAdd = 0;
+  for (const itemKey of Object.values(slots)) {
+    const eq = itemKey ? SHOP_ITEMS[itemKey as ShopItemKey]?.equip : undefined;
+    if (!eq) continue;
+    atkPct += eq.atkPct ?? 0;
+    defPct += eq.defPct ?? 0;
+    hpPct += eq.hpPct ?? 0;
+    critAdd += eq.critAdd ?? 0;
+    evaAdd += eq.evaAdd ?? 0;
+  }
   return {
-    hp: Math.round(stats.hp * (1 + (eq.hpPct ?? 0))),
-    atk: Math.round(stats.atk * (1 + (eq.atkPct ?? 0))),
-    def: Math.round(stats.def * (1 + (eq.defPct ?? 0))),
-    eva: Math.min(50, stats.eva + (eq.evaAdd ?? 0)),
-    crit: Math.min(50, stats.crit + (eq.critAdd ?? 0)),
+    hp: Math.round(stats.hp * (1 + hpPct)),
+    atk: Math.round(stats.atk * (1 + atkPct)),
+    def: Math.round(stats.def * (1 + defPct)),
+    eva: Math.min(50, stats.eva + evaAdd),
+    crit: Math.min(50, stats.crit + critAdd),
   };
 }
 

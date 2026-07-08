@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
-import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BOSS_WIN, COINS_BOSS_LOSE, applyEquipBonus } from "@/lib/shop-config";
+import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BOSS_WIN, COINS_BOSS_LOSE, applyEquipBonuses, type EquippedSlots } from "@/lib/shop-config";
 import { SPECIAL_SKILLS, type SpecialSkillId } from "@/lib/battle-config";
 import { recordPveEncounter } from "@/lib/pve-bestiary";
 
@@ -33,8 +33,8 @@ interface CardCat {
   pve_win_count?: number | null;
   // PVE 상대(고양이학대범 이외의 야생동물)는 실제 사진이 없어 이모지로 표시 — 진짜 고양이 카드는 항상 null.
   placeholder_emoji?: string | null;
-  // 장착 아이템(box/supabase_equip_item_migration.sql) — PVE 합성 상대는 항상 null.
-  equipped_item_key?: string | null;
+  // 부위별 장착 아이템(box/supabase_equip_slots_migration.sql) — PVE 합성 상대는 항상 빈 객체.
+  equipped_slots?: EquippedSlots | null;
 }
 
 // 등급별 HP 보너스: 일반→레전드로 갈수록 체력이 두껍게 (전투가 늘어지지 않도록 전체적으로 하향)
@@ -244,7 +244,7 @@ function calcStats(cat: CardCat) {
     eva:  Math.min(45, cat.battle_eva ?? 8),
     crit: Math.min(45, cat.battle_crit ?? 8),
   };
-  const { hp, atk, def, eva, crit } = applyEquipBonus(base, cat.equipped_item_key);
+  const { hp, atk, def, eva, crit } = applyEquipBonuses(base, cat.equipped_slots);
   return { hp, atk, def, eva, crit, spd: Math.round(s.sociability * 0.5 + 20) + lv };
 }
 
@@ -512,11 +512,11 @@ export async function POST(req: Request) {
 
   if (!myCat) return NextResponse.json({ error: "cat not found" }, { status: 404 });
 
-  // 장착 아이템 조회 — box/supabase_equip_item_migration.sql 실행 전이면 컬럼이 없어
-  // 이 조회만 조용히 실패(장착 없음으로 처리)하고 배틀 자체는 그대로 진행되게 분리.
+  // 부위별 장착 아이템 조회 — box/supabase_equip_slots_migration.sql 실행 전이면 컬럼이
+  // 없어 이 조회만 조용히 실패(장착 없음으로 처리)하고 배틀 자체는 그대로 진행되게 분리.
   try {
-    const { data: eq } = await supabase.from("cats").select("equipped_item_key").eq("id", my_cat_id).maybeSingle();
-    (myCat as CardCat).equipped_item_key = (eq as { equipped_item_key?: string | null } | null)?.equipped_item_key ?? null;
+    const { data: eq } = await supabase.from("cats").select("equipped_slots").eq("id", my_cat_id).maybeSingle();
+    (myCat as CardCat).equipped_slots = (eq as { equipped_slots?: EquippedSlots | null } | null)?.equipped_slots ?? {};
   } catch { /* 마이그레이션 전이면 무시 */ }
 
   // PVE("평소에" 하는 기본 모드) → 항상 고양이학대범과 대결. PVP는 실제 다른 유저 카드와 매칭.
@@ -561,13 +561,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "no_opponents" }, { status: 404 });
     }
 
-    // 장착 아이템 일괄 조회 — 위와 동일하게 마이그레이션 전이면 조용히 스킵
+    // 부위별 장착 아이템 일괄 조회 — 위와 동일하게 마이그레이션 전이면 조용히 스킵
     let opponentsWithEquip = opponents as CardCat[];
     try {
       const ids = opponentsWithEquip.map((o) => o.id);
-      const { data: eqRows } = await supabase.from("cats").select("id,equipped_item_key").in("id", ids);
-      const eqMap = new Map(((eqRows ?? []) as { id: string; equipped_item_key: string | null }[]).map((r) => [r.id, r.equipped_item_key]));
-      opponentsWithEquip = opponentsWithEquip.map((o) => ({ ...o, equipped_item_key: eqMap.get(o.id) ?? null }));
+      const { data: eqRows } = await supabase.from("cats").select("id,equipped_slots").in("id", ids);
+      const eqMap = new Map(((eqRows ?? []) as { id: string; equipped_slots: EquippedSlots | null }[]).map((r) => [r.id, r.equipped_slots]));
+      opponentsWithEquip = opponentsWithEquip.map((o) => ({ ...o, equipped_slots: eqMap.get(o.id) ?? {} }));
     } catch { /* 마이그레이션 전이면 무시 */ }
 
     // 승률 50%(팽팽한 접전)를 노려 매칭. 예전엔 자동전투만 45%(무관심 파밍 방지 목적)로

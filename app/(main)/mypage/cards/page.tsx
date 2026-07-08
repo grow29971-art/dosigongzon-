@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
 import { SPECIAL_SKILLS } from "@/lib/battle-config";
 import { PVE_BESTIARY } from "@/lib/pve-bestiary";
-import { SHOP_ITEMS, EQUIP_ITEM_KEYS, BORDER_FX_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-config";
+import { SHOP_ITEMS, EQUIP_ITEM_KEYS, BORDER_FX_ITEM_KEYS, BODY_SLOTS, BODY_SLOT_LABELS, type ShopItemKey, type BodySlot, type EquippedSlots } from "@/lib/shop-config";
 import Link from "next/link";
 
 interface CardCat {
@@ -29,7 +29,7 @@ interface CardCat {
   battle_special2: string | null;
   battle_special3: string | null;
   battle_special4: string | null;
-  equipped_item_key?: string | null;
+  equipped_slots?: EquippedSlots | null;
   equipped_border_key?: string | null;
 }
 
@@ -85,14 +85,14 @@ export default function MyCardsPage() {
       setSeenKeys((bestiary as { pve_seen_keys?: string[] } | null)?.pve_seen_keys ?? []);
     } catch { /* 마이그레이션 전이면 조용히 무시 */ }
 
-    // 장착 아이템/테두리 — box/supabase_equip_item_migration.sql,
+    // 부위별 장착 아이템/테두리 — box/supabase_equip_slots_migration.sql,
     // box/supabase_border_fx_migration.sql 실행 전이면 컬럼이 없어 이 쿼리만
     // 조용히 실패(전부 미장착으로 처리)하고 나머지 페이지는 정상 동작.
     try {
       const { data: eqRows } = await createClient()
-        .from("cats").select("id,equipped_item_key,equipped_border_key").eq("caretaker_id", uid);
-      const eqMap = new Map(((eqRows ?? []) as { id: string; equipped_item_key: string | null; equipped_border_key: string | null }[]).map(r => [r.id, r]));
-      setCats(loadedCats.map(c => ({ ...c, equipped_item_key: eqMap.get(c.id)?.equipped_item_key ?? null, equipped_border_key: eqMap.get(c.id)?.equipped_border_key ?? null })));
+        .from("cats").select("id,equipped_slots,equipped_border_key").eq("caretaker_id", uid);
+      const eqMap = new Map(((eqRows ?? []) as { id: string; equipped_slots: EquippedSlots | null; equipped_border_key: string | null }[]).map(r => [r.id, r]));
+      setCats(loadedCats.map(c => ({ ...c, equipped_slots: eqMap.get(c.id)?.equipped_slots ?? {}, equipped_border_key: eqMap.get(c.id)?.equipped_border_key ?? null })));
     } catch { /* 마이그레이션 전이면 조용히 무시 */ }
 
     const allCosmeticKeys = [...EQUIP_ITEM_KEYS, ...BORDER_FX_ITEM_KEYS];
@@ -103,7 +103,7 @@ export default function MyCardsPage() {
     setOwnedEquip(owned);
   };
 
-  const doEquip = async (catId: string, itemKey: string | null, slot: "equip" | "border" = "equip") => {
+  const doEquip = async (catId: string, itemKey: string | null, slot: BodySlot | "border") => {
     if (equipLoading) return;
     setEquipLoading(true);
     setEquipMsg("");
@@ -113,10 +113,14 @@ export default function MyCardsPage() {
     });
     const json = await res.json();
     setEquipLoading(false);
-    const field = slot === "border" ? "equipped_border_key" : "equipped_item_key";
     if (res.ok) {
-      setCats(prev => prev.map(c => c.id === catId ? { ...c, [field]: itemKey } : c));
-      setSelected(prev => prev && prev.id === catId ? { ...prev, [field]: itemKey } : prev);
+      if (slot === "border") {
+        setCats(prev => prev.map(c => c.id === catId ? { ...c, equipped_border_key: itemKey } : c));
+        setSelected(prev => prev && prev.id === catId ? { ...prev, equipped_border_key: itemKey } : prev);
+      } else {
+        setCats(prev => prev.map(c => c.id === catId ? { ...c, equipped_slots: { ...(c.equipped_slots ?? {}), [slot]: itemKey } } : c));
+        setSelected(prev => prev && prev.id === catId ? { ...prev, equipped_slots: { ...(prev.equipped_slots ?? {}), [slot]: itemKey } } : prev);
+      }
       if (user) {
         const allCosmeticKeys = [...EQUIP_ITEM_KEYS, ...BORDER_FX_ITEM_KEYS];
         const { data: itemRows } = await createClient()
@@ -400,40 +404,34 @@ export default function MyCardsPage() {
               )}
             </div>
 
-            {/* 장착 아이템 */}
+            {/* 부위별 장비창 — 머리/팔/몸통/다리/발 5칸 동시 장착 */}
             <div className="w-full rounded-2xl p-3" style={{ background: "#fff" }}>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[12px] font-bold flex items-center gap-1.5" style={{ color: "#2B2B3D" }}>
-                  <Gem size={13} /> 장착 아이템
-                </span>
-                {selected.equipped_item_key && (
-                  <button onClick={() => doEquip(selected.id, null)} disabled={equipLoading}
-                    className="text-[10.5px] font-bold px-2 py-1 rounded-full" style={{ background: "#FDECEC", color: "#E1505F" }}>
-                    해제
-                  </button>
-                )}
-              </div>
-              {selected.equipped_item_key ? (
-                <div className="flex items-center gap-2 rounded-xl px-2.5 py-2 mb-2" style={{ background: "#E3EEF9" }}>
-                  <span style={{ fontSize: 18 }}>{SHOP_ITEMS[selected.equipped_item_key as ShopItemKey]?.icon}</span>
-                  <div className="min-w-0">
-                    <p className="text-[11px] font-bold truncate" style={{ color: "#2F5E93" }}>{SHOP_ITEMS[selected.equipped_item_key as ShopItemKey]?.name}</p>
-                    <p className="text-[10px] truncate" style={{ color: "#6B8FB5" }}>{SHOP_ITEMS[selected.equipped_item_key as ShopItemKey]?.desc}</p>
-                  </div>
-                </div>
-              ) : (
-                <p className="text-[10px] mb-2" style={{ color: "#9A94A8" }}>장착한 아이템이 없어요.</p>
-              )}
-              <div className="grid grid-cols-2 gap-1.5">
-                {EQUIP_ITEM_KEYS.filter(k => k !== selected.equipped_item_key).map((key) => {
-                  const item = SHOP_ITEMS[key];
-                  const qty = ownedEquip[key] ?? 0;
+              <span className="text-[12px] font-bold flex items-center gap-1.5 mb-2" style={{ color: "#2B2B3D" }}>
+                <Gem size={13} /> 부위별 장비창
+              </span>
+              <div className="flex flex-col gap-1.5">
+                {BODY_SLOTS.map((slot) => {
+                  const slotItem = EQUIP_ITEM_KEYS.find(k => SHOP_ITEMS[k].bodySlot === slot);
+                  if (!slotItem) return null;
+                  const item = SHOP_ITEMS[slotItem];
+                  const equippedHere = selected.equipped_slots?.[slot] === slotItem;
+                  const qty = ownedEquip[slotItem] ?? 0;
+                  const canEquip = qty > 0 || equippedHere;
                   return (
-                    <button key={key} onClick={() => doEquip(selected.id, key)} disabled={qty <= 0 || equipLoading}
-                      className="rounded-xl px-2 py-1.5 text-left flex items-center gap-1.5"
-                      style={{ background: "#F6F5FA", opacity: qty > 0 ? 1 : 0.4 }}>
-                      <span style={{ fontSize: 14 }}>{item.icon}</span>
-                      <span className="text-[10px] font-bold truncate" style={{ color: "#2B2B3D" }}>{item.name} ({qty})</span>
+                    <button key={slot} onClick={() => canEquip && doEquip(selected.id, equippedHere ? null : slotItem, slot)}
+                      disabled={!canEquip || equipLoading}
+                      className="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-left"
+                      style={{ background: equippedHere ? "#E3EEF9" : "#F6F5FA", opacity: canEquip ? 1 : 0.45 }}>
+                      <span className="w-7 text-center" style={{ fontSize: 15 }}>{BODY_SLOT_LABELS[slot].emoji}</span>
+                      <span className="text-[10px] font-bold shrink-0" style={{ color: "#9A94A8", width: 28 }}>{BODY_SLOT_LABELS[slot].label}</span>
+                      <span style={{ fontSize: 16 }}>{item.icon}</span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[11px] font-bold truncate" style={{ color: equippedHere ? "#2F5E93" : "#2B2B3D" }}>{item.name}</p>
+                        <p className="text-[9.5px] truncate" style={{ color: "#9A94A8" }}>{item.desc}</p>
+                      </div>
+                      <span className="text-[10px] font-extrabold shrink-0" style={{ color: equippedHere ? "#4C82BC" : canEquip ? "#B4AFC2" : "#D8D5E0" }}>
+                        {equippedHere ? "장착중" : canEquip ? `장착 (${qty})` : "미보유"}
+                      </span>
                     </button>
                   );
                 })}
