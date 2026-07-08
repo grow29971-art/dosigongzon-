@@ -60,7 +60,7 @@ function MessagesPage() {
     getConversations().then(setConvs).finally(() => setLoading(false));
   }, [user]);
 
-  // 대화 상대 선택 시 메시지 로드 + 1초 폴링
+  // 대화 상대 선택 시 메시지 로드 — Realtime 구독 + 30초 폴백 폴링
   useEffect(() => {
     if (!selectedPartner || !user) return;
     let active = true;
