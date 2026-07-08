@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
 import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BOSS_WIN, COINS_BOSS_LOSE } from "@/lib/shop-config";
 import { recordPveEncounter } from "@/lib/pve-bestiary";
+import { verifyBattleToken } from "@/lib/battle-token";
 
 function computeLevel(exp: number) {
   const thresholds = [0, 90, 210, 380, 610, 900, 1260, 1690, 2200, 2800];
@@ -17,8 +18,19 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  const { my_cat_id, opp_cat_id, opp_caretaker_id, winner, rounds, my_hp_left, opp_hp_left, is_boss } = await req.json();
-  // is_boss는 "진짜 보스(고양이학대범)냐"만 뜻함(카드-배틀 route.ts에서 정확히 내려줌).
+  const { my_cat_id, opp_cat_id, opp_caretaker_id, winner, rounds, my_hp_left, opp_hp_left, battle_token } = await req.json();
+
+  // 결과 위조 방지 — 매칭 API(/api/cats/card-battle)가 발급한 서명 토큰이 없거나,
+  // 서명이 안 맞거나, 만료됐거나, 이 요청의 my_cat_id/opp_cat_id와 토큰 속 값이
+  // 다르면 거절한다. 이게 없으면 클라이언트가 아무 opp_cat_id(다른 유저의 실제
+  // 카드 포함)나 넣어서 코인·경험치를 무한 파밍하거나 남의 카드 전적을 조작할 수 있었음.
+  const tokenPayload = verifyBattleToken(battle_token);
+  if (!tokenPayload || tokenPayload.myCatId !== my_cat_id || tokenPayload.oppId !== opp_cat_id) {
+    return NextResponse.json({ error: "invalid_battle_token" }, { status: 400 });
+  }
+  // is_boss는 토큰에 서버가 직접 서명해둔 값만 신뢰 — 클라이언트가 보낸 is_boss는 안 씀
+  // (안 그러면 일반 PVP 승리를 "보스 격퇴"로 속여 보상을 더 받을 수 있었음).
+  const is_boss = tokenPayload.isBoss;
   // "PVE 10승" 배지처럼 일반 동물 승리도 세야 하는 값은 opp_cat_id가 "pve-" 접두사를
   // 갖는지(합성 PVE 상대인지)로 따로 판별한다 — PVP는 실제 cat UUID라 여기 안 걸림.
   const isPveEncounter = Boolean(is_boss) || String(opp_cat_id ?? "").startsWith("pve-");

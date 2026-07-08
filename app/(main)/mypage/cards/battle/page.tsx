@@ -410,6 +410,9 @@ export default function BattlePage() {
   const [countdown, setCountdown] = useState(3);
 
   // 배틀 데이터
+  // 수동 배틀 결과 기록(record) 위조 방지용 서명 토큰 — 매칭 API가 내려준 걸 그대로
+  // 보관했다가 endBattle에서 함께 보낸다. 서버가 실제로 이 상대를 배정했는지 검증함.
+  const battleTokenRef = useRef<string | null>(null);
   const [opponent, setOpponent] = useState<BattleCat | null>(null);
   const [myStats, setMyStats] = useState<BattleStats | null>(null);
   const [oppStats, setOppStats] = useState<BattleStats | null>(null);
@@ -606,6 +609,7 @@ export default function BattlePage() {
     setOpponent(opp);
     const isBoss = !!json.is_boss;
     setIsBossBattle(isBoss);
+    battleTokenRef.current = typeof json.battle_token === "string" ? json.battle_token : null;
 
     // 랜덤 배틀 환경 선택 (보스 조우는 항상 심야 골목으로 고정)
     const envKey = isBoss ? "night" : ENV_KEYS[Math.floor(Math.random() * ENV_KEYS.length)];
@@ -1259,7 +1263,7 @@ export default function BattlePage() {
     try {
       const res = await fetch("/api/cats/card-battle/record", {
         method:"POST", headers:{"content-type":"application/json"},
-        body: JSON.stringify({ my_cat_id:selected.id, opp_cat_id:opponent.id, opp_caretaker_id:opponent.caretaker_id, winner, rounds:turnCount, my_hp_left:myHpRef.current, opp_hp_left:oppHpRef.current, is_boss:isBossBattle }),
+        body: JSON.stringify({ my_cat_id:selected.id, opp_cat_id:opponent.id, opp_caretaker_id:opponent.caretaker_id, winner, rounds:turnCount, my_hp_left:myHpRef.current, opp_hp_left:oppHpRef.current, is_boss:isBossBattle, battle_token:battleTokenRef.current }),
       });
       const json = await res.json();
       if(mounted.current) setBattleResult({ winner, exp:json.exp_gained??0, newLevel:json.my_new_level??1, leveledUp:json.leveled_up??false, coinsGained:json.coins_gained });

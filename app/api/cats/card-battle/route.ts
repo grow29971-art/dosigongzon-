@@ -4,6 +4,7 @@ import { createClient as serviceClient } from "@supabase/supabase-js";
 import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BOSS_WIN, COINS_BOSS_LOSE, applyEquipBonuses, type EquippedSlots } from "@/lib/shop-config";
 import { SPECIAL_SKILLS, type SpecialSkillId } from "@/lib/battle-config";
 import { recordPveEncounter } from "@/lib/pve-bestiary";
+import { signBattleToken } from "@/lib/battle-token";
 
 export const maxDuration = 15;
 
@@ -601,12 +602,18 @@ export async function POST(req: Request) {
 
   // 수동 배틀: 스탯만 반환 (시뮬레이션 없음)
   if (mode === "manual") {
+    // 결과 기록(record 라우트) 위조 방지용 서명 토큰 — "이 상대는 실제로 이 매칭
+    // API를 통해 정식으로 배정됐다"는 걸 증명. 15분 내로 결과를 기록해야 유효.
+    const battle_token = signBattleToken({
+      myCatId: myCat.id, oppId: opponent.id, isBoss: isActualBoss, exp: Date.now() + 15 * 60 * 1000,
+    });
     return NextResponse.json({
       my_cat: myCat,
       opponent,
       my_stats: calcStats(myCat as CardCat),
       opp_stats: calcStats(opponent),
       is_boss: isActualBoss,
+      battle_token,
     });
   }
 
