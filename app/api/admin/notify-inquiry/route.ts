@@ -8,6 +8,7 @@ import { Resend } from "resend";
 import { createClient } from "@/lib/supabase/server";
 import { getDisplayName } from "@/lib/cats-repo";
 import { reportError } from "@/lib/error-report";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 30;
 
@@ -21,6 +22,12 @@ export async function POST(request: Request) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return Response.json({ error: "로그인이 필요해요." }, { status: 401 });
+    }
+
+    // 유저당 1시간 5회 — 실제 문의/신고는 이렇게 자주 반복될 일이 없고,
+    // 없으면 로그인 유저 누구나 admin 이메일함에 스팸을 반복 발송할 수 있었음.
+    if (!rateLimit(`notify-inquiry:${user.id}`, { max: 5, windowMs: 60 * 60 * 1000 })) {
+      return Response.json({ error: "잠시 후 다시 시도해주세요." }, { status: 429 });
     }
 
     const body = await request.json().catch(() => ({}));
