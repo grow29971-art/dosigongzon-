@@ -22,16 +22,13 @@ interface MyCat {
   equipped_border_key: string | null;
 }
 
-const RARITY_LABELS: Record<string, string> = { legendary: "레전드", rare: "레어", uncommon: "희귀", common: "일반" };
-
-// 인형(paper-doll) 배치 — 고양이 사진을 중심에 두고 5부위를 오각형으로 둘러쌈
-const SLOT_POS: Record<BodySlot, React.CSSProperties> = {
-  head: { top: 0, left: "50%", transform: "translateX(-50%)" },
-  arm: { top: "34%", left: 0 },
-  leg: { top: "34%", right: 0 },
-  body: { bottom: 6, left: "12%" },
-  foot: { bottom: 6, right: "12%" },
-};
+type Tab = "all" | "consumable" | "equip" | "border";
+const TABS: { key: Tab; label: string }[] = [
+  { key: "all", label: "전체" },
+  { key: "consumable", label: "소모품" },
+  { key: "equip", label: "장비" },
+  { key: "border", label: "테두리" },
+];
 
 export default function InventoryPage() {
   const { user, loading: authLoading } = useAuth();
@@ -41,6 +38,7 @@ export default function InventoryPage() {
   const [cats, setCats] = useState<MyCat[]>([]);
   const [activeCatId, setActiveCatId] = useState<string | null>(null);
   const [borderPicker, setBorderPicker] = useState(false);
+  const [tab, setTab] = useState<Tab>("all");
   const [equipLoading, setEquipLoading] = useState(false);
   const [toast, setToast] = useState("");
 
@@ -66,7 +64,6 @@ export default function InventoryPage() {
     load(user.id);
   }, [user, authLoading, router]);
 
-  const consumableKeys = SHOP_ITEM_KEYS.filter(k => !SHOP_ITEMS[k].equip && !SHOP_ITEMS[k].borderFx && (owned[k] ?? 0) > 0);
   const activeCat = cats.find(c => c.id === activeCatId) ?? null;
 
   const doEquip = async (itemKey: string | null, slot: BodySlot | "border") => {
@@ -83,7 +80,7 @@ export default function InventoryPage() {
       setBorderPicker(false);
       await load(user.id, activeCat.id);
     } else {
-      setToast(json.error === "no_stock" ? "보유 수량이 없어요. 상점에서 구매해주세요." : "처리 실패");
+      setToast(json.error === "no_stock" ? "보유 수량이 없어요." : "처리 실패");
     }
     setTimeout(() => setToast(""), 2200);
   };
@@ -94,8 +91,25 @@ export default function InventoryPage() {
     if (!slotItemKey) return;
     const equipped = activeCat.equipped_slots?.[slot] === slotItemKey;
     if (equipped) { doEquip(null, slot); return; }
-    if ((owned[slotItemKey] ?? 0) <= 0) { setToast("보유 수량이 없어요. 상점에서 구매해주세요."); setTimeout(() => setToast(""), 2200); return; }
+    if ((owned[slotItemKey] ?? 0) <= 0) { setToast("보유 수량이 없어요."); setTimeout(() => setToast(""), 2200); return; }
     doEquip(slotItemKey, slot);
+  };
+
+  const consumableKeys = SHOP_ITEM_KEYS.filter(k => !SHOP_ITEMS[k].equip && !SHOP_ITEMS[k].borderFx && (owned[k] ?? 0) > 0);
+  const equipKeys = EQUIP_ITEM_KEYS.filter(k => (owned[k] ?? 0) > 0 || activeCat?.equipped_slots?.[SHOP_ITEMS[k].bodySlot!] === k);
+  const borderKeys = BORDER_FX_ITEM_KEYS.filter(k => (owned[k] ?? 0) > 0 || activeCat?.equipped_border_key === k);
+  const listKeys: ShopItemKey[] =
+    tab === "consumable" ? consumableKeys :
+    tab === "equip" ? equipKeys :
+    tab === "border" ? borderKeys :
+    [...consumableKeys, ...equipKeys, ...borderKeys];
+  const totalOwnedCount = consumableKeys.length + equipKeys.length + borderKeys.length;
+
+  const rowTap = (key: ShopItemKey) => {
+    const item = SHOP_ITEMS[key];
+    if (item.bodySlot) tapSlot(item.bodySlot);
+    else if (item.borderFx) setBorderPicker(true);
+    // 소모품은 배틀 중에만 쓰는 아이템이라 가방에서는 탭해도 동작 없음(정보 확인만)
   };
 
   return (
@@ -104,7 +118,7 @@ export default function InventoryPage() {
         <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>
           <ArrowLeft size={18} className="text-white" />
         </button>
-        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><StickerIcon icon={Backpack} color="#7A5AE0" size={30} /> 가방</h1>
+        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><StickerIcon icon={Backpack} color="#7A5AE0" size={30} /> 소지품 &amp; 장비</h1>
       </div>
 
       <div className="px-4 pb-10">
@@ -118,13 +132,13 @@ export default function InventoryPage() {
         ) : (
           <>
             {/* 카드 선택 스트립 */}
-            <div className="flex gap-2 overflow-x-auto pb-1 mb-4 no-scrollbar">
+            <div className="flex gap-2 overflow-x-auto pb-1 mb-3 no-scrollbar">
               {cats.map((cat) => (
                 <button key={cat.id} onClick={() => setActiveCatId(cat.id)}
                   className="shrink-0 flex flex-col items-center gap-1 px-1"
                   style={{ opacity: activeCatId === cat.id ? 1 : 0.5 }}>
                   <div className="rounded-full overflow-hidden flex items-center justify-center" style={{
-                    width: 48, height: 48,
+                    width: 40, height: 40,
                     boxShadow: activeCatId === cat.id ? "0 0 0 2px #4C82BC" : "0 0 0 1px rgba(255,255,255,0.1)",
                   }}>
                     {cat.photo_url ? (
@@ -134,147 +148,102 @@ export default function InventoryPage() {
                       <div className="w-full h-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>🐱</div>
                     )}
                   </div>
-                  <span className="text-[9.5px] font-bold text-white max-w-[52px] truncate">{cat.name}</span>
+                  <span className="text-[9px] font-bold text-white max-w-[44px] truncate">{cat.name}</span>
                 </button>
               ))}
             </div>
 
+            {/* ── 좌: 장비칸 / 우: 소지품 목록 — 나란히 ── */}
             {activeCat && (
-              <>
-                {/* 인형(paper-doll) 장비창 */}
-                <div className="relative mx-auto mb-4" style={{ width: 260, height: 260 }}>
-                  {/* 중앙 고양이 */}
-                  <div className="absolute rounded-full overflow-hidden flex items-center justify-center"
-                    style={{ width: 118, height: 118, top: "50%", left: "50%", transform: "translate(-50%,-50%)", boxShadow: "0 0 0 3px rgba(255,255,255,0.12)" }}>
+              <div className="flex gap-2.5 items-start" style={{ minHeight: 420 }}>
+                {/* 좌측 장비 패널 */}
+                <div className="shrink-0 rounded-2xl p-2.5" style={{ width: 108, background: "rgba(255,255,255,0.04)" }}>
+                  <p className="text-[9.5px] font-extrabold text-center mb-2" style={{ color: "#8A8598" }}>캐릭터 장비</p>
+                  <div className="rounded-xl overflow-hidden mb-2 mx-auto flex items-center justify-center" style={{ width: 68, height: 68, background: "rgba(255,255,255,0.06)" }}>
                     {activeCat.photo_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={activeCat.photo_url} alt={activeCat.name} className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[40px]" style={{ background: "rgba(255,255,255,0.06)" }}>🐱</div>
+                      <span style={{ fontSize: 30 }}>🐱</span>
                     )}
                   </div>
-
-                  {/* 5부위 슬롯 */}
-                  {BODY_SLOTS.map((slot) => {
-                    const slotItemKey = EQUIP_ITEM_KEYS.find(k => SHOP_ITEMS[k].bodySlot === slot);
-                    if (!slotItemKey) return null;
-                    const item = SHOP_ITEMS[slotItemKey];
-                    const equipped = activeCat.equipped_slots?.[slot] === slotItemKey;
-                    const qty = owned[slotItemKey] ?? 0;
-                    return (
-                      <button key={slot} onClick={() => tapSlot(slot)} disabled={equipLoading}
-                        className="absolute flex flex-col items-center gap-0.5"
-                        style={SLOT_POS[slot]}>
-                        <div className="rounded-2xl flex items-center justify-center" style={{
-                          width: 48, height: 48,
-                          background: equipped ? "rgba(76,130,188,0.3)" : "rgba(255,255,255,0.06)",
-                          boxShadow: equipped ? "0 0 0 2px #4C82BC" : qty > 0 ? "0 0 0 1.5px rgba(255,255,255,0.25)" : "0 0 0 1px rgba(255,255,255,0.08)",
-                          opacity: qty > 0 || equipped ? 1 : 0.4,
-                        }}>
-                          <span style={{ fontSize: 20 }}>{item.icon}</span>
-                        </div>
-                        <span className="text-[8.5px] font-bold" style={{ color: equipped ? "#6FA0D8" : "#75718A" }}>
-                          {BODY_SLOT_LABELS[slot].label}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* 테두리(오라) 슬롯 */}
-                <button onClick={() => setBorderPicker(true)}
-                  className="w-full flex items-center gap-3 rounded-2xl px-3 py-2.5 mb-5"
-                  style={{ background: activeCat.equipped_border_key ? "rgba(232,176,64,0.18)" : "rgba(255,255,255,0.05)" }}>
-                  <span style={{ fontSize: 22 }}>{activeCat.equipped_border_key ? SHOP_ITEMS[activeCat.equipped_border_key as ShopItemKey]?.icon : "✨"}</span>
-                  <div className="min-w-0 flex-1 text-left">
-                    <p className="text-[12px] font-bold" style={{ color: activeCat.equipped_border_key ? "#E8B040" : "white" }}>
-                      {activeCat.equipped_border_key ? SHOP_ITEMS[activeCat.equipped_border_key as ShopItemKey]?.name : "테두리 오라 — 미장착"}
-                    </p>
-                    <p className="text-[10px] text-gray-500">탭해서 바꾸기</p>
+                  <div className="flex flex-col gap-1.5">
+                    {BODY_SLOTS.map((slot) => {
+                      const slotItemKey = EQUIP_ITEM_KEYS.find(k => SHOP_ITEMS[k].bodySlot === slot);
+                      if (!slotItemKey) return null;
+                      const item = SHOP_ITEMS[slotItemKey];
+                      const equipped = activeCat.equipped_slots?.[slot] === slotItemKey;
+                      const qty = owned[slotItemKey] ?? 0;
+                      return (
+                        <button key={slot} onClick={() => tapSlot(slot)} disabled={equipLoading}
+                          className="flex items-center gap-1.5 rounded-lg px-1.5 py-1"
+                          style={{ background: equipped ? "rgba(76,130,188,0.28)" : "rgba(255,255,255,0.05)" }}>
+                          <span className="rounded-md flex items-center justify-center shrink-0" style={{
+                            width: 22, height: 22, fontSize: 13,
+                            background: equipped ? "rgba(76,130,188,0.4)" : "rgba(255,255,255,0.06)",
+                            opacity: qty > 0 || equipped ? 1 : 0.4,
+                          }}>{item.icon}</span>
+                          <span className="text-[8.5px] font-bold truncate" style={{ color: equipped ? "#8FC0FF" : "#75718A" }}>
+                            {BODY_SLOT_LABELS[slot].label}
+                          </span>
+                        </button>
+                      );
+                    })}
+                    <button onClick={() => setBorderPicker(true)}
+                      className="flex items-center gap-1.5 rounded-lg px-1.5 py-1"
+                      style={{ background: activeCat.equipped_border_key ? "rgba(232,176,64,0.25)" : "rgba(255,255,255,0.05)" }}>
+                      <span className="rounded-md flex items-center justify-center shrink-0" style={{
+                        width: 22, height: 22, fontSize: 13,
+                        background: activeCat.equipped_border_key ? "rgba(232,176,64,0.35)" : "rgba(255,255,255,0.06)",
+                      }}>{activeCat.equipped_border_key ? SHOP_ITEMS[activeCat.equipped_border_key as ShopItemKey]?.icon : "✨"}</span>
+                      <span className="text-[8.5px] font-bold truncate" style={{ color: activeCat.equipped_border_key ? "#E8B040" : "#75718A" }}>테두리</span>
+                    </button>
                   </div>
-                </button>
-              </>
-            )}
-
-            {consumableKeys.length > 0 && (
-              <div className="mb-5">
-                <p className="text-[11px] font-extrabold mb-2" style={{ color: "#6FA0D8" }}>⚔️ 전투 소모품</p>
-                <div className="grid grid-cols-2 gap-3">
-                  {consumableKeys.map((key) => {
-                    const item = SHOP_ITEMS[key];
-                    return (
-                      <div key={key} className="rounded-2xl p-3 flex flex-col gap-1.5" style={{ background: "rgba(255,255,255,0.05)" }}>
-                        <div className="flex items-center justify-between">
-                          <span style={{ fontSize: 26 }}>{item.icon}</span>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }}>
-                            보유 {owned[key]}
-                          </span>
-                        </div>
-                        <span className="text-[12.5px] font-bold text-white">{item.name}</span>
-                        <span className="text-[10.5px] text-gray-400 leading-snug">{item.desc}</span>
-                      </div>
-                    );
-                  })}
                 </div>
-              </div>
-            )}
 
-            {/* 🗡️ 장비(무기·방어구) — 5부위 스탯 아이템, 보유분 전부 표시 + 여기서 바로 장착/해제 가능 */}
-            {activeCat && EQUIP_ITEM_KEYS.some(k => (owned[k] ?? 0) > 0 || Object.values(activeCat.equipped_slots ?? {}).includes(k)) && (
-              <div className="mb-5">
-                <p className="text-[11px] font-extrabold mb-2" style={{ color: "#9CC0E8" }}>🗡️ 장비 (무기·방어구)</p>
-                <div className="grid grid-cols-2 gap-3">
-                  {EQUIP_ITEM_KEYS.filter(k => (owned[k] ?? 0) > 0 || activeCat.equipped_slots?.[SHOP_ITEMS[k].bodySlot!] === k).map((key) => {
-                    const item = SHOP_ITEMS[key];
-                    const slot = item.bodySlot!;
-                    const equipped = activeCat.equipped_slots?.[slot] === key;
-                    const qty = owned[key] ?? 0;
-                    return (
-                      <button key={key} onClick={() => tapSlot(slot)} disabled={equipLoading}
-                        className="rounded-2xl p-3 flex flex-col gap-1.5 text-left" style={{ background: equipped ? "rgba(76,130,188,0.2)" : "rgba(255,255,255,0.05)" }}>
-                        <div className="flex items-center justify-between">
-                          <span style={{ fontSize: 26 }}>{item.icon}</span>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: equipped ? "#4C82BC" : "rgba(255,255,255,0.12)", color: equipped ? "white" : "rgba(255,255,255,0.7)" }}>
-                            {equipped ? "장착중" : `보유 ${qty}`}
-                          </span>
-                        </div>
-                        <span className="text-[12.5px] font-bold text-white">{item.name}</span>
-                        <span className="text-[10.5px] text-gray-400 leading-snug">{item.desc} · {BODY_SLOT_LABELS[slot].label} 부위</span>
+                {/* 우측 소지품 목록 */}
+                <div className="flex-1 min-w-0 rounded-2xl p-2.5" style={{ background: "rgba(255,255,255,0.04)" }}>
+                  <div className="flex gap-1 mb-2 overflow-x-auto no-scrollbar">
+                    {TABS.map((t) => (
+                      <button key={t.key} onClick={() => setTab(t.key)}
+                        className="shrink-0 px-2.5 py-1 rounded-full text-[10px] font-bold"
+                        style={{ background: tab === t.key ? "#4C82BC" : "rgba(255,255,255,0.06)", color: tab === t.key ? "white" : "#8A8598" }}>
+                        {t.label}
                       </button>
-                    );
-                  })}
+                    ))}
+                  </div>
+                  {listKeys.length === 0 ? (
+                    <p className="text-[11px] text-gray-500 text-center py-10">보유한 아이템이 없어요</p>
+                  ) : (
+                    <div className="flex flex-col gap-1.5" style={{ maxHeight: 380, overflowY: "auto" }}>
+                      {listKeys.map((key) => {
+                        const item = SHOP_ITEMS[key];
+                        const isEquipped = item.bodySlot
+                          ? activeCat.equipped_slots?.[item.bodySlot] === key
+                          : item.borderFx ? activeCat.equipped_border_key === key : false;
+                        const qty = owned[key] ?? 0;
+                        return (
+                          <button key={key} onClick={() => rowTap(key)}
+                            className="flex items-center gap-2 rounded-xl px-2 py-1.5 text-left"
+                            style={{ background: isEquipped ? "rgba(76,130,188,0.18)" : "rgba(255,255,255,0.03)" }}>
+                            <span className="rounded-lg flex items-center justify-center shrink-0" style={{ width: 30, height: 30, fontSize: 16, background: "rgba(255,255,255,0.06)" }}>
+                              {item.icon}
+                            </span>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-[11px] font-bold text-white truncate">{item.name} {qty > 0 && <span className="text-gray-400 font-normal">x{qty}</span>}</p>
+                              <p className="text-[9.5px] text-gray-500 truncate">{item.desc}</p>
+                            </div>
+                            {isEquipped && <CheckCircle2 size={14} style={{ color: "#4C82BC" }} className="shrink-0" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
 
-            {/* ✨ 테두리 — 보유분 전부 표시 + 여기서 바로 장착/해제 가능 */}
-            {activeCat && BORDER_FX_ITEM_KEYS.some(k => (owned[k] ?? 0) > 0 || activeCat.equipped_border_key === k) && (
-              <div className="mb-5">
-                <p className="text-[11px] font-extrabold mb-2" style={{ color: "#E8B040" }}>✨ 테두리 코스메틱</p>
-                <div className="grid grid-cols-2 gap-3">
-                  {BORDER_FX_ITEM_KEYS.filter(k => (owned[k] ?? 0) > 0 || activeCat.equipped_border_key === k).map((key) => {
-                    const item = SHOP_ITEMS[key];
-                    const equipped = activeCat.equipped_border_key === key;
-                    const qty = owned[key] ?? 0;
-                    return (
-                      <button key={key} onClick={() => doEquip(equipped ? null : key, "border")} disabled={equipLoading || (!equipped && qty <= 0)}
-                        className="rounded-2xl p-3 flex flex-col gap-1.5 text-left" style={{ background: equipped ? "rgba(232,176,64,0.2)" : "rgba(255,255,255,0.05)" }}>
-                        <div className="flex items-center justify-between">
-                          <span style={{ fontSize: 26 }}>{item.icon}</span>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: equipped ? "#E8B040" : "rgba(255,255,255,0.12)", color: equipped ? "white" : "rgba(255,255,255,0.7)" }}>
-                            {equipped ? "장착중" : `보유 ${qty}`}
-                          </span>
-                        </div>
-                        <span className="text-[12.5px] font-bold text-white">{item.name}</span>
-                        <span className="text-[10.5px] text-gray-400 leading-snug">{item.desc}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {consumableKeys.length === 0 && Object.keys(owned).length === 0 && (
+            {totalOwnedCount === 0 && (
               <div className="text-center py-6">
                 <p className="text-gray-400 text-[12px] mb-3">가방이 비어있어요</p>
                 <Link href="/mypage/shop"
@@ -305,7 +274,7 @@ export default function InventoryPage() {
                 <span className="text-[12px] font-bold" style={{ color: "#E1505F" }}>해제하기</span>
               </button>
             )}
-            {BORDER_FX_ITEM_KEYS.filter(k => (owned[k] ?? 0) > 0 || activeCat.equipped_border_key === k).length === 0 ? (
+            {BORDER_FX_ITEM_KEYS.filter(k => (owned[k] ?? 0) > 0).length === 0 ? (
               <p className="text-gray-400 text-[12px] py-6 text-center">보유한 테두리 아이템이 없어요. 상점에서 구매해보세요!</p>
             ) : (
               <div className="flex flex-col gap-2">
