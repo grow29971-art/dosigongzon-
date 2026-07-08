@@ -107,6 +107,8 @@ export default function MyCardsPage() {
     if (equipLoading) return;
     setEquipLoading(true);
     setEquipMsg("");
+    const targetCat = cats.find(c => c.id === catId);
+    const prevKey = slot === "border" ? (targetCat?.equipped_border_key ?? null) : (targetCat?.equipped_slots?.[slot] ?? null);
     const res = await fetch("/api/cats/equip-item", {
       method: "POST", headers: { "content-type": "application/json" },
       body: JSON.stringify({ cat_id: catId, item_key: itemKey, slot }),
@@ -121,14 +123,13 @@ export default function MyCardsPage() {
         setCats(prev => prev.map(c => c.id === catId ? { ...c, equipped_slots: { ...(c.equipped_slots ?? {}), [slot]: itemKey } } : c));
         setSelected(prev => prev && prev.id === catId ? { ...prev, equipped_slots: { ...(prev.equipped_slots ?? {}), [slot]: itemKey } } : prev);
       }
-      if (user) {
-        const allCosmeticKeys = [...EQUIP_ITEM_KEYS, ...BORDER_FX_ITEM_KEYS];
-        const { data: itemRows } = await createClient()
-          .from("user_items").select("item_key,quantity").eq("user_id", user.id).in("item_key", allCosmeticKeys);
-        const owned: Record<string, number> = {};
-        for (const it of (itemRows ?? []) as { item_key: string; quantity: number }[]) owned[it.item_key] = it.quantity;
-        setOwnedEquip(owned);
-      }
+      // 재고 재조회 없이 응답 결과로 로컬 상태만 바로 갱신 — API 호출 1번으로 끝나서 체감 속도 개선
+      setOwnedEquip(prev => {
+        const next = { ...prev };
+        if (prevKey) next[prevKey] = (next[prevKey] ?? 0) + 1;
+        if (itemKey) next[itemKey] = Math.max(0, (next[itemKey] ?? 0) - 1);
+        return next;
+      });
       setEquipMsg(itemKey ? `${SHOP_ITEMS[itemKey as ShopItemKey].name} 장착 완료!` : "장착 해제했어요.");
     } else {
       setEquipMsg(json.error === "no_stock" ? "보유 수량이 없어요. 상점에서 구매해주세요." : "처리 실패");

@@ -78,6 +78,7 @@ export default function InventoryPage() {
   const doEquip = async (itemKey: string | null, slot: BodySlot | "border") => {
     if (!activeCat || equipLoading || !user) return;
     setEquipLoading(true);
+    const prevKey = slot === "border" ? activeCat.equipped_border_key : (activeCat.equipped_slots?.[slot as BodySlot] ?? null);
     const res = await fetch("/api/cats/equip-item", {
       method: "POST", headers: { "content-type": "application/json" },
       body: JSON.stringify({ cat_id: activeCat.id, item_key: itemKey, slot }),
@@ -85,9 +86,22 @@ export default function InventoryPage() {
     const json = await res.json();
     setEquipLoading(false);
     if (res.ok) {
+      // 전체 재조회(user_items + cats 두 번 더 쿼리) 없이 응답 결과로 로컬 상태만
+      // 바로 갱신 — API 호출 1번으로 끝나서 체감 속도가 눈에 띄게 빨라짐.
+      const catId = activeCat.id;
+      setCats(prev => prev.map(c => {
+        if (c.id !== catId) return c;
+        if (slot === "border") return { ...c, equipped_border_key: itemKey };
+        return { ...c, equipped_slots: { ...(c.equipped_slots ?? {}), [slot]: itemKey } };
+      }));
+      setOwned(prev => {
+        const next = { ...prev };
+        if (prevKey) next[prevKey] = (next[prevKey] ?? 0) + 1;
+        if (itemKey) next[itemKey] = Math.max(0, (next[itemKey] ?? 0) - 1);
+        return next;
+      });
       setToast(itemKey ? `${SHOP_ITEMS[itemKey as ShopItemKey].name} 장착!` : "해제했어요.");
       setBorderPicker(false);
-      await load(user.id, activeCat.id);
     } else {
       setToast(json.error === "no_stock" ? "보유 수량이 없어요." : "처리 실패");
     }
