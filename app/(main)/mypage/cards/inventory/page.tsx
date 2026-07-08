@@ -31,16 +31,16 @@ const SLOT_THEME: Record<BodySlot, string> = {
   foot: "#5BC48A",
 };
 
-// 디아블로식 장비창 — 8각형 소켓을 캐릭터 초상화 둘레에 6각 배치(부위 5개 + 테두리).
-// clip-path로 각진 소켓 모양을 내고, 이중 테두리 + 베벨 그림자로 "박힌 보석" 느낌을 냄.
-const SOCKET_CLIP = "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%, 71% 100%, 29% 100%, 0% 71%, 0% 29%)";
-const HEX_POS: Record<BodySlot | "border", React.CSSProperties> = {
-  head: { top: "6%", left: "50%" },
-  body: { top: "29%", left: "9%" },
-  arm: { top: "29%", left: "91%" },
-  foot: { top: "76%", left: "9%" },
-  leg: { top: "76%", left: "91%" },
-  border: { top: "93%", left: "50%" },
+// 디아블로2식 장비창 — 세로 인체형 배치. 육각형으로 둘러싼 배치·각진 소켓 모양이
+// 둘 다 별로라는 피드백 → CSS grid로 명확한 세로 인체 실루엣(머리 위/팔·몸통 좌우/
+// 다리 아래/테두리·발 맨 아래) + 둥근 사각 소켓으로 교체.
+const SLOT_GRID_AREA: Record<BodySlot | "border", string> = {
+  head: "head",
+  arm: "arm",
+  body: "body",
+  leg: "leg",
+  border: "border",
+  foot: "foot",
 };
 
 type Tab = "all" | "consumable" | "equip" | "border";
@@ -192,32 +192,42 @@ export default function InventoryPage() {
             {activeCat && (
               <>
                 {/* 상단 장비 패널 — 디아블로식: 초상화를 중심에 두고 8각 소켓 6개를 육각 배치 */}
-                <div className="rounded-3xl pt-7 pb-10 px-4 mb-3 relative overflow-hidden" style={{
-                  background: "radial-gradient(ellipse at 50% 30%, #241F38 0%, #100E1A 75%)",
+                <div className="rounded-3xl pt-6 pb-6 px-4 mb-3" style={{
+                  background: "radial-gradient(ellipse at 50% 20%, #241F38 0%, #100E1A 75%)",
                   boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06), inset 0 2px 12px rgba(0,0,0,0.4), 0 8px 20px rgba(0,0,0,0.3)",
                 }}>
                   <p className="text-[10px] font-extrabold text-center mb-4 tracking-widest" style={{ color: "#6B6580" }}>EQUIPMENT</p>
 
-                  <div className="relative mx-auto" style={{ width: 250, height: 250 }}>
-                    {/* 초상화 — 금속 링 프레임 */}
-                    <div className="absolute rounded-full flex items-center justify-center" style={{
-                      width: 100, height: 100, top: "50%", left: "50%", transform: "translate(-50%,-50%)",
-                      padding: 4,
-                      background: "conic-gradient(from 180deg, #8A6FE8, #4C82BC, #E8B040, #8A6FE8)",
-                      boxShadow: "0 0 22px rgba(124,90,224,0.4), 0 4px 14px rgba(0,0,0,0.45)",
-                    }}>
-                      <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center" style={{ background: "#14121E", boxShadow: "inset 0 3px 8px rgba(0,0,0,0.6)" }}>
-                        {activeCat.photo_url ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={activeCat.photo_url} alt={activeCat.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <span className="text-[36px]">🐱</span>
-                        )}
+                  <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr 1fr",
+                    gridTemplateAreas: `". head ." "arm photo body" ". leg ." "border foot ."`,
+                    gap: 10,
+                    alignItems: "center",
+                    justifyItems: "center",
+                    maxWidth: 260,
+                    margin: "0 auto",
+                  }}>
+                    {/* 초상화 — 금속 링 프레임, 인체 중앙 */}
+                    <div style={{ gridArea: "photo", display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+                      <div className="rounded-full flex items-center justify-center" style={{
+                        width: 84, height: 84, padding: 4,
+                        background: "conic-gradient(from 180deg, #8A6FE8, #4C82BC, #E8B040, #8A6FE8)",
+                        boxShadow: "0 0 22px rgba(124,90,224,0.4), 0 4px 14px rgba(0,0,0,0.45)",
+                      }}>
+                        <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center" style={{ background: "#14121E", boxShadow: "inset 0 3px 8px rgba(0,0,0,0.6)" }}>
+                          {activeCat.photo_url ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={activeCat.photo_url} alt={activeCat.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-[30px]">🐱</span>
+                          )}
+                        </div>
                       </div>
+                      <p className="text-white text-[10.5px] font-extrabold text-center whitespace-nowrap">
+                        {activeCat.name} <span style={{ color: "#8A8598", fontWeight: 700 }}>Lv.{activeCat.card_level}</span>
+                      </p>
                     </div>
-                    <p className="absolute text-white text-[11px] font-extrabold text-center w-full truncate" style={{ top: "50%", marginTop: 34 }}>
-                      {activeCat.name} <span style={{ color: "#8A8598", fontWeight: 700 }}>Lv.{activeCat.card_level}</span>
-                    </p>
 
                     {BODY_SLOTS.map((slot) => {
                       const slotItemKey = EQUIP_ITEM_KEYS.find(k => SHOP_ITEMS[k].bodySlot === slot);
@@ -228,9 +238,10 @@ export default function InventoryPage() {
                       const color = SLOT_THEME[slot];
                       return (
                         <button key={slot} onClick={() => tapSlot(slot)} disabled={equipLoading}
-                          className="absolute flex flex-col items-center gap-1.5" style={{ ...HEX_POS[slot], transform: "translate(-50%,-50%)" }}>
-                          <div style={{
-                            width: 54, height: 54, clipPath: SOCKET_CLIP,
+                          style={{ gridArea: SLOT_GRID_AREA[slot] }}
+                          className="flex flex-col items-center gap-1.5">
+                          <div className="rounded-2xl" style={{
+                            width: 52, height: 52,
                             background: equipped ? `linear-gradient(150deg, ${color}, ${color}99)` : "linear-gradient(150deg, #2A2438, #19141F)",
                             boxShadow: equipped
                               ? `0 0 0 2px #4A4460, 0 0 14px ${color}80, inset 0 2px 3px rgba(255,255,255,0.35), inset 0 -4px 6px rgba(0,0,0,0.4)`
@@ -246,11 +257,12 @@ export default function InventoryPage() {
                       );
                     })}
 
-                    {/* 테두리(오라) 소켓 — 골드 테마, 하단 중앙 */}
+                    {/* 테두리(오라) 소켓 — 골드 테마, 발 옆(맨 아래 줄) */}
                     <button onClick={() => setBorderPicker(true)}
-                      className="absolute flex flex-col items-center gap-1.5" style={{ ...HEX_POS.border, transform: "translate(-50%,-50%)" }}>
-                      <div style={{
-                        width: 54, height: 54, clipPath: SOCKET_CLIP,
+                      style={{ gridArea: "border" }}
+                      className="flex flex-col items-center gap-1.5">
+                      <div className="rounded-2xl" style={{
+                        width: 52, height: 52,
                         background: activeCat.equipped_border_key ? "linear-gradient(150deg, #E8B040, #C4881F)" : "linear-gradient(150deg, #2A2438, #19141F)",
                         boxShadow: activeCat.equipped_border_key
                           ? "0 0 0 2px #4A4460, 0 0 14px rgba(232,176,64,0.8), inset 0 2px 3px rgba(255,255,255,0.35), inset 0 -4px 6px rgba(0,0,0,0.4)"
