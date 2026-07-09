@@ -24,6 +24,10 @@ export default function BottomNav() {
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
+  // 쇼핑 하위 플로우(상품 상세/장바구니/주문서/결제)는 하단 고정 결제 바와
+  // 겹쳐서 버튼을 가리므로 네비 숨김 — 각 페이지에 뒤로가기 버튼 있음.
+  if (/^\/shop\/.+/.test(pathname)) return null;
+
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-50"
