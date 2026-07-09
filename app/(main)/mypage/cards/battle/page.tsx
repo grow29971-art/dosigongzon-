@@ -12,7 +12,7 @@ import ParticleCanvas, { type ParticleCanvasHandle } from "@/app/components/Part
 import SfxToggle from "@/app/components/SfxToggle";
 import StickerIcon from "@/app/components/StickerIcon";
 import { sfx, primeSfx, setAmbientEnv, stopAmbient } from "@/lib/sfx";
-import { UI } from "@/lib/battle-ui-theme";
+import { UI, gridOverlayStyle } from "@/lib/battle-ui-theme";
 
 /* ──────────── 배틀 환경 ──────────── */
 const BATTLE_ENVS = {
@@ -1457,6 +1457,8 @@ export default function BattlePage() {
         animation: screenShake===2 ? "shakeScreenBig 0.45s ease" : screenShake===1 ? "shakeScreen 0.3s ease" : undefined,
       }}>
         <EnvScene env={battleEnv} />
+        {/* 사이버펑크 그리드 텍스처 — 배경 위에 항상 은은하게 깔림 */}
+        <div style={{ position:"absolute", inset:0, zIndex:1, pointerEvents:"none", opacity:0.5, ...gridOverlayStyle() }} />
 
         {/* 헤더 — 배틀 중엔 목업처럼 상단 바 없이 떠 있는 아이콘만 남기고 최소화 */}
         <div className={`flex items-center gap-3 px-4 shrink-0 ${isFightPhase ? "pt-safe pt-3 pb-1" : "pt-safe pt-4 pb-3"}`}
@@ -1465,7 +1467,7 @@ export default function BattlePage() {
             style={{background:"rgba(255,255,255,0.1)", boxShadow: isFightPhase ? "none" : `inset 0 0 0 1px ${UI.panelBorder}`}}>
             <ArrowLeft size={18} color={UI.textMain}/>
           </button>
-          {!isFightPhase && <h1 className="text-[17px] font-extrabold flex items-center gap-2" style={{color:UI.textMain}}><StickerIcon icon={Swords} color={UI.accent.violet} size={30}/> 카드 배틀</h1>}
+          {!isFightPhase && <h1 className="text-[17px] font-extrabold flex items-center gap-2" style={{color:UI.textMain}}><StickerIcon icon={Swords} color={UI.accent.pink} size={30}/> 카드 배틀</h1>}
           {isFightPhase && mode==="auto" && (
             <button onClick={()=>{ sfx.click(); setAutoSpeed(s=>s===1?2:s===2?3:1); }}
               className="ml-auto"
@@ -1512,9 +1514,9 @@ export default function BattlePage() {
                   className="flex-1"
                   style={{
                     padding:"12px 0", fontSize:13, fontWeight:800, borderRadius:UI.radiusSm,
-                    background: mode===m ? `${UI.accent.violet}1F` : UI.panel,
-                    boxShadow: mode===m ? `inset 0 0 0 1.5px ${UI.accent.violet}` : `inset 0 0 0 1px ${UI.panelBorder}`,
-                    color: mode===m ? UI.accent.violet : UI.textSub,
+                    background: mode===m ? `${UI.accent.pink}1F` : UI.panel,
+                    boxShadow: mode===m ? `inset 0 0 0 1.5px ${UI.accent.pink}` : `inset 0 0 0 1px ${UI.panelBorder}`,
+                    color: mode===m ? UI.accent.pink : UI.textSub,
                     transition:"transform 0.08s",
                   }}>
                   {m==="manual"?"🎮 수동 전투":"⚡ 자동 전투"}
@@ -1528,10 +1530,15 @@ export default function BattlePage() {
             <div className="grid grid-cols-2 gap-3 mb-6">
               {myCats.map(cat=>(
                 <div key={cat.id}
-                  style={{justifySelf:"start",display:"inline-block",outline:selected?.id===cat.id?`3px solid ${UI.accent.violet}`:"2px solid transparent",outlineOffset:2,borderRadius:20,transition:"transform 0.12s",transform:selected?.id===cat.id?"scale(1.04)":"scale(1)"}}>
+                  style={{
+                    justifySelf:"start",display:"inline-block",
+                    outline:selected?.id===cat.id?`3px solid ${UI.accent.pink}`:"2px solid transparent",outlineOffset:2,borderRadius:20,
+                    filter:selected?.id===cat.id?`drop-shadow(0 0 10px ${UI.accent.pink}) drop-shadow(0 0 18px ${UI.accent.pink}80)`:undefined,
+                    transition:"transform 0.12s, filter 0.15s",transform:selected?.id===cat.id?"scale(1.04)":"scale(1)",
+                  }}>
                   <CatCard name={cat.name} photoUrl={cat.photo_url} card={toCard(cat)} size="sm"
                     onClick={()=>phase==="select"&&setSelected(s=>s?.id===cat.id?null:cat)}/>
-                  {selected?.id===cat.id&&<div className="text-center text-[10px] font-bold mt-1" style={{ color: UI.accent.violet }}>✓ 선택됨</div>}
+                  {selected?.id===cat.id&&<div className="text-center text-[10px] font-bold mt-1" style={{ color: UI.accent.pink }}>✓ 선택됨</div>}
                 </div>
               ))}
             </div>
@@ -1541,8 +1548,8 @@ export default function BattlePage() {
                 className="w-full relative overflow-hidden"
                 style={{
                   padding:"16px 0", fontSize:15, fontWeight:800, color: UI.textMain, display:"flex", alignItems:"center", justifyContent:"center", gap:8,
-                  borderRadius:UI.radius, background: UI.accent.violet,
-                  boxShadow:`0 4px 20px ${UI.accent.violet}55`,
+                  borderRadius:UI.radius, background: `linear-gradient(135deg, ${UI.accent.pink}, ${UI.accent.cyan})`,
+                  boxShadow:`0 0 20px ${UI.accent.pink}80, 0 0 36px ${UI.accent.cyan}40`,
                   opacity:phase==="loading"?0.6:1,
                 }}>
                 {phase==="loading"?<span className="animate-pulse">상대 찾는 중...</span>:<><Swords size={18}/> 배틀 시작!</>}
@@ -1857,7 +1864,7 @@ export default function BattlePage() {
                   다시 선택
                 </button>
                 <button onClick={startBattle} className="flex-1"
-                  style={{ padding:"12px 0", fontSize:13, fontWeight:800, color:UI.textMain, display:"flex", alignItems:"center", justifyContent:"center", gap:6, borderRadius:UI.radiusSm, background:UI.accent.violet, boxShadow:`0 4px 14px ${UI.accent.violet}55` }}>
+                  style={{ padding:"12px 0", fontSize:13, fontWeight:800, color:UI.textMain, display:"flex", alignItems:"center", justifyContent:"center", gap:6, borderRadius:UI.radiusSm, background:UI.accent.pink, boxShadow:`0 4px 14px ${UI.accent.pink}55` }}>
                   <Swords size={14}/> 재도전
                 </button>
               </div>

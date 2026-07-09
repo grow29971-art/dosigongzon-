@@ -11,7 +11,7 @@ import {
   BODY_SLOTS, BODY_SLOT_LABELS, type ShopItemKey, type BodySlot, type EquippedSlots,
 } from "@/lib/shop-config";
 import StickerIcon from "@/app/components/StickerIcon";
-import { UI } from "@/lib/battle-ui-theme";
+import { UI, pageBgStyle } from "@/lib/battle-ui-theme";
 
 interface MyCat {
   id: string;
@@ -142,12 +142,12 @@ export default function InventoryPage() {
   };
 
   return (
-    <div className="min-h-dvh" style={{ background: UI.bgGradient }}>
+    <div className="min-h-dvh" style={pageBgStyle()}>
       <div className="sticky top-0 z-10 px-4 pt-safe pt-4 pb-3 flex items-center gap-3" style={{ background: "linear-gradient(180deg, #14141C 0%, rgba(20,20,28,0) 100%)" }}>
         <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>
           <ArrowLeft size={18} className="text-white" />
         </button>
-        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><StickerIcon icon={Backpack} color={UI.accent.violet} size={30} /> 소지품 &amp; 장비</h1>
+        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><StickerIcon icon={Backpack} color={UI.accent.pink} size={30} /> 소지품 &amp; 장비</h1>
       </div>
 
       <div className="px-4 pb-10">
@@ -168,7 +168,7 @@ export default function InventoryPage() {
                   style={{ opacity: activeCatId === cat.id ? 1 : 0.5 }}>
                   <div className="rounded-full overflow-hidden flex items-center justify-center" style={{
                     width: 40, height: 40,
-                    boxShadow: activeCatId === cat.id ? `0 0 0 2px ${UI.accent.violet}` : "0 0 0 1px rgba(255,255,255,0.1)",
+                    boxShadow: activeCatId === cat.id ? `0 0 0 2px ${UI.accent.pink}` : "0 0 0 1px rgba(255,255,255,0.1)",
                   }}>
                     {cat.photo_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -224,7 +224,7 @@ export default function InventoryPage() {
                     <div className="flex flex-col items-center shrink-0" style={{ gap: 4, width: 96 }}>
                       <div className="rounded-full flex items-center justify-center" style={{
                         width: 82, height: 82, padding: 4,
-                        background: UI.accent.violet,
+                        background: UI.accent.pink,
                         boxShadow: "0 0 22px rgba(124,90,224,0.4), 0 4px 14px rgba(0,0,0,0.45)",
                       }}>
                         <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center" style={{ background: "#14121E", boxShadow: "inset 0 3px 8px rgba(0,0,0,0.6)" }}>
@@ -299,7 +299,7 @@ export default function InventoryPage() {
                     {TABS.map((t) => (
                       <button key={t.key} onClick={() => setTab(t.key)}
                         className="px-3 py-1.5 rounded-full text-[11px] font-bold"
-                        style={{ background: tab === t.key ? `${UI.accent.violet}1F` : "rgba(255,255,255,0.06)", color: tab === t.key ? UI.accent.violet : UI.textSub }}>
+                        style={{ background: tab === t.key ? `${UI.accent.pink}1F` : "rgba(255,255,255,0.06)", color: tab === t.key ? UI.accent.pink : UI.textSub }}>
                         {t.label}
                       </button>
                     ))}
@@ -317,7 +317,7 @@ export default function InventoryPage() {
                         return (
                           <button key={key} onClick={() => rowTap(key)}
                             className="flex items-center gap-2 rounded-xl px-2.5 py-2 text-left"
-                            style={{ background: isEquipped ? `${UI.accent.violet}1A` : "rgba(255,255,255,0.03)" }}>
+                            style={{ background: isEquipped ? `${UI.accent.pink}1A` : "rgba(255,255,255,0.03)" }}>
                             <span className="rounded-lg flex items-center justify-center shrink-0" style={{ width: 32, height: 32, fontSize: 17, background: "rgba(255,255,255,0.06)" }}>
                               {item.icon}
                             </span>
@@ -325,7 +325,7 @@ export default function InventoryPage() {
                               <p className="text-[11px] font-bold text-white truncate">{item.name} {qty > 0 && <span className="text-gray-400 font-normal">x{qty}</span>}</p>
                               <p className="text-[9.5px] text-gray-500 truncate">{item.desc}</p>
                             </div>
-                            {isEquipped && <CheckCircle2 size={14} style={{ color: UI.accent.violet }} className="shrink-0" />}
+                            {isEquipped && <CheckCircle2 size={14} style={{ color: UI.accent.pink }} className="shrink-0" />}
                           </button>
                         );
                       })}

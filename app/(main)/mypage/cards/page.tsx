@@ -9,7 +9,7 @@ import CatCard, { type CatCardData, type CardRarity } from "@/app/components/Cat
 import { SPECIAL_SKILLS } from "@/lib/battle-config";
 import { PVE_BESTIARY } from "@/lib/pve-bestiary";
 import { SHOP_ITEMS, EQUIP_ITEM_KEYS, BORDER_FX_ITEM_KEYS, BODY_SLOTS, BODY_SLOT_LABELS, type ShopItemKey, type BodySlot, type EquippedSlots } from "@/lib/shop-config";
-import { UI, progressTrackStyle, progressFillStyle } from "@/lib/battle-ui-theme";
+import { UI, progressTrackStyle, progressFillStyle, pageBgStyle } from "@/lib/battle-ui-theme";
 import Link from "next/link";
 
 // 슬롯별 테마 색상 — 가방(인벤토리) 페이지와 동일한 배색으로 통일
@@ -246,7 +246,7 @@ export default function MyCardsPage() {
 
   return (
     <>
-      <div className="min-h-dvh" style={{ background: UI.bgGradient }}>
+      <div className="min-h-dvh" style={pageBgStyle()}>
         {/* 헤더 */}
         <div className="sticky top-0 z-10 px-4 pt-safe pt-4 pb-3 flex items-center gap-3" style={{ background: "linear-gradient(180deg, #14141C 0%, rgba(20,20,28,0) 100%)" }}>
           <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>
@@ -302,9 +302,9 @@ export default function MyCardsPage() {
               <button key={r} onClick={() => setFilter(r)}
                 className="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all"
                 style={{
-                  background: filter === r ? `${UI.accent.violet}1F` : UI.panel,
-                  color: filter === r ? UI.accent.violet : UI.textSub,
-                  boxShadow: filter === r ? `inset 0 0 0 1.5px ${UI.accent.violet}` : `inset 0 0 0 1px ${UI.panelBorder}`,
+                  background: filter === r ? `${UI.accent.pink}1F` : UI.panel,
+                  color: filter === r ? UI.accent.pink : UI.textSub,
+                  boxShadow: filter === r ? `inset 0 0 0 1.5px ${UI.accent.pink}` : `inset 0 0 0 1px ${UI.panelBorder}`,
                 }}>
                 {r === "all" ? `전체 ${cats.length}` : `${RARITY_LABELS[r]} ${counts[r]}`}
               </button>
@@ -361,7 +361,7 @@ export default function MyCardsPage() {
                 <span>{selected.card_exp} XP</span>
               </div>
               <div style={progressTrackStyle()}>
-                <div style={progressFillStyle(UI.accent.violet, ((selected.card_exp ?? 0) / ([0,90,210,380,610,900,1260,1690,2200,2800][Math.min(selected.card_level ?? 1, 9)] || 2800)) * 100)} />
+                <div style={progressFillStyle(UI.accent.pink, ((selected.card_exp ?? 0) / ([0,90,210,380,610,900,1260,1690,2200,2800][Math.min(selected.card_level ?? 1, 9)] || 2800)) * 100)} />
               </div>
             </div>
 

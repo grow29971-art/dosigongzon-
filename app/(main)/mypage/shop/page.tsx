@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import { SHOP_ITEMS, SHOP_ITEM_KEYS, EQUIP_ITEM_KEYS, BORDER_FX_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-config";
 import StickerIcon from "@/app/components/StickerIcon";
-import { UI } from "@/lib/battle-ui-theme";
+import { UI, pageBgStyle } from "@/lib/battle-ui-theme";
 
 export default function ShopPage() {
   const { user, loading: authLoading } = useAuth();
@@ -57,7 +57,7 @@ export default function ShopPage() {
   };
 
   return (
-    <div className="min-h-dvh" style={{ background: UI.bgGradient }}>
+    <div className="min-h-dvh" style={pageBgStyle()}>
       <div className="sticky top-0 z-10 px-4 pt-safe pt-4 pb-3 flex items-center gap-3" style={{ background: "linear-gradient(180deg, #14141C 0%, rgba(20,20,28,0) 100%)" }}>
         <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>
           <ArrowLeft size={18} className="text-white" />

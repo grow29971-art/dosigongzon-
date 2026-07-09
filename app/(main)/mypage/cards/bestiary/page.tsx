@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import { PVE_BESTIARY, PVE_BOSS, bestiaryPhotoUrl, dexNoLabel, type BestiaryEntry } from "@/lib/pve-bestiary";
 import StickerIcon from "@/app/components/StickerIcon";
-import { UI, progressTrackStyle, progressFillStyle } from "@/lib/battle-ui-theme";
+import { UI, progressTrackStyle, progressFillStyle, pageBgStyle } from "@/lib/battle-ui-theme";
 
 export default function BestiaryPage() {
   const { user, loading: authLoading } = useAuth();
@@ -44,7 +44,7 @@ export default function BestiaryPage() {
   const selectedDefeated = selected ? defeatedKeys.includes(selected.key) : false;
 
   return (
-    <div className="min-h-dvh" style={{ background: UI.bgGradient }}>
+    <div className="min-h-dvh" style={pageBgStyle()}>
       <div className="sticky top-0 z-10 px-4 pt-safe pt-4 pb-3 flex items-center gap-3" style={{ background: "linear-gradient(180deg, #14141C 0%, rgba(20,20,28,0) 100%)" }}>
         <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>
           <ArrowLeft size={18} className="text-white" />
@@ -66,7 +66,7 @@ export default function BestiaryPage() {
             <span className="text-[11px] font-bold" style={{ color: UI.textMuted }}>이겨본 개체 {defeatedCount}마리</span>
           </div>
           <div style={progressTrackStyle()}>
-            <div style={progressFillStyle(UI.accent.violet, pct)} />
+            <div style={progressFillStyle(UI.accent.pink, pct)} />
           </div>
         </div>
 
@@ -176,7 +176,7 @@ export default function BestiaryPage() {
               )}
 
               <button onClick={() => setSelected(null)} className="mt-4 w-full py-2.5 rounded-xl text-[13px] font-extrabold"
-                style={{ background: `${UI.accent.violet}1F`, color: UI.accent.violet, boxShadow: `inset 0 0 0 1px ${UI.accent.violet}` }}>
+                style={{ background: `${UI.accent.pink}1F`, color: UI.accent.pink, boxShadow: `inset 0 0 0 1px ${UI.accent.pink}` }}>
                 닫기
               </button>
             </div>
