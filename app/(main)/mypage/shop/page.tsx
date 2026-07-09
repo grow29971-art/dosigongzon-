@@ -65,7 +65,7 @@ export default function ShopPage() {
         <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><StickerIcon icon={Coins} color={UI.accent.gold} size={30} /> 상점</h1>
         <div className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: `${UI.accent.gold}1F` }}>
           <Coins size={14} color={UI.accent.gold} />
-          <span className="text-[13px] font-black" style={{ color: UI.accent.gold }}>{coins}</span>
+          <span className="text-[13px] font-black tabular-nums" style={{ color: UI.accent.gold }}>{coins}</span>
         </div>
       </div>
 

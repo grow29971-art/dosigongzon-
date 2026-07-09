@@ -83,7 +83,7 @@ export default function BattleRankingPage() {
                     <p className="text-[10px]" style={{ color: UI.textMuted }}>{r.wins}승 {r.losses}패</p>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-[14px] font-black" style={{ color: UI.accent.violet }}>{r.score}점</p>
+                    <p className="text-[14px] font-black tabular-nums" style={{ color: UI.accent.violet }}>{r.score}점</p>
                     {reward && <p className="text-[10px] font-bold" style={{ color: UI.accent.gold }}>+{reward} 코인</p>}
                   </div>
                 </div>

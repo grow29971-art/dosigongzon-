@@ -220,14 +220,15 @@ export default function InventoryPage() {
                       })}
                     </div>
 
-                    {/* 캐릭터 — 좌대(그림자) 위에 서 있는 느낌 */}
-                    <div className="flex flex-col items-center shrink-0" style={{ gap: 4, width: 96 }}>
-                      <div className="rounded-full flex items-center justify-center" style={{
-                        width: 82, height: 82, padding: 4,
+                    {/* 캐릭터 — 워크플로우 노드 아이콘과 같은 둥근 사각형 프레임 */}
+                    <div className="flex flex-col items-center shrink-0" style={{ gap: 8, width: 96 }}>
+                      <div style={{
+                        width: 82, height: 82, borderRadius: 26, padding: 2,
                         background: UI.accent.violet,
-                        boxShadow: "0 0 22px rgba(124,90,224,0.4), 0 4px 14px rgba(0,0,0,0.45)",
+                        boxShadow: `0 0 0 1px ${UI.accent.violet}, 0 0 16px ${UI.accent.violet}40`,
+                        display: "flex", alignItems: "center", justifyContent: "center",
                       }}>
-                        <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center" style={{ background: "#14121E", boxShadow: "inset 0 3px 8px rgba(0,0,0,0.6)" }}>
+                        <div className="w-full h-full overflow-hidden flex items-center justify-center" style={{ background: "#14121E", borderRadius: 24 }}>
                           {activeCat.photo_url ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={activeCat.photo_url} alt={activeCat.name} className="w-full h-full object-cover" />
@@ -236,11 +237,6 @@ export default function InventoryPage() {
                           )}
                         </div>
                       </div>
-                      {/* 좌대 그림자 타원 */}
-                      <div style={{
-                        width: 56, height: 12, borderRadius: "50%", marginTop: -2,
-                        background: "radial-gradient(ellipse, rgba(138,111,232,0.45), transparent 72%)",
-                      }} />
                       <p className="text-white text-[10.5px] font-extrabold text-center whitespace-nowrap">
                         {activeCat.name} <span style={{ color: UI.textSub, fontWeight: 700 }}>Lv.{activeCat.card_level}</span>
                       </p>
