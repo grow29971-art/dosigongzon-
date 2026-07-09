@@ -12,6 +12,7 @@ import ParticleCanvas, { type ParticleCanvasHandle } from "@/app/components/Part
 import SfxToggle from "@/app/components/SfxToggle";
 import StickerIcon from "@/app/components/StickerIcon";
 import { sfx, primeSfx, setAmbientEnv, stopAmbient } from "@/lib/sfx";
+import { UI } from "@/lib/battle-ui-theme";
 
 /* ──────────── 배틀 환경 ──────────── */
 const BATTLE_ENVS = {
@@ -1342,7 +1343,7 @@ export default function BattlePage() {
   const dangerTint = myDanger&&!oppDanger ? "rgba(255,70,70,0.16)" : oppDanger&&!myDanger ? "rgba(60,220,120,0.14)" : "rgba(0,0,0,0)";
   const rootBg = battleEnv
     ? `linear-gradient(180deg, ${dangerTint} 0%, transparent 30%), ${ENV_BACKGROUNDS[battleEnv]}`
-    : "radial-gradient(circle at 50% 34%, rgba(255,255,255,0.55), transparent 46%), linear-gradient(180deg, #E4EEFF 0%, #C9DEFF 45%, #AFCBFF 100%)";
+    : UI.bgGradient;
 
   return (
     <>
@@ -1458,11 +1459,12 @@ export default function BattlePage() {
 
         {/* 헤더 — 배틀 중엔 목업처럼 상단 바 없이 떠 있는 아이콘만 남기고 최소화 */}
         <div className={`flex items-center gap-3 px-4 shrink-0 ${isFightPhase ? "pt-safe pt-3 pb-1" : "pt-safe pt-4 pb-3"}`}
-          style={isFightPhase ? undefined : {background:"rgba(255,255,255,0.55)",backdropFilter:"blur(12px)"}}>
-          <button onClick={()=>{reset();router.back();}} className="w-9 h-9 rounded-full flex items-center justify-center" style={{background:"rgba(255,255,255,0.7)",boxShadow:"0 2px 6px rgba(60,50,90,0.1)"}}>
-            <ArrowLeft size={18} color="#2B2B3D"/>
+          style={isFightPhase ? undefined : {background:"linear-gradient(180deg, #14141C 0%, rgba(20,20,28,0) 100%)"}}>
+          <button onClick={()=>{reset();router.back();}} className="w-9 h-9 rounded-full flex items-center justify-center"
+            style={isFightPhase ? {background:"rgba(255,255,255,0.7)",boxShadow:"0 2px 6px rgba(60,50,90,0.1)"} : {background:"rgba(255,255,255,0.08)"}}>
+            <ArrowLeft size={18} color={isFightPhase ? "#2B2B3D" : UI.textMain}/>
           </button>
-          {!isFightPhase && <h1 className="text-[17px] font-extrabold flex items-center gap-2" style={{color:"#2B2B3D"}}><StickerIcon icon={Swords} color="#7A5AE0" size={30}/> 카드 배틀</h1>}
+          {!isFightPhase && <h1 className="text-[17px] font-extrabold flex items-center gap-2" style={{color:UI.textMain}}><StickerIcon icon={Swords} color={UI.accent.violet} size={30}/> 카드 배틀</h1>}
           {isFightPhase && mode==="auto" && (
             <button onClick={()=>{ sfx.click(); setAutoSpeed(s=>s===1?2:s===2?3:1); }}
               className="ml-auto"
@@ -1474,78 +1476,75 @@ export default function BattlePage() {
           <SfxToggle style={isFightPhase ? undefined : { marginLeft: "auto" }}/>
         </div>
 
-        {/* ──────── 선택 화면 ──────── */}
+        {/* ──────── 선택 화면(대기실) — 대시보드 톤: 짙은 배경 + 얇은 테두리 카드 + 컬러 배지 ──────── */}
         {(phase==="select"||phase==="loading") && (
-          <div className="flex-1 overflow-y-auto px-4 pb-6">
-            {/* 누구와 싸울지 — PVE(동네 불청객들: 바퀴벌레·쥐·너구리 등 + 가끔 고양이학대범) 기본, PVP(다른 유저)는 선택 */}
-            <div className="flex gap-2 mt-4 mb-2.5">
+          <div className="flex-1 overflow-y-auto px-4 pb-6" style={{ background: UI.bgGradient }}>
+            {/* 누구와 싸울지 */}
+            <p className="text-[10px] font-extrabold tracking-widest mt-4 mb-2" style={{ color: UI.textMuted }}>MATCH TYPE</p>
+            <div className="flex gap-2 mb-2.5">
               {([
-                { key:"pve" as const, label:"🐾 동네 불청객과 대결", color:"#E85555" },
-                { key:"pvp" as const, label:"⚔️ 다른 유저와 대결", color:"#5A8AC4" },
+                { key:"pve" as const, label:"🐾 동네 불청객과 대결", color: UI.accent.red },
+                { key:"pvp" as const, label:"⚔️ 다른 유저와 대결", color: UI.accent.blue },
               ]).map(bt=>(
                 <button key={bt.key} onClick={()=>setBattleType(bt.key)}
                   className="flex-1"
                   style={{
-                    padding:"12px 4px", fontSize:12.5, fontWeight:800, borderRadius:16,
-                    background: battleType===bt.key ? bt.color : "#fff",
-                    border: `2px solid ${battleType===bt.key ? bt.color : "#E3E1EC"}`,
-                    color: battleType===bt.key?"#fff":"#9A94A8",
-                    boxShadow: battleType===bt.key ? "0 3px 10px rgba(60,50,90,0.12)" : "none",
+                    padding:"12px 4px", fontSize:12.5, fontWeight:800, borderRadius:UI.radiusSm,
+                    background: battleType===bt.key ? `${bt.color}1F` : UI.panel,
+                    boxShadow: battleType===bt.key ? `inset 0 0 0 1.5px ${bt.color}` : `inset 0 0 0 1px ${UI.panelBorder}`,
+                    color: battleType===bt.key ? bt.color : UI.textSub,
                     transition:"transform 0.08s",
                   }}>
                   {bt.label}
                 </button>
               ))}
             </div>
-            <p className="text-[11px] text-center mb-4 font-semibold" style={{ color: battleType==="pve" ? "#E85555" : "#5A8AC4" }}>
+            <p className="text-[11px] text-center mb-4 font-semibold" style={{ color: battleType==="pve" ? UI.accent.red : UI.accent.blue }}>
               {battleType==="pve" ? "언제든 도전할 수 있는 PVE — 이겨도 져도 코인은 받아요" : "실제 다른 유저의 고양이 카드와 겨루는 PVP"}
             </p>
 
             {/* 어떻게 싸울지 — 수동(직접 조작)/자동(시뮬레이션) */}
+            <p className="text-[10px] font-extrabold tracking-widest mb-2" style={{ color: UI.textMuted }}>MODE</p>
             <div className="flex gap-2 mb-4">
               {(["manual","auto"] as Mode[]).map(m=>(
                 <button key={m} onClick={()=>setMode(m)}
                   className="flex-1"
                   style={{
-                    padding:"12px 0", fontSize:13, fontWeight:800, borderRadius:16,
-                    background: mode===m ? "#3E6FA8" : "#fff",
-                    border: `2px solid ${mode===m ? "#3E6FA8" : "#E3E1EC"}`,
-                    color: mode===m?"#fff":"#9A94A8",
-                    boxShadow: mode===m ? "0 3px 10px rgba(60,50,90,0.12)" : "none",
+                    padding:"12px 0", fontSize:13, fontWeight:800, borderRadius:UI.radiusSm,
+                    background: mode===m ? `${UI.accent.violet}1F` : UI.panel,
+                    boxShadow: mode===m ? `inset 0 0 0 1.5px ${UI.accent.violet}` : `inset 0 0 0 1px ${UI.panelBorder}`,
+                    color: mode===m ? UI.accent.violet : UI.textSub,
                     transition:"transform 0.08s",
                   }}>
                   {m==="manual"?"🎮 수동 전투":"⚡ 자동 전투"}
                 </button>
               ))}
             </div>
-            {mode==="manual"&&<p className="text-[11px] text-center mb-4 font-semibold" style={{color:"#9A94A8"}}>턴마다 기술을 직접 선택! 6초 안에 고르세요</p>}
+            {mode==="manual"&&<p className="text-[11px] text-center mb-4 font-semibold" style={{color:UI.textSub}}>턴마다 기술을 직접 선택! 6초 안에 고르세요</p>}
 
-            <p className="text-[13px] mb-3 font-bold" style={{color:"#6B6578"}}>출전할 고양이 선택</p>
-            {error&&<p className="text-[13px] mb-3 text-center font-semibold" style={{color:"#E1505F"}}>{error}</p>}
+            <p className="text-[10px] font-extrabold tracking-widest mb-3" style={{ color: UI.textMuted }}>SELECT YOUR CAT</p>
+            {error&&<p className="text-[13px] mb-3 text-center font-semibold" style={{ color: UI.accent.red }}>{error}</p>}
             <div className="grid grid-cols-2 gap-3 mb-6">
               {myCats.map(cat=>(
                 <div key={cat.id}
-                  style={{justifySelf:"start",display:"inline-block",outline:selected?.id===cat.id?"3px solid #3E6FA8":"2px solid transparent",outlineOffset:2,borderRadius:20,transition:"transform 0.12s",transform:selected?.id===cat.id?"scale(1.04)":"scale(1)"}}>
+                  style={{justifySelf:"start",display:"inline-block",outline:selected?.id===cat.id?`3px solid ${UI.accent.violet}`:"2px solid transparent",outlineOffset:2,borderRadius:20,transition:"transform 0.12s",transform:selected?.id===cat.id?"scale(1.04)":"scale(1)"}}>
                   <CatCard name={cat.name} photoUrl={cat.photo_url} card={toCard(cat)} size="sm"
                     onClick={()=>phase==="select"&&setSelected(s=>s?.id===cat.id?null:cat)}/>
-                  {selected?.id===cat.id&&<div className="text-center text-[10px] font-bold mt-1" style={{color:"#3E6FA8"}}>✓ 선택됨</div>}
+                  {selected?.id===cat.id&&<div className="text-center text-[10px] font-bold mt-1" style={{ color: UI.accent.violet }}>✓ 선택됨</div>}
                 </div>
               ))}
             </div>
-            {myCats.length===0&&<div className="text-center py-16"><p className="text-[14px]" style={{color:"#9A94A8"}}>카드가 없어요. 고양이를 등록하면 카드가 생성돼요!</p></div>}
+            {myCats.length===0&&<div className="text-center py-16"><p className="text-[14px]" style={{ color: UI.textSub }}>카드가 없어요. 고양이를 등록하면 카드가 생성돼요!</p></div>}
             {selected&&(
               <button onClick={startBattle} disabled={phase==="loading"}
                 className="w-full relative overflow-hidden"
                 style={{
-                  padding:"16px 0", fontSize:17, fontWeight:800, color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", gap:8,
-                  borderRadius:20, background:"linear-gradient(160deg,#C4B2FF 0%,#6FA0D8 40%,#2F5E93 100%)",
-                  boxShadow:"0 6px 16px rgba(47,94,147,0.4), 0 2px 4px rgba(47,94,147,0.3), inset 0 -3px 6px rgba(60,30,140,0.3)",
+                  padding:"16px 0", fontSize:15, fontWeight:800, color: UI.textMain, display:"flex", alignItems:"center", justifyContent:"center", gap:8,
+                  borderRadius:UI.radius, background: UI.accent.violet,
+                  boxShadow:`0 4px 20px ${UI.accent.violet}55`,
                   opacity:phase==="loading"?0.6:1,
                 }}>
-                <span aria-hidden="true" style={{ position:"absolute", inset:0, top:0, height:"50%", background:"linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 100%)" }} />
-                <span style={{ position:"relative", display:"flex", alignItems:"center", gap:8, textShadow:"0 1px 2px rgba(50,20,110,0.35)" }}>
                 {phase==="loading"?<span className="animate-pulse">상대 찾는 중...</span>:<><Swords size={18}/> 배틀 시작!</>}
-                </span>
               </button>
             )}
           </div>
@@ -1554,7 +1553,7 @@ export default function BattlePage() {
         {/* ──────── 카운트다운 ──────── */}
         {phase==="countdown"&&(
           <div className="flex-1 flex flex-col items-center justify-center">
-            <div key={countdown} style={{fontSize:countdown===0?64:100,fontWeight:900,color:countdown===0?"#FFA726":"#4A4460",textShadow:"0 4px 14px rgba(60,50,90,0.25)",animation:"cdPop 0.55s ease forwards"}}>
+            <div key={countdown} style={{fontSize:countdown===0?64:100,fontWeight:900,color:countdown===0?UI.accent.orange:UI.textMain,textShadow:"0 4px 20px rgba(0,0,0,0.5)",animation:"cdPop 0.55s ease forwards"}}>
               {countdown===0?"GO!":countdown}
             </div>
           </div>
