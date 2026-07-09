@@ -161,3 +161,53 @@ export async function createOrderFromCart(
 
   return created;
 }
+
+// ══════════════════════════════════════════
+// 주문 조회 (주문 내역 페이지용)
+// ══════════════════════════════════════════
+
+export interface OrderWithItems extends Order {
+  items: OrderItem[];
+}
+
+// ── 내 주문 목록 (최신순, 아이템 포함) ──
+export async function listMyOrders(): Promise<OrderWithItems[]> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*, items:order_items(*)")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("[order-repo] listMyOrders failed:", error);
+    throw new Error(`주문 내역을 불러올 수 없어요: ${error.message}`);
+  }
+  return (data ?? []) as OrderWithItems[];
+}
+
+// ── 주문 상세 (본인 것만 — RLS가 보장) ──
+export async function getMyOrder(orderId: string): Promise<OrderWithItems | null> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*, items:order_items(*)")
+    .eq("id", orderId)
+    .maybeSingle();
+
+  if (error) {
+    console.error("[order-repo] getMyOrder failed:", error);
+    throw new Error(`주문 정보를 불러올 수 없어요: ${error.message}`);
+  }
+  return (data as OrderWithItems | null) ?? null;
+}
+
+// ── 주문 대표 상품명: "스마트 쉼터 외 2건" 형식 ──
+export function orderDisplayName(items: OrderItem[]): string {
+  if (items.length === 0) return "주문 상품";
+  const first = items[0].product_name;
+  return items.length > 1 ? `${first} 외 ${items.length - 1}건` : first;
+}

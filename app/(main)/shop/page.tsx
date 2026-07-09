@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ShoppingBag, ShoppingCart } from "lucide-react";
+import { ShoppingBag, ShoppingCart, ReceiptText } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { listProducts, listCartItems, CATEGORY_MAP, type Product, type ProductCategory } from "@/lib/shop-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
@@ -104,6 +104,15 @@ export default function ShopPage() {
             우리 동네 고양이를 위한 쉼터 · 용품
           </p>
         </div>
+        <div className="flex items-center gap-2">
+        <Link
+          href="/shop/orders"
+          className="w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
+          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+          aria-label="주문 내역"
+        >
+          <ReceiptText size={18} className="text-text-sub" />
+        </Link>
         <Link
           href="/shop/cart"
           className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
@@ -120,6 +129,7 @@ export default function ShopPage() {
             </span>
           )}
         </Link>
+        </div>
       </div>
 
       {/* 카테고리 필터 */}
