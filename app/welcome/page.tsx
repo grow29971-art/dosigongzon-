@@ -197,14 +197,14 @@ function WelcomeContent() {
 
             <button
               type="button"
-              onClick={() => pickIntent("browsing", "/shorts")}
+              onClick={() => pickIntent("browsing", "/community")}
               className="px-4 py-4 rounded-2xl flex items-center gap-3 active:scale-[0.98] transition-transform"
               style={{ background: "rgba(255,255,255,0.96)", boxShadow: "0 8px 22px rgba(0,0,0,0.18)" }}
             >
-              <span className="text-[26px] shrink-0">🎬</span>
+              <span className="text-[26px] shrink-0">💬</span>
               <div className="text-left flex-1 min-w-0">
                 <p className="text-[14.5px] font-extrabold text-text-main leading-tight">그냥 구경하러</p>
-                <p className="text-[11.5px] text-text-sub mt-0.5">귀여운 영상부터 (냥숏츠)</p>
+                <p className="text-[11.5px] text-text-sub mt-0.5">동네 커뮤니티 이야기부터</p>
               </div>
               <ChevronRight size={16} className="text-text-sub shrink-0" />
             </button>

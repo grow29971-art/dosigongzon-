@@ -1,6 +1,6 @@
 // RSS 2.0 피드 — 외부 reader, IFTTT 자동화, 다른 사이트 임베드용
-// 도시공존 전체 콘텐츠(뉴스 + 꿀팁 + 냥숏츠) 최신순 합본.
-// 카테고리별 RSS는 /news/feed.xml, /tips/feed.xml, /shorts/feed.xml 별도.
+// 도시공존 전체 콘텐츠(뉴스 + 꿀팁) 최신순 합본.
+// 카테고리별 RSS는 /news/feed.xml, /tips/feed.xml 별도.
 
 import { createClient } from "@/lib/supabase/server";
 import { listPublishedTipsServer } from "@/lib/tips-repo";
@@ -93,45 +93,6 @@ async function fetchAllItems(): Promise<FeedItem[]> {
         guid: `${SITE_URL}/tips/${t.slug}`,
         category: "꿀팁",
         imageUrl: t.thumbnail_url ?? undefined,
-      });
-    }
-  } catch {
-    // skip
-  }
-
-  // 3) 냥숏츠 (최근 20개)
-  try {
-    const { data: shorts } = await supabase
-      .from("shorts")
-      .select("id, title, description, thumbnail_url, youtube_video_id, published_at, created_at")
-      .eq("published", true)
-      .order("published_at", { ascending: false })
-      .limit(20);
-
-    for (const s of (shorts ?? []) as Array<{
-      id: string;
-      title: string;
-      description: string | null;
-      thumbnail_url: string | null;
-      youtube_video_id: string | null;
-      published_at: string;
-      created_at: string;
-    }>) {
-      const thumb =
-        s.thumbnail_url ??
-        (s.youtube_video_id
-          ? `https://i.ytimg.com/vi/${s.youtube_video_id}/hqdefault.jpg`
-          : undefined);
-      items.push({
-        title: s.title,
-        link: `${SITE_URL}/shorts/${s.id}`,
-        description:
-          (s.description ?? "").slice(0, 280) ||
-          "도시공존이 큐레이션한 고양이·강아지·동물 짧은 영상",
-        pubDate: toRfc822(s.published_at || s.created_at),
-        guid: `${SITE_URL}/shorts/${s.id}`,
-        category: "냥숏츠",
-        imageUrl: thumb,
       });
     }
   } catch {
