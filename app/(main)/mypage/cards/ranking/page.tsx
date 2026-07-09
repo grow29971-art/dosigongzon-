@@ -6,6 +6,7 @@ import { ArrowLeft, Loader2, Trophy } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { WEEKLY_RANK_REWARDS } from "@/lib/shop-config";
 import StickerIcon from "@/app/components/StickerIcon";
+import { UI } from "@/lib/battle-ui-theme";
 
 const RANK_MEDAL = ["🥇", "🥈", "🥉"];
 
@@ -35,26 +36,26 @@ export default function BattleRankingPage() {
   }, [user, authLoading]);
 
   return (
-    <div className="min-h-dvh" style={{ background: "#0F0F1A" }}>
-      <div className="sticky top-0 z-10 px-4 pt-safe pt-4 pb-3 flex items-center gap-3" style={{ background: "#0F0F1A" }}>
+    <div className="min-h-dvh" style={{ background: UI.bgGradient }}>
+      <div className="sticky top-0 z-10 px-4 pt-safe pt-4 pb-3 flex items-center gap-3" style={{ background: "linear-gradient(180deg, #14141C 0%, rgba(20,20,28,0) 100%)" }}>
         <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>
           <ArrowLeft size={18} className="text-white" />
         </button>
-        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><StickerIcon icon={Trophy} color="#E8B040" size={30} /> 주간 배틀 랭킹</h1>
+        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><StickerIcon icon={Trophy} color={UI.accent.gold} size={30} /> 주간 배틀 랭킹</h1>
       </div>
 
       <div className="px-4 pb-10">
-        <div className="rounded-2xl p-3 mb-4 text-[12px] text-gray-400 leading-snug" style={{ background: "rgba(255,255,255,0.05)" }}>
-          매주 월요일에 초기화돼요. 이번 주 TOP 10은 <span style={{ color: "#FFCC44", fontWeight: 700 }}>상점 코인</span>을 받아요!
+        <div className="rounded-2xl p-3 mb-4 text-[12px] leading-snug" style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}`, color: UI.textSub }}>
+          매주 월요일에 초기화돼요. 이번 주 TOP 10은 <span style={{ color: UI.accent.gold, fontWeight: 700 }}>상점 코인</span>을 받아요!
           <br />점수 = 승리 3점 + 패배 1점 (참가만 해도 쌓여요)
         </div>
 
         {loading ? (
-          <div className="flex justify-center py-20"><Loader2 size={28} className="animate-spin text-gray-500" /></div>
+          <div className="flex justify-center py-20"><Loader2 size={28} className="animate-spin" style={{ color: UI.textMuted }} /></div>
         ) : ranks.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-[32px] mb-3">⚔️</p>
-            <p className="text-gray-500 text-[14px]">이번 주 배틀 기록이 아직 없어요</p>
+            <p className="text-[14px]" style={{ color: UI.textMuted }}>이번 주 배틀 기록이 아직 없어요</p>
           </div>
         ) : (
           <div className="flex flex-col gap-2">
@@ -65,10 +66,10 @@ export default function BattleRankingPage() {
                 <div key={r.userId}
                   className="flex items-center gap-3 rounded-2xl p-3"
                   style={{
-                    background: isMe ? "rgba(160,80,255,0.16)" : "rgba(255,255,255,0.05)",
-                    border: isMe ? "1px solid rgba(160,80,255,0.5)" : "1px solid transparent",
+                    background: isMe ? `${UI.accent.violet}1F` : UI.panel,
+                    boxShadow: isMe ? `inset 0 0 0 1.5px ${UI.accent.violet}` : `inset 0 0 0 1px ${UI.panelBorder}`,
                   }}>
-                  <span className="w-7 text-center text-[15px] font-black shrink-0" style={{ color: i < 3 ? "#FFD700" : "rgba(255,255,255,0.5)" }}>
+                  <span className="w-7 text-center text-[15px] font-black shrink-0" style={{ color: i < 3 ? UI.accent.gold : "rgba(255,255,255,0.5)" }}>
                     {RANK_MEDAL[i] ?? i + 1}
                   </span>
                   {r.avatarUrl ? (
@@ -78,12 +79,12 @@ export default function BattleRankingPage() {
                     <div className="w-9 h-9 rounded-full shrink-0 flex items-center justify-center" style={{ background: "rgba(255,255,255,0.1)" }}>🐱</div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-bold text-white truncate">{r.name}{isMe && <span className="text-[10px] text-purple-300 ml-1">(나)</span>}</p>
-                    <p className="text-[10px] text-gray-500">{r.wins}승 {r.losses}패</p>
+                    <p className="text-[13px] font-bold text-white truncate">{r.name}{isMe && <span className="text-[10px] ml-1" style={{ color: UI.accent.violet }}>(나)</span>}</p>
+                    <p className="text-[10px]" style={{ color: UI.textMuted }}>{r.wins}승 {r.losses}패</p>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-[14px] font-black" style={{ color: "#C090FF" }}>{r.score}점</p>
-                    {reward && <p className="text-[10px] font-bold" style={{ color: "#FFCC44" }}>+{reward} 코인</p>}
+                    <p className="text-[14px] font-black" style={{ color: UI.accent.violet }}>{r.score}점</p>
+                    {reward && <p className="text-[10px] font-bold" style={{ color: UI.accent.gold }}>+{reward} 코인</p>}
                   </div>
                 </div>
               );
