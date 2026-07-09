@@ -99,6 +99,20 @@ export function NavCardGameIcon({ size = 24 }: { size?: number }) {
   );
 }
 
+export function NavStoreIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M7 8.2h10l1 11a1.6 1.6 0 0 1-1.6 1.8H7.6A1.6 1.6 0 0 1 6 19.2Z"
+        fill="#FCE7B8" stroke={STROKE} strokeWidth={SW} strokeLinejoin="round" />
+      <path d="M8.5 8.2V6.6a3.5 3.5 0 0 1 7 0v1.6" stroke={STROKE} strokeWidth={SW} strokeLinecap="round" fill="none" />
+      <path d="M8.5 8.2V6.6a3.5 3.5 0 0 1 7 0v1.6" stroke="#E8935A" strokeWidth={1.6} strokeLinecap="round" fill="none" opacity={0.55} />
+      <circle cx="9.3" cy="11.2" r="0.9" fill="#fff" stroke={STROKE} strokeWidth={0.9} />
+      <circle cx="14.7" cy="11.2" r="0.9" fill="#fff" stroke={STROKE} strokeWidth={0.9} />
+      <path d="M15.6 4.3l0.4 1 1 0.4-1 0.4-0.4 1-0.4-1-1-0.4 1-0.4Z" fill="#8FCBEA" stroke={STROKE} strokeWidth={0.5} />
+    </svg>
+  );
+}
+
 export function NavMyIcon({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">

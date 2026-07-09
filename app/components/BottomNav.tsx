@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   NavHomeIcon, NavMapIcon, NavGuideIcon, NavAiButlerIcon,
-  NavCommunityIcon, NavCardGameIcon, NavMyIcon,
+  NavCommunityIcon, NavCardGameIcon, NavStoreIcon, NavMyIcon,
 } from "@/app/components/nav-icons";
 
 const tabs = [
@@ -14,6 +14,7 @@ const tabs = [
   { href: "/lab/cat-style", label: "AI집사", Icon: NavAiButlerIcon },
   { href: "/community", label: "커뮤니티", Icon: NavCommunityIcon },
   { href: "/mypage/cards", label: "카드게임", Icon: NavCardGameIcon },
+  { href: "/store", label: "쇼핑", Icon: NavStoreIcon },
   { href: "/mypage", label: "마이", Icon: NavMyIcon },
 ];
 
