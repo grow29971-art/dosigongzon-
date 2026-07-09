@@ -141,12 +141,12 @@ export default function InventoryPage() {
   };
 
   return (
-    <div className="min-h-dvh" style={{ background: "#0F0F1A" }}>
-      <div className="sticky top-0 z-10 px-4 pt-safe pt-4 pb-3 flex items-center gap-3" style={{ background: "#0F0F1A" }}>
-        <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>
+    <div className="min-h-dvh" style={{ background: "radial-gradient(ellipse at 50% 0%, #241A30 0%, #120D18 55%)" }}>
+      <div className="sticky top-0 z-10 px-4 pt-safe pt-4 pb-3 flex items-center gap-3" style={{ background: "linear-gradient(180deg, #1A1322 0%, rgba(26,19,34,0) 100%)" }}>
+        <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(232,176,64,0.12)" }}>
           <ArrowLeft size={18} className="text-white" />
         </button>
-        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><StickerIcon icon={Backpack} color="#7A5AE0" size={30} /> 소지품 &amp; 장비</h1>
+        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><StickerIcon icon={Backpack} color="#E8B040" size={30} /> 소지품 &amp; 장비</h1>
       </div>
 
       <div className="px-4 pb-10">
@@ -167,7 +167,7 @@ export default function InventoryPage() {
                   style={{ opacity: activeCatId === cat.id ? 1 : 0.5 }}>
                   <div className="rounded-full overflow-hidden flex items-center justify-center" style={{
                     width: 40, height: 40,
-                    boxShadow: activeCatId === cat.id ? "0 0 0 2px #4C82BC" : "0 0 0 1px rgba(255,255,255,0.1)",
+                    boxShadow: activeCatId === cat.id ? "0 0 0 2px #E8B040" : "0 0 0 1px rgba(255,255,255,0.1)",
                   }}>
                     {cat.photo_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -186,10 +186,10 @@ export default function InventoryPage() {
               <>
                 {/* 상단 장비 패널 — 디아블로식: 초상화를 중심에 두고 8각 소켓 6개를 육각 배치 */}
                 <div className="rounded-3xl pt-6 pb-6 px-3 mb-3" style={{
-                  background: "radial-gradient(ellipse at 50% 25%, #241F38 0%, #100E1A 75%)",
-                  boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06), inset 0 2px 12px rgba(0,0,0,0.4), 0 8px 20px rgba(0,0,0,0.3)",
+                  background: "radial-gradient(ellipse at 50% 20%, #33273F 0%, #170F1E 78%)",
+                  boxShadow: "inset 0 0 0 1px rgba(232,176,64,0.1), inset 0 2px 14px rgba(0,0,0,0.45), 0 8px 20px rgba(0,0,0,0.35)",
                 }}>
-                  <p className="text-[10px] font-extrabold text-center mb-4 tracking-widest" style={{ color: "#6B6580" }}>EQUIPMENT</p>
+                  <p className="text-[10px] font-extrabold text-center mb-4 tracking-widest" style={{ color: "#B4A08A" }}>EQUIPMENT</p>
 
                   <div className="flex items-center justify-center" style={{ gap: 10 }}>
                     {/* 좌측 컬럼 */}
@@ -205,10 +205,10 @@ export default function InventoryPage() {
                           <button key={slot} onClick={() => tapSlot(slot)} disabled={equipLoading} className="flex flex-col items-center gap-1">
                             <div className="rounded-xl" style={{
                               width: 50, height: 50,
-                              background: equipped ? `linear-gradient(150deg, ${color}, ${color}99)` : "rgba(255,255,255,0.05)",
+                              background: equipped ? `linear-gradient(150deg, ${color}, ${color}99)` : "linear-gradient(160deg, rgba(150,110,70,0.16), rgba(30,20,18,0.4))",
                               boxShadow: equipped
                                 ? `0 0 0 2px ${color}, 0 0 12px ${color}70, inset 0 2px 3px rgba(255,255,255,0.3)`
-                                : "0 0 0 1.5px rgba(255,255,255,0.09), inset 0 2px 4px rgba(0,0,0,0.4)",
+                                : "0 0 0 1.5px rgba(220,180,120,0.16), inset 0 2px 4px rgba(0,0,0,0.45)",
                               display: "flex", alignItems: "center", justifyContent: "center",
                             }}>
                               <span style={{ fontSize: 20, filter: equipped ? "none" : qty > 0 ? "grayscale(0.4) opacity(0.85)" : "grayscale(1) opacity(0.3)" }}>{item.icon}</span>
@@ -254,10 +254,10 @@ export default function InventoryPage() {
                             <button key="border" onClick={() => setBorderPicker(true)} className="flex flex-col items-center gap-1">
                               <div className="rounded-xl" style={{
                                 width: 50, height: 50,
-                                background: c ? "linear-gradient(150deg, #E8B040, #C4881F)" : "rgba(255,255,255,0.05)",
+                                background: c ? "linear-gradient(150deg, #E8B040, #C4881F)" : "linear-gradient(160deg, rgba(150,110,70,0.16), rgba(30,20,18,0.4))",
                                 boxShadow: c
                                   ? "0 0 0 2px #E8B040, 0 0 12px rgba(232,176,64,0.7), inset 0 2px 3px rgba(255,255,255,0.3)"
-                                  : "0 0 0 1.5px rgba(255,255,255,0.09), inset 0 2px 4px rgba(0,0,0,0.4)",
+                                  : "0 0 0 1.5px rgba(220,180,120,0.16), inset 0 2px 4px rgba(0,0,0,0.45)",
                                 display: "flex", alignItems: "center", justifyContent: "center",
                               }}>
                                 <span style={{ fontSize: 20 }}>{c ? SHOP_ITEMS[c as ShopItemKey]?.icon : "✨"}</span>
@@ -276,10 +276,10 @@ export default function InventoryPage() {
                           <button key={slot} onClick={() => tapSlot(slot)} disabled={equipLoading} className="flex flex-col items-center gap-1">
                             <div className="rounded-xl" style={{
                               width: 50, height: 50,
-                              background: equipped ? `linear-gradient(150deg, ${color}, ${color}99)` : "rgba(255,255,255,0.05)",
+                              background: equipped ? `linear-gradient(150deg, ${color}, ${color}99)` : "linear-gradient(160deg, rgba(150,110,70,0.16), rgba(30,20,18,0.4))",
                               boxShadow: equipped
                                 ? `0 0 0 2px ${color}, 0 0 12px ${color}70, inset 0 2px 3px rgba(255,255,255,0.3)`
-                                : "0 0 0 1.5px rgba(255,255,255,0.09), inset 0 2px 4px rgba(0,0,0,0.4)",
+                                : "0 0 0 1.5px rgba(220,180,120,0.16), inset 0 2px 4px rgba(0,0,0,0.45)",
                               display: "flex", alignItems: "center", justifyContent: "center",
                             }}>
                               <span style={{ fontSize: 20, filter: equipped ? "none" : qty > 0 ? "grayscale(0.4) opacity(0.85)" : "grayscale(1) opacity(0.3)" }}>{item.icon}</span>
@@ -293,12 +293,12 @@ export default function InventoryPage() {
                 </div>
 
                 {/* 하단 소지품 목록 */}
-                <div className="rounded-2xl p-3" style={{ background: "rgba(255,255,255,0.04)" }}>
+                <div className="rounded-2xl p-3" style={{ background: "linear-gradient(165deg, rgba(80,60,50,0.14), rgba(20,14,18,0.3))", boxShadow: "inset 0 0 0 1px rgba(232,176,64,0.07)" }}>
                   <div className="flex gap-1.5 mb-2.5">
                     {TABS.map((t) => (
                       <button key={t.key} onClick={() => setTab(t.key)}
                         className="px-3 py-1.5 rounded-full text-[11px] font-bold"
-                        style={{ background: tab === t.key ? "#4C82BC" : "rgba(255,255,255,0.06)", color: tab === t.key ? "white" : "#8A8598" }}>
+                        style={{ background: tab === t.key ? "linear-gradient(135deg,#E8B040,#C4881F)" : "rgba(255,255,255,0.06)", color: tab === t.key ? "#1A1220" : "#8A8598" }}>
                         {t.label}
                       </button>
                     ))}
@@ -316,15 +316,15 @@ export default function InventoryPage() {
                         return (
                           <button key={key} onClick={() => rowTap(key)}
                             className="flex items-center gap-2 rounded-xl px-2.5 py-2 text-left"
-                            style={{ background: isEquipped ? "rgba(76,130,188,0.18)" : "rgba(255,255,255,0.03)" }}>
-                            <span className="rounded-lg flex items-center justify-center shrink-0" style={{ width: 32, height: 32, fontSize: 17, background: "rgba(255,255,255,0.06)" }}>
+                            style={{ background: isEquipped ? "rgba(232,176,64,0.16)" : "rgba(255,255,255,0.03)" }}>
+                            <span className="rounded-lg flex items-center justify-center shrink-0" style={{ width: 32, height: 32, fontSize: 17, background: "linear-gradient(160deg, rgba(150,110,70,0.18), rgba(30,20,18,0.35))" }}>
                               {item.icon}
                             </span>
                             <div className="min-w-0 flex-1">
                               <p className="text-[11px] font-bold text-white truncate">{item.name} {qty > 0 && <span className="text-gray-400 font-normal">x{qty}</span>}</p>
                               <p className="text-[9.5px] text-gray-500 truncate">{item.desc}</p>
                             </div>
-                            {isEquipped && <CheckCircle2 size={14} style={{ color: "#4C82BC" }} className="shrink-0" />}
+                            {isEquipped && <CheckCircle2 size={14} style={{ color: "#E8B040" }} className="shrink-0" />}
                           </button>
                         );
                       })}
@@ -351,7 +351,7 @@ export default function InventoryPage() {
       {/* 테두리 선택 시트 */}
       {borderPicker && activeCat && (
         <div className="fixed inset-0 z-[210] flex items-end justify-center" style={{ background: "rgba(0,0,0,0.6)" }} onClick={() => setBorderPicker(false)}>
-          <div onClick={(e) => e.stopPropagation()} className="w-full max-w-lg rounded-t-3xl p-5" style={{ background: "#1A1A2A", maxHeight: "75vh", overflowY: "auto" }}>
+          <div onClick={(e) => e.stopPropagation()} className="w-full max-w-lg rounded-t-3xl p-5" style={{ background: "linear-gradient(180deg, #241A30, #170F1E)", maxHeight: "75vh", overflowY: "auto" }}>
             <div className="flex items-center justify-between mb-3">
               <p className="text-white text-[15px] font-extrabold">✨ 테두리 오라 선택</p>
               <button onClick={() => setBorderPicker(false)} className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.1)" }}>
