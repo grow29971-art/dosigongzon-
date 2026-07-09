@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   NavHomeIcon, NavMapIcon, NavGuideIcon, NavAiButlerIcon,
-  NavCommunityIcon, NavCardGameIcon, NavStoreIcon, NavMyIcon,
+  NavCommunityIcon, NavStoreIcon, NavMyIcon,
 } from "@/app/components/nav-icons";
 
 const tabs = [
@@ -13,7 +13,8 @@ const tabs = [
   { href: "/tips", label: "가이드", Icon: NavGuideIcon },
   { href: "/lab/cat-style", label: "AI집사", Icon: NavAiButlerIcon },
   { href: "/community", label: "커뮤니티", Icon: NavCommunityIcon },
-  { href: "/mypage/cards", label: "카드게임", Icon: NavCardGameIcon },
+  // 카드게임 탭 임시 숨김 (2026-07-10) — 복원 시 아래 줄 주석 해제
+  // { href: "/mypage/cards", label: "카드게임", Icon: NavCardGameIcon },
   { href: "/shop", label: "쇼핑", Icon: NavStoreIcon },
   { href: "/mypage", label: "마이", Icon: NavMyIcon },
 ];
