@@ -9,6 +9,7 @@ import CatCard, { type CatCardData, type CardRarity } from "@/app/components/Cat
 import { SPECIAL_SKILLS } from "@/lib/battle-config";
 import { PVE_BESTIARY } from "@/lib/pve-bestiary";
 import { SHOP_ITEMS, EQUIP_ITEM_KEYS, BORDER_FX_ITEM_KEYS, BODY_SLOTS, BODY_SLOT_LABELS, type ShopItemKey, type BodySlot, type EquippedSlots } from "@/lib/shop-config";
+import { UI, progressTrackStyle, progressFillStyle } from "@/lib/battle-ui-theme";
 import Link from "next/link";
 
 // 슬롯별 테마 색상 — 가방(인벤토리) 페이지와 동일한 배색으로 통일
@@ -245,14 +246,14 @@ export default function MyCardsPage() {
 
   return (
     <>
-      <div className="min-h-dvh" style={{ background: "radial-gradient(circle at 50% 0%, #EEF4FF, #F4F7FC 40%)" }}>
+      <div className="min-h-dvh" style={{ background: UI.bgGradient }}>
         {/* 헤더 */}
-        <div className="sticky top-0 z-10 px-4 pt-safe pt-4 pb-3 flex items-center gap-3" style={{ background: "rgba(255,255,255,0.7)", backdropFilter: "blur(12px)" }}>
-          <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "#fff", boxShadow: "0 2px 6px rgba(60,50,90,0.1)" }}>
-            <ArrowLeft size={18} style={{ color: "#2B2B3D" }} />
+        <div className="sticky top-0 z-10 px-4 pt-safe pt-4 pb-3 flex items-center gap-3" style={{ background: "linear-gradient(180deg, #14141C 0%, rgba(20,20,28,0) 100%)" }}>
+          <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>
+            <ArrowLeft size={18} style={{ color: UI.textMain }} />
           </button>
-          <h1 className="text-[17px] font-extrabold" style={{ color: "#2B2B3D" }}>내 고양이 카드</h1>
-          <span className="text-[13px] font-semibold ml-auto" style={{ color: "#8A8598" }}>{cats.length}장</span>
+          <h1 className="text-[17px] font-extrabold" style={{ color: UI.textMain }}>내 고양이 카드</h1>
+          <span className="text-[13px] font-semibold ml-auto" style={{ color: UI.textSub }}>{cats.length}장</span>
         </div>
 
         <div className="px-4 pb-28">
@@ -300,18 +301,22 @@ export default function MyCardsPage() {
             {(["all", ...RARITY_ORDER] as const).map((r) => (
               <button key={r} onClick={() => setFilter(r)}
                 className="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all"
-                style={{ background: filter === r ? "#4C82BC" : "#fff", color: filter === r ? "#fff" : "#8A8598", boxShadow: filter === r ? "0 2px 8px rgba(76,130,188,0.35)" : "0 1px 4px rgba(60,50,90,0.06)" }}>
+                style={{
+                  background: filter === r ? `${UI.accent.violet}1F` : UI.panel,
+                  color: filter === r ? UI.accent.violet : UI.textSub,
+                  boxShadow: filter === r ? `inset 0 0 0 1.5px ${UI.accent.violet}` : `inset 0 0 0 1px ${UI.panelBorder}`,
+                }}>
                 {r === "all" ? `전체 ${cats.length}` : `${RARITY_LABELS[r]} ${counts[r]}`}
               </button>
             ))}
           </div>
 
           {loading ? (
-            <div className="flex justify-center py-20"><Loader2 size={28} className="animate-spin" style={{ color: "#B4AFC2" }} /></div>
+            <div className="flex justify-center py-20"><Loader2 size={28} className="animate-spin" style={{ color: UI.textMuted }} /></div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-[32px] mb-3">🃏</p>
-              <p className="text-[14px] font-semibold" style={{ color: "#9A94A8" }}>{filter === "all" ? "아직 카드가 없어요" : `${RARITY_LABELS[filter as CardRarity]} 카드가 없어요`}</p>
+              <p className="text-[14px] font-semibold" style={{ color: UI.textSub }}>{filter === "all" ? "아직 카드가 없어요" : `${RARITY_LABELS[filter as CardRarity]} 카드가 없어요`}</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-4">
@@ -321,7 +326,7 @@ export default function MyCardsPage() {
                     card={{ card_rarity: cat.card_rarity, card_name: cat.card_name, card_traits: cat.card_traits ?? [], card_stats: cat.card_stats, card_flavor: cat.card_flavor, card_level: cat.card_level, card_exp: cat.card_exp, card_generated_at: cat.card_generated_at, best_win_streak: cat.best_win_streak, pve_win_count: cat.pve_win_count, equipped_border_key: cat.equipped_border_key }}
                     size="sm" onClick={() => setSelected(cat)} />
                   {repCardId === cat.id && (
-                    <span className="text-[9px] text-yellow-400 font-bold">★ 대표 카드</span>
+                    <span className="text-[9px] font-bold" style={{ color: UI.accent.gold }}>★ 대표 카드</span>
                   )}
                 </div>
               ))}
@@ -332,14 +337,14 @@ export default function MyCardsPage() {
 
       {/* 카드 상세 모달 */}
       {selected && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 200, background: "rgba(30,28,45,0.72)", backdropFilter: "blur(4px)", display: "flex", flexDirection: "column", alignItems: "center", padding: "20px 20px calc(20px + env(safe-area-inset-bottom))", gap: 12, overflowY: "auto", WebkitOverflowScrolling: "touch" }}
+        <div style={{ position: "fixed", inset: 0, zIndex: 200, background: "rgba(6,6,10,0.82)", backdropFilter: "blur(4px)", display: "flex", flexDirection: "column", alignItems: "center", padding: "20px 20px calc(20px + env(safe-area-inset-bottom))", gap: 12, overflowY: "auto", WebkitOverflowScrolling: "touch" }}
           onClick={() => setSelected(null)}>
           <button onClick={() => setSelected(null)}
             style={{
               position: "fixed", top: "calc(env(safe-area-inset-top) + 14px)", right: 16, zIndex: 201,
               width: 40, height: 40, borderRadius: 99,
-              background: "#fff", boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-              display: "flex", alignItems: "center", justifyContent: "center", color: "#2B2B3D", cursor: "pointer",
+              background: UI.panelAlt, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}`,
+              display: "flex", alignItems: "center", justifyContent: "center", color: UI.textMain, cursor: "pointer",
             }}>
             <X size={20} />
           </button>
@@ -350,16 +355,13 @@ export default function MyCardsPage() {
               size="lg" />
 
             {/* XP 바 */}
-            <div className="w-full px-1 rounded-2xl p-3" style={{ background: "#fff" }}>
-              <div className="flex justify-between text-[11px] font-semibold mb-1" style={{ color: "#8A8598" }}>
+            <div className="w-full px-1 rounded-2xl p-3" style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
+              <div className="flex justify-between text-[11px] font-semibold mb-1" style={{ color: UI.textSub }}>
                 <span>EXP</span>
                 <span>{selected.card_exp} XP</span>
               </div>
-              <div className="h-1.5 rounded-full" style={{ background: "#EEEDF4" }}>
-                <div className="h-full rounded-full" style={{
-                  width: `${Math.min(((selected.card_exp ?? 0) / ([0,90,210,380,610,900,1260,1690,2200,2800][Math.min(selected.card_level ?? 1, 9)] || 2800)) * 100, 100)}%`,
-                  background: "linear-gradient(90deg,#6FA0D8,#FF9CC6)",
-                }} />
+              <div style={progressTrackStyle()}>
+                <div style={progressFillStyle(UI.accent.violet, ((selected.card_exp ?? 0) / ([0,90,210,380,610,900,1260,1690,2200,2800][Math.min(selected.card_level ?? 1, 9)] || 2800)) * 100)} />
               </div>
             </div>
 
@@ -368,7 +370,7 @@ export default function MyCardsPage() {
               {/* 대표 카드 설정 */}
               <button onClick={() => setRepCard(repCardId === selected.id ? null : selected.id)}
                 className="py-2.5 rounded-xl text-[11px] font-bold flex flex-col items-center gap-1"
-                style={{ background: repCardId === selected.id ? "#FFF3D6" : "#fff", color: repCardId === selected.id ? "#C98A1E" : "#6B6578" }}>
+                style={{ background: repCardId === selected.id ? `${UI.accent.gold}1F` : UI.panel, color: repCardId === selected.id ? UI.accent.gold : UI.textSub, boxShadow: `inset 0 0 0 1px ${repCardId === selected.id ? UI.accent.gold : UI.panelBorder}` }}>
                 <Star size={14} />
                 {repCardId === selected.id ? "대표 해제" : "대표 설정"}
               </button>
@@ -376,7 +378,7 @@ export default function MyCardsPage() {
               {/* 배틀 */}
               <Link href="/mypage/cards/battle"
                 className="py-2.5 rounded-xl text-[11px] font-bold flex flex-col items-center gap-1"
-                style={{ background: "#E3EEF9", color: "#2F5E93", textDecoration: "none" }}>
+                style={{ background: `${UI.accent.blue}1F`, color: UI.accent.blue, boxShadow: `inset 0 0 0 1px ${UI.accent.blue}`, textDecoration: "none" }}>
                 <Swords size={14} />
                 배틀
               </Link>
@@ -384,7 +386,12 @@ export default function MyCardsPage() {
               {/* 합성 */}
               <button onClick={doSynthesis} disabled={synthLoading || selected.card_rarity === "legendary"}
                 className="py-2.5 rounded-xl text-[11px] font-bold flex flex-col items-center gap-1"
-                style={{ background: selected.card_rarity === "legendary" ? "#F1F0F5" : "#FFF3D6", color: selected.card_rarity === "legendary" ? "#C4C0CE" : "#C98A1E", opacity: synthLoading ? 0.6 : 1 }}>
+                style={{
+                  background: selected.card_rarity === "legendary" ? UI.panel : `${UI.accent.gold}1F`,
+                  color: selected.card_rarity === "legendary" ? UI.textMuted : UI.accent.gold,
+                  boxShadow: `inset 0 0 0 1px ${selected.card_rarity === "legendary" ? UI.panelBorder : UI.accent.gold}`,
+                  opacity: synthLoading ? 0.6 : 1,
+                }}>
                 <Zap size={14} />
                 합성
               </button>
@@ -392,25 +399,25 @@ export default function MyCardsPage() {
 
             {/* 합성 조건 안내 */}
             {selected.card_rarity !== "legendary" && (
-              <p className="text-[11px] text-center font-semibold" style={{ color: "#EDEBF7" }}>
+              <p className="text-[11px] text-center font-semibold" style={{ color: UI.textSub }}>
                 {RARITY_LABELS[selected.card_rarity]} → {SYNTHESIS_RESULT[selected.card_rarity]} 합성 조건: Lv.{LEVEL_GATE[selected.card_rarity]} 이상
-                <br />현재 레벨: <span style={{ color: (selected.card_level ?? 1) >= LEVEL_GATE[selected.card_rarity] ? "#FFD76A" : "#FF9C9C" }}>Lv.{selected.card_level ?? 1}</span>
+                <br />현재 레벨: <span style={{ color: (selected.card_level ?? 1) >= LEVEL_GATE[selected.card_rarity] ? UI.accent.gold : UI.accent.red }}>Lv.{selected.card_level ?? 1}</span>
               </p>
             )}
 
             {synthMsg && (
-              <p className="text-[13px] font-bold text-center" style={{ color: synthMsg.includes("부족") || synthMsg.includes("오류") ? "#FF9C9C" : "#9CF0B4" }}>
+              <p className="text-[13px] font-bold text-center" style={{ color: synthMsg.includes("부족") || synthMsg.includes("오류") ? UI.accent.red : UI.accent.green }}>
                 {synthMsg}
               </p>
             )}
 
             {/* 기술 다시 배우기 */}
-            <div className="w-full rounded-2xl p-3" style={{ background: "#fff" }}>
+            <div className="w-full rounded-2xl p-3" style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[12px] font-bold flex items-center gap-1.5" style={{ color: "#2B2B3D" }}>
+                <span className="text-[12px] font-bold flex items-center gap-1.5" style={{ color: UI.textMain }}>
                   <Scroll size={13} /> 기술 다시 배우기
                 </span>
-                <span className="text-[11px] font-bold" style={{ color: relearnQty > 0 ? "#C98A1E" : "#C4C0CE" }}>
+                <span className="text-[11px] font-bold" style={{ color: relearnQty > 0 ? UI.accent.gold : UI.textMuted }}>
                   머신 보유 {relearnQty}개
                 </span>
               </div>
@@ -420,26 +427,26 @@ export default function MyCardsPage() {
                   return (
                     <button key={i} onClick={() => doRelearn(i)} disabled={relearnQty <= 0 || relearnLoading}
                       className="rounded-xl px-2 py-1.5 text-left flex items-center gap-1.5"
-                      style={{ background: "#F6F5FA", opacity: relearnQty > 0 ? 1 : 0.4 }}>
+                      style={{ background: UI.panelAlt, opacity: relearnQty > 0 ? 1 : 0.4 }}>
                       <span style={{ fontSize: 14 }}>{skill?.icon ?? "❔"}</span>
-                      <span className="text-[10.5px] font-bold truncate" style={{ color: "#2B2B3D" }}>{skill?.name ?? "?"}</span>
+                      <span className="text-[10.5px] font-bold truncate" style={{ color: UI.textMain }}>{skill?.name ?? "?"}</span>
                     </button>
                   );
                 })}
               </div>
               {relearnQty <= 0 && (
-                <p className="text-[10px] mt-1.5" style={{ color: "#9A94A8" }}>상점에서 &quot;기술 다시 배우기 머신&quot;을 구매하면 스킬을 눌러 재배정할 수 있어요.</p>
+                <p className="text-[10px] mt-1.5" style={{ color: UI.textSub }}>상점에서 &quot;기술 다시 배우기 머신&quot;을 구매하면 스킬을 눌러 재배정할 수 있어요.</p>
               )}
               {relearnMsg && (
-                <p className="text-[11px] font-bold text-center mt-1.5" style={{ color: relearnMsg.includes("오류") || relearnMsg.includes("없어요") ? "#E1505F" : "#3FCB6B" }}>
+                <p className="text-[11px] font-bold text-center mt-1.5" style={{ color: relearnMsg.includes("오류") || relearnMsg.includes("없어요") ? UI.accent.red : UI.accent.green }}>
                   {relearnMsg}
                 </p>
               )}
             </div>
 
             {/* 부위별 장비창 — 머리/팔/몸통/다리/발 5칸 동시 장착 */}
-            <div className="w-full rounded-2xl p-3" style={{ background: "#fff" }}>
-              <span className="text-[12px] font-bold flex items-center gap-1.5 mb-2" style={{ color: "#2B2B3D" }}>
+            <div className="w-full rounded-2xl p-3" style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
+              <span className="text-[12px] font-bold flex items-center gap-1.5 mb-2" style={{ color: UI.textMain }}>
                 <Gem size={13} /> 부위별 장비창
               </span>
               <div className="flex flex-col gap-1.5">
@@ -455,18 +462,18 @@ export default function MyCardsPage() {
                     <button key={slot} onClick={() => canEquip && doEquip(selected.id, equippedHere ? null : slotItem, slot)}
                       disabled={!canEquip || equipLoading}
                       className="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-left"
-                      style={{ background: equippedHere ? `${color}1A` : "#F6F5FA", boxShadow: equippedHere ? `0 0 0 1.5px ${color}66` : "none", opacity: canEquip ? 1 : 0.45 }}>
+                      style={{ background: equippedHere ? `${color}1A` : UI.panelAlt, boxShadow: equippedHere ? `inset 0 0 0 1.5px ${color}` : `inset 0 0 0 1px ${UI.panelBorder}`, opacity: canEquip ? 1 : 0.45 }}>
                       <span className="rounded-lg flex items-center justify-center shrink-0" style={{
                         width: 30, height: 30, fontSize: 15,
-                        background: equippedHere ? color : "#EAE7F2",
+                        background: equippedHere ? color : "rgba(255,255,255,0.06)",
                         boxShadow: equippedHere ? `0 2px 6px ${color}55` : "none",
                       }}>{item.icon}</span>
-                      <span className="text-[10px] font-bold shrink-0" style={{ color: equippedHere ? color : "#9A94A8", width: 28 }}>{BODY_SLOT_LABELS[slot].label}</span>
+                      <span className="text-[10px] font-bold shrink-0" style={{ color: equippedHere ? color : UI.textSub, width: 28 }}>{BODY_SLOT_LABELS[slot].label}</span>
                       <div className="min-w-0 flex-1">
-                        <p className="text-[11px] font-bold truncate" style={{ color: equippedHere ? "#2F5E93" : "#2B2B3D" }}>{item.name}</p>
-                        <p className="text-[9.5px] truncate" style={{ color: "#9A94A8" }}>{item.desc}</p>
+                        <p className="text-[11px] font-bold truncate" style={{ color: equippedHere ? color : UI.textMain }}>{item.name}</p>
+                        <p className="text-[9.5px] truncate" style={{ color: UI.textSub }}>{item.desc}</p>
                       </div>
-                      <span className="text-[10px] font-extrabold shrink-0" style={{ color: equippedHere ? color : canEquip ? "#B4AFC2" : "#D8D5E0" }}>
+                      <span className="text-[10px] font-extrabold shrink-0" style={{ color: equippedHere ? color : canEquip ? UI.textSub : UI.textMuted }}>
                         {equippedHere ? "장착중" : canEquip ? `장착 (${qty})` : "미보유"}
                       </span>
                     </button>
@@ -474,35 +481,35 @@ export default function MyCardsPage() {
                 })}
               </div>
               {equipMsg && (
-                <p className="text-[11px] font-bold text-center mt-1.5" style={{ color: equipMsg.includes("실패") || equipMsg.includes("없어요") ? "#E1505F" : "#3FCB6B" }}>
+                <p className="text-[11px] font-bold text-center mt-1.5" style={{ color: equipMsg.includes("실패") || equipMsg.includes("없어요") ? UI.accent.red : UI.accent.green }}>
                   {equipMsg}
                 </p>
               )}
             </div>
 
             {/* 테두리 코스메틱 */}
-            <div className="w-full rounded-2xl p-3" style={{ background: "#fff" }}>
+            <div className="w-full rounded-2xl p-3" style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[12px] font-bold flex items-center gap-1.5" style={{ color: "#2B2B3D" }}>
+                <span className="text-[12px] font-bold flex items-center gap-1.5" style={{ color: UI.textMain }}>
                   <Sparkles size={13} /> 테두리 코스메틱
                 </span>
                 {selected.equipped_border_key && (
                   <button onClick={() => doEquip(selected.id, null, "border")} disabled={equipLoading}
-                    className="text-[10.5px] font-bold px-2 py-1 rounded-full" style={{ background: "#FDECEC", color: "#E1505F" }}>
+                    className="text-[10.5px] font-bold px-2 py-1 rounded-full" style={{ background: `${UI.accent.red}1A`, color: UI.accent.red }}>
                     해제
                   </button>
                 )}
               </div>
               {selected.equipped_border_key ? (
-                <div className="flex items-center gap-2 rounded-xl px-2.5 py-2 mb-2" style={{ background: "#FFF3D6" }}>
+                <div className="flex items-center gap-2 rounded-xl px-2.5 py-2 mb-2" style={{ background: `${UI.accent.gold}1A` }}>
                   <span style={{ fontSize: 18 }}>{SHOP_ITEMS[selected.equipped_border_key as ShopItemKey]?.icon}</span>
                   <div className="min-w-0">
-                    <p className="text-[11px] font-bold truncate" style={{ color: "#C98A1E" }}>{SHOP_ITEMS[selected.equipped_border_key as ShopItemKey]?.name}</p>
-                    <p className="text-[10px] truncate" style={{ color: "#B4966B" }}>{SHOP_ITEMS[selected.equipped_border_key as ShopItemKey]?.desc}</p>
+                    <p className="text-[11px] font-bold truncate" style={{ color: UI.accent.gold }}>{SHOP_ITEMS[selected.equipped_border_key as ShopItemKey]?.name}</p>
+                    <p className="text-[10px] truncate" style={{ color: UI.textSub }}>{SHOP_ITEMS[selected.equipped_border_key as ShopItemKey]?.desc}</p>
                   </div>
                 </div>
               ) : (
-                <p className="text-[10px] mb-2" style={{ color: "#9A94A8" }}>장착한 테두리가 없어요.</p>
+                <p className="text-[10px] mb-2" style={{ color: UI.textSub }}>장착한 테두리가 없어요.</p>
               )}
               <div className="grid grid-cols-2 gap-1.5">
                 {BORDER_FX_ITEM_KEYS.filter(k => k !== selected.equipped_border_key).map((key) => {
@@ -511,9 +518,9 @@ export default function MyCardsPage() {
                   return (
                     <button key={key} onClick={() => doEquip(selected.id, key, "border")} disabled={qty <= 0 || equipLoading}
                       className="rounded-xl px-2 py-1.5 text-left flex items-center gap-1.5"
-                      style={{ background: "#F6F5FA", opacity: qty > 0 ? 1 : 0.4 }}>
+                      style={{ background: UI.panelAlt, opacity: qty > 0 ? 1 : 0.4 }}>
                       <span style={{ fontSize: 14 }}>{item.icon}</span>
-                      <span className="text-[10px] font-bold truncate" style={{ color: "#2B2B3D" }}>{item.name} ({qty})</span>
+                      <span className="text-[10px] font-bold truncate" style={{ color: UI.textMain }}>{item.name} ({qty})</span>
                     </button>
                   );
                 })}
@@ -523,7 +530,7 @@ export default function MyCardsPage() {
             {/* 자랑하기 */}
             <button onClick={() => shareCard(selected)}
               className="w-full py-2.5 rounded-xl text-[12px] font-bold flex items-center justify-center gap-2"
-              style={{ background: "#fff", color: "#6B6578" }}>
+              style={{ background: UI.panel, color: UI.textSub, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
               <Share2 size={13} /> 커뮤니티에 자랑하기
             </button>
           </div>
