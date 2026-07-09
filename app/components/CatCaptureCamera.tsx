@@ -674,28 +674,16 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
               {/* 고양이 캔 (몬스터볼처럼 던지는 아이템) */}
               <div className="relative flex flex-col items-center"
                 style={{ filter: `drop-shadow(0 3px ${6 + pullY / 15}px rgba(0,0,0,0.45))` }}>
-                {/* 캔 뚜껑 */}
-                <div style={{
-                  width: 36, height: 13, borderRadius: "50%",
-                  background: "radial-gradient(ellipse at 35% 30%, #FFFFFF 0%, #E4E4E4 35%, #A8A8A8 70%, #808080 100%)",
-                  boxShadow: "inset 0 -2px 3px rgba(0,0,0,0.3)",
-                  position: "relative", zIndex: 2,
-                }} />
-                {/* 캔 몸통 */}
-                <div style={{
-                  width: 36, height: 32, marginTop: -5, borderRadius: 3,
-                  background: "linear-gradient(180deg, #FF8A3D 0%, #FF6B1A 55%, #E8540A 100%)",
-                  position: "relative", overflow: "hidden",
-                  boxShadow: "inset -5px 0 7px rgba(0,0,0,0.28), inset 4px 0 6px rgba(255,255,255,0.18)",
-                }}>
-                  <div style={{ position: "absolute", left: 4, top: 0, bottom: 0, width: 5, background: "rgba(255,255,255,0.25)", borderRadius: 2 }} />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center leading-none">
-                    <span style={{ fontSize: 8, fontWeight: 900, color: "white", letterSpacing: 0.5, textShadow: "0 1px 1px rgba(0,0,0,0.35)" }}>CAT</span>
-                    <span style={{ fontSize: 8, fontWeight: 900, color: "white", letterSpacing: 0.5, textShadow: "0 1px 1px rgba(0,0,0,0.35)" }}>FOOD</span>
-                  </div>
-                </div>
+                <img
+                  src="/images/capture-can.png"
+                  alt=""
+                  draggable={false}
+                  width={110}
+                  height={63}
+                  style={{ width: 110, height: "auto", userSelect: "none", pointerEvents: "none" }}
+                />
                 {/* 캔 바닥 그림자 */}
-                <div style={{ width: 34, height: 4, marginTop: -2, borderRadius: "50%", background: "rgba(0,0,0,0.22)" }} />
+                <div style={{ width: 60, height: 6, marginTop: -3, borderRadius: "50%", background: "rgba(0,0,0,0.22)" }} />
               </div>
             </div>
 
