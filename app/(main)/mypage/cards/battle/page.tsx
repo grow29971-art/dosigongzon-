@@ -26,12 +26,14 @@ type BattleEnvKey = keyof typeof BATTLE_ENVS;
 const ENV_KEYS = Object.keys(BATTLE_ENVS) as BattleEnvKey[];
 
 // 환경별 배경 — 파스텔 하늘 톤 그라디언트 (다크 판타지 톤 대신 포근한 가챠게임 톤)
+// 대시보드 톤(짙은 배경)에 맞춰 각 환경을 어두운 버전으로 — 날씨/시간대 컨셉은
+// 유지하되(은은한 컬러 글로우로 구분) 밝은 파스텔 하늘 대신 짙은 베이스로 통일.
 const ENV_BACKGROUNDS: Record<BattleEnvKey, string> = {
-  night: "radial-gradient(circle at 50% 34%, rgba(255,255,255,0.55), transparent 46%), linear-gradient(180deg, #E4EEFF 0%, #C9DEFF 45%, #AFCBFF 100%)",
-  noon:  "radial-gradient(circle at 50% 34%, rgba(255,255,255,0.6), transparent 46%), linear-gradient(180deg, #FFF6DE 0%, #FFE7B8 45%, #FFD48F 100%)",
-  rain:  "radial-gradient(circle at 50% 34%, rgba(255,255,255,0.55), transparent 46%), linear-gradient(180deg, #E1F0FB 0%, #C3DFEF 45%, #A6CCE1 100%)",
-  heat:  "radial-gradient(circle at 50% 34%, rgba(255,255,255,0.55), transparent 46%), linear-gradient(180deg, #FFE9DC 0%, #FFCFB6 45%, #FFB393 100%)",
-  fog:   "radial-gradient(circle at 50% 34%, rgba(255,255,255,0.6), transparent 46%), linear-gradient(180deg, #EDEBF7 0%, #D8D6E9 45%, #C4C2D9 100%)",
+  night: "radial-gradient(circle at 50% 30%, rgba(110,130,220,0.22), transparent 50%), linear-gradient(180deg, #0A0E1F 0%, #0D0A18 45%, #0A0A12 100%)",
+  noon:  "radial-gradient(circle at 50% 30%, rgba(255,190,110,0.2), transparent 50%), linear-gradient(180deg, #1A1508 0%, #14100A 45%, #0F0D0A 100%)",
+  rain:  "radial-gradient(circle at 50% 30%, rgba(110,160,210,0.2), transparent 50%), linear-gradient(180deg, #0C1420 0%, #0A121C 45%, #080F18 100%)",
+  heat:  "radial-gradient(circle at 50% 30%, rgba(255,130,90,0.22), transparent 50%), linear-gradient(180deg, #1F0F0A 0%, #180C08 45%, #120906 100%)",
+  fog:   "radial-gradient(circle at 50% 30%, rgba(180,170,210,0.16), transparent 50%), linear-gradient(180deg, #16131E 0%, #120F18 45%, #0E0C14 100%)",
 };
 
 // 액션 슬롯 순서: [기본공격, 방어, 스킬1, 스킬2, 스킬3, 스킬4]
@@ -246,7 +248,7 @@ function HpBar({ current, max }: { current:number; max:number }) {
   const pct = Math.max(0, Math.min(100, (current/max)*100));
   const grad = pct>50 ? "linear-gradient(90deg,#7CE38F,#3FCB6B)" : pct>25 ? "linear-gradient(90deg,#FFDA7C,#FFB93F)" : "linear-gradient(90deg,#FF9C9C,#FF5C5C)";
   return (
-    <div style={{ height:9, borderRadius:99, background:"rgba(0,0,0,0.08)", overflow:"hidden" }}>
+    <div style={{ height:9, borderRadius:99, background:"rgba(255,255,255,0.08)", overflow:"hidden" }}>
       <div style={{
         height:"100%", width:`${pct}%`, background:grad, borderRadius:99, transition:"width 0.45s ease, background 0.45s",
         animation: pct<25 ? "pulse 0.6s infinite" : undefined,
@@ -329,9 +331,8 @@ function SkillBtn({ skill, idx, disabled, cooldown=0, usesLeft, onPick, variant=
         gap: isPrimary ? 10 : 4,
         padding: isPrimary ? "13px 15px" : "12px 6px 10px",
         borderRadius: 18,
-        border: `2px solid ${isOff ? "#E3E1EC" : skill.color + "88"}`,
-        background: isOff ? "#F1F0F5" : "#fff",
-        boxShadow: isOff ? "none" : "0 3px 10px rgba(60,50,90,0.08)",
+        boxShadow: isOff ? `inset 0 0 0 1px ${UI.panelBorder}` : `inset 0 0 0 1.5px ${skill.color}88`,
+        background: isOff ? UI.panelAlt : UI.panel,
         transition:"transform 0.08s",
         opacity: isOff ? 0.6 : 1, cursor: isOff?"default":"pointer",
         WebkitTapHighlightColor:"transparent",
@@ -341,20 +342,20 @@ function SkillBtn({ skill, idx, disabled, cooldown=0, usesLeft, onPick, variant=
       <span style={{
         flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center",
         width: isPrimary?38:32, height: isPrimary?38:32, borderRadius:"50%",
-        background: isOff ? "#E3E1EC" : `${skill.color}22`, color: isOff ? "#B4B0C2" : skill.color,
+        background: isOff ? "rgba(255,255,255,0.06)" : `${skill.color}22`, color: isOff ? UI.textMuted : skill.color,
       }}>
         {isPrimary ? icons[idx] : <span style={{ fontSize:16 }}>{skill.icon}</span>}
       </span>
 
       <span style={{ display:"flex", flexDirection:"column", alignItems: isPrimary?"flex-start":"center", gap:1, minWidth:0, flex: isPrimary?1:undefined, width: isPrimary?undefined:"100%" }}>
         <span style={{
-          fontSize: isPrimary?14:11.5, fontWeight:800, color:"#2B2B3D",
+          fontSize: isPrimary?14:11.5, fontWeight:800, color:UI.textMain,
           whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis", maxWidth: "100%",
         }}>
           {skill.name}
         </span>
         <span style={{
-          fontSize: isPrimary?11:9.5, color:"#8A8598", fontWeight:600, textAlign: isPrimary?"left":"center",
+          fontSize: isPrimary?11:9.5, color:UI.textSub, fontWeight:600, textAlign: isPrimary?"left":"center",
           whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis", maxWidth:"100%",
         }}>
           {skill.desc}
@@ -365,21 +366,21 @@ function SkillBtn({ skill, idx, disabled, cooldown=0, usesLeft, onPick, variant=
         <span style={{
           position:"absolute", top: isPrimary?10:6, right: isPrimary?12:7,
           fontSize:10, fontWeight:800, padding:"2px 7px", borderRadius:999,
-          background: isExhausted ? "#FFE1E4" : "#EEF1FF",
-          color: isExhausted ? "#E1505F" : "#5C6BC0",
+          background: isExhausted ? `${UI.accent.red}22` : `${UI.accent.blue}22`,
+          color: isExhausted ? UI.accent.red : UI.accent.blue,
         }}>
           {usesLeft}회
         </span>
       )}
       {isCd && (
-        <div style={{ position:"absolute", inset:0, borderRadius:18, background:"rgba(255,255,255,0.92)", display:"flex", flexDirection: isPrimary?"row":"column", alignItems:"center", justifyContent:"center", gap: isPrimary?6:1 }}>
-          <span style={{ fontSize:isPrimary?20:17, fontWeight:800, color:"#E1505F" }}>{cooldown}</span>
-          <span style={{ fontSize:isPrimary?11:8.5, color:"#C98088", fontWeight:700 }}>턴 남음</span>
+        <div style={{ position:"absolute", inset:0, borderRadius:18, background:"rgba(10,10,15,0.88)", display:"flex", flexDirection: isPrimary?"row":"column", alignItems:"center", justifyContent:"center", gap: isPrimary?6:1 }}>
+          <span style={{ fontSize:isPrimary?20:17, fontWeight:800, color:UI.accent.red }}>{cooldown}</span>
+          <span style={{ fontSize:isPrimary?11:8.5, color:UI.textSub, fontWeight:700 }}>턴 남음</span>
         </div>
       )}
       {isExhausted && !isCd && (
-        <div style={{ position:"absolute", inset:0, borderRadius:18, background:"rgba(255,255,255,0.92)", display:"flex", alignItems:"center", justifyContent:"center" }}>
-          <span style={{ fontSize:isPrimary?13:11, fontWeight:800, color:"#E1505F" }}>소진</span>
+        <div style={{ position:"absolute", inset:0, borderRadius:18, background:"rgba(10,10,15,0.88)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <span style={{ fontSize:isPrimary?13:11, fontWeight:800, color:UI.accent.red }}>소진</span>
         </div>
       )}
     </button>
@@ -1461,18 +1462,18 @@ export default function BattlePage() {
         <div className={`flex items-center gap-3 px-4 shrink-0 ${isFightPhase ? "pt-safe pt-3 pb-1" : "pt-safe pt-4 pb-3"}`}
           style={isFightPhase ? undefined : {background:"linear-gradient(180deg, #14141C 0%, rgba(20,20,28,0) 100%)"}}>
           <button onClick={()=>{reset();router.back();}} className="w-9 h-9 rounded-full flex items-center justify-center"
-            style={isFightPhase ? {background:"rgba(255,255,255,0.7)",boxShadow:"0 2px 6px rgba(60,50,90,0.1)"} : {background:"rgba(255,255,255,0.08)"}}>
-            <ArrowLeft size={18} color={isFightPhase ? "#2B2B3D" : UI.textMain}/>
+            style={{background:"rgba(255,255,255,0.1)", boxShadow: isFightPhase ? "none" : `inset 0 0 0 1px ${UI.panelBorder}`}}>
+            <ArrowLeft size={18} color={UI.textMain}/>
           </button>
           {!isFightPhase && <h1 className="text-[17px] font-extrabold flex items-center gap-2" style={{color:UI.textMain}}><StickerIcon icon={Swords} color={UI.accent.violet} size={30}/> 카드 배틀</h1>}
           {isFightPhase && mode==="auto" && (
             <button onClick={()=>{ sfx.click(); setAutoSpeed(s=>s===1?2:s===2?3:1); }}
               className="ml-auto"
-              style={{ fontSize:11, fontWeight:800, padding:"4px 10px", borderRadius:999, color:"#3E6FA8", background:"#E3EEF9" }}>
+              style={{ fontSize:11, fontWeight:800, padding:"4px 10px", borderRadius:999, color:UI.accent.blue, background:`${UI.accent.blue}22` }}>
               {autoSpeed}배속
             </button>
           )}
-          {isFightPhase && mode!=="auto" && <span className="ml-auto text-[12px] font-bold" style={{color:"#6B6578"}}>{turnCount}턴</span>}
+          {isFightPhase && mode!=="auto" && <span className="ml-auto text-[12px] font-bold" style={{color:UI.textSub}}>{turnCount}턴</span>}
           <SfxToggle style={isFightPhase ? undefined : { marginLeft: "auto" }}/>
         </div>
 
@@ -1567,9 +1568,9 @@ export default function BattlePage() {
             {battleEnv && (
               <div className="text-center" style={{display:"flex", justifyContent:"center"}}>
                 <span style={{
-                  fontSize:11, fontWeight:800, color:"#5A5468",
-                  background:"rgba(255,255,255,0.75)", borderRadius:999, padding:"5px 14px",
-                  boxShadow:"0 2px 8px rgba(60,50,90,0.08)",
+                  fontSize:11, fontWeight:800, color:UI.textSub,
+                  background:UI.panel, borderRadius:999, padding:"5px 14px",
+                  boxShadow:`inset 0 0 0 1px ${UI.panelBorder}`,
                 }}>
                   {BATTLE_ENVS[battleEnv].emoji} {BATTLE_ENVS[battleEnv].name} · {BATTLE_ENVS[battleEnv].desc}
                 </span>
@@ -1582,9 +1583,9 @@ export default function BattlePage() {
                 <button onClick={()=>setAutoPilot(a=>!a)}
                   style={{
                     fontSize:9.5, fontWeight:800, padding:"5px 10px", whiteSpace:"nowrap", borderRadius:999,
-                    background: autoPilot ? "#3E6FA8" : "rgba(255,255,255,0.75)",
-                    color: autoPilot ? "#fff" : "#8A8598",
-                    boxShadow: autoPilot ? "0 2px 8px rgba(62,111,168,0.35)" : "none",
+                    background: autoPilot ? `${UI.accent.blue}22` : UI.panel,
+                    color: autoPilot ? UI.accent.blue : UI.textSub,
+                    boxShadow: autoPilot ? `inset 0 0 0 1px ${UI.accent.blue}` : `inset 0 0 0 1px ${UI.panelBorder}`,
                   }}>
                   ⚡ 자동전투 {autoPilot?"ON":"OFF"}
                 </button>
@@ -1592,14 +1593,14 @@ export default function BattlePage() {
                   <button onClick={()=>setAutoUseItems(a=>!a)}
                     style={{
                       fontSize:9.5, fontWeight:800, padding:"5px 10px", whiteSpace:"nowrap", borderRadius:999,
-                      background: autoUseItems ? "#FFA84D" : "rgba(255,255,255,0.75)",
-                      color: autoUseItems ? "#fff" : "#8A8598",
-                      boxShadow: autoUseItems ? "0 2px 8px rgba(255,168,77,0.35)" : "none",
+                      background: autoUseItems ? `${UI.accent.orange}22` : UI.panel,
+                      color: autoUseItems ? UI.accent.orange : UI.textSub,
+                      boxShadow: autoUseItems ? `inset 0 0 0 1px ${UI.accent.orange}` : `inset 0 0 0 1px ${UI.panelBorder}`,
                     }}>
                     🎒 자동아이템 {autoUseItems?"ON":"OFF"}
                   </button>
                 )}
-                <div style={{flex:1, height:16, borderRadius:999, background:"rgba(255,255,255,0.6)", overflow:"hidden", position:"relative", display:"flex", alignItems:"center"}}>
+                <div style={{flex:1, height:16, borderRadius:999, background:"rgba(255,255,255,0.08)", overflow:"hidden", position:"relative", display:"flex", alignItems:"center"}}>
                   {!autoPilot && (
                     <div style={{height:"100%",width:`${(timerLeft/6)*100}%`,borderRadius:999,transition:"width 0.9s linear",background:timerLeft<=2?"linear-gradient(90deg,#FF9C9C,#FF6B6B)":timerLeft<=4?"linear-gradient(90deg,#FFDA7C,#FFB84D)":"linear-gradient(90deg,#FF9CB8,#FF6B94)",animation:timerLeft<=2?"pulse 0.6s infinite":undefined}}/>
                   )}
@@ -1695,31 +1696,31 @@ export default function BattlePage() {
             {/* 카드 닉네임 줄 — 내 카드 / VS / 상대 이름 */}
             <div className="flex items-center justify-between px-1">
               <span className="flex items-center gap-1">
-                <span className="text-[10px] font-bold" style={{color:"#3E6FA8"}}>내 카드</span>
+                <span className="text-[10px] font-bold" style={{color:UI.accent.blue}}>내 카드</span>
                 {(selected?.win_streak ?? 0) > 0 && (
-                  <span className="flex items-center gap-0.5" style={{fontSize:9.5,fontWeight:800,color:"#FF7A3C"}}>
+                  <span className="flex items-center gap-0.5" style={{fontSize:9.5,fontWeight:800,color:UI.accent.orange}}>
                     🔥{selected!.win_streak}연승
                   </span>
                 )}
               </span>
-              <span style={{fontSize:11,fontWeight:900,color:"#B4AFC2"}}>VS</span>
-              <span className="text-[10px] font-bold" style={{color:isBossBattle?"#E1505F":"#8A8598"}}>{isBossBattle?`${opponent?.placeholder_emoji??"😾"} ${opponent?.name??"고양이학대범"}`:"상대방"}</span>
+              <span style={{fontSize:11,fontWeight:900,color:UI.textSub}}>VS</span>
+              <span className="text-[10px] font-bold" style={{color:isBossBattle?UI.accent.red:UI.textSub}}>{isBossBattle?`${opponent?.placeholder_emoji??"😾"} ${opponent?.name??"고양이학대범"}`:"상대방"}</span>
             </div>
 
             {/* HP 바 줄 — 양쪽 HP + 가운데 안내 문구 */}
             <div className="flex items-center gap-2">
               <div style={{flex:1}}>
                 <div className="flex justify-between text-[9px] mb-0.5">
-                  <span style={{color:myDanger?"#E1505F":"#5A5468",fontWeight:700}}>HP</span>
-                  <span style={{color:myDanger?"#E1505F":"#8A8598",fontWeight:700}}>{myHp}/{myMaxHp}</span>
+                  <span style={{color:myDanger?UI.accent.red:UI.textSub,fontWeight:700}}>HP</span>
+                  <span style={{color:myDanger?UI.accent.red:UI.textMuted,fontWeight:700}}>{myHp}/{myMaxHp}</span>
                 </div>
                 <HpBar current={myHp} max={myMaxHp}/>
               </div>
-              <span style={{fontSize:9,fontWeight:700,color:"#9A94A8",flexShrink:0,whiteSpace:"nowrap"}}>기술을 선택하세요!</span>
+              <span style={{fontSize:9,fontWeight:700,color:UI.textMuted,flexShrink:0,whiteSpace:"nowrap"}}>기술을 선택하세요!</span>
               <div style={{flex:1}}>
                 <div className="flex justify-between text-[9px] mb-0.5">
-                  <span style={{color:oppDanger?"#E1505F":"#5A5468",fontWeight:700}}>HP</span>
-                  <span style={{color:oppDanger?"#E1505F":"#8A8598",fontWeight:700}}>{oppHp}/{oppMaxHp}</span>
+                  <span style={{color:oppDanger?UI.accent.red:UI.textSub,fontWeight:700}}>HP</span>
+                  <span style={{color:oppDanger?UI.accent.red:UI.textMuted,fontWeight:700}}>{oppHp}/{oppMaxHp}</span>
                 </div>
                 <HpBar current={oppHp} max={oppMaxHp}/>
               </div>
@@ -1730,8 +1731,8 @@ export default function BattlePage() {
               <div>
                 {phase==="player_choose"&&(
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[11px] font-bold" style={{color:"#6B6578"}}>{autoPilot?"자동으로 선택 중...":"기술 선택"}</span>
-                    {!autoPilot && <span className="text-[13px] font-black" style={{color:timerLeft<=2?"#FF6B6B":timerLeft<=4?"#FFB84D":"#5CA8F5"}}>{timerLeft}s</span>}
+                    <span className="text-[11px] font-bold" style={{color:UI.textSub}}>{autoPilot?"자동으로 선택 중...":"기술 선택"}</span>
+                    {!autoPilot && <span className="text-[13px] font-black" style={{color:timerLeft<=2?UI.accent.red:timerLeft<=4?UI.accent.orange:UI.accent.blue}}>{timerLeft}s</span>}
                   </div>
                 )}
                 <div className="grid grid-cols-2 gap-2 mb-2.5">
@@ -1755,9 +1756,8 @@ export default function BattlePage() {
                     <button onClick={()=>{ sfx.click(); setItemPanelOpen(o=>!o); }}
                       style={{
                         width:"100%", padding:"10px 0", fontSize:13, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center", gap:8,
-                        borderRadius:16, background:"#fff", color:"#C68B00",
-                        border:"2px solid #F0D9A0",
-                        boxShadow:"0 3px 10px rgba(60,50,90,0.06)",
+                        borderRadius:16, background:UI.panel, color:UI.accent.gold,
+                        boxShadow:`inset 0 0 0 1.5px ${UI.accent.gold}55`,
                       }}>
                       <Backpack size={15}/> 아이템 사용
                       <ChevronDown size={14} style={{ transition:"transform 0.2s", transform: itemPanelOpen?"rotate(180deg)":"rotate(0)" }}/>
@@ -1773,8 +1773,8 @@ export default function BattlePage() {
                               className="relative flex flex-col items-center gap-1.5"
                               style={{
                                 padding:"10px 4px", borderRadius:16,
-                                background:"#fff", border:`2px solid ${qty>0?color+"66":"#E3E1EC"}`,
-                                boxShadow: qty>0 ? "0 3px 10px rgba(60,50,90,0.08)" : "none",
+                                background: qty>0 ? UI.panel : UI.panelAlt,
+                                boxShadow: qty>0 ? `inset 0 0 0 1.5px ${color}66` : `inset 0 0 0 1px ${UI.panelBorder}`,
                                 opacity: qty>0?1:0.5,
                               }}>
                               <span style={{
@@ -1784,10 +1784,10 @@ export default function BattlePage() {
                               }}>
                                 <Icon size={16} strokeWidth={2.4}/>
                               </span>
-                              <span className="text-[9.5px] font-bold text-center leading-tight" style={{color:"#4A4460"}}>{item.name}</span>
+                              <span className="text-[9.5px] font-bold text-center leading-tight" style={{color:UI.textMain}}>{item.name}</span>
                               <span style={{
                                 position:"absolute", top:2, right:2, fontSize:9.5, fontWeight:800, padding:"1px 5px", borderRadius:999,
-                                background: qty>0?"#FFF3D6":"#F1F0F5", color: qty>0?"#C68B00":"#B4B0C2",
+                                background: qty>0?`${UI.accent.gold}22`:"rgba(255,255,255,0.06)", color: qty>0?UI.accent.gold:UI.textMuted,
                               }}>
                                 {qty}
                               </span>
@@ -1800,7 +1800,7 @@ export default function BattlePage() {
                 )}
 
                 {phase==="opp_thinking"&&(
-                  <p className="text-center text-[11px] mt-2 animate-pulse font-semibold" style={{color:"#8A8598"}}>{actionMsg}</p>
+                  <p className="text-center text-[11px] mt-2 animate-pulse font-semibold" style={{color:UI.textSub}}>{actionMsg}</p>
                 )}
               </div>
             )}
@@ -1809,9 +1809,9 @@ export default function BattlePage() {
             {mode==="auto"&&actionMsg&&(
               <div style={{
                 padding:"11px 16px", textAlign:"center", borderRadius:16,
-                background:"rgba(255,255,255,0.85)", boxShadow:"0 3px 10px rgba(60,50,90,0.08)",
+                background:UI.panel, boxShadow:`inset 0 0 0 1px ${UI.panelBorder}`,
               }}>
-                <p key={actionMsg} style={{ fontSize:13.5, fontWeight:700, color:"#4A4460", letterSpacing:0.2, animation:"msgIn 0.3s ease" }}>{actionMsg}</p>
+                <p key={actionMsg} style={{ fontSize:13.5, fontWeight:700, color:UI.textMain, letterSpacing:0.2, animation:"msgIn 0.3s ease" }}>{actionMsg}</p>
               </div>
             )}
           </div>
