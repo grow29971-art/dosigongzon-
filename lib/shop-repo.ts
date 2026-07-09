@@ -5,14 +5,27 @@
 
 import { createClient } from "@/lib/supabase/client";
 
-export type ProductCategory = "shelter" | "heater" | "goods" | "etc";
+export type ProductCategory =
+  | "food" | "sand" | "health" | "toy" | "shelter" | "goods" | "support";
 
-export const CATEGORY_MAP: Record<ProductCategory, { label: string }> = {
-  shelter: { label: "쉼터" },
-  heater: { label: "히터" },
-  goods: { label: "굿즈" },
-  etc: { label: "기타" },
+export type ProductBadge = "신상" | "인기" | "한정";
+
+// 카테고리 상수 — 아이콘은 UI 컴포넌트 쪽(lucide-react)에서 매핑
+export const SHOP_CATEGORIES: Record<
+  ProductCategory,
+  { label: string; order: number; description: string }
+> = {
+  food:    { label: "사료·간식",   order: 1, description: "길고양이와 집고양이를 위한 사료·간식" },
+  sand:    { label: "모래·위생",   order: 2, description: "모래, 배변패드, 탈취·위생용품" },
+  health:  { label: "건강·케어",   order: 3, description: "영양제, 세정제, 건강관리 용품" },
+  toy:     { label: "장난감·용품", order: 4, description: "장난감, 스크래쳐, 캣타워" },
+  shelter: { label: "급식·쉼터",   order: 5, description: "야외 급식도구와 쉼터 용품" },
+  goods:   { label: "굿즈",        order: 6, description: "도시공존 자체 브랜드 굿즈" },
+  support: { label: "후원하기",    order: 7, description: "길고양이를 직접 후원하세요" },
 };
+
+// 하위 호환 별칭 (admin 페이지 등에서 사용)
+export const CATEGORY_MAP = SHOP_CATEGORIES;
 
 export interface Product {
   id: string;
@@ -25,6 +38,12 @@ export interface Product {
   stock: number;
   is_active: boolean;
   shipping_fee: number;
+  badge: ProductBadge | null;
+  is_donation: boolean;
+  donation_percent: number;
+  weight: string | null;
+  supplier: string | null; // 도매처 메모 — 프론트 미노출
+  is_virtual: boolean;     // 가상상품(후원) — 배송 없음
   created_at: string;
   updated_at: string;
 }

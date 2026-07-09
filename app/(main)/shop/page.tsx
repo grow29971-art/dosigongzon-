@@ -1,74 +1,137 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ShoppingBag, ShoppingCart, ReceiptText } from "lucide-react";
+import {
+  ShoppingCart, ReceiptText, PawPrint, LayoutGrid,
+  Fish, SprayCan, HeartPulse, ToyBrick, Home, Gift, Heart,
+  type LucideIcon,
+} from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-import { listProducts, listCartItems, CATEGORY_MAP, type Product, type ProductCategory } from "@/lib/shop-repo";
+import {
+  listProducts, listCartItems, SHOP_CATEGORIES,
+  type Product, type ProductCategory,
+} from "@/lib/shop-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 
 type FilterKey = ProductCategory | "all";
 
-const FILTERS: { key: FilterKey; label: string }[] = [
-  { key: "all", label: "전체" },
-  { key: "shelter", label: CATEGORY_MAP.shelter.label },
-  { key: "heater", label: CATEGORY_MAP.heater.label },
-  { key: "goods", label: CATEGORY_MAP.goods.label },
+// 카테고리 아이콘 매핑 (lucide-react — 기존 라이브러리)
+const CATEGORY_ICONS: Record<ProductCategory, LucideIcon> = {
+  food: Fish,
+  sand: SprayCan,
+  health: HeartPulse,
+  toy: ToyBrick,
+  shelter: Home,
+  goods: Gift,
+  support: Heart,
+};
+
+const FILTERS: { key: FilterKey; label: string; Icon: LucideIcon }[] = [
+  { key: "all", label: "전체", Icon: LayoutGrid },
+  ...(Object.entries(SHOP_CATEGORIES) as [ProductCategory, (typeof SHOP_CATEGORIES)[ProductCategory]][])
+    .sort((a, b) => a[1].order - b[1].order)
+    .map(([key, v]) => ({ key: key as FilterKey, label: v.label, Icon: CATEGORY_ICONS[key] })),
 ];
 
 function formatWon(amount: number): string {
   return `${amount.toLocaleString()}원`;
 }
 
+function discountRate(price: number, salePrice: number): number {
+  return Math.round(((price - salePrice) / price) * 100);
+}
+
+/* ═══ 상품 카드 ═══ */
 function ProductCard({ product }: { product: Product }) {
-  const thumb = sanitizeImageUrl(product.images[0], "https://placehold.co/400x400?text=No+Image");
+  const thumb = product.images[0] ? sanitizeImageUrl(product.images[0], "") : "";
   const soldOut = product.stock <= 0;
   const discounted = product.sale_price != null && product.sale_price < product.price;
+  const isSupport = product.category === "support";
 
   return (
-    <Link
-      href={`/shop/${product.id}`}
-      className="block active:scale-[0.98] transition-transform"
-    >
+    <Link href={`/shop/${product.id}`} className="block active:scale-[0.98] transition-transform">
       <div
-        className="overflow-hidden"
+        className="overflow-hidden h-full"
         style={{
-          background: "#FFFFFF",
+          background: isSupport ? "rgba(232,107,140,0.06)" : "#FFFFFF",
           borderRadius: 22,
           boxShadow: "0 6px 20px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.03)",
-          border: "1px solid rgba(0,0,0,0.04)",
+          border: isSupport ? "1.5px solid rgba(232,107,140,0.25)" : "1px solid rgba(0,0,0,0.04)",
         }}
       >
-        <div className="relative w-full" style={{ aspectRatio: "1 / 1", background: "#F4F7FC" }}>
-          <Image src={thumb} alt={product.name} fill className="object-cover" unoptimized={thumb.includes("placehold.co")} />
-          {soldOut && (
-            <div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{ background: "rgba(38,42,56,0.55)" }}
+        {/* 이미지 */}
+        <div className="relative w-full" style={{ aspectRatio: "1 / 1", background: isSupport ? "rgba(232,107,140,0.08)" : "#F4F7FC" }}>
+          {thumb ? (
+            <Image src={thumb} alt={product.name} fill className="object-cover" />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <PawPrint size={40} style={{ color: isSupport ? "rgba(232,107,140,0.45)" : "rgba(76,130,188,0.28)" }} />
+            </div>
+          )}
+          {product.badge && (
+            <span
+              className="absolute top-2 left-2 text-[9.5px] font-extrabold px-2 py-0.5 rounded-lg text-white"
+              style={{ background: product.badge === "인기" ? "#E14B3C" : product.badge === "신상" ? "#4C82BC" : "#8B65B8" }}
             >
+              {product.badge}
+            </span>
+          )}
+          {product.shipping_fee === 0 && !product.is_virtual && (
+            <span
+              className="absolute top-2 right-2 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md"
+              style={{ background: "rgba(107,142,111,0.92)", color: "#fff" }}
+            >
+              무료배송
+            </span>
+          )}
+          {soldOut && (
+            <div className="absolute inset-0 flex items-center justify-center" style={{ background: "rgba(38,42,56,0.55)" }}>
               <span className="text-white text-[13px] font-extrabold px-3 py-1.5 rounded-xl" style={{ background: "rgba(0,0,0,0.35)" }}>
                 품절
               </span>
             </div>
           )}
         </div>
+
+        {/* 정보 */}
         <div className="px-3 py-3">
-          <p className="text-[13.5px] font-bold text-text-main truncate">{product.name}</p>
-          <div className="mt-1 flex items-baseline gap-1.5">
+          <p className="text-[13px] font-bold text-text-main leading-snug" style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+            {product.name}
+          </p>
+          {product.weight && (
+            <p className="text-[10.5px] text-text-light mt-0.5">{product.weight}</p>
+          )}
+          <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
             {discounted && (
-              <span className="text-[11px] text-text-light line-through">{formatWon(product.price)}</span>
+              <span className="text-[11px] font-extrabold" style={{ color: "#E14B3C" }}>
+                {discountRate(product.price, product.sale_price as number)}%
+              </span>
             )}
-            <span className="text-[14.5px] font-extrabold" style={{ color: discounted ? "#E14B3C" : "#262A38" }}>
+            <span className="text-[14.5px] font-extrabold text-text-main">
               {formatWon(discounted ? (product.sale_price as number) : product.price)}
             </span>
+            {discounted && (
+              <span className="text-[10.5px] text-text-light line-through">{formatWon(product.price)}</span>
+            )}
           </div>
+          {isSupport ? (
+            <p className="text-[10px] font-bold mt-1.5" style={{ color: "#E86B8C" }}>
+              배송 없음 · 전액 후원
+            </p>
+          ) : product.is_donation ? (
+            <p className="text-[10px] font-semibold mt-1.5" style={{ color: "#C9A961" }}>
+              수익의 {product.donation_percent}% 후원 💛
+            </p>
+          ) : null}
         </div>
       </div>
     </Link>
   );
 }
 
+/* ═══ 페이지 ═══ */
 export default function ShopPage() {
   const { user } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
@@ -76,13 +139,14 @@ export default function ShopPage() {
   const [loading, setLoading] = useState(true);
   const [cartCount, setCartCount] = useState(0);
 
+  // 전체 상품 1회 fetch — 카테고리 필터는 클라이언트 사이드
+  // TODO: 상품 50개 초과 시 서버 사이드 필터링 전환
   useEffect(() => {
-    setLoading(true);
-    listProducts(filter === "all" ? undefined : filter)
+    listProducts()
       .then(setProducts)
       .catch(() => setProducts([]))
       .finally(() => setLoading(false));
-  }, [filter]);
+  }, []);
 
   useEffect(() => {
     if (!user) { setCartCount(0); return; }
@@ -91,90 +155,116 @@ export default function ShopPage() {
       .catch(() => setCartCount(0));
   }, [user]);
 
+  const visible = useMemo(
+    () => (filter === "all" ? products : products.filter((p) => p.category === filter)),
+    [products, filter],
+  );
+
   return (
     <div className="px-4 pt-14 pb-24">
-      {/* 헤더 */}
-      <div className="mb-5 px-1 flex items-end justify-between">
+      {/* ── 헤더 ── */}
+      <div className="mb-4 px-1 flex items-end justify-between">
         <div>
           <div className="flex items-baseline gap-2 mb-1">
             <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">쇼핑</h1>
             <span className="text-[11px] font-semibold text-text-light">Shop</span>
           </div>
           <p className="text-[12.5px] text-text-sub leading-relaxed">
-            우리 동네 고양이를 위한 쉼터 · 용품
+            우리 동네 고양이를 위한 용품 · 후원
           </p>
         </div>
         <div className="flex items-center gap-2">
-        <Link
-          href="/shop/orders"
-          className="w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
-          aria-label="주문 내역"
-        >
-          <ReceiptText size={18} className="text-text-sub" />
-        </Link>
-        <Link
-          href="/shop/cart"
-          className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
-          aria-label="장바구니"
-        >
-          <ShoppingCart size={18} className="text-text-sub" />
-          {cartCount > 0 && (
-            <span
-              className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full text-white text-[9px] font-extrabold flex items-center justify-center"
-              style={{ background: "#E14B3C" }}
-            >
-              {cartCount > 99 ? "99+" : cartCount}
-            </span>
-          )}
-        </Link>
+          <Link
+            href="/shop/orders"
+            className="w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
+            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+            aria-label="주문 내역"
+          >
+            <ReceiptText size={18} className="text-text-sub" />
+          </Link>
+          <Link
+            href="/shop/cart"
+            className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
+            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+            aria-label="장바구니"
+          >
+            <ShoppingCart size={18} className="text-text-sub" />
+            {cartCount > 0 && (
+              <span
+                className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full text-white text-[9px] font-extrabold flex items-center justify-center"
+                style={{ background: "#E14B3C" }}
+              >
+                {cartCount > 99 ? "99+" : cartCount}
+              </span>
+            )}
+          </Link>
         </div>
       </div>
 
-      {/* 카테고리 필터 */}
-      <div className="mb-4 flex items-center gap-2 overflow-x-auto">
+      {/* ── 후원 배너 ── */}
+      {/* TODO: 후원금 누적액 10만원 이상이 되면 금액 노출 */}
+      <div
+        className="mb-4 px-5 py-4 rounded-3xl"
+        style={{
+          background: "linear-gradient(135deg, rgba(196,126,90,0.12) 0%, rgba(232,107,140,0.10) 100%)",
+          border: "1px solid rgba(196,126,90,0.18)",
+        }}
+      >
+        <p className="text-[13.5px] font-extrabold text-text-main leading-relaxed">
+          여기서 구매하시면, 수익의 일부가
+          <br />길고양이 쉼터에 쓰입니다 🐱
+        </p>
+        <p className="text-[11.5px] text-text-sub mt-1">
+          첫 번째 길고양이 쉼터 설치까지, 함께해주세요
+        </p>
+      </div>
+
+      {/* ── 카테고리 필터 칩 ── */}
+      <div className="mb-4 flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4">
         {FILTERS.map((f) => {
           const on = filter === f.key;
+          const isSupport = f.key === "support";
           return (
             <button
               key={f.key}
               type="button"
               onClick={() => setFilter(f.key)}
-              className="px-3.5 py-1.5 rounded-2xl text-[12px] font-bold active:scale-95 transition-transform shrink-0"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-[12px] font-bold active:scale-95 transition-transform shrink-0"
               style={{
-                background: on ? "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)" : "rgba(255,255,255,0.9)",
-                color: on ? "#fff" : "#666",
-                boxShadow: on ? "0 2px 8px rgba(76,130,188,0.35)" : "0 2px 6px rgba(0,0,0,0.05)",
+                background: on
+                  ? isSupport
+                    ? "linear-gradient(135deg, #E86B8C 0%, #D85575 100%)"
+                    : "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)"
+                  : "rgba(255,255,255,0.9)",
+                color: on ? "#fff" : isSupport ? "#E86B8C" : "#666",
+                boxShadow: on
+                  ? `0 2px 8px ${isSupport ? "rgba(232,107,140,0.35)" : "rgba(76,130,188,0.35)"}`
+                  : "0 2px 6px rgba(0,0,0,0.05)",
               }}
             >
+              <f.Icon size={13} />
               {f.label}
             </button>
           );
         })}
       </div>
 
-      {/* 상품 그리드 */}
+      {/* ── 상품 그리드 ── */}
       {loading ? (
         <div className="grid grid-cols-2 gap-3">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="rounded-[22px] animate-pulse" style={{ aspectRatio: "1 / 1.35", background: "#EEF1F6" }} />
+            <div key={i} className="rounded-[22px] animate-pulse" style={{ aspectRatio: "1 / 1.4", background: "#EEF1F6" }} />
           ))}
         </div>
-      ) : products.length === 0 ? (
+      ) : visible.length === 0 ? (
         <div className="flex flex-col items-center text-center pt-14">
-          <div
-            className="w-16 h-16 rounded-3xl flex items-center justify-center mb-4"
-            style={{ background: "linear-gradient(135deg, #f5e6d8 0%, #e8c9a8 100%)" }}
-          >
-            <ShoppingBag size={28} style={{ color: "#4C82BC" }} />
-          </div>
-          <p className="text-[14px] font-bold text-text-main mb-1">아직 등록된 상품이 없어요</p>
-          <p className="text-[12.5px] text-text-sub">곧 새로운 상품으로 찾아올게요!</p>
+          <span className="text-[40px] mb-3">🐾</span>
+          <p className="text-[14px] font-bold text-text-main mb-1">아직 준비 중이에요</p>
+          <p className="text-[12.5px] text-text-sub">곧 채워질 거예요!</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-3">
-          {products.map((p) => (
+          {visible.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
         </div>
