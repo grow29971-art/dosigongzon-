@@ -117,12 +117,10 @@ export async function POST(req: Request) {
   type Item = { product_id: string | null; quantity: number };
   for (const item of (order.items ?? []) as Item[]) {
     if (!item.product_id) continue;
-    const { data: p } = await svc.from("products").select("stock").eq("id", item.product_id).maybeSingle();
-    if (!p) continue;
-    const { error: stockError } = await svc
-      .from("products")
-      .update({ stock: (p.stock as number) + item.quantity })
-      .eq("id", item.product_id);
+    const { error: stockError } = await svc.rpc("increment_product_stock", {
+      p_product_id: item.product_id,
+      p_qty: item.quantity,
+    });
     if (stockError) console.error("[payment/cancel] stock restore failed:", stockError);
   }
 

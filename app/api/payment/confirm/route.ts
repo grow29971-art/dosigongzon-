@@ -2,11 +2,19 @@
 // 토스페이먼츠 결제 승인 API
 // 프론트에서 결제 성공 리다이렉트 후 호출 —
 // 서버에서 금액 검증 후 토스 승인 API를 호출해야 결제가 확정됨.
+//
+// 안전장치:
+// 1. 금액 위변조 검증 (주문의 payment_amount와 대조)
+// 2. 원자적 주문 선점 (payment_key 조건부 UPDATE) — 동시 승인 요청 경합 방지
+// 3. 선(先) 재고 확보 (decrement_product_stock RPC, stock >= qty 조건) —
+//    승인 전에 재고를 잡아서 "돈은 나갔는데 재고 없음" 원천 차단.
+//    실패 시 이미 잡은 재고 원복 + 주문 취소, 결제는 청구되지 않음.
+// 4. 토스 승인 실패 시 재고 원복 + 주문 취소
 // ══════════════════════════════════════════
 
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createClient as serviceClient } from "@supabase/supabase-js";
+import { createClient as serviceClient, type SupabaseClient } from "@supabase/supabase-js";
 
 const TOSS_CONFIRM_URL = "https://api.tosspayments.com/v1/payments/confirm";
 
@@ -17,6 +25,20 @@ interface TossPaymentResponse {
   easyPay?: { provider?: string } | null;
   code?: string;
   message?: string;
+}
+
+type OrderItem = { product_id: string | null; quantity: number };
+
+// 확보해둔 재고 원복 (부분 실패/승인 실패 롤백용)
+async function restoreStock(svc: SupabaseClient, reserved: OrderItem[]): Promise<void> {
+  for (const item of reserved) {
+    if (!item.product_id) continue;
+    const { error } = await svc.rpc("increment_product_stock", {
+      p_product_id: item.product_id,
+      p_qty: item.quantity,
+    });
+    if (error) console.error("[payment/confirm] stock restore failed:", error, item.product_id);
+  }
 }
 
 export async function POST(req: Request) {
@@ -62,7 +84,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "본인 주문만 결제할 수 있어요." }, { status: 403 });
   }
 
-  // 이미 같은 paymentKey로 승인된 주문이면 성공으로 응답 (중복 요청 방지 — 새로고침 등)
+  // 이미 같은 paymentKey로 승인된 주문이면 성공으로 응답 (새로고침 등 중복 요청)
   if (order.status === "paid" && order.payment_key === paymentKey) {
     return NextResponse.json({ ok: true, orderId: order.id, orderNumber: order.order_number });
   }
@@ -76,7 +98,50 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "결제 금액이 주문과 일치하지 않아요." }, { status: 400 });
   }
 
-  // 5. 토스 승인 API 호출
+  // 5. 원자적 주문 선점 — 동시에 들어온 승인 요청 중 하나만 통과
+  const { data: claimed, error: claimError } = await svc
+    .from("orders")
+    .update({ payment_key: paymentKey, updated_at: new Date().toISOString() })
+    .eq("id", order.id)
+    .eq("status", "pending")
+    .is("payment_key", null)
+    .select("id");
+
+  if (claimError || !claimed || claimed.length === 0) {
+    // 다른 요청이 먼저 선점 — 잠시 후 같은 키로 완료됐는지 확인
+    const { data: recheck } = await svc
+      .from("orders").select("id, order_number, status, payment_key").eq("id", order.id).maybeSingle();
+    if (recheck?.status === "paid" && recheck.payment_key === paymentKey) {
+      return NextResponse.json({ ok: true, orderId: recheck.id, orderNumber: recheck.order_number });
+    }
+    return NextResponse.json({ error: "이미 결제가 진행 중인 주문이에요." }, { status: 409 });
+  }
+
+  const items = (order.items ?? []) as OrderItem[];
+
+  // 6. 선(先) 재고 확보 — 원자적 차감 (stock >= qty일 때만 성공)
+  const reserved: OrderItem[] = [];
+  for (const item of items) {
+    if (!item.product_id) continue;
+    const { data: ok, error: rpcError } = await svc.rpc("decrement_product_stock", {
+      p_product_id: item.product_id,
+      p_qty: item.quantity,
+    });
+    if (rpcError || ok !== true) {
+      if (rpcError) console.error("[payment/confirm] stock rpc failed:", rpcError);
+      await restoreStock(svc, reserved);
+      await svc.from("orders")
+        .update({ status: "cancelled", updated_at: new Date().toISOString() })
+        .eq("id", order.id);
+      return NextResponse.json(
+        { error: "재고가 부족해서 결제를 진행할 수 없어요. 결제 금액은 청구되지 않았어요." },
+        { status: 409 },
+      );
+    }
+    reserved.push(item);
+  }
+
+  // 7. 토스 승인 API 호출
   const basicAuth = Buffer.from(`${secretKey}:`).toString("base64");
   let toss: TossPaymentResponse;
   try {
@@ -90,9 +155,13 @@ export async function POST(req: Request) {
     });
     toss = (await res.json()) as TossPaymentResponse;
 
-    if (!res.ok) {
-      // 승인 실패 → 주문 취소 처리
+    // 이전 시도에서 승인은 됐지만 응답을 못 받았던 경우(타임아웃 후 재시도) — 성공으로 처리
+    if (!res.ok && toss.code === "ALREADY_PROCESSED_PAYMENT") {
+      console.warn("[payment/confirm] already processed — treating as success:", orderId);
+    } else if (!res.ok) {
+      // 승인 실패 → 재고 원복 + 주문 취소
       console.error("[payment/confirm] toss confirm failed:", toss.code, toss.message);
+      await restoreStock(svc, reserved);
       await svc.from("orders")
         .update({ status: "cancelled", updated_at: new Date().toISOString() })
         .eq("id", order.id);
@@ -102,11 +171,19 @@ export async function POST(req: Request) {
       );
     }
   } catch (e) {
+    // 네트워크 오류 — 승인 여부 불명이므로 주문은 pending 유지(재시도 가능), 재고만 원복
     console.error("[payment/confirm] toss request error:", e);
-    return NextResponse.json({ error: "결제 승인 중 오류가 발생했어요. 잠시 후 다시 시도해주세요." }, { status: 502 });
+    await restoreStock(svc, reserved);
+    await svc.from("orders")
+      .update({ payment_key: null, updated_at: new Date().toISOString() })
+      .eq("id", order.id);
+    return NextResponse.json(
+      { error: "결제 승인 중 오류가 발생했어요. 잠시 후 다시 시도해주세요." },
+      { status: 502 },
+    );
   }
 
-  // 6. 승인 성공 — 주문 확정
+  // 8. 승인 성공 — 주문 확정
   const paymentMethod = toss.easyPay?.provider
     ? `${toss.method ?? "간편결제"}(${toss.easyPay.provider})`
     : (toss.method ?? null);
@@ -115,31 +192,20 @@ export async function POST(req: Request) {
     .from("orders")
     .update({
       status: "paid",
-      payment_key: paymentKey,
       payment_method: paymentMethod,
       paid_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })
-    .eq("id", order.id);
+    .eq("id", order.id)
+    .eq("status", "pending");
 
   if (updateError) {
     // 결제는 됐는데 DB 반영 실패 — 로그 남기고 성공 응답 (관리자가 토스 콘솔과 대조 가능)
     console.error("[payment/confirm] order update failed after toss confirm:", updateError, orderId, paymentKey);
   }
 
-  // 7. 재고 차감 + 장바구니 비우기 (실패해도 결제 성공은 유지, 로그만)
-  type Item = { product_id: string | null; quantity: number };
-  for (const item of (order.items ?? []) as Item[]) {
-    if (!item.product_id) continue;
-    const { data: p } = await svc.from("products").select("stock").eq("id", item.product_id).maybeSingle();
-    if (!p) continue;
-    const newStock = Math.max(0, (p.stock as number) - item.quantity);
-    const { error: stockError } = await svc
-      .from("products").update({ stock: newStock }).eq("id", item.product_id);
-    if (stockError) console.error("[payment/confirm] stock decrement failed:", stockError);
-  }
-
-  const orderedIds = ((order.items ?? []) as Item[])
+  // 9. 장바구니 비우기 (실패해도 결제 성공은 유지, 로그만)
+  const orderedIds = items
     .map((i) => i.product_id)
     .filter((id): id is string => !!id);
   if (orderedIds.length > 0) {
