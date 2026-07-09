@@ -12,13 +12,14 @@ import { withSentryConfig } from "@sentry/nextjs";
 // nonce 기반 strict CSP는 동적 렌더링 강제 등 트레이드오프가 커 현재 단계에서는 보류.
 const cspDirectives = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://dapi.kakao.com https://*.daumcdn.net https://challenges.cloudflare.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://dapi.kakao.com https://*.daumcdn.net https://challenges.cloudflare.com https://js.tosspayments.com",
   "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data: https://cdn.jsdelivr.net",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://dapi.kakao.com https://*.daumcdn.net https://cdn.jsdelivr.net https://challenges.cloudflare.com",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://dapi.kakao.com https://*.daumcdn.net https://cdn.jsdelivr.net https://challenges.cloudflare.com https://*.tosspayments.com",
   // postcode.map.daum.net: 쇼핑몰 주문서의 다음 우편번호 검색 iframe
-  "frame-src https://challenges.cloudflare.com https://www.youtube.com https://www.youtube-nocookie.com https://postcode.map.daum.net",
+  // *.tosspayments.com / pay.toss.im: 토스페이먼츠 결제위젯·결제창
+  "frame-src https://challenges.cloudflare.com https://www.youtube.com https://www.youtube-nocookie.com https://postcode.map.daum.net https://*.tosspayments.com https://pay.toss.im",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
