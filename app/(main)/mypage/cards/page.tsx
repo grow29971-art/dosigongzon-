@@ -9,7 +9,7 @@ import CatCard, { type CatCardData, type CardRarity } from "@/app/components/Cat
 import { SPECIAL_SKILLS } from "@/lib/battle-config";
 import { PVE_BESTIARY } from "@/lib/pve-bestiary";
 import { SHOP_ITEMS, EQUIP_ITEM_KEYS, BORDER_FX_ITEM_KEYS, BODY_SLOTS, BODY_SLOT_LABELS, type ShopItemKey, type BodySlot, type EquippedSlots } from "@/lib/shop-config";
-import { UI, progressTrackStyle, progressFillStyle, statusPillStyle } from "@/lib/battle-ui-theme";
+import { UI, progressTrackStyle, progressFillStyle } from "@/lib/battle-ui-theme";
 import Link from "next/link";
 
 // 슬롯별 테마 색상 — 가방(인벤토리) 페이지와 동일한 배색으로 통일
@@ -473,16 +473,9 @@ export default function MyCardsPage() {
                         <p className="text-[11px] font-bold truncate" style={{ color: equippedHere ? color : UI.textMain }}>{item.name}</p>
                         <p className="text-[9.5px] truncate" style={{ color: UI.textSub }}>{item.desc}</p>
                       </div>
-                      {equippedHere ? (
-                        <span className="shrink-0" style={statusPillStyle(color)}>
-                          <span style={{ width: 5, height: 5, borderRadius: "50%", background: color, display: "inline-block" }} />
-                          장착중
-                        </span>
-                      ) : (
-                        <span className="text-[10px] font-extrabold shrink-0" style={{ color: canEquip ? UI.textSub : UI.textMuted }}>
-                          {canEquip ? `장착 (${qty})` : "미보유"}
-                        </span>
-                      )}
+                      <span className="text-[10px] font-extrabold shrink-0" style={{ color: equippedHere ? color : canEquip ? UI.textSub : UI.textMuted }}>
+                        {equippedHere ? "장착중" : canEquip ? `장착 (${qty})` : "미보유"}
+                      </span>
                     </button>
                   );
                 })}

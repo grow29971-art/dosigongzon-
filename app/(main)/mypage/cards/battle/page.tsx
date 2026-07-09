@@ -1712,7 +1712,7 @@ export default function BattlePage() {
               <div style={{flex:1}}>
                 <div className="flex justify-between text-[9px] mb-0.5">
                   <span style={{color:myDanger?UI.accent.red:UI.textSub,fontWeight:700}}>HP</span>
-                  <span className="tabular-nums" style={{color:myDanger?UI.accent.red:UI.textMuted,fontWeight:700}}>{myHp}/{myMaxHp}</span>
+                  <span style={{color:myDanger?UI.accent.red:UI.textMuted,fontWeight:700}}>{myHp}/{myMaxHp}</span>
                 </div>
                 <HpBar current={myHp} max={myMaxHp}/>
               </div>
@@ -1720,7 +1720,7 @@ export default function BattlePage() {
               <div style={{flex:1}}>
                 <div className="flex justify-between text-[9px] mb-0.5">
                   <span style={{color:oppDanger?UI.accent.red:UI.textSub,fontWeight:700}}>HP</span>
-                  <span className="tabular-nums" style={{color:oppDanger?UI.accent.red:UI.textMuted,fontWeight:700}}>{oppHp}/{oppMaxHp}</span>
+                  <span style={{color:oppDanger?UI.accent.red:UI.textMuted,fontWeight:700}}>{oppHp}/{oppMaxHp}</span>
                 </div>
                 <HpBar current={oppHp} max={oppMaxHp}/>
               </div>
@@ -1843,12 +1843,12 @@ export default function BattlePage() {
                 <div className="flex gap-3 items-center">
                   <span className="text-[11px] font-bold shrink-0 w-14 truncate" style={{color:UI.accent.blue}}>{selected.name}</span>
                   <div style={{flex:1}}><HpBar current={myHp} max={myMaxHp}/></div>
-                  <span className="text-[10px] shrink-0 tabular-nums" style={{color:UI.textSub}}>{myHp}/{myMaxHp}</span>
+                  <span className="text-[10px] shrink-0" style={{color:UI.textSub}}>{myHp}/{myMaxHp}</span>
                 </div>
                 <div className="flex gap-3 items-center">
                   <span className="text-[11px] font-bold shrink-0 w-14 truncate" style={{color:UI.textSub}}>{opponent.name}</span>
                   <div style={{flex:1}}><HpBar current={oppHp} max={oppMaxHp}/></div>
-                  <span className="text-[10px] shrink-0 tabular-nums" style={{color:UI.textSub}}>{oppHp}/{oppMaxHp}</span>
+                  <span className="text-[10px] shrink-0" style={{color:UI.textSub}}>{oppHp}/{oppMaxHp}</span>
                 </div>
               </div>
               <div className="flex gap-2 w-full">

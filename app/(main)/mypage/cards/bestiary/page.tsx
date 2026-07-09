@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import { PVE_BESTIARY, PVE_BOSS, bestiaryPhotoUrl, dexNoLabel, type BestiaryEntry } from "@/lib/pve-bestiary";
 import StickerIcon from "@/app/components/StickerIcon";
-import { UI, progressTrackStyle, progressFillStyle, statusPillStyle } from "@/lib/battle-ui-theme";
+import { UI, progressTrackStyle, progressFillStyle } from "@/lib/battle-ui-theme";
 
 export default function BestiaryPage() {
   const { user, loading: authLoading } = useAuth();
@@ -62,7 +62,7 @@ export default function BestiaryPage() {
         {/* 진행률 요약 */}
         <div className="rounded-2xl p-4 mb-4" style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
           <div className="flex items-end justify-between mb-2">
-            <span className="text-white text-[24px] font-black tabular-nums">{seenCount}<span className="text-[14px] font-bold" style={{ color: UI.textMuted }}>/{all.length}</span></span>
+            <span className="text-white text-[24px] font-black">{seenCount}<span className="text-[14px] font-bold" style={{ color: UI.textMuted }}>/{all.length}</span></span>
             <span className="text-[11px] font-bold" style={{ color: UI.textMuted }}>이겨본 개체 {defeatedCount}마리</span>
           </div>
           <div style={progressTrackStyle()}>
@@ -109,16 +109,10 @@ export default function BestiaryPage() {
                     {seen ? entry.name : "???"}
                   </span>
                   {seen && (
-                    defeated ? (
-                      <span style={{ ...statusPillStyle(entry.categoryColor), padding: "2px 7px", fontSize: 8.5 }}>
-                        <span style={{ width: 4, height: 4, borderRadius: "50%", background: entry.categoryColor, display: "inline-block" }} />
-                        승리
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-0.5 text-[8.5px] font-bold" style={{ color: UI.textSub }}>
-                        <Lock size={8} /> 조우
-                      </span>
-                    )
+                    <span className="flex items-center gap-0.5 text-[8.5px] font-bold" style={{ color: defeated ? entry.categoryColor : UI.textSub }}>
+                      {!defeated && <Lock size={8} />}
+                      {defeated ? "승리" : "조우"}
+                    </span>
                   )}
                 </button>
               );
