@@ -1822,7 +1822,7 @@ export default function BattlePage() {
           <div className="flex-1 flex flex-col items-center justify-center px-4 gap-4">
             <div style={{animation:"resIn 0.5s ease forwards",display:"flex",flexDirection:"column",alignItems:"center",gap:12,width:"100%",maxWidth:340}}>
               <div style={{fontSize:64}}>{battleResult.winner==="me"?(isBossBattle?"🎉":"🏆"):battleResult.winner==="draw"?"🤝":"💔"}</div>
-              <p style={{fontSize:26,fontWeight:900,color:battleResult.winner==="me"?"#3FCB6B":battleResult.winner==="draw"?"#C68B00":"#E1505F"}}>
+              <p style={{fontSize:26,fontWeight:900,color:battleResult.winner==="me"?UI.accent.green:battleResult.winner==="draw"?UI.accent.gold:UI.accent.red}}>
                 {battleResult.winner==="draw"
                   ? (isBossBattle ? `${opponent?.name??"적"}과 무승부...` : "무승부!")
                   : isBossBattle
@@ -1830,34 +1830,34 @@ export default function BattlePage() {
                     : (battleResult.winner==="me" ? "승리!" : "패배...")}
               </p>
               {isBossBattle && !!opponent?.photo_url && battleResult.winner==="me" && (
-                <p className="text-[12px] font-bold -mt-2" style={{color:"#C68B00"}}>🐾 갇혀있던 고양이를 구했다!</p>
+                <p className="text-[12px] font-bold -mt-2" style={{color:UI.accent.gold}}>🐾 갇혀있던 고양이를 구했다!</p>
               )}
               {isBossBattle && typeof battleResult.coinsGained==="number" && (
-                <p className="text-[13px] font-bold -mt-1" style={{color:"#C68B00"}}>💰 코인 +{battleResult.coinsGained}</p>
+                <p className="text-[13px] font-bold -mt-1" style={{color:UI.accent.gold}}>💰 코인 +{battleResult.coinsGained}</p>
               )}
-              <p className="text-[13px] font-semibold" style={{color:"#8A8598"}}>
+              <p className="text-[13px] font-semibold" style={{color:UI.textSub}}>
                 {turnCount}턴 · EXP +{battleResult.exp}
-                {battleResult.leveledUp&&<span style={{color:"#C68B00",fontWeight:800,marginLeft:8}}>⬆ Lv.{battleResult.newLevel}!</span>}
+                {battleResult.leveledUp&&<span style={{color:UI.accent.gold,fontWeight:800,marginLeft:8}}>⬆ Lv.{battleResult.newLevel}!</span>}
               </p>
-              <div className="w-full space-y-2 p-3" style={{ borderRadius:18, background:"rgba(255,255,255,0.85)", boxShadow:"0 3px 10px rgba(60,50,90,0.08)" }}>
+              <div className="w-full space-y-2 p-3" style={{ borderRadius:UI.radius, background:UI.panel, boxShadow:`inset 0 0 0 1px ${UI.panelBorder}` }}>
                 <div className="flex gap-3 items-center">
-                  <span className="text-[11px] font-bold shrink-0 w-14 truncate" style={{color:"#3E6FA8"}}>{selected.name}</span>
+                  <span className="text-[11px] font-bold shrink-0 w-14 truncate" style={{color:UI.accent.blue}}>{selected.name}</span>
                   <div style={{flex:1}}><HpBar current={myHp} max={myMaxHp}/></div>
-                  <span className="text-[10px] shrink-0" style={{color:"#8A8598"}}>{myHp}/{myMaxHp}</span>
+                  <span className="text-[10px] shrink-0" style={{color:UI.textSub}}>{myHp}/{myMaxHp}</span>
                 </div>
                 <div className="flex gap-3 items-center">
-                  <span className="text-[11px] font-bold shrink-0 w-14 truncate" style={{color:"#6B6578"}}>{opponent.name}</span>
+                  <span className="text-[11px] font-bold shrink-0 w-14 truncate" style={{color:UI.textSub}}>{opponent.name}</span>
                   <div style={{flex:1}}><HpBar current={oppHp} max={oppMaxHp}/></div>
-                  <span className="text-[10px] shrink-0" style={{color:"#8A8598"}}>{oppHp}/{oppMaxHp}</span>
+                  <span className="text-[10px] shrink-0" style={{color:UI.textSub}}>{oppHp}/{oppMaxHp}</span>
                 </div>
               </div>
               <div className="flex gap-2 w-full">
                 <button onClick={reset} className="flex-1"
-                  style={{ padding:"12px 0", fontSize:13, fontWeight:800, color:"#6B6578", borderRadius:16, background:"#fff", border:"2px solid #E3E1EC" }}>
+                  style={{ padding:"12px 0", fontSize:13, fontWeight:800, color:UI.textSub, borderRadius:UI.radiusSm, background:UI.panel, boxShadow:`inset 0 0 0 1px ${UI.panelBorder}` }}>
                   다시 선택
                 </button>
                 <button onClick={startBattle} className="flex-1"
-                  style={{ padding:"12px 0", fontSize:13, fontWeight:800, color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", gap:6, borderRadius:16, background:"linear-gradient(135deg,#6FA0D8,#2F5E93)", boxShadow:"0 4px 12px rgba(47,94,147,0.35)" }}>
+                  style={{ padding:"12px 0", fontSize:13, fontWeight:800, color:UI.textMain, display:"flex", alignItems:"center", justifyContent:"center", gap:6, borderRadius:UI.radiusSm, background:UI.accent.violet, boxShadow:`0 4px 14px ${UI.accent.violet}55` }}>
                   <Swords size={14}/> 재도전
                 </button>
               </div>
