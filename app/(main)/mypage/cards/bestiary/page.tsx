@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import { PVE_BESTIARY, PVE_BOSS, bestiaryPhotoUrl, dexNoLabel, type BestiaryEntry } from "@/lib/pve-bestiary";
 import StickerIcon from "@/app/components/StickerIcon";
+import { UI, progressTrackStyle, progressFillStyle } from "@/lib/battle-ui-theme";
 
 export default function BestiaryPage() {
   const { user, loading: authLoading } = useAuth();
@@ -43,15 +44,15 @@ export default function BestiaryPage() {
   const selectedDefeated = selected ? defeatedKeys.includes(selected.key) : false;
 
   return (
-    <div className="min-h-dvh" style={{ background: "#0F0F1A" }}>
-      <div className="sticky top-0 z-10 px-4 pt-safe pt-4 pb-3 flex items-center gap-3" style={{ background: "#0F0F1A" }}>
+    <div className="min-h-dvh" style={{ background: UI.bgGradient }}>
+      <div className="sticky top-0 z-10 px-4 pt-safe pt-4 pb-3 flex items-center gap-3" style={{ background: "linear-gradient(180deg, #14141C 0%, rgba(20,20,28,0) 100%)" }}>
         <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>
           <ArrowLeft size={18} className="text-white" />
         </button>
-        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><StickerIcon icon={BookMarked} color="#4FAF63" size={30} /> 동네 도감</h1>
+        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><StickerIcon icon={BookMarked} color={UI.accent.green} size={30} /> 동네 도감</h1>
         {seenCount > 0 && (
           <button onClick={share} className="ml-auto flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-bold"
-            style={{ background: "rgba(255,255,255,0.08)", color: "#B4AFC2" }}>
+            style={{ background: "rgba(255,255,255,0.08)", color: UI.textSub }}>
             <Share2 size={12} /> 자랑하기
           </button>
         )}
@@ -59,18 +60,18 @@ export default function BestiaryPage() {
 
       <div className="px-4 pb-10">
         {/* 진행률 요약 */}
-        <div className="rounded-2xl p-4 mb-4" style={{ background: "rgba(255,255,255,0.05)" }}>
+        <div className="rounded-2xl p-4 mb-4" style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
           <div className="flex items-end justify-between mb-2">
-            <span className="text-white text-[24px] font-black">{seenCount}<span className="text-[14px] font-bold text-gray-500">/{all.length}</span></span>
-            <span className="text-[11px] font-bold text-gray-500">이겨본 개체 {defeatedCount}마리</span>
+            <span className="text-white text-[24px] font-black">{seenCount}<span className="text-[14px] font-bold" style={{ color: UI.textMuted }}>/{all.length}</span></span>
+            <span className="text-[11px] font-bold" style={{ color: UI.textMuted }}>이겨본 개체 {defeatedCount}마리</span>
           </div>
-          <div className="h-2 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
-            <div className="h-full rounded-full" style={{ width: `${pct}%`, background: "linear-gradient(90deg,#4C82BC,#3E6FA8)", transition: "width 0.4s ease" }} />
+          <div style={progressTrackStyle()}>
+            <div style={progressFillStyle(UI.accent.violet, pct)} />
           </div>
         </div>
 
         {loading ? (
-          <div className="flex justify-center py-20"><Loader2 size={28} className="animate-spin text-gray-500" /></div>
+          <div className="flex justify-center py-20"><Loader2 size={28} className="animate-spin" style={{ color: UI.textMuted }} /></div>
         ) : (
           <div className="grid grid-cols-3 gap-3">
             {all.map((entry) => {
@@ -83,16 +84,16 @@ export default function BestiaryPage() {
                   key={entry.key}
                   onClick={() => seen && setSelected(entry)}
                   className="relative flex flex-col items-center gap-1.5 py-3 rounded-2xl active:scale-95 transition-transform"
-                  style={{ background: "rgba(255,255,255,0.05)", cursor: seen ? "pointer" : "default" }}
+                  style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}`, cursor: seen ? "pointer" : "default" }}
                 >
-                  <span className="absolute top-1.5 left-2 text-[8.5px] font-black tabular-nums" style={{ color: "#565266" }}>
+                  <span className="absolute top-1.5 left-2 text-[8.5px] font-black tabular-nums" style={{ color: UI.textMuted }}>
                     {dexNoLabel(entry.dexNo)}
                   </span>
                   <div
                     className="relative rounded-full overflow-hidden flex items-center justify-center mt-2.5"
                     style={{
                       width: 56, height: 56,
-                      background: seen ? "#1A1A2A" : "rgba(255,255,255,0.06)",
+                      background: seen ? UI.panelAlt : "rgba(255,255,255,0.06)",
                       boxShadow: `0 0 0 2px ${ringColor}`,
                     }}
                   >
@@ -104,11 +105,11 @@ export default function BestiaryPage() {
                       <span style={{ fontSize: 22, opacity: 0.3 }}>❔</span>
                     )}
                   </div>
-                  <span className="text-[10.5px] font-bold" style={{ color: seen ? "#E5E3EE" : "#565266" }}>
+                  <span className="text-[10.5px] font-bold" style={{ color: seen ? UI.textMain : UI.textMuted }}>
                     {seen ? entry.name : "???"}
                   </span>
                   {seen && (
-                    <span className="flex items-center gap-0.5 text-[8.5px] font-bold" style={{ color: defeated ? entry.categoryColor : "#6B6578" }}>
+                    <span className="flex items-center gap-0.5 text-[8.5px] font-bold" style={{ color: defeated ? entry.categoryColor : UI.textSub }}>
                       {!defeated && <Lock size={8} />}
                       {defeated ? "승리" : "조우"}
                     </span>
@@ -123,7 +124,7 @@ export default function BestiaryPage() {
       {/* 상세 모달 — 포켓몬 도감 스타일 */}
       {selected && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-6" style={{ background: "rgba(0,0,0,0.7)" }} onClick={() => setSelected(null)}>
-          <div onClick={(e) => e.stopPropagation()} className="w-full max-w-xs rounded-3xl overflow-hidden" style={{ background: "#1A1A2A" }}>
+          <div onClick={(e) => e.stopPropagation()} className="w-full max-w-xs rounded-3xl overflow-hidden" style={{ background: UI.panelAlt, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
             <div className="relative">
               {bestiaryPhotoUrl(selected) && (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -148,7 +149,7 @@ export default function BestiaryPage() {
                 <>
                   <div className="flex gap-1.5 mb-3">
                     {selected.traits.map((t) => (
-                      <span key={t} className="px-2 py-1 rounded-lg text-[10px] font-bold" style={{ background: "rgba(255,255,255,0.08)", color: "#B4AFC2" }}>
+                      <span key={t} className="px-2 py-1 rounded-lg text-[10px] font-bold" style={{ background: "rgba(255,255,255,0.08)", color: UI.textSub }}>
                         {t}
                       </span>
                     ))}
@@ -156,26 +157,26 @@ export default function BestiaryPage() {
                   <p className="text-[11px] font-bold mb-1.5" style={{ color: selected.categoryColor }}>
                     성격 · {selected.personality}
                   </p>
-                  <p className="text-[12.5px] leading-relaxed" style={{ color: "#D5D3DE" }}>
+                  <p className="text-[12.5px] leading-relaxed" style={{ color: UI.textSub }}>
                     {selected.story}
                   </p>
-                  <p className="text-[11px] font-bold mt-3" style={{ color: "#FFC15E" }}>🏆 승리한 적 있어요</p>
+                  <p className="text-[11px] font-bold mt-3" style={{ color: UI.accent.gold }}>🏆 승리한 적 있어요</p>
                 </>
               ) : (
                 <>
                   <div className="rounded-2xl px-4 py-5 text-center" style={{ background: "rgba(255,255,255,0.04)" }}>
-                    <Lock size={20} className="mx-auto mb-2" style={{ color: "#565266" }} />
-                    <p className="text-[13px] font-black tracking-widest" style={{ color: "#565266" }}>????</p>
-                    <p className="text-[11px] mt-1.5" style={{ color: "#6B6578" }}>
+                    <Lock size={20} className="mx-auto mb-2" style={{ color: UI.textMuted }} />
+                    <p className="text-[13px] font-black tracking-widest" style={{ color: UI.textMuted }}>????</p>
+                    <p className="text-[11px] mt-1.5" style={{ color: UI.textSub }}>
                       이 녀석을 배틀에서 이기면<br />성격·특징·이야기가 공개돼요
                     </p>
                   </div>
-                  <p className="text-[11px] font-bold mt-3" style={{ color: "#8A8598" }}>👀 조우했지만 아직 못 이겼어요</p>
+                  <p className="text-[11px] font-bold mt-3" style={{ color: UI.textSub }}>👀 조우했지만 아직 못 이겼어요</p>
                 </>
               )}
 
-              <button onClick={() => setSelected(null)} className="mt-4 w-full py-2.5 rounded-xl text-[13px] font-extrabold text-white"
-                style={{ background: "linear-gradient(135deg,#4C82BC,#3E6FA8)" }}>
+              <button onClick={() => setSelected(null)} className="mt-4 w-full py-2.5 rounded-xl text-[13px] font-extrabold"
+                style={{ background: `${UI.accent.violet}1F`, color: UI.accent.violet, boxShadow: `inset 0 0 0 1px ${UI.accent.violet}` }}>
                 닫기
               </button>
             </div>
