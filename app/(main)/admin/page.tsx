@@ -27,6 +27,8 @@ import {
   Sparkles,
   Activity,
   Megaphone,
+  ShoppingBag,
+  PackageCheck,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { getAdminStats, type AdminStats } from "@/lib/admin-stats";
@@ -92,6 +94,20 @@ export default function AdminDashboardPage() {
   }
 
   const menus: MenuItem[] = [
+    {
+      href: "/admin/products",
+      title: "상품 관리",
+      subtitle: "쇼핑몰 상품 등록·수정·재고",
+      Icon: ShoppingBag,
+      color: "#C47E5A",
+    },
+    {
+      href: "/admin/orders",
+      title: "주문 관리",
+      subtitle: "주문 상태·운송장·취소/환불",
+      Icon: PackageCheck,
+      color: "#4C82BC",
+    },
     {
       href: "/admin/event-keyring",
       title: "이벤트 응모자",
