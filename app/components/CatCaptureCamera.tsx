@@ -678,12 +678,12 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
                   src="/images/capture-can.png"
                   alt=""
                   draggable={false}
-                  width={110}
-                  height={63}
-                  style={{ width: 110, height: "auto", userSelect: "none", pointerEvents: "none" }}
+                  width={150}
+                  height={86}
+                  style={{ width: 150, height: "auto", userSelect: "none", pointerEvents: "none" }}
                 />
                 {/* 캔 바닥 그림자 */}
-                <div style={{ width: 60, height: 6, marginTop: -3, borderRadius: "50%", background: "rgba(0,0,0,0.22)" }} />
+                <div style={{ width: 80, height: 8, marginTop: -3, borderRadius: "50%", background: "rgba(0,0,0,0.22)" }} />
               </div>
             </div>
 
