@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import webpush from "web-push";
 import { createClient } from "@supabase/supabase-js";
 import { createClient as createUserClient } from "@/lib/supabase/server";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 15;
 
@@ -9,6 +10,13 @@ export async function POST(request: Request) {
   const supabase = await createUserClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+
+  // 유저당 1시간 3회 — 정상 흐름은 신규 카드 생성 직후 딱 1번만 호출됨.
+  // 제한이 없으면 본인 소유 레어/레전드 카드로 이 엔드포인트를 반복 호출해서
+  // 같은 동네 유저 전원에게 푸시 알림 스팸을 계속 보낼 수 있었음.
+  if (!rateLimit(`rare-alert:${user.id}`, { max: 3, windowMs: 60 * 60 * 1000 })) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
 
   const { cat_id } = await request.json();
   if (!cat_id) return NextResponse.json({ error: "missing cat_id" }, { status: 400 });

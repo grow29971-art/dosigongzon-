@@ -347,6 +347,18 @@ export async function createCat(input: CreateCatInput): Promise<Cat> {
     }
   }
 
+  // Rate limit — 고양이 등록마다 카드 생성 시 실제 Gemini API 호출이 나가서
+  // (신규 등록 시 card_generated_at이 비어있어 매번 호출됨), 제한 없이 빠르게
+  // 여러 마리를 연달아 등록하면 AI API 비용을 무한정 소모시킬 수 있었음.
+  await enforceUserActionLimit(supabase, {
+    table: "cats",
+    userColumn: "caretaker_id",
+    userId: user.id,
+    perMinute: 3,
+    perDay: 30,
+    label: "고양이 등록",
+  });
+
   const { data, error } = await supabase
     .from("cats")
     .insert({

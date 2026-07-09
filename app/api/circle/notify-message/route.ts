@@ -5,6 +5,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import webpush from "web-push";
+import { rateLimit } from "@/lib/rate-limit";
 
 const VAPID_PUBLIC = (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? "").trim();
 const VAPID_PRIVATE = (process.env.VAPID_PRIVATE_KEY ?? "").trim();
@@ -48,6 +49,12 @@ export async function POST(req: Request) {
   const senderId = userRes.user?.id;
   if (!senderId) {
     return NextResponse.json({ ok: false, error: "auth failed" }, { status: 401 });
+  }
+
+  // 유저당 1분 20회 — 실제 채팅 전송 흐름과 별개로 이 엔드포인트를 직접
+  // 반복 호출해서 같은 서클 멤버들에게 푸시 스팸을 보낼 수 있는 걸 막음.
+  if (!rateLimit(`circle-notify:${senderId}`, { max: 20, windowMs: 60 * 1000 })) {
+    return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
   }
 
   // 서비스 키로 멤버 + 푸시 구독 조회 (RLS 우회 가능 — 본인 메시지 알림이라 안전)
