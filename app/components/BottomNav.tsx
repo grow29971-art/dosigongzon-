@@ -17,7 +17,7 @@ const tabs: { href: string; label: string; Icon: LucideIcon }[] = [
   { href: "/community", label: "커뮤니티", Icon: MessagesSquare },
   // 카드게임 탭 임시 숨김 (2026-07-10) — 복원 시 lucide Gamepad2 아이콘 사용
   // { href: "/mypage/cards", label: "카드게임", Icon: Gamepad2 },
-  { href: "/shop", label: "쇼핑(구현중)", Icon: ShoppingBag },
+  { href: "/shop", label: "쇼핑준비중", Icon: ShoppingBag },
   { href: "/mypage", label: "마이", Icon: User },
 ];
 
