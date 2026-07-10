@@ -850,141 +850,6 @@ export default function HomeAuthed({
         </>
       )}
 
-      {/* 오늘의 균형 체크리스트·안부 재참여 카드 — 사용자 요청으로 제거 (2026-07-10) */}
-
-      {/* ══════ ↓ 홍보/부가 카드 — 홈 개편(2026-07-10)으로 아래로 이동 ══════ */}
-
-      {/* 1000명 이벤트 배너 (SSR) */}
-      {eventSlot}
-
-      {/* 오늘의 냥 상자 — 일일 출석 리추얼 */}
-      {user && <DailyCatBox />}
-
-      {/* 돌봄 cue 푸시 옵트인 — 고양이 보유 + 미구독만 (14일 dismiss) */}
-      {user && activity && <PushCareCueOptIn hasCat={activity.catCount > 0} />}
-
-      {/* 우리 동네 고양이 도감 entry (catCount>0) */}
-      {user && activity && activity.catCount > 0 && (
-        <Link
-          href="/collection"
-          className="block mb-3 active:scale-[0.99] transition-transform"
-          style={{
-            background: "linear-gradient(135deg, #FFFFFF 0%, #FCF6EC 100%)",
-            borderRadius: 18,
-            padding: "12px 14px",
-            border: "1px solid rgba(49,130,246,0.18)",
-            boxShadow: "0 4px 14px rgba(49,130,246,0.08)",
-          }}
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-lg" style={{ background: "rgba(49,130,246,0.12)" }}>📖</div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#1B64DA" }}>우리 동네 고양이 도감</p>
-              <p className="text-[13.5px] font-extrabold text-text-main leading-tight mt-0.5 truncate">만난 고양이를 모아보세요</p>
-            </div>
-            <ChevronRight size={14} style={{ color: "#1B64DA" }} className="shrink-0" />
-          </div>
-        </Link>
-      )}
-
-      {/* 사회적 증명 (오늘 활동 이웃 수) */}
-      <SocialProofStrip />
-
-      {/* 기능 가이드 팁 (시작 가이드 종료 유저) */}
-      {user && activity && onboardingDismissed && (
-        <FeatureTipsCard activity={activity} regions={myRegions} />
-      )}
-
-      {/* ══════ 이번 주 HOT 게시글 (SSR) ══════ */}
-      {hotSlot}
-
-      {/* ══════ 입양·임보 기다리는 아이들 (SSR) ══════ */}
-      {adoptionSlot}
-
-
-      {/* ══════ 오늘의 기념일 ══════ */}
-      {anniversaries.length > 0 && (
-        <div className="mb-4">
-          <div className="flex items-center gap-2 mb-3 px-1">
-            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E86B8C" }} />
-            <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
-              오늘의 기념일
-            </h2>
-            <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#E86B8C", opacity: 0.6 }}>
-              ANNIVERSARY 🎂
-            </span>
-          </div>
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1">
-            {anniversaries.map((a) => {
-              const label = a.years === 0
-                ? "오늘 구조됐어요"
-                : `만난 지 ${a.years}주년 🎉`;
-              const bgGradient = a.years >= 3
-                ? "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)"
-                : a.years >= 1
-                ? "linear-gradient(135deg, #F4A5C0 0%, #E86B8C 100%)"
-                : "linear-gradient(135deg, #FFD56B 0%, #E8B040 100%)";
-              return (
-                <Link
-                  key={a.catId}
-                  href={`/cats/${a.catId}`}
-                  className="shrink-0 active:scale-[0.97] transition-transform"
-                  style={{ width: 200 }}
-                >
-                  <div
-                    className="relative overflow-hidden"
-                    style={{
-                      borderRadius: 20,
-                      aspectRatio: "5 / 3",
-                      background: a.photoUrl
-                        ? `url('${a.photoUrl}') center/cover`
-                        : "#EEE8E0",
-                      boxShadow: "0 6px 18px rgba(232,107,140,0.25)",
-                    }}
-                  >
-                    {/* 그라디언트 오버레이 */}
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 55%)",
-                      }}
-                    />
-                    {/* 상단: 기념일 뱃지 */}
-                    <div
-                      className="absolute top-2 left-2 right-2 flex items-center justify-between"
-                    >
-                      <div
-                        className="px-2.5 py-1 rounded-full flex items-center gap-1"
-                        style={{
-                          background: bgGradient,
-                          boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
-                        }}
-                      >
-                        <span style={{ fontSize: 11 }}>🎂</span>
-                        <span className="text-[10px] font-extrabold text-white tracking-tight">
-                          {label}
-                        </span>
-                      </div>
-                    </div>
-                    {/* 하단: 이름·지역 */}
-                    <div className="absolute bottom-0 inset-x-0 px-3 py-2.5">
-                      <p className="text-[15px] font-extrabold text-white drop-shadow tracking-tight">
-                        {a.name}
-                      </p>
-                      {a.region && (
-                        <p className="text-[10px] text-white/80 drop-shadow">
-                          📍 {a.region}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
       {/* ══════ 내 활동 요약 ══════ */}
       {activity && levelInfo && (() => {
         const lc = getLevelColor(levelInfo.level);
@@ -1062,49 +927,6 @@ export default function HomeAuthed({
         </Link>
         );
       })()}
-
-      {/* ══════ 오늘의 냥식 ══════ */}
-      <div
-        className="flex items-start gap-3.5 px-5 py-4 mb-5"
-        style={{
-          background: "#FFFFFF",
-          borderRadius: 22,
-          boxShadow: "0 6px 20px rgba(232,176,64,0.10), 0 1px 3px rgba(0,0,0,0.03)",
-          border: "1px solid rgba(0,0,0,0.04)",
-        }}
-      >
-        <div
-          className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-          style={{
-            background: "linear-gradient(135deg, #E8B040 0%, #C9A961 100%)",
-            boxShadow: "0 5px 12px rgba(232,176,64,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)",
-          }}
-        >
-          <Sparkles size={18} color="#fff" strokeWidth={2.3} />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-extrabold tracking-[0.12em] mb-0.5" style={{ color: "#C9A961" }}>
-            TODAY&apos;S FACT
-          </p>
-          <p className="text-[13.5px] font-semibold text-text-main leading-relaxed">
-            {fact}
-          </p>
-        </div>
-      </div>
-
-      {/* 레벨업 / 업적 잠금 해제 토스트 */}
-      <AchievementToast
-        toasts={achievementToasts}
-        onDismiss={(id) =>
-          setAchievementToasts((prev) => prev.filter((t) => t.id !== id))
-        }
-      />
-
-      {/* 앱 열 때마다(세션 1회) 안내 모달 — 오늘 이거 해보세요 + 기능 탐색.
-          기능 웰컴 투어(FeatureTourGate가 레이아웃 레벨에서 렌더)가 아직 안 끝났으면 안 겹치게 억제 */}
-      {user && activity && !suppressAppOpenGuide && (
-        <AppOpenGuideModal hasCat={activity.catCount > 0} hasRegion={myRegions.length > 0} />
-      )}
 
       {/* ══════ 내 동네 소식 ══════ */}
       {user && (
@@ -1340,6 +1162,186 @@ export default function HomeAuthed({
           )}
         </div>
       )}
+
+      {/* 오늘의 균형 체크리스트·안부 재참여 카드 — 사용자 요청으로 제거 (2026-07-10) */}
+
+      {/* ══════ ↓ 홍보/부가 카드 — 홈 개편(2026-07-10)으로 아래로 이동 ══════ */}
+
+      {/* 1000명 이벤트 배너 (SSR) */}
+      {eventSlot}
+
+      {/* 오늘의 냥 상자 — 일일 출석 리추얼 */}
+      {user && <DailyCatBox />}
+
+      {/* 돌봄 cue 푸시 옵트인 — 고양이 보유 + 미구독만 (14일 dismiss) */}
+      {user && activity && <PushCareCueOptIn hasCat={activity.catCount > 0} />}
+
+      {/* 우리 동네 고양이 도감 entry (catCount>0) */}
+      {user && activity && activity.catCount > 0 && (
+        <Link
+          href="/collection"
+          className="block mb-3 active:scale-[0.99] transition-transform"
+          style={{
+            background: "linear-gradient(135deg, #FFFFFF 0%, #FCF6EC 100%)",
+            borderRadius: 18,
+            padding: "12px 14px",
+            border: "1px solid rgba(49,130,246,0.18)",
+            boxShadow: "0 4px 14px rgba(49,130,246,0.08)",
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-lg" style={{ background: "rgba(49,130,246,0.12)" }}>📖</div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#1B64DA" }}>우리 동네 고양이 도감</p>
+              <p className="text-[13.5px] font-extrabold text-text-main leading-tight mt-0.5 truncate">만난 고양이를 모아보세요</p>
+            </div>
+            <ChevronRight size={14} style={{ color: "#1B64DA" }} className="shrink-0" />
+          </div>
+        </Link>
+      )}
+
+      {/* 사회적 증명 (오늘 활동 이웃 수) */}
+      <SocialProofStrip />
+
+      {/* 기능 가이드 팁 (시작 가이드 종료 유저) */}
+      {user && activity && onboardingDismissed && (
+        <FeatureTipsCard activity={activity} regions={myRegions} />
+      )}
+
+      {/* ══════ 이번 주 HOT 게시글 (SSR) ══════ */}
+      {hotSlot}
+
+      {/* ══════ 입양·임보 기다리는 아이들 (SSR) ══════ */}
+      {adoptionSlot}
+
+
+      {/* ══════ 오늘의 기념일 ══════ */}
+      {anniversaries.length > 0 && (
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-3 px-1">
+            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E86B8C" }} />
+            <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+              오늘의 기념일
+            </h2>
+            <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#E86B8C", opacity: 0.6 }}>
+              ANNIVERSARY 🎂
+            </span>
+          </div>
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1">
+            {anniversaries.map((a) => {
+              const label = a.years === 0
+                ? "오늘 구조됐어요"
+                : `만난 지 ${a.years}주년 🎉`;
+              const bgGradient = a.years >= 3
+                ? "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)"
+                : a.years >= 1
+                ? "linear-gradient(135deg, #F4A5C0 0%, #E86B8C 100%)"
+                : "linear-gradient(135deg, #FFD56B 0%, #E8B040 100%)";
+              return (
+                <Link
+                  key={a.catId}
+                  href={`/cats/${a.catId}`}
+                  className="shrink-0 active:scale-[0.97] transition-transform"
+                  style={{ width: 200 }}
+                >
+                  <div
+                    className="relative overflow-hidden"
+                    style={{
+                      borderRadius: 20,
+                      aspectRatio: "5 / 3",
+                      background: a.photoUrl
+                        ? `url('${a.photoUrl}') center/cover`
+                        : "#EEE8E0",
+                      boxShadow: "0 6px 18px rgba(232,107,140,0.25)",
+                    }}
+                  >
+                    {/* 그라디언트 오버레이 */}
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 55%)",
+                      }}
+                    />
+                    {/* 상단: 기념일 뱃지 */}
+                    <div
+                      className="absolute top-2 left-2 right-2 flex items-center justify-between"
+                    >
+                      <div
+                        className="px-2.5 py-1 rounded-full flex items-center gap-1"
+                        style={{
+                          background: bgGradient,
+                          boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
+                        }}
+                      >
+                        <span style={{ fontSize: 11 }}>🎂</span>
+                        <span className="text-[10px] font-extrabold text-white tracking-tight">
+                          {label}
+                        </span>
+                      </div>
+                    </div>
+                    {/* 하단: 이름·지역 */}
+                    <div className="absolute bottom-0 inset-x-0 px-3 py-2.5">
+                      <p className="text-[15px] font-extrabold text-white drop-shadow tracking-tight">
+                        {a.name}
+                      </p>
+                      {a.region && (
+                        <p className="text-[10px] text-white/80 drop-shadow">
+                          📍 {a.region}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+
+      {/* ══════ 오늘의 냥식 ══════ */}
+      <div
+        className="flex items-start gap-3.5 px-5 py-4 mb-5"
+        style={{
+          background: "#FFFFFF",
+          borderRadius: 22,
+          boxShadow: "0 6px 20px rgba(232,176,64,0.10), 0 1px 3px rgba(0,0,0,0.03)",
+          border: "1px solid rgba(0,0,0,0.04)",
+        }}
+      >
+        <div
+          className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
+          style={{
+            background: "linear-gradient(135deg, #E8B040 0%, #C9A961 100%)",
+            boxShadow: "0 5px 12px rgba(232,176,64,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)",
+          }}
+        >
+          <Sparkles size={18} color="#fff" strokeWidth={2.3} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] font-extrabold tracking-[0.12em] mb-0.5" style={{ color: "#C9A961" }}>
+            TODAY&apos;S FACT
+          </p>
+          <p className="text-[13.5px] font-semibold text-text-main leading-relaxed">
+            {fact}
+          </p>
+        </div>
+      </div>
+
+      {/* 레벨업 / 업적 잠금 해제 토스트 */}
+      <AchievementToast
+        toasts={achievementToasts}
+        onDismiss={(id) =>
+          setAchievementToasts((prev) => prev.filter((t) => t.id !== id))
+        }
+      />
+
+      {/* 앱 열 때마다(세션 1회) 안내 모달 — 오늘 이거 해보세요 + 기능 탐색.
+          기능 웰컴 투어(FeatureTourGate가 레이아웃 레벨에서 렌더)가 아직 안 끝났으면 안 겹치게 억제 */}
+      {user && activity && !suppressAppOpenGuide && (
+        <AppOpenGuideModal hasCat={activity.catCount > 0} hasRegion={myRegions.length > 0} />
+      )}
+
 
       {/* ══════ 실시간 동네 피드 ══════ */}
       {feed.length > 0 && (() => {
