@@ -634,7 +634,7 @@ export default function HomeAuthed({
 
       {/* ══════ 실시간 날씨 위젯 — 홈 최상단(내 고양이 위) 배치 (2026-07-10) ══════ */}
       <div
-        className="p-5 mb-5 dark-card-level"
+        className="px-5 py-4 mb-4 dark-card-level"
         style={{
           background: "linear-gradient(135deg, #FFFFFF 0%, #FDF9F2 100%)",
           borderRadius: 22,
@@ -669,7 +669,7 @@ export default function HomeAuthed({
           /* 날씨 데이터 */
           <>
             {/* 상단: 날짜 + 지역 */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-2.5">
               <div>
                 <p className="text-[11px] text-text-sub font-medium">
                   {new Date().toLocaleDateString("ko-KR", { month: "long", day: "numeric", weekday: "long" })}
@@ -683,21 +683,21 @@ export default function HomeAuthed({
             </div>
 
             {/* 중앙: 큰 온도 + 아이콘 */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-2.5">
               <div className="flex items-end gap-1">
                 <span
-                  className="text-[48px] font-extrabold leading-none tracking-tight"
+                  className="text-[40px] font-extrabold leading-none tracking-tight"
                   style={{ color: getTempColor(weather.temp) }}
                 >
                   {weather.temp}
                 </span>
-                <span className="text-[20px] font-bold text-text-light mb-1.5">°C</span>
+                <span className="text-[18px] font-bold text-text-light mb-1">°C</span>
               </div>
               {(() => {
                 const WeatherIcon = WEATHER_ICONS[weather.weatherMain] ?? Cloud;
                 return (
                   <WeatherIcon
-                    size={48}
+                    size={40}
                     className="text-text-light"
                     strokeWidth={1.3}
                   />
