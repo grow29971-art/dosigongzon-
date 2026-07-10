@@ -100,9 +100,9 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
           >
             <X size={15} style={{ color: "#7A4F30" }} />
           </button>
-          <p className="text-[10px] font-extrabold tracking-[0.2em] mb-2" style={{ color: "#3E6FA8" }}>오늘 이거 해보세요</p>
+          <p className="text-[10px] font-extrabold tracking-[0.2em] mb-2" style={{ color: "#1B64DA" }}>오늘 이거 해보세요</p>
           <div className="flex items-center gap-3">
-            <div className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 text-3xl" style={{ background: "#FFFFFF", boxShadow: "0 4px 14px rgba(76,130,188,0.25)" }}>
+            <div className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 text-3xl" style={{ background: "#FFFFFF", boxShadow: "0 4px 14px rgba(49,130,246,0.25)" }}>
               {spot.emoji}
             </div>
             <div className="min-w-0">
@@ -118,12 +118,12 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
             href={spot.href}
             onClick={close}
             className="flex items-center justify-center gap-1.5 py-3.5 rounded-2xl text-white text-[14px] font-extrabold active:scale-[0.98] transition-transform"
-            style={{ background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)", boxShadow: "0 4px 14px rgba(76,130,188,0.4)" }}
+            style={{ background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)", boxShadow: "0 4px 14px rgba(49,130,246,0.4)" }}
           >
             {spot.cta} <ChevronRight size={15} />
           </Link>
 
-          <p className="text-[10.5px] font-extrabold tracking-[0.12em] mt-5 mb-2.5" style={{ color: "#3E6FA8" }}>이런 기능도 있어요</p>
+          <p className="text-[10.5px] font-extrabold tracking-[0.12em] mt-5 mb-2.5" style={{ color: "#1B64DA" }}>이런 기능도 있어요</p>
           <div className="grid grid-cols-3 gap-2">
             {CHIPS.map((c) => (
               <Link
@@ -131,7 +131,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
                 href={c.href}
                 onClick={close}
                 className="flex flex-col items-center gap-1 py-2.5 rounded-xl active:scale-[0.97] transition-transform"
-                style={{ background: "#FAF5EE", border: "1px solid rgba(76,130,188,0.12)" }}
+                style={{ background: "#FAF5EE", border: "1px solid rgba(49,130,246,0.12)" }}
               >
                 <span className="text-xl">{c.emoji}</span>
                 <span className="text-[11px] font-bold" style={{ color: "#5C4A3E" }}>{c.label}</span>

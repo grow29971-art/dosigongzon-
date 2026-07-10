@@ -62,18 +62,18 @@ function ProductCard({ product }: { product: Product }) {
         }}
       >
         {/* 이미지 */}
-        <div className="relative w-full" style={{ aspectRatio: "1 / 1", background: isSupport ? "rgba(232,107,140,0.08)" : "#F4F7FC" }}>
+        <div className="relative w-full" style={{ aspectRatio: "1 / 1", background: isSupport ? "rgba(232,107,140,0.08)" : "#F9FAFB" }}>
           {thumb ? (
             <Image src={thumb} alt={product.name} fill className="object-cover" />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
-              <PawPrint size={40} style={{ color: isSupport ? "rgba(232,107,140,0.45)" : "rgba(76,130,188,0.28)" }} />
+              <PawPrint size={40} style={{ color: isSupport ? "rgba(232,107,140,0.45)" : "rgba(49,130,246,0.28)" }} />
             </div>
           )}
           {product.badge && (
             <span
               className="absolute top-2 left-2 text-[9.5px] font-extrabold px-2 py-0.5 rounded-lg text-white"
-              style={{ background: product.badge === "인기" ? "#E14B3C" : product.badge === "신상" ? "#4C82BC" : "#8B65B8" }}
+              style={{ background: product.badge === "인기" ? "#E14B3C" : product.badge === "신상" ? "#3182F6" : "#8B65B8" }}
             >
               {product.badge}
             </span>
@@ -234,11 +234,11 @@ export default function ShopPage() {
                 background: on
                   ? isSupport
                     ? "linear-gradient(135deg, #E86B8C 0%, #D85575 100%)"
-                    : "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)"
+                    : "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)"
                   : "rgba(255,255,255,0.9)",
                 color: on ? "#fff" : isSupport ? "#E86B8C" : "#666",
                 boxShadow: on
-                  ? `0 2px 8px ${isSupport ? "rgba(232,107,140,0.35)" : "rgba(76,130,188,0.35)"}`
+                  ? `0 2px 8px ${isSupport ? "rgba(232,107,140,0.35)" : "rgba(49,130,246,0.35)"}`
                   : "0 2px 6px rgba(0,0,0,0.05)",
               }}
             >
@@ -253,7 +253,7 @@ export default function ShopPage() {
       {loading ? (
         <div className="grid grid-cols-2 gap-3">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="rounded-[22px] animate-pulse" style={{ aspectRatio: "1 / 1.4", background: "#EEF1F6" }} />
+            <div key={i} className="rounded-[22px] animate-pulse" style={{ aspectRatio: "1 / 1.4", background: "#F2F4F6" }} />
           ))}
         </div>
       ) : visible.length === 0 ? (

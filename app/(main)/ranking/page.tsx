@@ -103,7 +103,7 @@ export default async function RankingPage() {
           >
             <div className="text-[26px] leading-none shrink-0">{isTop3 ? "🎉" : "🐾"}</div>
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-extrabold tracking-[0.15em]" style={{ color: isTop3 ? "#A9851F" : "#3E6FA8" }}>
+              <p className="text-[10px] font-extrabold tracking-[0.15em]" style={{ color: isTop3 ? "#A9851F" : "#1B64DA" }}>
                 이번 주 내 순위
               </p>
               <p className="text-[15px] font-extrabold text-text-main leading-tight mt-0.5">
@@ -130,7 +130,7 @@ export default async function RankingPage() {
             <Link
               href="/map"
               className="inline-block mt-3 px-4 py-2 rounded-xl text-[12px] font-extrabold text-white"
-              style={{ background: "#4C82BC" }}
+              style={{ background: "#3182F6" }}
             >
               지도로 가기
             </Link>
@@ -206,7 +206,7 @@ function PodiumCard({ row, place, height }: { row: RankingRow; place: 1 | 2 | 3;
       ? "rgba(201,169,97,0.6)"
       : place === 2
         ? "rgba(160,160,160,0.6)"
-        : "rgba(76,130,188,0.5)";
+        : "rgba(49,130,246,0.5)";
 
   return (
     <Link

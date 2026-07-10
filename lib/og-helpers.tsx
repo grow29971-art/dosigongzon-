@@ -10,7 +10,7 @@ export function GuideOGTemplate({
   title,
   subtitle,
   highlightText,
-  highlightColor = "#4C82BC",
+  highlightColor = "#3182F6",
   tags,
 }: {
   badge: string;              // 예: "보호지침"
@@ -25,7 +25,7 @@ export function GuideOGTemplate({
     padding: "12px 22px",
     borderRadius: 999,
     background: "rgba(255,255,255,0.8)",
-    border: "2px solid rgba(76,130,188,0.25)",
+    border: "2px solid rgba(49,130,246,0.25)",
     fontSize: 22,
     fontWeight: 800,
     color: "#8B5A3C",
@@ -89,12 +89,12 @@ export function GuideOGTemplate({
               width: 56,
               height: 56,
               borderRadius: 18,
-              background: "#4C82BC",
+              background: "#3182F6",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontSize: 34,
-              boxShadow: "0 6px 18px rgba(76,130,188,0.3)",
+              boxShadow: "0 6px 18px rgba(49,130,246,0.3)",
             }}
           >
             🐾
@@ -173,7 +173,7 @@ export function GuideOGTemplate({
             marginLeft: "auto",
             padding: "10px 20px",
             borderRadius: 999,
-            background: "#4C82BC",
+            background: "#3182F6",
             color: "#fff",
             fontSize: 20,
             fontWeight: 900,

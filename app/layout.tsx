@@ -99,7 +99,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#F4F7FC",
+  themeColor: "#F9FAFB",
 };
 
 // JSON-LD: Organization 구조화 데이터

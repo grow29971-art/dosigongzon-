@@ -71,12 +71,12 @@ export default function FollowButton({ userId, size = "sm", variant = "default",
   // 컬러
   const bg = following
     ? variant === "light" ? "rgba(255,255,255,0.15)" : "#F6F1EA"
-    : variant === "light" ? "#fff" : "#4C82BC";
+    : variant === "light" ? "#fff" : "#3182F6";
   const fg = following
     ? variant === "light" ? "#fff" : "#8B5A3C"
-    : variant === "light" ? "#4C82BC" : "#fff";
+    : variant === "light" ? "#3182F6" : "#fff";
   const shadow = !following
-    ? variant === "light" ? "0 2px 8px rgba(0,0,0,0.2)" : "0 3px 10px rgba(76,130,188,0.35)"
+    ? variant === "light" ? "0 2px 8px rgba(0,0,0,0.2)" : "0 3px 10px rgba(49,130,246,0.35)"
     : "none";
 
   return (

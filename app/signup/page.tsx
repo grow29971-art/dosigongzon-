@@ -194,10 +194,10 @@ function SignupContent() {
             className="mb-4 rounded-2xl p-4"
             style={{
               background: "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
-              border: "1.5px solid rgba(76,130,188,0.30)",
+              border: "1.5px solid rgba(49,130,246,0.30)",
             }}
           >
-            <p className="text-[10.5px] font-extrabold tracking-[0.12em] mb-1.5" style={{ color: "#4C82BC" }}>
+            <p className="text-[10.5px] font-extrabold tracking-[0.12em] mb-1.5" style={{ color: "#3182F6" }}>
               🎁 1000명 이벤트 응모
             </p>
             <p className="text-[13px] font-extrabold text-text-main leading-tight mb-1">
@@ -291,7 +291,7 @@ function SignupContent() {
             <a
               href="mailto:grow29971@gmail.com?subject=%5B%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%A1%B4%5D%2014%EC%84%B8%20%EB%AF%B8%EB%A7%8C%20%EA%B0%80%EC%9E%85%20%EC%8B%A0%EC%B2%AD&body=%EB%B3%B4%ED%98%B8%EC%9E%90%20%EC%84%B1%ED%95%A8%3A%0A%EC%9E%90%EB%85%80%20%EB%8B%89%EB%84%A4%EC%9E%84%3A%0A%EC%9E%90%EB%85%80%20%EB%82%98%EC%9D%B4%3A%0A%EC%97%B0%EB%9D%BD%EC%B2%98%3A%0A%0A%E2%96%B2%20%EB%B3%B4%ED%98%B8%EC%9E%90%EB%A1%9C%EC%84%9C%20%EC%9E%90%EB%85%80%EC%9D%98%20%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%A1%B4%20%EA%B0%80%EC%9E%85%EC%97%90%20%EB%8F%99%EC%9D%98%ED%95%A9%EB%8B%88%EB%8B%A4."
               className="underline font-semibold"
-              style={{ color: "#3E6FA8" }}
+              style={{ color: "#1B64DA" }}
             >
               grow29971@gmail.com
             </a>
@@ -393,7 +393,7 @@ function SignupContent() {
                 }
               }}
               className="w-full py-3 rounded-xl text-[14px] font-bold text-white disabled:opacity-50"
-              style={{ backgroundColor: "#4C82BC" }}
+              style={{ backgroundColor: "#3182F6" }}
             >
               {emailLoading ? <Loader2 size={16} className="animate-spin mx-auto" /> : "로그인"}
             </button>

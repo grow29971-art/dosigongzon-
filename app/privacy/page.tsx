@@ -1,4 +1,4 @@
-﻿export const metadata = {
+export const metadata = {
   title: '개인정보 처리방침 | 도시공존',
 };
 
@@ -57,7 +57,7 @@ export default function PrivacyPage() {
 
       <section style={{ marginBottom: 32 }}>
         <h2 style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>7. 개인정보 보호책임자</h2>
-        <p>이메일: <a href="mailto:grow29971@gmail.com" style={{ color: '#4C82BC' }}>grow29971@gmail.com</a></p>
+        <p>이메일: <a href="mailto:grow29971@gmail.com" style={{ color: '#3182F6' }}>grow29971@gmail.com</a></p>
       </section>
 
       <section>

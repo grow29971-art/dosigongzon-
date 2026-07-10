@@ -17,7 +17,7 @@ export interface BestiaryEntry {
 
 const INSECT_COLOR = "#5BA876";
 const MAMMAL_COLOR = "#E8935A";
-const BIRD_COLOR = "#6FA0D8";
+const BIRD_COLOR = "#4593FC";
 const REPTILE_COLOR = "#8B65B8";
 const BOSS_COLOR = "#D85555";
 

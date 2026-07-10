@@ -235,11 +235,11 @@ export default function CatLocationPicker({
           >
             <div
               className="px-3 py-1.5 rounded-2xl text-[11px] font-extrabold text-white whitespace-nowrap mb-1"
-              style={{ background: "#4C82BC" }}
+              style={{ background: "#3182F6" }}
             >
               📍 여기로 이동
             </div>
-            <MapPin size={36} fill="#4C82BC" strokeWidth={1.5} color="#fff" />
+            <MapPin size={36} fill="#3182F6" strokeWidth={1.5} color="#fff" />
           </div>
         </div>
 
@@ -269,13 +269,13 @@ export default function CatLocationPicker({
           className="rounded-2xl px-4 py-3.5 mb-2.5"
           style={{
             background: "linear-gradient(135deg, #FFF8F2 0%, #F7F4EE 100%)",
-            border: "1.5px solid rgba(76,130,188,0.25)",
+            border: "1.5px solid rgba(49,130,246,0.25)",
           }}
         >
           <div className="flex items-center gap-3">
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "rgba(76,130,188,0.15)" }}
+              style={{ background: "rgba(49,130,246,0.15)" }}
             >
               <MapPin size={18} className="text-primary" />
             </div>
@@ -311,9 +311,9 @@ export default function CatLocationPicker({
           disabled={!mapReady || !region.trim()}
           className="w-full py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50"
           style={{
-            background: "#4C82BC",
+            background: "#3182F6",
             color: "#fff",
-            boxShadow: "0 4px 14px rgba(76,130,188,0.4)",
+            boxShadow: "0 4px 14px rgba(49,130,246,0.4)",
           }}
         >
           <Check size={16} />

@@ -72,7 +72,7 @@ export async function POST(request: Request) {
         `<p style="margin:0 0 6px;color:#555"><b>보낸 사람:</b> ${escapeHtml(userName)} (${escapeHtml(userEmail)})</p>` +
         `<p style="margin:0 0 6px;color:#555"><b>제목:</b> ${escapeHtml(subject || "(없음)")}</p>` +
         `<div style="margin:12px 0;padding:12px 14px;background:#F7F4EE;border-radius:8px;white-space:pre-wrap;font-size:14px;line-height:1.6">${escapeHtml(content || "(내용 없음)")}</div>` +
-        `<p style="margin:16px 0 0"><a href="${adminUrl}" style="display:inline-block;padding:8px 14px;background:#4C82BC;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold">관리자 페이지 열기</a></p>` +
+        `<p style="margin:16px 0 0"><a href="${adminUrl}" style="display:inline-block;padding:8px 14px;background:#3182F6;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold">관리자 페이지 열기</a></p>` +
         `</div>`,
     });
 

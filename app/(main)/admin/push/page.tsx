@@ -95,7 +95,7 @@ export default function AdminPushPage() {
       </div>
 
       {/* 미리보기 */}
-      <div className="rounded-2xl p-4 mb-5" style={{ backgroundColor: "#F5F3EE", border: "1px solid rgba(76,130,188,0.15)" }}>
+      <div className="rounded-2xl p-4 mb-5" style={{ backgroundColor: "#F5F3EE", border: "1px solid rgba(49,130,246,0.15)" }}>
         <p className="text-[10px] font-bold text-text-light mb-2">미리보기</p>
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
@@ -123,7 +123,7 @@ export default function AdminPushPage() {
           className="w-full text-left px-4 py-2.5 rounded-xl active:scale-[0.99] transition-transform"
           style={{
             background: "linear-gradient(135deg, #FFE8C2 0%, #FFCFB5 100%)",
-            border: "1px solid rgba(76,130,188,0.30)",
+            border: "1px solid rgba(49,130,246,0.30)",
           }}
         >
           <p className="text-[12.5px] font-extrabold" style={{ color: "#7A4F30" }}>
@@ -257,7 +257,7 @@ export default function AdminPushPage() {
           onClick={handleSend}
           disabled={sending}
           className="w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.97] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
-          style={{ boxShadow: "0 6px 20px rgba(76,130,188,0.3)" }}
+          style={{ boxShadow: "0 6px 20px rgba(49,130,246,0.3)" }}
         >
           {sending ? (
             <>

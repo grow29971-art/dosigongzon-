@@ -153,7 +153,7 @@ export default function AdminProductsPage() {
   }
 
   const inputStyle = {
-    background: "#F4F7FC",
+    background: "#F9FAFB",
     borderRadius: 12,
     border: "1px solid rgba(0,0,0,0.05)",
   } as const;
@@ -182,7 +182,7 @@ export default function AdminProductsPage() {
       {editingId && (
         <div
           className="mb-5 p-4"
-          style={{ background: "#fff", borderRadius: 20, boxShadow: "0 6px 20px rgba(0,0,0,0.08)", border: "1.5px solid rgba(76,130,188,0.3)" }}
+          style={{ background: "#fff", borderRadius: 20, boxShadow: "0 6px 20px rgba(0,0,0,0.08)", border: "1.5px solid rgba(49,130,246,0.3)" }}
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-[13.5px] font-extrabold text-text-main">
@@ -267,8 +267,8 @@ export default function AdminProductsPage() {
                   onClick={() => setDraft({ ...draft, category: c })}
                   className="px-3 py-1.5 rounded-xl text-[11.5px] font-bold"
                   style={{
-                    background: draft.category === c ? "#4C82BC" : "#F4F7FC",
-                    color: draft.category === c ? "#fff" : "#5C6270",
+                    background: draft.category === c ? "#3182F6" : "#F9FAFB",
+                    color: draft.category === c ? "#fff" : "#4E5968",
                   }}
                 >
                   {CATEGORY_MAP[c].label}
@@ -299,7 +299,7 @@ export default function AdminProductsPage() {
                 {draft.images.length < MAX_PRODUCT_IMAGES && (
                   <label
                     className="flex items-center justify-center rounded-xl cursor-pointer"
-                    style={{ width: 64, height: 64, background: "#F4F7FC", border: "1.5px dashed rgba(0,0,0,0.15)" }}
+                    style={{ width: 64, height: 64, background: "#F9FAFB", border: "1.5px dashed rgba(0,0,0,0.15)" }}
                   >
                     {uploading
                       ? <Loader2 size={18} className="animate-spin text-text-light" />
@@ -356,7 +356,7 @@ export default function AdminProductsPage() {
               className="flex items-center gap-3 p-3"
               style={{ background: "#fff", borderRadius: 16, boxShadow: "0 2px 8px rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.04)", opacity: p.is_active ? 1 : 0.55 }}
             >
-              <div className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 52, height: 52, background: "#F4F7FC" }}>
+              <div className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 52, height: 52, background: "#F9FAFB" }}>
                 {p.images[0] && <Image src={p.images[0]} alt="" fill className="object-cover" />}
               </div>
               <div className="flex-1 min-w-0">
@@ -381,7 +381,7 @@ export default function AdminProductsPage() {
                 <button
                   onClick={() => handleEdit(p)}
                   className="w-8 h-8 rounded-xl flex items-center justify-center"
-                  style={{ background: "#F4F7FC" }}
+                  style={{ background: "#F9FAFB" }}
                   aria-label="수정"
                 >
                   <Pencil size={14} className="text-text-sub" />

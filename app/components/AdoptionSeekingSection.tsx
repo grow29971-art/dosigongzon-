@@ -35,7 +35,7 @@ export default async function AdoptionSeekingSection() {
     <section className="px-5 mt-6">
       <div className="flex items-center justify-between mb-2.5 px-0.5">
         <div className="flex items-center gap-1.5">
-          <HandHeart size={15} style={{ color: "#4C82BC" }} />
+          <HandHeart size={15} style={{ color: "#3182F6" }} />
           <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
             지금 가족·임보를 기다려요
           </h2>
@@ -43,7 +43,7 @@ export default async function AdoptionSeekingSection() {
         <Link
           href="/map"
           className="text-[11px] font-bold inline-flex items-center gap-0.5"
-          style={{ color: "#4C82BC" }}
+          style={{ color: "#3182F6" }}
         >
           지도 <ArrowRight size={11} />
         </Link>

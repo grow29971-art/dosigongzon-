@@ -58,13 +58,13 @@ export default async function CelebratePage() {
 
       {/* 히어로 — 출시 축하 */}
       <section className="px-5 pt-8 text-center">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mb-4" style={{ background: "rgba(76,130,188,0.12)", color: "#3E6FA8" }}>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mb-4" style={{ background: "rgba(49,130,246,0.12)", color: "#1B64DA" }}>
           <Sparkles size={12} />
           <span className="text-[10.5px] font-extrabold tracking-[0.18em]">OFFICIAL LAUNCH · 2026.06.01</span>
         </div>
         <h1 className="text-[32px] font-extrabold text-text-main leading-tight tracking-tight">
           🎉 도시공존<br />
-          <span style={{ color: "#4C82BC" }}>정식 출시</span>
+          <span style={{ color: "#3182F6" }}>정식 출시</span>
         </h1>
         <p className="text-[14px] text-text-sub mt-4 leading-[1.85] max-w-md mx-auto">
           처음부터 함께해 주신 모든 케어테이커와 시민 여러분께
@@ -75,7 +75,7 @@ export default async function CelebratePage() {
 
       {/* 누적 통계 */}
       <section className="px-5 mt-8">
-        <p className="text-[10.5px] font-extrabold tracking-[0.18em] text-center mb-3" style={{ color: "#3E6FA8" }}>
+        <p className="text-[10.5px] font-extrabold tracking-[0.18em] text-center mb-3" style={{ color: "#1B64DA" }}>
           THIS FAR, TOGETHER
         </p>
         <div className="grid grid-cols-3 gap-2">
@@ -83,8 +83,8 @@ export default async function CelebratePage() {
             icon={<PawPrint size={18} color="#fff" />}
             value={stats.cats.toLocaleString()}
             label="등록된 아이들"
-            color="#4C82BC"
-            accent="#3E6FA8"
+            color="#3182F6"
+            accent="#1B64DA"
           />
           <StatBlock
             icon={<Users size={18} color="#fff" />}
@@ -109,7 +109,7 @@ export default async function CelebratePage() {
           className="rounded-3xl p-6"
           style={{
             background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)",
-            border: "1px solid rgba(76,130,188,0.20)",
+            border: "1px solid rgba(49,130,246,0.20)",
           }}
         >
           <p className="text-[13px] leading-[2] text-text-sub">
@@ -127,7 +127,7 @@ export default async function CelebratePage() {
             앞으로도 한 분 한 분의 손이 헛되지 않게,
             끝까지 함께하겠습니다.
           </p>
-          <p className="text-[12px] mt-5 text-right" style={{ color: "#3E6FA8" }}>
+          <p className="text-[12px] mt-5 text-right" style={{ color: "#1B64DA" }}>
             — 도시공존 운영자 김성우 드림 🐾
           </p>
         </div>
@@ -138,11 +138,11 @@ export default async function CelebratePage() {
         <div
           className="rounded-2xl p-5 text-center"
           style={{
-            background: "linear-gradient(135deg, rgba(76,130,188,0.10) 0%, rgba(232,107,140,0.08) 100%)",
-            border: "1px solid rgba(76,130,188,0.20)",
+            background: "linear-gradient(135deg, rgba(49,130,246,0.10) 0%, rgba(232,107,140,0.08) 100%)",
+            border: "1px solid rgba(49,130,246,0.20)",
           }}
         >
-          <Trophy size={22} className="mx-auto mb-2" style={{ color: "#4C82BC" }} />
+          <Trophy size={22} className="mx-auto mb-2" style={{ color: "#3182F6" }} />
           <p className="text-[14px] font-extrabold text-text-main mb-1.5 tracking-tight">
             창립 멤버 (Founding Member)
           </p>
@@ -161,8 +161,8 @@ export default async function CelebratePage() {
           href="/map"
           className="block w-full text-center py-3.5 rounded-2xl text-[14px] font-extrabold text-white active:scale-[0.98] transition-transform"
           style={{
-            background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
-            boxShadow: "0 6px 18px rgba(76,130,188,0.35)",
+            background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+            boxShadow: "0 6px 18px rgba(49,130,246,0.35)",
           }}
         >
           🐾 지도 열기 — 우리 동네 아이들 만나러
@@ -170,7 +170,7 @@ export default async function CelebratePage() {
         <Link
           href="/maker"
           className="block w-full text-center py-2.5 rounded-2xl text-[12.5px] font-bold mt-2 active:scale-[0.98]"
-          style={{ background: "#FFFFFF", color: "#3E6FA8", border: "1px solid rgba(76,130,188,0.25)" }}
+          style={{ background: "#FFFFFF", color: "#1B64DA", border: "1px solid rgba(49,130,246,0.25)" }}
         >
           운영 이야기 보기
         </Link>

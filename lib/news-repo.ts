@@ -112,7 +112,7 @@ export const BADGE_PRESETS: Record<
 > = {
   event: {
     label: "행사",
-    color: "#4C82BC",
+    color: "#3182F6",
     bg: "#EEE8E0",
     gradient: "linear-gradient(135deg, #EEE8E0 0%, #E5DCCF 100%)",
   },

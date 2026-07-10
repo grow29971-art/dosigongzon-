@@ -100,7 +100,7 @@ export default function DailyCheckinModal() {
               <p className="text-[12px] font-extrabold mb-3" style={{ color: "#4FAF63" }}>🎊 대표 카드가 Lv.{result.newLevel}로 레벨업했어요!</p>
             )}
             <button onClick={() => setShow(false)} className="w-full py-3 rounded-2xl text-[13px] font-extrabold text-white"
-              style={{ background: "linear-gradient(135deg,#4C82BC,#3E6FA8)" }}>
+              style={{ background: "linear-gradient(135deg,#3182F6,#1B64DA)" }}>
               확인
             </button>
           </div>
@@ -120,7 +120,7 @@ export default function DailyCheckinModal() {
                   <button key={t.key} onClick={() => toggle(t.key)}
                     className="flex items-center gap-2.5 rounded-2xl px-3 py-3 text-left"
                     style={{ background: on ? "#E3EEF9" : "#F6F5FA" }}>
-                    {on ? <CheckCircle2 size={20} style={{ color: "#4C82BC" }} /> : <Circle size={20} style={{ color: "#C4C0CE" }} />}
+                    {on ? <CheckCircle2 size={20} style={{ color: "#3182F6" }} /> : <Circle size={20} style={{ color: "#C4C0CE" }} />}
                     <span style={{ fontSize: 16 }}>{t.emoji}</span>
                     <span className="text-[13px] font-bold" style={{ color: on ? "#2F5E93" : "#6B6578" }}>{t.label}</span>
                   </button>
@@ -130,7 +130,7 @@ export default function DailyCheckinModal() {
             <button onClick={submit} disabled={!allChecked || submitting}
               className="w-full py-3 rounded-2xl text-[13px] font-extrabold text-white"
               style={{
-                background: allChecked ? "linear-gradient(135deg,#4C82BC,#3E6FA8)" : "#E3E1EC",
+                background: allChecked ? "linear-gradient(135deg,#3182F6,#1B64DA)" : "#E3E1EC",
                 color: allChecked ? "#fff" : "#B4AFC2",
                 opacity: submitting ? 0.7 : 1,
               }}>

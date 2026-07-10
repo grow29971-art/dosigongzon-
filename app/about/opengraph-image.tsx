@@ -11,10 +11,10 @@ export default function AboutOG() {
     (
       <GuideOGTemplate
         badge="🐾 소개"
-        badgeColor="#4C82BC"
+        badgeColor="#3182F6"
         title="도시공존 · 시민 참여"
         highlightText="시민 참여"
-        highlightColor="#4C82BC"
+        highlightColor="#3182F6"
         subtitle="길고양이를 함께 기록하고 돌보는 오픈 플랫폼. 광고 없이 이웃들이 모여 만드는 따뜻한 지도."
         tags={["🗺️ 돌봄 지도", "✂️ TNR", "🏥 구조", "💛 무료"]}
       />

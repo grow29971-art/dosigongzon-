@@ -60,23 +60,23 @@ export default function FoundingMemberBanner() {
       className="relative mb-3 rounded-2xl px-4 py-3.5"
       style={{
         background: "linear-gradient(135deg, #FFF6E8 0%, #F4E6C8 100%)",
-        border: "1.5px solid rgba(76,130,188,0.25)",
-        boxShadow: "0 4px 14px rgba(76,130,188,0.12)",
+        border: "1.5px solid rgba(49,130,246,0.25)",
+        boxShadow: "0 4px 14px rgba(49,130,246,0.12)",
       }}
     >
       <button
         type="button"
         onClick={handleDismiss}
         className="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center active:scale-90"
-        style={{ background: "rgba(76,130,188,0.10)" }}
+        style={{ background: "rgba(49,130,246,0.10)" }}
         aria-label="배너 닫기"
       >
-        <X size={14} color="#3E6FA8" />
+        <X size={14} color="#1B64DA" />
       </button>
       <div className="flex items-start gap-3 pr-7">
         <div
           className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-          style={{ background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)" }}
+          style={{ background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)" }}
         >
           <Sparkles size={20} color="#FFFFFF" />
         </div>

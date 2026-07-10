@@ -29,7 +29,7 @@ export default function PageIntroBanner({
   description,
   ctaLabel,
   ctaHref,
-  accent = "#4C82BC",
+  accent = "#3182F6",
 }: Props) {
   const [visible, setVisible] = useState(false);
 

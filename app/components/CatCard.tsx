@@ -401,7 +401,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
           boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.05)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-            <span style={{ fontWeight: 800, color: "#3E6FA8", flexShrink: 0 }}>⚔️ PVP</span>
+            <span style={{ fontWeight: 800, color: "#1B64DA", flexShrink: 0 }}>⚔️ PVP</span>
             <span style={{ color: "#5A554C", fontWeight: 600 }}>
               {card.pvp_wins ?? 0}승 {card.pvp_losses ?? 0}패 {card.pvp_draws ?? 0}무
             </span>

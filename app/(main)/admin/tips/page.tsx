@@ -249,7 +249,7 @@ export default function AdminTipsPage() {
           <button
             onClick={handleCreate}
             className="w-11 h-11 rounded-full bg-primary flex items-center justify-center active:scale-95 transition-transform"
-            style={{ boxShadow: "0 6px 14px rgba(76,130,188,0.35)" }}
+            style={{ boxShadow: "0 6px 14px rgba(49,130,246,0.35)" }}
             aria-label="새 꿀팁 작성"
           >
             <Plus size={20} color="#fff" strokeWidth={2.5} />
@@ -264,8 +264,8 @@ export default function AdminTipsPage() {
           style={{
             background: "#FFFFFF",
             borderRadius: 20,
-            boxShadow: "0 8px 24px rgba(76,130,188,0.14), 0 1px 3px rgba(0,0,0,0.03)",
-            border: "1.5px solid rgba(76,130,188,0.2)",
+            boxShadow: "0 8px 24px rgba(49,130,246,0.14), 0 1px 3px rgba(0,0,0,0.03)",
+            border: "1.5px solid rgba(49,130,246,0.2)",
           }}
         >
           <div className="flex items-center justify-between mb-3">
@@ -576,7 +576,7 @@ export default function AdminTipsPage() {
                 <button
                   onClick={() => handleEdit(item)}
                   className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold"
-                  style={{ backgroundColor: "#EEE8E0", color: "#4C82BC" }}
+                  style={{ backgroundColor: "#EEE8E0", color: "#3182F6" }}
                 >
                   <Pencil size={12} /> 수정
                 </button>

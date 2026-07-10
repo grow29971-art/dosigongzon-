@@ -131,7 +131,7 @@ export default async function TipsIndexPage() {
             background: "linear-gradient(135deg, #FFE6E0 0%, #FFCFB5 50%, #FFD9A8 100%)",
             borderRadius: 22,
             border: "1.5px solid rgba(216,85,85,0.25)",
-            boxShadow: "0 8px 24px rgba(216,85,85,0.15), 0 2px 6px rgba(76,130,188,0.10)",
+            boxShadow: "0 8px 24px rgba(216,85,85,0.15), 0 2px 6px rgba(49,130,246,0.10)",
           }}
         >
           <div
@@ -176,7 +176,7 @@ export default async function TipsIndexPage() {
               { href: "/protection/feeding-guide", label: "밥주기", sub: "올바른 방법", Icon: Sparkles, color: "#48A59E" },
               { href: "/protection/shelter-guide", label: "겨울 쉼터", sub: "지금 만들기", Icon: Snowflake, color: "#5A8AC4" },
               { href: "/protection/pharmacy-guide", label: "약품 안내", sub: "주변 약국", Icon: Pill, color: "#6B8E6F" },
-              { href: "/protection/district-contacts", label: "지자체 연락", sub: "전국 240+ 곳", Icon: Phone, color: "#3E6FA8" },
+              { href: "/protection/district-contacts", label: "지자체 연락", sub: "전국 240+ 곳", Icon: Phone, color: "#1B64DA" },
               { href: "/protection/legal", label: "법률·신고", sub: "학대 대응", Icon: Scale, color: "#7A6B8E" },
             ].map((cat) => (
               <Link
@@ -257,7 +257,7 @@ export default async function TipsIndexPage() {
           className="mt-6 p-5 rounded-2xl"
           style={{
             background: "linear-gradient(135deg, #FBF8F3 0%, #F2EBE0 100%)",
-            border: "1px solid rgba(76,130,188,0.15)",
+            border: "1px solid rgba(49,130,246,0.15)",
           }}
         >
           <p className="text-[12px] font-extrabold text-primary mb-1.5">도시공존이란?</p>
@@ -306,7 +306,7 @@ function TipCard({ tip }: { tip: Tip }) {
           {tip.featured && (
             <span
               className="absolute top-3 left-3 text-[10px] font-extrabold px-2 py-0.5 rounded-md text-white"
-              style={{ background: "rgba(76,130,188,0.95)" }}
+              style={{ background: "rgba(49,130,246,0.95)" }}
             >
               ✨ 추천
             </span>

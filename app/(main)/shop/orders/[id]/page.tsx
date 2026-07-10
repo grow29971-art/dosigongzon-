@@ -109,7 +109,7 @@ export default function OrderDetailPage() {
       {loading ? (
         <div className="px-4 mt-4 space-y-3">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="rounded-2xl animate-pulse" style={{ height: 110, background: "#EEF1F6" }} />
+            <div key={i} className="rounded-2xl animate-pulse" style={{ height: 110, background: "#F2F4F6" }} />
           ))}
         </div>
       ) : !order || !status ? (
@@ -156,19 +156,19 @@ export default function OrderDetailPage() {
                         <div
                           className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
                           style={{
-                            background: reached ? "#4C82BC" : "#EEF1F6",
-                            boxShadow: reached ? "0 2px 6px rgba(76,130,188,0.35)" : "none",
+                            background: reached ? "#3182F6" : "#F2F4F6",
+                            boxShadow: reached ? "0 2px 6px rgba(49,130,246,0.35)" : "none",
                           }}
                         >
                           {reached && <Check size={13} color="#fff" strokeWidth={3} />}
                         </div>
                         {!isLast && (
-                          <div className="flex-1 h-[3px] mx-1 rounded-full" style={{ background: tlIndex > i ? "#4C82BC" : "#EEF1F6" }} />
+                          <div className="flex-1 h-[3px] mx-1 rounded-full" style={{ background: tlIndex > i ? "#3182F6" : "#F2F4F6" }} />
                         )}
                       </div>
                       <span
                         className="text-[9.5px] font-bold mt-1.5"
-                        style={{ color: reached ? "#4C82BC" : "#8A90A0" }}
+                        style={{ color: reached ? "#3182F6" : "#8B95A1" }}
                       >
                         {step.label}
                       </span>
@@ -179,7 +179,7 @@ export default function OrderDetailPage() {
             ) : (
               <div
                 className="mt-4 py-3 text-center rounded-2xl text-[12.5px] font-bold"
-                style={{ background: "rgba(138,144,160,0.1)", color: "#8A90A0" }}
+                style={{ background: "rgba(138,144,160,0.1)", color: "#8B95A1" }}
               >
                 결제를 기다리고 있어요
               </div>
@@ -205,7 +205,7 @@ export default function OrderDetailPage() {
           {/* 배송지 */}
           <section className="p-4" style={sectionStyle}>
             <h2 className="text-[13.5px] font-extrabold text-text-main mb-3 flex items-center gap-1.5">
-              <MapPin size={14} style={{ color: "#4C82BC" }} /> 배송지
+              <MapPin size={14} style={{ color: "#3182F6" }} /> 배송지
             </h2>
             <p className="text-[13px] font-bold text-text-main">{order.recipient_name} · {order.recipient_phone}</p>
             <p className="text-[12.5px] text-text-sub mt-1">
@@ -225,7 +225,7 @@ export default function OrderDetailPage() {
           {/* 결제 정보 */}
           <section className="p-4" style={sectionStyle}>
             <h2 className="text-[13.5px] font-extrabold text-text-main mb-3 flex items-center gap-1.5">
-              <CreditCard size={14} style={{ color: "#4C82BC" }} /> 결제 정보
+              <CreditCard size={14} style={{ color: "#3182F6" }} /> 결제 정보
             </h2>
             <div className="flex items-center justify-between text-[12.5px] text-text-sub mb-1.5">
               <span>상품금액</span>
@@ -240,7 +240,7 @@ export default function OrderDetailPage() {
               style={{ borderTop: "1px dashed rgba(0,0,0,0.08)" }}
             >
               <span>총 결제금액</span>
-              <span style={{ color: "#4C82BC" }}>{formatWon(order.payment_amount)}</span>
+              <span style={{ color: "#3182F6" }}>{formatWon(order.payment_amount)}</span>
             </div>
             {order.payment_method && (
               <p className="text-[11.5px] text-text-light mt-2">결제수단: {order.payment_method}</p>
@@ -280,7 +280,7 @@ export default function OrderDetailPage() {
                 onClick={() => setCancelOpen(false)}
                 disabled={cancelling}
                 className="flex-1 py-3 rounded-2xl text-[13px] font-bold"
-                style={{ background: "#F4F7FC", color: "#5C6270" }}
+                style={{ background: "#F9FAFB", color: "#4E5968" }}
               >
                 돌아가기
               </button>

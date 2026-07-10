@@ -17,9 +17,9 @@ export default function SplashLoading() {
       <div
         className="relative w-[88px] h-[88px] rounded-[28px] flex items-center justify-center mb-5"
         style={{
-          background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
+          background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
           boxShadow:
-            "0 16px 40px rgba(76,130,188,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -3px 6px rgba(0,0,0,0.1)",
+            "0 16px 40px rgba(49,130,246,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -3px 6px rgba(0,0,0,0.1)",
           animation: "splash-pulse 1.8s ease-in-out infinite",
         }}
       >
@@ -36,7 +36,7 @@ export default function SplashLoading() {
       <div className="flex items-center gap-2">
         <div
           className="w-5 h-[2px] rounded-full"
-          style={{ backgroundColor: "#4C82BC", opacity: 0.5 }}
+          style={{ backgroundColor: "#3182F6", opacity: 0.5 }}
         />
         <p className="text-[11.5px] font-bold text-text-sub tracking-[-0.01em]">
           길 위의 아이들
@@ -47,15 +47,15 @@ export default function SplashLoading() {
       <div className="flex items-center gap-1.5 mt-8">
         <span
           className="w-1.5 h-1.5 rounded-full animate-bounce"
-          style={{ backgroundColor: "#4C82BC", animationDelay: "0ms" }}
+          style={{ backgroundColor: "#3182F6", animationDelay: "0ms" }}
         />
         <span
           className="w-1.5 h-1.5 rounded-full animate-bounce"
-          style={{ backgroundColor: "#4C82BC", animationDelay: "150ms" }}
+          style={{ backgroundColor: "#3182F6", animationDelay: "150ms" }}
         />
         <span
           className="w-1.5 h-1.5 rounded-full animate-bounce"
-          style={{ backgroundColor: "#4C82BC", animationDelay: "300ms" }}
+          style={{ backgroundColor: "#3182F6", animationDelay: "300ms" }}
         />
       </div>
 

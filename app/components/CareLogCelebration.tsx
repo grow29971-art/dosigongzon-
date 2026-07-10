@@ -99,7 +99,7 @@ export default function CareLogCelebration({
             <Sparkles size={10} style={{ color: "#D85555", opacity: 0.7 }} />
           </div>
           <div className="absolute bottom-4 right-5 animate-pulse" style={{ animationDelay: "0.6s" }}>
-            <Sparkles size={16} style={{ color: "#4C82BC", opacity: 0.8 }} />
+            <Sparkles size={16} style={{ color: "#3182F6", opacity: 0.8 }} />
           </div>
 
           <div className="flex items-center justify-center mb-3">
@@ -150,8 +150,8 @@ export default function CareLogCelebration({
                   onClick={handleCommit}
                   className="flex-1 py-3 rounded-2xl text-[13px] font-extrabold text-white active:scale-[0.98]"
                   style={{
-                    background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
-                    boxShadow: "0 4px 14px rgba(76,130,188,0.45)",
+                    background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+                    boxShadow: "0 4px 14px rgba(49,130,246,0.45)",
                   }}
                 >
                   네, 내일도 올게요

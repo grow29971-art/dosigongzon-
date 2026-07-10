@@ -6,33 +6,33 @@
    ══════════════════════════════════════════ */
 
 @theme inline {
-  /* Primary — 하단 네비게이션 파란 톤과 통일 */
-  --color-primary: #4C82BC;
-  --color-primary-light: #6FA0D8;
-  --color-primary-dark: #3E6FA8;
+  /* Primary — 토스 블루 (모던 미니멀 리디자인 2026-07-10) */
+  --color-primary: #3182F6;
+  --color-primary-light: #4593FC;
+  --color-primary-dark: #1B64DA;
 
-  /* Background — 쿨 오프화이트 (하늘색 톤과 어울리게) */
-  --color-warm-white: #F4F7FC;
+  /* Background — 뉴트럴 그레이 화이트 */
+  --color-warm-white: #F9FAFB;
   --color-surface: #FFFFFF;
-  --color-surface-alt: #EAF0FB;
+  --color-surface-alt: #F2F4F6;
 
-  /* Text */
-  --color-text-main: #262A38;
-  --color-text-sub: #5C6270;
-  --color-text-light: #8A90A0;
-  --color-text-muted: #AEB4C2;
+  /* Text — 뉴트럴 그레이 스케일 */
+  --color-text-main: #191F28;
+  --color-text-sub: #4E5968;
+  --color-text-light: #8B95A1;
+  --color-text-muted: #B0B8C1;
 
   /* Accents */
-  --color-sage: #4FAD6E;
-  --color-mint: #4FAD6E;
-  --color-clay: #3E6FA8;
-  --color-coral: #3E6FA8;
-  --color-error: #E1505F;
-  --color-warning: #E0A030;
+  --color-sage: #22A366;
+  --color-mint: #22A366;
+  --color-clay: #1B64DA;
+  --color-coral: #1B64DA;
+  --color-error: #F04452;
+  --color-warning: #FFA927;
 
   /* Border */
-  --color-border: #E2E6F0;
-  --color-divider: #EDF1F9;
+  --color-border: #E5E8EB;
+  --color-divider: #F2F4F6;
 
   /* Font */
   --font-sans: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -62,14 +62,16 @@ body {
 
 .card {
   background: white;
-  border-radius: 24px;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+  border-radius: 20px;
+  border: 1px solid #F2F4F6;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.03);
 }
 
 .card-sm {
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.03);
+  border-radius: 16px;
+  border: 1px solid #F2F4F6;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
 }
 
 .card-glass {
@@ -81,7 +83,7 @@ body {
 }
 
 .nav-shadow { box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03); }
-.fab-shadow { box-shadow: 0 6px 20px rgba(92, 141, 238, 0.3); }
+.fab-shadow { box-shadow: 0 6px 20px rgba(49, 130, 246, 0.25); }
 
 /* ── 태그 ── */
 .tag {
@@ -216,7 +218,7 @@ body {
 .tip-body blockquote {
   border-left: 3px solid var(--color-primary);
   padding: 0.6em 0 0.6em 1.1em;
-  background: #F1F5FC;
+  background: #F2F4F6;
   border-radius: 0 12px 12px 0;
   color: var(--color-text-sub);
   font-style: normal;
@@ -226,7 +228,7 @@ body {
 .tip-body code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.92em;
-  background: #E7EEFA;
+  background: #F2F4F6;
   color: #4A5578;
   padding: 0.15em 0.45em;
   border-radius: 6px;
@@ -274,7 +276,7 @@ body {
   text-align: left;
 }
 .tip-body th {
-  background: #F1F5FC;
+  background: #F2F4F6;
   font-weight: 700;
 }
 .tip-body hr {

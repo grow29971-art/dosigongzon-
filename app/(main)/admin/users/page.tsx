@@ -414,7 +414,7 @@ export default function AdminUsersPage() {
                     type="button"
                     onClick={() => setTitleTarget(titleTarget === u.id ? null : u.id)}
                     className="text-[10px] font-bold px-2 py-0.5 rounded-lg active:scale-95"
-                    style={{ backgroundColor: "#F6F1EA", color: "#4C82BC" }}
+                    style={{ backgroundColor: "#F6F1EA", color: "#3182F6" }}
                   >
                     {u.admin_title ? "🏷️ 타이틀 변경" : "🏷️ 타이틀 부여"}
                   </button>

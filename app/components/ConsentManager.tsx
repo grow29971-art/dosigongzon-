@@ -87,7 +87,7 @@ export default function ConsentManager() {
             className="mx-auto max-w-lg rounded-2xl bg-white p-4"
             style={{
               boxShadow: "0 8px 28px rgba(60,46,35,0.15), 0 2px 6px rgba(60,46,35,0.06)",
-              border: "1px solid rgba(76,130,188,0.18)",
+              border: "1px solid rgba(49,130,246,0.18)",
             }}
           >
             <div className="mb-3">
@@ -130,8 +130,8 @@ export default function ConsentManager() {
                 onClick={handleAccept}
                 className="flex-1 rounded-xl px-4 py-2.5 text-[12.5px] font-extrabold text-white active:scale-[0.98] transition-transform"
                 style={{
-                  background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
-                  boxShadow: "0 4px 12px rgba(76,130,188,0.28)",
+                  background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+                  boxShadow: "0 4px 12px rgba(49,130,246,0.28)",
                 }}
               >
                 동의하고 계속

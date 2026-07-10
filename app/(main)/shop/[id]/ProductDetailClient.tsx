@@ -19,7 +19,7 @@ function discountRate(price: number, salePrice: number): number {
 
 const BADGE_COLORS: Record<string, string> = {
   인기: "#E14B3C",
-  신상: "#4C82BC",
+  신상: "#3182F6",
   한정: "#8B65B8",
 };
 
@@ -120,8 +120,8 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               </div>
             ))
           ) : (
-            <div className="relative shrink-0 w-full h-full flex items-center justify-center" style={{ background: "#F4F7FC" }}>
-              <PawPrint size={64} style={{ color: "rgba(76,130,188,0.28)" }} />
+            <div className="relative shrink-0 w-full h-full flex items-center justify-center" style={{ background: "#F9FAFB" }}>
+              <PawPrint size={64} style={{ color: "rgba(49,130,246,0.28)" }} />
             </div>
           )}
         </div>
@@ -152,7 +152,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         {product.badge && (
           <span
             className="inline-block text-[10.5px] font-extrabold px-2 py-1 rounded-lg text-white mb-2"
-            style={{ background: BADGE_COLORS[product.badge] ?? "#4C82BC" }}
+            style={{ background: BADGE_COLORS[product.badge] ?? "#3182F6" }}
           >
             {product.badge}
           </span>
@@ -203,7 +203,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         {!isVirtual && !soldOut && (
           <div className="mt-5 flex items-center gap-3">
             <span className="text-[13px] font-bold text-text-main">수량</span>
-            <div className="flex items-center gap-3 px-3 py-1.5 rounded-2xl" style={{ background: "#F4F7FC" }}>
+            <div className="flex items-center gap-3 px-3 py-1.5 rounded-2xl" style={{ background: "#F9FAFB" }}>
               <button onClick={() => setQuantity((q) => Math.max(1, q - 1))} disabled={quantity <= 1} className="w-6 h-6 flex items-center justify-center disabled:opacity-30" aria-label="수량 줄이기">
                 <Minus size={14} />
               </button>
@@ -258,7 +258,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           <button
             disabled
             className="w-full py-3.5 rounded-2xl text-[14px] font-extrabold opacity-40"
-            style={{ background: "#F4F7FC", color: "#5C6270" }}
+            style={{ background: "#F9FAFB", color: "#4E5968" }}
           >
             품절된 상품입니다
           </button>
@@ -281,7 +281,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               onClick={handleAddToCart}
               disabled={busy}
               className="flex-1 py-3.5 rounded-2xl text-[13.5px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-40 flex items-center justify-center gap-1.5"
-              style={{ background: "#fff", color: "#4C82BC", border: "1.5px solid #4C82BC" }}
+              style={{ background: "#fff", color: "#3182F6", border: "1.5px solid #3182F6" }}
             >
               <ShoppingBag size={15} />
               장바구니 담기
@@ -290,7 +290,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               onClick={handleBuyNow}
               disabled={busy}
               className="flex-1 py-3.5 rounded-2xl bg-primary text-white text-[13.5px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-40"
-              style={{ boxShadow: "0 6px 20px rgba(76,130,188,0.3)" }}
+              style={{ boxShadow: "0 6px 20px rgba(49,130,246,0.3)" }}
             >
               바로 구매
             </button>

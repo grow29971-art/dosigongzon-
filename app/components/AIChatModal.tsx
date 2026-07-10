@@ -150,9 +150,9 @@ export default function AIChatModal({
           <div className="flex items-center gap-3">
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: "rgba(76,130,188,0.1)" }}
+              style={{ backgroundColor: "rgba(49,130,246,0.1)" }}
             >
-              <Bot size={20} color="#4C82BC" />
+              <Bot size={20} color="#3182F6" />
             </div>
             <div>
               <p className="text-[15px] font-bold" style={{ color: "#2A2A28" }}>도시공존 AI 집사</p>
@@ -190,7 +190,7 @@ export default function AIChatModal({
                 style={
                   msg.role === "user"
                     ? {
-                        backgroundColor: "#4C82BC",
+                        backgroundColor: "#3182F6",
                         color: "#fff",
                         borderRadius: "20px 20px 8px 20px",
                       }
@@ -223,7 +223,7 @@ export default function AIChatModal({
                   type="button"
                   onClick={() => send(q)}
                   className="text-[12px] font-semibold px-3 py-2 rounded-2xl active:scale-95 transition-transform"
-                  style={{ backgroundColor: "#fff", color: "#4C82BC", border: "1.5px solid #E5DCD3" }}
+                  style={{ backgroundColor: "#fff", color: "#3182F6", border: "1.5px solid #E5DCD3" }}
                 >
                   {q}
                 </button>
@@ -242,9 +242,9 @@ export default function AIChatModal({
                   boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                 }}
               >
-                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(76,130,188,0.4)", animationDelay: "0ms" }} />
-                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(76,130,188,0.4)", animationDelay: "150ms" }} />
-                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(76,130,188,0.4)", animationDelay: "300ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(49,130,246,0.4)", animationDelay: "0ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(49,130,246,0.4)", animationDelay: "150ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(49,130,246,0.4)", animationDelay: "300ms" }} />
               </div>
             </div>
           )}
@@ -282,7 +282,7 @@ export default function AIChatModal({
               onClick={() => send()}
               disabled={!input.trim() || loading}
               className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 active:scale-90 transition-transform disabled:opacity-40"
-              style={{ backgroundColor: "#4C82BC" }}
+              style={{ backgroundColor: "#3182F6" }}
             >
               <Send size={18} color="white" />
             </button>

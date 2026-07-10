@@ -117,18 +117,18 @@ export default function CatRegistrationCelebration({
             <Sparkles size={14} style={{ color: "#E8B040", opacity: 0.8 }} />
           </div>
           <div className="absolute top-10 right-8 animate-pulse" style={{ animationDelay: "0.3s" }}>
-            <PawPrint size={12} style={{ color: "#4C82BC", opacity: 0.5 }} />
+            <PawPrint size={12} style={{ color: "#3182F6", opacity: 0.5 }} />
           </div>
           <div className="absolute bottom-4 right-6 animate-pulse" style={{ animationDelay: "0.6s" }}>
-            <Sparkles size={16} style={{ color: "#4C82BC", opacity: 0.8 }} />
+            <Sparkles size={16} style={{ color: "#3182F6", opacity: 0.8 }} />
           </div>
 
           <div className="flex items-center justify-center mb-3">
             <div
               className="w-16 h-16 rounded-full flex items-center justify-center"
               style={{
-                background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
-                boxShadow: "0 8px 24px rgba(76,130,188,0.4)",
+                background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+                boxShadow: "0 8px 24px rgba(49,130,246,0.4)",
               }}
             >
               {isFirstEver ? (
@@ -182,7 +182,7 @@ export default function CatRegistrationCelebration({
               className="rounded-2xl px-4 py-3 mb-3 text-[11.5px] leading-snug"
               style={{ background: "#FFF9EF", color: "#7A5F3F" }}
             >
-              <p className="font-extrabold mb-1" style={{ color: "#4C82BC" }}>
+              <p className="font-extrabold mb-1" style={{ color: "#3182F6" }}>
                 💡 다음 단계 힌트
               </p>
               <p>
@@ -196,8 +196,8 @@ export default function CatRegistrationCelebration({
             onClick={onClose}
             className="w-full py-3 rounded-2xl text-[13px] font-extrabold text-white active:scale-[0.98]"
             style={{
-              background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
-              boxShadow: "0 4px 14px rgba(76,130,188,0.45)",
+              background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+              boxShadow: "0 4px 14px rgba(49,130,246,0.45)",
             }}
           >
             확인

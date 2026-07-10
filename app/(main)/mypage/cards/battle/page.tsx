@@ -1657,13 +1657,13 @@ export default function BattlePage() {
                   position:"relative", overflow:"hidden",
                   width:40, height:40, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center",
                   fontSize:13, fontWeight:900, color:"#fff", letterSpacing:0.5, flexShrink:0,
-                  background:"linear-gradient(160deg,#A9CCFF 0%,#5C93F0 45%,#3E6FA8 100%)",
-                  boxShadow:"0 0 0 3px #fff, 0 4px 10px rgba(62,111,168,0.45), 0 1px 3px rgba(62,111,168,0.3), inset 0 -2px 4px rgba(30,50,110,0.35)",
+                  background:"linear-gradient(160deg,#A9CCFF 0%,#5C93F0 45%,#1B64DA 100%)",
+                  boxShadow:"0 0 0 3px #fff, 0 4px 10px rgba(27,100,218,0.45), 0 1px 3px rgba(27,100,218,0.3), inset 0 -2px 4px rgba(30,50,110,0.35)",
                 }}>
                   <span aria-hidden="true" style={{ position:"absolute", inset:0, top:0, height:"55%", background:"linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%)", borderRadius:"999px 999px 0 0" }} />
                   <span style={{ position:"relative", textShadow:"0 1px 2px rgba(20,40,100,0.4)" }}>VS</span>
                 </span>
-                {actionMsg&&<div key={actionMsg} style={{fontSize:9,fontWeight:800,color:"#3E6FA8",textAlign:"center",maxWidth:60,lineHeight:1.3,marginTop:4,animation:"msgIn 0.3s ease"}}>{actionMsg}</div>}
+                {actionMsg&&<div key={actionMsg} style={{fontSize:9,fontWeight:800,color:"#1B64DA",textAlign:"center",maxWidth:60,lineHeight:1.3,marginTop:4,animation:"msgIn 0.3s ease"}}>{actionMsg}</div>}
               </div>
 
               {/* 상대 카드 */}

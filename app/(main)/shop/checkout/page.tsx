@@ -183,7 +183,7 @@ export default function CheckoutPage() {
   };
 
   const inputStyle = {
-    background: "#F4F7FC",
+    background: "#F9FAFB",
     borderRadius: 14,
     border: "1px solid rgba(0,0,0,0.05)",
   } as const;
@@ -205,7 +205,7 @@ export default function CheckoutPage() {
       {loading ? (
         <div className="px-4 mt-4 space-y-3">
           {[0, 1].map((i) => (
-            <div key={i} className="rounded-2xl animate-pulse" style={{ height: 80, background: "#EEF1F6" }} />
+            <div key={i} className="rounded-2xl animate-pulse" style={{ height: 80, background: "#F2F4F6" }} />
           ))}
         </div>
       ) : items.length === 0 ? (
@@ -286,7 +286,7 @@ export default function CheckoutPage() {
                   type="button"
                   onClick={() => setPostcodeOpen(true)}
                   className="flex-1 py-3 rounded-2xl text-[13px] font-bold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-transform"
-                  style={{ background: "rgba(76,130,188,0.1)", color: "#4C82BC" }}
+                  style={{ background: "rgba(49,130,246,0.1)", color: "#3182F6" }}
                 >
                   <MapPin size={14} />
                   주소 검색
@@ -348,7 +348,7 @@ export default function CheckoutPage() {
               style={{ borderTop: "1px dashed rgba(0,0,0,0.08)" }}
             >
               <span>총 결제금액</span>
-              <span style={{ color: "#4C82BC" }}>{formatWon(grandTotal)}</span>
+              <span style={{ color: "#3182F6" }}>{formatWon(grandTotal)}</span>
             </div>
           </section>
 
@@ -368,7 +368,7 @@ export default function CheckoutPage() {
             onClick={handleSubmit}
             disabled={submitting}
             className="w-full py-3.5 rounded-2xl bg-primary text-white text-[14.5px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-50"
-            style={{ boxShadow: "0 6px 20px rgba(76,130,188,0.3)" }}
+            style={{ boxShadow: "0 6px 20px rgba(49,130,246,0.3)" }}
           >
             {submitting ? "주문 처리 중…" : `${formatWon(grandTotal)} 결제하기`}
           </button>

@@ -112,7 +112,7 @@ export default function AdminInsightsPage() {
           <Section icon={<TrendingUp size={14} />} label="누적">
             <div className="grid grid-cols-2 gap-2.5">
               <StatCard icon={<Users size={16} />} label="총 가입자" value={data.totalUsers} delta={data.newUsersToday} accent="#4A7BA8" />
-              <StatCard icon={<CatIcon size={16} />} label="등록 고양이" value={data.totalCats} delta={data.newCatsToday} accent="#4C82BC" />
+              <StatCard icon={<CatIcon size={16} />} label="등록 고양이" value={data.totalCats} delta={data.newCatsToday} accent="#3182F6" />
               <StatCard icon={<MessageSquare size={16} />} label="총 게시글" value={data.totalPosts} delta={data.newPostsToday} accent="#8B65B8" />
               <StatCard icon={<Activity size={16} />} label="돌봄 기록" value={data.totalCareLogs} delta={data.newCareLogsToday} accent="#5BA876" />
             </div>
@@ -161,7 +161,7 @@ export default function AdminInsightsPage() {
               <Link
                 href="/admin/auth-errors"
                 className="inline-block mt-2 text-[11.5px] font-bold"
-                style={{ color: "#4C82BC" }}
+                style={{ color: "#3182F6" }}
               >
                 전체 로그 보기 →
               </Link>
@@ -209,7 +209,7 @@ export default function AdminInsightsPage() {
                     style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}
                   >
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-[11px] font-extrabold w-4 shrink-0" style={{ color: "#4C82BC" }}>
+                      <span className="text-[11px] font-extrabold w-4 shrink-0" style={{ color: "#3182F6" }}>
                         {i + 1}
                       </span>
                       <div className="min-w-0">
@@ -240,7 +240,7 @@ export default function AdminInsightsPage() {
                     style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}
                   >
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-[11px] font-extrabold w-4 shrink-0" style={{ color: "#4C82BC" }}>
+                      <span className="text-[11px] font-extrabold w-4 shrink-0" style={{ color: "#3182F6" }}>
                         {i + 1}
                       </span>
                       <p className="text-[13px] font-bold text-text-main truncate">{u.name}</p>
@@ -263,7 +263,7 @@ function Section({ icon, label, children }: { icon: React.ReactNode; label: stri
   return (
     <section>
       <div className="flex items-center gap-1.5 mb-2.5 px-1">
-        <span style={{ color: "#4C82BC" }}>{icon}</span>
+        <span style={{ color: "#3182F6" }}>{icon}</span>
         <h2 className="text-[13px] font-extrabold text-text-main tracking-tight">{label}</h2>
       </div>
       {children}

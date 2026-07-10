@@ -3,21 +3,26 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  NavHomeIcon, NavMapIcon, NavGuideIcon, NavAiButlerIcon,
-  NavCommunityIcon, NavStoreIcon, NavMyIcon,
-} from "@/app/components/nav-icons";
+  Home, Map, BookOpen, Sparkles, MessagesSquare, ShoppingBag, User,
+  type LucideIcon,
+} from "lucide-react";
 
-const tabs = [
-  { href: "/", label: "홈", Icon: NavHomeIcon },
-  { href: "/map", label: "지도", Icon: NavMapIcon },
-  { href: "/tips", label: "가이드", Icon: NavGuideIcon },
-  { href: "/lab/cat-style", label: "AI집사", Icon: NavAiButlerIcon },
-  { href: "/community", label: "커뮤니티", Icon: NavCommunityIcon },
-  // 카드게임 탭 임시 숨김 (2026-07-10) — 복원 시 아래 줄 주석 해제
-  // { href: "/mypage/cards", label: "카드게임", Icon: NavCardGameIcon },
-  { href: "/shop", label: "쇼핑(구현중)", Icon: NavStoreIcon },
-  { href: "/mypage", label: "마이", Icon: NavMyIcon },
+// 모던 미니멀 리디자인 (2026-07-10): 스티커 아이콘 → lucide 모노크롬.
+// 이전 스티커 아이콘 세트는 app/components/nav-icons.tsx에 보존.
+const tabs: { href: string; label: string; Icon: LucideIcon }[] = [
+  { href: "/", label: "홈", Icon: Home },
+  { href: "/map", label: "지도", Icon: Map },
+  { href: "/tips", label: "가이드", Icon: BookOpen },
+  { href: "/lab/cat-style", label: "AI집사", Icon: Sparkles },
+  { href: "/community", label: "커뮤니티", Icon: MessagesSquare },
+  // 카드게임 탭 임시 숨김 (2026-07-10) — 복원 시 lucide Gamepad2 아이콘 사용
+  // { href: "/mypage/cards", label: "카드게임", Icon: Gamepad2 },
+  { href: "/shop", label: "쇼핑(구현중)", Icon: ShoppingBag },
+  { href: "/mypage", label: "마이", Icon: User },
 ];
+
+const ACTIVE = "#3182F6";
+const INACTIVE = "#8B95A1";
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -32,11 +37,13 @@ export default function BottomNav() {
     <nav
       className="fixed bottom-0 left-0 right-0 z-50"
       style={{
-        background: "linear-gradient(180deg, #4C82BC 0%, #3E6FA8 100%)",
-        boxShadow: "0 -4px 16px rgba(20,40,70,0.25)",
+        background: "rgba(255,255,255,0.94)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        borderTop: "1px solid #F2F4F6",
       }}
     >
-      <div className="mx-auto max-w-lg flex px-1 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+      <div className="mx-auto max-w-lg flex px-1 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         {tabs.map(({ href, label, Icon }) => {
           const on = isActive(href);
           return (
@@ -45,25 +52,18 @@ export default function BottomNav() {
               href={href}
               aria-label={label}
               aria-current={on ? "page" : undefined}
-              className="relative flex flex-1 min-w-0 flex-col items-center gap-0.5 px-0.5 py-1"
+              className="relative flex flex-1 min-w-0 flex-col items-center gap-1 px-0.5 py-1.5 active:scale-95 transition-transform"
             >
+              <Icon
+                size={22}
+                color={on ? ACTIVE : INACTIVE}
+                strokeWidth={on ? 2.4 : 1.8}
+              />
               <span
-                className="flex items-center justify-center rounded-2xl transition-all shrink-0"
+                className="text-[10px] w-full text-center truncate"
                 style={{
-                  width: 40, height: 40,
-                  background: on ? "rgba(255,255,255,0.22)" : "transparent",
-                  transform: on ? "scale(1.06)" : "scale(1)",
-                  opacity: on ? 1 : 0.82,
-                }}
-              >
-                <Icon size={25} />
-              </span>
-              <span
-                className="text-[10px] font-extrabold w-full text-center truncate"
-                style={{
-                  color: "#fff",
-                  opacity: on ? 1 : 0.75,
-                  textShadow: "0 1px 2px rgba(20,40,70,0.5)",
+                  color: on ? ACTIVE : INACTIVE,
+                  fontWeight: on ? 800 : 600,
                 }}
               >
                 {label}

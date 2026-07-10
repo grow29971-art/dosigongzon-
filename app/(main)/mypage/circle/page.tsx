@@ -243,9 +243,9 @@ export default function CirclePage() {
           {invitations.length > 0 && (
             <section className="px-5 mt-6">
               <div className="flex items-center gap-2 mb-3">
-                <Mail size={14} style={{ color: "#4C82BC" }} />
+                <Mail size={14} style={{ color: "#3182F6" }} />
                 <h2 className="text-[14px] font-extrabold text-text-main">받은 초대</h2>
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: "#4C82BC" }}>
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: "#3182F6" }}>
                   {invitations.length}
                 </span>
               </div>
@@ -291,7 +291,7 @@ export default function CirclePage() {
           {myCircleId && (
             <section className="px-5 mt-6">
               <div className="flex items-center gap-2 mb-3">
-                <MessageCircle size={14} style={{ color: "#4C82BC" }} />
+                <MessageCircle size={14} style={{ color: "#3182F6" }} />
                 <h2 className="text-[14px] font-extrabold text-text-main">서클 채팅</h2>
               </div>
               <Link
@@ -299,14 +299,14 @@ export default function CirclePage() {
                 className="w-full block rounded-2xl p-4 active:scale-[0.99] transition-transform"
                 style={{
                   background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)",
-                  border: "1px solid rgba(76,130,188,0.22)",
-                  boxShadow: "0 2px 10px rgba(76,130,188,0.10)",
+                  border: "1px solid rgba(49,130,246,0.22)",
+                  boxShadow: "0 2px 10px rgba(49,130,246,0.10)",
                 }}
               >
                 <div className="flex items-center gap-3">
                   <div
                     className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-                    style={{ background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)" }}
+                    style={{ background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)" }}
                   >
                     <MessageCircle size={20} color="#fff" />
                   </div>
@@ -316,7 +316,7 @@ export default function CirclePage() {
                       멤버끼리 한 채팅방에서 대화 · 실시간 동기화
                     </p>
                   </div>
-                  <ChevronRight size={16} className="shrink-0" style={{ color: "#4C82BC", opacity: 0.7 }} />
+                  <ChevronRight size={16} className="shrink-0" style={{ color: "#3182F6", opacity: 0.7 }} />
                 </div>
               </Link>
 
@@ -505,7 +505,7 @@ function Avatar({ url, size = 40 }: { url: string | null; size?: number }) {
     return (
       <div
         className="shrink-0 rounded-full flex items-center justify-center text-white text-[13px] font-extrabold"
-        style={{ width: size, height: size, background: "linear-gradient(135deg, #4C82BC, #3E6FA8)" }}
+        style={{ width: size, height: size, background: "linear-gradient(135deg, #3182F6, #1B64DA)" }}
       >
         🐾
       </div>

@@ -88,10 +88,10 @@ export default function MyCatsQuickCare() {
     >
       <div className="flex items-center justify-between mb-2.5">
         <div className="min-w-0">
-          <p className="text-[10px] font-extrabold tracking-[0.15em]" style={{ color: "#3E6FA8" }}>내 아이 오늘 한 끼</p>
+          <p className="text-[10px] font-extrabold tracking-[0.15em]" style={{ color: "#1B64DA" }}>내 아이 오늘 한 끼</p>
           <p className="text-[12px] text-text-sub mt-0.5">탭 한 번이면 끝 — 메모·사진 없이도 OK</p>
         </div>
-        <p className="text-[11.5px] font-extrabold shrink-0" style={{ color: "#3E6FA8" }}>
+        <p className="text-[11.5px] font-extrabold shrink-0" style={{ color: "#1B64DA" }}>
           <span style={{ color: doneCount === cats.length ? "#6B8E6F" : "#E88D5A" }}>{doneCount}</span>/{cats.length}
         </p>
       </div>
@@ -106,7 +106,7 @@ export default function MyCatsQuickCare() {
                   className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center"
                   style={{
                     background: "#F4E6CE",
-                    border: c.fedToday ? "2px solid #6B8E6F" : "2px solid rgba(76,130,188,0.3)",
+                    border: c.fedToday ? "2px solid #6B8E6F" : "2px solid rgba(49,130,246,0.3)",
                   }}
                 >
                   {thumb ? (
@@ -150,7 +150,7 @@ export default function MyCatsQuickCare() {
       <Link
         href="/map"
         className="mt-2 flex items-center justify-center gap-1 text-[11px] font-bold py-1.5"
-        style={{ color: "#3E6FA8" }}
+        style={{ color: "#1B64DA" }}
       >
         더 자세히 기록(사진·메모·종류) <ChevronRight size={12} />
       </Link>

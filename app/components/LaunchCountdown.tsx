@@ -14,7 +14,7 @@ export default function LaunchCountdown() {
       rel="noopener noreferrer"
       className="block px-5 py-2.5 flex items-center justify-center gap-2 text-white active:scale-[0.99] transition-transform"
       style={{
-        background: "linear-gradient(90deg, #4C82BC 0%, #E86B8C 50%, #4C82BC 100%)",
+        background: "linear-gradient(90deg, #3182F6 0%, #E86B8C 50%, #3182F6 100%)",
       }}
     >
       <Rocket size={14} className="shrink-0" />

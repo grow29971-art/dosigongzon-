@@ -86,7 +86,7 @@ export function AdoptionInquireButton({
 function darken(hex: string): string {
   // 단순화된 darker 버전 — 정교한 색상 조정은 tailwind 토큰으로 대체 가능
   const map: Record<string, string> = {
-    "#4C82BC": "#3E6FA8",
+    "#3182F6": "#1B64DA",
     "#4A7BA8": "#3A6B96",
     "#8B65B8": "#6F4D97",
   };

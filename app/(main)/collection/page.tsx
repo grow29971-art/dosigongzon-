@@ -25,9 +25,9 @@ export default function CollectionPage() {
   return (
     <div className="min-h-dvh bg-warm-white pb-28">
       {/* 헤더 */}
-      <div className="sticky top-0 z-10 flex items-center gap-2 px-4 py-3" style={{ background: "rgba(255,253,248,0.92)", backdropFilter: "blur(8px)", borderBottom: "1px solid rgba(76,130,188,0.12)" }}>
-        <Link href="/" className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform" style={{ background: "rgba(76,130,188,0.1)" }} aria-label="홈으로">
-          <ChevronLeft size={18} style={{ color: "#3E6FA8" }} />
+      <div className="sticky top-0 z-10 flex items-center gap-2 px-4 py-3" style={{ background: "rgba(255,253,248,0.92)", backdropFilter: "blur(8px)", borderBottom: "1px solid rgba(49,130,246,0.12)" }}>
+        <Link href="/" className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform" style={{ background: "rgba(49,130,246,0.1)" }} aria-label="홈으로">
+          <ChevronLeft size={18} style={{ color: "#1B64DA" }} />
         </Link>
         <h1 className="text-[16px] font-extrabold text-text-main tracking-tight">우리 동네 고양이 도감</h1>
       </div>
@@ -60,17 +60,17 @@ export default function CollectionPage() {
         {!loading && data && data.total > 0 && (
           <>
             {/* 진행률 */}
-            <div className="mb-5 p-4 rounded-2xl" style={{ background: "linear-gradient(135deg, #FFFFFF 0%, #FCF6EC 100%)", border: "1px solid rgba(76,130,188,0.18)", boxShadow: "0 4px 14px rgba(76,130,188,0.08)" }}>
+            <div className="mb-5 p-4 rounded-2xl" style={{ background: "linear-gradient(135deg, #FFFFFF 0%, #FCF6EC 100%)", border: "1px solid rgba(49,130,246,0.18)", boxShadow: "0 4px 14px rgba(49,130,246,0.08)" }}>
               <div className="flex items-baseline justify-between mb-2">
-                <p className="text-[12px] font-extrabold" style={{ color: "#3E6FA8" }}>
+                <p className="text-[12px] font-extrabold" style={{ color: "#1B64DA" }}>
                   {data.regionName} 도감
                 </p>
                 <p className="text-[13px] font-extrabold text-text-main">
-                  <span style={{ color: "#4C82BC" }}>{data.collectedCount}</span> / {data.total} 마리 ({pct}%)
+                  <span style={{ color: "#3182F6" }}>{data.collectedCount}</span> / {data.total} 마리 ({pct}%)
                 </p>
               </div>
-              <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "rgba(76,130,188,0.15)" }}>
-                <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: "linear-gradient(90deg, #4C82BC 0%, #5BC4C4 100%)" }} />
+              <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "rgba(49,130,246,0.15)" }}>
+                <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: "linear-gradient(90deg, #3182F6 0%, #5BC4C4 100%)" }} />
               </div>
               <p className="text-[11px] text-text-sub mt-2 leading-snug">
                 만난 고양이는 컬러로, 아직 못 만난 아이는 실루엣으로 보여요. 돌봄·댓글을 남기면 도감이 채워져요 🐾
@@ -92,7 +92,7 @@ export default function CollectionPage() {
                       style={{
                         aspectRatio: "1 / 1",
                         background: c.collected ? "#F4E6CE" : "rgba(120,110,100,0.08)",
-                        border: c.collected ? "1.5px solid rgba(76,130,188,0.3)" : "1.5px dashed rgba(120,110,100,0.2)",
+                        border: c.collected ? "1.5px solid rgba(49,130,246,0.3)" : "1.5px dashed rgba(120,110,100,0.2)",
                       }}
                     >
                       {c.collected ? (
@@ -106,7 +106,7 @@ export default function CollectionPage() {
                         <PawPrint size={26} style={{ color: "rgba(120,110,100,0.35)" }} />
                       )}
                       {c.mine && (
-                        <span className="absolute top-1 left-1 text-[9px] font-extrabold px-1.5 py-0.5 rounded-full text-white" style={{ background: "#4C82BC" }}>내 아이</span>
+                        <span className="absolute top-1 left-1 text-[9px] font-extrabold px-1.5 py-0.5 rounded-full text-white" style={{ background: "#3182F6" }}>내 아이</span>
                       )}
                     </div>
                     <p className="text-[11px] font-bold text-center mt-1 truncate" style={{ color: c.collected ? "#2A2A28" : "rgba(120,110,100,0.6)" }}>
@@ -121,7 +121,7 @@ export default function CollectionPage() {
               <Link
                 href="/map"
                 className="mt-5 flex items-center justify-center gap-2 py-3 rounded-2xl text-white text-[13.5px] font-extrabold active:scale-[0.98] transition-transform"
-                style={{ background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)", boxShadow: "0 4px 14px rgba(76,130,188,0.35)" }}
+                style={{ background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)", boxShadow: "0 4px 14px rgba(49,130,246,0.35)" }}
               >
                 <MapPin size={15} /> 지도에서 못 만난 고양이 만나러 가기
               </Link>
@@ -142,7 +142,7 @@ function EmptyPrompt({ emoji, title, desc, ctaLabel, href }: { emoji: string; ti
       <Link
         href={href}
         className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-white text-[13.5px] font-extrabold active:scale-[0.98] transition-transform"
-        style={{ background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)", boxShadow: "0 4px 14px rgba(76,130,188,0.35)" }}
+        style={{ background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)", boxShadow: "0 4px 14px rgba(49,130,246,0.35)" }}
       >
         {ctaLabel}
       </Link>

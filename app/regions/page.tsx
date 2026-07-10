@@ -83,8 +83,8 @@ export default function RegionsIndexPage() {
 
       <section className="px-5 pt-4">
         <div className="flex items-center gap-1.5 mb-1.5">
-          <MapPin size={14} style={{ color: "#4C82BC" }} />
-          <span className="text-[11.5px] font-bold" style={{ color: "#4C82BC" }}>대한민국</span>
+          <MapPin size={14} style={{ color: "#3182F6" }} />
+          <span className="text-[11.5px] font-bold" style={{ color: "#3182F6" }}>대한민국</span>
         </div>
         <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight">
           전국 길고양이<br />돌봄 지도
@@ -101,8 +101,8 @@ export default function RegionsIndexPage() {
           href={SEOUL_HIGHLIGHT.href}
           className="block rounded-2xl p-4 active:scale-[0.98] transition-transform"
           style={{
-            background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
-            boxShadow: "0 8px 24px rgba(76,130,188,0.30)",
+            background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+            boxShadow: "0 8px 24px rgba(49,130,246,0.30)",
           }}
         >
           <div className="flex items-center justify-between">

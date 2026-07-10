@@ -18,7 +18,7 @@ export const NEWS_ITEMS: NewsItem[] = [
   {
     id: "news-1",
     badge: "행사",
-    badgeColor: "#4C82BC",
+    badgeColor: "#3182F6",
     badgeBg: "#EEE8E0",
     gradient: "linear-gradient(135deg, #EEE8E0 0%, #E5DCCF 100%)",
     image: "https://placehold.co/800x450/EEE8E0/C47E5A?text=CAT+FESTA+2026",

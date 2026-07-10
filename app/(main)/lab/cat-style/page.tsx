@@ -23,7 +23,7 @@ const GUIDE_LINKS: Array<{ href: string; label: string; Icon: typeof Siren; colo
   { href: "/protection/trapping-guide", label: "TNR·포획", Icon: Stethoscope, color: "#8B65B8" },
   { href: "/protection/shelter-guide", label: "겨울 쉼터", Icon: Snowflake, color: "#5A8AC4" },
   { href: "/protection/pharmacy-guide", label: "약품", Icon: Pill, color: "#6B8E6F" },
-  { href: "/tips", label: "전체 가이드", Icon: BookOpen, color: "#3E6FA8" },
+  { href: "/tips", label: "전체 가이드", Icon: BookOpen, color: "#1B64DA" },
 ];
 
 export default function AICatSitterPage() {
@@ -38,8 +38,8 @@ export default function AICatSitterPage() {
           href="/login?next=/lab/cat-style"
           className="inline-block mt-3 px-5 py-2.5 rounded-2xl text-white text-[13px] font-extrabold"
           style={{
-            background: "linear-gradient(135deg, #4C82BC 0%, #3E6FA8 100%)",
-            boxShadow: "0 4px 14px rgba(76,130,188,0.35)",
+            background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+            boxShadow: "0 4px 14px rgba(49,130,246,0.35)",
           }}
         >
           로그인하기
@@ -62,7 +62,7 @@ export default function AICatSitterPage() {
           <h1 className="text-[20px] font-extrabold text-text-main flex items-center gap-1.5">
             <Bot size={18} className="text-primary" />
             AI 집사
-            <span className="text-[9px] font-bold tracking-[0.15em] ml-0.5" style={{ color: "#4C82BC", opacity: 0.55 }}>BETA</span>
+            <span className="text-[9px] font-bold tracking-[0.15em] ml-0.5" style={{ color: "#3182F6", opacity: 0.55 }}>BETA</span>
           </h1>
           <p className="text-[10.5px] text-text-sub">길고양이 돌봄, 뭐든 물어보세요</p>
         </div>

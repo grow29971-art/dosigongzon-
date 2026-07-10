@@ -83,7 +83,7 @@ export default function CartPage() {
       {loading ? (
         <div className="px-4 mt-4 space-y-3">
           {[0, 1].map((i) => (
-            <div key={i} className="rounded-2xl animate-pulse" style={{ height: 96, background: "#EEF1F6" }} />
+            <div key={i} className="rounded-2xl animate-pulse" style={{ height: 96, background: "#F2F4F6" }} />
           ))}
         </div>
       ) : items.length === 0 ? (
@@ -92,7 +92,7 @@ export default function CartPage() {
             className="w-16 h-16 rounded-3xl flex items-center justify-center mb-4"
             style={{ background: "linear-gradient(135deg, #f5e6d8 0%, #e8c9a8 100%)" }}
           >
-            <ShoppingBag size={28} style={{ color: "#4C82BC" }} />
+            <ShoppingBag size={28} style={{ color: "#3182F6" }} />
           </div>
           <p className="text-[14px] font-bold text-text-main mb-1">장바구니가 비어있습니다</p>
           <p className="text-[12.5px] text-text-sub mb-6">담아둔 상품이 아직 없어요</p>
@@ -120,7 +120,7 @@ export default function CartPage() {
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-bold text-text-main truncate">{item.product.name}</p>
                   <p className="text-[12px] text-text-sub mt-0.5">{formatWon(unitPrice)}</p>
-                  <div className="mt-1.5 flex items-center gap-2 px-2 py-1 rounded-xl w-fit" style={{ background: "#F4F7FC" }}>
+                  <div className="mt-1.5 flex items-center gap-2 px-2 py-1 rounded-xl w-fit" style={{ background: "#F9FAFB" }}>
                     <button onClick={() => handleQuantity(item, -1)} disabled={busyId === item.id} className="w-5 h-5 flex items-center justify-center disabled:opacity-30">
                       <Minus size={12} />
                     </button>
@@ -162,7 +162,7 @@ export default function CartPage() {
           <button
             onClick={() => router.push("/shop/checkout")}
             className="w-full py-3.5 rounded-2xl bg-primary text-white text-[14px] font-extrabold active:scale-[0.98] transition-transform"
-            style={{ boxShadow: "0 6px 20px rgba(76,130,188,0.3)" }}
+            style={{ boxShadow: "0 6px 20px rgba(49,130,246,0.3)" }}
           >
             주문하기
           </button>

@@ -184,7 +184,7 @@ export default function AdminEventKeyringPage() {
           </Link>
           <div>
             <h1 className="text-[18px] font-extrabold text-text-main flex items-center gap-1.5">
-              <Gift size={16} style={{ color: "#4C82BC" }} />
+              <Gift size={16} style={{ color: "#3182F6" }} />
               이벤트 응모자
             </h1>
             <p className="text-[11px] text-text-sub">총 {entries.length}명</p>
@@ -198,7 +198,7 @@ export default function AdminEventKeyringPage() {
           </button>
           <button onClick={exportCsv} disabled={entries.length === 0}
             className="px-3 h-9 rounded-full bg-primary text-white text-[12px] font-extrabold flex items-center gap-1 active:scale-95 disabled:opacity-50"
-            style={{ boxShadow: "0 2px 8px rgba(76,130,188,0.25)" }}>
+            style={{ boxShadow: "0 2px 8px rgba(49,130,246,0.25)" }}>
             <Download size={13} />
             CSV
           </button>
@@ -211,9 +211,9 @@ export default function AdminEventKeyringPage() {
           <button key={k} onClick={() => setFilter(k)}
             className="shrink-0 px-3 py-1.5 rounded-full text-[12px] font-bold active:scale-95 transition-transform"
             style={{
-              background: filter === k ? "#4C82BC" : "#FFFFFF",
+              background: filter === k ? "#3182F6" : "#FFFFFF",
               color: filter === k ? "#FFFFFF" : "#6B5043",
-              border: filter === k ? "1px solid #4C82BC" : "1px solid rgba(0,0,0,0.05)",
+              border: filter === k ? "1px solid #3182F6" : "1px solid rgba(0,0,0,0.05)",
             }}>
             {k === "all" ? "전체" : STATUS_META[k].label} {counts[k] > 0 && <span className="ml-0.5 opacity-80">{counts[k]}</span>}
           </button>

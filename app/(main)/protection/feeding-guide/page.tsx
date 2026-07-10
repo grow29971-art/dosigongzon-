@@ -260,7 +260,7 @@ export default function FeedingGuidePage() {
       {/* 급식 5원칙 */}
       <section id="rules" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <BookOpen size={20} color="#4C82BC" />
+          <BookOpen size={20} color="#3182F6" />
           급식 5원칙
         </h2>
         <div className="space-y-2">
@@ -272,9 +272,9 @@ export default function FeedingGuidePage() {
             >
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                style={{ background: "rgba(76,130,188,0.12)" }}
+                style={{ background: "rgba(49,130,246,0.12)" }}
               >
-                <Icon size={18} style={{ color: "#4C82BC" }} />
+                <Icon size={18} style={{ color: "#3182F6" }} />
               </div>
               <div>
                 <p className="text-[14px] font-extrabold text-text-main">{title}</p>
@@ -387,7 +387,7 @@ export default function FeedingGuidePage() {
         <Link
           href="/map"
           className="block text-center py-4 rounded-2xl bg-primary text-white text-[14px] font-extrabold active:scale-[0.98]"
-          style={{ boxShadow: "0 6px 20px rgba(76,130,188,0.3)" }}
+          style={{ boxShadow: "0 6px 20px rgba(49,130,246,0.3)" }}
         >
           <Cat size={16} className="inline mr-1.5 -mt-0.5" />
           우리 동네 지도에서 돌봄 시작하기
