@@ -31,7 +31,6 @@ const AchievementToast = dynamic(() => import("@/app/components/AchievementToast
 import type { ToastData } from "@/app/components/AchievementToast";
 import SocialProofStrip from "@/app/components/SocialProofStrip";
 import { TITLES, CATEGORY_COLORS } from "@/lib/titles";
-import RescueBanner from "@/app/components/RescueBanner";
 import HomeStreakCard from "@/app/components/HomeStreakCard";
 import SplashLoading from "@/app/components/SplashLoading";
 import FoundingMemberBanner from "@/app/components/FoundingMemberBanner";
@@ -631,8 +630,7 @@ export default function HomeAuthed({
 
 
 
-      {/* ══════ 긴급 구조 배너 (scarcity/urgency) — 항상 우선 ══════ */}
-      {user && rescueCount > 0 && <RescueBanner count={rescueCount} />}
+      {/* 긴급 구조 배너(RescueBanner) — 사용자 요청으로 홈에서 제거 (2026-07-10) */}
 
       {/* ══════ 실시간 날씨 위젯 — 홈 최상단(내 고양이 위) 배치 (2026-07-10) ══════ */}
       <div
