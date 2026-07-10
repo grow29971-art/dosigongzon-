@@ -32,7 +32,6 @@ import type { ToastData } from "@/app/components/AchievementToast";
 import SocialProofStrip from "@/app/components/SocialProofStrip";
 import { TITLES, CATEGORY_COLORS } from "@/lib/titles";
 import RescueBanner from "@/app/components/RescueBanner";
-import StreakAtRiskAlert from "@/app/components/StreakAtRiskAlert";
 import HomeStreakCard from "@/app/components/HomeStreakCard";
 import SplashLoading from "@/app/components/SplashLoading";
 import FoundingMemberBanner from "@/app/components/FoundingMemberBanner";
@@ -635,21 +634,190 @@ export default function HomeAuthed({
       {/* ══════ 긴급 구조 배너 (scarcity/urgency) — 항상 우선 ══════ */}
       {user && rescueCount > 0 && <RescueBanner count={rescueCount} />}
 
+      {/* ══════ 실시간 날씨 위젯 — 홈 최상단(내 고양이 위) 배치 (2026-07-10) ══════ */}
+      <div
+        className="p-5 mb-5 dark-card-level"
+        style={{
+          background: "linear-gradient(135deg, #FFFFFF 0%, #FDF9F2 100%)",
+          borderRadius: 22,
+          boxShadow: "0 8px 24px rgba(74,123,168,0.08), 0 1px 3px rgba(0,0,0,0.03)",
+          border: "1px solid rgba(0,0,0,0.04)",
+        }}
+      >
+        {weatherLoading ? (
+          /* 로딩 */
+          <div className="flex items-center justify-center py-6 gap-2">
+            <Loader2 size={20} className="text-primary animate-spin" />
+            <span className="text-[13px] text-text-sub">날씨 정보를 불러오는 중...</span>
+          </div>
+        ) : weatherError ? (
+          /* 에러 */
+          <div className="flex items-center gap-3 py-3">
+            <div className="w-10 h-10 rounded-full bg-surface-alt flex items-center justify-center shrink-0">
+              <WifiOff size={18} className="text-text-muted" />
+            </div>
+            <div className="flex-1">
+              <p className="text-[13px] font-semibold text-text-main">날씨를 불러올 수 없어요</p>
+              <p className="text-[11px] text-text-sub mt-0.5">{weatherError}</p>
+            </div>
+            <button
+              onClick={() => { setWeatherError(""); setWeatherLoading(true); window.location.reload(); }}
+              className="text-[12px] font-semibold text-primary px-3 py-1.5 rounded-xl bg-primary/10 active:scale-95 transition-transform shrink-0"
+            >
+              재시도
+            </button>
+          </div>
+        ) : weather ? (
+          /* 날씨 데이터 */
+          <>
+            {/* 상단: 날짜 + 지역 */}
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-[11px] text-text-sub font-medium">
+                  {new Date().toLocaleDateString("ko-KR", { month: "long", day: "numeric", weekday: "long" })}
+                </p>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <MapPin size={12} className="text-primary" />
+                  <span className="text-[13px] font-bold text-text-main">{weather.city}</span>
+                </div>
+              </div>
+              <p className="text-[12px] text-text-sub capitalize">{weather.weatherDesc}</p>
+            </div>
+
+            {/* 중앙: 큰 온도 + 아이콘 */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-end gap-1">
+                <span
+                  className="text-[48px] font-extrabold leading-none tracking-tight"
+                  style={{ color: getTempColor(weather.temp) }}
+                >
+                  {weather.temp}
+                </span>
+                <span className="text-[20px] font-bold text-text-light mb-1.5">°C</span>
+              </div>
+              {(() => {
+                const WeatherIcon = WEATHER_ICONS[weather.weatherMain] ?? Cloud;
+                return (
+                  <WeatherIcon
+                    size={48}
+                    className="text-text-light"
+                    strokeWidth={1.3}
+                  />
+                );
+              })()}
+            </div>
+
+            {/* 하단: 체감 · 습도 · 바람 */}
+            <div className="grid grid-cols-3 gap-2">
+              <div className="flex items-center gap-1.5 bg-surface-alt rounded-xl px-3 py-2">
+                <Thermometer size={14} className="text-text-muted shrink-0" />
+                <div>
+                  <p className="text-[10px] text-text-muted">체감</p>
+                  <p className="text-[13px] font-bold text-text-main">{weather.feelsLike}°</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 bg-surface-alt rounded-xl px-3 py-2">
+                <Droplets size={14} className="text-text-muted shrink-0" />
+                <div>
+                  <p className="text-[10px] text-text-muted">습도</p>
+                  <p className="text-[13px] font-bold text-text-main">{weather.humidity}%</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 bg-surface-alt rounded-xl px-3 py-2">
+                <Wind size={14} className="text-text-muted shrink-0" />
+                <div>
+                  <p className="text-[10px] text-text-muted">바람</p>
+                  <p className="text-[13px] font-bold text-text-main">{weather.windSpeed}m/s</p>
+                </div>
+              </div>
+            </div>
+
+            {/* 돌봄 팁 */}
+            {(() => {
+              const t = weather.feelsLike;
+              const tips: { emoji: string; text: string; color: string }[] = [];
+
+              if (t <= -10) {
+                tips.push({ emoji: "🥶", text: "극한 추위! 숨숨집 내부에 핫팩을 넣어주세요. 물이 얼지 않게 자주 교체해주세요.", color: "#4A7BA8" });
+              } else if (t <= 0) {
+                tips.push({ emoji: "❄️", text: "물이 얼 수 있어요. 따뜻한 물로 하루 2회 이상 교체해주세요.", color: "#5B7A8F" });
+                tips.push({ emoji: "🏠", text: "스티로폼 숨숨집에 짚이나 담요를 깔아주세요.", color: "#6B8E6F" });
+              } else if (t <= 5) {
+                tips.push({ emoji: "🧣", text: "쌀쌀해요. 쉼터 점검하고 입구가 바람을 막는지 확인해주세요.", color: "#7A9BB0" });
+              } else if (t >= 33) {
+                tips.push({ emoji: "🔥", text: "폭염 주의! 그늘진 곳에 시원한 물을 놓아주세요. 사료가 상하기 쉬워요.", color: "#D85555" });
+              } else if (t >= 28) {
+                tips.push({ emoji: "☀️", text: "더워요. 물을 자주 갈아주고 그늘에 밥을 놓아주세요.", color: "#E88D5A" });
+              }
+
+              if (weather.weatherMain === "Rain" || weather.weatherMain === "Drizzle") {
+                tips.push({ emoji: "🌧️", text: "비 오는 날이에요. 밥그릇에 비가 들어가지 않게 지붕 아래에 놓아주세요.", color: "#4A7BA8" });
+              } else if (weather.weatherMain === "Snow") {
+                tips.push({ emoji: "🌨️", text: "눈이 와요. 쉼터 입구에 눈이 쌓이지 않게 치워주세요.", color: "#5B7A8F" });
+              }
+
+              if (weather.humidity >= 85) {
+                tips.push({ emoji: "💦", text: "습도가 높아요. 건사료가 눅눅해질 수 있으니 소량만 놓아주세요.", color: "#48A59E" });
+              }
+
+              if (weather.windSpeed >= 10) {
+                tips.push({ emoji: "💨", text: "바람이 강해요. 밥그릇이 날아가지 않게 무거운 그릇을 사용해주세요.", color: "#8B65B8" });
+              }
+
+              if (tips.length === 0 && t >= 10 && t <= 25) {
+                tips.push({ emoji: "🐾", text: "돌봄하기 좋은 날씨예요. 오늘도 아이들을 챙겨주셔서 감사해요!", color: "#6B8E6F" });
+              }
+
+              // 날씨 조건 → 관련 쇼핑 카테고리 맥락 다리
+              const t2 = weather.feelsLike;
+              const bridge =
+                (t2 <= 5 || weather.weatherMain === "Snow")
+                  ? { cat: "shelter", label: "따뜻한 쉼터·보온 용품 보기" }
+                  : (t2 >= 28)
+                    ? { cat: "shelter", label: "시원한 물그릇·급식 용품 보기" }
+                    : (weather.weatherMain === "Rain" || weather.weatherMain === "Drizzle")
+                      ? { cat: "shelter", label: "비 막는 급식소·쉼터 용품 보기" }
+                      : null;
+
+              return tips.length > 0 ? (
+                <div className="mt-3 space-y-1.5">
+                  {tips.map((tip, i) => (
+                    <div
+                      key={i}
+                      className="flex items-start gap-2 px-3 py-2 rounded-xl"
+                      style={{ backgroundColor: `${tip.color}10` }}
+                    >
+                      <span className="text-[14px] shrink-0">{tip.emoji}</span>
+                      <p className="text-[11.5px] font-semibold leading-snug" style={{ color: tip.color }}>
+                        {tip.text}
+                      </p>
+                    </div>
+                  ))}
+                  {bridge && (
+                    <Link
+                      href={`/shop?category=${bridge.cat}`}
+                      className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl active:scale-[0.98] transition-transform"
+                      style={{ background: "rgba(49,130,246,0.08)", border: "1px solid rgba(49,130,246,0.15)" }}
+                    >
+                      <span className="flex items-center gap-1.5 text-[11.5px] font-extrabold" style={{ color: "#1B64DA" }}>
+                        <ShoppingBag size={13} />
+                        {bridge.label}
+                      </span>
+                      <ChevronRight size={14} style={{ color: "#1B64DA" }} />
+                    </Link>
+                  )}
+                </div>
+              ) : null;
+            })()}
+          </>
+        ) : null}
+      </div>
+
       {/* ══════ 내 고양이 히어로 — 홈 개편(2026-07-10): 내 아이들이 가장 먼저 ══════ */}
       {user && <MyCatsHero />}
 
       {/* ══════ 일일 출석체크 모달 — 코인·카드 EXP·계정 레벨 보상 ══════ */}
       {user && <DailyCheckinModal />}
-
-      {/* ══════ streak 위험 hero — 활성·연속 3일+·오늘 미기록 ══════ */}
-      {/* 손실 회피 동기 자극. dismiss 시 오늘 다시 안 보임. */}
-      {user && activity && streakInfo && (
-        <StreakAtRiskAlert
-          streak={streakInfo.streak}
-          hasToday={streakInfo.hasToday}
-          catCount={activity.catCount}
-        />
-      )}
 
       {/* ══════ 첫 응원 카드 — 활성화 1단: 1탭 응원 → 등록 escalation (catCount===0) ══════ */}
       {user && activity && activity.catCount === 0 && cheerCats.length > 0 && (
@@ -896,185 +1064,6 @@ export default function HomeAuthed({
         </Link>
         );
       })()}
-
-      {/* ══════ 실시간 날씨 위젯 ══════ */}
-      <div
-        className="p-5 mb-5 dark-card-level"
-        style={{
-          background: "linear-gradient(135deg, #FFFFFF 0%, #FDF9F2 100%)",
-          borderRadius: 22,
-          boxShadow: "0 8px 24px rgba(74,123,168,0.08), 0 1px 3px rgba(0,0,0,0.03)",
-          border: "1px solid rgba(0,0,0,0.04)",
-        }}
-      >
-        {weatherLoading ? (
-          /* 로딩 */
-          <div className="flex items-center justify-center py-6 gap-2">
-            <Loader2 size={20} className="text-primary animate-spin" />
-            <span className="text-[13px] text-text-sub">날씨 정보를 불러오는 중...</span>
-          </div>
-        ) : weatherError ? (
-          /* 에러 */
-          <div className="flex items-center gap-3 py-3">
-            <div className="w-10 h-10 rounded-full bg-surface-alt flex items-center justify-center shrink-0">
-              <WifiOff size={18} className="text-text-muted" />
-            </div>
-            <div className="flex-1">
-              <p className="text-[13px] font-semibold text-text-main">날씨를 불러올 수 없어요</p>
-              <p className="text-[11px] text-text-sub mt-0.5">{weatherError}</p>
-            </div>
-            <button
-              onClick={() => { setWeatherError(""); setWeatherLoading(true); window.location.reload(); }}
-              className="text-[12px] font-semibold text-primary px-3 py-1.5 rounded-xl bg-primary/10 active:scale-95 transition-transform shrink-0"
-            >
-              재시도
-            </button>
-          </div>
-        ) : weather ? (
-          /* 날씨 데이터 */
-          <>
-            {/* 상단: 날짜 + 지역 */}
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <p className="text-[11px] text-text-sub font-medium">
-                  {new Date().toLocaleDateString("ko-KR", { month: "long", day: "numeric", weekday: "long" })}
-                </p>
-                <div className="flex items-center gap-1 mt-0.5">
-                  <MapPin size={12} className="text-primary" />
-                  <span className="text-[13px] font-bold text-text-main">{weather.city}</span>
-                </div>
-              </div>
-              <p className="text-[12px] text-text-sub capitalize">{weather.weatherDesc}</p>
-            </div>
-
-            {/* 중앙: 큰 온도 + 아이콘 */}
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-end gap-1">
-                <span
-                  className="text-[48px] font-extrabold leading-none tracking-tight"
-                  style={{ color: getTempColor(weather.temp) }}
-                >
-                  {weather.temp}
-                </span>
-                <span className="text-[20px] font-bold text-text-light mb-1.5">°C</span>
-              </div>
-              {(() => {
-                const WeatherIcon = WEATHER_ICONS[weather.weatherMain] ?? Cloud;
-                return (
-                  <WeatherIcon
-                    size={48}
-                    className="text-text-light"
-                    strokeWidth={1.3}
-                  />
-                );
-              })()}
-            </div>
-
-            {/* 하단: 체감 · 습도 · 바람 */}
-            <div className="grid grid-cols-3 gap-2">
-              <div className="flex items-center gap-1.5 bg-surface-alt rounded-xl px-3 py-2">
-                <Thermometer size={14} className="text-text-muted shrink-0" />
-                <div>
-                  <p className="text-[10px] text-text-muted">체감</p>
-                  <p className="text-[13px] font-bold text-text-main">{weather.feelsLike}°</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 bg-surface-alt rounded-xl px-3 py-2">
-                <Droplets size={14} className="text-text-muted shrink-0" />
-                <div>
-                  <p className="text-[10px] text-text-muted">습도</p>
-                  <p className="text-[13px] font-bold text-text-main">{weather.humidity}%</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 bg-surface-alt rounded-xl px-3 py-2">
-                <Wind size={14} className="text-text-muted shrink-0" />
-                <div>
-                  <p className="text-[10px] text-text-muted">바람</p>
-                  <p className="text-[13px] font-bold text-text-main">{weather.windSpeed}m/s</p>
-                </div>
-              </div>
-            </div>
-
-            {/* 돌봄 팁 */}
-            {(() => {
-              const t = weather.feelsLike;
-              const tips: { emoji: string; text: string; color: string }[] = [];
-
-              if (t <= -10) {
-                tips.push({ emoji: "🥶", text: "극한 추위! 숨숨집 내부에 핫팩을 넣어주세요. 물이 얼지 않게 자주 교체해주세요.", color: "#4A7BA8" });
-              } else if (t <= 0) {
-                tips.push({ emoji: "❄️", text: "물이 얼 수 있어요. 따뜻한 물로 하루 2회 이상 교체해주세요.", color: "#5B7A8F" });
-                tips.push({ emoji: "🏠", text: "스티로폼 숨숨집에 짚이나 담요를 깔아주세요.", color: "#6B8E6F" });
-              } else if (t <= 5) {
-                tips.push({ emoji: "🧣", text: "쌀쌀해요. 쉼터 점검하고 입구가 바람을 막는지 확인해주세요.", color: "#7A9BB0" });
-              } else if (t >= 33) {
-                tips.push({ emoji: "🔥", text: "폭염 주의! 그늘진 곳에 시원한 물을 놓아주세요. 사료가 상하기 쉬워요.", color: "#D85555" });
-              } else if (t >= 28) {
-                tips.push({ emoji: "☀️", text: "더워요. 물을 자주 갈아주고 그늘에 밥을 놓아주세요.", color: "#E88D5A" });
-              }
-
-              if (weather.weatherMain === "Rain" || weather.weatherMain === "Drizzle") {
-                tips.push({ emoji: "🌧️", text: "비 오는 날이에요. 밥그릇에 비가 들어가지 않게 지붕 아래에 놓아주세요.", color: "#4A7BA8" });
-              } else if (weather.weatherMain === "Snow") {
-                tips.push({ emoji: "🌨️", text: "눈이 와요. 쉼터 입구에 눈이 쌓이지 않게 치워주세요.", color: "#5B7A8F" });
-              }
-
-              if (weather.humidity >= 85) {
-                tips.push({ emoji: "💦", text: "습도가 높아요. 건사료가 눅눅해질 수 있으니 소량만 놓아주세요.", color: "#48A59E" });
-              }
-
-              if (weather.windSpeed >= 10) {
-                tips.push({ emoji: "💨", text: "바람이 강해요. 밥그릇이 날아가지 않게 무거운 그릇을 사용해주세요.", color: "#8B65B8" });
-              }
-
-              if (tips.length === 0 && t >= 10 && t <= 25) {
-                tips.push({ emoji: "🐾", text: "돌봄하기 좋은 날씨예요. 오늘도 아이들을 챙겨주셔서 감사해요!", color: "#6B8E6F" });
-              }
-
-              // 날씨 조건 → 관련 쇼핑 카테고리 맥락 다리
-              const t2 = weather.feelsLike;
-              const bridge =
-                (t2 <= 5 || weather.weatherMain === "Snow")
-                  ? { cat: "shelter", label: "따뜻한 쉼터·보온 용품 보기" }
-                  : (t2 >= 28)
-                    ? { cat: "shelter", label: "시원한 물그릇·급식 용품 보기" }
-                    : (weather.weatherMain === "Rain" || weather.weatherMain === "Drizzle")
-                      ? { cat: "shelter", label: "비 막는 급식소·쉼터 용품 보기" }
-                      : null;
-
-              return tips.length > 0 ? (
-                <div className="mt-3 space-y-1.5">
-                  {tips.map((tip, i) => (
-                    <div
-                      key={i}
-                      className="flex items-start gap-2 px-3 py-2 rounded-xl"
-                      style={{ backgroundColor: `${tip.color}10` }}
-                    >
-                      <span className="text-[14px] shrink-0">{tip.emoji}</span>
-                      <p className="text-[11.5px] font-semibold leading-snug" style={{ color: tip.color }}>
-                        {tip.text}
-                      </p>
-                    </div>
-                  ))}
-                  {bridge && (
-                    <Link
-                      href={`/shop?category=${bridge.cat}`}
-                      className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl active:scale-[0.98] transition-transform"
-                      style={{ background: "rgba(49,130,246,0.08)", border: "1px solid rgba(49,130,246,0.15)" }}
-                    >
-                      <span className="flex items-center gap-1.5 text-[11.5px] font-extrabold" style={{ color: "#1B64DA" }}>
-                        <ShoppingBag size={13} />
-                        {bridge.label}
-                      </span>
-                      <ChevronRight size={14} style={{ color: "#1B64DA" }} />
-                    </Link>
-                  )}
-                </div>
-              ) : null;
-            })()}
-          </>
-        ) : null}
-      </div>
 
       {/* ══════ 오늘의 냥식 ══════ */}
       <div
