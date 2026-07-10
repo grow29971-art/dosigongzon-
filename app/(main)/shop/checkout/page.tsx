@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ArrowLeft, Loader2, MapPin, X } from "lucide-react";
-import { loadTossPayments, type TossPaymentsWidgets } from "@tosspayments/tosspayments-sdk";
+import { ArrowLeft, MapPin, X } from "lucide-react";
+import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import { useAuth } from "@/lib/auth-context";
 import LoginRequired from "@/app/components/LoginRequired";
 import { listCartItems, computeCartTotal, type CartItem } from "@/lib/shop-repo";
@@ -77,12 +77,6 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  // 결제위젯 단계 — 주문 생성 후 열림
-  const [pendingOrder, setPendingOrder] = useState<Order | null>(null);
-  const [widgets, setWidgets] = useState<TossPaymentsWidgets | null>(null);
-  const [widgetReady, setWidgetReady] = useState(false);
-  const [paying, setPaying] = useState(false);
-
   useEffect(() => {
     if (!user) return;
     listCartItems()
@@ -122,32 +116,9 @@ export default function CheckoutPage() {
 
   const { productTotal, shippingFee, grandTotal } = computeCartTotal(items);
 
-  // 결제위젯 렌더링 — 주문 생성 후 pendingOrder가 잡히면 실행
-  useEffect(() => {
-    if (!pendingOrder || !user) return;
-    let cancelled = false;
-    (async () => {
-      try {
-        const toss = await loadTossPayments(TOSS_CLIENT_KEY);
-        const w = toss.widgets({ customerKey: user.id });
-        await w.setAmount({ currency: "KRW", value: pendingOrder.payment_amount });
-        if (cancelled) return;
-        await Promise.all([
-          w.renderPaymentMethods({ selector: "#toss-payment-methods", variantKey: "DEFAULT" }),
-          w.renderAgreement({ selector: "#toss-agreement", variantKey: "AGREEMENT" }),
-        ]);
-        if (cancelled) return;
-        setWidgets(w);
-        setWidgetReady(true);
-      } catch (e) {
-        console.error("[checkout] 결제위젯 로드 실패:", e);
-        setError("결제 화면을 불러올 수 없어요. 잠시 후 다시 시도해주세요.");
-        setPendingOrder(null);
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [pendingOrder, user]);
-
+  // 결제하기 — 주문 생성 후 토스 결제창 호출
+  // (결제위젯이 아닌 "결제창" 방식: API 개별 연동 키(test_ck_)로 사용 가능.
+  //  결제위젯 UI는 전자결제 이용 신청 후 위젯 키 발급 시 전환 검토)
   const handleSubmit = async () => {
     setError("");
     if (!recipientName.trim()) { setError("수령인 이름을 입력해주세요."); return; }
@@ -155,14 +126,15 @@ export default function CheckoutPage() {
       setError("연락처를 정확히 입력해주세요. (숫자와 - 만)"); return;
     }
     if (!postalCode || !address) { setError("주소를 검색해서 선택해주세요."); return; }
-    if (!TOSS_CLIENT_KEY) {
+    if (!TOSS_CLIENT_KEY || !user) {
       setError("결제 수단이 아직 준비 중이에요. 잠시 후 다시 시도해주세요.");
       return;
     }
 
     setSubmitting(true);
+    let order: Order | null = null;
     try {
-      const order = await createOrderFromCart(items, {
+      order = await createOrderFromCart(items, {
         recipient_name: recipientName.trim(),
         recipient_phone: recipientPhone.trim(),
         recipient_address: address,
@@ -170,49 +142,43 @@ export default function CheckoutPage() {
         postal_code: postalCode,
         memo: memo.trim() || undefined,
       });
-      setPendingOrder(order); // → 결제위젯 시트 열림
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "주문에 실패했어요. 다시 시도해주세요.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
-  // 결제위젯 시트 닫기 — 만들어둔 pending 주문은 정리
-  const closePaymentSheet = async () => {
-    const order = pendingOrder;
-    setPendingOrder(null);
-    setWidgets(null);
-    setWidgetReady(false);
-    if (order) {
-      fetch("/api/payment/cancel", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId: order.id }),
-      }).catch(() => {});
-    }
-  };
-
-  const handlePay = async () => {
-    if (!widgets || !pendingOrder) return;
-    setPaying(true);
-    setError("");
-    try {
+      const toss = await loadTossPayments(TOSS_CLIENT_KEY);
+      const payment = toss.payment({ customerKey: user.id });
       const orderName = items.length > 1
         ? `${items[0].product.name} 외 ${items.length - 1}건`
         : items[0].product.name;
-      await widgets.requestPayment({
-        orderId: pendingOrder.order_number,
+
+      await payment.requestPayment({
+        method: "CARD",
+        amount: { currency: "KRW", value: order.payment_amount },
+        orderId: order.order_number,
         orderName,
         successUrl: `${window.location.origin}/shop/payment/success`,
         failUrl: `${window.location.origin}/shop/payment/fail`,
         customerName: recipientName.trim(),
+        card: {
+          useEscrow: false,
+          flowMode: "DEFAULT",
+          useCardPoint: false,
+          useAppCardOnly: false,
+        },
       });
+      // requestPayment는 성공 시 successUrl로 리다이렉트 — 이 아래는 실행되지 않음
     } catch (e) {
-      // 사용자가 결제창을 닫은 경우 등 — 시트는 유지
+      // 결제창 이탈/실패 — 만들어둔 pending 주문 정리
+      if (order) {
+        fetch("/api/payment/cancel", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: order.id }),
+        }).catch(() => {});
+      }
       const msg = e instanceof Error ? e.message : "";
-      if (msg && !msg.includes("취소")) setError(msg);
-      setPaying(false);
+      if (msg && !msg.includes("취소")) {
+        setError(msg || "결제를 시작할 수 없어요. 다시 시도해주세요.");
+      }
+      setSubmitting(false);
     }
   };
 
@@ -406,49 +372,6 @@ export default function CheckoutPage() {
           >
             {submitting ? "주문 처리 중…" : `${formatWon(grandTotal)} 결제하기`}
           </button>
-        </div>
-      )}
-
-      {/* 토스 결제위젯 시트 */}
-      {pendingOrder && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ background: "rgba(20,25,40,0.5)" }}>
-          <div
-            className="w-full max-w-lg overflow-y-auto"
-            style={{ background: "#fff", borderRadius: "24px 24px 0 0", maxHeight: "88dvh" }}
-          >
-            <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3" style={{ background: "#fff", borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
-              <span className="text-[14px] font-extrabold text-text-main">결제하기</span>
-              <button onClick={closePaymentSheet} aria-label="닫기" className="w-8 h-8 flex items-center justify-center" disabled={paying}>
-                <X size={18} className="text-text-sub" />
-              </button>
-            </div>
-
-            {!widgetReady && (
-              <div className="flex flex-col items-center justify-center py-16 gap-3">
-                <Loader2 size={26} className="animate-spin text-primary" />
-                <p className="text-[12.5px] text-text-sub">결제 수단을 불러오는 중…</p>
-              </div>
-            )}
-
-            <div id="toss-payment-methods" />
-            <div id="toss-agreement" />
-
-            {widgetReady && (
-              <div className="px-4 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))]">
-                {error && (
-                  <p className="text-[12px] font-bold text-center mb-2" style={{ color: "#D85555" }}>{error}</p>
-                )}
-                <button
-                  onClick={handlePay}
-                  disabled={paying}
-                  className="w-full py-3.5 rounded-2xl bg-primary text-white text-[14.5px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-50"
-                  style={{ boxShadow: "0 6px 20px rgba(76,130,188,0.3)" }}
-                >
-                  {paying ? "결제 진행 중…" : `${formatWon(pendingOrder.payment_amount)} 결제`}
-                </button>
-              </div>
-            )}
-          </div>
         </div>
       )}
 
