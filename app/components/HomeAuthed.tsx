@@ -29,13 +29,13 @@ import dynamic from "next/dynamic";
 // 업적 토스트 — 업적 잠금 해제 시에만 보임. ssr 끄고 lazy.
 const AchievementToast = dynamic(() => import("@/app/components/AchievementToast"), { ssr: false });
 import type { ToastData } from "@/app/components/AchievementToast";
-import SocialProofStrip from "@/app/components/SocialProofStrip";
+const SocialProofStrip = dynamic(() => import("@/app/components/SocialProofStrip"), { ssr: false });
 import { TITLES, CATEGORY_COLORS } from "@/lib/titles";
 import HomeStreakCard from "@/app/components/HomeStreakCard";
 import SplashLoading from "@/app/components/SplashLoading";
-import FoundingMemberBanner from "@/app/components/FoundingMemberBanner";
+const FoundingMemberBanner = dynamic(() => import("@/app/components/FoundingMemberBanner"), { ssr: false });
 import PatchUpdateBanner518 from "@/app/components/PatchUpdateBanner518";
-import MyCircleQuickEntry from "@/app/components/MyCircleQuickEntry";
+const MyCircleQuickEntry = dynamic(() => import("@/app/components/MyCircleQuickEntry"), { ssr: false });
 import { countMyAcceptedCircleMembers } from "@/lib/circles-repo";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
@@ -70,14 +70,14 @@ import {
 } from "@/lib/leaderboard-repo";
 import { getRecentFeed, type FeedItem } from "@/lib/live-feed-repo";
 import { getTodayAnniversaries, type Anniversary } from "@/lib/anniversaries-repo";
-import OnboardingCard from "@/app/components/OnboardingCard";
-import DailyCatBox from "@/app/components/DailyCatBox";
-import DailyCheckinModal from "@/app/components/DailyCheckinModal";
-import FirstCheerCard from "@/app/components/FirstCheerCard";
-import AppOpenGuideModal from "@/app/components/AppOpenGuideModal";
+const OnboardingCard = dynamic(() => import("@/app/components/OnboardingCard"), { ssr: false });
+const DailyCatBox = dynamic(() => import("@/app/components/DailyCatBox"), { ssr: false });
+const DailyCheckinModal = dynamic(() => import("@/app/components/DailyCheckinModal"), { ssr: false });
+const FirstCheerCard = dynamic(() => import("@/app/components/FirstCheerCard"), { ssr: false });
+const AppOpenGuideModal = dynamic(() => import("@/app/components/AppOpenGuideModal"), { ssr: false });
 import MyCatsHero from "@/app/components/MyCatsHero";
-import PushCareCueOptIn from "@/app/components/PushCareCueOptIn";
-import FeatureTipsCard from "@/app/components/FeatureTipsCard";
+const PushCareCueOptIn = dynamic(() => import("@/app/components/PushCareCueOptIn"), { ssr: false });
+const FeatureTipsCard = dynamic(() => import("@/app/components/FeatureTipsCard"), { ssr: false });
 // 푸시 옵트인 카드는 페이지 하단 — 첫 페인트엔 viewport 밖. lazy 안전.
 const PushOptInCard = dynamic(() => import("@/app/components/PushOptInCard"), { ssr: false });
 // 친구 초대 카드 — 첫 cat 등록한 사용자에게만 홈 하단에 노출. viral 강화.
