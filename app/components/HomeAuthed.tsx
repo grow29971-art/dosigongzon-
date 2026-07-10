@@ -30,7 +30,6 @@ const AchievementToast = dynamic(() => import("@/app/components/AchievementToast
 import type { ToastData } from "@/app/components/AchievementToast";
 import SocialProofStrip from "@/app/components/SocialProofStrip";
 import { TITLES, CATEGORY_COLORS } from "@/lib/titles";
-import TodayChecklist from "@/app/components/TodayChecklist";
 import RescueBanner from "@/app/components/RescueBanner";
 import StreakFreezeButton from "@/app/components/StreakFreezeButton";
 import StreakAtRiskAlert from "@/app/components/StreakAtRiskAlert";
@@ -73,7 +72,6 @@ import {
 import { getRecentFeed, type FeedItem } from "@/lib/live-feed-repo";
 import { getTodayAnniversaries, type Anniversary } from "@/lib/anniversaries-repo";
 import OnboardingCard from "@/app/components/OnboardingCard";
-import HomeReengageCard from "@/app/components/HomeReengageCard";
 import DailyCatBox from "@/app/components/DailyCatBox";
 import DailyCheckinModal from "@/app/components/DailyCheckinModal";
 import FirstCheerCard from "@/app/components/FirstCheerCard";
@@ -677,25 +675,7 @@ export default function HomeAuthed({
         </>
       )}
 
-      {/* ══════ 오늘 해볼 것 체크리스트 (Zeigarnik) ══════ */}
-      {user && activity && (
-        <TodayChecklist
-          activity={activity}
-          hasTodayCare={streakInfo?.hasToday ?? false}
-          unreadCount={unreadCount}
-          rescueCount={rescueCount}
-        />
-      )}
-
-      {/* ══════ 홈 재참여 카드 — 돌봄 끊긴 고양이 안부 OR 우리 동네 소식 (catCount>0) ══════ */}
-      {user && activity && activity.catCount > 0 && (
-        <HomeReengageCard
-          quietCat={quietCat}
-          regionName={primaryRegion?.name ?? null}
-          neighborhoodCatCount={neighborhoodCatCount}
-          latestPost={neighborhoodPosts[0] ?? allPosts[0] ?? null}
-        />
-      )}
+      {/* 오늘의 균형 체크리스트·안부 재참여 카드 — 사용자 요청으로 제거 (2026-07-10) */}
 
       {/* ══════ ↓ 홍보/부가 카드 — 홈 개편(2026-07-10)으로 아래로 이동 ══════ */}
 
