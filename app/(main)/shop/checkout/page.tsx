@@ -220,6 +220,17 @@ export default function CheckoutPage() {
         </div>
       ) : (
         <div className="px-4 mt-3 space-y-4">
+          {/* 정식 오픈 준비 중 안내 */}
+          <div
+            className="flex items-start gap-2.5 px-4 py-3 rounded-2xl"
+            style={{ background: "rgba(255,169,39,0.1)", border: "1px solid rgba(255,169,39,0.28)" }}
+          >
+            <span className="text-[15px] shrink-0">🚧</span>
+            <p className="text-[11.5px] font-semibold leading-snug" style={{ color: "#A6741E" }}>
+              쇼핑몰은 정식 오픈을 준비 중이에요. 지금은 테스트 단계라 실제 결제·배송은 이뤄지지 않아요. 곧 정식으로 찾아올게요!
+            </p>
+          </div>
+
           {/* 주문 상품 */}
           <section
             className="p-4"

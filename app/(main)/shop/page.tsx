@@ -268,6 +268,17 @@ export default function ShopPage() {
         )}
       </div>
 
+      {/* ── 정식 오픈 준비 중 안내 ── */}
+      <div
+        className="mb-4 flex items-center gap-2 px-3.5 py-2 rounded-2xl"
+        style={{ background: "rgba(255,169,39,0.1)", border: "1px solid rgba(255,169,39,0.25)" }}
+      >
+        <span className="text-[13px] shrink-0">🚧</span>
+        <p className="text-[11px] font-semibold leading-snug" style={{ color: "#A6741E" }}>
+          정식 오픈 준비 중이에요. 지금은 미리보기 단계라 실제 결제·배송은 되지 않아요.
+        </p>
+      </div>
+
       {/* ── 카테고리 필터 칩 ── */}
       <div className="mb-4 flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4">
         {FILTERS.map((f) => {
