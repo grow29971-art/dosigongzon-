@@ -10,6 +10,7 @@ import { listPublishedTipsServer, type Tip } from "@/lib/tips-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { estimateReadingMinutes } from "@/lib/html-sanitize";
 import TipsAdminFab from "./TipsAdminFab";
+import TipsAIButler from "./TipsAIButler";
 
 export const revalidate = 600;
 
@@ -220,6 +221,9 @@ export default async function TipsIndexPage() {
           </Link>
         </div>
       </div>
+
+      {/* ── 🤖 AI 집사 (구 /lab/cat-style 병합, 2026-07-10) ── */}
+      <TipsAIButler />
 
       {/* ── 꿀팁 헤더 ── */}
       <div className="px-4 mb-2.5">

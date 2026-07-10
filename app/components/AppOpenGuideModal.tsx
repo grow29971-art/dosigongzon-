@@ -25,14 +25,14 @@ const ROTATION: Spot[] = [
   { emoji: "📖", title: "우리 동네 고양이 도감", desc: "내가 만난 고양이를 모아보세요. 완성도가 채워져요.", cta: "도감 열기", href: "/collection" },
   { emoji: "❤️", title: "오늘의 안부 한 줄", desc: "우리 동네 고양이에게 돌봄 기록을 남겨봐요.", cta: "지도 열기", href: "/map" },
   { emoji: "🏆", title: "이번 주 돌봄왕", desc: "케어테이커 랭킹에 도전해보세요.", cta: "랭킹 보기", href: "/ranking" },
-  { emoji: "🤖", title: "AI집사에게 물어보기", desc: "돌봄·건강 궁금증을 바로 해결해드려요.", cta: "질문하기", href: "/lab/cat-style" },
+  { emoji: "🤖", title: "AI집사에게 물어보기", desc: "돌봄·건강 궁금증을 바로 해결해드려요.", cta: "질문하기", href: "/tips" },
   { emoji: "💬", title: "동네 커뮤니티", desc: "입양·임보·자유 이야기를 나눠요.", cta: "둘러보기", href: "/community" },
 ];
 
 const CHIPS = [
   { emoji: "🗺️", label: "지도", href: "/map" },
   { emoji: "📖", label: "도감", href: "/collection" },
-  { emoji: "🤖", label: "AI집사", href: "/lab/cat-style" },
+  { emoji: "🤖", label: "AI집사", href: "/tips" },
   { emoji: "🏆", label: "랭킹", href: "/ranking" },
   { emoji: "💬", label: "커뮤니티", href: "/community" },
 ];
