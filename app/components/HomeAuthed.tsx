@@ -23,15 +23,13 @@ import {
   Sparkles,
   Bell,
   Search,
-  Flame,
-  Trophy,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 // 업적 토스트 — 업적 잠금 해제 시에만 보임. ssr 끄고 lazy.
 const AchievementToast = dynamic(() => import("@/app/components/AchievementToast"), { ssr: false });
 import type { ToastData } from "@/app/components/AchievementToast";
 import SocialProofStrip from "@/app/components/SocialProofStrip";
-import { TITLES, CATEGORY_COLORS, countUnlocked } from "@/lib/titles";
+import { TITLES, CATEGORY_COLORS } from "@/lib/titles";
 import TodayChecklist from "@/app/components/TodayChecklist";
 import RescueBanner from "@/app/components/RescueBanner";
 import StreakFreezeButton from "@/app/components/StreakFreezeButton";
@@ -80,7 +78,7 @@ import DailyCatBox from "@/app/components/DailyCatBox";
 import DailyCheckinModal from "@/app/components/DailyCheckinModal";
 import FirstCheerCard from "@/app/components/FirstCheerCard";
 import AppOpenGuideModal from "@/app/components/AppOpenGuideModal";
-import MyCatsQuickCare from "@/app/components/MyCatsQuickCare";
+import MyCatsHero from "@/app/components/MyCatsHero";
 import PushCareCueOptIn from "@/app/components/PushCareCueOptIn";
 import FeatureTipsCard from "@/app/components/FeatureTipsCard";
 // 푸시 옵트인 카드는 페이지 하단 — 첫 페인트엔 viewport 밖. lazy 안전.
@@ -635,16 +633,11 @@ export default function HomeAuthed({
 
 
 
-      {/* ══════ 1000명 이벤트 배너 (SSR) ══════ */}
-      {eventSlot}
-
       {/* ══════ 긴급 구조 배너 (scarcity/urgency) — 항상 우선 ══════ */}
       {user && rescueCount > 0 && <RescueBanner count={rescueCount} />}
 
-      {/* ══════ Play 스토어 앱 출시 안내 — 안드로이드 + 비-TWA만 ══════ */}
-
-      {/* ══════ 오늘의 냥 상자 — 일일 출석 리추얼 (전원) ══════ */}
-      {user && <DailyCatBox />}
+      {/* ══════ 내 고양이 히어로 — 홈 개편(2026-07-10): 내 아이들이 가장 먼저 ══════ */}
+      {user && <MyCatsHero />}
 
       {/* ══════ 일일 출석체크 모달 — 코인·카드 EXP·계정 레벨 보상 ══════ */}
       {user && <DailyCheckinModal />}
@@ -658,67 +651,6 @@ export default function HomeAuthed({
           catCount={activity.catCount}
         />
       )}
-
-      {/* ══════ 내 진척 mini strip — 활성 사용자만 ══════ */}
-      {/* 레벨·streak·업적 한 줄로 항상 viewport에. 클릭 시 마이페이지 — retention 자극. */}
-      {user && activity && activity.catCount > 0 && levelInfo && (() => {
-        const streak = streakInfo?.streak ?? 0;
-        const unlocked = countUnlocked(activity);
-        return (
-          <Link
-            href="/mypage"
-            className="block mb-3 active:scale-[0.99] transition-transform"
-            style={{
-              background: "linear-gradient(135deg, #FFFFFF 0%, #FCF6EC 100%)",
-              borderRadius: 18,
-              padding: "12px 14px",
-              border: "1px solid rgba(49,130,246,0.18)",
-              boxShadow: "0 4px 14px rgba(49,130,246,0.08), 0 1px 2px rgba(0,0,0,0.02)",
-            }}
-          >
-            <div className="flex items-center gap-3">
-              {/* 레벨 emoji 큰 원 */}
-              <div
-                className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 text-xl"
-                style={{ background: "rgba(49,130,246,0.12)" }}
-              >
-                {levelInfo.emoji}
-              </div>
-              {/* 텍스트 — 3분할 */}
-              <div className="flex-1 min-w-0 flex items-center gap-3">
-                <div className="min-w-0">
-                  <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#1B64DA" }}>
-                    LV.{levelInfo.level}
-                  </p>
-                  <p className="text-[12px] font-extrabold text-text-main truncate leading-tight">
-                    {levelInfo.title}
-                  </p>
-                </div>
-                <div className="w-px h-7 shrink-0" style={{ background: "rgba(49,130,246,0.18)" }} />
-                <div className="flex items-center gap-1 shrink-0">
-                  <Flame size={12} style={{ color: streak > 0 ? "#E88D5A" : "#C2B5A8" }} />
-                  <span className="text-[12px] font-extrabold tabular-nums" style={{ color: streak > 0 ? "#1B64DA" : "#8C7B6A" }}>
-                    {streak}일
-                  </span>
-                </div>
-                <div className="flex items-center gap-1 shrink-0">
-                  <Trophy size={12} style={{ color: unlocked > 0 ? "#C9A961" : "#C2B5A8" }} />
-                  <span className="text-[12px] font-extrabold tabular-nums" style={{ color: unlocked > 0 ? "#8C7B16" : "#8C7B6A" }}>
-                    {unlocked}
-                  </span>
-                </div>
-              </div>
-              <ChevronRight size={14} style={{ color: "#1B64DA" }} className="shrink-0" />
-            </div>
-          </Link>
-        );
-      })()}
-
-      {/* ══════ 돌봄 cue 푸시 옵트인 — 고양이 보유 + 미구독만 (14일 dismiss) ══════ */}
-      {user && activity && <PushCareCueOptIn hasCat={activity.catCount > 0} />}
-
-      {/* ══════ 내 아이 오늘 한 끼 — 1탭 돌봄 로깅, 핵심 루프 마찰 직격 (catCount>0) ══════ */}
-      {user && activity && activity.catCount > 0 && <MyCatsQuickCare />}
 
       {/* ══════ 첫 응원 카드 — 활성화 1단: 1탭 응원 → 등록 escalation (catCount===0) ══════ */}
       {user && activity && activity.catCount === 0 && cheerCats.length > 0 && (
@@ -745,6 +677,16 @@ export default function HomeAuthed({
         </>
       )}
 
+      {/* ══════ 오늘 해볼 것 체크리스트 (Zeigarnik) ══════ */}
+      {user && activity && (
+        <TodayChecklist
+          activity={activity}
+          hasTodayCare={streakInfo?.hasToday ?? false}
+          unreadCount={unreadCount}
+          rescueCount={rescueCount}
+        />
+      )}
+
       {/* ══════ 홈 재참여 카드 — 돌봄 끊긴 고양이 안부 OR 우리 동네 소식 (catCount>0) ══════ */}
       {user && activity && activity.catCount > 0 && (
         <HomeReengageCard
@@ -755,7 +697,18 @@ export default function HomeAuthed({
         />
       )}
 
-      {/* ══════ 우리 동네 고양이 도감 entry (catCount>0) ══════ */}
+      {/* ══════ ↓ 홍보/부가 카드 — 홈 개편(2026-07-10)으로 아래로 이동 ══════ */}
+
+      {/* 1000명 이벤트 배너 (SSR) */}
+      {eventSlot}
+
+      {/* 오늘의 냥 상자 — 일일 출석 리추얼 */}
+      {user && <DailyCatBox />}
+
+      {/* 돌봄 cue 푸시 옵트인 — 고양이 보유 + 미구독만 (14일 dismiss) */}
+      {user && activity && <PushCareCueOptIn hasCat={activity.catCount > 0} />}
+
+      {/* 우리 동네 고양이 도감 entry (catCount>0) */}
       {user && activity && activity.catCount > 0 && (
         <Link
           href="/collection"
@@ -779,20 +732,10 @@ export default function HomeAuthed({
         </Link>
       )}
 
-      {/* ══════ 사회적 증명 (오늘 활동 이웃 수) ══════ */}
+      {/* 사회적 증명 (오늘 활동 이웃 수) */}
       <SocialProofStrip />
 
-      {/* ══════ 오늘 해볼 것 체크리스트 (Zeigarnik) ══════ */}
-      {user && activity && (
-        <TodayChecklist
-          activity={activity}
-          hasTodayCare={streakInfo?.hasToday ?? false}
-          unreadCount={unreadCount}
-          rescueCount={rescueCount}
-        />
-      )}
-
-      {/* ══════ 기능 가이드 팁 (시작 가이드 종료 유저) ══════ */}
+      {/* 기능 가이드 팁 (시작 가이드 종료 유저) */}
       {user && activity && onboardingDismissed && (
         <FeatureTipsCard activity={activity} regions={myRegions} />
       )}
