@@ -23,6 +23,7 @@ import {
   Sparkles,
   Bell,
   Search,
+  ShoppingBag,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 // 업적 토스트 — 업적 잠금 해제 시에만 보임. ssr 끄고 lazy.
@@ -1238,6 +1239,17 @@ export default function HomeAuthed({
                 tips.push({ emoji: "🐾", text: "돌봄하기 좋은 날씨예요. 오늘도 아이들을 챙겨주셔서 감사해요!", color: "#6B8E6F" });
               }
 
+              // 날씨 조건 → 관련 쇼핑 카테고리 맥락 다리
+              const t2 = weather.feelsLike;
+              const bridge =
+                (t2 <= 5 || weather.weatherMain === "Snow")
+                  ? { cat: "shelter", label: "따뜻한 쉼터·보온 용품 보기" }
+                  : (t2 >= 28)
+                    ? { cat: "shelter", label: "시원한 물그릇·급식 용품 보기" }
+                    : (weather.weatherMain === "Rain" || weather.weatherMain === "Drizzle")
+                      ? { cat: "shelter", label: "비 막는 급식소·쉼터 용품 보기" }
+                      : null;
+
               return tips.length > 0 ? (
                 <div className="mt-3 space-y-1.5">
                   {tips.map((tip, i) => (
@@ -1252,6 +1264,19 @@ export default function HomeAuthed({
                       </p>
                     </div>
                   ))}
+                  {bridge && (
+                    <Link
+                      href={`/shop?category=${bridge.cat}`}
+                      className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl active:scale-[0.98] transition-transform"
+                      style={{ background: "rgba(49,130,246,0.08)", border: "1px solid rgba(49,130,246,0.15)" }}
+                    >
+                      <span className="flex items-center gap-1.5 text-[11.5px] font-extrabold" style={{ color: "#1B64DA" }}>
+                        <ShoppingBag size={13} />
+                        {bridge.label}
+                      </span>
+                      <ChevronRight size={14} style={{ color: "#1B64DA" }} />
+                    </Link>
+                  )}
                 </div>
               ) : null;
             })()}

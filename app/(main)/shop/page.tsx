@@ -146,6 +146,12 @@ export default function ShopPage() {
   const [cartCount, setCartCount] = useState(0);
   const [donation, setDonation] = useState<DonationProgress | null>(null);
 
+  // 딥링크 초기 카테고리 (?category=shelter 등) — 홈 맥락 다리에서 진입 시 자동 필터
+  useEffect(() => {
+    const raw = new URLSearchParams(window.location.search).get("category");
+    if (raw && raw in SHOP_CATEGORIES) setFilter(raw as FilterKey);
+  }, []);
+
   // 후원 적립 현황 (진행바)
   useEffect(() => {
     fetch("/api/shop/donation-progress")
