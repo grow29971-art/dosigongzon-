@@ -135,9 +135,37 @@ export async function POST(req: Request) {
 
   // ── 케이스 A: 결제 완료(DONE)인데 주문이 아직 pending ──
   if (toss.status === "DONE" && order.status === "pending") {
-    // 금액 검증 — 불일치면 자동 환불 후 취소 (위변조 주문에 돈만 잡힌 상태 방지)
-    if (toss.totalAmount !== order.payment_amount) {
-      console.error(`[payment/webhook] amount mismatch — auto refund: toss=${toss.totalAmount} order=${order.payment_amount} (${toss.orderId})`);
+    // 금액 검증 — confirm과 동일하게 실제 상품가로 기대 금액을 재계산해서 대조.
+    // (order.payment_amount는 클라이언트가 조작 가능하므로 그것만 믿으면 안 됨 —
+    //  이 경로는 confirm의 4.5 검증을 우회할 수 있어 여기서도 반드시 재검증)
+    let expectedAmount = order.payment_amount as number;
+    const productIds = items.map((i) => i.product_id).filter((id): id is string => !!id);
+    if (productIds.length !== items.length || items.length === 0) {
+      expectedAmount = -1; // 상품 정보 이상 → 강제 불일치 처리
+    } else {
+      const { data: prods } = await svc
+        .from("products")
+        .select("id, price, sale_price, shipping_fee")
+        .in("id", productIds);
+      const pm = new Map(
+        ((prods ?? []) as { id: string; price: number; sale_price: number | null; shipping_fee: number }[])
+          .map((p) => [p.id, p]),
+      );
+      let prodSum = 0;
+      let ship = 0;
+      let bad = false;
+      for (const it of items) {
+        const p = it.product_id ? pm.get(it.product_id) : undefined;
+        if (!p) { bad = true; break; }
+        prodSum += (p.sale_price ?? p.price) * it.quantity;
+        ship = Math.max(ship, p.shipping_fee);
+      }
+      expectedAmount = bad ? -1 : prodSum + ship;
+    }
+
+    // 실제 결제액이 기대 금액과 다르면 자동 환불 후 취소 (위변조 주문에 돈만 잡힌 상태 방지)
+    if (toss.totalAmount !== expectedAmount) {
+      console.error(`[payment/webhook] amount mismatch — auto refund: toss=${toss.totalAmount} expected=${expectedAmount} order=${order.payment_amount} (${toss.orderId})`);
       try {
         await fetch(`https://api.tosspayments.com/v1/payments/${encodeURIComponent(paymentKey)}/cancel`, {
           method: "POST",

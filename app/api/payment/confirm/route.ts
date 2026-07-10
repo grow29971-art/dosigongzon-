@@ -27,7 +27,7 @@ interface TossPaymentResponse {
   message?: string;
 }
 
-type OrderItem = { product_id: string | null; quantity: number; donation_amount?: number };
+type OrderItem = { id: string; product_id: string | null; quantity: number; donation_amount?: number };
 
 // 주문의 후원 적립액 합계 (성공 화면 표시용)
 function donationTotal(items: OrderItem[]): number {
@@ -117,26 +117,35 @@ export async function POST(req: Request) {
     }
     const { data: prods, error: prodError } = await svc
       .from("products")
-      .select("id, price, sale_price, shipping_fee, is_active")
+      .select("id, price, sale_price, shipping_fee, is_active, is_donation, donation_percent")
       .in("id", productIds);
     if (prodError) {
       console.error("[payment/confirm] product verify fetch failed:", prodError);
       return NextResponse.json({ error: "상품 확인 중 오류가 발생했어요." }, { status: 502 });
     }
     const priceMap = new Map(
-      ((prods ?? []) as { id: string; price: number; sale_price: number | null; shipping_fee: number; is_active: boolean }[])
+      ((prods ?? []) as { id: string; price: number; sale_price: number | null; shipping_fee: number; is_active: boolean; is_donation: boolean; donation_percent: number }[])
         .map((p) => [p.id, p]),
     );
     let expectedProducts = 0;
     let expectedShipping = 0;
+    // 후원액도 서버에서 재계산 — 클라이언트가 order_items.donation_amount를 조작해
+    // 공개 후원 집계를 부풀리는 것을 차단 (실제 상품 비율로 덮어씀).
+    const donationFixes: { id: string; donation_amount: number }[] = [];
     for (const item of items) {
       const p = item.product_id ? priceMap.get(item.product_id) : undefined;
       if (!p || !p.is_active) {
         return NextResponse.json({ error: "판매 중이 아닌 상품이 포함돼 있어요." }, { status: 409 });
       }
       const unit = p.sale_price ?? p.price;
-      expectedProducts += unit * item.quantity;
+      const subtotal = unit * item.quantity;
+      expectedProducts += subtotal;
       expectedShipping = Math.max(expectedShipping, p.shipping_fee);
+      const correctDonation = p.is_donation ? Math.floor((subtotal * p.donation_percent) / 100) : 0;
+      if (item.donation_amount !== correctDonation) {
+        donationFixes.push({ id: item.id, donation_amount: correctDonation });
+        item.donation_amount = correctDonation; // 응답(성공 화면)에도 교정값 반영
+      }
     }
     const expected = expectedProducts + expectedShipping;
     if (expected !== order.payment_amount) {
@@ -151,6 +160,14 @@ export async function POST(req: Request) {
         { error: "주문 금액 검증에 실패했어요. 상품 가격이 변경됐을 수 있으니 다시 주문해주세요." },
         { status: 409 },
       );
+    }
+    // 조작된 후원액 교정 (금액 검증 통과 후, 승인 전에 스냅샷 바로잡기)
+    for (const fix of donationFixes) {
+      const { error: fixError } = await svc
+        .from("order_items")
+        .update({ donation_amount: fix.donation_amount })
+        .eq("id", fix.id);
+      if (fixError) console.error("[payment/confirm] donation fix failed:", fixError, fix.id);
     }
   }
 
@@ -168,7 +185,7 @@ export async function POST(req: Request) {
     const { data: recheck } = await svc
       .from("orders").select("id, order_number, status, payment_key").eq("id", order.id).maybeSingle();
     if (recheck?.status === "paid" && recheck.payment_key === paymentKey) {
-      return NextResponse.json({ ok: true, orderId: recheck.id, orderNumber: recheck.order_number });
+      return NextResponse.json({ ok: true, orderId: recheck.id, orderNumber: recheck.order_number, donation: donationTotal(items) });
     }
     return NextResponse.json({ error: "이미 결제가 진행 중인 주문이에요." }, { status: 409 });
   }

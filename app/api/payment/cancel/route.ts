@@ -51,13 +51,19 @@ export async function POST(req: Request) {
 
   // ── pending: PG 호출 없이 취소 ──
   if (order.status === "pending") {
-    const { error } = await svc
+    const { data: done, error } = await svc
       .from("orders")
       .update({ status: "cancelled", updated_at: new Date().toISOString() })
-      .eq("id", order.id);
+      .eq("id", order.id)
+      .eq("status", "pending") // 경합 방지
+      .select("id");
     if (error) {
       console.error("[payment/cancel] pending cancel failed:", error);
       return NextResponse.json({ error: "주문 취소에 실패했어요." }, { status: 500 });
+    }
+    if (!done || done.length === 0) {
+      // 그 사이 상태가 바뀜 — 재조회 없이 성공 응답 (idempotent)
+      return NextResponse.json({ ok: true, status: "cancelled" });
     }
     return NextResponse.json({ ok: true, status: "cancelled" });
   }
@@ -105,23 +111,28 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "결제 취소 중 오류가 발생했어요. 잠시 후 다시 시도해주세요." }, { status: 502 });
   }
 
-  // 취소 확정 + 재고 복구
-  const { error: updateError } = await svc
+  // 취소 확정 — 조건부 전환(paid→cancelled)으로 이중 처리 방지.
+  // 실제로 행을 바꾼(=이 요청이 이긴) 경우에만 재고 복구 → 동시 취소 시 재고 이중 복구 차단.
+  const { data: transitioned, error: updateError } = await svc
     .from("orders")
     .update({ status: "cancelled", updated_at: new Date().toISOString() })
-    .eq("id", order.id);
+    .eq("id", order.id)
+    .eq("status", "paid")
+    .select("id");
   if (updateError) {
     console.error("[payment/cancel] status update failed after refund:", updateError, order.id);
   }
 
-  type Item = { product_id: string | null; quantity: number };
-  for (const item of (order.items ?? []) as Item[]) {
-    if (!item.product_id) continue;
-    const { error: stockError } = await svc.rpc("increment_product_stock", {
-      p_product_id: item.product_id,
-      p_qty: item.quantity,
-    });
-    if (stockError) console.error("[payment/cancel] stock restore failed:", stockError);
+  if (transitioned && transitioned.length > 0) {
+    type Item = { product_id: string | null; quantity: number };
+    for (const item of (order.items ?? []) as Item[]) {
+      if (!item.product_id) continue;
+      const { error: stockError } = await svc.rpc("increment_product_stock", {
+        p_product_id: item.product_id,
+        p_qty: item.quantity,
+      });
+      if (stockError) console.error("[payment/cancel] stock restore failed:", stockError);
+    }
   }
 
   return NextResponse.json({ ok: true, status: "cancelled" });
