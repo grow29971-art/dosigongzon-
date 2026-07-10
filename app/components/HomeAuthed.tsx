@@ -634,10 +634,10 @@ export default function HomeAuthed({
 
       {/* ══════ 실시간 날씨 위젯 — 홈 최상단(내 고양이 위) 배치 (2026-07-10) ══════ */}
       <div
-        className="px-5 py-4 mb-4 dark-card-level"
+        className="px-4 py-3 mb-4 dark-card-level"
         style={{
           background: "linear-gradient(135deg, #FFFFFF 0%, #FDF9F2 100%)",
-          borderRadius: 22,
+          borderRadius: 20,
           boxShadow: "0 8px 24px rgba(74,123,168,0.08), 0 1px 3px rgba(0,0,0,0.03)",
           border: "1px solid rgba(0,0,0,0.04)",
         }}
@@ -669,7 +669,7 @@ export default function HomeAuthed({
           /* 날씨 데이터 */
           <>
             {/* 상단: 날짜 + 지역 */}
-            <div className="flex items-center justify-between mb-2.5">
+            <div className="flex items-center justify-between mb-2">
               <div>
                 <p className="text-[11px] text-text-sub font-medium">
                   {new Date().toLocaleDateString("ko-KR", { month: "long", day: "numeric", weekday: "long" })}
@@ -683,21 +683,21 @@ export default function HomeAuthed({
             </div>
 
             {/* 중앙: 큰 온도 + 아이콘 */}
-            <div className="flex items-center justify-between mb-2.5">
+            <div className="flex items-center justify-between mb-2">
               <div className="flex items-end gap-1">
                 <span
-                  className="text-[40px] font-extrabold leading-none tracking-tight"
+                  className="text-[34px] font-extrabold leading-none tracking-tight"
                   style={{ color: getTempColor(weather.temp) }}
                 >
                   {weather.temp}
                 </span>
-                <span className="text-[18px] font-bold text-text-light mb-1">°C</span>
+                <span className="text-[16px] font-bold text-text-light mb-0.5">°C</span>
               </div>
               {(() => {
                 const WeatherIcon = WEATHER_ICONS[weather.weatherMain] ?? Cloud;
                 return (
                   <WeatherIcon
-                    size={40}
+                    size={34}
                     className="text-text-light"
                     strokeWidth={1.3}
                   />
@@ -707,21 +707,21 @@ export default function HomeAuthed({
 
             {/* 하단: 체감 · 습도 · 바람 */}
             <div className="grid grid-cols-3 gap-2">
-              <div className="flex items-center gap-1.5 bg-surface-alt rounded-xl px-3 py-2">
+              <div className="flex items-center gap-1.5 bg-surface-alt rounded-xl px-3 py-1.5">
                 <Thermometer size={14} className="text-text-muted shrink-0" />
                 <div>
                   <p className="text-[10px] text-text-muted">체감</p>
                   <p className="text-[13px] font-bold text-text-main">{weather.feelsLike}°</p>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 bg-surface-alt rounded-xl px-3 py-2">
+              <div className="flex items-center gap-1.5 bg-surface-alt rounded-xl px-3 py-1.5">
                 <Droplets size={14} className="text-text-muted shrink-0" />
                 <div>
                   <p className="text-[10px] text-text-muted">습도</p>
                   <p className="text-[13px] font-bold text-text-main">{weather.humidity}%</p>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 bg-surface-alt rounded-xl px-3 py-2">
+              <div className="flex items-center gap-1.5 bg-surface-alt rounded-xl px-3 py-1.5">
                 <Wind size={14} className="text-text-muted shrink-0" />
                 <div>
                   <p className="text-[10px] text-text-muted">바람</p>
