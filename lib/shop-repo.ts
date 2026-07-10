@@ -42,11 +42,16 @@ export interface Product {
   is_donation: boolean;
   donation_percent: number;
   weight: string | null;
-  supplier: string | null; // 도매처 메모 — 프론트 미노출
-  is_virtual: boolean;     // 가상상품(후원) — 배송 없음
+  supplier?: string | null; // 도매처 메모 — 클라이언트 조회에서 제외 (아래 컬럼 목록 참조)
+  is_virtual: boolean;      // 가상상품(후원) — 배송 없음
   created_at: string;
   updated_at: string;
 }
+
+// 클라이언트에 내려도 되는 컬럼 목록 — supplier(도매처 메모)는 의도적으로 제외.
+// select("*") 금지: 새 민감 컬럼이 생겨도 자동 노출되지 않게 명시적으로 관리.
+export const PRODUCT_PUBLIC_COLUMNS =
+  "id, name, description, price, sale_price, category, images, stock, is_active, shipping_fee, badge, is_donation, donation_percent, weight, is_virtual, created_at, updated_at";
 
 export interface CartItem {
   id: string;
@@ -62,7 +67,7 @@ export async function listProducts(category?: ProductCategory): Promise<Product[
   const supabase = createClient();
   let query = supabase
     .from("products")
-    .select("*")
+    .select(PRODUCT_PUBLIC_COLUMNS)
     .eq("is_active", true)
     .order("created_at", { ascending: false });
 
@@ -81,7 +86,7 @@ export async function getProduct(id: string): Promise<Product | null> {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("products")
-    .select("*")
+    .select(PRODUCT_PUBLIC_COLUMNS)
     .eq("id", id)
     .maybeSingle();
 
@@ -100,7 +105,7 @@ export async function listCartItems(): Promise<CartItem[]> {
 
   const { data, error } = await supabase
     .from("cart_items")
-    .select("*, product:products(*)")
+    .select(`*, product:products(${PRODUCT_PUBLIC_COLUMNS})`)
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 

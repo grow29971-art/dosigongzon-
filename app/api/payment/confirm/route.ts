@@ -98,6 +98,57 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "결제 금액이 주문과 일치하지 않아요." }, { status: 400 });
   }
 
+  // 4.5 서버 측 금액 무결성 재검증 — 주문·스냅샷이 클라이언트에서 생성되므로
+  // payment_amount만 믿으면 안 됨. order_items × "현재 products 가격"으로 기대 금액을
+  // 재계산해 일치할 때만 승인 (조작된 저가 주문 차단).
+  const items = (order.items ?? []) as OrderItem[];
+  {
+    if (items.length === 0) {
+      return NextResponse.json({ error: "주문 상품이 없어요." }, { status: 400 });
+    }
+    const productIds = items.map((i) => i.product_id).filter((id): id is string => !!id);
+    if (productIds.length !== items.length) {
+      return NextResponse.json({ error: "주문 상품 정보가 올바르지 않아요." }, { status: 400 });
+    }
+    const { data: prods, error: prodError } = await svc
+      .from("products")
+      .select("id, price, sale_price, shipping_fee, is_active")
+      .in("id", productIds);
+    if (prodError) {
+      console.error("[payment/confirm] product verify fetch failed:", prodError);
+      return NextResponse.json({ error: "상품 확인 중 오류가 발생했어요." }, { status: 502 });
+    }
+    const priceMap = new Map(
+      ((prods ?? []) as { id: string; price: number; sale_price: number | null; shipping_fee: number; is_active: boolean }[])
+        .map((p) => [p.id, p]),
+    );
+    let expectedProducts = 0;
+    let expectedShipping = 0;
+    for (const item of items) {
+      const p = item.product_id ? priceMap.get(item.product_id) : undefined;
+      if (!p || !p.is_active) {
+        return NextResponse.json({ error: "판매 중이 아닌 상품이 포함돼 있어요." }, { status: 409 });
+      }
+      const unit = p.sale_price ?? p.price;
+      expectedProducts += unit * item.quantity;
+      expectedShipping = Math.max(expectedShipping, p.shipping_fee);
+    }
+    const expected = expectedProducts + expectedShipping;
+    if (expected !== order.payment_amount) {
+      // 조작 시도 또는 주문 후 가격 변경 — 승인 거부 + 주문 취소 (결제 청구 없음)
+      console.error(
+        `[payment/confirm] integrity mismatch: expected=${expected} order=${order.payment_amount} (${orderId})`,
+      );
+      await svc.from("orders")
+        .update({ status: "cancelled", updated_at: new Date().toISOString() })
+        .eq("id", order.id);
+      return NextResponse.json(
+        { error: "주문 금액 검증에 실패했어요. 상품 가격이 변경됐을 수 있으니 다시 주문해주세요." },
+        { status: 409 },
+      );
+    }
+  }
+
   // 5. 원자적 주문 선점 — 동시에 들어온 승인 요청 중 하나만 통과
   const { data: claimed, error: claimError } = await svc
     .from("orders")
@@ -116,8 +167,6 @@ export async function POST(req: Request) {
     }
     return NextResponse.json({ error: "이미 결제가 진행 중인 주문이에요." }, { status: 409 });
   }
-
-  const items = (order.items ?? []) as OrderItem[];
 
   // 6. 선(先) 재고 확보 — 원자적 차감 (stock >= qty일 때만 성공)
   const reserved: OrderItem[] = [];
