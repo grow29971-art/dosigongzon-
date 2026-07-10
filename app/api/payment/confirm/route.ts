@@ -27,7 +27,12 @@ interface TossPaymentResponse {
   message?: string;
 }
 
-type OrderItem = { product_id: string | null; quantity: number };
+type OrderItem = { product_id: string | null; quantity: number; donation_amount?: number };
+
+// 주문의 후원 적립액 합계 (성공 화면 표시용)
+function donationTotal(items: OrderItem[]): number {
+  return items.reduce((sum, i) => sum + (i.donation_amount ?? 0), 0);
+}
 
 // 확보해둔 재고 원복 (부분 실패/승인 실패 롤백용)
 async function restoreStock(svc: SupabaseClient, reserved: OrderItem[]): Promise<void> {
@@ -86,7 +91,7 @@ export async function POST(req: Request) {
 
   // 이미 같은 paymentKey로 승인된 주문이면 성공으로 응답 (새로고침 등 중복 요청)
   if (order.status === "paid" && order.payment_key === paymentKey) {
-    return NextResponse.json({ ok: true, orderId: order.id, orderNumber: order.order_number });
+    return NextResponse.json({ ok: true, orderId: order.id, orderNumber: order.order_number, donation: donationTotal((order.items ?? []) as OrderItem[]) });
   }
   if (order.status !== "pending") {
     return NextResponse.json({ error: "이미 처리된 주문이에요." }, { status: 409 });
@@ -266,5 +271,5 @@ export async function POST(req: Request) {
     if (cartError) console.error("[payment/confirm] cart clear failed:", cartError);
   }
 
-  return NextResponse.json({ ok: true, orderId: order.id, orderNumber: order.order_number });
+  return NextResponse.json({ ok: true, orderId: order.id, orderNumber: order.order_number, donation: donationTotal(items) });
 }

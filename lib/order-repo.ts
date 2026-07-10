@@ -50,6 +50,7 @@ export interface OrderItem {
   product_price: number;
   quantity: number;
   subtotal: number;
+  donation_amount: number; // 주문 시점 후원 적립액 스냅샷
   created_at: string;
 }
 
@@ -139,16 +140,21 @@ export async function createOrderFromCart(
 
   const created = order as Order;
 
-  // 주문 시점 상품 스냅샷 저장
+  // 주문 시점 상품 스냅샷 저장 (후원 적립액 포함 — 이후 비율 변경과 무관하게 고정)
   const snapshots = items.map((item) => {
     const unitPrice = item.product.sale_price ?? item.product.price;
+    const subtotal = unitPrice * item.quantity;
+    const donationAmount = item.product.is_donation
+      ? Math.floor((subtotal * item.product.donation_percent) / 100)
+      : 0;
     return {
       order_id: created.id,
       product_id: item.product_id,
       product_name: item.product.name,
       product_price: unitPrice,
       quantity: item.quantity,
-      subtotal: unitPrice * item.quantity,
+      subtotal,
+      donation_amount: donationAmount,
     };
   });
   const { error: itemsError } = await supabase.from("order_items").insert(snapshots);

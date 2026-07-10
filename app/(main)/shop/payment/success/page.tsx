@@ -11,6 +11,7 @@ function SuccessContent() {
   const [errorMsg, setErrorMsg] = useState("");
   const [orderNumber, setOrderNumber] = useState("");
   const [orderId, setOrderId] = useState("");
+  const [donation, setDonation] = useState(0);
   const requested = useRef(false);
 
   useEffect(() => {
@@ -37,6 +38,7 @@ function SuccessContent() {
         if (!res.ok) throw new Error(json.error ?? "결제 승인에 실패했어요.");
         setOrderNumber(json.orderNumber ?? tossOrderId);
         setOrderId(json.orderId ?? "");
+        setDonation(typeof json.donation === "number" ? json.donation : 0);
         setState("done");
       })
       .catch((e) => {
@@ -94,6 +96,17 @@ function SuccessContent() {
       <p className="text-[13px] text-text-sub leading-relaxed mb-1">
         주문번호 <span className="font-extrabold text-text-main">{orderNumber}</span>
       </p>
+      {donation > 0 && (
+        <div
+          className="mb-4 px-4 py-3 rounded-2xl"
+          style={{ background: "rgba(232,107,140,0.08)", border: "1px solid rgba(232,107,140,0.2)" }}
+        >
+          <p className="text-[13px] font-extrabold" style={{ color: "#D85575" }}>
+            이 주문으로 {donation.toLocaleString()}원이
+            <br />길고양이에게 적립됐어요 💛
+          </p>
+        </div>
+      )}
       <p className="text-[12.5px] text-text-light mb-8">
         소중한 주문 감사해요. 우리 동네 고양이들에게 따뜻함이 전해질 거예요 🐾
       </p>

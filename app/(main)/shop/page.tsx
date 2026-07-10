@@ -132,12 +132,27 @@ function ProductCard({ product }: { product: Product }) {
 }
 
 /* ═══ 페이지 ═══ */
+interface DonationProgress {
+  total: number;
+  goal: number;
+  goalLabel: string;
+}
+
 export default function ShopPage() {
   const { user } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [filter, setFilter] = useState<FilterKey>("all");
   const [loading, setLoading] = useState(true);
   const [cartCount, setCartCount] = useState(0);
+  const [donation, setDonation] = useState<DonationProgress | null>(null);
+
+  // 후원 적립 현황 (진행바)
+  useEffect(() => {
+    fetch("/api/shop/donation-progress")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d && typeof d.total === "number") setDonation(d); })
+      .catch(() => {});
+  }, []);
 
   // 전체 상품 1회 fetch — 카테고리 필터는 클라이언트 사이드
   // TODO: 상품 50개 초과 시 서버 사이드 필터링 전환
@@ -201,8 +216,8 @@ export default function ShopPage() {
         </div>
       </div>
 
-      {/* ── 후원 배너 ── */}
-      {/* TODO: 후원금 누적액 10만원 이상이 되면 금액 노출 */}
+      {/* ── 후원 배너 + 공동 목표 진행바 ── */}
+      {/* 적립액 0원일 땐 금액 없이 문구만 (0원 노출 역효과 방지) */}
       <div
         className="mb-4 px-5 py-4 rounded-3xl"
         style={{
@@ -214,9 +229,37 @@ export default function ShopPage() {
           여기서 구매하시면, 수익의 일부가
           <br />길고양이 쉼터에 쓰입니다 🐱
         </p>
-        <p className="text-[11.5px] text-text-sub mt-1">
-          첫 번째 길고양이 쉼터 설치까지, 함께해주세요
-        </p>
+        {donation && donation.total > 0 ? (
+          <div className="mt-3">
+            <div className="flex items-baseline justify-between mb-1.5">
+              <span className="text-[11.5px] font-bold text-text-sub">
+                {donation.goalLabel}까지
+              </span>
+              <span className="text-[12px] font-extrabold" style={{ color: "#D85575" }}>
+                {donation.total.toLocaleString()}원
+                <span className="font-bold text-text-light"> / {donation.goal.toLocaleString()}원</span>
+              </span>
+            </div>
+            <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: "rgba(232,107,140,0.15)" }}>
+              <div
+                className="h-full rounded-full transition-all"
+                style={{
+                  width: `${Math.min(100, Math.max(3, (donation.total / donation.goal) * 100))}%`,
+                  background: "linear-gradient(90deg, #E86B8C 0%, #D85575 100%)",
+                }}
+              />
+            </div>
+            <p className="text-[10.5px] text-text-light mt-1.5">
+              {donation.total >= donation.goal
+                ? "목표 달성! 곧 쉼터 설치 소식으로 찾아올게요 🎉"
+                : "구매·후원 하나하나가 여기 쌓여요"}
+            </p>
+          </div>
+        ) : (
+          <p className="text-[11.5px] text-text-sub mt-1">
+            첫 번째 길고양이 쉼터 설치까지, 함께해주세요
+          </p>
+        )}
       </div>
 
       {/* ── 카테고리 필터 칩 ── */}
