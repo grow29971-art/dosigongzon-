@@ -427,9 +427,9 @@ export default async function AboutPage() {
 
           <p className="text-[12.5px] leading-[1.9] text-text-sub mt-4">
             <b className="text-text-main">광고도, 유료 구독도, 데이터 판매도 없이</b>{" "}
-            서버·도메인·AI 사용료·하드웨어 부품비까지 모두 운영자가 자비로 부담하며
-            굴리고 있습니다. 서비스가 단체·정당·기업과 무관하게 중립을 지킬 수 있는
-            이유이기도 해요.
+            굴리고 있습니다. 서버·도메인·AI 사용료·하드웨어 부품비는 운영자의 자비와
+            쇼핑몰 수익으로 충당하고, 쇼핑몰 수익의 일부는 길고양이들을 위해 다시
+            쓰여요. 단체·정당·기업의 지원 없이 중립을 지킬 수 있는 이유이기도 해요.
           </p>
 
           <p className="text-[12.5px] leading-[1.9] text-text-sub mt-3">
