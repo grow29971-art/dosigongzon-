@@ -1,4 +1,4 @@
-# 실물 쇼핑몰 SQL 실행 순서 (2026-07-10)
+# 실물 쇼핑몰 SQL 실행 순서 (2026-07-10, 갱신 2026-07-11)
 
 새 환경/DB 재구축 시 아래 순서대로 Supabase SQL Editor에서 실행.
 (관리자 판별은 기존 `admins` 테이블 재사용 — 별도 SQL 없음)
@@ -12,6 +12,7 @@
 | 5 | `supabase_shop_donation_migration.sql` | order_items.donation_amount 후원 스냅샷 컬럼 |
 | 6 | `supabase_shop_order_item_guard_migration.sql` | order_items INSERT 트리거 — 상품명/단가/소계/후원액을 서버 실제값으로 강제(조작 차단) |
 | 7 | `supabase_shop_orders_insert_guard_migration.sql` | **[보안]** orders INSERT status='pending' 강제 — 결제 없이 'paid' 위조 차단 |
+| 8 | `supabase_shop_virtual_order_migration.sql` | 후원(가상) 상품 전용 주문 배송지 생략 — 수령인/주소 컬럼 NOT NULL 해제 |
 | — | `supabase_shop_seed.sql` | (선택) 카테고리별 3개 총 21개 샘플 상품. 실상품 등록 시 불필요 |
 
 ## 주의
