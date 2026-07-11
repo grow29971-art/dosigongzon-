@@ -11,7 +11,19 @@ import { useAuth } from "@/lib/auth-context";
 const DISMISS_KEY = "dosigongzon_push_optin_dismissed_at";
 const DISMISS_DAYS = 7;
 
-export default function PushOptInCard() {
+interface PushOptInCardProps {
+  /** 카드 제목 (용도별 커스텀 — 예: 쇼핑 오픈 알림) */
+  title?: string;
+  description?: string;
+  /** 닫기 상태 저장 키 — 용도별로 분리해야 서로 안 겹침 */
+  dismissKey?: string;
+}
+
+export default function PushOptInCard({
+  title = "내 글에 댓글 달리면 알려드릴까요?",
+  description = "중요한 순간 놓치지 않게 알림으로 알려드려요",
+  dismissKey = DISMISS_KEY,
+}: PushOptInCardProps = {}) {
   const { user } = useAuth();
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -25,7 +37,7 @@ export default function PushOptInCard() {
     if (Notification.permission !== "default") return;
 
     try {
-      const dismissed = localStorage.getItem(DISMISS_KEY);
+      const dismissed = localStorage.getItem(dismissKey);
       if (dismissed) {
         const at = parseInt(dismissed, 10);
         if (
@@ -44,7 +56,7 @@ export default function PushOptInCard() {
 
   const handleDismiss = () => {
     try {
-      localStorage.setItem(DISMISS_KEY, String(Date.now()));
+      localStorage.setItem(dismissKey, String(Date.now()));
     } catch {
       /* no-op */
     }
@@ -109,13 +121,13 @@ export default function PushOptInCard() {
             className="text-[12.5px] font-bold leading-tight"
             style={{ color: "#8C5A37" }}
           >
-            내 글에 댓글 달리면 알려드릴까요?
+            {title}
           </p>
           <p
             className="text-[10.5px] mt-0.5"
             style={{ color: "#A88160" }}
           >
-            중요한 순간 놓치지 않게 알림으로 알려드려요
+            {description}
           </p>
         </div>
         <button

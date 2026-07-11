@@ -14,6 +14,7 @@ import {
   type Product, type ProductCategory,
 } from "@/lib/shop-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import PushOptInCard from "@/app/components/PushOptInCard";
 
 type FilterKey = ProductCategory | "all";
 
@@ -278,6 +279,13 @@ export default function ShopPage() {
           정식 오픈 준비 중이에요. 지금은 미리보기 단계라 실제 결제·배송은 되지 않아요.
         </p>
       </div>
+
+      {/* ── 오픈 사전알림 (푸시 옵트인 재사용, 쇼핑 전용 dismiss 키) ── */}
+      <PushOptInCard
+        title="정식 오픈하면 가장 먼저 알려드릴까요? 🔔"
+        description="오픈 소식과 첫 혜택을 푸시로 보내드려요"
+        dismissKey="dosigongzon_shop_open_optin_dismissed_at"
+      />
 
       {/* ── 카테고리 필터 칩 ── */}
       <div className="mb-4 flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4">
