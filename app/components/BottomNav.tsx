@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Home, Map, BookOpen, MessagesSquare, ShoppingBag, User,
+  Home, Map, Bot, MessagesSquare, ShoppingBag, User,
   type LucideIcon,
 } from "lucide-react";
 
@@ -12,12 +12,12 @@ import {
 const tabs: { href: string; label: string; Icon: LucideIcon }[] = [
   { href: "/", label: "홈", Icon: Home },
   { href: "/map", label: "지도", Icon: Map },
-  { href: "/tips", label: "가이드", Icon: BookOpen },
-  // AI집사 탭 — 가이드(/tips)로 병합돼 제거 (2026-07-10)
+  // 가이드 → AI집사로 라벨/아이콘 변경 (2026-07-11) — 목적지는 그대로 /tips (AI집사 챗봇 위치)
+  { href: "/tips", label: "AI집사", Icon: Bot },
   { href: "/community", label: "커뮤니티", Icon: MessagesSquare },
   // 카드게임 탭 숨김 (2026-07-10) — 복원 시 아래 줄 주석 해제
   // { href: "/mypage/cards", label: "카드게임", Icon: Gamepad2 },
-  { href: "/shop", label: "쇼핑", Icon: ShoppingBag },
+  { href: "/shop", label: "쇼핑(공사중)", Icon: ShoppingBag },
   { href: "/mypage", label: "마이", Icon: User },
 ];
 
