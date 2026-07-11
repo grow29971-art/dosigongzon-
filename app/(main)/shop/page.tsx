@@ -122,7 +122,7 @@ function ProductCard({ product }: { product: Product }) {
             </p>
           ) : product.is_donation ? (
             <p className="text-[10px] font-semibold mt-1.5" style={{ color: "#C9A961" }}>
-              수익의 {product.donation_percent}% 후원 💛
+              수익의 일부 후원 💛
             </p>
           ) : null}
         </div>
