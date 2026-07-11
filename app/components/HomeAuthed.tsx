@@ -1177,6 +1177,10 @@ export default function HomeAuthed({
 
       {/* ══════ ↓ 홍보/부가 카드 — 홈 개편(2026-07-10)으로 아래로 이동 ══════ */}
 
+      {/* ══════ 친구 초대 — 1000명 키링 배너 바로 위 배치 (2026-07-11): 초대→목표 달성 동선 연결 ══════ */}
+      {/* catCount > 0인 사용자만. 빈 홈에 카드 쌓아두지 않게 활성 임계 통과시점에 노출. */}
+      {activity && activity.catCount > 0 && <InviteSection />}
+
       {/* 1000명 이벤트 배너 (SSR) */}
       {eventSlot}
 
@@ -1595,10 +1599,6 @@ export default function HomeAuthed({
       {/* ══════ 푸시 권한 권유 — 첫 cat 등록한 사용자만 ══════ */}
       {/* 가입 직후 prompt는 90% 거부. 등록 후 활동 컨텍스트 묶어서 prompt → 수락률 4~5배. */}
       {activity && activity.catCount > 0 && <PushOptInCard />}
-
-      {/* ══════ 친구 초대 — 활동 사용자에게 viral 강화 ══════ */}
-      {/* catCount > 0인 사용자만. 빈 홈에 카드 쌓아두지 않게 활성 임계 통과시점에 노출. */}
-      {activity && activity.catCount > 0 && <InviteSection />}
 
       {/* ══════ 이번 주 동네 이슈 ══════ */}
       {weeklyIssues.length > 0 && (
