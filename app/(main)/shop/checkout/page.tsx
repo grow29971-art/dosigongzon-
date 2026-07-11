@@ -8,7 +8,7 @@ import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import { useAuth } from "@/lib/auth-context";
 import LoginRequired from "@/app/components/LoginRequired";
 import { listCartItems, computeCartTotal, type CartItem } from "@/lib/shop-repo";
-import { createOrderFromCart, type Order } from "@/lib/order-repo";
+import { createOrderFromCart, isVirtualOnlyCart, type Order } from "@/lib/order-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 
 const TOSS_CLIENT_KEY = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY ?? "";
@@ -115,17 +115,21 @@ export default function CheckoutPage() {
   }
 
   const { productTotal, shippingFee, grandTotal } = computeCartTotal(items);
+  // 전 상품이 가상(후원) 상품이면 배송이 없어 배송지 입력을 생략
+  const virtualOnly = isVirtualOnlyCart(items);
 
   // 결제하기 — 주문 생성 후 토스 결제창 호출
   // (결제위젯이 아닌 "결제창" 방식: API 개별 연동 키(test_ck_)로 사용 가능.
   //  결제위젯 UI는 전자결제 이용 신청 후 위젯 키 발급 시 전환 검토)
   const handleSubmit = async () => {
     setError("");
-    if (!recipientName.trim()) { setError("수령인 이름을 입력해주세요."); return; }
-    if (!recipientPhone.trim() || !/^[\d-]{9,13}$/.test(recipientPhone.trim())) {
-      setError("연락처를 정확히 입력해주세요. (숫자와 - 만)"); return;
+    if (!virtualOnly) {
+      if (!recipientName.trim()) { setError("수령인 이름을 입력해주세요."); return; }
+      if (!recipientPhone.trim() || !/^[\d-]{9,13}$/.test(recipientPhone.trim())) {
+        setError("연락처를 정확히 입력해주세요. (숫자와 - 만)"); return;
+      }
+      if (!postalCode || !address) { setError("주소를 검색해서 선택해주세요."); return; }
     }
-    if (!postalCode || !address) { setError("주소를 검색해서 선택해주세요."); return; }
     if (!TOSS_CLIENT_KEY || !user) {
       setError("결제 수단이 아직 준비 중이에요. 잠시 후 다시 시도해주세요.");
       return;
@@ -134,7 +138,7 @@ export default function CheckoutPage() {
     setSubmitting(true);
     let order: Order | null = null;
     try {
-      order = await createOrderFromCart(items, {
+      order = await createOrderFromCart(items, virtualOnly ? null : {
         recipient_name: recipientName.trim(),
         recipient_phone: recipientPhone.trim(),
         recipient_address: address,
@@ -156,7 +160,7 @@ export default function CheckoutPage() {
         orderName,
         successUrl: `${window.location.origin}/shop/payment/success`,
         failUrl: `${window.location.origin}/shop/payment/fail`,
-        customerName: recipientName.trim(),
+        ...(virtualOnly ? {} : { customerName: recipientName.trim() }),
         card: {
           useEscrow: false,
           flowMode: "DEFAULT",
@@ -259,7 +263,18 @@ export default function CheckoutPage() {
             </div>
           </section>
 
-          {/* 배송지 */}
+          {/* 배송지 — 가상(후원) 상품 전용 주문은 배송이 없어 생략 */}
+          {virtualOnly ? (
+            <div
+              className="flex items-start gap-2.5 px-4 py-3 rounded-2xl"
+              style={{ background: "rgba(232,141,90,0.08)", border: "1px solid rgba(232,141,90,0.22)" }}
+            >
+              <span className="text-[15px] shrink-0">💛</span>
+              <p className="text-[11.5px] font-semibold leading-snug" style={{ color: "#B06A42" }}>
+                후원 상품은 배송이 없어요. 배송지 입력 없이 바로 결제할 수 있고, 결제 금액은 길고양이들을 위해 쓰여요.
+              </p>
+            </div>
+          ) : (<>
           <section
             className="p-4"
             style={{ background: "#fff", borderRadius: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.04)" }}
@@ -339,6 +354,7 @@ export default function CheckoutPage() {
               maxLength={200}
             />
           </section>
+          </>)}
 
           {/* 결제 금액 */}
           <section
@@ -350,10 +366,12 @@ export default function CheckoutPage() {
               <span>총 상품금액</span>
               <span>{formatWon(productTotal)}</span>
             </div>
-            <div className="flex items-center justify-between text-[12.5px] text-text-sub mb-2.5">
-              <span>배송비</span>
-              <span>{shippingFee > 0 ? formatWon(shippingFee) : "무료"}</span>
-            </div>
+            {!virtualOnly && (
+              <div className="flex items-center justify-between text-[12.5px] text-text-sub mb-2.5">
+                <span>배송비</span>
+                <span>{shippingFee > 0 ? formatWon(shippingFee) : "무료"}</span>
+              </div>
+            )}
             <div
               className="flex items-center justify-between pt-2.5 text-[15px] font-extrabold text-text-main"
               style={{ borderTop: "1px dashed rgba(0,0,0,0.08)" }}

@@ -207,11 +207,17 @@ export default function OrderDetailPage() {
             <h2 className="text-[13.5px] font-extrabold text-text-main mb-3 flex items-center gap-1.5">
               <MapPin size={14} style={{ color: "#3182F6" }} /> 배송지
             </h2>
-            <p className="text-[13px] font-bold text-text-main">{order.recipient_name} · {order.recipient_phone}</p>
-            <p className="text-[12.5px] text-text-sub mt-1">
-              ({order.postal_code}) {order.recipient_address}
-              {order.recipient_address_detail ? ` ${order.recipient_address_detail}` : ""}
-            </p>
+            {order.recipient_address ? (
+              <>
+                <p className="text-[13px] font-bold text-text-main">{order.recipient_name} · {order.recipient_phone}</p>
+                <p className="text-[12.5px] text-text-sub mt-1">
+                  ({order.postal_code}) {order.recipient_address}
+                  {order.recipient_address_detail ? ` ${order.recipient_address_detail}` : ""}
+                </p>
+              </>
+            ) : (
+              <p className="text-[12.5px] text-text-sub">💛 후원 상품 주문이라 배송이 없어요.</p>
+            )}
             {order.memo && (
               <p className="text-[12px] text-text-light mt-2">메모: {order.memo}</p>
             )}

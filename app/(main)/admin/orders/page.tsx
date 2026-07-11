@@ -184,7 +184,7 @@ export default function AdminOrdersPage() {
                     <div className="flex-1 min-w-0">
                       <p className="text-[13px] font-bold text-text-main truncate">{orderDisplayName(order.items)}</p>
                       <p className="text-[11px] text-text-light mt-0.5">
-                        {order.recipient_name} · {formatDate(order.created_at)}
+                        {order.recipient_name ?? "후원 주문"} · {formatDate(order.created_at)}
                       </p>
                     </div>
                     <span className="text-[13.5px] font-extrabold text-text-main shrink-0 ml-2">{formatWon(order.payment_amount)}</span>
@@ -198,11 +198,17 @@ export default function AdminOrdersPage() {
                       {order.items.map((item) => (
                         <p key={item.id}>· {item.product_name} × {item.quantity} = {formatWon(item.subtotal)}</p>
                       ))}
-                      <p className="pt-1">
-                        ({order.postal_code}) {order.recipient_address}
-                        {order.recipient_address_detail ? ` ${order.recipient_address_detail}` : ""}
-                      </p>
-                      <p>{order.recipient_phone}</p>
+                      {order.recipient_address ? (
+                        <>
+                          <p className="pt-1">
+                            ({order.postal_code}) {order.recipient_address}
+                            {order.recipient_address_detail ? ` ${order.recipient_address_detail}` : ""}
+                          </p>
+                          <p>{order.recipient_phone}</p>
+                        </>
+                      ) : (
+                        <p className="pt-1">배송 없음 — 후원(가상) 상품 주문</p>
+                      )}
                       {order.memo && <p className="text-text-light">메모: {order.memo}</p>}
                     </div>
 

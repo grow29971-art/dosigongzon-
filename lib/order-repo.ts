@@ -29,11 +29,12 @@ export interface Order {
   total_amount: number;
   shipping_fee: number;
   payment_amount: number;
-  recipient_name: string;
-  recipient_phone: string;
-  recipient_address: string;
+  // 배송지 — 가상(후원) 상품 전용 주문은 배송이 없어 null
+  recipient_name: string | null;
+  recipient_phone: string | null;
+  recipient_address: string | null;
   recipient_address_detail: string | null;
-  postal_code: string;
+  postal_code: string | null;
   payment_key: string | null;
   payment_method: string | null;
   paid_at: string | null;
@@ -64,6 +65,11 @@ export interface ShippingInput {
   memo?: string;
 }
 
+// ── 장바구니 전체가 가상(후원) 상품인지 — 배송지 생략 가능 여부 ──
+export function isVirtualOnlyCart(items: CartItem[]): boolean {
+  return items.length > 0 && items.every((i) => i.product.is_virtual);
+}
+
 // ── 주문번호 생성: DS-yyyyMMdd-XXXX (4자리 영숫자) ──
 export function generateOrderNumber(): string {
   const now = new Date();
@@ -83,14 +89,18 @@ export function generateOrderNumber(): string {
 
 // ── 주문 생성 (장바구니 → orders + order_items 스냅샷, status: pending) ──
 // 결제 승인은 STEP 5의 /api/payment/confirm에서 처리. 여기서는 재고를 차감하지 않음.
+// shipping=null은 가상(후원) 상품 전용 주문 — 배송지 없이 생성.
 export async function createOrderFromCart(
   items: CartItem[],
-  shipping: ShippingInput,
+  shipping: ShippingInput | null,
 ): Promise<Order> {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("로그인이 필요해요.");
   if (items.length === 0) throw new Error("주문할 상품이 없어요.");
+  if (!shipping && !isVirtualOnlyCart(items)) {
+    throw new Error("실물 상품 주문에는 배송지가 필요해요.");
+  }
 
   // 주문 도배 방지 — 분당 5건, 일당 30건 (결제창 이탈 재시도는 여유 있게 허용)
   await enforceUserActionLimit(supabase, {
@@ -134,12 +144,12 @@ export async function createOrderFromCart(
       total_amount: productTotal,
       shipping_fee: shippingFee,
       payment_amount: grandTotal,
-      recipient_name: shipping.recipient_name,
-      recipient_phone: shipping.recipient_phone,
-      recipient_address: shipping.recipient_address,
-      recipient_address_detail: shipping.recipient_address_detail ?? null,
-      postal_code: shipping.postal_code,
-      memo: shipping.memo?.trim() || null,
+      recipient_name: shipping?.recipient_name ?? null,
+      recipient_phone: shipping?.recipient_phone ?? null,
+      recipient_address: shipping?.recipient_address ?? null,
+      recipient_address_detail: shipping?.recipient_address_detail ?? null,
+      postal_code: shipping?.postal_code ?? null,
+      memo: shipping?.memo?.trim() || null,
     })
     .select()
     .single();
