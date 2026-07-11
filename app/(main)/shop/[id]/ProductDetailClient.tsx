@@ -196,6 +196,26 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 ? "이 후원금은 전액 길고양이를 위해 사용됩니다 💛"
                 : "이 상품 수익의 일부는 길고양이 쉼터 설치에 사용됩니다 🐱"}
             </p>
+            {/* 구매 → 수익 → 후원 미니 흐름 */}
+            {product.donation_percent !== 100 && (
+              <div className="mt-2.5 flex items-center justify-between">
+                {[
+                  { emoji: "🛒", label: "구매" },
+                  { emoji: "💰", label: "수익 발생" },
+                  { emoji: "💛", label: "일부 후원" },
+                ].map((step, i) => (
+                  <div key={step.label} className="flex items-center flex-1 min-w-0">
+                    <div className="flex flex-col items-center gap-0.5 flex-1 min-w-0">
+                      <span className="text-[16px] leading-none">{step.emoji}</span>
+                      <span className="text-[10px] font-bold truncate" style={{ color: "#A8834A" }}>{step.label}</span>
+                    </div>
+                    {i < 2 && (
+                      <span className="text-[11px] shrink-0 px-0.5" style={{ color: "rgba(168,131,74,0.55)" }}>→</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
