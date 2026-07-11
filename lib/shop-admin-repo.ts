@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 import { requireAdmin } from "@/lib/admin-guard";
 import { convertImageToWebp } from "@/lib/cats-repo";
 import { isSafeImageUrl } from "@/lib/url-validate";
-import type { Product, ProductCategory } from "@/lib/shop-repo";
+import type { Product, ProductBadge, ProductCategory } from "@/lib/shop-repo";
 import type { OrderStatus, OrderWithItems } from "@/lib/order-repo";
 
 export interface ProductInput {
@@ -22,6 +22,12 @@ export interface ProductInput {
   stock: number;
   is_active: boolean;
   shipping_fee: number;
+  badge: ProductBadge | null;
+  is_donation: boolean;
+  donation_percent: number;
+  weight: string | null;
+  is_virtual: boolean;
+  supplier: string | null; // 도매처 메모 — 관리자 전용 (클라이언트 조회 컬럼에서 제외됨)
 }
 
 export const MAX_PRODUCT_IMAGES = 5;
@@ -35,6 +41,10 @@ function validateProductInput(input: ProductInput): void {
   }
   if (!Number.isInteger(input.stock) || input.stock < 0) throw new Error("재고는 0 이상 정수여야 해요.");
   if (!Number.isInteger(input.shipping_fee) || input.shipping_fee < 0) throw new Error("배송비는 0 이상 정수여야 해요.");
+  if (!Number.isInteger(input.donation_percent) || input.donation_percent < 0 || input.donation_percent > 100) {
+    throw new Error("후원 비율은 0~100 사이 정수여야 해요.");
+  }
+  if (input.is_virtual && input.shipping_fee > 0) throw new Error("가상(배송 없음) 상품은 배송비가 0이어야 해요.");
   if (input.images.length > MAX_PRODUCT_IMAGES) throw new Error(`이미지는 최대 ${MAX_PRODUCT_IMAGES}장까지 가능해요.`);
   for (const url of input.images) {
     if (!isSafeImageUrl(url)) throw new Error("이미지 URL 형식이 올바르지 않아요.");

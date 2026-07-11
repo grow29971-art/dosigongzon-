@@ -8,13 +8,14 @@ import {
   ArrowLeft, Plus, Pencil, Save, X, Loader2, Shield, ImagePlus, Trash2,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
-import { CATEGORY_MAP, type Product, type ProductCategory } from "@/lib/shop-repo";
+import { CATEGORY_MAP, type Product, type ProductBadge, type ProductCategory } from "@/lib/shop-repo";
 import {
   listAllProducts, createProduct, updateProduct, setProductActive,
   uploadProductImage, MAX_PRODUCT_IMAGES, type ProductInput,
 } from "@/lib/shop-admin-repo";
 
 const CATEGORIES = Object.keys(CATEGORY_MAP) as ProductCategory[];
+const BADGES: ProductBadge[] = ["신상", "인기", "한정"];
 
 const EMPTY_DRAFT: ProductInput = {
   name: "",
@@ -26,6 +27,12 @@ const EMPTY_DRAFT: ProductInput = {
   stock: 0,
   is_active: true,
   shipping_fee: 0,
+  badge: null,
+  is_donation: false,
+  donation_percent: 10,
+  weight: null,
+  is_virtual: false,
+  supplier: null,
 };
 
 function formatWon(amount: number): string {
@@ -81,6 +88,12 @@ export default function AdminProductsPage() {
       stock: p.stock,
       is_active: p.is_active,
       shipping_fee: p.shipping_fee,
+      badge: p.badge,
+      is_donation: p.is_donation,
+      donation_percent: p.donation_percent,
+      weight: p.weight,
+      is_virtual: p.is_virtual,
+      supplier: p.supplier ?? null,
     });
     setEditingId(p.id);
     setError("");
@@ -276,6 +289,104 @@ export default function AdminProductsPage() {
               ))}
             </div>
 
+            {/* 배지 */}
+            <div>
+              <span className="text-[11px] font-bold text-text-sub">배지</span>
+              <div className="flex items-center gap-1.5 flex-wrap mt-1">
+                <button
+                  type="button"
+                  onClick={() => setDraft({ ...draft, badge: null })}
+                  className="px-3 py-1.5 rounded-xl text-[11.5px] font-bold"
+                  style={{
+                    background: draft.badge === null ? "var(--color-primary)" : "var(--color-warm-white)",
+                    color: draft.badge === null ? "#fff" : "var(--color-text-sub)",
+                  }}
+                >
+                  없음
+                </button>
+                {BADGES.map((b) => (
+                  <button
+                    key={b}
+                    type="button"
+                    onClick={() => setDraft({ ...draft, badge: b })}
+                    className="px-3 py-1.5 rounded-xl text-[11.5px] font-bold"
+                    style={{
+                      background: draft.badge === b ? "var(--color-primary)" : "var(--color-warm-white)",
+                      color: draft.badge === b ? "#fff" : "var(--color-text-sub)",
+                    }}
+                  >
+                    {b}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 후원 연계 / 가상상품 */}
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={draft.is_donation}
+                  onChange={(e) => setDraft({ ...draft, is_donation: e.target.checked })}
+                />
+                <span className="text-[12.5px] font-bold text-text-main">후원 연계 💛</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={draft.is_virtual}
+                  onChange={(e) => setDraft({
+                    ...draft,
+                    is_virtual: e.target.checked,
+                    shipping_fee: e.target.checked ? 0 : draft.shipping_fee,
+                  })}
+                />
+                <span className="text-[12.5px] font-bold text-text-main">가상상품 (배송 없음)</span>
+              </label>
+            </div>
+            {draft.is_donation && (
+              <label className="block">
+                <span className="text-[11px] font-bold text-text-sub">후원 비율 (%) — 판매액 중 후원으로 적립되는 비율</span>
+                <input
+                  type="number"
+                  value={draft.donation_percent}
+                  onChange={(e) => setDraft({ ...draft, donation_percent: Math.min(100, Math.max(0, parseInt(e.target.value) || 0)) })}
+                  className="w-full px-3 py-2.5 text-[13px] outline-none mt-1"
+                  style={inputStyle}
+                  min={0}
+                  max={100}
+                />
+              </label>
+            )}
+
+            {/* 무게 / 도매처 메모 */}
+            <div className="grid grid-cols-2 gap-2">
+              <label className="block">
+                <span className="text-[11px] font-bold text-text-sub">무게/규격 (선택)</span>
+                <input
+                  type="text"
+                  value={draft.weight ?? ""}
+                  onChange={(e) => setDraft({ ...draft, weight: e.target.value || null })}
+                  placeholder="예: 2kg, 40×30cm"
+                  className="w-full px-3 py-2.5 text-[13px] outline-none mt-1"
+                  style={inputStyle}
+                  maxLength={30}
+                />
+              </label>
+              <label className="block">
+                <span className="text-[11px] font-bold text-text-sub">도매처 메모 (관리자만 봄)</span>
+                <input
+                  type="text"
+                  value={draft.supplier ?? ""}
+                  onChange={(e) => setDraft({ ...draft, supplier: e.target.value || null })}
+                  placeholder="예: ○○상사 010-…"
+                  className="w-full px-3 py-2.5 text-[13px] outline-none mt-1"
+                  style={inputStyle}
+                  maxLength={100}
+                />
+              </label>
+            </div>
+
             {/* 이미지 업로드 */}
             <div>
               <span className="text-[11px] font-bold text-text-sub">
@@ -365,6 +476,8 @@ export default function AdminProductsPage() {
                   {formatWon(p.sale_price ?? p.price)}
                   {p.sale_price != null && <span className="line-through ml-1 text-text-light">{formatWon(p.price)}</span>}
                   {" · "}재고 {p.stock} · {CATEGORY_MAP[p.category].label}
+                  {p.is_donation ? ` · 💛${p.donation_percent}%` : ""}
+                  {p.is_virtual ? " · 가상" : ""}
                 </p>
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
