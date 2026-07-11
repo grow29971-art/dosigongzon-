@@ -5,6 +5,7 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { computeCartTotal, type CartItem, type Product } from "@/lib/shop-repo";
+import { enforceUserActionLimit } from "@/lib/rate-limit";
 
 export type OrderStatus =
   | "pending" | "paid" | "preparing" | "shipping"
@@ -90,6 +91,16 @@ export async function createOrderFromCart(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("로그인이 필요해요.");
   if (items.length === 0) throw new Error("주문할 상품이 없어요.");
+
+  // 주문 도배 방지 — 분당 5건, 일당 30건 (결제창 이탈 재시도는 여유 있게 허용)
+  await enforceUserActionLimit(supabase, {
+    table: "orders",
+    userColumn: "user_id",
+    userId: user.id,
+    perMinute: 5,
+    perDay: 30,
+    label: "주문",
+  });
 
   // 주문 직전 재고 재확인 — 장바구니에 담아둔 사이 품절될 수 있음
   const productIds = items.map((i) => i.product_id);

@@ -15,6 +15,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient, type SupabaseClient } from "@supabase/supabase-js";
+import { rateLimit } from "@/lib/rate-limit";
 
 const TOSS_CONFIRM_URL = "https://api.tosspayments.com/v1/payments/confirm";
 
@@ -51,6 +52,11 @@ export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "로그인이 필요해요." }, { status: 401 });
+
+  // Rate limit: 사용자당 분당 10회 (정상 흐름은 주문당 1회 + 네트워크 오류 재시도)
+  if (!rateLimit(`payment-confirm:${user.id}`, { max: 10, windowMs: 60_000 })) {
+    return NextResponse.json({ error: "요청이 너무 많아요. 잠시 후 다시 시도해주세요." }, { status: 429 });
+  }
 
   const secretKey = process.env.TOSS_SECRET_KEY;
   if (!secretKey) {

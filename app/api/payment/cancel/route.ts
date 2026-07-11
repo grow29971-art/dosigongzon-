@@ -8,11 +8,17 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "로그인이 필요해요." }, { status: 401 });
+
+  // Rate limit: 사용자당 분당 10회 — 토스 환불 API 반복 호출 방지
+  if (!rateLimit(`payment-cancel:${user.id}`, { max: 10, windowMs: 60_000 })) {
+    return NextResponse.json({ error: "요청이 너무 많아요. 잠시 후 다시 시도해주세요." }, { status: 429 });
+  }
 
   let body: { orderId?: string; orderNumber?: string };
   try {
