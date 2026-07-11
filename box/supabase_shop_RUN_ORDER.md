@@ -13,6 +13,7 @@
 | 6 | `supabase_shop_order_item_guard_migration.sql` | order_items INSERT 트리거 — 상품명/단가/소계/후원액을 서버 실제값으로 강제(조작 차단) |
 | 7 | `supabase_shop_orders_insert_guard_migration.sql` | **[보안]** orders INSERT status='pending' 강제 — 결제 없이 'paid' 위조 차단 |
 | 8 | `supabase_shop_virtual_order_migration.sql` | 후원(가상) 상품 전용 주문 배송지 생략 — 수령인/주소 컬럼 NOT NULL 해제 |
+| 9 | `supabase_shop_donation_10_migration.sql` | 후원 비율 20%→10% (일부 후원 상품 + 신규 기본값, 전액 후원은 유지) |
 | — | `supabase_shop_seed.sql` | (선택) 카테고리별 3개 총 21개 샘플 상품. 실상품 등록 시 불필요 |
 
 ## 주의
