@@ -308,7 +308,7 @@ export default function MyPage() {
               disabled={avatarUploading}
               className="relative w-16 h-16 rounded-full flex items-center justify-center shrink-0 overflow-hidden active:scale-95 transition-transform"
               style={{
-                background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+                background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                 boxShadow: "0 6px 14px rgba(49,130,246,0.35), inset 0 1px 0 rgba(255,255,255,0.3), 0 0 0 3px #fff, 0 0 0 5px rgba(49,130,246,0.25)",
               }}
               aria-label="프로필 사진 변경"
@@ -328,9 +328,9 @@ export default function MyPage() {
                 }}
               >
                 {avatarUploading ? (
-                  <Loader2 size={11} className="animate-spin" style={{ color: "#3182F6" }} />
+                  <Loader2 size={11} className="animate-spin" style={{ color: "var(--color-primary)" }} />
                 ) : (
-                  <Camera size={11} style={{ color: "#3182F6" }} strokeWidth={2.5} />
+                  <Camera size={11} style={{ color: "var(--color-primary)" }} strokeWidth={2.5} />
                 )}
               </div>
               {/* 업로드 중 오버레이 */}
@@ -420,7 +420,7 @@ export default function MyPage() {
                   {joinedDays > 0 && (
                     <span
                       className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-full text-[10.5px] font-extrabold"
-                      style={{ background: "rgba(49,130,246,0.12)", color: "#1B64DA" }}
+                      style={{ background: "rgba(49,130,246,0.12)", color: "var(--color-primary-dark)" }}
                     >
                       🐾 첫 등록 후 {joinedDays}일째 함께 돌봐요
                     </span>
@@ -466,7 +466,7 @@ export default function MyPage() {
                     <div className="flex items-baseline gap-2">
                       <span
                         className="text-[11px] font-extrabold tracking-wider"
-                        style={{ color: "#1B64DA" }}
+                        style={{ color: "var(--color-primary-dark)" }}
                       >
                         LV.{lv.level}
                       </span>
@@ -485,7 +485,7 @@ export default function MyPage() {
                     <span className="text-[10.5px] text-text-sub font-semibold">
                       다음 레벨까지
                     </span>
-                    <span className="text-[10.5px] font-bold tabular-nums" style={{ color: "#3182F6" }}>
+                    <span className="text-[10.5px] font-bold tabular-nums" style={{ color: "var(--color-primary)" }}>
                       {lv.next
                         ? `${lv.score} / ${lv.next}`
                         : "MAX"}
@@ -493,13 +493,13 @@ export default function MyPage() {
                   </div>
                   <div
                     className="h-2 rounded-full overflow-hidden"
-                    style={{ backgroundColor: "#F2F4F6" }}
+                    style={{ backgroundColor: "var(--color-surface-alt)" }}
                   >
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
                         width: `${lv.progress * 100}%`,
-                        background: "linear-gradient(90deg, #3182F6 0%, #5BC4C4 100%)",
+                        background: "linear-gradient(90deg, var(--color-primary) 0%, #5BC4C4 100%)",
                         boxShadow: "0 0 8px rgba(49,130,246,0.5)",
                       }}
                     />
@@ -580,7 +580,7 @@ export default function MyPage() {
           {/* ── 내가 등록한 고양이 ── */}
           <div className="mb-5">
             <div className="flex items-center gap-2 mb-3 px-1">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#3182F6" }} />
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
               <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
                 내가 등록한 고양이 {myCats.length > 0 && `· ${myCats.length}`}
               </h2>
@@ -606,7 +606,7 @@ export default function MyPage() {
                     className="flex items-center gap-3 px-3 py-2.5 active:scale-[0.99] transition-transform"
                     style={{
                       background: "#FFFFFF",
-                      borderRadius: 16,
+                      borderRadius: "var(--radius-card-sm)",
                       boxShadow: "0 4px 14px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)",
                       border: "1px solid rgba(0,0,0,0.04)",
                     }}
@@ -623,7 +623,7 @@ export default function MyPage() {
                     >
                       {!cat.photo_url && (
                         <div className="w-full h-full flex items-center justify-center">
-                          <CatIcon size={18} style={{ color: "#3182F6" }} strokeWidth={2} />
+                          <CatIcon size={18} style={{ color: "var(--color-primary)" }} strokeWidth={2} />
                         </div>
                       )}
                     </div>
@@ -681,7 +681,7 @@ export default function MyPage() {
                     >
                       {!cat.photo_url && (
                         <div className="w-full h-full flex items-center justify-center">
-                          <CatIcon size={24} style={{ color: "#3182F6" }} strokeWidth={2} />
+                          <CatIcon size={24} style={{ color: "var(--color-primary)" }} strokeWidth={2} />
                         </div>
                       )}
                       <div
@@ -738,7 +738,7 @@ export default function MyPage() {
                       className="px-4 py-3"
                       style={{
                         background: "#FFFFFF",
-                        borderRadius: 16,
+                        borderRadius: "var(--radius-card-sm)",
                         boxShadow: "0 4px 14px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)",
                         border: "1px solid rgba(0,0,0,0.04)",
                         borderLeft: isAlert ? "3px solid #D85555" : "1px solid rgba(0,0,0,0.04)",
@@ -750,7 +750,7 @@ export default function MyPage() {
                         )}
                         <span
                           className="text-[11px] font-extrabold"
-                          style={{ color: isAlert ? "#D85555" : "#3182F6" }}
+                          style={{ color: isAlert ? "#D85555" : "var(--color-primary)" }}
                         >
                           {c.cat?.name ?? "알 수 없는 고양이"}
                         </span>
@@ -806,7 +806,7 @@ export default function MyPage() {
           {/* ── 내 설정 ── */}
           <div className="mb-3">
             <div className="flex items-center gap-2 mb-3 px-1">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#3182F6" }} />
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
               <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
                 내 설정
               </h2>
@@ -820,7 +820,7 @@ export default function MyPage() {
               className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform mb-2"
               style={{
                 background: "linear-gradient(135deg, #1A1A2E 0%, #16213E 100%)",
-                borderRadius: 16,
+                borderRadius: "var(--radius-card-sm)",
                 boxShadow: "0 4px 14px rgba(99,102,241,0.25)",
                 border: "1px solid rgba(99,102,241,0.30)",
               }}
@@ -839,7 +839,7 @@ export default function MyPage() {
               className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
               style={{
                 background: "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
-                borderRadius: 16,
+                borderRadius: "var(--radius-card-sm)",
                 boxShadow: "0 4px 14px rgba(49,130,246,0.15), 0 1px 2px rgba(0,0,0,0.02)",
                 border: "1px solid rgba(49,130,246,0.20)",
               }}
@@ -858,14 +858,14 @@ export default function MyPage() {
                   쌓아온 발자취와 따뜻한 순간들 보기
                 </p>
               </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "#3182F6", opacity: 0.7 }} />
+              <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-primary)", opacity: 0.7 }} />
             </Link>
             <Link
               href="/mypage/monthly-report"
               className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
               style={{
                 background: "linear-gradient(135deg, #EAF6EF 0%, #DCF0E4 100%)",
-                borderRadius: 16,
+                borderRadius: "var(--radius-card-sm)",
                 boxShadow: "0 4px 14px rgba(91,168,118,0.15), 0 1px 2px rgba(0,0,0,0.02)",
                 border: "1px solid rgba(91,168,118,0.20)",
               }}
@@ -891,14 +891,14 @@ export default function MyPage() {
               className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
               style={{
                 background: "#FFFFFF",
-                borderRadius: 16,
+                borderRadius: "var(--radius-card-sm)",
                 boxShadow: "0 4px 14px rgba(49,130,246,0.10), 0 1px 2px rgba(0,0,0,0.02)",
                 border: "1px solid rgba(0,0,0,0.04)",
               }}
             >
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ backgroundColor: "rgba(49,130,246,0.1)" }}
+                style={{ backgroundColor: "var(--color-primary-soft)" }}
               >
                 <MapPin size={18} color="#3182F6" strokeWidth={2} />
               </div>
@@ -910,14 +910,14 @@ export default function MyPage() {
                   최대 2곳까지 내 동네를 지정할 수 있어요
                 </p>
               </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "#3182F6", opacity: 0.7 }} />
+              <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-primary)", opacity: 0.7 }} />
             </Link>
             <Link
               href="/caretakers"
               className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
               style={{
                 background: "#FFFFFF",
-                borderRadius: 16,
+                borderRadius: "var(--radius-card-sm)",
                 boxShadow: "0 4px 14px rgba(107,142,111,0.10), 0 1px 2px rgba(0,0,0,0.02)",
                 border: "1px solid rgba(0,0,0,0.04)",
               }}
@@ -943,7 +943,7 @@ export default function MyPage() {
               className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
               style={{
                 background: "#FFFFFF",
-                borderRadius: 16,
+                borderRadius: "var(--radius-card-sm)",
                 boxShadow: "0 4px 14px rgba(201,169,97,0.12), 0 1px 2px rgba(0,0,0,0.02)",
                 border: "1px solid rgba(0,0,0,0.04)",
               }}
@@ -981,7 +981,7 @@ export default function MyPage() {
               className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
               style={{
                 background: "#FFFFFF",
-                borderRadius: 16,
+                borderRadius: "var(--radius-card-sm)",
                 boxShadow: "0 4px 14px rgba(139,101,184,0.10), 0 1px 2px rgba(0,0,0,0.02)",
                 border: "1px solid rgba(0,0,0,0.04)",
               }}
@@ -1018,7 +1018,7 @@ export default function MyPage() {
               className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
               style={{
                 background: "#FFFFFF",
-                borderRadius: 16,
+                borderRadius: "var(--radius-card-sm)",
                 boxShadow: "0 4px 14px rgba(74,123,168,0.10), 0 1px 2px rgba(0,0,0,0.02)",
                 border: "1px solid rgba(0,0,0,0.04)",
               }}
@@ -1044,7 +1044,7 @@ export default function MyPage() {
               className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
               style={{
                 background: "#FFFFFF",
-                borderRadius: 16,
+                borderRadius: "var(--radius-card-sm)",
                 boxShadow: "0 4px 14px rgba(72,165,158,0.10), 0 1px 2px rgba(0,0,0,0.02)",
                 border: "1px solid rgba(0,0,0,0.04)",
               }}
@@ -1070,7 +1070,7 @@ export default function MyPage() {
               className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
               style={{
                 background: "#FFFFFF",
-                borderRadius: 16,
+                borderRadius: "var(--radius-card-sm)",
                 boxShadow: "0 4px 14px rgba(107,142,111,0.10), 0 1px 2px rgba(0,0,0,0.02)",
                 border: "1px solid rgba(0,0,0,0.04)",
               }}
@@ -1106,7 +1106,7 @@ export default function MyPage() {
               className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
               style={{
                 background: "#FFFFFF",
-                borderRadius: 16,
+                borderRadius: "var(--radius-card-sm)",
                 boxShadow: "0 4px 14px rgba(184,69,69,0.08), 0 1px 2px rgba(0,0,0,0.02)",
                 border: "1px solid rgba(0,0,0,0.04)",
               }}
@@ -1174,7 +1174,7 @@ export default function MyPage() {
               backgroundColor: "#FFFFFF",
               color: "#A38E7A",
               border: "1px solid rgba(0,0,0,0.06)",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+              boxShadow: "var(--shadow-card)",
             }}
           >
             <LogOut size={14} />
@@ -1268,8 +1268,8 @@ export default function MyPage() {
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center shrink-0"
               style={{
-                background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
-                boxShadow: "0 6px 14px rgba(49,130,246,0.35)",
+                background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+                boxShadow: "var(--shadow-primary)",
               }}
             >
               <User size={28} color="#fff" strokeWidth={2} />
@@ -1391,13 +1391,13 @@ function TitleSection({
               background: equipped === adminTitleId
                 ? `linear-gradient(135deg, ${myAdminTitle.color}15 0%, ${myAdminTitle.color}08 100%)`
                 : "#FFFFFF",
-              borderRadius: 16,
+              borderRadius: "var(--radius-card-sm)",
               border: equipped === adminTitleId
                 ? `2px solid ${myAdminTitle.color}`
                 : "1px solid rgba(0,0,0,0.06)",
               boxShadow: equipped === adminTitleId
                 ? `0 4px 14px ${myAdminTitle.color}20`
-                : "0 2px 8px rgba(0,0,0,0.04)",
+                : "var(--shadow-card)",
             }}
           >
             <div
@@ -1470,10 +1470,10 @@ function TitleCard({
           : locked
             ? "#F8F5F0"
             : "#FFFFFF",
-        borderRadius: 16,
+        borderRadius: "var(--radius-card-sm)",
         boxShadow: locked
           ? "none"
-          : "0 2px 8px rgba(0,0,0,0.04)",
+          : "var(--shadow-card)",
         border: isEquipped
           ? `2px solid ${categoryColor}`
           : locked
@@ -1539,8 +1539,8 @@ function EmptyBox({ children }: { children: React.ReactNode }) {
       className="py-6 text-center text-[12px] text-text-sub"
       style={{
         background: "#FFFFFF",
-        borderRadius: 16,
-        boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+        borderRadius: "var(--radius-card-sm)",
+        boxShadow: "var(--shadow-card)",
         border: "1px solid rgba(0,0,0,0.04)",
       }}
     >

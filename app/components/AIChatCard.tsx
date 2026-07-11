@@ -26,7 +26,7 @@ export default function AIChatCard() {
           <div
             className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
             style={{
-              background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "0 5px 12px rgba(49,130,246,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)",
             }}
           >
@@ -37,7 +37,7 @@ export default function AIChatCard() {
               <p className="text-[15px] font-extrabold text-text-main tracking-tight">
                 AI 집사
               </p>
-              <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#3182F6", opacity: 0.5 }}>
+              <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "var(--color-primary)", opacity: 0.5 }}>
                 BETA
               </span>
             </div>
@@ -62,7 +62,7 @@ export default function AIChatCard() {
             aria-label="AI 집사에게 질문하기"
             className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 active:scale-90 transition-transform"
             style={{
-              background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "0 4px 10px rgba(49,130,246,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",
             }}
           >

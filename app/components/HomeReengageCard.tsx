@@ -24,7 +24,7 @@ const cardBox: CSSProperties = {
   background: "linear-gradient(135deg, #FFFFFF 0%, #FCF6EC 100%)",
   borderRadius: 18,
   border: "1px solid rgba(49,130,246,0.18)",
-  boxShadow: "0 4px 14px rgba(49,130,246,0.08)",
+  boxShadow: "0 4px 14px var(--color-primary-softer)",
 };
 
 export default function HomeReengageCard({ quietCat, regionName, neighborhoodCatCount, latestPost }: Props) {
@@ -85,11 +85,11 @@ export default function HomeReengageCard({ quietCat, regionName, neighborhoodCat
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 text-xl" style={{ background: "rgba(49,130,246,0.12)" }}>🗺️</div>
           <div className="flex-1 min-w-0">
-            <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#1B64DA" }}>우리 동네</p>
+            <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "var(--color-primary-dark)" }}>우리 동네</p>
             <p className="text-[13.5px] font-extrabold text-text-main leading-tight mt-0.5">활동 지역을 설정해보세요</p>
             <p className="text-[11px] text-text-sub mt-0.5 truncate">우리 동네 고양이·소식을 모아드려요</p>
           </div>
-          <ChevronRight size={14} style={{ color: "#1B64DA" }} className="shrink-0" />
+          <ChevronRight size={14} style={{ color: "var(--color-primary-dark)" }} className="shrink-0" />
         </div>
       </Link>
     );
@@ -103,16 +103,16 @@ export default function HomeReengageCard({ quietCat, regionName, neighborhoodCat
       <Link href="/map" className="flex items-center gap-3 px-3.5 py-3 active:scale-[0.99] transition-transform">
         <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-lg" style={{ background: "rgba(49,130,246,0.12)" }}>🗺️</div>
         <div className="flex-1 min-w-0">
-          <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#1B64DA" }}>우리 동네 · {regionName}</p>
+          <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "var(--color-primary-dark)" }}>우리 동네 · {regionName}</p>
           <p className="text-[13.5px] font-extrabold text-text-main leading-tight mt-0.5 truncate">
             {neighborhoodCatCount > 0 ? (
-              <>돌보는 고양이 <b style={{ color: "#3182F6" }}>{neighborhoodCatCount}마리</b> 지도에서 보기</>
+              <>돌보는 고양이 <b style={{ color: "var(--color-primary)" }}>{neighborhoodCatCount}마리</b> 지도에서 보기</>
             ) : (
               <>내 주변 고양이 지도 둘러보기</>
             )}
           </p>
         </div>
-        <MapPin size={15} style={{ color: "#3182F6" }} className="shrink-0" />
+        <MapPin size={15} style={{ color: "var(--color-primary)" }} className="shrink-0" />
       </Link>
 
       {latestPost && cat && (

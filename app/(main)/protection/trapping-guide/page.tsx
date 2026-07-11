@@ -279,7 +279,7 @@ export default function TrappingGuidePage() {
       <section id="step-3" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
           <MapPin size={20} color="#3182F6" />
-          <span className="w-7 h-7 rounded-full bg-[#3182F6] text-white text-[12px] font-extrabold flex items-center justify-center">3</span>
+          <span className="w-7 h-7 rounded-full bg-[var(--color-primary)] text-white text-[12px] font-extrabold flex items-center justify-center">3</span>
           포획틀 설치
         </h2>
         <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">설치 위치 고르기</h3>

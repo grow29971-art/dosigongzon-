@@ -37,7 +37,7 @@ const TIPS: Tip[] = [
   {
     id: "set_region",
     icon: MapPin,
-    iconColor: "#3182F6",
+    iconColor: "var(--color-primary)",
     iconBg: "rgba(49,130,246,0.12)",
     title: "활동 지역 설정하기",
     desc: "내 동네를 지정하면 홈에 그 지역 고양이 · 새 소식만 모아서 보여줘요.",
@@ -205,7 +205,7 @@ export default function FeatureTipsCard({ activity, regions }: Props) {
         className="p-4 relative"
         style={{
           background: "#FFFFFF",
-          borderRadius: 20,
+          borderRadius: "var(--radius-card)",
           boxShadow: "0 4px 18px rgba(0,0,0,0.05)",
           border: `1px solid ${tip.iconColor}20`,
         }}

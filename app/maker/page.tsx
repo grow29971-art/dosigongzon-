@@ -45,7 +45,7 @@ export default function MakerPage() {
         <Link
           href="/"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -55,13 +55,13 @@ export default function MakerPage() {
 
       {/* 히어로 */}
       <section className="px-5 pt-6">
-        <p className="text-[10.5px] font-extrabold tracking-[0.18em] mb-2" style={{ color: "#1B64DA" }}>
+        <p className="text-[10.5px] font-extrabold tracking-[0.18em] mb-2" style={{ color: "var(--color-primary-dark)" }}>
           MADE BY ONE NEIGHBOR
         </p>
         <h1 className="text-[26px] font-extrabold text-text-main leading-tight tracking-tight">
           이 플랫폼,
           <br />
-          <span style={{ color: "#1B64DA" }}>한 사람이 직접 만들었어요.</span>
+          <span style={{ color: "var(--color-primary-dark)" }}>한 사람이 직접 만들었어요.</span>
         </h1>
         <p className="text-[13.5px] text-text-sub mt-3 leading-relaxed">
           <b className="text-text-main">김성우</b> · 1인 풀스택 메이커
@@ -73,7 +73,7 @@ export default function MakerPage() {
       {/* 철학과 가치 — Mission / Vision / Values */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <Sparkles size={14} style={{ color: "#1B64DA" }} />
+          <Sparkles size={14} style={{ color: "var(--color-primary-dark)" }} />
           <h2 className="text-[14px] font-extrabold text-text-main">철학과 가치</h2>
         </div>
 
@@ -86,8 +86,8 @@ export default function MakerPage() {
           }}
         >
           <div className="flex items-center gap-1.5 mb-3">
-            <Compass size={14} style={{ color: "#3182F6" }} />
-            <span className="text-[10px] font-extrabold tracking-[0.18em]" style={{ color: "#3182F6" }}>
+            <Compass size={14} style={{ color: "var(--color-primary)" }} />
+            <span className="text-[10px] font-extrabold tracking-[0.18em]" style={{ color: "var(--color-primary)" }}>
               MISSION
             </span>
           </div>
@@ -131,8 +131,8 @@ export default function MakerPage() {
 
         {/* Values 3카드 */}
         <div className="flex items-center gap-1.5 mb-2 ml-1 mt-4">
-          <Sparkles size={14} style={{ color: "#1B64DA" }} />
-          <span className="text-[10px] font-extrabold tracking-[0.18em]" style={{ color: "#1B64DA" }}>
+          <Sparkles size={14} style={{ color: "var(--color-primary-dark)" }} />
+          <span className="text-[10px] font-extrabold tracking-[0.18em]" style={{ color: "var(--color-primary-dark)" }}>
             VALUES
           </span>
         </div>
@@ -140,8 +140,8 @@ export default function MakerPage() {
           <ValueCard
             n={1}
             icon={<Users size={16} color="#FFFFFF" />}
-            accent="#3182F6"
-            accentDark="#1B64DA"
+            accent="var(--color-primary)"
+            accentDark="var(--color-primary-dark)"
             title="연대"
             body="우리는 저마다 다른 문화·환경에서 각기 다른 삶을 살아왔지만, 인류라는 공통점을 가진 형제들이다. 항상 서로의 생각·개성·성향을 존중하고 형제애를 중요시한다."
           />
@@ -196,10 +196,10 @@ export default function MakerPage() {
       {/* 만드는 방식 — 한 사람 풀스택 */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <Sparkles size={14} style={{ color: "#3182F6" }} />
+          <Sparkles size={14} style={{ color: "var(--color-primary)" }} />
           <h2 className="text-[14px] font-extrabold text-text-main">어떻게 만드나</h2>
         </div>
-        <div className="bg-white rounded-3xl p-5" style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
+        <div className="bg-white rounded-3xl p-5" style={{ boxShadow: "var(--shadow-card)" }}>
           <p className="text-[12.5px] leading-[1.95] text-text-sub mb-4">
             기획·디자인·개발·운영·고객 응대까지 모두 직접 합니다.
             소프트웨어만 다루지 않고{" "}
@@ -288,7 +288,7 @@ export default function MakerPage() {
       {/* 케어테이커에게 전하는 말 */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <Hand size={14} style={{ color: "#3182F6" }} />
+          <Hand size={14} style={{ color: "var(--color-primary)" }} />
           <h2 className="text-[14px] font-extrabold text-text-main">케어테이커님께</h2>
         </div>
         <div
@@ -320,7 +320,7 @@ export default function MakerPage() {
           <Coffee size={14} style={{ color: "#8B5A3C" }} />
           <h2 className="text-[14px] font-extrabold text-text-main">제휴·문의·차 한 잔</h2>
         </div>
-        <div className="bg-white rounded-3xl p-5" style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
+        <div className="bg-white rounded-3xl p-5" style={{ boxShadow: "var(--shadow-card)" }}>
           <p className="text-[12.5px] leading-[1.95] text-text-sub mb-4">
             언론·블로그 취재, 동물보호 단체 협업, 지자체·캠페인 제휴, 학교 프로젝트
             인터뷰 등 어떤 결의 이야기든 환영합니다. 답장은 운영자가 직접 드려요.
@@ -329,7 +329,7 @@ export default function MakerPage() {
             href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("[도시공존] 안녕하세요")}`}
             className="flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-extrabold text-white active:scale-[0.98] transition-transform"
             style={{
-              background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "0 4px 14px rgba(49,130,246,0.30)",
             }}
           >
@@ -346,15 +346,15 @@ export default function MakerPage() {
       <section className="px-5 mt-7 text-center">
         <p className="text-[11px] text-text-light leading-relaxed">
           더 자세한 서비스 소개는{" "}
-          <Link href="/about" className="underline" style={{ color: "#1B64DA" }}>
+          <Link href="/about" className="underline" style={{ color: "var(--color-primary-dark)" }}>
             소개 페이지
           </Link>
           {" · "}이용약관·개인정보처리방침은{" "}
-          <Link href="/terms" className="underline" style={{ color: "#1B64DA" }}>
+          <Link href="/terms" className="underline" style={{ color: "var(--color-primary-dark)" }}>
             약관
           </Link>
           {" · "}
-          <Link href="/privacy" className="underline" style={{ color: "#1B64DA" }}>
+          <Link href="/privacy" className="underline" style={{ color: "var(--color-primary-dark)" }}>
             처리방침
           </Link>
         </p>
@@ -372,7 +372,7 @@ function SkillCard({ icon, title, sub }: { icon: React.ReactNode; title: string;
         border: "1px solid rgba(49,130,246,0.18)",
       }}
     >
-      <div className="flex items-center gap-1.5 mb-1" style={{ color: "#1B64DA" }}>
+      <div className="flex items-center gap-1.5 mb-1" style={{ color: "var(--color-primary-dark)" }}>
         {icon}
         <p className="text-[12px] font-extrabold tracking-tight text-text-main">{title}</p>
       </div>
@@ -399,7 +399,7 @@ function ValueCard({
   return (
     <div
       className="rounded-2xl p-4 flex items-start gap-3 bg-white"
-      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+      style={{ boxShadow: "var(--shadow-card)" }}
     >
       <div
         className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center"

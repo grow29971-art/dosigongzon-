@@ -164,8 +164,8 @@ export default async function HomeLanding({
       {/* 히어로 */}
       <section className="px-5 pt-14 pb-8" style={{ background: "linear-gradient(180deg, #FFF9F2 0%, #F7F4EE 100%)" }}>
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 mb-3">
-          <Heart size={12} style={{ color: "#3182F6" }} />
-          <span className="text-[11px] font-extrabold" style={{ color: "#3182F6" }}>
+          <Heart size={12} style={{ color: "var(--color-primary)" }} />
+          <span className="text-[11px] font-extrabold" style={{ color: "var(--color-primary)" }}>
             전국 · {data.userCount > 0
               ? `${data.userCount.toLocaleString()}명의 케어테이커`
               : "케어테이커 시민 참여 플랫폼"}
@@ -196,7 +196,7 @@ export default async function HomeLanding({
             href="/map"
             className="flex-[1.4] flex items-center justify-center gap-1.5 py-4 rounded-2xl text-white active:scale-[0.98] transition-transform"
             style={{
-              background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "0 8px 22px rgba(49,130,246,0.38), 0 2px 6px rgba(168,104,74,0.22)",
             }}
           >
@@ -208,7 +208,7 @@ export default async function HomeLanding({
             className="flex-1 flex items-center justify-center gap-1.5 py-4 rounded-2xl active:scale-[0.98] transition-transform"
             style={{
               background: "rgba(49,130,246,0.09)",
-              color: "#3182F6",
+              color: "var(--color-primary)",
               border: "1.5px solid rgba(49,130,246,0.45)",
             }}
           >
@@ -378,7 +378,7 @@ export default async function HomeLanding({
                 key={r.slug}
                 href={`/areas/${r.slug}`}
                 className="block rounded-2xl bg-white p-4 active:scale-[0.98] transition-transform"
-                style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.05)", border: "1px solid #F0E6D8" }}
+                style={{ boxShadow: "var(--shadow-card)", border: "1px solid #F0E6D8" }}
               >
                 <div className="flex items-center gap-3">
                   <div
@@ -388,7 +388,7 @@ export default async function HomeLanding({
                         idx === 0
                           ? "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)"
                           : idx === 1
-                          ? "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)"
+                          ? "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)"
                           : "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)",
                     }}
                   >
@@ -405,7 +405,7 @@ export default async function HomeLanding({
                       {r.activeCaretakers > 0 && (
                         <>
                           <span className="text-text-light">·</span>
-                          <span style={{ color: "#3182F6" }}>
+                          <span style={{ color: "var(--color-primary)" }}>
                             케어테이커 <b>{r.activeCaretakers}</b>명
                           </span>
                         </>
@@ -554,7 +554,7 @@ export default async function HomeLanding({
             가장 위험한 환경은 <b className="text-text-main">동네가 무관심한 상태</b>예요.
           </p>
           <p className="text-[12px] text-text-sub leading-[1.85] mt-2">
-            <b style={{ color: "#1B64DA" }}>케어테이커와 시민의 시선이 모이는 것</b> — 그게 학대자에게 가장
+            <b style={{ color: "var(--color-primary-dark)" }}>케어테이커와 시민의 시선이 모이는 것</b> — 그게 학대자에게 가장
             강한 억제력입니다. 도시공존은 그 시선을 모으려고 만들어진 도구예요.
           </p>
         </div>
@@ -564,11 +564,11 @@ export default async function HomeLanding({
       {/* 이렇게 시작해보세요 — 3단계 액션 가이드 */}
       <section className="px-5 mt-10">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#3182F6" }} />
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
           <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
             이렇게 시작해보세요
           </h2>
-          <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#3182F6", opacity: 0.6 }}>
+          <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "var(--color-primary)", opacity: 0.6 }}>
             3 STEPS
           </span>
         </div>
@@ -633,7 +633,7 @@ export default async function HomeLanding({
                 key={c.user_id}
                 href="/ranking"
                 className="flex items-center gap-3 p-3.5 rounded-2xl bg-white active:scale-[0.99] transition-transform"
-                style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+                style={{ boxShadow: "var(--shadow-card)" }}
               >
                 <div
                   className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-white font-extrabold text-[13px]"
@@ -697,7 +697,7 @@ export default async function HomeLanding({
             className="text-[14.5px] leading-[1.9] text-text-main relative z-10"
             style={{ fontFamily: "serif" }}
           >
-            우리는 <b style={{ color: "#3182F6" }}>길 위의 아이들</b>의 삶을
+            우리는 <b style={{ color: "var(--color-primary)" }}>길 위의 아이들</b>의 삶을
             <br />
             얼마나 이해하고 있을까요?
             <br />
@@ -731,7 +731,7 @@ export default async function HomeLanding({
           </p>
           <p
             className="text-[11px] font-extrabold tracking-[0.15em] mt-5 relative z-10"
-            style={{ color: "#3182F6" }}
+            style={{ color: "var(--color-primary)" }}
           >
             — 도시공존
           </p>
@@ -743,7 +743,7 @@ export default async function HomeLanding({
         <section className="px-5 mt-6 cv-auto">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#3182F6" }} />
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
               <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">최근 등록된 아이들</h2>
             </div>
             <Link href="/map" className="flex items-center gap-0.5 text-[12px] font-semibold text-primary">
@@ -760,7 +760,7 @@ export default async function HomeLanding({
                   key={c.id}
                   href={`/cats/${c.id}`}
                   className="block rounded-2xl overflow-hidden bg-white active:scale-[0.98] transition-transform"
-                  style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.06)" }}
+                  style={{ boxShadow: "var(--shadow-raised)" }}
                 >
                   <div className="relative" style={{ aspectRatio: "4/3" }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -812,7 +812,7 @@ export default async function HomeLanding({
               key={g.slug}
               href={`/areas/${g.slug}`}
               className="text-center py-2.5 rounded-xl bg-white active:scale-95 transition-transform"
-              style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}
+              style={{ boxShadow: "var(--shadow-card-sm)" }}
             >
               <p className="text-[13px] font-extrabold text-text-main">{g.name}</p>
               <p className="text-[10px] text-text-light mt-0.5 truncate">
@@ -824,7 +824,7 @@ export default async function HomeLanding({
         <Link
           href="/areas"
           className="block text-center text-[12.5px] font-bold py-2.5 rounded-xl"
-          style={{ backgroundColor: "#FFF", color: "#3182F6", border: "1px solid #E8D4BD" }}
+          style={{ backgroundColor: "#FFF", color: "var(--color-primary)", border: "1px solid #E8D4BD" }}
         >
           전국 구·동별 길고양이 지도 →
         </Link>
@@ -932,7 +932,7 @@ export default async function HomeLanding({
         <section className="px-5 mt-8 cv-auto">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#3182F6" }} />
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
               <h2 className="text-[15px] font-extrabold text-text-main tracking-tight flex items-center gap-1">
                 <Sparkles size={15} className="text-primary" />
                 꿀팁게시판
@@ -1103,10 +1103,10 @@ export default async function HomeLanding({
               className="w-9 h-9 rounded-full flex items-center justify-center"
               style={{ background: "rgba(49,130,246,0.15)" }}
             >
-              <Code2 size={18} style={{ color: "#1B64DA" }} />
+              <Code2 size={18} style={{ color: "var(--color-primary-dark)" }} />
             </div>
             <div className="min-w-0">
-              <p className="text-[10.5px] font-extrabold tracking-[0.12em]" style={{ color: "#1B64DA" }}>
+              <p className="text-[10.5px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-primary-dark)" }}>
                 MADE BY ONE NEIGHBOR
               </p>
               <p className="text-[14px] font-extrabold text-text-main">
@@ -1127,7 +1127,7 @@ export default async function HomeLanding({
               className="flex-1 flex items-center justify-center gap-1 py-2.5 rounded-xl text-[12px] font-extrabold active:scale-[0.98] transition-transform"
               style={{
                 background: "#FFFFFF",
-                color: "#1B64DA",
+                color: "var(--color-primary-dark)",
                 border: "1px solid rgba(49,130,246,0.25)",
               }}
             >
@@ -1138,7 +1138,7 @@ export default async function HomeLanding({
               href="mailto:grow29971@gmail.com?subject=%5B%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%A1%B4%5D%20%EC%A0%9C%ED%9C%B4%2F%EB%AC%B8%EC%9D%98"
               className="flex items-center justify-center gap-1 px-4 py-2.5 rounded-xl text-[12px] font-extrabold text-white active:scale-[0.98] transition-transform"
               style={{
-                background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+                background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                 boxShadow: "0 4px 12px rgba(49,130,246,0.3)",
               }}
             >
@@ -1184,7 +1184,7 @@ function ValueRow({ icon, title, desc }: { icon: React.ReactNode; title: string;
   return (
     <div
       className="bg-white rounded-2xl p-4 flex items-start gap-3"
-      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+      style={{ boxShadow: "var(--shadow-card)" }}
     >
       <div className="shrink-0 mt-0.5">{icon}</div>
       <div className="min-w-0">
@@ -1212,7 +1212,7 @@ function GuideCard({
     <Link
       href={href}
       className="block bg-white rounded-2xl p-3 active:scale-[0.98] transition-transform"
-      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}
+      style={{ boxShadow: "var(--shadow-card)" }}
     >
       <div className="flex items-center gap-2.5">
         <div
@@ -1236,7 +1236,7 @@ function TipsRow({ tip }: { tip: Tip }) {
     <Link
       href={`/tips/${tip.slug}`}
       className="flex gap-3 p-3 bg-white rounded-2xl active:scale-[0.99] transition-transform"
-      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+      style={{ boxShadow: "var(--shadow-card)" }}
     >
       {photo ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -1301,7 +1301,7 @@ function StartStep({
       href={href}
       className="flex items-center gap-3 px-3.5 py-3 rounded-2xl bg-white active:scale-[0.99] transition-transform"
       style={{
-        boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+        boxShadow: "var(--shadow-card)",
         border: `1px solid ${color}25`,
       }}
     >
@@ -1337,7 +1337,7 @@ function TechCard({
   return (
     <div
       className="bg-white rounded-2xl p-3 flex items-center gap-2.5"
-      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}
+      style={{ boxShadow: "var(--shadow-card)" }}
     >
       <div
         className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
@@ -1357,7 +1357,7 @@ function FaqRow({ q, a }: { q: string; a: string }) {
   return (
     <details
       className="bg-white rounded-2xl p-4"
-      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+      style={{ boxShadow: "var(--shadow-card)" }}
     >
       <summary className="text-[13px] font-extrabold text-text-main cursor-pointer list-none flex items-center justify-between">
         <span>{q}</span>
@@ -1372,7 +1372,7 @@ function SafetyRow({ icon, title, body }: { icon: string; title: string; body: s
   return (
     <div
       className="bg-white rounded-xl p-3 flex items-start gap-2.5"
-      style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)", border: "1px solid #E8DED0" }}
+      style={{ boxShadow: "var(--shadow-card-sm)", border: "1px solid #E8DED0" }}
     >
       <span className="text-[18px] shrink-0 leading-none mt-0.5">{icon}</span>
       <div className="min-w-0 flex-1">

@@ -16,7 +16,7 @@ interface Props {
   iconSize?: number;
 }
 
-export default function StickerIcon({ icon: Icon, color = "#3182F6", size = 34, iconSize }: Props) {
+export default function StickerIcon({ icon: Icon, color = "var(--color-primary)", size = 34, iconSize }: Props) {
   return (
     <span
       className="inline-flex items-center justify-center rounded-full shrink-0"

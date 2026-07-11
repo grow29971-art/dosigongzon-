@@ -72,7 +72,7 @@ function SuccessContent() {
           <Link
             href="/shop/checkout"
             className="py-3.5 rounded-2xl bg-primary text-white text-[14px] font-extrabold"
-            style={{ boxShadow: "0 6px 20px rgba(49,130,246,0.3)" }}
+            style={{ boxShadow: "var(--shadow-primary)" }}
           >
             다시 시도하기
           </Link>
@@ -114,7 +114,7 @@ function SuccessContent() {
         <Link
           href={orderId ? `/shop/orders/${orderId}` : "/shop/orders"}
           className="py-3.5 rounded-2xl bg-primary text-white text-[14px] font-extrabold"
-          style={{ boxShadow: "0 6px 20px rgba(49,130,246,0.3)" }}
+          style={{ boxShadow: "var(--shadow-primary)" }}
         >
           주문 내역 보기
         </Link>

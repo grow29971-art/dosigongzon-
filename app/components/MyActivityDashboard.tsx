@@ -35,7 +35,7 @@ export default function MyActivityDashboard() {
     return (
       <div
         className="rounded-2xl p-4 mb-5"
-        style={{ background: "#FFFFFF", boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+        style={{ background: "#FFFFFF", boxShadow: "var(--shadow-card)" }}
       >
         <div className="h-20 animate-pulse bg-surface-alt rounded-xl" />
       </div>
@@ -80,7 +80,7 @@ export default function MyActivityDashboard() {
 
       <div
         className="rounded-2xl overflow-hidden"
-        style={{ background: "#FFFFFF", boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}
+        style={{ background: "#FFFFFF", boxShadow: "var(--shadow-card)" }}
       >
         {/* 이번 달 카운트 + 변동률 */}
         <div

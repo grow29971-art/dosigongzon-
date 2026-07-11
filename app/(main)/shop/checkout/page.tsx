@@ -187,8 +187,8 @@ export default function CheckoutPage() {
   };
 
   const inputStyle = {
-    background: "#F9FAFB",
-    borderRadius: 14,
+    background: "var(--color-warm-white)",
+    borderRadius: "var(--radius-input)",
     border: "1px solid rgba(0,0,0,0.05)",
   } as const;
 
@@ -198,7 +198,7 @@ export default function CheckoutPage() {
         <button
           onClick={() => router.back()}
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로 가기"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -209,7 +209,7 @@ export default function CheckoutPage() {
       {loading ? (
         <div className="px-4 mt-4 space-y-3">
           {[0, 1].map((i) => (
-            <div key={i} className="rounded-2xl animate-pulse" style={{ height: 80, background: "#F2F4F6" }} />
+            <div key={i} className="rounded-2xl animate-pulse" style={{ height: 80, background: "var(--color-surface-alt)" }} />
           ))}
         </div>
       ) : items.length === 0 ? (
@@ -238,7 +238,7 @@ export default function CheckoutPage() {
           {/* 주문 상품 */}
           <section
             className="p-4"
-            style={{ background: "#fff", borderRadius: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.04)" }}
+            style={{ background: "#fff", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
           >
             <h2 className="text-[13.5px] font-extrabold text-text-main mb-3">주문 상품 {items.length}건</h2>
             <div className="space-y-2.5">
@@ -277,7 +277,7 @@ export default function CheckoutPage() {
           ) : (<>
           <section
             className="p-4"
-            style={{ background: "#fff", borderRadius: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.04)" }}
+            style={{ background: "#fff", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
           >
             <h2 className="text-[13.5px] font-extrabold text-text-main mb-3">배송지 정보</h2>
             <div className="space-y-2.5">
@@ -312,7 +312,7 @@ export default function CheckoutPage() {
                   type="button"
                   onClick={() => setPostcodeOpen(true)}
                   className="flex-1 py-3 rounded-2xl text-[13px] font-bold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-transform"
-                  style={{ background: "rgba(49,130,246,0.1)", color: "#3182F6" }}
+                  style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}
                 >
                   <MapPin size={14} />
                   주소 검색
@@ -342,7 +342,7 @@ export default function CheckoutPage() {
           {/* 주문 메모 */}
           <section
             className="p-4"
-            style={{ background: "#fff", borderRadius: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.04)" }}
+            style={{ background: "#fff", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
           >
             <h2 className="text-[13.5px] font-extrabold text-text-main mb-3">주문 메모 <span className="text-[11px] font-semibold text-text-light">(선택)</span></h2>
             <textarea
@@ -359,7 +359,7 @@ export default function CheckoutPage() {
           {/* 결제 금액 */}
           <section
             className="p-4"
-            style={{ background: "#fff", borderRadius: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.04)" }}
+            style={{ background: "#fff", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
           >
             <h2 className="text-[13.5px] font-extrabold text-text-main mb-3">결제 금액</h2>
             <div className="flex items-center justify-between text-[12.5px] text-text-sub mb-1.5">
@@ -377,7 +377,7 @@ export default function CheckoutPage() {
               style={{ borderTop: "1px dashed rgba(0,0,0,0.08)" }}
             >
               <span>총 결제금액</span>
-              <span style={{ color: "#3182F6" }}>{formatWon(grandTotal)}</span>
+              <span style={{ color: "var(--color-primary)" }}>{formatWon(grandTotal)}</span>
             </div>
           </section>
 
@@ -397,7 +397,7 @@ export default function CheckoutPage() {
             onClick={handleSubmit}
             disabled={submitting}
             className="w-full py-3.5 rounded-2xl bg-primary text-white text-[14.5px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-50"
-            style={{ boxShadow: "0 6px 20px rgba(49,130,246,0.3)" }}
+            style={{ boxShadow: "var(--shadow-primary)" }}
           >
             {submitting ? "주문 처리 중…" : `${formatWon(grandTotal)} 결제하기`}
           </button>

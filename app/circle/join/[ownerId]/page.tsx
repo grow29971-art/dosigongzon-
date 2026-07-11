@@ -126,7 +126,7 @@ export default function CircleJoinPage() {
         <Link
           href="/mypage/circle"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -158,7 +158,7 @@ export default function CircleJoinPage() {
           </Link>
         </div>
       ) : result === "rejected" ? (
-        <div className="rounded-3xl p-6 text-center bg-white" style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
+        <div className="rounded-3xl p-6 text-center bg-white" style={{ boxShadow: "var(--shadow-card)" }}>
           <p className="text-[15px] font-bold text-text-main mb-3">초대를 거절했어요</p>
           <Link href="/" className="text-primary text-[13px] font-bold">홈으로</Link>
         </div>

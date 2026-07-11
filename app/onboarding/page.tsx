@@ -60,8 +60,8 @@ const SLIDES = [
     /* 새벽 — 희망의 빛 */
     bg: "linear-gradient(170deg, #5a3e22 0%, #b87050 25%, #d4906a 50%, #e8c4a8 75%, #f5f0e8 100%)",
     particleColor: "rgba(212,149,111,0.08)",
-    accentColor: "#3182F6",
-    dotActive: "#3182F6",
+    accentColor: "var(--color-primary)",
+    dotActive: "var(--color-primary)",
     title: "이제 '도시공존'이\n당신의 든든한 쉼터가\n되어드릴게요.",
     body: "혼자 하는 돌봄이 외롭지 않도록,\n당신의 진심이 지치지 않도록.\n우리가 곁에서 정보를 나누고\n진심을 더하겠습니다.\n\n함께 공존의 길을 걸어봐요.",
     MainIcon: Handshake,
@@ -117,9 +117,9 @@ export default function OnboardingPage() {
   // 4번째: "이렇게 시작해보세요" 액션 카드 화면
   const isPicker = current === SLIDES.length;
   const pickerSlide = {
-    bg: "linear-gradient(170deg, #3182F6 0%, #4593FC 50%, #F5F0E8 100%)",
-    accentColor: "#3182F6",
-    dotActive: "#3182F6",
+    bg: "linear-gradient(170deg, var(--color-primary) 0%, var(--color-primary-light) 50%, #F5F0E8 100%)",
+    accentColor: "var(--color-primary)",
+    dotActive: "var(--color-primary)",
   };
   const activeBg = isPicker ? pickerSlide.bg : slide.bg;
   const activeAccent = isPicker ? pickerSlide.accentColor : slide.accentColor;

@@ -69,7 +69,7 @@ export default function BlockedUsersPage() {
         <Link
           href="/mypage"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="마이페이지로"
         >
           <ArrowLeft size={18} className="text-text-main" />

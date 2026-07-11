@@ -17,7 +17,7 @@ const SLOT_THEME: Record<BodySlot, string> = {
   head: "#B18CE8",
   arm: "#FF8B6B",
   body: "#FF6B8A",
-  leg: "#4593FC",
+  leg: "var(--color-primary-light)",
   foot: "#5BC48A",
 };
 
@@ -261,7 +261,7 @@ export default function MyCardsPage() {
           <div className="grid grid-cols-5 gap-1.5 mb-4 mt-3">
             <Link href="/mypage/cards/battle"
               className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[10.5px] text-white"
-              style={{ background: "linear-gradient(135deg,#4593FC,#2F5E93)", boxShadow: "0 4px 12px rgba(47,94,147,0.3)" }}>
+              style={{ background: "linear-gradient(135deg,var(--color-primary-light),#2F5E93)", boxShadow: "0 4px 12px rgba(47,94,147,0.3)" }}>
               <Swords size={15} /> 배틀
             </Link>
             <Link href="/mypage/cards/ranking"
@@ -342,7 +342,7 @@ export default function MyCardsPage() {
           <button onClick={() => setSelected(null)}
             style={{
               position: "fixed", top: "calc(env(safe-area-inset-top) + 14px)", right: 16, zIndex: 201,
-              width: 40, height: 40, borderRadius: 99,
+              width: 40, height: 40, borderRadius: "var(--radius-full)",
               background: UI.panelAlt, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}`,
               display: "flex", alignItems: "center", justifyContent: "center", color: UI.textMain, cursor: "pointer",
             }}>

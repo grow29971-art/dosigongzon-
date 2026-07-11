@@ -42,7 +42,7 @@ export default async function WeeklyHotPosts() {
                 className="relative rounded-2xl px-4 py-3 flex items-start gap-3"
                 style={{
                   background: "#FFFFFF",
-                  boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+                  boxShadow: "var(--shadow-card)",
                   border: "1px solid rgba(0,0,0,0.04)",
                 }}
               >

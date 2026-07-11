@@ -170,7 +170,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
         <Link
           href={`/areas/${slug}`}
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label={`${gu.name}으로`}
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -184,8 +184,8 @@ export default async function AreaDongPage({ params }: { params: Params }) {
 
       <section className="px-5 pt-4">
         <div className="flex items-center gap-1.5 mb-1.5">
-          <MapPin size={14} style={{ color: "#3182F6" }} />
-          <span className="text-[11.5px] font-bold" style={{ color: "#3182F6" }}>
+          <MapPin size={14} style={{ color: "var(--color-primary)" }} />
+          <span className="text-[11.5px] font-bold" style={{ color: "var(--color-primary)" }}>
             서울특별시 {gu.name} {dongName}
           </span>
         </div>
@@ -193,7 +193,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
           {dongName} 길고양이 돌봄 지도
         </h1>
         <p className="text-[13.5px] text-text-sub mt-2 leading-relaxed">
-          {dongName}에 등록된 길고양이 <b style={{ color: "#3182F6" }}>{catCount}마리</b>의 돌봄 기록.
+          {dongName}에 등록된 길고양이 <b style={{ color: "var(--color-primary)" }}>{catCount}마리</b>의 돌봄 기록.
           {urgent > 0 && (
             <> 지금 도움이 필요한 아이 <b style={{ color: "#D85555" }}>{urgent}마리</b>.</>
           )}
@@ -203,7 +203,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
           <Link
             href="/map"
             className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-primary text-white active:scale-[0.98] transition-transform"
-            style={{ boxShadow: "0 4px 14px rgba(49,130,246,0.3)" }}
+            style={{ boxShadow: "var(--shadow-primary)" }}
           >
             <PawPrint size={14} />
             <span className="text-[13px] font-extrabold">지도에서 보기</span>
@@ -211,7 +211,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
           <Link
             href="/signup"
             className="flex-1 flex items-center justify-center py-3 rounded-2xl active:scale-[0.98] transition-transform"
-            style={{ backgroundColor: "#FFF", color: "#3182F6", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 800 }}
+            style={{ backgroundColor: "#FFF", color: "var(--color-primary)", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 800 }}
           >
             돌봄 시작하기
           </Link>
@@ -254,15 +254,15 @@ export default async function AreaDongPage({ params }: { params: Params }) {
               <br />
               곧 {dongName}에도 따뜻한 지도가 생겨요.
               <br />
-              <b style={{ color: "#1B64DA" }}>출시 기념 — 지금 합류하시면 창립 멤버 타이틀을 영구 드려요.</b>
+              <b style={{ color: "var(--color-primary-dark)" }}>출시 기념 — 지금 합류하시면 창립 멤버 타이틀을 영구 드려요.</b>
             </p>
             <div className="flex gap-2">
               <Link
                 href={`/signup?next=${encodeURIComponent(`/areas/${slug}/${encodeURIComponent(dongName)}`)}`}
                 className="flex-[1.5] flex items-center justify-center py-2.5 rounded-xl text-white text-[12.5px] font-extrabold active:scale-[0.98] transition-transform"
                 style={{
-                  background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
-                  boxShadow: "0 4px 14px rgba(49,130,246,0.35)",
+                  background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+                  boxShadow: "var(--shadow-primary)",
                 }}
               >
                 무료로 시작하기
@@ -271,7 +271,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
                 href={`/areas/${slug}`}
                 className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.98] transition-transform bg-white"
                 style={{
-                  color: "#1B64DA",
+                  color: "var(--color-primary-dark)",
                   border: "1px solid rgba(49,130,246,0.30)",
                 }}
               >
@@ -289,7 +289,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
                   key={c.id}
                   href={`/cats/${c.id}`}
                   className="block rounded-2xl overflow-hidden bg-white active:scale-[0.98] transition-transform"
-                  style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.06)" }}
+                  style={{ boxShadow: "var(--shadow-raised)" }}
                 >
                   <div className="relative" style={{ aspectRatio: "1 / 1" }}>
                     <Image
@@ -339,7 +339,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
               <div
                 key={h.id}
                 className="bg-white rounded-2xl p-3.5"
-                style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+                style={{ boxShadow: "var(--shadow-card)" }}
               >
                 <p className="text-[13.5px] font-extrabold text-text-main">{h.name}</p>
                 {h.address && (
@@ -372,7 +372,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
                 key={d}
                 href={`/areas/${slug}/${encodeURIComponent(d)}`}
                 className="text-center py-2 rounded-xl bg-white text-[12px] font-bold active:scale-95 transition-transform"
-                style={{ color: "#6B5043", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}
+                style={{ color: "#6B5043", boxShadow: "var(--shadow-card-sm)" }}
               >
                 {d}
               </Link>
@@ -381,7 +381,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
           <Link
             href={`/areas/${slug}`}
             className="block text-center text-[12px] font-bold mt-3"
-            style={{ color: "#3182F6" }}
+            style={{ color: "var(--color-primary)" }}
           >
             {gu.name} 전체 보기 →
           </Link>
@@ -390,7 +390,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
 
       {/* 하단 SEO 본문 */}
       <section className="px-5 mt-7">
-        <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
+        <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "var(--shadow-card)" }}>
           <p className="text-[12.5px] text-text-sub leading-relaxed">
             <b className="text-text-main">도시공존</b>은 {gu.name} {dongName}을 포함한
             전국 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다.

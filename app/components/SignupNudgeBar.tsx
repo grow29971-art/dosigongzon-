@@ -82,7 +82,7 @@ export default function SignupNudgeBar() {
         <div
           className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
           style={{
-            background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+            background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
             boxShadow: "0 3px 8px rgba(49,130,246,0.35)",
           }}
         >
@@ -100,7 +100,7 @@ export default function SignupNudgeBar() {
           href={`/signup?next=${next}`}
           className="shrink-0 flex items-center gap-1 px-3 py-2 rounded-xl text-white text-[12px] font-extrabold active:scale-95 transition-transform"
           style={{
-            background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+            background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
             boxShadow: "0 3px 8px rgba(49,130,246,0.35)",
           }}
         >

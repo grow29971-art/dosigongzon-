@@ -48,7 +48,7 @@ export default function OrdersPage() {
         <button
           onClick={() => router.back()}
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로 가기"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -59,7 +59,7 @@ export default function OrdersPage() {
       {loading ? (
         <div className="px-4 mt-4 space-y-3">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="rounded-2xl animate-pulse" style={{ height: 100, background: "#F2F4F6" }} />
+            <div key={i} className="rounded-2xl animate-pulse" style={{ height: 100, background: "var(--color-surface-alt)" }} />
           ))}
         </div>
       ) : orders.length === 0 ? (
@@ -68,7 +68,7 @@ export default function OrdersPage() {
             className="w-16 h-16 rounded-3xl flex items-center justify-center mb-4"
             style={{ background: "linear-gradient(135deg, #f5e6d8 0%, #e8c9a8 100%)" }}
           >
-            <PackageOpen size={28} style={{ color: "#3182F6" }} />
+            <PackageOpen size={28} style={{ color: "var(--color-primary)" }} />
           </div>
           <p className="text-[14px] font-bold text-text-main mb-1">주문 내역이 없어요</p>
           <p className="text-[12.5px] text-text-sub mb-6">첫 주문을 기다리고 있어요!</p>

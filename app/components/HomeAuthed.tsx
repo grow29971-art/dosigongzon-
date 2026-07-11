@@ -110,7 +110,7 @@ function getTempColor(temp: number): string {
   if (temp <= 0) return "#5B7A8F";
   if (temp <= 10) return "#7A9BB0";
   if (temp <= 20) return "#2A2A28";
-  if (temp <= 30) return "#3182F6";
+  if (temp <= 30) return "var(--color-primary)";
   return "#B84545";
 }
 
@@ -437,7 +437,7 @@ export default function HomeAuthed({
             emoji: lvl.emoji,
             title: `Lv.${lvl.level} ${lvl.title}`,
             subtitle: "레벨이 올랐어요! 새 혜택을 확인해보세요",
-            color: "#3182F6",
+            color: "var(--color-primary)",
           });
         }
         localStorage.setItem(prevKey, String(lvl.level));
@@ -528,14 +528,14 @@ export default function HomeAuthed({
           <div className="flex items-center gap-2">
             <div
               className="w-5 h-[2px] rounded-full"
-              style={{ backgroundColor: "#3182F6", opacity: 0.6 }}
+              style={{ backgroundColor: "var(--color-primary)", opacity: 0.6 }}
             />
             <p className="text-[12.5px] font-extrabold text-text-sub tracking-[-0.01em]">
               길 위의 아이들
             </p>
             <span
               className="text-[9px] font-bold tracking-[0.15em]"
-              style={{ color: "#3182F6", opacity: 0.5 }}
+              style={{ color: "var(--color-primary)", opacity: 0.5 }}
             >
               FOR STRAY CATS
             </span>
@@ -568,7 +568,7 @@ export default function HomeAuthed({
             <div className="mt-2 flex items-center gap-2 max-w-[220px]">
               <span
                 className="text-[10px] font-extrabold tracking-tight shrink-0 flex items-center gap-0.5"
-                style={{ color: "#3182F6" }}
+                style={{ color: "var(--color-primary)" }}
               >
                 <span>{levelInfo.emoji}</span>
                 <span>Lv.{levelInfo.level}</span>
@@ -581,7 +581,7 @@ export default function HomeAuthed({
                   className="h-full rounded-full transition-all"
                   style={{
                     width: `${Math.max(levelInfo.progress * 100, 4)}%`,
-                    background: "linear-gradient(90deg, #3182F6 0%, #5BC4C4 100%)",
+                    background: "linear-gradient(90deg, var(--color-primary) 0%, #5BC4C4 100%)",
                   }}
                 />
               </div>
@@ -637,7 +637,7 @@ export default function HomeAuthed({
         className="px-4 py-3 mb-4 dark-card-level"
         style={{
           background: "linear-gradient(135deg, #FFFFFF 0%, #FDF9F2 100%)",
-          borderRadius: 20,
+          borderRadius: "var(--radius-card)",
           boxShadow: "0 8px 24px rgba(74,123,168,0.08), 0 1px 3px rgba(0,0,0,0.03)",
           border: "1px solid rgba(0,0,0,0.04)",
         }}
@@ -795,13 +795,13 @@ export default function HomeAuthed({
                     <Link
                       href={`/shop?category=${bridge.cat}`}
                       className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl active:scale-[0.98] transition-transform"
-                      style={{ background: "rgba(49,130,246,0.08)", border: "1px solid rgba(49,130,246,0.15)" }}
+                      style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(49,130,246,0.15)" }}
                     >
-                      <span className="flex items-center gap-1.5 text-[11.5px] font-extrabold" style={{ color: "#1B64DA" }}>
+                      <span className="flex items-center gap-1.5 text-[11.5px] font-extrabold" style={{ color: "var(--color-primary-dark)" }}>
                         <ShoppingBag size={13} />
                         {bridge.label}
                       </span>
-                      <ChevronRight size={14} style={{ color: "#1B64DA" }} />
+                      <ChevronRight size={14} style={{ color: "var(--color-primary-dark)" }} />
                     </Link>
                   )}
                 </div>
@@ -907,7 +907,7 @@ export default function HomeAuthed({
             {/* 스탯 4칸 */}
             <div className="grid grid-cols-4 gap-2">
               {[
-                { label: "고양이", value: activity.catCount, color: "#3182F6", icon: "🐱" },
+                { label: "고양이", value: activity.catCount, color: "var(--color-primary)", icon: "🐱" },
                 { label: "돌봄", value: activity.commentCount + activity.careLogCount, color: "#48A59E", icon: "📝" },
                 { label: "신고", value: activity.alertCount, color: "#8B65B8", icon: "🛡️" },
                 { label: "좋아요", value: activity.likesReceived, color: "#E86B8C", icon: "❤️" },
@@ -933,12 +933,12 @@ export default function HomeAuthed({
         <div className="mb-5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 px-1">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#3182F6" }} />
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
               <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
                 내 동네 소식
               </h2>
               {primaryRegion && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ background: "rgba(49,130,246,0.12)", color: "#3182F6" }}>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ background: "rgba(49,130,246,0.12)", color: "var(--color-primary)" }}>
                   📍 {primaryRegion.name}
                 </span>
               )}
@@ -959,7 +959,7 @@ export default function HomeAuthed({
               <div
                 className="px-4 py-4 flex items-center gap-3"
                 style={{
-                  background: "linear-gradient(135deg, rgba(49,130,246,0.08) 0%, rgba(168,104,74,0.04) 100%)",
+                  background: "linear-gradient(135deg, var(--color-primary-softer) 0%, rgba(168,104,74,0.04) 100%)",
                   borderRadius: 18,
                   border: "1px dashed rgba(49,130,246,0.3)",
                 }}
@@ -974,7 +974,7 @@ export default function HomeAuthed({
                   <p className="text-[13px] font-extrabold text-text-main">활동 지역을 설정해보세요</p>
                   <p className="text-[11px] text-text-sub mt-0.5">우리 동네 고양이 소식을 모아 볼 수 있어요</p>
                 </div>
-                <ChevronRight size={16} style={{ color: "#3182F6" }} />
+                <ChevronRight size={16} style={{ color: "var(--color-primary)" }} />
               </div>
             </Link>
           ) : (
@@ -990,7 +990,7 @@ export default function HomeAuthed({
                     style={{
                       background: "#FFFFFF",
                       borderRadius: 18,
-                      boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+                      boxShadow: "var(--shadow-card)",
                       border: "1px solid rgba(0,0,0,0.04)",
                     }}
                   >
@@ -1039,7 +1039,7 @@ export default function HomeAuthed({
                   style={{
                     background: "#FFFFFF",
                     borderRadius: 18,
-                    boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+                    boxShadow: "var(--shadow-card)",
                     border: "1px solid rgba(0,0,0,0.04)",
                   }}
                 >
@@ -1108,7 +1108,7 @@ export default function HomeAuthed({
                     href="/map"
                     className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white active:scale-[0.98] transition-transform"
                     style={{
-                      background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+                      background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                       boxShadow: "0 4px 12px rgba(49,130,246,0.3)",
                     }}
                   >
@@ -1127,7 +1127,7 @@ export default function HomeAuthed({
                   style={{
                     background: "#FFFFFF",
                     borderRadius: 18,
-                    boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+                    boxShadow: "var(--shadow-card)",
                     border: "1px solid rgba(0,0,0,0.04)",
                   }}
                 >
@@ -1143,7 +1143,7 @@ export default function HomeAuthed({
                       >
                         <span
                           className="text-[10px] font-extrabold px-2 py-0.5 rounded-md shrink-0"
-                          style={{ backgroundColor: "rgba(49,130,246,0.12)", color: "#3182F6" }}
+                          style={{ backgroundColor: "rgba(49,130,246,0.12)", color: "var(--color-primary)" }}
                         >
                           {p.region}
                         </span>
@@ -1186,16 +1186,16 @@ export default function HomeAuthed({
             borderRadius: 18,
             padding: "12px 14px",
             border: "1px solid rgba(49,130,246,0.18)",
-            boxShadow: "0 4px 14px rgba(49,130,246,0.08)",
+            boxShadow: "0 4px 14px var(--color-primary-softer)",
           }}
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-lg" style={{ background: "rgba(49,130,246,0.12)" }}>📖</div>
             <div className="flex-1 min-w-0">
-              <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "#1B64DA" }}>우리 동네 고양이 도감</p>
+              <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "var(--color-primary-dark)" }}>우리 동네 고양이 도감</p>
               <p className="text-[13.5px] font-extrabold text-text-main leading-tight mt-0.5 truncate">만난 고양이를 모아보세요</p>
             </div>
-            <ChevronRight size={14} style={{ color: "#1B64DA" }} className="shrink-0" />
+            <ChevronRight size={14} style={{ color: "var(--color-primary-dark)" }} className="shrink-0" />
           </div>
         </Link>
       )}
@@ -1247,7 +1247,7 @@ export default function HomeAuthed({
                   <div
                     className="relative overflow-hidden"
                     style={{
-                      borderRadius: 20,
+                      borderRadius: "var(--radius-card)",
                       aspectRatio: "5 / 3",
                       background: a.photoUrl
                         ? `url('${a.photoUrl}') center/cover`
@@ -1375,8 +1375,8 @@ export default function HomeAuthed({
               className="overflow-hidden"
               style={{
                 background: "#FFFFFF",
-                borderRadius: 20,
-                boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+                borderRadius: "var(--radius-card)",
+                boxShadow: "var(--shadow-card)",
                 border: "1px solid rgba(72,165,158,0.12)",
               }}
             >
@@ -1460,7 +1460,7 @@ export default function HomeAuthed({
                     className="flex items-center gap-3 px-3 py-2.5"
                     style={{
                       background: "#FFFFFF",
-                      borderRadius: 14,
+                      borderRadius: "var(--radius-input)",
                       boxShadow: "0 2px 6px rgba(0,0,0,0.04)",
                     }}
                   >
@@ -1477,7 +1477,7 @@ export default function HomeAuthed({
                       style={{
                         background: r.avatarUrl
                           ? `url('${r.avatarUrl}') center/cover`
-                          : "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+                          : "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                         border: "2px solid #fff",
                         boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
                       }}
@@ -1615,7 +1615,7 @@ export default function HomeAuthed({
                   className="flex items-start gap-3 px-4 py-3"
                   style={{
                     background: "#FFFFFF",
-                    borderRadius: 16,
+                    borderRadius: "var(--radius-card-sm)",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)",
                     border: "1px solid rgba(91,122,143,0.18)",
                   }}
@@ -1674,12 +1674,12 @@ export default function HomeAuthed({
             className="flex items-center justify-between px-4 py-2.5"
             style={{
               background: "linear-gradient(135deg, #FFF6EE 0%, #FFE9D2 100%)",
-              borderRadius: 14,
+              borderRadius: "var(--radius-input)",
               border: "1px solid #F2D6B6",
             }}
           >
             <div className="flex items-center gap-2 min-w-0">
-              <Sparkles size={14} style={{ color: "#3182F6" }} />
+              <Sparkles size={14} style={{ color: "var(--color-primary)" }} />
               <span
                 className="text-[12px] font-bold truncate"
                 style={{ color: "#8C5A37" }}
@@ -1687,7 +1687,7 @@ export default function HomeAuthed({
                 지난 방문 이후 새 글 {newPostsCount}개
               </span>
             </div>
-            <ChevronRight size={14} style={{ color: "#3182F6" }} />
+            <ChevronRight size={14} style={{ color: "var(--color-primary)" }} />
           </div>
         </Link>
       )}
@@ -1720,7 +1720,7 @@ export default function HomeAuthed({
                   className="flex items-center gap-3 px-4 py-3"
                   style={{
                     background: "#FFFFFF",
-                    borderRadius: 16,
+                    borderRadius: "var(--radius-card-sm)",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)",
                     border: "1px solid rgba(0,0,0,0.04)",
                   }}
@@ -1778,7 +1778,7 @@ export default function HomeAuthed({
             <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
               고양이 사회 소식
             </h2>
-            <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#3182F6", opacity: 0.5 }}>
+            <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "var(--color-primary)", opacity: 0.5 }}>
               NEWS &amp; EVENTS
             </span>
           </div>

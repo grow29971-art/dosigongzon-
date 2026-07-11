@@ -21,7 +21,7 @@ export default function MonthlyReportShareButton({ text }: { text: string }) {
       className="w-full flex items-center justify-center gap-2 py-3.5 active:scale-[0.98] transition-transform"
       style={{
         background: "#5BA876",
-        borderRadius: 14,
+        borderRadius: "var(--radius-input)",
         boxShadow: "0 4px 14px rgba(91,168,118,0.30)",
       }}
     >

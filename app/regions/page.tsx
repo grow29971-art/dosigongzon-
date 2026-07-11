@@ -73,7 +73,7 @@ export default function RegionsIndexPage() {
         <Link
           href="/"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -83,8 +83,8 @@ export default function RegionsIndexPage() {
 
       <section className="px-5 pt-4">
         <div className="flex items-center gap-1.5 mb-1.5">
-          <MapPin size={14} style={{ color: "#3182F6" }} />
-          <span className="text-[11.5px] font-bold" style={{ color: "#3182F6" }}>대한민국</span>
+          <MapPin size={14} style={{ color: "var(--color-primary)" }} />
+          <span className="text-[11.5px] font-bold" style={{ color: "var(--color-primary)" }}>대한민국</span>
         </div>
         <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight">
           전국 길고양이<br />돌봄 지도
@@ -101,7 +101,7 @@ export default function RegionsIndexPage() {
           href={SEOUL_HIGHLIGHT.href}
           className="block rounded-2xl p-4 active:scale-[0.98] transition-transform"
           style={{
-            background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+            background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
             boxShadow: "0 8px 24px rgba(49,130,246,0.30)",
           }}
         >
@@ -125,7 +125,7 @@ export default function RegionsIndexPage() {
               key={s.slug}
               href={`/regions/${s.slug}`}
               className="bg-white rounded-2xl p-3.5 active:scale-[0.97] transition-transform"
-              style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}
+              style={{ boxShadow: "var(--shadow-card)" }}
             >
               <div className="flex items-baseline justify-between">
                 <span className="text-[14px] font-extrabold text-text-main">{s.shortName}</span>
@@ -139,7 +139,7 @@ export default function RegionsIndexPage() {
 
       {/* 하단 SEO 본문 */}
       <section className="px-5 mt-7">
-        <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
+        <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "var(--shadow-card)" }}>
           <p className="text-[12.5px] text-text-sub leading-relaxed">
             <b className="text-text-main">도시공존</b>은 전국 어디서나 길고양이 돌봄 기록을 남길 수 있어요.
             현재 서울은 25개 구·동 단위 상세 페이지를 제공하고, 다른 광역시·도는 지역 단위 안내를

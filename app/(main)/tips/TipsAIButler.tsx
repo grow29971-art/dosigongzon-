@@ -36,7 +36,7 @@ export default function TipsAIButler() {
           <div
             className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
             style={{
-              background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "0 5px 12px rgba(49,130,246,0.35)",
             }}
           >
@@ -44,7 +44,7 @@ export default function TipsAIButler() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[15px] font-extrabold text-text-main tracking-tight">
-              AI 집사 <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#3182F6", opacity: 0.5 }}>BETA</span>
+              AI 집사 <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "var(--color-primary)", opacity: 0.5 }}>BETA</span>
             </p>
             <p className="text-[11.5px] text-text-sub mt-0.5">로그인하면 길고양이 돌봄, 뭐든 물어볼 수 있어요</p>
           </div>
@@ -64,7 +64,7 @@ export default function TipsAIButler() {
                 className="px-3 py-2.5 rounded-2xl flex items-center gap-2"
                 style={{
                   background: "#FFFFFF",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                  boxShadow: "var(--shadow-card)",
                   border: "1px solid rgba(0,0,0,0.04)",
                 }}
               >

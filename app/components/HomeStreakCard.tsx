@@ -27,7 +27,7 @@ export default function HomeStreakCard({
   const accent =
     s >= 30 ? "#D85555" :
     s >= 7  ? "#E88D5A" :
-    s >= 1  ? "#3182F6" : "#A38E7A";
+    s >= 1  ? "var(--color-primary)" : "#A38E7A";
   const headline = s === 0
     ? (hasToday ? "오늘 돌봄을 시작했어요" : "오늘 첫 돌봄을 기록해보세요")
     : hasToday

@@ -32,7 +32,7 @@ export function SkeletonText({ className, style }: SkeletonProps) {
 /** 고양이 카드 (areas·search) */
 export function SkeletonCatCard() {
   return (
-    <div className="rounded-2xl overflow-hidden bg-white" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.06)" }}>
+    <div className="rounded-2xl overflow-hidden bg-white" style={{ boxShadow: "var(--shadow-raised)" }}>
       <SkeletonBlock style={{ aspectRatio: "1 / 1", borderRadius: 0 }} />
       <div className="p-2.5">
         <SkeletonText className="w-2/3" />
@@ -45,7 +45,7 @@ export function SkeletonCatCard() {
 /** 게시글 카드 (community·search) */
 export function SkeletonPostCard() {
   return (
-    <div className="rounded-2xl bg-white p-3.5" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+    <div className="rounded-2xl bg-white p-3.5" style={{ boxShadow: "var(--shadow-card)" }}>
       <SkeletonText className="w-4/5" />
       <SkeletonText className="w-full mt-2 h-2.5" />
       <SkeletonText className="w-3/5 mt-1 h-2.5" />
@@ -60,7 +60,7 @@ export function SkeletonPostCard() {
 /** 병원 카드 (search·hospitals) */
 export function SkeletonHospitalCard() {
   return (
-    <div className="rounded-2xl bg-white p-3.5" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+    <div className="rounded-2xl bg-white p-3.5" style={{ boxShadow: "var(--shadow-card)" }}>
       <SkeletonText className="w-3/5" />
       <SkeletonText className="w-4/5 mt-2 h-2.5" />
       <SkeletonText className="w-1/3 mt-1.5 h-2.5" />
@@ -71,7 +71,7 @@ export function SkeletonHospitalCard() {
 /** 통계 카드 (admin/insights) */
 export function SkeletonStatCard() {
   return (
-    <div className="rounded-2xl bg-white p-3.5" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+    <div className="rounded-2xl bg-white p-3.5" style={{ boxShadow: "var(--shadow-card)" }}>
       <SkeletonText className="w-1/3 h-2.5" />
       <SkeletonBlock className="mt-2.5 h-7 w-1/2" />
     </div>
@@ -81,7 +81,7 @@ export function SkeletonStatCard() {
 /** 리스트 행 (TOP 5 등) */
 export function SkeletonListRow() {
   return (
-    <div className="flex items-center justify-between bg-white rounded-xl px-3.5 py-2.5" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+    <div className="flex items-center justify-between bg-white rounded-xl px-3.5 py-2.5" style={{ boxShadow: "var(--shadow-card-sm)" }}>
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <SkeletonCircle className="w-4 h-4 shrink-0" />
         <SkeletonText className="w-2/3" />

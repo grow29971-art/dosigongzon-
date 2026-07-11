@@ -75,7 +75,7 @@ export default async function CaretakersPage() {
             <div
               className="mb-3 px-3 py-2.5 rounded-xl flex items-center gap-2"
               style={{
-                background: "rgba(49,130,246,0.08)",
+                background: "var(--color-primary-softer)",
                 border: "1px solid rgba(49,130,246,0.15)",
               }}
             >
@@ -113,7 +113,7 @@ function CaretakerCard({
       className="rounded-2xl p-4"
       style={{
         background: "#FFFFFF",
-        boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+        boxShadow: "var(--shadow-card)",
         border: "1px solid rgba(0,0,0,0.04)",
       }}
     >
@@ -145,7 +145,7 @@ function CaretakerCard({
             {caretaker.admin_title && (
               <span
                 className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md shrink-0"
-                style={{ background: "#3182F6", color: "#fff" }}
+                style={{ background: "var(--color-primary)", color: "#fff" }}
               >
                 {caretaker.admin_title}
               </span>
@@ -184,8 +184,8 @@ function CaretakerCard({
           href={`/users/${caretaker.id}`}
           className="flex-1 py-2 rounded-xl text-center text-[12.5px] font-bold active:scale-[0.97] transition-transform"
           style={{
-            background: "rgba(49,130,246,0.08)",
-            color: "#3182F6",
+            background: "var(--color-primary-softer)",
+            color: "var(--color-primary)",
             border: "1px solid rgba(49,130,246,0.18)",
           }}
         >
@@ -194,7 +194,7 @@ function CaretakerCard({
         <Link
           href={`/messages?to=${caretaker.id}&name=${encodeURIComponent(caretaker.nickname)}&preset=${presetMsg}`}
           className="flex-1 py-2 rounded-xl text-center text-[12.5px] font-bold text-white active:scale-[0.97] transition-transform inline-flex items-center justify-center gap-1.5"
-          style={{ background: "#3182F6" }}
+          style={{ background: "var(--color-primary)" }}
         >
           <MessageCircle size={13} />
           쪽지 보내기
@@ -211,7 +211,7 @@ function EmptyNoRegion() {
       style={{
         background: "#FFFFFF",
         border: "1px solid rgba(0,0,0,0.04)",
-        boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+        boxShadow: "var(--shadow-card)",
       }}
     >
       <MapPin size={32} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
@@ -238,7 +238,7 @@ function EmptyNoMatch({ myRegions }: { myRegions: string[] }) {
       style={{
         background: "#FFFFFF",
         border: "1px solid rgba(0,0,0,0.04)",
-        boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+        boxShadow: "var(--shadow-card)",
       }}
     >
       <UserPlus size={32} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />

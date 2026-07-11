@@ -87,7 +87,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
         <Link
           href="/"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -101,7 +101,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
           style={{
             background: "linear-gradient(135deg, #FFFFFF 0%, #FFF9F0 100%)",
             boxShadow: "0 8px 24px rgba(49,130,246,0.15)",
-            border: "1px solid rgba(49,130,246,0.1)",
+            border: "1px solid var(--color-primary-soft)",
           }}
         >
           <div className="flex items-start gap-4">
@@ -111,7 +111,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
               style={{
                 background: profile.avatar_url
                   ? `url('${profile.avatar_url}') center/cover`
-                  : "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+                  : "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                 border: "3px solid #fff",
                 boxShadow: "0 6px 16px rgba(0,0,0,0.1)",
               }}
@@ -187,7 +187,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                   key={r.name}
                   className="px-2 py-0.5 rounded-lg text-[10.5px] font-extrabold"
                   style={{
-                    background: r.is_primary ? "#3182F6" : "#F7F4EE",
+                    background: r.is_primary ? "var(--color-primary)" : "#F7F4EE",
                     color: r.is_primary ? "#fff" : "#A38E7A",
                   }}
                 >
@@ -216,7 +216,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                 className="rounded-2xl p-3 flex items-center gap-2.5"
                 style={{
                   background: "#FFFFFF",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                  boxShadow: "var(--shadow-card)",
                   border: `1px solid ${CATEGORY_COLORS[t.category]}30`,
                 }}
               >
@@ -251,7 +251,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
           </div>
           <div
             className="rounded-2xl overflow-hidden"
-            style={{ background: "#FFFFFF", boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+            style={{ background: "#FFFFFF", boxShadow: "var(--shadow-card)" }}
           >
             {activity.map((item) => {
               const icon =
@@ -272,7 +272,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                   <div className="shrink-0">{icon}</div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[11.5px] font-bold text-text-main truncate">
-                      <span style={{ color: "#3182F6" }}>{item.targetName}</span>
+                      <span style={{ color: "var(--color-primary)" }}>{item.targetName}</span>
                       <span className="mx-1 text-text-light">·</span>
                       <span className="text-text-sub font-semibold">{item.summary}</span>
                     </p>
@@ -288,7 +288,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
       {/* 등록한 고양이 */}
       <div className="px-4 mt-5">
         <div className="flex items-center gap-2 mb-3 px-1">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#3182F6" }} />
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
           <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
             등록한 고양이
           </h2>
@@ -325,7 +325,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                 >
                   {!c.photo_url && (
                     <div className="w-full h-full flex items-center justify-center">
-                      <PawPrint size={22} style={{ color: "#3182F6" }} />
+                      <PawPrint size={22} style={{ color: "var(--color-primary)" }} />
                     </div>
                   )}
                 </div>
@@ -350,7 +350,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
           className="rounded-2xl p-4 text-center"
           style={{
             background: "#FFFFFF",
-            boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+            boxShadow: "var(--shadow-card)",
             border: "1px solid rgba(0,0,0,0.04)",
           }}
         >

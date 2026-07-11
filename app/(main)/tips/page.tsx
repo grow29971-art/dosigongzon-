@@ -93,7 +93,7 @@ export default async function TipsIndexPage() {
         <Link
           href="/"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -177,7 +177,7 @@ export default async function TipsIndexPage() {
               { href: "/protection/feeding-guide", label: "밥주기", sub: "올바른 방법", Icon: Sparkles, color: "#48A59E" },
               { href: "/protection/shelter-guide", label: "겨울 쉼터", sub: "지금 만들기", Icon: Snowflake, color: "#5A8AC4" },
               { href: "/protection/pharmacy-guide", label: "약품 안내", sub: "주변 약국", Icon: Pill, color: "#6B8E6F" },
-              { href: "/protection/district-contacts", label: "지자체 연락", sub: "전국 240+ 곳", Icon: Phone, color: "#1B64DA" },
+              { href: "/protection/district-contacts", label: "지자체 연락", sub: "전국 240+ 곳", Icon: Phone, color: "var(--color-primary-dark)" },
               { href: "/protection/legal", label: "법률·신고", sub: "학대 대응", Icon: Scale, color: "#7A6B8E" },
             ].map((cat) => (
               <Link
@@ -240,7 +240,7 @@ export default async function TipsIndexPage() {
         {items.length === 0 ? (
           <div
             className="text-center py-16 rounded-2xl bg-white"
-            style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             <Sparkles size={36} strokeWidth={1.2} className="mx-auto mb-3 text-text-light opacity-30" />
             <p className="text-[13px] text-text-sub font-semibold">아직 등록된 꿀팁이 없어요</p>

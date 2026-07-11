@@ -251,7 +251,7 @@ export default function AdminUsersPage() {
           className="flex-1 flex items-center gap-2 px-4 py-2.5"
           style={{
             background: "#FFFFFF",
-            borderRadius: 14,
+            borderRadius: "var(--radius-input)",
             border: "1px solid #E3DCD3",
           }}
         >
@@ -328,8 +328,8 @@ export default function AdminUsersPage() {
                 background: u.is_suspended
                   ? "linear-gradient(135deg, #FBEAEA 0%, #FFF 100%)"
                   : "#FFFFFF",
-                borderRadius: 16,
-                boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+                borderRadius: "var(--radius-card-sm)",
+                boxShadow: "var(--shadow-card)",
                 border: u.is_suspended
                   ? "1px solid rgba(216,85,85,0.2)"
                   : "1px solid rgba(0,0,0,0.04)",
@@ -414,7 +414,7 @@ export default function AdminUsersPage() {
                     type="button"
                     onClick={() => setTitleTarget(titleTarget === u.id ? null : u.id)}
                     className="text-[10px] font-bold px-2 py-0.5 rounded-lg active:scale-95"
-                    style={{ backgroundColor: "#F6F1EA", color: "#3182F6" }}
+                    style={{ backgroundColor: "#F6F1EA", color: "var(--color-primary)" }}
                   >
                     {u.admin_title ? "🏷️ 타이틀 변경" : "🏷️ 타이틀 부여"}
                   </button>

@@ -34,6 +34,28 @@
   --color-border: #E5E8EB;
   --color-divider: #F2F4F6;
 
+  /* Primary 틴트 — 칩/배지/버튼 배경용 반투명 */
+  --color-primary-soft: rgba(49, 130, 246, 0.1);
+  --color-primary-softer: rgba(49, 130, 246, 0.08);
+
+  /* ── Radius 토큰 (인라인 borderRadius 중앙화) ──
+     무드 변경 시 여기만 조정하면 앱 전체 라운드가 따라온다. */
+  --radius-input: 14px;    /* 입력창/작은 버튼 */
+  --radius-card-sm: 16px;  /* 작은 카드/칩 컨테이너 */
+  --radius-card: 20px;     /* 기본 섹션 카드 */
+  --radius-modal: 24px;    /* 모달/바텀시트 */
+  --radius-sheet: 28px;    /* 큰 시트 */
+  --radius-full: 9999px;   /* 필/원형 */
+
+  /* ── Shadow 토큰 ──
+     card: 기본 카드 · card-sm: 얕은 카드 · raised: 떠있는 요소(버튼/헤더)
+     primary: 파란 CTA 글로우 · modal: 오버레이 */
+  --shadow-card-sm: 0 1px 4px rgba(0, 0, 0, 0.03);
+  --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.04);
+  --shadow-raised: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-primary: 0 6px 20px rgba(49, 130, 246, 0.3);
+  --shadow-modal: 0 20px 50px rgba(0, 0, 0, 0.25);
+
   /* Font */
   --font-sans: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
@@ -61,17 +83,17 @@ body {
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 .card {
-  background: white;
-  border-radius: 20px;
-  border: 1px solid #F2F4F6;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.03);
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-divider);
+  box-shadow: var(--shadow-card-sm);
 }
 
 .card-sm {
-  background: white;
-  border-radius: 16px;
-  border: 1px solid #F2F4F6;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+  background: var(--color-surface);
+  border-radius: var(--radius-card-sm);
+  border: 1px solid var(--color-divider);
+  box-shadow: var(--shadow-card-sm);
 }
 
 .card-glass {
@@ -83,7 +105,7 @@ body {
 }
 
 .nav-shadow { box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03); }
-.fab-shadow { box-shadow: 0 6px 20px rgba(49, 130, 246, 0.25); }
+.fab-shadow { box-shadow: var(--shadow-primary); }
 
 /* ── 태그 ── */
 .tag {

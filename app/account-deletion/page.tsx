@@ -24,7 +24,7 @@ export default function AccountDeletionPage() {
         <Link
           href="/"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈으로"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -35,8 +35,8 @@ export default function AccountDeletionPage() {
         {/* 타이틀 */}
         <header className="mb-6">
           <div className="flex items-center gap-2 mb-2">
-            <Cat size={16} style={{ color: "#3182F6" }} />
-            <span className="text-[12px] font-bold" style={{ color: "#3182F6" }}>도시공존</span>
+            <Cat size={16} style={{ color: "var(--color-primary)" }} />
+            <span className="text-[12px] font-bold" style={{ color: "var(--color-primary)" }}>도시공존</span>
           </div>
           <h1 className="text-[26px] font-extrabold text-text-main tracking-tight leading-tight">
             계정 삭제 안내
@@ -59,7 +59,7 @@ export default function AccountDeletionPage() {
           <div className="flex items-center gap-2 mb-3">
             <div
               className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)" }}
+              style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
             >
               <Trash2 size={16} color="#fff" strokeWidth={2.5} />
             </div>
@@ -72,12 +72,12 @@ export default function AccountDeletionPage() {
             <li className="flex gap-3">
               <span
                 className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white"
-                style={{ background: "#3182F6" }}
+                style={{ background: "var(--color-primary)" }}
               >
                 1
               </span>
               <span className="text-[13.5px] text-text-main leading-relaxed">
-                <Link href="/login" className="font-bold underline" style={{ color: "#3182F6" }}>로그인</Link>
+                <Link href="/login" className="font-bold underline" style={{ color: "var(--color-primary)" }}>로그인</Link>
                 {" "}후 우측 하단{" "}
                 <strong>마이</strong>{" "}탭 진입
               </span>
@@ -85,7 +85,7 @@ export default function AccountDeletionPage() {
             <li className="flex gap-3">
               <span
                 className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white"
-                style={{ background: "#3182F6" }}
+                style={{ background: "var(--color-primary)" }}
               >
                 2
               </span>
@@ -96,7 +96,7 @@ export default function AccountDeletionPage() {
             <li className="flex gap-3">
               <span
                 className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white"
-                style={{ background: "#3182F6" }}
+                style={{ background: "var(--color-primary)" }}
               >
                 3
               </span>
@@ -110,7 +110,7 @@ export default function AccountDeletionPage() {
             href="/mypage"
             className="mt-5 flex items-center justify-between w-full px-4 py-3 rounded-xl active:scale-[0.99] transition-transform"
             style={{
-              background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "0 6px 16px rgba(49,130,246,0.3)",
             }}
           >

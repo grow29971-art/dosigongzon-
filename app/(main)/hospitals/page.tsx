@@ -74,14 +74,14 @@ export default function HospitalsPage() {
         <div className="flex items-center gap-2">
           <div
             className="w-5 h-[2px] rounded-full"
-            style={{ backgroundColor: "#3182F6", opacity: 0.6 }}
+            style={{ backgroundColor: "var(--color-primary)", opacity: 0.6 }}
           />
           <p className="text-[12px] font-bold text-text-sub">
             길 위의 아이들 치료를 도와주시는 병원
           </p>
           <span
             className="text-[9px] font-bold tracking-[0.15em]"
-            style={{ color: "#3182F6", opacity: 0.5 }}
+            style={{ color: "var(--color-primary)", opacity: 0.5 }}
           >
             RESCUE VETS
           </span>
@@ -118,9 +118,9 @@ export default function HospitalsPage() {
                 onClick={() => setCityFilter(c)}
                 className="shrink-0 px-4 py-2 rounded-full text-[12.5px] font-bold transition-all"
                 style={{
-                  backgroundColor: active ? "#3182F6" : "#FFFFFF",
+                  backgroundColor: active ? "var(--color-primary)" : "#FFFFFF",
                   color: active ? "#FFFFFF" : "#A38E7A",
-                  border: `1.5px solid ${active ? "#3182F6" : "#E3DCD3"}`,
+                  border: `1.5px solid ${active ? "var(--color-primary)" : "#E3DCD3"}`,
                   boxShadow: active ? "0 4px 12px rgba(49,130,246,0.35)" : "0 1px 3px rgba(0,0,0,0.03)",
                 }}
               >
@@ -162,7 +162,7 @@ export default function HospitalsPage() {
               <div className="flex items-center gap-2 mb-3 px-1">
                 <div
                   className="w-1 h-4 rounded-full"
-                  style={{ backgroundColor: "#3182F6" }}
+                  style={{ backgroundColor: "var(--color-primary)" }}
                 />
                 <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
                   {group.city}
@@ -223,7 +223,7 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
             {hospital.pinned && (
               <span
                 className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md flex items-center gap-0.5"
-                style={{ backgroundColor: "#EEE8E0", color: "#3182F6" }}
+                style={{ backgroundColor: "#EEE8E0", color: "var(--color-primary)" }}
               >
                 <Pin size={9} /> 추천
               </span>

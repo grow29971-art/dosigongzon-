@@ -77,7 +77,7 @@ export default function NotificationsPage() {
       {items.length === 0 ? (
         <div
           className="py-16 text-center"
-          style={{ background: "#FFFFFF", borderRadius: 20, border: "1px solid rgba(0,0,0,0.04)" }}
+          style={{ background: "#FFFFFF", borderRadius: "var(--radius-card)", border: "1px solid rgba(0,0,0,0.04)" }}
         >
           <Bell size={36} strokeWidth={1.2} className="text-text-light mx-auto mb-3" />
           <p className="text-[14px] font-bold text-text-main mb-1">아직 알림이 없어요</p>
@@ -115,7 +115,7 @@ export default function NotificationsPage() {
                   className="flex items-start gap-3 px-4 py-3.5"
                   style={{
                     background: item.isRead ? "#FFFFFF" : "#FDF9F2",
-                    borderRadius: 16,
+                    borderRadius: "var(--radius-card-sm)",
                     boxShadow: "0 1px 4px rgba(0,0,0,0.03)",
                     border: item.isRead ? "1px solid rgba(0,0,0,0.04)" : `1px solid ${config.color}20`,
                   }}

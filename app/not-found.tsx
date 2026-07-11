@@ -56,7 +56,7 @@ export default function NotFound() {
           </div>
           <p
             className="text-[14px] font-extrabold tracking-[0.3em] mb-4"
-            style={{ color: "#3182F6" }}
+            style={{ color: "var(--color-primary)" }}
           >
             404
           </p>
@@ -76,8 +76,8 @@ export default function NotFound() {
               href="/"
               className="w-full py-3 rounded-2xl text-[14px] font-extrabold text-white active:scale-[0.98] transition-transform"
               style={{
-                background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
-                boxShadow: "0 4px 14px rgba(49,130,246,0.4)",
+                background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+                boxShadow: "var(--shadow-primary)",
               }}
             >
               🏠 홈으로 가기

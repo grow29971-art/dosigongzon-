@@ -209,7 +209,7 @@ export default function CategoryPage() {
           className="relative overflow-hidden px-5 py-5"
           style={{
             background: "#FFFFFF",
-            borderRadius: 24,
+            borderRadius: "var(--radius-modal)",
             boxShadow: `0 8px 28px rgba(${meta.glow},0.14), 0 2px 6px rgba(0,0,0,0.03)`,
             border: `1.5px solid rgba(${meta.glow},0.20)`,
           }}
@@ -254,7 +254,7 @@ export default function CategoryPage() {
             <div
               className="overflow-hidden"
               style={{
-                borderRadius: 16,
+                borderRadius: "var(--radius-card-sm)",
                 border: `1.5px solid ${meta.color}33`,
                 background: `linear-gradient(135deg, ${meta.color}08 0%, ${meta.color}03 100%)`,
               }}
@@ -285,7 +285,7 @@ export default function CategoryPage() {
         className="mx-4 overflow-hidden"
         style={{
           background: "#FFFFFF",
-          borderRadius: 20,
+          borderRadius: "var(--radius-card)",
           boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
           border: "1px solid rgba(0,0,0,0.04)",
         }}

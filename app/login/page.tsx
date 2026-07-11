@@ -394,7 +394,7 @@ function LoginContent() {
                 }
               }}
               className="w-full py-3 rounded-xl text-[14px] font-bold text-white disabled:opacity-50"
-              style={{ backgroundColor: "#3182F6" }}
+              style={{ backgroundColor: "var(--color-primary)" }}
             >
               {emailLoading ? <Loader2 size={16} className="animate-spin mx-auto" /> : "로그인"}
             </button>

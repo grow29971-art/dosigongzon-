@@ -110,7 +110,7 @@ export default function ReportModal({
         className="w-full max-w-sm relative"
         style={{
           background: "#FFFFFF",
-          borderRadius: 24,
+          borderRadius: "var(--radius-modal)",
           boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
         }}
         onClick={(e) => e.stopPropagation()}

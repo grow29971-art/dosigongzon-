@@ -76,7 +76,7 @@ export default function FoundingMemberBanner() {
       <div className="flex items-start gap-3 pr-7">
         <div
           className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-          style={{ background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)" }}
+          style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
         >
           <Sparkles size={20} color="#FFFFFF" />
         </div>

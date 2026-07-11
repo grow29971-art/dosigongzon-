@@ -522,7 +522,7 @@ export default async function PharmacyGuidePage() {
           style={{
             background: "#FFFFFF",
             borderRadius: 18,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+            boxShadow: "var(--shadow-card)",
             border: "1px solid rgba(0,0,0,0.04)",
           }}
         >

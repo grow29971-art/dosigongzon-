@@ -58,7 +58,7 @@ export default function MarketingPushToggle() {
       className="w-full flex items-center gap-3 px-4 py-3.5 mt-2"
       style={{
         background: "#FFFFFF",
-        borderRadius: 16,
+        borderRadius: "var(--radius-card-sm)",
         boxShadow: "0 4px 14px rgba(74,123,168,0.10), 0 1px 2px rgba(0,0,0,0.02)",
         border: "1px solid rgba(0,0,0,0.04)",
       }}
@@ -91,7 +91,7 @@ export default function MarketingPushToggle() {
           style={{
             width: 44,
             height: 26,
-            borderRadius: 999,
+            borderRadius: "var(--radius-full)",
             background: enabled ? "#4A7BA8" : "#E5E0D6",
           }}
         >
@@ -101,7 +101,7 @@ export default function MarketingPushToggle() {
               left: enabled ? 21 : 3,
               width: 20,
               height: 20,
-              borderRadius: 999,
+              borderRadius: "var(--radius-full)",
               background: "#fff",
               boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
             }}

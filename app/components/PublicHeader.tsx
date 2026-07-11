@@ -31,7 +31,7 @@ export default async function PublicHeader() {
         <Link href="/" className="flex items-center gap-1.5 active:scale-95 transition-transform">
           <div
             className="w-7 h-7 rounded-xl flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)" }}
+            style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
           >
             <PawPrint size={15} color="#fff" strokeWidth={2.3} />
           </div>
@@ -45,7 +45,7 @@ export default async function PublicHeader() {
           <Link
             href="/mypage"
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11.5px] font-bold active:scale-95 transition-transform"
-            style={{ background: "rgba(49,130,246,0.12)", color: "#3182F6" }}
+            style={{ background: "rgba(49,130,246,0.12)", color: "var(--color-primary)" }}
             aria-label="마이페이지"
           >
             <UserIcon size={12} />
@@ -65,7 +65,7 @@ export default async function PublicHeader() {
               href="/signup"
               className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[11.5px] font-extrabold active:scale-95 transition-transform text-white"
               style={{
-                background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+                background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                 boxShadow: "0 2px 8px rgba(49,130,246,0.35)",
               }}
             >

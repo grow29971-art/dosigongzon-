@@ -254,7 +254,7 @@ export default function AdminHospitalsPage() {
             <button
               onClick={handleCreate}
               className="w-11 h-11 rounded-full bg-primary flex items-center justify-center active:scale-95 transition-transform"
-              style={{ boxShadow: "0 6px 14px rgba(49,130,246,0.35)" }}
+              style={{ boxShadow: "var(--shadow-primary)" }}
               aria-label="새 병원 추가"
             >
               <Plus size={20} color="#fff" strokeWidth={2.5} />
@@ -269,7 +269,7 @@ export default function AdminHospitalsPage() {
           className="mb-4 px-4 py-3"
           style={{
             background: syncing ? "rgba(34,181,115,0.08)" : syncResult?.startsWith("오류") || syncResult?.startsWith("동기화 실패") ? "rgba(216,85,85,0.08)" : "rgba(34,181,115,0.08)",
-            borderRadius: 16,
+            borderRadius: "var(--radius-card-sm)",
             border: `1px solid ${syncing ? "rgba(34,181,115,0.15)" : syncResult?.startsWith("오류") || syncResult?.startsWith("동기화 실패") ? "rgba(216,85,85,0.15)" : "rgba(34,181,115,0.15)"}`,
           }}
         >
@@ -299,7 +299,7 @@ export default function AdminHospitalsPage() {
           className="mb-5 p-4"
           style={{
             background: "#FFFFFF",
-            borderRadius: 20,
+            borderRadius: "var(--radius-card)",
             boxShadow: "0 8px 24px rgba(49,130,246,0.14), 0 1px 3px rgba(0,0,0,0.03)",
             border: "1.5px solid rgba(49,130,246,0.2)",
           }}
@@ -442,7 +442,7 @@ export default function AdminHospitalsPage() {
           className="py-10 text-center"
           style={{
             background: "#FFFFFF",
-            borderRadius: 16,
+            borderRadius: "var(--radius-card-sm)",
             border: "1px solid rgba(0,0,0,0.04)",
           }}
         >
@@ -462,7 +462,7 @@ export default function AdminHospitalsPage() {
               <div className="flex items-center gap-2 mb-2 px-1">
                 <div
                   className="w-1 h-4 rounded-full"
-                  style={{ backgroundColor: "#3182F6" }}
+                  style={{ backgroundColor: "var(--color-primary)" }}
                 />
                 <h2 className="text-[13px] font-extrabold text-text-main tracking-tight">
                   {group.city}
@@ -481,7 +481,7 @@ export default function AdminHospitalsPage() {
                           className="p-3"
                           style={{
                             background: "#FFFFFF",
-                            borderRadius: 14,
+                            borderRadius: "var(--radius-input)",
                             boxShadow: h.pinned
                               ? "0 4px 14px rgba(49,130,246,0.12), 0 1px 2px rgba(0,0,0,0.02)"
                               : "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)",
@@ -494,7 +494,7 @@ export default function AdminHospitalsPage() {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5 mb-0.5">
                                 {h.pinned && (
-                                  <Pin size={10} style={{ color: "#3182F6" }} />
+                                  <Pin size={10} style={{ color: "var(--color-primary)" }} />
                                 )}
                                 <p className="text-[13px] font-extrabold text-text-main truncate">
                                   {h.name}
@@ -513,7 +513,7 @@ export default function AdminHospitalsPage() {
                                 style={{ backgroundColor: "#EEE8E0" }}
                                 aria-label="수정"
                               >
-                                <Pencil size={12} style={{ color: "#3182F6" }} strokeWidth={2.3} />
+                                <Pencil size={12} style={{ color: "var(--color-primary)" }} strokeWidth={2.3} />
                               </button>
                               <button
                                 onClick={() => handleDelete(h)}

@@ -218,7 +218,7 @@ function MessagesPage() {
                   <div
                     className="overflow-hidden"
                     style={{
-                      backgroundColor: isMe ? "#3182F6" : "#F6F1EA",
+                      backgroundColor: isMe ? "var(--color-primary)" : "#F6F1EA",
                       borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
                     }}
                   >
@@ -355,8 +355,8 @@ function MessagesPage() {
               className="w-full flex items-center gap-3 px-4 py-3 active:scale-[0.99] transition-transform text-left"
               style={{
                 background: c.unreadCount > 0 ? "linear-gradient(135deg, #FDF9F2, #FFF)" : "#FFFFFF",
-                borderRadius: 16,
-                boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+                borderRadius: "var(--radius-card-sm)",
+                boxShadow: "var(--shadow-card)",
                 border: c.unreadCount > 0 ? "1.5px solid rgba(49,130,246,0.2)" : "1px solid rgba(0,0,0,0.04)",
               }}
             >

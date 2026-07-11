@@ -109,7 +109,7 @@ export default function Og200EventModal() {
           <div
             className="w-[68px] h-[68px] mx-auto rounded-full flex items-center justify-center mb-3"
             style={{
-              background: "linear-gradient(135deg, #E88D5A 0%, #3182F6 100%)",
+              background: "linear-gradient(135deg, #E88D5A 0%, var(--color-primary) 100%)",
               boxShadow: "0 8px 24px rgba(49,130,246,0.45)",
             }}
           >
@@ -132,14 +132,14 @@ export default function Og200EventModal() {
           <p className="text-[13px] leading-relaxed text-text-main mb-4">
             정식 출시 전, 도시공존에 가장 먼저 합류한
             {" "}초기 멤버에게만 영구 한정 타이틀
-            {" "}<b style={{ color: "#1B64DA" }}>🌟 초기 200</b>이 자동 부여됐어요.
+            {" "}<b style={{ color: "var(--color-primary-dark)" }}>🌟 초기 200</b>이 자동 부여됐어요.
           </p>
 
           <div
             className="rounded-2xl px-4 py-3 mb-4 text-[11.5px] leading-relaxed"
             style={{ background: "#FFF9EF", color: "#7A5F3F" }}
           >
-            <p className="font-extrabold mb-1" style={{ color: "#1B64DA" }}>
+            <p className="font-extrabold mb-1" style={{ color: "var(--color-primary-dark)" }}>
               💎 이런 의미예요
             </p>
             <ul className="space-y-1 pl-1">
@@ -161,8 +161,8 @@ export default function Og200EventModal() {
               onClick={dismiss}
               className="flex-[1.4] flex items-center justify-center py-3 rounded-2xl text-white text-[13px] font-extrabold active:scale-[0.98]"
               style={{
-                background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
-                boxShadow: "0 4px 14px rgba(49,130,246,0.4)",
+                background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+                boxShadow: "var(--shadow-primary)",
               }}
             >
               내 타이틀 보러가기
@@ -171,7 +171,7 @@ export default function Og200EventModal() {
               type="button"
               onClick={dismiss}
               className="flex-1 py-3 rounded-2xl text-[13px] font-extrabold active:scale-[0.98] bg-white"
-              style={{ color: "#1B64DA", border: "1.5px solid rgba(49,130,246,0.30)" }}
+              style={{ color: "var(--color-primary-dark)", border: "1.5px solid rgba(49,130,246,0.30)" }}
             >
               나중에
             </button>

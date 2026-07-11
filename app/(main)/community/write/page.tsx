@@ -143,7 +143,7 @@ export default function WritePage() {
             <div className="flex items-start gap-2.5">
               <div
                 className="w-9 h-9 rounded-xl shrink-0 flex items-center justify-center"
-                style={{ background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)" }}
+                style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
               >
                 <PawPrint size={17} color="#fff" strokeWidth={2.3} />
               </div>
@@ -158,7 +158,7 @@ export default function WritePage() {
                 <Link
                   href="/map"
                   className="inline-flex items-center gap-1 mt-2 text-[11.5px] font-extrabold"
-                  style={{ color: "#1B64DA" }}
+                  style={{ color: "var(--color-primary-dark)" }}
                 >
                   지도로 가서 등록하기
                   <ArrowRight size={11} />
@@ -313,7 +313,7 @@ export default function WritePage() {
               ? "bg-primary text-white"
               : "bg-border text-text-muted"
           }`}
-          style={canSubmit ? { boxShadow: "0 6px 20px rgba(49,130,246,0.3)" } : undefined}
+          style={canSubmit ? { boxShadow: "var(--shadow-primary)" } : undefined}
         >
           {submitting ? (
             <Loader2 size={18} className="animate-spin" />

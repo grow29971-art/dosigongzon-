@@ -150,7 +150,7 @@ export default function AIChatModal({
           <div className="flex items-center gap-3">
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: "rgba(49,130,246,0.1)" }}
+              style={{ backgroundColor: "var(--color-primary-soft)" }}
             >
               <Bot size={20} color="#3182F6" />
             </div>
@@ -190,7 +190,7 @@ export default function AIChatModal({
                 style={
                   msg.role === "user"
                     ? {
-                        backgroundColor: "#3182F6",
+                        backgroundColor: "var(--color-primary)",
                         color: "#fff",
                         borderRadius: "20px 20px 8px 20px",
                       }
@@ -198,7 +198,7 @@ export default function AIChatModal({
                         backgroundColor: "#FFFFFF",
                         color: "#2A2A28",
                         borderRadius: "20px 20px 20px 8px",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                        boxShadow: "var(--shadow-card)",
                       }
                 }
               >
@@ -223,7 +223,7 @@ export default function AIChatModal({
                   type="button"
                   onClick={() => send(q)}
                   className="text-[12px] font-semibold px-3 py-2 rounded-2xl active:scale-95 transition-transform"
-                  style={{ backgroundColor: "#fff", color: "#3182F6", border: "1.5px solid #E5DCD3" }}
+                  style={{ backgroundColor: "#fff", color: "var(--color-primary)", border: "1.5px solid #E5DCD3" }}
                 >
                   {q}
                 </button>
@@ -239,7 +239,7 @@ export default function AIChatModal({
                 style={{
                   backgroundColor: "#FFFFFF",
                   borderRadius: "20px 20px 20px 8px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                  boxShadow: "var(--shadow-card)",
                 }}
               >
                 <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(49,130,246,0.4)", animationDelay: "0ms" }} />
@@ -282,7 +282,7 @@ export default function AIChatModal({
               onClick={() => send()}
               disabled={!input.trim() || loading}
               className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 active:scale-90 transition-transform disabled:opacity-40"
-              style={{ backgroundColor: "#3182F6" }}
+              style={{ backgroundColor: "var(--color-primary)" }}
             >
               <Send size={18} color="white" />
             </button>

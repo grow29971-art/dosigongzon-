@@ -45,7 +45,7 @@ export default function LegalChecklist({
   }
 
   return (
-    <div className="rounded-2xl p-5 bg-white" style={{ border: "1px solid rgba(0,0,0,0.05)", boxShadow: "0 2px 8px rgba(0,0,0,0.03)" }}>
+    <div className="rounded-2xl p-5 bg-white" style={{ border: "1px solid rgba(0,0,0,0.05)", boxShadow: "var(--shadow-card)" }}>
       <div className="flex items-center gap-3 mb-3">
         <div
           className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"

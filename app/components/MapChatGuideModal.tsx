@@ -63,7 +63,7 @@ export default function MapChatGuideModal() {
         </button>
 
         <div className="mb-4 pr-8">
-          <p className="text-[10.5px] font-extrabold tracking-[0.12em] mb-1" style={{ color: "#3182F6" }}>
+          <p className="text-[10.5px] font-extrabold tracking-[0.12em] mb-1" style={{ color: "var(--color-primary)" }}>
             CHAT GUIDE
           </p>
           <h2 className="text-[18px] font-extrabold text-text-main tracking-tight leading-tight">
@@ -101,20 +101,20 @@ export default function MapChatGuideModal() {
           <div
             className="rounded-2xl p-3.5 mb-4 flex items-start gap-3"
             style={{
-              background: "linear-gradient(135deg, rgba(49,130,246,0.08) 0%, rgba(49,130,246,0.04) 100%)",
+              background: "linear-gradient(135deg, var(--color-primary-softer) 0%, rgba(49,130,246,0.04) 100%)",
               border: "1px solid rgba(49,130,246,0.18)",
             }}
           >
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)" }}
+              style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
             >
               <MessageCircle size={18} color="#FFFFFF" strokeWidth={2.4} />
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-[13.5px] font-extrabold text-text-main">💬 동네 채팅</p>
               <p className="text-[11.5px] text-text-sub mt-1 leading-relaxed">
-                <span className="font-bold" style={{ color: "#1B64DA" }}>현재 보고 있는 구</span> 단위 채팅방. 같은 동네 케어테이커끼리 실시간 정보 교환. 지도 위치를 옮기면 그 동네 채팅방으로 자동 연결.
+                <span className="font-bold" style={{ color: "var(--color-primary-dark)" }}>현재 보고 있는 구</span> 단위 채팅방. 같은 동네 케어테이커끼리 실시간 정보 교환. 지도 위치를 옮기면 그 동네 채팅방으로 자동 연결.
               </p>
             </div>
           </div>
@@ -128,7 +128,7 @@ export default function MapChatGuideModal() {
           type="button"
           onClick={dismiss}
           className="w-full py-3 rounded-2xl text-white text-[13px] font-extrabold active:scale-[0.99] transition-transform"
-          style={{ background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)" }}
+          style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
         >
           알겠어요
         </button>

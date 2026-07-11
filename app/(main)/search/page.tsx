@@ -123,14 +123,14 @@ function SearchPageInner() {
           <button
             onClick={() => router.back()}
             className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+            style={{ boxShadow: "var(--shadow-raised)" }}
             aria-label="뒤로"
           >
             <ArrowLeft size={18} className="text-text-main" />
           </button>
           <div
             className="flex-1 flex items-center gap-2 bg-white rounded-2xl px-4 py-2.5"
-            style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.06)" }}
+            style={{ boxShadow: "var(--shadow-raised)" }}
           >
             <Search size={16} className="text-text-muted shrink-0" />
             <input
@@ -171,9 +171,9 @@ function SearchPageInner() {
                 onClick={() => setTab(t.key)}
                 className="shrink-0 px-3 py-1.5 rounded-full text-[12px] font-bold active:scale-95 transition-transform"
                 style={{
-                  background: tab === t.key ? "#3182F6" : "#FFFFFF",
+                  background: tab === t.key ? "var(--color-primary)" : "#FFFFFF",
                   color: tab === t.key ? "#FFFFFF" : "#6B5043",
-                  border: tab === t.key ? "1px solid #3182F6" : "1px solid rgba(0,0,0,0.05)",
+                  border: tab === t.key ? "1px solid var(--color-primary)" : "1px solid rgba(0,0,0,0.05)",
                 }}
               >
                 {t.label} {t.count > 0 && <span className="ml-0.5 opacity-80">{t.count}</span>}
@@ -204,7 +204,7 @@ function SearchPageInner() {
 
         {!loading && !data.query && (
           <EmptyState
-            icon={<Search size={28} style={{ color: "#3182F6" }} />}
+            icon={<Search size={28} style={{ color: "var(--color-primary)" }} />}
             title="무엇을 찾고 있나요?"
             desc="고양이 이름·지역·게시글·병원·가이드를 한 번에 검색해요."
           />
@@ -212,7 +212,7 @@ function SearchPageInner() {
 
         {!loading && data.tooShort && (
           <EmptyState
-            icon={<Search size={28} style={{ color: "#3182F6" }} />}
+            icon={<Search size={28} style={{ color: "var(--color-primary)" }} />}
             title="2자 이상 입력해주세요"
             desc="너무 짧은 검색어는 결과가 너무 많아 정확도가 떨어져요."
           />
@@ -220,7 +220,7 @@ function SearchPageInner() {
 
         {!loading && data.query && !data.tooShort && totalCount === 0 && (
           <EmptyState
-            icon={<Search size={28} style={{ color: "#3182F6" }} />}
+            icon={<Search size={28} style={{ color: "var(--color-primary)" }} />}
             title={`"${data.query}" 결과 없음`}
             desc="다른 검색어로 시도해보세요."
           />
@@ -263,7 +263,7 @@ function EmptyState({ icon, title, desc }: { icon: React.ReactNode; title: strin
   return (
     <div
       className="py-14 flex flex-col items-center text-center rounded-2xl bg-white"
-      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+      style={{ boxShadow: "var(--shadow-card)" }}
     >
       <div
         className="w-14 h-14 rounded-full flex items-center justify-center mb-3"
@@ -292,7 +292,7 @@ function SectionCats({ items, tab }: { items: CatHit[]; query: string; tab: Sear
               key={c.id}
               href={`/cats/${c.id}`}
               className="block rounded-2xl overflow-hidden bg-white active:scale-[0.98] transition-transform"
-              style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.06)" }}
+              style={{ boxShadow: "var(--shadow-raised)" }}
             >
               <div className="relative" style={{ aspectRatio: "1 / 1" }}>
                 <Image
@@ -337,7 +337,7 @@ function SectionPosts({ items }: { items: PostHit[] }) {
             key={p.id}
             href={`/community/${p.id}`}
             className="block rounded-2xl bg-white p-3.5 active:scale-[0.99] transition-transform"
-            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             <p className="text-[13.5px] font-extrabold text-text-main line-clamp-1">{p.title}</p>
             <p className="text-[12px] text-text-sub mt-0.5 line-clamp-2 leading-snug">{p.content}</p>
@@ -369,7 +369,7 @@ function SectionHospitals({ items }: { items: HospitalHit[] }) {
           <div
             key={h.id}
             className="rounded-2xl bg-white p-3.5"
-            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             <p className="text-[13.5px] font-extrabold text-text-main">{h.name}</p>
             {h.address && (
@@ -408,7 +408,7 @@ function SectionUsers({ items }: { items: UserHit[] }) {
               key={u.id}
               href={`/users/${u.id}`}
               className="flex items-center gap-3 rounded-2xl bg-white p-3 active:scale-[0.99] transition-transform"
-              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+              style={{ boxShadow: "var(--shadow-card)" }}
             >
               <div
                 className="shrink-0 w-10 h-10 rounded-full overflow-hidden bg-surface-alt flex items-center justify-center"
@@ -426,7 +426,7 @@ function SectionUsers({ items }: { items: UserHit[] }) {
                   {u.admin_title && (
                     <span
                       className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md shrink-0"
-                      style={{ background: "#3182F6", color: "#fff" }}
+                      style={{ background: "var(--color-primary)", color: "#fff" }}
                     >
                       {u.admin_title}
                     </span>
@@ -454,7 +454,7 @@ function SectionGuides({ items }: { items: GuideHit[] }) {
               ? `/protection/${g.slug}`
               : `/protection/${g.slug}`}
             className="block rounded-2xl bg-white p-3.5 active:scale-[0.99] transition-transform"
-            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             <p className="text-[13.5px] font-extrabold text-text-main">{g.title}</p>
           </Link>
@@ -468,7 +468,7 @@ function SectionGuides({ items }: { items: GuideHit[] }) {
 function SectionHeader({ icon, label, count }: { icon: React.ReactNode; label: string; count: number }) {
   return (
     <div className="flex items-center gap-1.5 mb-2.5 px-1">
-      <span style={{ color: "#3182F6" }}>{icon}</span>
+      <span style={{ color: "var(--color-primary)" }}>{icon}</span>
       <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">{label}</h2>
       <span className="text-[11px] font-bold text-text-light">{count}</span>
     </div>

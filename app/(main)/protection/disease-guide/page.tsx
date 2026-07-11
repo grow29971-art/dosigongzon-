@@ -560,7 +560,7 @@ export default function DiseaseGuidePage() {
         <Link
           href="/protection"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="보호지침으로"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -688,7 +688,7 @@ export default function DiseaseGuidePage() {
                 id={d.id}
                 className="group rounded-2xl bg-white scroll-mt-20 overflow-hidden"
                 style={{
-                  boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+                  boxShadow: "var(--shadow-card)",
                   border: `1px solid ${sev.color}25`,
                 }}
               >
@@ -729,8 +729,8 @@ export default function DiseaseGuidePage() {
                 {/* 증상 — 단계별 상세 */}
                 <div className="mb-4">
                   <div className="flex items-center gap-1.5 mb-2">
-                    <Eye size={12} style={{ color: "#3182F6" }} />
-                    <p className="text-[11px] font-extrabold tracking-[0.1em]" style={{ color: "#3182F6" }}>
+                    <Eye size={12} style={{ color: "var(--color-primary)" }} />
+                    <p className="text-[11px] font-extrabold tracking-[0.1em]" style={{ color: "var(--color-primary)" }}>
                       SYMPTOMS · 증상
                     </p>
                   </div>
@@ -947,7 +947,7 @@ export default function DiseaseGuidePage() {
         <Link
           href="/protection/emergency-guide"
           className="px-3 py-2 rounded-xl text-[12px] font-bold active:scale-95"
-          style={{ background: "#FFF1E6", color: "#3182F6", border: "1px solid rgba(49,130,246,0.25)" }}
+          style={{ background: "#FFF1E6", color: "var(--color-primary)", border: "1px solid rgba(49,130,246,0.25)" }}
         >
           🚑 응급 구조 가이드
         </Link>

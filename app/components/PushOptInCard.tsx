@@ -93,7 +93,7 @@ export default function PushOptInCard() {
       className="mb-3 px-4 py-3"
       style={{
         background: "linear-gradient(135deg, #FFF6EE 0%, #FFE9D2 100%)",
-        borderRadius: 14,
+        borderRadius: "var(--radius-input)",
         border: "1px solid #F2D6B6",
       }}
     >
@@ -102,7 +102,7 @@ export default function PushOptInCard() {
           className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
           style={{ backgroundColor: "rgba(49,130,246,0.15)" }}
         >
-          <Bell size={16} style={{ color: "#3182F6" }} />
+          <Bell size={16} style={{ color: "var(--color-primary)" }} />
         </div>
         <div className="flex-1 min-w-0">
           <p
@@ -122,7 +122,7 @@ export default function PushOptInCard() {
           onClick={handleEnable}
           disabled={busy}
           className="px-3 py-1.5 rounded-lg text-[11px] font-bold shrink-0 active:scale-95 transition-transform disabled:opacity-50"
-          style={{ backgroundColor: "#3182F6", color: "#fff" }}
+          style={{ backgroundColor: "var(--color-primary)", color: "#fff" }}
         >
           {busy ? "..." : "켜기"}
         </button>

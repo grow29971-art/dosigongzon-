@@ -21,8 +21,8 @@ const tabs: { href: string; label: string; Icon: LucideIcon }[] = [
   { href: "/mypage", label: "마이", Icon: User },
 ];
 
-const ACTIVE = "#3182F6";
-const INACTIVE = "#8B95A1";
+const ACTIVE = "var(--color-primary)";
+const INACTIVE = "var(--color-text-light)";
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -40,7 +40,7 @@ export default function BottomNav() {
         background: "rgba(255,255,255,0.94)",
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
-        borderTop: "1px solid #F2F4F6",
+        borderTop: "1px solid var(--color-surface-alt)",
       }}
     >
       <div className="mx-auto max-w-lg flex px-1 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))]">

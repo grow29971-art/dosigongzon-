@@ -60,7 +60,7 @@ export default async function AreasIndexPage() {
         <Link
           href="/"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -70,14 +70,14 @@ export default async function AreasIndexPage() {
 
       <section className="px-5 pt-4">
         <div className="flex items-center gap-1.5 mb-1.5">
-          <MapPin size={14} style={{ color: "#3182F6" }} />
-          <span className="text-[11.5px] font-bold" style={{ color: "#3182F6" }}>전국</span>
+          <MapPin size={14} style={{ color: "var(--color-primary)" }} />
+          <span className="text-[11.5px] font-bold" style={{ color: "var(--color-primary)" }}>전국</span>
         </div>
         <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight">
           전국 <br />길고양이 돌봄 지도
         </h1>
         <p className="text-[13px] text-text-sub mt-2 leading-relaxed">
-          전체 등록 고양이 <b style={{ color: "#3182F6" }}>{total.toLocaleString()}마리</b>.
+          전체 등록 고양이 <b style={{ color: "var(--color-primary)" }}>{total.toLocaleString()}마리</b>.
           내 동네를 눌러 돌봄 기록과 긴급 구조가 필요한 아이를 확인하세요.
         </p>
       </section>
@@ -91,12 +91,12 @@ export default async function AreasIndexPage() {
                 key={g.slug}
                 href={`/areas/${g.slug}`}
                 className="bg-white rounded-2xl p-3.5 active:scale-[0.97] transition-transform"
-                style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}
+                style={{ boxShadow: "var(--shadow-card)" }}
               >
                 <div className="flex items-baseline justify-between">
                   <span className="text-[14px] font-extrabold text-text-main">{g.name}</span>
                   {n > 0 && (
-                    <span className="text-[11px] font-bold" style={{ color: "#3182F6" }}>
+                    <span className="text-[11px] font-bold" style={{ color: "var(--color-primary)" }}>
                       {n}마리
                     </span>
                   )}
@@ -122,17 +122,17 @@ export default async function AreasIndexPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-bold tracking-[0.12em]" style={{ color: "#3182F6" }}>NATIONWIDE</p>
+              <p className="text-[10px] font-bold tracking-[0.12em]" style={{ color: "var(--color-primary)" }}>NATIONWIDE</p>
               <p className="text-[15px] font-extrabold text-text-main mt-0.5">다른 광역시·도 보기</p>
               <p className="text-[11.5px] text-text-sub mt-0.5">부산·인천·대구·대전·광주·울산·세종·제주·경기</p>
             </div>
-            <span className="text-[18px]" style={{ color: "#3182F6" }}>→</span>
+            <span className="text-[18px]" style={{ color: "var(--color-primary)" }}>→</span>
           </div>
         </Link>
       </section>
 
       <section className="px-5 mt-5 cv-auto">
-        <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
+        <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "var(--shadow-card)" }}>
           <p className="text-[12.5px] text-text-sub leading-relaxed">
             <b className="text-text-main">도시공존</b>은 전국 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다.
             각 구별 페이지에서 동네에 등록된 고양이의 돌봄 기록, TNR 상태, 긴급 구조 요청을 확인할 수 있습니다.

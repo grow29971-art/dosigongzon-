@@ -88,7 +88,7 @@ export default function MyCatsHero() {
           <h2 className="text-[16px] font-extrabold text-text-main tracking-tight">내 고양이</h2>
           <span
             className="text-[10.5px] font-extrabold px-2 py-0.5 rounded-full"
-            style={{ background: "rgba(49,130,246,0.1)", color: "#3182F6" }}
+            style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}
           >
             {doneCount}/{cats.length} 오늘 밥
           </span>
@@ -116,7 +116,7 @@ export default function MyCatsHero() {
                 aspectRatio: "3 / 4",
                 borderRadius: 22,
                 scrollSnapAlign: "start",
-                background: "#F2F4F6",
+                background: "var(--color-surface-alt)",
                 boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
               }}
             >
@@ -145,7 +145,7 @@ export default function MyCatsHero() {
                 className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-1 rounded-full text-[9.5px] font-extrabold pointer-events-none"
                 style={{
                   background: cat.fedToday ? "rgba(34,163,102,0.92)" : "rgba(255,255,255,0.92)",
-                  color: cat.fedToday ? "#fff" : "#4E5968",
+                  color: cat.fedToday ? "#fff" : "var(--color-text-sub)",
                 }}
               >
                 {cat.fedToday ? <>✓ 오늘 밥</> : <>🍚 아직 전</>}
@@ -162,7 +162,7 @@ export default function MyCatsHero() {
                   className="w-full py-2 rounded-xl text-[12px] font-extrabold flex items-center justify-center gap-1 active:scale-95 transition-transform pointer-events-auto"
                   style={{
                     background: cat.fedToday ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.95)",
-                    color: cat.fedToday ? "#fff" : "#191F28",
+                    color: cat.fedToday ? "#fff" : "var(--color-text-main)",
                     backdropFilter: "blur(4px)",
                   }}
                 >
@@ -194,11 +194,11 @@ export default function MyCatsHero() {
         >
           <div
             className="w-11 h-11 rounded-full flex items-center justify-center"
-            style={{ background: "rgba(49,130,246,0.1)" }}
+            style={{ background: "var(--color-primary-soft)" }}
           >
-            <Plus size={20} style={{ color: "#3182F6" }} strokeWidth={2.5} />
+            <Plus size={20} style={{ color: "var(--color-primary)" }} strokeWidth={2.5} />
           </div>
-          <span className="text-[11.5px] font-extrabold" style={{ color: "#3182F6" }}>
+          <span className="text-[11.5px] font-extrabold" style={{ color: "var(--color-primary)" }}>
             새 친구 등록
           </span>
         </Link>

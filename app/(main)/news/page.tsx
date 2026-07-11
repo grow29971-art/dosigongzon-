@@ -49,7 +49,7 @@ export default async function NewsIndexPage() {
         <Link
           href="/"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -67,7 +67,7 @@ export default async function NewsIndexPage() {
         {items.length === 0 ? (
           <div
             className="text-center py-16 rounded-2xl bg-white"
-            style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             <Newspaper size={36} strokeWidth={1.2} className="mx-auto mb-3 text-text-light opacity-30" />
             <p className="text-[13px] text-text-sub font-semibold">아직 등록된 소식이 없어요</p>
@@ -90,7 +90,7 @@ export default async function NewsIndexPage() {
               <div
                 className="flex gap-3 p-3.5 rounded-2xl bg-white active:scale-[0.99] transition-transform"
                 style={{
-                  boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+                  boxShadow: "var(--shadow-card)",
                   border: item.pinned ? `1.5px solid ${badge.color}40` : "1px solid rgba(0,0,0,0.04)",
                 }}
               >

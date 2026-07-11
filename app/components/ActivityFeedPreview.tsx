@@ -29,7 +29,7 @@ import {
 const PREVIEW_COUNT = 4;
 
 const TYPE_CONFIG: Record<NotificationType, { icon: typeof Bell; color: string; bg: string }> = {
-  comment_on_my_cat:   { icon: MessageCircle, color: "#3182F6", bg: "#3182F615" },
+  comment_on_my_cat:   { icon: MessageCircle, color: "var(--color-primary)", bg: "#3182F615" },
   carelog_on_my_cat:   { icon: Heart,         color: "#6B8E6F", bg: "#6B8E6F15" },
   dm_received:         { icon: MessageCircle, color: "#4A7BA8", bg: "#4A7BA815" },
   alert_on_my_cat:     { icon: AlertTriangle, color: "#D85555", bg: "#D8555515" },
@@ -93,7 +93,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
         style={{
           background: "#FFFFFF",
           borderRadius: 18,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+          boxShadow: "var(--shadow-card)",
           border: "1px solid rgba(0,0,0,0.04)",
           minHeight: 92,
         }}
@@ -119,7 +119,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
             style={{
-              background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "0 4px 12px rgba(49,130,246,0.30)",
             }}
           >
@@ -138,7 +138,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
           <Link
             href={hasMyCat ? "/map" : "/map"}
             className="shrink-0 px-3 py-1.5 rounded-xl text-[11px] font-extrabold active:scale-95"
-            style={{ backgroundColor: "#3182F6", color: "#fff" }}
+            style={{ backgroundColor: "var(--color-primary)", color: "#fff" }}
           >
             <PawPrint size={11} className="inline mr-1" strokeWidth={2.5} />
             지도로
@@ -152,13 +152,13 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
     <section className="mb-3">
       <div className="flex items-center justify-between mb-2 px-1">
         <div className="flex items-center gap-2">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#3182F6" }} />
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
           <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
             새 소식
           </h2>
           <span
             className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md tabular-nums"
-            style={{ background: "#3182F622", color: "#1B64DA" }}
+            style={{ background: "#3182F622", color: "var(--color-primary-dark)" }}
           >
             {items.length}
           </span>
@@ -166,7 +166,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
         <Link
           href="/notifications"
           className="flex items-center gap-0.5 text-[11px] font-bold active:opacity-70"
-          style={{ color: "#1B64DA" }}
+          style={{ color: "var(--color-primary-dark)" }}
         >
           모두 보기
           <ChevronRight size={12} />

@@ -193,7 +193,7 @@ export default function AdminBroadcastPage() {
         <Link
           href="/admin"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="어드민 홈"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -261,7 +261,7 @@ export default function AdminBroadcastPage() {
               className="text-[11px] px-3 py-1.5 rounded-full font-semibold active:scale-[0.97]"
               style={{
                 background: "rgba(49,130,246,0.10)",
-                color: "#1B64DA",
+                color: "var(--color-primary-dark)",
                 border: "1px solid rgba(49,130,246,0.22)",
               }}
             >
@@ -298,7 +298,7 @@ export default function AdminBroadcastPage() {
         disabled={sending || !message.trim()}
         className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[14px] font-extrabold active:scale-[0.98] disabled:opacity-60"
         style={{
-          background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+          background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
           boxShadow: "0 6px 18px rgba(49,130,246,0.28)",
         }}
       >

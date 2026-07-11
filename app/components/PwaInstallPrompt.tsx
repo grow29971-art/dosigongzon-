@@ -167,14 +167,14 @@ export default function PwaInstallPrompt() {
           <div
             className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
             style={{
-              background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "0 4px 12px rgba(49,130,246,0.35)",
             }}
           >
             <Download size={19} color="#fff" strokeWidth={2.3} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#3182F6" }}>
+            <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-primary)" }}>
               INSTALL
             </p>
             <p className="text-[14.5px] font-extrabold text-text-main tracking-tight leading-tight mt-0.5">
@@ -197,17 +197,17 @@ export default function PwaInstallPrompt() {
 
         {/* iOS 안내 */}
         {showIosHint && (
-          <div className="mt-3 rounded-xl p-3" style={{ background: "rgba(49,130,246,0.08)" }}>
+          <div className="mt-3 rounded-xl p-3" style={{ background: "var(--color-primary-softer)" }}>
             <p className="text-[11.5px] text-text-main leading-relaxed mb-2 font-semibold">
               사파리 하단 공유 버튼을 눌러주세요:
             </p>
             <ol className="space-y-1 text-[11.5px] text-text-sub leading-relaxed pl-1">
               <li className="flex items-center gap-1.5">
-                <Share size={13} style={{ color: "#3182F6" }} />
+                <Share size={13} style={{ color: "var(--color-primary)" }} />
                 <span>공유 아이콘 탭</span>
               </li>
               <li className="flex items-center gap-1.5">
-                <PlusSquare size={13} style={{ color: "#3182F6" }} />
+                <PlusSquare size={13} style={{ color: "var(--color-primary)" }} />
                 <span>"홈 화면에 추가" 선택</span>
               </li>
             </ol>
@@ -221,7 +221,7 @@ export default function PwaInstallPrompt() {
             onClick={install}
             className="w-full mt-3 py-2.5 rounded-xl text-[13px] font-extrabold text-white active:scale-[0.98] transition-transform"
             style={{
-              background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "0 4px 12px rgba(49,130,246,0.35)",
             }}
           >

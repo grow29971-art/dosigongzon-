@@ -100,7 +100,7 @@ export default function MyInquiriesPage() {
           <Link
             href="/mypage"
             className="inline-block px-4 py-2 rounded-xl text-[12px] font-bold text-white"
-            style={{ background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)" }}
+            style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
           >
             마이페이지에서 문의하기
           </Link>
@@ -119,7 +119,7 @@ export default function MyInquiriesPage() {
               className="bg-white rounded-2xl overflow-hidden"
               style={{
                 border: `1px solid ${iq.status === "replied" ? `${color}30` : "rgba(0,0,0,0.05)"}`,
-                boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+                boxShadow: "var(--shadow-card)",
               }}
             >
               <button

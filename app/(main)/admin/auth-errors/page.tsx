@@ -282,7 +282,7 @@ export default function AdminAuthErrorsPage() {
       {stats.length > 0 && (
         <div
           className="rounded-2xl p-4 mb-3 bg-white"
-          style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+          style={{ boxShadow: "var(--shadow-card)" }}
         >
           <div className="flex items-center gap-2 mb-3">
             <AlertCircle size={13} style={{ color: "#E88D5A" }} />
@@ -377,7 +377,7 @@ export default function AdminAuthErrorsPage() {
       {logs.length === 0 ? (
         <div
           className="rounded-2xl py-8 text-center bg-white"
-          style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+          style={{ boxShadow: "var(--shadow-card)" }}
         >
           <Shield size={28} className="mx-auto mb-2 text-text-light" strokeWidth={1.5} />
           <p className="text-[12.5px] font-bold text-text-main">로그가 없어요</p>
@@ -392,7 +392,7 @@ export default function AdminAuthErrorsPage() {
               <div
                 key={log.id}
                 className="bg-white rounded-2xl overflow-hidden"
-                style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.04)" }}
+                style={{ boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
               >
                 <button
                   type="button"

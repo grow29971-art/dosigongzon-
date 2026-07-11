@@ -105,7 +105,7 @@ export default function LocationLogsPage() {
         ) : rows.length === 0 ? (
           <div
             className="bg-white rounded-2xl p-6 text-center text-[12px] text-text-sub"
-            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             아직 위치 변경 기록이 없어요.
           </div>
@@ -158,7 +158,7 @@ export default function LocationLogsPage() {
                       className="px-2 py-1 rounded-lg font-bold"
                       style={{
                         background: dongChanged ? "#FFF2E8" : "#F6F1EA",
-                        color: dongChanged ? "#3182F6" : "#A38E7A",
+                        color: dongChanged ? "var(--color-primary)" : "#A38E7A",
                       }}
                     >
                       {r.new_region ?? "?"}
@@ -207,7 +207,7 @@ function SummaryCard({
     <div
       className="rounded-2xl p-3 bg-white"
       style={{
-        boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+        boxShadow: "var(--shadow-card)",
         border: "1px solid rgba(0,0,0,0.04)",
       }}
     >

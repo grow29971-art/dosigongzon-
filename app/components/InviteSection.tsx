@@ -80,7 +80,7 @@ export default function InviteSection() {
         className="p-5"
         style={{
           background: "linear-gradient(135deg, #FFF5F8 0%, #FFE9F0 100%)",
-          borderRadius: 20,
+          borderRadius: "var(--radius-card)",
           border: "1px solid rgba(232,107,140,0.18)",
           boxShadow: "0 4px 14px rgba(232,107,140,0.12)",
         }}
@@ -164,7 +164,7 @@ export default function InviteSection() {
 
             {info.invitedByCode && (
               <p className="text-[10.5px] text-text-light text-center mt-3">
-                ✨ <b style={{ color: "#3182F6" }}>{info.invitedByCode}</b> 코드로 가입했어요
+                ✨ <b style={{ color: "var(--color-primary)" }}>{info.invitedByCode}</b> 코드로 가입했어요
               </p>
             )}
           </>

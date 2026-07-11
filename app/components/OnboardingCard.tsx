@@ -37,7 +37,7 @@ export default function OnboardingCard({
       subtitle: "우리 동네를 먼저 정해주세요",
       href: "/mypage/activity-regions",
       Icon: MapPin,
-      color: "#3182F6",
+      color: "var(--color-primary)",
     },
     {
       key: "cat",
@@ -94,18 +94,18 @@ export default function OnboardingCard({
         <div
           className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
           style={{
-            background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+            background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
             boxShadow: "0 4px 12px rgba(49,130,246,0.35)",
           }}
         >
           <Sparkles size={19} color="#fff" strokeWidth={2.3} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#3182F6" }}>
+          <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-primary)" }}>
             WELCOME
           </p>
           <p className="text-[15px] font-extrabold text-text-main tracking-tight leading-tight mt-0.5">
-            시작 가이드 <span style={{ color: "#3182F6" }}>{doneCount}/{total}</span>
+            시작 가이드 <span style={{ color: "var(--color-primary)" }}>{doneCount}/{total}</span>
           </p>
           <p className="text-[11.5px] text-text-sub mt-1 leading-snug">
             마지막은 선택 — 믿는 이웃과 안전한 돌봄까지!
@@ -133,7 +133,7 @@ export default function OnboardingCard({
           className="h-full rounded-full transition-all"
           style={{
             width: `${progress}%`,
-            background: "linear-gradient(90deg, #3182F6 0%, #5BC4C4 100%)",
+            background: "linear-gradient(90deg, var(--color-primary) 0%, #5BC4C4 100%)",
           }}
         />
       </div>

@@ -60,7 +60,7 @@ export default async function RankingPage() {
       <div className="px-4 mb-3">
         <details
           className="rounded-2xl px-4 py-3 bg-white"
-          style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+          style={{ boxShadow: "var(--shadow-card)" }}
         >
           <summary className="text-[12px] font-extrabold text-text-main cursor-pointer list-none flex items-center justify-between">
             <span>점수는 어떻게 계산되나요?</span>
@@ -103,7 +103,7 @@ export default async function RankingPage() {
           >
             <div className="text-[26px] leading-none shrink-0">{isTop3 ? "🎉" : "🐾"}</div>
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-extrabold tracking-[0.15em]" style={{ color: isTop3 ? "#A9851F" : "#1B64DA" }}>
+              <p className="text-[10px] font-extrabold tracking-[0.15em]" style={{ color: isTop3 ? "#A9851F" : "var(--color-primary-dark)" }}>
                 이번 주 내 순위
               </p>
               <p className="text-[15px] font-extrabold text-text-main leading-tight mt-0.5">
@@ -121,7 +121,7 @@ export default async function RankingPage() {
         {top.length === 0 && (
           <div
             className="rounded-2xl p-6 text-center bg-white"
-            style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             <p className="text-[13px] font-bold text-text-main">아직 랭킹이 없어요</p>
             <p className="text-[11.5px] text-text-sub mt-1">
@@ -130,7 +130,7 @@ export default async function RankingPage() {
             <Link
               href="/map"
               className="inline-block mt-3 px-4 py-2 rounded-xl text-[12px] font-extrabold text-white"
-              style={{ background: "#3182F6" }}
+              style={{ background: "var(--color-primary)" }}
             >
               지도로 가기
             </Link>
@@ -174,7 +174,7 @@ export default async function RankingPage() {
           <Link
             href="/login?next=/ranking"
             className="block rounded-2xl px-4 py-3.5 text-center bg-white"
-            style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             <p className="text-[12.5px] font-extrabold text-text-main">
               로그인하면 내 순위도 보여요
@@ -271,7 +271,7 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
       style={{
         background: highlight ? "#FFF3DC" : "#FFFFFF",
         border: highlight ? "1.5px solid rgba(201,169,97,0.5)" : "1px solid rgba(0,0,0,0.04)",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+        boxShadow: "var(--shadow-card)",
       }}
     >
       <div

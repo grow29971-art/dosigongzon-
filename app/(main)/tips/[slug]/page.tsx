@@ -207,7 +207,7 @@ export default async function TipDetailPage({ params }: Params) {
           <Link
             href="/tips"
             className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+            style={{ boxShadow: "var(--shadow-raised)" }}
             aria-label="꿀팁게시판"
           >
             <ArrowLeft size={18} className="text-text-main" />
@@ -220,7 +220,7 @@ export default async function TipDetailPage({ params }: Params) {
         {/* 헤더 카드 */}
         <header
           className="bg-white rounded-2xl p-5 mb-4"
-          style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}
+          style={{ boxShadow: "var(--shadow-card)" }}
         >
           {tip.tags.length > 0 && (
             <div className="flex gap-1.5 mb-2.5 flex-wrap">
@@ -267,7 +267,7 @@ export default async function TipDetailPage({ params }: Params) {
           <nav
             className="bg-white rounded-2xl p-4 mb-4"
             aria-label="목차"
-            style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             <p className="text-[11.5px] font-extrabold text-text-sub mb-2 inline-flex items-center gap-1.5">
               <ListIcon size={13} />
@@ -295,7 +295,7 @@ export default async function TipDetailPage({ params }: Params) {
         {/* 본문 카드 */}
         <div
           className="bg-white rounded-2xl p-6 mb-4"
-          style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}
+          style={{ boxShadow: "var(--shadow-card)" }}
         >
           <div
             className="tip-body text-text-main"
@@ -310,7 +310,7 @@ export default async function TipDetailPage({ params }: Params) {
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 p-4 rounded-2xl bg-white mb-4 active:scale-[0.99] transition-transform"
-            style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             <ExternalLink size={16} className="text-text-sub shrink-0" />
             <div className="flex-1 min-w-0">
@@ -326,7 +326,7 @@ export default async function TipDetailPage({ params }: Params) {
         {/* 공유 */}
         <div
           className="bg-white rounded-2xl p-4 mb-4"
-          style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}
+          style={{ boxShadow: "var(--shadow-card)" }}
         >
           <p className="text-[11.5px] font-extrabold text-text-sub mb-2.5">이 글 공유하기</p>
           <TipShareButtons url={url} title={tip.title} description={description} />
@@ -336,7 +336,7 @@ export default async function TipDetailPage({ params }: Params) {
         {related.length > 0 && (
           <section
             className="bg-white rounded-2xl p-4 mb-4"
-            style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             <p className="text-[11.5px] font-extrabold text-text-sub mb-2.5">관련 꿀팁</p>
             <div className="space-y-2">

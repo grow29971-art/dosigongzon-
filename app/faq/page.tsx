@@ -74,7 +74,7 @@ const CATEGORIES: FaqCategory[] = [
     id: "discover",
     label: "길고양이를 발견했어요",
     Icon: AlertCircle,
-    color: "#3182F6",
+    color: "var(--color-primary)",
     bg: "rgba(49,130,246,0.12)",
     items: [
       {
@@ -84,7 +84,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             건강해 보이면 그냥 두는 게 가장 좋아요. 길고양이는 한 동네에서 영역을 가지고 살아가는 동물이라 멀리 옮기면 오히려 길을 잃어요. 다치거나 어린아이만 있는 경우에만 개입이 필요합니다.{" "}
-            <Link href="/map" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/map" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               도시공존 지도
             </Link>
             에 위치를 등록해 이웃과 함께 지켜봐 주세요.
@@ -98,11 +98,11 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             심각한 부상이면 가장 가까운 동물병원에 전화 후 이송하세요. 비용 부담이 크면 자치구 동물보호 담당부서(120 → 자치구 연결)로 연락해 구조 협조를 요청할 수 있어요.{" "}
-            <Link href="/protection/emergency-guide" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/protection/emergency-guide" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               응급 처치 가이드
             </Link>
             에서 첫 30분 대응법을 확인하실 수 있고,{" "}
-            <Link href="/hospitals" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/hospitals" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               구조동물 치료 병원
             </Link>{" "}
             목록에서 가까운 병원을 찾을 수 있어요.
@@ -116,7 +116,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             동물보호법 위반은 형사처벌 대상입니다. 경찰서(112)나 지자체 동물보호 담당부서에 신고하세요. 영상·사진 등 증거를 가능한 한 확보하는 게 좋습니다.{" "}
-            <Link href="/protection/legal" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/protection/legal" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               동물보호법 정리
             </Link>{" "}
             페이지에서 처벌 조항과 신고 절차를 확인할 수 있어요.
@@ -130,7 +130,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             120(다산 콜센터) 또는 자치구 청소행정과에 신고하면 사체 처리해 줍니다. 사유지에서 발견한 경우 토지 소유자가 처리 책임이 있어요. 학대 의심 정황이 있으면 사진을 찍어 두고 경찰에 함께 신고하세요.{" "}
-            <Link href="/protection/district-contacts" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/protection/district-contacts" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               시군구 담당부서 연락처
             </Link>
             를 한눈에 볼 수 있어요.
@@ -144,7 +144,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             낮은 자세로 천천히 다가가세요. 정면으로 눈을 마주치지 말고 옆쪽에서, 손을 아래로 내밀어 냄새 먼저 맡게 합니다. 갑작스러운 소리·움직임은 금물이에요. 평소 같은 시간에 같은 장소에서 사료를 두면 신뢰가 빨리 쌓여요.{" "}
-            <Link href="/protection/feeding-guide" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/protection/feeding-guide" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               급식 가이드
             </Link>
             도 참고해 보세요.
@@ -167,7 +167,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             성급한 구조가 가장 큰 위험이에요. 엄마 고양이가 사냥하러 갔거나 새끼를 옮기는 중일 수 있어요. 최소 2~4시간은 멀리서 관찰하세요. 엄마가 돌아오면 그대로 두는 게 새끼에게 가장 좋아요. 4시간이 지나도 어미가 안 오거나, 새끼가 차가워졌으면 그때 구조하세요. 자세한 판단 기준은{" "}
-            <Link href="/protection/kitten-guide" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/protection/kitten-guide" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               새끼고양이 발견 가이드
             </Link>
             를 봐주세요.
@@ -181,7 +181,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             체온이 떨어진 새끼는 분유부터 먹이면 안 됩니다. 먼저 따뜻하게 데우세요. 미지근한 수건이나 핫팩(직접 접촉 금지, 천으로 감싸세요)으로 30분 이상 천천히 체온을 올린 후에 분유를 줍니다. 그 사이 가장 가까운{" "}
-            <Link href="/hospitals" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/hospitals" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               동물병원
             </Link>
             으로 이송하는 게 안전해요.
@@ -195,7 +195,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             1주차는 2시간마다(밤낮 모두), 2~3주차는 3~4시간마다, 4주차부터는 4~6시간마다 줍니다. 분유는 반드시 고양이 전용(사람·강아지 분유 X) 사용. 체온이 떨어졌으면 분유 전에 먼저 따뜻하게 해주세요. 30°C 정도가 가장 적정 체온이에요. 단계별 자세한 케어법은{" "}
-            <Link href="/protection/kitten-guide" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/protection/kitten-guide" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               새끼고양이 가이드
             </Link>
             에 정리돼 있어요.
@@ -218,7 +218,7 @@ const CATEGORIES: FaqCategory[] = [
     id: "tnr",
     label: "TNR(중성화)이 궁금해요",
     Icon: Scissors,
-    color: "#1B64DA",
+    color: "var(--color-primary-dark)",
     bg: "rgba(168,104,74,0.12)",
     items: [
       {
@@ -228,7 +228,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             TNR은 <strong>Trap</strong>(포획) - <strong>Neuter</strong>(중성화 수술) - <strong>Return</strong>(원래 자리에 방사)의 약자예요. 무분별한 번식을 막아 길고양이 개체수를 안정시키고, 발정기 울음·영역 다툼·새끼의 어린 죽음을 줄이는 가장 인도적인 방법입니다. 살처분이 아닌 공존이 목표예요.{" "}
-            <Link href="/protection/trapping-guide" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/protection/trapping-guide" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               TNR 요령 가이드
             </Link>
             에서 자세히 다뤘어요.
@@ -242,7 +242,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             대부분 자치구에서 무료 또는 보조금을 지원합니다. 신청 절차는 자치구마다 달라요. 동물보호 담당부서(120)나{" "}
-            <Link href="/protection/district-contacts" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/protection/district-contacts" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               시군구 담당부서 연락처
             </Link>
             에서 해당 구청 번호를 확인해 직접 문의하세요. 보통 연중 신청 가능하지만 예산 한도가 있어 조기 마감되는 곳도 있어요.
@@ -285,7 +285,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             임시보호는 입양 갈 곳을 찾는 동안 일정 기간(보통 2~8주) 우리 집에서 돌봐주는 거예요. 입양처가 나오면 보내야 합니다. 입양은 평생 가족으로 책임지는 것. 둘 다 동물보호단체나 개인 케어테이커를 통해 매칭됩니다.{" "}
-            <Link href="/protection/shelter-guide" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/protection/shelter-guide" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               임시보호 시작 가이드
             </Link>
             를 참고하세요.
@@ -299,7 +299,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             준비물: 케이지(또는 분리된 방), 사료, 물그릇, 화장실(모래), 스크래쳐, 장난감. 가장 중요한 건 격리 가능한 공간이에요. 기존 반려묘가 있으면 최소 2주 격리(전염병·기생충 체크). 시작 전{" "}
-            <Link href="/hospitals" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/hospitals" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               동물병원
             </Link>
             에서 기본 건강검진 필수.
@@ -342,7 +342,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             허피스(눈곱·재채기), 칼리시(구내염), 범백혈구감소증(설사·구토, 새끼에게 치명적), 곰팡이성 피부병, 귀진드기, 벼룩 등이 대표적이에요. 사람에게 옮길 수 있는 인수공통감염병(톡소플라즈마 등)도 있으니 만진 후엔 손을 꼭 씻으세요. 자세한 증상별 안내는{" "}
-            <Link href="/protection/disease-guide" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/protection/disease-guide" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               질병 가이드
             </Link>
             를 봐주세요.
@@ -356,7 +356,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             전문 수의사 처방 없이 임의로 약을 주는 건 위험해요. 사람 약(특히 타이레놀)은 고양이에게 치명적입니다. 다만 외부 기생충약·식이 보조제 등 일부는 동물약국에서 구입해 사용할 수 있어요.{" "}
-            <Link href="/protection/pharmacy-guide" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/protection/pharmacy-guide" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               약품 가이드
             </Link>
             에서 안전하게 사용할 수 있는 약 목록을 확인하세요.
@@ -370,7 +370,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             기본 건강검진(항원검사·기생충검사·X-ray)만 해도 10~20만원, 치료까지 필요하면 30~100만원 이상도 나옵니다. 비용 부담이 크면 자치구 동물병원 보조 사업, 동물보호단체 의료비 지원, 크라우드펀딩(고양이 라이프 등)을 활용하세요.{" "}
-            <Link href="/hospitals" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/hospitals" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               구조동물 치료 병원
             </Link>{" "}
             중에는 케어테이커 할인이 있는 곳도 있어요.
@@ -403,7 +403,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             네, 합법입니다. 동물보호법은 길고양이 돌봄을 보호하고 있어요. 다만 타인의 사유지·공동주택 공용공간에서 무단으로 사료를 두는 건 갈등 소지가 있어요. 가능하면 관리실·이웃과 미리 협의하고, 사료 그릇은 식사 후 바로 회수해 청결을 유지하세요.{" "}
-            <Link href="/protection/legal" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/protection/legal" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               동물보호법 정리
             </Link>
             도 함께 참고하세요.
@@ -427,7 +427,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             가능하면 대화로 해결하는 게 최선이에요. 사료 잔반·청결 문제 우려가 있다면 약속 시간에 와서 식사 후 회수, 사료 그릇 위치를 옮기는 등 절충안을 제시해 보세요. 협박·물리적 충돌로 이어지면 경찰에 신고하고 증거를 남기세요. 자치구의 길고양이 돌봄 가이드라인이 있는 곳도 많아요 —{" "}
-            <Link href="/protection/district-contacts" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/protection/district-contacts" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               자치구 담당부서
             </Link>
             에 문의해 보세요.
@@ -450,7 +450,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             급식 위치는 사람 동선과 떨어진 곳, 비를 피할 수 있는 곳이 좋아요. 정해진 시간에 정량 급여하고 식사 후 그릇을 회수하세요. 신선한 물도 함께. 추운 겨울엔 보온 쉼터를, 더운 여름엔 그늘을 만들어 주세요.{" "}
-            <Link href="/map" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/map" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               도시공존 지도
             </Link>
             에 위치를 등록하면 이웃과 정보 공유가 쉬워져요.
@@ -474,7 +474,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             스티로폼 상자에 담요·짚을 깔고 입구를 작게 만든 겨울집이 가장 일반적이에요. 바닥에서 띄워 한기를 막고, 입구는 바람 방향과 반대쪽으로. 핫팩은 직접 접촉을 피하고 천으로 감싸 사용. 겨울집 위치는 사람 손이 잘 안 닿는 조용한 곳에 두세요.{" "}
-            <Link href="/shelters" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/shelters" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               우리 동네 쉼터 지도
             </Link>
             도 확인해 보세요.
@@ -488,7 +488,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             사료·치료비 지원 사업이 자치구·동물보호단체별로 운영됩니다. 동물자유연대·카라·동물권행동 KARA 등 단체에서 매년 사료 지원, TNR 의료비 지원 등을 진행해요. 자치구 동물보호 담당부서에도 케어테이커 등록 후 지원받을 수 있는 프로그램이 있으니{" "}
-            <Link href="/protection/district-contacts" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/protection/district-contacts" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               담당부서 연락처
             </Link>
             를 확인하세요.
@@ -511,7 +511,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             도시공존은 우리 동네 길고양이를 지도에 기록하고, 이웃 케어테이커와 돌봄 정보를 나누는 시민 참여 플랫폼이에요. 고양이 등록·돌봄다이어리·이웃 쪽지·동물병원 정보·긴급 구조·뉴스를 한 곳에서. 무료이고, 회원가입 후 우리 동네 길고양이부터 등록해 보세요.{" "}
-            <Link href="/guide" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/guide" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               사용 가이드
             </Link>
             를 보면 빠르게 익숙해질 수 있어요.
@@ -535,7 +535,7 @@ const CATEGORIES: FaqCategory[] = [
         answerHtml: (
           <>
             같은 동네에서 위급 상태(주의·위험)로 표시된 고양이가 며칠째 돌봄 기록이 없을 때, 동네 활동 유저에게 푸시 알림을 보내요. 가까운 분이 한 번 들러주시면 됩니다. 알림 받기 싫으시면{" "}
-            <Link href="/mypage" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/mypage" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               마이페이지
             </Link>{" "}
             → 푸시 알림 설정에서 끌 수 있어요.
@@ -554,12 +554,12 @@ const CATEGORIES: FaqCategory[] = [
               target="_blank"
               rel="noopener noreferrer"
               className="underline"
-              style={{ color: "#1B64DA" }}
+              style={{ color: "var(--color-primary-dark)" }}
             >
               Play 스토어
             </a>
             에서 &lsquo;도시공존&rsquo;을 설치할 수 있어요. iOS 등 다른 기기는 모바일 브라우저에서{" "}
-            <Link href="/" className="underline" style={{ color: "#1B64DA" }}>
+            <Link href="/" className="underline" style={{ color: "var(--color-primary-dark)" }}>
               dosigongzon.com
             </Link>
             에 접속한 후 &lsquo;홈 화면에 추가&rsquo;를 누르면 앱처럼 사용할 수 있어요.
@@ -725,7 +725,7 @@ export default function FaqPage() {
                       <span className="flex-1">Q. {it.q}</span>
                       <ChevronDown
                         size={18}
-                        className="mt-0.5 shrink-0 text-[#1B64DA] transition-transform group-open:rotate-180"
+                        className="mt-0.5 shrink-0 text-[var(--color-primary-dark)] transition-transform group-open:rotate-180"
                       />
                     </summary>
                     <div
@@ -745,7 +745,7 @@ export default function FaqPage() {
         <section
           className="mt-10 rounded-2xl p-5"
           style={{
-            background: "linear-gradient(135deg, rgba(49,130,246,0.08) 0%, rgba(232,181,126,0.12) 100%)",
+            background: "linear-gradient(135deg, var(--color-primary-softer) 0%, rgba(232,181,126,0.12) 100%)",
             border: "1px solid rgba(49,130,246,0.18)",
           }}
         >
@@ -765,21 +765,21 @@ export default function FaqPage() {
             <Link
               href="/protection"
               className="rounded-full px-4 py-2 text-[12.5px] font-extrabold text-white shadow-sm active:scale-[0.98]"
-              style={{ background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)" }}
+              style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
             >
               보호 지침 전체 보기
             </Link>
             <Link
               href="/guide"
               className="rounded-full border bg-white px-4 py-2 text-[12.5px] font-extrabold active:scale-[0.98]"
-              style={{ borderColor: "rgba(49,130,246,0.3)", color: "#1B64DA" }}
+              style={{ borderColor: "rgba(49,130,246,0.3)", color: "var(--color-primary-dark)" }}
             >
               앱 사용 가이드
             </Link>
             <a
               href="mailto:grow29971@gmail.com"
               className="rounded-full border bg-white px-4 py-2 text-[12.5px] font-extrabold active:scale-[0.98]"
-              style={{ borderColor: "rgba(49,130,246,0.3)", color: "#1B64DA" }}
+              style={{ borderColor: "rgba(49,130,246,0.3)", color: "var(--color-primary-dark)" }}
             >
               메일로 문의
             </a>

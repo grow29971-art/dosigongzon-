@@ -44,7 +44,7 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
       className="mb-3 p-4"
       style={{
         background: "linear-gradient(135deg, #FFF3F6 0%, #FFE7EC 100%)",
-        borderRadius: 20,
+        borderRadius: "var(--radius-card)",
         border: "1px solid rgba(232,107,140,0.22)",
         boxShadow: "0 6px 20px rgba(232,107,140,0.12)",
       }}
@@ -103,7 +103,7 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
         <Link
           href="/map"
           className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white text-[13px] font-extrabold active:scale-[0.98] transition-transform"
-          style={{ background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)" }}
+          style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
         >
           <PawPrint size={14} /> 우리 동네 고양이 등록하기 <ChevronRight size={13} />
         </Link>

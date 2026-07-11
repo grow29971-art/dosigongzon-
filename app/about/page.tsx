@@ -120,7 +120,7 @@ export default async function AboutPage() {
         <Link
           href="/"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -131,13 +131,13 @@ export default async function AboutPage() {
       {/* 히어로 */}
       <section className="px-5 pt-4">
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 mb-3">
-          <Heart size={12} style={{ color: "#3182F6" }} />
-          <span className="text-[11px] font-extrabold" style={{ color: "#3182F6" }}>
+          <Heart size={12} style={{ color: "var(--color-primary)" }} />
+          <span className="text-[11px] font-extrabold" style={{ color: "var(--color-primary)" }}>
             전국 · 비영리 시민 참여 플랫폼
           </span>
         </div>
         <h1 className="text-[26px] font-extrabold text-text-main leading-tight tracking-tight">
-          전국 길고양이 <span style={{ color: "#3182F6" }}>{stats.cats.toLocaleString()}마리</span>의<br />
+          전국 길고양이 <span style={{ color: "var(--color-primary)" }}>{stats.cats.toLocaleString()}마리</span>의<br />
           돌봄 기록을 한 화면에.
         </h1>
         <p className="text-[13.5px] text-text-sub mt-3 leading-relaxed">
@@ -190,7 +190,7 @@ export default async function AboutPage() {
           className="rounded-2xl p-4 mt-3 flex items-start gap-2.5"
           style={{ background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)", border: "1px solid rgba(49,130,246,0.20)" }}
         >
-          <Heart size={15} style={{ color: "#3182F6" }} className="shrink-0 mt-0.5" />
+          <Heart size={15} style={{ color: "var(--color-primary)" }} className="shrink-0 mt-0.5" />
           <p className="text-[12.5px] leading-relaxed text-text-sub">
             <b className="text-text-main">그래서 도시공존을 만들었어요.</b> 흩어진 정보를 한 화면에 모으고,
             혼자였던 케어테이커를 같은 동네 이웃과 잇고, 화면 안팎으로 길 위의 아이들을 지킬 도구가 되기 위해서요.
@@ -205,7 +205,7 @@ export default async function AboutPage() {
         </h2>
         <div className="space-y-2.5">
           <FeatureRow
-            icon={<MapPin size={18} style={{ color: "#3182F6" }} />}
+            icon={<MapPin size={18} style={{ color: "var(--color-primary)" }} />}
             title="동네 길고양이 지도"
             desc="TNR, 건강, 급식 상태를 지도 위에 실시간으로 기록. 급식소 위치는 안전을 위해 비공개."
           />
@@ -240,10 +240,10 @@ export default async function AboutPage() {
           }}
         >
           <div className="flex items-center gap-1.5 mb-3">
-            <Compass size={14} style={{ color: "#3182F6" }} />
+            <Compass size={14} style={{ color: "var(--color-primary)" }} />
             <span
               className="text-[10px] font-extrabold tracking-[0.18em]"
-              style={{ color: "#3182F6" }}
+              style={{ color: "var(--color-primary)" }}
             >
               MISSION
             </span>
@@ -291,10 +291,10 @@ export default async function AboutPage() {
 
         {/* Values — 3 핵심 가치 */}
         <div className="flex items-center gap-1.5 mb-2 ml-1 mt-4">
-          <Sparkles size={14} style={{ color: "#1B64DA" }} />
+          <Sparkles size={14} style={{ color: "var(--color-primary-dark)" }} />
           <span
             className="text-[10px] font-extrabold tracking-[0.18em]"
-            style={{ color: "#1B64DA" }}
+            style={{ color: "var(--color-primary-dark)" }}
           >
             VALUES
           </span>
@@ -304,7 +304,7 @@ export default async function AboutPage() {
             n={1}
             icon={<Users size={16} color="#FFFFFF" />}
             accent="#3182F6"
-            accentDark="#1B64DA"
+            accentDark="var(--color-primary-dark)"
             title="연대"
             body="우리는 저마다 다른 문화·환경에서 각기 다른 삶을 살아왔지만, 인류라는 공통점을 가진 형제들이다. 항상 서로의 생각·개성·성향을 존중하고 형제애를 중요시한다."
           />
@@ -329,7 +329,7 @@ export default async function AboutPage() {
 
       {/* 가치 */}
       <section className="px-5 mt-8">
-        <div className="bg-white rounded-2xl p-5" style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
+        <div className="bg-white rounded-2xl p-5" style={{ boxShadow: "var(--shadow-card)" }}>
           <h2 className="text-[15px] font-extrabold text-text-main mb-2">
             우리가 지키는 원칙
           </h2>
@@ -365,10 +365,10 @@ export default async function AboutPage() {
               className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
               style={{ background: "rgba(49,130,246,0.15)" }}
             >
-              <Code2 size={22} style={{ color: "#1B64DA" }} />
+              <Code2 size={22} style={{ color: "var(--color-primary-dark)" }} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[10.5px] font-extrabold tracking-[0.12em]" style={{ color: "#1B64DA" }}>
+              <p className="text-[10.5px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-primary-dark)" }}>
                 MADE BY ONE NEIGHBOR
               </p>
               <p className="text-[15px] font-extrabold text-text-main">김성우 · 1인 풀스택 메이커</p>
@@ -442,7 +442,7 @@ export default async function AboutPage() {
             href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("[도시공존] 안녕하세요")}`}
             className="mt-4 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12.5px] font-extrabold text-white active:scale-[0.98] transition-transform"
             style={{
-              background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "0 4px 12px rgba(49,130,246,0.3)",
             }}
           >
@@ -487,7 +487,7 @@ export default async function AboutPage() {
           <ProductCard
             icon={<Flame size={22} color="#FFFFFF" />}
             accent="#3182F6"
-            accentDark="#1B64DA"
+            accentDark="var(--color-primary-dark)"
             badge="개발 중"
             title="고양이난로"
             desc={
@@ -520,7 +520,7 @@ export default async function AboutPage() {
         </p>
         <div className="space-y-2">
           <TechRow
-            icon={<MapPin size={18} style={{ color: "#3182F6" }} />}
+            icon={<MapPin size={18} style={{ color: "var(--color-primary)" }} />}
             title="전국 구·동 자체 좌표 매핑"
             desc="구·동 단위 좌표를 직접 정리한 자체 데이터셋. 외부 행정 API 없이도 한 화면에 모든 자치구가 즉시 뜹니다."
           />
@@ -555,7 +555,7 @@ export default async function AboutPage() {
       {/* 미디어 키트 — 언론·블로거 즉시 활용 */}
       <section className="px-5 mt-8">
         <h2 className="text-[16px] font-extrabold text-text-main mb-1 flex items-center gap-1.5">
-          <Newspaper size={15} style={{ color: "#3182F6" }} />
+          <Newspaper size={15} style={{ color: "var(--color-primary)" }} />
           미디어 키트 · 보도 자료
         </h2>
         <p className="text-[11.5px] text-text-sub mb-3 leading-relaxed">
@@ -569,7 +569,7 @@ export default async function AboutPage() {
         <h2 className="text-[16px] font-extrabold text-text-main mb-3">
           제휴 · 언론 · 블로그 문의
         </h2>
-        <div className="bg-white rounded-2xl p-5" style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
+        <div className="bg-white rounded-2xl p-5" style={{ boxShadow: "var(--shadow-card)" }}>
           <p className="text-[13px] text-text-sub leading-relaxed mb-4">
             동물병원, 보호단체, 언론사, 지자체, 블로거와의 협력을 환영합니다.
             취재 요청, 스크린샷·로고 요청, 데이터 제공, 지역 파트너십 등
@@ -578,7 +578,7 @@ export default async function AboutPage() {
           <a
             href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("[도시공존] 제휴/문의")}`}
             className="flex items-center justify-center gap-2 py-3 rounded-2xl bg-primary text-white active:scale-[0.98] transition-transform"
-            style={{ boxShadow: "0 4px 14px rgba(49,130,246,0.3)" }}
+            style={{ boxShadow: "var(--shadow-primary)" }}
           >
             <Mail size={16} />
             <span className="text-[13.5px] font-extrabold">{CONTACT_EMAIL}</span>
@@ -595,14 +595,14 @@ export default async function AboutPage() {
           <Link
             href="/map"
             className="flex-1 flex items-center justify-center py-3 rounded-2xl bg-primary text-white text-[13px] font-extrabold active:scale-[0.98] transition-transform"
-            style={{ boxShadow: "0 4px 14px rgba(49,130,246,0.3)" }}
+            style={{ boxShadow: "var(--shadow-primary)" }}
           >
             지도 보러가기
           </Link>
           <Link
             href="/areas"
             className="flex-1 flex items-center justify-center py-3 rounded-2xl active:scale-[0.98] transition-transform"
-            style={{ backgroundColor: "#FFF", color: "#3182F6", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 800 }}
+            style={{ backgroundColor: "#FFF", color: "var(--color-primary)", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 800 }}
           >
             우리 동네 보기
           </Link>
@@ -616,7 +616,7 @@ function StatCard({ value, label, color, emoji }: { value: number; label: string
   return (
     <div
       className="bg-white rounded-2xl py-4 flex flex-col items-center"
-      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}
+      style={{ boxShadow: "var(--shadow-card)" }}
     >
       <span style={{ fontSize: 22 }}>{emoji}</span>
       <span className="text-[20px] font-extrabold mt-0.5" style={{ color }}>
@@ -631,7 +631,7 @@ function FeatureRow({ icon, title, desc }: { icon: React.ReactNode; title: strin
   return (
     <div
       className="bg-white rounded-2xl p-4 flex items-start gap-3"
-      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+      style={{ boxShadow: "var(--shadow-card)" }}
     >
       <div className="shrink-0 mt-0.5">{icon}</div>
       <div className="min-w-0">
@@ -646,7 +646,7 @@ function TechRow({ icon, title, desc }: { icon: React.ReactNode; title: string; 
   return (
     <div
       className="bg-white rounded-2xl p-4 flex items-start gap-3"
-      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+      style={{ boxShadow: "var(--shadow-card)" }}
     >
       <div className="shrink-0 mt-0.5">{icon}</div>
       <div className="min-w-0">
@@ -671,7 +671,7 @@ function ProblemRow({
   return (
     <div
       className="bg-white rounded-2xl p-4 flex items-start gap-3"
-      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+      style={{ boxShadow: "var(--shadow-card)" }}
     >
       <div
         className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
@@ -712,7 +712,7 @@ function ProductCard({
   return (
     <div
       className="rounded-3xl p-5 bg-white"
-      style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.05)", border: `1px solid ${accent}26` }}
+      style={{ boxShadow: "var(--shadow-card)", border: `1px solid ${accent}26` }}
     >
       <div className="flex items-center gap-3 mb-3">
         <div
@@ -764,7 +764,7 @@ function SkillBadge({
       className="rounded-xl p-2.5 bg-white"
       style={{ border: "1px solid rgba(49,130,246,0.18)" }}
     >
-      <div className="flex items-center gap-1.5 mb-0.5" style={{ color: "#1B64DA" }}>
+      <div className="flex items-center gap-1.5 mb-0.5" style={{ color: "var(--color-primary-dark)" }}>
         {icon}
         <p className="text-[11.5px] font-extrabold tracking-tight text-text-main">{title}</p>
       </div>
@@ -791,7 +791,7 @@ function ValueCard({
   return (
     <div
       className="rounded-2xl p-4 flex items-start gap-3 bg-white"
-      style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+      style={{ boxShadow: "var(--shadow-card)" }}
     >
       <div
         className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center"

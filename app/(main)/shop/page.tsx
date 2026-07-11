@@ -62,7 +62,7 @@ function ProductCard({ product }: { product: Product }) {
         }}
       >
         {/* 이미지 */}
-        <div className="relative w-full" style={{ aspectRatio: "1 / 1", background: isSupport ? "rgba(232,107,140,0.08)" : "#F9FAFB" }}>
+        <div className="relative w-full" style={{ aspectRatio: "1 / 1", background: isSupport ? "rgba(232,107,140,0.08)" : "var(--color-warm-white)" }}>
           {thumb ? (
             <Image src={thumb} alt={product.name} fill className="object-cover" />
           ) : (
@@ -73,7 +73,7 @@ function ProductCard({ product }: { product: Product }) {
           {product.badge && (
             <span
               className="absolute top-2 left-2 text-[9.5px] font-extrabold px-2 py-0.5 rounded-lg text-white"
-              style={{ background: product.badge === "인기" ? "#E14B3C" : product.badge === "신상" ? "#3182F6" : "#8B65B8" }}
+              style={{ background: product.badge === "인기" ? "#E14B3C" : product.badge === "신상" ? "var(--color-primary)" : "#8B65B8" }}
             >
               {product.badge}
             </span>
@@ -198,7 +198,7 @@ export default function ShopPage() {
           <Link
             href="/shop/orders"
             className="w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
-            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+            style={{ boxShadow: "var(--shadow-raised)" }}
             aria-label="주문 내역"
           >
             <ReceiptText size={18} className="text-text-sub" />
@@ -206,7 +206,7 @@ export default function ShopPage() {
           <Link
             href="/shop/cart"
             className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
-            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+            style={{ boxShadow: "var(--shadow-raised)" }}
             aria-label="장바구니"
           >
             <ShoppingCart size={18} className="text-text-sub" />
@@ -294,7 +294,7 @@ export default function ShopPage() {
                 background: on
                   ? isSupport
                     ? "linear-gradient(135deg, #E86B8C 0%, #D85575 100%)"
-                    : "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)"
+                    : "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)"
                   : "rgba(255,255,255,0.9)",
                 color: on ? "#fff" : isSupport ? "#E86B8C" : "#666",
                 boxShadow: on
@@ -313,7 +313,7 @@ export default function ShopPage() {
       {loading ? (
         <div className="grid grid-cols-2 gap-3">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="rounded-[22px] animate-pulse" style={{ aspectRatio: "1 / 1.4", background: "#F2F4F6" }} />
+            <div key={i} className="rounded-[22px] animate-pulse" style={{ aspectRatio: "1 / 1.4", background: "var(--color-surface-alt)" }} />
           ))}
         </div>
       ) : visible.length === 0 ? (

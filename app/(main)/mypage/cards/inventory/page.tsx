@@ -28,7 +28,7 @@ const SLOT_THEME: Record<BodySlot, string> = {
   head: "#B18CE8",
   arm: "#FF8B6B",
   body: "#FF6B8A",
-  leg: "#4593FC",
+  leg: "var(--color-primary-light)",
   foot: "#5BC48A",
 };
 

@@ -106,14 +106,14 @@ export default function InstallAppMenuItem() {
         className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform disabled:opacity-80"
         style={{
           background: "#FFFFFF",
-          borderRadius: 16,
+          borderRadius: "var(--radius-card-sm)",
           boxShadow: "0 4px 14px rgba(72,165,158,0.10), 0 1px 2px rgba(0,0,0,0.02)",
           border: "1px solid rgba(0,0,0,0.04)",
         }}
       >
         <div
           className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-          style={{ backgroundColor: installed ? "rgba(46,125,50,0.1)" : "rgba(49,130,246,0.1)" }}
+          style={{ backgroundColor: installed ? "rgba(46,125,50,0.1)" : "var(--color-primary-soft)" }}
         >
           {installed ? (
             <Check size={18} color="#2E7D32" strokeWidth={2.2} />
@@ -128,7 +128,7 @@ export default function InstallAppMenuItem() {
           <p className="text-[11px] text-text-sub mt-0.5">{subtitle}</p>
         </div>
         {!installed && (
-          <ChevronRight size={16} className="shrink-0" style={{ color: "#3182F6", opacity: 0.7 }} />
+          <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-primary)", opacity: 0.7 }} />
         )}
       </button>
 
@@ -142,7 +142,7 @@ export default function InstallAppMenuItem() {
           />
           <div
             className="relative w-full max-w-sm rounded-[24px] p-5"
-            style={{ background: "#FFFFFF", boxShadow: "0 20px 50px rgba(0,0,0,0.25)" }}
+            style={{ background: "#FFFFFF", boxShadow: "var(--shadow-modal)" }}
           >
             <button
               type="button"
@@ -157,14 +157,14 @@ export default function InstallAppMenuItem() {
               <div
                 className="w-11 h-11 rounded-full flex items-center justify-center"
                 style={{
-                  background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+                  background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                   boxShadow: "0 4px 12px rgba(49,130,246,0.35)",
                 }}
               >
                 <Download size={19} color="#fff" strokeWidth={2.2} />
               </div>
               <div>
-                <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#3182F6" }}>
+                <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-primary)" }}>
                   INSTALL
                 </p>
                 <p className="text-[15px] font-extrabold text-text-main tracking-tight">
@@ -181,23 +181,23 @@ export default function InstallAppMenuItem() {
                   <li className="flex items-center gap-2">
                     <span
                       className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white shrink-0"
-                      style={{ background: "#3182F6" }}
+                      style={{ background: "var(--color-primary)" }}
                     >1</span>
-                    <Share size={14} style={{ color: "#3182F6" }} />
+                    <Share size={14} style={{ color: "var(--color-primary)" }} />
                     <span>사파리 하단 공유 아이콘 탭</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span
                       className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white shrink-0"
-                      style={{ background: "#3182F6" }}
+                      style={{ background: "var(--color-primary)" }}
                     >2</span>
-                    <PlusSquare size={14} style={{ color: "#3182F6" }} />
+                    <PlusSquare size={14} style={{ color: "var(--color-primary)" }} />
                     <span>"홈 화면에 추가" 선택</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span
                       className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white shrink-0"
-                      style={{ background: "#3182F6" }}
+                      style={{ background: "var(--color-primary)" }}
                     >3</span>
                     <span>우측 상단 "추가" 버튼</span>
                   </li>

@@ -368,7 +368,7 @@ export default function ProtectionPage() {
           border: `1px solid ${progress.read === progress.total ? "#5BA87633" : "rgba(49,130,246,0.18)"}`,
         }}
       >
-        <Sparkles size={16} className={progress.read === progress.total ? "text-[#3F5B42]" : "text-[#3182F6]"} />
+        <Sparkles size={16} className={progress.read === progress.total ? "text-[#3F5B42]" : "text-[var(--color-primary)]"} />
         <div className="flex-1 min-w-0">
           <p className="text-[12px] font-extrabold text-text-main">
             {progress.read === progress.total
@@ -380,12 +380,12 @@ export default function ProtectionPage() {
               className="h-full rounded-full transition-all duration-500"
               style={{
                 width: `${progress.percent}%`,
-                background: progress.read === progress.total ? "#5BA876" : "#3182F6",
+                background: progress.read === progress.total ? "#5BA876" : "var(--color-primary)",
               }}
             />
           </div>
         </div>
-        <span className="text-[12px] font-extrabold tabular-nums" style={{ color: progress.read === progress.total ? "#3F5B42" : "#3182F6" }}>
+        <span className="text-[12px] font-extrabold tabular-nums" style={{ color: progress.read === progress.total ? "#3F5B42" : "var(--color-primary)" }}>
           {progress.percent}%
         </span>
       </div>
@@ -450,7 +450,7 @@ export default function ProtectionPage() {
                 className="py-4 px-2 flex flex-col items-center active:scale-95 transition-transform"
                 style={{
                   background: `linear-gradient(135deg, ${c.accent}12 0%, ${c.accent}08 100%)`,
-                  borderRadius: 20,
+                  borderRadius: "var(--radius-card)",
                   border: `1.5px solid ${c.accent}20`,
                 }}
               >
@@ -492,7 +492,7 @@ export default function ProtectionPage() {
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 px-4 py-3.5 rounded-2xl active:scale-[0.98] transition-transform"
-            style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "0 2px 8px rgba(0,0,0,0.03)" }}
+            style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "var(--shadow-card)" }}
           >
             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: "rgba(3,199,90,0.1)" }}>
               <span className="text-[18px]">🍚</span>
@@ -508,7 +508,7 @@ export default function ProtectionPage() {
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 px-4 py-3.5 rounded-2xl active:scale-[0.98] transition-transform"
-            style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "0 2px 8px rgba(0,0,0,0.03)" }}
+            style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "var(--shadow-card)" }}
           >
             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: "rgba(3,199,90,0.1)" }}>
               <span className="text-[18px]">🐱</span>

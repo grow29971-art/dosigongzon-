@@ -165,7 +165,7 @@ export default function FeedingGuidePage() {
         <Link
           href="/protection"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="보호지침으로"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -268,13 +268,13 @@ export default function FeedingGuidePage() {
             <div
               key={title}
               className="rounded-2xl bg-white p-4 flex items-start gap-3"
-              style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+              style={{ boxShadow: "var(--shadow-card)" }}
             >
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
                 style={{ background: "rgba(49,130,246,0.12)" }}
               >
-                <Icon size={18} style={{ color: "#3182F6" }} />
+                <Icon size={18} style={{ color: "var(--color-primary)" }} />
               </div>
               <div>
                 <p className="text-[14px] font-extrabold text-text-main">{title}</p>
@@ -329,7 +329,7 @@ export default function FeedingGuidePage() {
         </h2>
         <div className="space-y-2">
           {faqSchema.mainEntity.map((q, i) => (
-            <details key={i} className="bg-white rounded-2xl p-4" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
+            <details key={i} className="bg-white rounded-2xl p-4" style={{ boxShadow: "var(--shadow-card)" }}>
               <summary className="text-[13.5px] font-extrabold text-text-main cursor-pointer list-none flex items-center justify-between">
                 <span>Q. {q.name}</span>
                 <span className="text-text-light text-[12px]">+</span>
@@ -349,7 +349,7 @@ export default function FeedingGuidePage() {
           <Link
             href="/protection/emergency-guide"
             className="bg-white rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98]"
-            style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             <span style={{ fontSize: 22 }}>🚨</span>
             <div className="flex-1 min-w-0">
@@ -360,7 +360,7 @@ export default function FeedingGuidePage() {
           <Link
             href="/protection/trapping-guide"
             className="bg-white rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98]"
-            style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             <span style={{ fontSize: 22 }}>✂️</span>
             <div className="flex-1 min-w-0">
@@ -371,7 +371,7 @@ export default function FeedingGuidePage() {
           <Link
             href="/protection/kitten-guide"
             className="bg-white rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98]"
-            style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             <span style={{ fontSize: 22 }}>🐾</span>
             <div className="flex-1 min-w-0">
@@ -387,7 +387,7 @@ export default function FeedingGuidePage() {
         <Link
           href="/map"
           className="block text-center py-4 rounded-2xl bg-primary text-white text-[14px] font-extrabold active:scale-[0.98]"
-          style={{ boxShadow: "0 6px 20px rgba(49,130,246,0.3)" }}
+          style={{ boxShadow: "var(--shadow-primary)" }}
         >
           <Cat size={16} className="inline mr-1.5 -mt-0.5" />
           우리 동네 지도에서 돌봄 시작하기

@@ -76,7 +76,7 @@ export default async function MonthlyReportPage({
           <Link
             href={`/mypage/monthly-report?y=${prev.year}&m=${prev.month}`}
             className="w-8 h-8 rounded-full flex items-center justify-center active:scale-90 transition-transform"
-            style={{ background: "#FFFFFF", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+            style={{ background: "#FFFFFF", boxShadow: "var(--shadow-raised)" }}
           >
             <ChevronLeft size={16} className="text-text-main" />
           </Link>
@@ -87,7 +87,7 @@ export default async function MonthlyReportPage({
             <Link
               href={`/mypage/monthly-report?y=${next.year}&m=${next.month}`}
               className="w-8 h-8 rounded-full flex items-center justify-center active:scale-90 transition-transform"
-              style={{ background: "#FFFFFF", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+              style={{ background: "#FFFFFF", boxShadow: "var(--shadow-raised)" }}
             >
               <ChevronRight size={16} className="text-text-main" />
             </Link>
@@ -103,7 +103,7 @@ export default async function MonthlyReportPage({
         {!active ? (
           <div
             className="rounded-2xl p-6 text-center"
-            style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+            style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "var(--shadow-card)" }}
           >
             <TrendingUp size={28} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
             <p className="text-[14px] font-extrabold text-text-main mb-1.5">
@@ -138,7 +138,7 @@ function StatTile({ icon, label, value, unit, tint }: { icon: React.ReactNode; l
   return (
     <div
       className="rounded-2xl p-4 flex flex-col gap-2"
-      style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+      style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "var(--shadow-card)" }}
     >
       <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: tint }}>
         {icon}

@@ -349,7 +349,7 @@ export default function AdminInboxPage() {
                 className="p-4"
                 style={{
                   background: "#FFFFFF",
-                  borderRadius: 16,
+                  borderRadius: "var(--radius-card-sm)",
                   boxShadow: "0 4px 14px rgba(216,85,85,0.08), 0 1px 2px rgba(0,0,0,0.02)",
                   border: "1px solid rgba(0,0,0,0.04)",
                   borderLeft: `3px solid ${REPORT_STATUS_COLORS[r.status]}`,
@@ -461,7 +461,7 @@ export default function AdminInboxPage() {
                 className="p-4"
                 style={{
                   background: "#FFFFFF",
-                  borderRadius: 16,
+                  borderRadius: "var(--radius-card-sm)",
                   boxShadow: "0 4px 14px rgba(74,123,168,0.08), 0 1px 2px rgba(0,0,0,0.02)",
                   border: "1px solid rgba(0,0,0,0.04)",
                   borderLeft: `3px solid ${INQUIRY_STATUS_COLORS[i.status]}`,
@@ -654,8 +654,8 @@ function EmptyBox({ children }: { children: React.ReactNode }) {
       className="py-12 text-center text-[13px] text-text-sub"
       style={{
         background: "#FFFFFF",
-        borderRadius: 16,
-        boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+        borderRadius: "var(--radius-card-sm)",
+        boxShadow: "var(--shadow-card)",
         border: "1px solid rgba(0,0,0,0.04)",
       }}
     >

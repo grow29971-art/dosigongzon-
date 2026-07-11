@@ -124,7 +124,7 @@ function MilestoneRow({ m }: { m: Milestone }) {
           className="flex-1 min-w-0 rounded-2xl p-3.5"
           style={{
             background: "#FFFFFF",
-            boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+            boxShadow: "var(--shadow-card)",
             border: "1px solid rgba(0,0,0,0.04)",
           }}
         >
@@ -148,7 +148,7 @@ function EmptyState() {
       style={{
         background: "#FFFFFF",
         border: "1px solid rgba(0,0,0,0.04)",
-        boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+        boxShadow: "var(--shadow-card)",
       }}
     >
       <Sparkles size={28} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />

@@ -176,7 +176,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
         <Link
           href="/regions"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="전국 지역"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -186,14 +186,14 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
 
       <section className="px-5 pt-4">
         <div className="flex items-center gap-1.5 mb-1.5">
-          <MapPin size={14} style={{ color: "#3182F6" }} />
-          <span className="text-[11.5px] font-bold" style={{ color: "#3182F6" }}>{region.name}</span>
+          <MapPin size={14} style={{ color: "var(--color-primary)" }} />
+          <span className="text-[11.5px] font-bold" style={{ color: "var(--color-primary)" }}>{region.name}</span>
         </div>
         <h1 className="text-[26px] font-extrabold text-text-main leading-tight tracking-tight">
           {region.shortName} 길고양이 돌봄 지도
         </h1>
         <p className="text-[13.5px] text-text-sub mt-2 leading-relaxed">
-          {region.name}에 등록된 길고양이 <b style={{ color: "#3182F6" }}>{catCount}마리</b>의 돌봄 기록.
+          {region.name}에 등록된 길고양이 <b style={{ color: "var(--color-primary)" }}>{catCount}마리</b>의 돌봄 기록.
           {urgent > 0 && (
             <> 지금 도움이 필요한 아이 <b style={{ color: "#D85555" }}>{urgent}마리</b>.</>
           )}
@@ -203,7 +203,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
           <Link
             href="/map"
             className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-primary text-white active:scale-[0.98] transition-transform"
-            style={{ boxShadow: "0 4px 14px rgba(49,130,246,0.3)" }}
+            style={{ boxShadow: "var(--shadow-primary)" }}
           >
             <PawPrint size={14} />
             <span className="text-[13px] font-extrabold">지도에서 보기</span>
@@ -211,7 +211,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
           <Link
             href="/signup"
             className="flex-1 flex items-center justify-center py-3 rounded-2xl active:scale-[0.98] transition-transform"
-            style={{ backgroundColor: "#FFF", color: "#3182F6", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 800 }}
+            style={{ backgroundColor: "#FFF", color: "var(--color-primary)", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 800 }}
           >
             돌봄 시작하기
           </Link>
@@ -262,15 +262,15 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
               <br />
               곧 {region.shortName}에도 따뜻한 지도가 생겨요.
               <br />
-              <b style={{ color: "#1B64DA" }}>출시 기념 — 지금 합류하시면 창립 멤버 타이틀을 영구 드려요.</b>
+              <b style={{ color: "var(--color-primary-dark)" }}>출시 기념 — 지금 합류하시면 창립 멤버 타이틀을 영구 드려요.</b>
             </p>
             <div className="flex gap-2">
               <Link
                 href={`/signup?next=${encodeURIComponent(`/regions/${sido}`)}`}
                 className="flex-[1.5] flex items-center justify-center py-2.5 rounded-xl text-white text-[12.5px] font-extrabold active:scale-[0.98] transition-transform"
                 style={{
-                  background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
-                  boxShadow: "0 4px 14px rgba(49,130,246,0.35)",
+                  background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+                  boxShadow: "var(--shadow-primary)",
                 }}
               >
                 무료로 시작하기
@@ -279,7 +279,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
                 href="/regions"
                 className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.98] transition-transform bg-white"
                 style={{
-                  color: "#1B64DA",
+                  color: "var(--color-primary-dark)",
                   border: "1px solid rgba(49,130,246,0.30)",
                 }}
               >
@@ -297,7 +297,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
                   key={c.id}
                   href={`/cats/${c.id}`}
                   className="block rounded-2xl overflow-hidden bg-white active:scale-[0.98] transition-transform"
-                  style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.06)" }}
+                  style={{ boxShadow: "var(--shadow-raised)" }}
                 >
                   <div className="relative" style={{ aspectRatio: "1 / 1" }}>
                     <Image
@@ -342,7 +342,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
               <div
                 key={h.id}
                 className="bg-white rounded-2xl p-3.5"
-                style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+                style={{ boxShadow: "var(--shadow-card)" }}
               >
                 <p className="text-[13.5px] font-extrabold text-text-main">{h.name}</p>
                 {h.address && (
@@ -363,7 +363,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
           <Link
             href="/hospitals"
             className="block text-center text-[12px] font-bold mt-3"
-            style={{ color: "#3182F6" }}
+            style={{ color: "var(--color-primary)" }}
           >
             전체 병원 보기 →
           </Link>
@@ -381,7 +381,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
                 key={s.slug}
                 href={`/regions/${s.slug}`}
                 className="text-center py-2 rounded-xl bg-white text-[12px] font-bold active:scale-95 transition-transform"
-                style={{ color: "#6B5043", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}
+                style={{ color: "#6B5043", boxShadow: "var(--shadow-card-sm)" }}
               >
                 {s.shortName}
               </Link>
@@ -390,7 +390,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
         <Link
           href="/areas"
           className="block text-center text-[12px] font-bold mt-3"
-          style={{ color: "#3182F6" }}
+          style={{ color: "var(--color-primary)" }}
         >
           전국 구·동별 지도 보기 →
         </Link>
@@ -398,7 +398,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
 
       {/* 하단 SEO 본문 */}
       <section className="px-5 mt-8 cv-auto">
-        <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
+        <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "var(--shadow-card)" }}>
           <p className="text-[12.5px] text-text-sub leading-relaxed">
             <b className="text-text-main">도시공존</b>은 {region.name}을 포함한 전국의 길고양이를 기록하고
             돌보는 시민 참여 플랫폼입니다. {region.shortName} 주민이라면 회원가입 후 동네 고양이를

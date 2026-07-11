@@ -257,7 +257,7 @@ export default function AdminPushPage() {
           onClick={handleSend}
           disabled={sending}
           className="w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.97] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
-          style={{ boxShadow: "0 6px 20px rgba(49,130,246,0.3)" }}
+          style={{ boxShadow: "var(--shadow-primary)" }}
         >
           {sending ? (
             <>

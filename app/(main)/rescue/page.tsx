@@ -96,7 +96,7 @@ export default async function RescuePage() {
         {cats.length === 0 ? (
           <div
             className="bg-white rounded-2xl p-8 text-center"
-            style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             <p className="text-[30px] mb-2">💚</p>
             <p className="text-[14px] font-extrabold text-text-main mb-1">

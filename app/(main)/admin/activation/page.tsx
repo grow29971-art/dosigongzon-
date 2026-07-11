@@ -49,7 +49,7 @@ const COHORT_META: Record<CohortId, {
     label: "신규",
     description: "최근 24시간 안에 가입",
     Icon: Sparkles,
-    color: "#3182F6",
+    color: "var(--color-primary)",
     bg: "rgba(49,130,246,0.10)",
   },
   active: {
@@ -206,7 +206,7 @@ export default function AdminActivationPage() {
         <Link
           href="/admin"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="어드민 홈"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -259,7 +259,7 @@ export default function AdminActivationPage() {
                       : "1px solid rgba(0,0,0,0.04)",
                     boxShadow: isSelected
                       ? `0 6px 18px ${meta.color}22`
-                      : "0 2px 8px rgba(0,0,0,0.04)",
+                      : "var(--shadow-card)",
                   }}
                 >
                   <div className="flex items-center gap-2 mb-1.5">
@@ -291,7 +291,7 @@ export default function AdminActivationPage() {
           {selected && (
             <section
               className="rounded-2xl bg-white p-4"
-              style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}
+              style={{ boxShadow: "var(--shadow-card)" }}
             >
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-[14px] font-extrabold" style={{ color: "#3D2F25" }}>
@@ -330,7 +330,7 @@ export default function AdminActivationPage() {
                         href={`/messages?to=${u.id}`}
                         className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-extrabold active:scale-[0.97]"
                         style={{
-                          background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+                          background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                           color: "#fff",
                         }}
                         aria-label="쪽지 보내기"

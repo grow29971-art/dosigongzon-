@@ -37,8 +37,8 @@ function timelineIndex(status: OrderStatus): number {
 
 const sectionStyle = {
   background: "#fff",
-  borderRadius: 20,
-  boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+  borderRadius: "var(--radius-card)",
+  boxShadow: "var(--shadow-card)",
   border: "1px solid rgba(0,0,0,0.04)",
 } as const;
 
@@ -98,7 +98,7 @@ export default function OrderDetailPage() {
         <button
           onClick={() => router.back()}
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로 가기"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -109,7 +109,7 @@ export default function OrderDetailPage() {
       {loading ? (
         <div className="px-4 mt-4 space-y-3">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="rounded-2xl animate-pulse" style={{ height: 110, background: "#F2F4F6" }} />
+            <div key={i} className="rounded-2xl animate-pulse" style={{ height: 110, background: "var(--color-surface-alt)" }} />
           ))}
         </div>
       ) : !order || !status ? (
@@ -156,19 +156,19 @@ export default function OrderDetailPage() {
                         <div
                           className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
                           style={{
-                            background: reached ? "#3182F6" : "#F2F4F6",
+                            background: reached ? "var(--color-primary)" : "var(--color-surface-alt)",
                             boxShadow: reached ? "0 2px 6px rgba(49,130,246,0.35)" : "none",
                           }}
                         >
                           {reached && <Check size={13} color="#fff" strokeWidth={3} />}
                         </div>
                         {!isLast && (
-                          <div className="flex-1 h-[3px] mx-1 rounded-full" style={{ background: tlIndex > i ? "#3182F6" : "#F2F4F6" }} />
+                          <div className="flex-1 h-[3px] mx-1 rounded-full" style={{ background: tlIndex > i ? "var(--color-primary)" : "var(--color-surface-alt)" }} />
                         )}
                       </div>
                       <span
                         className="text-[9.5px] font-bold mt-1.5"
-                        style={{ color: reached ? "#3182F6" : "#8B95A1" }}
+                        style={{ color: reached ? "var(--color-primary)" : "var(--color-text-light)" }}
                       >
                         {step.label}
                       </span>
@@ -179,7 +179,7 @@ export default function OrderDetailPage() {
             ) : (
               <div
                 className="mt-4 py-3 text-center rounded-2xl text-[12.5px] font-bold"
-                style={{ background: "rgba(138,144,160,0.1)", color: "#8B95A1" }}
+                style={{ background: "rgba(138,144,160,0.1)", color: "var(--color-text-light)" }}
               >
                 결제를 기다리고 있어요
               </div>
@@ -205,7 +205,7 @@ export default function OrderDetailPage() {
           {/* 배송지 */}
           <section className="p-4" style={sectionStyle}>
             <h2 className="text-[13.5px] font-extrabold text-text-main mb-3 flex items-center gap-1.5">
-              <MapPin size={14} style={{ color: "#3182F6" }} /> 배송지
+              <MapPin size={14} style={{ color: "var(--color-primary)" }} /> 배송지
             </h2>
             {order.recipient_address ? (
               <>
@@ -231,7 +231,7 @@ export default function OrderDetailPage() {
           {/* 결제 정보 */}
           <section className="p-4" style={sectionStyle}>
             <h2 className="text-[13.5px] font-extrabold text-text-main mb-3 flex items-center gap-1.5">
-              <CreditCard size={14} style={{ color: "#3182F6" }} /> 결제 정보
+              <CreditCard size={14} style={{ color: "var(--color-primary)" }} /> 결제 정보
             </h2>
             <div className="flex items-center justify-between text-[12.5px] text-text-sub mb-1.5">
               <span>상품금액</span>
@@ -246,7 +246,7 @@ export default function OrderDetailPage() {
               style={{ borderTop: "1px dashed rgba(0,0,0,0.08)" }}
             >
               <span>총 결제금액</span>
-              <span style={{ color: "#3182F6" }}>{formatWon(order.payment_amount)}</span>
+              <span style={{ color: "var(--color-primary)" }}>{formatWon(order.payment_amount)}</span>
             </div>
             {order.payment_method && (
               <p className="text-[11.5px] text-text-light mt-2">결제수단: {order.payment_method}</p>
@@ -276,7 +276,7 @@ export default function OrderDetailPage() {
       {/* 취소 확인 모달 */}
       {cancelOpen && order && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-8" style={{ background: "rgba(20,25,40,0.5)" }}>
-          <div className="w-full max-w-[320px] p-5" style={{ background: "#fff", borderRadius: 24 }}>
+          <div className="w-full max-w-[320px] p-5" style={{ background: "#fff", borderRadius: "var(--radius-modal)" }}>
             <p className="text-[15px] font-extrabold text-text-main mb-1.5">주문을 취소할까요?</p>
             <p className="text-[12.5px] text-text-sub leading-relaxed mb-4">
               결제된 금액은 결제수단으로 환불돼요. 취소 후에는 되돌릴 수 없어요.
@@ -286,7 +286,7 @@ export default function OrderDetailPage() {
                 onClick={() => setCancelOpen(false)}
                 disabled={cancelling}
                 className="flex-1 py-3 rounded-2xl text-[13px] font-bold"
-                style={{ background: "#F9FAFB", color: "#4E5968" }}
+                style={{ background: "var(--color-warm-white)", color: "var(--color-text-sub)" }}
               >
                 돌아가기
               </button>

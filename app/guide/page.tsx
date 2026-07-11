@@ -47,11 +47,11 @@ interface Feature {
 const SECTIONS: FeatureSection[] = [
   {
     groupLabel: "지도와 고양이",
-    groupColor: "#3182F6",
+    groupColor: "var(--color-primary)",
     features: [
       {
         icon: MapPin,
-        iconColor: "#3182F6",
+        iconColor: "var(--color-primary)",
         iconBg: "rgba(49,130,246,0.12)",
         title: "동네 길고양이 지도",
         desc: "우리 동네에 등록된 길고양이를 지도에서 한눈에. 고양이·병원·약국을 색깔로 구분해서 보여줘요.",
@@ -258,7 +258,7 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Download,
-        iconColor: "#3182F6",
+        iconColor: "var(--color-primary)",
         iconBg: "rgba(49,130,246,0.12)",
         title: "앱으로 설치 (PWA)",
         desc: "홈 화면에 설치하면 브라우저 탭 없이 앱처럼 열려요. 푸시 알림도 더 안정적.",
@@ -303,7 +303,7 @@ export default function GuidePage() {
         <Link
           href="/"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈으로"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -314,8 +314,8 @@ export default function GuidePage() {
       {/* 히어로 */}
       <section className="px-5 pt-4">
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 mb-3">
-          <Heart size={12} style={{ color: "#3182F6" }} />
-          <span className="text-[11px] font-extrabold" style={{ color: "#3182F6" }}>
+          <Heart size={12} style={{ color: "var(--color-primary)" }} />
+          <span className="text-[11px] font-extrabold" style={{ color: "var(--color-primary)" }}>
             HOW TO USE
           </span>
         </div>
@@ -332,7 +332,7 @@ export default function GuidePage() {
           <Link
             href="/map"
             className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-primary text-white active:scale-[0.98] transition-transform"
-            style={{ boxShadow: "0 4px 14px rgba(49,130,246,0.3)" }}
+            style={{ boxShadow: "var(--shadow-primary)" }}
           >
             <MapPin size={14} />
             <span className="text-[13px] font-extrabold">지도 먼저 가볼래요</span>
@@ -340,7 +340,7 @@ export default function GuidePage() {
           <Link
             href="/signup"
             className="flex-1 flex items-center justify-center py-3 rounded-2xl active:scale-[0.98] transition-transform"
-            style={{ backgroundColor: "#FFF", color: "#3182F6", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 800 }}
+            style={{ backgroundColor: "#FFF", color: "var(--color-primary)", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 800 }}
           >
             가입하고 시작
           </Link>
@@ -365,7 +365,7 @@ export default function GuidePage() {
                   className="rounded-2xl p-4"
                   style={{
                     background: "#FFFFFF",
-                    boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+                    boxShadow: "var(--shadow-card)",
                     border: "1px solid rgba(0,0,0,0.04)",
                   }}
                 >
@@ -434,7 +434,7 @@ export default function GuidePage() {
         <div
           className="rounded-3xl p-5 text-center"
           style={{
-            background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+            background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
             boxShadow: "0 8px 24px rgba(49,130,246,0.3)",
           }}
         >
@@ -445,7 +445,7 @@ export default function GuidePage() {
           <Link
             href="/map"
             className="inline-block mt-4 bg-white text-[13px] font-extrabold px-6 py-3 rounded-2xl active:scale-95 transition-transform"
-            style={{ color: "#3182F6" }}
+            style={{ color: "var(--color-primary)" }}
           >
             지도 열기 →
           </Link>

@@ -273,7 +273,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
       {/* ── 상단 리본: 등급 + HP ── */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 5, marginBottom: isSm ? 5 : 6 }}>
         <span style={{
-          background: "#fff", borderRadius: 999,
+          background: "#fff", borderRadius: "var(--radius-full)",
           padding: isLg ? "3px 10px" : "2px 7px",
           fontSize: fs.label, fontWeight: 800, color: cfg.accent,
           boxShadow: "0 1px 4px rgba(0,0,0,0.12)", flexShrink: 0,
@@ -282,7 +282,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
         </span>
         <span style={{
           display: "flex", alignItems: "center", gap: 3,
-          background: "#fff", borderRadius: 999,
+          background: "#fff", borderRadius: "var(--radius-full)",
           padding: isLg ? "3px 9px" : "2px 6px",
           boxShadow: "0 1px 4px rgba(0,0,0,0.12)", flexShrink: 0,
         }}>
@@ -336,7 +336,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
         </span>
         <span style={{
           background: lv >= 10 ? "linear-gradient(135deg,#FFD76A,#FFA83A)" : "#FF6B81",
-          color: "#fff", fontWeight: 800, borderRadius: 999,
+          color: "#fff", fontWeight: 800, borderRadius: "var(--radius-full)",
           padding: isLg ? "3px 10px" : "2px 7px", fontSize: fs.dex + 1, flexShrink: 0,
         }}>
           Lv.{lv}
@@ -352,7 +352,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
       {!isSm && !isLg && (
         <div style={{
           display: "flex", justifyContent: "space-between", marginTop: 6,
-          background: "#fff", borderRadius: 14, padding: "5px 6px",
+          background: "#fff", borderRadius: "var(--radius-input)", padding: "5px 6px",
           boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.05)",
         }}>
           {statRow.map((s, i) => (
@@ -401,7 +401,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
           boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.05)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-            <span style={{ fontWeight: 800, color: "#1B64DA", flexShrink: 0 }}>⚔️ PVP</span>
+            <span style={{ fontWeight: 800, color: "var(--color-primary-dark)", flexShrink: 0 }}>⚔️ PVP</span>
             <span style={{ color: "#5A554C", fontWeight: 600 }}>
               {card.pvp_wins ?? 0}승 {card.pvp_losses ?? 0}패 {card.pvp_draws ?? 0}무
             </span>

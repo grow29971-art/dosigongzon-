@@ -179,12 +179,12 @@ export default function AdminEventKeyringPage() {
       <div className="px-4 pt-12 pb-4 flex items-center justify-between gap-2">
         <div className="flex items-center gap-3 min-w-0">
           <Link href="/admin" className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }} aria-label="admin">
+            style={{ boxShadow: "var(--shadow-raised)" }} aria-label="admin">
             <ArrowLeft size={18} className="text-text-main" />
           </Link>
           <div>
             <h1 className="text-[18px] font-extrabold text-text-main flex items-center gap-1.5">
-              <Gift size={16} style={{ color: "#3182F6" }} />
+              <Gift size={16} style={{ color: "var(--color-primary)" }} />
               이벤트 응모자
             </h1>
             <p className="text-[11px] text-text-sub">총 {entries.length}명</p>
@@ -193,7 +193,7 @@ export default function AdminEventKeyringPage() {
         <div className="flex gap-1.5 shrink-0">
           <button onClick={reload} disabled={loading}
             className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90 disabled:opacity-50"
-            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }} aria-label="새로고침">
+            style={{ boxShadow: "var(--shadow-raised)" }} aria-label="새로고침">
             <RefreshCw size={15} className={`text-text-main ${loading ? "animate-spin" : ""}`} />
           </button>
           <button onClick={exportCsv} disabled={entries.length === 0}
@@ -211,9 +211,9 @@ export default function AdminEventKeyringPage() {
           <button key={k} onClick={() => setFilter(k)}
             className="shrink-0 px-3 py-1.5 rounded-full text-[12px] font-bold active:scale-95 transition-transform"
             style={{
-              background: filter === k ? "#3182F6" : "#FFFFFF",
+              background: filter === k ? "var(--color-primary)" : "#FFFFFF",
               color: filter === k ? "#FFFFFF" : "#6B5043",
-              border: filter === k ? "1px solid #3182F6" : "1px solid rgba(0,0,0,0.05)",
+              border: filter === k ? "1px solid var(--color-primary)" : "1px solid rgba(0,0,0,0.05)",
             }}>
             {k === "all" ? "전체" : STATUS_META[k].label} {counts[k] > 0 && <span className="ml-0.5 opacity-80">{counts[k]}</span>}
           </button>
@@ -226,7 +226,7 @@ export default function AdminEventKeyringPage() {
           <div className="py-10 flex justify-center"><Loader2 size={20} className="animate-spin text-primary" /></div>
         )}
         {!loading && visible.length === 0 && (
-          <div className="text-center py-12 rounded-2xl bg-white" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
+          <div className="text-center py-12 rounded-2xl bg-white" style={{ boxShadow: "var(--shadow-card)" }}>
             <Gift size={32} className="mx-auto mb-2 text-text-light opacity-30" />
             <p className="text-[13px] text-text-sub font-semibold">응모자가 없어요</p>
           </div>
@@ -268,7 +268,7 @@ function EntryCard({
   const isSimpleEntry = !entry.cat_photo_url && !entry.phone && !entry.address;
 
   return (
-    <div className="rounded-2xl bg-white p-4" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)", border: `1px solid ${meta.color}25` }}>
+    <div className="rounded-2xl bg-white p-4" style={{ boxShadow: "var(--shadow-card)", border: `1px solid ${meta.color}25` }}>
       <div className="flex items-start gap-3">
         {/* 사진 — 고양이 사진 또는 응모자 아바타 폴백 */}
         {entry.cat_photo_url ? (

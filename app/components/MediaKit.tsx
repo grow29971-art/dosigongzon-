@@ -50,10 +50,10 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
         <div
           key={b.id}
           className="bg-white rounded-2xl p-4"
-          style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+          style={{ boxShadow: "var(--shadow-card)" }}
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-extrabold tracking-[0.1em] uppercase" style={{ color: "#3182F6" }}>
+            <span className="text-[11px] font-extrabold tracking-[0.1em] uppercase" style={{ color: "var(--color-primary)" }}>
               {b.label}
             </span>
             <button
@@ -61,7 +61,7 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
               className="flex items-center gap-1 px-2.5 py-1 rounded-lg active:scale-95 transition-transform"
               style={{
                 background: copiedId === b.id ? "#E8F5E9" : "rgba(49,130,246,0.10)",
-                color: copiedId === b.id ? "#2E7D32" : "#1B64DA",
+                color: copiedId === b.id ? "#2E7D32" : "var(--color-primary-dark)",
               }}
             >
               {copiedId === b.id ? <Check size={11} /> : <Copy size={11} />}
@@ -79,9 +79,9 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
       {/* 로고 다운로드 */}
       <div
         className="bg-white rounded-2xl p-4"
-        style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}
+        style={{ boxShadow: "var(--shadow-card)" }}
       >
-        <p className="text-[11px] font-extrabold tracking-[0.1em] uppercase mb-2.5" style={{ color: "#3182F6" }}>
+        <p className="text-[11px] font-extrabold tracking-[0.1em] uppercase mb-2.5" style={{ color: "var(--color-primary)" }}>
           로고 · 아이콘 다운로드
         </p>
         <div className="grid grid-cols-3 gap-2">
@@ -116,7 +116,7 @@ function LogoCard({ href, label, filename }: { href: string; label: string; file
       <span className="text-[10px] font-extrabold mt-0.5" style={{ color: "#8B5A3C" }}>
         {label}
       </span>
-      <Download size={10} style={{ color: "#3182F6" }} />
+      <Download size={10} style={{ color: "var(--color-primary)" }} />
     </a>
   );
 }

@@ -56,7 +56,7 @@ export default function SocialProofStrip() {
       <div
         className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
         style={{
-          background: "linear-gradient(135deg, #E88D5A 0%, #3182F6 100%)",
+          background: "linear-gradient(135deg, #E88D5A 0%, var(--color-primary) 100%)",
           boxShadow: "0 4px 12px rgba(232,141,90,0.35)",
         }}
       >

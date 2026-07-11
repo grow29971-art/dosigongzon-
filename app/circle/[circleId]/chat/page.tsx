@@ -316,7 +316,7 @@ export default function CircleChatPage() {
                         <div
                           className={`px-3 py-2 rounded-2xl text-[13.5px] leading-relaxed whitespace-pre-wrap break-words ${isMine ? "rounded-tr-sm" : "rounded-tl-sm"}`}
                           style={{
-                            background: isMine ? "#3182F6" : "#FFFFFF",
+                            background: isMine ? "var(--color-primary)" : "#FFFFFF",
                             color: isMine ? "#FFFFFF" : "#3D2F25",
                             boxShadow: isMine ? "0 2px 6px rgba(49,130,246,0.25)" : "0 1px 3px rgba(0,0,0,0.05)",
                           }}
@@ -409,7 +409,7 @@ export default function CircleChatPage() {
             onClick={handleSend}
             disabled={(!input.trim() && !photoFile) || sending}
             className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 active:scale-90 disabled:opacity-40"
-            style={{ background: "#3182F6" }}
+            style={{ background: "var(--color-primary)" }}
             aria-label="전송"
           >
             {sending ? <Loader2 size={16} className="animate-spin text-white" /> : <Send size={17} color="#fff" />}
@@ -426,7 +426,7 @@ function Avatar({ url, size = 32 }: { url: string | null; size?: number }) {
     return (
       <div
         className="shrink-0 rounded-full flex items-center justify-center text-white text-[13px] font-extrabold"
-        style={{ width: size, height: size, background: "linear-gradient(135deg, #3182F6, #1B64DA)" }}
+        style={{ width: size, height: size, background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))" }}
       >
         🐾
       </div>

@@ -130,7 +130,7 @@ export default function ConsentManager() {
                 onClick={handleAccept}
                 className="flex-1 rounded-xl px-4 py-2.5 text-[12.5px] font-extrabold text-white active:scale-[0.98] transition-transform"
                 style={{
-                  background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+                  background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                   boxShadow: "0 4px 12px rgba(49,130,246,0.28)",
                 }}
               >

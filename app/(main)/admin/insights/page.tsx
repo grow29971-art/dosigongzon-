@@ -75,7 +75,7 @@ export default function AdminInsightsPage() {
         <button
           onClick={() => router.back()}
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -112,7 +112,7 @@ export default function AdminInsightsPage() {
           <Section icon={<TrendingUp size={14} />} label="누적">
             <div className="grid grid-cols-2 gap-2.5">
               <StatCard icon={<Users size={16} />} label="총 가입자" value={data.totalUsers} delta={data.newUsersToday} accent="#4A7BA8" />
-              <StatCard icon={<CatIcon size={16} />} label="등록 고양이" value={data.totalCats} delta={data.newCatsToday} accent="#3182F6" />
+              <StatCard icon={<CatIcon size={16} />} label="등록 고양이" value={data.totalCats} delta={data.newCatsToday} accent="var(--color-primary)" />
               <StatCard icon={<MessageSquare size={16} />} label="총 게시글" value={data.totalPosts} delta={data.newPostsToday} accent="#8B65B8" />
               <StatCard icon={<Activity size={16} />} label="돌봄 기록" value={data.totalCareLogs} delta={data.newCareLogsToday} accent="#5BA876" />
             </div>
@@ -140,7 +140,7 @@ export default function AdminInsightsPage() {
           <Section icon={<AlertTriangle size={14} />} label="로그인/인증 에러 (7일)">
             <div
               className="rounded-2xl bg-white p-3.5"
-              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+              style={{ boxShadow: "var(--shadow-card)" }}
             >
               <div className="flex items-baseline justify-between mb-2.5">
                 <span className="text-[11.5px] text-text-sub">총 실패</span>
@@ -161,7 +161,7 @@ export default function AdminInsightsPage() {
               <Link
                 href="/admin/auth-errors"
                 className="inline-block mt-2 text-[11.5px] font-bold"
-                style={{ color: "#3182F6" }}
+                style={{ color: "var(--color-primary)" }}
               >
                 전체 로그 보기 →
               </Link>
@@ -206,10 +206,10 @@ export default function AdminInsightsPage() {
                     key={c.id}
                     href={`/cats/${c.id}`}
                     className="flex items-center justify-between bg-white rounded-xl px-3.5 py-2.5 active:scale-[0.99]"
-                    style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}
+                    style={{ boxShadow: "var(--shadow-card-sm)" }}
                   >
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-[11px] font-extrabold w-4 shrink-0" style={{ color: "#3182F6" }}>
+                      <span className="text-[11px] font-extrabold w-4 shrink-0" style={{ color: "var(--color-primary)" }}>
                         {i + 1}
                       </span>
                       <div className="min-w-0">
@@ -237,10 +237,10 @@ export default function AdminInsightsPage() {
                     key={u.user_id}
                     href={`/users/${u.user_id}`}
                     className="flex items-center justify-between bg-white rounded-xl px-3.5 py-2.5 active:scale-[0.99]"
-                    style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}
+                    style={{ boxShadow: "var(--shadow-card-sm)" }}
                   >
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-[11px] font-extrabold w-4 shrink-0" style={{ color: "#3182F6" }}>
+                      <span className="text-[11px] font-extrabold w-4 shrink-0" style={{ color: "var(--color-primary)" }}>
                         {i + 1}
                       </span>
                       <p className="text-[13px] font-bold text-text-main truncate">{u.name}</p>
@@ -263,7 +263,7 @@ function Section({ icon, label, children }: { icon: React.ReactNode; label: stri
   return (
     <section>
       <div className="flex items-center gap-1.5 mb-2.5 px-1">
-        <span style={{ color: "#3182F6" }}>{icon}</span>
+        <span style={{ color: "var(--color-primary)" }}>{icon}</span>
         <h2 className="text-[13px] font-extrabold text-text-main tracking-tight">{label}</h2>
       </div>
       {children}
@@ -283,7 +283,7 @@ function StatCard({
   return (
     <div
       className="rounded-2xl bg-white p-3.5"
-      style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.03)" }}
+      style={{ boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.03)" }}
     >
       <div className="flex items-center gap-1.5 mb-1.5" style={{ color: accent }}>
         {icon}
@@ -305,7 +305,7 @@ function MiniCard({ label, value }: { label: string; value: number }) {
   return (
     <div
       className="rounded-2xl bg-white px-3.5 py-2.5"
-      style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}
+      style={{ boxShadow: "var(--shadow-card-sm)" }}
     >
       <p className="text-[10.5px] font-semibold text-text-sub">{label}</p>
       <p className="text-[18px] font-extrabold text-text-main tabular-nums tracking-tight mt-0.5">

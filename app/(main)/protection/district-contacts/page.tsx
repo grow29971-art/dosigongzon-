@@ -165,7 +165,7 @@ export default function DistrictContactsPage() {
             onClick={() => setSelectedRegion(r)}
             className="text-[12px] font-bold px-3 py-1.5 rounded-full whitespace-nowrap shrink-0 transition-all active:scale-95"
             style={{
-              backgroundColor: selectedRegion === r ? "#3182F6" : "#F5F3EE",
+              backgroundColor: selectedRegion === r ? "var(--color-primary)" : "#F5F3EE",
               color: selectedRegion === r ? "#fff" : "#7A756E",
             }}
           >
@@ -189,7 +189,7 @@ export default function DistrictContactsPage() {
             style={{
               background: "#FFFFFF",
               border: "1px solid rgba(0,0,0,0.04)",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+              boxShadow: "var(--shadow-card)",
             }}
           >
             <div
@@ -232,7 +232,7 @@ export default function DistrictContactsPage() {
             style={{
               background: "#FFFFFF",
               border: "1px solid rgba(0,0,0,0.04)",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+              boxShadow: "var(--shadow-card)",
             }}
           >
             <div
@@ -255,7 +255,7 @@ export default function DistrictContactsPage() {
             style={{
               background: "#FFFFFF",
               border: "1px solid rgba(0,0,0,0.04)",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+              boxShadow: "var(--shadow-card)",
             }}
           >
             <div

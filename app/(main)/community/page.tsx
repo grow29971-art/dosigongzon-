@@ -227,7 +227,7 @@ export default function CommunityPage() {
         <Link
           href="/search"
           className="w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="통합 검색"
         >
           <Search size={18} className="text-text-sub" />
@@ -254,7 +254,7 @@ export default function CommunityPage() {
         <div
           className="mb-4 flex items-center justify-center gap-2 py-2.5 rounded-2xl"
           style={{
-            background: "rgba(49,130,246,0.08)",
+            background: "var(--color-primary-softer)",
             border: "1px solid rgba(49,130,246,0.12)",
           }}
         >
@@ -286,7 +286,7 @@ export default function CommunityPage() {
             className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-transform flex items-center gap-1"
             style={{
               background: neighborhoodOnly
-                ? "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)"
+                ? "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)"
                 : "rgba(255,255,255,0.9)",
               color: neighborhoodOnly ? "#fff" : "#666",
               boxShadow: neighborhoodOnly
@@ -368,7 +368,7 @@ export default function CommunityPage() {
                     className="flex items-center gap-3 px-4 py-3"
                     style={{
                       background: "#FFFFFF",
-                      borderRadius: 16,
+                      borderRadius: "var(--radius-card-sm)",
                       boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)",
                       border: "1px solid rgba(0,0,0,0.04)",
                     }}

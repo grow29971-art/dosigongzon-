@@ -176,7 +176,7 @@ export default function CatLocationPicker({
       {/* 헤더 */}
       <div
         className="px-4 pt-14 pb-3 flex items-center gap-3 bg-white/90 backdrop-blur-md"
-        style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.06)" }}
+        style={{ boxShadow: "var(--shadow-raised)" }}
       >
         <button
           type="button"
@@ -235,7 +235,7 @@ export default function CatLocationPicker({
           >
             <div
               className="px-3 py-1.5 rounded-2xl text-[11px] font-extrabold text-white whitespace-nowrap mb-1"
-              style={{ background: "#3182F6" }}
+              style={{ background: "var(--color-primary)" }}
             >
               📍 여기로 이동
             </div>
@@ -311,9 +311,9 @@ export default function CatLocationPicker({
           disabled={!mapReady || !region.trim()}
           className="w-full py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50"
           style={{
-            background: "#3182F6",
+            background: "var(--color-primary)",
             color: "#fff",
-            boxShadow: "0 4px 14px rgba(49,130,246,0.4)",
+            boxShadow: "var(--shadow-primary)",
           }}
         >
           <Check size={16} />

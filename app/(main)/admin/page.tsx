@@ -391,7 +391,7 @@ export default function AdminDashboardPage() {
               className="flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
               style={{
                 background: "#FFFFFF",
-                borderRadius: 16,
+                borderRadius: "var(--radius-card-sm)",
                 boxShadow: `0 4px 14px ${m.color}10, 0 1px 2px rgba(0,0,0,0.02)`,
                 border: "1px solid rgba(0,0,0,0.04)",
               }}
@@ -438,7 +438,7 @@ export default function AdminDashboardPage() {
           </div>
           <div
             className="bg-white rounded-2xl p-4 text-[11px] text-text-sub leading-relaxed"
-            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             <p className="mb-1"><b>도시공존</b> · 길고양이 돌봄 시민 참여 플랫폼</p>
             <p>운영 중 이상 감지 시 로그인 실패 로그와 신고·문의함을 먼저 확인해주세요.</p>
@@ -472,7 +472,7 @@ function StatCard({
       style={{
         background: highlight ? `linear-gradient(135deg, ${color}15 0%, ${color}08 100%)` : "#FFFFFF",
         border: highlight ? `1px solid ${color}30` : "1px solid rgba(0,0,0,0.04)",
-        boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
+        boxShadow: "var(--shadow-card)",
       }}
     >
       <div className="flex items-center gap-1.5 mb-1">
