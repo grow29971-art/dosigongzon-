@@ -5,7 +5,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Sparkles, ChevronRight, Eye, Clock, ExternalLink, Pin, BookOpen, Siren, Baby, Stethoscope, Snowflake, Pill, Heart, Phone, Scale, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Sparkles, ChevronRight, Eye, Clock, ExternalLink, Pin, BookOpen, Bot, Siren, Baby, Stethoscope, Snowflake, Pill, Heart, Phone, Scale, AlertTriangle } from "lucide-react";
 import { listPublishedTipsServer, type Tip } from "@/lib/tips-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { estimateReadingMinutes } from "@/lib/html-sanitize";
@@ -15,24 +15,24 @@ import TipsAIButler from "./TipsAIButler";
 export const revalidate = 600;
 
 export const metadata: Metadata = {
-  title: "꿀팁게시판 — 도시공존",
+  title: "AI집사 · 돌봄 가이드 — 도시공존",
   description:
-    "길고양이 돌봄·TNR·중성화·구조·입양에 도움되는 정보글 모음. 도시공존이 직접 큐레이션한 꿀팁을 한곳에서 확인하세요.",
+    "길고양이 돌봄, 뭐든 AI 집사에게 물어보세요. TNR·구조·입양 가이드와 도시공존이 직접 큐레이션한 꿀팁까지 한곳에서.",
   keywords: [
     "길고양이 꿀팁", "길고양이 돌봄법", "TNR 신청", "중성화", "임시보호",
     "고양이 구조", "겨울철 길고양이", "케어테이커 꿀팁", "도시공존 꿀팁게시판",
   ],
   alternates: { canonical: "/tips" },
   openGraph: {
-    title: "꿀팁게시판 | 도시공존",
-    description: "길고양이 돌봄에 도움되는 정보글 큐레이션.",
+    title: "AI집사 · 돌봄 가이드 | 도시공존",
+    description: "길고양이 돌봄, 뭐든 AI 집사에게 물어보세요.",
     url: "https://dosigongzon.com/tips",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "꿀팁게시판 | 도시공존",
-    description: "길고양이 돌봄에 도움되는 정보글 큐레이션.",
+    title: "AI집사 · 돌봄 가이드 | 도시공존",
+    description: "길고양이 돌봄, 뭐든 AI 집사에게 물어보세요.",
   },
 };
 
@@ -100,29 +100,15 @@ export default async function TipsIndexPage() {
         </Link>
         <div>
           <h1 className="text-[20px] font-extrabold text-text-main tracking-tight flex items-center gap-1.5">
-            <BookOpen size={18} className="text-primary" />
-            가이드
+            <Bot size={18} className="text-primary" />
+            AI집사
           </h1>
-          <p className="text-[11px] text-text-sub">길고양이 돌봄 꿀팁 + 보호지침을 한곳에서</p>
+          <p className="text-[11px] text-text-sub">궁금한 건 AI 집사에게 — 구조 매뉴얼·꿀팁도 한곳에</p>
         </div>
       </div>
 
-      {/* ── 인기 태그 ── */}
-      {popularTags.length > 0 && (
-        <div className="px-4 pb-4">
-          <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-4 px-4" style={{ scrollbarWidth: "none" }}>
-            {popularTags.map((tag) => (
-              <Link
-                key={tag}
-                href={`/tips?tag=${encodeURIComponent(tag)}`}
-                className="shrink-0 text-[11.5px] font-bold px-2.5 py-1 rounded-full bg-white text-text-sub border border-black/[0.04] active:scale-95 transition-transform"
-              >
-                #{tag}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* ── 🤖 AI 집사 — 탭 이름이 AI집사라 최상단 배치 (2026-07-11) ── */}
+      <TipsAIButler />
 
       {/* ── 🚨 보호지침 매뉴얼 (꿀팁과 통합) — 위급할 땐 여기 펼치기 ── */}
       <div className="px-4 mb-5">
@@ -222,9 +208,6 @@ export default async function TipsIndexPage() {
         </div>
       </div>
 
-      {/* ── 🤖 AI 집사 (구 /lab/cat-style 병합, 2026-07-10) ── */}
-      <TipsAIButler />
-
       {/* ── 꿀팁 헤더 ── */}
       <div className="px-4 mb-2.5">
         <div className="flex items-center gap-1.5 px-1">
@@ -234,6 +217,23 @@ export default async function TipsIndexPage() {
           </h2>
         </div>
       </div>
+
+      {/* ── 인기 태그 ── */}
+      {popularTags.length > 0 && (
+        <div className="px-4 pb-3">
+          <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-4 px-4" style={{ scrollbarWidth: "none" }}>
+            {popularTags.map((tag) => (
+              <Link
+                key={tag}
+                href={`/tips?tag=${encodeURIComponent(tag)}`}
+                className="shrink-0 text-[11.5px] font-bold px-2.5 py-1 rounded-full bg-white text-text-sub border border-black/[0.04] active:scale-95 transition-transform"
+              >
+                #{tag}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ── 본문 ── */}
       <div className="px-4">
