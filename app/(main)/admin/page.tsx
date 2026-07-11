@@ -109,6 +109,13 @@ export default function AdminDashboardPage() {
       color: "#3182F6",
     },
     {
+      href: "/admin/cats",
+      title: "고양이 관리",
+      subtitle: "지도 고양이 검색·숨김·일괄 삭제",
+      Icon: CatIcon,
+      color: "#E88D5A",
+    },
+    {
       href: "/admin/event-keyring",
       title: "이벤트 응모자",
       subtitle: "1000명 키링 추첨 응모 관리",
