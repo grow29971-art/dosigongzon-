@@ -85,7 +85,7 @@ export default function MyCatsHero() {
       {/* 섹션 헤더 */}
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-2">
-          <h2 className="text-[16px] font-extrabold text-text-main tracking-tight">내 고양이</h2>
+          <h2 className="text-[16px] font-extrabold text-text-main tracking-tight">내 아이들</h2>
           <span
             className="text-[10.5px] font-extrabold px-2 py-0.5 rounded-full"
             style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}

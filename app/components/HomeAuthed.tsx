@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  User,
   MapPin,
   Wind,
   Sun,
@@ -152,6 +151,8 @@ export default function HomeAuthed({
   // 홈 리디자인(2026-07-11): 활동 요약 접기 + 동네 소식 탭
   const [activityOpen, setActivityOpen] = useState(false);
   const [hoodTab, setHoodTab] = useState<"cats" | "posts">("cats");
+  // 브리핑 헤드라인 — 오늘 아직 밥 기록이 없는 내 고양이 이름 (없으면 null)
+  const [hungryCatName, setHungryCatName] = useState<string | null>(null);
   const [streakInfo, setStreakInfo] = useState<StreakInfo | null>(null);
   const [caretakerRank, setCaretakerRank] = useState<CaretakerRank[]>([]);
   const [popularCats, setPopularCats] = useState<PopularCat[]>([]);
@@ -232,6 +233,37 @@ export default function HomeAuthed({
       return;
     }
     getMyStreakInfo().then(setStreakInfo).catch(() => {});
+  }, [user]);
+
+  // 브리핑 헤드라인 데이터 — MyCatsHero와 동일 쿼리(내 고양이 + 오늘 care_logs), 표시용 1건만
+  useEffect(() => {
+    if (!user) { setHungryCatName(null); return; }
+    let cancelled = false;
+    (async () => {
+      try {
+        const sb = createClient();
+        const { data: myCats } = await sb
+          .from("cats")
+          .select("id, name")
+          .eq("caretaker_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(10);
+        if (!myCats || myCats.length === 0) return;
+        const kstDate = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
+        const todayStart = new Date(kstDate + "T00:00:00+09:00").toISOString();
+        const rows = myCats as { id: string; name: string }[];
+        const { data: logs } = await sb
+          .from("care_logs")
+          .select("cat_id")
+          .eq("author_id", user.id)
+          .in("cat_id", rows.map((c) => c.id))
+          .gte("logged_at", todayStart);
+        const fed = new Set((logs ?? []).map((r: { cat_id: string }) => r.cat_id));
+        const hungry = rows.find((c) => !fed.has(c.id));
+        if (!cancelled) setHungryCatName(hungry?.name ?? null);
+      } catch { /* 헤드라인은 폴백 문구 사용 */ }
+    })();
+    return () => { cancelled = true; };
   }, [user]);
 
   // 온보딩 dismissal 상태 복원
@@ -518,100 +550,11 @@ export default function HomeAuthed({
 
   return (
     <>
-    <div className="px-5 pt-5 pb-4">
-      {/* ══════ 헤더 ══════ */}
-      <div className="flex items-start justify-between mb-7">
-        <div>
-          {/* 브랜드 타이틀 */}
-          <h1 className="text-[32px] font-black tracking-[-0.04em] leading-none mb-2.5">
-            <span className="text-text-main">도시</span>
-            <span className="text-primary">공존</span>
-          </h1>
-          {/* 서브타이틀 + 디바이더 */}
-          <div className="flex items-center gap-2">
-            <div
-              className="w-5 h-[2px] rounded-full"
-              style={{ backgroundColor: "var(--color-primary)", opacity: 0.6 }}
-            />
-            <p className="text-[12.5px] font-extrabold text-text-sub tracking-[-0.01em]">
-              길 위의 아이들
-            </p>
-            <span
-              className="text-[9px] font-bold tracking-[0.15em]"
-              style={{ color: "var(--color-primary)", opacity: 0.5 }}
-            >
-              FOR STRAY CATS
-            </span>
-          </div>
-          {/* 개인화 인사 — 시간대 + 이름 */}
-          {user && (() => {
-            const h = new Date(
-              new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }),
-            ).getHours();
-            const greet =
-              h < 5 ? "늦은 밤에도 수고 많으세요"
-              : h < 11 ? "좋은 아침이에요"
-              : h < 14 ? "점심은 드셨어요?"
-              : h < 18 ? "오늘도 고생하세요"
-              : h < 22 ? "좋은 저녁이에요"
-              : "편안한 밤 되세요";
-            const name =
-              (user.user_metadata?.nickname as string | undefined) ??
-              (user.user_metadata?.full_name as string | undefined) ??
-              user.email?.split("@")[0] ??
-              "";
-            return (
-              <p className="text-[11.5px] font-bold text-text-sub mt-2 tracking-tight">
-                {greet}{name ? `, ${name}님` : ""} 💛
-              </p>
-            );
-          })()}
-          {/* 레벨 진행률 미니 바 — 내 활동 요약 카드와 중복이라 제거 (홈 리디자인 2026-07-11) */}
-        </div>
-        <div className="flex items-center gap-2">
-          <Link
-            href="/search"
-            className="w-10 h-10 rounded-full bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
-            aria-label="통합 검색"
-          >
-            <Search size={18} className="text-text-sub" />
-          </Link>
-          {user && (
-            <Link
-              href="/notifications"
-              className="relative w-10 h-10 rounded-full bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
-              aria-label="알림"
-            >
-              <Bell size={18} className={unreadCount > 0 ? "text-primary" : "text-text-sub"} />
-              {unreadCount > 0 && (
-                <span
-                  className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white"
-                  style={{
-                    background: "linear-gradient(135deg, #E86B8C 0%, #D85555 100%)",
-                    boxShadow: "0 2px 6px rgba(216,85,85,0.4)",
-                  }}
-                >
-                  {unreadCount > 99 ? "99+" : unreadCount}
-                </span>
-              )}
-            </Link>
-          )}
-          <Link
-            href="/mypage"
-            className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center active:scale-90 transition-transform"
-          >
-            <User size={20} className="text-primary" />
-          </Link>
-        </div>
-      </div>
-
-
-
-      {/* 긴급 구조 배너(RescueBanner) — 사용자 요청으로 홈에서 제거 (2026-07-10) */}
-
-      {/* ══════ 실시간 날씨 위젯 — 홈 최상단(내 고양이 위) 배치 (2026-07-10) ══════ */}
+    <div className="px-5 pt-5 pb-24">
+      {/* ══════ 오늘의 브리핑 카드 — 인사·헤드라인·스트릭·알림 + 날씨를 한 카드로 (홈 리디자인 2차 2026-07-11) ══════ */}
+      {/* 브랜드 타이틀은 시안대로 제거 — 앱 아이덴티티는 스플래시/네비가 담당 */}
       <div
-        className="px-4 py-3 mb-4 dark-card-level"
+        className="mb-4 dark-card-level"
         style={{
           background: "linear-gradient(135deg, #FFFFFF 0%, #FDF9F2 100%)",
           borderRadius: "var(--radius-card)",
@@ -619,6 +562,81 @@ export default function HomeAuthed({
           border: "1px solid rgba(0,0,0,0.04)",
         }}
       >
+        <div className="px-4 pt-4">
+          {(() => {
+            const h = new Date(
+              new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }),
+            ).getHours();
+            const greet =
+              h < 5 ? "늦은 밤에도 수고 많으세요 🌙"
+              : h < 11 ? "좋은 아침이에요 ☀️"
+              : h < 14 ? "점심은 드셨어요? 🍽️"
+              : h < 18 ? "오늘도 고생하세요 🌤️"
+              : h < 22 ? "좋은 저녁이에요 🌆"
+              : "편안한 밤 되세요 🌙";
+            const name =
+              (user?.user_metadata?.nickname as string | undefined) ??
+              (user?.user_metadata?.full_name as string | undefined) ??
+              user?.email?.split("@")[0] ??
+              "";
+            return (
+              <>
+                <div className="flex items-center justify-between">
+                  <p className="text-[12px] font-bold text-text-sub tracking-tight">{greet}</p>
+                  <div className="flex items-center gap-1.5">
+                    {streakInfo && streakInfo.streak > 0 && (
+                      <span
+                        className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11.5px] font-extrabold"
+                        style={{ background: "#FFF7ED", border: "1px solid #FED7AA", color: "#EA580C" }}
+                      >
+                        🔥 {streakInfo.streak}일
+                      </span>
+                    )}
+                    <Link
+                      href="/search"
+                      className="w-9 h-9 rounded-xl bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
+                      aria-label="통합 검색"
+                    >
+                      <Search size={16} className="text-text-sub" />
+                    </Link>
+                    <Link
+                      href="/notifications"
+                      className="relative w-9 h-9 rounded-xl bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
+                      aria-label="알림"
+                    >
+                      <Bell size={16} className={unreadCount > 0 ? "text-primary" : "text-text-sub"} />
+                      {unreadCount > 0 && (
+                        <span
+                          className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 rounded-full flex items-center justify-center text-[9px] font-extrabold text-white"
+                          style={{
+                            background: "linear-gradient(135deg, #E86B8C 0%, #D85555 100%)",
+                            boxShadow: "0 2px 6px rgba(216,85,85,0.4)",
+                          }}
+                        >
+                          {unreadCount > 99 ? "99+" : unreadCount}
+                        </span>
+                      )}
+                    </Link>
+                  </div>
+                </div>
+                <h1 className="text-[20px] font-extrabold text-text-main tracking-tight leading-snug mt-1.5">
+                  {name ? `${name}님, ` : ""}
+                  {hungryCatName ? (
+                    <>
+                      <span className="text-primary">{hungryCatName}</span>가 밥을 기다려요
+                    </>
+                  ) : (
+                    <>오늘도 함께해 주셔서 고마워요 💛</>
+                  )}
+                </h1>
+              </>
+            );
+          })()}
+        </div>
+
+        {/* 구분선 + 날씨 행 */}
+        <div className="mx-4 my-3" style={{ height: 1, background: "rgba(0,0,0,0.06)" }} />
+        <div className="px-4 pb-4">
         {weatherLoading ? (
           /* 로딩 */
           <div className="flex items-center justify-center py-6 gap-2">
@@ -763,10 +781,15 @@ export default function HomeAuthed({
             })()}
           </>
         ) : null}
+        </div>
       </div>
 
-      {/* ══════ 내 고양이 히어로 — 홈 개편(2026-07-10): 내 아이들이 가장 먼저 ══════ */}
-      {user && <MyCatsHero />}
+      {/* ══════ 내 아이들 — 플로팅 돌봄 버튼의 스크롤 목적지(#my-cats) ══════ */}
+      {user && (
+        <div id="my-cats" style={{ scrollMarginTop: 12 }}>
+          <MyCatsHero />
+        </div>
+      )}
 
       {/* ══════ 일일 출석체크 모달 — 코인·카드 EXP·계정 레벨 보상 ══════ */}
       {user && <DailyCheckinModal />}
@@ -776,13 +799,7 @@ export default function HomeAuthed({
         <FirstCheerCard cats={cheerCats} regionName={primaryRegion?.name ?? null} />
       )}
 
-      {/* ══════ 돌봄 연속 일수(스트릭) — 내 서클 위로 배치 (2026-07-10) ══════ */}
-      {user && streakInfo && (
-        <HomeStreakCard
-          streakInfo={streakInfo}
-          onFreezeUsed={() => { getMyStreakInfo().then(setStreakInfo).catch(() => {}); }}
-        />
-      )}
+      {/* 스트릭 카드는 브리핑 칩으로 대체, 프리즈 기능 보존 위해 하단 부가 영역으로 이동 (2026-07-11) */}
 
       {/*
         신규 가입자(아직 첫 등록 안 한 유저) → 시작 가이드만 노출
@@ -1186,6 +1203,14 @@ export default function HomeAuthed({
 
       {/* 오늘의 냥 상자 — 일일 출석 리추얼 */}
       {user && <DailyCatBox />}
+
+      {/* ══════ 돌봄 연속 일수(스트릭) — 프리즈 UI 보존, 부가 영역으로 이동 (2026-07-11) ══════ */}
+      {user && streakInfo && (
+        <HomeStreakCard
+          streakInfo={streakInfo}
+          onFreezeUsed={() => { getMyStreakInfo().then(setStreakInfo).catch(() => {}); }}
+        />
+      )}
 
       {/* 돌봄 cue 푸시 옵트인 — 고양이 보유 + 미구독만 (14일 dismiss) */}
       {user && activity && <PushCareCueOptIn hasCat={activity.catCount > 0} />}
@@ -1899,6 +1924,28 @@ export default function HomeAuthed({
         </div>
       </div>
     </div>
+
+    {/* ══════ 플로팅 돌봄 기록 버튼 — 스크롤 내내 따라다님, 탭하면 내 아이들로 (2026-07-11) ══════ */}
+    {user && activity && activity.catCount > 0 && (
+      <div
+        className="fixed left-0 right-0 z-40 px-5 pointer-events-none"
+        style={{ bottom: "calc(env(safe-area-inset-bottom) + 72px)" }}
+      >
+        <div className="mx-auto max-w-lg">
+          <button
+            type="button"
+            onClick={() => document.getElementById("my-cats")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-white text-[14.5px] font-extrabold active:scale-[0.98] transition-transform pointer-events-auto"
+            style={{
+              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+              boxShadow: "0 6px 20px rgba(49,130,246,0.35)",
+            }}
+          >
+            🍚 돌봄 기록하기
+          </button>
+        </div>
+      </div>
+    )}
     </>
   );
 }
