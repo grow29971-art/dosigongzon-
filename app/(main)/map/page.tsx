@@ -2803,8 +2803,8 @@ export default function MapPage() {
                       className="w-full px-3 py-2 rounded-xl text-[13px] outline-none" style={{ backgroundColor: "#F6F1EA", border: "1px solid #E3DCD3" }} />
                   </div>
 
-                  {/* 위치 변경 (등록자 본인만) */}
-                  {user?.id === selectedCat.caretaker_id && (
+                  {/* 위치 변경 (등록자 본인 + 관리자) */}
+                  {(user?.id === selectedCat.caretaker_id || isAdmin) && (
                     <div>
                       <label className="text-[11px] font-bold text-text-sub mb-1 block">지도 위치</label>
                       <button
@@ -3660,8 +3660,8 @@ export default function MapPage() {
         />
       )}
 
-      {/* 고양이 위치 변경 Picker (등록자 본인만) */}
-      {selectedCat && user?.id === selectedCat.caretaker_id && (
+      {/* 고양이 위치 변경 Picker (등록자 본인 + 관리자) */}
+      {selectedCat && (user?.id === selectedCat.caretaker_id || isAdmin) && (
         <CatLocationPicker
           open={pickingLocation}
           initialLat={editLat ?? selectedCat.lat}
