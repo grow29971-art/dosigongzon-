@@ -329,6 +329,16 @@ export default function ShopPage() {
           ))}
         </div>
       )}
+
+      {/* ── 법적 고지 링크 ── */}
+      <div className="mt-8 text-center">
+        <Link
+          href="/shop/policy"
+          className="text-[11.5px] font-semibold text-text-light underline underline-offset-2"
+        >
+          쇼핑몰 이용안내 · 교환/반품/환불 규정
+        </Link>
+      </div>
     </div>
   );
 }
