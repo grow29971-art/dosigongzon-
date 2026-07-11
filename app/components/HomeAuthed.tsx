@@ -7,8 +7,6 @@ import { useRouter } from "next/navigation";
 import {
   User,
   MapPin,
-  Thermometer,
-  Droplets,
   Wind,
   Sun,
   Cloud,
@@ -20,6 +18,8 @@ import {
   Loader2,
   WifiOff,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   Sparkles,
   Bell,
   Search,
@@ -149,6 +149,9 @@ export default function HomeAuthed({
   const [allCats, setAllCats] = useState<Cat[]>([]);
   const [myRegions, setMyRegions] = useState<ActivityRegion[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  // 홈 리디자인(2026-07-11): 활동 요약 접기 + 동네 소식 탭
+  const [activityOpen, setActivityOpen] = useState(false);
+  const [hoodTab, setHoodTab] = useState<"cats" | "posts">("cats");
   const [streakInfo, setStreakInfo] = useState<StreakInfo | null>(null);
   const [caretakerRank, setCaretakerRank] = useState<CaretakerRank[]>([]);
   const [popularCats, setPopularCats] = useState<PopularCat[]>([]);
@@ -563,33 +566,7 @@ export default function HomeAuthed({
               </p>
             );
           })()}
-          {/* 레벨 진행률 미니 바 — sunk cost 원리로 투자감 시각화 */}
-          {user && levelInfo && (
-            <div className="mt-2 flex items-center gap-2 max-w-[220px]">
-              <span
-                className="text-[10px] font-extrabold tracking-tight shrink-0 flex items-center gap-0.5"
-                style={{ color: "var(--color-primary)" }}
-              >
-                <span>{levelInfo.emoji}</span>
-                <span>Lv.{levelInfo.level}</span>
-              </span>
-              <div
-                className="flex-1 h-1.5 rounded-full overflow-hidden"
-                style={{ background: "rgba(49,130,246,0.15)" }}
-              >
-                <div
-                  className="h-full rounded-full transition-all"
-                  style={{
-                    width: `${Math.max(levelInfo.progress * 100, 4)}%`,
-                    background: "linear-gradient(90deg, var(--color-primary) 0%, #5BC4C4 100%)",
-                  }}
-                />
-              </div>
-              <span className="text-[9.5px] font-bold text-text-light shrink-0">
-                {levelInfo.next ? `${levelInfo.next - levelInfo.score}점` : "MAX"}
-              </span>
-            </div>
-          )}
+          {/* 레벨 진행률 미니 바 — 내 활동 요약 카드와 중복이라 제거 (홈 리디자인 2026-07-11) */}
         </div>
         <div className="flex items-center gap-2">
           <Link
@@ -668,65 +645,42 @@ export default function HomeAuthed({
         ) : weather ? (
           /* 날씨 데이터 */
           <>
-            {/* 상단: 날짜 + 지역 */}
+            {/* 상단: 날짜·지역 한 줄 (홈 리디자인 2026-07-11: 밀도 압축) */}
             <div className="flex items-center justify-between mb-2">
-              <div>
-                <p className="text-[11px] text-text-sub font-medium">
-                  {new Date().toLocaleDateString("ko-KR", { month: "long", day: "numeric", weekday: "long" })}
-                </p>
-                <div className="flex items-center gap-1 mt-0.5">
-                  <MapPin size={12} className="text-primary" />
-                  <span className="text-[13px] font-bold text-text-main">{weather.city}</span>
-                </div>
+              <div className="flex items-center gap-1.5">
+                <MapPin size={12} className="text-primary shrink-0" />
+                <span className="text-[13px] font-bold text-text-main">{weather.city}</span>
+                <span className="text-[11px] text-text-light">
+                  {new Date().toLocaleDateString("ko-KR", { month: "long", day: "numeric", weekday: "short" })}
+                </span>
               </div>
               <p className="text-[12px] text-text-sub capitalize">{weather.weatherDesc}</p>
             </div>
 
-            {/* 중앙: 큰 온도 + 아이콘 */}
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-end gap-1">
-                <span
-                  className="text-[34px] font-extrabold leading-none tracking-tight"
-                  style={{ color: getTempColor(weather.temp) }}
-                >
-                  {weather.temp}
-                </span>
-                <span className="text-[16px] font-bold text-text-light mb-0.5">°C</span>
-              </div>
-              {(() => {
-                const WeatherIcon = WEATHER_ICONS[weather.weatherMain] ?? Cloud;
-                return (
-                  <WeatherIcon
-                    size={34}
-                    className="text-text-light"
-                    strokeWidth={1.3}
-                  />
-                );
-              })()}
-            </div>
-
-            {/* 하단: 체감 · 습도 · 바람 */}
-            <div className="grid grid-cols-3 gap-2">
-              <div className="flex items-center gap-1.5 bg-surface-alt rounded-xl px-3 py-1.5">
-                <Thermometer size={14} className="text-text-muted shrink-0" />
-                <div>
-                  <p className="text-[10px] text-text-muted">체감</p>
-                  <p className="text-[13px] font-bold text-text-main">{weather.feelsLike}°</p>
+            {/* 온도 + 아이콘 + 체감·습도·바람 한 줄 */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                {(() => {
+                  const WeatherIcon = WEATHER_ICONS[weather.weatherMain] ?? Cloud;
+                  return <WeatherIcon size={30} className="text-text-light" strokeWidth={1.4} />;
+                })()}
+                <div className="flex items-end gap-0.5">
+                  <span
+                    className="text-[30px] font-extrabold leading-none tracking-tight"
+                    style={{ color: getTempColor(weather.temp) }}
+                  >
+                    {weather.temp}
+                  </span>
+                  <span className="text-[14px] font-bold text-text-light mb-0.5">°C</span>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 bg-surface-alt rounded-xl px-3 py-1.5">
-                <Droplets size={14} className="text-text-muted shrink-0" />
-                <div>
-                  <p className="text-[10px] text-text-muted">습도</p>
-                  <p className="text-[13px] font-bold text-text-main">{weather.humidity}%</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 bg-surface-alt rounded-xl px-3 py-1.5">
-                <Wind size={14} className="text-text-muted shrink-0" />
-                <div>
-                  <p className="text-[10px] text-text-muted">바람</p>
-                  <p className="text-[13px] font-bold text-text-main">{weather.windSpeed}m/s</p>
-                </div>
+              <div className="text-right">
+                <p className="text-[11.5px] font-semibold text-text-sub">
+                  체감 {weather.feelsLike}° · 습도 {weather.humidity}%
+                </p>
+                <p className="text-[11.5px] text-text-light mt-0.5 flex items-center justify-end gap-1">
+                  <Wind size={11} className="shrink-0" /> 바람 {weather.windSpeed}m/s
+                </p>
               </div>
             </div>
 
@@ -779,7 +733,7 @@ export default function HomeAuthed({
 
               return tips.length > 0 ? (
                 <div className="mt-3 space-y-1.5">
-                  {tips.map((tip, i) => (
+                  {tips.slice(0, 2).map((tip, i) => (
                     <div
                       key={i}
                       className="flex items-start gap-2 px-3 py-2 rounded-xl"
@@ -850,81 +804,93 @@ export default function HomeAuthed({
         </>
       )}
 
-      {/* ══════ 내 활동 요약 ══════ */}
+      {/* ══════ 내 활동 요약 — 기본 접힘, 탭하면 스탯 펼침 (홈 리디자인 2026-07-11) ══════ */}
       {activity && levelInfo && (() => {
         const lc = getLevelColor(levelInfo.level);
         return (
-        <Link
-          href="/mypage"
-          className="block mb-5 active:scale-[0.98] transition-transform"
+        <div
+          className="mb-5 dark-card-level overflow-hidden"
+          style={{
+            background: "#FFFFFF",
+            borderRadius: 22,
+            boxShadow: "0 8px 28px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.03)",
+            border: "1px solid rgba(0,0,0,0.04)",
+          }}
         >
-          <div
-            className="p-5 dark-card-level"
-            style={{
-              background: "#FFFFFF",
-              borderRadius: 22,
-              boxShadow: "0 8px 28px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.03)",
-              border: "1px solid rgba(0,0,0,0.04)",
-            }}
+          {/* 헤더(레벨+경험치) = 접기 토글 */}
+          <button
+            type="button"
+            onClick={() => setActivityOpen((v) => !v)}
+            aria-expanded={activityOpen}
+            className="w-full text-left p-4 flex items-center gap-3 active:scale-[0.99] transition-transform"
           >
-            {/* 레벨 + 이름 */}
-            <div className="flex items-center gap-3.5 mb-4">
-              <div
-                className="w-14 h-14 rounded-full flex items-center justify-center shrink-0"
-                style={{ background: `linear-gradient(135deg, ${lc}20 0%, ${lc}10 100%)`, border: `2px solid ${lc}30` }}
-              >
-                <span className="text-[28px]">{levelInfo.emoji}</span>
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <p className="text-[18px] font-extrabold text-text-main tracking-tight">{levelInfo.title}</p>
-                  <span
-                    className="text-[10px] font-extrabold px-2 py-0.5 rounded-lg text-white"
-                    style={{ backgroundColor: lc }}
-                  >
-                    Lv.{levelInfo.level}
-                  </span>
-                </div>
-                {/* 경험치 바 */}
-                <div className="flex items-center gap-2.5 mt-2">
-                  <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: "#F0EBE4" }}>
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${Math.max(levelInfo.progress * 100, 4)}%`,
-                        background: `linear-gradient(90deg, ${lc} 0%, ${lc}BB 100%)`,
-                      }}
-                    />
-                  </div>
-                  <span className="text-[10px] font-bold text-text-light tabular-nums shrink-0">
-                    {levelInfo.score}{levelInfo.next ? `/${levelInfo.next}` : " MAX"}
-                  </span>
-                </div>
-              </div>
-              <ChevronRight size={16} className="text-text-light shrink-0" />
+            <div
+              className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
+              style={{ background: `linear-gradient(135deg, ${lc}20 0%, ${lc}10 100%)`, border: `2px solid ${lc}30` }}
+            >
+              <span className="text-[22px]">{levelInfo.emoji}</span>
             </div>
-
-            {/* 스탯 4칸 */}
-            <div className="grid grid-cols-4 gap-2">
-              {[
-                { label: "고양이", value: activity.catCount, color: "var(--color-primary)", icon: "🐱" },
-                { label: "돌봄", value: activity.commentCount + activity.careLogCount, color: "#48A59E", icon: "📝" },
-                { label: "신고", value: activity.alertCount, color: "#8B65B8", icon: "🛡️" },
-                { label: "좋아요", value: activity.likesReceived, color: "#E86B8C", icon: "❤️" },
-              ].map((s) => (
-                <div
-                  key={s.label}
-                  className="text-center py-2.5 rounded-2xl"
-                  style={{ backgroundColor: `${s.color}08`, border: `1px solid ${s.color}15` }}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <p className="text-[15px] font-extrabold text-text-main tracking-tight truncate">{levelInfo.title}</p>
+                <span
+                  className="text-[10px] font-extrabold px-2 py-0.5 rounded-lg text-white shrink-0"
+                  style={{ backgroundColor: lc }}
                 >
-                  <p className="text-[11px] mb-0.5">{s.icon}</p>
-                  <p className="text-[17px] font-black" style={{ color: s.color }}>{s.value}</p>
-                  <p className="text-[9px] font-semibold text-text-light">{s.label}</p>
+                  Lv.{levelInfo.level}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 mt-1.5">
+                <div className="flex-1 h-1.5 rounded-full overflow-hidden max-w-[140px]" style={{ backgroundColor: "#F0EBE4" }}>
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${Math.max(levelInfo.progress * 100, 4)}%`,
+                      background: `linear-gradient(90deg, ${lc} 0%, ${lc}BB 100%)`,
+                    }}
+                  />
                 </div>
-              ))}
+                <span className="text-[10px] font-bold text-text-light tabular-nums shrink-0">
+                  {levelInfo.score}{levelInfo.next ? `/${levelInfo.next}` : " MAX"}
+                </span>
+              </div>
             </div>
-          </div>
-        </Link>
+            {activityOpen
+              ? <ChevronUp size={16} className="text-text-light shrink-0" />
+              : <ChevronDown size={16} className="text-text-light shrink-0" />}
+          </button>
+
+          {/* 펼침: 스탯 4칸 + 마이페이지 링크 */}
+          {activityOpen && (
+            <div className="px-4 pb-4">
+              <div className="grid grid-cols-4 gap-2">
+                {[
+                  { label: "고양이", value: activity.catCount, color: "var(--color-primary)", icon: "🐱" },
+                  { label: "돌봄", value: activity.commentCount + activity.careLogCount, color: "#48A59E", icon: "📝" },
+                  { label: "신고", value: activity.alertCount, color: "#8B65B8", icon: "🛡️" },
+                  { label: "좋아요", value: activity.likesReceived, color: "#E86B8C", icon: "❤️" },
+                ].map((s) => (
+                  <div
+                    key={s.label}
+                    className="text-center py-2.5 rounded-2xl"
+                    style={{ backgroundColor: `${s.color}08`, border: `1px solid ${s.color}15` }}
+                  >
+                    <p className="text-[11px] mb-0.5">{s.icon}</p>
+                    <p className="text-[17px] font-black" style={{ color: s.color }}>{s.value}</p>
+                    <p className="text-[9px] font-semibold text-text-light">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+              <Link
+                href="/mypage"
+                className="mt-3 flex items-center justify-center gap-1 py-2 rounded-xl text-[12px] font-bold text-primary active:scale-[0.98] transition-transform"
+                style={{ background: "var(--color-primary-softer)" }}
+              >
+                업적·타이틀 전체 보기 <ChevronRight size={13} />
+              </Link>
+            </div>
+          )}
+        </div>
         );
       })()}
 
@@ -979,29 +945,44 @@ export default function HomeAuthed({
             </Link>
           ) : (
             <div className="space-y-2.5">
-              {/* 우리 동네 고양이 */}
+              {/* 동네 소식 카드 — 고양이/이야기 세그먼트 탭 (홈 리디자인 2026-07-11) */}
               {neighborhoodCats.length > 0 ? (
-                <Link
-                  href="/map"
-                  className="block active:scale-[0.99] transition-transform"
+                <div
+                  className="px-4 py-3.5"
+                  style={{
+                    background: "#FFFFFF",
+                    borderRadius: 18,
+                    boxShadow: "var(--shadow-card)",
+                    border: "1px solid rgba(0,0,0,0.04)",
+                  }}
                 >
-                  <div
-                    className="px-4 py-3.5"
-                    style={{
-                      background: "#FFFFFF",
-                      borderRadius: 18,
-                      boxShadow: "var(--shadow-card)",
-                      border: "1px solid rgba(0,0,0,0.04)",
-                    }}
-                  >
-                    <div className="flex items-center justify-between mb-2.5">
-                      <p className="text-[12px] font-extrabold text-text-main">
-                        🐾 우리 동네 고양이 <span className="text-primary">{neighborhoodCats.length}</span>
-                      </p>
-                      <span className="text-[10px] text-text-light">
-                        반경 {primaryRegion.radius_m >= 1000 ? `${primaryRegion.radius_m / 1000}km` : `${primaryRegion.radius_m}m`}
-                      </span>
-                    </div>
+                  {/* 세그먼트 탭 */}
+                  <div className="flex items-center gap-1 p-1 rounded-xl mb-2.5" style={{ background: "var(--color-warm-white)" }}>
+                    {([
+                      ["cats", `🐾 동네 고양이 ${neighborhoodCats.length}`],
+                      ["posts", "💬 동네 이야기"],
+                    ] as const).map(([key, label]) => (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setHoodTab(key)}
+                        className="flex-1 py-2 rounded-lg text-[11.5px] font-extrabold transition-colors"
+                        style={{
+                          background: hoodTab === key ? "#fff" : "transparent",
+                          color: hoodTab === key ? "var(--color-text-main)" : "var(--color-text-light)",
+                          boxShadow: hoodTab === key ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {hoodTab === "cats" ? (
+                  <Link href="/map" className="block active:scale-[0.99] transition-transform">
+                    <p className="text-[10px] text-text-light mb-2">
+                      반경 {primaryRegion.radius_m >= 1000 ? `${primaryRegion.radius_m / 1000}km` : `${primaryRegion.radius_m}m`} · 탭하면 지도에서 볼 수 있어요
+                    </p>
                     <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
                       {neighborhoodCats.map((c) => {
                         const safe = sanitizeImageUrl(c.photo_url, "https://placehold.co/100x100/EEEAE2/2A2A28?text=%3F");
@@ -1031,8 +1012,37 @@ export default function HomeAuthed({
                         );
                       })}
                     </div>
-                  </div>
-                </Link>
+                  </Link>
+                  ) : neighborhoodPosts.length > 0 ? (
+                    /* 동네 이야기 탭 */
+                    <div className="space-y-1.5">
+                      {neighborhoodPosts.map((p) => (
+                        <Link
+                          key={p.id}
+                          href={`/community/${p.id}`}
+                          className="flex items-center gap-2 py-1.5 active:opacity-70"
+                        >
+                          <span
+                            className="text-[10px] font-extrabold px-2 py-0.5 rounded-md shrink-0"
+                            style={{ backgroundColor: "rgba(49,130,246,0.12)", color: "var(--color-primary)" }}
+                          >
+                            {p.region}
+                          </span>
+                          <p className="text-[12.5px] font-bold text-text-main truncate flex-1">
+                            {p.title}
+                          </p>
+                          <span className="text-[10px] text-text-light shrink-0">
+                            {formatRelativeTime(p.createdAt)}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[12px] text-text-sub text-center py-4">
+                      아직 우리 동네 이야기가 없어요 — 첫 글을 남겨보세요!
+                    </p>
+                  )}
+                </div>
               ) : (
                 <div
                   className="px-4 py-4"
@@ -1120,8 +1130,8 @@ export default function HomeAuthed({
                 </div>
               )}
 
-              {/* 우리 동네 글 */}
-              {neighborhoodPosts.length > 0 && (
+              {/* 우리 동네 글 — 고양이 카드가 없을 때만 별도 카드 (있으면 위 탭에 통합) */}
+              {neighborhoodCats.length === 0 && neighborhoodPosts.length > 0 && (
                 <div
                   className="px-4 py-3"
                   style={{
