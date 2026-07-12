@@ -264,8 +264,12 @@ export function getDisplayCoord(
 // 위치 보호 2차 레이어: 시간 배회 (roaming)
 // ══════════════════════════════════════════
 
-/** 지도 마커 배회 반경 (m). 화면상 위치를 신뢰 불가능하게 만드는 게 목적. */
-export const CAT_ROAM_RADIUS_M = 5000;
+/**
+ * 지도 마커 배회 반경 (m). 화면상 위치를 신뢰 불가능하게 만드는 게 목적.
+ * 2026-07-13 사용자 결정: 고양이가 자기 동(洞)을 벗어나지 않도록 5km → 400m.
+ * (기반 좌표가 이미 동단위 ±444m 오프셋이라, 400m 배회면 합산해도 대부분 동 내부)
+ */
+export const CAT_ROAM_RADIUS_M = 400;
 
 /**
  * 실제 고양이가 활동반경을 돌아다니는 것처럼, 시간에 따라 불규칙하게 움직이는 표시 좌표.
@@ -273,9 +277,9 @@ export const CAT_ROAM_RADIUS_M = 5000;
  *   반경 radiusM 안을 부드럽게 배회.
  * - 고양이 id 해시로 위상·궤적이 정해지고 Date.now() 기반이라 결정적 —
  *   모든 접속자가 같은 시각엔 같은 위치를 봄. 서버·상태 불필요.
- * - 서로 소에 가까운 주기 3개(≈28분/6.4분/2분)의 사인 합성이라 궤적이 사실상 반복 안 됨.
- *   √2 정규화로 오프셋은 항상 반경 이내. 평균 이동속도는 반경 5km 기준 시속 ~110km
- *   (2026-07-13 사용자 요청으로 2배 상향).
+ * - 서로 소에 가까운 주기 3개(≈14분/3분/1.2분)의 사인 합성이라 궤적이 사실상 반복 안 됨.
+ *   √2 정규화로 오프셋은 항상 반경 이내. 평균 이동속도는 반경 400m 기준 시속 ~15km
+ *   (실제 고양이가 빠르게 이동하는 수준 — 반경 축소에 맞춰 주기를 당겨 생동감 유지).
  */
 export function roamCoord(
   cat: Pick<Cat, "id" | "lat" | "lng">,
@@ -288,13 +292,13 @@ export function roamCoord(
   const t = tMs / 1000;
   // 진폭 합 1.0 → 축별 최대 1. √2로 나눠 대각선에서도 반경 이내 보장.
   const nx =
-    (0.55 * Math.sin(t / 263 + f1 * 97) +
-      0.3 * Math.sin(t / 61 + f2 * 59) +
-      0.15 * Math.sin(t / 19 + f1 * 31)) / Math.SQRT2;
+    (0.55 * Math.sin(t / 131 + f1 * 97) +
+      0.3 * Math.sin(t / 29 + f2 * 59) +
+      0.15 * Math.sin(t / 11 + f1 * 31)) / Math.SQRT2;
   const ny =
-    (0.55 * Math.cos(t / 283 + f2 * 89) +
-      0.3 * Math.cos(t / 67 + f1 * 67) +
-      0.15 * Math.cos(t / 23 + f2 * 37)) / Math.SQRT2;
+    (0.55 * Math.cos(t / 139 + f2 * 89) +
+      0.3 * Math.cos(t / 31 + f1 * 67) +
+      0.15 * Math.cos(t / 13 + f2 * 37)) / Math.SQRT2;
   const dLat = (radiusM * ny) / 111111;
   const dLng = (radiusM * nx) / (111111 * Math.cos((base.lat * Math.PI) / 180));
   return { lat: base.lat + dLat, lng: base.lng + dLng };
