@@ -273,8 +273,9 @@ export const CAT_ROAM_RADIUS_M = 5000;
  *   반경 radiusM 안을 부드럽게 배회.
  * - 고양이 id 해시로 위상·궤적이 정해지고 Date.now() 기반이라 결정적 —
  *   모든 접속자가 같은 시각엔 같은 위치를 봄. 서버·상태 불필요.
- * - 서로 소에 가까운 주기 3개(≈55분/13분/4분)의 사인 합성이라 궤적이 사실상 반복 안 됨.
- *   √2 정규화로 오프셋은 항상 반경 이내. 평균 이동속도는 반경 5km 기준 시속 ~80km.
+ * - 서로 소에 가까운 주기 3개(≈28분/6.4분/2분)의 사인 합성이라 궤적이 사실상 반복 안 됨.
+ *   √2 정규화로 오프셋은 항상 반경 이내. 평균 이동속도는 반경 5km 기준 시속 ~110km
+ *   (2026-07-13 사용자 요청으로 2배 상향).
  */
 export function roamCoord(
   cat: Pick<Cat, "id" | "lat" | "lng">,
@@ -287,13 +288,13 @@ export function roamCoord(
   const t = tMs / 1000;
   // 진폭 합 1.0 → 축별 최대 1. √2로 나눠 대각선에서도 반경 이내 보장.
   const nx =
-    (0.55 * Math.sin(t / 521 + f1 * 97) +
-      0.3 * Math.sin(t / 127 + f2 * 59) +
-      0.15 * Math.sin(t / 37 + f1 * 31)) / Math.SQRT2;
+    (0.55 * Math.sin(t / 263 + f1 * 97) +
+      0.3 * Math.sin(t / 61 + f2 * 59) +
+      0.15 * Math.sin(t / 19 + f1 * 31)) / Math.SQRT2;
   const ny =
-    (0.55 * Math.cos(t / 569 + f2 * 89) +
-      0.3 * Math.cos(t / 139 + f1 * 67) +
-      0.15 * Math.cos(t / 41 + f2 * 37)) / Math.SQRT2;
+    (0.55 * Math.cos(t / 283 + f2 * 89) +
+      0.3 * Math.cos(t / 67 + f1 * 67) +
+      0.15 * Math.cos(t / 23 + f2 * 37)) / Math.SQRT2;
   const dLat = (radiusM * ny) / 111111;
   const dLng = (radiusM * nx) / (111111 * Math.cos((base.lat * Math.PI) / 180));
   return { lat: base.lat + dLat, lng: base.lng + dLng };

@@ -1332,7 +1332,7 @@ export default function MapPage() {
 
   // ── 고양이 마커 배회 애니메이션 (위치 보호 2차 레이어) ──
   // roamCoord가 Date.now() 기반 결정적이라, 주기적으로 현재 시각 위치로 옮기기만 하면 됨.
-  // 250ms 간격이면 이동폭이 틱당 수 m라 부드럽게 보임 (마커 최대 200개 × 4회/초 — 미미한 비용).
+  // 200ms 간격이면 이동폭이 틱당 수 m라 부드럽게 보임 (마커 최대 200개 × 5회/초 — 미미한 비용).
   useEffect(() => {
     if (!mapReady) return;
     const id = setInterval(() => {
@@ -1343,7 +1343,7 @@ export default function MapPage() {
         const coord = roamCoord(roamCat, isLoggedIn);
         ov.setPosition(new window.kakao.maps.LatLng(coord.lat, coord.lng));
       });
-    }, 250);
+    }, 200);
     return () => clearInterval(id);
   }, [mapReady, isLoggedIn]);
 
