@@ -48,13 +48,13 @@ import {
   createComment,
   uploadCommentPhoto,
   listAlertedCatIds,
-  getDisplayCoord,
   voteComment,
   getMyCommentVotes,
   getLevelColor,
   thumbnailUrl,
   optimizedImageUrl,
   MAP_CENTER,
+  roamCoord,
   type Cat,
   type CatComment,
   type CommentKind,
@@ -896,7 +896,7 @@ export default function MapPage() {
 
     catFocusHandledRef.current = true;
 
-    const coord = getDisplayCoord(cat, isLoggedIn);
+    const coord = roamCoord(cat, isLoggedIn);
     const map = mapInstanceRef.current;
     map.setCenter(new window.kakao.maps.LatLng(coord.lat, coord.lng));
     map.setLevel(3);
@@ -1108,7 +1108,7 @@ export default function MapPage() {
       lastPannedSearchRef.current = q;
       const bounds = new window.kakao.maps.LatLngBounds();
       filtered.forEach((c) => {
-        const coord = getDisplayCoord(c, isLoggedIn);
+        const coord = roamCoord(c, isLoggedIn);
         bounds.extend(new window.kakao.maps.LatLng(coord.lat, coord.lng));
       });
       map.setBounds(bounds, 80, 80, 80, 80);
@@ -1163,7 +1163,7 @@ export default function MapPage() {
       const visibleGroups: Array<[string, Cat[]]> = [];
       groups.forEach((dongCats, dong) => {
         const repCat = dongCats[0];
-        const coord = getDisplayCoord(repCat, isLoggedIn);
+        const coord = roamCoord(repCat, isLoggedIn);
         if (
           coord.lat >= minLat &&
           coord.lat <= maxLat &&
@@ -1205,7 +1205,7 @@ export default function MapPage() {
       if (dong === "기타" || !geocoder) {
         // region이 없는 고양이는 원래 좌표 사용 (개별 마커)
         dongCats.forEach((cat) => {
-          const coord = getDisplayCoord(cat, isLoggedIn);
+          const coord = roamCoord(cat, isLoggedIn);
           const pos = new window.kakao.maps.LatLng(coord.lat, coord.lng);
           const photoUrl = thumb(cat.photo_url, 64);
           const isAlerted = alertedCats.has(cat.id);
@@ -1230,6 +1230,7 @@ export default function MapPage() {
             setSelectedCat(cat); setCatCardTab("carelog");
           };
           const ov = new window.kakao.maps.CustomOverlay({ map: mapInstanceRef.current, position: pos, content: el, yAnchor: 1, zIndex: 10 });
+          (ov as any).__roamCat = cat; // 배회 애니메이션 기준
           overlaysRef.current.push(ov);
         });
         return;
@@ -1243,7 +1244,7 @@ export default function MapPage() {
 
       // 첫 번째 고양이의 좌표를 동 대표 좌표로 사용 (Geocoder보다 빠르고 정확)
       const repCat = dongCats[0];
-      const repCoord = getDisplayCoord(repCat, isLoggedIn);
+      const repCoord = roamCoord(repCat, isLoggedIn);
       const pos = new window.kakao.maps.LatLng(repCoord.lat, repCoord.lng);
 
       // tier 별 분기 — 사진 로드 절감
@@ -1264,6 +1265,7 @@ export default function MapPage() {
         const ov = new window.kakao.maps.CustomOverlay({
           map: mapInstanceRef.current, position: pos, content: el, yAnchor: 0.5, zIndex: 10,
         });
+        (ov as any).__roamCat = repCat; // 배회 애니메이션 기준
         overlaysRef.current.push(ov);
         return;
       }
@@ -1303,6 +1305,7 @@ export default function MapPage() {
         yAnchor: 1,
         zIndex: 10,
       });
+      (ov as any).__roamCat = repCat; // 배회 애니메이션 기준
       overlaysRef.current.push(ov);
     }
 
@@ -1326,6 +1329,23 @@ export default function MapPage() {
       }
     };
   }, [cats, mapReady, isLoggedIn, alertedCats, showCats, activityRegions, regionFilter, searchQDebounced, catFilter]);
+
+  // ── 고양이 마커 배회 애니메이션 (위치 보호 2차 레이어) ──
+  // roamCoord가 Date.now() 기반 결정적이라, 주기적으로 현재 시각 위치로 옮기기만 하면 됨.
+  // 250ms 간격이면 이동폭이 틱당 수 m라 부드럽게 보임 (마커 최대 200개 × 4회/초 — 미미한 비용).
+  useEffect(() => {
+    if (!mapReady) return;
+    const id = setInterval(() => {
+      if (!window.kakao || !mapInstanceRef.current || document.hidden) return;
+      overlaysRef.current.forEach((ov: any) => {
+        const roamCat = ov.__roamCat;
+        if (!roamCat) return;
+        const coord = roamCoord(roamCat, isLoggedIn);
+        ov.setPosition(new window.kakao.maps.LatLng(coord.lat, coord.lng));
+      });
+    }, 250);
+    return () => clearInterval(id);
+  }, [mapReady, isLoggedIn]);
 
   // ── 병원 마커 (뷰포트 기반 + 좌표 없으면 Geocoder 변환) ──
   const hospitalIdleListenerRef = useRef<any>(null);
@@ -1668,7 +1688,7 @@ export default function MapPage() {
                 const bounds = map?.getBounds?.();
                 if (!bounds || !window.kakao) return cats.length;
                 return cats.filter((c) => {
-                  const coord = getDisplayCoord(c, isLoggedIn);
+                  const coord = roamCoord(c, isLoggedIn);
                   const pos = new window.kakao.maps.LatLng(coord.lat, coord.lng);
                   return bounds.contain(pos);
                 }).length;
@@ -1911,7 +1931,7 @@ export default function MapPage() {
           const alertedInView = cats.filter((c) => {
             if (!alertedCats.has(c.id)) return false;
             if (!bounds || !window.kakao) return false;
-            const coord = getDisplayCoord(c, isLoggedIn);
+            const coord = roamCoord(c, isLoggedIn);
             const pos = new window.kakao.maps.LatLng(coord.lat, coord.lng);
             return bounds.contain(pos);
           });
