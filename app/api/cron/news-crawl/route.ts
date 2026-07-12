@@ -41,7 +41,8 @@ async function handle(request: Request): Promise<Response> {
         badge_type: item.badge_type,
         title: item.title,
         description: item.description,
-        image_url: item.image_url,
+        // 언론사 썸네일은 저작권 이슈로 저장/표시하지 않음 (2026-07-12) — 제목+아웃링크만
+        image_url: null,
         external_url: item.source_url,
         external_label: item.source_name
           ? `${item.source_name}에서 보기`
