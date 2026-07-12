@@ -637,7 +637,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           />
         )}
         <p className="text-[10.5px] text-text-light text-center leading-relaxed mt-2">
-          보안상 정확한 위치는 로그인 후 지도에서만 공개돼요.
+          아이들 안전을 위해 지도 위치는 대략적인 활동 범위로만 표시돼요.
           <br />동네 단톡방에 공유하면 더 많은 이웃이 지켜줘요 🫶
         </p>
       </div>

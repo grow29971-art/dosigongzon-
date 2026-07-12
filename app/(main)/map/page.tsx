@@ -2729,6 +2729,11 @@ export default function MapPage() {
                 )}
               </div>
 
+              {/* 배회 마커 안내 — 마커 위치를 실위치로 오해하고 찾아가는 혼란 방지 */}
+              <p className="text-[10px] text-text-light text-center px-4 pb-1">
+                🐾 마커는 아이들 보호를 위해 실제 위치와 다르게 계속 움직여요
+              </p>
+
               {selectedCat.card_flavor && (
                 <p
                   className="text-[11px] italic leading-relaxed px-4 py-2.5 text-center"
