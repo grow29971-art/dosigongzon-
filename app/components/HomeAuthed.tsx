@@ -1,5 +1,6 @@
 "use client";
 
+import { GEOLOCATION_ENABLED } from "@/lib/geo";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -526,8 +527,8 @@ export default function HomeAuthed({
       }
     };
 
-    if (!navigator.geolocation) {
-      // 위치 서비스 미지원 → IP 기반으로 서버에서 처리
+    if (!GEOLOCATION_ENABLED || !navigator.geolocation) {
+      // 측위 OFF(LBS 신고 전) 또는 미지원 → IP 기반으로 서버에서 처리
       fetchWeather();
       return;
     }

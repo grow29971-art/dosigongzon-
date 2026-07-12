@@ -1,5 +1,6 @@
 "use client";
 
+import { GEOLOCATION_ENABLED, GEO_DISABLED_MESSAGE } from "@/lib/geo";
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import {
   X,
@@ -810,7 +811,9 @@ export default function MapPage() {
   }, [apiKey]);
 
   // ── 접속 시 GPS 위치 요청 (거부해도 기본 중심으로 폴백) ──
+  // LBS 신고 전 측위 차단 — lib/geo.ts 참조
   useEffect(() => {
+    if (!GEOLOCATION_ENABLED) return;
     if (typeof navigator === "undefined" || !navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -1576,6 +1579,7 @@ export default function MapPage() {
       mapInstanceRef.current.setLevel(4);
       return;
     }
+    if (!GEOLOCATION_ENABLED) { toast.info(GEO_DISABLED_MESSAGE); return; }
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       (pos) => {

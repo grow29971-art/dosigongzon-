@@ -1,5 +1,6 @@
 "use client";
 
+import { GEOLOCATION_ENABLED, GEO_DISABLED_MESSAGE } from "@/lib/geo";
 import { useEffect, useRef, useState } from "react";
 import { X, LocateFixed, Loader2, MapPin, Check } from "lucide-react";
 import type { KakaoMap } from "@/lib/kakao-types";
@@ -145,6 +146,7 @@ export default function CatLocationPicker({
 
   // ── 내 위치로 이동 ──
   function handleLocateMe() {
+    if (!GEOLOCATION_ENABLED) { alert(GEO_DISABLED_MESSAGE); return; }
     if (!navigator.geolocation) return;
     setLocating(true);
     navigator.geolocation.getCurrentPosition(

@@ -1,5 +1,6 @@
 "use client";
 
+import { GEOLOCATION_ENABLED } from "@/lib/geo";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
@@ -144,7 +145,7 @@ export default function AddCatModal({
       if (initialLat !== undefined && initialLng !== undefined) {
         // 지도 클릭 좌표가 있으면 그걸로
         resolveRegion(initialLat, initialLng);
-      } else if (navigator.geolocation) {
+      } else if (GEOLOCATION_ENABLED && navigator.geolocation) {
         // 없으면 GPS 현재 위치로 자동 감지 (maximumAge 5분 — 모달 재오픈 시 권한 재확인 방지)
         navigator.geolocation.getCurrentPosition(
           (pos) => resolveRegion(pos.coords.latitude, pos.coords.longitude),

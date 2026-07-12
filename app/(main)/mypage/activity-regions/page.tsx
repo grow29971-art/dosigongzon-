@@ -1,5 +1,6 @@
 "use client";
 
+import { GEOLOCATION_ENABLED, GEO_DISABLED_MESSAGE } from "@/lib/geo";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -347,6 +348,7 @@ export default function ActivityRegionsPage() {
 
   // ── 내 위치 ──
   function handleLocateMe() {
+    if (!GEOLOCATION_ENABLED) { alert(GEO_DISABLED_MESSAGE); return; }
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       (pos) => {
