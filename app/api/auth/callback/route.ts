@@ -164,10 +164,12 @@ export async function GET(request: Request) {
       }
     }
     // Meta Pixel CAPI — 첫 가입자 CompleteRegistration 서버사이드 전송.
-    // 소셜·이메일 가입자 모두 포함. 이메일 가입자는 welcome을 거치지 않으므로
-    // 클라이언트 fbq가 발사 안 됨 → 서버에서만 발사 (dedup 안 필요).
+    // ★ 쿠키 동의 배너에서 "동의"한 사용자만 전송 (2026-07-12 개보법 정합화).
+    //   동의 거부·미응답 사용자의 정보는 어떤 경로로도 Meta에 보내지 않는다.
     // 소셜 가입자는 welcome의 trackPixelOnce(eventID=user.id)와 dedup됨.
-    if (firstSignup && user) {
+    const consentCookie = request.headers.get("cookie") ?? "";
+    const adConsented = /dosigongzon_cookie_consent=accepted/.test(consentCookie);
+    if (firstSignup && user && adConsented) {
       const fbp = request.headers.get("cookie")?.match(/_fbp=([^;]+)/)?.[1] ?? null;
       const fbc = request.headers.get("cookie")?.match(/_fbc=([^;]+)/)?.[1] ?? null;
       const ipHeader = request.headers.get("cf-connecting-ip")?.trim()

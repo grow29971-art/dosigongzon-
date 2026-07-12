@@ -1,5 +1,7 @@
 // Meta Pixel Conversions API (CAPI) — 서버사이드 전환 추적.
-// 쿠키 동의 거부·iOS ATT·광고 차단기 우회. 클라이언트 fbq와 같은 event_id로 dedup.
+// ★ 반드시 쿠키 동의(dosigongzon_cookie_consent=accepted)를 확인한 호출부에서만 사용할 것.
+//   동의 없이 호출하면 개보법 위반 소지 — 게이트는 호출부 책임 (예: auth/callback).
+// 클라이언트 fbq와 같은 event_id로 dedup.
 //
 // 활성 조건:
 //  - NEXT_PUBLIC_META_PIXEL_ID 설정됨

@@ -31,6 +31,10 @@ export default function ConsentManager() {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored === "accepted" || stored === "rejected") {
         setConsent(stored);
+        // 기존 사용자의 선택도 쿠키로 동기화 (서버 게이트용)
+        try {
+          document.cookie = `${STORAGE_KEY}=${stored}; path=/; max-age=31536000; SameSite=Lax`;
+        } catch { /* ignore */ }
       } else {
         setConsent("pending");
       }
@@ -40,12 +44,23 @@ export default function ConsentManager() {
     setMounted(true);
   }, []);
 
+  // 서버(예: 가입 콜백의 Meta CAPI)도 동의 상태를 읽을 수 있게 쿠키로 동기화.
+  // localStorage만으로는 서버사이드 전송을 게이트할 수 없음.
+  const syncConsentCookie = (v: "accepted" | "rejected") => {
+    try {
+      document.cookie = `${STORAGE_KEY}=${v}; path=/; max-age=31536000; SameSite=Lax`;
+    } catch {
+      // ignore
+    }
+  };
+
   const handleAccept = () => {
     try {
       localStorage.setItem(STORAGE_KEY, "accepted");
     } catch {
       // ignore
     }
+    syncConsentCookie("accepted");
     setConsent("accepted");
   };
 
@@ -55,6 +70,7 @@ export default function ConsentManager() {
     } catch {
       // ignore
     }
+    syncConsentCookie("rejected");
     setConsent("rejected");
   };
 
