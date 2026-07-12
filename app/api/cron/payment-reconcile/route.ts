@@ -159,3 +159,6 @@ export async function POST(request: Request) {
     details: mismatches,
   });
 }
+
+// Vercel Cron은 GET으로 호출 — POST와 동일 처리 (CRON_SECRET 검사 동일)
+export const GET = POST;

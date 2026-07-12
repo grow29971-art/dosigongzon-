@@ -158,3 +158,6 @@ export async function POST(request: Request) {
     summary: { newUsers, newCats, newCareLogs, newComments, pendingReports, pendingInquiries },
   });
 }
+
+// Vercel Cron은 GET으로 호출 — POST와 동일 처리 (CRON_SECRET 검사 동일)
+export const GET = POST;

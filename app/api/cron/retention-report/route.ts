@@ -155,3 +155,6 @@ export async function POST(request: Request) {
     metrics: { wau: wauCur.size, wauPrev: wauPrev.size, newUsers: uCur, careLogs: careC, newCats: cCur, community: commCur, totalUsers, totalCats },
   });
 }
+
+// Vercel Cron은 GET으로 호출 — POST와 동일 처리 (CRON_SECRET 검사 동일)
+export const GET = POST;
