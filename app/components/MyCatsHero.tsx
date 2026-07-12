@@ -9,9 +9,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Check, ChevronRight, PawPrint, Plus } from "lucide-react";
+import { Check, ChevronRight, PawPrint, Plus, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { createCareLog } from "@/lib/care-logs-repo";
+import { createCareLog, type CareType } from "@/lib/care-logs-repo";
 import { thumbnailUrl } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 
@@ -19,9 +19,17 @@ interface CatRow {
   id: string;
   name: string;
   photo_url: string | null;
-  fedToday: boolean;
+  doneTypes: CareType[]; // 오늘 내가 기록한 돌봄 유형
   busy: boolean;
 }
+
+// 홈에서 1탭으로 기록 가능한 퀵 돌봄 (메모/사진 필요한 유형은 상세 페이지에서)
+const QUICK_CARE: { type: CareType; emoji: string; label: string }[] = [
+  { type: "water", emoji: "💧", label: "물 줌" },
+  { type: "treat", emoji: "🍗", label: "간식 줌" },
+  { type: "health", emoji: "🩺", label: "건강 체크" },
+  { type: "shelter", emoji: "🏠", label: "쉼터 관리" },
+];
 
 // KST 오늘 00:00 → UTC ISO (logged_at 비교용)
 function kstTodayStartIso(): string {
@@ -32,6 +40,7 @@ function kstTodayStartIso(): string {
 export default function MyCatsHero() {
   const router = useRouter();
   const [cats, setCats] = useState<CatRow[] | null>(null);
+  const [moreOpen, setMoreOpen] = useState<string | null>(null); // 퀵 돌봄 오버레이 열린 고양이 id
 
   useEffect(() => {
     let cancelled = false;
@@ -53,24 +62,35 @@ export default function MyCatsHero() {
       const ids = rows.map((c) => c.id);
       const { data: logs } = await sb
         .from("care_logs")
-        .select("cat_id")
+        .select("cat_id, care_type")
         .eq("author_id", user.id)
         .in("cat_id", ids)
         .gte("logged_at", kstTodayStartIso());
-      const fedSet = new Set((logs ?? []).map((r: { cat_id: string }) => r.cat_id));
+      const doneMap = new Map<string, Set<CareType>>();
+      for (const r of (logs ?? []) as { cat_id: string; care_type: CareType }[]) {
+        if (!doneMap.has(r.cat_id)) doneMap.set(r.cat_id, new Set());
+        doneMap.get(r.cat_id)!.add(r.care_type);
+      }
       if (cancelled) return;
-      setCats(rows.map((c) => ({ ...c, fedToday: fedSet.has(c.id), busy: false })));
+      setCats(rows.map((c) => ({ ...c, doneTypes: Array.from(doneMap.get(c.id) ?? []), busy: false })));
     })();
     return () => {
       cancelled = true;
     };
   }, []);
 
-  const feed = async (id: string) => {
+  const logCare = async (id: string, type: CareType) => {
     setCats((prev) => prev?.map((c) => (c.id === id ? { ...c, busy: true } : c)) ?? null);
     try {
-      await createCareLog({ cat_id: id, care_type: "feed" });
-      setCats((prev) => prev?.map((c) => (c.id === id ? { ...c, fedToday: true, busy: false } : c)) ?? null);
+      await createCareLog({ cat_id: id, care_type: type });
+      setCats((prev) =>
+        prev?.map((c) =>
+          c.id === id
+            ? { ...c, doneTypes: c.doneTypes.includes(type) ? c.doneTypes : [...c.doneTypes, type], busy: false }
+            : c,
+        ) ?? null,
+      );
+      setMoreOpen(null);
       try { navigator.vibrate?.(12); } catch { /* 햅틱 미지원 */ }
     } catch {
       setCats((prev) => prev?.map((c) => (c.id === id ? { ...c, busy: false } : c)) ?? null);
@@ -78,7 +98,7 @@ export default function MyCatsHero() {
   };
 
   if (!cats || cats.length === 0) return null;
-  const doneCount = cats.filter((c) => c.fedToday).length;
+  const doneCount = cats.filter((c) => c.doneTypes.includes("feed")).length;
 
   return (
     <div className="mb-5">
@@ -107,6 +127,7 @@ export default function MyCatsHero() {
           const photo = cat.photo_url
             ? sanitizeImageUrl(thumbnailUrl(cat.photo_url, 480) ?? cat.photo_url, "")
             : "";
+          const fedToday = cat.doneTypes.includes("feed");
           return (
             <div
               key={cat.id}
@@ -144,37 +165,91 @@ export default function MyCatsHero() {
               <span
                 className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-1 rounded-full text-[9.5px] font-extrabold pointer-events-none"
                 style={{
-                  background: cat.fedToday ? "rgba(34,163,102,0.92)" : "rgba(255,255,255,0.92)",
-                  color: cat.fedToday ? "#fff" : "var(--color-text-sub)",
+                  background: fedToday ? "rgba(34,163,102,0.92)" : "rgba(255,255,255,0.92)",
+                  color: fedToday ? "#fff" : "var(--color-text-sub)",
                 }}
               >
-                {cat.fedToday ? <>✓ 오늘 밥</> : <>🍚 아직 전</>}
+                {fedToday ? <>✓ 오늘 밥</> : <>🍚 아직 전</>}
               </span>
 
-              {/* 이름 + 밥주기 버튼 */}
+              {/* 이름 + 밥주기/돌봄 버튼 */}
               <div className="absolute inset-x-0 bottom-0 px-3 pb-3 pointer-events-none">
                 <p className="text-[15.5px] font-extrabold text-white drop-shadow tracking-tight mb-2 truncate">
                   {cat.name}
                 </p>
-                <button
-                  onClick={(e) => { e.stopPropagation(); if (!cat.fedToday && !cat.busy) feed(cat.id); }}
-                  disabled={cat.fedToday || cat.busy}
-                  className="w-full py-2 rounded-xl text-[12px] font-extrabold flex items-center justify-center gap-1 active:scale-95 transition-transform pointer-events-auto"
-                  style={{
-                    background: cat.fedToday ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.95)",
-                    color: cat.fedToday ? "#fff" : "var(--color-text-main)",
-                    backdropFilter: "blur(4px)",
-                  }}
-                >
-                  {cat.busy ? (
-                    "기록 중…"
-                  ) : cat.fedToday ? (
-                    <><Check size={13} strokeWidth={3} /> 완료</>
-                  ) : (
-                    <>🍚 밥주기</>
-                  )}
-                </button>
+                <div className="flex gap-1.5">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); if (!fedToday && !cat.busy) logCare(cat.id, "feed"); }}
+                    disabled={fedToday || cat.busy}
+                    className="flex-1 min-w-0 py-2 rounded-xl text-[12px] font-extrabold flex items-center justify-center gap-1 active:scale-95 transition-transform pointer-events-auto"
+                    style={{
+                      background: fedToday ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.95)",
+                      color: fedToday ? "#fff" : "var(--color-text-main)",
+                      backdropFilter: "blur(4px)",
+                    }}
+                  >
+                    {cat.busy ? (
+                      "기록 중…"
+                    ) : fedToday ? (
+                      <><Check size={13} strokeWidth={3} /> 완료</>
+                    ) : (
+                      <>🍚 밥주기</>
+                    )}
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setMoreOpen(moreOpen === cat.id ? null : cat.id); }}
+                    aria-label={`${cat.name} 다른 돌봄 기록`}
+                    className="shrink-0 w-[34px] rounded-xl flex items-center justify-center active:scale-95 transition-transform pointer-events-auto"
+                    style={{ background: "rgba(255,255,255,0.28)", backdropFilter: "blur(4px)" }}
+                  >
+                    <Plus size={15} strokeWidth={3} className="text-white" />
+                  </button>
+                </div>
               </div>
+
+              {/* 퀵 돌봄 오버레이 (물/간식/건강/쉼터) */}
+              {moreOpen === cat.id && (
+                <div
+                  className="absolute inset-0 flex flex-col justify-end px-3 pb-3 pt-8"
+                  style={{ background: "rgba(0,0,0,0.62)", backdropFilter: "blur(3px)", borderRadius: 22 }}
+                >
+                  <button
+                    onClick={() => setMoreOpen(null)}
+                    aria-label="닫기"
+                    className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full flex items-center justify-center"
+                    style={{ background: "rgba(255,255,255,0.22)" }}
+                  >
+                    <X size={14} className="text-white" strokeWidth={3} />
+                  </button>
+                  <p className="text-[11px] font-extrabold text-white/85 mb-2 px-0.5">다른 돌봄 기록</p>
+                  <div className="grid grid-cols-2 gap-1.5 mb-1.5">
+                    {QUICK_CARE.map((q) => {
+                      const done = cat.doneTypes.includes(q.type);
+                      return (
+                        <button
+                          key={q.type}
+                          onClick={() => { if (!cat.busy) logCare(cat.id, q.type); }}
+                          disabled={cat.busy}
+                          className="py-2 rounded-xl text-[11px] font-extrabold flex items-center justify-center gap-1 active:scale-95 transition-transform"
+                          style={{
+                            background: done ? "rgba(34,163,102,0.35)" : "rgba(255,255,255,0.92)",
+                            color: done ? "#fff" : "var(--color-text-main)",
+                          }}
+                        >
+                          <span>{q.emoji}</span> {q.label}{done && <Check size={11} strokeWidth={3} />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <Link
+                    href={`/cats/${cat.id}`}
+                    className="py-1.5 rounded-xl text-[10.5px] font-bold text-white/80 text-center"
+                    style={{ background: "rgba(255,255,255,0.14)" }}
+                  >
+                    메모·사진과 함께 기록 →
+                  </Link>
+                </div>
+              )}
             </div>
           );
         })}
