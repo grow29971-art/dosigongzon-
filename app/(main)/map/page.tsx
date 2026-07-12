@@ -637,7 +637,6 @@ export default function MapPage() {
       (window as Window & { requestIdleCallback?: (cb: () => void) => void }).requestIdleCallback
       ?? ((cb) => { setTimeout(cb, 800); });
     idle(() => {
-      isCurrentUserAdmin().then(setIsAdmin).catch(() => {});
       fetch("/api/visit", { method: "POST" }).catch(() => {});
       fetch("/api/visit").then((r) => r.json()).then((d) => setTodayVisit(d.today)).catch(() => {});
     });
@@ -1021,6 +1020,14 @@ export default function MapPage() {
   }, [mapReady, activityRegions, regionFilter]);
 
   const [isAdmin, setIsAdmin] = useState(false);
+
+  // 관리자 여부 — 로그인 상태 변화에 반응해서 재확인.
+  // (기존: 첫 페인트 직후 idle에서 1회만 체크 → 세션 복원이 늦으면 false로 영구 고정돼
+  //  관리자 수정/삭제 버튼이 안 뜨는 케이스가 있었음)
+  useEffect(() => {
+    if (!user?.id) { setIsAdmin(false); return; }
+    isCurrentUserAdmin().then(setIsAdmin).catch(() => setIsAdmin(false));
+  }, [user?.id]);
 
   // ── 고양이 수정 모드 ──
   const [editingCat, setEditingCat] = useState(false);
