@@ -1233,8 +1233,8 @@ export default function MapPage() {
           const coord = roamCoord(cat, isLoggedIn);
           const pos = new window.kakao.maps.LatLng(coord.lat, coord.lng);
           const photoUrl = thumb(cat.photo_url, 64);
-          const isAlerted = alertedCats.has(cat.id);
-          const borderColor = isAlerted ? "#D85555" : "#3182F6";
+          // 마커 색은 파랑으로 통일 (2026-07-13 사용자 요청). 학대경보는 별도 ⚠️ 배지로 표시.
+          const borderColor = "#3182F6";
 
           const el = document.createElement("div");
           // tier 1·2: 작은 dot, tier 3: 사진 마커
@@ -1265,8 +1265,8 @@ export default function MapPage() {
 
       // 동 이름으로 중심 좌표 얻기
       const hasAlert = dongCats.some((c) => alertedCats.has(c.id));
-      const tnrNeeded = dongCats.some((c) => (c.tags ?? []).some((t) => t.includes("TNR 필요")));
-      const clusterColor = hasAlert ? "#D85555" : tnrNeeded ? "#E88D5A" : "#3182F6";
+      // 마커 색은 파랑으로 통일 (2026-07-13 사용자 요청). 학대경보는 별도 ⚠️ 배지로 표시.
+      const clusterColor = "#3182F6";
       const count = dongCats.length;
 
       // 첫 번째 고양이의 좌표를 동 대표 좌표로 사용 (Geocoder보다 빠르고 정확)
