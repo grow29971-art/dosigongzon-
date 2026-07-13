@@ -139,6 +139,19 @@ export async function POST(req: Request) {
       });
       if (stockError) console.error("[payment/cancel] stock restore failed:", stockError);
     }
+
+    // 사용 포인트 반환 — 조건부 전환을 이긴 요청만 실행되므로 이중 반환 없음.
+    // reason 고정(order-cancel:{id}) + 유니크 제약이 추가 방어선.
+    const pointsUsed = (order as { points_used?: number }).points_used ?? 0;
+    if (pointsUsed > 0) {
+      const { error: pointError } = await svc.rpc("grant_points", {
+        p_user_id: order.user_id,
+        p_amount: pointsUsed,
+        p_reason: `order-cancel:${order.id}`,
+        p_note: `주문 ${order.order_number} 취소 포인트 반환`,
+      });
+      if (pointError) console.error("[payment/cancel] point refund failed (manual check):", pointError, order.id);
+    }
   }
 
   return NextResponse.json({ ok: true, status: "cancelled" });

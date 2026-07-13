@@ -88,6 +88,12 @@ export async function POST(req: Request) {
   const newCoins = (profile.coins ?? 0) + CHECKIN_COINS;
   jobs.push(svc.from("profiles").update({ coins: newCoins, last_checkin_date: today }).eq("id", user.id));
 
+  // 주간 출석 이력 기록 — 주간 포인트 마일스톤 집계용 (테이블 없으면 조용히 무시)
+  jobs.push(
+    svc.from("checkin_days").upsert({ user_id: user.id, day: today }, { onConflict: "user_id,day", ignoreDuplicates: true })
+      .then((r) => { if (r.error && !r.error.message.includes("checkin_days")) console.error("[checkin] checkin_days:", r.error); return r; }),
+  );
+
   await Promise.all(jobs);
 
   return NextResponse.json({

@@ -113,6 +113,7 @@ export async function POST(req: Request) {
   // payment_amount만 믿으면 안 됨. order_items × "현재 products 가격"으로 기대 금액을
   // 재계산해 일치할 때만 승인 (조작된 저가 주문 차단).
   const items = (order.items ?? []) as OrderItem[];
+  const pointsUsed = (order as { points_used?: number }).points_used ?? 0;
   {
     if (items.length === 0) {
       return NextResponse.json({ error: "주문 상품이 없어요." }, { status: 400 });
@@ -135,6 +136,7 @@ export async function POST(req: Request) {
     );
     let expectedProducts = 0;
     let expectedShipping = 0;
+    let hasDonationOrVirtual = false;
     // 후원액도 서버에서 재계산 — 클라이언트가 order_items.donation_amount를 조작해
     // 공개 후원 집계를 부풀리는 것을 차단 (실제 상품 비율로 덮어씀).
     const donationFixes: { id: string; donation_amount: number }[] = [];
@@ -147,13 +149,31 @@ export async function POST(req: Request) {
       const subtotal = unit * item.quantity;
       expectedProducts += subtotal;
       expectedShipping = Math.max(expectedShipping, p.shipping_fee);
+      if (p.is_donation) hasDonationOrVirtual = true;
       const correctDonation = p.is_donation ? Math.floor((subtotal * p.donation_percent) / 100) : 0;
       if (item.donation_amount !== correctDonation) {
         donationFixes.push({ id: item.id, donation_amount: correctDonation });
         item.donation_amount = correctDonation; // 응답(성공 화면)에도 교정값 반영
       }
     }
-    const expected = expectedProducts + expectedShipping;
+    // 포인트 사용 검증 — payment_amount = 실가격 합계 − points_used 여야 함.
+    // 후원 상품 포함 주문은 포인트 불가, 최종 결제액 100원 미만 불가.
+    if (
+      !Number.isInteger(pointsUsed) || pointsUsed < 0 ||
+      (pointsUsed > 0 && hasDonationOrVirtual)
+    ) {
+      await svc.from("orders")
+        .update({ status: "cancelled", updated_at: new Date().toISOString() })
+        .eq("id", order.id);
+      return NextResponse.json({ error: "포인트 사용 조건이 올바르지 않아요." }, { status: 409 });
+    }
+    const expected = expectedProducts + expectedShipping - pointsUsed;
+    if (pointsUsed > 0 && expected < 100) {
+      await svc.from("orders")
+        .update({ status: "cancelled", updated_at: new Date().toISOString() })
+        .eq("id", order.id);
+      return NextResponse.json({ error: "포인트 사용 후 결제 금액이 너무 적어요." }, { status: 409 });
+    }
     if (expected !== order.payment_amount) {
       // 조작 시도 또는 주문 후 가격 변경 — 승인 거부 + 주문 취소 (결제 청구 없음)
       console.error(
@@ -218,6 +238,43 @@ export async function POST(req: Request) {
     reserved.push(item);
   }
 
+  // 6.5 포인트 차감 — 잔액 원자적 차감 (승인 전. 실패 시 재고 원복 + 주문 취소, 청구 없음)
+  // reason에 타임스탬프 포함: 네트워크 오류 → 환급 → 재시도 시 유니크 충돌 방지
+  // (동시 이중 차감은 5번 선점 게이트가 막음)
+  let pointsSpent = false;
+  if (pointsUsed > 0) {
+    const { data: spendOk, error: spendError } = await svc.rpc("spend_points", {
+      p_user_id: user.id,
+      p_amount: pointsUsed,
+      p_reason: `order:${order.id}:${Date.now()}`,
+      p_note: `주문 ${order.order_number} 포인트 사용`,
+    });
+    if (spendError || spendOk !== true) {
+      if (spendError) console.error("[payment/confirm] spend_points failed:", spendError);
+      await restoreStock(svc, reserved);
+      await svc.from("orders")
+        .update({ status: "cancelled", updated_at: new Date().toISOString() })
+        .eq("id", order.id);
+      return NextResponse.json(
+        { error: "포인트 잔액이 부족해요. 포인트를 조정한 뒤 다시 주문해주세요." },
+        { status: 409 },
+      );
+    }
+    pointsSpent = true;
+  }
+
+  // 포인트 환급 헬퍼 (승인 실패/네트워크 오류 롤백용)
+  const refundPoints = async () => {
+    if (!pointsSpent) return;
+    const { error } = await svc.rpc("grant_points", {
+      p_user_id: user.id,
+      p_amount: pointsUsed,
+      p_reason: `order-rollback:${order.id}:${Date.now()}`,
+      p_note: `주문 ${order.order_number} 승인 실패 포인트 환급`,
+    });
+    if (error) console.error("[payment/confirm] point refund failed (manual check):", error, order.id);
+  };
+
   // 7. 토스 승인 API 호출
   const basicAuth = Buffer.from(`${secretKey}:`).toString("base64");
   let toss: TossPaymentResponse;
@@ -236,9 +293,10 @@ export async function POST(req: Request) {
     if (!res.ok && toss.code === "ALREADY_PROCESSED_PAYMENT") {
       console.warn("[payment/confirm] already processed — treating as success:", orderId);
     } else if (!res.ok) {
-      // 승인 실패 → 재고 원복 + 주문 취소
+      // 승인 실패 → 재고 원복 + 포인트 환급 + 주문 취소
       console.error("[payment/confirm] toss confirm failed:", toss.code, toss.message);
       await restoreStock(svc, reserved);
+      await refundPoints();
       await svc.from("orders")
         .update({ status: "cancelled", updated_at: new Date().toISOString() })
         .eq("id", order.id);
@@ -248,9 +306,10 @@ export async function POST(req: Request) {
       );
     }
   } catch (e) {
-    // 네트워크 오류 — 승인 여부 불명이므로 주문은 pending 유지(재시도 가능), 재고만 원복
+    // 네트워크 오류 — 승인 여부 불명이므로 주문은 pending 유지(재시도 가능), 재고·포인트만 원복
     console.error("[payment/confirm] toss request error:", e);
     await restoreStock(svc, reserved);
+    await refundPoints();
     await svc.from("orders")
       .update({ payment_key: null, updated_at: new Date().toISOString() })
       .eq("id", order.id);

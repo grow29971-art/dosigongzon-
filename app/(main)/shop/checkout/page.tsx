@@ -77,12 +77,26 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  // 포인트 (주간 출석 적립 — 1P = 1원 할인). 테이블 미생성/잔액 0이면 섹션 숨김.
+  const [pointBalance, setPointBalance] = useState<number | null>(null);
+  const [pointsInput, setPointsInput] = useState(0);
+
   useEffect(() => {
     if (!user) return;
     listCartItems()
       .then(setItems)
       .catch(() => setItems([]))
       .finally(() => setLoading(false));
+    import("@/lib/supabase/client").then(({ createClient }) => {
+      createClient()
+        .from("user_points")
+        .select("balance")
+        .eq("user_id", user.id)
+        .maybeSingle()
+        .then(({ data, error: pErr }: { data: { balance: number } | null; error: unknown }) => {
+          if (!pErr && data) setPointBalance(data.balance);
+        });
+    });
   }, [user]);
 
   // 우편번호 모달 열릴 때 SDK embed
@@ -118,6 +132,13 @@ export default function CheckoutPage() {
   // 전 상품이 가상(후원) 상품이면 배송이 없어 배송지 입력을 생략
   const virtualOnly = isVirtualOnlyCart(items);
 
+  // 포인트 사용 가능 여부·한도 — 후원/가상 상품 포함 주문은 불가, 최종 결제액 100원 이상 유지
+  const pointsEligible =
+    (pointBalance ?? 0) > 0 && !items.some((i) => i.product.is_virtual || i.product.is_donation);
+  const maxPoints = pointsEligible ? Math.max(0, Math.min(pointBalance ?? 0, grandTotal - 100)) : 0;
+  const effectivePoints = Math.max(0, Math.min(pointsInput, maxPoints));
+  const finalAmount = grandTotal - effectivePoints;
+
   // 결제하기 — 주문 생성 후 토스 결제창 호출
   // (결제위젯이 아닌 "결제창" 방식: API 개별 연동 키(test_ck_)로 사용 가능.
   //  결제위젯 UI는 전자결제 이용 신청 후 위젯 키 발급 시 전환 검토)
@@ -145,7 +166,7 @@ export default function CheckoutPage() {
         recipient_address_detail: addressDetail.trim() || undefined,
         postal_code: postalCode,
         memo: memo.trim() || undefined,
-      });
+      }, effectivePoints);
 
       const toss = await loadTossPayments(TOSS_CLIENT_KEY);
       const payment = toss.payment({ customerKey: user.id });
@@ -356,6 +377,48 @@ export default function CheckoutPage() {
           </section>
           </>)}
 
+          {/* 포인트 사용 — 주간 출석 적립 (1P=1원). 후원 상품 포함 시 숨김 */}
+          {pointsEligible && (
+            <section
+              className="p-4"
+              style={{ background: "#fff", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
+            >
+              <div className="flex items-center justify-between mb-2.5">
+                <h2 className="text-[13.5px] font-extrabold text-text-main">포인트 사용</h2>
+                <span className="text-[11px] font-bold text-text-light tabular-nums">
+                  보유 {(pointBalance ?? 0).toLocaleString()}P
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  max={maxPoints}
+                  value={pointsInput === 0 ? "" : pointsInput}
+                  placeholder="0"
+                  onChange={(e) => {
+                    const v = parseInt(e.target.value, 10);
+                    setPointsInput(isNaN(v) || v < 0 ? 0 : Math.min(v, maxPoints));
+                  }}
+                  className="flex-1 px-3 py-2.5 rounded-xl text-[13px] outline-none tabular-nums"
+                  style={{ backgroundColor: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setPointsInput(maxPoints)}
+                  className="shrink-0 px-3.5 rounded-xl text-[12px] font-extrabold active:scale-95 transition-transform"
+                  style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}
+                >
+                  전액 사용
+                </button>
+              </div>
+              <p className="text-[10px] text-text-light mt-1.5">
+                1P = 1원 · 최종 결제 금액은 100원 이상이어야 해요 · 주문 취소 시 자동 반환
+              </p>
+            </section>
+          )}
+
           {/* 결제 금액 */}
           <section
             className="p-4"
@@ -372,12 +435,18 @@ export default function CheckoutPage() {
                 <span>{shippingFee > 0 ? formatWon(shippingFee) : "무료"}</span>
               </div>
             )}
+            {effectivePoints > 0 && (
+              <div className="flex items-center justify-between text-[12.5px] mb-1.5" style={{ color: "#22A366" }}>
+                <span>포인트 할인</span>
+                <span className="tabular-nums">-{formatWon(effectivePoints)}</span>
+              </div>
+            )}
             <div
               className="flex items-center justify-between pt-2.5 text-[15px] font-extrabold text-text-main"
               style={{ borderTop: "1px dashed rgba(0,0,0,0.08)" }}
             >
               <span>총 결제금액</span>
-              <span style={{ color: "var(--color-primary)" }}>{formatWon(grandTotal)}</span>
+              <span style={{ color: "var(--color-primary)" }}>{formatWon(finalAmount)}</span>
             </div>
           </section>
 
@@ -399,7 +468,7 @@ export default function CheckoutPage() {
             className="w-full py-3.5 rounded-2xl bg-primary text-white text-[14.5px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-50"
             style={{ boxShadow: "var(--shadow-primary)" }}
           >
-            {submitting ? "주문 처리 중…" : `${formatWon(grandTotal)} 결제하기`}
+            {submitting ? "주문 처리 중…" : `${formatWon(finalAmount)} 결제하기`}
           </button>
         </div>
       )}

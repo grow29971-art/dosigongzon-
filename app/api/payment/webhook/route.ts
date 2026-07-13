@@ -139,28 +139,36 @@ export async function POST(req: Request) {
     // (order.payment_amount는 클라이언트가 조작 가능하므로 그것만 믿으면 안 됨 —
     //  이 경로는 confirm의 4.5 검증을 우회할 수 있어 여기서도 반드시 재검증)
     let expectedAmount = order.payment_amount as number;
+    const webhookPoints = (order as { points_used?: number }).points_used ?? 0;
     const productIds = items.map((i) => i.product_id).filter((id): id is string => !!id);
     if (productIds.length !== items.length || items.length === 0) {
       expectedAmount = -1; // 상품 정보 이상 → 강제 불일치 처리
     } else {
       const { data: prods } = await svc
         .from("products")
-        .select("id, price, sale_price, shipping_fee")
+        .select("id, price, sale_price, shipping_fee, is_donation")
         .in("id", productIds);
       const pm = new Map(
-        ((prods ?? []) as { id: string; price: number; sale_price: number | null; shipping_fee: number }[])
+        ((prods ?? []) as { id: string; price: number; sale_price: number | null; shipping_fee: number; is_donation: boolean }[])
           .map((p) => [p.id, p]),
       );
       let prodSum = 0;
       let ship = 0;
       let bad = false;
+      let hasDonation = false;
       for (const it of items) {
         const p = it.product_id ? pm.get(it.product_id) : undefined;
         if (!p) { bad = true; break; }
         prodSum += (p.sale_price ?? p.price) * it.quantity;
         ship = Math.max(ship, p.shipping_fee);
+        if (p.is_donation) hasDonation = true;
       }
-      expectedAmount = bad ? -1 : prodSum + ship;
+      // 포인트 검증 — confirm 4.5와 동일 규칙 (후원 상품 포함 시 포인트 불가, 최소 100원)
+      const pointsValid =
+        Number.isInteger(webhookPoints) && webhookPoints >= 0 &&
+        !(webhookPoints > 0 && hasDonation) &&
+        !(webhookPoints > 0 && prodSum + ship - webhookPoints < 100);
+      expectedAmount = bad || !pointsValid ? -1 : prodSum + ship - webhookPoints;
     }
 
     // 실제 결제액이 기대 금액과 다르면 자동 환불 후 취소 (위변조 주문에 돈만 잡힌 상태 방지)
@@ -191,6 +199,32 @@ export async function POST(req: Request) {
       .select("id");
 
     if (claimed && claimed.length > 0) {
+      // 포인트 차감 — confirm을 우회한 경로이므로 여기서 수행.
+      // 잔액 부족(비정상)이면 자동 환불 + 취소 (돈만 잡힌 상태 방지)
+      if (webhookPoints > 0) {
+        const { data: spendOk, error: spendError } = await svc.rpc("spend_points", {
+          p_user_id: order.user_id,
+          p_amount: webhookPoints,
+          p_reason: `order:${order.id}:${Date.now()}`,
+          p_note: `주문 ${order.order_number} 포인트 사용 (웹훅 확정)`,
+        });
+        if (spendError || spendOk !== true) {
+          console.error("[payment/webhook] spend_points failed — auto refund:", spendError, order.id);
+          try {
+            await fetch(`https://api.tosspayments.com/v1/payments/${encodeURIComponent(paymentKey)}/cancel`, {
+              method: "POST",
+              headers: { Authorization: `Basic ${basicAuth}`, "Content-Type": "application/json" },
+              body: JSON.stringify({ cancelReason: "포인트 잔액 검증 실패 자동 환불" }),
+            });
+          } catch (e) {
+            console.error("[payment/webhook] auto refund failed (manual refund needed):", e, paymentKey);
+          }
+          await svc.from("orders")
+            .update({ status: "cancelled", updated_at: new Date().toISOString() })
+            .eq("id", order.id);
+          return NextResponse.json({ ok: true, action: "refunded_points_insufficient" });
+        }
+      }
       // 웹훅이 선점 — 정식 확정 (재고 차감 포함)
       await finalizePaid(svc, order, toss, true);
       return NextResponse.json({ ok: true, action: "finalized" });
@@ -216,6 +250,17 @@ export async function POST(req: Request) {
       .update({ status: "cancelled", updated_at: new Date().toISOString() })
       .eq("id", order.id);
     await restoreStock(svc, items);
+    // 사용 포인트 반환 — cancel 라우트와 같은 reason이라 이중 반환은 유니크 제약이 차단
+    const casePoints = (order as { points_used?: number }).points_used ?? 0;
+    if (casePoints > 0) {
+      const { error: pointError } = await svc.rpc("grant_points", {
+        p_user_id: order.user_id,
+        p_amount: casePoints,
+        p_reason: `order-cancel:${order.id}`,
+        p_note: `주문 ${order.order_number} 취소 포인트 반환 (웹훅 동기화)`,
+      });
+      if (pointError) console.error("[payment/webhook] point refund failed:", pointError, order.id);
+    }
     return NextResponse.json({ ok: true, action: "cancelled_sync" });
   }
 

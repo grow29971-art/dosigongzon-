@@ -70,6 +70,7 @@ const DailyCheckinModal = dynamic(() => import("@/app/components/DailyCheckinMod
 const FirstCheerCard = dynamic(() => import("@/app/components/FirstCheerCard"), { ssr: false });
 const AppOpenGuideModal = dynamic(() => import("@/app/components/AppOpenGuideModal"), { ssr: false });
 import MyCatsHero from "@/app/components/MyCatsHero";
+const WeeklyCheckinCard = dynamic(() => import("@/app/components/WeeklyCheckinCard"), { ssr: false });
 const PushCareCueOptIn = dynamic(() => import("@/app/components/PushCareCueOptIn"), { ssr: false });
 const FeatureTipsCard = dynamic(() => import("@/app/components/FeatureTipsCard"), { ssr: false });
 // 푸시 옵트인 카드는 페이지 하단 — 첫 페인트엔 viewport 밖. lazy 안전.
@@ -1322,6 +1323,9 @@ export default function HomeAuthed({
           </div>
         </div>
       )}
+
+      {/* 주간 출석 보드 — 스탬프 + 마일스톤 포인트 (쇼핑 할인용) */}
+      {user && <WeeklyCheckinCard />}
 
       {/* 오늘의 냥 상자 — 일일 출석 리추얼 */}
       {user && <div id="daily-box" style={{ scrollMarginTop: 12 }}><DailyCatBox /></div>}

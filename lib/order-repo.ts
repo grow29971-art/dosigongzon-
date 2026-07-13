@@ -93,6 +93,7 @@ export function generateOrderNumber(): string {
 export async function createOrderFromCart(
   items: CartItem[],
   shipping: ShippingInput | null,
+  pointsUsed: number = 0,
 ): Promise<Order> {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -100,6 +101,15 @@ export async function createOrderFromCart(
   if (items.length === 0) throw new Error("주문할 상품이 없어요.");
   if (!shipping && !isVirtualOnlyCart(items)) {
     throw new Error("실물 상품 주문에는 배송지가 필요해요.");
+  }
+
+  // 포인트 검증 (1차 — 최종 검증·차감은 결제 승인 API에서 서버가 수행)
+  if (!Number.isInteger(pointsUsed) || pointsUsed < 0) {
+    throw new Error("포인트 사용액이 올바르지 않아요.");
+  }
+  if (pointsUsed > 0 && items.some((i) => i.product.is_virtual || i.product.is_donation)) {
+    // 후원/가상 상품은 포인트 사용 불가 — 실입금 없는 후원 집계 왜곡 방지
+    throw new Error("후원 상품에는 포인트를 사용할 수 없어요.");
   }
 
   // 주문 도배 방지 — 분당 5건, 일당 30건 (결제창 이탈 재시도는 여유 있게 허용)
@@ -135,6 +145,11 @@ export async function createOrderFromCart(
 
   const { productTotal, shippingFee, grandTotal } = computeCartTotal(items);
 
+  // 포인트는 최종 결제액이 100원(토스 최소 결제) 미만이 되지 않는 선까지만
+  if (pointsUsed > 0 && grandTotal - pointsUsed < 100) {
+    throw new Error("포인트 사용 후 결제 금액은 100원 이상이어야 해요.");
+  }
+
   const { data: order, error: orderError } = await supabase
     .from("orders")
     .insert({
@@ -143,7 +158,9 @@ export async function createOrderFromCart(
       status: "pending",
       total_amount: productTotal,
       shipping_fee: shippingFee,
-      payment_amount: grandTotal,
+      payment_amount: grandTotal - pointsUsed,
+      // 마이그레이션 전 배포 호환: 컬럼은 포인트 사용 시에만 포함
+      ...(pointsUsed > 0 ? { points_used: pointsUsed } : {}),
       recipient_name: shipping?.recipient_name ?? null,
       recipient_phone: shipping?.recipient_phone ?? null,
       recipient_address: shipping?.recipient_address ?? null,
