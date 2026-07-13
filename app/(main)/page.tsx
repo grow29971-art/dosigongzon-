@@ -11,7 +11,11 @@ import Event1000Banner from "@/app/components/Event1000Banner";
 
 export default async function HomePage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // getSession: 쿠키 파싱만 (네트워크 0회) — getUser()는 auth 서버 왕복이라 홈 TTFB가
+  // 1.9s까지 늘어졌었음(다른 페이지 0.15s). 여기선 어느 셸을 렌더할지 고르는 용도뿐이고,
+  // HomeAuthed 내부 데이터는 전부 클라이언트 fetch + RLS로 보호되므로 검증 강도 낮춰도 안전.
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
   // HOT 게시글 + 입양·임보 + 1000명 이벤트 — 각각 독립된 쿼리라 Suspense로 감싸서
   // 로그인 확인이 끝나는 대로 셸을 먼저 스트리밍하고, 이 3개는 준비되는 대로 각자
   // 채워 넣는다. 예전엔 이 셋이 페이지 전체 응답을 같이 막고 있어서 홈이 다른
