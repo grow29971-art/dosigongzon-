@@ -187,6 +187,32 @@ body {
   .cat-emote { display: none; }
 }
 
+/* ── 쓰다듬기 하트 버스트 (2026-07-13) — 탭할 때마다 하트가 위로 팡 ── */
+@keyframes pet-heart {
+  0% { opacity: 0; transform: translate(-50%, 0) scale(0.4) rotate(var(--r, 0deg)); }
+  20% { opacity: 1; transform: translate(-50%, -18px) scale(1.15) rotate(var(--r, 0deg)); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx, 0px)), -70px) scale(0.9) rotate(var(--r, 0deg)); }
+}
+.pet-heart {
+  position: absolute;
+  left: 50%;
+  bottom: 46px;
+  font-size: 22px;
+  pointer-events: none;
+  animation: pet-heart 1s ease-out forwards;
+  z-index: 40;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+}
+@keyframes pet-pop {
+  0%, 100% { transform: scale(1); }
+  40% { transform: scale(1.12); }
+}
+.pet-pop { animation: pet-pop 0.28s ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .pet-heart { animation: none; opacity: 0; }
+  .pet-pop { animation: none; }
+}
+
 /* ── 출시 카운트다운 D-3 이하 부드러운 펄스 ── */
 @keyframes pulse-soft {
   0%, 100% { opacity: 1; }

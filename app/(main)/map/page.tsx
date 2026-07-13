@@ -89,7 +89,7 @@ type AreaChat = {
 import { createClient as createSupabaseClient } from "@/lib/supabase/client";
 const CareLogTab = dynamic(() => import("@/app/components/CareLogTab"), { ssr: false });
 const CatCard = dynamic(() => import("@/app/components/CatCard"), { ssr: false });
-import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, toggleCatLike, listMyLikedCatIds, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, VISIBILITY_MAP, type CatGender, type CatHealthStatus, type AdoptionStatus, type CatVisibility } from "@/lib/cats-repo";
+import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, toggleCatLike, petCat, listMyLikedCatIds, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, VISIBILITY_MAP, type CatGender, type CatHealthStatus, type AdoptionStatus, type CatVisibility } from "@/lib/cats-repo";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import {
   listMyActivityRegions,
@@ -1067,6 +1067,44 @@ export default function MapPage() {
     return () => clearInterval(id);
   }, []);
 
+  // ── 쓰다듬기 (pet) — 하트 팡 + 누적 카운터. 연타는 배치로 flush ──
+  const [petCount, setPetCount] = useState(0);
+  const [petHearts, setPetHearts] = useState<{ id: number; dx: number; r: number; ch: string }[]>([]);
+  const [petPop, setPetPop] = useState(false);
+  const pendingPetsRef = useRef(0);
+  const petFlushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const petHeartSeq = useRef(0);
+  // 선택 고양이 바뀌면 카운터 동기화 + 남은 대기분 flush
+  useEffect(() => {
+    setPetCount(selectedCat?.pet_count ?? 0);
+  }, [selectedCat?.id, selectedCat?.pet_count]);
+
+  const doPet = useCallback(() => {
+    if (!selectedCat) return;
+    if (!isLoggedIn) {
+      if (confirm("로그인하면 아이를 쓰다듬을 수 있어요. 로그인할까요?")) window.location.href = "/login";
+      return;
+    }
+    // 낙관적 UI — 즉시 하트 + 카운트
+    const CH = ["💕", "💛", "🐾", "✨", "😻"];
+    const heart = { id: ++petHeartSeq.current, dx: Math.round((Math.random() - 0.5) * 44), r: Math.round((Math.random() - 0.5) * 40), ch: CH[Math.floor(Math.random() * CH.length)] };
+    setPetHearts((prev) => [...prev.slice(-14), heart]);
+    setPetCount((c) => c + 1);
+    setPetPop(true);
+    setTimeout(() => setPetPop(false), 280);
+    setTimeout(() => setPetHearts((prev) => prev.filter((h) => h.id !== heart.id)), 1000);
+    try { navigator.vibrate?.(8); } catch { /* 미지원 */ }
+    // 배치 flush (연타 모아 1회 RPC)
+    pendingPetsRef.current += 1;
+    const catId = selectedCat.id;
+    if (petFlushTimerRef.current) clearTimeout(petFlushTimerRef.current);
+    petFlushTimerRef.current = setTimeout(() => {
+      const n = pendingPetsRef.current;
+      pendingPetsRef.current = 0;
+      if (n > 0) petCat(catId, n).catch(() => {});
+    }, 700);
+  }, [selectedCat, isLoggedIn]);
+
   // 관리자 여부 — 로그인 상태 변화에 반응해서 재확인.
   // (기존: 첫 페인트 직후 idle에서 1회만 체크 → 세션 복원이 늦으면 false로 영구 고정돼
   //  관리자 수정/삭제 버튼이 안 뜨는 케이스가 있었음)
@@ -1266,8 +1304,8 @@ export default function MapPage() {
           } else {
             el.innerHTML = floatWrap(`
               <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
-                <div style="width:62px;height:62px;border-radius:50%;border:3px solid ${borderColor};background:white;box-shadow:0 4px 12px ${borderColor}55;overflow:hidden;background-image:url('${photoUrl}');background-size:cover;background-position:center;"></div>
-                <span class="roam-state" style="position:absolute;top:-6px;right:-8px;font-size:15px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(cat.id).emoji}</span>
+                <div style="width:72px;height:72px;border-radius:50%;border:3.5px solid ${borderColor};background:white;box-shadow:0 4px 13px ${borderColor}55;overflow:hidden;background-image:url('${photoUrl}');background-size:cover;background-position:center;"></div>
+                <span class="roam-state" style="position:absolute;top:-6px;right:-8px;font-size:17px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(cat.id).emoji}</span>
                 ${emoteSpan(cat.id, emoteForCat(cat.id))}
                 <div style="width:10px;height:10px;background:${borderColor};transform:rotate(45deg);margin-top:-7px;"></div>
               </div>
@@ -1331,9 +1369,9 @@ export default function MapPage() {
           ${hasAlert ? `<div style="background:linear-gradient(135deg,#D85555,#B84545);color:#fff;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:800;white-space:nowrap;box-shadow:0 3px 8px rgba(216,85,85,0.5);margin-bottom:4px;animation:alert-pulse 1.6s ease-in-out infinite;">⚠️ 학대경보</div>` : ""}
           <div style="display:flex;gap:-8px;align-items:center;position:relative;">
             ${photos.map((url, i) => `
-              <div style="width:${i === 0 ? 66 : 50}px;height:${i === 0 ? 66 : 50}px;border-radius:50%;border:3px solid ${i === 0 ? clusterColor : "#fff"};background:white;box-shadow:0 3px 10px rgba(0,0,0,0.15);overflow:hidden;background-image:url('${url}');background-size:cover;background-position:center;margin-left:${i > 0 ? "-14px" : "0"};z-index:${3 - i};position:relative;"></div>
+              <div style="width:${i === 0 ? 76 : 58}px;height:${i === 0 ? 76 : 58}px;border-radius:50%;border:3.5px solid ${i === 0 ? clusterColor : "#fff"};background:white;box-shadow:0 3px 11px rgba(0,0,0,0.15);overflow:hidden;background-image:url('${url}');background-size:cover;background-position:center;margin-left:${i > 0 ? "-16px" : "0"};z-index:${3 - i};position:relative;"></div>
             `).join("")}
-            <span class="roam-state" style="position:absolute;top:-6px;left:50px;font-size:15px;z-index:4;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(repCat.id).emoji}</span>
+            <span class="roam-state" style="position:absolute;top:-6px;left:58px;font-size:17px;z-index:4;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(repCat.id).emoji}</span>
             ${emoteSpan(repCat.id, emoteForCat(repCat.id))}
           </div>
           <div style="margin-top:4px;padding:3px 12px;border-radius:12px;background:${clusterColor}ee;color:#fff;font-size:11px;font-weight:800;white-space:nowrap;box-shadow:0 3px 10px ${clusterColor}44;display:flex;align-items:center;gap:4px;">
@@ -2845,6 +2883,41 @@ export default function MapPage() {
                   );
                 })()}
               </div>
+
+              {/* 쓰다듬기 — 탭하면 하트 팡 + 누적 횟수 (순수 애정, 보상 없음) */}
+              {!editingCat && (
+                <div className="px-4 pb-1 flex justify-center">
+                  <div className="relative">
+                    {/* 하트 버스트 */}
+                    {petHearts.map((h) => (
+                      <span
+                        key={h.id}
+                        className="pet-heart"
+                        style={{ ["--dx" as string]: `${h.dx}px`, ["--r" as string]: `${h.r}deg` }}
+                      >
+                        {h.ch}
+                      </span>
+                    ))}
+                    <button
+                      onClick={doPet}
+                      className={`flex items-center gap-2 pl-3.5 pr-4 py-2.5 rounded-full active:scale-95 transition-transform ${petPop ? "pet-pop" : ""}`}
+                      style={{
+                        background: "linear-gradient(135deg, #FF8FB1 0%, #FF6B95 100%)",
+                        boxShadow: "0 5px 16px rgba(255,107,149,0.40)",
+                      }}
+                      aria-label={`${selectedCat.name} 쓰다듬기`}
+                    >
+                      <span className="text-[16px]">🤚</span>
+                      <span className="text-[13px] font-extrabold text-white">쓰다듬기</span>
+                      {petCount > 0 && (
+                        <span className="text-[11px] font-extrabold text-white/90 tabular-nums flex items-center gap-0.5">
+                          <Heart size={10} fill="currentColor" /> {petCount.toLocaleString()}
+                        </span>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* 배회 마커 안내 — 마커 위치를 실위치로 오해하고 찾아가는 혼란 방지 */}
               <p className="text-[10px] text-text-light text-center px-4 pb-1">

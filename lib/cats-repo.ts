@@ -34,6 +34,7 @@ export interface Cat {
   caretaker_id: string | null;
   caretaker_name: string | null;
   like_count: number;
+  pet_count?: number; // 쓰다듬기 누적 (마이그레이션 전이면 undefined)
   created_at: string;
   card_rarity: string | null;
   card_name: string | null;
@@ -1530,4 +1531,17 @@ export async function toggleCatLike(catId: string): Promise<{ liked: boolean; li
     liked: !existing,
     likeCount: (catRow?.like_count as number | undefined) ?? 0,
   };
+}
+
+// ── 쓰다듬기 — 누적 카운터 증가 (연타를 count로 배치 flush). 로그인 필수. ──
+// 실패(미로그인·마이그레이션 전 등)해도 조용히 무시 — UI 하트 효과는 낙관적으로 진행.
+export async function petCat(catId: string, count: number): Promise<number | null> {
+  if (count < 1) return null;
+  const supabase = createClient();
+  const { data, error } = await supabase.rpc("pet_cat", {
+    p_cat_id: catId,
+    p_count: Math.min(count, 30),
+  });
+  if (error) return null;
+  return typeof data === "number" ? data : null;
 }
