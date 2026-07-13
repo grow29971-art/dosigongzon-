@@ -56,6 +56,8 @@ import {
   MAP_CENTER,
   roamCoord,
   catRoamMode,
+  setRoamWeather,
+  getDisplayCoord,
   type Cat,
   type CatComment,
   type CommentKind,
@@ -638,6 +640,11 @@ export default function MapPage() {
       (window as Window & { requestIdleCallback?: (cb: () => void) => void }).requestIdleCallback
       ?? ((cb) => { setTimeout(cb, 800); });
     idle(() => {
+      // 날씨 → 배회 위축 (비/눈/폭염이면 고양이들이 숨음)
+      fetch("/api/weather")
+        .then((r) => r.json())
+        .then((w) => setRoamWeather(w?.weatherMain ?? null, typeof w?.feelsLike === "number" ? w.feelsLike : null))
+        .catch(() => {});
       fetch("/api/visit", { method: "POST" }).catch(() => {});
       fetch("/api/visit").then((r) => r.json()).then((d) => setTodayVisit(d.today)).catch(() => {});
     });
@@ -1342,22 +1349,64 @@ export default function MapPage() {
     };
   }, [cats, mapReady, isLoggedIn, alertedCats, showCats, activityRegions, regionFilter, searchQDebounced, catFilter]);
 
+  // ── 돌봄 기록 반응 연출 — 기록하면 그 고양이 마커가 아지트로 달려와 밥을 먹음 ──
+  // run(2.5s 달려옴) → eat(60s 🍚) → return(2s 배회 위치로 복귀)
+  const careFxRef = useRef<Map<string, { phase: "run" | "eat" | "return"; t0: number; from: { lat: number; lng: number } }>>(new Map());
+  useEffect(() => {
+    const onCare = (e: Event) => {
+      const catId = (e as CustomEvent).detail?.cat_id as string | undefined;
+      if (!catId) return;
+      const cat = cats.find((c) => c.id === catId);
+      if (!cat) return;
+      careFxRef.current.set(catId, { phase: "run", t0: Date.now(), from: roamCoord(cat, isLoggedIn) });
+    };
+    window.addEventListener("cat-care-logged", onCare);
+    return () => window.removeEventListener("cat-care-logged", onCare);
+  }, [cats, isLoggedIn]);
+
   // ── 고양이 마커 배회 애니메이션 (위치 보호 2차 레이어) ──
   // roamCoord가 Date.now() 기반 결정적이라, 주기적으로 현재 시각 위치로 옮기기만 하면 됨.
   // 200ms 간격이면 이동폭이 틱당 수 m라 부드럽게 보임 (마커 최대 200개 × 5회/초 — 미미한 비용).
   useEffect(() => {
     if (!mapReady) return;
+    const lerp = (a: { lat: number; lng: number }, b: { lat: number; lng: number }, p: number) => ({
+      lat: a.lat + (b.lat - a.lat) * p,
+      lng: a.lng + (b.lng - a.lng) * p,
+    });
     const id = setInterval(() => {
       if (!window.kakao || !mapInstanceRef.current || document.hidden) return;
       overlaysRef.current.forEach((ov: any) => {
         const roamCat = ov.__roamCat;
         if (!roamCat) return;
-        const coord = roamCoord(roamCat, isLoggedIn);
+        let coord = roamCoord(roamCat, isLoggedIn);
+        let emojiOverride: string | null = null;
+
+        // 돌봄 연출 진행 중이면 배회 대신 연출 좌표
+        const fx = careFxRef.current.get(roamCat.id);
+        if (fx) {
+          const base = getDisplayCoord(roamCat, isLoggedIn);
+          const elapsed = Date.now() - fx.t0;
+          if (fx.phase === "run") {
+            const p = Math.min(1, elapsed / 2500);
+            coord = lerp(fx.from, base, 1 - Math.pow(1 - p, 3)); // ease-out
+            emojiOverride = "💨";
+            if (p >= 1) { fx.phase = "eat"; fx.t0 = Date.now(); }
+          } else if (fx.phase === "eat") {
+            coord = base;
+            emojiOverride = "🍚";
+            if (elapsed > 60000) { fx.phase = "return"; fx.t0 = Date.now(); fx.from = base; }
+          } else {
+            const p = Math.min(1, elapsed / 2000);
+            coord = lerp(fx.from, roamCoord(roamCat, isLoggedIn), p);
+            if (p >= 1) careFxRef.current.delete(roamCat.id);
+          }
+        }
+
         ov.setPosition(new window.kakao.maps.LatLng(coord.lat, coord.lng));
-        // 행동 상태 뱃지 (💤 쉬는 중 / 🐾 산책 중 / 💨 우다다) — 바뀔 때만 DOM 갱신
+        // 행동 상태 뱃지 (💤/🐾/💨, 날씨 시 ☔☃️🥵🧣, 연출 시 💨/🍚) — 바뀔 때만 DOM 갱신
         const stateEl: HTMLElement | null = ov.__stateEl ?? null;
         if (stateEl) {
-          const { emoji } = catRoamMode(roamCat.id);
+          const emoji = emojiOverride ?? catRoamMode(roamCat.id).emoji;
           if (stateEl.textContent !== emoji) stateEl.textContent = emoji;
         }
       });

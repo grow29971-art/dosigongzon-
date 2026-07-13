@@ -291,6 +291,33 @@ const ROAM_DIURNAL = [
   0.4, 0.35, 0.35, 0.45, 0.6, 0.8, 0.9, 1, 1, 1, 0.95, 0.9, // 12~23시
 ];
 
+// ── 날씨 → 배회 위축 (2026-07-13) ──
+// 비/눈/폭염이면 고양이들이 아지트 근처에 숨어 잘 안 움직임.
+// 뷰어의 /api/weather(IP 기반) 기준 — 같은 지역 접속자끼리는 동일하게 보임.
+let roamWeather: { scale: number; reason: "rain" | "snow" | "heat" | "cold" | null } = { scale: 1, reason: null };
+
+export function setRoamWeather(weatherMain: string | null, feelsLike: number | null) {
+  if (weatherMain === "Rain" || weatherMain === "Drizzle" || weatherMain === "Thunderstorm") {
+    roamWeather = { scale: 0.3, reason: "rain" };
+  } else if (weatherMain === "Snow") {
+    roamWeather = { scale: 0.35, reason: "snow" };
+  } else if (feelsLike !== null && feelsLike >= 33) {
+    roamWeather = { scale: 0.45, reason: "heat" };
+  } else if (feelsLike !== null && feelsLike <= -10) {
+    roamWeather = { scale: 0.4, reason: "cold" };
+  } else {
+    roamWeather = { scale: 1, reason: null };
+  }
+}
+
+// 쉼 상태 표현 — 날씨 사유가 있으면 그걸로 (마커 뱃지·카드 칩 공용)
+const REST_BY_REASON: Record<string, { emoji: string; label: string }> = {
+  rain: { emoji: "☔", label: "비 피하는 중" },
+  snow: { emoji: "☃️", label: "눈 피하는 중" },
+  heat: { emoji: "🥵", label: "더위 피하는 중" },
+  cold: { emoji: "🧣", label: "추위 피하는 중" },
+};
+
 function roamActivity(catId: string, tMs: number): number {
   const [f1, f2] = hashToUnitFloats(catId + "|roam");
   const t = tMs / 1000;
@@ -303,7 +330,7 @@ function roamActivity(catId: string, tMs: number): number {
   const h0 = Math.floor(h) % 24;
   const frac = h - Math.floor(h);
   const d = ROAM_DIURNAL[h0] * (1 - frac) + ROAM_DIURNAL[(h0 + 1) % 24] * frac;
-  return Math.min(1, Math.max(0.15, env * d));
+  return Math.min(1, Math.max(0.15, env * d)) * roamWeather.scale;
 }
 
 export type RoamMode = "rest" | "stroll" | "zoomies";
@@ -314,7 +341,10 @@ export function catRoamMode(
   tMs: number = Date.now(),
 ): { mode: RoamMode; emoji: string; label: string } {
   const a = roamActivity(catId, tMs);
-  if (a < 0.3) return { mode: "rest", emoji: "💤", label: "쉬는 중" };
+  if (a < 0.3) {
+    const w = roamWeather.reason ? REST_BY_REASON[roamWeather.reason] : null;
+    return w ? { mode: "rest", ...w } : { mode: "rest", emoji: "💤", label: "쉬는 중" };
+  }
   if (a < 0.58) return { mode: "stroll", emoji: "🐾", label: "산책 중" };
   return { mode: "zoomies", emoji: "💨", label: "우다다 중" };
 }

@@ -292,6 +292,11 @@ export async function createCareLog(
     throw new Error(`기록 실패: ${error.message}`);
   }
 
+  // 지도 마커 연출용 전역 이벤트 — 지도가 열려 있으면 해당 마커가 아지트로 달려옴
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("cat-care-logged", { detail: { cat_id: input.cat_id } }));
+  }
+
   // 카드 EXP 추가 (fire-and-forget)
   supabase.rpc("add_cat_card_exp", { p_cat_id: input.cat_id, p_amount: 10 })
     .then(({ data }: { data: { leveled_up?: boolean; level?: number } | null }) => {
