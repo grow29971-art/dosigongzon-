@@ -281,6 +281,44 @@ export const CAT_ROAM_RADIUS_M = 400;
  *   √2 정규화로 오프셋은 항상 반경 이내. 평균 이동속도는 반경 400m 기준 시속 ~15km
  *   (실제 고양이가 빠르게 이동하는 수준 — 반경 축소에 맞춰 주기를 당겨 생동감 유지).
  */
+/**
+ * 배회 활동량 (0.12~1). 고양이별 활동 파동(≈21분/6.4분 주기) × 하루 생체리듬.
+ * 고양이는 박명성(crepuscular) — 새벽 5~8시·저녁 17~22시 활발, 한낮엔 늘어짐.
+ * 연속 함수라 위치가 튀지 않음. 활동량이 낮으면 아지트(기준 좌표) 근처로 모임.
+ */
+const ROAM_DIURNAL = [
+  0.9, 0.8, 0.7, 0.6, 0.7, 0.9, 1, 1, 0.8, 0.6, 0.5, 0.45, // 0~11시 (KST)
+  0.4, 0.35, 0.35, 0.45, 0.6, 0.8, 0.9, 1, 1, 1, 0.95, 0.9, // 12~23시
+];
+
+function roamActivity(catId: string, tMs: number): number {
+  const [f1, f2] = hashToUnitFloats(catId + "|roam");
+  const t = tMs / 1000;
+  const e1 = 0.5 + 0.5 * Math.sin(t / 199 + f1 * 13);
+  const e2 = 0.5 + 0.5 * Math.sin(t / 61 + f2 * 17);
+  // 바닥 0.45 — 하루 분포가 쉼 ~24% / 산책 ~58% / 우다다 ~18%로 나오게 튜닝 (24h 시뮬)
+  const env = 0.45 + 0.55 * e1 * e2;
+  // KST 시각(소수시). 시간표는 시각 간 선형 보간으로 연속성 유지.
+  const h = (tMs / 3600000 + 9) % 24;
+  const h0 = Math.floor(h) % 24;
+  const frac = h - Math.floor(h);
+  const d = ROAM_DIURNAL[h0] * (1 - frac) + ROAM_DIURNAL[(h0 + 1) % 24] * frac;
+  return Math.min(1, Math.max(0.15, env * d));
+}
+
+export type RoamMode = "rest" | "stroll" | "zoomies";
+
+/** 현재 배회 행동 상태 — 마커 뱃지·고양이 카드 표시용. 결정적(모든 접속자 동일). */
+export function catRoamMode(
+  catId: string,
+  tMs: number = Date.now(),
+): { mode: RoamMode; emoji: string; label: string } {
+  const a = roamActivity(catId, tMs);
+  if (a < 0.3) return { mode: "rest", emoji: "💤", label: "쉬는 중" };
+  if (a < 0.58) return { mode: "stroll", emoji: "🐾", label: "산책 중" };
+  return { mode: "zoomies", emoji: "💨", label: "우다다 중" };
+}
+
 export function roamCoord(
   cat: Pick<Cat, "id" | "lat" | "lng">,
   isLoggedIn: boolean,
@@ -299,8 +337,10 @@ export function roamCoord(
     (0.55 * Math.cos(t / 139 + f2 * 89) +
       0.3 * Math.cos(t / 31 + f1 * 67) +
       0.15 * Math.cos(t / 13 + f2 * 37)) / Math.SQRT2;
-  const dLat = (radiusM * ny) / 111111;
-  const dLng = (radiusM * nx) / (111111 * Math.cos((base.lat * Math.PI) / 180));
+  // 활동량이 낮을수록 아지트(기준 좌표) 근처로 — 쉴 때 웅크리고, 활발할 때 넓게 누빔
+  const act = roamActivity(cat.id, tMs);
+  const dLat = (radiusM * act * ny) / 111111;
+  const dLng = (radiusM * act * nx) / (111111 * Math.cos((base.lat * Math.PI) / 180));
   return { lat: base.lat + dLat, lng: base.lng + dLng };
 }
 

@@ -55,6 +55,7 @@ import {
   optimizedImageUrl,
   MAP_CENTER,
   roamCoord,
+  catRoamMode,
   type Cat,
   type CatComment,
   type CommentKind,
@@ -1021,6 +1022,13 @@ export default function MapPage() {
 
   const [isAdmin, setIsAdmin] = useState(false);
 
+  // 배회 행동 상태 칩 갱신용 틱 (30초 — 상태는 분 단위로 바뀌므로 충분)
+  const [roamTick, setRoamTick] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setRoamTick(Date.now()), 30000);
+    return () => clearInterval(id);
+  }, []);
+
   // 관리자 여부 — 로그인 상태 변화에 반응해서 재확인.
   // (기존: 첫 페인트 직후 idle에서 1회만 체크 → 세션 복원이 늦으면 false로 영구 고정돼
   //  관리자 수정/삭제 버튼이 안 뜨는 케이스가 있었음)
@@ -1219,8 +1227,9 @@ export default function MapPage() {
             `;
           } else {
             el.innerHTML = `
-              <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;">
+              <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
                 <div style="width:48px;height:48px;border-radius:50%;border:3px solid ${borderColor};background:white;box-shadow:0 4px 12px ${borderColor}55;overflow:hidden;background-image:url('${photoUrl}');background-size:cover;background-position:center;"></div>
+                <span class="roam-state" style="position:absolute;top:-7px;right:-9px;font-size:13px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(cat.id).emoji}</span>
                 <div style="width:10px;height:10px;background:${borderColor};transform:rotate(45deg);margin-top:-7px;"></div>
               </div>
             `;
@@ -1231,6 +1240,7 @@ export default function MapPage() {
           };
           const ov = new window.kakao.maps.CustomOverlay({ map: mapInstanceRef.current, position: pos, content: el, yAnchor: 1, zIndex: 10 });
           (ov as any).__roamCat = cat; // 배회 애니메이션 기준
+          (ov as any).__stateEl = el.querySelector(".roam-state"); // 행동 상태 뱃지
           overlaysRef.current.push(ov);
         });
         return;
@@ -1277,12 +1287,13 @@ export default function MapPage() {
 
       const el = document.createElement("div");
       el.innerHTML = `
-        <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;">
+        <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
           ${hasAlert ? `<div style="background:linear-gradient(135deg,#D85555,#B84545);color:#fff;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:800;white-space:nowrap;box-shadow:0 3px 8px rgba(216,85,85,0.5);margin-bottom:4px;animation:alert-pulse 1.6s ease-in-out infinite;">⚠️ 학대경보</div>` : ""}
-          <div style="display:flex;gap:-8px;align-items:center;">
+          <div style="display:flex;gap:-8px;align-items:center;position:relative;">
             ${photos.map((url, i) => `
               <div style="width:${i === 0 ? 52 : 40}px;height:${i === 0 ? 52 : 40}px;border-radius:50%;border:3px solid ${i === 0 ? clusterColor : "#fff"};background:white;box-shadow:0 3px 10px rgba(0,0,0,0.15);overflow:hidden;background-image:url('${url}');background-size:cover;background-position:center;margin-left:${i > 0 ? "-12px" : "0"};z-index:${3 - i};position:relative;"></div>
             `).join("")}
+            <span class="roam-state" style="position:absolute;top:-7px;left:38px;font-size:13px;z-index:4;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(repCat.id).emoji}</span>
           </div>
           <div style="margin-top:4px;padding:3px 12px;border-radius:12px;background:${clusterColor}ee;color:#fff;font-size:11px;font-weight:800;white-space:nowrap;box-shadow:0 3px 10px ${clusterColor}44;display:flex;align-items:center;gap:4px;">
             <span>🐾</span>
@@ -1306,6 +1317,7 @@ export default function MapPage() {
         zIndex: 10,
       });
       (ov as any).__roamCat = repCat; // 배회 애니메이션 기준
+      (ov as any).__stateEl = el.querySelector(".roam-state"); // 행동 상태 뱃지
       overlaysRef.current.push(ov);
     }
 
@@ -1342,6 +1354,12 @@ export default function MapPage() {
         if (!roamCat) return;
         const coord = roamCoord(roamCat, isLoggedIn);
         ov.setPosition(new window.kakao.maps.LatLng(coord.lat, coord.lng));
+        // 행동 상태 뱃지 (💤 쉬는 중 / 🐾 산책 중 / 💨 우다다) — 바뀔 때만 DOM 갱신
+        const stateEl: HTMLElement | null = ov.__stateEl ?? null;
+        if (stateEl) {
+          const { emoji } = catRoamMode(roamCat.id);
+          if (stateEl.textContent !== emoji) stateEl.textContent = emoji;
+        }
       });
     }, 200);
     return () => clearInterval(id);
@@ -2727,6 +2745,15 @@ export default function MapPage() {
                     </span>
                   </div>
                 )}
+                {(() => {
+                  const m = catRoamMode(selectedCat.id, roamTick);
+                  return (
+                    <div className="flex items-center gap-1 px-3 py-1.5 rounded-full" style={{ background: "#F1F0F5" }}>
+                      <span className="text-[11px]">{m.emoji}</span>
+                      <span className="text-[11px] font-semibold text-text-sub">지금 {m.label}</span>
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* 배회 마커 안내 — 마커 위치를 실위치로 오해하고 찾아가는 혼란 방지 */}
