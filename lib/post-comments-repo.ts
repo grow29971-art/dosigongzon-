@@ -18,6 +18,7 @@ export interface PostComment {
   author_title: string | null;
   author_level: number | null;
   body: string;
+  is_secret?: boolean; // 비밀 댓글 (댓글·게시글 작성자·관리자만) — 마이그레이션 전이면 undefined
   created_at: string;
 }
 
@@ -42,6 +43,7 @@ export async function createPostComment(
   postId: string,
   body: string,
   parentId?: string | null,
+  isSecret?: boolean,
 ): Promise<PostComment> {
   const supabase = createClient();
 
@@ -87,6 +89,8 @@ export async function createPostComment(
       author_title: equippedTitle,
       author_level: authorLevel,
       body: trimmed,
+      // 마이그레이션 전 배포 호환: 비밀 댓글일 때만 컬럼 포함
+      ...(isSecret ? { is_secret: true } : {}),
     })
     .select()
     .single();

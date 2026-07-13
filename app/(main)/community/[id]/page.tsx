@@ -18,6 +18,8 @@ import {
   ThumbsDown,
   Reply,
   X,
+  Lock,
+  Unlock,
   CornerDownRight,
   Share2,
   Check,
@@ -64,6 +66,7 @@ export default function PostDetailPage({
   const [submitting, setSubmitting] = useState(false);
   const [commentError, setCommentError] = useState("");
   const [replyTo, setReplyTo] = useState<{ id: string; name: string } | null>(null);
+  const [secretComment, setSecretComment] = useState(false);
 
   // admin 여부
   const [isAdmin, setIsAdmin] = useState(false);
@@ -250,10 +253,11 @@ export default function PostDetailPage({
     setSubmitting(true);
     setCommentError("");
     try {
-      const created = await createPostComment(id, commentText, replyTo?.id);
+      const created = await createPostComment(id, commentText, replyTo?.id, secretComment);
       setComments((prev) => [...prev, created]);
       setCommentText("");
       setReplyTo(null);
+      setSecretComment(false);
     } catch (err) {
       setCommentError(err instanceof Error ? err.message : "작성 실패");
     } finally {
@@ -629,6 +633,20 @@ export default function PostDetailPage({
               {commentError}
             </p>
           )}
+          {/* 비밀 댓글 토글 — 켜면 글쓴이와 나만 볼 수 있음 */}
+          <button
+            type="button"
+            onClick={() => setSecretComment((v) => !v)}
+            className="flex items-center gap-1.5 mb-1.5 px-2 py-1 active:scale-95 transition-transform"
+            aria-pressed={secretComment}
+          >
+            {secretComment
+              ? <Lock size={12} style={{ color: "#8B65B8" }} />
+              : <Unlock size={12} className="text-text-light" />}
+            <span className="text-[11px] font-bold" style={{ color: secretComment ? "#8B65B8" : "var(--color-text-light)" }}>
+              {secretComment ? "비밀 댓글 — 글쓴이와 나만 볼 수 있어요" : "비밀 댓글"}
+            </span>
+          </button>
           <div className="flex items-center gap-2">
             <input
               type="text"
@@ -704,6 +722,14 @@ function CommentItem({
           <span className="text-[13px] font-semibold text-text-main">
             {c.author_name ?? "익명"}
           </span>
+          {c.is_secret && (
+            <span
+              className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-[1px] rounded-md"
+              style={{ backgroundColor: "rgba(139,101,184,0.14)", color: "#8B65B8" }}
+            >
+              <Lock size={9} /> 비밀
+            </span>
+          )}
           {c.author_level && (
             <span
               className="text-[9px] font-extrabold px-1.5 py-[1px] rounded-md tabular-nums"
