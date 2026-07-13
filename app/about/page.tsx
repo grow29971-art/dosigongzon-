@@ -335,7 +335,7 @@ export default async function AboutPage() {
           </h2>
           <ul className="space-y-2 text-[12.5px] text-text-sub leading-relaxed">
             <li>
-              <b className="text-text-main">안전 우선.</b> 길고양이의 급식소·숨숨집 정확 좌표는 절대 공개하지 않습니다.
+              <b className="text-text-main">안전 우선.</b> 길고양이의 급식소·숨숨집 정확 좌표는 절대 공개하지 않습니다. 지도 위 고양이 마커는 보호를 위해 실제 위치와 다르게 계속 움직여요.
             </li>
             <li>
               <b className="text-text-main">중립적 기록.</b> 특정 단체·정당과 무관하며 시민 누구나 참여할 수 있는 열린 플랫폼입니다.
@@ -347,6 +347,65 @@ export default async function AboutPage() {
               <b className="text-text-main">광고 없는 무료 운영.</b> 광고·수익 모델 없이 전국 시민의 자발적 기록으로 유지됩니다.
             </li>
           </ul>
+        </div>
+      </section>
+
+      {/* 위치 보안 — 배회 마커 3중 보호 */}
+      <section className="px-5 mt-8">
+        <h2 className="text-[16px] font-extrabold text-text-main mb-3">고양이 위치는 이렇게 지켜요</h2>
+        <div
+          className="rounded-3xl p-5"
+          style={{
+            background: "linear-gradient(135deg, #EEF5FF 0%, #E3EEFC 100%)",
+            border: "1px solid rgba(49,130,246,0.20)",
+          }}
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <div
+              className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
+              style={{ background: "rgba(49,130,246,0.15)" }}
+            >
+              <ShieldCheck size={22} style={{ color: "var(--color-primary-dark)" }} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[10.5px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-primary-dark)" }}>
+                LOCATION PRIVACY
+              </p>
+              <p className="text-[15px] font-extrabold text-text-main">지도 속 고양이는 일부러 계속 움직여요</p>
+            </div>
+          </div>
+          <p className="text-[12.5px] text-text-sub leading-relaxed mb-3">
+            학대 시도로부터 아이들을 지키기 위해, 지도에 표시되는 고양이 위치는 3중으로 보호됩니다.
+            지도를 아무리 오래 지켜봐도 실제 급식소나 아지트는 알아낼 수 없어요.
+          </p>
+          <ul className="space-y-2.5 text-[12px] text-text-sub leading-relaxed">
+            <li className="flex gap-2">
+              <span className="shrink-0">🔒</span>
+              <span>
+                <b className="text-text-main">실제 좌표는 애초에 저장하지 않아요.</b> 등록하는 순간 수백 미터
+                무작위로 이동된 좌표만 저장돼요. 운영자조차 실제 위치를 모릅니다.
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span className="shrink-0">🐾</span>
+              <span>
+                <b className="text-text-main">마커가 진짜 고양이처럼 살아 움직여요.</b> 지도 속 아이들은 자기
+                동네 안에서 쉬고(💤)·산책하고(🐾)·달리며(💨) 계속 자리를 바꿔요. 새벽과 저녁엔 부지런히
+                다니고 한낮엔 늘어지는 하루 리듬까지 있어서, 화면 위 위치는 실시간 위치가 아니에요.
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span className="shrink-0">👤</span>
+              <span>
+                <b className="text-text-main">로그인하지 않으면 더 흐리게.</b> 비로그인 방문자에게는 위치가
+                한층 더 넓게 퍼져 보이고, 사진·동네 이름도 가려집니다.
+              </span>
+            </li>
+          </ul>
+          <p className="text-[11px] text-text-light leading-relaxed mt-3">
+            그래서 &ldquo;지도 보고 찾아가기&rdquo;는 어렵지만, 그게 바로 아이들이 안전한 이유예요. 실제
+            돌봄에 필요한 위치는 동네 케어테이커끼리 쪽지로 나눠주세요.
+          </p>
         </div>
       </section>
 
