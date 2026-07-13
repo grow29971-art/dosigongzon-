@@ -148,6 +148,21 @@ body {
   }
 }
 
+/* ── 지도 고양이 마커 둥실둥실 부유 (2026-07-13) ──
+   위아래 부유 + 살짝 기우뚱. 배회 이동(setPosition)과 독립적으로 겹쳐 동작.
+   duration/delay는 마커별 인라인 지정 — 고양이마다 위상이 달라 자연스러움. */
+@keyframes cat-float {
+  0%, 100% { transform: translateY(0) rotate(-1.4deg); }
+  50% { transform: translateY(-6px) rotate(1.4deg); }
+}
+.cat-float {
+  animation: cat-float 2.6s ease-in-out infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cat-float { animation: none; }
+}
+
 /* ── 출시 카운트다운 D-3 이하 부드러운 펄스 ── */
 @keyframes pulse-soft {
   0%, 100% { opacity: 1; }

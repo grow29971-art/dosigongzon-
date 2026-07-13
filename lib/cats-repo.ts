@@ -278,7 +278,7 @@ export const CAT_ROAM_RADIUS_M = 150;
  * - 고양이 id 해시로 위상·궤적이 정해지고 Date.now() 기반이라 결정적 —
  *   모든 접속자가 같은 시각엔 같은 위치를 봄. 서버·상태 불필요.
  * - 저주파 표류를 줄이고 빠른 진동 성분을 키운 지그재그 모델 (2026-07-13 피드백:
- *   한 방향으로 쭉 가지 말고 왔다갔다) — 시뮬 기준 평균 시속 9~10km,
+ *   한 방향으로 쭉 가지 말고 왔다갔다) — 시뮬 기준 평균 시속 12~13km,
  *   1분 경로 ~160m vs 순이동 ~45m. 고양이별 주기 변주(±20%)·회전방향으로 패턴 다양화.
  *   √2 정규화로 오프셋은 항상 반경 이내.
  */
@@ -364,14 +364,14 @@ export function roamCoord(
   const s2 = 0.8 + 0.4 * f2;
   const dir = f2 > 0.5 ? 1 : -1; // 회전 성향 (시계/반시계)
   const nx =
-    (0.32 * Math.sin(t / (163 * s1) + f1 * 97) +
-      0.34 * Math.sin(t / (23 * s2) + f2 * 59) +
-      0.34 * Math.sin(t / (9 * s1) + f1 * 31)) / Math.SQRT2;
+    (0.32 * Math.sin(t / (149 * s1) + f1 * 97) +
+      0.34 * Math.sin(t / (18 * s2) + f2 * 59) +
+      0.34 * Math.sin(t / (7 * s1) + f1 * 31)) / Math.SQRT2;
   const ny =
     dir *
-    (0.32 * Math.cos(t / (173 * s2) + f2 * 89) +
-      0.34 * Math.cos(t / (21 * s1) + f1 * 67) +
-      0.34 * Math.cos(t / (8 * s2) + f2 * 37)) / Math.SQRT2;
+    (0.32 * Math.cos(t / (157 * s2) + f2 * 89) +
+      0.34 * Math.cos(t / (17 * s1) + f1 * 67) +
+      0.34 * Math.cos(t / (6 * s2) + f2 * 37)) / Math.SQRT2;
   // 활동량이 낮을수록 아지트(기준 좌표) 근처로 — 쉴 때 웅크리고, 활발할 때 넓게 누빔
   const act = roamActivity(cat.id, tMs);
   const dLat = (radiusM * act * ny) / 111111;

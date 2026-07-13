@@ -122,6 +122,16 @@ function formatRelativeTime(iso: string): string {
   return new Date(iso).toLocaleDateString("ko-KR", { month: "short", day: "numeric" });
 }
 
+// 마커 둥실둥실 부유 래퍼 — 고양이별 주기(2.2~3.2s)·위상 변주 (globals.css cat-float)
+// 배회 이동(setPosition)과 독립적으로 겹쳐 동작해 떠다니는 느낌을 만든다.
+function floatWrap(inner: string, seed: string): string {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  const dur = (2.2 + (h % 100) / 100).toFixed(2);
+  const delay = (-((h >> 3) % 27) / 10).toFixed(1);
+  return `<div class="cat-float" style="animation-duration:${dur}s;animation-delay:${delay}s">${inner}</div>`;
+}
+
 // 지도 마커 캐시 (sessionStorage). 변경 발생 시 invalidate해서 stale 데이터 방지.
 const MAP_CATS_CACHE_KEY = "dosi_map_cats_v1";
 const MAP_CATS_CACHE_TTL_MS = 5 * 60 * 1000;
@@ -1229,17 +1239,17 @@ export default function MapPage() {
           const el = document.createElement("div");
           // tier 1·2: 작은 dot, tier 3: 사진 마커
           if (tier <= 2) {
-            el.innerHTML = `
+            el.innerHTML = floatWrap(`
               <div style="transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:${borderColor};border:2px solid #fff;box-shadow:0 2px 6px ${borderColor}66;cursor:pointer;"></div>
-            `;
+            `, cat.id);
           } else {
-            el.innerHTML = `
+            el.innerHTML = floatWrap(`
               <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
                 <div style="width:48px;height:48px;border-radius:50%;border:3px solid ${borderColor};background:white;box-shadow:0 4px 12px ${borderColor}55;overflow:hidden;background-image:url('${photoUrl}');background-size:cover;background-position:center;"></div>
                 <span class="roam-state" style="position:absolute;top:-7px;right:-9px;font-size:13px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(cat.id).emoji}</span>
                 <div style="width:10px;height:10px;background:${borderColor};transform:rotate(45deg);margin-top:-7px;"></div>
               </div>
-            `;
+            `, cat.id);
           }
           el.onclick = () => {
             if (!isLoggedIn) { if (confirm("로그인하면 고양이 정보를 볼 수 있어요. 로그인할까요?")) window.location.href = "/login"; return; }
@@ -1268,12 +1278,12 @@ export default function MapPage() {
       if (tier === 1) {
         // 광역 뷰: 작은 dot + 카운트만 (사진 0)
         const el = document.createElement("div");
-        el.innerHTML = `
+        el.innerHTML = floatWrap(`
           <div style="transform:translate(-50%,-50%);display:flex;align-items:center;gap:4px;cursor:pointer;">
             <div style="width:18px;height:18px;border-radius:50%;background:${clusterColor};border:2px solid #fff;box-shadow:0 2px 6px ${clusterColor}66;"></div>
             ${count > 1 ? `<span style="background:${clusterColor};color:#fff;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:800;box-shadow:0 1px 4px ${clusterColor}66;">${count}</span>` : ""}
           </div>
-        `;
+        `, repCat.id);
         el.onclick = () => {
           if (!isLoggedIn) { if (confirm("로그인하면 고양이 정보를 볼 수 있어요. 로그인할까요?")) window.location.href = "/login"; return; }
           setSelectedDong(dong);
@@ -1293,7 +1303,7 @@ export default function MapPage() {
       const photos = dongCats.slice(0, photoLimit).map((c) => thumb(c.photo_url, thumbSize));
 
       const el = document.createElement("div");
-      el.innerHTML = `
+      el.innerHTML = floatWrap(`
         <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
           ${hasAlert ? `<div style="background:linear-gradient(135deg,#D85555,#B84545);color:#fff;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:800;white-space:nowrap;box-shadow:0 3px 8px rgba(216,85,85,0.5);margin-bottom:4px;animation:alert-pulse 1.6s ease-in-out infinite;">⚠️ 학대경보</div>` : ""}
           <div style="display:flex;gap:-8px;align-items:center;position:relative;">
@@ -1309,7 +1319,7 @@ export default function MapPage() {
           </div>
           <div style="width:10px;height:10px;background:${clusterColor};transform:rotate(45deg);margin-top:-7px;"></div>
         </div>
-      `;
+      `, repCat.id);
       el.onclick = () => {
         if (!isLoggedIn) { if (confirm("로그인하면 고양이 정보를 볼 수 있어요. 로그인할까요?")) window.location.href = "/login"; return; }
         setSelectedDong(dong);
