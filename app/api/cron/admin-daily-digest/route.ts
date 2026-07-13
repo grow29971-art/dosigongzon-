@@ -1,4 +1,6 @@
-// 운영자 일일 다이제스트 — Vercel Cron 매일 08:00 KST (23:00 UTC 전날)
+// 운영자 일일 다이제스트 — Vercel Cron 매일 09:10 KST (00:10 UTC)
+// (원래 08:00 KST(23:00 UTC)였으나 해당 슬롯 스케줄 호출이 안 와서
+//  실행이 검증된 00:00 UTC 직후로 이동 — 2026-07-13, cron_runs 하트비트로 추적 중)
 // admins 테이블의 모든 운영자에게 DM으로 어제 활동 요약 자동 발송.
 // 출시 후 매일 모니터링 부담 ↓ — 자기 자신에게 DM (자가 발송 패턴).
 //
@@ -113,7 +115,7 @@ export async function POST(request: Request) {
     lines.push(`• 🚨 7일 로그인 실패 ${authErrors7d}건 (이상치 가능)`);
   }
   lines.push("");
-  lines.push("자세히 → /admin (이 메시지는 매일 08:00 자동 발송)");
+  lines.push("자세히 → /admin (이 메시지는 매일 아침 자동 발송)");
   const body = lines.join("\n");
 
   // admin 사용자 조회 (admins 테이블)

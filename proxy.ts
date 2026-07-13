@@ -1,5 +1,31 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, type NextRequest, type NextFetchEvent } from "next/server";
 import { updateSession } from "@/lib/supabase/proxy";
+
+// ── 크론 하트비트 — Vercel Cron이 실제로 호출하는지 진단 (2026-07-13) ──
+// cron_runs 테이블(box/supabase_cron_runs_migration.sql)에 호출 사실만 기록.
+// 테이블이 없거나 실패해도 요청 처리에 영향 없음 (fire-and-forget + waitUntil).
+function logCronRun(request: NextRequest, event: NextFetchEvent) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return;
+  const name = request.nextUrl.pathname.replace("/api/cron/", "");
+  event.waitUntil(
+    fetch(`${url}/rest/v1/cron_runs`, {
+      method: "POST",
+      headers: {
+        apikey: key,
+        authorization: `Bearer ${key}`,
+        "content-type": "application/json",
+        prefer: "return=minimal",
+      },
+      body: JSON.stringify({
+        name,
+        method: request.method,
+        has_auth: !!request.headers.get("authorization"),
+      }),
+    }).catch(() => {}),
+  );
+}
 
 // ── 전역 API Rate Limiting (IP 기반, 인메모리) ──
 const ipBuckets = new Map<string, { count: number; resetAt: number }>();
@@ -47,8 +73,13 @@ const BOT_PROBE_PATTERNS = [
   /\.(asp|aspx|jsp|cgi)$/i,
 ];
 
-export async function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest, event: NextFetchEvent) {
   const { pathname } = request.nextUrl;
+
+  // 크론 호출 기록 (스케줄 실행 여부 진단)
+  if (pathname.startsWith("/api/cron/")) {
+    logCronRun(request, event);
+  }
 
   // 봇 프로빙 → 404 (세션 업데이트·rate limit 낭비 방지)
   for (const pattern of BOT_PROBE_PATTERNS) {
