@@ -1261,13 +1261,13 @@ export default function MapPage() {
           // tier 1·2: 작은 dot, tier 3: 사진 마커
           if (tier <= 2) {
             el.innerHTML = floatWrap(`
-              <div style="transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:${borderColor};border:2px solid #fff;box-shadow:0 2px 6px ${borderColor}66;cursor:pointer;"></div>
+              <div style="transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:${borderColor};border:2px solid #fff;box-shadow:0 2px 6px ${borderColor}66;cursor:pointer;"></div>
             `, cat.id);
           } else {
             el.innerHTML = floatWrap(`
               <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
-                <div style="width:48px;height:48px;border-radius:50%;border:3px solid ${borderColor};background:white;box-shadow:0 4px 12px ${borderColor}55;overflow:hidden;background-image:url('${photoUrl}');background-size:cover;background-position:center;"></div>
-                <span class="roam-state" style="position:absolute;top:-7px;right:-9px;font-size:13px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(cat.id).emoji}</span>
+                <div style="width:62px;height:62px;border-radius:50%;border:3px solid ${borderColor};background:white;box-shadow:0 4px 12px ${borderColor}55;overflow:hidden;background-image:url('${photoUrl}');background-size:cover;background-position:center;"></div>
+                <span class="roam-state" style="position:absolute;top:-6px;right:-8px;font-size:15px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(cat.id).emoji}</span>
                 ${emoteSpan(cat.id, emoteForCat(cat.id))}
                 <div style="width:10px;height:10px;background:${borderColor};transform:rotate(45deg);margin-top:-7px;"></div>
               </div>
@@ -1303,8 +1303,8 @@ export default function MapPage() {
         const el = document.createElement("div");
         el.innerHTML = floatWrap(`
           <div style="transform:translate(-50%,-50%);display:flex;align-items:center;gap:4px;cursor:pointer;">
-            <div style="width:18px;height:18px;border-radius:50%;background:${clusterColor};border:2px solid #fff;box-shadow:0 2px 6px ${clusterColor}66;"></div>
-            ${count > 1 ? `<span style="background:${clusterColor};color:#fff;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:800;box-shadow:0 1px 4px ${clusterColor}66;">${count}</span>` : ""}
+            <div style="width:24px;height:24px;border-radius:50%;background:${clusterColor};border:2.5px solid #fff;box-shadow:0 2px 7px ${clusterColor}66;"></div>
+            ${count > 1 ? `<span style="background:${clusterColor};color:#fff;padding:2px 7px;border-radius:9px;font-size:11px;font-weight:800;box-shadow:0 1px 4px ${clusterColor}66;">${count}</span>` : ""}
           </div>
         `, repCat.id);
         el.onclick = () => {
@@ -1331,9 +1331,9 @@ export default function MapPage() {
           ${hasAlert ? `<div style="background:linear-gradient(135deg,#D85555,#B84545);color:#fff;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:800;white-space:nowrap;box-shadow:0 3px 8px rgba(216,85,85,0.5);margin-bottom:4px;animation:alert-pulse 1.6s ease-in-out infinite;">⚠️ 학대경보</div>` : ""}
           <div style="display:flex;gap:-8px;align-items:center;position:relative;">
             ${photos.map((url, i) => `
-              <div style="width:${i === 0 ? 52 : 40}px;height:${i === 0 ? 52 : 40}px;border-radius:50%;border:3px solid ${i === 0 ? clusterColor : "#fff"};background:white;box-shadow:0 3px 10px rgba(0,0,0,0.15);overflow:hidden;background-image:url('${url}');background-size:cover;background-position:center;margin-left:${i > 0 ? "-12px" : "0"};z-index:${3 - i};position:relative;"></div>
+              <div style="width:${i === 0 ? 66 : 50}px;height:${i === 0 ? 66 : 50}px;border-radius:50%;border:3px solid ${i === 0 ? clusterColor : "#fff"};background:white;box-shadow:0 3px 10px rgba(0,0,0,0.15);overflow:hidden;background-image:url('${url}');background-size:cover;background-position:center;margin-left:${i > 0 ? "-14px" : "0"};z-index:${3 - i};position:relative;"></div>
             `).join("")}
-            <span class="roam-state" style="position:absolute;top:-7px;left:38px;font-size:13px;z-index:4;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(repCat.id).emoji}</span>
+            <span class="roam-state" style="position:absolute;top:-6px;left:50px;font-size:15px;z-index:4;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(repCat.id).emoji}</span>
             ${emoteSpan(repCat.id, emoteForCat(repCat.id))}
           </div>
           <div style="margin-top:4px;padding:3px 12px;border-radius:12px;background:${clusterColor}ee;color:#fff;font-size:11px;font-weight:800;white-space:nowrap;box-shadow:0 3px 10px ${clusterColor}44;display:flex;align-items:center;gap:4px;">
