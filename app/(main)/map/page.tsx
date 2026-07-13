@@ -132,6 +132,27 @@ function floatWrap(inner: string, seed: string): string {
   return `<div class="cat-float" style="animation-duration:${dur}s;animation-delay:${delay}s">${inner}</div>`;
 }
 
+// 고양이 기분 이모지 스팬 — per-cat 지연으로 뿜는 타이밍을 흩뿌림 (globals.css cat-emote)
+const STROLL_EMOTES = ["💕", "✨", "🐾", "😻", "🐟"];
+function catStrollEmote(seed: string): string {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  return STROLL_EMOTES[h % STROLL_EMOTES.length];
+}
+function emoteSpan(seed: string, emoji: string): string {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 33 + seed.charCodeAt(i)) >>> 0;
+  const delay = -((h % 90) / 10).toFixed(1); // -0 ~ -8.9s
+  return `<span class="cat-emote" style="animation-delay:${delay}s">${emoji}</span>`;
+}
+// roam 상태 → 뿜을 이모지 (자면 💤 / 우다다면 💨 / 평소엔 고양이별 고정 감정)
+function emoteForCat(catId: string, tMs?: number): string {
+  const mode = catRoamMode(catId, tMs).mode;
+  if (mode === "rest") return "💤";
+  if (mode === "zoomies") return "💨";
+  return catStrollEmote(catId);
+}
+
 // 지도 마커 캐시 (sessionStorage). 변경 발생 시 invalidate해서 stale 데이터 방지.
 const MAP_CATS_CACHE_KEY = "dosi_map_cats_v1";
 const MAP_CATS_CACHE_TTL_MS = 5 * 60 * 1000;
@@ -1247,6 +1268,7 @@ export default function MapPage() {
               <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
                 <div style="width:48px;height:48px;border-radius:50%;border:3px solid ${borderColor};background:white;box-shadow:0 4px 12px ${borderColor}55;overflow:hidden;background-image:url('${photoUrl}');background-size:cover;background-position:center;"></div>
                 <span class="roam-state" style="position:absolute;top:-7px;right:-9px;font-size:13px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(cat.id).emoji}</span>
+                ${emoteSpan(cat.id, emoteForCat(cat.id))}
                 <div style="width:10px;height:10px;background:${borderColor};transform:rotate(45deg);margin-top:-7px;"></div>
               </div>
             `, cat.id);
@@ -1258,6 +1280,7 @@ export default function MapPage() {
           const ov = new window.kakao.maps.CustomOverlay({ map: mapInstanceRef.current, position: pos, content: el, yAnchor: 1, zIndex: 10 });
           (ov as any).__roamCat = cat; // 배회 애니메이션 기준
           (ov as any).__stateEl = el.querySelector(".roam-state"); // 행동 상태 뱃지
+          (ov as any).__emoteEl = el.querySelector(".cat-emote"); // 기분 이모지
           overlaysRef.current.push(ov);
         });
         return;
@@ -1311,6 +1334,7 @@ export default function MapPage() {
               <div style="width:${i === 0 ? 52 : 40}px;height:${i === 0 ? 52 : 40}px;border-radius:50%;border:3px solid ${i === 0 ? clusterColor : "#fff"};background:white;box-shadow:0 3px 10px rgba(0,0,0,0.15);overflow:hidden;background-image:url('${url}');background-size:cover;background-position:center;margin-left:${i > 0 ? "-12px" : "0"};z-index:${3 - i};position:relative;"></div>
             `).join("")}
             <span class="roam-state" style="position:absolute;top:-7px;left:38px;font-size:13px;z-index:4;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(repCat.id).emoji}</span>
+            ${emoteSpan(repCat.id, emoteForCat(repCat.id))}
           </div>
           <div style="margin-top:4px;padding:3px 12px;border-radius:12px;background:${clusterColor}ee;color:#fff;font-size:11px;font-weight:800;white-space:nowrap;box-shadow:0 3px 10px ${clusterColor}44;display:flex;align-items:center;gap:4px;">
             <span>🐾</span>
@@ -1335,6 +1359,7 @@ export default function MapPage() {
       });
       (ov as any).__roamCat = repCat; // 배회 애니메이션 기준
       (ov as any).__stateEl = el.querySelector(".roam-state"); // 행동 상태 뱃지
+      (ov as any).__emoteEl = el.querySelector(".cat-emote"); // 기분 이모지
       overlaysRef.current.push(ov);
     }
 
@@ -1418,6 +1443,12 @@ export default function MapPage() {
         if (stateEl) {
           const emoji = emojiOverride ?? catRoamMode(roamCat.id).emoji;
           if (stateEl.textContent !== emoji) stateEl.textContent = emoji;
+        }
+        // 기분 이모지 (자면 💤 / 우다다면 💨 / 평소 고양이별 감정) — 바뀔 때만 갱신
+        const emoteEl: HTMLElement | null = ov.__emoteEl ?? null;
+        if (emoteEl) {
+          const em = emoteForCat(roamCat.id);
+          if (emoteEl.textContent !== em) emoteEl.textContent = em;
         }
       });
     }, 200);

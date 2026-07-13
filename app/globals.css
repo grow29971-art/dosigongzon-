@@ -163,6 +163,30 @@ body {
   .cat-float { animation: none; }
 }
 
+/* ── 지도 고양이 기분 이모지 뿜기 (2026-07-13) ──
+   머리 위로 💕✨🐾(자면 💤, 우다다면 💨)를 주기적으로 뽀글 띄우고 사라짐.
+   per-cat animation-delay로 제각각 타이밍. 대부분 시간은 opacity 0이라 가벼움. */
+@keyframes cat-emote {
+  0%, 74% { opacity: 0; transform: translateY(2px) scale(0.5); }
+  82% { opacity: 1; transform: translateY(-9px) scale(1.05); }
+  90% { opacity: 0.9; transform: translateY(-16px) scale(1); }
+  100% { opacity: 0; transform: translateY(-24px) scale(0.85); }
+}
+.cat-emote {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  margin-left: -9px;
+  font-size: 14px;
+  pointer-events: none;
+  z-index: 5;
+  animation: cat-emote 9s ease-in-out infinite;
+  filter: drop-shadow(0 1px 1.5px rgba(0,0,0,0.25));
+}
+@media (prefers-reduced-motion: reduce) {
+  .cat-emote { display: none; }
+}
+
 /* ── 출시 카운트다운 D-3 이하 부드러운 펄스 ── */
 @keyframes pulse-soft {
   0%, 100% { opacity: 1; }
