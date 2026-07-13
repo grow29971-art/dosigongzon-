@@ -40,12 +40,6 @@ import { countMyAcceptedCircleMembers } from "@/lib/circles-repo";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import {
-  listNews,
-  BADGE_PRESETS,
-  resolveDdayLabel,
-  type NewsItem,
-} from "@/lib/news-repo";
-import {
   getMyActivitySummary,
   getMyQuietestCat,
   computeScore,
@@ -138,7 +132,6 @@ export default function HomeAuthed({
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [weatherLoading, setWeatherLoading] = useState(true);
   const [weatherError, setWeatherError] = useState("");
-  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [activity, setActivity] = useState<MyActivitySummary | null>(null);
   const [circleMemberCount, setCircleMemberCount] = useState(0);
   const [achievementToasts, setAchievementToasts] = useState<ToastData[]>([]);
@@ -205,8 +198,6 @@ export default function HomeAuthed({
 
   // 데이터 로드
   useEffect(() => {
-    // 홈에선 최신 3개만 노출 — 전체는 /news 에서 (스크롤 부담 ↓)
-    listNews().then((all) => setNewsItems(all.slice(0, 3)));
     listCurrentWeekIssues().then(setWeeklyIssues).catch(() => {});
     listPosts().then((posts) => {
       setAllPosts(posts);
@@ -1804,124 +1795,7 @@ export default function HomeAuthed({
         <ChevronRight size={16} className="text-primary opacity-70" />
       </Link>
 
-      {/* ══════ 고양이 사회 소식 & 일정 ══════ */}
-      <div className="mb-4 cv-auto">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2 px-1">
-            <div className="w-1 h-4 rounded-full bg-primary" />
-            <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
-              고양이 사회 소식
-            </h2>
-            <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "var(--color-primary)", opacity: 0.5 }}>
-              NEWS &amp; EVENTS
-            </span>
-          </div>
-          <Link
-            href="/news"
-            className="flex items-center gap-0.5 text-[12px] font-semibold text-primary"
-          >
-            전체보기 <ChevronRight size={14} />
-          </Link>
-        </div>
-
-        <div className="space-y-4">
-          {newsItems.length === 0 && (
-            <div
-              className="p-6 text-center text-[13px] text-text-sub"
-              style={{
-                background: "#FFFFFF",
-                borderRadius: 22,
-                boxShadow: "0 4px 16px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.03)",
-                border: "1px solid rgba(0,0,0,0.04)",
-              }}
-            >
-              아직 등록된 소식이 없어요.
-            </div>
-          )}
-          {newsItems.map((item) => {
-            const preset = BADGE_PRESETS[item.badge_type];
-            const ddayLabel = resolveDdayLabel(item);
-            const isUpcoming = !!ddayLabel && ddayLabel.startsWith("D-") && ddayLabel !== "D-day";
-            const isToday = ddayLabel === "D-day";
-            const isEnded = ddayLabel === "종료";
-            return (
-              <Link
-                key={item.id}
-                href={`/news/${item.id}`}
-                className="block overflow-hidden active:scale-[0.98] transition-transform"
-                style={{
-                  background: "#FFFFFF",
-                  borderRadius: 22,
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.03)",
-                  border: "1px solid rgba(0,0,0,0.04)",
-                }}
-              >
-                {/* 이미지 영역 (16:9) */}
-                <div className="relative aspect-[16/9] overflow-hidden" style={{ background: preset.gradient }}>
-                  {item.image_url && (
-                    <Image
-                      src={item.image_url}
-                      alt={item.title}
-                      fill
-                      sizes="(max-width: 720px) 100vw, 600px"
-                      style={{ objectFit: "cover" }}
-                    />
-                  )}
-                  {/* 하단 그라데이션 오버레이 */}
-                  <div
-                    className="absolute inset-0"
-                    style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)" }}
-                  />
-                  {/* 카테고리 뱃지 (좌상단) */}
-                  <span
-                    className="absolute top-3 left-3 text-[11px] font-bold px-2.5 py-1 rounded-xl backdrop-blur-sm"
-                    style={{
-                      color: preset.color,
-                      backgroundColor: `${preset.bg}dd`,
-                    }}
-                  >
-                    {preset.label}
-                  </span>
-                  {/* D-Day 뱃지 (우상단) */}
-                  {ddayLabel && (
-                    <span
-                      className="absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-xl backdrop-blur-sm"
-                      style={{
-                        color: isEnded ? "#8B7562" : isToday ? "#fff" : isUpcoming ? "#B84545" : "#6B8E6F",
-                        backgroundColor: isEnded
-                          ? "rgba(230,222,214,0.9)"
-                          : isToday
-                          ? "rgba(216,85,85,0.95)"
-                          : isUpcoming
-                          ? "rgba(238,227,222,0.9)"
-                          : "rgba(232,236,229,0.9)",
-                      }}
-                    >
-                      {ddayLabel}
-                    </span>
-                  )}
-                  {/* 이미지 위 설명 */}
-                  {item.description && (
-                    <p className="absolute bottom-3 left-4 right-4 text-white text-[13px] font-semibold leading-snug drop-shadow-md">
-                      {item.description}
-                    </p>
-                  )}
-                </div>
-
-                {/* 텍스트 영역 */}
-                <div className="bg-white px-4 py-3.5">
-                  <p className="text-[16px] font-bold text-text-main leading-snug mb-1">
-                    {item.title}
-                  </p>
-                  {item.date_label && (
-                    <p className="text-[13px] text-text-light">{item.date_label}</p>
-                  )}
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </div>
+      {/* 고양이 사회 소식 & 일정 섹션 — 사용자 요청으로 제거 (2026-07-13). /news 페이지는 유지 */}
     </div>
 
     {/* ══════ 플로팅 돌봄 기록 버튼 — 스크롤 내내 따라다님, 탭하면 내 아이들로 (2026-07-11) ══════ */}
