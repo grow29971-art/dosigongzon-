@@ -6,6 +6,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { isSafeImageUrl } from "@/lib/url-validate";
 import { convertImageToWebp } from "@/lib/cats-repo";
+import { enforceUserActionLimit } from "@/lib/rate-limit";
 
 // ── 돌봄 유형 ──
 export type CareType =
@@ -250,6 +251,16 @@ export async function createCareLog(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error("로그인이 필요해요.");
+
+  // 도배 방지 — 분당 8건, 일당 120건 (연타·자동화 차단; DB 트리거가 하드 제한 2차 방어)
+  await enforceUserActionLimit(supabase, {
+    table: "care_logs",
+    userColumn: "author_id",
+    userId: user.id,
+    perMinute: 8,
+    perDay: 120,
+    label: "돌봄 기록",
+  });
 
   // photo_url 검증
   if (input.photo_url && !isSafeImageUrl(input.photo_url)) {

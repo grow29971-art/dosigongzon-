@@ -165,6 +165,18 @@ export default function TermsPage() {
           </ol>
         </section>
 
+        <section>
+          <h2 className="text-[14px] font-bold text-text-main mb-2">제9조의4 (포인트)</h2>
+          <ol className="list-decimal pl-5 space-y-1">
+            <li>운영자는 출석 등 서비스 참여 활동에 대한 보상으로 포인트를 지급할 수 있으며, 포인트는 쇼핑몰 결제 시 1포인트당 1원으로 사용할 수 있습니다.</li>
+            <li>포인트는 무상으로 지급되는 혜택으로서 현금으로 환급되지 않으며, 타인에게 양도할 수 없습니다.</li>
+            <li>포인트를 사용한 주문이 취소·환불되는 경우, 사용한 포인트는 회원에게 자동으로 반환됩니다.</li>
+            <li>부정한 방법(비정상적 반복 행위, 다중 계정, 시스템 악용 등)으로 적립된 포인트는 사전 통지 후 회수될 수 있으며, 관련 계정은 이용이 제한될 수 있습니다.</li>
+            <li>회원 탈퇴 시 보유 포인트는 소멸되며, 복구되지 않습니다.</li>
+            <li>운영자는 포인트 제도(적립 기준·사용 조건 등)를 변경할 수 있으며, 회원에게 불리한 변경은 제3조에 따라 사전 공지합니다.</li>
+          </ol>
+        </section>
+
         {/* 제4장 의무 */}
         <div className="text-[14px] font-extrabold text-primary pt-2">제4장 의무</div>
 

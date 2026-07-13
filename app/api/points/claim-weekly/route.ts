@@ -6,6 +6,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const MILESTONES: { days: number; points: number }[] = [
   { days: 3, points: 100 },
@@ -32,6 +33,11 @@ export async function POST() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+
+  // 지급은 어차피 멱등이지만, 스팸 호출로 인한 DB 부하 방지
+  if (!rateLimit(`claim-weekly:${user.id}`, { max: 10, windowMs: 60_000 })) {
+    return NextResponse.json({ error: "요청이 너무 많아요." }, { status: 429 });
+  }
 
   const svc = serviceClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

@@ -46,6 +46,18 @@ export async function POST(req: Request) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
   );
 
+  // 원자적 선점 — 동시 요청 중 하나만 통과 (레이스로 코인 중복 수령 차단).
+  // last_checkin_date를 조건부로 먼저 today로 바꾸고, 행을 못 바꾼 요청은 already 처리.
+  const { data: claimedRows } = await svc
+    .from("profiles")
+    .update({ last_checkin_date: today })
+    .eq("id", user.id)
+    .or(`last_checkin_date.is.null,last_checkin_date.neq.${today}`)
+    .select("id");
+  if (!claimedRows || claimedRows.length === 0) {
+    return NextResponse.json({ error: "already_checked_in" }, { status: 400 });
+  }
+
   // 카드 경험치를 받을 대상 카드 — 대표 카드가 있으면 그걸로, 없으면 가장 최근 카드
   const repCardId = (profile as { rep_card_cat_id?: string | null }).rep_card_cat_id;
   let targetCatId: string | null = repCardId ?? null;
@@ -86,7 +98,8 @@ export async function POST(req: Request) {
   }
 
   const newCoins = (profile.coins ?? 0) + CHECKIN_COINS;
-  jobs.push(svc.from("profiles").update({ coins: newCoins, last_checkin_date: today }).eq("id", user.id));
+  // last_checkin_date는 위 원자적 선점에서 이미 기록됨 — 여기선 코인만
+  jobs.push(svc.from("profiles").update({ coins: newCoins }).eq("id", user.id));
 
   // 주간 출석 이력 기록 — 주간 포인트 마일스톤 집계용 (테이블 없으면 조용히 무시)
   jobs.push(
