@@ -32,5 +32,34 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
   const product = await getProductServer(id);
   if (!product || !product.is_active) notFound();
 
-  return <ProductDetailClient product={product} />;
+  // Product 구조화 데이터 — 구글 쇼핑 탭/리치 결과 노출용
+  const price = product.sale_price ?? product.price;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: (product.description ?? "").slice(0, 300),
+    image: product.images?.length ? product.images : undefined,
+    brand: { "@type": "Brand", name: "도시공존" },
+    offers: {
+      "@type": "Offer",
+      url: `https://dosigongzon.com/shop/${product.id}`,
+      priceCurrency: "KRW",
+      price,
+      availability:
+        product.stock > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ProductDetailClient product={product} />
+    </>
+  );
 }

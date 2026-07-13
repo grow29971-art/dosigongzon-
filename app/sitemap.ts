@@ -41,6 +41,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/protection/disease-guide",     priority: 0.8,  changeFrequency: "monthly" },
     { path: "/tips",                         priority: 0.9,  changeFrequency: "daily" },
     { path: "/news",                         priority: 0.85, changeFrequency: "daily" },
+    { path: "/shop",                         priority: 0.85, changeFrequency: "daily" },
+    { path: "/shop/policy",                  priority: 0.3,  changeFrequency: "monthly" },
     { path: "/login",                        priority: 0.3,  changeFrequency: "yearly" },
     { path: "/signup",                       priority: 0.3,  changeFrequency: "yearly" },
     { path: "/privacy",                      priority: 0.2,  changeFrequency: "yearly" },
@@ -98,6 +100,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(c.created_at),
         changeFrequency: "weekly",
         priority: 0.5,
+      });
+    }
+  } catch {
+    // DB 접근 실패해도 정적 경로는 제공
+  }
+
+  // 쇼핑 상품 — /shop/[id] (활성 상품만; 오픈 전부터 인덱싱 시작해 오픈 시 노출 선점)
+  try {
+    const supabase = await createClient();
+    const { data: products } = await supabase
+      .from("products")
+      .select("id, updated_at")
+      .eq("is_active", true)
+      .limit(500);
+    for (const p of (products ?? []) as { id: string; updated_at: string | null }[]) {
+      entries.push({
+        url: `${SITE_URL}/shop/${p.id}`,
+        lastModified: p.updated_at ? new Date(p.updated_at) : now,
+        changeFrequency: "weekly",
+        priority: 0.6,
       });
     }
   } catch {
