@@ -44,6 +44,7 @@ export interface CareLog {
   memo: string | null;
   photo_url: string | null;
   amount: string | null;
+  is_private?: boolean; // 비밀글 (작성자·관리자만 조회) — 마이그레이션 전이면 undefined
   logged_at: string;
   created_at: string;
 }
@@ -54,6 +55,7 @@ export interface CreateCareLogInput {
   memo?: string;
   photo_url?: string;
   amount?: string;
+  is_private?: boolean;
   logged_at?: string; // ISO string, 기본값 now
 }
 
@@ -293,6 +295,8 @@ export async function createCareLog(
       memo: input.memo || null,
       photo_url: input.photo_url || null,
       amount: input.amount || null,
+      // 마이그레이션 전 배포 호환: 비밀글일 때만 컬럼 포함
+      ...(input.is_private ? { is_private: true } : {}),
       logged_at: input.logged_at || new Date().toISOString(),
     })
     .select()

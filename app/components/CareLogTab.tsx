@@ -8,6 +8,8 @@ import {
   Trash2,
   X,
   Send,
+  Lock,
+  Unlock,
 } from "lucide-react";
 import {
   listCareLogs,
@@ -43,6 +45,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
   const [amount, setAmount] = useState("");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [isPrivate, setIsPrivate] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   // 축하 모달 상태
@@ -84,6 +87,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
         memo: memo.trim() || undefined,
         amount: amount.trim() || undefined,
         photo_url: photoUrl,
+        is_private: isPrivate,
       });
 
       setLogs((prev) => [newLog, ...prev]);
@@ -95,6 +99,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
       setAmount("");
       setPhotoFile(null);
       setPhotoPreview(null);
+      setIsPrivate(false);
       setShowForm(false);
 
       // peak-end 축하 연출
@@ -199,6 +204,14 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                     </span>
                     {log.amount && (
                       <span className="text-[10px] text-text-light">{log.amount}</span>
+                    )}
+                    {log.is_private && (
+                      <span
+                        className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded"
+                        style={{ backgroundColor: "rgba(139,101,184,0.14)", color: "#8B65B8" }}
+                      >
+                        <Lock size={9} /> 비밀
+                      </span>
                     )}
                     <span className="text-[9px] text-text-light ml-auto">
                       {formatLogTime(log.logged_at)}
@@ -325,6 +338,32 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                   <Camera size={14} style={{ color: photoFile ? "#fff" : "#A38E7A" }} />
                 </button>
               </div>
+
+              {/* 비밀글 토글 — 켜면 나(작성자)만 볼 수 있음 */}
+              <button
+                type="button"
+                onClick={() => setIsPrivate((v) => !v)}
+                className="flex items-center gap-2 w-full px-3 py-2 rounded-xl active:scale-[0.98] transition-transform"
+                style={{
+                  backgroundColor: isPrivate ? "rgba(139,101,184,0.10)" : "#fff",
+                  border: isPrivate ? "1px solid rgba(139,101,184,0.35)" : "1px solid #E5E0D6",
+                }}
+                aria-pressed={isPrivate}
+              >
+                {isPrivate ? <Lock size={13} style={{ color: "#8B65B8" }} /> : <Unlock size={13} style={{ color: "#A38E7A" }} />}
+                <span className="text-[12px] font-bold" style={{ color: isPrivate ? "#8B65B8" : "#A38E7A" }}>
+                  {isPrivate ? "비밀글 — 나만 볼 수 있어요" : "비밀글로 남기기"}
+                </span>
+                <span
+                  className="ml-auto w-9 h-5 rounded-full transition-colors relative"
+                  style={{ backgroundColor: isPrivate ? "#8B65B8" : "#D8D2C8" }}
+                >
+                  <span
+                    className="absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all"
+                    style={{ left: isPrivate ? "18px" : "2px", boxShadow: "0 1px 2px rgba(0,0,0,0.2)" }}
+                  />
+                </span>
+              </button>
 
               {/* 등록 버튼 — 한 줄 전체 폭으로 명확하게 */}
               <button
