@@ -743,7 +743,8 @@ export default function HomeAuthed({
 
               return tips.length > 0 ? (
                 <div className="mt-3 space-y-1.5">
-                  {tips.slice(0, 2).map((tip, i) => (
+                  {/* 홈 리디자인 시안(2026-07-13): 팁은 1개만 — 밀도 압축 */}
+                  {tips.slice(0, 1).map((tip, i) => (
                     <div
                       key={i}
                       className="flex items-start gap-2 px-3 py-2 rounded-xl"
@@ -1266,45 +1267,78 @@ export default function HomeAuthed({
         );
       })()}
 
-      {/* ══════ 오늘 할 일 — 리추얼·랭킹 모음 (Figma 4화면 구조 2026-07-13) ══════ */}
+      {/* ══════ 오늘 할 일 — 리추얼·랭킹 칩 행 (Figma 시안 2026-07-13, 가로 스와이프) ══════ */}
+      {/* 도감 대형 카드는 칩으로 흡수. 냥 상자/스트릭/랭킹 칩은 아래 해당 카드로 스크롤. */}
+      {user && (
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-2.5 px-1">
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E8B040" }} />
+              <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">오늘 할 일</h2>
+            </div>
+            <span className="text-[10px] font-bold text-text-light">매일 리셋</span>
+          </div>
+          <div className="flex gap-2.5 overflow-x-auto no-scrollbar -mx-5 px-5 pb-1" style={{ scrollSnapType: "x proximity" }}>
+            {([
+              { emoji: "🎁", title: "냥 상자 열기", sub: "오늘의 랜덤 보상", target: "daily-box", href: null, hot: true },
+              streakInfo && streakInfo.streak > 0
+                ? { emoji: "🔥", title: `스트릭 ${streakInfo.streak}일째`, sub: "연속 돌봄 지키기", target: "streak-card", href: null, hot: false }
+                : { emoji: "🔥", title: "스트릭 시작", sub: "오늘 돌봄 기록하면 1일", target: "my-cats", href: null, hot: false },
+              { emoji: "📖", title: "동네 도감", sub: "만난 고양이 모으기", target: null, href: "/collection", hot: false },
+              { emoji: "🏆", title: "이번 주 랭킹", sub: "돌봄왕에 도전", target: "weekly-rank", href: null, hot: false },
+            ] as { emoji: string; title: string; sub: string; target: string | null; href: string | null; hot: boolean }[]).map((c) =>
+              c.href ? (
+                <Link
+                  key={c.title}
+                  href={c.href}
+                  className="shrink-0 flex flex-col gap-0.5 active:scale-[0.97] transition-transform"
+                  style={{
+                    width: 132, padding: "13px 13px 12px", borderRadius: 18, scrollSnapAlign: "start",
+                    background: "#FFFFFF", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)",
+                  }}
+                >
+                  <span className="text-[21px] mb-0.5">{c.emoji}</span>
+                  <span className="text-[12.5px] font-extrabold text-text-main tracking-tight">{c.title}</span>
+                  <span className="text-[10px] font-semibold text-text-light leading-snug">{c.sub}</span>
+                </Link>
+              ) : (
+                <button
+                  key={c.title}
+                  type="button"
+                  onClick={() => document.getElementById(c.target!)?.scrollIntoView({ behavior: "smooth", block: "center" })}
+                  className="shrink-0 flex flex-col gap-0.5 text-left active:scale-[0.97] transition-transform"
+                  style={{
+                    width: 132, padding: "13px 13px 12px", borderRadius: 18, scrollSnapAlign: "start",
+                    background: c.hot ? "linear-gradient(150deg, rgba(255,169,39,0.14), #FFFFFF 70%)" : "#FFFFFF",
+                    border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)",
+                  }}
+                >
+                  <span className="text-[21px] mb-0.5">{c.emoji}</span>
+                  <span className="text-[12.5px] font-extrabold text-text-main tracking-tight">{c.title}</span>
+                  <span className="text-[10px] font-semibold text-text-light leading-snug">{c.sub}</span>
+                </button>
+              ),
+            )}
+          </div>
+        </div>
+      )}
+
       {/* 오늘의 냥 상자 — 일일 출석 리추얼 */}
-      {user && <DailyCatBox />}
+      {user && <div id="daily-box" style={{ scrollMarginTop: 12 }}><DailyCatBox /></div>}
 
       {/* ══════ 돌봄 연속 일수(스트릭) — 프리즈 UI 보존, 부가 영역으로 이동 (2026-07-11) ══════ */}
       {user && streakInfo && (
-        <HomeStreakCard
-          streakInfo={streakInfo}
-          onFreezeUsed={() => { getMyStreakInfo().then(setStreakInfo).catch(() => {}); }}
-        />
-      )}
-
-      {/* 우리 동네 고양이 도감 entry (catCount>0) */}
-      {user && activity && activity.catCount > 0 && (
-        <Link
-          href="/collection"
-          className="block mb-3 active:scale-[0.99] transition-transform"
-          style={{
-            background: "linear-gradient(135deg, #FFFFFF 0%, #FCF6EC 100%)",
-            borderRadius: 18,
-            padding: "12px 14px",
-            border: "1px solid rgba(49,130,246,0.18)",
-            boxShadow: "0 4px 14px var(--color-primary-softer)",
-          }}
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-lg" style={{ background: "rgba(49,130,246,0.12)" }}>📖</div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[9.5px] font-extrabold tracking-[0.15em]" style={{ color: "var(--color-primary-dark)" }}>우리 동네 고양이 도감</p>
-              <p className="text-[13.5px] font-extrabold text-text-main leading-tight mt-0.5 truncate">만난 고양이를 모아보세요</p>
-            </div>
-            <ChevronRight size={14} style={{ color: "var(--color-primary-dark)" }} className="shrink-0" />
-          </div>
-        </Link>
+        <div id="streak-card" style={{ scrollMarginTop: 12 }}>
+          <HomeStreakCard
+            streakInfo={streakInfo}
+            onFreezeUsed={() => { getMyStreakInfo().then(setStreakInfo).catch(() => {}); }}
+          />
+        </div>
       )}
 
       {/* ══════ 이번 주 돌봄 왕 TOP 3 ══════ */}
       {caretakerRank.length > 0 && (
-        <div className="mb-5 cv-auto">
+        <div className="mb-5 cv-auto" id="weekly-rank" style={{ scrollMarginTop: 12 }}>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 px-1">
               <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E8B040" }} />
