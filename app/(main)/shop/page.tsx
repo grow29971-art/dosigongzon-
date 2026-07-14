@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ShoppingCart, ReceiptText, PawPrint, LayoutGrid,
-  Fish, SprayCan, HeartPulse, ToyBrick, Home, Gift,
+  Fish, SprayCan, HeartPulse, ToyBrick, Home, Gift, ChevronRight,
   type LucideIcon,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
@@ -219,6 +219,19 @@ export default function ShopPage() {
         </div>
       </div>
 
+      {/* ── 돌봄→포인트→할인 안내 띠 (탭하면 홈 주간 출석으로) ── */}
+      <Link
+        href="/#daily-box"
+        className="mb-4 flex items-center gap-2.5 px-4 py-2.5 rounded-2xl active:scale-[0.99] transition-transform"
+        style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(49,130,246,0.18)" }}
+      >
+        <span className="text-[16px] shrink-0">🐾</span>
+        <p className="text-[11.5px] font-bold leading-snug flex-1" style={{ color: "var(--color-primary-dark)" }}>
+          매일 돌봄 출석하면 포인트 적립 · 쇼핑에서 <b>1P = 1원</b>으로 쓸 수 있어요
+        </p>
+        <ChevronRight size={15} style={{ color: "var(--color-primary)" }} className="shrink-0" />
+      </Link>
+
       {/* ── 후원 배너 + 공동 목표 진행바 ── */}
       {/* 적립액 0원일 땐 금액 없이 문구만 (0원 노출 역효과 방지) */}
       <div
@@ -229,7 +242,7 @@ export default function ShopPage() {
         }}
       >
         <p className="text-[13.5px] font-extrabold text-text-main leading-relaxed">
-          여기서 구매하시면, 수익의 대부분이
+          여기서 구매하시면, 수익의 일부분이
           <br />길고양이를 위해 쓰입니다 🐱
           <span className="text-[11px] font-bold text-text-light"> (사용처 투표 중)</span>
         </p>
@@ -239,7 +252,7 @@ export default function ShopPage() {
           style={{ background: "rgba(255,255,255,0.55)", border: "1px solid rgba(196,126,90,0.15)" }}
         >
           <p className="text-[11px] leading-[1.65] text-text-sub">
-            운영자는 <b className="text-text-main">서버 유지 등 최소한만</b> 남기고
+            운영자는 <b className="text-text-main">서버 유지 등 최소 마진만</b> 남기고
             나머지는 전부 아이들에게 써요. 정확한 비율은 계산 중이에요.
             <br />모인 금액과 쓰인 금액은 <b className="text-text-main">아래에서 투명하게</b> 공개돼요 💛
           </p>

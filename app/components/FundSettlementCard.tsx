@@ -77,7 +77,7 @@ export default function FundSettlementCard() {
             </div>
           )}
           <p className="text-[10px] text-text-light mt-2.5">
-            운영자는 서버 유지 등 최소한만 남기고, 나머지는 전부 아이들에게 써요.
+            운영자는 서버 유지 등 최소 마진만 남기고, 나머지는 전부 아이들에게 써요.
           </p>
         </>
       )}

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowLeft, MapPin, X } from "lucide-react";
 import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import { useAuth } from "@/lib/auth-context";
@@ -417,6 +418,20 @@ export default function CheckoutPage() {
                 1P = 1원 · 최종 결제 금액은 100원 이상이어야 해요 · 주문 취소 시 자동 반환
               </p>
             </section>
+          )}
+
+          {/* 포인트 0P 힌트 — 적립 유도 (후원/가상 상품 주문 아닐 때만) */}
+          {(pointBalance ?? 0) === 0 && !items.some((i) => i.product.is_virtual || i.product.is_donation) && (
+            <Link
+              href="/#daily-box"
+              className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl active:scale-[0.99] transition-transform"
+              style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(49,130,246,0.18)" }}
+            >
+              <span className="text-[15px] shrink-0">🐾</span>
+              <p className="text-[11px] font-bold leading-snug flex-1" style={{ color: "var(--color-primary-dark)" }}>
+                매일 돌봄 출석하면 포인트가 쌓여요 · 다음엔 <b>1P = 1원</b>으로 할인받으세요
+              </p>
+            </Link>
           )}
 
           {/* 결제 금액 */}
