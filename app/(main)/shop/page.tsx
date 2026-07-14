@@ -244,7 +244,7 @@ export default function ShopPage() {
             <br />모인 금액과 쓰인 금액은 <b className="text-text-main">아래에서 투명하게</b> 공개돼요 💛
           </p>
           <p className="text-[11px] font-bold text-text-main mt-1.5 pt-1.5" style={{ borderTop: "1px solid rgba(196,126,90,0.12)" }}>
-            도시공존은 <b style={{ color: "var(--color-primary-dark)" }}>길집사님들과</b> 함께 만들어가요 🐾
+            도시공존은 특정 단체·정당과 무관하게, 오직 <b style={{ color: "var(--color-primary-dark)" }}>길집사님들과</b> 함께 만들어가요 🐾
           </p>
         </div>
         {donation && donation.total > 0 ? (
