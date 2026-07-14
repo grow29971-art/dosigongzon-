@@ -530,10 +530,12 @@ export default async function AboutPage() {
             title="IoT 스마트쉼터"
             desc={
               <>
-                추위와 위험으로부터 아이들을 지키는 <b className="text-text-main">발열 IoT 쉼터</b>예요.
-                내부 온도를 따뜻하게 유지하고, 카메라·센서로 출입과 이상을 감지해
-                도시공존 앱으로 실시간 알림을 보냅니다. 운영자 한 명이 감시하는 게 아니라,
-                <b className="text-text-main"> 같은 동네 케어테이커가 직접 모니터링</b>하는 구조로 설계했어요.
+                길 위 아이들의 여러 문제를 한 번에 풀기 위한 <b className="text-text-main">발열 IoT 쉼터</b>예요.
+                <b className="text-text-main"> 겨울 동사</b>는 내부를 따뜻하게 유지해 막고,
+                &lsquo;오늘 그 아이 왔나·별일 없나&rsquo; 확인할 길이 없던 문제는
+                <b className="text-text-main"> 카메라·센서로 출입과 상태를 원격 확인</b>해 해결해요.
+                운영자 한 명이 다 챙기지 못하는 한계는, 같은 동네 케어테이커들이
+                <b className="text-text-main"> 나눠서 모니터링</b>하고 이상 시 앱으로 바로 알림을 받는 구조로 풀었어요.
               </>
             }
             pills={[
@@ -552,12 +554,14 @@ export default async function AboutPage() {
             desc={
               <>
                 혹한에 길 위의 아이들이 얼지 않도록 만드는 <b className="text-text-main">저전력 전자 온열 기구</b>예요.
-                스마트쉼터보다 가볍게, 급식소나 숨숨집 곁에 두고 쓸 수 있게 설계하고 있어요.
-                안전한 발열과 과열 차단을 1순위로, <b className="text-text-main">겨울철 동사를 막는 가장 작은 한 걸음</b>을 목표로 합니다.
+                흔히 쓰는 핫팩은 <b className="text-text-main">10시간</b>이면 식어버려 자주 갈아줘야 하지만,
+                고양이난로는 <b className="text-text-main">약 23시간 작동</b>해 밤새 온기를 유지해요.
+                자주 들를 수 없는 급식소·숨숨집에서 <b className="text-text-main">핫팩의 한계를 해결</b>하려고 만들었어요.
+                안전한 발열과 과열 차단을 1순위로, 겨울철 동사를 막는 가장 작은 한 걸음을 목표로 합니다.
               </>
             }
             pills={[
-              { icon: <Thermometer size={11} />, label: "저전력 발열" },
+              { icon: <Thermometer size={11} />, label: "약 23시간 연속 작동" },
               { icon: <Box size={11} />, label: "급식소 곁 설치" },
               { icon: <Wrench size={11} />, label: "과열 차단 안전 설계" },
             ]}
