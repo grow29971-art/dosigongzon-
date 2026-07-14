@@ -89,6 +89,7 @@ type AreaChat = {
 import { createClient as createSupabaseClient } from "@/lib/supabase/client";
 const CareLogTab = dynamic(() => import("@/app/components/CareLogTab"), { ssr: false });
 const CatCard = dynamic(() => import("@/app/components/CatCard"), { ssr: false });
+import MapIntroModal from "@/app/components/MapIntroModal";
 import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, toggleCatLike, petCat, listMyLikedCatIds, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, VISIBILITY_MAP, type CatGender, type CatHealthStatus, type AdoptionStatus, type CatVisibility } from "@/lib/cats-repo";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import {
@@ -1806,6 +1807,8 @@ export default function MapPage() {
   }
 
   return (
+    <>
+    <MapIntroModal />
     <div
       className="app-no-zoom relative no-dark"
       style={{
@@ -3914,5 +3917,6 @@ export default function MapPage() {
         }
       `}</style>
     </div>
+    </>
   );
 }

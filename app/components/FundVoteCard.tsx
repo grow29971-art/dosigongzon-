@@ -6,6 +6,7 @@
 
 import { useEffect, useState } from "react";
 import { loadFundVote, castFundVote, type FundVoteOption } from "@/lib/fund-vote-repo";
+import { createInquiry } from "@/lib/support-repo";
 
 export default function FundVoteCard() {
   const [ready, setReady] = useState(false);
@@ -14,6 +15,12 @@ export default function FundVoteCard() {
   const [myVote, setMyVote] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  // 기타 아이디어 (관리자 인박스로 전송)
+  const [ideaOpen, setIdeaOpen] = useState(false);
+  const [idea, setIdea] = useState("");
+  const [ideaBusy, setIdeaBusy] = useState(false);
+  const [ideaDone, setIdeaDone] = useState(false);
+  const [ideaErr, setIdeaErr] = useState("");
 
   useEffect(() => {
     loadFundVote()
@@ -60,6 +67,25 @@ export default function FundVoteCard() {
       setErr(msg.includes("로그인") ? "로그인하면 투표할 수 있어요." : "투표에 실패했어요. 잠시 후 다시 시도해주세요.");
     } finally {
       setBusy(false);
+    }
+  };
+
+  const sendIdea = async () => {
+    const text = idea.trim();
+    if (ideaBusy || !text) return;
+    setIdeaBusy(true);
+    setIdeaErr("");
+    try {
+      await createInquiry({ subject: "[수익 사용처 아이디어]", body: text });
+      setIdeaDone(true);
+      setIdea("");
+      setIdeaOpen(false);
+      try { navigator.vibrate?.(12); } catch { /* 미지원 */ }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "전송에 실패했어요.";
+      setIdeaErr(msg.includes("로그인") ? "로그인하면 보낼 수 있어요." : "전송에 실패했어요. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setIdeaBusy(false);
     }
   };
 
@@ -111,6 +137,54 @@ export default function FundVoteCard() {
             </button>
           );
         })}
+
+        {/* 기타 — 아이디어를 관리자에게 전송 (투표 아님) */}
+        {ideaDone ? (
+          <div className="px-3.5 py-3 rounded-2xl text-center" style={{ background: "var(--color-primary-soft)" }}>
+            <p className="text-[12px] font-extrabold text-primary">💌 아이디어 고마워요! 잘 읽어볼게요</p>
+          </div>
+        ) : !ideaOpen ? (
+          <button
+            onClick={() => { setIdeaOpen(true); setIdeaErr(""); }}
+            className="w-full text-left px-3.5 py-2.5 rounded-2xl active:scale-[0.99] transition-transform"
+            style={{ border: "1px dashed var(--color-border)", background: "transparent" }}
+          >
+            <span className="flex items-center gap-2 text-[13px] font-bold text-text-sub">
+              <span className="text-[15px]">💡</span>
+              기타 — 아이디어를 저에게 보내주세요
+            </span>
+          </button>
+        ) : (
+          <div className="px-1 pt-1">
+            <textarea
+              value={idea}
+              onChange={(e) => setIdea(e.target.value)}
+              placeholder="수익을 이런 데 쓰면 좋겠어요… (자유롭게 적어주세요)"
+              rows={3}
+              maxLength={500}
+              className="w-full px-3 py-2.5 rounded-xl text-[12.5px] outline-none resize-none"
+              style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+            />
+            {ideaErr && <p className="text-[11px] mt-1" style={{ color: "#D85555" }}>{ideaErr}</p>}
+            <div className="flex gap-2 mt-2">
+              <button
+                onClick={() => { setIdeaOpen(false); setIdea(""); setIdeaErr(""); }}
+                className="px-3.5 py-2 rounded-xl text-[12px] font-bold text-text-sub active:scale-95 transition-transform"
+                style={{ background: "var(--color-surface-alt)" }}
+              >
+                취소
+              </button>
+              <button
+                onClick={sendIdea}
+                disabled={ideaBusy || !idea.trim()}
+                className="flex-1 py-2 rounded-xl text-[12.5px] font-extrabold text-white active:scale-[0.98] transition-transform disabled:opacity-40"
+                style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
+              >
+                {ideaBusy ? "보내는 중…" : "보내기"}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {err && <p className="text-[11px] mt-2" style={{ color: "#D85555" }}>{err}</p>}
