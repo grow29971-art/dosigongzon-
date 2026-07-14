@@ -2,7 +2,7 @@
 -- 사용처 투표 기본 표수(baseline) 세팅 (2026-07-14)
 -- 실제 유저 계정을 건드리지 않고, 항목별 시작 표수를 더해서 표시.
 -- 실제 투표는 이 위에 그대로 쌓임. 되돌리려면 seed_votes = 0.
--- 순서: 중성화 > 구조·치료 > 사료·급식 > 방한용품 > 쉼터 (총 130)
+-- 순서: 중성화 > 구조·치료 > 사료·급식 > 방한용품 > 쉼터 (총 133)
 -- 실행 위치: Supabase Dashboard → SQL Editor
 -- ══════════════════════════════════════════
 
@@ -10,9 +10,9 @@ alter table public.fund_vote_options
   add column if not exists seed_votes int not null default 0;
 
 update public.fund_vote_options set seed_votes = 42 where label = 'TNR(중성화) 지원';
-update public.fund_vote_options set seed_votes = 33 where label = '구조·치료 의료비';
-update public.fund_vote_options set seed_votes = 26 where label = '사료·급식 지원';
-update public.fund_vote_options set seed_votes = 18 where label = '겨울나기 방한 물품';
+update public.fund_vote_options set seed_votes = 34 where label = '구조·치료 의료비';
+update public.fund_vote_options set seed_votes = 27 where label = '사료·급식 지원';
+update public.fund_vote_options set seed_votes = 19 where label = '겨울나기 방한 물품';
 update public.fund_vote_options set seed_votes = 11 where label = '길고양이 쉼터 설치';
 
 -- 결과 집계 = 기본 표수 + 실제 투표수 (활성 항목 전체 반환)
