@@ -16,6 +16,7 @@ import {
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import PushOptInCard from "@/app/components/PushOptInCard";
 import FundVoteCard from "@/app/components/FundVoteCard";
+import FundSettlementCard from "@/app/components/FundSettlementCard";
 
 type FilterKey = ProductCategory | "all";
 
@@ -228,10 +229,24 @@ export default function ShopPage() {
         }}
       >
         <p className="text-[13.5px] font-extrabold text-text-main leading-relaxed">
-          여기서 구매하시면, 수익의 일부가
+          여기서 구매하시면, 수익의 대부분이
           <br />길고양이를 위해 쓰입니다 🐱
           <span className="text-[11px] font-bold text-text-light"> (사용처 투표 중)</span>
         </p>
+        {/* 투명성 안내 */}
+        <div
+          className="mt-2.5 px-3 py-2 rounded-xl"
+          style={{ background: "rgba(255,255,255,0.55)", border: "1px solid rgba(196,126,90,0.15)" }}
+        >
+          <p className="text-[11px] leading-[1.65] text-text-sub">
+            운영자는 <b className="text-text-main">서버 유지 등 최소한만</b> 남기고
+            나머지는 전부 아이들에게 써요. 정확한 비율은 계산 중이에요.
+            <br />모인 금액과 쓰인 금액은 <b className="text-text-main">아래에서 투명하게</b> 공개돼요 💛
+          </p>
+          <p className="text-[11px] font-bold text-text-main mt-1.5 pt-1.5" style={{ borderTop: "1px solid rgba(196,126,90,0.12)" }}>
+            도시공존은 <b style={{ color: "var(--color-primary-dark)" }}>길집사님들과</b> 함께 만들어가요 🐾
+          </p>
+        </div>
         {donation && donation.total > 0 ? (
           <div className="mt-3">
             <div className="flex items-baseline justify-between mb-1.5">
@@ -264,6 +279,9 @@ export default function ShopPage() {
           </p>
         )}
       </div>
+
+      {/* ── 후원금 투명 정산 ── */}
+      <FundSettlementCard />
 
       {/* ── 수익 사용처 투표 ── */}
       <FundVoteCard />

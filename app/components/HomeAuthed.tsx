@@ -35,6 +35,7 @@ import HomeStreakCard from "@/app/components/HomeStreakCard";
 import SplashLoading from "@/app/components/SplashLoading";
 const FoundingMemberBanner = dynamic(() => import("@/app/components/FoundingMemberBanner"), { ssr: false });
 import PatchUpdateBanner518 from "@/app/components/PatchUpdateBanner518";
+import FirstProjectBanner from "@/app/components/FirstProjectBanner";
 const MyCircleQuickEntry = dynamic(() => import("@/app/components/MyCircleQuickEntry"), { ssr: false });
 import { countMyAcceptedCircleMembers } from "@/lib/circles-repo";
 import { useAuth } from "@/lib/auth-context";
@@ -544,6 +545,9 @@ export default function HomeAuthed({
   return (
     <>
     <div className="px-5 pt-5 pb-24">
+      {/* ══════ 첫 구원 프로젝트 — 사용처 투표 유도 배너 (닫기 가능, 2026-07-14) ══════ */}
+      <FirstProjectBanner />
+
       {/* ══════ 오늘의 브리핑 카드 — 인사·헤드라인·스트릭·알림 + 날씨를 한 카드로 (홈 리디자인 2차 2026-07-11) ══════ */}
       {/* 브랜드 타이틀은 시안대로 제거 — 앱 아이덴티티는 스플래시/네비가 담당 */}
       <div
