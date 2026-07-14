@@ -32,6 +32,7 @@ import { createAnonClient } from "@/lib/supabase/anon";
 import { SEOUL_GUS } from "@/lib/seoul-regions";
 import { getGuCounts } from "@/lib/region-counts";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import AboutCityCard from "@/app/components/AboutCityCard";
 import { listPublishedTipsServer, type Tip } from "@/lib/tips-repo";
 import { getTopCaretakersServer, type RankingRow } from "@/lib/ranking-repo";
 import { getActiveRegionsTop3 } from "@/lib/region-activity";
@@ -161,8 +162,13 @@ export default async function HomeLanding({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }} />
       <LandingOnboardingGate />
 
+      {/* 도시공존 소개 — 비로그인 방문자(인스타 유입 등)가 최상단에서 바로 이해 */}
+      <div className="px-5 pt-14 pb-1">
+        <AboutCityCard className="mb-0" />
+      </div>
+
       {/* 히어로 */}
-      <section className="px-5 pt-14 pb-8" style={{ background: "linear-gradient(180deg, #FFF9F2 0%, #F7F4EE 100%)" }}>
+      <section className="px-5 pt-6 pb-8" style={{ background: "linear-gradient(180deg, #FFF9F2 0%, #F7F4EE 100%)" }}>
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 mb-3">
           <Heart size={12} style={{ color: "var(--color-primary)" }} />
           <span className="text-[11px] font-extrabold" style={{ color: "var(--color-primary)" }}>
