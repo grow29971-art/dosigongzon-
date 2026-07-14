@@ -7,9 +7,9 @@
 import { NextResponse } from "next/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
 
-// 1차 목표: 첫 번째 길고양이 쉼터 설치
+// 1차 목표 (사용처는 커뮤니티 투표로 결정 예정 — 2026-07-14)
 const GOAL_AMOUNT = 100_000;
-const GOAL_LABEL = "첫 번째 길고양이 쉼터";
+const GOAL_LABEL = "1차 목표";
 
 const COUNTED_STATUSES = ["paid", "preparing", "shipping", "delivered"];
 

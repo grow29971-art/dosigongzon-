@@ -6,7 +6,7 @@
 import { createClient } from "@/lib/supabase/client";
 
 export type ProductCategory =
-  | "food" | "sand" | "health" | "toy" | "shelter" | "goods" | "support";
+  | "food" | "sand" | "health" | "toy" | "shelter" | "goods";
 
 export type ProductBadge = "신상" | "인기" | "한정";
 
@@ -21,7 +21,6 @@ export const SHOP_CATEGORIES: Record<
   toy:     { label: "장난감·용품", order: 4, description: "장난감, 스크래쳐, 캣타워" },
   shelter: { label: "급식·쉼터",   order: 5, description: "야외 급식도구와 쉼터 용품" },
   goods:   { label: "굿즈",        order: 6, description: "도시공존 자체 브랜드 굿즈" },
-  support: { label: "후원하기",    order: 7, description: "길고양이를 직접 후원하세요" },
 };
 
 // 하위 호환 별칭 (admin 페이지 등에서 사용)

@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ShoppingCart, ReceiptText, PawPrint, LayoutGrid,
-  Fish, SprayCan, HeartPulse, ToyBrick, Home, Gift, Heart,
+  Fish, SprayCan, HeartPulse, ToyBrick, Home, Gift,
   type LucideIcon,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
@@ -15,6 +15,7 @@ import {
 } from "@/lib/shop-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import PushOptInCard from "@/app/components/PushOptInCard";
+import FundVoteCard from "@/app/components/FundVoteCard";
 
 type FilterKey = ProductCategory | "all";
 
@@ -26,7 +27,6 @@ const CATEGORY_ICONS: Record<ProductCategory, LucideIcon> = {
   toy: ToyBrick,
   shelter: Home,
   goods: Gift,
-  support: Heart,
 };
 
 const FILTERS: { key: FilterKey; label: string; Icon: LucideIcon }[] = [
@@ -49,26 +49,25 @@ function ProductCard({ product }: { product: Product }) {
   const thumb = product.images[0] ? sanitizeImageUrl(product.images[0], "") : "";
   const soldOut = product.stock <= 0;
   const discounted = product.sale_price != null && product.sale_price < product.price;
-  const isSupport = product.category === "support";
 
   return (
     <Link href={`/shop/${product.id}`} className="block active:scale-[0.98] transition-transform">
       <div
         className="overflow-hidden h-full"
         style={{
-          background: isSupport ? "rgba(232,107,140,0.06)" : "#FFFFFF",
+          background: "#FFFFFF",
           borderRadius: 22,
           boxShadow: "0 6px 20px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.03)",
-          border: isSupport ? "1.5px solid rgba(232,107,140,0.25)" : "1px solid rgba(0,0,0,0.04)",
+          border: "1px solid rgba(0,0,0,0.04)",
         }}
       >
         {/* 이미지 */}
-        <div className="relative w-full" style={{ aspectRatio: "1 / 1", background: isSupport ? "rgba(232,107,140,0.08)" : "var(--color-warm-white)" }}>
+        <div className="relative w-full" style={{ aspectRatio: "1 / 1", background: "var(--color-warm-white)" }}>
           {thumb ? (
             <Image src={thumb} alt={product.name} fill className="object-cover" />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
-              <PawPrint size={40} style={{ color: isSupport ? "rgba(232,107,140,0.45)" : "rgba(49,130,246,0.28)" }} />
+              <PawPrint size={40} style={{ color: "rgba(49,130,246,0.28)" }} />
             </div>
           )}
           {product.badge && (
@@ -117,11 +116,7 @@ function ProductCard({ product }: { product: Product }) {
               <span className="text-[10.5px] text-text-light line-through">{formatWon(product.price)}</span>
             )}
           </div>
-          {isSupport ? (
-            <p className="text-[10px] font-bold mt-1.5" style={{ color: "#E86B8C" }}>
-              배송 없음 · 전액 후원
-            </p>
-          ) : product.is_donation ? (
+          {product.is_donation ? (
             <p className="text-[10px] font-semibold mt-1.5" style={{ color: "#C9A961" }}>
               수익의 일부 후원 💛
             </p>
@@ -234,7 +229,8 @@ export default function ShopPage() {
       >
         <p className="text-[13.5px] font-extrabold text-text-main leading-relaxed">
           여기서 구매하시면, 수익의 일부가
-          <br />길고양이 쉼터에 쓰입니다 🐱
+          <br />길고양이를 위해 쓰입니다 🐱
+          <span className="text-[11px] font-bold text-text-light"> (사용처 투표 중)</span>
         </p>
         {donation && donation.total > 0 ? (
           <div className="mt-3">
@@ -258,16 +254,19 @@ export default function ShopPage() {
             </div>
             <p className="text-[10.5px] text-text-light mt-1.5">
               {donation.total >= donation.goal
-                ? "목표 달성! 곧 쉼터 설치 소식으로 찾아올게요 🎉"
-                : "구매·후원 하나하나가 여기 쌓여요"}
+                ? "목표 달성! 사용처는 투표로 정해요 🎉"
+                : "구매 하나하나가 여기 쌓여요"}
             </p>
           </div>
         ) : (
           <p className="text-[11.5px] text-text-sub mt-1">
-            첫 번째 길고양이 쉼터 설치까지, 함께해주세요
+            어디에 쓸지는 함께 투표로 정해요
           </p>
         )}
       </div>
+
+      {/* ── 수익 사용처 투표 ── */}
+      <FundVoteCard />
 
       {/* ── 정식 오픈 준비 중 안내 ── */}
       <div
@@ -291,7 +290,6 @@ export default function ShopPage() {
       <div className="mb-4 flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4">
         {FILTERS.map((f) => {
           const on = filter === f.key;
-          const isSupport = f.key === "support";
           return (
             <button
               key={f.key}
@@ -300,13 +298,11 @@ export default function ShopPage() {
               className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-[12px] font-bold active:scale-95 transition-transform shrink-0"
               style={{
                 background: on
-                  ? isSupport
-                    ? "linear-gradient(135deg, #E86B8C 0%, #D85575 100%)"
-                    : "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)"
+                  ? "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)"
                   : "rgba(255,255,255,0.9)",
-                color: on ? "#fff" : isSupport ? "#E86B8C" : "#666",
+                color: on ? "#fff" : "#666",
                 boxShadow: on
-                  ? `0 2px 8px ${isSupport ? "rgba(232,107,140,0.35)" : "rgba(49,130,246,0.35)"}`
+                  ? "0 2px 8px rgba(49,130,246,0.35)"
                   : "0 2px 6px rgba(0,0,0,0.05)",
               }}
             >

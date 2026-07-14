@@ -98,7 +98,6 @@ export default function ShopPolicyPage() {
           <ul className="space-y-1.5">
             <Item>환불은 결제한 수단으로 진행되며, 카드 결제 취소는 카드사 사정에 따라 3~5영업일이 걸릴 수 있어요.</Item>
             <Item>배송 시작 전 주문은 주문 상세에서 직접 취소할 수 있어요.</Item>
-            <Item>후원(가상) 상품은 결제일부터 7일 이내 요청 시 전액 환불돼요.</Item>
           </ul>
         </section>
 
@@ -106,8 +105,9 @@ export default function ShopPolicyPage() {
         <section className="p-4" style={sectionStyle}>
           <h2 className="text-[13.5px] font-extrabold text-text-main mb-2.5">수익의 사용</h2>
           <p className="text-[12.5px] text-text-sub leading-relaxed">
-            쇼핑몰 수익의 일부는 길고양이 쉼터 설치와 구조 활동에 사용돼요. 누적
-            현황은 쇼핑몰 홈의 진행바에서 투명하게 공개하고 있어요 💛
+            쇼핑몰 수익의 일부는 길고양이를 위해 사용돼요. 구체적인 사용처는
+            커뮤니티 투표로 정하며, 누적 현황은 쇼핑몰 홈의 진행바에서
+            투명하게 공개하고 있어요 💛
           </p>
         </section>
       </div>
