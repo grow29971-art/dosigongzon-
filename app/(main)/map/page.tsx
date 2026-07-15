@@ -1948,7 +1948,7 @@ export default function MapPage() {
             {searchMatchCount !== null && (
               <div className="mt-1.5 pointer-events-none">
                 <span
-                  className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold"
+                  className="inline-flex items-center px-2.5 py-1 chip-square text-[11px] font-bold"
                   style={{
                     background: searchMatchCount > 0 ? "rgba(255,255,255,0.95)" : "rgba(216,85,85,0.92)",
                     color: searchMatchCount > 0 ? "#3182F6" : "#fff",
@@ -2319,7 +2319,7 @@ export default function MapPage() {
                   aria-hidden="true"
                 />
                 <span
-                  className="absolute -top-1.5 -right-1.5 text-[9px] font-extrabold px-1.5 py-0.5 rounded-full text-white z-10"
+                  className="absolute -top-1.5 -right-1.5 text-[9px] font-extrabold px-1.5 py-0.5 chip-square text-white z-10"
                   style={{
                     background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)",
                     boxShadow: "0 2px 6px rgba(216,85,119,0.4)",
@@ -2530,7 +2530,7 @@ export default function MapPage() {
                 <span className="text-[18px]">🐾</span>
                 <h3 className="text-[17px] font-extrabold text-text-main">{selectedDong}</h3>
                 <span
-                  className="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                  className="text-[11px] font-bold px-2 py-0.5 chip-square"
                   style={{ backgroundColor: "#3182F6", color: "#fff" }}
                 >
                   {selectedDongCats.length}마리
@@ -2835,7 +2835,7 @@ export default function MapPage() {
                 style={{ height: 34, background: catCardTheme.typeBg }}
               >
                 <span
-                  className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-extrabold tracking-wide"
+                  className="inline-flex items-center gap-1 chip-square px-2 py-0.5 text-[10px] font-extrabold tracking-wide"
                   style={{ background: "rgba(255,255,255,0.25)", color: "#fff" }}
                 >
                   <span>{catCardTheme.typeIcon}</span>
@@ -2844,7 +2844,7 @@ export default function MapPage() {
                 <div className="flex items-center gap-2">
                   {selectedCat.card_level != null && selectedCat.card_level > 1 && (
                     <span
-                      className="rounded-full px-2 py-0.5 text-[10px] font-black"
+                      className="chip-square px-2 py-0.5 text-[10px] font-black"
                       style={{ background: "rgba(255,255,255,0.25)", color: "#fff" }}
                     >
                       Lv.{selectedCat.card_level}
@@ -2880,13 +2880,13 @@ export default function MapPage() {
 
               <div className="px-4 pb-2 flex items-center justify-center gap-2 flex-wrap">
                 {selectedCat.region && (
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: "#F1F0F5" }}>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 chip-square" style={{ background: "#F1F0F5" }}>
                     <MapPin size={12} className="text-primary" />
                     <span className="text-[12px] font-bold text-text-main">{selectedCat.region}</span>
                   </div>
                 )}
                 {selectedCat.caretaker_name && (
-                  <div className="flex items-center gap-1 px-3 py-1.5 rounded-full" style={{ background: "#F1F0F5" }}>
+                  <div className="flex items-center gap-1 px-3 py-1.5 chip-square" style={{ background: "#F1F0F5" }}>
                     <Heart size={11} className="text-primary" fill="currentColor" />
                     <span className="text-[11px] font-semibold text-text-sub">
                       {selectedCat.caretaker_name} 돌봄중
@@ -2896,7 +2896,7 @@ export default function MapPage() {
                 {(() => {
                   const m = catRoamMode(selectedCat.id, roamTick);
                   return (
-                    <div className="flex items-center gap-1 px-3 py-1.5 rounded-full" style={{ background: "#F1F0F5" }}>
+                    <div className="flex items-center gap-1 px-3 py-1.5 chip-square" style={{ background: "#F1F0F5" }}>
                       <span className="text-[11px]">{m.emoji}</span>
                       <span className="text-[11px] font-semibold text-text-sub">지금 {m.label}</span>
                     </div>
@@ -3224,7 +3224,7 @@ export default function MapPage() {
                   {selectedCat.visibility && selectedCat.visibility !== "public" && (
                     <div className="mb-2 flex items-center gap-1.5 flex-wrap">
                       <span
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10.5px] font-extrabold"
+                        className="inline-flex items-center gap-1 px-2 py-0.5 chip-square text-[10.5px] font-extrabold"
                         style={{
                           background: `${VISIBILITY_MAP[selectedCat.visibility].color}15`,
                           color: VISIBILITY_MAP[selectedCat.visibility].color,
@@ -3237,7 +3237,7 @@ export default function MapPage() {
                       {/* circle 핀 + 본인 아닌 viewer = 서클 공동 돌봄 안내 */}
                       {selectedCat.visibility === "circle" && user?.id !== selectedCat.caretaker_id && (
                         <span
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10.5px] font-extrabold"
+                          className="inline-flex items-center gap-1 px-2 py-0.5 chip-square text-[10.5px] font-extrabold"
                           style={{ background: "rgba(107,142,111,0.12)", color: "#4F6B53", border: "1px solid rgba(107,142,111,0.30)" }}
                         >
                           🤝 함께 돌볼 수 있어요
