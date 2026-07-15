@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { MapPin, PawPrint, Heart, Check, X, Sparkles, ShieldCheck } from "lucide-react";
+import { MapPin, PawPrint, Heart, Check, X, Sparkles } from "lucide-react";
 
 interface OnboardingCardProps {
   hasActivityRegion: boolean;   // 활동 지역 설정 완료
@@ -26,25 +26,17 @@ export default function OnboardingCard({
   hasActivityRegion,
   hasMyCat,
   hasCareLog,
-  hasCircleMember = false,
   onDismiss,
 }: OnboardingCardProps) {
+  // 순서가 곧 유도 흐름 — 등록은 지역설정 없이도 가능하므로 '첫 고양이 등록'을 1순위로.
+  // 지역설정은 관문이 아니라 '동네 소식을 받는' 선택 단계로 마지막에 둔다(가입→등록 이탈 완화).
   const steps: Step[] = useMemo(() => [
-    {
-      key: "region",
-      done: hasActivityRegion,
-      title: "내 활동 지역 설정",
-      subtitle: "우리 동네를 먼저 정해주세요",
-      href: "/mypage/activity-regions",
-      Icon: MapPin,
-      color: "var(--color-primary)",
-    },
     {
       key: "cat",
       done: hasMyCat,
       title: "첫 고양이 등록",
       subtitle: "지도에서 + 버튼으로 아이를 등록해요",
-      href: "/map",
+      href: "/map?add=1",
       Icon: PawPrint,
       color: "#E88D5A",
     },
@@ -58,15 +50,15 @@ export default function OnboardingCard({
       color: "#E86B8C",
     },
     {
-      key: "circle",
-      done: hasCircleMember,
-      title: "믿는 이웃 초대",
-      subtitle: "내 서클로 안전한 돌봄 시작 (선택)",
-      href: "/mypage/circle",
-      Icon: ShieldCheck,
-      color: "#6B8E6F",
+      key: "region",
+      done: hasActivityRegion,
+      title: "내 동네 소식 받기",
+      subtitle: "동네를 정하면 근처 소식·이웃이 보여요 (선택)",
+      href: "/mypage/activity-regions",
+      Icon: MapPin,
+      color: "var(--color-primary)",
     },
-  ], [hasActivityRegion, hasMyCat, hasCareLog, hasCircleMember]);
+  ], [hasActivityRegion, hasMyCat, hasCareLog]);
 
   const doneCount = steps.filter((s) => s.done).length;
   const total = steps.length;
@@ -108,7 +100,7 @@ export default function OnboardingCard({
             시작 가이드 <span style={{ color: "var(--color-primary)" }}>{doneCount}/{total}</span>
           </p>
           <p className="text-[11.5px] text-text-sub mt-1 leading-snug">
-            마지막은 선택 — 믿는 이웃과 안전한 돌봄까지!
+            지도에서 아이 한 마리만 등록하면 시작이에요!
           </p>
         </div>
         {onDismiss && (

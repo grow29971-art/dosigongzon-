@@ -948,6 +948,23 @@ export default function MapPage() {
     window.history.replaceState({}, "", url.toString());
   }, [mapReady, cats, isLoggedIn]);
 
+  // ── /map?add=1 딥링크 — 진입 시 등록 플로우 자동 오픈 ──
+  // 홈/온보딩의 '첫 고양이 등록' CTA가 지도에서 + 버튼을 찾게 하지 않고 바로 등록으로 잇는다.
+  const addFlowHandledRef = useRef(false);
+  useEffect(() => {
+    if (addFlowHandledRef.current) return;
+    if (!mapReady || !mapInstanceRef.current || !window.kakao) return;
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("add") !== "1") return;
+    addFlowHandledRef.current = true;
+    url.searchParams.delete("add");
+    window.history.replaceState({}, "", url.toString());
+    if (!isLoggedIn) return; // 비로그인은 조용히 무시
+    const center = mapInstanceRef.current.getCenter();
+    setPickedCoord({ lat: center.getLat(), lng: center.getLng() });
+    setVisibilityIntroOpen(true);
+  }, [mapReady, isLoggedIn]);
+
   // ── 지도 초기화 후에 GPS가 뒤늦게 도착하면 중심 이동 (단, cat 포커스 중이면 스킵) ──
   useEffect(() => {
     if (!mapReady || !userPos || !mapInstanceRef.current || !window.kakao) return;
