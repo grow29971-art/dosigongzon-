@@ -71,6 +71,7 @@ const DailyCheckinModal = dynamic(() => import("@/app/components/DailyCheckinMod
 const FirstCheerCard = dynamic(() => import("@/app/components/FirstCheerCard"), { ssr: false });
 const AppOpenGuideModal = dynamic(() => import("@/app/components/AppOpenGuideModal"), { ssr: false });
 import MyCatsHero from "@/app/components/MyCatsHero";
+import CareTamagotchiHero from "@/app/components/CareTamagotchiHero";
 const WeeklyCheckinCard = dynamic(() => import("@/app/components/WeeklyCheckinCard"), { ssr: false });
 const PushCareCueOptIn = dynamic(() => import("@/app/components/PushCareCueOptIn"), { ssr: false });
 const FeatureTipsCard = dynamic(() => import("@/app/components/FeatureTipsCard"), { ssr: false });
@@ -576,6 +577,7 @@ export default function HomeAuthed({
         { emoji: "🐾", text: <>지도에서 <b className="text-text-main">+ 버튼</b>으로 우리 동네 고양이를 등록해요.</> },
         { emoji: "🍚", text: <>매일 <b className="text-text-main">내 아이들</b>에게 밥·물·간식을 1탭으로 기록해요.</> },
         { emoji: "🗺️", text: <>아래로 내리면 우리 동네 고양이·소식이 이어져요.</> },
+        { emoji: "😸", text: <>대표 아이와 <b className="text-text-main">다마고치</b>처럼 교감해요. 방치해도 아프거나 떠나지 않으니 부담 없이!</> },
       ]}
     />
     <div className="px-5 pt-5 pb-24">
@@ -609,6 +611,9 @@ export default function HomeAuthed({
 
       {/* ══════ 첫 구원 프로젝트 — 사용처 투표 유도 배너 (닫기 가능, 2026-07-14) ══════ */}
       {SHOW_FUND_BANNER && <FirstProjectBanner />}
+
+      {/* ══════ 다마고치 케어 히어로 — 대표묘와의 가상 교감 (2026-07-16, 홈 최상단) ══════ */}
+      <CareTamagotchiHero />
 
       {/* ══════ 오늘의 브리핑 카드 — 인사·헤드라인·스트릭·알림 + 날씨를 한 카드로 (홈 리디자인 2차 2026-07-11) ══════ */}
       {/* 브랜드 타이틀은 시안대로 제거 — 앱 아이덴티티는 스플래시/네비가 담당 */}
