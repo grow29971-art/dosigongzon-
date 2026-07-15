@@ -455,7 +455,7 @@ export default async function AboutPage() {
             <SkillBadge
               icon={<Code2 size={13} />}
               title="풀스택 개발"
-              sub="웹·앱·API·DB·인프라"
+              sub="웹·앱"
             />
             <SkillBadge
               icon={<Cpu size={13} />}
