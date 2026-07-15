@@ -63,7 +63,7 @@ async function getLandingData() {
         .order("created_at", { ascending: false })
         .limit(6),
       supabase.from("rescue_hospitals").select("*", { count: "exact", head: true }).eq("hidden", false),
-      supabase.from("profiles").select("*", { count: "exact", head: true }),
+      supabase.from("profiles").select("id", { count: "exact", head: true }),
       getGuCounts(),
     ]);
 

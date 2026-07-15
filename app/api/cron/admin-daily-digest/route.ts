@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     pendingInquiriesRes,
     authErrorsRes,
   ] = await Promise.allSettled([
-    supabase.from("profiles").select("*", { count: "exact", head: true })
+    supabase.from("profiles").select("id", { count: "exact", head: true })
       .gte("created_at", yesterdayStart).lt("created_at", todayStart),
     supabase.from("cats").select("*", { count: "exact", head: true })
       .gte("created_at", yesterdayStart).lt("created_at", todayStart),
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
       .gte("created_at", yesterdayStart).lt("created_at", todayStart),
     supabase.from("care_logs").select("*", { count: "exact", head: true })
       .gte("logged_at", yesterdayStart).lt("logged_at", todayStart),
-    supabase.from("profiles").select("*", { count: "exact", head: true }),
+    supabase.from("profiles").select("id", { count: "exact", head: true }),
     supabase.from("cats").select("*", { count: "exact", head: true }).eq("hidden", false),
     supabase.from("reports").select("*", { count: "exact", head: true }).eq("status", "pending"),
     supabase.from("inquiries").select("*", { count: "exact", head: true }).eq("status", "pending"),

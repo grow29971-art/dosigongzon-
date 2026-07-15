@@ -77,12 +77,12 @@ export default function AdminEventKeyringPage() {
       if (userIds.length > 0) {
         const { data: profs } = await supabase
           .from("profiles")
-          .select("id, nickname, email, avatar_url")
+          .select("id, nickname, avatar_url")
           .in("id", userIds);
         const map: Record<string, UserMini> = {};
-        for (const p of (profs ?? []) as { id: string; nickname: string | null; email: string | null; avatar_url: string | null }[]) {
+        for (const p of (profs ?? []) as { id: string; nickname: string | null; avatar_url: string | null }[]) {
           map[p.id] = {
-            nickname: p.nickname ?? p.email?.split("@")[0] ?? "익명",
+            nickname: p.nickname ?? "익명",
             avatar_url: p.avatar_url,
           };
         }

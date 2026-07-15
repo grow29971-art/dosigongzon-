@@ -19,7 +19,7 @@ export async function getUserProfileServer(id: string): Promise<PublicUserProfil
   const supabase = await createClient();
   const { data } = await supabase
     .from("profiles")
-    .select("id, nickname, email, avatar_url, admin_title, created_at")
+    .select("id, nickname, avatar_url, admin_title, created_at")
     .eq("id", id)
     .maybeSingle();
 
@@ -27,7 +27,6 @@ export async function getUserProfileServer(id: string): Promise<PublicUserProfil
   const row = data as {
     id: string;
     nickname: string | null;
-    email: string | null;
     avatar_url: string | null;
     admin_title: string | null;
     created_at: string;
@@ -35,7 +34,7 @@ export async function getUserProfileServer(id: string): Promise<PublicUserProfil
 
   return {
     id: row.id,
-    nickname: row.nickname ?? row.email?.split("@")[0] ?? "익명",
+    nickname: row.nickname ?? "익명",
     avatar_url: row.avatar_url,
     admin_title: row.admin_title,
     created_at: row.created_at,
@@ -309,7 +308,7 @@ export async function listNearbyCaretakersServer(myId: string): Promise<NearbyCa
   const [profilesRes, catsRes, caresRes] = await Promise.all([
     supabase
       .from("profiles")
-      .select("id, nickname, email, avatar_url, admin_title, suspended")
+      .select("id, nickname, avatar_url, admin_title, suspended")
       .in("id", userIds),
     supabase
       .from("cats")
@@ -339,7 +338,6 @@ export async function listNearbyCaretakersServer(myId: string): Promise<NearbyCa
   for (const p of (profilesRes.data ?? []) as {
     id: string;
     nickname: string | null;
-    email: string | null;
     avatar_url: string | null;
     admin_title: string | null;
     suspended: boolean | null;
@@ -347,7 +345,7 @@ export async function listNearbyCaretakersServer(myId: string): Promise<NearbyCa
     if (p.suspended) continue;
     list.push({
       id: p.id,
-      nickname: p.nickname ?? p.email?.split("@")[0] ?? "익명",
+      nickname: p.nickname ?? "익명",
       avatar_url: p.avatar_url,
       admin_title: p.admin_title,
       catCount: catCounts.get(p.id) ?? 0,

@@ -72,7 +72,7 @@ async function getStats() {
       // private/circle 모두 포함한 전체 카운트
       supabase.rpc("total_cat_count"),
       supabase.from("rescue_hospitals").select("*", { count: "exact", head: true }).eq("hidden", false),
-      supabase.from("profiles").select("*", { count: "exact", head: true }),
+      supabase.from("profiles").select("id", { count: "exact", head: true }),
     ]);
     return {
       cats: Number(catsRpc.data ?? 0),

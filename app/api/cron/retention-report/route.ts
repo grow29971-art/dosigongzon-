@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     range("posts", "created_at", wk2Start, wk1Start),
     range("post_comments", "created_at", wk1Start, nowIso),
     range("post_comments", "created_at", wk2Start, wk1Start),
-    supabase.from("profiles").select("*", { count: "exact", head: true }),
+    supabase.from("profiles").select("id", { count: "exact", head: true }),
     supabase.from("cats").select("*", { count: "exact", head: true }).eq("hidden", false),
     // 최근 14일 방문 (DAU ~10~20 → 14일 ≈ 200행 미만, 단일 fetch 안전)
     supabase.from("daily_visits").select("date, user_id").gte("date", kstDate(now - 14 * DAY)),

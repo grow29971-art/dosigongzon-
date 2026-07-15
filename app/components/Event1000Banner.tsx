@@ -15,7 +15,7 @@ async function getCounts(): Promise<{ userCount: number; entryCount: number }> {
   try {
     const supabase = createAnonClient();
     const [users, entries] = await Promise.all([
-      supabase.from("profiles").select("*", { count: "exact", head: true }),
+      supabase.from("profiles").select("id", { count: "exact", head: true }),
       supabase.from("event_keyring_entries").select("*", { count: "exact", head: true }),
     ]);
     return {

@@ -15,7 +15,7 @@ async function getStats() {
     const [catsRpc, profilesRes, urgentRpc, hospitalsRes] = await Promise.all([
       // private/circle 포함 전체 카운트
       supabase.rpc("total_cat_count"),
-      supabase.from("profiles").select("*", { count: "exact", head: true }),
+      supabase.from("profiles").select("id", { count: "exact", head: true }),
       supabase.rpc("total_danger_cat_count"),
       supabase.from("rescue_hospitals").select("*", { count: "exact", head: true }).eq("hidden", false),
     ]);
