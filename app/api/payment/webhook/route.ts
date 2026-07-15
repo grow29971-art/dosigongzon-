@@ -24,7 +24,7 @@ interface TossPayment {
   easyPay?: { provider?: string } | null;
 }
 
-type OrderItem = { product_id: string | null; quantity: number };
+type OrderItem = { id: string; product_id: string | null; quantity: number; donation_amount?: number };
 
 async function restoreStock(svc: SupabaseClient, items: OrderItem[]): Promise<void> {
   for (const item of items) {
@@ -140,16 +140,19 @@ export async function POST(req: Request) {
     //  이 경로는 confirm의 4.5 검증을 우회할 수 있어 여기서도 반드시 재검증)
     let expectedAmount = order.payment_amount as number;
     const webhookPoints = (order as { points_used?: number }).points_used ?? 0;
+    // 후원액도 confirm과 동일하게 실제 상품 비율로 재계산 — 클라이언트가 order_items.donation_amount를
+    // 조작해 공개 후원 집계(투명 정산)를 부풀리는 것을 차단. 선점 성공 후 스냅샷을 덮어씀.
+    const donationFixes: { id: string; donation_amount: number }[] = [];
     const productIds = items.map((i) => i.product_id).filter((id): id is string => !!id);
     if (productIds.length !== items.length || items.length === 0) {
       expectedAmount = -1; // 상품 정보 이상 → 강제 불일치 처리
     } else {
       const { data: prods } = await svc
         .from("products")
-        .select("id, price, sale_price, shipping_fee, is_donation")
+        .select("id, price, sale_price, shipping_fee, is_donation, donation_percent")
         .in("id", productIds);
       const pm = new Map(
-        ((prods ?? []) as { id: string; price: number; sale_price: number | null; shipping_fee: number; is_donation: boolean }[])
+        ((prods ?? []) as { id: string; price: number; sale_price: number | null; shipping_fee: number; is_donation: boolean; donation_percent: number }[])
           .map((p) => [p.id, p]),
       );
       let prodSum = 0;
@@ -159,9 +162,14 @@ export async function POST(req: Request) {
       for (const it of items) {
         const p = it.product_id ? pm.get(it.product_id) : undefined;
         if (!p) { bad = true; break; }
-        prodSum += (p.sale_price ?? p.price) * it.quantity;
+        const subtotal = (p.sale_price ?? p.price) * it.quantity;
+        prodSum += subtotal;
         ship = Math.max(ship, p.shipping_fee);
         if (p.is_donation) hasDonation = true;
+        const correctDonation = p.is_donation ? Math.floor((subtotal * p.donation_percent) / 100) : 0;
+        if (it.donation_amount !== correctDonation) {
+          donationFixes.push({ id: it.id, donation_amount: correctDonation });
+        }
       }
       // 포인트 검증 — confirm 4.5와 동일 규칙 (후원 상품 포함 시 포인트 불가, 최소 100원)
       const pointsValid =
@@ -199,6 +207,14 @@ export async function POST(req: Request) {
       .select("id");
 
     if (claimed && claimed.length > 0) {
+      // 조작된 후원액 교정 — 선점 성공(이 웹훅이 확정 주체)한 뒤에만 스냅샷을 바로잡는다.
+      for (const fix of donationFixes) {
+        const { error: fixError } = await svc
+          .from("order_items")
+          .update({ donation_amount: fix.donation_amount })
+          .eq("id", fix.id);
+        if (fixError) console.error("[payment/webhook] donation fix failed:", fixError, fix.id);
+      }
       // 포인트 차감 — confirm을 우회한 경로이므로 여기서 수행.
       // 잔액 부족(비정상)이면 자동 환불 + 취소 (돈만 잡힌 상태 방지)
       if (webhookPoints > 0) {
