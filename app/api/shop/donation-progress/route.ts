@@ -5,7 +5,7 @@
 // ══════════════════════════════════════════
 
 import { NextResponse } from "next/server";
-import { createClient as serviceClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 // 1차 목표 (사용처는 커뮤니티 투표로 결정 예정 — 2026-07-14)
 const GOAL_AMOUNT = 100_000;
@@ -14,10 +14,7 @@ const GOAL_LABEL = "1차 목표";
 const COUNTED_STATUSES = ["paid", "preparing", "shipping", "delivered"];
 
 export async function GET() {
-  const svc = serviceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
+  const svc = createServiceClient();
 
   const { data, error } = await svc
     .from("order_items")

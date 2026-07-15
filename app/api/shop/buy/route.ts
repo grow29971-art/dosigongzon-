@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createClient as serviceClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { SHOP_ITEMS, type ShopItemKey } from "@/lib/shop-config";
 
 // box/supabase_shop_buy_rpc_migration.sql의 buy_shop_item_atomic() DB 함수로
@@ -17,10 +17,7 @@ export async function POST(req: Request) {
   const item = SHOP_ITEMS[item_key as ShopItemKey];
   if (!item) return NextResponse.json({ error: "invalid_item" }, { status: 400 });
 
-  const svc = serviceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
+  const svc = createServiceClient();
 
   const { data: rpcData, error: rpcError } = await svc.rpc("buy_shop_item_atomic", {
     p_user_id: user.id,

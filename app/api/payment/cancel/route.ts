@@ -7,7 +7,7 @@
 
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createClient as serviceClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
@@ -30,10 +30,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "주문 정보가 누락됐어요." }, { status: 400 });
   }
 
-  const svc = serviceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
+  const svc = createServiceClient();
 
   // 주문 조회 (id 또는 order_number)
   let query = svc.from("orders").select("*, items:order_items(*)");

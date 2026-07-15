@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createClient as serviceClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { SHOP_ITEMS, type ShopItemKey } from "@/lib/shop-config";
 
 export async function POST(req: Request) {
@@ -22,10 +22,7 @@ export async function POST(req: Request) {
   const qty = existing?.quantity ?? 0;
   if (qty <= 0) return NextResponse.json({ error: "no_stock" }, { status: 400 });
 
-  const svc = serviceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
+  const svc = createServiceClient();
   // gt("quantity", 0) 필터로 동시 요청이 겹쳐도 최소한 음수로는 안 내려가게 방어.
   // (완전한 원자적 차감은 아니라 극단적으론 재고보다 1개 더 쓰는 경쟁 상태가 이론상
   // 남지만, 배틀 소모품이라 파급력이 작아 이 정도 방어로 충분하다고 판단)

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createClient as serviceClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { kstToday } from "@/lib/kst";
 
 const TASK_CARE_TYPE: Record<string, { care_type: string; memo: string }> = {
@@ -37,10 +37,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "already_checked_in" }, { status: 400 });
   }
 
-  const svc = serviceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
+  const svc = createServiceClient();
 
   // 원자적 선점 — 동시 요청 중 하나만 통과 (레이스로 코인 중복 수령 차단).
   // last_checkin_date를 조건부로 먼저 today로 바꾸고, 행을 못 바꾼 요청은 already 처리.

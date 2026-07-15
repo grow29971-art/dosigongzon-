@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/lib/supabase/server";
-import { createClient as serviceClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { generateBattleStats } from "@/lib/battle-config";
 import { TITLES, TRAITS, FLAVORS } from "@/lib/battle-card-titles";
 import { calculateCatGrade, type CatFeatures } from "@/lib/cat-grade";
@@ -118,7 +118,7 @@ export async function POST(request: Request) {
 
   // 완벽 포획 성공 횟수 집계 (타이틀 연동) — 진짜 새 카드 생성일 때만 1회 카운트
   if (perfectCatch) {
-    const svc = serviceClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+    const svc = createServiceClient();
     const { data: profile } = await svc.from("profiles").select("perfect_catch_count").eq("id", user.id).maybeSingle();
     await svc.from("profiles").update({ perfect_catch_count: (profile?.perfect_catch_count ?? 0) + 1 }).eq("id", user.id);
   }

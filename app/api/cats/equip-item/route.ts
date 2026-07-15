@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createClient as serviceClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { SHOP_ITEMS, BODY_SLOTS, type ShopItemKey, type BodySlot } from "@/lib/shop-config";
 
 // 카드에 아이템을 끼우거나(item_key) 빼는(item_key: null) API.
@@ -28,10 +28,7 @@ export async function POST(req: Request) {
     if (!ok) return NextResponse.json({ error: "invalid_item" }, { status: 400 });
   }
 
-  const svc = serviceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
+  const svc = createServiceClient();
 
   const { data: rpcData, error: rpcError } = await svc.rpc("equip_item_atomic", {
     p_user_id: user.id,

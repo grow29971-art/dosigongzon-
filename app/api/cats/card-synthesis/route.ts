@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createClient as serviceClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { generateBattleStats } from "@/lib/battle-config";
 import { TITLES, FLAVORS } from "@/lib/battle-card-titles";
 
@@ -47,10 +47,7 @@ export async function POST(req: Request) {
   const flavorPool = FLAVORS[newRarity as keyof typeof FLAVORS] ?? FLAVORS.common;
   const newCardName = `${pick(titlePool)} ${cat.name}`;
 
-  const svc = serviceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
+  const svc = createServiceClient();
 
   // 레벨·경험치는 그대로 유지, 등급/이름/전투 스탯만 다음 단계로 갱신
   await svc.from("cats").update({

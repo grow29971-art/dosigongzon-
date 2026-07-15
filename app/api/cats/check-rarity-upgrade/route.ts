@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createClient as serviceClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { generateBattleStats, RARITY_CARE_THRESHOLD, RARITY_UPGRADE_TARGET } from "@/lib/battle-config";
 import { TITLES, FLAVORS } from "@/lib/battle-card-titles";
 
@@ -47,10 +47,7 @@ export async function POST(req: Request) {
   const flavorPool = FLAVORS[newRarity as keyof typeof FLAVORS] ?? FLAVORS.common;
   const newCardName = `${pick(titlePool)} ${cat.name}`;
 
-  const svc = serviceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
+  const svc = createServiceClient();
 
   await svc.from("cats").update({
     card_rarity: newRarity,

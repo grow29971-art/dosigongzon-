@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createClient as serviceClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { SKILL_POOL, SPECIAL_SKILLS, type SpecialSkillId } from "@/lib/battle-config";
 
 const SLOT_COLUMNS = ["battle_special", "battle_special2", "battle_special3", "battle_special4"] as const;
@@ -43,10 +43,7 @@ export async function POST(req: Request) {
   const pickPool = candidates.length > 0 ? candidates : pool;
   const newSkillId = pickPool[Math.floor(Math.random() * pickPool.length)] as SpecialSkillId;
 
-  const svc = serviceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
+  const svc = createServiceClient();
 
   await Promise.all([
     svc.from("cats").update({ [SLOT_COLUMNS[slot]]: newSkillId }).eq("id", cat_id),

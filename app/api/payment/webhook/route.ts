@@ -11,7 +11,8 @@
 // ══════════════════════════════════════════
 
 import { NextResponse } from "next/server";
-import { createClient as serviceClient, type SupabaseClient } from "@supabase/supabase-js";
+import { type SupabaseClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export const maxDuration = 60;
 
@@ -118,10 +119,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "lookup failed" }, { status: 502 }); // 토스가 재시도
   }
 
-  const svc = serviceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
+  const svc = createServiceClient();
 
   // 3. 주문 조회
   const { data: order } = await svc

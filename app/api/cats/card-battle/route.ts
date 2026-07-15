@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createClient as serviceClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BATTLE_DRAW, COINS_BOSS_WIN, COINS_BOSS_LOSE, COINS_BOSS_DRAW, applyEquipBonuses, type EquippedSlots } from "@/lib/shop-config";
 import { SPECIAL_SKILLS, type SpecialSkillId } from "@/lib/battle-config";
 import { recordPveEncounter } from "@/lib/pve-bestiary";
@@ -645,10 +645,7 @@ export async function POST(req: Request) {
   const result = simulateBattle(myCat as CardCat, opponent);
 
   // EXP 지급
-  const svc = serviceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
+  const svc = createServiceClient();
 
   const winnerExp = 14, loserExp = 5, drawExp = 9;
   const myExpGained = result.isDraw ? drawExp : result.attackerWins ? winnerExp : loserExp;

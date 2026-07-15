@@ -5,7 +5,7 @@
 
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createClient as serviceClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { rateLimit } from "@/lib/rate-limit";
 
 export const MILESTONES: { days: number; points: number }[] = [
@@ -39,10 +39,7 @@ export async function POST() {
     return NextResponse.json({ error: "요청이 너무 많아요." }, { status: 429 });
   }
 
-  const svc = serviceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
+  const svc = createServiceClient();
 
   const { monday, weekKey } = kstWeekInfo();
   const { data: days, error: daysError } = await svc

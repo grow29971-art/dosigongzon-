@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createClient as serviceClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BATTLE_DRAW, COINS_BOSS_WIN, COINS_BOSS_LOSE, COINS_BOSS_DRAW } from "@/lib/shop-config";
 import { recordPveEncounter } from "@/lib/pve-bestiary";
 import { verifyBattleToken } from "@/lib/battle-token";
@@ -47,10 +47,7 @@ export async function POST(req: Request) {
     .from("cats").select("id,card_exp,card_level,win_streak,best_win_streak")
     .eq("id", opp_cat_id).maybeSingle();
 
-  const svc = serviceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
+  const svc = createServiceClient();
 
   const winnerExp = 15, loserExp = 6, drawExp = 10;
   const myExpGained = isDraw ? drawExp : iWon ? winnerExp : loserExp;

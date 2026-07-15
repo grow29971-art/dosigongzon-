@@ -5,15 +5,12 @@
 // ══════════════════════════════════════════
 
 import { NextResponse } from "next/server";
-import { createClient as serviceClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 const COUNTED_STATUSES = ["paid", "preparing", "shipping", "delivered"];
 
 export async function GET() {
-  const svc = serviceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
+  const svc = createServiceClient();
 
   // 모인 금액
   const { data: items } = await svc
