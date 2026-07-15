@@ -63,6 +63,21 @@
   --shadow-primary: 0 6px 20px rgba(49, 130, 246, 0.3);
   --shadow-modal: 0 20px 50px rgba(0, 0, 0, 0.25);
 
+  /* ── 타이포 스케일 (2026-07-15, 토스식 위계) ──
+     화면마다 제각각이던 px를 6단계로 수렴. 새 화면은 이 스케일만 사용.
+     display: 페이지 대제목 · title: 섹션 제목 · body: 본문 · label: 보조 · caption: 최소 */
+  --text-display: 24px;   /* 페이지 헤드라인 (extrabold) */
+  --text-title: 20px;     /* 카드 헤드라인 (extrabold) */
+  --text-section: 17px;   /* 섹션 제목 (bold) */
+  --text-body: 15px;      /* 본문/리스트 제목 (medium~semibold) */
+  --text-label: 13px;     /* 보조 텍스트/버튼 소형 */
+  --text-caption: 11px;   /* 캡션/타임스탬프 */
+
+  /* ── 모션 토큰 — 짧고 절제된 트랜지션 ── */
+  --motion-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-base: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-spring: 0.3s cubic-bezier(0.34, 1.3, 0.64, 1);
+
   /* Font */
   --font-sans: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
@@ -113,6 +128,20 @@ body {
 
 .nav-shadow { box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03); }
 .fab-shadow { box-shadow: var(--shadow-primary); }
+
+/* ── 프레스 피드백 — 탭 가능한 모든 표면의 공통 인터랙션 ──
+   살짝 눌리며(scale) 어두워지는(opacity) 절제된 반응. 카드/리스트행/버튼에 부착. */
+.press {
+  transition: transform var(--motion-fast), opacity var(--motion-fast);
+}
+.press:active {
+  transform: scale(0.98);
+  opacity: 0.85;
+}
+.press-strong:active {
+  transform: scale(0.96);
+  opacity: 0.85;
+}
 
 /* ── 태그 ── */
 .tag {
