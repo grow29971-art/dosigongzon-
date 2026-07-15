@@ -407,16 +407,22 @@ export default function HomeAuthed({
     recordVisit();
   }, [authLoading, user]);
 
-  // 온보딩 체크
+  // 온보딩 체크 — /onboarding은 비로그인(랜딩) 전용이다.
+  // 로그인 유저는 이미 가입을 마친 사람이므로 "가입/로그인" 화면인 /onboarding으로
+  // 절대 튕기지 않는다(예: 소셜 첫 가입은 /welcome을 거치는데 그 경로는 onboarded 플래그를
+  // 세팅하지 않아, 가입 직후 홈 첫 진입에서 랜딩 온보딩으로 새던 버그를 차단).
   useEffect(() => {
+    if (authLoading) return;
     try {
-      if (!localStorage.getItem("dosigongzon_onboarded")) {
+      if (user) {
+        localStorage.setItem("dosigongzon_onboarded", "true");
+      } else if (!localStorage.getItem("dosigongzon_onboarded")) {
         router.push("/onboarding");
         return;
       }
     } catch {}
     setOnboardingChecked(true);
-  }, [router]);
+  }, [router, authLoading, user]);
 
   // 온보딩 통과 후 auth 확인 → 로그인 안 되어 있으면 지도(비회원 모드)로
   useEffect(() => {
