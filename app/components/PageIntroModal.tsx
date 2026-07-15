@@ -38,23 +38,30 @@ export default function PageIntroModal({
 }) {
   const [show, setShow] = useState(false);
 
-  // 4일에 한 번만 노출 (그 창 안 첫 진입 시). 매번 뜨는 피로 방지.
+  // 4일에 한 번만 노출 (매번 피로 방지). 쿨다운은 계정별로 독립 —
+  // 유저 id를 키에 넣어, 같은 브라우저라도 새 계정은 처음처럼 안내가 뜬다. 비로그인은 'anon'.
   useEffect(() => {
+    let cancelled = false;
     const REMIND_MS = 4 * 24 * 60 * 60 * 1000; // 4일
-    const tsKey = `${storageKey}_ts`;
-    let due = true;
-    try {
-      const last = Number(localStorage.getItem(tsKey) || 0);
-      due = Date.now() - last > REMIND_MS;
-    } catch {
-      due = true;
-    }
-    if (!due) return;
-    const t = setTimeout(() => {
-      setShow(true);
-      try { localStorage.setItem(tsKey, String(Date.now())); } catch { /* ignore */ }
-    }, 400);
-    return () => clearTimeout(t);
+    (async () => {
+      let uid = "anon";
+      try {
+        const { createClient } = await import("@/lib/supabase/client");
+        const { data } = await createClient().auth.getUser();
+        if (data.user) uid = data.user.id;
+      } catch { /* 비로그인/오류 → anon */ }
+      if (cancelled) return;
+      const tsKey = `${storageKey}_${uid}_ts`;
+      let due = true;
+      try { due = Date.now() - Number(localStorage.getItem(tsKey) || 0) > REMIND_MS; } catch { due = true; }
+      if (!due) return;
+      setTimeout(() => {
+        if (cancelled) return;
+        setShow(true);
+        try { localStorage.setItem(tsKey, String(Date.now())); } catch { /* ignore */ }
+      }, 400);
+    })();
+    return () => { cancelled = true; };
   }, [storageKey]);
 
   // 도움말 버튼 등으로 강제 재오픈

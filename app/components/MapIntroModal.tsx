@@ -11,23 +11,29 @@ import { X, ShieldCheck } from "lucide-react";
 export default function MapIntroModal() {
   const [show, setShow] = useState(false);
 
-  // 4일에 한 번만 노출 (매번 뜨는 피로 방지)
+  // 4일에 한 번만 노출 (계정별 독립 쿨다운)
   useEffect(() => {
+    let cancelled = false;
     const REMIND_MS = 4 * 24 * 60 * 60 * 1000;
-    const tsKey = "dosigongzon_intro_map_ts";
-    let due = true;
-    try {
-      const last = Number(localStorage.getItem(tsKey) || 0);
-      due = Date.now() - last > REMIND_MS;
-    } catch {
-      due = true;
-    }
-    if (!due) return;
-    const t = setTimeout(() => {
-      setShow(true);
-      try { localStorage.setItem(tsKey, String(Date.now())); } catch { /* ignore */ }
-    }, 600);
-    return () => clearTimeout(t);
+    (async () => {
+      let uid = "anon";
+      try {
+        const { createClient } = await import("@/lib/supabase/client");
+        const { data } = await createClient().auth.getUser();
+        if (data.user) uid = data.user.id;
+      } catch { /* anon */ }
+      if (cancelled) return;
+      const tsKey = `dosigongzon_intro_map_${uid}_ts`;
+      let due = true;
+      try { due = Date.now() - Number(localStorage.getItem(tsKey) || 0) > REMIND_MS; } catch { due = true; }
+      if (!due) return;
+      setTimeout(() => {
+        if (cancelled) return;
+        setShow(true);
+        try { localStorage.setItem(tsKey, String(Date.now())); } catch { /* ignore */ }
+      }, 600);
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   const close = () => setShow(false); // 닫아도 다음 방문 때 다시 노출

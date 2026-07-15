@@ -33,6 +33,7 @@ import { SEOUL_GUS } from "@/lib/seoul-regions";
 import { getGuCounts } from "@/lib/region-counts";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import AboutCityCard from "@/app/components/AboutCityCard";
+import PageIntroModal from "@/app/components/PageIntroModal";
 import { listPublishedTipsServer, type Tip } from "@/lib/tips-repo";
 import { getTopCaretakersServer, type RankingRow } from "@/lib/ranking-repo";
 import { getActiveRegionsTop3 } from "@/lib/region-activity";
@@ -161,6 +162,19 @@ export default async function HomeLanding({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }} />
       <LandingOnboardingGate />
+
+      <PageIntroModal
+        storageKey="dosigongzon_intro_landing"
+        badge="도시공존"
+        headerEmoji="🐾"
+        title="우리 동네 길고양이를 함께 돌봐요"
+        items={[
+          { emoji: "🗺️", text: <>지도에서 우리 동네 길고양이를 만나고, 밥·건강을 함께 기록해요.</> },
+          { emoji: "💛", text: <>쇼핑 수익 일부는 아이들에게 — <b className="text-text-main">사용처는 함께 투표</b>로 정해요.</> },
+          { emoji: "✨", text: <>가입은 무료예요. 우리 동네부터 시작해보세요.</> },
+        ]}
+        buttonLabel="둘러보기 🐾"
+      />
 
       {/* 도시공존 소개 — 비로그인 방문자(인스타 유입 등)가 최상단에서 바로 이해 */}
       <div className="px-5 pt-14 pb-1">
