@@ -28,7 +28,26 @@ export default function MapIntroModal() {
     setShow(false);
   };
 
-  if (!show) return null;
+  // 닫힌 상태 → 좌하단 "?" 도움말 버튼 (언제든 다시 보기)
+  if (!show) {
+    return (
+      <button
+        onClick={() => setShow(true)}
+        className="fixed z-40 w-8 h-8 rounded-full flex items-center justify-center text-[15px] font-extrabold active:scale-90 transition-transform"
+        style={{
+          left: 12,
+          bottom: "calc(5.5rem + env(safe-area-inset-bottom))",
+          background: "rgba(255,255,255,0.95)",
+          color: "var(--color-text-light)",
+          boxShadow: "0 3px 12px rgba(0,0,0,0.15)",
+          border: "1px solid var(--color-divider)",
+        }}
+        aria-label="이용안내 다시 보기"
+      >
+        ?
+      </button>
+    );
+  }
 
   return (
     <div

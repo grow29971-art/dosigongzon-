@@ -22,6 +22,7 @@ export default function PageIntroModal({
   accent = "var(--color-primary)",
   accentDark = "var(--color-primary-dark)",
   headerBg = "linear-gradient(160deg, #EEF5FF 0%, #E3EEFC 100%)",
+  reopenSignal = 0,
 }: {
   storageKey: string;
   badge: string;
@@ -32,9 +33,12 @@ export default function PageIntroModal({
   accent?: string;
   accentDark?: string;
   headerBg?: string;
+  /** 값이 바뀌면(도움말 버튼 클릭 등) 안내창을 강제로 다시 연다 */
+  reopenSignal?: number;
 }) {
   const [show, setShow] = useState(false);
 
+  // 첫 방문 자동 노출 (localStorage로 1회)
   useEffect(() => {
     try {
       if (!localStorage.getItem(storageKey)) {
@@ -46,12 +50,36 @@ export default function PageIntroModal({
     }
   }, [storageKey]);
 
+  // 도움말 버튼 등으로 강제 재오픈
+  useEffect(() => {
+    if (reopenSignal > 0) setShow(true);
+  }, [reopenSignal]);
+
   const close = () => {
     try { localStorage.setItem(storageKey, "1"); } catch { /* ignore */ }
     setShow(false);
   };
 
-  if (!show) return null;
+  // 닫힌 상태에선 좌하단에 작은 "?" 도움말 버튼 → 언제든 안내 다시 보기
+  if (!show) {
+    return (
+      <button
+        onClick={() => setShow(true)}
+        className="fixed z-40 w-8 h-8 rounded-full flex items-center justify-center text-[15px] font-extrabold active:scale-90 transition-transform"
+        style={{
+          left: 12,
+          bottom: "calc(5.5rem + env(safe-area-inset-bottom))",
+          background: "rgba(255,255,255,0.95)",
+          color: "var(--color-text-light)",
+          boxShadow: "0 3px 12px rgba(0,0,0,0.15)",
+          border: "1px solid var(--color-divider)",
+        }}
+        aria-label="이용안내 다시 보기"
+      >
+        ?
+      </button>
+    );
+  }
 
   return (
     <div
