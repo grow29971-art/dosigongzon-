@@ -146,7 +146,7 @@ export default async function TipDetailPage({ params }: Params) {
       },
     },
     keywords: tip.tags.join(", "),
-    articleSection: "꿀팁게시판",
+    articleSection: "도시공존 꿀팁 매거진",
     inLanguage: "ko-KR",
   };
 
@@ -156,7 +156,7 @@ export default async function TipDetailPage({ params }: Params) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "홈", item: SITE_URL },
-      { "@type": "ListItem", position: 2, name: "꿀팁게시판", item: `${SITE_URL}/tips` },
+      { "@type": "ListItem", position: 2, name: "꿀팁 매거진", item: `${SITE_URL}/tips` },
       { "@type": "ListItem", position: 3, name: tip.title, item: url },
     ],
   };
@@ -197,7 +197,7 @@ export default async function TipDetailPage({ params }: Params) {
           <Link
             href="/tips"
             className="absolute top-12 left-4 w-10 h-10 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform"
-            aria-label="꿀팁게시판"
+            aria-label="꿀팁 매거진"
           >
             <ArrowLeft size={20} className="text-text-main" />
           </Link>
@@ -208,7 +208,7 @@ export default async function TipDetailPage({ params }: Params) {
             href="/tips"
             className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
             style={{ boxShadow: "var(--shadow-raised)" }}
-            aria-label="꿀팁게시판"
+            aria-label="꿀팁 매거진"
           >
             <ArrowLeft size={18} className="text-text-main" />
           </Link>

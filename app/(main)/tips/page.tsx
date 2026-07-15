@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     "길고양이 돌봄, 뭐든 AI 집사에게 물어보세요. TNR·구조·입양 가이드와 도시공존이 직접 큐레이션한 꿀팁까지 한곳에서.",
   keywords: [
     "길고양이 꿀팁", "길고양이 돌봄법", "TNR 신청", "중성화", "임시보호",
-    "고양이 구조", "겨울철 길고양이", "케어테이커 꿀팁", "도시공존 꿀팁게시판",
+    "고양이 구조", "겨울철 길고양이", "케어테이커 꿀팁", "도시공존 꿀팁 매거진",
   ],
   alternates: { canonical: "/tips" },
   openGraph: {
@@ -66,7 +66,7 @@ export default async function TipsIndexPage() {
   const itemListLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "도시공존 꿀팁게시판",
+    name: "도시공존 꿀팁 매거진",
     description:
       "길고양이 돌봄·TNR·중성화·구조·입양에 도움되는 정보글 모음.",
     itemListElement: items.slice(0, 20).map((tip, idx) => ({
@@ -118,7 +118,7 @@ export default async function TipsIndexPage() {
             <Bot size={18} className="text-primary" />
             AI집사
           </h1>
-          <p className="text-[11px] text-text-sub">궁금한 건 AI 집사에게 — 구조 매뉴얼·꿀팁도 한곳에</p>
+          <p className="text-[11px] text-text-sub">궁금한 건 AI 집사에게 — 구조 매뉴얼·꿀팁 매거진도 한곳에</p>
         </div>
       </div>
 
@@ -223,12 +223,12 @@ export default async function TipsIndexPage() {
         </div>
       </div>
 
-      {/* ── 꿀팁 헤더 ── */}
+      {/* ── 꿀팁 매거진 헤더 (토스식 17px 위계) ── */}
       <div className="px-4 mb-2.5">
         <div className="flex items-center gap-1.5 px-1">
-          <Sparkles size={14} className="text-primary" />
-          <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
-            꿀팁
+          <Sparkles size={15} className="text-primary" />
+          <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+            도시공존 꿀팁 매거진
           </h2>
         </div>
       </div>
