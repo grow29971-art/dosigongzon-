@@ -29,6 +29,7 @@ import {
   Megaphone,
   ShoppingBag,
   PackageCheck,
+  HeartHandshake,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { getAdminStats, type AdminStats } from "@/lib/admin-stats";
@@ -107,6 +108,13 @@ export default function AdminDashboardPage() {
       subtitle: "주문 상태·운송장·취소/환불",
       Icon: PackageCheck,
       color: "#3182F6",
+    },
+    {
+      href: "/admin/fund",
+      title: "후원금 지출 관리",
+      subtitle: "투명 정산 위젯에 쓰인 금액 등록",
+      Icon: HeartHandshake,
+      color: "#E86B8C",
     },
     {
       href: "/admin/cats",

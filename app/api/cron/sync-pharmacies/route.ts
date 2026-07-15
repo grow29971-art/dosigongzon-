@@ -200,6 +200,29 @@ export async function POST(request: Request) {
       `[sync-pharmacies] Done! Inserted: ${totalInserted}, Updated: ${totalUpdated}`,
     );
 
+    // 0건 처리 = 외부 API가 응답 안 하거나 authKey 만료 가능성 → 조용히 넘기지 않고 관리자에게 알림.
+    // (2026-07-15: 4/16 이후 데이터 정지가 silent skip으로 방치됐던 문제 대응)
+    if (totalInserted === 0 && totalUpdated === 0) {
+      try {
+        const { data: admins } = await supabase.from("admins").select("user_id");
+        const ids = ((admins ?? []) as { user_id: string }[]).map((a) => a.user_id);
+        if (ids.length > 0) {
+          const body =
+            "⚠️ 동물약국 동기화 0건 처리\n" +
+            "LOCALDATA(정부) API 응답 없음 또는 authKey 만료 의심.\n" +
+            "→ localdata.go.kr 에서 authKey 유효성/갱신 확인 필요.";
+          await supabase.from("direct_messages").insert(
+            ids.map((id) => ({
+              sender_id: id, sender_name: "도시공존 운영", sender_avatar_url: null,
+              receiver_id: id, receiver_name: "운영자", body,
+            })),
+          );
+        }
+      } catch (alertErr) {
+        console.error("[sync-pharmacies] 실패 알림 발송 실패:", alertErr);
+      }
+    }
+
     return Response.json({
       success: true,
       inserted: totalInserted,
