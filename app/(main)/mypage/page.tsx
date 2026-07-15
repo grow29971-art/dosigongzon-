@@ -441,7 +441,7 @@ export default function MyPage() {
                   <p className="text-[12px] text-text-light mt-0.5 truncate">{email}</p>
                   {joinedDays > 0 && (
                     <span
-                      className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-full text-[10.5px] font-extrabold"
+                      className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 chip-square text-[10.5px] font-extrabold"
                       style={{ background: "rgba(49,130,246,0.12)", color: "var(--color-primary-dark)" }}
                     >
                       🐾 첫 등록 후 {joinedDays}일째 함께 돌봐요
@@ -705,7 +705,7 @@ export default function MyPage() {
                         </div>
                       )}
                       <div
-                        className="absolute top-1.5 right-1.5 flex items-center gap-0.5 px-1.5 py-0.5 rounded-full"
+                        className="absolute top-1.5 right-1.5 flex items-center gap-0.5 px-1.5 py-0.5 chip-square"
                         style={{
                           background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)",
                           boxShadow: "0 2px 6px rgba(232,107,140,0.4)",
@@ -1038,7 +1038,7 @@ export default function MyPage() {
                     내 서클
                   </p>
                   <span
-                    className="text-[10.5px] font-extrabold px-1.5 py-0.5 rounded-full"
+                    className="text-[10.5px] font-extrabold px-1.5 py-0.5 chip-square"
                     style={{ background: "#4F6B53", color: "#FFF" }}
                   >
                     {circleMemberCount}
@@ -1416,7 +1416,7 @@ function TitleCard({
     >
       {isEquipped && (
         <span
-          className="absolute top-1 right-1 text-[8px] font-extrabold px-1.5 py-0.5 rounded-full"
+          className="absolute top-1 right-1 text-[8px] font-extrabold px-1.5 py-0.5 chip-square"
           style={{ backgroundColor: categoryColor, color: "#fff" }}
         >
           장착

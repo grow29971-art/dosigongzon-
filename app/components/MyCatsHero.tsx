@@ -102,7 +102,7 @@ export default function MyCatsHero() {
         <div className="flex items-center gap-2">
           <h2 className="text-[16px] font-extrabold text-text-main tracking-tight">내 아이들</h2>
           <span
-            className="text-[10.5px] font-extrabold px-2 py-0.5 rounded-full"
+            className="text-[10.5px] font-extrabold px-2 py-0.5 chip-square"
             style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}
           >
             {doneCount}/{cats.length} 오늘 밥
@@ -158,7 +158,7 @@ export default function MyCatsHero() {
 
               {/* 오늘 상태 칩 */}
               <span
-                className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-1 rounded-full text-[9.5px] font-extrabold pointer-events-none"
+                className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-1 chip-square text-[9.5px] font-extrabold pointer-events-none"
                 style={{
                   background: fedToday ? "rgba(34,163,102,0.92)" : "rgba(255,255,255,0.92)",
                   color: fedToday ? "#fff" : "var(--color-text-sub)",

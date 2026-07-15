@@ -645,7 +645,7 @@ export default function HomeAuthed({
                   <div className="flex items-center gap-1.5">
                     {streakInfo && streakInfo.streak > 0 && (
                       <span
-                        className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11.5px] font-extrabold"
+                        className="flex items-center gap-1 px-2.5 py-1 chip-square text-[11.5px] font-extrabold"
                         style={{ background: "#FFF7ED", border: "1px solid #FED7AA", color: "#EA580C" }}
                       >
                         🔥 {streakInfo.streak}일
@@ -1535,7 +1535,7 @@ export default function HomeAuthed({
                     {idx + 1}
                   </div>
                   <div
-                    className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 px-1.5 py-0.5 rounded-full"
+                    className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 px-1.5 py-0.5 chip-square"
                     style={{
                       background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)",
                       boxShadow: "0 2px 4px rgba(232,107,140,0.4)",
@@ -1665,7 +1665,7 @@ export default function HomeAuthed({
                       className="absolute top-2 left-2 right-2 flex items-center justify-between"
                     >
                       <div
-                        className="px-2.5 py-1 rounded-full flex items-center gap-1"
+                        className="px-2.5 py-1 chip-square flex items-center gap-1"
                         style={{
                           background: bgGradient,
                           boxShadow: "0 2px 6px rgba(0,0,0,0.25)",

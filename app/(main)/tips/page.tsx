@@ -241,7 +241,7 @@ export default async function TipsIndexPage() {
               <Link
                 key={tag}
                 href={`/tips?tag=${encodeURIComponent(tag)}`}
-                className="shrink-0 text-[11.5px] font-bold px-2.5 py-1 rounded-full bg-white text-text-sub border border-black/[0.04] active:scale-95 transition-transform"
+                className="shrink-0 text-[11.5px] font-bold px-2.5 py-1 chip-square bg-white text-text-sub border border-black/[0.04] active:scale-95 transition-transform"
               >
                 #{tag}
               </Link>

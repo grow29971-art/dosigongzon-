@@ -143,6 +143,9 @@ body {
   opacity: 0.85;
 }
 
+/* 사각 시그니처 칩 — 텍스트 칩/배지의 rounded-full 대체 (아바타·원형 아이콘 버튼은 원형 유지) */
+.chip-square { border-radius: var(--radius-square); }
+
 /* ── 태그 ── */
 .tag {
   display: inline-flex;
