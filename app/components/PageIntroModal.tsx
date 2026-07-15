@@ -38,27 +38,19 @@ export default function PageIntroModal({
 }) {
   const [show, setShow] = useState(false);
 
-  // 첫 방문 자동 노출 (localStorage로 1회)
+  // 페이지에 들어올 때마다(탭 이동 = 컴포넌트 remount) 항상 노출.
+  // storageKey는 컴포넌트 식별용으로만 유지 (더는 1회 제한에 쓰지 않음).
   useEffect(() => {
-    try {
-      if (!localStorage.getItem(storageKey)) {
-        const t = setTimeout(() => setShow(true), 450);
-        return () => clearTimeout(t);
-      }
-    } catch {
-      setShow(true);
-    }
-  }, [storageKey]);
+    const t = setTimeout(() => setShow(true), 400);
+    return () => clearTimeout(t);
+  }, []);
 
   // 도움말 버튼 등으로 강제 재오픈
   useEffect(() => {
     if (reopenSignal > 0) setShow(true);
   }, [reopenSignal]);
 
-  const close = () => {
-    try { localStorage.setItem(storageKey, "1"); } catch { /* ignore */ }
-    setShow(false);
-  };
+  const close = () => setShow(false); // 닫아도 다음 방문 때 다시 노출
 
   // 닫힌 상태에선 좌하단에 작은 "?" 도움말 버튼 → 언제든 안내 다시 보기
   if (!show) {

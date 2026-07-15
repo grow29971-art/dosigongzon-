@@ -7,26 +7,17 @@
 import { useEffect, useState } from "react";
 import { X, ShieldCheck } from "lucide-react";
 
-const DISMISS_KEY = "dosigongzon_map_intro_seen";
 
 export default function MapIntroModal() {
   const [show, setShow] = useState(false);
 
+  // 지도에 들어올 때마다 노출 (탭 이동 = remount)
   useEffect(() => {
-    try {
-      if (!localStorage.getItem(DISMISS_KEY)) {
-        const t = setTimeout(() => setShow(true), 600); // 지도 로드 뒤 살짝 늦게
-        return () => clearTimeout(t);
-      }
-    } catch {
-      setShow(true);
-    }
+    const t = setTimeout(() => setShow(true), 600); // 지도 로드 뒤 살짝 늦게
+    return () => clearTimeout(t);
   }, []);
 
-  const close = () => {
-    try { localStorage.setItem(DISMISS_KEY, "1"); } catch { /* ignore */ }
-    setShow(false);
-  };
+  const close = () => setShow(false); // 닫아도 다음 방문 때 다시 노출
 
   // 닫힌 상태 → 좌하단 "?" 도움말 버튼 (언제든 다시 보기)
   if (!show) {
