@@ -89,6 +89,15 @@ export default function MyPage() {
   const { user, loading, signOut } = useAuth();
   const router = useRouter();
 
+  // 마이페이지 메뉴 간결화 (2026-07-15) — MAU 초기 저활용 진입점을 눈에서 숨김.
+  // 라우트·코드는 유지하며, 각 플래그를 true로 되돌리면 복원.
+  const SHOW_CARD_GAME = false;      // 내 고양이 카드(CatchCat 게임)
+  const SHOW_JOURNEY = false;        // 당신의 여정
+  const SHOW_MONTHLY_REPORT = false; // 이번 달 성장 리포트
+  const SHOW_CARETAKERS = false;     // 동네 케어테이커 찾기 — 인원 필요
+  const SHOW_RANKING = false;        // 랭킹
+  const SHOW_CIRCLE = false;         // 서클(그룹 돌봄)
+
   const [summary, setSummary] = useState<MyActivitySummary | null>(null);
   const [myCats, setMyCats] = useState<Cat[]>([]);
   const [likedCats, setLikedCats] = useState<Cat[]>([]);
@@ -827,6 +836,7 @@ export default function MyPage() {
             <p className="text-[10.5px] font-extrabold tracking-[0.15em] mb-2 ml-1" style={{ color: "rgba(49,130,246,0.65)" }}>
               ACTIVITY
             </p>
+            {SHOW_CARD_GAME && (
             <Link
               href="/mypage/cards"
               className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform mb-2"
@@ -846,6 +856,8 @@ export default function MyPage() {
               </div>
               <ChevronRight size={16} style={{ color: "rgba(255,255,255,0.3)" }} />
             </Link>
+            )}
+            {SHOW_JOURNEY && (
             <Link
               href="/mypage/journey"
               className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
@@ -872,6 +884,8 @@ export default function MyPage() {
               </div>
               <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-primary)", opacity: 0.7 }} />
             </Link>
+            )}
+            {SHOW_MONTHLY_REPORT && (
             <Link
               href="/mypage/monthly-report"
               className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
@@ -898,6 +912,7 @@ export default function MyPage() {
               </div>
               <ChevronRight size={16} className="shrink-0" style={{ color: "#5BA876", opacity: 0.7 }} />
             </Link>
+            )}
             <Link
               href="/mypage/activity-regions"
               className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
@@ -924,6 +939,7 @@ export default function MyPage() {
               </div>
               <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-primary)", opacity: 0.7 }} />
             </Link>
+            {SHOW_CARETAKERS && (
             <Link
               href="/caretakers"
               className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
@@ -950,6 +966,8 @@ export default function MyPage() {
               </div>
               <ChevronRight size={16} className="shrink-0" style={{ color: "#6B8E6F", opacity: 0.7 }} />
             </Link>
+            )}
+            {SHOW_RANKING && (
             <Link
               href="/ranking"
               className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
@@ -976,6 +994,7 @@ export default function MyPage() {
               </div>
               <ChevronRight size={16} className="shrink-0" style={{ color: "#C9A961", opacity: 0.7 }} />
             </Link>
+            )}
             {/* 설정 그룹 */}
             <p className="text-[10.5px] font-extrabold tracking-[0.15em] mt-4 mb-2 ml-1" style={{ color: "rgba(49,130,246,0.65)" }}>
               SETTINGS
@@ -1077,6 +1096,7 @@ export default function MyPage() {
               </div>
               <ChevronRight size={16} className="shrink-0" style={{ color: "#48A59E", opacity: 0.7 }} />
             </Link>
+            {SHOW_CIRCLE && (
             <Link
               href="/mypage/circle"
               className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
@@ -1113,6 +1133,7 @@ export default function MyPage() {
               </div>
               <ChevronRight size={16} className="shrink-0" style={{ color: "#4F6B53", opacity: 0.7 }} />
             </Link>
+            )}
             <Link
               href="/mypage/blocked-users"
               className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
