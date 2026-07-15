@@ -201,9 +201,16 @@ export default function ShopPage() {
           <div className="flex items-baseline gap-2 mb-1">
             <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">쇼핑</h1>
             <span className="text-[11px] font-semibold text-text-light">Shop</span>
+            {/* 오픈 준비 상태 칩 — 제품 컨택·내부 공사 진행 중 표시 */}
+            <span
+              className="chip-square px-2 py-0.5 text-[10px] font-extrabold"
+              style={{ background: "rgba(255,169,39,0.15)", color: "#B87A10" }}
+            >
+              🚧 오픈 준비 중
+            </span>
           </div>
           <p className="text-[12.5px] text-text-sub leading-relaxed">
-            우리 동네 고양이를 위한 용품 · 후원
+            제품 컨택 · 내부 공사 중 — 좋은 것만 골라서 열게요 🐾
           </p>
         </div>
         <div className="flex items-center gap-2">
