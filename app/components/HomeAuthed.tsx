@@ -34,7 +34,6 @@ import { TITLES, CATEGORY_COLORS } from "@/lib/titles";
 import HomeStreakCard from "@/app/components/HomeStreakCard";
 import SplashLoading from "@/app/components/SplashLoading";
 const FoundingMemberBanner = dynamic(() => import("@/app/components/FoundingMemberBanner"), { ssr: false });
-import PatchUpdateBanner518 from "@/app/components/PatchUpdateBanner518";
 import FirstProjectBanner from "@/app/components/FirstProjectBanner";
 import PageIntroModal from "@/app/components/PageIntroModal";
 const MyCircleQuickEntry = dynamic(() => import("@/app/components/MyCircleQuickEntry"), { ssr: false });
@@ -181,11 +180,8 @@ export default function HomeAuthed({
     }
   }, [user]);
 
-  // 로그인 코인 보너스 (1일 1회, fire-and-forget)
-  useEffect(() => {
-    if (!user) return;
-    fetch("/api/coins/daily-login", { method: "POST" }).catch(() => {});
-  }, [user]);
+  // 로그인 코인 보너스 — 포인트 경제(출석/쇼핑) 잠정 비노출 동안 중단.
+  // SHOW_CHECKIN 부활 시 함께 복원.
 
   // allPosts 또는 lastVisitAt 갱신 시 새 글 개수 재계산
   useEffect(() => {
@@ -557,6 +553,18 @@ export default function HomeAuthed({
   const SHOW_POPULAR_POSTS = false;  // 인기 커뮤니티 글 → HOT 게시글과 중복
   const SHOW_TIPS_ENTRY = false;     // 꿀팁게시판 진입 → AI집사 탭에 존재
 
+  // ── 홈 3블록화 (2026-07-15): MAU 초기엔 '첫 돌봄' 신호를 흐리는 섹션을 숨긴다. ──
+  // 쇼핑/포인트 오픈·인원 확보 후 각 플래그를 true로 되돌리면 복원(라우트·코드는 유지).
+  const SHOW_FUND_BANNER = false;         // 첫 프로젝트(펀드) 배너 — 쇼핑 오픈 전 공허
+  const SHOW_TODO_CHIPS = false;          // '오늘 할 일' 칩(냥상자·도감·랭킹)
+  const SHOW_CHECKIN = false;             // 출석/냥상자/주간출석 — 포인트 경제(쇼핑과 함께 부활)
+  const SHOW_POPULAR_CATS = false;        // 이번 주 인기 고양이 TOP5 — 인원 필요
+  const SHOW_EVENT_BANNERS = false;       // 파운딩멤버 등 이벤트 배너
+  const SHOW_CIRCLE_ENTRY = false;        // 서클 빠른 진입 — 저활용
+  const SHOW_INVITE = false;              // 초대 섹션
+  const SHOW_SOCIAL_PROOF = false;        // 사회적 증명 스트립
+  const SHOW_WEATHER_SHOP_BRIDGE = false; // 날씨→쇼핑 카테고리 다리
+
   return (
     <>
     <PageIntroModal
@@ -565,15 +573,16 @@ export default function HomeAuthed({
       headerEmoji="🏠"
       title="우리 동네 길고양이, 여기서 함께 돌봐요"
       items={[
+        { emoji: "🐾", text: <>지도에서 <b className="text-text-main">+ 버튼</b>으로 우리 동네 고양이를 등록해요.</> },
         { emoji: "🍚", text: <>매일 <b className="text-text-main">내 아이들</b>에게 밥·물·간식을 1탭으로 기록해요.</> },
-        { emoji: "🗺️", text: <>지도에서 동네 고양이를 만나고, 아래로 내리면 동네 소식·랭킹이 이어져요.</> },
-        { emoji: "🔥", text: <>매일 들르면 <b className="text-text-main">출석 포인트</b>가 쌓여 쇼핑 할인으로 돌아와요.</> },
+        { emoji: "🗺️", text: <>아래로 내리면 우리 동네 고양이·소식이 이어져요.</> },
       ]}
     />
     <div className="px-5 pt-5 pb-24">
-      {/* ══════ 지역 미설정 유저 — 우리 동네 설정 유도 (온보딩 병목 개선 2026-07-15) ══════ */}
-      {/* 가입 후 지역 설정 이탈이 커서, 미설정 시 최상단에 눈에 띄게 안내. */}
-      {user && myRegions.length === 0 && (
+      {/* ══════ 지역 미설정 유저 — 동네 소식 받기 유도 (2026-07-15) ══════ */}
+      {/* 지역설정은 등록의 관문이 아니다 — 첫 등록 전(catCount===0) 유저에겐 등록 유도가
+          먼저 오도록, 이 배너는 '등록을 마친 뒤'에만 노출해 동네 소식 연결로 안내. */}
+      {user && myRegions.length === 0 && activity && activity.catCount > 0 && (
         <Link
           href="/mypage/activity-regions"
           className="block mb-4 active:scale-[0.99] transition-transform"
@@ -599,7 +608,7 @@ export default function HomeAuthed({
       )}
 
       {/* ══════ 첫 구원 프로젝트 — 사용처 투표 유도 배너 (닫기 가능, 2026-07-14) ══════ */}
-      <FirstProjectBanner />
+      {SHOW_FUND_BANNER && <FirstProjectBanner />}
 
       {/* ══════ 오늘의 브리핑 카드 — 인사·헤드라인·스트릭·알림 + 날씨를 한 카드로 (홈 리디자인 2차 2026-07-11) ══════ */}
       {/* 브랜드 타이틀은 시안대로 제거 — 앱 아이덴티티는 스플래시/네비가 담당 */}
@@ -814,7 +823,7 @@ export default function HomeAuthed({
                       </p>
                     </div>
                   ))}
-                  {bridge && (
+                  {SHOW_WEATHER_SHOP_BRIDGE && bridge && (
                     <Link
                       href={`/shop?category=${bridge.cat}`}
                       className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl active:scale-[0.98] transition-transform"
@@ -843,7 +852,7 @@ export default function HomeAuthed({
       )}
 
       {/* ══════ 일일 출석체크 모달 — 코인·카드 EXP·계정 레벨 보상 ══════ */}
-      {user && <DailyCheckinModal />}
+      {SHOW_CHECKIN && user && <DailyCheckinModal />}
 
       {/* ══════ 첫 응원 카드 — 활성화 1단: 1탭 응원 → 등록 escalation (catCount===0) ══════ */}
       {user && activity && activity.catCount === 0 && cheerCats.length > 0 && (
@@ -867,8 +876,8 @@ export default function HomeAuthed({
         />
       ) : (
         <>
-          {user && <MyCircleQuickEntry />}
-          {user && myRegions.length > 0 && <FoundingMemberBanner />}
+          {SHOW_CIRCLE_ENTRY && user && <MyCircleQuickEntry />}
+          {SHOW_EVENT_BANNERS && user && myRegions.length > 0 && <FoundingMemberBanner />}
         </>
       )}
 
@@ -1327,7 +1336,7 @@ export default function HomeAuthed({
 
       {/* ══════ 오늘 할 일 — 리추얼·랭킹 칩 행 (Figma 시안 2026-07-13, 가로 스와이프) ══════ */}
       {/* 도감 대형 카드는 칩으로 흡수. 냥 상자/스트릭/랭킹 칩은 아래 해당 카드로 스크롤. */}
-      {user && (
+      {SHOW_TODO_CHIPS && user && (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2.5 px-1">
             <div className="flex items-center gap-2">
@@ -1382,10 +1391,10 @@ export default function HomeAuthed({
       )}
 
       {/* 주간 출석 보드 — 스탬프 + 마일스톤 포인트 (쇼핑 할인용) */}
-      {user && <WeeklyCheckinCard />}
+      {SHOW_CHECKIN && user && <WeeklyCheckinCard />}
 
       {/* 오늘의 냥 상자 — 일일 출석 리추얼 */}
-      {user && <div id="daily-box" style={{ scrollMarginTop: 12 }}><DailyCatBox /></div>}
+      {SHOW_CHECKIN && user && <div id="daily-box" style={{ scrollMarginTop: 12 }}><DailyCatBox /></div>}
 
       {/* ══════ 돌봄 연속 일수(스트릭) — 프리즈 UI 보존, 부가 영역으로 이동 (2026-07-11) ══════ */}
       {user && streakInfo && (
@@ -1398,7 +1407,7 @@ export default function HomeAuthed({
       )}
 
       {/* ══════ 이번 주 돌봄 왕 TOP 3 ══════ */}
-      {caretakerRank.length > 0 && (
+      {SHOW_POPULAR_CATS && caretakerRank.length > 0 && (
         <div className="mb-5 cv-auto" id="weekly-rank" style={{ scrollMarginTop: 12 }}>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 px-1">
@@ -1475,7 +1484,7 @@ export default function HomeAuthed({
       )}
 
       {/* ══════ 이번 주 인기 고양이 TOP 5 ══════ */}
-      {popularCats.length > 0 && (
+      {SHOW_POPULAR_CATS && popularCats.length > 0 && (
         <div className="mb-5 cv-auto">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 px-1">
@@ -1593,16 +1602,16 @@ export default function HomeAuthed({
 
       {/* ══════ 친구 초대 — 1000명 키링 배너 바로 위 배치 (2026-07-11): 초대→목표 달성 동선 연결 ══════ */}
       {/* catCount > 0인 사용자만. 빈 홈에 카드 쌓아두지 않게 활성 임계 통과시점에 노출. */}
-      {activity && activity.catCount > 0 && <InviteSection />}
+      {SHOW_INVITE && activity && activity.catCount > 0 && <InviteSection />}
 
       {/* 1000명 이벤트 배너 (SSR) */}
-      {eventSlot}
+      {SHOW_EVENT_BANNERS && eventSlot}
 
       {/* 돌봄 cue 푸시 옵트인 — 고양이 보유 + 미구독만 (14일 dismiss) */}
       {user && activity && <PushCareCueOptIn hasCat={activity.catCount > 0} />}
 
       {/* 사회적 증명 (오늘 활동 이웃 수) */}
-      <SocialProofStrip />
+      {SHOW_SOCIAL_PROOF && <SocialProofStrip />}
 
       {/* 기능 가이드 팁 (시작 가이드 종료 유저) */}
       {user && activity && onboardingDismissed && (
