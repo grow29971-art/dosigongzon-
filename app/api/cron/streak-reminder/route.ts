@@ -4,14 +4,9 @@
 
 import webpush from "web-push";
 import { createClient } from "@supabase/supabase-js";
+import { toKstDate } from "@/lib/kst";
 
 export const maxDuration = 300;
-
-// KST 날짜 문자열 "YYYY-MM-DD"
-function toKstDate(iso: string | Date): string {
-  const d = typeof iso === "string" ? new Date(iso) : iso;
-  return d.toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
-}
 
 export async function POST(request: Request) {
   const authHeader = request.headers.get("authorization");

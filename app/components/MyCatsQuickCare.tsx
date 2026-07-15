@@ -11,6 +11,7 @@ import { Check, ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { createCareLog } from "@/lib/care-logs-repo";
 import { thumbnailUrl } from "@/lib/cats-repo";
+import { kstTodayStartIso } from "@/lib/kst";
 
 interface CatRow {
   id: string;
@@ -18,12 +19,6 @@ interface CatRow {
   photo_url: string | null;
   fedToday: boolean;
   busy: boolean;
-}
-
-// KST 오늘 00:00 → UTC ISO (logged_at 비교용)
-function kstTodayStartIso(): string {
-  const kstDate = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
-  return new Date(kstDate + "T00:00:00+09:00").toISOString();
 }
 
 export default function MyCatsQuickCare() {

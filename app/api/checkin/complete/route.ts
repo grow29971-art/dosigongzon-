@@ -1,11 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
-
-// KST 날짜 문자열 "YYYY-MM-DD" — streak-reminder 등 다른 cron과 동일한 방식
-function kstToday(): string {
-  return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
-}
+import { kstToday } from "@/lib/kst";
 
 const TASK_CARE_TYPE: Record<string, { care_type: string; memo: string }> = {
   water: { care_type: "water", memo: "일일 출석체크 — 물 갈아줬어요" },

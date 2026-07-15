@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, Circle, X, Coins, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
+import { kstToday } from "@/lib/kst";
 
 const TASKS = [
   { key: "water", label: "물 갈아주기", emoji: "💧" },
@@ -18,10 +19,6 @@ const TASKS = [
   { key: "clean", label: "화장실·집 청소", emoji: "🧹" },
   { key: "health", label: "건강 상태 확인", emoji: "🩺" },
 ];
-
-function kstToday(): string {
-  return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
-}
 
 export default function DailyCheckinModal() {
   const { user } = useAuth();

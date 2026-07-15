@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════
 
 import { createClient } from "@/lib/supabase/client";
+import { toKstDate, thisMondayKstISO } from "@/lib/kst";
 
 export interface StreakInfo {
   streak: number;            // 오늘(또는 어제)부터 거슬러 올라간 연속 일수
@@ -17,30 +18,6 @@ export interface StreakInfo {
     goal: number;            // 목표 (기본 7)
     byDay: boolean[];        // [월,화,수,목,금,토,일] 돌봄 유무
   };
-}
-
-// KST 날짜 문자열 "YYYY-MM-DD"
-function toKstDate(iso: string | Date): string {
-  const d = typeof iso === "string" ? new Date(iso) : iso;
-  // en-CA는 "YYYY-MM-DD" 포맷 반환
-  return d.toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
-}
-
-// 이번 주 월요일 0시(KST)의 UTC ISO 반환
-function thisMondayKstISO(): string {
-  const now = new Date();
-  // KST 기준 현재 시각
-  const kstNow = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
-  const day = kstNow.getDay(); // 0=일 1=월
-  const daysSinceMonday = (day + 6) % 7;
-  const kstMon = new Date(kstNow);
-  kstMon.setHours(0, 0, 0, 0);
-  kstMon.setDate(kstMon.getDate() - daysSinceMonday);
-  // kstMon은 브라우저 로컬 기준으로 만들어졌지만, 같은 시각(KST 자정)을 ISO로 변환해 사용
-  // KST와 브라우저 로컬 타임존 차이 보정
-  const offsetMinutes = new Date().getTimezoneOffset() - (-540); // KST는 +9h = -540m
-  const utcMs = kstMon.getTime() - offsetMinutes * 60 * 1000;
-  return new Date(utcMs).toISOString();
 }
 
 export async function getMyStreakInfo(weeklyGoal = 7): Promise<StreakInfo> {

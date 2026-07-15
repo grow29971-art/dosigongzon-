@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════
 
 import { createClient } from "@/lib/supabase/client";
+import { thisMondayKstISO } from "@/lib/kst";
 
 export interface CaretakerRank {
   userId: string;
@@ -21,20 +22,6 @@ export interface PopularCat {
   like_count: number;
   comment_count: number; // 이번 주 댓글 수
   score: number;         // 가중 점수
-}
-
-// 이번 주 월요일 0시(KST)의 UTC ISO
-function thisMondayKstISO(): string {
-  const now = new Date();
-  const kstNow = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
-  const day = kstNow.getDay();
-  const daysSinceMonday = (day + 6) % 7;
-  const kstMon = new Date(kstNow);
-  kstMon.setHours(0, 0, 0, 0);
-  kstMon.setDate(kstMon.getDate() - daysSinceMonday);
-  const offsetMinutes = new Date().getTimezoneOffset() - (-540);
-  const utcMs = kstMon.getTime() - offsetMinutes * 60 * 1000;
-  return new Date(utcMs).toISOString();
 }
 
 // ══════════════════════════════════════════

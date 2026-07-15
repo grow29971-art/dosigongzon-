@@ -3,6 +3,7 @@
 // ══════════════════════════════════════════
 
 import { createClient } from "@/lib/supabase/client";
+import { toKstDate, thisMondayKstDate } from "@/lib/kst";
 
 export interface FreezeRow {
   id: string;
@@ -15,21 +16,6 @@ export interface FreezeStatus {
   dates: Set<string>;          // 지금까지 얼린 날짜 전부
   usedThisWeek: boolean;       // 이번 ISO 주에 사용했는지
   canUseToday: boolean;        // 오늘 사용 가능 조건 성립
-}
-
-function toKstDate(iso: string | Date): string {
-  const d = typeof iso === "string" ? new Date(iso) : iso;
-  return d.toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
-}
-
-function thisMondayKst(): string {
-  const now = new Date();
-  const kstNow = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
-  const daysSinceMonday = (kstNow.getDay() + 6) % 7;
-  const monday = new Date(kstNow);
-  monday.setHours(0, 0, 0, 0);
-  monday.setDate(monday.getDate() - daysSinceMonday);
-  return monday.toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
 }
 
 /**
@@ -57,7 +43,7 @@ export async function getMyFreezeStatus(): Promise<FreezeStatus> {
   if (error || !data) return empty;
 
   const dates = new Set((data as { freeze_date: string }[]).map((r) => r.freeze_date));
-  const monday = thisMondayKst();
+  const monday = thisMondayKstDate();
   const usedThisWeek = Array.from(dates).some((d) => d >= monday);
   const today = toKstDate(new Date());
   const canUseToday = !usedThisWeek && !dates.has(today);

@@ -14,6 +14,7 @@ import { createClient } from "@/lib/supabase/client";
 import { createCareLog, type CareType } from "@/lib/care-logs-repo";
 import { thumbnailUrl } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import { kstTodayStartIso } from "@/lib/kst";
 
 interface CatRow {
   id: string;
@@ -30,12 +31,6 @@ const QUICK_CARE: { type: CareType; emoji: string; label: string }[] = [
   { type: "health", emoji: "🩺", label: "건강 체크" },
   { type: "shelter", emoji: "🏠", label: "쉼터 관리" },
 ];
-
-// KST 오늘 00:00 → UTC ISO (logged_at 비교용)
-function kstTodayStartIso(): string {
-  const kstDate = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
-  return new Date(kstDate + "T00:00:00+09:00").toISOString();
-}
 
 export default function MyCatsHero() {
   const router = useRouter();

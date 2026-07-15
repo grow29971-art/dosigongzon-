@@ -1,20 +1,10 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as serviceClient } from "@supabase/supabase-js";
+import { thisMondayKstISO } from "@/lib/kst";
 
 // card_battles의 RLS는 "본인 배틀만 조회"라 랭킹 집계는 service_role로만 가능.
 // 이번 주(월~일, KST) 참가자별 승3점/패1점 집계.
-function thisMondayKstISO(): string {
-  const now = new Date();
-  const kstNow = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
-  const day = kstNow.getDay();
-  const daysSinceMonday = (day + 6) % 7;
-  const kstMon = new Date(kstNow);
-  kstMon.setHours(0, 0, 0, 0);
-  kstMon.setDate(kstMon.getDate() - daysSinceMonday);
-  const offsetMinutes = new Date().getTimezoneOffset() - -540;
-  return new Date(kstMon.getTime() - offsetMinutes * 60 * 1000).toISOString();
-}
 
 interface BattleRow {
   challenger_id: string | null;

@@ -15,12 +15,9 @@
 // 운영자가 도시공존 앱·웹 열면 인박스에 어제 요약이 쌓여 있음. 푸시 발송 안 함(소음 ↓).
 
 import { createClient } from "@supabase/supabase-js";
+import { toKstDate } from "@/lib/kst";
 
 export const maxDuration = 60;
-
-function toKstDate(iso: Date): string {
-  return iso.toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
-}
 
 export async function POST(request: Request) {
   const authHeader = request.headers.get("authorization");
