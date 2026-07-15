@@ -54,13 +54,8 @@ export default function EmailDigestToggle() {
   return (
     <div
       id="email-digest"
-      className="w-full flex items-center gap-3 px-4 py-3.5 mt-2"
-      style={{
-        background: "#FFFFFF",
-        borderRadius: "var(--radius-card-sm)",
-        boxShadow: "0 4px 14px rgba(232,107,140,0.10), 0 1px 2px rgba(0,0,0,0.02)",
-        border: "1px solid rgba(0,0,0,0.04)",
-      }}
+      className="w-full flex items-center gap-3 px-1 py-3"
+      style={{ borderTop: "1px solid var(--color-divider)" }}
     >
       <div
         className="w-10 h-10 flex items-center justify-center shrink-0"

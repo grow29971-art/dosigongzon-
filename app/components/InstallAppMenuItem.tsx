@@ -99,21 +99,20 @@ export default function InstallAppMenuItem() {
 
   return (
     <>
+      {/* 마이페이지 '내 설정' 그룹 카드 내부의 행(row) — 토스식 (2026-07-16) */}
       <button
         type="button"
         onClick={handleClick}
         disabled={installed}
-        className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform disabled:opacity-80"
-        style={{
-          background: "#FFFFFF",
-          borderRadius: "var(--radius-card-sm)",
-          boxShadow: "0 4px 14px rgba(72,165,158,0.10), 0 1px 2px rgba(0,0,0,0.02)",
-          border: "1px solid rgba(0,0,0,0.04)",
-        }}
+        className="w-full flex items-center gap-3 px-1 py-3 press disabled:opacity-80"
+        style={{ borderTop: "1px solid var(--color-divider)" }}
       >
         <div
-          className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-          style={{ backgroundColor: installed ? "rgba(46,125,50,0.1)" : "var(--color-primary-soft)" }}
+          className="w-10 h-10 flex items-center justify-center shrink-0"
+          style={{
+            backgroundColor: installed ? "rgba(46,125,50,0.1)" : "var(--color-primary-soft)",
+            borderRadius: "var(--radius-square-lg)",
+          }}
         >
           {installed ? (
             <Check size={18} color="#2E7D32" strokeWidth={2.2} />

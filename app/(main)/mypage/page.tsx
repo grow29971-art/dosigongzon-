@@ -69,6 +69,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { getUnreadCount } from "@/lib/dm-repo";
 import { countMyAcceptedCircleMembers } from "@/lib/circles-repo";
+import UIListRow from "@/app/components/ui/ListRow";
 
 function formatRelative(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -601,8 +602,7 @@ export default function MyPage() {
           {/* ── 내가 등록한 고양이 ── */}
           <div className="mb-5">
             <div className="flex items-center gap-2 mb-3 px-1">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
-              <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
                 내가 등록한 고양이 {myCats.length > 0 && `· ${myCats.length}`}
               </h2>
             </div>
@@ -675,8 +675,7 @@ export default function MyPage() {
           {likedCats.length > 0 && (
             <div className="mb-5">
               <div className="flex items-center gap-2 mb-3 px-1">
-                <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E86B8C" }} />
-                <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+                <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
                   응원하는 고양이 · {likedCats.length}
                 </h2>
               </div>
@@ -735,8 +734,7 @@ export default function MyPage() {
           {/* ── 최근 돌봄 기록 ── */}
           <div className="mb-5">
             <div className="flex items-center gap-2 mb-3 px-1">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#6B8E6F" }} />
-              <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
                 최근 돌봄 기록 {myComments.length > 0 && `· ${myComments.length}`}
               </h2>
             </div>
@@ -827,8 +825,7 @@ export default function MyPage() {
           {/* ── 내 설정 ── */}
           <div className="mb-3">
             <div className="flex items-center gap-2 mb-3 px-1">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
-              <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
                 내 설정
               </h2>
             </div>
@@ -913,32 +910,16 @@ export default function MyPage() {
               <ChevronRight size={16} className="shrink-0" style={{ color: "#5BA876", opacity: 0.7 }} />
             </Link>
             )}
-            <Link
-              href="/mypage/activity-regions"
-              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
-              style={{
-                background: "#FFFFFF",
-                borderRadius: "var(--radius-card-sm)",
-                boxShadow: "0 4px 14px rgba(49,130,246,0.10), 0 1px 2px rgba(0,0,0,0.02)",
-                border: "1px solid rgba(0,0,0,0.04)",
-              }}
-            >
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ backgroundColor: "var(--color-primary-soft)" }}
-              >
-                <MapPin size={18} color="#3182F6" strokeWidth={2} />
-              </div>
-              <div className="flex-1 min-w-0 text-left">
-                <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                  활동 지역 설정
-                </p>
-                <p className="text-[11px] text-text-sub mt-0.5">
-                  최대 2곳까지 내 동네를 지정할 수 있어요
-                </p>
-              </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-primary)", opacity: 0.7 }} />
-            </Link>
+            {/* ── 토스식 그룹 카드 (2026-07-16): 개별 카드 나열 → 흰 카드 1장 + 행 구분선.
+                숨김 플래그 블록을 복원할 땐 UIListRow로 전환해서 이 카드에 넣을 것. ── */}
+            <div className="card px-3 py-1">
+              <UIListRow
+                href="/mypage/activity-regions"
+                icon={<MapPin size={18} color="#3182F6" strokeWidth={2} />}
+                iconBg="var(--color-primary-soft)"
+                title="활동 지역 설정"
+                subtitle="최대 2곳까지 내 동네를 지정할 수 있어요"
+              />
             {SHOW_CARETAKERS && (
             <Link
               href="/caretakers"
@@ -995,107 +976,45 @@ export default function MyPage() {
               <ChevronRight size={16} className="shrink-0" style={{ color: "#C9A961", opacity: 0.7 }} />
             </Link>
             )}
-            {/* 설정 그룹 */}
-            <p className="text-[10.5px] font-extrabold tracking-[0.15em] mt-4 mb-2 ml-1" style={{ color: "rgba(49,130,246,0.65)" }}>
-              SETTINGS
-            </p>
+            {/* 설정 항목들 — 각 컴포넌트가 자체적으로 위 구분선을 그리는 행(row)으로 렌더 */}
             <InstallAppMenuItem />
             <EmailDigestToggle />
             <MarketingPushToggle />
-
-            {/* 도움말 그룹 */}
-            <p className="text-[10.5px] font-extrabold tracking-[0.15em] mt-4 mb-2 ml-1" style={{ color: "rgba(49,130,246,0.65)" }}>
-              HELP
-            </p>
-            <Link
+            <UIListRow
               href="/guide"
-              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
-              style={{
-                background: "#FFFFFF",
-                borderRadius: "var(--radius-card-sm)",
-                boxShadow: "0 4px 14px rgba(139,101,184,0.10), 0 1px 2px rgba(0,0,0,0.02)",
-                border: "1px solid rgba(0,0,0,0.04)",
-              }}
-            >
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ backgroundColor: "rgba(139,101,184,0.12)" }}
-              >
-                <BookOpen size={18} color="#8B65B8" strokeWidth={2} />
-              </div>
-              <div className="flex-1 min-w-0 text-left">
-                <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                  사용 가이드
-                </p>
-                <p className="text-[11px] text-text-sub mt-0.5">
-                  10가지 핵심 기능 설명을 한눈에
-                </p>
-              </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "#8B65B8", opacity: 0.7 }} />
-            </Link>
+              icon={<BookOpen size={18} color="#8B65B8" strokeWidth={2} />}
+              iconBg="rgba(139,101,184,0.12)"
+              title="사용 가이드"
+              subtitle="10가지 핵심 기능 설명을 한눈에"
+              style={{ borderTop: "1px solid var(--color-divider)" }}
+            />
+            </div>
           </div>
 
           {/* ── 지원 / 문의 ── */}
           <div className="mb-3">
             <div className="flex items-center gap-2 mb-3 px-1">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4A7BA8" }} />
-              <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
                 지원
               </h2>
             </div>
-            <button
-              type="button"
+            {/* ── 토스식 그룹 카드 — 지원 항목 묶음 (복원 시 내 서클도 UIListRow로) ── */}
+            <div className="card px-3 py-1">
+            <UIListRow
               onClick={() => setInquiryOpen(true)}
-              className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
-              style={{
-                background: "#FFFFFF",
-                borderRadius: "var(--radius-card-sm)",
-                boxShadow: "0 4px 14px rgba(74,123,168,0.10), 0 1px 2px rgba(0,0,0,0.02)",
-                border: "1px solid rgba(0,0,0,0.04)",
-              }}
-            >
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ backgroundColor: "rgba(74,123,168,0.1)" }}
-              >
-                <MessageSquare size={18} color="#4A7BA8" strokeWidth={2} />
-              </div>
-              <div className="flex-1 min-w-0 text-left">
-                <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                  문의하기
-                </p>
-                <p className="text-[11px] text-text-sub mt-0.5">
-                  불편사항, 버그, 제안 등을 관리자에게 전달
-                </p>
-              </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "#4A7BA8", opacity: 0.7 }} />
-            </button>
-            <Link
+              icon={<MessageSquare size={18} color="#4A7BA8" strokeWidth={2} />}
+              iconBg="rgba(74,123,168,0.1)"
+              title="문의하기"
+              subtitle="불편사항, 버그, 제안 등을 관리자에게 전달"
+            />
+            <UIListRow
               href="/mypage/inquiries"
-              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
-              style={{
-                background: "#FFFFFF",
-                borderRadius: "var(--radius-card-sm)",
-                boxShadow: "0 4px 14px rgba(72,165,158,0.10), 0 1px 2px rgba(0,0,0,0.02)",
-                border: "1px solid rgba(0,0,0,0.04)",
-              }}
-            >
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ backgroundColor: "rgba(72,165,158,0.1)" }}
-              >
-                <Inbox size={18} color="#48A59E" strokeWidth={2} />
-              </div>
-              <div className="flex-1 min-w-0 text-left">
-                <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                  내 문의 보기
-                </p>
-                <p className="text-[11px] text-text-sub mt-0.5">
-                  접수한 문의·관리자 답변 확인
-                </p>
-              </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "#48A59E", opacity: 0.7 }} />
-            </Link>
+              icon={<Inbox size={18} color="#48A59E" strokeWidth={2} />}
+              iconBg="rgba(72,165,158,0.1)"
+              title="내 문의 보기"
+              subtitle="접수한 문의·관리자 답변 확인"
+              style={{ borderTop: "1px solid var(--color-divider)" }}
+            />
             {SHOW_CIRCLE && (
             <Link
               href="/mypage/circle"
@@ -1134,40 +1053,22 @@ export default function MyPage() {
               <ChevronRight size={16} className="shrink-0" style={{ color: "#4F6B53", opacity: 0.7 }} />
             </Link>
             )}
-            <Link
+            <UIListRow
               href="/mypage/blocked-users"
-              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
-              style={{
-                background: "#FFFFFF",
-                borderRadius: "var(--radius-card-sm)",
-                boxShadow: "0 4px 14px rgba(184,69,69,0.08), 0 1px 2px rgba(0,0,0,0.02)",
-                border: "1px solid rgba(0,0,0,0.04)",
-              }}
-            >
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ backgroundColor: "rgba(184,69,69,0.1)" }}
-              >
-                <Ban size={18} color="#B84545" strokeWidth={2} />
-              </div>
-              <div className="flex-1 min-w-0 text-left">
-                <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                  차단한 사용자
-                </p>
-                <p className="text-[11px] text-text-sub mt-0.5">
-                  차단 목록 확인 및 해제
-                </p>
-              </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "#B84545", opacity: 0.7 }} />
-            </Link>
+              icon={<Ban size={18} color="#B84545" strokeWidth={2} />}
+              iconBg="rgba(184,69,69,0.1)"
+              title="차단한 사용자"
+              subtitle="차단 목록 확인 및 해제"
+              style={{ borderTop: "1px solid var(--color-divider)" }}
+            />
+            </div>
           </div>
 
           {/* ── 관리자 대시보드 (단일 진입점) ── */}
           {isAdmin && (
             <div className="mb-3">
               <div className="flex items-center gap-2 mb-3 px-1">
-                <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#2C2C2C" }} />
-                <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+                <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
                   운영 관리
                 </h2>
               </div>
@@ -1410,8 +1311,7 @@ function TitleSection({
       {myAdminTitle && (
         <div className="mb-3">
           <div className="flex items-center gap-2 mb-2 px-1">
-            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: myAdminTitle.color }} />
-            <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+            <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
               특별 타이틀
             </h2>
           </div>
@@ -1453,8 +1353,7 @@ function TitleSection({
       )}
 
       <div className="flex items-center gap-2 mb-3 px-1">
-        <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C9A961" }} />
-        <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+        <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
           업적
         </h2>
         <span className="text-[11px] font-bold text-text-sub tabular-nums ml-0.5">
