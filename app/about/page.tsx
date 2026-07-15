@@ -445,9 +445,9 @@ export default async function AboutPage() {
           </p>
 
           <p className="text-[12.5px] leading-[1.9] text-text-sub mt-3">
-            소프트웨어만 다루지 않습니다. <b className="text-text-main">물리적인 손이 닿는 영역</b>까지
-            직접 만들 줄 알기 때문에, 화면 너머 길 위의 문제를 도구로 해결하는 데 익숙해요.
-            "코드로 끝나지 않는 서비스"를 만들 수 있는 이유이기도 합니다.
+            소프트웨어만 만들지 않아요. 겨울 난로 같은 <b className="text-text-main">화면 밖의 문제</b>도
+            직접 손으로 부딪히며 만들어보는 중이에요. 잘하는 것도, 배워가며 하는 것도 있지만
+            <b className="text-text-main"> 아이들에게 실제로 닿는 것</b>을 만드는 데 집중하고 있어요.
           </p>
 
           {/* 메이커 역량 4 카드 */}
@@ -584,13 +584,13 @@ export default async function AboutPage() {
         <div className="space-y-2">
           <TechRow
             icon={<MapPin size={18} style={{ color: "var(--color-primary)" }} />}
-            title="전국 구·동 자체 좌표 매핑"
-            desc="구·동 단위 좌표를 직접 정리한 자체 데이터셋. 외부 행정 API 없이도 한 화면에 모든 자치구가 즉시 뜹니다."
+            title="구·동 좌표 직접 정리"
+            desc="구·동 단위 좌표를 손수 정리해, 자치구를 한 화면에서 볼 수 있게 만들었어요."
           />
           <TechRow
             icon={<Bot size={18} style={{ color: "#8B65B8" }} />}
             title="AI 집사 챗봇 (Google Gemini)"
-            desc="응급·구조·식이 질문에 즉시 답하는 케어테이커 보조 AI. 호칭과 상황을 사용자에 맞춰 실시간 생성합니다."
+            desc="응급·구조·식이 질문에 답하도록 Gemini를 연동한 보조 챗봇이에요. 의료 판단은 수의사와 상의가 필요해요."
           />
           <TechRow
             icon={<Radio size={18} style={{ color: "#22B573" }} />}
