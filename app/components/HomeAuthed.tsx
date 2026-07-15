@@ -681,8 +681,9 @@ export default function HomeAuthed({
                 <h1 className="text-[20px] font-extrabold text-text-main tracking-tight leading-snug mt-1.5">
                   {name ? `${name}님, ` : ""}
                   {hungryCatName ? (
+                    // 부담·죄책감 대신 초대 톤 — "기다려요"(방치 암시)보다 가볍게 권유
                     <>
-                      <span className="text-primary">{hungryCatName}</span>가 밥을 기다려요
+                      오늘 <span className="text-primary">{hungryCatName}</span> 밥 챙겨줄까요? 🍚
                     </>
                   ) : (
                     <>오늘도 함께해 주셔서 고마워요 💛</>
