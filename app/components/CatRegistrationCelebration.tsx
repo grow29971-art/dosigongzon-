@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, PawPrint, Heart, Share2, Swords } from "lucide-react";
+import { Sparkles, PawPrint, Heart, Share2, Swords, Check } from "lucide-react";
 import Link from "next/link";
 import { getMyInviteInfo } from "@/lib/invites-repo";
 import { shareToKakao } from "@/lib/kakao-share";
 import { track } from "@vercel/analytics";
 import CatCard, { type CatCardData } from "@/app/components/CatCard";
+import { createCareLog } from "@/lib/care-logs-repo";
 import type { Cat } from "@/lib/cats-repo";
 
 type Props = {
@@ -34,6 +35,22 @@ export default function CatRegistrationCelebration({
   onClose,
 }: Props) {
   const [inviting, setInviting] = useState(false);
+  // 첫 밥 기록 — 등록 직후(만족 최고점)에 두 번째 활성화 이벤트인 '첫 돌봄 기록'을
+  // 1탭으로 잇는다. 등록자의 상당수가 첫 돌봄으로 넘어가지 못하던 누수를 막기 위함.
+  const [meal, setMeal] = useState<"idle" | "saving" | "done">("idle");
+
+  const logFirstMeal = async () => {
+    if (!cat?.id || meal !== "idle") return;
+    setMeal("saving");
+    try {
+      await createCareLog({ cat_id: cat.id, care_type: "feed" });
+      setMeal("done");
+      try { track("first_meal_from_celebration"); } catch {}
+      try { navigator.vibrate?.(12); } catch { /* 햅틱 미지원 */ }
+    } catch {
+      setMeal("idle");
+    }
+  };
 
   if (!open) return null;
 
@@ -163,6 +180,32 @@ export default function CatRegistrationCelebration({
               />
               <p className="text-[10px] text-gray-400 mt-2">마이페이지 → 내 카드에서 확인할 수 있어요</p>
             </div>
+          )}
+          {/* 첫 밥 기록 — 등록 직후 가장 자연스러운 다음 행동. card 유무와 무관하게 노출.
+              1탭이면 오늘의 첫 돌봄이 기록돼 두 번째 활성화 이벤트로 이어진다. */}
+          {cat?.id && (
+            meal === "done" ? (
+              <div
+                className="flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3 mb-3 text-[12.5px] font-extrabold"
+                style={{ background: "#EAF6EC", color: "#3B7A46" }}
+              >
+                <Check size={16} strokeWidth={3} />
+                오늘 {catName} 밥 완료! 🍚
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={logFirstMeal}
+                disabled={meal === "saving"}
+                className="w-full flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3 mb-3 text-[13px] font-extrabold text-white active:scale-[0.98] disabled:opacity-60"
+                style={{
+                  background: "linear-gradient(135deg, #E88D5A 0%, #D9743F 100%)",
+                  boxShadow: "0 4px 14px rgba(217,116,63,0.4)",
+                }}
+              >
+                🍚 {meal === "saving" ? "기록 중…" : "지금 첫 밥 기록하기"}
+              </button>
+            )
           )}
           {/* 배틀 시스템 온보딩 — 카드가 막 생겼을 때(초반 1~2번째 등록)만 살짝 소개.
               매번 뜨면 피로감이라 registrationCount<=2로 제한 */}
