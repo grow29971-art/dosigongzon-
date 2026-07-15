@@ -6,7 +6,7 @@
    ══════════════════════════════════════════ */
 
 @theme inline {
-  /* Primary — 토스 블루 (모던 미니멀 리디자인 2026-07-10) */
+  /* Primary — 공존 블루 (클린 미니멀 톤. hex는 흔한 파랑이라 상표 대상 아님) */
   --color-primary: #3182F6;
   --color-primary-light: #4593FC;
   --color-primary-dark: #1B64DA;
@@ -46,6 +46,13 @@
   --radius-modal: 24px;    /* 모달/바텀시트 */
   --radius-sheet: 28px;    /* 큰 시트 */
   --radius-full: 9999px;   /* 필/원형 */
+
+  /* ── 공존 시그니처: 사각(squircle) 모티프 (2026-07-15) ──
+     클린 톤은 유지하되, 트레이드드레스 회피용으로 '원형 대신 라운드 사각'을 시그니처로.
+     토글 노브·칩·선택 표시에 사용. (일반 카드는 기존 radius-card 유지) */
+  --radius-square-sm: 6px;   /* 토글 노브·작은 칩 */
+  --radius-square: 8px;      /* 칩·태그·선택 배지 */
+  --radius-square-lg: 10px;  /* 토글 트랙·세그먼트 */
 
   /* ── Shadow 토큰 ──
      card: 기본 카드 · card-sm: 얕은 카드 · raised: 떠있는 요소(버튼/헤더)

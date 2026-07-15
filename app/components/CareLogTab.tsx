@@ -354,13 +354,14 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                 <span className="text-[12px] font-bold" style={{ color: isPrivate ? "#8B65B8" : "#A38E7A" }}>
                   {isPrivate ? "비밀글 — 나만 볼 수 있어요" : "비밀글로 남기기"}
                 </span>
+                {/* 공존 시그니처: 사각 토글 (원형 아님) */}
                 <span
-                  className="ml-auto w-9 h-5 rounded-full transition-colors relative"
-                  style={{ backgroundColor: isPrivate ? "#8B65B8" : "#D8D2C8" }}
+                  className="ml-auto w-9 h-5 transition-colors relative"
+                  style={{ backgroundColor: isPrivate ? "#8B65B8" : "#D8D2C8", borderRadius: "var(--radius-square-lg)" }}
                 >
                   <span
-                    className="absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all"
-                    style={{ left: isPrivate ? "18px" : "2px", boxShadow: "0 1px 2px rgba(0,0,0,0.2)" }}
+                    className="absolute top-0.5 w-4 h-4 bg-white transition-all"
+                    style={{ left: isPrivate ? "18px" : "2px", borderRadius: "var(--radius-square-sm)", boxShadow: "0 1px 2px rgba(0,0,0,0.2)" }}
                   />
                 </span>
               </button>
