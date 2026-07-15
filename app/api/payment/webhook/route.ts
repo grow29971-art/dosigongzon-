@@ -149,10 +149,10 @@ export async function POST(req: Request) {
     } else {
       const { data: prods } = await svc
         .from("products")
-        .select("id, price, sale_price, shipping_fee, is_donation, donation_percent")
+        .select("id, price, sale_price, shipping_fee, is_donation, donation_percent, is_virtual")
         .in("id", productIds);
       const pm = new Map(
-        ((prods ?? []) as { id: string; price: number; sale_price: number | null; shipping_fee: number; is_donation: boolean; donation_percent: number }[])
+        ((prods ?? []) as { id: string; price: number; sale_price: number | null; shipping_fee: number; is_donation: boolean; donation_percent: number; is_virtual: boolean }[])
           .map((p) => [p.id, p]),
       );
       let prodSum = 0;
@@ -165,7 +165,7 @@ export async function POST(req: Request) {
         const subtotal = (p.sale_price ?? p.price) * it.quantity;
         prodSum += subtotal;
         ship = Math.max(ship, p.shipping_fee);
-        if (p.is_donation) hasDonation = true;
+        if (p.is_donation || p.is_virtual) hasDonation = true;
         const correctDonation = p.is_donation ? Math.floor((subtotal * p.donation_percent) / 100) : 0;
         if (it.donation_amount !== correctDonation) {
           donationFixes.push({ id: it.id, donation_amount: correctDonation });

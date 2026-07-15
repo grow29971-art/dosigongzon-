@@ -124,14 +124,14 @@ export async function POST(req: Request) {
     }
     const { data: prods, error: prodError } = await svc
       .from("products")
-      .select("id, price, sale_price, shipping_fee, is_active, is_donation, donation_percent")
+      .select("id, price, sale_price, shipping_fee, is_active, is_donation, donation_percent, is_virtual")
       .in("id", productIds);
     if (prodError) {
       console.error("[payment/confirm] product verify fetch failed:", prodError);
       return NextResponse.json({ error: "상품 확인 중 오류가 발생했어요." }, { status: 502 });
     }
     const priceMap = new Map(
-      ((prods ?? []) as { id: string; price: number; sale_price: number | null; shipping_fee: number; is_active: boolean; is_donation: boolean; donation_percent: number }[])
+      ((prods ?? []) as { id: string; price: number; sale_price: number | null; shipping_fee: number; is_active: boolean; is_donation: boolean; donation_percent: number; is_virtual: boolean }[])
         .map((p) => [p.id, p]),
     );
     let expectedProducts = 0;
@@ -149,7 +149,7 @@ export async function POST(req: Request) {
       const subtotal = unit * item.quantity;
       expectedProducts += subtotal;
       expectedShipping = Math.max(expectedShipping, p.shipping_fee);
-      if (p.is_donation) hasDonationOrVirtual = true;
+      if (p.is_donation || p.is_virtual) hasDonationOrVirtual = true;
       const correctDonation = p.is_donation ? Math.floor((subtotal * p.donation_percent) / 100) : 0;
       if (item.donation_amount !== correctDonation) {
         donationFixes.push({ id: item.id, donation_amount: correctDonation });
