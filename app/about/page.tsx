@@ -31,6 +31,8 @@ import {
   Puzzle,
   HeartCrack,
   Hammer,
+  Camera,
+  Globe,
 } from "lucide-react";
 import { createAnonClient } from "@/lib/supabase/anon";
 import MediaKit from "@/app/components/MediaKit";
@@ -646,6 +648,29 @@ export default async function AboutPage() {
             <Mail size={16} />
             <span className="text-[13.5px] font-extrabold">{CONTACT_EMAIL}</span>
           </a>
+          {/* 인스타그램 · 블로그 */}
+          <div className="grid grid-cols-2 gap-2 mt-2">
+            <a
+              href="https://instagram.com/regen2997"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-1.5 py-2.5 rounded-2xl active:scale-[0.98] transition-transform"
+              style={{ background: "rgba(225,48,108,0.10)", border: "1px solid rgba(225,48,108,0.22)" }}
+            >
+              <Camera size={15} style={{ color: "#E1306C" }} />
+              <span className="text-[12px] font-extrabold" style={{ color: "#C13584" }}>@regen2997</span>
+            </a>
+            <a
+              href="https://blog.naver.com/re_gen777"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-1.5 py-2.5 rounded-2xl active:scale-[0.98] transition-transform"
+              style={{ background: "rgba(3,199,90,0.10)", border: "1px solid rgba(3,199,90,0.22)" }}
+            >
+              <Globe size={15} style={{ color: "#03C75A" }} />
+              <span className="text-[12px] font-extrabold" style={{ color: "#029F49" }}>블로그</span>
+            </a>
+          </div>
           <p className="text-[11px] text-text-light mt-2.5 text-center">
             운영자: 김성우 · 보통 1~2일 내 회신
           </p>
