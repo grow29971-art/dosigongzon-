@@ -678,7 +678,7 @@ export default function HomeAuthed({
                     </Link>
                   </div>
                 </div>
-                <h1 className="text-[20px] font-extrabold text-text-main tracking-tight leading-snug mt-1.5">
+                <h1 className="text-[22px] font-extrabold text-text-main tracking-tight leading-snug mt-1.5">
                   {name ? `${name}님, ` : ""}
                   {hungryCatName ? (
                     // 부담·죄책감 대신 초대 톤 — "기다려요"(방치 암시)보다 가볍게 권유
@@ -887,8 +887,7 @@ export default function HomeAuthed({
         <div className="mb-5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 px-1">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
-              <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
                 내 동네 소식
               </h2>
               {primaryRegion && (
@@ -1168,8 +1167,7 @@ export default function HomeAuthed({
           <div className="mb-5">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2 px-1">
-                <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#48A59E" }} />
-                <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+                <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
                   지금 우리 동네
                 </h2>
                 <span
@@ -1341,8 +1339,7 @@ export default function HomeAuthed({
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2.5 px-1">
             <div className="flex items-center gap-2">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E8B040" }} />
-              <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">오늘 할 일</h2>
+              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">오늘 할 일</h2>
             </div>
             <span className="text-[10px] font-bold text-text-light">매일 리셋</span>
           </div>
@@ -1412,8 +1409,7 @@ export default function HomeAuthed({
         <div className="mb-5 cv-auto" id="weekly-rank" style={{ scrollMarginTop: 12 }}>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 px-1">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E8B040" }} />
-              <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
                 이번 주 돌봄 왕
               </h2>
               <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#E8B040", opacity: 0.6 }}>
@@ -1489,8 +1485,7 @@ export default function HomeAuthed({
         <div className="mb-5 cv-auto">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 px-1">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E86B8C" }} />
-              <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
                 이번 주 인기 고양이
               </h2>
               <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#E86B8C", opacity: 0.6 }}>
@@ -1623,8 +1618,7 @@ export default function HomeAuthed({
       {SHOW_ANNIVERSARY && anniversaries.length > 0 && (
         <div className="mb-4">
           <div className="flex items-center gap-2 mb-3 px-1">
-            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E86B8C" }} />
-            <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+            <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
               오늘의 기념일
             </h2>
             <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#E86B8C", opacity: 0.6 }}>
@@ -1724,11 +1718,7 @@ export default function HomeAuthed({
       {SHOW_WEEKLY_ISSUES && weeklyIssues.length > 0 && (
         <div className="mb-5">
           <div className="flex items-center gap-2 px-1 mb-3">
-            <div
-              className="w-1 h-4 rounded-full"
-              style={{ backgroundColor: "#5B7A8F" }}
-            />
-            <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+            <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
               이번 주 동네 이슈
             </h2>
             <span
@@ -1827,8 +1817,7 @@ export default function HomeAuthed({
         <div className="mb-5 cv-auto">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 px-1">
-              <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E88D5A" }} />
-              <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
                 인기 게시글
               </h2>
             </div>
