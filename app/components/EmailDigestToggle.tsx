@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Mail, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { track } from "@vercel/analytics";
+import SquareToggle from "@/app/components/ui/SquareToggle";
 
 export default function EmailDigestToggle() {
   const [enabled, setEnabled] = useState<boolean | null>(null);
@@ -62,8 +63,8 @@ export default function EmailDigestToggle() {
       }}
     >
       <div
-        className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-        style={{ backgroundColor: "rgba(232,107,140,0.1)" }}
+        className="w-10 h-10 flex items-center justify-center shrink-0"
+        style={{ backgroundColor: "rgba(232,107,140,0.1)", borderRadius: "var(--radius-square-lg)" }}
       >
         <Mail size={18} color="#E86B8C" strokeWidth={2} />
       </div>
@@ -78,33 +79,14 @@ export default function EmailDigestToggle() {
       {enabled === null ? (
         <Loader2 size={16} className="animate-spin text-text-muted shrink-0" />
       ) : (
-        <button
-          type="button"
-          onClick={handleToggle}
+        <SquareToggle
+          checked={enabled}
+          onChange={handleToggle}
           disabled={saving}
-          role="switch"
-          aria-checked={enabled}
+          size="sm"
+          color="#E86B8C"
           aria-label="주간 이메일 수신 설정"
-          className="shrink-0 relative transition-colors disabled:opacity-60"
-          style={{
-            width: 44,
-            height: 26,
-            borderRadius: "var(--radius-square-lg)",
-            background: enabled ? "#E86B8C" : "#E5E0D6",
-          }}
-        >
-          <span
-            className="absolute top-[3px] transition-all"
-            style={{
-              left: enabled ? 21 : 3,
-              width: 20,
-              height: 20,
-              borderRadius: "var(--radius-square-sm)",
-              background: "#fff",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
-            }}
-          />
-        </button>
+        />
       )}
     </div>
   );

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { BellRing, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { track } from "@vercel/analytics";
+import SquareToggle from "@/app/components/ui/SquareToggle";
 
 /**
  * 마케팅성 푸시(주간 동네 소식, 지역 채팅 유도 등) 수신 설정.
@@ -64,8 +65,8 @@ export default function MarketingPushToggle() {
       }}
     >
       <div
-        className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-        style={{ backgroundColor: "rgba(74,123,168,0.1)" }}
+        className="w-10 h-10 flex items-center justify-center shrink-0"
+        style={{ backgroundColor: "rgba(74,123,168,0.1)", borderRadius: "var(--radius-square-lg)" }}
       >
         <BellRing size={18} color="#4A7BA8" strokeWidth={2} />
       </div>
@@ -80,33 +81,14 @@ export default function MarketingPushToggle() {
       {enabled === null ? (
         <Loader2 size={16} className="animate-spin text-text-muted shrink-0" />
       ) : (
-        <button
-          type="button"
-          onClick={handleToggle}
+        <SquareToggle
+          checked={enabled}
+          onChange={handleToggle}
           disabled={saving}
-          role="switch"
-          aria-checked={enabled}
+          size="sm"
+          color="#4A7BA8"
           aria-label="마케팅 푸시 수신 설정"
-          className="shrink-0 relative transition-colors disabled:opacity-60"
-          style={{
-            width: 44,
-            height: 26,
-            borderRadius: "var(--radius-square-lg)",
-            background: enabled ? "#4A7BA8" : "#E5E0D6",
-          }}
-        >
-          <span
-            className="absolute top-[3px] transition-all"
-            style={{
-              left: enabled ? 21 : 3,
-              width: 20,
-              height: 20,
-              borderRadius: "var(--radius-square-sm)",
-              background: "#fff",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
-            }}
-          />
-        </button>
+        />
       )}
     </div>
   );
