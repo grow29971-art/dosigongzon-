@@ -206,11 +206,11 @@ export default function ShopPage() {
               className="chip-square px-2 py-0.5 text-[10px] font-extrabold"
               style={{ background: "rgba(255,169,39,0.15)", color: "#B87A10" }}
             >
-              🚧 오픈 준비 중
+              🚧 공사 중
             </span>
           </div>
           <p className="text-[12.5px] text-text-sub leading-relaxed">
-            제품 컨택 · 내부 공사 중 — 좋은 것만 골라서 열게요 🐾
+            입점 제품 협의 중 · 곧 오픈해요
           </p>
         </div>
         <div className="flex items-center gap-2">
