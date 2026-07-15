@@ -565,6 +565,33 @@ export default function HomeAuthed({
       ]}
     />
     <div className="px-5 pt-5 pb-24">
+      {/* ══════ 지역 미설정 유저 — 우리 동네 설정 유도 (온보딩 병목 개선 2026-07-15) ══════ */}
+      {/* 가입 후 지역 설정 이탈이 커서, 미설정 시 최상단에 눈에 띄게 안내. */}
+      {user && myRegions.length === 0 && (
+        <Link
+          href="/mypage/activity-regions"
+          className="block mb-4 active:scale-[0.99] transition-transform"
+          style={{
+            background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+            borderRadius: 20,
+            boxShadow: "0 8px 24px rgba(49,130,246,0.28)",
+          }}
+        >
+          <div className="p-4 flex items-center gap-3">
+            <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 text-[22px]" style={{ background: "rgba(255,255,255,0.2)" }}>
+              📍
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-extrabold text-white leading-snug">우리 동네부터 알려주세요</p>
+              <p className="text-[11.5px] leading-snug mt-0.5" style={{ color: "rgba(255,255,255,0.9)" }}>
+                동네를 정하면 우리 동네 고양이·소식이 여기 나타나요
+              </p>
+            </div>
+            <ChevronRight size={18} color="#fff" className="shrink-0" />
+          </div>
+        </Link>
+      )}
+
       {/* ══════ 첫 구원 프로젝트 — 사용처 투표 유도 배너 (닫기 가능, 2026-07-14) ══════ */}
       <FirstProjectBanner />
 

@@ -270,8 +270,8 @@ export default function ShopPage() {
           style={{ background: "rgba(255,255,255,0.55)", border: "1px solid rgba(196,126,90,0.15)" }}
         >
           <p className="text-[11px] leading-[1.65] text-text-sub">
-            운영자는 <b className="text-text-main">서버 유지 등 최소 마진만</b> 남기고
-            나머지는 전부 아이들에게 써요. 정확한 비율은 계산 중이에요.
+            운영자는 <b className="text-text-main">서버 유지 등 최소 마진만</b> 남기고,
+            남는 수익은 아이들에게 써요. <b className="text-text-main">어디에 쓸지는 투표로</b> 정하고,
             <br />모인 금액과 쓰인 금액은 <b className="text-text-main">아래에서 투명하게</b> 공개돼요 💛
           </p>
           <p className="text-[11px] font-bold text-text-main mt-1.5 pt-1.5" style={{ borderTop: "1px solid rgba(196,126,90,0.12)" }}>
