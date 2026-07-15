@@ -36,6 +36,7 @@ import SplashLoading from "@/app/components/SplashLoading";
 const FoundingMemberBanner = dynamic(() => import("@/app/components/FoundingMemberBanner"), { ssr: false });
 import PatchUpdateBanner518 from "@/app/components/PatchUpdateBanner518";
 import FirstProjectBanner from "@/app/components/FirstProjectBanner";
+import PageIntroModal from "@/app/components/PageIntroModal";
 const MyCircleQuickEntry = dynamic(() => import("@/app/components/MyCircleQuickEntry"), { ssr: false });
 import { countMyAcceptedCircleMembers } from "@/lib/circles-repo";
 import { useAuth } from "@/lib/auth-context";
@@ -544,6 +545,17 @@ export default function HomeAuthed({
 
   return (
     <>
+    <PageIntroModal
+      storageKey="dosigongzon_intro_home"
+      badge="홈"
+      headerEmoji="🏠"
+      title="우리 동네 길고양이, 여기서 함께 돌봐요"
+      items={[
+        { emoji: "🍚", text: <>매일 <b className="text-text-main">내 아이들</b>에게 밥·물·간식을 1탭으로 기록해요.</> },
+        { emoji: "🗺️", text: <>지도에서 동네 고양이를 만나고, 아래로 내리면 동네 소식·랭킹이 이어져요.</> },
+        { emoji: "🔥", text: <>매일 들르면 <b className="text-text-main">출석 포인트</b>가 쌓여 쇼핑 할인으로 돌아와요.</> },
+      ]}
+    />
     <div className="px-5 pt-5 pb-24">
       {/* ══════ 첫 구원 프로젝트 — 사용처 투표 유도 배너 (닫기 가능, 2026-07-14) ══════ */}
       <FirstProjectBanner />
