@@ -100,7 +100,7 @@ export default function AdminDashboardPage() {
       title: "상품 관리",
       subtitle: "쇼핑몰 상품 등록·수정·재고",
       Icon: ShoppingBag,
-      color: "#C47E5A",
+      color: "#E8930C",
     },
     {
       href: "/admin/orders",

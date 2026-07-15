@@ -89,7 +89,7 @@ export default function EmailDigestToggle() {
           style={{
             width: 44,
             height: 26,
-            borderRadius: "var(--radius-full)",
+            borderRadius: "var(--radius-square-lg)",
             background: enabled ? "#E86B8C" : "#E5E0D6",
           }}
         >
@@ -99,7 +99,7 @@ export default function EmailDigestToggle() {
               left: enabled ? 21 : 3,
               width: 20,
               height: 20,
-              borderRadius: "var(--radius-full)",
+              borderRadius: "var(--radius-square-sm)",
               background: "#fff",
               boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
             }}
