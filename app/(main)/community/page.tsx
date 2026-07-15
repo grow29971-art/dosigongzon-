@@ -9,7 +9,6 @@ import {
   Heart,
   ShoppingBag,
   MessagesSquare,
-  ChevronRight,
   TrendingUp,
   Plus,
   Eye,
@@ -27,6 +26,7 @@ import { useAuth } from "@/lib/auth-context";
 import LoginRequired from "@/app/components/LoginRequired";
 import PageIntroBanner from "@/app/components/PageIntroBanner";
 import CommunityWritePrompt from "@/app/components/CommunityWritePrompt";
+import UIListRow from "@/app/components/ui/ListRow";
 
 /* ═══ 카테고리 카드 데이터 ═══ */
 type CategoryCard = {
@@ -93,54 +93,6 @@ const CATEGORIES: CategoryCard[] = [
     highlight: true,
   },
 ];
-
-/* ═══ 카테고리 카드 컴포넌트 ═══ */
-function CategoryCardItem({ card }: { card: CategoryCard }) {
-  const href = card.key === "popular" ? "/community/popular" : `/community/category/${card.key}`;
-  return (
-    <Link
-      href={href}
-      className="block active:scale-[0.98] transition-transform"
-    >
-      <div
-        className="relative overflow-hidden px-5 py-[18px]"
-        style={{
-          background: "#FFFFFF",
-          borderRadius: 22,
-          boxShadow: card.highlight
-            ? `0 12px 32px rgba(${card.glowColor},0.18), 0 2px 6px rgba(${card.glowColor},0.08)`
-            : `0 6px 20px rgba(${card.glowColor},0.10), 0 1px 3px rgba(0,0,0,0.03)`,
-          border: card.highlight
-            ? `1.5px solid rgba(${card.glowColor},0.30)`
-            : "1px solid rgba(0,0,0,0.04)",
-        }}
-      >
-        <div className="flex items-center gap-4">
-          <div
-            className="w-[48px] h-[48px] rounded-full flex items-center justify-center shrink-0 dark-icon-box"
-            style={{ backgroundColor: `${card.iconBg}15`, boxShadow: `0 0 0 2px ${card.iconBg}22` }}
-          >
-            <card.Icon size={22} color={card.iconBg} strokeWidth={2} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[15.5px] font-extrabold text-text-main tracking-tight leading-tight">
-              {card.title}
-            </p>
-            <p className="text-[11.5px] text-text-sub mt-1 leading-snug truncate">
-              {card.subtitle}
-            </p>
-          </div>
-          <ChevronRight
-            size={18}
-            strokeWidth={2.5}
-            className="shrink-0"
-            style={{ color: card.iconBg, opacity: 0.7 }}
-          />
-        </div>
-      </div>
-    </Link>
-  );
-}
 
 /* ═══ 페이지 ═══ */
 export default function CommunityPage() {
@@ -286,10 +238,11 @@ export default function CommunityPage() {
           <button
             type="button"
             onClick={() => setNeighborhoodOnly(false)}
-            className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-transform"
+            className="px-3 py-1.5 text-[11px] font-bold active:scale-95 transition-transform"
             style={{
-              backgroundColor: !neighborhoodOnly ? "#2C2C2C" : "rgba(255,255,255,0.9)",
-              color: !neighborhoodOnly ? "#fff" : "#666",
+              borderRadius: "var(--radius-square-lg)",
+              backgroundColor: !neighborhoodOnly ? "var(--color-text-main)" : "rgba(255,255,255,0.9)",
+              color: !neighborhoodOnly ? "#fff" : "var(--color-text-sub)",
               boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
             }}
           >
@@ -298,12 +251,13 @@ export default function CommunityPage() {
           <button
             type="button"
             onClick={() => setNeighborhoodOnly(true)}
-            className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-transform flex items-center gap-1"
+            className="px-3 py-1.5 text-[11px] font-bold active:scale-95 transition-transform flex items-center gap-1"
             style={{
+              borderRadius: "var(--radius-square-lg)",
               background: neighborhoodOnly
                 ? "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)"
                 : "rgba(255,255,255,0.9)",
-              color: neighborhoodOnly ? "#fff" : "#666",
+              color: neighborhoodOnly ? "#fff" : "var(--color-text-sub)",
               boxShadow: neighborhoodOnly
                 ? "0 2px 8px rgba(49,130,246,0.35)"
                 : "0 2px 6px rgba(0,0,0,0.05)",
@@ -328,46 +282,32 @@ export default function CommunityPage() {
         </div>
       )}
 
-      {/* ── 카테고리 벤토 그리드 ── */}
-      <div className="space-y-3">
-        {/* Row 1: 긴급 (wide, highlight) */}
-        <CategoryCardItem card={CATEGORIES[0]} />
-
-        {/* Row 1.5: 인기 게시물 (wide, highlight) */}
-        <CategoryCardItem card={CATEGORIES[5]} />
-
-        {/* Row 2: 임보 | 입양 */}
-        <div className="grid grid-cols-2 gap-3">
-          <Link
-            href={`/community/category/${CATEGORIES[1].key}`}
-            className="block active:scale-[0.98] transition-transform"
-          >
-            <CompactCard card={CATEGORIES[1]} />
-          </Link>
-          <Link
-            href={`/community/category/${CATEGORIES[2].key}`}
-            className="block active:scale-[0.98] transition-transform"
-          >
-            <CompactCard card={CATEGORIES[2]} />
-          </Link>
-        </div>
-
-        {/* Row 3: 중고마켓 */}
-        <CategoryCardItem card={CATEGORIES[3]} />
-
-        {/* Row 4: 자유게시판 */}
-        <CategoryCardItem card={CATEGORIES[4]} />
+      {/* ── 카테고리 — 토스식 그룹 리스트 (2026-07-16): 색색 카드 6장 → 흰 카드 1장 + 행 구분선.
+          색은 아이콘 박스에만 남기고 장식(글로우·색 테두리)은 제거 — 타이포·아이콘만으로 위계. ── */}
+      <div className="card px-3 py-1">
+        {([CATEGORIES[0], CATEGORIES[5], CATEGORIES[1], CATEGORIES[2], CATEGORIES[3], CATEGORIES[4]] as CategoryCard[]).map(
+          (card, idx, arr) => (
+            <UIListRow
+              key={card.key}
+              href={card.key === "popular" ? "/community/popular" : `/community/category/${card.key}`}
+              icon={<card.Icon size={20} color={card.iconBg} strokeWidth={2} />}
+              iconBg={`${card.iconBg}15`}
+              title={card.title}
+              subtitle={card.subtitle}
+              style={idx < arr.length - 1 ? { borderBottom: "1px solid var(--color-divider)" } : undefined}
+            />
+          ),
+        )}
       </div>
 
       {/* ── 인기 글 ── */}
       {popularPosts.length > 0 && (
         <div className="mt-6">
-          <div className="flex items-center gap-2 mb-3 px-1">
-            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C9A961" }} />
-            <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+          <div className="flex items-center gap-1.5 mb-3 px-1">
+            <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
               인기 글
             </h2>
-            <TrendingUp size={13} style={{ color: "#C9A961" }} />
+            <TrendingUp size={14} style={{ color: "#C9A961" }} />
           </div>
           <div className="space-y-2.5">
             {popularPosts.map((post) => {
@@ -389,10 +329,11 @@ export default function CommunityPage() {
                     }}
                   >
                     <span
-                      className="text-[10px] font-extrabold px-2 py-1 rounded-lg shrink-0"
+                      className="text-[10px] font-extrabold px-2 py-1 shrink-0"
                       style={{
                         backgroundColor: `${cat.iconBg}15`,
                         color: cat.iconBg,
+                        borderRadius: "var(--radius-square)",
                       }}
                     >
                       {cat.title}
@@ -426,29 +367,3 @@ export default function CommunityPage() {
 }
 
 /* ═══ 2칸 그리드용 컴팩트 카드 ═══ */
-function CompactCard({ card }: { card: CategoryCard }) {
-  return (
-    <div
-      className="relative overflow-hidden px-4 py-[18px]"
-      style={{
-        background: "#FFFFFF",
-        borderRadius: 22,
-        boxShadow: `0 6px 20px rgba(${card.glowColor},0.10), 0 1px 3px rgba(0,0,0,0.03)`,
-        border: "1px solid rgba(0,0,0,0.04)",
-      }}
-    >
-      <div
-        className="w-[44px] h-[44px] rounded-full flex items-center justify-center mb-3 dark-icon-box"
-        style={{ backgroundColor: `${card.iconBg}15`, boxShadow: `0 0 0 2px ${card.iconBg}22` }}
-      >
-        <card.Icon size={20} color={card.iconBg} strokeWidth={2} />
-      </div>
-      <p className="text-[15px] font-extrabold text-text-main tracking-tight">
-        {card.title}
-      </p>
-      <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
-        {card.subtitle}
-      </p>
-    </div>
-  );
-}
