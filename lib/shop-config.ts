@@ -3,7 +3,8 @@ export type ShopItemKey =
   | "skill_relearn"
   | "atk_charm" | "def_charm" | "crit_charm" | "eva_charm" | "hp_charm"
   | "border_rainbow" | "border_gold" | "border_holo" | "border_sparkle" | "border_neon_blue"
-  | "border_neon_pink" | "border_fire" | "border_ice" | "border_starlight" | "border_shadow";
+  | "border_neon_pink" | "border_fire" | "border_ice" | "border_starlight" | "border_shadow"
+  | "premium_can" | "churu" | "growth_can";
 
 // 카드 테두리 코스메틱 — 순수 시각 효과, 전투에 아무 영향 없음.
 // 실제 CSS 애니메이션은 app/components/CatCard.tsx의 BORDER_FX에서 정의.
@@ -44,6 +45,7 @@ export interface ShopItem {
   equip?: EquipEffect;     // 있으면 "장착 아이템" — 소모되지 않고 카드에 계속 장착됨
   bodySlot?: BodySlot;     // equip 아이템이 낄 부위 (장비창 UI용)
   borderFx?: BorderFxKey;  // 있으면 "테두리 코스메틱" — 스탯 영향 없이 카드 외형만 바꿈
+  care?: { fullness?: number; mood?: number; exp?: number }; // 있으면 "케어 아이템" — 다마고치 게이지 증가량(100 클램프)
 }
 
 export const SHOP_ITEMS: Record<ShopItemKey, ShopItem> = {
@@ -54,6 +56,11 @@ export const SHOP_ITEMS: Record<ShopItemKey, ShopItem> = {
   power_up:       { key: "power_up",       name: "파워업 캔",   desc: "이번 공격 피해 +30%",       icon: "🥫", price: 35, usableInBattle: true },
   lucky_charm:    { key: "lucky_charm",    name: "행운의 부적", desc: "상대 다음 공격 100% 회피",  icon: "🍀", price: 35, usableInBattle: true },
   skill_relearn:  { key: "skill_relearn",  name: "기술 다시 배우기 머신", desc: "카드 스킬 1개를 새 스킬로 재배정", icon: "📜", price: 60, usableInBattle: false },
+
+  // ── 케어 아이템 — 다마고치(대표묘 케어) 전용. 일일 급여 한도와 무관하게 사용 가능 ──
+  premium_can: { key: "premium_can", name: "프리미엄 캔", desc: "포만감 가득 + 기분 소폭 + EXP", icon: "🥫", price: 45, usableInBattle: false, care: { fullness: 100, mood: 10, exp: 6 } },
+  churu:       { key: "churu",       name: "츄르",        desc: "기분 만점! + EXP",             icon: "🍦", price: 30, usableInBattle: false, care: { mood: 100, exp: 4 } },
+  growth_can:  { key: "growth_can",  name: "성장 캔",     desc: "포만감 소폭 + EXP 듬뿍",       icon: "✨", price: 90, usableInBattle: false, care: { fullness: 25, exp: 15 } },
 
   // ── 장착 아이템 — 부위별 5칸(머리/팔/몸통/다리/발)에 각각 동시 장착 가능 ──
   crit_charm: { key: "crit_charm", name: "급소의 렌즈", desc: "장착 시 크리티컬 확률 +5%p", icon: "🎯", price: 90, usableInBattle: false, equip: { critAdd: 5 }, bodySlot: "head" },
