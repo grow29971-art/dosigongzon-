@@ -2,7 +2,7 @@
 // area_chats 테이블 전체 비움. 사용자 요청: 하루마다 채팅 전부 새로고침.
 // 채팅 UI에서도 "매일 새벽 4시 정리" 안내 노출.
 
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { reportError } from "@/lib/error-report";
 
 export const maxDuration = 60;
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "서버 설정 미완료" }, { status: 500 });
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   // 삭제 전 카운트 (로그용)
   const { count: before } = await supabase

@@ -1,7 +1,7 @@
 // 사회적 증명용 집계 — 오늘 돌봄 유저·이번 주 신규 고양이·전체 돌봄 연결 수
 // 비로그인 접근 가능. 개인정보 없이 숫자만 반환.
 
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 export const revalidate = 60; // 1분 캐시
@@ -23,9 +23,7 @@ export async function GET(request: Request) {
     });
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
+  const supabase = createServiceClient();
 
   // 오늘 00:00 KST → UTC 변환
   const kstNowStr = new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" });

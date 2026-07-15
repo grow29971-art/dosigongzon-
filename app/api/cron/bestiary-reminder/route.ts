@@ -3,7 +3,7 @@
 // 남은 미발견 종 수를 알려줘서 재접속 동기를 만든다. 다 채운 유저는 대상에서 제외.
 
 import webpush from "web-push";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export const maxDuration = 300;
 
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     vapidPrivate,
   );
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   // 1. 마케팅 푸시 동의 + 도감 컬럼 보유 유저(마이그레이션 전이면 컬럼 자체가 없어 빈 배열로 옴)
   const { data: optedIn, error: profileErr } = await supabase

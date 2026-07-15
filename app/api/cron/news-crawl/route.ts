@@ -2,7 +2,7 @@
 // Vercel Cron: 매일 09:00 KST 자동 실행
 // 수동 호출: GET/POST /api/cron/news-crawl (CRON_SECRET 필요)
 
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { crawlAll } from "@/lib/news-crawler";
 import { reportError } from "@/lib/error-report";
 
@@ -27,7 +27,7 @@ async function handle(request: Request): Promise<Response> {
     );
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   try {
     const items = await crawlAll();

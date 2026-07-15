@@ -9,7 +9,7 @@
 //   - no_cat: 첫 등록 미완료 (catCount = 0)
 //   - dormant: 8~30일 미접속
 
-import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { reportError } from "@/lib/error-report";
 
 export const maxDuration = 60;
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   if (!supabaseUrl || !supabaseServiceKey) {
     return Response.json({ error: "서버 설정 미완료" }, { status: 500 });
   }
-  const service = createServiceClient(supabaseUrl, supabaseServiceKey);
+  const service = createServiceClient();
 
   // 관리자 인증 (set-title 패턴) — Bearer token에서 user 확인 후 admins 테이블 조회
   const authHeader = request.headers.get("authorization");

@@ -3,7 +3,7 @@
 // 서버 전용 (cron에서 호출, service_role 필요)
 // ══════════════════════════════════════════
 
-import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 const SITE_URL = "https://dosigongzon.com";
 
@@ -30,13 +30,8 @@ export interface DigestContent {
   myCatCount: number; // 받는 유저의 등록 고양이 수
 }
 
-function getServiceClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-  return createServiceClient(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
-  });
-}
+// 공용 팩토리(lib/supabase/service.ts)와 동일 옵션이라 그대로 위임
+const getServiceClient = createServiceClient;
 
 /** 다이제스트 수신 대상 유저 조회 (opt-in, 최근 발송 7일 이상 경과). */
 export async function listDigestRecipients(): Promise<DigestRecipient[]> {

@@ -4,7 +4,7 @@
 // POST /api/admin/sync-hospitals (관리자 전용)
 // ══════════════════════════════════════════
 
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 // Vercel 함수 최대 실행 시간 (5분)
 export const maxDuration = 300;
@@ -157,7 +157,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "KAKAO_REST_API_KEY 환경변수를 설정해주세요" }, { status: 500 });
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   // ── 관리자 인증 ──
   const authHeader = request.headers.get("authorization");

@@ -10,7 +10,7 @@
 // box/supabase_storage_diet_cleanup.sql PART 2와 동일한 정책.
 // 고아 storage 파일 정리(PART 4)는 race condition 리스크로 자동화하지 않음.
 
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { reportError } from "@/lib/error-report";
 
 export const maxDuration = 60;
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "서버 설정 미완료" }, { status: 500 });
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   const results: Record<string, { deleted: number; error: string | null }> = {};
   let totalDeleted = 0;

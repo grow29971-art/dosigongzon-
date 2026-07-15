@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export async function POST(request: Request) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "인증 필요" }, { status: 401 });
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
   const token = authHeader.slice(7);
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 

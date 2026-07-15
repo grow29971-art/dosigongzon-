@@ -2,7 +2,7 @@
 // 이번 주 동네 활동 요약을 전체 구독자에게 broadcast
 
 import webpush from "web-push";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export const maxDuration = 300;
 
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     vapidPrivate,
   );
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
   // 이번 주 신규 고양이·긴급 돌봄 수 집계 — service-role이 RLS 우회하므로 hidden 명시 필터

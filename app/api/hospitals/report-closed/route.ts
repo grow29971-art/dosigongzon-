@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 // 유저별 신고 빈도 제한 (인메모리, 1시간에 5회)
 const reportLog = new Map<string, number[]>();
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "서버 오류" }, { status: 500 });
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   // 로그인 확인
   const authHeader = request.headers.get("authorization");

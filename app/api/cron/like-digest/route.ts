@@ -3,7 +3,7 @@
 // 발송 후 posts.like_count_snapshot을 현재 like_count로 갱신.
 
 import webpush from "web-push";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export const maxDuration = 300;
 
@@ -45,7 +45,7 @@ async function handle(request: Request): Promise<Response> {
     vapidPrivate,
   );
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   // 좋아요가 늘어난 글들 (저자 있음, 숨김 아님)
   const { data: postsRaw } = await supabase

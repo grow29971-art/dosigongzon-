@@ -14,7 +14,7 @@
 //
 // 운영자가 도시공존 앱·웹 열면 인박스에 어제 요약이 쌓여 있음. 푸시 발송 안 함(소음 ↓).
 
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { toKstDate } from "@/lib/kst";
 
 export const maxDuration = 60;
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "서버 설정 미완료" }, { status: 500 });
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   // KST 어제 00:00 ~ 오늘 00:00
   const now = new Date();

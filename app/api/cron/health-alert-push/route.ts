@@ -3,7 +3,7 @@
 // 같은 동네 활동 유저에게 푸시. 마케팅 푸시 동의 유저만.
 
 import webpush from "web-push";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export const maxDuration = 300;
 
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     vapidPrivate,
   );
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
   const staleAt = new Date(Date.now() - STALE_DAYS * 24 * 60 * 60 * 1000).toISOString();
 
   // 1) 위급 상태 고양이 — hidden 제외 (서비스키 RLS 우회)

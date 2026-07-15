@@ -3,7 +3,7 @@
 // 하루 놓치면 연속 기록이 끊기므로 잠들기 전 마지막 리마인더.
 
 import webpush from "web-push";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { toKstDate } from "@/lib/kst";
 
 export const maxDuration = 300;
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     vapidPrivate,
   );
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
   const today = toKstDate(new Date());
 
   // 1. 마케팅 푸시 동의 유저 목록

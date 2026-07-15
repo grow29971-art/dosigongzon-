@@ -1,5 +1,5 @@
 import webpush from "web-push";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export async function POST(request: Request) {
   const vapidPublic = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "인증 필요" }, { status: 401 });
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   // 토큰으로 유저 확인
   const token = authHeader.slice(7);

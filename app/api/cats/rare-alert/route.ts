@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import webpush from "web-push";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { createClient as createUserClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "config" }, { status: 500 });
   }
 
-  const admin = createClient(supabaseUrl, supabaseServiceKey);
+  const admin = createServiceClient();
 
   // 고양이 정보 (등록자 본인 것만)
   const { data: cat } = await admin

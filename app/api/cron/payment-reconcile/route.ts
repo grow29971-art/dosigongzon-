@@ -8,7 +8,7 @@
 // 불일치 발견 시 관리자 DM 자가발송(admin-daily-digest와 동일 패턴) + 로그.
 // 수동 호출: POST /api/cron/payment-reconcile (CRON_SECRET 필요)
 
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export const maxDuration = 60;
 
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     return Response.json({ ok: true, skipped: "TOSS_SECRET_KEY 미설정" });
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
   const cutoff = new Date(Date.now() - LOOKBACK_DAYS * 24 * 60 * 60 * 1000).toISOString();
 
   // 최근 결제 이력이 있는 주문 (payment_key 보유 = 토스 원장에 존재)

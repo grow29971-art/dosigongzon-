@@ -2,7 +2,7 @@
 // Vercel Cron: 매일 03:00 KST 자동 실행
 // 수동 호출: POST /api/cron/sync-pharmacies (admin만)
 
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { reportError } from "@/lib/error-report";
 
 // LOCALDATA가 https 지원 — MITM 변조 방지 위해 https 사용
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
   }
 
   // Service role client (RLS 우회)
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   try {
     let totalInserted = 0;

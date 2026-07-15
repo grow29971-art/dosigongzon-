@@ -2,7 +2,7 @@
 // 활동 지역 설정한 유저 중, 그 구의 최근 7일 채팅이 활발한데 본인은 참여 안 한 사람에게 개인화 푸시
 
 import webpush from "web-push";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { SEOUL_GUS } from "@/lib/seoul-regions";
 
 /** 유저의 활동 지역 이름을 실제 구 이름으로 매핑. "연남동" → "마포구". */
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     vapidPrivate,
   );
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
   // 1. 활동 지역이 설정된 유저(프라이머리) 모두 조회

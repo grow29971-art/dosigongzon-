@@ -2,7 +2,7 @@
 // 자격: 본인이 등록한 고양이 1마리 이상.
 // 입력: { cat_id } — 본인이 돌보는 고양이 ID. 그 아이 모양으로 커스텀 키링 제작.
 
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { reportError } from "@/lib/error-report";
 
 export async function POST(request: Request) {
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   if (!authHeader?.startsWith("Bearer ")) {
     return Response.json({ error: "로그인이 필요해요" }, { status: 401 });
   }
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
   const token = authHeader.slice(7);
   const { data: { user } } = await supabase.auth.getUser(token);
   if (!user) {

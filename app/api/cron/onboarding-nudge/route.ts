@@ -3,7 +3,7 @@
 // "행동을 안 한 유저"에게만 푸시 → 일반 broadcast보다 클릭률·전환 ↑
 
 import webpush from "web-push";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export const maxDuration = 300;
 
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     vapidPrivate,
   );
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   // 1) 가입 7~30일 + marketing_push_enabled=true 유저
   const since = new Date(Date.now() - MAX_DAYS * 24 * 60 * 60 * 1000).toISOString();

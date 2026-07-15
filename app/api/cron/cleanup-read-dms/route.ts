@@ -7,7 +7,7 @@
 // - 무한 보관은 user privacy/DB 비용 부담
 // - privacy 정책 제3조에 명시됨 (/privacy)
 
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { reportError } from "@/lib/error-report";
 
 export const maxDuration = 60;
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "서버 설정 미완료" }, { status: 500 });
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   const cutoff = new Date(Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000).toISOString();
 

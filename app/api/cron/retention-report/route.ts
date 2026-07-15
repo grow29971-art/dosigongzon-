@@ -11,7 +11,7 @@
 //   • 커뮤니티 글+댓글
 //   • 누적 가입·고양이 (맥락)
 
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export const maxDuration = 60;
 
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
   if (!supabaseUrl || !supabaseServiceKey) {
     return Response.json({ error: "서버 설정 미완료" }, { status: 500 });
   }
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   const now = Date.now();
   const DAY = 86_400_000;

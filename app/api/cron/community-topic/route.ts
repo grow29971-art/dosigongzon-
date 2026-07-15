@@ -3,7 +3,7 @@
 // AI 집사가 주 2회 가벼운 대화 주제를 자유게시판에 올려 마중물 역할.
 // Gemini 실패/미설정 시 큐레이션 폴백. 최근 72시간 내 봇 글 있으면 스킵(중복 방지).
 
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const maxDuration = 60;
@@ -108,7 +108,7 @@ export async function POST(request: Request) {
   if (!supabaseUrl || !serviceKey) {
     return Response.json({ error: "서버 설정 미완료" }, { status: 500 });
   }
-  const supabase = createClient(supabaseUrl, serviceKey);
+  const supabase = createServiceClient();
 
   // 중복 가드 — 최근 72시간 내 봇 글이 있으면 스킵
   const since = new Date(Date.now() - 72 * 3600 * 1000).toISOString();

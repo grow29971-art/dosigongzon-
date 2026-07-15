@@ -1,7 +1,7 @@
 // 주간 배틀 랭킹 코인 지급 — Vercel Cron 매주 월요일 08:00 KST (일 23:00 UTC)
 // 지난 주(월~일, KST) card_battles 참가자를 승3점/패1점으로 집계해 TOP 10에게 코인 지급.
 
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { WEEKLY_RANK_REWARDS } from "@/lib/shop-config";
 
 interface BattleRow {
@@ -35,7 +35,7 @@ async function handle(request: Request): Promise<Response> {
   if (!supabaseUrl || !supabaseServiceKey) {
     return Response.json({ error: "서버 설정 미완료" }, { status: 500 });
   }
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   const lastMonday = mondayKst(-1);
   const thisMonday = mondayKst(0);

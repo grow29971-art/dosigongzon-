@@ -4,7 +4,7 @@
 // 목적: "앱을 열게 하는 트리거" 부재 해소 → 홈 MyCatsQuickCare 카드에서 1탭 로깅.
 
 import webpush from "web-push";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export const maxDuration = 300;
 
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     vapidPrivate,
   );
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   // 1) 마케팅 푸시 동의 유저
   const { data: optedIn } = await supabase

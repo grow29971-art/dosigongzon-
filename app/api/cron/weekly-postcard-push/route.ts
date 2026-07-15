@@ -3,7 +3,7 @@
 // 마케팅 푸시 동의자만 대상.
 
 import webpush from "web-push";
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export const maxDuration = 300;
 
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     vapidPrivate,
   );
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   // 이번 주 KST 월요일 00:00 → UTC
   const kstNow = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }));

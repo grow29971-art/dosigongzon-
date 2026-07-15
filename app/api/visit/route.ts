@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import { createHash } from "node:crypto";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     return Response.json({ count: 0 });
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   const authHeader = request.headers.get("authorization");
   const ip = getClientIp(request);
@@ -90,7 +90,7 @@ export async function GET() {
     return Response.json({ today: 0, total: 0 });
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createServiceClient();
 
   const { data: allStats } = await supabase
     .from("daily_stats")

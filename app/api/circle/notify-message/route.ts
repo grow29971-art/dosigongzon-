@@ -4,6 +4,7 @@
 
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { createServiceClient } from "@/lib/supabase/service";
 import webpush from "web-push";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -58,7 +59,7 @@ export async function POST(req: Request) {
   }
 
   // 서비스 키로 멤버 + 푸시 구독 조회 (RLS 우회 가능 — 본인 메시지 알림이라 안전)
-  const admin = createClient(SUPABASE_URL, SERVICE_KEY);
+  const admin = createServiceClient();
 
   // 서클의 owner와 accepted 멤버 모두 조회 (sender 제외)
   const [{ data: circleRow }, { data: members }] = await Promise.all([
