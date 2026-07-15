@@ -11,9 +11,22 @@ import { X, ShieldCheck } from "lucide-react";
 export default function MapIntroModal() {
   const [show, setShow] = useState(false);
 
-  // 지도에 들어올 때마다 노출 (탭 이동 = remount)
+  // 4일에 한 번만 노출 (매번 뜨는 피로 방지)
   useEffect(() => {
-    const t = setTimeout(() => setShow(true), 600); // 지도 로드 뒤 살짝 늦게
+    const REMIND_MS = 4 * 24 * 60 * 60 * 1000;
+    const tsKey = "dosigongzon_intro_map_ts";
+    let due = true;
+    try {
+      const last = Number(localStorage.getItem(tsKey) || 0);
+      due = Date.now() - last > REMIND_MS;
+    } catch {
+      due = true;
+    }
+    if (!due) return;
+    const t = setTimeout(() => {
+      setShow(true);
+      try { localStorage.setItem(tsKey, String(Date.now())); } catch { /* ignore */ }
+    }, 600);
     return () => clearTimeout(t);
   }, []);
 

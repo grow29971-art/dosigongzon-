@@ -38,12 +38,24 @@ export default function PageIntroModal({
 }) {
   const [show, setShow] = useState(false);
 
-  // 페이지에 들어올 때마다(탭 이동 = 컴포넌트 remount) 항상 노출.
-  // storageKey는 컴포넌트 식별용으로만 유지 (더는 1회 제한에 쓰지 않음).
+  // 4일에 한 번만 노출 (그 창 안 첫 진입 시). 매번 뜨는 피로 방지.
   useEffect(() => {
-    const t = setTimeout(() => setShow(true), 400);
+    const REMIND_MS = 4 * 24 * 60 * 60 * 1000; // 4일
+    const tsKey = `${storageKey}_ts`;
+    let due = true;
+    try {
+      const last = Number(localStorage.getItem(tsKey) || 0);
+      due = Date.now() - last > REMIND_MS;
+    } catch {
+      due = true;
+    }
+    if (!due) return;
+    const t = setTimeout(() => {
+      setShow(true);
+      try { localStorage.setItem(tsKey, String(Date.now())); } catch { /* ignore */ }
+    }, 400);
     return () => clearTimeout(t);
-  }, []);
+  }, [storageKey]);
 
   // 도움말 버튼 등으로 강제 재오픈
   useEffect(() => {
