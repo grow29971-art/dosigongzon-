@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRef } from "react";
+import PageIntroModal from "@/app/components/PageIntroModal";
 import Image from "next/image";
 import {
   User,
@@ -259,6 +260,17 @@ export default function MyPage() {
 
   return (
     <div className="px-4 pt-14 pb-8">
+      <PageIntroModal
+        storageKey="dosigongzon_intro_mypage"
+        badge="마이페이지"
+        headerEmoji="👤"
+        title="내 돌봄 발자취를 모아봐요"
+        items={[
+          { emoji: "🏆", text: <>돌볼수록 <b className="text-text-main">레벨·업적·타이틀</b>이 쌓여요.</> },
+          { emoji: "🐱", text: <>내 고양이·돌봄 기록·포획 카드를 관리해요.</> },
+          { emoji: "⚙️", text: <>알림·서클·차단 등 설정도 여기서 할 수 있어요.</> },
+        ]}
+      />
       {/* 헤더 */}
       <div className="mb-6 px-1">
         <div className="flex items-baseline gap-2 mb-1">

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import PageIntroModal from "@/app/components/PageIntroModal";
 import {
   Siren,
   Home,
@@ -209,6 +210,20 @@ export default function CommunityPage() {
 
   return (
     <div className="px-4 pt-14 pb-24">
+      <PageIntroModal
+        storageKey="dosigongzon_intro_community"
+        badge="커뮤니티"
+        headerEmoji="💬"
+        title="이웃 길집사와 이야기 나눠요"
+        headerBg="linear-gradient(160deg, #EDE7F6 0%, #E4DAF3 100%)"
+        accent="#8B65B8"
+        accentDark="#6E4E96"
+        items={[
+          { emoji: "🐾", text: <>동네 돌봄 소식·꿀팁·질문을 자유롭게 나눠요.</> },
+          { emoji: "🔒", text: <>댓글은 <b className="text-text-main">비밀 댓글</b>로 글쓴이에게만 조용히 남길 수도 있어요.</> },
+          { emoji: "✍️", text: <>우하단 글쓰기 버튼으로 첫 글을 남겨보세요.</> },
+        ]}
+      />
       {/* ── 헤더 ── */}
       <div className="mb-6 px-1 flex items-end justify-between">
         <div>

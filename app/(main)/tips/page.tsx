@@ -8,6 +8,7 @@ import Image from "next/image";
 import { ArrowLeft, Sparkles, ChevronRight, Eye, Clock, ExternalLink, Pin, BookOpen, Bot, Siren, Baby, Stethoscope, Snowflake, Pill, Heart, Phone, Scale, AlertTriangle } from "lucide-react";
 import { listPublishedTipsServer, type Tip } from "@/lib/tips-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import PageIntroModal from "@/app/components/PageIntroModal";
 import { estimateReadingMinutes } from "@/lib/html-sanitize";
 import TipsAdminFab from "./TipsAdminFab";
 import TipsAIButler from "./TipsAIButler";
@@ -78,6 +79,20 @@ export default async function TipsIndexPage() {
 
   return (
     <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
+      <PageIntroModal
+        storageKey="dosigongzon_intro_tips"
+        badge="AI 집사"
+        headerEmoji="🤖"
+        title="궁금한 건 AI 집사에게 물어보세요"
+        headerBg="linear-gradient(160deg, #E8F5E9 0%, #DBEEDD 100%)"
+        accent="#22A366"
+        accentDark="#1B7D50"
+        items={[
+          { emoji: "💬", text: <>응급처치·TNR·사료·겨울나기… 무엇이든 <b className="text-text-main">24시간</b> 답해줘요.</> },
+          { emoji: "📖", text: <>상황별 보호 가이드도 이 곳에 모여 있어요.</> },
+          { emoji: "⚠️", text: <>급하거나 의료 판단이 필요하면 꼭 <b className="text-text-main">실제 수의사</b>와 상의하세요.</> },
+        ]}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

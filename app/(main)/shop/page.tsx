@@ -17,6 +17,7 @@ import { sanitizeImageUrl } from "@/lib/url-validate";
 import PushOptInCard from "@/app/components/PushOptInCard";
 import FundVoteCard from "@/app/components/FundVoteCard";
 import FundSettlementCard from "@/app/components/FundSettlementCard";
+import PageIntroModal from "@/app/components/PageIntroModal";
 
 type FilterKey = ProductCategory | "all";
 
@@ -180,6 +181,20 @@ export default function ShopPage() {
 
   return (
     <div className="px-4 pt-14 pb-24">
+      <PageIntroModal
+        storageKey="dosigongzon_intro_shop"
+        badge="쇼핑"
+        headerEmoji="🛍️"
+        title="사면, 아이들에게 돌아가요"
+        headerBg="linear-gradient(160deg, #FFF3E0 0%, #FCE9D6 100%)"
+        accent="#E8930C"
+        accentDark="#B5720A"
+        items={[
+          { emoji: "💛", text: <>수익의 일부는 길고양이를 위해 써요. <b className="text-text-main">사용처는 함께 투표</b>로 정해요.</> },
+          { emoji: "🐾", text: <>매일 돌봄 출석으로 모은 포인트를 <b className="text-text-main">1P = 1원</b> 할인으로 쓸 수 있어요.</> },
+          { emoji: "🔍", text: <>모인 금액·쓰인 금액을 <b className="text-text-main">투명하게 공개</b>해요.</> },
+        ]}
+      />
       {/* ── 헤더 ── */}
       <div className="mb-4 px-1 flex items-end justify-between">
         <div>
