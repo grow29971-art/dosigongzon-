@@ -543,6 +543,14 @@ export default function HomeAuthed({
     return <SplashLoading />;
   }
 
+  // ── 홈 간결화 (2026-07-15): 아래 섹션은 잠정 비노출. 되살리려면 해당 플래그 true. ──
+  // 기준: 중복(인기 커뮤니티=HOT) · 다른 탭에 존재(꿀팁·동네이슈·새글) · 저빈도(기념일)
+  const SHOW_ANNIVERSARY = false;    // 오늘의 기념일 → 냥식으로 충분
+  const SHOW_WEEKLY_ISSUES = false;  // 동네 이슈 → 커뮤니티 탭
+  const SHOW_NEW_POSTS_BADGE = false;// 지난 방문 새 글 배지 → 커뮤니티 탭
+  const SHOW_POPULAR_POSTS = false;  // 인기 커뮤니티 글 → HOT 게시글과 중복
+  const SHOW_TIPS_ENTRY = false;     // 꿀팁게시판 진입 → AI집사 탭에 존재
+
   return (
     <>
     <PageIntroModal
@@ -1569,7 +1577,7 @@ export default function HomeAuthed({
       )}
 
       {/* ══════ 오늘의 기념일 ══════ */}
-      {anniversaries.length > 0 && (
+      {SHOW_ANNIVERSARY && anniversaries.length > 0 && (
         <div className="mb-4">
           <div className="flex items-center gap-2 mb-3 px-1">
             <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E86B8C" }} />
@@ -1670,7 +1678,7 @@ export default function HomeAuthed({
       {activity && activity.catCount > 0 && <PushOptInCard />}
 
       {/* ══════ 이번 주 동네 이슈 ══════ */}
-      {weeklyIssues.length > 0 && (
+      {SHOW_WEEKLY_ISSUES && weeklyIssues.length > 0 && (
         <div className="mb-5">
           <div className="flex items-center gap-2 px-1 mb-3">
             <div
@@ -1744,7 +1752,7 @@ export default function HomeAuthed({
       )}
 
       {/* ══════ 지난 방문 이후 새 글 배지 ══════ */}
-      {newPostsCount > 0 && (
+      {SHOW_NEW_POSTS_BADGE && newPostsCount > 0 && (
         <Link
           href="/community"
           className="block mb-3 active:scale-[0.99] transition-transform"
@@ -1772,7 +1780,7 @@ export default function HomeAuthed({
       )}
 
       {/* ══════ 인기 커뮤니티 글 ══════ */}
-      {popularPosts.length > 0 && (
+      {SHOW_POPULAR_POSTS && popularPosts.length > 0 && (
         <div className="mb-5 cv-auto">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 px-1">
@@ -1824,6 +1832,7 @@ export default function HomeAuthed({
       )}
 
       {/* ══════ 꿀팁게시판 진입 카드 ══════ */}
+      {SHOW_TIPS_ENTRY && (
       <Link
         href="/tips"
         className="flex items-center gap-3 p-4 mb-4 active:scale-[0.99] transition-transform"
@@ -1848,6 +1857,7 @@ export default function HomeAuthed({
         </div>
         <ChevronRight size={16} className="text-primary opacity-70" />
       </Link>
+      )}
 
       {/* 고양이 사회 소식 & 일정 섹션 — 사용자 요청으로 제거 (2026-07-13). /news 페이지는 유지 */}
     </div>
