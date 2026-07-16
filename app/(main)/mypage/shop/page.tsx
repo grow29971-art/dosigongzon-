@@ -71,7 +71,7 @@ export default function ShopPage() {
 
       <div className="px-4 pb-10">
         <p className="text-[12px] mb-4" style={{ color: UI.textMuted }}>
-          배틀 승리·돌봄 기록·매일 로그인으로 코인을 모아보세요. 구매한 아이템은 카드 배틀 중에 사용할 수 있어요.
+          출석·돌봄 기록·배틀 승리·매일 로그인으로 코인을 모아보세요. 케어 간식은 홈 다마고치에서, 나머지는 카드 배틀에서 사용해요.
         </p>
 
         {msg && (
@@ -86,9 +86,45 @@ export default function ShopPage() {
           </div>
         ) : (
           <>
+            <p className="text-[11px] font-extrabold mb-2" style={{ color: UI.accent.green }}>🍚 케어 간식 — 홈 다마고치에게 줘요</p>
+            <div className="grid grid-cols-2 gap-3 mb-2">
+              {SHOP_ITEM_KEYS.filter(k => !!SHOP_ITEMS[k].care).map((key) => {
+                const item = SHOP_ITEMS[key];
+                const canAfford = coins >= item.price;
+                return (
+                  <div key={key} className="rounded-2xl p-3 flex flex-col gap-2" style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
+                    <div className="flex items-center justify-between">
+                      <span style={{ fontSize: 28 }}>{item.icon}</span>
+                      {owned[key] > 0 && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }}>
+                          보유 {owned[key]}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[13px] font-bold text-white">{item.name}</span>
+                    <span className="text-[11px] leading-snug" style={{ color: UI.textSub }}>{item.desc}</span>
+                    <button
+                      onClick={() => buy(key)}
+                      disabled={!canAfford || buyingKey === key}
+                      className="mt-1 py-2 rounded-xl text-[12px] font-black flex items-center justify-center gap-1"
+                      style={{
+                        background: canAfford ? `${UI.accent.green}22` : "rgba(255,255,255,0.06)",
+                        boxShadow: canAfford ? `inset 0 0 0 1px ${UI.accent.green}` : "none",
+                        color: canAfford ? UI.accent.green : "rgba(255,255,255,0.3)",
+                        opacity: buyingKey === key ? 0.6 : 1,
+                      }}
+                    >
+                      <Coins size={12} /> {item.price}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-[10px] mb-5" style={{ color: UI.textMuted }}>구매하면 홈 화면 다마고치 카드에 아이템 칩이 생겨요. 일일 밥주기 한도와 무관하게 쓸 수 있어요.</p>
+
             <p className="text-[11px] font-extrabold mb-2" style={{ color: UI.accent.blue }}>⚔️ 전투 소모품</p>
             <div className="grid grid-cols-2 gap-3 mb-5">
-              {SHOP_ITEM_KEYS.filter(k => !SHOP_ITEMS[k].equip && !SHOP_ITEMS[k].borderFx).map((key) => {
+              {SHOP_ITEM_KEYS.filter(k => !SHOP_ITEMS[k].equip && !SHOP_ITEMS[k].borderFx && !SHOP_ITEMS[k].care).map((key) => {
                 const item = SHOP_ITEMS[key];
                 const canAfford = coins >= item.price;
                 return (
