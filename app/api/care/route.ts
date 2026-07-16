@@ -10,9 +10,10 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { SHOP_ITEMS, type ShopItemKey } from "@/lib/shop-config";
 import {
-  fullnessAt, moodAt, gaugeTs, currentCareDay,
+  fullnessAt, moodAt, cleanlinessAt, poopCount, gaugeTs, currentCareDay,
   FEED_LIMIT_PER_DAY, FEED_FULLNESS_GAIN, FEED_MOOD_GAIN, FEED_EXP,
-  FULLNESS_DECAY_HOURS, MOOD_DECAY_HOURS, FEED_FULL_BLOCK,
+  FULLNESS_DECAY_HOURS, MOOD_DECAY_HOURS, CLEANLINESS_DECAY_HOURS,
+  FEED_FULL_BLOCK, PLAY_MOOD_GAIN, CLEAN_MOOD_GAIN,
 } from "@/lib/care";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -35,6 +36,7 @@ interface CareCatRow {
   fed_day: number | null;
   fed_today: number | null;
   pet_day: number | null;
+  cleaned_at?: string | null; // 마이그레이션 전이면 컬럼 없음(undefined)
 }
 
 export async function POST(req: Request) {
@@ -53,23 +55,43 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   }
   const { target_id, action } = body;
-  if (!target_id || !action || !["feed", "pet", "use_item"].includes(action)) {
+  if (!target_id || !action || !["feed", "pet", "use_item", "clean", "play"].includes(action)) {
     return NextResponse.json({ error: "invalid_params" }, { status: 400 });
   }
 
   const svc = createServiceClient();
-  const { data: cat, error: catError } = await svc
-    .from("cats")
-    .select("id, caretaker_id, card_exp, card_level, fed_at, mood_at, fed_day, fed_today, pet_day")
-    .eq("id", target_id)
-    .maybeSingle();
-
-  // 마이그레이션 전 안전 거절 — 배포 순서가 꼬여도 안 죽는다
-  if (catError?.code === "42703") {
+  // cleaned_at은 별도 마이그레이션이라 있을 수도 없을 수도 있음 — 우선 cleaned_at 포함해
+  // 시도하고, 그 컬럼만 없으면(42703) 청결 없이 재조회한다. fed_at 등 기본 케어 컬럼
+  // 자체가 없으면(care 마이그레이션 전) 503으로 안전 거절.
+  let cleanedSupported = true;
+  let cat: CareCatRow | null = null;
+  {
+    const withClean = await svc
+      .from("cats")
+      .select("id, caretaker_id, card_exp, card_level, fed_at, mood_at, fed_day, fed_today, pet_day, cleaned_at")
+      .eq("id", target_id).maybeSingle();
+    if (withClean.error?.code === "42703") {
+      cleanedSupported = false;
+      const base = await svc
+        .from("cats")
+        .select("id, caretaker_id, card_exp, card_level, fed_at, mood_at, fed_day, fed_today, pet_day")
+        .eq("id", target_id).maybeSingle();
+      if (base.error?.code === "42703") return NextResponse.json({ error: "not_ready" }, { status: 503 });
+      if (base.error || !base.data) return NextResponse.json({ error: "not_found" }, { status: 404 });
+      cat = base.data as CareCatRow;
+    } else if (withClean.error) {
+      return NextResponse.json({ error: "not_found" }, { status: 404 });
+    } else if (!withClean.data) {
+      return NextResponse.json({ error: "not_found" }, { status: 404 });
+    } else {
+      cat = withClean.data as CareCatRow;
+    }
+  }
+  // 청소는 cleaned_at 컬럼이 있어야 가능
+  if (action === "clean" && !cleanedSupported) {
     return NextResponse.json({ error: "not_ready" }, { status: 503 });
   }
-  if (catError || !cat) return NextResponse.json({ error: "not_found" }, { status: 404 });
-  const row = cat as CareCatRow;
+  const row = cat;
   if (row.caretaker_id !== user.id) {
     return NextResponse.json({ error: "not_owner" }, { status: 403 });
   }
@@ -78,6 +100,8 @@ export async function POST(req: Request) {
   const today = currentCareDay(now);
   const fullness = fullnessAt(row.fed_at, now);
   const mood = moodAt(row.mood_at, now);
+  // 청결: 컬럼 미지원 환경에선 100(항상 깨끗)으로 취급 — 청소 UI가 안 뜰 뿐
+  const cleanliness = cleanedSupported ? cleanlinessAt(row.cleaned_at ?? null, now) : 100;
   const exp = row.card_exp ?? 0;
   const level = row.card_level ?? 1;
 
@@ -121,7 +145,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "daily_limit" }, { status: 429 });
     }
     return NextResponse.json({
-      ok: true, fullness: newFullness, mood: newMood,
+      ok: true, fullness: newFullness, mood: newMood, cleanliness,
       fed_today: fedToday + 1, feed_limit: FEED_LIMIT_PER_DAY,
       exp_gained: FEED_EXP, leveled_up: newLevel > level, new_level: newLevel,
     });
@@ -144,7 +168,42 @@ export async function POST(req: Request) {
     }
     // EXP는 지도에서 실물 쓰다듬기(상위 보상)에 양보 — 여기선 0
     return NextResponse.json({
-      ok: true, fullness, mood: 100,
+      ok: true, fullness, mood: 100, cleanliness,
+      fed_today: row.fed_day === today ? (row.fed_today ?? 0) : 0, feed_limit: FEED_LIMIT_PER_DAY,
+      exp_gained: 0, leveled_up: false, new_level: level,
+    });
+  }
+
+  // ── 치워주기 (청결 100, 기분 소폭) — 한도 없음, EXP·코인 없음(파밍 불가) ──
+  if (action === "clean") {
+    const newMood = Math.min(100, mood + CLEAN_MOOD_GAIN);
+    const { error } = await svc.from("cats").update({
+      cleaned_at: new Date(now).toISOString(), // 청결 만점
+      mood_at: gaugeTs(newMood, MOOD_DECAY_HOURS, now),
+    }).eq("id", row.id);
+    if (error) {
+      console.error("[care] clean update failed:", error);
+      return NextResponse.json({ error: "update_failed" }, { status: 502 });
+    }
+    return NextResponse.json({
+      ok: true, fullness, mood: newMood, cleanliness: 100,
+      fed_today: row.fed_day === today ? (row.fed_today ?? 0) : 0, feed_limit: FEED_LIMIT_PER_DAY,
+      exp_gained: 0, leveled_up: false, new_level: level,
+    });
+  }
+
+  // ── 놀아주기 (기분 회복) — 한도 없음, EXP·코인 없음(게이지만 움직여 파밍 불가) ──
+  if (action === "play") {
+    const newMood = Math.min(100, mood + PLAY_MOOD_GAIN);
+    const { error } = await svc.from("cats").update({
+      mood_at: gaugeTs(newMood, MOOD_DECAY_HOURS, now),
+    }).eq("id", row.id);
+    if (error) {
+      console.error("[care] play update failed:", error);
+      return NextResponse.json({ error: "update_failed" }, { status: 502 });
+    }
+    return NextResponse.json({
+      ok: true, fullness, mood: newMood, cleanliness,
       fed_today: row.fed_day === today ? (row.fed_today ?? 0) : 0, feed_limit: FEED_LIMIT_PER_DAY,
       exp_gained: 0, leveled_up: false, new_level: level,
     });
@@ -191,7 +250,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "update_failed" }, { status: 502 });
   }
   return NextResponse.json({
-    ok: true, fullness: newFullness, mood: newMood,
+    ok: true, fullness: newFullness, mood: newMood, cleanliness,
     fed_today: row.fed_day === today ? (row.fed_today ?? 0) : 0, feed_limit: FEED_LIMIT_PER_DAY,
     exp_gained: item.care.exp ?? 0, leveled_up: newLevel > level, new_level: newLevel,
     item_remaining: itemRemaining,

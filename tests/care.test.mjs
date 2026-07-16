@@ -5,6 +5,8 @@ import assert from "node:assert/strict";
 import {
   fullnessAt,
   moodAt,
+  cleanlinessAt,
+  poopCount,
   gaugeTs,
   careState,
   growthStage,
@@ -12,6 +14,8 @@ import {
   CARE_DEFAULT_GAUGE,
   FULLNESS_DECAY_HOURS,
   MOOD_DECAY_HOURS,
+  CLEANLINESS_DECAY_HOURS,
+  POOP_THRESHOLD,
 } from "../lib/care.ts";
 
 const H = 3_600_000;
@@ -68,9 +72,39 @@ test("careState 경계값", () => {
   assert.equal(careState(69, 100).key, "calm");
 });
 
-test("careState 문구에 죄책감 단어 없음", () => {
-  for (const [f, m] of [[10, 10], [10, 80], [80, 10], [50, 50], [90, 90]]) {
-    const s = careState(f, m);
+test("청결 감쇠: 36h 곡선 (18h=50), null→55", () => {
+  assert.equal(cleanlinessAt(iso(0), NOW), 100);
+  assert.equal(cleanlinessAt(iso(18 * H), NOW), 50);
+  assert.equal(cleanlinessAt(iso(36 * H), NOW), 0);
+  assert.equal(cleanlinessAt(null, NOW), CARE_DEFAULT_GAUGE);
+});
+
+test("cleanliness gaugeTs 왕복", () => {
+  for (const v of [0, 20, 55, 80, 100]) {
+    assert.ok(Math.abs(cleanlinessAt(gaugeTs(v, CLEANLINESS_DECAY_HOURS, NOW), NOW) - v) < 1e-6, `v=${v}`);
+  }
+});
+
+test("poopCount: 임계 이상 0개, 낮을수록 최대 3개", () => {
+  assert.equal(poopCount(POOP_THRESHOLD), 0);   // 딱 55는 깨끗
+  assert.equal(poopCount(100), 0);
+  assert.equal(poopCount(54), 1);
+  assert.equal(poopCount(20), 2);
+  assert.equal(poopCount(0), 3);
+  assert.ok(poopCount(-999) <= 3);              // 클램프
+});
+
+test("careState: 청결 낮으면 messy 최우선", () => {
+  assert.equal(careState(100, 100, 34).key, "messy"); // 배부르고 기분 좋아도 꾀죄죄면 청소
+  assert.equal(careState(100, 100, 35).key, "calm");  // 35는 messy 아님(하지만 신남은 청결 70+ 필요)
+  assert.equal(careState(100, 100, 70).key, "excited"); // 청결 70이면 신남 조건 충족
+  assert.equal(careState(70, 70, 69).key, "calm");    // 신남은 청결도 70 이상 필요
+  assert.equal(careState(70, 70).key, "excited");     // 청결 인자 생략 → 100 취급(하위호환)
+});
+
+test("careState 문구에 죄책감 단어 없음 (청결 포함)", () => {
+  for (const [f, m, c] of [[10, 10, 100], [10, 80, 100], [80, 10, 100], [50, 50, 50], [90, 90, 90], [90, 90, 10]]) {
+    const s = careState(f, m, c);
     assert.ok(!/굶|죽|아파|병/.test(s.line + s.label), s.key);
   }
 });
