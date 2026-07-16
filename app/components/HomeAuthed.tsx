@@ -86,7 +86,7 @@ import {
   distanceMeters,
   type ActivityRegion,
 } from "@/lib/activity-regions-repo";
-import { sanitizeImageUrl } from "@/lib/url-validate";
+import { sanitizeImageUrl, sanitizeHttpUrl } from "@/lib/url-validate";
 
 import { CAT_FACTS } from "@/lib/cat-facts";
 
@@ -1775,10 +1775,10 @@ export default function HomeAuthed({
                   </div>
                 </div>
               );
-              return issue.external_url ? (
+              return issue.external_url && sanitizeHttpUrl(issue.external_url) ? (
                 <a
                   key={issue.id}
-                  href={issue.external_url}
+                  href={sanitizeHttpUrl(issue.external_url, "#")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block active:scale-[0.99] transition-transform"

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { createClient } from "@/lib/supabase/client";
+import { sanitizeHttpUrl, sanitizeImageUrl } from "@/lib/url-validate";
 import { useToast } from "@/app/components/Toast";
 
 type EntryStatus = "pending" | "selected" | "shipped" | "rejected";
@@ -271,10 +272,10 @@ function EntryCard({
     <div className="rounded-2xl bg-white p-4" style={{ boxShadow: "var(--shadow-card)", border: `1px solid ${meta.color}25` }}>
       <div className="flex items-start gap-3">
         {/* 사진 — 고양이 사진 또는 응모자 아바타 폴백 */}
-        {entry.cat_photo_url ? (
-          <a href={entry.cat_photo_url} target="_blank" rel="noopener noreferrer"
+        {entry.cat_photo_url && sanitizeImageUrl(entry.cat_photo_url) ? (
+          <a href={sanitizeHttpUrl(entry.cat_photo_url, "#")} target="_blank" rel="noopener noreferrer"
             className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 80, height: 80 }}>
-            <Image src={entry.cat_photo_url} alt="" fill sizes="80px" style={{ objectFit: "cover" }} />
+            <Image src={sanitizeImageUrl(entry.cat_photo_url)} alt="" fill sizes="80px" style={{ objectFit: "cover" }} />
           </a>
         ) : profile?.avatar_url ? (
           <div className="relative shrink-0 rounded-xl overflow-hidden bg-surface-alt" style={{ width: 80, height: 80 }}>
