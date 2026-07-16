@@ -181,8 +181,12 @@ export default function HomeAuthed({
     }
   }, [user]);
 
-  // 로그인 코인 보너스 — 포인트 경제(출석/쇼핑) 잠정 비노출 동안 중단.
-  // SHOW_CHECKIN 부활 시 함께 복원.
+  // 로그인 코인 보너스 — 하루 1회(+15), 중복 지급은 서버가 KST 날짜 선점으로 차단.
+  // 코인 경제 부활(2026-07-16)과 함께 복원 — 케어 간식 구매 재원.
+  useEffect(() => {
+    if (!user) return;
+    fetch("/api/coins/daily-login", { method: "POST" }).catch(() => {});
+  }, [user]);
 
   // allPosts 또는 lastVisitAt 갱신 시 새 글 개수 재계산
   useEffect(() => {
@@ -558,7 +562,7 @@ export default function HomeAuthed({
   // 쇼핑/포인트 오픈·인원 확보 후 각 플래그를 true로 되돌리면 복원(라우트·코드는 유지).
   const SHOW_FUND_BANNER = false;         // 첫 프로젝트(펀드) 배너 — 쇼핑 오픈 전 공허
   const SHOW_TODO_CHIPS = false;          // '오늘 할 일' 칩(냥상자·도감·랭킹)
-  const SHOW_CHECKIN = false;             // 출석/냥상자/주간출석 — 포인트 경제(쇼핑과 함께 부활)
+  const SHOW_CHECKIN = true;              // 출석/냥상자/주간출석 — 코인 경제 부활(2026-07-16, 다마고치 케어 간식 재원)
   const SHOW_POPULAR_CATS = false;        // 이번 주 인기 고양이 TOP5 — 인원 필요
   const SHOW_EVENT_BANNERS = false;       // 파운딩멤버 등 이벤트 배너
   const SHOW_CIRCLE_ENTRY = false;        // 서클 빠른 진입 — 저활용
