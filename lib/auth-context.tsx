@@ -40,6 +40,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       );
       unsub = () => subscription.unsubscribe();
+    }).catch(() => {
+      // 배포 직후 stale chunk 등으로 클라이언트 로드 실패 시 무한 로딩 방지 —
+      // 게이트를 풀어 비로그인 상태로라도 앱이 뜨게 한다.
+      if (!cancelled) setLoading(false);
     });
 
     return () => {

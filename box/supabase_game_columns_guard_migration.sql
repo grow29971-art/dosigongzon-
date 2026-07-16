@@ -20,8 +20,12 @@ returns trigger
 language plpgsql
 as $$
 begin
-  -- service_role(서버 API·크론)은 uid가 없음 — 서버 로직만 경제 컬럼을 만진다
-  if auth.uid() is null then
+  -- PostgREST '직접' 요청(authenticated/anon 롤)만 검사.
+  -- service_role(서버 API·크론)과 SECURITY DEFINER RPC(정의자 롤로 실행 —
+  -- add_cat_card_exp·buy_shop_item_atomic 등 자체 검증 보유)는 통과.
+  if current_user in ('authenticated', 'anon') then
+    null; -- 아래 검사 진행
+  else
     return new;
   end if;
 
@@ -86,8 +90,9 @@ returns trigger
 language plpgsql
 as $$
 begin
-  if auth.uid() is null then
-    return new; -- service_role (케어·배틀·출석 API, 크론)
+  -- 직접 REST 요청만 검사 — service_role·SECURITY DEFINER RPC(add_cat_card_exp 등)는 통과
+  if current_user not in ('authenticated', 'anon') then
+    return new;
   end if;
   if exists (select 1 from public.admins where user_id = auth.uid()) then
     return new;

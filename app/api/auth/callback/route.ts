@@ -135,7 +135,8 @@ export async function GET(request: Request) {
           .from("profiles")
           .update({
             nickname,
-            terms_agreed_at: new Date().toISOString(),
+            // terms_agreed_at은 최초 1회만 — 재로그인마다 덮어쓰면 법적 동의 시점 기록이 훼손됨
+            ...(isFirstLogin ? { terms_agreed_at: new Date().toISOString() } : {}),
             ...(alreadyHasTitle || !earlyTitle ? {} : { admin_title: earlyTitle }),
             email_digest_enabled: emailOptIn,
           })
@@ -149,7 +150,8 @@ export async function GET(request: Request) {
         await supabase
           .from("profiles")
           .update({
-            terms_agreed_at: new Date().toISOString(),
+            // 최초 인증 때만 동의 시점 기록 — 재로그인마다 갱신하면 법적 기록 훼손
+            ...(isFirstLogin ? { terms_agreed_at: new Date().toISOString() } : {}),
             ...(earlyTitle ? { admin_title: earlyTitle } : {}),
             // 이메일 가입 최초 인증 완료 시점에 한해 동의 반영 (중복 업데이트 방지)
             ...(isFirstLogin ? { email_digest_enabled: emailOptIn } : {}),

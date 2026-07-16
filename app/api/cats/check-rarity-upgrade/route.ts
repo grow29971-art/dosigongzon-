@@ -12,10 +12,13 @@ export async function POST(req: Request) {
   const { cat_id } = await req.json();
   if (!cat_id) return NextResponse.json({ upgraded: false });
 
+  // 소유권 검증 필수 — caretaker_id 조건이 없으면 아무나 남의 cat_id로 호출해
+  // 카드 이름·스탯을 주인 모르게 재추첨(그리핑)할 수 있었음.
   const { data: cat } = await supabase
     .from("cats")
     .select("id, name, card_rarity, card_generated_at")
     .eq("id", cat_id)
+    .eq("caretaker_id", user.id)
     .maybeSingle();
 
   if (!cat?.card_generated_at || cat.card_rarity === "legendary") {
@@ -49,12 +52,13 @@ export async function POST(req: Request) {
 
   const svc = createServiceClient();
 
-  await svc.from("cats").update({
+  const { error: upErr } = await svc.from("cats").update({
     card_rarity: newRarity,
     card_name: newCardName,
     card_flavor: pick(flavorPool),
     ...battleStats,
   }).eq("id", cat_id);
+  if (upErr) return NextResponse.json({ upgraded: false }, { status: 500 });
 
   return NextResponse.json({
     upgraded: true,

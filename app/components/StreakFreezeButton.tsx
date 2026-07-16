@@ -77,6 +77,9 @@ export default function StreakFreezeButton({ streak, hasToday, onUsed }: Props) 
     return (
       <div
         className="mt-2 px-3 py-2.5 rounded-xl"
+        // 부모 카드가 <Link href="/map">라 이 패널의 버튼 클릭이 버블되면 지도로
+        // 튕겨 성공/에러 피드백을 못 봤음 — 패널 루트에서 기본이동·전파를 막는다.
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
         style={{
           background: "linear-gradient(135deg, #E8F0F8 0%, #D8E4F0 100%)",
           border: "1px solid rgba(74,123,168,0.25)",
