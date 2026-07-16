@@ -9,8 +9,6 @@ import { createCat, uploadCatPhoto, type Cat, type CatGender, type CatHealthStat
 import { useAuth } from "@/lib/auth-context";
 import CatRegistrationCelebration from "@/app/components/CatRegistrationCelebration";
 import type { CatCardData } from "@/app/components/CatCard";
-import dynamic from "next/dynamic";
-const CatCaptureCamera = dynamic(() => import("@/app/components/CatCaptureCamera"), { ssr: false });
 import { findLocationViolations, formatViolationMessage } from "@/lib/location-patterns";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 
@@ -97,13 +95,9 @@ export default function AddCatModal({
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
   // 추가 정보(선택) 펼침 — 기본은 이름·동네만 보여 마찰 최소화
   const [showMore, setShowMore] = useState(false);
-  // 포획 게임에서 "완벽 포획"으로 잡았는지 — 카드 생성 시 높은 등급 확률 보너스에 사용
-  const [perfectCatch, setPerfectCatch] = useState(false);
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [showCamera, setShowCamera] = useState(false);
-  const [pendingGalleryFiles, setPendingGalleryFiles] = useState<File[]>([]);
   // 등록 직후 축하 모달
   const [celebration, setCelebration] = useState<{
     open: boolean;
@@ -169,38 +163,12 @@ export default function AddCatModal({
       setError("");
       setSubmitting(false);
       setShowMore(false);
-      setPerfectCatch(false);
     }
     return () => { document.body.style.overflow = ""; };
   }, [open, initialLat, initialLng]);
 
-  const handleCameraCapture = (file: File, isPerfectCatch: boolean) => {
-    setShowCamera(false);
-    setPerfectCatch(isPerfectCatch);
-    // 갤러리 모드면 pendingGalleryFiles 전체 추가, 카메라 모드면 file만 추가
-    const filesToAdd = pendingGalleryFiles.length > 0 ? pendingGalleryFiles : [file];
-    setPendingGalleryFiles([]);
-    const available = MAX_PHOTOS - photoFiles.length;
-    const toAdd = filesToAdd.slice(0, available);
-    if (toAdd.length === 0) return;
-    const newPreviews: string[] = [];
-    let loaded = 0;
-    toAdd.forEach((f, idx) => {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        newPreviews[idx] = ev.target?.result as string;
-        loaded++;
-        if (loaded === toAdd.length) {
-          setPhotoFiles(prev => [...prev, ...toAdd]);
-          setPhotoPreviews(prev => [...prev, ...newPreviews]);
-        }
-      };
-      reader.readAsDataURL(f);
-    });
-  };
-
-  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = Array.from(e.target.files ?? []);
+  // 카메라 촬영·갤러리 선택 공통 — 검증 후 미리보기와 함께 바로 추가.
+  const addFiles = (selected: File[]) => {
     if (selected.length === 0) return;
 
     const available = MAX_PHOTOS - photoFiles.length;
@@ -222,10 +190,24 @@ export default function AddCatModal({
     }
 
     setError("");
-    // 첫 번째 사진은 포획 화면으로 — 나머지는 포획 완료 후 한꺼번에 추가
-    setPendingGalleryFiles(toAdd);
-    setShowCamera(true);
+    const newPreviews: string[] = [];
+    let loaded = 0;
+    toAdd.forEach((f, idx) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        newPreviews[idx] = ev.target?.result as string;
+        loaded++;
+        if (loaded === toAdd.length) {
+          setPhotoFiles((prev) => [...prev, ...toAdd]);
+          setPhotoPreviews((prev) => [...prev, ...newPreviews]);
+        }
+      };
+      reader.readAsDataURL(f);
+    });
+  };
 
+  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    addFiles(Array.from(e.target.files ?? []));
     // 같은 파일 다시 선택 가능하게 리셋
     if (e.target) e.target.value = "";
   };
@@ -312,7 +294,7 @@ export default function AddCatModal({
       let generatedCard: CatCardData | null = null;
       if (newCat.id) {
         try {
-          let body: Record<string, string | boolean> = { cat_id: newCat.id, perfect_catch: perfectCatch };
+          let body: Record<string, string | boolean> = { cat_id: newCat.id };
           if (photoFiles[0]) {
             const b64 = await resizeToBase64(photoFiles[0], 800);
             body = { ...body, image_base64: b64, mime_type: "image/jpeg" };
@@ -480,10 +462,9 @@ export default function AddCatModal({
                   className="relative w-full aspect-[4/3] rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-2 active:scale-[0.99] transition-transform overflow-hidden"
                   style={{ background: "linear-gradient(135deg, #0F0F1A 0%, #1A1A2E 100%)", borderColor: "#6366F1" }}
                 >
-                  <span className="text-[36px]">🐾</span>
-                  <p className="text-[14px] font-extrabold text-white">고양이 포획하기</p>
-                  <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.5)" }}>카메라로 직접 찍어서 카드 발급</p>
-                  <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[9px] font-bold text-white" style={{ background: "#6366F1" }}>CatchCat</div>
+                  <Camera size={34} className="text-white" strokeWidth={1.5} />
+                  <p className="text-[14px] font-extrabold text-white">사진 찍기</p>
+                  <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.5)" }}>카메라로 우리 동네 아이를 담아요</p>
                 </button>
                 <input
                   ref={captureInputRef}
@@ -493,10 +474,8 @@ export default function AddCatModal({
                   className="hidden"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
-                    if (!file) return;
+                    if (file) addFiles([file]);
                     if (e.target) e.target.value = "";
-                    setPendingGalleryFiles([file]);
-                    setShowCamera(true);
                   }}
                 />
                 <button
@@ -902,20 +881,5 @@ export default function AddCatModal({
     portalRoot,
   );
 
-  // CatCaptureCamera는 modal stacking context 밖, body에 직접 마운트
-  return (
-    <>
-      {portal}
-      {showCamera && portalRoot && createPortal(
-        <CatCaptureCamera
-          onCapture={handleCameraCapture}
-          onClose={() => { setShowCamera(false); setPendingGalleryFiles([]); }}
-          onFallbackGallery={() => { setShowCamera(false); setPendingGalleryFiles([]); fileInputRef.current?.click(); }}
-          onFallbackCapture={() => { setShowCamera(false); setPendingGalleryFiles([]); captureInputRef.current?.click(); }}
-          previewFile={pendingGalleryFiles[0]}
-        />,
-        document.body,
-      )}
-    </>
-  );
+  return portal;
 }
