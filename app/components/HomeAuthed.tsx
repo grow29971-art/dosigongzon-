@@ -563,11 +563,11 @@ export default function HomeAuthed({
   const SHOW_FUND_BANNER = false;         // 첫 프로젝트(펀드) 배너 — 쇼핑 오픈 전 공허
   const SHOW_TODO_CHIPS = false;          // '오늘 할 일' 칩(냥상자·도감·랭킹)
   const SHOW_CHECKIN = true;              // 출석/냥상자/주간출석 — 코인 경제 부활(2026-07-16, 다마고치 케어 간식 재원)
-  const SHOW_POPULAR_CATS = false;        // 이번 주 인기 고양이 TOP5 — 인원 필요
+  const SHOW_POPULAR_CATS = true;         // 이번 주 인기 고양이 TOP5 — 관계주의 훅(2026-07-16 회의). length>0 가드로 인원 적으면 자동 숨김
   const SHOW_EVENT_BANNERS = false;       // 파운딩멤버 등 이벤트 배너
-  const SHOW_CIRCLE_ENTRY = false;        // 서클 빠른 진입 — 저활용
-  const SHOW_INVITE = false;              // 초대 섹션
-  const SHOW_SOCIAL_PROOF = false;        // 사회적 증명 스트립
+  const SHOW_CIRCLE_ENTRY = true;         // 서클 빠른 진입 — "혼자→같이" 리텐션 앵커(2026-07-16 회의)
+  const SHOW_INVITE = true;               // 초대 섹션 — 바이럴 유입(catCount>0 가드). (2026-07-16 회의)
+  const SHOW_SOCIAL_PROOF = true;         // 사회적 증명 스트립 — 동네 활발함 신호(데이터 없으면 자동 숨김). (2026-07-16 회의)
   const SHOW_WEATHER_SHOP_BRIDGE = false; // 날씨→쇼핑 카테고리 다리
 
   return (
