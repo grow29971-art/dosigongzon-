@@ -86,6 +86,8 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
   const roundsFailedRef = useRef(0);
   const throwStateRef = useRef<ThrowState>("idle");
   const sweepAnimRef = useRef<number>(0);
+  // 카메라 시작 시도 토큰 — getUserMedia await 중 언마운트/재시작 감지용
+  const startTokenRef = useRef(0);
 
   const setAttemptsLeft = (v: number) => { attemptsLeftRef.current = v; setAttemptsLeftState(v); };
 
@@ -102,10 +104,18 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
     setCamState("requesting");
     streamRef.current?.getTracks().forEach(t => t.stop());
     streamRef.current = null;
+    // 이 시도의 토큰 — await 사이에 언마운트/재시작되면 토큰이 바뀐다.
+    const myToken = ++startTokenRef.current;
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } },
       });
+      // 권한 프롬프트 도중 모달이 닫혔거나(언마운트) 재시작됐으면 이 스트림을 즉시 정리 —
+      // 안 그러면 "모달 닫혔는데 카메라 LED가 켜진 채로" 남는다.
+      if (myToken !== startTokenRef.current) {
+        stream.getTracks().forEach(t => t.stop());
+        return;
+      }
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -127,7 +137,10 @@ export default function CatCaptureCamera({ onCapture, onClose, onFallbackGallery
     if (previewFile) return;
     startCamera();
     return () => {
+      // 토큰을 무효화해 진행 중인 getUserMedia가 resolve되면 스스로 스트림을 정리하게 함
+      startTokenRef.current++;
       streamRef.current?.getTracks().forEach(t => t.stop());
+      streamRef.current = null;
       cancelAnimationFrame(animRef.current);
       if (missResetTimeoutRef.current) clearTimeout(missResetTimeoutRef.current);
     };
