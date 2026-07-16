@@ -54,19 +54,29 @@ export async function POST(req: Request) {
 
   // ── pending: PG 호출 없이 취소 ──
   if (order.status === "pending") {
+    // payment_key가 이미 잡혀 있으면 confirm이 토스 승인 중(status=pending 유지)이라는
+    // 뜻 — 여기서 취소하면 "청구됐는데 주문 취소" 상태가 됨. is(payment_key,null)로
+    // 승인 진행 중인 주문은 취소 대상에서 제외한다.
     const { data: done, error } = await svc
       .from("orders")
       .update({ status: "cancelled", updated_at: new Date().toISOString() })
       .eq("id", order.id)
       .eq("status", "pending") // 경합 방지
+      .is("payment_key", null) // 결제 승인 진행 중(payment_key 선점됨)이면 취소 불가
       .select("id");
     if (error) {
       console.error("[payment/cancel] pending cancel failed:", error);
       return NextResponse.json({ error: "주문 취소에 실패했어요." }, { status: 500 });
     }
     if (!done || done.length === 0) {
-      // 그 사이 상태가 바뀜 — 재조회 없이 성공 응답 (idempotent)
-      return NextResponse.json({ ok: true, status: "cancelled" });
+      // 취소 못 함 — 결제 승인이 진행 중이거나 이미 상태가 바뀜. 최신 상태 재조회로 안내.
+      const { data: fresh } = await svc.from("orders").select("status, payment_key").eq("id", order.id).maybeSingle();
+      const st = (fresh as { status?: string } | null)?.status;
+      if (st === "cancelled" || st === "refunded") {
+        return NextResponse.json({ ok: true, status: st });
+      }
+      // pending인데 payment_key가 잡혀 있음 = 승인 처리 중
+      return NextResponse.json({ error: "결제 승인이 진행 중이에요. 잠시 후 다시 시도해주세요." }, { status: 409 });
     }
     return NextResponse.json({ ok: true, status: "cancelled" });
   }

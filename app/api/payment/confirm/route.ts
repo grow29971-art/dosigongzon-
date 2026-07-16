@@ -322,7 +322,7 @@ export async function POST(req: Request) {
     ? `${toss.method ?? "간편결제"}(${toss.easyPay.provider})`
     : (toss.method ?? null);
 
-  const { error: updateError } = await svc
+  const { data: paidRows, error: updateError } = await svc
     .from("orders")
     .update({
       status: "paid",
@@ -331,11 +331,33 @@ export async function POST(req: Request) {
       updated_at: new Date().toISOString(),
     })
     .eq("id", order.id)
-    .eq("status", "pending");
+    .eq("status", "pending")
+    .select("id");
 
   if (updateError) {
     // 결제는 됐는데 DB 반영 실패 — 로그 남기고 성공 응답 (관리자가 토스 콘솔과 대조 가능)
     console.error("[payment/confirm] order update failed after toss confirm:", updateError, orderId, paymentKey);
+  } else if (!paidRows || paidRows.length === 0) {
+    // 0행 전환 = 토스 승인 사이에 주문이 취소/변경됨(청구는 됐는데 주문 없음).
+    // 자동 환불 시도 후 재고·포인트 원복. 환불 실패 시 관리자 수동 대조용 로그.
+    console.error("[payment/confirm] paid transition matched 0 rows — order changed during approval, auto-refunding:", order.id, paymentKey);
+    try {
+      const refundAuth = Buffer.from(`${secretKey}:`).toString("base64");
+      const cancelRes = await fetch(
+        `https://api.tosspayments.com/v1/payments/${encodeURIComponent(paymentKey)}/cancel`,
+        { method: "POST", headers: { Authorization: `Basic ${refundAuth}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ cancelReason: "주문 상태 불일치 자동 환불" }) },
+      );
+      if (!cancelRes.ok) console.error("[payment/confirm] auto-refund failed (MANUAL CHECK):", order.id, paymentKey, await cancelRes.text().catch(() => ""));
+    } catch (e) {
+      console.error("[payment/confirm] auto-refund request error (MANUAL CHECK):", order.id, paymentKey, e);
+    }
+    await restoreStock(svc, reserved);
+    await refundPoints();
+    return NextResponse.json(
+      { error: "주문 처리 중 문제가 생겨 결제를 취소했어요. 다시 시도해주세요." },
+      { status: 409 },
+    );
   }
 
   // 9. 장바구니 비우기 (실패해도 결제 성공은 유지, 로그만)
