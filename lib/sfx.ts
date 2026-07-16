@@ -337,49 +337,49 @@ export const sfx = {
   },
 
   // ── 골골송 — 다마고치 쓰다듬기 시 고양이 그르렁. ──
-  // 오디오 파일 없이: 저역 톱니/삼각 몸통 + 브라운 노이즈 숨결을 약 26Hz LFO 트레몰로로
-  // 맥동시켜 "그르르르" 맥놀이를 만든다. 폰 스피커 로우롤오프를 감안해 몸통을 100Hz대에 둠.
-  purr: ({ duration = 1.1, volume = 0.34 }: { duration?: number; volume?: number } = {}) => {
+  // 오디오 파일 없이 합성. 톱니파는 배음이 많아 "버즈·모터"처럼 거슬려서 제거하고,
+  // 삼각/사인 몸통 + 낮은 컷오프(뭉근) + 얕은 24Hz 맥동으로 부드럽고 따뜻한 그르렁으로.
+  purr: ({ duration = 1.1, volume = 0.24 }: { duration?: number; volume?: number } = {}) => {
     if (isSfxMuted()) return;
     const audioCtx = getCtx();
     if (!audioCtx) return;
     const t0 = audioCtx.currentTime;
 
-    // 몸통 — 폰 스피커에서도 크게 들리게 주파수 상향(180Hz대) + 옥타브 아래 두께감
+    // 몸통 — 부드러운 삼각(150Hz, 폰에서 들리되 배음 적음) + 사인 서브(75Hz, 따뜻한 두께)
     const osc = audioCtx.createOscillator();
-    osc.type = "sawtooth"; osc.frequency.setValueAtTime(184, t0);
+    osc.type = "triangle"; osc.frequency.setValueAtTime(150, t0);
     const osc2 = audioCtx.createOscillator();
-    osc2.type = "triangle"; osc2.frequency.setValueAtTime(92, t0);
+    osc2.type = "sine"; osc2.frequency.setValueAtTime(75, t0);
 
-    // 숨결 텍스처 — 브라운 노이즈
+    // 숨결 텍스처 — 브라운 노이즈(아주 약하게, 하이 없이 뭉근)
     const len = Math.max(1, Math.floor(audioCtx.sampleRate * duration));
     const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
     const data = buf.getChannelData(0);
     let last = 0;
-    for (let i = 0; i < len; i++) { const w = Math.random() * 2 - 1; last = (last + 0.02 * w) / 1.02; data[i] = last * 3.2; }
+    for (let i = 0; i < len; i++) { const w = Math.random() * 2 - 1; last = (last + 0.02 * w) / 1.02; data[i] = last * 1.6; }
     const noise = audioCtx.createBufferSource(); noise.buffer = buf;
 
-    // 살짝 밝게 — 컷오프를 올려 더 또렷하고 크게 들리도록
+    // 뭉근하게 — 컷오프를 낮춰(650Hz) 날카로운 고역 제거 → 따뜻·부드러움
     const lp = audioCtx.createBiquadFilter();
-    lp.type = "lowpass"; lp.frequency.value = 1100; lp.Q.value = 0.7;
+    lp.type = "lowpass"; lp.frequency.value = 650; lp.Q.value = 0.4;
 
-    // 골골 맥동 — 27Hz LFO로 진폭 변조(트레몰로)
-    const trem = audioCtx.createGain(); trem.gain.setValueAtTime(0.6, t0);
+    // 골골 맥동 — 24Hz, 얕게(깊게 끊으면 모터처럼 됨). 0.48~1.0 사이만 진동.
+    const trem = audioCtx.createGain(); trem.gain.setValueAtTime(0.74, t0);
     const lfo = audioCtx.createOscillator();
-    lfo.type = "sine"; lfo.frequency.setValueAtTime(27, t0);
-    const lfoDepth = audioCtx.createGain(); lfoDepth.gain.setValueAtTime(0.4, t0);
+    lfo.type = "sine"; lfo.frequency.setValueAtTime(24, t0);
+    const lfoDepth = audioCtx.createGain(); lfoDepth.gain.setValueAtTime(0.26, t0);
     lfo.connect(lfoDepth).connect(trem.gain);
 
-    // 엔벨로프 — 부드럽게 들어오고 나감
+    // 엔벨로프 — 더 부드럽게 들어오고 나감
     const env = audioCtx.createGain();
     env.gain.setValueAtTime(0.0001, t0);
-    env.gain.linearRampToValueAtTime(volume, t0 + 0.14);
-    env.gain.setValueAtTime(volume, t0 + Math.max(0.2, duration - 0.25));
+    env.gain.linearRampToValueAtTime(volume, t0 + 0.18);
+    env.gain.setValueAtTime(volume, t0 + Math.max(0.2, duration - 0.3));
     env.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
 
     osc.connect(lp); osc2.connect(lp); noise.connect(lp);
     lp.connect(trem).connect(env);
-    routeOut(audioCtx, env, 0.18);
+    routeOut(audioCtx, env, 0.12);
 
     const stopAt = t0 + duration + 0.05;
     osc.start(t0); osc2.start(t0); noise.start(t0); lfo.start(t0);
