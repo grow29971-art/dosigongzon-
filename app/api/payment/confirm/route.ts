@@ -17,6 +17,7 @@ import { createClient } from "@/lib/supabase/server";
 import { type SupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient } from "@/lib/supabase/service";
 import { rateLimit } from "@/lib/rate-limit";
+import { PAYMENT_ENABLED, PAYMENT_DISABLED_MESSAGE } from "@/lib/payments-config";
 
 const TOSS_CONFIRM_URL = "https://api.tosspayments.com/v1/payments/confirm";
 
@@ -49,6 +50,12 @@ async function restoreStock(svc: SupabaseClient, reserved: OrderItem[]): Promise
 }
 
 export async function POST(req: Request) {
+  // 0. 통신판매업 신고 완료 전 실화폐 결제 하드락 — 토스 승인(금액 확정) 자체를 막는다.
+  //    UI를 우회해 여기까지 와도 승인이 안 되므로 실제 매출은 발생하지 않음.
+  if (!PAYMENT_ENABLED) {
+    return NextResponse.json({ error: PAYMENT_DISABLED_MESSAGE }, { status: 503 });
+  }
+
   // 1. 인증
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

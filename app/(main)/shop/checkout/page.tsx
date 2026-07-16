@@ -10,6 +10,7 @@ import { useAuth } from "@/lib/auth-context";
 import LoginRequired from "@/app/components/LoginRequired";
 import { listCartItems, computeCartTotal, type CartItem } from "@/lib/shop-repo";
 import { createOrderFromCart, isVirtualOnlyCart, type Order } from "@/lib/order-repo";
+import { PAYMENT_ENABLED, PAYMENT_DISABLED_MESSAGE } from "@/lib/payments-config";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 
 const TOSS_CLIENT_KEY = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY ?? "";
@@ -145,6 +146,8 @@ export default function CheckoutPage() {
   //  결제위젯 UI는 전자결제 이용 신청 후 위젯 키 발급 시 전환 검토)
   const handleSubmit = async () => {
     setError("");
+    // 통신판매업 신고 완료 전 실화폐 결제 하드락
+    if (!PAYMENT_ENABLED) { setError(PAYMENT_DISABLED_MESSAGE); return; }
     if (!virtualOnly) {
       if (!recipientName.trim()) { setError("수령인 이름을 입력해주세요."); return; }
       if (!recipientPhone.trim() || !/^[\d-]{9,13}$/.test(recipientPhone.trim())) {
@@ -477,13 +480,18 @@ export default function CheckoutPage() {
           className="fixed bottom-0 left-0 right-0 z-40 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
           style={{ background: "#fff", boxShadow: "0 -4px 16px rgba(20,40,70,0.08)" }}
         >
+          {!PAYMENT_ENABLED && (
+            <p className="text-[12px] text-center font-semibold mb-2" style={{ color: "#B8791F" }}>
+              {PAYMENT_DISABLED_MESSAGE}
+            </p>
+          )}
           <button
             onClick={handleSubmit}
-            disabled={submitting}
+            disabled={submitting || !PAYMENT_ENABLED}
             className="w-full py-3.5 rounded-2xl bg-primary text-white text-[14.5px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-50"
             style={{ boxShadow: "var(--shadow-primary)" }}
           >
-            {submitting ? "주문 처리 중…" : `${formatWon(finalAmount)} 결제하기`}
+            {!PAYMENT_ENABLED ? "결제 준비 중" : submitting ? "주문 처리 중…" : `${formatWon(finalAmount)} 결제하기`}
           </button>
         </div>
       )}

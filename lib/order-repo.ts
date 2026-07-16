@@ -6,6 +6,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { computeCartTotal, type CartItem, type Product } from "@/lib/shop-repo";
 import { enforceUserActionLimit } from "@/lib/rate-limit";
+import { PAYMENT_ENABLED, PAYMENT_DISABLED_MESSAGE } from "@/lib/payments-config";
 
 export type OrderStatus =
   | "pending" | "paid" | "preparing" | "shipping"
@@ -95,6 +96,10 @@ export async function createOrderFromCart(
   shipping: ShippingInput | null,
   pointsUsed: number = 0,
 ): Promise<Order> {
+  // 통신판매업 신고 완료 전 실화폐 결제 하드락 — 주문 생성 자체를 막아 결제창이 안 열리게.
+  // (최종 방어는 /api/payment/confirm 서버 관문. 코인 구매는 이 경로가 아니라 무관.)
+  if (!PAYMENT_ENABLED) throw new Error(PAYMENT_DISABLED_MESSAGE);
+
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("로그인이 필요해요.");
