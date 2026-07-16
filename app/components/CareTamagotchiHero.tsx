@@ -66,6 +66,8 @@ function Gauge({ label, emoji, value, color }: { label: string; emoji: string; v
 
 // 골골 맥동 진동 패턴(ms) — 짧은 on/off 반복으로 "그르르르" 손맛. 총 ~1초.
 const PURR_VIBE = [55, 25, 55, 25, 55, 25, 55, 25, 55, 25, 55, 25, 55, 25, 55, 25, 55, 25, 55];
+// 만질 때마다 나오는 움직임 종류 수(cthR1~cthR6).
+const N_REACT = 6;
 
 export default function CareTamagotchiHero() {
   const { user } = useAuth();
@@ -79,8 +81,8 @@ export default function CareTamagotchiHero() {
   const [raining, setRaining] = useState(false);
   const [fxList, setFxList] = useState<Fx[]>([]);
   const [, setTick] = useState(0);
-  // 액션 시 캐릭터 통통 튀는 반응 — 홀짝 클래스 교대로 CSS 애니메이션 재시작.
-  const [reactId, setReactId] = useState(0);
+  // 만질 때마다 여러 움직임 중 하나 — 직전과 다른 변형을 골라 CSS 애니메이션 재시작.
+  const [reactVariant, setReactVariant] = useState(-1);
   const fxId = useRef(0);
 
   // 로드: 대표묘(없으면 첫 등록묘) + 보유 케어 아이템
@@ -158,6 +160,11 @@ export default function CareTamagotchiHero() {
     setTimeout(() => setFxList((prev) => prev.filter((f) => f.id !== id)), 1200);
   };
 
+  // 다음 움직임 — 직전 변형과 다른 걸 골라 매번 다르게(같은 값이면 CSS가 재생 안 됨).
+  const nextReact = () => setReactVariant((v) => v < 0
+    ? Math.floor(Math.random() * N_REACT)
+    : (v + 1 + Math.floor(Math.random() * (N_REACT - 1))) % N_REACT);
+
   // 하트 뿅뿅 — 캐릭터 주변에 하트 여러 개를 순차로 팡팡 띄운다.
   const heartBurst = () => {
     const hearts = ["💕", "💗", "💖", "❤️", "💛"];
@@ -174,7 +181,7 @@ export default function CareTamagotchiHero() {
     primeSfx();
     sfx.purr();
     try { navigator.vibrate?.(PURR_VIBE); } catch { /* 진동 미지원 */ }
-    setReactId((n) => n + 1); // 홉+위글 움직임
+    nextReact(); // 매번 다른 움직임
     heartBurst();
   };
 
@@ -221,7 +228,7 @@ export default function CareTamagotchiHero() {
       }
       // 쓰다듬기는 위(petTap)에서 진동·움직임을 이미 걸었으니 여기서 덮어쓰지 않음.
       try { if (action !== "pet") navigator.vibrate?.(12); } catch { /* 햅틱 미지원 */ }
-      if (action !== "pet") setReactId((n) => n + 1);
+      if (action !== "pet") nextReact();
       if (data.leveled_up) { flash(`🎉 레벨 업! Lv.${data.new_level} 달성!`); spawnFx("🎉", 50, 30); }
       else if (action === "feed") { flash("냠냠! 맛있게 먹었어요 🍚"); spawnFx("🍚", 40, 44); spawnFx("😋", 58, 40); }
       else if (action === "pet") { flash("골골골… 기분 최고예요 💛"); }
@@ -310,13 +317,13 @@ export default function CareTamagotchiHero() {
         {/* 캐릭터 — 통일 일러스트(SVG). 감정은 careState, 성장은 scale로 반영 */}
         <button
           type="button"
-          className={`cth-cat ${reactId ? (reactId % 2 ? "cth-react-a" : "cth-react-b") : ""}`}
+          className="cth-cat"
           style={{ ["--cth-scale" as string]: scale }}
           onClick={() => { if (!petDone && !busy) act("pet"); else petTap(); }}
           disabled={busy}
           aria-label="쓰다듬기"
         >
-          <svg className="cth-catimg" viewBox="0 0 220 210" data-emo={emo} data-dirty={cleanliness < 45 ? "1" : "0"} aria-hidden="true">
+          <svg className="cth-catimg" viewBox="0 0 220 210" data-emo={emo} data-dirty={cleanliness < 45 ? "1" : "0"} data-react={reactVariant >= 0 ? reactVariant : undefined} aria-hidden="true">
             <defs>
               <linearGradient id="cthFur" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0" stopColor="#EEBE84" /><stop offset="1" stopColor="#D6975A" />
@@ -506,9 +513,13 @@ const SCENE_CSS = `
   width:136px;z-index:3;transform:translateX(-50%) scale(var(--cth-scale,1));transform-origin:50% 100%;
   animation:cthBreathe 3.4s ease-in-out infinite}
 .cth-cat:disabled{cursor:default}
-.cth-cat.cth-react-a{animation:cthPop .6s cubic-bezier(.3,1.4,.5,1)}
-.cth-cat.cth-react-b{animation:cthPop .6s cubic-bezier(.3,1.4,.5,1)}
-.cth-catimg{width:100%;height:auto;display:block;overflow:visible}
+.cth-catimg{width:100%;height:auto;display:block;overflow:visible;transform-origin:50% 100%}
+.cth-catimg[data-react="0"]{animation:cthR1 .6s cubic-bezier(.3,1.35,.5,1)}
+.cth-catimg[data-react="1"]{animation:cthR2 .55s ease}
+.cth-catimg[data-react="2"]{animation:cthR3 .7s cubic-bezier(.4,1.2,.5,1)}
+.cth-catimg[data-react="3"]{animation:cthR4 .55s cubic-bezier(.3,1.5,.5,1)}
+.cth-catimg[data-react="4"]{animation:cthR5 .6s ease-in-out}
+.cth-catimg[data-react="5"]{animation:cthR6 .7s cubic-bezier(.3,1.3,.5,1)}
 .cth-catimg .cth-tail{transform-origin:80% 62%;animation:cthTail 2.6s ease-in-out infinite}
 .cth-catimg .cth-lids{transform-box:fill-box;transform-origin:center;animation:cthBlink 5s infinite}
 .cth-catimg .cth-face>g{display:none}
@@ -535,13 +546,42 @@ const SCENE_CSS = `
 @keyframes cthBlink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.08)}}
 @keyframes cthTwinkle{0%,100%{opacity:.25}50%{opacity:.9}}
 @keyframes cthFall{0%{transform:translateY(0)}100%{transform:translateY(206px)}}
-@keyframes cthPop{
-  0%,100%{transform:translateX(-50%) translateY(0) rotate(0deg) scale(var(--cth-scale,1))}
-  18%{transform:translateX(-50%) translateY(-12px) rotate(-5deg) scale(calc(var(--cth-scale,1)*1.06),calc(var(--cth-scale,1)*.95))}
-  40%{transform:translateX(-50%) translateY(0) rotate(4deg) scale(calc(var(--cth-scale,1)*.97),calc(var(--cth-scale,1)*1.04))}
-  62%{transform:translateX(-50%) translateY(-5px) rotate(-3deg) scale(var(--cth-scale,1))}
-  82%{transform:translateX(-50%) translateY(0) rotate(2deg) scale(var(--cth-scale,1))}}
+/* 만질 때마다 랜덤으로 나오는 움직임 6종 (svg 로컬 transform, 버튼 숨쉬기와 별개로 합성) */
+@keyframes cthR1{ /* 홉+위글 */
+  0%,100%{transform:translateY(0) rotate(0) scale(1)}
+  18%{transform:translateY(-14px) rotate(-6deg) scale(1.05,.95)}
+  40%{transform:translateY(0) rotate(5deg) scale(.97,1.04)}
+  62%{transform:translateY(-6px) rotate(-3deg) scale(1)}
+  82%{transform:translateY(0) rotate(2deg) scale(1)}}
+@keyframes cthR2{ /* 좌우 흔들기 */
+  0%,100%{transform:translateX(0) rotate(0)}
+  15%{transform:translateX(-10px) rotate(-3deg)}
+  30%{transform:translateX(10px) rotate(3deg)}
+  45%{transform:translateX(-8px) rotate(-2deg)}
+  60%{transform:translateX(7px) rotate(2deg)}
+  78%{transform:translateX(-3px) rotate(0)}}
+@keyframes cthR3{ /* 점프 스핀 */
+  0%{transform:translateY(0) rotate(0) scale(1)}
+  50%{transform:translateY(-13px) rotate(360deg) scale(1.03)}
+  100%{transform:translateY(0) rotate(360deg) scale(1)}}
+@keyframes cthR4{ /* 제자리 스쿼시 */
+  0%,100%{transform:scale(1)}
+  25%{transform:scale(1.13,.85)}
+  50%{transform:scale(.88,1.13)}
+  72%{transform:scale(1.04,.97)}}
+@keyframes cthR5{ /* 좌우 기우뚱 */
+  0%,100%{transform:rotate(0)}
+  20%{transform:rotate(-9deg)}
+  40%{transform:rotate(8deg)}
+  60%{transform:rotate(-6deg)}
+  80%{transform:rotate(4deg)}}
+@keyframes cthR6{ /* 더블 홉 */
+  0%,100%{transform:translateY(0) scale(1)}
+  20%{transform:translateY(-16px) scale(1.04,.96)}
+  40%{transform:translateY(0) scale(.98,1.03)}
+  60%{transform:translateY(-9px) scale(1)}
+  80%{transform:translateY(0) scale(1)}}
 @keyframes cthPopIn{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
 @keyframes cthFloat{0%{transform:translate(-50%,-50%) scale(.7);opacity:0}20%{opacity:1}100%{transform:translate(-50%,-130%) scale(1.1);opacity:0}}
-@media (prefers-reduced-motion:reduce){.cth-cat,.cth-catimg .cth-tail,.cth-catimg .cth-lids,.cth-stars i,.cth-fx,.cth-cat.cth-react-a,.cth-cat.cth-react-b{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.cth-cat,.cth-catimg,.cth-catimg .cth-tail,.cth-catimg .cth-lids,.cth-stars i,.cth-fx{animation:none!important}}
 `;
