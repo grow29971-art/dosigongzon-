@@ -66,8 +66,8 @@ function Gauge({ label, emoji, value, color }: { label: string; emoji: string; v
 
 // 골골 맥동 진동 패턴(ms) — 짧은 on/off 반복으로 "그르르르" 손맛. 총 ~1초.
 const PURR_VIBE = [55, 25, 55, 25, 55, 25, 55, 25, 55, 25, 55, 25, 55, 25, 55, 25, 55, 25, 55];
-// 만질 때마다 나오는 움직임 종류 수(cthR1~cthR6).
-const N_REACT = 6;
+// 만질 때마다 나오는 움직임 종류 수(cthR1~cthR12).
+const N_REACT = 12;
 
 export default function CareTamagotchiHero() {
   const { user } = useAuth();
@@ -520,6 +520,12 @@ const SCENE_CSS = `
 .cth-catimg[data-react="3"]{animation:cthR4 .55s cubic-bezier(.3,1.5,.5,1)}
 .cth-catimg[data-react="4"]{animation:cthR5 .6s ease-in-out}
 .cth-catimg[data-react="5"]{animation:cthR6 .7s cubic-bezier(.3,1.3,.5,1)}
+.cth-catimg[data-react="6"]{animation:cthR7 .6s cubic-bezier(.3,1.45,.5,1)}
+.cth-catimg[data-react="7"]{animation:cthR8 .75s cubic-bezier(.4,1.2,.5,1)}
+.cth-catimg[data-react="8"]{animation:cthR9 .6s ease-in-out}
+.cth-catimg[data-react="9"]{animation:cthR10 .7s ease-in-out}
+.cth-catimg[data-react="10"]{animation:cthR11 .5s linear}
+.cth-catimg[data-react="11"]{animation:cthR12 .72s cubic-bezier(.3,1.5,.5,1)}
 .cth-catimg .cth-tail{transform-origin:80% 62%;animation:cthTail 2.6s ease-in-out infinite}
 .cth-catimg .cth-lids{transform-box:fill-box;transform-origin:center;animation:cthBlink 5s infinite}
 .cth-catimg .cth-face>g{display:none}
@@ -581,6 +587,38 @@ const SCENE_CSS = `
   40%{transform:translateY(0) scale(.98,1.03)}
   60%{transform:translateY(-9px) scale(1)}
   80%{transform:translateY(0) scale(1)}}
+@keyframes cthR7{ /* 웅크렸다 폭 튀어오르기 */
+  0%,100%{transform:translateY(0) scale(1)}
+  30%{transform:translateY(6px) scale(1.08,.9)}
+  55%{transform:translateY(-13px) scale(.95,1.08)}
+  78%{transform:translateY(0) scale(1)}}
+@keyframes cthR8{ /* 반대 방향 점프 스핀 */
+  0%{transform:translateY(0) rotate(0) scale(1)}
+  50%{transform:translateY(-11px) rotate(-360deg) scale(1.03)}
+  100%{transform:translateY(0) rotate(-360deg) scale(1)}}
+@keyframes cthR9{ /* 젤리 흔들기(스큐) */
+  0%,100%{transform:rotate(0) skewX(0)}
+  20%{transform:rotate(-5deg) skewX(6deg)}
+  40%{transform:rotate(4deg) skewX(-5deg)}
+  60%{transform:rotate(-3deg) skewX(3deg)}
+  80%{transform:rotate(1deg) skewX(-1deg)}}
+@keyframes cthR10{ /* 좌우 스텝 댄스 */
+  0%,100%{transform:translateX(0) rotate(0)}
+  25%{transform:translateX(-12px) rotate(-7deg)}
+  50%{transform:translateX(0) rotate(0)}
+  75%{transform:translateX(12px) rotate(7deg)}}
+@keyframes cthR11{ /* 부르르 떨기 */
+  0%,100%{transform:translateX(0)}
+  10%{transform:translateX(-4px)}20%{transform:translateX(4px)}
+  30%{transform:translateX(-4px)}40%{transform:translateX(4px)}
+  50%{transform:translateX(-3px)}60%{transform:translateX(3px)}
+  70%{transform:translateX(-2px)}80%{transform:translateX(2px)}90%{transform:translateX(-1px)}}
+@keyframes cthR12{ /* 크게 점프 */
+  0%,100%{transform:translateY(0) scale(1)}
+  15%{transform:translateY(0) scale(1.1,.86)}
+  40%{transform:translateY(-26px) scale(.92,1.12)}
+  65%{transform:translateY(0) scale(1.06,.94)}
+  85%{transform:translateY(0) scale(1)}}
 @keyframes cthPopIn{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
 @keyframes cthFloat{0%{transform:translate(-50%,-50%) scale(.7);opacity:0}20%{opacity:1}100%{transform:translate(-50%,-130%) scale(1.1);opacity:0}}
 @media (prefers-reduced-motion:reduce){.cth-cat,.cth-catimg,.cth-catimg .cth-tail,.cth-catimg .cth-lids,.cth-stars i,.cth-fx{animation:none!important}}
