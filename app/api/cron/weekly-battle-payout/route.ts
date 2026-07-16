@@ -62,17 +62,36 @@ async function handle(request: Request): Promise<Response> {
     .sort((a, b) => b[1] - a[1])
     .slice(0, WEEKLY_RANK_REWARDS.length);
 
+  const weekStart = lastMonday.toISOString();
   const payouts: { user_id: string; score: number; reward: number }[] = [];
+  let skipped = 0;
   for (let i = 0; i < top.length; i++) {
     const [userId, score] = top[i];
     const reward = WEEKLY_RANK_REWARDS[i];
-    const { data: profile } = await supabase.from("profiles").select("coins").eq("id", userId).maybeSingle();
-    const newCoins = (profile?.coins ?? 0) + reward;
-    await supabase.from("profiles").update({ coins: newCoins }).eq("id", userId);
+
+    // 멱등 지급대장 선점 — 이번 주 이 유저에게 이미 지급했으면 23505로 건너뜀.
+    // 크론 재시도로 인한 이중지급을 원천 차단. 테이블 없으면(42P01) 폴백해 1회 지급.
+    const { error: ledgerErr } = await supabase
+      .from("weekly_payouts")
+      .insert({ week_start: weekStart, user_id: userId, score, reward });
+    if (ledgerErr) {
+      if (ledgerErr.code === "23505") { skipped++; continue; } // 이미 지급됨
+      if (ledgerErr.code !== "42P01") { // 42P01=테이블 미생성(폴백 계속), 그 외는 로그 후 건너뜀
+        console.error("[weekly-payout] ledger insert failed:", ledgerErr, userId);
+        continue;
+      }
+    }
+
+    // 코인은 원자 증감 RPC — 갱신 소실 방지. RPC 미배포 시 read-modify-write 폴백.
+    const { error: rpcErr } = await supabase.rpc("increment_coins", { p_user_id: userId, p_amount: reward });
+    if (rpcErr) {
+      const { data: profile } = await supabase.from("profiles").select("coins").eq("id", userId).maybeSingle();
+      await supabase.from("profiles").update({ coins: (profile?.coins ?? 0) + reward }).eq("id", userId);
+    }
     payouts.push({ user_id: userId, score, reward });
   }
 
-  return Response.json({ ok: true, week_start: lastMonday.toISOString(), payouts });
+  return Response.json({ ok: true, week_start: weekStart, paid: payouts.length, skipped, payouts });
 }
 
 export async function POST(request: Request) {
