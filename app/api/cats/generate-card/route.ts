@@ -116,6 +116,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ card: existing });
   }
 
+  // 내 고양이가 아니거나 존재하지 않으면(existing null) 진행 불가 —
+  // 예전엔 여기서도 계속 진행해 임의 cat_id + perfectCatch:true 반복 호출로
+  // perfect_catch_count를 무한 파밍할 수 있었음.
+  if (!existing) {
+    return NextResponse.json({ error: "cat not found" }, { status: 404 });
+  }
+
   // 완벽 포획 성공 횟수 집계 (타이틀 연동) — 진짜 새 카드 생성일 때만 1회 카운트
   if (perfectCatch) {
     const svc = createServiceClient();

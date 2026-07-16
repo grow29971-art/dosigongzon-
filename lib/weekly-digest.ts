@@ -121,26 +121,43 @@ export async function getMyCatCount(userId: string): Promise<number> {
   return count ?? 0;
 }
 
+// 이메일 HTML에 들어가는 유저 자유입력(닉네임·고양이 이름·지역) 이스케이프 —
+// 닉네임에 마크업을 넣은 유저가 인기 고양이에 오르면 전 수신자 메일에 피싱 링크가
+// 삽입될 수 있어 반드시 처리한다.
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+// 이미지 src는 http(s)만 허용 — javascript:/data: 등 스킴 차단
+function safeImgSrc(url: string | null | undefined, fallback: string): string {
+  if (!url || !/^https?:\/\//i.test(url)) return fallback;
+  return escapeHtml(url);
+}
+
 /** 마크업 — 기본 이메일 클라이언트 호환성 우선 (inline style + 단순 테이블 X). */
 export function renderDigestHtml(
   recipient: DigestRecipient,
   content: DigestContent,
 ): { subject: string; html: string; text: string } {
-  const displayName = recipient.nickname || recipient.email.split("@")[0];
+  const displayName = escapeHtml(recipient.nickname || recipient.email.split("@")[0]);
   const subject = `🐾 도시공존 이번 주 소식 — 새 고양이 ${content.newCatsThisWeek}마리`;
 
   const catCard = (c: DigestCatPreview, urgent: boolean) => {
-    const photo = c.photo_url || `${SITE_URL}/icons/icon-192.png`;
+    const photo = safeImgSrc(c.photo_url, `${SITE_URL}/icons/icon-192.png`);
+    const catName = escapeHtml(c.name ?? "");
+    const catRegion = escapeHtml(c.region ?? "우리 동네");
+    const catId = encodeURIComponent(c.id);
     const label = urgent ? "🚨 긴급" : "❤️ 인기";
     const labelBg = urgent ? "#D85555" : "#E86B8C";
     return `
       <div style="background:#fff;border-radius:14px;overflow:hidden;margin-bottom:10px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
-        <a href="${SITE_URL}/cats/${c.id}?utm_source=email&utm_medium=digest" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;padding:10px;">
-          <img src="${photo}" width="60" height="60" style="border-radius:10px;object-fit:cover;flex-shrink:0;" alt="${c.name}" />
+        <a href="${SITE_URL}/cats/${catId}?utm_source=email&utm_medium=digest" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;padding:10px;">
+          <img src="${photo}" width="60" height="60" style="border-radius:10px;object-fit:cover;flex-shrink:0;" alt="${catName}" />
           <div style="flex:1;min-width:0;">
             <div style="display:inline-block;background:${labelBg};color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;margin-bottom:4px;">${label}</div>
-            <div style="font-size:14px;font-weight:800;color:#2A2A28;">${c.name}</div>
-            <div style="font-size:11px;color:#8B7562;margin-top:2px;">📍 ${c.region ?? "우리 동네"}</div>
+            <div style="font-size:14px;font-weight:800;color:#2A2A28;">${catName}</div>
+            <div style="font-size:11px;color:#8B7562;margin-top:2px;">📍 ${catRegion}</div>
           </div>
         </a>
       </div>

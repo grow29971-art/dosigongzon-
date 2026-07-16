@@ -1423,6 +1423,16 @@ export async function updateCat(
     }
   }
 
+  // photo_url/photo_urls 검증 — createCat과 동일하게 Storage URL 외 값(XSS 탈출) 차단.
+  // 이 값들이 지도 마커 innerHTML의 CSS url()·다이제스트 <img src>에 내삽되므로 필수.
+  if (input.photo_url !== undefined && input.photo_url !== null && !isSafeImageUrl(input.photo_url)) {
+    throw new Error("사진 URL 형식이 올바르지 않아요.");
+  }
+  if (Array.isArray(input.photo_urls)) {
+    const bad = input.photo_urls.some((u) => typeof u !== "string" || !isSafeImageUrl(u));
+    if (bad) throw new Error("사진 URL 형식이 올바르지 않아요.");
+  }
+
   const { data, error } = await supabase
     .from("cats")
     .update(input)

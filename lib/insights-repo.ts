@@ -5,6 +5,7 @@
 // ══════════════════════════════════════════
 
 import { createClient } from "@/lib/supabase/server";
+import { kstToday, thisMondayKstDate } from "@/lib/kst";
 
 export interface InsightsSnapshot {
   // 누적 수
@@ -92,19 +93,21 @@ export async function getInsightsSnapshot(): Promise<InsightsSnapshot> {
     count(supabase, "care_logs", { column: "logged_at", gte: weekStart }),
   ]);
 
-  // 방문자 (daily_stats)
+  // 방문자 (daily_stats) — date 컬럼은 KST 달력 날짜.
+  // todayStart(KST자정의 UTC ISO)를 slice(0,10)하면 UTC 날짜라 KST 기준 하루 어긋나
+  // '어제' 행이 잡혔음(gte+limit라 정렬도 비결정적). KST 오늘 날짜로 eq 조회.
+  const kstTodayDate = kstToday();
   const { data: todayStats } = await supabase
     .from("daily_stats")
     .select("visit_count")
-    .gte("date", todayStart.slice(0, 10))
-    .limit(1)
+    .eq("date", kstTodayDate)
     .maybeSingle();
   const visitsToday = (todayStats?.visit_count as number | undefined) ?? 0;
 
   const { data: weekStats } = await supabase
     .from("daily_stats")
     .select("visit_count")
-    .gte("date", weekStart.slice(0, 10));
+    .gte("date", thisMondayKstDate());
   const visitsWeek = ((weekStats ?? []) as Array<{ visit_count: number | null }>)
     .reduce((sum, r) => sum + (r.visit_count ?? 0), 0);
 
