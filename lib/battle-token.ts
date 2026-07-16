@@ -21,6 +21,7 @@ export interface BattleTokenPayload {
   oppId: string;
   isBoss: boolean;
   exp: number; // 만료 시각(ms epoch)
+  nonce?: string; // 발급마다 고유 — 같은 매칭 조합이라도 토큰이 항상 달라 단회 소모 판별 가능
 }
 
 function secretKey(): string {

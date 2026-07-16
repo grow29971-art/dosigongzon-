@@ -4,6 +4,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BATTLE_DRAW, COINS_BOSS_WIN, COINS_BOSS_LOSE, COINS_BOSS_DRAW } from "@/lib/shop-config";
 import { recordPveEncounter } from "@/lib/pve-bestiary";
 import { verifyBattleToken } from "@/lib/battle-token";
+import { createHash } from "crypto";
 
 function computeLevel(exp: number) {
   const thresholds = [0, 90, 210, 380, 610, 900, 1260, 1690, 2200, 2800];
@@ -43,6 +44,18 @@ export async function POST(req: Request) {
 
   if (!myCat) return NextResponse.json({ error: "cat not found" }, { status: 404 });
 
+  const svcForToken = createServiceClient();
+  // 토큰 단회 소모 — 같은 토큰 재전송으로 매칭 1회당 보상을 여러 번 받는 파밍 차단.
+  // unique 제약(primary key) 충돌이면 이미 사용된 토큰. 테이블 미생성(마이그레이션 전,
+  // 42P01)이면 기존 '검증만' 동작으로 폴백해 배틀이 깨지지 않게 한다.
+  const tokenHash = createHash("sha256").update(String(battle_token)).digest("hex");
+  const { error: useErr } = await svcForToken
+    .from("battle_token_uses")
+    .insert({ token_hash: tokenHash, user_id: user.id });
+  if (useErr && useErr.code === "23505") {
+    return NextResponse.json({ error: "battle_token_already_used" }, { status: 409 });
+  }
+
   const { data: oppCat } = await supabase
     .from("cats").select("id,card_exp,card_level,win_streak,best_win_streak")
     .eq("id", opp_cat_id).maybeSingle();
@@ -62,7 +75,12 @@ export async function POST(req: Request) {
     : is_boss
       ? (iWon ? COINS_BOSS_WIN : COINS_BOSS_LOSE)
       : (iWon ? COINS_BATTLE_WIN : COINS_BATTLE_LOSE);
-  const newCoins = Math.max(0, myCoinsNow + coinsGained);
+  // 코인은 DB에서 원자 증감 — 동시 지급 경합 시 소실 방지. RPC 미실행 환경은 기존 방식 폴백.
+  let newCoins = Math.max(0, myCoinsNow + coinsGained);
+  const { data: rpcCoins, error: coinRpcErr } = await svc.rpc("increment_coins", {
+    p_user_id: user.id, p_amount: coinsGained,
+  });
+  if (!coinRpcErr && typeof rpcCoins === "number") newCoins = rpcCoins;
   // 무승부는 이긴 것도 아니라서 연승 기록은 그대로 끊김(0으로)
   const myNewStreak  = iWon ? (myCat.win_streak ?? 0) + 1 : 0;
   const oppNewStreak = iWon ? 0 : isDraw ? 0 : (oppCat?.win_streak ?? 0) + 1;
@@ -79,7 +97,7 @@ export async function POST(req: Request) {
   await Promise.all([
     svc.from("cats").update({ card_exp: myNewExp, card_level: computeLevel(myNewExp), win_streak: myNewStreak, best_win_streak: myNewBestStreak, pve_win_count: myNewPveWins }).eq("id", my_cat_id),
     oppCat && svc.from("cats").update({ card_exp: oppNewExp, card_level: computeLevel(oppNewExp), win_streak: oppNewStreak, best_win_streak: oppNewBestStreak }).eq("id", opp_cat_id),
-    svc.from("profiles").update({ coins: newCoins }).eq("id", user.id),
+    coinRpcErr ? svc.from("profiles").update({ coins: newCoins }).eq("id", user.id) : Promise.resolve(),
     svc.from("profiles").update({ boss_defeats: newBossDefeats, best_win_streak: newBestStreak }).eq("id", user.id),
     // oppCat이 없으면(보스 조우 등 DB에 없는 상대) FK 제약 위반이 나므로 기록을 건너뜀
     oppCat ? svc.from("card_battles").insert({

@@ -5,6 +5,7 @@ import { COINS_BATTLE_WIN, COINS_BATTLE_LOSE, COINS_BATTLE_DRAW, COINS_BOSS_WIN,
 import { SPECIAL_SKILLS, type SpecialSkillId } from "@/lib/battle-config";
 import { recordPveEncounter } from "@/lib/pve-bestiary";
 import { signBattleToken } from "@/lib/battle-token";
+import { randomUUID } from "crypto";
 
 export const maxDuration = 15;
 
@@ -630,6 +631,7 @@ export async function POST(req: Request) {
     // API를 통해 정식으로 배정됐다"는 걸 증명. 15분 내로 결과를 기록해야 유효.
     const battle_token = signBattleToken({
       myCatId: myCat.id, oppId: opponent.id, isBoss: isActualBoss, exp: Date.now() + 15 * 60 * 1000,
+      nonce: randomUUID(), // 단회 소모(record에서 해시 기록) — 같은 매칭이라도 토큰 재사용 불가
     });
     return NextResponse.json({
       my_cat: myCat,
