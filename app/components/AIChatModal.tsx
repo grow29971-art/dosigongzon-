@@ -105,8 +105,9 @@ export default function AIChatModal({
       const data = await res.json();
 
       if (!res.ok) {
-        const debugInfo = data.debug ? `\n\n[디버그] ${data.debug}` : "";
-        throw new Error(`${data.error || "응답 오류"}${debugInfo}`);
+        // 서버 debug 정보는 UI에 노출하지 않는다(CLAUDE.md 보안 원칙) — 콘솔에만 남김
+        if (data.debug) console.error("[AIChat] server debug:", data.debug);
+        throw new Error(data.error || "응답 오류");
       }
 
       setMessages((prev) => [
