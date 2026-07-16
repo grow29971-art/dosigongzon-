@@ -223,7 +223,8 @@ export default function CareTamagotchiHero() {
   const stage = growthStage(level);
   const fedToday = cat.fed_day === today ? (cat.fed_today ?? 0) : 0;
   const petDone = cat.pet_day === today;
-  const photo = sanitizeImageUrl(cat.photo_url ? thumbnailUrl(cat.photo_url, 96) : null);
+  // 등록 사진을 메인 캐릭터로 사용 (retina 대응 큰 썸네일). 없으면 그림 캐릭터로 폴백.
+  const photo = sanitizeImageUrl(cat.photo_url ? thumbnailUrl(cat.photo_url, 240) : null);
   const tod = timeOfDay();
   const nPoop = cleanSupported ? poopCount(cleanliness) : 0;
   // 캐릭터 크기 — 성장할수록 조금씩 커짐 (Lv1 0.92 → Lv10 1.1)
@@ -265,31 +266,32 @@ export default function CareTamagotchiHero() {
         <div className="cth-rug" />
         <div className="cth-bowl" />
 
-        {/* 우리 아이 사진 뱃지 — 가상 캐릭터와 실제 아이 연결 */}
-        {photo && (
-          <div className="cth-portrait" title={`우리 아이 ${cat.name}`}>
-            <Image src={photo} alt={cat.name} fill sizes="34px" style={{ objectFit: "cover" }} />
-          </div>
-        )}
-
-        {/* 캐릭터 */}
+        {/* 캐릭터 — 등록 사진이 있으면 사진, 없으면 그림 고양이로 폴백 */}
         <button
           type="button"
-          className={`cth-cat ${cleanliness < 45 ? "cth-messy" : ""}`}
+          className={`cth-cat ${cleanliness < 45 ? "cth-messy" : ""} ${photo ? "cth-hasphoto" : ""}`}
           data-face={state.face}
           style={{ ["--cth-scale" as string]: scale }}
           onClick={() => { if (!petDone && !busy) act("pet"); else spawnFx("🐾", 50, 44); }}
           disabled={busy}
           aria-label="쓰다듬기"
         >
-          <span className="cth-tail" />
-          <span className="cth-body" />
-          <span className="cth-ear l" /><span className="cth-ear r" />
-          <span className="cth-face">
-            <span className="cth-eye l" /><span className="cth-eye r" />
-            <span className="cth-cheek l" /><span className="cth-cheek r" />
-            <span className="cth-mouth" />
-          </span>
+          {photo ? (
+            <span className="cth-photo">
+              <Image src={photo} alt={cat.name} fill sizes="112px" style={{ objectFit: "cover" }} />
+            </span>
+          ) : (
+            <>
+              <span className="cth-tail" />
+              <span className="cth-body" />
+              <span className="cth-ear l" /><span className="cth-ear r" />
+              <span className="cth-face">
+                <span className="cth-eye l" /><span className="cth-eye r" />
+                <span className="cth-cheek l" /><span className="cth-cheek r" />
+                <span className="cth-mouth" />
+              </span>
+            </>
+          )}
           <span className="cth-smudge a" /><span className="cth-smudge b" />
         </button>
 
@@ -400,7 +402,10 @@ const SCENE_CSS = `
 .cth-rug{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:140px;height:30px;border-radius:50%;background:rgba(196,126,90,.22);z-index:1}
 .cth-bowl{position:absolute;bottom:16px;left:26px;width:40px;height:18px;border-radius:0 0 20px 20px;background:#C47E5A;z-index:2;box-shadow:inset 0 3px 0 rgba(255,255,255,.25)}
 .cth-bowl::before{content:"";position:absolute;top:-5px;left:5px;right:5px;height:9px;border-radius:50%;background:#E8B98C}
-.cth-portrait{position:absolute;top:12px;right:14px;width:34px;height:34px;border-radius:11px;overflow:hidden;z-index:4;border:2.5px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.2)}
+.cth-photo{width:92px;height:92px;left:50%;bottom:2px;transform:translateX(-50%);border-radius:50%;overflow:hidden;z-index:3;
+  border:4px solid #fff;box-shadow:0 7px 16px rgba(0,0,0,.24);background:#EADBC8}
+.cth-cat.cth-hasphoto .cth-smudge.a{left:26px;bottom:20px}
+.cth-cat.cth-hasphoto .cth-smudge.b{left:60px;bottom:44px}
 
 .cth-cat{position:absolute;bottom:22px;left:50%;padding:0;border:0;background:none;cursor:pointer;
   width:104px;height:106px;z-index:3;transform:translateX(-50%) scale(var(--cth-scale,1));transform-origin:50% 100%;
