@@ -197,7 +197,7 @@ export default function AdminEventKeyringPage() {
             <RefreshCw size={15} className={`text-text-main ${loading ? "animate-spin" : ""}`} />
           </button>
           <button onClick={exportCsv} disabled={entries.length === 0}
-            className="px-3 h-9 rounded-full bg-primary text-white text-[12px] font-extrabold flex items-center gap-1 active:scale-95 disabled:opacity-50"
+            className="px-3 h-9 rounded-xl bg-primary text-white text-[12px] font-extrabold flex items-center gap-1 active:scale-95 disabled:opacity-50"
             style={{ boxShadow: "0 2px 8px rgba(49,130,246,0.25)" }}>
             <Download size={13} />
             CSV
@@ -209,7 +209,7 @@ export default function AdminEventKeyringPage() {
       <div className="px-4 mb-3 flex gap-1.5 overflow-x-auto scrollbar-hide">
         {(["all", ...STATUS_ORDER] as const).map((k) => (
           <button key={k} onClick={() => setFilter(k)}
-            className="shrink-0 px-3 py-1.5 rounded-full text-[12px] font-bold active:scale-95 transition-transform"
+            className="shrink-0 px-3 py-1.5 chip-square text-[12px] font-bold active:scale-95 transition-transform"
             style={{
               background: filter === k ? "var(--color-primary)" : "#FFFFFF",
               color: filter === k ? "#FFFFFF" : "#6B5043",
@@ -289,7 +289,7 @@ function EntryCard({
         {/* 정보 */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-1">
-            <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md"
+            <span className="text-[10px] font-extrabold px-1.5 py-0.5 chip-square"
               style={{ background: meta.bg, color: meta.color }}>
               {meta.emoji} {meta.label}
             </span>

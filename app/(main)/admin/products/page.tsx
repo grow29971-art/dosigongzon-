@@ -483,7 +483,7 @@ export default function AdminProductsPage() {
               <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   onClick={() => handleToggleActive(p)}
-                  className="px-2 py-1 rounded-lg text-[10px] font-extrabold"
+                  className="px-2 py-1 chip-square text-[10px] font-extrabold"
                   style={{
                     background: p.is_active ? "rgba(107,142,111,0.12)" : "rgba(216,85,85,0.1)",
                     color: p.is_active ? "#6B8E6F" : "#D85555",

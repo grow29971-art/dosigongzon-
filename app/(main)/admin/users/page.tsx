@@ -362,7 +362,7 @@ export default function AdminUsersPage() {
                     const meta = PROVIDER_META[p] ?? { label: p, bg: "#EEE", fg: "#555", emoji: "" };
                     return (
                       <span
-                        className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md"
+                        className="text-[9px] font-extrabold px-1.5 py-0.5 chip-square"
                         style={{ backgroundColor: meta.bg, color: meta.fg }}
                         title={`로그인: ${meta.label}`}
                       >
@@ -372,7 +372,7 @@ export default function AdminUsersPage() {
                   })()}
                   {u.is_suspended && (
                     <span
-                      className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md"
+                      className="text-[9px] font-extrabold px-1.5 py-0.5 chip-square"
                       style={{ backgroundColor: "#D85555", color: "#fff" }}
                     >
                       정지
@@ -382,7 +382,7 @@ export default function AdminUsersPage() {
                     const at = findAdminTitle(u.admin_title);
                     return at ? (
                       <span
-                        className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md"
+                        className="text-[9px] font-extrabold px-1.5 py-0.5 chip-square"
                         style={{ backgroundColor: at.color, color: "#fff" }}
                       >
                         {at.emoji} {at.name}

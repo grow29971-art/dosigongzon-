@@ -142,7 +142,7 @@ export default function LocationLogsPage() {
 
                   <div className="flex items-center gap-2 text-[12px] mb-2">
                     <span
-                      className="px-2 py-1 rounded-lg font-bold"
+                      className="px-2 py-1 chip-square font-bold"
                       style={{
                         background: "#F6F1EA",
                         color: "#A38E7A",
@@ -155,7 +155,7 @@ export default function LocationLogsPage() {
                       className={dongChanged ? "text-primary" : "text-text-light"}
                     />
                     <span
-                      className="px-2 py-1 rounded-lg font-bold"
+                      className="px-2 py-1 chip-square font-bold"
                       style={{
                         background: dongChanged ? "#FFF2E8" : "#F6F1EA",
                         color: dongChanged ? "var(--color-primary)" : "#A38E7A",

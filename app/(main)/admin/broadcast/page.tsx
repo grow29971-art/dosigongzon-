@@ -258,7 +258,7 @@ export default function AdminBroadcastPage() {
               key={t.label}
               type="button"
               onClick={() => setMessage(t.text)}
-              className="text-[11px] px-3 py-1.5 rounded-full font-semibold active:scale-[0.97]"
+              className="text-[11px] px-3 py-1.5 chip-square font-semibold active:scale-[0.97]"
               style={{
                 background: "rgba(49,130,246,0.10)",
                 color: "var(--color-primary-dark)",

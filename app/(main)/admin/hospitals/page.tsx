@@ -460,11 +460,7 @@ export default function AdminHospitalsPage() {
           {groups.map((group) => (
             <section key={group.city}>
               <div className="flex items-center gap-2 mb-2 px-1">
-                <div
-                  className="w-1 h-4 rounded-full"
-                  style={{ backgroundColor: "var(--color-primary)" }}
-                />
-                <h2 className="text-[13px] font-extrabold text-text-main tracking-tight">
+                <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
                   {group.city}
                 </h2>
               </div>

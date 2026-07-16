@@ -336,7 +336,7 @@ export default function AdminWeeklyIssuesPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                       <span
-                        className="text-[10px] font-bold px-2 py-0.5 rounded-md"
+                        className="text-[10px] font-bold px-2 py-0.5 chip-square"
                         style={{
                           color: isLive ? "#5B7A8F" : "#A38E7A",
                           backgroundColor: isLive ? "#E5E8ED" : "#EEE8E0",

@@ -357,13 +357,13 @@ export default function AdminInboxPage() {
               >
                 <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
                   <span
-                    className="text-[10px] font-extrabold px-2 py-0.5 rounded-md text-white"
+                    className="text-[10px] font-extrabold px-2 py-0.5 chip-square text-white"
                     style={{ backgroundColor: "#D85555" }}
                   >
                     {REPORT_REASON_LABELS[r.reason]}
                   </span>
                   <span
-                    className="text-[10px] font-bold px-2 py-0.5 rounded-md"
+                    className="text-[10px] font-bold px-2 py-0.5 chip-square"
                     style={{
                       backgroundColor: `${REPORT_STATUS_COLORS[r.status]}22`,
                       color: REPORT_STATUS_COLORS[r.status],
@@ -469,7 +469,7 @@ export default function AdminInboxPage() {
               >
                 <div className="flex items-center gap-1.5 mb-1.5">
                   <span
-                    className="text-[10px] font-bold px-2 py-0.5 rounded-md"
+                    className="text-[10px] font-bold px-2 py-0.5 chip-square"
                     style={{
                       backgroundColor: `${INQUIRY_STATUS_COLORS[i.status]}22`,
                       color: INQUIRY_STATUS_COLORS[i.status],
@@ -607,7 +607,7 @@ function TabButton({
       <span className="text-[13px] font-extrabold tracking-tight">{label}</span>
       {count > 0 && (
         <span
-          className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md tabular-nums"
+          className="text-[10px] font-extrabold px-1.5 py-0.5 chip-square tabular-nums"
           style={{
             backgroundColor: active ? "rgba(255,255,255,0.3)" : `${color}22`,
             color: active ? "#FFFFFF" : color,

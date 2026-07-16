@@ -393,8 +393,7 @@ export default function AdminDashboardPage() {
       {/* 메뉴 그리드 */}
       <div className="px-4">
         <div className="flex items-center gap-2 mb-3 px-1">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#2C2C2C" }} />
-          <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+          <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
             관리 메뉴
           </h2>
         </div>
@@ -424,7 +423,7 @@ export default function AdminDashboardPage() {
                   </p>
                   {m.badge !== undefined && m.badge > 0 && (
                     <span
-                      className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md"
+                      className="text-[9px] font-extrabold px-1.5 py-0.5 chip-square"
                       style={{
                         background: m.color,
                         color: "#fff",
@@ -446,8 +445,7 @@ export default function AdminDashboardPage() {
         {/* 위험 액션 */}
         <div className="mt-6">
           <div className="flex items-center gap-2 mb-3 px-1">
-            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#B84545" }} />
-            <h2 className="text-[13px] font-extrabold text-text-main tracking-tight">
+            <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
               빠른 정보
             </h2>
           </div>

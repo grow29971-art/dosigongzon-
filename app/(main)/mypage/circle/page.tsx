@@ -244,8 +244,8 @@ export default function CirclePage() {
             <section className="px-5 mt-6">
               <div className="flex items-center gap-2 mb-3">
                 <Mail size={14} style={{ color: "var(--color-primary)" }} />
-                <h2 className="text-[14px] font-extrabold text-text-main">받은 초대</h2>
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: "var(--color-primary)" }}>
+                <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">받은 초대</h2>
+                <span className="text-[11px] font-bold px-2 py-0.5 chip-square text-white" style={{ background: "var(--color-primary)" }}>
                   {invitations.length}
                 </span>
               </div>
@@ -292,7 +292,7 @@ export default function CirclePage() {
             <section className="px-5 mt-6">
               <div className="flex items-center gap-2 mb-3">
                 <MessageCircle size={14} style={{ color: "var(--color-primary)" }} />
-                <h2 className="text-[14px] font-extrabold text-text-main">서클 채팅</h2>
+                <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">서클 채팅</h2>
               </div>
               <Link
                 href={`/circle/${myCircleId}/chat`}
@@ -345,7 +345,7 @@ export default function CirclePage() {
                             </div>
                             {unread > 0 && (
                               <span
-                                className="shrink-0 px-2 py-0.5 rounded-full text-[10.5px] font-extrabold leading-none"
+                                className="shrink-0 px-2 py-0.5 chip-square text-[10.5px] font-extrabold leading-none"
                                 style={{ background: "#D85555", color: "#FFF" }}
                               >
                                 {unread > 99 ? "99+" : unread}
@@ -365,8 +365,8 @@ export default function CirclePage() {
           <section className="px-5 mt-6">
             <div className="flex items-center gap-2 mb-3">
               <Link2 size={14} style={{ color: "#FEE500" }} />
-              <h2 className="text-[14px] font-extrabold text-text-main">초대 링크</h2>
-              <span className="text-[9px] font-extrabold tracking-[0.15em] px-1.5 py-0.5 rounded-full" style={{ background: "#FEE500", color: "#191919" }}>
+              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">초대 링크</h2>
+              <span className="text-[9px] font-extrabold tracking-[0.15em] px-1.5 py-0.5 chip-square" style={{ background: "#FEE500", color: "#191919" }}>
                 빠른 초대
               </span>
             </div>
@@ -404,7 +404,7 @@ export default function CirclePage() {
           <section className="px-5 mt-6">
             <div className="flex items-center gap-2 mb-3">
               <UserPlus size={14} style={{ color: "#4A7BA8" }} />
-              <h2 className="text-[14px] font-extrabold text-text-main">닉네임 검색 초대</h2>
+              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">닉네임 검색 초대</h2>
             </div>
             <div className="bg-white rounded-2xl p-3" style={{ boxShadow: "var(--shadow-card)" }}>
               <div className="flex items-center gap-2">
@@ -466,8 +466,8 @@ export default function CirclePage() {
           <section className="px-5 mt-6">
             <div className="flex items-center gap-2 mb-3">
               <Users size={14} style={{ color: "#6B8E6F" }} />
-              <h2 className="text-[14px] font-extrabold text-text-main">내 서클 멤버</h2>
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full text-white" style={{ background: "#6B8E6F" }}>
+              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">내 서클 멤버</h2>
+              <span className="text-[11px] font-bold px-2 py-0.5 chip-square text-white" style={{ background: "#6B8E6F" }}>
                 {acceptedMembers.length}
               </span>
             </div>

@@ -129,7 +129,7 @@ export default function MyInquiriesPage() {
               >
                 <div className="flex items-center gap-2 mb-1.5">
                   <span
-                    className="text-[9.5px] font-extrabold px-2 py-0.5 rounded-md"
+                    className="text-[9.5px] font-extrabold px-2 py-0.5 chip-square"
                     style={{ backgroundColor: `${color}15`, color }}
                   >
                     {label}

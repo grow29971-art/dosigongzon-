@@ -328,7 +328,7 @@ export default function AdminActivationPage() {
                       </div>
                       <Link
                         href={`/messages?to=${u.id}`}
-                        className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-extrabold active:scale-[0.97]"
+                        className="shrink-0 flex items-center gap-1 px-3 py-1.5 chip-square text-[11px] font-extrabold active:scale-[0.97]"
                         style={{
                           background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                           color: "#fff",

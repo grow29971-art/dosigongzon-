@@ -266,7 +266,7 @@ export default function AdminNewsPage() {
                 <button
                   key={t}
                   onClick={() => setDraft((d) => ({ ...d, badge_type: t }))}
-                  className="py-2 rounded-lg text-[11px] font-bold transition-all"
+                  className="py-2 chip-square text-[11px] font-bold transition-all"
                   style={{
                     backgroundColor: active ? preset.color : preset.bg,
                     color: active ? "#fff" : preset.color,
@@ -518,7 +518,7 @@ export default function AdminNewsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                       <span
-                        className="text-[10px] font-bold px-2 py-0.5 rounded-md"
+                        className="text-[10px] font-bold px-2 py-0.5 chip-square"
                         style={{ color: preset.color, backgroundColor: preset.bg }}
                       >
                         {preset.label}
@@ -530,7 +530,7 @@ export default function AdminNewsPage() {
                       )}
                       {item.auto_imported && (
                         <span
-                          className="text-[10px] font-bold px-1.5 py-0.5 rounded-md"
+                          className="text-[10px] font-bold px-1.5 py-0.5 chip-square"
                           style={{ color: "#7A6B8E", backgroundColor: "#EAE6E8" }}
                         >
                           자동수집

@@ -533,7 +533,7 @@ export default function AdminTipsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                     {!item.published && (
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-text-muted text-white">
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 chip-square bg-text-muted text-white">
                         초안
                       </span>
                     )}

@@ -368,8 +368,7 @@ export default function AdminAuthErrorsPage() {
 
       {/* 로그 리스트 */}
       <div className="flex items-center gap-2 mb-2 mt-4">
-        <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#8B65B8" }} />
-        <h2 className="text-[13px] font-extrabold text-text-main">
+        <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
           최근 로그 {logs.length > 0 && <span className="text-text-light font-bold">({logs.length})</span>}
         </h2>
       </div>
@@ -415,7 +414,7 @@ export default function AdminAuthErrorsPage() {
                       </span>
                       {log.provider && (
                         <span
-                          className="text-[9px] font-bold px-1.5 py-0.5 rounded-md"
+                          className="text-[9px] font-bold px-1.5 py-0.5 chip-square"
                           style={{
                             backgroundColor: log.provider === "google" ? "#E3EBF7" : log.provider === "kakao" ? "#FEF4C8" : "#F0EDF7",
                             color: log.provider === "google" ? "#3A6CB5" : log.provider === "kakao" ? "#7A5F16" : "#5D4785",
@@ -425,7 +424,7 @@ export default function AdminAuthErrorsPage() {
                         </span>
                       )}
                       <span
-                        className="text-[9px] font-bold px-1.5 py-0.5 rounded-md"
+                        className="text-[9px] font-bold px-1.5 py-0.5 chip-square"
                         style={{ backgroundColor: "#F0F0F0", color: "#666" }}
                       >
                         {log.stage}

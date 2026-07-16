@@ -679,7 +679,7 @@ export default function ActivityRegionsPage() {
                   key={p.value}
                   type="button"
                   onClick={() => setRadius(p.value)}
-                  className="px-3 py-1.5 rounded-xl text-[11px] font-bold active:scale-95 transition-transform"
+                  className="px-3 py-1.5 chip-square text-[11px] font-bold active:scale-95 transition-transform"
                   style={{
                     background: active ? SLOT_COLORS[activeSlot] : "#F7F4EE",
                     color: active ? "#fff" : "#666",
@@ -713,7 +713,7 @@ export default function ActivityRegionsPage() {
           </div>
           {savedOnSlot?.is_primary ? (
             <span
-              className="px-3 py-1.5 rounded-xl text-[11px] font-extrabold"
+              className="px-3 py-1.5 chip-square text-[11px] font-extrabold"
               style={{ background: "#E8B84A", color: "#fff" }}
             >
               <Check size={11} className="inline mr-0.5" />
