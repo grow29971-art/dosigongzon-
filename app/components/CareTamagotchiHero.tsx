@@ -11,6 +11,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { thumbnailUrl } from "@/lib/cats-repo";
@@ -245,26 +246,31 @@ export default function CareTamagotchiHero() {
         </button>
       </div>
 
-      {/* 보유 케어 아이템 칩 (0개면 숨김) */}
-      {items.length > 0 && (
-        <div className="flex gap-1.5 mt-2.5 overflow-x-auto no-scrollbar">
-          {items.map((it) => {
-            const def = SHOP_ITEMS[it.key];
-            return (
-              <button
-                key={it.key}
-                type="button"
-                onClick={() => act("use_item", it.key)}
-                disabled={busy}
-                className="chip-square press shrink-0 px-2.5 py-1.5 text-[11px] font-bold disabled:opacity-40"
-                style={{ background: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}
-              >
-                {def.icon} {def.name} ×{it.quantity}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      {/* 보유 케어 아이템 칩 + 상점 진입 (코인 경제 부활 2026-07-16) */}
+      <div className="flex gap-1.5 mt-2.5 overflow-x-auto no-scrollbar">
+        {items.map((it) => {
+          const def = SHOP_ITEMS[it.key];
+          return (
+            <button
+              key={it.key}
+              type="button"
+              onClick={() => act("use_item", it.key)}
+              disabled={busy}
+              className="chip-square press shrink-0 px-2.5 py-1.5 text-[11px] font-bold disabled:opacity-40"
+              style={{ background: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}
+            >
+              {def.icon} {def.name} ×{it.quantity}
+            </button>
+          );
+        })}
+        <Link
+          href="/mypage/shop"
+          className="chip-square press shrink-0 px-2.5 py-1.5 text-[11px] font-bold"
+          style={{ background: "var(--color-primary-soft)", color: "var(--color-primary-dark)" }}
+        >
+          🛍️ {items.length > 0 ? "간식 더 사기" : "케어 간식 사러 가기"}
+        </Link>
+      </div>
 
       {/* 실존 고양이 오해 방지 캡션 */}
       <p className="text-[10px] text-text-muted mt-2.5">
