@@ -64,6 +64,9 @@ function Gauge({ label, emoji, value, color }: { label: string; emoji: string; v
   );
 }
 
+// 골골 맥동 진동 패턴(ms) — 짧은 on/off 반복으로 "그르르르" 손맛. 총 ~1초.
+const PURR_VIBE = [55, 25, 55, 25, 55, 25, 55, 25, 55, 25, 55, 25, 55, 25, 55, 25, 55, 25, 55];
+
 export default function CareTamagotchiHero() {
   const { user } = useAuth();
   const [cat, setCat] = useState<CareCat | null>(null);
@@ -155,10 +158,17 @@ export default function CareTamagotchiHero() {
     setTimeout(() => setFxList((prev) => prev.filter((f) => f.id !== id)), 1200);
   };
 
+  // 쓰다듬기 피드백 — 골골송 소리 + 골골 맥동 진동(즉시, 손맛). primeSfx로 iOS 제스처 활성.
+  const purrFeedback = () => {
+    primeSfx();
+    sfx.purr();
+    try { navigator.vibrate?.(PURR_VIBE); } catch { /* 진동 미지원 */ }
+  };
+
   const act = async (action: "feed" | "pet" | "use_item" | "clean" | "play", itemKey?: ShopItemKey) => {
     if (!cat || busy) return;
-    // 쓰다듬기 → 골골송 즉시 재생(API 왕복과 무관하게 손맛 있게). primeSfx로 iOS 제스처 활성.
-    if (action === "pet") { primeSfx(); sfx.purr(); }
+    // 쓰다듬기 → 골골송+진동 즉시(API 왕복과 무관하게 손맛 있게).
+    if (action === "pet") purrFeedback();
     setBusy(true);
     try {
       const res = await fetch("/api/care", {
@@ -196,7 +206,8 @@ export default function CareTamagotchiHero() {
           .map((it) => it.key === itemKey ? { ...it, quantity: data.item_remaining ?? it.quantity - 1 } : it)
           .filter((it) => it.quantity > 0));
       }
-      try { navigator.vibrate?.(12); } catch { /* 햅틱 미지원 */ }
+      // 쓰다듬기는 위에서 골골 맥동 진동을 이미 걸었으니, 여기서 다시 12ms로 덮어써 끊지 않음.
+      try { if (action !== "pet") navigator.vibrate?.(12); } catch { /* 햅틱 미지원 */ }
       setReactId((n) => n + 1);
       if (data.leveled_up) { flash(`🎉 레벨 업! Lv.${data.new_level} 달성!`); spawnFx("🎉", 50, 30); }
       else if (action === "feed") { flash("냠냠! 맛있게 먹었어요 🍚"); spawnFx("🍚", 40, 44); spawnFx("😋", 58, 40); }
@@ -288,7 +299,7 @@ export default function CareTamagotchiHero() {
           type="button"
           className={`cth-cat ${reactId ? (reactId % 2 ? "cth-react-a" : "cth-react-b") : ""}`}
           style={{ ["--cth-scale" as string]: scale }}
-          onClick={() => { if (!petDone && !busy) act("pet"); else { primeSfx(); sfx.purr(); spawnFx("🐾", 50, 44); setReactId((n) => n + 1); } }}
+          onClick={() => { if (!petDone && !busy) act("pet"); else { purrFeedback(); spawnFx("🐾", 50, 44); setReactId((n) => n + 1); } }}
           disabled={busy}
           aria-label="쓰다듬기"
         >

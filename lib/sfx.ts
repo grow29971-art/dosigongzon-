@@ -339,17 +339,17 @@ export const sfx = {
   // ── 골골송 — 다마고치 쓰다듬기 시 고양이 그르렁. ──
   // 오디오 파일 없이: 저역 톱니/삼각 몸통 + 브라운 노이즈 숨결을 약 26Hz LFO 트레몰로로
   // 맥동시켜 "그르르르" 맥놀이를 만든다. 폰 스피커 로우롤오프를 감안해 몸통을 100Hz대에 둠.
-  purr: ({ duration = 1.1, volume = 0.14 }: { duration?: number; volume?: number } = {}) => {
+  purr: ({ duration = 1.1, volume = 0.34 }: { duration?: number; volume?: number } = {}) => {
     if (isSfxMuted()) return;
     const audioCtx = getCtx();
     if (!audioCtx) return;
     const t0 = audioCtx.currentTime;
 
-    // 몸통 — 저음(배음 풍부) + 옥타브 아래 두께감
+    // 몸통 — 폰 스피커에서도 크게 들리게 주파수 상향(180Hz대) + 옥타브 아래 두께감
     const osc = audioCtx.createOscillator();
-    osc.type = "sawtooth"; osc.frequency.setValueAtTime(104, t0);
+    osc.type = "sawtooth"; osc.frequency.setValueAtTime(184, t0);
     const osc2 = audioCtx.createOscillator();
-    osc2.type = "triangle"; osc2.frequency.setValueAtTime(52, t0);
+    osc2.type = "triangle"; osc2.frequency.setValueAtTime(92, t0);
 
     // 숨결 텍스처 — 브라운 노이즈
     const len = Math.max(1, Math.floor(audioCtx.sampleRate * duration));
@@ -359,15 +359,15 @@ export const sfx = {
     for (let i = 0; i < len; i++) { const w = Math.random() * 2 - 1; last = (last + 0.02 * w) / 1.02; data[i] = last * 3.2; }
     const noise = audioCtx.createBufferSource(); noise.buffer = buf;
 
-    // 뭉근하게 — 그르렁은 부드러운 소리
+    // 살짝 밝게 — 컷오프를 올려 더 또렷하고 크게 들리도록
     const lp = audioCtx.createBiquadFilter();
-    lp.type = "lowpass"; lp.frequency.value = 600; lp.Q.value = 0.7;
+    lp.type = "lowpass"; lp.frequency.value = 1100; lp.Q.value = 0.7;
 
-    // 골골 맥동 — 26Hz LFO로 진폭 변조(트레몰로)
-    const trem = audioCtx.createGain(); trem.gain.setValueAtTime(0.55, t0);
+    // 골골 맥동 — 27Hz LFO로 진폭 변조(트레몰로)
+    const trem = audioCtx.createGain(); trem.gain.setValueAtTime(0.6, t0);
     const lfo = audioCtx.createOscillator();
-    lfo.type = "sine"; lfo.frequency.setValueAtTime(26, t0);
-    const lfoDepth = audioCtx.createGain(); lfoDepth.gain.setValueAtTime(0.45, t0);
+    lfo.type = "sine"; lfo.frequency.setValueAtTime(27, t0);
+    const lfoDepth = audioCtx.createGain(); lfoDepth.gain.setValueAtTime(0.4, t0);
     lfo.connect(lfoDepth).connect(trem.gain);
 
     // 엔벨로프 — 부드럽게 들어오고 나감
