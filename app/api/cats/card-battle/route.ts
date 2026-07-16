@@ -6,6 +6,7 @@ import { SPECIAL_SKILLS, type SpecialSkillId } from "@/lib/battle-config";
 import { recordPveEncounter } from "@/lib/pve-bestiary";
 import { signBattleToken } from "@/lib/battle-token";
 import { randomUUID } from "crypto";
+import { cardLevelFromExp as computeLevel } from "@/lib/card-level";
 
 export const maxDuration = 15;
 
@@ -654,14 +655,6 @@ export async function POST(req: Request) {
   const oppExpGained = result.isDraw ? drawExp : result.attackerWins ? loserExp : winnerExp;
   const myNewExp  = (myCat.card_exp ?? 0) + myExpGained;
   const oppNewExp = (opponent.card_exp ?? 0) + oppExpGained;
-
-  function computeLevel(exp: number) {
-    const thresholds = [0, 90, 210, 380, 610, 900, 1260, 1690, 2200, 2800];
-    for (let i = thresholds.length - 1; i >= 0; i--) {
-      if (exp >= thresholds[i]) return i + 1;
-    }
-    return 1;
-  }
 
   const { data: myProfile } = await svc.from("profiles").select("coins").eq("id", user.id).maybeSingle();
   const myCoinsNow = myProfile?.coins ?? 0;

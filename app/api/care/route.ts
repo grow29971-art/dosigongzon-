@@ -17,14 +17,7 @@ import {
 } from "@/lib/care";
 import { rateLimit } from "@/lib/rate-limit";
 
-// 카드 레벨 커브 — checkin/battle과 동일 thresholds (Lv1~10)
-function computeLevel(exp: number) {
-  const thresholds = [0, 90, 210, 380, 610, 900, 1260, 1690, 2200, 2800];
-  for (let i = thresholds.length - 1; i >= 0; i--) {
-    if (exp >= thresholds[i]) return i + 1;
-  }
-  return 1;
-}
+import { cardLevelFromExp as computeLevel } from "@/lib/card-level";
 
 interface CareCatRow {
   id: string;

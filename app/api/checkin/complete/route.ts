@@ -12,13 +12,7 @@ const TASK_CARE_TYPE: Record<string, { care_type: string; memo: string }> = {
 const CHECKIN_COINS = 50;
 const CHECKIN_CARD_EXP = 50;
 
-function computeLevel(exp: number) {
-  const thresholds = [0, 90, 210, 380, 610, 900, 1260, 1690, 2200, 2800];
-  for (let i = thresholds.length - 1; i >= 0; i--) {
-    if (exp >= thresholds[i]) return i + 1;
-  }
-  return 1;
-}
+import { cardLevelFromExp as computeLevel } from "@/lib/card-level";
 
 export async function POST(req: Request) {
   const supabase = await createClient();
