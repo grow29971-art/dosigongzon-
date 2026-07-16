@@ -38,6 +38,7 @@ export async function POST() {
     p_user_id: user.id, p_amount: COINS_LOGIN_BONUS,
   });
   if (rpcErr) {
+    console.warn("[coins/daily-login] ⚠️ increment_coins RPC 미배포/오류 — 비원자 폴백. 마이그레이션 확인 필요.");
     await svc.from("profiles").update({ coins }).eq("id", user.id);
   } else if (typeof rpcCoins === "number") {
     coins = rpcCoins;

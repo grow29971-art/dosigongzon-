@@ -217,6 +217,7 @@ export async function POST(req: Request) {
     if (rpcRemaining < 0) return NextResponse.json({ error: "no_stock" }, { status: 400 });
     itemRemaining = rpcRemaining;
   } else {
+    console.warn("[care] ⚠️ consume_user_item RPC 미배포/오류 — 비원자 폴백 실행. 마이그레이션 확인 필요.");
     const { data: inv } = await svc
       .from("user_items").select("quantity")
       .eq("user_id", user.id).eq("item_key", item.key).maybeSingle();

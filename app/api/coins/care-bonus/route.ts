@@ -58,6 +58,7 @@ export async function POST() {
   }
 
   // RPC 미실행 환경 폴백 — 기존 read-modify-write (마이그레이션 실행 후엔 위 경로만 탐)
+  console.warn("[coins/care-bonus] ⚠️ award_care_bonus_atomic RPC 미배포/오류 — 비원자 폴백. 마이그레이션 확인 필요.");
   const newCoins = (profile?.coins ?? 0) + COINS_CARE_PER_LOG;
   await svc.from("profiles").update({
     coins: newCoins,

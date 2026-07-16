@@ -34,7 +34,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, coins: result.coins, item_key: result.item_key, quantity: result.quantity });
   }
 
-  // RPC 미배포 시(마이그레이션 전) 이전 다단계 방식으로 폴백
+  // 폴백은 '함수 자체가 없을 때(마이그레이션 전)'로만 한정 — 일시적 RPC 오류에도
+  // 폴백하면 경쟁 상태 있는 비원자 경로로 조용히 강등됨(감사 M9). 프로덕션엔 RPC가
+  // 배포돼 있으므로 여기 도달하면 환경 설정 문제 → 경고 로그로 표면화.
+  const fnMissing = rpcError.code === "42883" || rpcError.code === "PGRST202"
+    || /function .* does not exist/i.test(rpcError.message ?? "");
+  if (!fnMissing) {
+    console.error("[shop/buy] buy_shop_item_atomic RPC 오류(함수 존재):", rpcError);
+    return NextResponse.json({ error: "purchase_failed" }, { status: 500 });
+  }
+  console.warn("[shop/buy] ⚠️ buy_shop_item_atomic RPC 미배포 — 비원자 폴백 실행. 마이그레이션 확인 필요.");
   const { data: profile } = await supabase
     .from("profiles")
     .select("coins")
