@@ -1,0 +1,14 @@
+# Gradle / Android 빌드 산출물 — 전부 재생성 가능. git 추적 제외.
+.gradle/
+build/
+app/build/
+*.iml
+.idea/
+local.properties
+
+# 서명 키스토어는 절대 커밋 금지 (분실 시 앱 업데이트 불가 — Desktop 백업 사용)
+*.keystore
+*.jks
+
+# 릴리스 산출물은 필요 시 수동으로 add (기본은 무시 — bubblewrap build로 재생성)
+# app-release-bundle.aab / app-release-signed.apk 는 루트에 이미 추적 중이라 유지됨
