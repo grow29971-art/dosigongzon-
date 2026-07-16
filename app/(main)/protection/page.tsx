@@ -213,8 +213,8 @@ function InfoCard({ card, isRead }: { card: (typeof cards)[number]; isRead?: boo
           <card.Icon size={22} color={card.iconBg} strokeWidth={2} />
           {isRead && (
             <div
-              className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"
-              style={{ background: "#5BA876", border: "1.5px solid #fff" }}
+              className="absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center"
+              style={{ background: "#5BA876", border: "1.5px solid #fff", borderRadius: "var(--radius-square-sm)" }}
             >
               <CheckCircle2 size={10} color="#fff" strokeWidth={3} />
             </div>
@@ -235,7 +235,7 @@ function InfoCard({ card, isRead }: { card: (typeof cards)[number]; isRead?: boo
     </div>
   );
 
-  const className = "block active:scale-[0.98] transition-transform";
+  const className = "block press";
 
   if (card.type === "link") {
     return (
@@ -342,7 +342,7 @@ export default function ProtectionPage() {
               <Link
                 key={s.label}
                 href={s.href}
-                className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full active:scale-95 transition-transform"
+                className="shrink-0 flex items-center gap-1.5 px-3 py-2 chip-square press"
                 style={{
                   background: `${s.color}10`,
                   border: `1px solid ${s.color}30`,
@@ -434,9 +434,8 @@ export default function ProtectionPage() {
 
       {/* ── 긴급 연락처 ── */}
       <div className="mt-6">
-        <div className="flex items-center gap-2 mb-3 px-1">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#B84545" }} />
-          <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+        <div className="mb-3 px-1">
+          <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
             긴급 연락처
           </h2>
         </div>
@@ -447,7 +446,7 @@ export default function ProtectionPage() {
               <a
                 key={c.label}
                 href={`tel:${c.tel}`}
-                className="py-4 px-2 flex flex-col items-center active:scale-95 transition-transform"
+                className="py-4 px-2 flex flex-col items-center press"
                 style={{
                   background: `linear-gradient(135deg, ${c.accent}12 0%, ${c.accent}08 100%)`,
                   borderRadius: "var(--radius-card)",
@@ -455,7 +454,7 @@ export default function ProtectionPage() {
                 }}
               >
                 <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center mb-2"
+                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-2"
                   style={{ backgroundColor: `${c.accent}15` }}
                 >
                   <Icon size={20} color={c.accent} strokeWidth={2} />
@@ -480,9 +479,8 @@ export default function ProtectionPage() {
 
       {/* ── 길고양이 급식소 커뮤니티 ── */}
       <div className="mt-6 mb-4">
-        <div className="flex items-center gap-2 mb-3 px-1">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#03C75A" }} />
-          <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+        <div className="mb-3 px-1">
+          <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
             급식소 커뮤니티
           </h2>
         </div>
@@ -491,7 +489,7 @@ export default function ProtectionPage() {
             href="https://cafe.naver.com/icfc0520"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl active:scale-[0.98] transition-transform"
+            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl press"
             style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "var(--shadow-card)" }}
           >
             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: "rgba(3,199,90,0.1)" }}>
@@ -507,7 +505,7 @@ export default function ProtectionPage() {
             href="https://cafe.naver.com/caretaker"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl active:scale-[0.98] transition-transform"
+            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl press"
             style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "var(--shadow-card)" }}
           >
             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: "rgba(3,199,90,0.1)" }}>

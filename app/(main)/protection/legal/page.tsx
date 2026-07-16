@@ -335,7 +335,7 @@ export default function LegalGuidePage() {
           <li><strong>목격자 진술</strong> — 실명·연락처 있으면 증거력 ↑</li>
           <li><strong>SNS 업로드·댓글</strong> — 가해자 본인이 자랑하는 경우 캡처 + URL 보관</li>
         </ol>
-        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "#F6F1EA" }}>
+        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "var(--color-surface-alt)" }}>
           <p className="font-bold text-text-main mb-1">💡 촬영 팁</p>
           <ul className="space-y-1 text-text-sub pl-4 list-disc">
             <li>원본 보관 — 편집·압축하지 말고 원본 파일 그대로</li>
@@ -513,7 +513,7 @@ export default function LegalGuidePage() {
       </section>
 
       {/* 신뢰 출처 */}
-      <section className="mb-8 rounded-2xl p-4" style={{ background: "#F6F1EA", border: "1px solid rgba(0,0,0,0.04)" }}>
+      <section className="mb-8 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid rgba(0,0,0,0.04)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2">참고한 출처</h3>
         <ul className="text-[12px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
           <li>동물보호법 (법률 제19446호, 2024 개정)</li>

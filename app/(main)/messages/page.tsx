@@ -218,7 +218,7 @@ function MessagesPage() {
                   <div
                     className="overflow-hidden"
                     style={{
-                      backgroundColor: isMe ? "var(--color-primary)" : "#F6F1EA",
+                      backgroundColor: isMe ? "var(--color-primary)" : "var(--color-surface-alt)",
                       borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
                     }}
                   >
@@ -227,12 +227,12 @@ function MessagesPage() {
                       <img src={optimizedImageUrl(msg.photo_url, 600) ?? msg.photo_url} alt="" loading="lazy" decoding="async" className="max-w-full max-h-48 object-cover" />
                     )}
                     {msg.body && msg.body !== "📷 사진" && (
-                      <p className="px-3.5 py-2 text-[13px] leading-relaxed" style={{ color: isMe ? "#fff" : "#2A2A28" }}>
+                      <p className="px-3.5 py-2 text-[13px] leading-relaxed" style={{ color: isMe ? "#fff" : "var(--color-text-main)" }}>
                         {msg.body}
                       </p>
                     )}
                     {(!msg.body || msg.body === "📷 사진") && !msg.photo_url && (
-                      <p className="px-3.5 py-2 text-[13px] leading-relaxed" style={{ color: isMe ? "#fff" : "#2A2A28" }}>
+                      <p className="px-3.5 py-2 text-[13px] leading-relaxed" style={{ color: isMe ? "#fff" : "var(--color-text-main)" }}>
                         {msg.body}
                       </p>
                     )}
@@ -286,9 +286,9 @@ function MessagesPage() {
             type="button"
             onClick={() => photoInputRef.current?.click()}
             className="w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-transform shrink-0"
-            style={{ backgroundColor: photoFile ? "#6B8E6F" : "#F6F1EA", border: "1px solid #E3DCD3" }}
+            style={{ backgroundColor: photoFile ? "#6B8E6F" : "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
           >
-            <Camera size={18} style={{ color: photoFile ? "#fff" : "#A38E7A" }} />
+            <Camera size={18} style={{ color: photoFile ? "#fff" : "var(--color-text-light)" }} />
           </button>
           <input
             type="text"
@@ -296,7 +296,7 @@ function MessagesPage() {
             onChange={(e) => setMsgText(e.target.value)}
             placeholder="쪽지를 입력하세요"
             className="flex-1 px-3.5 py-2.5 rounded-2xl text-[13px] outline-none"
-            style={{ backgroundColor: "#F6F1EA", border: "1px solid #E3DCD3" }}
+            style={{ backgroundColor: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.nativeEvent.isComposing && (msgText.trim() || photoFile)) {
                 e.preventDefault();
@@ -352,9 +352,9 @@ function MessagesPage() {
               key={c.partnerId}
               type="button"
               onClick={() => setSelectedPartner({ id: c.partnerId, name: c.partnerName })}
-              className="w-full flex items-center gap-3 px-4 py-3 active:scale-[0.99] transition-transform text-left"
+              className="w-full flex items-center gap-3 px-4 py-3 press text-left"
               style={{
-                background: c.unreadCount > 0 ? "linear-gradient(135deg, #FDF9F2, #FFF)" : "#FFFFFF",
+                background: c.unreadCount > 0 ? "linear-gradient(135deg, var(--color-primary-softer), #FFF)" : "#FFFFFF",
                 borderRadius: "var(--radius-card-sm)",
                 boxShadow: "var(--shadow-card)",
                 border: c.unreadCount > 0 ? "1.5px solid rgba(49,130,246,0.2)" : "1px solid rgba(0,0,0,0.04)",
@@ -372,7 +372,7 @@ function MessagesPage() {
                 <div className="flex items-center gap-2">
                   <span className="text-[13px] font-bold text-text-main">{c.partnerName}</span>
                   {c.unreadCount > 0 && (
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary text-white">{c.unreadCount}</span>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 chip-square bg-primary text-white">{c.unreadCount}</span>
                   )}
                 </div>
                 <p className="text-[11px] text-text-sub truncate mt-0.5">{c.lastMessage}</p>

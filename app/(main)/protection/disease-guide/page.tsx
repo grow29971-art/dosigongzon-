@@ -639,7 +639,7 @@ export default function DiseaseGuidePage() {
               key={s.symptom}
               className="rounded-xl p-3 flex items-start gap-3"
               style={{
-                background: "#F7F4EE",
+                background: "var(--color-surface-alt)",
                 border: "1px solid rgba(0,0,0,0.05)",
               }}
             >
@@ -741,7 +741,7 @@ export default function DiseaseGuidePage() {
                       <li
                         key={s}
                         className="px-2 py-1 rounded-lg text-[11px] font-semibold"
-                        style={{ background: "#F7F4EE", color: "#4A4A48" }}
+                        style={{ background: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}
                       >
                         {s}
                       </li>

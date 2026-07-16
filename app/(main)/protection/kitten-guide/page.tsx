@@ -205,7 +205,7 @@ export default function KittenGuidePage() {
       {/* Step 1 */}
       <section id="step-1" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <span className="w-7 h-7 rounded-full bg-[#C9A961] text-white text-[12px] font-extrabold flex items-center justify-center">1</span>
+          <span className="w-7 h-7 chip-square bg-[#C9A961] text-white text-[12px] font-extrabold flex items-center justify-center">1</span>
           관찰 — 왜 바로 데려가면 안 되나
         </h2>
         <p className="text-[14px] text-text-main leading-relaxed mb-3">
@@ -219,7 +219,7 @@ export default function KittenGuidePage() {
           <li><strong>사람 냄새 최소화</strong> — 손을 대지 마세요. 어미가 새끼를 포기하진 않지만 경계가 강해져 급여 거부로 이어질 수 있어요.</li>
           <li><strong>소리·빛 자극 금지</strong> — 후레시, 큰 소리는 어미를 쫓아냅니다. 조용히 거리를 두고 지켜보세요.</li>
         </ul>
-        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "#F6F1EA" }}>
+        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "var(--color-surface-alt)" }}>
           <p className="font-bold text-text-main mb-1">💡 TIP — 어미가 있는 신호</p>
           <ul className="space-y-1 text-text-sub pl-4 list-disc">
             <li>새끼들이 울지 않고 모여있다</li>
@@ -232,7 +232,7 @@ export default function KittenGuidePage() {
       {/* Step 2 */}
       <section id="step-2" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <span className="w-7 h-7 rounded-full bg-[#D85555] text-white text-[12px] font-extrabold flex items-center justify-center">2</span>
+          <span className="w-7 h-7 chip-square bg-[#D85555] text-white text-[12px] font-extrabold flex items-center justify-center">2</span>
           위험 신호 — 즉시 구조가 필요한 7가지
         </h2>
         <p className="text-[14px] text-text-main leading-relaxed mb-3">
@@ -269,7 +269,7 @@ export default function KittenGuidePage() {
       <section id="step-3" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
           <Thermometer size={20} color="#3182F6" />
-          <span className="w-7 h-7 rounded-full bg-[var(--color-primary)] text-white text-[12px] font-extrabold flex items-center justify-center">3</span>
+          <span className="w-7 h-7 chip-square bg-[var(--color-primary)] text-white text-[12px] font-extrabold flex items-center justify-center">3</span>
           체온 유지 — 36.5도 만들기
         </h2>
         <p className="text-[14px] text-text-main leading-relaxed mb-3">
@@ -297,7 +297,7 @@ export default function KittenGuidePage() {
       <section id="step-4" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
           <Milk size={20} color="#6B8E6F" />
-          <span className="w-7 h-7 rounded-full bg-[#6B8E6F] text-white text-[12px] font-extrabold flex items-center justify-center">4</span>
+          <span className="w-7 h-7 chip-square bg-[#6B8E6F] text-white text-[12px] font-extrabold flex items-center justify-center">4</span>
           KMR 분유 급여 — 절대 우유 금지
         </h2>
         <p className="text-[14px] text-text-main leading-relaxed mb-3">
@@ -308,7 +308,7 @@ export default function KittenGuidePage() {
         <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">연령별 급여량·간격</h3>
         <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(0,0,0,0.08)" }}>
           <table className="w-full text-[13px]">
-            <thead style={{ background: "#F6F1EA" }}>
+            <thead style={{ background: "var(--color-surface-alt)" }}>
               <tr>
                 <th className="text-left px-3 py-2 font-bold">연령</th>
                 <th className="text-left px-3 py-2 font-bold">간격</th>
@@ -346,7 +346,7 @@ export default function KittenGuidePage() {
       <section id="step-5" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
           <Stethoscope size={20} color="#4A7BA8" />
-          <span className="w-7 h-7 rounded-full bg-[#4A7BA8] text-white text-[12px] font-extrabold flex items-center justify-center">5</span>
+          <span className="w-7 h-7 chip-square bg-[#4A7BA8] text-white text-[12px] font-extrabold flex items-center justify-center">5</span>
           동물병원 방문 — 24시간 내
         </h2>
         <p className="text-[14px] text-text-main leading-relaxed mb-3">
@@ -374,7 +374,7 @@ export default function KittenGuidePage() {
       <section id="step-6" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
           <Home size={20} color="#8B65B8" />
-          <span className="w-7 h-7 rounded-full bg-[#8B65B8] text-white text-[12px] font-extrabold flex items-center justify-center">6</span>
+          <span className="w-7 h-7 chip-square bg-[#8B65B8] text-white text-[12px] font-extrabold flex items-center justify-center">6</span>
           입양·임보 결정
         </h2>
         <p className="text-[14px] text-text-main leading-relaxed mb-3">
@@ -467,7 +467,7 @@ export default function KittenGuidePage() {
       </section>
 
       {/* 신뢰 출처 */}
-      <section className="mb-8 rounded-2xl p-4" style={{ background: "#F6F1EA", border: "1px solid rgba(0,0,0,0.04)" }}>
+      <section className="mb-8 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid rgba(0,0,0,0.04)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2 flex items-center gap-1.5">
           <Heart size={14} color="#3182F6" />
           참고한 공공 자료

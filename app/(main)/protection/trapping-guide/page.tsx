@@ -221,7 +221,7 @@ export default function TrappingGuidePage() {
       {/* Step 1 */}
       <section id="step-1" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <span className="w-7 h-7 rounded-full bg-[#6B8E6F] text-white text-[12px] font-extrabold flex items-center justify-center">1</span>
+          <span className="w-7 h-7 chip-square bg-[#6B8E6F] text-white text-[12px] font-extrabold flex items-center justify-center">1</span>
           신청 — 구청 TNR 사업
         </h2>
         <p className="text-[14px] text-text-main leading-relaxed mb-3">
@@ -234,7 +234,7 @@ export default function TrappingGuidePage() {
           <li>포획틀 대여 + TNR 무상 쿠폰 수령 (며칠 소요)</li>
           <li>쿠폰 명시된 지정 동물병원에서 수술 예약</li>
         </ol>
-        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "#F6F1EA" }}>
+        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "var(--color-surface-alt)" }}>
           <p className="font-bold text-text-main mb-1">💡 지역 담당 부서</p>
           <p className="text-text-sub">
             도시공존의 <Link href="/protection/district-contacts" className="text-primary font-bold underline">시·구·군청 동물보호 담당부서</Link>에서
@@ -247,7 +247,7 @@ export default function TrappingGuidePage() {
       <section id="step-2" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
           <Package size={20} color="#5B7A8F" />
-          <span className="w-7 h-7 rounded-full bg-[#5B7A8F] text-white text-[12px] font-extrabold flex items-center justify-center">2</span>
+          <span className="w-7 h-7 chip-square bg-[#5B7A8F] text-white text-[12px] font-extrabold flex items-center justify-center">2</span>
           준비물 체크리스트
         </h2>
         <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid rgba(0,0,0,0.06)" }}>
@@ -279,7 +279,7 @@ export default function TrappingGuidePage() {
       <section id="step-3" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
           <MapPin size={20} color="#3182F6" />
-          <span className="w-7 h-7 rounded-full bg-[var(--color-primary)] text-white text-[12px] font-extrabold flex items-center justify-center">3</span>
+          <span className="w-7 h-7 chip-square bg-[var(--color-primary)] text-white text-[12px] font-extrabold flex items-center justify-center">3</span>
           포획틀 설치
         </h2>
         <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">설치 위치 고르기</h3>
@@ -311,7 +311,7 @@ export default function TrappingGuidePage() {
       <section id="step-4" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
           <Clock size={20} color="#7A6B8E" />
-          <span className="w-7 h-7 rounded-full bg-[#7A6B8E] text-white text-[12px] font-extrabold flex items-center justify-center">4</span>
+          <span className="w-7 h-7 chip-square bg-[#7A6B8E] text-white text-[12px] font-extrabold flex items-center justify-center">4</span>
           대기·포획
         </h2>
         <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
@@ -334,7 +334,7 @@ export default function TrappingGuidePage() {
       <section id="step-5" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
           <Stethoscope size={20} color="#4A7BA8" />
-          <span className="w-7 h-7 rounded-full bg-[#4A7BA8] text-white text-[12px] font-extrabold flex items-center justify-center">5</span>
+          <span className="w-7 h-7 chip-square bg-[#4A7BA8] text-white text-[12px] font-extrabold flex items-center justify-center">5</span>
           수술·회복
         </h2>
         <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">병원에서의 처치</h3>
@@ -349,7 +349,7 @@ export default function TrappingGuidePage() {
         <h3 className="text-[14px] font-bold text-text-main mt-5 mb-2">회복 기간</h3>
         <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(0,0,0,0.08)" }}>
           <table className="w-full text-[13px]">
-            <thead style={{ background: "#F6F1EA" }}>
+            <thead style={{ background: "var(--color-surface-alt)" }}>
               <tr>
                 <th className="text-left px-3 py-2 font-bold">성별</th>
                 <th className="text-left px-3 py-2 font-bold">실내 회복</th>
@@ -380,7 +380,7 @@ export default function TrappingGuidePage() {
       <section id="step-6" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
           <Scissors size={20} color="#8B65B8" />
-          <span className="w-7 h-7 rounded-full bg-[#8B65B8] text-white text-[12px] font-extrabold flex items-center justify-center">6</span>
+          <span className="w-7 h-7 chip-square bg-[#8B65B8] text-white text-[12px] font-extrabold flex items-center justify-center">6</span>
           재방사
         </h2>
         <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
@@ -495,7 +495,7 @@ export default function TrappingGuidePage() {
       </section>
 
       {/* 신뢰 출처 */}
-      <section className="mb-8 rounded-2xl p-4" style={{ background: "#F6F1EA", border: "1px solid rgba(0,0,0,0.04)" }}>
+      <section className="mb-8 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid rgba(0,0,0,0.04)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2">참고한 출처</h3>
         <ul className="text-[12px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
           <li>농림축산식품부 길고양이 TNR 사업 지침</li>

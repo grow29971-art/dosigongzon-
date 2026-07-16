@@ -356,7 +356,7 @@ export default async function PharmacyGuidePage() {
             </div>
           ))}
         </div>
-        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "#F6F1EA" }}>
+        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "var(--color-surface-alt)" }}>
           <p className="font-bold text-text-main mb-1">🚨 중독 의심 시</p>
           <p className="text-text-sub">
             즉시 24시간 동물병원 이송. <strong>먹던 물질·용기</strong>를 함께 챙겨가면 진단·치료가 빨라집니다.
@@ -432,7 +432,7 @@ export default async function PharmacyGuidePage() {
                 )}
 
                 {p.tip && (
-                  <div className="px-3.5 py-3 rounded-xl mb-3" style={{ backgroundColor: "#FDF9F2" }}>
+                  <div className="px-3.5 py-3 rounded-xl mb-3" style={{ backgroundColor: "var(--color-surface-alt)" }}>
                     <p className="text-[11px] font-extrabold mb-1 text-primary">💡 알아두세요</p>
                     <p className="text-[12px] text-text-main leading-relaxed">{p.tip}</p>
                   </div>
@@ -542,7 +542,7 @@ export default async function PharmacyGuidePage() {
       )}
 
       {/* 신뢰 출처 */}
-      <section className="mt-6 rounded-2xl p-4" style={{ background: "#F6F1EA", border: "1px solid rgba(0,0,0,0.04)" }}>
+      <section className="mt-6 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid rgba(0,0,0,0.04)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2">참고한 공공 자료</h3>
         <ul className="text-[12px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
           <li>식품의약품안전처 동물용의약품 공개 자료</li>

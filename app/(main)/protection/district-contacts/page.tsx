@@ -163,10 +163,10 @@ export default function DistrictContactsPage() {
           <button
             key={r}
             onClick={() => setSelectedRegion(r)}
-            className="text-[12px] font-bold px-3 py-1.5 rounded-full whitespace-nowrap shrink-0 transition-all active:scale-95"
+            className="text-[12px] font-bold px-3 py-1.5 chip-square whitespace-nowrap shrink-0 press"
             style={{
-              backgroundColor: selectedRegion === r ? "var(--color-primary)" : "#F5F3EE",
-              color: selectedRegion === r ? "#fff" : "#7A756E",
+              backgroundColor: selectedRegion === r ? "var(--color-primary)" : "var(--color-surface-alt)",
+              color: selectedRegion === r ? "#fff" : "var(--color-text-sub)",
             }}
           >
             {r}
@@ -185,7 +185,7 @@ export default function DistrictContactsPage() {
           <a
             key={i}
             href={`tel:${c.tel.replace(/-/g, "")}`}
-            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl active:scale-[0.98] transition-transform"
+            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl press"
             style={{
               background: "#FFFFFF",
               border: "1px solid rgba(0,0,0,0.04)",
@@ -200,7 +200,7 @@ export default function DistrictContactsPage() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md" style={{ backgroundColor: "#F5F3EE", color: "#7A756E" }}>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 chip-square" style={{ backgroundColor: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}>
                   {c.region}
                 </span>
                 <p className="text-[14px] font-bold text-text-main truncate">{c.district}</p>
@@ -217,9 +217,8 @@ export default function DistrictContactsPage() {
 
       {/* 길고양이 급식소 커뮤니티 */}
       <div className="mt-6 mb-4">
-        <div className="flex items-center gap-2 mb-3 px-1">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#48A59E" }} />
-          <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+        <div className="mb-3 px-1">
+          <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
             길고양이 급식소 커뮤니티
           </h2>
         </div>
@@ -228,7 +227,7 @@ export default function DistrictContactsPage() {
             href="https://cafe.naver.com/icfc0520"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl active:scale-[0.98] transition-transform"
+            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl press"
             style={{
               background: "#FFFFFF",
               border: "1px solid rgba(0,0,0,0.04)",
@@ -251,7 +250,7 @@ export default function DistrictContactsPage() {
             href="https://cafe.naver.com/caretaker"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl active:scale-[0.98] transition-transform"
+            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl press"
             style={{
               background: "#FFFFFF",
               border: "1px solid rgba(0,0,0,0.04)",

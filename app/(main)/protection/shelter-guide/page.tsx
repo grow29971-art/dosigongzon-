@@ -248,7 +248,7 @@ export default function ShelterGuidePage() {
               style={{ boxShadow: "var(--shadow-card)" }}
             >
               <div
-                className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-white text-[13px] font-extrabold"
+                className="w-8 h-8 chip-square flex items-center justify-center shrink-0 text-white text-[13px] font-extrabold"
                 style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
               >
                 {i + 1}
