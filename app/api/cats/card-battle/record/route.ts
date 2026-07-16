@@ -7,6 +7,7 @@ import { verifyBattleToken } from "@/lib/battle-token";
 import { createHash } from "crypto";
 
 import { cardLevelFromExp as computeLevel } from "@/lib/card-level";
+import { battleRewardOk } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -56,15 +57,18 @@ export async function POST(req: Request) {
 
   const svc = createServiceClient();
 
+  // 일일 보상 상한(자동배틀과 공유) 초과 시 코인·EXP 0 — 전적·토큰소모는 그대로.
+  const rewardOk = battleRewardOk(user.id);
+
   const winnerExp = 15, loserExp = 6, drawExp = 10;
-  const myExpGained = isDraw ? drawExp : iWon ? winnerExp : loserExp;
+  const myExpGained = !rewardOk ? 0 : isDraw ? drawExp : iWon ? winnerExp : loserExp;
   const oppExpGained = isDraw ? drawExp : iWon ? loserExp : winnerExp;
   const myNewExp = (myCat.card_exp ?? 0) + myExpGained;
   const oppNewExp = oppCat ? ((oppCat.card_exp ?? 0) + oppExpGained) : 0;
 
   const { data: myProfile } = await svc.from("profiles").select("coins").eq("id", user.id).maybeSingle();
   const myCoinsNow = myProfile?.coins ?? 0;
-  const coinsGained = isDraw
+  const coinsGained = !rewardOk ? 0 : isDraw
     ? (is_boss ? COINS_BOSS_DRAW : COINS_BATTLE_DRAW)
     : is_boss
       ? (iWon ? COINS_BOSS_WIN : COINS_BOSS_LOSE)

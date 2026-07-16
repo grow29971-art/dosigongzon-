@@ -7,6 +7,7 @@ import { recordPveEncounter } from "@/lib/pve-bestiary";
 import { signBattleToken } from "@/lib/battle-token";
 import { randomUUID } from "crypto";
 import { cardLevelFromExp as computeLevel } from "@/lib/card-level";
+import { battleBurstOk, battleRewardOk } from "@/lib/rate-limit";
 
 export const maxDuration = 15;
 
@@ -512,6 +513,11 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
+  // 파밍 방어 — 분당 연타 차단. 자동·수동(토큰 발급) 양쪽 진입을 여기서 함께 제한.
+  if (!battleBurstOk(user.id)) {
+    return NextResponse.json({ error: "too_many_requests" }, { status: 429 });
+  }
+
   const { my_cat_id, mode = "auto", battle_type = "pve" } = await req.json();
   if (!my_cat_id) return NextResponse.json({ error: "my_cat_id required" }, { status: 400 });
 
@@ -650,8 +656,12 @@ export async function POST(req: Request) {
   // EXP 지급
   const svc = createServiceClient();
 
+  // 일일 보상 상한 초과 시 코인·EXP를 0으로 — 배틀 자체(전투·전적·도감)는 그대로 즐길 수 있게
+  // 두고 파밍 대상 재화만 차단. 상대 EXP·전적은 파밍 대상이 아니라 그대로 지급.
+  const rewardOk = battleRewardOk(user.id);
+
   const winnerExp = 14, loserExp = 5, drawExp = 9;
-  const myExpGained = result.isDraw ? drawExp : result.attackerWins ? winnerExp : loserExp;
+  const myExpGained = !rewardOk ? 0 : result.isDraw ? drawExp : result.attackerWins ? winnerExp : loserExp;
   const oppExpGained = result.isDraw ? drawExp : result.attackerWins ? loserExp : winnerExp;
   const myNewExp  = (myCat.card_exp ?? 0) + myExpGained;
   const oppNewExp = (opponent.card_exp ?? 0) + oppExpGained;
@@ -660,7 +670,7 @@ export async function POST(req: Request) {
   const myCoinsNow = myProfile?.coins ?? 0;
   // 코인 보상은 "진짜 보스냐"로 갈라야 한다 — isBossEncounter는 PVE 모드 전체를 뜻해서
   // 이걸로 나누면 모기 한 마리 이겨도 보스급 보상(8코인)이 나가는 버그가 있었음.
-  const coinsGained = result.isDraw
+  const coinsGained = !rewardOk ? 0 : result.isDraw
     ? (isActualBoss ? COINS_BOSS_DRAW : COINS_BATTLE_DRAW)
     : isActualBoss
       ? (result.attackerWins ? COINS_BOSS_WIN : COINS_BOSS_LOSE)
