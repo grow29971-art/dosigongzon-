@@ -18,6 +18,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { thumbnailUrl } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import { sfx, primeSfx } from "@/lib/sfx";
 import { SHOP_ITEMS, SHOP_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-config";
 import {
   fullnessAt, moodAt, cleanlinessAt, poopCount, gaugeTs, careState, growthStage, currentCareDay,
@@ -156,6 +157,8 @@ export default function CareTamagotchiHero() {
 
   const act = async (action: "feed" | "pet" | "use_item" | "clean" | "play", itemKey?: ShopItemKey) => {
     if (!cat || busy) return;
+    // 쓰다듬기 → 골골송 즉시 재생(API 왕복과 무관하게 손맛 있게). primeSfx로 iOS 제스처 활성.
+    if (action === "pet") { primeSfx(); sfx.purr(); }
     setBusy(true);
     try {
       const res = await fetch("/api/care", {
@@ -285,7 +288,7 @@ export default function CareTamagotchiHero() {
           type="button"
           className={`cth-cat ${reactId ? (reactId % 2 ? "cth-react-a" : "cth-react-b") : ""}`}
           style={{ ["--cth-scale" as string]: scale }}
-          onClick={() => { if (!petDone && !busy) act("pet"); else { spawnFx("🐾", 50, 44); setReactId((n) => n + 1); } }}
+          onClick={() => { if (!petDone && !busy) act("pet"); else { primeSfx(); sfx.purr(); spawnFx("🐾", 50, 44); setReactId((n) => n + 1); } }}
           disabled={busy}
           aria-label="쓰다듬기"
         >

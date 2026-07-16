@@ -335,4 +335,54 @@ export const sfx = {
     tone({ freq: 200, duration: 0.1, type: "sawtooth", volume: 0.12 });
     tone({ freq: 500, duration: 0.18, type: "triangle", volume: 0.14, delay: 0.08, slideTo: 700 });
   },
+
+  // ── 골골송 — 다마고치 쓰다듬기 시 고양이 그르렁. ──
+  // 오디오 파일 없이: 저역 톱니/삼각 몸통 + 브라운 노이즈 숨결을 약 26Hz LFO 트레몰로로
+  // 맥동시켜 "그르르르" 맥놀이를 만든다. 폰 스피커 로우롤오프를 감안해 몸통을 100Hz대에 둠.
+  purr: ({ duration = 1.1, volume = 0.14 }: { duration?: number; volume?: number } = {}) => {
+    if (isSfxMuted()) return;
+    const audioCtx = getCtx();
+    if (!audioCtx) return;
+    const t0 = audioCtx.currentTime;
+
+    // 몸통 — 저음(배음 풍부) + 옥타브 아래 두께감
+    const osc = audioCtx.createOscillator();
+    osc.type = "sawtooth"; osc.frequency.setValueAtTime(104, t0);
+    const osc2 = audioCtx.createOscillator();
+    osc2.type = "triangle"; osc2.frequency.setValueAtTime(52, t0);
+
+    // 숨결 텍스처 — 브라운 노이즈
+    const len = Math.max(1, Math.floor(audioCtx.sampleRate * duration));
+    const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+    const data = buf.getChannelData(0);
+    let last = 0;
+    for (let i = 0; i < len; i++) { const w = Math.random() * 2 - 1; last = (last + 0.02 * w) / 1.02; data[i] = last * 3.2; }
+    const noise = audioCtx.createBufferSource(); noise.buffer = buf;
+
+    // 뭉근하게 — 그르렁은 부드러운 소리
+    const lp = audioCtx.createBiquadFilter();
+    lp.type = "lowpass"; lp.frequency.value = 600; lp.Q.value = 0.7;
+
+    // 골골 맥동 — 26Hz LFO로 진폭 변조(트레몰로)
+    const trem = audioCtx.createGain(); trem.gain.setValueAtTime(0.55, t0);
+    const lfo = audioCtx.createOscillator();
+    lfo.type = "sine"; lfo.frequency.setValueAtTime(26, t0);
+    const lfoDepth = audioCtx.createGain(); lfoDepth.gain.setValueAtTime(0.45, t0);
+    lfo.connect(lfoDepth).connect(trem.gain);
+
+    // 엔벨로프 — 부드럽게 들어오고 나감
+    const env = audioCtx.createGain();
+    env.gain.setValueAtTime(0.0001, t0);
+    env.gain.linearRampToValueAtTime(volume, t0 + 0.14);
+    env.gain.setValueAtTime(volume, t0 + Math.max(0.2, duration - 0.25));
+    env.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+
+    osc.connect(lp); osc2.connect(lp); noise.connect(lp);
+    lp.connect(trem).connect(env);
+    routeOut(audioCtx, env, 0.18);
+
+    const stopAt = t0 + duration + 0.05;
+    osc.start(t0); osc2.start(t0); noise.start(t0); lfo.start(t0);
+    osc.stop(stopAt); osc2.stop(stopAt); noise.stop(stopAt); lfo.stop(stopAt);
+  },
 };
