@@ -96,7 +96,10 @@ export async function POST(req: Request) {
     const newExp = exp + FEED_EXP;
     const newLevel = computeLevel(newExp);
 
-    const { error } = await svc.from("cats").update({
+    // 낙관적 동시성 가드 — 읽은 시점의 fed_day/fed_today와 여전히 일치할 때만 갱신.
+    // 동시 밥주기 요청이 둘 다 fedToday를 읽고 통과해도, 늦게 도착한 쪽은 이 조건이
+    // 어긋나 0행 갱신 → 일일 한도(3회) 초과 지급 차단.
+    let feedUpdate = svc.from("cats").update({
       // ⚠️ fed_at = now 로 저장하면 항상 100이 되어 +38이 무의미 — 반드시 역산값 저장
       fed_at: gaugeTs(newFullness, FULLNESS_DECAY_HOURS, now),
       mood_at: gaugeTs(newMood, MOOD_DECAY_HOURS, now),
@@ -105,9 +108,17 @@ export async function POST(req: Request) {
       card_exp: newExp,
       card_level: newLevel,
     }).eq("id", row.id);
+    feedUpdate = fedToday === 0
+      ? feedUpdate.or(`fed_day.is.null,fed_day.neq.${today}`) // 오늘 첫 밥: 아직 today로 안 바뀐 행만
+      : feedUpdate.eq("fed_day", today).eq("fed_today", fedToday); // 2·3번째: 카운터 그대로일 때만
+    const { data: feedRows, error } = await feedUpdate.select("id");
     if (error) {
       console.error("[care] feed update failed:", error);
       return NextResponse.json({ error: "update_failed" }, { status: 502 });
+    }
+    if (!feedRows || feedRows.length === 0) {
+      // 동시 요청이 먼저 반영됨 — 한도 초과로 처리
+      return NextResponse.json({ error: "daily_limit" }, { status: 429 });
     }
     return NextResponse.json({
       ok: true, fullness: newFullness, mood: newMood,
@@ -144,18 +155,25 @@ export async function POST(req: Request) {
   if (!item?.care) {
     return NextResponse.json({ error: "not_care_item" }, { status: 400 });
   }
-  const { data: inv } = await svc
-    .from("user_items")
-    .select("quantity")
-    .eq("user_id", user.id)
-    .eq("item_key", item.key)
-    .maybeSingle();
-  const qty = (inv as { quantity: number } | null)?.quantity ?? 0;
-  if (qty <= 0) return NextResponse.json({ error: "no_stock" }, { status: 400 });
-
-  // 수량 차감 (use-item 라우트와 동일한 gt 가드 방식)
-  await svc.from("user_items").update({ quantity: qty - 1, updated_at: new Date(now).toISOString() })
-    .eq("user_id", user.id).eq("item_key", item.key).gt("quantity", 0);
+  // 원자적 소모 — DB에서 조건부 증분 후 남은 수량 반환. 동시 요청이 같은 재고를
+  // 두 번 쓰던 레이스 차단. RPC 미배포(42883) 시 기존 read-modify-write 폴백.
+  let itemRemaining: number;
+  const { data: rpcRemaining, error: consumeErr } = await svc.rpc("consume_user_item", {
+    p_user_id: user.id, p_item_key: item.key,
+  });
+  if (!consumeErr && typeof rpcRemaining === "number") {
+    if (rpcRemaining < 0) return NextResponse.json({ error: "no_stock" }, { status: 400 });
+    itemRemaining = rpcRemaining;
+  } else {
+    const { data: inv } = await svc
+      .from("user_items").select("quantity")
+      .eq("user_id", user.id).eq("item_key", item.key).maybeSingle();
+    const qty = (inv as { quantity: number } | null)?.quantity ?? 0;
+    if (qty <= 0) return NextResponse.json({ error: "no_stock" }, { status: 400 });
+    await svc.from("user_items").update({ quantity: qty - 1, updated_at: new Date(now).toISOString() })
+      .eq("user_id", user.id).eq("item_key", item.key).gt("quantity", 0);
+    itemRemaining = qty - 1;
+  }
 
   const newFullness = Math.min(100, fullness + (item.care.fullness ?? 0));
   const newMood = Math.min(100, mood + (item.care.mood ?? 0));
@@ -176,6 +194,6 @@ export async function POST(req: Request) {
     ok: true, fullness: newFullness, mood: newMood,
     fed_today: row.fed_day === today ? (row.fed_today ?? 0) : 0, feed_limit: FEED_LIMIT_PER_DAY,
     exp_gained: item.care.exp ?? 0, leveled_up: newLevel > level, new_level: newLevel,
-    item_remaining: qty - 1,
+    item_remaining: itemRemaining,
   });
 }
