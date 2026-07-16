@@ -158,17 +158,30 @@ export default function CareTamagotchiHero() {
     setTimeout(() => setFxList((prev) => prev.filter((f) => f.id !== id)), 1200);
   };
 
-  // 쓰다듬기 피드백 — 골골송 소리 + 골골 맥동 진동(즉시, 손맛). primeSfx로 iOS 제스처 활성.
-  const purrFeedback = () => {
+  // 하트 뿅뿅 — 캐릭터 주변에 하트 여러 개를 순차로 팡팡 띄운다.
+  const heartBurst = () => {
+    const hearts = ["💕", "💗", "💖", "❤️", "💛"];
+    for (let i = 0; i < 6; i++) {
+      const hx = 50 + (Math.random() * 46 - 23); // 27~73%
+      const hy = 36 + (Math.random() * 24 - 8);  // 캐릭터 상체 주변
+      const emoji = hearts[i % hearts.length];
+      setTimeout(() => spawnFx(emoji, hx, hy), i * 55); // 살짝 시차 → 뿅뿅
+    }
+  };
+
+  // 쓰다듬기 피드백(즉시) — 골골송 + 골골 맥동 진동 + 캐릭터 움직임 + 하트 뿅뿅.
+  const petTap = () => {
     primeSfx();
     sfx.purr();
     try { navigator.vibrate?.(PURR_VIBE); } catch { /* 진동 미지원 */ }
+    setReactId((n) => n + 1); // 홉+위글 움직임
+    heartBurst();
   };
 
   const act = async (action: "feed" | "pet" | "use_item" | "clean" | "play", itemKey?: ShopItemKey) => {
     if (!cat || busy) return;
-    // 쓰다듬기 → 골골송+진동 즉시(API 왕복과 무관하게 손맛 있게).
-    if (action === "pet") purrFeedback();
+    // 쓰다듬기 → 골골송+진동+움직임+하트 즉시(API 왕복과 무관하게 손맛 있게).
+    if (action === "pet") petTap();
     setBusy(true);
     try {
       const res = await fetch("/api/care", {
@@ -206,12 +219,12 @@ export default function CareTamagotchiHero() {
           .map((it) => it.key === itemKey ? { ...it, quantity: data.item_remaining ?? it.quantity - 1 } : it)
           .filter((it) => it.quantity > 0));
       }
-      // 쓰다듬기는 위에서 골골 맥동 진동을 이미 걸었으니, 여기서 다시 12ms로 덮어써 끊지 않음.
+      // 쓰다듬기는 위(petTap)에서 진동·움직임을 이미 걸었으니 여기서 덮어쓰지 않음.
       try { if (action !== "pet") navigator.vibrate?.(12); } catch { /* 햅틱 미지원 */ }
-      setReactId((n) => n + 1);
+      if (action !== "pet") setReactId((n) => n + 1);
       if (data.leveled_up) { flash(`🎉 레벨 업! Lv.${data.new_level} 달성!`); spawnFx("🎉", 50, 30); }
       else if (action === "feed") { flash("냠냠! 맛있게 먹었어요 🍚"); spawnFx("🍚", 40, 44); spawnFx("😋", 58, 40); }
-      else if (action === "pet") { flash("골골골… 기분 최고예요 💛"); spawnFx("💛", 42, 40); spawnFx("💛", 56, 46); }
+      else if (action === "pet") { flash("골골골… 기분 최고예요 💛"); }
       else if (action === "clean") { flash("반짝반짝 개운해졌어요 ✨"); spawnFx("✨", 40, 58); spawnFx("✨", 60, 55); }
       else if (action === "play") { flash("까르르! 신나게 놀았어요 🎾"); spawnFx("🎾", 44, 48); spawnFx("😸", 58, 40); }
       else { flash("아이템을 맛있게 냠냠! ✨"); spawnFx("✨", 50, 42); }
@@ -299,7 +312,7 @@ export default function CareTamagotchiHero() {
           type="button"
           className={`cth-cat ${reactId ? (reactId % 2 ? "cth-react-a" : "cth-react-b") : ""}`}
           style={{ ["--cth-scale" as string]: scale }}
-          onClick={() => { if (!petDone && !busy) act("pet"); else { purrFeedback(); spawnFx("🐾", 50, 44); setReactId((n) => n + 1); } }}
+          onClick={() => { if (!petDone && !busy) act("pet"); else petTap(); }}
           disabled={busy}
           aria-label="쓰다듬기"
         >
@@ -493,8 +506,8 @@ const SCENE_CSS = `
   width:136px;z-index:3;transform:translateX(-50%) scale(var(--cth-scale,1));transform-origin:50% 100%;
   animation:cthBreathe 3.4s ease-in-out infinite}
 .cth-cat:disabled{cursor:default}
-.cth-cat.cth-react-a{animation:cthPop .5s ease}
-.cth-cat.cth-react-b{animation:cthPop .5s ease}
+.cth-cat.cth-react-a{animation:cthPop .6s cubic-bezier(.3,1.4,.5,1)}
+.cth-cat.cth-react-b{animation:cthPop .6s cubic-bezier(.3,1.4,.5,1)}
 .cth-catimg{width:100%;height:auto;display:block;overflow:visible}
 .cth-catimg .cth-tail{transform-origin:80% 62%;animation:cthTail 2.6s ease-in-out infinite}
 .cth-catimg .cth-lids{transform-box:fill-box;transform-origin:center;animation:cthBlink 5s infinite}
@@ -522,7 +535,12 @@ const SCENE_CSS = `
 @keyframes cthBlink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.08)}}
 @keyframes cthTwinkle{0%,100%{opacity:.25}50%{opacity:.9}}
 @keyframes cthFall{0%{transform:translateY(0)}100%{transform:translateY(206px)}}
-@keyframes cthPop{0%,100%{transform:translateX(-50%) scale(var(--cth-scale,1))}35%{transform:translateX(-50%) scale(calc(var(--cth-scale,1)*1.11),calc(var(--cth-scale,1)*.9))}70%{transform:translateX(-50%) scale(calc(var(--cth-scale,1)*.96),calc(var(--cth-scale,1)*1.05))}}
+@keyframes cthPop{
+  0%,100%{transform:translateX(-50%) translateY(0) rotate(0deg) scale(var(--cth-scale,1))}
+  18%{transform:translateX(-50%) translateY(-12px) rotate(-5deg) scale(calc(var(--cth-scale,1)*1.06),calc(var(--cth-scale,1)*.95))}
+  40%{transform:translateX(-50%) translateY(0) rotate(4deg) scale(calc(var(--cth-scale,1)*.97),calc(var(--cth-scale,1)*1.04))}
+  62%{transform:translateX(-50%) translateY(-5px) rotate(-3deg) scale(var(--cth-scale,1))}
+  82%{transform:translateX(-50%) translateY(0) rotate(2deg) scale(var(--cth-scale,1))}}
 @keyframes cthPopIn{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
 @keyframes cthFloat{0%{transform:translate(-50%,-50%) scale(.7);opacity:0}20%{opacity:1}100%{transform:translate(-50%,-130%) scale(1.1);opacity:0}}
 @media (prefers-reduced-motion:reduce){.cth-cat,.cth-catimg .cth-tail,.cth-catimg .cth-lids,.cth-stars i,.cth-fx,.cth-cat.cth-react-a,.cth-cat.cth-react-b{animation:none!important}}
