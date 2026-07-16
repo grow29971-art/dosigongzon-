@@ -39,8 +39,26 @@ export async function POST() {
     return NextResponse.json({ awarded: false, reason: "no_new_care_log", coins: profile?.coins ?? 0 });
   }
 
-  const newCoins = (profile?.coins ?? 0) + COINS_CARE_PER_LOG;
   const svc = createServiceClient();
+
+  // 검증·카운터 증가·코인 지급을 DB 트랜잭션(FOR UPDATE)에서 한 번에 —
+  // 동시 요청이 같은 count_today를 읽고 이중 지급하던 레이스 차단.
+  const { data: rpcRes, error: rpcErr } = await svc.rpc("award_care_bonus_atomic", {
+    p_user_id: user.id,
+    p_amount: COINS_CARE_PER_LOG,
+    p_today: today,
+    p_cap: COINS_CARE_DAILY_CAP,
+    p_eligible: eligibleCount,
+  });
+  if (!rpcErr && rpcRes) {
+    const r = rpcRes as { awarded?: boolean; reason?: string; coins?: number; count_today?: number; error?: string };
+    if (r.error) return NextResponse.json({ awarded: false, reason: r.error, coins: profile?.coins ?? 0 });
+    if (!r.awarded) return NextResponse.json({ awarded: false, reason: r.reason, coins: r.coins ?? 0 });
+    return NextResponse.json({ awarded: true, coins: r.coins ?? 0, bonus: COINS_CARE_PER_LOG, count_today: r.count_today ?? countToday + 1 });
+  }
+
+  // RPC 미실행 환경 폴백 — 기존 read-modify-write (마이그레이션 실행 후엔 위 경로만 탐)
+  const newCoins = (profile?.coins ?? 0) + COINS_CARE_PER_LOG;
   await svc.from("profiles").update({
     coins: newCoins,
     last_care_coin_date: today,

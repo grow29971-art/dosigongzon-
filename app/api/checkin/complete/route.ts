@@ -90,9 +90,17 @@ export async function POST(req: Request) {
     }
   }
 
-  const newCoins = (profile.coins ?? 0) + CHECKIN_COINS;
-  // last_checkin_date는 위 원자적 선점에서 이미 기록됨 — 여기선 코인만
-  jobs.push(svc.from("profiles").update({ coins: newCoins }).eq("id", user.id));
+  // 코인은 DB에서 원자 증감(increment_coins) — 배틀 보상·상점 구매 등 다른 경로와
+  // 동시에 코인이 바뀌어도 갱신 소실 없음. RPC 미실행 환경에선 기존 방식으로 폴백.
+  let coinsTotal = (profile.coins ?? 0) + CHECKIN_COINS;
+  const { data: rpcCoins, error: rpcErr } = await svc.rpc("increment_coins", {
+    p_user_id: user.id, p_amount: CHECKIN_COINS,
+  });
+  if (rpcErr) {
+    jobs.push(svc.from("profiles").update({ coins: coinsTotal }).eq("id", user.id));
+  } else if (typeof rpcCoins === "number") {
+    coinsTotal = rpcCoins;
+  }
 
   // 주간 출석 이력 기록 — 주간 포인트 마일스톤 집계용 (테이블 없으면 조용히 무시)
   jobs.push(
@@ -105,7 +113,7 @@ export async function POST(req: Request) {
   return NextResponse.json({
     ok: true,
     coins_gained: CHECKIN_COINS,
-    coins_total: newCoins,
+    coins_total: coinsTotal,
     card_exp_gained: targetCatId ? CHECKIN_CARD_EXP : 0,
     card_leveled_up: cardLeveledUp,
     card_new_level: cardNewLevel,
