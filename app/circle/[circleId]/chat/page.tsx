@@ -10,7 +10,7 @@ import Image from "next/image";
 import { ArrowLeft, Send, Loader2, Trash2, Users, Image as ImageIcon, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
-import { sanitizeImageUrl } from "@/lib/url-validate";
+import { sanitizeImageUrl, sanitizeHttpUrl } from "@/lib/url-validate";
 import { thumbnailUrl, optimizedImageUrl } from "@/lib/cats-repo";
 import {
   listCircleMessages,
@@ -295,9 +295,9 @@ export default function CircleChatPage() {
                           {m.sender_name ?? "익명"}
                         </p>
                       )}
-                      {m.image_url && (
+                      {m.image_url && sanitizeImageUrl(m.image_url) && (
                         <a
-                          href={m.image_url}
+                          href={sanitizeHttpUrl(m.image_url, "#")}
                           target="_blank"
                           rel="noopener noreferrer"
                           className={`block mb-1 rounded-2xl overflow-hidden ${isMine ? "rounded-tr-sm" : "rounded-tl-sm"}`}
@@ -305,7 +305,7 @@ export default function CircleChatPage() {
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src={optimizedImageUrl(m.image_url, 480, 70) ?? m.image_url}
+                            src={optimizedImageUrl(sanitizeImageUrl(m.image_url), 480, 70) ?? sanitizeImageUrl(m.image_url)}
                             alt=""
                             loading="lazy"
                             className="w-full h-auto block"

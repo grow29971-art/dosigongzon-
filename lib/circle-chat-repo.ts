@@ -4,6 +4,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 import { enforceUserActionLimit } from "@/lib/rate-limit";
+import { isSafeImageUrl } from "@/lib/url-validate";
 import { convertImageToWebp } from "@/lib/cats-repo";
 
 export interface CircleMessage {
@@ -66,6 +67,12 @@ export async function sendCircleMessage(
   const hasImage = !!imageUrl;
   if (!trimmed && !hasImage) throw new Error("내용 또는 사진을 입력해주세요.");
   if (trimmed.length > 1000) throw new Error("1000자 이내로 작성해주세요.");
+
+  // 이미지 URL은 https(s)만 허용 — javascript:/data: 등 주입 차단 (심층 방어).
+  // 브라우저 anon 클라이언트라 REST 직접 우회 가능 → 렌더 측 sanitize가 최종 방어.
+  if (hasImage && !isSafeImageUrl(imageUrl)) {
+    throw new Error("유효하지 않은 이미지 주소예요.");
+  }
 
   // 어뷰징 검증 (텍스트 있을 때만)
   if (trimmed) {
