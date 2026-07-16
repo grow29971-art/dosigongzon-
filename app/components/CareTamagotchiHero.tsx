@@ -75,6 +75,8 @@ export default function CareTamagotchiHero() {
   const [raining, setRaining] = useState(false);
   const [fxList, setFxList] = useState<Fx[]>([]);
   const [, setTick] = useState(0);
+  // 액션 시 캐릭터 통통 튀는 반응 — 홀짝 클래스 교대로 CSS 애니메이션 재시작.
+  const [reactId, setReactId] = useState(0);
   const fxId = useRef(0);
 
   // 로드: 대표묘(없으면 첫 등록묘) + 보유 케어 아이템
@@ -192,6 +194,7 @@ export default function CareTamagotchiHero() {
           .filter((it) => it.quantity > 0));
       }
       try { navigator.vibrate?.(12); } catch { /* 햅틱 미지원 */ }
+      setReactId((n) => n + 1);
       if (data.leveled_up) { flash(`🎉 레벨 업! Lv.${data.new_level} 달성!`); spawnFx("🎉", 50, 30); }
       else if (action === "feed") { flash("냠냠! 맛있게 먹었어요 🍚"); spawnFx("🍚", 40, 44); spawnFx("😋", 58, 40); }
       else if (action === "pet") { flash("골골골… 기분 최고예요 💛"); spawnFx("💛", 42, 40); spawnFx("💛", 56, 46); }
@@ -223,10 +226,14 @@ export default function CareTamagotchiHero() {
   const stage = growthStage(level);
   const fedToday = cat.fed_day === today ? (cat.fed_today ?? 0) : 0;
   const petDone = cat.pet_day === today;
-  // 등록 사진을 메인 캐릭터로 사용 (retina 대응 큰 썸네일). 없으면 그림 캐릭터로 폴백.
-  const photo = sanitizeImageUrl(cat.photo_url ? thumbnailUrl(cat.photo_url, 240) : null);
+  // 등록 사진은 코너 뱃지로 — "가상 분신 ↔ 우리 아이" 연결. 메인 캐릭터는 일러스트.
+  const photo = sanitizeImageUrl(cat.photo_url ? thumbnailUrl(cat.photo_url, 96) : null);
   const tod = timeOfDay();
   const nPoop = cleanSupported ? poopCount(cleanliness) : 0;
+  // careState.face(calm|happy|hungry|pouty) → 일러스트 감정. 밤+기분 좋으면 졸림 변형.
+  const emo = state.face === "calm"
+    ? (tod === "night" && mood >= 60 ? "sleepy" : "content")
+    : state.face;
   // 캐릭터 크기 — 성장할수록 조금씩 커짐 (Lv1 0.92 → Lv10 1.1)
   const scale = Math.min(1.12, 0.9 + level * 0.022);
 
@@ -237,13 +244,19 @@ export default function CareTamagotchiHero() {
     <div className="card p-4 mb-4">
       <style dangerouslySetInnerHTML={{ __html: SCENE_CSS }} />
 
-      {/* 헤더: 이름 + 단계/레벨 + 상태 문구 */}
+      {/* 헤더: 이름 + 단계/레벨 + 우리 아이 사진 뱃지 */}
       <div className="flex items-center gap-2 mb-2.5">
         <p className="text-[16px] font-extrabold text-text-main truncate">{cat.name}</p>
         <span className="chip-square px-1.5 py-0.5 text-[10px] font-extrabold shrink-0"
           style={{ background: "var(--color-primary-soft)", color: "var(--color-primary-dark)" }}>
           {stage.emoji} {stage.name} · Lv.{level}
         </span>
+        <span className="flex-1" />
+        {photo && (
+          <span className="cth-badge" title={`우리 아이 ${cat.name}`}>
+            <Image src={photo} alt={cat.name} fill sizes="34px" style={{ objectFit: "cover" }} />
+          </span>
+        )}
       </div>
 
       {/* ── 씬 ── */}
@@ -265,34 +278,83 @@ export default function CareTamagotchiHero() {
         )}
         <div className="cth-rug" />
         <div className="cth-bowl" />
+        <div className="cth-plant"><i /><i /><i /><b /></div>
 
-        {/* 캐릭터 — 등록 사진이 있으면 사진, 없으면 그림 고양이로 폴백 */}
+        {/* 캐릭터 — 통일 일러스트(SVG). 감정은 careState, 성장은 scale로 반영 */}
         <button
           type="button"
-          className={`cth-cat ${cleanliness < 45 ? "cth-messy" : ""} ${photo ? "cth-hasphoto" : ""}`}
-          data-face={state.face}
+          className={`cth-cat ${reactId ? (reactId % 2 ? "cth-react-a" : "cth-react-b") : ""}`}
           style={{ ["--cth-scale" as string]: scale }}
-          onClick={() => { if (!petDone && !busy) act("pet"); else spawnFx("🐾", 50, 44); }}
+          onClick={() => { if (!petDone && !busy) act("pet"); else { spawnFx("🐾", 50, 44); setReactId((n) => n + 1); } }}
           disabled={busy}
           aria-label="쓰다듬기"
         >
-          {photo ? (
-            <span className="cth-photo">
-              <Image src={photo} alt={cat.name} fill sizes="112px" style={{ objectFit: "cover" }} />
-            </span>
-          ) : (
-            <>
-              <span className="cth-tail" />
-              <span className="cth-body" />
-              <span className="cth-ear l" /><span className="cth-ear r" />
-              <span className="cth-face">
-                <span className="cth-eye l" /><span className="cth-eye r" />
-                <span className="cth-cheek l" /><span className="cth-cheek r" />
-                <span className="cth-mouth" />
-              </span>
-            </>
-          )}
-          <span className="cth-smudge a" /><span className="cth-smudge b" />
+          <svg className="cth-catimg" viewBox="0 0 220 210" data-emo={emo} data-dirty={cleanliness < 45 ? "1" : "0"} aria-hidden="true">
+            <defs>
+              <linearGradient id="cthFur" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stopColor="#EEBE84" /><stop offset="1" stopColor="#D6975A" />
+              </linearGradient>
+              <radialGradient id="cthBelly" cx="50%" cy="42%" r="60%">
+                <stop offset="0" stopColor="#F9EACF" /><stop offset="1" stopColor="#F1DDBB" />
+              </radialGradient>
+            </defs>
+            <ellipse cx="110" cy="196" rx="62" ry="12" fill="rgba(90,60,40,.18)" />
+            <path className="cth-tail" d="M168 158 C214 156 214 96 182 92 C202 116 190 146 156 146 Z" fill="url(#cthFur)" />
+            <path d="M60 60 L48 16 L98 46 Z" fill="url(#cthFur)" />
+            <path d="M160 60 L172 16 L122 46 Z" fill="url(#cthFur)" />
+            <path d="M63 52 L56 26 L86 44 Z" fill="#F2A6A0" />
+            <path d="M157 52 L164 26 L134 44 Z" fill="#F2A6A0" />
+            <path d="M110 30 C66 30 47 76 47 120 C47 178 80 198 110 198 C140 198 173 178 173 120 C173 76 154 30 110 30 Z" fill="url(#cthFur)" />
+            <ellipse cx="110" cy="146" rx="43" ry="50" fill="url(#cthBelly)" />
+            <path d="M96 44 q14 -12 28 0" fill="none" stroke="#C88A54" strokeWidth="5" strokeLinecap="round" opacity=".55" />
+            <path d="M104 40 q6 -8 12 0" fill="none" stroke="#C88A54" strokeWidth="5" strokeLinecap="round" opacity=".55" />
+            <ellipse cx="90" cy="192" rx="15" ry="11" fill="#F1DDBB" />
+            <ellipse cx="130" cy="192" rx="15" ry="11" fill="#F1DDBB" />
+            <ellipse cx="74" cy="128" rx="11" ry="7" fill="#F2A6A0" opacity=".7" />
+            <ellipse cx="146" cy="128" rx="11" ry="7" fill="#F2A6A0" opacity=".7" />
+            <path d="M104 122 h12 l-6 7 Z" fill="#C77" />
+            <g stroke="#B98A63" strokeWidth="1.6" opacity=".6" strokeLinecap="round">
+              <line x1="60" y1="118" x2="86" y2="120" /><line x1="60" y1="128" x2="86" y2="126" />
+              <line x1="160" y1="118" x2="134" y2="120" /><line x1="160" y1="128" x2="134" y2="126" />
+            </g>
+            <g className="cth-face">
+              <g className="cth-f-content">
+                <g className="cth-lids">
+                  <ellipse cx="88" cy="112" rx="7" ry="9" fill="#3B2A1E" />
+                  <ellipse cx="132" cy="112" rx="7" ry="9" fill="#3B2A1E" />
+                </g>
+                <circle cx="90" cy="109" r="2.4" fill="#fff" /><circle cx="134" cy="109" r="2.4" fill="#fff" />
+                <path d="M104 132 q6 6 12 0" fill="none" stroke="#3B2A1E" strokeWidth="2.6" strokeLinecap="round" />
+              </g>
+              <g className="cth-f-happy">
+                <path d="M81 114 q7 -11 14 0" fill="none" stroke="#3B2A1E" strokeWidth="3.4" strokeLinecap="round" />
+                <path d="M125 114 q7 -11 14 0" fill="none" stroke="#3B2A1E" strokeWidth="3.4" strokeLinecap="round" />
+                <path d="M101 130 q9 10 18 0" fill="none" stroke="#3B2A1E" strokeWidth="2.8" strokeLinecap="round" />
+              </g>
+              <g className="cth-f-hungry">
+                <ellipse cx="88" cy="111" rx="8" ry="10" fill="#3B2A1E" /><ellipse cx="132" cy="111" rx="8" ry="10" fill="#3B2A1E" />
+                <circle cx="91" cy="107" r="3" fill="#fff" /><circle cx="135" cy="107" r="3" fill="#fff" />
+                <ellipse cx="110" cy="133" rx="6" ry="7" fill="#8A4A3A" />
+                <path d="M116 137 q4 8 0 13" fill="none" stroke="#7FC2E8" strokeWidth="3" strokeLinecap="round" />
+              </g>
+              <g className="cth-f-sleepy">
+                <path d="M80 113 q8 6 16 0" fill="none" stroke="#3B2A1E" strokeWidth="3" strokeLinecap="round" />
+                <path d="M124 113 q8 6 16 0" fill="none" stroke="#3B2A1E" strokeWidth="3" strokeLinecap="round" />
+                <path d="M105 132 q5 4 10 0" fill="none" stroke="#3B2A1E" strokeWidth="2.4" strokeLinecap="round" />
+                <text x="150" y="96" fontSize="16" fill="#8A7660" opacity=".8">z</text>
+                <text x="160" y="84" fontSize="12" fill="#8A7660" opacity=".7">z</text>
+              </g>
+              <g className="cth-f-pouty">
+                <line x1="81" y1="112" x2="95" y2="115" stroke="#3B2A1E" strokeWidth="3.4" strokeLinecap="round" />
+                <line x1="139" y1="112" x2="125" y2="115" stroke="#3B2A1E" strokeWidth="3.4" strokeLinecap="round" />
+                <path d="M104 134 q6 -6 12 0" fill="none" stroke="#3B2A1E" strokeWidth="2.6" strokeLinecap="round" />
+              </g>
+            </g>
+            <g className="cth-smudge" fill="rgba(120,90,60,.5)">
+              <ellipse cx="80" cy="150" rx="9" ry="6" transform="rotate(18 80 150)" />
+              <ellipse cx="140" cy="160" rx="7" ry="5" />
+            </g>
+          </svg>
         </button>
 
         {/* 바닥 오브젝트 — 탭하면 청소 */}
@@ -376,83 +438,78 @@ export default function CareTamagotchiHero() {
   );
 }
 
-// ── 씬 CSS (namespaced cth-) ──
+// ── 씬 CSS (namespaced cth-) — 통일 일러스트 세계관 ──
 const SCENE_CSS = `
-.cth-scene{position:relative;height:184px;border-radius:16px;overflow:hidden;isolation:isolate;user-select:none;
-  --sky-top:#BEE4F3;--sky-bot:#E9F6EF;--floor:#E7D6C1}
-.cth-scene[data-time="sunset"]{--sky-top:#F6C79B;--sky-bot:#F1A97E;--floor:#DCB795}
-.cth-scene[data-time="night"]{--sky-top:#25254A;--sky-bot:#39355E;--floor:#483E36}
-.cth-sky{position:absolute;inset:0;z-index:0;transition:background .9s ease;
-  background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-bot) 60%,var(--floor) 60%,var(--floor) 100%)}
-.cth-sky::after{content:"";position:absolute;top:16px;right:20px;width:34px;height:34px;border-radius:50%;transition:.9s}
-.cth-scene[data-time="day"] .cth-sky::after{background:radial-gradient(circle at 40% 40%,#FFF6D8,#FFD86B);box-shadow:0 0 24px 6px rgba(255,214,107,.55)}
-.cth-scene[data-time="sunset"] .cth-sky::after{background:radial-gradient(circle at 40% 40%,#FFE9C8,#FF9E5E);box-shadow:0 0 28px 8px rgba(255,140,80,.5)}
-.cth-scene[data-time="night"] .cth-sky::after{background:radial-gradient(circle at 60% 35%,#F4F1E4,#CFC9B0);box-shadow:0 0 20px 5px rgba(220,220,200,.35)}
-.cth-stars{position:absolute;inset:0;z-index:1;opacity:0;transition:.9s;pointer-events:none}
+.cth-scene{position:relative;height:196px;border-radius:16px;overflow:hidden;isolation:isolate;user-select:none;
+  --sky1:#CFEAF2;--sky2:#EAF5EC;--floor:#EAD8BF;--lamp:0}
+.cth-scene[data-time="sunset"]{--sky1:#F6C79B;--sky2:#F0A97C;--floor:#E1BC93}
+.cth-scene[data-time="night"]{--sky1:#241C40;--sky2:#382F58;--floor:#443A4A;--lamp:1}
+.cth-sky{position:absolute;inset:0;z-index:0;transition:background .8s ease,filter .8s ease;
+  background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 58%,var(--floor) 58%,var(--floor) 100%)}
+.cth-scene.cth-rain-on .cth-sky{filter:saturate(.82) brightness(.95)}
+.cth-sky::after{content:"";position:absolute;top:18px;right:24px;width:32px;height:32px;border-radius:50%;transition:.8s}
+.cth-scene[data-time="day"] .cth-sky::after{background:radial-gradient(circle at 38% 38%,#FFF7DB,#FFD873);box-shadow:0 0 26px 7px rgba(255,214,110,.55)}
+.cth-scene[data-time="sunset"] .cth-sky::after{background:radial-gradient(circle at 40% 40%,#FFE7C6,#FF9E5E);box-shadow:0 0 30px 9px rgba(255,140,80,.5)}
+.cth-scene[data-time="night"] .cth-sky::after{background:radial-gradient(circle at 60% 34%,#F5F1E2,#D2CBB0);box-shadow:0 0 22px 6px rgba(226,226,205,.4)}
+.cth-stars{position:absolute;inset:0;z-index:1;opacity:0;transition:.8s;pointer-events:none}
 .cth-scene[data-time="night"] .cth-stars{opacity:1}
-.cth-stars i{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;opacity:.8;animation:cthTwinkle 3s ease-in-out infinite}
-.cth-win{position:absolute;top:20px;left:20px;width:46px;height:40px;border-radius:8px;z-index:1;
-  background:linear-gradient(180deg,#cfeaf5,#eaf6ef);border:4px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.12)}
-.cth-scene[data-time="night"] .cth-win{filter:brightness(.7)}
-.cth-lamp{position:absolute;top:2px;right:56px;width:18px;height:52px;z-index:1;opacity:0;transition:.9s}
-.cth-scene[data-time="night"] .cth-lamp{opacity:1}
-.cth-lamp::after{content:"";position:absolute;top:26px;left:-2px;width:22px;height:16px;border-radius:0 0 40% 40%;background:#FFD86B;box-shadow:0 0 20px 8px rgba(255,216,107,.6)}
+.cth-stars i{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;opacity:.85;animation:cthTwinkle 3s ease-in-out infinite}
+.cth-win{position:absolute;top:20px;left:22px;width:48px;height:42px;border-radius:9px;z-index:1;
+  background:linear-gradient(180deg,#d3ecf5,#eef7ef);border:4px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.10);transition:filter .8s}
+.cth-scene[data-time="night"] .cth-win{filter:brightness(.66) saturate(.8)}
+.cth-win::after{content:"";position:absolute;top:0;bottom:0;left:50%;width:2px;transform:translateX(-1px);background:rgba(255,255,255,.7)}
+.cth-plant{position:absolute;top:2px;right:74px;width:22px;height:52px;z-index:1}
+.cth-plant b{position:absolute;left:7px;top:26px;width:8px;height:26px;border-radius:0 0 5px 5px;background:#C88A54}
+.cth-plant i{position:absolute;width:16px;height:12px;border-radius:60% 60% 60% 0;background:#79B57F;transform-origin:bottom right}
+.cth-plant i:nth-child(1){left:0;top:16px;transform:rotate(-18deg)}
+.cth-plant i:nth-child(2){left:8px;top:8px;transform:rotate(8deg)}
+.cth-plant i:nth-child(3){left:2px;top:2px;transform:rotate(-4deg) scale(.85)}
+.cth-lamp{position:absolute;top:-2px;right:120px;width:16px;height:48px;z-index:1;opacity:var(--lamp);transition:.8s}
+.cth-lamp::after{content:"";position:absolute;top:24px;left:-3px;width:22px;height:15px;border-radius:0 0 44% 44%;background:#FFD873;box-shadow:0 0 22px 9px rgba(255,216,110,.62)}
 .cth-rain{position:absolute;inset:0;z-index:2;pointer-events:none}
-.cth-rain i{position:absolute;top:-12px;width:2px;height:13px;border-radius:2px;background:rgba(180,205,225,.72);animation:cthFall linear infinite}
-.cth-rug{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:140px;height:30px;border-radius:50%;background:rgba(196,126,90,.22);z-index:1}
-.cth-bowl{position:absolute;bottom:16px;left:26px;width:40px;height:18px;border-radius:0 0 20px 20px;background:#C47E5A;z-index:2;box-shadow:inset 0 3px 0 rgba(255,255,255,.25)}
+.cth-rain i{position:absolute;top:-14px;width:2px;height:13px;border-radius:2px;background:rgba(180,205,225,.72);animation:cthFall linear infinite}
+.cth-rug{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:150px;height:30px;border-radius:50%;background:rgba(196,126,90,.20);z-index:1}
+.cth-bowl{position:absolute;bottom:16px;left:28px;width:42px;height:18px;border-radius:0 0 21px 21px;background:#C47E5A;z-index:2;box-shadow:inset 0 3px 0 rgba(255,255,255,.25)}
 .cth-bowl::before{content:"";position:absolute;top:-5px;left:5px;right:5px;height:9px;border-radius:50%;background:#E8B98C}
-.cth-photo{width:92px;height:92px;left:50%;bottom:2px;transform:translateX(-50%);border-radius:50%;overflow:hidden;z-index:3;
-  border:4px solid #fff;box-shadow:0 7px 16px rgba(0,0,0,.24);background:#EADBC8}
-.cth-cat.cth-hasphoto .cth-smudge.a{left:26px;bottom:20px}
-.cth-cat.cth-hasphoto .cth-smudge.b{left:60px;bottom:44px}
 
-.cth-cat{position:absolute;bottom:22px;left:50%;padding:0;border:0;background:none;cursor:pointer;
-  width:104px;height:106px;z-index:3;transform:translateX(-50%) scale(var(--cth-scale,1));transform-origin:50% 100%;
-  animation:cthBreathe 3.2s ease-in-out infinite}
+.cth-badge{position:relative;display:block;width:34px;height:34px;border-radius:11px;overflow:hidden;flex-shrink:0;
+  border:2.5px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.18)}
+
+.cth-cat{position:absolute;bottom:18px;left:50%;padding:0;border:0;background:none;cursor:pointer;line-height:0;
+  width:136px;z-index:3;transform:translateX(-50%) scale(var(--cth-scale,1));transform-origin:50% 100%;
+  animation:cthBreathe 3.4s ease-in-out infinite}
 .cth-cat:disabled{cursor:default}
-.cth-cat>span{position:absolute}
-.cth-tail{width:50px;height:23px;right:-26px;bottom:16px;border-radius:0 36px 36px 0;background:#E0AE7F;transform-origin:0 50%;animation:cthTail 2.4s ease-in-out infinite}
-.cth-body{width:86px;height:74px;left:9px;bottom:0;border-radius:48% 48% 44% 44%/54% 54% 46% 46%;background:#E7B98E;box-shadow:inset -7px -9px 0 rgba(0,0,0,.06)}
-.cth-ear{width:0;height:0;top:5px;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:23px solid #E7B98E}
-.cth-ear.l{left:18px;transform:rotate(-16deg);transform-origin:bottom center;animation:cthEarL 5s ease-in-out infinite}
-.cth-ear.r{right:18px;transform:rotate(16deg);transform-origin:bottom center;animation:cthEarR 5s ease-in-out infinite}
-.cth-ear::after{content:"";position:absolute;left:-7px;bottom:-21px;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:11px solid #F0A9A0}
-.cth-face{width:86px;height:74px;left:9px;bottom:0}
-.cth-eye{width:10px;height:13px;top:30px;border-radius:50%;background:#3a2c22;animation:cthBlink 4.3s infinite}
-.cth-eye.l{left:24px}.cth-eye.r{right:24px}
-.cth-eye::after{content:"";position:absolute;top:2px;left:2px;width:4px;height:4px;border-radius:50%;background:#fff;opacity:.9}
-.cth-cheek{width:12px;height:8px;top:41px;border-radius:50%;background:#F0A9A0;opacity:.72}
-.cth-cheek.l{left:13px}.cth-cheek.r{right:13px}
-.cth-mouth{width:15px;height:8px;left:50%;top:43px;transform:translateX(-50%);border-radius:0 0 15px 15px;border:2.5px solid #3a2c22;border-top:0}
-.cth-cat[data-face="happy"] .cth-eye{height:8px;border-radius:11px 11px 0 0;top:32px;animation:none}
-.cth-cat[data-face="happy"] .cth-mouth{width:18px;height:11px}
-.cth-cat[data-face="hungry"] .cth-mouth{width:10px;height:10px;border-radius:50%;border:2.5px solid #3a2c22;top:42px}
-.cth-cat[data-face="pouty"]{transform:translateX(-50%) scale(var(--cth-scale,1)) rotate(-5deg)}
-.cth-cat[data-face="pouty"] .cth-eye{height:4px;border-radius:4px;animation:none;top:35px}
-.cth-cat[data-face="pouty"] .cth-mouth{border-radius:15px 15px 0 0;border-top:2.5px solid #3a2c22;border-bottom:0;top:47px}
-.cth-smudge{position:absolute;border-radius:50%;background:rgba(120,90,60,.5);opacity:0;transition:.4s;z-index:4}
-.cth-cat.cth-messy .cth-smudge{opacity:1}
-.cth-smudge.a{width:11px;height:8px;left:30px;bottom:22px;transform:rotate(20deg)}
-.cth-smudge.b{width:8px;height:6px;left:54px;bottom:38px}
+.cth-cat.cth-react-a{animation:cthPop .5s ease}
+.cth-cat.cth-react-b{animation:cthPop .5s ease}
+.cth-catimg{width:100%;height:auto;display:block;overflow:visible}
+.cth-catimg .cth-tail{transform-origin:80% 62%;animation:cthTail 2.6s ease-in-out infinite}
+.cth-catimg .cth-lids{transform-box:fill-box;transform-origin:center;animation:cthBlink 5s infinite}
+.cth-catimg .cth-face>g{display:none}
+.cth-catimg[data-emo="content"] .cth-f-content{display:block}
+.cth-catimg[data-emo="happy"] .cth-f-happy{display:block}
+.cth-catimg[data-emo="hungry"] .cth-f-hungry{display:block}
+.cth-catimg[data-emo="sleepy"] .cth-f-sleepy{display:block}
+.cth-catimg[data-emo="pouty"] .cth-f-pouty{display:block}
+.cth-catimg[data-emo="sleepy"] .cth-lids{animation:none}
+.cth-catimg .cth-smudge{opacity:0;transition:opacity .4s}
+.cth-catimg[data-dirty="1"] .cth-smudge{opacity:1}
 
 .cth-poop{position:absolute;padding:0;border:0;background:none;font-size:22px;cursor:pointer;z-index:5;
-  filter:drop-shadow(0 3px 2px rgba(0,0,0,.25));animation:cthPop .3s ease-out backwards;transition:transform .15s}
+  filter:drop-shadow(0 3px 2px rgba(0,0,0,.25));animation:cthPopIn .3s ease-out backwards;transition:transform .15s}
 .cth-poop:hover{transform:scale(1.15) rotate(-6deg)}
 .cth-bubble{position:absolute;left:10px;right:10px;bottom:8px;z-index:6;text-align:center;font-size:12px;font-weight:700;
-  color:#3E3128;background:rgba(255,255,255,.86);border-radius:11px;padding:5px 10px;backdrop-filter:blur(3px);
+  color:#3E3128;background:rgba(255,255,255,.88);border-radius:11px;padding:5px 10px;backdrop-filter:blur(3px);
   box-shadow:0 3px 10px rgba(0,0,0,.12)}
-.cth-scene[data-time="night"] .cth-bubble{color:#F1E8DE;background:rgba(40,34,30,.78)}
+.cth-scene[data-time="night"] .cth-bubble{color:#F1E8DE;background:rgba(40,34,30,.8)}
 .cth-fx{position:absolute;pointer-events:none;font-size:20px;z-index:7;transform:translate(-50%,-50%);animation:cthFloat 1.15s ease-out forwards}
 
 @keyframes cthBreathe{0%,100%{transform:translateX(-50%) scale(var(--cth-scale,1))}50%{transform:translateX(-50%) scale(calc(var(--cth-scale,1) * 1.035))}}
-@keyframes cthTail{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(14deg)}}
-@keyframes cthBlink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
-@keyframes cthEarL{0%,92%,100%{transform:rotate(-16deg)}96%{transform:rotate(-24deg)}}
-@keyframes cthEarR{0%,90%,100%{transform:rotate(16deg)}95%{transform:rotate(24deg)}}
+@keyframes cthTail{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(11deg)}}
+@keyframes cthBlink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.08)}}
 @keyframes cthTwinkle{0%,100%{opacity:.25}50%{opacity:.9}}
-@keyframes cthFall{0%{transform:translateY(0)}100%{transform:translateY(200px)}}
-@keyframes cthPop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes cthFall{0%{transform:translateY(0)}100%{transform:translateY(206px)}}
+@keyframes cthPop{0%,100%{transform:translateX(-50%) scale(var(--cth-scale,1))}35%{transform:translateX(-50%) scale(calc(var(--cth-scale,1)*1.11),calc(var(--cth-scale,1)*.9))}70%{transform:translateX(-50%) scale(calc(var(--cth-scale,1)*.96),calc(var(--cth-scale,1)*1.05))}}
+@keyframes cthPopIn{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
 @keyframes cthFloat{0%{transform:translate(-50%,-50%) scale(.7);opacity:0}20%{opacity:1}100%{transform:translate(-50%,-130%) scale(1.1);opacity:0}}
-@media (prefers-reduced-motion:reduce){.cth-cat,.cth-tail,.cth-ear,.cth-eye,.cth-stars i,.cth-fx{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.cth-cat,.cth-catimg .cth-tail,.cth-catimg .cth-lids,.cth-stars i,.cth-fx,.cth-cat.cth-react-a,.cth-cat.cth-react-b{animation:none!important}}
 `;
