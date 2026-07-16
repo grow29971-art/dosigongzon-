@@ -170,14 +170,17 @@ export default function CareTamagotchiHero() {
         else flash("잠시 후 다시 시도해주세요");
         return;
       }
-      // ⚠️ 응답 '값'을 역산해 저장 — now로 넣으면 게이지 100 뻥튀기
+      // ⚠️ 응답 '값'을 역산해 저장 — now로 넣으면 게이지 100 뻥튀기.
+      // 값이 숫자가 아니면(부분응답·스키마변경) gaugeTs(NaN)→new Date(NaN) RangeError로
+      // 히어로가 크래시하므로, 유한 숫자일 때만 역산하고 아니면 기존값 유지.
       const now = Date.now();
+      const backTs = (v: unknown, hours: number, fallback: string | null | undefined) =>
+        typeof v === "number" && Number.isFinite(v) ? gaugeTs(v, hours, now) : (fallback ?? null);
       setCat((prev) => prev ? {
         ...prev,
-        fed_at: gaugeTs(data.fullness, FULLNESS_DECAY_HOURS, now),
-        mood_at: gaugeTs(data.mood, MOOD_DECAY_HOURS, now),
-        cleaned_at: cleanSupported && typeof data.cleanliness === "number"
-          ? gaugeTs(data.cleanliness, CLEANLINESS_DECAY_HOURS, now) : prev.cleaned_at,
+        fed_at: backTs(data.fullness, FULLNESS_DECAY_HOURS, prev.fed_at),
+        mood_at: backTs(data.mood, MOOD_DECAY_HOURS, prev.mood_at),
+        cleaned_at: cleanSupported ? backTs(data.cleanliness, CLEANLINESS_DECAY_HOURS, prev.cleaned_at) : prev.cleaned_at,
         fed_day: action === "feed" ? currentCareDay(now) : prev.fed_day,
         fed_today: typeof data.fed_today === "number" ? data.fed_today : prev.fed_today,
         pet_day: action === "pet" ? currentCareDay(now) : prev.pet_day,

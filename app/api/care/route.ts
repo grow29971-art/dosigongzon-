@@ -247,6 +247,12 @@ export async function POST(req: Request) {
   }).eq("id", row.id);
   if (error) {
     console.error("[care] use_item update failed:", error);
+    // 아이템은 이미 차감됐는데 효과 적용이 실패 — 유료 간식이 증발하지 않게 되돌린다.
+    // 에러 경로라 드물고, 되돌림 자체가 또 실패하면 로그만(수동 보정).
+    const { error: refundErr } = await svc.from("user_items")
+      .update({ quantity: itemRemaining + 1, updated_at: new Date(now).toISOString() })
+      .eq("user_id", user.id).eq("item_key", item.key);
+    if (refundErr) console.error("[care] use_item refund failed (MANUAL CHECK):", refundErr, user.id, item.key);
     return NextResponse.json({ error: "update_failed" }, { status: 502 });
   }
   return NextResponse.json({
