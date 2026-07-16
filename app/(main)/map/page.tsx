@@ -1059,13 +1059,12 @@ export default function MapPage() {
       });
       regionCirclesRef.current.push(circle);
 
-      // 지역 이름 라벨
+      // 지역 이름 라벨 — 이름은 유저 자유입력이라 textContent로만 주입 (XSS 차단)
       const labelEl = document.createElement("div");
-      labelEl.innerHTML = `
-        <div style="transform:translate(-50%,-50%);padding:3px 10px;border-radius:12px;background:${color}dd;color:#fff;font-size:10px;font-weight:800;box-shadow:0 2px 6px ${color}66;white-space:nowrap;opacity:${active ? 1 : 0.5};">
-          📍 ${r.name}
-        </div>
-      `;
+      const labelInner = document.createElement("div");
+      labelInner.style.cssText = `transform:translate(-50%,-50%);padding:3px 10px;border-radius:12px;background:${color}dd;color:#fff;font-size:10px;font-weight:800;box-shadow:0 2px 6px ${color}66;white-space:nowrap;opacity:${active ? 1 : 0.5};`;
+      labelInner.textContent = `📍 ${r.name}`;
+      labelEl.appendChild(labelInner);
       const label = new window.kakao.maps.CustomOverlay({
         map: mapInstanceRef.current,
         position: new window.kakao.maps.LatLng(r.lat, r.lng),
