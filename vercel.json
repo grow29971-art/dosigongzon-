@@ -46,7 +46,7 @@
       "schedule": "0 11 * * 0"
     },
     {
-      "path": "/api/cron/news-crawl",
+      "path": "/api/cron/daily-dispatch",
       "schedule": "0 0 * * *"
     },
     {
@@ -56,10 +56,6 @@
     {
       "path": "/api/cron/storage-diet",
       "schedule": "0 17 * * *"
-    },
-    {
-      "path": "/api/cron/admin-daily-digest",
-      "schedule": "10 0 * * *"
     },
     {
       "path": "/api/cron/retention-report",
@@ -76,10 +72,6 @@
     {
       "path": "/api/cron/cleanup-stale-orders",
       "schedule": "0 19 * * *"
-    },
-    {
-      "path": "/api/cron/payment-reconcile",
-      "schedule": "20 0 * * *"
     },
     {
       "path": "/api/cron/community-topic",
