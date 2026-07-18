@@ -5,6 +5,30 @@
 
 import { createClient } from "@/lib/supabase/client";
 
+// 비로그인 투표 식별자 — 브라우저/기기 단위(1기기 1표, 캐주얼 중복만 방지).
+const ANON_ID_KEY = "dosigongzon_anon_id";
+const ANON_VOTE_KEY = "dosigongzon_fund_vote"; // 비로그인 내 선택(표시용)
+
+function randomId(): string {
+  try {
+    if (typeof crypto !== "undefined" && crypto.randomUUID) return crypto.randomUUID();
+  } catch { /* 폴백 */ }
+  return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function getAnonId(): string {
+  try {
+    let id = localStorage.getItem(ANON_ID_KEY);
+    if (!id) {
+      id = randomId();
+      localStorage.setItem(ANON_ID_KEY, id);
+    }
+    return id;
+  } catch {
+    return randomId();
+  }
+}
+
 export interface FundVoteOption {
   id: string;
   label: string;
@@ -45,14 +69,28 @@ export async function loadFundVote(): Promise<FundVoteState> {
       .eq("user_id", user.id)
       .maybeSingle();
     myVote = (mine as { option_id: string } | null)?.option_id ?? null;
+  } else {
+    // 비로그인: 내 선택은 localStorage에 보관한 값으로 표시
+    try { myVote = localStorage.getItem(ANON_VOTE_KEY); } catch { /* 무시 */ }
   }
 
   return { options, counts, total, myVote };
 }
 
-// 투표(변경 포함). 성공 시 true. 로그인/오류 시 예외.
+// 투표(변경 포함). 로그인 유저는 cast_fund_vote, 비로그인은 cast_fund_vote_anon(기기 단위). 오류 시 예외.
 export async function castFundVote(optionId: string): Promise<void> {
   const supabase = createClient();
-  const { error } = await supabase.rpc("cast_fund_vote", { p_option_id: optionId });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    const { error } = await supabase.rpc("cast_fund_vote", { p_option_id: optionId });
+    if (error) throw new Error(error.message);
+    return;
+  }
+  // 비로그인 — 기기 식별자 기준 1표
+  const { error } = await supabase.rpc("cast_fund_vote_anon", {
+    p_option_id: optionId,
+    p_anon_id: getAnonId(),
+  });
   if (error) throw new Error(error.message);
+  try { localStorage.setItem(ANON_VOTE_KEY, optionId); } catch { /* 무시 */ }
 }
