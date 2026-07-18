@@ -66,6 +66,8 @@ import {
 import { getRecentFeed, type FeedItem } from "@/lib/live-feed-repo";
 import { getTodayAnniversaries, type Anniversary } from "@/lib/anniversaries-repo";
 const OnboardingCard = dynamic(() => import("@/app/components/OnboardingCard"), { ssr: false });
+// 온보딩→홈 핸드오프 — 온보딩에서 고른 아이 첫 밥 CTA (pending_care 있을 때만 렌더)
+const PendingCareHandoff = dynamic(() => import("@/app/components/PendingCareHandoff"), { ssr: false });
 const DailyCatBox = dynamic(() => import("@/app/components/DailyCatBox"), { ssr: false });
 const DailyCheckinModal = dynamic(() => import("@/app/components/DailyCheckinModal"), { ssr: false });
 const FirstCheerCard = dynamic(() => import("@/app/components/FirstCheerCard"), { ssr: false });
@@ -615,6 +617,9 @@ export default function HomeAuthed({
 
       {/* ══════ 첫 구원 프로젝트 — 사용처 투표 유도 배너 (닫기 가능, 2026-07-14) ══════ */}
       {SHOW_FUND_BANNER && <FirstProjectBanner />}
+
+      {/* ══════ 온보딩 핸드오프 — "방금 고른 ○○ 첫 밥 주기" (2026-07-18 회의 1순위, 최상단) ══════ */}
+      {user && <PendingCareHandoff />}
 
       {/* ══════ 다마고치 케어 히어로 — 대표묘와의 가상 교감 (2026-07-16, 홈 최상단) ══════ */}
       <CareTamagotchiHero />

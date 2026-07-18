@@ -17,6 +17,7 @@ import {
   Check,
 } from "lucide-react";
 import { listCats, thumbnailUrl, type Cat } from "@/lib/cats-repo";
+import { logFunnelEvent } from "@/lib/funnel-repo";
 
 /* ═══ 온보딩 3단계 ═══
    intro(감성 1장) → pick(마음 가는 아이 고르기 = 첫 행동) → start(시작점 선택)
@@ -54,6 +55,11 @@ export default function OnboardingPage() {
   const [cats, setCats] = useState<Cat[]>([]);
   const [loadingCats, setLoadingCats] = useState(true);
   const [picked, setPicked] = useState<Cat | null>(null);
+
+  // 퍼널 1단: intro 진입 (기기당 1회)
+  useEffect(() => {
+    logFunnelEvent("onboarding_intro");
+  }, []);
 
   // 미리보기용 실제 고양이 몇 마리 (anon 읽기 — 지도와 동일 경로)
   useEffect(() => {
@@ -106,6 +112,8 @@ export default function OnboardingPage() {
         JSON.stringify({ id: cat.id, name: cat.name, at: new Date().toISOString() }),
       );
     } catch {}
+    // 퍼널 2단: 실제 아이 선택 (감정 커밋)
+    logFunnelEvent("onboarding_pick", cat.id);
     setTimeout(() => transition("start"), 950);
   };
 
