@@ -24,7 +24,8 @@ export const ORDER_STATUS_MAP: Record<OrderStatus, { label: string; color: strin
 
 export interface Order {
   id: string;
-  user_id: string;
+  user_id: string | null;       // 게스트 주문은 null
+  guest_token?: string | null;  // 게스트 주문 접근 비밀키(회원 주문은 null)
   order_number: string;
   status: OrderStatus;
   total_amount: number;
@@ -259,4 +260,95 @@ export function orderDisplayName(items: OrderItem[]): string {
   if (items.length === 0) return "주문 상품";
   const first = items[0].product_name;
   return items.length > 1 ? `${first} 외 ${items.length - 1}건` : first;
+}
+
+// ══════════════════════════════════════════
+// 게스트(비로그인) 주문 — SECURITY DEFINER RPC 경유
+// 서버가 금액·재고 재계산해 pending 주문 생성. 게스트는 order_number+guest_token으로만 접근.
+// ══════════════════════════════════════════
+
+export interface GuestOrderResult {
+  order_id: string;
+  order_number: string;
+  guest_token: string;
+  payment_amount: number;
+}
+
+// 이 기기에서 만든 게스트 주문 기억 (order_number+token) — "게스트 주문 조회"용
+const GUEST_ORDERS_KEY = "dosigongzon_guest_orders";
+
+function rememberGuestOrder(orderNumber: string, guestToken: string): void {
+  try {
+    const raw = localStorage.getItem(GUEST_ORDERS_KEY);
+    const list: { order_number: string; guest_token: string }[] = raw ? JSON.parse(raw) : [];
+    if (!list.some((o) => o.order_number === orderNumber)) {
+      list.unshift({ order_number: orderNumber, guest_token: guestToken });
+      localStorage.setItem(GUEST_ORDERS_KEY, JSON.stringify(list.slice(0, 50)));
+    }
+  } catch { /* 무시 */ }
+}
+
+export function listRememberedGuestOrders(): { order_number: string; guest_token: string }[] {
+  try {
+    const raw = localStorage.getItem(GUEST_ORDERS_KEY);
+    return raw ? (JSON.parse(raw) as { order_number: string; guest_token: string }[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+// ── 게스트 주문 생성 ──
+export async function createGuestOrder(
+  items: CartItem[],
+  shipping: ShippingInput | null,
+): Promise<GuestOrderResult> {
+  if (!PAYMENT_ENABLED) throw new Error(PAYMENT_DISABLED_MESSAGE);
+  if (items.length === 0) throw new Error("주문할 상품이 없어요.");
+  if (!shipping && !isVirtualOnlyCart(items)) {
+    throw new Error("실물 상품 주문에는 배송지가 필요해요.");
+  }
+
+  const supabase = createClient();
+  const p_items = items.map((i) => ({ product_id: i.product_id, quantity: i.quantity }));
+  const p_shipping = shipping
+    ? {
+        recipient_name: shipping.recipient_name,
+        recipient_phone: shipping.recipient_phone,
+        recipient_address: shipping.recipient_address,
+        recipient_address_detail: shipping.recipient_address_detail ?? "",
+        postal_code: shipping.postal_code,
+        memo: shipping.memo ?? "",
+      }
+    : null;
+
+  const { data, error } = await supabase.rpc("create_guest_order", { p_items, p_shipping });
+  if (error) throw new Error(error.message);
+  const res = data as GuestOrderResult;
+  rememberGuestOrder(res.order_number, res.guest_token);
+  return res;
+}
+
+// ── 게스트 주문 조회 (order_number + token 일치 시에만) ──
+export async function getGuestOrder(orderNumber: string, guestToken: string): Promise<OrderWithItems | null> {
+  const supabase = createClient();
+  const { data, error } = await supabase.rpc("get_guest_order", {
+    p_order_number: orderNumber,
+    p_guest_token: guestToken,
+  });
+  if (error) throw new Error(error.message);
+  if (!data) return null;
+  const parsed = data as { order: Order | null; items: OrderItem[] };
+  if (!parsed.order) return null;
+  return { ...parsed.order, items: parsed.items ?? [] };
+}
+
+// ── 게스트 주문 취소 (결제 전 pending만) ──
+export async function cancelGuestOrder(orderNumber: string, guestToken: string): Promise<boolean> {
+  const supabase = createClient();
+  const { data, error } = await supabase.rpc("cancel_guest_order", {
+    p_order_number: orderNumber,
+    p_guest_token: guestToken,
+  });
+  if (error) throw new Error(error.message);
+  return Boolean(data);
 }
