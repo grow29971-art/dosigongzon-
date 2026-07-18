@@ -5,11 +5,10 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, MapPin, X } from "lucide-react";
-import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
+import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
 import { useAuth } from "@/lib/auth-context";
-import LoginRequired from "@/app/components/LoginRequired";
 import { listCartItems, computeCartTotal, type CartItem } from "@/lib/shop-repo";
-import { createOrderFromCart, isVirtualOnlyCart, type Order } from "@/lib/order-repo";
+import { createOrderFromCart, createGuestOrder, cancelGuestOrder, isVirtualOnlyCart } from "@/lib/order-repo";
 import { PAYMENT_ENABLED, PAYMENT_DISABLED_MESSAGE } from "@/lib/payments-config";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 
@@ -84,22 +83,26 @@ export default function CheckoutPage() {
   const [pointsInput, setPointsInput] = useState(0);
 
   useEffect(() => {
-    if (!user) return;
+    if (authLoading) return;
+    // 게스트도 주문서 접근 — 장바구니는 shop-repo가 로그인/게스트를 알아서 분기
     listCartItems()
       .then(setItems)
       .catch(() => setItems([]))
       .finally(() => setLoading(false));
-    import("@/lib/supabase/client").then(({ createClient }) => {
-      createClient()
-        .from("user_points")
-        .select("balance")
-        .eq("user_id", user.id)
-        .maybeSingle()
-        .then(({ data, error: pErr }: { data: { balance: number } | null; error: unknown }) => {
-          if (!pErr && data) setPointBalance(data.balance);
-        });
-    });
-  }, [user]);
+    // 포인트는 로그인 유저만 (게스트는 적립·사용 불가)
+    if (user) {
+      import("@/lib/supabase/client").then(({ createClient }) => {
+        createClient()
+          .from("user_points")
+          .select("balance")
+          .eq("user_id", user.id)
+          .maybeSingle()
+          .then(({ data, error: pErr }: { data: { balance: number } | null; error: unknown }) => {
+            if (!pErr && data) setPointBalance(data.balance);
+          });
+      });
+    }
+  }, [authLoading, user]);
 
   // 우편번호 모달 열릴 때 SDK embed
   useEffect(() => {
@@ -126,10 +129,6 @@ export default function CheckoutPage() {
     return () => { cancelled = true; };
   }, [postcodeOpen]);
 
-  if (!authLoading && !user) {
-    return <LoginRequired from="/shop/checkout" title="주문은 로그인 후 가능해요" description="배송지와 주문 내역을 안전하게 관리하려면 로그인이 필요해요." />;
-  }
-
   const { productTotal, shippingFee, grandTotal } = computeCartTotal(items);
   // 전 상품이 가상(후원) 상품이면 배송이 없어 배송지 입력을 생략
   const virtualOnly = isVirtualOnlyCart(items);
@@ -155,35 +154,49 @@ export default function CheckoutPage() {
       }
       if (!postalCode || !address) { setError("주소를 검색해서 선택해주세요."); return; }
     }
-    if (!TOSS_CLIENT_KEY || !user) {
+    if (!TOSS_CLIENT_KEY) {
       setError("결제 수단이 아직 준비 중이에요. 잠시 후 다시 시도해주세요.");
       return;
     }
 
+    const shipping = virtualOnly ? null : {
+      recipient_name: recipientName.trim(),
+      recipient_phone: recipientPhone.trim(),
+      recipient_address: address,
+      recipient_address_detail: addressDetail.trim() || undefined,
+      postal_code: postalCode,
+      memo: memo.trim() || undefined,
+    };
+
     setSubmitting(true);
-    let order: Order | null = null;
+    // 주문 식별자 — 회원/게스트 공통. 실패 시 정리에 사용.
+    let orderId = "";
+    let orderNumber = "";
+    let paymentAmount = 0;
+    let guestToken: string | null = null;
     try {
-      order = await createOrderFromCart(items, virtualOnly ? null : {
-        recipient_name: recipientName.trim(),
-        recipient_phone: recipientPhone.trim(),
-        recipient_address: address,
-        recipient_address_detail: addressDetail.trim() || undefined,
-        postal_code: postalCode,
-        memo: memo.trim() || undefined,
-      }, effectivePoints);
+      if (user) {
+        const o = await createOrderFromCart(items, shipping, effectivePoints);
+        orderId = o.id; orderNumber = o.order_number; paymentAmount = o.payment_amount;
+      } else {
+        // 게스트 주문 — 포인트 미사용, 서버가 금액 재계산
+        const g = await createGuestOrder(items, shipping);
+        orderId = g.order_id; orderNumber = g.order_number;
+        paymentAmount = g.payment_amount; guestToken = g.guest_token;
+      }
 
       const toss = await loadTossPayments(TOSS_CLIENT_KEY);
-      const payment = toss.payment({ customerKey: user.id });
+      const payment = toss.payment({ customerKey: user ? user.id : ANONYMOUS });
       const orderName = items.length > 1
         ? `${items[0].product.name} 외 ${items.length - 1}건`
         : items[0].product.name;
 
       await payment.requestPayment({
         method: "CARD",
-        amount: { currency: "KRW", value: order.payment_amount },
-        orderId: order.order_number,
+        amount: { currency: "KRW", value: paymentAmount },
+        orderId: orderNumber,
         orderName,
-        successUrl: `${window.location.origin}/shop/payment/success`,
+        successUrl: `${window.location.origin}/shop/payment/success${guestToken ? `?guest=${encodeURIComponent(guestToken)}` : ""}`,
         failUrl: `${window.location.origin}/shop/payment/fail`,
         ...(virtualOnly ? {} : { customerName: recipientName.trim() }),
         card: {
@@ -196,12 +209,16 @@ export default function CheckoutPage() {
       // requestPayment는 성공 시 successUrl로 리다이렉트 — 이 아래는 실행되지 않음
     } catch (e) {
       // 결제창 이탈/실패 — 만들어둔 pending 주문 정리
-      if (order) {
-        fetch("/api/payment/cancel", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId: order.id }),
-        }).catch(() => {});
+      if (orderId) {
+        if (user) {
+          fetch("/api/payment/cancel", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderId }),
+          }).catch(() => {});
+        } else if (guestToken) {
+          cancelGuestOrder(orderNumber, guestToken).catch(() => {});
+        }
       }
       const msg = e instanceof Error ? e.message : "";
       if (msg && !msg.includes("취소")) {

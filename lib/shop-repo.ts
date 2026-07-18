@@ -96,11 +96,64 @@ export async function getProduct(id: string): Promise<Product | null> {
   return (data as Product | null) ?? null;
 }
 
-// ── 내 장바구니 (상품 정보 조인) ──
+// ══════════════════════════════════════════
+// 게스트(비로그인) 장바구니 — localStorage. 로그인 유저는 서버 cart_items 사용.
+// 게스트 CartItem은 id=product_id(합성), user_id="guest"로 채운다.
+// ══════════════════════════════════════════
+const GUEST_CART_KEY = "dosigongzon_guest_cart";
+
+interface GuestCartEntry { product_id: string; quantity: number }
+
+function readGuestCart(): GuestCartEntry[] {
+  try {
+    const raw = localStorage.getItem(GUEST_CART_KEY);
+    return raw ? (JSON.parse(raw) as GuestCartEntry[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeGuestCart(list: GuestCartEntry[]): void {
+  try {
+    localStorage.setItem(GUEST_CART_KEY, JSON.stringify(list.filter((e) => e.quantity > 0)));
+  } catch { /* 무시 */ }
+}
+
+export function clearGuestCart(): void {
+  try { localStorage.removeItem(GUEST_CART_KEY); } catch { /* 무시 */ }
+}
+
+// ── 내 장바구니 (상품 정보 조인) — 로그인=서버, 비로그인=localStorage ──
 export async function listCartItems(): Promise<CartItem[]> {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return [];
+
+  if (!user) {
+    // 게스트: localStorage 항목 → 현재 상품 정보 조인
+    const entries = readGuestCart();
+    if (entries.length === 0) return [];
+    const ids = entries.map((e) => e.product_id);
+    const { data, error } = await supabase
+      .from("products")
+      .select(PRODUCT_PUBLIC_COLUMNS)
+      .in("id", ids)
+      .eq("is_active", true);
+    if (error) {
+      console.error("[shop-repo] listCartItems(guest) failed:", error);
+      throw new Error(`장바구니를 불러올 수 없어요: ${error.message}`);
+    }
+    const prodMap = new Map(((data ?? []) as Product[]).map((p) => [p.id, p]));
+    return entries
+      .filter((e) => prodMap.has(e.product_id))
+      .map((e) => ({
+        id: e.product_id,
+        user_id: "guest",
+        product_id: e.product_id,
+        quantity: e.quantity,
+        created_at: "",
+        product: prodMap.get(e.product_id)!,
+      }));
+  }
 
   const { data, error } = await supabase
     .from("cart_items")
@@ -121,7 +174,16 @@ export async function listCartItems(): Promise<CartItem[]> {
 export async function addToCart(productId: string, quantity = 1): Promise<void> {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error("로그인이 필요해요.");
+
+  if (!user) {
+    // 게스트: localStorage 누적
+    const list = readGuestCart();
+    const idx = list.findIndex((e) => e.product_id === productId);
+    if (idx >= 0) list[idx].quantity += quantity;
+    else list.push({ product_id: productId, quantity });
+    writeGuestCart(list);
+    return;
+  }
 
   const { data: existing, error: fetchError } = await supabase
     .from("cart_items")
@@ -156,11 +218,18 @@ export async function addToCart(productId: string, quantity = 1): Promise<void> 
   }
 }
 
-// ── 장바구니 수량 변경 ──
+// ── 장바구니 수량 변경 (게스트는 cartItemId=product_id) ──
 export async function updateCartQuantity(cartItemId: string, quantity: number): Promise<void> {
   const supabase = createClient();
   if (quantity <= 0) {
     await removeFromCart(cartItemId);
+    return;
+  }
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    const list = readGuestCart();
+    const idx = list.findIndex((e) => e.product_id === cartItemId);
+    if (idx >= 0) { list[idx].quantity = quantity; writeGuestCart(list); }
     return;
   }
   const { error } = await supabase
@@ -173,9 +242,14 @@ export async function updateCartQuantity(cartItemId: string, quantity: number): 
   }
 }
 
-// ── 장바구니 항목 삭제 ──
+// ── 장바구니 항목 삭제 (게스트는 cartItemId=product_id) ──
 export async function removeFromCart(cartItemId: string): Promise<void> {
   const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    writeGuestCart(readGuestCart().filter((e) => e.product_id !== cartItemId));
+    return;
+  }
   const { error } = await supabase
     .from("cart_items")
     .delete()

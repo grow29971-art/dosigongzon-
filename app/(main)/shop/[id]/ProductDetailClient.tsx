@@ -59,14 +59,8 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     setActiveImage(Math.round(el.scrollLeft / el.clientWidth));
   };
 
-  const requireLogin = (): boolean => {
-    if (user) return true;
-    router.push(`/login?next=${encodeURIComponent(`/shop/${product.id}`)}`);
-    return false;
-  };
-
+  // 게스트도 장바구니·구매 가능 — 장바구니는 localStorage(shop-repo), 주문은 게스트 RPC.
   const handleAddToCart = async () => {
-    if (!requireLogin()) return;
     setBusy(true);
     try {
       await addToCart(product.id, quantity);
@@ -79,7 +73,6 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   };
 
   const handleBuyNow = async () => {
-    if (!requireLogin()) return;
     setBusy(true);
     try {
       await addToCart(product.id, isVirtual ? 1 : quantity);

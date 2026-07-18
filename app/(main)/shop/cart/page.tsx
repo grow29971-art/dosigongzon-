@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ArrowLeft, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-import LoginRequired from "@/app/components/LoginRequired";
 import {
   listCartItems, updateCartQuantity, removeFromCart, computeCartTotal,
   type CartItem,
@@ -33,14 +32,12 @@ export default function CartPage() {
   };
 
   useEffect(() => {
-    if (!user) return;
+    if (authLoading) return;
     reload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [authLoading, user]);
 
-  if (!authLoading && !user) {
-    return <LoginRequired from="/shop/cart" title="장바구니는 로그인 후 이용할 수 있어요" description="담아둔 상품을 안전하게 보관하려면 로그인이 필요해요." />;
-  }
+  // 게스트도 장바구니 이용 가능(localStorage). 로그인 게이트 제거.
 
   const handleQuantity = async (item: CartItem, delta: number) => {
     const next = Math.max(1, Math.min(item.product.stock, item.quantity + delta));
