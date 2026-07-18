@@ -269,7 +269,8 @@ export default function MyPage() {
   const avatarUrl = user?.user_metadata?.avatar_url as string | undefined;
 
   return (
-    <div className="px-4 pt-14 pb-8">
+    // theme-mono: 블랙앤그레이화이트 파일럿 (2026-07-18) — var() 기반 색을 무채색으로 전환
+    <div className="theme-mono px-4 pt-14 pb-8">
       <PageIntroModal
         storageKey="dosigongzon_intro_mypage"
         badge="마이페이지"
@@ -303,7 +304,7 @@ export default function MyPage() {
           description="레벨·업적·streak으로 활동이 보상돼요. 친구 초대(+15점), 주간 이메일, 앱 설치, 동네 푸시도 여기서 켜고 끌 수 있어요."
           ctaLabel="전체 기능 안내"
           ctaHref="/guide"
-          accent="#3182F6"
+          accent="#191F28"
         />
       </div>
 
@@ -386,9 +387,9 @@ export default function MyPage() {
                       disabled={nickSaving}
                       className="flex-1 min-w-0 px-2 py-1.5 rounded-lg text-[15px] font-extrabold outline-none"
                       style={{
-                        backgroundColor: "#F6F1EA",
-                        color: "#2A2A28",
-                        border: "1px solid #E3DCD3",
+                        backgroundColor: "#F9FAFB",
+                        color: "#191F28",
+                        border: "1px solid #E5E8EB",
                       }}
                       placeholder="닉네임"
                     />
@@ -397,7 +398,7 @@ export default function MyPage() {
                       onClick={handleSaveNick}
                       disabled={nickSaving}
                       className="w-7 h-7 rounded-lg flex items-center justify-center active:scale-90 transition-transform"
-                      style={{ backgroundColor: "#6B8E6F" }}
+                      style={{ backgroundColor: "#6B7684" }}
                     >
                       {nickSaving ? (
                         <Loader2 size={12} className="text-white animate-spin" />
@@ -410,14 +411,14 @@ export default function MyPage() {
                       onClick={handleCancelEditNick}
                       disabled={nickSaving}
                       className="w-7 h-7 rounded-lg flex items-center justify-center active:scale-90 transition-transform"
-                      style={{ backgroundColor: "#EEE8E0" }}
+                      style={{ backgroundColor: "#F2F4F6" }}
                     >
-                      <X size={12} style={{ color: "#A38E7A" }} strokeWidth={3} />
+                      <X size={12} style={{ color: "#8B95A1" }} strokeWidth={3} />
                     </button>
                   </div>
                   <p className="text-[11px] text-text-light mt-1 truncate">{email}</p>
                   {nickError && (
-                    <p className="text-[11px] mt-1" style={{ color: "#B84545" }}>
+                    <p className="text-[11px] mt-1" style={{ color: "#F04452" }}>
                       {nickError}
                     </p>
                   )}
@@ -432,10 +433,10 @@ export default function MyPage() {
                       type="button"
                       onClick={handleStartEditNick}
                       className="w-6 h-6 rounded-lg flex items-center justify-center active:scale-90 transition-transform shrink-0"
-                      style={{ backgroundColor: "#EEE8E0" }}
+                      style={{ backgroundColor: "#F2F4F6" }}
                       aria-label="닉네임 수정"
                     >
-                      <Pencil size={11} style={{ color: "#A38E7A" }} strokeWidth={2.5} />
+                      <Pencil size={11} style={{ color: "#8B95A1" }} strokeWidth={2.5} />
                     </button>
                   </div>
                   <p className="text-[12px] text-text-light mt-0.5 truncate">{email}</p>
@@ -448,7 +449,7 @@ export default function MyPage() {
                     </span>
                   )}
                   {avatarError && (
-                    <p className="text-[11px] mt-1" style={{ color: "#B84545" }}>
+                    <p className="text-[11px] mt-1" style={{ color: "#F04452" }}>
                       {avatarError}
                     </p>
                   )}
@@ -469,7 +470,7 @@ export default function MyPage() {
               <div
                 className="mb-3 px-5 py-4 relative overflow-hidden dark-card-level"
                 style={{
-                  background: "linear-gradient(135deg, #FFFFFF 0%, #FDF9F2 100%)",
+                  background: "linear-gradient(135deg, #FFFFFF 0%, #FFFFFF 100%)",
                   borderRadius: 22,
                   boxShadow: "0 8px 24px rgba(49,130,246,0.12), 0 1px 3px rgba(0,0,0,0.03)",
                   border: "1.5px solid rgba(49,130,246,0.18)",
@@ -521,7 +522,7 @@ export default function MyPage() {
                       className="h-full rounded-full transition-all duration-500"
                       style={{
                         width: `${lv.progress * 100}%`,
-                        background: "linear-gradient(90deg, var(--color-primary) 0%, #5BC4C4 100%)",
+                        background: "linear-gradient(90deg, var(--color-primary) 0%, #6B7684 100%)",
                         boxShadow: "0 0 8px rgba(49,130,246,0.5)",
                       }}
                     />
@@ -531,7 +532,7 @@ export default function MyPage() {
                 {(() => {
                   const perks = getLevelPerks(lv.level);
                   return (
-                    <div className="mt-3 pt-3 border-t" style={{ borderColor: "#EEE8E0" }}>
+                    <div className="mt-3 pt-3 border-t" style={{ borderColor: "#F2F4F6" }}>
                       <p className="text-[10px] font-bold text-text-light mb-2">Lv.{lv.level} 혜택</p>
                       <div className="grid grid-cols-2 gap-1.5">
                         <div className="flex items-center gap-1.5 text-[10.5px]">
@@ -547,7 +548,7 @@ export default function MyPage() {
                         <div className="flex items-center gap-1.5 text-[10.5px]">
                           <span>{perks.canUseSpecialEmoji ? "✨" : "🔒"}</span>
                           <span className="text-text-sub">특별 이모지</span>
-                          <span className="font-bold ml-auto" style={{ color: perks.canUseSpecialEmoji ? "#6B8E6F" : "#A0A0A0" }}>{perks.canUseSpecialEmoji ? "사용 가능" : "Lv.3+"}</span>
+                          <span className="font-bold ml-auto" style={{ color: perks.canUseSpecialEmoji ? "#6B7684" : "#8B95A1" }}>{perks.canUseSpecialEmoji ? "사용 가능" : "Lv.3+"}</span>
                         </div>
                       </div>
                     </div>
@@ -563,7 +564,7 @@ export default function MyPage() {
               Icon={CatIcon}
               label="등록 고양이"
               value={summary?.catCount ?? 0}
-              color="#3182F6"
+              color="#191F28"
               glow="49,130,246"
               loading={dataLoading}
             />
@@ -571,7 +572,7 @@ export default function MyPage() {
               Icon={MessageCircle}
               label="돌봄 기록"
               value={summary?.commentCount ?? 0}
-              color="#6B8E6F"
+              color="#6B7684"
               glow="107,142,111"
               loading={dataLoading}
             />
@@ -579,7 +580,7 @@ export default function MyPage() {
               Icon={AlertTriangle}
               label="학대 신고"
               value={summary?.alertCount ?? 0}
-              color="#D85555"
+              color="#F04452"
               glow="216,85,85"
               loading={dataLoading}
             />
@@ -637,7 +638,7 @@ export default function MyPage() {
                       style={{
                         background: cat.photo_url
                           ? `url('${cat.photo_url}') center/cover`
-                          : "#EEE8E0",
+                          : "#F2F4F6",
                         border: "2px solid #fff",
                         boxShadow: "0 3px 8px rgba(0,0,0,0.08)",
                       }}
@@ -694,7 +695,7 @@ export default function MyPage() {
                       style={{
                         background: cat.photo_url
                           ? `url('${cat.photo_url}') center/cover`
-                          : "#EEE8E0",
+                          : "#F2F4F6",
                         boxShadow: "0 3px 10px rgba(0,0,0,0.08)",
                         border: "2px solid #fff",
                       }}
@@ -707,7 +708,7 @@ export default function MyPage() {
                       <div
                         className="absolute top-1.5 right-1.5 flex items-center gap-0.5 px-1.5 py-0.5 chip-square"
                         style={{
-                          background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)",
+                          background: "linear-gradient(135deg, #6B7684 0%, #4E5968 100%)",
                           boxShadow: "0 2px 6px rgba(232,107,140,0.4)",
                         }}
                       >
@@ -760,16 +761,16 @@ export default function MyPage() {
                         borderRadius: "var(--radius-card-sm)",
                         boxShadow: "0 4px 14px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)",
                         border: "1px solid rgba(0,0,0,0.04)",
-                        borderLeft: isAlert ? "3px solid #D85555" : "1px solid rgba(0,0,0,0.04)",
+                        borderLeft: isAlert ? "3px solid #F04452" : "1px solid rgba(0,0,0,0.04)",
                       }}
                     >
                       <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                         {isAlert && (
-                          <AlertTriangle size={11} style={{ color: "#D85555" }} />
+                          <AlertTriangle size={11} style={{ color: "#F04452" }} />
                         )}
                         <span
                           className="text-[11px] font-extrabold"
-                          style={{ color: isAlert ? "#D85555" : "var(--color-primary)" }}
+                          style={{ color: isAlert ? "#F04452" : "var(--color-primary)" }}
                         >
                           {c.cat?.name ?? "알 수 없는 고양이"}
                         </span>
@@ -797,7 +798,7 @@ export default function MyPage() {
                       {c.body && (
                         <p
                           className="text-[12px] leading-relaxed"
-                          style={{ color: isAlert ? "#8B2F2F" : "#4A3F35" }}
+                          style={{ color: isAlert ? "#B3242F" : "#333D4B" }}
                         >
                           {c.body}
                         </p>
@@ -838,7 +839,7 @@ export default function MyPage() {
               href="/mypage/cards"
               className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform mb-2"
               style={{
-                background: "linear-gradient(135deg, #1A1A2E 0%, #16213E 100%)",
+                background: "linear-gradient(135deg, #191F28 0%, #191F28 100%)",
                 borderRadius: "var(--radius-card-sm)",
                 boxShadow: "0 4px 14px rgba(99,102,241,0.25)",
                 border: "1px solid rgba(99,102,241,0.30)",
@@ -859,7 +860,7 @@ export default function MyPage() {
               href="/mypage/journey"
               className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
               style={{
-                background: "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
+                background: "linear-gradient(135deg, #F9FAFB 0%, #F2F4F6 100%)",
                 borderRadius: "var(--radius-card-sm)",
                 boxShadow: "0 4px 14px rgba(49,130,246,0.15), 0 1px 2px rgba(0,0,0,0.02)",
                 border: "1px solid rgba(49,130,246,0.20)",
@@ -869,7 +870,7 @@ export default function MyPage() {
                 className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                 style={{ backgroundColor: "#FFFFFF" }}
               >
-                <Sparkles size={18} color="#3182F6" strokeWidth={2} />
+                <Sparkles size={18} color="#191F28" strokeWidth={2} />
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <p className="text-[14px] font-extrabold text-text-main tracking-tight">
@@ -887,7 +888,7 @@ export default function MyPage() {
               href="/mypage/monthly-report"
               className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
               style={{
-                background: "linear-gradient(135deg, #EAF6EF 0%, #DCF0E4 100%)",
+                background: "linear-gradient(135deg, #F2F4F6 0%, #F2F4F6 100%)",
                 borderRadius: "var(--radius-card-sm)",
                 boxShadow: "0 4px 14px rgba(91,168,118,0.15), 0 1px 2px rgba(0,0,0,0.02)",
                 border: "1px solid rgba(91,168,118,0.20)",
@@ -897,7 +898,7 @@ export default function MyPage() {
                 className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                 style={{ backgroundColor: "#FFFFFF" }}
               >
-                <TrendingUp size={18} color="#5BA876" strokeWidth={2} />
+                <TrendingUp size={18} color="#6B7684" strokeWidth={2} />
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <p className="text-[14px] font-extrabold text-text-main tracking-tight">
@@ -907,7 +908,7 @@ export default function MyPage() {
                   이번 달 내가 얼마나 채웠는지 한눈에 보기
                 </p>
               </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "#5BA876", opacity: 0.7 }} />
+              <ChevronRight size={16} className="shrink-0" style={{ color: "#6B7684", opacity: 0.7 }} />
             </Link>
             )}
             {/* ── 토스식 그룹 카드 (2026-07-16): 개별 카드 나열 → 흰 카드 1장 + 행 구분선.
@@ -915,7 +916,7 @@ export default function MyPage() {
             <div className="card px-3 py-1">
               <UIListRow
                 href="/mypage/activity-regions"
-                icon={<MapPin size={18} color="#3182F6" strokeWidth={2} />}
+                icon={<MapPin size={18} color="#191F28" strokeWidth={2} />}
                 iconBg="var(--color-primary-soft)"
                 title="활동 지역 설정"
                 subtitle="최대 2곳까지 내 동네를 지정할 수 있어요"
@@ -935,7 +936,7 @@ export default function MyPage() {
                 className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                 style={{ backgroundColor: "rgba(107,142,111,0.12)" }}
               >
-                <UserPlus size={18} color="#6B8E6F" strokeWidth={2} />
+                <UserPlus size={18} color="#6B7684" strokeWidth={2} />
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <p className="text-[14px] font-extrabold text-text-main tracking-tight">
@@ -945,7 +946,7 @@ export default function MyPage() {
                   같은 동네에서 활동하는 분들과 연결돼요
                 </p>
               </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "#6B8E6F", opacity: 0.7 }} />
+              <ChevronRight size={16} className="shrink-0" style={{ color: "#6B7684", opacity: 0.7 }} />
             </Link>
             )}
             {SHOW_RANKING && (
@@ -963,7 +964,7 @@ export default function MyPage() {
                 className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                 style={{ backgroundColor: "rgba(201,169,97,0.14)" }}
               >
-                <Trophy size={18} color="#C9A961" strokeWidth={2} />
+                <Trophy size={18} color="#8B95A1" strokeWidth={2} />
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <p className="text-[14px] font-extrabold text-text-main tracking-tight">
@@ -973,7 +974,7 @@ export default function MyPage() {
                   내 활동 점수와 동네 케어테이커 순위를 확인해요
                 </p>
               </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "#C9A961", opacity: 0.7 }} />
+              <ChevronRight size={16} className="shrink-0" style={{ color: "#8B95A1", opacity: 0.7 }} />
             </Link>
             )}
             {/* 설정 항목들 — 각 컴포넌트가 자체적으로 위 구분선을 그리는 행(row)으로 렌더 */}
@@ -982,7 +983,7 @@ export default function MyPage() {
             <MarketingPushToggle />
             <UIListRow
               href="/guide"
-              icon={<BookOpen size={18} color="#8B65B8" strokeWidth={2} />}
+              icon={<BookOpen size={18} color="#4E5968" strokeWidth={2} />}
               iconBg="rgba(139,101,184,0.12)"
               title="사용 가이드"
               subtitle="10가지 핵심 기능 설명을 한눈에"
@@ -1002,14 +1003,14 @@ export default function MyPage() {
             <div className="card px-3 py-1">
             <UIListRow
               onClick={() => setInquiryOpen(true)}
-              icon={<MessageSquare size={18} color="#4A7BA8" strokeWidth={2} />}
+              icon={<MessageSquare size={18} color="#4E5968" strokeWidth={2} />}
               iconBg="rgba(74,123,168,0.1)"
               title="문의하기"
               subtitle="불편사항, 버그, 제안 등을 관리자에게 전달"
             />
             <UIListRow
               href="/mypage/inquiries"
-              icon={<Inbox size={18} color="#48A59E" strokeWidth={2} />}
+              icon={<Inbox size={18} color="#4E5968" strokeWidth={2} />}
               iconBg="rgba(72,165,158,0.1)"
               title="내 문의 보기"
               subtitle="접수한 문의·관리자 답변 확인"
@@ -1030,7 +1031,7 @@ export default function MyPage() {
                 className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                 style={{ backgroundColor: "rgba(107,142,111,0.12)" }}
               >
-                <ShieldCheck size={18} color="#4F6B53" strokeWidth={2} />
+                <ShieldCheck size={18} color="#4E5968" strokeWidth={2} />
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <div className="flex items-center gap-1.5">
@@ -1039,7 +1040,7 @@ export default function MyPage() {
                   </p>
                   <span
                     className="text-[10.5px] font-extrabold px-1.5 py-0.5 chip-square"
-                    style={{ background: "#4F6B53", color: "#FFF" }}
+                    style={{ background: "#4E5968", color: "#FFF" }}
                   >
                     {circleMemberCount}
                   </span>
@@ -1050,12 +1051,12 @@ export default function MyPage() {
                     : "믿는 이웃을 초대해 안전한 돌봄 시작하기"}
                 </p>
               </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "#4F6B53", opacity: 0.7 }} />
+              <ChevronRight size={16} className="shrink-0" style={{ color: "#4E5968", opacity: 0.7 }} />
             </Link>
             )}
             <UIListRow
               href="/mypage/blocked-users"
-              icon={<Ban size={18} color="#B84545" strokeWidth={2} />}
+              icon={<Ban size={18} color="#F04452" strokeWidth={2} />}
               iconBg="rgba(184,69,69,0.1)"
               title="차단한 사용자"
               subtitle="차단 목록 확인 및 해제"
@@ -1076,7 +1077,7 @@ export default function MyPage() {
                 href="/admin"
                 className="flex items-center gap-3 px-4 py-4 active:scale-[0.99] transition-transform"
                 style={{
-                  background: "linear-gradient(135deg, #2C2C2C 0%, #3F3F3F 100%)",
+                  background: "linear-gradient(135deg, #191F28 0%, #333D4B 100%)",
                   borderRadius: 18,
                   boxShadow: "0 6px 20px rgba(44,44,44,0.30), 0 1px 2px rgba(0,0,0,0.04)",
                 }}
@@ -1106,7 +1107,7 @@ export default function MyPage() {
             className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-[13px] font-bold active:scale-[0.97] transition-transform"
             style={{
               backgroundColor: "#FFFFFF",
-              color: "#A38E7A",
+              color: "#8B95A1",
               border: "1px solid rgba(0,0,0,0.06)",
               boxShadow: "var(--shadow-card)",
             }}
@@ -1146,7 +1147,7 @@ export default function MyPage() {
                   정말 탈퇴하시겠어요?
                 </h2>
                 <p className="text-[13px] text-text-sub leading-relaxed mb-1">
-                  탈퇴하면 다음 데이터가 <b style={{ color: "#B84545" }}>영구 삭제</b>됩니다.
+                  탈퇴하면 다음 데이터가 <b style={{ color: "#F04452" }}>영구 삭제</b>됩니다.
                 </p>
                 <ul className="text-[12px] text-text-sub leading-relaxed mb-4 pl-4 list-disc">
                   <li>등록한 고양이 정보</li>
@@ -1156,7 +1157,7 @@ export default function MyPage() {
                   <li>업적 및 레벨</li>
                 </ul>
                 <p className="text-[12px] text-text-sub mb-3">
-                  확인을 위해 <b style={{ color: "#B84545" }}>탈퇴합니다</b>를 입력해주세요.
+                  확인을 위해 <b style={{ color: "#F04452" }}>탈퇴합니다</b>를 입력해주세요.
                 </p>
                 <input
                   type="text"
@@ -1177,7 +1178,7 @@ export default function MyPage() {
                     onClick={handleDeleteAccount}
                     disabled={deleteConfirmText !== "탈퇴합니다" || deleting}
                     className="flex-1 py-3 rounded-xl text-[14px] font-bold text-white active:scale-[0.97] transition-transform disabled:opacity-40"
-                    style={{ backgroundColor: "#B84545" }}
+                    style={{ backgroundColor: "#F04452" }}
                   >
                     {deleting ? "처리 중..." : "탈퇴하기"}
                   </button>
@@ -1400,7 +1401,7 @@ function TitleCard({
         background: isEquipped
           ? `${categoryColor}08`
           : locked
-            ? "#F8F5F0"
+            ? "#F9FAFB"
             : "#FFFFFF",
         borderRadius: "var(--radius-card-sm)",
         boxShadow: locked
@@ -1409,7 +1410,7 @@ function TitleCard({
         border: isEquipped
           ? `2px solid ${categoryColor}`
           : locked
-            ? "1.5px dashed #DDD6CC"
+            ? "1.5px dashed #E5E8EB"
             : `1px solid rgba(0,0,0,0.06)`,
       }}
       title={status.description}
@@ -1425,7 +1426,7 @@ function TitleCard({
       <div
         className="w-10 h-10 rounded-full flex items-center justify-center text-[20px] mb-1.5"
         style={{
-          background: locked ? "#EEEAE4" : `${categoryColor}12`,
+          background: locked ? "#F2F4F6" : `${categoryColor}12`,
           filter: locked ? "grayscale(100%) opacity(0.45)" : "none",
         }}
       >
@@ -1433,13 +1434,13 @@ function TitleCard({
       </div>
       <p
         className="text-[10.5px] font-extrabold leading-tight"
-        style={{ color: locked ? "#A38E7A" : "#2A2A28" }}
+        style={{ color: locked ? "#8B95A1" : "#191F28" }}
       >
         {status.name}
       </p>
       <span
         className="text-[9px] font-bold mt-0.5 uppercase tracking-wider"
-        style={{ color: locked ? "#C0B3A0" : categoryColor }}
+        style={{ color: locked ? "#B0B8C1" : categoryColor }}
       >
         {CATEGORY_LABELS[status.category]}
       </span>
@@ -1448,7 +1449,7 @@ function TitleCard({
       {locked && status.progressValue > 0 && (
         <div
           className="w-full h-1 rounded-full mt-1.5 overflow-hidden"
-          style={{ backgroundColor: "#E3DCD3" }}
+          style={{ backgroundColor: "#E5E8EB" }}
         >
           <div
             className="h-full rounded-full"
