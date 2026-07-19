@@ -256,18 +256,15 @@ export default function AddCatModal({
       const photoUrl = uploaded[0]; // 대표 사진 = 첫 번째
       const photoUrls = uploaded; // 전체 배열
 
-      // 좌표 보호: ±444m 랜덤 오프셋 (실제 위치 추적 차단 + 마커 겹침 방지).
-      // 0.008deg 위도 ≈ ±444m. 서울 위도(37.5)에서 경도는 cos 보정해 ±350m 정도.
-      const offsetLat = initialLat + (Math.random() - 0.5) * 0.008;
-      const offsetLng = initialLng + (Math.random() - 0.5) * 0.008;
-
+      // 좌표 보호(±444m 오프셋)는 서버(createCat)에서 단일 적용 — 등록·수정 경로 일관.
+      // 클라이언트는 원본 좌표만 전달한다(여기서 오프셋하면 서버와 이중 적용됨).
       const newCat = await createCat({
         name: name.trim(),
         description: description.trim() || undefined,
         photo_url: photoUrl,
         photo_urls: photoUrls,
-        lat: offsetLat,
-        lng: offsetLng,
+        lat: initialLat,
+        lng: initialLng,
         region: selectedDong.trim(),
         tags,
         gender,

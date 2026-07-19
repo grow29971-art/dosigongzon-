@@ -261,6 +261,20 @@ export function getDisplayCoord(
   return fuzzCoord(cat.lat, cat.lng, cat.id, 500);
 }
 
+/**
+ * 등록·수정 시 DB 저장 직전 좌표에 ±444m 랜덤 오프셋을 적용하는 서버측 단일 방어선.
+ * 실제 급식소 위치가 DB에 정확히 저장되는 것을 차단(학대·표적 방지)한다.
+ * createCat·updateCat 모두 반드시 이 함수를 거쳐야 하며, 클라이언트에서 별도 오프셋 금지
+ * (과거 수정 경로가 오프셋을 누락해 정확 좌표가 저장되던 회귀를 서버 단일화로 봉합).
+ * 0.008deg 위도 ≈ ±444m. 경도는 서울 위도 기준 ±350m 정도.
+ */
+export function applyLocationOffset(lat: number, lng: number): { lat: number; lng: number } {
+  return {
+    lat: lat + (Math.random() - 0.5) * 0.008,
+    lng: lng + (Math.random() - 0.5) * 0.008,
+  };
+}
+
 // ══════════════════════════════════════════
 // 위치 보호 2차 레이어: 시간 배회 (roaming)
 // ══════════════════════════════════════════
@@ -479,10 +493,15 @@ export async function createCat(input: CreateCatInput): Promise<Cat> {
     label: "고양이 등록",
   });
 
+  // 좌표 보호: DB 저장 직전 서버에서 ±444m 오프셋 적용 (단일 방어선).
+  const { lat: offsetLat, lng: offsetLng } = applyLocationOffset(input.lat, input.lng);
+
   const { data, error } = await supabase
     .from("cats")
     .insert({
       ...input,
+      lat: offsetLat,
+      lng: offsetLng,
       photo_url: safePhotoUrl,
       caretaker_id: user.id,
       caretaker_name: input.caretaker_name ?? getDisplayName(user),
@@ -1433,9 +1452,18 @@ export async function updateCat(
     if (bad) throw new Error("사진 URL 형식이 올바르지 않아요.");
   }
 
+  // 좌표 보호: 수정 경로도 저장 직전 서버에서 ±444m 오프셋 적용 (등록과 동일 단일 방어선).
+  // 위치를 바꾸지 않은 수정(lat/lng 미포함)은 그대로 두어 기존 오프셋 좌표를 재오프셋하지 않음.
+  const patch = { ...input };
+  if (typeof input.lat === "number" && typeof input.lng === "number") {
+    const off = applyLocationOffset(input.lat, input.lng);
+    patch.lat = off.lat;
+    patch.lng = off.lng;
+  }
+
   const { data, error } = await supabase
     .from("cats")
-    .update(input)
+    .update(patch)
     .eq("id", catId)
     .select()
     .single();
