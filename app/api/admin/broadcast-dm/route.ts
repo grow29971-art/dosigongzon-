@@ -22,6 +22,8 @@ type Cohort = "all" | "founding" | "no_cat" | "dormant" | "marketing";
 interface BroadcastBody {
   message?: unknown;
   cohort?: unknown;
+  /** true면 실제 발송 없이 대상 수만 반환 (발송 전 미리보기용) */
+  preview?: unknown;
 }
 
 export async function POST(request: Request) {
@@ -53,6 +55,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "잘못된 요청이에요." }, { status: 400 });
   }
 
+  const preview = body.preview === true;
   const message = typeof body.message === "string" ? body.message.trim() : "";
   const cohort: Cohort =
     body.cohort === "founding" || body.cohort === "no_cat" ||
@@ -60,11 +63,14 @@ export async function POST(request: Request) {
       ? body.cohort
       : "all";
 
-  if (!message) {
-    return Response.json({ error: "메시지를 입력해주세요." }, { status: 400 });
-  }
-  if (message.length > 1000) {
-    return Response.json({ error: "메시지는 1000자 이내로 작성해주세요." }, { status: 400 });
+  // 미리보기가 아닐 때만 메시지 필수 검증 (미리보기는 대상 수만 계산)
+  if (!preview) {
+    if (!message) {
+      return Response.json({ error: "메시지를 입력해주세요." }, { status: 400 });
+    }
+    if (message.length > 1000) {
+      return Response.json({ error: "메시지는 1000자 이내로 작성해주세요." }, { status: 400 });
+    }
   }
 
   // 운영자 본인 프로필 (sender_name·avatar 스냅샷)
@@ -131,6 +137,11 @@ export async function POST(request: Request) {
         .map((u) => u.id),
     );
     targets = targets.filter((u) => dormantIds.has(u.id));
+  }
+
+  // 미리보기: 실제 발송 없이 대상 수만 반환
+  if (preview) {
+    return Response.json({ preview: true, count: targets.length, cohort });
   }
 
   if (targets.length === 0) {

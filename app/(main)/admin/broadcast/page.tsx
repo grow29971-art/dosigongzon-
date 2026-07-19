@@ -133,6 +133,8 @@ export default function AdminBroadcastPage() {
     | null
   >(null);
   const [error, setError] = useState("");
+  const [previewCount, setPreviewCount] = useState<number | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
 
   useEffect(() => {
     isCurrentUserAdmin()
@@ -146,6 +148,39 @@ export default function AdminBroadcastPage() {
         router.replace("/");
       });
   }, [router]);
+
+  // 코호트 선택 시 예상 대상 수 미리보기 (실제 발송 없음)
+  useEffect(() => {
+    if (!authorized) return;
+    let cancelled = false;
+    setPreviewLoading(true);
+    setPreviewCount(null);
+    (async () => {
+      try {
+        const sb = createClient();
+        const { data: { session } } = await sb.auth.getSession();
+        const res = await fetch("/api/admin/broadcast-dm", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.access_token ?? ""}`,
+          },
+          body: JSON.stringify({ preview: true, cohort }),
+        });
+        const data = await res.json();
+        if (!cancelled && res.ok && typeof data.count === "number") {
+          setPreviewCount(data.count);
+        }
+      } catch {
+        /* 미리보기 실패는 조용히 무시 */
+      } finally {
+        if (!cancelled) setPreviewLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [cohort, authorized]);
 
   const handleSend = async () => {
     if (sending) return;
@@ -318,6 +353,24 @@ export default function AdminBroadcastPage() {
           }}
         />
       </section>
+
+      {/* 예상 대상 수 미리보기 */}
+      <div
+        className="mb-3 flex items-center justify-center gap-1.5 text-[12.5px]"
+        style={{ color: "rgba(60,46,35,0.6)" }}
+      >
+        <UsersIcon size={13} />
+        {previewLoading ? (
+          <span>예상 대상 계산 중…</span>
+        ) : previewCount !== null ? (
+          <span>
+            이 코호트 예상 대상{" "}
+            <b style={{ color: "#3D2F25" }}>{previewCount}명</b>
+          </span>
+        ) : (
+          <span>예상 대상 수 확인 불가</span>
+        )}
+      </div>
 
       {/* 발송 버튼 */}
       <button
