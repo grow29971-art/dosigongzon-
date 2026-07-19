@@ -63,13 +63,16 @@ export function battleRewardOk(userId: string): boolean {
   return rateLimit(`battle:reward:${userId}`, { max: BATTLE_REWARD_PER_DAY, windowMs: DAY_MS });
 }
 
-/** 클라이언트 IP 추출 */
+/**
+ * 클라이언트 IP 추출 (Vercel 직결 환경 — Cloudflare 프록시 아님, cf-ray 부재 확인).
+ * cf-connecting-ip는 우리 경로의 어떤 신뢰 프록시도 설정하지 않는 헤더라 클라이언트가
+ * 임의로 위조할 수 있음(IP 기반 rate-limit·방문자 카운터 오염) → 신뢰 목록에서 제외.
+ * Vercel이 설정·정규화하는 x-forwarded-for(첫 홉)·x-real-ip만 신뢰한다.
+ */
 export function getClientIp(request: Request): string {
   return (
-    // Cloudflare 프록시 통과 시 실제 클라이언트 IP (프록시 OFF면 헤더 없음 → 폴백)
-    request.headers.get("cf-connecting-ip")?.trim() ||
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip") ||
+    request.headers.get("x-real-ip")?.trim() ||
     "unknown"
   );
 }
