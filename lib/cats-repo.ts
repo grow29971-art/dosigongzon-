@@ -275,6 +275,19 @@ export function applyLocationOffset(lat: number, lng: number): { lat: number; ln
   };
 }
 
+/**
+ * region(동 이름) 검증. region은 지도 마커 innerHTML에 삽입되므로 HTML 특수문자 금지.
+ * 이 repo는 브라우저 클라이언트로 실행돼 REST 직결 공격은 못 막으므로 실제 방어선은
+ * DB CHECK 제약(box/supabase_cats_region_check_migration.sql)과 렌더측 escapeHtml이며,
+ * 여기 검증은 정상 UI 경로의 조기 차단·일관 메시지 목적(defense in depth).
+ */
+function assertSafeRegion(region: string | null | undefined): void {
+  if (region == null) return;
+  if (region.length > 40 || /[<>]/.test(region)) {
+    throw new Error("지역 이름 형식이 올바르지 않아요.");
+  }
+}
+
 // ══════════════════════════════════════════
 // 위치 보호 2차 레이어: 시간 배회 (roaming)
 // ══════════════════════════════════════════
@@ -480,6 +493,7 @@ export async function createCat(input: CreateCatInput): Promise<Cat> {
       throw new Error(formatAbuseMessage(nameAbuse));
     }
   }
+  assertSafeRegion(input.region);
 
   // Rate limit — 고양이 등록마다 카드 생성 시 실제 Gemini API 호출이 나가서
   // (신규 등록 시 card_generated_at이 비어있어 매번 호출됨), 제한 없이 빠르게
@@ -1441,6 +1455,7 @@ export async function updateCat(
       throw new Error(formatAbuseMessage(nameAbuse));
     }
   }
+  assertSafeRegion(input.region);
 
   // photo_url/photo_urls 검증 — createCat과 동일하게 Storage URL 외 값(XSS 탈출) 차단.
   // 이 값들이 지도 마커 innerHTML의 CSS url()·다이제스트 <img src>에 내삽되므로 필수.

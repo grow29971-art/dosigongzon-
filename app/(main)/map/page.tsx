@@ -125,6 +125,18 @@ function formatRelativeTime(iso: string): string {
 
 // 마커 둥실둥실 부유 래퍼 — 고양이별 주기(2.2~3.2s)·위상 변주 (globals.css cat-float)
 // 배회 이동(setPosition)과 독립적으로 겹쳐 동작해 떠다니는 느낌을 만든다.
+// 사용자 유래 문자열을 innerHTML에 넣기 전 HTML 이스케이프 (저장형 XSS 차단).
+// region(동 이름)은 정상 경로에선 카카오 지오코딩 값이지만, 저장 경계가 UI가 아니라
+// REST 직결로 <img onerror> 등을 심을 수 있어 렌더 시점에 반드시 이스케이프한다.
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function floatWrap(inner: string, seed: string): string {
   let h = 0;
   for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
@@ -1393,7 +1405,7 @@ export default function MapPage() {
           </div>
           <div style="margin-top:4px;padding:3px 12px;border-radius:12px;background:${clusterColor}ee;color:#fff;font-size:11px;font-weight:800;white-space:nowrap;box-shadow:0 3px 10px ${clusterColor}44;display:flex;align-items:center;gap:4px;">
             <span>🐾</span>
-            <span>${dong}</span>
+            <span>${escapeHtml(dong)}</span>
             <span style="background:rgba(255,255,255,0.3);padding:1px 6px;border-radius:8px;font-size:10px;">${count}</span>
           </div>
           <div style="width:10px;height:10px;background:${clusterColor};transform:rotate(45deg);margin-top:-7px;"></div>
