@@ -8,13 +8,16 @@
 //   - founding: founding_member 타이틀 보유자
 //   - no_cat: 첫 등록 미완료 (catCount = 0)
 //   - dormant: 8~30일 미접속
+//   - marketing: 마케팅 수신 동의자(marketing_push_enabled=true)만.
+//       ★ 쇼핑·이벤트 등 광고성 정보는 정보통신망법상 동의자에게만 "(광고)" 표기+
+//         수신거부 안내로 보내야 하므로, 광고성 발송은 반드시 이 코호트로.
 
 import { createServiceClient } from "@/lib/supabase/service";
 import { reportError } from "@/lib/error-report";
 
 export const maxDuration = 60;
 
-type Cohort = "all" | "founding" | "no_cat" | "dormant";
+type Cohort = "all" | "founding" | "no_cat" | "dormant" | "marketing";
 
 interface BroadcastBody {
   message?: unknown;
@@ -52,7 +55,8 @@ export async function POST(request: Request) {
 
   const message = typeof body.message === "string" ? body.message.trim() : "";
   const cohort: Cohort =
-    body.cohort === "founding" || body.cohort === "no_cat" || body.cohort === "dormant"
+    body.cohort === "founding" || body.cohort === "no_cat" ||
+    body.cohort === "dormant" || body.cohort === "marketing"
       ? body.cohort
       : "all";
 
@@ -79,6 +83,11 @@ export async function POST(request: Request) {
 
   if (cohort === "founding") {
     usersQuery = usersQuery.eq("admin_title", "founding_member");
+  }
+
+  // 광고성 정보는 마케팅 수신 동의자에게만 — 정보통신망법 옵트인 준수.
+  if (cohort === "marketing") {
+    usersQuery = usersQuery.eq("marketing_push_enabled", true);
   }
 
   const { data: targetUsers, error: usersErr } = await usersQuery;

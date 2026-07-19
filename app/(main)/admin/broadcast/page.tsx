@@ -16,11 +16,12 @@ import {
   Sparkles,
   Cat as CatIcon,
   Moon,
+  Tag,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { createClient } from "@/lib/supabase/client";
 
-type Cohort = "all" | "founding" | "no_cat" | "dormant";
+type Cohort = "all" | "founding" | "no_cat" | "dormant" | "marketing";
 
 const COHORT_OPTIONS: Array<{
   id: Cohort;
@@ -57,9 +58,26 @@ const COHORT_OPTIONS: Array<{
     Icon: Moon,
     color: "#9D7AB8",
   },
+  {
+    id: "marketing",
+    label: "마케팅 동의자 (광고용)",
+    description: "마케팅 수신 동의자만 — 쇼핑·이벤트 등 (광고)성 안내는 반드시 이 코호트로",
+    Icon: Tag,
+    color: "#C47E5A",
+  },
 ];
 
 const TEMPLATES: Array<{ label: string; text: string }> = [
+  {
+    label: "🗣 이탈·잔존 설문 (전체 발송용)",
+    text:
+      "안녕하세요! 도시공존 만든 사람이에요 🐾\n\n앱을 더 좋게 고치려고 실제 쓰신 분들 얘기를 직접 듣고 있어요. 바쁘시면 딱 한 줄만 답 주셔도 큰 도움이 됩니다 👇\n\n혹시 마지막으로 도시공존 앱 여신 게 언제쯤이었어요? 그때 뭐 하려고 여셨는지도 기억나시면 같이요!\n\n편하게 \"한 2주 전, 고양이 등록하려고요\" 이렇게 툭 답해주시면 돼요. (칭찬 말고 불편했던 점 들으려는 거라 편하게 말씀해 주셔도 됩니다 🙂) 15분 통화 괜찮으신 분은 말씀 주세요 — 커피 기프티콘 보내드릴게요!\n\n— 김성우 드림",
+  },
+  {
+    label: "🛍 쇼핑몰 예고 (광고 · 마케팅 동의자 전용)",
+    text:
+      "(광고) 도시공존 🛍️\n\n안녕하세요, 도시공존 운영자입니다. 곧 도시공존 안에 작은 굿즈샵이 열릴 준비를 하고 있어요! 길고양이 돌봄에 보탬이 되는 물건들로 준비 중이에요. 오픈하면 제일 먼저 알려드릴게요 🐾\n\n※ 이 안내는 마케팅 정보 수신에 동의하신 분께만 발송돼요.\n수신거부: 마이페이지 > 알림 설정에서 마케팅 알림 끄기\n\n— 김성우 드림",
+  },
   {
     label: "환영 인사 (창립 멤버)",
     text:
@@ -139,6 +157,16 @@ export default function AdminBroadcastPage() {
       setError("메시지는 1000자 이내로 작성해주세요.");
       return;
     }
+
+    // 광고↔코호트 정합성 안전장치 (정보통신망법 위반 방지)
+    const hasAdLabel = message.includes("(광고)");
+    if (cohort === "marketing" && !hasAdLabel) {
+      if (!confirm("⚠ 마케팅 동의자 발송인데 '(광고)' 표기가 없어요.\n광고성 정보는 '(광고)' 표기 + 수신거부 안내가 법적으로 필요합니다.\n그래도 보낼까요?")) return;
+    }
+    if (hasAdLabel && cohort !== "marketing") {
+      if (!confirm("⚠ '(광고)' 표기가 있는데 대상이 '마케팅 동의자'가 아니에요.\n동의하지 않은 분께 광고를 보내면 정보통신망법 위반(최대 3천만원)입니다.\n코호트를 '마케팅 동의자'로 바꾸는 걸 강력히 권장해요.\n그래도 보낼까요?")) return;
+    }
+
     const cohortLabel = COHORT_OPTIONS.find((c) => c.id === cohort)?.label ?? cohort;
     if (
       !confirm(
