@@ -24,6 +24,8 @@ interface BroadcastBody {
   cohort?: unknown;
   /** true면 실제 발송 없이 대상 수만 반환 (발송 전 미리보기용) */
   preview?: unknown;
+  /** true면 관리자 본인에게만 1통 발송 (진짜 발송 전 확인용 테스트) */
+  test?: unknown;
 }
 
 export async function POST(request: Request) {
@@ -83,6 +85,25 @@ export async function POST(request: Request) {
     (adminProfile as { nickname?: string | null } | null)?.nickname ?? "도시공존 운영자";
   const senderAvatar =
     (adminProfile as { avatar_url?: string | null } | null)?.avatar_url ?? null;
+
+  // 테스트 발송: 관리자 본인에게만 1통. 진짜 대량 발송 전 실제 도착 모습 확인용.
+  if (body.test === true) {
+    const { error: testErr } = await service.from("direct_messages").insert([
+      {
+        sender_id: adminId,
+        sender_name: senderName,
+        sender_avatar_url: senderAvatar,
+        receiver_id: adminId,
+        receiver_name: senderName,
+        body: message,
+      },
+    ]);
+    if (testErr) {
+      reportError("broadcast-dm/test-insert", new Error(testErr.message));
+      return Response.json({ error: testErr.message }, { status: 500 });
+    }
+    return Response.json({ ok: true, sent: 1, failed: 0, totalTargets: 1, test: true });
+  }
 
   // 대상 사용자 조회
   let usersQuery = service.from("profiles").select("id, nickname").neq("id", adminId);

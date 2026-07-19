@@ -239,6 +239,40 @@ export default function AdminBroadcastPage() {
     }
   };
 
+  // 나에게만 테스트 발송 (본인 받은편지함으로 1통) — 진짜 대량 발송 전 확인용
+  const handleTestSend = async () => {
+    if (sending) return;
+    if (!message.trim()) {
+      setError("메시지를 입력해주세요.");
+      return;
+    }
+    setSending(true);
+    setError("");
+    setResult(null);
+    try {
+      const sb = createClient();
+      const { data: { session } } = await sb.auth.getSession();
+      const res = await fetch("/api/admin/broadcast-dm", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token ?? ""}`,
+        },
+        body: JSON.stringify({ message: message.trim(), test: true }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "테스트 발송 실패");
+        return;
+      }
+      setResult(data);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "네트워크 오류");
+    } finally {
+      setSending(false);
+    }
+  };
+
   if (checking || !authorized) {
     return (
       <div className="flex justify-center pt-20">
@@ -371,6 +405,22 @@ export default function AdminBroadcastPage() {
           <span>예상 대상 수 확인 불가</span>
         )}
       </div>
+
+      {/* 나에게 테스트 발송 — 진짜 발송 전 확인 */}
+      <button
+        type="button"
+        onClick={handleTestSend}
+        disabled={sending || !message.trim()}
+        className="w-full mb-2.5 flex items-center justify-center gap-2 py-3 rounded-2xl text-[13px] font-extrabold active:scale-[0.98] disabled:opacity-60"
+        style={{
+          background: "#FFFFFF",
+          color: "var(--color-primary-dark)",
+          border: "1.5px solid rgba(49,130,246,0.35)",
+        }}
+      >
+        {sending ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
+        나에게만 테스트 발송 (1통)
+      </button>
 
       {/* 발송 버튼 */}
       <button
