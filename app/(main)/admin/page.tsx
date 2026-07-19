@@ -167,6 +167,13 @@ export default function AdminDashboardPage() {
       color: "#3182F6",
     },
     {
+      href: "/admin/announcement",
+      title: "접속 팝업 공지",
+      subtitle: "접속 시 뜨는 팝업 공지 등록·내리기",
+      Icon: Megaphone,
+      color: "#C47E5A",
+    },
+    {
       href: "/admin/auth-errors",
       title: "로그인 실패 로그",
       subtitle: "OAuth·매직링크 실패 원인",
