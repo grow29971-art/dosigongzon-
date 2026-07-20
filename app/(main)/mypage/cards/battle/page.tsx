@@ -1503,7 +1503,7 @@ export default function BattlePage() {
               ))}
             </div>
             <p className="text-[11px] text-center mb-4 font-semibold" style={{ color: battleType==="pve" ? UI.accent.red : UI.accent.blue }}>
-              {battleType==="pve" ? "언제든 도전할 수 있는 PVE — 이겨도 져도 코인은 받아요" : "실제 다른 유저의 고양이 카드와 겨루는 PVP"}
+              {battleType==="pve" ? "언제든 도전할 수 있는 PVE — 이기면 코인을 받아요" : "실제 다른 유저의 고양이 카드와 겨루는 PVP"}
             </p>
 
             {/* 어떻게 싸울지 — 수동(직접 조작)/자동(시뮬레이션) */}
