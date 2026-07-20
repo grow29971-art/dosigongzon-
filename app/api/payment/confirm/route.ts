@@ -18,6 +18,7 @@ import { type SupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient } from "@/lib/supabase/service";
 import { rateLimit } from "@/lib/rate-limit";
 import { PAYMENT_ENABLED, PAYMENT_DISABLED_MESSAGE } from "@/lib/payments-config";
+import { maxPointsUsable } from "@/lib/points-config";
 
 const TOSS_CONFIRM_URL = "https://api.tosspayments.com/v1/payments/confirm";
 
@@ -172,13 +173,15 @@ export async function POST(req: Request) {
         .eq("id", order.id);
       return NextResponse.json({ error: "포인트 사용 조건이 올바르지 않아요." }, { status: 409 });
     }
-    const expected = expectedProducts + expectedShipping - pointsUsed;
-    if (pointsUsed > 0 && expected < 100) {
+    // 포인트 사용 한도 — 주문 금액의 30% + 최종 결제액 100원 이상 (points-config 공유 정책).
+    // order-repo의 1차 검증을 우회해 orders를 직접 조작해도 여기서 걸림.
+    if (pointsUsed > 0 && pointsUsed > maxPointsUsable(expectedProducts + expectedShipping)) {
       await svc.from("orders")
         .update({ status: "cancelled", updated_at: new Date().toISOString() })
         .eq("id", order.id);
-      return NextResponse.json({ error: "포인트 사용 후 결제 금액이 너무 적어요." }, { status: 409 });
+      return NextResponse.json({ error: "포인트 사용 한도를 초과했어요. 다시 주문해주세요." }, { status: 409 });
     }
+    const expected = expectedProducts + expectedShipping - pointsUsed;
     if (expected !== order.payment_amount) {
       // 조작 시도 또는 주문 후 가격 변경 — 승인 거부 + 주문 취소 (결제 청구 없음)
       console.error(

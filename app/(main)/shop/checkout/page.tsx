@@ -10,6 +10,7 @@ import { useAuth } from "@/lib/auth-context";
 import { listCartItems, computeCartTotal, type CartItem } from "@/lib/shop-repo";
 import { createOrderFromCart, createGuestOrder, cancelGuestOrder, isVirtualOnlyCart } from "@/lib/order-repo";
 import { PAYMENT_ENABLED, PAYMENT_DISABLED_MESSAGE } from "@/lib/payments-config";
+import { maxPointsUsable } from "@/lib/points-config";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 
 const TOSS_CLIENT_KEY = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY ?? "";
@@ -133,10 +134,11 @@ export default function CheckoutPage() {
   // 전 상품이 가상(후원) 상품이면 배송이 없어 배송지 입력을 생략
   const virtualOnly = isVirtualOnlyCart(items);
 
-  // 포인트 사용 가능 여부·한도 — 후원/가상 상품 포함 주문은 불가, 최종 결제액 100원 이상 유지
+  // 포인트 사용 가능 여부·한도 — 후원/가상 상품 포함 주문은 불가.
+  // 사용 한도는 points-config 공유 정책 (주문 금액의 30% + 최종 결제액 100원 이상).
   const pointsEligible =
     (pointBalance ?? 0) > 0 && !items.some((i) => i.product.is_virtual || i.product.is_donation);
-  const maxPoints = pointsEligible ? Math.max(0, Math.min(pointBalance ?? 0, grandTotal - 100)) : 0;
+  const maxPoints = pointsEligible ? Math.min(pointBalance ?? 0, maxPointsUsable(grandTotal)) : 0;
   const effectivePoints = Math.max(0, Math.min(pointsInput, maxPoints));
   const finalAmount = grandTotal - effectivePoints;
 
@@ -431,11 +433,11 @@ export default function CheckoutPage() {
                   className="shrink-0 px-3.5 rounded-xl text-[12px] font-extrabold active:scale-95 transition-transform"
                   style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}
                 >
-                  전액 사용
+                  최대 사용
                 </button>
               </div>
               <p className="text-[10px] text-text-light mt-1.5">
-                1P = 1원 · 최종 결제 금액은 100원 이상이어야 해요 · 주문 취소 시 자동 반환
+                1P = 1원 · 주문 금액의 30%까지 사용 가능 (이 주문 최대 {maxPoints.toLocaleString()}P) · 주문 취소 시 자동 반환
               </p>
             </section>
           )}
