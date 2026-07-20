@@ -117,24 +117,25 @@ export function applyEquipBonuses(
   };
 }
 
-// 코인 지급량
-export const COINS_LOGIN_BONUS = 15;
-export const COINS_CARE_PER_LOG = 2;
-export const COINS_CARE_DAILY_CAP = 5; // 하루 최대 지급 횟수 (총 10코인)
-export const COINS_BATTLE_WIN = 3;
-export const COINS_BATTLE_LOSE = 1;
-export const COINS_BATTLE_DRAW = 2; // 승/패의 중간 — 무승부는 이겼다고도 졌다고도 하기 애매하니까
+// 코인 지급량 — 2026-07-20 전체 하향(약 절반). 일일 확정 수입이 75코인(출석50+로그인15+돌봄10)으로
+// 아이템 가격대(30~140) 대비 너무 후해서 코인 가치가 무너지는 걸 방지.
+export const COINS_LOGIN_BONUS = 8;
+export const COINS_CARE_PER_LOG = 1;
+export const COINS_CARE_DAILY_CAP = 5; // 하루 최대 지급 횟수 (총 5코인)
+export const COINS_BATTLE_WIN = 2;
+export const COINS_BATTLE_LOSE = 0; // 패배 보상 폐지 — 지기만 해도 쌓이는 무한 파밍 차단
+export const COINS_BATTLE_DRAW = 1; // 승/패의 중간 — 무승부는 이겼다고도 졌다고도 하기 애매하니까
 
 // 고양이학대범 PVE 보상 — 예전엔 12% 확률로만 만나는 희귀 이벤트라 이기면 크게(20)
 // 지면 보유 코인 20%를 뺏기는 화끈한 하이리스크·하이리턴이었음. 이제 PVE가 "평소에" 하는
 // 기본 모드가 되면서, 그 페널티를 매번 감당하면 재미보다 스트레스가 커서 완화함 —
-// 이기면 PVP보다 조금 더(코인 8), 져도 페널티 없이 PVP 패배와 동일한 소액 위로(1)만 지급.
-export const COINS_BOSS_WIN = 8;
-export const COINS_BOSS_LOSE = 1;
-export const COINS_BOSS_DRAW = 3;
+// 이기면 PVP보다 조금 더(코인 4), 패배는 PVP와 동일하게 무보상.
+export const COINS_BOSS_WIN = 4;
+export const COINS_BOSS_LOSE = 0;
+export const COINS_BOSS_DRAW = 2;
 
 // 주간 배틀 랭킹 코인 보상 (1~10등)
-export const WEEKLY_RANK_REWARDS = [200, 150, 120, 100, 80, 60, 50, 40, 30, 20];
+export const WEEKLY_RANK_REWARDS = [100, 80, 60, 50, 40, 30, 25, 20, 15, 10];
 
 export function kstDateString(d: Date = new Date()): string {
   return new Date(d.getTime() + 9 * 3600 * 1000).toISOString().slice(0, 10);

@@ -9,7 +9,7 @@ const TASK_CARE_TYPE: Record<string, { care_type: string; memo: string }> = {
   clean: { care_type: "other", memo: "일일 출석체크 — 화장실/집 청소했어요" },
   health: { care_type: "health", memo: "일일 출석체크 — 건강 상태 확인했어요" },
 };
-const CHECKIN_COINS = 50;
+const CHECKIN_COINS = 25; // 2026-07-20 50→25 하향 — 코인 경제 전체 조정(shop-config 주석 참고)
 const CHECKIN_CARD_EXP = 50;
 
 import { cardLevelFromExp as computeLevel } from "@/lib/card-level";

@@ -1839,7 +1839,7 @@ export default function BattlePage() {
               {isBossBattle && !!opponent?.photo_url && battleResult.winner==="me" && (
                 <p className="text-[12px] font-bold -mt-2" style={{color:UI.accent.gold}}>🐾 갇혀있던 고양이를 구했다!</p>
               )}
-              {isBossBattle && typeof battleResult.coinsGained==="number" && (
+              {isBossBattle && typeof battleResult.coinsGained==="number" && battleResult.coinsGained>0 && (
                 <p className="text-[13px] font-bold -mt-1" style={{color:UI.accent.gold}}>💰 코인 +{battleResult.coinsGained}</p>
               )}
               <p className="text-[13px] font-semibold" style={{color:UI.textSub}}>
