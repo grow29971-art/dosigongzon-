@@ -2,16 +2,17 @@
 
 // 주간 출석 보드 — 이번 주(월~일) 출석 스탬프 + 마일스톤 포인트 수령 (2026-07-13)
 // 일일 출석체크(DailyCheckinModal)를 완료한 날이 스탬프로 찍힘.
-// 3일 100P / 5일 200P / 7일 300P — 포인트는 쇼핑몰에서 1P=1원 할인.
+// 3일 50P / 5일 100P / 7일 150P — 포인트는 쇼핑몰에서 1P=1원 할인.
+// 서버(claim-weekly/route.ts)의 MILESTONES와 반드시 같은 값 유지.
 // 마이그레이션(supabase_weekly_points_migration.sql) 전이면 조용히 렌더 안 함.
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 const MILESTONES = [
-  { days: 3, points: 100 },
-  { days: 5, points: 200 },
-  { days: 7, points: 300 },
+  { days: 3, points: 50 },
+  { days: 5, points: 100 },
+  { days: 7, points: 150 },
 ];
 const DAY_LABELS = ["월", "화", "수", "목", "금", "토", "일"];
 

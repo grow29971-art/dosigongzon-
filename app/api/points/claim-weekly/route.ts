@@ -1,7 +1,8 @@
 // 주간 출석 포인트 수령 API
 // 이번 주(KST 월~일) 출석체크 완료 일수 기준 마일스톤 포인트 지급.
-// 3일 100P / 5일 200P / 7일 300P — point_ledger의 (user, reason) 유니크로 중복 지급 원천 차단.
-// 포인트는 쇼핑몰 결제 시 1P = 1원 할인.
+// 3일 50P / 5일 100P / 7일 150P — point_ledger의 (user, reason) 유니크로 중복 지급 원천 차단.
+// 포인트는 쇼핑몰 결제 시 1P = 1원 할인. 실돈 부채라 적립량은 보수적으로 유지
+// (2026-07-20 100/200/300 → 50/100/150 하향 — 주 최대 600P가 쇼핑몰 부담이 컸음).
 
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
@@ -9,9 +10,9 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { rateLimit } from "@/lib/rate-limit";
 
 export const MILESTONES: { days: number; points: number }[] = [
-  { days: 3, points: 100 },
-  { days: 5, points: 200 },
-  { days: 7, points: 300 },
+  { days: 3, points: 50 },
+  { days: 5, points: 100 },
+  { days: 7, points: 150 },
 ];
 
 // KST 기준 이번 주 월요일 날짜 + ISO 주차 키 (예: 2026-W29)
