@@ -35,34 +35,6 @@ export function cleanupRateLimitBuckets(): void {
   }
 }
 
-// ══════════════════════════════════════════
-// 카드 배틀 파밍 방어 (인메모리)
-// 자동/수동 배틀에 유량제한이 전무해 스크립트로 코인·EXP·리더보드를 무제한
-// 파밍할 수 있었음. 버스트(분당 연타) + 일일 보상 횟수 상한으로 이중 차단.
-// ⚠ 인메모리라 인스턴스별·재시작시 초기화 — 완벽하진 않지만 자동화 파밍은 실질 차단.
-//    (영속 상한은 M15 rate-limit 영속화 잔여 과제로 후속.)
-// ══════════════════════════════════════════
-
-const DAY_MS = 24 * 60 * 60 * 1000;
-
-/** 분당 배틀 요청 상한 — 사람은 배틀을 지켜보므로 여유롭게, 봇 연타는 차단. */
-export const BATTLE_BURST_PER_MIN = 40;
-/** 하루 보상 지급 배틀 수 상한(자동+수동 공유). 초과분은 코인·EXP 0 지급. */
-export const BATTLE_REWARD_PER_DAY = 150;
-
-/** 배틀 버스트 허용 여부. false면 429로 거절. */
-export function battleBurstOk(userId: string): boolean {
-  return rateLimit(`battle:burst:${userId}`, { max: BATTLE_BURST_PER_MIN, windowMs: 60_000 });
-}
-
-/**
- * 오늘 보상 여유가 있으면 true(카운터 1 소비). 초과면 false → 호출부에서 코인·EXP를 0으로.
- * 자동배틀·record(수동) 양쪽이 같은 키를 공유해 하루 총 보상 배틀 수를 함께 제한.
- */
-export function battleRewardOk(userId: string): boolean {
-  return rateLimit(`battle:reward:${userId}`, { max: BATTLE_REWARD_PER_DAY, windowMs: DAY_MS });
-}
-
 /**
  * 클라이언트 IP 추출 (Vercel 직결 환경 — Cloudflare 프록시 아님, cf-ray 부재 확인).
  * cf-connecting-ip는 우리 경로의 어떤 신뢰 프록시도 설정하지 않는 헤더라 클라이언트가

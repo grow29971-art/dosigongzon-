@@ -1,25 +1,17 @@
 "use client";
 
+// 내 고양이 카드 — 컬렉션·합성·대표 카드·테두리 코스메틱.
+// 2026-07-20 카드배틀 삭제: 배틀/랭킹/도감 링크, 스킬 재배정, 부위별 장비창, 전적 표시 제거.
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, X, Swords, Trophy, Coins, Star, Zap, Share2, Scroll, BookMarked, Gem, Sparkles, Backpack } from "lucide-react";
+import { ArrowLeft, Loader2, X, Coins, Star, Zap, Share2, Sparkles, Backpack } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import CatCard, { type CatCardData, type CardRarity } from "@/app/components/CatCard";
-import { SPECIAL_SKILLS } from "@/lib/battle-config";
-import { PVE_BESTIARY } from "@/lib/pve-bestiary";
-import { SHOP_ITEMS, EQUIP_ITEM_KEYS, BORDER_FX_ITEM_KEYS, BODY_SLOTS, BODY_SLOT_LABELS, type ShopItemKey, type BodySlot, type EquippedSlots } from "@/lib/shop-config";
+import { SHOP_ITEMS, BORDER_FX_ITEM_KEYS, type ShopItemKey } from "@/lib/shop-config";
 import { UI, progressTrackStyle, progressFillStyle, pageBgStyle } from "@/lib/battle-ui-theme";
 import Link from "next/link";
-
-// 슬롯별 테마 색상 — 가방(인벤토리) 페이지와 동일한 배색으로 통일
-const SLOT_THEME: Record<BodySlot, string> = {
-  head: "#B18CE8",
-  arm: "#FF8B6B",
-  body: "#FF6B8A",
-  leg: "var(--color-primary-light)",
-  foot: "#5BC48A",
-};
 
 interface CardCat {
   id: string;
@@ -33,18 +25,6 @@ interface CardCat {
   card_generated_at: string;
   card_level: number;
   card_exp: number;
-  best_win_streak?: number | null;
-  pve_win_count?: number | null;
-  pvp_wins?: number | null;
-  pvp_losses?: number | null;
-  pvp_draws?: number | null;
-  pve_losses?: number | null;
-  pve_draws?: number | null;
-  battle_special: string | null;
-  battle_special2: string | null;
-  battle_special3: string | null;
-  battle_special4: string | null;
-  equipped_slots?: EquippedSlots | null;
   equipped_border_key?: string | null;
 }
 
@@ -64,100 +44,51 @@ export default function MyCardsPage() {
   const [repCardId, setRepCardId] = useState<string | null>(null);
   const [synthLoading, setSynthLoading] = useState(false);
   const [synthMsg, setSynthMsg] = useState("");
-  const [relearnQty, setRelearnQty] = useState(0);
-  const [relearnLoading, setRelearnLoading] = useState(false);
-  const [relearnMsg, setRelearnMsg] = useState("");
-  const [seenKeys, setSeenKeys] = useState<string[]>([]);
-  const [ownedEquip, setOwnedEquip] = useState<Record<string, number>>({});
+  const [ownedBorders, setOwnedBorders] = useState<Record<string, number>>({});
   const [equipLoading, setEquipLoading] = useState(false);
   const [equipMsg, setEquipMsg] = useState("");
 
   const loadCats = async (uid: string) => {
-    const [{ data }, { data: profile }, { data: relearnItem }] = await Promise.all([
+    const [{ data }, { data: profile }] = await Promise.all([
       createClient()
         .from("cats")
-        .select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_generated_at,card_level,card_exp,best_win_streak,pve_win_count,battle_special,battle_special2,battle_special3,battle_special4")
+        .select("id,name,photo_url,card_rarity,card_name,card_traits,card_stats,card_flavor,card_generated_at,card_level,card_exp,equipped_border_key")
         .eq("caretaker_id", uid)
         .not("card_generated_at", "is", null)
         .order("card_level", { ascending: false })
         .order("card_generated_at", { ascending: false }),
       createClient()
         .from("profiles").select("rep_card_cat_id").eq("id", uid).maybeSingle(),
-      createClient()
-        .from("user_items").select("quantity").eq("user_id", uid).eq("item_key", "skill_relearn").maybeSingle(),
     ]);
-    const loadedCats = (data ?? []) as CardCat[];
-    setCats(loadedCats);
+    setCats((data ?? []) as CardCat[]);
     setRepCardId((profile as { rep_card_cat_id?: string | null } | null)?.rep_card_cat_id ?? null);
-    setRelearnQty((relearnItem as { quantity?: number } | null)?.quantity ?? 0);
     setLoading(false);
 
-    // 도감/장착 아이템/보유 아이템/PVP·PVE 전적 — 예전엔 이런 항목들을 순차로 하나씩
-    // 기다려서(하나 끝나야 다음 게 시작) 왕복이 그대로 더해지고 있었음. allSettled로
-    // 한 번에 병렬 실행 — 마이그레이션 전 컬럼이 없어 실패하는 항목이 있어도
-    // 나머지는 그대로 반영되게 개별 결과를 따로 처리. eqRes/recordRes 둘 다 cats 상태를
-    // 건드리므로 각자 따로 setCats 하지 않고 한 번에 합쳐서 반영(안 그러면 나중 호출이
-    // 앞선 호출의 병합 결과를 덮어써버림).
-    const allCosmeticKeys = [...EQUIP_ITEM_KEYS, ...BORDER_FX_ITEM_KEYS];
-    const [bestiaryRes, eqRes, itemsRes, recordRes] = await Promise.allSettled([
-      createClient().from("profiles").select("pve_seen_keys").eq("id", uid).maybeSingle(),
-      createClient().from("cats").select("id,equipped_slots,equipped_border_key").eq("caretaker_id", uid),
-      createClient().from("user_items").select("item_key,quantity").eq("user_id", uid).in("item_key", allCosmeticKeys),
-      createClient().from("cats").select("id,pvp_wins,pvp_losses,pvp_draws,pve_losses,pve_draws").eq("caretaker_id", uid),
-    ]);
-
-    if (bestiaryRes.status === "fulfilled") {
-      const bestiary = bestiaryRes.value.data as { pve_seen_keys?: string[] } | null;
-      setSeenKeys(bestiary?.pve_seen_keys ?? []);
-    }
-
-    const eqMap = eqRes.status === "fulfilled"
-      ? new Map(((eqRes.value.data ?? []) as { id: string; equipped_slots: EquippedSlots | null; equipped_border_key: string | null }[]).map(r => [r.id, r]))
-      : null;
-    const recordMap = recordRes.status === "fulfilled"
-      ? new Map(((recordRes.value.data ?? []) as { id: string; pvp_wins: number; pvp_losses: number; pvp_draws: number; pve_losses: number; pve_draws: number }[]).map(r => [r.id, r]))
-      : null;
-    if (eqMap || recordMap) {
-      setCats(loadedCats.map(c => ({
-        ...c,
-        ...(eqMap ? { equipped_slots: eqMap.get(c.id)?.equipped_slots ?? {}, equipped_border_key: eqMap.get(c.id)?.equipped_border_key ?? null } : {}),
-        ...(recordMap ? {
-          pvp_wins: recordMap.get(c.id)?.pvp_wins ?? 0, pvp_losses: recordMap.get(c.id)?.pvp_losses ?? 0, pvp_draws: recordMap.get(c.id)?.pvp_draws ?? 0,
-          pve_losses: recordMap.get(c.id)?.pve_losses ?? 0, pve_draws: recordMap.get(c.id)?.pve_draws ?? 0,
-        } : {}),
-      })));
-    }
-
-    if (itemsRes.status === "fulfilled") {
-      const itemRows = (itemsRes.value.data ?? []) as { item_key: string; quantity: number }[];
-      const owned: Record<string, number> = {};
-      for (const it of itemRows) owned[it.item_key] = it.quantity;
-      setOwnedEquip(owned);
-    }
+    // 보유 테두리 아이템 — 실패해도(마이그레이션 전) 카드 목록엔 영향 없게 따로 처리
+    const { data: itemRows } = await createClient()
+      .from("user_items").select("item_key,quantity").eq("user_id", uid).in("item_key", BORDER_FX_ITEM_KEYS);
+    const owned: Record<string, number> = {};
+    for (const it of (itemRows ?? []) as { item_key: string; quantity: number }[]) owned[it.item_key] = it.quantity;
+    setOwnedBorders(owned);
   };
 
-  const doEquip = async (catId: string, itemKey: string | null, slot: BodySlot | "border") => {
+  const doEquip = async (catId: string, itemKey: string | null) => {
     if (equipLoading) return;
     setEquipLoading(true);
     setEquipMsg("");
     const targetCat = cats.find(c => c.id === catId);
-    const prevKey = slot === "border" ? (targetCat?.equipped_border_key ?? null) : (targetCat?.equipped_slots?.[slot] ?? null);
+    const prevKey = targetCat?.equipped_border_key ?? null;
     const res = await fetch("/api/cats/equip-item", {
       method: "POST", headers: { "content-type": "application/json" },
-      body: JSON.stringify({ cat_id: catId, item_key: itemKey, slot }),
+      body: JSON.stringify({ cat_id: catId, item_key: itemKey, slot: "border" }),
     });
     const json = await res.json();
     setEquipLoading(false);
     if (res.ok) {
-      if (slot === "border") {
-        setCats(prev => prev.map(c => c.id === catId ? { ...c, equipped_border_key: itemKey } : c));
-        setSelected(prev => prev && prev.id === catId ? { ...prev, equipped_border_key: itemKey } : prev);
-      } else {
-        setCats(prev => prev.map(c => c.id === catId ? { ...c, equipped_slots: { ...(c.equipped_slots ?? {}), [slot]: itemKey } } : c));
-        setSelected(prev => prev && prev.id === catId ? { ...prev, equipped_slots: { ...(prev.equipped_slots ?? {}), [slot]: itemKey } } : prev);
-      }
-      // 재고 재조회 없이 응답 결과로 로컬 상태만 바로 갱신 — API 호출 1번으로 끝나서 체감 속도 개선
-      setOwnedEquip(prev => {
+      setCats(prev => prev.map(c => c.id === catId ? { ...c, equipped_border_key: itemKey } : c));
+      setSelected(prev => prev && prev.id === catId ? { ...prev, equipped_border_key: itemKey } : prev);
+      // 재고 재조회 없이 응답 결과로 로컬 상태만 바로 갱신
+      setOwnedBorders(prev => {
         const next = { ...prev };
         if (prevKey) next[prevKey] = (next[prevKey] ?? 0) + 1;
         if (itemKey) next[itemKey] = Math.max(0, (next[itemKey] ?? 0) - 1);
@@ -177,7 +108,7 @@ export default function MyCardsPage() {
 
   useEffect(() => {
     if (selected) document.body.style.overflow = "hidden";
-    else { document.body.style.overflow = ""; setSynthMsg(""); setRelearnMsg(""); }
+    else { document.body.style.overflow = ""; setSynthMsg(""); setEquipMsg(""); }
     return () => { document.body.style.overflow = ""; };
   }, [selected]);
 
@@ -214,27 +145,6 @@ export default function MyCardsPage() {
     }
   };
 
-  const doRelearn = async (slot: number) => {
-    if (!selected || relearnQty <= 0 || relearnLoading) return;
-    setRelearnLoading(true);
-    setRelearnMsg("");
-    const res = await fetch("/api/shop/relearn-skill", {
-      method: "POST", headers: { "content-type": "application/json" },
-      body: JSON.stringify({ cat_id: selected.id, slot }),
-    });
-    const json = await res.json();
-    setRelearnLoading(false);
-    if (res.ok) {
-      setRelearnQty(json.remaining);
-      const key = (["battle_special", "battle_special2", "battle_special3", "battle_special4"] as const)[slot];
-      setSelected(prev => prev ? { ...prev, [key]: json.new_skill_id } : null);
-      setCats(prev => prev.map(c => c.id === selected.id ? { ...c, [key]: json.new_skill_id } : c));
-      setRelearnMsg(`📜 스킬 ${slot + 1}이(가) "${json.new_skill_name}"(으)로 바뀌었어요!`);
-    } else {
-      setRelearnMsg(json.error === "no_stock" ? "머신이 없어요. 상점에서 구매해주세요." : "오류 발생");
-    }
-  };
-
   const shareCard = (cat: CardCat) => {
     const text = `내가 돌보는 ${cat.name}가 [${RARITY_LABELS[cat.card_rarity]}] ${cat.card_name ?? cat.name} 카드를 획득했어요! (Lv.${cat.card_level}) 🐱`;
     router.push(`/community/write?t=${encodeURIComponent(text.slice(0, 50))}&content=${encodeURIComponent(text)}`);
@@ -258,36 +168,11 @@ export default function MyCardsPage() {
 
         <div className="px-4 pb-28">
           {/* 빠른 메뉴 */}
-          <div className="grid grid-cols-5 gap-1.5 mb-4 mt-3">
-            <Link href="/mypage/cards/battle"
-              className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[10.5px] text-white"
-              style={{ background: "linear-gradient(135deg,var(--color-primary-light),#2F5E93)", boxShadow: "0 4px 12px rgba(47,94,147,0.3)" }}>
-              <Swords size={15} /> 배틀
-            </Link>
-            <Link href="/mypage/cards/ranking"
-              className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[10.5px] text-white"
-              style={{ background: "linear-gradient(135deg,#8FC0FF,#5C93F0)", boxShadow: "0 4px 12px rgba(92,147,240,0.3)" }}>
-              <Trophy size={15} /> 랭킹
-            </Link>
+          <div className="grid grid-cols-2 gap-1.5 mb-4 mt-3">
             <Link href="/mypage/shop"
               className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[10.5px] text-white"
               style={{ background: "linear-gradient(135deg,#FFC15E,#FFA030)", boxShadow: "0 4px 12px rgba(255,160,48,0.3)" }}>
               <Coins size={15} /> 상점
-            </Link>
-            <Link href="/mypage/cards/bestiary"
-              className="relative flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[10.5px] text-white"
-              style={{ background: "linear-gradient(135deg,#7FCB8A,#4FAF63)", boxShadow: "0 4px 12px rgba(79,175,99,0.3)" }}>
-              <BookMarked size={15} /> 도감
-              {(() => {
-                const total = PVE_BESTIARY.length + 1;
-                const seenCount = seenKeys.length;
-                return seenCount > 0 ? (
-                  <span className="absolute -top-1.5 -right-1.5 rounded-full text-[9px] font-extrabold px-1.5 py-0.5"
-                    style={{ background: "#fff", color: "#4FAF63", boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}>
-                    {seenCount}/{total}
-                  </span>
-                ) : null;
-              })()}
             </Link>
             <Link href="/mypage/cards/inventory"
               className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[10.5px] text-white"
@@ -323,7 +208,7 @@ export default function MyCardsPage() {
               {filtered.map((cat) => (
                 <div key={cat.id} className="flex flex-col items-center gap-1">
                   <CatCard name={cat.name} photoUrl={cat.photo_url}
-                    card={{ card_rarity: cat.card_rarity, card_name: cat.card_name, card_traits: cat.card_traits ?? [], card_stats: cat.card_stats, card_flavor: cat.card_flavor, card_level: cat.card_level, card_exp: cat.card_exp, card_generated_at: cat.card_generated_at, best_win_streak: cat.best_win_streak, pve_win_count: cat.pve_win_count, equipped_border_key: cat.equipped_border_key }}
+                    card={{ card_rarity: cat.card_rarity, card_name: cat.card_name, card_traits: cat.card_traits ?? [], card_stats: cat.card_stats, card_flavor: cat.card_flavor, card_level: cat.card_level, card_exp: cat.card_exp, card_generated_at: cat.card_generated_at, equipped_border_key: cat.equipped_border_key }}
                     size="sm" onClick={() => setSelected(cat)} />
                   {repCardId === cat.id && (
                     <span className="text-[9px] font-bold" style={{ color: UI.accent.gold }}>★ 대표 카드</span>
@@ -351,7 +236,7 @@ export default function MyCardsPage() {
           <div onClick={e => e.stopPropagation()} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, width: "100%", maxWidth: 340, margin: "auto 0" }}>
 
             <CatCard name={selected.name} photoUrl={selected.photo_url}
-              card={{ card_rarity: selected.card_rarity, card_name: selected.card_name, card_traits: selected.card_traits ?? [], card_stats: selected.card_stats, card_flavor: selected.card_flavor, card_level: selected.card_level, card_exp: selected.card_exp, card_generated_at: selected.card_generated_at, best_win_streak: selected.best_win_streak, pve_win_count: selected.pve_win_count, pvp_wins: selected.pvp_wins, pvp_losses: selected.pvp_losses, pvp_draws: selected.pvp_draws, pve_losses: selected.pve_losses, pve_draws: selected.pve_draws, equipped_border_key: selected.equipped_border_key }}
+              card={{ card_rarity: selected.card_rarity, card_name: selected.card_name, card_traits: selected.card_traits ?? [], card_stats: selected.card_stats, card_flavor: selected.card_flavor, card_level: selected.card_level, card_exp: selected.card_exp, card_generated_at: selected.card_generated_at, equipped_border_key: selected.equipped_border_key }}
               size="lg" />
 
             {/* XP 바 */}
@@ -366,7 +251,7 @@ export default function MyCardsPage() {
             </div>
 
             {/* 액션 버튼들 */}
-            <div className="grid grid-cols-3 gap-2 w-full">
+            <div className="grid grid-cols-2 gap-2 w-full">
               {/* 대표 카드 설정 */}
               <button onClick={() => setRepCard(repCardId === selected.id ? null : selected.id)}
                 className="py-2.5 rounded-xl text-[11px] font-bold flex flex-col items-center gap-1"
@@ -374,14 +259,6 @@ export default function MyCardsPage() {
                 <Star size={14} />
                 {repCardId === selected.id ? "대표 해제" : "대표 설정"}
               </button>
-
-              {/* 배틀 */}
-              <Link href="/mypage/cards/battle"
-                className="py-2.5 rounded-xl text-[11px] font-bold flex flex-col items-center gap-1"
-                style={{ background: `${UI.accent.blue}1F`, color: UI.accent.blue, boxShadow: `inset 0 0 0 1px ${UI.accent.blue}`, textDecoration: "none" }}>
-                <Swords size={14} />
-                배틀
-              </Link>
 
               {/* 합성 */}
               <button onClick={doSynthesis} disabled={synthLoading || selected.card_rarity === "legendary"}
@@ -411,82 +288,6 @@ export default function MyCardsPage() {
               </p>
             )}
 
-            {/* 기술 다시 배우기 */}
-            <div className="w-full rounded-2xl p-3" style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[12px] font-bold flex items-center gap-1.5" style={{ color: UI.textMain }}>
-                  <Scroll size={13} /> 기술 다시 배우기
-                </span>
-                <span className="text-[11px] font-bold" style={{ color: relearnQty > 0 ? UI.accent.gold : UI.textMuted }}>
-                  머신 보유 {relearnQty}개
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-1.5">
-                {([selected.battle_special, selected.battle_special2, selected.battle_special3, selected.battle_special4]).map((id, i) => {
-                  const skill = SPECIAL_SKILLS[id as keyof typeof SPECIAL_SKILLS];
-                  return (
-                    <button key={i} onClick={() => doRelearn(i)} disabled={relearnQty <= 0 || relearnLoading}
-                      className="rounded-xl px-2 py-1.5 text-left flex items-center gap-1.5"
-                      style={{ background: UI.panelAlt, opacity: relearnQty > 0 ? 1 : 0.4 }}>
-                      <span style={{ fontSize: 14 }}>{skill?.icon ?? "❔"}</span>
-                      <span className="text-[10.5px] font-bold truncate" style={{ color: UI.textMain }}>{skill?.name ?? "?"}</span>
-                    </button>
-                  );
-                })}
-              </div>
-              {relearnQty <= 0 && (
-                <p className="text-[10px] mt-1.5" style={{ color: UI.textSub }}>상점에서 &quot;기술 다시 배우기 머신&quot;을 구매하면 스킬을 눌러 재배정할 수 있어요.</p>
-              )}
-              {relearnMsg && (
-                <p className="text-[11px] font-bold text-center mt-1.5" style={{ color: relearnMsg.includes("오류") || relearnMsg.includes("없어요") ? UI.accent.red : UI.accent.green }}>
-                  {relearnMsg}
-                </p>
-              )}
-            </div>
-
-            {/* 부위별 장비창 — 머리/팔/몸통/다리/발 5칸 동시 장착 */}
-            <div className="w-full rounded-2xl p-3" style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
-              <span className="text-[12px] font-bold flex items-center gap-1.5 mb-2" style={{ color: UI.textMain }}>
-                <Gem size={13} /> 부위별 장비창
-              </span>
-              <div className="flex flex-col gap-1.5">
-                {BODY_SLOTS.map((slot) => {
-                  const slotItem = EQUIP_ITEM_KEYS.find(k => SHOP_ITEMS[k].bodySlot === slot);
-                  if (!slotItem) return null;
-                  const item = SHOP_ITEMS[slotItem];
-                  const equippedHere = selected.equipped_slots?.[slot] === slotItem;
-                  const qty = ownedEquip[slotItem] ?? 0;
-                  const canEquip = qty > 0 || equippedHere;
-                  const color = SLOT_THEME[slot];
-                  return (
-                    <button key={slot} onClick={() => canEquip && doEquip(selected.id, equippedHere ? null : slotItem, slot)}
-                      disabled={!canEquip || equipLoading}
-                      className="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-left"
-                      style={{ background: equippedHere ? `${color}1A` : UI.panelAlt, boxShadow: equippedHere ? `inset 0 0 0 1.5px ${color}` : `inset 0 0 0 1px ${UI.panelBorder}`, opacity: canEquip ? 1 : 0.45 }}>
-                      <span className="rounded-lg flex items-center justify-center shrink-0" style={{
-                        width: 30, height: 30, fontSize: 15,
-                        background: equippedHere ? color : "rgba(255,255,255,0.06)",
-                        boxShadow: equippedHere ? `0 2px 6px ${color}55` : "none",
-                      }}>{item.icon}</span>
-                      <span className="text-[10px] font-bold shrink-0" style={{ color: equippedHere ? color : UI.textSub, width: 28 }}>{BODY_SLOT_LABELS[slot].label}</span>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[11px] font-bold truncate" style={{ color: equippedHere ? color : UI.textMain }}>{item.name}</p>
-                        <p className="text-[9.5px] truncate" style={{ color: UI.textSub }}>{item.desc}</p>
-                      </div>
-                      <span className="text-[10px] font-extrabold shrink-0" style={{ color: equippedHere ? color : canEquip ? UI.textSub : UI.textMuted }}>
-                        {equippedHere ? "장착중" : canEquip ? `장착 (${qty})` : "미보유"}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-              {equipMsg && (
-                <p className="text-[11px] font-bold text-center mt-1.5" style={{ color: equipMsg.includes("실패") || equipMsg.includes("없어요") ? UI.accent.red : UI.accent.green }}>
-                  {equipMsg}
-                </p>
-              )}
-            </div>
-
             {/* 테두리 코스메틱 */}
             <div className="w-full rounded-2xl p-3" style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
               <div className="flex items-center justify-between mb-2">
@@ -494,7 +295,7 @@ export default function MyCardsPage() {
                   <Sparkles size={13} /> 테두리 코스메틱
                 </span>
                 {selected.equipped_border_key && (
-                  <button onClick={() => doEquip(selected.id, null, "border")} disabled={equipLoading}
+                  <button onClick={() => doEquip(selected.id, null)} disabled={equipLoading}
                     className="text-[10.5px] font-bold px-2 py-1 rounded-full" style={{ background: `${UI.accent.red}1A`, color: UI.accent.red }}>
                     해제
                   </button>
@@ -514,9 +315,9 @@ export default function MyCardsPage() {
               <div className="grid grid-cols-2 gap-1.5">
                 {BORDER_FX_ITEM_KEYS.filter(k => k !== selected.equipped_border_key).map((key) => {
                   const item = SHOP_ITEMS[key];
-                  const qty = ownedEquip[key] ?? 0;
+                  const qty = ownedBorders[key] ?? 0;
                   return (
-                    <button key={key} onClick={() => doEquip(selected.id, key, "border")} disabled={qty <= 0 || equipLoading}
+                    <button key={key} onClick={() => doEquip(selected.id, key)} disabled={qty <= 0 || equipLoading}
                       className="rounded-xl px-2 py-1.5 text-left flex items-center gap-1.5"
                       style={{ background: UI.panelAlt, opacity: qty > 0 ? 1 : 0.4 }}>
                       <span style={{ fontSize: 14 }}>{item.icon}</span>
@@ -525,6 +326,11 @@ export default function MyCardsPage() {
                   );
                 })}
               </div>
+              {equipMsg && (
+                <p className="text-[11px] font-bold text-center mt-1.5" style={{ color: equipMsg.includes("실패") || equipMsg.includes("없어요") ? UI.accent.red : UI.accent.green }}>
+                  {equipMsg}
+                </p>
+              )}
             </div>
 
             {/* 자랑하기 */}

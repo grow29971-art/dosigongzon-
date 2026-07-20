@@ -12,9 +12,6 @@ export interface MonthlyGrowthReport {
   careLogCount: number;   // 이번 달 돌봄다이어리 작성 수
   newCatCount: number;    // 이번 달 새로 등록한 고양이 수
   commentCount: number;   // 이번 달 커뮤니티 기록(돌봄기록+경보) 수
-  // 이번 달 PVP 승리 수 — card_battles엔 PVP만 기록되고 PVE(고양이학대범/야생동물)는
-  // 상대가 실제 DB 카드가 아니라 FK 제약상 기록을 안 남기므로, 여기 숫자는 PVP만 정확히 센 것.
-  battleWinCount: number;
 }
 
 function monthRange(year: number, month: number) {
@@ -27,15 +24,13 @@ export async function getMonthlyGrowthReport(userId: string, year: number, month
   const supabase = await createClient();
   const { start, end } = monthRange(year, month);
 
-  const [careLogsRes, catsRes, commentsRes, battlesRes] = await Promise.all([
+  const [careLogsRes, catsRes, commentsRes] = await Promise.all([
     supabase.from("care_logs").select("id", { count: "exact", head: true })
       .eq("author_id", userId).gte("logged_at", start).lt("logged_at", end),
     supabase.from("cats").select("id", { count: "exact", head: true })
       .eq("caretaker_id", userId).gte("created_at", start).lt("created_at", end),
     supabase.from("cat_comments").select("id", { count: "exact", head: true })
       .eq("author_id", userId).gte("created_at", start).lt("created_at", end),
-    supabase.from("card_battles").select("id", { count: "exact", head: true })
-      .eq("winner_id", userId).gte("created_at", start).lt("created_at", end),
   ]);
 
   return {
@@ -43,12 +38,11 @@ export async function getMonthlyGrowthReport(userId: string, year: number, month
     careLogCount: careLogsRes.count ?? 0,
     newCatCount: catsRes.count ?? 0,
     commentCount: commentsRes.count ?? 0,
-    battleWinCount: battlesRes.count ?? 0,
   };
 }
 
 export function hasAnyActivity(r: MonthlyGrowthReport): boolean {
-  return r.careLogCount > 0 || r.newCatCount > 0 || r.commentCount > 0 || r.battleWinCount > 0;
+  return r.careLogCount > 0 || r.newCatCount > 0 || r.commentCount > 0;
 }
 
 const MONTH_COMMENTS: { min: number; text: string }[] = [

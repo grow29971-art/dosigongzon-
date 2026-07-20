@@ -1081,8 +1081,6 @@ export interface MyActivitySummary {
   currentStreak: number;      // 현재 연속 돌봄 일수
   longestStreak: number;      // 역대 최장 연속 돌봄 일수
   weeklyGoalAchieved: boolean; // 이번 주 7일 모두 돌봄 기록 있음
-  bossDefeats: number;         // 고양이학대범 격퇴 횟수
-  bestWinStreak: number;       // 역대 최고 카드 배틀 연승
   perfectCatchCount: number;   // 완벽 포획 성공 횟수
 }
 
@@ -1220,10 +1218,10 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
       catCount: 0, commentCount: 0, alertCount: 0, likesReceived: 0,
       careLogCount: 0, inviteCount: 0,
       currentStreak: 0, longestStreak: 0, weeklyGoalAchieved: false,
-      bossDefeats: 0, bestWinStreak: 0, perfectCatchCount: 0,
+      perfectCatchCount: 0,
     };
 
-  const [catsRes, commentsRes, alertsRes, likeSumRes, careLogsRes, invitesRes, recentCareRes, freezesRes, battleProfileRes] = await Promise.all([
+  const [catsRes, commentsRes, alertsRes, likeSumRes, careLogsRes, invitesRes, recentCareRes, freezesRes, catchProfileRes] = await Promise.all([
     supabase
       .from("cats")
       .select("id", { count: "exact", head: true })
@@ -1261,10 +1259,10 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
       .from("streak_freezes")
       .select("freeze_date")
       .eq("user_id", user.id),
-    // 배틀/포획 타이틀용 카운터
+    // 포획 타이틀용 카운터
     supabase
       .from("profiles")
-      .select("boss_defeats,best_win_streak,perfect_catch_count")
+      .select("perfect_catch_count")
       .eq("id", user.id)
       .maybeSingle(),
   ]);
@@ -1289,9 +1287,7 @@ export async function getMyActivitySummary(): Promise<MyActivitySummary> {
     currentStreak,
     longestStreak,
     weeklyGoalAchieved,
-    bossDefeats: battleProfileRes.data?.boss_defeats ?? 0,
-    bestWinStreak: battleProfileRes.data?.best_win_streak ?? 0,
-    perfectCatchCount: battleProfileRes.data?.perfect_catch_count ?? 0,
+    perfectCatchCount: catchProfileRes.data?.perfect_catch_count ?? 0,
   };
 }
 

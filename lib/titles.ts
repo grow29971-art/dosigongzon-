@@ -255,61 +255,7 @@ export const TITLES: TitleDef[] = [
     progress: (s) => clamp01(s.likesReceived / 200),
   },
 
-  // ── 배틀/포획 (bossDefeats, bestWinStreak, perfectCatchCount) ──
-  {
-    id: "boss_slayer_1",
-    name: "고양이 구조자",
-    emoji: "🐱",
-    category: "battle",
-    description: "고양이학대범을 처음으로 격퇴했어요",
-    unlocked: (s) => s.bossDefeats >= 1,
-    progress: (s) => clamp01(s.bossDefeats / 1),
-  },
-  {
-    id: "boss_slayer_5",
-    name: "학대범의 천적",
-    emoji: "😾",
-    category: "battle",
-    description: "고양이학대범을 5번 격퇴했어요",
-    unlocked: (s) => s.bossDefeats >= 5,
-    progress: (s) => clamp01(s.bossDefeats / 5),
-  },
-  {
-    id: "boss_slayer_20",
-    name: "정의의 사도",
-    emoji: "⚔️",
-    category: "battle",
-    description: "고양이학대범을 20번 이상 격퇴한 수호자",
-    unlocked: (s) => s.bossDefeats >= 20,
-    progress: (s) => clamp01(s.bossDefeats / 20),
-  },
-  {
-    id: "win_streak_3",
-    name: "떠오르는 강자",
-    emoji: "🔥",
-    category: "battle",
-    description: "카드 배틀 3연승을 달성했어요",
-    unlocked: (s) => s.bestWinStreak >= 3,
-    progress: (s) => clamp01(s.bestWinStreak / 3),
-  },
-  {
-    id: "win_streak_10",
-    name: "무패의 기록",
-    emoji: "🏅",
-    category: "battle",
-    description: "카드 배틀 10연승을 달성했어요",
-    unlocked: (s) => s.bestWinStreak >= 10,
-    progress: (s) => clamp01(s.bestWinStreak / 10),
-  },
-  {
-    id: "win_streak_20",
-    name: "전투의 화신",
-    emoji: "🐉",
-    category: "battle",
-    description: "카드 배틀 20연승 — 누구도 막을 수 없는 기록",
-    unlocked: (s) => s.bestWinStreak >= 20,
-    progress: (s) => clamp01(s.bestWinStreak / 20),
-  },
+  // ── 포획 (perfectCatchCount) — 배틀 타이틀(boss/연승)은 2026-07-20 카드배틀 삭제와 함께 제거 ──
   {
     id: "perfect_catch_1",
     name: "포획의 감각",
@@ -347,7 +293,7 @@ export const CATEGORY_LABELS: Record<TitleCategory, string> = {
   invite: "초대",
   streak: "꾸준함",
   carelog: "돌봄다이어리",
-  battle: "배틀",
+  battle: "포획",
 };
 
 export const CATEGORY_COLORS: Record<TitleCategory, string> = {

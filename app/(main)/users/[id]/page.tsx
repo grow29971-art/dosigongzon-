@@ -73,8 +73,6 @@ export default async function UserProfilePage({ params }: { params: Params }) {
     currentStreak: stats.currentStreak,
     longestStreak: stats.longestStreak,
     weeklyGoalAchieved: false, // 공개 프로필엔 주간 목표 표시 안 함
-    bossDefeats: stats.bossDefeats,
-    bestWinStreak: stats.bestWinStreak,
     perfectCatchCount: stats.perfectCatchCount,
   };
   const level = computeLevel(computeScore(activitySummary));

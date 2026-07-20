@@ -81,15 +81,13 @@ export interface PublicProfileStats {
   postCount: number;
   currentStreak: number;
   longestStreak: number;
-  bossDefeats: number;
-  bestWinStreak: number;
   perfectCatchCount: number;
 }
 
 /** 공개 프로필용 스탯 — 본인 외에 타인이 보는 숫자. */
 export async function getUserPublicStatsServer(id: string): Promise<PublicProfileStats> {
   const supabase = await createClient();
-  const [cats, cares, comments, alerts, likeSum, posts, careDays, battleProfile] = await Promise.all([
+  const [cats, cares, comments, alerts, likeSum, posts, careDays, catchProfile] = await Promise.all([
     supabase.from("cats").select("*", { count: "exact", head: true }).eq("caretaker_id", id),
     supabase.from("care_logs").select("*", { count: "exact", head: true }).eq("author_id", id),
     supabase.from("cat_comments").select("*", { count: "exact", head: true }).eq("author_id", id),
@@ -98,7 +96,7 @@ export async function getUserPublicStatsServer(id: string): Promise<PublicProfil
     supabase.from("posts").select("*", { count: "exact", head: true }).eq("author_id", id).eq("hidden", false),
     // streak 계산용: 최근 365일 care_logs 날짜
     supabase.from("care_logs").select("logged_at").eq("author_id", id).order("logged_at", { ascending: false }).limit(1000),
-    supabase.from("profiles").select("boss_defeats,best_win_streak,perfect_catch_count").eq("id", id).maybeSingle(),
+    supabase.from("profiles").select("perfect_catch_count").eq("id", id).maybeSingle(),
   ]);
 
   const likesReceived = ((likeSum.data ?? []) as { like_count: number }[]).reduce(
@@ -148,9 +146,7 @@ export async function getUserPublicStatsServer(id: string): Promise<PublicProfil
     postCount: posts.count ?? 0,
     currentStreak: current,
     longestStreak: longest,
-    bossDefeats: battleProfile.data?.boss_defeats ?? 0,
-    bestWinStreak: battleProfile.data?.best_win_streak ?? 0,
-    perfectCatchCount: battleProfile.data?.perfect_catch_count ?? 0,
+    perfectCatchCount: catchProfile.data?.perfect_catch_count ?? 0,
   };
 }
 

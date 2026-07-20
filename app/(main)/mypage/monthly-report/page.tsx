@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowLeft, ChevronLeft, ChevronRight, TrendingUp, BookOpen, CatIcon, Swords, MessageSquare } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, TrendingUp, BookOpen, CatIcon, MessageSquare } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getMonthlyGrowthReport, hasAnyActivity, pickMonthComment } from "@/lib/monthly-report-server";
 import MonthlyReportShareButton from "@/app/components/MonthlyReportShareButton";
@@ -34,7 +34,7 @@ export default async function MonthlyReportPage({
   const month = Number(sp.m) || now.getMonth() + 1;
 
   const report = await getMonthlyGrowthReport(user.id, year, month);
-  const total = report.careLogCount + report.newCatCount + report.commentCount + report.battleWinCount;
+  const total = report.careLogCount + report.newCatCount + report.commentCount;
   const active = hasAnyActivity(report);
 
   const prev = shiftMonth(year, month, -1);
@@ -46,8 +46,7 @@ export default async function MonthlyReportPage({
     `🐾 도시공존 ${year}년 ${month}월 성장 리포트\n\n` +
     `📓 돌봄다이어리 ${report.careLogCount}회\n` +
     `🐱 새로 등록한 고양이 ${report.newCatCount}마리\n` +
-    `💬 커뮤니티 기록 ${report.commentCount}건\n` +
-    `⚔️ PVP 승리 ${report.battleWinCount}회\n\n` +
+    `💬 커뮤니티 기록 ${report.commentCount}건\n\n` +
     `${pickMonthComment(total)}`;
 
   return (
@@ -123,7 +122,6 @@ export default async function MonthlyReportPage({
               <StatTile icon={<BookOpen size={18} color="#3182F6" />} label="돌봄다이어리" value={report.careLogCount} unit="회" tint="#FFF5E0" />
               <StatTile icon={<CatIcon size={18} color="#5BA876" />} label="새로 등록한 고양이" value={report.newCatCount} unit="마리" tint="#EAF6EF" />
               <StatTile icon={<MessageSquare size={18} color="#4A7BA8" />} label="커뮤니티 기록" value={report.commentCount} unit="건" tint="#E5EDF5" />
-              <StatTile icon={<Swords size={18} color="#8B3A3A" />} label="PVP 승리" value={report.battleWinCount} unit="회" tint="#FBE5DC" />
             </div>
 
             <MonthlyReportShareButton text={shareText} />
