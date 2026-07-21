@@ -1563,77 +1563,66 @@ export default function MapPage() {
       });
     }
 
+    // 병원=에메랄드 그린 크로스 / 약국=웜 오렌지 알약 — 물방울 핀 + 이름 칩.
+    // 핀 꼭짓점이 정확히 좌표에 꽂히고, 라벨은 좌표 아래에 매달린다.
     function createHospitalEl(h: RescueHospital) {
       const el = document.createElement("div");
       const isPharmacy = (h.tags ?? []).some((t: string) => t.includes("동물약국"));
       const isManual = h.source !== "kakao";
       const isLarge = isPharmacy || isManual; // 약국 + 수동 등록 = 큰 마커
-      const mc1 = isPharmacy ? "#E88D5A" : "#22B573";
-      const mc2 = isPharmacy ? "#3182F6" : "#1A9A5E";
-      const sz = isLarge ? 42 : 28; // 카카오 병원은 작게
-      const iconSz = isLarge ? (isPharmacy ? 20 : 22) : 14;
-      const icon = isPharmacy
-        ? `<svg width="${iconSz}" height="${iconSz}" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M10.5 20H6a2 2 0 01-2-2V8l4-4h8l4 4v4"/>
-            <path d="M8 4v4h4"/>
-            <circle cx="17" cy="17" r="4"/>
-            <path d="M15 17h4"/>
-            <path d="M17 15v4"/>
-           </svg>`
-        : `<svg width="${iconSz}" height="${iconSz}" viewBox="0 0 24 24" fill="none"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z" fill="#fff"/></svg>`;
+      const c1 = isPharmacy ? "#FF9E43" : "#2BC47E";
+      const c2 = isPharmacy ? "#F0762B" : "#149D5B";
+      const uid = `hp${String(h.id).replace(/[^a-zA-Z0-9]/g, "").slice(0, 12)}`;
 
-      // 큰 마커 (약국/수동): 아이콘 + 라벨 + 포인터
+      // 아이콘 — 핀 중앙(22,19.5)에 배치. 병원=둥근 십자, 약국=알약(캡슐)
+      const iconSvg = isPharmacy
+        ? `<g transform="translate(11.5,9) scale(0.875)" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+             <path d="M10.5 20.5 3.5 13.5a4.95 4.95 0 1 1 7-7l7 7a4.95 4.95 0 1 1-7 7Z"/>
+             <path d="m8.5 8.5 7 7"/>
+           </g>`
+        : `<path d="M22 13v13M15.5 19.5h13" stroke="#fff" stroke-width="4.4" stroke-linecap="round"/>`;
+
       if (isLarge) {
         const label = h.name.length > 14 ? h.name.slice(0, 14) + "…" : h.name;
         el.innerHTML = `
-          <div style="
-            transform: translate(-50%, -100%);
-            display: flex; flex-direction: column; align-items: center; cursor: pointer;
-          ">
+          <div style="position: relative; transform: translate(-50%, -100%); cursor: pointer; width: 44px; height: 54px;">
+            <svg width="44" height="54" viewBox="0 0 44 54" style="display:block; filter: drop-shadow(0 5px 8px ${c2}66);">
+              <defs>
+                <linearGradient id="${uid}" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="${c1}"/>
+                  <stop offset="1" stop-color="${c2}"/>
+                </linearGradient>
+              </defs>
+              <path d="M22 52C22 52 5 31.5 5 19.5C5 10.1 12.6 2.5 22 2.5C31.4 2.5 39 10.1 39 19.5C39 31.5 22 52 22 52Z"
+                    fill="url(#${uid})" stroke="#fff" stroke-width="3"/>
+              <circle cx="22" cy="19.5" r="12.5" fill="rgba(255,255,255,0.16)"/>
+              ${iconSvg}
+            </svg>
             <div style="
-              width: ${sz}px; height: ${sz}px;
-              border-radius: ${isPharmacy ? "50%" : "14px"};
-              background: linear-gradient(135deg, ${mc1} 0%, ${mc2} 100%);
-              border: 2.5px solid #fff;
-              box-shadow: 0 4px 14px ${mc1}55;
-              display: flex; align-items: center; justify-content: center;
-            ">
-              ${icon}
-            </div>
-            <div style="
-              margin-top: 3px; padding: 2px 8px; border-radius: 8px;
-              background: #fff; color: ${mc1};
-              font-size: 9.5px; font-weight: 800; white-space: nowrap;
-              box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-              letter-spacing: -0.3px;
-              border: 1.5px solid ${mc1}30;
+              position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+              margin-top: -2px; padding: 2.5px 9px; border-radius: 999px;
+              background: rgba(255,255,255,0.97); color: ${c2};
+              font-size: 10px; font-weight: 800; white-space: nowrap;
+              letter-spacing: -0.3px; line-height: 1.35;
+              box-shadow: 0 2px 10px rgba(0,0,0,0.16);
+              border: 1px solid rgba(0,0,0,0.05);
             ">${label}</div>
-            <div style="
-              width: 6px; height: 6px;
-              background: #fff;
-              border-right: 1.5px solid ${mc1}30;
-              border-bottom: 1.5px solid ${mc1}30;
-              transform: rotate(45deg);
-              margin-top: -5px;
-            "></div>
           </div>
         `;
       } else {
-        // 작은 마커 (카카오 병원): 아이콘만, 라벨 없음
+        // 작은 마커 (카카오 병원): 원형 도트 + 십자, 좌표 정중앙 앵커
         el.innerHTML = `
-          <div style="
-            transform: translate(-50%, -100%);
-            display: flex; flex-direction: column; align-items: center; cursor: pointer;
-          ">
+          <div style="transform: translate(-50%, -50%); cursor: pointer;">
             <div style="
-              width: ${sz}px; height: ${sz}px;
-              border-radius: 10px;
-              background: linear-gradient(135deg, ${mc1} 0%, ${mc2} 100%);
+              width: 26px; height: 26px; border-radius: 50%;
+              background: linear-gradient(135deg, ${c1} 0%, ${c2} 100%);
               border: 2px solid #fff;
-              box-shadow: 0 2px 8px ${mc1}44;
+              box-shadow: 0 2px 7px ${c2}66;
               display: flex; align-items: center; justify-content: center;
             ">
-              ${icon}
+              <svg width="12" height="12" viewBox="0 0 12 12">
+                <path d="M6 1.5v9M1.5 6h9" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
+              </svg>
             </div>
           </div>
         `;
@@ -1885,8 +1874,8 @@ export default function MapPage() {
           <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
             {[
               { key: "cats", label: "고양이", active: showCats, toggle: () => setShowCats(!showCats), color: "#3182F6" },
-              { key: "hospitals", label: "병원", active: showHospitals, toggle: () => setShowHospitals(!showHospitals), color: "#22B573" },
-              { key: "pharmacies", label: "약국", active: showPharmacies, toggle: () => setShowPharmacies(!showPharmacies), color: "#E88D5A" },
+              { key: "hospitals", label: "병원", active: showHospitals, toggle: () => setShowHospitals(!showHospitals), color: "#149D5B" },
+              { key: "pharmacies", label: "약국", active: showPharmacies, toggle: () => setShowPharmacies(!showPharmacies), color: "#F0762B" },
             ].map((f) => (
               <button
                 key={f.key}
@@ -2602,7 +2591,7 @@ export default function MapPage() {
       {/* 선택된 병원/약국 상세 카드 */}
       {selectedHospital && (() => {
         const isPharm = (selectedHospital.tags ?? []).some((t) => t.includes("동물약국"));
-        const accent = isPharm ? "#9B6DD7" : "#22B573";
+        const accent = isPharm ? "#F0762B" : "#149D5B"; // 마커·필터 칩과 동일 팔레트
         return (
         <div className="absolute bottom-0 left-0 right-0 z-20 px-4 pb-4 pointer-events-none">
           <div
@@ -2633,10 +2622,13 @@ export default function MapPage() {
                   }}
                 >
                   {isPharm ? (
-                    <span style={{ fontSize: 22 }}>💊</span>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M10.5 20.5 3.5 13.5a4.95 4.95 0 1 1 7-7l7 7a4.95 4.95 0 1 1-7 7Z"/>
+                      <path d="m8.5 8.5 7 7"/>
+                    </svg>
                   ) : (
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                      <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z" fill="#fff"/>
+                      <path d="M12 5.5v13M5.5 12h13" stroke="#fff" strokeWidth="4" strokeLinecap="round"/>
                     </svg>
                   )}
                 </div>
