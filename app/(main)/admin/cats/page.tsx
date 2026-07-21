@@ -245,7 +245,7 @@ export default function AdminCatsPage() {
                   background: "#fff",
                   borderRadius: "var(--radius-card-sm)",
                   boxShadow: "var(--shadow-card)",
-                  border: checked ? "1.5px solid rgba(49,130,246,0.45)" : "1px solid rgba(0,0,0,0.04)",
+                  border: checked ? "1.5px solid rgba(173, 94, 59,0.45)" : "1px solid rgba(0,0,0,0.04)",
                   opacity: cat.hidden ? 0.55 : 1,
                 }}
               >
@@ -253,7 +253,7 @@ export default function AdminCatsPage() {
                   type="checkbox"
                   checked={checked}
                   onChange={() => toggleSelect(cat.id)}
-                  className="w-4 h-4 shrink-0 accent-[#3182F6]"
+                  className="w-4 h-4 shrink-0 accent-[#AD5E3B]"
                   aria-label={`${cat.name} 선택`}
                 />
                 <div

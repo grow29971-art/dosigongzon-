@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 
 const CAT_COLOR: Record<MilestoneCategory, { bg: string; ring: string; text: string }> = {
   join:     { bg: "#E8ECE5", ring: "#5BA876", text: "#3F5B42" },
-  cat:      { bg: "#FFF1E6", ring: "#3182F6", text: "#7A4A2A" },
+  cat:      { bg: "#FFF1E6", ring: "#AD5E3B", text: "#7A4A2A" },
   care:     { bg: "#FFF5E0", ring: "#E8B040", text: "#8C6A1F" },
   comment:  { bg: "#F0E8F8", ring: "#8B65B8", text: "#5A3F7E" },
   post:     { bg: "#E5EDF5", ring: "#4A7BA8", text: "#2A4A6B" },
@@ -79,7 +79,7 @@ export default async function JourneyPage() {
             {/* 세로 선 */}
             <div
               className="absolute left-[20px] top-2 bottom-2 w-[2px] rounded-full"
-              style={{ background: "linear-gradient(to bottom, #3182F633 0%, #3182F611 100%)" }}
+              style={{ background: "linear-gradient(to bottom, #AD5E3B33 0%, #AD5E3B11 100%)" }}
             />
 
             <div className="space-y-4">

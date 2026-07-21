@@ -42,7 +42,7 @@ const COHORT_OPTIONS: Array<{
     label: "창립 멤버",
     description: "5/20 전 가입한 founding_member 타이틀 보유자",
     Icon: Sparkles,
-    color: "#3182F6",
+    color: "#AD5E3B",
   },
   {
     id: "no_cat",
@@ -357,9 +357,9 @@ export default function AdminBroadcastPage() {
               onClick={() => setMessage(t.text)}
               className="text-[11px] px-3 py-1.5 chip-square font-semibold active:scale-[0.97]"
               style={{
-                background: "rgba(49,130,246,0.10)",
+                background: "rgba(173, 94, 59,0.10)",
                 color: "var(--color-primary-dark)",
-                border: "1px solid rgba(49,130,246,0.22)",
+                border: "1px solid rgba(173, 94, 59,0.22)",
               }}
             >
               {t.label}
@@ -415,7 +415,7 @@ export default function AdminBroadcastPage() {
         style={{
           background: "#FFFFFF",
           color: "var(--color-primary-dark)",
-          border: "1.5px solid rgba(49,130,246,0.35)",
+          border: "1.5px solid rgba(173, 94, 59,0.35)",
         }}
       >
         {sending ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
@@ -430,7 +430,7 @@ export default function AdminBroadcastPage() {
         className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[14px] font-extrabold active:scale-[0.98] disabled:opacity-60"
         style={{
           background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-          boxShadow: "0 6px 18px rgba(49,130,246,0.28)",
+          boxShadow: "0 6px 18px rgba(173, 94, 59,0.28)",
         }}
       >
         {sending ? (

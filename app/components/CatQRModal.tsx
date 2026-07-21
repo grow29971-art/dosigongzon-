@@ -104,7 +104,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
       >
         <div className="px-5 pt-5 pb-3 flex items-start justify-between">
           <div>
-            <p className="text-[10.5px] font-extrabold tracking-[0.18em]" style={{ color: "#1B64DA" }}>
+            <p className="text-[10.5px] font-extrabold tracking-[0.18em]" style={{ color: "#8A4325" }}>
               SHARE OFFLINE
             </p>
             <h2 className="text-[17px] font-extrabold text-text-main mt-1 tracking-tight">
@@ -137,7 +137,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
             onClick={handleDownload}
             disabled={!dataUrl}
             className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-extrabold text-white active:scale-[0.97] disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)" }}
+            style={{ background: "linear-gradient(135deg, #AD5E3B 0%, #8A4325 100%)" }}
           >
             <Download size={14} />
             <span>이미지 저장</span>
@@ -147,7 +147,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
             onClick={handlePrint}
             disabled={!dataUrl}
             className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-extrabold active:scale-[0.97] disabled:opacity-50"
-            style={{ background: "#FFFFFF", color: "#1B64DA", border: "1.5px solid rgba(49,130,246,0.30)" }}
+            style={{ background: "#FFFFFF", color: "#8A4325", border: "1.5px solid rgba(173, 94, 59,0.30)" }}
           >
             <Printer size={14} />
             <span>인쇄하기</span>

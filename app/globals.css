@@ -6,10 +6,12 @@
    ══════════════════════════════════════════ */
 
 @theme inline {
-  /* Primary — 공존 블루 (클린 미니멀 톤. hex는 흔한 파랑이라 상표 대상 아님) */
-  --color-primary: #3182F6;
-  --color-primary-light: #4593FC;
-  --color-primary-dark: #1B64DA;
+  /* Primary — 테라코타 (2026-07-21 3에이전트 회의 결정: "고양이 체온의 색".
+     흰 배경 대비 4.73:1 AA 통과. light는 초기 브랜드 웜 브라운 복권.
+     WAU 100 도달까지 테마색 동결. 이전: 블루 backup/toss-blue-20260721 · 블랙 39d99ba) */
+  --color-primary: #AD5E3B;
+  --color-primary-light: #C47E5A;
+  --color-primary-dark: #8A4325;
 
   /* Background — 뉴트럴 그레이 화이트 */
   --color-warm-white: #F9FAFB;
@@ -46,8 +48,8 @@
   /* Accents */
   --color-sage: #22A366;
   --color-mint: #22A366;
-  --color-clay: #1B64DA;
-  --color-coral: #1B64DA;
+  --color-clay: #8A4325;
+  --color-coral: #8A4325;
   --color-error: #F04452;
   --color-warning: #FFA927;
 
@@ -56,8 +58,8 @@
   --color-divider: #F2F4F6;
 
   /* Primary 틴트 — 칩/배지/버튼 배경용 반투명 */
-  --color-primary-soft: rgba(49, 130, 246, 0.1);
-  --color-primary-softer: rgba(49, 130, 246, 0.08);
+  --color-primary-soft: rgba(173, 94, 59, 0.1);
+  --color-primary-softer: rgba(173, 94, 59, 0.08);
 
   /* ── Radius 토큰 (인라인 borderRadius 중앙화) ──
      무드 변경 시 여기만 조정하면 앱 전체 라운드가 따라온다. */
@@ -77,11 +79,11 @@
 
   /* ── Shadow 토큰 ──
      card: 기본 카드 · card-sm: 얕은 카드 · raised: 떠있는 요소(버튼/헤더)
-     primary: 파란 CTA 글로우 · modal: 오버레이 */
+     primary: 테라코타 CTA 글로우 · modal: 오버레이 */
   --shadow-card-sm: 0 1px 4px rgba(0, 0, 0, 0.03);
   --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.04);
   --shadow-raised: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-primary: 0 6px 20px rgba(49, 130, 246, 0.3);
+  --shadow-primary: 0 6px 20px rgba(173, 94, 59, 0.3);
   --shadow-modal: 0 20px 50px rgba(0, 0, 0, 0.25);
 
   /* ── 타이포 스케일 (2026-07-15, 토스식 위계) ──

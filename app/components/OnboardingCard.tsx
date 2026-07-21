@@ -77,8 +77,8 @@ export default function OnboardingCard({
       style={{
         background: "linear-gradient(135deg, #FFF9F0 0%, #FFF2DF 100%)",
         borderRadius: 22,
-        border: "1px solid rgba(49,130,246,0.2)",
-        boxShadow: "0 6px 20px rgba(49,130,246,0.12)",
+        border: "1px solid rgba(173, 94, 59,0.2)",
+        boxShadow: "0 6px 20px rgba(173, 94, 59,0.12)",
       }}
     >
       {/* 헤더 */}
@@ -87,7 +87,7 @@ export default function OnboardingCard({
           className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
           style={{
             background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-            boxShadow: "0 4px 12px rgba(49,130,246,0.35)",
+            boxShadow: "0 4px 12px rgba(173, 94, 59,0.35)",
           }}
         >
           <Sparkles size={19} color="#fff" strokeWidth={2.3} />
@@ -119,7 +119,7 @@ export default function OnboardingCard({
       {/* 진행률 바 */}
       <div
         className="w-full h-1.5 rounded-full overflow-hidden mb-4"
-        style={{ background: "rgba(49,130,246,0.15)" }}
+        style={{ background: "rgba(173, 94, 59,0.15)" }}
       >
         <div
           className="h-full rounded-full transition-all"

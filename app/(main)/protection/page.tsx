@@ -365,7 +365,7 @@ export default function ProtectionPage() {
           background: progress.read === progress.total
             ? "linear-gradient(135deg, #E8F4E8 0%, #D5EDD5 100%)"
             : "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
-          border: `1px solid ${progress.read === progress.total ? "#5BA87633" : "rgba(49,130,246,0.18)"}`,
+          border: `1px solid ${progress.read === progress.total ? "#5BA87633" : "rgba(173, 94, 59,0.18)"}`,
         }}
       >
         <Sparkles size={16} className={progress.read === progress.total ? "text-[#3F5B42]" : "text-[var(--color-primary)]"} />

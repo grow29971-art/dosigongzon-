@@ -206,7 +206,7 @@ function PodiumCard({ row, place, height }: { row: RankingRow; place: 1 | 2 | 3;
       ? "rgba(201,169,97,0.6)"
       : place === 2
         ? "rgba(160,160,160,0.6)"
-        : "rgba(49,130,246,0.5)";
+        : "rgba(173, 94, 59,0.5)";
 
   return (
     <Link

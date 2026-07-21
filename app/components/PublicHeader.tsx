@@ -23,7 +23,7 @@ export default async function PublicHeader() {
       className="sticky top-0 z-30 backdrop-blur-md"
       style={{
         background: "rgba(255, 253, 248, 0.88)",
-        borderBottom: "1px solid rgba(49,130,246,0.12)",
+        borderBottom: "1px solid rgba(173, 94, 59,0.12)",
       }}
     >
       <div className="max-w-lg mx-auto px-4 h-12 flex items-center justify-between">
@@ -45,7 +45,7 @@ export default async function PublicHeader() {
           <Link
             href="/mypage"
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11.5px] font-bold active:scale-95 transition-transform"
-            style={{ background: "rgba(49,130,246,0.12)", color: "var(--color-primary)" }}
+            style={{ background: "rgba(173, 94, 59,0.12)", color: "var(--color-primary)" }}
             aria-label="마이페이지"
           >
             <UserIcon size={12} />
@@ -66,7 +66,7 @@ export default async function PublicHeader() {
               className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[11.5px] font-extrabold active:scale-95 transition-transform text-white"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-                boxShadow: "0 2px 8px rgba(49,130,246,0.35)",
+                boxShadow: "0 2px 8px rgba(173, 94, 59,0.35)",
               }}
             >
               시작하기

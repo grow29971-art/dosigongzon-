@@ -595,9 +595,9 @@ export default function HomeAuthed({
           href="/mypage/activity-regions"
           className="block mb-4 active:scale-[0.99] transition-transform"
           style={{
-            background: "linear-gradient(135deg, #3182F6 0%, #1B64DA 100%)",
+            background: "linear-gradient(135deg, #AD5E3B 0%, #8A4325 100%)",
             borderRadius: 20,
-            boxShadow: "0 8px 24px rgba(49,130,246,0.28)",
+            boxShadow: "0 8px 24px rgba(173, 94, 59,0.28)",
           }}
         >
           <div className="p-4 flex items-center gap-3">
@@ -842,7 +842,7 @@ export default function HomeAuthed({
                     <Link
                       href={`/shop?category=${bridge.cat}`}
                       className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl active:scale-[0.98] transition-transform"
-                      style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(49,130,246,0.15)" }}
+                      style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(173, 94, 59,0.15)" }}
                     >
                       <span className="flex items-center gap-1.5 text-[11.5px] font-extrabold" style={{ color: "var(--color-primary-dark)" }}>
                         <ShoppingBag size={13} />
@@ -905,7 +905,7 @@ export default function HomeAuthed({
                 내 동네 소식
               </h2>
               {primaryRegion && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ background: "rgba(49,130,246,0.12)", color: "var(--color-primary)" }}>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ background: "rgba(173, 94, 59,0.12)", color: "var(--color-primary)" }}>
                   📍 {primaryRegion.name}
                 </span>
               )}
@@ -928,14 +928,14 @@ export default function HomeAuthed({
                 style={{
                   background: "linear-gradient(135deg, var(--color-primary-softer) 0%, rgba(168,104,74,0.04) 100%)",
                   borderRadius: 18,
-                  border: "1px dashed rgba(49,130,246,0.3)",
+                  border: "1px dashed rgba(173, 94, 59,0.3)",
                 }}
               >
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: "rgba(49,130,246,0.15)" }}
+                  style={{ backgroundColor: "rgba(173, 94, 59,0.15)" }}
                 >
-                  <MapPin size={18} color="#3182F6" strokeWidth={2} />
+                  <MapPin size={18} color="#AD5E3B" strokeWidth={2} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-extrabold text-text-main">활동 지역을 설정해보세요</p>
@@ -1025,7 +1025,7 @@ export default function HomeAuthed({
                         >
                           <span
                             className="text-[10px] font-extrabold px-2 py-0.5 rounded-md shrink-0"
-                            style={{ backgroundColor: "rgba(49,130,246,0.12)", color: "var(--color-primary)" }}
+                            style={{ backgroundColor: "rgba(173, 94, 59,0.12)", color: "var(--color-primary)" }}
                           >
                             {p.region}
                           </span>
@@ -1057,7 +1057,7 @@ export default function HomeAuthed({
                   <div className="flex items-start gap-3 mb-3">
                     <div
                       className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-[18px]"
-                      style={{ backgroundColor: "rgba(49,130,246,0.15)" }}
+                      style={{ backgroundColor: "rgba(173, 94, 59,0.15)" }}
                     >
                       🐾
                     </div>
@@ -1120,7 +1120,7 @@ export default function HomeAuthed({
                     className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white active:scale-[0.98] transition-transform"
                     style={{
                       background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-                      boxShadow: "0 4px 12px rgba(49,130,246,0.3)",
+                      boxShadow: "0 4px 12px rgba(173, 94, 59,0.3)",
                     }}
                   >
                     <span className="text-[12.5px] font-extrabold tracking-tight">
@@ -1154,7 +1154,7 @@ export default function HomeAuthed({
                       >
                         <span
                           className="text-[10px] font-extrabold px-2 py-0.5 rounded-md shrink-0"
-                          style={{ backgroundColor: "rgba(49,130,246,0.12)", color: "var(--color-primary)" }}
+                          style={{ backgroundColor: "rgba(173, 94, 59,0.12)", color: "var(--color-primary)" }}
                         >
                           {p.region}
                         </span>
@@ -1885,13 +1885,13 @@ export default function HomeAuthed({
         style={{
           background: "linear-gradient(135deg, #FBF8F3 0%, #F2EBE0 100%)",
           borderRadius: 22,
-          boxShadow: "0 4px 16px rgba(49,130,246,0.10), 0 1px 3px rgba(0,0,0,0.03)",
-          border: "1px solid rgba(49,130,246,0.18)",
+          boxShadow: "0 4px 16px rgba(173, 94, 59,0.10), 0 1px 3px rgba(0,0,0,0.03)",
+          border: "1px solid rgba(173, 94, 59,0.18)",
         }}
       >
         <div
           className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-          style={{ background: "rgba(49,130,246,0.15)" }}
+          style={{ background: "rgba(173, 94, 59,0.15)" }}
         >
           <Sparkles size={22} className="text-primary" />
         </div>
@@ -1921,7 +1921,7 @@ export default function HomeAuthed({
             className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-white text-[14.5px] font-extrabold active:scale-[0.98] transition-transform pointer-events-auto"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 6px 20px rgba(49,130,246,0.35)",
+              boxShadow: "0 6px 20px rgba(173, 94, 59,0.35)",
             }}
           >
             🍚 돌봄 기록하기

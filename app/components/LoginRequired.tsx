@@ -21,7 +21,7 @@ export default function LoginRequired({
         className="w-16 h-16 rounded-3xl flex items-center justify-center mb-4"
         style={{
           background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-          boxShadow: "0 10px 28px rgba(49,130,246,0.35)",
+          boxShadow: "0 10px 28px rgba(173, 94, 59,0.35)",
         }}
       >
         <MessagesSquare size={28} color="#fff" strokeWidth={2.2} />

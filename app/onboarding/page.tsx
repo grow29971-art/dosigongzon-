@@ -258,7 +258,7 @@ export default function OnboardingPage() {
           <div className="w-full max-w-[360px] space-y-2.5">
             <SignupActionCard pickedName={picked?.name ?? null} onClick={() => goAndComplete("/signup")} />
             <ActionCard
-              icon={<MapPin size={20} color="#3182F6" strokeWidth={2.2} />}
+              icon={<MapPin size={20} color="#AD5E3B" strokeWidth={2.2} />}
               title="가입 없이 지도부터 보기"
               desc="구경만 해도 OK — 나중에 가입할 수 있어요"
               onClick={() => goAndComplete("/map")}

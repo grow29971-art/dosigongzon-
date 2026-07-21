@@ -50,7 +50,7 @@ const COHORT_META: Record<CohortId, {
     description: "최근 24시간 안에 가입",
     Icon: Sparkles,
     color: "var(--color-primary)",
-    bg: "rgba(49,130,246,0.10)",
+    bg: "rgba(173, 94, 59,0.10)",
   },
   active: {
     label: "활성",

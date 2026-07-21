@@ -102,7 +102,7 @@ export default function RegionsIndexPage() {
           className="block rounded-2xl p-4 active:scale-[0.98] transition-transform"
           style={{
             background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-            boxShadow: "0 8px 24px rgba(49,130,246,0.30)",
+            boxShadow: "0 8px 24px rgba(173, 94, 59,0.30)",
           }}
         >
           <div className="flex items-center justify-between">

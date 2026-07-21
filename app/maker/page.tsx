@@ -82,7 +82,7 @@ export default function MakerPage() {
           className="rounded-3xl p-5 mb-3"
           style={{
             background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)",
-            border: "1px solid rgba(49,130,246,0.20)",
+            border: "1px solid rgba(173, 94, 59,0.20)",
           }}
         >
           <div className="flex items-center gap-1.5 mb-3">
@@ -174,7 +174,7 @@ export default function MakerPage() {
           className="rounded-3xl p-5"
           style={{
             background: "linear-gradient(135deg, #FFF9F2 0%, #F4E8D8 100%)",
-            border: "1px solid rgba(49,130,246,0.20)",
+            border: "1px solid rgba(173, 94, 59,0.20)",
           }}
         >
           <p className="text-[13px] leading-[2] text-text-sub">
@@ -330,7 +330,7 @@ export default function MakerPage() {
             className="flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-extrabold text-white active:scale-[0.98] transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 4px 14px rgba(49,130,246,0.30)",
+              boxShadow: "0 4px 14px rgba(173, 94, 59,0.30)",
             }}
           >
             <Mail size={14} />
@@ -369,7 +369,7 @@ function SkillCard({ icon, title, sub }: { icon: React.ReactNode; title: string;
       className="rounded-xl p-3"
       style={{
         background: "linear-gradient(135deg, #FFF9F2 0%, #F4E8D8 100%)",
-        border: "1px solid rgba(49,130,246,0.18)",
+        border: "1px solid rgba(173, 94, 59,0.18)",
       }}
     >
       <div className="flex items-center gap-1.5 mb-1" style={{ color: "var(--color-primary-dark)" }}>

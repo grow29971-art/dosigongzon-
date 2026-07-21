@@ -60,18 +60,18 @@ export default function FoundingMemberBanner() {
       className="relative mb-3 rounded-2xl px-4 py-3.5"
       style={{
         background: "linear-gradient(135deg, #FFF6E8 0%, #F4E6C8 100%)",
-        border: "1.5px solid rgba(49,130,246,0.25)",
-        boxShadow: "0 4px 14px rgba(49,130,246,0.12)",
+        border: "1.5px solid rgba(173, 94, 59,0.25)",
+        boxShadow: "0 4px 14px rgba(173, 94, 59,0.12)",
       }}
     >
       <button
         type="button"
         onClick={handleDismiss}
         className="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center active:scale-90"
-        style={{ background: "rgba(49,130,246,0.10)" }}
+        style={{ background: "rgba(173, 94, 59,0.10)" }}
         aria-label="배너 닫기"
       >
-        <X size={14} color="#1B64DA" />
+        <X size={14} color="#8A4325" />
       </button>
       <div className="flex items-start gap-3 pr-7">
         <div

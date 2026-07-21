@@ -117,7 +117,7 @@ export default async function AreasIndexPage() {
           className="block rounded-2xl p-4 active:scale-[0.98] transition-transform"
           style={{
             background: "linear-gradient(135deg, #FFF8F2 0%, #F7F4EE 100%)",
-            border: "1.5px solid rgba(49,130,246,0.25)",
+            border: "1.5px solid rgba(173, 94, 59,0.25)",
           }}
         >
           <div className="flex items-center justify-between">

@@ -101,7 +101,7 @@ export default function MyCatsQuickCare() {
                   className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center"
                   style={{
                     background: "#F4E6CE",
-                    border: c.fedToday ? "2px solid #6B8E6F" : "2px solid rgba(49,130,246,0.3)",
+                    border: c.fedToday ? "2px solid #6B8E6F" : "2px solid rgba(173, 94, 59,0.3)",
                   }}
                 >
                   {thumb ? (

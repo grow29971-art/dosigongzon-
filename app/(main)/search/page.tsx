@@ -267,7 +267,7 @@ function EmptyState({ icon, title, desc }: { icon: React.ReactNode; title: strin
     >
       <div
         className="w-14 h-14 rounded-full flex items-center justify-center mb-3"
-        style={{ background: "rgba(49,130,246,0.12)" }}
+        style={{ background: "rgba(173, 94, 59,0.12)" }}
       >
         {icon}
       </div>

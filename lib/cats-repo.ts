@@ -83,7 +83,7 @@ export const ADOPTION_MAP: Record<
   Exclude<AdoptionStatus, null>,
   { label: string; emoji: string; color: string; short: string }
 > = {
-  seeking_home: { label: "입양처 찾는 중", short: "입양", emoji: "🏡", color: "#3182F6" },
+  seeking_home: { label: "입양처 찾는 중", short: "입양", emoji: "🏡", color: "#AD5E3B" },
   temp_care: { label: "임시보호 필요", short: "임보", emoji: "🤝", color: "#4A7BA8" },
   both: { label: "입양·임보 모두", short: "입양·임보", emoji: "💛", color: "#8B65B8" },
 };

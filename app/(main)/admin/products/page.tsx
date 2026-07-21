@@ -195,7 +195,7 @@ export default function AdminProductsPage() {
       {editingId && (
         <div
           className="mb-5 p-4"
-          style={{ background: "#fff", borderRadius: "var(--radius-card)", boxShadow: "0 6px 20px rgba(0,0,0,0.08)", border: "1.5px solid rgba(49,130,246,0.3)" }}
+          style={{ background: "#fff", borderRadius: "var(--radius-card)", boxShadow: "0 6px 20px rgba(0,0,0,0.08)", border: "1.5px solid rgba(173, 94, 59,0.3)" }}
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-[13.5px] font-extrabold text-text-main">

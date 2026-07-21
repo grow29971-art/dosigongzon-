@@ -82,7 +82,7 @@ export default function LocationLogsPage() {
       {/* 요약 */}
       <div className="px-4 -mt-6 mb-5 grid grid-cols-3 gap-2">
         <SummaryCard label="전체" value={rows.length} color="#4A7BA8" />
-        <SummaryCard label="동 이동" value={dongMoves.length} color="#3182F6" />
+        <SummaryCard label="동 이동" value={dongMoves.length} color="#AD5E3B" />
         <SummaryCard
           label="500m↑ 이동"
           value={longMoves.length}

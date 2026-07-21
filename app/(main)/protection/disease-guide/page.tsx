@@ -947,7 +947,7 @@ export default function DiseaseGuidePage() {
         <Link
           href="/protection/emergency-guide"
           className="px-3 py-2 rounded-xl text-[12px] font-bold active:scale-95"
-          style={{ background: "#FFF1E6", color: "var(--color-primary)", border: "1px solid rgba(49,130,246,0.25)" }}
+          style={{ background: "#FFF1E6", color: "var(--color-primary)", border: "1px solid rgba(173, 94, 59,0.25)" }}
         >
           🚑 응급 구조 가이드
         </Link>

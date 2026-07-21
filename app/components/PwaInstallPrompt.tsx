@@ -159,8 +159,8 @@ export default function PwaInstallPrompt() {
         style={{
           maxWidth: 420,
           background: "linear-gradient(135deg, #FFFFFF 0%, #FFF9F0 100%)",
-          boxShadow: "0 12px 36px rgba(49,130,246,0.25), 0 2px 8px rgba(0,0,0,0.08)",
-          border: "1px solid rgba(49,130,246,0.25)",
+          boxShadow: "0 12px 36px rgba(173, 94, 59,0.25), 0 2px 8px rgba(0,0,0,0.08)",
+          border: "1px solid rgba(173, 94, 59,0.25)",
         }}
       >
         <div className="flex items-start gap-3">
@@ -168,7 +168,7 @@ export default function PwaInstallPrompt() {
             className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 4px 12px rgba(49,130,246,0.35)",
+              boxShadow: "0 4px 12px rgba(173, 94, 59,0.35)",
             }}
           >
             <Download size={19} color="#fff" strokeWidth={2.3} />
@@ -222,7 +222,7 @@ export default function PwaInstallPrompt() {
             className="w-full mt-3 py-2.5 rounded-xl text-[13px] font-extrabold text-white active:scale-[0.98] transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 4px 12px rgba(49,130,246,0.35)",
+              boxShadow: "0 4px 12px rgba(173, 94, 59,0.35)",
             }}
           >
             홈 화면에 추가

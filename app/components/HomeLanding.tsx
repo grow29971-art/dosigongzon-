@@ -217,7 +217,7 @@ export default async function HomeLanding({
             className="flex-[1.4] flex items-center justify-center gap-1.5 py-4 rounded-2xl text-white active:scale-[0.98] transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 8px 22px rgba(49,130,246,0.38), 0 2px 6px rgba(168,104,74,0.22)",
+              boxShadow: "0 8px 22px rgba(173, 94, 59,0.38), 0 2px 6px rgba(168,104,74,0.22)",
             }}
           >
             <PawPrint size={15} />
@@ -227,16 +227,16 @@ export default async function HomeLanding({
             href="/signup"
             className="flex-1 flex items-center justify-center gap-1.5 py-4 rounded-2xl active:scale-[0.98] transition-transform"
             style={{
-              background: "rgba(49,130,246,0.09)",
+              background: "rgba(173, 94, 59,0.09)",
               color: "var(--color-primary)",
-              border: "1.5px solid rgba(49,130,246,0.45)",
+              border: "1.5px solid rgba(173, 94, 59,0.45)",
             }}
           >
             <Sparkles size={14} />
             <span className="text-[14px] font-extrabold tracking-tight">돌봄 시작하기</span>
           </Link>
         </div>
-        <p className="mt-2 text-center text-[11px] font-bold" style={{ color: "rgba(49,130,246,0.7)" }}>
+        <p className="mt-2 text-center text-[11px] font-bold" style={{ color: "rgba(173, 94, 59,0.7)" }}>
           10초 가입 · 광고 없는 무료 운영
         </p>
 
@@ -565,7 +565,7 @@ export default async function HomeLanding({
           className="rounded-2xl p-4 mb-3"
           style={{
             background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)",
-            border: "1px solid rgba(49,130,246,0.20)",
+            border: "1px solid rgba(173, 94, 59,0.20)",
           }}
         >
           <p className="text-[12px] text-text-sub leading-[1.85]">
@@ -599,7 +599,7 @@ export default async function HomeLanding({
           <StartStep
             n={1}
             href="/signup"
-            color="#3182F6"
+            color="#AD5E3B"
             title="1초 가입 — 카카오·구글로"
             desc="이메일 따로 안 적어도 돼요. 닉네임만 정하면 끝."
           />
@@ -698,7 +698,7 @@ export default async function HomeLanding({
           className="relative rounded-3xl px-6 py-7 overflow-hidden"
           style={{
             background: "linear-gradient(135deg, #FDF7EE 0%, #F6E8D4 100%)",
-            border: "1px solid rgba(49,130,246,0.18)",
+            border: "1px solid rgba(173, 94, 59,0.18)",
           }}
         >
           <span
@@ -708,7 +708,7 @@ export default async function HomeLanding({
               fontSize: 60,
               lineHeight: 1,
               fontFamily: "serif",
-              color: "rgba(49,130,246,0.25)",
+              color: "rgba(173, 94, 59,0.25)",
             }}
           >
             “
@@ -860,7 +860,7 @@ export default async function HomeLanding({
             border: "1px solid rgba(0,0,0,0.04)",
           }}
         >
-          <TrustInline emoji="🐾" value={data.catCount} label="등록" color="#3182F6" />
+          <TrustInline emoji="🐾" value={data.catCount} label="등록" color="#AD5E3B" />
           <span className="w-px h-8" style={{ background: "rgba(0,0,0,0.06)" }} />
           <TrustInline emoji="❤️" value={data.userCount} label="이웃" color="#E86B8C" />
           <span className="w-px h-8" style={{ background: "rgba(0,0,0,0.06)" }} />
@@ -1071,8 +1071,8 @@ export default async function HomeLanding({
         </p>
         <div className="grid grid-cols-2 gap-2">
           <TechCard
-            icon={<MapPin size={16} color="#3182F6" />}
-            iconBg="#3182F615"
+            icon={<MapPin size={16} color="#AD5E3B" />}
+            iconBg="#AD5E3B15"
             title="전국 구·동 자체 매핑"
             sub="구·동 단위 좌표 직접 정리"
           />
@@ -1115,13 +1115,13 @@ export default async function HomeLanding({
           className="rounded-3xl p-5"
           style={{
             background: "linear-gradient(135deg, #FFF9F2 0%, #F4E8D8 100%)",
-            border: "1px solid rgba(49,130,246,0.20)",
+            border: "1px solid rgba(173, 94, 59,0.20)",
           }}
         >
           <div className="flex items-center gap-2 mb-2">
             <div
               className="w-9 h-9 rounded-full flex items-center justify-center"
-              style={{ background: "rgba(49,130,246,0.15)" }}
+              style={{ background: "rgba(173, 94, 59,0.15)" }}
             >
               <Code2 size={18} style={{ color: "var(--color-primary-dark)" }} />
             </div>
@@ -1148,7 +1148,7 @@ export default async function HomeLanding({
               style={{
                 background: "#FFFFFF",
                 color: "var(--color-primary-dark)",
-                border: "1px solid rgba(49,130,246,0.25)",
+                border: "1px solid rgba(173, 94, 59,0.25)",
               }}
             >
               <span>운영 이야기 보기</span>
@@ -1159,7 +1159,7 @@ export default async function HomeLanding({
               className="flex items-center justify-center gap-1 px-4 py-2.5 rounded-xl text-[12px] font-extrabold text-white active:scale-[0.98] transition-transform"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-                boxShadow: "0 4px 12px rgba(49,130,246,0.3)",
+                boxShadow: "0 4px 12px rgba(173, 94, 59,0.3)",
               }}
             >
               <Mail size={12} />
