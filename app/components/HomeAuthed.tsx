@@ -22,6 +22,7 @@ import {
   ChevronUp,
   Sparkles,
   Bell,
+  Bot,
   Search,
   ShoppingBag,
 } from "lucide-react";
@@ -667,6 +668,14 @@ export default function HomeAuthed({
                         🔥 {streakInfo.streak}일
                       </span>
                     )}
+                    <Link
+                      href="/tips"
+                      className="w-9 h-9 rounded-xl bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
+                      aria-label="AI 집사"
+                    >
+                      {/* AI집사 이중 진입점 — 탭 재편(D-day) 시 탭이 빠져도 발견성 유지 (2026-07-21 회의) */}
+                      <Bot size={16} className="text-text-sub" />
+                    </Link>
                     <Link
                       href="/search"
                       className="w-9 h-9 rounded-xl bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"

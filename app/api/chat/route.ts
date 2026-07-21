@@ -163,6 +163,13 @@ export async function POST(request: Request) {
   // 하니 실제 등급보다 낮게 잡힐 순 있어도 스푸핑으로 높게 받을 순 없음.
   const { count: catCount } = await supabase
     .from("cats").select("id", { count: "exact", head: true }).eq("caretaker_id", user.id);
+
+  // AI집사 사용 계측 (2026-07-21) — 탭 재편 시 "AI집사 탭을 빼도 되는가" 판단 근거.
+  // 테이블 미생성(box/supabase_ai_chat_usage_migration.sql 실행 전)이어도 조용히 무시.
+  supabase.from("ai_chat_logs").insert({ user_id: user.id }).then(
+    (r) => { if (r.error && !/ai_chat_logs/.test(r.error.message)) console.warn("[chat] usage log:", r.error.message); },
+  );
+
   const userLevel = computeLevel((catCount ?? 0) * 10).level;
   const rl = checkRateLimit(user.id, getRateLimit(userLevel));
   if (!rl.ok) {
