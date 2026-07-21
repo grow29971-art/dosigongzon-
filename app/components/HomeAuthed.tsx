@@ -73,6 +73,7 @@ const DailyCheckinModal = dynamic(() => import("@/app/components/DailyCheckinMod
 const FirstCheerCard = dynamic(() => import("@/app/components/FirstCheerCard"), { ssr: false });
 const AppOpenGuideModal = dynamic(() => import("@/app/components/AppOpenGuideModal"), { ssr: false });
 import MyCatsHero from "@/app/components/MyCatsHero";
+import ShopPreviewStrip from "@/app/components/ShopPreviewStrip";
 import CareTamagotchiHero from "@/app/components/CareTamagotchiHero";
 const WeeklyCheckinCard = dynamic(() => import("@/app/components/WeeklyCheckinCard"), { ssr: false });
 const PushCareCueOptIn = dynamic(() => import("@/app/components/PushCareCueOptIn"), { ssr: false });
@@ -570,7 +571,8 @@ export default function HomeAuthed({
   const SHOW_CIRCLE_ENTRY = true;         // 서클 빠른 진입 — "혼자→같이" 리텐션 앵커(2026-07-16 회의)
   const SHOW_INVITE = true;               // 초대 섹션 — 바이럴 유입(catCount>0 가드). (2026-07-16 회의)
   const SHOW_SOCIAL_PROOF = true;         // 사회적 증명 스트립 — 동네 활발함 신호(데이터 없으면 자동 숨김). (2026-07-16 회의)
-  const SHOW_WEATHER_SHOP_BRIDGE = false; // 날씨→쇼핑 카테고리 다리
+  const SHOW_WEATHER_SHOP_BRIDGE = true;  // 날씨→쇼핑 카테고리 다리 — 2026-07-21 쇼핑 동선 회의로 ON (한파/폭염/비 조건부 노출)
+  const SHOW_SHOP_PREVIEW = true;         // 홈 쇼핑 프리뷰 스트립(찜) — 2026-07-21 쇼핑 동선 회의. 케어 지표 하락 시 이 플래그로 롤백
 
   return (
     <>
@@ -865,6 +867,9 @@ export default function HomeAuthed({
           <MyCatsHero />
         </div>
       )}
+
+      {/* ══════ 쇼핑 프리뷰 — 케어 섹션 뒤 배치 (2026-07-21 쇼핑 동선 회의, 케어 위계 유지) ══════ */}
+      {SHOW_SHOP_PREVIEW && user && <ShopPreviewStrip />}
 
       {/* ══════ 일일 출석체크 모달 — 코인·카드 EXP·계정 레벨 보상 ══════ */}
       {SHOW_CHECKIN && user && <DailyCheckinModal />}

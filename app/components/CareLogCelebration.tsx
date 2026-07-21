@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Heart, Sparkles } from "lucide-react";
 
 type Props = {
@@ -166,6 +167,19 @@ export default function CareLogCelebration({
                 </button>
               </div>
             </>
+          )}
+
+          {/* 7일+ 스트릭에게만 — 습관 형성된 유저에게 보상 프레임으로 상점 제안
+              (2026-07-21 쇼핑 동선 회의. 첫 돌봄의 peak-end 순간은 오염 금지라 streak 조건 필수) */}
+          {streak >= 7 && (
+            <Link
+              href="/shop?category=food"
+              onClick={onClose}
+              className="block text-center text-[12px] font-bold mt-3 py-3 rounded-2xl active:scale-[0.98] transition-transform"
+              style={{ background: "rgba(232,148,10,0.1)", color: "#B87409" }}
+            >
+              🔥 {streak}일 연속 기념 — 아이들 간식 구경하고 찜해두기
+            </Link>
           )}
         </div>
       </div>

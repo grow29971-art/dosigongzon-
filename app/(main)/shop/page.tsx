@@ -5,9 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ShoppingCart, ReceiptText, PawPrint, LayoutGrid,
-  Fish, SprayCan, HeartPulse, ToyBrick, Home, Gift, ChevronRight,
+  Fish, SprayCan, HeartPulse, ToyBrick, Home, Gift, ChevronRight, Heart,
   type LucideIcon,
 } from "lucide-react";
+import { readWishlist, toggleWishlist } from "@/lib/wishlist";
 import { useAuth } from "@/lib/auth-context";
 import {
   listProducts, listCartItems, SHOP_CATEGORIES,
@@ -47,7 +48,8 @@ function discountRate(price: number, salePrice: number): number {
 }
 
 /* ═══ 상품 카드 ═══ */
-function ProductCard({ product }: { product: Product }) {
+// wished/onToggleWish: 오픈 전 찜 (2026-07-21 쇼핑 동선 회의 — 결제 하드락 중 완결 행동)
+function ProductCard({ product, wished, onToggleWish }: { product: Product; wished: boolean; onToggleWish: (id: string) => void }) {
   const thumb = product.images[0] ? sanitizeImageUrl(product.images[0], "") : "";
   const soldOut = product.stock <= 0;
   const discounted = product.sale_price != null && product.sale_price < product.price;
@@ -95,6 +97,16 @@ function ProductCard({ product }: { product: Product }) {
               </span>
             </div>
           )}
+          {/* 찜 — Link 내부라 preventDefault로 상세 이동 차단 */}
+          <button
+            type="button"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleWish(product.id); }}
+            aria-label={wished ? "찜 해제" : "찜하기"}
+            className="absolute bottom-2 right-2 z-10 w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform"
+            style={{ background: "rgba(255,255,255,0.94)", boxShadow: "0 1px 6px rgba(0,0,0,0.14)" }}
+          >
+            <Heart size={16} fill={wished ? "#E14B6A" : "none"} style={{ color: wished ? "#E14B6A" : "var(--color-text-light)" }} />
+          </button>
         </div>
 
         {/* 정보 */}
@@ -143,6 +155,7 @@ export default function ShopPage() {
   const [loading, setLoading] = useState(true);
   const [cartCount, setCartCount] = useState(0);
   const [donation, setDonation] = useState<DonationProgress | null>(null);
+  const [wish, setWish] = useState<string[]>([]);
 
   // 딥링크 초기 카테고리 (?category=shelter 등) — 홈 맥락 다리에서 진입 시 자동 필터
   useEffect(() => {
@@ -165,6 +178,7 @@ export default function ShopPage() {
       .then(setProducts)
       .catch(() => setProducts([]))
       .finally(() => setLoading(false));
+    setWish(readWishlist());
   }, []);
 
   useEffect(() => {
@@ -210,7 +224,7 @@ export default function ShopPage() {
             </span>
           </div>
           <p className="text-[12.5px] text-text-sub leading-relaxed">
-            입점 제품 협의 중 · 곧 오픈해요
+            길집사님들이 실제로 쓰는 것만 골라 들여오고 있어요
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -277,8 +291,8 @@ export default function ShopPage() {
           style={{ background: "rgba(255,255,255,0.55)", border: "1px solid rgba(196,126,90,0.15)" }}
         >
           <p className="text-[11px] leading-[1.65] text-text-sub">
-            운영자는 <b className="text-text-main">서버 유지 등 최소 마진만</b> 남기고,
-            남는 수익은 아이들에게 써요<span className="text-text-light"> (몇%인지 계산 중)</span>. <b className="text-text-main">어디에 쓸지는 투표로</b> 정하고,
+            어차피 사는 사료·용품, 여기서 사면 <b className="text-text-main">수익의 일부가 아이들에게</b> 쌓여요.
+            <b className="text-text-main"> 어디에 쓸지는 투표로</b> 정하고,
             <br />모인 금액과 쓰인 금액은 <b className="text-text-main">아래에서 투명하게</b> 공개돼요 💛
           </p>
           <p className="text-[11px] font-bold text-text-main mt-1.5 pt-1.5" style={{ borderTop: "1px solid rgba(196,126,90,0.12)" }}>
@@ -328,7 +342,7 @@ export default function ShopPage() {
       >
         <span className="text-[13px] shrink-0">🚧</span>
         <p className="text-[11px] font-semibold leading-snug" style={{ color: "#A6741E" }}>
-          정식 오픈 준비 중이에요. 지금은 미리보기 단계라 실제 결제·배송은 되지 않아요.
+          아직 오픈 전이라 결제·배송은 되지 않아요. 지금은 구경하고 <b>♡ 찜해두는</b> 기간이에요.
         </p>
       </div>
 
@@ -382,7 +396,7 @@ export default function ShopPage() {
       ) : (
         <div className="grid grid-cols-2 gap-3">
           {visible.map((p) => (
-            <ProductCard key={p.id} product={p} />
+            <ProductCard key={p.id} product={p} wished={wish.includes(p.id)} onToggleWish={(id) => setWish(toggleWishlist(id))} />
           ))}
         </div>
       )}
