@@ -246,7 +246,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             style={{
               background:
                 "linear-gradient(135deg, var(--color-primary-softer) 0%, rgba(232,107,140,0.06) 100%)",
-              border: "1px solid rgba(49,130,246,0.18)",
+              border: "1px solid rgba(25, 31, 40,0.18)",
             }}
           >
             {/* 돌봄 이웃 아바타 스택 */}
@@ -329,8 +329,8 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             className="rounded-2xl p-4 relative overflow-hidden"
             style={{
               background: "linear-gradient(135deg, #FFF6E8 0%, #FCE7D2 50%, #F8D9BE 100%)",
-              border: "1.5px solid rgba(49,130,246,0.30)",
-              boxShadow: "0 6px 18px rgba(49,130,246,0.18)",
+              border: "1.5px solid rgba(25, 31, 40,0.30)",
+              boxShadow: "0 6px 18px rgba(25, 31, 40,0.18)",
             }}
           >
             <div
@@ -372,7 +372,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                 className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.98] transition-transform bg-white"
                 style={{
                   color: "var(--color-primary-dark)",
-                  border: "1px solid rgba(49,130,246,0.30)",
+                  border: "1px solid rgba(25, 31, 40,0.30)",
                 }}
               >
                 더 둘러보기
@@ -477,17 +477,17 @@ export default async function CatDetailPage({ params }: { params: Params }) {
               style={{
                 background: hasTodayPhoto
                   ? "linear-gradient(135deg, rgba(91,168,118,0.14) 0%, rgba(107,142,111,0.10) 100%)"
-                  : "linear-gradient(135deg, rgba(49,130,246,0.16) 0%, rgba(232,176,64,0.10) 100%)",
+                  : "linear-gradient(135deg, rgba(25, 31, 40,0.16) 0%, rgba(232,176,64,0.10) 100%)",
                 border: hasTodayPhoto
                   ? "1.5px solid rgba(91,168,118,0.35)"
-                  : "1.5px dashed rgba(49,130,246,0.40)",
+                  : "1.5px dashed rgba(25, 31, 40,0.40)",
               }}
             >
               <div className="flex items-center gap-2.5">
                 <div
                   className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
                   style={{
-                    background: hasTodayPhoto ? "rgba(91,168,118,0.22)" : "rgba(49,130,246,0.18)",
+                    background: hasTodayPhoto ? "rgba(91,168,118,0.22)" : "rgba(25, 31, 40,0.18)",
                   }}
                 >
                   {hasTodayPhoto ? (
@@ -526,7 +526,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             className="rounded-2xl p-5 text-center"
             style={{
               background: "linear-gradient(135deg, #FFF9F2 0%, #FCE7D2 100%)",
-              border: "1.5px dashed rgba(49,130,246,0.35)",
+              border: "1.5px dashed rgba(25, 31, 40,0.35)",
             }}
           >
             <Sparkles size={20} className="mx-auto mb-1.5" style={{ color: "var(--color-primary)" }} />
@@ -543,7 +543,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
               className="inline-flex items-center gap-1.5 mt-3 px-4 py-2 rounded-xl text-white text-[12px] font-extrabold active:scale-[0.97] transition-transform"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-                boxShadow: "0 6px 18px rgba(49,130,246,0.35)",
+                boxShadow: "0 6px 18px rgba(25, 31, 40,0.35)",
               }}
             >
               <Camera size={13} />

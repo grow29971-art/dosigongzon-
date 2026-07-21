@@ -194,7 +194,7 @@ function SignupContent() {
             className="mb-4 rounded-2xl p-4"
             style={{
               background: "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
-              border: "1.5px solid rgba(49,130,246,0.30)",
+              border: "1.5px solid rgba(25, 31, 40,0.30)",
             }}
           >
             <p className="text-[10.5px] font-extrabold tracking-[0.12em] mb-1.5" style={{ color: "var(--color-primary)" }}>

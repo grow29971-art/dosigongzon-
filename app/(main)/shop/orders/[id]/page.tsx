@@ -157,7 +157,7 @@ export default function OrderDetailPage() {
                           className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
                           style={{
                             background: reached ? "var(--color-primary)" : "var(--color-surface-alt)",
-                            boxShadow: reached ? "0 2px 6px rgba(49,130,246,0.35)" : "none",
+                            boxShadow: reached ? "0 2px 6px rgba(25, 31, 40,0.35)" : "none",
                           }}
                         >
                           {reached && <Check size={13} color="#fff" strokeWidth={3} />}

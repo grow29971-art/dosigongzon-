@@ -102,7 +102,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
           </button>
           <p className="text-[10px] font-extrabold tracking-[0.2em] mb-2" style={{ color: "var(--color-primary-dark)" }}>오늘 이거 해보세요</p>
           <div className="flex items-center gap-3">
-            <div className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 text-3xl" style={{ background: "#FFFFFF", boxShadow: "0 4px 14px rgba(49,130,246,0.25)" }}>
+            <div className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 text-3xl" style={{ background: "#FFFFFF", boxShadow: "0 4px 14px rgba(25, 31, 40,0.25)" }}>
               {spot.emoji}
             </div>
             <div className="min-w-0">
@@ -131,7 +131,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
                 href={c.href}
                 onClick={close}
                 className="flex flex-col items-center gap-1 py-2.5 rounded-xl active:scale-[0.97] transition-transform"
-                style={{ background: "#FAF5EE", border: "1px solid rgba(49,130,246,0.12)" }}
+                style={{ background: "#FAF5EE", border: "1px solid rgba(25, 31, 40,0.12)" }}
               >
                 <span className="text-xl">{c.emoji}</span>
                 <span className="text-[11px] font-bold" style={{ color: "#5C4A3E" }}>{c.label}</span>

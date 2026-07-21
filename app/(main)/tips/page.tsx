@@ -133,7 +133,7 @@ export default async function TipsIndexPage() {
             background: "linear-gradient(135deg, #FFE6E0 0%, #FFCFB5 50%, #FFD9A8 100%)",
             borderRadius: 22,
             border: "1.5px solid rgba(216,85,85,0.25)",
-            boxShadow: "0 8px 24px rgba(216,85,85,0.15), 0 2px 6px rgba(49,130,246,0.10)",
+            boxShadow: "0 8px 24px rgba(216,85,85,0.15), 0 2px 6px rgba(25, 31, 40,0.10)",
           }}
         >
           <div
@@ -276,7 +276,7 @@ export default async function TipsIndexPage() {
           className="mt-6 p-5 rounded-2xl"
           style={{
             background: "linear-gradient(135deg, #FBF8F3 0%, #F2EBE0 100%)",
-            border: "1px solid rgba(49,130,246,0.15)",
+            border: "1px solid rgba(25, 31, 40,0.15)",
           }}
         >
           <p className="text-[12px] font-extrabold text-primary mb-1.5">도시공존이란?</p>
@@ -325,7 +325,7 @@ function TipCard({ tip }: { tip: Tip }) {
           {tip.featured && (
             <span
               className="absolute top-3 left-3 text-[10px] font-extrabold px-2 py-0.5 rounded-md text-white"
-              style={{ background: "rgba(49,130,246,0.95)" }}
+              style={{ background: "rgba(25, 31, 40,0.95)" }}
             >
               ✨ 추천
             </span>

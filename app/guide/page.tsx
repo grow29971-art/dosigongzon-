@@ -52,7 +52,7 @@ const SECTIONS: FeatureSection[] = [
       {
         icon: MapPin,
         iconColor: "var(--color-primary)",
-        iconBg: "rgba(49,130,246,0.12)",
+        iconBg: "rgba(25, 31, 40,0.12)",
         title: "동네 길고양이 지도",
         desc: "우리 동네에 등록된 길고양이를 지도에서 한눈에. 고양이·병원·약국을 색깔로 구분해서 보여줘요.",
         steps: [
@@ -259,7 +259,7 @@ const SECTIONS: FeatureSection[] = [
       {
         icon: Download,
         iconColor: "var(--color-primary)",
-        iconBg: "rgba(49,130,246,0.12)",
+        iconBg: "rgba(25, 31, 40,0.12)",
         title: "앱으로 설치 (PWA)",
         desc: "홈 화면에 설치하면 브라우저 탭 없이 앱처럼 열려요. 푸시 알림도 더 안정적.",
         steps: [
@@ -435,7 +435,7 @@ export default function GuidePage() {
           className="rounded-3xl p-5 text-center"
           style={{
             background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-            boxShadow: "0 8px 24px rgba(49,130,246,0.3)",
+            boxShadow: "0 8px 24px rgba(25, 31, 40,0.3)",
           }}
         >
           <p className="text-[16px] font-extrabold text-white leading-snug">

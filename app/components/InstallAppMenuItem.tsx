@@ -117,7 +117,7 @@ export default function InstallAppMenuItem() {
           {installed ? (
             <Check size={18} color="#2E7D32" strokeWidth={2.2} />
           ) : (
-            <Download size={18} color="#3182F6" strokeWidth={2.2} />
+            <Download size={18} color="#191F28" strokeWidth={2.2} />
           )}
         </div>
         <div className="flex-1 min-w-0 text-left">
@@ -157,7 +157,7 @@ export default function InstallAppMenuItem() {
                 className="w-11 h-11 rounded-full flex items-center justify-center"
                 style={{
                   background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-                  boxShadow: "0 4px 12px rgba(49,130,246,0.35)",
+                  boxShadow: "0 4px 12px rgba(25, 31, 40,0.35)",
                 }}
               >
                 <Download size={19} color="#fff" strokeWidth={2.2} />

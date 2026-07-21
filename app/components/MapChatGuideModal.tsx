@@ -101,8 +101,8 @@ export default function MapChatGuideModal() {
           <div
             className="rounded-2xl p-3.5 mb-4 flex items-start gap-3"
             style={{
-              background: "linear-gradient(135deg, var(--color-primary-softer) 0%, rgba(49,130,246,0.04) 100%)",
-              border: "1px solid rgba(49,130,246,0.18)",
+              background: "linear-gradient(135deg, var(--color-primary-softer) 0%, rgba(25, 31, 40,0.04) 100%)",
+              border: "1px solid rgba(25, 31, 40,0.18)",
             }}
           >
             <div

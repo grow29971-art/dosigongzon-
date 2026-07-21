@@ -110,7 +110,7 @@ export default function Og200EventModal() {
             className="w-[68px] h-[68px] mx-auto rounded-full flex items-center justify-center mb-3"
             style={{
               background: "linear-gradient(135deg, #E88D5A 0%, var(--color-primary) 100%)",
-              boxShadow: "0 8px 24px rgba(49,130,246,0.45)",
+              boxShadow: "0 8px 24px rgba(25, 31, 40,0.45)",
             }}
           >
             <span className="text-[34px] leading-none">🌟</span>
@@ -171,7 +171,7 @@ export default function Og200EventModal() {
               type="button"
               onClick={dismiss}
               className="flex-1 py-3 rounded-2xl text-[13px] font-extrabold active:scale-[0.98] bg-white"
-              style={{ color: "var(--color-primary-dark)", border: "1.5px solid rgba(49,130,246,0.30)" }}
+              style={{ color: "var(--color-primary-dark)", border: "1.5px solid rgba(25, 31, 40,0.30)" }}
             >
               나중에
             </button>

@@ -146,7 +146,7 @@ export default function MyCatsHero() {
                   <Image src={photo} alt={cat.name} fill className="object-cover" sizes="168px" />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <PawPrint size={44} style={{ color: "rgba(49,130,246,0.25)" }} />
+                    <PawPrint size={44} style={{ color: "rgba(25, 31, 40,0.25)" }} />
                   </div>
                 )}
                 {/* 하단 그라디언트 */}
@@ -259,7 +259,7 @@ export default function MyCatsHero() {
             borderRadius: 22,
             scrollSnapAlign: "start",
             background: "#FFFFFF",
-            border: "1.5px dashed rgba(49,130,246,0.35)",
+            border: "1.5px dashed rgba(25, 31, 40,0.35)",
           }}
         >
           <div

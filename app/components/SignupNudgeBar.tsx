@@ -73,8 +73,8 @@ export default function SignupNudgeBar() {
         className={`pointer-events-auto mx-auto mx-4 max-w-md rounded-2xl px-4 py-3 flex items-center gap-3 transition-all ${shown ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
         style={{
           background: "linear-gradient(135deg, #FFFFFF 0%, #FFF9F0 100%)",
-          boxShadow: "0 12px 36px rgba(49,130,246,0.28), 0 2px 6px rgba(0,0,0,0.08)",
-          border: "1px solid rgba(49,130,246,0.25)",
+          boxShadow: "0 12px 36px rgba(25, 31, 40,0.28), 0 2px 6px rgba(0,0,0,0.08)",
+          border: "1px solid rgba(25, 31, 40,0.25)",
           marginLeft: 12,
           marginRight: 12,
         }}
@@ -83,7 +83,7 @@ export default function SignupNudgeBar() {
           className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
           style={{
             background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-            boxShadow: "0 3px 8px rgba(49,130,246,0.35)",
+            boxShadow: "0 3px 8px rgba(25, 31, 40,0.35)",
           }}
         >
           <Sparkles size={16} color="#fff" strokeWidth={2.3} />
@@ -101,7 +101,7 @@ export default function SignupNudgeBar() {
           className="shrink-0 flex items-center gap-1 px-3 py-2 rounded-xl text-white text-[12px] font-extrabold active:scale-95 transition-transform"
           style={{
             background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-            boxShadow: "0 3px 8px rgba(49,130,246,0.35)",
+            boxShadow: "0 3px 8px rgba(25, 31, 40,0.35)",
           }}
         >
           가입

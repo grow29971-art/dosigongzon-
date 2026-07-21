@@ -199,7 +199,7 @@ export default function AdminEventKeyringPage() {
           </button>
           <button onClick={exportCsv} disabled={entries.length === 0}
             className="px-3 h-9 rounded-xl bg-primary text-white text-[12px] font-extrabold flex items-center gap-1 active:scale-95 disabled:opacity-50"
-            style={{ boxShadow: "0 2px 8px rgba(49,130,246,0.25)" }}>
+            style={{ boxShadow: "0 2px 8px rgba(25, 31, 40,0.25)" }}>
             <Download size={13} />
             CSV
           </button>

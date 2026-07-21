@@ -25,7 +25,7 @@ export default function CollectionPage() {
   return (
     <div className="min-h-dvh bg-warm-white pb-28">
       {/* 헤더 */}
-      <div className="sticky top-0 z-10 flex items-center gap-2 px-4 py-3" style={{ background: "rgba(255,253,248,0.92)", backdropFilter: "blur(8px)", borderBottom: "1px solid rgba(49,130,246,0.12)" }}>
+      <div className="sticky top-0 z-10 flex items-center gap-2 px-4 py-3" style={{ background: "rgba(255,253,248,0.92)", backdropFilter: "blur(8px)", borderBottom: "1px solid rgba(25, 31, 40,0.12)" }}>
         <Link href="/" className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform" style={{ background: "var(--color-primary-soft)" }} aria-label="홈으로">
           <ChevronLeft size={18} style={{ color: "var(--color-primary-dark)" }} />
         </Link>
@@ -60,7 +60,7 @@ export default function CollectionPage() {
         {!loading && data && data.total > 0 && (
           <>
             {/* 진행률 */}
-            <div className="mb-5 p-4 rounded-2xl" style={{ background: "linear-gradient(135deg, #FFFFFF 0%, #FCF6EC 100%)", border: "1px solid rgba(49,130,246,0.18)", boxShadow: "0 4px 14px var(--color-primary-softer)" }}>
+            <div className="mb-5 p-4 rounded-2xl" style={{ background: "linear-gradient(135deg, #FFFFFF 0%, #FCF6EC 100%)", border: "1px solid rgba(25, 31, 40,0.18)", boxShadow: "0 4px 14px var(--color-primary-softer)" }}>
               <div className="flex items-baseline justify-between mb-2">
                 <p className="text-[12px] font-extrabold" style={{ color: "var(--color-primary-dark)" }}>
                   {data.regionName} 도감
@@ -69,7 +69,7 @@ export default function CollectionPage() {
                   <span style={{ color: "var(--color-primary)" }}>{data.collectedCount}</span> / {data.total} 마리 ({pct}%)
                 </p>
               </div>
-              <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "rgba(49,130,246,0.15)" }}>
+              <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "rgba(25, 31, 40,0.15)" }}>
                 <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: "linear-gradient(90deg, var(--color-primary) 0%, #5BC4C4 100%)" }} />
               </div>
               <p className="text-[11px] text-text-sub mt-2 leading-snug">
@@ -92,7 +92,7 @@ export default function CollectionPage() {
                       style={{
                         aspectRatio: "1 / 1",
                         background: c.collected ? "#F4E6CE" : "rgba(120,110,100,0.08)",
-                        border: c.collected ? "1.5px solid rgba(49,130,246,0.3)" : "1.5px dashed rgba(120,110,100,0.2)",
+                        border: c.collected ? "1.5px solid rgba(25, 31, 40,0.3)" : "1.5px dashed rgba(120,110,100,0.2)",
                       }}
                     >
                       {c.collected ? (

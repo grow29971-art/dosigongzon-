@@ -145,7 +145,7 @@ export default function CatRegistrationCelebration({
               className="w-16 h-16 rounded-full flex items-center justify-center"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-                boxShadow: "0 8px 24px rgba(49,130,246,0.4)",
+                boxShadow: "0 8px 24px rgba(25, 31, 40,0.4)",
               }}
             >
               {isFirstEver ? (
@@ -227,7 +227,7 @@ export default function CatRegistrationCelebration({
             className="w-full py-3 rounded-2xl text-[13px] font-extrabold text-white active:scale-[0.98]"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 4px 14px rgba(49,130,246,0.45)",
+              boxShadow: "0 4px 14px rgba(25, 31, 40,0.45)",
             }}
           >
             확인

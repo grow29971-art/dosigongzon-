@@ -107,7 +107,7 @@ export default function AdminDashboardPage() {
       title: "주문 관리",
       subtitle: "주문 상태·운송장·취소/환불",
       Icon: PackageCheck,
-      color: "#3182F6",
+      color: "#191F28",
     },
     {
       href: "/admin/fund",
@@ -128,7 +128,7 @@ export default function AdminDashboardPage() {
       title: "이벤트 응모자",
       subtitle: "1000명 키링 추첨 응모 관리",
       Icon: Gift,
-      color: "#3182F6",
+      color: "#191F28",
     },
     {
       href: "/admin/insights",
@@ -164,7 +164,7 @@ export default function AdminDashboardPage() {
       title: "전체 쪽지 발송",
       subtitle: "코호트별 일괄 환영·재참여 메시지",
       Icon: Megaphone,
-      color: "#3182F6",
+      color: "#191F28",
     },
     {
       href: "/admin/announcement",
@@ -193,7 +193,7 @@ export default function AdminDashboardPage() {
       title: "꿀팁게시판 관리",
       subtitle: "정보글 작성·발행·수정",
       Icon: Sparkles,
-      color: "#3182F6",
+      color: "#191F28",
     },
     {
       href: "/admin/weekly-issues",
@@ -221,7 +221,7 @@ export default function AdminDashboardPage() {
       title: "푸시 알림 발송",
       subtitle: "전체 사용자에게 공지",
       Icon: Bell,
-      color: "#3182F6",
+      color: "#191F28",
     },
     {
       href: "/admin/location-logs",
@@ -287,7 +287,7 @@ export default function AdminDashboardPage() {
                 stats.daysUntilLaunch > 0
                   ? "linear-gradient(135deg, #FFE8C2 0%, #FFCFB5 60%, #FFB99B 100%)"
                   : "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)",
-              boxShadow: "0 8px 24px rgba(49,130,246,0.20)",
+              boxShadow: "0 8px 24px rgba(25, 31, 40,0.20)",
             }}
           >
             <div className="flex items-center justify-between gap-3">
@@ -360,7 +360,7 @@ export default function AdminDashboardPage() {
             Icon={CatIcon}
             label="등록 고양이"
             value={stats.totalCats}
-            color="#3182F6"
+            color="#191F28"
           />
           <StatCard
             Icon={MessageSquare}

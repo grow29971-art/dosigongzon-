@@ -121,7 +121,7 @@ export default function HospitalsPage() {
                   backgroundColor: active ? "var(--color-primary)" : "#FFFFFF",
                   color: active ? "#FFFFFF" : "#A38E7A",
                   border: `1.5px solid ${active ? "var(--color-primary)" : "#E3DCD3"}`,
-                  boxShadow: active ? "0 4px 12px rgba(49,130,246,0.35)" : "0 1px 3px rgba(0,0,0,0.03)",
+                  boxShadow: active ? "0 4px 12px rgba(25, 31, 40,0.35)" : "0 1px 3px rgba(0,0,0,0.03)",
                 }}
               >
                 {c}
@@ -209,10 +209,10 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
         background: "#FFFFFF",
         borderRadius: 18,
         boxShadow: hospital.pinned
-          ? "0 8px 24px rgba(49,130,246,0.14), 0 1px 3px rgba(0,0,0,0.03)"
+          ? "0 8px 24px rgba(25, 31, 40,0.14), 0 1px 3px rgba(0,0,0,0.03)"
           : "0 4px 16px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02)",
         border: hospital.pinned
-          ? "1.5px solid rgba(49,130,246,0.25)"
+          ? "1.5px solid rgba(25, 31, 40,0.25)"
           : "1px solid rgba(0,0,0,0.04)",
       }}
     >

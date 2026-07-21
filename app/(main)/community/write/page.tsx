@@ -137,7 +137,7 @@ export default function WritePage() {
             className="rounded-2xl p-4"
             style={{
               background: "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
-              border: "1.5px solid rgba(49,130,246,0.25)",
+              border: "1.5px solid rgba(25, 31, 40,0.25)",
             }}
           >
             <div className="flex items-start gap-2.5">

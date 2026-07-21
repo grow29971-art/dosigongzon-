@@ -447,7 +447,7 @@ export default function CheckoutPage() {
             <Link
               href="/#daily-box"
               className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl active:scale-[0.99] transition-transform"
-              style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(49,130,246,0.18)" }}
+              style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(25, 31, 40,0.18)" }}
             >
               <span className="text-[15px] shrink-0">🐾</span>
               <p className="text-[11px] font-bold leading-snug flex-1" style={{ color: "var(--color-primary-dark)" }}>

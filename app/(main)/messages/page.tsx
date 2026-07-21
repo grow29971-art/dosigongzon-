@@ -357,7 +357,7 @@ function MessagesPage() {
                 background: c.unreadCount > 0 ? "linear-gradient(135deg, var(--color-primary-softer), #FFF)" : "#FFFFFF",
                 borderRadius: "var(--radius-card-sm)",
                 boxShadow: "var(--shadow-card)",
-                border: c.unreadCount > 0 ? "1.5px solid rgba(49,130,246,0.2)" : "1px solid rgba(0,0,0,0.04)",
+                border: c.unreadCount > 0 ? "1.5px solid rgba(25, 31, 40,0.2)" : "1px solid rgba(0,0,0,0.04)",
               }}
             >
               {c.partnerAvatar ? (

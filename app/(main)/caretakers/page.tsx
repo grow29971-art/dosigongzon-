@@ -76,7 +76,7 @@ export default async function CaretakersPage() {
               className="mb-3 px-3 py-2.5 rounded-xl flex items-center gap-2"
               style={{
                 background: "var(--color-primary-softer)",
-                border: "1px solid rgba(49,130,246,0.15)",
+                border: "1px solid rgba(25, 31, 40,0.15)",
               }}
             >
               <Sparkles size={13} className="text-primary shrink-0" />
@@ -186,7 +186,7 @@ function CaretakerCard({
           style={{
             background: "var(--color-primary-softer)",
             color: "var(--color-primary)",
-            border: "1px solid rgba(49,130,246,0.18)",
+            border: "1px solid rgba(25, 31, 40,0.18)",
           }}
         >
           프로필 보기

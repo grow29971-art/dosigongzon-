@@ -299,8 +299,8 @@ export default function CirclePage() {
                 className="w-full block rounded-2xl p-4 active:scale-[0.99] transition-transform"
                 style={{
                   background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)",
-                  border: "1px solid rgba(49,130,246,0.22)",
-                  boxShadow: "0 2px 10px rgba(49,130,246,0.10)",
+                  border: "1px solid rgba(25, 31, 40,0.22)",
+                  boxShadow: "0 2px 10px rgba(25, 31, 40,0.10)",
                 }}
               >
                 <div className="flex items-center gap-3">
