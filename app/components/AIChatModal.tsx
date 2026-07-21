@@ -153,7 +153,7 @@ export default function AIChatModal({
               className="w-10 h-10 rounded-full flex items-center justify-center"
               style={{ backgroundColor: "var(--color-primary-soft)" }}
             >
-              <Bot size={20} color="#191F28" />
+              <Bot size={20} color="#3182F6" />
             </div>
             <div>
               <p className="text-[15px] font-bold" style={{ color: "#2A2A28" }}>도시공존 AI 집사</p>
@@ -243,9 +243,9 @@ export default function AIChatModal({
                   boxShadow: "var(--shadow-card)",
                 }}
               >
-                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(25, 31, 40,0.4)", animationDelay: "0ms" }} />
-                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(25, 31, 40,0.4)", animationDelay: "150ms" }} />
-                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(25, 31, 40,0.4)", animationDelay: "300ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(49,130,246,0.4)", animationDelay: "0ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(49,130,246,0.4)", animationDelay: "150ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(49,130,246,0.4)", animationDelay: "300ms" }} />
               </div>
             </div>
           )}

@@ -18,7 +18,7 @@ export default function AIChatCard() {
         style={{
           background: "#FFFFFF",
           borderRadius: 22,
-          boxShadow: "0 6px 20px rgba(25, 31, 40,0.10), 0 1px 3px rgba(0,0,0,0.03)",
+          boxShadow: "0 6px 20px rgba(49,130,246,0.10), 0 1px 3px rgba(0,0,0,0.03)",
           border: "1px solid rgba(0,0,0,0.04)",
         }}
       >
@@ -27,7 +27,7 @@ export default function AIChatCard() {
             className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 5px 12px rgba(25, 31, 40,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)",
+              boxShadow: "0 5px 12px rgba(49,130,246,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)",
             }}
           >
             <Bot size={20} color="#fff" strokeWidth={2.3} />
@@ -63,7 +63,7 @@ export default function AIChatCard() {
             className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 active:scale-90 transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 4px 10px rgba(25, 31, 40,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",
+              boxShadow: "0 4px 10px rgba(49,130,246,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",
             }}
           >
             <Send size={15} color="white" />

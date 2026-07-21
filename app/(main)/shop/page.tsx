@@ -69,7 +69,7 @@ function ProductCard({ product }: { product: Product }) {
             <Image src={thumb} alt={product.name} fill className="object-cover" />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
-              <PawPrint size={40} style={{ color: "rgba(25, 31, 40,0.28)" }} />
+              <PawPrint size={40} style={{ color: "rgba(49,130,246,0.28)" }} />
             </div>
           )}
           {product.badge && (
@@ -248,7 +248,7 @@ export default function ShopPage() {
       <Link
         href="/#daily-box"
         className="mb-4 flex items-center gap-2.5 px-4 py-2.5 rounded-2xl active:scale-[0.99] transition-transform"
-        style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(25, 31, 40,0.18)" }}
+        style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(49,130,246,0.18)" }}
       >
         <span className="text-[16px] shrink-0">🐾</span>
         <p className="text-[11.5px] font-bold leading-snug flex-1" style={{ color: "var(--color-primary-dark)" }}>
@@ -355,7 +355,7 @@ export default function ShopPage() {
                   : "rgba(255,255,255,0.9)",
                 color: on ? "#fff" : "#666",
                 boxShadow: on
-                  ? "0 2px 8px rgba(25, 31, 40,0.35)"
+                  ? "0 2px 8px rgba(49,130,246,0.35)"
                   : "0 2px 6px rgba(0,0,0,0.05)",
               }}
             >

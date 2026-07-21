@@ -80,7 +80,7 @@ export default async function PostOGImage({ params }: { params: Params }) {
                   width: 44,
                   height: 44,
                   borderRadius: 14,
-                  background: "#191F28",
+                  background: "#3182F6",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",

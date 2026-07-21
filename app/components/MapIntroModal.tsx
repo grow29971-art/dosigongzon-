@@ -72,7 +72,7 @@ export default function MapIntroModal() {
       >
         {/* 헤더 */}
         <div className="px-6 pt-6 pb-4 text-center" style={{ background: "linear-gradient(160deg, #EEF5FF 0%, #E3EEFC 100%)" }}>
-          <div className="w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-3" style={{ background: "rgba(25, 31, 40,0.15)" }}>
+          <div className="w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-3" style={{ background: "rgba(49,130,246,0.15)" }}>
             <ShieldCheck size={28} style={{ color: "var(--color-primary-dark)" }} />
           </div>
           <p className="text-[10px] font-extrabold tracking-[0.15em] mb-1" style={{ color: "var(--color-primary-dark)" }}>

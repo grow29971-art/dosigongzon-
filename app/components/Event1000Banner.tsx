@@ -43,7 +43,7 @@ export default async function Event1000Banner() {
             : "linear-gradient(135deg, #5C93D8 0%, var(--color-primary) 55%, var(--color-primary-dark) 100%)",
           boxShadow: reached
             ? "0 12px 32px rgba(107,142,111,0.30)"
-            : "0 12px 32px rgba(25, 31, 40,0.30)",
+            : "0 12px 32px rgba(49,130,246,0.30)",
         }}
       >
         <div className="p-5 text-white">

@@ -260,7 +260,7 @@ export default function FeedingGuidePage() {
       {/* 급식 5원칙 */}
       <section id="rules" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <BookOpen size={20} color="#191F28" />
+          <BookOpen size={20} color="#3182F6" />
           급식 5원칙
         </h2>
         <div className="space-y-2">
@@ -272,7 +272,7 @@ export default function FeedingGuidePage() {
             >
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                style={{ background: "rgba(25, 31, 40,0.12)" }}
+                style={{ background: "rgba(49,130,246,0.12)" }}
               >
                 <Icon size={18} style={{ color: "var(--color-primary)" }} />
               </div>

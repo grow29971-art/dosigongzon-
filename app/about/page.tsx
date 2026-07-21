@@ -153,7 +153,7 @@ export default async function AboutPage() {
       {/* 통계 */}
       <section className="px-5 mt-6">
         <div className="grid grid-cols-3 gap-2">
-          <StatCard value={stats.cats} label="등록 고양이" color="#191F28" emoji="🐾" />
+          <StatCard value={stats.cats} label="등록 고양이" color="#3182F6" emoji="🐾" />
           <StatCard value={stats.users} label="동네 이웃" color="#E86B8C" emoji="❤️" />
           <StatCard value={stats.hospitals} label="치료 병원" color="#22B573" emoji="🏥" />
         </div>
@@ -190,7 +190,7 @@ export default async function AboutPage() {
         </div>
         <div
           className="rounded-2xl p-4 mt-3 flex items-start gap-2.5"
-          style={{ background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)", border: "1px solid rgba(25, 31, 40,0.20)" }}
+          style={{ background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)", border: "1px solid rgba(49,130,246,0.20)" }}
         >
           <Heart size={15} style={{ color: "var(--color-primary)" }} className="shrink-0 mt-0.5" />
           <p className="text-[12.5px] leading-relaxed text-text-sub">
@@ -238,7 +238,7 @@ export default async function AboutPage() {
           className="rounded-3xl p-5 mb-3"
           style={{
             background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)",
-            border: "1px solid rgba(25, 31, 40,0.20)",
+            border: "1px solid rgba(49,130,246,0.20)",
           }}
         >
           <div className="flex items-center gap-1.5 mb-3">
@@ -305,7 +305,7 @@ export default async function AboutPage() {
           <ValueCard
             n={1}
             icon={<Users size={16} color="#FFFFFF" />}
-            accent="#191F28"
+            accent="#3182F6"
             accentDark="var(--color-primary-dark)"
             title="연대"
             body="우리는 저마다 다른 문화·환경에서 각기 다른 삶을 살아왔지만, 인류라는 공통점을 가진 형제들이다. 항상 서로의 생각·개성·성향을 존중하고 형제애를 중요시한다."
@@ -359,13 +359,13 @@ export default async function AboutPage() {
           className="rounded-3xl p-5"
           style={{
             background: "linear-gradient(135deg, #EEF5FF 0%, #E3EEFC 100%)",
-            border: "1px solid rgba(25, 31, 40,0.20)",
+            border: "1px solid rgba(49,130,246,0.20)",
           }}
         >
           <div className="flex items-center gap-3 mb-3">
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "rgba(25, 31, 40,0.15)" }}
+              style={{ background: "rgba(49,130,246,0.15)" }}
             >
               <ShieldCheck size={22} style={{ color: "var(--color-primary-dark)" }} />
             </div>
@@ -418,13 +418,13 @@ export default async function AboutPage() {
           className="rounded-3xl p-5"
           style={{
             background: "linear-gradient(135deg, #FFF9F2 0%, #F4E8D8 100%)",
-            border: "1px solid rgba(25, 31, 40,0.20)",
+            border: "1px solid rgba(49,130,246,0.20)",
           }}
         >
           <div className="flex items-center gap-3 mb-3">
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "rgba(25, 31, 40,0.15)" }}
+              style={{ background: "rgba(49,130,246,0.15)" }}
             >
               <Code2 size={22} style={{ color: "var(--color-primary-dark)" }} />
             </div>
@@ -504,7 +504,7 @@ export default async function AboutPage() {
             className="mt-4 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12.5px] font-extrabold text-white active:scale-[0.98] transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 4px 12px rgba(25, 31, 40,0.3)",
+              boxShadow: "0 4px 12px rgba(49,130,246,0.3)",
             }}
           >
             <Mail size={13} />
@@ -549,7 +549,7 @@ export default async function AboutPage() {
           />
           <ProductCard
             icon={<Flame size={22} color="#FFFFFF" />}
-            accent="#191F28"
+            accent="#3182F6"
             accentDark="var(--color-primary-dark)"
             badge="개발 중"
             title="고양이난로"
@@ -850,7 +850,7 @@ function SkillBadge({
   return (
     <div
       className="rounded-xl p-2.5 bg-white"
-      style={{ border: "1px solid rgba(25, 31, 40,0.18)" }}
+      style={{ border: "1px solid rgba(49,130,246,0.18)" }}
     >
       <div className="flex items-center gap-1.5 mb-0.5" style={{ color: "var(--color-primary-dark)" }}>
         {icon}

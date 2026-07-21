@@ -50,7 +50,7 @@ export default function SocialProofStrip() {
       style={{
         background:
           "linear-gradient(135deg, rgba(232,141,90,0.10) 0%, rgba(72,165,158,0.08) 100%)",
-        border: "1px solid rgba(25, 31, 40,0.18)",
+        border: "1px solid rgba(49,130,246,0.18)",
       }}
     >
       <div

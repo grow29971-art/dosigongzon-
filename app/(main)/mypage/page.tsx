@@ -320,7 +320,7 @@ export default function MyPage() {
             style={{
               background: "#FFFFFF",
               borderRadius: 22,
-              boxShadow: "0 6px 20px rgba(25, 31, 40,0.10), 0 1px 3px rgba(0,0,0,0.03)",
+              boxShadow: "0 6px 20px rgba(49,130,246,0.10), 0 1px 3px rgba(0,0,0,0.03)",
               border: "1px solid rgba(0,0,0,0.04)",
             }}
           >
@@ -332,7 +332,7 @@ export default function MyPage() {
               className="relative w-16 h-16 rounded-full flex items-center justify-center shrink-0 overflow-hidden active:scale-95 transition-transform"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-                boxShadow: "0 6px 14px rgba(25, 31, 40,0.35), inset 0 1px 0 rgba(255,255,255,0.3), 0 0 0 3px #fff, 0 0 0 5px rgba(25, 31, 40,0.25)",
+                boxShadow: "0 6px 14px rgba(49,130,246,0.35), inset 0 1px 0 rgba(255,255,255,0.3), 0 0 0 3px #fff, 0 0 0 5px rgba(49,130,246,0.25)",
               }}
               aria-label="프로필 사진 변경"
             >
@@ -443,7 +443,7 @@ export default function MyPage() {
                   {joinedDays > 0 && (
                     <span
                       className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 chip-square text-[10.5px] font-extrabold"
-                      style={{ background: "rgba(25, 31, 40,0.12)", color: "var(--color-primary-dark)" }}
+                      style={{ background: "rgba(49,130,246,0.12)", color: "var(--color-primary-dark)" }}
                     >
                       🐾 첫 등록 후 {joinedDays}일째 함께 돌봐요
                     </span>
@@ -472,15 +472,15 @@ export default function MyPage() {
                 style={{
                   background: "linear-gradient(135deg, #FFFFFF 0%, #FFFFFF 100%)",
                   borderRadius: 22,
-                  boxShadow: "0 8px 24px rgba(25, 31, 40,0.12), 0 1px 3px rgba(0,0,0,0.03)",
-                  border: "1.5px solid rgba(25, 31, 40,0.18)",
+                  boxShadow: "0 8px 24px rgba(49,130,246,0.12), 0 1px 3px rgba(0,0,0,0.03)",
+                  border: "1.5px solid rgba(49,130,246,0.18)",
                 }}
               >
                 <div className="flex items-center gap-4 mb-3">
                   <div
                     className="w-[48px] h-[48px] rounded-full flex items-center justify-center shrink-0 text-2xl"
                     style={{
-                      backgroundColor: "rgba(25, 31, 40,0.12)",
+                      backgroundColor: "rgba(49,130,246,0.12)",
                     }}
                   >
                     {lv.emoji}
@@ -523,7 +523,7 @@ export default function MyPage() {
                       style={{
                         width: `${lv.progress * 100}%`,
                         background: "linear-gradient(90deg, var(--color-primary) 0%, #6B7684 100%)",
-                        boxShadow: "0 0 8px rgba(25, 31, 40,0.5)",
+                        boxShadow: "0 0 8px rgba(49,130,246,0.5)",
                       }}
                     />
                   </div>
@@ -831,7 +831,7 @@ export default function MyPage() {
               </h2>
             </div>
             {/* 활동 그룹 */}
-            <p className="text-[10.5px] font-extrabold tracking-[0.15em] mb-2 ml-1" style={{ color: "rgba(25, 31, 40,0.65)" }}>
+            <p className="text-[10.5px] font-extrabold tracking-[0.15em] mb-2 ml-1" style={{ color: "rgba(49,130,246,0.65)" }}>
               ACTIVITY
             </p>
             {SHOW_CARD_GAME && (
@@ -862,8 +862,8 @@ export default function MyPage() {
               style={{
                 background: "linear-gradient(135deg, #F9FAFB 0%, #F2F4F6 100%)",
                 borderRadius: "var(--radius-card-sm)",
-                boxShadow: "0 4px 14px rgba(25, 31, 40,0.15), 0 1px 2px rgba(0,0,0,0.02)",
-                border: "1px solid rgba(25, 31, 40,0.20)",
+                boxShadow: "0 4px 14px rgba(49,130,246,0.15), 0 1px 2px rgba(0,0,0,0.02)",
+                border: "1px solid rgba(49,130,246,0.20)",
               }}
             >
               <div
@@ -1196,7 +1196,7 @@ export default function MyPage() {
             style={{
               background: "#FFFFFF",
               borderRadius: 22,
-              boxShadow: "0 6px 20px rgba(25, 31, 40,0.10), 0 1px 3px rgba(0,0,0,0.03)",
+              boxShadow: "0 6px 20px rgba(49,130,246,0.10), 0 1px 3px rgba(0,0,0,0.03)",
               border: "1px solid rgba(0,0,0,0.04)",
             }}
           >

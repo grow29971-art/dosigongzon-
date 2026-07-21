@@ -300,8 +300,8 @@ export default function AdminHospitalsPage() {
           style={{
             background: "#FFFFFF",
             borderRadius: "var(--radius-card)",
-            boxShadow: "0 8px 24px rgba(25, 31, 40,0.14), 0 1px 3px rgba(0,0,0,0.03)",
-            border: "1.5px solid rgba(25, 31, 40,0.2)",
+            boxShadow: "0 8px 24px rgba(49,130,246,0.14), 0 1px 3px rgba(0,0,0,0.03)",
+            border: "1.5px solid rgba(49,130,246,0.2)",
           }}
         >
           <div className="flex items-center justify-between mb-3">
@@ -479,10 +479,10 @@ export default function AdminHospitalsPage() {
                             background: "#FFFFFF",
                             borderRadius: "var(--radius-input)",
                             boxShadow: h.pinned
-                              ? "0 4px 14px rgba(25, 31, 40,0.12), 0 1px 2px rgba(0,0,0,0.02)"
+                              ? "0 4px 14px rgba(49,130,246,0.12), 0 1px 2px rgba(0,0,0,0.02)"
                               : "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)",
                             border: h.pinned
-                              ? "1.5px solid rgba(25, 31, 40,0.25)"
+                              ? "1.5px solid rgba(49,130,246,0.25)"
                               : "1px solid rgba(0,0,0,0.04)",
                           }}
                         >

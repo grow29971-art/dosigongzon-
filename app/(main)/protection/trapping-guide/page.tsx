@@ -278,7 +278,7 @@ export default function TrappingGuidePage() {
       {/* Step 3 */}
       <section id="step-3" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <MapPin size={20} color="#191F28" />
+          <MapPin size={20} color="#3182F6" />
           <span className="w-7 h-7 chip-square bg-[var(--color-primary)] text-white text-[12px] font-extrabold flex items-center justify-center">3</span>
           포획틀 설치
         </h2>
@@ -443,7 +443,7 @@ export default function TrappingGuidePage() {
       {/* 관련 가이드 */}
       <section className="mb-8">
         <h2 className="flex items-center gap-2 text-[16px] font-extrabold text-text-main mb-3">
-          <BookOpen size={18} color="#191F28" />
+          <BookOpen size={18} color="#3182F6" />
           관련 가이드
         </h2>
         <div className="space-y-2">

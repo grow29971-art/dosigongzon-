@@ -165,7 +165,7 @@ export default function AdminOrdersPage() {
             return (
               <div
                 key={order.id}
-                style={{ background: "#fff", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card)", border: open ? "1.5px solid rgba(25, 31, 40,0.35)" : "1px solid rgba(0,0,0,0.04)" }}
+                style={{ background: "#fff", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card)", border: open ? "1.5px solid rgba(49,130,246,0.35)" : "1px solid rgba(0,0,0,0.04)" }}
               >
                 <button className="w-full text-left p-3.5" onClick={() => handleOpen(order)}>
                   <div className="flex items-center justify-between mb-1.5">

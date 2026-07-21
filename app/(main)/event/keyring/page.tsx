@@ -155,7 +155,7 @@ export default function KeyringEventPage() {
           className="rounded-2xl p-4"
           style={{
             background: "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
-            border: "1.5px solid rgba(25, 31, 40,0.25)",
+            border: "1.5px solid rgba(49,130,246,0.25)",
           }}
         >
           <p className="text-[10.5px] font-extrabold tracking-[0.12em] mb-1" style={{ color: "var(--color-primary)" }}>
@@ -176,7 +176,7 @@ export default function KeyringEventPage() {
         <div className="px-4 mb-4">
           <div
             className="rounded-2xl p-4"
-            style={{ background: "#FFF", border: "1px solid rgba(25, 31, 40,0.18)", boxShadow: "var(--shadow-card)" }}
+            style={{ background: "#FFF", border: "1px solid rgba(49,130,246,0.18)", boxShadow: "var(--shadow-card)" }}
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-1.5">
@@ -189,7 +189,7 @@ export default function KeyringEventPage() {
             </div>
             <div
               className="w-full h-2 rounded-full overflow-hidden"
-              style={{ background: "rgba(25, 31, 40,0.15)" }}
+              style={{ background: "rgba(49,130,246,0.15)" }}
             >
               <div
                 className="h-full rounded-full transition-all"
@@ -251,11 +251,11 @@ export default function KeyringEventPage() {
           // 자격 미달: 등록한 고양이 0마리
           <div
             className="rounded-2xl p-6 text-center"
-            style={{ background: "#FFF", border: "1px dashed rgba(25, 31, 40,0.35)" }}
+            style={{ background: "#FFF", border: "1px dashed rgba(49,130,246,0.35)" }}
           >
             <div
               className="w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-3"
-              style={{ background: "rgba(25, 31, 40,0.12)" }}
+              style={{ background: "rgba(49,130,246,0.12)" }}
             >
               <PawPrint size={26} style={{ color: "var(--color-primary)" }} />
             </div>
@@ -270,7 +270,7 @@ export default function KeyringEventPage() {
             <Link
               href="/map"
               className="inline-flex items-center gap-1.5 px-5 py-3 rounded-2xl bg-primary text-white text-[14px] font-extrabold active:scale-[0.97] transition-transform"
-              style={{ boxShadow: "0 6px 20px rgba(25, 31, 40,0.30)" }}
+              style={{ boxShadow: "0 6px 20px rgba(49,130,246,0.30)" }}
             >
               <PlusCircle size={16} />
               지도에서 첫 아이 등록하기
@@ -305,7 +305,7 @@ export default function KeyringEventPage() {
                       className="relative block rounded-2xl overflow-hidden bg-white text-left active:scale-[0.98] transition-transform"
                       style={{
                         boxShadow: selected
-                          ? "0 8px 22px rgba(25, 31, 40,0.35)"
+                          ? "0 8px 22px rgba(49,130,246,0.35)"
                           : "var(--shadow-raised)",
                         border: selected ? "2.5px solid var(--color-primary)" : "2.5px solid transparent",
                       }}
@@ -321,7 +321,7 @@ export default function KeyringEventPage() {
                         {selected && (
                           <div
                             className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full flex items-center justify-center"
-                            style={{ background: "var(--color-primary)", boxShadow: "0 2px 8px rgba(25, 31, 40,0.5)" }}
+                            style={{ background: "var(--color-primary)", boxShadow: "0 2px 8px rgba(49,130,246,0.5)" }}
                           >
                             <Check size={13} color="#fff" strokeWidth={3} />
                           </div>
@@ -349,7 +349,7 @@ export default function KeyringEventPage() {
               onClick={handleSubmit}
               disabled={submitting || !selectedCatId}
               className="w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold disabled:opacity-50 active:scale-[0.97] flex items-center justify-center gap-2"
-              style={{ boxShadow: "0 6px 20px rgba(25, 31, 40,0.30)" }}
+              style={{ boxShadow: "0 6px 20px rgba(49,130,246,0.30)" }}
             >
               {submitting ? <Loader2 size={18} className="animate-spin" /> : <Gift size={18} />}
               {submitting

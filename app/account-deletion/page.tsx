@@ -111,7 +111,7 @@ export default function AccountDeletionPage() {
             className="mt-5 flex items-center justify-between w-full px-4 py-3 rounded-xl active:scale-[0.99] transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 6px 16px rgba(25, 31, 40,0.3)",
+              boxShadow: "0 6px 16px rgba(49,130,246,0.3)",
             }}
           >
             <span className="text-[13px] font-extrabold text-white">

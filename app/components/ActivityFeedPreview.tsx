@@ -29,7 +29,7 @@ import {
 const PREVIEW_COUNT = 4;
 
 const TYPE_CONFIG: Record<NotificationType, { icon: typeof Bell; color: string; bg: string }> = {
-  comment_on_my_cat:   { icon: MessageCircle, color: "var(--color-primary)", bg: "#191F2815" },
+  comment_on_my_cat:   { icon: MessageCircle, color: "var(--color-primary)", bg: "#3182F615" },
   carelog_on_my_cat:   { icon: Heart,         color: "#6B8E6F", bg: "#6B8E6F15" },
   dm_received:         { icon: MessageCircle, color: "#4A7BA8", bg: "#4A7BA815" },
   alert_on_my_cat:     { icon: AlertTriangle, color: "#D85555", bg: "#D8555515" },
@@ -112,7 +112,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
         style={{
           background: "linear-gradient(135deg, #FFF6E8 0%, #FCE7D2 100%)",
           borderRadius: 18,
-          border: "1px solid rgba(25, 31, 40,0.20)",
+          border: "1px solid rgba(49,130,246,0.20)",
         }}
       >
         <div className="flex items-center gap-2.5">
@@ -120,7 +120,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
             className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 4px 12px rgba(25, 31, 40,0.30)",
+              boxShadow: "0 4px 12px rgba(49,130,246,0.30)",
             }}
           >
             <Bell size={15} color="#fff" strokeWidth={2.2} />
@@ -158,7 +158,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
           </h2>
           <span
             className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md tabular-nums"
-            style={{ background: "#191F2822", color: "var(--color-primary-dark)" }}
+            style={{ background: "#3182F622", color: "var(--color-primary-dark)" }}
           >
             {items.length}
           </span>
@@ -178,7 +178,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
         style={{
           background: "#FFFFFF",
           borderRadius: 18,
-          boxShadow: "0 4px 14px rgba(25, 31, 40,0.06), 0 1px 3px rgba(0,0,0,0.02)",
+          boxShadow: "0 4px 14px rgba(49,130,246,0.06), 0 1px 3px rgba(0,0,0,0.02)",
           border: "1px solid rgba(0,0,0,0.04)",
         }}
       >

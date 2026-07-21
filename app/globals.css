@@ -6,11 +6,10 @@
    ══════════════════════════════════════════ */
 
 @theme inline {
-  /* Primary — 잉크 블랙 (2026-07-21 블랙앤그레이 무드 전면 전환.
-     이전 공존 블루(hex 3182F6)로 되돌리려면 backup/toss-blue-20260721 브랜치 참고) */
-  --color-primary: #191F28;
-  --color-primary-light: #333D4B;
-  --color-primary-dark: #000000;
+  /* Primary — 공존 블루 (클린 미니멀 톤. hex는 흔한 파랑이라 상표 대상 아님) */
+  --color-primary: #3182F6;
+  --color-primary-light: #4593FC;
+  --color-primary-dark: #1B64DA;
 
   /* Background — 뉴트럴 그레이 화이트 */
   --color-warm-white: #F9FAFB;
@@ -44,11 +43,11 @@
   --color-ink-dark: #000000;
   --color-care: #E8940A; /* 밥주기 등 케어 액션 전용 웜 액센트 (모노 무드에서도 유지) */
 
-  /* Accents — 모노 무드: 장식성 액센트는 그레이/잉크로, error·warning은 시맨틱 유지 */
-  --color-sage: #6B7684;
-  --color-mint: #6B7684;
-  --color-clay: #191F28;
-  --color-coral: #191F28;
+  /* Accents */
+  --color-sage: #22A366;
+  --color-mint: #22A366;
+  --color-clay: #1B64DA;
+  --color-coral: #1B64DA;
   --color-error: #F04452;
   --color-warning: #FFA927;
 
@@ -57,8 +56,8 @@
   --color-divider: #F2F4F6;
 
   /* Primary 틴트 — 칩/배지/버튼 배경용 반투명 */
-  --color-primary-soft: rgba(25, 31, 40, 0.06);
-  --color-primary-softer: rgba(25, 31, 40, 0.04);
+  --color-primary-soft: rgba(49, 130, 246, 0.1);
+  --color-primary-softer: rgba(49, 130, 246, 0.08);
 
   /* ── Radius 토큰 (인라인 borderRadius 중앙화) ──
      무드 변경 시 여기만 조정하면 앱 전체 라운드가 따라온다. */
@@ -78,11 +77,11 @@
 
   /* ── Shadow 토큰 ──
      card: 기본 카드 · card-sm: 얕은 카드 · raised: 떠있는 요소(버튼/헤더)
-     primary: 잉크 CTA 글로우 · modal: 오버레이 */
+     primary: 파란 CTA 글로우 · modal: 오버레이 */
   --shadow-card-sm: 0 1px 4px rgba(0, 0, 0, 0.03);
   --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.04);
   --shadow-raised: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-primary: 0 6px 20px rgba(25, 31, 40, 0.22);
+  --shadow-primary: 0 6px 20px rgba(49, 130, 246, 0.3);
   --shadow-modal: 0 20px 50px rgba(0, 0, 0, 0.25);
 
   /* ── 타이포 스케일 (2026-07-15, 토스식 위계) ──

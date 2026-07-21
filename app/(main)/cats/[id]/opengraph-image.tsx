@@ -44,7 +44,7 @@ export default async function CatOGImage({ params }: { params: Params }) {
             width: 420,
             height: 420,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(25, 31, 40,0.25) 0%, rgba(25, 31, 40,0) 70%)",
+            background: "radial-gradient(circle, rgba(49,130,246,0.25) 0%, rgba(49,130,246,0) 70%)",
           }}
         />
 
@@ -91,7 +91,7 @@ export default async function CatOGImage({ params }: { params: Params }) {
                 width: 44,
                 height: 44,
                 borderRadius: 14,
-                background: "#191F28",
+                background: "#3182F6",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -114,7 +114,7 @@ export default async function CatOGImage({ params }: { params: Params }) {
                 gap: 10,
                 fontSize: 24,
                 fontWeight: 700,
-                color: "#191F28",
+                color: "#3182F6",
               }}
             >
               <span>📍</span>
@@ -176,7 +176,7 @@ export default async function CatOGImage({ params }: { params: Params }) {
                 color: "#8B5A3C",
                 fontSize: 20,
                 fontWeight: 800,
-                border: "2px solid rgba(25, 31, 40,0.3)",
+                border: "2px solid rgba(49,130,246,0.3)",
               }}
             >
               dosigongzon.com

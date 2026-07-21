@@ -60,7 +60,7 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
               onClick={() => handleCopy(b.id, b.text)}
               className="flex items-center gap-1 px-2.5 py-1 rounded-lg active:scale-95 transition-transform"
               style={{
-                background: copiedId === b.id ? "#E8F5E9" : "rgba(25, 31, 40,0.10)",
+                background: copiedId === b.id ? "#E8F5E9" : "rgba(49,130,246,0.10)",
                 color: copiedId === b.id ? "#2E7D32" : "var(--color-primary-dark)",
               }}
             >
@@ -103,7 +103,7 @@ function LogoCard({ href, label, filename }: { href: string; label: string; file
       href={href}
       download={filename}
       className="flex flex-col items-center gap-1 py-3 rounded-xl active:scale-95 transition-transform"
-      style={{ background: "#FFF8F2", border: "1px solid rgba(25, 31, 40,0.20)" }}
+      style={{ background: "#FFF8F2", border: "1px solid rgba(49,130,246,0.20)" }}
     >
       <div
         className="w-10 h-10 rounded-xl flex items-center justify-center"

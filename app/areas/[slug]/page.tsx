@@ -186,8 +186,8 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
             className="relative overflow-hidden rounded-2xl p-5 text-center"
             style={{
               background: "linear-gradient(135deg, #FFF6E8 0%, #FCE7D2 60%, #F8D9BE 100%)",
-              border: "1.5px solid rgba(25, 31, 40,0.30)",
-              boxShadow: "0 6px 18px rgba(25, 31, 40,0.18)",
+              border: "1.5px solid rgba(49,130,246,0.30)",
+              boxShadow: "0 6px 18px rgba(49,130,246,0.18)",
             }}
           >
             <div
@@ -229,7 +229,7 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
                 className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.98] transition-transform bg-white"
                 style={{
                   color: "var(--color-primary-dark)",
-                  border: "1px solid rgba(25, 31, 40,0.30)",
+                  border: "1px solid rgba(49,130,246,0.30)",
                 }}
               >
                 서울 다른 구

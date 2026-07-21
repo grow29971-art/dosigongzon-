@@ -114,7 +114,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             ))
           ) : (
             <div className="relative shrink-0 w-full h-full flex items-center justify-center" style={{ background: "var(--color-warm-white)" }}>
-              <PawPrint size={64} style={{ color: "rgba(25, 31, 40,0.28)" }} />
+              <PawPrint size={64} style={{ color: "rgba(49,130,246,0.28)" }} />
             </div>
           )}
         </div>

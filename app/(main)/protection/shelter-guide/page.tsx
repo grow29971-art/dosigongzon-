@@ -237,7 +237,7 @@ export default function ShelterGuidePage() {
       {/* 제작법 */}
       <section id="how" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <Hammer size={20} color="#191F28" />
+          <Hammer size={20} color="#3182F6" />
           5단계 제작법
         </h2>
         <div className="space-y-2">

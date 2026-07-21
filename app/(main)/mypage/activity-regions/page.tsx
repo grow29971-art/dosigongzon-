@@ -28,7 +28,7 @@ import { MAP_CENTER } from "@/lib/cats-repo";
 import type { KakaoMap, KakaoMapMouseEvent, KakaoPlaceResult, KakaoOverlay, KakaoCircle } from "@/lib/kakao-types";
 
 const SLOT_COLORS: Record<RegionSlot, string> = {
-  1: "#191F28",
+  1: "#3182F6",
   2: "#4A7BA8",
 };
 

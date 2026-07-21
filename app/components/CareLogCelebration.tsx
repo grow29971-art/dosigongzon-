@@ -151,7 +151,7 @@ export default function CareLogCelebration({
                   className="flex-1 py-3 rounded-2xl text-[13px] font-extrabold text-white active:scale-[0.98]"
                   style={{
                     background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-                    boxShadow: "0 4px 14px rgba(25, 31, 40,0.45)",
+                    boxShadow: "0 4px 14px rgba(49,130,246,0.45)",
                   }}
                 >
                   네, 내일도 올게요

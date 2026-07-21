@@ -7,9 +7,9 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const TOPICS: Array<{ label: string; emoji: string; color: string }> = [
-  { label: "발견·신고", emoji: "🚨", color: "#191F28" },
+  { label: "발견·신고", emoji: "🚨", color: "#3182F6" },
   { label: "새끼고양이", emoji: "🍼", color: "#E8B57E" },
-  { label: "TNR·중성화", emoji: "✂️", color: "#000000" },
+  { label: "TNR·중성화", emoji: "✂️", color: "#1B64DA" },
   { label: "임시보호·입양", emoji: "🏠", color: "#7AAE82" },
   { label: "응급·치료", emoji: "🏥", color: "#D85555" },
   { label: "법·신고", emoji: "⚖️", color: "#5F7A8E" },
@@ -42,7 +42,7 @@ export default function FaqOGImage() {
             height: 480,
             borderRadius: "50%",
             background:
-              "radial-gradient(circle, rgba(25, 31, 40,0.22) 0%, rgba(25, 31, 40,0) 70%)",
+              "radial-gradient(circle, rgba(49,130,246,0.22) 0%, rgba(49,130,246,0) 70%)",
             display: "flex",
           }}
         />
@@ -74,7 +74,7 @@ export default function FaqOGImage() {
               width: 52,
               height: 52,
               borderRadius: 16,
-              background: "#191F28",
+              background: "#3182F6",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -104,7 +104,7 @@ export default function FaqOGImage() {
             }}
           >
             <span>길고양이 자주 묻는</span>
-            <span style={{ color: "#191F28" }}>30개 질문</span>
+            <span style={{ color: "#3182F6" }}>30개 질문</span>
           </div>
           <p
             style={{
@@ -159,7 +159,7 @@ export default function FaqOGImage() {
               color: "#8B5A3C",
               fontSize: 20,
               fontWeight: 800,
-              border: "2px solid rgba(25, 31, 40,0.3)",
+              border: "2px solid rgba(49,130,246,0.3)",
               marginLeft: "auto",
             }}
           >
