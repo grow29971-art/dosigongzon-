@@ -27,7 +27,6 @@ import LoginRequired from "@/app/components/LoginRequired";
 import PageIntroBanner from "@/app/components/PageIntroBanner";
 import CommunityWritePrompt from "@/app/components/CommunityWritePrompt";
 import UIListRow from "@/app/components/ui/ListRow";
-import CatPetitionSection from "@/app/components/CatPetitionSection";
 
 /* ═══ 카테고리 카드 데이터 ═══ */
 type CategoryCard = {
@@ -202,16 +201,12 @@ export default function CommunityPage() {
         </Link>
       </div>
 
-      {/* ── 국회 길고양이 청원 (찬반 전체 — 링크 안내만, 2026-07-22 회의)
-          2026-07-23: 최상단 이동 + 기본 접힘 바 — 접힘이라 핵심 동선(카테고리)을 밀지 않는다 ── */}
-      <CatPetitionSection />
-
       {/* 페이지 사용법 안내 (dismiss 가능) */}
       <div className="mb-4">
         <PageIntroBanner
           id="community"
           title="커뮤니티에서 할 수 있는 것"
-          description="긴급 구조·임보 요청·입양 공고·용품 나눔·일상 대화까지. 카테고리별로 구별되니 찾기 쉬워요. 우측 하단 + 버튼으로 글쓰기. 맨 위 '국회 길고양이 청원' 바를 누르면 진행 중인 청원도 볼 수 있어요."
+          description="긴급 구조·임보 요청·입양 공고·용품 나눔·일상 대화까지. 카테고리별로 구별되니 찾기 쉬워요. 우측 하단 + 버튼으로 글쓰기. 홈 맨 위에서 '국회 길고양이 청원'도 확인할 수 있어요."
           ctaLabel="자세한 사용법"
           ctaHref="/guide"
           accent="#8B65B8"
