@@ -422,7 +422,8 @@ export default function HomeAuthed({
       if (user) {
         localStorage.setItem("dosigongzon_onboarded", "true");
       } else if (!localStorage.getItem("dosigongzon_onboarded")) {
-        router.push("/onboarding");
+        // "지도가 곧 온보딩" (2026-07-22 회의 B안) — 첫 안내는 지도 위 MapIntroSheet가 담당
+        router.push("/map");
         return;
       }
     } catch {}
