@@ -49,19 +49,22 @@ export function logFunnelEvent(step: FunnelStep, catId?: string | null): void {
 
   (async () => {
     try {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      // unique(anon_id, step) 충돌은 정상 흐름(재방문) — ignoreDuplicates로 조용히 무시
-      const { error } = await supabase.from("funnel_events").upsert(
-        {
-          anon_id: getAnonId(),
-          step,
-          user_id: user?.id ?? null,
-          cat_id: catId ?? null,
-        },
-        { onConflict: "anon_id,step", ignoreDuplicates: true },
-      );
-      if (!error) {
+      // 서버 라우트 경유 (2026-07-22: 프로덕션 anon RLS가 원인 불명으로 거부 지속 →
+      // /api/funnel(service role + 검증 + 레이트리밋)로 우회. RLS 의존 제거.)
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      try {
+        const { data } = await createClient().auth.getSession();
+        if (data.session?.access_token) {
+          headers["Authorization"] = `Bearer ${data.session.access_token}`;
+        }
+      } catch { /* 비로그인 — anon 계측 */ }
+      const res = await fetch("/api/funnel", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ anonId: getAnonId(), step, catId: catId ?? null }),
+        keepalive: true,
+      });
+      if (res.ok) {
         try { localStorage.setItem(guardKey, "1"); } catch { /* 무시 */ }
       }
     } catch {
