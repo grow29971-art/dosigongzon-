@@ -74,10 +74,12 @@ export async function POST(request: Request) {
   }
 
   // 5) 발송
+  // 2026-07-22 심리 회의: "한 끼" 프레임(안 주면 굶는다는 암시) 제거 — 죄책감 없는 안부 톤.
+  // 딥링크는 홈 최상단 실기록 지점(#my-cats)으로 — 약속("탭 한 번")과 랜딩 일치.
   const payload = JSON.stringify({
-    title: "🍚 내 아이 오늘 한 끼",
-    body: "탭 한 번이면 끝 — 안부 한 줄 남겨볼까요?",
-    url: "/",
+    title: "🍚 오늘도 잘 지내나 볼까요?",
+    body: "쓰담 한 번, 안부 한 줄 — 탭 한 번이면 끝나요.",
+    url: "/#my-cats",
   });
 
   let sent = 0;

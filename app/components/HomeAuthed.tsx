@@ -74,6 +74,7 @@ const DailyCheckinModal = dynamic(() => import("@/app/components/DailyCheckinMod
 const FirstCheerCard = dynamic(() => import("@/app/components/FirstCheerCard"), { ssr: false });
 const AppOpenGuideModal = dynamic(() => import("@/app/components/AppOpenGuideModal"), { ssr: false });
 import MyCatsHero from "@/app/components/MyCatsHero";
+import ReturnDigestCard from "@/app/components/ReturnDigestCard";
 import ShopPreviewStrip from "@/app/components/ShopPreviewStrip";
 import CareTamagotchiHero from "@/app/components/CareTamagotchiHero";
 const WeeklyCheckinCard = dynamic(() => import("@/app/components/WeeklyCheckinCard"), { ssr: false });
@@ -625,7 +626,17 @@ export default function HomeAuthed({
       {/* ══════ 온보딩 핸드오프 — "방금 고른 ○○ 첫 밥 주기" (2026-07-18 회의 1순위, 최상단) ══════ */}
       {user && <PendingCareHandoff />}
 
-      {/* ══════ 다마고치 케어 히어로 — 대표묘와의 가상 교감 (2026-07-16, 홈 최상단) ══════ */}
+      {/* ══════ 귀환 카드 — 다녀간 사이 내 고양이에게 생긴 일 (2026-07-22 리텐션 회의: 보상 먼저) ══════ */}
+      {user && <ReturnDigestCard lastVisitAt={lastVisitAt} />}
+
+      {/* ══════ 내 아이들 — 실제 밥 기록 1탭 (2026-07-22 재배치: 행동을 가상 케어보다 위로) ══════ */}
+      {user && (
+        <div id="my-cats" style={{ scrollMarginTop: 12 }}>
+          <MyCatsHero />
+        </div>
+      )}
+
+      {/* ══════ 다마고치 케어 히어로 — 대표묘와의 가상 교감 (2026-07-22부터 컴팩트 접힘 기본) ══════ */}
       <CareTamagotchiHero />
 
       {/* ══════ 오늘의 브리핑 카드 — 인사·헤드라인·스트릭·알림 + 날씨를 한 카드로 (홈 리디자인 2차 2026-07-11) ══════ */}
@@ -871,12 +882,7 @@ export default function HomeAuthed({
         </div>
       </div>
 
-      {/* ══════ 내 아이들 — 플로팅 돌봄 버튼의 스크롤 목적지(#my-cats) ══════ */}
-      {user && (
-        <div id="my-cats" style={{ scrollMarginTop: 12 }}>
-          <MyCatsHero />
-        </div>
-      )}
+      {/* (내 아이들 섹션은 2026-07-22 재배치로 상단 이동 — #my-cats 앵커 포함) */}
 
       {/* ══════ 쇼핑 프리뷰 — 케어 섹션 뒤 배치 (2026-07-21 쇼핑 동선 회의, 케어 위계 유지) ══════ */}
       {SHOW_SHOP_PREVIEW && user && <ShopPreviewStrip />}

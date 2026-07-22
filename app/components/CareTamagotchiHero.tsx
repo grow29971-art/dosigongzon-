@@ -14,6 +14,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { thumbnailUrl } from "@/lib/cats-repo";
@@ -84,6 +85,18 @@ export default function CareTamagotchiHero() {
   // 만질 때마다 여러 움직임 중 하나 — 직전과 다른 변형을 골라 CSS 애니메이션 재시작.
   const [reactVariant, setReactVariant] = useState(-1);
   const fxId = useRef(0);
+
+  // 컴팩트 모드 (2026-07-22 리텐션 회의: 홈 첫 화면 600px 회수 — 접힌 게 기본,
+  // 펼침 상태는 기기별 기억 → 코어 유저는 한 번 펼치면 계속 펼쳐진 채 유지)
+  const EXPAND_KEY = "dosigongzon_tama_expanded";
+  const [expanded, setExpanded] = useState(false);
+  useEffect(() => {
+    try { setExpanded(localStorage.getItem(EXPAND_KEY) === "1"); } catch { /* 무시 */ }
+  }, []);
+  const toggleExpanded = (v: boolean) => {
+    setExpanded(v);
+    try { localStorage.setItem(EXPAND_KEY, v ? "1" : "0"); } catch { /* 무시 */ }
+  };
 
   // 로드: 대표묘(없으면 첫 등록묘) + 보유 케어 아이템
   useEffect(() => {
@@ -274,6 +287,56 @@ export default function CareTamagotchiHero() {
   // 바닥 오브젝트 위치(인덱스 기반 고정 — 틱마다 안 흔들리게)
   const POOP_POS = [{ l: 22, e: "💩" }, { l: 70, e: "🍂" }, { l: 46, e: "💩" }];
 
+  // ── 컴팩트(접힘) 모드 — 이름·레벨·게이지 3줄 요약만, 탭하면 풀 씬 전개 ──
+  if (!expanded) {
+    return (
+      <div className="card p-3.5 mb-4">
+        <button
+          type="button"
+          onClick={() => toggleExpanded(true)}
+          className="w-full flex items-center gap-3 active:scale-[0.99] transition-transform"
+          aria-label={`${cat.name} 케어 펼치기`}
+        >
+          <span
+            className="relative w-11 h-11 rounded-2xl overflow-hidden shrink-0 flex items-center justify-center text-[22px]"
+            style={{ background: "var(--color-primary-soft)" }}
+          >
+            {photo ? (
+              <Image src={photo} alt={cat.name} fill sizes="44px" style={{ objectFit: "cover" }} />
+            ) : (
+              <>🐱</>
+            )}
+          </span>
+          <span className="flex-1 min-w-0 text-left">
+            <span className="flex items-center gap-1.5">
+              <span className="text-[14.5px] font-extrabold text-text-main truncate">{cat.name}</span>
+              <span
+                className="chip-square px-1.5 py-0.5 text-[9.5px] font-extrabold shrink-0"
+                style={{ background: "var(--color-primary-soft)", color: "var(--color-primary-dark)" }}
+              >
+                {stage.emoji} Lv.{level}
+              </span>
+            </span>
+            <span className="flex items-center gap-1.5 mt-1.5">
+              {[
+                { v: fullness, c: "#E8A54B" },
+                { v: mood, c: "#E86B8C" },
+                { v: cleanliness, c: "#5BA8D0" },
+              ].map((g, i) => (
+                <span key={i} className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "var(--color-surface-alt)" }}>
+                  <span className="block h-full rounded-full" style={{ width: `${g.v}%`, background: g.c }} />
+                </span>
+              ))}
+            </span>
+          </span>
+          <span className="flex items-center gap-0.5 text-[11px] font-bold shrink-0 text-text-sub">
+            펼치기 <ChevronDown size={13} />
+          </span>
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="card p-4 mb-4">
       <style dangerouslySetInnerHTML={{ __html: SCENE_CSS }} />
@@ -291,6 +354,15 @@ export default function CareTamagotchiHero() {
             <Image src={photo} alt={cat.name} fill sizes="34px" style={{ objectFit: "cover" }} />
           </span>
         )}
+        <button
+          type="button"
+          onClick={() => toggleExpanded(false)}
+          className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 active:scale-90"
+          aria-label="케어 접기"
+          style={{ background: "var(--color-surface-alt)" }}
+        >
+          <ChevronUp size={14} className="text-text-sub" />
+        </button>
       </div>
 
       {/* ── 씬 ── */}

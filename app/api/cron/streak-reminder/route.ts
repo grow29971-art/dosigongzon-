@@ -106,19 +106,22 @@ export async function POST(request: Request) {
     auth: string;
   }>) {
     const streak = streakByUser.get(sub.user_id) ?? 0;
+    // 2026-07-22 심리 회의: 손실 위협("위험해요!") → 누적 관계 서사로.
+    // 위협 프레임은 하루 놓친 유저의 복귀 포기를 부른다(이탈 가속기).
     const title =
       streak >= 30
-        ? `🔥🔥🔥 ${streak}일 스트릭이 위험해요!`
+        ? `🔥 ${streak}일째 이어진 사이`
         : streak >= 7
-          ? `🔥🔥 ${streak}일 연속 — 오늘만 이어가면 돼요`
-          : `🔥 ${streak}일 스트릭 · 오늘 한 줄 남기면 이어져요`;
+          ? `🔥🔥 ${streak}일 연속 — 오늘도 이어볼까요?`
+          : `🔥 ${streak}일 스트릭 · 오늘 한 줄이면 이어져요`;
     const body =
       streak >= 30
-        ? "한 달 넘게 이어온 기록, 오늘 단 한 줄로 지킬 수 있어요."
+        ? `오늘 한 줄이면 ${streak + 1}일 — 아이도 이제 발소리를 알아볼 거예요.`
         : streak >= 7
-          ? "일주일 넘게 꾸준히 챙겼어요. 오늘도 한 번만 들러볼까요?"
-          : "오늘 안부 한 줄이면 연속 기록이 이어져요 💛";
-    const url = "/map";
+          ? "일주일 넘게 꾸준히 챙겼어요. 오늘도 한 번 들러볼까요?"
+          : "오늘 안부 한 줄이면 연속 기록이 쌓여요 💛";
+    // 딥링크: 스트릭을 잇는 최단 행동은 홈 1탭 기록 — 지도(4단계 경로)가 아니라 #my-cats로
+    const url = "/#my-cats";
 
     try {
       await webpush.sendNotification(
