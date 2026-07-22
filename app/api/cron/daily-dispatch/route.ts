@@ -10,7 +10,26 @@
 
 export const maxDuration = 60;
 
-const JOBS = ["news-crawl", "admin-daily-digest", "payment-reconcile"] as const;
+// 2026-07-22 팬아웃 고장 수리: 스케줄 호출의 request.url origin은 배포 URL
+// (*.vercel.app, Deployment Protection에 막힘)이라 서브 fetch가 무음 실패했다
+// (7/19~22 디스패처만 발화, 서브잡 하트비트 0건 — 리텐션 회의 실측).
+// 수동 테스트는 dosigongzon.com으로 호출해서 통과 → 3일 무증상.
+// 해결: origin을 프로덕션 도메인으로 고정 + 실패를 console.error로 가시화.
+const DISPATCH_ORIGIN = process.env.CRON_DISPATCH_ORIGIN || "https://dosigongzon.com";
+
+const DAILY_JOBS = ["news-crawl", "admin-daily-digest", "payment-reconcile"] as const;
+
+// 요일 조건부 잡 (2026-07-22 리텐션 회의: 유령 3종 부활 — 스케줄 슬롯 추가 없이 편입)
+// 디스패처는 00:00 UTC = 09:00 KST 발화. 원래 의도 시각과 다르지만 배달 보장이 우선.
+const WEEKDAY_JOBS: Record<number, string[]> = {
+  3: ["engagement-push"], // 수요일(KST)
+  6: ["onboarding-nudge"], // 토요일(KST)
+  0: ["weekly-postcard-push"], // 일요일(KST)
+};
+
+function kstWeekday(): number {
+  return new Date(Date.now() + 9 * 3600 * 1000).getUTCDay();
+}
 
 async function handle(request: Request) {
   const cronSecret = process.env.CRON_SECRET;
@@ -19,13 +38,14 @@ async function handle(request: Request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const origin = new URL(request.url).origin;
+  const jobs = [...DAILY_JOBS, ...(WEEKDAY_JOBS[kstWeekday()] ?? [])];
 
   const settled = await Promise.allSettled(
-    JOBS.map((job) =>
-      fetch(`${origin}/api/cron/${job}`, {
+    jobs.map((job) =>
+      fetch(`${DISPATCH_ORIGIN}/api/cron/${job}`, {
         method: "POST",
         headers: { authorization: `Bearer ${cronSecret}` },
+        cache: "no-store",
       }).then((r) => ({ job, status: r.status, ok: r.ok })),
     ),
   );
@@ -33,10 +53,16 @@ async function handle(request: Request) {
   const results = settled.map((s, i) =>
     s.status === "fulfilled"
       ? s.value
-      : { job: JOBS[i], status: 0, ok: false, error: String(s.reason) },
+      : { job: jobs[i], status: 0, ok: false, error: String(s.reason) },
   );
 
-  return Response.json({ dispatchedAt: new Date().toISOString(), results });
+  const failed = results.filter((r) => !r.ok);
+  if (failed.length > 0) {
+    // Vercel 함수 로그 + Sentry에서 보이도록 — 무음 실패 재발 방지
+    console.error("[daily-dispatch] 서브잡 실패:", JSON.stringify(failed));
+  }
+
+  return Response.json({ dispatchedAt: new Date().toISOString(), origin: DISPATCH_ORIGIN, results });
 }
 
 export async function POST(request: Request) {

@@ -689,7 +689,18 @@ export default function MapPage() {
         .then((r) => r.json())
         .then((w) => setRoamWeather(w?.weatherMain ?? null, typeof w?.feelsLike === "number" ? w.feelsLike : null))
         .catch(() => {});
-      fetch("/api/visit", { method: "POST" }).catch(() => {});
+      // 로그인 유저는 auth 헤더를 실어야 daily_visits(유저 단위 방문 원장)에 잡힌다
+      // (2026-07-22 리텐션 회의: 지도 직행 유저 WAU 과소집계 수정)
+      (async () => {
+        const headers: Record<string, string> = {};
+        try {
+          const { data } = await createSupabaseClient().auth.getSession();
+          if (data.session?.access_token) {
+            headers["Authorization"] = `Bearer ${data.session.access_token}`;
+          }
+        } catch { /* 비로그인 — IP 기반 집계로 폴백 */ }
+        fetch("/api/visit", { method: "POST", headers }).catch(() => {});
+      })();
       fetch("/api/visit").then((r) => r.json()).then((d) => setTodayVisit(d.today)).catch(() => {});
     });
   }, [fetchCats]);

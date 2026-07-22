@@ -8,6 +8,7 @@
 import { useEffect, useState } from "react";
 import { Bell, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { createClient } from "@/lib/supabase/client";
 
 const DISMISS_KEY = "dosigongzon_push_care_cue_dismissed_at";
 const DISMISS_DAYS = 14;
@@ -66,6 +67,15 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
           body: JSON.stringify({ subscription: sub.toJSON() }),
         });
       }
+      // 구독+마케팅 동의 통합 (2026-07-22 리텐션 회의 — 교집합 3명 문제)
+      if (user) {
+        try {
+          await createClient()
+            .from("profiles")
+            .update({ marketing_push_enabled: true })
+            .eq("id", user.id);
+        } catch { /* 동의 반영 실패는 구독 자체를 막지 않음 */ }
+      }
       setShow(false);
     } catch {
       dismiss();
@@ -100,6 +110,9 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
           </p>
           <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
             바쁘면 까먹어요 — 알림이 챙겨드려요.
+          </p>
+          <p className="text-[9.5px] mt-0.5" style={{ color: "#BFA084" }}>
+            켜면 돌봄·소식 알림(마케팅 포함) 수신에 동의해요 · 마이페이지에서 해제 가능
           </p>
         </div>
         <div className="flex flex-col gap-1 shrink-0">

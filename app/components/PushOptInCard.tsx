@@ -7,6 +7,7 @@
 import { useEffect, useState } from "react";
 import { Bell, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { createClient } from "@/lib/supabase/client";
 
 const DISMISS_KEY = "dosigongzon_push_optin_dismissed_at";
 const DISMISS_DAYS = 7;
@@ -90,6 +91,16 @@ export default function PushOptInCard({
           body: JSON.stringify({ subscription: sub.toJSON() }),
         });
       }
+      // 구독과 마케팅 수신 동의를 한 플로우로 통합 (2026-07-22 리텐션 회의:
+      // 구독 31명 ∩ 옵트인 45명 = 교집합 3명 문제 — 카드에 동의 문구 명시, 마이페이지에서 해제 가능)
+      if (user) {
+        try {
+          await createClient()
+            .from("profiles")
+            .update({ marketing_push_enabled: true })
+            .eq("id", user.id);
+        } catch { /* 동의 반영 실패는 구독 자체를 막지 않음 */ }
+      }
       setShow(false);
     } catch {
       handleDismiss();
@@ -128,6 +139,9 @@ export default function PushOptInCard({
             style={{ color: "#A88160" }}
           >
             {description}
+          </p>
+          <p className="text-[9.5px] mt-0.5" style={{ color: "#BFA084" }}>
+            켜면 돌봄·소식 알림(마케팅 포함) 수신에 동의해요 · 마이페이지에서 언제든 해제
           </p>
         </div>
         <button

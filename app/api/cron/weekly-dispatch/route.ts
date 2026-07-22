@@ -9,6 +9,10 @@
 
 export const maxDuration = 60;
 
+// 2026-07-22 팬아웃 고장 수리 — daily-dispatch와 동일 (배포 URL origin이 프로텍션에 막혀
+// 서브 fetch 무음 실패). 프로덕션 도메인 고정 + 실패 가시화.
+const DISPATCH_ORIGIN = process.env.CRON_DISPATCH_ORIGIN || "https://dosigongzon.com";
+
 const JOBS = ["retention-report", "weekly-digest"] as const;
 
 async function handle(request: Request) {
@@ -18,13 +22,12 @@ async function handle(request: Request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const origin = new URL(request.url).origin;
-
   const settled = await Promise.allSettled(
     JOBS.map((job) =>
-      fetch(`${origin}/api/cron/${job}`, {
+      fetch(`${DISPATCH_ORIGIN}/api/cron/${job}`, {
         method: "POST",
         headers: { authorization: `Bearer ${cronSecret}` },
+        cache: "no-store",
       }).then((r) => ({ job, status: r.status, ok: r.ok })),
     ),
   );
@@ -35,7 +38,12 @@ async function handle(request: Request) {
       : { job: JOBS[i], status: 0, ok: false, error: String(s.reason) },
   );
 
-  return Response.json({ dispatchedAt: new Date().toISOString(), results });
+  const failed = results.filter((r) => !r.ok);
+  if (failed.length > 0) {
+    console.error("[weekly-dispatch] 서브잡 실패:", JSON.stringify(failed));
+  }
+
+  return Response.json({ dispatchedAt: new Date().toISOString(), origin: DISPATCH_ORIGIN, results });
 }
 
 export async function POST(request: Request) {

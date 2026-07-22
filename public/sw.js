@@ -94,13 +94,31 @@ self.addEventListener("push", (e) => {
 });
 
 // 알림 클릭 시 해당 페이지로 이동
+// 2026-07-22 수리: 기존 includes(url) 매칭은 url이 "/"일 때 아무 열린 페이지에나
+// focus만 하고 약속한 화면으로 이동하지 않았다(리텐션 회의 발견).
+// → pathname 정확 일치 시에만 focus, 아니면 기존 창을 navigate, 없으면 새 창.
 self.addEventListener("notificationclick", (e) => {
   e.notification.close();
   const url = e.notification.data?.url || "/";
   e.waitUntil(
-    clients.matchAll({ type: "window" }).then((list) => {
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
+      let targetPath = url;
+      try {
+        targetPath = new URL(url, self.location.origin).pathname;
+      } catch (_) { /* 상대경로 그대로 사용 */ }
       for (const client of list) {
-        if (client.url.includes(url) && "focus" in client) return client.focus();
+        try {
+          if (new URL(client.url).pathname === targetPath && "focus" in client) {
+            return client.focus();
+          }
+        } catch (_) { /* URL 파싱 실패 시 다음 후보 */ }
+      }
+      const existing = list.find((c) => "navigate" in c && "focus" in c);
+      if (existing) {
+        return existing
+          .navigate(url)
+          .then((c) => (c ? c.focus() : clients.openWindow(url)))
+          .catch(() => clients.openWindow(url));
       }
       return clients.openWindow(url);
     })
