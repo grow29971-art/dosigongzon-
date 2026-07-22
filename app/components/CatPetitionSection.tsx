@@ -119,7 +119,8 @@ export default function CatPetitionSection() {
           </span>
         )}
         <span className="ml-auto flex items-center gap-1.5 shrink-0">
-          {minDday !== null && (
+          {/* 힌트가 떠 있는 동안엔 D-day 숨김 — 좁은 화면에서 제목 줄바꿈 방지 */}
+          {minDday !== null && !(showHint && !open) && (
             <span className="text-[11px] font-bold" style={{ color: CIVIC_TEXT }}>
               {ddayLabel(minDday)}
             </span>
