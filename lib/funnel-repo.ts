@@ -38,11 +38,13 @@ function getAnonId(): string {
 
 // 스텝당 기기 1회만 전송 (localStorage 1차 가드 + DB unique 2차 가드).
 // 실패해도 UX에 영향 없어야 하므로 완전 fire-and-forget — 예외를 밖으로 내보내지 않는다.
+// v2 (2026-07-22 회의): 가드를 인서트 "성공 후"에만 설정 — v1은 실패해도 가드가 남아
+// 그 기기가 영구 침묵했다(RLS 미적용 기간의 방문 기기 전원이 이 상태). 키도 v2로 올려
+// v1 가드에 물린 기기들이 다시 전송을 시도하게 한다.
 export function logFunnelEvent(step: FunnelStep, catId?: string | null): void {
+  const guardKey = `dosigongzon_funnel_v2_${step}`;
   try {
-    const guardKey = `dosigongzon_funnel_${step}`;
     if (localStorage.getItem(guardKey)) return;
-    localStorage.setItem(guardKey, "1");
   } catch { /* localStorage 차단 — DB unique가 중복을 막으므로 계속 진행 */ }
 
   (async () => {
@@ -50,7 +52,7 @@ export function logFunnelEvent(step: FunnelStep, catId?: string | null): void {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       // unique(anon_id, step) 충돌은 정상 흐름(재방문) — ignoreDuplicates로 조용히 무시
-      await supabase.from("funnel_events").upsert(
+      const { error } = await supabase.from("funnel_events").upsert(
         {
           anon_id: getAnonId(),
           step,
@@ -59,8 +61,11 @@ export function logFunnelEvent(step: FunnelStep, catId?: string | null): void {
         },
         { onConflict: "anon_id,step", ignoreDuplicates: true },
       );
+      if (!error) {
+        try { localStorage.setItem(guardKey, "1"); } catch { /* 무시 */ }
+      }
     } catch {
-      /* 마이그레이션 전·네트워크 실패 — 계측은 조용히 포기 */
+      /* 네트워크 실패 — 가드를 안 남겼으므로 다음 방문에 재시도된다 */
     }
   })();
 }
