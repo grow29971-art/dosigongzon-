@@ -14,7 +14,9 @@ export type FunnelStep =
   | "onboarding_intro" // 온보딩 intro 화면 진입
   | "onboarding_pick" // pick 단계에서 실제 아이 선택
   | "signup_home" // 가입 후 홈 첫 도달 (pending_care 보유 상태)
-  | "first_feed"; // 핸드오프 CTA로 첫 밥 기록 성공
+  | "first_feed" // 핸드오프 CTA로 첫 밥 기록 성공
+  | "petition_notice_view" // 청원 안내 팝업 노출 (2026-07-22 회의: 킬 조건 계측)
+  | "petition_notice_click"; // 청원 안내 CTA 클릭 → 국회 사이트 이동
 
 function randomId(): string {
   try {

@@ -21,6 +21,8 @@ export default function AdminAnnouncementPage() {
   const [authorized, setAuthorized] = useState(false);
 
   const [message, setMessage] = useState("");
+  const [linkUrl, setLinkUrl] = useState("");
+  const [linkLabel, setLinkLabel] = useState("");
   const [current, setCurrent] = useState<Announcement | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -59,9 +61,11 @@ export default function AdminAnnouncementPage() {
     setError("");
     setDone("");
     try {
-      await publishAnnouncement(message.trim());
+      await publishAnnouncement(message.trim(), linkUrl, linkLabel);
       setDone("✓ 공지를 등록했어요. 이제 접속자에게 팝업으로 표시됩니다.");
       setMessage("");
+      setLinkUrl("");
+      setLinkLabel("");
       await refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "등록 실패");
@@ -168,6 +172,30 @@ export default function AdminAnnouncementPage() {
             boxShadow: "inset 0 1px 2px rgba(0,0,0,0.02)",
             color: "#3D2F25",
           }}
+        />
+      </section>
+
+      {/* 선택: 외부 링크 CTA */}
+      <section className="mb-4">
+        <p className="text-[12px] font-extrabold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
+          링크 버튼 (선택 — 비우면 버튼 없음)
+        </p>
+        <input
+          type="url"
+          value={linkUrl}
+          onChange={(e) => setLinkUrl(e.target.value)}
+          placeholder="https:// 링크 주소"
+          className="w-full rounded-2xl bg-white p-4 text-[13.5px] mb-2"
+          style={{ border: "1px solid rgba(0,0,0,0.06)", color: "#3D2F25" }}
+        />
+        <input
+          type="text"
+          value={linkLabel}
+          onChange={(e) => setLinkLabel(e.target.value)}
+          maxLength={30}
+          placeholder="버튼 문구 (기본: 자세히 보기)"
+          className="w-full rounded-2xl bg-white p-4 text-[13.5px]"
+          style={{ border: "1px solid rgba(0,0,0,0.06)", color: "#3D2F25" }}
         />
       </section>
 
