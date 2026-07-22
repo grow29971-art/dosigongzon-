@@ -90,7 +90,9 @@ export async function GET() {
     // 국회 API 장애 — 빈 목록 반환, 클라이언트는 섹션 자체를 숨긴다
   }
 
-  results.sort((a, b) => b.agreeCount - a.agreeCount);
+  // 마감 임박순 (2026-07-23 회의): 동의수순은 가장 결집된 진영의 청원을 첫 카드로
+  // 부스팅하는 정렬이라 중립 원칙과 충돌 — 마감일이라는 기계적 기준으로 교체.
+  results.sort((a, b) => a.endDate.localeCompare(b.endDate));
   // 진행 중 목록에 이미 있는 청원이 스냅샷에 중복돼도 진행 중이 우선
   const ongoingIds = new Set(results.map((p) => p.id));
   const closed = (closedPetitions as ClosedPetition[]).filter((p) => !ongoingIds.has(p.id));
