@@ -16,7 +16,13 @@ const ONGOING_QUERY =
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
 
-const CAT_KEYWORDS = ["고양이", "길고양이", "캣맘", "캣 "];
+// 고양이 직접 키워드 + 동물보호 전반(캣맘 유저 관심사 직결).
+// '동물' 단독은 오탐이 많아 복합어로만 매칭.
+const CAT_KEYWORDS = [
+  "고양이", "길고양이", "캣맘", "캣 ",
+  "동물보호", "동물학대", "동물복지", "유기동물", "반려동물",
+  "중성화", "TNR", "급식소",
+];
 
 interface AssemblyPetit {
   petitId?: string;

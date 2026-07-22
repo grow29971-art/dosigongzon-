@@ -37,7 +37,7 @@ export default function CatPetitionSection() {
     <div className="mt-6">
       <div className="flex items-center gap-1.5 mb-1 px-1">
         <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
-          국회에 올라온 길고양이 청원
+          국회에 올라온 길고양이·동물 청원
         </h2>
         <Landmark size={14} style={{ color: "#6B7FA3" }} />
       </div>
