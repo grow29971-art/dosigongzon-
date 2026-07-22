@@ -6,7 +6,11 @@
 import { createClient } from "@/lib/supabase/client";
 
 // 비로그인 투표 식별자 — 브라우저/기기 단위(1기기 1표, 캐주얼 중복만 방지).
-const ANON_ID_KEY = "dosigongzon_anon_id";
+// 2026-07-22 보안 회의: 계측용 dosigongzon_anon_id 와 키 분리(신뢰경계 혼용 금지).
+// 한계: 클라이언트 제어 식별자라 localStorage 삭제로 재투표 가능 —
+// 표 무결성이 중요한 투표는 로그인 투표(cast_fund_vote)만 신뢰할 것.
+const ANON_ID_KEY = "dosigongzon_fund_anon_id";
+const LEGACY_SHARED_KEY = "dosigongzon_anon_id"; // 분리 전 공용 키 — 기존 투표 기기 승계용
 const ANON_VOTE_KEY = "dosigongzon_fund_vote"; // 비로그인 내 선택(표시용)
 
 function randomId(): string {
@@ -20,7 +24,8 @@ function getAnonId(): string {
   try {
     let id = localStorage.getItem(ANON_ID_KEY);
     if (!id) {
-      id = randomId();
+      // 과거 공용 키로 이미 투표한 기기는 그 id를 승계해 중복 투표를 만들지 않는다
+      id = localStorage.getItem(LEGACY_SHARED_KEY) || randomId();
       localStorage.setItem(ANON_ID_KEY, id);
     }
     return id;
