@@ -3,13 +3,10 @@
 // 읽기는 anon 포함 누구나(RLS: active=true), 쓰기는 admins 테이블 보유자만(RLS).
 
 import { createClient } from "@/lib/supabase/client";
-import { isSafeHttpUrl } from "@/lib/url-validate";
 
 export interface Announcement {
   id: string;
   body: string;
-  link_url: string | null;
-  link_label: string | null;
   created_at: string;
 }
 
@@ -18,7 +15,7 @@ export async function getActiveAnnouncement(): Promise<Announcement | null> {
   const supabase = createClient();
   const { data } = await supabase
     .from("app_announcements")
-    .select("id, body, link_url, link_label, created_at")
+    .select("id, body, created_at")
     .eq("active", true)
     .order("created_at", { ascending: false })
     .limit(1)
@@ -26,26 +23,17 @@ export async function getActiveAnnouncement(): Promise<Announcement | null> {
   return (data as Announcement | null) ?? null;
 }
 
-/** 새 팝업 공지 등록 (관리자). 기존 활성 공지는 자동으로 내림. 링크는 선택. */
-export async function publishAnnouncement(
-  body: string,
-  linkUrl?: string,
-  linkLabel?: string,
-): Promise<void> {
+/** 새 팝업 공지 등록 (관리자). 기존 활성 공지는 자동으로 내림. */
+export async function publishAnnouncement(body: string): Promise<void> {
   const trimmed = body.trim();
   if (!trimmed) throw new Error("공지 내용을 입력해주세요.");
   if (trimmed.length > 1000) throw new Error("공지는 1000자 이내로 작성해주세요.");
-  const url = linkUrl?.trim() || null;
-  if (url && !isSafeHttpUrl(url)) throw new Error("링크는 http(s) URL만 가능해요.");
   const supabase = createClient();
   // 기존 활성 공지 내리기 (한 번에 하나만 노출)
   await supabase.from("app_announcements").update({ active: false }).eq("active", true);
-  const { error } = await supabase.from("app_announcements").insert({
-    body: trimmed,
-    active: true,
-    link_url: url,
-    link_label: url ? linkLabel?.trim() || "자세히 보기" : null,
-  });
+  const { error } = await supabase
+    .from("app_announcements")
+    .insert({ body: trimmed, active: true });
   if (error) throw new Error(error.message);
 }
 

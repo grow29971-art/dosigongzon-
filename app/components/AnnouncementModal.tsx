@@ -2,13 +2,10 @@
 
 // 접속 팝업 공지 — 관리자가 등록한 활성 공지를 최초 접속 시 1회 모달로 표시.
 // 이후 localStorage로 재노출 방지(공지 id별). 본문은 순수 텍스트 렌더(XSS 방지).
-// 링크가 있는 공지는 CTA 버튼으로 노출하고 조회/클릭을 계측 (2026-07-22 청원 안내 회의 결정).
 
 import { useEffect, useState } from "react";
-import { X, Megaphone, ExternalLink } from "lucide-react";
+import { X, Megaphone } from "lucide-react";
 import { getActiveAnnouncement, type Announcement } from "@/lib/announcements-repo";
-import { isSafeHttpUrl } from "@/lib/url-validate";
-import { logFunnelEvent } from "@/lib/funnel-repo";
 
 export default function AnnouncementModal() {
   const [ann, setAnn] = useState<Announcement | null>(null);
@@ -23,8 +20,6 @@ export default function AnnouncementModal() {
         } catch {
           /* localStorage 접근 불가 시 그냥 표시 */
         }
-        // 링크형 공지(현재는 청원 안내 전용)만 노출 계측 — 기기당 1회
-        if (isSafeHttpUrl(a.link_url)) logFunnelEvent("petition_notice_view");
         setAnn(a);
       })
       .catch(() => {
@@ -81,38 +76,14 @@ export default function AnnouncementModal() {
           {ann.body}
         </p>
 
-        {isSafeHttpUrl(ann.link_url) && (
-          <a
-            href={ann.link_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => logFunnelEvent("petition_notice_click")}
-            className="mt-5 w-full py-3 rounded-2xl text-white text-[14px] font-extrabold active:scale-[0.98] flex items-center justify-center gap-1.5"
-            style={{
-              background: "linear-gradient(135deg, #C47E5A 0%, #A96A47 100%)",
-              boxShadow: "0 6px 16px rgba(196,126,90,0.32)",
-            }}
-          >
-            {ann.link_label || "자세히 보기"}
-            <ExternalLink size={14} />
-          </a>
-        )}
-
         <button
           type="button"
           onClick={dismiss}
-          className={`w-full py-3 rounded-2xl text-[14px] font-extrabold active:scale-[0.98] ${
-            isSafeHttpUrl(ann.link_url) ? "mt-2.5" : "mt-5"
-          }`}
-          style={
-            isSafeHttpUrl(ann.link_url)
-              ? { background: "#F1ECE4", color: "#8B7562" }
-              : {
-                  background: "linear-gradient(135deg, #C47E5A 0%, #A96A47 100%)",
-                  boxShadow: "0 6px 16px rgba(196,126,90,0.32)",
-                  color: "#FFFFFF",
-                }
-          }
+          className="mt-5 w-full py-3 rounded-2xl text-white text-[14px] font-extrabold active:scale-[0.98]"
+          style={{
+            background: "linear-gradient(135deg, #C47E5A 0%, #A96A47 100%)",
+            boxShadow: "0 6px 16px rgba(196,126,90,0.32)",
+          }}
         >
           확인했어요
         </button>
