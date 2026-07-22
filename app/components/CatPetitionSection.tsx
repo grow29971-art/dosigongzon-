@@ -5,8 +5,8 @@
 // 동의는 국회 사이트에서 본인인증으로만 가능 — 앱은 링크 안내만 한다(2026-07-22 회의).
 
 import { useEffect, useState } from "react";
-import { Landmark, ExternalLink } from "lucide-react";
-import type { CatPetition } from "@/app/api/petitions/route";
+import { Landmark, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
+import type { CatPetition, ClosedPetition } from "@/app/api/petitions/route";
 
 function dday(endDate: string): string {
   const end = new Date(`${endDate}T23:59:59+09:00`).getTime();
@@ -19,19 +19,22 @@ function dday(endDate: string): string {
 
 export default function CatPetitionSection() {
   const [petitions, setPetitions] = useState<CatPetition[]>([]);
+  const [closed, setClosed] = useState<ClosedPetition[]>([]);
+  const [showClosed, setShowClosed] = useState(false);
 
   useEffect(() => {
     fetch("/api/petitions")
       .then((r) => r.json())
       .then((d) => {
         if (Array.isArray(d?.petitions)) setPetitions(d.petitions);
+        if (Array.isArray(d?.closed)) setClosed(d.closed);
       })
       .catch(() => {
         /* 국회 API 장애 — 섹션 숨김 */
       });
   }, []);
 
-  if (petitions.length === 0) return null;
+  if (petitions.length === 0 && closed.length === 0) return null;
 
   return (
     <div className="mt-6">
@@ -100,6 +103,69 @@ export default function CatPetitionSection() {
           );
         })}
       </div>
+
+      {/* 종료된 청원 아카이브 (2020~) — 동의수 확정, 접이식 */}
+      {closed.length > 0 && (
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={() => setShowClosed((v) => !v)}
+            className="w-full flex items-center justify-center gap-1.5 py-2.5 text-[12px] font-bold active:scale-[0.99] transition-transform"
+            style={{
+              background: "rgba(255,255,255,0.7)",
+              borderRadius: "var(--radius-card-sm)",
+              border: "1px solid rgba(0,0,0,0.05)",
+              color: "#6B7FA3",
+            }}
+          >
+            지난 청원 {closed.length}건 {showClosed ? "접기" : "보기"}
+            {showClosed ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+          </button>
+
+          {showClosed && (
+            <div
+              className="mt-2 px-4 py-1"
+              style={{
+                background: "#FFFFFF",
+                borderRadius: "var(--radius-card-sm)",
+                border: "1px solid rgba(0,0,0,0.04)",
+              }}
+            >
+              {closed.map((p, idx) => (
+                <a
+                  key={p.id}
+                  href={p.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2.5 py-2.5"
+                  style={
+                    idx < closed.length - 1
+                      ? { borderBottom: "1px solid var(--color-divider)" }
+                      : undefined
+                  }
+                >
+                  <span
+                    className="shrink-0 text-[9.5px] font-extrabold px-1.5 py-0.5 rounded-md"
+                    style={
+                      p.status === "established"
+                        ? { background: "rgba(91,168,118,0.14)", color: "#3E8A5C" }
+                        : { background: "rgba(0,0,0,0.05)", color: "rgba(60,46,35,0.45)" }
+                    }
+                  >
+                    {p.status === "established" ? "성립" : "종료"}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[12px] font-semibold text-text-main truncate">{p.title}</p>
+                    <p className="text-[10px] text-text-light mt-0.5">
+                      {p.agreeCount.toLocaleString()}명 동의 · {p.endDate} 마감
+                    </p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -42,6 +42,19 @@ export interface CatPetition {
   url: string;
 }
 
+export interface ClosedPetition {
+  id: string;
+  title: string;
+  agreeCount: number;
+  endDate: string;
+  status: "established" | "ended"; // 성립(위원회 회부) / 미성립 종료
+  url: string;
+}
+
+// 종료 청원은 동의수가 확정 불변 — 2026-07-22 전체 아카이브(3,628건) 크롤링에서
+// 동물 키워드 매칭 48건을 정적 스냅샷으로 보존. 진행 중 청원이 마감되면 이 파일에 수동 추가.
+import closedPetitions from "./closed-petitions.json";
+
 export async function GET() {
   const results: CatPetition[] = [];
   try {
@@ -78,5 +91,8 @@ export async function GET() {
   }
 
   results.sort((a, b) => b.agreeCount - a.agreeCount);
-  return NextResponse.json({ petitions: results });
+  // 진행 중 목록에 이미 있는 청원이 스냅샷에 중복돼도 진행 중이 우선
+  const ongoingIds = new Set(results.map((p) => p.id));
+  const closed = (closedPetitions as ClosedPetition[]).filter((p) => !ongoingIds.has(p.id));
+  return NextResponse.json({ petitions: results, closed });
 }
