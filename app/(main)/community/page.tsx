@@ -202,6 +202,10 @@ export default function CommunityPage() {
         </Link>
       </div>
 
+      {/* ── 국회 길고양이 청원 (찬반 전체 — 링크 안내만, 2026-07-22 회의)
+          2026-07-23: 최상단 이동 + 기본 접힘 바 — 접힘이라 핵심 동선(카테고리)을 밀지 않는다 ── */}
+      <CatPetitionSection />
+
       {/* 페이지 사용법 안내 (dismiss 가능) */}
       <div className="mb-4">
         <PageIntroBanner
@@ -300,9 +304,6 @@ export default function CommunityPage() {
           ),
         )}
       </div>
-
-      {/* ── 국회 길고양이 청원 (찬반 전체 — 링크 안내만, 2026-07-22 회의) ── */}
-      <CatPetitionSection />
 
       {/* ── 인기 글 ── */}
       {popularPosts.length > 0 && (

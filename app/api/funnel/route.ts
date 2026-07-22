@@ -13,6 +13,8 @@ const VALID_STEPS = new Set([
   "onboarding_pick",
   "signup_home",
   "first_feed",
+  "petition_expand",
+  "petition_click",
 ]);
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
