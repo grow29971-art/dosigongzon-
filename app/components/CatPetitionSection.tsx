@@ -42,6 +42,8 @@ export default function CatPetitionSection() {
   const [failed, setFailed] = useState(false);
   const [open, setOpen] = useState(false);
   const [showClosed, setShowClosed] = useState(false);
+  // 한 번도 토글한 적 없는 유저에게만 "탭해서 보기" 힌트 — 접이식인 걸 모르는 문제 해결
+  const [showHint, setShowHint] = useState(false);
 
   useEffect(() => {
     fetch("/api/petitions")
@@ -57,6 +59,7 @@ export default function CatPetitionSection() {
         if (pref === "1") {
           setOpen(true);
         } else if (pref === null) {
+          setShowHint(true);
           const urgent = list.some((p) => {
             const days = ddayNum(p.endDate);
             return days !== null && days >= 0 && days <= 3;
@@ -79,6 +82,7 @@ export default function CatPetitionSection() {
   const toggle = () => {
     const next = !open;
     setOpen(next);
+    setShowHint(false);
     try { localStorage.setItem(OPEN_PREF_KEY, next ? "1" : "0"); } catch {}
     if (next) logFunnelEvent("petition_expand");
   };
@@ -118,6 +122,14 @@ export default function CatPetitionSection() {
           {minDday !== null && (
             <span className="text-[11px] font-bold" style={{ color: CIVIC_TEXT }}>
               {ddayLabel(minDday)}
+            </span>
+          )}
+          {showHint && !open && (
+            <span
+              className="text-[10px] font-bold px-1.5 py-0.5 rounded-md"
+              style={{ background: "rgba(107,127,163,0.1)", color: CIVIC_TEXT }}
+            >
+              탭해서 보기
             </span>
           )}
           <ChevronDown

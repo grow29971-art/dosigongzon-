@@ -211,7 +211,7 @@ export default function CommunityPage() {
         <PageIntroBanner
           id="community"
           title="커뮤니티에서 할 수 있는 것"
-          description="긴급 구조·임보 요청·입양 공고·용품 나눔·일상 대화까지. 카테고리별로 구별되니 찾기 쉬워요. 우측 하단 + 버튼으로 글쓰기."
+          description="긴급 구조·임보 요청·입양 공고·용품 나눔·일상 대화까지. 카테고리별로 구별되니 찾기 쉬워요. 우측 하단 + 버튼으로 글쓰기. 맨 위 '국회 길고양이 청원' 바를 누르면 진행 중인 청원도 볼 수 있어요."
           ctaLabel="자세한 사용법"
           ctaHref="/guide"
           accent="#8B65B8"
