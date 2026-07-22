@@ -17,7 +17,8 @@ export const maxDuration = 60;
 // 해결: origin을 프로덕션 도메인으로 고정 + 실패를 console.error로 가시화.
 const DISPATCH_ORIGIN = process.env.CRON_DISPATCH_ORIGIN || "https://dosigongzon.com";
 
-const DAILY_JOBS = ["news-crawl", "admin-daily-digest", "payment-reconcile"] as const;
+// weather-alert: 혹한·폭염 급식 경보 (2026-07-22 신설 — 조건 미충족 시 발송 0이 정상)
+const DAILY_JOBS = ["news-crawl", "admin-daily-digest", "payment-reconcile", "weather-alert"] as const;
 
 // 요일 조건부 잡 (2026-07-22 리텐션 회의: 유령 3종 부활 — 스케줄 슬롯 추가 없이 편입)
 // 디스패처는 00:00 UTC = 09:00 KST 발화. 원래 의도 시각과 다르지만 배달 보장이 우선.
