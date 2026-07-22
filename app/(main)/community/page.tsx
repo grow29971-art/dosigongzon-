@@ -27,6 +27,7 @@ import LoginRequired from "@/app/components/LoginRequired";
 import PageIntroBanner from "@/app/components/PageIntroBanner";
 import CommunityWritePrompt from "@/app/components/CommunityWritePrompt";
 import UIListRow from "@/app/components/ui/ListRow";
+import CatPetitionSection from "@/app/components/CatPetitionSection";
 
 /* ═══ 카테고리 카드 데이터 ═══ */
 type CategoryCard = {
@@ -299,6 +300,9 @@ export default function CommunityPage() {
           ),
         )}
       </div>
+
+      {/* ── 국회 길고양이 청원 (찬반 전체 — 링크 안내만, 2026-07-22 회의) ── */}
+      <CatPetitionSection />
 
       {/* ── 인기 글 ── */}
       {popularPosts.length > 0 && (
