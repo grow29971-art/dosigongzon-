@@ -551,7 +551,7 @@ export default async function AboutPage() {
             icon={<Flame size={22} color="#FFFFFF" />}
             accent="#AD5E3B"
             accentDark="var(--color-primary-dark)"
-            badge="개발 중"
+            badge="양산 준비 중"
             title="고양이난로"
             desc={
               <>
