@@ -10,8 +10,10 @@ export async function GET(request: Request) {
 
   const apiKey = process.env.OPENWEATHERMAP_API_KEY;
   if (!apiKey) {
+    // 원인은 서버 로그로만 — 응답에 env 변수명/설정 힌트 노출 금지(CLAUDE.md 보안 규칙).
+    console.error("[Weather API] OPENWEATHERMAP_API_KEY 미설정");
     return Response.json(
-      { error: "OPENWEATHERMAP_API_KEY가 설정되지 않았습니다.", debug: ".env.local에 OPENWEATHERMAP_API_KEY를 추가하세요." },
+      { error: "날씨 정보를 일시적으로 제공할 수 없어요." },
       { status: 500 },
     );
   }
