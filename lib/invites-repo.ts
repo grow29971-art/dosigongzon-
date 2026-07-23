@@ -39,12 +39,10 @@ export async function getMyInviteInfo(): Promise<MyInviteInfo> {
 
   let invitedByCode: string | null = null;
   if (meRes.data?.invited_by) {
-    const { data: inviter } = await supabase
-      .from("profiles")
-      .select("invite_code")
-      .eq("id", meRes.data.invited_by)
-      .maybeSingle();
-    invitedByCode = (inviter?.invite_code as string | null) ?? null;
+    // 남의 invite_code 직접조회는 profiles 락다운(self+admin) 후 불가.
+    // auth.uid()의 invited_by만 따라가는 SECURITY DEFINER RPC로 우회.
+    const { data: inviterCode } = await supabase.rpc("get_inviter_code");
+    invitedByCode = (inviterCode as string | null) ?? null;
   }
 
   return {

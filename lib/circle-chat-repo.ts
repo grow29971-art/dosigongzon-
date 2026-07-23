@@ -234,7 +234,7 @@ export async function listJoinedCircles(): Promise<JoinedCircle[]> {
   // owner 프로필 + 멤버 카운트 일괄 조회
   const ownerIds = Array.from(new Set(allCircles.map((c) => c.owner_id)));
   const [{ data: profiles }, { data: memberCounts }] = await Promise.all([
-    supabase.from("profiles").select("id, nickname, avatar_url").in("id", ownerIds),
+    supabase.from("profiles_public").select("id, nickname, avatar_url").in("id", ownerIds),
     supabase
       .from("circle_members")
       .select("circle_id")

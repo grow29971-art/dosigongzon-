@@ -82,7 +82,7 @@ export default function CircleChatPage() {
         if (cancelled || !res.data) return;
         const ownerId = res.data.owner_id;
         supabase
-          .from("profiles")
+          .from("profiles_public")
           .select("nickname")
           .eq("id", ownerId)
           .maybeSingle()

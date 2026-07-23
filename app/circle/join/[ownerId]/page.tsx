@@ -35,7 +35,7 @@ export default function CircleJoinPage() {
     if (!ownerId) return;
     const supabase = createClient();
     supabase
-      .from("profiles")
+      .from("profiles_public")
       .select("id, nickname, avatar_url")
       .eq("id", ownerId)
       .maybeSingle()

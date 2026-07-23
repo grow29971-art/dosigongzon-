@@ -26,12 +26,12 @@ async function getStats() {
     const supabase = createAnonClient();
     const [catsRpc, profilesRes, hospitalsRes] = await Promise.all([
       supabase.rpc("total_cat_count"),
-      supabase.from("profiles").select("id", { count: "exact", head: true }),
+      supabase.rpc("total_user_count"),
       supabase.from("rescue_hospitals").select("*", { count: "exact", head: true }).eq("hidden", false),
     ]);
     return {
       cats: Number(catsRpc.data ?? 0),
-      users: profilesRes.count ?? 0,
+      users: Number(profilesRes.data ?? 0),
       hospitals: hospitalsRes.count ?? 0,
     };
   } catch {

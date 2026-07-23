@@ -43,9 +43,8 @@ export default function KeyringEventPage() {
   useEffect(() => {
     const supabase = createClient();
     supabase
-      .from("profiles")
-      .select("*", { count: "exact", head: true })
-      .then((res: { count: number | null }) => setMemberCount(res.count ?? 0));
+      .rpc("total_user_count")
+      .then((res: { data: number | null }) => setMemberCount(Number(res.data ?? 0)));
   }, []);
 
   // 비로그인 가드

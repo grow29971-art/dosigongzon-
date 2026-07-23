@@ -100,7 +100,7 @@ export async function listMyCircleMembers(): Promise<CircleMember[]> {
   // 멤버 프로필 조인 (단건 쿼리로 일괄)
   const memberIds = Array.from(new Set(rows.map((r) => r.member_id)));
   const { data: profiles } = await supabase
-    .from("profiles")
+    .from("profiles_public")
     .select("id, nickname, avatar_url")
     .in("id", memberIds);
   const profileMap = new Map<string, { nickname: string | null; avatar_url: string | null }>();
@@ -125,7 +125,7 @@ export async function searchUsersByNickname(query: string): Promise<Array<{ id: 
   if (q.length < 2) return [];
 
   const { data, error } = await supabase
-    .from("profiles")
+    .from("profiles_public")
     .select("id, nickname, avatar_url")
     .ilike("nickname", `%${q}%`)
     .neq("id", user.id)
@@ -195,7 +195,7 @@ export async function listMyPendingInvitations(): Promise<PendingInvitation[]> {
 
   const ownerIds = Array.from(new Set(Array.from(circleMap.values())));
   const { data: profiles } = await supabase
-    .from("profiles")
+    .from("profiles_public")
     .select("id, nickname, avatar_url")
     .in("id", ownerIds);
   const profileMap = new Map<string, { nickname: string | null; avatar_url: string | null }>();

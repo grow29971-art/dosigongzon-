@@ -63,14 +63,14 @@ async function getLandingData() {
         .order("created_at", { ascending: false })
         .limit(6),
       supabase.from("rescue_hospitals").select("*", { count: "exact", head: true }).eq("hidden", false),
-      supabase.from("profiles").select("id", { count: "exact", head: true }),
+      supabase.rpc("total_user_count"),
       getGuCounts(),
     ]);
 
     return {
       catCount: Number(catsRpcRes.data ?? 0),
       hospitalCount: hospitalsRes.count ?? 0,
-      userCount: profilesRes.count ?? 0,
+      userCount: Number(profilesRes.data ?? 0),
       recentCats: (recentCatsRes.data ?? []) as Array<{
         id: string;
         name: string;

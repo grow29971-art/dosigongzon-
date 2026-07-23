@@ -95,7 +95,7 @@ async function listMyBlockedUsersFallback(userId: string): Promise<BlockedUser[]
   if (ids.length === 0) return [];
 
   const { data: profiles } = await supabase
-    .from("profiles")
+    .from("profiles_public")
     .select("id, nickname, avatar_url")
     .in("id", ids);
 
