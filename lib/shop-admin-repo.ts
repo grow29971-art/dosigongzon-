@@ -9,6 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 import { requireAdmin } from "@/lib/admin-guard";
 import { convertImageToWebp } from "@/lib/cats-repo";
 import { isSafeImageUrl } from "@/lib/url-validate";
+import { PRODUCT_PUBLIC_COLUMNS } from "@/lib/shop-repo";
 import type { Product, ProductBadge, ProductCategory } from "@/lib/shop-repo";
 import type { OrderStatus, OrderWithItems } from "@/lib/order-repo";
 
@@ -52,19 +53,24 @@ function validateProductInput(input: ProductInput): void {
 }
 
 // ── 전체 상품 목록 (판매중지 포함) ──
+// supplier(도매처 메모)가 anon/authenticated에서 REVOKE되므로,
+// 관리자 목록은 service_role 서버 라우트를 경유해 supplier까지 읽는다.
 export async function listAllProducts(): Promise<Product[]> {
   await requireAdmin();
   const supabase = createClient();
-  const { data, error } = await supabase
-    .from("products")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("[shop-admin-repo] listAllProducts failed:", error);
-    throw new Error(`상품 목록을 불러올 수 없어요: ${error.message}`);
+  const { data: { session } } = await supabase.auth.getSession();
+  const res = await fetch("/api/admin/products", {
+    headers: session?.access_token
+      ? { Authorization: `Bearer ${session.access_token}` }
+      : {},
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({} as { error?: string }));
+    console.error("[shop-admin-repo] listAllProducts failed:", res.status, err);
+    throw new Error(`상품 목록을 불러올 수 없어요: ${err.error ?? res.status}`);
   }
-  return (data ?? []) as Product[];
+  const { products } = (await res.json()) as { products: Product[] };
+  return products ?? [];
 }
 
 // ── 상품 등록 ──
@@ -72,10 +78,11 @@ export async function createProduct(input: ProductInput): Promise<Product> {
   await requireAdmin();
   validateProductInput(input);
   const supabase = createClient();
+  // 반환은 supplier 제외 공개컬럼만 — authenticated는 supplier SELECT 권한이 없음.
   const { data, error } = await supabase
     .from("products")
     .insert(input)
-    .select()
+    .select(PRODUCT_PUBLIC_COLUMNS)
     .single();
 
   if (error) {
@@ -90,11 +97,12 @@ export async function updateProduct(id: string, input: ProductInput): Promise<Pr
   await requireAdmin();
   validateProductInput(input);
   const supabase = createClient();
+  // 반환은 supplier 제외 공개컬럼만 — authenticated는 supplier SELECT 권한이 없음.
   const { data, error } = await supabase
     .from("products")
     .update({ ...input, updated_at: new Date().toISOString() })
     .eq("id", id)
-    .select()
+    .select(PRODUCT_PUBLIC_COLUMNS)
     .single();
 
   if (error) {
