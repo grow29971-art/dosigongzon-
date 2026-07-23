@@ -39,6 +39,12 @@ export async function POST(request: Request) {
   if (!userId || !body) {
     return Response.json({ error: "userId, body 필수" }, { status: 400 });
   }
+  // userId는 아래 hasLegitRelation의 .or() 필터에 문자열 보간되므로 UUID로 엄격 검증
+  // (PostgREST 필터 injection 차단 — 정상 경로는 항상 UUID).
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (typeof userId !== "string" || !UUID_RE.test(userId)) {
+    return Response.json({ error: "userId 형식 오류" }, { status: 400 });
+  }
 
   // 자기 자신에게 푸시는 OK (시스템/테스트)
   // 타인에게 푸시는 관계 검증 필수
