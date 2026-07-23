@@ -590,6 +590,7 @@ export default function HomeAuthed({
         { emoji: "🍚", text: <>매일 <b className="text-text-main">내 아이들</b>에게 밥·물·간식을 1탭으로 기록해요.</> },
         { emoji: "🗺️", text: <>아래로 내리면 우리 동네 고양이·소식이 이어져요.</> },
         { emoji: "😸", text: <>대표 아이와 <b className="text-text-main">다마고치</b>처럼 교감해요. 방치해도 아프거나 떠나지 않으니 부담 없이!</> },
+        { emoji: "🏛️", text: <>맨 위 <b className="text-text-main">국회 길고양이 청원</b> 바를 눌러보세요. 진행 중인 청원과 마감일을 볼 수 있어요.</> },
       ]}
     />
     <div className="px-5 pt-5 pb-24">
