@@ -5,19 +5,16 @@
 // 동의는 국회 사이트에서 본인인증으로만 가능 — 앱은 링크 안내만 한다(2026-07-22 회의).
 //
 // 2026-07-23 개편: 커뮤니티 최상단 이동 + 전체 접이식(4에이전트 합의안).
-// - 기본 접힘 — 반대 진영 청원이 첫 화면 첫 카드가 되는 리스크의 완충재.
+// - 항상 접힌 상태로 시작(자동 펼침·펼침 상태 저장 없음) — 홈 최상단에서
+//   펼쳐진 채 보이는 문제 방지 + 반대 진영 청원이 첫 카드가 되는 리스크 완충.
 // - 접힘 바는 fetch 전부터 고정 높이로 렌더 — 최상단에서 늦게 나타나며
 //   카테고리(긴급 제보 행)를 밀어내는 레이아웃 시프트 방지.
-// - D-3 이내 마감 청원이 있으면 자동 펼침. 단 유저가 한 번이라도 직접
-//   접거나 펼치면 그 선택(localStorage)을 항상 우선한다.
+// - 바 안에 한 줄 안내 문구로 "이게 뭔지" 설명(2026-07-23).
 
 import { useEffect, useState } from "react";
 import { Landmark, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import type { CatPetition, ClosedPetition } from "@/app/api/petitions/route";
 import { logFunnelEvent } from "@/lib/funnel-repo";
-
-// 유저가 직접 토글한 결과만 저장 ("1" 펼침 / "0" 접힘). 없으면 기본 접힘.
-const OPEN_PREF_KEY = "dosi_petition_open_v1";
 
 // #6B7FA3(그래픽용)은 흰 배경 11~12px 텍스트에서 대비 4.5:1 미달 — 텍스트는 한 단계 어둡게.
 const CIVIC = "#6B7FA3";
@@ -42,8 +39,6 @@ export default function CatPetitionSection() {
   const [failed, setFailed] = useState(false);
   const [open, setOpen] = useState(false);
   const [showClosed, setShowClosed] = useState(false);
-  // 한 번도 토글한 적 없는 유저에게만 "탭해서 보기" 힌트 — 접이식인 걸 모르는 문제 해결
-  const [showHint, setShowHint] = useState(false);
 
   useEffect(() => {
     fetch("/api/petitions")
@@ -52,20 +47,6 @@ export default function CatPetitionSection() {
         const list: CatPetition[] = Array.isArray(d?.petitions) ? d.petitions : [];
         setPetitions(list);
         if (Array.isArray(d?.closed)) setClosed(d.closed);
-
-        // 유저가 직접 토글한 적 없으면: D-3 이내 마감 임박 청원 존재 시 자동 펼침
-        let pref: string | null = null;
-        try { pref = localStorage.getItem(OPEN_PREF_KEY); } catch {}
-        if (pref === "1") {
-          setOpen(true);
-        } else if (pref === null) {
-          setShowHint(true);
-          const urgent = list.some((p) => {
-            const days = ddayNum(p.endDate);
-            return days !== null && days >= 0 && days <= 3;
-          });
-          if (urgent) setOpen(true);
-        }
       })
       .catch(() => setFailed(true)); // 국회 API 장애 — 섹션 숨김
   }, []);
@@ -82,8 +63,6 @@ export default function CatPetitionSection() {
   const toggle = () => {
     const next = !open;
     setOpen(next);
-    setShowHint(false);
-    try { localStorage.setItem(OPEN_PREF_KEY, next ? "1" : "0"); } catch {}
     if (next) logFunnelEvent("petition_expand");
   };
 
@@ -109,28 +88,26 @@ export default function CatPetitionSection() {
         >
           <Landmark size={16} color={CIVIC} />
         </span>
-        <span className="text-[14px] font-bold text-text-main">국회 길고양이 청원</span>
-        {petitions.length > 0 && (
-          <span
-            className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md shrink-0"
-            style={{ background: "rgba(107,127,163,0.14)", color: CIVIC_TEXT }}
-          >
-            진행중 {petitions.length}
+        <span className="flex-1 min-w-0 text-left">
+          <span className="flex items-center gap-1.5">
+            <span className="text-[14px] font-bold text-text-main">국회 길고양이 청원</span>
+            {petitions.length > 0 && (
+              <span
+                className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md shrink-0"
+                style={{ background: "rgba(107,127,163,0.14)", color: CIVIC_TEXT }}
+              >
+                진행중 {petitions.length}
+              </span>
+            )}
           </span>
-        )}
-        <span className="ml-auto flex items-center gap-1.5 shrink-0">
-          {/* 힌트가 떠 있는 동안엔 D-day 숨김 — 좁은 화면에서 제목 줄바꿈 방지 */}
-          {minDday !== null && !(showHint && !open) && (
+          <span className="block text-[11px] text-text-light truncate mt-0.5">
+            길고양이 관련 국민동의청원 모아보기 · 탭하면 열려요
+          </span>
+        </span>
+        <span className="flex items-center gap-1.5 shrink-0">
+          {minDday !== null && (
             <span className="text-[11px] font-bold" style={{ color: CIVIC_TEXT }}>
               {ddayLabel(minDday)}
-            </span>
-          )}
-          {showHint && !open && (
-            <span
-              className="text-[10px] font-bold px-1.5 py-0.5 rounded-md"
-              style={{ background: "rgba(107,127,163,0.1)", color: CIVIC_TEXT }}
-            >
-              탭해서 보기
             </span>
           )}
           <ChevronDown
