@@ -12,7 +12,7 @@ import { X, ChevronRight, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { createCareLog } from "@/lib/care-logs-repo";
 import { thumbnailUrl } from "@/lib/cats-repo";
-import { logFunnelEvent } from "@/lib/funnel-repo";
+import { hasLoggedFunnelStep, logFunnelEvent } from "@/lib/funnel-repo";
 
 const PENDING_KEY = "dosigongzon_pending_care";
 // 고른 지 7일 지나면 맥락이 죽은 커밋 — 조용히 버린다
@@ -40,15 +40,24 @@ export default function PendingCareHandoff() {
     let pending: PendingCare | null = null;
     try {
       const raw = localStorage.getItem(PENDING_KEY);
-      if (!raw) return;
-      pending = JSON.parse(raw) as PendingCare;
-      if (!pending?.id || Date.now() - new Date(pending.at).getTime() > MAX_AGE_MS) {
-        localStorage.removeItem(PENDING_KEY);
-        return;
+      if (raw) {
+        pending = JSON.parse(raw) as PendingCare;
+        if (!pending?.id || Date.now() - new Date(pending.at).getTime() > MAX_AGE_MS) {
+          localStorage.removeItem(PENDING_KEY);
+          pending = null;
+        }
       }
     } catch {
-      return;
+      pending = null;
     }
+
+    // 퍼널 3단: 이 기기에서 온보딩(intro)을 본 뒤 로그인 상태로 홈에 도달.
+    // pending_care에 묶어두면 pick을 안 거친 가입이 전부 누락돼 스텝이 죽는다 (2026-07-24 분리)
+    if (pending || hasLoggedFunnelStep("onboarding_intro")) {
+      logFunnelEvent("signup_home", pending?.id ?? null);
+    }
+
+    if (!pending) return;
 
     let cancelled = false;
     (async () => {
@@ -65,8 +74,6 @@ export default function PendingCareHandoff() {
           return;
         }
         setCat(data as HandoffCat);
-        // 퍼널 3단: 고른 아이를 들고 가입 후 홈에 도달
-        logFunnelEvent("signup_home", (data as HandoffCat).id);
       } catch {
         /* 조회 실패 — 카드 미표시 (다음 방문에 재시도) */
       }

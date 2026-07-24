@@ -43,8 +43,19 @@ function getAnonId(): string {
 // v2 (2026-07-22 회의): 가드를 인서트 "성공 후"에만 설정 — v1은 실패해도 가드가 남아
 // 그 기기가 영구 침묵했다(RLS 미적용 기간의 방문 기기 전원이 이 상태). 키도 v2로 올려
 // v1 가드에 물린 기기들이 다시 전송을 시도하게 한다.
+const GUARD_PREFIX = "dosigongzon_funnel_v2_";
+
+/** 이 기기가 해당 스텝을 이미 전송했는지 (가드 존재 여부) — 후속 스텝의 발화 조건 판정용 */
+export function hasLoggedFunnelStep(step: FunnelStep): boolean {
+  try {
+    return !!localStorage.getItem(GUARD_PREFIX + step);
+  } catch {
+    return false;
+  }
+}
+
 export function logFunnelEvent(step: FunnelStep, catId?: string | null): void {
-  const guardKey = `dosigongzon_funnel_v2_${step}`;
+  const guardKey = GUARD_PREFIX + step;
   try {
     if (localStorage.getItem(guardKey)) return;
   } catch { /* localStorage 차단 — DB unique가 중복을 막으므로 계속 진행 */ }
