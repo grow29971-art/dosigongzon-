@@ -8,7 +8,10 @@
 // 롤백: vercel.json에서 daily-dispatch를 빼고 news-crawl(0 0)·admin-daily-digest(10 0)·
 //       payment-reconcile(20 0) 3개를 되살리면 됨. 이 파일은 삭제해도 무방.
 
-export const maxDuration = 60;
+// 서브잡 중 maxDuration 300짜리(news-crawl·weather-alert·engagement-push 등)를 await로
+// 기다리므로 디스패처도 300이어야 함 — 60이면 서브잡 완료 전에 디스패처가 먼저 죽어
+// outbound fetch가 어보트되고, 하트비트만 찍힌 채 작업이 부분 실행되는 결행이 재발한다.
+export const maxDuration = 300;
 
 // 2026-07-22 팬아웃 고장 수리: 스케줄 호출의 request.url origin은 배포 URL
 // (*.vercel.app, Deployment Protection에 막힘)이라 서브 fetch가 무음 실패했다

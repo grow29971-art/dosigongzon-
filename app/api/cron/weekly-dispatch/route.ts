@@ -7,7 +7,9 @@
 //       retention-report(30 23 * * 0)를 되살리면 됨.
 // 2026-07-20: weekly-battle-payout은 카드배틀 삭제와 함께 제거.
 
-export const maxDuration = 60;
+// 서브잡(weekly-digest 등 maxDuration 300)을 await로 기다리므로 디스패처도 300 필요
+// — 60이면 서브잡 완료 전 디스패처가 먼저 죽어 fetch 어보트로 결행 재발(daily와 동일).
+export const maxDuration = 300;
 
 // 2026-07-22 팬아웃 고장 수리 — daily-dispatch와 동일 (배포 URL origin이 프로텍션에 막혀
 // 서브 fetch 무음 실패). 프로덕션 도메인 고정 + 실패 가시화.
