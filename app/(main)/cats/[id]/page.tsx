@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/server";
 import FollowButton from "@/app/components/FollowButton";
 import ShareCatButton from "@/app/components/ShareCatButton";
 import { AdoptionBadge, AdoptionInquireButton } from "@/app/components/AdoptionBadge";
+import PickCatSignupCta from "@/app/components/PickCatSignupCta";
 
 const SITE_URL = "https://dosigongzon.com";
 
@@ -357,16 +358,8 @@ export default async function CatDetailPage({ params }: { params: Params }) {
               )}
             </p>
             <div className="flex gap-2">
-              <Link
-                href={`/signup?next=${encodeURIComponent(`/cats/${cat.id}`)}`}
-                className="flex-[1.6] flex items-center justify-center py-2.5 rounded-xl text-white text-[12.5px] font-extrabold active:scale-[0.98] transition-transform"
-                style={{
-                  background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-                  boxShadow: "var(--shadow-primary)",
-                }}
-              >
-                무료로 시작하기
-              </Link>
+              {/* 온보딩 pick 지점 — pending_care 커밋 + onboarding_pick 계측 후 가입으로 */}
+              <PickCatSignupCta catId={cat.id} catName={cat.name} />
               <Link
                 href="/"
                 className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.98] transition-transform bg-white"
