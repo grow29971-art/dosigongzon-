@@ -11,6 +11,7 @@ import FollowButton from "@/app/components/FollowButton";
 import ShareCatButton from "@/app/components/ShareCatButton";
 import { AdoptionBadge, AdoptionInquireButton } from "@/app/components/AdoptionBadge";
 import PickCatSignupCta from "@/app/components/PickCatSignupCta";
+import FirstFeedBar from "@/app/components/FirstFeedBar";
 
 const SITE_URL = "https://dosigongzon.com";
 
@@ -634,6 +635,9 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           <br />동네 단톡방에 공유하면 더 많은 이웃이 지켜줘요 🫶
         </p>
       </div>
+
+      {/* 가입 직후 착지 완주 바 — pending_care가 이 아이일 때만 뜬다 (회의 P0-1) */}
+      {currentUserId && <FirstFeedBar catId={cat.id} catName={cat.name} />}
     </div>
   );
 }
