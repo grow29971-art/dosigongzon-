@@ -8,6 +8,7 @@ import { isSafeImageUrl } from "@/lib/url-validate";
 import { findLocationViolations, formatViolationMessage } from "@/lib/location-patterns";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 import { enforceUserActionLimit } from "@/lib/rate-limit";
+import { kstToday, thisMondayKstDate } from "@/lib/kst";
 
 export type CatGender = "male" | "female" | "unknown";
 export type CatHealthStatus = "good" | "caution" | "danger";
@@ -1400,15 +1401,16 @@ function computeStreakAndWeekly(
   }
 
   // 이번 주 월~일 모든 요일에 기록 있는지
-  const kstNow = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
-  const day = kstNow.getDay();
-  const daysSinceMonday = (day + 6) % 7;
+  // 클라이언트에서 실행되는 코드 — 기기 TZ에 의존하는 toLocaleString 파싱 대신
+  // kst.ts 헬퍼로 계산해야 해외 접속 기기에서도 주간 경계가 어긋나지 않는다
+  const todayKst = kstToday();
+  const mondayKst = thisMondayKstDate();
   let achieved = true;
   for (let i = 0; i < 7; i++) {
-    const d = new Date(kstNow);
-    d.setDate(d.getDate() - daysSinceMonday + i);
-    if (d > kstNow) { achieved = false; break; } // 미래 요일은 아직 달성 불가
-    const key = d.toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
+    const d = new Date(mondayKst + "T00:00:00Z");
+    d.setUTCDate(d.getUTCDate() + i);
+    const key = d.toISOString().slice(0, 10);
+    if (key > todayKst) { achieved = false; break; } // 미래 요일은 아직 달성 불가
     if (!daysSet.has(key)) { achieved = false; break; }
   }
 
