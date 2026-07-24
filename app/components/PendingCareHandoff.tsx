@@ -13,6 +13,7 @@ import { createClient } from "@/lib/supabase/client";
 import { createCareLog } from "@/lib/care-logs-repo";
 import { thumbnailUrl } from "@/lib/cats-repo";
 import { hasLoggedFunnelStep, logFunnelEvent } from "@/lib/funnel-repo";
+import FirstFeedPushPrompt from "@/app/components/FirstFeedPushPrompt";
 
 const PENDING_KEY = "dosigongzon_pending_care";
 // 고른 지 7일 지나면 맥락이 죽은 커밋 — 조용히 버린다
@@ -160,7 +161,7 @@ export default function PendingCareHandoff() {
                 {cat.name}가 첫 밥을 받았어요! 🎉
               </p>
               <p className="text-[11.5px] mt-0.5" style={{ color: "rgba(255,255,255,0.75)" }}>
-                내일 또 챙겨주면 진짜 돌봄이 시작돼요
+                오늘부터 {cat.name}의 집사예요 — 내일 또 챙겨주면 진짜 돌봄이 시작돼요
               </p>
             </>
           ) : (
@@ -185,13 +186,16 @@ export default function PendingCareHandoff() {
       </div>
 
       {phase === "done" ? (
-        <Link
-          href={`/cats/${cat.id}`}
-          className="mt-3.5 flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13.5px] font-extrabold active:scale-[0.98] transition-transform"
-          style={{ background: "rgba(255,255,255,0.95)", color: "#7A5238" }}
-        >
-          {cat.name} 보러 가기 <ChevronRight size={14} />
-        </Link>
+        <>
+          <FirstFeedPushPrompt catName={cat.name} />
+          <Link
+            href={`/cats/${cat.id}`}
+            className="mt-3.5 flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13.5px] font-extrabold active:scale-[0.98] transition-transform"
+            style={{ background: "rgba(255,255,255,0.95)", color: "#7A5238" }}
+          >
+            {cat.name} 보러 가기 <ChevronRight size={14} />
+          </Link>
+        </>
       ) : (
         <>
           <button

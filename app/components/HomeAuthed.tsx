@@ -169,6 +169,24 @@ export default function HomeAuthed({
   // 기능 웰컴 투어(FeatureTourModal, FeatureTourGate가 렌더)와 이 세션에서 안 겹치게
   // AppOpenGuideModal을 억제할지 판단하는 용도 — 실제 모달 렌더는 FeatureTourGate가 담당.
   const [suppressAppOpenGuide, setSuppressAppOpenGuide] = useState(true);
+  // 방금 고른 아이(pending_care)를 든 신규 유저에겐 인트로·출석 모달이 핸드오프 카드를
+  // 덮지 않도록 억제 (2026-07-24 회의 P0-2). null = 판정 전(모달 렌더 보류, 깜빡임 방지)
+  const [suppressWelcomeModals, setSuppressWelcomeModals] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("dosigongzon_pending_care");
+      if (!raw) {
+        setSuppressWelcomeModals(false);
+        return;
+      }
+      const p = JSON.parse(raw) as { id?: string; at?: string };
+      const fresh = !!p?.id && !!p.at && Date.now() - new Date(p.at).getTime() <= 7 * 24 * 60 * 60 * 1000;
+      setSuppressWelcomeModals(fresh);
+    } catch {
+      setSuppressWelcomeModals(false);
+    }
+  }, []);
 
   // 마지막 방문 시각 — 진입 시 비교용으로 저장된 값 복원, 즉시 현재 시각으로 갱신.
   // 다음 방문 시 "지난 방문 이후 새 글 N개" 카운트의 기준이 됨.
@@ -580,6 +598,7 @@ export default function HomeAuthed({
 
   return (
     <>
+    {suppressWelcomeModals === false && (
     <PageIntroModal
       storageKey="dosigongzon_intro_home"
       badge="홈"
@@ -593,6 +612,7 @@ export default function HomeAuthed({
         { emoji: "🏛️", text: <>맨 위 <b className="text-text-main">국회 길고양이 청원</b> 바를 눌러보세요. 진행 중인 청원과 마감일을 볼 수 있어요.</> },
       ]}
     />
+    )}
     <div className="px-5 pt-5 pb-24">
       {/* ══════ 국회 길고양이 청원 — 접이식 바 (2026-07-23 커뮤니티→홈 최상단 이동) ══════ */}
       <CatPetitionSection />
@@ -893,7 +913,7 @@ export default function HomeAuthed({
       {SHOW_SHOP_PREVIEW && user && <ShopPreviewStrip />}
 
       {/* ══════ 일일 출석체크 모달 — 코인·카드 EXP·계정 레벨 보상 ══════ */}
-      {SHOW_CHECKIN && user && <DailyCheckinModal />}
+      {SHOW_CHECKIN && user && suppressWelcomeModals === false && <DailyCheckinModal />}
 
       {/* ══════ 첫 응원 카드 — 활성화 1단: 1탭 응원 → 등록 escalation (catCount===0) ══════ */}
       {user && activity && activity.catCount === 0 && cheerCats.length > 0 && (
