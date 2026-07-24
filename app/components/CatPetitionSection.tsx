@@ -37,6 +37,7 @@ export default function CatPetitionSection() {
   const [petitions, setPetitions] = useState<CatPetition[]>([]);
   const [closed, setClosed] = useState<ClosedPetition[]>([]);
   const [failed, setFailed] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [open, setOpen] = useState(false);
   const [showClosed, setShowClosed] = useState(false);
 
@@ -47,11 +48,13 @@ export default function CatPetitionSection() {
         const list: CatPetition[] = Array.isArray(d?.petitions) ? d.petitions : [];
         setPetitions(list);
         if (Array.isArray(d?.closed)) setClosed(d.closed);
+        setLoaded(true);
       })
       .catch(() => setFailed(true)); // 국회 API 장애 — 섹션 숨김
   }, []);
 
-  const loaded = petitions.length > 0 || closed.length > 0;
+  // loaded를 "목록이 비어있지 않음"으로 파생하면 빈 응답 시 섹션 숨김 조건이 영원히
+  // false가 되어(항상 빈 바 렌더) 죽은 조건이 된다 — fetch 완료 여부를 상태로 추적
   if (failed || (loaded && petitions.length === 0 && closed.length === 0)) return null;
 
   const minDday = petitions.reduce<number | null>((min, p) => {
@@ -127,7 +130,7 @@ export default function CatPetitionSection() {
 
           <div className="space-y-2.5">
             {petitions.map((p) => {
-              const pct = Math.min(100, Math.round((p.agreeCount / p.goal) * 100));
+              const pct = p.goal > 0 ? Math.min(100, Math.round((p.agreeCount / p.goal) * 100)) : 0;
               return (
                 <a
                   key={p.id}
