@@ -119,8 +119,10 @@ export async function POST(request: Request) {
 
   // admins 조회 + 자가 DM (admin-daily-digest와 동일 패턴)
   const { data: admins, error: adminsErr } = await supabase.from("admins").select("user_id");
+  // 실패에 200을 주면 디스패처(r.ok 판정)가 성공으로 집계해 무음 결행이 됨 — 500 필수
   if (adminsErr || !admins || admins.length === 0) {
-    return Response.json({ ok: false, sent: 0, reason: "no admins" });
+    console.error("[retention-report] admins 조회 실패:", adminsErr?.message ?? "no admins");
+    return Response.json({ ok: false, sent: 0, reason: "no admins" }, { status: 500 });
   }
   const adminIds = (admins as { user_id: string }[]).map((a) => a.user_id);
 
@@ -146,7 +148,8 @@ export async function POST(request: Request) {
 
   const { error: insertErr } = await supabase.from("direct_messages").insert(rows);
   if (insertErr) {
-    return Response.json({ ok: false, sent: 0, error: insertErr.message });
+    console.error("[retention-report] DM insert 실패:", insertErr.message);
+    return Response.json({ ok: false, sent: 0, error: insertErr.message }, { status: 500 });
   }
 
   return Response.json({

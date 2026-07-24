@@ -23,16 +23,14 @@ export async function POST(request: Request) {
   const fromEmail = process.env.RESEND_FROM_EMAIL || "도시공존 <onboarding@resend.dev>";
 
   if (!resendKey) {
-    // 이메일 인프라 미설정 — 발송 스킵하고 구조만 검증
-    const base = await getDigestBaseContent();
+    // 이메일 인프라 미설정 — 발송 스킵. 200을 주면 디스패처가 성공으로 집계해
+    // "이메일 0건"이 무증상으로 지속되므로 503으로 가시화한다.
+    console.error("[weekly-digest] RESEND_API_KEY 미설정 — 발송 0건 스킵");
     const recipients = await listDigestRecipients();
-    return Response.json({
-      ok: true,
-      dryRun: true,
-      reason: "RESEND_API_KEY not configured",
-      recipientCount: recipients.length,
-      baseContent: base,
-    });
+    return Response.json(
+      { ok: false, dryRun: true, reason: "RESEND_API_KEY not configured", recipientCount: recipients.length },
+      { status: 503 },
+    );
   }
 
   const resend = new Resend(resendKey);
