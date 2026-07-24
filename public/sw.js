@@ -82,7 +82,10 @@ self.addEventListener("fetch", (e) => {
 
 // 푸시 알림 수신
 self.addEventListener("push", (e) => {
-  const data = e.data ? e.data.json() : {};
+  let data = {};
+  try {
+    data = e.data ? e.data.json() : {};
+  } catch (_) { /* 비JSON 페이로드 — throw하면 알림 자체가 안 뜨므로 기본 알림으로 처리 */ }
   const title = data.title || "도시공존";
   const options = {
     body: data.body || "새로운 알림이 있어요",
