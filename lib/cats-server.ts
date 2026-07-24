@@ -12,8 +12,12 @@ export async function getCatByIdServer(id: string): Promise<Cat | null> {
   if (!/^[0-9a-fA-F-]{32,36}$/.test(id)) return null;
 
   const supabase = await createClient();
+  // 비로그인 방문자(공유 링크)는 지터 좌표 뷰로 — anon select("*")의 좌표 노출 차단.
+  // 로그인은 base(본인 hidden/서클 가시성 정책 필요) (2026-07-24 좌표 잠금)
+  const { data: sessionData } = await supabase.auth.getSession();
+  const table = sessionData.session ? "cats" : "cats_public_map";
   const { data, error } = await supabase
-    .from("cats")
+    .from(table)
     .select("*")
     .eq("id", id)
     .maybeSingle();
@@ -112,8 +116,11 @@ export interface CatCommunityStats {
  */
 export async function getRescueCatsServer(limit: number = 50): Promise<Cat[]> {
   const supabase = await createClient();
+  // 비로그인은 지터 좌표 뷰 — anon 좌표 노출 차단 (2026-07-24 좌표 잠금)
+  const { data: sessionData } = await supabase.auth.getSession();
+  const table = sessionData.session ? "cats" : "cats_public_map";
   const { data, error } = await supabase
-    .from("cats")
+    .from(table)
     .select("*")
     .eq("health_status", "danger")
     .order("created_at", { ascending: false })

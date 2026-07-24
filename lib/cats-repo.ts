@@ -409,10 +409,14 @@ export function roamCoord(
 }
 
 // ── 모든 고양이 조회 (지도 핀용) ──
+// 비로그인은 cats_public_map 뷰(개체별 고정 지터 좌표) — anon REST로 저장 좌표가
+// 화면 퍼징보다 정밀하게 노출되던 것을 차단 (2026-07-24, box/supabase_cats_anon_coord_lockdown)
 export async function listCats(): Promise<Cat[]> {
   const supabase = createClient();
+  const { data: sessionData } = await supabase.auth.getSession();
+  const table = sessionData.session ? "cats" : "cats_public_map";
   const { data, error } = await supabase
-    .from("cats")
+    .from(table)
     .select("*")
     .order("created_at", { ascending: false });
 
