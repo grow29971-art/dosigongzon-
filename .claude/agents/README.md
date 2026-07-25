@@ -5,9 +5,12 @@
 
 ## 네이밍 규칙
 `ag_[계열]_[이름].md` — frontmatter `name:`과 파일명(확장자 제외) 일치 필수.
-- 계열: **dev**(개발) / **biz**(사업) / **qa**(검증) / **ops**(인프라·보안)
+- 계열: **dev**(개발) / **biz**(사업) / **qa**(검증) / **ops**(인프라·보안) / **meta**(총괄)
 
 ## 에이전트 목록
+
+### 🏛️ META
+- **ag_meta_council** — 원탁회의 총괄(참모총장). 12관점 소집→반박→합의→P0/P1/P2 박제. 큰 결정·우선순위 충돌 시 이것부터
 
 ### 🏗️ DEV
 - **ag_dev_nextjs** — Next.js App Router + Supabase 풀스택 (API·RSC·RLS·마이그레이션)
@@ -69,3 +72,4 @@ ag_biz_bm → ag_biz_korean-psych → ag_qa_devils-advocate → ag_biz_research
 | 2026.04 | `ag_` 네이밍 4계열 도입, korean-psych·토론 조합 |
 | 2026.07 | 도시공존 스택에 맞춰 재작성: flutter 제거, nestjs→nextjs, ops를 Vercel+Supabase 기준으로 |
 | 2026.07.25 | ag_biz_growth 신규(Day0 활성화·실측 지표). 디자이너 테마 테라코타 #AD5E3B 동결 반영, nextjs에 한 커밋=한 변경·즉시 배포 워크플로, security에 통신판매업·LBS 신고 게이트. b2g/domain-strays 목록 등재 |
+| 2026.07.25 | **ag_meta_council 신규** — 7/17 12인 회의록의 규율(실측 라벨·판정 기준 선등록·악마 좌석 상설·하지 말 것)과 에이전트 토론 체계를 융합한 의사결정 엔진. meta 계열 신설 |
