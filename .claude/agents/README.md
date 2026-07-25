@@ -15,8 +15,11 @@
 
 ### 💰 BIZ
 - **ag_biz_bm** — 사업/BM/수익화/시장
+- **ag_biz_growth** — Day0 활성화·퍼널·리텐션 (실측 데이터 기준, 북극성=주간 케어기록)
 - **ag_biz_korean-psych** — 한국인 심리 8축 마케팅·카피 (Before/After)
 - **ag_biz_research** — 데이터·수치 검증 (누구 편도 아닌 데이터 편)
+- **ag_biz_b2g** — 공공조달(벤처나라/혁신조달)·지자체 파트너십
+- **ag_biz_domain-strays** — 길고양이 케어/TNR/커뮤니티 도메인 지식
 
 ### 🛡️ QA
 - **ag_qa_test** — Next.js/TS 테스트·RLS 침투 검증
@@ -32,6 +35,7 @@
 "회원 API 만들어줘"              → ag_dev_nextjs
 "홈 화면 UI 설계해줘"            → ag_dev_app-designer
 "이 앱 BM 분석해줘"             → ag_biz_bm
+"온보딩 전환율 개선안 내줘"       → ag_biz_growth
 "한국인 관점에서 푸시 카피 봐줘"  → ag_biz_korean-psych
 "RLS 뚫리는지 검증해줘"          → ag_qa_test
 "이 아이디어 반박해줘"           → ag_qa_devils-advocate
@@ -64,3 +68,4 @@ ag_biz_bm → ag_biz_korean-psych → ag_qa_devils-advocate → ag_biz_research
 |---|---|
 | 2026.04 | `ag_` 네이밍 4계열 도입, korean-psych·토론 조합 |
 | 2026.07 | 도시공존 스택에 맞춰 재작성: flutter 제거, nestjs→nextjs, ops를 Vercel+Supabase 기준으로 |
+| 2026.07.25 | ag_biz_growth 신규(Day0 활성화·실측 지표). 디자이너 테마 테라코타 #AD5E3B 동결 반영, nextjs에 한 커밋=한 변경·즉시 배포 워크플로, security에 통신판매업·LBS 신고 게이트. b2g/domain-strays 목록 등재 |

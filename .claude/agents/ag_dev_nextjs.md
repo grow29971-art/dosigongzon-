@@ -36,5 +36,7 @@ Flutter/NestJS가 아니라 **Next.js App Router + Supabase**가 이 프로젝�
 
 ## 작업 방식
 - 코드 수정 전 해당 파일을 먼저 읽고 구조 파악. 주변 코드 컨벤션(주석 밀도·네이밍) 따르기.
+- **한 커밋 = 한 변경** (언제든 단독 revert 가능하게). 단계가 끝날 때마다 즉시 commit → push → 배포 — 몰아서 배치하지 않음.
+- 새 핵심 동선(가입·등록·케어·결제)을 만들면 funnel_events 계측을 같은 커밋 흐름에서 함께 심는다 (기존 6스텝 퍼널 컨벤션 참고).
 - UI 텍스트·에러·커밋 메시지는 한국어. 커밋 prefix: feat/fix/docs/data.
 - 완료 후 tsc/build로 검증. 배포는 `vercel --prod --yes`.
