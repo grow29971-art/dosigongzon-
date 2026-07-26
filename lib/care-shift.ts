@@ -70,6 +70,7 @@ const CARE_SHIFT_ERROR_MESSAGES: Readonly<Record<string, string>> = {
   not_found: "지금은 사용할 수 없는 기능이에요.",
   forbidden: "이 돌봄 교대를 처리할 권한이 없어요.",
   invalid_transition: "이미 처리된 요청이에요. 목록을 새로고침해 주세요.",
+  duplicate_request: "같은 시각에 이미 요청한 돌봄 교대가 있어요.",
   invalid_params: "입력한 내용을 다시 확인해 주세요.",
   invalid_body: "입력한 내용을 다시 확인해 주세요.",
 };

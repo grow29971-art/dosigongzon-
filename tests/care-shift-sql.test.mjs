@@ -14,6 +14,13 @@ test("care shift migration remains rerunnable without destructive table changes"
   assert.doesNotMatch(sql, /^\s*(drop table|delete from|truncate)\b/im);
 });
 
+test("care shift migration blocks duplicate open requests for the same slot", () => {
+  assert.match(
+    sql,
+    /create unique index if not exists care_shifts_unique_open_request_idx\s+on public\.care_shifts \(circle_id, requester_id, assignee_id, starts_at\)\s+where status <> 'completed'/i,
+  );
+});
+
 test("care shift migration keeps participant-only access and no delete grant", () => {
   assert.match(
     sql,

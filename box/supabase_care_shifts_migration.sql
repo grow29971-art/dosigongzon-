@@ -32,6 +32,14 @@ create index if not exists care_shifts_requester_status_idx
 create index if not exists care_shifts_assignee_status_idx
   on public.care_shifts (assignee_id, status, starts_at);
 
+-- Rate limiting alone still allows identical spam requests inside the window;
+-- block duplicate open (requested/accepted) shifts for the same slot at the DB.
+-- Completed shifts stay out so the same slot can be requested again later.
+-- The API maps unique_violation (23505) to duplicate_request.
+create unique index if not exists care_shifts_unique_open_request_idx
+  on public.care_shifts (circle_id, requester_id, assignee_id, starts_at)
+  where status <> 'completed';
+
 alter table public.care_shifts enable row level security;
 
 create or replace function public.is_accepted_circle_member(
@@ -164,6 +172,7 @@ notify pgrst, 'reload schema';
 -- drop index if exists public.care_shifts_circle_start_idx;
 -- drop index if exists public.care_shifts_requester_status_idx;
 -- drop index if exists public.care_shifts_assignee_status_idx;
+-- drop index if exists public.care_shifts_unique_open_request_idx;
 -- 테이블 drop은 데이터 파괴 — §2-3 규칙상 금지. 접근만 차단하려면:
 -- revoke all on public.care_shifts from authenticated;
 -- notify pgrst, 'reload schema';

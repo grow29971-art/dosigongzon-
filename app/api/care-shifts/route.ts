@@ -120,6 +120,9 @@ export async function POST(request: Request) {
     if (error.code === "42501" || error.code === "23503") {
       return NextResponse.json({ error: "forbidden" }, { status: 403 });
     }
+    if (error.code === "23505") {
+      return NextResponse.json({ error: "duplicate_request" }, { status: 409 });
+    }
     console.error("[care-shifts] create failed:", error.code);
     return NextResponse.json({ error: "create_failed" }, { status: 502 });
   }

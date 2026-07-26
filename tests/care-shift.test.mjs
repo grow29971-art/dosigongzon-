@@ -81,6 +81,10 @@ test("known API error codes map to Korean guidance", () => {
     describeCareShiftError("invalid_transition", "기본 안내"),
     "이미 처리된 요청이에요. 목록을 새로고침해 주세요.",
   );
+  assert.equal(
+    describeCareShiftError("duplicate_request", "기본 안내"),
+    "같은 시각에 이미 요청한 돌봄 교대가 있어요.",
+  );
 });
 
 test("unknown or missing error codes fall back to the given Korean message", () => {
