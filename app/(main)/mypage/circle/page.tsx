@@ -23,6 +23,7 @@ import {
   Clock3,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { describeCareShiftError } from "@/lib/care-shift";
 import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
 import { shareToKakao } from "@/lib/kakao-share";
 import {
@@ -228,7 +229,11 @@ export default function CirclePage() {
         }),
       });
       const result = (await response.json()) as { error?: string };
-      if (!response.ok) throw new Error(result.error ?? "교대 요청을 만들지 못했어요.");
+      if (!response.ok) {
+        throw new Error(
+          describeCareShiftError(result.error, "교대 요청을 만들지 못했어요."),
+        );
+      }
       setShiftStartsAt("");
       setShiftNote("");
       await loadCareShifts();
@@ -253,7 +258,11 @@ export default function CirclePage() {
         body: JSON.stringify({ id: shift.id, status }),
       });
       const result = (await response.json()) as { error?: string };
-      if (!response.ok) throw new Error(result.error ?? "교대 상태를 바꾸지 못했어요.");
+      if (!response.ok) {
+        throw new Error(
+          describeCareShiftError(result.error, "교대 상태를 바꾸지 못했어요."),
+        );
+      }
       await loadCareShifts();
     } catch (error) {
       alert(error instanceof Error ? error.message : "교대 상태를 바꾸지 못했어요.");

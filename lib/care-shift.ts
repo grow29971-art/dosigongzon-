@@ -48,6 +48,25 @@ export function canTransitionCareShift(
   return getNextCareShiftStatus(current, actor) === next;
 }
 
+const CARE_SHIFT_ERROR_MESSAGES: Readonly<Record<string, string>> = {
+  unauthorized: "로그인이 필요한 기능이에요.",
+  rate_limited: "요청이 너무 잦아요. 잠시 후 다시 시도해 주세요.",
+  not_ready: "돌봄 교대 기능을 준비하고 있어요. 잠시 후 다시 시도해 주세요.",
+  not_found: "지금은 사용할 수 없는 기능이에요.",
+  forbidden: "이 돌봄 교대를 처리할 권한이 없어요.",
+  invalid_transition: "이미 처리된 요청이에요. 목록을 새로고침해 주세요.",
+  invalid_params: "입력한 내용을 다시 확인해 주세요.",
+  invalid_body: "입력한 내용을 다시 확인해 주세요.",
+};
+
+export function describeCareShiftError(
+  code: unknown,
+  fallback: string,
+): string {
+  if (typeof code !== "string") return fallback;
+  return CARE_SHIFT_ERROR_MESSAGES[code] ?? fallback;
+}
+
 export function validateCareShiftRequest(
   input: CareShiftRequestInput,
   now: Date = new Date(),

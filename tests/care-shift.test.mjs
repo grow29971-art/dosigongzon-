@@ -5,6 +5,7 @@ import {
   CARE_SHIFT_NOTE_MAX_LENGTH,
   CARE_SHIFT_STATUSES,
   canTransitionCareShift,
+  describeCareShiftError,
   getNextCareShiftStatus,
   validateCareShiftRequest,
 } from "../lib/care-shift.ts";
@@ -62,6 +63,27 @@ test("invalid participants, time, and oversized notes are rejected together", ()
     ),
     ["self_assignment", "starts_at_not_future", "note_too_long"],
   );
+});
+
+test("known API error codes map to Korean guidance", () => {
+  assert.equal(
+    describeCareShiftError("rate_limited", "기본 안내"),
+    "요청이 너무 잦아요. 잠시 후 다시 시도해 주세요.",
+  );
+  assert.equal(
+    describeCareShiftError("not_ready", "기본 안내"),
+    "돌봄 교대 기능을 준비하고 있어요. 잠시 후 다시 시도해 주세요.",
+  );
+  assert.equal(
+    describeCareShiftError("invalid_transition", "기본 안내"),
+    "이미 처리된 요청이에요. 목록을 새로고침해 주세요.",
+  );
+});
+
+test("unknown or missing error codes fall back to the given Korean message", () => {
+  assert.equal(describeCareShiftError("create_failed", "기본 안내"), "기본 안내");
+  assert.equal(describeCareShiftError(undefined, "기본 안내"), "기본 안내");
+  assert.equal(describeCareShiftError(42, "기본 안내"), "기본 안내");
 });
 
 test("missing participants and malformed time have stable errors", () => {
