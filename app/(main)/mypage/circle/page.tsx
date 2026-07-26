@@ -3,7 +3,7 @@
 // Private Circle 관리 페이지 — 내가 승인한 이웃에게만 핀 노출.
 // 학대 우려 케어테이커가 안전하게 위치를 공유할 수 있는 신뢰 그룹.
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -41,6 +41,14 @@ import { sanitizeImageUrl } from "@/lib/url-validate";
 import { thumbnailUrl } from "@/lib/cats-repo";
 
 type SearchUser = { id: string; nickname: string | null; avatar_url: string | null };
+type CareShift = {
+  id: string;
+  requester_id: string;
+  assignee_id: string;
+  starts_at: string;
+  note: string | null;
+  status: "requested" | "accepted" | "completed";
+};
 
 export default function CirclePage() {
   const { user, loading: authLoading } = useAuth();
@@ -62,6 +70,8 @@ export default function CirclePage() {
   const [shiftStartsAt, setShiftStartsAt] = useState("");
   const [shiftNote, setShiftNote] = useState("");
   const [shiftSubmitting, setShiftSubmitting] = useState(false);
+  const [careShifts, setCareShifts] = useState<CareShift[]>([]);
+  const [careShiftsLoading, setCareShiftsLoading] = useState(false);
 
   const inviteUrl = user ? `https://dosigongzon.com/circle/join/${user.id}` : "";
 
@@ -121,6 +131,24 @@ export default function CirclePage() {
     if (!user) return;
     loadAll();
   }, [user]);
+
+  const loadCareShifts = useCallback(async () => {
+    if (!user || !isCoreJourneyEnabled("P3")) return;
+    setCareShiftsLoading(true);
+    try {
+      const response = await fetch("/api/care-shifts");
+      const result = (await response.json()) as { shifts?: CareShift[] };
+      if (response.ok) setCareShifts(result.shifts ?? []);
+    } catch (error) {
+      console.error("[care-shifts] load failed", error);
+    } finally {
+      setCareShiftsLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    void loadCareShifts();
+  }, [loadCareShifts]);
 
   const handleSearch = async () => {
     const q = searchQuery.trim();
@@ -202,6 +230,7 @@ export default function CirclePage() {
       if (!response.ok) throw new Error(result.error ?? "교대 요청을 만들지 못했어요.");
       setShiftStartsAt("");
       setShiftNote("");
+      await loadCareShifts();
       alert("돌봄 교대를 요청했어요.");
     } catch (error) {
       alert(error instanceof Error ? error.message : "교대 요청을 만들지 못했어요.");
@@ -344,6 +373,52 @@ export default function CirclePage() {
                 교대를 부탁하려면 먼저 서클 이웃의 초대 수락이 필요해요.
               </p>
             )}
+            <div className="mt-4 border-t border-black/5 pt-4">
+              <h3 className="text-[12px] font-extrabold text-text-main">내 돌봄 교대</h3>
+              {careShiftsLoading ? (
+                <div className="flex justify-center py-5" aria-label="돌봄 교대 불러오는 중">
+                  <Loader2 size={18} className="animate-spin text-primary" />
+                </div>
+              ) : careShifts.length > 0 ? (
+                <ul className="mt-2 space-y-2">
+                  {careShifts.map((shift) => {
+                    const assignee = acceptedMembers.find(
+                      (member) => member.member_id === shift.assignee_id,
+                    );
+                    const statusLabel = {
+                      requested: "요청됨",
+                      accepted: "수락됨",
+                      completed: "완료",
+                    }[shift.status];
+                    return (
+                      <li key={shift.id} className="rounded-xl bg-[#F7F4EE] px-3 py-2.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-[12px] font-bold text-text-main">
+                            {shift.requester_id === user.id
+                              ? `${assignee?.member_nickname ?? "이웃"}에게 요청`
+                              : "받은 교대 요청"}
+                          </p>
+                          <span className="shrink-0 text-[11px] font-bold text-primary">
+                            {statusLabel}
+                          </span>
+                        </div>
+                        <time className="mt-1 block text-[11px] text-text-sub" dateTime={shift.starts_at}>
+                          {new Intl.DateTimeFormat("ko-KR", {
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          }).format(new Date(shift.starts_at))}
+                        </time>
+                        {shift.note && (
+                          <p className="mt-1 line-clamp-2 text-[11px] text-text-sub">{shift.note}</p>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="mt-2 text-[11px] text-text-light">아직 돌봄 교대 요청이 없어요.</p>
+              )}
+            </div>
           </div>
         </section>
       )}
