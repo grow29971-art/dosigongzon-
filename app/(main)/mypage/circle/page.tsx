@@ -23,7 +23,7 @@ import {
   Clock3,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-import { describeCareShiftError } from "@/lib/care-shift";
+import { describeCareShiftError, toDatetimeLocalValue } from "@/lib/care-shift";
 import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
 import { shareToKakao } from "@/lib/kakao-share";
 import {
@@ -376,7 +376,7 @@ export default function CirclePage() {
                   <input
                     type="datetime-local"
                     value={shiftStartsAt}
-                    min={new Date(Date.now() + 60_000).toISOString().slice(0, 16)}
+                    min={toDatetimeLocalValue(new Date(Date.now() + 60_000))}
                     onChange={(event) => setShiftStartsAt(event.target.value)}
                     className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 text-[13px] font-normal"
                   />

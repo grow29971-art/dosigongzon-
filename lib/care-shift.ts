@@ -48,6 +48,13 @@ export function canTransitionCareShift(
   return getNextCareShiftStatus(current, actor) === next;
 }
 
+// datetime-local 입력은 타임존 없는 로컬 벽시계 문자열을 기대한다.
+// toISOString()은 UTC라 KST에서는 9시간 과거가 되어 그대로 쓰면 안 된다.
+export function toDatetimeLocalValue(date: Date): string {
+  const shifted = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
+  return shifted.toISOString().slice(0, 16);
+}
+
 const CARE_SHIFT_ERROR_MESSAGES: Readonly<Record<string, string>> = {
   unauthorized: "로그인이 필요한 기능이에요.",
   rate_limited: "요청이 너무 잦아요. 잠시 후 다시 시도해 주세요.",

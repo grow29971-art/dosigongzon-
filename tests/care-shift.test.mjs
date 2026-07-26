@@ -7,6 +7,7 @@ import {
   canTransitionCareShift,
   describeCareShiftError,
   getNextCareShiftStatus,
+  toDatetimeLocalValue,
   validateCareShiftRequest,
 } from "../lib/care-shift.ts";
 
@@ -84,6 +85,20 @@ test("unknown or missing error codes fall back to the given Korean message", () 
   assert.equal(describeCareShiftError("create_failed", "기본 안내"), "기본 안내");
   assert.equal(describeCareShiftError(undefined, "기본 안내"), "기본 안내");
   assert.equal(describeCareShiftError(42, "기본 안내"), "기본 안내");
+});
+
+test("datetime-local min uses local wall-clock time, not UTC", () => {
+  assert.equal(
+    toDatetimeLocalValue(new Date(2026, 6, 27, 21, 30)),
+    "2026-07-27T21:30",
+  );
+});
+
+test("datetime-local values round-trip through local Date parsing", () => {
+  const date = new Date("2026-07-26T12:00:00.000Z");
+  const value = toDatetimeLocalValue(date);
+  assert.match(value, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/);
+  assert.equal(new Date(value).getTime(), date.getTime());
 });
 
 test("missing participants and malformed time have stable errors", () => {
