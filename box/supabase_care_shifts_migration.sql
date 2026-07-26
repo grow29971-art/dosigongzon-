@@ -102,6 +102,13 @@ begin
 end;
 $$;
 
+-- Trigger functions do not need direct client execution. PostgreSQL grants
+-- EXECUTE to PUBLIC by default, so remove it explicitly before creating the
+-- trigger; the trigger itself continues to invoke the function.
+revoke all on function public.guard_care_shift_write() from public;
+revoke all on function public.guard_care_shift_write() from anon;
+revoke all on function public.guard_care_shift_write() from authenticated;
+
 drop trigger if exists care_shifts_guard_write on public.care_shifts;
 create trigger care_shifts_guard_write
   before insert or update on public.care_shifts
