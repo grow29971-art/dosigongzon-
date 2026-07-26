@@ -53,6 +53,10 @@ test("care shift migration keeps participant-only access and no delete grant", (
 test("care shift transition timestamps are always assigned by the database", () => {
   assert.match(
     sql,
+    /if tg_op = 'INSERT' then[\s\S]*new\.created_at := now\(\);[\s\S]*new\.updated_at := now\(\);/i,
+  );
+  assert.match(
+    sql,
     /old\.status = 'requested' and new\.status = 'accepted' then\s+new\.accepted_at := now\(\);\s+new\.completed_at := null;/i,
   );
   assert.match(

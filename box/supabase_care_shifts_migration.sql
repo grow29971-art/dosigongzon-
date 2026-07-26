@@ -82,6 +82,7 @@ begin
     new.status := 'requested';
     new.accepted_at := null;
     new.completed_at := null;
+    new.created_at := now();
     new.updated_at := now();
     return new;
   end if;
