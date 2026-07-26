@@ -37,6 +37,13 @@ test("care shift migration enforces the same 60-day future horizon as the API", 
   );
 });
 
+test("care shift migration rejects note control characters outside allowed formatting", () => {
+  assert.match(
+    sql,
+    /constraint\s+care_shifts_note_controls\s+check\s*\(\s*note is null or translate\(note,\s*E'\\t\\n\\r',\s*''\)\s*!~\s*'\[\[:cntrl:\]\]'\s*\)/i,
+  );
+});
+
 test("care shift migration keeps participant-only access and no delete grant", () => {
   assert.match(
     sql,

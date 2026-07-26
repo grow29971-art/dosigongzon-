@@ -22,6 +22,9 @@ create table if not exists public.care_shifts (
     starts_at <= created_at + interval '60 days'
   ),
   constraint care_shifts_note_length check (char_length(coalesce(note, '')) <= 500),
+  constraint care_shifts_note_controls check (
+    note is null or translate(note, E'\t\n\r', '') !~ '[[:cntrl:]]'
+  ),
   constraint care_shifts_status check (status in ('requested', 'accepted', 'completed')),
   constraint care_shifts_status_timestamps check (
     (status = 'requested' and accepted_at is null and completed_at is null)
