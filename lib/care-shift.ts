@@ -97,6 +97,11 @@ export function isCareShiftContentLengthTooLarge(
   return Number.isFinite(bytes) && bytes > CARE_SHIFT_MAX_BODY_BYTES;
 }
 
+export function isCareShiftJsonContentType(contentType: string | null): boolean {
+  if (!contentType) return false;
+  return contentType.split(";", 1)[0].trim().toLowerCase() === "application/json";
+}
+
 export function isCareShiftBodyTooLarge(rawBody: string): boolean {
   return new TextEncoder().encode(rawBody).byteLength > CARE_SHIFT_MAX_BODY_BYTES;
 }
@@ -224,6 +229,7 @@ const CARE_SHIFT_ERROR_MESSAGES: Readonly<Record<string, string>> = {
   invalid_params: "입력한 내용을 다시 확인해 주세요.",
   invalid_body: "입력한 내용을 다시 확인해 주세요.",
   payload_too_large: "입력한 내용이 너무 길어요. 메모를 줄여 주세요.",
+  unsupported_media_type: "요청 형식이 올바르지 않아요. 다시 시도해 주세요.",
 };
 
 export function describeCareShiftError(

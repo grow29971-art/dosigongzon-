@@ -7,6 +7,7 @@ import {
   isCareShiftBodyTooLarge,
   isCareShiftCheckViolationCode,
   isCareShiftContentLengthTooLarge,
+  isCareShiftJsonContentType,
   isCareShiftSchemaNotReadyCode,
   isCareShiftTransitionViolationCode,
   isCareShiftUuid,
@@ -83,6 +84,9 @@ export async function POST(request: Request) {
   }
   if (isCareShiftContentLengthTooLarge(request.headers.get("content-length"))) {
     return NextResponse.json({ error: "payload_too_large" }, { status: 413 });
+  }
+  if (!isCareShiftJsonContentType(request.headers.get("content-type"))) {
+    return NextResponse.json({ error: "unsupported_media_type" }, { status: 415 });
   }
 
   let rawBody: string;
@@ -180,6 +184,9 @@ export async function PATCH(request: Request) {
   }
   if (isCareShiftContentLengthTooLarge(request.headers.get("content-length"))) {
     return NextResponse.json({ error: "payload_too_large" }, { status: 413 });
+  }
+  if (!isCareShiftJsonContentType(request.headers.get("content-type"))) {
+    return NextResponse.json({ error: "unsupported_media_type" }, { status: 415 });
   }
 
   let rawBody: string;

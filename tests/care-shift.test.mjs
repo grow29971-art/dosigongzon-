@@ -19,6 +19,7 @@ import {
   isCareShiftBodyTooLarge,
   isCareShiftCheckViolationCode,
   isCareShiftContentLengthTooLarge,
+  isCareShiftJsonContentType,
   isCareShiftSchemaNotReadyCode,
   isCareShiftTimestamp,
   isCareShiftTransitionViolationCode,
@@ -382,6 +383,18 @@ test("declared oversized request bodies are rejected before reading the stream",
   assert.equal(isCareShiftContentLengthTooLarge(null), false);
   assert.equal(isCareShiftContentLengthTooLarge("chunked"), false);
   assert.equal(isCareShiftContentLengthTooLarge("-1"), false);
+});
+
+test("care shift write requests accept only JSON media types", () => {
+  assert.equal(isCareShiftJsonContentType("application/json"), true);
+  assert.equal(isCareShiftJsonContentType("Application/JSON; charset=utf-8"), true);
+  assert.equal(isCareShiftJsonContentType(" text/plain "), false);
+  assert.equal(isCareShiftJsonContentType("application/json-patch+json"), false);
+  assert.equal(isCareShiftJsonContentType(null), false);
+  assert.equal(
+    describeCareShiftError("unsupported_media_type", "기본 안내"),
+    "요청 형식이 올바르지 않아요. 다시 시도해 주세요.",
+  );
 });
 
 test("null, array, and primitive JSON bodies are rejected before field access", () => {
