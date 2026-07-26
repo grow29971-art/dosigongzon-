@@ -36,6 +36,7 @@ test("care shift identifiers accept UUIDs and reject malformed database input", 
 
 test("missing care shift schema and stale PostgREST cache are both not ready", () => {
   assert.equal(isCareShiftSchemaNotReadyCode("42P01"), true);
+  assert.equal(isCareShiftSchemaNotReadyCode("PGRST204"), true);
   assert.equal(isCareShiftSchemaNotReadyCode("PGRST205"), true);
   assert.equal(isCareShiftSchemaNotReadyCode("42501"), false);
 });

@@ -24,7 +24,7 @@ export function isCareShiftUuid(value: string): boolean {
 }
 
 export function isCareShiftSchemaNotReadyCode(code: string): boolean {
-  return code === "42P01" || code === "PGRST205";
+  return code === "42P01" || code === "PGRST204" || code === "PGRST205";
 }
 
 // API 검증을 통과한 요청도 DB 도달 시점에는 CHECK(미래 시작 시각 등)에
