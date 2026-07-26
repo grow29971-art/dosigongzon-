@@ -506,3 +506,10 @@ test("care shift success and error responses are not cached", () => {
     17,
   );
 });
+
+test("removing a circle member clears a stale care shift assignee", () => {
+  assert.match(
+    careShiftPageSource,
+    /removeCircleMember\(m\.member_id\);[\s\S]*?setShiftAssigneeId\(\(prev\) => \(prev === m\.member_id \? "" : prev\)\);/,
+  );
+});

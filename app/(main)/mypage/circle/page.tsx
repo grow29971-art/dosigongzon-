@@ -233,6 +233,7 @@ export default function CirclePage() {
     try {
       await removeCircleMember(m.member_id);
       setMembers((prev) => prev.filter((x) => x.member_id !== m.member_id));
+      setShiftAssigneeId((prev) => (prev === m.member_id ? "" : prev));
     } catch (e) {
       alert(e instanceof Error ? e.message : "제거 실패");
     } finally {
