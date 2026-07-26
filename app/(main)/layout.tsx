@@ -12,7 +12,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <WelcomeGate />
       <FeatureTourGate />
       <AnnouncementModal />
-      <main className="pb-20 mx-auto w-full max-w-lg">{children}</main>
+      {/* 플로팅 네비(높이 58 + 하단 여백 10) 뒤로 콘텐츠가 가려지지 않도록 pb-24 */}
+      <main className="pb-24 mx-auto w-full max-w-lg">{children}</main>
       <BottomNav />
     </div>
   );
