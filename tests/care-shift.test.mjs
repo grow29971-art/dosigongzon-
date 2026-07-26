@@ -100,6 +100,20 @@ test("invalid participants, time, and oversized notes are rejected together", ()
   );
 });
 
+test("self assignment rejects UUIDs that differ only by letter case", () => {
+  assert.deepEqual(
+    validateCareShiftRequest(
+      {
+        requesterId: "4f01f5fd-1b52-4d63-9bbc-7f6055f7b7cc",
+        assigneeId: "4F01F5FD-1B52-4D63-9BBC-7F6055F7B7CC",
+        startsAt: "2026-07-27T02:00:00.000Z",
+      },
+      new Date("2026-07-27T01:00:00.000Z"),
+    ),
+    ["self_assignment"],
+  );
+});
+
 test("shift requests beyond the future horizon are rejected", () => {
   const now = new Date("2026-07-27T01:00:00.000Z");
   assert.equal(CARE_SHIFT_MAX_FUTURE_MS, 60 * 24 * 60 * 60 * 1000);

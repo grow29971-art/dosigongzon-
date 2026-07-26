@@ -145,7 +145,11 @@ export function validateCareShiftRequest(
 
   if (!requesterId) errors.push("requester_required");
   if (!assigneeId) errors.push("assignee_required");
-  if (requesterId && assigneeId && requesterId === assigneeId) {
+  if (
+    requesterId &&
+    assigneeId &&
+    requesterId.toLowerCase() === assigneeId.toLowerCase()
+  ) {
     errors.push("self_assignment");
   }
   if (!hasValidTimestamp) {
