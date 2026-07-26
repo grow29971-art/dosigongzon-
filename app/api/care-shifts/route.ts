@@ -6,6 +6,7 @@ import {
   isCareShiftBodyObject,
   isCareShiftCheckViolationCode,
   isCareShiftSchemaNotReadyCode,
+  isCareShiftTransitionViolationCode,
   isCareShiftUuid,
   validateCareShiftRequest,
 } from "@/lib/care-shift";
@@ -205,7 +206,10 @@ export async function PATCH(request: Request) {
     if (error.code === "42501") {
       return NextResponse.json({ error: "forbidden" }, { status: 403 });
     }
-    if (error.code === "PGRST116") {
+    if (
+      error.code === "PGRST116" ||
+      isCareShiftTransitionViolationCode(error.code)
+    ) {
       return NextResponse.json({ error: "invalid_transition" }, { status: 409 });
     }
     console.error("[care-shifts] transition failed:", error.code);

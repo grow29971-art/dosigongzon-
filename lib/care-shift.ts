@@ -33,6 +33,12 @@ export function isCareShiftCheckViolationCode(code: string): boolean {
   return code === "23514";
 }
 
+// 상태 전환 트리거는 stale/concurrent 요청을 P0001로 거절한다.
+// 이는 서버 장애가 아니라 이미 처리된 요청과 같은 전이 충돌이다.
+export function isCareShiftTransitionViolationCode(code: string): boolean {
+  return code === "P0001";
+}
+
 export function isCareShiftTimestamp(value: string): boolean {
   const match = RFC3339_TIMESTAMP_PATTERN.exec(value);
   if (!match || Number.isNaN(Date.parse(value))) return false;

@@ -15,6 +15,7 @@ import {
   isCareShiftCheckViolationCode,
   isCareShiftSchemaNotReadyCode,
   isCareShiftTimestamp,
+  isCareShiftTransitionViolationCode,
   isCareShiftUuid,
   toDatetimeLocalValue,
   validateCareShiftRequest,
@@ -46,6 +47,12 @@ test("DB check violations are input errors, not schema readiness gaps", () => {
   assert.equal(isCareShiftCheckViolationCode("23505"), false);
   assert.equal(isCareShiftCheckViolationCode("42P01"), false);
   assert.equal(isCareShiftSchemaNotReadyCode("23514"), false);
+});
+
+test("DB trigger transition violations are conflicts, not server failures", () => {
+  assert.equal(isCareShiftTransitionViolationCode("P0001"), true);
+  assert.equal(isCareShiftTransitionViolationCode("23514"), false);
+  assert.equal(isCareShiftTransitionViolationCode("PGRST116"), false);
 });
 
 test("care shift timestamps require an explicit RFC 3339 timezone", () => {
