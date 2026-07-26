@@ -3,7 +3,7 @@ import test from "node:test";
 
 import {
   CARE_SHIFT_LIST_LOOKBACK_MS,
-  CARE_SHIFT_MAX_BODY_CHARS,
+  CARE_SHIFT_MAX_BODY_BYTES,
   CARE_SHIFT_MAX_FUTURE_MS,
   CARE_SHIFT_NOTE_MAX_LENGTH,
   CARE_SHIFT_STATUSES,
@@ -280,9 +280,17 @@ test("only plain object request bodies are accepted", () => {
 });
 
 test("oversized request bodies are rejected before JSON parsing", () => {
-  assert.equal(CARE_SHIFT_MAX_BODY_CHARS, 16 * 1024);
-  assert.equal(isCareShiftBodyTooLarge("가".repeat(CARE_SHIFT_MAX_BODY_CHARS)), false);
-  assert.equal(isCareShiftBodyTooLarge("가".repeat(CARE_SHIFT_MAX_BODY_CHARS + 1)), true);
+  assert.equal(CARE_SHIFT_MAX_BODY_BYTES, 16 * 1024);
+  assert.equal(isCareShiftBodyTooLarge("a".repeat(CARE_SHIFT_MAX_BODY_BYTES)), false);
+  assert.equal(isCareShiftBodyTooLarge("a".repeat(CARE_SHIFT_MAX_BODY_BYTES + 1)), true);
+  assert.equal(
+    isCareShiftBodyTooLarge("가".repeat(Math.floor(CARE_SHIFT_MAX_BODY_BYTES / 3))),
+    false,
+  );
+  assert.equal(
+    isCareShiftBodyTooLarge("가".repeat(Math.floor(CARE_SHIFT_MAX_BODY_BYTES / 3) + 1)),
+    true,
+  );
   assert.equal(isCareShiftBodyTooLarge(""), false);
   assert.equal(
     describeCareShiftError("payload_too_large", "기본 안내"),
