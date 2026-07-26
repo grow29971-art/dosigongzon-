@@ -20,8 +20,10 @@ import {
   Copy,
   MessageCircle,
   ChevronRight,
+  Clock3,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
 import { shareToKakao } from "@/lib/kakao-share";
 import {
   listMyCircleMembers,
@@ -199,6 +201,7 @@ export default function CirclePage() {
 
   const acceptedMembers = members.filter((m) => m.status === "accepted");
   const pendingMembers = members.filter((m) => m.status === "pending");
+  const showCareShift = isCoreJourneyEnabled("P3");
 
   return (
     <div className="min-h-dvh pb-6" style={{ background: "#F7F4EE" }}>
@@ -232,6 +235,37 @@ export default function CirclePage() {
           </p>
         </div>
       </section>
+
+      {showCareShift && (
+        <section className="px-5 mt-5" aria-labelledby="care-shift-heading">
+          <div
+            className="rounded-2xl bg-white p-4"
+            style={{ boxShadow: "var(--shadow-card)" }}
+          >
+            <div className="flex items-start gap-3">
+              <div
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                style={{ background: "rgba(107,142,111,0.12)", color: "#4F6B53" }}
+              >
+                <Clock3 size={20} aria-hidden="true" />
+              </div>
+              <div>
+                <h2 id="care-shift-heading" className="text-[15px] font-extrabold text-text-main">
+                  돌봄 교대
+                </h2>
+                <p className="mt-1 text-[12px] leading-relaxed text-text-sub">
+                  서클 이웃에게 빈 시간의 돌봄을 부탁하고, 수락부터 완료까지 함께 확인해요.
+                </p>
+              </div>
+            </div>
+            <ol className="mt-3 grid grid-cols-3 gap-2 text-center text-[11px] font-bold text-text-sub">
+              <li className="rounded-xl bg-[#F7F4EE] px-2 py-2">1. 요청</li>
+              <li className="rounded-xl bg-[#F7F4EE] px-2 py-2">2. 수락</li>
+              <li className="rounded-xl bg-[#F7F4EE] px-2 py-2">3. 완료</li>
+            </ol>
+          </div>
+        </section>
+      )}
 
       {loading ? (
         <div className="flex justify-center pt-12">
