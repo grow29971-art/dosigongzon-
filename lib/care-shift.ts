@@ -46,7 +46,8 @@ export function isCareShiftTimestamp(value: string): boolean {
     Number(minuteText) <= 59 &&
     Number(secondText) <= 59 &&
     (offsetHourText === undefined ||
-      (offsetHour < 14 || (offsetHour === 14 && offsetMinute === 0)))
+      (offsetMinute <= 59 &&
+        (offsetHour < 14 || (offsetHour === 14 && offsetMinute === 0))))
   );
 }
 
