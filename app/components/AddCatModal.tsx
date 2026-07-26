@@ -13,6 +13,7 @@ import { findLocationViolations, formatViolationMessage } from "@/lib/location-p
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 import {
   DISCOVERY_RECORD_STEPS,
+  findNearbyDiscoveryCandidates,
   getAdjacentDiscoveryRecordStep,
   type DiscoveryRecordStep,
 } from "@/lib/discovery-record-flow";
@@ -27,6 +28,7 @@ interface AddCatModalProps {
   // 등록 시작 전 시트에서 선택한 visibility (없으면 public)
   initialVisibility?: CatVisibility;
   showDiscoverySteps?: boolean;
+  duplicateCandidates?: readonly Cat[];
 }
 
 const TAG_PRESETS = [
@@ -74,10 +76,21 @@ export default function AddCatModal({
   initialLng,
   initialVisibility = "public",
   showDiscoverySteps = false,
+  duplicateCandidates = [],
 }: AddCatModalProps) {
   const { user } = useAuth();
   const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
   const [discoveryStep, setDiscoveryStep] = useState<DiscoveryRecordStep>("location");
+  const nearbyCandidates = useMemo(
+    () =>
+      initialLat === undefined || initialLng === undefined
+        ? []
+        : findNearbyDiscoveryCandidates(
+            { lat: initialLat, lng: initialLng },
+            duplicateCandidates,
+          ),
+    [duplicateCandidates, initialLat, initialLng],
+  );
 
   const [name, setName] = useState("");
   const [detectedGu, setDetectedGu] = useState("");
@@ -498,6 +511,29 @@ export default function AddCatModal({
             </div>
             </div>
           )}
+          {showDiscoverySteps &&
+            discoveryStep === "location" &&
+            nearbyCandidates.length > 0 && (
+              <div className="rounded-2xl border border-amber-300/30 bg-amber-200/10 p-3">
+                <p className="text-[12px] font-extrabold text-amber-100">
+                  잠깐, 주변에 이미 등록된 아이가 있어요
+                </p>
+                <p className="mt-1 text-[11px] text-white/65">
+                  같은 아이라면 새로 등록하지 말고 기존 기록을 이어주세요.
+                </p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {nearbyCandidates.map((candidate) => (
+                    <Link
+                      key={candidate.id}
+                      href={`/cats/${candidate.id}`}
+                      className="rounded-lg bg-white/10 px-2.5 py-1.5 text-[11px] font-bold text-white/85"
+                    >
+                      {candidate.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           {(!showDiscoverySteps || discoveryStep === "identity") && (
           <>
           {/* 사진 업로드 — 최대 5장 */}

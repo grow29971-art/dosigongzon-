@@ -3939,6 +3939,7 @@ export default function MapPage() {
         initialLng={pickedCoord?.lng}
         initialVisibility={pickedVisibility}
         showDiscoverySteps={SHOW_MAP_DISCOVERY}
+        duplicateCandidates={cats}
       />
 
       {/* QR 코드 모달 — 오프라인 공유 */}
