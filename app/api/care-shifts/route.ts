@@ -33,6 +33,9 @@ export async function GET() {
   if (!user) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
+  if (!rateLimit(`care-shift:list:${user.id}`, { max: 60, windowMs: 60_000 })) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
 
   const { data, error } = await supabase
     .from("care_shifts")
