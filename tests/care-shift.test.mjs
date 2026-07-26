@@ -426,7 +426,7 @@ test("missing participants and malformed time have stable errors", () => {
 test("care shift success and error responses are not cached", () => {
   assert.match(
     careShiftRouteSource,
-    /const PRIVATE_NO_STORE_HEADERS = \{\s*"Cache-Control": "private, no-store",?\s*\} as const;/,
+    /const PRIVATE_NO_STORE_HEADERS = \{\s*"Cache-Control": "private, no-store",\s*Vary: "Cookie, Authorization",?\s*\} as const;/,
   );
   const getHandlerSource = careShiftRouteSource.slice(
     careShiftRouteSource.indexOf("export async function GET()"),

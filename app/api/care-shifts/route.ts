@@ -31,6 +31,7 @@ type TransitionCareShiftBody = {
 
 const PRIVATE_NO_STORE_HEADERS = {
   "Cache-Control": "private, no-store",
+  Vary: "Cookie, Authorization",
 } as const;
 
 export async function GET() {
