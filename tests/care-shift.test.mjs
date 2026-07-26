@@ -205,6 +205,7 @@ test("known API error codes map to Korean guidance", () => {
 
 test("unknown or missing error codes fall back to the given Korean message", () => {
   assert.equal(describeCareShiftError("create_failed", "기본 안내"), "기본 안내");
+  assert.equal(describeCareShiftError("list_failed", "기본 안내"), "기본 안내");
   assert.equal(describeCareShiftError(undefined, "기본 안내"), "기본 안내");
   assert.equal(describeCareShiftError(42, "기본 안내"), "기본 안내");
 });

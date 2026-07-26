@@ -77,7 +77,7 @@ export default function CirclePage() {
   const [shiftSubmitting, setShiftSubmitting] = useState(false);
   const [careShifts, setCareShifts] = useState<CareShift[]>([]);
   const [careShiftsLoading, setCareShiftsLoading] = useState(false);
-  const [careShiftsLoadFailed, setCareShiftsLoadFailed] = useState(false);
+  const [careShiftsLoadError, setCareShiftsLoadError] = useState<string | null>(null);
   const [careShiftTransitioning, setCareShiftTransitioning] = useState<string | null>(null);
 
   const inviteUrl = user ? `https://dosigongzon.com/circle/join/${user.id}` : "";
@@ -142,18 +142,23 @@ export default function CirclePage() {
   const loadCareShifts = useCallback(async () => {
     if (!user || !isCoreJourneyEnabled("P3")) return;
     setCareShiftsLoading(true);
-    setCareShiftsLoadFailed(false);
+    setCareShiftsLoadError(null);
     try {
       const response = await fetch("/api/care-shifts");
-      const result = (await response.json()) as { shifts?: CareShift[] };
+      const result = (await response.json()) as {
+        shifts?: CareShift[];
+        error?: unknown;
+      };
       if (response.ok) {
         setCareShifts(result.shifts ?? []);
       } else {
-        setCareShiftsLoadFailed(true);
+        setCareShiftsLoadError(
+          describeCareShiftError(result.error, "돌봄 교대 목록을 불러오지 못했어요."),
+        );
       }
     } catch (error) {
       console.error("[care-shifts] load failed", error);
-      setCareShiftsLoadFailed(true);
+      setCareShiftsLoadError("돌봄 교대 목록을 불러오지 못했어요.");
     } finally {
       setCareShiftsLoading(false);
     }
@@ -425,11 +430,9 @@ export default function CirclePage() {
                 <div className="flex justify-center py-5" aria-label="돌봄 교대 불러오는 중">
                   <Loader2 size={18} className="animate-spin text-primary" />
                 </div>
-              ) : careShiftsLoadFailed ? (
+              ) : careShiftsLoadError ? (
                 <div className="mt-2">
-                  <p className="text-[11px] text-text-light">
-                    돌봄 교대 목록을 불러오지 못했어요.
-                  </p>
+                  <p className="text-[11px] text-text-light">{careShiftsLoadError}</p>
                   <button
                     type="button"
                     onClick={() => void loadCareShifts()}
