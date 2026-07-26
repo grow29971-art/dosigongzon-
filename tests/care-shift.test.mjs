@@ -71,7 +71,7 @@ test("care shift list ignores stale overlapping responses", () => {
 test("care shift list invalidates in-flight responses when auth context changes", () => {
   assert.match(
     careShiftPageSource,
-    /if \(!user \|\| !isCoreJourneyEnabled\("P3"\)\) \{[\s\S]*?careShiftsRequestId\.current \+= 1;[\s\S]*?setCareShifts\(\[\]\)/,
+    /if \(!userId \|\| !isCoreJourneyEnabled\("P3"\)\) \{[\s\S]*?careShiftsRequestId\.current \+= 1;[\s\S]*?setCareShifts\(\[\]\)/,
   );
   assert.match(
     careShiftPageSource,
@@ -522,6 +522,20 @@ test("care shift transition refreshes are discarded after auth context changes",
     guardIndex < refreshIndex,
     "전환 응답의 목록 재조회는 인증 컨텍스트 가드 뒤에 와야 한다",
   );
+});
+
+test("care shift auth context tracks the user id, not the user object identity", () => {
+  // 토큰 갱신은 같은 사용자여도 새 user 객체를 만든다. 객체 정체성에
+  // 걸리면 진행 중 요청의 finally 가드가 어긋나 제출 상태가 영구히 잠긴다.
+  assert.match(careShiftPageSource, /const userId = user\?\.id \?\? null;/);
+  assert.match(
+    careShiftPageSource,
+    /if \(!userId \|\| !isCoreJourneyEnabled\("P3"\)\) return;/,
+  );
+  assert.match(careShiftPageSource, /\}, \[userId\]\);/);
+  assert.match(careShiftPageSource, /\}, \[loadCareShifts, userId\]\);/);
+  assert.doesNotMatch(careShiftPageSource, /\}, \[loadCareShifts, user\]\);/);
+  assert.doesNotMatch(careShiftPageSource, /useCallback\([\s\S]*?\}, \[user\]\);/);
 });
 
 test("removing a circle member clears a stale care shift assignee", () => {

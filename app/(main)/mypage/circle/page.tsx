@@ -82,6 +82,10 @@ export default function CirclePage() {
   const [careShiftTransitioning, setCareShiftTransitioning] = useState<string | null>(null);
   const careShiftsRequestId = useRef(0);
   const careShiftAuthContextId = useRef(0);
+  // 토큰 갱신(TOKEN_REFRESHED)은 같은 사용자여도 user 객체를 새로 만든다.
+  // 객체 정체성으로 인증 컨텍스트를 무효화하면 진행 중 요청의 제출 상태가
+  // 영구히 잠기므로, 로그아웃·계정 전환만 구분하는 id를 기준으로 삼는다.
+  const userId = user?.id ?? null;
 
   const inviteUrl = user ? `https://dosigongzon.com/circle/join/${user.id}` : "";
 
@@ -143,7 +147,7 @@ export default function CirclePage() {
   }, [user]);
 
   const loadCareShifts = useCallback(async () => {
-    if (!user || !isCoreJourneyEnabled("P3")) return;
+    if (!userId || !isCoreJourneyEnabled("P3")) return;
     const requestId = ++careShiftsRequestId.current;
     setCareShiftsLoading(true);
     setCareShiftsLoadError(null);
@@ -170,10 +174,10 @@ export default function CirclePage() {
         setCareShiftsLoading(false);
       }
     }
-  }, [user]);
+  }, [userId]);
 
   useEffect(() => {
-    if (!user || !isCoreJourneyEnabled("P3")) {
+    if (!userId || !isCoreJourneyEnabled("P3")) {
       careShiftsRequestId.current += 1;
       careShiftAuthContextId.current += 1;
       setCareShifts([]);
@@ -189,7 +193,7 @@ export default function CirclePage() {
       careShiftsRequestId.current += 1;
       careShiftAuthContextId.current += 1;
     };
-  }, [loadCareShifts, user]);
+  }, [loadCareShifts, userId]);
 
   const handleSearch = async () => {
     const q = searchQuery.trim();
