@@ -164,6 +164,43 @@ export function careShiftListWindowStart(now: Date): string {
   return new Date(now.getTime() - CARE_SHIFT_LIST_LOOKBACK_MS).toISOString();
 }
 
+const CARE_SHIFT_MAX_FUTURE_DAYS = CARE_SHIFT_MAX_FUTURE_MS / (24 * 60 * 60 * 1000);
+
+// invalid_params 한 문구로 뭉개면 사용자는 무엇을 고쳐야 할지 알 수 없다.
+// 서버 details의 첫 번째 사유를 구체적 한국어 안내로 바꾼다.
+// Record<CareShiftRequestValidationError, ...>라 새 검증 사유가 생기면
+// 이 맵도 함께 채워야 컴파일이 통과한다.
+const CARE_SHIFT_VALIDATION_MESSAGES: Readonly<
+  Record<CareShiftRequestValidationError, string>
+> = {
+  requester_required: "로그인이 필요한 기능이에요.",
+  assignee_required: "교대할 이웃을 선택해 주세요.",
+  self_assignment: "자기 자신에게는 교대를 요청할 수 없어요.",
+  invalid_starts_at: "시작 시각을 다시 선택해 주세요.",
+  starts_at_not_future: "시작 시각은 지금보다 뒤여야 해요.",
+  starts_at_too_far: `시작 시각은 ${CARE_SHIFT_MAX_FUTURE_DAYS}일 안에서만 선택할 수 있어요.`,
+  note_too_long: `메모는 ${CARE_SHIFT_NOTE_MAX_LENGTH}자까지 입력할 수 있어요.`,
+  note_has_control_chars: "메모에 사용할 수 없는 특수 문자가 있어요.",
+};
+
+export function describeCareShiftValidationErrors(
+  details: unknown,
+  fallback: string,
+): string {
+  if (!Array.isArray(details)) return fallback;
+  for (const detail of details) {
+    if (
+      typeof detail === "string" &&
+      Object.prototype.hasOwnProperty.call(CARE_SHIFT_VALIDATION_MESSAGES, detail)
+    ) {
+      return CARE_SHIFT_VALIDATION_MESSAGES[
+        detail as CareShiftRequestValidationError
+      ];
+    }
+  }
+  return fallback;
+}
+
 const CARE_SHIFT_ERROR_MESSAGES: Readonly<Record<string, string>> = {
   unauthorized: "로그인이 필요한 기능이에요.",
   rate_limited: "요청이 너무 잦아요. 잠시 후 다시 시도해 주세요.",

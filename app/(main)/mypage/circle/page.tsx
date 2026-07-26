@@ -26,6 +26,7 @@ import { useAuth } from "@/lib/auth-context";
 import {
   CARE_SHIFT_MAX_FUTURE_MS,
   describeCareShiftError,
+  describeCareShiftValidationErrors,
   toDatetimeLocalValue,
 } from "@/lib/care-shift";
 import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
@@ -244,10 +245,19 @@ export default function CirclePage() {
           note: shiftNote.trim() || undefined,
         }),
       });
-      const result = (await response.json()) as { error?: string };
+      const result = (await response.json()) as {
+        error?: string;
+        details?: unknown;
+      };
       if (!response.ok) {
+        const fallback = describeCareShiftError(
+          result.error,
+          "교대 요청을 만들지 못했어요.",
+        );
         throw new Error(
-          describeCareShiftError(result.error, "교대 요청을 만들지 못했어요."),
+          result.error === "invalid_params"
+            ? describeCareShiftValidationErrors(result.details, fallback)
+            : fallback,
         );
       }
       setShiftStartsAt("");

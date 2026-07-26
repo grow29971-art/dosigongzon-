@@ -10,6 +10,7 @@ import {
   canTransitionCareShift,
   careShiftListWindowStart,
   describeCareShiftError,
+  describeCareShiftValidationErrors,
   getNextCareShiftStatus,
   getRequiredCurrentStatus,
   hasCareShiftNoteControlChars,
@@ -235,6 +236,47 @@ test("known API error codes map to Korean guidance", () => {
     describeCareShiftError("duplicate_request", "기본 안내"),
     "같은 시각에 이미 요청한 돌봄 교대가 있어요.",
   );
+});
+
+test("invalid_params details map to specific Korean guidance", () => {
+  assert.equal(
+    describeCareShiftValidationErrors(["starts_at_not_future"], "기본 안내"),
+    "시작 시각은 지금보다 뒤여야 해요.",
+  );
+  assert.equal(
+    describeCareShiftValidationErrors(["starts_at_too_far"], "기본 안내"),
+    "시작 시각은 60일 안에서만 선택할 수 있어요.",
+  );
+  assert.equal(
+    describeCareShiftValidationErrors(["note_too_long"], "기본 안내"),
+    `메모는 ${CARE_SHIFT_NOTE_MAX_LENGTH}자까지 입력할 수 있어요.`,
+  );
+  assert.equal(
+    describeCareShiftValidationErrors(["self_assignment"], "기본 안내"),
+    "자기 자신에게는 교대를 요청할 수 없어요.",
+  );
+});
+
+test("the first recognized validation detail wins over later ones", () => {
+  assert.equal(
+    describeCareShiftValidationErrors(
+      ["unknown_detail", "note_has_control_chars", "note_too_long"],
+      "기본 안내",
+    ),
+    "메모에 사용할 수 없는 특수 문자가 있어요.",
+  );
+});
+
+test("missing, empty, or unknown validation details fall back safely", () => {
+  assert.equal(describeCareShiftValidationErrors(undefined, "기본 안내"), "기본 안내");
+  assert.equal(describeCareShiftValidationErrors(null, "기본 안내"), "기본 안내");
+  assert.equal(describeCareShiftValidationErrors("not-an-array", "기본 안내"), "기본 안내");
+  assert.equal(describeCareShiftValidationErrors([], "기본 안내"), "기본 안내");
+  assert.equal(
+    describeCareShiftValidationErrors(["unknown_detail", 42], "기본 안내"),
+    "기본 안내",
+  );
+  assert.equal(describeCareShiftValidationErrors(["toString"], "기본 안내"), "기본 안내");
 });
 
 test("unknown or missing error codes fall back to the given Korean message", () => {
