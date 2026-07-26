@@ -1,4 +1,35 @@
-const CACHE_NAME = "dosigongzon-v7";
+const CACHE_NAME = "dosigongzon-v8";
+
+// ── 캐시 정책 (2026-07-26 보안 패치) ─────────────────────────
+// 이전(v7)에는 same-origin GET 응답을 사실상 전부 캐시해서, 로그인 개인화
+// HTML·RSC 페이로드가 Cache Storage에 남아 로그아웃/계정 전환 후 오프라인에서
+// 이전 사용자 화면이 노출될 수 있었다.
+// 원칙: 동적 HTML·RSC는 캐시하지 않는다. 공개·정적임이 확인된 경로만 allowlist.
+// (v8 버전 범프 + install의 전체 캐시 삭제로 기존 개인화 캐시도 청소된다)
+
+// 완전 공개(비로그인과 동일 응답) HTML — network-first, 오프라인 fallback용
+const PUBLIC_HTML_PATHS = ["/protection", "/protection/pharmacy-guide"];
+const PUBLIC_HTML_PREFIXES = ["/tips"];
+
+// 공개 정적 자원 — 이 경로만 캐시. 그 외 same-origin GET(RSC ?_rsc= 등)은 캐시 금지.
+const STATIC_PREFIXES = ["/_next/static/", "/icons/", "/images/", "/boss/", "/pve/"];
+const STATIC_FILES = ["/manifest.json", "/favicon.ico"];
+
+const isPublicHtml = (path) =>
+  PUBLIC_HTML_PATHS.includes(path) ||
+  PUBLIC_HTML_PREFIXES.some((p) => path === p || path.startsWith(p + "/"));
+
+const isPublicStatic = (path) =>
+  STATIC_PREFIXES.some((p) => path.startsWith(p)) || STATIC_FILES.includes(path);
+
+// 서버가 캐시 금지를 선언한 응답(no-store/private)은 allowlist 경로여도 저장 안 함.
+const cacheable = (req, res) => {
+  if (req.method !== "GET" || !res.ok) return false;
+  if (res.type !== "basic" && res.type !== "default") return false;
+  const cc = (res.headers.get("Cache-Control") || "").toLowerCase();
+  if (cc.includes("no-store") || cc.includes("private")) return false;
+  return true;
+};
 
 self.addEventListener("install", (e) => {
   // 이전 캐시 즉시 삭제
@@ -20,20 +51,22 @@ self.addEventListener("activate", (e) => {
 });
 
 self.addEventListener("fetch", (e) => {
-  // API, 인증, 외부 요청은 무조건 네트워크
+  // API, 인증, 외부, 비GET 요청은 무조건 네트워크
   if (
+    e.request.method !== "GET" ||
     e.request.url.includes("/api/") ||
     e.request.url.includes("supabase") ||
     !e.request.url.startsWith(self.location.origin)
   ) return;
 
-  // 캐시 안전 조건 — GET + 정상 응답 + same-origin basic 응답만 저장.
-  // POST/PUT/DELETE는 cache.put이 throw, opaque/error 응답은 캐시해도 의미 없음.
-  const cacheable = (req, res) =>
-    req.method === "GET" && res.ok && (res.type === "basic" || res.type === "default");
+  let path;
+  try {
+    path = new URL(e.request.url).pathname;
+  } catch (_) { return; }
 
-  // HTML 페이지 요청 → 네트워크 우선 (실패 시 캐시)
+  // HTML 페이지 요청 → 공개 allowlist만 network-first + 캐시. 나머지는 SW 미관여.
   if (e.request.mode === "navigate") {
+    if (!isPublicHtml(path)) return;
     e.respondWith(
       fetch(e.request)
         .then((res) => {
@@ -48,9 +81,12 @@ self.addEventListener("fetch", (e) => {
     return;
   }
 
+  // navigate가 아닌 요청은 공개 정적 자원만 취급 (RSC 페이로드 등 동적 fetch 제외)
+  if (!isPublicStatic(path)) return;
+
   // /_next/static/ — content-hashed immutable. cache-first로 2nd 페이지뷰 LCP 단축.
   // (해시가 바뀌면 새 URL이 되어 새로 fetch)
-  if (e.request.url.includes("/_next/static/")) {
+  if (path.startsWith("/_next/static/")) {
     e.respondWith(
       caches.match(e.request).then((cached) => {
         if (cached) return cached;
@@ -66,7 +102,7 @@ self.addEventListener("fetch", (e) => {
     return;
   }
 
-  // 기타 정적 자원 → 네트워크 우선 (실패 시 캐시)
+  // 기타 공개 정적 자원 → 네트워크 우선 (실패 시 캐시)
   e.respondWith(
     fetch(e.request)
       .then((res) => {
@@ -80,6 +116,22 @@ self.addEventListener("fetch", (e) => {
   );
 });
 
+// push data.url 검증 — same-origin + 허용 pathname만 연다. 푸시 페이로드가
+// 오염돼도 외부 사이트/스킴 URL로 창을 열지 못하게 차단 (2026-07-26 보안 패치).
+const PUSH_PATH_PREFIXES = [
+  "/cats", "/messages", "/map", "/mypage", "/community",
+  "/notifications", "/experiment", "/shop", "/protection", "/tips",
+];
+const safeNotificationUrl = (raw) => {
+  try {
+    const u = new URL(raw || "/", self.location.origin);
+    if (u.origin !== self.location.origin) return "/";
+    const ok = u.pathname === "/" ||
+      PUSH_PATH_PREFIXES.some((p) => u.pathname === p || u.pathname.startsWith(p + "/"));
+    return ok ? u.pathname + u.search + u.hash : "/";
+  } catch (_) { return "/"; }
+};
+
 // 푸시 알림 수신
 self.addEventListener("push", (e) => {
   let data = {};
@@ -91,7 +143,7 @@ self.addEventListener("push", (e) => {
     body: data.body || "새로운 알림이 있어요",
     icon: "/icons/icon-192.png",
     badge: "/icons/icon-192.png",
-    data: { url: data.url || "/" },
+    data: { url: safeNotificationUrl(data.url) },
   };
   e.waitUntil(self.registration.showNotification(title, options));
 });
@@ -102,7 +154,8 @@ self.addEventListener("push", (e) => {
 // → pathname 정확 일치 시에만 focus, 아니면 기존 창을 navigate, 없으면 새 창.
 self.addEventListener("notificationclick", (e) => {
   e.notification.close();
-  const url = e.notification.data?.url || "/";
+  // 저장 시점에 검증됐어도 클릭 시점에 한 번 더 — 이중 방어
+  const url = safeNotificationUrl(e.notification.data?.url);
   e.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
       let targetPath = url;

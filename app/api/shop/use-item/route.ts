@@ -14,7 +14,8 @@ export async function POST(req: Request) {
 
   const svc = createServiceClient();
   // 원자적 소모 — DB 조건부 증분 후 남은 수량 반환(consume_user_item). 동시 요청이
-  // 같은 재고를 두 번 쓰던 레이스 차단. RPC 미배포(42883) 시 기존 gt-가드 방식 폴백.
+  // 같은 재고를 두 번 쓰는 레이스 차단. RPC가 없거나 실패하면 503 fail-closed —
+  // 비원자 폴백(read-then-write)은 중복 사용을 허용하므로 금지 (2026-07-26 보안 패치).
   const { data: rpcRemaining, error: consumeErr } = await svc.rpc("consume_user_item", {
     p_user_id: user.id, p_item_key: item.key,
   });
@@ -23,13 +24,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, remaining: rpcRemaining });
   }
 
-  const { data: existing } = await supabase
-    .from("user_items").select("quantity")
-    .eq("user_id", user.id).eq("item_key", item.key).maybeSingle();
-  const qty = existing?.quantity ?? 0;
-  if (qty <= 0) return NextResponse.json({ error: "no_stock" }, { status: 400 });
-  await svc.from("user_items").update({ quantity: qty - 1, updated_at: new Date().toISOString() })
-    .eq("user_id", user.id).eq("item_key", item.key).gt("quantity", 0);
-
-  return NextResponse.json({ ok: true, remaining: qty - 1 });
+  console.error("[shop/use-item] consume_user_item RPC 실패 — fail-closed:", consumeErr?.code ?? "bad_return");
+  return NextResponse.json({ error: "not_ready" }, { status: 503 });
 }

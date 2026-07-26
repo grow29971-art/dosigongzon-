@@ -9,19 +9,23 @@
 //   }
 
 import * as Sentry from "@sentry/nextjs";
+import { allowlistExtra } from "@/lib/sentry-redact";
 
 export function reportError(
   scope: string,
   err: unknown,
   extra?: Record<string, unknown>,
 ) {
-  if (extra) {
-    console.error(`[${scope}]`, err, extra);
+  // extra는 무조건 전달하지 않는다 — 식별자·수치류 키만 allowlist 통과시키고
+  // 자유 문자열(본문·주소·이메일 등)은 버린다 (2026-07-26 보안 패치).
+  const safeExtra = allowlistExtra(extra);
+  if (safeExtra) {
+    console.error(`[${scope}]`, err, safeExtra);
   } else {
     console.error(`[${scope}]`, err);
   }
   Sentry.captureException(err, {
     tags: { scope },
-    extra,
+    extra: safeExtra,
   });
 }

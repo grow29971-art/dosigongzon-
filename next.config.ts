@@ -10,9 +10,16 @@ import { withSentryConfig } from "@sentry/nextjs";
 // - 이미지: placehold.co, 모든 https (사용자 업로드 이미지 호스트가 다양할 수 있음)
 // 인라인 스타일/스크립트: React/Next 런타임이 필요로 해서 'unsafe-inline' 유지.
 // nonce 기반 strict CSP는 동적 렌더링 강제 등 트레이드오프가 커 현재 단계에서는 보류.
+//
+// 'unsafe-eval' 제거 (2026-07-26 보안 강화): 앱·lib 소스에 eval/new Function/WebAssembly
+// 사용이 전무해 프로덕션에선 불필요. 단 Next dev(Turbopack HMR)는 eval을 쓰므로 개발에서만 허용.
+// ⚠ 배포 전 확인: 프로덕션/프리뷰에서 지도(Kakao)·결제(Toss) 플로우가 정상 동작하는지 —
+//   해당 SDK가 eval을 요구하면 콘솔에 CSP 위반이 뜬다(그 경우에만 해당 호스트 script-src 확인).
+const IS_DEV = process.env.NODE_ENV !== "production";
+const scriptEval = IS_DEV ? " 'unsafe-eval'" : "";
 const cspDirectives = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://dapi.kakao.com https://*.daumcdn.net https://challenges.cloudflare.com https://js.tosspayments.com",
+  `script-src 'self' 'unsafe-inline'${scriptEval} https://dapi.kakao.com https://*.daumcdn.net https://challenges.cloudflare.com https://js.tosspayments.com`,
   "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data: https://cdn.jsdelivr.net",
@@ -85,6 +92,8 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react"],
   },
+  // jsdom 기반 DOMPurify(tips 렌더 sink 정화)는 서버 외부 패키지로 두어 번들 문제 회피
+  serverExternalPackages: ["isomorphic-dompurify"],
   // next/image — Vercel Image Optimization 활성. 자동 WebP/AVIF + 디바이스별 리사이즈.
   // 서드파티 아바타(Google/Kakao)는 이미 CDN 최적화 상태라 개별 컴포넌트에서 unoptimized 유지.
   // quota 한계: Hobby 1000 source images/month (현재 사용 << 한계).

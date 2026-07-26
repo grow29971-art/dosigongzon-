@@ -1,0 +1,5 @@
+-- (중복 — 삭제 예정) 정본으로 대체됨:
+--   · 검증(읽기 전용):  box/보안검증_경제성RPC_권한_20260726.sql
+--   · 보조 매트릭스:    box/supabase_rpc_grant_check.sql
+--   · 하드닝(권한 회수): box/supabase_economy_rpc_lockdown_migration.sql
+-- 같은 날 두 세션이 병렬로 같은 항목을 작성해 생긴 중복 파일. 실행하지 말 것.

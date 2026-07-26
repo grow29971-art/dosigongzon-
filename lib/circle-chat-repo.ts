@@ -18,8 +18,25 @@ export interface CircleMessage {
   created_at: string;
 }
 
-/** 서클 채팅 사진 업로드 → 공개 URL 반환 (cat-photos 버킷 재사용) */
-export async function uploadCircleChatImage(file: File): Promise<string> {
+// ── 서클 사진 비공개 저장 (2026-07-26 보안 패치) ──
+// 예전엔 공개 버킷(cat-photos)에 올려 URL만 알면 비멤버도 열람 가능했다.
+// 이제 private 버킷(circle-photos)에 올리고, image_url에는 "private:{경로}" 참조만
+// 저장한다. 표시는 /api/circle/image-url이 멤버십 검증 후 발급하는 5분 TTL
+// signed URL로만 가능. 기존 공개 URL(http…) 메시지는 그대로 렌더된다(호환).
+// 선행조건: box/supabase_circle_photos_private_migration.sql 실행.
+
+export const CIRCLE_IMAGE_PRIVATE_PREFIX = "private:";
+
+const UUID_SEG = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+const PRIVATE_REF_RE = new RegExp(`^private:${UUID_SEG}/${UUID_SEG}/${UUID_SEG}\\.webp$`, "i");
+
+/** image_url이 비공개 버킷 참조("private:{circleId}/{uid}/{uuid}.webp")인지 검증 */
+export function isPrivateCircleImageRef(v: string): boolean {
+  return PRIVATE_REF_RE.test(v);
+}
+
+/** 서클 채팅 사진 업로드 → 비공개 참조("private:…") 반환 */
+export async function uploadCircleChatImage(file: File, circleId: string): Promise<string> {
   const supabase = createClient();
   const {
     data: { user },
@@ -27,14 +44,18 @@ export async function uploadCircleChatImage(file: File): Promise<string> {
   if (!user) throw new Error("로그인이 필요해요.");
 
   const webpFile = await convertImageToWebp(file, 1024, 0.8);
-  const fileName = `circle/${user.id}/${crypto.randomUUID()}.webp`;
+  // 경로 규약 {circleId}/{내 uid}/{uuid}.webp — storage RLS가 멤버십·본인 여부를 검증
+  const fileName = `${circleId}/${user.id}/${crypto.randomUUID()}.webp`;
   const { error: uploadErr } = await supabase.storage
-    .from("cat-photos")
+    .from("circle-photos")
     .upload(fileName, webpFile, { contentType: "image/webp" });
-  if (uploadErr) throw new Error(`사진 업로드 실패: ${uploadErr.message}`);
-
-  const { data } = supabase.storage.from("cat-photos").getPublicUrl(fileName);
-  return data.publicUrl;
+  if (uploadErr) {
+    if (/bucket.*not.*found/i.test(uploadErr.message)) {
+      throw new Error("사진 저장소가 아직 준비되지 않았어요. 관리자에게 문의해주세요.");
+    }
+    throw new Error(`사진 업로드 실패: ${uploadErr.message}`);
+  }
+  return `${CIRCLE_IMAGE_PRIVATE_PREFIX}${fileName}`;
 }
 
 /** 채팅 메시지 목록 (최근 → 과거 100개). */
@@ -68,9 +89,10 @@ export async function sendCircleMessage(
   if (!trimmed && !hasImage) throw new Error("내용 또는 사진을 입력해주세요.");
   if (trimmed.length > 1000) throw new Error("1000자 이내로 작성해주세요.");
 
-  // 이미지 URL은 https(s)만 허용 — javascript:/data: 등 주입 차단 (심층 방어).
+  // 이미지는 비공개 버킷 참조("private:…") 또는 https URL(레거시)만 허용 —
+  // javascript:/data: 등 주입 차단 (심층 방어).
   // 브라우저 anon 클라이언트라 REST 직접 우회 가능 → 렌더 측 sanitize가 최종 방어.
-  if (hasImage && !isSafeImageUrl(imageUrl)) {
+  if (hasImage && !isPrivateCircleImageRef(imageUrl!) && !isSafeImageUrl(imageUrl)) {
     throw new Error("유효하지 않은 이미지 주소예요.");
   }
 

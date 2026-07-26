@@ -1,10 +1,15 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { reportError } from "@/lib/error-report";
 import { computeLevel } from "@/lib/cats-repo";
 
-// ── 유저당 레이트리밋 (인메모리, 인스턴스별) ──
-// 분산 환경에선 Redis 권장. 지금은 단일 서버 MVP 기준.
+// ── 유저당 레이트리밋 (분산: Postgres RPC + 인메모리 폴백) ──
+// 2026-07-26 보안: 기존 모듈-스코프 Map은 Vercel 다중 인스턴스에서 인스턴스별로
+// 카운트돼 실효 한도 = 설정값 × 인스턴스 수였음(Gemini 비용 어뷰징). Postgres
+// check_ai_chat_rate RPC를 단일 소스로 써서 인스턴스 무관 고정 한도를 강제한다.
+// RPC 미배포(마이그레이션 전, 42883)면 인메모리로 폴백 — 채팅은 계속 동작하되
+// 분산 보장만 빠짐(기존 동작 유지). box/supabase_ai_chat_rate_migration.sql 실행 후 분산 활성.
 // 레벨별 분당 대화 제한: Lv1-2=10, Lv3-4=20, Lv5+=30
 function getRateLimit(level: number): number {
   if (level >= 5) return 30;
@@ -13,9 +18,11 @@ function getRateLimit(level: number): number {
 }
 
 const RATE_WINDOW_MS = 60_000; // 1분
+const RATE_WINDOW_SEC = 60;
 const rateBuckets = new Map<string, { count: number; resetAt: number }>();
 
-function checkRateLimit(userId: string, limit: number): { ok: true } | { ok: false; retryAfter: number } {
+// 인메모리 폴백 — RPC 미배포 시에만 사용 (best-effort, 인스턴스별)
+function checkRateLimitMemory(userId: string, limit: number): { ok: true } | { ok: false; retryAfter: number } {
   const now = Date.now();
   const bucket = rateBuckets.get(userId);
   if (!bucket || bucket.resetAt <= now) {
@@ -27,6 +34,27 @@ function checkRateLimit(userId: string, limit: number): { ok: true } | { ok: fal
   }
   bucket.count += 1;
   return { ok: true };
+}
+
+// 분산 판정 — Postgres RPC. 미배포(42883)면 null 반환 → 호출부에서 인메모리 폴백.
+async function checkRateLimitDistributed(
+  userId: string,
+  limit: number,
+): Promise<{ ok: true } | { ok: false; retryAfter: number } | null> {
+  try {
+    const svc = createServiceClient();
+    const { data, error } = await svc.rpc("check_ai_chat_rate", {
+      p_user_id: userId,
+      p_limit: limit,
+      p_window_seconds: RATE_WINDOW_SEC,
+    });
+    if (error) return null; // 미배포/오류 → 폴백
+    const res = data as { allowed?: boolean; retry_after?: number };
+    if (res?.allowed) return { ok: true };
+    return { ok: false, retryAfter: Math.max(res?.retry_after ?? RATE_WINDOW_SEC, 1) };
+  } catch {
+    return null;
+  }
 }
 
 /* ═══ 오프라인 폴백 답변 (API 전체 실패 시) ═══
@@ -171,7 +199,9 @@ export async function POST(request: Request) {
   );
 
   const userLevel = computeLevel((catCount ?? 0) * 10).level;
-  const rl = checkRateLimit(user.id, getRateLimit(userLevel));
+  const limit = getRateLimit(userLevel);
+  // 분산(Postgres) 우선, 미배포면 인메모리 폴백
+  const rl = (await checkRateLimitDistributed(user.id, limit)) ?? checkRateLimitMemory(user.id, limit);
   if (!rl.ok) {
     return Response.json(
       { error: `잠시 후 다시 시도해주세요. (${rl.retryAfter}초) 레벨을 올리면 더 많이 대화할 수 있어요!` },

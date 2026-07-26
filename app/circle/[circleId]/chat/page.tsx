@@ -18,8 +18,70 @@ import {
   deleteCircleMessage,
   uploadCircleChatImage,
   markCircleRead,
+  isPrivateCircleImageRef,
   type CircleMessage,
 } from "@/lib/circle-chat-repo";
+
+// 비공개 참조("private:…") → signed URL 해석 결과 캐시 (세션 내, TTL 5분이라 재진입 시 재발급)
+const signedUrlCache = new Map<string, string>();
+
+// 채팅 사진 — 레거시 공개 URL은 그대로, 비공개 참조는 signed URL 발급 후 표시.
+function ChatImage({ raw, isMine }: { raw: string; isMine: boolean }) {
+  const isPrivate = isPrivateCircleImageRef(raw);
+  const [signed, setSigned] = useState<string | null>(
+    isPrivate ? (signedUrlCache.get(raw) ?? null) : null,
+  );
+
+  useEffect(() => {
+    if (!isPrivate || signed) return;
+    let alive = true;
+    fetch("/api/circle/image-url", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ ref: raw }),
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { url?: string } | null) => {
+        if (alive && d?.url) {
+          signedUrlCache.set(raw, d.url);
+          setSigned(d.url);
+        }
+      })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, [raw, isPrivate, signed]);
+
+  const legacySafe = isPrivate ? null : sanitizeImageUrl(raw);
+  const src = isPrivate ? signed : (optimizedImageUrl(legacySafe, 480, 70) ?? legacySafe);
+  const href = isPrivate ? (signed ?? "#") : sanitizeHttpUrl(raw, "#");
+  if (!isPrivate && !legacySafe) return null;
+
+  const rounding = isMine ? "rounded-tr-sm" : "rounded-tl-sm";
+  if (!src) {
+    // signed URL 발급 중 placeholder
+    return (
+      <div
+        className={`mb-1 rounded-2xl ${rounding} flex items-center justify-center`}
+        style={{ width: 180, height: 120, background: "rgba(0,0,0,0.06)" }}
+        aria-label="사진 불러오는 중"
+      >
+        <Loader2 size={18} className="animate-spin text-text-light" />
+      </div>
+    );
+  }
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`block mb-1 rounded-2xl overflow-hidden ${rounding}`}
+      style={{ maxWidth: 220, boxShadow: "0 2px 6px rgba(0,0,0,0.10)" }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt="" loading="lazy" className="w-full h-auto block" />
+    </a>
+  );
+}
 
 function formatTime(iso: string): string {
   const d = new Date(iso);
@@ -149,7 +211,7 @@ export default function CircleChatPage() {
     try {
       let imageUrl: string | null = null;
       if (photoFile) {
-        imageUrl = await uploadCircleChatImage(photoFile);
+        imageUrl = await uploadCircleChatImage(photoFile, circleId);
       }
       const sent = await sendCircleMessage(circleId, input, imageUrl);
       // 낙관적 추가 (RT가 도착 전이라도 즉시 표시)
@@ -295,23 +357,7 @@ export default function CircleChatPage() {
                           {m.sender_name ?? "익명"}
                         </p>
                       )}
-                      {m.image_url && sanitizeImageUrl(m.image_url) && (
-                        <a
-                          href={sanitizeHttpUrl(m.image_url, "#")}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`block mb-1 rounded-2xl overflow-hidden ${isMine ? "rounded-tr-sm" : "rounded-tl-sm"}`}
-                          style={{ maxWidth: 220, boxShadow: "0 2px 6px rgba(0,0,0,0.10)" }}
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={optimizedImageUrl(sanitizeImageUrl(m.image_url), 480, 70) ?? sanitizeImageUrl(m.image_url)}
-                            alt=""
-                            loading="lazy"
-                            className="w-full h-auto block"
-                          />
-                        </a>
-                      )}
+                      {m.image_url && <ChatImage raw={m.image_url} isMine={isMine} />}
                       {m.body && (
                         <div
                           className={`px-3 py-2 rounded-2xl text-[13.5px] leading-relaxed whitespace-pre-wrap break-words ${isMine ? "rounded-tr-sm" : "rounded-tl-sm"}`}

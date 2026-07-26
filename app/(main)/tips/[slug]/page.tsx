@@ -13,6 +13,7 @@ import {
 } from "@/lib/tips-repo";
 import { sanitizeImageUrl, sanitizeHttpUrl } from "@/lib/url-validate";
 import { estimateReadingMinutes, extractTextFromHtml } from "@/lib/html-sanitize";
+import { sanitizeTipHtmlServer } from "@/lib/html-sanitize-server";
 import TipViewIncrementer from "./TipViewIncrementer";
 import TipShareButtons from "./TipShareButtons";
 
@@ -118,7 +119,10 @@ export default async function TipDetailPage({ params }: Params) {
   const url = `${SITE_URL}/tips/${tip.slug}`;
   const image = photo || `${SITE_URL}/opengraph-image`;
 
-  const { html: bodyWithIds, toc } = extractToc(tip.body);
+  // 렌더 sink 최종 방어: extractToc로 헤딩 id 주입 후 DOMPurify로 재정화
+  // (write-time 정규식 sanitizer + render-time DOMPurify 이중 방어)
+  const { html: rawBodyWithIds, toc } = extractToc(tip.body);
+  const bodyWithIds = sanitizeTipHtmlServer(rawBodyWithIds);
 
   const related = await getRelatedTipsServer(tip.slug, tip.tags, 3);
 

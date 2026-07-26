@@ -19,6 +19,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { rateLimit } from "@/lib/rate-limit";
 import { PAYMENT_ENABLED, PAYMENT_DISABLED_MESSAGE } from "@/lib/payments-config";
 import { maxPointsUsable } from "@/lib/points-config";
+import { maskPaymentKey, safeTossError, safeErrorMessage } from "@/lib/log-sanitize";
 
 const TOSS_CONFIRM_URL = "https://api.tosspayments.com/v1/payments/confirm";
 
@@ -301,8 +302,8 @@ export async function POST(req: Request) {
     if (!res.ok && toss.code === "ALREADY_PROCESSED_PAYMENT") {
       console.warn("[payment/confirm] already processed — treating as success:", orderId);
     } else if (!res.ok) {
-      // 승인 실패 → 재고 원복 + 포인트 환급 + 주문 취소
-      console.error("[payment/confirm] toss confirm failed:", toss.code, toss.message);
+      // 승인 실패 → 재고 원복 + 포인트 환급 + 주문 취소 (오류는 allowlist 필드만 기록)
+      console.error("[payment/confirm] toss confirm failed:", safeTossError(toss));
       await restoreStock(svc, reserved);
       await refundPoints();
       await svc.from("orders")
@@ -315,7 +316,7 @@ export async function POST(req: Request) {
     }
   } catch (e) {
     // 네트워크 오류 — 승인 여부 불명이므로 주문은 pending 유지(재시도 가능), 재고·포인트만 원복
-    console.error("[payment/confirm] toss request error:", e);
+    console.error("[payment/confirm] toss request error:", safeErrorMessage(e, [paymentKey]));
     await restoreStock(svc, reserved);
     await refundPoints();
     await svc.from("orders")
@@ -345,12 +346,12 @@ export async function POST(req: Request) {
     .select("id");
 
   if (updateError) {
-    // 결제는 됐는데 DB 반영 실패 — 로그 남기고 성공 응답 (관리자가 토스 콘솔과 대조 가능)
-    console.error("[payment/confirm] order update failed after toss confirm:", updateError, orderId, paymentKey);
+    // 결제는 됐는데 DB 반영 실패 — 로그 남기고 성공 응답 (digest로 토스 콘솔 대조 가능)
+    console.error("[payment/confirm] order update failed after toss confirm:", updateError, orderId, maskPaymentKey(paymentKey));
   } else if (!paidRows || paidRows.length === 0) {
     // 0행 전환 = 토스 승인 사이에 주문이 취소/변경됨(청구는 됐는데 주문 없음).
     // 자동 환불 시도 후 재고·포인트 원복. 환불 실패 시 관리자 수동 대조용 로그.
-    console.error("[payment/confirm] paid transition matched 0 rows — order changed during approval, auto-refunding:", order.id, paymentKey);
+    console.error("[payment/confirm] paid transition matched 0 rows — order changed during approval, auto-refunding:", order.id, maskPaymentKey(paymentKey));
     try {
       const refundAuth = Buffer.from(`${secretKey}:`).toString("base64");
       const cancelRes = await fetch(
@@ -358,9 +359,12 @@ export async function POST(req: Request) {
         { method: "POST", headers: { Authorization: `Basic ${refundAuth}`, "Content-Type": "application/json" },
           body: JSON.stringify({ cancelReason: "주문 상태 불일치 자동 환불" }) },
       );
-      if (!cancelRes.ok) console.error("[payment/confirm] auto-refund failed (MANUAL CHECK):", order.id, paymentKey, await cancelRes.text().catch(() => ""));
+      if (!cancelRes.ok) {
+        const cancelErr = await cancelRes.json().catch(() => ({}));
+        console.error("[payment/confirm] auto-refund failed (MANUAL CHECK):", order.id, maskPaymentKey(paymentKey), safeTossError(cancelErr));
+      }
     } catch (e) {
-      console.error("[payment/confirm] auto-refund request error (MANUAL CHECK):", order.id, paymentKey, e);
+      console.error("[payment/confirm] auto-refund request error (MANUAL CHECK):", order.id, maskPaymentKey(paymentKey), safeErrorMessage(e, [paymentKey]));
     }
     await restoreStock(svc, reserved);
     await refundPoints();

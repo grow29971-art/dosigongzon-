@@ -13,6 +13,7 @@
 import { NextResponse } from "next/server";
 import { type SupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient } from "@/lib/supabase/service";
+import { maskPaymentKey, safeErrorMessage } from "@/lib/log-sanitize";
 
 export const maxDuration = 60;
 
@@ -115,7 +116,8 @@ export async function POST(req: Request) {
     }
     toss = (await res.json()) as TossPayment;
   } catch (e) {
-    console.error("[payment/webhook] toss lookup failed:", e);
+    // 예외 객체에 요청 URL(paymentKey 포함)이 섞일 수 있어 메시지만 기록
+    console.error("[payment/webhook] toss lookup failed:", safeErrorMessage(e, [paymentKey]));
     return NextResponse.json({ error: "lookup failed" }, { status: 502 }); // 토스가 재시도
   }
 
@@ -187,7 +189,7 @@ export async function POST(req: Request) {
           body: JSON.stringify({ cancelReason: "주문 금액 검증 실패 자동 환불" }),
         });
       } catch (e) {
-        console.error("[payment/webhook] auto refund failed (manual refund needed):", e, paymentKey);
+        console.error("[payment/webhook] auto refund failed (manual refund needed):", safeErrorMessage(e, [paymentKey]), maskPaymentKey(paymentKey));
       }
       await svc.from("orders")
         .update({ status: "cancelled", updated_at: new Date().toISOString() })
@@ -231,7 +233,7 @@ export async function POST(req: Request) {
               body: JSON.stringify({ cancelReason: "포인트 잔액 검증 실패 자동 환불" }),
             });
           } catch (e) {
-            console.error("[payment/webhook] auto refund failed (manual refund needed):", e, paymentKey);
+            console.error("[payment/webhook] auto refund failed (manual refund needed):", safeErrorMessage(e, [paymentKey]), maskPaymentKey(paymentKey));
           }
           await svc.from("orders")
             .update({ status: "cancelled", updated_at: new Date().toISOString() })

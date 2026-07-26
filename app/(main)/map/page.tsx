@@ -1594,7 +1594,8 @@ export default function MapPage() {
         : `<path d="M22 13v13M15.5 19.5h13" stroke="#fff" stroke-width="4.4" stroke-linecap="round"/>`;
 
       if (isLarge) {
-        const label = h.name.length > 14 ? h.name.slice(0, 14) + "…" : h.name;
+        // 수동 등록 병원명은 저장 경계(REST 직결)를 우회한 페이로드일 수 있어 반드시 이스케이프
+        const label = escapeHtml(h.name.length > 14 ? h.name.slice(0, 14) + "…" : h.name);
         el.innerHTML = `
           <div style="position: relative; transform: translate(-50%, -100%); cursor: pointer; width: 44px; height: 54px;">
             <svg width="44" height="54" viewBox="0 0 44 54" style="display:block; filter: drop-shadow(0 5px 8px ${c2}66);">

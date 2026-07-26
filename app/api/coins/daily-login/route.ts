@@ -32,14 +32,19 @@ export async function POST() {
     return NextResponse.json({ awarded: false, coins: profile?.coins ?? 0 });
   }
 
-  // 코인은 DB에서 원자 증감 — RPC 미실행 환경에선 기존 read-modify-write 폴백
+  // 코인은 DB에서 원자 증감 — RPC가 없거나 실패하면 503 fail-closed.
+  // 비원자 read-modify-write 폴백은 동시 요청의 중복 지급을 허용하므로 금지 (2026-07-26 보안 패치).
+  // 선점(last_login_bonus_date)을 되돌려 재시도 가능하게 한다.
   let coins = (profile?.coins ?? 0) + COINS_LOGIN_BONUS;
   const { data: rpcCoins, error: rpcErr } = await svc.rpc("increment_coins", {
     p_user_id: user.id, p_amount: COINS_LOGIN_BONUS,
   });
   if (rpcErr) {
-    console.warn("[coins/daily-login] ⚠️ increment_coins RPC 미배포/오류 — 비원자 폴백. 마이그레이션 확인 필요.");
-    await svc.from("profiles").update({ coins }).eq("id", user.id);
+    console.error("[coins/daily-login] increment_coins RPC 실패 — fail-closed:", rpcErr.code);
+    await svc.from("profiles")
+      .update({ last_login_bonus_date: profile?.last_login_bonus_date ?? null })
+      .eq("id", user.id);
+    return NextResponse.json({ error: "not_ready" }, { status: 503 });
   } else if (typeof rpcCoins === "number") {
     coins = rpcCoins;
   }

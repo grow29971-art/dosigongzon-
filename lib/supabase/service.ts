@@ -7,6 +7,7 @@
 //    (server-only 라우트/lib에서만 사용. 브라우저는 lib/supabase/client.ts)
 // ══════════════════════════════════════════
 
+import "server-only"; // 클라이언트 번들에 섞이면 빌드가 실패하도록 하드 경계 (2026-07-26 보안 패치)
 import { createClient } from "@supabase/supabase-js";
 
 /**

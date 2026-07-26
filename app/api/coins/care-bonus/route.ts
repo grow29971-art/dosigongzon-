@@ -57,14 +57,7 @@ export async function POST() {
     return NextResponse.json({ awarded: true, coins: r.coins ?? 0, bonus: COINS_CARE_PER_LOG, count_today: r.count_today ?? countToday + 1 });
   }
 
-  // RPC 미실행 환경 폴백 — 기존 read-modify-write (마이그레이션 실행 후엔 위 경로만 탐)
-  console.warn("[coins/care-bonus] ⚠️ award_care_bonus_atomic RPC 미배포/오류 — 비원자 폴백. 마이그레이션 확인 필요.");
-  const newCoins = (profile?.coins ?? 0) + COINS_CARE_PER_LOG;
-  await svc.from("profiles").update({
-    coins: newCoins,
-    last_care_coin_date: today,
-    care_coin_count_today: countToday + 1,
-  }).eq("id", user.id);
-
-  return NextResponse.json({ awarded: true, coins: newCoins, bonus: COINS_CARE_PER_LOG, count_today: countToday + 1 });
+  // fail-closed: 비원자 read-modify-write 폴백은 동시 요청의 이중 지급을 허용하므로 금지 (2026-07-26 보안 패치)
+  console.error("[coins/care-bonus] award_care_bonus_atomic RPC 실패 — fail-closed:", rpcErr?.code ?? "bad_return");
+  return NextResponse.json({ error: "not_ready" }, { status: 503 });
 }

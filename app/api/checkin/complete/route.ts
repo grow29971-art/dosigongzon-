@@ -85,14 +85,19 @@ export async function POST(req: Request) {
   }
 
   // 코인은 DB에서 원자 증감(increment_coins) — 배틀 보상·상점 구매 등 다른 경로와
-  // 동시에 코인이 바뀌어도 갱신 소실 없음. RPC 미실행 환경에선 기존 방식으로 폴백.
+  // 동시에 코인이 바뀌어도 갱신 소실 없음. RPC가 없거나 실패하면 503 fail-closed —
+  // 비원자 폴백은 동시 요청의 갱신 소실/중복을 허용하므로 금지 (2026-07-26 보안 패치).
+  // 이 시점엔 선점(last_checkin_date)만 반영된 상태라 선점을 되돌리고 재시도 가능하게 한다.
   let coinsTotal = (profile.coins ?? 0) + CHECKIN_COINS;
   const { data: rpcCoins, error: rpcErr } = await svc.rpc("increment_coins", {
     p_user_id: user.id, p_amount: CHECKIN_COINS,
   });
   if (rpcErr) {
-    console.warn("[checkin] ⚠️ increment_coins RPC 미배포/오류 — 비원자 폴백. 마이그레이션 확인 필요.");
-    jobs.push(svc.from("profiles").update({ coins: coinsTotal }).eq("id", user.id));
+    console.error("[checkin] increment_coins RPC 실패 — fail-closed:", rpcErr.code);
+    await svc.from("profiles")
+      .update({ last_checkin_date: (profile as { last_checkin_date?: string | null }).last_checkin_date ?? null })
+      .eq("id", user.id);
+    return NextResponse.json({ error: "not_ready" }, { status: 503 });
   } else if (typeof rpcCoins === "number") {
     coinsTotal = rpcCoins;
   }

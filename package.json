@@ -17,12 +17,14 @@
     "@types/qrcode": "^1.5.6",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
+    "isomorphic-dompurify": "^3.19.0",
     "lucide-react": "^1.7.0",
-    "next": "^16.2.4",
+    "next": "^16.2.12",
     "qrcode": "^1.5.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "resend": "^6.12.0",
+    "server-only": "^0.0.1",
     "web-push": "^3.6.7"
   },
   "devDependencies": {
@@ -32,9 +34,16 @@
     "@types/react-dom": "^19",
     "@types/web-push": "^3.6.4",
     "eslint": "^9",
-    "eslint-config-next": "16.2.2",
+    "eslint-config-next": "^16.2.12",
     "puppeteer": "^24.40.0",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "//overrides": "2026-07-26 보안: transitive 취약점 안전 버전 고정 (호환 범위 내). brace-expansion은 취약한 5.0.7만 정밀 교체(eslint 체인의 1.1.13은 이미 패치됨 — 전역 강제 시 minimatch@3 CJS 깨짐). next 자체 권고는 안정 forward patch 부재로 미해결 — 개발일지 참고.",
+  "overrides": {
+    "postcss": "^8.5.23",
+    "sharp": "^0.35.3",
+    "fast-uri": "^3.1.4",
+    "brace-expansion@5.0.7": "5.0.8"
   }
 }

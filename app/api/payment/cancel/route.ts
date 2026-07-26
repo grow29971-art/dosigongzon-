@@ -9,6 +9,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { rateLimit } from "@/lib/rate-limit";
+import { safeTossError, safeErrorMessage } from "@/lib/log-sanitize";
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -113,14 +114,15 @@ export async function POST(req: Request) {
     );
     if (!res.ok) {
       const toss = (await res.json().catch(() => ({}))) as { message?: string };
-      console.error("[payment/cancel] toss cancel failed:", toss);
+      console.error("[payment/cancel] toss cancel failed:", safeTossError(toss));
       return NextResponse.json(
         { error: toss.message ?? "결제 취소에 실패했어요. 고객센터로 문의해주세요." },
         { status: 400 },
       );
     }
   } catch (e) {
-    console.error("[payment/cancel] toss request error:", e);
+    // 예외 객체에 요청 URL(payment_key 포함)이 섞일 수 있어 메시지만 기록
+    console.error("[payment/cancel] toss request error:", safeErrorMessage(e, [order.payment_key]));
     return NextResponse.json({ error: "결제 취소 중 오류가 발생했어요. 잠시 후 다시 시도해주세요." }, { status: 502 });
   }
 

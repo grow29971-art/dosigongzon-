@@ -57,7 +57,9 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        // "<"를 <로 치환해 상품명/설명에 "</script>"를 심어 스크립트 컨텍스트를
+        // 탈출하는 저장형 XSS를 차단 (JSON 의미는 동일)
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
       <ProductDetailClient product={product} />
     </>
