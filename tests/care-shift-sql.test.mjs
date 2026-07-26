@@ -34,6 +34,18 @@ test("care shift migration keeps participant-only access and no delete grant", (
   assert.doesNotMatch(sql, /grant[^;]*\bdelete\b[^;]*on public\.care_shifts/i);
 });
 
+test("care shift transition timestamps are always assigned by the database", () => {
+  assert.match(
+    sql,
+    /old\.status = 'requested' and new\.status = 'accepted' then\s+new\.accepted_at := now\(\);\s+new\.completed_at := null;/i,
+  );
+  assert.match(
+    sql,
+    /old\.status = 'accepted' and new\.status = 'completed' then\s+new\.accepted_at := old\.accepted_at;\s+new\.completed_at := now\(\);/i,
+  );
+  assert.doesNotMatch(sql, /new\.(?:accepted_at|completed_at) := coalesce/i);
+});
+
 test("care shift migration guards ordered assignee-only transitions", () => {
   assert.match(
     sql,

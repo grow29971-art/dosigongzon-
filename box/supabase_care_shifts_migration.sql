@@ -96,11 +96,11 @@ begin
   end if;
 
   if old.status = 'requested' and new.status = 'accepted' then
-    new.accepted_at := coalesce(new.accepted_at, now());
+    new.accepted_at := now();
     new.completed_at := null;
   elsif old.status = 'accepted' and new.status = 'completed' then
     new.accepted_at := old.accepted_at;
-    new.completed_at := coalesce(new.completed_at, now());
+    new.completed_at := now();
   else
     raise exception 'invalid care shift status transition';
   end if;
