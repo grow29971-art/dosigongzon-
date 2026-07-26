@@ -53,7 +53,10 @@ as $$
   );
 $$;
 
+-- Supabase default privileges grant execute to anon/authenticated separately
+-- from PUBLIC, so revoke each role explicitly (repo convention: shop_stock_rpc).
 revoke all on function public.is_accepted_circle_member(uuid, uuid) from public;
+revoke all on function public.is_accepted_circle_member(uuid, uuid) from anon;
 grant execute on function public.is_accepted_circle_member(uuid, uuid) to authenticated;
 
 create or replace function public.guard_care_shift_write()
@@ -140,3 +143,21 @@ grant select, insert, update on public.care_shifts to authenticated;
 
 comment on table public.care_shifts is
   'P3 circle care shift requests with requested -> accepted -> completed lifecycle';
+
+notify pgrst, 'reload schema';
+
+-- ─────────────────────────────────────────────
+-- 롤백 (원복 시 아래 실행 — 정책·트리거·함수·인덱스 제거만, 데이터 파괴 없음)
+-- drop policy if exists "care_shifts_assignee_transition" on public.care_shifts;
+-- drop policy if exists "care_shifts_request" on public.care_shifts;
+-- drop policy if exists "care_shifts_read_participants" on public.care_shifts;
+-- drop trigger if exists care_shifts_guard_write on public.care_shifts;
+-- drop function if exists public.guard_care_shift_write();
+-- drop function if exists public.is_accepted_circle_member(uuid, uuid);
+-- drop index if exists public.care_shifts_circle_start_idx;
+-- drop index if exists public.care_shifts_requester_status_idx;
+-- drop index if exists public.care_shifts_assignee_status_idx;
+-- 테이블 drop은 데이터 파괴 — §2-3 규칙상 금지. 접근만 차단하려면:
+-- revoke all on public.care_shifts from authenticated;
+-- notify pgrst, 'reload schema';
+-- ─────────────────────────────────────────────
