@@ -17,14 +17,35 @@ export const CARE_SHIFT_MAX_FUTURE_MS = 60 * 24 * 60 * 60 * 1000;
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const RFC3339_TIMESTAMP_PATTERN =
-  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/;
+  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{1,3})?(?:Z|[+-](\d{2}):(\d{2}))$/;
 
 export function isCareShiftUuid(value: string): boolean {
   return UUID_PATTERN.test(value);
 }
 
 export function isCareShiftTimestamp(value: string): boolean {
-  return RFC3339_TIMESTAMP_PATTERN.test(value) && !Number.isNaN(Date.parse(value));
+  const match = RFC3339_TIMESTAMP_PATTERN.exec(value);
+  if (!match || Number.isNaN(Date.parse(value))) return false;
+
+  const [, yearText, monthText, dayText, hourText, minuteText, secondText, offsetHourText, offsetMinuteText] =
+    match;
+  const year = Number(yearText);
+  const month = Number(monthText);
+  const day = Number(dayText);
+  const daysInMonth =
+    month >= 1 && month <= 12
+      ? new Date(Date.UTC(year, month, 0)).getUTCDate()
+      : 0;
+
+  return (
+    day >= 1 &&
+    day <= daysInMonth &&
+    Number(hourText) <= 23 &&
+    Number(minuteText) <= 59 &&
+    Number(secondText) <= 59 &&
+    (offsetHourText === undefined ||
+      (Number(offsetHourText) <= 23 && Number(offsetMinuteText) <= 59))
+  );
 }
 
 // JSON.parse는 null·배열·원시값도 유효한 본문으로 통과시키는데,

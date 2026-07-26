@@ -39,6 +39,13 @@ test("care shift timestamps require an explicit RFC 3339 timezone", () => {
   assert.equal(isCareShiftTimestamp("not-a-date"), false);
 });
 
+test("care shift timestamps reject normalized calendar and clock overflows", () => {
+  assert.equal(isCareShiftTimestamp("2026-02-30T10:00:00Z"), false);
+  assert.equal(isCareShiftTimestamp("2026-07-27T24:00:00Z"), false);
+  assert.equal(isCareShiftTimestamp("2026-07-27T10:60:00+09:00"), false);
+  assert.equal(isCareShiftTimestamp("2026-07-27T10:00:00+09:60"), false);
+});
+
 test("an assignee can accept a request and complete an accepted shift", () => {
   assert.equal(getNextCareShiftStatus("requested", "assignee"), "accepted");
   assert.equal(getNextCareShiftStatus("accepted", "assignee"), "completed");
