@@ -55,6 +55,14 @@ export function toDatetimeLocalValue(date: Date): string {
   return shifted.toISOString().slice(0, 16);
 }
 
+// 목록은 시작 시각 오름차순 + 50건 제한이라, 오래된 과거 교대가 창을
+// 채우면 새 요청이 목록 밖으로 밀려난다. 최근 1주 이전 시작분은 제외한다.
+export const CARE_SHIFT_LIST_LOOKBACK_MS = 7 * 24 * 60 * 60 * 1000;
+
+export function careShiftListWindowStart(now: Date): string {
+  return new Date(now.getTime() - CARE_SHIFT_LIST_LOOKBACK_MS).toISOString();
+}
+
 const CARE_SHIFT_ERROR_MESSAGES: Readonly<Record<string, string>> = {
   unauthorized: "로그인이 필요한 기능이에요.",
   rate_limited: "요청이 너무 잦아요. 잠시 후 다시 시도해 주세요.",

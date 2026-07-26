@@ -2,9 +2,11 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  CARE_SHIFT_LIST_LOOKBACK_MS,
   CARE_SHIFT_NOTE_MAX_LENGTH,
   CARE_SHIFT_STATUSES,
   canTransitionCareShift,
+  careShiftListWindowStart,
   describeCareShiftError,
   getNextCareShiftStatus,
   toDatetimeLocalValue,
@@ -99,6 +101,22 @@ test("datetime-local values round-trip through local Date parsing", () => {
   const value = toDatetimeLocalValue(date);
   assert.match(value, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/);
   assert.equal(new Date(value).getTime(), date.getTime());
+});
+
+test("care shift list window starts exactly one week before now", () => {
+  const now = new Date("2026-07-26T15:00:00.000Z");
+  assert.equal(CARE_SHIFT_LIST_LOOKBACK_MS, 7 * 24 * 60 * 60 * 1000);
+  assert.equal(
+    careShiftListWindowStart(now),
+    "2026-07-19T15:00:00.000Z",
+  );
+});
+
+test("care shift list window keeps recent shifts and drops stale ones", () => {
+  const now = new Date("2026-07-26T15:00:00.000Z");
+  const windowStart = careShiftListWindowStart(now);
+  assert.ok("2026-07-20T09:00:00.000Z" >= windowStart);
+  assert.ok("2026-07-01T09:00:00.000Z" < windowStart);
 });
 
 test("missing participants and malformed time have stable errors", () => {

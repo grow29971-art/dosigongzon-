@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 
-import { validateCareShiftRequest } from "@/lib/care-shift";
+import {
+  careShiftListWindowStart,
+  validateCareShiftRequest,
+} from "@/lib/care-shift";
 import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
 import { rateLimit } from "@/lib/rate-limit";
 import { createClient } from "@/lib/supabase/server";
@@ -34,6 +37,7 @@ export async function GET() {
     .from("care_shifts")
     .select("id, circle_id, requester_id, assignee_id, starts_at, note, status")
     .or(`requester_id.eq.${user.id},assignee_id.eq.${user.id}`)
+    .gte("starts_at", careShiftListWindowStart(new Date()))
     .order("starts_at", { ascending: true })
     .limit(50);
 
