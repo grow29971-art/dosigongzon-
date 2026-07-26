@@ -73,6 +73,7 @@ export default function CirclePage() {
   const [shiftSubmitting, setShiftSubmitting] = useState(false);
   const [careShifts, setCareShifts] = useState<CareShift[]>([]);
   const [careShiftsLoading, setCareShiftsLoading] = useState(false);
+  const [careShiftsLoadFailed, setCareShiftsLoadFailed] = useState(false);
   const [careShiftTransitioning, setCareShiftTransitioning] = useState<string | null>(null);
 
   const inviteUrl = user ? `https://dosigongzon.com/circle/join/${user.id}` : "";
@@ -137,12 +138,18 @@ export default function CirclePage() {
   const loadCareShifts = useCallback(async () => {
     if (!user || !isCoreJourneyEnabled("P3")) return;
     setCareShiftsLoading(true);
+    setCareShiftsLoadFailed(false);
     try {
       const response = await fetch("/api/care-shifts");
       const result = (await response.json()) as { shifts?: CareShift[] };
-      if (response.ok) setCareShifts(result.shifts ?? []);
+      if (response.ok) {
+        setCareShifts(result.shifts ?? []);
+      } else {
+        setCareShiftsLoadFailed(true);
+      }
     } catch (error) {
       console.error("[care-shifts] load failed", error);
+      setCareShiftsLoadFailed(true);
     } finally {
       setCareShiftsLoading(false);
     }
@@ -410,6 +417,19 @@ export default function CirclePage() {
               {careShiftsLoading ? (
                 <div className="flex justify-center py-5" aria-label="돌봄 교대 불러오는 중">
                   <Loader2 size={18} className="animate-spin text-primary" />
+                </div>
+              ) : careShiftsLoadFailed ? (
+                <div className="mt-2">
+                  <p className="text-[11px] text-text-light">
+                    돌봄 교대 목록을 불러오지 못했어요.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => void loadCareShifts()}
+                    className="mt-2 min-h-11 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-[12px] font-extrabold text-text-main"
+                  >
+                    다시 시도
+                  </button>
                 </div>
               ) : careShifts.length > 0 ? (
                 <ul className="mt-2 space-y-2">
