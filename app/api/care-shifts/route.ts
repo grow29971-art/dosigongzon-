@@ -4,6 +4,7 @@ import {
   careShiftListWindowStart,
   getRequiredCurrentStatus,
   isCareShiftBodyObject,
+  isCareShiftCheckViolationCode,
   isCareShiftSchemaNotReadyCode,
   isCareShiftUuid,
   validateCareShiftRequest,
@@ -136,6 +137,9 @@ export async function POST(request: Request) {
     }
     if (error.code === "23505") {
       return NextResponse.json({ error: "duplicate_request" }, { status: 409 });
+    }
+    if (isCareShiftCheckViolationCode(error.code)) {
+      return NextResponse.json({ error: "invalid_params" }, { status: 400 });
     }
     console.error("[care-shifts] create failed:", error.code);
     return NextResponse.json({ error: "create_failed" }, { status: 502 });

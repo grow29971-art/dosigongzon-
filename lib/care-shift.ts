@@ -27,6 +27,12 @@ export function isCareShiftSchemaNotReadyCode(code: string): boolean {
   return code === "42P01" || code === "PGRST205";
 }
 
+// API 검증을 통과한 요청도 DB 도달 시점에는 CHECK(미래 시작 시각 등)에
+// 걸릴 수 있다. check_violation은 서버 장애가 아니라 입력 문제다.
+export function isCareShiftCheckViolationCode(code: string): boolean {
+  return code === "23514";
+}
+
 export function isCareShiftTimestamp(value: string): boolean {
   const match = RFC3339_TIMESTAMP_PATTERN.exec(value);
   if (!match || Number.isNaN(Date.parse(value))) return false;

@@ -12,6 +12,7 @@ import {
   getNextCareShiftStatus,
   getRequiredCurrentStatus,
   isCareShiftBodyObject,
+  isCareShiftCheckViolationCode,
   isCareShiftSchemaNotReadyCode,
   isCareShiftTimestamp,
   isCareShiftUuid,
@@ -37,6 +38,13 @@ test("missing care shift schema and stale PostgREST cache are both not ready", (
   assert.equal(isCareShiftSchemaNotReadyCode("42P01"), true);
   assert.equal(isCareShiftSchemaNotReadyCode("PGRST205"), true);
   assert.equal(isCareShiftSchemaNotReadyCode("42501"), false);
+});
+
+test("DB check violations are input errors, not schema readiness gaps", () => {
+  assert.equal(isCareShiftCheckViolationCode("23514"), true);
+  assert.equal(isCareShiftCheckViolationCode("23505"), false);
+  assert.equal(isCareShiftCheckViolationCode("42P01"), false);
+  assert.equal(isCareShiftSchemaNotReadyCode("23514"), false);
 });
 
 test("care shift timestamps require an explicit RFC 3339 timezone", () => {
