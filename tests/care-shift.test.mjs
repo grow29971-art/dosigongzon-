@@ -11,6 +11,7 @@ import {
   describeCareShiftError,
   getNextCareShiftStatus,
   isCareShiftBodyObject,
+  isCareShiftTimestamp,
   isCareShiftUuid,
   toDatetimeLocalValue,
   validateCareShiftRequest,
@@ -28,6 +29,14 @@ test("care shift identifiers accept UUIDs and reject malformed database input", 
   assert.equal(isCareShiftUuid("4f01f5fd-1b52-4d63-9bbc-7f6055f7b7cc"), true);
   assert.equal(isCareShiftUuid("not-a-uuid"), false);
   assert.equal(isCareShiftUuid("4f01f5fd-1b52-4d63-9bbc"), false);
+});
+
+test("care shift timestamps require an explicit RFC 3339 timezone", () => {
+  assert.equal(isCareShiftTimestamp("2026-07-27T01:30:00Z"), true);
+  assert.equal(isCareShiftTimestamp("2026-07-27T10:30:00+09:00"), true);
+  assert.equal(isCareShiftTimestamp("2026-07-27T10:30"), false);
+  assert.equal(isCareShiftTimestamp("2026-07-27 10:30:00"), false);
+  assert.equal(isCareShiftTimestamp("not-a-date"), false);
 });
 
 test("an assignee can accept a request and complete an accepted shift", () => {

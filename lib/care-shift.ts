@@ -16,9 +16,15 @@ export const CARE_SHIFT_MAX_FUTURE_MS = 60 * 24 * 60 * 60 * 1000;
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const RFC3339_TIMESTAMP_PATTERN =
+  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/;
 
 export function isCareShiftUuid(value: string): boolean {
   return UUID_PATTERN.test(value);
+}
+
+export function isCareShiftTimestamp(value: string): boolean {
+  return RFC3339_TIMESTAMP_PATTERN.test(value) && !Number.isNaN(Date.parse(value));
 }
 
 // JSON.parse는 null·배열·원시값도 유효한 본문으로 통과시키는데,
@@ -110,6 +116,7 @@ export function validateCareShiftRequest(
   const errors: CareShiftRequestValidationError[] = [];
   const requesterId = input.requesterId.trim();
   const assigneeId = input.assigneeId.trim();
+  const hasValidTimestamp = isCareShiftTimestamp(input.startsAt);
   const startsAt = new Date(input.startsAt);
 
   if (!requesterId) errors.push("requester_required");
@@ -117,7 +124,7 @@ export function validateCareShiftRequest(
   if (requesterId && assigneeId && requesterId === assigneeId) {
     errors.push("self_assignment");
   }
-  if (Number.isNaN(startsAt.getTime())) {
+  if (!hasValidTimestamp) {
     errors.push("invalid_starts_at");
   } else if (startsAt.getTime() <= now.getTime()) {
     errors.push("starts_at_not_future");
