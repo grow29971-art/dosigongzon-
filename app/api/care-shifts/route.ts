@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import {
   careShiftListWindowStart,
+  isCareShiftUuid,
   validateCareShiftRequest,
 } from "@/lib/care-shift";
 import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
@@ -86,6 +87,9 @@ export async function POST(request: Request) {
   ) {
     return NextResponse.json({ error: "invalid_params" }, { status: 400 });
   }
+  if (!isCareShiftUuid(body.circle_id) || !isCareShiftUuid(body.assignee_id)) {
+    return NextResponse.json({ error: "invalid_params" }, { status: 400 });
+  }
 
   const note = body.note?.trim() || null;
   const validationErrors = validateCareShiftRequest({
@@ -157,6 +161,9 @@ export async function PATCH(request: Request) {
     typeof body.id !== "string" ||
     (body.status !== "accepted" && body.status !== "completed")
   ) {
+    return NextResponse.json({ error: "invalid_params" }, { status: 400 });
+  }
+  if (!isCareShiftUuid(body.id)) {
     return NextResponse.json({ error: "invalid_params" }, { status: 400 });
   }
 

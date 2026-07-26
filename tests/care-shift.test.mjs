@@ -9,6 +9,7 @@ import {
   careShiftListWindowStart,
   describeCareShiftError,
   getNextCareShiftStatus,
+  isCareShiftUuid,
   toDatetimeLocalValue,
   validateCareShiftRequest,
 } from "../lib/care-shift.ts";
@@ -19,6 +20,12 @@ test("care shift uses the requested, accepted, completed sequence", () => {
     "accepted",
     "completed",
   ]);
+});
+
+test("care shift identifiers accept UUIDs and reject malformed database input", () => {
+  assert.equal(isCareShiftUuid("4f01f5fd-1b52-4d63-9bbc-7f6055f7b7cc"), true);
+  assert.equal(isCareShiftUuid("not-a-uuid"), false);
+  assert.equal(isCareShiftUuid("4f01f5fd-1b52-4d63-9bbc"), false);
 });
 
 test("an assignee can accept a request and complete an accepted shift", () => {

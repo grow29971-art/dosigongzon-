@@ -10,6 +10,13 @@ export type CareShiftActor = "requester" | "assignee";
 
 export const CARE_SHIFT_NOTE_MAX_LENGTH = 500;
 
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+export function isCareShiftUuid(value: string): boolean {
+  return UUID_PATTERN.test(value);
+}
+
 export type CareShiftRequestInput = {
   requesterId: string;
   assigneeId: string;
