@@ -237,7 +237,9 @@ export function describeCareShiftError(
   fallback: string,
 ): string {
   if (typeof code !== "string") return fallback;
-  return CARE_SHIFT_ERROR_MESSAGES[code] ?? fallback;
+  return Object.prototype.hasOwnProperty.call(CARE_SHIFT_ERROR_MESSAGES, code)
+    ? CARE_SHIFT_ERROR_MESSAGES[code]
+    : fallback;
 }
 
 export function validateCareShiftRequest(

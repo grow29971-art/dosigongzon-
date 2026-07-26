@@ -376,6 +376,12 @@ test("unknown or missing error codes fall back to the given Korean message", () 
   assert.equal(describeCareShiftError(42, "기본 안내"), "기본 안내");
 });
 
+test("prototype keys as error codes fall back safely", () => {
+  assert.equal(describeCareShiftError("toString", "fallback"), "fallback");
+  assert.equal(describeCareShiftError("constructor", "fallback"), "fallback");
+  assert.equal(describeCareShiftError("hasOwnProperty", "fallback"), "fallback");
+});
+
 test("datetime-local min uses local wall-clock time, not UTC", () => {
   assert.equal(
     toDatetimeLocalValue(new Date(2026, 6, 27, 21, 30)),
