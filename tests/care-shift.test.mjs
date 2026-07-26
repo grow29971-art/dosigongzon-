@@ -18,6 +18,7 @@ import {
   isCareShiftBodyObject,
   isCareShiftBodyTooLarge,
   isCareShiftCheckViolationCode,
+  isCareShiftContentLengthTooLarge,
   isCareShiftSchemaNotReadyCode,
   isCareShiftTimestamp,
   isCareShiftTransitionViolationCode,
@@ -367,6 +368,20 @@ test("oversized request bodies are rejected before JSON parsing", () => {
     describeCareShiftError("payload_too_large", "기본 안내"),
     "입력한 내용이 너무 길어요. 메모를 줄여 주세요.",
   );
+});
+
+test("declared oversized request bodies are rejected before reading the stream", () => {
+  assert.equal(
+    isCareShiftContentLengthTooLarge(String(CARE_SHIFT_MAX_BODY_BYTES)),
+    false,
+  );
+  assert.equal(
+    isCareShiftContentLengthTooLarge(String(CARE_SHIFT_MAX_BODY_BYTES + 1)),
+    true,
+  );
+  assert.equal(isCareShiftContentLengthTooLarge(null), false);
+  assert.equal(isCareShiftContentLengthTooLarge("chunked"), false);
+  assert.equal(isCareShiftContentLengthTooLarge("-1"), false);
 });
 
 test("null, array, and primitive JSON bodies are rejected before field access", () => {

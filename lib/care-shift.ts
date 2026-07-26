@@ -89,6 +89,14 @@ export function isCareShiftTimestamp(value: string): boolean {
 // 파싱 전에 원문 길이로 거절한다.
 export const CARE_SHIFT_MAX_BODY_BYTES = 16 * 1024;
 
+export function isCareShiftContentLengthTooLarge(
+  contentLength: string | null,
+): boolean {
+  if (contentLength === null || !/^\d+$/.test(contentLength)) return false;
+  const bytes = Number(contentLength);
+  return Number.isFinite(bytes) && bytes > CARE_SHIFT_MAX_BODY_BYTES;
+}
+
 export function isCareShiftBodyTooLarge(rawBody: string): boolean {
   return new TextEncoder().encode(rawBody).byteLength > CARE_SHIFT_MAX_BODY_BYTES;
 }

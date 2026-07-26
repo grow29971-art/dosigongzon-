@@ -6,6 +6,7 @@ import {
   isCareShiftBodyObject,
   isCareShiftBodyTooLarge,
   isCareShiftCheckViolationCode,
+  isCareShiftContentLengthTooLarge,
   isCareShiftSchemaNotReadyCode,
   isCareShiftTransitionViolationCode,
   isCareShiftUuid,
@@ -79,6 +80,9 @@ export async function POST(request: Request) {
   }
   if (!rateLimit(`care-shift:create:${user.id}`, { max: 10, windowMs: 60_000 })) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
+  if (isCareShiftContentLengthTooLarge(request.headers.get("content-length"))) {
+    return NextResponse.json({ error: "payload_too_large" }, { status: 413 });
   }
 
   let rawBody: string;
@@ -173,6 +177,9 @@ export async function PATCH(request: Request) {
   }
   if (!rateLimit(`care-shift:transition:${user.id}`, { max: 20, windowMs: 60_000 })) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
+  if (isCareShiftContentLengthTooLarge(request.headers.get("content-length"))) {
+    return NextResponse.json({ error: "payload_too_large" }, { status: 413 });
   }
 
   let rawBody: string;
