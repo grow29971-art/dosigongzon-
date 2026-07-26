@@ -676,7 +676,7 @@ export default function HomeAuthed({
               </p>
             </div>
           )}
-          <MyCatsHero />
+          <MyCatsHero careInboxMode={SHOW_CARE_INBOX_HOME} />
         </section>
       )}
 

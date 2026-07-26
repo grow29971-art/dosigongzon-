@@ -32,7 +32,11 @@ const QUICK_CARE: { type: CareType; emoji: string; label: string }[] = [
   { type: "shelter", emoji: "🏠", label: "쉼터 관리" },
 ];
 
-export default function MyCatsHero() {
+interface MyCatsHeroProps {
+  careInboxMode?: boolean;
+}
+
+export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
   const router = useRouter();
   const [cats, setCats] = useState<CatRow[] | null>(null);
   const [moreOpen, setMoreOpen] = useState<string | null>(null); // 퀵 돌봄 오버레이 열린 고양이 id
@@ -67,7 +71,11 @@ export default function MyCatsHero() {
         doneMap.get(r.cat_id)!.add(r.care_type);
       }
       if (cancelled) return;
-      setCats(rows.map((c) => ({ ...c, doneTypes: Array.from(doneMap.get(c.id) ?? []), busy: false })));
+      setCats(rows.map((c) => ({
+        ...c,
+        doneTypes: Array.from(doneMap.get(c.id) ?? []),
+        busy: false,
+      })));
     })();
     return () => {
       cancelled = true;
@@ -94,6 +102,11 @@ export default function MyCatsHero() {
 
   if (!cats || cats.length === 0) return null;
   const doneCount = cats.filter((c) => c.doneTypes.includes("feed")).length;
+  const displayedCats = careInboxMode
+    ? [...cats].sort((a, b) =>
+        Number(a.doneTypes.includes("feed")) - Number(b.doneTypes.includes("feed")),
+      )
+    : cats;
 
   return (
     <div className="mb-5">
@@ -118,7 +131,7 @@ export default function MyCatsHero() {
         className="flex gap-3 overflow-x-auto no-scrollbar -mx-5 px-5 pb-1"
         style={{ scrollSnapType: "x mandatory" }}
       >
-        {cats.map((cat) => {
+        {displayedCats.map((cat) => {
           const photo = cat.photo_url
             ? sanitizeImageUrl(thumbnailUrl(cat.photo_url, 480) ?? cat.photo_url, "")
             : "";
