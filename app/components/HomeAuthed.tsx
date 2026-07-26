@@ -600,7 +600,7 @@ export default function HomeAuthed({
 
   return (
     <>
-    {suppressWelcomeModals === false && (
+    {suppressWelcomeModals === false && !SHOW_CARE_INBOX_HOME && (
     <PageIntroModal
       storageKey="dosigongzon_intro_home"
       badge="홈"
@@ -1785,7 +1785,7 @@ export default function HomeAuthed({
 
       {/* 앱 열 때마다(세션 1회) 안내 모달 — 오늘 이거 해보세요 + 기능 탐색.
           기능 웰컴 투어(FeatureTourGate가 레이아웃 레벨에서 렌더)가 아직 안 끝났으면 안 겹치게 억제 */}
-      {user && activity && !suppressAppOpenGuide && (
+      {user && activity && !suppressAppOpenGuide && !SHOW_CARE_INBOX_HOME && (
         <AppOpenGuideModal hasCat={activity.catCount > 0} hasRegion={myRegions.length > 0} />
       )}
 
