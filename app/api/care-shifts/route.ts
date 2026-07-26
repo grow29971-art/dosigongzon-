@@ -4,6 +4,7 @@ import {
   careShiftListWindowStart,
   getRequiredCurrentStatus,
   isCareShiftBodyObject,
+  isCareShiftBodyTooLarge,
   isCareShiftCheckViolationCode,
   isCareShiftSchemaNotReadyCode,
   isCareShiftTransitionViolationCode,
@@ -80,9 +81,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 
+  let rawBody: string;
+  try {
+    rawBody = await request.text();
+  } catch {
+    return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+  }
+  if (isCareShiftBodyTooLarge(rawBody)) {
+    return NextResponse.json({ error: "payload_too_large" }, { status: 413 });
+  }
   let parsed: unknown;
   try {
-    parsed = await request.json();
+    parsed = JSON.parse(rawBody);
   } catch {
     return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   }
@@ -165,9 +175,18 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 
+  let rawBody: string;
+  try {
+    rawBody = await request.text();
+  } catch {
+    return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+  }
+  if (isCareShiftBodyTooLarge(rawBody)) {
+    return NextResponse.json({ error: "payload_too_large" }, { status: 413 });
+  }
   let parsed: unknown;
   try {
-    parsed = await request.json();
+    parsed = JSON.parse(rawBody);
   } catch {
     return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   }

@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   CARE_SHIFT_LIST_LOOKBACK_MS,
+  CARE_SHIFT_MAX_BODY_CHARS,
   CARE_SHIFT_MAX_FUTURE_MS,
   CARE_SHIFT_NOTE_MAX_LENGTH,
   CARE_SHIFT_STATUSES,
@@ -13,6 +14,7 @@ import {
   getRequiredCurrentStatus,
   hasCareShiftNoteControlChars,
   isCareShiftBodyObject,
+  isCareShiftBodyTooLarge,
   isCareShiftCheckViolationCode,
   isCareShiftSchemaNotReadyCode,
   isCareShiftTimestamp,
@@ -275,6 +277,17 @@ test("care shift list window keeps recent shifts and drops stale ones", () => {
 test("only plain object request bodies are accepted", () => {
   assert.equal(isCareShiftBodyObject({}), true);
   assert.equal(isCareShiftBodyObject({ circle_id: "abc" }), true);
+});
+
+test("oversized request bodies are rejected before JSON parsing", () => {
+  assert.equal(CARE_SHIFT_MAX_BODY_CHARS, 16 * 1024);
+  assert.equal(isCareShiftBodyTooLarge("가".repeat(CARE_SHIFT_MAX_BODY_CHARS)), false);
+  assert.equal(isCareShiftBodyTooLarge("가".repeat(CARE_SHIFT_MAX_BODY_CHARS + 1)), true);
+  assert.equal(isCareShiftBodyTooLarge(""), false);
+  assert.equal(
+    describeCareShiftError("payload_too_large", "기본 안내"),
+    "입력한 내용이 너무 길어요. 메모를 줄여 주세요.",
+  );
 });
 
 test("null, array, and primitive JSON bodies are rejected before field access", () => {

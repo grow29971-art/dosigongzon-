@@ -80,6 +80,15 @@ export function isCareShiftTimestamp(value: string): boolean {
   );
 }
 
+// 메모 500자 계약상 정상 요청 본문은 수 KB를 넘지 않는다. 검증 전에
+// 수 MB JSON 본문을 통째로 파싱하며 CPU·메모리를 쓰지 않도록,
+// 파싱 전에 원문 길이로 거절한다.
+export const CARE_SHIFT_MAX_BODY_CHARS = 16 * 1024;
+
+export function isCareShiftBodyTooLarge(rawBody: string): boolean {
+  return rawBody.length > CARE_SHIFT_MAX_BODY_CHARS;
+}
+
 // JSON.parse는 null·배열·원시값도 유효한 본문으로 통과시키는데,
 // null 본문은 필드 접근에서 예외를 던져 500이 된다. 객체 본문만 허용한다.
 export function isCareShiftBodyObject(
@@ -165,6 +174,7 @@ const CARE_SHIFT_ERROR_MESSAGES: Readonly<Record<string, string>> = {
   duplicate_request: "같은 시각에 이미 요청한 돌봄 교대가 있어요.",
   invalid_params: "입력한 내용을 다시 확인해 주세요.",
   invalid_body: "입력한 내용을 다시 확인해 주세요.",
+  payload_too_large: "입력한 내용이 너무 길어요. 메모를 줄여 주세요.",
 };
 
 export function describeCareShiftError(
