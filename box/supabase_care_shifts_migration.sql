@@ -16,6 +16,9 @@ create table if not exists public.care_shifts (
   updated_at timestamptz not null default now(),
   constraint care_shifts_distinct_participants check (requester_id <> assignee_id),
   constraint care_shifts_future_start check (starts_at > created_at),
+  constraint care_shifts_future_horizon check (
+    starts_at <= created_at + interval '60 days'
+  ),
   constraint care_shifts_note_length check (char_length(coalesce(note, '')) <= 500),
   constraint care_shifts_status check (status in ('requested', 'accepted', 'completed')),
   constraint care_shifts_status_timestamps check (
@@ -138,6 +141,7 @@ create policy "care_shifts_request"
     requester_id = auth.uid()
     and requester_id <> assignee_id
     and starts_at > now()
+    and starts_at <= now() + interval '60 days'
     and (
       public.is_circle_owner_of(circle_id)
       or public.is_member_of_circle(circle_id)

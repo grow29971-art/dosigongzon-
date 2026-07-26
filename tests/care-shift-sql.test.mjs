@@ -21,6 +21,17 @@ test("care shift migration blocks duplicate open requests for the same slot", ()
   );
 });
 
+test("care shift migration enforces the same 60-day future horizon as the API", () => {
+  assert.match(
+    sql,
+    /constraint\s+care_shifts_future_horizon\s+check\s*\(\s*starts_at\s*<=\s*created_at\s*\+\s*interval\s+'60 days'\s*\)/i,
+  );
+  assert.match(
+    sql,
+    /starts_at\s*<=\s*now\(\)\s*\+\s*interval\s+'60 days'/i,
+  );
+});
+
 test("care shift migration keeps participant-only access and no delete grant", () => {
   assert.match(
     sql,
