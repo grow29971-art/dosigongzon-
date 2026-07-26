@@ -10,6 +10,7 @@ import {
   careShiftListWindowStart,
   describeCareShiftError,
   getNextCareShiftStatus,
+  isCareShiftBodyObject,
   isCareShiftUuid,
   toDatetimeLocalValue,
   validateCareShiftRequest,
@@ -162,6 +163,19 @@ test("care shift list window keeps recent shifts and drops stale ones", () => {
   const windowStart = careShiftListWindowStart(now);
   assert.ok("2026-07-20T09:00:00.000Z" >= windowStart);
   assert.ok("2026-07-01T09:00:00.000Z" < windowStart);
+});
+
+test("only plain object request bodies are accepted", () => {
+  assert.equal(isCareShiftBodyObject({}), true);
+  assert.equal(isCareShiftBodyObject({ circle_id: "abc" }), true);
+});
+
+test("null, array, and primitive JSON bodies are rejected before field access", () => {
+  assert.equal(isCareShiftBodyObject(null), false);
+  assert.equal(isCareShiftBodyObject([]), false);
+  assert.equal(isCareShiftBodyObject("care"), false);
+  assert.equal(isCareShiftBodyObject(42), false);
+  assert.equal(isCareShiftBodyObject(undefined), false);
 });
 
 test("missing participants and malformed time have stable errors", () => {

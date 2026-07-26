@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import {
   careShiftListWindowStart,
+  isCareShiftBodyObject,
   isCareShiftUuid,
   validateCareShiftRequest,
 } from "@/lib/care-shift";
@@ -75,12 +76,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 
-  let body: CreateCareShiftBody;
+  let parsed: unknown;
   try {
-    body = await request.json();
+    parsed = await request.json();
   } catch {
     return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   }
+  if (!isCareShiftBodyObject(parsed)) {
+    return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+  }
+  const body: CreateCareShiftBody = parsed;
 
   if (
     typeof body.circle_id !== "string" ||
@@ -153,12 +158,16 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 
-  let body: TransitionCareShiftBody;
+  let parsed: unknown;
   try {
-    body = await request.json();
+    parsed = await request.json();
   } catch {
     return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   }
+  if (!isCareShiftBodyObject(parsed)) {
+    return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+  }
+  const body: TransitionCareShiftBody = parsed;
 
   if (
     typeof body.id !== "string" ||

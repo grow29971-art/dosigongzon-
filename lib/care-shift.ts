@@ -21,6 +21,14 @@ export function isCareShiftUuid(value: string): boolean {
   return UUID_PATTERN.test(value);
 }
 
+// JSON.parse는 null·배열·원시값도 유효한 본문으로 통과시키는데,
+// null 본문은 필드 접근에서 예외를 던져 500이 된다. 객체 본문만 허용한다.
+export function isCareShiftBodyObject(
+  value: unknown,
+): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
 export type CareShiftRequestInput = {
   requesterId: string;
   assigneeId: string;
