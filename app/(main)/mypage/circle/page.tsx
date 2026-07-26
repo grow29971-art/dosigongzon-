@@ -72,6 +72,7 @@ export default function CirclePage() {
   const [shiftSubmitting, setShiftSubmitting] = useState(false);
   const [careShifts, setCareShifts] = useState<CareShift[]>([]);
   const [careShiftsLoading, setCareShiftsLoading] = useState(false);
+  const [careShiftTransitioning, setCareShiftTransitioning] = useState<string | null>(null);
 
   const inviteUrl = user ? `https://dosigongzon.com/circle/join/${user.id}` : "";
 
@@ -236,6 +237,28 @@ export default function CirclePage() {
       alert(error instanceof Error ? error.message : "교대 요청을 만들지 못했어요.");
     } finally {
       setShiftSubmitting(false);
+    }
+  };
+
+  const handleCareShiftTransition = async (
+    shift: CareShift,
+    status: "accepted" | "completed",
+  ) => {
+    if (careShiftTransitioning) return;
+    setCareShiftTransitioning(shift.id);
+    try {
+      const response = await fetch("/api/care-shifts", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: shift.id, status }),
+      });
+      const result = (await response.json()) as { error?: string };
+      if (!response.ok) throw new Error(result.error ?? "교대 상태를 바꾸지 못했어요.");
+      await loadCareShifts();
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "교대 상태를 바꾸지 못했어요.");
+    } finally {
+      setCareShiftTransitioning(null);
     }
   };
 
@@ -410,6 +433,25 @@ export default function CirclePage() {
                         </time>
                         {shift.note && (
                           <p className="mt-1 line-clamp-2 text-[11px] text-text-sub">{shift.note}</p>
+                        )}
+                        {shift.assignee_id === user.id && shift.status !== "completed" && (
+                          <button
+                            type="button"
+                            disabled={careShiftTransitioning !== null}
+                            onClick={() =>
+                              handleCareShiftTransition(
+                                shift,
+                                shift.status === "requested" ? "accepted" : "completed",
+                              )
+                            }
+                            className="mt-2 min-h-11 w-full rounded-xl bg-primary px-3 py-2 text-[12px] font-extrabold text-white disabled:opacity-40"
+                          >
+                            {careShiftTransitioning === shift.id
+                              ? "처리 중..."
+                              : shift.status === "requested"
+                                ? "돌봄 수락"
+                                : "돌봄 완료"}
+                          </button>
                         )}
                       </li>
                     );
