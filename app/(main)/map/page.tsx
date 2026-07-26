@@ -92,6 +92,7 @@ const CatCard = dynamic(() => import("@/app/components/CatCard"), { ssr: false }
 import MapIntroModal from "@/app/components/MapIntroModal";
 import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, toggleCatLike, petCat, listMyLikedCatIds, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, VISIBILITY_MAP, type CatGender, type CatHealthStatus, type AdoptionStatus, type CatVisibility } from "@/lib/cats-repo";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
+import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
 import {
   listMyActivityRegions,
   type ActivityRegion,
@@ -215,6 +216,13 @@ export default function MapPage() {
     return () => clearTimeout(id);
   }, [searchQ]);
   const [showFilterPanel, setShowFilterPanel] = useState(false);
+
+  // ── P2 지도·발견 (핵심 여정 개편) — 첫 화면은 기본 탐색(지역·검색·마커·등록)만 남기고
+  // 레이어 칩·활동 지역 탭·경보 카드·채팅 FAB은 "상세 도구" 2차 영역으로 접는다.
+  // flag off / kill switch면 detailToolsVisible이 항상 true → 기존 UI 완전 유지.
+  const SHOW_MAP_DISCOVERY = isCoreJourneyEnabled("P2");
+  const [detailToolsOpen, setDetailToolsOpen] = useState(false);
+  const detailToolsVisible = !SHOW_MAP_DISCOVERY || detailToolsOpen;
   type CatFilter = "all" | "tnr_needed" | "neutered" | "health_concern" | "alert";
   const [catFilter, setCatFilter] = useState<CatFilter>("all");
 
@@ -1882,7 +1890,26 @@ export default function MapPage() {
             )}
           </div>
 
+          {/* P2 상세 도구 토글 — flag on일 때만 노출. 레이어 칩·지역 탭·경보 카드·채팅 FAB을 2차로 */}
+          {SHOW_MAP_DISCOVERY && (
+            <button
+              type="button"
+              onClick={() => setDetailToolsOpen((v) => !v)}
+              className="px-3 py-2 rounded-xl text-[11px] font-bold active:scale-95 transition-all shrink-0 flex items-center gap-1"
+              style={{
+                backgroundColor: detailToolsOpen ? "#AD5E3B" : "rgba(255,255,255,0.85)",
+                color: detailToolsOpen ? "#fff" : "#A38E7A",
+                boxShadow: detailToolsOpen ? "0 2px 8px #AD5E3B40" : "0 1px 4px rgba(0,0,0,0.06)",
+              }}
+              aria-expanded={detailToolsOpen}
+            >
+              <SlidersHorizontal size={12} />
+              {detailToolsOpen ? "간단히" : "상세 도구"}
+            </button>
+          )}
+
           {/* 필터 칩 */}
+          {detailToolsVisible && (
           <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
             {[
               { key: "cats", label: "고양이", active: showCats, toggle: () => setShowCats(!showCats), color: "#AD5E3B" },
@@ -1904,6 +1931,7 @@ export default function MapPage() {
               </button>
             ))}
           </div>
+          )}
         </div>
 
         {/* 고양이 검색 + 속성 필터 */}
@@ -2004,8 +2032,8 @@ export default function MapPage() {
           </div>
         )}
 
-        {/* 활동 지역 탭 (당근마켓 스타일) */}
-        {isLoggedIn && (
+        {/* 활동 지역 탭 (당근마켓 스타일) — P2 flag on이면 상세 도구를 연 경우에만 */}
+        {isLoggedIn && detailToolsVisible && (
           <div className="flex gap-1.5 mt-2 pointer-events-auto overflow-x-auto scrollbar-hide">
             {activityRegions.length > 0 ? (
               <>
@@ -2101,8 +2129,8 @@ export default function MapPage() {
           </div>
         )}
 
-        {/* 학대 경보 & 시민 참여 카드 — 현재 보이는 구 기준 */}
-        {(() => {
+        {/* 학대 경보 & 시민 참여 카드 — 현재 보이는 구 기준. P2 flag on이면 상세 도구 2차 영역 */}
+        {detailToolsVisible && (() => {
           // 현재 지도 화면에 보이는 경보 고양이만 필터
           const map = mapInstanceRef.current;
           const bounds = map?.getBounds?.();
@@ -2257,8 +2285,9 @@ export default function MapPage() {
         </div>
       )}
 
-      {/* 채팅 FAB — 전체 채팅만 활성. 동네 채팅은 가입자 늘면 재활성화 예정. */}
-      {!selectedCat && !selectedHospital && !chatOpen && !selectedDong && (
+      {/* 채팅 FAB — 전체 채팅만 활성. 동네 채팅은 가입자 늘면 재활성화 예정.
+          P2 flag on이면 상세 도구를 연 경우에만 (기능 자체는 유지, 2차 영역). */}
+      {!selectedCat && !selectedHospital && !chatOpen && !selectedDong && detailToolsVisible && (
         <div className="absolute bottom-6 left-4 z-30 flex flex-col items-start gap-1.5">
           {/* 전체 채팅 — 모든 지역이 함께 쓰는 방 */}
           <button
