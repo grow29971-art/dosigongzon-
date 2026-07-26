@@ -380,6 +380,7 @@ test("declared oversized request bodies are rejected before reading the stream",
     isCareShiftContentLengthTooLarge(String(CARE_SHIFT_MAX_BODY_BYTES + 1)),
     true,
   );
+  assert.equal(isCareShiftContentLengthTooLarge("9".repeat(400)), true);
   assert.equal(isCareShiftContentLengthTooLarge(null), false);
   assert.equal(isCareShiftContentLengthTooLarge("chunked"), false);
   assert.equal(isCareShiftContentLengthTooLarge("-1"), false);

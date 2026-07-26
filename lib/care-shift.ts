@@ -94,7 +94,7 @@ export function isCareShiftContentLengthTooLarge(
 ): boolean {
   if (contentLength === null || !/^\d+$/.test(contentLength)) return false;
   const bytes = Number(contentLength);
-  return Number.isFinite(bytes) && bytes > CARE_SHIFT_MAX_BODY_BYTES;
+  return !Number.isSafeInteger(bytes) || bytes > CARE_SHIFT_MAX_BODY_BYTES;
 }
 
 export function isCareShiftJsonContentType(contentType: string | null): boolean {
