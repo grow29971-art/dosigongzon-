@@ -66,6 +66,11 @@ as $$
     where cm.circle_id = p_circle_id
       and cm.member_id = p_user_id
       and cm.status = 'accepted'
+  ) or exists (
+    select 1
+    from public.caretaker_circles cc
+    where cc.id = p_circle_id
+      and cc.owner_id = p_user_id
   );
 $$;
 

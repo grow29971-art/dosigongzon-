@@ -57,6 +57,13 @@ test("care shift migration keeps participant-only access and no delete grant", (
   assert.doesNotMatch(sql, /grant[^;]*\bdelete\b[^;]*on public\.care_shifts/i);
 });
 
+test("care shift requests may assign either an accepted member or the circle owner", () => {
+  assert.match(
+    sql,
+    /from public\.circle_members cm[\s\S]*cm\.status = 'accepted'[\s\S]*or exists\s*\(\s*select 1\s+from public\.caretaker_circles cc\s+where cc\.id = p_circle_id\s+and cc\.owner_id = p_user_id/i,
+  );
+});
+
 test("care shift transition timestamps are always assigned by the database", () => {
   assert.match(
     sql,
