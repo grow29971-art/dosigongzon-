@@ -93,6 +93,7 @@ import {
   type ActivityRegion,
 } from "@/lib/activity-regions-repo";
 import { sanitizeImageUrl, sanitizeHttpUrl } from "@/lib/url-validate";
+import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
 
 import { CAT_FACTS } from "@/lib/cat-facts";
 
@@ -595,6 +596,7 @@ export default function HomeAuthed({
   const SHOW_SOCIAL_PROOF = true;         // 사회적 증명 스트립 — 동네 활발함 신호(데이터 없으면 자동 숨김). (2026-07-16 회의)
   const SHOW_WEATHER_SHOP_BRIDGE = true;  // 날씨→쇼핑 카테고리 다리 — 2026-07-21 쇼핑 동선 회의로 ON (한파/폭염/비 조건부 노출)
   const SHOW_SHOP_PREVIEW = true;         // 홈 쇼핑 프리뷰 스트립(찜) — 2026-07-21 쇼핑 동선 회의. 케어 지표 하락 시 이 플래그로 롤백
+  const SHOW_CARE_INBOX_HOME = isCoreJourneyEnabled("P1");
 
   return (
     <>
@@ -656,9 +658,26 @@ export default function HomeAuthed({
 
       {/* ══════ 내 아이들 — 실제 밥 기록 1탭 (2026-07-22 재배치: 행동을 가상 케어보다 위로) ══════ */}
       {user && (
-        <div id="my-cats" style={{ scrollMarginTop: 12 }}>
+        <section
+          id="my-cats"
+          aria-labelledby={SHOW_CARE_INBOX_HOME ? "care-inbox-title" : undefined}
+          style={{ scrollMarginTop: 12 }}
+        >
+          {SHOW_CARE_INBOX_HOME && (
+            <div className="mb-3 px-1">
+              <p className="text-[10px] font-extrabold tracking-[0.16em] text-primary">
+                TODAY&apos;S CARE
+              </p>
+              <h2 id="care-inbox-title" className="mt-1 text-[20px] font-extrabold tracking-tight text-text-main">
+                오늘의 돌봄
+              </h2>
+              <p className="mt-1 text-[12px] leading-relaxed text-text-sub">
+                아직 챙기지 못한 아이부터 확인하고 기록해 주세요.
+              </p>
+            </div>
+          )}
           <MyCatsHero />
-        </div>
+        </section>
       )}
 
       {/* ══════ 다마고치 케어 히어로 — 대표묘와의 가상 교감 (2026-07-22부터 컴팩트 접힘 기본) ══════ */}
