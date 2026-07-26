@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import {
   careShiftListWindowStart,
+  getRequiredCurrentStatus,
   isCareShiftBodyObject,
   isCareShiftUuid,
   validateCareShiftRequest,
@@ -179,7 +180,10 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "invalid_params" }, { status: 400 });
   }
 
-  const expectedStatus = body.status === "accepted" ? "requested" : "accepted";
+  const expectedStatus = getRequiredCurrentStatus(body.status, "assignee");
+  if (!expectedStatus) {
+    return NextResponse.json({ error: "invalid_params" }, { status: 400 });
+  }
   const { data, error } = await supabase
     .from("care_shifts")
     .update({ status: body.status })

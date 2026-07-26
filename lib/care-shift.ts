@@ -98,6 +98,18 @@ export function canTransitionCareShift(
   return getNextCareShiftStatus(current, actor) === next;
 }
 
+// 목표 상태에 도달하기 위한 유일한 현재 상태를 전이 계약에서 역산한다.
+// API가 인라인 매핑을 재작성하면 계약 변경 시 어긋날 수 있어 이 함수만 쓴다.
+export function getRequiredCurrentStatus(
+  next: CareShiftStatus,
+  actor: CareShiftActor,
+): CareShiftStatus | null {
+  const matches = CARE_SHIFT_STATUSES.filter(
+    (current) => ALLOWED_TRANSITIONS[current][actor] === next,
+  );
+  return matches.length === 1 ? matches[0] : null;
+}
+
 // datetime-local 입력은 타임존 없는 로컬 벽시계 문자열을 기대한다.
 // toISOString()은 UTC라 KST에서는 9시간 과거가 되어 그대로 쓰면 안 된다.
 export function toDatetimeLocalValue(date: Date): string {

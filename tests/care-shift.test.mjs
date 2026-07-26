@@ -10,6 +10,7 @@ import {
   careShiftListWindowStart,
   describeCareShiftError,
   getNextCareShiftStatus,
+  getRequiredCurrentStatus,
   isCareShiftBodyObject,
   isCareShiftTimestamp,
   isCareShiftUuid,
@@ -68,6 +69,26 @@ test("requesters, skips, and completed shift rewrites are rejected", () => {
     canTransitionCareShift("completed", "accepted", "assignee"),
     false,
   );
+});
+
+test("required current status is derived from the transition contract", () => {
+  assert.equal(getRequiredCurrentStatus("accepted", "assignee"), "requested");
+  assert.equal(getRequiredCurrentStatus("completed", "assignee"), "accepted");
+  assert.equal(getRequiredCurrentStatus("requested", "assignee"), null);
+  for (const status of CARE_SHIFT_STATUSES) {
+    assert.equal(getRequiredCurrentStatus(status, "requester"), null);
+  }
+});
+
+test("required current status stays consistent with forward transitions", () => {
+  for (const actor of ["requester", "assignee"]) {
+    for (const current of CARE_SHIFT_STATUSES) {
+      const next = getNextCareShiftStatus(current, actor);
+      if (next !== null) {
+        assert.equal(getRequiredCurrentStatus(next, actor), current);
+      }
+    }
+  }
 });
 
 test("a valid future shift request is accepted", () => {
