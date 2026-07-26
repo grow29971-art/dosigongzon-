@@ -53,6 +53,21 @@ test("care shift transition conflict refreshes the stale list", () => {
   );
 });
 
+test("care shift list ignores stale overlapping responses", () => {
+  assert.match(
+    careShiftPageSource,
+    /const requestId = \+\+careShiftsRequestId\.current/,
+  );
+  assert.match(
+    careShiftPageSource,
+    /response\.ok && requestId === careShiftsRequestId\.current/,
+  );
+  assert.match(
+    careShiftPageSource,
+    /requestId === careShiftsRequestId\.current[\s\S]*?setCareShiftsLoading\(false\)/,
+  );
+});
+
 test("care shift identifiers accept UUIDs and reject malformed database input", () => {
   assert.equal(isCareShiftUuid("4f01f5fd-1b52-4d63-9bbc-7f6055f7b7cc"), true);
   assert.equal(isCareShiftUuid("not-a-uuid"), false);

@@ -3,7 +3,7 @@
 // Private Circle 관리 페이지 — 내가 승인한 이웃에게만 핀 노출.
 // 학대 우려 케어테이커가 안전하게 위치를 공유할 수 있는 신뢰 그룹.
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -80,6 +80,7 @@ export default function CirclePage() {
   const [careShiftsLoading, setCareShiftsLoading] = useState(false);
   const [careShiftsLoadError, setCareShiftsLoadError] = useState<string | null>(null);
   const [careShiftTransitioning, setCareShiftTransitioning] = useState<string | null>(null);
+  const careShiftsRequestId = useRef(0);
 
   const inviteUrl = user ? `https://dosigongzon.com/circle/join/${user.id}` : "";
 
@@ -142,6 +143,7 @@ export default function CirclePage() {
 
   const loadCareShifts = useCallback(async () => {
     if (!user || !isCoreJourneyEnabled("P3")) return;
+    const requestId = ++careShiftsRequestId.current;
     setCareShiftsLoading(true);
     setCareShiftsLoadError(null);
     try {
@@ -150,18 +152,22 @@ export default function CirclePage() {
         shifts?: CareShift[];
         error?: unknown;
       };
-      if (response.ok) {
+      if (response.ok && requestId === careShiftsRequestId.current) {
         setCareShifts(result.shifts ?? []);
-      } else {
+      } else if (!response.ok && requestId === careShiftsRequestId.current) {
         setCareShiftsLoadError(
           describeCareShiftError(result.error, "돌봄 교대 목록을 불러오지 못했어요."),
         );
       }
     } catch (error) {
       console.error("[care-shifts] load failed", error);
-      setCareShiftsLoadError("돌봄 교대 목록을 불러오지 못했어요.");
+      if (requestId === careShiftsRequestId.current) {
+        setCareShiftsLoadError("돌봄 교대 목록을 불러오지 못했어요.");
+      }
     } finally {
-      setCareShiftsLoading(false);
+      if (requestId === careShiftsRequestId.current) {
+        setCareShiftsLoading(false);
+      }
     }
   }, [user]);
 
