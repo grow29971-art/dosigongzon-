@@ -64,7 +64,10 @@ export async function GET() {
     return NextResponse.json({ error: "list_failed" }, { status: 502 });
   }
 
-  return NextResponse.json({ shifts: data ?? [] });
+  return NextResponse.json(
+    { shifts: data ?? [] },
+    { headers: { "Cache-Control": "private, no-store" } },
+  );
 }
 
 export async function POST(request: Request) {

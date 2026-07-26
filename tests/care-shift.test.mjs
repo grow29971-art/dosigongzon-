@@ -1,5 +1,11 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
+
+const careShiftRouteSource = readFileSync(
+  new URL("../app/api/care-shifts/route.ts", import.meta.url),
+  "utf8",
+);
 
 import {
   CARE_SHIFT_LIST_LOOKBACK_MS,
@@ -414,5 +420,12 @@ test("missing participants and malformed time have stable errors", () => {
       startsAt: "not-a-date",
     }),
     ["requester_required", "assignee_required", "invalid_starts_at"],
+  );
+});
+
+test("care shift list response is not cached", () => {
+  assert.match(
+    careShiftRouteSource,
+    /"Cache-Control": "private, no-store"/,
   );
 });
