@@ -29,9 +29,16 @@ type TransitionCareShiftBody = {
   status?: unknown;
 };
 
+const PRIVATE_NO_STORE_HEADERS = {
+  "Cache-Control": "private, no-store",
+} as const;
+
 export async function GET() {
   if (!isCoreJourneyEnabled("P3")) {
-    return NextResponse.json({ error: "not_found" }, { status: 404 });
+    return NextResponse.json(
+      { error: "not_found" },
+      { status: 404, headers: PRIVATE_NO_STORE_HEADERS },
+    );
   }
 
   const supabase = await createClient();
@@ -39,10 +46,16 @@ export async function GET() {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    return NextResponse.json(
+      { error: "unauthorized" },
+      { status: 401, headers: PRIVATE_NO_STORE_HEADERS },
+    );
   }
   if (!rateLimit(`care-shift:list:${user.id}`, { max: 60, windowMs: 60_000 })) {
-    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: PRIVATE_NO_STORE_HEADERS },
+    );
   }
 
   const { data, error } = await supabase
@@ -55,18 +68,27 @@ export async function GET() {
 
   if (error) {
     if (isCareShiftSchemaNotReadyCode(error.code)) {
-      return NextResponse.json({ error: "not_ready" }, { status: 503 });
+      return NextResponse.json(
+        { error: "not_ready" },
+        { status: 503, headers: PRIVATE_NO_STORE_HEADERS },
+      );
     }
     if (error.code === "42501") {
-      return NextResponse.json({ error: "forbidden" }, { status: 403 });
+      return NextResponse.json(
+        { error: "forbidden" },
+        { status: 403, headers: PRIVATE_NO_STORE_HEADERS },
+      );
     }
     console.error("[care-shifts] list failed:", error.code);
-    return NextResponse.json({ error: "list_failed" }, { status: 502 });
+    return NextResponse.json(
+      { error: "list_failed" },
+      { status: 502, headers: PRIVATE_NO_STORE_HEADERS },
+    );
   }
 
   return NextResponse.json(
     { shifts: data ?? [] },
-    { headers: { "Cache-Control": "private, no-store" } },
+    { headers: PRIVATE_NO_STORE_HEADERS },
   );
 }
 
