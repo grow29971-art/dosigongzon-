@@ -46,6 +46,13 @@ test("care shift timestamps reject normalized calendar and clock overflows", () 
   assert.equal(isCareShiftTimestamp("2026-07-27T10:00:00+09:60"), false);
 });
 
+test("care shift timestamps reject RFC 3339 offsets beyond 14 hours", () => {
+  assert.equal(isCareShiftTimestamp("2026-07-27T10:00:00+14:00"), true);
+  assert.equal(isCareShiftTimestamp("2026-07-27T10:00:00-14:00"), true);
+  assert.equal(isCareShiftTimestamp("2026-07-27T10:00:00+14:01"), false);
+  assert.equal(isCareShiftTimestamp("2026-07-27T10:00:00-15:00"), false);
+});
+
 test("an assignee can accept a request and complete an accepted shift", () => {
   assert.equal(getNextCareShiftStatus("requested", "assignee"), "accepted");
   assert.equal(getNextCareShiftStatus("accepted", "assignee"), "completed");

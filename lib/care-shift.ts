@@ -32,6 +32,8 @@ export function isCareShiftTimestamp(value: string): boolean {
   const year = Number(yearText);
   const month = Number(monthText);
   const day = Number(dayText);
+  const offsetHour = Number(offsetHourText);
+  const offsetMinute = Number(offsetMinuteText);
   const daysInMonth =
     month >= 1 && month <= 12
       ? new Date(Date.UTC(year, month, 0)).getUTCDate()
@@ -44,7 +46,7 @@ export function isCareShiftTimestamp(value: string): boolean {
     Number(minuteText) <= 59 &&
     Number(secondText) <= 59 &&
     (offsetHourText === undefined ||
-      (Number(offsetHourText) <= 23 && Number(offsetMinuteText) <= 59))
+      (offsetHour < 14 || (offsetHour === 14 && offsetMinute === 0)))
   );
 }
 
