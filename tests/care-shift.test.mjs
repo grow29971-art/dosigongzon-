@@ -68,6 +68,17 @@ test("care shift list ignores stale overlapping responses", () => {
   );
 });
 
+test("care shift list invalidates in-flight responses when auth context changes", () => {
+  assert.match(
+    careShiftPageSource,
+    /if \(!user \|\| !isCoreJourneyEnabled\("P3"\)\) \{[\s\S]*?careShiftsRequestId\.current \+= 1;[\s\S]*?setCareShifts\(\[\]\)/,
+  );
+  assert.match(
+    careShiftPageSource,
+    /return \(\) => \{\s*careShiftsRequestId\.current \+= 1;\s*\}/,
+  );
+});
+
 test("care shift identifiers accept UUIDs and reject malformed database input", () => {
   assert.equal(isCareShiftUuid("4f01f5fd-1b52-4d63-9bbc-7f6055f7b7cc"), true);
   assert.equal(isCareShiftUuid("not-a-uuid"), false);

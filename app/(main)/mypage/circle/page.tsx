@@ -172,8 +172,19 @@ export default function CirclePage() {
   }, [user]);
 
   useEffect(() => {
+    if (!user || !isCoreJourneyEnabled("P3")) {
+      careShiftsRequestId.current += 1;
+      setCareShifts([]);
+      setCareShiftsLoadError(null);
+      setCareShiftsLoading(false);
+      return;
+    }
+
     void loadCareShifts();
-  }, [loadCareShifts]);
+    return () => {
+      careShiftsRequestId.current += 1;
+    };
+  }, [loadCareShifts, user]);
 
   const handleSearch = async () => {
     const q = searchQuery.trim();
