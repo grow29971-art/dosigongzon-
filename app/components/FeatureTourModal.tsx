@@ -21,6 +21,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
 
 interface TourStep {
   Icon: LucideIcon;
@@ -82,6 +83,30 @@ const STEPS: TourStep[] = [
   },
 ];
 
+const CORE_JOURNEY_STEPS: TourStep[] = [
+  {
+    Icon: MapPin,
+    color: "#5A8AC4",
+    eyebrow: "1 · 발견",
+    title: "우리 동네 아이를 찾아요",
+    body: "지도에서 가까운 아이와 최근 돌봄 소식을 먼저 확인해요.",
+  },
+  {
+    Icon: PawPrint,
+    color: "#E88D5A",
+    eyebrow: "2 · 돌봄",
+    title: "오늘 필요한 돌봄을 기록해요",
+    body: "밥, 물, 건강 상태를 남기면 다음 돌봄이 필요한 이웃에게 이어져요.",
+  },
+  {
+    Icon: Users,
+    color: "#6B8E6F",
+    eyebrow: "3 · 연결",
+    title: "혼자가 아닌 돌봄을 시작해요",
+    body: "활동 지역을 정하고 같은 동네 이웃과 안전하게 돌봄을 이어가요.",
+  },
+];
+
 export default function FeatureTourModal({
   hasRegion,
   onDone,
@@ -92,9 +117,10 @@ export default function FeatureTourModal({
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [closing, setClosing] = useState(false);
+  const steps = isCoreJourneyEnabled("P1") ? CORE_JOURNEY_STEPS : STEPS;
 
-  const isLast = step === STEPS.length - 1;
-  const current = STEPS[step];
+  const isLast = step === steps.length - 1;
+  const current = steps[step];
 
   const finish = async (destination: string) => {
     if (closing) return;
@@ -120,7 +146,7 @@ export default function FeatureTourModal({
       finish(hasRegion ? "/map" : "/mypage/activity-regions");
       return;
     }
-    setStep((s) => Math.min(s + 1, STEPS.length - 1));
+    setStep((s) => Math.min(s + 1, steps.length - 1));
   };
 
   const handleSkip = () => finish(hasRegion ? "/map" : "/mypage/activity-regions");
@@ -172,7 +198,7 @@ export default function FeatureTourModal({
         <div className="px-7 pb-7">
           {/* 진행 인디케이터 */}
           <div className="flex items-center justify-center gap-1.5 mb-5">
-            {STEPS.map((_, i) => (
+            {steps.map((_, i) => (
               <span
                 key={i}
                 className="transition-all duration-300"
