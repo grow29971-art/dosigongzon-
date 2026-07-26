@@ -192,9 +192,9 @@ export default function CirclePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          circleId: myCircleId,
-          assigneeId: shiftAssigneeId,
-          startsAt: new Date(shiftStartsAt).toISOString(),
+          circle_id: myCircleId,
+          assignee_id: shiftAssigneeId,
+          starts_at: new Date(shiftStartsAt).toISOString(),
           note: shiftNote.trim() || undefined,
         }),
       });
