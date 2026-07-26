@@ -498,6 +498,8 @@ export default function AddCatModal({
             </div>
             </div>
           )}
+          {(!showDiscoverySteps || discoveryStep === "identity") && (
+          <>
           {/* 사진 업로드 — 최대 5장 */}
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -606,8 +608,11 @@ export default function AddCatModal({
               className="w-full px-4 py-3 rounded-2xl bg-white/[0.07] text-[14px] text-white outline-none focus:bg-white/10 focus:ring-2 focus:ring-[#6366F1]/20 transition-all placeholder:text-white/30"
             />
           </div>
+          </>
+          )}
 
           {/* 동네 */}
+          {(!showDiscoverySteps || discoveryStep === "location") && (
           <div>
             <label className="text-[12px] font-bold text-white mb-2 block">
               동네 <span className="text-error">*</span>
@@ -644,7 +649,10 @@ export default function AddCatModal({
               />
             )}
           </div>
+          )}
 
+          {(!showDiscoverySteps || discoveryStep === "identity") && (
+          <>
           {/* 추가 정보 토글 — 기본은 이름·동네만, 나머지는 접어서 마찰 최소화 */}
           <button
             type="button"
@@ -835,8 +843,11 @@ export default function AddCatModal({
           </div>
           </>
           )}
+          </>
+          )}
 
           {/* 공개 범위 — Private Circle */}
+          {(!showDiscoverySteps || discoveryStep === "visibility") && (
           <div>
             <label className="text-[12px] font-bold text-white mb-2 block">
               공개 범위 <span className="text-white/45 font-normal">(보안)</span>
@@ -876,6 +887,7 @@ export default function AddCatModal({
               </Link>
             </p>
           </div>
+          )}
 
           {/* 에러 메시지 */}
           {error && (
@@ -892,6 +904,7 @@ export default function AddCatModal({
           className="relative px-5 py-3 border-t border-white/12"
           style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
         >
+          {(!showDiscoverySteps || discoveryStep === "visibility") && (
           <button
             onClick={handleSubmit}
             disabled={submitting}
@@ -913,6 +926,7 @@ export default function AddCatModal({
               </>
             )}
           </button>
+          )}
         </div>
       </div>
 
