@@ -8,6 +8,7 @@ import {
   CARE_SHIFT_NOTE_MAX_LENGTH,
   CARE_SHIFT_STATUSES,
   canTransitionCareShift,
+  careShiftNoteLength,
   careShiftListWindowStart,
   describeCareShiftError,
   describeCareShiftValidationErrors,
@@ -145,6 +146,34 @@ test("invalid participants, time, and oversized notes are rejected together", ()
       new Date("2026-07-27T01:00:00.000Z"),
     ),
     ["self_assignment", "starts_at_not_future", "note_too_long"],
+  );
+});
+
+test("note length counts Unicode characters consistently with PostgreSQL", () => {
+  assert.equal(careShiftNoteLength("🐈".repeat(CARE_SHIFT_NOTE_MAX_LENGTH)), 500);
+  assert.deepEqual(
+    validateCareShiftRequest(
+      {
+        requesterId: "owner-1",
+        assigneeId: "member-1",
+        startsAt: "2026-07-27T02:00:00.000Z",
+        note: "🐈".repeat(CARE_SHIFT_NOTE_MAX_LENGTH),
+      },
+      new Date("2026-07-27T01:00:00.000Z"),
+    ),
+    [],
+  );
+  assert.deepEqual(
+    validateCareShiftRequest(
+      {
+        requesterId: "owner-1",
+        assigneeId: "member-1",
+        startsAt: "2026-07-27T02:00:00.000Z",
+        note: "🐈".repeat(CARE_SHIFT_NOTE_MAX_LENGTH + 1),
+      },
+      new Date("2026-07-27T01:00:00.000Z"),
+    ),
+    ["note_too_long"],
   );
 });
 

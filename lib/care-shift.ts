@@ -10,6 +10,10 @@ export type CareShiftActor = "requester" | "assignee";
 
 export const CARE_SHIFT_NOTE_MAX_LENGTH = 500;
 
+export function careShiftNoteLength(note: string): number {
+  return Array.from(note).length;
+}
+
 // 목록 삭제 수단이 없어 비상식적 원미래(예: 수십 년 뒤) 교대는 영구히 남는다.
 // 실제 돌봄 조율 범위를 넘는 시작 시각은 요청 단계에서 거절한다.
 export const CARE_SHIFT_MAX_FUTURE_MS = 60 * 24 * 60 * 60 * 1000;
@@ -248,7 +252,10 @@ export function validateCareShiftRequest(
   } else if (startsAt.getTime() > now.getTime() + CARE_SHIFT_MAX_FUTURE_MS) {
     errors.push("starts_at_too_far");
   }
-  if ((input.note?.trim().length ?? 0) > CARE_SHIFT_NOTE_MAX_LENGTH) {
+  if (
+    (input.note == null ? 0 : careShiftNoteLength(input.note.trim())) >
+    CARE_SHIFT_NOTE_MAX_LENGTH
+  ) {
     errors.push("note_too_long");
   }
   if (input.note != null && hasCareShiftNoteControlChars(input.note)) {
