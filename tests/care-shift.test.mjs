@@ -423,7 +423,7 @@ test("missing participants and malformed time have stable errors", () => {
   );
 });
 
-test("care shift list success and error responses are not cached", () => {
+test("care shift success and error responses are not cached", () => {
   assert.match(
     careShiftRouteSource,
     /const PRIVATE_NO_STORE_HEADERS = \{\s*"Cache-Control": "private, no-store",?\s*\} as const;/,
@@ -435,5 +435,21 @@ test("care shift list success and error responses are not cached", () => {
   assert.equal(
     (getHandlerSource.match(/headers: PRIVATE_NO_STORE_HEADERS/g) ?? []).length,
     7,
+  );
+  const postHandlerSource = careShiftRouteSource.slice(
+    careShiftRouteSource.indexOf("export async function POST("),
+    careShiftRouteSource.indexOf("export async function PATCH("),
+  );
+  assert.equal(
+    (postHandlerSource.match(/headers: PRIVATE_NO_STORE_HEADERS/g) ?? []).length,
+    18,
+  );
+  const patchHandlerSource = careShiftRouteSource.slice(
+    careShiftRouteSource.indexOf("export async function PATCH("),
+  );
+  assert.equal(
+    (patchHandlerSource.match(/headers: PRIVATE_NO_STORE_HEADERS/g) ?? [])
+      .length,
+    17,
   );
 });
