@@ -30,6 +30,7 @@ import {
   ShoppingBag,
   PackageCheck,
   HeartHandshake,
+  FlaskConical,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { getAdminStats, type AdminStats } from "@/lib/admin-stats";
@@ -136,6 +137,13 @@ export default function AdminDashboardPage() {
       subtitle: "가입·활동·인기 지표",
       Icon: BarChart3,
       color: "#5BA876",
+    },
+    {
+      href: "/admin/experiments",
+      title: "동네 돌봄 실험",
+      subtitle: "14일 지역 실험 생성·전환 지표",
+      Icon: FlaskConical,
+      color: "#6B8E6F",
     },
     {
       href: "/admin/inbox",
