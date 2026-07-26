@@ -39,6 +39,19 @@ export function isCareShiftTransitionViolationCode(code: string): boolean {
   return code === "P0001";
 }
 
+// Postgres text는 NUL(U+0000)을 저장할 수 없어 22P05로 실패하고, 나머지
+// C0/C1 제어 문자도 목록 표시를 깨뜨린다. 탭·줄바꿈·CR만 서식으로 허용한다.
+export function hasCareShiftNoteControlChars(note: string): boolean {
+  for (const ch of note) {
+    const code = ch.codePointAt(0) ?? 0;
+    const isAllowedFormatting = code === 9 || code === 10 || code === 13;
+    const isC0 = code < 32;
+    const isDelOrC1 = code >= 127 && code <= 159;
+    if ((isC0 || isDelOrC1) && !isAllowedFormatting) return true;
+  }
+  return false;
+}
+
 export function isCareShiftTimestamp(value: string): boolean {
   const match = RFC3339_TIMESTAMP_PATTERN.exec(value);
   if (!match || Number.isNaN(Date.parse(value))) return false;
@@ -89,7 +102,8 @@ export type CareShiftRequestValidationError =
   | "invalid_starts_at"
   | "starts_at_not_future"
   | "starts_at_too_far"
-  | "note_too_long";
+  | "note_too_long"
+  | "note_has_control_chars";
 
 const ALLOWED_TRANSITIONS: Readonly<
   Record<CareShiftStatus, Partial<Record<CareShiftActor, CareShiftStatus>>>
@@ -189,6 +203,9 @@ export function validateCareShiftRequest(
   }
   if ((input.note?.trim().length ?? 0) > CARE_SHIFT_NOTE_MAX_LENGTH) {
     errors.push("note_too_long");
+  }
+  if (input.note != null && hasCareShiftNoteControlChars(input.note)) {
+    errors.push("note_has_control_chars");
   }
 
   return errors;

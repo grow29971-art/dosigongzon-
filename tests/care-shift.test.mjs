@@ -11,6 +11,7 @@ import {
   describeCareShiftError,
   getNextCareShiftStatus,
   getRequiredCurrentStatus,
+  hasCareShiftNoteControlChars,
   isCareShiftBodyObject,
   isCareShiftCheckViolationCode,
   isCareShiftSchemaNotReadyCode,
@@ -141,6 +142,30 @@ test("invalid participants, time, and oversized notes are rejected together", ()
       new Date("2026-07-27T01:00:00.000Z"),
     ),
     ["self_assignment", "starts_at_not_future", "note_too_long"],
+  );
+});
+
+test("notes with NUL or other control characters are rejected before the DB", () => {
+  const nul = String.fromCharCode(0);
+  const escapeChar = String.fromCharCode(27);
+  const c1Char = String.fromCharCode(128);
+  assert.equal(hasCareShiftNoteControlChars(`저녁 급식${nul}`), true);
+  assert.equal(hasCareShiftNoteControlChars(escapeChar), true);
+  assert.equal(hasCareShiftNoteControlChars(c1Char), true);
+  assert.equal(hasCareShiftNoteControlChars("탭\t줄바꿈\n복귀\r 허용"), false);
+  assert.equal(hasCareShiftNoteControlChars("저녁 급식 부탁드려요."), false);
+
+  assert.deepEqual(
+    validateCareShiftRequest(
+      {
+        requesterId: "owner-1",
+        assigneeId: "member-1",
+        startsAt: "2026-07-27T02:00:00.000Z",
+        note: `저녁 급식${nul}`,
+      },
+      new Date("2026-07-27T01:00:00.000Z"),
+    ),
+    ["note_has_control_chars"],
   );
 });
 
