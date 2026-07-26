@@ -14,6 +14,11 @@ test("care shift migration remains rerunnable without destructive table changes"
   assert.doesNotMatch(sql, /^\s*(drop table|delete from|truncate)\b/im);
 });
 
+test("care shift migration applies atomically before reloading PostgREST", () => {
+  assert.match(sql, /^\s*begin\s*;/im);
+  assert.match(sql, /notify pgrst,\s*'reload schema'\s*;\s*commit\s*;/i);
+});
+
 test("care shift migration blocks duplicate open requests for the same slot", () => {
   assert.match(
     sql,

@@ -2,6 +2,8 @@
 -- CITY project ref: sozxbnvgsougkliibnxl
 -- Do not run against another Supabase project.
 
+begin;
+
 create table if not exists public.care_shifts (
   id uuid primary key default gen_random_uuid(),
   circle_id uuid not null references public.caretaker_circles(id) on delete cascade,
@@ -164,6 +166,8 @@ comment on table public.care_shifts is
   'P3 circle care shift requests with requested -> accepted -> completed lifecycle';
 
 notify pgrst, 'reload schema';
+
+commit;
 
 -- ─────────────────────────────────────────────
 -- 롤백 (원복 시 아래 실행 — 정책·트리거·함수·인덱스 제거만, 데이터 파괴 없음)
