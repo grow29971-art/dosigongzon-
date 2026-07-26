@@ -4,6 +4,7 @@ import {
   careShiftListWindowStart,
   getRequiredCurrentStatus,
   isCareShiftBodyObject,
+  isCareShiftSchemaNotReadyCode,
   isCareShiftUuid,
   validateCareShiftRequest,
 } from "@/lib/care-shift";
@@ -48,7 +49,7 @@ export async function GET() {
     .limit(50);
 
   if (error) {
-    if (error.code === "42P01") {
+    if (isCareShiftSchemaNotReadyCode(error.code)) {
       return NextResponse.json({ error: "not_ready" }, { status: 503 });
     }
     if (error.code === "42501") {
@@ -127,7 +128,7 @@ export async function POST(request: Request) {
     .single();
 
   if (error) {
-    if (error.code === "42P01") {
+    if (isCareShiftSchemaNotReadyCode(error.code)) {
       return NextResponse.json({ error: "not_ready" }, { status: 503 });
     }
     if (error.code === "42501" || error.code === "23503") {
@@ -194,7 +195,7 @@ export async function PATCH(request: Request) {
     .single();
 
   if (error) {
-    if (error.code === "42P01") {
+    if (isCareShiftSchemaNotReadyCode(error.code)) {
       return NextResponse.json({ error: "not_ready" }, { status: 503 });
     }
     if (error.code === "42501") {

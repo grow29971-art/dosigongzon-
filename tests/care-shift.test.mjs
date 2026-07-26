@@ -12,6 +12,7 @@ import {
   getNextCareShiftStatus,
   getRequiredCurrentStatus,
   isCareShiftBodyObject,
+  isCareShiftSchemaNotReadyCode,
   isCareShiftTimestamp,
   isCareShiftUuid,
   toDatetimeLocalValue,
@@ -30,6 +31,12 @@ test("care shift identifiers accept UUIDs and reject malformed database input", 
   assert.equal(isCareShiftUuid("4f01f5fd-1b52-4d63-9bbc-7f6055f7b7cc"), true);
   assert.equal(isCareShiftUuid("not-a-uuid"), false);
   assert.equal(isCareShiftUuid("4f01f5fd-1b52-4d63-9bbc"), false);
+});
+
+test("missing care shift schema and stale PostgREST cache are both not ready", () => {
+  assert.equal(isCareShiftSchemaNotReadyCode("42P01"), true);
+  assert.equal(isCareShiftSchemaNotReadyCode("PGRST205"), true);
+  assert.equal(isCareShiftSchemaNotReadyCode("42501"), false);
 });
 
 test("care shift timestamps require an explicit RFC 3339 timezone", () => {

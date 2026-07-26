@@ -23,6 +23,10 @@ export function isCareShiftUuid(value: string): boolean {
   return UUID_PATTERN.test(value);
 }
 
+export function isCareShiftSchemaNotReadyCode(code: string): boolean {
+  return code === "42P01" || code === "PGRST205";
+}
+
 export function isCareShiftTimestamp(value: string): boolean {
   const match = RFC3339_TIMESTAMP_PATTERN.exec(value);
   if (!match || Number.isNaN(Date.parse(value))) return false;
