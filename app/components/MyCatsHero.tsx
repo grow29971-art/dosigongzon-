@@ -15,6 +15,7 @@ import { createCareLog, type CareType } from "@/lib/care-logs-repo";
 import { thumbnailUrl } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { kstTodayStartIso } from "@/lib/kst";
+import { prioritizePendingFeed } from "@/lib/care-inbox";
 
 interface CatRow {
   id: string;
@@ -103,9 +104,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
   if (!cats || cats.length === 0) return null;
   const doneCount = cats.filter((c) => c.doneTypes.includes("feed")).length;
   const displayedCats = careInboxMode
-    ? [...cats].sort((a, b) =>
-        Number(a.doneTypes.includes("feed")) - Number(b.doneTypes.includes("feed")),
-      )
+    ? prioritizePendingFeed(cats)
     : cats;
 
   return (
