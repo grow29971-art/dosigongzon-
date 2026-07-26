@@ -11,6 +11,7 @@ import CatRegistrationCelebration from "@/app/components/CatRegistrationCelebrat
 import type { CatCardData } from "@/app/components/CatCard";
 import { findLocationViolations, formatViolationMessage } from "@/lib/location-patterns";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
+import { DISCOVERY_RECORD_STEPS } from "@/lib/discovery-record-flow";
 
 interface AddCatModalProps {
   open: boolean;
@@ -21,6 +22,7 @@ interface AddCatModalProps {
   initialLng?: number;
   // 등록 시작 전 시트에서 선택한 visibility (없으면 public)
   initialVisibility?: CatVisibility;
+  showDiscoverySteps?: boolean;
 }
 
 const TAG_PRESETS = [
@@ -67,6 +69,7 @@ export default function AddCatModal({
   initialLat,
   initialLng,
   initialVisibility = "public",
+  showDiscoverySteps = false,
 }: AddCatModalProps) {
   const { user } = useAuth();
   const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
@@ -441,6 +444,23 @@ export default function AddCatModal({
 
         {/* 스크롤 영역 */}
         <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5">
+          {showDiscoverySteps && (
+            <ol className="grid grid-cols-3 gap-2" aria-label="발견 기록 3단계">
+              {DISCOVERY_RECORD_STEPS.map((step, index) => (
+                <li
+                  key={step.id}
+                  className="rounded-xl border border-white/15 bg-white/[0.06] px-2 py-2 text-center"
+                >
+                  <span className="block text-[10px] font-extrabold text-[#A5B4FC]">
+                    {index + 1}단계
+                  </span>
+                  <span className="mt-0.5 block text-[11px] font-bold text-white/80">
+                    {step.label}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          )}
           {/* 사진 업로드 — 최대 5장 */}
           <div>
             <div className="flex items-center justify-between mb-2">

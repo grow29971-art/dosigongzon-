@@ -3938,6 +3938,7 @@ export default function MapPage() {
         initialLat={pickedCoord?.lat}
         initialLng={pickedCoord?.lng}
         initialVisibility={pickedVisibility}
+        showDiscoverySteps={SHOW_MAP_DISCOVERY}
       />
 
       {/* QR 코드 모달 — 오프라인 공유 */}
