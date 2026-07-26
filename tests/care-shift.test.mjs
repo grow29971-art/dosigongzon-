@@ -507,6 +507,23 @@ test("care shift success and error responses are not cached", () => {
   );
 });
 
+test("care shift transition refreshes are discarded after auth context changes", () => {
+  const transitionSource = careShiftPageSource.slice(
+    careShiftPageSource.indexOf("const handleCareShiftTransition"),
+    careShiftPageSource.indexOf("if (authLoading)"),
+  );
+  const guardIndex = transitionSource.indexOf(
+    "if (authContextId !== careShiftAuthContextId.current) return;",
+  );
+  const refreshIndex = transitionSource.indexOf("await loadCareShifts()");
+  assert.notEqual(guardIndex, -1);
+  assert.notEqual(refreshIndex, -1);
+  assert.ok(
+    guardIndex < refreshIndex,
+    "전환 응답의 목록 재조회는 인증 컨텍스트 가드 뒤에 와야 한다",
+  );
+});
+
 test("removing a circle member clears a stale care shift assignee", () => {
   assert.match(
     careShiftPageSource,

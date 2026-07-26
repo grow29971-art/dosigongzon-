@@ -315,6 +315,7 @@ export default function CirclePage() {
         body: JSON.stringify({ id: shift.id, status }),
       });
       const result = (await response.json()) as { error?: string };
+      if (authContextId !== careShiftAuthContextId.current) return;
       if (!response.ok) {
         if (result.error === "invalid_transition") {
           await loadCareShifts();
