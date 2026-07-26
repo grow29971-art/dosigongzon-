@@ -36,7 +36,7 @@ import {
   type CircleMember,
   type PendingInvitation,
 } from "@/lib/circles-repo";
-import { listJoinedCircles, listMyUnreadCircles, type JoinedCircle, type UnreadCircle } from "@/lib/circle-chat-repo";
+import { listJoinedCircles, listMyUnreadCircles, type JoinedCircle } from "@/lib/circle-chat-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { thumbnailUrl } from "@/lib/cats-repo";
 
@@ -58,6 +58,10 @@ export default function CirclePage() {
   const [myCircleId, setMyCircleId] = useState<string | null>(null);
   const [joinedCircles, setJoinedCircles] = useState<JoinedCircle[]>([]);
   const [unreadMap, setUnreadMap] = useState<Map<string, number>>(new Map());
+  const [shiftAssigneeId, setShiftAssigneeId] = useState("");
+  const [shiftStartsAt, setShiftStartsAt] = useState("");
+  const [shiftNote, setShiftNote] = useState("");
+  const [shiftSubmitting, setShiftSubmitting] = useState(false);
 
   const inviteUrl = user ? `https://dosigongzon.com/circle/join/${user.id}` : "";
 
@@ -180,6 +184,32 @@ export default function CirclePage() {
     }
   };
 
+  const handleCreateCareShift = async () => {
+    if (!myCircleId || !shiftAssigneeId || !shiftStartsAt || shiftSubmitting) return;
+    setShiftSubmitting(true);
+    try {
+      const response = await fetch("/api/care-shifts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          circleId: myCircleId,
+          assigneeId: shiftAssigneeId,
+          startsAt: new Date(shiftStartsAt).toISOString(),
+          note: shiftNote.trim() || undefined,
+        }),
+      });
+      const result = (await response.json()) as { error?: string };
+      if (!response.ok) throw new Error(result.error ?? "교대 요청을 만들지 못했어요.");
+      setShiftStartsAt("");
+      setShiftNote("");
+      alert("돌봄 교대를 요청했어요.");
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "교대 요청을 만들지 못했어요.");
+    } finally {
+      setShiftSubmitting(false);
+    }
+  };
+
   if (authLoading) {
     return (
       <div className="flex justify-center pt-20">
@@ -231,7 +261,7 @@ export default function CirclePage() {
           <p className="text-[12px] text-text-sub leading-relaxed">
             서클 멤버에게만 보이는 고양이를 등록할 수 있어요. 학대 우려가 큰 아이를
             <b className="text-text-main"> 믿는 이웃</b>과만 공유하세요. 등록할 때 공개 범위를
-            <b className="text-text-main"> "내 서클"</b>로 선택하면 적용돼요.
+            <b className="text-text-main"> &quot;내 서클&quot;</b>로 선택하면 적용돼요.
           </p>
         </div>
       </section>
@@ -263,6 +293,57 @@ export default function CirclePage() {
               <li className="rounded-xl bg-[#F7F4EE] px-2 py-2">2. 수락</li>
               <li className="rounded-xl bg-[#F7F4EE] px-2 py-2">3. 완료</li>
             </ol>
+            {acceptedMembers.length > 0 ? (
+              <div className="mt-4 space-y-3 border-t border-black/5 pt-4">
+                <label className="block text-[12px] font-bold text-text-main">
+                  부탁할 이웃
+                  <select
+                    value={shiftAssigneeId}
+                    onChange={(event) => setShiftAssigneeId(event.target.value)}
+                    className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 text-[13px] font-normal"
+                  >
+                    <option value="">서클 이웃 선택</option>
+                    {acceptedMembers.map((member) => (
+                      <option key={member.member_id} value={member.member_id}>
+                        {member.member_nickname ?? "이웃"}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block text-[12px] font-bold text-text-main">
+                  돌봄 시작 시각
+                  <input
+                    type="datetime-local"
+                    value={shiftStartsAt}
+                    min={new Date(Date.now() + 60_000).toISOString().slice(0, 16)}
+                    onChange={(event) => setShiftStartsAt(event.target.value)}
+                    className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 text-[13px] font-normal"
+                  />
+                </label>
+                <label className="block text-[12px] font-bold text-text-main">
+                  메모 <span className="font-normal text-text-light">(선택)</span>
+                  <textarea
+                    value={shiftNote}
+                    maxLength={500}
+                    onChange={(event) => setShiftNote(event.target.value)}
+                    placeholder="급식 위치나 필요한 돌봄을 알려주세요."
+                    className="mt-1.5 min-h-20 w-full resize-none rounded-xl border border-black/10 bg-white px-3 py-2.5 text-[13px] font-normal"
+                  />
+                </label>
+                <button
+                  type="button"
+                  disabled={!shiftAssigneeId || !shiftStartsAt || shiftSubmitting}
+                  onClick={handleCreateCareShift}
+                  className="min-h-11 w-full rounded-xl bg-primary px-4 py-2.5 text-[13px] font-extrabold text-white disabled:opacity-40"
+                >
+                  {shiftSubmitting ? "요청 중..." : "돌봄 교대 요청"}
+                </button>
+              </div>
+            ) : (
+              <p className="mt-3 text-[11px] text-text-light">
+                교대를 부탁하려면 먼저 서클 이웃의 초대 수락이 필요해요.
+              </p>
+            )}
           </div>
         </section>
       )}
