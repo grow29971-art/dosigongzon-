@@ -12,6 +12,11 @@ type CreateCareShiftBody = {
   note?: unknown;
 };
 
+type TransitionCareShiftBody = {
+  id?: unknown;
+  status?: unknown;
+};
+
 export async function GET() {
   if (!isCoreJourneyEnabled("P3")) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });
@@ -116,4 +121,61 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ shift: data }, { status: 201 });
+}
+
+export async function PATCH(request: Request) {
+  if (!isCoreJourneyEnabled("P3")) {
+    return NextResponse.json({ error: "not_found" }, { status: 404 });
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+  if (!rateLimit(`care-shift:transition:${user.id}`, { max: 20, windowMs: 60_000 })) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
+
+  let body: TransitionCareShiftBody;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+  }
+
+  if (
+    typeof body.id !== "string" ||
+    (body.status !== "accepted" && body.status !== "completed")
+  ) {
+    return NextResponse.json({ error: "invalid_params" }, { status: 400 });
+  }
+
+  const expectedStatus = body.status === "accepted" ? "requested" : "accepted";
+  const { data, error } = await supabase
+    .from("care_shifts")
+    .update({ status: body.status })
+    .eq("id", body.id)
+    .eq("assignee_id", user.id)
+    .eq("status", expectedStatus)
+    .select("id, circle_id, requester_id, assignee_id, starts_at, note, status")
+    .single();
+
+  if (error) {
+    if (error.code === "42P01") {
+      return NextResponse.json({ error: "not_ready" }, { status: 503 });
+    }
+    if (error.code === "42501") {
+      return NextResponse.json({ error: "forbidden" }, { status: 403 });
+    }
+    if (error.code === "PGRST116") {
+      return NextResponse.json({ error: "invalid_transition" }, { status: 409 });
+    }
+    console.error("[care-shifts] transition failed:", error.code);
+    return NextResponse.json({ error: "transition_failed" }, { status: 502 });
+  }
+
+  return NextResponse.json({ shift: data });
 }
