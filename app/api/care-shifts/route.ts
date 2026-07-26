@@ -12,6 +12,40 @@ type CreateCareShiftBody = {
   note?: unknown;
 };
 
+export async function GET() {
+  if (!isCoreJourneyEnabled("P3")) {
+    return NextResponse.json({ error: "not_found" }, { status: 404 });
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
+  const { data, error } = await supabase
+    .from("care_shifts")
+    .select("id, circle_id, requester_id, assignee_id, starts_at, note, status")
+    .or(`requester_id.eq.${user.id},assignee_id.eq.${user.id}`)
+    .order("starts_at", { ascending: true })
+    .limit(50);
+
+  if (error) {
+    if (error.code === "42P01") {
+      return NextResponse.json({ error: "not_ready" }, { status: 503 });
+    }
+    if (error.code === "42501") {
+      return NextResponse.json({ error: "forbidden" }, { status: 403 });
+    }
+    console.error("[care-shifts] list failed:", error.code);
+    return NextResponse.json({ error: "list_failed" }, { status: 502 });
+  }
+
+  return NextResponse.json({ shifts: data ?? [] });
+}
+
 export async function POST(request: Request) {
   if (!isCoreJourneyEnabled("P3")) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });
