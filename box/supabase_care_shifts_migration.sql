@@ -168,7 +168,11 @@ create policy "care_shifts_assignee_transition"
   using (assignee_id = auth.uid())
   with check (assignee_id = auth.uid());
 
+-- Supabase default privileges grant ALL (including DELETE) on new public
+-- tables to authenticated, so revoke first and re-grant only the narrow set
+-- (repo convention: dm_update_hardening).
 revoke all on public.care_shifts from anon;
+revoke all on public.care_shifts from authenticated;
 grant select, insert, update on public.care_shifts to authenticated;
 
 comment on table public.care_shifts is
@@ -192,5 +196,6 @@ commit;
 -- drop index if exists public.care_shifts_unique_open_request_idx;
 -- 테이블 drop은 데이터 파괴 — §2-3 규칙상 금지. 접근만 차단하려면:
 -- revoke all on public.care_shifts from authenticated;
+-- (default privileges 원복이 필요하면: grant all on public.care_shifts to authenticated; — DELETE까지 되살아나므로 권장하지 않음)
 -- notify pgrst, 'reload schema';
 -- ─────────────────────────────────────────────

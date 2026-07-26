@@ -50,11 +50,16 @@ test("care shift migration keeps participant-only access and no delete grant", (
     /using\s*\(\s*auth\.uid\(\)\s+in\s+\(requester_id,\s*assignee_id\)\s*\)/i,
   );
   assert.match(sql, /revoke all on public\.care_shifts from anon/i);
+  // Supabase default privileges already grant DELETE to authenticated on new
+  // tables; the narrow grant only holds if the defaults are revoked first.
   assert.match(
     sql,
-    /grant select,\s*insert,\s*update on public\.care_shifts to authenticated/i,
+    /revoke all on public\.care_shifts from authenticated;[\s\S]*?grant select,\s*insert,\s*update on public\.care_shifts to authenticated/i,
   );
-  assert.doesNotMatch(sql, /grant[^;]*\bdelete\b[^;]*on public\.care_shifts/i);
+  assert.doesNotMatch(
+    sql,
+    /^\s*grant[^;]*\bdelete\b[^;]*on public\.care_shifts/im,
+  );
 });
 
 test("care shift requests may assign either an accepted member or the circle owner", () => {
