@@ -11,7 +11,11 @@ import CatRegistrationCelebration from "@/app/components/CatRegistrationCelebrat
 import type { CatCardData } from "@/app/components/CatCard";
 import { findLocationViolations, formatViolationMessage } from "@/lib/location-patterns";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
-import { DISCOVERY_RECORD_STEPS } from "@/lib/discovery-record-flow";
+import {
+  DISCOVERY_RECORD_STEPS,
+  getAdjacentDiscoveryRecordStep,
+  type DiscoveryRecordStep,
+} from "@/lib/discovery-record-flow";
 
 interface AddCatModalProps {
   open: boolean;
@@ -73,6 +77,7 @@ export default function AddCatModal({
 }: AddCatModalProps) {
   const { user } = useAuth();
   const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
+  const [discoveryStep, setDiscoveryStep] = useState<DiscoveryRecordStep>("location");
 
   const [name, setName] = useState("");
   const [detectedGu, setDetectedGu] = useState("");
@@ -166,6 +171,7 @@ export default function AddCatModal({
       setError("");
       setSubmitting(false);
       setShowMore(false);
+      setDiscoveryStep("location");
     }
     return () => { document.body.style.overflow = ""; };
   }, [open, initialLat, initialLng]);
@@ -445,21 +451,52 @@ export default function AddCatModal({
         {/* 스크롤 영역 */}
         <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5">
           {showDiscoverySteps && (
+            <div>
             <ol className="grid grid-cols-3 gap-2" aria-label="발견 기록 3단계">
               {DISCOVERY_RECORD_STEPS.map((step, index) => (
                 <li
                   key={step.id}
-                  className="rounded-xl border border-white/15 bg-white/[0.06] px-2 py-2 text-center"
+                  className={`rounded-xl border px-2 py-2 text-center ${
+                    discoveryStep === step.id
+                      ? "border-[#818CF8] bg-[#6366F1]/20"
+                      : "border-white/15 bg-white/[0.06]"
+                  }`}
                 >
-                  <span className="block text-[10px] font-extrabold text-[#A5B4FC]">
-                    {index + 1}단계
-                  </span>
-                  <span className="mt-0.5 block text-[11px] font-bold text-white/80">
-                    {step.label}
-                  </span>
+                  <button
+                    type="button"
+                    className="w-full"
+                    aria-current={discoveryStep === step.id ? "step" : undefined}
+                    onClick={() => setDiscoveryStep(step.id)}
+                  >
+                    <span className="block text-[10px] font-extrabold text-[#A5B4FC]">
+                      {index + 1}단계
+                    </span>
+                    <span className="mt-0.5 block text-[11px] font-bold text-white/80">
+                      {step.label}
+                    </span>
+                  </button>
                 </li>
               ))}
             </ol>
+            <div className="mt-2 flex items-center justify-between">
+              <button
+                type="button"
+                disabled={discoveryStep === "location"}
+                onClick={() => setDiscoveryStep((step) => getAdjacentDiscoveryRecordStep(step, "previous"))}
+                className="rounded-lg px-3 py-1.5 text-[11px] font-bold text-white/65 disabled:opacity-30"
+              >
+                이전
+              </button>
+              <button
+                type="button"
+                disabled={discoveryStep === "visibility"}
+                onClick={() => setDiscoveryStep((step) => getAdjacentDiscoveryRecordStep(step, "next"))}
+                className="rounded-lg bg-[#6366F1]/20 px-3 py-1.5 text-[11px] font-bold text-[#C7CAFF] disabled:opacity-30"
+              >
+                다음
+              </button>
+            </div>
+            </div>
           )}
           {/* 사진 업로드 — 최대 5장 */}
           <div>
