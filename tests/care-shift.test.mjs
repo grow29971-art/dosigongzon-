@@ -6,6 +6,10 @@ const careShiftRouteSource = readFileSync(
   new URL("../app/api/care-shifts/route.ts", import.meta.url),
   "utf8",
 );
+const careShiftPageSource = readFileSync(
+  new URL("../app/(main)/mypage/circle/page.tsx", import.meta.url),
+  "utf8",
+);
 
 import {
   CARE_SHIFT_LIST_LOOKBACK_MS,
@@ -40,6 +44,13 @@ test("care shift uses the requested, accepted, completed sequence", () => {
     "accepted",
     "completed",
   ]);
+});
+
+test("care shift transition conflict refreshes the stale list", () => {
+  assert.match(
+    careShiftPageSource,
+    /result\.error === "invalid_transition"[\s\S]*?await loadCareShifts\(\)/,
+  );
 });
 
 test("care shift identifiers accept UUIDs and reject malformed database input", () => {

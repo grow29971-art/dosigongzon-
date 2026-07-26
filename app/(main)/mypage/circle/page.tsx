@@ -285,6 +285,9 @@ export default function CirclePage() {
       });
       const result = (await response.json()) as { error?: string };
       if (!response.ok) {
+        if (result.error === "invalid_transition") {
+          await loadCareShifts();
+        }
         throw new Error(
           describeCareShiftError(result.error, "교대 상태를 바꾸지 못했어요."),
         );
