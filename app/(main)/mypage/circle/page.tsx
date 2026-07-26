@@ -81,6 +81,7 @@ export default function CirclePage() {
   const [careShiftsLoadError, setCareShiftsLoadError] = useState<string | null>(null);
   const [careShiftTransitioning, setCareShiftTransitioning] = useState<string | null>(null);
   const careShiftsRequestId = useRef(0);
+  const careShiftAuthContextId = useRef(0);
 
   const inviteUrl = user ? `https://dosigongzon.com/circle/join/${user.id}` : "";
 
@@ -174,15 +175,19 @@ export default function CirclePage() {
   useEffect(() => {
     if (!user || !isCoreJourneyEnabled("P3")) {
       careShiftsRequestId.current += 1;
+      careShiftAuthContextId.current += 1;
       setCareShifts([]);
       setCareShiftsLoadError(null);
       setCareShiftsLoading(false);
+      setShiftSubmitting(false);
+      setCareShiftTransitioning(null);
       return;
     }
 
     void loadCareShifts();
     return () => {
       careShiftsRequestId.current += 1;
+      careShiftAuthContextId.current += 1;
     };
   }, [loadCareShifts, user]);
 
@@ -250,6 +255,7 @@ export default function CirclePage() {
 
   const handleCreateCareShift = async () => {
     if (!myCircleId || !shiftAssigneeId || !shiftStartsAt || shiftSubmitting) return;
+    const authContextId = careShiftAuthContextId.current;
     setShiftSubmitting(true);
     try {
       const response = await fetch("/api/care-shifts", {
@@ -277,14 +283,20 @@ export default function CirclePage() {
             : fallback,
         );
       }
+      if (authContextId !== careShiftAuthContextId.current) return;
       setShiftStartsAt("");
       setShiftNote("");
       await loadCareShifts();
+      if (authContextId !== careShiftAuthContextId.current) return;
       alert("돌봄 교대를 요청했어요.");
     } catch (error) {
-      alert(error instanceof Error ? error.message : "교대 요청을 만들지 못했어요.");
+      if (authContextId === careShiftAuthContextId.current) {
+        alert(error instanceof Error ? error.message : "교대 요청을 만들지 못했어요.");
+      }
     } finally {
-      setShiftSubmitting(false);
+      if (authContextId === careShiftAuthContextId.current) {
+        setShiftSubmitting(false);
+      }
     }
   };
 
@@ -293,6 +305,7 @@ export default function CirclePage() {
     status: "accepted" | "completed",
   ) => {
     if (careShiftTransitioning) return;
+    const authContextId = careShiftAuthContextId.current;
     setCareShiftTransitioning(shift.id);
     try {
       const response = await fetch("/api/care-shifts", {
@@ -305,15 +318,20 @@ export default function CirclePage() {
         if (result.error === "invalid_transition") {
           await loadCareShifts();
         }
+        if (authContextId !== careShiftAuthContextId.current) return;
         throw new Error(
           describeCareShiftError(result.error, "교대 상태를 바꾸지 못했어요."),
         );
       }
       await loadCareShifts();
     } catch (error) {
-      alert(error instanceof Error ? error.message : "교대 상태를 바꾸지 못했어요.");
+      if (authContextId === careShiftAuthContextId.current) {
+        alert(error instanceof Error ? error.message : "교대 상태를 바꾸지 못했어요.");
+      }
     } finally {
-      setCareShiftTransitioning(null);
+      if (authContextId === careShiftAuthContextId.current) {
+        setCareShiftTransitioning(null);
+      }
     }
   };
 

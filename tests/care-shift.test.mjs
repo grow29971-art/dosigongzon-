@@ -75,7 +75,23 @@ test("care shift list invalidates in-flight responses when auth context changes"
   );
   assert.match(
     careShiftPageSource,
-    /return \(\) => \{\s*careShiftsRequestId\.current \+= 1;\s*\}/,
+    /return \(\) => \{\s*careShiftsRequestId\.current \+= 1;[\s\S]*?careShiftAuthContextId\.current \+= 1;\s*\}/,
+  );
+});
+
+test("care shift mutations discard UI effects after auth context changes", () => {
+  assert.match(careShiftPageSource, /const careShiftAuthContextId = useRef\(0\)/);
+  assert.match(
+    careShiftPageSource,
+    /return \(\) => \{[\s\S]*?careShiftAuthContextId\.current \+= 1;/,
+  );
+  assert.match(
+    careShiftPageSource,
+    /const authContextId = careShiftAuthContextId\.current;[\s\S]*?if \(authContextId !== careShiftAuthContextId\.current\) return;/,
+  );
+  assert.match(
+    careShiftPageSource,
+    /if \(authContextId === careShiftAuthContextId\.current\) \{[\s\S]*?setCareShiftTransitioning\(null\)/,
   );
 });
 
