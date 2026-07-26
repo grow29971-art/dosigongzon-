@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   CARE_SHIFT_LIST_LOOKBACK_MS,
+  CARE_SHIFT_MAX_FUTURE_MS,
   CARE_SHIFT_NOTE_MAX_LENGTH,
   CARE_SHIFT_STATUSES,
   canTransitionCareShift,
@@ -72,6 +73,39 @@ test("invalid participants, time, and oversized notes are rejected together", ()
       new Date("2026-07-27T01:00:00.000Z"),
     ),
     ["self_assignment", "starts_at_not_future", "note_too_long"],
+  );
+});
+
+test("shift requests beyond the future horizon are rejected", () => {
+  const now = new Date("2026-07-27T01:00:00.000Z");
+  assert.equal(CARE_SHIFT_MAX_FUTURE_MS, 60 * 24 * 60 * 60 * 1000);
+  assert.deepEqual(
+    validateCareShiftRequest(
+      {
+        requesterId: "owner-1",
+        assigneeId: "member-1",
+        startsAt: new Date(
+          now.getTime() + CARE_SHIFT_MAX_FUTURE_MS + 60_000,
+        ).toISOString(),
+      },
+      now,
+    ),
+    ["starts_at_too_far"],
+  );
+});
+
+test("a shift request exactly at the future horizon is accepted", () => {
+  const now = new Date("2026-07-27T01:00:00.000Z");
+  assert.deepEqual(
+    validateCareShiftRequest(
+      {
+        requesterId: "owner-1",
+        assigneeId: "member-1",
+        startsAt: new Date(now.getTime() + CARE_SHIFT_MAX_FUTURE_MS).toISOString(),
+      },
+      now,
+    ),
+    [],
   );
 });
 

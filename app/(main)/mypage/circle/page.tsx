@@ -23,7 +23,11 @@ import {
   Clock3,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-import { describeCareShiftError, toDatetimeLocalValue } from "@/lib/care-shift";
+import {
+  CARE_SHIFT_MAX_FUTURE_MS,
+  describeCareShiftError,
+  toDatetimeLocalValue,
+} from "@/lib/care-shift";
 import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
 import { shareToKakao } from "@/lib/kakao-share";
 import {
@@ -384,6 +388,9 @@ export default function CirclePage() {
                     type="datetime-local"
                     value={shiftStartsAt}
                     min={toDatetimeLocalValue(new Date(Date.now() + 60_000))}
+                    max={toDatetimeLocalValue(
+                      new Date(Date.now() + CARE_SHIFT_MAX_FUTURE_MS),
+                    )}
                     onChange={(event) => setShiftStartsAt(event.target.value)}
                     className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 text-[13px] font-normal"
                   />
