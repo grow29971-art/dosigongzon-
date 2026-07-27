@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 import {
   CARE_TEAM_SECTIONS,
@@ -7,6 +9,11 @@ import {
   careTeamSectionByHref,
   findCareTeamSection,
 } from "../lib/care-team.ts";
+
+function readRepoFile(relativePath) {
+  const url = new URL(`../${relativePath}`, import.meta.url);
+  return readFileSync(fileURLToPath(url), "utf8");
+}
 
 test("care team sections keep fixed order: circle -> neighborhood -> community", () => {
   assert.deepEqual(
@@ -82,4 +89,39 @@ test("careTeamSectionByHref is fail-safe for unknown / partial / non-string href
   assert.equal(careTeamSectionByHref(""), undefined);
   assert.equal(careTeamSectionByHref(null), undefined);
   assert.equal(careTeamSectionByHref(undefined), undefined);
+});
+
+// ─────────────────────────────────────────────
+// P4 배선 계약: CareTeamCard가 노출되는 모든 진입면(홈·서클·커뮤니티·지도)은
+//   반드시 P4 flag로 게이팅되어야 한다. flag off / kill switch on이면 카드가
+//   렌더되지 않아야 하는데, 렌더 조건에서 flag 검사가 빠지면 fail-closed 원칙이
+//   깨진다. 소스 정규식 감시로 그 드리프트를 고정한다(기존 테스트 스타일).
+// ─────────────────────────────────────────────
+
+const CARE_TEAM_CALL_SITES = [
+  "app/components/HomeAuthed.tsx",
+  "app/(main)/mypage/circle/page.tsx",
+  "app/(main)/community/page.tsx",
+  "app/(main)/map/page.tsx",
+];
+
+test("every surface that renders CareTeamCard gates it behind the P4 flag", () => {
+  for (const relativePath of CARE_TEAM_CALL_SITES) {
+    const source = readRepoFile(relativePath);
+    assert.ok(
+      source.includes("<CareTeamCard"),
+      `${relativePath} should render CareTeamCard`,
+    );
+    // 직접 flag 검사 또는 P4 flag에서 파생된 게이트 변수(showCareTeam) 중 하나로
+    // 반드시 fail-closed 게이팅되어야 한다.
+    const directlyGated = /isCoreJourneyEnabled\(\s*["']P4["']\s*\)/.test(source);
+    const derivedGate =
+      /const\s+showCareTeam\s*=\s*isCoreJourneyEnabled\(\s*["']P4["']\s*\)/.test(
+        source,
+      ) && /showCareTeam\s*&&\s*<CareTeamCard/.test(source);
+    assert.ok(
+      directlyGated || derivedGate,
+      `${relativePath} must gate CareTeamCard behind the P4 flag (fail-closed)`,
+    );
+  }
 });
