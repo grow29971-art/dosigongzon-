@@ -15,7 +15,7 @@ import { createCareLog, type CareType } from "@/lib/care-logs-repo";
 import { thumbnailUrl } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { kstTodayStartIso } from "@/lib/kst";
-import { prioritizePendingFeed } from "@/lib/care-inbox";
+import { prioritizePendingFeed, countPendingFeed } from "@/lib/care-inbox";
 
 interface CatRow {
   id: string;
@@ -103,6 +103,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
 
   if (!cats || cats.length === 0) return null;
   const doneCount = cats.filter((c) => c.doneTypes.includes("feed")).length;
+  const pendingCount = countPendingFeed(cats);
   const displayedCats = careInboxMode
     ? prioritizePendingFeed(cats)
     : cats;
@@ -117,7 +118,9 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
             className="text-[10.5px] font-extrabold px-2 py-0.5 chip-square"
             style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}
           >
-            {doneCount}/{cats.length} 오늘 밥
+            {careInboxMode && pendingCount > 0
+              ? `아직 ${pendingCount}마리`
+              : `${doneCount}/${cats.length} 오늘 밥`}
           </span>
         </div>
         <Link href="/mypage" className="flex items-center gap-0.5 text-[12px] font-bold text-text-light">
