@@ -7,7 +7,9 @@ import {
   ArrowLeft, Loader2, Inbox, Clock, CheckCircle2, MessageSquare,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-import { listInquiries, INQUIRY_STATUS_LABELS, INQUIRY_STATUS_COLORS, type Inquiry } from "@/lib/support-repo";
+import { listInquiries, listMyReports, INQUIRY_STATUS_LABELS, INQUIRY_STATUS_COLORS, type Inquiry } from "@/lib/support-repo";
+import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
+import { buildMyReportsPanel, myReportsPanelHasContent, type MyReportsPanel } from "@/lib/report-status";
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleString("ko-KR", {
@@ -23,12 +25,42 @@ export default function MyInquiriesPage() {
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
+  // P5 신고 상태 추적: flag가 켜졌을 때만 내가 접수한 신고의 진행 상태 패널을
+  // 이 화면(내 문의) 상단에 함께 보여준다. flag off 또는 kill switch on이면
+  // 아래 배선이 모두 no-op이라 기존 내 문의 화면이 그대로 유지된다(fail-closed).
+  const showReportStatus = isCoreJourneyEnabled("P5");
+  const [reportsPanel, setReportsPanel] = useState<MyReportsPanel | null>(null);
+
   useEffect(() => {
     if (!user) return;
     listInquiries()
       .then((all) => setItems(all.filter((i) => i.user_id === user.id)))
       .finally(() => setLoading(false));
   }, [user]);
+
+  useEffect(() => {
+    if (!user || !showReportStatus) {
+      // Clear any previously loaded panel on logout / flag-off so a stale
+      // reporter panel can never linger. This is a one-time reset on
+      // user/flag change (not a per-render cascade), so the synchronous
+      // setState here is a known false positive.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setReportsPanel(null);
+      return;
+    }
+    let alive = true;
+    listMyReports()
+      .then((rows) => {
+        if (alive) setReportsPanel(buildMyReportsPanel(rows));
+      })
+      .catch(() => {
+        // fail-safe: 신고 목록 조회 실패는 내 문의 화면을 막지 않는다.
+        if (alive) setReportsPanel(null);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [user, showReportStatus]);
 
   if (authLoading || loading) {
     return (
@@ -51,6 +83,8 @@ export default function MyInquiriesPage() {
 
   const pending = items.filter((i) => i.status === "pending").length;
   const replied = items.filter((i) => i.status === "replied").length;
+  const showReportsPanel =
+    showReportStatus && myReportsPanelHasContent(reportsPanel);
 
   return (
     <div className="px-4 pt-14 pb-24 max-w-[720px] mx-auto">
@@ -85,6 +119,36 @@ export default function MyInquiriesPage() {
           )}
         </div>
       </div>
+
+      {/* P5 내 신고 상태 (flag on & 접수한 신고가 있을 때만) */}
+      {showReportsPanel && reportsPanel && (
+        <div
+          className="mb-5 rounded-2xl bg-white overflow-hidden"
+          style={{ border: "1px solid rgba(0,0,0,0.05)", boxShadow: "var(--shadow-card)" }}
+        >
+          <div className="px-4 pt-3.5 pb-2">
+            <div className="flex items-baseline gap-2">
+              <h2 className="text-[14px] font-extrabold text-text-main">내 신고 상태</h2>
+              <span className="text-[11px] text-text-sub ml-auto">{reportsPanel.headline}</span>
+            </div>
+          </div>
+          <div style={{ borderTop: "1px solid rgba(0,0,0,0.05)" }}>
+            {reportsPanel.items.map((it) => (
+              <div
+                key={it.id}
+                className="px-4 py-3"
+                style={{
+                  borderBottom: "1px solid rgba(0,0,0,0.04)",
+                  opacity: it.closed ? 0.65 : 1,
+                }}
+              >
+                <p className="text-[12.5px] font-bold text-text-main">{it.line}</p>
+                <p className="text-[11.5px] text-text-sub mt-0.5">{it.detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* 빈 상태 */}
       {items.length === 0 && (
