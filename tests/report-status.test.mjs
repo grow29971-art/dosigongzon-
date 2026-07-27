@@ -17,6 +17,7 @@ import {
   formatReporterReportLine,
   orderMyReportsForReporter,
   buildMyReportsPanel,
+  myReportsPanelHasContent,
 } from "../lib/report-status.ts";
 
 const KNOWN = ["pending", "reviewed", "resolved", "dismissed"];
@@ -306,4 +307,23 @@ test("buildMyReportsPanel fails safe on malformed input (empty panel, neutral he
     assert.equal(panel.closedCount, 0);
     assert.equal(panel.headline, "아직 접수한 신고가 없어요.");
   }
+});
+
+
+test("myReportsPanelHasContent is true only when the panel has rows", () => {
+  const rows = [
+    { id: "1", reason: "spam", status: "pending", created_at: "2026-07-20T00:00:00Z" },
+  ];
+  assert.equal(myReportsPanelHasContent(buildMyReportsPanel(rows)), true);
+  // Empty (no reports filed yet) -> nothing worth rendering.
+  assert.equal(myReportsPanelHasContent(buildMyReportsPanel([])), false);
+});
+
+test("myReportsPanelHasContent fails safe on malformed panels", () => {
+  // null / non-object / missing or non-array items -> treated as empty.
+  for (const bad of [undefined, null, "nope", 42, {}, { items: null }, { items: "x" }]) {
+    assert.equal(myReportsPanelHasContent(bad), false);
+  }
+  // A corrupted numeric total must not override the real (empty) items array.
+  assert.equal(myReportsPanelHasContent({ items: [], total: 99 }), false);
 });

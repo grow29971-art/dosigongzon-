@@ -385,3 +385,21 @@ export function buildMyReportsPanel(
     closedCount: view.closedCount,
   };
 }
+
+/**
+ * Whether a reporter panel has any report row worth rendering. Lets a UI
+ * skip the whole "my reports" surface (instead of drawing an empty box with
+ * only a neutral headline) when the reporter has filed nothing yet.
+ *
+ * Pure and fail-safe: a null / malformed panel, or one whose `items` is not a
+ * real array, is treated as empty (false) rather than throwing. Uses the
+ * concrete `items` array length as the source of truth so a corrupted numeric
+ * `total` can never make an empty panel look non-empty.
+ */
+export function myReportsPanelHasContent(
+  panel: MyReportsPanel | null | undefined,
+): boolean {
+  if (!panel || typeof panel !== "object") return false;
+  const { items } = panel as MyReportsPanel;
+  return Array.isArray(items) && items.length > 0;
+}
