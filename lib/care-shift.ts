@@ -20,8 +20,11 @@ export const CARE_SHIFT_MAX_FUTURE_MS = 60 * 24 * 60 * 60 * 1000;
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+// RFC 3339는 시각 오프셋 'Z'와 날짜-시각 구분자 'T'의 소문자('z'/'t')도
+// 유효한 형식으로 허용한다. UI의 toISOString()은 대문자만 보내지만,
+// 우회 요청이 표준에 맞는 소문자 형식을 보내도 일관되게 통과해야 한다.
 const RFC3339_TIMESTAMP_PATTERN =
-  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{1,3})?(?:Z|[+-](\d{2}):(\d{2}))$/;
+  /^(\d{4})-(\d{2})-(\d{2})[Tt](\d{2}):(\d{2}):(\d{2})(?:\.\d{1,3})?(?:[Zz]|[+-](\d{2}):(\d{2}))$/;
 
 export function isCareShiftUuid(value: string): boolean {
   return UUID_PATTERN.test(value);

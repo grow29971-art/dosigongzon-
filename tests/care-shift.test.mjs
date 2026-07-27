@@ -143,6 +143,15 @@ test("care shift timestamps reject RFC 3339 offsets beyond 14 hours", () => {
   assert.equal(isCareShiftTimestamp("2026-07-27T10:00:00-15:00"), false);
 });
 
+test("care shift timestamps accept lowercase RFC 3339 z and t", () => {
+  assert.equal(isCareShiftTimestamp("2026-07-27T01:30:00z"), true);
+  assert.equal(isCareShiftTimestamp("2026-07-27t01:30:00Z"), true);
+  assert.equal(isCareShiftTimestamp("2026-07-27t01:30:00z"), true);
+  // 소문자만 허용하고 다른 구분자는 여전히 거절해야 한다.
+  assert.equal(isCareShiftTimestamp("2026-07-27x01:30:00Z"), false);
+  assert.equal(isCareShiftTimestamp("2026-07-27T24:00:00z"), false);
+});
+
 test("an assignee can accept a request and complete an accepted shift", () => {
   assert.equal(getNextCareShiftStatus("requested", "assignee"), "accepted");
   assert.equal(getNextCareShiftStatus("accepted", "assignee"), "completed");
