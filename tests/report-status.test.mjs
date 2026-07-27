@@ -16,6 +16,7 @@ import {
   summarizeMyReportsHeadline,
   formatReporterReportLine,
   orderMyReportsForReporter,
+  buildMyReportsPanel,
 } from "../lib/report-status.ts";
 
 const KNOWN = ["pending", "reviewed", "resolved", "dismissed"];
@@ -267,4 +268,42 @@ test("buildMyReportsView orders open reports before closed ones", () => {
   assert.equal(view.total, 4);
   assert.equal(view.openCount, 2);
   assert.equal(view.closedCount, 2);
+});
+
+test("buildMyReportsPanel composes a render-ready panel (headline + items)", () => {
+  const rows = [
+    { id: "1", reason: "spam", status: "resolved", created_at: "2026-07-27T03:00:00.000Z" },
+    { id: "2", reason: "abuse", status: "pending", created_at: "2026-07-27T02:00:00.000Z" },
+    { id: "3", reason: "other", status: "dismissed", created_at: "2026-07-27T01:00:00.000Z" },
+    { id: "4", reason: "spam", status: "reviewed", created_at: "2026-07-27T00:00:00.000Z" },
+  ];
+  const panel = buildMyReportsPanel(rows);
+  // Same open-first ordering and counts as the underlying view model.
+  assert.deepEqual(panel.items.map((i) => i.id), ["2", "4", "1", "3"]);
+  assert.equal(panel.total, 4);
+  assert.equal(panel.openCount, 2);
+  assert.equal(panel.closedCount, 2);
+  // Mixed headline.
+  assert.equal(panel.headline, "진행 중 2건 · 완료 2건");
+  // Each item is fully pre-formatted: non-empty line, detail, boolean closed.
+  for (const item of panel.items) {
+    assert.equal(typeof item.id, "string");
+    assert.ok(item.line.length > 0, `line for ${item.id}`);
+    assert.ok(item.detail.length > 0, `detail for ${item.id}`);
+    assert.equal(typeof item.closed, "boolean");
+  }
+  // Open item (pending) not closed; terminal item (resolved) closed.
+  assert.equal(panel.items.find((i) => i.id === "2").closed, false);
+  assert.equal(panel.items.find((i) => i.id === "1").closed, true);
+});
+
+test("buildMyReportsPanel fails safe on malformed input (empty panel, neutral headline)", () => {
+  for (const bad of [undefined, null, "nope", 42, {}]) {
+    const panel = buildMyReportsPanel(bad);
+    assert.deepEqual(panel.items, []);
+    assert.equal(panel.total, 0);
+    assert.equal(panel.openCount, 0);
+    assert.equal(panel.closedCount, 0);
+    assert.equal(panel.headline, "아직 접수한 신고가 없어요.");
+  }
 });

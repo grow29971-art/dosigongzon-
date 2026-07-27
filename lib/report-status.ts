@@ -322,3 +322,66 @@ function formatReporterDate(value: string | null | undefined): string {
     return "";
   }
 }
+
+/**
+ * One render-ready row for the reporter "my reports" panel. Everything the
+ * UI needs to draw a single item without any additional logic: a stable key,
+ * the pre-formatted one-line summary, the reporter-voice detail sentence, and
+ * whether the report is terminal (so the UI can dim / group closed items).
+ */
+export interface MyReportsPanelItem {
+  id: string;
+  line: string;
+  detail: string;
+  closed: boolean;
+}
+
+/**
+ * A fully render-ready reporter panel: a single headline plus per-report
+ * rows, all pre-formatted. Lets a future UI render the "내 신고 상태" surface
+ * with zero formatting logic of its own.
+ */
+export interface MyReportsPanel {
+  headline: string;
+  items: MyReportsPanelItem[];
+  total: number;
+  openCount: number;
+  closedCount: number;
+}
+
+/**
+ * Compose the full reporter-facing panel from raw report rows in one pure,
+ * fail-safe call. It layers the existing view model (buildMyReportsView),
+ * headline (summarizeMyReportsHeadline), and line formatter
+ * (formatReporterReportLine) into a single render-ready object so the UI can
+ * map straight over `items` and print `headline` with no logic of its own.
+ *
+ * Pure and fail-safe: a non-array / malformed input yields an empty panel
+ * with the neutral headline rather than throwing, and each row is projected
+ * through the fail-safe helpers so a bad row can never crash the panel or
+ * mislead the reporter. Reads no operator-only fields and introduces no new
+ * statuses, columns, routes, or mutations. `items` preserves the open-first,
+ * newest-first-within-group ordering from buildMyReportsView, and
+ * openCount + closedCount always equals total.
+ */
+export function buildMyReportsPanel(
+  reports:
+    | ReadonlyArray<Pick<Report, "id" | "reason" | "status" | "created_at">>
+    | null
+    | undefined,
+): MyReportsPanel {
+  const view = buildMyReportsView(reports);
+  const items: MyReportsPanelItem[] = view.reports.map((summary) => ({
+    id: summary.id,
+    line: formatReporterReportLine(summary),
+    detail: summary.status.detail,
+    closed: summary.closed === true,
+  }));
+  return {
+    headline: summarizeMyReportsHeadline(view),
+    items,
+    total: view.total,
+    openCount: view.openCount,
+    closedCount: view.closedCount,
+  };
+}
