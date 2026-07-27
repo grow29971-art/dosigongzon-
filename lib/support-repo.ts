@@ -114,6 +114,34 @@ export async function listReports(): Promise<Report[]> {
   return (data ?? []) as Report[];
 }
 
+/**
+ * P5 신고 상태 추적 — 신고자 관점 읽기 전용 조회.
+ *
+ * listReports()는 운영진용(전체 조회)이라 신고자가 자기 신고 상태를 따라가는
+ * P5 "신고 상태 추적"에는 맞지 않는다. 이 함수는 현재 로그인한 사용자가
+ * reporter_id로 남긴 신고만 최신순으로 돌려주는 순수 읽기(SELECT) 헬퍼다.
+ * 새 스키마·컬럼·라우트·뮤테이션을 만들지 않고 기존 reports 테이블만 조회하며,
+ * 실제 가시성은 기존 RLS가 다시 제한한다(방어 심층). 미로그인·오류는 예외를
+ * 던지지 않고 빈 배열로 fail-safe 처리해, 조회 실패가 신고자 화면을 깨지 않는다.
+ */
+export async function listMyReports(): Promise<Report[]> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("reports")
+    .select("*")
+    .eq("reporter_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("[support-repo] listMyReports failed:", error);
+    return [];
+  }
+  return (data ?? []) as Report[];
+}
+
 export async function updateReportStatus(
   id: string,
   status: ReportStatus,
