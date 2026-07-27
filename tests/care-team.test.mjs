@@ -199,3 +199,40 @@ test("CareTeamCard links only through the contract (no hardcoded route href)", (
     "CareTeamCard must iterate the contract via careTeamSections()",
   );
 });
+
+// ─────────────────────────────────────────────
+// P4 불변식(기존 기능 삭제 금지): CareTeamCard는 각 화면의 2차 영역에
+//   "더해" 보여주는 진입 카드일 뿐, 그 화면의 기존 핵심 콘텐츠를 대체·삭제
+//   해서는 안 된다. 미래 편집이 CareTeamCard를 배선하며 실수로 기존 주요
+//   내용을 걷어내면(예: 홈의 서클 빠른 진입, 서클의 돌봄 교대, 커뮤니티의
+//   글쓰기, 지도의 학대 경보) 이 소스 감시가 즉시 실패한다.
+// ─────────────────────────────────────────────
+
+const CARE_TEAM_SURFACE_ANCHORS = {
+  // 홈: P1 오늘의 돌봄 인박스 + 서클 빠른 진입은 유지되어야 한다.
+  "app/components/HomeAuthed.tsx": ["careInbox", "MyCircleQuickEntry"],
+  // 서클: P3 돌봄 교대 흐름은 유지되어야 한다.
+  "app/(main)/mypage/circle/page.tsx": ["/api/care-shifts"],
+  // 커뮤니티: 글쓰기 프롬프트는 유지되어야 한다.
+  "app/(main)/community/page.tsx": ["WritePrompt"],
+  // 지도: Kakao 지도 인스턴스와 상세 도구는 유지되어야 한다.
+  "app/(main)/map/page.tsx": ["mapInstanceRef", "detailToolsVisible"],
+};
+
+test("CareTeamCard is added alongside, not replacing, each surface's existing content", () => {
+  for (const relativePath of CARE_TEAM_CALL_SITES) {
+    const source = readRepoFile(relativePath);
+    // 이 화면들은 여전히 CareTeamCard를 렌더한다(추가 위치).
+    assert.ok(
+      source.includes("<CareTeamCard"),
+      `${relativePath} should still render CareTeamCard`,
+    );
+    // 그리고 이 화면의 기존 핵심 콘텐츠 앵커도 그대로 남아 있어야 한다.
+    for (const anchor of CARE_TEAM_SURFACE_ANCHORS[relativePath]) {
+      assert.ok(
+        source.includes(anchor),
+        `${relativePath} must keep existing content anchor "${anchor}" (P4 must not delete existing features)`,
+      );
+    }
+  }
+});
