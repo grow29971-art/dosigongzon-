@@ -67,6 +67,7 @@ export function findCareTeamSection(
  * href(현재 경로)로 통합 화면 섹션을 찾는다. 링크 대상 페이지가 돌봄팀
  * 하위 섹션 중 어디에 있는지 판별해 강조 표시 등에 쓸 수 있다.
  * - 쿼리스트링/해시(`/map?foo`, `/circle#bar`)는 경로 부분만 비교한다.
+ * - 끝의 슬래시(`/circle/`)는 무시하고 계약 경로와 같게 취급한다.
  * - 알 수 없는 경로·비문자열은 undefined를 반환하고 예외를 던지지 않는다.
  * - 새 URL을 만들지 않으며 계약의 href만 참조한다(불변식 유지).
  */
@@ -74,7 +75,10 @@ export function careTeamSectionByHref(
   href: string | null | undefined,
 ): CareTeamSection | undefined {
   if (typeof href !== "string") return undefined;
-  const path = href.split(/[?#]/, 1)[0];
-  if (!path) return undefined;
+  const rawPath = href.split(/[?#]/, 1)[0];
+  if (!rawPath) return undefined;
+  // 끝 슬래시 정규화: `/circle/` → `/circle` (루트 `/`는 그대로 둔다).
+  const path =
+    rawPath.length > 1 ? rawPath.replace(/\/+$/, "") || "/" : rawPath;
   return CARE_TEAM_SECTIONS.find((section) => section.href === path);
 }

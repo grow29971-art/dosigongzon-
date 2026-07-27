@@ -64,6 +64,17 @@ test("careTeamSectionByHref ignores query string and hash (path only)", () => {
   assert.equal(careTeamSectionByHref("/community?tab=1#top")?.key, "community");
 });
 
+test("careTeamSectionByHref ignores a trailing slash (path normalization)", () => {
+  assert.equal(careTeamSectionByHref("/circle/")?.key, "circle");
+  assert.equal(careTeamSectionByHref("/map/")?.key, "neighborhood");
+  assert.equal(careTeamSectionByHref("/community/?tab=1")?.key, "community");
+  // 여러 개의 끝 슬래시도 모두 제거한다.
+  assert.equal(careTeamSectionByHref("/circle//")?.key, "circle");
+  // 루트/부분 경로는 여전히 매칭되지 않는다.
+  assert.equal(careTeamSectionByHref("/"), undefined);
+  assert.equal(careTeamSectionByHref("/mapx/"), undefined);
+});
+
 test("careTeamSectionByHref is fail-safe for unknown / partial / non-string href", () => {
   assert.equal(careTeamSectionByHref("/nope"), undefined);
   assert.equal(careTeamSectionByHref("/mapx"), undefined);
