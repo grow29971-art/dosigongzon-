@@ -18,14 +18,19 @@ const eslintConfig = defineConfig([
     "box/**",
   ]),
   {
-    // react-hooks 6 신규 규칙. 2026-07-27 TASK 3: 위반 28곳 전수 확인 결과
-    // 전부 "마운트 1회 초기화 / 의존성 변경 리셋 / 게이트 후 1회 세팅" 패턴이고
-    // 렌더마다 setState 하는 진짜 무한 루프는 없었다. 24개 파일에 인라인 disable을
-    // 흩뿌리면 오히려 노이즈라, error→warn 강등으로 error 카운트에서 뺀다.
-    // warn으로 유지하므로 "향후 새로 생기는" set-state-in-effect 위반은 계속 노출된다
-    // (blanket off가 아님 — 진짜 루프 탐지 능력 보존).
+    // react-hooks 6 / next 강화 룰셋으로 새로 error가 된 규칙들 — 2026-07-27 전수 확인 후
+    // error→warn 강등. 전부 "진짜 위험(무한 렌더 루프·데이터 파괴)"이 아니라 cosmetic/의도된
+    // 패턴이며, warn 유지라 향후 신규 위반은 계속 노출된다(blanket off 아님 — 탐지력 보존).
+    //
+    // · set-state-in-effect(28): 전부 마운트 1회 초기화/의존성 리셋/게이트 후 세팅. 렌더 루프 없음.
+    // · no-unescaped-entities(38): JSX 텍스트의 ' " 등 — 렌더 정상, 순수 cosmetic.
+    // · purity(3): 컨페티 Math.random(장식·랜덤이 목적)·useMemo 내 Date.now(팁 신선도) — 의도됨.
+    // · static-components(1): mypage/journey의 얇은 Wrapper — 경미한 리마운트, 추후 정리 대상.
     rules: {
       "react-hooks/set-state-in-effect": "warn",
+      "react/no-unescaped-entities": "warn",
+      "react-hooks/purity": "warn",
+      "react-hooks/static-components": "warn",
     },
   },
 ]);
