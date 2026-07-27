@@ -147,3 +147,50 @@ export function summarizeReportForReporter(
     createdAt: report.created_at,
   };
 }
+
+/**
+ * Reporter-facing view model for the whole "my reports" list.
+ * A pure, fail-safe projection over the rows returned by listMyReports():
+ * it maps each row through summarizeReportForReporter and derives small
+ * aggregate counts the UI can show without any additional logic.
+ * Introduces no new statuses, columns, routes, or mutations.
+ */
+export interface MyReportsView {
+  /** Per-report reporter summaries, in the order given (listMyReports is newest-first). */
+  reports: ReporterReportSummary[];
+  /** Total number of reports. */
+  total: number;
+  /** Reports still in progress (not terminal) from the reporter's view. */
+  openCount: number;
+  /** Reports that reached a terminal state (resolved / dismissed). */
+  closedCount: number;
+}
+
+/**
+ * Build the reporter-facing "my reports" view model from raw report rows.
+ * Pure and fail-safe: a non-array input (null/undefined/malformed) yields an
+ * empty view rather than throwing, and each row is projected through the
+ * fail-safe summarizeReportForReporter so a bad row can never crash the list
+ * or mislead the reporter. openCount + closedCount always equals total.
+ */
+export function buildMyReportsView(
+  reports:
+    | ReadonlyArray<Pick<Report, "id" | "reason" | "status" | "created_at">>
+    | null
+    | undefined,
+): MyReportsView {
+  if (!Array.isArray(reports)) {
+    return { reports: [], total: 0, openCount: 0, closedCount: 0 };
+  }
+  const summaries = reports.map(summarizeReportForReporter);
+  const closedCount = summaries.reduce(
+    (acc, summary) => acc + (summary.closed ? 1 : 0),
+    0,
+  );
+  return {
+    reports: summaries,
+    total: summaries.length,
+    openCount: summaries.length - closedCount,
+    closedCount,
+  };
+}

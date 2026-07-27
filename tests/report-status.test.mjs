@@ -12,6 +12,7 @@ import {
   describeReportStatusForReporter,
   isReportClosedForReporter,
   summarizeReportForReporter,
+  buildMyReportsView,
 } from "../lib/report-status.ts";
 
 const KNOWN = ["pending", "reviewed", "resolved", "dismissed"];
@@ -94,4 +95,37 @@ test("summarizeReportForReporter fails safe on malformed reason/status", () => {
     assert.equal(s.status.title, "접수됨");
     assert.equal(s.closed, false);
   }
+});
+
+test("buildMyReportsView projects rows and derives open/closed counts", () => {
+  const rows = [
+    { id: "a", reason: "spam", status: "pending", created_at: "2026-07-27T03:00:00.000Z" },
+    { id: "b", reason: "abuse", status: "reviewed", created_at: "2026-07-27T02:00:00.000Z" },
+    { id: "c", reason: "other", status: "resolved", created_at: "2026-07-27T01:00:00.000Z" },
+    { id: "d", reason: "false_info", status: "dismissed", created_at: "2026-07-27T00:00:00.000Z" },
+  ];
+  const view = buildMyReportsView(rows);
+  assert.equal(view.total, 4);
+  assert.equal(view.openCount, 2); // pending + reviewed
+  assert.equal(view.closedCount, 2); // resolved + dismissed
+  assert.equal(view.openCount + view.closedCount, view.total);
+  // order preserved (newest-first as given by listMyReports)
+  assert.deepEqual(view.reports.map((r) => r.id), ["a", "b", "c", "d"]);
+  // each entry is a fail-safe reporter summary
+  assert.equal(view.reports[1].status.title, "확인 중");
+  assert.equal(view.reports[2].closed, true);
+});
+
+test("buildMyReportsView fails safe on non-array / malformed rows", () => {
+  for (const bad of [undefined, null, "nope", 42, {}]) {
+    const view = buildMyReportsView(bad);
+    assert.deepEqual(view, { reports: [], total: 0, openCount: 0, closedCount: 0 });
+  }
+  // malformed rows inside a real array still project (fail-safe per row)
+  const view = buildMyReportsView([
+    { id: "x", reason: "weird", status: "???", created_at: "" },
+  ]);
+  assert.equal(view.total, 1);
+  assert.equal(view.openCount, 1); // malformed status -> non-terminal
+  assert.equal(view.reports[0].reasonLabel, "기타");
 });
