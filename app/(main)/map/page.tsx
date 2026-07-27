@@ -1052,34 +1052,44 @@ export default function MapPage() {
 
     const el = document.createElement("div");
     el.style.cssText = "position:relative;width:0;height:0;pointer-events:none;";
+    // 치비 캐릭터: 큰 눈 + 볼터치 + 고양이 비니(냥이앱 테마). 비니/브림에 논바이너리
+    // 프라이드 컬러(보라#9C59D1·노랑#FCF434), 살짝 통통 살구빛 얼굴.
     el.innerHTML = `
-      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;">
-        <div style="
-          width:40px;height:40px;border-radius:50%;
-          background:linear-gradient(155deg,#FCF434 0%,#FFFFFF 45%,#9C59D1 100%);
-          border:2.5px solid #fff;
-          box-shadow:0 3px 9px rgba(44,44,44,0.30);
-          display:flex;align-items:center;justify-content:center;
-        ">
-          <svg width="27" height="27" viewBox="0 0 27 27" fill="none" aria-hidden="true">
-            <!-- 머리 -->
-            <circle cx="13.5" cy="10.2" r="5.3" fill="#F4C89A"/>
-            <!-- 헤어(젠더 뉴트럴) -->
-            <path d="M8.1 9.8 a5.4 5.4 0 0 1 10.8 0 c0 -3 -2.4 -5.4 -5.4 -5.4 s-5.4 2.4 -5.4 5.4 Z" fill="#4A3B33"/>
-            <!-- 눈 -->
-            <circle cx="11.6" cy="10.4" r="0.85" fill="#2C2C2C"/>
-            <circle cx="15.4" cy="10.4" r="0.85" fill="#2C2C2C"/>
-            <!-- 미소 -->
-            <path d="M11.7 12.4 q1.8 1.4 3.6 0" stroke="#2C2C2C" stroke-width="0.95" stroke-linecap="round" fill="none"/>
-            <!-- 어깨/몸(논바이너리 보라) -->
-            <path d="M5.6 23.5 c0 -4.4 3.6 -6.3 7.9 -6.3 s7.9 1.9 7.9 6.3 Z" fill="#9C59D1"/>
-          </svg>
-        </div>
+      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);z-index:2;
+        filter:drop-shadow(0 3px 5px rgba(44,44,44,0.35));">
+        <svg width="52" height="52" viewBox="0 0 52 52" fill="none" aria-hidden="true">
+          <!-- 흰 테두리 원판 -->
+          <circle cx="26" cy="26" r="20.5" fill="#FFF7EC" stroke="#FFFFFF" stroke-width="3"/>
+          <!-- 얼굴 -->
+          <circle cx="26" cy="29" r="13.5" fill="#FBD9AE"/>
+          <!-- 고양이 귀 (비니) -->
+          <path d="M13.5 17 L11.5 8.5 L20 13.5 Z" fill="#9C59D1"/>
+          <path d="M14.6 15.4 L13.4 10.4 L18 13.2 Z" fill="#F7A8C4"/>
+          <path d="M38.5 17 L40.5 8.5 L32 13.5 Z" fill="#9C59D1"/>
+          <path d="M37.4 15.4 L38.6 10.4 L34 13.2 Z" fill="#F7A8C4"/>
+          <!-- 비니 돔 (보라) -->
+          <path d="M12.5 22 C12.5 12.5 18.5 8 26 8 C33.5 8 39.5 12.5 39.5 22 Z" fill="#9C59D1"/>
+          <!-- 비니 브림 (노랑, 접힌 밴드) -->
+          <rect x="11" y="19.5" width="30" height="6.4" rx="3.2" fill="#FCF434"/>
+          <rect x="11" y="19.5" width="30" height="6.4" rx="3.2" fill="#000000" opacity="0.06"/>
+          <!-- 볼터치 -->
+          <ellipse cx="16.5" cy="33" rx="3" ry="2.2" fill="#F79FC0" opacity="0.75"/>
+          <ellipse cx="35.5" cy="33" rx="3" ry="2.2" fill="#F79FC0" opacity="0.75"/>
+          <!-- 큰 눈 -->
+          <ellipse cx="20.7" cy="30.2" rx="3" ry="3.6" fill="#3B2A28"/>
+          <ellipse cx="31.3" cy="30.2" rx="3" ry="3.6" fill="#3B2A28"/>
+          <circle cx="21.9" cy="28.9" r="1.15" fill="#FFFFFF"/>
+          <circle cx="32.5" cy="28.9" r="1.15" fill="#FFFFFF"/>
+          <circle cx="19.9" cy="31.4" r="0.55" fill="#FFFFFF" opacity="0.8"/>
+          <circle cx="30.5" cy="31.4" r="0.55" fill="#FFFFFF" opacity="0.8"/>
+          <!-- 미소 -->
+          <path d="M23 35 Q26 37.6 29 35" stroke="#8A5A46" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+        </svg>
       </div>
       <div style="
         position:absolute;left:50%;top:50%;
-        width:40px;height:40px;border-radius:50%;
-        background:rgba(156,89,209,0.32);
+        width:44px;height:44px;border-radius:50%;
+        background:rgba(156,89,209,0.30);
         animation:dosi-user-pulse 1.8s ease-out infinite;
         z-index:1;
       "></div>
