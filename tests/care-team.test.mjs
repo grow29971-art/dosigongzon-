@@ -217,6 +217,31 @@ test("CareTeamCard links only through the contract (no hardcoded route href)", (
 });
 
 // ─────────────────────────────────────────────
+// P4 불변식(현재 위치 강조): '현재 위치' 배지 표시는 반드시 현재 경로를
+//   계약으로 역조회한 결과(careTeamSectionByHref(pathname))로만 결정되어야
+//   한다. 미래 편집이 강조 판단을 하드코딩 경로 비교나 별도 상태로 바꾸면
+//   계약과 카드의 '현재 위치' 표시가 조용히 어긋난다. 소스 감시로 고정한다.
+// ─────────────────────────────────────────────
+
+test("CareTeamCard drives current-location highlight from careTeamSectionByHref(pathname)", () => {
+  const source = readRepoFile("app/components/CareTeamCard.tsx");
+  // 현재 경로는 usePathname()에서 오고, 강조 키는 계약 역조회로만 정한다.
+  assert.ok(
+    /usePathname\(\)/.test(source),
+    "CareTeamCard must read the current path via usePathname()",
+  );
+  assert.ok(
+    /careTeamSectionByHref\(\s*pathname\s*\)/.test(source),
+    "CareTeamCard must derive the current section from careTeamSectionByHref(pathname)",
+  );
+  // 현재 위치인 항목은 링크 대신 aria-current="page"로 표시한다(접근성 계약).
+  assert.ok(
+    /aria-current=["']page["']/.test(source),
+    'CareTeamCard must mark the current section with aria-current="page"',
+  );
+});
+
+// ─────────────────────────────────────────────
 // P4 불변식(기존 기능 삭제 금지): CareTeamCard는 각 화면의 2차 영역에
 //   "더해" 보여주는 진입 카드일 뿐, 그 화면의 기존 핵심 콘텐츠를 대체·삭제
 //   해서는 안 된다. 미래 편집이 CareTeamCard를 배선하며 실수로 기존 주요
