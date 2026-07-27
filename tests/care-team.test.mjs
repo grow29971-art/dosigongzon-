@@ -107,6 +107,22 @@ test("every section href is an absolute in-app route (starts with '/', no scheme
   }
 });
 
+test("findCareTeamSection and careTeamSectionByHref agree for every section (key<->href round-trip)", () => {
+  // 두 조회 함수는 같은 계약을 서로 다른 축(key vs href)으로 본다. 미래 편집이
+  // 어느 한쪽만 바꾸면(예: 새 섹션의 href가 정규화 후 자기 자신을 못 되찾음)
+  // 카드의 '현재 위치' 강조가 조용히 어긋난다. 두 방향을 함께 고정한다.
+  for (const section of CARE_TEAM_SECTIONS) {
+    // key로 찾은 섹션은 href로 되찾은 섹션과 같은 key여야 한다.
+    const byKey = findCareTeamSection(section.key);
+    assert.ok(byKey, `${section.key} must be findable by key`);
+    assert.equal(
+      careTeamSectionByHref(byKey.href)?.key,
+      section.key,
+      `${section.key}: findByKey -> byHref must return the same section`,
+    );
+  }
+});
+
 test("careTeamSectionByHref matches existing routes exactly", () => {
   assert.equal(careTeamSectionByHref("/mypage/circle")?.key, "circle");
   assert.equal(careTeamSectionByHref("/map")?.key, "neighborhood");
