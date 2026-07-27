@@ -26,6 +26,8 @@ import { useAuth } from "@/lib/auth-context";
 import LoginRequired from "@/app/components/LoginRequired";
 import PageIntroBanner from "@/app/components/PageIntroBanner";
 import CommunityWritePrompt from "@/app/components/CommunityWritePrompt";
+import CareTeamCard from "@/app/components/CareTeamCard";
+import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
 import UIListRow from "@/app/components/ui/ListRow";
 
 /* ═══ 카테고리 카드 데이터 ═══ */
@@ -149,6 +151,9 @@ export default function CommunityPage() {
 
   const visiblePosts = neighborhoodOnly ? posts.filter(filterByNeighborhood) : posts;
 
+  // P4 돌봄팀 통합: flag on(kill switch off)일 때만 돌봄팀 진입 카드 노출.
+  const showCareTeam = isCoreJourneyEnabled("P4");
+
   if (!mounted) return null;
 
   // 인기 게시글 3건 — 좋아요 + 댓글 + 조회수 가중 합산
@@ -215,6 +220,9 @@ export default function CommunityPage() {
 
       {/* 글쓰기 유도 — 글감 프롬프트 (빈 페이지 공포 ↓) */}
       <CommunityWritePrompt />
+
+      {/* P4 돌봄팀 통합 진입 카드 — flag off/kill switch on이면 렌더 안 함 */}
+      {showCareTeam && <CareTeamCard />}
 
       {/* ── 오늘 방문자 (누적 총 방문자 수) ── */}
       {todayVisit !== null && (
