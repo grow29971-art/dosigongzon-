@@ -13,6 +13,7 @@ import {
   isReportClosedForReporter,
   summarizeReportForReporter,
   buildMyReportsView,
+  summarizeMyReportsHeadline,
 } from "../lib/report-status.ts";
 
 const KNOWN = ["pending", "reviewed", "resolved", "dismissed"];
@@ -128,4 +129,42 @@ test("buildMyReportsView fails safe on non-array / malformed rows", () => {
   assert.equal(view.total, 1);
   assert.equal(view.openCount, 1); // malformed status -> non-terminal
   assert.equal(view.reports[0].reasonLabel, "기타");
+});
+
+test("summarizeMyReportsHeadline derives one line per open/closed mix", () => {
+  const empty = buildMyReportsView([]);
+  assert.equal(summarizeMyReportsHeadline(empty), "아직 접수한 신고가 없어요.");
+
+  const allOpen = buildMyReportsView([
+    { id: "a", reason: "spam", status: "pending", created_at: "2026-07-27T02:00:00.000Z" },
+    { id: "b", reason: "abuse", status: "reviewed", created_at: "2026-07-27T01:00:00.000Z" },
+  ]);
+  assert.equal(summarizeMyReportsHeadline(allOpen), "진행 중 2건");
+
+  const allClosed = buildMyReportsView([
+    { id: "c", reason: "other", status: "resolved", created_at: "2026-07-27T01:00:00.000Z" },
+  ]);
+  assert.equal(summarizeMyReportsHeadline(allClosed), "완료 1건");
+
+  const mixed = buildMyReportsView([
+    { id: "a", reason: "spam", status: "pending", created_at: "2026-07-27T03:00:00.000Z" },
+    { id: "b", reason: "abuse", status: "reviewed", created_at: "2026-07-27T02:00:00.000Z" },
+    { id: "c", reason: "other", status: "resolved", created_at: "2026-07-27T01:00:00.000Z" },
+  ]);
+  assert.equal(summarizeMyReportsHeadline(mixed), "진행 중 2건 · 완료 1건");
+});
+
+test("summarizeMyReportsHeadline fails safe on malformed view", () => {
+  for (const bad of [undefined, null, "nope", 42, [], {}]) {
+    assert.equal(summarizeMyReportsHeadline(bad), "아직 접수한 신고가 없어요.");
+  }
+  // negative / non-finite counts are rejected, not rendered
+  assert.equal(
+    summarizeMyReportsHeadline({ reports: [], total: 0, openCount: -3, closedCount: NaN }),
+    "아직 접수한 신고가 없어요.",
+  );
+  assert.equal(
+    summarizeMyReportsHeadline({ reports: [], total: 0, openCount: 1.5, closedCount: 2 }),
+    "완료 2건", // fractional open rejected, closed kept
+  );
 });

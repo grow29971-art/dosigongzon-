@@ -194,3 +194,40 @@ export function buildMyReportsView(
     closedCount,
   };
 }
+
+/**
+ * Build a single reporter-facing headline line for the "my reports" view.
+ * Pure and fail-safe: it derives one short Korean summary sentence from the
+ * view-model counts so a future UI can render it directly without any count
+ * formatting logic of its own. Introduces no new statuses, columns, routes,
+ * or mutations and reads no operator-only fields.
+ *
+ * Behaviour:
+ *  - empty list (total 0)      -> a neutral "no reports yet" line.
+ *  - all reports still open    -> "진행 중 N건".
+ *  - all reports terminal      -> "완료 N건".
+ *  - mixed                     -> "진행 중 N건 · 완료 M건".
+ *
+ * Fail-safe: a non-object / malformed input (or negative / non-finite
+ * counts) yields the same neutral empty-state line rather than throwing,
+ * so a broken view can never crash the header or show a misleading count.
+ */
+export function summarizeMyReportsHeadline(
+  view: MyReportsView | null | undefined,
+): string {
+  const EMPTY = "아직 접수한 신고가 없어요.";
+  if (!view || typeof view !== "object") return EMPTY;
+
+  const open = Number((view as MyReportsView).openCount);
+  const closed = Number((view as MyReportsView).closedCount);
+  // Reject anything that is not a safe, non-negative integer count.
+  const safeOpen =
+    Number.isSafeInteger(open) && open > 0 ? open : 0;
+  const safeClosed =
+    Number.isSafeInteger(closed) && closed > 0 ? closed : 0;
+
+  if (safeOpen === 0 && safeClosed === 0) return EMPTY;
+  if (safeClosed === 0) return `진행 중 ${safeOpen}건`;
+  if (safeOpen === 0) return `완료 ${safeClosed}건`;
+  return `진행 중 ${safeOpen}건 · 완료 ${safeClosed}건`;
+}
