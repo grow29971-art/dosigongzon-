@@ -100,6 +100,7 @@ import { createClient as createSupabaseClient } from "@/lib/supabase/client";
 const CareLogTab = dynamic(() => import("@/app/components/CareLogTab"), { ssr: false });
 const CatCard = dynamic(() => import("@/app/components/CatCard"), { ssr: false });
 import MapIntroModal from "@/app/components/MapIntroModal";
+import CareTeamCard from "@/app/components/CareTeamCard";
 import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, toggleCatLike, petCat, listMyLikedCatIds, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, VISIBILITY_MAP, type CatGender, type CatHealthStatus, type AdoptionStatus, type CatVisibility } from "@/lib/cats-repo";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
@@ -2236,6 +2237,10 @@ export default function MapPage() {
             </div>
           );
         })()}
+
+        {/* P4 돌봄팀 진입 카드 — P4 flag on + P2 상세 도구 열림일 때만 2차 영역에 노출.
+            지도(/map)는 이 카드의 '동네 채팅' 섹션이라 현재 위치 배지로 표시된다. */}
+        {isCoreJourneyEnabled("P4") && detailToolsVisible && <CareTeamCard />}
 
       </div>
 
