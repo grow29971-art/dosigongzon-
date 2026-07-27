@@ -125,3 +125,29 @@ test("every surface that renders CareTeamCard gates it behind the P4 flag", () =
     );
   }
 });
+
+// ─────────────────────────────────────────────
+// P4 불변식(기존 URL 유지): CareTeamCard는 새 라우트를 만들지 않고 오직
+//   lib/care-team.ts 계약의 href만 링크 대상으로 써야 한다. 미래 편집이
+//   컴포넌트에 raw 경로 문자열(href="/새경로")을 하드코딩하면 "기존 URL
+//   보존" 불변식이 조용히 깨진다. 소스 감시로 그 드리프트를 고정한다.
+// ─────────────────────────────────────────────
+
+test("CareTeamCard links only through the contract (no hardcoded route href)", () => {
+  const source = readRepoFile("app/components/CareTeamCard.tsx");
+  // 링크 대상은 계약(section.href)에서만 온다.
+  assert.ok(
+    /href=\{section\.href\}/.test(source),
+    "CareTeamCard must set Link href from the contract (section.href)",
+  );
+  // raw 경로 문자열(href="/...")을 직접 하드코딩하지 않는다 = 새 라우트 금지.
+  assert.ok(
+    !/href=["']\//.test(source),
+    "CareTeamCard must not hardcode a raw route href (P4 keeps existing URLs)",
+  );
+  // 카드가 그리는 섹션 목록은 계약 함수에서만 온다.
+  assert.ok(
+    /careTeamSections\(\)\.map/.test(source),
+    "CareTeamCard must iterate the contract via careTeamSections()",
+  );
+});
