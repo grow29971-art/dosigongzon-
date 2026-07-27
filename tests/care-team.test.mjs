@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   CARE_TEAM_SECTIONS,
   careTeamSections,
+  careTeamSectionByHref,
   findCareTeamSection,
 } from "../lib/care-team.ts";
 
@@ -49,4 +50,25 @@ test("findCareTeamSection is fail-safe for unknown / prototype / non-string keys
 test("every section key is unique and present in the exported contract", () => {
   const keys = CARE_TEAM_SECTIONS.map((s) => s.key);
   assert.equal(new Set(keys).size, keys.length);
+});
+
+test("careTeamSectionByHref matches existing routes exactly", () => {
+  assert.equal(careTeamSectionByHref("/circle")?.key, "circle");
+  assert.equal(careTeamSectionByHref("/map")?.key, "neighborhood");
+  assert.equal(careTeamSectionByHref("/community")?.key, "community");
+});
+
+test("careTeamSectionByHref ignores query string and hash (path only)", () => {
+  assert.equal(careTeamSectionByHref("/map?region=seoul")?.key, "neighborhood");
+  assert.equal(careTeamSectionByHref("/circle#invite")?.key, "circle");
+  assert.equal(careTeamSectionByHref("/community?tab=1#top")?.key, "community");
+});
+
+test("careTeamSectionByHref is fail-safe for unknown / partial / non-string href", () => {
+  assert.equal(careTeamSectionByHref("/nope"), undefined);
+  assert.equal(careTeamSectionByHref("/mapx"), undefined);
+  assert.equal(careTeamSectionByHref("map"), undefined);
+  assert.equal(careTeamSectionByHref(""), undefined);
+  assert.equal(careTeamSectionByHref(null), undefined);
+  assert.equal(careTeamSectionByHref(undefined), undefined);
 });
