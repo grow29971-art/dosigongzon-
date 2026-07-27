@@ -19,6 +19,7 @@ export default function MyCircleQuickEntry() {
 
   useEffect(() => {
     if (!user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- mount/user-change only: 로그아웃 상태를 1회 로딩 해제로 정착시킬 뿐 렌더마다 setState 하지 않는다(직후 `if (!user) return null`).
       setLoading(false);
       return;
     }
