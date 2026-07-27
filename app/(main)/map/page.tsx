@@ -891,20 +891,23 @@ export default function MapPage() {
     document.head.appendChild(script);
   }, [apiKey]);
 
-  // ── 접속 시 GPS 위치 요청 (거부해도 기본 중심으로 폴백) ──
-  // LBS 신고 전 측위 차단 — lib/geo.ts 참조
+  // ── 실시간 GPS 추적 (거부해도 기본 중심으로 폴백) ──
+  // LBS 신고 전 측위 차단 — lib/geo.ts 참조.
+  // watchPosition으로 유저가 움직이면 내 위치 마커도 따라 움직인다(2026-07-27).
   useEffect(() => {
     if (!GEOLOCATION_ENABLED) return;
     if (typeof navigator === "undefined" || !navigator.geolocation) return;
-    navigator.geolocation.getCurrentPosition(
+    const watchId = navigator.geolocation.watchPosition(
       (pos) => {
         setUserPos({ lat: pos.coords.latitude, lng: pos.coords.longitude });
       },
       () => {
         // geolocation 거부·실패 시 기본 중심 좌표 사용 (조용히)
       },
-      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60_000 },
+      // maximumAge 짧게 — 이동 중 신선한 좌표로 마커가 부드럽게 따라오게
+      { enableHighAccuracy: true, timeout: 10_000, maximumAge: 3_000 },
     );
+    return () => navigator.geolocation.clearWatch(watchId);
   }, []);
 
   // ── SDK 준비되면 지도 초기화 ──
@@ -1007,23 +1010,31 @@ export default function MapPage() {
     setVisibilityIntroOpen(true);
   }, [mapReady, isLoggedIn]);
 
-  // ── 지도 초기화 후에 GPS가 뒤늦게 도착하면 중심 이동 (단, cat 포커스 중이면 스킵) ──
+  // ── 지도 초기화 후 GPS 첫 좌표 도착 시 1회만 중심 이동 (단, cat 포커스 중이면 스킵) ──
+  // 실시간 추적(watchPosition)이라 매 업데이트마다 중심을 옮기면 지도가 계속 튕겨
+  // 사용자가 지도를 못 움직인다 → 최초 1회만 중심. 이후 재중심은 "내 위치" 버튼으로.
+  const userCenteredOnceRef = useRef(false);
   useEffect(() => {
     if (!mapReady || !userPos || !mapInstanceRef.current || !window.kakao) return;
-    if (catFocusHandledRef.current) return;
+    if (userCenteredOnceRef.current || catFocusHandledRef.current) return;
+    userCenteredOnceRef.current = true;
     const map = mapInstanceRef.current;
     map.setCenter(new window.kakao.maps.LatLng(userPos.lat, userPos.lng));
   }, [mapReady, userPos]);
 
-  // ── 내 위치 마커 (파란 점 + 펄스 링) ──
+  // ── 내 위치 마커 (논바이너리 캐릭터 + 펄스 링) ──
+  // 실시간 추적: 오버레이가 이미 있으면 위치만 갱신(부드럽게 이동), 없을 때만 생성.
+  // 캐릭터는 젠더 뉴트럴한 인물 + 논바이너리 프라이드 컬러(노랑#FCF434·흰색·보라#9C59D1·검정) 링.
   const userLocationOverlayRef = useRef<KakaoOverlay | null>(null);
   useEffect(() => {
     if (!mapReady || !userPos || !window.kakao) return;
     const map = mapInstanceRef.current;
+    const pos = new window.kakao.maps.LatLng(userPos.lat, userPos.lng);
 
-    // 기존 마커 제거
+    // 이미 마커가 있으면 위치만 이동 (이동 중 깜빡임/애니메이션 리셋 방지)
     if (userLocationOverlayRef.current) {
-      userLocationOverlayRef.current.setMap(null);
+      userLocationOverlayRef.current.setPosition(pos);
+      return;
     }
 
     // 한 번만 펄스 keyframes 주입
@@ -1032,8 +1043,8 @@ export default function MapPage() {
       style.id = "__user_location_pulse_css";
       style.textContent = `
         @keyframes dosi-user-pulse {
-          0%   { transform: translate(-50%, -50%) scale(1);   opacity: 0.55; }
-          100% { transform: translate(-50%, -50%) scale(2.6); opacity: 0;    }
+          0%   { transform: translate(-50%, -50%) scale(1);   opacity: 0.5; }
+          100% { transform: translate(-50%, -50%) scale(2.6); opacity: 0;   }
         }
       `;
       document.head.appendChild(style);
@@ -1042,18 +1053,33 @@ export default function MapPage() {
     const el = document.createElement("div");
     el.style.cssText = "position:relative;width:0;height:0;pointer-events:none;";
     el.innerHTML = `
+      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;">
+        <div style="
+          width:40px;height:40px;border-radius:50%;
+          background:linear-gradient(155deg,#FCF434 0%,#FFFFFF 45%,#9C59D1 100%);
+          border:2.5px solid #fff;
+          box-shadow:0 3px 9px rgba(44,44,44,0.30);
+          display:flex;align-items:center;justify-content:center;
+        ">
+          <svg width="27" height="27" viewBox="0 0 27 27" fill="none" aria-hidden="true">
+            <!-- 머리 -->
+            <circle cx="13.5" cy="10.2" r="5.3" fill="#F4C89A"/>
+            <!-- 헤어(젠더 뉴트럴) -->
+            <path d="M8.1 9.8 a5.4 5.4 0 0 1 10.8 0 c0 -3 -2.4 -5.4 -5.4 -5.4 s-5.4 2.4 -5.4 5.4 Z" fill="#4A3B33"/>
+            <!-- 눈 -->
+            <circle cx="11.6" cy="10.4" r="0.85" fill="#2C2C2C"/>
+            <circle cx="15.4" cy="10.4" r="0.85" fill="#2C2C2C"/>
+            <!-- 미소 -->
+            <path d="M11.7 12.4 q1.8 1.4 3.6 0" stroke="#2C2C2C" stroke-width="0.95" stroke-linecap="round" fill="none"/>
+            <!-- 어깨/몸(논바이너리 보라) -->
+            <path d="M5.6 23.5 c0 -4.4 3.6 -6.3 7.9 -6.3 s7.9 1.9 7.9 6.3 Z" fill="#9C59D1"/>
+          </svg>
+        </div>
+      </div>
       <div style="
         position:absolute;left:50%;top:50%;
-        transform:translate(-50%,-50%);
-        width:18px;height:18px;border-radius:50%;
-        background:#4A90E2;
-        box-shadow:0 0 0 3px rgba(255,255,255,0.95), 0 2px 6px rgba(0,0,0,0.25);
-        z-index:2;
-      "></div>
-      <div style="
-        position:absolute;left:50%;top:50%;
-        width:18px;height:18px;border-radius:50%;
-        background:rgba(74,144,226,0.35);
+        width:40px;height:40px;border-radius:50%;
+        background:rgba(156,89,209,0.32);
         animation:dosi-user-pulse 1.8s ease-out infinite;
         z-index:1;
       "></div>
@@ -1061,21 +1087,24 @@ export default function MapPage() {
 
     const ov = new window.kakao.maps.CustomOverlay({
       map,
-      position: new window.kakao.maps.LatLng(userPos.lat, userPos.lng),
+      position: pos,
       content: el,
       xAnchor: 0.5,
       yAnchor: 0.5,
       zIndex: 100,
     });
     userLocationOverlayRef.current = ov;
+  }, [mapReady, userPos]);
 
+  // 언마운트 시에만 내 위치 마커 제거 (실시간 갱신 중엔 유지)
+  useEffect(() => {
     return () => {
       if (userLocationOverlayRef.current) {
         userLocationOverlayRef.current.setMap(null);
         userLocationOverlayRef.current = null;
       }
     };
-  }, [mapReady, userPos]);
+  }, []);
 
   // ── 활동 지역 Circle 오버레이 ──
   useEffect(() => {
