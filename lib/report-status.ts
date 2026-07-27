@@ -231,3 +231,60 @@ export function summarizeMyReportsHeadline(
   if (safeOpen === 0) return `완료 ${safeClosed}건`;
   return `진행 중 ${safeOpen}건 · 완료 ${safeClosed}건`;
 }
+
+/**
+ * Format a single reporter report summary into one display line the UI can
+ * render directly, e.g. "확인 중 · 학대 조장 · 2026.07.27".
+ *
+ * Pure and fail-safe: it reads only the reporter-facing summary produced by
+ * summarizeReportForReporter (no operator-only fields) and never throws.
+ * A missing / malformed createdAt is simply omitted rather than rendered as
+ * "Invalid Date", so a broken row still yields a clean "<status> · <reason>"
+ * line. Introduces no new statuses, columns, routes, or mutations.
+ *
+ * The date is formatted as a KST (Asia/Seoul) calendar date so the line is
+ * stable regardless of the viewer's runtime timezone.
+ */
+export function formatReporterReportLine(
+  summary: ReporterReportSummary | null | undefined,
+): string {
+  if (!summary || typeof summary !== "object") return "";
+
+  const parts: string[] = [];
+
+  const title = (summary as ReporterReportSummary).status?.title;
+  if (typeof title === "string" && title.trim().length > 0) {
+    parts.push(title.trim());
+  }
+
+  const reasonLabel = (summary as ReporterReportSummary).reasonLabel;
+  if (typeof reasonLabel === "string" && reasonLabel.trim().length > 0) {
+    parts.push(reasonLabel.trim());
+  }
+
+  const dateLabel = formatReporterDate((summary as ReporterReportSummary).createdAt);
+  if (dateLabel) parts.push(dateLabel);
+
+  return parts.join(" · ");
+}
+
+// Format an ISO timestamp as a KST calendar date "YYYY.MM.DD". Fail-safe:
+// a missing / unparseable value returns "" (omitted from the line) rather
+// than "Invalid Date".
+function formatReporterDate(value: string | null | undefined): string {
+  if (typeof value !== "string" || value.trim().length === 0) return "";
+  const ms = Date.parse(value);
+  if (!Number.isFinite(ms)) return "";
+  try {
+    // en-CA yields ISO-like YYYY-MM-DD; convert to dot form for display.
+    const ymd = new Date(ms).toLocaleDateString("en-CA", {
+      timeZone: "Asia/Seoul",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    return ymd.replace(/-/g, ".");
+  } catch {
+    return "";
+  }
+}

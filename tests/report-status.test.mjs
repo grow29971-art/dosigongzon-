@@ -14,6 +14,7 @@ import {
   summarizeReportForReporter,
   buildMyReportsView,
   summarizeMyReportsHeadline,
+  formatReporterReportLine,
 } from "../lib/report-status.ts";
 
 const KNOWN = ["pending", "reviewed", "resolved", "dismissed"];
@@ -166,5 +167,55 @@ test("summarizeMyReportsHeadline fails safe on malformed view", () => {
   assert.equal(
     summarizeMyReportsHeadline({ reports: [], total: 0, openCount: 1.5, closedCount: 2 }),
     "완료 2건", // fractional open rejected, closed kept
+  );
+});
+
+test("formatReporterReportLine renders status · reason · KST date", () => {
+  const summary = summarizeReportForReporter({
+    id: "r1",
+    reason: "abuse",
+    status: "reviewed",
+    // 2026-07-27T00:00:00Z is 2026-07-27 09:00 KST -> same calendar day
+    created_at: "2026-07-27T00:00:00.000Z",
+  });
+  assert.equal(formatReporterReportLine(summary), "확인 중 · 학대 조장 · 2026.07.27");
+});
+
+test("formatReporterReportLine uses KST calendar day across UTC midnight", () => {
+  // 2026-07-26T20:00:00Z is 2026-07-27 05:00 KST -> KST date is the 27th
+  const summary = summarizeReportForReporter({
+    id: "r2",
+    reason: "spam",
+    status: "resolved",
+    created_at: "2026-07-26T20:00:00.000Z",
+  });
+  assert.equal(formatReporterReportLine(summary), "처리 완료 · 스팸/도배 · 2026.07.27");
+});
+
+test("formatReporterReportLine omits an unparseable date, keeps status · reason", () => {
+  for (const badDate of ["", "not-a-date", "Invalid Date"]) {
+    const summary = summarizeReportForReporter({
+      id: "rx",
+      reason: "other",
+      status: "pending",
+      created_at: badDate,
+    });
+    assert.equal(formatReporterReportLine(summary), "접수됨 · 기타");
+  }
+});
+
+test("formatReporterReportLine fails safe on null / malformed summary", () => {
+  for (const bad of [undefined, null, "nope", 42, []]) {
+    assert.equal(formatReporterReportLine(bad), "");
+  }
+  // a summary with a missing status object still renders reason · date
+  assert.equal(
+    formatReporterReportLine({
+      id: "r",
+      reasonLabel: "기타",
+      closed: false,
+      createdAt: "2026-07-27T00:00:00.000Z",
+    }),
+    "기타 · 2026.07.27",
   );
 });
