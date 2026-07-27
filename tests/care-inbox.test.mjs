@@ -38,3 +38,12 @@ test("밥을 아직 못 챙긴 아이 수를 센다", () => {
 test("빈 인박스의 미완료 수는 0이다", () => {
   assert.equal(countPendingFeed([]), 0);
 });
+
+test("모두 밥을 못 챙긴 경우 미완료 수는 전체 마리 수와 같다 (홈 배지)", () => {
+  const cats = [
+    { id: "a", doneTypes: [] },
+    { id: "b", doneTypes: ["water"] },
+    { id: "c", doneTypes: ["health", "shelter"] },
+  ];
+  assert.equal(countPendingFeed(cats), cats.length);
+});
