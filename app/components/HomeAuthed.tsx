@@ -94,6 +94,7 @@ import {
 } from "@/lib/activity-regions-repo";
 import { sanitizeImageUrl, sanitizeHttpUrl } from "@/lib/url-validate";
 import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
+import CareTeamCard from "@/app/components/CareTeamCard";
 
 import { CAT_FACTS } from "@/lib/cat-facts";
 
@@ -957,6 +958,9 @@ export default function HomeAuthed({
       ) : (
         <>
           {SHOW_CIRCLE_ENTRY && user && <MyCircleQuickEntry />}
+          {/* P4 돌봄팀 통합 진입 카드 — 서클·동네 채팅·커뮤니티를 홈에서 오가는 앵커.
+              flag off / kill switch on이면 렌더하지 않아 기존 홈이 그대로 유지된다. */}
+          {isCoreJourneyEnabled("P4") && user && <CareTeamCard />}
           {SHOW_EVENT_BANNERS && user && myRegions.length > 0 && <FoundingMemberBanner />}
         </>
       )}
