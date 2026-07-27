@@ -15,6 +15,7 @@ import {
   buildMyReportsView,
   summarizeMyReportsHeadline,
   formatReporterReportLine,
+  orderMyReportsForReporter,
 } from "../lib/report-status.ts";
 
 const KNOWN = ["pending", "reviewed", "resolved", "dismissed"];
@@ -218,4 +219,52 @@ test("formatReporterReportLine fails safe on null / malformed summary", () => {
     }),
     "기타 · 2026.07.27",
   );
+});
+
+test("orderMyReportsForReporter lifts open reports above closed, stable within groups", () => {
+  // Newest-first input mixing open (pending/reviewed) and closed (resolved/dismissed).
+  const input = [
+    { id: "a", closed: true },
+    { id: "b", closed: false },
+    { id: "c", closed: true },
+    { id: "d", closed: false },
+  ];
+  const ordered = orderMyReportsForReporter(input);
+  assert.deepEqual(
+    ordered.map((r) => r.id),
+    ["b", "d", "a", "c"],
+    "open first (b,d) then closed (a,c), order preserved within each group",
+  );
+  // input is not mutated
+  assert.deepEqual(input.map((r) => r.id), ["a", "b", "c", "d"]);
+});
+
+test("orderMyReportsForReporter treats missing/malformed closed flag as open", () => {
+  const input = [
+    { id: "x", closed: true },
+    { id: "y" }, // no closed flag -> open
+    { id: "z", closed: "true" }, // non-boolean -> open (not terminal)
+  ];
+  const ordered = orderMyReportsForReporter(input);
+  assert.deepEqual(ordered.map((r) => r.id), ["y", "z", "x"]);
+});
+
+test("orderMyReportsForReporter fails safe on non-array input", () => {
+  for (const bad of [undefined, null, "nope", 42, {}]) {
+    assert.deepEqual(orderMyReportsForReporter(bad), []);
+  }
+});
+
+test("buildMyReportsView orders open reports before closed ones", () => {
+  const rows = [
+    { id: "1", reason: "spam", status: "resolved", created_at: "2026-07-27T03:00:00.000Z" },
+    { id: "2", reason: "abuse", status: "pending", created_at: "2026-07-27T02:00:00.000Z" },
+    { id: "3", reason: "other", status: "dismissed", created_at: "2026-07-27T01:00:00.000Z" },
+    { id: "4", reason: "spam", status: "reviewed", created_at: "2026-07-27T00:00:00.000Z" },
+  ];
+  const view = buildMyReportsView(rows);
+  assert.deepEqual(view.reports.map((r) => r.id), ["2", "4", "1", "3"]);
+  assert.equal(view.total, 4);
+  assert.equal(view.openCount, 2);
+  assert.equal(view.closedCount, 2);
 });

@@ -167,11 +167,43 @@ export interface MyReportsView {
 }
 
 /**
+ * Order reporter summaries so in-progress (open) reports come before
+ * terminal (closed) ones, while preserving the incoming order within each
+ * group. Pure and stable: listMyReports returns rows newest-first, so this
+ * keeps that ordering inside the open group and inside the closed group,
+ * only lifting the reports that still need attention to the top.
+ *
+ * Fail-safe: a non-array input yields an empty array rather than throwing.
+ * The input array is not mutated (a shallow copy is returned).
+ */
+export function orderMyReportsForReporter(
+  summaries:
+    | ReadonlyArray<ReporterReportSummary>
+    | null
+    | undefined,
+): ReporterReportSummary[] {
+  if (!Array.isArray(summaries)) return [];
+  const open: ReporterReportSummary[] = [];
+  const closed: ReporterReportSummary[] = [];
+  for (const summary of summaries) {
+    // Treat only an explicit terminal flag as closed; a missing/malformed
+    // flag stays in the open group so active reports are never hidden.
+    if (summary && summary.closed === true) closed.push(summary);
+    else open.push(summary as ReporterReportSummary);
+  }
+  return [...open, ...closed];
+}
+
+/**
  * Build the reporter-facing "my reports" view model from raw report rows.
  * Pure and fail-safe: a non-array input (null/undefined/malformed) yields an
  * empty view rather than throwing, and each row is projected through the
  * fail-safe summarizeReportForReporter so a bad row can never crash the list
  * or mislead the reporter. openCount + closedCount always equals total.
+ *
+ * Reports are ordered open-first (via orderMyReportsForReporter) so the
+ * reports still needing attention stay at the top, while newest-first order
+ * is preserved within each group.
  */
 export function buildMyReportsView(
   reports:
@@ -182,7 +214,9 @@ export function buildMyReportsView(
   if (!Array.isArray(reports)) {
     return { reports: [], total: 0, openCount: 0, closedCount: 0 };
   }
-  const summaries = reports.map(summarizeReportForReporter);
+  const summaries = orderMyReportsForReporter(
+    reports.map(summarizeReportForReporter),
+  );
   const closedCount = summaries.reduce(
     (acc, summary) => acc + (summary.closed ? 1 : 0),
     0,
