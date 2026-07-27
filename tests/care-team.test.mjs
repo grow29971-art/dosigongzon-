@@ -59,6 +59,54 @@ test("every section key is unique and present in the exported contract", () => {
   assert.equal(new Set(keys).size, keys.length);
 });
 
+// ─────────────────────────────────────────────
+// P4 계약 무결성: 카드는 계약의 label·description·href를 그대로 렌더한다.
+//   어떤 섹션이 빈 라벨/설명을 갖거나 href가 절대 경로(`/`로 시작)가 아니면
+//   카드에 깨진 항목이 생기고, careTeamSectionByHref의 경로 정규화도 어긋난다.
+//   미래의 계약 편집이 이런 불량 값을 넣으면 즉시 실패하도록 고정한다.
+// ─────────────────────────────────────────────
+
+test("every section has a non-empty label and description", () => {
+  for (const section of CARE_TEAM_SECTIONS) {
+    assert.equal(typeof section.label, "string", `${section.key} label must be a string`);
+    assert.ok(section.label.trim().length > 0, `${section.key} label must be non-empty`);
+    assert.equal(
+      typeof section.description,
+      "string",
+      `${section.key} description must be a string`,
+    );
+    assert.ok(
+      section.description.trim().length > 0,
+      `${section.key} description must be non-empty`,
+    );
+  }
+});
+
+test("every section href is an absolute in-app route (starts with '/', no scheme)", () => {
+  for (const section of CARE_TEAM_SECTIONS) {
+    assert.equal(typeof section.href, "string", `${section.key} href must be a string`);
+    assert.ok(
+      section.href.startsWith("/"),
+      `${section.key} href must be an absolute in-app path`,
+    );
+    // 외부 스킴/프로토콜-상대 URL 금지(P4는 기존 in-app 라우트만 가리킨다).
+    assert.ok(
+      !section.href.startsWith("//"),
+      `${section.key} href must not be a protocol-relative URL`,
+    );
+    assert.ok(
+      !/^[a-z][a-z0-9+.-]*:/i.test(section.href),
+      `${section.key} href must not contain a URL scheme`,
+    );
+    // 계약의 href는 careTeamSectionByHref로 자기 자신을 되찾을 수 있어야 한다.
+    assert.equal(
+      careTeamSectionByHref(section.href)?.key,
+      section.key,
+      `${section.key} href must round-trip through careTeamSectionByHref`,
+    );
+  }
+});
+
 test("careTeamSectionByHref matches existing routes exactly", () => {
   assert.equal(careTeamSectionByHref("/circle")?.key, "circle");
   assert.equal(careTeamSectionByHref("/map")?.key, "neighborhood");
