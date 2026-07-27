@@ -85,6 +85,26 @@ test("care shift transition timestamps are always assigned by the database", () 
   assert.doesNotMatch(sql, /new\.(?:accepted_at|completed_at) := coalesce/i);
 });
 
+test("care shift migration keeps status/timestamp consistency as a DB check", () => {
+  // Defense in depth beyond the trigger: even a direct UPDATE that skipped the
+  // trigger path must not persist an accepted/completed row without matching
+  // timestamps, or a requested row that already carries them.
+  assert.match(
+    sql,
+    /constraint\s+care_shifts_status_timestamps\s+check\s*\(\s*\(status = 'requested' and accepted_at is null and completed_at is null\)\s*or \(status = 'accepted' and accepted_at is not null and completed_at is null\)\s*or \(status = 'completed' and accepted_at is not null and completed_at is not null\)\s*\)/i,
+  );
+});
+
+test("care shift migration keeps request identity fields immutable on update", () => {
+  // The status transition path must never let a client rewrite who/where/when
+  // by tunneling extra columns through an UPDATE; the guard rejects any change
+  // to the identity/creation fields.
+  assert.match(
+    sql,
+    /new\.circle_id <> old\.circle_id[\s\S]*new\.requester_id <> old\.requester_id[\s\S]*new\.assignee_id <> old\.assignee_id[\s\S]*new\.starts_at <> old\.starts_at[\s\S]*new\.created_at <> old\.created_at then\s+raise exception 'care shift request fields are immutable'/i,
+  );
+});
+
 test("care shift migration guards ordered assignee-only transitions", () => {
   assert.match(
     sql,
