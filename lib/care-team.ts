@@ -29,9 +29,12 @@ export interface CareTeamSection {
 export const CARE_TEAM_SECTIONS: readonly CareTeamSection[] = [
   {
     key: "circle",
+    // 기존 서클 화면의 실제 라우트는 /mypage/circle 이다(MyCircleQuickEntry 등
+    // 기존 진입점이 모두 /mypage/circle 로 링크한다). /circle 은 page.tsx가 없어
+    // 링크가 깨지고 현재 위치 강조도 매칭되지 않으므로 실제 URL을 가리킨다.
     label: "돌봄 서클",
     description: "함께 돌보는 이웃과 교대·기록을 나눠요",
-    href: "/circle",
+    href: "/mypage/circle",
   },
   {
     key: "neighborhood",

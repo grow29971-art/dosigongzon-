@@ -26,7 +26,7 @@ test("care team sections preserve existing URLs (no new routes)", () => {
   const hrefByKey = Object.fromEntries(
     careTeamSections().map((s) => [s.key, s.href]),
   );
-  assert.equal(hrefByKey.circle, "/circle");
+  assert.equal(hrefByKey.circle, "/mypage/circle");
   assert.equal(hrefByKey.neighborhood, "/map");
   assert.equal(hrefByKey.community, "/community");
 });
@@ -108,23 +108,23 @@ test("every section href is an absolute in-app route (starts with '/', no scheme
 });
 
 test("careTeamSectionByHref matches existing routes exactly", () => {
-  assert.equal(careTeamSectionByHref("/circle")?.key, "circle");
+  assert.equal(careTeamSectionByHref("/mypage/circle")?.key, "circle");
   assert.equal(careTeamSectionByHref("/map")?.key, "neighborhood");
   assert.equal(careTeamSectionByHref("/community")?.key, "community");
 });
 
 test("careTeamSectionByHref ignores query string and hash (path only)", () => {
   assert.equal(careTeamSectionByHref("/map?region=seoul")?.key, "neighborhood");
-  assert.equal(careTeamSectionByHref("/circle#invite")?.key, "circle");
+  assert.equal(careTeamSectionByHref("/mypage/circle#invite")?.key, "circle");
   assert.equal(careTeamSectionByHref("/community?tab=1#top")?.key, "community");
 });
 
 test("careTeamSectionByHref ignores a trailing slash (path normalization)", () => {
-  assert.equal(careTeamSectionByHref("/circle/")?.key, "circle");
+  assert.equal(careTeamSectionByHref("/mypage/circle/")?.key, "circle");
   assert.equal(careTeamSectionByHref("/map/")?.key, "neighborhood");
   assert.equal(careTeamSectionByHref("/community/?tab=1")?.key, "community");
   // 여러 개의 끝 슬래시도 모두 제거한다.
-  assert.equal(careTeamSectionByHref("/circle//")?.key, "circle");
+  assert.equal(careTeamSectionByHref("/mypage/circle//")?.key, "circle");
   // 루트/부분 경로는 여전히 매칭되지 않는다.
   assert.equal(careTeamSectionByHref("/"), undefined);
   assert.equal(careTeamSectionByHref("/mapx/"), undefined);
