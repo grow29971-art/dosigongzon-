@@ -11,6 +11,7 @@ import assert from "node:assert/strict";
 import {
   describeReportStatusForReporter,
   isReportClosedForReporter,
+  summarizeReportForReporter,
 } from "../lib/report-status.ts";
 
 const KNOWN = ["pending", "reviewed", "resolved", "dismissed"];
@@ -52,5 +53,45 @@ test("unknown / malformed values fail safe to non-terminal 접수됨", () => {
     assert.equal(v.closed, false, `closed for ${String(bad)}`);
     // and the boolean helper agrees
     assert.equal(isReportClosedForReporter(bad), false);
+  }
+});
+
+test("summarizeReportForReporter projects a row into a reporter summary", () => {
+  const s = summarizeReportForReporter({
+    id: "r1",
+    reason: "abuse",
+    status: "reviewed",
+    created_at: "2026-07-27T00:00:00.000Z",
+  });
+  assert.equal(s.id, "r1");
+  assert.equal(s.reasonLabel, "학대 조장");
+  assert.equal(s.status.title, "확인 중");
+  assert.equal(s.closed, false);
+  assert.equal(s.createdAt, "2026-07-27T00:00:00.000Z");
+});
+
+test("summarizeReportForReporter closed flag mirrors terminal status", () => {
+  const resolved = summarizeReportForReporter({
+    id: "r2",
+    reason: "spam",
+    status: "resolved",
+    created_at: "2026-07-27T00:00:00.000Z",
+  });
+  assert.equal(resolved.closed, true);
+  assert.equal(resolved.status.closed, true);
+});
+
+test("summarizeReportForReporter fails safe on malformed reason/status", () => {
+  // Unknown reason -> 기타 label; malformed status -> non-terminal 접수됨.
+  for (const badReason of [undefined, null, "nope", "toString", "__proto__"]) {
+    const s = summarizeReportForReporter({
+      id: "rx",
+      reason: badReason,
+      status: "weird",
+      created_at: "2026-07-27T00:00:00.000Z",
+    });
+    assert.equal(s.reasonLabel, "기타", `reason label for ${String(badReason)}`);
+    assert.equal(s.status.title, "접수됨");
+    assert.equal(s.closed, false);
   }
 });

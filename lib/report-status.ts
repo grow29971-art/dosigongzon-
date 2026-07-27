@@ -13,7 +13,7 @@
 // to the safe "접수됨" (received) view so a broken value can never surface a
 // misleading "resolved" message to a reporter.
 
-import type { ReportStatus } from "./support-repo";
+import type { Report, ReportReason, ReportStatus } from "./support-repo";
 
 /**
  * Reporter-facing description of a report status.
@@ -86,4 +86,64 @@ export function isReportClosedForReporter(
   status: string | null | undefined,
 ): boolean {
   return describeReportStatusForReporter(status).closed;
+}
+
+/**
+ * Reporter-facing summary of a single report row.
+ * A pure projection of the existing Report shape for the reporter's own
+ * "my reports" view — no new fields, routes, or mutations. It deliberately
+ * omits operator-only fields (admin_note, reporter contact info) so the
+ * reporter view never leaks internal notes.
+ */
+export interface ReporterReportSummary {
+  id: string;
+  reasonLabel: string;
+  status: ReporterStatusView;
+  closed: boolean;
+  createdAt: string;
+}
+
+// Reporter-facing reason labels. These deliberately mirror the admin
+// REPORT_REASON_LABELS values in lib/support-repo.ts (kept in sync by
+// tests/report-status-source.test.mjs) but are inlined here so this pure
+// view module has no runtime dependency on the repo layer (which pulls in
+// the Supabase client). Keys are the existing ReportReason union.
+const REPORTER_REASON_LABELS: Record<ReportReason, string> = {
+  spam: "스팸/도배",
+  abuse: "학대 조장",
+  inappropriate: "부적절한 내용",
+  false_info: "허위 정보",
+  other: "기타",
+};
+
+// Fail-safe reason label: unknown / prototype-key reasons fall back to the
+// existing "기타" (other) label rather than surfacing a raw enum value.
+function reasonLabelForReporter(reason: string | null | undefined): string {
+  if (
+    typeof reason === "string" &&
+    Object.prototype.hasOwnProperty.call(REPORTER_REASON_LABELS, reason)
+  ) {
+    return REPORTER_REASON_LABELS[reason as ReportReason];
+  }
+  return REPORTER_REASON_LABELS.other;
+}
+
+/**
+ * Project a raw report row into a reporter-facing summary. Pure and
+ * fail-safe: a missing/malformed status uses the safe non-terminal view and
+ * a missing/malformed reason uses the "기타" label, so a bad row can never
+ * mislead the reporter or throw. Does not read admin_note or reporter
+ * contact fields.
+ */
+export function summarizeReportForReporter(
+  report: Pick<Report, "id" | "reason" | "status" | "created_at">,
+): ReporterReportSummary {
+  const view = describeReportStatusForReporter(report.status);
+  return {
+    id: report.id,
+    reasonLabel: reasonLabelForReporter(report.reason),
+    status: view,
+    closed: view.closed,
+    createdAt: report.created_at,
+  };
 }

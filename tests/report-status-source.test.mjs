@@ -63,6 +63,27 @@ test("reporter view keys exactly match the ReportStatus union source of truth", 
   );
 });
 
+// Parse a `Record<...> = { key: "value", ... }` label map object body by name.
+function parseLabelMap(src, name) {
+  const m = src.match(new RegExp(`${name}[^=]*=\\s*\\{([\\s\\S]*?)\\n\\};`));
+  assert.ok(m, `${name} object not found`);
+  const pairs = [...m[1].matchAll(/^\s*([a-zA-Z_][a-zA-Z0-9_]*):\s*"([^"]*)"/gm)];
+  assert.ok(pairs.length > 0, `${name} has no key/value pairs`);
+  return Object.fromEntries(pairs.map((x) => [x[1], x[2]]));
+}
+
+test("reporter reason labels exactly mirror the admin REPORT_REASON_LABELS", () => {
+  // REPORTER_REASON_LABELS is inlined in report-status.ts (no runtime import
+  // of the repo layer). This keeps it from drifting from the admin source.
+  const admin = parseLabelMap(repoSrc, "REPORT_REASON_LABELS");
+  const reporter = parseLabelMap(viewSrc, "REPORTER_REASON_LABELS");
+  assert.deepEqual(
+    reporter,
+    admin,
+    "REPORTER_REASON_LABELS must equal REPORT_REASON_LABELS exactly (keys and values)",
+  );
+});
+
 test("reporter view maps only own known keys and keeps a non-terminal fallback", () => {
   // own-property guard so inherited prototype keys can't be treated as statuses
   assert.ok(
