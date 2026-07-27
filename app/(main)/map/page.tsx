@@ -73,7 +73,17 @@ import TitleBadge from "@/app/components/TitleBadge";
 import SendDMButton from "@/app/components/SendDMButton";
 import { listRescueHospitals, type RescueHospital } from "@/lib/hospitals-repo";
 import type { Post } from "@/lib/types";
-import type { KakaoMapMouseEvent } from "@/lib/kakao-types";
+import type {
+  KakaoMapMouseEvent, KakaoMap, KakaoOverlay, KakaoCircle,
+} from "@/lib/kakao-types";
+
+// 지도 오버레이에 배회 애니메이션용 앱 데이터를 얹은 확장 타입 (SDK 외 프로젝트 전용).
+// CustomOverlay 인스턴스에 런타임으로 붙이는 필드라 kakao-types.ts(순수 SDK)가 아닌 여기 둔다.
+interface RoamOverlay extends KakaoOverlay {
+  __roamCat?: Cat;
+  __stateEl?: HTMLElement | null;
+  __emoteEl?: HTMLElement | null;
+}
 
 // area_chats 행 — temp- 접두사 id는 낙관적 메시지(아직 서버 미반영)
 type AreaChat = {
@@ -180,8 +190,8 @@ export default function MapPage() {
   const isLoggedIn = !!user;
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const overlaysRef = useRef<any[]>([]);
+  const mapInstanceRef = useRef<KakaoMap | null>(null);
+  const overlaysRef = useRef<RoamOverlay[]>([]);
 
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [mapReady, setMapReady] = useState(false);
@@ -230,7 +240,7 @@ export default function MapPage() {
   const [activityRegions, setActivityRegions] = useState<ActivityRegion[]>([]);
   // 'all' = 전체, 1|2 = 해당 슬롯만 필터
   const [regionFilter, setRegionFilter] = useState<"all" | 1 | 2>("all");
-  const regionCirclesRef = useRef<any[]>([]);
+  const regionCirclesRef = useRef<(KakaoCircle | KakaoOverlay)[]>([]);
 
   const [cats, setCats] = useState<Cat[]>([]);
   const [loadingCats, setLoadingCats] = useState(true);
@@ -255,7 +265,7 @@ export default function MapPage() {
   // 병원 오버레이 (항상 표시)
   const [hospitals, setHospitals] = useState<RescueHospital[]>([]);
   const [selectedHospital, setSelectedHospital] = useState<RescueHospital | null>(null);
-  const hospitalOverlaysRef = useRef<any[]>([]);
+  const hospitalOverlaysRef = useRef<KakaoOverlay[]>([]);
 
   // 현재 구 감지 + 채팅
   const [currentGu, setCurrentGu] = useState("");
@@ -1005,7 +1015,7 @@ export default function MapPage() {
   }, [mapReady, userPos]);
 
   // ── 내 위치 마커 (파란 점 + 펄스 링) ──
-  const userLocationOverlayRef = useRef<any>(null);
+  const userLocationOverlayRef = useRef<KakaoOverlay | null>(null);
   useEffect(() => {
     if (!mapReady || !userPos || !window.kakao) return;
     const map = mapInstanceRef.current;
@@ -1188,7 +1198,7 @@ export default function MapPage() {
     : [];
 
   // ── cats를 동 단위로 그룹화 → 클러스터 마커 (뷰포트 기반) ──
-  const catIdleListenerRef = useRef<any>(null);
+  const catIdleListenerRef = useRef<(() => void) | null>(null);
   // 검색으로 찾은 고양이가 현재 뷰포트 밖에 있으면 필터링만 되고 아무것도
   // 안 보여서 "등록했는데 안 보인다"는 문의로 이어졌음 — 검색어가 바뀔 때마다
   // 매칭된 고양이들이 전부 보이도록 지도를 자동으로 이동/줌아웃한다.
@@ -1363,10 +1373,10 @@ export default function MapPage() {
             if (!isLoggedIn) { if (confirm("로그인하면 고양이 정보를 볼 수 있어요. 로그인할까요?")) window.location.href = "/login"; return; }
             setSelectedCat(cat); setCatCardTab("carelog");
           };
-          const ov = new window.kakao.maps.CustomOverlay({ map: mapInstanceRef.current, position: pos, content: el, yAnchor: 1, zIndex: 10 });
-          (ov as any).__roamCat = cat; // 배회 애니메이션 기준
-          (ov as any).__stateEl = el.querySelector(".roam-state"); // 행동 상태 뱃지
-          (ov as any).__emoteEl = el.querySelector(".cat-emote"); // 기분 이모지
+          const ov: RoamOverlay = new window.kakao.maps.CustomOverlay({ map: mapInstanceRef.current, position: pos, content: el, yAnchor: 1, zIndex: 10 });
+          ov.__roamCat = cat; // 배회 애니메이션 기준
+          ov.__stateEl = el.querySelector<HTMLElement>(".roam-state"); // 행동 상태 뱃지
+          ov.__emoteEl = el.querySelector<HTMLElement>(".cat-emote"); // 기분 이모지
           overlaysRef.current.push(ov);
         });
         return;
@@ -1398,10 +1408,10 @@ export default function MapPage() {
           setSelectedDong(dong);
           setSelectedCat(null);
         };
-        const ov = new window.kakao.maps.CustomOverlay({
+        const ov: RoamOverlay = new window.kakao.maps.CustomOverlay({
           map: mapInstanceRef.current, position: pos, content: el, yAnchor: 0.5, zIndex: 10,
         });
-        (ov as any).__roamCat = repCat; // 배회 애니메이션 기준
+        ov.__roamCat = repCat; // 배회 애니메이션 기준
         overlaysRef.current.push(ov);
         return;
       }
@@ -1443,10 +1453,11 @@ export default function MapPage() {
         yAnchor: 1,
         zIndex: 10,
       });
-      (ov as any).__roamCat = repCat; // 배회 애니메이션 기준
-      (ov as any).__stateEl = el.querySelector(".roam-state"); // 행동 상태 뱃지
-      (ov as any).__emoteEl = el.querySelector(".cat-emote"); // 기분 이모지
-      overlaysRef.current.push(ov);
+      const roamOv = ov as RoamOverlay;
+      roamOv.__roamCat = repCat; // 배회 애니메이션 기준
+      roamOv.__stateEl = el.querySelector<HTMLElement>(".roam-state"); // 행동 상태 뱃지
+      roamOv.__emoteEl = el.querySelector<HTMLElement>(".cat-emote"); // 기분 이모지
+      overlaysRef.current.push(roamOv);
     }
 
     // 초기 렌더 + idle 리스너 (200ms 디바운스 — panning 중 중복 호출 절감)
@@ -1496,7 +1507,7 @@ export default function MapPage() {
     });
     const id = setInterval(() => {
       if (!window.kakao || !mapInstanceRef.current || document.hidden) return;
-      overlaysRef.current.forEach((ov: any) => {
+      overlaysRef.current.forEach((ov) => {
         const roamCat = ov.__roamCat;
         if (!roamCat) return;
         let coord = roamCoord(roamCat, isLoggedIn);
@@ -1542,7 +1553,7 @@ export default function MapPage() {
   }, [mapReady, isLoggedIn]);
 
   // ── 병원 마커 (뷰포트 기반 + 좌표 없으면 Geocoder 변환) ──
-  const hospitalIdleListenerRef = useRef<any>(null);
+  const hospitalIdleListenerRef = useRef<(() => void) | null>(null);
   const geocodedCoordsRef = useRef<Map<string, { lat: number; lng: number }>>(new Map());
 
   useEffect(() => {

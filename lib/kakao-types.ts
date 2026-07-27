@@ -13,6 +13,7 @@ export interface KakaoLatLngBounds {
   extend(latlng: KakaoLatLng): void;
   getSouthWest(): KakaoLatLng;
   getNorthEast(): KakaoLatLng;
+  contain(latlng: KakaoLatLng): boolean;
 }
 
 export interface KakaoMap {
@@ -22,6 +23,15 @@ export interface KakaoMap {
   getLevel(): number;
   relayout(): void;
   panTo(latlng: KakaoLatLng): void;
+  getBounds(): KakaoLatLngBounds;
+  // setBounds(bounds, paddingTop, paddingRight, paddingBottom, paddingLeft)
+  setBounds(
+    bounds: KakaoLatLngBounds,
+    paddingTop?: number,
+    paddingRight?: number,
+    paddingBottom?: number,
+    paddingLeft?: number,
+  ): void;
 }
 
 export interface KakaoMapMouseEvent {
