@@ -151,9 +151,8 @@ function normalizeItem(raw: RawItem): CrawledNewsItem | null {
     cleanTitle = raw.title.slice(0, lastDash).trim();
   }
 
-  let pubDate: string;
   const parsed = new Date(raw.pubDate);
-  pubDate = Number.isFinite(parsed.getTime())
+  const pubDate: string = Number.isFinite(parsed.getTime())
     ? parsed.toISOString()
     : new Date().toISOString();
 

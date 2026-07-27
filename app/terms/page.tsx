@@ -172,7 +172,7 @@ export default function TermsPage() {
           <h2 className="text-[14px] font-bold text-text-main mb-2">제9조의3 (쇼핑몰 등 유료 서비스)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>운영자는 서비스 내에서 실물 상품 및 후원형 상품을 판매하는 쇼핑몰을 운영할 수 있습니다.</li>
-            <li>판매자 정보, 배송, 교환·반품·환불에 관한 세부 사항은 <a href="/shop/policy" className="text-primary underline">쇼핑몰 이용안내</a>에 따르며, 이는 본 약관의 일부를 구성합니다.</li>
+            <li>판매자 정보, 배송, 교환·반품·환불에 관한 세부 사항은 <Link href="/shop/policy" className="text-primary underline">쇼핑몰 이용안내</Link>에 따르며, 이는 본 약관의 일부를 구성합니다.</li>
             <li>결제는 전자결제대행사(토스페이먼츠)를 통해 처리되며, 운영자는 카드번호 등 결제수단 정보를 저장하지 않습니다.</li>
             <li>회원은 「전자상거래 등에서의 소비자보호에 관한 법률」 제17조에 따라 상품을 받은 날부터 7일 이내에 청약철회를 할 수 있습니다. 단, 같은 법에 따라 청약철회가 제한되는 경우는 예외로 합니다.</li>
             <li>만 19세 미만의 회원이 법정대리인의 동의 없이 결제한 경우, 회원 본인 또는 법정대리인은 「민법」에 따라 해당 계약을 취소할 수 있습니다.</li>
