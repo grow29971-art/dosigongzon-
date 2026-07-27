@@ -30,6 +30,7 @@ import {
   toDatetimeLocalValue,
 } from "@/lib/care-shift";
 import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
+import { careTeamSections } from "@/lib/care-team";
 import { shareToKakao } from "@/lib/kakao-share";
 import {
   listMyCircleMembers,
@@ -363,6 +364,7 @@ export default function CirclePage() {
   const acceptedMembers = members.filter((m) => m.status === "accepted");
   const pendingMembers = members.filter((m) => m.status === "pending");
   const showCareShift = isCoreJourneyEnabled("P3");
+  const showCareTeam = isCoreJourneyEnabled("P4");
 
   return (
     <div className="min-h-dvh pb-6" style={{ background: "#F7F4EE" }}>
@@ -396,6 +398,52 @@ export default function CirclePage() {
           </p>
         </div>
       </section>
+
+      {showCareTeam && (
+        <section className="px-5 mt-5" aria-labelledby="care-team-heading">
+          <div
+            className="rounded-2xl bg-white p-4"
+            style={{ boxShadow: "var(--shadow-card)" }}
+          >
+            <div className="flex items-start gap-3">
+              <div
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                style={{ background: "rgba(107,142,111,0.12)", color: "#4F6B53" }}
+              >
+                <Users size={20} aria-hidden="true" />
+              </div>
+              <div>
+                <h2 id="care-team-heading" className="text-[15px] font-extrabold text-text-main">
+                  돌봄팀
+                </h2>
+                <p className="mt-1 text-[12px] leading-relaxed text-text-sub">
+                  서클·동네 채팅·고양이 커뮤니티를 한 곳에서 오갈 수 있어요.
+                </p>
+              </div>
+            </div>
+            <ul className="mt-3 space-y-2">
+              {careTeamSections().map((section) => (
+                <li key={section.key}>
+                  <Link
+                    href={section.href}
+                    className="flex items-center justify-between rounded-xl bg-[#F7F4EE] px-3 py-2.5 active:scale-[0.99]"
+                  >
+                    <span className="min-w-0">
+                      <span className="block text-[13px] font-bold text-text-main">
+                        {section.label}
+                      </span>
+                      <span className="block truncate text-[11px] text-text-sub">
+                        {section.description}
+                      </span>
+                    </span>
+                    <ChevronRight size={16} className="shrink-0 text-text-sub" aria-hidden="true" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       {showCareShift && (
         <section className="px-5 mt-5" aria-labelledby="care-shift-heading">
