@@ -106,10 +106,16 @@
 }
 
 
+/* 라이트 전용 앱 — 안드로이드 크롬/WebView의 강제 다크 테마(Auto Dark Theme) 반전 차단 */
 html {
+  color-scheme: only light;
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
 }
+
+/* Tailwind dark: 변형을 시스템 다크모드가 아닌 .dark 클래스에만 반응하도록 재정의.
+   .dark를 붙이는 곳이 없으므로 사실상 비활성 — 시스템 다크모드에 UI가 뒤집히지 않는다. */
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* ══════════════════════════════════════════
    블랙앤그레이화이트 무드 스코프 (2026-07-18 TDS 파일럿)

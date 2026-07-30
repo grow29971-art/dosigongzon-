@@ -99,7 +99,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "var(--color-warm-white)",
+  themeColor: "#F9FAFB", // meta theme-color는 CSS 변수를 해석하지 못함 — warm-white 실제 hex
+  colorScheme: "only light", // 안드로이드 크롬 강제 다크(Auto Dark Theme) 차단
 };
 
 // JSON-LD: Organization 구조화 데이터
