@@ -1975,6 +1975,14 @@ export default function HomeAuthed({
       )}
 
       {/* 고양이 사회 소식 & 일정 섹션 — 사용자 요청으로 제거 (2026-07-13). /news 페이지는 유지 */}
+
+      {/* 다크모드 진단용 임시 링크 — 앱(TWA)엔 주소창이 없어 /darkcheck 진입 경로가 필요.
+          원인 확정 후 진단 페이지와 함께 삭제 예정 (2026-07-30) */}
+      <div className="text-center pb-2">
+        <Link href="/darkcheck" className="text-[11px]" style={{ color: "var(--color-text-muted)" }}>
+          화면 색상 진단
+        </Link>
+      </div>
     </div>
 
     {/* ══════ 플로팅 돌봄 기록 버튼 — 스크롤 내내 따라다님, 탭하면 내 아이들로 (2026-07-11) ══════ */}
