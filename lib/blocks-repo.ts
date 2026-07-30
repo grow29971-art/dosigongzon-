@@ -57,33 +57,14 @@ export async function listMyBlockedUsers(): Promise<BlockedUser[]> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return [];
 
-  // user_blocks → profiles 조인으로 닉네임/아바타까지 한 번에
-  const { data, error } = await supabase
-    .from("user_blocks")
-    .select("blocked_id, created_at, profiles!user_blocks_blocked_id_fkey(nickname, avatar_url)")
-    .eq("blocker_id", user.id)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    // 외래키명 명시 조인이 실패할 수 있음 — fallback (별도 쿼리 두 번)
-    return await listMyBlockedUsersFallback(user.id);
-  }
-
-  type Row = {
-    blocked_id: string;
-    created_at: string;
-    profiles: { nickname: string | null; avatar_url: string | null } | null;
-  };
-  return (data as unknown as Row[]).map((r) => ({
-    id: r.blocked_id,
-    nickname: r.profiles?.nickname ?? null,
-    avatar_url: r.profiles?.avatar_url ?? null,
-    created_at: r.created_at,
-  }));
+  // profiles 중첩 조인은 쓰지 않는다. base profiles가 self+admin으로 잠기면
+  // PostgREST가 에러 없이 profiles: null을 돌려줘 에러 기반 폴백이 발동하지 않고
+  // 닉네임/아바타만 조용히 빈값이 된다. 처음부터 profiles_public 2단 조회로 간다.
+  return await listMyBlockedUsersPublic(user.id);
 }
 
-// 외래키 조인 실패 시 폴백
-async function listMyBlockedUsersFallback(userId: string): Promise<BlockedUser[]> {
+// user_blocks + profiles_public 2단 조회 (뷰는 FK 임베드를 못 타므로 별도 쿼리)
+async function listMyBlockedUsersPublic(userId: string): Promise<BlockedUser[]> {
   const supabase = createClient();
   const { data: blocks } = await supabase
     .from("user_blocks")

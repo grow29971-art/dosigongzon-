@@ -126,8 +126,10 @@ export async function GET(request: Request) {
           .maybeSingle();
         const alreadyHasTitle = !!(existing?.admin_title);
 
+        // profiles_public 경유 — base가 self+admin으로 잠기면 base count는 항상 1이 되어
+        // 신규 가입자 전원에게 early_supporter가 오지급된다.
         const { count } = await supabase
-          .from("profiles")
+          .from("profiles_public")
           .select("*", { count: "exact", head: true });
         const earlyTitle = (count ?? 0) <= 100 ? "early_supporter" : null;
 
@@ -142,8 +144,9 @@ export async function GET(request: Request) {
           })
           .eq("id", user.id);
       } else {
+        // profiles_public 경유 — 이유는 위 소셜 분기 주석 참조.
         const { count } = await supabase
-          .from("profiles")
+          .from("profiles_public")
           .select("*", { count: "exact", head: true });
         const earlyTitle = (count ?? 0) <= 100 ? "early_supporter" : null;
 
