@@ -106,11 +106,21 @@
 }
 
 
-/* 라이트 전용 앱 — 안드로이드 크롬/WebView의 강제 다크 테마(Auto Dark Theme) 반전 차단 */
+/* ── 강제 다크(자동 다크닝) 방어 — "다크 지원 선언 + 항상 라이트 렌더" 전략 ──
+   크롬 Auto Dark·WebView(카톡/네이버 인앱) 알고리즘 다크닝은 "다크 미지원" 페이지만
+   골라 색을 반전시킨다. only light 선언은 크롬 일부에서만 존중되고 WebView에선
+   오히려 반전 대상이 되므로(2026-07-30 헤드리스 실측), light dark로 "지원"을 선언해
+   반전 자체를 건너뛰게 하고, 실제 스타일은 아래 author 색으로 항상 라이트를 유지한다. */
 html {
-  color-scheme: only light;
+  color-scheme: light dark;
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
+}
+
+/* 다크 선언의 부작용 차단: UA가 그리는 위젯(입력창·셀렉트·체크박스·스크롤바 등)이
+   시스템 다크에서 어둡게 렌더되지 않도록 컨트롤은 라이트 스킴으로 되돌린다. */
+input, textarea, select, button, meter, progress {
+  color-scheme: light;
 }
 
 /* Tailwind dark: 변형을 시스템 다크모드가 아닌 .dark 클래스에만 반응하도록 재정의.

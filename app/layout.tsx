@@ -100,7 +100,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   themeColor: "#F9FAFB", // meta theme-color는 CSS 변수를 해석하지 못함 — warm-white 실제 hex
-  colorScheme: "only light", // 안드로이드 크롬 강제 다크(Auto Dark Theme) 차단
+  colorScheme: "light dark", // 다크 "지원" 선언으로 크롬/WebView 강제 다크닝 회피 (실제 스타일은 항상 라이트 — globals.css 참고)
 };
 
 // JSON-LD: Organization 구조화 데이터
