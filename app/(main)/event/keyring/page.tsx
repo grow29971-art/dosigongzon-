@@ -43,7 +43,7 @@ export default function KeyringEventPage() {
   useEffect(() => {
     const supabase = createClient();
     supabase
-      .from("profiles")
+      .from("profiles_public")
       .select("*", { count: "exact", head: true })
       .then((res: { count: number | null }) => setMemberCount(res.count ?? 0));
   }, []);

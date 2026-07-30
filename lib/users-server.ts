@@ -18,7 +18,7 @@ export async function getUserProfileServer(id: string): Promise<PublicUserProfil
 
   const supabase = await createClient();
   const { data } = await supabase
-    .from("profiles")
+    .from("profiles_public")
     .select("id, nickname, avatar_url, admin_title, created_at")
     .eq("id", id)
     .maybeSingle();
@@ -96,7 +96,7 @@ export async function getUserPublicStatsServer(id: string): Promise<PublicProfil
     supabase.from("posts").select("*", { count: "exact", head: true }).eq("author_id", id).eq("hidden", false),
     // streak 계산용: 최근 365일 care_logs 날짜
     supabase.from("care_logs").select("logged_at").eq("author_id", id).order("logged_at", { ascending: false }).limit(1000),
-    supabase.from("profiles").select("perfect_catch_count").eq("id", id).maybeSingle(),
+    supabase.from("profiles_public").select("perfect_catch_count").eq("id", id).maybeSingle(),
   ]);
 
   const likesReceived = ((likeSum.data ?? []) as { like_count: number }[]).reduce(
@@ -303,7 +303,7 @@ export async function listNearbyCaretakersServer(myId: string): Promise<NearbyCa
 
   const [profilesRes, catsRes, caresRes] = await Promise.all([
     supabase
-      .from("profiles")
+      .from("profiles_public")
       .select("id, nickname, avatar_url, admin_title, suspended")
       .in("id", userIds),
     supabase

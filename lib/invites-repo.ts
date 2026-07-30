@@ -39,12 +39,20 @@ export async function getMyInviteInfo(): Promise<MyInviteInfo> {
 
   let invitedByCode: string | null = null;
   if (meRes.data?.invited_by) {
-    const { data: inviter } = await supabase
-      .from("profiles")
-      .select("invite_code")
-      .eq("id", meRes.data.invited_by)
-      .maybeSingle();
-    invitedByCode = (inviter?.invite_code as string | null) ?? null;
+    // 남의 invite_code 직접조회는 profiles 락다운(self+admin) 후 불가.
+    // auth.uid()의 invited_by만 따라가는 SECURITY DEFINER RPC로 우회.
+    const { data: inviterCode, error: rpcErr } = await supabase.rpc("get_inviter_code");
+    if (rpcErr) {
+      // RPC 미생성 구간(코드 배포 > SQL 실행 사이)에서만 타는 경로.
+      const { data: inviter } = await supabase
+        .from("profiles")
+        .select("invite_code")
+        .eq("id", meRes.data.invited_by)
+        .maybeSingle();
+      invitedByCode = (inviter?.invite_code as string | null) ?? null;
+    } else {
+      invitedByCode = (inviterCode as string | null) ?? null;
+    }
   }
 
   return {

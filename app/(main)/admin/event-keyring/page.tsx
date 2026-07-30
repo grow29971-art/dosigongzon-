@@ -77,7 +77,7 @@ export default function AdminEventKeyringPage() {
       const userIds = Array.from(new Set(list.map((e) => e.user_id)));
       if (userIds.length > 0) {
         const { data: profs } = await supabase
-          .from("profiles")
+          .from("profiles_public")
           .select("id, nickname, avatar_url")
           .in("id", userIds);
         const map: Record<string, UserMini> = {};

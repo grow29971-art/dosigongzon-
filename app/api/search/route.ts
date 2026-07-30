@@ -105,7 +105,7 @@ export async function GET(request: Request) {
       : Promise.resolve({ data: [] as Array<{ id: string; name: string; address: string | null; district: string | null; phone: string | null }>, error: null }),
     includeUsers
       ? supabase
-          .from("profiles")
+          .from("profiles_public")
           .select("id, nickname, avatar_url, admin_title")
           .eq("suspended", false)
           .ilike("nickname", ilikePattern)

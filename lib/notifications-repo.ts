@@ -224,7 +224,7 @@ export async function getNotifications(limit = 30): Promise<NotificationItem[]> 
   if (inviteRows.length > 0) {
     const inviteeIds = inviteRows.map((r) => r.invitee_id);
     const { data: invitees } = await supabase
-      .from("profiles")
+      .from("profiles_public")
       .select("id, nickname, avatar_url")
       .in("id", inviteeIds);
     const inviteeMap = new Map(
