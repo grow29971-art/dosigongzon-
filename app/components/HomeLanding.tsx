@@ -33,6 +33,7 @@ import { SEOUL_GUS } from "@/lib/seoul-regions";
 import { getGuCounts } from "@/lib/region-counts";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import AboutCityCard from "@/app/components/AboutCityCard";
+import RallyPosterBanner from "@/app/components/RallyPosterBanner";
 import PageIntroModal from "@/app/components/PageIntroModal";
 import { listPublishedTipsServer, type Tip } from "@/lib/tips-repo";
 import { getTopCaretakersServer, type RankingRow } from "@/lib/ranking-repo";
@@ -178,6 +179,8 @@ export default async function HomeLanding({
 
       {/* 도시공존 소개 — 비로그인 방문자(인스타 유입 등)가 최상단에서 바로 이해 */}
       <div className="px-5 pt-14 pb-1">
+        {/* 세계 고양이의 날 보신각 집회 홍보 — 8/8까지 최상단 노출 후 자동 숨김 */}
+        <RallyPosterBanner />
         <AboutCityCard className="mb-0" />
       </div>
 
