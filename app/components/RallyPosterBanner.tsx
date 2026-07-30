@@ -10,7 +10,7 @@ export default function RallyPosterBanner() {
   return (
     <div className="mb-4">
       <a
-        href="/events/rally-20260808.jpg"
+        href="/events/rally-20260808-v2.jpg"
         target="_blank"
         rel="noopener"
         className="block active:scale-[0.99] transition-transform"
@@ -22,8 +22,8 @@ export default function RallyPosterBanner() {
         }}
       >
         <Image
-          src="/events/rally-20260808.jpg"
-          alt="도시공존 캠페인 — 세계 고양이의 날 보신각 집회. 길고양이 처우개선 촉구, 자원봉사자·스텝 대모집. 8월 8일 토요일 오후 4시, 보신각 앞(종각역). 문의·신청 @helpcats2004 / @helpcats2019 DM. 주최 헬프캣츠, 후원 도시공존"
+          src="/events/rally-20260808-v2.jpg"
+          alt="공존 캠페인 — 세계 고양이의 날 보신각 집회. 길고양이 처우개선 촉구, 자원봉사자·스텝·집회참여자 대모집. 8월 8일 토요일 오후 4시, 보신각 앞(종각역). 문의·신청 @helpcats2004 / @helpcats2019 DM. 주최 헬프캣츠, 후원 도시공존"
           width={1080}
           height={1080}
           priority
