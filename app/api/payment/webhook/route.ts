@@ -22,6 +22,7 @@ interface TossPayment {
   orderId: string;       // = 우리 order_number
   status: string;        // DONE | CANCELED | PARTIAL_CANCELED | EXPIRED | ABORTED | ...
   totalAmount: number;
+  balanceAmount?: number; // 취소 후 남은 결제 잔액 — 부분취소(>0) 판별용
   method?: string;
   easyPay?: { provider?: string } | null;
 }
@@ -262,11 +263,29 @@ export async function POST(req: Request) {
 
   // ── 케이스 B: 토스에서 취소/환불됐는데 주문이 아직 paid ──
   if ((toss.status === "CANCELED" || toss.status === "PARTIAL_CANCELED") && order.status === "paid") {
-    await svc.from("orders")
+    // 부분취소 방어 — PARTIAL_CANCELED인데 잔액(balanceAmount)이 남아 있으면 부분 환불이므로
+    // 주문 전체를 취소 처리하면 안 됨(재고·포인트 과잉 환원). 전액취소(balance=0)만 자동 동기화하고
+    // 진짜 부분취소는 reconcile/관리자 수동 처리에 위임. (2026-07-30 보안)
+    const balance = toss.balanceAmount ?? 0;
+    const isFullCancel = toss.status === "CANCELED" || balance === 0;
+    if (!isFullCancel) {
+      console.error(`[payment/webhook] partial cancel — manual/reconcile needed: order=${order.id} balance=${balance} (${toss.orderId})`);
+      return NextResponse.json({ ok: true, action: "partial_cancel_manual" });
+    }
+
+    // 조건부 전환(paid→cancelled) — 실제로 행을 바꾼(이 웹훅이 이긴) 경우에만 후처리.
+    // 토스 웹훅 중복 재전송 시 재고·포인트 이중 환원 차단 (cancel 라우트와 동일 패턴).
+    const { data: cancelled } = await svc.from("orders")
       .update({ status: "cancelled", updated_at: new Date().toISOString() })
-      .eq("id", order.id);
+      .eq("id", order.id)
+      .eq("status", "paid")
+      .select("id");
+    if (!cancelled || cancelled.length === 0) {
+      return NextResponse.json({ ok: true, action: "already_cancelled" });
+    }
+
     await restoreStock(svc, items);
-    // 사용 포인트 반환 — cancel 라우트와 같은 reason이라 이중 반환은 유니크 제약이 차단
+    // 사용 포인트 반환 — 조건부 전환을 이긴 요청만 실행 + cancel과 같은 reason이라 이중 반환 차단
     const casePoints = (order as { points_used?: number }).points_used ?? 0;
     if (casePoints > 0) {
       const { error: pointError } = await svc.rpc("grant_points", {

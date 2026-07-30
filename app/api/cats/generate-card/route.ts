@@ -5,8 +5,13 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { generateBattleStats } from "@/lib/battle-config";
 import { TITLES, TRAITS, FLAVORS } from "@/lib/battle-card-titles";
 import { calculateCatGrade, type CatFeatures } from "@/lib/cat-grade";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 30;
+
+// 이미지 입력 상한 — Gemini Vision 비용/대역 남용 방지 (2026-07-30 보안)
+const ALLOWED_IMAGE_MIME = new Set(["image/jpeg", "image/png", "image/webp"]);
+const MAX_IMAGE_B64_LEN = 8 * 1024 * 1024; // base64 문자열 길이 상한 (~8MB)
 
 // 등급(rarity)과 카드 이름/플레이버는 더 이상 여기서 정하지 않는다 — AI는 "실제로 보이는 것"만
 // 있는 그대로 보고하고, 등급은 lib/cat-grade.ts의 calculateCatGrade()가 룰 테이블로 산정한다.
@@ -99,6 +104,11 @@ export async function POST(request: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
+  // 레이트리밋(best-effort, 인메모리) — 유저당 분당 20회. 인스턴스 무관 강한 방어는 아래 원자 선점이 담당.
+  if (!rateLimit(`generate-card:${user.id}`, { max: 20, windowMs: 60_000 })) {
+    return NextResponse.json({ error: "요청이 너무 많아요. 잠시 후 다시 시도해주세요." }, { status: 429 });
+  }
+
   const body = await request.json();
   const { cat_id, image_base64, mime_type, perfect_catch } = body;
   const perfectCatch = perfect_catch === true;
@@ -123,6 +133,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "cat not found" }, { status: 404 });
   }
 
+  // 원자적 선점 — card_generated_at을 null→now()로 조건부 전환해 이긴 요청 1개만 진행.
+  // (2026-07-30 보안: 예전엔 존재 확인과 Gemini 호출 사이에 락이 없어, 같은 고양이로
+  //  동시 요청 N개를 쏘면 Gemini Vision을 N번 호출 + perfect_catch_count까지 부풀릴 수 있었음)
+  const { data: claimed } = await supabase
+    .from("cats")
+    .update({ card_generated_at: new Date().toISOString() })
+    .eq("id", cat_id)
+    .eq("caretaker_id", user.id)
+    .is("card_generated_at", null)
+    .select("id");
+  if (!claimed || claimed.length === 0) {
+    // 다른 요청이 이미 선점(생성 중/완료) — 최신 카드 반환
+    const { data: fresh } = await supabase
+      .from("cats")
+      .select("card_rarity,card_name,card_traits,card_stats,card_flavor,card_generated_at,name")
+      .eq("id", cat_id)
+      .eq("caretaker_id", user.id)
+      .maybeSingle();
+    return NextResponse.json({ card: fresh ?? existing, deduped: true });
+  }
+
   // 완벽 포획 성공 횟수 집계 (타이틀 연동) — 진짜 새 카드 생성일 때만 1회 카운트
   if (perfectCatch) {
     const svc = createServiceClient();
@@ -136,12 +167,18 @@ export async function POST(request: Request) {
   // 예전엔 클라이언트가 보낸 photo_url을 서버가 그대로 fetch해서 SSRF(내부망 주소로
   // 서버가 요청하게 만들 수 있는) 위험이 있었음. 실제 호출부(AddCatModal)는 image_base64만
   // 쓰고 photo_url은 아무 데서도 안 써서, 그냥 이 경로 자체를 제거함.
-  if (image_base64) {
+  const mimeType = mime_type ?? "image/jpeg";
+  const imageValid =
+    typeof image_base64 === "string" &&
+    image_base64.length > 0 &&
+    image_base64.length <= MAX_IMAGE_B64_LEN &&
+    ALLOWED_IMAGE_MIME.has(mimeType);
+
+  if (imageValid) {
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (apiKey) {
       try {
         const imgB64 = image_base64;
-        const mimeType = mime_type ?? "image/jpeg";
 
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
