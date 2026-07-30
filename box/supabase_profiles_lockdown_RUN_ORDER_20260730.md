@@ -26,7 +26,7 @@
 |---|---|---|---|---|
 | 1 | `profiles_public` 뷰 | `supabase_profiles_public_view_migration.sql` | SQL Editor | ✅ **이미 적용됨 — 건너뜀** |
 | 2 | RPC 2종 생성 | `supabase_profiles_lockdown_rpcs_migration.sql` | **성우 / SQL Editor** | ⬜ 실행 필요 |
-| 3 | 앱 코드 repoint 배포 | (커밋 + `vercel --prod`) | 코드 | 🟨 커밋 완료 — **배포 확인 후 ✅로 고칠 것** |
+| 3 | 앱 코드 repoint 배포 | (커밋 + `vercel --prod`) | 코드 | ✅ **2026-07-31 배포 완료** (`dpl_Erpg5xqpkEkNm1ej3tA7y3ExMBYL`, dosigongzon.com 별칭 연결) |
 | 4 | **base RLS self+admin 잠금** | `supabase_profiles_authenticated_lockdown_migration.sql` | **성우 / SQL Editor** | ⬜ 실행 필요 |
 
 > **2·3번은 순서 무관하게 만들어 뒀다.** 7/24 브랜치 원안은 가입자 수를 `total_user_count()` RPC로
@@ -40,6 +40,10 @@
 > "나를 초대한 사람 코드"가 정상이려면 2번이 필요하다.
 >
 > **4번은 반드시 3번 배포 확인 후.** 4번을 먼저 실행하면 서클 멤버·차단목록·알림·공개 프로필·통합검색·이웃 목록이 전부 빈 화면이 된다.
+>
+> ✅ **3번 배포 완료·검증됨(2026-07-31).** 라이브 스모크 결과: 홈 "344명의 케어테이커" 정상,
+> `/about` 통계 정상, `/api/search?types=users` 15건 반환, `/event/keyring`·`/caretakers`·`/map`·`/community` 전부 200.
+> → **이제 1번·4번 SQL을 실행해도 되는 상태다.**
 
 ---
 
