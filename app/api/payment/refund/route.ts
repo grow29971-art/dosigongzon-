@@ -14,6 +14,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import {
   decideRefund,
   refundableAmount,
+  REFUND_REASON_LABELS,
   type RefundReasonCode,
 } from "@/lib/refund-policy";
 import {
@@ -23,6 +24,7 @@ import {
   type RefundOrderItemRow,
   type RefundOrderRow,
 } from "@/lib/refund-executor";
+import { notifyAdminsRefund } from "@/lib/refund-notify";
 
 // 유저가 직접 고를 수 있는 사유 — admin_discretion(관리자 직권)은 제외
 const USER_REASONS: RefundReasonCode[] = [
@@ -144,6 +146,14 @@ export async function POST(req: Request) {
     if (markError) {
       console.error("[payment/refund] order mark requested failed:", markError, orderRow.id);
     }
+    await notifyAdminsRefund(svc, [
+      `🧾 환불 요청 접수`,
+      ``,
+      `주문 ${orderRow.order_number} · ${amount.toLocaleString()}원`,
+      `사유: ${REFUND_REASON_LABELS[reasonCode]}${reasonNote ? ` — ${reasonNote}` : ""}`,
+      ``,
+      `/admin/orders에서 승인·거부를 처리해주세요.`,
+    ].join("\n"));
     return NextResponse.json({ ok: true, mode: "review", note: decision.note, amount });
   }
 
@@ -156,5 +166,11 @@ export async function POST(req: Request) {
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: result.status });
   }
+  await notifyAdminsRefund(svc, [
+    `💸 즉시환불 완료 (배송 전·가상상품 자동 처리)`,
+    ``,
+    `주문 ${orderRow.order_number} · ${amount.toLocaleString()}원`,
+    `사유: ${REFUND_REASON_LABELS[reasonCode]}${reasonNote ? ` — ${reasonNote}` : ""}`,
+  ].join("\n"));
   return NextResponse.json({ ok: true, mode: "auto", status: "refunded", amount });
 }

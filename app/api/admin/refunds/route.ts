@@ -16,6 +16,7 @@ import {
   type RefundOrderItemRow,
   type RefundOrderRow,
 } from "@/lib/refund-executor";
+import { notifyUserRefund } from "@/lib/refund-notify";
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -84,6 +85,21 @@ export async function POST(req: Request) {
     if (orderError) {
       console.error("[admin/refunds] order reject mark failed:", orderError, refundRow.order_id);
     }
+    // 유저에게 처리 결과 쪽지 (게스트 주문은 user_id 없음 — 스킵)
+    const { data: rejectedOrder } = await svc
+      .from("orders")
+      .select("user_id, order_number")
+      .eq("id", refundRow.order_id)
+      .maybeSingle();
+    const rejectedRow = rejectedOrder as { user_id: string | null; order_number: string } | null;
+    if (rejectedRow?.user_id) {
+      await notifyUserRefund(svc, user.id, rejectedRow.user_id, [
+        `주문 ${rejectedRow.order_number}의 환불 요청이 반려됐어요.`,
+        rejectReason ? `사유: ${rejectReason}` : "",
+        ``,
+        `궁금한 점은 이 쪽지에 답장으로 문의해주세요.`,
+      ].filter(Boolean).join("\n"));
+    }
     return NextResponse.json({ ok: true, action: "rejected" });
   }
 
@@ -121,6 +137,12 @@ export async function POST(req: Request) {
   );
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: result.status });
+  }
+  if (orderRow.user_id) {
+    await notifyUserRefund(svc, user.id, orderRow.user_id, [
+      `주문 ${orderRow.order_number}의 환불이 승인됐어요.`,
+      `${refundRow.amount.toLocaleString()}원이 결제수단으로 며칠 내에 입금돼요.`,
+    ].join("\n"));
   }
   return NextResponse.json({ ok: true, action: "approved", amount: refundRow.amount });
 }
