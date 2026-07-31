@@ -49,22 +49,31 @@ export async function POST(request: Request) {
   const cutoff = new Date(Date.now() - LOOKBACK_DAYS * 24 * 60 * 60 * 1000).toISOString();
 
   // 최근 결제 이력이 있는 주문 (payment_key 보유 = 토스 원장에 존재)
-  const { data: orders, error: ordersError } = await supabase
-    .from("orders")
-    .select("id, order_number, status, payment_amount, payment_key, updated_at")
-    .not("payment_key", "is", null)
-    .gte("updated_at", cutoff)
-    .order("updated_at", { ascending: false })
-    .limit(MAX_ORDERS_PER_RUN);
+  // refund_amount는 부분환불 대조용 — 마이그레이션 전(컬럼 없음, 42703)이면 빼고 재조회
+  const selectBase = "id, order_number, status, payment_amount, payment_key, updated_at";
+  const fetchOrders = (withRefund: boolean) =>
+    supabase
+      .from("orders")
+      .select(withRefund ? `${selectBase}, refund_amount` : selectBase)
+      .not("payment_key", "is", null)
+      .gte("updated_at", cutoff)
+      .order("updated_at", { ascending: false })
+      .limit(MAX_ORDERS_PER_RUN);
+
+  let { data: orders, error: ordersError } = await fetchOrders(true);
+  if (ordersError && ordersError.code === "42703") {
+    ({ data: orders, error: ordersError } = await fetchOrders(false));
+  }
 
   if (ordersError) {
     console.error("[payment-reconcile] orders fetch failed:", ordersError);
     return Response.json({ ok: false, error: ordersError.message }, { status: 500 });
   }
 
-  const rows = (orders ?? []) as {
+  const rows = (orders ?? []) as unknown as {
     id: string; order_number: string; status: string;
     payment_amount: number; payment_key: string; updated_at: string;
+    refund_amount?: number | null;
   }[];
 
   const basicAuth = Buffer.from(`${secretKey}:`).toString("base64");
@@ -92,22 +101,33 @@ export async function POST(request: Request) {
     }
     checked++;
 
+    // DB에 기록된 환불 누적액 — 토스 잔액의 기대값을 이걸로 계산한다.
+    // (기존엔 balanceAmount !== totalAmount면 무조건 신고 → 정상 부분환불도 매일 걸렸음)
+    const refunded = order.refund_amount ?? 0;
+
     if (PAID_LIKE.includes(order.status)) {
-      // 결제 완료로 기록된 주문 — 토스도 DONE + 금액 일치 + 미취소여야 함
-      if (toss.status !== "DONE") {
+      // 결제 유지 중인 주문 — 부분환불이 있으면 토스는 PARTIAL_CANCELED가 정상
+      const okStatus = toss.status === "DONE" || (refunded > 0 && toss.status === "PARTIAL_CANCELED");
+      if (!okStatus) {
         mismatches.push(`${order.order_number}: DB=${order.status}, 토스=${toss.status} (환불 미반영 가능)`);
       } else if (toss.totalAmount !== order.payment_amount) {
         mismatches.push(`${order.order_number}: 금액 불일치 DB=${order.payment_amount}원, 토스=${toss.totalAmount}원`);
-      } else if (typeof toss.balanceAmount === "number" && toss.balanceAmount !== toss.totalAmount) {
-        mismatches.push(`${order.order_number}: 부분취소 감지 — 토스 잔액 ${toss.balanceAmount}/${toss.totalAmount}원, DB=${order.status}`);
+      } else if (typeof toss.balanceAmount === "number" && toss.balanceAmount !== order.payment_amount - refunded) {
+        mismatches.push(`${order.order_number}: 잔액 불일치 — 토스 ${toss.balanceAmount}원, DB 기준 ${order.payment_amount - refunded}원 (환불액 ${refunded}원 대조)`);
       }
     } else if (CANCELLED_LIKE.includes(order.status)) {
       // 취소/환불로 기록된 주문 — 토스에 잔액이 남아 있으면 환불 실패 의심
-      const cancelled = toss.status === "CANCELED" || toss.status === "PARTIAL_CANCELED";
       if (toss.status === "DONE" && (toss.balanceAmount ?? 0) > 0) {
         mismatches.push(`${order.order_number}: DB=${order.status}인데 토스 잔액 ${toss.balanceAmount}원 남음 (환불 확인 필요)`);
-      } else if (!cancelled && toss.status !== "DONE") {
-        // ABORTED/EXPIRED 등은 청구 없음 → 정상
+      } else if (
+        refunded > 0 &&
+        (toss.status === "CANCELED" || toss.status === "PARTIAL_CANCELED") &&
+        typeof toss.balanceAmount === "number" &&
+        toss.balanceAmount !== order.payment_amount - refunded
+      ) {
+        // 반품비 차감 환불은 잔액(= 결제액 - 환불액)이 남는 게 정상 — 그 값과 다를 때만 신고.
+        // refund_amount 기록이 없는 옛 취소 건은 기존처럼 DONE+잔액 케이스만 본다.
+        mismatches.push(`${order.order_number}: 환불 잔액 불일치 — 토스 ${toss.balanceAmount}원, DB 기준 ${order.payment_amount - refunded}원`);
       }
     }
   }

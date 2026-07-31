@@ -12,13 +12,22 @@ const COUNTED_STATUSES = ["paid", "preparing", "shipping", "delivered"];
 export async function GET() {
   const svc = createServiceClient();
 
-  // 모인 금액
-  const { data: items } = await svc
-    .from("order_items")
-    .select("donation_amount, order:orders!inner(status)")
-    .in("order.status", COUNTED_STATUSES);
-  const collected = ((items ?? []) as { donation_amount: number }[])
-    .reduce((s, r) => s + (r.donation_amount ?? 0), 0);
+  // 모인 금액 — donation_totals 뷰(부분환불 차감 반영) 우선, 마이그레이션 전이면 기존 집계 폴백
+  let collected: number;
+  const { data: viewRow, error: viewError } = await svc
+    .from("donation_totals")
+    .select("donation_net")
+    .maybeSingle();
+  if (!viewError && viewRow) {
+    collected = Number((viewRow as { donation_net: number | string }).donation_net ?? 0);
+  } else {
+    const { data: items } = await svc
+      .from("order_items")
+      .select("donation_amount, order:orders!inner(status)")
+      .in("order.status", COUNTED_STATUSES);
+    collected = ((items ?? []) as { donation_amount: number }[])
+      .reduce((s, r) => s + (r.donation_amount ?? 0), 0);
+  }
 
   // 쓰인 금액(전체 합계) + 최근 지출 내역 (테이블 없으면 조용히 0)
   let spent = 0;

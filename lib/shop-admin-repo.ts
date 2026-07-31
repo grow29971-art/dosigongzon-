@@ -223,10 +223,30 @@ export async function updateOrderAdmin(
   await requireAdmin();
   const supabase = createClient();
 
-  const { error } = await supabase
+  // 배송 시각 기록 — 청약철회 "받은 날부터 7일"의 기산점. 이미 기록돼 있으면 보존.
+  // 배송중을 건너뛰고 바로 배송완료로 바꾸면 shipped_at도 함께 채운다.
+  const now = new Date().toISOString();
+  const timestamps: { shipped_at?: string; delivered_at?: string } = {};
+  if (changes.status === "shipping" && order.status !== "shipping" && !order.shipped_at) {
+    timestamps.shipped_at = now;
+  }
+  if (changes.status === "delivered" && order.status !== "delivered") {
+    if (!order.shipped_at) timestamps.shipped_at = now;
+    if (!order.delivered_at) timestamps.delivered_at = now;
+  }
+
+  let { error } = await supabase
     .from("orders")
-    .update({ ...changes, updated_at: new Date().toISOString() })
+    .update({ ...changes, ...timestamps, updated_at: now })
     .eq("id", order.id);
+
+  // 마이그레이션 전(shipped_at/delivered_at 컬럼 없음)이면 시각 없이 재시도
+  if (error && (error.code === "PGRST204" || error.code === "42703")) {
+    ({ error } = await supabase
+      .from("orders")
+      .update({ ...changes, updated_at: now })
+      .eq("id", order.id));
+  }
 
   if (error) {
     console.error("[shop-admin-repo] updateOrderAdmin failed:", error);
