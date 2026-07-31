@@ -9,6 +9,15 @@ import {
   getMyOrder, ORDER_STATUS_MAP,
   type OrderWithItems, type OrderStatus,
 } from "@/lib/order-repo";
+import {
+  decideRefund, refundableAmount, REFUND_REASON_LABELS,
+  type RefundOrderInput, type RefundReasonCode,
+} from "@/lib/refund-policy";
+
+// 유저가 고를 수 있는 환불 사유 (서버 USER_REASONS와 동일 세트)
+const USER_REASONS: RefundReasonCode[] = [
+  "change_of_mind", "defect", "wrong_delivery", "delayed", "other",
+];
 
 function formatWon(amount: number): string {
   return `${amount.toLocaleString()}원`;
@@ -49,8 +58,11 @@ export default function OrderDetailPage() {
 
   const [order, setOrder] = useState<OrderWithItems | null>(null);
   const [loading, setLoading] = useState(true);
-  const [cancelOpen, setCancelOpen] = useState(false);
-  const [cancelling, setCancelling] = useState(false);
+  const [refundOpen, setRefundOpen] = useState(false);
+  const [reason, setReason] = useState<RefundReasonCode>("change_of_mind");
+  const [note, setNote] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -65,32 +77,68 @@ export default function OrderDetailPage() {
     return <LoginRequired from={`/shop/orders/${id}`} title="주문 상세는 로그인 후 확인할 수 있어요" />;
   }
 
-  const handleCancel = async () => {
+  const handleRefund = async () => {
     if (!order) return;
-    setCancelling(true);
+    setSubmitting(true);
     setError("");
     try {
-      const res = await fetch("/api/payment/cancel", {
+      const res = await fetch("/api/payment/refund", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId: order.id }),
+        body: JSON.stringify({
+          orderId: order.id,
+          reasonCode: reason,
+          reasonNote: note.trim() || undefined,
+        }),
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) {
-        throw new Error(json.error ?? "주문 취소에 실패했어요. 잠시 후 다시 시도해주세요.");
+        throw new Error(json.error ?? "환불 요청에 실패했어요. 잠시 후 다시 시도해주세요.");
       }
-      setOrder((prev) => (prev ? { ...prev, status: "cancelled" } : prev));
-      setCancelOpen(false);
+      if (json.mode === "auto") {
+        setOrder((prev) => prev
+          ? { ...prev, status: "refunded", refund_status: "refunded", refund_amount: json.amount ?? prev.payment_amount }
+          : prev);
+        setNotice("환불이 완료됐어요. 결제수단으로 며칠 내에 입금돼요.");
+      } else {
+        setOrder((prev) => (prev ? { ...prev, refund_status: "requested" } : prev));
+        setNotice("환불 요청이 접수됐어요. 관리자 확인 후 처리 결과를 알려드려요.");
+      }
+      setRefundOpen(false);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "주문 취소에 실패했어요.");
+      setError(e instanceof Error ? e.message : "환불 요청에 실패했어요.");
     } finally {
-      setCancelling(false);
+      setSubmitting(false);
     }
   };
 
   const status = order ? ORDER_STATUS_MAP[order.status] : null;
   const tlIndex = order ? timelineIndex(order.status) : -1;
   const isAborted = order?.status === "cancelled" || order?.status === "refunded";
+
+  // ── 환불 정책 판정 (서버 /api/payment/refund와 같은 순수 함수 공유) ──
+  // 전 품목 가상(후원) 주문은 배송지가 없다 — recipient_address 유무가 실물 포함의 프록시.
+  const refundStatus = order?.refund_status ?? "none";
+  const refundInput: RefundOrderInput | null = order ? {
+    status: order.status,
+    refundStatus: refundStatus as RefundOrderInput["refundStatus"],
+    paymentAmount: order.payment_amount,
+    refundAmount: order.refund_amount ?? 0,
+    paidAt: order.paid_at,
+    shippedAt: order.shipped_at ?? null,
+    deliveredAt: order.delivered_at ?? null,
+    hasPhysicalItem: !!order.recipient_address,
+    hasDonationItem: order.items.some((i) => (i.donation_amount ?? 0) > 0),
+    allVirtual: !order.recipient_address,
+  } : null;
+  // 배송 전(즉시 전액 취소)과 배송 후(사유 선택 + 심사)는 문구가 다르다
+  const preShipment = order?.status === "paid" || order?.status === "preparing";
+  const modalDecision = refundInput ? decideRefund(refundInput, reason) : null;
+  const remaining = order ? order.payment_amount - (order.refund_amount ?? 0) : 0;
+  // 어떤 사유로든 요청 가능하면 버튼 노출 (기한은 사유별로 다르니 둘 다 확인)
+  const canRequestRefund = !!refundInput && !isAborted && order!.status !== "pending" &&
+    refundStatus !== "requested" &&
+    (decideRefund(refundInput, "change_of_mind").allowed || decideRefund(refundInput, "defect").allowed);
 
   return (
     <div className="pb-24">
@@ -184,6 +232,24 @@ export default function OrderDetailPage() {
                 결제를 기다리고 있어요
               </div>
             )}
+
+            {/* 환불 축 상태 — 배송 상태와 독립 */}
+            {!isAborted && refundStatus === "requested" && (
+              <div
+                className="mt-3 py-2.5 text-center rounded-2xl text-[12px] font-bold"
+                style={{ background: "rgba(232,141,90,0.12)", color: "#E88D5A" }}
+              >
+                환불 요청이 접수됐어요 — 관리자 확인 후 처리돼요
+              </div>
+            )}
+            {!isAborted && refundStatus === "rejected" && (
+              <div
+                className="mt-3 py-2.5 text-center rounded-2xl text-[12px] font-bold"
+                style={{ background: "rgba(138,144,160,0.12)", color: "var(--color-text-sub)" }}
+              >
+                환불 요청이 반려됐어요 — 필요하면 다시 요청할 수 있어요
+              </div>
+            )}
           </section>
 
           {/* 주문 상품 */}
@@ -256,47 +322,101 @@ export default function OrderDetailPage() {
             )}
           </section>
 
+          {notice && (
+            <p className="text-[12.5px] font-bold text-center" style={{ color: "var(--color-primary)" }}>{notice}</p>
+          )}
           {error && (
             <p className="text-[12.5px] font-bold text-center" style={{ color: "#D85555" }}>{error}</p>
           )}
 
-          {/* 주문 취소 — 결제완료 상태에서만 */}
-          {order.status === "paid" && (
+          {/* 취소·환불 — 정책 판정(decideRefund)이 허용하는 상태에서만.
+              배송 전(paid/preparing)은 즉시 전액, 배송 중·완료는 사유 선택 후 심사 접수 */}
+          {canRequestRefund && (
             <button
-              onClick={() => setCancelOpen(true)}
+              onClick={() => { setReason("change_of_mind"); setNote(""); setRefundOpen(true); }}
               className="w-full py-3 rounded-2xl text-[13px] font-bold active:scale-[0.98] transition-transform"
               style={{ background: "rgba(216,85,85,0.08)", color: "#D85555", border: "1px solid rgba(216,85,85,0.2)" }}
             >
-              주문 취소
+              {preShipment ? "주문 취소" : "환불 요청"}
             </button>
           )}
         </div>
       )}
 
-      {/* 취소 확인 모달 */}
-      {cancelOpen && order && (
+      {/* 취소·환불 요청 모달 */}
+      {refundOpen && order && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-8" style={{ background: "rgba(20,25,40,0.5)" }}>
-          <div className="w-full max-w-[320px] p-5" style={{ background: "#fff", borderRadius: "var(--radius-modal)" }}>
-            <p className="text-[15px] font-extrabold text-text-main mb-1.5">주문을 취소할까요?</p>
-            <p className="text-[12.5px] text-text-sub leading-relaxed mb-4">
-              결제된 금액은 결제수단으로 환불돼요. 취소 후에는 되돌릴 수 없어요.
+          <div className="w-full max-w-[320px] p-5 max-h-[80vh] overflow-y-auto" style={{ background: "#fff", borderRadius: "var(--radius-modal)" }}>
+            <p className="text-[15px] font-extrabold text-text-main mb-1.5">
+              {preShipment ? "주문을 취소할까요?" : "환불을 요청할까요?"}
             </p>
+
+            {preShipment ? (
+              <p className="text-[12.5px] text-text-sub leading-relaxed mb-4">
+                배송 시작 전이라 전액이 결제수단으로 환불돼요. 취소 후에는 되돌릴 수 없어요.
+              </p>
+            ) : (
+              <>
+                <p className="text-[12.5px] text-text-sub leading-relaxed mb-3">환불 사유를 선택해주세요.</p>
+                <div className="space-y-1.5 mb-3">
+                  {USER_REASONS.map((code) => (
+                    <button
+                      key={code}
+                      onClick={() => setReason(code)}
+                      className="w-full px-3 py-2.5 rounded-xl text-left text-[12.5px] font-bold"
+                      style={{
+                        background: reason === code ? "rgba(173,94,59,0.08)" : "var(--color-warm-white)",
+                        color: reason === code ? "var(--color-primary)" : "var(--color-text-sub)",
+                        border: reason === code ? "1.5px solid rgba(173,94,59,0.4)" : "1px solid rgba(0,0,0,0.05)",
+                      }}
+                    >
+                      {REFUND_REASON_LABELS[code]}
+                    </button>
+                  ))}
+                </div>
+                <textarea
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  placeholder="상세 내용 (선택)"
+                  maxLength={500}
+                  rows={2}
+                  className="w-full px-3 py-2.5 rounded-xl text-[12.5px] outline-none resize-none mb-3"
+                  style={{ background: "var(--color-warm-white)", border: "1px solid rgba(0,0,0,0.05)" }}
+                />
+              </>
+            )}
+
+            {/* 판정 미리보기 — 서버와 같은 decideRefund 결과 */}
+            {modalDecision && (modalDecision.allowed ? (
+              <div className="px-3 py-2.5 rounded-xl mb-4 text-[11.5px] leading-relaxed" style={{ background: "rgba(107,142,111,0.08)", color: "#6B8E6F" }}>
+                <p className="font-bold">{modalDecision.note}</p>
+                <p className="mt-0.5">
+                  예상 환불액 <b>{formatWon(refundableAmount(remaining, modalDecision))}</b>
+                  {modalDecision.mode === "review" && " · 관리자 확인 후 처리돼요"}
+                </p>
+              </div>
+            ) : (
+              <p className="px-3 py-2.5 rounded-xl mb-4 text-[11.5px] font-bold leading-relaxed" style={{ background: "rgba(216,85,85,0.08)", color: "#D85555" }}>
+                {modalDecision.reason}
+              </p>
+            ))}
+
             <div className="flex gap-2">
               <button
-                onClick={() => setCancelOpen(false)}
-                disabled={cancelling}
+                onClick={() => setRefundOpen(false)}
+                disabled={submitting}
                 className="flex-1 py-3 rounded-2xl text-[13px] font-bold"
                 style={{ background: "var(--color-warm-white)", color: "var(--color-text-sub)" }}
               >
                 돌아가기
               </button>
               <button
-                onClick={handleCancel}
-                disabled={cancelling}
+                onClick={handleRefund}
+                disabled={submitting || !modalDecision?.allowed}
                 className="flex-1 py-3 rounded-2xl text-[13px] font-extrabold text-white disabled:opacity-50"
                 style={{ background: "#D85555" }}
               >
-                {cancelling ? "취소 중…" : "주문 취소"}
+                {submitting ? "처리 중…" : preShipment ? "주문 취소" : "환불 요청"}
               </button>
             </div>
           </div>

@@ -29,6 +29,17 @@ export type RefundReasonCode =
   | "admin_discretion"  // 관리자 직권
   | "other";
 
+// 유저 화면·관리자 화면 공용 사유 라벨
+export const REFUND_REASON_LABELS: Record<RefundReasonCode, string> = {
+  change_of_mind: "단순 변심",
+  defect: "상품에 문제가 있어요",
+  wrong_delivery: "다른 상품이 왔어요",
+  delayed: "배송이 너무 늦어요",
+  out_of_stock: "품절 안내를 받았어요",
+  admin_discretion: "관리자 직권",
+  other: "기타",
+};
+
 // 판매자 귀책 = 배송비 판매자 부담 + 기한이 넉넉함
 export const SELLER_FAULT_REASONS: RefundReasonCode[] = [
   "defect",

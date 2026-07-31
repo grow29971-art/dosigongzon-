@@ -45,6 +45,14 @@ export interface Order {
   memo: string | null;
   created_at: string;
   updated_at: string;
+  // ── 환불 축 (refund_system 마이그레이션 전 배포 호환을 위해 전부 optional) ──
+  refund_status?: "none" | "requested" | "rejected" | "partial_refunded" | "refunded" | null;
+  refund_amount?: number | null;
+  refund_requested_at?: string | null;
+  refunded_at?: string | null;
+  refund_reason?: string | null;
+  shipped_at?: string | null;   // 청약철회 7일 기산점 — 관리자가 배송중 전환 시 기록
+  delivered_at?: string | null;
 }
 
 export interface OrderItem {
@@ -57,6 +65,8 @@ export interface OrderItem {
   subtotal: number;
   donation_amount: number; // 주문 시점 후원 적립액 스냅샷
   created_at: string;
+  refunded_quantity?: number | null;  // 품목별 환불 수량 (마이그레이션 전 호환 optional)
+  donation_refunded?: number | null;  // 후원 차감 누적 (〃)
 }
 
 export interface ShippingInput {
