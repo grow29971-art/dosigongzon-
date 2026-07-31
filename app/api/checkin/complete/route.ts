@@ -20,7 +20,12 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   const { tasks } = await req.json();
-  const taskKeys: string[] = Array.isArray(tasks) ? tasks.filter((t) => TASK_CARE_TYPE[t]) : [];
+  // 중복 제거 — 이 라우트는 service_role로 care_logs를 넣어 DB 도배방지 트리거
+  // (care_logs_rate_guard, auth.uid() null 면제)를 우회하므로, tasks=["feed"×200]로
+  // 하루 1회 체크인에서 대량 기록을 만들 수 있었다. 유효 care_type 4종으로 유일화.
+  const taskKeys: string[] = Array.isArray(tasks)
+    ? [...new Set(tasks.filter((t) => TASK_CARE_TYPE[t]))]
+    : [];
   if (taskKeys.length === 0) return NextResponse.json({ error: "no_tasks" }, { status: 400 });
 
   const today = kstToday();
