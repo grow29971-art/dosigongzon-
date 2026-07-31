@@ -232,15 +232,25 @@ export async function POST(request: Request) {
       );
     }
 
+    // 입력 토큰 상한 — 레이트리밋만으론 요청 1건에 초대형 history/message를 실어
+    // Gemini 입력 토큰 비용을 폭증시킬 수 있어(요청당 상한 부재), 길이를 강제로 자른다.
+    const MAX_MESSAGE_CHARS = 2000;
+    const MAX_HISTORY_TURNS = 10;
+    const MAX_HISTORY_TEXT_CHARS = 2000;
+    const safeMessage = message.slice(0, MAX_MESSAGE_CHARS);
+
     const addressName = addressTerm(userName);
 
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    // 대화 히스토리 구성
-    const chatHistory = (history ?? []).map((h) => ({
-      role: h.role === "ai" ? ("model" as const) : ("user" as const),
-      parts: [{ text: h.text }],
-    }));
+    // 대화 히스토리 구성 — 최근 N턴만, 각 턴 텍스트도 상한 적용
+    const chatHistory = (Array.isArray(history) ? history : [])
+      .filter((h) => h && typeof h.text === "string")
+      .slice(-MAX_HISTORY_TURNS)
+      .map((h) => ({
+        role: h.role === "ai" ? ("model" as const) : ("user" as const),
+        parts: [{ text: h.text.slice(0, MAX_HISTORY_TEXT_CHARS) }],
+      }));
 
     // 모델 자동 폴백: 순서대로 시도
     const errors: string[] = [];
@@ -251,7 +261,7 @@ export async function POST(request: Request) {
         const result = await tryChat(
           genAI,
           modelName,
-          message,
+          safeMessage,
           chatHistory,
           addressName,
         );
@@ -280,7 +290,7 @@ export async function POST(request: Request) {
 
     // 모든 모델이 실패 → 오프라인 키워드 매칭으로 답변
     console.log("[AI 집사] 모든 모델 실패, 오프라인 폴백 사용");
-    const offlineReply = getOfflineResponse(message, addressName);
+    const offlineReply = getOfflineResponse(safeMessage, addressName);
     return Response.json({ reply: offlineReply, model: "offline" });
   } catch (err: unknown) {
     const rawMessage = err instanceof Error ? err.message : String(err);
