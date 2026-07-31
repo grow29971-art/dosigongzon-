@@ -1,4 +1,5 @@
 import { createServiceClient } from "@/lib/supabase/service";
+import { createClient } from "@/lib/supabase/server";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
@@ -16,12 +17,17 @@ export async function POST(request: Request) {
     return Response.json({ available: false, throttled: true }, { status: 429 });
   }
 
-  const { nickname, currentUserId } = await request.json();
+  const { nickname } = await request.json();
   const trimmed = nickname?.trim();
 
   if (!trimmed || trimmed.length < 2 || trimmed.length > 20) {
     return Response.json({ available: false });
   }
+
+  // 본인 제외 대상은 세션에서 판정한다. 예전엔 클라이언트가 보낸 currentUserId를
+  // 그대로 믿어 `neq("id", 남의id)`로 남의 닉네임을 available:true로 만들 수 있었다.
+  const authed = await createClient();
+  const { data: { user } } = await authed.auth.getUser();
 
   const supabase = createServiceClient();
 
@@ -32,9 +38,9 @@ export async function POST(request: Request) {
     .select("id")
     .eq("nickname", trimmed);
 
-  // 본인은 제외 (닉네임 변경 시)
-  if (currentUserId) {
-    query = query.neq("id", currentUserId);
+  // 본인은 제외 (닉네임 변경 시) — 로그인 세션 기준, 스푸핑 불가
+  if (user) {
+    query = query.neq("id", user.id);
   }
 
   const { data, error } = await query.limit(1);
