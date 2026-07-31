@@ -173,6 +173,42 @@ export async function listAllOrders(status?: OrderStatus): Promise<OrderWithItem
   return (data ?? []) as OrderWithItems[];
 }
 
+// ── 열린 환불 요청 목록 (심사 대기 / 토스 실패 / 처리 중단) ──
+// 마이그레이션 전(order_refunds 미생성)이면 조용히 빈 목록을 돌려준다.
+export interface AdminRefundRequest {
+  id: string;
+  order_id: string;
+  status: "requested" | "approved" | "failed";
+  kind: "full" | "partial";
+  amount: number;
+  reason_code: string;
+  reason_note: string | null;
+  return_shipping_fee: number;
+  created_at: string;
+  order: {
+    id: string;
+    order_number: string;
+    status: OrderStatus;
+    payment_amount: number;
+    recipient_name: string | null;
+  } | null;
+}
+
+export async function listOpenRefunds(): Promise<AdminRefundRequest[]> {
+  await requireAdmin();
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("order_refunds")
+    .select("id, order_id, status, kind, amount, reason_code, reason_note, return_shipping_fee, created_at, order:orders(id, order_number, status, payment_amount, recipient_name)")
+    .in("status", ["requested", "approved", "failed"])
+    .order("created_at", { ascending: true });
+  if (error) {
+    console.error("[shop-admin-repo] listOpenRefunds failed:", error);
+    return [];
+  }
+  return (data ?? []) as unknown as AdminRefundRequest[];
+}
+
 // 재고 복구가 필요한 전환: 결제 후 상태 → 취소/환불
 const STOCK_RESTORE_FROM: OrderStatus[] = ["paid", "preparing", "shipping"];
 

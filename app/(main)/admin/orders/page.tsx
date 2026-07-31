@@ -6,7 +6,15 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, Shield, Save, Truck, ChevronDown, ChevronUp } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { ORDER_STATUS_MAP, orderDisplayName, type OrderStatus, type OrderWithItems } from "@/lib/order-repo";
-import { listAllOrders, updateOrderAdmin } from "@/lib/shop-admin-repo";
+import { listAllOrders, listOpenRefunds, updateOrderAdmin, type AdminRefundRequest } from "@/lib/shop-admin-repo";
+import { REFUND_REASON_LABELS, type RefundReasonCode } from "@/lib/refund-policy";
+
+// 환불 원장 상태별 표시 (requested 외에는 비정상 중단 건 — 재시도 대상)
+const REFUND_STATE_LABEL: Record<AdminRefundRequest["status"], { label: string; color: string }> = {
+  requested: { label: "심사 대기", color: "#E88D5A" },
+  approved:  { label: "처리 중단 — 재시도 필요", color: "#D85555" },
+  failed:    { label: "토스 실패 — 재시도 필요", color: "#D85555" },
+};
 
 const ALL_STATUSES = Object.keys(ORDER_STATUS_MAP) as OrderStatus[];
 
@@ -36,16 +44,48 @@ export default function AdminOrdersPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
+  const [refunds, setRefunds] = useState<AdminRefundRequest[]>([]);
+  const [refundBusyId, setRefundBusyId] = useState<string | null>(null);
+  const [rejectId, setRejectId] = useState<string | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
+  const [refundError, setRefundError] = useState("");
+
   const refresh = useCallback(async (f: OrderStatus | "all") => {
     setLoading(true);
     try {
       setOrders(await listAllOrders(f === "all" ? undefined : f));
+      setRefunds(await listOpenRefunds());
     } catch {
       setOrders([]);
     } finally {
       setLoading(false);
     }
   }, []);
+
+  const handleRefundAction = async (refund: AdminRefundRequest, action: "approve" | "reject") => {
+    setRefundBusyId(refund.id);
+    setRefundError("");
+    try {
+      const res = await fetch("/api/admin/refunds", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          refundId: refund.id,
+          action,
+          ...(action === "reject" ? { rejectReason: rejectReason.trim() } : {}),
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error ?? "처리에 실패했어요.");
+      setRejectId(null);
+      setRejectReason("");
+      await refresh(filter);
+    } catch (e) {
+      setRefundError(e instanceof Error ? e.message : "처리에 실패했어요.");
+    } finally {
+      setRefundBusyId(null);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -123,6 +163,95 @@ export default function AdminOrdersPage() {
         </button>
         <h1 className="text-[17px] font-extrabold text-text-main">주문 관리</h1>
       </div>
+
+      {/* 환불 요청 — 심사 대기·실패 건 (승인 시 토스 취소까지 자동 실행) */}
+      {refunds.length > 0 && (
+        <section
+          className="mb-4 p-3.5"
+          style={{ background: "#fff", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card)", border: "1.5px solid rgba(232,141,90,0.35)" }}
+        >
+          <h2 className="text-[13.5px] font-extrabold text-text-main mb-2.5">환불 요청 {refunds.length}건</h2>
+          <div className="space-y-2.5">
+            {refunds.map((r) => {
+              const state = REFUND_STATE_LABEL[r.status];
+              const busy = refundBusyId === r.id;
+              return (
+                <div key={r.id} className="p-3 rounded-xl" style={{ background: "var(--color-warm-white)" }}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[11px] font-semibold text-text-light">{r.order?.order_number ?? r.order_id}</span>
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 chip-square" style={{ backgroundColor: `${state.color}15`, color: state.color }}>
+                      {state.label}
+                    </span>
+                  </div>
+                  <p className="text-[12.5px] font-bold text-text-main">
+                    {formatWon(r.amount)} 환불
+                    {r.return_shipping_fee > 0 && <span className="text-text-light font-semibold"> (반품비 {formatWon(r.return_shipping_fee)} 차감됨)</span>}
+                  </p>
+                  <p className="text-[11.5px] text-text-sub mt-0.5">
+                    사유: {REFUND_REASON_LABELS[r.reason_code as RefundReasonCode] ?? r.reason_code}
+                    {r.reason_note && ` — ${r.reason_note}`}
+                  </p>
+                  <p className="text-[11px] text-text-light mt-0.5">
+                    주문 상태 {r.order ? ORDER_STATUS_MAP[r.order.status].label : "?"} · {formatDate(r.created_at)} 접수
+                  </p>
+
+                  {rejectId === r.id ? (
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        value={rejectReason}
+                        onChange={(e) => setRejectReason(e.target.value)}
+                        placeholder="거부 사유 (유저에게 전달돼요)"
+                        maxLength={500}
+                        className="w-full px-3 py-2 rounded-xl text-[12px] outline-none"
+                        style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.08)" }}
+                      />
+                      <div className="mt-1.5 flex gap-1.5">
+                        <button
+                          onClick={() => { setRejectId(null); setRejectReason(""); }}
+                          disabled={busy}
+                          className="flex-1 py-2 rounded-xl text-[12px] font-bold"
+                          style={{ background: "#fff", color: "var(--color-text-sub)" }}
+                        >
+                          돌아가기
+                        </button>
+                        <button
+                          onClick={() => handleRefundAction(r, "reject")}
+                          disabled={busy}
+                          className="flex-1 py-2 rounded-xl text-[12px] font-extrabold text-white disabled:opacity-50"
+                          style={{ background: "#D85555" }}
+                        >
+                          {busy ? "처리 중…" : "거부 확정"}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mt-2 flex gap-1.5">
+                      <button
+                        onClick={() => { setRejectId(r.id); setRejectReason(""); }}
+                        disabled={busy}
+                        className="flex-1 py-2 rounded-xl text-[12px] font-bold"
+                        style={{ background: "#fff", color: "#D85555", border: "1px solid rgba(216,85,85,0.25)" }}
+                      >
+                        거부
+                      </button>
+                      <button
+                        onClick={() => handleRefundAction(r, "approve")}
+                        disabled={busy}
+                        className="flex-1 py-2 rounded-xl text-[12px] font-extrabold text-white disabled:opacity-50"
+                        style={{ background: "var(--color-primary)" }}
+                      >
+                        {busy ? "처리 중…" : r.status === "requested" ? "승인 (토스 환불 실행)" : "재시도"}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          {refundError && <p className="mt-2 text-[11.5px] font-bold" style={{ color: "#D85555" }}>{refundError}</p>}
+        </section>
+      )}
 
       {/* 상태 필터 */}
       <div className="flex items-center gap-1.5 mb-4 overflow-x-auto pb-1">
