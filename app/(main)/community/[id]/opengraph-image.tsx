@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { getPostByIdServer } from "@/lib/posts-server";
 import { CATEGORY_MAP } from "@/lib/types";
-import { sanitizeImageUrl } from "@/lib/url-validate";
+import { sanitizeOgImageUrl } from "@/lib/url-validate";
 
 export const runtime = "nodejs";
 export const alt = "도시공존 커뮤니티";
@@ -23,7 +23,7 @@ export default async function PostOGImage({ params }: { params: Params }) {
   const likes = post?.likeCount ?? 0;
   const comments = post?.commentCount ?? 0;
   const firstImage = post?.images?.[0]
-    ? sanitizeImageUrl(post.images[0], "")
+    ? sanitizeOgImageUrl(post.images[0], "")
     : "";
 
   return new ImageResponse(

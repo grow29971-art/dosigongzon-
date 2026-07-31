@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getCatByIdServer } from "@/lib/cats-server";
-import { sanitizeImageUrl } from "@/lib/url-validate";
+import { sanitizeOgImageUrl } from "@/lib/url-validate";
 
 export const runtime = "nodejs";
 export const alt = "도시공존 — 길고양이 이야기";
@@ -15,7 +15,7 @@ export default async function CatOGImage({ params }: { params: Params }) {
 
   const name = cat?.name ?? "길고양이";
   const region = cat?.region ?? "우리 동네";
-  const photoUrl = sanitizeImageUrl(
+  const photoUrl = sanitizeOgImageUrl(
     cat?.photo_url ?? null,
     "https://placehold.co/800x800/EEEAE2/2A2A28?text=Cat",
   );

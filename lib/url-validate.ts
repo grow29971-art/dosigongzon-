@@ -38,3 +38,31 @@ export function sanitizeHttpUrl(
 ): string {
   return isSafeHttpUrl(raw) ? raw : fallback;
 }
+
+// ── OG 이미지(next/og) 전용 SSRF 가드 ──
+// next/og의 ImageResponse는 이 URL을 서버에서 직접 fetch한다. 위의 sanitizeImageUrl은
+// XSS(CSS url() 탈출) 방어용이라 http·사설IP·내부 호스트(169.254.169.254 등)를 통과시켜
+// 서버측 SSRF가 된다. OG용은 https + 신뢰 호스트(Supabase 스토리지·플레이스홀더)만 허용.
+const OG_IMAGE_HOST_ALLOW: Set<string> = (() => {
+  const hosts = new Set<string>(["placehold.co"]);
+  try {
+    const h = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").hostname.toLowerCase();
+    if (h) hosts.add(h);
+  } catch {
+    /* env 미설정 시 스토리지 호스트 없이 플레이스홀더만 허용 */
+  }
+  return hosts;
+})();
+
+export function sanitizeOgImageUrl(raw: unknown, fallback: string): string {
+  if (typeof raw !== "string" || raw.length > 2048) return fallback;
+  let u: URL;
+  try {
+    u = new URL(raw);
+  } catch {
+    return fallback;
+  }
+  if (u.protocol !== "https:") return fallback;
+  if (!OG_IMAGE_HOST_ALLOW.has(u.hostname.toLowerCase())) return fallback;
+  return raw;
+}
