@@ -15,6 +15,19 @@ interface CatQRModalProps {
   catName: string;
 }
 
+// 인쇄 팝업은 document.write로 만들어지고, window.open("")로 연 about:blank는
+// opener(dosigongzon.com)의 origin을 상속한다. 고양이 이름은 사용자 입력이므로
+// 이스케이프 없이 삽입하면 same-origin Stored XSS가 된다. 요소 텍스트·따옴표 속성
+// 양쪽을 안전하게 하기 위해 & < > " ' 를 모두 엔티티로 변환한다.
+function escapeHtml(raw: string): string {
+  return raw
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export default function CatQRModal({ open, onClose, catId, catName }: CatQRModalProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
@@ -68,10 +81,11 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
     if (!dataUrl) return;
     const w = window.open("", "_blank", "width=500,height=700");
     if (!w) return;
+    const safeName = escapeHtml(catName);
     w.document.write(`
       <html>
         <head>
-          <title>${catName} 도시공존 QR</title>
+          <title>${safeName} 도시공존 QR</title>
           <style>
             body { font-family: 'Apple SD Gothic Neo', sans-serif; text-align: center; padding: 32px; }
             h1 { font-size: 20px; margin: 0 0 8px; color: #3D2F25; }
@@ -81,9 +95,9 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
           </style>
         </head>
         <body>
-          <h1>🐾 ${catName}</h1>
+          <h1>🐾 ${safeName}</h1>
           <p>이 아이의 안부를 함께 살펴주세요<br/>QR 스캔 → 도시공존 페이지</p>
-          <img src="${dataUrl}" alt="${catName} QR" />
+          <img src="${dataUrl}" alt="${safeName} QR" />
           <p class="footer">dosigongzon.com — 길고양이 시민 참여 지도</p>
         </body>
       </html>

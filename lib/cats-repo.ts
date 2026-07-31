@@ -289,6 +289,18 @@ function assertSafeRegion(region: string | null | undefined): void {
   }
 }
 
+/**
+ * 고양이 이름 검증. 이름은 QR 인쇄 팝업(CatQRModal)·지도 마커 등 여러 곳에서
+ * HTML/텍스트로 렌더되므로 region과 동일하게 HTML 특수문자를 금지한다.
+ * 렌더 측 escapeHtml이 1차 방어선이고, 여기 검증은 정상 UI 경로 조기 차단 목적.
+ */
+function assertSafeName(name: string | null | undefined): void {
+  if (name == null) return;
+  if (name.length > 40 || /[<>]/.test(name)) {
+    throw new Error("이름 형식이 올바르지 않아요. (< > 문자는 쓸 수 없어요)");
+  }
+}
+
 // ══════════════════════════════════════════
 // 위치 보호 2차 레이어: 시간 배회 (roaming)
 // ══════════════════════════════════════════
@@ -498,6 +510,7 @@ export async function createCat(input: CreateCatInput): Promise<Cat> {
       throw new Error(formatAbuseMessage(nameAbuse));
     }
   }
+  assertSafeName(input.name);
   assertSafeRegion(input.region);
 
   // Rate limit — 고양이 등록마다 카드 생성 시 실제 Gemini API 호출이 나가서
@@ -1457,6 +1470,7 @@ export async function updateCat(
       throw new Error(formatAbuseMessage(nameAbuse));
     }
   }
+  assertSafeName(input.name);
   assertSafeRegion(input.region);
 
   // photo_url/photo_urls 검증 — createCat과 동일하게 Storage URL 외 값(XSS 탈출) 차단.
