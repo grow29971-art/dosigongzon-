@@ -157,6 +157,26 @@ function floatWrap(inner: string, seed: string): string {
   return `<div class="cat-float" style="animation-duration:${dur}s;animation-delay:${delay}s">${inner}</div>`;
 }
 
+// 마커 뽀용 탄성 — 누를 때마다 젤리 바운스(cat-boing) + 햅틱 + 랜덤 이모지 팡.
+// 마커 루트에 class="cat-press"와 --mk-tr(기존 translate) 지정 필요 (globals.css cat-boing).
+const PRESS_POPS = ["💕", "✨", "🐾", "😻", "💛", "🐟"];
+function attachPressFx(el: HTMLElement) {
+  const target = el.querySelector<HTMLElement>(".cat-press");
+  if (!target) return;
+  el.addEventListener("pointerdown", () => {
+    try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {}
+    // 연타 시에도 매번 처음부터 재생 — 클래스 제거 후 리플로우로 애니메이션 리셋
+    target.classList.remove("cat-boing");
+    void target.offsetWidth;
+    target.classList.add("cat-boing");
+    const pop = document.createElement("span");
+    pop.className = "cat-press-pop";
+    pop.textContent = PRESS_POPS[Math.floor(Math.random() * PRESS_POPS.length)];
+    target.appendChild(pop);
+    setTimeout(() => pop.remove(), 750);
+  });
+}
+
 // 고양이 기분 이모지 스팬 — per-cat 지연으로 뿜는 타이밍을 흩뿌림 (globals.css cat-emote)
 const STROLL_EMOTES = ["💕", "✨", "🐾", "😻", "🐟"];
 function catStrollEmote(seed: string): string {
@@ -1413,14 +1433,14 @@ export default function MapPage() {
           // tier 1·2: 작은 dot, tier 3: 사진 마커
           if (tier <= 2) {
             el.innerHTML = floatWrap(`
-              <div style="transform:translate(-50%,-50%);position:relative;width:18px;height:18px;cursor:pointer;">
+              <div class="cat-press" style="transform:translate(-50%,-50%);--mk-tr:translate(-50%,-50%);position:relative;width:18px;height:18px;cursor:pointer;">
                 ${catEars(18, borderColor)}
                 <div style="position:relative;z-index:1;width:18px;height:18px;border-radius:50%;background:${borderColor};border:2px solid #fff;box-shadow:0 2px 6px ${borderColor}66;"></div>
               </div>
             `, cat.id);
           } else {
             el.innerHTML = floatWrap(`
-              <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
+              <div class="cat-press" style="transform:translate(-50%,-100%);--mk-tr:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
                 <div style="position:relative;width:72px;height:72px;">
                   ${catEars(72, borderColor)}
                   <div style="position:relative;z-index:1;width:72px;height:72px;border-radius:50%;border:3.5px solid ${borderColor};background:white;box-shadow:0 4px 13px ${borderColor}55;overflow:hidden;background-image:url('${photoUrl}');background-size:cover;background-position:center;"></div>
@@ -1435,6 +1455,7 @@ export default function MapPage() {
             if (!isLoggedIn) { if (confirm("로그인하면 고양이 정보를 볼 수 있어요. 로그인할까요?")) window.location.href = "/login"; return; }
             setSelectedCat(cat); setCatCardTab("carelog");
           };
+          attachPressFx(el);
           const ov: RoamOverlay = new window.kakao.maps.CustomOverlay({ map: mapInstanceRef.current, position: pos, content: el, yAnchor: 1, zIndex: 10 });
           ov.__roamCat = cat; // 배회 애니메이션 기준
           ov.__stateEl = el.querySelector<HTMLElement>(".roam-state"); // 행동 상태 뱃지
@@ -1460,7 +1481,7 @@ export default function MapPage() {
         // 광역 뷰: 작은 dot + 카운트만 (사진 0)
         const el = document.createElement("div");
         el.innerHTML = floatWrap(`
-          <div style="transform:translate(-50%,-50%);display:flex;align-items:center;gap:4px;cursor:pointer;">
+          <div class="cat-press" style="transform:translate(-50%,-50%);--mk-tr:translate(-50%,-50%);position:relative;display:flex;align-items:center;gap:4px;cursor:pointer;">
             <div style="position:relative;width:24px;height:24px;">
               ${catEars(24, clusterColor)}
               <div style="position:relative;z-index:1;width:24px;height:24px;border-radius:50%;background:${clusterColor};border:2.5px solid #fff;box-shadow:0 2px 7px ${clusterColor}66;"></div>
@@ -1473,6 +1494,7 @@ export default function MapPage() {
           setSelectedDong(dong);
           setSelectedCat(null);
         };
+        attachPressFx(el);
         const ov: RoamOverlay = new window.kakao.maps.CustomOverlay({
           map: mapInstanceRef.current, position: pos, content: el, yAnchor: 0.5, zIndex: 10,
         });
@@ -1488,7 +1510,7 @@ export default function MapPage() {
 
       const el = document.createElement("div");
       el.innerHTML = floatWrap(`
-        <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
+        <div class="cat-press" style="transform:translate(-50%,-100%);--mk-tr:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
           ${hasAlert ? `<div style="position:relative;z-index:5;background:linear-gradient(135deg,#D85555,#B84545);color:#fff;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:800;white-space:nowrap;box-shadow:0 3px 8px rgba(216,85,85,0.5);margin-bottom:12px;animation:alert-pulse 1.6s ease-in-out infinite;">⚠️ 학대경보</div>` : ""}
           <div style="display:flex;gap:-8px;align-items:center;position:relative;">
             ${photos.map((url, i) => {
@@ -1516,6 +1538,7 @@ export default function MapPage() {
         setSelectedDong(dong);
         setSelectedCat(null);
       };
+      attachPressFx(el);
 
       const ov = new window.kakao.maps.CustomOverlay({
         map: mapInstanceRef.current,
