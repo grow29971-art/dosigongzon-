@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { X, Flag, Loader2, Check, Ban } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { X, Flag, Loader2, Check, Ban, Camera } from "lucide-react";
 import {
   createReport,
   REPORT_REASON_LABELS,
   type ReportReason,
   type ReportTargetType,
 } from "@/lib/support-repo";
+import { uploadReportEvidence, EVIDENCE_MAX_FILES } from "@/lib/evidence-repo";
 import { blockUser } from "@/lib/blocks-repo";
 import { useAuth } from "@/lib/auth-context";
 
@@ -46,6 +47,9 @@ export default function ReportModal({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
+  // 증거 사진 (B-2) — 업로드 시 EXIF 제거된 webp 사본만 저장됨
+  const [photos, setPhotos] = useState<File[]>([]);
+  const photoInputRef = useRef<HTMLInputElement>(null);
 
   // 본인 콘텐츠는 차단 의미 없음
   const canBlock = !!authorUserId && !!user && user.id !== authorUserId;
@@ -57,6 +61,7 @@ export default function ReportModal({
       setAlsoBlock(false);
       setError("");
       setDone(false);
+      setPhotos([]);
     }
   }, [open]);
 
@@ -64,13 +69,21 @@ export default function ReportModal({
     setSubmitting(true);
     setError("");
     try {
-      await createReport({
+      const reportId = await createReport({
         target_type: targetType,
         target_id: targetId,
         target_snapshot: targetSnapshot,
         reason,
         description,
       });
+      // 증거 사진 업로드 (EXIF 제거 사본) — 실패해도 신고 자체는 이미 접수됨
+      if (photos.length > 0) {
+        try {
+          await uploadReportEvidence(reportId, photos);
+        } catch {
+          alert("신고는 접수됐지만 사진 업로드에 실패했어요. 필요하면 문의로 다시 보내주세요.");
+        }
+      }
       // admin 이메일 알림 — 본 흐름과 분리, 실패해도 사용자에게 영향 없음
       fetch("/api/admin/notify-inquiry", {
         method: "POST",
@@ -208,6 +221,59 @@ export default function ReportModal({
                   border: "1px solid #E3DCD3",
                 }}
               />
+            </div>
+
+            {/* 증거 사진 첨부 (B-2) — EXIF 제거 사본만 저장, 90일 후 자동 파기 */}
+            <div className="px-5 pb-3">
+              <p className="text-[11px] font-bold text-text-sub mb-2">
+                증거 사진 (선택 · 최대 {EVIDENCE_MAX_FILES}장)
+              </p>
+              <input
+                ref={photoInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={(e) => {
+                  const files = Array.from(e.target.files ?? []);
+                  setPhotos((prev) => [...prev, ...files].slice(0, EVIDENCE_MAX_FILES));
+                  e.target.value = "";
+                }}
+              />
+              <div className="flex gap-1.5 flex-wrap">
+                {photos.map((f, i) => (
+                  <div key={`${f.name}-${i}`} className="relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={URL.createObjectURL(f)}
+                      alt=""
+                      className="w-14 h-14 rounded-lg object-cover"
+                      style={{ border: "1px solid #E3DCD3" }}
+                    />
+                    <button
+                      onClick={() => setPhotos((prev) => prev.filter((_, j) => j !== i))}
+                      aria-label="사진 제거"
+                      className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: "#B84545" }}
+                    >
+                      <X size={10} color="#fff" strokeWidth={3} />
+                    </button>
+                  </div>
+                ))}
+                {photos.length < EVIDENCE_MAX_FILES && (
+                  <button
+                    onClick={() => photoInputRef.current?.click()}
+                    className="w-14 h-14 rounded-lg flex items-center justify-center active:scale-95"
+                    style={{ backgroundColor: "#F6F1EA", border: "1.5px dashed #C3BCB3" }}
+                    aria-label="사진 추가"
+                  >
+                    <Camera size={16} style={{ color: "#A38E7A" }} />
+                  </button>
+                )}
+              </div>
+              <p className="text-[10px] mt-1.5 leading-relaxed" style={{ color: "#A38E7A" }}>
+                사진 속 위치정보(EXIF)는 자동으로 제거돼요 · 관리자만 열람 · 90일 후 자동 파기
+              </p>
             </div>
 
             {/* 차단도 함께 (작성자 정보 있을 때만) */}

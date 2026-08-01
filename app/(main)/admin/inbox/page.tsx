@@ -38,6 +38,7 @@ import {
   type InquiryStatus,
 } from "@/lib/support-repo";
 import { Ban, Eraser } from "lucide-react";
+import ReportEvidenceBlock from "@/app/components/ReportEvidenceBlock";
 
 type Tab = "reports" | "inquiries";
 
@@ -395,6 +396,8 @@ export default function AdminInboxPage() {
                     {r.description}
                   </p>
                 )}
+                {/* 증거 사진 + 기관 이관 서식 (B-2) */}
+                <ReportEvidenceBlock report={r} />
                 {/* 관리자 액션 — 상단 행(대상 처리) */}
                 <div className="flex gap-1.5 mt-3 pt-2.5 border-t border-divider">
                   <ActionBtn

@@ -52,6 +52,10 @@
     {
       "path": "/api/cron/community-topic",
       "schedule": "30 0 * * 2,5"
+    },
+    {
+      "path": "/api/cron/purge-safety-data",
+      "schedule": "40 18 * * *"
     }
   ]
 }

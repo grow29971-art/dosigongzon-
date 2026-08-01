@@ -68,7 +68,8 @@ export interface CreateReportInput {
   description?: string;
 }
 
-export async function createReport(input: CreateReportInput): Promise<void> {
+/** 신고 생성. 생성된 신고 id를 반환 (증거 첨부 등 후속 작업용). */
+export async function createReport(input: CreateReportInput): Promise<string> {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("로그인이 필요해요.");
@@ -83,7 +84,7 @@ export async function createReport(input: CreateReportInput): Promise<void> {
     label: "신고",
   });
 
-  const { error } = await supabase.from("reports").insert({
+  const { data, error } = await supabase.from("reports").insert({
     reporter_id: user.id,
     reporter_email: null,
     reporter_name: "익명 신고자",
@@ -92,12 +93,13 @@ export async function createReport(input: CreateReportInput): Promise<void> {
     target_snapshot: input.target_snapshot ?? null,
     reason: input.reason,
     description: input.description?.trim() || null,
-  });
+  }).select("id").single();
 
-  if (error) {
+  if (error || !data) {
     console.error("[support-repo] createReport failed:", error);
-    throw new Error(`신고 전송 실패: ${error.message}`);
+    throw new Error(`신고 전송 실패: ${error?.message ?? "id 반환 실패"}`);
   }
+  return (data as { id: string }).id;
 }
 
 export async function listReports(): Promise<Report[]> {
