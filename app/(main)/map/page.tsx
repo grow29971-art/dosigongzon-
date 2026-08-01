@@ -3038,10 +3038,40 @@ export default function MapPage() {
                 </div>
               )}
 
-              {/* 배회 마커 안내 — 마커 위치를 실위치로 오해하고 찾아가는 혼란 방지 */}
-              <p className="text-[10px] text-text-light text-center px-4 pb-1">
-                🐾 마커는 아이들 보호를 위해 실제 위치와 다르게 계속 움직여요
-              </p>
+              {/* 배회 마커 안내 — 탭하면 스토킹·학대 방지 설계 상세 설명 펼침 */}
+              <details className="px-4 pb-1 group">
+                <summary className="text-[10px] text-text-light text-center list-none cursor-pointer select-none [&::-webkit-details-marker]:hidden">
+                  🐾 마커는 아이들 보호를 위해 실제 위치와 다르게 계속 움직여요{" "}
+                  <span className="underline underline-offset-2 font-semibold">자세히</span>
+                </summary>
+                <div
+                  className="mt-2 rounded-2xl px-4 py-3.5 text-left"
+                  style={{ backgroundColor: "var(--color-surface-alt)" }}
+                >
+                  <p className="text-[11.5px] font-extrabold text-text-main mb-2">
+                    🛡 스토킹·학대를 막는 3중 위치 보호
+                  </p>
+                  <ul className="space-y-2 text-[11px] leading-relaxed text-text-sub">
+                    <li>
+                      <b className="text-text-main">① 등록 순간부터 흐려져요</b> — 등록할 때 서버가
+                      좌표를 수백 m 옮겨서 저장해요. 정확한 자리는 저희 서버에도 남지 않아요.
+                    </li>
+                    <li>
+                      <b className="text-text-main">② 마커는 일부러 돌아다녀요</b> — 지금 보이는
+                      움직임은 실제 이동이 아니라, 위치를 특정하지 못하게 하는 보호 장치예요.
+                      마커를 따라가도 그 자리에 아이가 없어요.
+                    </li>
+                    <li>
+                      <b className="text-text-main">③ 로그인하지 않으면 더 넓게</b> — 비로그인
+                      화면에는 최대 1km 가까이 흐려져서 동네 단위로만 보여요.
+                    </li>
+                  </ul>
+                  <p className="text-[10.5px] leading-relaxed mt-2.5" style={{ color: "#8A7A6E" }}>
+                    학대 신고가 접수되면 마커에 ⚠️ 경보가 붙어 이웃이 함께 지켜봐요. 아이들을
+                    위해 급식소·쉼터의 정확한 위치는 글이나 설명에도 적지 말아주세요 🙏
+                  </p>
+                </div>
+              </details>
 
               {selectedCat.card_flavor && (
                 <p
