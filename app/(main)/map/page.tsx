@@ -34,6 +34,7 @@ import {
   SlidersHorizontal,
   BookOpen,
   Sparkles,
+  PhoneCall,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { CARD_THEME, pseudoDexNo, type CardRarity } from "@/app/components/CatCard";
@@ -71,6 +72,7 @@ import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 import { getMyBlockedIdSet } from "@/lib/blocks-repo";
 import TitleBadge from "@/app/components/TitleBadge";
 import SendDMButton from "@/app/components/SendDMButton";
+import SafetyCallSheet from "@/app/components/SafetyCallSheet";
 import { listRescueHospitals, type RescueHospital } from "@/lib/hospitals-repo";
 import type { Post } from "@/lib/types";
 import type {
@@ -267,6 +269,8 @@ export default function MapPage() {
   const [loadingCats, setLoadingCats] = useState(true);
   const [catsError, setCatsError] = useState("");
   const [alertedCats, setAlertedCats] = useState<Set<string>>(new Set());
+  // 곁에 있어요 — 112/119 빠른 전화 시트 (A-1, 서버 무경유)
+  const [safetyOpen, setSafetyOpen] = useState(false);
 
   // 검색어 매칭 개수 — "등록했는데 안 보인다" 문의 방지용 피드백.
   // 매칭이 있으면 지도가 자동으로 그쪽으로 이동하고(마커 렌더 useEffect), 없으면
@@ -2445,6 +2449,20 @@ export default function MapPage() {
       {/* 내 위치 + 등록 FAB */}
       {!selectedCat && !selectedHospital && !chatOpen && !selectedDong && (
         <div className="absolute bottom-6 right-4 z-30 flex flex-col gap-2.5 items-end">
+          {/* 곁에 있어요 — 112/119 빠른 전화 (A-1). 공포 프레임 대신 안심 톤 */}
+          <button
+            onClick={() => setSafetyOpen(true)}
+            className="relative w-11 h-11 rounded-full flex items-center justify-center active:scale-90 transition-transform overflow-hidden"
+            style={{
+              background: "linear-gradient(180deg, #FFFFFF 0%, #F2F4FA 100%)",
+              boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 -3px 6px rgba(60,70,110,0.08) inset, 0 3px 8px rgba(30,40,80,0.14), 0 8px 18px rgba(30,40,80,0.10)",
+            }}
+            aria-label="곁에 있어요 — 112/119 빠른 전화"
+          >
+            <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1/2 rounded-t-full pointer-events-none"
+              style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 100%)" }} />
+            <PhoneCall size={17} style={{ color: "#B84545" }} strokeWidth={2.4} className="relative" />
+          </button>
           <button
             onClick={handleLocateMe}
             className="relative w-11 h-11 rounded-full flex items-center justify-center active:scale-90 transition-transform overflow-hidden"
@@ -2511,6 +2529,9 @@ export default function MapPage() {
           </div>
         </div>
       )}
+
+      {/* 곁에 있어요 — 112/119 빠른 전화 시트 (A-1, 서버 무경유) */}
+      <SafetyCallSheet open={safetyOpen} onClose={() => setSafetyOpen(false)} />
 
       {/* 첫 진입 유저용 코치마크 (내 고양이 0마리일 때만) */}
       {!selectedCat && !selectedHospital && !chatOpen && !selectedDong && !addModalOpen && (
