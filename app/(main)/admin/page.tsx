@@ -154,6 +154,13 @@ export default function AdminDashboardPage() {
       badge: (stats?.pendingReports ?? 0) + (stats?.pendingInquiries ?? 0),
     },
     {
+      href: "/admin/zones",
+      title: "QR 지킴판",
+      subtitle: "돌봄 구역 QR 생성·익명 제보 확인·이관",
+      Icon: Shield,
+      color: "#4A7B52",
+    },
+    {
       href: "/admin/users",
       title: "가입자 관리",
       subtitle: "전체 회원 조회·정지 현황",
