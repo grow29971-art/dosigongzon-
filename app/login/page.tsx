@@ -215,6 +215,11 @@ function LoginContent() {
                     💡 {oauthGuide.tip}
                   </p>
                 )}
+                {/* 사과 + 자동 접수 안내 — 에러는 logAuthError로 운영팀 로그에 실제 기록됨 */}
+                <p className="text-[11px] mt-2 leading-relaxed" style={{ color: "#8A7A6E" }}>
+                  불편을 드려 죄송해요 🙏 이 오류는 운영팀에 자동으로 접수됐어요.
+                  빠른 시일 내에 해결하겠습니다.
+                </p>
                 {/* 다시 시도 — 에러 쿼리만 제거해 깨끗한 로그인 상태로. next는 보존. */}
                 <button
                   type="button"
