@@ -78,6 +78,14 @@ export async function GET(request: Request) {
     const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
 
     if (exchangeError) {
+      // 중복 호출 내성 — 새로고침·프리페치로 콜백이 재실행되면 code는 이미 소모돼
+      // flow_state_not_found가 되지만, 세션 쿠키가 이미 있으면 로그인은 성공한 상태.
+      // 이 경우 에러 화면 대신 목적지로 보낸다.
+      const { data: { user: existingUser } } = await supabase.auth.getUser();
+      if (existingUser) {
+        return NextResponse.redirect(`${origin}${next}`);
+      }
+
       const diag = await getDiagSuffix();
       // Supabase AuthError에는 status/code/name이 추가로 들어있음 — message에 안 담기면 함께 기록
       const errCode = (exchangeError as { code?: string }).code;
@@ -94,9 +102,20 @@ export async function GET(request: Request) {
           referrer: ref,
         });
       } catch { /* 로깅 실패 무시 */ }
-      return NextResponse.redirect(
-        `${origin}/login?error=auth_failed&error_description=${encodeURIComponent(exchangeError.message)}`,
-      );
+
+      // flow state 만료/소모(인증 도중 지체·재시도)는 전용 코드로 — 로그인 화면에서
+      // "쿠키 차단" 같은 엉뚱한 안내 대신 "다시 시도" 안내를 띄우기 위함.
+      const isFlowState =
+        errCode === "flow_state_not_found" || exchangeError.message.toLowerCase().includes("flow state");
+      const params = new URLSearchParams({
+        error: "auth_failed",
+        error_description: exchangeError.message,
+      });
+      if (isFlowState) params.set("error_code", "flow_state_expired");
+      if (providerParam) params.set("provider", providerParam);
+      // 재시도 시 원래 가려던 곳(예: /messages) 보존
+      if (next !== "/") params.set("next", next);
+      return NextResponse.redirect(`${origin}/login?${params.toString()}`);
     }
 
     const { data: { user } } = await supabase.auth.getUser();

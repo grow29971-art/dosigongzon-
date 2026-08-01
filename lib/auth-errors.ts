@@ -80,6 +80,19 @@ export function explainAuthError(
     };
   }
 
+  // ── PKCE flow state 만료/소모 ──
+  // 카카오 인증 도중 오래 지체했거나 콜백이 재실행돼 code가 이미 쓰인 경우.
+  // 주의: 서버 로그의 diag 접미사("cookies=2")가 아래 cookie/storage 분기에
+  // 오매칭되므로 이 분기가 반드시 먼저 와야 함.
+  if (c === "flow_state_expired" || d.includes("flow state") || d.includes("flow_state")) {
+    return {
+      title: "로그인 유효시간이 지났어요",
+      body: "인증 화면에서 시간이 오래 지나면 처음부터 다시 진행해야 해요. 브라우저 문제가 아니에요.",
+      tip: "로그인 버튼을 다시 눌러 이번엔 한 번에 진행해주세요.",
+      severity: "info",
+    };
+  }
+
   // ── Supabase / 세션 관련 ──
   if (c === "auth_failed" || c === "invalid_grant") {
     return {
