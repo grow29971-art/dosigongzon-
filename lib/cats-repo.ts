@@ -263,10 +263,12 @@ export function getDisplayCoord(
 }
 
 /**
- * 등록·수정 시 DB 저장 직전 좌표에 ±444m 랜덤 오프셋을 적용하는 서버측 단일 방어선.
+ * 등록·수정 시 좌표에 ±444m 랜덤 오프셋을 적용하는 단일 방어선.
+ * ⚠️ 실행 위치는 브라우저다(이 repo는 클라이언트 실행) — 오프셋이 전송 "전"에 적용되므로
+ * 실좌표는 네트워크로도 나가지 않는다. 위치정보법 무신고 구성의 근거 중 하나(lib/geo.ts 참조).
  * 실제 급식소 위치가 DB에 정확히 저장되는 것을 차단(학대·표적 방지)한다.
- * createCat·updateCat 모두 반드시 이 함수를 거쳐야 하며, 클라이언트에서 별도 오프셋 금지
- * (과거 수정 경로가 오프셋을 누락해 정확 좌표가 저장되던 회귀를 서버 단일화로 봉합).
+ * createCat·updateCat 모두 반드시 이 함수를 거쳐야 함
+ * (과거 수정 경로가 오프셋을 누락해 정확 좌표가 저장되던 회귀를 단일화로 봉합).
  * 0.008deg 위도 ≈ ±444m. 경도는 서울 위도 기준 ±350m 정도.
  */
 export function applyLocationOffset(lat: number, lng: number): { lat: number; lng: number } {
@@ -525,7 +527,7 @@ export async function createCat(input: CreateCatInput): Promise<Cat> {
     label: "고양이 등록",
   });
 
-  // 좌표 보호: DB 저장 직전 서버에서 ±444m 오프셋 적용 (단일 방어선).
+  // 좌표 보호: 전송 전 브라우저에서 ±444m 오프셋 적용 (단일 방어선 — 실좌표 미전송).
   const { lat: offsetLat, lng: offsetLng } = applyLocationOffset(input.lat, input.lng);
 
   const { data, error } = await supabase

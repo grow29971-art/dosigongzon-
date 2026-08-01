@@ -563,7 +563,14 @@ export default function HomeAuthed({
     }
 
     navigator.geolocation.getCurrentPosition(
-      (pos) => fetchWeather(pos.coords.latitude, pos.coords.longitude),
+      (pos) => {
+        // ⚠️ 위치정보법(무신고 구성): GPS 실좌표를 서버로 보내지 않는다.
+        // 약 5km 격자(0.05°)로 스냅해 전송 — 날씨는 도시 단위 정보라 체감 차이 없고,
+        // 격자 좌표는 개인 위치 식별이 불가해 개인위치정보 수집에 해당하지 않는 구성.
+        const gridLat = Number((Math.round(pos.coords.latitude / 0.05) * 0.05).toFixed(2));
+        const gridLng = Number((Math.round(pos.coords.longitude / 0.05) * 0.05).toFixed(2));
+        fetchWeather(gridLat, gridLng);
+      },
       () => {
         // GPS 거부 → IP 기반으로 서버에서 처리
         fetchWeather();

@@ -347,18 +347,36 @@ export default function ActivityRegionsPage() {
   }
 
   // ── 내 위치 ──
+  // ⚠️ 위치정보법(무신고 구성): GPS 실좌표를 핀(=DB 저장 좌표)으로 쓰지 않는다.
+  // GPS는 "내 동네 찾기"에만 쓰고, 핀은 행정동 중심(공공 좌표)으로 스냅 —
+  // user_activity_regions에는 개인 위치가 아닌 행정동 중심이 저장된다.
   function handleLocateMe() {
     if (!GEOLOCATION_ENABLED) { alert(GEO_DISABLED_MESSAGE); return; }
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setLat(pos.coords.latitude);
-        setLng(pos.coords.longitude);
-        reverseGeocode(pos.coords.latitude, pos.coords.longitude);
+        const gpsLat = pos.coords.latitude;
+        const gpsLng = pos.coords.longitude;
+        // 지오코더 불가 시 폴백: ~1.1km 격자로 뭉개서 사용 (개인 위치 식별 불가 수준)
+        const fallback = () => {
+          setLat(Math.round(gpsLat * 100) / 100);
+          setLng(Math.round(gpsLng * 100) / 100);
+        };
+        if (!window.kakao?.maps?.services) { fallback(); return; }
+        const geocoder = new window.kakao.maps.services.Geocoder();
+        geocoder.coord2RegionCode(gpsLng, gpsLat, (result, status) => {
+          if (status !== window.kakao.maps.services.Status.OK || !Array.isArray(result)) { fallback(); return; }
+          const admin = result.find((r) => r?.region_type === "H") ?? result[0];
+          if (!admin) { fallback(); return; }
+          setLat(admin.y);
+          setLng(admin.x);
+          const dong = admin.region_3depth_name || admin.region_2depth_name;
+          if (dong && !name.trim()) setName(dong);
+        });
       },
       () => alert("위치 권한을 허용해주세요."),
-      // 사용자 명시 클릭이지만 60초 캐시 — 연속 클릭 시 권한 팝업 반복 방지
-      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60_000 },
+      // 동네 판별 용도라 고정밀 불필요 + 60초 캐시 — 연속 클릭 시 권한 팝업 반복 방지
+      { enableHighAccuracy: false, timeout: 8000, maximumAge: 60_000 },
     );
   }
 
