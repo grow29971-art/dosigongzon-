@@ -1383,6 +1383,22 @@ export default function MapPage() {
       return safe;
     }
 
+    // 고양이 귀 — 원형 마커를 고양이 머리 실루엣으로 (2026-08-02 사용자 요청).
+    // 원 뒤(z-index:0)에 삼각형 귀 2개를 세움. 마커 원은 wrapper 안에서 z-index:1 필요.
+    function catEars(size: number, color: string): string {
+      const w = Math.round(size * 0.4);
+      const h = Math.round(size * 0.38);
+      const top = -Math.round(h * 0.52);
+      const inset = Math.max(1, Math.round(size * 0.02));
+      // 30px 이상 큰 마커는 안쪽 귀 명암까지 (흰 귀는 어두운 명암, 색 귀는 밝은 명암)
+      const inner = size >= 30
+        ? `<div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:54%;height:58%;background:${color === "#fff" ? "rgba(0,0,0,0.10)" : "rgba(255,255,255,0.38)"};clip-path:polygon(50% 0%,0% 100%,100% 100%);"></div>`
+        : "";
+      const ear = (deg: number, pos: string) =>
+        `<div style="position:absolute;top:${top}px;${pos};width:${w}px;height:${h}px;background:${color};clip-path:polygon(50% 0%,0% 100%,100% 100%);transform:rotate(${deg}deg);z-index:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.18));">${inner}</div>`;
+      return ear(-18, `left:${inset}px`) + ear(18, `right:${inset}px`);
+    }
+
     function renderGroup(dong: string, dongCats: Cat[], tier: 1 | 2 | 3) {
       if (dong === "기타" || !geocoder) {
         // region이 없는 고양이는 원래 좌표 사용 (개별 마커)
@@ -1397,12 +1413,18 @@ export default function MapPage() {
           // tier 1·2: 작은 dot, tier 3: 사진 마커
           if (tier <= 2) {
             el.innerHTML = floatWrap(`
-              <div style="transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:${borderColor};border:2px solid #fff;box-shadow:0 2px 6px ${borderColor}66;cursor:pointer;"></div>
+              <div style="transform:translate(-50%,-50%);position:relative;width:18px;height:18px;cursor:pointer;">
+                ${catEars(18, borderColor)}
+                <div style="position:relative;z-index:1;width:18px;height:18px;border-radius:50%;background:${borderColor};border:2px solid #fff;box-shadow:0 2px 6px ${borderColor}66;"></div>
+              </div>
             `, cat.id);
           } else {
             el.innerHTML = floatWrap(`
               <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
-                <div style="width:72px;height:72px;border-radius:50%;border:3.5px solid ${borderColor};background:white;box-shadow:0 4px 13px ${borderColor}55;overflow:hidden;background-image:url('${photoUrl}');background-size:cover;background-position:center;"></div>
+                <div style="position:relative;width:72px;height:72px;">
+                  ${catEars(72, borderColor)}
+                  <div style="position:relative;z-index:1;width:72px;height:72px;border-radius:50%;border:3.5px solid ${borderColor};background:white;box-shadow:0 4px 13px ${borderColor}55;overflow:hidden;background-image:url('${photoUrl}');background-size:cover;background-position:center;"></div>
+                </div>
                 <span class="roam-state" style="position:absolute;top:-6px;right:-8px;font-size:17px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(cat.id).emoji}</span>
                 ${emoteSpan(cat.id, emoteForCat(cat.id))}
                 <div style="width:10px;height:10px;background:${borderColor};transform:rotate(45deg);margin-top:-7px;"></div>
@@ -1439,7 +1461,10 @@ export default function MapPage() {
         const el = document.createElement("div");
         el.innerHTML = floatWrap(`
           <div style="transform:translate(-50%,-50%);display:flex;align-items:center;gap:4px;cursor:pointer;">
-            <div style="width:24px;height:24px;border-radius:50%;background:${clusterColor};border:2.5px solid #fff;box-shadow:0 2px 7px ${clusterColor}66;"></div>
+            <div style="position:relative;width:24px;height:24px;">
+              ${catEars(24, clusterColor)}
+              <div style="position:relative;z-index:1;width:24px;height:24px;border-radius:50%;background:${clusterColor};border:2.5px solid #fff;box-shadow:0 2px 7px ${clusterColor}66;"></div>
+            </div>
             ${count > 1 ? `<span style="background:${clusterColor};color:#fff;padding:2px 7px;border-radius:9px;font-size:11px;font-weight:800;box-shadow:0 1px 4px ${clusterColor}66;">${count}</span>` : ""}
           </div>
         `, repCat.id);
@@ -1464,11 +1489,17 @@ export default function MapPage() {
       const el = document.createElement("div");
       el.innerHTML = floatWrap(`
         <div style="transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
-          ${hasAlert ? `<div style="background:linear-gradient(135deg,#D85555,#B84545);color:#fff;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:800;white-space:nowrap;box-shadow:0 3px 8px rgba(216,85,85,0.5);margin-bottom:4px;animation:alert-pulse 1.6s ease-in-out infinite;">⚠️ 학대경보</div>` : ""}
+          ${hasAlert ? `<div style="position:relative;z-index:5;background:linear-gradient(135deg,#D85555,#B84545);color:#fff;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:800;white-space:nowrap;box-shadow:0 3px 8px rgba(216,85,85,0.5);margin-bottom:12px;animation:alert-pulse 1.6s ease-in-out infinite;">⚠️ 학대경보</div>` : ""}
           <div style="display:flex;gap:-8px;align-items:center;position:relative;">
-            ${photos.map((url, i) => `
-              <div style="width:${i === 0 ? 76 : 58}px;height:${i === 0 ? 76 : 58}px;border-radius:50%;border:3.5px solid ${i === 0 ? clusterColor : "#fff"};background:white;box-shadow:0 3px 11px rgba(0,0,0,0.15);overflow:hidden;background-image:url('${url}');background-size:cover;background-position:center;margin-left:${i > 0 ? "-16px" : "0"};z-index:${3 - i};position:relative;"></div>
-            `).join("")}
+            ${photos.map((url, i) => {
+              const w = i === 0 ? 76 : 58;
+              const bc = i === 0 ? clusterColor : "#fff";
+              return `
+              <div style="position:relative;width:${w}px;height:${w}px;margin-left:${i > 0 ? "-16px" : "0"};z-index:${3 - i};">
+                ${catEars(w, bc)}
+                <div style="position:relative;z-index:1;width:100%;height:100%;border-radius:50%;border:3.5px solid ${bc};background:white;box-shadow:0 3px 11px rgba(0,0,0,0.15);overflow:hidden;background-image:url('${url}');background-size:cover;background-position:center;"></div>
+              </div>`;
+            }).join("")}
             <span class="roam-state" style="position:absolute;top:-6px;left:58px;font-size:17px;z-index:4;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(repCat.id).emoji}</span>
             ${emoteSpan(repCat.id, emoteForCat(repCat.id))}
           </div>
