@@ -12,6 +12,7 @@
 
 import { useEffect, useState } from "react";
 import { X, Phone, MapPin, Loader2 } from "lucide-react";
+import ShareMyLocation from "@/app/components/ShareMyLocation";
 
 const NOTICE_KEY = "dosi_safety_call_notice_v1";
 
@@ -191,8 +192,11 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
           </div>
         )}
 
+        {/* 내 위치 보내기 (A-2) — 서버 무경유 */}
+        <ShareMyLocation />
+
         <p className="text-[10px] text-text-light text-center mt-3 leading-relaxed">
-          휴대폰 기본 전화 기능으로 연결해주는 바로가기예요 · 잘못 눌렀다면 통화 전에 끊으면 돼요
+          휴대폰 기본 전화·문자·공유 기능으로 연결해주는 바로가기예요 · 잘못 눌렀다면 통화 전에 끊으면 돼요
         </p>
       </div>
     </div>
