@@ -15,6 +15,7 @@ import {
   type Conversation,
   type DirectMessage,
 } from "@/lib/dm-repo";
+import { LocationWarningError } from "@/lib/location-patterns";
 import { thumbnailUrl, optimizedImageUrl } from "@/lib/cats-repo";
 
 export default function MessagesPageWrapper() {
@@ -158,7 +159,17 @@ function MessagesPage() {
       setMessages((prev) => [...prev, tempMsg]);
       setTimeout(() => endRef.current?.scrollIntoView({ behavior: "smooth" }), 30);
 
-      await sendDM(selectedPartner.id, selectedPartner.name, body, photoUrl);
+      try {
+        await sendDM(selectedPartner.id, selectedPartner.name, body, photoUrl);
+      } catch (warn) {
+        if (!(warn instanceof LocationWarningError)) throw warn;
+        // 위치 표현 감지 → 사용자 확인 후 전송(협업 목적 주소 공유는 허용)
+        if (!window.confirm(`${warn.message}\n\n주소·위치로 보이는 내용이 있어요. 상대에게 그대로 보낼까요?`)) {
+          setMessages((prev) => prev.filter((m) => m.id !== tempMsg.id));
+          return;
+        }
+        await sendDM(selectedPartner.id, selectedPartner.name, body, photoUrl, true);
+      }
     } catch (err) {
       alert(err instanceof Error ? err.message : "전송 실패");
     } finally {

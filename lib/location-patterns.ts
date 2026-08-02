@@ -80,3 +80,18 @@ export function formatViolationMessage(violations: LocationViolation[]): string 
   const parts = violations.map((v) => `${v.label}(${v.match})`);
   return `${parts.join(", ")}는 길고양이 안전을 위해 적을 수 없어요.`;
 }
+
+/**
+ * DM·서클채팅용 "경고 후 허용" 신호.
+ * 공개 게시물(고양이 설명·목격제보)은 위치 표현을 하드 차단하지만, DM/서클은
+ * 실제 협업(합동 급식·TNR 조율)에 주소 공유가 정당히 필요한 사적 채널이라
+ * 차단 대신 이 에러로 UI가 사용자 확인을 받도록 한다. name으로 식별(모듈 경계 안전).
+ */
+export class LocationWarningError extends Error {
+  readonly violations: LocationViolation[];
+  constructor(violations: LocationViolation[]) {
+    super(formatViolationMessage(violations));
+    this.name = "LocationWarningError";
+    this.violations = violations;
+  }
+}

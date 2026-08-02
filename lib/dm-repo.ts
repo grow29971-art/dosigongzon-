@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { getDisplayName, convertImageToWebp } from "@/lib/cats-repo";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
+import { findLocationViolations, LocationWarningError } from "@/lib/location-patterns";
 import { enforceUserActionLimit } from "@/lib/rate-limit";
 
 export interface DirectMessage {
@@ -25,7 +26,7 @@ export interface Conversation {
   unreadCount: number;
 }
 
-export async function sendDM(receiverId: string, receiverName: string, body: string, photoUrl?: string): Promise<void> {
+export async function sendDM(receiverId: string, receiverName: string, body: string, photoUrl?: string, allowLocation = false): Promise<void> {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("로그인이 필요해요.");
@@ -33,10 +34,17 @@ export async function sendDM(receiverId: string, receiverName: string, body: str
   const trimmed = body.trim();
   if (!trimmed && !photoUrl) throw new Error("내용을 입력해주세요.");
 
-  // 어뷰징 검증 — DM도 욕설·위협 차단
+  // 어뷰징 검증 — DM도 욕설·위협·전화/차량번호 등 PII 하드 차단
   if (trimmed) {
     const abuse = findAbuseViolations(trimmed);
     if (abuse.length > 0) throw new Error(formatAbuseMessage(abuse));
+  }
+
+  // 위치 표현(동·호수·아파트·역 등)은 "경고 후 허용" — 스토킹 조력 방지 겸 협업 UX 보존.
+  // 사용자가 확인(allowLocation)하면 통과. (2026-08-02 보안수정 STEP 3)
+  if (trimmed && !allowLocation) {
+    const loc = findLocationViolations(trimmed);
+    if (loc.length > 0) throw new LocationWarningError(loc);
   }
 
   // Rate limit — 도배 방어 (분당 10건, 일당 100건)

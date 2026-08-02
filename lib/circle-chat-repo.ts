@@ -3,6 +3,7 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
+import { findLocationViolations, LocationWarningError } from "@/lib/location-patterns";
 import { enforceUserActionLimit } from "@/lib/rate-limit";
 import { isSafeImageUrl } from "@/lib/url-validate";
 import { convertImageToWebp } from "@/lib/cats-repo";
@@ -77,6 +78,7 @@ export async function sendCircleMessage(
   circleId: string,
   body: string,
   imageUrl?: string | null,
+  allowLocation = false,
 ): Promise<CircleMessage> {
   const supabase = createClient();
   const {
@@ -96,10 +98,17 @@ export async function sendCircleMessage(
     throw new Error("유효하지 않은 이미지 주소예요.");
   }
 
-  // 어뷰징 검증 (텍스트 있을 때만)
+  // 어뷰징 검증 (텍스트 있을 때만) — 욕설·위협·PII 하드 차단
   if (trimmed) {
     const abuse = findAbuseViolations(trimmed);
     if (abuse.length > 0) throw new Error(formatAbuseMessage(abuse));
+  }
+
+  // 위치 표현은 "경고 후 허용" — 합동 급식·TNR 조율 등 정당한 주소 공유 보존.
+  // (2026-08-02 보안수정 STEP 3)
+  if (trimmed && !allowLocation) {
+    const loc = findLocationViolations(trimmed);
+    if (loc.length > 0) throw new LocationWarningError(loc);
   }
 
   // Rate limit — 분당 30건, 일당 300건 (단체 채팅이라 DM보다 약간 여유)

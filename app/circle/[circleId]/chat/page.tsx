@@ -21,6 +21,7 @@ import {
   isPrivateCircleImageRef,
   type CircleMessage,
 } from "@/lib/circle-chat-repo";
+import { LocationWarningError } from "@/lib/location-patterns";
 
 // 비공개 참조("private:…") → signed URL 해석 결과 캐시 (세션 내, TTL 5분이라 재진입 시 재발급)
 const signedUrlCache = new Map<string, string>();
@@ -213,7 +214,19 @@ export default function CircleChatPage() {
       if (photoFile) {
         imageUrl = await uploadCircleChatImage(photoFile, circleId);
       }
-      const sent = await sendCircleMessage(circleId, input, imageUrl);
+      const sent = await (async () => {
+        try {
+          return await sendCircleMessage(circleId, input, imageUrl);
+        } catch (warn) {
+          if (!(warn instanceof LocationWarningError)) throw warn;
+          // 위치 표현 감지 → 확인 후 전송(합동 급식·TNR 조율 주소 공유는 허용)
+          if (!window.confirm(`${warn.message}\n\n주소·위치로 보이는 내용이 있어요. 서클에 그대로 보낼까요?`)) {
+            return null;
+          }
+          return await sendCircleMessage(circleId, input, imageUrl, true);
+        }
+      })();
+      if (!sent) return;
       // 낙관적 추가 (RT가 도착 전이라도 즉시 표시)
       setMessages((prev) => {
         if (prev.some((m) => m.id === sent.id)) return prev;
