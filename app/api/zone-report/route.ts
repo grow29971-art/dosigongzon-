@@ -12,6 +12,8 @@
 
 import { createServiceClient } from "@/lib/supabase/service";
 import { reportError } from "@/lib/error-report";
+import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
+import { findLocationViolations, formatViolationMessage } from "@/lib/location-patterns";
 
 const INCIDENT_TYPES = ["violence", "poison_suspect", "trap_suspect", "shelter_damage", "abandonment", "other"] as const;
 const OCCURRED_WHEN = ["now", "hours_ago", "today", "yesterday", "earlier", "unknown"] as const;
@@ -75,6 +77,23 @@ export async function POST(request: Request) {
   }
   if (detailRaw.length > DETAIL_MAX) {
     return Response.json({ error: `상세 설명은 ${DETAIL_MAX}자 이내로 적어주세요.` }, { status: 400 });
+  }
+
+  // ⚠️ 익명 제보 자유서술의 무기화 방지 (2026-08-02 방어회의 P0 — 변호사·프로파일러·악마의변호인 동시지목):
+  // 고양이 등록(lib/cats-repo.ts)과 동일하게 서버에서 신상(PII: 전화·차량번호·주민번호 등)과
+  // 위치특정(동·호수·아파트·역·도로명 등) 표현을 fail-closed로 차단한다.
+  // UI 안내(ZoneReportForm)만으론 "N동 김씨" 같은 피제보자 특정 서술이 그대로 저장·기관 이관되어
+  // 운영자가 명예훼손·개인정보 노출의 주체가 될 수 있다. 그 백도어를 서버가 막는다.
+  if (detailRaw) {
+    const abuse = findAbuseViolations(detailRaw);
+    const loc = findLocationViolations(detailRaw);
+    if (abuse.length > 0 || loc.length > 0) {
+      const msg = [formatAbuseMessage(abuse), formatViolationMessage(loc)].filter(Boolean).join(" ");
+      return Response.json(
+        { error: msg || "특정 개인이나 위치를 식별할 수 있는 내용은 적을 수 없어요." },
+        { status: 400 },
+      );
+    }
   }
 
   // 봇 검증 (Turnstile)
