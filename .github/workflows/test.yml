@@ -1,0 +1,24 @@
+name: test
+
+# 보안 불변식 회귀 가드 (tests/security-invariants.test.mjs) — 경제성 fail-closed·결제
+# 로그 마스킹·XSS·server-only 경계·GPS 무신고 불변식이 리팩터로 되돌아가면 여기서 실패한다.
+# (2026-08-02: GPS 불변식 테스트가 "주석과 동급"이 되지 않도록 push마다 강제 실행하는 게이트)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  invariants:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      # 테스트는 node 내장 러너 + 소스 문자열 검사라 의존성 설치 없이도 돈다.
+      # (.ts 직접 import는 node 24의 타입 스트리핑으로 처리)
+      - name: 보안 불변식 테스트
+        run: npm test

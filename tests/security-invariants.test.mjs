@@ -5,7 +5,7 @@
 //  실질 방어선은 "변이는 원자 RPC로만, 실패 시 503"이라는 코드 형태 자체다)
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { isSafeImageUrl } from "../lib/url-validate.ts";
 
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
@@ -111,4 +111,79 @@ test("sentry config 3종: sendDefaultPii false + redactSentryEvent 연결", () =
     assert.ok(src.includes("sendDefaultPii: false"), `${file}: sendDefaultPii false 필요`);
     assert.ok(src.includes("redactSentryEvent"), `${file}: 공통 redaction 필요`);
   }
+});
+
+// ── 6. GPS 무신고 불변식 (lib/geo.ts 주석 → 실행 가능한 회귀 가드) ──
+// 위협모델: 리팩터로 raw GPS 좌표(pos.coords)가 fetch body·supabase insert/rpc 인자에
+//   실리면 개인위치정보 "수집"이 되어 미신고 LBS 운영(위치정보법·형사) 위험. 좌표가
+//   네트워크로 나가는 유일 허용 경로는 HomeAuthed의 0.05° 격자 스냅(날씨)뿐이다.
+//   (설계 근거: 2026-08-02 보안수정 회의 STEP 6)
+
+// 좌표를 다루도록 허가된 파일 화이트리스트 = 리뷰 게이트.
+// 새 파일이 GPS를 쓰면 이 테스트가 깨지고, lib/geo.ts 불변식을 검토한 뒤에만 여기 추가할 수 있다.
+const KNOWN_GEO_FILES = new Set([
+  "app/(main)/map/page.tsx",
+  "app/(main)/mypage/activity-regions/page.tsx",
+  "app/components/HomeAuthed.tsx",
+  "app/components/CatLocationPicker.tsx",
+  "app/components/AddCatModal.tsx",
+  "app/components/SafetyCallSheet.tsx",
+  "app/components/ShareMyLocation.tsx",
+]);
+
+// 주석 제거 — 주석 속 단어("fetch·supabase 금지" 등)가 오탐되지 않게. `://`(URL)는 보존.
+const stripComments = (s) =>
+  s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");
+
+const listAppSources = () =>
+  readdirSync(new URL("../app/", import.meta.url), { recursive: true })
+    .map((f) => "app/" + String(f).replace(/\\/g, "/"))
+    .filter((f) => /\.(ts|tsx)$/.test(f));
+
+// R1 — 신규 GPS 도입 = 강제 리뷰 게이트
+test("GPS: getCurrentPosition/watchPosition 사용처는 화이트리스트뿐", () => {
+  const users = listAppSources().filter((f) =>
+    /(getCurrentPosition|watchPosition)\s*\(/.test(stripComments(read(f))),
+  );
+  const unknown = users.filter((f) => !KNOWN_GEO_FILES.has(f));
+  assert.deepEqual(
+    unknown,
+    [],
+    `미등록 GPS 사용처 — lib/geo.ts 불변식 검토 후 화이트리스트 갱신 필요: ${unknown.join(", ")}`,
+  );
+});
+
+// R2 — egress-free 파일 봉인: 좌표를 화면/OS로만 흘리고 네트워크로 절대 안 보냄
+test("GPS: SafetyCallSheet·ShareMyLocation에 네트워크 송신 채널 금지", () => {
+  for (const f of ["app/components/SafetyCallSheet.tsx", "app/components/ShareMyLocation.tsx"]) {
+    const code = stripComments(read(f));
+    for (const banned of ["fetch(", "createClient", ".insert(", ".rpc(", ".upsert(", "sendBeacon", "XMLHttpRequest"]) {
+      assert.ok(!code.includes(banned), `${f}: 좌표 egress 채널 금지 — '${banned}' 발견`);
+    }
+  }
+});
+
+// R3 — 날씨만 좌표 전송 허용, 그것도 0.05° 격자 스냅 강제
+test("GPS: 날씨 전송 좌표는 격자 스냅을 거치고 raw 직결은 금지", () => {
+  const home = stripComments(read("app/components/HomeAuthed.tsx"));
+  assert.match(
+    home,
+    /Math\.round\(\s*pos\.coords\.latitude\s*\/\s*0\.05\s*\)/,
+    "weather 전송 좌표는 0.05° 격자 스냅을 거쳐야 함",
+  );
+  assert.ok(!/fetchWeather\(\s*pos\.coords/.test(home), "raw pos.coords를 fetchWeather에 직결 금지");
+});
+
+// R4 — 활동지역: 저장 좌표는 행정동 중심/격자만, raw gpsLat/gpsLng 대입 금지
+test("GPS: activity-regions는 raw GPS를 저장 state에 직접 대입하지 않음", () => {
+  const src = stripComments(read("app/(main)/mypage/activity-regions/page.tsx"));
+  assert.ok(!/setLat\(\s*gpsLat\s*\)/.test(src), "raw gpsLat 저장 금지 (행정동 중심/격자만)");
+  assert.ok(!/setLng\(\s*gpsLng\s*\)/.test(src), "raw gpsLng 저장 금지");
+});
+
+// R5 — 고양이 좌표: 저장 직전 applyLocationOffset(±444m) 통과 + 오프셋이 항등이 아님
+test("GPS: createCat/updateCat 좌표는 applyLocationOffset을 거침", () => {
+  const src = read("lib/cats-repo.ts");
+  assert.match(src, /applyLocationOffset\(\s*input\.lat\s*,\s*input\.lng\s*\)/);
+  assert.match(src, /\(Math\.random\(\)\s*-\s*0\.5\)\s*\*\s*0\.008/);
 });
