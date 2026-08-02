@@ -12,6 +12,9 @@ export const maxDuration = 30;
 // 이미지 입력 상한 — Gemini Vision 비용/대역 남용 방지 (2026-07-30 보안)
 const ALLOWED_IMAGE_MIME = new Set(["image/jpeg", "image/png", "image/webp"]);
 const MAX_IMAGE_B64_LEN = 8 * 1024 * 1024; // base64 문자열 길이 상한 (~8MB)
+// 플랫폼 전체 일일 Gemini 호출 상한 — 도달 시 랜덤 카드로 우아하게 강등 (STEP 4).
+// 정상 유저 무간섭용 넉넉한 천장. 유료 결제 전환 시 더 낮게 조일 것.
+const AI_DAILY_LIMIT = 5000;
 
 // 등급(rarity)과 카드 이름/플레이버는 더 이상 여기서 정하지 않는다 — AI는 "실제로 보이는 것"만
 // 있는 그대로 보고하고, 등급은 lib/cat-grade.ts의 calculateCatGrade()가 룰 테이블로 산정한다.
@@ -176,7 +179,16 @@ export async function POST(request: Request) {
 
   if (imageValid) {
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    // 글로벌 일일 서킷브레이커 — 플랫폼 전체 상한 도달 시 Gemini를 건너뛰고 랜덤 카드로 강등.
+    // fail-open: RPC 미배포/오류면 기존대로 AI 진행(배포·SQL 순서 독립). 실제 Gemini 호출 직전에만 소모.
+    let underDailyCap = true;
     if (apiKey) {
+      try {
+        const { data: allowed, error } = await createServiceClient().rpc("increment_ai_call", { p_limit: AI_DAILY_LIMIT });
+        if (!error && allowed === false) underDailyCap = false;
+      } catch { /* fail-open */ }
+    }
+    if (apiKey && underDailyCap) {
       try {
         const imgB64 = image_base64;
 
