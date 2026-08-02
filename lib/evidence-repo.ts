@@ -13,6 +13,7 @@ import { createClient } from "@/lib/supabase/client";
 import { convertImageToWebp } from "@/lib/cats-repo";
 import type { Report } from "@/lib/support-repo";
 import { REPORT_REASON_LABELS, type ReportReason } from "@/lib/support-repo";
+import { SAFETY_REPORT_EVIDENCE_ENABLED } from "@/lib/safety-flags";
 
 export interface ReportEvidence {
   id: string;
@@ -36,6 +37,11 @@ async function sha256Hex(blob: Blob): Promise<string> {
 
 /** 신고에 사진 첨부 (최대 3장). EXIF 제거된 webp 사본만 업로드. */
 export async function uploadReportEvidence(reportId: string, files: File[]): Promise<number> {
+  // 킬스위치: 사고·이슈 시 증거 첨부만 차단 (신고 본문은 계속 가능)
+  if (!SAFETY_REPORT_EVIDENCE_ENABLED) {
+    throw new Error("사진 첨부를 잠시 점검 중이에요. 신고 내용만 먼저 접수해주세요.");
+  }
+
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("로그인이 필요해요.");

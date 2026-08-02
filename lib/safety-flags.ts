@@ -22,8 +22,19 @@ function forceKilled(envKey: string): boolean {
 }
 
 // ── B-1 QR 지킴판 익명 목격제보 (랜딩 /z/[zoneId] + 접수 /api/zone-report) ──
+// 서버 경로라 코드 상수 + 환경변수 KILL_ZONE_REPORT override 둘 다 유효.
 // 끄면: 랜딩은 제보 폼 대신 "일시 중단 + 112 안내"만 노출, 접수 라우트는 503.
 export const SAFETY_ZONE_REPORT_ENABLED = true && !forceKilled("KILL_ZONE_REPORT");
+
+// ── B-2 신고 증거 첨부 업로드 (lib/evidence-repo) ──
+// ⚠️ 클라이언트 경로 가드라 코드 상수만 반영(환경변수 override 미적용 — 브라우저는 비공개 env 못 읽음).
+// 끄면: uploadReportEvidence()가 즉시 throw → 신고 본문은 되고 사진 첨부만 막힘.
+export const SAFETY_REPORT_EVIDENCE_ENABLED = true;
+
+// ── 학대경보(alert) 댓글 작성 (lib/cats-repo) ──
+// ⚠️ 클라이언트 경로 가드라 코드 상수만 반영.
+// 끄면: kind='alert' 댓글 작성이 throw → 일반(note) 댓글은 계속 가능.
+export const SAFETY_ABUSE_ALERT_ENABLED = true;
 
 /** 안전기능 OFF 동안 사용자에게 보여줄 공통 안내. */
 export const SAFETY_DISABLED_MESSAGE =

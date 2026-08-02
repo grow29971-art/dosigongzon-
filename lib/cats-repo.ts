@@ -9,6 +9,7 @@ import { findLocationViolations, formatViolationMessage } from "@/lib/location-p
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 import { enforceUserActionLimit } from "@/lib/rate-limit";
 import { kstToday, thisMondayKstDate } from "@/lib/kst";
+import { SAFETY_ABUSE_ALERT_ENABLED } from "@/lib/safety-flags";
 
 export type CatGender = "male" | "female" | "unknown";
 export type CatHealthStatus = "good" | "caution" | "danger";
@@ -981,6 +982,11 @@ export async function createComment(
   } catch {
     // 요약 실패해도 일반 댓글은 진행, 경보는 아래에서 막힘
     authorLevel = null;
+  }
+
+  // 킬스위치: 사고·이슈 시 학대경보 작성 차단 (일반 댓글은 계속 가능)
+  if (kind === "alert" && !SAFETY_ABUSE_ALERT_ENABLED) {
+    throw new Error("학대경보 기록을 잠시 중단했어요. 긴급 상황은 112로 신고해주세요.");
   }
 
   // 경보(alert)는 레벨 1 이상만 기록 가능 — 신규/장난 계정이 가짜 경보 난립 차단
