@@ -14,6 +14,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { reportError } from "@/lib/error-report";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 import { findLocationViolations, formatViolationMessage } from "@/lib/location-patterns";
+import { SAFETY_ZONE_REPORT_ENABLED, SAFETY_DISABLED_MESSAGE } from "@/lib/safety-flags";
 
 const INCIDENT_TYPES = ["violence", "poison_suspect", "trap_suspect", "shelter_damage", "abandonment", "other"] as const;
 const OCCURRED_WHEN = ["now", "hours_ago", "today", "yesterday", "earlier", "unknown"] as const;
@@ -46,6 +47,11 @@ async function verifyTurnstile(token: string | null): Promise<boolean> {
 }
 
 export async function POST(request: Request) {
+  // 킬스위치: 사고·이슈 시 접수 자체를 요청 경로에서 차단 (fail-closed)
+  if (!SAFETY_ZONE_REPORT_ENABLED) {
+    return Response.json({ error: SAFETY_DISABLED_MESSAGE }, { status: 503 });
+  }
+
   let body: {
     zone_id?: unknown;
     incident_type?: unknown;
