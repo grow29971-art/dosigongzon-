@@ -1370,12 +1370,12 @@ export default function MapPage() {
       });
     }
 
-    // 실물 사진 뱃지 — 전신 캐릭터 옆에 붙는 작은 원형 사진 (2026-08-04 사용자 요청).
+    // 실물 사진 뱃지 — 전신 캐릭터 옆에 붙는 원형 사진 (2026-08-04 사용자 요청, 26→40px 확대).
     // pos는 "top:...;left:...;" 형태의 위치 스타일. 사진 없거나 URL 비정상이면 생략.
     function photoBadge(cat: Cat, pos: string): string {
       const safe = cat.photo_url ? sanitizeImageUrl(cat.photo_url, "") : "";
       if (!safe) return "";
-      return `<div style="position:absolute;${pos}width:26px;height:26px;border-radius:50%;border:2px solid #fff;background-image:url('${safe}');background-size:cover;background-position:center;box-shadow:0 2px 5px rgba(0,0,0,0.28);z-index:4;"></div>`;
+      return `<div style="position:absolute;${pos}width:40px;height:40px;border-radius:50%;border:2.5px solid #fff;background-image:url('${safe}');background-size:cover;background-position:center;box-shadow:0 2px 6px rgba(0,0,0,0.3);z-index:4;"></div>`;
     }
 
     // 고양이 귀 — 원형 마커를 고양이 머리 실루엣으로 (2026-08-02 사용자 요청).
@@ -1418,7 +1418,7 @@ export default function MapPage() {
             // 캐릭터 옆에 실물 사진 뱃지 (2026-08-04 사용자 요청).
             el.innerHTML = floatWrap(`
               <div class="cat-press" style="transform:translate(-50%,-100%);--mk-tr:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
-                ${photoBadge(cat, "top:-8px;left:-20px;")}
+                ${photoBadge(cat, "top:-16px;left:-34px;")}
                 <div class="cat-walk-flip" style="display:flex;transform:scaleX(1);transition:transform 0.25s ease;filter:drop-shadow(0 2px 3px rgba(44,30,20,0.32));">
                   ${catArtWalkSvg(cat.art_key ?? cat.id, 54)}
                 </div>
@@ -1490,7 +1490,7 @@ export default function MapPage() {
         <div class="cat-press" style="transform:translate(-50%,-100%);--mk-tr:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
           ${hasAlert ? `<div style="position:relative;z-index:5;background:linear-gradient(135deg,#D85555,#B84545);color:#fff;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:800;white-space:nowrap;box-shadow:0 3px 8px rgba(216,85,85,0.5);margin-bottom:12px;animation:alert-pulse 1.6s ease-in-out infinite;">⚠️ 학대경보</div>` : ""}
           <div style="display:flex;align-items:flex-end;position:relative;">
-            ${photoBadge(repCat, "top:-14px;left:-16px;")}
+            ${photoBadge(repCat, "top:-24px;left:-30px;")}
             ${artCats.map((c, i) => {
               const w = i === 0 ? 56 : 40;
               return `
