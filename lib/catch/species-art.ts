@@ -157,6 +157,51 @@ const ART: Record<string, SpeciesArt> = {
 
 const FALLBACK: SpeciesArt = { fur: "#D8B98A", earInner: "#EFA8A8", muzzle: "#F0E0C8", iris: "#6A5238", pattern: "none" };
 
+// ── 셀 셰이딩 파생 팔레트 (2026-08-04 메이저게임급 리디자인) ──
+// 털색 하나에서 하이라이트/음영/컬러 아웃라인/림라이트를 자동 산출한다.
+// 118종 팔레트를 일일이 튜닝하지 않고도 전 종이 같은 라이팅 문법
+// (좌상단 키라이트 + 하단 웜 섀도 + 털색 계열 아웃라인)을 공유한다.
+// 외부 참조·SVG 필터 없이 그라데이션만 쓴다 — 마커 수십 개 동시 렌더에도 싸다.
+function hexToRgb(hex: string): [number, number, number] {
+  let h = hex.replace("#", "");
+  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  const n = parseInt(h, 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function mix(c1: string, c2: string, t: number): string {
+  const [r1, g1, b1] = hexToRgb(c1);
+  const [r2, g2, b2] = hexToRgb(c2);
+  const ch = (x: number, y: number) => Math.round(x + (y - x) * t).toString(16).padStart(2, "0");
+  return `#${ch(r1, r2)}${ch(g1, g2)}${ch(b1, b2)}`;
+}
+interface Shades { hi: string; lo: string; line: string; rim: string; }
+function shades(a: SpeciesArt): Shades {
+  return {
+    hi: mix(a.fur, "#FFFFFF", 0.32),   // 키라이트 (좌상단)
+    lo: mix(a.fur, "#5A3630", 0.28),   // 웜 섀도 (하단) — 검정 대신 따뜻한 갈색 계열
+    line: mix(a.fur, "#2B1A16", 0.58), // 아웃라인 — 단색 검정선 금지, 털색에서 파생
+    rim: mix(a.fur, "#FFFFFF", 0.55),  // 림라이트 (하단 가장자리 반사광)
+  };
+}
+const irisGrad = (id: string, c: string) =>
+  `<radialGradient id="${id}" cx="0.5" cy="0.75" r="0.9">`
+  + `<stop offset="0" stop-color="${mix(c, "#FFFFFF", 0.5)}"/>`
+  + `<stop offset="0.45" stop-color="${c}"/>`
+  + `<stop offset="1" stop-color="${mix(c, "#141018", 0.55)}"/>`
+  + `</radialGradient>`;
+const furGrad = (id: string, a: SpeciesArt, s: Shades) =>
+  `<radialGradient id="${id}" cx="0.38" cy="0.3" r="0.95">`
+  + `<stop offset="0" stop-color="${s.hi}"/>`
+  + `<stop offset="0.52" stop-color="${a.fur}"/>`
+  + `<stop offset="1" stop-color="${s.lo}"/>`
+  + `</radialGradient>`;
+const bodyGrad = (id: string, a: SpeciesArt, s: Shades) =>
+  `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">`
+  + `<stop offset="0" stop-color="${s.hi}"/>`
+  + `<stop offset="0.45" stop-color="${a.fur}"/>`
+  + `<stop offset="1" stop-color="${s.lo}"/>`
+  + `</linearGradient>`;
+
 /**
  * 종 키 → 치비 고양이 얼굴 SVG 문자열 (viewBox 0 0 100 100).
  * 지도 마커 innerHTML과 React(dangerouslySetInnerHTML) 양쪽에서 사용.
@@ -188,37 +233,48 @@ export function speciesArtDataUrl(speciesKey: string, size = 200, bg = "#FFF6E4"
  */
 export function speciesArtBodySvg(speciesKey: string, size: number): string {
   const a = ART[speciesKey] ?? FALLBACK;
+  const s = shades(a);
   const clipId = `cc-bodyhead-${speciesKey}`;
   const bodyClip = `cc-body-${speciesKey}`;
+  const grad = `${bodyClip}-f`;
   const bodyPath = "M 28 92 Q 18 68 33 53 Q 41 48 50 48 Q 59 48 67 53 Q 82 68 72 92 Q 61 96 50 96 Q 39 96 28 92 Z";
-  // 줄무늬 종만 몸통·꼬리에 줄을 얹어 정체성 강화 (나머지는 단색 fur + 배 하이라이트로 충분)
+  const tailD = "M 71 88 Q 93 84 89 62 Q 87 52 78 56";
+  // 줄무늬 종만 몸통·꼬리에 결 따라 흐르는 렌즈형 줄을 얹어 정체성 강화
   const bodyStripes = a.pattern === "stripes" ? `
-    <g clip-path="url(#${bodyClip})" stroke="${a.patternColor}" stroke-width="4.5" stroke-linecap="round" fill="none" opacity="0.85">
-      <path d="M 30 64 q 20 -6 40 0"/>
-      <path d="M 29 74 q 21 -5 42 0"/>
-      <path d="M 30 84 q 20 -4 40 0"/>
+    <g clip-path="url(#${bodyClip})" fill="${a.patternColor}" opacity="0.85">
+      <path d="M 30 63 C 43 59.5 57 59.5 70 63 C 57 66.5 43 66.5 30 63 Z"/>
+      <path d="M 29 73 C 43 69.5 57 69.5 71 73 C 57 76.5 43 76.5 29 73 Z"/>
+      <path d="M 30.5 83 C 43 80 57 80 69.5 83 C 57 86 43 86 30.5 83 Z"/>
     </g>` : "";
   const tailStripes = a.pattern === "stripes" ? `
     <g stroke="${a.patternColor}" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.85">
       <path d="M 85 78 q 4 -1 6 -3"/><path d="M 88 68 q 3 -1 4 -3"/>
     </g>` : "";
   return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <defs><clipPath id="${bodyClip}"><path d="${bodyPath}"/></clipPath></defs>
-    <ellipse cx="50" cy="95.5" rx="29" ry="4.5" fill="black" opacity="0.08"/>
-    <!-- 꼬리 (몸 뒤에서 오른쪽으로 말림) -->
-    <path d="M 71 88 Q 93 84 89 62 Q 87 52 78 56" fill="none" stroke="${a.fur}" stroke-width="11" stroke-linecap="round"/>
-    <path d="M 71 88 Q 93 84 89 62 Q 87 52 78 56" fill="none" stroke="rgba(40,30,30,0.12)" stroke-width="12.6" stroke-linecap="round" opacity="0.35"/>
-    <path d="M 71 88 Q 93 84 89 62 Q 87 52 78 56" fill="none" stroke="${a.fur}" stroke-width="11" stroke-linecap="round"/>
+    <defs>
+      <clipPath id="${bodyClip}"><path d="${bodyPath}"/></clipPath>
+      ${bodyGrad(grad, a, s)}
+    </defs>
+    <!-- 부드러운 낙하 그림자 (2겹 — blur 필터 없이 소프트 에지) -->
+    <ellipse cx="50" cy="95.3" rx="30" ry="4.8" fill="#1B1410" opacity="0.09"/>
+    <ellipse cx="50" cy="95.3" rx="21" ry="3.4" fill="#1B1410" opacity="0.10"/>
+    <!-- 꼬리 (몸 뒤에서 오른쪽으로 말림) — 컬러 아웃라인 언더레이 -->
+    <path d="${tailD}" fill="none" stroke="${s.line}" stroke-width="13" stroke-linecap="round"/>
+    <path d="${tailD}" fill="none" stroke="${a.fur}" stroke-width="10.4" stroke-linecap="round"/>
     ${tailStripes}
-    <!-- 몸통(앉은 엉덩이) -->
-    <path d="${bodyPath}" fill="${a.fur}"/>
-    <ellipse cx="50" cy="78" rx="14" ry="15" fill="${a.muzzle}" opacity="0.35"/>
+    <!-- 몸통(앉은 엉덩이) — 통합 실루엣 아웃라인 + 셀 셰이딩 그라데이션 -->
+    <path d="${bodyPath}" fill="${s.line}" stroke="${s.line}" stroke-width="4" stroke-linejoin="round"/>
+    <path d="${bodyPath}" fill="url(#${grad})"/>
+    <ellipse cx="50" cy="78" rx="13.5" ry="14" fill="${a.muzzle}" opacity="0.4"/>
     ${bodyStripes}
-    <!-- 앞발 -->
-    <rect x="39.5" y="73" width="8.5" height="21" rx="4.2" fill="${a.fur}"/>
-    <rect x="52" y="73" width="8.5" height="21" rx="4.2" fill="${a.fur}"/>
-    <g stroke="rgba(40,30,30,0.13)" stroke-width="1.3" stroke-linecap="round"><path d="M 43.7 89 v 4.5"/><path d="M 56.2 89 v 4.5"/></g>
-    <path d="${bodyPath}" fill="none" stroke="rgba(40,30,30,0.13)" stroke-width="2"/>
+    <g clip-path="url(#${bodyClip})">
+      <ellipse cx="50" cy="97" rx="30" ry="9" fill="${s.lo}" opacity="0.4"/>
+      <path d="M 24 68 Q 20 80 29 90" fill="none" stroke="${s.rim}" stroke-width="2.6" opacity="0.4" stroke-linecap="round"/>
+    </g>
+    <!-- 앞발 (짧고 통통하게 — 앉은 치비 비율) -->
+    <rect x="39" y="79" width="9.2" height="15.5" rx="4.5" fill="url(#${grad})" stroke="${s.line}" stroke-width="1.3"/>
+    <rect x="51.8" y="79" width="9.2" height="15.5" rx="4.5" fill="url(#${grad})" stroke="${s.line}" stroke-width="1.3"/>
+    <g stroke="${s.line}" stroke-width="1.2" stroke-linecap="round" opacity="0.5"><path d="M 43.6 90.5 v 3.2"/><path d="M 56.4 90.5 v 3.2"/></g>
     <!-- 머리 (얼굴 마크업을 상단으로 축소 배치 — 치비 비율: 머리를 몸보다 크게) -->
     <g transform="translate(15 -6) scale(0.7)">${headMarkup(a, clipId)}</g>
   </svg>`;
@@ -241,10 +297,12 @@ export function speciesArtWalkSvg(
   speciesKey: string, width: number, opts?: { walking?: boolean; jitter?: number },
 ): string {
   const a = ART[speciesKey] ?? FALLBACK;
+  const s = shades(a);
   const walking = opts?.walking ?? true;
   const j = opts?.jitter ?? 0;
   const clipId = `cc-walkhead-${speciesKey}`;
   const bodyClip = `cc-walkbody-${speciesKey}`;
+  const grad = `${bodyClip}-f`;
   const height = Math.round((width * 96) / 112);
 
   const short = speciesKey === "munchkin";
@@ -252,7 +310,9 @@ export function speciesArtWalkSvg(
   const legTop = 72 + shift;
   const legLen = 94 - legTop;
   // 샴 포인트 — 다리·꼬리가 진한 색 (귀 안쪽은 headMarkup이 처리)
-  const limbFur = a.pattern === "points" && a.patternColor ? a.patternColor : a.fur;
+  const isPoints = a.pattern === "points" && !!a.patternColor;
+  const limbFur = isPoints ? a.patternColor! : a.fur;
+  const legFill = isPoints ? limbFur : `url(#${grad})`;
 
   const legDur = 0.52 + j * 0.14;
   const legStyle = (phase: 0 | 1) =>
@@ -262,9 +322,9 @@ export function speciesArtWalkSvg(
   // 대각 걸음: far(반대편) 다리는 살짝 어둡게 눌러 원근을 준다. 턱시도는 흰 양말.
   const leg = (x: number, phase: 0 | 1, far: boolean) => `
     <g ${legStyle(phase)}>
-      <rect x="${x}" y="${legTop}" width="7.5" height="${legLen}" rx="3.7" fill="${limbFur}"/>
-      ${a.pattern === "tuxedo" ? `<rect x="${x}" y="88" width="7.5" height="6" rx="3" fill="#FFFFFF"/>` : ""}
-      ${far ? `<rect x="${x}" y="${legTop}" width="7.5" height="${legLen}" rx="3.7" fill="rgba(30,22,20,0.16)"/>` : ""}
+      <rect x="${x}" y="${legTop}" width="7.5" height="${legLen}" rx="3.7" fill="${legFill}" stroke="${s.line}" stroke-width="1.5"/>
+      ${a.pattern === "tuxedo" ? `<rect x="${x + 0.6}" y="88" width="6.3" height="5.4" rx="2.7" fill="#FFFFFF"/>` : ""}
+      ${far ? `<rect x="${x}" y="${legTop}" width="7.5" height="${legLen}" rx="3.7" fill="rgba(30,22,20,0.18)"/>` : ""}
     </g>`;
 
   const tailSway =
@@ -274,56 +334,69 @@ export function speciesArtWalkSvg(
         <path d="M 13 ${47 + shift} l 6 2.5"/><path d="M 11.5 ${40 + shift} l 6 1.5"/>
       </g>` : "";
   const tail = speciesKey === "bobtail"
-    ? `<circle cx="26" cy="${54 + shift}" r="7" fill="${limbFur}" stroke="rgba(40,30,30,0.13)" stroke-width="1.8"/>`
+    ? `<circle cx="26" cy="${54 + shift}" r="7" fill="${limbFur}" stroke="${s.line}" stroke-width="1.8"/>`
     : `<g style="${tailSway}">
-      <path d="M 27 ${62 + shift} Q 13 ${54 + shift} 11 ${37 + shift}" fill="none" stroke="${limbFur}" stroke-width="7" stroke-linecap="round"/>
+      <path d="M 27 ${62 + shift} Q 13 ${54 + shift} 11 ${37 + shift}" fill="none" stroke="${s.line}" stroke-width="9" stroke-linecap="round"/>
+      <path d="M 27 ${62 + shift} Q 13 ${54 + shift} 11 ${37 + shift}" fill="none" stroke="${limbFur}" stroke-width="6.4" stroke-linecap="round"/>
       ${tailStripes}
     </g>`;
 
-  // 몸통(가로 캡슐) + 종별 무늬 — 좌표는 몸통 클립 기준
+  // 몸통(가로 캡슐) + 종별 무늬 — 좌표는 몸통 클립 기준. 무늬는 기하 나열 대신 유기적 패치.
   const bodyX = 24, bodyY = 50 + shift, bodyW = 54, bodyH = 28;
   let bodyPattern = "";
   if (a.pattern === "stripes") {
+    // 등에서 흘러내리는 렌즈형 타비 줄무늬 (위가 두껍고 아래로 뾰족)
+    const strip = (x: number, len: number) =>
+      `<path d="M ${x} ${bodyY - 1} C ${x - 2.6} ${bodyY + len * 0.45} ${x - 1.8} ${bodyY + len * 0.8} ${x} ${bodyY + len} C ${x + 1.8} ${bodyY + len * 0.8} ${x + 2.6} ${bodyY + len * 0.45} ${x} ${bodyY - 1} Z"/>`;
     bodyPattern = `
-      <g clip-path="url(#${bodyClip})" stroke="${a.patternColor}" stroke-width="4.5" stroke-linecap="round" fill="none" opacity="0.85">
-        <path d="M 34 ${bodyY + 1} q 2 8 0 14"/>
-        <path d="M 45 ${bodyY + 1} q 2 9 0 15"/>
-        <path d="M 56 ${bodyY + 1} q 2 8 0 14"/>
+      <g clip-path="url(#${bodyClip})" fill="${a.patternColor}" opacity="0.9">
+        ${strip(35, 15)}${strip(45.5, 17)}${strip(56, 15)}
       </g>`;
   } else if (a.pattern === "tuxedo") {
     bodyPattern = `
       <g clip-path="url(#${bodyClip})">
-        <ellipse cx="${bodyX + bodyW - 9}" cy="${bodyY + bodyH + 2}" rx="21" ry="14" fill="${a.patternColor}"/>
+        <path d="M ${bodyX + 22} ${bodyY + bodyH} C ${bodyX + 26} ${bodyY + 12} ${bodyX + 40} ${bodyY + 10} ${bodyX + bodyW} ${bodyY + 14} L ${bodyX + bodyW} ${bodyY + bodyH} Z" fill="${a.patternColor}"/>
       </g>`;
   } else if (a.pattern === "calico") {
     bodyPattern = `
-      <g clip-path="url(#${bodyClip})">
-        <path d="M 29 ${bodyY} q 13 -2 17 8 q -7 10 -19 6 Z" fill="${a.patternColor}"/>
-        <path d="M 56 ${bodyY + 13} q 11 -5 17 4 q -4 10 -17 7 Z" fill="${a.patternColor2}"/>
+      <g clip-path="url(#${bodyClip})" opacity="0.95">
+        <path d="M 28 ${bodyY - 1} C 36 ${bodyY - 2} 42.5 ${bodyY + 3} 44 ${bodyY + 9} C 38.5 ${bodyY + 14.5} 29 ${bodyY + 12.5} 27 ${bodyY + 5} Z" fill="${a.patternColor}"/>
+        <path d="M 56 ${bodyY + 11} C 62.5 ${bodyY + 6.5} 71 ${bodyY + 8} 73.5 ${bodyY + 14} C 71 ${bodyY + 20.5} 60.5 ${bodyY + 21.5} 56.5 ${bodyY + 16} Z" fill="${a.patternColor2}"/>
       </g>`;
   } else if (a.pattern === "tortie") {
     bodyPattern = `
-      <g clip-path="url(#${bodyClip})" opacity="0.9">
-        <ellipse cx="36" cy="${bodyY + 8}" rx="8" ry="5.5" fill="${a.patternColor}" transform="rotate(-14 36 ${bodyY + 8})"/>
-        <ellipse cx="55" cy="${bodyY + 6}" rx="7" ry="5" fill="${a.patternColor2}" transform="rotate(10 55 ${bodyY + 6})"/>
-        <ellipse cx="46" cy="${bodyY + 19}" rx="6.5" ry="4.5" fill="${a.patternColor2}"/>
-        <ellipse cx="66" cy="${bodyY + 17}" rx="6" ry="4" fill="${a.patternColor}"/>
+      <g clip-path="url(#${bodyClip})" opacity="0.92">
+        <path d="M 30 ${bodyY + 6} C 33 ${bodyY + 1} 41 ${bodyY} 43.5 ${bodyY + 5} C 45 ${bodyY + 10} 39.5 ${bodyY + 13.5} 34.5 ${bodyY + 12} C 30.5 ${bodyY + 10.5} 28.8 ${bodyY + 8.5} 30 ${bodyY + 6} Z" fill="${a.patternColor}"/>
+        <path d="M 51 ${bodyY + 3} C 55.5 ${bodyY - 1} 62.5 ${bodyY + 1} 63.5 ${bodyY + 6} C 64 ${bodyY + 10.5} 58 ${bodyY + 12.5} 53.5 ${bodyY + 10.5} C 50 ${bodyY + 8.5} 49.3 ${bodyY + 5.5} 51 ${bodyY + 3} Z" fill="${a.patternColor2}"/>
+        <path d="M 42 ${bodyY + 16} C 45 ${bodyY + 13} 51 ${bodyY + 14} 52 ${bodyY + 18} C 52.5 ${bodyY + 22} 46.5 ${bodyY + 24} 43 ${bodyY + 21.5} C 40.5 ${bodyY + 19.5} 40.6 ${bodyY + 17.5} 42 ${bodyY + 16} Z" fill="${a.patternColor2}"/>
+        <path d="M 62 ${bodyY + 15} C 65.5 ${bodyY + 12.5} 71 ${bodyY + 14} 71.5 ${bodyY + 18} C 71.5 ${bodyY + 21.5} 66 ${bodyY + 23} 63 ${bodyY + 20.5} C 61 ${bodyY + 18.5} 60.8 ${bodyY + 16.5} 62 ${bodyY + 15} Z" fill="${a.patternColor}"/>
       </g>`;
   } else if (a.pattern === "stars" && a.patternColor) {
     bodyPattern = `
       <g clip-path="url(#${bodyClip})" opacity="0.95">
-        ${starPath(35, bodyY + 8, 0.8, a.patternColor)}${starPath(52, bodyY + 17, 0.55, a.patternColor)}${starPath(64, bodyY + 7, 0.65, a.patternColor)}
+        <circle cx="35" cy="${bodyY + 8}" r="4.2" fill="${a.patternColor}" opacity="0.25"/>
+        ${starPath(35, bodyY + 8, 0.8, a.patternColor)}${starPath(52, bodyY + 17, 0.55, a.patternColor)}
+        <circle cx="64" cy="${bodyY + 7}" r="3.4" fill="${a.patternColor}" opacity="0.22"/>
+        ${starPath(64, bodyY + 7, 0.65, a.patternColor)}
+        <circle cx="44" cy="${bodyY + 5}" r="0.9" fill="${a.patternColor}" opacity="0.8"/>
+        <circle cx="70" cy="${bodyY + 16}" r="1" fill="${a.patternColor}" opacity="0.8"/>
       </g>`;
   }
 
   return `<svg width="${width}" height="${height}" viewBox="0 0 112 96" xmlns="http://www.w3.org/2000/svg">
-    <defs><clipPath id="${bodyClip}"><rect x="${bodyX}" y="${bodyY}" width="${bodyW}" height="${bodyH}" rx="14"/></clipPath></defs>
+    <defs>
+      <clipPath id="${bodyClip}"><rect x="${bodyX}" y="${bodyY}" width="${bodyW}" height="${bodyH}" rx="14"/></clipPath>
+      ${bodyGrad(grad, a, s)}
+    </defs>
+    <ellipse cx="53" cy="93.6" rx="27" ry="3.1" fill="#1B1410" opacity="0.12"/>
     ${tail}
     ${leg(33, 0, true)}${leg(58, 1, true)}
-    <rect x="${bodyX}" y="${bodyY}" width="${bodyW}" height="${bodyH}" rx="14" fill="${a.fur}"/>
-    <ellipse cx="${bodyX + bodyW / 2}" cy="${bodyY + bodyH - 4}" rx="18" ry="8" fill="${a.muzzle}" opacity="0.3"/>
+    <rect x="${bodyX}" y="${bodyY}" width="${bodyW}" height="${bodyH}" rx="14" fill="url(#${grad})" stroke="${s.line}" stroke-width="2.4"/>
+    <ellipse cx="${bodyX + bodyW / 2}" cy="${bodyY + bodyH - 4}" rx="18" ry="8" fill="${a.muzzle}" opacity="0.32"/>
     ${bodyPattern}
-    <rect x="${bodyX}" y="${bodyY}" width="${bodyW}" height="${bodyH}" rx="14" fill="none" stroke="rgba(40,30,30,0.13)" stroke-width="2"/>
+    <g clip-path="url(#${bodyClip})">
+      <path d="M ${bodyX + 4} ${bodyY + bodyH - 3} Q ${bodyX + bodyW / 2} ${bodyY + bodyH + 4} ${bodyX + bodyW - 4} ${bodyY + bodyH - 3}" fill="none" stroke="${s.rim}" stroke-width="2.4" opacity="0.4" stroke-linecap="round"/>
+    </g>
     ${leg(42, 1, false)}${leg(67, 0, false)}
     <g transform="translate(50 ${-2 + shift}) scale(0.58)">${headMarkup(a, clipId)}</g>
   </svg>`;
@@ -402,53 +475,76 @@ export function butlerWalkSvg(width: number): string {
 }
 
 // 얼굴 마크업(귀·머리·눈·주둥이 등) — 얼굴 전용/전신 양쪽이 공유. viewBox 0 0 100 100 기준.
+// 2026-08-04 메이저게임급 리디자인: 통합 실루엣 아웃라인(귀+머리 한 덩어리 컬러 라인),
+// 라디얼 셀 셰이딩, 홍채 그라데이션 글로시 왕눈, 유기적 무늬 패치, 하단 림라이트.
 function headMarkup(a: SpeciesArt, clipId: string): string {
+  const s = shades(a);
+  const gFur = `${clipId}-f`;
+  const gIris = `${clipId}-i`;
+  const gIrisR = a.irisRight ? `${clipId}-j` : gIris;
+  const rightIris = a.irisRight ?? a.iris;
+  const earL = "M 20 45 L 15.5 19 Q 15 13.5 20 15.5 L 44 28 Z";
+  const earR = "M 80 45 L 84.5 19 Q 85 13.5 80 15.5 L 56 28 Z";
+  const earInner = a.pattern === "points" && a.patternColor ? a.patternColor : a.earInner;
 
-  // 무늬 레이어 (머리 타원에 클리핑)
+  // 무늬 레이어 — 기하 도형 나열이 아니라 털 결을 따라 흐르는 유기적 패치 (머리 타원에 클리핑)
   let pattern = "";
   if (a.pattern === "stripes") {
+    // 타비 이마 3줄(위가 두껍고 아래로 뾰족한 렌즈형) + 뺨 마킹
     pattern = `
-      <g clip-path="url(#${clipId})" stroke="${a.patternColor}" stroke-width="5" stroke-linecap="round" fill="none">
-        <path d="M 42 30 q 1 8 0 13"/>
-        <path d="M 50 28 q 0 8 0 14"/>
-        <path d="M 58 30 q -1 8 0 13"/>
-        <path d="M 18 58 h 8 M 17 66 h 8"/>
-        <path d="M 82 58 h -8 M 83 66 h -8"/>
+      <g clip-path="url(#${clipId})" fill="${a.patternColor}" opacity="0.9">
+        <path d="M 50 25.5 C 48.3 31 48.3 37.5 50 42.5 C 51.7 37.5 51.7 31 50 25.5 Z"/>
+        <path d="M 41 27.5 C 38.8 32 38.6 37 40.6 41.5 C 43 37.6 43.2 31.8 41 27.5 Z"/>
+        <path d="M 59 27.5 C 61.2 32 61.4 37 59.4 41.5 C 57 37.6 56.8 31.8 59 27.5 Z"/>
+        <path d="M 14.5 56.5 C 19.5 54.8 24.3 55.2 27.5 57.2 C 24.2 59.4 19.2 59.6 14.5 58.6 Z"/>
+        <path d="M 15.5 63.5 C 20 62.2 24 62.6 26.5 64.4 C 23.6 66.3 19.2 66.5 15.5 65.4 Z"/>
+        <path d="M 85.5 56.5 C 80.5 54.8 75.7 55.2 72.5 57.2 C 75.8 59.4 80.8 59.6 85.5 58.6 Z"/>
+        <path d="M 84.5 63.5 C 80 62.2 76 62.6 73.5 64.4 C 76.4 66.3 80.8 66.5 84.5 65.4 Z"/>
       </g>`;
   } else if (a.pattern === "tuxedo") {
     pattern = `
       <g clip-path="url(#${clipId})">
-        <path d="M 30 68 Q 50 48 70 68 L 70 92 L 30 92 Z" fill="${a.patternColor}"/>
+        <path d="M 28 72 C 33 60.5 41 55.5 50 55.5 C 59 55.5 67 60.5 72 72 L 72 92 L 28 92 Z" fill="${a.patternColor}"/>
       </g>`;
   } else if (a.pattern === "calico") {
     pattern = `
-      <g clip-path="url(#${clipId})">
-        <path d="M 16 38 Q 30 26 44 36 Q 36 52 18 52 Z" fill="${a.patternColor}"/>
-        <path d="M 60 32 Q 76 26 84 42 Q 76 52 62 46 Z" fill="${a.patternColor2}"/>
+      <g clip-path="url(#${clipId})" opacity="0.95">
+        <path d="M 13 42 C 13.5 31.5 23 25.5 33.5 29 C 40 31.8 41.5 40 36 45 C 28.5 51.2 15.5 50.5 13 42 Z" fill="${a.patternColor}"/>
+        <path d="M 60 30.5 C 67.5 23.5 80.5 26 85 36 C 87.5 43.8 80.5 50.5 71.5 48.3 C 63 46.2 56.8 37.2 60 30.5 Z" fill="${a.patternColor2}"/>
       </g>`;
   } else if (a.pattern === "tortie") {
     pattern = `
-      <g clip-path="url(#${clipId})" opacity="0.9">
-        <ellipse cx="34" cy="40" rx="10" ry="7" fill="${a.patternColor}" transform="rotate(-16 34 40)"/>
-        <ellipse cx="66" cy="36" rx="9" ry="6" fill="${a.patternColor2}" transform="rotate(12 66 36)"/>
-        <ellipse cx="24" cy="62" rx="7" ry="5" fill="${a.patternColor2}"/>
-        <ellipse cx="76" cy="60" rx="7" ry="5" fill="${a.patternColor}"/>
-        <ellipse cx="52" cy="33" rx="6" ry="4" fill="${a.patternColor2}"/>
+      <g clip-path="url(#${clipId})" opacity="0.92">
+        <path d="M 23 37 C 26.5 29.5 37.5 28 43 34 C 46 39 42 46 35 47 C 27.5 47.8 21.5 43.5 23 37 Z" fill="${a.patternColor}"/>
+        <path d="M 56 30 C 63 25 73 28 75.5 35 C 77 42 69.5 46.5 62 44.2 C 55.8 42.2 53 35 56 30 Z" fill="${a.patternColor2}"/>
+        <path d="M 14 56 C 18 51.5 25 52.5 27 57.5 C 28.3 62.5 23 66.5 18 64.3 C 14 62.4 12.3 58.6 14 56 Z" fill="${a.patternColor2}"/>
+        <path d="M 72.5 55.5 C 77.5 51.5 84.5 53.5 86 58.5 C 87 63.5 81 66.6 76.5 64.3 C 72.5 62.2 70.7 58.2 72.5 55.5 Z" fill="${a.patternColor}"/>
+        <path d="M 44 27.5 C 48 24 54.5 25 56.5 29 C 57.8 33 52.5 36 48 35 C 44 34 42 30.5 44 27.5 Z" fill="${a.patternColor2}"/>
       </g>`;
   } else if (a.pattern === "points") {
+    // 샴 포인트 — 3겹 타원으로 가장자리가 부드럽게 번지는 마스크 (경계 링이 안 보이게 얕은 단차)
     pattern = `
       <g clip-path="url(#${clipId})">
-        <ellipse cx="50" cy="72" rx="17" ry="12" fill="${a.patternColor}" opacity="0.5"/>
+        <ellipse cx="50" cy="73.5" rx="22" ry="15.5" fill="${a.patternColor}" opacity="0.16"/>
+        <ellipse cx="50" cy="73" rx="17" ry="12" fill="${a.patternColor}" opacity="0.24"/>
+        <ellipse cx="50" cy="72.5" rx="12.5" ry="9" fill="${a.patternColor}" opacity="0.34"/>
       </g>`;
   } else if (a.pattern === "stars") {
-    const star = (x: number, y: number, s: number) =>
-      `<path transform="translate(${x} ${y}) scale(${s})" d="M0,-4 L1.1,-1.1 L4,0 L1.1,1.1 L0,4 L-1.1,1.1 L-4,0 L-1.1,-1.1 Z" fill="${a.patternColor}"/>`;
-    pattern = `<g clip-path="url(#${clipId})" opacity="0.95">${star(30, 40, 0.9)}${star(68, 34, 0.7)}${star(58, 46, 0.5)}</g>`;
+    const star = (x: number, y: number, sc: number) =>
+      `<path transform="translate(${x} ${y}) scale(${sc})" d="M0,-4 L1.1,-1.1 L4,0 L1.1,1.1 L0,4 L-1.1,1.1 L-4,0 L-1.1,-1.1 Z" fill="${a.patternColor}"/>`;
+    pattern = `
+      <g clip-path="url(#${clipId})" opacity="0.95">
+        <circle cx="30" cy="40" r="4.8" fill="${a.patternColor}" opacity="0.25"/>${star(30, 40, 0.9)}
+        <circle cx="68" cy="34" r="3.8" fill="${a.patternColor}" opacity="0.22"/>${star(68, 34, 0.7)}
+        ${star(58, 46, 0.5)}
+        <circle cx="23" cy="51" r="1" fill="${a.patternColor}" opacity="0.8"/>
+        <circle cx="75" cy="47" r="1.1" fill="${a.patternColor}" opacity="0.8"/>
+      </g>`;
   }
 
-  // 갈기 (머리 뒤 스캘럽 원)
+  // 갈기 (머리 뒤 스캘럽 원 — 자체 그라데이션으로 볼륨)
   const mane = a.mane ? `
-    <g fill="${a.mane}">
+    <g fill="url(#${clipId}-mn)">
       ${Array.from({ length: 12 }, (_, i) => {
         const ang = (i / 12) * Math.PI * 2;
         const x = 50 + Math.cos(ang) * 37;
@@ -456,6 +552,13 @@ function headMarkup(a: SpeciesArt, clipId: string): string {
         return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9"/>`;
       }).join("")}
     </g>` : "";
+  const maneDef = a.mane
+    ? `<radialGradient id="${clipId}-mn" cx="0.4" cy="0.32" r="0.95">`
+      + `<stop offset="0" stop-color="${mix(a.mane, "#FFFFFF", 0.28)}"/>`
+      + `<stop offset="0.55" stop-color="${a.mane}"/>`
+      + `<stop offset="1" stop-color="${mix(a.mane, "#5A3630", 0.3)}"/>`
+      + `</radialGradient>`
+    : "";
 
   // 주름 (민털냥)
   const wrinkles = a.wrinkles ? `
@@ -464,50 +567,63 @@ function headMarkup(a: SpeciesArt, clipId: string): string {
       <path d="M 42 38 q 8 -3 16 0"/>
     </g>` : "";
 
-  const rightIris = a.irisRight ?? a.iris;
+  // 글로시 왕눈 — 홍채 라디얼 그라데이션 + 세로 동공 + 하이라이트 2점 + 하부 반사광 + 윗눈꺼풀 라인
+  const eye = (cx: number, gid: string, c: string) => `
+    <g>
+      <ellipse cx="${cx}" cy="57.2" rx="9" ry="9.6" fill="${mix(c, "#1A1420", 0.62)}"/>
+      <ellipse cx="${cx}" cy="57.4" rx="8.1" ry="8.7" fill="url(#${gid})"/>
+      <ellipse cx="${cx}" cy="58.8" rx="4" ry="5.3" fill="#1B1622"/>
+      <ellipse cx="${cx}" cy="63.4" rx="4.4" ry="1.9" fill="${mix(c, "#FFFFFF", 0.55)}" opacity="0.5"/>
+      <circle cx="${cx - 3.1}" cy="53.6" r="2.9" fill="#FFFFFF"/>
+      <circle cx="${cx + 3.5}" cy="60.6" r="1.35" fill="#FFFFFF" opacity="0.92"/>
+      <path d="M ${cx - 8.4} 51.4 Q ${cx} 45.8 ${cx + 8.4} 51.4" fill="none" stroke="${s.line}" stroke-width="1.7" opacity="0.4" stroke-linecap="round"/>
+    </g>`;
 
   return `
-    <defs><clipPath id="${clipId}"><ellipse cx="50" cy="59" rx="35" ry="32"/></clipPath></defs>
+    <defs>
+      <clipPath id="${clipId}"><ellipse cx="50" cy="59" rx="35" ry="32"/></clipPath>
+      ${furGrad(gFur, a, s)}
+      ${irisGrad(gIris, a.iris)}
+      ${a.irisRight ? irisGrad(gIrisR, a.irisRight) : ""}
+      ${maneDef}
+    </defs>
     ${mane}
+    <!-- 통합 실루엣 아웃라인 — 귀+머리를 한 덩어리 털색 계열 라인으로 (멀리서도 읽히는 실루엣) -->
+    <g fill="${s.line}" stroke="${s.line}" stroke-width="4.6" stroke-linejoin="round">
+      <path d="${earL}"/><path d="${earR}"/><ellipse cx="50" cy="59" rx="35" ry="32"/>
+    </g>
     <!-- 귀 (짧고 둥근 팁 — 뾰족귀보다 아기 비율) -->
-    <path d="M 20 45 L 15.5 19 Q 15 13.5 20 15.5 L 44 28 Z" fill="${a.fur}"/>
-    <path d="M 80 45 L 84.5 19 Q 85 13.5 80 15.5 L 56 28 Z" fill="${a.fur}"/>
-    <path d="M 24 39 L 21 23 L 36.5 30 Z" fill="${a.pattern === "points" ? a.patternColor : a.earInner}"/>
-    <path d="M 76 39 L 79 23 L 63.5 30 Z" fill="${a.pattern === "points" ? a.patternColor : a.earInner}"/>
-    <!-- 머리 (더 크고 둥글게) -->
-    <ellipse cx="50" cy="59" rx="35" ry="32" fill="${a.fur}"/>
+    <path d="${earL}" fill="url(#${gFur})"/>
+    <path d="${earR}" fill="url(#${gFur})"/>
+    <path d="M 24 39 L 21 23 L 36.5 30 Z" fill="${earInner}"/>
+    <path d="M 76 39 L 79 23 L 63.5 30 Z" fill="${earInner}"/>
+    <!-- 머리 — 라디얼 셀 셰이딩 (좌상단 키라이트 → 하단 웜 섀도) -->
+    <ellipse cx="50" cy="59" rx="35" ry="32" fill="url(#${gFur})"/>
     ${pattern}
     ${wrinkles}
-    <!-- 셰이딩: 좌상단 하이라이트 + 하단 그림자 + 외곽선 (입체감) -->
+    <!-- 셰이딩 오버레이: 하단 코어 섀도 + 림라이트 + 좌상단 하이라이트 + 턱 라인 강조(선 두께 변화) -->
     <g clip-path="url(#${clipId})">
-      <ellipse cx="37" cy="42" rx="17" ry="9" fill="white" opacity="0.16" transform="rotate(-16 37 42)"/>
-      <ellipse cx="50" cy="88" rx="33" ry="13" fill="black" opacity="0.07"/>
+      <ellipse cx="50" cy="93" rx="37" ry="17" fill="${s.lo}" opacity="0.38"/>
+      <path d="M 21 76 Q 50 95 79 76" fill="none" stroke="${s.rim}" stroke-width="3" opacity="0.4" stroke-linecap="round"/>
+      <ellipse cx="36" cy="37" rx="19" ry="10" fill="#FFFFFF" opacity="0.17" transform="rotate(-14 36 37)"/>
+      <path d="M 30 88 Q 50 94.5 70 88" fill="none" stroke="${s.line}" stroke-width="2.4" opacity="0.45" stroke-linecap="round"/>
     </g>
-    <ellipse cx="50" cy="59" rx="35" ry="32" fill="none" stroke="rgba(70,45,38,0.2)" stroke-width="2.2"/>
-    <path d="M 20 45 L 15.5 19 Q 15 13.5 20 15.5 L 44 28" fill="none" stroke="rgba(70,45,38,0.18)" stroke-width="2.2" stroke-linejoin="round"/>
-    <path d="M 80 45 L 84.5 19 Q 85 13.5 80 15.5 L 56 28" fill="none" stroke="rgba(70,45,38,0.18)" stroke-width="2.2" stroke-linejoin="round"/>
     <!-- 주둥이 (작을수록 눈이 커 보인다) -->
-    <ellipse cx="50" cy="71" rx="13" ry="8.5" fill="${a.muzzle}" opacity="0.9"/>
-    <!-- 눈 (1.3배 왕눈 + 이중 하이라이트 — 귀여움의 본체) -->
-    <g>
-      <circle cx="35.5" cy="57" r="8" fill="${a.iris}"/>
-      <circle cx="35.5" cy="57" r="5.1" fill="#1E1A22"/>
-      <circle cx="33" cy="54.6" r="2.4" fill="white"/>
-      <circle cx="37.6" cy="59.2" r="1.1" fill="white" opacity="0.85"/>
-      <circle cx="64.5" cy="57" r="8" fill="${rightIris}"/>
-      <circle cx="64.5" cy="57" r="5.1" fill="#1E1A22"/>
-      <circle cx="62" cy="54.6" r="2.4" fill="white"/>
-      <circle cx="66.6" cy="59.2" r="1.1" fill="white" opacity="0.85"/>
-    </g>
-    <!-- 볼터치 (넓고 은은하게) -->
-    <ellipse cx="26.5" cy="66.5" rx="5.6" ry="3.5" fill="#F09090" opacity="0.5"/>
-    <ellipse cx="73.5" cy="66.5" rx="5.6" ry="3.5" fill="#F09090" opacity="0.5"/>
-    <!-- 코 (둥근 젤리코) + ω입 -->
-    <path d="M 47 66.4 L 53 66.4 Q 54.2 66.4 53.5 67.6 L 51 70.2 Q 50 71.2 49 70.2 L 46.5 67.6 Q 45.8 66.4 47 66.4 Z" fill="#E8837A"/>
-    <path d="M 50 70.6 q -0.9 3.2 -4.8 2.9 M 50 70.6 q 0.9 3.2 4.8 2.9"
-      stroke="#8A6A5A" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-    <!-- 수염 (짧고 얌전하게) -->
-    <g stroke="#8A8A8A" stroke-width="1.4" stroke-linecap="round" opacity="0.5">
+    <ellipse cx="50" cy="71.5" rx="13.5" ry="9" fill="${a.muzzle}" opacity="0.95"/>
+    ${eye(35.5, gIris, a.iris)}
+    ${eye(64.5, gIrisR, rightIris)}
+    <!-- 볼터치 (2겹 — 가장자리가 번지는 에어브러시 느낌) -->
+    <ellipse cx="26" cy="67" rx="5.8" ry="3.6" fill="#F58F9E" opacity="0.4"/>
+    <ellipse cx="26" cy="67" rx="3.3" ry="2" fill="#F0798C" opacity="0.4"/>
+    <ellipse cx="74" cy="67" rx="5.8" ry="3.6" fill="#F58F9E" opacity="0.4"/>
+    <ellipse cx="74" cy="67" rx="3.3" ry="2" fill="#F0798C" opacity="0.4"/>
+    <!-- 코 (둥근 젤리코 + 광택점) + ω입 -->
+    <path d="M 46.8 66.2 L 53.2 66.2 Q 54.6 66.2 53.8 67.6 L 51.1 70.4 Q 50 71.5 48.9 70.4 L 46.2 67.6 Q 45.4 66.2 46.8 66.2 Z" fill="#E8737E"/>
+    <ellipse cx="48.6" cy="67.2" rx="1.2" ry="0.65" fill="#FFFFFF" opacity="0.75"/>
+    <path d="M 50 71.2 q -0.9 3.2 -4.8 2.9 M 50 71.2 q 0.9 3.2 4.8 2.9"
+      stroke="#8A6058" stroke-width="1.9" fill="none" stroke-linecap="round"/>
+    <!-- 수염 (짧고 얌전하게 — 털색 계열) -->
+    <g stroke="${s.line}" stroke-width="1.4" stroke-linecap="round" opacity="0.35">
       <path d="M 20 68 L 12 66.5"/><path d="M 21 73 L 13 74"/>
       <path d="M 80 68 L 88 66.5"/><path d="M 79 73 L 87 74"/>
     </g>`;

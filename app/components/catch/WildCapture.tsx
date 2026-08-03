@@ -40,7 +40,9 @@ interface Props {
 
 type CamState = "requesting" | "ready" | "nocam";
 type ThrowState = "idle" | "pulling" | "flying" | "hit" | "miss";
-type ResultState = null | { card: CapturedCard; isPerfect: boolean; wasUpgraded: boolean } | { error: string };
+type ResultState = null
+  | { card: CapturedCard; isPerfect: boolean; wasUpgraded: boolean; quest: { title: string; reward: number } | null }
+  | { error: string };
 
 // 투척 튜닝값 (냥줍 2026-07-24 모바일 조작감 패치 반영: |dy| 인식·최소 당김 16px·투척 존 58%)
 const MIN_PULL_Y = 16;
@@ -235,13 +237,13 @@ export default function WildCapture({ spawn, userPos, onClose, onCaptured }: Pro
         signal: ctrl.signal,
       }).finally(() => clearTimeout(timeout));
       // 504 HTML 등 JSON 아닌 응답 방어
-      const data = await res.json().catch(() => ({} as { error?: string; card?: CapturedCard; was_upgraded?: boolean }));
+      const data = await res.json().catch(() => ({} as { error?: string; card?: CapturedCard; was_upgraded?: boolean; quest?: { title: string; reward: number } | null }));
       if (!res.ok || !data.card) {
         setResult({ error: data.error ?? `포획 기록에 실패했어요. (오류 ${res.status}) 다시 시도해주세요.` });
         return;
       }
       streamRef.current?.getTracks().forEach(t => t.stop());
-      setResult({ card: data.card as CapturedCard, isPerfect, wasUpgraded: data.was_upgraded === true });
+      setResult({ card: data.card as CapturedCard, isPerfect, wasUpgraded: data.was_upgraded === true, quest: data.quest ?? null });
       onCaptured?.(data.card as CapturedCard);
     } catch (e) {
       const aborted = e instanceof DOMException && e.name === "AbortError";
@@ -723,6 +725,13 @@ export default function WildCapture({ spawn, userPos, onClose, onCaptured }: Pro
                     {result.wasUpgraded
                       ? `✨ 완벽 포획 — ${RARITY_LABEL[resultRarity]} 등급으로 승급! ✨`
                       : "✨ 완벽 포획 보너스 EXP +20 ✨"}
+                  </p>
+                )}
+                {/* 주간 의뢰 완료 배지 — capture 응답 quest 필드 (P5) */}
+                {result.quest && (
+                  <p className="px-3 py-1.5 rounded-full text-[12px] font-black mb-2"
+                    style={{ background: "rgba(255,193,94,0.18)", color: "#FFC15E", boxShadow: "inset 0 0 0 1.5px rgba(255,193,94,0.55)", animation: "result-card-in 0.4s ease 0.2s backwards" }}>
+                    📜 의뢰 완료 「{result.quest.title}」 +{result.quest.reward}코인
                   </p>
                 )}
                 {/* 진짜 트레이딩 카드로 결과 표시 */}

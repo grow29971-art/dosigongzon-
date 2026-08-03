@@ -16,6 +16,7 @@
 // 지도는 MapLibre GL + OpenFreeMap (카카오맵은 약관상 게임 사용 금지라 배제).
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import maplibregl from "maplibre-gl";
 import { LocateFixed, Radar, X, Star, FlaskConical } from "lucide-react";
@@ -24,6 +25,7 @@ import type { CSSProperties } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { GEOLOCATION_ENABLED } from "@/lib/geo";
+import { CATCH_BATTLE_ENABLED } from "@/lib/catch/features";
 import { encodeGeohash, haversineMeters } from "@/lib/catch/geohash";
 import { RARITY_COLOR, speciesPhotoUrl } from "@/lib/catch/spawn-species";
 import { speciesArtWalkSvg, butlerWalkSvg } from "@/lib/catch/species-art";
@@ -1009,6 +1011,28 @@ export default function CatchMapPage() {
           }}>
             야생냥이
           </span>
+        </div>
+        {/* ── 진입 칩 — 도감·배틀·랭킹 (P5 네비 연결, 지도 HUD 문법 준수) ── */}
+        <div className="flex items-center gap-1.5 pointer-events-auto">
+          <Link href="/catch/dex" aria-label="냥이 도감"
+            className="flex items-center gap-1 px-2.5 py-2 text-[11px] font-black active:scale-95 transition-transform"
+            style={{ ...hudChipStyle("#3182F6", 12), color: "#1B64DA" }}>
+            📖 도감
+          </Link>
+          {CATCH_BATTLE_ENABLED && (
+            <Link href="/catch/battle" aria-label="냥이 배틀"
+              className="flex items-center gap-1 px-2.5 py-2 text-[11px] font-black active:scale-95 transition-transform"
+              style={{ ...hudChipStyle("#F76808", 12), color: "#D9610A" }}>
+              ⚔️ 배틀
+            </Link>
+          )}
+          {CATCH_BATTLE_ENABLED && (
+            <Link href="/catch/ranking" aria-label="배틀 랭킹"
+              className="flex items-center gap-1 px-2.5 py-2 text-[11px] font-black active:scale-95 transition-transform"
+              style={{ ...hudChipStyle("#8B5CF6", 12), color: "#7C3AED" }}>
+              🏆 랭킹
+            </Link>
+          )}
         </div>
       </header>
 

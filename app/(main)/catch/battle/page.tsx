@@ -426,6 +426,39 @@ export default function CatchBattlePage() {
   useEffect(() => { autoSpeedRef.current = autoSpeed; }, [autoSpeed]);
   const [error, setError] = useState("");
   const [countdown, setCountdown] = useState(3);
+
+  // ── 🪄 기술 다시 배우기 (P5) — /api/catch/relearn, 코인 60 직접 차감 ──
+  // 냥줍은 가방의 skill_relearn 아이템이었지만 city는 코인 차감형(API 주석 참조).
+  const [relearnSlot, setRelearnSlot] = useState<number | null>(null); // 1~4 = 확인 대기 슬롯
+  const [relearnBusy, setRelearnBusy] = useState(false);
+  const [relearnMsg, setRelearnMsg] = useState("");
+  useEffect(() => { setRelearnSlot(null); setRelearnMsg(""); }, [selected?.id]);
+  const doRelearn = useCallback(async (slot: number) => {
+    if (!selected || relearnBusy) return;
+    setRelearnBusy(true);
+    setRelearnMsg("");
+    try {
+      const res = await fetch("/api/catch/relearn", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ card_id: selected.id, slot }),
+      });
+      const json = await res.json().catch(() => ({} as { error?: string; new_skill?: string; new_skill_name?: string; new_skill_icon?: string }));
+      if (!res.ok || !json.new_skill) {
+        setRelearnMsg(json.error ?? "재배정에 실패했어요. 다시 시도해주세요.");
+        return;
+      }
+      const column = (["battle_special", "battle_special2", "battle_special3", "battle_special4"] as const)[slot - 1];
+      const patch = { [column]: json.new_skill as string };
+      setMyCats(prev => prev.map(c => c.id === selected.id ? { ...c, ...patch } : c));
+      setSelected(prev => prev && prev.id === selected.id ? { ...prev, ...patch } : prev);
+      setRelearnMsg(`✨ ${json.new_skill_icon ?? "🪄"} ${json.new_skill_name ?? json.new_skill} 습득!`);
+    } catch {
+      setRelearnMsg("네트워크 오류가 발생했어요.");
+    } finally {
+      setRelearnBusy(false);
+      setRelearnSlot(null);
+    }
+  }, [selected, relearnBusy]);
   // PVP 상대 0명(콜드스타트) → PVE 자동 전환 안내 토스트
   const [pvpFallbackNotice, setPvpFallbackNotice] = useState(false);
   const pvpFallbackTimerRef = useRef<ReturnType<typeof setTimeout>|null>(null);
@@ -1776,6 +1809,49 @@ export default function CatchBattlePage() {
                   style={{ background: UI.accent.blue, boxShadow: "0 3px 0 #1B64DA" }}>
                   지도 열기
                 </button>
+              </div>
+            )}
+            {/* ── 🪄 선택한 냥이 기술 + 다시 배우기 (P5) ── */}
+            {selected&&(
+              <div className="mb-5 px-3.5 py-3" style={{ background: UI.panel, borderRadius: UI.radius, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-[10px] font-extrabold tracking-widest" style={{ color: UI.textMuted }}>SKILLS</p>
+                  <p className="text-[10px] font-bold" style={{ color: UI.textSub }}>🪄 탭해서 다시 배우기 · 60코인</p>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {[1, 2, 3, 4].map(slot => {
+                    const id = getSlotSkillId(selected, slot - 1);
+                    const info = SPECIAL_SKILLS[id as keyof typeof SPECIAL_SKILLS];
+                    const confirming = relearnSlot === slot;
+                    return (
+                      <button key={slot} disabled={relearnBusy}
+                        onClick={() => { if (confirming) { doRelearn(slot); } else { setRelearnSlot(slot); setRelearnMsg(""); } }}
+                        className="flex items-center gap-1.5 px-2.5 py-2 text-left"
+                        style={{
+                          borderRadius: UI.radiusSm,
+                          background: confirming ? `${UI.accent.blue}1F` : "rgba(2,32,71,0.04)",
+                          boxShadow: confirming ? `inset 0 0 0 1.5px ${UI.accent.blue}` : `inset 0 0 0 1px ${UI.panelBorder}`,
+                          opacity: relearnBusy ? 0.6 : 1,
+                        }}>
+                        <span style={{ fontSize: 15 }}>{info?.icon ?? "✨"}</span>
+                        <span className="flex-1 min-w-0">
+                          <span className="block text-[11px] font-extrabold truncate" style={{ color: confirming ? UI.accent.blue : UI.textMain }}>
+                            {confirming ? (relearnBusy ? "배우는 중..." : "60코인으로 교체?") : (info?.name ?? id)}
+                          </span>
+                          <span className="block text-[9px] font-bold truncate" style={{ color: UI.textSub }}>
+                            {confirming ? "한 번 더 누르면 확정" : `슬롯 ${slot}`}
+                          </span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                {relearnSlot !== null && !relearnBusy && (
+                  <button onClick={() => setRelearnSlot(null)} className="mt-2 text-[10.5px] font-bold" style={{ color: UI.textMuted }}>취소</button>
+                )}
+                {relearnMsg && (
+                  <p className="mt-2 text-[11px] font-bold text-center" style={{ color: relearnMsg.startsWith("✨") ? UI.accent.blue : UI.accent.red }}>{relearnMsg}</p>
+                )}
               </div>
             )}
             {selected&&(

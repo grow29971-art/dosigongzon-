@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Home, Map, Bot, MessagesSquare, ShoppingBag, User,
+  Home, Map, Bot, MessagesSquare, ShoppingBag, User, Cat,
   type LucideIcon,
 } from "lucide-react";
 
@@ -21,13 +21,22 @@ import {
 // ⚠ 켜기 전 조건: box/supabase_ai_chat_usage_migration.sql 계측 데이터로 AI집사 사용량 확인.
 const SHOP_OPEN_NAV = false;
 
+// ── 캐치캣(야생냥이 게임) 탭 오픈 (2026-08-04 냥줍 이식 P5) ──
+// AI집사 탭 자리를 캐치캣(/catch)으로 교체. AI집사는 홈 헤더 Bot 아이콘 +
+// 마이페이지 경로가 이미 있어 이중 진입점 유지(L20 주석 참조).
+// false로 되돌리면 AI집사 탭 원상복구.
+const CATCH_OPEN_NAV = true;
+
 type Tab = { href: string; label: string; Icon: LucideIcon };
 
 const legacyTabs: Tab[] = [
   { href: "/", label: "홈", Icon: Home },
   { href: "/map", label: "지도", Icon: Map },
   // 가이드 → AI집사로 라벨/아이콘 변경 (2026-07-11) — 목적지는 그대로 /tips (AI집사 챗봇 위치)
-  { href: "/tips", label: "AI집사", Icon: Bot },
+  // 캐치캣 오픈 시 이 자리를 캐치캣 탭으로 교체 (2026-08-04)
+  CATCH_OPEN_NAV
+    ? { href: "/catch", label: "캐치캣", Icon: Cat }
+    : { href: "/tips", label: "AI집사", Icon: Bot },
   { href: "/community", label: "커뮤니티", Icon: MessagesSquare },
   // 카드게임 탭 숨김 (2026-07-10) — 복원 시 아래 줄 주석 해제
   // { href: "/mypage/cards", label: "카드게임", Icon: Gamepad2 },
