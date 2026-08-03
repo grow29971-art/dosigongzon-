@@ -196,7 +196,9 @@ export async function POST(request: Request) {
         const imgB64 = image_base64;
 
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+        // 2026-08-04 실측: gemini-2.0-flash 무료 티어 쿼터가 0으로 막혀(429 limit:0)
+        // AI 경로가 전부 랜덤 폴백으로 새고 있었음 → 무료 쿼터가 살아있는 2.5로 교체.
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
         const result = await model.generateContent([
           PROMPT,
           { inlineData: { data: imgB64, mimeType } },

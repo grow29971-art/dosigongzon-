@@ -16,9 +16,11 @@ import { deriveArtKey, deriveArtColors } from "@/lib/cat-art";
 
 export const maxDuration = 60;
 
-const BATCH = 8;
+const BATCH = 6;
 const AI_DAILY_LIMIT = 5000; // generate-card와 동일
 const MAX_IMAGE_BYTES = 6 * 1024 * 1024;
+// 무료 티어 분당 요청 제한(RPM) 준수용 호출 간격 — 429 예방
+const CALL_GAP_MS = 4000;
 
 const PROMPT = `이 사진 속 고양이의 외형만 판독해서 JSON만 반환 (마크다운 없이):
 {
@@ -61,7 +63,8 @@ export async function POST(request: Request) {
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  // 2.0-flash는 무료 티어 쿼터 0 (2026-08-04 실측 429 limit:0) — 색 추출은 lite로 충분
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
   let done = 0, skipped = 0, capped = false;
   const reasons: Array<{ id: string; reason: string }> = []; // 배치별 스킵/실패 사유 (진단용)
@@ -79,6 +82,9 @@ export async function POST(request: Request) {
       const { data: allowed, error } = await svc.rpc("increment_ai_call", { p_limit: AI_DAILY_LIMIT });
       if (!error && allowed === false) { capped = true; break; }
     } catch { /* fail-open */ }
+
+    // RPM 준수 — 연속 Gemini 호출 사이 간격
+    await new Promise((r) => setTimeout(r, CALL_GAP_MS));
 
     try {
       const res = await fetch(cat.photo_url);

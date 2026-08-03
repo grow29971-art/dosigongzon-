@@ -136,13 +136,15 @@ function buildSystemPrompt(name: string): string {
 }
 
 // 우선순위대로 시도할 모델 목록 (폭넓게 폴백)
+// 2026-08-04: 2.0 계열은 무료 티어 쿼터 0 (429 limit:0 실측) — 매 요청 헛시도 2회를
+// 없애기 위해 무료 쿼터가 살아있는 2.5/latest를 앞으로, 2.0은 최후 폴백으로 강등.
 const MODEL_CANDIDATES = [
-  "gemini-2.0-flash-lite",
-  "gemini-2.0-flash",
-  "gemini-2.5-flash",
   "gemini-2.5-flash-lite",
+  "gemini-2.5-flash",
   "gemini-flash-lite-latest",
   "gemini-flash-latest",
+  "gemini-2.0-flash-lite",
+  "gemini-2.0-flash",
 ];
 
 async function tryChat(
