@@ -26,12 +26,18 @@ export const UI = {
   textSub: "#4E5968",
   textMuted: "#8B95A1",
 
+  // 라운드 반경 — 냥줍 go-ui-theme 계승 (P4 배틀 화면이 radius/radiusSm 사용)
+  radius: 20,
+  radiusSm: 14,
+
   // 포인트 — 무채색 + 블루 1색 수렴(냥줍 2026-07-20 모노 전환 최종값 그대로)
   accent: {
     pink: "#3182F6",
     cyan: "#4E5968",
+    violet: "#4E5968",
     blue: "#3182F6",
     green: "#4E5968",
+    orange: "#8B95A1",
     red: "#E5484D",
     gold: "#191F28",
   },
@@ -108,3 +114,29 @@ export const silhouetteStyle: CSSProperties = {
   filter: "brightness(0.22) saturate(0.3) contrast(0.9)",
   opacity: 0.85,
 };
+
+// ── P4 배틀·랭킹 화면 추가분 (냥줍 go-ui-theme 헬퍼 이식, 2026-08-04) ──
+
+/** 아이콘 배지 — 스쿼클 + 컬러 틴트 배경 */
+export function iconBadgeStyle(color: string, size = 40): CSSProperties {
+  return {
+    width: size, height: size, borderRadius: SQUIRCLE,
+    background: `${color}14`,
+    boxShadow: `inset 0 0 0 1px ${color}44`,
+    display: "flex", alignItems: "center", justifyContent: "center",
+  };
+}
+
+/** 풀폭 CTA 버튼 — 화면 하단 주 행동 */
+export function ctaStyle(color: string = UI.accent.blue): CSSProperties {
+  return {
+    width: "100%", padding: "15px 0", borderRadius: 14,
+    background: color, color: "#FFFFFF", fontWeight: 800, fontSize: 15,
+    boxShadow: `0 4px 14px ${color}40`,
+  };
+}
+
+/** 라이트 테마 — 네온 그리드 대신 민무늬 (냥줍 배틀 페이지 호출부 호환용 빈 스타일) */
+export function gridOverlayStyle(): CSSProperties {
+  return {};
+}

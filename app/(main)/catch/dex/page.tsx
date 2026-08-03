@@ -4,7 +4,7 @@
 //  · 기록: 내가 포획한 냥이들의 시간순 갤러리 (종 아트/사진)
 //  · 컬렉션: 등급 컬렉션 + 종 도감(카탈로그 전체, 미획득 실루엣) — 수집 축 ①
 //  · 업적: catch_cards/catch_profiles에서 순수 계산 + 보상 수령 — 수집 축 ②
-//  · 배틀: P4 이식 예정 — CATCH_BATTLE_ENABLED 플래그로 탭 자리만 (빈 상태)
+//  · 배틀: PVE 조우 도감(lib/catch/pve-bestiary) + 전적 요약 — P4 이식 (2026-08-04)
 // 상단에 이번 주 의뢰 배너(lib/catch/quests — 결정적 계산 + catch_profiles.quest_week).
 //
 // 냥줍 대비 뺀 것: 실사(photo_url) 필터 — city 포획 카드는 전부 종 아트라 전체를
@@ -25,6 +25,7 @@ import {
   computeAchievements, BATTLE_ACHIEVEMENT_KEYS, type Achievement,
 } from "@/lib/catch/achievements";
 import { currentQuest, currentWeekKey, isQuestDoneThisWeek, questProgressCount, QUEST_REWARD_COINS } from "@/lib/catch/quests";
+import { PVE_BESTIARY, PVE_BOSS, bestiaryPhotoUrl, dexNoLabel } from "@/lib/catch/pve-bestiary";
 import { CATCH_BATTLE_ENABLED } from "@/lib/catch/features";
 import { celebrateVictory } from "@/lib/catch/celebrate";
 import {
@@ -42,6 +43,21 @@ interface DexCard {
   caught_at: string;
   bond: number | null;
   is_shiny: boolean | null;
+  // 전적 컬럼(P1 catch_cards 마이그레이션에 포함 — 배틀 탭 요약용)
+  pvp_wins: number | null;
+  pvp_losses: number | null;
+  pvp_draws: number | null;
+  pve_win_count: number | null;
+  pve_losses: number | null;
+  pve_draws: number | null;
+}
+
+// 배틀 진행 상태(catch_profiles P4 컬럼) — 마이그레이션 전이면 null(전부 0/빈 배열 취급)
+interface BattleProf {
+  bossDefeats: number;
+  bestWinStreak: number;
+  pveSeen: string[];
+  pveDefeated: string[];
 }
 
 const RARITY_KEYS = ["common", "uncommon", "rare", "legendary"] as const;
@@ -92,6 +108,7 @@ export default function CatchDexPage() {
   const [cards, setCards] = useState<DexCard[] | null>(null);
   const [perfectCount, setPerfectCount] = useState(0);
   const [questWeek, setQuestWeek] = useState<string | null>(null);
+  const [battleProf, setBattleProf] = useState<BattleProf | null>(null);
   // 업적 보상 수령 — null이면 마이그레이션 전(503)/로딩 중: 수령 버튼을 숨기고 표시만
   const [claimedAch, setClaimedAch] = useState<string[] | null>(null);
   const [claimingKey, setClaimingKey] = useState<string | null>(null);
@@ -102,9 +119,9 @@ export default function CatchDexPage() {
     if (!user) { router.replace("/login"); return; }
     const supabase = createClient();
     (async () => {
-      const [cardsRes, profRes] = await Promise.all([
+      const [cardsRes, profRes, battleRes] = await Promise.all([
         supabase.from("catch_cards")
-          .select("id, card_name, card_rarity, photo_url, species_key, caught_geohash7, caught_at, bond, is_shiny")
+          .select("id, card_name, card_rarity, photo_url, species_key, caught_geohash7, caught_at, bond, is_shiny, pvp_wins, pvp_losses, pvp_draws, pve_win_count, pve_losses, pve_draws")
           .eq("owner_id", user.id)
           .order("caught_at", { ascending: false })
           .limit(1000),
@@ -112,12 +129,26 @@ export default function CatchDexPage() {
         supabase.from("catch_profiles")
           .select("perfect_catch_count, quest_week")
           .eq("user_id", user.id).maybeSingle(),
+        // 배틀 컬럼(P4 catch_battle_migration)은 또 별도 — 위 조회와 분리해 컬럼 부재가
+        // 완벽포획/의뢰 표시까지 깨뜨리지 않게 한다 (마이그레이션 내성 패턴)
+        supabase.from("catch_profiles")
+          .select("boss_defeats, best_win_streak, pve_seen_keys, pve_defeated_keys")
+          .eq("user_id", user.id).maybeSingle(),
       ]);
       // catch_cards 마이그레이션 전 — 도감은 빈 상태로 (지도가 이미 503 안내를 담당)
       setCards(cardsRes.error ? [] : ((cardsRes.data ?? []) as unknown as DexCard[]));
       if (!profRes.error && profRes.data) {
         setPerfectCount((profRes.data.perfect_catch_count as number | null) ?? 0);
         setQuestWeek((profRes.data.quest_week as string | null) ?? null);
+      }
+      if (!battleRes.error) {
+        const b = battleRes.data;
+        setBattleProf({
+          bossDefeats: (b?.boss_defeats as number | null) ?? 0,
+          bestWinStreak: (b?.best_win_streak as number | null) ?? 0,
+          pveSeen: Array.isArray(b?.pve_seen_keys) ? (b.pve_seen_keys as string[]) : [],
+          pveDefeated: Array.isArray(b?.pve_defeated_keys) ? (b.pve_defeated_keys as string[]) : [],
+        });
       }
       // 업적 수령 기록 — 마이그레이션 전(503)·실패면 null 유지(버튼 미노출, 목록은 정상)
       fetch("/api/catch/achievements/claim")
@@ -175,12 +206,12 @@ export default function CatchDexPage() {
     rarityCounts,
     distinctCells: new Set((cards ?? []).map(c => c.caught_geohash7).filter(Boolean)).size,
     perfectCatches: perfectCount,
-    bossDefeats: 0,     // TODO(P4): 배틀 이식 시 전적 소스 연결
-    bestWinStreak: 0,   // TODO(P4)
+    bossDefeats: battleProf?.bossDefeats ?? 0,
+    bestWinStreak: battleProf?.bestWinStreak ?? 0,
     speciesCount: Object.keys(speciesOwned).length,
     shinyCount: (cards ?? []).filter(c => c.is_shiny).length,
   }).filter(a => CATCH_BATTLE_ENABLED || !BATTLE_ACHIEVEMENT_KEYS.has(a.key)),
-  [cards, rarityCounts, perfectCount, speciesOwned]);
+  [cards, rarityCounts, perfectCount, speciesOwned, battleProf]);
   const doneCount = achievements.filter(a => a.done).length;
 
   // ── 이번 주 의뢰 배너 재료 — 결정적 계산 + catch_profiles.quest_week 진행값 ──
@@ -486,19 +517,115 @@ export default function CatchDexPage() {
         </div>
       )}
 
-      {/* ══ 배틀 — P4 이식 예정 자리 (CATCH_BATTLE_ENABLED) ══ */}
-      {CATCH_BATTLE_ENABLED && tab === "battle" && (
-        <div className="text-center py-16">
-          <span className="inline-flex w-16 h-16 items-center justify-center"
-            style={{ borderRadius: SQUIRCLE, background: UI.panel, boxShadow: `inset 0 0 0 1.5px ${UI.panelBorderStrong}` }}>
-            <Swords size={26} color={UI.textMuted} strokeWidth={2.2} />
-          </span>
-          <p className="text-[14px] font-black mt-4">배틀 도감은 준비 중이에요</p>
-          <p className="text-[12px] font-bold mt-1.5" style={{ color: UI.textMuted }}>
-            곧 야생의 상대들과 겨루고 조우 도감을 채울 수 있어요!
-          </p>
-        </div>
-      )}
+      {/* ══ 배틀 — PVE 조우 도감 + 전적 요약 (CATCH_BATTLE_ENABLED) ══ */}
+      {CATCH_BATTLE_ENABLED && tab === "battle" && (() => {
+        const seen = new Set(battleProf?.pveSeen ?? []);
+        const defeated = new Set(battleProf?.pveDefeated ?? []);
+        const sum = (f: (c: DexCard) => number) => (cards ?? []).reduce((s, c) => s + f(c), 0);
+        const pvpW = sum(c => c.pvp_wins ?? 0), pvpL = sum(c => c.pvp_losses ?? 0), pvpD = sum(c => c.pvp_draws ?? 0);
+        const pveW = sum(c => c.pve_win_count ?? 0), pveL = sum(c => c.pve_losses ?? 0), pveD = sum(c => c.pve_draws ?? 0);
+        const roster = [...PVE_BESTIARY, PVE_BOSS];
+        const defeatedCount = roster.filter(e => defeated.has(e.key)).length;
+        return (
+          <div>
+            {/* 전적 요약 */}
+            <SectionBanner color={UI.accent.red}>배틀 전적</SectionBanner>
+            <div className="grid grid-cols-2 gap-2.5 mb-2.5">
+              <div className="rounded-2xl px-4 py-3.5" style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorderStrong}` }}>
+                <p className="text-[11px] font-black" style={{ color: UI.textMuted }}>🐾 PVE (야생 불청객)</p>
+                <p className="text-[17px] mt-1" style={numFontStyle}>
+                  {pveW}<span className="text-[11px]" style={{ color: UI.textMuted }}>승</span>{" "}
+                  {pveL}<span className="text-[11px]" style={{ color: UI.textMuted }}>패</span>{" "}
+                  {pveD}<span className="text-[11px]" style={{ color: UI.textMuted }}>무</span>
+                </p>
+              </div>
+              <div className="rounded-2xl px-4 py-3.5" style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorderStrong}` }}>
+                <p className="text-[11px] font-black" style={{ color: UI.textMuted }}>⚔️ PVP (다른 집사)</p>
+                <p className="text-[17px] mt-1" style={numFontStyle}>
+                  {pvpW}<span className="text-[11px]" style={{ color: UI.textMuted }}>승</span>{" "}
+                  {pvpL}<span className="text-[11px]" style={{ color: UI.textMuted }}>패</span>{" "}
+                  {pvpD}<span className="text-[11px]" style={{ color: UI.textMuted }}>무</span>
+                </p>
+              </div>
+              <div className="rounded-2xl px-4 py-3.5" style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorderStrong}` }}>
+                <p className="text-[11px] font-black" style={{ color: UI.textMuted }}>🔥 최고 연승</p>
+                <p className="text-[17px] mt-1" style={numFontStyle}>{battleProf?.bestWinStreak ?? 0}</p>
+              </div>
+              <div className="rounded-2xl px-4 py-3.5" style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorderStrong}` }}>
+                <p className="text-[11px] font-black" style={{ color: UI.textMuted }}>🦹 빌런 퇴치</p>
+                <p className="text-[17px] mt-1" style={numFontStyle}>{battleProf?.bossDefeats ?? 0}<span className="text-[11px]" style={{ color: UI.textMuted }}>회</span></p>
+              </div>
+            </div>
+            <div className="flex gap-2 mb-6">
+              <button onClick={() => router.push("/catch/battle")}
+                className="flex-1 py-2.5 rounded-full text-[12.5px] font-black text-white flex items-center justify-center gap-1.5"
+                style={{ background: UI.accent.blue, boxShadow: "0 3px 0 #1B64DA" }}>
+                <Swords size={14} /> 배틀 하러 가기
+              </button>
+              <button onClick={() => router.push("/catch/ranking")}
+                className="flex-1 py-2.5 rounded-full text-[12.5px] font-black flex items-center justify-center gap-1.5"
+                style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorderStrong}`, color: UI.textSub }}>
+                <Trophy size={14} /> 주간 랭킹
+              </button>
+            </div>
+
+            {/* PVE 조우 도감 — 만나면 실루엣 해제, 이겨야 스토리 공개 */}
+            <SectionBanner color={UI.accent.cyan}
+              right={
+                <p className="text-[13px]" style={numFontStyle}>
+                  <span style={{ color: UI.accent.blue }}>{defeatedCount}</span>
+                  <span style={{ color: UI.textMuted }}>/{roster.length}</span>
+                </p>
+              }>
+              조우 도감
+            </SectionBanner>
+            <p className="text-[10.5px] font-bold mb-2.5" style={{ color: UI.textMuted }}>
+              PVE 배틀에서 만나면 모습이, 이기면 이야기가 공개돼요
+            </p>
+            <div className="flex flex-col gap-2">
+              {roster.map(e => {
+                const met = seen.has(e.key);
+                const won = defeated.has(e.key);
+                const photo = bestiaryPhotoUrl(e);
+                return (
+                  <div key={e.key} className="rounded-2xl px-3 py-2.5 flex items-center gap-3"
+                    style={{
+                      background: UI.panel,
+                      boxShadow: won ? `inset 0 0 0 1.5px ${e.categoryColor}88` : `inset 0 0 0 1px ${UI.panelBorder}`,
+                      opacity: met ? 1 : 0.65,
+                    }}>
+                    <span className="w-12 h-12 shrink-0 flex items-center justify-center overflow-hidden text-[24px]"
+                      style={{ borderRadius: SQUIRCLE, background: "rgba(141,180,220,0.07)", boxShadow: `inset 0 0 0 1px ${UI.panelBorderStrong}` }}>
+                      {met && photo
+                        // eslint-disable-next-line @next/next/no-img-element
+                        ? <img src={photo} alt={e.name} className="w-full h-full object-cover" style={won ? undefined : silhouetteStyle} />
+                        : met ? e.emoji
+                        // eslint-disable-next-line @next/next/no-img-element
+                        : photo ? <img src={photo} alt="???" className="w-full h-full object-cover" style={silhouetteStyle} /> : "❓"}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[8.5px]" style={{ ...numFontStyle, color: met ? e.categoryColor : UI.textMuted }}>{dexNoLabel(e.dexNo)}</span>
+                        <span className="text-[12px] font-black truncate" style={{ color: met ? UI.textMain : UI.textMuted }}>
+                          {met ? e.name : "???"}
+                        </span>
+                        {met && (
+                          <span className="text-[8.5px] font-black px-1.5 py-0.5 shrink-0"
+                            style={{ ...arcadeChipStyle(e.categoryColor), borderRadius: 6 }}>{e.category}</span>
+                        )}
+                        {won && <span className="text-[9px] font-black shrink-0" style={{ color: e.categoryColor }}>격퇴 ✓</span>}
+                      </div>
+                      <p className="text-[10px] font-bold mt-0.5 leading-snug" style={{ color: UI.textMuted }}>
+                        {won ? e.story : met ? `${e.traits[0]} · ${e.traits[1]} — 이기면 이야기가 공개돼요` : "아직 만나지 못한 상대"}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* 토스트 (업적 수령 / 공유 복사) */}
       {claimToast && (

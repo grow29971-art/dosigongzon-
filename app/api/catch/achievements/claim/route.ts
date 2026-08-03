@@ -82,9 +82,21 @@ export async function POST(request: Request) {
       reportError("catch-achievement:cards", cardsRes.error);
       return NextResponse.json({ error: "카드 조회에 실패했어요." }, { status: 500 });
     }
+    // 배틀 진행값(P4 catch_battle_migration 컬럼) — 별도 조회로 분리해 컬럼 부재
+    // (마이그레이션 전)가 나머지 업적 수령을 막지 않게 한다. 실패 시 0 취급 —
+    // 배틀 업적(streak_5·boss_5)만 "미달성"으로 남을 뿐 안전하다.
+    let bossDefeats = 0, bestWinStreak = 0;
+    {
+      const { data: bp, error: bpErr } = await s.from("catch_profiles")
+        .select("boss_defeats, best_win_streak").eq("user_id", user.id).maybeSingle();
+      if (!bpErr) {
+        bossDefeats = (bp?.boss_defeats as number | null) ?? 0;
+        bestWinStreak = (bp?.best_win_streak as number | null) ?? 0;
+      }
+    }
     const input = achievementInput(
       (cardsRes.data ?? []) as unknown as AchievementCardRow[],
-      { perfect_catch_count: perfect },
+      { perfect_catch_count: perfect, boss_defeats: bossDefeats, best_win_streak: bestWinStreak },
     );
     const ach = computeAchievements(input).find(a => a.key === key);
     if (!ach) return NextResponse.json({ error: "없는 업적이에요." }, { status: 400 });

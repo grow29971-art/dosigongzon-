@@ -56,6 +56,10 @@
     {
       "path": "/api/cron/purge-safety-data",
       "schedule": "40 18 * * *"
+    },
+    {
+      "path": "/api/cron/catch-ranking-settle",
+      "schedule": "5 15 * * 0"
     }
   ]
 }

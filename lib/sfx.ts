@@ -83,9 +83,10 @@ export function stopAmbient() {
   ambientGain = null;
 }
 
-export type AmbientEnv = "night" | "noon" | "rain" | "heat" | "fog";
+export type AmbientEnv = "night" | "noon" | "rain" | "heat" | "fog" | "snow";
 const AMBIENT_PRESET: Record<AmbientEnv, { freq: number; q: number; vol: number }> = {
   rain:  { freq: 3200, q: 0.6, vol: 0.05 },
+  snow:  { freq: 500,  q: 0.5, vol: 0.03 },
   heat:  { freq: 900,  q: 1.2, vol: 0.035 },
   fog:   { freq: 500,  q: 1.5, vol: 0.03 },
   night: { freq: 700,  q: 2.0, vol: 0.022 },
