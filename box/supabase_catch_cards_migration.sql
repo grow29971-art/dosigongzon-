@@ -67,6 +67,11 @@ CREATE TABLE IF NOT EXISTS catch_cards (
   avatar_species TEXT                      -- 지도 아바타 종 오버라이드(avatar_species_migration)
 );
 
+-- [P2 추가 2026-08-04] 쓰다듬기(app/api/catch/pet) 하루 1회 CAS 게이트용 —
+-- 냥줍 supabase_pet_migration.sql 계승. 위 CREATE TABLE에 합치지 않고 ALTER로 둔 것은
+-- P1 시점에 이미 테이블을 만든 환경도 재실행 한 번으로 따라잡게 하기 위함(멱등).
+ALTER TABLE catch_cards ADD COLUMN IF NOT EXISTS last_petted_at TIMESTAMPTZ;
+
 -- 중복 포획 최종 방어선 — 서버 검증을 뚫어도 같은 스폰은 1유저 1장
 CREATE UNIQUE INDEX IF NOT EXISTS catch_cards_owner_spawn_unique
   ON catch_cards (owner_id, spawn_id) WHERE spawn_id IS NOT NULL;
