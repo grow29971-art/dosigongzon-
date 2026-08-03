@@ -1429,7 +1429,10 @@ export default function MapPage() {
             `, cat.id);
           }
           el.onclick = () => {
-            if (!isLoggedIn) { if (confirm("로그인하면 고양이 정보를 볼 수 있어요. 로그인할까요?")) window.location.href = "/login"; return; }
+            // 비로그인은 로그인 강요 대신 고양이 상세로 — "지도가 곧 온보딩" pick 동선
+            // (2026-08-04: confirm→/login 게이트가 온보딩 pick 지점을 도달 불가로 만들어
+            //  onboarding_pick 0건이던 퍼널 단절 수리. 상세는 비로그인 열람 설계 + 가입 CTA 보유)
+            if (!isLoggedIn) { window.location.href = `/cats/${cat.id}`; return; }
             setSelectedCat(cat); setCatCardTab("carelog");
           };
           attachPressFx(el);
@@ -1468,7 +1471,12 @@ export default function MapPage() {
           </div>
         `, repCat.id);
         el.onclick = () => {
-          if (!isLoggedIn) { if (confirm("로그인하면 고양이 정보를 볼 수 있어요. 로그인할까요?")) window.location.href = "/login"; return; }
+          // 비로그인은 확대해서 개별 마커로 풀어줌 → 개별 탭이 상세(pick 지점)로 잇는다
+          if (!isLoggedIn) {
+            const m = mapInstanceRef.current;
+            if (m) { m.panTo(pos); m.setLevel(Math.max(1, m.getLevel() - 2)); }
+            return;
+          }
           setSelectedDong(dong);
           setSelectedCat(null);
         };
@@ -1510,7 +1518,12 @@ export default function MapPage() {
         </div>
       `, repCat.id);
       el.onclick = () => {
-        if (!isLoggedIn) { if (confirm("로그인하면 고양이 정보를 볼 수 있어요. 로그인할까요?")) window.location.href = "/login"; return; }
+        // 비로그인은 확대해서 개별 마커로 풀어줌 → 개별 탭이 상세(pick 지점)로 잇는다
+        if (!isLoggedIn) {
+          const m = mapInstanceRef.current;
+          if (m) { m.panTo(pos); m.setLevel(Math.max(1, m.getLevel() - 2)); }
+          return;
+        }
         setSelectedDong(dong);
         setSelectedCat(null);
       };
