@@ -1370,6 +1370,14 @@ export default function MapPage() {
       });
     }
 
+    // 실물 사진 뱃지 — 전신 캐릭터 옆에 붙는 작은 원형 사진 (2026-08-04 사용자 요청).
+    // pos는 "top:...;left:...;" 형태의 위치 스타일. 사진 없거나 URL 비정상이면 생략.
+    function photoBadge(cat: Cat, pos: string): string {
+      const safe = cat.photo_url ? sanitizeImageUrl(cat.photo_url, "") : "";
+      if (!safe) return "";
+      return `<div style="position:absolute;${pos}width:26px;height:26px;border-radius:50%;border:2px solid #fff;background-image:url('${safe}');background-size:cover;background-position:center;box-shadow:0 2px 5px rgba(0,0,0,0.28);z-index:4;"></div>`;
+    }
+
     // 고양이 귀 — 원형 마커를 고양이 머리 실루엣으로 (2026-08-02 사용자 요청).
     // 원 뒤(z-index:0)에 삼각형 귀 2개를 세움. 마커 원은 wrapper 안에서 z-index:1 필요.
     function catEars(size: number, color: string): string {
@@ -1406,10 +1414,13 @@ export default function MapPage() {
             `, cat.id);
           } else {
             // 전신 걷는 고양이 아트 (2026-08-04 냥줍 이식 — 원형 사진 마커 대체·축소)
+            // art_key(AI 사진 판독 팔레트)가 있으면 실제 털색 반영, 없으면 id 해시 폴백.
+            // 캐릭터 옆에 실물 사진 뱃지 (2026-08-04 사용자 요청).
             el.innerHTML = floatWrap(`
               <div class="cat-press" style="transform:translate(-50%,-100%);--mk-tr:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
+                ${photoBadge(cat, "top:-8px;left:-20px;")}
                 <div class="cat-walk-flip" style="display:flex;transform:scaleX(1);transition:transform 0.25s ease;filter:drop-shadow(0 2px 3px rgba(44,30,20,0.32));">
-                  ${catArtWalkSvg(cat.id, 54)}
+                  ${catArtWalkSvg(cat.art_key ?? cat.id, 54)}
                 </div>
                 <span class="roam-state" style="position:absolute;top:-10px;right:-8px;font-size:16px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(cat.id).emoji}</span>
                 ${emoteSpan(cat.id, emoteForCat(cat.id))}
@@ -1479,11 +1490,12 @@ export default function MapPage() {
         <div class="cat-press" style="transform:translate(-50%,-100%);--mk-tr:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
           ${hasAlert ? `<div style="position:relative;z-index:5;background:linear-gradient(135deg,#D85555,#B84545);color:#fff;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:800;white-space:nowrap;box-shadow:0 3px 8px rgba(216,85,85,0.5);margin-bottom:12px;animation:alert-pulse 1.6s ease-in-out infinite;">⚠️ 학대경보</div>` : ""}
           <div style="display:flex;align-items:flex-end;position:relative;">
+            ${photoBadge(repCat, "top:-14px;left:-16px;")}
             ${artCats.map((c, i) => {
               const w = i === 0 ? 56 : 40;
               return `
               <div class="${i === 0 ? "cat-walk-flip" : ""}" style="display:flex;margin-left:${i > 0 ? "-12px" : "0"};z-index:${3 - i};transform:scaleX(1);transition:transform 0.25s ease;filter:drop-shadow(0 2px 3px rgba(44,30,20,0.3));">
-                ${catArtWalkSvg(c.id, w)}
+                ${catArtWalkSvg(c.art_key ?? c.id, w)}
               </div>`;
             }).join("")}
             <span class="roam-state" style="position:absolute;top:-12px;left:44px;font-size:16px;z-index:4;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(repCat.id).emoji}</span>

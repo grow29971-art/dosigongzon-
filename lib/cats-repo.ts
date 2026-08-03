@@ -37,6 +37,7 @@ export interface Cat {
   caretaker_name: string | null;
   like_count: number;
   pet_count?: number; // 쓰다듬기 누적 (마이그레이션 전이면 undefined)
+  art_key?: string | null; // 지도 마커 캐릭터 팔레트 (AI 사진 판독, 마이그레이션 전이면 undefined)
   created_at: string;
   card_rarity: string | null;
   card_name: string | null;

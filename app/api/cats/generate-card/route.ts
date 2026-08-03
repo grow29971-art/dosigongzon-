@@ -5,6 +5,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { generateBattleStats } from "@/lib/battle-config";
 import { TITLES, TRAITS, FLAVORS } from "@/lib/battle-card-titles";
 import { calculateCatGrade, type CatFeatures } from "@/lib/cat-grade";
+import { deriveArtKey } from "@/lib/cat-art";
 import { rateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 30;
@@ -225,6 +226,14 @@ export async function POST(request: Request) {
           // grade_* 컬럼은 별도 update — 마이그레이션 미적용으로 실패해도 위 카드 생성엔 영향 없음
           const { error: gradeErr } = await supabase.from("cats").update(gradeFields).eq("id", cat_id).eq("caretaker_id", user.id);
           if (gradeErr) console.warn("[generate-card] grade 컬럼 저장 실패 (마이그레이션 미적용 가능성):", gradeErr.message);
+
+          // 지도 마커 캐릭터 팔레트 — 같은 AI 판독 결과에서 파생 (추가 API 호출 없음).
+          // 별도 update: art_key 마이그레이션 미적용이어도 카드/등급 저장엔 영향 없음.
+          const artKey = deriveArtKey(parsed.features);
+          if (artKey) {
+            const { error: artErr } = await supabase.from("cats").update({ art_key: artKey }).eq("id", cat_id).eq("caretaker_id", user.id);
+            if (artErr) console.warn("[generate-card] art_key 저장 실패 (마이그레이션 미적용 가능성):", artErr.message);
+          }
 
           return NextResponse.json({ card, grade: gradeResult });
         }

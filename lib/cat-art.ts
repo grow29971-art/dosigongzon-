@@ -21,23 +21,26 @@ interface CatPalette {
   patternColor2?: string;
 }
 
-// 한국 길고양이에서 흔한 모습 위주 14종 — cat.id 해시로 하나가 배정된다.
-const PALETTES: CatPalette[] = [
-  { fur: "#F5B653", earInner: "#F09090", muzzle: "#FBE3B7", iris: "#7A5230", pattern: "stripes", patternColor: "#D8933A" }, // 치즈
-  { fur: "#9FB4C7", earInner: "#E8A0A8", muzzle: "#E3ECF4", iris: "#4F6A43", pattern: "stripes", patternColor: "#5F7488" }, // 고등어
-  { fur: "#3A3F4B", earInner: "#E8A0A8", muzzle: "#FFFFFF", iris: "#D8A03F", pattern: "tuxedo", patternColor: "#FFFFFF" }, // 턱시도
-  { fur: "#33363F", earInner: "#5A5E6C", muzzle: "#4A4E5A", iris: "#F2C94C", pattern: "none" },                            // 올블랙
-  { fur: "#F7F4EE", earInner: "#F5B8C0", muzzle: "#FFFFFF", iris: "#5FA8D8", pattern: "none" },                            // 올화이트
-  { fur: "#B9BDC7", earInner: "#E8A8B0", muzzle: "#E8EAEF", iris: "#7A9A4F", pattern: "stripes", patternColor: "#8E93A1" }, // 회색태비
-  { fur: "#F9F3E7", earInner: "#F0A0A8", muzzle: "#FFFFFF", iris: "#7A5230", pattern: "calico", patternColor: "#F0A24E", patternColor2: "#4E4A55" }, // 삼색
-  { fur: "#5A4636", earInner: "#E8A0A8", muzzle: "#8A6E52", iris: "#E8B44C", pattern: "tortie", patternColor: "#E08A3C", patternColor2: "#3A2E24" }, // 카오스
-  { fur: "#FBF8F2", earInner: "#F5B8C0", muzzle: "#FFFFFF", iris: "#5FA8D8", irisRight: "#E8B44C", pattern: "none" },       // 오드아이
-  { fur: "#E3C29A", earInner: "#EFA8A8", muzzle: "#F5E4CB", iris: "#6A8A4F", pattern: "stripes", patternColor: "#C9A276" }, // 베이지태비
-  { fur: "#F1E3CE", earInner: "#8A6E5A", muzzle: "#C9AE8E", iris: "#4F8FD8", pattern: "points", patternColor: "#6E523E" },  // 샴
-  { fur: "#F7F5F0", earInner: "#F0A8B0", muzzle: "#FFFFFF", iris: "#7A5230", pattern: "calico", patternColor: "#3A3F4B", patternColor2: "#2E323C" }, // 젖소
-  { fur: "#D9A05C", earInner: "#EFA098", muzzle: "#F0D0A0", iris: "#7A5230", pattern: "stripes", patternColor: "#B67F3C" }, // 카라멜
-  { fur: "#E0913F", earInner: "#F0A090", muzzle: "#F6D8A8", iris: "#6A8A4F", pattern: "stripes", patternColor: "#B96F28" }, // 골목대장
-];
+// 한국 길고양이에서 흔한 모습 위주 15종. 키는 cats.art_key에 저장되는 값 —
+// AI 사진 판독(deriveArtKey)이 배정하고, 없으면 cat.id 해시로 하나가 배정된다.
+const PALETTES: Record<string, CatPalette> = {
+  cheese:      { fur: "#F5B653", earInner: "#F09090", muzzle: "#FBE3B7", iris: "#7A5230", pattern: "stripes", patternColor: "#D8933A" }, // 치즈
+  mackerel:    { fur: "#9FB4C7", earInner: "#E8A0A8", muzzle: "#E3ECF4", iris: "#4F6A43", pattern: "stripes", patternColor: "#5F7488" }, // 고등어
+  tuxedo:      { fur: "#3A3F4B", earInner: "#E8A0A8", muzzle: "#FFFFFF", iris: "#D8A03F", pattern: "tuxedo", patternColor: "#FFFFFF" }, // 턱시도
+  allblack:    { fur: "#33363F", earInner: "#5A5E6C", muzzle: "#4A4E5A", iris: "#F2C94C", pattern: "none" },                            // 올블랙
+  allwhite:    { fur: "#F7F4EE", earInner: "#F5B8C0", muzzle: "#FFFFFF", iris: "#5FA8D8", pattern: "none" },                            // 올화이트
+  graytabby:   { fur: "#B9BDC7", earInner: "#E8A8B0", muzzle: "#E8EAEF", iris: "#7A9A4F", pattern: "stripes", patternColor: "#8E93A1" }, // 회색태비
+  calico:      { fur: "#F9F3E7", earInner: "#F0A0A8", muzzle: "#FFFFFF", iris: "#7A5230", pattern: "calico", patternColor: "#F0A24E", patternColor2: "#4E4A55" }, // 삼색
+  tortie:      { fur: "#5A4636", earInner: "#E8A0A8", muzzle: "#8A6E52", iris: "#E8B44C", pattern: "tortie", patternColor: "#E08A3C", patternColor2: "#3A2E24" }, // 카오스
+  oddeye:      { fur: "#FBF8F2", earInner: "#F5B8C0", muzzle: "#FFFFFF", iris: "#5FA8D8", irisRight: "#E8B44C", pattern: "none" },       // 오드아이
+  beigetabby:  { fur: "#E3C29A", earInner: "#EFA8A8", muzzle: "#F5E4CB", iris: "#6A8A4F", pattern: "stripes", patternColor: "#C9A276" }, // 베이지태비
+  siamese:     { fur: "#F1E3CE", earInner: "#8A6E5A", muzzle: "#C9AE8E", iris: "#4F8FD8", pattern: "points", patternColor: "#6E523E" },  // 샴
+  cowcat:      { fur: "#F7F5F0", earInner: "#F0A8B0", muzzle: "#FFFFFF", iris: "#7A5230", pattern: "calico", patternColor: "#3A3F4B", patternColor2: "#2E323C" }, // 젖소
+  caramel:     { fur: "#D9A05C", earInner: "#EFA098", muzzle: "#F0D0A0", iris: "#7A5230", pattern: "stripes", patternColor: "#B67F3C" }, // 카라멜
+  alleyboss:   { fur: "#E0913F", earInner: "#F0A090", muzzle: "#F6D8A8", iris: "#6A8A4F", pattern: "stripes", patternColor: "#B96F28" }, // 골목대장
+  russianblue: { fur: "#8B9BB4", earInner: "#C3A8B8", muzzle: "#AEBACC", iris: "#6FCF97", pattern: "none" },                            // 솔리드 그레이
+};
+const PALETTE_KEYS = Object.keys(PALETTES);
 
 function hashSeed(seed: string): number {
   let h = 0;
@@ -45,9 +48,56 @@ function hashSeed(seed: string): number {
   return h;
 }
 
-function paletteFor(seed: string): { art: CatPalette; idx: number } {
-  const idx = hashSeed(seed) % PALETTES.length;
-  return { art: PALETTES[idx], idx };
+// seedOrKey가 팔레트 키(art_key)면 그대로, 아니면(cat.id 등) 해시로 결정적 배정
+function paletteFor(seedOrKey: string): { art: CatPalette; key: string } {
+  if (PALETTES[seedOrKey]) return { art: PALETTES[seedOrKey], key: seedOrKey };
+  const key = PALETTE_KEYS[hashSeed(seedOrKey) % PALETTE_KEYS.length];
+  return { art: PALETTES[key], key };
+}
+
+/**
+ * AI 사진 판독 features(colors/pattern/traits — generate-card 라우트의 Gemini 출력) →
+ * 마커 캐릭터 팔레트 키. 매핑 불가하면 null (호출측이 저장 생략 → id 해시 폴백).
+ * box/supabase_cat_art_key_migration.sql의 백필 CASE와 로직이 일치해야 한다.
+ */
+export function deriveArtKey(
+  f: { colors?: unknown; pattern?: unknown; traits?: unknown } | null | undefined,
+): string | null {
+  if (!f) return null;
+  const colors = (Array.isArray(f.colors) ? f.colors : []).map((c) => String(c).toLowerCase());
+  const pattern = String(f.pattern ?? "").toLowerCase();
+  const traits = (Array.isArray(f.traits) ? f.traits : []).map((t) => String(t).toLowerCase());
+  const has = (...keys: string[]) => keys.some((k) => colors.some((c) => c.includes(k)));
+  const orange = has("orange", "ginger", "red", "cream", "apricot");
+  const black = has("black");
+  const white = has("white");
+  const gray = has("gray", "grey", "blue", "silver");
+  const brown = has("brown", "beige", "tan", "sand");
+
+  if (traits.some((t) => t.includes("odd_eye") || t.includes("oddeye"))) return "oddeye";
+  if (pattern === "calico" || (pattern === "van" && orange && black)) return "calico";
+  if (pattern === "tortoiseshell" || pattern === "torbie") return "tortie";
+  if (pattern === "tuxedo") return "tuxedo";
+  if (pattern === "colorpoint") return "siamese";
+  if (pattern === "tabby") {
+    if (orange) return "cheese";
+    if (gray) return "mackerel";
+    if (brown) return "beigetabby";
+    return "mackerel";
+  }
+  if (pattern === "bicolor" || pattern === "van") {
+    if (black && white) return "cowcat";
+    if (orange) return "cheese";
+    return "graytabby";
+  }
+  // solid 등 — 색으로만 판단
+  if (black && !white) return "allblack";
+  if (white && !black && !orange && !gray) return "allwhite";
+  if (black && white) return "cowcat";
+  if (gray) return "russianblue";
+  if (orange) return "caramel";
+  if (brown) return "beigetabby";
+  return null;
 }
 
 /**
@@ -59,11 +109,11 @@ function paletteFor(seed: string): { art: CatPalette; idx: number } {
 export function catArtWalkSvg(
   seed: string, width: number, opts?: { walking?: boolean; jitter?: number },
 ): string {
-  const { art: a, idx } = paletteFor(seed);
+  const { art: a, key } = paletteFor(seed);
   const walking = opts?.walking ?? true;
   const j = opts?.jitter ?? ((hashSeed(seed) >> 4) % 100) / 100;
-  const clipId = `dosi-walkhead-${idx}`;
-  const bodyClip = `dosi-walkbody-${idx}`;
+  const clipId = `dosi-walkhead-${key}`;
+  const bodyClip = `dosi-walkbody-${key}`;
   const height = Math.round((width * 96) / 112);
 
   // 샴 포인트 — 다리·꼬리가 진한 색
