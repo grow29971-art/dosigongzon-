@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { cardLevelFromExp } from "@/lib/card-level";
 import { encodeGeohash, geohashNeighbors3x3, parseGh7, GEOHASH_PRECISION } from "@/lib/catch/geohash";
 import { myCatRoamFor, roamPosAt, currentDay } from "@/lib/catch/wild";
+import { applyQuestEvent } from "@/lib/catch/quest-server";
 import { rateLimit } from "@/lib/rate-limit";
 import { reportError } from "@/lib/error-report";
 
@@ -90,7 +91,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ already: true, card_name: card.card_name });
     }
 
-    // TODO(P3): quest hook — 냥줍 applyQuestEvent({ type: "pet" }) 자리.
+    // 주간 의뢰 훅(P3) — CAS 게이트 통과분(=오늘 첫 쓰다듬기)만 발행하므로
+    // 하루 1회 초과 파밍 불가. 실패해도 쓰다듬기 성공 응답을 막지 않는다.
+    const quest = await applyQuestEvent(svc, user.id, { type: "pet" });
 
     return NextResponse.json({
       ok: true,
@@ -98,6 +101,7 @@ export async function POST(request: Request) {
       exp_gained: PET_EXP,
       leveled_up: newLevel > ((card.card_level as number) ?? 1),
       new_level: newLevel,
+      quest,
     });
   } catch (e) {
     reportError("catch-pet", e);

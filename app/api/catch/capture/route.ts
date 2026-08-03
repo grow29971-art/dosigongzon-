@@ -6,6 +6,7 @@ import {
 } from "@/lib/catch/wild";
 import { geohashCenter, haversineMeters, parseGh7 } from "@/lib/catch/geohash";
 import { generateBattleStats, RARITY_UPGRADE_TARGET } from "@/lib/battle-config";
+import { applyQuestEvent } from "@/lib/catch/quest-server";
 import { rateLimit } from "@/lib/rate-limit";
 import { reportError } from "@/lib/error-report";
 
@@ -162,10 +163,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "포획 기록에 실패했어요. 다시 시도해주세요." }, { status: 500 });
     }
 
-    // TODO(P3): quest hook — 냥줍 applyQuestEvent(capture)·partner-perk 동반 EXP는
-    // 도감·퀘스트 단계에서 city 구조에 맞게 재연결한다.
+    // ── P3 부가 보상 — 어느 것도 포획 성공 응답을 막지 않는다 ──
+    // 완벽 포획 카운트(업적 perfect_10 재료) — 원자 upsert 증분 RPC.
+    // catch_profiles 마이그레이션 전이면 조용히 생략(업적은 부가 기능).
+    if (isPerfect) {
+      const { error: bumpErr } = await svc.rpc("bump_catch_perfect", { p_user: user.id });
+      if (bumpErr) { /* 마이그레이션 전 — 생략 */ }
+    }
+    // 주간 의뢰 훅 — 등급은 승급 반영 최종값(finalRarity) 기준 (catch-uncommon 의뢰 인정)
+    const quest = await applyQuestEvent(svc, user.id, {
+      type: "capture", speciesKey: species.key, rarity: finalRarity, isPerfect,
+    });
 
-    return NextResponse.json({ card, isPerfect, was_upgraded: wasUpgraded, is_event: isEvent });
+    return NextResponse.json({ card, isPerfect, was_upgraded: wasUpgraded, is_event: isEvent, quest });
   } catch (e) {
     reportError("catch-capture", e);
     return NextResponse.json({ error: "서버 오류가 발생했어요." }, { status: 500 });
