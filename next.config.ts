@@ -23,7 +23,11 @@ const cspDirectives = [
   "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data: https://cdn.jsdelivr.net",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://dapi.kakao.com https://*.daumcdn.net https://cdn.jsdelivr.net https://challenges.cloudflare.com https://*.tosspayments.com",
+  // 2026-08-04 catch(야생냥이 게임): MapLibre 지도 타일·글리프(public/catch/map-style.json이 참조)
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://dapi.kakao.com https://*.daumcdn.net https://cdn.jsdelivr.net https://challenges.cloudflare.com https://*.tosspayments.com https://tiles.openfreemap.org",
+  // 2026-08-04 catch(야생냥이 게임): MapLibre GL은 blob: URL로 웹워커를 띄운다(타일 파싱).
+  // worker-src 미지정 시 script-src로 폴백돼 blob: 워커가 차단되므로 명시.
+  "worker-src 'self' blob:",
   // postcode.map.kakao.com(신규)/postcode.map.daum.net(구): 주문서의 우편번호 검색 iframe
   // *.tosspayments.com / pay.toss.im: 토스페이먼츠 결제위젯·결제창
   "frame-src https://challenges.cloudflare.com https://www.youtube.com https://www.youtube-nocookie.com https://postcode.map.kakao.com https://postcode.map.daum.net https://*.tosspayments.com https://pay.toss.im",
@@ -55,9 +59,11 @@ const securityHeaders = [
     value: "strict-origin-when-cross-origin",
   },
   // 사용하지 않는 브라우저 권한 차단
+  // 2026-08-04 catch(야생냥이 게임): camera=()→camera=(self) — 포획 미니게임의 AR 카메라 배경용.
+  // geolocation=(self) 명시 — 기존엔 미지정(기본 self 허용)이었는데 지도 게임의 핵심 권한이라 명문화.
   {
     key: "Permissions-Policy",
-    value: "camera=(), microphone=(), payment=(), usb=(), interest-cohort=()",
+    value: "camera=(self), microphone=(), payment=(), usb=(), interest-cohort=(), geolocation=(self)",
   },
   // HTTPS 강제 (프로덕션에서 의미 있음; 로컬 http 개발엔 무해)
   {

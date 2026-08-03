@@ -92,7 +92,7 @@ export default function MyPage() {
 
   // 마이페이지 메뉴 간결화 (2026-07-15) — MAU 초기 저활용 진입점을 눈에서 숨김.
   // 라우트·코드는 유지하며, 각 플래그를 true로 되돌리면 복원.
-  const SHOW_CARD_GAME = false;      // 내 고양이 카드(CatchCat 게임)
+  const SHOW_CARD_GAME = true;       // 내 고양이 카드(CatchCat 게임) — 2026-08-04 캐치캣 이식 오픈
   const SHOW_JOURNEY = false;        // 당신의 여정
   const SHOW_MONTHLY_REPORT = false; // 이번 달 성장 리포트
   const SHOW_CARETAKERS = false;     // 동네 케어테이커 찾기 — 인원 필요
@@ -853,6 +853,49 @@ export default function MyPage() {
                 <p className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>CatchCat — 등록한 고양이 카드 컬렉션</p>
               </div>
               <ChevronRight size={16} style={{ color: "rgba(255,255,255,0.3)" }} />
+            </Link>
+            )}
+            {/* 캐치캣(야생냥이 게임) 진입점 — 2026-08-04 냥줍 이식 P5 */}
+            {SHOW_CARD_GAME && (
+            <Link
+              href="/catch"
+              className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform mb-2"
+              style={{
+                background: "linear-gradient(135deg, #F9FAFB 0%, #F2F4F6 100%)",
+                borderRadius: "var(--radius-card-sm)",
+                boxShadow: "0 4px 14px rgba(173, 94, 59,0.15), 0 1px 2px rgba(0,0,0,0.02)",
+                border: "1px solid rgba(173, 94, 59,0.20)",
+              }}
+            >
+              <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#FFFFFF" }}>
+                <span className="text-[20px]">🐾</span>
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-[14px] font-extrabold text-text-main tracking-tight">야생냥이 지도</p>
+                <p className="text-[11px] text-text-sub mt-0.5">캐치캣 — 동네 야생냥이 만나고 카드 모으기</p>
+              </div>
+              <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-primary)", opacity: 0.7 }} />
+            </Link>
+            )}
+            {SHOW_CARD_GAME && (
+            <Link
+              href="/catch/dex"
+              className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform mb-2"
+              style={{
+                background: "linear-gradient(135deg, #F9FAFB 0%, #F2F4F6 100%)",
+                borderRadius: "var(--radius-card-sm)",
+                boxShadow: "0 4px 14px rgba(173, 94, 59,0.15), 0 1px 2px rgba(0,0,0,0.02)",
+                border: "1px solid rgba(173, 94, 59,0.20)",
+              }}
+            >
+              <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#FFFFFF" }}>
+                <span className="text-[20px]">📖</span>
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-[14px] font-extrabold text-text-main tracking-tight">냥이 도감</p>
+                <p className="text-[11px] text-text-sub mt-0.5">모은 카드 컬렉션 · 업적 · 배틀 기록</p>
+              </div>
+              <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-primary)", opacity: 0.7 }} />
             </Link>
             )}
             {SHOW_JOURNEY && (

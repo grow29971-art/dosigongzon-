@@ -548,3 +548,32 @@ body {
   content-visibility: auto;
   contain-intrinsic-size: auto 600px;
 }
+
+/* ══════════════════════════════════════════
+   catch 배틀 연출 (냥줍 이식, 2026-08-04 P4)
+   ══════════════════════════════════════════ */
+/* 배틀 날씨 오버레이(BattleWeather) 키프레임 */
+@keyframes bw-twinkle { 0%,100% { opacity: 0.25; } 50% { opacity: 1; } }
+@keyframes bw-glow { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
+@keyframes bw-rain { from { background-position: 0 0; } to { background-position: -26px 120px; } }
+@keyframes bw-snow { from { background-position: 0 0, 50px 40px; } to { background-position: 36px 110px, 12px 190px; } }
+@keyframes bw-fog { 0%,100% { transform: translateX(-3%); } 50% { transform: translateX(3%); } }
+@keyframes bw-cloud { from { transform: translateX(-25%); } to { transform: translateX(420px); } }
+@keyframes bw-heatwave { 0%,100% { transform: translateY(0) skewX(0deg); opacity: 0.75; } 50% { transform: translateY(-4px) skewX(-1.2deg); opacity: 1; } }
+
+/* 배틀 저체력 비네트 — 화면 가장자리가 심장박동처럼 붉게 조여온다 */
+.danger-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(255,40,40,0.28) 100%);
+  animation: catchHeartbeat 1.1s ease-in-out infinite;
+}
+@keyframes catchHeartbeat {
+  0%, 100% { opacity: 0.45; }
+  12% { opacity: 1; }
+  24% { opacity: 0.55; }
+  36% { opacity: 0.9; }
+  55% { opacity: 0.45; }
+}

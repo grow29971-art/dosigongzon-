@@ -2,10 +2,10 @@
 // 배틀 배경(비/불씨/먼지/반딧불/안개)과 포획 연출(스파크/별/충격파)에서 공용으로 사용한다.
 
 export type BurstKind = "spark" | "star" | "shockwave";
-export type AmbientKind = "rain" | "ember" | "dust" | "firefly" | "mist";
+export type AmbientKind = "rain" | "ember" | "dust" | "firefly" | "mist" | "snow";
 type ParticleKind = BurstKind | AmbientKind;
 
-const AMBIENT_KINDS = new Set<ParticleKind>(["rain", "ember", "dust", "firefly", "mist"]);
+const AMBIENT_KINDS = new Set<ParticleKind>(["rain", "ember", "dust", "firefly", "mist", "snow"]);
 const DRIFT_GLOW_KINDS = new Set<ParticleKind>(["dust", "firefly"]);
 
 interface Particle {
@@ -101,6 +101,20 @@ export class ParticleSystem {
           wobblePhase: Math.random() * Math.PI * 2, wobbleAmp2: 0,
         });
       }
+    } else if (this.ambientKind === "snow") {
+      // 눈 오는 골목 — 좌우로 흔들리며 천천히 떨어지는 눈송이 (냥줍 배틀 snow 환경 이식, 2026-08-04 P4)
+      this.spawnAccum += dt * 14 * this.ambientIntensity;
+      while (this.spawnAccum > 1) {
+        this.spawnAccum--;
+        this.particles.push({
+          kind: "snow", x: Math.random() * w * 1.2 - w * 0.1, y: -8,
+          vx: -12, vy: 55 + Math.random() * 45,
+          life: 0, maxLife: 9, size: 1.4 + Math.random() * 1.8,
+          color: this.ambientColor, rotation: 0, rotSpeed: 0, gravity: 0,
+          wobbleAmp: 12 + Math.random() * 16, wobbleSpeed: 0.6 + Math.random() * 0.7,
+          wobblePhase: Math.random() * Math.PI * 2, wobbleAmp2: 0,
+        });
+      }
     } else if (this.ambientKind === "dust") {
       // 한낮 배경 — 햇빛 속을 느리게 떠도는 먼지/꽃가루
       this.spawnAccum += dt * 4.5 * this.ambientIntensity;
@@ -149,9 +163,9 @@ export class ParticleSystem {
       p.life += dt;
       if (p.kind === "rain") {
         p.x += p.vx * dt; p.y += p.vy * dt;
-      } else if (p.kind === "ember") {
+      } else if (p.kind === "ember" || p.kind === "snow") {
         p.wobblePhase += p.wobbleSpeed * dt;
-        p.x += Math.sin(p.wobblePhase) * p.wobbleAmp * dt;
+        p.x += Math.sin(p.wobblePhase) * p.wobbleAmp * dt + p.vx * dt;
         p.y += p.vy * dt;
       } else if (DRIFT_GLOW_KINDS.has(p.kind)) {
         p.wobblePhase += p.wobbleSpeed * dt;
@@ -167,7 +181,7 @@ export class ParticleSystem {
     }
 
     this.particles = this.particles.filter(p => {
-      if (p.kind === "rain") return p.y < h + 20 && p.life < p.maxLife;
+      if (p.kind === "rain" || p.kind === "snow") return p.y < h + 20 && p.life < p.maxLife;
       if (p.kind === "ember") return p.y > -20 && p.life < p.maxLife;
       if (p.kind === "mist") return p.x > -p.size - 20 && p.x < w + p.size + 20 && p.life < p.maxLife;
       return p.life < p.maxLife;
@@ -187,6 +201,12 @@ export class ParticleSystem {
         ctx.stroke();
       } else if (p.kind === "ember") {
         const alpha = Math.max(0, Math.sin(Math.min(1, t * 3)) * (1 - t));
+        ctx.fillStyle = `rgba(${p.color},${alpha})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (p.kind === "snow") {
+        const alpha = 0.75 * Math.max(0, Math.min(1, (1 - t) * 3));
         ctx.fillStyle = `rgba(${p.color},${alpha})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);

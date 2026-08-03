@@ -129,6 +129,9 @@ const KNOWN_GEO_FILES = new Set([
   "app/components/AddCatModal.tsx",
   "app/components/SafetyCallSheet.tsx",
   "app/components/ShareMyLocation.tsx",
+  // 야생냥이 게임 지도(냥줍 이식 P2, 2026-08-04) — 좌표는 state/ref까지만 쓰고
+  // 서버 전송은 geohash7 마스킹만. 아래 R6 테스트가 전송 본문을 소스 레벨로 봉인한다.
+  "app/(main)/catch/page.tsx",
 ]);
 
 // 주석 제거 — 주석 속 단어("fetch·supabase 금지" 등)가 오탐되지 않게. `://`(URL)는 보존.
@@ -186,4 +189,31 @@ test("GPS: createCat/updateCat 좌표는 applyLocationOffset을 거침", () => {
   const src = read("lib/cats-repo.ts");
   assert.match(src, /applyLocationOffset\(\s*input\.lat\s*,\s*input\.lng\s*\)/);
   assert.match(src, /\(Math\.random\(\)\s*-\s*0\.5\)\s*\*\s*0\.008/);
+});
+
+// R6 — 야생냥이 게임(/catch): 네트워크 전송 본문에 raw 좌표 금지, geohash7 마스킹만 허용
+// (냥줍 이식 P2 2026-08-04). GPS 좌표는 지도 마커·거리 판정 등 화면 계산에는 쓰이지만,
+// fetch 본문(JSON.stringify)에 실릴 수 있는 좌표 형태는 encodeGeohash(...,7) 결과뿐이어야 한다.
+test("GPS: catch 지도·포획의 전송 본문은 encodeGeohash(gh7)만 — raw lat/lng 금지", () => {
+  for (const f of ["app/(main)/catch/page.tsx", "app/components/catch/WildCapture.tsx"]) {
+    const code = stripComments(read(f));
+    // 좌표가 합법적으로 들어갈 수 있는 유일한 자리(encodeGeohash 인자)를 가린 뒤 검사
+    const masked = code.replace(/encodeGeohash\([^)]*\)/g, "encodeGeohash(__masked__)");
+    const bodies = [...masked.matchAll(/JSON\.stringify\(\{([^}]*)\}/g)].map((m) => m[1]);
+    assert.ok(bodies.length > 0, `${f}: 검사할 JSON.stringify 본문이 있어야 함 (전송 코드 이동 시 이 테스트도 갱신)`);
+    for (const body of bodies) {
+      assert.ok(
+        !/\b(lat|lng|latitude|longitude|coords)\b/.test(body),
+        `${f}: 전송/저장 본문에 raw 좌표 식별자 금지 — ${body.trim().slice(0, 80)}`,
+      );
+    }
+    // gh7은 반드시 정밀도 7 마스킹을 거쳐 전송된다 (원문 코드 기준)
+    if (/gh7:/.test(code)) {
+      assert.match(code, /gh7:\s*encodeGeohash\([^)]*,\s*7\)/, `${f}: gh7는 encodeGeohash(...,7)로만 생성`);
+    }
+    // 클라이언트에서 supabase 쓰기 채널로 좌표가 새는 경로 금지 (쓰기는 전부 Route Handler)
+    for (const banned of [".insert(", ".rpc(", ".upsert("]) {
+      assert.ok(!code.includes(banned), `${f}: 클라 supabase 쓰기 금지 — '${banned}' 발견`);
+    }
+  }
 });

@@ -167,6 +167,13 @@ export default function MyCardsPage() {
         </div>
 
         <div className="px-4 pb-28">
+          {/* 캐치캣 안내 — 야생냥이 카드는 별도 컬렉션 (2026-08-04 P5) */}
+          <Link href="/catch/dex"
+            className="flex items-center gap-2 px-3.5 py-2.5 mt-3 rounded-xl text-[11.5px] font-bold"
+            style={{ background: UI.panel, color: UI.textSub, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
+            🐾 야생냥이 카드는 <span style={{ color: UI.accent.pink }}>캐치캣 도감</span>에서 볼 수 있어요 →
+          </Link>
+
           {/* 빠른 메뉴 */}
           <div className="grid grid-cols-2 gap-1.5 mb-4 mt-3">
             <Link href="/mypage/shop"
