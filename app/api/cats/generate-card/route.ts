@@ -5,7 +5,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { generateBattleStats } from "@/lib/battle-config";
 import { TITLES, TRAITS, FLAVORS } from "@/lib/battle-card-titles";
 import { calculateCatGrade, type CatFeatures } from "@/lib/cat-grade";
-import { deriveArtKey } from "@/lib/cat-art";
+import { deriveArtKey, deriveArtColors } from "@/lib/cat-art";
 import { rateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 30;
@@ -29,7 +29,9 @@ const PROMPT = `이 고양이 사진을 분석해서 CatchCat 카드에 쓸 정�
     "pattern": "solid|tabby|tuxedo|bicolor|van|colorpoint|torbie|tortoiseshell|calico 중 실제 관찰되는 값 하나",
     "traits": ["odd_eye(양쪽 눈 색이 다름) 등 눈에 보이는 특이 형질만, 없으면 빈 배열"],
     "sex": "male|female|unknown (사진으로 확실치 않으면 반드시 unknown)",
-    "confidence": "이 features 판단에 대한 본인의 확신도 0.0~1.0 (애매하면 낮게)"
+    "confidence": "이 features 판단에 대한 본인의 확신도 0.0~1.0 (애매하면 낮게)",
+    "fur_hex": "#RRGGBB — 고양이 몸통 털의 대표색 (배경/그림자 제외, 실제 픽셀 색감)",
+    "pattern_hex": "#RRGGBB 또는 null — 줄무늬/패치 등 무늬 색. 무늬 없으면 null"
   },
   "traits": ["기술1", "기술2", "기술3"],
   "stats": { "cuteness": 0-100, "wildness": 0-100, "sociability": 0-100, "mysteriousness": 0-100 },
@@ -227,12 +229,21 @@ export async function POST(request: Request) {
           const { error: gradeErr } = await supabase.from("cats").update(gradeFields).eq("id", cat_id).eq("caretaker_id", user.id);
           if (gradeErr) console.warn("[generate-card] grade 컬럼 저장 실패 (마이그레이션 미적용 가능성):", gradeErr.message);
 
-          // 지도 마커 캐릭터 팔레트 — 같은 AI 판독 결과에서 파생 (추가 API 호출 없음).
-          // 별도 update: art_key 마이그레이션 미적용이어도 카드/등급 저장엔 영향 없음.
+          // 지도 마커 캐릭터 팔레트+실측 색 — 같은 AI 판독 결과에서 파생 (추가 API 호출 없음).
+          // 별도 update: art 마이그레이션 미적용이어도 카드/등급 저장엔 영향 없음.
+          // art_colors 컬럼이 아직 없으면 결합 update가 실패하므로 art_key 단독으로 재시도.
           const artKey = deriveArtKey(parsed.features);
-          if (artKey) {
-            const { error: artErr } = await supabase.from("cats").update({ art_key: artKey }).eq("id", cat_id).eq("caretaker_id", user.id);
-            if (artErr) console.warn("[generate-card] art_key 저장 실패 (마이그레이션 미적용 가능성):", artErr.message);
+          const artColors = deriveArtColors(parsed.features);
+          if (artKey || artColors) {
+            const artFields: Record<string, unknown> = {};
+            if (artKey) artFields.art_key = artKey;
+            if (artColors) artFields.art_colors = artColors;
+            const { error: artErr } = await supabase.from("cats").update(artFields).eq("id", cat_id).eq("caretaker_id", user.id);
+            if (artErr && artKey) {
+              console.warn("[generate-card] art 저장 실패, art_key 단독 재시도:", artErr.message);
+              const { error: keyErr } = await supabase.from("cats").update({ art_key: artKey }).eq("id", cat_id).eq("caretaker_id", user.id);
+              if (keyErr) console.warn("[generate-card] art_key 저장 실패 (마이그레이션 미적용 가능성):", keyErr.message);
+            }
           }
 
           return NextResponse.json({ card, grade: gradeResult });

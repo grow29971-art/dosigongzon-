@@ -1420,7 +1420,7 @@ export default function MapPage() {
               <div class="cat-press" style="transform:translate(-50%,-100%);--mk-tr:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
                 ${photoBadge(cat, "top:-16px;left:-34px;")}
                 <div class="cat-walk-flip" style="display:flex;transform:scaleX(1);transition:transform 0.25s ease;filter:drop-shadow(0 2px 3px rgba(44,30,20,0.32));">
-                  ${catArtWalkSvg(cat.art_key ?? cat.id, 54)}
+                  ${catArtWalkSvg(cat.art_key ?? cat.id, 54, { colors: cat.art_colors })}
                 </div>
                 <span class="roam-state" style="position:absolute;top:-10px;right:-8px;font-size:16px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(cat.id).emoji}</span>
                 ${emoteSpan(cat.id, emoteForCat(cat.id))}
@@ -1495,7 +1495,7 @@ export default function MapPage() {
               const w = i === 0 ? 56 : 40;
               return `
               <div class="${i === 0 ? "cat-walk-flip" : ""}" style="display:flex;margin-left:${i > 0 ? "-12px" : "0"};z-index:${3 - i};transform:scaleX(1);transition:transform 0.25s ease;filter:drop-shadow(0 2px 3px rgba(44,30,20,0.3));">
-                ${catArtWalkSvg(c.art_key ?? c.id, w)}
+                ${catArtWalkSvg(c.art_key ?? c.id, w, { colors: c.art_colors })}
               </div>`;
             }).join("")}
             <span class="roam-state" style="position:absolute;top:-12px;left:44px;font-size:16px;z-index:4;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(repCat.id).emoji}</span>

@@ -100,20 +100,70 @@ export function deriveArtKey(
   return null;
 }
 
+// ── 사진 실측 색 (art_colors) ──
+// Gemini가 사진에서 뽑은 털/무늬 hex를 팔레트 위에 덮어써 "그 고양이 색" 캐릭터를 만든다.
+
+export interface CatArtColors {
+  fur?: string | null;     // 몸통 털 대표색
+  pattern?: string | null; // 무늬(줄무늬/패치) 색
+}
+
+// innerHTML에 박히는 값이라 형식 엄격 검증 (스타일 인젝션 차단)
+function safeHex(h: unknown): string | null {
+  return typeof h === "string" && /^#[0-9a-fA-F]{6}$/.test(h) ? h : null;
+}
+
+// 흰색과 혼합해 밝은 파생색(주둥이·배) 생성. p=0(원색)~1(흰색).
+function mixWhite(hex: string, p: number): string {
+  const n = parseInt(hex.slice(1), 16);
+  const ch = (v: number) => Math.round(v + (255 - v) * p).toString(16).padStart(2, "0");
+  return `#${ch((n >> 16) & 255)}${ch((n >> 8) & 255)}${ch(n & 255)}`;
+}
+
+/**
+ * AI 사진 판독 features(fur_hex/pattern_hex) → 저장용 art_colors.
+ * hex 형식이 아니면 버린다. fur가 없으면 전체 null (색 미확정).
+ */
+export function deriveArtColors(
+  f: { fur_hex?: unknown; pattern_hex?: unknown } | null | undefined,
+): { fur: string; pattern: string | null } | null {
+  if (!f) return null;
+  const fur = safeHex(f.fur_hex);
+  if (!fur) return null;
+  return { fur, pattern: safeHex(f.pattern_hex) };
+}
+
 /**
  * cat.id → 옆모습 걷는 전신 고양이 SVG (지도 마커용) — 기본 오른쪽(동쪽) 보기.
  * 이동 방향 반전은 호출측이 컨테이너에 scaleX(-1)를 건다.
  * walking=true면 다리 총총·꼬리 살랑 CSS 애니메이션 (globals.css nyangLegSwing/nyangTailSway).
  * jitter(0..1)는 개체별 주기·위상 분산용 — 생략 시 id 해시에서 유도.
+ * colors(사진 실측 hex)가 있으면 팔레트의 털/무늬/주둥이 색을 덮어쓴다.
  */
 export function catArtWalkSvg(
-  seed: string, width: number, opts?: { walking?: boolean; jitter?: number },
+  seed: string, width: number,
+  opts?: { walking?: boolean; jitter?: number; colors?: CatArtColors | null },
 ): string {
-  const { art: a, key } = paletteFor(seed);
+  const { art: base, key } = paletteFor(seed);
+  // 사진 실측 색 오버라이드 — fur가 유효할 때만. 주둥이는 털색을 밝힌 파생색.
+  const furOv = safeHex(opts?.colors?.fur);
+  const patternOv = safeHex(opts?.colors?.pattern);
+  const a: CatPalette = furOv
+    ? {
+        ...base,
+        fur: furOv,
+        muzzle: mixWhite(furOv, 0.55),
+        patternColor: patternOv ?? base.patternColor,
+      }
+    : patternOv
+      ? { ...base, patternColor: patternOv }
+      : base;
   const walking = opts?.walking ?? true;
   const j = opts?.jitter ?? ((hashSeed(seed) >> 4) % 100) / 100;
-  const clipId = `dosi-walkhead-${key}`;
-  const bodyClip = `dosi-walkbody-${key}`;
+  // 색 오버라이드가 있으면 clipPath id도 고유화 (같은 키·다른 색 SVG 공존 대비)
+  const colorTag = furOv ? `-${furOv.slice(1)}` : "";
+  const clipId = `dosi-walkhead-${key}${colorTag}`;
+  const bodyClip = `dosi-walkbody-${key}${colorTag}`;
   const height = Math.round((width * 96) / 112);
 
   // 샴 포인트 — 다리·꼬리가 진한 색
