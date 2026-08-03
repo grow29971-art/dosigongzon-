@@ -62,11 +62,13 @@ export async function POST(request: Request) {
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
   let done = 0, skipped = 0, capped = false;
+  const reasons: Array<{ id: string; reason: string }> = []; // 배치별 스킵/실패 사유 (진단용)
   for (const cat of targets ?? []) {
     // 우리 Storage 사진만 서버 fetch (SSRF 가드) — 외부 URL은 스킵 마킹
     if (!cat.photo_url || !cat.photo_url.startsWith(storagePrefix)) {
       await svc.from("cats").update({ art_colors: { none: true } }).eq("id", cat.id);
       skipped++;
+      reasons.push({ id: cat.id, reason: "external_url" });
       continue;
     }
 
@@ -91,18 +93,22 @@ export async function POST(request: Request) {
       if (!parsed.is_cat) {
         await svc.from("cats").update({ art_colors: { none: true } }).eq("id", cat.id);
         skipped++;
+        reasons.push({ id: cat.id, reason: `not_cat raw=${raw.slice(0, 120)}` });
         continue;
       }
       const artKey = deriveArtKey(parsed);
       const artColors = deriveArtColors(parsed);
       const fields: Record<string, unknown> = { art_colors: artColors ?? { none: true } };
       if (artKey) fields.art_key = artKey;
-      await svc.from("cats").update(fields).eq("id", cat.id);
-      if (artColors) done++; else skipped++;
+      const { error: upErr } = await svc.from("cats").update(fields).eq("id", cat.id);
+      if (upErr) reasons.push({ id: cat.id, reason: `update_fail ${upErr.message}` });
+      if (artColors) done++;
+      else { skipped++; reasons.push({ id: cat.id, reason: `no_colors raw=${raw.slice(0, 120)}` }); }
     } catch (err) {
       // 일시 오류(네트워크·파싱)는 마킹하지 않고 다음 배치에서 재시도
       console.warn("[backfill-cat-art] 실패:", cat.id, err);
       skipped++;
+      reasons.push({ id: cat.id, reason: `error ${err instanceof Error ? err.message.slice(0, 160) : String(err).slice(0, 160)}` });
     }
   }
 
@@ -112,5 +118,5 @@ export async function POST(request: Request) {
     .not("photo_url", "is", null)
     .is("art_colors", null);
 
-  return NextResponse.json({ done, skipped, capped, remaining: remaining ?? 0 });
+  return NextResponse.json({ done, skipped, capped, remaining: remaining ?? 0, reasons });
 }
