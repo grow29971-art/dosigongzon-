@@ -38,7 +38,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  // 프로덕션 env 값 끝에 개행/공백이 붙어 있을 수 있어(2026-08-04 실측 — Vercel 대시보드
+  // 입력 시 딸려 들어간 개행) 반드시 정리 후 프리픽스 비교. 안 하면 전부 external_url 오판.
+  const supabaseUrl = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(/\\n/g, "").trim().replace(/\/+$/, "");
   const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
   if (!supabaseUrl || !apiKey) {
     return NextResponse.json({ error: "서버 설정 미완료" }, { status: 500 });
