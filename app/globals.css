@@ -285,6 +285,30 @@ body {
   .cat-emote { display: none; }
 }
 
+/* ── 전신 고양이 마커 걷기 (2026-08-04, 냥줍 이식 — lib/cat-art.ts catArtWalkSvg) ──
+   다리 총총(대각 2쌍 역위상 delay), 꼬리 살랑. duration/delay는 SVG 인라인 지정. */
+@keyframes nyangLegSwing {
+  0%, 100% { transform: rotate(13deg); }
+  50% { transform: rotate(-13deg); }
+}
+@keyframes nyangTailSway {
+  0%, 100% { transform: rotate(-7deg); }
+  50% { transform: rotate(6deg); }
+}
+
+/* 내 위치 사람 캐릭터 (lib/cat-art.ts personMarkerSvg) — 몸통 상시 숨쉬기 */
+.me-marker .me-body {
+  transform-box: fill-box; transform-origin: 50% 100%;
+  animation: nyangBreathe 2.6s ease-in-out infinite;
+}
+@keyframes nyangBreathe {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.965); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .me-marker .me-body { animation: none; }
+}
+
 /* ── 지도 마커 뽀용 탄성 (2026-08-02) ──
    누르면 젤리처럼 눌렸다 튕겨 오름 (squash & stretch).
    마커 루트의 기존 translate는 --mk-tr 변수로 넘겨받아 유지. */

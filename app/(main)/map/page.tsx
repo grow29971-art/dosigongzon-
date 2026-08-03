@@ -67,6 +67,7 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/app/components/Toast";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import { catArtWalkSvg, personMarkerSvg } from "@/lib/cat-art";
 import { findLocationViolations } from "@/lib/location-patterns";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 import { getMyBlockedIdSet } from "@/lib/blocks-repo";
@@ -85,6 +86,8 @@ interface RoamOverlay extends KakaoOverlay {
   __roamCat?: Cat;
   __stateEl?: HTMLElement | null;
   __emoteEl?: HTMLElement | null;
+  __flipEl?: HTMLElement | null; // 전신 고양이 좌우 반전 컨테이너 (.cat-walk-flip)
+  __lastLng?: number;            // 직전 경도 — 이동 방향으로 바라보는 쪽 결정
 }
 
 // area_chats 행 — temp- 접두사 id는 낙관적 메시지(아직 서버 미반영)
@@ -1046,9 +1049,9 @@ export default function MapPage() {
     map.setCenter(new window.kakao.maps.LatLng(userPos.lat, userPos.lng));
   }, [mapReady, userPos]);
 
-  // ── 내 위치 마커 (논바이너리 캐릭터 + 펄스 링) ──
+  // ── 내 위치 마커 (사람 캐릭터 + 펄스 링) ──
   // 실시간 추적: 오버레이가 이미 있으면 위치만 갱신(부드럽게 이동), 없을 때만 생성.
-  // 캐릭터는 젠더 뉴트럴한 인물 + 논바이너리 프라이드 컬러(노랑#FCF434·흰색·보라#9C59D1·검정) 링.
+  // 캐릭터는 고양이귀 후드를 쓴 치비 사람 (lib/cat-art.ts personMarkerSvg, 테라코타 테마).
   const userLocationOverlayRef = useRef<KakaoOverlay | null>(null);
   useEffect(() => {
     if (!mapReady || !userPos || !window.kakao) return;
@@ -1076,44 +1079,17 @@ export default function MapPage() {
 
     const el = document.createElement("div");
     el.style.cssText = "position:relative;width:0;height:0;pointer-events:none;";
-    // 치비 캐릭터: 큰 눈 + 볼터치 + 고양이 비니(냥이앱 테마). 비니/브림에 논바이너리
-    // 프라이드 컬러(보라#9C59D1·노랑#FCF434), 살짝 통통 살구빛 얼굴.
+    // 사람 캐릭터 (2026-08-04 사용자 요청 — 냥줍 집사 아바타 이식, 테라코타 후드).
+    // 발이 좌표 근처에 오도록 세로로 살짝 올려 앵커링. 몸통 숨쉬기는 .me-marker CSS.
     el.innerHTML = `
-      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);z-index:2;
-        filter:drop-shadow(0 3px 5px rgba(44,44,44,0.35));">
-        <svg width="52" height="52" viewBox="0 0 52 52" fill="none" aria-hidden="true">
-          <!-- 흰 테두리 원판 -->
-          <circle cx="26" cy="26" r="20.5" fill="#FFF7EC" stroke="#FFFFFF" stroke-width="3"/>
-          <!-- 얼굴 -->
-          <circle cx="26" cy="29" r="13.5" fill="#FBD9AE"/>
-          <!-- 고양이 귀 (비니) -->
-          <path d="M13.5 17 L11.5 8.5 L20 13.5 Z" fill="#9C59D1"/>
-          <path d="M14.6 15.4 L13.4 10.4 L18 13.2 Z" fill="#F7A8C4"/>
-          <path d="M38.5 17 L40.5 8.5 L32 13.5 Z" fill="#9C59D1"/>
-          <path d="M37.4 15.4 L38.6 10.4 L34 13.2 Z" fill="#F7A8C4"/>
-          <!-- 비니 돔 (보라) -->
-          <path d="M12.5 22 C12.5 12.5 18.5 8 26 8 C33.5 8 39.5 12.5 39.5 22 Z" fill="#9C59D1"/>
-          <!-- 비니 브림 (노랑, 접힌 밴드) -->
-          <rect x="11" y="19.5" width="30" height="6.4" rx="3.2" fill="#FCF434"/>
-          <rect x="11" y="19.5" width="30" height="6.4" rx="3.2" fill="#000000" opacity="0.06"/>
-          <!-- 볼터치 -->
-          <ellipse cx="16.5" cy="33" rx="3" ry="2.2" fill="#F79FC0" opacity="0.75"/>
-          <ellipse cx="35.5" cy="33" rx="3" ry="2.2" fill="#F79FC0" opacity="0.75"/>
-          <!-- 큰 눈 -->
-          <ellipse cx="20.7" cy="30.2" rx="3" ry="3.6" fill="#3B2A28"/>
-          <ellipse cx="31.3" cy="30.2" rx="3" ry="3.6" fill="#3B2A28"/>
-          <circle cx="21.9" cy="28.9" r="1.15" fill="#FFFFFF"/>
-          <circle cx="32.5" cy="28.9" r="1.15" fill="#FFFFFF"/>
-          <circle cx="19.9" cy="31.4" r="0.55" fill="#FFFFFF" opacity="0.8"/>
-          <circle cx="30.5" cy="31.4" r="0.55" fill="#FFFFFF" opacity="0.8"/>
-          <!-- 미소 -->
-          <path d="M23 35 Q26 37.6 29 35" stroke="#8A5A46" stroke-width="1.4" stroke-linecap="round" fill="none"/>
-        </svg>
+      <div class="me-marker" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-58%);z-index:2;
+        display:flex;filter:drop-shadow(0 3px 5px rgba(44,44,44,0.35));">
+        ${personMarkerSvg(46)}
       </div>
       <div style="
         position:absolute;left:50%;top:50%;
         width:44px;height:44px;border-radius:50%;
-        background:rgba(156,89,209,0.30);
+        background:rgba(173,94,59,0.28);
         animation:dosi-user-pulse 1.8s ease-out infinite;
         z-index:1;
       "></div>
@@ -1394,19 +1370,6 @@ export default function MapPage() {
       });
     }
 
-    // 마커용 사진 URL — image transformation 활성 시 변환 endpoint, 아니면 원본.
-    // 2026-05-23 출시 D-2 사용자 보고 "사진이 안 보임" 핫픽스로 비활성. 원본 URL 사용.
-    const TRANSFORM_ENABLED = false;
-    function thumb(url: string | null | undefined, size: number): string {
-      const safe = sanitizeImageUrl(url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
-      if (!TRANSFORM_ENABLED) return safe;
-      if (safe.includes("/storage/v1/object/public/")) {
-        const transformed = safe.replace("/object/public/", "/render/image/public/");
-        return `${transformed}?width=${size * 2}&height=${size * 2}&resize=cover&quality=70`;
-      }
-      return safe;
-    }
-
     // 고양이 귀 — 원형 마커를 고양이 머리 실루엣으로 (2026-08-02 사용자 요청).
     // 원 뒤(z-index:0)에 삼각형 귀 2개를 세움. 마커 원은 wrapper 안에서 z-index:1 필요.
     function catEars(size: number, color: string): string {
@@ -1429,7 +1392,6 @@ export default function MapPage() {
         dongCats.forEach((cat) => {
           const coord = roamCoord(cat, isLoggedIn);
           const pos = new window.kakao.maps.LatLng(coord.lat, coord.lng);
-          const photoUrl = thumb(cat.photo_url, 64);
           // 마커 색은 파랑으로 통일 (2026-07-13 사용자 요청). 학대경보는 별도 ⚠️ 배지로 표시.
           const borderColor = "#AD5E3B";
 
@@ -1443,15 +1405,15 @@ export default function MapPage() {
               </div>
             `, cat.id);
           } else {
+            // 전신 걷는 고양이 아트 (2026-08-04 냥줍 이식 — 원형 사진 마커 대체·축소)
             el.innerHTML = floatWrap(`
               <div class="cat-press" style="transform:translate(-50%,-100%);--mk-tr:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
-                <div style="position:relative;width:72px;height:72px;">
-                  ${catEars(72, borderColor)}
-                  <div style="position:relative;z-index:1;width:72px;height:72px;border-radius:50%;border:3.5px solid ${borderColor};background:white;box-shadow:0 4px 13px ${borderColor}55;overflow:hidden;background-image:url('${photoUrl}');background-size:cover;background-position:center;"></div>
+                <div class="cat-walk-flip" style="display:flex;transform:scaleX(1);transition:transform 0.25s ease;filter:drop-shadow(0 2px 3px rgba(44,30,20,0.32));">
+                  ${catArtWalkSvg(cat.id, 54)}
                 </div>
-                <span class="roam-state" style="position:absolute;top:-6px;right:-8px;font-size:17px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(cat.id).emoji}</span>
+                <span class="roam-state" style="position:absolute;top:-10px;right:-8px;font-size:16px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(cat.id).emoji}</span>
                 ${emoteSpan(cat.id, emoteForCat(cat.id))}
-                <div style="width:10px;height:10px;background:${borderColor};transform:rotate(45deg);margin-top:-7px;"></div>
+                <div style="width:32px;height:5px;border-radius:50%;background:rgba(40,30,20,0.18);margin-top:-3px;"></div>
               </div>
             `, cat.id);
           }
@@ -1464,6 +1426,7 @@ export default function MapPage() {
           ov.__roamCat = cat; // 배회 애니메이션 기준
           ov.__stateEl = el.querySelector<HTMLElement>(".roam-state"); // 행동 상태 뱃지
           ov.__emoteEl = el.querySelector<HTMLElement>(".cat-emote"); // 기분 이모지
+          ov.__flipEl = el.querySelector<HTMLElement>(".cat-walk-flip"); // 이동 방향 반전
           overlaysRef.current.push(ov);
         });
         return;
@@ -1507,26 +1470,23 @@ export default function MapPage() {
         return;
       }
 
-      // tier 2·3 — 사진 마커 (2는 1장, 3은 3장). 64~96px 썸네일.
-      const photoLimit = tier === 2 ? 1 : 3;
-      const thumbSize = tier === 2 ? 64 : 96;
-      const photos = dongCats.slice(0, photoLimit).map((c) => thumb(c.photo_url, thumbSize));
+      // tier 2·3 — 전신 걷는 고양이 아트 (2는 1마리, 3은 3마리. 2026-08-04 사진 원형 대체·축소)
+      const artLimit = tier === 2 ? 1 : 3;
+      const artCats = dongCats.slice(0, artLimit);
 
       const el = document.createElement("div");
       el.innerHTML = floatWrap(`
         <div class="cat-press" style="transform:translate(-50%,-100%);--mk-tr:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;">
           ${hasAlert ? `<div style="position:relative;z-index:5;background:linear-gradient(135deg,#D85555,#B84545);color:#fff;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:800;white-space:nowrap;box-shadow:0 3px 8px rgba(216,85,85,0.5);margin-bottom:12px;animation:alert-pulse 1.6s ease-in-out infinite;">⚠️ 학대경보</div>` : ""}
-          <div style="display:flex;gap:-8px;align-items:center;position:relative;">
-            ${photos.map((url, i) => {
-              const w = i === 0 ? 76 : 58;
-              const bc = i === 0 ? clusterColor : "#fff";
+          <div style="display:flex;align-items:flex-end;position:relative;">
+            ${artCats.map((c, i) => {
+              const w = i === 0 ? 56 : 40;
               return `
-              <div style="position:relative;width:${w}px;height:${w}px;margin-left:${i > 0 ? "-16px" : "0"};z-index:${3 - i};">
-                ${catEars(w, bc)}
-                <div style="position:relative;z-index:1;width:100%;height:100%;border-radius:50%;border:3.5px solid ${bc};background:white;box-shadow:0 3px 11px rgba(0,0,0,0.15);overflow:hidden;background-image:url('${url}');background-size:cover;background-position:center;"></div>
+              <div class="${i === 0 ? "cat-walk-flip" : ""}" style="display:flex;margin-left:${i > 0 ? "-12px" : "0"};z-index:${3 - i};transform:scaleX(1);transition:transform 0.25s ease;filter:drop-shadow(0 2px 3px rgba(44,30,20,0.3));">
+                ${catArtWalkSvg(c.id, w)}
               </div>`;
             }).join("")}
-            <span class="roam-state" style="position:absolute;top:-6px;left:58px;font-size:17px;z-index:4;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(repCat.id).emoji}</span>
+            <span class="roam-state" style="position:absolute;top:-12px;left:44px;font-size:16px;z-index:4;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));">${catRoamMode(repCat.id).emoji}</span>
             ${emoteSpan(repCat.id, emoteForCat(repCat.id))}
           </div>
           <div style="margin-top:4px;padding:3px 12px;border-radius:12px;background:${clusterColor}ee;color:#fff;font-size:11px;font-weight:800;white-space:nowrap;box-shadow:0 3px 10px ${clusterColor}44;display:flex;align-items:center;gap:4px;">
@@ -1555,6 +1515,7 @@ export default function MapPage() {
       roamOv.__roamCat = repCat; // 배회 애니메이션 기준
       roamOv.__stateEl = el.querySelector<HTMLElement>(".roam-state"); // 행동 상태 뱃지
       roamOv.__emoteEl = el.querySelector<HTMLElement>(".cat-emote"); // 기분 이모지
+      roamOv.__flipEl = el.querySelector<HTMLElement>(".cat-walk-flip"); // 이동 방향 반전
       overlaysRef.current.push(roamOv);
     }
 
@@ -1633,6 +1594,16 @@ export default function MapPage() {
         }
 
         ov.setPosition(new window.kakao.maps.LatLng(coord.lat, coord.lng));
+        // 전신 고양이는 이동 방향을 바라본다 (기본 동쪽 보기 → 서쪽 이동 시 반전)
+        const flipEl: HTMLElement | null = ov.__flipEl ?? null;
+        if (flipEl) {
+          const last = ov.__lastLng;
+          if (last != null && Math.abs(coord.lng - last) > 1e-7) {
+            const t = coord.lng < last ? "scaleX(-1)" : "scaleX(1)";
+            if (flipEl.style.transform !== t) flipEl.style.transform = t;
+          }
+          ov.__lastLng = coord.lng;
+        }
         // 행동 상태 뱃지 (💤/🐾/💨, 날씨 시 ☔☃️🥵🧣, 연출 시 💨/🍚) — 바뀔 때만 DOM 갱신
         const stateEl: HTMLElement | null = ov.__stateEl ?? null;
         if (stateEl) {
