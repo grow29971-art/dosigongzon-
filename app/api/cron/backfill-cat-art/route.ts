@@ -113,10 +113,17 @@ export async function POST(request: Request) {
       if (artColors) done++;
       else { skipped++; reasons.push({ id: cat.id, reason: `no_colors raw=${raw.slice(0, 120)}` }); }
     } catch (err) {
-      // 일시 오류(네트워크·파싱)는 마킹하지 않고 다음 배치에서 재시도
-      console.warn("[backfill-cat-art] 실패:", cat.id, err);
+      const msg = err instanceof Error ? err.message : String(err);
+      // 영구 오류(사진 4xx = 삭제된 파일)는 마킹해서 재처리 루프에서 제외.
+      // 일시 오류(5xx·네트워크·429·파싱)는 마킹하지 않고 다음 배치에서 재시도.
+      if (/^photo fetch 4\d\d/.test(msg)) {
+        await svc.from("cats").update({ art_colors: { none: true } }).eq("id", cat.id);
+        reasons.push({ id: cat.id, reason: `photo_gone ${msg}` });
+      } else {
+        console.warn("[backfill-cat-art] 실패:", cat.id, err);
+        reasons.push({ id: cat.id, reason: `error ${msg.slice(0, 160)}` });
+      }
       skipped++;
-      reasons.push({ id: cat.id, reason: `error ${err instanceof Error ? err.message.slice(0, 160) : String(err).slice(0, 160)}` });
     }
   }
 
