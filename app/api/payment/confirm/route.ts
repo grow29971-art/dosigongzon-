@@ -13,10 +13,11 @@
 // ══════════════════════════════════════════
 
 import { NextResponse } from "next/server";
+import { timingSafeEqual } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
 import { type SupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient } from "@/lib/supabase/service";
-import { rateLimit } from "@/lib/rate-limit";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { PAYMENT_ENABLED, PAYMENT_DISABLED_MESSAGE } from "@/lib/payments-config";
 import { maxPointsUsable } from "@/lib/points-config";
 import { maskPaymentKey, safeTossError, safeErrorMessage } from "@/lib/log-sanitize";
@@ -39,6 +40,13 @@ function donationTotal(items: OrderItem[]): number {
   return items.reduce((sum, i) => sum + (i.donation_amount ?? 0), 0);
 }
 
+// 게스트 주문 토큰 대조 — 길이가 다르면 timingSafeEqual이 예외라 먼저 거른다.
+function tokenEquals(stored: string, provided: string): boolean {
+  const a = Buffer.from(stored, "utf8");
+  const b = Buffer.from(provided, "utf8");
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
 // 확보해둔 재고 원복 (부분 실패/승인 실패 롤백용)
 async function restoreStock(svc: SupabaseClient, reserved: OrderItem[]): Promise<void> {
   for (const item of reserved) {
@@ -58,13 +66,31 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: PAYMENT_DISABLED_MESSAGE }, { status: 503 });
   }
 
-  // 1. 인증
+  // 1. 입력 파싱 — 인증 분기(회원/게스트)가 guestToken에 의존하므로 먼저 읽는다.
+  let body: { paymentKey?: string; orderId?: string; amount?: number; guestToken?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "잘못된 요청이에요." }, { status: 400 });
+  }
+  const { paymentKey, orderId, amount } = body;
+  const guestToken = typeof body.guestToken === "string" && body.guestToken ? body.guestToken : null;
+  if (!paymentKey || !orderId || typeof amount !== "number" || !Number.isInteger(amount) || amount <= 0) {
+    return NextResponse.json({ error: "필수 정보가 누락됐어요." }, { status: 400 });
+  }
+
+  // 2. 인증 — 회원은 세션, 게스트는 주문 생성 시 발급된 토큰으로 인가.
+  //    (게스트 경로가 없으면 비회원 결제는 토스에 청구만 되고 주문이 영영 pending으로 남는다)
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "로그인이 필요해요." }, { status: 401 });
+  if (!user && !guestToken) {
+    return NextResponse.json({ error: "로그인이 필요해요." }, { status: 401 });
+  }
 
-  // Rate limit: 사용자당 분당 10회 (정상 흐름은 주문당 1회 + 네트워크 오류 재시도)
-  if (!rateLimit(`payment-confirm:${user.id}`, { max: 10, windowMs: 60_000 })) {
+  // Rate limit: 회원은 사용자당, 게스트는 IP당 분당 10회
+  // (정상 흐름은 주문당 1회 + 네트워크 오류 재시도)
+  const limitKey = user ? `payment-confirm:${user.id}` : `payment-confirm-guest:${getClientIp(req)}`;
+  if (!rateLimit(limitKey, { max: 10, windowMs: 60_000 })) {
     return NextResponse.json({ error: "요청이 너무 많아요. 잠시 후 다시 시도해주세요." }, { status: 429 });
   }
 
@@ -72,18 +98,6 @@ export async function POST(req: Request) {
   if (!secretKey) {
     console.error("[payment/confirm] TOSS_SECRET_KEY missing");
     return NextResponse.json({ error: "결제 설정이 아직 완료되지 않았어요." }, { status: 503 });
-  }
-
-  // 2. 입력 파싱
-  let body: { paymentKey?: string; orderId?: string; amount?: number };
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "잘못된 요청이에요." }, { status: 400 });
-  }
-  const { paymentKey, orderId, amount } = body;
-  if (!paymentKey || !orderId || typeof amount !== "number" || !Number.isInteger(amount) || amount <= 0) {
-    return NextResponse.json({ error: "필수 정보가 누락됐어요." }, { status: 400 });
   }
 
   const svc = createServiceClient();
@@ -98,8 +112,16 @@ export async function POST(req: Request) {
   if (orderError || !order) {
     return NextResponse.json({ error: "주문을 찾을 수 없어요." }, { status: 404 });
   }
-  if (order.user_id !== user.id) {
-    return NextResponse.json({ error: "본인 주문만 결제할 수 있어요." }, { status: 403 });
+  if (user) {
+    if (order.user_id !== user.id) {
+      return NextResponse.json({ error: "본인 주문만 결제할 수 있어요." }, { status: 403 });
+    }
+  } else {
+    // 게스트 — 회원 주문에는 절대 접근 불가. 발급된 토큰이 정확히 일치해야만 승인.
+    const storedToken = (order as { guest_token?: string | null }).guest_token ?? null;
+    if (order.user_id !== null || !storedToken || !tokenEquals(storedToken, guestToken!)) {
+      return NextResponse.json({ error: "본인 주문만 결제할 수 있어요." }, { status: 403 });
+    }
   }
 
   // 이미 같은 paymentKey로 승인된 주문이면 성공으로 응답 (새로고침 등 중복 요청)
@@ -121,6 +143,11 @@ export async function POST(req: Request) {
   // 재계산해 일치할 때만 승인 (조작된 저가 주문 차단).
   const items = (order.items ?? []) as OrderItem[];
   const pointsUsed = (order as { points_used?: number }).points_used ?? 0;
+  // 포인트는 회원 잔액에서만 차감 가능 — 게스트 주문에 포인트가 실려 있으면 비정상 주문이다.
+  const memberId = user?.id ?? null;
+  if (!memberId && pointsUsed > 0) {
+    return NextResponse.json({ error: "비회원 주문에는 포인트를 사용할 수 없어요." }, { status: 400 });
+  }
   {
     if (items.length === 0) {
       return NextResponse.json({ error: "주문 상품이 없어요." }, { status: 400 });
@@ -251,9 +278,9 @@ export async function POST(req: Request) {
   // reason에 타임스탬프 포함: 네트워크 오류 → 환급 → 재시도 시 유니크 충돌 방지
   // (동시 이중 차감은 5번 선점 게이트가 막음)
   let pointsSpent = false;
-  if (pointsUsed > 0) {
+  if (pointsUsed > 0 && memberId) {
     const { data: spendOk, error: spendError } = await svc.rpc("spend_points", {
-      p_user_id: user.id,
+      p_user_id: memberId,
       p_amount: pointsUsed,
       p_reason: `order:${order.id}:${Date.now()}`,
       p_note: `주문 ${order.order_number} 포인트 사용`,
@@ -274,9 +301,9 @@ export async function POST(req: Request) {
 
   // 포인트 환급 헬퍼 (승인 실패/네트워크 오류 롤백용)
   const refundPoints = async () => {
-    if (!pointsSpent) return;
+    if (!pointsSpent || !memberId) return;
     const { error } = await svc.rpc("grant_points", {
-      p_user_id: user.id,
+      p_user_id: memberId,
       p_amount: pointsUsed,
       p_reason: `order-rollback:${order.id}:${Date.now()}`,
       p_note: `주문 ${order.order_number} 승인 실패 포인트 환급`,
@@ -378,11 +405,11 @@ export async function POST(req: Request) {
   const orderedIds = items
     .map((i) => i.product_id)
     .filter((id): id is string => !!id);
-  if (orderedIds.length > 0) {
+  if (orderedIds.length > 0 && memberId) {
     const { error: cartError } = await svc
       .from("cart_items")
       .delete()
-      .eq("user_id", user.id)
+      .eq("user_id", memberId)
       .in("product_id", orderedIds);
     if (cartError) console.error("[payment/confirm] cart clear failed:", cartError);
   }
