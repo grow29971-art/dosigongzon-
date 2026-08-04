@@ -28,6 +28,21 @@ export function safeTossError(t: unknown): string {
   return parts.filter(Boolean).join(" | ");
 }
 
+// Postgres/PostgREST 오류 → 로그 안전 문자열.
+// 오류 객체를 통째로 넘기면 details/hint에 제약 위반을 일으킨 "행 값 전체"가 담긴다 —
+// 주문 테이블이면 수령인 이름·전화·주소가 그대로 로그에 남는다. message 자체도
+// `Key (phone)=(010...) already exists` 처럼 값을 품으므로 괄호 값을 지운 뒤 패턴 치환한다.
+export function safePgError(e: unknown): string {
+  const o = (typeof e === "object" && e !== null ? e : {}) as Record<string, unknown>;
+  const code = typeof o.code === "string" ? o.code : "unknown_code";
+  const raw = typeof o.message === "string" ? o.message : "";
+  const masked = raw
+    .replace(/\([^()]*\)=\([^()]*\)/g, "(...)=(...)")
+    .replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, "[email]")
+    .replace(/01[016789][ -.]?\d{3,4}[ -.]?\d{4}/g, "[phone]");
+  return `${code} | ${masked.slice(0, 200)}`;
+}
+
 // 예외 → 로그 안전 문자열. 메시지에 끼어들 수 있는 시크릿(URL 속 paymentKey 등)은
 // 다이제스트로 치환한 뒤 길이 제한.
 export function safeErrorMessage(

@@ -8,6 +8,7 @@
 // ══════════════════════════════════════════
 
 import { NextResponse } from "next/server";
+import { safePgError } from "@/lib/log-sanitize";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { REFUND_REASON_LABELS, type RefundReasonCode } from "@/lib/refund-policy";
@@ -70,7 +71,7 @@ export async function POST(req: Request) {
       .eq("status", "requested")
       .select("id");
     if (error) {
-      console.error("[admin/refunds] reject failed:", error, refundRow.id);
+      console.error("[admin/refunds] reject failed:", safePgError(error), refundRow.id);
       return NextResponse.json({ error: "거부 처리에 실패했어요." }, { status: 500 });
     }
     if (!done || done.length === 0) {
@@ -83,7 +84,7 @@ export async function POST(req: Request) {
       .eq("id", refundRow.order_id)
       .eq("refund_status", "requested");
     if (orderError) {
-      console.error("[admin/refunds] order reject mark failed:", orderError, refundRow.order_id);
+      console.error("[admin/refunds] order reject mark failed:", safePgError(orderError), refundRow.order_id);
     }
     // 유저에게 처리 결과 쪽지 (게스트 주문은 user_id 없음 — 스킵)
     const { data: rejectedOrder } = await svc
@@ -112,7 +113,7 @@ export async function POST(req: Request) {
     .in("status", ["requested", "failed"])
     .select("id");
   if (claimError) {
-    console.error("[admin/refunds] approve claim failed:", claimError, refundRow.id);
+    console.error("[admin/refunds] approve claim failed:", safePgError(claimError), refundRow.id);
     return NextResponse.json({ error: "승인 처리에 실패했어요." }, { status: 500 });
   }
   if ((!claimed || claimed.length === 0) && refundRow.status !== "approved") {

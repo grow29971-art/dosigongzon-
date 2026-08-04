@@ -20,7 +20,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { PAYMENT_ENABLED, PAYMENT_DISABLED_MESSAGE } from "@/lib/payments-config";
 import { maxPointsUsable } from "@/lib/points-config";
-import { maskPaymentKey, safeTossError, safeErrorMessage } from "@/lib/log-sanitize";
+import { safePgError, maskPaymentKey, safeTossError, safeErrorMessage } from "@/lib/log-sanitize";
 
 const TOSS_CONFIRM_URL = "https://api.tosspayments.com/v1/payments/confirm";
 
@@ -55,7 +55,7 @@ async function restoreStock(svc: SupabaseClient, reserved: OrderItem[]): Promise
       p_product_id: item.product_id,
       p_qty: item.quantity,
     });
-    if (error) console.error("[payment/confirm] stock restore failed:", error, item.product_id);
+    if (error) console.error("[payment/confirm] stock restore failed:", safePgError(error), item.product_id);
   }
 }
 
@@ -161,7 +161,7 @@ export async function POST(req: Request) {
       .select("id, price, sale_price, shipping_fee, is_active, is_donation, donation_percent, is_virtual")
       .in("id", productIds);
     if (prodError) {
-      console.error("[payment/confirm] product verify fetch failed:", prodError);
+      console.error("[payment/confirm] product verify fetch failed:", safePgError(prodError));
       return NextResponse.json({ error: "상품 확인 중 오류가 발생했어요." }, { status: 502 });
     }
     const priceMap = new Map(
@@ -229,7 +229,7 @@ export async function POST(req: Request) {
         .from("order_items")
         .update({ donation_amount: fix.donation_amount })
         .eq("id", fix.id);
-      if (fixError) console.error("[payment/confirm] donation fix failed:", fixError, fix.id);
+      if (fixError) console.error("[payment/confirm] donation fix failed:", safePgError(fixError), fix.id);
     }
   }
 
@@ -261,7 +261,7 @@ export async function POST(req: Request) {
       p_qty: item.quantity,
     });
     if (rpcError || ok !== true) {
-      if (rpcError) console.error("[payment/confirm] stock rpc failed:", rpcError);
+      if (rpcError) console.error("[payment/confirm] stock rpc failed:", safePgError(rpcError));
       await restoreStock(svc, reserved);
       await svc.from("orders")
         .update({ status: "cancelled", updated_at: new Date().toISOString() })
@@ -286,7 +286,7 @@ export async function POST(req: Request) {
       p_note: `주문 ${order.order_number} 포인트 사용`,
     });
     if (spendError || spendOk !== true) {
-      if (spendError) console.error("[payment/confirm] spend_points failed:", spendError);
+      if (spendError) console.error("[payment/confirm] spend_points failed:", safePgError(spendError));
       await restoreStock(svc, reserved);
       await svc.from("orders")
         .update({ status: "cancelled", updated_at: new Date().toISOString() })
@@ -308,7 +308,7 @@ export async function POST(req: Request) {
       p_reason: `order-rollback:${order.id}:${Date.now()}`,
       p_note: `주문 ${order.order_number} 승인 실패 포인트 환급`,
     });
-    if (error) console.error("[payment/confirm] point refund failed (manual check):", error, order.id);
+    if (error) console.error("[payment/confirm] point refund failed (manual check):", safePgError(error), order.id);
   };
 
   // 7. 토스 승인 API 호출
@@ -374,7 +374,7 @@ export async function POST(req: Request) {
 
   if (updateError) {
     // 결제는 됐는데 DB 반영 실패 — 로그 남기고 성공 응답 (digest로 토스 콘솔 대조 가능)
-    console.error("[payment/confirm] order update failed after toss confirm:", updateError, orderId, maskPaymentKey(paymentKey));
+    console.error("[payment/confirm] order update failed after toss confirm:", safePgError(updateError), orderId, maskPaymentKey(paymentKey));
   } else if (!paidRows || paidRows.length === 0) {
     // 0행 전환 = 토스 승인 사이에 주문이 취소/변경됨(청구는 됐는데 주문 없음).
     // 자동 환불 시도 후 재고·포인트 원복. 환불 실패 시 관리자 수동 대조용 로그.
@@ -411,7 +411,7 @@ export async function POST(req: Request) {
       .delete()
       .eq("user_id", memberId)
       .in("product_id", orderedIds);
-    if (cartError) console.error("[payment/confirm] cart clear failed:", cartError);
+    if (cartError) console.error("[payment/confirm] cart clear failed:", safePgError(cartError));
   }
 
   return NextResponse.json({ ok: true, orderId: order.id, orderNumber: order.order_number, donation: donationTotal(items) });

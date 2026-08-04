@@ -10,8 +10,10 @@
 
 const REDACTED = "[redacted]";
 
+// 주문 PII는 키 이름이 recipient_*/postal_code/memo 라서 email·phone·address 패턴에
+// 걸리지 않는 것들이 있었다(이름·우편번호·배송메모·환불사유). 2026-08-04 보강.
 const SENSITIVE_KEY =
-  /authorization|cookie|token|secret|password|passwd|payment[-_]?key|api[-_]?key|session|email|phone|tel|address|contact|주소|연락처|전화|이메일/i;
+  /authorization|cookie|token|secret|password|passwd|payment[-_]?key|api[-_]?key|session|email|phone|tel|address|contact|recipient|postal|memo|note|tracking|order[-_]?number|주소|연락처|전화|이메일/i;
 
 // 문자열 값 안에 섞인 PII 패턴
 const VALUE_PATTERNS: Array<[RegExp, string]> = [

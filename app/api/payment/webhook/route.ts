@@ -15,7 +15,7 @@ import { NextResponse } from "next/server";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { type SupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient } from "@/lib/supabase/service";
-import { maskPaymentKey, safeErrorMessage } from "@/lib/log-sanitize";
+import { safePgError, maskPaymentKey, safeErrorMessage } from "@/lib/log-sanitize";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 60;
@@ -74,7 +74,7 @@ async function restoreStock(svc: SupabaseClient, items: OrderItem[]): Promise<vo
       p_product_id: item.product_id,
       p_qty: item.quantity,
     });
-    if (error) console.error("[payment/webhook] stock restore failed:", error, item.product_id);
+    if (error) console.error("[payment/webhook] stock restore failed:", safePgError(error), item.product_id);
   }
 }
 
@@ -95,7 +95,7 @@ async function finalizePaid(
       });
       if (error || ok !== true) {
         // 결제는 이미 완료 — 재고 부족이어도 주문은 확정하고 관리자 수동 처리 대상으로 로그
-        console.error("[payment/webhook] stock decrement failed after DONE payment (manual check needed):", order.id, item.product_id, error);
+        console.error("[payment/webhook] stock decrement failed after DONE payment (manual check needed):", order.id, item.product_id, safePgError(error));
       } else {
         reserved.push(item);
       }
@@ -117,7 +117,7 @@ async function finalizePaid(
     })
     .eq("id", order.id)
     .eq("status", "pending");
-  if (error) console.error("[payment/webhook] mark paid failed:", error, order.id);
+  if (error) console.error("[payment/webhook] mark paid failed:", safePgError(error), order.id);
 
   const ids = order.items.map((i) => i.product_id).filter((id): id is string => !!id);
   if (ids.length > 0) {
@@ -284,7 +284,7 @@ export async function POST(req: Request) {
           .from("order_items")
           .update({ donation_amount: fix.donation_amount })
           .eq("id", fix.id);
-        if (fixError) console.error("[payment/webhook] donation fix failed:", fixError, fix.id);
+        if (fixError) console.error("[payment/webhook] donation fix failed:", safePgError(fixError), fix.id);
       }
       // 포인트 차감 — confirm을 우회한 경로이므로 여기서 수행.
       // 잔액 부족(비정상)이면 자동 환불 + 취소 (돈만 잡힌 상태 방지)
@@ -296,7 +296,7 @@ export async function POST(req: Request) {
           p_note: `주문 ${order.order_number} 포인트 사용 (웹훅 확정)`,
         });
         if (spendError || spendOk !== true) {
-          console.error("[payment/webhook] spend_points failed — auto refund:", spendError, order.id);
+          console.error("[payment/webhook] spend_points failed — auto refund:", safePgError(spendError), order.id);
           try {
             await fetch(`https://api.tosspayments.com/v1/payments/${encodeURIComponent(paymentKey)}/cancel`, {
               method: "POST",
@@ -364,7 +364,7 @@ export async function POST(req: Request) {
         p_reason: `order-cancel:${order.id}`,
         p_note: `주문 ${order.order_number} 취소 포인트 반환 (웹훅 동기화)`,
       });
-      if (pointError) console.error("[payment/webhook] point refund failed:", pointError, order.id);
+      if (pointError) console.error("[payment/webhook] point refund failed:", safePgError(pointError), order.id);
     }
     return NextResponse.json({ ok: true, action: "cancelled_sync" });
   }
