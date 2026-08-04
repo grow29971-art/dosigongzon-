@@ -17,7 +17,7 @@ import {
   type RefundOrderInput,
   type OrderStatus,
 } from "@/lib/refund-policy";
-import { safeTossError, safeErrorMessage } from "@/lib/log-sanitize";
+import { safePgError, safeTossError, safeErrorMessage } from "@/lib/log-sanitize";
 
 // orders 행 중 환불 판정·실행에 필요한 부분.
 // refund_* 컬럼은 마이그레이션 전 배포 호환을 위해 optional로 읽는다(없으면 none/0 취급).
@@ -207,7 +207,7 @@ export async function executeFullRefund(
     .eq("status", "approved")
     .select("id");
   if (wonError) {
-    console.error("[refund-executor] ledger completion failed (manual check):", wonError, refund.id);
+    console.error("[refund-executor] ledger completion failed (manual check):", safePgError(wonError), refund.id);
   }
   if (!won || won.length === 0) {
     // 다른 요청이 이미 완료 처리 — 토스는 멱등 키로 이중 청구가 없었으므로 성공으로 간주.
@@ -234,7 +234,7 @@ export async function executeFullRefund(
     // DB 오류 — 전이가 일어나지 않았다. 주문은 아직 환불 전 상태로 보이므로 여기서 재고·포인트를
     // 복원하면, 나중에 재시도·관리자 처리가 또 복원해 이중이 된다. 토스 환불은 이미 나갔으니
     // 관리자 수동 확인 대상으로 남기고 후처리는 하지 않는다.
-    console.error("[refund-executor] order finalize failed — 후처리 생략(수동 확인 필요):", orderError, order.id);
+    console.error("[refund-executor] order finalize failed — 후처리 생략(수동 확인 필요):", safePgError(orderError), order.id);
     return { ok: true, balanceAfter: tossBalanceAfter };
   }
   if (!finalized || finalized.length === 0) {
@@ -253,7 +253,7 @@ export async function executeFullRefund(
       p_product_id: item.product_id,
       p_qty: qty,
     });
-    if (stockError) console.error("[refund-executor] stock restore failed:", stockError, item.product_id);
+    if (stockError) console.error("[refund-executor] stock restore failed:", safePgError(stockError), item.product_id);
   }
 
   // 품목별 환불 수량·후원 차감 기록 — 공개 후원 집계(donation_totals)가 이 값으로 순액을 계산한다.
@@ -273,7 +273,7 @@ export async function executeFullRefund(
         donation_refunded: (item.donation_refunded ?? 0) + delta,
       })
       .eq("id", item.id);
-    if (itemError) console.error("[refund-executor] item refund mark failed:", itemError, item.id);
+    if (itemError) console.error("[refund-executor] item refund mark failed:", safePgError(itemError), item.id);
   }
 
   // 사용 포인트 반환 — 전액환불은 기존 취소 경로와 같은 reason(order-cancel:{id})을 써서
@@ -286,7 +286,7 @@ export async function executeFullRefund(
       p_note: `주문 ${order.order_number} 환불 포인트 반환`,
     });
     if (pointError) {
-      console.error("[refund-executor] point refund failed (manual check):", pointError, order.id);
+      console.error("[refund-executor] point refund failed (manual check):", safePgError(pointError), order.id);
     }
   }
 

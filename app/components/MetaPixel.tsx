@@ -8,6 +8,12 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect } from "react";
 import { META_PIXEL_ID } from "@/lib/meta-pixel";
 
+// 결제 결과 화면은 URL 쿼리에 결제 식별자가 실려 들어온다. 픽셀은 문서 URL을 통째로
+// 전송하므로, 이 경로에서는 스크립트를 아예 로드하지 않고 PageView도 발사하지 않는다.
+function isPaymentPath(pathname: string | null): boolean {
+  return !!pathname && pathname.startsWith("/shop/payment");
+}
+
 function PixelPageView() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -15,6 +21,7 @@ function PixelPageView() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!window.fbq) return;
+    if (isPaymentPath(pathname)) return;
     try {
       window.fbq("track", "PageView");
     } catch {
@@ -26,7 +33,9 @@ function PixelPageView() {
 }
 
 export default function MetaPixel() {
+  const pathname = usePathname();
   if (!META_PIXEL_ID) return null;
+  if (isPaymentPath(pathname)) return null;
   // iOS 앱(PWAShell) 에서는 Meta Pixel 비활성 — ATT 미구현으로 Apple 가이드라인 5.1.2 위반 방지
   if (typeof navigator !== "undefined" && navigator.userAgent.includes("PWAShell")) return null;
 

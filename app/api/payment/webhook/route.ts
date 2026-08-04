@@ -8,14 +8,52 @@
 //
 // 보안: 웹훅 본문은 신뢰하지 않음 — paymentKey만 뽑아서
 // 토스 결제 조회 API(시크릿 키 인증)로 실제 상태·금액을 다시 확인한 뒤 처리.
+// 여기에 더해 TOSS_WEBHOOK_SECRET이 설정돼 있으면 서명을 먼저 검증한다(2026-08-04 보안).
 // ══════════════════════════════════════════
 
 import { NextResponse } from "next/server";
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { type SupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient } from "@/lib/supabase/service";
-import { maskPaymentKey, safeErrorMessage } from "@/lib/log-sanitize";
+import { safePgError, maskPaymentKey, safeErrorMessage } from "@/lib/log-sanitize";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 60;
+
+// ── 토스 웹훅 서명 검증 ──
+// 헤더: tosspayments-webhook-signature: v1:<base64>,v1:<base64>  (키 회전 대비 복수 서명)
+//       tosspayments-webhook-transmission-time: <ISO8601>
+// 서명 대상은 "전송시각 + 원문 본문"의 결합이며, 문서상 결합 표기가 한 가지로 못박혀 있지
+// 않아 실무에서 쓰이는 세 형태를 모두 대조한다(하나라도 맞으면 정품으로 인정).
+// 비교는 timingSafeEqual — 길이가 다르면 비교 자체가 예외이므로 먼저 길이를 본다.
+function verifyTossSignature(
+  rawBody: string,
+  signatureHeader: string | null,
+  transmissionTime: string | null,
+  secret: string,
+): boolean {
+  if (!signatureHeader || !transmissionTime) return false;
+  const provided = signatureHeader
+    .split(",")
+    .map((s) => s.trim().replace(/^v1:/, ""))
+    .filter(Boolean);
+  if (provided.length === 0) return false;
+
+  const expected = [
+    `${transmissionTime}.${rawBody}`,
+    `${transmissionTime}${rawBody}`,
+    `${rawBody}${transmissionTime}`,
+  ].map((payload) => createHmac("sha256", secret).update(payload, "utf8").digest("base64"));
+
+  for (const p of provided) {
+    const a = Buffer.from(p, "utf8");
+    for (const e of expected) {
+      const b = Buffer.from(e, "utf8");
+      if (a.length === b.length && timingSafeEqual(a, b)) return true;
+    }
+  }
+  return false;
+}
 
 interface TossPayment {
   paymentKey: string;
@@ -36,7 +74,7 @@ async function restoreStock(svc: SupabaseClient, items: OrderItem[]): Promise<vo
       p_product_id: item.product_id,
       p_qty: item.quantity,
     });
-    if (error) console.error("[payment/webhook] stock restore failed:", error, item.product_id);
+    if (error) console.error("[payment/webhook] stock restore failed:", safePgError(error), item.product_id);
   }
 }
 
@@ -57,7 +95,7 @@ async function finalizePaid(
       });
       if (error || ok !== true) {
         // 결제는 이미 완료 — 재고 부족이어도 주문은 확정하고 관리자 수동 처리 대상으로 로그
-        console.error("[payment/webhook] stock decrement failed after DONE payment (manual check needed):", order.id, item.product_id, error);
+        console.error("[payment/webhook] stock decrement failed after DONE payment (manual check needed):", order.id, item.product_id, safePgError(error));
       } else {
         reserved.push(item);
       }
@@ -79,7 +117,7 @@ async function finalizePaid(
     })
     .eq("id", order.id)
     .eq("status", "pending");
-  if (error) console.error("[payment/webhook] mark paid failed:", error, order.id);
+  if (error) console.error("[payment/webhook] mark paid failed:", safePgError(error), order.id);
 
   const ids = order.items.map((i) => i.product_id).filter((id): id is string => !!id);
   if (ids.length > 0) {
@@ -89,12 +127,44 @@ async function finalizePaid(
 
 export async function POST(req: Request) {
   const secretKey = process.env.TOSS_SECRET_KEY;
-  if (!secretKey) return NextResponse.json({ ok: true, skipped: "no secret key" });
+  if (!secretKey) {
+    console.error("[payment/webhook] TOSS_SECRET_KEY 미설정 — 결제 대사를 수행할 수 없음");
+    return NextResponse.json({ ok: true, skipped: "no secret key" });
+  }
+
+  // 0. 원문 본문을 먼저 text로 읽는다 — 서명 대상이 원문 바이트라
+  //    req.json()을 먼저 부르면 검증할 원문이 사라진다.
+  let rawBody: string;
+  try {
+    rawBody = await req.text();
+  } catch {
+    return NextResponse.json({ error: "invalid body" }, { status: 400 });
+  }
+
+  // 0-1. 서명 검증 (시크릿이 설정된 경우에만 강제)
+  //   설정됨  → 서명 불일치는 즉시 401. 토스 조회 API를 태우지 않는다.
+  //   미설정  → 본문 위조는 아래 토스 재조회로 막히지만, 무인증 호출이 외부 API·DB를
+  //             태우는 증폭 경로가 되므로 IP 레이트리밋으로 제한한다.
+  const webhookSecret = process.env.TOSS_WEBHOOK_SECRET;
+  if (webhookSecret) {
+    const valid = verifyTossSignature(
+      rawBody,
+      req.headers.get("tosspayments-webhook-signature"),
+      req.headers.get("tosspayments-webhook-transmission-time"),
+      webhookSecret,
+    );
+    if (!valid) {
+      console.error("[payment/webhook] 서명 검증 실패 — 요청 거부");
+      return NextResponse.json({ error: "invalid signature" }, { status: 401 });
+    }
+  } else if (!rateLimit(`payment-webhook:${getClientIp(req)}`, { max: 60, windowMs: 60_000 })) {
+    return NextResponse.json({ error: "too many requests" }, { status: 429 });
+  }
 
   // 1. 웹훅 본문에서 paymentKey만 추출 (v2/legacy 형태 모두 대응)
   let paymentKey: string | undefined;
   try {
-    const body = await req.json();
+    const body = JSON.parse(rawBody);
     paymentKey = body?.data?.paymentKey ?? body?.paymentKey;
   } catch {
     return NextResponse.json({ error: "invalid body" }, { status: 400 });
@@ -214,7 +284,7 @@ export async function POST(req: Request) {
           .from("order_items")
           .update({ donation_amount: fix.donation_amount })
           .eq("id", fix.id);
-        if (fixError) console.error("[payment/webhook] donation fix failed:", fixError, fix.id);
+        if (fixError) console.error("[payment/webhook] donation fix failed:", safePgError(fixError), fix.id);
       }
       // 포인트 차감 — confirm을 우회한 경로이므로 여기서 수행.
       // 잔액 부족(비정상)이면 자동 환불 + 취소 (돈만 잡힌 상태 방지)
@@ -226,7 +296,7 @@ export async function POST(req: Request) {
           p_note: `주문 ${order.order_number} 포인트 사용 (웹훅 확정)`,
         });
         if (spendError || spendOk !== true) {
-          console.error("[payment/webhook] spend_points failed — auto refund:", spendError, order.id);
+          console.error("[payment/webhook] spend_points failed — auto refund:", safePgError(spendError), order.id);
           try {
             await fetch(`https://api.tosspayments.com/v1/payments/${encodeURIComponent(paymentKey)}/cancel`, {
               method: "POST",
@@ -294,7 +364,7 @@ export async function POST(req: Request) {
         p_reason: `order-cancel:${order.id}`,
         p_note: `주문 ${order.order_number} 취소 포인트 반환 (웹훅 동기화)`,
       });
-      if (pointError) console.error("[payment/webhook] point refund failed:", pointError, order.id);
+      if (pointError) console.error("[payment/webhook] point refund failed:", safePgError(pointError), order.id);
     }
     return NextResponse.json({ ok: true, action: "cancelled_sync" });
   }

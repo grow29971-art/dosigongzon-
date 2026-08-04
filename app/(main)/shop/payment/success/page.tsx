@@ -4,6 +4,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle2, Loader2, XCircle } from "lucide-react";
+import { listRememberedGuestOrders } from "@/lib/order-repo";
 
 function SuccessContent() {
   const params = useSearchParams();
@@ -28,10 +29,28 @@ function SuccessContent() {
       return;
     }
 
+    // 비회원 주문은 세션이 없으므로, 주문 생성 시 이 기기에 기억해둔 토큰으로 승인 권한을
+    // 증명한다. 토큰을 successUrl 쿼리로 넘기면 히스토리·액세스 로그·광고 픽셀(문서 URL
+    // 전송)에 비밀값이 그대로 남기 때문에 URL 대신 로컬 저장소에서 읽는다.
+    const guestToken =
+      listRememberedGuestOrders().find((o) => o.order_number === tossOrderId)?.guest_token ?? null;
+
+    // 결제 파라미터를 히스토리에서 즉시 제거 (뒤로가기 재전송·외부 스크립트 수집 축소)
+    try {
+      window.history.replaceState(null, "", "/shop/payment/success");
+    } catch {
+      // 무시 — 승인 흐름에는 영향 없음
+    }
+
     fetch("/api/payment/confirm", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ paymentKey, orderId: tossOrderId, amount }),
+      body: JSON.stringify({
+        paymentKey,
+        orderId: tossOrderId,
+        amount,
+        ...(guestToken ? { guestToken } : {}),
+      }),
     })
       .then(async (res) => {
         const json = await res.json().catch(() => ({}));

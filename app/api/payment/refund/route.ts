@@ -9,6 +9,7 @@
 // ══════════════════════════════════════════
 
 import { NextResponse } from "next/server";
+import { safePgError } from "@/lib/log-sanitize";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { rateLimit } from "@/lib/rate-limit";
@@ -193,7 +194,7 @@ export async function POST(req: Request) {
         { status: 409 },
       );
     }
-    console.error("[payment/refund] ledger insert failed:", insertError, orderRow.id);
+    console.error("[payment/refund] ledger insert failed:", safePgError(insertError), orderRow.id);
     return NextResponse.json({ error: "환불 접수에 실패했어요. 잠시 후 다시 시도해주세요." }, { status: 500 });
   }
 
@@ -209,7 +210,7 @@ export async function POST(req: Request) {
       })
       .eq("id", orderRow.id);
     if (markError) {
-      console.error("[payment/refund] order mark requested failed:", markError, orderRow.id);
+      console.error("[payment/refund] order mark requested failed:", safePgError(markError), orderRow.id);
     }
     await notifyAdminsRefund(svc, [
       `🧾 환불 요청 접수`,

@@ -9,7 +9,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { rateLimit } from "@/lib/rate-limit";
-import { safeTossError, safeErrorMessage } from "@/lib/log-sanitize";
+import { safePgError, safeTossError, safeErrorMessage } from "@/lib/log-sanitize";
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
       .is("payment_key", null) // 결제 승인 진행 중(payment_key 선점됨)이면 취소 불가
       .select("id");
     if (error) {
-      console.error("[payment/cancel] pending cancel failed:", error);
+      console.error("[payment/cancel] pending cancel failed:", safePgError(error));
       return NextResponse.json({ error: "주문 취소에 실패했어요." }, { status: 500 });
     }
     if (!done || done.length === 0) {
@@ -135,7 +135,7 @@ export async function POST(req: Request) {
     .eq("status", "paid")
     .select("id");
   if (updateError) {
-    console.error("[payment/cancel] status update failed after refund:", updateError, order.id);
+    console.error("[payment/cancel] status update failed after refund:", safePgError(updateError), order.id);
   }
 
   if (transitioned && transitioned.length > 0) {
@@ -146,7 +146,7 @@ export async function POST(req: Request) {
         p_product_id: item.product_id,
         p_qty: item.quantity,
       });
-      if (stockError) console.error("[payment/cancel] stock restore failed:", stockError);
+      if (stockError) console.error("[payment/cancel] stock restore failed:", safePgError(stockError));
     }
 
     // 사용 포인트 반환 — 조건부 전환을 이긴 요청만 실행되므로 이중 반환 없음.
@@ -159,7 +159,7 @@ export async function POST(req: Request) {
         p_reason: `order-cancel:${order.id}`,
         p_note: `주문 ${order.order_number} 취소 포인트 반환`,
       });
-      if (pointError) console.error("[payment/cancel] point refund failed (manual check):", pointError, order.id);
+      if (pointError) console.error("[payment/cancel] point refund failed (manual check):", safePgError(pointError), order.id);
     }
   }
 

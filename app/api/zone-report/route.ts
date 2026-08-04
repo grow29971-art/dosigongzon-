@@ -26,8 +26,10 @@ const ZONE_DAILY_LIMIT = 30; // 구역당 일일 제보 상한 (도배 방지 �
 async function verifyTurnstile(token: string | null): Promise<boolean> {
   const secret = process.env.TURNSTILE_SECRET_KEY;
   if (!secret) {
-    // 프로덕션에서 키 미설정이면 차단 (fail-closed), 개발 환경만 bypass
-    return process.env.VERCEL_ENV !== "production";
+    // 키 미설정 시 우회는 로컬 개발에서만 허용한다. preview 배포도 프로덕션과 같은
+    // Supabase 프로젝트에 쓰기 때문에, 환경 이름으로 판정하면 키가 빠진 preview가
+    // 캡차 없이 실데이터를 오염시키는 통로가 된다. (2026-08-04 보안)
+    return process.env.NODE_ENV === "development" && !process.env.VERCEL;
   }
   if (!token) return false;
   try {

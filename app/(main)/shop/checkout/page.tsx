@@ -198,7 +198,7 @@ export default function CheckoutPage() {
         amount: { currency: "KRW", value: paymentAmount },
         orderId: orderNumber,
         orderName,
-        successUrl: `${window.location.origin}/shop/payment/success${guestToken ? `?guest=${encodeURIComponent(guestToken)}` : ""}`,
+        successUrl: `${window.location.origin}/shop/payment/success`,
         failUrl: `${window.location.origin}/shop/payment/fail`,
         ...(virtualOnly ? {} : { customerName: recipientName.trim() }),
         card: {

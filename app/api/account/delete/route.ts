@@ -34,7 +34,20 @@ export async function POST(request: Request) {
     }
   }
 
-  // 유저 삭제 (service_role로 auth.users에서 삭제 → CASCADE로 관련 데이터 정리)
+  // 주문·결제·환불 기록은 전자상거래법상 보존 대상(계약·대금결제 5년, 소비자불만 3년)이라
+  // 계정과 함께 지우면 안 된다. 탈퇴 시점만 남기고 계정 연결은 FK(on delete set null)가 끊는다.
+  // box/supabase_orders_retention_migration.sql 실행 전이면 컬럼이 없어 42703이 나는데,
+  // 그때는 기존 동작(CASCADE 삭제)이므로 표식 없이 진행한다.
+  const { error: markError } = await supabase
+    .from("orders")
+    .update({ user_deleted_at: new Date().toISOString() })
+    .eq("user_id", user.id);
+  if (markError && markError.code !== "42703" && markError.code !== "PGRST204") {
+    console.error("[account/delete] 주문 탈퇴 표식 실패:", markError.code);
+    return Response.json({ error: "탈퇴 처리에 실패했어요. 잠시 후 다시 시도해주세요." }, { status: 500 });
+  }
+
+  // 유저 삭제 (service_role로 auth.users에서 삭제 → 나머지 테이블은 CASCADE로 정리)
   const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
 
   if (deleteError) {
