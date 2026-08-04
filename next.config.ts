@@ -17,6 +17,17 @@ import { withSentryConfig } from "@sentry/nextjs";
 //   해당 SDK가 eval을 요구하면 콘솔에 CSP 위반이 뜬다(그 경우에만 해당 호스트 script-src 확인).
 const IS_DEV = process.env.NODE_ENV !== "production";
 const scriptEval = IS_DEV ? " 'unsafe-eval'" : "";
+
+// 우리 Supabase 프로젝트 호스트만 이미지 최적화 대상으로 허용하기 위한 값.
+// 환경변수가 없으면 어떤 원격 이미지도 매칭되지 않는 값으로 두어 fail-closed.
+const SUPABASE_HOSTNAME = (() => {
+  try {
+    // .env 값에 개행이 섞여 들어온 전례가 있어 trim 후 파싱한다.
+    return new URL((process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim()).hostname || "unset.invalid";
+  } catch {
+    return "unset.invalid";
+  }
+})();
 const cspDirectives = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${scriptEval} https://dapi.kakao.com https://*.daumcdn.net https://challenges.cloudflare.com https://js.tosspayments.com`,
@@ -100,11 +111,20 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30일 — Storage 사진 거의 안 바뀜
+    // 리다이렉트는 remotePatterns 재검증을 받지 않는다 — 허용 호스트에 리다이렉트만
+    // 두면 임의 호스트를 대신 fetch하게 되므로 추종을 끈다. (2026-08-04 보안)
+    maximumRedirects: 0,
     remotePatterns: [
-      { protocol: "https", hostname: "*.supabase.co" },
+      // supabase.co는 멀티테넌트 호스트다. 와일드카드를 두면 누구나 자기 프로젝트에
+      // 파일을 올려 우리 이미지 최적화기를 통과시킬 수 있어 우리 프로젝트로 고정한다.
+      {
+        protocol: "https",
+        hostname: SUPABASE_HOSTNAME,
+        pathname: "/storage/v1/object/public/**",
+      },
       { protocol: "https", hostname: "placehold.co" },
-      { protocol: "https", hostname: "lh3.googleusercontent.com" },
-      { protocol: "https", hostname: "k.kakaocdn.net" },
+      { protocol: "https", hostname: "lh3.googleusercontent.com", pathname: "/**" },
+      { protocol: "https", hostname: "k.kakaocdn.net", pathname: "/**" },
     ],
   },
   async headers() {
