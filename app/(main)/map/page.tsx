@@ -1471,12 +1471,12 @@ export default function MapPage() {
           </div>
         `, repCat.id);
         el.onclick = () => {
-          // 비로그인은 확대해서 개별 마커로 풀어줌 → 개별 탭이 상세(pick 지점)로 잇는다
-          if (!isLoggedIn) {
-            const m = mapInstanceRef.current;
-            if (m) { m.panTo(pos); m.setLevel(Math.max(1, m.getLevel() - 2)); }
-            return;
-          }
+          // 비로그인 → 대표 고양이 상세로 직행 (pick 지점).
+          // 이전엔 "확대해서 개별 마커로 풀어준다"였는데, 비로그인은 tier가 1로 고정돼
+          // (위 getTier 분기) 아무리 확대해도 다시 이 클러스터가 나오는 막다른 길이었다.
+          // 그래서 onboarding_pick이 14일간 0건이었다. 상세는 비로그인 열람 설계 +
+          // 가입 CTA 보유이므로 여기서 바로 잇는다. (2026-08-04)
+          if (!isLoggedIn) { window.location.href = `/cats/${repCat.id}`; return; }
           setSelectedDong(dong);
           setSelectedCat(null);
         };
@@ -1518,12 +1518,10 @@ export default function MapPage() {
         </div>
       `, repCat.id);
       el.onclick = () => {
-        // 비로그인은 확대해서 개별 마커로 풀어줌 → 개별 탭이 상세(pick 지점)로 잇는다
-        if (!isLoggedIn) {
-          const m = mapInstanceRef.current;
-          if (m) { m.panTo(pos); m.setLevel(Math.max(1, m.getLevel() - 2)); }
-          return;
-        }
+        // 비로그인 → 대표 고양이 상세로 직행 (위 tier 1 분기와 동일한 이유).
+        // 현재 비로그인은 tier 1 고정이라 이 경로에 도달하지 않지만, tier 정책이
+        // 바뀌어도 pick 동선이 다시 끊기지 않도록 같이 맞춰 둔다.
+        if (!isLoggedIn) { window.location.href = `/cats/${repCat.id}`; return; }
         setSelectedDong(dong);
         setSelectedCat(null);
       };
