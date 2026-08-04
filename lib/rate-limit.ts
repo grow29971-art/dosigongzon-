@@ -39,12 +39,16 @@ export function cleanupRateLimitBuckets(): void {
  * 클라이언트 IP 추출 (Vercel 직결 환경 — Cloudflare 프록시 아님, cf-ray 부재 확인).
  * cf-connecting-ip는 우리 경로의 어떤 신뢰 프록시도 설정하지 않는 헤더라 클라이언트가
  * 임의로 위조할 수 있음(IP 기반 rate-limit·방문자 카운터 오염) → 신뢰 목록에서 제외.
- * Vercel이 설정·정규화하는 x-forwarded-for(첫 홉)·x-real-ip만 신뢰한다.
+ *
+ * x-forwarded-for는 클라이언트가 먼저 보낸 값 뒤에 프록시가 실제 IP를 덧붙이는 형태라
+ * 첫 요소는 요청자가 정할 수 있다. 항상 마지막(가장 가까운 홉) 요소를 쓰고, Vercel이
+ * 직접 설정해 덮어쓸 수 없는 x-vercel-forwarded-for를 최우선한다. (2026-08-04 보안)
  */
 export function getClientIp(request: Request): string {
   return (
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    request.headers.get("x-vercel-forwarded-for")?.split(",").pop()?.trim() ||
     request.headers.get("x-real-ip")?.trim() ||
+    request.headers.get("x-forwarded-for")?.split(",").pop()?.trim() ||
     "unknown"
   );
 }
