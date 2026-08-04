@@ -59,6 +59,11 @@ export interface RefundOrderInput {
   paidAt: string | null;
   shippedAt: string | null;
   deliveredAt: string | null;
+  // 송장이 발급됐는가. status가 아직 배송 전(paid/preparing)이어도 실물이 이미 나갔을 수 있어
+  // 자동환불 여부를 가르는 근거가 된다(H-2). shippedAt만으로는 부족하다 —
+  // 관리자가 운송장만 입력하고 상태를 안 바꾸면 shipped_at은 null로 남기 때문
+  // (shop-admin-repo.ts:230-236은 status가 shipping/delivered로 갈 때만 shipped_at을 채운다).
+  hasTracking: boolean;
   hasPhysicalItem: boolean;    // 실물 상품 포함 여부 (재고 복원·회수 필요)
   hasDonationItem: boolean;    // 후원 상품 포함 여부 (공개 집계 차감 필요)
   allVirtual: boolean;         // 전 품목이 가상상품
@@ -114,7 +119,10 @@ export function decideRefund(
   const bearer: "buyer" | "seller" | "none" =
     sellerFault ? "seller" : order.hasPhysicalItem ? "buyer" : "none";
   // 배송 전이면 회수할 물건이 없으므로 반품 배송비도 없다.
-  const shipped = order.status === "shipping" || order.status === "delivered";
+  // "실제로 나갔는가"가 기준이라 상태뿐 아니라 송장·발송시각도 함께 본다(H-2와 같은 근거) —
+  // 상태만 보면 송장이 나간 주문에서 반품비를 못 물려 판매자가 왕복 배송비를 떠안는다.
+  const dispatched = order.hasTracking || !!order.shippedAt;
+  const shipped = order.status === "shipping" || order.status === "delivered" || dispatched;
   const returnFee = bearer === "buyer" && shipped ? RETURN_SHIPPING_FEE : 0;
 
   // ── 1. 전 품목 가상상품 — 배송 개념이 없다 ──
@@ -135,6 +143,16 @@ export function decideRefund(
   //    정책 페이지 "배송 시작 전 주문은 주문 상세에서 직접 취소"와 일치시킨다.
   //    (기존 UI는 paid에서만 버튼을 노출해 preparing이 누락돼 있었다)
   if (order.status === "paid" || order.status === "preparing") {
+    // ⚠ H-2: 상태는 배송 전이지만 실물이 이미 나간 경우(송장 발급·발송 시각 기록)는
+    //   즉시 자동환불이 곧 상품 편취가 된다. 회수 확인이 필요하므로 심사로 내린다.
+    //   관리자가 운송장만 입력하고 상태를 안 바꾸는 운영 흐름이 실제로 존재하므로
+    //   shippedAt "또는" 송장 유무 둘 다 봐야 한다(admin/orders/page.tsx:120-123).
+    if (dispatched) {
+      return {
+        allowed: true, mode: "review", shippingFeeBearer: bearer, returnShippingFee: returnFee,
+        note: "이미 발송된 상품이에요 — 회수 확인 후 환불해요",
+      };
+    }
     return {
       allowed: true, mode: "auto", shippingFeeBearer: "none", returnShippingFee: 0,
       note: "배송 전 — 전액 환불, 반품 배송비 없음",

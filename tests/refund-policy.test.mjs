@@ -28,6 +28,7 @@ const base = {
   hasPhysicalItem: true,
   hasDonationItem: false,
   allVirtual: false,
+  hasTracking: false,
 };
 const order = (o) => ({ ...base, ...o });
 
@@ -67,6 +68,38 @@ test("배송 전(paid/preparing)은 즉시 전액 환불 · 반품비 없음", (
     assert.equal(r.returnShippingFee, 0);
     assert.equal(r.shippingFeeBearer, "none");
   }
+});
+
+// H-2 (2026-08-04): 상태는 배송 전인데 실물이 이미 나간 주문 — 즉시환불하면 상품 편취
+test("송장이 발급된 preparing 주문은 자동환불 금지 — 심사로 (H-2)", () => {
+  const r = decideRefund(order({ status: "preparing", hasTracking: true }), "change_of_mind", NOW);
+  assert.equal(r.allowed, true);
+  assert.equal(r.mode, "review");
+  assert.match(r.note, /발송/);
+});
+
+test("shipped_at만 있고 상태가 paid여도 자동환불 금지 (H-2)", () => {
+  const r = decideRefund(order({ status: "paid", shippedAt: daysAgo(1) }), "change_of_mind", NOW);
+  assert.equal(r.mode, "review");
+});
+
+test("송장 공백 문자열은 발송으로 보지 않는다 — 정상 즉시환불 유지 (H-2 오탐 방지)", () => {
+  // hasTracking은 호출측에서 trim해 넘긴다(빈 문자열 → false). 정책은 boolean만 신뢰.
+  const r = decideRefund(order({ status: "preparing", hasTracking: false }), "change_of_mind", NOW);
+  assert.equal(r.mode, "auto");
+});
+
+test("발송된 배송전 주문의 단순변심은 반품비를 구매자가 부담 (H-2 회귀)", () => {
+  const r = decideRefund(order({ status: "preparing", hasTracking: true }), "change_of_mind", NOW);
+  assert.equal(r.shippingFeeBearer, "buyer");
+  assert.equal(r.returnShippingFee, RETURN_SHIPPING_FEE);
+});
+
+test("발송된 배송전 주문이라도 하자·오배송은 판매자 부담 (H-2 회귀)", () => {
+  const r = decideRefund(order({ status: "preparing", hasTracking: true }), "defect", NOW);
+  assert.equal(r.mode, "review");
+  assert.equal(r.shippingFeeBearer, "seller");
+  assert.equal(r.returnShippingFee, 0);
 });
 
 test("배송 중은 자동환불 금지 — 회수 필요하므로 심사", () => {

@@ -34,6 +34,7 @@ export interface RefundOrderRow {
   paid_at: string | null;
   shipped_at?: string | null;
   delivered_at?: string | null;
+  tracking_number?: string | null; // 송장 발급 여부 — 배송 전 자동환불 차단 근거(H-2)
 }
 
 export interface RefundOrderItemRow {
@@ -66,6 +67,7 @@ export function buildRefundOrderInput(
     paidAt: order.paid_at,
     shippedAt: order.shipped_at ?? null,
     deliveredAt: order.delivered_at ?? null,
+    hasTracking: !!order.tracking_number?.trim(),
     hasPhysicalItem: itemFlags.some((f) => f?.is_virtual !== true),
     hasDonationItem: items.some((it, i) => (it.donation_amount ?? 0) > 0 || itemFlags[i]?.is_donation === true),
     allVirtual: items.length > 0 && itemFlags.every((f) => f?.is_virtual === true),

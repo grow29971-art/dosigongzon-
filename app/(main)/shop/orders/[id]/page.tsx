@@ -127,12 +127,18 @@ export default function OrderDetailPage() {
     paidAt: order.paid_at,
     shippedAt: order.shipped_at ?? null,
     deliveredAt: order.delivered_at ?? null,
+    // 서버(buildRefundOrderInput)와 같은 근거를 써야 화면 안내와 실제 판정이 갈리지 않는다
+    hasTracking: !!order.tracking_number?.trim(),
     hasPhysicalItem: !!order.recipient_address,
     hasDonationItem: order.items.some((i) => (i.donation_amount ?? 0) > 0),
     allVirtual: !order.recipient_address,
   } : null;
-  // 배송 전(즉시 전액 취소)과 배송 후(사유 선택 + 심사)는 문구가 다르다
-  const preShipment = order?.status === "paid" || order?.status === "preparing";
+  // 배송 전(즉시 전액 취소)과 배송 후(사유 선택 + 심사)는 문구가 다르다.
+  // 송장이 이미 나갔으면 상태가 preparing이어도 즉시취소가 아니라 심사다(H-2) —
+  // "즉시 취소돼요" 안내 후 실제로는 심사로 접수되면 유저가 속았다고 느낀다.
+  const preShipment =
+    (order?.status === "paid" || order?.status === "preparing") &&
+    !order?.tracking_number?.trim() && !order?.shipped_at;
   const modalDecision = refundInput ? decideRefund(refundInput, reason) : null;
   const remaining = order ? order.payment_amount - (order.refund_amount ?? 0) : 0;
   // 어떤 사유로든 요청 가능하면 버튼 노출 (기한은 사유별로 다르니 둘 다 확인)
