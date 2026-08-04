@@ -48,6 +48,14 @@ export const SELLER_FAULT_REASONS: RefundReasonCode[] = [
   "out_of_stock",
 ];
 
+// 가상상품에는 성립할 수 없는 "배송 개념" 사유 (H-1).
+// 배송이 없는 상품에 배송지연·오배송을 주장할 수 없으므로, 이 사유로는
+// 판매자 귀책 기한(90일)을 적용하지 않는다 — 기한 우회로로 쓰이던 구멍.
+export const VIRTUAL_INAPPLICABLE_REASONS: RefundReasonCode[] = [
+  "wrong_delivery",
+  "delayed",
+];
+
 export type OrderStatus =
   | "pending" | "paid" | "preparing" | "shipping" | "delivered" | "cancelled" | "refunded";
 
@@ -127,15 +135,38 @@ export function decideRefund(
 
   // ── 1. 전 품목 가상상품 — 배송 개념이 없다 ──
   if (order.allVirtual) {
-    // 가상상품은 재고·회수가 없어 즉시 처리 가능. 다만 사용 이력 확인이 필요한
-    // 케이스는 관리자 판단으로 넘긴다(사용 여부를 이 레이어에서 알 수 없음).
+    // H-1 ①: 배송 개념 사유로 기한을 늘리지 못하게 막는다.
+    //   배송지연·오배송은 배송이 없는 가상상품엔 성립할 수 없는 사유인데, 둘 다
+    //   SELLER_FAULT_REASONS에 있어 예전엔 sellerFault로 분류돼 7일 기한 체크 자체를
+    //   건너뛰었다(= 유저가 사유만 바꾸면 무기한 즉시환불). 이 우회로를 닫는다.
+    //   단 진짜 하자(defect)·품절(out_of_stock)은 가상상품에도 성립하므로 법정 기한
+    //   (전자상거래법 제17조 3항 → DEFECT_CLAIM_DAYS)을 그대로 인정한다. 여기서 7일로
+    //   깎으면 법정 기간을 축소하는 약관이 되어 그 자체가 위법 소지다.
     const d = daysSince(order.paidAt, now);
-    if (!sellerFault && d !== null && d > WITHDRAWAL_DAYS) {
-      return { allowed: false, reason: `가상상품은 결제 후 ${WITHDRAWAL_DAYS}일 이내에만 환불할 수 있어요.` };
+    const virtualLimit = sellerFault && !VIRTUAL_INAPPLICABLE_REASONS.includes(reasonCode)
+      ? DEFECT_CLAIM_DAYS
+      : WITHDRAWAL_DAYS;
+    if (d !== null && d > virtualLimit) {
+      return {
+        allowed: false,
+        reason: virtualLimit === DEFECT_CLAIM_DAYS
+          ? `상품 하자 신고 기한(${DEFECT_CLAIM_DAYS}일)이 지났어요. 고객센터로 문의해주세요.`
+          : `가상상품은 결제 후 ${WITHDRAWAL_DAYS}일 이내에만 환불할 수 있어요.`,
+      };
     }
+    // H-1 ②: 【가상상품 등록 전 필수 선행】 사용 이력 확인이 생기기 전까지 auto 금지.
+    //   지금은 사용 여부를 알 수 있는 스키마가 없다(user_items는 보유 수량만 있고
+    //   소비 이력·used_at이 없음 — supabase_shop_coins_migration.sql:11-18).
+    //   그래서 "이미 써버린 가상상품"도 무인 즉시환불될 수 있어, 관리자 확인으로 내린다.
+    //   ⚠ 이 review 고정을 auto로 되돌리려면 아래가 먼저 충족돼야 한다:
+    //      1) 가상상품 지급·사용 이력 테이블(또는 user_items.consumed_at) 추가
+    //      2) RefundOrderInput에 virtualUsed(또는 usedCount) 전달
+    //      3) 미사용이 확인된 건만 auto, 사용분은 review 유지
+    //   체크리스트: box/가상상품_등록전_선행조건.md
+    //   (현재 가상상품 0건이라 UX 손해 없음. 나중에 누구가 등록해도 안전판이 자동으로 걸린다.)
     return {
-      allowed: true, mode: "auto", shippingFeeBearer: "none", returnShippingFee: 0,
-      note: "가상상품 — 재고·회수 없이 즉시 환불",
+      allowed: true, mode: "review", shippingFeeBearer: "none", returnShippingFee: 0,
+      note: "가상상품 — 사용 여부 확인 후 환불해요",
     };
   }
 

@@ -153,19 +153,40 @@ test("하자도 90일이 지나면 거부", () => {
 // ══════════════════════════════════════════
 // 4. 상품 유형별 분기
 // ══════════════════════════════════════════
-test("가상상품은 배송 개념 없이 즉시 환불 · 반품비 없음", () => {
-  const r = decideRefund(order({ allVirtual: true, hasPhysicalItem: false }), "change_of_mind", NOW);
+// H-1 ② (2026-08-04): 사용 이력 확인이 생기기 전까지 가상상품 auto 금지 — 하드 가드.
+// 이 테스트가 깨진다면 box/가상상품_등록전_선행조건.md의 선행조건이 끝났는지 먼저 확인할 것.
+const virtualOrder = (o) => order({ allVirtual: true, hasPhysicalItem: false, ...o });
+
+test("가상상품은 반품비 없이 환불 가능하되 auto가 아니라 review (H-1 하드 가드)", () => {
+  const r = decideRefund(virtualOrder({}), "change_of_mind", NOW);
   assert.equal(r.allowed, true);
-  assert.equal(r.mode, "auto");
+  assert.equal(r.mode, "review");
   assert.equal(r.returnShippingFee, 0);
+  assert.equal(r.shippingFeeBearer, "none");
 });
 
 test("가상상품도 7일 지나면 단순변심 거부", () => {
-  const r = decideRefund(
-    order({ allVirtual: true, hasPhysicalItem: false, paidAt: daysAgo(WITHDRAWAL_DAYS + 1) }),
-    "change_of_mind", NOW,
-  );
+  const r = decideRefund(virtualOrder({ paidAt: daysAgo(WITHDRAWAL_DAYS + 1) }), "change_of_mind", NOW);
   assert.equal(r.allowed, false);
+});
+
+test("가상상품은 배송지연 사유로 7일 기한을 우회할 수 없다 (H-1 ①)", () => {
+  const r = decideRefund(virtualOrder({ paidAt: daysAgo(WITHDRAWAL_DAYS + 1) }), "delayed", NOW);
+  assert.equal(r.allowed, false);
+  assert.match(r.reason, /7일/);
+});
+
+test("가상상품은 오배송 사유로도 7일 기한을 우회할 수 없다 (H-1 ①)", () => {
+  const r = decideRefund(virtualOrder({ paidAt: daysAgo(30) }), "wrong_delivery", NOW);
+  assert.equal(r.allowed, false);
+});
+
+test("가상상품의 진짜 하자는 법정 기한(90일)을 그대로 인정 — 법정 기간 축소 금지", () => {
+  const ok = decideRefund(virtualOrder({ paidAt: daysAgo(30) }), "defect", NOW);
+  assert.equal(ok.allowed, true);
+  assert.equal(ok.mode, "review");
+  const late = decideRefund(virtualOrder({ paidAt: daysAgo(DEFECT_CLAIM_DAYS + 1) }), "defect", NOW);
+  assert.equal(late.allowed, false);
 });
 
 test("수령일 기록이 없으면 유저에게 불리하게 거부하지 않고 심사로 넘긴다", () => {
