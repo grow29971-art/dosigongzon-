@@ -215,7 +215,10 @@ export async function executeFullRefund(
   }
 
   // 주문 확정 — 전액환불 완료 시에만 status를 refunded로. (트리거가 이미 허용하는 전이)
-  const { error: orderError } = await svc
+  // ⚠ M-1: .select("id")가 없으면 status 가드에 0행 매칭이어도 error가 없어 "성공"으로 읽힌다.
+  //   그 상태로 아래 후처리를 진행하면 이미 환불 처리된 주문에 재고·포인트·후원을 이중 복원한다.
+  //   위 원장 완료 전환(:194-213)이 쓰는 것과 같은 "이긴 요청만 후처리" 패턴으로 통일한다.
+  const { data: finalized, error: orderError } = await svc
     .from("orders")
     .update({
       status: "refunded",
@@ -225,9 +228,20 @@ export async function executeFullRefund(
       updated_at: new Date().toISOString(),
     })
     .eq("id", order.id)
-    .in("status", ["paid", "preparing", "shipping", "delivered"]);
+    .in("status", ["paid", "preparing", "shipping", "delivered"])
+    .select("id");
   if (orderError) {
-    console.error("[refund-executor] order finalize failed (manual check):", orderError, order.id);
+    // DB 오류 — 전이가 일어나지 않았다. 주문은 아직 환불 전 상태로 보이므로 여기서 재고·포인트를
+    // 복원하면, 나중에 재시도·관리자 처리가 또 복원해 이중이 된다. 토스 환불은 이미 나갔으니
+    // 관리자 수동 확인 대상으로 남기고 후처리는 하지 않는다.
+    console.error("[refund-executor] order finalize failed — 후처리 생략(수동 확인 필요):", orderError, order.id);
+    return { ok: true, balanceAfter: tossBalanceAfter };
+  }
+  if (!finalized || finalized.length === 0) {
+    // 0행 매칭 = 주문이 이미 종료 상태(다른 경로가 먼저 확정). 그 경로에서 재고·포인트·후원이
+    // 이미 복원됐으므로 여기서 또 하면 이중 복원이다. 토스는 멱등 키로 이중 청구가 없었다.
+    console.warn("[refund-executor] order finalize matched 0 rows — 후처리 생략(이중 복원 방지):", order.id);
+    return { ok: true, balanceAfter: tossBalanceAfter };
   }
 
   // 재고 복원 — 아직 환불 안 된 수량만. (기존 cancel 라우트와 같은 RPC)
