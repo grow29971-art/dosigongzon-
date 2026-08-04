@@ -155,20 +155,26 @@ export async function uploadProductImage(file: File): Promise<string> {
 // ══════════════════════════════════════════
 
 // ── 전체 주문 목록 (상태 필터, admin RLS로 전체 조회 가능) ──
+// 관리자 계정 하나가 탈취되면 이 함수가 전 고객의 이름·전화·주소를 한 번에 넘겨준다.
+// 상한을 두어 단일 요청으로 전체 주소록이 빠져나가지 않게 한다. 더 오래된 주문은
+// 상태 필터로 좁혀 보는 것이 정상 운영 동선이다. (2026-08-04 보안)
+const ADMIN_ORDER_PAGE_SIZE = 200;
+
 export async function listAllOrders(status?: OrderStatus): Promise<OrderWithItems[]> {
   await requireAdmin();
   const supabase = createClient();
   let query = supabase
     .from("orders")
     .select("*, items:order_items(*)")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(ADMIN_ORDER_PAGE_SIZE);
 
   if (status) query = query.eq("status", status);
 
   const { data, error } = await query;
   if (error) {
-    console.error("[shop-admin-repo] listAllOrders failed:", error);
-    throw new Error(`주문 목록을 불러올 수 없어요: ${error.message}`);
+    console.error("[shop-admin-repo] listAllOrders failed:", error.code);
+    throw new Error("주문 목록을 불러올 수 없어요.");
   }
   return (data ?? []) as OrderWithItems[];
 }
