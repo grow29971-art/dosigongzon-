@@ -117,10 +117,13 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       // supabase.co는 멀티테넌트 호스트다. 와일드카드를 두면 누구나 자기 프로젝트에
       // 파일을 올려 우리 이미지 최적화기를 통과시킬 수 있어 우리 프로젝트로 고정한다.
+      // 핵심 방어는 호스트 고정이다. 경로는 public/sign 둘 다 허용 —
+      // 서명 URL은 토큰이 있어야 열리므로 최적화기를 거쳐도 권한 우회가 아니고,
+      // public만 허용하면 나중에 서명 URL을 <Image>로 바꾼 화면이 조용히 깨진다.
       {
         protocol: "https",
         hostname: SUPABASE_HOSTNAME,
-        pathname: "/storage/v1/object/public/**",
+        pathname: "/storage/v1/object/**",
       },
       { protocol: "https", hostname: "placehold.co" },
       { protocol: "https", hostname: "lh3.googleusercontent.com", pathname: "/**" },
