@@ -60,55 +60,40 @@ select polname from pg_policy
 --  타이밍: 지금은 실주문이 0건이라 아무 손실 없이 바꿀 수 있습니다.
 --          결제를 켠 뒤에는 이미 지워진 기록을 되살릴 수 없습니다.
 
-begin;
+--  ⚠ Supabase SQL Editor는 실행을 자체 트랜잭션으로 감싼다. begin/commit을 직접 쓰거나
+--    한 문장을 여러 줄로 나누면 파서가 끊어 읽어 42601(syntax error near "add")이 난다.
+--    → 아래처럼 문장당 한 줄로 둘 것.
 
 -- (1) 탈퇴 시점 기록용 컬럼
-alter table public.orders
-  add column if not exists user_deleted_at timestamptz;
-
-comment on column public.orders.user_deleted_at is
-  '회원 탈퇴로 user_id 연결이 끊긴 시점. 법정 보존기간 만료 파기의 기준.';
+alter table public.orders add column if not exists user_deleted_at timestamptz;
 
 -- (2) "주인 없는 주문 금지" 제약에 탈퇴 예외 추가
 --     (이걸 안 하면 (3)번 때문에 탈퇴 자체가 실패합니다)
 alter table public.orders drop constraint if exists orders_owner_check;
-alter table public.orders add constraint orders_owner_check
-  check (user_id is not null or guest_token is not null or user_deleted_at is not null);
+alter table public.orders add constraint orders_owner_check check (user_id is not null or guest_token is not null or user_deleted_at is not null);
 
 -- (3) 탈퇴 시 주문을 지우지 말고 연결만 끊기 (CASCADE → SET NULL)
 alter table public.orders drop constraint if exists orders_user_id_fkey;
-alter table public.orders
-  add constraint orders_user_id_fkey
-  foreign key (user_id) references auth.users(id) on delete set null;
+alter table public.orders add constraint orders_user_id_fkey foreign key (user_id) references auth.users(id) on delete set null;
 
-commit;
+-- (4) 컬럼 설명 (선택 — 실패해도 무방)
+comment on column public.orders.user_deleted_at is '회원 탈퇴로 user_id 연결이 끊긴 시점. 법정 보존기간 만료 파기의 기준.';
 
 
 -- ── 2번 확인 ──────────────────────────────────────────────
 -- ⓐ 아래가 'n' 을 반환하면 성공 ('n' = SET NULL, 'c' = 예전 CASCADE)
-select confdeltype
-  from pg_constraint
- where conrelid = 'public.orders'::regclass
-   and conname = 'orders_user_id_fkey';
+select confdeltype from pg_constraint where conrelid = 'public.orders'::regclass and conname = 'orders_user_id_fkey';
 
 -- ⓑ 아래가 한 줄 나오면 성공
-select column_name from information_schema.columns
- where table_schema = 'public'
-   and table_name = 'orders'
-   and column_name = 'user_deleted_at';
+select column_name from information_schema.columns where table_schema = 'public' and table_name = 'orders' and column_name = 'user_deleted_at';
 
 
 -- ── 2번 되돌리기 (문제 생겼을 때만) ───────────────────────
--- begin;
 -- alter table public.orders drop constraint if exists orders_user_id_fkey;
--- alter table public.orders
---   add constraint orders_user_id_fkey
---   foreign key (user_id) references auth.users(id) on delete cascade;
+-- alter table public.orders add constraint orders_user_id_fkey foreign key (user_id) references auth.users(id) on delete cascade;
 -- alter table public.orders drop constraint if exists orders_owner_check;
--- alter table public.orders add constraint orders_owner_check
---   check (user_id is not null or guest_token is not null);
+-- alter table public.orders add constraint orders_owner_check check (user_id is not null or guest_token is not null);
 -- alter table public.orders drop column if exists user_deleted_at;
--- commit;
 
 
 
