@@ -174,11 +174,38 @@ test("GPS: 날씨 전송 좌표는 격자 스냅을 거치고 raw 직결은 금�
   assert.ok(!/fetchWeather\(\s*pos\.coords/.test(home), "raw pos.coords를 fetchWeather에 직결 금지");
 });
 
-// R4 — 활동지역: 저장 좌표는 행정동 중심/격자만, raw gpsLat/gpsLng 대입 금지
-test("GPS: activity-regions는 raw GPS를 저장 state에 직접 대입하지 않음", () => {
+// R3-1 — 좌표는 URL이 아니라 POST body로. 격자 좌표라도 쿼리스트링에 실으면
+//   우리가 저장하지 않아도 플랫폼(Vercel) 액세스 로그에 남아 "미수집" 구성이 깨진다.
+test("GPS: 날씨 좌표는 쿼리스트링이 아니라 POST body로만 전송", () => {
+  const home = stripComments(read("app/components/HomeAuthed.tsx"));
+  assert.ok(
+    !/["'`]\/api\/weather[^"'`]*\?[^"'`]*(lat|lon)=/.test(home),
+    "좌표를 /api/weather 쿼리스트링에 실으면 안 됨 (플랫폼 로그 잔존)",
+  );
+  assert.match(home, /JSON\.stringify\(\{\s*lat\s*,\s*lon\s*\}\)/, "좌표는 body로 전송해야 함");
+
+  const route = stripComments(read("app/api/weather/route.ts"));
+  assert.ok(
+    !/searchParams\.get\(\s*["'](lat|lon)["']\s*\)/.test(route),
+    "GET에서 좌표 쿼리를 읽으면 안 됨 — 읽는 순간 URL에 실어 보내는 경로가 되살아난다",
+  );
+  assert.ok(
+    !/cf-connecting-ip/.test(route),
+    "cf-connecting-ip는 우리 경로의 프록시가 설정하지 않아 위조 가능 — getClientIp를 쓸 것",
+  );
+});
+
+// R4 — 활동지역: 저장 좌표는 행정동 중심만. raw든 뭉갠 값이든 GPS 파생값 저장 금지
+test("GPS: activity-regions는 GPS 파생 좌표를 저장 state에 대입하지 않음", () => {
   const src = stripComments(read("app/(main)/mypage/activity-regions/page.tsx"));
-  assert.ok(!/setLat\(\s*gpsLat\s*\)/.test(src), "raw gpsLat 저장 금지 (행정동 중심/격자만)");
+  assert.ok(!/setLat\(\s*gpsLat\s*\)/.test(src), "raw gpsLat 저장 금지 (행정동 중심만)");
   assert.ok(!/setLng\(\s*gpsLng\s*\)/.test(src), "raw gpsLng 저장 금지");
+  // 뭉갠 격자값도 금지 — GPS에서 파생된 좌표를 user_id와 함께 저장하는 순간
+  // 개인위치정보 수집으로 해석될 여지가 생긴다. 지오코딩 실패 시엔 저장하지 않는다.
+  assert.ok(
+    !/set(Lat|Lng)\(\s*Math\.round\(\s*gps/.test(src),
+    "GPS 파생 격자값 저장 금지 — 지오코딩 실패 시 직접 선택을 안내할 것",
+  );
 });
 
 // R5 — 고양이 좌표: 저장 직전 applyLocationOffset(±444m) 통과 + 오프셋이 항등이 아님

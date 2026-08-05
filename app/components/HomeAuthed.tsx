@@ -541,8 +541,16 @@ export default function HomeAuthed({
     // 날씨 가져오기
     const fetchWeather = async (lat?: number, lon?: number) => {
       try {
-        const params = lat && lon ? `?lat=${lat}&lon=${lon}` : "";
-        const res = await fetch(`/api/weather${params}`);
+        // 좌표는 body로만 보낸다 — 쿼리스트링에 실으면 격자 좌표라도 플랫폼
+        // 액세스 로그에 남아 "위치정보 미수집" 구성이 형식적으로 깨진다.
+        const res =
+          lat && lon
+            ? await fetch("/api/weather", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ lat, lon }),
+              })
+            : await fetch("/api/weather");
         const data = await res.json();
         if (!res.ok) {
           throw new Error(data.debug || data.error || `HTTP ${res.status}`);

@@ -357,17 +357,19 @@ export default function ActivityRegionsPage() {
       (pos) => {
         const gpsLat = pos.coords.latitude;
         const gpsLng = pos.coords.longitude;
-        // 지오코더 불가 시 폴백: ~1.1km 격자로 뭉개서 사용 (개인 위치 식별 불가 수준)
-        const fallback = () => {
-          setLat(Math.round(gpsLat * 100) / 100);
-          setLng(Math.round(gpsLng * 100) / 100);
+        // 지오코딩 실패 시 저장하지 않는다.
+        // 예전에는 GPS를 ~1.1km 격자로 뭉개 핀으로 썼는데, 뭉갠 값이라도 GPS에서
+        // 파생된 좌표를 user_id와 함께 저장하면 "개인위치정보를 수집하지 않는다"는
+        // 무신고 구성이 깨진다. 저장 대신 직접 선택을 안내한다. (2026-08-05)
+        const geocodeFailed = () => {
+          alert("동네를 확인하지 못했어요. 지도를 눌러 직접 선택하거나 주소로 검색해주세요.");
         };
-        if (!window.kakao?.maps?.services) { fallback(); return; }
+        if (!window.kakao?.maps?.services) { geocodeFailed(); return; }
         const geocoder = new window.kakao.maps.services.Geocoder();
         geocoder.coord2RegionCode(gpsLng, gpsLat, (result, status) => {
-          if (status !== window.kakao.maps.services.Status.OK || !Array.isArray(result)) { fallback(); return; }
+          if (status !== window.kakao.maps.services.Status.OK || !Array.isArray(result)) { geocodeFailed(); return; }
           const admin = result.find((r) => r?.region_type === "H") ?? result[0];
-          if (!admin) { fallback(); return; }
+          if (!admin) { geocodeFailed(); return; }
           setLat(admin.y);
           setLng(admin.x);
           const dong = admin.region_3depth_name || admin.region_2depth_name;
