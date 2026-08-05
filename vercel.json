@@ -56,6 +56,10 @@
     {
       "path": "/api/cron/purge-safety-data",
       "schedule": "40 18 * * *"
+    },
+    {
+      "path": "/api/cron/scheduled-push",
+      "schedule": "0 4 * * *"
     }
   ]
 }

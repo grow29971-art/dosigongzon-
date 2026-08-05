@@ -1,10 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { ArrowLeft, Send, Loader2, Bell } from "lucide-react";
+import { ArrowLeft, Send, Loader2, Bell, Clock, X } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { createClient } from "@/lib/supabase/client";
+import {
+  listScheduledPushes,
+  createScheduledPush,
+  cancelScheduledPush,
+  type ScheduledPush,
+} from "@/lib/scheduled-push-repo";
+
+// datetime-local 입력용 — 로컬 시각 기준 "YYYY-MM-DDTHH:mm"
+function toLocalInputValue(d: Date): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+const STATUS_LABEL: Record<ScheduledPush["status"], string> = {
+  pending: "대기 중",
+  sending: "발송 중",
+  sent: "발송 완료",
+  cancelled: "취소됨",
+  failed: "실패",
+};
 
 export default function AdminPushPage() {
   const [authChecked, setAuthChecked] = useState(false);
@@ -17,12 +37,61 @@ export default function AdminPushPage() {
   const [result, setResult] = useState<{ sent: number; total: number } | null>(null);
   const [error, setError] = useState("");
 
+  // 예약 발송
+  const [scheduleAt, setScheduleAt] = useState("");
+  const [scheduling, setScheduling] = useState(false);
+  const [scheduled, setScheduled] = useState<ScheduledPush[]>([]);
+  const [scheduleMsg, setScheduleMsg] = useState("");
+
+  const reloadScheduled = useCallback(() => {
+    listScheduledPushes()
+      .then(setScheduled)
+      .catch(() => setScheduled([]));
+  }, []);
+
   useEffect(() => {
     isCurrentUserAdmin().then((ok) => {
       setIsAdmin(ok);
       setAuthChecked(true);
+      if (ok) reloadScheduled();
     });
-  }, []);
+  }, [reloadScheduled]);
+
+  const handleSchedule = async () => {
+    setError("");
+    setScheduleMsg("");
+    if (!body.trim()) return setError("메시지 내용을 입력해주세요.");
+    if (!scheduleAt) return setError("발송 시각을 선택해주세요.");
+    setScheduling(true);
+    try {
+      await createScheduledPush({
+        title,
+        body,
+        url,
+        scheduledAt: new Date(scheduleAt),
+      });
+      setScheduleMsg("예약했어요. 지정 시각 이후 첫 체크포인트(매일 오후 1시)에 발송됩니다.");
+      setBody("");
+      setScheduleAt("");
+      reloadScheduled();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "예약에 실패했어요.");
+    } finally {
+      setScheduling(false);
+    }
+  };
+
+  const handleCancel = async (id: string) => {
+    setError("");
+    setScheduleMsg("");
+    try {
+      await cancelScheduledPush(id);
+      setScheduleMsg("예약을 취소했어요.");
+      reloadScheduled();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "취소에 실패했어요.");
+    }
+  };
 
   const handleSend = async () => {
     if (!body.trim()) return setError("메시지 내용을 입력해주세요.");
@@ -113,6 +182,30 @@ export default function AdminPushPage() {
       {/* 이벤트 quick-fill — 6/1 출시 이후 자동 비활성 (수동 삭제) */}
       <div className="mb-5 space-y-2">
         <p className="text-[10px] font-extrabold tracking-[0.15em] text-text-light mb-1.5">EVENT QUICK-FILL</p>
+
+        <button
+          type="button"
+          onClick={() => {
+            setTitle("🐾 8/8 보신각 집회");
+            setBody("세계 고양이의 날, 길고양이 처우개선 촉구 집회가 8월 8일(토) 오후 4시 보신각 앞(종각역)에서 열려요. 도시공존이 후원합니다. 홈에서 참여 신청할 수 있어요.");
+            setUrl("/");
+            // 집회 당일 오후 1시 — 3시간 전 리마인더
+            setScheduleAt(toLocalInputValue(new Date(2026, 7, 8, 13, 0)));
+          }}
+          className="w-full text-left px-4 py-2.5 rounded-xl active:scale-[0.99] transition-transform"
+          style={{
+            background: "linear-gradient(135deg, #FFE3D3 0%, #FFC9AE 100%)",
+            border: "1px solid rgba(173, 94, 59,0.35)",
+          }}
+        >
+          <p className="text-[12.5px] font-extrabold" style={{ color: "#8A4A28" }}>
+            🐾 8/8 보신각 집회 리마인더
+          </p>
+          <p className="text-[10.5px] mt-0.5" style={{ color: "#9A5A34" }}>
+            제목·본문·이동경로 + 8/8 오후 1시 예약 시각까지 자동 채움. 아래 &quot;예약 발송&quot;을 누르세요.
+          </p>
+        </button>
+
         <button
           type="button"
           onClick={() => {
@@ -253,9 +346,15 @@ export default function AdminPushPage() {
           </div>
         )}
 
+        {scheduleMsg && (
+          <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: "#EAF0EA" }}>
+            <p className="text-[13px] font-semibold" style={{ color: "#3E5A42" }}>{scheduleMsg}</p>
+          </div>
+        )}
+
         <button
           onClick={handleSend}
-          disabled={sending}
+          disabled={sending || scheduling}
           className="w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.97] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
           style={{ boxShadow: "var(--shadow-primary)" }}
         >
@@ -267,10 +366,92 @@ export default function AdminPushPage() {
           ) : (
             <>
               <Send size={18} />
-              전체 발송
+              지금 전체 발송
             </>
           )}
         </button>
+
+        {/* ── 예약 발송 ── */}
+        <div className="pt-2">
+          <label className="text-[12px] font-bold text-text-main mb-1.5 block">
+            예약 발송 시각
+          </label>
+          <input
+            type="datetime-local"
+            value={scheduleAt}
+            onChange={(e) => setScheduleAt(e.target.value)}
+            min={toLocalInputValue(new Date())}
+            className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[14px] text-text-main outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+          />
+          <p className="text-[10px] text-text-light mt-1 leading-relaxed">
+            발송 점검은 <b>매일 오후 1시</b>에 한 번 돕니다. 지정한 시각이 지난 뒤 첫 점검에서 나가요.
+            (예: 8/8 오후 1시로 두면 그날 오후 1시에 발송)
+          </p>
+
+          <button
+            onClick={handleSchedule}
+            disabled={sending || scheduling}
+            className="w-full mt-3 py-3.5 rounded-2xl text-[14.5px] font-bold active:scale-[0.97] transition-transform disabled:opacity-60 flex items-center justify-center gap-2 bg-white"
+            style={{ color: "var(--color-primary-dark)", border: "1.5px solid rgba(173, 94, 59,0.35)" }}
+          >
+            {scheduling ? (
+              <>
+                <Loader2 size={17} className="animate-spin" />
+                예약 중...
+              </>
+            ) : (
+              <>
+                <Clock size={17} />
+                예약 발송
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* 예약 목록 */}
+        {scheduled.length > 0 && (
+          <div className="pt-4">
+            <p className="text-[10px] font-extrabold tracking-[0.15em] text-text-light mb-2">예약 목록</p>
+            <div className="space-y-2">
+              {scheduled.map((s) => (
+                <div
+                  key={s.id}
+                  className="rounded-2xl px-4 py-3"
+                  style={{ backgroundColor: "#F5F3EE", border: "1px solid rgba(173, 94, 59,0.15)" }}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[12.5px] font-extrabold text-text-main truncate">{s.title}</p>
+                      <p className="text-[11.5px] text-text-sub mt-0.5 line-clamp-2">{s.body}</p>
+                      <p className="text-[10.5px] text-text-light mt-1">
+                        {new Date(s.scheduled_at).toLocaleString("ko-KR", {
+                          month: "long", day: "numeric", hour: "2-digit", minute: "2-digit",
+                        })}
+                        {" · "}
+                        <b style={{ color: s.status === "pending" ? "var(--color-primary-dark)" : undefined }}>
+                          {STATUS_LABEL[s.status]}
+                        </b>
+                        {s.status === "sent" && s.total_count != null && (
+                          <> · {s.total_count}명 중 {s.sent_count}명 도달</>
+                        )}
+                      </p>
+                    </div>
+                    {s.status === "pending" && (
+                      <button
+                        onClick={() => handleCancel(s.id)}
+                        className="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 active:scale-90 transition-transform"
+                        style={{ border: "1px solid rgba(173, 94, 59,0.25)" }}
+                        aria-label="예약 취소"
+                      >
+                        <X size={14} className="text-text-sub" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
