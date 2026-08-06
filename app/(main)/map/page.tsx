@@ -747,7 +747,8 @@ export default function MapPage() {
         } catch { /* 비로그인 — IP 기반 집계로 폴백 */ }
         fetch("/api/visit", { method: "POST", headers }).catch(() => {});
       })();
-      fetch("/api/visit").then((r) => r.json()).then((d) => setTodayVisit(d.today)).catch(() => {});
+      // 라벨이 "방문자 N명"(누적) — 오늘 수치가 아니라 누적을 쓴다
+      fetch("/api/visit").then((r) => r.json()).then((d) => setTodayVisit(d.cumulative)).catch(() => {});
     });
   }, [fetchCats]);
 

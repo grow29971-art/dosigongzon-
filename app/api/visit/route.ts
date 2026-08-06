@@ -1,6 +1,7 @@
 import { createServiceClient } from "@/lib/supabase/service";
 import { createHash } from "node:crypto";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
+import { kstToday } from "@/lib/kst";
 
 function hashIp(ip: string): string {
   return createHash("sha256").update(ip).digest("hex").slice(0, 32);
@@ -92,11 +93,18 @@ export async function GET() {
 
   const supabase = createServiceClient();
 
+  // today와 cumulative를 반드시 구분한다.
+  // 예전엔 전 기간 합계를 today로 내보내서 관리자 화면의 "오늘 방문자"가
+  // 누적값(수천)을 표시했다 — 실제 하루 방문은 두 자릿수다. (2026-08-06)
   const { data: allStats } = await supabase
     .from("daily_stats")
-    .select("visit_count");
+    .select("date, visit_count");
 
-  const totalVisits = (allStats ?? []).reduce((sum, row) => sum + (row.visit_count ?? 0), 0);
+  const rows = (allStats ?? []) as { date: string; visit_count: number | null }[];
+  const cumulative = rows.reduce((sum, row) => sum + (row.visit_count ?? 0), 0);
+  // daily_stats.date는 KST 달력 날짜 (insights-repo와 같은 기준)
+  const todayKey = kstToday();
+  const today = rows.find((r) => r.date === todayKey)?.visit_count ?? 0;
 
   const { count: totalUsers } = await supabase
     .from("profiles")
@@ -104,7 +112,8 @@ export async function GET() {
 
   return Response.json(
     {
-      today: totalVisits,
+      today,
+      cumulative,
       total: totalUsers ?? 0,
     },
     {

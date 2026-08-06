@@ -130,7 +130,8 @@ export default function CommunityPage() {
       ?? ((cb: () => void) => setTimeout(cb, 800));
     idle(() => {
       fetch("/api/visit").then((r) => r.json()).then((d) => {
-        setTodayVisit(d.today);
+        // 라벨이 "방문자 N명"(누적) — 오늘 수치가 아니라 누적을 쓴다
+        setTodayVisit(d.cumulative);
         setTotalUsers(d.total);
       }).catch(() => {});
       listMyActivityRegions().then(setMyRegions).catch(() => {});

@@ -15,7 +15,8 @@ export default function TodayVisitors() {
     fetch("/api/visit")
       .then((r) => r.json())
       .then((d) => {
-        if (!cancelled) setTodayCount(typeof d.today === "number" ? d.today : 0);
+        // 문구가 "지금까지 N명"이므로 오늘이 아니라 누적을 쓴다
+        if (!cancelled) setTodayCount(typeof d.cumulative === "number" ? d.cumulative : 0);
       })
       .catch(() => {});
     return () => { cancelled = true; };
