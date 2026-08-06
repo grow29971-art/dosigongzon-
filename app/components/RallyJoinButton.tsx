@@ -1,6 +1,8 @@
 "use client";
 
-// 집회 참여하기 버튼 + 참여 인원 추산 (RallyPosterBanner 하단)
+// 집회 참여하기 버튼 (RallyPosterBanner 하단)
+// 참여 인원 수는 화면에 표시하지 않는다 — 참여자가 적을 때 오히려 역효과라 2026-08-06 제거.
+// 집계는 관리자가 DB에서 확인한다(rally_participation_count RPC).
 // - 일반 유저: 1인 1회 (DB partial unique index) → 누르면 "참여 완료"로 고정
 // - 관리자(admins 등재): 계속 누를 수 있음 (admin_extra=true 행으로 누적)
 // - 비로그인: 로그인 페이지로 안내
@@ -14,7 +16,6 @@ import { createClient } from "@/lib/supabase/client";
 export default function RallyJoinButton() {
   const router = useRouter();
   const [ready, setReady] = useState(false);
-  const [count, setCount] = useState<number | null>(null);
   const [joined, setJoined] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -24,11 +25,11 @@ export default function RallyJoinButton() {
     let cancelled = false;
     (async () => {
       const supabase = createClient();
-      const { data: cnt, error: cntErr } = await supabase.rpc("rally_participation_count");
+      // 참여 인원은 화면에 표시하지 않는다(2026-08-06). 이 호출은 테이블·RPC가
+      // 실제로 배포됐는지 확인하는 용도 — 실패하면 버튼 자체를 숨겨 홈을 깨뜨리지 않는다.
+      const { error: cntErr } = await supabase.rpc("rally_participation_count");
       if (cancelled) return;
-      // 테이블/RPC 미배포 등 — 버튼 자체를 숨겨서 홈을 깨뜨리지 않음
       if (cntErr) return;
-      setCount(Number(cnt ?? 0));
       setReady(true);
 
       const { data: { session } } = await supabase.auth.getSession();
@@ -72,7 +73,6 @@ export default function RallyJoinButton() {
         return;
       }
       setJoined(true);
-      setCount((c) => (c ?? 0) + 1);
     } finally {
       setBusy(false);
     }
@@ -96,7 +96,6 @@ export default function RallyJoinButton() {
         return;
       }
       setJoined(false);
-      setCount((c) => Math.max(0, (c ?? 1) - 1));
     } finally {
       setBusy(false);
     }
@@ -128,17 +127,6 @@ export default function RallyJoinButton() {
           </>
         )}
       </button>
-      {count !== null && count > 0 && (
-        <div
-          className="shrink-0 px-3 py-2 rounded-2xl text-center"
-          style={{ background: "#FFF3EC", border: "1px solid #F3D9CB" }}
-        >
-          <p className="text-[15px] font-extrabold tabular-nums leading-tight" style={{ color: "var(--color-primary-dark)" }}>
-            {count.toLocaleString()}명
-          </p>
-          <p className="text-[9.5px] font-bold leading-tight" style={{ color: "#B07A5C" }}>함께해요</p>
-        </div>
-      )}
     </div>
 
     {/* 수집 고지 + 철회 경로 — 참여 이력은 본인만 볼 수 있고 언제든 지울 수 있어야 한다 */}
