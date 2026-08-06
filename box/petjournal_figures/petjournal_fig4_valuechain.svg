@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+  <rect width="900" height="480" fill="#f5f8f7"/>
+  <defs>
+    <marker id="ar4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2f7d6e"/>
+    </marker>
+  </defs>
+  <text x="450" y="54" text-anchor="middle" font-size="30" font-weight="700" fill="#1f2933">세 갈래 진입로가 만나는 한 곳</text>
+  <text x="450" y="86" text-anchor="middle" font-size="17" fill="#6b7684">펫산업의 익숙한 밸류체인이 '공공(B2G)'이라는 새 수요처를 만난다</text>
+
+  <!-- three inputs -->
+  <rect x="60" y="130" width="250" height="80" rx="14" fill="#ffffff" stroke="#cdd7d3" stroke-width="2"/>
+  <text x="90" y="165" font-size="18" font-weight="700" fill="#1f2933">제조·수입</text>
+  <text x="90" y="192" font-size="14" fill="#6b7684">저전력 온열기구 · IoT 스마트 쉼터</text>
+
+  <rect x="60" y="230" width="250" height="80" rx="14" fill="#ffffff" stroke="#cdd7d3" stroke-width="2"/>
+  <text x="90" y="265" font-size="18" font-weight="700" fill="#1f2933">병원·약국</text>
+  <text x="90" y="292" font-size="14" fill="#6b7684">구조·중성화 지도의 신규 유입</text>
+
+  <rect x="60" y="330" width="250" height="80" rx="14" fill="#ffffff" stroke="#cdd7d3" stroke-width="2"/>
+  <text x="90" y="365" font-size="18" font-weight="700" fill="#1f2933">데이터</text>
+  <text x="90" y="392" font-size="14" fill="#6b7684">개체 밀도 · TNR 이력</text>
+
+  <!-- destination -->
+  <rect x="560" y="200" width="280" height="140" rx="16" fill="#2f7d6e"/>
+  <text x="700" y="258" text-anchor="middle" font-size="24" font-weight="700" fill="#ffffff">지자체 동물보호 예산</text>
+  <text x="700" y="292" text-anchor="middle" font-size="18" fill="#d7ece6">B2G · 아직 아무도 안 연 손님</text>
+
+  <g stroke="#2f7d6e" stroke-width="2.5" fill="none">
+    <path d="M310 170 C 430 170, 440 250, 555 262" marker-end="url(#ar4)"/>
+    <path d="M310 270 L 555 270" marker-end="url(#ar4)"/>
+    <path d="M310 370 C 430 370, 440 290, 555 278" marker-end="url(#ar4)"/>
+  </g>
+</svg>

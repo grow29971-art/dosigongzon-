@@ -186,8 +186,10 @@ export default function AdminPushPage() {
         <button
           type="button"
           onClick={() => {
-            setTitle("🐾 8/8 보신각 집회");
-            setBody("세계 고양이의 날, 길고양이 처우개선 촉구 집회가 8월 8일(토) 오후 4시 보신각 앞(종각역)에서 열려요. 도시공존이 후원합니다. 홈에서 참여 신청할 수 있어요.");
+            // 푸시 본문은 40자쯤에서 잘린다 — 핵심(시각·장소)을 앞에 두고,
+            // "신청"처럼 약속의 무게가 큰 단어는 뺀다.
+            setTitle("🐾 오늘 오후 4시, 종각에서 만나요");
+            setBody("세계 고양이의 날 보신각 집회예요. 잠깐 얼굴만 비춰도 큰 힘이 돼요. 못 오셔도 괜찮아요 — 도시공존도 현장에 있어요.");
             setUrl("/");
             // 집회 당일 오후 1시 — 3시간 전 리마인더
             setScheduleAt(toLocalInputValue(new Date(2026, 7, 8, 13, 0)));

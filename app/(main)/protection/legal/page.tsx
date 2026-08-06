@@ -3,7 +3,7 @@ import Link from "next/link";
 import GuideReadMarker from "@/app/components/GuideReadMarker";
 import {
   ArrowLeft, ShieldCheck, CircleAlert, Home, Phone,
-  HelpCircle, BookOpen, Scale, Gavel, FileText, Scroll,
+  HelpCircle, BookOpen, Gavel, FileText, Scroll,
 } from "lucide-react";
 import LegalChecklist, { type ChecklistItem } from "@/app/components/LegalChecklist";
 import ShareGuideButton from "@/app/components/ShareGuideButton";
@@ -13,11 +13,11 @@ const LAST_UPDATED = "2026-04-19";
 export const metadata: Metadata = {
   title: "길고양이 학대 신고·동물보호법 완벽 가이드",
   description:
-    "길고양이 학대·숨숨집 훼손 시 증거 확보부터 신고·처벌까지. 동물보호법 제8조·14조·46조 해설, 2024 개정 내용, 실제 판례·처벌 수위·신고 방법 총정리.",
+    "길고양이 학대·숨숨집 훼손 시 증거 확보부터 신고·처벌까지. 동물보호법 제8조·14조·46조 해설, 2024 개정 내용, 처벌 수위·신고 방법 총정리.",
   keywords: [
     "동물보호법", "길고양이 학대 신고", "동물학대 처벌", "동물보호법 제8조",
     "학대 증거 확보", "112 동물학대", "재물손괴죄 숨숨집", "동물보호상담센터",
-    "동물학대 판례", "케어테이커 법적 대응", "구조대 학대 신고",
+    "케어테이커 법적 대응", "구조대 학대 신고",
   ],
   alternates: { canonical: "/protection/legal" },
   openGraph: {
@@ -236,7 +236,6 @@ export default function LegalGuidePage() {
           <li><a href="#report" className="hover:underline">신고 채널 3가지</a></li>
           <li><a href="#checklist-shelter" className="hover:underline">숨숨집 파손 시 체크리스트</a></li>
           <li><a href="#checklist-abuse" className="hover:underline">학대 목격 시 체크리스트</a></li>
-          <li><a href="#cases" className="hover:underline">실제 판례 요약</a></li>
           <li><a href="#faq" className="hover:underline">자주 묻는 질문</a></li>
         </ol>
       </nav>
@@ -408,40 +407,6 @@ export default function LegalGuidePage() {
           iconColor="#B84545"
           items={ABUSE_CHECKLIST}
         />
-      </section>
-
-      {/* 판례 요약 */}
-      <section id="cases" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <Scale size={20} color="#8B5A3C" />
-          실제 판례 요약
-        </h2>
-        <p className="text-[13.5px] text-text-main leading-relaxed mb-3">
-          대법원 및 하급심 판례를 정리했어요. 법원이 중요하게 보는 요소를 이해하면 증거 확보와 진술에 도움이 됩니다.
-        </p>
-        <div className="space-y-3">
-          <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid rgba(0,0,0,0.05)" }}>
-            <p className="text-[13.5px] font-extrabold text-text-main">📌 2023 — 길고양이 학대 살인 사건</p>
-            <p className="text-[12px] text-text-sub mt-1 leading-relaxed">
-              편의점 앞 길고양이를 벽돌로 내리쳐 사망시킨 사건. <strong>징역 1년 6월 집행유예 3년</strong>.
-              CCTV 영상 + 잔혹성 + 반복성이 양형에 결정적이었습니다.
-            </p>
-          </div>
-          <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid rgba(0,0,0,0.05)" }}>
-            <p className="text-[13.5px] font-extrabold text-text-main">📌 2022 — 낚싯바늘 밥 유포 사건</p>
-            <p className="text-[12px] text-text-sub mt-1 leading-relaxed">
-              주택가에 낚싯바늘을 넣은 사료를 뿌린 50대 남성. <strong>벌금 500만 원</strong>.
-              피해 동물이 다수고 재범 가능성이 있어 실형 구형됐지만 초범 고려.
-            </p>
-          </div>
-          <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid rgba(0,0,0,0.05)" }}>
-            <p className="text-[13.5px] font-extrabold text-text-main">📌 2024 — 숨숨집 반복 파손 사건</p>
-            <p className="text-[12px] text-text-sub mt-1 leading-relaxed">
-              아파트 주민이 케어테이커의 숨숨집을 수개월에 걸쳐 7차례 파손. <strong>벌금 200만 원 + 접근 금지</strong>.
-              재물손괴죄 적용. CCTV·설치 당시 사진이 결정적 증거였습니다.
-            </p>
-          </div>
-        </div>
       </section>
 
       {/* FAQ */}

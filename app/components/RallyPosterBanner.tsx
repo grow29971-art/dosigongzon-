@@ -31,6 +31,13 @@ export default function RallyPosterBanner() {
         />
       </a>
       <RallyJoinButton />
+      {/* 후원사와 주최자의 책임 범위를 명확히 — 참여자 모집·인원 집계를 앱에서 하다 보니
+          공동주최로 오인될 소지가 있다. (2026-08-06) */}
+      <p className="mt-2 px-1 text-[10.5px] leading-relaxed text-text-light">
+        주최 <b>헬프캣츠</b> · 후원 도시공존. 행사 운영과 현장 안전관리 책임은 주최 측에 있으며,
+        문의는 주최 측 채널(@helpcats2004 / @helpcats2019)로 부탁드려요.
+        미성년자는 보호자 동반 또는 사전 동의가 필요해요.
+      </p>
     </div>
   );
 }

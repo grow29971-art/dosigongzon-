@@ -42,6 +42,15 @@ export async function POST(request: Request) {
   const svc = createServiceClient();
   const nowIso = new Date().toISOString();
 
+  // 0. 좌초 회수 — 선점(sending)한 채로 함수가 죽으면 다음 실행이 영영 못 잡는다.
+  //    1시간 넘게 sending인 건은 실패로 확정해 관리자가 목록에서 알아볼 수 있게 한다.
+  const staleIso = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  await svc
+    .from("scheduled_pushes")
+    .update({ status: "failed", error_note: "발송 중 중단(좌초 회수)" })
+    .eq("status", "sending")
+    .lt("scheduled_at", staleIso);
+
   // 1. 발송 시각이 지난 대기 건 (오래된 것부터)
   const { data: due, error: dueError } = await svc
     .from("scheduled_pushes")
@@ -59,10 +68,26 @@ export async function POST(request: Request) {
     return Response.json({ ok: true, processed: 0 });
   }
 
-  // 2. 구독자 한 번만 조회 (예약 여러 건이 같은 대상에게 나간다)
+  // 2. 구독자 조회 — 마케팅 푸시에 동의한 유저만.
+  //    다른 크론(care-cue·streak-reminder 등)과 같은 규칙이며, 관리자 화면도
+  //    "마케팅 옵트인자 대상"이라고 표기하고 있다. (2026-08-06)
+  const { data: optedIn, error: optError } = await svc
+    .from("profiles")
+    .select("id")
+    .eq("marketing_push_enabled", true);
+  if (optError) {
+    console.error("[cron/scheduled-push] 옵트인 조회 실패:", safePgError(optError));
+    return Response.json({ error: "조회 실패" }, { status: 500 });
+  }
+  const optedInIds = (optedIn ?? []).map((p) => p.id as string);
+  if (optedInIds.length === 0) {
+    return Response.json({ ok: true, processed: 0, reason: "옵트인 대상 없음" });
+  }
+
   const { data: subs, error: subError } = await svc
     .from("push_subscriptions")
-    .select("id, endpoint, p256dh, auth");
+    .select("id, endpoint, p256dh, auth")
+    .in("user_id", optedInIds);
   if (subError) {
     console.error("[cron/scheduled-push] 구독자 조회 실패:", safePgError(subError));
     return Response.json({ error: "조회 실패" }, { status: 500 });

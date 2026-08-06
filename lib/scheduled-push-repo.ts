@@ -31,13 +31,22 @@ export interface ScheduledPushInput {
   scheduledAt: Date;
 }
 
-/** 푸시 이동 경로 검증 — 내부 절대경로 또는 https 외부 URL만 허용 */
+// 서비스워커(public/sw.js)의 PUSH_PATH_PREFIXES와 반드시 같아야 한다.
+// SW는 목록 밖 경로를 조용히 "/"로 강등하므로, 여기서 통과시켜 놓으면
+// 관리자에게는 저장 성공으로 보이는데 실제 알림은 홈으로 떨어진다.
+const PUSH_PATH_PREFIXES = [
+  "/cats", "/messages", "/map", "/mypage", "/community",
+  "/notifications", "/experiment", "/shop", "/protection", "/tips",
+];
+
+/** 푸시 이동 경로 검증 — SW가 실제로 열어주는 경로만 허용. 그 외는 "/" */
 export function normalizePushUrl(raw: string): string {
   const v = raw.trim();
-  if (!v) return "/";
-  if (v.startsWith("/") && !v.startsWith("//")) return v;
-  if (/^https:\/\/[^\s]+$/i.test(v)) return v;
-  return "/";
+  if (!v || v === "/") return "/";
+  if (!v.startsWith("/") || v.startsWith("//")) return "/";
+  const path = v.split(/[?#]/)[0];
+  const ok = PUSH_PATH_PREFIXES.some((p) => path === p || path.startsWith(p + "/"));
+  return ok ? v : "/";
 }
 
 export async function listScheduledPushes(): Promise<ScheduledPush[]> {
@@ -66,10 +75,17 @@ export async function createScheduledPush(input: ScheduledPushInput): Promise<vo
   if (Number.isNaN(input.scheduledAt.getTime())) throw new Error("발송 시각을 확인해주세요.");
   if (input.scheduledAt.getTime() < Date.now()) throw new Error("이미 지난 시각이에요.");
 
+  // 강등되면 조용히 홈으로 보내지 말고 관리자에게 알린다 — 예약 발송은 되돌릴 수 없다.
+  const url = normalizePushUrl(input.url);
+  const rawUrl = input.url.trim();
+  if (rawUrl && rawUrl !== "/" && url === "/") {
+    throw new Error("알림에서 열 수 없는 경로예요. /map, /cats/…, /shop, /protection 같은 앱 내 경로만 가능해요.");
+  }
+
   const { error } = await supabase.from("scheduled_pushes").insert({
     title: input.title.trim() || "도시공존",
     body,
-    url: normalizePushUrl(input.url),
+    url,
     scheduled_at: input.scheduledAt.toISOString(),
     created_by: adminId,
   });

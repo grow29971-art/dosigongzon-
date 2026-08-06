@@ -13,8 +13,9 @@ const KNOWN_CRONS = new Set([
   "cleanup-area-chats", "cleanup-read-dms", "cleanup-stale-orders", "community-topic",
   "daily-dispatch", "engagement-push", "health-alert-push", "like-digest",
   "news-crawl", "onboarding-nudge", "payment-reconcile", "purge-safety-data",
-  "retention-report", "storage-diet", "streak-reminder", "sync-pharmacies",
-  "weather-alert", "weekly-digest", "weekly-dispatch", "weekly-postcard-push",
+  "retention-report", "scheduled-push", "storage-diet", "streak-reminder",
+  "sync-pharmacies", "weather-alert", "weekly-digest", "weekly-dispatch",
+  "weekly-postcard-push",
 ]);
 
 function logCronRun(request: NextRequest, event: NextFetchEvent, name: string) {
@@ -41,7 +42,10 @@ function logCronRun(request: NextRequest, event: NextFetchEvent, name: string) {
 
 // ── 전역 API Rate Limiting (IP 기반, 인메모리) ──
 const ipBuckets = new Map<string, { count: number; resetAt: number }>();
-const GLOBAL_LIMIT = 120; // IP당 1분에 120요청
+// IP당 1분 한도. 통신사 CGNAT·공용 WiFi에서는 수십 명이 같은 IP로 묶여
+// 나가므로, 오프라인 행사(집회 등)에서 정상 이용자가 429를 맞지 않도록 넉넉히 잡는다.
+// 봇 프로빙은 위 BOT_PROBE_PATTERNS가 별도로 404 처리한다. (2026-08-06)
+const GLOBAL_LIMIT = 600;
 const WINDOW_MS = 60_000;
 
 function getIP(req: NextRequest): string {

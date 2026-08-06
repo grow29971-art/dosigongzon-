@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+  <rect width="900" height="480" fill="#f5f8f7"/>
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2f7d6e"/>
+    </marker>
+  </defs>
+  <text x="450" y="56" text-anchor="middle" font-size="30" font-weight="700" fill="#1f2933">돌봄이 데이터가 되는 흐름</text>
+  <text x="450" y="88" text-anchor="middle" font-size="17" fill="#6b7684">골목의 관찰이 예산의 근거가 되기까지</text>
+
+  <g>
+    <rect x="60" y="180" width="170" height="110" rx="14" fill="#ffffff" stroke="#cdd7d3" stroke-width="2"/>
+    <text x="145" y="228" text-anchor="middle" font-size="19" font-weight="700" fill="#1f2933">① 발견·돌봄</text>
+    <text x="145" y="256" text-anchor="middle" font-size="15" fill="#6b7684">밥·물·건강·중성화</text>
+
+    <rect x="290" y="180" width="170" height="110" rx="14" fill="#ffffff" stroke="#cdd7d3" stroke-width="2"/>
+    <text x="375" y="228" text-anchor="middle" font-size="19" font-weight="700" fill="#1f2933">② 지도 기록</text>
+    <text x="375" y="256" text-anchor="middle" font-size="15" fill="#6b7684">몇 번의 탭으로</text>
+
+    <rect x="520" y="180" width="170" height="110" rx="14" fill="#ffffff" stroke="#cdd7d3" stroke-width="2"/>
+    <text x="605" y="228" text-anchor="middle" font-size="19" font-weight="700" fill="#1f2933">③ 데이터 축적</text>
+    <text x="605" y="256" text-anchor="middle" font-size="15" fill="#6b7684">개체·건강·TNR 이력</text>
+
+    <rect x="695" y="330" width="145" height="90" rx="14" fill="#2f7d6e"/>
+    <text x="767" y="368" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff">④ 예산 근거</text>
+    <text x="767" y="393" text-anchor="middle" font-size="14" fill="#d7ece6">지자체 정책·B2G</text>
+  </g>
+
+  <g stroke="#2f7d6e" stroke-width="2.5" fill="none">
+    <line x1="230" y1="235" x2="284" y2="235" marker-end="url(#ar)"/>
+    <line x1="460" y1="235" x2="514" y2="235" marker-end="url(#ar)"/>
+    <path d="M605 290 L605 375 L689 375" marker-end="url(#ar)"/>
+  </g>
+</svg>

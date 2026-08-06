@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif">
+  <rect width="900" height="480" fill="#f5f8f7"/>
+  <defs>
+    <marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2f7d6e"/>
+    </marker>
+  </defs>
+  <text x="450" y="56" text-anchor="middle" font-size="30" font-weight="700" fill="#1f2933">실좌표는 저장하지 않는다</text>
+  <text x="450" y="88" text-anchor="middle" font-size="17" fill="#6b7684">기록은 남기되, 위치는 숨긴다 — 3단 보호</text>
+
+  <!-- real coord, discarded -->
+  <rect x="60" y="200" width="180" height="110" rx="14" fill="#ffffff" stroke="#d98b8b" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="150" y="248" text-anchor="middle" font-size="18" font-weight="700" fill="#b05555">실제 좌표</text>
+  <text x="150" y="276" text-anchor="middle" font-size="14" fill="#b05555">서버에 저장 안 함 ✕</text>
+
+  <rect x="300" y="200" width="180" height="110" rx="14" fill="#ffffff" stroke="#cdd7d3" stroke-width="2"/>
+  <text x="390" y="248" text-anchor="middle" font-size="18" font-weight="700" fill="#1f2933">±수백 m 퍼징</text>
+  <text x="390" y="276" text-anchor="middle" font-size="14" fill="#6b7684">흐트러진 좌표만 저장</text>
+
+  <rect x="540" y="200" width="180" height="110" rx="14" fill="#ffffff" stroke="#cdd7d3" stroke-width="2"/>
+  <text x="630" y="248" text-anchor="middle" font-size="18" font-weight="700" fill="#1f2933">비로그인 추가 흐림</text>
+  <text x="630" y="276" text-anchor="middle" font-size="14" fill="#6b7684">방문자엔 더 뭉갬</text>
+
+  <rect x="740" y="215" width="115" height="80" rx="14" fill="#2f7d6e"/>
+  <text x="797" y="250" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">지도 표시</text>
+  <text x="797" y="274" text-anchor="middle" font-size="13" fill="#d7ece6">안전한 범위</text>
+
+  <g stroke="#2f7d6e" stroke-width="2.5" fill="none">
+    <line x1="240" y1="255" x2="294" y2="255" marker-end="url(#ar3)"/>
+    <line x1="480" y1="255" x2="534" y2="255" marker-end="url(#ar3)"/>
+    <line x1="720" y1="255" x2="734" y2="255" marker-end="url(#ar3)"/>
+  </g>
+  <text x="450" y="360" text-anchor="middle" font-size="16" fill="#6b7684">＊ 밥자리를 아무리 들여다봐도 찾아갈 수 없다. 신뢰가 전제인 사업의 설계 원칙.</text>
+</svg>

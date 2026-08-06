@@ -78,7 +78,32 @@ export default function RallyJoinButton() {
     }
   };
 
+  // 참여 철회 — 집회 참여 이력은 민감할 수 있는 정보라 반드시 스스로 지울 수 있어야 한다.
+  const handleCancel = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { error } = await supabase
+        .from("rally_participations")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("admin_extra", false);
+      if (error) {
+        alert("취소하지 못했어요. 잠시 후 다시 시도해주세요.");
+        return;
+      }
+      setJoined(false);
+      setCount((c) => Math.max(0, (c ?? 1) - 1));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
+    <>
     <div className="mt-2.5 flex items-center gap-2.5">
       <button
         onClick={handleJoin}
@@ -115,5 +140,24 @@ export default function RallyJoinButton() {
         </div>
       )}
     </div>
+
+    {/* 수집 고지 + 철회 경로 — 참여 이력은 본인만 볼 수 있고 언제든 지울 수 있어야 한다 */}
+    <p className="mt-1.5 px-1 text-[10.5px] leading-relaxed text-text-light">
+      참여 여부는 <b>인원 추산에만</b> 쓰고 명단은 공개하지 않아요. 집회 다음 날 모두 삭제돼요.
+      {done && (
+        <>
+          {" "}
+          <button
+            onClick={handleCancel}
+            disabled={busy}
+            className="underline font-bold disabled:opacity-50"
+            style={{ color: "var(--color-primary-dark)" }}
+          >
+            참여 취소하기
+          </button>
+        </>
+      )}
+    </p>
+    </>
   );
 }
