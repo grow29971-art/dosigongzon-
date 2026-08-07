@@ -610,7 +610,11 @@ export default function HomeAuthed({
   const SHOW_CIRCLE_ENTRY = true;         // 서클 빠른 진입 — "혼자→같이" 리텐션 앵커(2026-07-16 회의)
   const SHOW_INVITE = true;               // 초대 섹션 — 바이럴 유입(catCount>0 가드). (2026-07-16 회의)
   const SHOW_SOCIAL_PROOF = true;         // 사회적 증명 스트립 — 동네 활발함 신호(데이터 없으면 자동 숨김). (2026-07-16 회의)
-  const SHOW_WEATHER_SHOP_BRIDGE = true;  // 날씨→쇼핑 카테고리 다리 — 2026-07-21 쇼핑 동선 회의로 ON (한파/폭염/비 조건부 노출)
+  // 날씨→쇼핑 카테고리 다리 — 2026-07-21 쇼핑 동선 회의로 ON.
+  // 2026-08-07 OFF: 상품이 전부 비활성이라 이 링크만 유일하게 빈 쇼핑으로 보내는
+  // 데드엔드가 됐다(ShopPreviewStrip은 0개면 자동 숨김인데 이 다리는 가드가 없었다).
+  // 상품을 다시 켤 때 함께 true로 되돌릴 것.
+  const SHOW_WEATHER_SHOP_BRIDGE = false;
   const SHOW_SHOP_PREVIEW = true;         // 홈 쇼핑 프리뷰 스트립(찜) — 2026-07-21 쇼핑 동선 회의. 케어 지표 하락 시 이 플래그로 롤백
   const SHOW_CARE_INBOX_HOME = isCoreJourneyEnabled("P1");
 

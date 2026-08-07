@@ -337,7 +337,7 @@ export default function ShopPage() {
       >
         <span className="text-[13px] shrink-0">🚧</span>
         <p className="text-[11px] font-semibold leading-snug" style={{ color: "#A6741E" }}>
-          아직 오픈 전이라 결제·배송은 되지 않아요. 지금은 구경하고 <b>♡ 찜해두는</b> 기간이에요.
+          정식 오픈을 준비하고 있어요. 준비되면 알려드릴게요.
         </p>
       </div>
 
