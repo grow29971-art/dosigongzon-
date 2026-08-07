@@ -16,7 +16,6 @@ import {
 } from "@/lib/shop-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import PushOptInCard from "@/app/components/PushOptInCard";
-import FundVoteCard from "@/app/components/FundVoteCard";
 import FundSettlementCard from "@/app/components/FundSettlementCard";
 import PageIntroModal from "@/app/components/PageIntroModal";
 
@@ -321,19 +320,16 @@ export default function ShopPage() {
             </div>
             <p className="text-[10.5px] text-text-light mt-1.5">
               {donation.total >= donation.goal
-                ? "목표 달성! 사용처는 투표로 정해요 🎉"
+                ? "목표 달성! 중성화 지원에 쓰여요 🎉"
                 : "구매 하나하나가 여기 쌓여요"}
             </p>
           </div>
         ) : (
           <p className="text-[11.5px] text-text-sub mt-1">
-            어디에 쓸지는 함께 투표로 정해요
+            모인 금액은 길고양이 중성화(TNR) 지원에 쓰여요
           </p>
         )}
       </div>
-
-      {/* ── 수익 사용처 투표 ── */}
-      <FundVoteCard />
 
       {/* ── 정식 오픈 준비 중 안내 ── */}
       <div

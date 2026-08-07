@@ -42,8 +42,23 @@ export async function GET() {
     disbursements = rows.slice(0, 10); // 표시는 최근 10건
   }
 
+  // 중성화 완료로 확인된 고양이 수.
+  // ⚠ 후원금으로 중성화한 마릿수가 아니라 "지도에 등록된 개체 중 중성화가 확인된 수"다.
+  //   둘을 혼동하면 사실과 다른 성과가 되므로 표시 라벨에서 반드시 구분한다.
+  const { count: neuteredCount } = await svc
+    .from("cats")
+    .select("id", { count: "exact", head: true })
+    .eq("neutered", true)
+    .eq("hidden", false);
+
   return NextResponse.json(
-    { collected, spent, balance: collected - spent, disbursements },
+    {
+      collected,
+      spent,
+      balance: collected - spent,
+      disbursements,
+      neuteredCount: neuteredCount ?? 0,
+    },
     { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
   );
 }

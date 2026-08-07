@@ -11,6 +11,8 @@ interface Settlement {
   spent: number;
   balance: number;
   disbursements: { amount: number; memo: string; spent_at: string }[];
+  /** 지도에 등록된 개체 중 중성화가 확인된 수 (후원금 집행 실적과는 별개) */
+  neuteredCount?: number;
 }
 
 const won = (n: number) => `${n.toLocaleString()}원`;
@@ -27,6 +29,7 @@ export default function FundSettlementCard() {
 
   if (!data) return null;
   const { collected, spent, balance, disbursements } = data;
+  const neuteredCount = data.neuteredCount ?? 0;
   const empty = collected === 0 && spent === 0;
 
   return (
@@ -55,6 +58,22 @@ export default function FundSettlementCard() {
           </div>
         ))}
       </div>
+
+      {/* 중성화 확인 마릿수 — 후원금 집행 실적이 아니라 지도 등록 개체 기준이라
+          라벨에서 "지도에 등록된"을 명시한다(성과 과장 방지). */}
+      {neuteredCount > 0 && (
+        <div
+          className="mt-2 flex items-center justify-center gap-1.5 py-2.5 rounded-2xl"
+          style={{ background: "rgba(107,142,111,0.10)", border: "1px solid rgba(107,142,111,0.22)" }}
+        >
+          <span className="text-[13px]">✂️</span>
+          <span className="text-[11px] font-bold text-text-sub">지도에 등록된 중성화 완료</span>
+          <span className="text-[14px] font-black tabular-nums" style={{ color: "#4F6B53" }}>
+            {neuteredCount.toLocaleString()}
+          </span>
+          <span className="text-[11px] font-bold text-text-sub">마리</span>
+        </div>
+      )}
 
       {empty ? (
         <p className="text-[10.5px] text-text-light text-center mt-3 leading-relaxed">
