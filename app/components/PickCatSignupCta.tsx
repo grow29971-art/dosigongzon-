@@ -7,11 +7,20 @@
 // (구 /onboarding pick 화면은 7/22 폐지 — 쓰기 경로가 함께 사라져 퍼널 3스텝이 죽어 있었다)
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { logFunnelEvent } from "@/lib/funnel-repo";
 
 const PENDING_KEY = "dosigongzon_pending_care";
 
 export default function PickCatSignupCta({ catId, catName }: { catId: string; catName: string }) {
+  // 이 컴포넌트는 비로그인일 때만 렌더되므로(cats/[id]/page.tsx의 !currentUserId 블록),
+  // 마운트 = "비로그인 방문자가 고양이 상세에 도달"이다. pick 바로 앞단을 재는 스텝으로,
+  // 이게 없으면 onboarding_pick이 0일 때 "동선이 안 닿았다"와 "닿았는데 안 눌렀다"를
+  // 구분할 수 없다. (logFunnelEvent는 스텝당 기기 1회 가드가 있어 중복 걱정 없음)
+  useEffect(() => {
+    logFunnelEvent("cat_detail_view_anon", catId);
+  }, [catId]);
+
   const commit = () => {
     try {
       localStorage.setItem(

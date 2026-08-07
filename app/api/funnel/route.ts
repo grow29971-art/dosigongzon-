@@ -10,6 +10,7 @@ import { rateLimit, getClientIp } from "@/lib/rate-limit";
 // lib/funnel-repo.ts FunnelStep과 동기 유지할 것
 const VALID_STEPS = new Set([
   "onboarding_intro",
+  "cat_detail_view_anon",
   "onboarding_pick",
   "signup_home",
   "first_feed",

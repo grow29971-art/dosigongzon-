@@ -12,6 +12,7 @@ const ANON_ID_KEY = "dosigongzon_anon_id";
 
 export type FunnelStep =
   | "onboarding_intro" // 온보딩 intro 화면 진입
+  | "cat_detail_view_anon" // 비로그인이 고양이 상세에 도달 (pick 바로 앞단)
   | "onboarding_pick" // pick 단계에서 실제 아이 선택
   | "signup_home" // 가입 후 홈 첫 도달 (pending_care 보유 상태)
   | "first_feed" // 핸드오프 CTA로 첫 밥 기록 성공
