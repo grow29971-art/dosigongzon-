@@ -22,6 +22,7 @@ export default function AdminFundPage() {
 
   const [amount, setAmount] = useState("");
   const [memo, setMemo] = useState("");
+  const [neuteredCount, setNeuteredCount] = useState("");
   const [spentAt, setSpentAt] = useState(todayKst());
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -53,8 +54,13 @@ export default function AdminFundPage() {
     setError("");
     setSaving(true);
     try {
-      await createDisbursement({ amount: Number(amount), memo, spent_at: spentAt });
-      setAmount(""); setMemo(""); setSpentAt(todayKst());
+      await createDisbursement({
+        amount: Number(amount),
+        memo,
+        spent_at: spentAt,
+        neuteredCount: neuteredCount ? Number(neuteredCount) : undefined,
+      });
+      setAmount(""); setMemo(""); setNeuteredCount(""); setSpentAt(todayKst());
       await reload();
     } catch (e) {
       setError(e instanceof Error ? e.message : "등록 실패");
@@ -87,7 +93,28 @@ export default function AdminFundPage() {
         <ArrowLeft size={16} /> 관리자
       </button>
       <h1 className="text-[22px] font-extrabold text-text-main tracking-tight mb-1">후원금 지출 관리</h1>
-      <p className="text-[12.5px] text-text-sub mb-5">여기 등록한 지출이 쇼핑의 &lsquo;투명 정산&rsquo; 위젯에 바로 반영돼요.</p>
+      <p className="text-[12.5px] text-text-sub mb-3">여기 등록한 지출이 쇼핑의 &lsquo;투명 정산&rsquo; 위젯에 바로 반영돼요.</p>
+
+      {/* 계산식 안내 — 세 숫자가 각각 어디서 오는지 한눈에. 손이 필요한 칸이 하나뿐임을 명시 */}
+      <div
+        className="mb-5 px-3.5 py-3 rounded-2xl text-[11.5px] leading-relaxed"
+        style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(173, 94, 59,0.12)" }}
+      >
+        <p className="font-extrabold text-text-main mb-1.5">숫자는 이렇게 계산돼요</p>
+        <p className="text-text-sub">
+          <b>모인 금액</b> = 결제완료 주문의 후원액 합계 · <b>자동</b>
+          <br />
+          <span className="text-text-light">주문이 취소·환불되면 그만큼 자동으로 빠져요.</span>
+        </p>
+        <p className="text-text-sub mt-1.5">
+          <b>쓰인 금액</b> = 아래에 등록한 지출의 합계 · <b>등록만 직접</b>
+          <br />
+          <span className="text-text-light">실제로 돈을 쓴 건 앱이 알 수 없어서, 이 칸만 사람이 넣어요.</span>
+        </p>
+        <p className="text-text-sub mt-1.5">
+          <b>잔액</b> = 모인 − 쓰인 · <b>자동</b>
+        </p>
+      </div>
 
       {/* 요약 */}
       <div className="grid grid-cols-3 gap-2 mb-5">
@@ -121,6 +148,13 @@ export default function AdminFundPage() {
             style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
           />
           <input
+            type="text" inputMode="numeric" value={neuteredCount}
+            onChange={(e) => setNeuteredCount(e.target.value.replace(/[^0-9]/g, ""))}
+            placeholder="중성화 마릿수 (없으면 비워두세요)"
+            className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none tabular-nums"
+            style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+          />
+          <input
             type="date" value={spentAt} onChange={(e) => setSpentAt(e.target.value)}
             className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none"
             style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
@@ -144,7 +178,10 @@ export default function AdminFundPage() {
           <div key={d.id} className="flex items-center gap-3 px-3.5 py-3 rounded-xl" style={{ background: "#fff", border: "1px solid var(--color-divider)" }}>
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main truncate">{d.memo}</p>
-              <p className="text-[10.5px] text-text-light">{d.spent_at}</p>
+              <p className="text-[10.5px] text-text-light">
+                {d.spent_at}
+                {d.neutered_count > 0 && <> · ✂️ {d.neutered_count}마리</>}
+              </p>
             </div>
             <span className="text-[13px] font-extrabold tabular-nums shrink-0" style={{ color: "#E86B8C" }}>-{won(d.amount)}</span>
             <button onClick={() => remove(d.id)} className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center active:scale-90" style={{ background: "rgba(216,85,85,0.1)" }} aria-label="삭제">
