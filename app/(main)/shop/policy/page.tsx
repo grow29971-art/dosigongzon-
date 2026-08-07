@@ -105,9 +105,9 @@ export default function ShopPolicyPage() {
         <section className="p-4" style={sectionStyle}>
           <h2 className="text-[13.5px] font-extrabold text-text-main mb-2.5">수익의 사용</h2>
           <p className="text-[12.5px] text-text-sub leading-relaxed">
-            쇼핑몰 수익의 일부는 길고양이를 위해 사용돼요. 구체적인 사용처는
-            커뮤니티 투표로 정하며, 누적 현황은 쇼핑몰 홈의 진행바에서
-            투명하게 공개하고 있어요 💛
+            쇼핑몰 수익의 일부는 길고양이 중성화(TNR) 지원에 사용돼요.
+            상품마다 정해진 후원 비율은 상품 상세에서 확인할 수 있고,
+            모인 금액·쓰인 금액·잔액은 쇼핑몰 홈에서 그대로 공개하고 있어요 💛
           </p>
         </section>
       </div>

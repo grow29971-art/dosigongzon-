@@ -203,7 +203,7 @@ export default function ShopPage() {
         accent="#E8930C"
         accentDark="#B5720A"
         items={[
-          { emoji: "💛", text: <>수익의 일부는 길고양이를 위해 써요. <b className="text-text-main">사용처는 함께 투표</b>로 정해요.</> },
+          { emoji: "💛", text: <>수익의 일부는 길고양이 <b className="text-text-main">중성화(TNR)</b>에 써요. 모인 금액과 쓴 금액은 그대로 공개돼요.</> },
           { emoji: "🐾", text: <>매일 돌봄 출석으로 모은 포인트를 <b className="text-text-main">1P = 1원</b> 할인으로 쓸 수 있어요.</> },
           { emoji: "🔍", text: <>모인 금액·쓰인 금액을 <b className="text-text-main">투명하게 공개</b>해요.</> },
         ]}
@@ -280,9 +280,8 @@ export default function ShopPage() {
         }}
       >
         <p className="text-[13.5px] font-extrabold text-text-main leading-relaxed">
-          여기서 구매하시면, 수익의 일부분이
-          <br />길고양이를 위해 쓰입니다 🐱
-          <span className="text-[11px] font-bold text-text-light"> (사용처 투표 중)</span>
+          여기서 사면 수익의 일부가
+          <br />길고양이 <b style={{ color: "var(--color-primary-dark)" }}>중성화(TNR)</b>에 쓰여요 🐱
         </p>
         {/* 투명성 안내 */}
         <div
@@ -290,9 +289,8 @@ export default function ShopPage() {
           style={{ background: "rgba(255,255,255,0.55)", border: "1px solid rgba(196,126,90,0.15)" }}
         >
           <p className="text-[11px] leading-[1.65] text-text-sub">
-            어차피 사는 사료·용품, 여기서 사면 <b className="text-text-main">수익의 일부가 아이들에게</b> 쌓여요.
-            <b className="text-text-main"> 어디에 쓸지는 투표로</b> 정하고,
-            <br />모인 금액과 쓰인 금액은 <b className="text-text-main">아래에서 투명하게</b> 공개돼요 💛
+            어차피 사는 사료·용품이잖아요.
+            <br />얼마가 모였고 얼마를 썼는지는 <b className="text-text-main">아래에 그대로 공개</b>돼요 💛
           </p>
           <p className="text-[11px] font-bold text-text-main mt-1.5 pt-1.5" style={{ borderTop: "1px solid rgba(196,126,90,0.12)" }}>
             도시공존은 특정 단체·정당과 무관하게, 오직 <b style={{ color: "var(--color-primary-dark)" }}>길집사님들과</b> 함께 만들어가요 🐾
@@ -325,8 +323,9 @@ export default function ShopPage() {
             </p>
           </div>
         ) : (
+          // 헤드라인에서 이미 용도를 말했으니 여기서는 반복하지 않는다
           <p className="text-[11.5px] text-text-sub mt-1">
-            모인 금액은 길고양이 중성화(TNR) 지원에 쓰여요
+            첫 구매가 첫 후원이 돼요
           </p>
         )}
       </div>
