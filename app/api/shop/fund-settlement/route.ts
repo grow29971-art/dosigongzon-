@@ -42,14 +42,18 @@ export async function GET() {
     disbursements = rows.slice(0, 10); // 표시는 최근 10건
   }
 
-  // 중성화 완료로 확인된 고양이 수.
-  // ⚠ 후원금으로 중성화한 마릿수가 아니라 "지도에 등록된 개체 중 중성화가 확인된 수"다.
-  //   둘을 혼동하면 사실과 다른 성과가 되므로 표시 라벨에서 반드시 구분한다.
-  const { count: neuteredCount } = await svc
-    .from("cats")
-    .select("id", { count: "exact", head: true })
-    .eq("neutered", true)
-    .eq("hidden", false);
+  // 후원금으로 중성화한 마릿수 — 집행 내역(fund_disbursements)에 기록된 값의 합계.
+  // 지도에 등록된 중성화 개체 수와는 다르다. 이건 "우리가 모은 돈으로 실제 수술한 수"라
+  // 집행이 없으면 0이며, 0을 그대로 보여주는 것이 정직하다.
+  // (neutered_count 컬럼 마이그레이션 전이면 조용히 0)
+  let neuteredCount = 0;
+  const { data: neuteredRows, error: neuteredErr } = await svc
+    .from("fund_disbursements")
+    .select("neutered_count");
+  if (!neuteredErr && neuteredRows) {
+    neuteredCount = (neuteredRows as { neutered_count: number | null }[])
+      .reduce((s, r) => s + (r.neutered_count ?? 0), 0);
+  }
 
   return NextResponse.json(
     {
@@ -57,7 +61,7 @@ export async function GET() {
       spent,
       balance: collected - spent,
       disbursements,
-      neuteredCount: neuteredCount ?? 0,
+      neuteredCount,
     },
     { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
   );
