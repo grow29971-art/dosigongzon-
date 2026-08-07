@@ -183,6 +183,61 @@ export default async function CatDetailPage({ params }: { params: Params }) {
         </div>
       </div>
 
+      {/* 비로그인 진입자 회원가입 nudge — pick 지점.
+          2026-08-07: 갤러리·스탯·사회증명 아래에 있어서 소형 폰에서는 접힘 밖이었다.
+          커버 직후로 올려 첫 화면 안에 들어오게 한다. (cat_detail_view_anon은
+          PickCatSignupCta 마운트 시 발화하므로 순서를 바꿔도 계측량은 그대로) */}
+      {!currentUserId && (
+        <div className="px-4 mt-3">
+          <div
+            className="rounded-2xl p-4 relative overflow-hidden"
+            style={{
+              background: "linear-gradient(135deg, #FFF6E8 0%, #FCE7D2 50%, #F8D9BE 100%)",
+              border: "1.5px solid rgba(173, 94, 59,0.30)",
+              boxShadow: "0 6px 18px rgba(173, 94, 59,0.18)",
+            }}
+          >
+            <div
+              aria-hidden
+              style={{
+                position: "absolute",
+                top: -40,
+                right: -30,
+                width: 140,
+                height: 140,
+                borderRadius: "50%",
+                background: "radial-gradient(circle, rgba(232,141,90,0.18) 0%, rgba(232,141,90,0) 70%)",
+              }}
+            />
+            <p className="text-[14.5px] font-extrabold text-text-main leading-tight tracking-tight mb-1.5">
+              🐾 우리 동네 길고양이도 같이 돌봐요
+            </p>
+            <p className="text-[11.5px] leading-relaxed mb-3" style={{ color: "rgba(92,74,62,0.85)" }}>
+              도시공존은 광고 없는 무료 시민 참여 길고양이 지도예요.
+              {totalCatsForNudge > 0 && (
+                <>
+                  {" "}전국 <b style={{ color: "var(--color-primary-dark)" }}>{totalCatsForNudge.toLocaleString()}마리</b>가 이미 등록돼 함께 돌봐지고 있어요.
+                </>
+              )}
+            </p>
+            <div className="flex gap-2">
+              {/* 온보딩 pick 지점 — pending_care 커밋 + onboarding_pick 계측 후 가입으로 */}
+              <PickCatSignupCta catId={cat.id} catName={cat.name} />
+              <Link
+                href="/"
+                className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.98] transition-transform bg-white"
+                style={{
+                  color: "var(--color-primary-dark)",
+                  border: "1px solid rgba(173, 94, 59,0.30)",
+                }}
+              >
+                더 둘러보기
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 입양·임보 문의 CTA (상태 있고 본인 고양이 아닐 때) */}
       {cat.adoption_status && (
         <div className="px-4 mt-3">
@@ -319,58 +374,6 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                   좋아요 {communityStats.likeUserCount}명 · 최근 30일 기록
                 </p>
               )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 비로그인 진입자 회원가입 nudge — SNS 공유로 들어온 사람이 매력 느낄 자리 */}
-      {!currentUserId && (
-        <div className="px-4 mt-3">
-          <div
-            className="rounded-2xl p-4 relative overflow-hidden"
-            style={{
-              background: "linear-gradient(135deg, #FFF6E8 0%, #FCE7D2 50%, #F8D9BE 100%)",
-              border: "1.5px solid rgba(173, 94, 59,0.30)",
-              boxShadow: "0 6px 18px rgba(173, 94, 59,0.18)",
-            }}
-          >
-            <div
-              aria-hidden
-              style={{
-                position: "absolute",
-                top: -40,
-                right: -30,
-                width: 140,
-                height: 140,
-                borderRadius: "50%",
-                background: "radial-gradient(circle, rgba(232,141,90,0.18) 0%, rgba(232,141,90,0) 70%)",
-              }}
-            />
-            <p className="text-[14.5px] font-extrabold text-text-main leading-tight tracking-tight mb-1.5">
-              🐾 우리 동네 길고양이도 같이 돌봐요
-            </p>
-            <p className="text-[11.5px] leading-relaxed mb-3" style={{ color: "rgba(92,74,62,0.85)" }}>
-              도시공존은 광고 없는 무료 시민 참여 길고양이 지도예요.
-              {totalCatsForNudge > 0 && (
-                <>
-                  {" "}전국 <b style={{ color: "var(--color-primary-dark)" }}>{totalCatsForNudge.toLocaleString()}마리</b>가 이미 등록돼 함께 돌봐지고 있어요.
-                </>
-              )}
-            </p>
-            <div className="flex gap-2">
-              {/* 온보딩 pick 지점 — pending_care 커밋 + onboarding_pick 계측 후 가입으로 */}
-              <PickCatSignupCta catId={cat.id} catName={cat.name} />
-              <Link
-                href="/"
-                className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.98] transition-transform bg-white"
-                style={{
-                  color: "var(--color-primary-dark)",
-                  border: "1px solid rgba(173, 94, 59,0.30)",
-                }}
-              >
-                더 둘러보기
-              </Link>
             </div>
           </div>
         </div>
@@ -614,14 +617,22 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             urgent
           />
         )}
-        <Link
-          href={`/map?cat=${cat.id}`}
-          className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary text-white active:scale-[0.98] transition-transform"
-          style={{ boxShadow: "var(--shadow-primary)" }}
-        >
-          <PawPrint size={16} />
-          <span className="text-[13.5px] font-extrabold">지도에서 돌봄하기</span>
-        </Link>
+        {/* 비로그인에게는 숨긴다. 눌러도 지도 시트의 돌봄 탭이 로그인 전용이라
+            입력 폼이 통째로 사라지는 침묵 실패였고(CareLogTab의 isLoggedIn 가드),
+            위쪽 가입 CTA보다 시각적으로 강해 pick 경로를 새게 만들고 있었다.
+            (2026-08-07 — /signup으로 보내는 대신 숨기는 이유: 그 경로는
+             pending_care 커밋과 onboarding_pick 발화를 거치지 않아
+             계측 밖 두 번째 가입 경로가 생긴다) */}
+        {currentUserId && (
+          <Link
+            href={`/map?cat=${cat.id}`}
+            className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary text-white active:scale-[0.98] transition-transform"
+            style={{ boxShadow: "var(--shadow-primary)" }}
+          >
+            <PawPrint size={16} />
+            <span className="text-[13.5px] font-extrabold">지도에서 돌봄하기</span>
+          </Link>
+        )}
         {cat.health_status !== "danger" && (
           <ShareCatButton
             catId={cat.id}

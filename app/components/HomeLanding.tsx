@@ -511,11 +511,13 @@ export default async function HomeLanding({
                 NEW
               </span>
             </div>
+            {/* 가입 전 방문자에게 "이 앱 가입자 중에 학대자가 있다"는 공포를 먼저 심으면
+                전환을 스스로 깎는다. 같은 기능을 위협이 아니라 통제권으로 설명한다. (2026-08-07) */}
             <p className="text-[15px] font-extrabold text-white leading-snug mb-2 tracking-tight">
-              가장 무서운 건 가입자 중에 학대자가 있을까봐?
+              위치를 아무에게나 보이고 싶지 않은 아이가 있어요
             </p>
             <p className="text-[12.5px] leading-[1.85]" style={{ color: "rgba(255,255,255,0.92)" }}>
-              그 공포에 대한 답이 <b style={{ color: "#FFF7C4" }}>Private Circle</b>입니다.
+              그럴 때 쓰는 게 <b style={{ color: "#FFF7C4" }}>Private Circle</b>입니다.
               걱정되는 아이는 <b style={{ color: "#FFF7C4" }}>"내 서클"</b>로 설정하면,
               내가 직접 승인한 이웃에게만 보입니다.
             </p>

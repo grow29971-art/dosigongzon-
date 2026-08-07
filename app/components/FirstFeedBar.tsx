@@ -36,7 +36,14 @@ export default function FirstFeedBar({ catId, catName }: { catId: string; catNam
     createClient()
       .auth.getUser()
       .then(({ data }: { data: { user: { id: string } | null } }) => {
-        if (!cancelled && data.user) setShow(true);
+        if (cancelled || !data.user) return;
+        setShow(true);
+        // pick을 거쳐 가입한 사람은 홈이 아니라 이 상세로 착지하기 때문에
+        // PendingCareHandoff가 뜨지 않고, 그래서 signup_home을 구조적으로
+        // 한 번도 찍을 수 없었다(퍼널이 pick →(공백)→ first_feed로 끊김).
+        // 여기 조건(pending_care 일치 + 로그인)이 signup_home의 정의 그 자체다.
+        // logFunnelEvent에 스텝당 기기 1회 가드가 있어 중복 발화하지 않는다.
+        logFunnelEvent("signup_home", catId);
       });
     return () => {
       cancelled = true;
