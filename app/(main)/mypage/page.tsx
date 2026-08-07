@@ -26,6 +26,7 @@ import {
   Ban,
   ShieldCheck,
   TrendingUp,
+  Star,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 const InquiryModal = dynamic(() => import("@/app/components/InquiryModal"), { ssr: false });
@@ -921,6 +922,30 @@ export default function MyPage() {
                 title="활동 지역 설정"
                 subtitle="최대 2곳까지 내 동네를 지정할 수 있어요"
               />
+            <Link
+              href="/memorial"
+              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
+              style={{
+                background: "#FFFFFF",
+                borderRadius: "var(--radius-card-sm)",
+                boxShadow: "0 4px 14px rgba(58,44,77,0.10), 0 1px 2px rgba(0,0,0,0.02)",
+                border: "1px solid rgba(0,0,0,0.04)",
+              }}
+            >
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                style={{ background: "linear-gradient(135deg, #3a2c4d, #6b5b8a)" }}
+              >
+                <Star size={18} color="#FFE9A8" fill="#FFE9A8" strokeWidth={2} />
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-[14px] font-extrabold text-text-main tracking-tight">고양이별</p>
+                <p className="text-[11px] text-text-sub mt-0.5">
+                  먼저 떠난 아이들을 기억하는 곳이에요
+                </p>
+              </div>
+              <ChevronRight size={16} className="shrink-0" style={{ color: "#6B7684", opacity: 0.7 }} />
+            </Link>
             {SHOW_CARETAKERS && (
             <Link
               href="/caretakers"

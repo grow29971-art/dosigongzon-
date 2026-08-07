@@ -40,6 +40,9 @@ export interface Cat {
   art_key?: string | null; // 지도 마커 캐릭터 팔레트 (AI 사진 판독, 마이그레이션 전이면 undefined)
   art_colors?: { fur?: string | null; pattern?: string | null } | null; // 사진 실측 털/무늬 색 hex
   created_at: string;
+  memorial_at?: string | null;   // 고양이별로 보낸 시각. null/undefined 면 생존
+  memorial_note?: string | null; // 마지막 인사
+  memorial_by?: string | null;
   card_rarity: string | null;
   card_name: string | null;
   card_traits: string[] | null;
@@ -445,7 +448,10 @@ export async function listCats(): Promise<Cat[]> {
     throw new Error(`고양이 목록을 불러올 수 없어요: ${error.message}`);
   }
 
-  return (data ?? []) as Cat[];
+  // 고양이별로 간 아이는 지도에서 뺀다. 뷰(cats_public_map)는 SQL에서 이미 걸러지지만
+  // 로그인 사용자는 base 테이블을 읽으므로 여기서 거른다. 컬럼이 없던 시절 데이터도
+  // undefined 라 그대로 통과한다(마이그레이션 전후 모두 안전).
+  return ((data ?? []) as Cat[]).filter((c) => !c.memorial_at);
 }
 
 // ── Supabase Storage image transformation 토글 ──
@@ -1525,6 +1531,129 @@ export async function deleteCat(catId: string): Promise<void> {
     console.error("[cats-repo] deleteCat failed:", error);
     throw new Error(`삭제에 실패했어요: ${error.message}`);
   }
+}
+
+// ══════════════════════════════════════════
+// 고양이별 (추모)
+//
+// 삭제(deleteCat)는 care_logs·cat_cards·댓글까지 CASCADE 로 지운다.
+// 무지개다리를 건넌 아이에게 그건 기록까지 없애는 일이라, 행을 남긴 채
+// memorial_at 만 찍어 지도·건강경보에서 빼고 /memorial 에서 계속 볼 수 있게 한다.
+// ══════════════════════════════════════════
+
+export interface MemorialCat extends Cat {
+  memorial_at: string;
+  flower_count: number;
+  care_log_count: number;
+}
+
+// 고양이별로 보내기 (등록한 본인 또는 관리자 — RLS 의 update 정책이 최종 판단)
+export async function sendCatToStar(catId: string, note: string): Promise<void> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const { error } = await supabase
+    .from("cats")
+    .update({
+      memorial_at: new Date().toISOString(),
+      memorial_note: note.trim() || null,
+      memorial_by: user?.id ?? null,
+    })
+    .eq("id", catId);
+
+  if (error) {
+    console.error("[cats-repo] sendCatToStar failed:", error);
+    throw new Error(`고양이별로 보내지 못했어요: ${error.message}`);
+  }
+}
+
+// 되돌리기 — 잘못 보냈을 때 지도로 복귀
+export async function restoreCatFromStar(catId: string): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("cats")
+    .update({ memorial_at: null, memorial_note: null, memorial_by: null })
+    .eq("id", catId);
+
+  if (error) throw new Error(`되돌리지 못했어요: ${error.message}`);
+}
+
+// 고양이별 목록 — 최근에 간 순
+export async function listMemorialCats(): Promise<MemorialCat[]> {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("cats")
+    .select("*")
+    .not("memorial_at", "is", null)
+    .order("memorial_at", { ascending: false });
+
+  if (error) {
+    console.error("[cats-repo] listMemorialCats failed:", error);
+    throw new Error(`고양이별을 불러오지 못했어요: ${error.message}`);
+  }
+
+  const cats = (data ?? []) as Cat[];
+  if (cats.length === 0) return [];
+
+  const ids = cats.map((c) => c.id);
+
+  // 헌화·돌봄기록 수는 별도 집계. PostgREST 에 group by 가 없어 행을 받아 세되,
+  // 추모 개체 수가 적어 비용이 작다(id 컬럼만 조회).
+  const [flowers, logs] = await Promise.all([
+    supabase.from("memorial_flowers").select("cat_id").in("cat_id", ids),
+    supabase.from("care_logs").select("cat_id").in("cat_id", ids),
+  ]);
+
+  const tally = (rows: { cat_id: string }[] | null) => {
+    const m = new Map<string, number>();
+    for (const r of rows ?? []) m.set(r.cat_id, (m.get(r.cat_id) ?? 0) + 1);
+    return m;
+  };
+  const flowerBy = tally(flowers.data as { cat_id: string }[] | null);
+  const logBy = tally(logs.data as { cat_id: string }[] | null);
+
+  return cats.map((c) => ({
+    ...c,
+    memorial_at: c.memorial_at as string,
+    flower_count: flowerBy.get(c.id) ?? 0,
+    care_log_count: logBy.get(c.id) ?? 0,
+  }));
+}
+
+// 내가 헌화한 고양이 ID 목록
+export async function listMyFlowerCatIds(): Promise<Set<string>> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return new Set();
+
+  const { data } = await supabase.from("memorial_flowers").select("cat_id").eq("user_id", user.id);
+  const rows = (data ?? []) as { cat_id: string }[];
+  return new Set(rows.map((r) => r.cat_id));
+}
+
+// 헌화 토글 — 켜졌으면 true
+export async function toggleMemorialFlower(catId: string): Promise<boolean> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("로그인이 필요해요.");
+
+  const { data: existing } = await supabase
+    .from("memorial_flowers")
+    .select("id")
+    .eq("cat_id", catId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (existing) {
+    const { error } = await supabase.from("memorial_flowers").delete().eq("cat_id", catId).eq("user_id", user.id);
+    if (error) throw new Error(`취소하지 못했어요: ${error.message}`);
+    return false;
+  }
+
+  const { error } = await supabase.from("memorial_flowers").insert({ cat_id: catId, user_id: user.id });
+  if (error) throw new Error(`헌화하지 못했어요: ${error.message}`);
+  return true;
 }
 
 // ══════════════════════════════════════════

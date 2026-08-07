@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, MapPin, PawPrint, CalendarDays, Camera, BookOpen, Sparkles } from "lucide-react";
+import { ArrowLeft, MapPin, PawPrint, CalendarDays, Camera, BookOpen, Sparkles, Star } from "lucide-react";
 import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer, getCatCommunityStatsServer, getCatDiaryServer } from "@/lib/cats-server";
 import { GENDER_MAP, HEALTH_MAP, thumbnailUrl, optimizedImageUrl } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
@@ -187,7 +187,50 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           2026-08-07: 갤러리·스탯·사회증명 아래에 있어서 소형 폰에서는 접힘 밖이었다.
           커버 직후로 올려 첫 화면 안에 들어오게 한다. (cat_detail_view_anon은
           PickCatSignupCta 마운트 시 발화하므로 순서를 바꿔도 계측량은 그대로) */}
-      {!currentUserId && (
+      {/* 고양이별로 간 아이 — 돌봄 권유 대신 추모 안내로 바꾼다 */}
+      {cat.memorial_at && (
+        <div className="px-4 mt-3">
+          <div
+            className="rounded-2xl p-5"
+            style={{
+              background: "linear-gradient(135deg, #2b2440 0%, #3a2c4d 55%, #55456f 100%)",
+              boxShadow: "0 8px 22px rgba(58,44,77,0.28)",
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <Star size={16} color="#FFE9A8" fill="#FFE9A8" />
+              <p className="text-[13.5px] font-bold text-white">
+                {cat.name}(이)는 고양이별에 있어요
+              </p>
+            </div>
+            <p className="text-[12.5px] leading-[1.7] mt-2" style={{ color: "rgba(255,255,255,0.66)" }}>
+              {new Date(cat.memorial_at).toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+              에 무지개다리를 건넜어요. 아래 기록은 그대로 남아 있어요.
+            </p>
+            {cat.memorial_note && (
+              <p
+                className="text-[13px] leading-[1.7] mt-3 px-3.5 py-3 whitespace-pre-wrap"
+                style={{ color: "rgba(255,255,255,0.82)", background: "rgba(0,0,0,0.2)", borderRadius: 12 }}
+              >
+                {cat.memorial_note}
+              </p>
+            )}
+            <Link
+              href="/memorial"
+              className="inline-flex items-center justify-center h-[40px] px-5 rounded-xl mt-4 text-[13px] font-bold"
+              style={{ background: "rgba(255,255,255,0.94)", color: "#3a2c4d" }}
+            >
+              고양이별 가보기
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {!currentUserId && !cat.memorial_at && (
         <div className="px-4 mt-3">
           <div
             className="rounded-2xl p-4 relative overflow-hidden"

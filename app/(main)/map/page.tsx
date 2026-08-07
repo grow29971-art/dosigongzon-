@@ -23,6 +23,7 @@ import {
   ChevronDown,
   ChevronUp,
   Trash2,
+  Star,
   LocateFixed,
   Stethoscope,
   Clock,
@@ -119,6 +120,7 @@ import { shareToKakao } from "@/lib/kakao-share";
 const MapCoachmark = dynamic(() => import("@/app/components/MapCoachmark"), { ssr: false });
 const MapChatGuideModal = dynamic(() => import("@/app/components/MapChatGuideModal"), { ssr: false });
 import ReactionBar from "@/app/components/ReactionBar";
+import SendToCatStar from "@/app/components/SendToCatStar";
 import { listReactionsBatch, type ReactionSummary } from "@/lib/reactions-repo";
 const CatLocationPicker = dynamic(() => import("@/app/components/CatLocationPicker"), { ssr: false });
 
@@ -1214,6 +1216,8 @@ export default function MapPage() {
 
   // ── 고양이 수정 모드 ──
   const [editingCat, setEditingCat] = useState(false);
+  // 고양이별로 보내기 모달 (무지개다리 → 삭제 대신 추모 보관)
+  const [starCat, setStarCat] = useState<{ id: string; name: string; photo_url: string | null } | null>(null);
   const [editName, setEditName] = useState("");
   const [editDesc, setEditDesc] = useState("");
   // 위치 식별 + 어뷰징 실시간 검출
@@ -2528,6 +2532,19 @@ export default function MapPage() {
       {/* 곁에 있어요 — 112/119 빠른 전화 시트 (A-1, 서버 무경유) */}
       <SafetyCallSheet open={safetyOpen} onClose={() => setSafetyOpen(false)} />
 
+      {/* 고양이별로 보내기 — 확인 → 승천 애니메이션 → 도착 */}
+      {starCat && (
+        <SendToCatStar
+          cat={starCat}
+          onClose={() => setStarCat(null)}
+          onSent={() => {
+            setCats((prev) => prev.filter((c) => c.id !== starCat.id));
+            invalidateMapCatsCache();
+            setSelectedCat(null);
+          }}
+        />
+      )}
+
       {/* 첫 진입 유저용 코치마크 (내 고양이 0마리일 때만) */}
       {!selectedCat && !selectedHospital && !chatOpen && !selectedDong && !addModalOpen && (
         <MapCoachmark
@@ -2952,6 +2969,26 @@ export default function MapPage() {
                 aria-label="수정"
               >
                 <Pencil size={17} className="text-primary" />
+              </button>
+              {/* 고양이별로 보내기 — 무지개다리를 건넌 아이용.
+                  삭제는 care_logs·카드까지 CASCADE 로 지우므로 기록을 남기려면 이쪽이다. */}
+              <button
+                onClick={() =>
+                  setStarCat({
+                    id: selectedCat.id,
+                    name: selectedCat.name,
+                    photo_url: selectedCat.photo_url ?? null,
+                  })
+                }
+                className="w-11 h-11 rounded-full flex items-center justify-center active:scale-90 transition-transform"
+                style={{
+                  background: "linear-gradient(135deg, #3a2c4d, #6b5b8a)",
+                  boxShadow: "0 4px 14px rgba(58,44,77,0.38)",
+                }}
+                aria-label="고양이별로 보내기"
+                title="고양이별로 보내기"
+              >
+                <Star size={17} color="#FFE9A8" fill="#FFE9A8" />
               </button>
               <button
                 onClick={async () => {

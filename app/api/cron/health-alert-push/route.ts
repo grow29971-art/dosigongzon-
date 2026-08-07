@@ -37,11 +37,14 @@ export async function POST(request: Request) {
   const supabase = createServiceClient();
   const staleAt = new Date(Date.now() - STALE_DAYS * 24 * 60 * 60 * 1000).toISOString();
 
-  // 1) 위급 상태 고양이 — hidden 제외 (서비스키 RLS 우회)
+  // 1) 위급 상태 고양이 — hidden·고양이별 제외 (서비스키 RLS 우회)
+  //    memorial_at 이 찍힌 아이는 이미 떠난 아이다. 이 필터가 없으면 health_status 가
+  //    danger 로 굳은 채 남아 "N일째 안부가 없어요" 푸시가 무기한 반복된다.
   const { data: cats } = await supabase
     .from("cats")
     .select("id, name, region, health_status, caretaker_id")
     .eq("hidden", false)
+    .is("memorial_at", null)
     .in("health_status", ["caution", "danger"])
     .not("region", "is", null)
     .order("created_at", { ascending: false })
