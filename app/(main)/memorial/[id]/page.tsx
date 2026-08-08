@@ -6,6 +6,7 @@ import { getCatByIdServer, getMemorialCareLogsServer } from "@/lib/cats-server";
 import { CARE_TYPE_MAP, type CareType } from "@/lib/care-logs-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import MemorialFlowerButton from "@/app/components/MemorialFlowerButton";
+import MemorialDiary from "@/app/components/MemorialDiary";
 
 export async function generateMetadata({
   params,
@@ -185,6 +186,9 @@ export default async function MemorialCatPage({
             </div>
           </div>
         )}
+
+        {/* 추모일기 — 떠나보낸 뒤 계속 쓰는 자리. 돌봄 기록(과거)보다 위에 둔다 */}
+        <MemorialDiary catId={cat.id} catName={cat.name} />
 
         {/* 돌봄 기록 전체 */}
         <div className="mt-10">

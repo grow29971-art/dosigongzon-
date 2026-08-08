@@ -1656,6 +1656,97 @@ export async function toggleMemorialFlower(catId: string): Promise<boolean> {
   return true;
 }
 
+// ── 추모일기 ──
+// 기본 비공개. RLS 가 "내 글 또는 공개글"만 돌려주므로 여기서 추가 필터를 걸지 않는다.
+// 하루 1편 제약도, 연속 일수 집계도 없다 — 못 쓴 날이 실패로 보이면 안 된다.
+
+export interface MemorialDiary {
+  id: string;
+  cat_id: string;
+  author_id: string;
+  author_name: string | null;
+  body: string;
+  mood: number | null;
+  is_shared: boolean;
+  created_at: string;
+}
+
+/** 그날의 마음 — 글이 안 나오는 날 이것만 찍고 나가도 되게 */
+export const DIARY_MOODS: { value: number; emoji: string; label: string }[] = [
+  { value: 1, emoji: "😭", label: "많이 힘들어요" },
+  { value: 2, emoji: "😢", label: "울었어요" },
+  { value: 3, emoji: "😔", label: "그리워요" },
+  { value: 4, emoji: "🙂", label: "견딜 만해요" },
+  { value: 5, emoji: "😌", label: "괜찮아졌어요" },
+];
+
+export async function listMemorialDiaries(catId: string): Promise<MemorialDiary[]> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("memorial_diaries")
+    .select("*")
+    .eq("cat_id", catId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("[cats-repo] listMemorialDiaries failed:", error);
+    return [];
+  }
+  return (data ?? []) as MemorialDiary[];
+}
+
+export async function createMemorialDiary(input: {
+  catId: string;
+  body: string;
+  mood: number | null;
+  isShared: boolean;
+}): Promise<MemorialDiary> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("로그인이 필요해요.");
+
+  // 작성자 이름은 스냅샷(프로젝트 비정규화 관례) — 닉네임이 바뀌어도 그때 쓴 사람으로 남는다
+  const { data: profile } = await supabase
+    .from("profiles_public")
+    .select("nickname")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const { data, error } = await supabase
+    .from("memorial_diaries")
+    .insert({
+      cat_id: input.catId,
+      author_id: user.id,
+      author_name: (profile as { nickname?: string } | null)?.nickname ?? null,
+      body: input.body.trim(),
+      mood: input.mood,
+      is_shared: input.isShared,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("[cats-repo] createMemorialDiary failed:", error);
+    throw new Error(`일기를 남기지 못했어요: ${error.message}`);
+  }
+  return data as MemorialDiary;
+}
+
+export async function setMemorialDiaryShared(diaryId: string, isShared: boolean): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("memorial_diaries")
+    .update({ is_shared: isShared })
+    .eq("id", diaryId);
+  if (error) throw new Error(`변경하지 못했어요: ${error.message}`);
+}
+
+export async function deleteMemorialDiary(diaryId: string): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase.from("memorial_diaries").delete().eq("id", diaryId);
+  if (error) throw new Error(`삭제하지 못했어요: ${error.message}`);
+}
+
 // ══════════════════════════════════════════
 // 고양이 좋아요 (cat_likes)
 // ══════════════════════════════════════════

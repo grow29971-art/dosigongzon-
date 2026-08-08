@@ -111,6 +111,17 @@ function MemorialAbout({ defaultOpen }: { defaultOpen: boolean }) {
                 헌화는 기억하고 있다는 표시예요 — 같은 아이를 돌봤던 이웃들의 헌화도 함께 쌓입니다.
               </p>
             </div>
+
+            <div>
+              <p className="text-[12.5px] font-bold" style={{ color: "rgba(255,233,168,0.9)" }}>
+                추모일기
+              </p>
+              <p className="text-[13px] leading-[1.8] mt-1" style={{ color: "rgba(255,255,255,0.66)" }}>
+                떠나보낸 뒤 하고 싶은 말을 하나씩 적어두는 자리예요. 기본은 나만 보기고,
+                한 줄이어도 괜찮아요. <b className="text-white">며칠 걸러도, 그만 써도 아무 표시가 남지 않아요</b> —
+                연속 일수를 세지 않으니까요. 괜찮아지면 안 쓰게 되는 게 맞습니다.
+              </p>
+            </div>
           </div>
 
           <p
