@@ -100,6 +100,29 @@ export async function getCatDiaryServer(catId: string, limit = 60): Promise<CatD
   };
 }
 
+/**
+ * 고양이별(추모) — 한 아이의 돌봄 기록 전부.
+ * 삭제 대신 memorial_at 만 찍으므로 care_logs 는 그대로 남아 있다.
+ * RLS 가 비밀글(is_private)을 걸러주므로 여기서 추가 필터는 걸지 않는다.
+ */
+export async function getMemorialCareLogsServer(catId: string, limit = 500) {
+  if (!/^[0-9a-fA-F-]{32,36}$/.test(catId)) return [];
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("care_logs")
+    .select("id, care_type, memo, photo_url, amount, author_id, author_name, author_avatar_url, logged_at")
+    .eq("cat_id", catId)
+    .order("logged_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error("[cats-server] getMemorialCareLogsServer failed:", error);
+    return [];
+  }
+  return data ?? [];
+}
+
 export interface CatCommunityStats {
   uniqueCaretakers: number;         // 이 고양이를 돌본 unique 유저 수
   recentCaretakers: {               // 최근 돌본 이웃 프로필 (최대 3명)

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, Star, Flower2, Undo2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Star, Flower2, Undo2 } from "lucide-react";
 import {
   listMemorialCats,
   listMyFlowerCatIds,
@@ -12,6 +12,7 @@ import {
 } from "@/lib/cats-repo";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/app/components/Toast";
+import { sanitizeImageUrl } from "@/lib/url-validate";
 
 // 배경 별 — id 없이 페이지 고정 시드
 function makeStars(count: number) {
@@ -186,7 +187,7 @@ export default function MemorialPage() {
                 }}
               >
                 <div className="flex items-start gap-4">
-                  <Link href={`/cats/${cat.id}`} className="shrink-0">
+                  <Link href={`/memorial/${cat.id}`} className="shrink-0">
                     <div
                       className="rounded-full overflow-hidden"
                       style={{
@@ -197,9 +198,9 @@ export default function MemorialPage() {
                         background: "#2a2340",
                       }}
                     >
-                      {cat.photo_url ? (
+                      {sanitizeImageUrl(cat.photo_url) ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={cat.photo_url} alt="" className="w-full h-full object-cover" />
+                        <img src={sanitizeImageUrl(cat.photo_url)} alt="" className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-[28px]">🐈</div>
                       )}
@@ -207,7 +208,7 @@ export default function MemorialPage() {
                   </Link>
 
                   <div className="flex-1 min-w-0">
-                    <Link href={`/cats/${cat.id}`}>
+                    <Link href={`/memorial/${cat.id}`}>
                       <h2 className="text-[17px] font-bold text-white truncate">{cat.name}</h2>
                     </Link>
                     <p className="text-[12.5px] mt-1" style={{ color: "rgba(255,255,255,0.5)" }}>
@@ -238,7 +239,16 @@ export default function MemorialPage() {
                   </p>
                 )}
 
-                <div className="flex items-center gap-2 mt-4">
+                <Link
+                  href={`/memorial/${cat.id}`}
+                  className="flex items-center justify-center gap-1 h-[40px] mt-4 text-[13px] font-semibold"
+                  style={{ borderRadius: 12, background: "rgba(255,255,255,0.06)", color: "rgba(255,233,168,0.85)" }}
+                >
+                  {cat.care_log_count > 0 ? `함께한 기록 ${cat.care_log_count}개 보기` : "추모관 들어가기"}
+                  <ChevronRight size={14} />
+                </Link>
+
+                <div className="flex items-center gap-2 mt-2">
                   <button
                     onClick={() => handleFlower(cat.id)}
                     className="flex-1 h-[42px] rounded-xl flex items-center justify-center gap-1.5 text-[13.5px] font-semibold active:scale-[0.97] transition-transform"
