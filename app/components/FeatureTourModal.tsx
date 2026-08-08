@@ -138,6 +138,15 @@ export default function FeatureTourModal({
       // 저장 실패해도 투어 진행 자체를 막지는 않음 — 다음 방문에 다시 뜰 뿐
     }
     onDone();
+    // 투어를 닫았다고 보던 화면에서 쫓아내지 않는다 (2026-08-09).
+    // 지금까지는 X를 눌러도 무조건 push 라, 어느 페이지에 있든 /map 또는
+    // /mypage/activity-regions 로 튕겼다. 대상이 신규 유저 263명 전원이다.
+    // 이미 콘텐츠를 보고 있던 사람은 그 자리에 두고, 갈 곳이 없는 경우
+    // (홈·투어 전용 진입)에만 안내한다.
+    try {
+      const here = window.location.pathname;
+      if (here.startsWith("/cats/") || here.startsWith("/map") || here.startsWith("/memorial")) return;
+    } catch { /* SSR·차단 환경 — 기존 동작 유지 */ }
     router.push(destination);
   };
 

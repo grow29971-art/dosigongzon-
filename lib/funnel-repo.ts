@@ -14,10 +14,17 @@ export type FunnelStep =
   | "onboarding_intro" // 온보딩 intro 화면 진입
   | "cat_detail_view_anon" // 비로그인이 고양이 상세에 도달 (pick 바로 앞단)
   | "onboarding_pick" // pick 단계에서 실제 아이 선택
+  | "signup_view" // pick 다음 /signup 화면 도달 (2026-08-09 추가 — 아래 주석)
   | "signup_home" // 가입 후 홈 첫 도달 (pending_care 보유 상태)
   | "first_feed" // 핸드오프 CTA로 첫 밥 기록 성공
   | "petition_expand" // 커뮤니티 상단 청원 바를 펼침
   | "petition_click"; // 청원 카드 클릭(국회 사이트 이동)
+
+// signup_view 를 넣은 이유 (2026-08-09):
+// 최초의 onboarding_pick 이 발생했는데(01:24:28) 그 사람은 가입하지 않았다.
+// pick 과 signup_home 사이가 완전히 암흑이라 "가입 화면에 가긴 했는가"조차 몰랐다.
+// pick 은 있는데 signup_view 가 없으면 이동 자체 실패(인앱브라우저 차단 등),
+// 둘 다 있는데 signup_home 이 없으면 가입 폼에서 이탈이다.
 
 function randomId(): string {
   try {

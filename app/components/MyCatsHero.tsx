@@ -52,6 +52,9 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
         .from("cats")
         .select("id, name, photo_url")
         .eq("caretaker_id", user.id)
+        // 고양이별로 보낸 아이 제외 (2026-08-09). 이게 없으면 떠난 아이가
+        // "오늘의 돌봄"에 남아 매일 아침 "🍚 밥주기" 버튼을 내민다.
+        .is("memorial_at", null)
         .order("created_at", { ascending: false })
         .limit(10);
       if (!myCats || myCats.length === 0) {

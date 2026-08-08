@@ -18,7 +18,15 @@ export default function FeatureTourGate() {
   const [status, setStatus] = useState<"idle" | "show" | "hidden">("idle");
   const [hasRegion, setHasRegion] = useState(false);
 
-  const onExcludedPath = pathname?.startsWith("/welcome") || pathname?.startsWith("/onboarding");
+  // /cats/ 를 제외 경로에 넣은 이유 (2026-08-09):
+  // 이 모달은 z-[200], FirstFeedBar 는 z-40(FirstFeedBar.tsx:77) 이라 가입 직후
+  // 고양이 상세에 착지하면 첫 밥 버튼이 통째로 가려진다. 게다가 아래 finish() 가
+  // 페이지를 /map 또는 /mypage/activity-regions 로 밀어내서 기회 자체가 사라진다.
+  // pick 을 거쳐 가입한 사람의 착지점이 정확히 여기다 — 투어보다 첫 밥이 먼저다.
+  const onExcludedPath =
+    pathname?.startsWith("/welcome") ||
+    pathname?.startsWith("/onboarding") ||
+    pathname?.startsWith("/cats/");
 
   useEffect(() => {
     if (loading || !user) return;

@@ -18,6 +18,7 @@ import {
 } from "@/lib/in-app-browser";
 import TurnstileWidget from "@/app/components/TurnstileWidget";
 import { trackPixelEventAsync } from "@/lib/meta-pixel";
+import { logFunnelEvent } from "@/lib/funnel-repo";
 
 export default function SignupPage() {
   return (
@@ -54,6 +55,10 @@ function SignupContent() {
     } catch {
       // sessionStorage 차단 환경 — 무시
     }
+    // 가입 화면 도달 계측. pick → signup_home 사이가 암흑이라 8/9 최초 pick 이
+    // 어디서 죽었는지 특정할 수 없었다. pick 은 있는데 이게 없으면 이동 자체 실패,
+    // 둘 다 있는데 signup_home 이 없으면 이 화면에서 이탈이다.
+    logFunnelEvent("signup_view");
   }, []);
 
   const handleOpenExternal = async () => {

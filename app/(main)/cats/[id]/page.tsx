@@ -281,8 +281,9 @@ export default async function CatDetailPage({ params }: { params: Params }) {
         </div>
       )}
 
-      {/* 입양·임보 문의 CTA (상태 있고 본인 고양이 아닐 때) */}
-      {cat.adoption_status && (
+      {/* 입양·임보 문의 CTA (상태 있고 본인 고양이 아닐 때).
+          고양이별로 간 아이에겐 띄우지 않는다 — 떠난 아이에게 "입양 문의하기"는 잔인하다 */}
+      {cat.adoption_status && !cat.memorial_at && (
         <div className="px-4 mt-3">
           <AdoptionInquireButton
             status={cat.adoption_status}

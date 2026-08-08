@@ -13,6 +13,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/app/components/Toast";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import { isCurrentUserAdmin } from "@/lib/news-repo";
 
 // 배경 별 — id 없이 페이지 고정 시드
 function makeStars(count: number) {
@@ -146,6 +147,9 @@ export default function MemorialPage() {
   const [cats, setCats] = useState<MemorialCat[] | null>(null);
   const [flowered, setFlowered] = useState<Set<string>>(new Set());
   const [userId, setUserId] = useState<string | null>(null);
+  // 보내기는 등록자 또는 관리자가 할 수 있는데(map/page.tsx:2963) 되돌리기는
+  // 등록자만 볼 수 있었다. 관리자가 보낸 아이는 되돌릴 UI가 없었다 (2026-08-09 수정)
+  const [isAdmin, setIsAdmin] = useState(false);
   const stars = useMemo(() => makeStars(70), []);
 
   const load = useCallback(async () => {
@@ -164,6 +168,7 @@ export default function MemorialPage() {
     void (async () => {
       const { data } = await createClient().auth.getUser();
       setUserId(data.user?.id ?? null);
+      if (data.user) setIsAdmin(await isCurrentUserAdmin());
     })();
   }, [load]);
 
@@ -285,7 +290,7 @@ export default function MemorialPage() {
         <div className="flex flex-col gap-4">
           {cats?.map((cat) => {
             const cared = daysBetween(cat.created_at, cat.memorial_at);
-            const mine = userId && cat.caretaker_id === userId;
+            const canRestore = Boolean(userId && (cat.caretaker_id === userId || isAdmin));
             return (
               <div
                 key={cat.id}
@@ -373,7 +378,7 @@ export default function MemorialPage() {
                     {cat.flower_count > 0 && ` ${cat.flower_count}`}
                   </button>
 
-                  {mine && (
+                  {canRestore && (
                     <button
                       onClick={() => handleRestore(cat)}
                       className="h-[42px] px-4 rounded-xl flex items-center gap-1.5 text-[13px] active:scale-[0.97] transition-transform"

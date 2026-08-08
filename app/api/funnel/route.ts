@@ -12,6 +12,7 @@ const VALID_STEPS = new Set([
   "onboarding_intro",
   "cat_detail_view_anon",
   "onboarding_pick",
+  "signup_view",
   "signup_home",
   "first_feed",
   "petition_expand",
