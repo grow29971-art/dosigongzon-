@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Star, Flower2, Undo2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, Star, Flower2, Undo2, Info } from "lucide-react";
 import {
   listMemorialCats,
   listMyFlowerCatIds,
@@ -28,6 +28,101 @@ function makeStars(count: number) {
     delay: next() * 4,
     opacity: 0.2 + next() * 0.55,
   }));
+}
+
+/**
+ * 고양이별 안내.
+ * 이 공간이 "삭제 대신"이라는 걸 모르면 아이를 지워버리게 되고, 그러면
+ * care_logs·카드·댓글이 CASCADE 로 함께 사라진다 — 되돌릴 수 없다.
+ * 그래서 무엇이 남고 무엇이 사라지는지를 분명히 적는다.
+ */
+function MemorialAbout({ defaultOpen }: { defaultOpen: boolean }) {
+  const [open, setOpen] = useState(false);
+  const [touched, setTouched] = useState(false);
+
+  // 목록 로딩이 끝난 뒤 기본 상태를 정한다(사용자가 직접 여닫았으면 존중)
+  useEffect(() => {
+    if (!touched) setOpen(defaultOpen);
+  }, [defaultOpen, touched]);
+
+  const toggle = () => {
+    setTouched(true);
+    setOpen((v) => !v);
+  };
+
+  return (
+    <div
+      style={{
+        borderRadius: 20,
+        background: "rgba(255,255,255,0.06)",
+        border: "1px solid rgba(255,255,255,0.11)",
+      }}
+    >
+      <button
+        onClick={toggle}
+        className="w-full flex items-center gap-2 px-5 py-4 text-left"
+        aria-expanded={open}
+      >
+        <Info size={15} color="rgba(255,233,168,0.9)" />
+        <span className="text-[13.5px] font-bold text-white flex-1">고양이별은 어떤 곳인가요?</span>
+        <ChevronDown
+          size={16}
+          color="rgba(255,255,255,0.5)"
+          style={{ transform: open ? "rotate(180deg)" : "none", transition: "transform 200ms ease" }}
+        />
+      </button>
+
+      {open && (
+        <div className="px-5 pb-5" style={{ animation: "memFadeIn 300ms ease both" }}>
+          <p className="text-[13.5px] leading-[1.85]" style={{ color: "rgba(255,255,255,0.72)" }}>
+            길에서 살아가는 아이들은 언젠가 먼저 떠납니다. 그때 지도에서 이름을 지워버리면
+            함께한 시간까지 없던 일이 되는 것 같습니다. 고양이별은 그 아이들이 머무는 곳이에요.
+            지도에서만 내려올 뿐, <b className="text-white">이름도 사진도 그동안의 돌봄 기록도 그대로 남습니다.</b>
+          </p>
+
+          <div className="mt-5 flex flex-col gap-3.5">
+            <div>
+              <p className="text-[12.5px] font-bold" style={{ color: "rgba(255,233,168,0.9)" }}>
+                어떻게 보내나요
+              </p>
+              <p className="text-[13px] leading-[1.8] mt-1" style={{ color: "rgba(255,255,255,0.66)" }}>
+                지도에서 아이를 누르고 별 버튼(⭐)을 누르면 됩니다. 마지막 인사를 함께 남길 수 있어요.
+                등록한 분과 관리자만 보낼 수 있고, 잘못 보냈다면 여기서 다시 지도로 되돌릴 수 있습니다.
+              </p>
+            </div>
+
+            <div>
+              <p className="text-[12.5px] font-bold" style={{ color: "rgba(255,233,168,0.9)" }}>
+                삭제와 무엇이 다른가요
+              </p>
+              <p className="text-[13px] leading-[1.8] mt-1" style={{ color: "rgba(255,255,255,0.66)" }}>
+                삭제는 돌봄 일지와 사진, 카드까지 <b className="text-white">전부 함께 지워지고 되돌릴 수 없습니다.</b>
+                {" "}고양이별로 보내면 지도에서만 내려오고 기록은 남습니다.
+                건강 알림도 더 이상 가지 않아요.
+              </p>
+            </div>
+
+            <div>
+              <p className="text-[12.5px] font-bold" style={{ color: "rgba(255,233,168,0.9)" }}>
+                여기서 할 수 있는 일
+              </p>
+              <p className="text-[13px] leading-[1.8] mt-1" style={{ color: "rgba(255,255,255,0.66)" }}>
+                아이를 누르면 그동안의 돌봄 기록을 날짜별로 전부 볼 수 있어요.
+                헌화는 기억하고 있다는 표시예요 — 같은 아이를 돌봤던 이웃들의 헌화도 함께 쌓입니다.
+              </p>
+            </div>
+          </div>
+
+          <p
+            className="text-[12px] leading-[1.75] mt-5 px-4 py-3"
+            style={{ color: "rgba(255,255,255,0.5)", background: "rgba(0,0,0,0.18)", borderRadius: 12 }}
+          >
+            떠나보내는 일을 서두르지 않으셔도 돼요. 며칠 보이지 않는 것과 떠난 것은 다르니까요.
+          </p>
+        </div>
+      )}
+    </div>
+  );
 }
 
 function daysBetween(from: string, to: string) {
@@ -147,15 +242,18 @@ export default function MemorialPage() {
           </p>
         </div>
 
+        {/* 고양이별 안내 — 아이가 없을 땐 펼친 채로, 있을 땐 접어서 목록을 먼저 보여준다 */}
+        <MemorialAbout defaultOpen={cats !== null && cats.length === 0} />
+
         {/* 목록 */}
         {cats === null && (
-          <p className="text-center text-[14px]" style={{ color: "rgba(255,255,255,0.45)" }}>
+          <p className="text-center text-[14px] mt-10" style={{ color: "rgba(255,255,255,0.45)" }}>
             불러오는 중…
           </p>
         )}
 
         {cats?.length === 0 && (
-          <div className="text-center py-16">
+          <div className="text-center pt-12 pb-6">
             <p className="text-[15px] leading-[1.8]" style={{ color: "rgba(255,255,255,0.55)" }}>
               아직 고양이별에 온 아이가 없어요.
               <br />
@@ -170,6 +268,8 @@ export default function MemorialPage() {
             </Link>
           </div>
         )}
+
+        {cats !== null && cats.length > 0 && <div className="h-8" />}
 
         <div className="flex flex-col gap-4">
           {cats?.map((cat) => {
@@ -284,6 +384,10 @@ export default function MemorialPage() {
         @keyframes memStarTwinkle {
           0%, 100% { opacity: 0.18; }
           50%      { opacity: 1; }
+        }
+        @keyframes memFadeIn {
+          from { opacity: 0; transform: translateY(-4px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
         @keyframes memGlow {
           0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 8px rgba(255,233,168,0.55)); }
