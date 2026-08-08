@@ -40,7 +40,8 @@ box/                 — SQL 마이그레이션 + 개발일지 (배포 안 함)
 ### DB
 - Supabase RLS 필수. 모든 테이블에 적절한 정책 존재해야 함.
 - admin 작업은 `requireAdmin()` + RLS 이중 방어.
-- `is_user_not_suspended()` 함수로 정지 유저 차단.
+- `is_user_not_suspended(uid uuid)` 함수로 정지 유저 차단. **인자를 받는다** — RLS 정책에서는
+  `public.is_user_not_suspended(auth.uid())` 로 호출할 것(무인자 호출은 42883).
 - 비정규화(author_name/avatar/level 스냅샷)는 의도적 — 변경 금지.
 
 ### 보안
