@@ -2448,6 +2448,22 @@ export default function MapPage() {
       {/* 내 위치 + 등록 FAB */}
       {!selectedCat && !selectedHospital && !chatOpen && !selectedDong && (
         <div className="absolute bottom-6 right-4 z-30 flex flex-col gap-2.5 items-end">
+          {/* 고양이별 — 먼저 떠난 아이들. 밤하늘 톤이라 다른 FAB과 구분된다 */}
+          <Link
+            href="/memorial"
+            className="relative w-11 h-11 rounded-full flex items-center justify-center active:scale-90 transition-transform overflow-hidden"
+            style={{
+              background: "linear-gradient(180deg, #4a3a63 0%, #2b2140 100%)",
+              boxShadow: "0 1px 0 rgba(255,255,255,0.18) inset, 0 3px 8px rgba(30,20,50,0.28), 0 8px 18px rgba(30,20,50,0.18)",
+            }}
+            aria-label="고양이별 — 먼저 떠난 아이들"
+            title="고양이별"
+          >
+            <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1/2 rounded-t-full pointer-events-none"
+              style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 100%)" }} />
+            <Star size={16} color="#FFE9A8" fill="#FFE9A8" className="relative" />
+          </Link>
+
           {/* 곁에 있어요 — 112/119 빠른 전화 (A-1). 공포 프레임 대신 안심 톤 */}
           <button
             onClick={() => setSafetyOpen(true)}
