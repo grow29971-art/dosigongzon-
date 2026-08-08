@@ -77,7 +77,6 @@ import MyCatsHero from "@/app/components/MyCatsHero";
 import ReturnDigestCard from "@/app/components/ReturnDigestCard";
 import ShopPreviewStrip from "@/app/components/ShopPreviewStrip";
 import CareTamagotchiHero from "@/app/components/CareTamagotchiHero";
-import RallyPosterBanner from "@/app/components/RallyPosterBanner";
 const WeeklyCheckinCard = dynamic(() => import("@/app/components/WeeklyCheckinCard"), { ssr: false });
 const PushCareCueOptIn = dynamic(() => import("@/app/components/PushCareCueOptIn"), { ssr: false });
 const FeatureTipsCard = dynamic(() => import("@/app/components/FeatureTipsCard"), { ssr: false });
@@ -636,8 +635,8 @@ export default function HomeAuthed({
     />
     )}
     <div className="px-5 pt-5 pb-24">
-      {/* ══════ 세계 고양이의 날 보신각 집회 홍보 — 8/8까지 최상단 노출 후 자동 숨김 ══════ */}
-      <RallyPosterBanner />
+      {/* 보신각 집회 배너는 행사 종료로 내림 (2026-08-08).
+          컴포넌트는 남겨둠 — 다음 행사 때 이 자리에 다시 붙이면 된다. */}
 
       {/* ══════ 지역 미설정 유저 — 동네 소식 받기 유도 (2026-07-15) ══════ */}
       {/* 지역설정은 등록의 관문이 아니다 — 첫 등록 전(catCount===0) 유저에겐 등록 유도가
