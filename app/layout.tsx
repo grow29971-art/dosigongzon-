@@ -7,7 +7,6 @@ import PendingInviteApplier from "@/app/components/PendingInviteApplier";
 import MarketingConsentApplier from "@/app/components/MarketingConsentApplier";
 import SignupNudgeBar from "@/app/components/SignupNudgeBar";
 import ConsentManager from "@/app/components/ConsentManager";
-import Og200EventModal from "@/app/components/Og200EventModal";
 import "./globals.css";
 
 const SITE_URL = "https://dosigongzon.com";
@@ -225,7 +224,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <PendingInviteApplier />
             <MarketingConsentApplier />
             <SignupNudgeBar />
-            <Og200EventModal />
+            {/* Og200EventModal 마운트 제거 (2026-08-09).
+                CAMPAIGN_END = 2026-06-02 이라 Og200EventModal.tsx:29 의
+                `if (Date.now() >= CAMPAIGN_END) return` 로 68일째 렌더 자체가 불가능한데,
+                전 페이지에서 useAuth + supabase 조회를 붙들고 있었다.
+                컴포넌트 파일은 남긴다 — 다음 캠페인 때 이 줄만 되살리면 된다. */}
           </ToastProvider>
         </AuthProvider>
         {/* 쿠키 동의 배너 + 동의 시에만 Vercel Analytics·SpeedInsights 로드 */}

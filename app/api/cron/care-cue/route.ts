@@ -1,7 +1,11 @@
 // 돌봄 일일 cue 푸시 — Vercel Cron 매일 18:00 KST (09:00 UTC).
 // 대상: 마케팅 푸시 동의 + 고양이 보유 + 최근 7일 돌봄 기록 0건인 유저.
 //        (= 스트릭이 없는 신규/끊긴 케이스. streak-reminder가 안 잡는 audience를 보완.)
-// 목적: "앱을 열게 하는 트리거" 부재 해소 → 홈 MyCatsQuickCare 카드에서 1탭 로깅.
+// 목적: "앱을 열게 하는 트리거" 부재 해소 → 홈 MyCatsHero 카드(#my-cats)에서 1탭 로깅.
+//        ⚠ 예전 주석은 목적지를 MyCatsQuickCare 로 적어놨는데 그 컴포넌트는 import 0인
+//        고아다(MyCatsHero 로 교체되며 주석만 안 고쳤음). 실제 딥링크는 아래 /#my-cats,
+//        앵커는 HomeAuthed.tsx 의 id="my-cats". 홈 블록을 정리할 때 이 앵커가 날아가면
+//        이 푸시가 랜딩만 하고 아무 데도 안 간다. (2026-08-09 정정)
 
 import webpush from "web-push";
 import { createServiceClient } from "@/lib/supabase/service";
