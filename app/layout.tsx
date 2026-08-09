@@ -6,6 +6,7 @@ import PwaInstallPrompt from "@/app/components/PwaInstallPrompt";
 import PendingInviteApplier from "@/app/components/PendingInviteApplier";
 import MarketingConsentApplier from "@/app/components/MarketingConsentApplier";
 import SignupNudgeBar from "@/app/components/SignupNudgeBar";
+import SourceCapture from "@/app/components/SourceCapture";
 import ConsentManager from "@/app/components/ConsentManager";
 import "./globals.css";
 
@@ -224,6 +225,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <PendingInviteApplier />
             <MarketingConsentApplier />
             <SignupNudgeBar />
+            {/* 유입 출처 first-touch 캡처 — 채널별 퍼널을 가르기 위한 최소 계측 */}
+            <SourceCapture />
             {/* Og200EventModal 마운트 제거 (2026-08-09).
                 CAMPAIGN_END = 2026-06-02 이라 Og200EventModal.tsx:29 의
                 `if (Date.now() >= CAMPAIGN_END) return` 로 68일째 렌더 자체가 불가능한데,

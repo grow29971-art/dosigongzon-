@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     return Response.json({ ok: false }, { status: 429 });
   }
 
-  let body: { anonId?: unknown; step?: unknown; catId?: unknown };
+  let body: { anonId?: unknown; step?: unknown; catId?: unknown; source?: unknown };
   try {
     body = await request.json();
   } catch {
@@ -38,6 +38,11 @@ export async function POST(request: Request) {
   const anonId = typeof body.anonId === "string" ? body.anonId.trim() : "";
   const step = typeof body.step === "string" ? body.step : "";
   const catId = typeof body.catId === "string" && UUID_RE.test(body.catId) ? body.catId : null;
+  // 유입 출처 — 클라이언트가 보내는 값이므로 서버에서도 다시 좁힌다(저장소 오염 방지).
+  const source =
+    typeof body.source === "string"
+      ? body.source.toLowerCase().replace(/[^a-z0-9_.-]/g, "").slice(0, 32) || null
+      : null;
   if (anonId.length < 8 || anonId.length > 64 || !VALID_STEPS.has(step)) {
     return Response.json({ ok: false }, { status: 400 });
   }
@@ -55,10 +60,24 @@ export async function POST(request: Request) {
   }
 
   // unique(anon_id, step) 충돌은 정상(재방문) — ignoreDuplicates로 무시
+  const base = { anon_id: anonId, step, user_id: userId, cat_id: catId };
   const { error } = await supabase.from("funnel_events").upsert(
-    { anon_id: anonId, step, user_id: userId, cat_id: catId },
+    source ? { ...base, source } : base,
     { onConflict: "anon_id,step", ignoreDuplicates: true },
   );
+
+  // source 컬럼 마이그레이션 전이면 PGRST204(컬럼 없음)로 실패한다.
+  // 그때 계측 전체를 잃으면 안 되므로 source 를 빼고 한 번 더 시도한다.
+  // (8/7·8/9 에 스텝 추가 때 SQL 지연으로 조용히 0건이 된 전례가 두 번 있었다)
+  if (error && source && error.code === "PGRST204") {
+    const retry = await supabase.from("funnel_events").upsert(base, {
+      onConflict: "anon_id,step",
+      ignoreDuplicates: true,
+    });
+    if (retry.error) return Response.json({ ok: false }, { status: 500 });
+    return Response.json({ ok: true, sourceDropped: true });
+  }
+
   if (error) {
     return Response.json({ ok: false }, { status: 500 });
   }

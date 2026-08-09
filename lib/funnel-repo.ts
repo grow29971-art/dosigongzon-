@@ -33,6 +33,69 @@ function randomId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
+// ── 유입 출처 (first-touch) ──
+// 인스타 광고비가 뭘 사는지, 당근을 추가하면 그게 움직였는지 가르기 위한 최소 계측.
+// first-touch 를 쓰는 이유: 가입은 방문 당일이 아니라 며칠 뒤에도 일어난다.
+// 한 번 잡히면 덮어쓰지 않는다.
+const SOURCE_KEY = "dosigongzon_utm_source";
+
+// referrer 호스트 → 짧은 토큰. 목록에 없으면 호스트를 그대로 정규화해서 쓴다.
+const REFERRER_MAP: [RegExp, string][] = [
+  [/instagram\.com|l\.instagram|ig\.me/i, "instagram"],
+  [/facebook\.com|fb\.me|fb\.com/i, "facebook"],
+  [/daangn\.com|karrot/i, "daangn"],
+  [/(^|\.)naver\.com/i, "naver"],
+  [/(^|\.)google\./i, "google"],
+  [/(^|\.)daum\.net|kakao/i, "kakao"],
+  [/(^|\.)youtube\.com|youtu\.be/i, "youtube"],
+  [/threads\.net/i, "threads"],
+  [/(^|\.)x\.com|twitter\.com/i, "x"],
+];
+
+function normalizeSource(raw: string): string {
+  return raw.toLowerCase().replace(/[^a-z0-9_.-]/g, "").slice(0, 32);
+}
+
+/**
+ * 최초 진입 시 1회 호출 — utm_source(또는 ref/utm_medium 없이 source만) 우선,
+ * 없으면 referrer 호스트에서 유추해 저장한다. 이미 값이 있으면 아무것도 안 한다.
+ * SourceCapture 컴포넌트가 앱 최상단에서 부른다.
+ */
+export function captureSource(): void {
+  try {
+    if (localStorage.getItem(SOURCE_KEY)) return; // first-touch 유지
+
+    const params = new URLSearchParams(window.location.search);
+    const explicit = params.get("utm_source") ?? params.get("ref");
+    if (explicit) {
+      const v = normalizeSource(explicit);
+      if (v) { localStorage.setItem(SOURCE_KEY, v); return; }
+    }
+
+    const ref = document.referrer;
+    if (!ref) { localStorage.setItem(SOURCE_KEY, "direct"); return; }
+
+    const host = new URL(ref).hostname;
+    if (host === window.location.hostname) return; // 내부 이동 — 판단 보류
+
+    for (const [re, token] of REFERRER_MAP) {
+      if (re.test(host)) { localStorage.setItem(SOURCE_KEY, token); return; }
+    }
+    const v = normalizeSource(host.replace(/^www\./, ""));
+    if (v) localStorage.setItem(SOURCE_KEY, v);
+  } catch {
+    /* localStorage·URL 파싱 차단 환경 — 출처 없이 계측만 계속한다 */
+  }
+}
+
+function getSource(): string | null {
+  try {
+    return localStorage.getItem(SOURCE_KEY);
+  } catch {
+    return null;
+  }
+}
+
 function getAnonId(): string {
   try {
     let id = localStorage.getItem(ANON_ID_KEY);
@@ -82,7 +145,7 @@ export function logFunnelEvent(step: FunnelStep, catId?: string | null): void {
       const res = await fetch("/api/funnel", {
         method: "POST",
         headers,
-        body: JSON.stringify({ anonId: getAnonId(), step, catId: catId ?? null }),
+        body: JSON.stringify({ anonId: getAnonId(), step, catId: catId ?? null, source: getSource() }),
         keepalive: true,
       });
       if (res.ok) {
