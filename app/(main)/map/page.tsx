@@ -4066,7 +4066,10 @@ export default function MapPage() {
                     placeholder={
                       commentKind === "alert"
                         ? "학대/위험 상황을 알려주세요"
-                        : "돌봄 기록을 남겨주세요"
+                        // 이 입력창은 cat_comments 에 저장된다 — 옆 "돌봄다이어리" 탭(care_logs)에는
+                        // 나타나지 않는다. "돌봄 기록"이라고 쓰면 같은 시트 안에 같은 이름의
+                        // 입력창이 두 개가 되고, 여기 쓴 글이 기록에서 사라진 것처럼 보인다. (2026-08-09)
+                        : "이 아이 이야기를 남겨주세요"
                     }
                     className="flex-1 min-w-0 px-3 py-2 rounded-xl text-[12px] outline-none"
                     style={{ backgroundColor: "#F6F1EA", color: "#2A2A28" }}

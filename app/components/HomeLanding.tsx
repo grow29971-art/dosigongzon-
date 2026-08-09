@@ -238,7 +238,9 @@ export default async function HomeLanding({
           </Link>
         </div>
         <p className="mt-2 text-center text-[11px] font-bold" style={{ color: "rgba(173, 94, 59,0.7)" }}>
-          10초 가입 · 광고 없는 무료 운영
+          {/* 같은 페이지 아래(:606)에 "1초 가입"이 있어 숫자가 서로 달랐다.
+              카카오·구글 OAuth 한 번이므로 그쪽에 맞춘다. (2026-08-09) */}
+          1초 가입 · 광고 없는 무료 운영
         </p>
 
         {/* 처음이신가요? 가이드 링크 */}

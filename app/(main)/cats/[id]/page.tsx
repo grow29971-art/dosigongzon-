@@ -493,8 +493,10 @@ export default async function CatDetailPage({ params }: { params: Params }) {
         <div className="flex items-center justify-between mb-2.5 px-1">
           <div className="flex items-center gap-1.5">
             <BookOpen size={16} style={{ color: "var(--color-primary)" }} />
+            {/* 위 스탯카드의 "돌봄다이어리"(care_logs 개수)와 이름이 겹쳐서,
+                두 숫자가 안 맞으면 고장난 것처럼 보였다. 이건 사진 모음이다. (2026-08-09) */}
             <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
-              {cat.name}의 다이어리
+              {cat.name} 사진첩
             </h2>
           </div>
           {diary.totalPhotos > 0 && (
