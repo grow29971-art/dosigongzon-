@@ -80,6 +80,25 @@ export function openInExternalBrowser(): boolean {
   return false;
 }
 
+/**
+ * 인앱 브라우저에서 이 제공자로 로그인/가입이 막히는가.
+ *
+ * 2026-08-09 정정: 그동안 인앱이면 **모든 제공자**를 막았는데 그건 과잉 차단이었다.
+ * 실제로 임베디드 웹뷰를 거부하는 건 구글이다(`disallowed_useragent` 정책).
+ * 카카오는 웹뷰를 막지 않고, 특히 카카오톡 자체 인앱에서는 오히려 가장 잘 되는 환경이다.
+ * 애플도 웹뷰에서 제약이 있어 함께 막는다.
+ *
+ * 결과적으로 카톡·인스타 공유 링크로 들어온 사람이 "가입이 안 돼요" 벽을 만나
+ * 그대로 이탈하던 경로가 열린다. 실측: 8/9 하루에만 /signup 도달 3명 중 완주 1명.
+ */
+export function isProviderBlockedInApp(
+  provider: "kakao" | "google" | "apple",
+  inApp: InAppBrowser,
+): boolean {
+  if (!inApp) return false;
+  return provider !== "kakao";
+}
+
 /** 인앱 브라우저 이름을 한국어로 */
 export function inAppBrowserLabel(kind: InAppBrowser): string {
   switch (kind) {

@@ -12,6 +12,7 @@ import {
   detectOS,
   detectSamsungInternet,
   inAppBrowserLabel,
+  isProviderBlockedInApp,
   openInExternalBrowser,
   type InAppBrowser,
 } from "@/lib/in-app-browser";
@@ -93,7 +94,8 @@ function LoginContent() {
   };
 
   const handleSocial = async (provider: "kakao" | "google" | "apple") => {
-    if (inApp) { handleOpenExternal(); return; }
+    // 인앱이라도 카카오는 그대로 진행 — 막히는 건 구글·애플뿐이다 (2026-08-09)
+    if (isProviderBlockedInApp(provider, inApp)) { handleOpenExternal(); return; }
     if (!agreed) { setError("약관에 동의해주세요."); return; }
     setError("");
     setSocialLoading(provider);
@@ -131,24 +133,25 @@ function LoginContent() {
         {inApp && (
           <div
             className="mb-6 rounded-2xl p-4"
-            style={{ backgroundColor: "#FBEAEA", border: "1px solid #E8C5C5" }}
+            style={{ backgroundColor: "#FFF7E6", border: "1px solid #F0DFB8" }}
           >
             <div className="flex items-start gap-2.5 mb-3">
-              <AlertCircle size={18} className="mt-0.5 shrink-0" style={{ color: "#B84545" }} />
+              <AlertCircle size={18} className="mt-0.5 shrink-0" style={{ color: "#B8860B" }} />
               <div className="min-w-0">
-                <p className="text-[13px] font-extrabold" style={{ color: "#B84545" }}>
-                  {inAppBrowserLabel(inApp)} 안에서는 소셜 로그인이 안 돼요
+                <p className="text-[13px] font-extrabold" style={{ color: "#8A6410" }}>
+                  카카오로 바로 로그인할 수 있어요
                 </p>
-                <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#8B2F2F" }}>
-                  보안 정책으로 인앱 브라우저에서 OAuth가 차단됩니다. 일반 브라우저로 열어주세요.
+                <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#8A6410" }}>
+                  {inAppBrowserLabel(inApp)} 안에서는 <b>구글·애플 로그인만</b> 막혀 있어요.
+                  그 두 가지를 쓰시려면 아래에서 브라우저를 열어주세요.
                 </p>
               </div>
             </div>
             <button
               type="button"
               onClick={handleOpenExternal}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-[13px] text-white transition-transform active:scale-95"
-              style={{ backgroundColor: "#B84545" }}
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[12.5px] transition-transform active:scale-95"
+              style={{ backgroundColor: "rgba(0,0,0,0.05)", color: "#6B5043" }}
             >
               <ExternalLink size={14} />
               {detectOS() === "ios" && inApp !== "kakaotalk"
@@ -310,7 +313,8 @@ function LoginContent() {
             onClick={() => handleSocial("kakao")}
             disabled={!!socialLoading}
             className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-extrabold active:scale-[0.97] transition-transform disabled:opacity-60"
-            style={{ backgroundColor: "#FEE500", color: "#191919", opacity: (agreed || inApp) ? 1 : 0.6 }}
+            /* 인앱에서도 카카오는 실제로 진행되므로 약관 동의 상태를 그대로 반영 */
+            style={{ backgroundColor: "#FEE500", color: "#191919", opacity: agreed ? 1 : 0.6 }}
           >
             {socialLoading === "kakao" ? (
               <Loader2 size={18} className="animate-spin" />

@@ -13,6 +13,7 @@ import {
   detectOS,
   detectSamsungInternet,
   inAppBrowserLabel,
+  isProviderBlockedInApp,
   openInExternalBrowser,
   type InAppBrowser,
 } from "@/lib/in-app-browser";
@@ -70,7 +71,9 @@ function SignupContent() {
   };
 
   const handleSignup = async (provider: "kakao" | "google" | "apple") => {
-    if (inApp) { handleOpenExternal(); return; }
+    // 인앱이라도 카카오는 그대로 진행한다 — 막히는 건 구글·애플뿐이다.
+    // (기존엔 인앱이면 무조건 외부 브라우저로 튕겨서, 카톡·인스타 유입이 여기서 전부 끊겼다)
+    if (isProviderBlockedInApp(provider, inApp)) { handleOpenExternal(); return; }
     if (!agreed) { setError("약관에 동의해주세요."); return; }
     if (turnstileRequired && !turnstileToken) {
       setError("봇 방지 확인을 완료해주세요.");
@@ -143,28 +146,30 @@ function SignupContent() {
   return (
     <div className="min-h-dvh bg-warm-white flex flex-col">
       <div className="flex-1 overflow-y-auto px-6 py-12 flex flex-col justify-center max-w-lg mx-auto w-full">
-        {/* 인앱 브라우저 경고 */}
+        {/* 인앱 브라우저 안내 — 막힌 건 구글·애플뿐이고 카카오는 여기서 바로 된다.
+            예전엔 빨간 "가입이 안 돼요" 벽이라 카톡·인스타 유입이 통째로 이탈했다. (2026-08-09) */}
         {inApp && (
           <div
             className="mb-6 rounded-2xl p-4"
-            style={{ backgroundColor: "#FBEAEA", border: "1px solid #E8C5C5" }}
+            style={{ backgroundColor: "#FFF7E6", border: "1px solid #F0DFB8" }}
           >
             <div className="flex items-start gap-2.5 mb-3">
-              <AlertCircle size={18} className="mt-0.5 shrink-0" style={{ color: "#B84545" }} />
+              <AlertCircle size={18} className="mt-0.5 shrink-0" style={{ color: "#B8860B" }} />
               <div className="min-w-0">
-                <p className="text-[13px] font-extrabold" style={{ color: "#B84545" }}>
-                  {inAppBrowserLabel(inApp)}에서는 가입이 안 돼요
+                <p className="text-[13px] font-extrabold" style={{ color: "#8A6410" }}>
+                  카카오로 바로 가입할 수 있어요
                 </p>
-                <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#8B2F2F" }}>
-                  OAuth 보안 정책으로 인앱 브라우저에서 가입이 차단돼요. 크롬·사파리로 열어주세요.
+                <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#8A6410" }}>
+                  {inAppBrowserLabel(inApp)} 안에서는 <b>구글·애플 가입만</b> 막혀 있어요.
+                  그 두 가지로 가입하시려면 아래에서 브라우저를 열어주세요.
                 </p>
               </div>
             </div>
             <button
               type="button"
               onClick={handleOpenExternal}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-[13px] text-white active:scale-95"
-              style={{ backgroundColor: "#B84545" }}
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[12.5px] active:scale-95"
+              style={{ backgroundColor: "rgba(0,0,0,0.05)", color: "#6B5043" }}
             >
               <ExternalLink size={14} />
               {detectOS() === "ios" && inApp !== "kakaotalk"
@@ -310,7 +315,8 @@ function SignupContent() {
             onClick={() => handleSignup("kakao")}
             disabled={!!loading}
             className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-extrabold active:scale-[0.97] transition-transform disabled:opacity-60"
-            style={{ backgroundColor: "#FEE500", color: "#191919", opacity: (agreed || inApp) ? 1 : 0.6 }}
+            /* 인앱에서도 카카오는 실제로 진행되므로 약관 동의 상태를 그대로 반영한다 */
+            style={{ backgroundColor: "#FEE500", color: "#191919", opacity: agreed ? 1 : 0.6 }}
           >
             {loading === "kakao" ? (
               <Loader2 size={18} className="animate-spin" />
