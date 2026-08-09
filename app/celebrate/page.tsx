@@ -8,7 +8,7 @@ const SITE_URL = "https://dosigongzon.com";
 export const metadata: Metadata = {
   title: "🎉 도시공존 정식 출시 — 처음부터 함께해 주셔서 감사합니다",
   description:
-    "2026년 6월 1일 도시공존 정식 출시. 길고양이 한 마리를 위한 시민의 손길이 함께 모인 시간들. 케어테이커·시민 여러분, 진심으로 감사드립니다.",
+    "2026년 6월 1일 도시공존 정식 출시. 길고양이 한 마리를 위한 시민의 손길이 함께 모인 시간들. 길집사·시민 여러분, 진심으로 감사드립니다.",
   alternates: { canonical: "/celebrate" },
   openGraph: {
     type: "website",
@@ -67,7 +67,7 @@ export default async function CelebratePage() {
           <span style={{ color: "var(--color-primary)" }}>정식 출시</span>
         </h1>
         <p className="text-[14px] text-text-sub mt-4 leading-[1.85] max-w-md mx-auto">
-          처음부터 함께해 주신 모든 케어테이커와 시민 여러분께
+          처음부터 함께해 주신 모든 길집사와 시민 여러분께
           <br />
           진심으로 감사드립니다.
         </p>
@@ -89,7 +89,7 @@ export default async function CelebratePage() {
           <StatBlock
             icon={<Users size={18} color="#fff" />}
             value={stats.users.toLocaleString()}
-            label="케어테이커"
+            label="길집사"
             color="#E86B8C"
             accent="#D85577"
           />
@@ -147,7 +147,7 @@ export default async function CelebratePage() {
             창립 멤버 (Founding Member)
           </p>
           <p className="text-[12px] text-text-sub leading-relaxed">
-            6월 1일 이전 가입하신 케어테이커는<br />
+            6월 1일 이전 가입하신 길집사는<br />
             <b className="text-text-main">FOUNDING MEMBER 타이틀</b>이 영구 부여됐어요.
             <br />
             마이페이지에서 확인하실 수 있어요.

@@ -1,5 +1,5 @@
 // 어뷰징 텍스트 패턴 검출 — 개인정보 노출·욕설·동물 학대/위협 표현.
-// 길고양이 보호 + 케어테이커 개인정보 보호 + 커뮤니티 신뢰 유지.
+// 길고양이 보호 + 길집사 개인정보 보호 + 커뮤니티 신뢰 유지.
 // location-patterns.ts와 같은 형태로 description·posts·comments·DM에 재사용.
 
 export interface AbuseViolation {

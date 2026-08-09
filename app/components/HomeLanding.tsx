@@ -42,7 +42,7 @@ import ShareAreaButton from "@/app/components/ShareAreaButton";
 import TodayVisitors from "@/app/components/TodayVisitors";
 import SocialProofStrip from "@/app/components/SocialProofStrip";
 
-// 활동 케어테이커 TOP 3 — 광고 LP에 강력한 사회적 증명. 10분 캐시(egress 절감).
+// 활동 길집사 TOP 3 — 광고 LP에 강력한 사회적 증명. 10분 캐시(egress 절감).
 const getCachedTopCaretakers = unstable_cache(
   async (): Promise<RankingRow[]> => getTopCaretakersServer(3),
   ["landing-top-caretakers"],
@@ -127,7 +127,7 @@ export default async function HomeLanding({
         name: "도시공존은 무엇인가요?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "전국 길고양이를 시민이 함께 기록하고 돌보는 시민 참여 플랫폼입니다. 케어테이커가 지도 위에 TNR·급식·건강 기록을 남기고, 긴급 구조가 필요한 아이에게 이웃이 빠르게 닿을 수 있게 돕습니다.",
+          text: "전국 길고양이를 시민이 함께 기록하고 돌보는 시민 참여 플랫폼입니다. 길집사가 지도 위에 TNR·급식·건강 기록을 남기고, 긴급 구조가 필요한 아이에게 이웃이 빠르게 닿을 수 있게 돕습니다.",
         },
       },
       {
@@ -188,8 +188,8 @@ export default async function HomeLanding({
           <Heart size={12} style={{ color: "var(--color-primary)" }} />
           <span className="text-[11px] font-extrabold" style={{ color: "var(--color-primary)" }}>
             전국 · {data.userCount > 0
-              ? `${data.userCount.toLocaleString()}명의 케어테이커`
-              : "케어테이커 시민 참여 플랫폼"}
+              ? `${data.userCount.toLocaleString()}명의 길집사`
+              : "길집사 시민 참여 플랫폼"}
           </span>
         </div>
         <h1 className="text-[30px] font-black text-text-main leading-[1.15] tracking-tight">
@@ -197,7 +197,7 @@ export default async function HomeLanding({
           <span className="text-primary">한 화면에서 함께 돌봐요.</span>
         </h1>
         <p className="text-[13.5px] text-text-sub mt-3 leading-relaxed">
-          케어테이커가 길고양이의
+          길집사가 길고양이의
           <b className="text-text-main"> TNR·건강·급식</b> 기록을 실시간으로 남기고,
           긴급한 아이를 동네 이웃과 빠르게 잇는 전국 길고양이 돌봄 지도예요.
         </p>
@@ -254,7 +254,7 @@ export default async function HomeLanding({
         </Link>
       </section>
 
-      {/* 왜 길고양이를 돌봐야 하나 — 히어로 직후 최상단. 비케어테이커 도시민 어필 핵심 카드. */}
+      {/* 왜 길고양이를 돌봐야 하나 — 히어로 직후 최상단. 비길집사 도시민 어필 핵심 카드. */}
       <section className="px-5 mt-8">
         {/* 상단 라벨 */}
         <div className="flex justify-center mb-3">
@@ -393,7 +393,7 @@ export default async function HomeLanding({
             </span>
           </div>
           <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
-            이번 주 새 친구·케어테이커·치료 병원이 가장 많이 모이는 동네예요.
+            이번 주 새 친구·길집사·치료 병원이 가장 많이 모이는 동네예요.
           </p>
           <div className="space-y-2">
             {activeRegions.map((r, idx) => (
@@ -429,7 +429,7 @@ export default async function HomeLanding({
                         <>
                           <span className="text-text-light">·</span>
                           <span style={{ color: "var(--color-primary)" }}>
-                            케어테이커 <b>{r.activeCaretakers}</b>명
+                            길집사 <b>{r.activeCaretakers}</b>명
                           </span>
                         </>
                       )}
@@ -459,7 +459,7 @@ export default async function HomeLanding({
         </section>
       )}
 
-      {/* 안전 정책 — 가입 직전 신뢰 봉합. 학대 우려 케어테이커 대상 핵심 메시지. */}
+      {/* 안전 정책 — 가입 직전 신뢰 봉합. 학대 우려 길집사 대상 핵심 메시지. */}
       <section className="px-5 mt-10">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4A7BA8" }} />
@@ -579,7 +579,7 @@ export default async function HomeLanding({
             가장 위험한 환경은 <b className="text-text-main">동네가 무관심한 상태</b>예요.
           </p>
           <p className="text-[12px] text-text-sub leading-[1.85] mt-2">
-            <b style={{ color: "var(--color-primary-dark)" }}>케어테이커와 시민의 시선이 모이는 것</b> — 그게 학대자에게 가장
+            <b style={{ color: "var(--color-primary-dark)" }}>길집사와 시민의 시선이 모이는 것</b> — 그게 학대자에게 가장
             강한 억제력입니다. 도시공존은 그 시선을 모으려고 만들어진 도구예요.
           </p>
         </div>
@@ -636,14 +636,14 @@ export default async function HomeLanding({
       {/* 1000명 이벤트 배너 — 가입 전환 강력 트리거 */}
       {eventSlot}
 
-      {/* 이번 주 활동 케어테이커 TOP 3 — 살아있는 커뮤니티 사회적 증명 */}
+      {/* 이번 주 활동 길집사 TOP 3 — 살아있는 커뮤니티 사회적 증명 */}
       {topCaretakers.length > 0 && (
         <section className="px-5 mt-6">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#C9A961" }} />
             <h2 className="text-[15px] font-extrabold text-text-main tracking-tight inline-flex items-center gap-1.5">
               <Trophy size={14} style={{ color: "#C9A961" }} />
-              이번 주 활동 케어테이커 TOP 3
+              이번 주 활동 길집사 TOP 3
             </h2>
             <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#C9A961", opacity: 0.6 }}>
               LEADERBOARD
@@ -676,7 +676,7 @@ export default async function HomeLanding({
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-extrabold text-text-main truncate">
-                    {c.nickname || "익명 케어테이커"}
+                    {c.nickname || "익명 길집사"}
                   </p>
                   <p className="text-[11px] text-text-sub mt-0.5">
                     🐱 {c.cat_count}마리 · 💛 돌봄 {c.care_count}회 · {c.score}점
@@ -873,13 +873,13 @@ export default async function HomeLanding({
         </div>
       </section>
 
-      {/* 케어테이커 필수 가이드 8종 — 보호지침 허브로 유도 (SEO + 체류시간) */}
+      {/* 길집사 필수 가이드 8종 — 보호지침 허브로 유도 (SEO + 체류시간) */}
       <section className="px-5 mt-8 cv-auto">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#D85555" }} />
             <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
-              케어테이커 필수 가이드 8종
+              길집사 필수 가이드 8종
             </h2>
           </div>
           <Link
@@ -1030,7 +1030,7 @@ export default async function HomeLanding({
         <div className="space-y-2">
           <FaqRow
             q="도시공존은 무엇인가요?"
-            a="전국 길고양이를 시민이 함께 기록하고 돌보는 시민 참여 플랫폼입니다. 케어테이커가 지도 위에 TNR·급식·건강 기록을 남기고, 긴급 구조가 필요한 아이에게 이웃이 빠르게 닿을 수 있게 돕습니다."
+            a="전국 길고양이를 시민이 함께 기록하고 돌보는 시민 참여 플랫폼입니다. 길집사가 지도 위에 TNR·급식·건강 기록을 남기고, 긴급 구조가 필요한 아이에게 이웃이 빠르게 닿을 수 있게 돕습니다."
           />
           <FaqRow
             q="급식소 정확한 위치가 공개되나요?"
@@ -1054,7 +1054,7 @@ export default async function HomeLanding({
           }}
         >
           <p className="text-[14px] font-extrabold text-text-main mb-1">
-            동네 케어테이커 단톡방에 공유해보세요 🐾
+            동네 길집사 단톡방에 공유해보세요 🐾
           </p>
           <p className="text-[11.5px] text-text-sub mb-3 leading-relaxed">
             아이들을 지켜줄 이웃이 한 명 더 늘어납니다.
@@ -1140,7 +1140,7 @@ export default async function HomeLanding({
             </div>
           </div>
           <p className="text-[12.5px] leading-[1.85] text-text-sub">
-            도시공존은 <b className="text-text-main">케어테이커 한 분 한 분의 손이 헛되지 않게 하고 싶다</b>는 마음으로
+            도시공존은 <b className="text-text-main">길집사 한 분 한 분의 손이 헛되지 않게 하고 싶다</b>는 마음으로
             1인 개발자가 직접 설계하고 운영하는 비영리 플랫폼이에요.
             <br />
             광고도, 수익 모델도 없이 자비로 굴러갑니다.

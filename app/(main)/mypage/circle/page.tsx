@@ -1,7 +1,7 @@
 "use client";
 
 // Private Circle 관리 페이지 — 내가 승인한 이웃에게만 핀 노출.
-// 학대 우려 케어테이커가 안전하게 위치를 공유할 수 있는 신뢰 그룹.
+// 학대 우려 길집사가 안전하게 위치를 공유할 수 있는 신뢰 그룹.
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -588,7 +588,7 @@ export default function CirclePage() {
                     <Avatar url={inv.owner_avatar_url} />
                     <div className="flex-1 min-w-0">
                       <p className="text-[13px] font-extrabold text-text-main truncate">
-                        {inv.owner_nickname ?? "익명 케어테이커"}
+                        {inv.owner_nickname ?? "익명 길집사"}
                       </p>
                       <p className="text-[11px] text-text-light">서클 초대를 보냈어요</p>
                     </div>
@@ -872,7 +872,7 @@ function MemberRow({
       <Avatar url={member.member_avatar_url ?? null} />
       <div className="flex-1 min-w-0">
         <p className="text-[13px] font-extrabold text-text-main truncate">
-          {member.member_nickname ?? "익명 케어테이커"}
+          {member.member_nickname ?? "익명 길집사"}
         </p>
         <p className="text-[11px]" style={{ color: pending ? "#C9A961" : "#6B8E6F" }}>
           {pending ? "수락 대기 중" : "수락됨"}

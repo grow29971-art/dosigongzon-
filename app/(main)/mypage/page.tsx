@@ -96,7 +96,7 @@ export default function MyPage() {
   const SHOW_CARD_GAME = false;      // 내 고양이 카드(CatchCat 게임)
   const SHOW_JOURNEY = false;        // 당신의 여정
   const SHOW_MONTHLY_REPORT = false; // 이번 달 성장 리포트
-  const SHOW_CARETAKERS = false;     // 동네 케어테이커 찾기 — 인원 필요
+  const SHOW_CARETAKERS = false;     // 동네 길집사 찾기 — 인원 필요
   const SHOW_RANKING = false;        // 랭킹
   const SHOW_CIRCLE = false;         // 서클(그룹 돌봄)
 
@@ -965,7 +965,7 @@ export default function MyPage() {
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                  동네 케어테이커 찾기
+                  동네 길집사 찾기
                 </p>
                 <p className="text-[11px] text-text-sub mt-0.5">
                   같은 동네에서 활동하는 분들과 연결돼요
@@ -993,10 +993,10 @@ export default function MyPage() {
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <p className="text-[14px] font-extrabold text-text-main tracking-tight">
-                  케어테이커 활동 랭킹
+                  길집사 활동 랭킹
                 </p>
                 <p className="text-[11px] text-text-sub mt-0.5">
-                  내 활동 점수와 동네 케어테이커 순위를 확인해요
+                  내 활동 점수와 동네 길집사 순위를 확인해요
                 </p>
               </div>
               <ChevronRight size={16} className="shrink-0" style={{ color: "#8B95A1", opacity: 0.7 }} />

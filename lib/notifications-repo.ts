@@ -302,7 +302,7 @@ export async function getNotifications(limit = 30): Promise<NotificationItem[]> 
         items.push({
           id: `cat_moved_${m.id}`,
           type: "cat_moved",
-          actorName: m.changed_by_name ?? "돌보미",
+          actorName: m.changed_by_name ?? "길집사",
           actorAvatar: cat.photo_url,
           message: `📍 ${m.old_region ?? "?"} → ${m.new_region ?? "?"}로 옮겨졌어요`,
           targetId: m.cat_id,

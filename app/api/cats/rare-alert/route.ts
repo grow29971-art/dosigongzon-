@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ skipped: true });
   }
 
-  // 같은 지역 케어테이커 찾기 (최근 180일 내 고양이 등록한 유저)
+  // 같은 지역 길집사 찾기 (최근 180일 내 고양이 등록한 유저)
   const { data: regionCaretakers } = await admin
     .from("cats")
     .select("caretaker_id")

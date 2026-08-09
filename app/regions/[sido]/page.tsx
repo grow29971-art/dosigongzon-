@@ -108,7 +108,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { catCount } = await getSidoData(region.primaryKeywords, region.districtKeywords, region.shortName);
   const title = `${region.shortName} 길고양이 돌봄 지도`;
   const description = catCount > 0
-    ? `${region.name}에 등록된 길고양이 ${catCount}마리의 돌봄 기록. 동네 케어테이커와 함께 TNR·구조·급식을 실시간 공유하는 도시공존.`
+    ? `${region.name}에 등록된 길고양이 ${catCount}마리의 돌봄 기록. 동네 길집사와 함께 TNR·구조·급식을 실시간 공유하는 도시공존.`
     : `${region.name} 길고양이 돌봄 지도. 첫 돌봄 기록을 남겨보세요.`;
 
   return {
@@ -117,7 +117,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     alternates: { canonical: `/regions/${sido}` },
     keywords: [
       `${region.shortName} 길고양이`,
-      `${region.shortName} 케어테이커`,
+      `${region.shortName} 길집사`,
       `${region.shortName} TNR`,
       `${region.shortName} 길고양이 구조`,
       `${region.name} 길고양이`,
@@ -255,7 +255,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
             />
             <p className="text-[28px] leading-none mb-2" aria-hidden>🐾</p>
             <p className="text-[15px] font-extrabold text-text-main leading-tight tracking-tight mb-1.5">
-              {region.shortName}의 첫 번째 케어테이커가 되어주세요
+              {region.shortName}의 첫 번째 길집사가 되어주세요
             </p>
             <p className="text-[12px] leading-relaxed mb-4" style={{ color: "rgba(92,74,62,0.85)" }}>
               아직 비어있어요. 한 번의 돌봄 기록이 이웃을 부르고,

@@ -27,7 +27,7 @@ const CONTACT_EMAIL = "grow29971@gmail.com";
 export const metadata: Metadata = {
   title: "운영 이야기 — 도시공존을 만든 사람",
   description:
-    "도시공존은 1인 메이커 김성우가 SW·HW·운영까지 직접 만들고 굴리는 비영리 시민 참여 플랫폼입니다. 케어테이커 한 분의 손이 헛되지 않게 — 이 한 가지를 위해 시작됐어요.",
+    "도시공존은 1인 메이커 김성우가 SW·HW·운영까지 직접 만들고 굴리는 비영리 시민 참여 플랫폼입니다. 길집사 한 분의 손이 헛되지 않게 — 이 한 가지를 위해 시작됐어요.",
   alternates: { canonical: "/maker" },
   openGraph: {
     type: "website",
@@ -179,14 +179,14 @@ export default function MakerPage() {
         >
           <p className="text-[13px] leading-[2] text-text-sub">
             매일 밥자리에 들러 사료를 채우고, 비 오는 날엔 우산 든 채 한참을 기다리고,
-            누가 알아주지 않아도 그 아이가 오늘 잘 있는지 한 번 더 둘러보는 케어테이커들이
+            누가 알아주지 않아도 그 아이가 오늘 잘 있는지 한 번 더 둘러보는 길집사들이
             계십니다.
           </p>
           <p className="text-[13px] leading-[2] text-text-sub mt-3">
             그 손이 흩어진 채로 끝나지 않게 — 같은 동네 이웃끼리 정보를 잇고,
             기록 한 줄이 다음 사람의 안심으로 이어지게 만들고 싶었어요.{" "}
             <b className="text-text-main">
-              "케어테이커 한 분의 손이 헛되지 않게."
+              "길집사 한 분의 손이 헛되지 않게."
             </b>{" "}
             이 한 문장이 도시공존의 시작입니다.
           </p>
@@ -274,7 +274,7 @@ export default function MakerPage() {
           <PrincipleRow
             emoji="🤝"
             title="시민이 만드는 시민의 도구"
-            body="기록·돌봄·소통의 주체는 케어테이커와 시민이에요. 운영자는 그 손이 더 멀리 닿을 수 있게 도구를 만들고 유지할 뿐입니다."
+            body="기록·돌봄·소통의 주체는 길집사와 시민이에요. 운영자는 그 손이 더 멀리 닿을 수 있게 도구를 만들고 유지할 뿐입니다."
           />
           <PrincipleRow
             emoji="🌱"
@@ -285,11 +285,11 @@ export default function MakerPage() {
         </div>
       </section>
 
-      {/* 케어테이커에게 전하는 말 */}
+      {/* 길집사에게 전하는 말 */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
           <Hand size={14} style={{ color: "var(--color-primary)" }} />
-          <h2 className="text-[14px] font-extrabold text-text-main">케어테이커님께</h2>
+          <h2 className="text-[14px] font-extrabold text-text-main">길집사님께</h2>
         </div>
         <div
           className="rounded-3xl p-5"
@@ -300,7 +300,7 @@ export default function MakerPage() {
         >
           <p className="text-[13px] leading-[2] text-text-sub">
             처음 만난 아이의 사진 한 장, 한 줄 기록이
-            그 동네의 또 다른 케어테이커에게는 큰 안심이 됩니다.
+            그 동네의 또 다른 길집사에게는 큰 안심이 됩니다.
           </p>
           <p className="text-[13px] leading-[2] text-text-sub mt-3">
             너무 걱정되는 아이가 있다면 <b className="text-text-main">Private Circle</b>로

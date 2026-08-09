@@ -1,6 +1,6 @@
 "use client";
 
-// 케어테이커 랭킹 자랑하기 — navigator.share(모바일) → 클립보드 복사 폴백.
+// 길집사 랭킹 자랑하기 — navigator.share(모바일) → 클립보드 복사 폴백.
 import { useState } from "react";
 import { Share2, Check } from "lucide-react";
 
@@ -17,12 +17,12 @@ export default function RankShareButton({
 
   const share = async () => {
     const text = top3
-      ? `🏆 도시공존 케어테이커 랭킹 ${rank}위 달성! 우리 동네 길고양이 돌보는 중이에요 🐾 (${score.toLocaleString()}점)`
-      : `🐾 도시공존 케어테이커 랭킹 ${rank}위! 같이 우리 동네 길고양이 돌봐요 (${score.toLocaleString()}점)`;
+      ? `🏆 도시공존 길집사 랭킹 ${rank}위 달성! 우리 동네 길고양이 돌보는 중이에요 🐾 (${score.toLocaleString()}점)`
+      : `🐾 도시공존 길집사 랭킹 ${rank}위! 같이 우리 동네 길고양이 돌봐요 (${score.toLocaleString()}점)`;
     const url = "https://dosigongzon.com/ranking";
     try {
       if (typeof navigator !== "undefined" && navigator.share) {
-        await navigator.share({ title: "도시공존 케어테이커 랭킹", text, url });
+        await navigator.share({ title: "도시공존 길집사 랭킹", text, url });
       } else {
         await navigator.clipboard.writeText(`${text}\n${url}`);
         setCopied(true);

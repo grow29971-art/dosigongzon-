@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   keywords: [
     "동물보호법", "길고양이 학대 신고", "동물학대 처벌", "동물보호법 제8조",
     "학대 증거 확보", "112 동물학대", "재물손괴죄 숨숨집", "동물보호상담센터",
-    "케어테이커 법적 대응", "구조대 학대 신고",
+    "길집사 법적 대응", "구조대 학대 신고",
   ],
   alternates: { canonical: "/protection/legal" },
   openGraph: {
@@ -215,7 +215,7 @@ export default function LegalGuidePage() {
           길고양이 학대·숨숨집 훼손은 <strong>막연한 "나쁜 짓"이 아니라 명확한 범죄</strong>입니다.
           동물보호법 제8조 위반은 <strong>3년 이하 징역 또는 3천만 원 이하 벌금</strong>. 재물손괴죄도 형사 처벌 대상.
           하지만 제대로 <strong>증거를 확보하고 신고하는 방법</strong>을 모르면 실제 처벌로 이어지기 어려워요.
-          이 가이드는 법조문 해설 + 신고 절차 + 증거 확보 + FAQ 까지 케어테이커가 알아야 할 법률 지식을 모두 담았습니다.
+          이 가이드는 법조문 해설 + 신고 절차 + 증거 확보 + FAQ 까지 길집사가 알아야 할 법률 지식을 모두 담았습니다.
         </p>
         <p className="text-[11px] text-text-sub mt-3">
           마지막 업데이트: {LAST_UPDATED}

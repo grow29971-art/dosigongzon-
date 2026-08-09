@@ -209,7 +209,7 @@ export const TITLES: TitleDef[] = [
   },
   {
     id: "regular_caregiver",
-    name: "단골 케어테이커",
+    name: "단골 길집사",
     emoji: "🥣",
     category: "carelog",
     description: "10번의 돌봄다이어리로 정성을 쌓았어요",

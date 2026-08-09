@@ -175,7 +175,7 @@ export default function CircleJoinPage() {
               PRIVATE CIRCLE 초대
             </p>
             <p className="text-[16px] font-extrabold text-text-main leading-snug mb-2">
-              <b style={{ color: "#4F6B53" }}>{ownerProfile.nickname ?? "익명 케어테이커"}</b>
+              <b style={{ color: "#4F6B53" }}>{ownerProfile.nickname ?? "익명 길집사"}</b>
               님이 당신을<br />서클에 초대했어요
             </p>
             <p className="text-[12px] text-text-sub leading-relaxed">

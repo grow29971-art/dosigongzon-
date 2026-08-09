@@ -89,9 +89,9 @@ export default function CatRegistrationCelebration({
   // 그 외 일반 등록은 단순 확인 + N마리째 카운터 노출(누적감)
   const milestoneInfo = ((): { headline: string; subline: string } | null => {
     if (isFirstEver) return null;
-    if (registrationCount === 50) return { headline: `🥇 50마리째! ${catName}`, subline: "동네의 절반을 알게 된 진정한 케어테이커예요" };
+    if (registrationCount === 50) return { headline: `🥇 50마리째! ${catName}`, subline: "동네의 절반을 알게 된 진정한 길집사예요" };
     if (registrationCount === 20) return { headline: `👑 20마리째! ${catName}`, subline: "마을의 눈 — 동네 길잡이가 되셨어요" };
-    if (registrationCount === 10) return { headline: `🏡 10마리째! ${catName}`, subline: "두 자릿수 케어테이커 영역에 들어왔어요" };
+    if (registrationCount === 10) return { headline: `🏡 10마리째! ${catName}`, subline: "두 자릿수 길집사 영역에 들어왔어요" };
     if (registrationCount === 5) return { headline: `🐾 5마리째! ${catName}`, subline: "부지런한 집사 영역에 들어왔어요" };
     if (registrationCount === 3) return { headline: `🌱 3마리째! ${catName}`, subline: "동네 지도가 점점 두꺼워져요" };
     return null;

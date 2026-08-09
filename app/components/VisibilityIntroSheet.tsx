@@ -1,7 +1,7 @@
 "use client";
 
 // 고양이 등록 시작 전 노출되는 "공개 범위 3단계" 안내 시트.
-// 매번 등록 시작할 때마다 노출 — 학대 우려 케어테이커 안전 선택 유도.
+// 매번 등록 시작할 때마다 노출 — 학대 우려 길집사 안전 선택 유도.
 
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";

@@ -45,13 +45,13 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "도시공존 소개 — 길고양이와 함께 걷는 시민 참여 플랫폼",
   description:
-    "도시공존은 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다. 전국 케어테이커가 실시간으로 돌봄 기록을 공유하고, IoT 스마트쉼터·고양이난로 같은 돌봄 하드웨어로 길 위의 위험까지 직접 막습니다. 제휴·언론·블로그 문의 환영.",
+    "도시공존은 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다. 전국 길집사가 실시간으로 돌봄 기록을 공유하고, IoT 스마트쉼터·고양이난로 같은 돌봄 하드웨어로 길 위의 위험까지 직접 막습니다. 제휴·언론·블로그 문의 환영.",
   alternates: { canonical: "/about" },
   keywords: [
     "도시공존",
     "길고양이 플랫폼",
     "TNR 지도",
-    "케어테이커 커뮤니티",
+    "길집사 커뮤니티",
     "길고양이 돌봄",
     "시민 참여 플랫폼",
     "동물보호 플랫폼",
@@ -143,7 +143,7 @@ export default async function AboutPage() {
           돌봄 기록을 한 화면에.
         </h1>
         <p className="text-[13.5px] text-text-sub mt-3 leading-relaxed">
-          <b className="text-text-main">도시공존</b>은 케어테이커가
+          <b className="text-text-main">도시공존</b>은 길집사가
           <b className="text-text-main"> TNR·건강·급식</b> 기록을 실시간으로 남기고,
           긴급 구조가 필요한 아이에게 동네 이웃이 빠르게 닿을 수 있도록 잇는
           전국 길고양이 돌봄 지도입니다.
@@ -179,7 +179,7 @@ export default async function AboutPage() {
             n={2}
             icon={<HeartCrack size={18} color="#FFFFFF" />}
             title="활동의 외로움"
-            desc="대부분의 케어테이커는 혼자 묵묵히 길을 돕니다. 같은 동네에 누가 함께 돌보는지 몰라 손길이 겹치거나 비고, 힘든 순간에 기대고 안부를 나눌 이웃이 곁에 없어 쉽게 지쳤어요."
+            desc="대부분의 길집사는 혼자 묵묵히 길을 돕니다. 같은 동네에 누가 함께 돌보는지 몰라 손길이 겹치거나 비고, 힘든 순간에 기대고 안부를 나눌 이웃이 곁에 없어 쉽게 지쳤어요."
           />
           <ProblemRow
             n={3}
@@ -195,7 +195,7 @@ export default async function AboutPage() {
           <Heart size={15} style={{ color: "var(--color-primary)" }} className="shrink-0 mt-0.5" />
           <p className="text-[12.5px] leading-relaxed text-text-sub">
             <b className="text-text-main">그래서 도시공존을 만들었어요.</b> 흩어진 정보를 한 화면에 모으고,
-            혼자였던 케어테이커를 같은 동네 이웃과 잇고, 화면 안팎으로 길 위의 아이들을 지킬 도구가 되기 위해서요.
+            혼자였던 길집사를 같은 동네 이웃과 잇고, 화면 안팎으로 길 위의 아이들을 지킬 도구가 되기 위해서요.
           </p>
         </div>
       </section>
@@ -219,12 +219,12 @@ export default async function AboutPage() {
           <FeatureRow
             icon={<Users size={18} style={{ color: "#4A7BA8" }} />}
             title="동네 커뮤니티"
-            desc="케어테이커끼리 실시간 채팅, 커뮤니티 게시판, 1:1 쪽지로 정보와 안부를 나눠요."
+            desc="길집사끼리 실시간 채팅, 커뮤니티 게시판, 1:1 쪽지로 정보와 안부를 나눠요."
           />
           <FeatureRow
             icon={<Shield size={18} style={{ color: "#6B8E6F" }} />}
             title="보호 지침 · 약품 가이드"
-            desc="초보 케어테이커를 위한 응급처치, TNR, 새끼 구조, 법률 가이드를 한 곳에."
+            desc="초보 길집사를 위한 응급처치, TNR, 새끼 구조, 법률 가이드를 한 곳에."
           />
         </div>
       </section>
@@ -406,7 +406,7 @@ export default async function AboutPage() {
           </ul>
           <p className="text-[11px] text-text-light leading-relaxed mt-3">
             그래서 &ldquo;지도 보고 찾아가기&rdquo;는 어렵지만, 그게 바로 아이들이 안전한 이유예요. 실제
-            돌봄에 필요한 위치는 동네 케어테이커끼리 쪽지로 나눠주세요.
+            돌봄에 필요한 위치는 동네 길집사끼리 쪽지로 나눠주세요.
           </p>
         </div>
       </section>
@@ -440,7 +440,7 @@ export default async function AboutPage() {
           </div>
 
           <p className="text-[12.5px] leading-[1.9] text-text-sub">
-            도시공존은 <b className="text-text-main">케어테이커 한 분의 손이 헛되지 않게</b>,
+            도시공존은 <b className="text-text-main">길집사 한 분의 손이 헛되지 않게</b>,
             그리고 길 위의 아이들이 매일 다시 보일 수 있게 하고 싶어,
             한 명이 직접 <b className="text-text-main">설계·개발·운영</b>까지 모두 떠안고 굴리는
             비영리 플랫폼이에요.
@@ -536,7 +536,7 @@ export default async function AboutPage() {
                 <b className="text-text-main"> 겨울 동사</b>는 내부를 따뜻하게 유지해 막고,
                 &lsquo;오늘 그 아이 왔나·별일 없나&rsquo; 확인할 길이 없던 문제는
                 <b className="text-text-main"> 카메라·센서로 출입과 상태를 원격 확인</b>해 해결해요.
-                운영자 한 명이 다 챙기지 못하는 한계는, 같은 동네 케어테이커들이
+                운영자 한 명이 다 챙기지 못하는 한계는, 같은 동네 길집사들이
                 <b className="text-text-main"> 나눠서 모니터링</b>하고 이상 시 앱으로 바로 알림을 받는 구조로 풀었어요.
               </>
             }
@@ -597,7 +597,7 @@ export default async function AboutPage() {
           <TechRow
             icon={<Radio size={18} style={{ color: "#22B573" }} />}
             title="실시간 동기화 (Supabase Realtime)"
-            desc="누군가 새 기록을 남기면 같은 동네 케어테이커 화면에 즉시 반영. 1:1 쪽지·구조 신호도 같은 채널로 흐릅니다."
+            desc="누군가 새 기록을 남기면 같은 동네 길집사 화면에 즉시 반영. 1:1 쪽지·구조 신호도 같은 채널로 흐릅니다."
           />
           <TechRow
             icon={<Lock size={18} style={{ color: "#6B8E6F" }} />}

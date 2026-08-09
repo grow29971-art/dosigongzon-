@@ -474,10 +474,10 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                     className="font-bold hover:underline"
                     style={{ color: "var(--color-primary)" }}
                   >
-                    돌보미 {cat.caretaker_name}
+                    길집사 {cat.caretaker_name}
                   </Link>
                 ) : (
-                  <span>돌보미 {cat.caretaker_name}</span>
+                  <span>길집사 {cat.caretaker_name}</span>
                 )}
                 {cat.caretaker_id && (
                   <FollowButton userId={cat.caretaker_id} size="sm" />

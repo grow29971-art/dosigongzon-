@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/guide" },
   keywords: [
     "도시공존 사용법", "길고양이 지도 앱", "돌봄다이어리", "고양이 등록 방법",
-    "케어테이커 커뮤니티", "TNR 기록", "도시공존 가이드",
+    "길집사 커뮤니티", "TNR 기록", "도시공존 가이드",
   ],
   openGraph: {
     type: "website",
