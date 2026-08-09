@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, ChevronDown, Flower2, Undo2, Info } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, Flower2, Undo2, Info, Trash2 } from "lucide-react";
 import {
   listMemorialCats,
   listMyFlowerCatIds,
@@ -14,6 +14,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/app/components/Toast";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
+import { deleteCatByAdmin } from "@/lib/support-repo";
 import CatStarPlanet from "@/app/components/CatStarPlanet";
 
 // 배경 별 — id 없이 페이지 고정 시드
@@ -155,6 +156,10 @@ export default function MemorialPage() {
   // 보내기는 등록자 또는 관리자가 할 수 있는데(map/page.tsx:2963) 되돌리기는
   // 등록자만 볼 수 있었다. 관리자가 보낸 아이는 되돌릴 UI가 없었다 (2026-08-09 수정)
   const [isAdmin, setIsAdmin] = useState(false);
+  // 관리자 영구 삭제 — 이름을 직접 입력받는다(CASCADE 라 복구 없음)
+  const [deleteTarget, setDeleteTarget] = useState<MemorialCat | null>(null);
+  const [deleteText, setDeleteText] = useState("");
+  const [deleting, setDeleting] = useState(false);
   const stars = useMemo(() => makeStars(70), []);
 
   const load = useCallback(async () => {
@@ -200,6 +205,25 @@ export default function MemorialPage() {
         prev?.map((c) => (c.id === catId ? { ...c, flower_count: c.flower_count + (was ? 1 : -1) } : c)) ?? prev,
       );
       toast.error(err instanceof Error ? err.message : "헌화하지 못했어요");
+    }
+  };
+
+  // 관리자 영구 삭제. deleteCatByAdmin 은 requireAdmin() 을 거치고
+  // DB 쪽에도 cats_delete_admin 정책이 있어 UI가 뚫려도 서버에서 한 번 더 막힌다.
+  const handleAdminDelete = async () => {
+    if (!deleteTarget || deleting) return;
+    if (deleteText.trim() !== deleteTarget.name) return;
+    setDeleting(true);
+    try {
+      await deleteCatByAdmin(deleteTarget.id);
+      setCats((prev) => prev?.filter((c) => c.id !== deleteTarget.id) ?? prev);
+      toast.success(`${deleteTarget.name}(을)를 삭제했어요`);
+      setDeleteTarget(null);
+      setDeleteText("");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "삭제하지 못했어요");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -428,12 +452,98 @@ export default function MemorialPage() {
                       되돌리기
                     </button>
                   )}
+
+                  {/* 영구 삭제 — 관리자만. 되돌리기와 달리 CASCADE 라 복구가 없다 */}
+                  {isAdmin && (
+                    <button
+                      onClick={() => { setDeleteTarget(cat); setDeleteText(""); }}
+                      className="w-[42px] h-[42px] rounded-xl flex items-center justify-center shrink-0 active:scale-[0.97] transition-transform"
+                      style={{ background: "rgba(216,85,85,0.16)", color: "rgba(255,150,150,0.9)" }}
+                      aria-label={`${cat.name} 영구 삭제 (관리자)`}
+                      title="영구 삭제 (관리자)"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  )}
                 </div>
               </div>
             );
           })}
         </div>
       </div>
+
+      {/* 영구 삭제 확인 — 되돌리기와 달리 복구가 없어서 이름을 직접 받는다.
+          care_logs·cat_cards·댓글·헌화·추모일기가 전부 CASCADE 로 함께 사라진다. */}
+      {deleteTarget && (
+        <div
+          className="fixed inset-0 flex items-center justify-center px-6"
+          style={{ zIndex: 120, background: "rgba(10,7,18,0.72)" }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="영구 삭제 확인"
+        >
+          <div
+            className="w-full bg-white overflow-hidden"
+            style={{ maxWidth: 380, borderRadius: 24, boxShadow: "0 20px 60px rgba(0,0,0,0.45)" }}
+          >
+            <div className="px-6 pt-7 pb-6">
+              <div
+                className="w-12 h-12 rounded-full flex items-center justify-center mb-4"
+                style={{ background: "rgba(216,85,85,0.12)" }}
+              >
+                <Trash2 size={20} color="#C94A4A" />
+              </div>
+
+              <h2 className="text-[18px] font-bold text-gray-900">
+                {deleteTarget.name}(을)를 영구 삭제할까요?
+              </h2>
+              <p className="text-[13.5px] leading-[1.7] text-gray-600 mt-2">
+                고양이별에서 내리는 게 아니라 <b className="text-gray-900">기록째 지웁니다.</b>{" "}
+                되돌릴 수 없어요.
+              </p>
+
+              <ul
+                className="text-[12.5px] leading-[1.9] mt-4 px-4 py-3"
+                style={{ background: "#FBF3F3", borderRadius: 14, color: "#8B3A3A" }}
+              >
+                <li>· 돌봄 기록 {deleteTarget.care_log_count}개</li>
+                <li>· 헌화 {deleteTarget.flower_count}개</li>
+                <li>· 사진 · 카드 · 댓글 · 추모일기 전부</li>
+              </ul>
+
+              <p className="text-[12.5px] text-gray-500 mt-5 mb-2">
+                확인을 위해 <b className="text-gray-800">{deleteTarget.name}</b> 을(를) 입력해주세요.
+              </p>
+              <input
+                value={deleteText}
+                onChange={(e) => setDeleteText(e.target.value)}
+                placeholder={deleteTarget.name}
+                autoFocus
+                className="w-full text-[14px] px-4 py-3 outline-none"
+                style={{ borderRadius: 12, background: "#F6F3F0", border: "1px solid #E7E0DA" }}
+              />
+
+              <button
+                onClick={() => void handleAdminDelete()}
+                disabled={deleting || deleteText.trim() !== deleteTarget.name}
+                className="w-full h-[50px] rounded-2xl mt-5 text-white text-[15px] font-bold active:scale-[0.98] transition-transform disabled:opacity-40"
+                style={{ background: "#C94A4A" }}
+              >
+                {deleting ? "삭제 중…" : "영구 삭제"}
+              </button>
+              <button
+                onClick={() => setDeleteTarget(null)}
+                className="w-full h-[46px] mt-1 text-[14px] font-medium text-gray-500"
+              >
+                취소
+              </button>
+              <p className="text-[11.5px] text-gray-400 text-center mt-1">
+                지도로 되돌리려는 거라면 취소하고 <b>되돌리기</b>를 눌러주세요.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style>{`
         @keyframes memStarTwinkle {
