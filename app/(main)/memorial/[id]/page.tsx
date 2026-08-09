@@ -92,7 +92,7 @@ export default async function MemorialCatPage({
   return (
     <div
       className="min-h-screen"
-      style={{ background: "linear-gradient(180deg, #0d0b18 0%, #241d3a 38%, #3a2c4d 100%)" }}
+      style={{ background: "linear-gradient(180deg, #07060F 0%, #140F26 34%, #241B3B 68%, #33254A 100%)" }}
     >
       <div className="px-5 pb-28" style={{ paddingTop: "max(env(safe-area-inset-top), 16px)" }}>
         <div className="flex items-center py-3">

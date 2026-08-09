@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, ChevronDown, Star, Flower2, Undo2, Info } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, Flower2, Undo2, Info } from "lucide-react";
 import {
   listMemorialCats,
   listMyFlowerCatIds,
@@ -14,6 +14,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/app/components/Toast";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
+import CatStarPlanet from "@/app/components/CatStarPlanet";
 
 // 배경 별 — id 없이 페이지 고정 시드
 function makeStars(count: number) {
@@ -22,13 +23,17 @@ function makeStars(count: number) {
     h ^= h << 13; h ^= h >>> 17; h ^= h << 5;
     return ((h >>> 0) % 10000) / 10000;
   };
-  return Array.from({ length: count }, () => ({
-    left: next() * 100,
-    top: next() * 100,
-    size: 1 + next() * 2,
-    delay: next() * 4,
-    opacity: 0.2 + next() * 0.55,
-  }));
+  return Array.from({ length: count }, () => {
+    const depth = next();               // 0=먼 별(작고 흐림), 1=가까운 별(크고 밝음)
+    return {
+      left: next() * 100,
+      top: next() * 100,
+      size: depth > 0.92 ? 2.6 + next() * 1.4 : depth > 0.65 ? 1.4 + next() : 0.7 + next() * 0.6,
+      delay: next() * 6,
+      dur: 2.6 + next() * 3.4,
+      opacity: depth > 0.92 ? 0.85 : depth > 0.65 ? 0.45 + next() * 0.35 : 0.18 + next() * 0.25,
+    };
+  });
 }
 
 /**
@@ -212,9 +217,21 @@ export default function MemorialPage() {
   return (
     <div
       className="min-h-screen relative"
-      style={{ background: "linear-gradient(180deg, #0d0b18 0%, #241d3a 40%, #3a2c4d 100%)" }}
+      style={{ background: "linear-gradient(180deg, #07060F 0%, #140F26 34%, #241B3B 68%, #33254A 100%)" }}
     >
-      {/* 밤하늘 */}
+      {/* 성운 — 큰 반경 그라디언트 두 겹. 단색 밤하늘의 밋밋함을 없앤다 */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: [
+            "radial-gradient(ellipse 70% 40% at 18% 12%, rgba(120,86,190,0.30), transparent 70%)",
+            "radial-gradient(ellipse 60% 35% at 88% 34%, rgba(64,96,180,0.24), transparent 72%)",
+            "radial-gradient(ellipse 90% 30% at 50% 96%, rgba(180,110,90,0.16), transparent 75%)",
+          ].join(","),
+        }}
+      />
+
+      {/* 별밭 — 크기·밝기가 다른 세 겹이라 깊이가 생긴다 */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {stars.map((s, i) => (
           <span
@@ -227,7 +244,30 @@ export default function MemorialPage() {
               height: s.size,
               background: "#fff",
               opacity: s.opacity,
-              animation: `memStarTwinkle 3.6s ease-in-out ${s.delay}s infinite`,
+              boxShadow: s.size > 2 ? `0 0 ${s.size * 2.5}px rgba(255,255,255,0.55)` : undefined,
+              animation: `memStarTwinkle ${s.dur}s ease-in-out ${s.delay}s infinite`,
+            }}
+          />
+        ))}
+
+        {/* 별똥별 — 아주 가끔만 지나간다 */}
+        {[
+          { top: "12%", left: "-10%", delay: 6, dur: 2.6 },
+          { top: "38%", left: "-14%", delay: 21, dur: 3.1 },
+        ].map((m, i) => (
+          <span
+            key={`meteor-${i}`}
+            className="absolute"
+            style={{
+              top: m.top,
+              left: m.left,
+              width: 120,
+              height: 1.5,
+              background: "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.85) 70%, #fff 100%)",
+              borderRadius: 2,
+              opacity: 0,
+              transform: "rotate(18deg)",
+              animation: `memMeteor ${m.dur}s ease-in ${m.delay}s infinite`,
             }}
           />
         ))}
@@ -246,11 +286,10 @@ export default function MemorialPage() {
           </Link>
         </div>
 
-        <div className="text-center pt-6 pb-10">
-          <div className="inline-flex" style={{ animation: "memGlow 3s ease-in-out infinite" }}>
-            <Star size={34} color="#FFE9A8" fill="#FFE9A8" />
-          </div>
-          <h1 className="text-[24px] font-bold text-white mt-4">고양이별</h1>
+        <div className="flex flex-col items-center text-center pt-4 pb-10">
+          {/* 곁별 수 = 고양이별에 온 아이 수 */}
+          <CatStarPlanet size={148} companions={cats?.length ?? 0} />
+          <h1 className="text-[24px] font-bold text-white mt-1">고양이별</h1>
           <p className="text-[14px] leading-[1.7] mt-3" style={{ color: "rgba(255,255,255,0.62)" }}>
             먼저 떠난 아이들이 머무는 곳이에요.
             <br />
@@ -405,12 +444,14 @@ export default function MemorialPage() {
           from { opacity: 0; transform: translateY(-4px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        @keyframes memGlow {
-          0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 8px rgba(255,233,168,0.55)); }
-          50%      { transform: scale(1.1);  filter: drop-shadow(0 0 22px rgba(255,233,168,0.9)); }
+        @keyframes memMeteor {
+          0%      { opacity: 0; transform: translate3d(0,0,0) rotate(18deg); }
+          4%      { opacity: 1; }
+          22%     { opacity: 1; }
+          30%,100%{ opacity: 0; transform: translate3d(140vw, 46vh, 0) rotate(18deg); }
         }
         @media (prefers-reduced-motion: reduce) {
-          [style*="memStarTwinkle"], [style*="memGlow"] { animation: none !important; }
+          [style*="memStarTwinkle"], [style*="memMeteor"], [style*="memFadeIn"] { animation: none !important; }
         }
       `}</style>
     </div>
