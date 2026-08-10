@@ -6,7 +6,6 @@
 
 import { useEffect, useRef } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { createClient } from "@/lib/supabase/client";
 import { reportError } from "@/lib/error-report";
 
 const STORAGE_KEY = "dosigongzon_pending_marketing_consent";
@@ -27,6 +26,8 @@ export default function MarketingConsentApplier() {
     triedRef.current = true;
 
     (async () => {
+      // supabase-js를 전 페이지 공유 청크에서 빼기 위한 지연 로드 — auth-context와 같은 패턴.
+      const { createClient } = await import("@/lib/supabase/client");
       const supabase = createClient();
       const { error } = await supabase
         .from("profiles")

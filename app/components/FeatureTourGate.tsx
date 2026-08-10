@@ -6,11 +6,15 @@
 // 막아서, 가입 직후엔 welcome이 끝나고 실제 목적지에 도착했을 때 뜨도록 자연스럽게 순서가 잡힌다.
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
-import { createClient } from "@/lib/supabase/client";
-import { listMyActivityRegions, type ActivityRegion } from "@/lib/activity-regions-repo";
-import FeatureTourModal from "@/app/components/FeatureTourModal";
+
+// supabase-js·모달을 전 페이지 공유 청크에서 빼기 위한 지연 로드 — auth-context와 같은 패턴.
+// 이 게이트는 (main) 레이아웃 전체에 마운트되므로 정적 import 하나가 곧 전 페이지 first-load다.
+const FeatureTourModal = dynamic(() => import("@/app/components/FeatureTourModal"), {
+  ssr: false,
+});
 
 export default function FeatureTourGate() {
   const pathname = usePathname();
@@ -34,20 +38,28 @@ export default function FeatureTourGate() {
     if (status !== "idle") return;
 
     let cancelled = false;
-    const profileQuery = createClient()
-      .from("profiles")
-      .select("feature_tour_completed_at")
-      .eq("id", user.id)
-      .maybeSingle() as Promise<{ data: { feature_tour_completed_at?: string | null } | null }>;
-    const regionsQuery: Promise<ActivityRegion[]> = listMyActivityRegions().catch(() => []);
-
-    Promise.all([profileQuery, regionsQuery])
-      .then(([{ data }, regions]) => {
+    (async () => {
+      try {
+        const [{ createClient }, { listMyActivityRegions }] = await Promise.all([
+          import("@/lib/supabase/client"),
+          import("@/lib/activity-regions-repo"),
+        ]);
+        const profileQuery = createClient()
+          .from("profiles")
+          .select("feature_tour_completed_at")
+          .eq("id", user.id)
+          .maybeSingle() as Promise<{ data: { feature_tour_completed_at?: string | null } | null }>;
+        const [{ data }, regions] = await Promise.all([
+          profileQuery,
+          listMyActivityRegions().catch(() => []),
+        ]);
         if (cancelled) return;
         setHasRegion(regions.length > 0);
         setStatus(data?.feature_tour_completed_at ? "hidden" : "show");
-      })
-      .catch(() => { if (!cancelled) setStatus("hidden"); });
+      } catch {
+        if (!cancelled) setStatus("hidden");
+      }
+    })();
 
     return () => { cancelled = true; };
   }, [user, loading, onExcludedPath, status]);
