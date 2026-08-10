@@ -88,7 +88,8 @@ interface RoamOverlay extends KakaoOverlay {
   __stateEl?: HTMLElement | null;
   __emoteEl?: HTMLElement | null;
   __flipEl?: HTMLElement | null; // 전신 고양이 좌우 반전 컨테이너 (.cat-walk-flip)
-  __lastLng?: number;            // 직전 경도 — 이동 방향으로 바라보는 쪽 결정
+  __lastLng?: number;            // 직전 반영 경도 — 이동 방향 결정 + 미세이동 스킵 판정
+  __lastLat?: number;            // 직전 반영 위도 — 미세이동 스킵 판정
 }
 
 // area_chats 행 — temp- 접두사 id는 낙관적 메시지(아직 서버 미반영)
@@ -1605,6 +1606,11 @@ export default function MapPage() {
     });
     const id = setInterval(() => {
       if (!window.kakao || !mapInstanceRef.current || document.hidden) return;
+      // 화면상 반 픽셀 미만 이동은 setPosition 스킵 — 줌아웃(마커 최대 200개)일수록
+      // 배회 진폭이 픽셀 이하로 뭉개져 대부분의 DOM 쓰기·LatLng 할당이 사라진다.
+      // 카카오 지도는 level이 1 오를 때마다 축척이 2배 — 대략 level 6 ≈ 3m/반픽셀.
+      const level = mapInstanceRef.current.getLevel();
+      const minDeltaDeg = (0.05 * Math.pow(2, level)) / 111111;
       overlaysRef.current.forEach((ov) => {
         const roamCat = ov.__roamCat;
         if (!roamCat) return;
@@ -1632,15 +1638,25 @@ export default function MapPage() {
           }
         }
 
-        ov.setPosition(new window.kakao.maps.LatLng(coord.lat, coord.lng));
-        // 전신 고양이는 이동 방향을 바라본다 (기본 동쪽 보기 → 서쪽 이동 시 반전)
-        const flipEl: HTMLElement | null = ov.__flipEl ?? null;
-        if (flipEl) {
-          const last = ov.__lastLng;
-          if (last != null && Math.abs(coord.lng - last) > 1e-7) {
-            const t = coord.lng < last ? "scaleX(-1)" : "scaleX(1)";
-            if (flipEl.style.transform !== t) flipEl.style.transform = t;
+        // 미세이동 스킵 — 연출(fx) 중에는 항상 반영 (달려가기/복귀가 끊기면 안 됨)
+        const moved =
+          fx != null ||
+          ov.__lastLat == null ||
+          ov.__lastLng == null ||
+          Math.abs(coord.lat - ov.__lastLat) >= minDeltaDeg ||
+          Math.abs(coord.lng - ov.__lastLng) >= minDeltaDeg;
+        if (moved) {
+          ov.setPosition(new window.kakao.maps.LatLng(coord.lat, coord.lng));
+          // 전신 고양이는 이동 방향을 바라본다 (기본 동쪽 보기 → 서쪽 이동 시 반전)
+          const flipEl: HTMLElement | null = ov.__flipEl ?? null;
+          if (flipEl) {
+            const last = ov.__lastLng;
+            if (last != null && Math.abs(coord.lng - last) > 1e-7) {
+              const t = coord.lng < last ? "scaleX(-1)" : "scaleX(1)";
+              if (flipEl.style.transform !== t) flipEl.style.transform = t;
+            }
           }
+          ov.__lastLat = coord.lat;
           ov.__lastLng = coord.lng;
         }
         // 행동 상태 뱃지 (💤/🐾/💨, 날씨 시 ☔☃️🥵🧣, 연출 시 💨/🍚) — 바뀔 때만 DOM 갱신
