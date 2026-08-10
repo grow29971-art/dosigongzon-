@@ -1,6 +1,8 @@
 // 돌봄 스트릭 위험 알림 — Vercel Cron 매일 21:30 KST (12:30 UTC)
-// 스트릭 2일↑인데 오늘 아직 돌봄 기록이 없는 유저에게 푸시.
+// 스트릭 1일↑인데 오늘 아직 돌봄 기록이 없는 유저에게 푸시.
 // 하루 놓치면 연속 기록이 끊기므로 잠들기 전 마지막 리마인더.
+// 2026-08-10 사용량 회의: 임계 2→1 — 어제 첫 기록을 남긴 유저(D1→D2, 습관이
+// 가장 잘 깨지는 지점)가 어느 크론에도 안 잡히는 무통지 구간이었다.
 
 import webpush from "web-push";
 import { createServiceClient } from "@/lib/supabase/service";
@@ -58,7 +60,7 @@ export async function POST(request: Request) {
     userDays.get(row.author_id)!.add(kstDay);
   }
 
-  // 3. 스트릭 위험군 추출: streak >= 2 AND !hasToday
+  // 3. 스트릭 위험군 추출: streak >= 1 AND !hasToday
   const atRisk: Array<{ userId: string; streak: number }> = [];
   for (const userId of optedInIds) {
     const days = userDays.get(userId);
@@ -77,7 +79,7 @@ export async function POST(request: Request) {
         break;
       }
     }
-    if (streak >= 2) atRisk.push({ userId, streak });
+    if (streak >= 1) atRisk.push({ userId, streak });
   }
 
   if (atRisk.length === 0) {
@@ -113,13 +115,17 @@ export async function POST(request: Request) {
         ? `🔥 ${streak}일째 이어진 사이`
         : streak >= 7
           ? `🔥🔥 ${streak}일 연속 — 오늘도 이어볼까요?`
-          : `🔥 ${streak}일 스트릭 · 오늘 한 줄이면 이어져요`;
+          : streak >= 2
+            ? `🔥 ${streak}일 스트릭 · 오늘 한 줄이면 이어져요`
+            : "🌱 어제 만난 아이, 오늘도 궁금하지 않으세요?";
     const body =
       streak >= 30
         ? `오늘 한 줄이면 ${streak + 1}일 — 아이도 이제 발소리를 알아볼 거예요.`
         : streak >= 7
           ? "일주일 넘게 꾸준히 챙겼어요. 오늘도 한 번 들러볼까요?"
-          : "오늘 안부 한 줄이면 연속 기록이 쌓여요 💛";
+          : streak >= 2
+            ? "오늘 안부 한 줄이면 연속 기록이 쌓여요 💛"
+            : "어제 첫 안부를 전하셨죠. 오늘 한 줄이면 두 번째 만남이에요 💛";
     // 딥링크: 스트릭을 잇는 최단 행동은 홈 1탭 기록 — 지도(4단계 경로)가 아니라 #my-cats로
     const url = "/#my-cats";
 
