@@ -65,6 +65,7 @@ import {
   type CommentKind,
   type VoteValue,
 } from "@/lib/cats-repo";
+import { sfx, primeSfx } from "@/lib/sfx";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/app/components/Toast";
 import { sanitizeImageUrl } from "@/lib/url-validate";
@@ -1177,13 +1178,15 @@ export default function MapPage() {
     return () => clearInterval(id);
   }, []);
 
-  // ── 쓰다듬기 (pet) — 하트 팡 + 누적 카운터. 연타는 배치로 flush ──
+  // ── 쓰다듬기 (pet) — 하트 팡 + 원형사진 흔들림 + 골골송 + 누적 카운터. 연타는 배치로 flush ──
   const [petCount, setPetCount] = useState(0);
   const [petHearts, setPetHearts] = useState<{ id: number; dx: number; r: number; ch: string }[]>([]);
   const [petPop, setPetPop] = useState(false);
   const pendingPetsRef = useRef(0);
   const petFlushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const petHeartSeq = useRef(0);
+  const petPhotoRef = useRef<HTMLDivElement | null>(null);
+  const lastPurrAtRef = useRef(0);
   // 선택 고양이 바뀌면 카운터 동기화 + 남은 대기분 flush
   useEffect(() => {
     setPetCount(selectedCat?.pet_count ?? 0);
@@ -1204,6 +1207,18 @@ export default function MapPage() {
     setTimeout(() => setPetPop(false), 280);
     setTimeout(() => setPetHearts((prev) => prev.filter((h) => h.id !== heart.id)), 1000);
     try { navigator.vibrate?.(8); } catch { /* 미지원 */ }
+    // 원형 사진 흔들림 — 연타 시에도 처음부터 재생되도록 리플로우로 애니메이션 리셋
+    const ph = petPhotoRef.current;
+    if (ph) {
+      ph.classList.remove("pet-wiggle");
+      void ph.offsetWidth;
+      ph.classList.add("pet-wiggle");
+    }
+    // 골골송 — 다마고치와 같은 합성음(파일 없음). 연타는 0.9초에 1번만 울려 소리 겹침 방지.
+    if (Date.now() - lastPurrAtRef.current > 900) {
+      lastPurrAtRef.current = Date.now();
+      try { primeSfx(); sfx.purr({ duration: 0.9 }); } catch { /* 오디오 미지원 */ }
+    }
     // 배치 flush (연타 모아 1회 RPC)
     pendingPetsRef.current += 1;
     const catId = selectedCat.id;
@@ -3109,6 +3124,7 @@ export default function MapPage() {
               {/* 사진 — 둥근 원형 프레임(도감 인카운터 느낌), 흰 배경 위에 살짝 띄워서 */}
               <div className="px-4 pt-4 pb-1 flex justify-center" style={{ background: `linear-gradient(180deg, ${catCardTheme.typeBg}22, transparent 70%)` }}>
                 <div
+                  ref={petPhotoRef}
                   className="relative overflow-hidden bg-surface-alt rounded-full"
                   style={{ width: 148, height: 148, boxShadow: `0 0 0 5px #fff, 0 0 0 8px ${catCardTheme.typeBg}, 0 8px 20px rgba(0,0,0,0.15)` }}
                 >

@@ -366,9 +366,19 @@ body {
   40% { transform: scale(1.12); }
 }
 .pet-pop { animation: pet-pop 0.28s ease-out; }
+/* 쓰다듬기 시 원형 사진이 갸웃갸웃 — 고개를 비비는 느낌의 짧은 흔들림 */
+@keyframes pet-wiggle {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-4deg) scale(1.05); }
+  50% { transform: rotate(3deg) scale(1.07); }
+  75% { transform: rotate(-2deg) scale(1.03); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+.pet-wiggle { animation: pet-wiggle 0.55s ease-in-out; }
 @media (prefers-reduced-motion: reduce) {
   .pet-heart { animation: none; opacity: 0; }
   .pet-pop { animation: none; }
+  .pet-wiggle { animation: none; }
 }
 
 /* ── 출시 카운트다운 D-3 이하 부드러운 펄스 ── */
