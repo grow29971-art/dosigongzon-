@@ -2,12 +2,16 @@
 // 서버 사이드 cats 조회 (RSC/라우트 핸들러 전용)
 // ══════════════════════════════════════════
 
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { createAnonClient } from "@/lib/supabase/anon";
 import type { Cat } from "@/lib/cats-repo";
 import { isSafeImageUrl } from "@/lib/url-validate";
 
-export async function getCatByIdServer(id: string): Promise<Cat | null> {
+// React cache(): generateMetadata와 페이지 본문이 같은 요청에서 같은 행을 2번 조회하던
+// 중복 제거. 요청 단위 dedup일 뿐 요청 간 공유 캐시가 아니므로 세션 분기(실좌표/지터
+// 뷰 선택)는 그대로 안전하다 — 공유 캐시(unstable_cache 등)로 바꾸면 좌표 유출.
+export const getCatByIdServer = cache(async (id: string): Promise<Cat | null> => {
   // UUID 형식이 아니면 즉시 null (400 회피)
   if (!/^[0-9a-fA-F-]{32,36}$/.test(id)) return null;
 
@@ -27,7 +31,7 @@ export async function getCatByIdServer(id: string): Promise<Cat | null> {
     return null;
   }
   return (data as Cat | null) ?? null;
-}
+});
 
 export async function getCatCommentsCountServer(id: string): Promise<number> {
   const supabase = await createClient();
