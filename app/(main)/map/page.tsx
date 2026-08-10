@@ -1566,7 +1566,10 @@ export default function MapPage() {
         window.kakao.maps.event.removeListener(map, "idle", catIdleListenerRef.current);
       }
     };
-  }, [cats, mapReady, isLoggedIn, alertedCats, showCats, activityRegions, regionFilter, searchQDebounced, catFilter]);
+    // activityRegions·regionFilter는 이 이펙트 본문에서 미사용 — 활동지역 오버레이는
+    // 별도 이펙트(1128행대)가 담당한다. 여기 남겨두면 지역 로드/필터 토글마다
+    // 마커 80~200개가 통째로 재생성되는 불필요 비용이 든다.
+  }, [cats, mapReady, isLoggedIn, alertedCats, showCats, searchQDebounced, catFilter]);
 
   // ── 돌봄 기록 반응 연출 — 기록하면 그 고양이 마커가 아지트로 달려와 밥을 먹음 ──
   // run(2.5s 달려옴) → eat(60s 🍚) → return(2s 배회 위치로 복귀)
