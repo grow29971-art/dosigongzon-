@@ -290,7 +290,10 @@ export default function MapPage() {
   }, [cats, searchQDebounced]);
 
   const [abuseCardExpanded, setAbuseCardExpanded] = useState(false);
-  const [userPos, setUserPos] = useState<{ lat: number; lng: number } | null>(null);
+  // GPS 좌표는 state가 아니라 ref — watchPosition이 이동 중 초당 ~1회 픽스를 주는데,
+  // state면 그때마다 이 거대 컴포넌트 전체가 리렌더된다. 오버레이는 명령형으로 직접 갱신.
+  const userPosRef = useRef<{ lat: number; lng: number } | null>(null);
+  const applyUserPosRef = useRef<(() => void) | null>(null);
 
   // 병원 오버레이 (항상 표시)
   const [hospitals, setHospitals] = useState<RescueHospital[]>([]);
@@ -929,7 +932,8 @@ export default function MapPage() {
     if (typeof navigator === "undefined" || !navigator.geolocation) return;
     const watchId = navigator.geolocation.watchPosition(
       (pos) => {
-        setUserPos({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        userPosRef.current = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        applyUserPosRef.current?.();
       },
       () => {
         // geolocation 거부·실패 시 기본 중심 좌표 사용 (조용히)
@@ -954,7 +958,7 @@ export default function MapPage() {
 
       // 초기 중심: GPS > 주 활동 지역 > 기본 중심
       const primary = activityRegions.find((r) => r.is_primary) ?? activityRegions[0];
-      const initialCenter = userPos ?? (primary ? { lat: primary.lat, lng: primary.lng } : MAP_CENTER);
+      const initialCenter = userPosRef.current ?? (primary ? { lat: primary.lat, lng: primary.lng } : MAP_CENTER);
       const map = new window.kakao.maps.Map(container, {
         center: new window.kakao.maps.LatLng(initialCenter.lat, initialCenter.lng),
         level: 6,
@@ -1040,26 +1044,23 @@ export default function MapPage() {
     setVisibilityIntroOpen(true);
   }, [mapReady, isLoggedIn]);
 
-  // ── 지도 초기화 후 GPS 첫 좌표 도착 시 1회만 중심 이동 (단, cat 포커스 중이면 스킵) ──
-  // 실시간 추적(watchPosition)이라 매 업데이트마다 중심을 옮기면 지도가 계속 튕겨
-  // 사용자가 지도를 못 움직인다 → 최초 1회만 중심. 이후 재중심은 "내 위치" 버튼으로.
-  const userCenteredOnceRef = useRef(false);
-  useEffect(() => {
-    if (!mapReady || !userPos || !mapInstanceRef.current || !window.kakao) return;
-    if (userCenteredOnceRef.current || catFocusHandledRef.current) return;
-    userCenteredOnceRef.current = true;
-    const map = mapInstanceRef.current;
-    map.setCenter(new window.kakao.maps.LatLng(userPos.lat, userPos.lng));
-  }, [mapReady, userPos]);
-
-  // ── 내 위치 마커 (사람 캐릭터 + 펄스 링) ──
-  // 실시간 추적: 오버레이가 이미 있으면 위치만 갱신(부드럽게 이동), 없을 때만 생성.
+  // ── GPS 좌표 반영 (리렌더 없는 명령형 경로) ──
+  // 첫 픽스 1회만 중심 이동 (cat 포커스 중이면 스킵) — 매 업데이트마다 중심을 옮기면
+  // 지도가 계속 튕겨 사용자가 지도를 못 움직인다. 이후 재중심은 "내 위치" 버튼으로.
+  // 내 위치 마커(사람 캐릭터 + 펄스 링)는 있으면 위치만 갱신, 없을 때만 생성.
   // 캐릭터는 고양이귀 후드를 쓴 치비 사람 (lib/cat-art.ts personMarkerSvg, 테라코타 테마).
+  const userCenteredOnceRef = useRef(false);
   const userLocationOverlayRef = useRef<KakaoOverlay | null>(null);
-  useEffect(() => {
-    if (!mapReady || !userPos || !window.kakao) return;
+  const applyUserPos = () => {
+    const p = userPosRef.current;
     const map = mapInstanceRef.current;
-    const pos = new window.kakao.maps.LatLng(userPos.lat, userPos.lng);
+    if (!p || !map || !window.kakao?.maps) return;
+    const pos = new window.kakao.maps.LatLng(p.lat, p.lng);
+
+    if (!userCenteredOnceRef.current && !catFocusHandledRef.current) {
+      userCenteredOnceRef.current = true;
+      map.setCenter(pos);
+    }
 
     // 이미 마커가 있으면 위치만 이동 (이동 중 깜빡임/애니메이션 리셋 방지)
     if (userLocationOverlayRef.current) {
@@ -1107,7 +1108,14 @@ export default function MapPage() {
       zIndex: 100,
     });
     userLocationOverlayRef.current = ov;
-  }, [mapReady, userPos]);
+  };
+  // 렌더마다 최신 클로저로 교체 — watchPosition([] deps)이 항상 최신 함수를 부르게.
+  applyUserPosRef.current = applyUserPos;
+
+  // GPS 픽스가 지도 준비보다 먼저 도착한 경우 — 지도 준비 시 1회 반영
+  useEffect(() => {
+    if (mapReady) applyUserPosRef.current?.();
+  }, [mapReady]);
 
   // 언마운트 시에만 내 위치 마커 제거 (실시간 갱신 중엔 유지)
   useEffect(() => {
@@ -1906,7 +1914,8 @@ export default function MapPage() {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
-        setUserPos({ lat: latitude, lng: longitude });
+        userPosRef.current = { lat: latitude, lng: longitude };
+        applyUserPosRef.current?.();
         if (mapInstanceRef.current && window.kakao) {
           mapInstanceRef.current.setCenter(new window.kakao.maps.LatLng(latitude, longitude));
           mapInstanceRef.current.setLevel(4);
