@@ -30,11 +30,13 @@ const SUPABASE_HOSTNAME = (() => {
 })();
 const cspDirectives = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${scriptEval} https://dapi.kakao.com https://*.daumcdn.net https://challenges.cloudflare.com https://js.tosspayments.com`,
+  // connect.facebook.net: Meta Pixel(fbevents.js) — ConsentManager 동의 시에만 마운트되지만
+  // CSP에 없으면 동의한 유저조차 스크립트 로드가 차단돼 광고 측정이 통째로 죽는다.
+  `script-src 'self' 'unsafe-inline'${scriptEval} https://dapi.kakao.com https://*.daumcdn.net https://challenges.cloudflare.com https://js.tosspayments.com https://connect.facebook.net`,
   "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data: https://cdn.jsdelivr.net",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://dapi.kakao.com https://*.daumcdn.net https://cdn.jsdelivr.net https://challenges.cloudflare.com https://*.tosspayments.com",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://dapi.kakao.com https://*.daumcdn.net https://cdn.jsdelivr.net https://challenges.cloudflare.com https://*.tosspayments.com https://connect.facebook.net https://www.facebook.com",
   // postcode.map.kakao.com(신규)/postcode.map.daum.net(구): 주문서의 우편번호 검색 iframe
   // *.tosspayments.com / pay.toss.im: 토스페이먼츠 결제위젯·결제창
   "frame-src https://challenges.cloudflare.com https://www.youtube.com https://www.youtube-nocookie.com https://postcode.map.kakao.com https://postcode.map.daum.net https://*.tosspayments.com https://pay.toss.im",
