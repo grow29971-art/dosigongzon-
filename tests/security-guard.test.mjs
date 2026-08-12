@@ -46,6 +46,15 @@ const AUTH_EXEMPT = {
     reason: "공개 읽기 전용 후원금 정산 요약",
     readOnly: true,
   },
+  "app/api/shop/wishlist/route.ts": {
+    reason:
+      "찜 계측 수집 — 비로그인 방문자의 찜이 측정 대상(결제 오픈 게이트)이라 세션 인증 불가. /api/funnel과 동일 방어선: IP 레이트리밋 + anonId 길이 검증 + productId UUID 검증, 쓰기는 계측 테이블 insert뿐(RLS 정책 0개로 클라이언트 접근 차단)",
+    mustInclude: [
+      "rateLimit(`wishlist:${ip}`",
+      "anonId.length < 8 || anonId.length > 64",
+      "UUID_RE.test(body.productId)",
+    ],
+  },
 };
 
 const guardedRoutes = GUARDED_API_DIRS.flatMap((dir) =>
