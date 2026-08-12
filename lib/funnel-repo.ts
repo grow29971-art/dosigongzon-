@@ -88,7 +88,8 @@ export function captureSource(): void {
   }
 }
 
-function getSource(): string | null {
+// 찜 계측(lib/wishlist.ts)도 같은 first-touch 출처를 공유한다
+export function getSource(): string | null {
   try {
     return localStorage.getItem(SOURCE_KEY);
   } catch {
@@ -96,7 +97,9 @@ function getSource(): string | null {
   }
 }
 
-function getAnonId(): string {
+// 퍼널·펀드투표·찜 계측이 공유하는 기기 식별자 — 결제 오픈 게이트의 "유니크 N명"이
+// 퍼널 방문자 모수와 같은 단위로 잡히도록 반드시 이 함수를 쓸 것
+export function getAnonId(): string {
   try {
     let id = localStorage.getItem(ANON_ID_KEY);
     if (!id) {
