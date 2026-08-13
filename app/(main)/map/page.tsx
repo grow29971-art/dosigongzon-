@@ -2035,7 +2035,7 @@ export default function MapPage() {
             <span className="text-[11px] font-bold text-text-light">{cats.length}</span>
             {todayVisit != null && (
               <>
-                <span className="w-px h-3 mx-0.5" style={{ backgroundColor: "#E0DBD3" }} />
+                <span className="w-px h-3 mx-0.5" style={{ backgroundColor: "var(--color-gray-200)" }} />
                 <span className="text-[10px] font-bold text-text-light">방문자 {todayVisit.toLocaleString()}명</span>
               </>
             )}
@@ -2388,7 +2388,7 @@ export default function MapPage() {
         ref={mapContainerRef}
         className="w-full h-full"
         style={{
-          background: "#EEEAE2",
+          background: "var(--color-gray-50)",
           // 부모 높이 계산 실패 시도 최소 400px 확보 (빈 화면 방지)
           minHeight: 400,
         }}
@@ -2416,7 +2416,7 @@ export default function MapPage() {
       {/* 데이터 에러 */}
       {catsError && (
         <div className="absolute top-32 left-4 right-4 z-10">
-          <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: "#EEE3DE" }}>
+          <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: "var(--color-gray-100)" }}>
             <p className="text-[12px] font-semibold" style={{ color: "var(--color-error)" }}>
               {catsError}
             </p>
@@ -2547,8 +2547,8 @@ export default function MapPage() {
                 <span
                   className="absolute -top-1.5 -right-1.5 text-[9px] font-bold px-1.5 py-0.5 chip-square text-white z-10"
                   style={{
-                    background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)",
-                    boxShadow: "0 2px 6px rgba(216,85,119,0.4)",
+                    background: "var(--color-like)",
+                    boxShadow: "0 2px 6px rgba(232,107,140,0.4)",
                   }}
                 >
                   NEW
@@ -2695,7 +2695,7 @@ export default function MapPage() {
                       <div
                         className="px-3.5 py-2 text-[13px] leading-relaxed"
                         style={{
-                          backgroundColor: isMe ? "var(--color-primary)" : "#F6F1EA",
+                          backgroundColor: isMe ? "var(--color-primary)" : "var(--color-gray-50)",
                           color: isMe ? "#fff" : "var(--color-gray-900)",
                           borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
                         }}
@@ -2723,7 +2723,7 @@ export default function MapPage() {
                   onChange={(e) => setChatText(e.target.value)}
                   placeholder="메시지를 입력하세요"
                   className="flex-1 px-3.5 py-2.5 rounded-2xl text-[13px] outline-none"
-                  style={{ backgroundColor: "#F6F1EA", border: "1px solid #E3DCD3" }}
+                  style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-gray-200)" }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.nativeEvent.isComposing && chatText.trim()) {
                       e.preventDefault();
@@ -2816,7 +2816,7 @@ export default function MapPage() {
                       {(cat.tags ?? []).length > 0 && (
                         <div className="flex gap-1 mt-1">
                           {cat.tags.slice(0, 3).map((tag) => (
-                            <span key={tag} className="text-[9px] px-1.5 py-0.5 rounded-md" style={{ backgroundColor: "#EEE8E0", color: "var(--color-text-light)" }}>{tag}</span>
+                            <span key={tag} className="text-[9px] px-1.5 py-0.5 rounded-md" style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-text-light)" }}>{tag}</span>
                           ))}
                         </div>
                       )}
@@ -2982,7 +2982,7 @@ export default function MapPage() {
                     } catch { toast.error("신고 처리 중 오류가 발생했어요"); }
                   }}
                   className="flex items-center justify-center gap-1.5 w-full py-2.5 rounded-2xl text-[12px] font-bold active:scale-[0.97] transition-transform"
-                  style={{ backgroundColor: "#F5F0EB", color: "var(--color-text-light)" }}
+                  style={{ backgroundColor: "var(--color-gray-50)", color: "var(--color-text-light)" }}
                 >
                   <Flag size={13} />
                   폐업 신고
@@ -3146,13 +3146,13 @@ export default function MapPage() {
 
               <div className="px-4 pb-2 flex items-center justify-center gap-2 flex-wrap">
                 {selectedCat.region && (
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 chip-square" style={{ background: "#F1F0F5" }}>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 chip-square" style={{ background: "var(--color-gray-100)" }}>
                     <MapPin size={12} className="text-primary" />
                     <span className="text-[12px] font-bold text-text-main">{selectedCat.region}</span>
                   </div>
                 )}
                 {selectedCat.caretaker_name && (
-                  <div className="flex items-center gap-1 px-3 py-1.5 chip-square" style={{ background: "#F1F0F5" }}>
+                  <div className="flex items-center gap-1 px-3 py-1.5 chip-square" style={{ background: "var(--color-gray-100)" }}>
                     <Heart size={11} className="text-primary" fill="currentColor" />
                     <span className="text-[11px] font-semibold text-text-sub">
                       {selectedCat.caretaker_name} 돌봄중
@@ -3162,7 +3162,7 @@ export default function MapPage() {
                 {(() => {
                   const m = catRoamMode(selectedCat.id, roamTick);
                   return (
-                    <div className="flex items-center gap-1 px-3 py-1.5 chip-square" style={{ background: "#F1F0F5" }}>
+                    <div className="flex items-center gap-1 px-3 py-1.5 chip-square" style={{ background: "var(--color-gray-100)" }}>
                       <span className="text-[11px]">{m.emoji}</span>
                       <span className="text-[11px] font-semibold text-text-sub">지금 {m.label}</span>
                     </div>
@@ -3188,8 +3188,8 @@ export default function MapPage() {
                       onClick={doPet}
                       className={`flex items-center gap-2 pl-3.5 pr-4 py-2.5 rounded-full active:scale-95 transition-transform ${petPop ? "pet-pop" : ""}`}
                       style={{
-                        background: "linear-gradient(135deg, #FF8FB1 0%, #FF6B95 100%)",
-                        boxShadow: "0 5px 16px rgba(255,107,149,0.40)",
+                        background: "var(--color-like)",
+                        boxShadow: "0 5px 16px rgba(232,107,140,0.40)",
                       }}
                       aria-label={`${selectedCat.name} 쓰다듬기`}
                     >
@@ -3314,7 +3314,7 @@ export default function MapPage() {
                   <div>
                     <label className="text-[11px] font-bold text-text-sub mb-1 block">이름</label>
                     <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} maxLength={20}
-                      className="w-full px-3 py-2 rounded-xl text-[14px] outline-none" style={{ backgroundColor: "#F6F1EA", border: "1px solid #E3DCD3" }} />
+                      className="w-full px-3 py-2 rounded-xl text-[14px] outline-none" style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-gray-200)" }} />
                   </div>
                   <div>
                     <label className="text-[11px] font-bold text-text-sub mb-1 block">설명</label>
@@ -3324,8 +3324,8 @@ export default function MapPage() {
                     <textarea value={editDesc} onChange={(e) => setEditDesc(e.target.value)} rows={3} maxLength={200}
                       className="w-full px-3 py-2 rounded-xl text-[13px] outline-none resize-none"
                       style={{
-                        backgroundColor: (editDescViolations.length > 0 || editDescAbuseViolations.length > 0) ? "#FBEAEA" : "#F6F1EA",
-                        border: `1px solid ${(editDescViolations.length > 0 || editDescAbuseViolations.length > 0) ? "#E8C5C5" : "#E3DCD3"}`,
+                        backgroundColor: (editDescViolations.length > 0 || editDescAbuseViolations.length > 0) ? "var(--color-error-soft)" : "var(--color-gray-50)",
+                        border: `1px solid ${(editDescViolations.length > 0 || editDescAbuseViolations.length > 0) ? "var(--color-error)" : "var(--color-gray-200)"}`,
                       }} />
                     {editDescViolations.length > 0 && (
                       <p className="text-[10.5px] mt-1 leading-relaxed" style={{ color: "var(--color-error)" }}>
@@ -3341,7 +3341,7 @@ export default function MapPage() {
                   <div>
                     <label className="text-[11px] font-bold text-text-sub mb-1 block">동네</label>
                     <input type="text" value={editRegion} onChange={(e) => setEditRegion(e.target.value)} maxLength={20}
-                      className="w-full px-3 py-2 rounded-xl text-[13px] outline-none" style={{ backgroundColor: "#F6F1EA", border: "1px solid #E3DCD3" }} />
+                      className="w-full px-3 py-2 rounded-xl text-[13px] outline-none" style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-gray-200)" }} />
                   </div>
 
                   {/* 위치 변경 (등록자 본인 + 관리자) */}
@@ -3353,8 +3353,8 @@ export default function MapPage() {
                         onClick={() => setPickingLocation(true)}
                         className="w-full px-3 py-2.5 rounded-xl text-[13px] font-bold flex items-center justify-between active:scale-[0.98]"
                         style={{
-                          backgroundColor: editLat !== null ? "#FFF2E8" : "#F6F1EA",
-                          border: editLat !== null ? "1px solid var(--color-primary)" : "1px solid #E3DCD3",
+                          backgroundColor: editLat !== null ? "#FFF2E8" : "var(--color-gray-50)",
+                          border: editLat !== null ? "1px solid var(--color-primary)" : "1px solid var(--color-gray-200)",
                           color: editLat !== null ? "var(--color-primary)" : "var(--color-text-light)",
                         }}
                       >
@@ -3412,9 +3412,9 @@ export default function MapPage() {
                     <button type="button" onClick={() => setEditAdoption(null)}
                       className="text-[11px] font-bold px-2.5 py-1.5 rounded-lg"
                       style={{
-                        backgroundColor: editAdoption === null ? "#EEE8E0" : undefined,
+                        backgroundColor: editAdoption === null ? "var(--color-gray-100)" : undefined,
                         color: editAdoption === null ? "var(--color-text-light)" : "var(--color-text-light)",
-                        border: editAdoption === null ? "1px solid var(--color-primary)" : "1px solid #E3DCD3",
+                        border: editAdoption === null ? "1px solid var(--color-primary)" : "1px solid var(--color-gray-200)",
                       }}>
                       해당 없음
                     </button>
@@ -3443,8 +3443,8 @@ export default function MapPage() {
                             onClick={() => setEditVisibility(k)}
                             className="w-full p-2.5 rounded-xl text-left flex items-start gap-2 transition-all active:scale-[0.99]"
                             style={{
-                              backgroundColor: active ? `${info.color}15` : "#F9F6F1",
-                              border: `1.5px solid ${active ? info.color : "#E3DCD3"}`,
+                              backgroundColor: active ? `${info.color}15` : "var(--color-gray-50)",
+                              border: `1.5px solid ${active ? info.color : "var(--color-gray-200)"}`,
                             }}
                           >
                             <span className="text-[15px] leading-none mt-0.5">{info.emoji}</span>
@@ -3497,7 +3497,7 @@ export default function MapPage() {
                     >
                       {editSaving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} 저장
                     </button>
-                    <button onClick={() => { setEditingCat(false); setEditLat(null); setEditLng(null); }} className="px-5 py-2.5 rounded-xl text-[13px] font-bold" style={{ backgroundColor: "#EEE8E0", color: "var(--color-text-light)" }}>
+                    <button onClick={() => { setEditingCat(false); setEditLat(null); setEditLng(null); }} className="px-5 py-2.5 rounded-xl text-[13px] font-bold" style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-text-light)" }}>
                       취소
                     </button>
                   </div>
@@ -3550,8 +3550,8 @@ export default function MapPage() {
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl active:scale-95 transition-transform disabled:opacity-60"
                       style={{
                         background: likedCatIds.has(selectedCat.id)
-                          ? "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)"
-                          : "#F6F1EA",
+                          ? "var(--color-like)"
+                          : "var(--color-gray-50)",
                         color: likedCatIds.has(selectedCat.id) ? "#fff" : "var(--color-text-light)",
                         boxShadow: likedCatIds.has(selectedCat.id)
                           ? "0 3px 10px rgba(232,107,140,0.35)"
@@ -3597,7 +3597,7 @@ export default function MapPage() {
                         onClick={handleShareCat}
                         className="flex items-center gap-1 px-2.5 py-1.5 rounded-2xl active:scale-95 transition-transform"
                         style={{
-                          background: shareStatus === "copied" ? "var(--color-sage)" : "#F6F1EA",
+                          background: shareStatus === "copied" ? "var(--color-sage)" : "var(--color-gray-50)",
                           color: shareStatus === "copied" ? "#fff" : "var(--color-text-light)",
                           boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
                         }}
@@ -3632,12 +3632,12 @@ export default function MapPage() {
                   {/* 프로필 뱃지: 성별 · 중성화 · 건강 */}
                   <div className="flex flex-wrap gap-1.5 mb-2">
                     {selectedCat.gender && selectedCat.gender !== "unknown" && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: "#EEE8E0", color: "var(--color-text-sub)" }}>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-text-sub)" }}>
                         {GENDER_MAP[selectedCat.gender]?.emoji} {GENDER_MAP[selectedCat.gender]?.label}
                       </span>
                     )}
                     {selectedCat.neutered != null && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: selectedCat.neutered ? "#E8F5E9" : "#FFF3E0", color: selectedCat.neutered ? "var(--color-sage)" : "var(--color-care)" }}>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: selectedCat.neutered ? "var(--color-sage-soft)" : "var(--color-care-soft)", color: selectedCat.neutered ? "var(--color-sage)" : "var(--color-care)" }}>
                         {selectedCat.neutered ? "중성화 완료" : "중성화 필요"}
                       </span>
                     )}
@@ -3662,7 +3662,7 @@ export default function MapPage() {
                         <span
                           key={tag}
                           className="text-[11px] font-semibold px-2.5 py-1 rounded-lg"
-                          style={{ backgroundColor: "#EEE8E0", color: "var(--color-primary)" }}
+                          style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-primary)" }}
                         >
                           {tag}
                         </span>
@@ -3676,7 +3676,7 @@ export default function MapPage() {
               {alertCount > 0 && (
                 <div
                   className="mt-4 rounded-2xl p-3"
-                  style={{ backgroundColor: "#FBEAEA", border: "1px solid #E8C5C5" }}
+                  style={{ backgroundColor: "var(--color-error-soft)", border: "1px solid var(--color-error)" }}
                 >
                   <div className="flex items-center gap-1.5 mb-2">
                     <AlertTriangle size={14} style={{ color: "var(--color-error)" }} />
@@ -3727,14 +3727,14 @@ export default function MapPage() {
               )}
 
               {/* ══ 탭: 돌봄다이어리 | 커뮤니티 ══ */}
-              <div className="mt-4 pt-3 border-t" style={{ borderColor: "#EEE8E0" }}>
+              <div className="mt-4 pt-3 border-t" style={{ borderColor: "var(--color-gray-100)" }}>
                 <div className="flex gap-1 mb-3 px-1">
                   <button
                     type="button"
                     onClick={() => setCatCardTab("carelog")}
                     className="flex-1 py-2 rounded-xl text-[12px] font-bold transition-all"
                     style={{
-                      backgroundColor: catCardTab === "carelog" ? "var(--color-primary)" : "#F6F1EA",
+                      backgroundColor: catCardTab === "carelog" ? "var(--color-primary)" : "var(--color-gray-50)",
                       color: catCardTab === "carelog" ? "#fff" : "var(--color-text-light)",
                     }}
                   >
@@ -3745,7 +3745,7 @@ export default function MapPage() {
                     onClick={() => setCatCardTab("community")}
                     className="flex-1 py-2 rounded-xl text-[12px] font-bold transition-all"
                     style={{
-                      backgroundColor: catCardTab === "community" ? "var(--color-primary)" : "#F6F1EA",
+                      backgroundColor: catCardTab === "community" ? "var(--color-primary)" : "var(--color-gray-50)",
                       color: catCardTab === "community" ? "#fff" : "var(--color-text-light)",
                     }}
                   >
@@ -3815,7 +3815,7 @@ export default function MapPage() {
                         key={c.id}
                         className="rounded-xl px-3 py-2"
                         style={{
-                          backgroundColor: isAlert ? "#FBEAEA" : "#F6F1EA",
+                          backgroundColor: isAlert ? "var(--color-error-soft)" : "var(--color-gray-50)",
                           borderLeft: isAlert ? "3px solid var(--color-error)" : "none",
                         }}
                       >
@@ -3837,7 +3837,7 @@ export default function MapPage() {
                             <div
                               className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
                               style={{
-                                background: isAlert ? "#FBEAEA" : "#EEE8E0",
+                                background: isAlert ? "var(--color-error-soft)" : "var(--color-gray-100)",
                                 border: "1.5px solid #fff",
                               }}
                             >
@@ -3906,7 +3906,7 @@ export default function MapPage() {
                               width: "100%",
                               maxWidth: 220,
                               aspectRatio: "4 / 3",
-                              backgroundColor: "#EEE8E0",
+                              backgroundColor: "var(--color-gray-100)",
                             }}
                           >
                             <img
@@ -3954,7 +3954,7 @@ export default function MapPage() {
                                   className="flex items-center gap-1 px-2 py-1 rounded-lg active:scale-95 transition-all"
                                   style={{
                                     backgroundColor: liked ? "var(--color-sage)" : "var(--color-surface)",
-                                    border: `1px solid ${liked ? "var(--color-sage)" : "#E3DCD3"}`,
+                                    border: `1px solid ${liked ? "var(--color-sage)" : "var(--color-gray-200)"}`,
                                     color: liked ? "#FFFFFF" : "var(--color-sage)",
                                   }}
                                   aria-label="좋아요"
@@ -3970,7 +3970,7 @@ export default function MapPage() {
                                   className="flex items-center gap-1 px-2 py-1 rounded-lg active:scale-95 transition-all"
                                   style={{
                                     backgroundColor: disliked ? "var(--color-gray-500)" : "var(--color-surface)",
-                                    border: `1px solid ${disliked ? "var(--color-gray-500)" : "#E3DCD3"}`,
+                                    border: `1px solid ${disliked ? "var(--color-gray-500)" : "var(--color-gray-200)"}`,
                                     color: disliked ? "#FFFFFF" : "var(--color-text-light)",
                                   }}
                                   aria-label="싫어요"
@@ -3994,7 +3994,7 @@ export default function MapPage() {
                                   className="ml-auto flex items-center justify-center w-7 h-7 rounded-lg active:scale-90 transition-transform"
                                   style={{
                                     backgroundColor: "var(--color-surface)",
-                                    border: "1px solid #E3DCD3",
+                                    border: "1px solid var(--color-gray-200)",
                                   }}
                                   aria-label="신고"
                                   title="신고하기"
@@ -4048,7 +4048,7 @@ export default function MapPage() {
                 {commentKind === "alert" ? (
                   <div
                     className="mt-3 rounded-xl px-3 py-2.5"
-                    style={{ backgroundColor: "#FBEAEA", border: "1.5px solid var(--color-error)" }}
+                    style={{ backgroundColor: "var(--color-error-soft)", border: "1.5px solid var(--color-error)" }}
                   >
                     <p className="text-[11.5px] font-bold leading-snug" style={{ color: "var(--color-error)" }}>
                       🚨 학대·위험 신고 모드
@@ -4076,7 +4076,7 @@ export default function MapPage() {
                     className="shrink-0 w-8 h-8 rounded-xl flex items-center justify-center transition-colors"
                     style={{
                       backgroundColor:
-                        commentKind === "alert" ? "#FBEAEA" : "#EEE8E0",
+                        commentKind === "alert" ? "var(--color-error-soft)" : "var(--color-gray-100)",
                       color: commentKind === "alert" ? "var(--color-error)" : "var(--color-text-light)",
                       border: commentKind === "alert" ? "1.5px solid var(--color-error)" : "none",
                     }}
@@ -4090,7 +4090,7 @@ export default function MapPage() {
                     onClick={() => commentFileInputRef.current?.click()}
                     className="shrink-0 w-8 h-8 rounded-xl flex items-center justify-center transition-colors"
                     style={{
-                      backgroundColor: commentPhotoFile ? "#E8ECE5" : "#EEE8E0",
+                      backgroundColor: commentPhotoFile ? "var(--color-sage-soft)" : "var(--color-gray-100)",
                       color: commentPhotoFile ? "var(--color-sage)" : "var(--color-text-light)",
                     }}
                     title="사진 첨부"
@@ -4114,7 +4114,7 @@ export default function MapPage() {
                         : "이 아이 이야기를 남겨주세요"
                     }
                     className="flex-1 min-w-0 px-3 py-2 rounded-xl text-[12px] outline-none"
-                    style={{ backgroundColor: "#F6F1EA", color: "var(--color-gray-900)" }}
+                    style={{ backgroundColor: "var(--color-gray-50)", color: "var(--color-gray-900)" }}
                     disabled={submittingComment}
                   />
                   <button
