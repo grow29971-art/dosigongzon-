@@ -42,11 +42,13 @@ interface ToastApi {
 
 const ToastContext = createContext<ToastApi | null>(null);
 
-const VARIANT_STYLE: Record<Variant, { bg: string; border: string; color: string; Icon: typeof CheckCircle2 }> = {
-  success: { bg: "#E8F4E8", border: "#C8E0C8", color: "#3F5B42", Icon: CheckCircle2 },
-  error:   { bg: "#FBEAEA", border: "#E8C5C5", color: "#8B2F2F", Icon: AlertCircle },
-  warn:    { bg: "#FFF4E0", border: "#F5DAB0", color: "#6F4910", Icon: AlertTriangle },
-  info:    { bg: "#F0F6FF", border: "#C9DBF5", color: "#22457A", Icon: Info },
+// 다크 뉴트럴 단일 표면 (2026-08-13 UIUX 오딧): variant는 아이콘 색으로만 구분.
+// 파스텔 배경 4종은 폐기 — 표면이 화면마다 다르면 시스템 알림으로 안 읽힌다.
+const VARIANT_ICON: Record<Variant, { iconColor: string; Icon: typeof CheckCircle2 }> = {
+  success: { iconColor: "#4ADE80", Icon: CheckCircle2 },
+  error:   { iconColor: "#FF7A85", Icon: AlertCircle },
+  warn:    { iconColor: "var(--color-warning)", Icon: AlertTriangle },
+  info:    { iconColor: "var(--color-gray-400)", Icon: Info },
 };
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
@@ -111,7 +113,7 @@ function ToastViewport({ items, onClose }: { items: ToastItem[]; onClose: (id: n
 }
 
 function ToastCard({ item, onClose }: { item: ToastItem; onClose: () => void }) {
-  const { bg, border, color, Icon } = VARIANT_STYLE[item.variant];
+  const { iconColor, Icon } = VARIANT_ICON[item.variant];
   const [entered, setEntered] = useState(false);
   useEffect(() => {
     // 다음 tick에 entered=true로 → transition 동작
@@ -120,18 +122,21 @@ function ToastCard({ item, onClose }: { item: ToastItem; onClose: () => void }) 
   }, []);
   return (
     <div
-      className="pointer-events-auto flex items-start gap-2 rounded-2xl px-3.5 py-2.5 w-full max-w-sm transition-all"
+      className="pointer-events-auto flex items-start gap-2 px-4 py-3 w-full max-w-sm transition-all"
       style={{
-        background: bg,
-        border: `1px solid ${border}`,
-        boxShadow: "0 8px 24px rgba(0,0,0,0.10)",
+        background: "rgba(25,31,40,0.94)",
+        borderRadius: "var(--radius-input)",
+        boxShadow: "var(--shadow-modal)",
         transform: entered ? "translateY(0)" : "translateY(-20px)",
         opacity: entered ? 1 : 0,
       }}
       role="status"
     >
-      <Icon size={16} className="shrink-0 mt-0.5" style={{ color }} />
-      <p className="flex-1 text-[12.5px] leading-snug font-semibold" style={{ color }}>
+      <Icon size={16} className="shrink-0 mt-0.5" style={{ color: iconColor }} />
+      <p
+        className="flex-1 leading-snug font-medium"
+        style={{ fontSize: "var(--text-label)", color: "#FFFFFF" }}
+      >
         {item.message}
       </p>
       <button
@@ -140,7 +145,7 @@ function ToastCard({ item, onClose }: { item: ToastItem; onClose: () => void }) 
         className="shrink-0 -mr-1 -mt-0.5 p-1 rounded-md active:scale-90"
         aria-label="닫기"
       >
-        <X size={12} style={{ color }} />
+        <X size={12} style={{ color: "var(--color-gray-500)" }} />
       </button>
     </div>
   );
