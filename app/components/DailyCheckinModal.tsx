@@ -104,7 +104,7 @@ export default function DailyCheckinModal() {
         ) : (
           <div className="p-6">
             <div className="flex items-center justify-between mb-1">
-              <p className="text-[17px] font-extrabold" style={{ color: "#2B2B3D" }}>🐾 오늘의 출석체크</p>
+              <p className="text-[17px] font-extrabold" style={{ color: "#2B2B3D" }}>오늘의 출석체크</p>
               <button onClick={() => setShow(false)} className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: "#F1F0F5" }}>
                 <X size={14} style={{ color: "#8A8598" }} />
               </button>

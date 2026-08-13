@@ -173,7 +173,7 @@ export default async function HomeLanding({
           { emoji: "💛", text: <>쇼핑 수익 일부는 아이들에게 — <b className="text-text-main">사용처는 함께 투표</b>로 정해요.</> },
           { emoji: "✨", text: <>가입은 무료예요. 우리 동네부터 시작해보세요.</> },
         ]}
-        buttonLabel="둘러보기 🐾"
+        buttonLabel="둘러보기"
       />
 
       {/* 도시공존 소개 — 비로그인 방문자(인스타 유입 등)가 최상단에서 바로 이해 */}

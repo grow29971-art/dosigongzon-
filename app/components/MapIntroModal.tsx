@@ -117,7 +117,7 @@ export default function MapIntroModal() {
             className="w-full py-3 rounded-2xl text-[14px] font-extrabold text-white active:scale-[0.98] transition-transform"
             style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
           >
-            둘러보기 시작 🐾
+            둘러보기 시작
           </button>
         </div>
 

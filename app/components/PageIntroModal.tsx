@@ -18,7 +18,7 @@ export default function PageIntroModal({
   title,
   headerEmoji,
   items,
-  buttonLabel = "시작하기 🐾",
+  buttonLabel = "시작하기",
   accent = "var(--color-primary)",
   accentDark = "var(--color-primary-dark)",
   headerBg = "linear-gradient(160deg, #EEF5FF 0%, #E3EEFC 100%)",

@@ -80,8 +80,7 @@ import CareTamagotchiHero from "@/app/components/CareTamagotchiHero";
 const WeeklyCheckinCard = dynamic(() => import("@/app/components/WeeklyCheckinCard"), { ssr: false });
 const PushCareCueOptIn = dynamic(() => import("@/app/components/PushCareCueOptIn"), { ssr: false });
 const FeatureTipsCard = dynamic(() => import("@/app/components/FeatureTipsCard"), { ssr: false });
-// 푸시 옵트인 카드는 페이지 하단 — 첫 페인트엔 viewport 밖. lazy 안전.
-const PushOptInCard = dynamic(() => import("@/app/components/PushOptInCard"), { ssr: false });
+// PushOptInCard는 PushCareCueOptIn과 청중 중복(이중 노출 결함)으로 홈에서 제거 (2026-08-13)
 // 친구 초대 카드 — 첫 cat 등록한 사용자에게만 홈 하단에 노출. viral 강화.
 const InviteSection = dynamic(() => import("@/app/components/InviteSection"), { ssr: false });
 import type { Post } from "@/lib/types";
@@ -1812,9 +1811,10 @@ export default function HomeAuthed({
         <AppOpenGuideModal hasCat={activity.catCount > 0} hasRegion={myRegions.length > 0} />
       )}
 
-      {/* ══════ 푸시 권한 권유 — 첫 cat 등록한 사용자만 ══════ */}
-      {/* 가입 직후 prompt는 90% 거부. 등록 후 활동 컨텍스트 묶어서 prompt → 수락률 4~5배. */}
-      {activity && activity.catCount > 0 && <PushOptInCard />}
+      {/* ══════ 푸시 권한 권유 ══════ */}
+      {/* 2026-08-13 UIUX 오딧: PushCareCueOptIn(위쪽, 케어 cue 프레이밍)과 청중이 동일한데
+          dismiss 키가 달라 카드 2장이 동시에 렌더되던 결함 → 케어 cue 쪽만 남김.
+          (가입 직후 prompt 회피·등록 후 맥락 결합 원칙은 PushCareCueOptIn이 동일하게 수행) */}
 
       {/* ══════ 이번 주 동네 이슈 ══════ */}
       {SHOW_WEEKLY_ISSUES && weeklyIssues.length > 0 && (
@@ -1995,13 +1995,8 @@ export default function HomeAuthed({
 
       {/* 고양이 사회 소식 & 일정 섹션 — 사용자 요청으로 제거 (2026-07-13). /news 페이지는 유지 */}
 
-      {/* 다크모드 진단용 임시 링크 — 앱(TWA)엔 주소창이 없어 /darkcheck 진입 경로가 필요.
-          원인 확정 후 진단 페이지와 함께 삭제 예정 (2026-07-30) */}
-      <div className="text-center pb-2">
-        <Link href="/darkcheck" className="text-[11px]" style={{ color: "var(--color-text-muted)" }}>
-          화면 색상 진단
-        </Link>
-      </div>
+      {/* 다크모드 진단 링크는 원인 확정(강제 다크닝 방어 적용)으로 제거 (2026-08-13).
+          /darkcheck 페이지 자체는 유지 — 필요 시 URL 직접 진입. */}
     </div>
 
     {/* ══════ 플로팅 돌봄 기록 버튼 — 스크롤 내내 따라다님, 탭하면 내 아이들로 (2026-07-11) ══════ */}
