@@ -646,8 +646,8 @@ export default function HomeAuthed({
           href="/mypage/activity-regions"
           className="block mb-4 active:scale-[0.99] transition-transform"
           style={{
-            background: "linear-gradient(135deg, #AD5E3B 0%, #8A4325 100%)",
-            borderRadius: 20,
+            background: "var(--color-primary)",
+            borderRadius: "var(--radius-card)",
             boxShadow: "0 8px 24px rgba(173, 94, 59,0.28)",
           }}
         >
@@ -656,8 +656,8 @@ export default function HomeAuthed({
               📍
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-extrabold text-white leading-snug">우리 동네부터 알려주세요</p>
-              <p className="text-[11.5px] leading-snug mt-0.5" style={{ color: "rgba(255,255,255,0.9)" }}>
+              <p className="text-[14px] font-bold text-white leading-snug">우리 동네부터 알려주세요</p>
+              <p className="text-[11px] leading-snug mt-0.5" style={{ color: "rgba(255,255,255,0.9)" }}>
                 동네를 정하면 우리 동네 고양이·소식이 여기 나타나요
               </p>
             </div>
@@ -684,10 +684,7 @@ export default function HomeAuthed({
         >
           {SHOW_CARE_INBOX_HOME && (
             <div className="mb-3 px-1">
-              <p className="text-[10px] font-extrabold tracking-[0.16em] text-primary">
-                TODAY&apos;S CARE
-              </p>
-              <h2 id="care-inbox-title" className="mt-1 text-[20px] font-extrabold tracking-tight text-text-main">
+              <h2 id="care-inbox-title" className="text-[20px] font-bold tracking-tight text-text-main">
                 오늘의 돌봄
               </h2>
               <p className="mt-1 text-[12px] leading-relaxed text-text-sub">
@@ -707,9 +704,9 @@ export default function HomeAuthed({
       <div
         className="mb-4 dark-card-level"
         style={{
-          background: "linear-gradient(135deg, #FFFFFF 0%, #FDF9F2 100%)",
+          background: "var(--color-surface)",
           borderRadius: "var(--radius-card)",
-          boxShadow: "0 8px 24px rgba(74,123,168,0.08), 0 1px 3px rgba(0,0,0,0.03)",
+          boxShadow: "var(--shadow-card)",
           border: "1px solid rgba(0,0,0,0.04)",
         }}
       >
@@ -737,8 +734,8 @@ export default function HomeAuthed({
                   <div className="flex items-center gap-1.5">
                     {streakInfo && streakInfo.streak > 0 && (
                       <span
-                        className="flex items-center gap-1 px-2.5 py-1 chip-square text-[11.5px] font-extrabold"
-                        style={{ background: "#FFF7ED", border: "1px solid #FED7AA", color: "#EA580C" }}
+                        className="flex items-center gap-1 px-2.5 py-1 chip-square text-[11px] font-bold"
+                        style={{ background: "var(--color-care-soft)", border: "1px solid rgba(232,148,10,0.3)", color: "var(--color-care)" }}
                       >
                         🔥 {streakInfo.streak}일
                       </span>
@@ -766,10 +763,10 @@ export default function HomeAuthed({
                       <Bell size={16} className={unreadCount > 0 ? "text-primary" : "text-text-sub"} />
                       {unreadCount > 0 && (
                         <span
-                          className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 rounded-full flex items-center justify-center text-[9px] font-extrabold text-white"
+                          className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 rounded-full flex items-center justify-center text-[9px] font-bold text-white"
                           style={{
-                            background: "linear-gradient(135deg, #E86B8C 0%, #D85555 100%)",
-                            boxShadow: "0 2px 6px rgba(216,85,85,0.4)",
+                            background: "var(--color-error)",
+                            boxShadow: "0 2px 6px rgba(240,68,82,0.4)",
                           }}
                         >
                           {unreadCount > 99 ? "99+" : unreadCount}
@@ -844,7 +841,7 @@ export default function HomeAuthed({
                 })()}
                 <div className="flex items-end gap-0.5">
                   <span
-                    className="text-[30px] font-extrabold leading-none tracking-tight"
+                    className="text-[30px] font-bold leading-none tracking-tight"
                     style={{ color: getTempColor(weather.temp) }}
                   >
                     {weather.temp}
@@ -853,10 +850,10 @@ export default function HomeAuthed({
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-[11.5px] font-semibold text-text-sub">
+                <p className="text-[11px] font-semibold text-text-sub">
                   체감 {weather.feelsLike}° · 습도 {weather.humidity}%
                 </p>
-                <p className="text-[11.5px] text-text-light mt-0.5 flex items-center justify-end gap-1">
+                <p className="text-[11px] text-text-light mt-0.5 flex items-center justify-end gap-1">
                   <Wind size={11} className="shrink-0" /> 바람 {weather.windSpeed}m/s
                 </p>
               </div>
@@ -919,7 +916,7 @@ export default function HomeAuthed({
                       style={{ backgroundColor: `${tip.color}10` }}
                     >
                       <span className="text-[14px] shrink-0">{tip.emoji}</span>
-                      <p className="text-[11.5px] font-semibold leading-snug" style={{ color: tip.color }}>
+                      <p className="text-[11px] font-semibold leading-snug" style={{ color: tip.color }}>
                         {tip.text}
                       </p>
                     </div>
@@ -930,7 +927,7 @@ export default function HomeAuthed({
                       className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl active:scale-[0.98] transition-transform"
                       style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(173, 94, 59,0.15)" }}
                     >
-                      <span className="flex items-center gap-1.5 text-[11.5px] font-extrabold" style={{ color: "var(--color-primary-dark)" }}>
+                      <span className="flex items-center gap-1.5 text-[11px] font-bold" style={{ color: "var(--color-primary-dark)" }}>
                         <ShoppingBag size={13} />
                         {bridge.label}
                       </span>
@@ -988,7 +985,7 @@ export default function HomeAuthed({
         <div className="mb-5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 px-1">
-              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+              <h2 className="text-[17px] font-bold text-text-main tracking-tight">
                 내 동네 소식
               </h2>
               {primaryRegion && (
@@ -1013,8 +1010,8 @@ export default function HomeAuthed({
               <div
                 className="px-4 py-4 flex items-center gap-3"
                 style={{
-                  background: "linear-gradient(135deg, var(--color-primary-softer) 0%, rgba(168,104,74,0.04) 100%)",
-                  borderRadius: 18,
+                  background: "var(--color-primary-softer)",
+                  borderRadius: "var(--radius-card)",
                   border: "1px dashed rgba(173, 94, 59,0.3)",
                 }}
               >
@@ -1022,10 +1019,10 @@ export default function HomeAuthed({
                   className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                   style={{ backgroundColor: "rgba(173, 94, 59,0.15)" }}
                 >
-                  <MapPin size={18} color="#AD5E3B" strokeWidth={2} />
+                  <MapPin size={18} color="var(--color-primary)" strokeWidth={2} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-extrabold text-text-main">활동 지역을 설정해보세요</p>
+                  <p className="text-[13px] font-bold text-text-main">활동 지역을 설정해보세요</p>
                   <p className="text-[11px] text-text-sub mt-0.5">우리 동네 고양이 소식을 모아 볼 수 있어요</p>
                 </div>
                 <ChevronRight size={16} style={{ color: "var(--color-primary)" }} />
@@ -1038,8 +1035,8 @@ export default function HomeAuthed({
                 <div
                   className="px-4 py-3.5"
                   style={{
-                    background: "#FFFFFF",
-                    borderRadius: 18,
+                    background: "var(--color-surface)",
+                    borderRadius: "var(--radius-card)",
                     boxShadow: "var(--shadow-card)",
                     border: "1px solid rgba(0,0,0,0.04)",
                   }}
@@ -1054,9 +1051,9 @@ export default function HomeAuthed({
                         key={key}
                         type="button"
                         onClick={() => setHoodTab(key)}
-                        className="flex-1 py-2 rounded-lg text-[11.5px] font-extrabold transition-colors"
+                        className="flex-1 py-2 rounded-lg text-[11px] font-bold transition-colors"
                         style={{
-                          background: hoodTab === key ? "#fff" : "transparent",
+                          background: hoodTab === key ? "var(--color-surface)" : "transparent",
                           color: hoodTab === key ? "var(--color-text-main)" : "var(--color-text-light)",
                           boxShadow: hoodTab === key ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
                         }}
@@ -1111,12 +1108,12 @@ export default function HomeAuthed({
                           className="flex items-center gap-2 py-1.5 active:opacity-70"
                         >
                           <span
-                            className="text-[10px] font-extrabold px-2 py-0.5 rounded-md shrink-0"
+                            className="text-[10px] font-bold px-2 py-0.5 rounded-md shrink-0"
                             style={{ backgroundColor: "rgba(173, 94, 59,0.12)", color: "var(--color-primary)" }}
                           >
                             {p.region}
                           </span>
-                          <p className="text-[12.5px] font-bold text-text-main truncate flex-1">
+                          <p className="text-[13px] font-bold text-text-main truncate flex-1">
                             {p.title}
                           </p>
                           <span className="text-[10px] text-text-light shrink-0">
@@ -1135,8 +1132,8 @@ export default function HomeAuthed({
                 <div
                   className="px-4 py-4"
                   style={{
-                    background: "#FFFFFF",
-                    borderRadius: 18,
+                    background: "var(--color-surface)",
+                    borderRadius: "var(--radius-card)",
                     boxShadow: "var(--shadow-card)",
                     border: "1px solid rgba(0,0,0,0.04)",
                   }}
@@ -1149,10 +1146,10 @@ export default function HomeAuthed({
                       🐾
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-extrabold text-text-main mb-0.5">
+                      <p className="text-[13px] font-bold text-text-main mb-0.5">
                         {primaryRegion.name}의 첫 등록자가 되어주세요
                       </p>
-                      <p className="text-[11.5px] text-text-sub leading-relaxed">
+                      <p className="text-[11px] text-text-sub leading-relaxed">
                         첫 한 마리를 등록하면 동네 이웃이 함께 돌볼 수 있어요.
                       </p>
                     </div>
@@ -1163,7 +1160,7 @@ export default function HomeAuthed({
                       className="pt-3 mb-3"
                       style={{ borderTop: "1px dashed rgba(0,0,0,0.06)" }}
                     >
-                      <p className="text-[10.5px] text-text-light font-bold mb-2">
+                      <p className="text-[11px] text-text-light font-bold mb-2">
                         다른 동네 인기 고양이 둘러보기
                       </p>
                       <div className="flex gap-1.5">
@@ -1206,11 +1203,11 @@ export default function HomeAuthed({
                     href="/map"
                     className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white active:scale-[0.98] transition-transform"
                     style={{
-                      background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+                      background: "var(--color-primary)",
                       boxShadow: "0 4px 12px rgba(173, 94, 59,0.3)",
                     }}
                   >
-                    <span className="text-[12.5px] font-extrabold tracking-tight">
+                    <span className="text-[13px] font-bold tracking-tight">
                       지도에서 첫 등록 시작
                     </span>
                     <ChevronRight size={14} />
@@ -1223,13 +1220,13 @@ export default function HomeAuthed({
                 <div
                   className="px-4 py-3"
                   style={{
-                    background: "#FFFFFF",
-                    borderRadius: 18,
+                    background: "var(--color-surface)",
+                    borderRadius: "var(--radius-card)",
                     boxShadow: "var(--shadow-card)",
                     border: "1px solid rgba(0,0,0,0.04)",
                   }}
                 >
-                  <p className="text-[12px] font-extrabold text-text-main mb-2">
+                  <p className="text-[12px] font-bold text-text-main mb-2">
                     💬 우리 동네 이야기
                   </p>
                   <div className="space-y-1.5">
@@ -1240,12 +1237,12 @@ export default function HomeAuthed({
                         className="flex items-center gap-2 py-1.5 active:opacity-70"
                       >
                         <span
-                          className="text-[10px] font-extrabold px-2 py-0.5 rounded-md shrink-0"
+                          className="text-[10px] font-bold px-2 py-0.5 rounded-md shrink-0"
                           style={{ backgroundColor: "rgba(173, 94, 59,0.12)", color: "var(--color-primary)" }}
                         >
                           {p.region}
                         </span>
-                        <p className="text-[12.5px] font-bold text-text-main truncate flex-1">
+                        <p className="text-[13px] font-bold text-text-main truncate flex-1">
                           {p.title}
                         </p>
                         <span className="text-[10px] text-text-light shrink-0">
@@ -1268,22 +1265,21 @@ export default function HomeAuthed({
           <div className="mb-5">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2 px-1">
-                <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+                <h2 className="text-[17px] font-bold text-text-main tracking-tight">
                   지금 우리 동네
                 </h2>
                 <span
-                  className="inline-flex items-center gap-1 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md"
-                  style={{ backgroundColor: "#48A59E15", color: "#48A59E" }}
+                  className="inline-flex items-center px-1.5 py-1 rounded-md"
+                  style={{ backgroundColor: "var(--color-sage-soft)" }}
                 >
                   <span
                     className="w-1.5 h-1.5 rounded-full animate-pulse"
-                    style={{ background: "#48A59E" }}
+                    style={{ background: "var(--color-sage)" }}
                   />
-                  LIVE
                 </span>
               </div>
               {primary && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: "rgba(72,165,158,0.12)", color: "#48A59E" }}>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: "var(--color-sage-soft)", color: "var(--color-sage)" }}>
                   📍 {primary.name}
                 </span>
               )}
@@ -1291,10 +1287,10 @@ export default function HomeAuthed({
             <div
               className="overflow-hidden"
               style={{
-                background: "#FFFFFF",
+                background: "var(--color-surface)",
                 borderRadius: "var(--radius-card)",
                 boxShadow: "var(--shadow-card)",
-                border: "1px solid rgba(72,165,158,0.12)",
+                border: "1px solid var(--color-sage-soft)",
               }}
             >
               {feed.slice(0, 3).map((f, i) => {
@@ -1315,19 +1311,19 @@ export default function HomeAuthed({
                         style={{
                           background: f.catPhoto
                             ? `url('${f.catPhoto}') center/cover`
-                            : "#EEE8E0",
+                            : "var(--color-gray-100)",
                           border: "2px solid #fff",
                           boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
                         }}
                       />
                       <div className="flex-1 min-w-0">
                         <p className="text-[12px] text-text-sub leading-snug truncate">
-                          <span className="font-extrabold" style={{ color: "#48A59E" }}>
+                          <span className="font-bold" style={{ color: "var(--color-sage)" }}>
                             {f.actorName}
                           </span>
                           <span className="text-text-light"> 님이 </span>
                           <span className="font-bold text-text-main">{f.catRegion ?? "동네"} </span>
-                          <span className="font-extrabold text-text-main">{f.catName}</span>
+                          <span className="font-bold text-text-main">{f.catName}</span>
                           <span className="text-text-light">에게 </span>
                           <span className="text-text-main">{f.message}</span>
                         </p>
@@ -1351,8 +1347,8 @@ export default function HomeAuthed({
         <div
           className="mb-5 dark-card-level overflow-hidden"
           style={{
-            background: "#FFFFFF",
-            borderRadius: 22,
+            background: "var(--color-surface)",
+            borderRadius: "var(--radius-card)",
             boxShadow: "0 8px 28px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.03)",
             border: "1px solid rgba(0,0,0,0.04)",
           }}
@@ -1372,16 +1368,16 @@ export default function HomeAuthed({
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <p className="text-[15px] font-extrabold text-text-main tracking-tight truncate">{levelInfo.title}</p>
+                <p className="text-[15px] font-bold text-text-main tracking-tight truncate">{levelInfo.title}</p>
                 <span
-                  className="text-[10px] font-extrabold px-2 py-0.5 rounded-lg text-white shrink-0"
+                  className="text-[10px] font-bold px-2 py-0.5 rounded-lg text-white shrink-0"
                   style={{ backgroundColor: lc }}
                 >
                   Lv.{levelInfo.level}
                 </span>
               </div>
               <div className="flex items-center gap-2 mt-1.5">
-                <div className="flex-1 h-1.5 rounded-full overflow-hidden max-w-[140px]" style={{ backgroundColor: "#F0EBE4" }}>
+                <div className="flex-1 h-1.5 rounded-full overflow-hidden max-w-[140px]" style={{ backgroundColor: "var(--color-gray-100)" }}>
                   <div
                     className="h-full rounded-full"
                     style={{
@@ -1440,7 +1436,7 @@ export default function HomeAuthed({
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2.5 px-1">
             <div className="flex items-center gap-2">
-              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">오늘 할 일</h2>
+              <h2 className="text-[17px] font-bold text-text-main tracking-tight">오늘 할 일</h2>
             </div>
             <span className="text-[10px] font-bold text-text-light">매일 리셋</span>
           </div>
@@ -1459,12 +1455,12 @@ export default function HomeAuthed({
                   href={c.href}
                   className="shrink-0 flex flex-col gap-0.5 active:scale-[0.97] transition-transform"
                   style={{
-                    width: 132, padding: "13px 13px 12px", borderRadius: 18, scrollSnapAlign: "start",
-                    background: "#FFFFFF", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)",
+                    width: 132, padding: "13px 13px 12px", borderRadius: "var(--radius-card)", scrollSnapAlign: "start",
+                    background: "var(--color-surface)", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)",
                   }}
                 >
                   <span className="text-[21px] mb-0.5">{c.emoji}</span>
-                  <span className="text-[12.5px] font-extrabold text-text-main tracking-tight">{c.title}</span>
+                  <span className="text-[13px] font-bold text-text-main tracking-tight">{c.title}</span>
                   <span className="text-[10px] font-semibold text-text-light leading-snug">{c.sub}</span>
                 </Link>
               ) : (
@@ -1474,13 +1470,13 @@ export default function HomeAuthed({
                   onClick={() => document.getElementById(c.target!)?.scrollIntoView({ behavior: "smooth", block: "center" })}
                   className="shrink-0 flex flex-col gap-0.5 text-left active:scale-[0.97] transition-transform"
                   style={{
-                    width: 132, padding: "13px 13px 12px", borderRadius: 18, scrollSnapAlign: "start",
-                    background: c.hot ? "linear-gradient(150deg, rgba(255,169,39,0.14), #FFFFFF 70%)" : "#FFFFFF",
+                    width: 132, padding: "13px 13px 12px", borderRadius: "var(--radius-card)", scrollSnapAlign: "start",
+                    background: c.hot ? "var(--color-warning-soft)" : "var(--color-surface)",
                     border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)",
                   }}
                 >
                   <span className="text-[21px] mb-0.5">{c.emoji}</span>
-                  <span className="text-[12.5px] font-extrabold text-text-main tracking-tight">{c.title}</span>
+                  <span className="text-[13px] font-bold text-text-main tracking-tight">{c.title}</span>
                   <span className="text-[10px] font-semibold text-text-light leading-snug">{c.sub}</span>
                 </button>
               ),
@@ -1510,19 +1506,16 @@ export default function HomeAuthed({
         <div className="mb-5 cv-auto" id="weekly-rank" style={{ scrollMarginTop: 12 }}>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 px-1">
-              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+              <h2 className="text-[17px] font-bold text-text-main tracking-tight">
                 이번 주 돌봄 왕
               </h2>
-              <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#E8B040", opacity: 0.6 }}>
-                WEEKLY TOP
-              </span>
             </div>
           </div>
           <div
             className="p-4"
             style={{
-              background: "linear-gradient(135deg, #FFF9E8 0%, #FFF3CC 100%)",
-              borderRadius: 22,
+              background: "var(--color-warning-soft)",
+              borderRadius: "var(--radius-card)",
               border: "1px solid rgba(232,176,64,0.25)",
               boxShadow: "0 4px 14px rgba(232,176,64,0.15)",
             }}
@@ -1536,7 +1529,7 @@ export default function HomeAuthed({
                     key={r.userId}
                     className="flex items-center gap-3 px-3 py-2.5"
                     style={{
-                      background: "#FFFFFF",
+                      background: "var(--color-surface)",
                       borderRadius: "var(--radius-input)",
                       boxShadow: "0 2px 6px rgba(0,0,0,0.04)",
                     }}
@@ -1554,7 +1547,7 @@ export default function HomeAuthed({
                       style={{
                         background: r.avatarUrl
                           ? `url('${r.avatarUrl}') center/cover`
-                          : "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+                          : "var(--color-primary)",
                         border: "2px solid #fff",
                         boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
                       }}
@@ -1566,11 +1559,11 @@ export default function HomeAuthed({
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-extrabold text-text-main truncate tracking-tight">
+                      <p className="text-[13px] font-bold text-text-main truncate tracking-tight">
                         {r.name}
                       </p>
-                      <p className="text-[10.5px] text-text-sub">
-                        이번 주 돌봄 <span className="font-extrabold" style={{ color: "#E88D5A" }}>{r.careCount}</span>회
+                      <p className="text-[11px] text-text-sub">
+                        이번 주 돌봄 <span className="font-bold" style={{ color: "var(--color-care)" }}>{r.careCount}</span>회
                       </p>
                     </div>
                   </div>
@@ -1586,12 +1579,9 @@ export default function HomeAuthed({
         <div className="mb-5 cv-auto">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 px-1">
-              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+              <h2 className="text-[17px] font-bold text-text-main tracking-tight">
                 이번 주 인기 고양이
               </h2>
-              <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#E86B8C", opacity: 0.6 }}>
-                TRENDING
-              </span>
             </div>
             <Link
               href="/map"
@@ -1615,20 +1605,20 @@ export default function HomeAuthed({
                       aspectRatio: "1/1",
                       background: c.photo_url
                         ? `url('${c.photo_url}') center/cover`
-                        : "#EEE8E0",
+                        : "var(--color-gray-100)",
                       boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
                       border: "2px solid #fff",
                     }}
                   />
                   <div
-                    className="absolute top-1.5 left-1.5 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white"
+                    className="absolute top-1.5 left-1.5 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white"
                     style={{
                       background: idx === 0
-                        ? "linear-gradient(135deg, #E8B040 0%, #C08860 100%)"
+                        ? "var(--color-warning)"
                         : idx === 1
-                        ? "linear-gradient(135deg, #B8B8B8 0%, #888 100%)"
+                        ? "var(--color-gray-400)"
                         : idx === 2
-                        ? "linear-gradient(135deg, #C08860 0%, #8B5A3C 100%)"
+                        ? "var(--color-primary-light)"
                         : "rgba(44,44,44,0.7)",
                       boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
                     }}
@@ -1638,15 +1628,15 @@ export default function HomeAuthed({
                   <div
                     className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 px-1.5 py-0.5 chip-square"
                     style={{
-                      background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)",
+                      background: "var(--color-like)",
                       boxShadow: "0 2px 4px rgba(232,107,140,0.4)",
                     }}
                   >
                     <span style={{ fontSize: 9 }}>❤️</span>
-                    <span className="text-[9.5px] font-extrabold text-white">{c.like_count}</span>
+                    <span className="text-[11px] font-bold text-white">{c.like_count}</span>
                   </div>
                 </div>
-                <p className="text-[12.5px] font-extrabold text-text-main truncate">
+                <p className="text-[13px] font-bold text-text-main truncate">
                   {c.name}
                 </p>
                 <p className="text-[10px] text-text-sub truncate">
@@ -1664,26 +1654,23 @@ export default function HomeAuthed({
       <div
         className="flex items-start gap-3.5 px-5 py-4 mb-5"
         style={{
-          background: "#FFFFFF",
-          borderRadius: 22,
-          boxShadow: "0 6px 20px rgba(232,176,64,0.10), 0 1px 3px rgba(0,0,0,0.03)",
+          background: "var(--color-surface)",
+          borderRadius: "var(--radius-card)",
+          boxShadow: "var(--shadow-card)",
           border: "1px solid rgba(0,0,0,0.04)",
         }}
       >
         <div
           className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
           style={{
-            background: "linear-gradient(135deg, #E8B040 0%, #C9A961 100%)",
-            boxShadow: "0 5px 12px rgba(232,176,64,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)",
+            background: "var(--color-warning)",
+            boxShadow: "var(--shadow-raised)",
           }}
         >
           <Sparkles size={18} color="#fff" strokeWidth={2.3} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-extrabold tracking-[0.12em] mb-0.5" style={{ color: "#C9A961" }}>
-            TODAY&apos;S FACT
-          </p>
-          <p className="text-[13.5px] font-semibold text-text-main leading-relaxed">
+          <p className="text-[13px] font-semibold text-text-main leading-relaxed">
             {fact}
           </p>
         </div>
@@ -1719,12 +1706,9 @@ export default function HomeAuthed({
       {SHOW_ANNIVERSARY && anniversaries.length > 0 && (
         <div className="mb-4">
           <div className="flex items-center gap-2 mb-3 px-1">
-            <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+            <h2 className="text-[17px] font-bold text-text-main tracking-tight">
               오늘의 기념일
             </h2>
-            <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#E86B8C", opacity: 0.6 }}>
-              ANNIVERSARY 🎂
-            </span>
           </div>
           <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1">
             {anniversaries.map((a) => {
@@ -1732,10 +1716,10 @@ export default function HomeAuthed({
                 ? "오늘 구조됐어요"
                 : `만난 지 ${a.years}주년 🎉`;
               const bgGradient = a.years >= 3
-                ? "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)"
+                ? "var(--color-like)"
                 : a.years >= 1
-                ? "linear-gradient(135deg, #F4A5C0 0%, #E86B8C 100%)"
-                : "linear-gradient(135deg, #FFD56B 0%, #E8B040 100%)";
+                ? "var(--color-like)"
+                : "var(--color-warning)";
               return (
                 <Link
                   key={a.catId}
@@ -1750,7 +1734,7 @@ export default function HomeAuthed({
                       aspectRatio: "5 / 3",
                       background: a.photoUrl
                         ? `url('${a.photoUrl}') center/cover`
-                        : "#EEE8E0",
+                        : "var(--color-gray-100)",
                       boxShadow: "0 6px 18px rgba(232,107,140,0.25)",
                     }}
                   >
@@ -1773,14 +1757,14 @@ export default function HomeAuthed({
                         }}
                       >
                         <span style={{ fontSize: 11 }}>🎂</span>
-                        <span className="text-[10px] font-extrabold text-white tracking-tight">
+                        <span className="text-[10px] font-bold text-white tracking-tight">
                           {label}
                         </span>
                       </div>
                     </div>
                     {/* 하단: 이름·지역 */}
                     <div className="absolute bottom-0 inset-x-0 px-3 py-2.5">
-                      <p className="text-[15px] font-extrabold text-white drop-shadow tracking-tight">
+                      <p className="text-[15px] font-bold text-white drop-shadow tracking-tight">
                         {a.name}
                       </p>
                       {a.region && (
@@ -1820,15 +1804,9 @@ export default function HomeAuthed({
       {SHOW_WEEKLY_ISSUES && weeklyIssues.length > 0 && (
         <div className="mb-5">
           <div className="flex items-center gap-2 px-1 mb-3">
-            <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+            <h2 className="text-[17px] font-bold text-text-main tracking-tight">
               이번 주 동네 이슈
             </h2>
-            <span
-              className="text-[9px] font-bold tracking-[0.15em]"
-              style={{ color: "#5B7A8F", opacity: 0.6 }}
-            >
-              THIS WEEK
-            </span>
           </div>
           <div className="space-y-2">
             {weeklyIssues.map((issue) => {
@@ -1836,17 +1814,16 @@ export default function HomeAuthed({
                 <div
                   className="flex items-start gap-3 px-4 py-3"
                   style={{
-                    background: "#FFFFFF",
+                    background: "var(--color-surface)",
                     borderRadius: "var(--radius-card-sm)",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)",
-                    border: "1px solid rgba(91,122,143,0.18)",
+                    border: "1px solid rgba(173, 94, 59,0.18)",
                   }}
                 >
                   <div
                     className="w-9 h-9 rounded-xl flex items-center justify-center text-[18px] shrink-0"
                     style={{
-                      background:
-                        "linear-gradient(135deg, #F0F4F8 0%, #DCE4EE 100%)",
+                      background: "var(--color-gray-100)",
                     }}
                   >
                     {issue.emoji ?? "📰"}
@@ -1861,7 +1838,7 @@ export default function HomeAuthed({
                       </p>
                     )}
                     {issue.external_url && issue.external_label && (
-                      <p className="text-[10.5px] mt-1 font-bold" style={{ color: "#5B7A8F" }}>
+                      <p className="text-[11px] mt-1 font-bold" style={{ color: "var(--color-primary)" }}>
                         {issue.external_label} →
                       </p>
                     )}
@@ -1895,16 +1872,16 @@ export default function HomeAuthed({
           <div
             className="flex items-center justify-between px-4 py-2.5"
             style={{
-              background: "linear-gradient(135deg, #FFF6EE 0%, #FFE9D2 100%)",
+              background: "var(--color-primary-softer)",
               borderRadius: "var(--radius-input)",
-              border: "1px solid #F2D6B6",
+              border: "1px solid var(--color-border)",
             }}
           >
             <div className="flex items-center gap-2 min-w-0">
               <Sparkles size={14} style={{ color: "var(--color-primary)" }} />
               <span
                 className="text-[12px] font-bold truncate"
-                style={{ color: "#8C5A37" }}
+                style={{ color: "var(--color-primary-dark)" }}
               >
                 지난 방문 이후 새 글 {newPostsCount}개
               </span>
@@ -1919,7 +1896,7 @@ export default function HomeAuthed({
         <div className="mb-5 cv-auto">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 px-1">
-              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+              <h2 className="text-[17px] font-bold text-text-main tracking-tight">
                 인기 게시글
               </h2>
             </div>
@@ -1940,7 +1917,7 @@ export default function HomeAuthed({
                 <div
                   className="flex items-center gap-3 px-4 py-3"
                   style={{
-                    background: "#FFFFFF",
+                    background: "var(--color-surface)",
                     borderRadius: "var(--radius-card-sm)",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)",
                     border: "1px solid rgba(0,0,0,0.04)",
@@ -1950,7 +1927,7 @@ export default function HomeAuthed({
                     <p className="text-[13px] font-bold text-text-main truncate">
                       {post.title}
                     </p>
-                    <p className="text-[10.5px] text-text-light mt-0.5">
+                    <p className="text-[11px] text-text-light mt-0.5">
                       {post.authorName} · {formatRelativeTime(post.createdAt)}
                     </p>
                   </div>
@@ -1971,8 +1948,8 @@ export default function HomeAuthed({
         href="/tips"
         className="flex items-center gap-3 p-4 mb-4 active:scale-[0.99] transition-transform"
         style={{
-          background: "linear-gradient(135deg, #FBF8F3 0%, #F2EBE0 100%)",
-          borderRadius: 22,
+          background: "var(--color-primary-softer)",
+          borderRadius: "var(--radius-card)",
           boxShadow: "0 4px 16px rgba(173, 94, 59,0.10), 0 1px 3px rgba(0,0,0,0.03)",
           border: "1px solid rgba(173, 94, 59,0.18)",
         }}
@@ -1984,8 +1961,8 @@ export default function HomeAuthed({
           <Sparkles size={22} className="text-primary" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[14px] font-extrabold text-text-main">꿀팁게시판</p>
-          <p className="text-[11.5px] text-text-sub mt-0.5">
+          <p className="text-[14px] font-bold text-text-main">꿀팁게시판</p>
+          <p className="text-[11px] text-text-sub mt-0.5">
             길고양이 돌봄·TNR·구조 정보글 모음
           </p>
         </div>
@@ -2009,7 +1986,7 @@ export default function HomeAuthed({
           <button
             type="button"
             onClick={() => document.getElementById("my-cats")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-white text-[14.5px] font-extrabold active:scale-[0.98] transition-transform pointer-events-auto"
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-white text-[15px] font-bold active:scale-[0.98] transition-transform pointer-events-auto"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "0 6px 20px rgba(173, 94, 59,0.35)",
