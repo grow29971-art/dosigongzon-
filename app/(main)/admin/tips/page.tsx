@@ -275,7 +275,7 @@ export default function AdminTipsPage() {
             <button
               onClick={handleCancel}
               className="w-7 h-7 rounded-lg flex items-center justify-center active:scale-90"
-              style={{ backgroundColor: "#EEE8E0" }}
+              style={{ backgroundColor: "var(--color-gray-100)" }}
             >
               <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
             </button>
@@ -320,7 +320,7 @@ export default function AdminTipsPage() {
                   src={draft.thumbnail_url}
                   alt=""
                   className="w-full aspect-[16/9] rounded-xl object-cover"
-                  style={{ border: "1px solid #E3DCD3" }}
+                  style={{ border: "1px solid var(--color-gray-200)" }}
                 />
                 <button
                   type="button"
@@ -336,7 +336,7 @@ export default function AdminTipsPage() {
               <label
                 className="flex flex-col items-center justify-center aspect-[16/9] rounded-xl cursor-pointer active:scale-[0.99] transition-transform"
                 style={{
-                  backgroundColor: "#F6F1EA",
+                  backgroundColor: "var(--color-gray-50)",
                   border: "1.5px dashed #C9BDAA",
                   color: "#A38E7A",
                 }}
@@ -381,9 +381,9 @@ export default function AdminTipsPage() {
             placeholder={`<h2>들어가며</h2>\n<p>...</p>\n<h2>본론</h2>\n<ul><li>...</li></ul>`}
             className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-3 resize-y"
             style={{
-              backgroundColor: "#F6F1EA",
+              backgroundColor: "var(--color-gray-50)",
               color: "#2A2A28",
-              border: "1px solid #E3DCD3",
+              border: "1px solid var(--color-gray-200)",
               fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, monospace",
               minHeight: 280,
             }}
@@ -414,7 +414,7 @@ export default function AdminTipsPage() {
 
           {/* 발행 옵션 */}
           <div className="grid grid-cols-3 gap-2 mb-3">
-            <label className="flex items-center gap-1.5 cursor-pointer p-2 rounded-lg" style={{ background: "#F6F1EA" }}>
+            <label className="flex items-center gap-1.5 cursor-pointer p-2 rounded-lg" style={{ background: "var(--color-gray-50)" }}>
               <input
                 type="checkbox"
                 checked={draft.published}
@@ -423,7 +423,7 @@ export default function AdminTipsPage() {
               />
               <span className="text-[11.5px] font-semibold text-text-sub">발행</span>
             </label>
-            <label className="flex items-center gap-1.5 cursor-pointer p-2 rounded-lg" style={{ background: "#F6F1EA" }}>
+            <label className="flex items-center gap-1.5 cursor-pointer p-2 rounded-lg" style={{ background: "var(--color-gray-50)" }}>
               <input
                 type="checkbox"
                 checked={draft.featured}
@@ -434,7 +434,7 @@ export default function AdminTipsPage() {
                 <Sparkles size={10} /> 추천
               </span>
             </label>
-            <label className="flex items-center gap-1.5 cursor-pointer p-2 rounded-lg" style={{ background: "#F6F1EA" }}>
+            <label className="flex items-center gap-1.5 cursor-pointer p-2 rounded-lg" style={{ background: "var(--color-gray-50)" }}>
               <input
                 type="checkbox"
                 checked={draft.pinned}
@@ -462,9 +462,9 @@ export default function AdminTipsPage() {
             }
             className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-3"
             style={{
-              backgroundColor: "#F6F1EA",
+              backgroundColor: "var(--color-gray-50)",
               color: "#2A2A28",
-              border: "1px solid #E3DCD3",
+              border: "1px solid var(--color-gray-200)",
             }}
           />
 
@@ -487,7 +487,7 @@ export default function AdminTipsPage() {
               onClick={handleCancel}
               disabled={saving}
               className="px-5 py-2.5 rounded-xl text-[13px] font-bold"
-              style={{ backgroundColor: "#EEE8E0", color: "#A38E7A" }}
+              style={{ backgroundColor: "var(--color-gray-100)", color: "#A38E7A" }}
             >
               취소
             </button>
@@ -576,14 +576,14 @@ export default function AdminTipsPage() {
                 <button
                   onClick={() => handleEdit(item)}
                   className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold"
-                  style={{ backgroundColor: "#EEE8E0", color: "var(--color-primary)" }}
+                  style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-primary)" }}
                 >
                   <Pencil size={12} /> 수정
                 </button>
                 <button
                   onClick={() => handleDelete(item)}
                   className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold"
-                  style={{ backgroundColor: "#FBEAEA", color: "#D85555" }}
+                  style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}
                 >
                   <Trash2 size={12} /> 삭제
                 </button>
@@ -631,9 +631,9 @@ function Input({
       disabled={disabled}
       className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-1 disabled:opacity-50 disabled:cursor-not-allowed"
       style={{
-        backgroundColor: "#F6F1EA",
+        backgroundColor: "var(--color-gray-50)",
         color: "#2A2A28",
-        border: "1px solid #E3DCD3",
+        border: "1px solid var(--color-gray-200)",
       }}
     />
   );

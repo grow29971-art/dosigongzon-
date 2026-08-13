@@ -130,7 +130,7 @@ export default async function RescuePage() {
                       style={{
                         background: photo
                           ? `url('${photo}') center/cover`
-                          : "#EEE8E0",
+                          : "var(--color-gray-100)",
                       }}
                     />
                     {/* 내용 */}

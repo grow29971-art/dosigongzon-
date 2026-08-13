@@ -114,7 +114,7 @@ export default function ShareCatButton({ catId, name, region, description, urgen
       disabled={loading}
       className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl active:scale-[0.98] transition-transform disabled:opacity-70"
       style={{
-        backgroundColor: status === "idle" ? "#FEE500" : "#E8F5E9",
+        backgroundColor: status === "idle" ? "#FEE500" : "var(--color-sage-soft)",
         color: status === "idle" ? "#191919" : "#2E7D32",
         boxShadow: status === "idle"
           ? "0 4px 14px rgba(254,229,0,0.35)"

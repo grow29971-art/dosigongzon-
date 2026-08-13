@@ -167,7 +167,7 @@ export default function MakerPage() {
       {/* 시작한 이유 */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <Heart size={14} style={{ color: "#E86B8C" }} />
+          <Heart size={14} style={{ color: "var(--color-like)" }} />
           <h2 className="text-[14px] font-extrabold text-text-main">왜 시작했나</h2>
         </div>
         <div

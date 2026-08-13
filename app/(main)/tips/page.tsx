@@ -84,7 +84,7 @@ export default async function TipsIndexPage() {
         badge="AI 집사"
         headerEmoji="🤖"
         title="궁금한 건 AI 집사에게 물어보세요"
-        headerBg="linear-gradient(160deg, #E8F5E9 0%, #DBEEDD 100%)"
+        headerBg="linear-gradient(160deg, var(--color-sage-soft) 0%, #DBEEDD 100%)"
         accent="#22A366"
         accentDark="#1B7D50"
         items={[
@@ -173,7 +173,7 @@ export default async function TipsIndexPage() {
             {[
               { href: "/protection/emergency-guide", label: "응급처치", sub: "다쳤을 때", Icon: Siren, color: "#D85555" },
               { href: "/protection/kitten-guide", label: "새끼 발견", sub: "이런 땐 데려와요", Icon: Baby, color: "#E88D5A" },
-              { href: "/protection/disease-guide", label: "질병 신호", sub: "증상 체크", Icon: Heart, color: "#E86B8C" },
+              { href: "/protection/disease-guide", label: "질병 신호", sub: "증상 체크", Icon: Heart, color: "var(--color-like)" },
               { href: "/protection/trapping-guide", label: "TNR·포획", sub: "안전한 절차", Icon: Stethoscope, color: "#8B65B8" },
               { href: "/protection/feeding-guide", label: "밥주기", sub: "올바른 방법", Icon: Sparkles, color: "#48A59E" },
               { href: "/protection/shelter-guide", label: "겨울 쉼터", sub: "지금 만들기", Icon: Snowflake, color: "#5A8AC4" },
@@ -308,7 +308,7 @@ function TipCard({ tip }: { tip: Tip }) {
         className="rounded-2xl overflow-hidden bg-white active:scale-[0.99] transition-transform"
         style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.06)" }}
       >
-        <div className="relative w-full aspect-[16/9] bg-[#EEE8E0]">
+        <div className="relative w-full aspect-[16/9] bg-[var(--color-gray-100)]">
           {photo ? (
             <Image
               src={photo}

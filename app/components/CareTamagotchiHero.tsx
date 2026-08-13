@@ -320,7 +320,7 @@ export default function CareTamagotchiHero() {
             <span className="flex items-center gap-1.5 mt-1.5">
               {[
                 { v: fullness, c: "#E8A54B" },
-                { v: mood, c: "#E86B8C" },
+                { v: mood, c: "var(--color-like)" },
                 { v: cleanliness, c: "#5BA8D0" },
               ].map((g, i) => (
                 <span key={i} className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "var(--color-surface-alt)" }}>

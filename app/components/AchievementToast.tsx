@@ -151,7 +151,7 @@ export default function AchievementToast({
           type="button"
           onClick={() => onDismiss(current.id)}
           className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 active:scale-90"
-          style={{ background: "#F5F0EB" }}
+          style={{ background: "var(--color-gray-50)" }}
           aria-label="닫기"
         >
           <X size={13} style={{ color: "#A38E7A" }} />

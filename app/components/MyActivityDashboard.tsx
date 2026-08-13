@@ -146,7 +146,7 @@ export default function MyActivityDashboard() {
                 >
                   <div
                     className="relative w-8 h-8 rounded-full overflow-hidden shrink-0"
-                    style={{ background: "#EEE8E0" }}
+                    style={{ background: "var(--color-gray-100)" }}
                   >
                     {c.photoUrl && (
                       <Image src={c.photoUrl} alt={c.catName} fill sizes="32px" style={{ objectFit: "cover" }} />

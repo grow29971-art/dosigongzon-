@@ -59,9 +59,9 @@ export default function EmailDigestToggle() {
     >
       <div
         className="w-10 h-10 flex items-center justify-center shrink-0"
-        style={{ backgroundColor: "rgba(232,107,140,0.1)", borderRadius: "var(--radius-square-lg)" }}
+        style={{ backgroundColor: "var(--color-like-soft)", borderRadius: "var(--radius-square-lg)" }}
       >
-        <Mail size={18} color="#E86B8C" strokeWidth={2} />
+        <Mail size={18} color="var(--color-like)" strokeWidth={2} />
       </div>
       <div className="flex-1 min-w-0 text-left">
         <p className="text-[14px] font-extrabold text-text-main tracking-tight">
@@ -79,7 +79,7 @@ export default function EmailDigestToggle() {
           onChange={handleToggle}
           disabled={saving}
           size="sm"
-          color="#E86B8C"
+          color="var(--color-like)"
           aria-label="주간 이메일 수신 설정"
         />
       )}

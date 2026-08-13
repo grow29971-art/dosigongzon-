@@ -65,7 +65,7 @@ const CATEGORIES: CategoryCard[] = [
     title: "입양",
     subtitle: "새 가족을 찾아요",
     Icon: Heart,
-    iconBg: "#E86B8C",
+    iconBg: "var(--color-like)",
     glowColor: "232,107,140",
   },
   {

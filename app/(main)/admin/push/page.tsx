@@ -260,7 +260,7 @@ export default function AdminPushPage() {
           className="w-full text-left px-4 py-2.5 rounded-xl active:scale-[0.99] transition-transform"
           style={{
             background: "linear-gradient(135deg, #FFD6E4 0%, #FFB99B 100%)",
-            border: "1px solid rgba(232,107,140,0.30)",
+            border: "1px solid var(--color-like-soft)",
           }}
         >
           <p className="text-[12.5px] font-extrabold" style={{ color: "#A8395B" }}>
@@ -335,7 +335,7 @@ export default function AdminPushPage() {
         </div>
 
         {error && (
-          <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: "#FBEAEA" }}>
+          <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: "var(--color-error-soft)" }}>
             <p className="text-[13px] font-semibold" style={{ color: "#B84545" }}>{error}</p>
           </div>
         )}

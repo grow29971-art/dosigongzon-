@@ -263,7 +263,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
               type="button"
               onClick={() => setShowForm(true)}
               className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12px] font-bold active:scale-[0.97] transition-transform"
-              style={{ backgroundColor: "#F6F1EA", color: "var(--color-primary)" }}
+              style={{ backgroundColor: "var(--color-gray-50)", color: "var(--color-primary)" }}
             >
               <Plus size={14} />
               돌봄 기록 추가
@@ -271,7 +271,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
           ) : (
             <div
               className="p-3 rounded-2xl space-y-2.5"
-              style={{ backgroundColor: "#F6F1EA", border: "1px solid #E5E0D6" }}
+              style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid #E5E0D6" }}
             >
               {/* 유형 선택 */}
               <div className="flex gap-1.5 flex-wrap">

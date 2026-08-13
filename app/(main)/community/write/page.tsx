@@ -231,7 +231,7 @@ export default function WritePage() {
                   src={url}
                   alt=""
                   className="w-full h-full object-cover rounded-xl"
-                  style={{ border: "1px solid #E3DCD3" }}
+                  style={{ border: "1px solid var(--color-gray-200)" }}
                 />
                 <button
                   type="button"
@@ -249,7 +249,7 @@ export default function WritePage() {
               <label
                 className="flex flex-col items-center justify-center aspect-square rounded-xl cursor-pointer active:scale-[0.97] transition-transform"
                 style={{
-                  backgroundColor: "#F6F1EA",
+                  backgroundColor: "var(--color-gray-50)",
                   border: "1.5px dashed #C9BDAA",
                   color: "#A38E7A",
                 }}
@@ -291,7 +291,7 @@ export default function WritePage() {
         {submitError && (
           <div
             className="rounded-2xl px-4 py-3"
-            style={{ backgroundColor: "#FBEAEA" }}
+            style={{ backgroundColor: "var(--color-error-soft)" }}
           >
             <p className="text-[13px] font-semibold" style={{ color: "#B84545" }}>
               {submitError}

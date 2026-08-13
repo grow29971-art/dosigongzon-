@@ -212,7 +212,7 @@ export default function KeyringEventPage() {
           <div
             className="rounded-2xl p-6 text-center"
             style={{
-              background: done ? "#E8ECE5" : "#FFF4E0",
+              background: done ? "#E8ECE5" : "var(--color-warning-soft)",
               border: `1px solid ${done ? "#D6DCD2" : "#F5DAB0"}`,
             }}
           >
@@ -279,7 +279,7 @@ export default function KeyringEventPage() {
         ) : (
           <div className="space-y-3">
             {error && (
-              <div className="rounded-xl px-4 py-3" style={{ background: "#FBEAEA" }}>
+              <div className="rounded-xl px-4 py-3" style={{ background: "var(--color-error-soft)" }}>
                 <p className="text-[13px] font-semibold" style={{ color: "#B84545" }}>{error}</p>
               </div>
             )}

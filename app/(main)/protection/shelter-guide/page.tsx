@@ -273,7 +273,7 @@ export default function ShelterGuidePage() {
             <div
               key={c.title}
               className="rounded-xl p-3.5"
-              style={{ background: "#FBEAEA", border: "1px solid rgba(216,85,85,0.15)" }}
+              style={{ background: "var(--color-error-soft)", border: "1px solid rgba(216,85,85,0.15)" }}
             >
               <p className="text-[13px] font-bold" style={{ color: "#8B2F2F" }}>{c.title}</p>
               <p className="text-[13px] text-text-sub mt-1 leading-relaxed">{c.desc}</p>
@@ -298,7 +298,7 @@ export default function ShelterGuidePage() {
               <li>물그릇은 쉼터 밖, 사료는 쉼터 근처 다른 지점</li>
             </ul>
           </div>
-          <div className="rounded-2xl p-4" style={{ background: "#FFF3E0", border: "1px solid #F2D4A5" }}>
+          <div className="rounded-2xl p-4" style={{ background: "var(--color-care-soft)", border: "1px solid #F2D4A5" }}>
             <p className="text-[13px] font-bold" style={{ color: "#B56A1A" }}>여름 (6 ~ 9월)</p>
             <ul className="text-[13px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
               <li>겨울용 스티로폼 박스는 덥고 곰팡이 위험 — 교체 또는 입구 확장</li>

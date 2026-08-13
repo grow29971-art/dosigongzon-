@@ -51,8 +51,8 @@ export default function AIChatCard() {
             onClick={() => setChatOpen(true)}
             className="flex-1 rounded-xl px-4 py-2.5 text-[12.5px] text-text-muted text-left transition-all active:scale-[0.98]"
             style={{
-              backgroundColor: "#F6F1EA",
-              border: "1px solid #E3DCD3",
+              backgroundColor: "var(--color-gray-50)",
+              border: "1px solid var(--color-gray-200)",
             }}
           >
             예: 새끼 고양이를 발견했어요...

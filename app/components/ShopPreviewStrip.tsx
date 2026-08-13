@@ -85,8 +85,8 @@ export default function ShopPreviewStrip() {
                 >
                   <Heart
                     size={15}
-                    fill={wished ? "#E14B6A" : "none"}
-                    style={{ color: wished ? "#E14B6A" : "var(--color-text-light)" }}
+                    fill={wished ? "var(--color-like)" : "none"}
+                    style={{ color: wished ? "var(--color-like)" : "var(--color-text-light)" }}
                   />
                 </button>
               </div>

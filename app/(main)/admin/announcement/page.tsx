@@ -136,7 +136,7 @@ export default function AdminAnnouncementPage() {
               onClick={handleClear}
               disabled={busy}
               className="mt-3 flex items-center gap-1.5 text-[12px] font-bold px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-50"
-              style={{ background: "#FBEAEA", color: "#B84545" }}
+              style={{ background: "var(--color-error-soft)", color: "#B84545" }}
             >
               <EyeOff size={13} /> 이 공지 내리기
             </button>
@@ -186,7 +186,7 @@ export default function AdminAnnouncementPage() {
       </button>
 
       {error && (
-        <div className="mt-4 rounded-2xl p-4 text-[13px]" style={{ background: "#FBEAEA", color: "#B84545" }}>
+        <div className="mt-4 rounded-2xl p-4 text-[13px]" style={{ background: "var(--color-error-soft)", color: "#B84545" }}>
           {error}
         </div>
       )}

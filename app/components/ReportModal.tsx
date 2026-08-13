@@ -152,7 +152,7 @@ export default function ReportModal({
             disabled={submitting}
             aria-label="신고 창 닫기"
             className="w-7 h-7 rounded-lg flex items-center justify-center active:scale-90"
-            style={{ backgroundColor: "#EEE8E0" }}
+            style={{ backgroundColor: "var(--color-gray-100)" }}
           >
             <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
           </button>
@@ -191,9 +191,9 @@ export default function ReportModal({
                       onClick={() => setReason(r)}
                       className="py-2.5 rounded-xl text-[12px] font-bold transition-all"
                       style={{
-                        backgroundColor: active ? "#D85555" : "#F6F1EA",
+                        backgroundColor: active ? "#D85555" : "var(--color-gray-50)",
                         color: active ? "#FFFFFF" : "#4A3F35",
-                        border: `1.5px solid ${active ? "#D85555" : "#E3DCD3"}`,
+                        border: `1.5px solid ${active ? "#D85555" : "var(--color-gray-200)"}`,
                       }}
                     >
                       {REPORT_REASON_LABELS[r]}
@@ -216,9 +216,9 @@ export default function ReportModal({
                 placeholder="관리자에게 전달할 상세 내용을 적어주세요"
                 className="w-full px-3 py-2.5 rounded-xl text-[12px] outline-none resize-none"
                 style={{
-                  backgroundColor: "#F6F1EA",
+                  backgroundColor: "var(--color-gray-50)",
                   color: "#2A2A28",
-                  border: "1px solid #E3DCD3",
+                  border: "1px solid var(--color-gray-200)",
                 }}
               />
             </div>
@@ -248,7 +248,7 @@ export default function ReportModal({
                       src={URL.createObjectURL(f)}
                       alt=""
                       className="w-14 h-14 rounded-lg object-cover"
-                      style={{ border: "1px solid #E3DCD3" }}
+                      style={{ border: "1px solid var(--color-gray-200)" }}
                     />
                     <button
                       onClick={() => setPhotos((prev) => prev.filter((_, j) => j !== i))}
@@ -264,7 +264,7 @@ export default function ReportModal({
                   <button
                     onClick={() => photoInputRef.current?.click()}
                     className="w-14 h-14 rounded-lg flex items-center justify-center active:scale-95"
-                    style={{ backgroundColor: "#F6F1EA", border: "1.5px dashed #C3BCB3" }}
+                    style={{ backgroundColor: "var(--color-gray-50)", border: "1.5px dashed #C3BCB3" }}
                     aria-label="사진 추가"
                   >
                     <Camera size={16} style={{ color: "#A38E7A" }} />
@@ -281,7 +281,7 @@ export default function ReportModal({
               <div className="px-5 pb-3">
                 <label
                   className="flex items-start gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer active:scale-[0.99] transition-transform"
-                  style={{ backgroundColor: alsoBlock ? "#FBEAEA" : "#F6F1EA", border: `1.5px solid ${alsoBlock ? "#E8C5C5" : "#E3DCD3"}` }}
+                  style={{ backgroundColor: alsoBlock ? "var(--color-error-soft)" : "var(--color-gray-50)", border: `1.5px solid ${alsoBlock ? "#E8C5C5" : "var(--color-gray-200)"}` }}
                 >
                   <input
                     type="checkbox"
@@ -326,7 +326,7 @@ export default function ReportModal({
                 disabled={submitting}
                 className="flex-1 py-3 rounded-xl text-[13px] font-bold"
                 style={{
-                  backgroundColor: "#EEE8E0",
+                  backgroundColor: "var(--color-gray-100)",
                   color: "#A38E7A",
                 }}
               >

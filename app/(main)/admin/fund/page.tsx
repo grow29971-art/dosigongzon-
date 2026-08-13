@@ -120,7 +120,7 @@ export default function AdminFundPage() {
       <div className="grid grid-cols-3 gap-2 mb-5">
         {[
           { label: "모인 금액", value: collected ?? 0, color: "#22A366" },
-          { label: "쓰인 금액", value: spent, color: "#E86B8C" },
+          { label: "쓰인 금액", value: spent, color: "var(--color-like)" },
           { label: "잔액", value: balance, color: "var(--color-primary)" },
         ].map((s) => (
           <div key={s.label} className="text-center py-3 rounded-2xl" style={{ background: "var(--color-surface-alt)" }}>
@@ -183,7 +183,7 @@ export default function AdminFundPage() {
                 {d.neutered_count > 0 && <> · ✂️ {d.neutered_count}마리</>}
               </p>
             </div>
-            <span className="text-[13px] font-extrabold tabular-nums shrink-0" style={{ color: "#E86B8C" }}>-{won(d.amount)}</span>
+            <span className="text-[13px] font-extrabold tabular-nums shrink-0" style={{ color: "var(--color-like)" }}>-{won(d.amount)}</span>
             <button onClick={() => remove(d.id)} className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center active:scale-90" style={{ background: "rgba(216,85,85,0.1)" }} aria-label="삭제">
               <Trash2 size={14} style={{ color: "#D85555" }} />
             </button>

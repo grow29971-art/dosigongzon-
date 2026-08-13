@@ -185,7 +185,7 @@ export default function CircleJoinPage() {
           </div>
 
           {error && (
-            <div className="rounded-2xl px-4 py-3 mb-3" style={{ background: "#FBEAEA" }}>
+            <div className="rounded-2xl px-4 py-3 mb-3" style={{ background: "var(--color-error-soft)" }}>
               <p className="text-[12.5px]" style={{ color: "#B84545" }}>{error}</p>
             </div>
           )}
@@ -195,7 +195,7 @@ export default function CircleJoinPage() {
               onClick={handleReject}
               disabled={busy}
               className="flex-1 py-3 rounded-2xl text-[14px] font-bold active:scale-95 disabled:opacity-50"
-              style={{ background: "#EEE8E0", color: "#8B7562" }}
+              style={{ background: "var(--color-gray-100)", color: "#8B7562" }}
             >
               <X size={14} className="inline mr-1" /> 거절
             </button>

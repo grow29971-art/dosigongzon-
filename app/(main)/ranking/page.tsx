@@ -293,7 +293,7 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
       ) : (
         <div
           className="w-9 h-9 rounded-full flex items-center justify-center text-[14px] shrink-0"
-          style={{ background: "#F6F1EA", border: `1.5px solid ${getLevelColor(level.level)}` }}
+          style={{ background: "var(--color-gray-50)", border: `1.5px solid ${getLevelColor(level.level)}` }}
         >
           🐾
         </div>

@@ -60,7 +60,7 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
               onClick={() => handleCopy(b.id, b.text)}
               className="flex items-center gap-1 px-2.5 py-1 rounded-lg active:scale-95 transition-transform"
               style={{
-                background: copiedId === b.id ? "#E8F5E9" : "rgba(173, 94, 59,0.10)",
+                background: copiedId === b.id ? "var(--color-sage-soft)" : "rgba(173, 94, 59,0.10)",
                 color: copiedId === b.id ? "#2E7D32" : "var(--color-primary-dark)",
               }}
             >

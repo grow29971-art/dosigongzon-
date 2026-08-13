@@ -385,7 +385,7 @@ export default function AdminInboxPage() {
                 {r.target_snapshot && (
                   <div
                     className="text-[11px] leading-relaxed p-2 rounded-lg mb-2"
-                    style={{ backgroundColor: "#F6F1EA", color: "#4A3F35" }}
+                    style={{ backgroundColor: "var(--color-gray-50)", color: "#4A3F35" }}
                   >
                     <span className="text-text-light font-bold">대상 내용:</span>{" "}
                     {r.target_snapshot}
@@ -493,7 +493,7 @@ export default function AdminInboxPage() {
                 </p>
                 <div
                   className="text-[12px] leading-relaxed p-3 rounded-lg whitespace-pre-wrap"
-                  style={{ backgroundColor: "#F6F1EA", color: "#4A3F35" }}
+                  style={{ backgroundColor: "var(--color-gray-50)", color: "#4A3F35" }}
                 >
                   {i.body}
                 </div>
@@ -507,7 +507,7 @@ export default function AdminInboxPage() {
                     <div
                       className="text-[12px] leading-relaxed p-3 rounded-lg whitespace-pre-wrap"
                       style={{
-                        backgroundColor: "#E8F5E9",
+                        backgroundColor: "var(--color-sage-soft)",
                         border: "1px solid #CDE5CF",
                         color: "#2E4A31",
                       }}
@@ -533,7 +533,7 @@ export default function AdminInboxPage() {
                     style={{
                       backgroundColor: "#FFFFFF",
                       color: "#2A2A28",
-                      border: "1px solid #E3DCD3",
+                      border: "1px solid var(--color-gray-200)",
                     }}
                   />
                   <button
@@ -602,7 +602,7 @@ function TabButton({
       style={{
         background: active ? `linear-gradient(135deg, ${color} 0%, ${color}DD 100%)` : "#FFFFFF",
         color: active ? "#FFFFFF" : color,
-        border: `1.5px solid ${active ? color : "#E3DCD3"}`,
+        border: `1.5px solid ${active ? color : "var(--color-gray-200)"}`,
         boxShadow: active ? `0 4px 12px ${color}55` : "0 2px 6px rgba(0,0,0,0.03)",
       }}
     >

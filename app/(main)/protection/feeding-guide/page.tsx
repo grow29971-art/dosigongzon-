@@ -222,7 +222,7 @@ export default function FeedingGuidePage() {
             <div
               key={f.name}
               className="rounded-xl p-3 flex items-start gap-3"
-              style={{ background: "#FBEAEA", border: "1px solid rgba(216,85,85,0.15)" }}
+              style={{ background: "var(--color-error-soft)", border: "1px solid rgba(216,85,85,0.15)" }}
             >
               <span style={{ fontSize: 22, lineHeight: 1 }} className="shrink-0">{f.emoji}</span>
               <div>
@@ -245,7 +245,7 @@ export default function FeedingGuidePage() {
             <div
               key={f.name}
               className="rounded-xl p-3 flex items-start gap-3"
-              style={{ background: "#E8F5E9", border: "1px solid rgba(107,142,111,0.18)" }}
+              style={{ background: "var(--color-sage-soft)", border: "1px solid rgba(107,142,111,0.18)" }}
             >
               <span style={{ fontSize: 22, lineHeight: 1 }} className="shrink-0">{f.emoji}</span>
               <div>
@@ -292,7 +292,7 @@ export default function FeedingGuidePage() {
           계절별 주의사항
         </h2>
         <div className="space-y-2.5">
-          <div className="rounded-2xl p-4" style={{ background: "#FFF3E0", border: "1px solid #F2D4A5" }}>
+          <div className="rounded-2xl p-4" style={{ background: "var(--color-care-soft)", border: "1px solid #F2D4A5" }}>
             <p className="text-[13px] font-bold" style={{ color: "#B56A1A" }}>여름 (6~8월)</p>
             <ul className="text-[13px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
               <li>건사료는 2시간 내 변질 — 소량 자주 교체</li>

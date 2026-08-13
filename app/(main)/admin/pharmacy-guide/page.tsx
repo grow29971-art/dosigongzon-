@@ -129,7 +129,7 @@ export default function AdminPharmacyGuidePage() {
         <div className="mb-5 p-4" style={{ background: "#FFFFFF", borderRadius: "var(--radius-card)", boxShadow: "0 8px 24px rgba(173, 94, 59,0.14)", border: "1.5px solid rgba(173, 94, 59,0.2)" }}>
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-[14px] font-extrabold text-text-main">{editingId === "new" ? "새 약품 추가" : "약품 수정"}</h2>
-            <button onClick={handleCancel} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#EEE8E0" }}>
+            <button onClick={handleCancel} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--color-gray-100)" }}>
               <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
             </button>
           </div>
@@ -140,13 +140,13 @@ export default function AdminPharmacyGuidePage() {
             {draft.image_url ? (
               <div className="relative">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={draft.image_url} alt="" className="w-full aspect-[16/9] rounded-xl object-cover" style={{ border: "1px solid #E3DCD3" }} />
+                <img src={draft.image_url} alt="" className="w-full aspect-[16/9] rounded-xl object-cover" style={{ border: "1px solid var(--color-gray-200)" }} />
                 <button type="button" onClick={() => setDraft((d) => ({ ...d, image_url: null }))} className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}>
                   <X size={16} strokeWidth={3} />
                 </button>
               </div>
             ) : (
-              <label className="flex flex-col items-center justify-center aspect-[16/9] rounded-xl cursor-pointer" style={{ backgroundColor: "#F6F1EA", border: "1.5px dashed #C9BDAA", color: "#A38E7A" }}>
+              <label className="flex flex-col items-center justify-center aspect-[16/9] rounded-xl cursor-pointer" style={{ backgroundColor: "var(--color-gray-50)", border: "1.5px dashed #C9BDAA", color: "#A38E7A" }}>
                 {uploading ? <Loader2 size={22} className="animate-spin mb-1" /> : <><ImagePlus size={24} className="mb-1" /><span className="text-[12px] font-semibold">이미지 선택</span></>}
                 <input type="file" accept="image/*" className="hidden" disabled={uploading} onChange={handleImageSelect} />
               </label>
@@ -170,7 +170,7 @@ export default function AdminPharmacyGuidePage() {
           </div>
 
           <label className="block text-[11px] font-bold text-text-sub mb-1 mt-2">설명 *</label>
-          <textarea value={draft.description} onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))} rows={4} placeholder="성분, 효능 등 상세 설명" className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-1 resize-none" style={{ backgroundColor: "#F6F1EA", border: "1px solid #E3DCD3" }} />
+          <textarea value={draft.description} onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))} rows={4} placeholder="성분, 효능 등 상세 설명" className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-1 resize-none" style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-gray-200)" }} />
 
           <Field label="사용법" value={draft.usage_info ?? ""} onChange={(v) => setDraft((d) => ({ ...d, usage_info: v || null }))} placeholder="투여 방법, 횟수" />
           <Field label="💡 팁" value={draft.tip ?? ""} onChange={(v) => setDraft((d) => ({ ...d, tip: v || null }))} placeholder="주의사항이나 꿀팁" />
@@ -183,7 +183,7 @@ export default function AdminPharmacyGuidePage() {
             <button onClick={handleSave} disabled={saving || uploading} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 active:scale-[0.97] transition-all">
               {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} 저장
             </button>
-            <button onClick={handleCancel} disabled={saving} className="px-5 py-2.5 rounded-xl text-[13px] font-bold" style={{ backgroundColor: "#EEE8E0", color: "#A38E7A" }}>취소</button>
+            <button onClick={handleCancel} disabled={saving} className="px-5 py-2.5 rounded-xl text-[13px] font-bold" style={{ backgroundColor: "var(--color-gray-100)", color: "#A38E7A" }}>취소</button>
           </div>
         </div>
       )}
@@ -213,10 +213,10 @@ export default function AdminPharmacyGuidePage() {
               </div>
             </div>
             <div className="flex gap-1.5 mt-3 pt-3 border-t border-divider">
-              <button onClick={() => handleEdit(item)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold" style={{ backgroundColor: "#EEE8E0", color: "var(--color-primary)" }}>
+              <button onClick={() => handleEdit(item)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold" style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-primary)" }}>
                 <Pencil size={12} /> 수정
               </button>
-              <button onClick={() => handleDelete(item)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold" style={{ backgroundColor: "#FBEAEA", color: "#D85555" }}>
+              <button onClick={() => handleDelete(item)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold" style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}>
                 <Trash2 size={12} /> 삭제
               </button>
             </div>
@@ -232,7 +232,7 @@ function Field({ label, value, onChange, placeholder }: { label: string; value: 
     <>
       <label className="block text-[11px] font-bold text-text-sub mb-1 mt-2">{label}</label>
       <input type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
-        className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-1" style={{ backgroundColor: "#F6F1EA", border: "1px solid #E3DCD3" }} />
+        className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-1" style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-gray-200)" }} />
     </>
   );
 }

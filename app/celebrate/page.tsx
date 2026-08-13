@@ -90,8 +90,8 @@ export default async function CelebratePage() {
             icon={<Users size={18} color="#fff" />}
             value={stats.users.toLocaleString()}
             label="길집사"
-            color="#E86B8C"
-            accent="#D85577"
+            color="var(--color-like)"
+            accent="var(--color-like)"
           />
           <StatBlock
             icon={<Heart size={18} color="#fff" />}
@@ -138,7 +138,7 @@ export default async function CelebratePage() {
         <div
           className="rounded-2xl p-5 text-center"
           style={{
-            background: "linear-gradient(135deg, rgba(173, 94, 59,0.10) 0%, rgba(232,107,140,0.08) 100%)",
+            background: "linear-gradient(135deg, rgba(173, 94, 59,0.10) 0%, var(--color-like-soft) 100%)",
             border: "1px solid rgba(173, 94, 59,0.20)",
           }}
         >

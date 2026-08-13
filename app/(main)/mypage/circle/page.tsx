@@ -605,7 +605,7 @@ export default function CirclePage() {
                         onClick={() => handleRespond(inv, "rejected")}
                         disabled={busy === inv.id}
                         className="px-3 py-2 rounded-xl text-[12px] font-bold active:scale-95 disabled:opacity-50"
-                        style={{ background: "#EEE8E0", color: "#8B7562" }}
+                        style={{ background: "var(--color-gray-100)", color: "#8B7562" }}
                       >
                         <X size={13} />
                       </button>
@@ -737,7 +737,7 @@ export default function CirclePage() {
             </div>
             <div className="bg-white rounded-2xl p-3" style={{ boxShadow: "var(--shadow-card)" }}>
               <div className="flex items-center gap-2">
-                <div className="flex-1 flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: "#F6F1EA" }}>
+                <div className="flex-1 flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: "var(--color-gray-50)" }}>
                   <Search size={14} className="text-text-light shrink-0" />
                   <input
                     type="text"
@@ -767,7 +767,7 @@ export default function CirclePage() {
                     <div
                       key={r.id}
                       className="flex items-center gap-2 px-2.5 py-2 rounded-xl"
-                      style={{ background: "#F9F6F1" }}
+                      style={{ background: "var(--color-gray-50)" }}
                     >
                       <Avatar url={r.avatar_url} size={32} />
                       <p className="flex-1 min-w-0 text-[12.5px] font-bold text-text-main truncate">
@@ -803,7 +803,7 @@ export default function CirclePage() {
             {acceptedMembers.length === 0 && pendingMembers.length === 0 ? (
               <div
                 className="rounded-2xl p-6 text-center"
-                style={{ background: "#F9F6F1", border: "1px dashed #E3DCD3" }}
+                style={{ background: "var(--color-gray-50)", border: "1px dashed var(--color-gray-200)" }}
               >
                 <p className="text-[12.5px] text-text-sub leading-relaxed">
                   아직 서클 멤버가 없어요.
@@ -882,7 +882,7 @@ function MemberRow({
         onClick={onRemove}
         disabled={busy}
         className="px-3 py-2 rounded-xl text-[12px] font-bold active:scale-95 disabled:opacity-50"
-        style={{ background: "#EEE8E0", color: "#8B7562" }}
+        style={{ background: "var(--color-gray-100)", color: "#8B7562" }}
       >
         {busy ? <Loader2 size={12} className="animate-spin" /> : "내보내기"}
       </button>

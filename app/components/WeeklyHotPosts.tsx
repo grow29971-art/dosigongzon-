@@ -15,9 +15,9 @@ export default async function WeeklyHotPosts() {
   return (
     <div className="mb-5">
       <div className="flex items-center gap-2 mb-3 px-1">
-        <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E86B8C" }} />
+        <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-like)" }} />
         <h2 className="text-[14px] font-extrabold text-text-main tracking-tight flex items-center gap-1">
-          <Flame size={14} style={{ color: "#E86B8C" }} />
+          <Flame size={14} style={{ color: "var(--color-like)" }} />
           이번 주 HOT
         </h2>
         <Link
@@ -96,7 +96,7 @@ export default async function WeeklyHotPosts() {
                       </span>
                     )}
                     {post.likeCount > 0 && (
-                      <span className="flex items-center gap-0.5" style={{ color: "#E86B8C" }}>
+                      <span className="flex items-center gap-0.5" style={{ color: "var(--color-like)" }}>
                         <Heart size={10} fill="currentColor" />
                         {post.likeCount}
                       </span>

@@ -112,8 +112,8 @@ const TIPS: Tip[] = [
   {
     id: "invite_friend",
     icon: Gift,
-    iconColor: "#E86B8C",
-    iconBg: "rgba(232,107,140,0.12)",
+    iconColor: "var(--color-like)",
+    iconBg: "var(--color-like-soft)",
     title: "친구를 초대해보세요",
     desc: "내 초대 코드로 친구가 가입하면 15점 보너스 + '씨앗을 심는 자' 업적. 카카오톡으로 바로 보낼 수 있어요.",
     ctaLabel: "내 코드 보기",

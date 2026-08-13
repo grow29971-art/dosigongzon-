@@ -46,7 +46,7 @@ export default function FundSettlementCard() {
       <div className="grid grid-cols-3 gap-2">
         {[
           { label: "모인 금액", value: collected, color: "#22A366" },
-          { label: "쓰인 금액", value: spent, color: "#E86B8C" },
+          { label: "쓰인 금액", value: spent, color: "var(--color-like)" },
           { label: "잔액", value: balance, color: "var(--color-primary)" },
         ].map((s) => (
           <div key={s.label} className="text-center py-2.5 rounded-2xl" style={{ background: "var(--color-surface-alt)" }}>
@@ -87,7 +87,7 @@ export default function FundSettlementCard() {
                   <div key={i} className="flex items-center gap-2 text-[11.5px]">
                     <span className="text-text-light tabular-nums shrink-0">{d.spent_at.slice(5).replace("-", ".")}</span>
                     <span className="text-text-main truncate flex-1">{d.memo}</span>
-                    <span className="font-extrabold tabular-nums shrink-0" style={{ color: "#E86B8C" }}>-{won(d.amount)}</span>
+                    <span className="font-extrabold tabular-nums shrink-0" style={{ color: "var(--color-like)" }}>-{won(d.amount)}</span>
                   </div>
                 ))}
               </div>

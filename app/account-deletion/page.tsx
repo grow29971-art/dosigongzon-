@@ -170,7 +170,7 @@ export default function AccountDeletionPage() {
         <section
           className="rounded-2xl p-5 mb-4"
           style={{
-            background: "#FBEAEA",
+            background: "var(--color-error-soft)",
             border: "1px solid #E8C5C5",
           }}
         >

@@ -134,8 +134,8 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: MessageSquare,
-        iconColor: "#E86B8C",
-        iconBg: "rgba(232,107,140,0.12)",
+        iconColor: "var(--color-like)",
+        iconBg: "var(--color-like-soft)",
         title: "1:1 쪽지 (DM)",
         desc: "다른 회원과 개인적으로 대화. 임보 상세 협의·입양 문의·동네 연락처 교환 등에 사용.",
         steps: [
@@ -178,8 +178,8 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Gift,
-        iconColor: "#E86B8C",
-        iconBg: "rgba(232,107,140,0.12)",
+        iconColor: "var(--color-like)",
+        iconBg: "var(--color-like-soft)",
         title: "친구 초대",
         desc: "내 초대 코드로 친구가 가입하면 +15점 보너스 + 초대 업적 자동 해제. 카카오톡 공유 버튼 한 번에.",
         steps: [
@@ -248,8 +248,8 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Mail,
-        iconColor: "#E86B8C",
-        iconBg: "rgba(232,107,140,0.12)",
+        iconColor: "var(--color-like)",
+        iconBg: "var(--color-like-soft)",
         title: "주간 이메일 다이제스트",
         desc: "매주 월요일 아침, 이번 주 우리 동네 새 고양이 · 긴급 돌봄 요약을 메일로.",
         href: "/mypage",

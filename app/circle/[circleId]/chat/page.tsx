@@ -320,7 +320,7 @@ export default function CircleChatPage() {
         <Link
           href="/mypage/circle"
           className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90"
-          style={{ background: "#F6F1EA" }}
+          style={{ background: "var(--color-gray-50)" }}
           aria-label="뒤로"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -446,7 +446,7 @@ export default function CircleChatPage() {
             onClick={() => fileInputRef.current?.click()}
             disabled={sending || !!photoPreview}
             className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 active:scale-90 disabled:opacity-40"
-            style={{ background: "#F6F1EA", color: "#8B7562" }}
+            style={{ background: "var(--color-gray-50)", color: "#8B7562" }}
             aria-label="사진 첨부"
           >
             <ImageIcon size={17} />
@@ -462,7 +462,7 @@ export default function CircleChatPage() {
             maxLength={1000}
             disabled={sending}
             className="flex-1 rounded-2xl px-4 py-2.5 text-[14px] outline-none disabled:opacity-50"
-            style={{ background: "#F6F1EA", color: "#2A2A28" }}
+            style={{ background: "var(--color-gray-50)", color: "#2A2A28" }}
           />
           <button
             onClick={handleSend}

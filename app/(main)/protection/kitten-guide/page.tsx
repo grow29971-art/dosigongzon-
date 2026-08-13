@@ -252,7 +252,7 @@ export default function KittenGuidePage() {
             <div
               key={r.text}
               className="flex items-center gap-3 px-4 py-3 border-b last:border-b-0"
-              style={{ borderColor: "rgba(216,85,85,0.15)", background: "#FBEAEA" }}
+              style={{ borderColor: "rgba(216,85,85,0.15)", background: "var(--color-error-soft)" }}
             >
               <span className="text-[17px]">{r.icon}</span>
               <span className="text-[13px] font-semibold text-text-main">{r.text}</span>

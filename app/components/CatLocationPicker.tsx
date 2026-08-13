@@ -203,7 +203,7 @@ export default function CatLocationPicker({
         <div
           ref={mapContainerRef}
           className="w-full h-full"
-          style={{ background: "#EEEAE2" }}
+          style={{ background: "var(--color-gray-50)" }}
         />
 
         {/* 로딩/에러 오버레이 */}

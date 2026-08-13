@@ -45,16 +45,16 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
       style={{
         background: "linear-gradient(135deg, #FFF3F6 0%, #FFE7EC 100%)",
         borderRadius: "var(--radius-card)",
-        border: "1px solid rgba(232,107,140,0.22)",
-        boxShadow: "0 6px 20px rgba(232,107,140,0.12)",
+        border: "1px solid var(--color-like-soft)",
+        boxShadow: "0 6px 20px var(--color-like-soft)",
       }}
     >
       <div className="flex items-start gap-2.5 mb-3">
-        <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-lg" style={{ background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)" }}>
+        <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-lg" style={{ background: "var(--color-like)" }}>
           🐾
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "#D85577" }}>첫 발걸음</p>
+          <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-like)" }}>첫 발걸음</p>
           <p className="text-[14px] font-extrabold text-text-main leading-tight mt-0.5">
             {cheered
               ? "응원 고마워요! 🎉"
@@ -88,10 +88,10 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
                   onClick={() => cheer(c.id)}
                   disabled={busy === c.id}
                   className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 active:scale-90 transition-transform"
-                  style={{ background: isLiked ? "#E86B8C" : "rgba(232,107,140,0.12)" }}
+                  style={{ background: isLiked ? "var(--color-like)" : "var(--color-like-soft)" }}
                   aria-label={`${c.name} 응원하기`}
                 >
-                  <Heart size={14} fill={isLiked ? "#fff" : "none"} style={{ color: isLiked ? "#fff" : "#E86B8C" }} strokeWidth={2.4} />
+                  <Heart size={14} fill={isLiked ? "#fff" : "none"} style={{ color: isLiked ? "#fff" : "var(--color-like)" }} strokeWidth={2.4} />
                 </button>
               </div>
             </div>

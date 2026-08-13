@@ -444,7 +444,7 @@ export default function AdminBroadcastPage() {
       {error && (
         <div
           className="mt-4 rounded-2xl p-4 text-[13px]"
-          style={{ background: "#FBEAEA", color: "#B84545" }}
+          style={{ background: "var(--color-error-soft)", color: "#B84545" }}
         >
           {error}
         </div>

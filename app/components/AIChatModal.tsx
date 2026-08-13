@@ -165,14 +165,14 @@ export default function AIChatModal({
           <button
             onClick={onClose}
             className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform"
-            style={{ backgroundColor: "#EEEAE2" }}
+            style={{ backgroundColor: "var(--color-gray-50)" }}
           >
             <X size={18} color="#7A756E" />
           </button>
         </div>
 
         {/* 면책 고지 */}
-        <div className="px-4 py-2 flex items-start gap-2" style={{ backgroundColor: "#F6F1EA", borderBottom: "1px solid #E5E0D6" }}>
+        <div className="px-4 py-2 flex items-start gap-2" style={{ backgroundColor: "var(--color-gray-50)", borderBottom: "1px solid #E5E0D6" }}>
           <Info size={13} className="shrink-0 mt-0.5" style={{ color: "#A38E7A" }} />
           <p className="text-[10px] leading-relaxed" style={{ color: "#8B7A68" }}>
             AI 집사의 답변은 참고용이며 <b>전문 수의사 상담을 대체하지 않습니다</b>. 대화 내용은 Google AI에 전송되며 서버에 저장되지 않습니다.
@@ -275,7 +275,7 @@ export default function AIChatModal({
               placeholder="길고양이에 대해 물어보세요..."
               className="flex-1 rounded-2xl px-4 py-3 text-[14px] outline-none transition"
               style={{
-                backgroundColor: "#EEEAE2",
+                backgroundColor: "var(--color-gray-50)",
                 color: "#2A2A28",
               }}
             />

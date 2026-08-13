@@ -81,7 +81,7 @@ export default function BlockedUsersPage() {
         {/* 안내 카드 */}
         <div
           className="rounded-2xl p-4 mb-4 flex items-start gap-3"
-          style={{ backgroundColor: "#FBEAEA", border: "1px solid #E8C5C5" }}
+          style={{ backgroundColor: "var(--color-error-soft)", border: "1px solid #E8C5C5" }}
         >
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
@@ -107,7 +107,7 @@ export default function BlockedUsersPage() {
           >
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
-              style={{ backgroundColor: "#F6F1EA" }}
+              style={{ backgroundColor: "var(--color-gray-50)" }}
             >
               <Users size={24} style={{ color: "#A38E7A" }} strokeWidth={1.8} />
             </div>
@@ -142,7 +142,7 @@ export default function BlockedUsersPage() {
                   ) : (
                     <div
                       className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                      style={{ backgroundColor: "#EEE8E0", border: "1.5px solid #E5E0D6" }}
+                      style={{ backgroundColor: "var(--color-gray-100)", border: "1.5px solid #E5E0D6" }}
                     >
                       <span className="text-[14px] font-extrabold" style={{ color: "#A38E7A" }}>
                         {(b.nickname ?? "?").charAt(0)}
@@ -162,7 +162,7 @@ export default function BlockedUsersPage() {
                     onClick={() => handleUnblock(b)}
                     disabled={busyId === b.id}
                     className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[11.5px] font-bold active:scale-95 transition-transform disabled:opacity-60"
-                    style={{ backgroundColor: "#F6F1EA", color: "#A38E7A", border: "1px solid #E3DCD3" }}
+                    style={{ backgroundColor: "var(--color-gray-50)", color: "#A38E7A", border: "1px solid var(--color-gray-200)" }}
                   >
                     {busyId === b.id ? (
                       <Loader2 size={11} className="animate-spin" />

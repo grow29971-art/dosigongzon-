@@ -561,7 +561,7 @@ export default function ActivityRegionsPage() {
           <div
             ref={mapContainerRef}
             className="w-full h-full"
-            style={{ background: "#EEEAE2", minHeight: 280 }}
+            style={{ background: "var(--color-gray-50)", minHeight: 280 }}
           />
 
           {/* 지도 로딩/에러 오버레이 */}

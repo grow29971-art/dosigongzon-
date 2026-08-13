@@ -58,7 +58,7 @@ export default function FollowButton({ userId, size = "sm", variant = "default",
       <button
         disabled
         className={`inline-flex items-center justify-center rounded-xl ${sm ? "px-2.5 py-1" : "px-3 py-1.5"}`}
-        style={{ background: variant === "light" ? "rgba(255,255,255,0.2)" : "#F6F1EA", opacity: 0.6 }}
+        style={{ background: variant === "light" ? "rgba(255,255,255,0.2)" : "var(--color-gray-50)", opacity: 0.6 }}
       >
         <Loader2 size={iconSize} className="animate-spin text-text-sub" />
       </button>
@@ -70,7 +70,7 @@ export default function FollowButton({ userId, size = "sm", variant = "default",
 
   // 컬러
   const bg = following
-    ? variant === "light" ? "rgba(255,255,255,0.15)" : "#F6F1EA"
+    ? variant === "light" ? "rgba(255,255,255,0.15)" : "var(--color-gray-50)"
     : variant === "light" ? "#fff" : "var(--color-primary)";
   const fg = following
     ? variant === "light" ? "#fff" : "#8B5A3C"

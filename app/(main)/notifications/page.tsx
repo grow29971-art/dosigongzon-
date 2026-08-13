@@ -29,9 +29,9 @@ const TYPE_CONFIG: Record<NotificationType, { icon: typeof Bell; color: string; 
   comment_on_my_post:  { icon: MessageSquare, color: "#8B65B8", bg: "#8B65B815" },
   inquiry_updated:     { icon: CheckCircle2,  color: "#48A59E", bg: "#48A59E15" },
   following_activity:  { icon: UserPlus,      color: "#E8B040", bg: "#E8B04015" },
-  invite_accepted:     { icon: Gift,          color: "#E86B8C", bg: "#E86B8C15" },
+  invite_accepted:     { icon: Gift,          color: "var(--color-like)", bg: "#E86B8C15" },
   cat_moved:           { icon: MapPin,        color: "#5A8AC4", bg: "#5A8AC415" },
-  urgent_in_area:      { icon: AlertTriangle, color: "#D85555", bg: "#FBEAEA" },
+  urgent_in_area:      { icon: AlertTriangle, color: "#D85555", bg: "var(--color-error-soft)" },
 };
 
 function formatTime(iso: string): string {

@@ -171,7 +171,7 @@ export default function LegalGuidePage() {
       <div
         className="rounded-2xl p-4 mb-5"
         style={{
-          background: "#FBEAEA",
+          background: "var(--color-error-soft)",
           border: "1px solid rgba(216,85,85,0.3)",
         }}
       >
@@ -403,7 +403,7 @@ export default function LegalGuidePage() {
           title="학대 목격 시"
           subtitle="동물보호법 제8조 위반"
           iconNode={<CircleAlert size={22} color="#B84545" strokeWidth={1.8} />}
-          iconBg="#EEE3DE"
+          iconBg="var(--color-gray-100)"
           iconColor="#B84545"
           items={ABUSE_CHECKLIST}
         />

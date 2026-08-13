@@ -120,7 +120,7 @@ export default function HospitalsPage() {
                 style={{
                   backgroundColor: active ? "var(--color-primary)" : "#FFFFFF",
                   color: active ? "#FFFFFF" : "#A38E7A",
-                  border: `1.5px solid ${active ? "var(--color-primary)" : "#E3DCD3"}`,
+                  border: `1.5px solid ${active ? "var(--color-primary)" : "var(--color-gray-200)"}`,
                   boxShadow: active ? "0 4px 12px rgba(173, 94, 59,0.35)" : "0 1px 3px rgba(0,0,0,0.03)",
                 }}
               >
@@ -223,7 +223,7 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
             {hospital.pinned && (
               <span
                 className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md flex items-center gap-0.5"
-                style={{ backgroundColor: "#EEE8E0", color: "var(--color-primary)" }}
+                style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-primary)" }}
               >
                 <Pin size={9} /> 추천
               </span>
@@ -231,8 +231,8 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
             <div
               className="w-6 h-6 rounded-full flex items-center justify-center"
               style={{
-                background: "linear-gradient(135deg, #E86B8C 0%, #C55374 100%)",
-                boxShadow: "0 3px 8px rgba(232,107,140,0.3), inset 0 1px 0 rgba(255,255,255,0.4)",
+                background: "var(--color-like)",
+                boxShadow: "0 3px 8px var(--color-like-soft), inset 0 1px 0 rgba(255,255,255,0.4)",
               }}
             >
               <Heart size={12} color="#fff" strokeWidth={2.3} fill="#fff" />
@@ -263,7 +263,7 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
             <span
               key={tag}
               className="text-[10px] font-bold px-2 py-0.5 rounded-md"
-              style={{ backgroundColor: "#F6F1EA", color: "#8B6F5A" }}
+              style={{ backgroundColor: "var(--color-gray-50)", color: "#8B6F5A" }}
             >
               {tag}
             </span>
@@ -291,7 +291,7 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
       {hospital.note && (
         <div
           className="mt-2 px-3 py-2 rounded-lg text-[11px] leading-relaxed"
-          style={{ backgroundColor: "#F6F1EA", color: "#4A3F35" }}
+          style={{ backgroundColor: "var(--color-gray-50)", color: "#4A3F35" }}
         >
           {hospital.note}
         </div>

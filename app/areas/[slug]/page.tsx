@@ -178,7 +178,7 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
       {/* 고양이 그리드 */}
       <section className="px-5 mt-7">
         <h2 className="text-[16px] font-extrabold text-text-main mb-3 flex items-center gap-1.5">
-          <Heart size={15} style={{ color: "#E86B8C" }} />
+          <Heart size={15} style={{ color: "var(--color-like)" }} />
           {gu.name} 고양이들
         </h2>
         {cats.length === 0 ? (

@@ -461,7 +461,7 @@ export default function AdminAuthErrorsPage() {
                         type="button"
                         onClick={() => handleDeleteOne(log.id)}
                         className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold active:scale-95"
-                        style={{ backgroundColor: "#FBEAEA", color: "#B84545" }}
+                        style={{ backgroundColor: "var(--color-error-soft)", color: "#B84545" }}
                       >
                         <Trash2 size={10} />
                         이 로그 삭제

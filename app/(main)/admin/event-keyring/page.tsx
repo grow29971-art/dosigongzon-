@@ -36,10 +36,10 @@ interface UserMini {
 }
 
 const STATUS_META: Record<EntryStatus, { label: string; color: string; bg: string; emoji: string }> = {
-  pending:  { label: "대기",   color: "#A38E7A", bg: "#EEE8E0", emoji: "⏳" },
+  pending:  { label: "대기",   color: "#A38E7A", bg: "var(--color-gray-100)", emoji: "⏳" },
   selected: { label: "당첨",   color: "#5BA876", bg: "#E8ECE5", emoji: "🎉" },
   shipped:  { label: "배송완료", color: "#4A7BA8", bg: "#E5E8ED", emoji: "📦" },
-  rejected: { label: "제외",   color: "#D85555", bg: "#FBEAEA", emoji: "✖️" },
+  rejected: { label: "제외",   color: "#D85555", bg: "var(--color-error-soft)", emoji: "✖️" },
 };
 
 const STATUS_ORDER: EntryStatus[] = ["pending", "selected", "shipped", "rejected"];
@@ -349,7 +349,7 @@ function EntryCard({
           maxLength={200}
           disabled={savingNote}
           className="w-full px-3 py-2 rounded-lg text-[12px] outline-none"
-          style={{ background: "#F6F1EA", border: "1px solid #E3DCD3" }}
+          style={{ background: "var(--color-gray-50)", border: "1px solid var(--color-gray-200)" }}
         />
       </div>
     </div>

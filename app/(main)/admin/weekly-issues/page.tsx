@@ -207,7 +207,7 @@ export default function AdminWeeklyIssuesPage() {
             <button
               onClick={handleCancel}
               className="w-7 h-7 rounded-lg flex items-center justify-center active:scale-90"
-              style={{ backgroundColor: "#EEE8E0" }}
+              style={{ backgroundColor: "var(--color-gray-100)" }}
             >
               <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
             </button>
@@ -235,9 +235,9 @@ export default function AdminWeeklyIssuesPage() {
             placeholder="간단한 안내 (줄바꿈 유지됨)"
             className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-3 resize-none"
             style={{
-              backgroundColor: "#F6F1EA",
+              backgroundColor: "var(--color-gray-50)",
               color: "#2A2A28",
-              border: "1px solid #E3DCD3",
+              border: "1px solid var(--color-gray-200)",
             }}
           />
 
@@ -250,9 +250,9 @@ export default function AdminWeeklyIssuesPage() {
             }
             className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-3"
             style={{
-              backgroundColor: "#F6F1EA",
+              backgroundColor: "var(--color-gray-50)",
               color: "#2A2A28",
-              border: "1px solid #E3DCD3",
+              border: "1px solid var(--color-gray-200)",
             }}
           />
 
@@ -294,7 +294,7 @@ export default function AdminWeeklyIssuesPage() {
               onClick={handleCancel}
               disabled={saving}
               className="px-5 py-2.5 rounded-xl text-[13px] font-bold"
-              style={{ backgroundColor: "#EEE8E0", color: "#A38E7A" }}
+              style={{ backgroundColor: "var(--color-gray-100)", color: "#A38E7A" }}
             >
               취소
             </button>
@@ -339,7 +339,7 @@ export default function AdminWeeklyIssuesPage() {
                         className="text-[10px] font-bold px-2 py-0.5 chip-square"
                         style={{
                           color: isLive ? "#5B7A8F" : "#A38E7A",
-                          backgroundColor: isLive ? "#E5E8ED" : "#EEE8E0",
+                          backgroundColor: isLive ? "#E5E8ED" : "var(--color-gray-100)",
                         }}
                       >
                         {isLive ? "노출 중" : "지난 이슈"}
@@ -362,14 +362,14 @@ export default function AdminWeeklyIssuesPage() {
                   <button
                     onClick={() => handleEdit(item)}
                     className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold"
-                    style={{ backgroundColor: "#EEE8E0", color: "var(--color-primary)" }}
+                    style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-primary)" }}
                   >
                     <Pencil size={12} /> 수정
                   </button>
                   <button
                     onClick={() => handleDelete(item)}
                     className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold"
-                    style={{ backgroundColor: "#FBEAEA", color: "#D85555" }}
+                    style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}
                   >
                     <Trash2 size={12} /> 삭제
                   </button>
@@ -415,9 +415,9 @@ function Input({
       placeholder={placeholder}
       className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-1"
       style={{
-        backgroundColor: "#F6F1EA",
+        backgroundColor: "var(--color-gray-50)",
         color: "#2A2A28",
-        border: "1px solid #E3DCD3",
+        border: "1px solid var(--color-gray-200)",
       }}
     />
   );

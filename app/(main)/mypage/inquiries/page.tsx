@@ -216,7 +216,7 @@ export default function MyInquiriesPage() {
                   style={{ borderTop: "1px solid rgba(0,0,0,0.05)" }}
                 >
                   {/* 내 문의 원본 */}
-                  <div className="rounded-xl p-3" style={{ background: "#F6F1EA" }}>
+                  <div className="rounded-xl p-3" style={{ background: "var(--color-gray-50)" }}>
                     <p className="text-[10px] font-extrabold text-text-sub tracking-[0.1em] mb-1.5">
                       내 문의
                     </p>

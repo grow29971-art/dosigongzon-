@@ -134,7 +134,7 @@ export default async function PopularPostsPage() {
                         style={{ width: 16, height: 16 }}
                       />
                     ) : (
-                      <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: "#EEE8E0" }}>
+                      <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--color-gray-100)" }}>
                         <span className="text-[7px] font-bold" style={{ color: "#A38E7A" }}>
                           {post.authorName.charAt(0)}
                         </span>

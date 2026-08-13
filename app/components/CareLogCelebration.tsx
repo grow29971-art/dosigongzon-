@@ -161,7 +161,7 @@ export default function CareLogCelebration({
                   type="button"
                   onClick={onClose}
                   className="px-4 py-3 rounded-2xl text-[12px] font-bold"
-                  style={{ background: "#F5F0EB", color: "#A38E7A" }}
+                  style={{ background: "var(--color-gray-50)", color: "#A38E7A" }}
                 >
                   닫기
                 </button>

@@ -101,7 +101,7 @@ export default function AdminInsightsPage() {
       )}
 
       {error && (
-        <div className="mx-4 rounded-xl p-3" style={{ background: "#FBEAEA" }}>
+        <div className="mx-4 rounded-xl p-3" style={{ background: "var(--color-error-soft)" }}>
           <p className="text-[12.5px] font-semibold" style={{ color: "#B84545" }}>{error}</p>
         </div>
       )}
@@ -217,7 +217,7 @@ export default function AdminInsightsPage() {
                         <p className="text-[10.5px] text-text-light truncate">{c.region ?? "지역 미정"}</p>
                       </div>
                     </div>
-                    <span className="text-[12px] font-extrabold" style={{ color: "#E86B8C" }}>
+                    <span className="text-[12px] font-extrabold" style={{ color: "var(--color-like)" }}>
                       ♥ {c.like_count}
                     </span>
                   </Link>

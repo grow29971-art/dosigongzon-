@@ -144,7 +144,7 @@ export default function LocationLogsPage() {
                     <span
                       className="px-2 py-1 chip-square font-bold"
                       style={{
-                        background: "#F6F1EA",
+                        background: "var(--color-gray-50)",
                         color: "#A38E7A",
                       }}
                     >
@@ -157,7 +157,7 @@ export default function LocationLogsPage() {
                     <span
                       className="px-2 py-1 chip-square font-bold"
                       style={{
-                        background: dongChanged ? "#FFF2E8" : "#F6F1EA",
+                        background: dongChanged ? "#FFF2E8" : "var(--color-gray-50)",
                         color: dongChanged ? "var(--color-primary)" : "#A38E7A",
                       }}
                     >

@@ -311,7 +311,7 @@ export default function AdminHospitalsPage() {
             <button
               onClick={handleCancel}
               className="w-7 h-7 rounded-lg flex items-center justify-center active:scale-90"
-              style={{ backgroundColor: "#EEE8E0" }}
+              style={{ backgroundColor: "var(--color-gray-100)" }}
             >
               <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
             </button>
@@ -384,9 +384,9 @@ export default function AdminHospitalsPage() {
             placeholder="구조자/길집사에게 도움될 정보 (할인 조건, 응급 대응 가능 시간 등)"
             className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-3 resize-none"
             style={{
-              backgroundColor: "#F6F1EA",
+              backgroundColor: "var(--color-gray-50)",
               color: "#2A2A28",
-              border: "1px solid #E3DCD3",
+              border: "1px solid var(--color-gray-200)",
             }}
           />
 
@@ -426,7 +426,7 @@ export default function AdminHospitalsPage() {
               disabled={saving}
               className="px-5 py-2.5 rounded-xl text-[13px] font-bold"
               style={{
-                backgroundColor: "#EEE8E0",
+                backgroundColor: "var(--color-gray-100)",
                 color: "#A38E7A",
               }}
             >
@@ -506,7 +506,7 @@ export default function AdminHospitalsPage() {
                               <button
                                 onClick={() => handleEdit(h)}
                                 className="w-7 h-7 rounded-lg flex items-center justify-center"
-                                style={{ backgroundColor: "#EEE8E0" }}
+                                style={{ backgroundColor: "var(--color-gray-100)" }}
                                 aria-label="수정"
                               >
                                 <Pencil size={12} style={{ color: "var(--color-primary)" }} strokeWidth={2.3} />
@@ -514,7 +514,7 @@ export default function AdminHospitalsPage() {
                               <button
                                 onClick={() => handleDelete(h)}
                                 className="w-7 h-7 rounded-lg flex items-center justify-center"
-                                style={{ backgroundColor: "#FBEAEA" }}
+                                style={{ backgroundColor: "var(--color-error-soft)" }}
                                 aria-label="삭제"
                               >
                                 <Trash2 size={12} style={{ color: "#D85555" }} strokeWidth={2.3} />
@@ -527,7 +527,7 @@ export default function AdminHospitalsPage() {
                                 <span
                                   key={t}
                                   className="text-[9px] font-bold px-1.5 py-0.5 rounded"
-                                  style={{ backgroundColor: "#F6F1EA", color: "#8B6F5A" }}
+                                  style={{ backgroundColor: "var(--color-gray-50)", color: "#8B6F5A" }}
                                 >
                                   {t}
                                 </span>
@@ -581,9 +581,9 @@ function Input({
       placeholder={placeholder}
       className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-1"
       style={{
-        backgroundColor: "#F6F1EA",
+        backgroundColor: "var(--color-gray-50)",
         color: "#2A2A28",
-        border: "1px solid #E3DCD3",
+        border: "1px solid var(--color-gray-200)",
       }}
     />
   );

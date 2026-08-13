@@ -38,7 +38,7 @@ interface UserRow {
 const PROVIDER_META: Record<string, { label: string; bg: string; fg: string; emoji: string }> = {
   google:     { label: "구글",     bg: "#E3EBF7", fg: "#3A6CB5", emoji: "🟦" },
   kakao:      { label: "카카오",   bg: "#FEF4C8", fg: "#7A5F16", emoji: "🟨" },
-  email:      { label: "이메일",   bg: "#EEE8E0", fg: "#8B5A3C", emoji: "✉️" },
+  email:      { label: "이메일",   bg: "var(--color-gray-100)", fg: "#8B5A3C", emoji: "✉️" },
   apple:      { label: "애플",     bg: "#E5E5E5", fg: "#2A2A28", emoji: "" },
   naver:      { label: "네이버",   bg: "#E0F0E4", fg: "#1C7A33", emoji: "🟩" },
   facebook:   { label: "페이스북", bg: "#E4EAF5", fg: "#3B5998", emoji: "Ⓕ" },
@@ -252,7 +252,7 @@ export default function AdminUsersPage() {
           style={{
             background: "#FFFFFF",
             borderRadius: "var(--radius-input)",
-            border: "1px solid #E3DCD3",
+            border: "1px solid var(--color-gray-200)",
           }}
         >
           <Search size={16} className="text-text-muted shrink-0" />
@@ -270,7 +270,7 @@ export default function AdminUsersPage() {
           className="flex items-center gap-1 px-3 py-2.5 rounded-xl text-[11px] font-bold active:scale-95 shrink-0"
           style={{
             background: "#FFFFFF",
-            border: "1px solid #E3DCD3",
+            border: "1px solid var(--color-gray-200)",
             color: "#333",
           }}
         >
@@ -326,7 +326,7 @@ export default function AdminUsersPage() {
               className="flex items-center gap-3 px-4 py-3"
               style={{
                 background: u.is_suspended
-                  ? "linear-gradient(135deg, #FBEAEA 0%, #FFF 100%)"
+                  ? "linear-gradient(135deg, var(--color-error-soft) 0%, #FFF 100%)"
                   : "#FFFFFF",
                 borderRadius: "var(--radius-card-sm)",
                 boxShadow: "var(--shadow-card)",
@@ -414,7 +414,7 @@ export default function AdminUsersPage() {
                     type="button"
                     onClick={() => setTitleTarget(titleTarget === u.id ? null : u.id)}
                     className="text-[10px] font-bold px-2 py-0.5 rounded-lg active:scale-95"
-                    style={{ backgroundColor: "#F6F1EA", color: "var(--color-primary)" }}
+                    style={{ backgroundColor: "var(--color-gray-50)", color: "var(--color-primary)" }}
                   >
                     {u.admin_title ? "🏷️ 타이틀 변경" : "🏷️ 타이틀 부여"}
                   </button>
@@ -435,7 +435,7 @@ export default function AdminUsersPage() {
                       onClick={() => handleSuspend(u)}
                       disabled={busyUserId === u.id}
                       className="text-[10px] font-bold px-2 py-0.5 rounded-lg active:scale-95 disabled:opacity-50 flex items-center gap-1"
-                      style={{ backgroundColor: "#FBEAEA", color: "#B84545" }}
+                      style={{ backgroundColor: "var(--color-error-soft)", color: "#B84545" }}
                     >
                       {busyUserId === u.id ? <Loader2 size={10} className="animate-spin" /> : <Ban size={10} />}
                       정지
@@ -450,7 +450,7 @@ export default function AdminUsersPage() {
                         type="button"
                         onClick={() => handleSetTitle(u.id, null)}
                         className="text-[10px] font-bold px-2 py-1 rounded-lg active:scale-95"
-                        style={{ backgroundColor: "#FBEAEA", color: "#D85555" }}
+                        style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}
                       >
                         ✕ 제거
                       </button>

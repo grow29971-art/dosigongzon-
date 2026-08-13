@@ -79,7 +79,7 @@ export default function ReactionBar({
             className="flex items-center gap-1 px-2 py-1 rounded-full text-[10.5px] font-bold active:scale-90 transition-all disabled:opacity-50"
             style={{
               background: picked ? `${color}22` : active ? "#FFFFFF" : "transparent",
-              border: `1px solid ${picked ? color : "#E3DCD3"}`,
+              border: `1px solid ${picked ? color : "var(--color-gray-200)"}`,
               color: picked ? color : "#8B7562",
             }}
             aria-label={`${emoji} 반응`}

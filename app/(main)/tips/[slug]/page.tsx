@@ -183,7 +183,7 @@ export default async function TipDetailPage({ params }: Params) {
 
       {/* ── 대표 이미지 ── */}
       {photo ? (
-        <div className="relative w-full aspect-[16/9] bg-[#EEE8E0]">
+        <div className="relative w-full aspect-[16/9] bg-[var(--color-gray-100)]">
           <Image
             src={photo}
             alt={tip.title}

@@ -137,7 +137,7 @@ const CATEGORIES = [
     emoji: "💊",
     Icon: Heart,
     title: "영양제",
-    color: "#E86B8C",
+    color: "var(--color-like)",
     desc: "노묘·회복기·특정 증상 보조",
     items: [
       { name: "락토 / 프로바이오틱스", use: "사료에 섞기", range: "설사·장 트러블" },
@@ -227,7 +227,7 @@ export default async function PharmacyGuidePage() {
       <div
         className="flex items-start gap-3 px-4 py-3.5 mb-5"
         style={{
-          background: "#FBEAEA",
+          background: "var(--color-error-soft)",
           borderRadius: "var(--radius-card-sm)",
           border: "1px solid rgba(216,85,85,0.15)",
         }}
@@ -340,7 +340,7 @@ export default async function PharmacyGuidePage() {
               key={d.name}
               className="flex items-start gap-3 px-4 py-3"
               style={{
-                background: i % 2 === 0 ? "#FBEAEA" : "#FDECEC",
+                background: i % 2 === 0 ? "var(--color-error-soft)" : "#FDECEC",
                 borderTop: i === 0 ? "none" : "1px solid rgba(216,85,85,0.1)",
               }}
             >

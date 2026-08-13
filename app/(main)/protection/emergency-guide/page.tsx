@@ -175,7 +175,7 @@ export default function EmergencyGuidePage() {
       <div
         className="rounded-2xl p-4 mb-5"
         style={{
-          background: "#FBEAEA",
+          background: "var(--color-error-soft)",
           border: "1px solid rgba(216,85,85,0.3)",
         }}
       >
@@ -268,7 +268,7 @@ export default function EmergencyGuidePage() {
             <div
               key={s.title}
               className="rounded-xl p-3"
-              style={{ background: "#FBEAEA", border: "1px solid rgba(216,85,85,0.15)" }}
+              style={{ background: "var(--color-error-soft)", border: "1px solid rgba(216,85,85,0.15)" }}
             >
               <div className="flex items-center gap-1.5 mb-1">
                 <span style={{ fontSize: 16 }}>{s.emoji}</span>

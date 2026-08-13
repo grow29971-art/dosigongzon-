@@ -109,7 +109,7 @@ export default function MapIntroSheet() {
             href="/protection/emergency-guide"
             onClick={dismiss}
             className="flex-1 py-3 rounded-2xl text-[13px] font-bold text-center flex items-center justify-center gap-1.5 active:scale-[0.98]"
-            style={{ background: "#FBEAEA", color: "#B84545" }}
+            style={{ background: "var(--color-error-soft)", color: "#B84545" }}
           >
             <Siren size={14} />
             응급상황이에요

@@ -115,7 +115,7 @@ export default function AdminDashboardPage() {
       title: "후원금 지출 관리",
       subtitle: "투명 정산 위젯에 쓰인 금액 등록",
       Icon: HeartHandshake,
-      color: "#E86B8C",
+      color: "var(--color-like)",
     },
     {
       href: "/admin/cats",

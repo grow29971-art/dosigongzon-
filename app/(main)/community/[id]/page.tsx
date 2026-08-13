@@ -320,7 +320,7 @@ export default function PostDetailPage({
             <button
               className="text-[11px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform flex items-center gap-1"
               style={{
-                backgroundColor: post.isPinned ? "#FBEAEA" : "#EEE8E0",
+                backgroundColor: post.isPinned ? "var(--color-error-soft)" : "var(--color-gray-100)",
                 color: post.isPinned ? "#D85555" : "#A38E7A",
               }}
               onClick={async () => {
@@ -340,7 +340,7 @@ export default function PostDetailPage({
             </button>
             <button
               className="text-[11px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform flex items-center gap-1"
-              style={{ backgroundColor: "#FBEAEA", color: "#D85555" }}
+              style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}
               onClick={async () => {
                 if (!confirm(`"${post.title}" 글을 삭제할까요?`)) return;
                 const supabase = createClient();
@@ -413,7 +413,7 @@ export default function PostDetailPage({
                 <div
                   key={url}
                   className="relative w-full aspect-square rounded-xl overflow-hidden"
-                  style={{ border: "1px solid #E3DCD3" }}
+                  style={{ border: "1px solid var(--color-gray-200)" }}
                 >
                   <Image
                     src={url}
@@ -438,7 +438,7 @@ export default function PostDetailPage({
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold active:scale-95 transition-all"
               style={{
                 backgroundColor: myVote === 1 ? cat.color : "#FFFFFF",
-                border: `1.5px solid ${myVote === 1 ? cat.color : "#E3DCD3"}`,
+                border: `1.5px solid ${myVote === 1 ? cat.color : "var(--color-gray-200)"}`,
                 color: myVote === 1 ? "#FFFFFF" : cat.color,
               }}
             >
@@ -450,7 +450,7 @@ export default function PostDetailPage({
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold active:scale-95 transition-all"
               style={{
                 backgroundColor: myVote === -1 ? "#A38E7A" : "#FFFFFF",
-                border: `1.5px solid ${myVote === -1 ? "#A38E7A" : "#E3DCD3"}`,
+                border: `1.5px solid ${myVote === -1 ? "#A38E7A" : "var(--color-gray-200)"}`,
                 color: myVote === -1 ? "#FFFFFF" : "#A38E7A",
               }}
             >
@@ -487,7 +487,7 @@ export default function PostDetailPage({
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] font-bold active:scale-95 transition-transform"
               style={{
                 backgroundColor: shareStatus === "copied" ? "#6B8E6F" : "#FFFFFF",
-                border: `1px solid ${shareStatus === "copied" ? "#6B8E6F" : "#E3DCD3"}`,
+                border: `1px solid ${shareStatus === "copied" ? "#6B8E6F" : "var(--color-gray-200)"}`,
                 color: shareStatus === "copied" ? "#FFFFFF" : cat.color,
               }}
               aria-label="공유"
@@ -516,7 +516,7 @@ export default function PostDetailPage({
                 })
               }
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] active:scale-95 transition-transform"
-              style={{ backgroundColor: "#FFFFFF", border: "1px solid #E3DCD3", color: "#A38E7A" }}
+              style={{ backgroundColor: "#FFFFFF", border: "1px solid var(--color-gray-200)", color: "#A38E7A" }}
             >
               <Flag size={12} strokeWidth={2.2} />
               신고
@@ -666,7 +666,7 @@ export default function PostDetailPage({
               disabled={!commentText.trim() || submitting || !user}
               className="w-10 h-10 rounded-full flex items-center justify-center transition-all disabled:opacity-40"
               style={{
-                backgroundColor: commentText.trim() && user ? "var(--color-primary)" : "#E3DCD3",
+                backgroundColor: commentText.trim() && user ? "var(--color-primary)" : "var(--color-gray-200)",
               }}
             >
               {submitting ? (
@@ -753,7 +753,7 @@ function CommentItem({
             type="button"
             onClick={onReport}
             className="w-5 h-5 rounded-md flex items-center justify-center active:scale-90"
-            style={{ backgroundColor: "#F6F1EA" }}
+            style={{ backgroundColor: "var(--color-gray-50)" }}
             aria-label="댓글 신고"
           >
             <Flag size={9} style={{ color: "#A38E7A" }} strokeWidth={2.5} />

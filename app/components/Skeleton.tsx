@@ -7,7 +7,7 @@ interface SkeletonProps {
 }
 
 const baseStyle: React.CSSProperties = {
-  background: "linear-gradient(90deg, #EEE8E0 0%, #F5F0E8 50%, #EEE8E0 100%)",
+  background: "linear-gradient(90deg, var(--color-gray-100) 0%, #F5F0E8 50%, var(--color-gray-100) 100%)",
   backgroundSize: "200% 100%",
   animation: "skeleton-shimmer 1.4s ease-in-out infinite",
 };

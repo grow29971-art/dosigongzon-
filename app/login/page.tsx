@@ -184,8 +184,8 @@ function LoginContent() {
             className="rounded-2xl p-4 mb-4"
             style={{
               backgroundColor:
-                oauthGuide.severity === "danger" ? "#FBEAEA" :
-                oauthGuide.severity === "warn" ? "#FFF4E0" : "#F0F6FF",
+                oauthGuide.severity === "danger" ? "var(--color-error-soft)" :
+                oauthGuide.severity === "warn" ? "var(--color-warning-soft)" : "#F0F6FF",
               border: `1px solid ${
                 oauthGuide.severity === "danger" ? "#E8C5C5" :
                 oauthGuide.severity === "warn" ? "#F5DAB0" : "#C9DBF5"
@@ -254,7 +254,7 @@ function LoginContent() {
 
         {/* 일반 에러 */}
         {error && (
-          <div className="rounded-xl px-4 py-3 mb-4" style={{ backgroundColor: "#FBEAEA" }}>
+          <div className="rounded-xl px-4 py-3 mb-4" style={{ backgroundColor: "var(--color-error-soft)" }}>
             <p className="text-[13px] font-semibold" style={{ color: "#B84545" }}>{error}</p>
           </div>
         )}
@@ -263,7 +263,7 @@ function LoginContent() {
         {!inApp && (
           <div
             className="mb-4 rounded-xl px-4 py-2.5 flex items-start gap-2"
-            style={{ backgroundColor: "#F6F1EA", border: "1px solid #E5E0D6" }}
+            style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid #E5E0D6" }}
           >
             <span className="text-[13px] mt-0.5">💡</span>
             <p className="text-[11.5px] text-text-sub leading-relaxed">
@@ -297,7 +297,7 @@ function LoginContent() {
         {isSamsung && !inApp && (
           <div
             className="mb-3 rounded-xl px-3.5 py-2.5 flex items-start gap-2"
-            style={{ backgroundColor: "#FFF4E0", border: "1px solid #F5DAB0" }}
+            style={{ backgroundColor: "var(--color-warning-soft)", border: "1px solid #F5DAB0" }}
           >
             <span className="text-[14px] mt-0.5">⚠️</span>
             <p className="text-[11.5px] leading-relaxed" style={{ color: "#6F4910" }}>

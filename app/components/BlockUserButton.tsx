@@ -67,7 +67,7 @@ export default function BlockUserButton({ userId, userName, size = "sm", onChang
       <button
         disabled
         className={`inline-flex items-center justify-center rounded-xl ${sm ? "px-2.5 py-1" : "px-3 py-1.5"}`}
-        style={{ background: "#F6F1EA", opacity: 0.6 }}
+        style={{ background: "var(--color-gray-50)", opacity: 0.6 }}
       >
         <Loader2 size={iconSize} className="animate-spin text-text-sub" />
       </button>
@@ -76,7 +76,7 @@ export default function BlockUserButton({ userId, userName, size = "sm", onChang
 
   const Icon = blocked ? ShieldOff : Ban;
   const label = blocked ? "차단 해제" : "차단";
-  const bg = blocked ? "#F6F1EA" : "#FBEAEA";
+  const bg = blocked ? "var(--color-gray-50)" : "var(--color-error-soft)";
   const fg = blocked ? "#A38E7A" : "#B84545";
   const border = blocked ? "1px solid rgba(0,0,0,0.06)" : "1px solid #E8C5C5";
 

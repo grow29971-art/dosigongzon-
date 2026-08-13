@@ -186,7 +186,7 @@ export default function AdminZonesPage() {
               <span
                 className="text-[10.5px] font-bold px-2 py-0.5 rounded-lg"
                 style={{
-                  backgroundColor: r.status === "received" ? "#FFF4E0" : r.status === "forwarded" ? "#EAF2FB" : "#F0F0EC",
+                  backgroundColor: r.status === "received" ? "var(--color-warning-soft)" : r.status === "forwarded" ? "#EAF2FB" : "#F0F0EC",
                   color: r.status === "received" ? "#B07A1C" : r.status === "forwarded" ? "#3A6CB5" : "#8A8578",
                 }}
               >

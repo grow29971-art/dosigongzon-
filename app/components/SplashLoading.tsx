@@ -10,7 +10,7 @@ export default function SplashLoading() {
     <div
       className="fixed inset-0 flex flex-col items-center justify-center z-[90]"
       style={{
-        background: "linear-gradient(180deg, #F5F3EE 0%, #EEEAE2 100%)",
+        background: "linear-gradient(180deg, #F5F3EE 0%, var(--color-gray-50) 100%)",
       }}
     >
       {/* 로고 */}

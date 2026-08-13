@@ -154,7 +154,7 @@ export default async function AboutPage() {
       <section className="px-5 mt-6">
         <div className="grid grid-cols-3 gap-2">
           <StatCard value={stats.cats} label="등록 고양이" color="var(--color-primary)" emoji="🐾" />
-          <StatCard value={stats.users} label="동네 이웃" color="#E86B8C" emoji="❤️" />
+          <StatCard value={stats.users} label="동네 이웃" color="var(--color-like)" emoji="❤️" />
           <StatCard value={stats.hospitals} label="치료 병원" color="var(--color-sage)" emoji="🏥" />
         </div>
       </section>

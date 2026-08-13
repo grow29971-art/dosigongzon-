@@ -370,7 +370,7 @@ export default async function HomeLanding({
       {activeRegions.length > 0 && (
         <section className="px-5 mt-10">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E86B8C" }} />
+            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-like)" }} />
             <h2 className="text-[15px] font-bold text-text-main tracking-tight">
               지금 활발한 동네
             </h2>
@@ -392,7 +392,7 @@ export default async function HomeLanding({
                     style={{
                       background:
                         idx === 0
-                          ? "#E86B8C"
+                          ? "var(--color-like)"
                           : idx === 1
                           ? "var(--color-primary)"
                           : "var(--color-sage)",
@@ -404,7 +404,7 @@ export default async function HomeLanding({
                     <p className="text-[15px] font-bold text-text-main tracking-tight">{r.name}</p>
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1 text-[11px]">
                       {r.recentCats > 0 && (
-                        <span style={{ color: "#E86B8C" }}>
+                        <span style={{ color: "var(--color-like)" }}>
                           <b>이번 주 +{r.recentCats}</b>마리
                         </span>
                       )}
@@ -586,7 +586,7 @@ export default async function HomeLanding({
           <StartStep
             n={3}
             href="/map"
-            color="#E86B8C"
+            color="var(--color-like)"
             title="오른쪽 + 버튼으로 첫 한 줄 남기기"
             desc="사진·이름·건강 상태 한 번에. 위치는 자동으로 흐리게 처리돼요."
           />
@@ -829,7 +829,7 @@ export default async function HomeLanding({
         >
           <TrustInline emoji="🐾" value={data.catCount} label="등록" color="var(--color-primary)" />
           <span className="w-px h-8" style={{ background: "rgba(0,0,0,0.06)" }} />
-          <TrustInline emoji="❤️" value={data.userCount} label="이웃" color="#E86B8C" />
+          <TrustInline emoji="❤️" value={data.userCount} label="이웃" color="var(--color-like)" />
           <span className="w-px h-8" style={{ background: "rgba(0,0,0,0.06)" }} />
           <TrustInline emoji="🏥" value={data.hospitalCount} label="병원" color="var(--color-sage)" />
         </div>

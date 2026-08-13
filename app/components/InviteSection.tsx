@@ -67,11 +67,11 @@ export default function InviteSection() {
   return (
     <div className="mb-3">
       <div className="flex items-center gap-2 mb-3 px-1">
-        <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E86B8C" }} />
+        <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-like)" }} />
         <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
           친구 초대
         </h2>
-        <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "#E86B8C", opacity: 0.6 }}>
+        <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "var(--color-like)", opacity: 0.6 }}>
           GROW TOGETHER
         </span>
       </div>
@@ -81,16 +81,16 @@ export default function InviteSection() {
         style={{
           background: "linear-gradient(135deg, #FFF5F8 0%, #FFE9F0 100%)",
           borderRadius: "var(--radius-card)",
-          border: "1px solid rgba(232,107,140,0.18)",
-          boxShadow: "0 4px 14px rgba(232,107,140,0.12)",
+          border: "1px solid var(--color-like-soft)",
+          boxShadow: "0 4px 14px var(--color-like-soft)",
         }}
       >
         <div className="flex items-center gap-3 mb-4">
           <div
             className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
             style={{
-              background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)",
-              boxShadow: "0 4px 12px rgba(232,107,140,0.35)",
+              background: "var(--color-like)",
+              boxShadow: "0 4px 12px var(--color-like-soft)",
             }}
           >
             <Gift size={20} color="#fff" strokeWidth={2.2} />
@@ -103,9 +103,9 @@ export default function InviteSection() {
               친구가 이 코드로 가입하면 서로 연결돼요
             </p>
           </div>
-          <div className="flex items-center gap-1 px-2.5 py-1 rounded-full" style={{ background: "rgba(232,107,140,0.12)" }}>
-            <Users size={12} style={{ color: "#E86B8C" }} />
-            <span className="text-[11px] font-extrabold" style={{ color: "#E86B8C" }}>
+          <div className="flex items-center gap-1 px-2.5 py-1 rounded-full" style={{ background: "var(--color-like-soft)" }}>
+            <Users size={12} style={{ color: "var(--color-like)" }} />
+            <span className="text-[11px] font-extrabold" style={{ color: "var(--color-like)" }}>
               {info?.invitedCount ?? 0}명
             </span>
           </div>
@@ -120,13 +120,13 @@ export default function InviteSection() {
             {/* 코드 표시 */}
             <div
               className="flex items-center justify-between gap-2 px-4 py-3.5 rounded-xl mb-2.5"
-              style={{ background: "#FFF", border: "1.5px dashed rgba(232,107,140,0.35)" }}
+              style={{ background: "#FFF", border: "1.5px dashed var(--color-like-soft)" }}
             >
               <div>
                 <p className="text-[10px] font-bold text-text-light tracking-[0.1em]">INVITE CODE</p>
                 <p
                   className="text-[22px] font-black tracking-[0.18em] mt-0.5"
-                  style={{ color: "#D85577" }}
+                  style={{ color: "var(--color-like)" }}
                 >
                   {info.inviteCode}
                 </p>
@@ -136,8 +136,8 @@ export default function InviteSection() {
                 onClick={handleCopy}
                 className="flex items-center gap-1.5 px-3 py-2 rounded-xl active:scale-95 transition-transform"
                 style={{
-                  background: copied ? "#E8F5E9" : "rgba(232,107,140,0.12)",
-                  color: copied ? "#2E7D32" : "#D85577",
+                  background: copied ? "var(--color-sage-soft)" : "var(--color-like-soft)",
+                  color: copied ? "#2E7D32" : "var(--color-like)",
                 }}
                 aria-label="초대 링크 복사"
               >

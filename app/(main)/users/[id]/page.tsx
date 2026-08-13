@@ -316,7 +316,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                   style={{
                     background: c.photo_url
                       ? `url('${sanitizeImageUrl(c.photo_url, "")}') center/cover`
-                      : "#EEE8E0",
+                      : "var(--color-gray-100)",
                     border: "2px solid #fff",
                     boxShadow: "0 3px 10px rgba(0,0,0,0.06)",
                   }}
@@ -352,7 +352,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
             border: "1px solid rgba(0,0,0,0.04)",
           }}
         >
-          <Heart size={16} className="mx-auto mb-1" style={{ color: "#E86B8C" }} />
+          <Heart size={16} className="mx-auto mb-1" style={{ color: "var(--color-like)" }} />
           <p className="text-[12px] font-bold text-text-main">
             함께 돌봐요
           </p>

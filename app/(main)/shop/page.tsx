@@ -105,7 +105,7 @@ function ProductCard({ product, wished, onToggleWish }: { product: Product; wish
             className="absolute bottom-2 right-2 z-10 w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform"
             style={{ background: "rgba(255,255,255,0.94)", boxShadow: "0 1px 6px rgba(0,0,0,0.14)" }}
           >
-            <Heart size={16} fill={wished ? "#E14B6A" : "none"} style={{ color: wished ? "#E14B6A" : "var(--color-text-light)" }} />
+            <Heart size={16} fill={wished ? "var(--color-like)" : "none"} style={{ color: wished ? "var(--color-like)" : "var(--color-text-light)" }} />
           </button>
         </div>
 
@@ -200,7 +200,7 @@ export default function ShopPage() {
         badge="쇼핑"
         headerEmoji="🛍️"
         title="사면, 아이들에게 돌아가요"
-        headerBg="linear-gradient(160deg, #FFF3E0 0%, #FCE9D6 100%)"
+        headerBg="linear-gradient(160deg, var(--color-care-soft) 0%, #FCE9D6 100%)"
         accent="#E8930C"
         accentDark="#B5720A"
         items={[
@@ -268,7 +268,7 @@ export default function ShopPage() {
       <div
         className="mb-4 px-5 py-4 rounded-3xl"
         style={{
-          background: "linear-gradient(135deg, rgba(196,126,90,0.12) 0%, rgba(232,107,140,0.10) 100%)",
+          background: "linear-gradient(135deg, rgba(196,126,90,0.12) 0%, var(--color-like-soft) 100%)",
           border: "1px solid rgba(196,126,90,0.18)",
         }}
       >

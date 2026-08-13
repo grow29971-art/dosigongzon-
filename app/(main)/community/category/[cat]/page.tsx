@@ -52,7 +52,7 @@ const CATEGORY_META: Record<
     title: "입양",
     subtitle: "새 가족을 찾아요",
     Icon: Heart,
-    color: "#E86B8C",
+    color: "var(--color-like)",
     glow: "232,107,140",
   },
   market: {
