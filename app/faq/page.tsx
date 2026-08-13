@@ -157,8 +157,8 @@ const CATEGORIES: FaqCategory[] = [
     id: "kitten",
     label: "새끼고양이를 발견했어요",
     Icon: Baby,
-    color: "#E8B57E",
-    bg: "rgba(232,181,126,0.18)",
+    color: "var(--color-care)",
+    bg: "rgba(232,148,10,0.14)",
     items: [
       {
         q: "혼자 있는 새끼고양이를 발견했어요. 데려가도 되나요?",
@@ -275,8 +275,8 @@ const CATEGORIES: FaqCategory[] = [
     id: "shelter",
     label: "임시보호와 입양",
     Icon: Home,
-    color: "#7AAE82",
-    bg: "rgba(122,174,130,0.14)",
+    color: "var(--color-sage)",
+    bg: "rgba(34,163,102,0.12)",
     items: [
       {
         q: "임시보호와 입양의 차이가 뭔가요?",
@@ -332,8 +332,8 @@ const CATEGORIES: FaqCategory[] = [
     id: "health",
     label: "아프거나 다친 고양이",
     Icon: HeartPulse,
-    color: "#D85555",
-    bg: "rgba(216,85,85,0.12)",
+    color: "var(--color-error)",
+    bg: "rgba(240,68,82,0.12)",
     items: [
       {
         q: "길고양이가 자주 걸리는 병은 뭔가요?",
@@ -393,8 +393,8 @@ const CATEGORIES: FaqCategory[] = [
     id: "law",
     label: "법·신고가 궁금해요",
     Icon: Scale,
-    color: "#5F7A8E",
-    bg: "rgba(95,122,142,0.12)",
+    color: "var(--color-gray-600)",
+    bg: "rgba(107,118,132,0.12)",
     items: [
       {
         q: "길집사 활동은 합법인가요?",
@@ -440,8 +440,8 @@ const CATEGORIES: FaqCategory[] = [
     id: "caretaker",
     label: "길집사 활동",
     Icon: Users,
-    color: "#9D7AB8",
-    bg: "rgba(157,122,184,0.12)",
+    color: "var(--color-text-sub)",
+    bg: "rgba(78,89,104,0.10)",
     items: [
       {
         q: "처음 길집사를 시작하려는데, 어떻게 해야 하나요?",
@@ -657,9 +657,9 @@ export default function FaqPage() {
             className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm"
             aria-label="홈으로"
           >
-            <ArrowLeft size={18} color="#5C4A3E" />
+            <ArrowLeft size={18} color="var(--color-text-sub)" />
           </Link>
-          <p className="text-[12px]" style={{ color: "rgba(92,74,62,0.6)" }}>
+          <p className="text-[12px]" style={{ color: "var(--color-text-light)" }}>
             도시공존 / 자주 묻는 질문
           </p>
         </div>
@@ -668,13 +668,13 @@ export default function FaqPage() {
         <header className="mb-7">
           <h1
             className="mb-2 text-[26px] font-extrabold leading-tight"
-            style={{ color: "#3D2F25" }}
+            style={{ color: "var(--color-text-main)" }}
           >
             길고양이 자주 묻는 질문
           </h1>
           <p
             className="text-[14px] leading-relaxed"
-            style={{ color: "rgba(92,74,62,0.78)" }}
+            style={{ color: "var(--color-text-sub)" }}
           >
             발견·구조·TNR·임시보호·입양·학대 신고까지 — 시민이 가장 많이 묻는{" "}
             {totalQuestions}개 질문에 도시공존이 답해드려요.
@@ -689,7 +689,7 @@ export default function FaqPage() {
         >
           <p
             className="mb-3 text-[12px] font-bold tracking-wide"
-            style={{ color: "rgba(92,74,62,0.7)" }}
+            style={{ color: "var(--color-text-light)" }}
           >
             카테고리
           </p>
@@ -724,7 +724,7 @@ export default function FaqPage() {
                 >
                   <Icon size={17} color={c.color} />
                 </span>
-                <h2 className="text-[18px] font-extrabold" style={{ color: "#3D2F25" }}>
+                <h2 className="text-[18px] font-bold" style={{ color: "var(--color-text-main)" }}>
                   {c.label}
                 </h2>
               </div>
@@ -737,7 +737,7 @@ export default function FaqPage() {
                   >
                     <summary
                       className="flex cursor-pointer list-none items-start justify-between gap-3 text-[14px] font-semibold leading-snug"
-                      style={{ color: "#3D2F25" }}
+                      style={{ color: "var(--color-text-main)" }}
                     >
                       <span className="flex-1">Q. {it.q}</span>
                       <ChevronDown
@@ -746,8 +746,8 @@ export default function FaqPage() {
                       />
                     </summary>
                     <div
-                      className="mt-3 text-[13.5px] leading-relaxed"
-                      style={{ color: "rgba(60,46,35,0.85)" }}
+                      className="mt-3 text-[13px] leading-relaxed"
+                      style={{ color: "var(--color-text-sub)" }}
                     >
                       {it.answerHtml}
                     </div>
@@ -762,40 +762,40 @@ export default function FaqPage() {
         <section
           className="mt-10 rounded-2xl p-5"
           style={{
-            background: "linear-gradient(135deg, var(--color-primary-softer) 0%, rgba(232,181,126,0.12) 100%)",
+            background: "var(--color-primary-softer)",
             border: "1px solid rgba(173, 94, 59,0.18)",
           }}
         >
           <h3
-            className="mb-2 text-[16px] font-extrabold"
-            style={{ color: "#3D2F25" }}
+            className="mb-2 text-[16px] font-bold"
+            style={{ color: "var(--color-text-main)" }}
           >
             여기 답이 없는 질문이 있나요?
           </h3>
           <p
             className="mb-4 text-[13px] leading-relaxed"
-            style={{ color: "rgba(60,46,35,0.78)" }}
+            style={{ color: "var(--color-text-sub)" }}
           >
             상세한 가이드는 보호지침에서 다루고 있어요. 그래도 답을 못 찾으면 메일로 문의주세요.
           </p>
           <div className="flex flex-wrap gap-2">
             <Link
               href="/protection"
-              className="rounded-full px-4 py-2 text-[12.5px] font-extrabold text-white shadow-sm active:scale-[0.98]"
+              className="rounded-full px-4 py-2 text-[13px] font-bold text-white shadow-sm active:scale-[0.98]"
               style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
             >
               보호 지침 전체 보기
             </Link>
             <Link
               href="/guide"
-              className="rounded-full border bg-white px-4 py-2 text-[12.5px] font-extrabold active:scale-[0.98]"
+              className="rounded-full border bg-white px-4 py-2 text-[13px] font-bold active:scale-[0.98]"
               style={{ borderColor: "rgba(173, 94, 59,0.3)", color: "var(--color-primary-dark)" }}
             >
               앱 사용 가이드
             </Link>
             <a
               href="mailto:grow29971@gmail.com"
-              className="rounded-full border bg-white px-4 py-2 text-[12.5px] font-extrabold active:scale-[0.98]"
+              className="rounded-full border bg-white px-4 py-2 text-[13px] font-bold active:scale-[0.98]"
               style={{ borderColor: "rgba(173, 94, 59,0.3)", color: "var(--color-primary-dark)" }}
             >
               메일로 문의
