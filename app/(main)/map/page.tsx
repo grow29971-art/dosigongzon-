@@ -2560,8 +2560,8 @@ export default function MapPage() {
               className="relative rounded-full flex items-center justify-center active:scale-90 transition-transform overflow-hidden"
               style={{
                 width: 58, height: 58,
-                background: "linear-gradient(160deg, #7CACFF 0%, #AD5E3B 45%, #8A4325 100%)",
-                boxShadow: "0 0 0 4px #fff, 0 6px 14px rgba(27,100,218,0.45), 0 2px 4px rgba(27,100,218,0.3), inset 0 -3px 6px rgba(30,50,110,0.35)",
+                background: "linear-gradient(160deg, var(--color-primary-light) 0%, var(--color-primary) 45%, var(--color-primary-dark) 100%)",
+                boxShadow: "0 0 0 4px #fff, 0 6px 14px rgba(173,94,59,0.45), 0 2px 4px rgba(173,94,59,0.3), inset 0 -3px 6px rgba(138,67,37,0.35)",
               }}
               aria-label="고양이 등록"
             >
