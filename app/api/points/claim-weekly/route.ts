@@ -9,7 +9,8 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { rateLimit } from "@/lib/rate-limit";
 
-export const MILESTONES: { days: number; points: number }[] = [
+// (라우트 파일은 핸들러 외 export 금지 — WeeklyCheckinCard가 같은 값을 복제 보유)
+const MILESTONES: { days: number; points: number }[] = [
   { days: 3, points: 50 },
   { days: 5, points: 100 },
   { days: 7, points: 150 },
