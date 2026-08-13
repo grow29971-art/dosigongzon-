@@ -80,16 +80,17 @@ export default function FirstFeedBar({ catId, catName }: { catId: string; catNam
       <div
         className="mx-auto max-w-lg p-3.5"
         style={{
-          background: "linear-gradient(135deg, #4A3527 0%, #7A5238 55%, #C47E5A 100%)",
-          borderRadius: 20,
-          boxShadow: "0 10px 28px rgba(122,82,56,0.4)",
+          // 앱에서 그라디언트가 허용되는 유일한 히어로 CTA — 단, 색은 동결 토큰 계열만
+          background: "linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%)",
+          borderRadius: "var(--radius-card)",
+          boxShadow: "var(--shadow-primary)",
         }}
       >
         {phase === "done" ? (
           <>
-            <p className="text-[14px] font-extrabold text-white text-center leading-snug">
-              {catName}가 첫 밥을 받았어요! 🎉
-              <span className="block text-[11.5px] font-semibold mt-0.5" style={{ color: "rgba(255,255,255,0.75)" }}>
+            <p className="text-[15px] font-bold text-white text-center leading-snug">
+              {catName}가 첫 밥을 받았어요 🎉
+              <span className="block text-[13px] font-medium mt-0.5" style={{ color: "rgba(255,255,255,0.8)" }}>
                 오늘부터 {catName}의 집사예요 — 내일 또 챙겨주면 진짜 돌봄이 시작돼요
               </span>
             </p>
@@ -100,18 +101,19 @@ export default function FirstFeedBar({ catId, catName }: { catId: string; catNam
             <button
               onClick={feed}
               disabled={phase === "busy"}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-[14px] font-extrabold active:scale-[0.98] transition-transform"
+              className="w-full flex items-center justify-center gap-2 py-3 text-[15px] font-bold active:scale-[0.98] transition-transform"
               style={{
-                background: "linear-gradient(135deg, #FFF7C4 0%, #E8B040 100%)",
-                color: "#4A3527",
-                boxShadow: "0 6px 16px rgba(232,176,64,0.35)",
+                background: "#FFFFFF",
+                color: "var(--color-primary-dark)",
+                borderRadius: "var(--radius-input)",
                 opacity: phase === "busy" ? 0.7 : 1,
               }}
             >
-              {phase === "busy" ? <Loader2 size={16} className="animate-spin" /> : "🍚"} 방금 고른 {catName}, 첫 밥 주기
+              {phase === "busy" && <Loader2 size={16} className="animate-spin" />}
+              방금 고른 {catName}, 첫 밥 주기
             </button>
             {error && (
-              <p className="mt-1.5 text-[11px] font-semibold text-center" style={{ color: "#FFD9D9" }}>
+              <p className="mt-1.5 text-[11px] font-medium text-center" style={{ color: "#FFD9D9" }}>
                 {error}
               </p>
             )}
