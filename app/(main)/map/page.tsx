@@ -466,6 +466,7 @@ export default function MapPage() {
   const [commentsError, setCommentsError] = useState("");
   const [newComment, setNewComment] = useState("");
   const [commentKind, setCommentKind] = useState<CommentKind>("note");
+  const [togglingAlert, setTogglingAlert] = useState(false);
   const [submittingComment, setSubmittingComment] = useState(false);
   const [commentPhotoFile, setCommentPhotoFile] = useState<File | null>(null);
   const [commentPhotoPreview, setCommentPhotoPreview] = useState<string | null>(null);
@@ -679,6 +680,88 @@ export default function MapPage() {
       setCommentsError(err instanceof Error ? err.message : "댓글 작성 실패");
     } finally {
       setSubmittingComment(false);
+    }
+  };
+
+  // ── 학대경보 원터치 토글 (2026-08-13 사장님 요청) ──
+  // 기존엔 댓글창에서 ⚠️ 모드로 전환해 글을 써야 경보가 켜졌다. 이제 시트 버튼 한 번으로
+  // 켜고/끄기 — 저장은 동일하게 kind="alert" 댓글이라 레벨 1 가드·킬스위치·48시간
+  // 자동 해제 등 기존 방어선을 전부 그대로 통과한다. 끄기 = 내 경보 댓글 삭제(RLS 본인만).
+  const ALERT_WINDOW_MS = 2 * 24 * 60 * 60 * 1000; // listAlertedCatIds(2)와 동일 창
+  const myActiveAlert =
+    (user &&
+      comments.find(
+        (c) =>
+          c.kind === "alert" &&
+          c.author_id === user.id &&
+          Date.now() - new Date(c.created_at).getTime() < ALERT_WINDOW_MS,
+      )) ||
+    null;
+
+  // 마커 경보 상태를 5분 세션 캐시에도 반영 — 새로고침 시 옛 상태로 되돌아가지 않게
+  const syncAlertedCache = (next: Set<string>) => {
+    try {
+      const raw = sessionStorage.getItem(MAP_CATS_CACHE_KEY);
+      if (raw) {
+        const cached = JSON.parse(raw);
+        cached.alerted = Array.from(next);
+        sessionStorage.setItem(MAP_CATS_CACHE_KEY, JSON.stringify(cached));
+      }
+    } catch {}
+  };
+
+  const handleToggleAbuseAlert = async () => {
+    if (!selectedCat || togglingAlert || commentsLoading) return;
+    if (!isLoggedIn) {
+      if (confirm("로그인하면 학대경보를 켤 수 있어요. 로그인할까요?")) window.location.href = "/login";
+      return;
+    }
+    if (myActiveAlert) {
+      if (!confirm(`${selectedCat.name}의 학대경보를 해제할까요?`)) return;
+    } else if (
+      !confirm(
+        `${selectedCat.name} 주변에 학대·위험 의심 상황이 있나요?\n\n경보를 켜면 48시간 동안 지도 마커에 ⚠️ 학대경보가 표시되고, 112·상담센터 연락 버튼이 활성화돼요.\n\n긴급한 현장은 112에 먼저 신고해주세요.`,
+      )
+    ) {
+      return;
+    }
+    setTogglingAlert(true);
+    setCommentsError("");
+    try {
+      if (myActiveAlert) {
+        await deleteComment(myActiveAlert.id);
+        const remaining = comments.filter((c) => c.id !== myActiveAlert.id);
+        setComments(remaining);
+        const stillAlerted = remaining.some(
+          (c) =>
+            c.kind === "alert" &&
+            Date.now() - new Date(c.created_at).getTime() < ALERT_WINDOW_MS,
+        );
+        if (!stillAlerted) {
+          const next = new Set(alertedCats);
+          next.delete(selectedCat.id);
+          setAlertedCats(next);
+          syncAlertedCache(next);
+        }
+      } else {
+        const created = await createComment(
+          selectedCat.id,
+          "⚠️ 학대·위험 의심 경보 (지도에서 원터치로 켰어요)",
+          "alert",
+        );
+        setComments((prev) => [created, ...prev]);
+        const next = new Set(alertedCats);
+        next.add(selectedCat.id);
+        setAlertedCats(next);
+        syncAlertedCache(next);
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "학대경보 처리에 실패했어요.";
+      // 버튼이 댓글 영역과 떨어져 있어 에러를 즉시 보여준다 (레벨 가드·킬스위치 안내 포함)
+      setCommentsError(msg);
+      alert(msg);
+    } finally {
+      setTogglingAlert(false);
     }
   };
 
@@ -3542,7 +3625,7 @@ export default function MapPage() {
                   )}
 
                   {/* 좋아요 버튼 */}
-                  <div className="flex items-center gap-2 mb-2.5">
+                  <div className="flex items-center gap-2 mb-2.5 flex-wrap">
                     <button
                       type="button"
                       onClick={handleToggleCatLike}
@@ -3566,6 +3649,34 @@ export default function MapPage() {
                       />
                       <span className="text-[12px] font-bold">
                         {selectedCat.like_count ?? 0}
+                      </span>
+                    </button>
+                    {/* 학대경보 원터치 토글 — 켜면 48h 마커 경보, 끄면 내 경보 삭제 */}
+                    <button
+                      type="button"
+                      onClick={handleToggleAbuseAlert}
+                      disabled={togglingAlert}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl active:scale-95 transition-transform disabled:opacity-60"
+                      style={{
+                        background: myActiveAlert ? "var(--color-error)" : "var(--color-gray-50)",
+                        color: myActiveAlert ? "#fff" : "var(--color-text-light)",
+                        border:
+                          !myActiveAlert && alertedCats.has(selectedCat.id)
+                            ? "1px solid var(--color-error)"
+                            : "none",
+                        boxShadow: myActiveAlert
+                          ? "0 3px 10px rgba(240,68,82,0.35)"
+                          : "0 1px 4px rgba(0,0,0,0.04)",
+                      }}
+                      aria-label={myActiveAlert ? "학대경보 해제" : "학대경보 켜기"}
+                    >
+                      {togglingAlert ? (
+                        <Loader2 size={13} className="animate-spin" />
+                      ) : (
+                        <AlertTriangle size={13} strokeWidth={2.5} />
+                      )}
+                      <span className="text-[12px] font-bold">
+                        {myActiveAlert ? "경보 중" : "학대경보"}
                       </span>
                     </button>
                     {(selectedCat.like_count ?? 0) > 0 && (
