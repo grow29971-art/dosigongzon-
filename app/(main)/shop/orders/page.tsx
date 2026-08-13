@@ -66,12 +66,12 @@ export default function OrdersPage() {
         <div className="flex flex-col items-center text-center pt-16 px-6">
           <div
             className="w-16 h-16 rounded-3xl flex items-center justify-center mb-4"
-            style={{ background: "linear-gradient(135deg, #f5e6d8 0%, #e8c9a8 100%)" }}
+            style={{ background: "var(--color-primary-soft)" }}
           >
             <PackageOpen size={28} style={{ color: "var(--color-primary)" }} />
           </div>
           <p className="text-[14px] font-bold text-text-main mb-1">주문 내역이 없어요</p>
-          <p className="text-[12.5px] text-text-sub mb-6">첫 주문을 기다리고 있어요!</p>
+          <p className="text-[13px] text-text-sub mb-6">첫 주문을 기다리고 있어요!</p>
           <Link
             href="/shop"
             className="px-5 py-2.5 rounded-2xl bg-primary text-white text-[13px] font-bold active:scale-95 transition-transform"
@@ -91,12 +91,12 @@ export default function OrdersPage() {
               >
                 <div
                   className="p-4"
-                  style={{ background: "#fff", borderRadius: 18, boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)", border: "1px solid rgba(0,0,0,0.04)" }}
+                  style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card-sm)", boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)", border: "1px solid rgba(0,0,0,0.04)" }}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-[11px] font-semibold text-text-light">{order.order_number}</span>
                     <span
-                      className="text-[10.5px] font-extrabold px-2 py-1 rounded-lg"
+                      className="text-[11px] font-bold px-2 py-1 rounded-lg"
                       style={{ backgroundColor: `${status.color}15`, color: status.color }}
                     >
                       {status.label}
@@ -104,7 +104,7 @@ export default function OrdersPage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13.5px] font-bold text-text-main truncate">{orderDisplayName(order.items)}</p>
+                      <p className="text-[13px] font-medium text-text-main truncate">{orderDisplayName(order.items)}</p>
                       <p className="text-[11px] text-text-light mt-1">{formatDate(order.created_at)}</p>
                       {order.tracking_number && (
                         <p className="text-[11px] text-text-sub mt-1 flex items-center gap-1">
@@ -113,7 +113,7 @@ export default function OrdersPage() {
                       )}
                     </div>
                     <div className="flex items-center gap-1 shrink-0 ml-3">
-                      <span className="text-[14px] font-extrabold text-text-main">{formatWon(order.payment_amount)}</span>
+                      <span className="text-[14px] font-bold text-text-main">{formatWon(order.payment_amount)}</span>
                       <ChevronRight size={16} className="text-text-light" />
                     </div>
                   </div>

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ArrowLeft, Minus, Plus, PawPrint, ShoppingBag, Truck } from "lucide-react";
+import { ArrowLeft, Minus, Plus, PawPrint, ShoppingBag, Truck, ShoppingCart, Coins, Heart } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { addToCart, SHOP_CATEGORIES, type Product } from "@/lib/shop-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
@@ -18,9 +18,9 @@ function discountRate(price: number, salePrice: number): number {
 }
 
 const BADGE_COLORS: Record<string, string> = {
-  인기: "#E14B3C",
+  인기: "var(--color-error)",
   신상: "var(--color-primary)",
-  한정: "#8B65B8",
+  한정: "var(--color-warning)",
 };
 
 export default function ProductDetailClient({ product }: { product: Product }) {
@@ -120,7 +120,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         </div>
         {soldOut && (
           <div className="absolute inset-0 rounded-3xl flex items-center justify-center" style={{ background: "rgba(38,42,56,0.55)" }}>
-            <span className="text-white text-[16px] font-extrabold px-4 py-2 rounded-xl" style={{ background: "rgba(0,0,0,0.35)" }}>품절</span>
+            <span className="text-white text-[16px] font-bold px-4 py-2 rounded-xl" style={{ background: "rgba(0,0,0,0.35)" }}>품절</span>
           </div>
         )}
         {images.length > 1 && (
@@ -144,25 +144,25 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       <div className="px-4 mt-5">
         {product.badge && (
           <span
-            className="inline-block text-[10.5px] font-extrabold px-2 py-1 rounded-lg text-white mb-2"
+            className="inline-block text-[11px] font-bold px-2 py-1 rounded-lg text-white mb-2"
             style={{ background: BADGE_COLORS[product.badge] ?? "var(--color-primary)" }}
           >
             {product.badge}
           </span>
         )}
-        <h1 className="text-[19px] font-extrabold text-text-main tracking-tight leading-snug">{product.name}</h1>
+        <h1 className="text-[20px] font-extrabold text-text-main tracking-tight leading-snug">{product.name}</h1>
         {product.weight && <p className="text-[12px] text-text-light mt-1">{product.weight}</p>}
 
         <div className="mt-2.5 flex items-baseline gap-2 flex-wrap">
           {discounted && (
             <span
-              className="text-[12px] font-extrabold px-1.5 py-0.5 rounded-md text-white"
-              style={{ background: "#E14B3C" }}
+              className="text-[12px] font-bold px-1.5 py-0.5 rounded-md text-white"
+              style={{ background: "var(--color-error)" }}
             >
               {discountRate(product.price, product.sale_price as number)}%
             </span>
           )}
-          <span className="text-[23px] font-extrabold text-text-main">{formatWon(unitPrice)}</span>
+          <span className="text-[24px] font-bold text-text-main">{formatWon(unitPrice)}</span>
           {discounted && <span className="text-[13px] text-text-light line-through">{formatWon(product.price)}</span>}
         </div>
 
@@ -171,7 +171,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           {isVirtual
             ? "배송 없음 · 후원금으로 전액 사용됩니다"
             : product.shipping_fee === 0
-              ? "무료배송 📦"
+              ? "무료배송"
               : `배송비 ${formatWon(product.shipping_fee)}`}
         </div>
 
@@ -180,11 +180,11 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           <div
             className="mt-4 px-4 py-3.5 rounded-2xl"
             style={{
-              background: product.donation_percent === 100 ? "rgba(232,107,140,0.08)" : "rgba(201,169,97,0.1)",
-              border: `1px solid ${product.donation_percent === 100 ? "rgba(232,107,140,0.2)" : "rgba(201,169,97,0.25)"}`,
+              background: "var(--color-primary-softer)",
+              border: "1px solid rgba(173,94,59,0.2)",
             }}
           >
-            <p className="text-[12.5px] font-bold leading-relaxed" style={{ color: product.donation_percent === 100 ? "#D85575" : "#A8834A" }}>
+            <p className="text-[13px] font-bold leading-relaxed" style={{ color: "var(--color-primary-dark)" }}>
               {product.donation_percent === 100
                 ? "이 후원금은 전액 길고양이를 위해 사용됩니다 💛"
                 : `이 상품은 결제 금액의 ${product.donation_percent}%가 길고양이 중성화(TNR)에 쓰여요 🐱`}
@@ -193,17 +193,17 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             {product.donation_percent !== 100 && (
               <div className="mt-2.5 flex items-center justify-between">
                 {[
-                  { emoji: "🛒", label: "구매" },
-                  { emoji: "💰", label: "수익 발생" },
-                  { emoji: "💛", label: "일부 후원" },
+                  { Icon: ShoppingCart, label: "구매" },
+                  { Icon: Coins, label: "수익 발생" },
+                  { Icon: Heart, label: "일부 후원" },
                 ].map((step, i) => (
                   <div key={step.label} className="flex items-center flex-1 min-w-0">
                     <div className="flex flex-col items-center gap-0.5 flex-1 min-w-0">
-                      <span className="text-[16px] leading-none">{step.emoji}</span>
-                      <span className="text-[10px] font-bold truncate" style={{ color: "#A8834A" }}>{step.label}</span>
+                      <step.Icon size={15} style={{ color: "var(--color-primary)" }} />
+                      <span className="text-[10px] font-bold truncate" style={{ color: "var(--color-primary-dark)" }}>{step.label}</span>
                     </div>
                     {i < 2 && (
-                      <span className="text-[11px] shrink-0 px-0.5" style={{ color: "rgba(168,131,74,0.55)" }}>→</span>
+                      <span className="text-[11px] shrink-0 px-0.5" style={{ color: "var(--color-text-light)" }}>→</span>
                     )}
                   </div>
                 ))}
@@ -220,13 +220,13 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               <button onClick={() => setQuantity((q) => Math.max(1, q - 1))} disabled={quantity <= 1} className="w-6 h-6 flex items-center justify-center disabled:opacity-30" aria-label="수량 줄이기">
                 <Minus size={14} />
               </button>
-              <span className="text-[14px] font-extrabold w-5 text-center">{quantity}</span>
+              <span className="text-[14px] font-medium w-5 text-center">{quantity}</span>
               <button onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))} disabled={quantity >= product.stock} className="w-6 h-6 flex items-center justify-center disabled:opacity-30" aria-label="수량 늘리기">
                 <Plus size={14} />
               </button>
             </div>
             {product.stock <= 5 && (
-              <span className="text-[11.5px] font-bold" style={{ color: "#E88D5A" }}>{product.stock}개 남음</span>
+              <span className="text-[11px] font-bold" style={{ color: "var(--color-warning)" }}>{product.stock}개 남음</span>
             )}
           </div>
         )}
@@ -234,11 +234,11 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         {/* 상품 설명 */}
         {product.description && (
           <div className="mt-6">
-            <p className="text-[13.5px] text-text-sub leading-relaxed whitespace-pre-wrap">{visibleDesc}</p>
+            <p className="text-[13px] text-text-sub leading-relaxed whitespace-pre-wrap">{visibleDesc}</p>
             {descLong && (
               <button
                 onClick={() => setDescOpen((o) => !o)}
-                className="mt-2 text-[12.5px] font-bold text-primary"
+                className="mt-2 text-[13px] font-bold text-primary"
               >
                 {descOpen ? "접기" : "더보기"}
               </button>
@@ -255,7 +255,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         >
           {toast.msg}
           {toast.withCartLink && (
-            <Link href="/shop/cart" className="font-extrabold underline underline-offset-2" style={{ color: "#9CC5F0" }}>
+            <Link href="/shop/cart" className="font-bold underline underline-offset-2" style={{ color: "var(--color-primary-light)" }}>
               장바구니 보기
             </Link>
           )}
@@ -265,12 +265,12 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       {/* 하단 고정 바 */}
       <div
         className="fixed bottom-0 left-0 right-0 z-40 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
-        style={{ background: "#fff", boxShadow: "0 -4px 16px rgba(20,40,70,0.08)" }}
+        style={{ background: "var(--color-surface)", boxShadow: "0 -4px 16px rgba(20,40,70,0.08)" }}
       >
         {soldOut ? (
           <button
             disabled
-            className="w-full py-3.5 rounded-2xl text-[14px] font-extrabold opacity-40"
+            className="w-full py-3.5 rounded-2xl text-[14px] font-bold opacity-40"
             style={{ background: "var(--color-warm-white)", color: "var(--color-text-sub)" }}
           >
             품절된 상품입니다
@@ -279,22 +279,22 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           <button
             onClick={handleBuyNow}
             disabled={busy}
-            className="w-full py-3.5 rounded-2xl text-white text-[14.5px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #E86B8C 0%, #D85575 100%)", boxShadow: "0 6px 20px rgba(232,107,140,0.35)" }}
+            className="w-full py-3.5 rounded-2xl text-white text-[15px] font-bold active:scale-[0.98] transition-transform disabled:opacity-50"
+            style={{ background: "var(--color-primary)", boxShadow: "var(--shadow-primary)" }}
           >
-            후원하기 💛
+            후원하기
           </button>
         ) : (
           <div className="flex items-center gap-2">
             <div className="shrink-0 pr-1">
               <p className="text-[10px] text-text-light">총 금액</p>
-              <p className="text-[15px] font-extrabold text-text-main">{formatWon(unitPrice * quantity)}</p>
+              <p className="text-[15px] font-bold text-text-main">{formatWon(unitPrice * quantity)}</p>
             </div>
             <button
               onClick={handleAddToCart}
               disabled={busy}
-              className="flex-1 py-3.5 rounded-2xl text-[13.5px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-40 flex items-center justify-center gap-1.5"
-              style={{ background: "#fff", color: "var(--color-primary)", border: "1.5px solid var(--color-primary)" }}
+              className="flex-1 py-3.5 rounded-2xl text-[13px] font-bold active:scale-[0.98] transition-transform disabled:opacity-40 flex items-center justify-center gap-1.5"
+              style={{ background: "var(--color-surface)", color: "var(--color-primary)", border: "1.5px solid var(--color-primary)" }}
             >
               <ShoppingBag size={15} />
               장바구니 담기
@@ -302,7 +302,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             <button
               onClick={handleBuyNow}
               disabled={busy}
-              className="flex-1 py-3.5 rounded-2xl bg-primary text-white text-[13.5px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-40"
+              className="flex-1 py-3.5 rounded-2xl bg-primary text-white text-[13px] font-bold active:scale-[0.98] transition-transform disabled:opacity-40"
               style={{ boxShadow: "var(--shadow-primary)" }}
             >
               바로 구매

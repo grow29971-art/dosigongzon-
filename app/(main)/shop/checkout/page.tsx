@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, MapPin, X } from "lucide-react";
+import { ArrowLeft, MapPin, X, Construction, Heart, PawPrint } from "lucide-react";
 import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
 import { useAuth } from "@/lib/auth-context";
 import { listCartItems, computeCartTotal, type CartItem } from "@/lib/shop-repo";
@@ -273,8 +273,8 @@ export default function CheckoutPage() {
             className="flex items-start gap-2.5 px-4 py-3 rounded-2xl"
             style={{ background: "rgba(255,169,39,0.1)", border: "1px solid rgba(255,169,39,0.28)" }}
           >
-            <span className="text-[15px] shrink-0">🚧</span>
-            <p className="text-[11.5px] font-semibold leading-snug" style={{ color: "#A6741E" }}>
+            <Construction size={15} className="shrink-0" style={{ color: "var(--color-warning)" }} />
+            <p className="text-[11px] font-semibold leading-snug" style={{ color: "var(--color-warning)" }}>
               쇼핑몰은 정식 오픈을 준비 중이에요. 지금은 테스트 단계라 실제 결제·배송은 이뤄지지 않아요. 곧 정식으로 찾아올게요!
             </p>
           </div>
@@ -282,9 +282,9 @@ export default function CheckoutPage() {
           {/* 주문 상품 */}
           <section
             className="p-4"
-            style={{ background: "#fff", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
+            style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
           >
-            <h2 className="text-[13.5px] font-extrabold text-text-main mb-3">주문 상품 {items.length}건</h2>
+            <h2 className="text-[13px] font-bold text-text-main mb-3">주문 상품 {items.length}건</h2>
             <div className="space-y-2.5">
               {items.map((item) => {
                 const unitPrice = item.product.sale_price ?? item.product.price;
@@ -295,10 +295,10 @@ export default function CheckoutPage() {
                       <Image src={thumb} alt={item.product.name} fill className="object-cover" unoptimized={thumb.includes("placehold.co")} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[12.5px] font-bold text-text-main truncate">{item.product.name}</p>
-                      <p className="text-[11.5px] text-text-sub">{formatWon(unitPrice)} · {item.quantity}개</p>
+                      <p className="text-[13px] font-medium text-text-main truncate">{item.product.name}</p>
+                      <p className="text-[11px] text-text-sub">{formatWon(unitPrice)} · {item.quantity}개</p>
                     </div>
-                    <span className="text-[12.5px] font-extrabold text-text-main shrink-0">
+                    <span className="text-[13px] font-medium text-text-main shrink-0">
                       {formatWon(unitPrice * item.quantity)}
                     </span>
                   </div>
@@ -313,24 +313,24 @@ export default function CheckoutPage() {
               className="flex items-start gap-2.5 px-4 py-3 rounded-2xl"
               style={{ background: "rgba(232,141,90,0.08)", border: "1px solid rgba(232,141,90,0.22)" }}
             >
-              <span className="text-[15px] shrink-0">💛</span>
-              <p className="text-[11.5px] font-semibold leading-snug" style={{ color: "#B06A42" }}>
+              <Heart size={15} className="shrink-0" style={{ color: "var(--color-primary)" }} />
+              <p className="text-[11px] font-semibold leading-snug" style={{ color: "var(--color-primary-dark)" }}>
                 후원 상품은 배송이 없어요. 배송지 입력 없이 바로 결제할 수 있고, 결제 금액은 길고양이들을 위해 쓰여요.
               </p>
             </div>
           ) : (<>
           <section
             className="p-4"
-            style={{ background: "#fff", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
+            style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
           >
-            <h2 className="text-[13.5px] font-extrabold text-text-main mb-3">배송지 정보</h2>
+            <h2 className="text-[13px] font-bold text-text-main mb-3">배송지 정보</h2>
             <div className="space-y-2.5">
               <input
                 type="text"
                 value={recipientName}
                 onChange={(e) => setRecipientName(e.target.value)}
                 placeholder="수령인 이름"
-                className="w-full px-3.5 py-3 text-[13.5px] outline-none"
+                className="w-full px-3.5 py-3 text-[13px] outline-none"
                 style={inputStyle}
                 maxLength={20}
               />
@@ -339,7 +339,7 @@ export default function CheckoutPage() {
                 value={recipientPhone}
                 onChange={(e) => setRecipientPhone(e.target.value)}
                 placeholder="연락처 (예: 010-1234-5678)"
-                className="w-full px-3.5 py-3 text-[13.5px] outline-none"
+                className="w-full px-3.5 py-3 text-[13px] outline-none"
                 style={inputStyle}
                 maxLength={13}
               />
@@ -349,7 +349,7 @@ export default function CheckoutPage() {
                   value={postalCode}
                   readOnly
                   placeholder="우편번호"
-                  className="w-[110px] px-3.5 py-3 text-[13.5px] outline-none"
+                  className="w-[110px] px-3.5 py-3 text-[13px] outline-none"
                   style={inputStyle}
                 />
                 <button
@@ -367,7 +367,7 @@ export default function CheckoutPage() {
                   type="text"
                   value={address}
                   readOnly
-                  className="w-full px-3.5 py-3 text-[13.5px] outline-none"
+                  className="w-full px-3.5 py-3 text-[13px] outline-none"
                   style={inputStyle}
                 />
               )}
@@ -376,7 +376,7 @@ export default function CheckoutPage() {
                 value={addressDetail}
                 onChange={(e) => setAddressDetail(e.target.value)}
                 placeholder="상세주소 (동/호수 등)"
-                className="w-full px-3.5 py-3 text-[13.5px] outline-none"
+                className="w-full px-3.5 py-3 text-[13px] outline-none"
                 style={inputStyle}
                 maxLength={50}
               />
@@ -386,14 +386,14 @@ export default function CheckoutPage() {
           {/* 주문 메모 */}
           <section
             className="p-4"
-            style={{ background: "#fff", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
+            style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
           >
-            <h2 className="text-[13.5px] font-extrabold text-text-main mb-3">주문 메모 <span className="text-[11px] font-semibold text-text-light">(선택)</span></h2>
+            <h2 className="text-[13px] font-bold text-text-main mb-3">주문 메모 <span className="text-[11px] font-semibold text-text-light">(선택)</span></h2>
             <textarea
               value={memo}
               onChange={(e) => setMemo(e.target.value)}
               placeholder="배송 시 요청사항을 입력해주세요"
-              className="w-full px-3.5 py-3 text-[13.5px] outline-none resize-none"
+              className="w-full px-3.5 py-3 text-[13px] outline-none resize-none"
               style={{ ...inputStyle, minHeight: 72 }}
               maxLength={200}
             />
@@ -404,10 +404,10 @@ export default function CheckoutPage() {
           {pointsEligible && (
             <section
               className="p-4"
-              style={{ background: "#fff", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
+              style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
             >
               <div className="flex items-center justify-between mb-2.5">
-                <h2 className="text-[13.5px] font-extrabold text-text-main">포인트 사용</h2>
+                <h2 className="text-[13px] font-bold text-text-main">포인트 사용</h2>
                 <span className="text-[11px] font-bold text-text-light tabular-nums">
                   보유 {(pointBalance ?? 0).toLocaleString()}P
                 </span>
@@ -430,7 +430,7 @@ export default function CheckoutPage() {
                 <button
                   type="button"
                   onClick={() => setPointsInput(maxPoints)}
-                  className="shrink-0 px-3.5 rounded-xl text-[12px] font-extrabold active:scale-95 transition-transform"
+                  className="shrink-0 px-3.5 rounded-xl text-[12px] font-bold active:scale-95 transition-transform"
                   style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}
                 >
                   최대 사용
@@ -449,7 +449,7 @@ export default function CheckoutPage() {
               className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl active:scale-[0.99] transition-transform"
               style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(173, 94, 59,0.18)" }}
             >
-              <span className="text-[15px] shrink-0">🐾</span>
+              <PawPrint size={16} className="shrink-0" style={{ color: "var(--color-primary)" }} />
               <p className="text-[11px] font-bold leading-snug flex-1" style={{ color: "var(--color-primary-dark)" }}>
                 매일 돌봄 출석하면 포인트가 쌓여요 · 다음엔 <b>1P = 1원</b>으로 할인받으세요
               </p>
@@ -459,27 +459,27 @@ export default function CheckoutPage() {
           {/* 결제 금액 */}
           <section
             className="p-4"
-            style={{ background: "#fff", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
+            style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
           >
-            <h2 className="text-[13.5px] font-extrabold text-text-main mb-3">결제 금액</h2>
-            <div className="flex items-center justify-between text-[12.5px] text-text-sub mb-1.5">
+            <h2 className="text-[13px] font-bold text-text-main mb-3">결제 금액</h2>
+            <div className="flex items-center justify-between text-[13px] text-text-sub mb-1.5">
               <span>총 상품금액</span>
               <span>{formatWon(productTotal)}</span>
             </div>
             {!virtualOnly && (
-              <div className="flex items-center justify-between text-[12.5px] text-text-sub mb-2.5">
+              <div className="flex items-center justify-between text-[13px] text-text-sub mb-2.5">
                 <span>배송비</span>
                 <span>{shippingFee > 0 ? formatWon(shippingFee) : "무료"}</span>
               </div>
             )}
             {effectivePoints > 0 && (
-              <div className="flex items-center justify-between text-[12.5px] mb-1.5" style={{ color: "#22A366" }}>
+              <div className="flex items-center justify-between text-[13px] mb-1.5" style={{ color: "var(--color-sage)" }}>
                 <span>포인트 할인</span>
                 <span className="tabular-nums">-{formatWon(effectivePoints)}</span>
               </div>
             )}
             <div
-              className="flex items-center justify-between pt-2.5 text-[15px] font-extrabold text-text-main"
+              className="flex items-center justify-between pt-2.5 text-[15px] font-bold text-text-main"
               style={{ borderTop: "1px dashed rgba(0,0,0,0.08)" }}
             >
               <span>총 결제금액</span>
@@ -488,7 +488,7 @@ export default function CheckoutPage() {
           </section>
 
           {error && (
-            <p className="text-[12.5px] font-bold text-center" style={{ color: "#D85555" }}>{error}</p>
+            <p className="text-[13px] font-bold text-center" style={{ color: "var(--color-error)" }}>{error}</p>
           )}
         </div>
       )}
@@ -497,17 +497,17 @@ export default function CheckoutPage() {
       {items.length > 0 && !loading && (
         <div
           className="fixed bottom-0 left-0 right-0 z-40 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
-          style={{ background: "#fff", boxShadow: "0 -4px 16px rgba(20,40,70,0.08)" }}
+          style={{ background: "var(--color-surface)", boxShadow: "0 -4px 16px rgba(20,40,70,0.08)" }}
         >
           {!PAYMENT_ENABLED && (
-            <p className="text-[12px] text-center font-semibold mb-2" style={{ color: "#B8791F" }}>
+            <p className="text-[12px] text-center font-semibold mb-2" style={{ color: "var(--color-warning)" }}>
               {PAYMENT_DISABLED_MESSAGE}
             </p>
           )}
           <button
             onClick={handleSubmit}
             disabled={submitting || !PAYMENT_ENABLED}
-            className="w-full py-3.5 rounded-2xl bg-primary text-white text-[14.5px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-50"
+            className="w-full py-3.5 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.98] transition-transform disabled:opacity-50"
             style={{ boxShadow: "var(--shadow-primary)" }}
           >
             {!PAYMENT_ENABLED ? "결제 준비 중" : submitting ? "주문 처리 중…" : `${formatWon(finalAmount)} 결제하기`}
@@ -520,10 +520,10 @@ export default function CheckoutPage() {
         <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ background: "rgba(20,25,40,0.5)" }}>
           <div
             className="w-full max-w-lg overflow-hidden"
-            style={{ background: "#fff", borderRadius: "24px 24px 0 0", height: "70dvh" }}
+            style={{ background: "var(--color-surface)", borderRadius: "var(--radius-modal) var(--radius-modal) 0 0", height: "70dvh" }}
           >
             <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
-              <span className="text-[14px] font-extrabold text-text-main">주소 검색</span>
+              <span className="text-[14px] font-bold text-text-main">주소 검색</span>
               <button onClick={() => setPostcodeOpen(false)} aria-label="닫기" className="w-8 h-8 flex items-center justify-center">
                 <X size={18} className="text-text-sub" />
               </button>

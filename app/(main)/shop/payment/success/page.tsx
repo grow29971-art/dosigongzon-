@@ -83,14 +83,14 @@ function SuccessContent() {
           className="w-16 h-16 rounded-full flex items-center justify-center mb-5"
           style={{ background: "rgba(216,85,85,0.1)" }}
         >
-          <XCircle size={32} style={{ color: "#D85555" }} />
+          <XCircle size={32} style={{ color: "var(--color-error)" }} />
         </div>
         <h1 className="text-[18px] font-extrabold text-text-main mb-2">결제 승인에 실패했어요</h1>
         <p className="text-[13px] text-text-sub leading-relaxed mb-7 max-w-[300px]">{errorMsg}</p>
         <div className="flex flex-col gap-2 w-full max-w-[280px]">
           <Link
             href="/shop/checkout"
-            className="py-3.5 rounded-2xl bg-primary text-white text-[14px] font-extrabold"
+            className="py-3.5 rounded-2xl bg-primary text-white text-[14px] font-bold"
             style={{ boxShadow: "var(--shadow-primary)" }}
           >
             다시 시도하기
@@ -107,32 +107,32 @@ function SuccessContent() {
     <div className="flex flex-col items-center justify-center min-h-[70vh] px-6 text-center">
       <div
         className="w-16 h-16 rounded-full flex items-center justify-center mb-5"
-        style={{ background: "rgba(107,142,111,0.12)" }}
+        style={{ background: "rgba(34,163,102,0.12)" }}
       >
-        <CheckCircle2 size={32} style={{ color: "#6B8E6F" }} />
+        <CheckCircle2 size={32} style={{ color: "var(--color-sage)" }} />
       </div>
       <h1 className="text-[19px] font-extrabold text-text-main mb-2">결제가 완료됐어요!</h1>
       <p className="text-[13px] text-text-sub leading-relaxed mb-1">
-        주문번호 <span className="font-extrabold text-text-main">{orderNumber}</span>
+        주문번호 <span className="font-bold text-text-main">{orderNumber}</span>
       </p>
       {donation > 0 && (
         <div
           className="mb-4 px-4 py-3 rounded-2xl"
-          style={{ background: "rgba(232,107,140,0.08)", border: "1px solid rgba(232,107,140,0.2)" }}
+          style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(173,94,59,0.2)" }}
         >
-          <p className="text-[13px] font-extrabold" style={{ color: "#D85575" }}>
+          <p className="text-[13px] font-bold" style={{ color: "var(--color-primary-dark)" }}>
             이 주문으로 {donation.toLocaleString()}원이
             <br />길고양이에게 적립됐어요 💛
           </p>
         </div>
       )}
-      <p className="text-[12.5px] text-text-light mb-8">
+      <p className="text-[13px] text-text-light mb-8">
         소중한 주문 감사해요. 우리 동네 고양이들에게 따뜻함이 전해질 거예요 🐾
       </p>
       <div className="flex flex-col gap-2 w-full max-w-[280px]">
         <Link
           href={orderId ? `/shop/orders/${orderId}` : "/shop/orders"}
-          className="py-3.5 rounded-2xl bg-primary text-white text-[14px] font-extrabold"
+          className="py-3.5 rounded-2xl bg-primary text-white text-[14px] font-bold"
           style={{ boxShadow: "var(--shadow-primary)" }}
         >
           주문 내역 보기

@@ -87,12 +87,12 @@ export default function CartPage() {
         <div className="flex flex-col items-center text-center pt-14 px-6">
           <div
             className="w-16 h-16 rounded-3xl flex items-center justify-center mb-4"
-            style={{ background: "linear-gradient(135deg, #f5e6d8 0%, #e8c9a8 100%)" }}
+            style={{ background: "var(--color-primary-soft)" }}
           >
             <ShoppingBag size={28} style={{ color: "var(--color-primary)" }} />
           </div>
           <p className="text-[14px] font-bold text-text-main mb-1">장바구니가 비어있습니다</p>
-          <p className="text-[12.5px] text-text-sub mb-6">담아둔 상품이 아직 없어요</p>
+          <p className="text-[13px] text-text-sub mb-6">담아둔 상품이 아직 없어요</p>
           <Link
             href="/shop"
             className="px-5 py-2.5 rounded-2xl bg-primary text-white text-[13px] font-bold active:scale-95 transition-transform"
@@ -109,7 +109,7 @@ export default function CartPage() {
               <div
                 key={item.id}
                 className="flex items-center gap-3 p-3"
-                style={{ background: "#FFFFFF", borderRadius: 18, boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)", border: "1px solid rgba(0,0,0,0.04)" }}
+                style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card-sm)", boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)", border: "1px solid rgba(0,0,0,0.04)" }}
               >
                 <Link href={`/shop/${item.product.id}`} className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 64, height: 64 }}>
                   <Image src={thumb} alt={item.product.name} fill className="object-cover" unoptimized={thumb.includes("placehold.co")} />
@@ -121,7 +121,7 @@ export default function CartPage() {
                     <button onClick={() => handleQuantity(item, -1)} disabled={busyId === item.id} className="w-5 h-5 flex items-center justify-center disabled:opacity-30">
                       <Minus size={12} />
                     </button>
-                    <span className="text-[12px] font-extrabold w-4 text-center">{item.quantity}</span>
+                    <span className="text-[12px] font-medium w-4 text-center">{item.quantity}</span>
                     <button onClick={() => handleQuantity(item, 1)} disabled={busyId === item.id || item.quantity >= item.product.stock} className="w-5 h-5 flex items-center justify-center disabled:opacity-30">
                       <Plus size={12} />
                     </button>
@@ -131,7 +131,7 @@ export default function CartPage() {
                   <button onClick={() => handleRemove(item)} disabled={busyId === item.id} aria-label="삭제">
                     <Trash2 size={16} className="text-text-light" />
                   </button>
-                  <span className="text-[13px] font-extrabold text-text-main">{formatWon(unitPrice * item.quantity)}</span>
+                  <span className="text-[13px] font-bold text-text-main">{formatWon(unitPrice * item.quantity)}</span>
                 </div>
               </div>
             );
@@ -142,7 +142,7 @@ export default function CartPage() {
       {items.length > 0 && (
         <div
           className="fixed bottom-0 left-0 right-0 z-40 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
-          style={{ background: "#fff", boxShadow: "0 -4px 16px rgba(20,40,70,0.08)" }}
+          style={{ background: "var(--color-surface)", boxShadow: "0 -4px 16px rgba(20,40,70,0.08)" }}
         >
           <div className="flex items-center justify-between text-[12px] text-text-sub mb-1">
             <span>상품금액</span>
@@ -152,13 +152,13 @@ export default function CartPage() {
             <span>배송비</span>
             <span>{shippingFee > 0 ? formatWon(shippingFee) : "무료"}</span>
           </div>
-          <div className="flex items-center justify-between text-[15px] font-extrabold text-text-main mb-3">
+          <div className="flex items-center justify-between text-[15px] font-bold text-text-main mb-3">
             <span>결제예정금액</span>
             <span>{formatWon(grandTotal)}</span>
           </div>
           <button
             onClick={() => router.push("/shop/checkout")}
-            className="w-full py-3.5 rounded-2xl bg-primary text-white text-[14px] font-extrabold active:scale-[0.98] transition-transform"
+            className="w-full py-3.5 rounded-2xl bg-primary text-white text-[14px] font-bold active:scale-[0.98] transition-transform"
             style={{ boxShadow: "var(--shadow-primary)" }}
           >
             주문하기

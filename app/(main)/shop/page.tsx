@@ -6,6 +6,7 @@ import Image from "next/image";
 import {
   ShoppingCart, ReceiptText, PawPrint, LayoutGrid,
   Fish, SprayCan, HeartPulse, ToyBrick, Home, Gift, ChevronRight, Heart,
+  Construction,
   type LucideIcon,
 } from "lucide-react";
 import { readWishlist, toggleWishlist } from "@/lib/wishlist";
@@ -58,8 +59,8 @@ function ProductCard({ product, wished, onToggleWish }: { product: Product; wish
       <div
         className="overflow-hidden h-full"
         style={{
-          background: "#FFFFFF",
-          borderRadius: 22,
+          background: "var(--color-surface)",
+          borderRadius: "var(--radius-card)",
           boxShadow: "0 6px 20px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.03)",
           border: "1px solid rgba(0,0,0,0.04)",
         }}
@@ -75,23 +76,23 @@ function ProductCard({ product, wished, onToggleWish }: { product: Product; wish
           )}
           {product.badge && (
             <span
-              className="absolute top-2 left-2 text-[9.5px] font-extrabold px-2 py-0.5 rounded-lg text-white"
-              style={{ background: product.badge === "인기" ? "#E14B3C" : product.badge === "신상" ? "var(--color-primary)" : "#8B65B8" }}
+              className="absolute top-2 left-2 text-[11px] font-bold px-2 py-0.5 rounded-lg text-white"
+              style={{ background: product.badge === "인기" ? "var(--color-error)" : product.badge === "신상" ? "var(--color-primary)" : "var(--color-warning)" }}
             >
               {product.badge}
             </span>
           )}
           {product.shipping_fee === 0 && !product.is_virtual && (
             <span
-              className="absolute top-2 right-2 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md"
-              style={{ background: "rgba(107,142,111,0.92)", color: "#fff" }}
+              className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded-md"
+              style={{ background: "rgba(34,163,102,0.92)", color: "#fff" }}
             >
               무료배송
             </span>
           )}
           {soldOut && (
             <div className="absolute inset-0 flex items-center justify-center" style={{ background: "rgba(38,42,56,0.55)" }}>
-              <span className="text-white text-[13px] font-extrabold px-3 py-1.5 rounded-xl" style={{ background: "rgba(0,0,0,0.35)" }}>
+              <span className="text-white text-[13px] font-bold px-3 py-1.5 rounded-xl" style={{ background: "rgba(0,0,0,0.35)" }}>
                 품절
               </span>
             </div>
@@ -110,27 +111,27 @@ function ProductCard({ product, wished, onToggleWish }: { product: Product; wish
 
         {/* 정보 */}
         <div className="px-3 py-3">
-          <p className="text-[13px] font-bold text-text-main leading-snug" style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+          <p className="text-[13px] font-medium text-text-main leading-snug" style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
             {product.name}
           </p>
           {product.weight && (
-            <p className="text-[10.5px] text-text-light mt-0.5">{product.weight}</p>
+            <p className="text-[11px] text-text-light mt-0.5">{product.weight}</p>
           )}
           <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
             {discounted && (
-              <span className="text-[11px] font-extrabold" style={{ color: "#E14B3C" }}>
+              <span className="text-[11px] font-medium" style={{ color: "var(--color-error)" }}>
                 {discountRate(product.price, product.sale_price as number)}%
               </span>
             )}
-            <span className="text-[14.5px] font-extrabold text-text-main">
+            <span className="text-[15px] font-bold text-text-main">
               {formatWon(discounted ? (product.sale_price as number) : product.price)}
             </span>
             {discounted && (
-              <span className="text-[10.5px] text-text-light line-through">{formatWon(product.price)}</span>
+              <span className="text-[11px] text-text-light line-through">{formatWon(product.price)}</span>
             )}
           </div>
           {product.is_donation ? (
-            <p className="text-[10px] font-semibold mt-1.5" style={{ color: "#C9A961" }}>
+            <p className="text-[10px] font-semibold mt-1.5" style={{ color: "var(--color-warning)" }}>
               수익의 일부 후원 💛
             </p>
           ) : null}
@@ -213,16 +214,8 @@ export default function ShopPage() {
         <div>
           <div className="flex items-baseline gap-2 mb-1">
             <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">쇼핑</h1>
-            <span className="text-[11px] font-semibold text-text-light">Shop</span>
-            {/* 오픈 준비 상태 칩 — 제품 컨택·내부 공사 진행 중 표시 */}
-            <span
-              className="chip-square px-2 py-0.5 text-[10px] font-extrabold"
-              style={{ background: "rgba(255,169,39,0.15)", color: "#B87A10" }}
-            >
-              🚧 공사 중
-            </span>
           </div>
-          <p className="text-[12.5px] text-text-sub leading-relaxed">
+          <p className="text-[13px] text-text-sub leading-relaxed">
             길집사님들이 실제로 쓰는 것만 골라 들여오고 있어요
           </p>
         </div>
@@ -244,8 +237,8 @@ export default function ShopPage() {
             <ShoppingCart size={18} className="text-text-sub" />
             {cartCount > 0 && (
               <span
-                className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full text-white text-[9px] font-extrabold flex items-center justify-center"
-                style={{ background: "#E14B3C" }}
+                className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full text-white text-[9px] font-bold flex items-center justify-center"
+                style={{ background: "var(--color-error)" }}
               >
                 {cartCount > 99 ? "99+" : cartCount}
               </span>
@@ -263,8 +256,8 @@ export default function ShopPage() {
         className="mb-4 flex items-center gap-2.5 px-4 py-2.5 rounded-2xl active:scale-[0.99] transition-transform"
         style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(173, 94, 59,0.18)" }}
       >
-        <span className="text-[16px] shrink-0">🐾</span>
-        <p className="text-[11.5px] font-bold leading-snug flex-1" style={{ color: "var(--color-primary-dark)" }}>
+        <PawPrint size={16} className="shrink-0" style={{ color: "var(--color-primary)" }} />
+        <p className="text-[11px] font-bold leading-snug flex-1" style={{ color: "var(--color-primary-dark)" }}>
           매일 돌봄 출석하면 포인트 적립 · 쇼핑에서 <b>1P = 1원</b>으로 쓸 수 있어요
         </p>
         <ChevronRight size={15} style={{ color: "var(--color-primary)" }} className="shrink-0" />
@@ -279,7 +272,7 @@ export default function ShopPage() {
           border: "1px solid rgba(196,126,90,0.18)",
         }}
       >
-        <p className="text-[13.5px] font-extrabold text-text-main leading-relaxed">
+        <p className="text-[13px] font-bold text-text-main leading-relaxed">
           여기서 사면 <b style={{ color: "var(--color-primary-dark)" }}>결제 금액의 5%</b>가
           <br />길고양이 <b style={{ color: "var(--color-primary-dark)" }}>중성화(TNR)</b>에 쓰여요 🐱
         </p>
@@ -299,24 +292,24 @@ export default function ShopPage() {
         {donation && donation.total > 0 ? (
           <div className="mt-3">
             <div className="flex items-baseline justify-between mb-1.5">
-              <span className="text-[11.5px] font-bold text-text-sub">
+              <span className="text-[11px] font-bold text-text-sub">
                 {donation.goalLabel}까지
               </span>
-              <span className="text-[12px] font-extrabold" style={{ color: "#D85575" }}>
+              <span className="text-[12px] font-bold" style={{ color: "var(--color-primary-dark)" }}>
                 {donation.total.toLocaleString()}원
                 <span className="font-bold text-text-light"> / {donation.goal.toLocaleString()}원</span>
               </span>
             </div>
-            <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: "rgba(232,107,140,0.15)" }}>
+            <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: "rgba(173,94,59,0.15)" }}>
               <div
                 className="h-full rounded-full transition-all"
                 style={{
                   width: `${Math.min(100, Math.max(3, (donation.total / donation.goal) * 100))}%`,
-                  background: "linear-gradient(90deg, #E86B8C 0%, #D85575 100%)",
+                  background: "var(--color-primary)",
                 }}
               />
             </div>
-            <p className="text-[10.5px] text-text-light mt-1.5">
+            <p className="text-[11px] text-text-light mt-1.5">
               {donation.total >= donation.goal
                 ? "목표 달성! 중성화 지원에 쓰여요 🎉"
                 : "구매 하나하나가 여기 쌓여요"}
@@ -324,7 +317,7 @@ export default function ShopPage() {
           </div>
         ) : (
           // 헤드라인에서 이미 용도를 말했으니 여기서는 반복하지 않는다
-          <p className="text-[11.5px] text-text-sub mt-1">
+          <p className="text-[11px] text-text-sub mt-1">
             첫 구매가 첫 후원이 돼요
           </p>
         )}
@@ -335,15 +328,15 @@ export default function ShopPage() {
         className="mb-4 flex items-center gap-2 px-3.5 py-2 rounded-2xl"
         style={{ background: "rgba(255,169,39,0.1)", border: "1px solid rgba(255,169,39,0.25)" }}
       >
-        <span className="text-[13px] shrink-0">🚧</span>
-        <p className="text-[11px] font-semibold leading-snug" style={{ color: "#A6741E" }}>
+        <Construction size={15} className="shrink-0" style={{ color: "var(--color-warning)" }} />
+        <p className="text-[11px] font-semibold leading-snug" style={{ color: "var(--color-warning)" }}>
           정식 오픈을 준비하고 있어요. 준비되면 알려드릴게요.
         </p>
       </div>
 
       {/* ── 오픈 사전알림 (푸시 옵트인 재사용, 쇼핑 전용 dismiss 키) ── */}
       <PushOptInCard
-        title="정식 오픈하면 가장 먼저 알려드릴까요? 🔔"
+        title="정식 오픈하면 가장 먼저 알려드릴까요?"
         description="오픈 소식과 첫 혜택을 푸시로 보내드려요"
         dismissKey="dosigongzon_shop_open_optin_dismissed_at"
       />
@@ -359,13 +352,9 @@ export default function ShopPage() {
               onClick={() => setFilter(f.key)}
               className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-[12px] font-bold active:scale-95 transition-transform shrink-0"
               style={{
-                background: on
-                  ? "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)"
-                  : "rgba(255,255,255,0.9)",
-                color: on ? "#fff" : "#666",
-                boxShadow: on
-                  ? "0 2px 8px rgba(173, 94, 59,0.35)"
-                  : "0 2px 6px rgba(0,0,0,0.05)",
+                background: on ? "var(--color-primary)" : "rgba(255,255,255,0.9)",
+                color: on ? "#fff" : "var(--color-text-sub)",
+                boxShadow: on ? "var(--shadow-card)" : "0 2px 6px rgba(0,0,0,0.05)",
               }}
             >
               <f.Icon size={13} />
@@ -379,14 +368,14 @@ export default function ShopPage() {
       {loading ? (
         <div className="grid grid-cols-2 gap-3">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="rounded-[22px] animate-pulse" style={{ aspectRatio: "1 / 1.4", background: "var(--color-surface-alt)" }} />
+            <div key={i} className="rounded-[var(--radius-card)] animate-pulse" style={{ aspectRatio: "1 / 1.4", background: "var(--color-surface-alt)" }} />
           ))}
         </div>
       ) : visible.length === 0 ? (
         <div className="flex flex-col items-center text-center pt-14">
-          <span className="text-[40px] mb-3">🐾</span>
+          <PawPrint size={40} className="mb-3" style={{ color: "var(--color-text-muted)" }} />
           <p className="text-[14px] font-bold text-text-main mb-1">아직 준비 중이에요</p>
-          <p className="text-[12.5px] text-text-sub">곧 채워질 거예요!</p>
+          <p className="text-[13px] text-text-sub">곧 채워질 거예요!</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-3">
@@ -400,7 +389,7 @@ export default function ShopPage() {
       <div className="mt-8 text-center">
         <Link
           href="/shop/policy"
-          className="text-[11.5px] font-semibold text-text-light underline underline-offset-2"
+          className="text-[11px] font-semibold text-text-light underline underline-offset-2"
         >
           쇼핑몰 이용안내 · 교환/반품/환불 규정
         </Link>

@@ -45,7 +45,7 @@ function timelineIndex(status: OrderStatus): number {
 }
 
 const sectionStyle = {
-  background: "#fff",
+  background: "var(--color-surface)",
   borderRadius: "var(--radius-card)",
   boxShadow: "var(--shadow-card)",
   border: "1px solid rgba(0,0,0,0.04)",
@@ -183,18 +183,18 @@ export default function OrderDetailPage() {
             <div className="flex items-center justify-between mb-1">
               <span className="text-[12px] font-semibold text-text-light">{order.order_number}</span>
               <span
-                className="text-[11px] font-extrabold px-2.5 py-1 rounded-lg"
+                className="text-[11px] font-bold px-2.5 py-1 rounded-lg"
                 style={{ backgroundColor: `${status.color}15`, color: status.color }}
               >
                 {status.label}
               </span>
             </div>
-            <p className="text-[11.5px] text-text-light">{formatDate(order.created_at)} 주문</p>
+            <p className="text-[11px] text-text-light">{formatDate(order.created_at)} 주문</p>
 
             {/* 상태 타임라인 */}
             {isAborted ? (
               <div
-                className="mt-4 py-3 text-center rounded-2xl text-[12.5px] font-bold"
+                className="mt-4 py-3 text-center rounded-2xl text-[13px] font-bold"
                 style={{ background: `${status.color}10`, color: status.color }}
               >
                 {order.status === "cancelled" ? "이 주문은 취소되었어요" : "이 주문은 환불 처리되었어요"}
@@ -221,7 +221,7 @@ export default function OrderDetailPage() {
                         )}
                       </div>
                       <span
-                        className="text-[9.5px] font-bold mt-1.5"
+                        className="text-[11px] font-bold mt-1.5"
                         style={{ color: reached ? "var(--color-primary)" : "var(--color-text-light)" }}
                       >
                         {step.label}
@@ -232,7 +232,7 @@ export default function OrderDetailPage() {
               </div>
             ) : (
               <div
-                className="mt-4 py-3 text-center rounded-2xl text-[12.5px] font-bold"
+                className="mt-4 py-3 text-center rounded-2xl text-[13px] font-bold"
                 style={{ background: "rgba(138,144,160,0.1)", color: "var(--color-text-light)" }}
               >
                 결제를 기다리고 있어요
@@ -243,7 +243,7 @@ export default function OrderDetailPage() {
             {!isAborted && refundStatus === "requested" && (
               <div
                 className="mt-3 py-2.5 text-center rounded-2xl text-[12px] font-bold"
-                style={{ background: "rgba(232,141,90,0.12)", color: "#E88D5A" }}
+                style={{ background: "rgba(255,169,39,0.12)", color: "var(--color-warning)" }}
               >
                 환불 요청이 접수됐어요 — 관리자 확인 후 처리돼요
               </div>
@@ -260,15 +260,15 @@ export default function OrderDetailPage() {
 
           {/* 주문 상품 */}
           <section className="p-4" style={sectionStyle}>
-            <h2 className="text-[13.5px] font-extrabold text-text-main mb-3">주문 상품</h2>
+            <h2 className="text-[13px] font-bold text-text-main mb-3">주문 상품</h2>
             <div className="space-y-2">
               {order.items.map((item) => (
                 <div key={item.id} className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-bold text-text-main truncate">{item.product_name}</p>
-                    <p className="text-[11.5px] text-text-sub">{formatWon(item.product_price)} · {item.quantity}개</p>
+                    <p className="text-[13px] font-medium text-text-main truncate">{item.product_name}</p>
+                    <p className="text-[11px] text-text-sub">{formatWon(item.product_price)} · {item.quantity}개</p>
                   </div>
-                  <span className="text-[13px] font-extrabold text-text-main shrink-0 ml-3">{formatWon(item.subtotal)}</span>
+                  <span className="text-[13px] font-medium text-text-main shrink-0 ml-3">{formatWon(item.subtotal)}</span>
                 </div>
               ))}
             </div>
@@ -276,25 +276,25 @@ export default function OrderDetailPage() {
 
           {/* 배송지 */}
           <section className="p-4" style={sectionStyle}>
-            <h2 className="text-[13.5px] font-extrabold text-text-main mb-3 flex items-center gap-1.5">
+            <h2 className="text-[13px] font-bold text-text-main mb-3 flex items-center gap-1.5">
               <MapPin size={14} style={{ color: "var(--color-primary)" }} /> 배송지
             </h2>
             {order.recipient_address ? (
               <>
                 <p className="text-[13px] font-bold text-text-main">{order.recipient_name} · {order.recipient_phone}</p>
-                <p className="text-[12.5px] text-text-sub mt-1">
+                <p className="text-[13px] text-text-sub mt-1">
                   ({order.postal_code}) {order.recipient_address}
                   {order.recipient_address_detail ? ` ${order.recipient_address_detail}` : ""}
                 </p>
               </>
             ) : (
-              <p className="text-[12.5px] text-text-sub">💛 후원 상품 주문이라 배송이 없어요.</p>
+              <p className="text-[13px] text-text-sub">💛 후원 상품 주문이라 배송이 없어요.</p>
             )}
             {order.memo && (
               <p className="text-[12px] text-text-light mt-2">메모: {order.memo}</p>
             )}
             {order.tracking_number && (
-              <p className="text-[12.5px] text-text-sub mt-2 flex items-center gap-1.5">
+              <p className="text-[13px] text-text-sub mt-2 flex items-center gap-1.5">
                 <Truck size={13} /> 운송장번호 <span className="font-bold text-text-main">{order.tracking_number}</span>
               </p>
             )}
@@ -302,37 +302,37 @@ export default function OrderDetailPage() {
 
           {/* 결제 정보 */}
           <section className="p-4" style={sectionStyle}>
-            <h2 className="text-[13.5px] font-extrabold text-text-main mb-3 flex items-center gap-1.5">
+            <h2 className="text-[13px] font-bold text-text-main mb-3 flex items-center gap-1.5">
               <CreditCard size={14} style={{ color: "var(--color-primary)" }} /> 결제 정보
             </h2>
-            <div className="flex items-center justify-between text-[12.5px] text-text-sub mb-1.5">
+            <div className="flex items-center justify-between text-[13px] text-text-sub mb-1.5">
               <span>상품금액</span>
               <span>{formatWon(order.total_amount)}</span>
             </div>
-            <div className="flex items-center justify-between text-[12.5px] text-text-sub mb-2.5">
+            <div className="flex items-center justify-between text-[13px] text-text-sub mb-2.5">
               <span>배송비</span>
               <span>{order.shipping_fee > 0 ? formatWon(order.shipping_fee) : "무료"}</span>
             </div>
             <div
-              className="flex items-center justify-between pt-2.5 text-[14.5px] font-extrabold text-text-main"
+              className="flex items-center justify-between pt-2.5 text-[15px] font-bold text-text-main"
               style={{ borderTop: "1px dashed rgba(0,0,0,0.08)" }}
             >
               <span>총 결제금액</span>
               <span style={{ color: "var(--color-primary)" }}>{formatWon(order.payment_amount)}</span>
             </div>
             {order.payment_method && (
-              <p className="text-[11.5px] text-text-light mt-2">결제수단: {order.payment_method}</p>
+              <p className="text-[11px] text-text-light mt-2">결제수단: {order.payment_method}</p>
             )}
             {order.paid_at && (
-              <p className="text-[11.5px] text-text-light mt-0.5">{formatDate(order.paid_at)} 결제</p>
+              <p className="text-[11px] text-text-light mt-0.5">{formatDate(order.paid_at)} 결제</p>
             )}
           </section>
 
           {notice && (
-            <p className="text-[12.5px] font-bold text-center" style={{ color: "var(--color-primary)" }}>{notice}</p>
+            <p className="text-[13px] font-bold text-center" style={{ color: "var(--color-primary)" }}>{notice}</p>
           )}
           {error && (
-            <p className="text-[12.5px] font-bold text-center" style={{ color: "#D85555" }}>{error}</p>
+            <p className="text-[13px] font-bold text-center" style={{ color: "var(--color-error)" }}>{error}</p>
           )}
 
           {/* 취소·환불 — 정책 판정(decideRefund)이 허용하는 상태에서만.
@@ -341,7 +341,7 @@ export default function OrderDetailPage() {
             <button
               onClick={() => { setReason("change_of_mind"); setNote(""); setRefundOpen(true); }}
               className="w-full py-3 rounded-2xl text-[13px] font-bold active:scale-[0.98] transition-transform"
-              style={{ background: "rgba(216,85,85,0.08)", color: "#D85555", border: "1px solid rgba(216,85,85,0.2)" }}
+              style={{ background: "rgba(240,68,82,0.08)", color: "var(--color-error)", border: "1px solid rgba(240,68,82,0.2)" }}
             >
               {preShipment ? "주문 취소" : "환불 요청"}
             </button>
@@ -352,24 +352,24 @@ export default function OrderDetailPage() {
       {/* 취소·환불 요청 모달 */}
       {refundOpen && order && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-8" style={{ background: "rgba(20,25,40,0.5)" }}>
-          <div className="w-full max-w-[320px] p-5 max-h-[80vh] overflow-y-auto" style={{ background: "#fff", borderRadius: "var(--radius-modal)" }}>
-            <p className="text-[15px] font-extrabold text-text-main mb-1.5">
+          <div className="w-full max-w-[320px] p-5 max-h-[80vh] overflow-y-auto" style={{ background: "var(--color-surface)", borderRadius: "var(--radius-modal)" }}>
+            <p className="text-[15px] font-bold text-text-main mb-1.5">
               {preShipment ? "주문을 취소할까요?" : "환불을 요청할까요?"}
             </p>
 
             {preShipment ? (
-              <p className="text-[12.5px] text-text-sub leading-relaxed mb-4">
+              <p className="text-[13px] text-text-sub leading-relaxed mb-4">
                 배송 시작 전이라 전액이 결제수단으로 환불돼요. 취소 후에는 되돌릴 수 없어요.
               </p>
             ) : (
               <>
-                <p className="text-[12.5px] text-text-sub leading-relaxed mb-3">환불 사유를 선택해주세요.</p>
+                <p className="text-[13px] text-text-sub leading-relaxed mb-3">환불 사유를 선택해주세요.</p>
                 <div className="space-y-1.5 mb-3">
                   {USER_REASONS.map((code) => (
                     <button
                       key={code}
                       onClick={() => setReason(code)}
-                      className="w-full px-3 py-2.5 rounded-xl text-left text-[12.5px] font-bold"
+                      className="w-full px-3 py-2.5 rounded-xl text-left text-[13px] font-bold"
                       style={{
                         background: reason === code ? "rgba(173,94,59,0.08)" : "var(--color-warm-white)",
                         color: reason === code ? "var(--color-primary)" : "var(--color-text-sub)",
@@ -386,7 +386,7 @@ export default function OrderDetailPage() {
                   placeholder="상세 내용 (선택)"
                   maxLength={500}
                   rows={2}
-                  className="w-full px-3 py-2.5 rounded-xl text-[12.5px] outline-none resize-none mb-3"
+                  className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none resize-none mb-3"
                   style={{ background: "var(--color-warm-white)", border: "1px solid rgba(0,0,0,0.05)" }}
                 />
               </>
@@ -394,7 +394,7 @@ export default function OrderDetailPage() {
 
             {/* 판정 미리보기 — 서버와 같은 decideRefund 결과 */}
             {modalDecision && (modalDecision.allowed ? (
-              <div className="px-3 py-2.5 rounded-xl mb-4 text-[11.5px] leading-relaxed" style={{ background: "rgba(107,142,111,0.08)", color: "#6B8E6F" }}>
+              <div className="px-3 py-2.5 rounded-xl mb-4 text-[11px] leading-relaxed" style={{ background: "rgba(34,163,102,0.08)", color: "var(--color-sage)" }}>
                 <p className="font-bold">{modalDecision.note}</p>
                 <p className="mt-0.5">
                   예상 환불액 <b>{formatWon(refundableAmount(remaining, modalDecision))}</b>
@@ -402,7 +402,7 @@ export default function OrderDetailPage() {
                 </p>
               </div>
             ) : (
-              <p className="px-3 py-2.5 rounded-xl mb-4 text-[11.5px] font-bold leading-relaxed" style={{ background: "rgba(216,85,85,0.08)", color: "#D85555" }}>
+              <p className="px-3 py-2.5 rounded-xl mb-4 text-[11px] font-bold leading-relaxed" style={{ background: "rgba(240,68,82,0.08)", color: "var(--color-error)" }}>
                 {modalDecision.reason}
               </p>
             ))}
@@ -419,8 +419,8 @@ export default function OrderDetailPage() {
               <button
                 onClick={handleRefund}
                 disabled={submitting || !modalDecision?.allowed}
-                className="flex-1 py-3 rounded-2xl text-[13px] font-extrabold text-white disabled:opacity-50"
-                style={{ background: "#D85555" }}
+                className="flex-1 py-3 rounded-2xl text-[13px] font-bold text-white disabled:opacity-50"
+                style={{ background: "var(--color-error)" }}
               >
                 {submitting ? "처리 중…" : preShipment ? "주문 취소" : "환불 요청"}
               </button>
