@@ -537,68 +537,68 @@ export default function CatCard({ name, photoUrl, card, size = "md", onClick }: 
         /* ── 상점 테두리 코스메틱 10종 — 순수 시각 효과, 프레임 숙련도와 같은
            drop-shadow 필터 애니메이션 기법을 재사용해 카드 모양은 안 건드림 ── */
         @keyframes fx-rainbow {
-          0%   { filter: drop-shadow(0 0 6px rgba(255,80,80,0.95)) drop-shadow(0 0 14px rgba(255,80,80,0.6)); }
-          20%  { filter: drop-shadow(0 0 6px rgba(255,210,60,0.95)) drop-shadow(0 0 14px rgba(255,210,60,0.6)); }
-          40%  { filter: drop-shadow(0 0 6px rgba(120,255,140,0.95)) drop-shadow(0 0 14px rgba(120,255,140,0.6)); }
-          60%  { filter: drop-shadow(0 0 6px rgba(100,180,255,0.95)) drop-shadow(0 0 14px rgba(100,180,255,0.6)); }
-          80%  { filter: drop-shadow(0 0 6px rgba(210,120,255,0.95)) drop-shadow(0 0 14px rgba(210,120,255,0.6)); }
-          100% { filter: drop-shadow(0 0 6px rgba(255,80,80,0.95)) drop-shadow(0 0 14px rgba(255,80,80,0.6)); }
+          0%   { filter: drop-shadow(0 0 6px rgba(255,80,80,0.48)) drop-shadow(0 0 9px rgba(255,80,80,0.3)); }
+          20%  { filter: drop-shadow(0 0 6px rgba(255,210,60,0.48)) drop-shadow(0 0 9px rgba(255,210,60,0.3)); }
+          40%  { filter: drop-shadow(0 0 6px rgba(120,255,140,0.48)) drop-shadow(0 0 9px rgba(120,255,140,0.3)); }
+          60%  { filter: drop-shadow(0 0 6px rgba(100,180,255,0.48)) drop-shadow(0 0 9px rgba(100,180,255,0.3)); }
+          80%  { filter: drop-shadow(0 0 6px rgba(210,120,255,0.48)) drop-shadow(0 0 9px rgba(210,120,255,0.3)); }
+          100% { filter: drop-shadow(0 0 6px rgba(255,80,80,0.48)) drop-shadow(0 0 9px rgba(255,80,80,0.3)); }
         }
         .border-fx-rainbow { animation: fx-rainbow 3s linear infinite; }
 
         @keyframes fx-gold {
-          0%,100% { filter: drop-shadow(0 0 6px rgba(255,215,60,0.95)) drop-shadow(0 0 14px rgba(255,180,0,0.65)); }
-          50% { filter: drop-shadow(0 0 10px rgba(255,235,140,1)) drop-shadow(0 0 20px rgba(255,200,40,0.85)); }
+          0%,100% { filter: drop-shadow(0 0 6px rgba(255,215,60,0.48)) drop-shadow(0 0 9px rgba(255,180,0,0.33)); }
+          50% { filter: drop-shadow(0 0 10px rgba(255,235,140,0.5)) drop-shadow(0 0 13px rgba(255,200,40,0.43)); }
         }
         .border-fx-gold { animation: fx-gold 2.2s ease-in-out infinite; }
 
         @keyframes fx-holo {
-          0% { filter: drop-shadow(0 0 7px rgba(120,220,255,0.9)) drop-shadow(0 0 14px rgba(120,220,255,0.5)); }
-          33% { filter: drop-shadow(0 0 7px rgba(255,120,220,0.9)) drop-shadow(0 0 14px rgba(255,120,220,0.5)); }
-          66% { filter: drop-shadow(0 0 7px rgba(255,235,120,0.9)) drop-shadow(0 0 14px rgba(255,235,120,0.5)); }
-          100% { filter: drop-shadow(0 0 7px rgba(120,220,255,0.9)) drop-shadow(0 0 14px rgba(120,220,255,0.5)); }
+          0% { filter: drop-shadow(0 0 7px rgba(120,220,255,0.45)) drop-shadow(0 0 9px rgba(120,220,255,0.25)); }
+          33% { filter: drop-shadow(0 0 7px rgba(255,120,220,0.45)) drop-shadow(0 0 9px rgba(255,120,220,0.25)); }
+          66% { filter: drop-shadow(0 0 7px rgba(255,235,120,0.45)) drop-shadow(0 0 9px rgba(255,235,120,0.25)); }
+          100% { filter: drop-shadow(0 0 7px rgba(120,220,255,0.45)) drop-shadow(0 0 9px rgba(120,220,255,0.25)); }
         }
         .border-fx-holo { animation: fx-holo 3s ease-in-out infinite; }
 
         @keyframes fx-sparkle {
-          0%,100% { filter: drop-shadow(0 0 4px rgba(255,255,255,0.9)) drop-shadow(0 0 9px rgba(255,255,255,0.5)); }
-          50% { filter: drop-shadow(0 0 11px rgba(255,255,255,1)) drop-shadow(0 0 22px rgba(255,255,255,0.85)); }
+          0%,100% { filter: drop-shadow(0 0 4px rgba(255,255,255,0.45)) drop-shadow(0 0 9px rgba(255,255,255,0.25)); }
+          50% { filter: drop-shadow(0 0 11px rgba(255,255,255,0.5)) drop-shadow(0 0 15px rgba(255,255,255,0.43)); }
         }
         .border-fx-sparkle { animation: fx-sparkle 1.1s ease-in-out infinite; }
 
         @keyframes fx-neon_blue {
-          0%,100% { filter: drop-shadow(0 0 5px rgba(80,160,255,0.9)) drop-shadow(0 0 12px rgba(80,160,255,0.55)); }
-          50% { filter: drop-shadow(0 0 9px rgba(120,190,255,1)) drop-shadow(0 0 18px rgba(80,160,255,0.8)); }
+          0%,100% { filter: drop-shadow(0 0 5px rgba(80,160,255,0.45)) drop-shadow(0 0 8px rgba(80,160,255,0.28)); }
+          50% { filter: drop-shadow(0 0 9px rgba(120,190,255,0.5)) drop-shadow(0 0 12px rgba(80,160,255,0.4)); }
         }
         .border-fx-neon_blue { animation: fx-neon_blue 1.8s ease-in-out infinite; }
 
         @keyframes fx-neon_pink {
-          0%,100% { filter: drop-shadow(0 0 5px rgba(255,100,190,0.9)) drop-shadow(0 0 12px rgba(255,100,190,0.55)); }
-          50% { filter: drop-shadow(0 0 9px rgba(255,150,210,1)) drop-shadow(0 0 18px rgba(255,100,190,0.8)); }
+          0%,100% { filter: drop-shadow(0 0 5px rgba(255,100,190,0.45)) drop-shadow(0 0 8px rgba(255,100,190,0.28)); }
+          50% { filter: drop-shadow(0 0 9px rgba(255,150,210,0.5)) drop-shadow(0 0 12px rgba(255,100,190,0.4)); }
         }
         .border-fx-neon_pink { animation: fx-neon_pink 1.8s ease-in-out infinite; }
 
         @keyframes fx-fire {
-          0%,100% { filter: drop-shadow(0 0 6px rgba(255,120,40,0.95)) drop-shadow(0 0 13px rgba(255,60,20,0.65)); }
-          50% { filter: drop-shadow(0 0 10px rgba(255,180,60,1)) drop-shadow(0 0 20px rgba(255,90,20,0.85)); }
+          0%,100% { filter: drop-shadow(0 0 6px rgba(255,120,40,0.48)) drop-shadow(0 0 9px rgba(255,60,20,0.33)); }
+          50% { filter: drop-shadow(0 0 10px rgba(255,180,60,0.5)) drop-shadow(0 0 13px rgba(255,90,20,0.43)); }
         }
         .border-fx-fire { animation: fx-fire 0.9s ease-in-out infinite; }
 
         @keyframes fx-ice {
-          0%,100% { filter: drop-shadow(0 0 6px rgba(160,230,255,0.9)) drop-shadow(0 0 13px rgba(120,210,255,0.55)); }
-          50% { filter: drop-shadow(0 0 10px rgba(220,250,255,1)) drop-shadow(0 0 20px rgba(160,230,255,0.8)); }
+          0%,100% { filter: drop-shadow(0 0 6px rgba(160,230,255,0.45)) drop-shadow(0 0 9px rgba(120,210,255,0.28)); }
+          50% { filter: drop-shadow(0 0 10px rgba(220,250,255,0.5)) drop-shadow(0 0 13px rgba(160,230,255,0.4)); }
         }
         .border-fx-ice { animation: fx-ice 2.5s ease-in-out infinite; }
 
         @keyframes fx-starlight {
-          0%,100% { filter: drop-shadow(0 0 5px rgba(255,245,200,0.85)) drop-shadow(0 0 12px rgba(255,220,140,0.5)); }
-          50% { filter: drop-shadow(0 0 9px rgba(255,250,220,1)) drop-shadow(0 0 18px rgba(255,230,160,0.75)); }
+          0%,100% { filter: drop-shadow(0 0 5px rgba(255,245,200,0.43)) drop-shadow(0 0 8px rgba(255,220,140,0.25)); }
+          50% { filter: drop-shadow(0 0 9px rgba(255,250,220,0.5)) drop-shadow(0 0 12px rgba(255,230,160,0.38)); }
         }
         .border-fx-starlight { animation: fx-starlight 2.6s ease-in-out infinite; }
 
         @keyframes fx-shadow {
-          0%,100% { filter: drop-shadow(0 0 6px rgba(110,60,160,0.8)) drop-shadow(0 0 14px rgba(40,20,60,0.6)); }
-          50% { filter: drop-shadow(0 0 10px rgba(150,90,200,0.9)) drop-shadow(0 0 20px rgba(60,30,90,0.8)); }
+          0%,100% { filter: drop-shadow(0 0 6px rgba(110,60,160,0.4)) drop-shadow(0 0 9px rgba(40,20,60,0.3)); }
+          50% { filter: drop-shadow(0 0 10px rgba(150,90,200,0.45)) drop-shadow(0 0 13px rgba(60,30,90,0.4)); }
         }
         .border-fx-shadow { animation: fx-shadow 2.8s ease-in-out infinite; }
 
