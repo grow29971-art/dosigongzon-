@@ -166,7 +166,7 @@ export default function EmergencyGuidePage() {
         >
           <ArrowLeft size={22} className="text-text-main" />
         </Link>
-        <h1 className="text-[22px] font-extrabold text-text-main tracking-tight leading-snug">
+        <h1 className="text-[24px] font-extrabold text-text-main tracking-tight leading-snug">
           길고양이 응급 구조·응급처치 완벽 가이드
         </h1>
       </div>
@@ -175,13 +175,13 @@ export default function EmergencyGuidePage() {
       <div
         className="rounded-2xl p-4 mb-5"
         style={{
-          background: "linear-gradient(135deg, #FBEAEA 0%, #FFE3E3 100%)",
+          background: "#FBEAEA",
           border: "1px solid rgba(216,85,85,0.3)",
         }}
       >
         <div className="flex items-center gap-2 mb-2.5">
           <Phone size={15} color="#B84545" />
-          <p className="text-[13px] font-extrabold" style={{ color: "#8B2F2F" }}>
+          <p className="text-[13px] font-bold" style={{ color: "#8B2F2F" }}>
             위급 상황 시 바로 연락
           </p>
         </div>
@@ -191,27 +191,27 @@ export default function EmergencyGuidePage() {
             className="rounded-xl bg-white p-3 flex flex-col items-center active:scale-95"
             style={{ border: "1px solid rgba(216,85,85,0.15)" }}
           >
-            <span className="text-[18px]">🚔</span>
-            <p className="text-[10px] text-text-sub mt-1">학대·범죄 신고</p>
-            <p className="text-[14px] font-extrabold" style={{ color: "#B84545" }}>112</p>
+            <span className="text-[17px]">🚔</span>
+            <p className="text-[11px] text-text-sub mt-1">학대·범죄 신고</p>
+            <p className="text-[15px] font-bold" style={{ color: "#B84545" }}>112</p>
           </a>
           <a
             href="tel:1577-0954"
             className="rounded-xl bg-white p-3 flex flex-col items-center active:scale-95"
             style={{ border: "1px solid rgba(216,85,85,0.15)" }}
           >
-            <span className="text-[18px]">🐾</span>
-            <p className="text-[10px] text-text-sub mt-1">동물보호상담</p>
-            <p className="text-[13px] font-extrabold" style={{ color: "#B84545" }}>1577-0954</p>
+            <span className="text-[17px]">🐾</span>
+            <p className="text-[11px] text-text-sub mt-1">동물보호상담</p>
+            <p className="text-[13px] font-bold" style={{ color: "#B84545" }}>1577-0954</p>
           </a>
           <a
             href="tel:1577-2504"
             className="rounded-xl bg-white p-3 flex flex-col items-center active:scale-95"
             style={{ border: "1px solid rgba(216,85,85,0.15)" }}
           >
-            <span className="text-[18px]">🚧</span>
-            <p className="text-[10px] text-text-sub mt-1">도로 로드킬</p>
-            <p className="text-[13px] font-extrabold" style={{ color: "#B84545" }}>1577-2504</p>
+            <span className="text-[17px]">🚧</span>
+            <p className="text-[11px] text-text-sub mt-1">도로 로드킬</p>
+            <p className="text-[13px] font-bold" style={{ color: "#B84545" }}>1577-2504</p>
           </a>
         </div>
       </div>
@@ -224,7 +224,7 @@ export default function EmergencyGuidePage() {
           border: "1px solid rgba(184,69,69,0.15)",
         }}
       >
-        <p className="text-[13.5px] leading-relaxed text-text-main">
+        <p className="text-[13px] leading-relaxed text-text-main">
           다친 길고양이를 발견했을 때 가장 큰 실수는 <strong>겁먹고 아무것도 안 하거나, 반대로 맨손으로 덥썩 안는 것</strong>이에요.
           고양이는 통증·공포 상태에서 가족이든 구조자든 가리지 않고 물고 할퀼 수 있어 본인도 부상당합니다.
           이 가이드는 <strong>안전 확보 → 상태 판단 → 응급처치 → 이송 → 사후 조치</strong> 5단계로
@@ -241,7 +241,7 @@ export default function EmergencyGuidePage() {
         className="rounded-2xl bg-white p-4 mb-6"
         style={{ border: "1px solid rgba(0,0,0,0.05)" }}
       >
-        <p className="text-[11px] font-extrabold text-text-sub tracking-[0.1em] mb-2">목차</p>
+        <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
           <li><a href="#signs" className="hover:underline">위급 신호 8가지 — 즉시 병원</a></li>
           <li><a href="#step-1" className="hover:underline">1단계: 안전 확보</a></li>
@@ -256,11 +256,11 @@ export default function EmergencyGuidePage() {
 
       {/* 위급 신호 */}
       <section id="signs" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <AlertTriangle size={20} color="#D85555" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <AlertTriangle size={20} color="var(--color-error)" />
           위급 신호 8가지 — 즉시 병원
         </h2>
-        <p className="text-[14px] text-text-main leading-relaxed mb-3">
+        <p className="text-[15px] text-text-main leading-relaxed mb-3">
           아래 중 <strong>하나라도 해당되면 관찰·판단 스킵하고 바로 병원</strong>으로. 분 단위 생존율입니다.
         </p>
         <div className="grid grid-cols-2 gap-2">
@@ -272,7 +272,7 @@ export default function EmergencyGuidePage() {
             >
               <div className="flex items-center gap-1.5 mb-1">
                 <span style={{ fontSize: 16 }}>{s.emoji}</span>
-                <span className="text-[12.5px] font-extrabold" style={{ color: "#8B2F2F" }}>
+                <span className="text-[13px] font-bold" style={{ color: "#8B2F2F" }}>
                   {s.title}
                 </span>
               </div>
@@ -284,22 +284,22 @@ export default function EmergencyGuidePage() {
 
       {/* Step 1 */}
       <section id="step-1" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Shield size={20} color="#B84545" />
-          <span className="w-7 h-7 chip-square bg-[#B84545] text-white text-[12px] font-extrabold flex items-center justify-center">1</span>
+          <span className="w-7 h-7 chip-square bg-[#B84545] text-white text-[13px] font-bold flex items-center justify-center">1</span>
           안전 확보
         </h2>
-        <p className="text-[14px] text-text-main leading-relaxed mb-3">
+        <p className="text-[15px] text-text-main leading-relaxed mb-3">
           구조자가 다치면 고양이도 같이 못 구합니다. <strong>본인 안전이 1순위</strong>예요.
         </p>
-        <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">차도·위험 지역이라면</h3>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">차도·위험 지역이라면</h3>
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li>차량 대피 공간 먼저 확보 — <strong>반드시 비상등</strong> 켜고 안전 삼각대 설치</li>
           <li>동행자가 있으면 한 명은 교통 유도, 다른 한 명이 접근</li>
           <li>야간이면 전조등이나 핸드폰 손전등 켜 드라이버에게 가시 확보</li>
         </ul>
-        <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">고양이에게 접근할 때</h3>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">고양이에게 접근할 때</h3>
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li><strong>두꺼운 장갑 착용</strong> — 통증·공포 상태의 고양이는 가족·구조자 가리지 않고 뭅니다</li>
           <li>또는 수건·담요로 <strong>손과 팔을 감싼</strong> 뒤 접근</li>
           <li>천천히 낮은 자세로, 조용한 목소리로 "괜찮아" 같은 단어 반복</li>
@@ -309,12 +309,12 @@ export default function EmergencyGuidePage() {
 
       {/* Step 2 */}
       <section id="step-2" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Stethoscope size={20} color="#4A7BA8" />
-          <span className="w-7 h-7 chip-square bg-[#4A7BA8] text-white text-[12px] font-extrabold flex items-center justify-center">2</span>
+          <span className="w-7 h-7 chip-square bg-[#4A7BA8] text-white text-[13px] font-bold flex items-center justify-center">2</span>
           상태 파악 (5초 체크)
         </h2>
-        <p className="text-[14px] text-text-main leading-relaxed mb-3">
+        <p className="text-[15px] text-text-main leading-relaxed mb-3">
           의사결정에 쓸 시간은 길지 않아요. <strong>5초 내</strong> 네 가지를 빠르게 확인하세요.
         </p>
         <div className="rounded-2xl overflow-hidden mb-4" style={{ border: "1px solid rgba(0,0,0,0.08)" }}>
@@ -340,53 +340,53 @@ export default function EmergencyGuidePage() {
             </tbody>
           </table>
         </div>
-        <p className="text-[12.5px] text-text-sub leading-relaxed">
+        <p className="text-[13px] text-text-sub leading-relaxed">
           몸을 만지기 전에 <strong>눈으로만 우선 확인</strong>하세요. 통증 부위 잘못 건드리면 쇼크 올 수 있어요.
         </p>
       </section>
 
       {/* Step 3 */}
       <section id="step-3" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Droplet size={20} color="#AD5E3B" />
-          <span className="w-7 h-7 chip-square bg-[var(--color-primary)] text-white text-[12px] font-extrabold flex items-center justify-center">3</span>
+          <span className="w-7 h-7 chip-square bg-[var(--color-primary)] text-white text-[13px] font-bold flex items-center justify-center">3</span>
           응급처치 (상황별)
         </h2>
-        <p className="text-[14px] text-text-main leading-relaxed mb-3">
+        <p className="text-[15px] text-text-main leading-relaxed mb-3">
           가능한 처치와 해선 안 되는 처치를 혼동하지 마세요. <strong>"이송을 위한 최소한의 안정"</strong>이 목표지, 치료가 아닙니다.
         </p>
 
-        <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">🩸 출혈</h3>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">출혈</h3>
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li>깨끗한 천·거즈로 <strong>상처 부위를 직접 압박</strong> (2~3분)</li>
           <li>지혈되지 않으면 위쪽으로 천을 덧대며 계속 압박 (기존 거즈 떼지 말기)</li>
           <li>지혈대는 금물 — 혈액 순환 완전 차단되면 조직 괴사</li>
         </ul>
 
-        <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">🤕 골절 의심</h3>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">골절 의심</h3>
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li>골절 부위가 움직이지 않게 <strong>부목·딱딱한 책</strong>으로 고정</li>
           <li>고정이 어렵거나 확신 없으면 건드리지 말고 담요 감싸서 이송</li>
           <li>수술 가능성 있으니 <strong>무엇을 먹이지도 말기</strong> (마취 문제)</li>
         </ul>
 
-        <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">🌀 경련·발작</h3>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">경련·발작</h3>
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li>손으로 누르지 말기 — 척추 부상 위험</li>
           <li>주변의 딱딱한 물건 치우고 부상 방지</li>
           <li>경련이 멎을 때까지 기다린 후 즉시 이송</li>
           <li>구토물·먹던 음식 있으면 <strong>샘플 확보</strong> (중독 진단용)</li>
         </ul>
 
-        <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">🤮 중독 의심</h3>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">중독 의심</h3>
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li>입에 거품 + 구토 + 기력 소실이면 즉시 이송</li>
           <li>주변에 의심 물질(쥐약·부동액·청소약품) 있으면 <strong>용기·라벨 촬영</strong></li>
           <li>사람용 최토제·활성탄 금지 — 반드시 수의사 판단으로</li>
         </ul>
 
-        <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">❄️ 저체온</h3>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">저체온</h3>
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li>수건으로 감싸고 자동차 히터로 실내 20~25℃ 유지</li>
           <li>핫팩은 수건에 <strong>감싼 후</strong> 간접적으로 (직접 닿으면 저온 화상)</li>
           <li>뜨거운 물에 담그거나 드라이어 금지 — 쇼크 위험</li>
@@ -395,12 +395,12 @@ export default function EmergencyGuidePage() {
 
       {/* Step 4 */}
       <section id="step-4" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Car size={20} color="#6B8E6F" />
-          <span className="w-7 h-7 chip-square bg-[#6B8E6F] text-white text-[12px] font-extrabold flex items-center justify-center">4</span>
+          <span className="w-7 h-7 chip-square bg-[#6B8E6F] text-white text-[13px] font-bold flex items-center justify-center">4</span>
           안전 이송
         </h2>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li>이동장·박스에 <strong>담요 깔고</strong> 고양이를 수건으로 감싸 넣기</li>
           <li>이동장 없으면 큰 박스 + 뚜껑 (숨구멍 필수)</li>
           <li>차량 내 온도 20~25℃ 유지. 에어컨 직풍 금지</li>
@@ -412,12 +412,12 @@ export default function EmergencyGuidePage() {
 
       {/* Step 5 */}
       <section id="step-5" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Flame size={20} color="#E88D5A" />
-          <span className="w-7 h-7 chip-square bg-[#E88D5A] text-white text-[12px] font-extrabold flex items-center justify-center">5</span>
+          <span className="w-7 h-7 chip-square bg-[#E88D5A] text-white text-[13px] font-bold flex items-center justify-center">5</span>
           사후 조치·신고
         </h2>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li><strong>학대 정황</strong>이 있으면 112 신고 + 증거 사진 확보 (동물보호법 제8조 위반 = 형사처벌 대상)</li>
           <li><strong>로드킬</strong>은 도로관리청(1577-2504)에 장소·시간 신고 → 재발 방지·운전자 주의 표지판</li>
           <li>병원 치료 후 발견 장소에 재방사할지, 임시보호할지 결정 — <Link href="/community/category/foster" className="text-primary font-bold underline">커뮤니티 임보</Link>에 도움 요청 가능</li>
@@ -428,12 +428,12 @@ export default function EmergencyGuidePage() {
 
       {/* 하지 말아야 할 것 */}
       <section id="dont" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <AlertTriangle size={20} color="#D85555" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <AlertTriangle size={20} color="var(--color-error)" />
           절대 하지 말아야 할 행동
         </h2>
         <div className="rounded-2xl p-4" style={{ background: "#FDECEC", border: "1px solid rgba(216,85,85,0.2)" }}>
-          <ul className="text-[13.5px] space-y-2 pl-4 list-disc leading-relaxed" style={{ color: "#8B2F2F" }}>
+          <ul className="text-[13px] space-y-2 pl-4 list-disc leading-relaxed" style={{ color: "#8B2F2F" }}>
             <li><strong>사람용 약 투여</strong> — 타이레놀·아스피린·이부프로펜 등. 치명적</li>
             <li><strong>억지로 물·음식 주기</strong> — 의식 저하 상태면 기도 막힘</li>
             <li><strong>상처를 알코올·과산화수소로 닦기</strong> — 조직 손상 악화</li>
@@ -446,8 +446,8 @@ export default function EmergencyGuidePage() {
 
       {/* FAQ */}
       <section id="faq" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-4">
-          <HelpCircle size={20} color="#48A59E" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-4">
+          <HelpCircle size={20} color="var(--color-sage)" />
           자주 묻는 질문
         </h2>
         <div className="space-y-3">
@@ -457,7 +457,7 @@ export default function EmergencyGuidePage() {
               className="rounded-xl bg-white p-4 group"
               style={{ border: "1px solid rgba(0,0,0,0.06)" }}
             >
-              <summary className="cursor-pointer text-[14px] font-bold text-text-main flex items-center gap-2 list-none">
+              <summary className="cursor-pointer text-[15px] font-bold text-text-main flex items-center gap-2 list-none">
                 <span className="text-primary">Q.</span>
                 <span className="flex-1">{q.name}</span>
               </summary>
@@ -471,7 +471,7 @@ export default function EmergencyGuidePage() {
 
       {/* 관련 가이드 */}
       <section className="mb-8">
-        <h2 className="flex items-center gap-2 text-[16px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <BookOpen size={18} color="#AD5E3B" />
           관련 가이드
         </h2>
@@ -481,10 +481,10 @@ export default function EmergencyGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <span className="text-[18px]">🐱</span>
+            <span className="text-[17px]">🐱</span>
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-bold text-text-main">새끼 고양이(냥줍) 가이드</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">어린 아이 발견했을 때 대응</p>
+              <p className="text-[13px] font-bold text-text-main">새끼 고양이(냥줍) 가이드</p>
+              <p className="text-[11px] text-text-sub mt-0.5">어린 아이 발견했을 때 대응</p>
             </div>
           </Link>
           <Link
@@ -492,10 +492,10 @@ export default function EmergencyGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <span className="text-[18px]">✂️</span>
+            <span className="text-[17px]">✂️</span>
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-bold text-text-main">TNR 포획 가이드</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">중성화 수술을 위한 안전한 포획</p>
+              <p className="text-[13px] font-bold text-text-main">TNR 포획 가이드</p>
+              <p className="text-[11px] text-text-sub mt-0.5">중성화 수술을 위한 안전한 포획</p>
             </div>
           </Link>
           <Link
@@ -503,10 +503,10 @@ export default function EmergencyGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <span className="text-[18px]">⚖️</span>
+            <span className="text-[17px]">⚖️</span>
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-bold text-text-main">동물보호법·학대 신고</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">법적 대응과 증거 확보 방법</p>
+              <p className="text-[13px] font-bold text-text-main">동물보호법·학대 신고</p>
+              <p className="text-[11px] text-text-sub mt-0.5">법적 대응과 증거 확보 방법</p>
             </div>
           </Link>
         </div>
@@ -515,7 +515,7 @@ export default function EmergencyGuidePage() {
       {/* 신뢰 출처 */}
       <section className="mb-8 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid rgba(0,0,0,0.04)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2">참고한 공공 자료</h3>
-        <ul className="text-[12px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
+        <ul className="text-[13px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
           <li>동물보호관리시스템 (animal.go.kr) — 농림축산식품부</li>
           <li>동물보호법 및 시행령</li>
           <li>국민재난안전포털 (safekorea.go.kr)</li>

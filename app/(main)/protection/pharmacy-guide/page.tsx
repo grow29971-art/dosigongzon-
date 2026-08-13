@@ -227,14 +227,14 @@ export default async function PharmacyGuidePage() {
       <div
         className="flex items-start gap-3 px-4 py-3.5 mb-5"
         style={{
-          background: "linear-gradient(135deg, #FBEAEA 0%, #FFF 100%)",
-          borderRadius: 18,
+          background: "#FBEAEA",
+          borderRadius: "var(--radius-card-sm)",
           border: "1px solid rgba(216,85,85,0.15)",
         }}
       >
-        <AlertTriangle size={18} className="shrink-0 mt-0.5" style={{ color: "#D85555" }} />
+        <AlertTriangle size={18} className="shrink-0 mt-0.5" style={{ color: "var(--color-error)" }} />
         <div>
-          <p className="text-[12px] font-bold leading-snug" style={{ color: "#B84545" }}>
+          <p className="text-[13px] font-bold leading-snug" style={{ color: "#B84545" }}>
             약품 사용 전 반드시 확인
           </p>
           <p className="text-[11px] text-text-sub mt-1 leading-relaxed">
@@ -252,7 +252,7 @@ export default async function PharmacyGuidePage() {
           border: "1px solid rgba(155,109,215,0.2)",
         }}
       >
-        <p className="text-[13.5px] leading-relaxed text-text-main">
+        <p className="text-[13px] leading-relaxed text-text-main">
           길고양이 돌봄에는 <strong>구충제·영양제·응급 외용약</strong> 몇 가지만 갖춰두면 일상적 대응이 가능합니다.
           동물약국은 처방전 없이 살 수 있고 병원보다 저렴해요. 다만
           <strong className="mx-1">사람 약은 절대 금지</strong>, 증상 심하거나 오래가면 반드시 병원.
@@ -268,10 +268,10 @@ export default async function PharmacyGuidePage() {
         className="rounded-2xl bg-white p-4 mb-6"
         style={{ border: "1px solid rgba(0,0,0,0.05)" }}
       >
-        <p className="text-[11px] font-extrabold text-text-sub tracking-[0.1em] mb-2">목차</p>
+        <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
           <li><a href="#categories" className="hover:underline">카테고리별 필수 약품</a></li>
-          <li><a href="#banned" className="hover:underline">⛔ 절대 주면 안 되는 사람 약</a></li>
+          <li><a href="#banned" className="hover:underline">절대 주면 안 되는 사람 약</a></li>
           <li><a href="#items" className="hover:underline">상세 제품 카드</a></li>
           <li><a href="#faq" className="hover:underline">자주 묻는 질문</a></li>
         </ol>
@@ -279,7 +279,7 @@ export default async function PharmacyGuidePage() {
 
       {/* 카테고리별 필수 약품 */}
       <section id="categories" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Pill size={20} color="#9B6DD7" />
           카테고리별 필수 약품
         </h2>
@@ -288,15 +288,15 @@ export default async function PharmacyGuidePage() {
             <div
               key={c.title}
               className="rounded-2xl bg-white p-4"
-              style={{ border: `1px solid ${c.color}20`, boxShadow: `0 3px 10px ${c.color}10` }}
+              style={{ border: `1px solid ${c.color}20`, boxShadow: "var(--shadow-card-sm)" }}
             >
               <div className="flex items-center gap-2 mb-2">
                 <span style={{ fontSize: 20 }}>{c.emoji}</span>
-                <h3 className="text-[15px] font-extrabold" style={{ color: c.color }}>
+                <h3 className="text-[15px] font-bold" style={{ color: c.color }}>
                   {c.title}
                 </h3>
               </div>
-              <p className="text-[12.5px] text-text-sub mb-3 leading-relaxed">{c.desc}</p>
+              <p className="text-[13px] text-text-sub mb-3 leading-relaxed">{c.desc}</p>
               <div className="space-y-1.5">
                 {c.items.map((it) => (
                   <div
@@ -304,12 +304,12 @@ export default async function PharmacyGuidePage() {
                     className="flex items-center gap-2 px-3 py-2 rounded-lg"
                     style={{ background: `${c.color}08` }}
                   >
-                    <span className="text-[12px] font-extrabold text-text-main shrink-0" style={{ minWidth: 90 }}>
+                    <span className="text-[13px] font-bold text-text-main shrink-0" style={{ minWidth: 90 }}>
                       {it.name}
                     </span>
                     <span className="text-[11px] text-text-sub flex-1">{it.use}</span>
                     <span
-                      className="text-[9px] font-bold px-1.5 py-0.5 rounded-md shrink-0"
+                      className="text-[11px] font-bold px-1.5 py-0.5 rounded-md shrink-0"
                       style={{ background: c.color, color: "#fff" }}
                     >
                       {it.range}
@@ -324,11 +324,11 @@ export default async function PharmacyGuidePage() {
 
       {/* 절대 금지 */}
       <section id="banned" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <Shield size={20} color="#D85555" />
-          ⛔ 절대 주면 안 되는 사람 약·물질
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <Shield size={20} color="var(--color-error)" />
+          절대 주면 안 되는 사람 약·물질
         </h2>
-        <p className="text-[13.5px] text-text-main leading-relaxed mb-3">
+        <p className="text-[13px] text-text-main leading-relaxed mb-3">
           많은 길집사가 "도와주려다" 치명적 실수를 합니다. 아래 목록은 소량만으로도 중독·사망 가능성이 높은 것들이에요.
         </p>
         <div
@@ -346,10 +346,10 @@ export default async function PharmacyGuidePage() {
             >
               <span style={{ fontSize: 16, marginTop: 2 }}>⛔</span>
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-extrabold" style={{ color: "#8B2F2F" }}>
+                <p className="text-[13px] font-bold" style={{ color: "#8B2F2F" }}>
                   {d.name}
                 </p>
-                <p className="text-[11.5px] mt-0.5 leading-snug" style={{ color: "#B84545" }}>
+                <p className="text-[11px] mt-0.5 leading-snug" style={{ color: "#B84545" }}>
                   {d.reason}
                 </p>
               </div>
@@ -357,7 +357,7 @@ export default async function PharmacyGuidePage() {
           ))}
         </div>
         <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "var(--color-surface-alt)" }}>
-          <p className="font-bold text-text-main mb-1">🚨 중독 의심 시</p>
+          <p className="font-bold text-text-main mb-1">중독 의심 시</p>
           <p className="text-text-sub">
             즉시 24시간 동물병원 이송. <strong>먹던 물질·용기</strong>를 함께 챙겨가면 진단·치료가 빨라집니다.
             응급 대응은 <Link href="/protection/emergency-guide" className="text-primary font-bold underline">응급 구조 가이드</Link> 참고.
@@ -367,11 +367,11 @@ export default async function PharmacyGuidePage() {
 
       {/* DB 기반 상세 카드 */}
       <section id="items" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Stethoscope size={20} color="#9B6DD7" />
           상세 제품 카드
         </h2>
-        <p className="text-[12.5px] text-text-sub mb-4 leading-relaxed">
+        <p className="text-[13px] text-text-sub mb-4 leading-relaxed">
           도시공존 관리자가 직접 검증한 제품 정보입니다. 가격·사용법·주의사항을 확인하세요.
         </p>
 
@@ -387,9 +387,9 @@ export default async function PharmacyGuidePage() {
               key={p.id}
               className="overflow-hidden"
               style={{
-                background: "#FFFFFF",
-                borderRadius: 22,
-                boxShadow: "0 4px 16px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.03)",
+                background: "var(--color-surface)",
+                borderRadius: "var(--radius-card)",
+                boxShadow: "var(--shadow-card-sm)",
                 border: "1px solid rgba(0,0,0,0.04)",
               }}
             >
@@ -408,33 +408,33 @@ export default async function PharmacyGuidePage() {
               {!p.image_url && (
                 <div
                   className="w-full h-36 flex items-center justify-center"
-                  style={{ background: `linear-gradient(135deg, ${p.color}18 0%, ${p.color}08 100%)` }}
+                  style={{ background: `${p.color}10` }}
                 >
-                  <span className="text-[14px] font-bold" style={{ color: p.color }}>{p.category}</span>
+                  <span className="text-[15px] font-bold" style={{ color: p.color }}>{p.category}</span>
                 </div>
               )}
 
               <div className="p-5">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[10px] font-extrabold px-2.5 py-1 rounded-lg" style={{ backgroundColor: p.color, color: "#fff" }}>
+                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg" style={{ backgroundColor: p.color, color: "#fff" }}>
                     {p.category}
                   </span>
-                  {p.brand && <span className="text-[10px] text-text-light">{p.brand}</span>}
+                  {p.brand && <span className="text-[11px] text-text-light">{p.brand}</span>}
                 </div>
-                <h3 className="text-[16px] font-extrabold text-text-main mb-2 leading-tight">{p.name}</h3>
+                <h3 className="text-[17px] font-bold text-text-main mb-2 leading-tight">{p.name}</h3>
                 <p className="text-[13px] text-text-sub leading-relaxed mb-4">{p.description}</p>
 
                 {p.usage_info && (
                   <div className="px-3.5 py-3 rounded-xl mb-2.5" style={{ backgroundColor: `${p.color}10` }}>
-                    <p className="text-[11px] font-extrabold mb-1" style={{ color: p.color }}>사용법</p>
-                    <p className="text-[12px] text-text-main leading-relaxed">{p.usage_info}</p>
+                    <p className="text-[11px] font-bold mb-1" style={{ color: p.color }}>사용법</p>
+                    <p className="text-[13px] text-text-main leading-relaxed">{p.usage_info}</p>
                   </div>
                 )}
 
                 {p.tip && (
                   <div className="px-3.5 py-3 rounded-xl mb-3" style={{ backgroundColor: "var(--color-surface-alt)" }}>
-                    <p className="text-[11px] font-extrabold mb-1 text-primary">💡 알아두세요</p>
-                    <p className="text-[12px] text-text-main leading-relaxed">{p.tip}</p>
+                    <p className="text-[11px] font-bold mb-1 text-primary">알아두세요</p>
+                    <p className="text-[13px] text-text-main leading-relaxed">{p.tip}</p>
                   </div>
                 )}
 
@@ -449,8 +449,8 @@ export default async function PharmacyGuidePage() {
 
       {/* FAQ */}
       <section id="faq" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-4">
-          <HelpCircle size={20} color="#48A59E" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-4">
+          <HelpCircle size={20} color="var(--color-sage)" />
           자주 묻는 질문
         </h2>
         <div className="space-y-3">
@@ -460,7 +460,7 @@ export default async function PharmacyGuidePage() {
               className="rounded-xl bg-white p-4 group"
               style={{ border: "1px solid rgba(0,0,0,0.06)" }}
             >
-              <summary className="cursor-pointer text-[14px] font-bold text-text-main flex items-center gap-2 list-none">
+              <summary className="cursor-pointer text-[15px] font-bold text-text-main flex items-center gap-2 list-none">
                 <span className="text-primary">Q.</span>
                 <span className="flex-1">{q.name}</span>
               </summary>
@@ -474,7 +474,7 @@ export default async function PharmacyGuidePage() {
 
       {/* 관련 가이드 */}
       <section className="mb-8">
-        <h2 className="flex items-center gap-2 text-[16px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <BookOpen size={18} color="#AD5E3B" />
           관련 가이드
         </h2>
@@ -484,10 +484,10 @@ export default async function PharmacyGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <span className="text-[18px]">🚨</span>
+            <span className="text-[17px]">🚨</span>
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-bold text-text-main">응급 구조 가이드</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">중독·부상 발생 시 대응법</p>
+              <p className="text-[13px] font-bold text-text-main">응급 구조 가이드</p>
+              <p className="text-[11px] text-text-sub mt-0.5">중독·부상 발생 시 대응법</p>
             </div>
           </Link>
           <Link
@@ -495,10 +495,10 @@ export default async function PharmacyGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <span className="text-[18px]">🐱</span>
+            <span className="text-[17px]">🐱</span>
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-bold text-text-main">새끼 고양이(냥줍) 가이드</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">KMR 분유·연령별 급여</p>
+              <p className="text-[13px] font-bold text-text-main">새끼 고양이(냥줍) 가이드</p>
+              <p className="text-[11px] text-text-sub mt-0.5">KMR 분유·연령별 급여</p>
             </div>
           </Link>
           <Link
@@ -506,10 +506,10 @@ export default async function PharmacyGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <Stethoscope size={18} color="#6B8E6F" className="shrink-0" />
+            <Stethoscope size={18} color="var(--color-sage)" className="shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-bold text-text-main">구조동물 치료 병원</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">처방·진료 가능한 동물병원</p>
+              <p className="text-[13px] font-bold text-text-main">구조동물 치료 병원</p>
+              <p className="text-[11px] text-text-sub mt-0.5">처방·진료 가능한 동물병원</p>
             </div>
           </Link>
         </div>
@@ -520,8 +520,8 @@ export default async function PharmacyGuidePage() {
         <div
           className="px-5 py-4 text-center"
           style={{
-            background: "#FFFFFF",
-            borderRadius: 18,
+            background: "var(--color-surface)",
+            borderRadius: "var(--radius-card-sm)",
             boxShadow: "var(--shadow-card)",
             border: "1px solid rgba(0,0,0,0.04)",
           }}
@@ -532,8 +532,8 @@ export default async function PharmacyGuidePage() {
             href="/map"
             className="inline-block px-5 py-2.5 rounded-xl text-[13px] font-bold text-white"
             style={{
-              background: "linear-gradient(135deg, #9B6DD7 0%, #7B4FBF 100%)",
-              boxShadow: "0 6px 16px rgba(155,109,215,0.35)",
+              background: "var(--color-primary)",
+              boxShadow: "var(--shadow-primary)",
             }}
           >
             지도에서 동물약국 보기
@@ -544,7 +544,7 @@ export default async function PharmacyGuidePage() {
       {/* 신뢰 출처 */}
       <section className="mt-6 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid rgba(0,0,0,0.04)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2">참고한 공공 자료</h3>
-        <ul className="text-[12px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
+        <ul className="text-[13px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
           <li>식품의약품안전처 동물용의약품 공개 자료</li>
           <li>국가동물의약품관리정보시스템 (EMAH)</li>
           <li>동물약국 표시사항 · 사용설명서</li>

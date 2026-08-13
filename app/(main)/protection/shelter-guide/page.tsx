@@ -176,12 +176,12 @@ export default function ShelterGuidePage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
-        <span className="text-[12px] font-semibold text-text-sub">
+        <span className="text-[13px] font-semibold text-text-sub">
           <Link href="/protection" className="hover:underline">보호지침</Link>
         </span>
       </div>
 
-      <h1 className="text-[26px] font-black text-text-main leading-tight tracking-tight mb-3">
+      <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight mb-3">
         길고양이 <span style={{ color: "#4A7BA8" }}>겨울나기</span> · <br />숨숨집 만들기
       </h1>
 
@@ -192,7 +192,7 @@ export default function ShelterGuidePage() {
           border: "1px solid rgba(74,123,168,0.18)",
         }}
       >
-        <p className="text-[13.5px] leading-relaxed text-text-main">
+        <p className="text-[13px] leading-relaxed text-text-main">
           한겨울 길고양이 사망 원인 1위는 <strong>동사와 탈수</strong>예요.
           두꺼운 스티로폼 박스 하나, 재료비 <strong>1만 5천 원 내외</strong>로 동네 아이들을 지킬 수 있습니다.
           이 가이드는 재료 선택부터 제작 · 설치 · 운영 · 계절별 조정까지 실전 매뉴얼입니다.
@@ -201,7 +201,7 @@ export default function ShelterGuidePage() {
       </div>
 
       <nav aria-label="목차" className="rounded-2xl bg-white p-4 mb-6" style={{ border: "1px solid rgba(0,0,0,0.05)" }}>
-        <p className="text-[11px] font-extrabold text-text-sub tracking-[0.1em] mb-2">목차</p>
+        <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
           <li><a href="#materials" className="hover:underline">준비물</a></li>
           <li><a href="#how" className="hover:underline">5단계 제작법</a></li>
@@ -213,7 +213,7 @@ export default function ShelterGuidePage() {
 
       {/* 준비물 */}
       <section id="materials" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Wrench size={20} color="#4A7BA8" />
           준비물 (총 약 1만 5천 원)
         </h2>
@@ -226,8 +226,8 @@ export default function ShelterGuidePage() {
             >
               <span style={{ fontSize: 20, lineHeight: 1 }} className="shrink-0">{m.emoji}</span>
               <div>
-                <p className="text-[13px] font-extrabold text-text-main">{m.name}</p>
-                <p className="text-[12px] text-text-sub mt-0.5 leading-snug">{m.note}</p>
+                <p className="text-[13px] font-bold text-text-main">{m.name}</p>
+                <p className="text-[13px] text-text-sub mt-0.5 leading-snug">{m.note}</p>
               </div>
             </div>
           ))}
@@ -236,7 +236,7 @@ export default function ShelterGuidePage() {
 
       {/* 제작법 */}
       <section id="how" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Hammer size={20} color="#AD5E3B" />
           5단계 제작법
         </h2>
@@ -248,14 +248,14 @@ export default function ShelterGuidePage() {
               style={{ boxShadow: "var(--shadow-card)" }}
             >
               <div
-                className="w-8 h-8 chip-square flex items-center justify-center shrink-0 text-white text-[13px] font-extrabold"
-                style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
+                className="w-8 h-8 chip-square flex items-center justify-center shrink-0 text-white text-[13px] font-bold"
+                style={{ background: "var(--color-primary)" }}
               >
                 {i + 1}
               </div>
               <div>
-                <p className="text-[14px] font-extrabold text-text-main">{s.name}</p>
-                <p className="text-[12.5px] text-text-sub mt-1 leading-relaxed">{s.text}</p>
+                <p className="text-[15px] font-bold text-text-main">{s.name}</p>
+                <p className="text-[13px] text-text-sub mt-1 leading-relaxed">{s.text}</p>
               </div>
             </div>
           ))}
@@ -264,8 +264,8 @@ export default function ShelterGuidePage() {
 
       {/* 주의사항 */}
       <section id="cautions" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <AlertTriangle size={20} color="#D85555" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <AlertTriangle size={20} color="var(--color-error)" />
           꼭 지켜야 할 5가지
         </h2>
         <div className="space-y-2">
@@ -275,8 +275,8 @@ export default function ShelterGuidePage() {
               className="rounded-xl p-3.5"
               style={{ background: "#FBEAEA", border: "1px solid rgba(216,85,85,0.15)" }}
             >
-              <p className="text-[13px] font-extrabold" style={{ color: "#8B2F2F" }}>⚠️ {c.title}</p>
-              <p className="text-[12px] text-text-sub mt-1 leading-relaxed">{c.desc}</p>
+              <p className="text-[13px] font-bold" style={{ color: "#8B2F2F" }}>{c.title}</p>
+              <p className="text-[13px] text-text-sub mt-1 leading-relaxed">{c.desc}</p>
             </div>
           ))}
         </div>
@@ -284,14 +284,14 @@ export default function ShelterGuidePage() {
 
       {/* 계절별 */}
       <section id="seasons" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <Thermometer size={20} color="#E88D5A" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <Thermometer size={20} color="var(--color-care)" />
           계절별 운영
         </h2>
         <div className="space-y-2.5">
           <div className="rounded-2xl p-4" style={{ background: "#E3F2FD", border: "1px solid #B3D9E8" }}>
-            <p className="text-[13.5px] font-extrabold" style={{ color: "#1E5B8C" }}>❄️ 겨울 (11월 중순 ~ 2월)</p>
-            <ul className="text-[12.5px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
+            <p className="text-[13px] font-bold" style={{ color: "#1E5B8C" }}>겨울 (11월 중순 ~ 2월)</p>
+            <ul className="text-[13px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
               <li>짚은 2주마다 교체 (습기·벌레)</li>
               <li>입구에 천을 커튼처럼 늘어뜨리면 바람 막이 추가</li>
               <li>폭설 후엔 입구가 막히지 않았는지 확인</li>
@@ -299,8 +299,8 @@ export default function ShelterGuidePage() {
             </ul>
           </div>
           <div className="rounded-2xl p-4" style={{ background: "#FFF3E0", border: "1px solid #F2D4A5" }}>
-            <p className="text-[13.5px] font-extrabold" style={{ color: "#B56A1A" }}>🌞 여름 (6 ~ 9월)</p>
-            <ul className="text-[12.5px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
+            <p className="text-[13px] font-bold" style={{ color: "#B56A1A" }}>여름 (6 ~ 9월)</p>
+            <ul className="text-[13px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
               <li>겨울용 스티로폼 박스는 덥고 곰팡이 위험 — 교체 또는 입구 확장</li>
               <li>그늘 있는 평평한 나무판·돌만 있어도 쉼터 역할</li>
               <li>물그릇은 깊고 넓게, 하루 2회 이상 교체</li>
@@ -308,8 +308,8 @@ export default function ShelterGuidePage() {
             </ul>
           </div>
           <div className="rounded-2xl p-4" style={{ background: "#F1F8E9", border: "1px solid #C8E2B0" }}>
-            <p className="text-[13.5px] font-extrabold" style={{ color: "#3F6B1F" }}>🌸 봄·가을 환절기</p>
-            <ul className="text-[12.5px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
+            <p className="text-[13px] font-bold" style={{ color: "#3F6B1F" }}>봄·가을 환절기</p>
+            <ul className="text-[13px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
               <li>봄: 기생충 관리 시작 (구충제 처방 등)</li>
               <li>가을: 겨울 대비 짚·단열 시트 미리 교체</li>
               <li>장마철: 방수 테이프 점검, 입구 방향 확인</li>
@@ -320,18 +320,18 @@ export default function ShelterGuidePage() {
 
       {/* FAQ */}
       <section id="faq" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <HelpCircle size={20} color="#8B65B8" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <HelpCircle size={20} color="var(--color-sage)" />
           자주 묻는 질문
         </h2>
         <div className="space-y-2">
           {faqSchema.mainEntity.map((q, i) => (
             <details key={i} className="bg-white rounded-2xl p-4" style={{ boxShadow: "var(--shadow-card)" }}>
-              <summary className="text-[13.5px] font-extrabold text-text-main cursor-pointer list-none flex items-center justify-between">
+              <summary className="text-[13px] font-bold text-text-main cursor-pointer list-none flex items-center justify-between">
                 <span>Q. {q.name}</span>
-                <span className="text-text-light text-[12px]">+</span>
+                <span className="text-text-light text-[13px]">+</span>
               </summary>
-              <p className="text-[12.5px] text-text-sub mt-2.5 leading-relaxed whitespace-pre-line">
+              <p className="text-[13px] text-text-sub mt-2.5 leading-relaxed whitespace-pre-line">
                 {q.acceptedAnswer.text}
               </p>
             </details>
@@ -341,7 +341,7 @@ export default function ShelterGuidePage() {
 
       {/* 관련 가이드 */}
       <section className="mb-8">
-        <h2 className="text-[15px] font-extrabold text-text-main mb-3">함께 보면 좋은 가이드</h2>
+        <h2 className="text-[15px] font-bold text-text-main mb-3">함께 보면 좋은 가이드</h2>
         <div className="grid grid-cols-1 gap-2">
           <Link
             href="/protection/feeding-guide"
@@ -350,8 +350,8 @@ export default function ShelterGuidePage() {
           >
             <span style={{ fontSize: 22 }}>🍚</span>
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-extrabold text-text-main">먹이 가이드</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">안전한 급식 · 계절별 주의사항</p>
+              <p className="text-[13px] font-bold text-text-main">먹이 가이드</p>
+              <p className="text-[11px] text-text-sub mt-0.5">안전한 급식 · 계절별 주의사항</p>
             </div>
           </Link>
           <Link
@@ -361,8 +361,8 @@ export default function ShelterGuidePage() {
           >
             <span style={{ fontSize: 22 }}>🚨</span>
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-extrabold text-text-main">응급 구조 가이드</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">다친 아이 발견 시 대응법</p>
+              <p className="text-[13px] font-bold text-text-main">응급 구조 가이드</p>
+              <p className="text-[11px] text-text-sub mt-0.5">다친 아이 발견 시 대응법</p>
             </div>
           </Link>
         </div>
@@ -371,7 +371,7 @@ export default function ShelterGuidePage() {
       <section className="mb-2">
         <Link
           href="/map"
-          className="block text-center py-4 rounded-2xl bg-primary text-white text-[14px] font-extrabold active:scale-[0.98]"
+          className="block text-center py-4 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.98]"
           style={{ boxShadow: "var(--shadow-primary)" }}
         >
           <Cat size={16} className="inline mr-1.5 -mt-0.5" />

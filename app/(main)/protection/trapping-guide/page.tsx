@@ -155,7 +155,7 @@ export default function TrappingGuidePage() {
         >
           <ArrowLeft size={22} className="text-text-main" />
         </Link>
-        <h1 className="text-[22px] font-extrabold text-text-main tracking-tight leading-snug">
+        <h1 className="text-[24px] font-extrabold text-text-main tracking-tight leading-snug">
           길고양이 TNR 포획 방법 — 포획틀 설치부터 방사까지
         </h1>
       </div>
@@ -168,7 +168,7 @@ export default function TrappingGuidePage() {
           border: "1px solid rgba(107,142,111,0.2)",
         }}
       >
-        <p className="text-[13.5px] leading-relaxed text-text-main">
+        <p className="text-[13px] leading-relaxed text-text-main">
           <strong>TNR</strong>은 <em>Trap(포획) - Neuter(중성화) - Return(재방사)</em>의 줄임말.
           길고양이 개체수를 인도적으로 조절하는 유일한 방법이에요.
           <strong className="mx-1">포획만 잘못해도 스트레스로 사망</strong>할 수 있어 올바른 절차가 중요합니다.
@@ -181,16 +181,16 @@ export default function TrappingGuidePage() {
 
       {/* 왜 TNR? */}
       <section id="why" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <Info size={20} color="#6B8E6F" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <Info size={20} color="var(--color-sage)" />
           왜 TNR을 해야 하나요?
         </h2>
-        <p className="text-[14px] text-text-main leading-relaxed mb-3">
+        <p className="text-[15px] text-text-main leading-relaxed mb-3">
           한 마리 암컷이 <strong>1년에 평균 10~12마리</strong> 출산하고, 그 새끼들이 다시 번식하면
           <strong className="mx-1">4년 만에 7만 마리</strong>까지 불어납니다. 개체수 폭증은 길고양이 개개의 복지를 떨어뜨리고
           주민 민원과 학대 사건의 원인이 돼요. TNR은:
         </p>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li><strong>개체수 증가 억제</strong> — 번식 사이클 끊기</li>
           <li><strong>발정기 소음·영역 다툼 감소</strong> — 주민 민원 완화</li>
           <li><strong>질병 감염 경로 차단</strong> — 교미·싸움 상처 감소</li>
@@ -205,7 +205,7 @@ export default function TrappingGuidePage() {
         className="rounded-2xl bg-white p-4 mb-6"
         style={{ border: "1px solid rgba(0,0,0,0.05)" }}
       >
-        <p className="text-[11px] font-extrabold text-text-sub tracking-[0.1em] mb-2">목차</p>
+        <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
           <li><a href="#step-1" className="hover:underline">1단계: 신청 — 구청 TNR 사업</a></li>
           <li><a href="#step-2" className="hover:underline">2단계: 준비물 체크리스트</a></li>
@@ -220,22 +220,22 @@ export default function TrappingGuidePage() {
 
       {/* Step 1 */}
       <section id="step-1" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <span className="w-7 h-7 chip-square bg-[#6B8E6F] text-white text-[12px] font-extrabold flex items-center justify-center">1</span>
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <span className="w-7 h-7 chip-square bg-[#6B8E6F] text-white text-[13px] font-bold flex items-center justify-center">1</span>
           신청 — 구청 TNR 사업
         </h2>
-        <p className="text-[14px] text-text-main leading-relaxed mb-3">
+        <p className="text-[15px] text-text-main leading-relaxed mb-3">
           대부분 지자체가 <strong>무상 TNR 사업</strong>을 운영합니다. 직접 포획·수술 비용 대지 말고 이걸 먼저 활용하세요.
         </p>
-        <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">신청 절차</h3>
-        <ol className="text-[13.5px] text-text-main space-y-2 pl-5 list-decimal leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">신청 절차</h3>
+        <ol className="text-[13px] text-text-main space-y-2 pl-5 list-decimal leading-relaxed">
           <li>거주지 <strong>시·구·군청 동물보호 부서</strong> 전화 또는 온라인 민원</li>
           <li>대략 위치, 추정 마릿수, 신청자 정보 제출</li>
           <li>포획틀 대여 + TNR 무상 쿠폰 수령 (며칠 소요)</li>
           <li>쿠폰 명시된 지정 동물병원에서 수술 예약</li>
         </ol>
         <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "var(--color-surface-alt)" }}>
-          <p className="font-bold text-text-main mb-1">💡 지역 담당 부서</p>
+          <p className="font-bold text-text-main mb-1">지역 담당 부서</p>
           <p className="text-text-sub">
             도시공존의 <Link href="/protection/district-contacts" className="text-primary font-bold underline">시·구·군청 동물보호 담당부서</Link>에서
             전국 지자체 전화번호를 한눈에 볼 수 있어요.
@@ -245,9 +245,9 @@ export default function TrappingGuidePage() {
 
       {/* Step 2 */}
       <section id="step-2" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Package size={20} color="#5B7A8F" />
-          <span className="w-7 h-7 chip-square bg-[#5B7A8F] text-white text-[12px] font-extrabold flex items-center justify-center">2</span>
+          <span className="w-7 h-7 chip-square bg-[#5B7A8F] text-white text-[13px] font-bold flex items-center justify-center">2</span>
           준비물 체크리스트
         </h2>
         <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid rgba(0,0,0,0.06)" }}>
@@ -265,10 +265,10 @@ export default function TrappingGuidePage() {
               className="flex items-start gap-3 py-2.5"
               style={{ borderTop: i === 0 ? "none" : "1px solid rgba(0,0,0,0.05)" }}
             >
-              <CheckCircle2 size={15} className="mt-0.5 shrink-0" style={{ color: "#6B8E6F" }} />
+              <CheckCircle2 size={15} className="mt-0.5 shrink-0" style={{ color: "var(--color-sage)" }} />
               <div className="flex-1 min-w-0">
-                <p className="text-[13.5px] font-bold text-text-main">{x.item}</p>
-                <p className="text-[11.5px] text-text-sub mt-0.5">{x.note}</p>
+                <p className="text-[13px] font-bold text-text-main">{x.item}</p>
+                <p className="text-[11px] text-text-sub mt-0.5">{x.note}</p>
               </div>
             </div>
           ))}
@@ -277,20 +277,20 @@ export default function TrappingGuidePage() {
 
       {/* Step 3 */}
       <section id="step-3" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <MapPin size={20} color="#AD5E3B" />
-          <span className="w-7 h-7 chip-square bg-[var(--color-primary)] text-white text-[12px] font-extrabold flex items-center justify-center">3</span>
+          <span className="w-7 h-7 chip-square bg-[var(--color-primary)] text-white text-[13px] font-bold flex items-center justify-center">3</span>
           포획틀 설치
         </h2>
-        <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">설치 위치 고르기</h3>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">설치 위치 고르기</h3>
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li><strong>평소 밥자리 근처</strong> — 이미 익숙한 장소가 경계심 ↓</li>
           <li><strong>벽이나 구조물 옆</strong> — 고양이가 등 뒤를 믿고 들어감</li>
           <li>사람 통행 적은 시간대에 설치 (저녁 8시 이후 권장)</li>
           <li>비·바람 막히는 곳 (포획틀 안정성 ↑)</li>
         </ul>
-        <h3 className="text-[14px] font-bold text-text-main mt-5 mb-2">설치 요령</h3>
-        <ol className="text-[13.5px] text-text-main space-y-2 pl-5 list-decimal leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-5 mb-2">설치 요령</h3>
+        <ol className="text-[13px] text-text-main space-y-2 pl-5 list-decimal leading-relaxed">
           <li>포획틀 아래에 <strong>신문지 또는 수건</strong> 깔기 — 바닥의 이상한 감촉을 가려줌</li>
           <li>입구 반대편 <strong>가장 깊숙한 곳</strong>에 미끼 놓기 (발판 위까지 들어가야 문 닫힘)</li>
           <li>미끼 주변·바닥에 <strong>파우더 형태 캣닢</strong> 살짝 뿌리기 (유인 효과 ↑)</li>
@@ -298,7 +298,7 @@ export default function TrappingGuidePage() {
           <li>주변에 <strong>평소 먹이 그릇 치우기</strong> — 미끼만 먹게 유도</li>
         </ol>
         <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "#FDECEC", color: "#8B2F2F" }}>
-          <p className="font-bold mb-1">⚠ 주의</p>
+          <p className="font-bold mb-1">주의</p>
           <ul className="space-y-1 pl-4 list-disc">
             <li>다른 동물(너구리·개)이 접근 가능한 장소 피하기</li>
             <li>비 오는 날은 연기 — 물에 젖으면 저체온 위험</li>
@@ -309,19 +309,19 @@ export default function TrappingGuidePage() {
 
       {/* Step 4 */}
       <section id="step-4" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Clock size={20} color="#7A6B8E" />
-          <span className="w-7 h-7 chip-square bg-[#7A6B8E] text-white text-[12px] font-extrabold flex items-center justify-center">4</span>
+          <span className="w-7 h-7 chip-square bg-[#7A6B8E] text-white text-[13px] font-bold flex items-center justify-center">4</span>
           대기·포획
         </h2>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li><strong>10m 이상 떨어져 관찰</strong> — 차 안이나 건물 창문에서 바라보면 좋음</li>
           <li>핸드폰 불빛도 끄고 가급적 조용히</li>
           <li>평균 <strong>2~6시간</strong> 내 포획. 경계심 높은 개체는 하루 이상 걸릴 수 있음</li>
           <li>6시간 지나도 포획 안 되면 <strong>위치·미끼 변경</strong> 고려</li>
         </ul>
-        <h3 className="text-[14px] font-bold text-text-main mt-5 mb-2">포획 성공 직후 (가장 중요)</h3>
-        <ol className="text-[13.5px] text-text-main space-y-2 pl-5 list-decimal leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-5 mb-2">포획 성공 직후 (가장 중요)</h3>
+        <ol className="text-[13px] text-text-main space-y-2 pl-5 list-decimal leading-relaxed">
           <li>즉시 <strong>수건·담요로 포획틀 전체를 덮기</strong> — 시야 차단으로 5~10분 내 안정</li>
           <li>2~3분 기다린 후 조용히 접근. 말 걸지 말고 갑작스런 소음 금지</li>
           <li><strong>이어팁 확인</strong> — 왼쪽 귀 V자 잘림 있으면 이미 중성화된 개체. 즉시 풀어주기</li>
@@ -332,13 +332,13 @@ export default function TrappingGuidePage() {
 
       {/* Step 5 */}
       <section id="step-5" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Stethoscope size={20} color="#4A7BA8" />
-          <span className="w-7 h-7 chip-square bg-[#4A7BA8] text-white text-[12px] font-extrabold flex items-center justify-center">5</span>
+          <span className="w-7 h-7 chip-square bg-[#4A7BA8] text-white text-[13px] font-bold flex items-center justify-center">5</span>
           수술·회복
         </h2>
-        <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">병원에서의 처치</h3>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">병원에서의 처치</h3>
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li>기초 건강 검사 (체중·심박·탈수 여부)</li>
           <li>중성화 수술 (약 30분~1시간)</li>
           <li>기생충 구충 (내·외부)</li>
@@ -346,7 +346,7 @@ export default function TrappingGuidePage() {
           <li><strong>왼쪽 귀 끝 V자 절단</strong> — 이어팁. 향후 재포획 방지용 표식</li>
           <li>마이크로칩 삽입 (지역·병원마다 다름)</li>
         </ul>
-        <h3 className="text-[14px] font-bold text-text-main mt-5 mb-2">회복 기간</h3>
+        <h3 className="text-[15px] font-bold text-text-main mt-5 mb-2">회복 기간</h3>
         <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(0,0,0,0.08)" }}>
           <table className="w-full text-[13px]">
             <thead style={{ background: "var(--color-surface-alt)" }}>
@@ -370,7 +370,7 @@ export default function TrappingGuidePage() {
             </tbody>
           </table>
         </div>
-        <p className="text-[12.5px] text-text-sub mt-4 leading-relaxed">
+        <p className="text-[13px] text-text-sub mt-4 leading-relaxed">
           회복 공간이 없으면 도시공존 <Link href="/community/category/foster" className="text-primary font-bold underline">커뮤니티 임보</Link>에
           "TNR 회복 보호 구함" 글을 올려보세요. 이웃들이 도와줍니다.
         </p>
@@ -378,12 +378,12 @@ export default function TrappingGuidePage() {
 
       {/* Step 6 */}
       <section id="step-6" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Scissors size={20} color="#8B65B8" />
-          <span className="w-7 h-7 chip-square bg-[#8B65B8] text-white text-[12px] font-extrabold flex items-center justify-center">6</span>
+          <span className="w-7 h-7 chip-square bg-[#8B65B8] text-white text-[13px] font-bold flex items-center justify-center">6</span>
           재방사
         </h2>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li><strong>포획한 바로 그 자리</strong>에 다시 풀어줘야 함. 낯선 곳은 생존 불가</li>
           <li>방사 시간은 <strong>해 질 무렵</strong>이 가장 안전 (야행성 적응 시간)</li>
           <li>평소 밥자리에 <strong>즐겨 먹는 사료</strong>를 놓아 복귀 유도</li>
@@ -391,19 +391,19 @@ export default function TrappingGuidePage() {
           <li>도시공존 지도에 <strong>이어팁 태그 추가</strong>해서 커뮤니티에 기록</li>
         </ul>
         <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "#E8F4E8", color: "#3F5B42" }}>
-          <p className="font-bold mb-1">✅ 꾸준한 돌봄이 완성</p>
+          <p className="font-bold mb-1">꾸준한 돌봄이 완성</p>
           <p>TNR은 끝이 아니라 시작. 재방사 후 <strong>정기적 급식·급수</strong>와 날씨 대응이 있어야 아이들이 건강하게 지낼 수 있어요.</p>
         </div>
       </section>
 
       {/* 하지 말아야 할 것 */}
       <section id="dont" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <AlertTriangle size={20} color="#D85555" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <AlertTriangle size={20} color="var(--color-error)" />
           절대 하지 말아야 할 행동
         </h2>
         <div className="rounded-2xl p-4" style={{ background: "#FDECEC", border: "1px solid rgba(216,85,85,0.2)" }}>
-          <ul className="text-[13.5px] space-y-2 pl-4 list-disc leading-relaxed" style={{ color: "#8B2F2F" }}>
+          <ul className="text-[13px] space-y-2 pl-4 list-disc leading-relaxed" style={{ color: "#8B2F2F" }}>
             <li><strong>맨손 포획 시도</strong> — 물리면 Pasteurella 감염 위험</li>
             <li><strong>포획틀 방치</strong> — 2시간 이상 관찰 없이 두면 스트레스·탈수</li>
             <li><strong>수술 전 급식</strong> — 마취 중 구토로 흡인성 폐렴 위험</li>
@@ -417,8 +417,8 @@ export default function TrappingGuidePage() {
 
       {/* FAQ */}
       <section id="faq" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-4">
-          <HelpCircle size={20} color="#48A59E" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-4">
+          <HelpCircle size={20} color="var(--color-sage)" />
           자주 묻는 질문
         </h2>
         <div className="space-y-3">
@@ -428,7 +428,7 @@ export default function TrappingGuidePage() {
               className="rounded-xl bg-white p-4 group"
               style={{ border: "1px solid rgba(0,0,0,0.06)" }}
             >
-              <summary className="cursor-pointer text-[14px] font-bold text-text-main flex items-center gap-2 list-none">
+              <summary className="cursor-pointer text-[15px] font-bold text-text-main flex items-center gap-2 list-none">
                 <span className="text-primary">Q.</span>
                 <span className="flex-1">{q.name}</span>
               </summary>
@@ -442,7 +442,7 @@ export default function TrappingGuidePage() {
 
       {/* 관련 가이드 */}
       <section className="mb-8">
-        <h2 className="flex items-center gap-2 text-[16px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <BookOpen size={18} color="#AD5E3B" />
           관련 가이드
         </h2>
@@ -452,10 +452,10 @@ export default function TrappingGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <span className="text-[18px]">📞</span>
+            <span className="text-[17px]">📞</span>
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-bold text-text-main">시·구·군청 동물보호 담당부서</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">TNR 신청·포획틀 대여</p>
+              <p className="text-[13px] font-bold text-text-main">시·구·군청 동물보호 담당부서</p>
+              <p className="text-[11px] text-text-sub mt-0.5">TNR 신청·포획틀 대여</p>
             </div>
           </Link>
           <Link
@@ -463,10 +463,10 @@ export default function TrappingGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <span className="text-[18px]">🐱</span>
+            <span className="text-[17px]">🐱</span>
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-bold text-text-main">새끼 고양이(냥줍) 가이드</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">어린 아이 발견했을 때</p>
+              <p className="text-[13px] font-bold text-text-main">새끼 고양이(냥줍) 가이드</p>
+              <p className="text-[11px] text-text-sub mt-0.5">어린 아이 발견했을 때</p>
             </div>
           </Link>
           <Link
@@ -474,10 +474,10 @@ export default function TrappingGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <span className="text-[18px]">🚨</span>
+            <span className="text-[17px]">🚨</span>
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-bold text-text-main">응급 구조 가이드</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">다친 길고양이 대응법</p>
+              <p className="text-[13px] font-bold text-text-main">응급 구조 가이드</p>
+              <p className="text-[11px] text-text-sub mt-0.5">다친 길고양이 대응법</p>
             </div>
           </Link>
           <Link
@@ -485,10 +485,10 @@ export default function TrappingGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <Stethoscope size={18} color="#6B8E6F" className="shrink-0" />
+            <Stethoscope size={18} color="var(--color-sage)" className="shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-bold text-text-main">구조동물 치료 병원</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">TNR 지정 병원 목록</p>
+              <p className="text-[13px] font-bold text-text-main">구조동물 치료 병원</p>
+              <p className="text-[11px] text-text-sub mt-0.5">TNR 지정 병원 목록</p>
             </div>
           </Link>
         </div>
@@ -497,7 +497,7 @@ export default function TrappingGuidePage() {
       {/* 신뢰 출처 */}
       <section className="mb-8 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid rgba(0,0,0,0.04)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2">참고한 출처</h3>
-        <ul className="text-[12px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
+        <ul className="text-[13px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
           <li>농림축산식품부 길고양이 TNR 사업 지침</li>
           <li>서울특별시 동물보호과 TNR 사업 안내</li>
           <li>카라(KARA) TNR 매뉴얼</li>

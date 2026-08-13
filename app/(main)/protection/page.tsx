@@ -194,11 +194,9 @@ function InfoCard({ card, isRead }: { card: (typeof cards)[number]; isRead?: boo
     <div
       className="relative overflow-hidden px-5 py-[18px]"
       style={{
-        background: "#FFFFFF",
-        borderRadius: 22,
-        boxShadow: card.highlight
-          ? `0 12px 32px rgba(${card.glowColor},0.18), 0 2px 6px rgba(${card.glowColor},0.08)`
-          : `0 6px 20px rgba(${card.glowColor},0.10), 0 1px 3px rgba(0,0,0,0.03)`,
+        background: "var(--color-surface)",
+        borderRadius: "var(--radius-card)",
+        boxShadow: "var(--shadow-card-sm)",
         border: card.highlight
           ? `1.5px solid rgba(${card.glowColor},0.30)`
           : "1px solid rgba(0,0,0,0.04)",
@@ -214,14 +212,14 @@ function InfoCard({ card, isRead }: { card: (typeof cards)[number]; isRead?: boo
           {isRead && (
             <div
               className="absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center"
-              style={{ background: "#5BA876", border: "1.5px solid #fff", borderRadius: "var(--radius-square-sm)" }}
+              style={{ background: "var(--color-sage)", border: "1.5px solid #fff", borderRadius: "var(--radius-square-sm)" }}
             >
               <CheckCircle2 size={10} color="#fff" strokeWidth={3} />
             </div>
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[15.5px] font-extrabold text-text-main tracking-tight leading-tight">
+          <p className="text-[15px] font-bold text-text-main tracking-tight leading-tight">
             {card.title}
           </p>
         </div>
@@ -323,11 +321,8 @@ export default function ProtectionPage() {
           <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
             보호지침
           </h1>
-          <span className="text-[11px] font-semibold text-text-light">
-            Protection Guide
-          </span>
         </div>
-        <p className="text-[12.5px] text-text-sub leading-relaxed">
+        <p className="text-[13px] text-text-sub leading-relaxed">
           길고양이 보호에 필요한 모든 정보를 한 곳에
         </p>
       </div>
@@ -349,7 +344,7 @@ export default function ProtectionPage() {
                 }}
               >
                 <Icon size={13} color={s.color} strokeWidth={2.4} />
-                <span className="text-[12px] font-bold" style={{ color: s.color }}>
+                <span className="text-[13px] font-bold" style={{ color: s.color }}>
                   {s.label}
                 </span>
               </Link>
@@ -365,12 +360,12 @@ export default function ProtectionPage() {
           background: progress.read === progress.total
             ? "linear-gradient(135deg, #E8F4E8 0%, #D5EDD5 100%)"
             : "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
-          border: `1px solid ${progress.read === progress.total ? "#5BA87633" : "rgba(173, 94, 59,0.18)"}`,
+          border: `1px solid ${progress.read === progress.total ? "rgba(34,163,102,0.2)" : "rgba(173, 94, 59,0.18)"}`,
         }}
       >
         <Sparkles size={16} className={progress.read === progress.total ? "text-[#3F5B42]" : "text-[var(--color-primary)]"} />
         <div className="flex-1 min-w-0">
-          <p className="text-[12px] font-extrabold text-text-main">
+          <p className="text-[13px] font-bold text-text-main">
             {progress.read === progress.total
               ? "9개 가이드 모두 학습 완료! 🎉"
               : `9개 중 ${progress.read}개 학습`}
@@ -380,12 +375,12 @@ export default function ProtectionPage() {
               className="h-full rounded-full transition-all duration-500"
               style={{
                 width: `${progress.percent}%`,
-                background: progress.read === progress.total ? "#5BA876" : "var(--color-primary)",
+                background: progress.read === progress.total ? "var(--color-sage)" : "var(--color-primary)",
               }}
             />
           </div>
         </div>
-        <span className="text-[12px] font-extrabold tabular-nums" style={{ color: progress.read === progress.total ? "#3F5B42" : "var(--color-primary)" }}>
+        <span className="text-[13px] font-bold tabular-nums" style={{ color: progress.read === progress.total ? "#3F5B42" : "var(--color-primary)" }}>
           {progress.percent}%
         </span>
       </div>
@@ -435,7 +430,7 @@ export default function ProtectionPage() {
       {/* ── 긴급 연락처 ── */}
       <div className="mt-6">
         <div className="mb-3 px-1">
-          <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+          <h2 className="text-[17px] font-bold text-text-main tracking-tight">
             긴급 연락처
           </h2>
         </div>
@@ -448,7 +443,7 @@ export default function ProtectionPage() {
                 href={`tel:${c.tel}`}
                 className="py-4 px-2 flex flex-col items-center press"
                 style={{
-                  background: `linear-gradient(135deg, ${c.accent}12 0%, ${c.accent}08 100%)`,
+                  background: `${c.accent}0D`,
                   borderRadius: "var(--radius-card)",
                   border: `1.5px solid ${c.accent}20`,
                 }}
@@ -459,11 +454,11 @@ export default function ProtectionPage() {
                 >
                   <Icon size={20} color={c.accent} strokeWidth={2} />
                 </div>
-                <p className="text-[12px] font-extrabold text-text-main tracking-tight">
+                <p className="text-[13px] font-bold text-text-main tracking-tight">
                   {c.label}
                 </p>
                 <p
-                  className="text-[10.5px] font-bold mt-0.5 tracking-tight"
+                  className="text-[11px] font-bold mt-0.5 tracking-tight"
                   style={{ color: c.accent }}
                 >
                   {c.tel}
@@ -472,7 +467,7 @@ export default function ProtectionPage() {
             );
           })}
         </div>
-        <p className="text-[10.5px] text-text-light mt-2.5 px-1 leading-relaxed">
+        <p className="text-[11px] text-text-light mt-2.5 px-1 leading-relaxed">
           학대 현장 목격 시 경찰 우선 · 보호/상담은 동물권 단체
         </p>
       </div>
@@ -480,7 +475,7 @@ export default function ProtectionPage() {
       {/* ── 길고양이 급식소 커뮤니티 ── */}
       <div className="mt-6 mb-4">
         <div className="mb-3 px-1">
-          <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+          <h2 className="text-[17px] font-bold text-text-main tracking-tight">
             급식소 커뮤니티
           </h2>
         </div>
@@ -493,10 +488,10 @@ export default function ProtectionPage() {
             style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "var(--shadow-card)" }}
           >
             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: "rgba(3,199,90,0.1)" }}>
-              <span className="text-[18px]">🍚</span>
+              <span className="text-[17px]">🍚</span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-bold text-text-main">길냥이 급식소</p>
+              <p className="text-[15px] font-bold text-text-main">길냥이 급식소</p>
               <p className="text-[11px] text-text-sub mt-0.5">네이버 카페 · 길고양이 급식 정보 공유</p>
             </div>
             <span className="text-[11px] font-bold shrink-0" style={{ color: "#03C75A" }}>NAVER →</span>
@@ -509,10 +504,10 @@ export default function ProtectionPage() {
             style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "var(--shadow-card)" }}
           >
             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: "rgba(3,199,90,0.1)" }}>
-              <span className="text-[18px]">🐱</span>
+              <span className="text-[17px]">🐱</span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-bold text-text-main">길고양이 급식소</p>
+              <p className="text-[15px] font-bold text-text-main">길고양이 급식소</p>
               <p className="text-[11px] text-text-sub mt-0.5">네이버 카페 · 전국 급식소 위치 및 운영</p>
             </div>
             <span className="text-[11px] font-bold shrink-0" style={{ color: "#03C75A" }}>NAVER →</span>

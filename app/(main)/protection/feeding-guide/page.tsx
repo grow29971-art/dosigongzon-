@@ -170,14 +170,14 @@ export default function FeedingGuidePage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
-        <span className="text-[12px] font-semibold text-text-sub">
+        <span className="text-[13px] font-semibold text-text-sub">
           <Link href="/protection" className="hover:underline">보호지침</Link>
         </span>
       </div>
 
-      <h1 className="text-[26px] font-black text-text-main leading-tight tracking-tight mb-3">
+      <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight mb-3">
         길고양이 먹이 가이드 — <br />
-        <span style={{ color: "#E88D5A" }}>안전한 급식</span>의 기본
+        <span style={{ color: "var(--color-care)" }}>안전한 급식</span>의 기본
       </h1>
 
       {/* 요약 */}
@@ -188,7 +188,7 @@ export default function FeedingGuidePage() {
           border: "1px solid rgba(232,141,90,0.18)",
         }}
       >
-        <p className="text-[13.5px] leading-relaxed text-text-main">
+        <p className="text-[13px] leading-relaxed text-text-main">
           길고양이에게 <strong>우유 · 참치캔 · 사람 음식</strong>을 주는 건 선의지만 실제로는 건강을 해칩니다.
           올바른 급식은 <strong>고양이 전용 사료 + 깨끗한 물</strong>을 규칙적으로 제공하는 것이 전부.
           이 글은 금지 음식, 안전 음식, 급식소 운영 5원칙, 계절별 주의사항을 정리한 실전 매뉴얼입니다.
@@ -198,7 +198,7 @@ export default function FeedingGuidePage() {
 
       {/* 목차 */}
       <nav aria-label="목차" className="rounded-2xl bg-white p-4 mb-6" style={{ border: "1px solid rgba(0,0,0,0.05)" }}>
-        <p className="text-[11px] font-extrabold text-text-sub tracking-[0.1em] mb-2">목차</p>
+        <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
           <li><a href="#bad" className="hover:underline">절대 주면 안 되는 음식 10가지</a></li>
           <li><a href="#good" className="hover:underline">안전하고 권장되는 음식</a></li>
@@ -210,11 +210,11 @@ export default function FeedingGuidePage() {
 
       {/* 금지 음식 */}
       <section id="bad" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <Ban size={20} color="#D85555" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <Ban size={20} color="var(--color-error)" />
           절대 주면 안 되는 음식 10가지
         </h2>
-        <p className="text-[14px] text-text-main leading-relaxed mb-3">
+        <p className="text-[15px] text-text-main leading-relaxed mb-3">
           아래 음식은 <strong>소량으로도 응급 상황</strong>을 만들 수 있어요. "조금은 괜찮겠지" 하지 마세요.
         </p>
         <div className="grid grid-cols-1 gap-2">
@@ -226,8 +226,8 @@ export default function FeedingGuidePage() {
             >
               <span style={{ fontSize: 22, lineHeight: 1 }} className="shrink-0">{f.emoji}</span>
               <div>
-                <p className="text-[13px] font-extrabold" style={{ color: "#8B2F2F" }}>{f.name}</p>
-                <p className="text-[12px] text-text-sub mt-0.5 leading-snug">{f.reason}</p>
+                <p className="text-[13px] font-bold" style={{ color: "#8B2F2F" }}>{f.name}</p>
+                <p className="text-[13px] text-text-sub mt-0.5 leading-snug">{f.reason}</p>
               </div>
             </div>
           ))}
@@ -236,8 +236,8 @@ export default function FeedingGuidePage() {
 
       {/* 안전 음식 */}
       <section id="good" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <Utensils size={20} color="#6B8E6F" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <Utensils size={20} color="var(--color-sage)" />
           안전하고 권장되는 음식
         </h2>
         <div className="grid grid-cols-1 gap-2">
@@ -249,8 +249,8 @@ export default function FeedingGuidePage() {
             >
               <span style={{ fontSize: 22, lineHeight: 1 }} className="shrink-0">{f.emoji}</span>
               <div>
-                <p className="text-[13px] font-extrabold" style={{ color: "#2E5A34" }}>{f.name}</p>
-                <p className="text-[12px] text-text-sub mt-0.5 leading-snug">{f.tip}</p>
+                <p className="text-[13px] font-bold" style={{ color: "#2E5A34" }}>{f.name}</p>
+                <p className="text-[13px] text-text-sub mt-0.5 leading-snug">{f.tip}</p>
               </div>
             </div>
           ))}
@@ -259,7 +259,7 @@ export default function FeedingGuidePage() {
 
       {/* 급식 5원칙 */}
       <section id="rules" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <BookOpen size={20} color="#AD5E3B" />
           급식 5원칙
         </h2>
@@ -277,8 +277,8 @@ export default function FeedingGuidePage() {
                 <Icon size={18} style={{ color: "var(--color-primary)" }} />
               </div>
               <div>
-                <p className="text-[14px] font-extrabold text-text-main">{title}</p>
-                <p className="text-[12.5px] text-text-sub mt-1 leading-relaxed">{desc}</p>
+                <p className="text-[15px] font-bold text-text-main">{title}</p>
+                <p className="text-[13px] text-text-sub mt-1 leading-relaxed">{desc}</p>
               </div>
             </div>
           ))}
@@ -287,14 +287,14 @@ export default function FeedingGuidePage() {
 
       {/* 계절별 */}
       <section id="seasons" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <AlertTriangle size={20} color="#E88D5A" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <AlertTriangle size={20} color="var(--color-care)" />
           계절별 주의사항
         </h2>
         <div className="space-y-2.5">
           <div className="rounded-2xl p-4" style={{ background: "#FFF3E0", border: "1px solid #F2D4A5" }}>
-            <p className="text-[13.5px] font-extrabold" style={{ color: "#B56A1A" }}>🌞 여름 (6~8월)</p>
-            <ul className="text-[12.5px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
+            <p className="text-[13px] font-bold" style={{ color: "#B56A1A" }}>여름 (6~8월)</p>
+            <ul className="text-[13px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
               <li>건사료는 2시간 내 변질 — 소량 자주 교체</li>
               <li>습식은 직사광선 피해 그늘에, 1시간 내 회수</li>
               <li>물그릇은 하루 2회 이상 교체, 얕은 것보다 깊은 그릇이 시원함 유지</li>
@@ -302,8 +302,8 @@ export default function FeedingGuidePage() {
             </ul>
           </div>
           <div className="rounded-2xl p-4" style={{ background: "#E3F2FD", border: "1px solid #B3D9E8" }}>
-            <p className="text-[13.5px] font-extrabold" style={{ color: "#1E5B8C" }}>❄️ 겨울 (12~2월)</p>
-            <ul className="text-[12.5px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
+            <p className="text-[13px] font-bold" style={{ color: "#1E5B8C" }}>겨울 (12~2월)</p>
+            <ul className="text-[13px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
               <li>물이 얼면 전부 동사 위험 — 미지근한 물 하루 1~2회 교체</li>
               <li>사료에 미지근한 물 살짝 섞어 주면 수분 섭취에 도움</li>
               <li>급식 시간 뒤 남은 사료는 꼭 회수 (얼어붙음)</li>
@@ -311,8 +311,8 @@ export default function FeedingGuidePage() {
             </ul>
           </div>
           <div className="rounded-2xl p-4" style={{ background: "#F1F8E9", border: "1px solid #C8E2B0" }}>
-            <p className="text-[13.5px] font-extrabold" style={{ color: "#3F6B1F" }}>🌸 봄·가을 (환절기)</p>
-            <ul className="text-[12.5px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
+            <p className="text-[13px] font-bold" style={{ color: "#3F6B1F" }}>봄·가을 (환절기)</p>
+            <ul className="text-[13px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
               <li>환절기엔 면역력 저하로 결막염·호흡기 질환 발생 증가</li>
               <li>노묘는 관절염 악화 — 사료에 관절 영양제 살짝 섞어주는 것도 방법</li>
               <li>발정기·영역 싸움 상처 관찰 → 도시공존 '건강 체크' 기록에 남기면 이웃과 공유 가능</li>
@@ -323,18 +323,18 @@ export default function FeedingGuidePage() {
 
       {/* FAQ */}
       <section id="faq" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <HelpCircle size={20} color="#8B65B8" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <HelpCircle size={20} color="var(--color-sage)" />
           자주 묻는 질문
         </h2>
         <div className="space-y-2">
           {faqSchema.mainEntity.map((q, i) => (
             <details key={i} className="bg-white rounded-2xl p-4" style={{ boxShadow: "var(--shadow-card)" }}>
-              <summary className="text-[13.5px] font-extrabold text-text-main cursor-pointer list-none flex items-center justify-between">
+              <summary className="text-[13px] font-bold text-text-main cursor-pointer list-none flex items-center justify-between">
                 <span>Q. {q.name}</span>
-                <span className="text-text-light text-[12px]">+</span>
+                <span className="text-text-light text-[13px]">+</span>
               </summary>
-              <p className="text-[12.5px] text-text-sub mt-2.5 leading-relaxed whitespace-pre-line">
+              <p className="text-[13px] text-text-sub mt-2.5 leading-relaxed whitespace-pre-line">
                 {q.acceptedAnswer.text}
               </p>
             </details>
@@ -344,7 +344,7 @@ export default function FeedingGuidePage() {
 
       {/* 관련 가이드 */}
       <section className="mb-8">
-        <h2 className="text-[15px] font-extrabold text-text-main mb-3">함께 보면 좋은 가이드</h2>
+        <h2 className="text-[15px] font-bold text-text-main mb-3">함께 보면 좋은 가이드</h2>
         <div className="grid grid-cols-1 gap-2">
           <Link
             href="/protection/emergency-guide"
@@ -353,8 +353,8 @@ export default function FeedingGuidePage() {
           >
             <span style={{ fontSize: 22 }}>🚨</span>
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-extrabold text-text-main">응급 구조 가이드</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">다친 아이 발견 시 대응법</p>
+              <p className="text-[13px] font-bold text-text-main">응급 구조 가이드</p>
+              <p className="text-[11px] text-text-sub mt-0.5">다친 아이 발견 시 대응법</p>
             </div>
           </Link>
           <Link
@@ -364,8 +364,8 @@ export default function FeedingGuidePage() {
           >
             <span style={{ fontSize: 22 }}>✂️</span>
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-extrabold text-text-main">TNR 포획 가이드</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">중성화 수술 전 과정</p>
+              <p className="text-[13px] font-bold text-text-main">TNR 포획 가이드</p>
+              <p className="text-[11px] text-text-sub mt-0.5">중성화 수술 전 과정</p>
             </div>
           </Link>
           <Link
@@ -375,8 +375,8 @@ export default function FeedingGuidePage() {
           >
             <span style={{ fontSize: 22 }}>🐾</span>
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-extrabold text-text-main">냥줍 가이드 (새끼 고양이)</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">관찰·체온·급여 3단계</p>
+              <p className="text-[13px] font-bold text-text-main">냥줍 가이드 (새끼 고양이)</p>
+              <p className="text-[11px] text-text-sub mt-0.5">관찰·체온·급여 3단계</p>
             </div>
           </Link>
         </div>
@@ -386,7 +386,7 @@ export default function FeedingGuidePage() {
       <section className="mb-2">
         <Link
           href="/map"
-          className="block text-center py-4 rounded-2xl bg-primary text-white text-[14px] font-extrabold active:scale-[0.98]"
+          className="block text-center py-4 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.98]"
           style={{ boxShadow: "var(--shadow-primary)" }}
         >
           <Cat size={16} className="inline mr-1.5 -mt-0.5" />

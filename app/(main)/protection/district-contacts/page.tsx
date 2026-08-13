@@ -142,7 +142,7 @@ export default function DistrictContactsPage() {
         </Link>
         <div>
           <h1 className="text-[20px] font-extrabold text-text-main">구청 동물보호 연락처</h1>
-          <p className="text-[12px] text-text-sub">TNR · 구조 · 학대신고 담당부서</p>
+          <p className="text-[13px] text-text-sub">TNR · 구조 · 학대신고 담당부서</p>
         </div>
       </div>
 
@@ -153,7 +153,7 @@ export default function DistrictContactsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="지역 또는 구 이름 검색"
-          className="flex-1 text-[14px] text-text-main bg-transparent outline-none placeholder:text-text-muted"
+          className="flex-1 text-[15px] text-text-main bg-transparent outline-none placeholder:text-text-muted"
         />
       </div>
 
@@ -163,7 +163,7 @@ export default function DistrictContactsPage() {
           <button
             key={r}
             onClick={() => setSelectedRegion(r)}
-            className="text-[12px] font-bold px-3 py-1.5 chip-square whitespace-nowrap shrink-0 press"
+            className="text-[13px] font-bold px-3 py-1.5 chip-square whitespace-nowrap shrink-0 press"
             style={{
               backgroundColor: selectedRegion === r ? "var(--color-primary)" : "var(--color-surface-alt)",
               color: selectedRegion === r ? "#fff" : "var(--color-text-sub)",
@@ -196,20 +196,20 @@ export default function DistrictContactsPage() {
               className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
               style={{ backgroundColor: "rgba(91,168,118,0.1)" }}
             >
-              <Building2 size={18} style={{ color: "#5BA876" }} />
+              <Building2 size={18} style={{ color: "var(--color-sage)" }} />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold px-1.5 py-0.5 chip-square" style={{ backgroundColor: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}>
+                <span className="text-[11px] font-bold px-1.5 py-0.5 chip-square" style={{ backgroundColor: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}>
                   {c.region}
                 </span>
-                <p className="text-[14px] font-bold text-text-main truncate">{c.district}</p>
+                <p className="text-[15px] font-bold text-text-main truncate">{c.district}</p>
               </div>
               <p className="text-[11px] text-text-sub mt-0.5">{c.dept}</p>
             </div>
             <div className="flex items-center gap-1 shrink-0">
               <Phone size={13} className="text-primary" />
-              <span className="text-[12px] font-bold text-primary">{c.tel}</span>
+              <span className="text-[13px] font-bold text-primary">{c.tel}</span>
             </div>
           </a>
         ))}
@@ -218,7 +218,7 @@ export default function DistrictContactsPage() {
       {/* 길고양이 급식소 커뮤니티 */}
       <div className="mt-6 mb-4">
         <div className="mb-3 px-1">
-          <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+          <h2 className="text-[17px] font-bold text-text-main tracking-tight">
             길고양이 급식소 커뮤니티
           </h2>
         </div>
@@ -238,10 +238,10 @@ export default function DistrictContactsPage() {
               className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
               style={{ backgroundColor: "rgba(3,199,90,0.1)" }}
             >
-              <span className="text-[18px]">🍚</span>
+              <span className="text-[17px]">🍚</span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-bold text-text-main">길냥이 급식소</p>
+              <p className="text-[15px] font-bold text-text-main">길냥이 급식소</p>
               <p className="text-[11px] text-text-sub mt-0.5">네이버 카페 · 길고양이 급식 정보 공유</p>
             </div>
             <span className="text-[11px] font-bold shrink-0" style={{ color: "#03C75A" }}>NAVER</span>
@@ -261,10 +261,10 @@ export default function DistrictContactsPage() {
               className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
               style={{ backgroundColor: "rgba(3,199,90,0.1)" }}
             >
-              <span className="text-[18px]">🐱</span>
+              <span className="text-[17px]">🐱</span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-bold text-text-main">길고양이 급식소</p>
+              <p className="text-[15px] font-bold text-text-main">길고양이 급식소</p>
               <p className="text-[11px] text-text-sub mt-0.5">네이버 카페 · 전국 급식소 위치 및 운영</p>
             </div>
             <span className="text-[11px] font-bold shrink-0" style={{ color: "#03C75A" }}>NAVER</span>

@@ -158,7 +158,7 @@ export default function KittenGuidePage() {
         >
           <ArrowLeft size={22} className="text-text-main" />
         </Link>
-        <h1 className="text-[22px] font-extrabold text-text-main tracking-tight leading-snug">
+        <h1 className="text-[24px] font-extrabold text-text-main tracking-tight leading-snug">
           새끼 고양이(냥줍) 발견했을 때 완벽 가이드
         </h1>
       </div>
@@ -171,7 +171,7 @@ export default function KittenGuidePage() {
           border: "1px solid rgba(201,169,97,0.2)",
         }}
       >
-        <p className="text-[13.5px] leading-relaxed text-text-main">
+        <p className="text-[13px] leading-relaxed text-text-main">
           길에서 우는 아기 고양이를 발견했을 때, 가장 먼저 해야 할 일은
           <strong className="mx-1">데려오는 게 아니라 관찰</strong>입니다.
           어미가 잠시 자리를 비운 것이라면 사람이 개입하는 순간
@@ -190,7 +190,7 @@ export default function KittenGuidePage() {
         className="rounded-2xl bg-white p-4 mb-6"
         style={{ border: "1px solid rgba(0,0,0,0.05)" }}
       >
-        <p className="text-[11px] font-extrabold text-text-sub tracking-[0.1em] mb-2">목차</p>
+        <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
           <li><a href="#step-1" className="hover:underline">관찰 — 왜 바로 데려가면 안 되나</a></li>
           <li><a href="#step-2" className="hover:underline">위험 신호 판단 — 즉시 구조가 필요한 7가지</a></li>
@@ -204,23 +204,23 @@ export default function KittenGuidePage() {
 
       {/* Step 1 */}
       <section id="step-1" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <span className="w-7 h-7 chip-square bg-[#C9A961] text-white text-[12px] font-extrabold flex items-center justify-center">1</span>
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <span className="w-7 h-7 chip-square bg-[#C9A961] text-white text-[13px] font-bold flex items-center justify-center">1</span>
           관찰 — 왜 바로 데려가면 안 되나
         </h2>
-        <p className="text-[14px] text-text-main leading-relaxed mb-3">
+        <p className="text-[15px] text-text-main leading-relaxed mb-3">
           야생 고양이 어미는 먹이를 구하러 <strong>1~2시간씩 자리를 비우는 게 정상</strong>입니다.
           이 시간에 우는 아기 고양이를 사람이 데려가면, 어미와 영원히 이별시키는 결과가 됩니다.
           어미 젖은 분유보다 영양가·면역력이 훨씬 뛰어나서 생존율 차이가 큽니다.
         </p>
-        <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">관찰 원칙 3가지</h3>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">관찰 원칙 3가지</h3>
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li><strong>최소 2~3시간 멀리서 관찰</strong> — 어미 고양이는 근처 숨어 사람을 지켜보고 있을 가능성이 큽니다.</li>
           <li><strong>사람 냄새 최소화</strong> — 손을 대지 마세요. 어미가 새끼를 포기하진 않지만 경계가 강해져 급여 거부로 이어질 수 있어요.</li>
           <li><strong>소리·빛 자극 금지</strong> — 후레시, 큰 소리는 어미를 쫓아냅니다. 조용히 거리를 두고 지켜보세요.</li>
         </ul>
         <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "var(--color-surface-alt)" }}>
-          <p className="font-bold text-text-main mb-1">💡 TIP — 어미가 있는 신호</p>
+          <p className="font-bold text-text-main mb-1">TIP — 어미가 있는 신호</p>
           <ul className="space-y-1 text-text-sub pl-4 list-disc">
             <li>새끼들이 울지 않고 모여있다</li>
             <li>주변에 어미 털·배변 흔적이 있다</li>
@@ -231,11 +231,11 @@ export default function KittenGuidePage() {
 
       {/* Step 2 */}
       <section id="step-2" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <span className="w-7 h-7 chip-square bg-[#D85555] text-white text-[12px] font-extrabold flex items-center justify-center">2</span>
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <span className="w-7 h-7 chip-square bg-[#D85555] text-white text-[13px] font-bold flex items-center justify-center">2</span>
           위험 신호 — 즉시 구조가 필요한 7가지
         </h2>
-        <p className="text-[14px] text-text-main leading-relaxed mb-3">
+        <p className="text-[15px] text-text-main leading-relaxed mb-3">
           아래 신호 중 하나라도 해당되면 <strong>관찰 없이 즉시 구조</strong>해야 합니다.
           분 단위로 생존이 위협받는 상황이에요.
         </p>
@@ -254,12 +254,12 @@ export default function KittenGuidePage() {
               className="flex items-center gap-3 px-4 py-3 border-b last:border-b-0"
               style={{ borderColor: "rgba(216,85,85,0.15)", background: "#FBEAEA" }}
             >
-              <span className="text-[18px]">{r.icon}</span>
-              <span className="text-[13.5px] font-semibold text-text-main">{r.text}</span>
+              <span className="text-[17px]">{r.icon}</span>
+              <span className="text-[13px] font-semibold text-text-main">{r.text}</span>
             </div>
           ))}
         </div>
-        <p className="text-[12px] text-text-sub mt-3 leading-relaxed">
+        <p className="text-[13px] text-text-sub mt-3 leading-relaxed">
           긴급 구조 시 가까운 동물병원 또는 <strong>동물보호상담센터(1577-0954)</strong>로 연락하세요.
           도시공존 앱의 <Link href="/hospitals" className="text-primary underline font-bold">구조동물 치료 병원</Link> 목록에서도 가까운 병원을 찾을 수 있습니다.
         </p>
@@ -267,24 +267,24 @@ export default function KittenGuidePage() {
 
       {/* Step 3 */}
       <section id="step-3" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Thermometer size={20} color="#AD5E3B" />
-          <span className="w-7 h-7 chip-square bg-[var(--color-primary)] text-white text-[12px] font-extrabold flex items-center justify-center">3</span>
+          <span className="w-7 h-7 chip-square bg-[var(--color-primary)] text-white text-[13px] font-bold flex items-center justify-center">3</span>
           체온 유지 — 36.5도 만들기
         </h2>
-        <p className="text-[14px] text-text-main leading-relaxed mb-3">
+        <p className="text-[15px] text-text-main leading-relaxed mb-3">
           새끼 고양이는 생후 3~4주까지 스스로 체온을 조절하지 못해요.
           <strong>저체온증은 탈수·저혈당보다 더 빠르게 사망에 이르는 원인</strong>입니다.
           구조 직후 가장 먼저 해야 할 일이 보온입니다.
         </p>
-        <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">보온 3단계</h3>
-        <ol className="text-[13.5px] text-text-main space-y-2 pl-5 list-decimal leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">보온 3단계</h3>
+        <ol className="text-[13px] text-text-main space-y-2 pl-5 list-decimal leading-relaxed">
           <li><strong>수건으로 감싸기</strong> — 마른 수건으로 몸을 감싸 체온 손실 차단. 젖어있다면 새 수건으로 먼저 말립니다.</li>
           <li><strong>핫팩은 간접 열원으로</strong> — 핫팩을 수건에 싸서 박스 구석에 두세요. 직접 닿으면 저온 화상 위험. 반대편에 찬 공간도 만들어 아기가 피할 수 있게 합니다.</li>
           <li><strong>체온계로 확인</strong> — 36.5~38.5℃가 정상. 36℃ 이하면 저체온증, 39℃ 이상이면 고열·감염 의심. 둘 다 병원 직행.</li>
         </ol>
         <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "#FDECEC", color: "#8B2F2F" }}>
-          <p className="font-bold mb-1">⚠ 주의 — 금지 행동</p>
+          <p className="font-bold mb-1">주의 — 금지 행동</p>
           <ul className="space-y-1 pl-4 list-disc">
             <li>뜨거운 물에 담그기 (쇼크 위험)</li>
             <li>드라이어로 말리기 (화상·호흡기 자극)</li>
@@ -295,17 +295,17 @@ export default function KittenGuidePage() {
 
       {/* Step 4 */}
       <section id="step-4" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Milk size={20} color="#6B8E6F" />
-          <span className="w-7 h-7 chip-square bg-[#6B8E6F] text-white text-[12px] font-extrabold flex items-center justify-center">4</span>
+          <span className="w-7 h-7 chip-square bg-[#6B8E6F] text-white text-[13px] font-bold flex items-center justify-center">4</span>
           KMR 분유 급여 — 절대 우유 금지
         </h2>
-        <p className="text-[14px] text-text-main leading-relaxed mb-3">
+        <p className="text-[15px] text-text-main leading-relaxed mb-3">
           <strong>우유는 설사·탈수로 새끼를 죽일 수 있습니다.</strong>
           유당불내증 때문에요. 반드시 <strong>고양이 전용 분유(KMR)</strong> 또는 동등한 대용분유를 사용해야 합니다.
           응급 시 임시로 쌀뜨물·따뜻한 물 한 티스푼 정도는 가능하지만, 분유를 최우선 구해야 해요.
         </p>
-        <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">연령별 급여량·간격</h3>
+        <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">연령별 급여량·간격</h3>
         <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(0,0,0,0.08)" }}>
           <table className="w-full text-[13px]">
             <thead style={{ background: "var(--color-surface-alt)" }}>
@@ -332,8 +332,8 @@ export default function KittenGuidePage() {
             </tbody>
           </table>
         </div>
-        <h3 className="text-[14px] font-bold text-text-main mt-5 mb-2">급여 방법</h3>
-        <ol className="text-[13.5px] text-text-main space-y-2 pl-5 list-decimal leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-5 mb-2">급여 방법</h3>
+        <ol className="text-[13px] text-text-main space-y-2 pl-5 list-decimal leading-relaxed">
           <li>분유를 체온 정도(38℃)로 데워요. 전자레인지 금지 — 따뜻한 물에 중탕으로.</li>
           <li>새끼를 <strong>엎드린 자세</strong>로 눕히고 (사람 아기처럼 눕히면 폐에 들어갈 수 있음) 젖병을 물려요.</li>
           <li>한 번에 많이 주지 말고, 위의 표대로 소량을 자주.</li>
@@ -344,25 +344,25 @@ export default function KittenGuidePage() {
 
       {/* Step 5 */}
       <section id="step-5" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Stethoscope size={20} color="#4A7BA8" />
-          <span className="w-7 h-7 chip-square bg-[#4A7BA8] text-white text-[12px] font-extrabold flex items-center justify-center">5</span>
+          <span className="w-7 h-7 chip-square bg-[#4A7BA8] text-white text-[13px] font-bold flex items-center justify-center">5</span>
           동물병원 방문 — 24시간 내
         </h2>
-        <p className="text-[14px] text-text-main leading-relaxed mb-3">
+        <p className="text-[15px] text-text-main leading-relaxed mb-3">
           겉보기엔 멀쩡해 보여도 <strong>기생충·탈수·호흡기 감염은 육안으로 보이지 않습니다</strong>.
           구조 후 24시간 내 병원 방문으로 기초 건강 상태를 확인하세요.
         </p>
-        <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">병원에서 하는 검사·처치</h3>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">병원에서 하는 검사·처치</h3>
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li>체중·체온 측정 (기준치 비교)</li>
           <li>기생충 검사 및 구충 (회충·벼룩·진드기)</li>
           <li>탈수 여부 확인 + 필요 시 수액</li>
           <li>범백(FPV) 감염 여부 확인</li>
           <li>체온 안정화 후 보호 지침 안내</li>
         </ul>
-        <h3 className="text-[14px] font-bold text-text-main mt-5 mb-2">예상 비용</h3>
-        <p className="text-[13.5px] text-text-main leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-5 mb-2">예상 비용</h3>
+        <p className="text-[13px] text-text-main leading-relaxed">
           기초 검진 <strong>3~7만원</strong>, 범백 키트 1~2만원, 구충제 1~2만원, 수액 처치 시 3~5만원 추가.
           총 <strong>5~15만원</strong> 수준. 구조묘 할인을 제공하는 병원도 있으니
           <Link href="/hospitals" className="text-primary font-bold underline ml-1">구조동물 치료 병원</Link>
@@ -372,25 +372,25 @@ export default function KittenGuidePage() {
 
       {/* Step 6 */}
       <section id="step-6" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Home size={20} color="#8B65B8" />
-          <span className="w-7 h-7 chip-square bg-[#8B65B8] text-white text-[12px] font-extrabold flex items-center justify-center">6</span>
+          <span className="w-7 h-7 chip-square bg-[#8B65B8] text-white text-[13px] font-bold flex items-center justify-center">6</span>
           입양·임보 결정
         </h2>
-        <p className="text-[14px] text-text-main leading-relaxed mb-3">
+        <p className="text-[15px] text-text-main leading-relaxed mb-3">
           건강이 안정되면 <strong>본인이 평생 돌볼지, 새 가족을 찾아줄지</strong> 결정해야 합니다.
           냥줍 후 부담돼 유기·방치로 이어지는 경우가 많아 신중히 판단하세요.
         </p>
-        <h3 className="text-[14px] font-bold text-text-main mt-4 mb-2">직접 돌보기 체크리스트</h3>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">직접 돌보기 체크리스트</h3>
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li>향후 <strong>15~20년</strong> 평생 책임 의지</li>
           <li>초기 비용 30~50만원 감당 가능 (병원·용품)</li>
           <li>월 5~10만원 고정 지출 여력 (사료·모래·예방접종)</li>
           <li>가족 모두 알레르기·반대 없음</li>
           <li>이사 계획 시 반려동물 동반 가능 주거</li>
         </ul>
-        <h3 className="text-[14px] font-bold text-text-main mt-5 mb-2">임보·입양 구하는 법</h3>
-        <ul className="text-[13.5px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
+        <h3 className="text-[15px] font-bold text-text-main mt-5 mb-2">임보·입양 구하는 법</h3>
+        <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
           <li>도시공존 커뮤니티 <Link href="/community/category/foster" className="text-primary font-bold underline">임보</Link>·<Link href="/community/category/adoption" className="text-primary font-bold underline">입양</Link> 카테고리에 글 올리기</li>
           <li>네이버 카페 (고양이라서 다행이야, 냥이네 등) 활용</li>
           <li>카라·동물자유연대 구조 공고 페이지</li>
@@ -400,8 +400,8 @@ export default function KittenGuidePage() {
 
       {/* FAQ */}
       <section id="faq" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-4">
-          <HelpCircle size={20} color="#48A59E" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-4">
+          <HelpCircle size={20} color="var(--color-sage)" />
           자주 묻는 질문
         </h2>
         <div className="space-y-3">
@@ -411,7 +411,7 @@ export default function KittenGuidePage() {
               className="rounded-xl bg-white p-4 group"
               style={{ border: "1px solid rgba(0,0,0,0.06)" }}
             >
-              <summary className="cursor-pointer text-[14px] font-bold text-text-main flex items-center gap-2 list-none">
+              <summary className="cursor-pointer text-[15px] font-bold text-text-main flex items-center gap-2 list-none">
                 <span className="text-primary">Q.</span>
                 <span className="flex-1">{q.name}</span>
               </summary>
@@ -425,7 +425,7 @@ export default function KittenGuidePage() {
 
       {/* 관련 가이드 */}
       <section className="mb-8">
-        <h2 className="flex items-center gap-2 text-[16px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <BookOpen size={18} color="#AD5E3B" />
           관련 가이드
         </h2>
@@ -435,10 +435,10 @@ export default function KittenGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <AlertTriangle size={18} color="#D85555" className="shrink-0" />
+            <AlertTriangle size={18} color="var(--color-error)" className="shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-bold text-text-main">길고양이 응급 구조 가이드</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">성묘가 다쳤을 때 대응법</p>
+              <p className="text-[13px] font-bold text-text-main">길고양이 응급 구조 가이드</p>
+              <p className="text-[11px] text-text-sub mt-0.5">성묘가 다쳤을 때 대응법</p>
             </div>
           </Link>
           <Link
@@ -446,10 +446,10 @@ export default function KittenGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <Clock size={18} color="#E88D5A" className="shrink-0" />
+            <Clock size={18} color="var(--color-care)" className="shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-bold text-text-main">TNR 포획 가이드</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">중성화 수술을 위한 안전한 포획</p>
+              <p className="text-[13px] font-bold text-text-main">TNR 포획 가이드</p>
+              <p className="text-[11px] text-text-sub mt-0.5">중성화 수술을 위한 안전한 포획</p>
             </div>
           </Link>
           <Link
@@ -457,10 +457,10 @@ export default function KittenGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <Stethoscope size={18} color="#6B8E6F" className="shrink-0" />
+            <Stethoscope size={18} color="var(--color-sage)" className="shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-[13.5px] font-bold text-text-main">구조동물 치료 병원</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">할인·지원되는 동물병원 목록</p>
+              <p className="text-[13px] font-bold text-text-main">구조동물 치료 병원</p>
+              <p className="text-[11px] text-text-sub mt-0.5">할인·지원되는 동물병원 목록</p>
             </div>
           </Link>
         </div>
@@ -472,7 +472,7 @@ export default function KittenGuidePage() {
           <Heart size={14} color="#AD5E3B" />
           참고한 공공 자료
         </h3>
-        <ul className="text-[12px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
+        <ul className="text-[13px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
           <li>동물보호관리시스템 (animal.go.kr) — 농림축산식품부</li>
           <li>동물보호법 및 시행령</li>
           <li>동물보호상담센터 (1577-0954) 안내 자료</li>

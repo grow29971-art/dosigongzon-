@@ -565,13 +565,13 @@ export default function DiseaseGuidePage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
-        <span className="text-[12px] font-semibold text-text-sub">
+        <span className="text-[13px] font-semibold text-text-sub">
           <Link href="/protection" className="hover:underline">보호지침</Link>
         </span>
       </div>
 
-      <h1 className="text-[26px] font-black text-text-main leading-tight tracking-tight mb-3">
-        길고양이 <span style={{ color: "#D85555" }}>질병</span> 가이드 — <br />
+      <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight mb-3">
+        길고양이 <span style={{ color: "var(--color-error)" }}>질병</span> 가이드 — <br />
         증상·대응·예방 한눈에
       </h1>
 
@@ -583,7 +583,7 @@ export default function DiseaseGuidePage() {
           border: "1px solid rgba(216,85,85,0.18)",
         }}
       >
-        <p className="text-[13.5px] leading-relaxed text-text-main">
+        <p className="text-[13px] leading-relaxed text-text-main">
           길고양이에게 흔한 <strong>10가지 질병</strong>을 <strong>증상 · 원인 · 대응 · 예방</strong> 순으로 정리했어요.
           아래 매트릭스에서 증상으로 빠르게 매칭해보고, 응급 증후가 보이면 바로 병원으로 이송하세요.
         </p>
@@ -597,12 +597,12 @@ export default function DiseaseGuidePage() {
         className="rounded-2xl p-4 mb-6 flex gap-3"
         style={{
           background: "#FFEFEF",
-          border: "1.5px solid #D85555",
+          border: "1.5px solid var(--color-error)",
         }}
       >
-        <AlertTriangle size={22} style={{ color: "#D85555" }} className="shrink-0 mt-0.5" />
-        <div className="text-[12.5px] leading-snug">
-          <p className="font-extrabold text-text-main mb-1">즉시 병원 — 이런 증상은 응급</p>
+        <AlertTriangle size={22} style={{ color: "var(--color-error)" }} className="shrink-0 mt-0.5" />
+        <div className="text-[13px] leading-snug">
+          <p className="font-bold text-text-main mb-1">즉시 병원 — 이런 증상은 응급</p>
           <ul className="list-disc pl-4 space-y-0.5 text-text-sub">
             <li>심한 설사·구토 + 무기력 (범백 의심)</li>
             <li>호흡이 가쁘거나 복부가 빵빵함 (FIP·흉수)</li>
@@ -615,7 +615,7 @@ export default function DiseaseGuidePage() {
 
       {/* 목차 */}
       <nav aria-label="목차" className="rounded-2xl bg-white p-4 mb-6" style={{ border: "1px solid rgba(0,0,0,0.05)" }}>
-        <p className="text-[11px] font-extrabold text-text-sub tracking-[0.1em] mb-2">목차</p>
+        <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
           <li><a href="#matrix" className="hover:underline">증상 → 의심 질병 매트릭스</a></li>
           <li><a href="#diseases" className="hover:underline">흔한 질병 10가지 상세</a></li>
@@ -626,7 +626,7 @@ export default function DiseaseGuidePage() {
 
       {/* 증상 매트릭스 */}
       <section id="matrix" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <Search size={20} color="#4A7BA8" />
           증상 → 의심 질병 매트릭스
         </h2>
@@ -647,7 +647,7 @@ export default function DiseaseGuidePage() {
                 {s.emoji}
               </span>
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-extrabold text-text-main">{s.symptom}</p>
+                <p className="text-[13px] font-bold text-text-main">{s.symptom}</p>
                 <div className="flex flex-wrap gap-1.5 mt-1.5">
                   {s.suspects.map((sid) => {
                     const d = DISEASES.find((x) => x.id === sid);
@@ -675,8 +675,8 @@ export default function DiseaseGuidePage() {
 
       {/* 질병 상세 */}
       <section id="diseases" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <Stethoscope size={20} color="#D85555" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <Stethoscope size={20} color="var(--color-error)" />
           흔한 질병 10가지 상세
         </h2>
         <div className="space-y-4">
@@ -700,17 +700,17 @@ export default function DiseaseGuidePage() {
                   </span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="text-[15.5px] font-extrabold text-text-main tracking-tight leading-tight">
+                      <h3 className="text-[15px] font-bold text-text-main tracking-tight leading-tight">
                         {d.name}
                       </h3>
                       <span
-                        className="px-2 py-0.5 rounded-lg text-[10px] font-extrabold shrink-0"
+                        className="px-2 py-0.5 rounded-lg text-[11px] font-bold shrink-0"
                         style={{ background: sev.bg, color: sev.color }}
                       >
                         {sev.label}
                       </span>
                     </div>
-                    <p className="text-[10.5px] text-text-light mt-1 group-open:hidden">
+                    <p className="text-[11px] text-text-light mt-1 group-open:hidden">
                       탭해서 자세히 보기 →
                     </p>
                   </div>
@@ -730,7 +730,7 @@ export default function DiseaseGuidePage() {
                 <div className="mb-4">
                   <div className="flex items-center gap-1.5 mb-2">
                     <Eye size={12} style={{ color: "var(--color-primary)" }} />
-                    <p className="text-[11px] font-extrabold tracking-[0.1em]" style={{ color: "var(--color-primary)" }}>
+                    <p className="text-[11px] font-bold tracking-[0.1em]" style={{ color: "var(--color-primary)" }}>
                       SYMPTOMS · 증상
                     </p>
                   </div>
@@ -756,15 +756,15 @@ export default function DiseaseGuidePage() {
                       style={{ background: "#F0F7F0", border: "1px solid rgba(107,142,111,0.20)" }}
                     >
                       <p
-                        className="text-[10.5px] font-extrabold tracking-[0.1em] mb-1.5 flex items-center gap-1"
+                        className="text-[11px] font-bold tracking-[0.1em] mb-1.5 flex items-center gap-1"
                         style={{ color: "#3F7B3F" }}
                       >
                         <span>●</span> 초기 — 쉽게 놓치는 신호
                       </p>
-                      <ul className="space-y-1 text-[12.5px] text-text-main leading-snug">
+                      <ul className="space-y-1 text-[13px] text-text-main leading-snug">
                         {d.symptomsDetail.early.map((s) => (
                           <li key={s} className="flex gap-1.5">
-                            <span className="shrink-0" style={{ color: "#6B8E6F" }}>·</span>
+                            <span className="shrink-0" style={{ color: "var(--color-sage)" }}>·</span>
                             <span>{s}</span>
                           </li>
                         ))}
@@ -777,12 +777,12 @@ export default function DiseaseGuidePage() {
                       style={{ background: "#FFF1E6", border: "1px solid rgba(232,141,90,0.25)" }}
                     >
                       <p
-                        className="text-[10.5px] font-extrabold tracking-[0.1em] mb-1.5 flex items-center gap-1"
+                        className="text-[11px] font-bold tracking-[0.1em] mb-1.5 flex items-center gap-1"
                         style={{ color: "#C4621E" }}
                       >
                         <span>●●</span> 진행 — 바로 의심
                       </p>
-                      <ul className="space-y-1 text-[12.5px] text-text-main leading-snug">
+                      <ul className="space-y-1 text-[13px] text-text-main leading-snug">
                         {d.symptomsDetail.progressing.map((s) => (
                           <li key={s} className="flex gap-1.5">
                             <span className="shrink-0" style={{ color: "#E88D5A" }}>·</span>
@@ -799,15 +799,15 @@ export default function DiseaseGuidePage() {
                         style={{ background: "#FDECEC", border: "1px solid rgba(216,85,85,0.25)" }}
                       >
                         <p
-                          className="text-[10.5px] font-extrabold tracking-[0.1em] mb-1.5 flex items-center gap-1"
+                          className="text-[11px] font-bold tracking-[0.1em] mb-1.5 flex items-center gap-1"
                           style={{ color: "#A73838" }}
                         >
                           <span>●●●</span> 심각 — 즉시 병원
                         </p>
-                        <ul className="space-y-1 text-[12.5px] text-text-main leading-snug">
+                        <ul className="space-y-1 text-[13px] text-text-main leading-snug">
                           {d.symptomsDetail.critical.map((s) => (
                             <li key={s} className="flex gap-1.5">
-                              <span className="shrink-0" style={{ color: "#D85555" }}>·</span>
+                              <span className="shrink-0" style={{ color: "var(--color-error)" }}>·</span>
                               <span>{s}</span>
                             </li>
                           ))}
@@ -821,12 +821,12 @@ export default function DiseaseGuidePage() {
                       style={{ background: "#F4EDFA", border: "1px solid rgba(139,101,184,0.20)" }}
                     >
                       <p
-                        className="text-[10.5px] font-extrabold tracking-[0.1em] mb-1"
+                        className="text-[11px] font-bold tracking-[0.1em] mb-1"
                         style={{ color: "#6E4EA0" }}
                       >
-                        💡 이 질병 구별 팁
+                        이 질병 구별 팁
                       </p>
-                      <p className="text-[12.5px] leading-relaxed text-text-main">
+                      <p className="text-[13px] leading-relaxed text-text-main">
                         {d.symptomsDetail.distinctive}
                       </p>
                     </div>
@@ -836,34 +836,34 @@ export default function DiseaseGuidePage() {
                 {/* 원인 */}
                 <div className="mb-3">
                   <div className="flex items-center gap-1.5 mb-1">
-                    <Activity size={12} style={{ color: "#8B65B8" }} />
-                    <p className="text-[11px] font-extrabold tracking-[0.1em]" style={{ color: "#8B65B8" }}>
+                    <Activity size={12} style={{ color: "var(--color-text-sub)" }} />
+                    <p className="text-[11px] font-bold tracking-[0.1em]" style={{ color: "var(--color-text-sub)" }}>
                       CAUSE · 원인
                     </p>
                   </div>
-                  <p className="text-[12.5px] leading-relaxed text-text-sub">{d.cause}</p>
+                  <p className="text-[13px] leading-relaxed text-text-sub">{d.cause}</p>
                 </div>
 
                 {/* 대응 */}
                 <div className="mb-3">
                   <div className="flex items-center gap-1.5 mb-1">
-                    <Stethoscope size={12} style={{ color: "#D85555" }} />
-                    <p className="text-[11px] font-extrabold tracking-[0.1em]" style={{ color: "#D85555" }}>
+                    <Stethoscope size={12} style={{ color: "var(--color-error)" }} />
+                    <p className="text-[11px] font-bold tracking-[0.1em]" style={{ color: "var(--color-error)" }}>
                       RESPONSE · 대응
                     </p>
                   </div>
-                  <p className="text-[12.5px] leading-relaxed text-text-main">{d.response}</p>
+                  <p className="text-[13px] leading-relaxed text-text-main">{d.response}</p>
                 </div>
 
                 {/* 예방 */}
                 <div>
                   <div className="flex items-center gap-1.5 mb-1">
-                    <ShieldCheck size={12} style={{ color: "#6B8E6F" }} />
-                    <p className="text-[11px] font-extrabold tracking-[0.1em]" style={{ color: "#6B8E6F" }}>
+                    <ShieldCheck size={12} style={{ color: "var(--color-sage)" }} />
+                    <p className="text-[11px] font-bold tracking-[0.1em]" style={{ color: "var(--color-sage)" }}>
                       PREVENTION · 예방
                     </p>
                   </div>
-                  <p className="text-[12.5px] leading-relaxed text-text-sub">{d.prevention}</p>
+                  <p className="text-[13px] leading-relaxed text-text-sub">{d.prevention}</p>
                 </div>
                 </div>
               </details>
@@ -874,44 +874,44 @@ export default function DiseaseGuidePage() {
 
       {/* 예방 체크리스트 */}
       <section id="prevent" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
-          <Syringe size={20} color="#6B8E6F" />
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
+          <Syringe size={20} color="var(--color-sage)" />
           예방 체크리스트
         </h2>
         <div
           className="rounded-2xl p-5"
           style={{
-            background: "linear-gradient(135deg, #F0F7F0 0%, #E4F1E4 100%)",
+            background: "#F0F7F0",
             border: "1px solid rgba(107,142,111,0.25)",
           }}
         >
           <ul className="space-y-2 text-[13px] text-text-main">
             <li className="flex gap-2">
-              <span className="shrink-0">✅</span>
+              <span className="shrink-0 text-primary">·</span>
               <span><strong>TNR + 종합백신·구충</strong> 동시 진행 요청 (3종/5종 + 외/내부 기생충)</span>
             </li>
             <li className="flex gap-2">
-              <span className="shrink-0">✅</span>
+              <span className="shrink-0 text-primary">·</span>
               <span><strong>급식소 주변 청결</strong> — 남은 사료 회수, 물 하루 2회 교체, 그릇 주기적 세척</span>
             </li>
             <li className="flex gap-2">
-              <span className="shrink-0">✅</span>
+              <span className="shrink-0 text-primary">·</span>
               <span><strong>쉼터는 건조·환기</strong>가 핵심. 습한 쉼터는 곰팡이성 피부염의 온상</span>
             </li>
             <li className="flex gap-2">
-              <span className="shrink-0">✅</span>
+              <span className="shrink-0 text-primary">·</span>
               <span><strong>신규 구조 개체는 14일 격리 관찰</strong> — 범백·FeLV 잠복기 대응</span>
             </li>
             <li className="flex gap-2">
-              <span className="shrink-0">✅</span>
+              <span className="shrink-0 text-primary">·</span>
               <span><strong>싸움 잦은 수컷은 중성화 우선</strong> — FIV 교상 전파 차단</span>
             </li>
             <li className="flex gap-2">
-              <span className="shrink-0">✅</span>
+              <span className="shrink-0 text-primary">·</span>
               <span><strong>월 1회 외·내부 구충</strong> 커버리지 있는 제품 추천 (수의사 상담)</span>
             </li>
             <li className="flex gap-2">
-              <span className="shrink-0">✅</span>
+              <span className="shrink-0 text-primary">·</span>
               <span><strong>접촉 후 손 씻기</strong> — 곰팡이성 피부염·개선충 인수공통 대비</span>
             </li>
           </ul>
@@ -920,7 +920,7 @@ export default function DiseaseGuidePage() {
 
       {/* FAQ */}
       <section id="faq" className="mb-8 scroll-mt-20">
-        <h2 className="flex items-center gap-2 text-[18px] font-extrabold text-text-main mb-3">
+        <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
           <HelpCircle size={20} color="#4A7BA8" />
           자주 묻는 질문
         </h2>
@@ -931,10 +931,10 @@ export default function DiseaseGuidePage() {
               className="rounded-2xl bg-white p-4 group"
               style={{ border: "1px solid rgba(0,0,0,0.05)" }}
             >
-              <summary className="cursor-pointer text-[13.5px] font-extrabold text-text-main">
+              <summary className="cursor-pointer text-[13px] font-bold text-text-main">
                 Q. {q.name}
               </summary>
-              <p className="mt-2 text-[12.5px] leading-relaxed text-text-sub">
+              <p className="mt-2 text-[13px] leading-relaxed text-text-sub">
                 {q.acceptedAnswer.text}
               </p>
             </details>
@@ -946,29 +946,29 @@ export default function DiseaseGuidePage() {
       <div className="flex gap-2 flex-wrap">
         <Link
           href="/protection/emergency-guide"
-          className="px-3 py-2 rounded-xl text-[12px] font-bold active:scale-95"
+          className="px-3 py-2 rounded-xl text-[13px] font-bold active:scale-95"
           style={{ background: "#FFF1E6", color: "var(--color-primary)", border: "1px solid rgba(173, 94, 59,0.25)" }}
         >
-          🚑 응급 구조 가이드
+          응급 구조 가이드
         </Link>
         <Link
           href="/protection/pharmacy-guide"
-          className="px-3 py-2 rounded-xl text-[12px] font-bold active:scale-95"
+          className="px-3 py-2 rounded-xl text-[13px] font-bold active:scale-95"
           style={{ background: "#F4EDFA", color: "#8B65B8", border: "1px solid rgba(139,101,184,0.25)" }}
         >
-          💊 약품 가이드
+          약품 가이드
         </Link>
         <Link
           href="/hospitals"
-          className="px-3 py-2 rounded-xl text-[12px] font-bold active:scale-95"
-          style={{ background: "#E8F4E8", color: "#6B8E6F", border: "1px solid rgba(107,142,111,0.25)" }}
+          className="px-3 py-2 rounded-xl text-[13px] font-bold active:scale-95"
+          style={{ background: "#E8F4E8", color: "var(--color-sage)", border: "1px solid rgba(107,142,111,0.25)" }}
         >
-          🏥 가까운 병원 찾기
+          가까운 병원 찾기
         </Link>
       </div>
 
       {/* 면책 */}
-      <p className="text-[10px] text-text-light mt-6 leading-relaxed">
+      <p className="text-[11px] text-text-light mt-6 leading-relaxed">
         ⓘ 본 가이드는 공공기관·수의 자료를 바탕으로 일반 정보를 제공합니다. 개별 진단·처방은 반드시 동물병원을 통해 확인해주세요.
         특정 제품·제조사의 광고나 판매 유도와 무관합니다.
       </p>
