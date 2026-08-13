@@ -30,7 +30,19 @@ export default function OnboardingCard({
 }: OnboardingCardProps) {
   // 순서가 곧 유도 흐름 — 등록은 지역설정 없이도 가능하므로 '첫 고양이 등록'을 1순위로.
   // 지역설정은 관문이 아니라 '동네 소식을 받는' 선택 단계로 마지막에 둔다(가입→등록 이탈 완화).
+  // "가입 완료"를 0번 완료 스텝으로 부여 — endowed progress(이미 진행됐다는 프레이밍이
+  // 완주율을 올린다, Nunes & Drèze 2006). 실제로 완료한 일에만 크레딧.
+  // 색은 primary 단일 — 무지개 스텝 색은 위계가 아니라 노이즈였다 (2026-08-13 UIUX 오딧).
   const steps: Step[] = useMemo(() => [
+    {
+      key: "signup",
+      done: true,
+      title: "가입 완료",
+      subtitle: "",
+      href: "/mypage",
+      Icon: Check,
+      color: "var(--color-primary)",
+    },
     {
       key: "cat",
       done: hasMyCat,
@@ -38,7 +50,7 @@ export default function OnboardingCard({
       subtitle: "지도에서 + 버튼으로 아이를 등록해요",
       href: "/map?add=1",
       Icon: PawPrint,
-      color: "#E88D5A",
+      color: "var(--color-primary)",
     },
     {
       key: "care",
@@ -47,7 +59,7 @@ export default function OnboardingCard({
       subtitle: "밥·물·건강 체크 한 번만 남겨봐요",
       href: "/map",
       Icon: Heart,
-      color: "#E86B8C",
+      color: "var(--color-primary)",
     },
     {
       key: "region",
@@ -75,32 +87,26 @@ export default function OnboardingCard({
     <div
       className="mb-4 p-5"
       style={{
-        background: "linear-gradient(135deg, #FFF9F0 0%, #FFF2DF 100%)",
-        borderRadius: 22,
-        border: "1px solid rgba(173, 94, 59,0.2)",
-        boxShadow: "0 6px 20px rgba(173, 94, 59,0.12)",
+        background: "var(--color-surface)",
+        borderRadius: "var(--radius-card)",
+        border: "1px solid var(--color-border)",
+        boxShadow: "var(--shadow-card)",
       }}
     >
       {/* 헤더 */}
       <div className="flex items-start gap-3 mb-4">
         <div
           className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-          style={{
-            background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-            boxShadow: "0 4px 12px rgba(173, 94, 59,0.35)",
-          }}
+          style={{ background: "var(--color-primary)" }}
         >
           <Sparkles size={19} color="#fff" strokeWidth={2.3} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-primary)" }}>
-            WELCOME
-          </p>
-          <p className="text-[15px] font-extrabold text-text-main tracking-tight leading-tight mt-0.5">
+          <p className="text-[15px] font-bold text-text-main tracking-tight leading-tight">
             시작 가이드 <span style={{ color: "var(--color-primary)" }}>{doneCount}/{total}</span>
           </p>
-          <p className="text-[11.5px] text-text-sub mt-1 leading-snug">
-            지도에서 아이 한 마리만 등록하면 시작이에요!
+          <p className="text-[12px] text-text-sub mt-1 leading-snug">
+            지도에서 아이 한 마리만 등록하면 시작돼요
           </p>
         </div>
         {onDismiss && (
@@ -116,17 +122,14 @@ export default function OnboardingCard({
         )}
       </div>
 
-      {/* 진행률 바 */}
+      {/* 진행률 바 — 단색 primary (구 테마 시안 그라디언트 잔재 제거) */}
       <div
         className="w-full h-1.5 rounded-full overflow-hidden mb-4"
-        style={{ background: "rgba(173, 94, 59,0.15)" }}
+        style={{ background: "var(--color-gray-100)" }}
       >
         <div
           className="h-full rounded-full transition-all"
-          style={{
-            width: `${progress}%`,
-            background: "linear-gradient(90deg, var(--color-primary) 0%, #5BC4C4 100%)",
-          }}
+          style={{ width: `${progress}%`, background: "var(--color-primary)" }}
         />
       </div>
 
@@ -141,16 +144,16 @@ export default function OnboardingCard({
               className="flex items-center gap-3 px-3 py-2.5 rounded-xl active:scale-[0.99] transition-transform"
               style={{
                 background: s.done
-                  ? "rgba(107,142,111,0.1)"
+                  ? "var(--color-gray-50)"
                   : isNext
                     ? "#FFFFFF"
                     : "rgba(255,255,255,0.6)",
                 border: s.done
-                  ? "1px solid rgba(107,142,111,0.2)"
+                  ? "1px solid var(--color-divider)"
                   : isNext
-                    ? `1px solid ${s.color}40`
+                    ? "1px solid var(--color-primary-soft)"
                     : "1px solid rgba(0,0,0,0.04)",
-                boxShadow: isNext ? `0 3px 10px ${s.color}20` : "none",
+                boxShadow: isNext ? "var(--shadow-card)" : "none",
               }}
             >
               {/* 체크 / 번호 */}
@@ -158,34 +161,33 @@ export default function OnboardingCard({
                 className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
                 style={{
                   background: s.done
-                    ? "#6B8E6F"
+                    ? "var(--color-sage)"
                     : isNext
                       ? s.color
-                      : "rgba(0,0,0,0.08)",
+                      : "var(--color-gray-300)",
                   color: "#fff",
                 }}
               >
                 {s.done ? (
                   <Check size={13} strokeWidth={3} />
                 ) : (
-                  <span className="text-[11px] font-extrabold">{idx + 1}</span>
+                  <span className="text-[11px] font-bold">{idx + 1}</span>
                 )}
               </div>
 
               {/* 본문 */}
               <div className="flex-1 min-w-0">
                 <p
-                  className="text-[13px] font-extrabold tracking-tight"
+                  className="text-[13px] font-bold tracking-tight"
                   style={{
-                    color: s.done ? "#3F5B42" : "#2A2A28",
+                    color: s.done ? "var(--color-text-light)" : "var(--color-text-main)",
                     textDecoration: s.done ? "line-through" : "none",
-                    opacity: s.done ? 0.7 : 1,
                   }}
                 >
                   {s.title}
                 </p>
-                {!s.done && (
-                  <p className="text-[10.5px] text-text-sub mt-0.5 truncate">
+                {!s.done && s.subtitle && (
+                  <p className="text-[11px] text-text-sub mt-0.5 truncate">
                     {s.subtitle}
                   </p>
                 )}
