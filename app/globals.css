@@ -53,6 +53,17 @@
   --color-error: #F04452;
   --color-warning: #FFA927;
 
+  /* ── 의미색 공식 등록 + soft tint (2026-08-13 UIUX 리뉴얼 잔여 결정) ──
+     like: 좋아요·찜·쓰다듬기 하트 전용 — 구 핑크 #E86B8C를 공식 승격해
+     산발 파생색(#D85577·#FF8FB1·#E14B6A 등)을 이 한 색으로 수렴한다.
+     *-soft: primary-soft와 동일 패턴의 연한 배경 틴트 — 임의 파스텔 hex(#FBEAEA 등) 대체 */
+  --color-like: #E86B8C;
+  --color-like-soft: rgba(232, 107, 140, 0.12);
+  --color-error-soft: rgba(240, 68, 82, 0.08);
+  --color-warning-soft: rgba(255, 169, 39, 0.12);
+  --color-sage-soft: rgba(34, 163, 102, 0.1);
+  --color-care-soft: rgba(232, 148, 10, 0.12);
+
   /* Border */
   --color-border: #E5E8EB;
   --color-divider: #F2F4F6;
