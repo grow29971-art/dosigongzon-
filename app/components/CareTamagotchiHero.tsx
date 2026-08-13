@@ -56,7 +56,7 @@ function Gauge({ label, emoji, value, color }: { label: string; emoji: string; v
     <div className="flex-1 min-w-0">
       <div className="flex items-center justify-between mb-1">
         <span className="text-[11px] font-bold text-text-sub">{emoji} {label}</span>
-        <span className="text-[11px] font-extrabold tabular-nums" style={{ color }}>{Math.round(value)}</span>
+        <span className="text-[11px] font-bold tabular-nums" style={{ color }}>{Math.round(value)}</span>
       </div>
       <div className="h-2 rounded-full overflow-hidden" style={{ background: "var(--color-surface-alt)" }}>
         <div className="h-full rounded-full transition-all duration-500" style={{ width: `${value}%`, background: color }} />
@@ -309,9 +309,9 @@ export default function CareTamagotchiHero() {
           </span>
           <span className="flex-1 min-w-0 text-left">
             <span className="flex items-center gap-1.5">
-              <span className="text-[14.5px] font-extrabold text-text-main truncate">{cat.name}</span>
+              <span className="text-[15px] font-bold text-text-main truncate">{cat.name}</span>
               <span
-                className="chip-square px-1.5 py-0.5 text-[9.5px] font-extrabold shrink-0"
+                className="chip-square px-1.5 py-0.5 text-[11px] font-bold shrink-0"
                 style={{ background: "var(--color-primary-soft)", color: "var(--color-primary-dark)" }}
               >
                 {stage.emoji} Lv.{level}
@@ -343,8 +343,8 @@ export default function CareTamagotchiHero() {
 
       {/* 헤더: 이름 + 단계/레벨 + 우리 아이 사진 뱃지 */}
       <div className="flex items-center gap-2 mb-2.5">
-        <p className="text-[16px] font-extrabold text-text-main truncate">{cat.name}</p>
-        <span className="chip-square px-1.5 py-0.5 text-[10px] font-extrabold shrink-0"
+        <p className="text-[17px] font-bold text-text-main truncate">{cat.name}</p>
+        <span className="chip-square px-1.5 py-0.5 text-[11px] font-bold shrink-0"
           style={{ background: "var(--color-primary-soft)", color: "var(--color-primary-dark)" }}>
           {stage.emoji} {stage.name} · Lv.{level}
         </span>
@@ -495,26 +495,26 @@ export default function CareTamagotchiHero() {
       {/* 액션 버튼 */}
       <div className="grid grid-cols-2 gap-2 mt-3">
         <button type="button" onClick={() => act("feed")} disabled={busy || fedToday >= FEED_LIMIT_PER_DAY}
-          className="press py-2.5 text-[13px] font-extrabold text-white disabled:opacity-40"
-          style={{ borderRadius: "var(--radius-input)", background: "linear-gradient(135deg, #E88D5A 0%, #D9743F 100%)" }}>
-          🍚 밥 주기 <span className="text-[11px] font-bold opacity-85">({fedToday}/{FEED_LIMIT_PER_DAY})</span>
+          className="press py-2.5 text-[13px] font-bold text-white disabled:opacity-40"
+          style={{ borderRadius: "var(--radius-input)", background: "var(--color-care)" }}>
+          밥 주기 <span className="text-[11px] font-bold opacity-85">({fedToday}/{FEED_LIMIT_PER_DAY})</span>
         </button>
         <button type="button" onClick={() => act("pet")} disabled={busy || petDone}
-          className="press py-2.5 text-[13px] font-extrabold disabled:opacity-40"
+          className="press py-2.5 text-[13px] font-bold disabled:opacity-40"
           style={{ borderRadius: "var(--radius-input)", background: petDone ? "var(--color-surface-alt)" : "var(--color-primary-soft)", color: petDone ? "var(--color-text-light)" : "var(--color-primary-dark)" }}>
-          {petDone ? "✓ 오늘 쓰담 완료" : "🤚 쓰다듬기"}
+          {petDone ? "✓ 오늘 쓰담 완료" : "쓰다듬기"}
         </button>
         {cleanSupported && (
           <button type="button" onClick={() => act("clean")} disabled={busy || nPoop === 0}
-            className="press py-2.5 text-[13px] font-extrabold text-white disabled:opacity-40"
-            style={{ borderRadius: "var(--radius-input)", background: "linear-gradient(135deg, #54B89E 0%, #3C9880 100%)" }}>
-            🧹 치워주기{nPoop > 0 ? ` (${nPoop})` : ""}
+            className="press py-2.5 text-[13px] font-bold text-white disabled:opacity-40"
+            style={{ borderRadius: "var(--radius-input)", background: "var(--color-sage)" }}>
+            치워주기{nPoop > 0 ? ` (${nPoop})` : ""}
           </button>
         )}
         <button type="button" onClick={() => act("play")} disabled={busy}
-          className="press py-2.5 text-[13px] font-extrabold text-white disabled:opacity-40"
-          style={{ borderRadius: "var(--radius-input)", background: "linear-gradient(135deg, #C48ACB 0%, #A366AD 100%)" }}>
-          🎾 놀아주기
+          className="press py-2.5 text-[13px] font-bold text-white disabled:opacity-40"
+          style={{ borderRadius: "var(--radius-input)", background: "var(--color-gray-700)" }}>
+          놀아주기
         </button>
       </div>
 
@@ -532,7 +532,7 @@ export default function CareTamagotchiHero() {
         })}
         <Link href="/mypage/shop" className="chip-square press shrink-0 px-2.5 py-1.5 text-[11px] font-bold"
           style={{ background: "var(--color-primary-soft)", color: "var(--color-primary-dark)" }}>
-          🛍️ {items.length > 0 ? "간식 더 사기" : "케어 간식 사러 가기"}
+          {items.length > 0 ? "간식 더 사기" : "케어 간식 사러 가기"}
         </Link>
       </div>
 
