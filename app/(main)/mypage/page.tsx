@@ -675,7 +675,7 @@ export default function MyPage() {
                 </h2>
               </div>
               <div
-                className="flex gap-2 overflow-x-auto scrollbar-hide px-1 -mx-1 pb-1"
+                className="flex gap-2 overflow-x-auto no-scrollbar px-1 -mx-1 pb-1"
               >
                 {likedCats.map((cat) => (
                   <Link

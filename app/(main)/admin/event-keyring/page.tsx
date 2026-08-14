@@ -207,7 +207,7 @@ export default function AdminEventKeyringPage() {
       </div>
 
       {/* 필터 탭 */}
-      <div className="px-4 mb-3 flex gap-1.5 overflow-x-auto scrollbar-hide">
+      <div className="px-4 mb-3 flex gap-1.5 overflow-x-auto no-scrollbar">
         {(["all", ...STATUS_ORDER] as const).map((k) => (
           <button key={k} onClick={() => setFilter(k)}
             className="shrink-0 px-3 py-1.5 chip-square text-[12px] font-bold active:scale-95 transition-transform"

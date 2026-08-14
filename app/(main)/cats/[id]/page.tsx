@@ -298,7 +298,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
       {/* 갤러리 썸네일 (사진 2장 이상일 때) */}
       {cat.photo_urls && cat.photo_urls.length > 1 && (
         <div className="px-4 mt-3">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
             {cat.photo_urls.map((url, idx) => {
               const safeUrl = sanitizeImageUrl(url, "");
               return (

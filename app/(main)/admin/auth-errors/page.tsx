@@ -194,7 +194,7 @@ export default function AdminAuthErrorsPage() {
 
       {/* 기간 + 새로고침 + 청소 */}
       <div className="flex items-center gap-2 mb-3">
-        <div className="flex gap-1.5 flex-1 overflow-x-auto scrollbar-hide">
+        <div className="flex gap-1.5 flex-1 overflow-x-auto no-scrollbar">
           {[1, 7, 30].map((d) => (
             <button
               key={d}

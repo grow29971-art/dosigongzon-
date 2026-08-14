@@ -146,7 +146,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
     <div>
       {/* 통계 칩 */}
       {stats && stats.total > 0 && (
-        <div className="flex gap-1.5 overflow-x-auto pb-2 px-1 scrollbar-hide">
+        <div className="flex gap-1.5 overflow-x-auto pb-2 px-1 no-scrollbar">
           {(Object.entries(stats.byType) as [CareType, number][]).map(
             ([type, count]) => {
               const info = CARE_TYPE_MAP[type];

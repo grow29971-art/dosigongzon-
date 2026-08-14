@@ -2144,7 +2144,7 @@ export default function MapPage() {
 
           {/* 필터 칩 */}
           {detailToolsVisible && (
-          <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
+          <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
             {[
               { key: "cats", label: "고양이", active: showCats, toggle: () => setShowCats(!showCats), color: "#AD5E3B" },
               { key: "hospitals", label: "병원", active: showHospitals, toggle: () => setShowHospitals(!showHospitals), color: "#149D5B" },
@@ -2236,7 +2236,7 @@ export default function MapPage() {
 
             {/* 속성 필터 칩 */}
             {showFilterPanel && (
-              <div id="cat-filter-panel" className="flex gap-1.5 mt-2 overflow-x-auto scrollbar-hide">
+              <div id="cat-filter-panel" className="flex gap-1.5 mt-2 overflow-x-auto no-scrollbar">
                 {([
                   { key: "all",             label: "전체",       color: "var(--color-gray-900)" },
                   { key: "alert",           label: "학대 경보",   color: "var(--color-error)" },
@@ -2268,7 +2268,7 @@ export default function MapPage() {
 
         {/* 활동 지역 탭 (당근마켓 스타일) — P2 flag on이면 상세 도구를 연 경우에만 */}
         {isLoggedIn && detailToolsVisible && (
-          <div className="flex gap-1.5 mt-2 pointer-events-auto overflow-x-auto scrollbar-hide">
+          <div className="flex gap-1.5 mt-2 pointer-events-auto overflow-x-auto no-scrollbar">
             {activityRegions.length > 0 ? (
               <>
                 <button
@@ -4333,16 +4333,6 @@ export default function MapPage() {
           }}
         />
       )}
-
-      <style jsx>{`
-        @keyframes slide-up {
-          from { transform: translateY(100%); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-        :global(.animate-slide-up) {
-          animation: slide-up 0.3s ease-out;
-        }
-      `}</style>
     </div>
     </>
   );

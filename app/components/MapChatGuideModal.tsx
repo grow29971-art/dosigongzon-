@@ -48,7 +48,7 @@ export default function MapChatGuideModal() {
       aria-label="지도 채팅 사용법 안내"
     >
       <div
-        className="bg-white w-full max-w-md rounded-3xl p-5 relative animate-slide-up"
+        className="bg-white w-full max-w-md rounded-3xl p-5 relative animate-rise"
         style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.25)" }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -133,14 +133,6 @@ export default function MapChatGuideModal() {
           알겠어요
         </button>
       </div>
-
-      <style>{`
-        @keyframes slide-up {
-          from { transform: translateY(20px); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-        .animate-slide-up { animation: slide-up 0.3s ease-out; }
-      `}</style>
     </div>
   );
 }

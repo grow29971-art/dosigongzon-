@@ -1068,7 +1068,7 @@ export default function HomeAuthed({
                     <p className="text-[10px] text-text-light mb-2">
                       반경 {primaryRegion.radius_m >= 1000 ? `${primaryRegion.radius_m / 1000}km` : `${primaryRegion.radius_m}m`} · 탭하면 지도에서 볼 수 있어요
                     </p>
-                    <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
+                    <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
                       {neighborhoodCats.map((c) => {
                         const safe = sanitizeImageUrl(c.photo_url, "https://placehold.co/100x100/EEEAE2/2A2A28?text=%3F");
                         const avatar = thumbnailUrl(safe, 100) ?? safe;
@@ -1590,7 +1590,7 @@ export default function HomeAuthed({
               지도 <ChevronRight size={14} />
             </Link>
           </div>
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1">
+          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
             {popularCats.map((c, idx) => (
               <Link
                 key={c.id}
@@ -1710,7 +1710,7 @@ export default function HomeAuthed({
               오늘의 기념일
             </h2>
           </div>
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1">
+          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
             {anniversaries.map((a) => {
               const label = a.years === 0
                 ? "오늘 구조됐어요"

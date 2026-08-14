@@ -280,7 +280,7 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Provider 필터 칩 */}
-      <div className="flex items-center gap-1.5 mb-4 overflow-x-auto scrollbar-hide">
+      <div className="flex items-center gap-1.5 mb-4 overflow-x-auto no-scrollbar">
         <button
           type="button"
           onClick={() => setProviderFilter(null)}

@@ -157,7 +157,7 @@ function SearchPageInner() {
 
         {/* ── 탭 ── */}
         {data.query && !data.tooShort && (
-          <div className="flex gap-1.5 mt-3 overflow-x-auto scrollbar-hide">
+          <div className="flex gap-1.5 mt-3 overflow-x-auto no-scrollbar">
             {([
               { key: "all", label: "전체", count: totalCount },
               { key: "cats", label: "고양이", count: data.counts.cats },
