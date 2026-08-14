@@ -56,7 +56,7 @@ export default function TipShareButtons({ url, title, description }: Props) {
       <button
         type="button"
         onClick={onCopy}
-        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white text-[12.5px] font-bold text-text-main border border-black/[0.06] active:scale-95 transition-transform"
+        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white text-[13px] font-bold text-text-main border border-black/[0.06] active:scale-95 transition-transform"
       >
         {copied ? <Check size={14} className="text-primary" /> : <Link2 size={14} />}
         {copied ? "복사됨" : "URL 복사"}
@@ -65,7 +65,7 @@ export default function TipShareButtons({ url, title, description }: Props) {
       <button
         type="button"
         onClick={onKakao}
-        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-[12.5px] font-bold active:scale-95 transition-transform"
+        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-[13px] font-bold active:scale-95 transition-transform"
         style={{ background: "#FEE500", color: "#3C1E1E" }}
       >
         <span>💬</span> 카카오톡
@@ -75,7 +75,7 @@ export default function TipShareButtons({ url, title, description }: Props) {
         href={naverUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-[12.5px] font-bold text-white active:scale-95 transition-transform"
+        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-[13px] font-bold text-white active:scale-95 transition-transform"
         style={{ background: "#03C75A" }}
       >
         N 네이버
@@ -85,7 +85,7 @@ export default function TipShareButtons({ url, title, description }: Props) {
         href={twitterUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-[12.5px] font-bold text-white active:scale-95 transition-transform"
+        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-[13px] font-bold text-white active:scale-95 transition-transform"
         style={{ background: "#000" }}
       >
         𝕏 트위터

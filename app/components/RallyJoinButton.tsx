@@ -130,7 +130,7 @@ export default function RallyJoinButton() {
     </div>
 
     {/* 수집 고지 + 철회 경로 — 참여 이력은 본인만 볼 수 있고 언제든 지울 수 있어야 한다 */}
-    <p className="mt-1.5 px-1 text-[10.5px] leading-relaxed text-text-light">
+    <p className="mt-1.5 px-1 text-[11px] leading-relaxed text-text-light">
       참여 여부는 <b>인원 추산에만</b> 쓰고 명단은 공개하지 않아요. 집회 다음 날 모두 삭제돼요.
       {done && (
         <>

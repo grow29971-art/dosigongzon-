@@ -137,12 +137,12 @@ export default async function RescuePage() {
                     <div className="flex-1 min-w-0 py-2.5 pr-3">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span
-                          className="px-2 py-0.5 rounded-lg text-[9.5px] font-extrabold flex items-center gap-1"
+                          className="px-2 py-0.5 rounded-lg text-[10px] font-extrabold flex items-center gap-1"
                           style={{ background: "#D85555", color: "#fff" }}
                         >
                           🚨 위험
                         </span>
-                        <span className="text-[10.5px] text-text-light">
+                        <span className="text-[11px] text-text-light">
                           {timeSince(cat.created_at)}
                         </span>
                       </div>
@@ -156,11 +156,11 @@ export default async function RescuePage() {
                         </p>
                       )}
                       {cat.description && (
-                        <p className="text-[11.5px] text-text-sub mt-1 line-clamp-2 leading-snug">
+                        <p className="text-[12px] text-text-sub mt-1 line-clamp-2 leading-snug">
                           {cat.description}
                         </p>
                       )}
-                      <div className="flex items-center gap-3 mt-2 text-[10.5px] text-text-light">
+                      <div className="flex items-center gap-3 mt-2 text-[11px] text-text-light">
                         <span className="flex items-center gap-0.5">
                           <Heart size={10} />
                           {cat.like_count ?? 0}
@@ -180,7 +180,7 @@ export default async function RescuePage() {
 
         {/* 하단 안내 */}
         <div
-          className="mt-5 rounded-2xl p-4 text-[11.5px] leading-snug"
+          className="mt-5 rounded-2xl p-4 text-[12px] leading-snug"
           style={{ background: "#FFF9F0", border: "1px solid rgba(232,141,90,0.25)" }}
         >
           <p className="font-extrabold text-text-main mb-1">💡 도움을 주고 싶다면</p>

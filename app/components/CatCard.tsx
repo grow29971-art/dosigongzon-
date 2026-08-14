@@ -453,7 +453,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
         <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: fs.bottom, color: "#9A958A", fontWeight: 600 }}>
           <span style={{
             width: 15, height: 15, borderRadius: "50%", background: cfg.typeBg,
-            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8.5,
+            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9,
           }}>{cfg.typeIcon}</span>
           속성
           <span style={{ color: "#C4BFB2" }}>·</span>

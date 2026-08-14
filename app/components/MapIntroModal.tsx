@@ -88,21 +88,21 @@ export default function MapIntroModal() {
           <div className="flex flex-col gap-3">
             <div className="flex gap-3">
               <span className="text-[18px] shrink-0">🐾</span>
-              <p className="text-[12.5px] leading-[1.65] text-text-sub">
+              <p className="text-[13px] leading-[1.65] text-text-sub">
                 지도 속 고양이는 <b className="text-text-main">실제 위치가 아니에요.</b> 자기 동네
                 안을 불규칙하게 돌아다니며 계속 자리를 바꿔요.
               </p>
             </div>
             <div className="flex gap-3">
               <span className="text-[18px] shrink-0">🔒</span>
-              <p className="text-[12.5px] leading-[1.65] text-text-sub">
+              <p className="text-[13px] leading-[1.65] text-text-sub">
                 등록할 때부터 <b className="text-text-main">실제 좌표는 저장하지 않아요.</b> 그래서
                 지도를 아무리 봐도 급식소나 아지트는 알 수 없어요.
               </p>
             </div>
             <div className="flex gap-3">
               <span className="text-[18px] shrink-0">💤</span>
-              <p className="text-[12.5px] leading-[1.65] text-text-sub">
+              <p className="text-[13px] leading-[1.65] text-text-sub">
                 쉬고(💤) · 산책하고(🐾) · 우다다(💨) 하는 모습을 구경하고, 탭해서
                 쓰다듬어 주세요.
               </p>

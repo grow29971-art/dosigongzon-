@@ -51,7 +51,7 @@ export default async function RankingPage() {
             길집사 활동 랭킹
           </h1>
         </div>
-        <p className="text-[12.5px] text-text-sub leading-relaxed">
+        <p className="text-[13px] text-text-sub leading-relaxed">
           등록·돌봄 기록·좋아요로 점수가 쌓여요. 매일 새로운 동네 길집사를 만나보세요.
         </p>
       </div>
@@ -66,7 +66,7 @@ export default async function RankingPage() {
             <span>점수는 어떻게 계산되나요?</span>
             <span className="text-text-light text-[12px]">+</span>
           </summary>
-          <ul className="text-[11.5px] text-text-sub mt-2.5 leading-relaxed space-y-0.5">
+          <ul className="text-[12px] text-text-sub mt-2.5 leading-relaxed space-y-0.5">
             <li>· 고양이 등록 — 1마리 +10점</li>
             <li>· 돌봄 기록 (댓글) — 1건 +1점</li>
             <li>· 위급 경보 — 1건 +2점 추가</li>
@@ -124,7 +124,7 @@ export default async function RankingPage() {
             style={{ boxShadow: "var(--shadow-card)" }}
           >
             <p className="text-[13px] font-bold text-text-main">아직 랭킹이 없어요</p>
-            <p className="text-[11.5px] text-text-sub mt-1">
+            <p className="text-[12px] text-text-sub mt-1">
               가장 먼저 고양이를 등록하고 1위가 되어보세요!
             </p>
             <Link
@@ -145,7 +145,7 @@ export default async function RankingPage() {
       {/* 본인이 Top 50 밖일 때 본인 순위 표시 */}
       {user && myRank && !inTop && (
         <div className="px-4 mt-4">
-          <div className="text-[10.5px] font-extrabold tracking-[0.15em] text-text-sub mb-1.5 px-1">
+          <div className="text-[11px] font-extrabold tracking-[0.15em] text-text-sub mb-1.5 px-1">
             내 순위
           </div>
           <RankRow
@@ -162,7 +162,7 @@ export default async function RankingPage() {
             }}
             highlight
           />
-          <p className="text-[10.5px] text-text-sub text-center mt-2">
+          <p className="text-[11px] text-text-sub text-center mt-2">
             전체 {myRank.total_users.toLocaleString()}명 중 {myRank.rank.toLocaleString()}위
           </p>
         </div>
@@ -176,10 +176,10 @@ export default async function RankingPage() {
             className="block rounded-2xl px-4 py-3.5 text-center bg-white"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <p className="text-[12.5px] font-extrabold text-text-main">
+            <p className="text-[13px] font-extrabold text-text-main">
               로그인하면 내 순위도 보여요
             </p>
-            <p className="text-[10.5px] text-text-sub mt-0.5">
+            <p className="text-[11px] text-text-sub mt-0.5">
               지금 시작하면 여기 오를 수 있어요 🐾
             </p>
           </Link>
@@ -241,11 +241,11 @@ function PodiumCard({ row, place, height }: { row: RankingRow; place: 1 | 2 | 3;
             🐾
           </div>
         )}
-        <p className="text-[11.5px] font-extrabold text-text-main mt-1.5 truncate max-w-full px-1">
+        <p className="text-[12px] font-extrabold text-text-main mt-1.5 truncate max-w-full px-1">
           {row.nickname ?? "익명"}
         </p>
         <p
-          className="text-[9.5px] font-bold tracking-tight"
+          className="text-[10px] font-bold tracking-tight"
           style={{ color: getLevelColor(level.level) }}
         >
           {level.emoji} {level.title}
@@ -303,20 +303,20 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
           {row.nickname ?? "익명"}
         </p>
         <p
-          className="text-[10.5px] font-bold mt-0.5"
+          className="text-[11px] font-bold mt-0.5"
           style={{ color: getLevelColor(level.level) }}
         >
           {level.emoji} {level.title}
         </p>
       </div>
       <div className="flex items-center gap-2.5 shrink-0">
-        <span className="flex items-center gap-0.5 text-[10.5px] text-text-sub">
+        <span className="flex items-center gap-0.5 text-[11px] text-text-sub">
           <PawPrint size={10} /> {row.cat_count}
         </span>
-        <span className="flex items-center gap-0.5 text-[10.5px] text-text-sub">
+        <span className="flex items-center gap-0.5 text-[11px] text-text-sub">
           <MessageCircle size={10} /> {row.comment_count}
         </span>
-        <span className="flex items-center gap-0.5 text-[10.5px] text-text-sub">
+        <span className="flex items-center gap-0.5 text-[11px] text-text-sub">
           <Heart size={10} /> {row.likes_received ?? 0}
         </span>
       </div>

@@ -286,7 +286,7 @@ export default function AdminAuthErrorsPage() {
         >
           <div className="flex items-center gap-2 mb-3">
             <AlertCircle size={13} style={{ color: "#E88D5A" }} />
-            <h2 className="text-[12.5px] font-extrabold text-text-main">
+            <h2 className="text-[13px] font-extrabold text-text-main">
               에러 코드 TOP
             </h2>
             <span className="text-[10px] text-text-light">(클릭하면 해당 코드만 필터)</span>
@@ -379,7 +379,7 @@ export default function AdminAuthErrorsPage() {
           style={{ boxShadow: "var(--shadow-card)" }}
         >
           <Shield size={28} className="mx-auto mb-2 text-text-light" strokeWidth={1.5} />
-          <p className="text-[12.5px] font-bold text-text-main">로그가 없어요</p>
+          <p className="text-[13px] font-bold text-text-main">로그가 없어요</p>
           <p className="text-[11px] text-text-sub mt-0.5">로그인 실패가 없거나, 아직 SQL 마이그레이션을 실행하지 않았어요.</p>
         </div>
       ) : (
@@ -409,7 +409,7 @@ export default function AdminAuthErrorsPage() {
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[11.5px] font-extrabold text-text-main">
+                      <span className="text-[12px] font-extrabold text-text-main">
                         {guide.title}
                       </span>
                       {log.provider && (

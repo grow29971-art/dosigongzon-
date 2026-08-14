@@ -108,7 +108,7 @@ export default function WeeklyCheckinCard() {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-[16px]">🗓️</span>
-          <h3 className="text-[13.5px] font-extrabold text-text-main tracking-tight">주간 출석</h3>
+          <h3 className="text-[14px] font-extrabold text-text-main tracking-tight">주간 출석</h3>
           <span className="text-[10px] font-bold text-text-light">{dayCount}/7일</span>
         </div>
         <span
@@ -165,7 +165,7 @@ export default function WeeklyCheckinCard() {
           <button
             onClick={claim}
             disabled={claiming}
-            className="shrink-0 px-3.5 py-1.5 rounded-xl text-[11.5px] font-extrabold text-white active:scale-95 transition-transform"
+            className="shrink-0 px-3.5 py-1.5 rounded-xl text-[12px] font-extrabold text-white active:scale-95 transition-transform"
             style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
           >
             {claiming ? "받는 중…" : `+${claimableSum}P 받기`}
@@ -178,7 +178,7 @@ export default function WeeklyCheckinCard() {
           🎉 {justGranted}P 적립! 쇼핑에서 1P=1원으로 쓸 수 있어요
         </p>
       )}
-      <p className="text-[9.5px] text-text-light mt-2 text-center">
+      <p className="text-[10px] text-text-light mt-2 text-center">
         일일 출석체크를 완료하면 스탬프가 찍혀요 · 포인트는 쇼핑몰 결제 할인에 사용
       </p>
     </div>

@@ -50,8 +50,8 @@ export default function FundSettlementCard() {
           { label: "잔액", value: balance, color: "var(--color-primary)" },
         ].map((s) => (
           <div key={s.label} className="text-center py-2.5 rounded-2xl" style={{ background: "var(--color-surface-alt)" }}>
-            <p className="text-[9.5px] font-bold text-text-light mb-0.5">{s.label}</p>
-            <p className="text-[13.5px] font-black tabular-nums" style={{ color: s.color }}>
+            <p className="text-[10px] font-bold text-text-light mb-0.5">{s.label}</p>
+            <p className="text-[14px] font-black tabular-nums" style={{ color: s.color }}>
               {s.value.toLocaleString()}
               <span className="text-[9px] font-bold text-text-light">원</span>
             </p>
@@ -74,17 +74,17 @@ export default function FundSettlementCard() {
       </div>
 
       {empty ? (
-        <p className="text-[10.5px] text-text-light text-center mt-3 leading-relaxed">
+        <p className="text-[11px] text-text-light text-center mt-3 leading-relaxed">
           정식 오픈 후 첫 구매부터 집계를 시작해요.<br />모인 금액과 쓰인 금액을 여기서 투명하게 공개할게요.
         </p>
       ) : (
         <>
           {disbursements.length > 0 && (
             <div className="mt-3">
-              <p className="text-[10.5px] font-bold text-text-sub mb-1.5">최근 사용 내역</p>
+              <p className="text-[11px] font-bold text-text-sub mb-1.5">최근 사용 내역</p>
               <div className="flex flex-col gap-1">
                 {disbursements.map((d, i) => (
-                  <div key={i} className="flex items-center gap-2 text-[11.5px]">
+                  <div key={i} className="flex items-center gap-2 text-[12px]">
                     <span className="text-text-light tabular-nums shrink-0">{d.spent_at.slice(5).replace("-", ".")}</span>
                     <span className="text-text-main truncate flex-1">{d.memo}</span>
                     <span className="font-extrabold tabular-nums shrink-0" style={{ color: "var(--color-like)" }}>-{won(d.amount)}</span>

@@ -179,7 +179,7 @@ export default function AdminCatsPage() {
         <h1 className="text-[17px] font-extrabold text-text-main flex items-center gap-1.5">
           <CatIcon size={17} className="text-primary" /> 고양이 관리
         </h1>
-        <span className="text-[11.5px] font-bold text-text-light ml-auto">{cats.length}마리</span>
+        <span className="text-[12px] font-bold text-text-light ml-auto">{cats.length}마리</span>
       </div>
 
       {/* 검색 */}
@@ -203,7 +203,7 @@ export default function AdminCatsPage() {
           <button
             key={key}
             onClick={() => setFilter(key)}
-            className="px-3 py-1.5 rounded-xl text-[11.5px] font-bold"
+            className="px-3 py-1.5 rounded-xl text-[12px] font-bold"
             style={{
               background: filter === key ? "var(--color-primary)" : "#fff",
               color: filter === key ? "#fff" : "#666",
@@ -215,7 +215,7 @@ export default function AdminCatsPage() {
         ))}
         <button
           onClick={selectAllVisible}
-          className="ml-auto px-3 py-1.5 rounded-xl text-[11.5px] font-bold"
+          className="ml-auto px-3 py-1.5 rounded-xl text-[12px] font-bold"
           style={{ background: "#fff", color: "var(--color-primary)", boxShadow: "0 2px 6px rgba(0,0,0,0.05)" }}
         >
           {selected.size === visible.length && visible.length > 0 ? "전체 해제" : "전체 선택"}
@@ -270,7 +270,7 @@ export default function AdminCatsPage() {
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-extrabold text-text-main truncate">
                     {cat.name}
-                    {cat.hidden && <span className="ml-1.5 text-[9.5px] font-bold px-1.5 py-0.5 rounded" style={{ background: "rgba(216,85,85,0.12)", color: "#D85555" }}>숨김</span>}
+                    {cat.hidden && <span className="ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded" style={{ background: "rgba(216,85,85,0.12)", color: "#D85555" }}>숨김</span>}
                   </p>
                   <p className="text-[11px] text-text-light truncate mt-0.5">
                     {cat.region ?? "지역 없음"} · {cat.caretaker_name ?? "등록자 없음"} · {formatDate(cat.created_at)}

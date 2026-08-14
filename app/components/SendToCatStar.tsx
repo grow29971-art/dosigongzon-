@@ -286,7 +286,7 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
             >
               아직 아니에요
             </button>
-            <p className="text-[11.5px] text-gray-400 text-center mt-1">
+            <p className="text-[12px] text-gray-400 text-center mt-1">
               잘못 보냈다면 고양이별에서 다시 지도로 되돌릴 수 있어요.
             </p>
           </div>

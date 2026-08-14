@@ -67,7 +67,7 @@ export default function ReportEvidenceBlock({ report }: { report: Report }) {
         {copied ? "복사됨" : "기관 이관 서식 복사"}
       </button>
       {evidence.length > 0 && (
-        <p className="text-[9.5px] text-text-light mt-1">
+        <p className="text-[10px] text-text-light mt-1">
           사진은 EXIF 제거 사본 · {new Date(evidence[0].purge_at).toLocaleDateString("ko-KR")} 자동 파기
         </p>
       )}

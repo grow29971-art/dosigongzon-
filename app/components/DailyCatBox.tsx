@@ -120,11 +120,11 @@ export default function DailyCatBox() {
           </span>
         )}
       </div>
-      <p className="text-[13.5px] font-bold text-text-main leading-relaxed">{fact}</p>
+      <p className="text-[14px] font-bold text-text-main leading-relaxed">{fact}</p>
       {isBonus && (
         <div className="mt-2.5 flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: "rgba(232,141,90,0.12)" }}>
           <Gift size={14} style={{ color: "#D8743C" }} className="shrink-0" />
-          <p className="text-[11.5px] font-extrabold leading-snug" style={{ color: "var(--color-primary-dark)" }}>
+          <p className="text-[12px] font-extrabold leading-snug" style={{ color: "var(--color-primary-dark)" }}>
             오늘은 행운의 날! 길고양이에게 따뜻한 한 끼 어때요 🐾
           </p>
         </div>

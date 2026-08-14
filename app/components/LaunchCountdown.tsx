@@ -18,7 +18,7 @@ export default function LaunchCountdown() {
       }}
     >
       <Rocket size={14} className="shrink-0" />
-      <span className="text-[12.5px] font-extrabold tracking-tight whitespace-nowrap">
+      <span className="text-[13px] font-extrabold tracking-tight whitespace-nowrap">
         🎉 도시공존 출시!{" "}
         <span
           className="mx-0.5 px-1.5 py-0.5 rounded-md"

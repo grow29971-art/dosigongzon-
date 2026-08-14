@@ -96,7 +96,7 @@ export default function FundVoteCard() {
     >
       <div className="flex items-center justify-between mb-0.5">
         <h3 className="text-[14px] font-extrabold text-text-main tracking-tight">🗳️ 수익, 어디에 쓸까요?</h3>
-        <span className="text-[10.5px] font-bold text-text-light tabular-nums">{total.toLocaleString()}명 참여</span>
+        <span className="text-[11px] font-bold text-text-light tabular-nums">{total.toLocaleString()}명 참여</span>
       </div>
       <p className="text-[11px] text-text-light mb-3">가장 많은 표를 받은 곳에 먼저 쓰여요 · 투표는 언제든 바꿀 수 있어요</p>
 
@@ -162,7 +162,7 @@ export default function FundVoteCard() {
               placeholder="수익을 이런 데 쓰면 좋겠어요… (자유롭게 적어주세요)"
               rows={3}
               maxLength={500}
-              className="w-full px-3 py-2.5 rounded-xl text-[12.5px] outline-none resize-none"
+              className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none resize-none"
               style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
             />
             {ideaErr && <p className="text-[11px] mt-1" style={{ color: "#D85555" }}>{ideaErr}</p>}
@@ -177,7 +177,7 @@ export default function FundVoteCard() {
               <button
                 onClick={sendIdea}
                 disabled={ideaBusy || !idea.trim()}
-                className="flex-1 py-2 rounded-xl text-[12.5px] font-extrabold text-white active:scale-[0.98] transition-transform disabled:opacity-40"
+                className="flex-1 py-2 rounded-xl text-[13px] font-extrabold text-white active:scale-[0.98] transition-transform disabled:opacity-40"
                 style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
               >
                 {ideaBusy ? "보내는 중…" : "보내기"}

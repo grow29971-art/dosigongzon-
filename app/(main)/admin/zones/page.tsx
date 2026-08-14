@@ -107,7 +107,7 @@ export default function AdminZonesPage() {
         </p>
 
         {error && (
-          <p className="text-[12.5px] font-bold mb-3" style={{ color: "#B84545" }}>{error}</p>
+          <p className="text-[13px] font-bold mb-3" style={{ color: "#B84545" }}>{error}</p>
         )}
 
         {/* 구역 생성 */}
@@ -140,11 +140,11 @@ export default function AdminZonesPage() {
             <div className="flex items-center justify-between">
               <div className="min-w-0">
                 <p className="text-[14px] font-extrabold text-text-main truncate">{zone.label}</p>
-                <p className="text-[10.5px] text-text-light">{zone.active ? "운영 중" : "중지됨"} · 제보 {reports.filter((r) => r.zone_id === zone.id).length}건</p>
+                <p className="text-[11px] text-text-light">{zone.active ? "운영 중" : "중지됨"} · 제보 {reports.filter((r) => r.zone_id === zone.id).length}건</p>
               </div>
               <button
                 onClick={() => setZoneActive(zone.id, !zone.active).then(refresh).catch((e) => setError(e.message))}
-                className="text-[11.5px] font-bold px-3 py-1.5 rounded-lg active:scale-95"
+                className="text-[12px] font-bold px-3 py-1.5 rounded-lg active:scale-95"
                 style={{ backgroundColor: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}
               >
                 {zone.active ? "운영 중지" : "다시 운영"}
@@ -173,18 +173,18 @@ export default function AdminZonesPage() {
           <Inbox size={16} className="text-primary" />
           <h2 className="text-[15px] font-extrabold text-text-main">접수된 제보</h2>
         </div>
-        <p className="text-[10.5px] text-text-light mb-3 leading-relaxed">
+        <p className="text-[11px] text-text-light mb-3 leading-relaxed">
           도시공존은 내용을 판정하지 않아요 — 확인 후 경찰·동물보호센터 이관 여부만 결정합니다. 제보는 90일 후 자동 파기.
         </p>
-        {reports.length === 0 && <p className="text-[12.5px] text-text-light">아직 제보가 없어요.</p>}
+        {reports.length === 0 && <p className="text-[13px] text-text-light">아직 제보가 없어요.</p>}
         {reports.map((r) => (
           <div key={r.id} className="rounded-2xl bg-white p-4 mb-2.5" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[12.5px] font-extrabold text-text-main">
+              <span className="text-[13px] font-extrabold text-text-main">
                 {INCIDENT_LABELS[r.incident_type] ?? r.incident_type}
               </span>
               <span
-                className="text-[10.5px] font-bold px-2 py-0.5 rounded-lg"
+                className="text-[11px] font-bold px-2 py-0.5 rounded-lg"
                 style={{
                   backgroundColor: r.status === "received" ? "var(--color-warning-soft)" : r.status === "forwarded" ? "#EAF2FB" : "#F0F0EC",
                   color: r.status === "received" ? "#B07A1C" : r.status === "forwarded" ? "#3A6CB5" : "#8A8578",
@@ -205,14 +205,14 @@ export default function AdminZonesPage() {
             <div className="flex gap-1.5 mt-2.5">
               {r.status === "received" && (
                 <button onClick={() => handleStatus(r.id, "forwarded")} disabled={busy}
-                  className="text-[11.5px] font-bold px-3 py-1.5 rounded-lg text-white active:scale-95 disabled:opacity-60"
+                  className="text-[12px] font-bold px-3 py-1.5 rounded-lg text-white active:scale-95 disabled:opacity-60"
                   style={{ backgroundColor: "#4A7BA8" }}>
                   기관 이관 처리
                 </button>
               )}
               {r.status !== "closed" && (
                 <button onClick={() => handleStatus(r.id, "closed")} disabled={busy}
-                  className="text-[11.5px] font-bold px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-60"
+                  className="text-[12px] font-bold px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-60"
                   style={{ backgroundColor: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}>
                   종결
                 </button>

@@ -136,7 +136,7 @@ export default function Og200EventModal() {
           </p>
 
           <div
-            className="rounded-2xl px-4 py-3 mb-4 text-[11.5px] leading-relaxed"
+            className="rounded-2xl px-4 py-3 mb-4 text-[12px] leading-relaxed"
             style={{ background: "#FFF9EF", color: "#7A5F3F" }}
           >
             <p className="font-extrabold mb-1" style={{ color: "var(--color-primary-dark)" }}>
@@ -152,7 +152,7 @@ export default function Og200EventModal() {
           <p className="text-[12px] leading-relaxed text-text-sub mb-5 text-center">
             처음부터 함께해 주셔서 진심으로 감사드립니다.
             <br />출시 후에도 한결같이 좋은 서비스 만들겠습니다 🐾
-            <br /><span className="text-[10.5px] text-text-light">— 도시공존 운영자 김성우 드림</span>
+            <br /><span className="text-[11px] text-text-light">— 도시공존 운영자 김성우 드림</span>
           </p>
 
           <div className="flex gap-2">

@@ -153,7 +153,7 @@ export default function MyActivityDashboard() {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[11.5px] font-extrabold text-text-main truncate">
+                    <p className="text-[12px] font-extrabold text-text-main truncate">
                       {i === 0 && "🥇 "}{c.catName}
                     </p>
                     <p className="text-[10px] font-bold" style={{ color: i === 0 ? "#A67B1E" : "#A38E7A" }}>
@@ -200,7 +200,7 @@ export default function MyActivityDashboard() {
                 );
               })}
             </div>
-            <div className="flex justify-between text-[8.5px] text-text-light mt-1 px-0.5 font-semibold">
+            <div className="flex justify-between text-[9px] text-text-light mt-1 px-0.5 font-semibold">
               <span>0시</span>
               <span>6시</span>
               <span>12시</span>

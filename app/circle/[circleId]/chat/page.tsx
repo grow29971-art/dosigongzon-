@@ -326,12 +326,12 @@ export default function CircleChatPage() {
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
         <div className="flex-1 min-w-0">
-          <p className="text-[14.5px] font-extrabold text-text-main truncate">
+          <p className="text-[15px] font-extrabold text-text-main truncate">
             {ownerInfo?.ownerId === user.id ? "내 서클" : `${ownerInfo?.nickname ?? "이웃"}님의 서클`}
           </p>
           <div className="flex items-center gap-1 mt-0.5">
             <Users size={11} className="text-text-light" />
-            <span className="text-[10.5px] text-text-light">멤버 {memberCount + 1}명</span>
+            <span className="text-[11px] text-text-light">멤버 {memberCount + 1}명</span>
           </div>
         </div>
       </div>
@@ -349,13 +349,13 @@ export default function CircleChatPage() {
           <div className="pt-20 text-center">
             <Users size={32} className="mx-auto mb-3 text-text-light" />
             <p className="text-[13px] text-text-sub mb-1">아직 대화가 없어요</p>
-            <p className="text-[11.5px] text-text-light">첫 메시지를 보내 이웃과 인사 나눠보세요.</p>
+            <p className="text-[12px] text-text-light">첫 메시지를 보내 이웃과 인사 나눠보세요.</p>
           </div>
         ) : (
           groupedByDate.map((group, gi) => (
             <div key={gi}>
               <div className="flex justify-center my-3">
-                <span className="text-[10.5px] px-2.5 py-1 rounded-full bg-white text-text-light" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+                <span className="text-[11px] px-2.5 py-1 rounded-full bg-white text-text-light" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
                   {formatDate(group.date)}
                 </span>
               </div>
@@ -366,14 +366,14 @@ export default function CircleChatPage() {
                     {!isMine && <Avatar url={m.sender_avatar_url} size={32} />}
                     <div className={`max-w-[75%] ${isMine ? "items-end" : "items-start"} flex flex-col`}>
                       {!isMine && (
-                        <p className="text-[10.5px] text-text-light mb-0.5 ml-1">
+                        <p className="text-[11px] text-text-light mb-0.5 ml-1">
                           {m.sender_name ?? "익명"}
                         </p>
                       )}
                       {m.image_url && <ChatImage raw={m.image_url} isMine={isMine} />}
                       {m.body && (
                         <div
-                          className={`px-3 py-2 rounded-2xl text-[13.5px] leading-relaxed whitespace-pre-wrap break-words ${isMine ? "rounded-tr-sm" : "rounded-tl-sm"}`}
+                          className={`px-3 py-2 rounded-2xl text-[14px] leading-relaxed whitespace-pre-wrap break-words ${isMine ? "rounded-tr-sm" : "rounded-tl-sm"}`}
                           style={{
                             background: isMine ? "var(--color-primary)" : "#FFFFFF",
                             color: isMine ? "#FFFFFF" : "#3D2F25",
@@ -415,7 +415,7 @@ export default function CircleChatPage() {
         }}
       >
         {error && (
-          <p className="text-[10.5px] mb-1.5 px-1" style={{ color: "#B84545" }}>{error}</p>
+          <p className="text-[11px] mb-1.5 px-1" style={{ color: "#B84545" }}>{error}</p>
         )}
         {/* 사진 미리보기 */}
         {photoPreview && (

@@ -670,11 +670,11 @@ export default function CirclePage() {
                               <p className="text-[13px] font-extrabold text-text-main truncate">
                                 {c.owner_nickname ?? "익명"}님의 서클
                               </p>
-                              <p className="text-[10.5px] text-text-light">멤버 {c.member_count + 1}명</p>
+                              <p className="text-[11px] text-text-light">멤버 {c.member_count + 1}명</p>
                             </div>
                             {unread > 0 && (
                               <span
-                                className="shrink-0 px-2 py-0.5 chip-square text-[10.5px] font-extrabold leading-none"
+                                className="shrink-0 px-2 py-0.5 chip-square text-[11px] font-extrabold leading-none"
                                 style={{ background: "#D85555", color: "#FFF" }}
                               >
                                 {unread > 99 ? "99+" : unread}
@@ -703,7 +703,7 @@ export default function CirclePage() {
               className="rounded-2xl p-3"
               style={{ boxShadow: "var(--shadow-card)", background: "linear-gradient(135deg, #FFFEF5 0%, #FFF8DC 100%)", border: "1px solid rgba(254,229,0,0.4)" }}
             >
-              <p className="text-[11.5px] leading-relaxed mb-2.5" style={{ color: "#6B5916" }}>
+              <p className="text-[12px] leading-relaxed mb-2.5" style={{ color: "#6B5916" }}>
                 링크 한 번이면 친한 이웃을 바로 서클에 초대할 수 있어요. 카카오톡으로 공유 → 받는 사람이 수락하면 즉시 멤버.
               </p>
               <div className="flex gap-2">
@@ -756,7 +756,7 @@ export default function CirclePage() {
                 <button
                   onClick={handleSearch}
                   disabled={searching || searchQuery.trim().length < 2}
-                  className="px-4 py-2 rounded-xl bg-primary text-white text-[12.5px] font-extrabold active:scale-95 disabled:opacity-40"
+                  className="px-4 py-2 rounded-xl bg-primary text-white text-[13px] font-extrabold active:scale-95 disabled:opacity-40"
                 >
                   {searching ? <Loader2 size={13} className="animate-spin" /> : "검색"}
                 </button>
@@ -770,13 +770,13 @@ export default function CirclePage() {
                       style={{ background: "var(--color-gray-50)" }}
                     >
                       <Avatar url={r.avatar_url} size={32} />
-                      <p className="flex-1 min-w-0 text-[12.5px] font-bold text-text-main truncate">
+                      <p className="flex-1 min-w-0 text-[13px] font-bold text-text-main truncate">
                         {r.nickname ?? "익명"}
                       </p>
                       <button
                         onClick={() => handleInvite(r)}
                         disabled={busy === r.id}
-                        className="px-3 py-1.5 rounded-lg text-[11.5px] font-extrabold text-white active:scale-95 disabled:opacity-50"
+                        className="px-3 py-1.5 rounded-lg text-[12px] font-extrabold text-white active:scale-95 disabled:opacity-50"
                         style={{ background: "#4A7BA8" }}
                       >
                         {busy === r.id ? <Loader2 size={11} className="animate-spin" /> : "초대"}
@@ -805,7 +805,7 @@ export default function CirclePage() {
                 className="rounded-2xl p-6 text-center"
                 style={{ background: "var(--color-gray-50)", border: "1px dashed var(--color-gray-200)" }}
               >
-                <p className="text-[12.5px] text-text-sub leading-relaxed">
+                <p className="text-[13px] text-text-sub leading-relaxed">
                   아직 서클 멤버가 없어요.
                   <br />
                   위에서 닉네임을 검색해 초대해보세요.

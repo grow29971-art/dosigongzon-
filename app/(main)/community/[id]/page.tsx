@@ -457,10 +457,10 @@ export default function PostDetailPage({
               <ThumbsDown size={15} strokeWidth={2.2} fill={myVote === -1 ? "#FFFFFF" : "none"} />
               {post.dislikeCount}
             </button>
-            <span className="flex items-center gap-1 text-text-light text-[12.5px] px-1">
+            <span className="flex items-center gap-1 text-text-light text-[13px] px-1">
               <Eye size={14} /> {post.viewCount}
             </span>
-            <span className="flex items-center gap-1 text-text-light text-[12.5px] px-1">
+            <span className="flex items-center gap-1 text-text-light text-[13px] px-1">
               <MessageCircle size={14} /> {comments.length}
             </span>
           </div>

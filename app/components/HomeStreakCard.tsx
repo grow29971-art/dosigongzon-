@@ -112,7 +112,7 @@ export default function HomeStreakCard({
             <p className="text-[16px] font-extrabold text-text-main tracking-tight leading-tight mt-0.5">
               {headline}
             </p>
-            <p className="text-[11.5px] text-text-sub mt-1 leading-snug">{subline}</p>
+            <p className="text-[12px] text-text-sub mt-1 leading-snug">{subline}</p>
             <StreakFreezeButton streak={s} hasToday={hasToday} onUsed={onFreezeUsed} />
           </div>
         </div>
@@ -164,7 +164,7 @@ export default function HomeStreakCard({
                 border: streakInfo.isRecord ? "1px solid #E8B84A55" : "none",
               }}
             >
-              <span className="text-[10.5px] font-bold" style={{ color: streakInfo.isRecord ? "#A67B1E" : "#8C7B6A" }}>
+              <span className="text-[11px] font-bold" style={{ color: streakInfo.isRecord ? "#A67B1E" : "#8C7B6A" }}>
                 {streakInfo.isRecord
                   ? `🎉 역대 최장 기록 갱신 중! (${streakInfo.longestStreak}일)`
                   : `🏆 역대 최장 ${streakInfo.longestStreak}일 · 돌파까지 ${streakInfo.longestStreak - s + 1}일`}
@@ -173,7 +173,7 @@ export default function HomeStreakCard({
           )}
 
           <div className="mt-3 px-3 py-2 rounded-lg flex items-center justify-between" style={{ background: `${accent}12` }}>
-            <span className="text-[10.5px] font-bold" style={{ color: accent }}>
+            <span className="text-[11px] font-bold" style={{ color: accent }}>
               {progress >= 100
                 ? "🏆 주간 개근 달성! +5점 · 업적 잠금 해제"
                 : s >= 100

@@ -148,7 +148,7 @@ export default function WritePage() {
                 <PawPrint size={17} color="#fff" strokeWidth={2.3} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[12.5px] font-extrabold text-text-main leading-tight mb-1">
+                <p className="text-[13px] font-extrabold text-text-main leading-tight mb-1">
                   첫 동네 고양이부터 등록해보세요
                 </p>
                 <p className="text-[11px] text-text-sub leading-relaxed">
@@ -157,7 +157,7 @@ export default function WritePage() {
                 </p>
                 <Link
                   href="/map"
-                  className="inline-flex items-center gap-1 mt-2 text-[11.5px] font-extrabold"
+                  className="inline-flex items-center gap-1 mt-2 text-[12px] font-extrabold"
                   style={{ color: "var(--color-primary-dark)" }}
                 >
                   지도로 가서 등록하기

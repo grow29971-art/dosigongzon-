@@ -115,7 +115,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
           aria-expanded={guideOpen}
         >
           <Info size={14} color="rgba(255,233,168,0.85)" />
-          <span className="text-[12.5px] font-bold text-white flex-1">추모일기는 어떻게 쓰나요?</span>
+          <span className="text-[13px] font-bold text-white flex-1">추모일기는 어떻게 쓰나요?</span>
           <ChevronDown
             size={15}
             color="rgba(255,255,255,0.45)"
@@ -125,7 +125,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
 
         {guideOpen && (
           <div className="px-4 pb-4 flex flex-col gap-3">
-            <p className="text-[12.5px] leading-[1.85]" style={{ color: "rgba(255,255,255,0.68)" }}>
+            <p className="text-[13px] leading-[1.85]" style={{ color: "rgba(255,255,255,0.68)" }}>
               길고양이를 떠나보낸 슬픔은 주변에서 알아주기 어려운 종류예요. &ldquo;남의 고양이잖아&rdquo;,
               &ldquo;길고양이는 원래 그래&rdquo; 같은 말을 들으면 마음을 접게 되고, 접어둔 슬픔은
               더 오래 갑니다. 여기는 그 말을 대신 받아두는 자리예요.
@@ -135,7 +135,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
               <p className="text-[12px] font-bold" style={{ color: "rgba(255,233,168,0.9)" }}>
                 잘 쓰지 않아도 돼요
               </p>
-              <p className="text-[12.5px] leading-[1.8] mt-1" style={{ color: "rgba(255,255,255,0.62)" }}>
+              <p className="text-[13px] leading-[1.8] mt-1" style={{ color: "rgba(255,255,255,0.62)" }}>
                 한 줄이어도 좋아요. 글이 안 나오는 날은 그날의 마음만 골라두고 나가셔도 됩니다.
                 오늘 뭘 했는지, 어디서 생각났는지 같은 사소한 것도 나중엔 기록이 돼요.
               </p>
@@ -145,7 +145,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
               <p className="text-[12px] font-bold" style={{ color: "rgba(255,233,168,0.9)" }}>
                 매일 안 써도 돼요
               </p>
-              <p className="text-[12.5px] leading-[1.8] mt-1" style={{ color: "rgba(255,255,255,0.62)" }}>
+              <p className="text-[13px] leading-[1.8] mt-1" style={{ color: "rgba(255,255,255,0.62)" }}>
                 연속으로 며칠 썼는지 세지 않아요. 하루에 여러 번 써도 되고, 한참 안 쓰다 다시 와도
                 아무 표시가 남지 않습니다. <b className="text-white">괜찮아지면 그만 쓰셔도 돼요.</b>
                 {" "}그게 이 일기의 목표예요.
@@ -156,14 +156,14 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
               <p className="text-[12px] font-bold" style={{ color: "rgba(255,233,168,0.9)" }}>
                 기본은 나만 보기
               </p>
-              <p className="text-[12.5px] leading-[1.8] mt-1" style={{ color: "rgba(255,255,255,0.62)" }}>
+              <p className="text-[13px] leading-[1.8] mt-1" style={{ color: "rgba(255,255,255,0.62)" }}>
                 쓴 글은 나에게만 보여요. 같은 아이를 알던 이웃과 나누고 싶을 때만 공개로 바꾸면 되고,
                 공개했다가 다시 닫을 수도 있어요.
               </p>
             </div>
 
             <p
-              className="text-[11.5px] leading-[1.75] mt-1 px-3.5 py-3"
+              className="text-[12px] leading-[1.75] mt-1 px-3.5 py-3"
               style={{ color: "rgba(255,255,255,0.5)", background: "rgba(0,0,0,0.2)", borderRadius: 12 }}
             >
               며칠이 지나도 잠이 오지 않거나 일상이 어려울 만큼 힘들다면, 혼자 견디지 않으셔도 돼요.
@@ -200,7 +200,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
             ))}
           </div>
           {mood !== null && (
-            <p className="text-[11.5px] -mt-2 mb-3" style={{ color: "rgba(255,233,168,0.8)" }}>
+            <p className="text-[12px] -mt-2 mb-3" style={{ color: "rgba(255,233,168,0.8)" }}>
               {DIARY_MOODS.find((m) => m.value === mood)?.label}
             </p>
           )}
@@ -210,7 +210,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
             onChange={(e) => setBody(e.target.value.slice(0, 2000))}
             rows={4}
             placeholder={`${catName}에게 하고 싶은 말을 적어보세요. 한 줄이어도 괜찮아요.`}
-            className="w-full text-[13.5px] leading-[1.7] px-4 py-3 outline-none resize-none"
+            className="w-full text-[14px] leading-[1.7] px-4 py-3 outline-none resize-none"
             style={{
               borderRadius: 14,
               background: "rgba(0,0,0,0.22)",
@@ -276,11 +276,11 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
             >
               <div className="flex items-center gap-2">
                 {m && <span className="text-[15px]">{m.emoji}</span>}
-                <span className="text-[11.5px]" style={{ color: "rgba(255,255,255,0.42)" }}>
+                <span className="text-[12px]" style={{ color: "rgba(255,255,255,0.42)" }}>
                   {fmt(d.created_at)}
                 </span>
                 {!isMine && d.author_name && (
-                  <span className="text-[11.5px]" style={{ color: "rgba(255,255,255,0.42)" }}>
+                  <span className="text-[12px]" style={{ color: "rgba(255,255,255,0.42)" }}>
                     · {d.author_name}
                   </span>
                 )}
@@ -310,7 +310,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
               </div>
 
               <p
-                className="text-[13.5px] leading-[1.8] mt-2.5 whitespace-pre-wrap"
+                className="text-[14px] leading-[1.8] mt-2.5 whitespace-pre-wrap"
                 style={{ color: "rgba(255,255,255,0.82)" }}
               >
                 {d.body}
@@ -320,7 +320,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
         })}
 
         {diaries?.length === 0 && (
-          <p className="text-[12.5px] text-center py-6" style={{ color: "rgba(255,255,255,0.35)" }}>
+          <p className="text-[13px] text-center py-6" style={{ color: "rgba(255,255,255,0.35)" }}>
             아직 남긴 일기가 없어요.
           </p>
         )}

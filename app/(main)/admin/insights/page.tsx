@@ -82,7 +82,7 @@ export default function AdminInsightsPage() {
         </button>
         <div>
           <h1 className="text-[22px] font-extrabold text-text-main tracking-tight">분석</h1>
-          <p className="text-[11.5px] text-text-sub">운영 지표 스냅샷</p>
+          <p className="text-[12px] text-text-sub">운영 지표 스냅샷</p>
         </div>
       </div>
 
@@ -102,7 +102,7 @@ export default function AdminInsightsPage() {
 
       {error && (
         <div className="mx-4 rounded-xl p-3" style={{ background: "var(--color-error-soft)" }}>
-          <p className="text-[12.5px] font-semibold" style={{ color: "#B84545" }}>{error}</p>
+          <p className="text-[13px] font-semibold" style={{ color: "#B84545" }}>{error}</p>
         </div>
       )}
 
@@ -143,11 +143,11 @@ export default function AdminInsightsPage() {
               style={{ boxShadow: "var(--shadow-card)" }}
             >
               <div className="flex items-baseline justify-between mb-2.5">
-                <span className="text-[11.5px] text-text-sub">총 실패</span>
+                <span className="text-[12px] text-text-sub">총 실패</span>
                 <span className="text-[18px] font-extrabold text-text-main">{data.authErrorsWeek}</span>
               </div>
               {data.authErrorTopCodes.length === 0 ? (
-                <p className="text-[11.5px] text-text-light">기록 없음</p>
+                <p className="text-[12px] text-text-light">기록 없음</p>
               ) : (
                 <div className="space-y-1.5">
                   {data.authErrorTopCodes.map((e) => (
@@ -160,7 +160,7 @@ export default function AdminInsightsPage() {
               )}
               <Link
                 href="/admin/auth-errors"
-                className="inline-block mt-2 text-[11.5px] font-bold"
+                className="inline-block mt-2 text-[12px] font-bold"
                 style={{ color: "var(--color-primary)" }}
               >
                 전체 로그 보기 →
@@ -190,7 +190,7 @@ export default function AdminInsightsPage() {
               <MiniCard label="7일 푸시 발송" value={data.alertPushesWeek} />
               <MiniCard label="7일 수신 유저" value={data.alertPushedUsersWeek} />
             </div>
-            <p className="mt-2 px-1 text-[10.5px] text-text-light leading-relaxed">
+            <p className="mt-2 px-1 text-[11px] text-text-light leading-relaxed">
               "3일+ 부재"가 cron 타깃. dedup 적용으로 같은 (유저·고양이) 페어는 24h당 1회만 발송.
             </p>
           </Section>
@@ -214,7 +214,7 @@ export default function AdminInsightsPage() {
                       </span>
                       <div className="min-w-0">
                         <p className="text-[13px] font-bold text-text-main truncate">{c.name}</p>
-                        <p className="text-[10.5px] text-text-light truncate">{c.region ?? "지역 미정"}</p>
+                        <p className="text-[11px] text-text-light truncate">{c.region ?? "지역 미정"}</p>
                       </div>
                     </div>
                     <span className="text-[12px] font-extrabold" style={{ color: "var(--color-like)" }}>
@@ -293,7 +293,7 @@ function StatCard({
         {value.toLocaleString()}
       </p>
       {delta > 0 && (
-        <p className="text-[10.5px] font-bold mt-0.5" style={{ color: "#5BA876" }}>
+        <p className="text-[11px] font-bold mt-0.5" style={{ color: "#5BA876" }}>
           +{delta} 오늘
         </p>
       )}
@@ -307,7 +307,7 @@ function MiniCard({ label, value }: { label: string; value: number }) {
       className="rounded-2xl bg-white px-3.5 py-2.5"
       style={{ boxShadow: "var(--shadow-card-sm)" }}
     >
-      <p className="text-[10.5px] font-semibold text-text-sub">{label}</p>
+      <p className="text-[11px] font-semibold text-text-sub">{label}</p>
       <p className="text-[18px] font-extrabold text-text-main tabular-nums tracking-tight mt-0.5">
         {value.toLocaleString()}
       </p>

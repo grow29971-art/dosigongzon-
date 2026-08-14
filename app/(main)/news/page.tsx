@@ -121,11 +121,11 @@ export default async function NewsIndexPage() {
                       </span>
                     )}
                   </div>
-                  <p className="text-[13.5px] font-extrabold text-text-main leading-snug line-clamp-2">
+                  <p className="text-[14px] font-extrabold text-text-main leading-snug line-clamp-2">
                     {item.title}
                   </p>
                   {item.description && (
-                    <p className="text-[11.5px] text-text-sub line-clamp-2 mt-1 leading-snug">
+                    <p className="text-[12px] text-text-sub line-clamp-2 mt-1 leading-snug">
                       {item.description}
                     </p>
                   )}

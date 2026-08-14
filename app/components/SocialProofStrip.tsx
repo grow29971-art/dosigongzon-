@@ -72,7 +72,7 @@ export default function SocialProofStrip() {
           {primary}
         </p>
         {activeCaretakersToday > 0 && totalCats > 0 && (
-          <p className="text-[10.5px] text-text-sub mt-0.5 leading-tight">
+          <p className="text-[11px] text-text-sub mt-0.5 leading-tight">
             누적 {totalCats.toLocaleString()}마리 ·{" "}
             {newCatsThisWeek > 0 && `이번 주 새 친구 ${newCatsThisWeek}마리`}
           </p>

@@ -96,7 +96,7 @@ export default function InviteSection() {
             <Gift size={20} color="#fff" strokeWidth={2.2} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[13.5px] font-extrabold text-text-main tracking-tight">
+            <p className="text-[14px] font-extrabold text-text-main tracking-tight">
               내 초대 코드
             </p>
             <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
@@ -142,7 +142,7 @@ export default function InviteSection() {
                 aria-label="초대 링크 복사"
               >
                 {copied ? <Check size={14} /> : <Copy size={14} />}
-                <span className="text-[11.5px] font-extrabold">{copied ? "복사됨" : "링크 복사"}</span>
+                <span className="text-[12px] font-extrabold">{copied ? "복사됨" : "링크 복사"}</span>
               </button>
             </div>
 
@@ -163,7 +163,7 @@ export default function InviteSection() {
             </button>
 
             {info.invitedByCode && (
-              <p className="text-[10.5px] text-text-light text-center mt-3">
+              <p className="text-[11px] text-text-light text-center mt-3">
                 ✨ <b style={{ color: "var(--color-primary)" }}>{info.invitedByCode}</b> 코드로 가입했어요
               </p>
             )}

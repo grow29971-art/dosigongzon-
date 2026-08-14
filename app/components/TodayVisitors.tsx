@@ -37,7 +37,7 @@ export default function TodayVisitors() {
         style={{ background: "#48A59E" }}
       />
       <Eye size={12} style={{ color: "#48A59E" }} />
-      <span className="text-[11.5px] font-extrabold" style={{ color: "#2E7870" }}>
+      <span className="text-[12px] font-extrabold" style={{ color: "#2E7870" }}>
         지금까지 {todayCount.toLocaleString()}명이 둘러봤어요
       </span>
     </div>

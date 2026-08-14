@@ -89,10 +89,10 @@ export default function SignupNudgeBar() {
           <Sparkles size={16} color="#fff" strokeWidth={2.3} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[12.5px] font-extrabold text-text-main leading-tight tracking-tight">
+          <p className="text-[13px] font-extrabold text-text-main leading-tight tracking-tight">
             가입하면 고양이 등록·돌봄 기록 가능!
           </p>
-          <p className="text-[10.5px] text-text-sub mt-0.5 leading-tight">
+          <p className="text-[11px] text-text-sub mt-0.5 leading-tight">
             구글로 <b>10초 가입</b> · 동네 이웃과 함께 돌봐요
           </p>
         </div>

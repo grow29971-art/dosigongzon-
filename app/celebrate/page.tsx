@@ -60,7 +60,7 @@ export default async function CelebratePage() {
       <section className="px-5 pt-8 text-center">
         <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mb-4" style={{ background: "rgba(173, 94, 59,0.12)", color: "var(--color-primary-dark)" }}>
           <Sparkles size={12} />
-          <span className="text-[10.5px] font-extrabold tracking-[0.18em]">OFFICIAL LAUNCH · 2026.06.01</span>
+          <span className="text-[11px] font-extrabold tracking-[0.18em]">OFFICIAL LAUNCH · 2026.06.01</span>
         </div>
         <h1 className="text-[32px] font-extrabold text-text-main leading-tight tracking-tight">
           🎉 도시공존<br />
@@ -75,7 +75,7 @@ export default async function CelebratePage() {
 
       {/* 누적 통계 */}
       <section className="px-5 mt-8">
-        <p className="text-[10.5px] font-extrabold tracking-[0.18em] text-center mb-3" style={{ color: "var(--color-primary-dark)" }}>
+        <p className="text-[11px] font-extrabold tracking-[0.18em] text-center mb-3" style={{ color: "var(--color-primary-dark)" }}>
           THIS FAR, TOGETHER
         </p>
         <div className="grid grid-cols-3 gap-2">
@@ -169,7 +169,7 @@ export default async function CelebratePage() {
         </Link>
         <Link
           href="/maker"
-          className="block w-full text-center py-2.5 rounded-2xl text-[12.5px] font-bold mt-2 active:scale-[0.98]"
+          className="block w-full text-center py-2.5 rounded-2xl text-[13px] font-bold mt-2 active:scale-[0.98]"
           style={{ background: "#FFFFFF", color: "var(--color-primary-dark)", border: "1px solid rgba(173, 94, 59,0.25)" }}
         >
           운영 이야기 보기
@@ -214,7 +214,7 @@ function StatBlock({
       <p className="text-[20px] font-extrabold tracking-tight" style={{ color: accent }}>
         {value}
       </p>
-      <p className="text-[10.5px] text-text-sub mt-0.5">{label}</p>
+      <p className="text-[11px] text-text-sub mt-0.5">{label}</p>
     </div>
   );
 }

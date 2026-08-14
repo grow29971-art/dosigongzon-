@@ -170,7 +170,7 @@ export default function AdminOrdersPage() {
           className="mb-4 p-3.5"
           style={{ background: "#fff", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card)", border: "1.5px solid rgba(232,141,90,0.35)" }}
         >
-          <h2 className="text-[13.5px] font-extrabold text-text-main mb-2.5">환불 요청 {refunds.length}건</h2>
+          <h2 className="text-[14px] font-extrabold text-text-main mb-2.5">환불 요청 {refunds.length}건</h2>
           <div className="space-y-2.5">
             {refunds.map((r) => {
               const state = REFUND_STATE_LABEL[r.status];
@@ -183,11 +183,11 @@ export default function AdminOrdersPage() {
                       {state.label}
                     </span>
                   </div>
-                  <p className="text-[12.5px] font-bold text-text-main">
+                  <p className="text-[13px] font-bold text-text-main">
                     {formatWon(r.amount)} 환불
                     {r.return_shipping_fee > 0 && <span className="text-text-light font-semibold"> (반품비 {formatWon(r.return_shipping_fee)} 차감됨)</span>}
                   </p>
-                  <p className="text-[11.5px] text-text-sub mt-0.5">
+                  <p className="text-[12px] text-text-sub mt-0.5">
                     사유: {REFUND_REASON_LABELS[r.reason_code as RefundReasonCode] ?? r.reason_code}
                     {r.reason_note && ` — ${r.reason_note}`}
                   </p>
@@ -249,7 +249,7 @@ export default function AdminOrdersPage() {
               );
             })}
           </div>
-          {refundError && <p className="mt-2 text-[11.5px] font-bold" style={{ color: "#D85555" }}>{refundError}</p>}
+          {refundError && <p className="mt-2 text-[12px] font-bold" style={{ color: "#D85555" }}>{refundError}</p>}
         </section>
       )}
 
@@ -257,7 +257,7 @@ export default function AdminOrdersPage() {
       <div className="flex items-center gap-1.5 mb-4 overflow-x-auto pb-1">
         <button
           onClick={() => handleFilter("all")}
-          className="px-3 py-1.5 rounded-xl text-[11.5px] font-bold shrink-0"
+          className="px-3 py-1.5 rounded-xl text-[12px] font-bold shrink-0"
           style={{ background: filter === "all" ? "#2C2C2C" : "#fff", color: filter === "all" ? "#fff" : "#666", boxShadow: "0 2px 6px rgba(0,0,0,0.05)" }}
         >
           전체
@@ -266,7 +266,7 @@ export default function AdminOrdersPage() {
           <button
             key={s}
             onClick={() => handleFilter(s)}
-            className="px-3 py-1.5 rounded-xl text-[11.5px] font-bold shrink-0"
+            className="px-3 py-1.5 rounded-xl text-[12px] font-bold shrink-0"
             style={{
               background: filter === s ? ORDER_STATUS_MAP[s].color : "#fff",
               color: filter === s ? "#fff" : "#666",
@@ -316,7 +316,7 @@ export default function AdminOrdersPage() {
                         {order.recipient_name ?? "후원 주문"} · {formatDate(order.created_at)}
                       </p>
                     </div>
-                    <span className="text-[13.5px] font-extrabold text-text-main shrink-0 ml-2">{formatWon(order.payment_amount)}</span>
+                    <span className="text-[14px] font-extrabold text-text-main shrink-0 ml-2">{formatWon(order.payment_amount)}</span>
                   </div>
                 </button>
 
@@ -346,7 +346,7 @@ export default function AdminOrdersPage() {
                       <select
                         value={draftStatus}
                         onChange={(e) => setDraftStatus(e.target.value as OrderStatus)}
-                        className="flex-1 px-3 py-2.5 text-[12.5px] font-bold outline-none"
+                        className="flex-1 px-3 py-2.5 text-[13px] font-bold outline-none"
                         style={{ background: "var(--color-warm-white)", borderRadius: 12, border: "1px solid rgba(0,0,0,0.05)" }}
                       >
                         {ALL_STATUSES.map((s) => (
@@ -362,14 +362,14 @@ export default function AdminOrdersPage() {
                           value={draftTracking}
                           onChange={(e) => setDraftTracking(e.target.value)}
                           placeholder="운송장번호"
-                          className="flex-1 text-[12.5px] outline-none bg-transparent"
+                          className="flex-1 text-[13px] outline-none bg-transparent"
                           maxLength={30}
                         />
                       </div>
                       <button
                         onClick={() => handleSave(order)}
                         disabled={saving}
-                        className="px-4 py-2.5 rounded-xl bg-primary text-white text-[12.5px] font-extrabold disabled:opacity-50 flex items-center gap-1"
+                        className="px-4 py-2.5 rounded-xl bg-primary text-white text-[13px] font-extrabold disabled:opacity-50 flex items-center gap-1"
                       >
                         {saving ? <Loader2 size={13} className="animate-spin" /> : <Save size={13} />}
                         저장
@@ -381,7 +381,7 @@ export default function AdminOrdersPage() {
                         ⚠ 취소/환불로 변경하면 재고가 복구돼요. 실제 결제금 환불은 토스페이먼츠 연동 후 자동 처리되며, 그 전에는 토스 상점관리자에서 직접 환불해야 해요.
                       </p>
                     )}
-                    {error && <p className="mt-2 text-[11.5px] font-bold" style={{ color: "#D85555" }}>{error}</p>}
+                    {error && <p className="mt-2 text-[12px] font-bold" style={{ color: "#D85555" }}>{error}</p>}
                   </div>
                 )}
               </div>

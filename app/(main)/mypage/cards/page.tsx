@@ -170,12 +170,12 @@ export default function MyCardsPage() {
           {/* 빠른 메뉴 */}
           <div className="grid grid-cols-2 gap-1.5 mb-4 mt-3">
             <Link href="/mypage/shop"
-              className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[10.5px] text-white"
+              className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[11px] text-white"
               style={{ background: "linear-gradient(135deg,#FFC15E,#FFA030)", boxShadow: "0 4px 12px rgba(255,160,48,0.3)" }}>
               <Coins size={15} /> 상점
             </Link>
             <Link href="/mypage/cards/inventory"
-              className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[10.5px] text-white"
+              className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[11px] text-white"
               style={{ background: "linear-gradient(135deg,#B08FE0,#7A5AE0)", boxShadow: "0 4px 12px rgba(122,90,224,0.3)" }}>
               <Backpack size={15} /> 가방
             </Link>
@@ -296,7 +296,7 @@ export default function MyCardsPage() {
                 </span>
                 {selected.equipped_border_key && (
                   <button onClick={() => doEquip(selected.id, null)} disabled={equipLoading}
-                    className="text-[10.5px] font-bold px-2 py-1 rounded-full" style={{ background: `${UI.accent.red}1A`, color: UI.accent.red }}>
+                    className="text-[11px] font-bold px-2 py-1 rounded-full" style={{ background: `${UI.accent.red}1A`, color: UI.accent.red }}>
                     해제
                   </button>
                 )}

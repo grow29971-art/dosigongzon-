@@ -103,7 +103,7 @@ export default function InquiryModal({ open, onClose }: Props) {
             <p className="text-[14px] font-extrabold text-text-main mb-1">
               문의가 전송됐어요
             </p>
-            <p className="text-[11.5px] text-text-sub">
+            <p className="text-[12px] text-text-sub">
               보통 24시간 내에 마이페이지 &gt; 내 문의 보기로 답변드려요
             </p>
           </div>
@@ -140,7 +140,7 @@ export default function InquiryModal({ open, onClose }: Props) {
                 rows={6}
                 maxLength={2000}
                 placeholder="불편 사항, 버그, 제안 등을 자세히 적어주세요"
-                className="w-full px-3 py-2.5 rounded-xl text-[12.5px] outline-none resize-none"
+                className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none resize-none"
                 style={{
                   backgroundColor: "var(--color-gray-50)",
                   color: "#2A2A28",

@@ -55,7 +55,7 @@ export default function UIListRow({
       <div className="flex-1 min-w-0">
         <p className="text-[15px] font-semibold text-text-main leading-snug truncate">{title}</p>
         {subtitle !== undefined && (
-          <p className="text-[12.5px] text-text-light leading-snug mt-0.5 truncate">{subtitle}</p>
+          <p className="text-[13px] text-text-light leading-snug mt-0.5 truncate">{subtitle}</p>
         )}
       </div>
       {right !== undefined ? (

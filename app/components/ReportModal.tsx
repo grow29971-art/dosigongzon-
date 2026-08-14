@@ -173,7 +173,7 @@ export default function ReportModal({
             <p className="text-[14px] font-extrabold text-text-main mb-1">
               신고가 접수됐어요
             </p>
-            <p className="text-[11.5px] text-text-sub">
+            <p className="text-[12px] text-text-sub">
               관리자가 확인 후 조치해드려요
             </p>
           </div>
@@ -305,7 +305,7 @@ export default function ReportModal({
                         {authorName ? `${authorName}님 차단` : "이 사용자 차단"}
                       </span>
                     </div>
-                    <p className="text-[10.5px] mt-0.5" style={{ color: "#A38E7A" }}>
+                    <p className="text-[11px] mt-0.5" style={{ color: "#A38E7A" }}>
                       서로 메시지·댓글이 안 보여요. 마이페이지에서 해제 가능.
                     </p>
                   </div>

@@ -187,12 +187,12 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
       <section className="px-5 pt-4">
         <div className="flex items-center gap-1.5 mb-1.5">
           <MapPin size={14} style={{ color: "var(--color-primary)" }} />
-          <span className="text-[11.5px] font-bold" style={{ color: "var(--color-primary)" }}>{region.name}</span>
+          <span className="text-[12px] font-bold" style={{ color: "var(--color-primary)" }}>{region.name}</span>
         </div>
         <h1 className="text-[26px] font-extrabold text-text-main leading-tight tracking-tight">
           {region.shortName} 길고양이 돌봄 지도
         </h1>
-        <p className="text-[13.5px] text-text-sub mt-2 leading-relaxed">
+        <p className="text-[14px] text-text-sub mt-2 leading-relaxed">
           {region.name}에 등록된 길고양이 <b style={{ color: "var(--color-primary)" }}>{catCount}마리</b>의 돌봄 기록.
           {urgent > 0 && (
             <> 지금 도움이 필요한 아이 <b style={{ color: "#D85555" }}>{urgent}마리</b>.</>
@@ -267,7 +267,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
             <div className="flex gap-2">
               <Link
                 href={`/signup?next=${encodeURIComponent(`/regions/${sido}`)}`}
-                className="flex-[1.5] flex items-center justify-center py-2.5 rounded-xl text-white text-[12.5px] font-extrabold active:scale-[0.98] transition-transform"
+                className="flex-[1.5] flex items-center justify-center py-2.5 rounded-xl text-white text-[13px] font-extrabold active:scale-[0.98] transition-transform"
                 style={{
                   background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                   boxShadow: "var(--shadow-primary)",
@@ -277,7 +277,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
               </Link>
               <Link
                 href="/regions"
-                className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.98] transition-transform bg-white"
+                className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[13px] font-extrabold active:scale-[0.98] transition-transform bg-white"
                 style={{
                   color: "var(--color-primary-dark)",
                   border: "1px solid rgba(173, 94, 59,0.30)",
@@ -320,7 +320,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
                     <p className="text-[13px] font-extrabold text-text-main truncate">{c.name}</p>
                     <div className="flex items-center gap-0.5 mt-0.5">
                       <MapPin size={10} className="text-text-light" />
-                      <span className="text-[10.5px] text-text-sub truncate">{c.region ?? region.shortName}</span>
+                      <span className="text-[11px] text-text-sub truncate">{c.region ?? region.shortName}</span>
                     </div>
                   </div>
                 </Link>
@@ -344,14 +344,14 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
                 className="bg-white rounded-2xl p-3.5"
                 style={{ boxShadow: "var(--shadow-card)" }}
               >
-                <p className="text-[13.5px] font-extrabold text-text-main">{h.name}</p>
+                <p className="text-[14px] font-extrabold text-text-main">{h.name}</p>
                 {h.address && (
-                  <p className="text-[11.5px] text-text-sub mt-0.5 leading-snug">{h.address}</p>
+                  <p className="text-[12px] text-text-sub mt-0.5 leading-snug">{h.address}</p>
                 )}
                 {h.phone && (
                   <a
                     href={`tel:${h.phone}`}
-                    className="text-[11.5px] font-bold mt-1 inline-block"
+                    className="text-[12px] font-bold mt-1 inline-block"
                     style={{ color: "#22B573" }}
                   >
                     📞 {h.phone}
@@ -399,7 +399,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
       {/* 하단 SEO 본문 */}
       <section className="px-5 mt-8 cv-auto">
         <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "var(--shadow-card)" }}>
-          <p className="text-[12.5px] text-text-sub leading-relaxed">
+          <p className="text-[13px] text-text-sub leading-relaxed">
             <b className="text-text-main">도시공존</b>은 {region.name}을 포함한 전국의 길고양이를 기록하고
             돌보는 시민 참여 플랫폼입니다. {region.shortName} 주민이라면 회원가입 후 동네 고양이를
             등록해주세요. 정확한 위치는 보안을 위해 공개되지 않습니다.

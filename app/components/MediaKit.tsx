@@ -65,7 +65,7 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
               }}
             >
               {copiedId === b.id ? <Check size={11} /> : <Copy size={11} />}
-              <span className="text-[10.5px] font-extrabold">
+              <span className="text-[11px] font-extrabold">
                 {copiedId === b.id ? "복사됨" : "복사"}
               </span>
             </button>
@@ -89,7 +89,7 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
           <LogoCard href="/icons/icon-192.png" label="아이콘 192" filename="dosigongzon-192.png" />
           <LogoCard href="/icons/apple-touch-icon.png" label="Apple Touch" filename="dosigongzon-apple.png" />
         </div>
-        <p className="text-[10.5px] text-text-light mt-2.5 leading-relaxed">
+        <p className="text-[11px] text-text-light mt-2.5 leading-relaxed">
           ※ 비영리·도움 보도용은 자유 사용. 상업적·왜곡 사용은 사전 협의 부탁드려요.
         </p>
       </div>

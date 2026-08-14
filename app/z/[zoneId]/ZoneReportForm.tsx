@@ -93,7 +93,7 @@ export default function ZoneReportForm({ zoneId }: { zoneId: string }) {
   }
 
   const chip = (selected: boolean) =>
-    `px-3 py-2 rounded-xl text-[12.5px] font-bold active:scale-95 transition-transform ${
+    `px-3 py-2 rounded-xl text-[13px] font-bold active:scale-95 transition-transform ${
       selected ? "text-white" : "text-text-sub"
     }`;
   const chipStyle = (selected: boolean) => ({
@@ -137,7 +137,7 @@ export default function ZoneReportForm({ zoneId }: { zoneId: string }) {
 
       <div>
         <p className="text-[12px] font-extrabold text-text-main mb-1">상세 설명 (선택)</p>
-        <p className="text-[10.5px] text-text-light mb-1.5 leading-relaxed">
+        <p className="text-[11px] text-text-light mb-1.5 leading-relaxed">
           기관 전달용으로만 쓰이고 화면에 공개되지 않아요. <b>사람의 이름·차량번호·얼굴 등 신원 정보는 적지 말아주세요.</b>
         </p>
         <textarea
@@ -153,7 +153,7 @@ export default function ZoneReportForm({ zoneId }: { zoneId: string }) {
 
       <TurnstileWidget onVerify={setToken} onExpire={() => setToken(null)} onError={() => setToken(null)} />
 
-      {error && <p className="text-[12.5px] font-bold" style={{ color: "#B84545" }}>{error}</p>}
+      {error && <p className="text-[13px] font-bold" style={{ color: "#B84545" }}>{error}</p>}
 
       <button
         onClick={submit}
@@ -164,7 +164,7 @@ export default function ZoneReportForm({ zoneId }: { zoneId: string }) {
         {submitting ? (<><Loader2 size={16} className="animate-spin" /> 접수 중…</>) : "익명으로 제보하기"}
       </button>
 
-      <p className="text-[10.5px] text-text-light text-center leading-relaxed">
+      <p className="text-[11px] text-text-light text-center leading-relaxed">
         제보자의 위치·계정·연락처는 수집하지 않아요 · 접수 내용은 90일 후 자동 파기돼요
       </p>
     </div>

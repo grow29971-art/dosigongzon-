@@ -193,7 +193,7 @@ export default function CommunityPage() {
               Community
             </span>
           </div>
-          <p className="text-[12.5px] text-text-sub leading-relaxed">
+          <p className="text-[13px] text-text-sub leading-relaxed">
             동네 이웃들과 함께 만드는 공간
           </p>
         </div>
@@ -351,7 +351,7 @@ export default function CommunityPage() {
                       <p className="text-[13px] font-bold text-text-main truncate">
                         {post.title}
                       </p>
-                      <p className="text-[10.5px] text-text-light mt-0.5">
+                      <p className="text-[11px] text-text-light mt-0.5">
                         {post.authorName} · {formatRelativeTime(post.createdAt)}
                       </p>
                     </div>

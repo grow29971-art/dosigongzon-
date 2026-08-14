@@ -175,8 +175,8 @@ function WelcomeContent() {
             >
               <span className="text-[26px] shrink-0">🐾</span>
               <div className="text-left flex-1 min-w-0">
-                <p className="text-[14.5px] font-extrabold text-text-main leading-tight">이미 돌보고 있어요</p>
-                <p className="text-[11.5px] text-text-sub mt-0.5">지도·돌봄일지로 바로</p>
+                <p className="text-[15px] font-extrabold text-text-main leading-tight">이미 돌보고 있어요</p>
+                <p className="text-[12px] text-text-sub mt-0.5">지도·돌봄일지로 바로</p>
               </div>
               <ChevronRight size={16} className="text-text-sub shrink-0" />
             </button>
@@ -189,8 +189,8 @@ function WelcomeContent() {
             >
               <span className="text-[26px] shrink-0">💛</span>
               <div className="text-left flex-1 min-w-0">
-                <p className="text-[14.5px] font-extrabold text-text-main leading-tight">관심 있어 들어왔어요</p>
-                <p className="text-[11.5px] text-text-sub mt-0.5">동네 둘러보면서 천천히</p>
+                <p className="text-[15px] font-extrabold text-text-main leading-tight">관심 있어 들어왔어요</p>
+                <p className="text-[12px] text-text-sub mt-0.5">동네 둘러보면서 천천히</p>
               </div>
               <ChevronRight size={16} className="text-text-sub shrink-0" />
             </button>
@@ -203,8 +203,8 @@ function WelcomeContent() {
             >
               <span className="text-[26px] shrink-0">💬</span>
               <div className="text-left flex-1 min-w-0">
-                <p className="text-[14.5px] font-extrabold text-text-main leading-tight">그냥 구경하러</p>
-                <p className="text-[11.5px] text-text-sub mt-0.5">동네 커뮤니티 이야기부터</p>
+                <p className="text-[15px] font-extrabold text-text-main leading-tight">그냥 구경하러</p>
+                <p className="text-[12px] text-text-sub mt-0.5">동네 커뮤니티 이야기부터</p>
               </div>
               <ChevronRight size={16} className="text-text-sub shrink-0" />
             </button>
@@ -262,7 +262,7 @@ function WelcomeContent() {
                 }}
               >
                 <Sparkles size={11} color="#FFF7C4" />
-                <span className="text-[10.5px] font-extrabold tracking-[0.12em] text-white">
+                <span className="text-[11px] font-extrabold tracking-[0.12em] text-white">
                   EARLY SUPPORTER · 100명 한정
                 </span>
               </div>
@@ -274,7 +274,7 @@ function WelcomeContent() {
               <span style={{ color: "#FFF7C4" }}>{nickname}</span>님 🐾
             </h1>
             {/* 닉네임 변경 가능 힌트 — 신규 가입자가 random nickname을 마음에 안 들어도 모르는 경우 방지 */}
-            <p className="text-[11.5px] text-white/65 mb-4 leading-snug text-center">
+            <p className="text-[12px] text-white/65 mb-4 leading-snug text-center">
               ✏️ 마이페이지에서 언제든 다른 닉네임으로 바꿀 수 있어요
             </p>
             <p className="text-[14px] text-center text-white/85 leading-[1.85] max-w-[300px]">

@@ -126,7 +126,7 @@ export default function ShareMyLocation() {
         <button
           onClick={getLocation}
           disabled={locating}
-          className="w-full rounded-xl py-3 text-[13.5px] font-extrabold text-white active:scale-95 transition-transform flex items-center justify-center gap-1.5 disabled:opacity-60"
+          className="w-full rounded-xl py-3 text-[14px] font-extrabold text-white active:scale-95 transition-transform flex items-center justify-center gap-1.5 disabled:opacity-60"
           style={{ backgroundColor: "var(--color-primary)" }}
         >
           {locating ? (<><Loader2 size={15} className="animate-spin" /> 위치 확인 중…</>) : "지금 위치 링크 만들기"}
@@ -135,7 +135,7 @@ export default function ShareMyLocation() {
         <div className="space-y-2">
           <button
             onClick={shareViaSheet}
-            className="w-full rounded-xl py-3 text-[13.5px] font-extrabold text-white active:scale-95 transition-transform flex items-center justify-center gap-1.5"
+            className="w-full rounded-xl py-3 text-[14px] font-extrabold text-white active:scale-95 transition-transform flex items-center justify-center gap-1.5"
             style={{ backgroundColor: "var(--color-primary)" }}
           >
             <Share2 size={15} /> 공유로 보내기 (카톡·문자 등)
@@ -144,7 +144,7 @@ export default function ShareMyLocation() {
             <a
               key={`${g.phone}-${i}`}
               href={smsHref(g.phone, shareText)}
-              className="w-full rounded-xl py-3 text-[13.5px] font-bold active:scale-95 transition-transform flex items-center justify-center gap-1.5"
+              className="w-full rounded-xl py-3 text-[14px] font-bold active:scale-95 transition-transform flex items-center justify-center gap-1.5"
               style={{ backgroundColor: "#fff", color: "var(--color-text-main)", border: "1px solid var(--color-divider)" }}
             >
               <MessageSquare size={15} className="text-primary" /> {g.name}에게 문자 보내기
@@ -163,7 +163,7 @@ export default function ShareMyLocation() {
       {/* 보호 연락처 관리 — 내 폰(localStorage)에만 저장 */}
       <div className="mt-3 pt-2.5" style={{ borderTop: "1px solid var(--color-divider)" }}>
         <div className="flex items-center justify-between">
-          <span className="text-[10.5px] font-bold text-text-sub">보호 연락처 (내 폰에만 저장 · 최대 {MAX_GUARDIANS}명)</span>
+          <span className="text-[11px] font-bold text-text-sub">보호 연락처 (내 폰에만 저장 · 최대 {MAX_GUARDIANS}명)</span>
           {guardians.length < MAX_GUARDIANS && (
             <button onClick={() => setAddOpen((v) => !v)} className="text-[11px] font-bold text-primary flex items-center gap-0.5 active:scale-95">
               <Plus size={12} /> 추가
@@ -171,7 +171,7 @@ export default function ShareMyLocation() {
           )}
         </div>
         {guardians.length === 0 && !addOpen && (
-          <p className="text-[10.5px] text-text-light mt-1">미리 등록해두면 위급할 때 한 번에 문자를 보낼 수 있어요.</p>
+          <p className="text-[11px] text-text-light mt-1">미리 등록해두면 위급할 때 한 번에 문자를 보낼 수 있어요.</p>
         )}
         {guardians.map((g, i) => (
           <div key={`${g.phone}-list-${i}`} className="flex items-center justify-between mt-1.5">

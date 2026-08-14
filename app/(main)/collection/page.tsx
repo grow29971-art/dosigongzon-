@@ -120,7 +120,7 @@ export default function CollectionPage() {
             {data.collectedCount < data.total && (
               <Link
                 href="/map"
-                className="mt-5 flex items-center justify-center gap-2 py-3 rounded-2xl text-white text-[13.5px] font-extrabold active:scale-[0.98] transition-transform"
+                className="mt-5 flex items-center justify-center gap-2 py-3 rounded-2xl text-white text-[14px] font-extrabold active:scale-[0.98] transition-transform"
                 style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)", boxShadow: "var(--shadow-primary)" }}
               >
                 <MapPin size={15} /> 지도에서 못 만난 고양이 만나러 가기
@@ -138,10 +138,10 @@ function EmptyPrompt({ emoji, title, desc, ctaLabel, href }: { emoji: string; ti
     <div className="text-center py-12 px-4">
       <p className="text-4xl mb-3">{emoji}</p>
       <p className="text-[15px] font-extrabold text-text-main mb-1.5">{title}</p>
-      <p className="text-[12.5px] text-text-sub leading-relaxed mb-5">{desc}</p>
+      <p className="text-[13px] text-text-sub leading-relaxed mb-5">{desc}</p>
       <Link
         href={href}
-        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-white text-[13.5px] font-extrabold active:scale-[0.98] transition-transform"
+        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-white text-[14px] font-extrabold active:scale-[0.98] transition-transform"
         style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)", boxShadow: "var(--shadow-primary)" }}
       >
         {ctaLabel}

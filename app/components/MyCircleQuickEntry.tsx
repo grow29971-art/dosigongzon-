@@ -65,17 +65,17 @@ export default function MyCircleQuickEntry() {
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <p className="text-[13.5px] font-extrabold text-text-main tracking-tight">
+              <p className="text-[14px] font-extrabold text-text-main tracking-tight">
                 내 서클
               </p>
               <span
-                className="text-[9.5px] font-extrabold px-1.5 py-0.5 rounded-md tracking-wider"
+                className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md tracking-wider"
                 style={{ background: "rgba(79,107,83,0.15)", color: "#4F6B53" }}
               >
                 PRIVATE
               </span>
             </div>
-            <p className="text-[10.5px] mt-0.5 leading-snug" style={{ color: "rgba(60,46,35,0.65)" }}>
+            <p className="text-[11px] mt-0.5 leading-snug" style={{ color: "rgba(60,46,35,0.65)" }}>
               걱정되는 아이를 내가 초대한 이웃에게만 보여줘요
             </p>
             <div className="flex items-center gap-1 mt-1">
@@ -83,7 +83,7 @@ export default function MyCircleQuickEntry() {
               {loading ? (
                 <Loader2 size={10} className="animate-spin" style={{ color: "#4F6B53" }} />
               ) : (
-                <span className="text-[10.5px] font-bold" style={{ color: "#4F6B53" }}>
+                <span className="text-[11px] font-bold" style={{ color: "#4F6B53" }}>
                   {memberCount === 0 ? "초대 시작하기" : `멤버 ${memberCount}명`}
                 </span>
               )}
@@ -107,7 +107,7 @@ export default function MyCircleQuickEntry() {
           <div className="flex gap-2">
             <Link
               href={circleId ? `/circle/${circleId}/chat` : "/mypage/circle"}
-              className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12.5px] font-extrabold text-white active:scale-[0.97] transition-transform relative"
+              className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-extrabold text-white active:scale-[0.97] transition-transform relative"
               style={{ background: "linear-gradient(135deg, #4F6B53 0%, #6B8E6F 100%)", boxShadow: "0 3px 10px rgba(79,107,83,0.25)" }}
             >
               <MessageCircle size={13} />
@@ -123,7 +123,7 @@ export default function MyCircleQuickEntry() {
             </Link>
             <Link
               href="/mypage/circle"
-              className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.97] transition-transform bg-white"
+              className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[13px] font-extrabold active:scale-[0.97] transition-transform bg-white"
               style={{ color: "#4F6B53", border: "1px solid rgba(79,107,83,0.30)" }}
             >
               관리

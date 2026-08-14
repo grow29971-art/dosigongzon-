@@ -193,7 +193,7 @@ export default function FeatureTourModal({
           >
             <current.Icon size={30} color={current.color} strokeWidth={2} />
           </div>
-          <p className="text-[10.5px] font-extrabold tracking-[0.16em] mb-1.5" style={{ color: current.color }}>
+          <p className="text-[11px] font-extrabold tracking-[0.16em] mb-1.5" style={{ color: current.color }}>
             {current.eyebrow}
           </p>
           <h2 className="text-[21px] font-extrabold text-text-main tracking-tight leading-snug whitespace-pre-line">

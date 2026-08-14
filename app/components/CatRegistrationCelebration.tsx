@@ -162,7 +162,7 @@ export default function CatRegistrationCelebration({
           >
             {headline}
           </h2>
-          <p className="text-[12.5px] font-bold text-text-sub text-center mt-1.5 leading-snug">
+          <p className="text-[13px] font-bold text-text-sub text-center mt-1.5 leading-snug">
             {subline}
           </p>
         </div>
@@ -186,7 +186,7 @@ export default function CatRegistrationCelebration({
           {cat?.id && (
             meal === "done" ? (
               <div
-                className="flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3 mb-3 text-[12.5px] font-extrabold"
+                className="flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3 mb-3 text-[13px] font-extrabold"
                 style={{ background: "#EAF6EC", color: "#3B7A46" }}
               >
                 <Check size={16} strokeWidth={3} />
@@ -209,7 +209,7 @@ export default function CatRegistrationCelebration({
           )}
           {isFirstEver && !card && (
             <div
-              className="rounded-2xl px-4 py-3 mb-3 text-[11.5px] leading-snug"
+              className="rounded-2xl px-4 py-3 mb-3 text-[12px] leading-snug"
               style={{ background: "#FFF9EF", color: "#7A5F3F" }}
             >
               <p className="font-extrabold mb-1" style={{ color: "var(--color-primary)" }}>

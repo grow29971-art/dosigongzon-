@@ -51,8 +51,8 @@ export default function CommunityWritePrompt() {
           <PenLine size={15} color="#fff" strokeWidth={2.3} />
         </div>
         <div className="min-w-0">
-          <p className="text-[13.5px] font-extrabold text-text-main leading-tight">이런 글 어때요?</p>
-          <p className="text-[10.5px] text-text-sub mt-0.5">탭하면 제목이 채워져 바로 쓸 수 있어요</p>
+          <p className="text-[14px] font-extrabold text-text-main leading-tight">이런 글 어때요?</p>
+          <p className="text-[11px] text-text-sub mt-0.5">탭하면 제목이 채워져 바로 쓸 수 있어요</p>
         </div>
       </div>
 
@@ -65,7 +65,7 @@ export default function CommunityWritePrompt() {
             style={{ border: "1px solid rgba(139,101,184,0.12)" }}
           >
             <span className="text-base shrink-0">{p.emoji}</span>
-            <span className="flex-1 min-w-0 text-[12.5px] font-bold text-text-main truncate">{p.label}</span>
+            <span className="flex-1 min-w-0 text-[13px] font-bold text-text-main truncate">{p.label}</span>
             <ChevronRight size={14} style={{ color: "#8B65B8" }} className="shrink-0" />
           </Link>
         ))}

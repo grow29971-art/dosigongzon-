@@ -216,7 +216,7 @@ export default function AdminActivationPage() {
             <Users size={18} className="text-primary" />
             가입자 활성도 코호트
           </h1>
-          <p className="text-[11.5px] text-text-sub">
+          <p className="text-[12px] text-text-sub">
             전체 {users.length}명 · 운영자가 손길 닿을 코호트별 분류
           </p>
         </div>
@@ -279,7 +279,7 @@ export default function AdminActivationPage() {
                   <p className="text-[24px] font-extrabold leading-none" style={{ color: "#3D2F25" }}>
                     {count}
                   </p>
-                  <p className="text-[10.5px] mt-1.5 leading-snug" style={{ color: "rgba(60,46,35,0.55)" }}>
+                  <p className="text-[11px] mt-1.5 leading-snug" style={{ color: "rgba(60,46,35,0.55)" }}>
                     {meta.description}
                   </p>
                 </button>
@@ -321,7 +321,7 @@ export default function AdminActivationPage() {
                         <p className="text-[13px] font-bold truncate" style={{ color: "#3D2F25" }}>
                           {u.nickname}
                         </p>
-                        <p className="text-[10.5px] truncate" style={{ color: "rgba(60,46,35,0.55)" }}>
+                        <p className="text-[11px] truncate" style={{ color: "rgba(60,46,35,0.55)" }}>
                           {u.email} · 가입 {timeAgo(u.created_at)} · 접속 {timeAgo(u.last_sign_in_at)}
                           {" · "}🐾 {u.catCount}
                         </p>
@@ -346,7 +346,7 @@ export default function AdminActivationPage() {
           )}
 
           {!selected && (
-            <p className="text-center text-[11.5px] mt-2" style={{ color: "rgba(60,46,35,0.5)" }}>
+            <p className="text-center text-[12px] mt-2" style={{ color: "rgba(60,46,35,0.5)" }}>
               카드를 누르면 그 코호트 사용자 목록이 나와요. 휴면·이탈 후보·첫 등록 미완료를 우선 손길 대상으로.
             </p>
           )}

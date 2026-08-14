@@ -127,7 +127,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                 </h1>
                 {adminTitle && (
                   <span
-                    className="text-[9.5px] font-extrabold px-1.5 py-0.5 rounded-md"
+                    className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md"
                     style={{ backgroundColor: adminTitle.color, color: "#fff" }}
                   >
                     {adminTitle.emoji} {adminTitle.name}
@@ -156,7 +156,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                   </span>
                 )}
               </div>
-              <p className="text-[11.5px] text-text-sub mt-2 flex items-center gap-1">
+              <p className="text-[12px] text-text-sub mt-2 flex items-center gap-1">
                 <CalendarDays size={11} />
                 {joinedAt} 가입
               </p>
@@ -179,11 +179,11 @@ export default async function UserProfilePage({ params }: { params: Params }) {
           {regions.length > 0 && (
             <div className="mt-4 flex items-center gap-1.5 flex-wrap">
               <MapPin size={11} className="text-text-sub" />
-              <span className="text-[10.5px] font-bold text-text-sub">활동 지역</span>
+              <span className="text-[11px] font-bold text-text-sub">활동 지역</span>
               {regions.map((r) => (
                 <span
                   key={r.name}
-                  className="px-2 py-0.5 rounded-lg text-[10.5px] font-extrabold"
+                  className="px-2 py-0.5 rounded-lg text-[11px] font-extrabold"
                   style={{
                     background: r.is_primary ? "var(--color-primary)" : "#F7F4EE",
                     color: r.is_primary ? "#fff" : "#A38E7A",
@@ -225,10 +225,10 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                   {t.emoji}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[11.5px] font-extrabold text-text-main truncate">
+                  <p className="text-[12px] font-extrabold text-text-main truncate">
                     {t.name}
                   </p>
-                  <p className="text-[9.5px] text-text-sub truncate leading-tight">
+                  <p className="text-[10px] text-text-sub truncate leading-tight">
                     {t.description}
                   </p>
                 </div>
@@ -269,7 +269,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                 >
                   <div className="shrink-0">{icon}</div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[11.5px] font-bold text-text-main truncate">
+                    <p className="text-[12px] font-bold text-text-main truncate">
                       <span style={{ color: "var(--color-primary)" }}>{item.targetName}</span>
                       <span className="mx-1 text-text-light">·</span>
                       <span className="text-text-sub font-semibold">{item.summary}</span>
@@ -301,7 +301,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
             <PawPrint size={28} className="mx-auto text-text-light mb-2" strokeWidth={1.2} />
-            <p className="text-[12.5px] text-text-sub">아직 등록한 고양이가 없어요</p>
+            <p className="text-[13px] text-text-sub">아직 등록한 고양이가 없어요</p>
           </div>
         ) : (
           <div className="grid grid-cols-3 gap-2">
@@ -356,7 +356,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
           <p className="text-[12px] font-bold text-text-main">
             함께 돌봐요
           </p>
-          <p className="text-[10.5px] text-text-sub mt-0.5">
+          <p className="text-[11px] text-text-sub mt-0.5">
             {profile.nickname}님과 같은 이웃이 되어 길고양이를 함께 지켜주세요
           </p>
         </div>
@@ -386,7 +386,7 @@ function StatBox({ label, value, color }: { label: string; value: number; color:
       <p className="text-[16px] font-extrabold tracking-tight" style={{ color }}>
         {value.toLocaleString()}
       </p>
-      <p className="text-[9.5px] text-text-sub font-bold mt-0.5">{label}</p>
+      <p className="text-[10px] text-text-sub font-bold mt-0.5">{label}</p>
     </div>
   );
 }

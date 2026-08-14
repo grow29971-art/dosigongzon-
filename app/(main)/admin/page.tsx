@@ -343,7 +343,7 @@ export default function AdminDashboardPage() {
                   +{stats.newUsersToday}
                 </p>
                 <p
-                  className="text-[9.5px] font-bold tabular-nums"
+                  className="text-[10px] font-bold tabular-nums"
                   style={{ color: stats.daysUntilLaunch > 0 ? "#8E5430" : "rgba(255,255,255,0.75)" }}
                 >
                   어제 +{stats.newUsersYesterday}

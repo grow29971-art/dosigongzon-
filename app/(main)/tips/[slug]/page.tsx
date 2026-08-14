@@ -232,7 +232,7 @@ export default async function TipDetailPage({ params }: Params) {
                 <Link
                   key={tag}
                   href={`/tips?tag=${encodeURIComponent(tag)}`}
-                  className="text-[10.5px] font-extrabold px-2 py-0.5 rounded-md"
+                  className="text-[11px] font-extrabold px-2 py-0.5 rounded-md"
                   style={{ background: "#F2EBE0", color: "#8B6F4E" }}
                 >
                   #{tag}
@@ -251,7 +251,7 @@ export default async function TipDetailPage({ params }: Params) {
               {tip.description}
             </p>
           )}
-          <div className="flex items-center gap-2 mt-3 text-[11.5px] text-text-light">
+          <div className="flex items-center gap-2 mt-3 text-[12px] text-text-light">
             <span className="font-bold text-primary">도시공존</span>
             <span>·</span>
             <span>{formatDate(tip.published_at)}</span>
@@ -273,7 +273,7 @@ export default async function TipDetailPage({ params }: Params) {
             aria-label="목차"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <p className="text-[11.5px] font-extrabold text-text-sub mb-2 inline-flex items-center gap-1.5">
+            <p className="text-[12px] font-extrabold text-text-sub mb-2 inline-flex items-center gap-1.5">
               <ListIcon size={13} />
               목차
             </p>
@@ -285,7 +285,7 @@ export default async function TipDetailPage({ params }: Params) {
                 >
                   <a
                     href={`#${item.id}`}
-                    className="text-[12.5px] text-text-main hover:text-primary"
+                    className="text-[13px] text-text-main hover:text-primary"
                   >
                     {item.level === 3 ? "· " : ""}
                     {item.text}
@@ -318,7 +318,7 @@ export default async function TipDetailPage({ params }: Params) {
           >
             <ExternalLink size={16} className="text-text-sub shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-[10.5px] text-text-light font-bold">출처</p>
+              <p className="text-[11px] text-text-light font-bold">출처</p>
               <p className="text-[13px] text-text-main font-bold truncate">
                 {tip.source_label || sourceUrl}
               </p>
@@ -332,7 +332,7 @@ export default async function TipDetailPage({ params }: Params) {
           className="bg-white rounded-2xl p-4 mb-4"
           style={{ boxShadow: "var(--shadow-card)" }}
         >
-          <p className="text-[11.5px] font-extrabold text-text-sub mb-2.5">이 글 공유하기</p>
+          <p className="text-[12px] font-extrabold text-text-sub mb-2.5">이 글 공유하기</p>
           <TipShareButtons url={url} title={tip.title} description={description} />
         </div>
 
@@ -342,7 +342,7 @@ export default async function TipDetailPage({ params }: Params) {
             className="bg-white rounded-2xl p-4 mb-4"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <p className="text-[11.5px] font-extrabold text-text-sub mb-2.5">관련 꿀팁</p>
+            <p className="text-[12px] font-extrabold text-text-sub mb-2.5">관련 꿀팁</p>
             <div className="space-y-2">
               {related.map((r) => (
                 <RelatedRow key={r.id} tip={r} />
@@ -401,7 +401,7 @@ function RelatedRow({ tip }: { tip: Tip }) {
         <p className="text-[13px] font-bold text-text-main leading-snug line-clamp-2">
           {tip.title}
         </p>
-        <p className="text-[10.5px] text-text-light mt-0.5">
+        <p className="text-[11px] text-text-light mt-0.5">
           {formatDate(tip.published_at)}
         </p>
       </div>

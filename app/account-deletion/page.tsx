@@ -76,7 +76,7 @@ export default function AccountDeletionPage() {
               >
                 1
               </span>
-              <span className="text-[13.5px] text-text-main leading-relaxed">
+              <span className="text-[14px] text-text-main leading-relaxed">
                 <Link href="/login" className="font-bold underline" style={{ color: "var(--color-primary)" }}>로그인</Link>
                 {" "}후 우측 하단{" "}
                 <strong>마이</strong>{" "}탭 진입
@@ -89,7 +89,7 @@ export default function AccountDeletionPage() {
               >
                 2
               </span>
-              <span className="text-[13.5px] text-text-main leading-relaxed">
+              <span className="text-[14px] text-text-main leading-relaxed">
                 페이지 맨 아래로 스크롤 → <strong>계정 삭제</strong> 버튼 탭
               </span>
             </li>
@@ -100,7 +100,7 @@ export default function AccountDeletionPage() {
               >
                 3
               </span>
-              <span className="text-[13.5px] text-text-main leading-relaxed">
+              <span className="text-[14px] text-text-main leading-relaxed">
                 확인 안내에 따라 진행 — 즉시 처리됩니다
               </span>
             </li>
@@ -155,10 +155,10 @@ export default function AccountDeletionPage() {
             }}
           >
             <div>
-              <p className="text-[12.5px] font-extrabold" style={{ color: "#4A7BA8" }}>
+              <p className="text-[13px] font-extrabold" style={{ color: "#4A7BA8" }}>
                 grow29971@gmail.com
               </p>
-              <p className="text-[10.5px] text-text-sub mt-0.5">
+              <p className="text-[11px] text-text-sub mt-0.5">
                 평일 1~3영업일 내 처리
               </p>
             </div>
@@ -180,7 +180,7 @@ export default function AccountDeletionPage() {
               삭제되는 데이터
             </h2>
           </div>
-          <ul className="space-y-2 text-[12.5px] leading-relaxed" style={{ color: "#4A3F35" }}>
+          <ul className="space-y-2 text-[13px] leading-relaxed" style={{ color: "#4A3F35" }}>
             <li>· 계정 정보 (이메일, 닉네임, 프로필 사진)</li>
             <li>· 등록한 길고양이 정보 및 사진</li>
             <li>· 작성한 게시글, 댓글, 돌봄다이어리</li>
@@ -205,7 +205,7 @@ export default function AccountDeletionPage() {
               일부 보존되는 데이터 (법령상 의무)
             </h2>
           </div>
-          <ul className="space-y-2 text-[12.5px] leading-relaxed" style={{ color: "#4A3F35" }}>
+          <ul className="space-y-2 text-[13px] leading-relaxed" style={{ color: "#4A3F35" }}>
             <li>
               · <strong>로그인 기록 / 접속 IP</strong> — <strong>3개월</strong>{" "}
               (통신비밀보호법)
@@ -224,7 +224,7 @@ export default function AccountDeletionPage() {
         </section>
 
         {/* 안내 */}
-        <p className="text-[11.5px] text-text-light leading-relaxed text-center mt-6 mb-4 px-2">
+        <p className="text-[12px] text-text-light leading-relaxed text-center mt-6 mb-4 px-2">
           삭제된 데이터는 복구할 수 없습니다.
           <br />
           처리 관련 문의: <a href="mailto:grow29971@gmail.com" className="underline">grow29971@gmail.com</a>

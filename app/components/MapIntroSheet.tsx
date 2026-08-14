@@ -72,7 +72,7 @@ export default function MapIntroSheet() {
           <br />
           지도 한 장에 다 있어요
         </h2>
-        <p className="text-[13.5px] text-text-sub leading-relaxed mt-2.5">
+        <p className="text-[14px] text-text-sub leading-relaxed mt-2.5">
           {catCount !== null ? (
             <>
               지금 <b className="text-primary">{catCount.toLocaleString()}마리</b>가 이웃들의
@@ -116,7 +116,7 @@ export default function MapIntroSheet() {
           </Link>
         </div>
 
-        <p className="text-center text-[11.5px] text-text-light mt-4">
+        <p className="text-center text-[12px] text-text-light mt-4">
           기록을 남기려면{" "}
           <Link href="/login" onClick={dismiss} className="font-bold underline underline-offset-2 text-text-sub">
             로그인

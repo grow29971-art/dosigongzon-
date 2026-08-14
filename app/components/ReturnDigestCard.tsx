@@ -56,7 +56,7 @@ export default function ReturnDigestCard({ lastVisitAt }: { lastVisitAt: number 
       >
         <div className="flex items-center gap-1.5 mb-2">
           <MailOpen size={14} style={{ color: "var(--color-primary)" }} />
-          <p className="text-[12.5px] font-extrabold" style={{ color: "var(--color-primary-dark)" }}>
+          <p className="text-[13px] font-extrabold" style={{ color: "var(--color-primary-dark)" }}>
             다녀간 사이
           </p>
           <span className="flex-1" />
@@ -66,7 +66,7 @@ export default function ReturnDigestCard({ lastVisitAt }: { lastVisitAt: number 
         </div>
         <div className="space-y-1">
           {items.map((n) => (
-            <p key={n.id} className="text-[12.5px] text-text-main truncate">
+            <p key={n.id} className="text-[13px] text-text-main truncate">
               <b>{n.actorName}</b>
               <span className="text-text-sub">
                 {"님이 "}

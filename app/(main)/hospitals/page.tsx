@@ -116,7 +116,7 @@ export default function HospitalsPage() {
               <button
                 key={c}
                 onClick={() => setCityFilter(c)}
-                className="shrink-0 px-4 py-2 rounded-full text-[12.5px] font-bold transition-all"
+                className="shrink-0 px-4 py-2 rounded-full text-[13px] font-bold transition-all"
                 style={{
                   backgroundColor: active ? "var(--color-primary)" : "#FFFFFF",
                   color: active ? "#FFFFFF" : "#A38E7A",
@@ -274,13 +274,13 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
       {/* 정보 */}
       <div className="space-y-1 mb-2">
         {hospital.address && (
-          <div className="flex items-start gap-2 text-[11.5px] text-text-sub">
+          <div className="flex items-start gap-2 text-[12px] text-text-sub">
             <MapPin size={12} className="text-text-light shrink-0 mt-0.5" />
             <span className="leading-relaxed">{hospital.address}</span>
           </div>
         )}
         {hospital.hours && (
-          <div className="flex items-start gap-2 text-[11.5px] text-text-sub">
+          <div className="flex items-start gap-2 text-[12px] text-text-sub">
             <Clock size={12} className="text-text-light shrink-0 mt-0.5" />
             <span className="leading-relaxed">{hospital.hours}</span>
           </div>

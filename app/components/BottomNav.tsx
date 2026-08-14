@@ -104,7 +104,7 @@ export default function BottomNav() {
               <span
                 className="w-full text-center whitespace-nowrap"
                 style={{
-                  fontSize: "10.5px",
+                  fontSize: "11px",
                   lineHeight: 1.1,
                   letterSpacing: "-0.2px",
                   color: on ? ACTIVE : INACTIVE,

@@ -164,7 +164,7 @@ export default async function TipsIndexPage() {
               구조 매뉴얼
             </span>
           </div>
-          <p className="text-[11.5px] leading-snug mb-3" style={{ color: "rgba(92,42,30,0.80)" }}>
+          <p className="text-[12px] leading-snug mb-3" style={{ color: "rgba(92,42,30,0.80)" }}>
             응급·새끼 발견·TNR·법률까지 — 한 발 빠른 대처가 한 생명을 살려요
           </p>
 
@@ -200,7 +200,7 @@ export default async function TipsIndexPage() {
                 <span className="text-[11px] font-extrabold text-text-main leading-none">
                   {cat.label}
                 </span>
-                <span className="text-[9.5px] font-bold text-text-light leading-none">
+                <span className="text-[10px] font-bold text-text-light leading-none">
                   {cat.sub}
                 </span>
               </Link>
@@ -241,7 +241,7 @@ export default async function TipsIndexPage() {
               <Link
                 key={tag}
                 href={`/tips?tag=${encodeURIComponent(tag)}`}
-                className="shrink-0 text-[11.5px] font-bold px-2.5 py-1 chip-square bg-white text-text-sub border border-black/[0.04] active:scale-95 transition-transform"
+                className="shrink-0 text-[12px] font-bold px-2.5 py-1 chip-square bg-white text-text-sub border border-black/[0.04] active:scale-95 transition-transform"
               >
                 #{tag}
               </Link>
@@ -354,11 +354,11 @@ function TipCard({ tip }: { tip: Tip }) {
             {tip.title}
           </h2>
           {tip.description && (
-            <p className="text-[12.5px] text-text-sub line-clamp-2 mt-1.5 leading-snug">
+            <p className="text-[13px] text-text-sub line-clamp-2 mt-1.5 leading-snug">
               {tip.description}
             </p>
           )}
-          <div className="flex items-center gap-2 mt-2.5 text-[10.5px] text-text-light">
+          <div className="flex items-center gap-2 mt-2.5 text-[11px] text-text-light">
             <span>{formatDate(tip.published_at)}</span>
             <span>·</span>
             <span className="inline-flex items-center gap-0.5">

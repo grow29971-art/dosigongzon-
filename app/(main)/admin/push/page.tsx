@@ -200,10 +200,10 @@ export default function AdminPushPage() {
             border: "1px solid rgba(173, 94, 59,0.35)",
           }}
         >
-          <p className="text-[12.5px] font-extrabold" style={{ color: "#8A4A28" }}>
+          <p className="text-[13px] font-extrabold" style={{ color: "#8A4A28" }}>
             🐾 8/8 보신각 집회 리마인더
           </p>
-          <p className="text-[10.5px] mt-0.5" style={{ color: "#9A5A34" }}>
+          <p className="text-[11px] mt-0.5" style={{ color: "#9A5A34" }}>
             제목·본문·이동경로 + 8/8 오후 1시 예약 시각까지 자동 채움. 아래 &quot;예약 발송&quot;을 누르세요.
           </p>
         </button>
@@ -221,10 +221,10 @@ export default function AdminPushPage() {
             border: "1px solid rgba(173, 94, 59,0.30)",
           }}
         >
-          <p className="text-[12.5px] font-extrabold" style={{ color: "#7A4F30" }}>
+          <p className="text-[13px] font-extrabold" style={{ color: "#7A4F30" }}>
             🌟 초기 200 이벤트 안내 (출시 D-3)
           </p>
-          <p className="text-[10.5px] mt-0.5" style={{ color: "#8E5430" }}>
+          <p className="text-[11px] mt-0.5" style={{ color: "#8E5430" }}>
             제목·본문·이동경로 자동 채움. 클릭 후 발송 버튼만 누르세요.
           </p>
         </button>
@@ -242,10 +242,10 @@ export default function AdminPushPage() {
             border: "1px solid rgba(74,123,168,0.30)",
           }}
         >
-          <p className="text-[12.5px] font-extrabold" style={{ color: "#2C5A85" }}>
+          <p className="text-[13px] font-extrabold" style={{ color: "#2C5A85" }}>
             📱 Play 스토어 앱 출시 안내
           </p>
-          <p className="text-[10.5px] mt-0.5" style={{ color: "#3F6B8E" }}>
+          <p className="text-[11px] mt-0.5" style={{ color: "#3F6B8E" }}>
             Play 스토어 설치 URL로 외부 이동. 마케팅 옵트인자 대상.
           </p>
         </button>
@@ -263,10 +263,10 @@ export default function AdminPushPage() {
             border: "1px solid var(--color-like-soft)",
           }}
         >
-          <p className="text-[12.5px] font-extrabold" style={{ color: "#A8395B" }}>
+          <p className="text-[13px] font-extrabold" style={{ color: "#A8395B" }}>
             🎉 정식 출시 D-Day (6/1 당일 발송)
           </p>
-          <p className="text-[10.5px] mt-0.5" style={{ color: "#B5546F" }}>
+          <p className="text-[11px] mt-0.5" style={{ color: "#B5546F" }}>
             /celebrate 페이지로 안내. 출시일 한 번만 발송.
           </p>
         </button>
@@ -284,10 +284,10 @@ export default function AdminPushPage() {
             border: "1px solid rgba(107,142,111,0.30)",
           }}
         >
-          <p className="text-[12.5px] font-extrabold" style={{ color: "#3F6B4E" }}>
+          <p className="text-[13px] font-extrabold" style={{ color: "#3F6B4E" }}>
             🌱 출시 +7일 회고 (6/1 발송)
           </p>
-          <p className="text-[10.5px] mt-0.5" style={{ color: "#5F8F73" }}>
+          <p className="text-[11px] mt-0.5" style={{ color: "#5F8F73" }}>
             첫 주 통계·회고. 출시 다음 주말 발송 권장.
           </p>
         </button>
@@ -393,7 +393,7 @@ export default function AdminPushPage() {
           <button
             onClick={handleSchedule}
             disabled={sending || scheduling}
-            className="w-full mt-3 py-3.5 rounded-2xl text-[14.5px] font-bold active:scale-[0.97] transition-transform disabled:opacity-60 flex items-center justify-center gap-2 bg-white"
+            className="w-full mt-3 py-3.5 rounded-2xl text-[15px] font-bold active:scale-[0.97] transition-transform disabled:opacity-60 flex items-center justify-center gap-2 bg-white"
             style={{ color: "var(--color-primary-dark)", border: "1.5px solid rgba(173, 94, 59,0.35)" }}
           >
             {scheduling ? (
@@ -423,9 +423,9 @@ export default function AdminPushPage() {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1">
-                      <p className="text-[12.5px] font-extrabold text-text-main truncate">{s.title}</p>
-                      <p className="text-[11.5px] text-text-sub mt-0.5 line-clamp-2">{s.body}</p>
-                      <p className="text-[10.5px] text-text-light mt-1">
+                      <p className="text-[13px] font-extrabold text-text-main truncate">{s.title}</p>
+                      <p className="text-[12px] text-text-sub mt-0.5 line-clamp-2">{s.body}</p>
+                      <p className="text-[11px] text-text-light mt-1">
                         {new Date(s.scheduled_at).toLocaleString("ko-KR", {
                           month: "long", day: "numeric", hour: "2-digit", minute: "2-digit",
                         })}

@@ -142,8 +142,8 @@ export default function MyInquiriesPage() {
                   opacity: it.closed ? 0.65 : 1,
                 }}
               >
-                <p className="text-[12.5px] font-bold text-text-main">{it.line}</p>
-                <p className="text-[11.5px] text-text-sub mt-0.5">{it.detail}</p>
+                <p className="text-[13px] font-bold text-text-main">{it.line}</p>
+                <p className="text-[12px] text-text-sub mt-0.5">{it.detail}</p>
               </div>
             ))}
           </div>
@@ -193,19 +193,19 @@ export default function MyInquiriesPage() {
               >
                 <div className="flex items-center gap-2 mb-1.5">
                   <span
-                    className="text-[9.5px] font-extrabold px-2 py-0.5 chip-square"
+                    className="text-[10px] font-extrabold px-2 py-0.5 chip-square"
                     style={{ backgroundColor: `${color}15`, color }}
                   >
                     {label}
                   </span>
-                  <span className="text-[10.5px] text-text-light ml-auto">
+                  <span className="text-[11px] text-text-light ml-auto">
                     {formatDate(iq.created_at)}
                   </span>
                 </div>
-                <p className="text-[13.5px] font-extrabold text-text-main truncate">
+                <p className="text-[14px] font-extrabold text-text-main truncate">
                   {iq.subject}
                 </p>
-                <p className="text-[11.5px] text-text-sub mt-0.5 truncate">
+                <p className="text-[12px] text-text-sub mt-0.5 truncate">
                   {iq.body}
                 </p>
               </button>
@@ -252,7 +252,7 @@ export default function MyInquiriesPage() {
                       className="rounded-xl p-3 text-center"
                       style={{ background: "#FFF9E8", border: "1px dashed rgba(201,169,97,0.3)" }}
                     >
-                      <p className="text-[11.5px]" style={{ color: "#8A7318" }}>
+                      <p className="text-[12px]" style={{ color: "#8A7318" }}>
                         {iq.status === "pending"
                           ? "아직 답변을 기다리고 있어요"
                           : "답변이 등록되지 않았어요"}

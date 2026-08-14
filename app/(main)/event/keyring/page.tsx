@@ -158,13 +158,13 @@ export default function KeyringEventPage() {
             border: "1.5px solid rgba(173, 94, 59,0.25)",
           }}
         >
-          <p className="text-[10.5px] font-extrabold tracking-[0.12em] mb-1" style={{ color: "var(--color-primary)" }}>
+          <p className="text-[11px] font-extrabold tracking-[0.12em] mb-1" style={{ color: "var(--color-primary)" }}>
             🎁 내가 돌보는 아이 모양 커스텀 키링
           </p>
-          <p className="text-[13.5px] font-extrabold text-text-main leading-tight mb-1">
+          <p className="text-[14px] font-extrabold text-text-main leading-tight mb-1">
             가입자 1,000명 달성 시 20명 추첨
           </p>
-          <p className="text-[11.5px] text-text-sub leading-relaxed">
+          <p className="text-[12px] text-text-sub leading-relaxed">
             당신이 돌보는 길고양이를 직접 등록하고 응모하면, 그 아이 모양의 아크릴 키링을 만들어 보내드려요.
             세상에 하나뿐인 우리 동네 아이의 키링.
           </p>
@@ -199,7 +199,7 @@ export default function KeyringEventPage() {
                 }}
               />
             </div>
-            <p className="text-[10.5px] text-text-sub mt-2 leading-relaxed">
+            <p className="text-[11px] text-text-sub mt-2 leading-relaxed">
               {1000 - memberCount}명만 더 모이면 추첨이 시작돼요. 친구를 초대하면 더 빨리 달성해요 🎁
             </p>
           </div>
@@ -232,7 +232,7 @@ export default function KeyringEventPage() {
             <p className="text-[13px] text-text-sub leading-relaxed">
               가입자 1,000명 달성 시 추첨해서 쪽지로 안내드릴게요.
             </p>
-            <div className="flex items-center justify-center gap-1.5 mt-3 text-[11.5px]" style={{ color: "var(--color-primary)" }}>
+            <div className="flex items-center justify-center gap-1.5 mt-3 text-[12px]" style={{ color: "var(--color-primary)" }}>
               <Users size={12} />
               <b>친구를 초대하면 추첨이 더 빨리 시작돼요!</b>
             </div>
@@ -262,7 +262,7 @@ export default function KeyringEventPage() {
             <p className="text-[15px] font-extrabold text-text-main mb-1.5">
               먼저 돌보는 아이를 등록해주세요
             </p>
-            <p className="text-[12.5px] text-text-sub leading-relaxed mb-4">
+            <p className="text-[13px] text-text-sub leading-relaxed mb-4">
               이 키링은 <b className="text-text-main">당신이 돌보는 아이 모양</b>으로 제작돼요.
               <br />
               지도에서 + 버튼을 눌러 첫 아이를 등록하면 응모할 수 있어요.
@@ -331,7 +331,7 @@ export default function KeyringEventPage() {
                         <p className="text-[13px] font-extrabold text-text-main truncate">{cat.name}</p>
                         <div className="flex items-center gap-0.5 mt-0.5">
                           <MapPin size={10} className="text-text-light" />
-                          <span className="text-[10.5px] text-text-sub truncate">
+                          <span className="text-[11px] text-text-sub truncate">
                             {cat.region ?? "우리 동네"}
                           </span>
                         </div>
@@ -340,7 +340,7 @@ export default function KeyringEventPage() {
                   );
                 })}
               </div>
-              <p className="text-[10.5px] text-text-light mt-2 leading-relaxed">
+              <p className="text-[11px] text-text-light mt-2 leading-relaxed">
                 · 한 분당 1회만 응모 가능. 응모 후엔 변경할 수 없어요.
               </p>
             </div>
@@ -359,7 +359,7 @@ export default function KeyringEventPage() {
                   : "키링으로 만들 아이를 골라주세요"}
             </button>
 
-            <p className="text-[10.5px] text-text-light text-center leading-relaxed pt-2">
+            <p className="text-[11px] text-text-light text-center leading-relaxed pt-2">
               · 추첨되시면 쪽지로 키링 제작 진행 상황과 배송 정보를 안내드려요.<br />
               · 더 많은 아이를 돌보고 계시다면 지도에서 추가 등록해주세요.
             </p>
@@ -371,7 +371,7 @@ export default function KeyringEventPage() {
       <div className="px-4 mt-6">
         <div className="mb-2 flex items-start gap-2">
           <span className="text-[14px]">📣</span>
-          <p className="text-[11.5px] text-text-sub leading-relaxed">
+          <p className="text-[12px] text-text-sub leading-relaxed">
             <b className="text-text-main">친구를 초대해주세요.</b> 가입자 1,000명이 빨리 모일수록 추첨이 빨라지고,
             친구가 많으면 동네 길고양이가 더 안전해져요.
           </p>

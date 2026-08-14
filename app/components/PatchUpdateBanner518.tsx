@@ -58,21 +58,21 @@ export default function PatchUpdateBanner518() {
               <X size={16} color="rgba(255,255,255,0.7)" />
             </button>
           </div>
-          <p className="text-[14.5px] font-extrabold text-white leading-snug mb-2 tracking-tight">
+          <p className="text-[15px] font-extrabold text-white leading-snug mb-2 tracking-tight">
             🛡 Private Circle — 믿는 이웃에게만 핀 공개
           </p>
           <p className="text-[12px] leading-[1.75]" style={{ color: "rgba(255,255,255,0.92)" }}>
             걱정되는 아이는 <b style={{ color: "#FFF7C4" }}>"내 서클"</b>로 등록하면 내가
             승인한 이웃에게만 보입니다. 일반 가입자에게도 외부인에게도 노출되지 않아요.
           </p>
-          <p className="text-[11.5px] mt-2 leading-relaxed" style={{ color: "rgba(255,255,255,0.75)" }}>
+          <p className="text-[12px] mt-2 leading-relaxed" style={{ color: "rgba(255,255,255,0.75)" }}>
             함께 강화: 좌표 ±444m 흐림 · 비로그인 외부인 도트만 · 위치 단어 자동 차단 ·
             사진 GPS 자동 제거
           </p>
           <Link
             href="/mypage/circle"
             onClick={handleDismiss}
-            className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.98] transition-transform"
+            className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-extrabold active:scale-[0.98] transition-transform"
             style={{ background: "rgba(255,255,255,0.95)", color: "#4F6B53" }}
           >
             <span>내 서클 시작하기</span>

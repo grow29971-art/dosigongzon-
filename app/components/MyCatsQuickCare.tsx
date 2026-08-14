@@ -86,7 +86,7 @@ export default function MyCatsQuickCare() {
           <p className="text-[10px] font-extrabold tracking-[0.15em]" style={{ color: "var(--color-primary-dark)" }}>내 아이 오늘 한 끼</p>
           <p className="text-[12px] text-text-sub mt-0.5">탭 한 번이면 끝 — 메모·사진 없이도 OK</p>
         </div>
-        <p className="text-[11.5px] font-extrabold shrink-0" style={{ color: "var(--color-primary-dark)" }}>
+        <p className="text-[12px] font-extrabold shrink-0" style={{ color: "var(--color-primary-dark)" }}>
           <span style={{ color: doneCount === cats.length ? "#6B8E6F" : "#E88D5A" }}>{doneCount}</span>/{cats.length}
         </p>
       </div>
@@ -112,7 +112,7 @@ export default function MyCatsQuickCare() {
                   )}
                 </div>
               </Link>
-              <p className="text-[10.5px] font-bold text-center mt-1 truncate w-full" style={{ color: "#2A2A28" }}>
+              <p className="text-[11px] font-bold text-center mt-1 truncate w-full" style={{ color: "#2A2A28" }}>
                 {c.name}
               </p>
               <button

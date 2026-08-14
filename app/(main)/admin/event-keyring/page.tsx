@@ -298,7 +298,7 @@ function EntryCard({
               {new Date(entry.created_at).toLocaleDateString("ko-KR")}
             </span>
           </div>
-          <p className="text-[14.5px] font-extrabold text-text-main truncate">{displayName}</p>
+          <p className="text-[15px] font-extrabold text-text-main truncate">{displayName}</p>
           {entry.phone && (
             <a href={`tel:${entry.phone}`} className="flex items-center gap-1 mt-0.5 text-[12px] font-bold" style={{ color: "#22B573" }}>
               <Phone size={11} />
@@ -306,7 +306,7 @@ function EntryCard({
             </a>
           )}
           {entry.address && (
-            <p className="flex items-start gap-1 mt-1 text-[11.5px] text-text-sub leading-snug">
+            <p className="flex items-start gap-1 mt-1 text-[12px] text-text-sub leading-snug">
               <MapPin size={11} className="shrink-0 mt-0.5" />
               <span>{entry.address}</span>
             </p>
@@ -326,7 +326,7 @@ function EntryCard({
           const active = entry.status === s;
           return (
             <button key={s} onClick={() => onStatus(entry.id, s)} disabled={active}
-              className="flex-1 min-w-0 py-2 rounded-lg text-[11.5px] font-bold flex items-center justify-center gap-1 active:scale-95 disabled:opacity-50"
+              className="flex-1 min-w-0 py-2 rounded-lg text-[12px] font-bold flex items-center justify-center gap-1 active:scale-95 disabled:opacity-50"
               style={{
                 background: active ? m.color : `${m.color}15`,
                 color: active ? "#fff" : m.color,

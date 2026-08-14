@@ -56,14 +56,14 @@ export default function FirstProjectBanner() {
           <p className="text-[15px] font-extrabold text-white leading-snug mb-2 tracking-tight">
             🐾 도시공존 1호 프로젝트
           </p>
-          <p className="text-[12.5px] leading-[1.7]" style={{ color: "rgba(255,255,255,0.92)" }}>
+          <p className="text-[13px] leading-[1.7]" style={{ color: "rgba(255,255,255,0.92)" }}>
             곧 시작됩니다. 모인 수익을 <b style={{ color: "#FFF7C4" }}>어디에 먼저 쓸지</b>,
             여러분의 생각을 투표해주세요.
           </p>
           <Link
             href="/shop"
             onClick={handleDismiss}
-            className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12.5px] font-extrabold active:scale-[0.98] transition-transform"
+            className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-extrabold active:scale-[0.98] transition-transform"
             style={{ background: "rgba(255,255,255,0.95)", color: "#8A4325" }}
           >
             <span>투표하러 가기</span>

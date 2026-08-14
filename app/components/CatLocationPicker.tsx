@@ -297,7 +297,7 @@ export default function CatLocationPicker({
             </div>
           </div>
         </div>
-        <p className="text-[10.5px] text-text-light leading-relaxed mb-3 px-1">
+        <p className="text-[11px] text-text-light leading-relaxed mb-3 px-1">
           💡 동 이름이 익숙한 이름과 다르면 다음 화면 &ldquo;동네&rdquo; 칸에서 직접 고칠 수 있어요. (행정동·법정동 차이로 다르게 보일 수 있음)
         </p>
 

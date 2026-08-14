@@ -158,7 +158,7 @@ export default function InventoryPage() {
                   <p className="text-[12px] font-bold text-white truncate">
                     {activeCat.name}의 테두리
                   </p>
-                  <p className="text-[10.5px] truncate" style={{ color: UI.textSub }}>
+                  <p className="text-[11px] truncate" style={{ color: UI.textSub }}>
                     {activeCat.equipped_border_key
                       ? SHOP_ITEMS[activeCat.equipped_border_key as ShopItemKey]?.name
                       : "장착한 테두리가 없어요 — 눌러서 선택"}
@@ -195,7 +195,7 @@ export default function InventoryPage() {
                         </span>
                         <div className="min-w-0 flex-1">
                           <p className="text-[11px] font-bold text-white truncate">{item.name} {qty > 0 && <span className="text-gray-400 font-normal">x{qty}</span>}</p>
-                          <p className="text-[9.5px] text-gray-500 truncate">{item.desc}</p>
+                          <p className="text-[10px] text-gray-500 truncate">{item.desc}</p>
                         </div>
                         {isEquipped && <CheckCircle2 size={14} style={{ color: UI.accent.pink }} className="shrink-0" />}
                       </button>
@@ -249,7 +249,7 @@ export default function InventoryPage() {
                       style={{ background: isThis ? "rgba(232,176,64,0.22)" : "rgba(255,255,255,0.05)" }}>
                       <span style={{ fontSize: 22 }}>{item.icon}</span>
                       <div className="min-w-0 flex-1">
-                        <p className="text-[12.5px] font-bold text-white truncate">{item.name}</p>
+                        <p className="text-[13px] font-bold text-white truncate">{item.name}</p>
                         <p className="text-[10px] text-gray-500 truncate">{item.desc}</p>
                       </div>
                       {isThis && <CheckCircle2 size={18} style={{ color: "#E8B040" }} className="shrink-0" />}

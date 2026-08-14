@@ -85,7 +85,7 @@ export default function NotFound() {
             <div className="grid grid-cols-2 gap-2">
               <Link
                 href="/map"
-                className="py-2.5 rounded-2xl text-[12.5px] font-bold active:scale-[0.98]"
+                className="py-2.5 rounded-2xl text-[13px] font-bold active:scale-[0.98]"
                 style={{
                   background: "#F7F4EE",
                   color: "#A38E7A",
@@ -96,7 +96,7 @@ export default function NotFound() {
               </Link>
               <Link
                 href="/protection"
-                className="py-2.5 rounded-2xl text-[12.5px] font-bold active:scale-[0.98]"
+                className="py-2.5 rounded-2xl text-[13px] font-bold active:scale-[0.98]"
                 style={{
                   background: "#F7F4EE",
                   color: "#A38E7A",
@@ -107,7 +107,7 @@ export default function NotFound() {
               </Link>
               <Link
                 href="/community"
-                className="py-2.5 rounded-2xl text-[12.5px] font-bold active:scale-[0.98]"
+                className="py-2.5 rounded-2xl text-[13px] font-bold active:scale-[0.98]"
                 style={{
                   background: "#F7F4EE",
                   color: "#A38E7A",
@@ -118,7 +118,7 @@ export default function NotFound() {
               </Link>
               <Link
                 href="/guide"
-                className="py-2.5 rounded-2xl text-[12.5px] font-bold active:scale-[0.98]"
+                className="py-2.5 rounded-2xl text-[13px] font-bold active:scale-[0.98]"
                 style={{
                   background: "#F7F4EE",
                   color: "#A38E7A",

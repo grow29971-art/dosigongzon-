@@ -111,7 +111,7 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
           <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
             바쁘면 까먹어요 — 알림이 챙겨드려요.
           </p>
-          <p className="text-[9.5px] mt-0.5" style={{ color: "#BFA084" }}>
+          <p className="text-[10px] mt-0.5" style={{ color: "#BFA084" }}>
             켜면 돌봄·소식 알림(마케팅 포함) 수신에 동의해요 · 마이페이지에서 해제 가능
           </p>
         </div>
@@ -120,7 +120,7 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
             type="button"
             onClick={enable}
             disabled={busy}
-            className="h-8 px-3 rounded-full text-white text-[11.5px] font-extrabold active:scale-95 transition-transform disabled:opacity-60"
+            className="h-8 px-3 rounded-full text-white text-[12px] font-extrabold active:scale-95 transition-transform disabled:opacity-60"
             style={{ background: "var(--color-primary)", boxShadow: "0 3px 8px rgba(173, 94, 59,0.3)" }}
           >
             {busy ? "..." : "켜기"}
@@ -128,7 +128,7 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
           <button
             type="button"
             onClick={dismiss}
-            className="h-6 px-2 rounded-full flex items-center justify-center text-[10.5px] font-bold"
+            className="h-6 px-2 rounded-full flex items-center justify-center text-[11px] font-bold"
             style={{ color: "#A88160" }}
             aria-label="다음에"
           >

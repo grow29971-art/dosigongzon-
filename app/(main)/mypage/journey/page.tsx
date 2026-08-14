@@ -65,7 +65,7 @@ export default async function JourneyPage() {
         <p className="text-[13px] text-text-sub leading-relaxed">
           도시공존에서 쌓아온 발자취와 따뜻한 순간들이에요.
         </p>
-        <p className="mt-2 text-[11.5px] text-text-light">
+        <p className="mt-2 text-[12px] text-text-light">
           총 {items.length}개의 작은 이야기가 모였습니다.
         </p>
       </div>
@@ -128,7 +128,7 @@ function MilestoneRow({ m }: { m: Milestone }) {
             border: "1px solid rgba(0,0,0,0.04)",
           }}
         >
-          <p className="text-[10.5px] font-bold tracking-wide" style={{ color: c.text }}>
+          <p className="text-[11px] font-bold tracking-wide" style={{ color: c.text }}>
             {fmtDate(m.date)}
           </p>
           <p className="mt-0.5 text-[14px] font-extrabold text-text-main tracking-tight leading-tight">

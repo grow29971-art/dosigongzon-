@@ -123,7 +123,7 @@ export default function PageIntroModal({
             {items.map((it, i) => (
               <div key={i} className="flex gap-3">
                 <span className="text-[18px] shrink-0 leading-tight">{it.emoji}</span>
-                <p className="text-[12.5px] leading-[1.65] text-text-sub">{it.text}</p>
+                <p className="text-[13px] leading-[1.65] text-text-sub">{it.text}</p>
               </div>
             ))}
           </div>

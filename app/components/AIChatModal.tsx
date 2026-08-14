@@ -261,7 +261,7 @@ export default function AIChatModal({
           }}
         >
           {/* AI 면책 안내 — 의료·법률 자문 아님 */}
-          <p className="text-[10.5px] mb-2 leading-relaxed text-center" style={{ color: "#8B7562" }}>
+          <p className="text-[11px] mb-2 leading-relaxed text-center" style={{ color: "#8B7562" }}>
             ⓘ AI 응답은 <b>참고용</b>이며 의료 진단·법률 자문이 아닙니다. 응급·의료는 수의사와 상의해주세요.
           </p>
           <div className="flex items-center gap-2">

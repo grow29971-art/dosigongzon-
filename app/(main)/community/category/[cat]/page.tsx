@@ -321,7 +321,7 @@ export default function CategoryPage() {
                 <h3 className="text-[14px] font-bold text-text-main leading-snug truncate">
                   {post.title}
                 </h3>
-                <p className="text-[11.5px] text-text-sub truncate mt-0.5">
+                <p className="text-[12px] text-text-sub truncate mt-0.5">
                   {post.content}
                 </p>
                 <div className="flex items-center gap-2 mt-1.5">
@@ -333,7 +333,7 @@ export default function CategoryPage() {
                       <span className="text-[7px] font-bold" style={{ color: meta.color }}>{post.authorName.charAt(0)}</span>
                     </div>
                   )}
-                  <span className="text-[10.5px] text-text-sub font-semibold">{post.authorName}</span>
+                  <span className="text-[11px] text-text-sub font-semibold">{post.authorName}</span>
                   {post.authorLevel && (
                     <span className="text-[8px] font-extrabold px-1 py-[0.5px] rounded" style={{ backgroundColor: getLevelColor(post.authorLevel), color: "#fff" }}>
                       Lv.{post.authorLevel}

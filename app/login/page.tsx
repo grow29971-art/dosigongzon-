@@ -150,7 +150,7 @@ function LoginContent() {
             <button
               type="button"
               onClick={handleOpenExternal}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[12.5px] transition-transform active:scale-95"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[13px] transition-transform active:scale-95"
               style={{ backgroundColor: "rgba(0,0,0,0.05)", color: "#6B5043" }}
             >
               <ExternalLink size={14} />
@@ -173,7 +173,7 @@ function LoginContent() {
             <PawPrint size={40} className="text-primary" strokeWidth={1.8} />
           </div>
           <h1 className="text-[26px] font-extrabold text-text-main tracking-tight">도시공존</h1>
-          <p className="text-[13.5px] text-text-sub mt-2 leading-relaxed">
+          <p className="text-[14px] text-text-sub mt-2 leading-relaxed">
             카카오 또는 구글로 1초 만에 시작하기
           </p>
         </div>
@@ -214,7 +214,7 @@ function LoginContent() {
                   {oauthGuide.body}
                 </p>
                 {oauthGuide.tip && (
-                  <p className="text-[11.5px] mt-2 leading-relaxed font-semibold" style={{ color: "#3F5B42" }}>
+                  <p className="text-[12px] mt-2 leading-relaxed font-semibold" style={{ color: "#3F5B42" }}>
                     💡 {oauthGuide.tip}
                   </p>
                 )}
@@ -230,7 +230,7 @@ function LoginContent() {
                     const next = searchParams.get("next");
                     router.replace(next && next.startsWith("/") && !next.startsWith("//") ? `/login?next=${encodeURIComponent(next)}` : "/login");
                   }}
-                  className="mt-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11.5px] font-bold active:scale-95"
+                  className="mt-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-bold active:scale-95"
                   style={{
                     backgroundColor: "rgba(255,255,255,0.7)",
                     color:
@@ -266,7 +266,7 @@ function LoginContent() {
             style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid #E5E0D6" }}
           >
             <span className="text-[13px] mt-0.5">💡</span>
-            <p className="text-[11.5px] text-text-sub leading-relaxed">
+            <p className="text-[12px] text-text-sub leading-relaxed">
               가입과 로그인이 같아요. 처음이시면 그냥 카카오 또는 구글 버튼을 눌러주세요.
             </p>
           </div>
@@ -286,7 +286,7 @@ function LoginContent() {
             >
               {agreed && <Check size={12} color="white" strokeWidth={3} />}
             </div>
-            <span className="text-[12.5px] text-text-sub leading-relaxed">
+            <span className="text-[13px] text-text-sub leading-relaxed">
               <Link href="/terms" className="font-bold text-primary underline">이용약관</Link> 및{" "}
               <Link href="/privacy" className="font-bold text-primary underline">개인정보처리방침</Link>에 동의하며, 만 14세 이상입니다
             </span>
@@ -300,7 +300,7 @@ function LoginContent() {
             style={{ backgroundColor: "var(--color-warning-soft)", border: "1px solid #F5DAB0" }}
           >
             <span className="text-[14px] mt-0.5">⚠️</span>
-            <p className="text-[11.5px] leading-relaxed" style={{ color: "#6F4910" }}>
+            <p className="text-[12px] leading-relaxed" style={{ color: "#6F4910" }}>
               <b>삼성 인터넷</b>에서는 카카오 로그인이 자주 실패해요 (KOE205).
               <b>크롬·사파리</b>로 열면 안정적이에요.
             </p>
@@ -360,7 +360,7 @@ function LoginContent() {
           </button>
         </div>
 
-        <p className="text-[11.5px] text-text-light text-center mt-6 leading-relaxed">
+        <p className="text-[12px] text-text-light text-center mt-6 leading-relaxed">
           한 번 연결하면 다음부터 1클릭 로그인 ·<br />
           광고 없음 · 무료
         </p>

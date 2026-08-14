@@ -99,7 +99,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
         }}
       >
         <Loader2 size={14} className="animate-spin text-text-light" />
-        <span className="text-[11.5px] text-text-light">새 소식 불러오는 중…</span>
+        <span className="text-[12px] text-text-light">새 소식 불러오는 중…</span>
       </div>
     );
   }
@@ -201,7 +201,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
                 <Icon size={15} style={{ color: config.color }} strokeWidth={2.2} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[12.5px] font-extrabold text-text-main leading-tight tracking-tight">
+                <p className="text-[13px] font-extrabold text-text-main leading-tight tracking-tight">
                   {item.targetName}
                 </p>
                 <p className="text-[11px] text-text-sub mt-0.5 leading-snug line-clamp-1">

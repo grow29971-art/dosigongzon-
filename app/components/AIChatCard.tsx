@@ -41,7 +41,7 @@ export default function AIChatCard() {
                 BETA
               </span>
             </div>
-            <p className="text-[11.5px] text-text-sub mt-0.5">
+            <p className="text-[12px] text-text-sub mt-0.5">
               길고양이 돌봄이 궁금하다면 물어보세요
             </p>
           </div>
@@ -49,7 +49,7 @@ export default function AIChatCard() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setChatOpen(true)}
-            className="flex-1 rounded-xl px-4 py-2.5 text-[12.5px] text-text-muted text-left transition-all active:scale-[0.98]"
+            className="flex-1 rounded-xl px-4 py-2.5 text-[13px] text-text-muted text-left transition-all active:scale-[0.98]"
             style={{
               backgroundColor: "var(--color-gray-50)",
               border: "1px solid var(--color-gray-200)",

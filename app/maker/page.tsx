@@ -55,7 +55,7 @@ export default function MakerPage() {
 
       {/* 히어로 */}
       <section className="px-5 pt-6">
-        <p className="text-[10.5px] font-extrabold tracking-[0.18em] mb-2" style={{ color: "var(--color-primary-dark)" }}>
+        <p className="text-[11px] font-extrabold tracking-[0.18em] mb-2" style={{ color: "var(--color-primary-dark)" }}>
           MADE BY ONE NEIGHBOR
         </p>
         <h1 className="text-[26px] font-extrabold text-text-main leading-tight tracking-tight">
@@ -63,7 +63,7 @@ export default function MakerPage() {
           <br />
           <span style={{ color: "var(--color-primary-dark)" }}>한 사람이 직접 만들었어요.</span>
         </h1>
-        <p className="text-[13.5px] text-text-sub mt-3 leading-relaxed">
+        <p className="text-[14px] text-text-sub mt-3 leading-relaxed">
           <b className="text-text-main">김성우</b> · 1인 풀스택 메이커
           <br />
           Software · Hardware · Product · Operations
@@ -91,11 +91,11 @@ export default function MakerPage() {
               MISSION
             </span>
           </div>
-          <p className="text-[15.5px] font-extrabold text-text-main leading-[1.55] mb-2.5 tracking-tight">
+          <p className="text-[16px] font-extrabold text-text-main leading-[1.55] mb-2.5 tracking-tight">
             언제나 어디서든 모두가<br />
             느낄 수 있는 새로운 형태의 자연을 제공합니다.
           </p>
-          <p className="text-[12.5px] text-text-sub leading-relaxed">
+          <p className="text-[13px] text-text-sub leading-relaxed">
             우리는 자연을 과학과 접목하여 발전시키고, 자연의 사전적 의미를 재정립합니다.
           </p>
         </div>
@@ -114,17 +114,17 @@ export default function MakerPage() {
               VISION
             </span>
           </div>
-          <p className="text-[12.5px] text-text-sub leading-[1.95]">
+          <p className="text-[13px] text-text-sub leading-[1.95]">
             현재 인류에게는 자연이 주는 <b className="text-text-main">정서적 안정</b>이 필요합니다.
             지금까지 인류는 발전을 위해 자연을 정복하고 파괴해왔습니다.
             이제는 자연과 <b className="text-text-main">균형과 조화</b>를 맞춰야 할 때입니다.
           </p>
-          <p className="text-[12.5px] text-text-sub leading-[1.95] mt-3">
+          <p className="text-[13px] text-text-sub leading-[1.95] mt-3">
             자연은 우리 삶의 기초가 되는 터전이며, 우리의 모든 것은 자연에서 시작되었습니다.
             자연이 주는 즐거움과 안정감을 함께 함으로써 자연과 인류 간 조화로운 미래를 만들기 위해,
             혁신적인 제품을 연구하고 사람들에게 제공하여 자연에 대한 이해와 경험을 모두와 나누고자 합니다.
           </p>
-          <p className="text-[12.5px] text-text-sub leading-[1.95] mt-3">
+          <p className="text-[13px] text-text-sub leading-[1.95] mt-3">
             우리는 <b className="text-text-main">자연친화적인 세상</b>을 만들어 인류사회에 공헌합니다.
           </p>
         </div>
@@ -200,7 +200,7 @@ export default function MakerPage() {
           <h2 className="text-[14px] font-extrabold text-text-main">어떻게 만드나</h2>
         </div>
         <div className="bg-white rounded-3xl p-5" style={{ boxShadow: "var(--shadow-card)" }}>
-          <p className="text-[12.5px] leading-[1.95] text-text-sub mb-4">
+          <p className="text-[13px] leading-[1.95] text-text-sub mb-4">
             기획·디자인·개발·운영·고객 응대까지 모두 직접 합니다.
             소프트웨어만 다루지 않고{" "}
             <b className="text-text-main">물리적으로 손에 잡히는 영역</b>까지 만들어요.
@@ -321,7 +321,7 @@ export default function MakerPage() {
           <h2 className="text-[14px] font-extrabold text-text-main">제휴·문의·차 한 잔</h2>
         </div>
         <div className="bg-white rounded-3xl p-5" style={{ boxShadow: "var(--shadow-card)" }}>
-          <p className="text-[12.5px] leading-[1.95] text-text-sub mb-4">
+          <p className="text-[13px] leading-[1.95] text-text-sub mb-4">
             언론·블로그 취재, 동물보호 단체 협업, 지자체·캠페인 제휴, 학교 프로젝트
             인터뷰 등 어떤 결의 이야기든 환영합니다. 답장은 운영자가 직접 드려요.
           </p>
@@ -376,7 +376,7 @@ function SkillCard({ icon, title, sub }: { icon: React.ReactNode; title: string;
         {icon}
         <p className="text-[12px] font-extrabold tracking-tight text-text-main">{title}</p>
       </div>
-      <p className="text-[10.5px] text-text-sub leading-tight">{sub}</p>
+      <p className="text-[11px] text-text-sub leading-tight">{sub}</p>
     </div>
   );
 }
@@ -437,7 +437,7 @@ function PrincipleRow({
         <span className="text-[18px] shrink-0 leading-none mt-0.5">{emoji}</span>
         <div className="flex-1 min-w-0">
           <p className="text-[13px] font-extrabold text-text-main leading-snug tracking-tight">{title}</p>
-          <p className="text-[11.5px] text-text-sub mt-1 leading-relaxed">{body}</p>
+          <p className="text-[12px] text-text-sub mt-1 leading-relaxed">{body}</p>
         </div>
       </div>
     </div>

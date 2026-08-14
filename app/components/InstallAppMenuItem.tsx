@@ -176,7 +176,7 @@ export default function InstallAppMenuItem() {
                 <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
                   사파리 하단 공유 버튼을 눌러 <b>홈 화면에 추가</b>를 선택하면 앱처럼 사용할 수 있어요.
                 </p>
-                <ol className="space-y-2.5 text-[12.5px] text-text-main">
+                <ol className="space-y-2.5 text-[13px] text-text-main">
                   <li className="flex items-center gap-2">
                     <span
                       className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-extrabold text-white shrink-0"
@@ -204,10 +204,10 @@ export default function InstallAppMenuItem() {
               </>
             ) : (
               <>
-                <p className="text-[12.5px] text-text-sub leading-relaxed mb-2">
+                <p className="text-[13px] text-text-sub leading-relaxed mb-2">
                   iOS 크롬·파이어폭스에서는 홈 화면 추가가 지원되지 않아요.
                 </p>
-                <p className="text-[12.5px] text-text-main leading-relaxed">
+                <p className="text-[13px] text-text-main leading-relaxed">
                   <b>사파리</b>로 이 페이지를 열고 공유 → <b>홈 화면에 추가</b>를 이용해주세요.
                 </p>
               </>

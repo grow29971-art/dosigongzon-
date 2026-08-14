@@ -58,7 +58,7 @@ export default async function CaretakersPage() {
             동네 길집사 찾기
           </h1>
         </div>
-        <p className="text-[12.5px] text-text-sub leading-relaxed">
+        <p className="text-[13px] text-text-sub leading-relaxed">
           내 활동 지역에서 함께 길고양이를 챙기는 분들을 만나보세요.
           휴가 갈 때 백업을 부탁하거나 정보 공유도 가능해요.
         </p>
@@ -80,7 +80,7 @@ export default async function CaretakersPage() {
               }}
             >
               <Sparkles size={13} className="text-primary shrink-0" />
-              <p className="text-[11.5px] font-bold text-text-main leading-tight">
+              <p className="text-[12px] font-bold text-text-main leading-tight">
                 {myRegions.join(" · ")}에서 활동하는 {caretakers.length}분
               </p>
             </div>
@@ -139,7 +139,7 @@ function CaretakerCard({
 
         <Link href={`/users/${caretaker.id}`} className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <p className="text-[14.5px] font-extrabold text-text-main tracking-tight truncate">
+            <p className="text-[15px] font-extrabold text-text-main tracking-tight truncate">
               {caretaker.nickname}
             </p>
             {caretaker.admin_title && (
@@ -182,7 +182,7 @@ function CaretakerCard({
       <div className="mt-3 flex gap-2">
         <Link
           href={`/users/${caretaker.id}`}
-          className="flex-1 py-2 rounded-xl text-center text-[12.5px] font-bold active:scale-[0.97] transition-transform"
+          className="flex-1 py-2 rounded-xl text-center text-[13px] font-bold active:scale-[0.97] transition-transform"
           style={{
             background: "var(--color-primary-softer)",
             color: "var(--color-primary)",
@@ -193,7 +193,7 @@ function CaretakerCard({
         </Link>
         <Link
           href={`/messages?to=${caretaker.id}&name=${encodeURIComponent(caretaker.nickname)}&preset=${presetMsg}`}
-          className="flex-1 py-2 rounded-xl text-center text-[12.5px] font-bold text-white active:scale-[0.97] transition-transform inline-flex items-center justify-center gap-1.5"
+          className="flex-1 py-2 rounded-xl text-center text-[13px] font-bold text-white active:scale-[0.97] transition-transform inline-flex items-center justify-center gap-1.5"
           style={{ background: "var(--color-primary)" }}
         >
           <MessageCircle size={13} />

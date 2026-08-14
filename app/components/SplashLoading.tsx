@@ -38,7 +38,7 @@ export default function SplashLoading() {
           className="w-5 h-[2px] rounded-full"
           style={{ backgroundColor: "var(--color-primary)", opacity: 0.5 }}
         />
-        <p className="text-[11.5px] font-bold text-text-sub tracking-[-0.01em]">
+        <p className="text-[12px] font-bold text-text-sub tracking-[-0.01em]">
           길 위의 아이들
         </p>
       </div>

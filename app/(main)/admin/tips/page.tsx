@@ -297,7 +297,7 @@ export default function AdminTipsPage() {
             placeholder="tnr-application-guide"
           />
           {draft.slug && (
-            <p className="text-[10.5px] text-text-light mb-2 -mt-0.5">
+            <p className="text-[11px] text-text-light mb-2 -mt-0.5">
               → /tips/{draft.slug}
             </p>
           )}
@@ -388,7 +388,7 @@ export default function AdminTipsPage() {
               minHeight: 280,
             }}
           />
-          <p className="text-[10.5px] text-text-light -mt-2 mb-2">
+          <p className="text-[11px] text-text-light -mt-2 mb-2">
             ⚠️ &lt;script&gt; · &lt;iframe&gt; · on* 핸들러는 자동 제거돼요
           </p>
 
@@ -421,7 +421,7 @@ export default function AdminTipsPage() {
                 onChange={(e) => setDraft((d) => ({ ...d, published: e.target.checked }))}
                 className="w-4 h-4 accent-primary"
               />
-              <span className="text-[11.5px] font-semibold text-text-sub">발행</span>
+              <span className="text-[12px] font-semibold text-text-sub">발행</span>
             </label>
             <label className="flex items-center gap-1.5 cursor-pointer p-2 rounded-lg" style={{ background: "var(--color-gray-50)" }}>
               <input
@@ -430,7 +430,7 @@ export default function AdminTipsPage() {
                 onChange={(e) => setDraft((d) => ({ ...d, featured: e.target.checked }))}
                 className="w-4 h-4 accent-primary"
               />
-              <span className="text-[11.5px] font-semibold text-text-sub flex items-center gap-0.5">
+              <span className="text-[12px] font-semibold text-text-sub flex items-center gap-0.5">
                 <Sparkles size={10} /> 추천
               </span>
             </label>
@@ -441,7 +441,7 @@ export default function AdminTipsPage() {
                 onChange={(e) => setDraft((d) => ({ ...d, pinned: e.target.checked }))}
                 className="w-4 h-4 accent-primary"
               />
-              <span className="text-[11.5px] font-semibold text-text-sub flex items-center gap-0.5">
+              <span className="text-[12px] font-semibold text-text-sub flex items-center gap-0.5">
                 <Pin size={10} /> 고정
               </span>
             </label>

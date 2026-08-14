@@ -118,13 +118,13 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
       >
         <div className="px-5 pt-5 pb-3 flex items-start justify-between">
           <div>
-            <p className="text-[10.5px] font-extrabold tracking-[0.18em]" style={{ color: "#8A4325" }}>
+            <p className="text-[11px] font-extrabold tracking-[0.18em]" style={{ color: "#8A4325" }}>
               SHARE OFFLINE
             </p>
             <h2 className="text-[17px] font-extrabold text-text-main mt-1 tracking-tight">
               {catName} QR 코드
             </h2>
-            <p className="text-[11.5px] text-text-sub mt-1 leading-relaxed">
+            <p className="text-[12px] text-text-sub mt-1 leading-relaxed">
               인쇄해 동네에 붙이면 스캔하는 이웃이 도시공존으로 들어와요.
             </p>
           </div>
@@ -168,7 +168,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
           </button>
         </div>
 
-        <p className="text-[10.5px] text-text-light text-center pb-4 px-5 leading-relaxed">
+        <p className="text-[11px] text-text-light text-center pb-4 px-5 leading-relaxed">
           A4·A5 어디든 인쇄 가능. 전봇대·우편함·게시판 등 동네에 공유하시면<br/>
           이웃이 스캔해 함께 돌볼 수 있어요.
         </p>

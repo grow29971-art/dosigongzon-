@@ -112,7 +112,7 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
 
         {/* 최초 1회 한계 고지 */}
         {showNotice && (
-          <div className="rounded-xl px-3.5 py-2.5 mt-3 text-[11.5px] leading-relaxed" style={{ backgroundColor: "#FFF6E8", color: "#6F5A3A" }}>
+          <div className="rounded-xl px-3.5 py-2.5 mt-3 text-[12px] leading-relaxed" style={{ backgroundColor: "#FFF6E8", color: "#6F5A3A" }}>
             이 기능은 휴대폰 전화 앱을 <b>대신 열어주는 바로가기</b>예요. 자동으로 발신되지 않고,
             통신 상태에 따라 실패할 수 있어요.
           </div>
@@ -139,7 +139,7 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
               {geo.address && (
                 <p className="text-[16px] font-extrabold text-text-main leading-snug">{geo.address}</p>
               )}
-              <p className="text-[12.5px] text-text-sub mt-0.5 tabular-nums">
+              <p className="text-[13px] text-text-sub mt-0.5 tabular-nums">
                 위도 {geo.lat.toFixed(5)} · 경도 {geo.lng.toFixed(5)}
               </p>
               <p className="text-[10px] text-text-light mt-1">이 위치는 화면에만 표시되고 어디에도 저장·전송되지 않아요.</p>
@@ -157,7 +157,7 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
             >
               <Phone size={20} />
               <span className="text-[15px] font-extrabold">112 전화 걸기</span>
-              <span className="text-[10.5px] opacity-85">경찰 · 위협받을 때</span>
+              <span className="text-[11px] opacity-85">경찰 · 위협받을 때</span>
             </button>
             <button
               onClick={() => setConfirmTarget({ number: "119", label: "119 전화 걸기", desc: "구조·응급의료" })}
@@ -166,13 +166,13 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
             >
               <Phone size={20} />
               <span className="text-[15px] font-extrabold">119 전화 걸기</span>
-              <span className="text-[10.5px] opacity-85">구조 · 응급의료</span>
+              <span className="text-[11px] opacity-85">구조 · 응급의료</span>
             </button>
           </div>
         ) : (
           <div className="rounded-2xl px-4 py-4 mt-3 text-center" style={{ backgroundColor: "#FFF3EC", border: "1px solid #EAD3C6" }}>
             <p className="text-[15px] font-extrabold text-text-main">{confirmTarget.number}에 전화를 겁니다</p>
-            <p className="text-[11.5px] text-text-sub mt-0.5">{confirmTarget.desc}</p>
+            <p className="text-[12px] text-text-sub mt-0.5">{confirmTarget.desc}</p>
             <div className="flex gap-2.5 mt-3">
               <a
                 href={`tel:${confirmTarget.number}`}

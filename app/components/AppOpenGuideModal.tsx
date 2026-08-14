@@ -123,7 +123,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
             {spot.cta} <ChevronRight size={15} />
           </Link>
 
-          <p className="text-[10.5px] font-extrabold tracking-[0.12em] mt-5 mb-2.5" style={{ color: "var(--color-primary-dark)" }}>이런 기능도 있어요</p>
+          <p className="text-[11px] font-extrabold tracking-[0.12em] mt-5 mb-2.5" style={{ color: "var(--color-primary-dark)" }}>이런 기능도 있어요</p>
           <div className="grid grid-cols-3 gap-2">
             {CHIPS.map((c) => (
               <Link

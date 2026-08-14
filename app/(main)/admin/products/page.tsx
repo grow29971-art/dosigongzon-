@@ -198,7 +198,7 @@ export default function AdminProductsPage() {
           style={{ background: "#fff", borderRadius: "var(--radius-card)", boxShadow: "0 6px 20px rgba(0,0,0,0.08)", border: "1.5px solid rgba(173, 94, 59,0.3)" }}
         >
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[13.5px] font-extrabold text-text-main">
+            <span className="text-[14px] font-extrabold text-text-main">
               {editingId === "new" ? "새 상품 등록" : "상품 수정"}
             </span>
             <button onClick={() => setEditingId(null)} aria-label="닫기">
@@ -278,7 +278,7 @@ export default function AdminProductsPage() {
                   key={c}
                   type="button"
                   onClick={() => setDraft({ ...draft, category: c })}
-                  className="px-3 py-1.5 rounded-xl text-[11.5px] font-bold"
+                  className="px-3 py-1.5 rounded-xl text-[12px] font-bold"
                   style={{
                     background: draft.category === c ? "var(--color-primary)" : "var(--color-warm-white)",
                     color: draft.category === c ? "#fff" : "var(--color-text-sub)",
@@ -296,7 +296,7 @@ export default function AdminProductsPage() {
                 <button
                   type="button"
                   onClick={() => setDraft({ ...draft, badge: null })}
-                  className="px-3 py-1.5 rounded-xl text-[11.5px] font-bold"
+                  className="px-3 py-1.5 rounded-xl text-[12px] font-bold"
                   style={{
                     background: draft.badge === null ? "var(--color-primary)" : "var(--color-warm-white)",
                     color: draft.badge === null ? "#fff" : "var(--color-text-sub)",
@@ -309,7 +309,7 @@ export default function AdminProductsPage() {
                     key={b}
                     type="button"
                     onClick={() => setDraft({ ...draft, badge: b })}
-                    className="px-3 py-1.5 rounded-xl text-[11.5px] font-bold"
+                    className="px-3 py-1.5 rounded-xl text-[12px] font-bold"
                     style={{
                       background: draft.badge === b ? "var(--color-primary)" : "var(--color-warm-white)",
                       color: draft.badge === b ? "#fff" : "var(--color-text-sub)",
@@ -329,7 +329,7 @@ export default function AdminProductsPage() {
                   checked={draft.is_donation}
                   onChange={(e) => setDraft({ ...draft, is_donation: e.target.checked })}
                 />
-                <span className="text-[12.5px] font-bold text-text-main">후원 연계 💛</span>
+                <span className="text-[13px] font-bold text-text-main">후원 연계 💛</span>
               </label>
               <label className="flex items-center gap-2">
                 <input
@@ -341,7 +341,7 @@ export default function AdminProductsPage() {
                     shipping_fee: e.target.checked ? 0 : draft.shipping_fee,
                   })}
                 />
-                <span className="text-[12.5px] font-bold text-text-main">가상상품 (배송 없음)</span>
+                <span className="text-[13px] font-bold text-text-main">가상상품 (배송 없음)</span>
               </label>
             </div>
             {draft.is_donation && (
@@ -435,7 +435,7 @@ export default function AdminProductsPage() {
                 checked={draft.is_active}
                 onChange={(e) => setDraft({ ...draft, is_active: e.target.checked })}
               />
-              <span className="text-[12.5px] font-bold text-text-main">판매 활성화</span>
+              <span className="text-[13px] font-bold text-text-main">판매 활성화</span>
             </label>
 
             {error && <p className="text-[12px] font-bold" style={{ color: "#D85555" }}>{error}</p>}
@@ -443,7 +443,7 @@ export default function AdminProductsPage() {
             <button
               onClick={handleSave}
               disabled={saving || uploading}
-              className="w-full py-3 rounded-2xl bg-primary text-white text-[13.5px] font-extrabold disabled:opacity-50 flex items-center justify-center gap-1.5"
+              className="w-full py-3 rounded-2xl bg-primary text-white text-[14px] font-extrabold disabled:opacity-50 flex items-center justify-center gap-1.5"
             >
               {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
               {editingId === "new" ? "등록하기" : "수정 저장"}
@@ -472,7 +472,7 @@ export default function AdminProductsPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[13px] font-bold text-text-main truncate">{p.name}</p>
-                <p className="text-[11.5px] text-text-sub mt-0.5">
+                <p className="text-[12px] text-text-sub mt-0.5">
                   {formatWon(p.sale_price ?? p.price)}
                   {p.sale_price != null && <span className="line-through ml-1 text-text-light">{formatWon(p.price)}</span>}
                   {" · "}재고 {p.stock} · {CATEGORY_MAP[p.category].label}

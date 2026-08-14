@@ -121,7 +121,7 @@ export default function CareLogCelebration({
           >
             {headline}
           </h2>
-          <p className="text-[12.5px] font-bold text-text-sub text-center mt-1.5 leading-snug">
+          <p className="text-[13px] font-bold text-text-sub text-center mt-1.5 leading-snug">
             {subline}
           </p>
         </div>

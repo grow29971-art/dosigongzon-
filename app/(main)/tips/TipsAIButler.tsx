@@ -46,7 +46,7 @@ export default function TipsAIButler() {
             <p className="text-[15px] font-extrabold text-text-main tracking-tight">
               AI 집사 <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "var(--color-primary)", opacity: 0.5 }}>BETA</span>
             </p>
-            <p className="text-[11.5px] text-text-sub mt-0.5">로그인하면 길고양이 돌봄, 뭐든 물어볼 수 있어요</p>
+            <p className="text-[12px] text-text-sub mt-0.5">로그인하면 길고양이 돌봄, 뭐든 물어볼 수 있어요</p>
           </div>
         </Link>
       ) : (
@@ -69,7 +69,7 @@ export default function TipsAIButler() {
                 }}
               >
                 <span className="text-[16px] shrink-0">{q.emoji}</span>
-                <p className="text-[11.5px] font-bold text-text-main leading-tight">{q.question}</p>
+                <p className="text-[12px] font-bold text-text-main leading-tight">{q.question}</p>
               </div>
             ))}
           </div>

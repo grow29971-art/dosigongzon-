@@ -129,7 +129,7 @@ export default function AchievementToast({
           <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: current.color }}>
             {current.kind === "level_up" ? "LEVEL UP" : "UNLOCKED"}
           </p>
-          <p className="text-[13.5px] font-extrabold text-text-main leading-tight tracking-tight mt-0.5">
+          <p className="text-[14px] font-extrabold text-text-main leading-tight tracking-tight mt-0.5">
             {current.title}
           </p>
           <p className="text-[11px] font-semibold text-text-sub mt-0.5 leading-tight truncate">

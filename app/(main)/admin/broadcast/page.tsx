@@ -300,7 +300,7 @@ export default function AdminBroadcastPage() {
             <Megaphone size={18} className="text-primary" />
             전체 쪽지 발송
           </h1>
-          <p className="text-[11.5px] text-text-sub">
+          <p className="text-[12px] text-text-sub">
             코호트별 일괄 발송 · 도배 trigger 면제 적용됨
           </p>
         </div>
@@ -335,7 +335,7 @@ export default function AdminBroadcastPage() {
                     {c.label}
                   </span>
                 </div>
-                <p className="text-[10.5px] leading-snug" style={{ color: "rgba(60,46,35,0.55)" }}>
+                <p className="text-[11px] leading-snug" style={{ color: "rgba(60,46,35,0.55)" }}>
                   {c.description}
                 </p>
               </button>
@@ -379,7 +379,7 @@ export default function AdminBroadcastPage() {
           rows={10}
           maxLength={1000}
           placeholder="안녕하세요, 도시공존 운영자입니다..."
-          className="w-full rounded-2xl bg-white p-4 text-[13.5px] leading-relaxed resize-none"
+          className="w-full rounded-2xl bg-white p-4 text-[14px] leading-relaxed resize-none"
           style={{
             border: "1px solid rgba(0,0,0,0.06)",
             boxShadow: "inset 0 1px 2px rgba(0,0,0,0.02)",
@@ -390,7 +390,7 @@ export default function AdminBroadcastPage() {
 
       {/* 예상 대상 수 미리보기 */}
       <div
-        className="mb-3 flex items-center justify-center gap-1.5 text-[12.5px]"
+        className="mb-3 flex items-center justify-center gap-1.5 text-[13px]"
         style={{ color: "rgba(60,46,35,0.6)" }}
       >
         <UsersIcon size={13} />
@@ -466,7 +466,7 @@ export default function AdminBroadcastPage() {
           </p>
           {result.firstError && (
             <p
-              className="mt-2 px-2.5 py-1.5 rounded-lg text-[11.5px] font-mono break-all"
+              className="mt-2 px-2.5 py-1.5 rounded-lg text-[12px] font-mono break-all"
               style={{ background: "rgba(0,0,0,0.06)", color: "#5C3F0A" }}
             >
               첫 에러: {result.firstError}

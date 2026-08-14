@@ -112,7 +112,7 @@ export default function CircleJoinPage() {
       <div className="min-h-dvh px-6 pt-20 text-center" style={{ background: "#F7F4EE" }}>
         <ShieldCheck size={40} className="mx-auto mb-3" style={{ color: "#4F6B53" }} />
         <p className="text-[14px] text-text-sub mb-3">본인의 초대 링크예요.</p>
-        <p className="text-[12.5px] text-text-light mb-5">이 링크를 카카오톡으로 공유해 이웃을 초대해보세요.</p>
+        <p className="text-[13px] text-text-light mb-5">이 링크를 카카오톡으로 공유해 이웃을 초대해보세요.</p>
         <Link href="/mypage/circle" className="inline-block px-6 py-2.5 rounded-2xl bg-primary text-white font-extrabold text-[13px] active:scale-95">
           내 서클 관리
         </Link>
@@ -146,7 +146,7 @@ export default function CircleJoinPage() {
           <p className="text-[18px] font-extrabold mb-2">
             {result === "already" ? "이미 멤버예요" : "서클에 합류했어요!"}
           </p>
-          <p className="text-[12.5px] mb-5" style={{ color: "rgba(255,255,255,0.85)" }}>
+          <p className="text-[13px] mb-5" style={{ color: "rgba(255,255,255,0.85)" }}>
             {ownerProfile.nickname ?? "익명"}님의 Private Circle 멤버로 등록됐어요.
           </p>
           <Link
@@ -171,7 +171,7 @@ export default function CircleJoinPage() {
             <div className="flex justify-center mb-3">
               <Avatar url={ownerProfile.avatar_url} size={72} />
             </div>
-            <p className="text-[10.5px] font-extrabold tracking-[0.18em] mb-1.5" style={{ color: "#4F6B53" }}>
+            <p className="text-[11px] font-extrabold tracking-[0.18em] mb-1.5" style={{ color: "#4F6B53" }}>
               PRIVATE CIRCLE 초대
             </p>
             <p className="text-[16px] font-extrabold text-text-main leading-snug mb-2">
@@ -186,7 +186,7 @@ export default function CircleJoinPage() {
 
           {error && (
             <div className="rounded-2xl px-4 py-3 mb-3" style={{ background: "var(--color-error-soft)" }}>
-              <p className="text-[12.5px]" style={{ color: "#B84545" }}>{error}</p>
+              <p className="text-[13px]" style={{ color: "#B84545" }}>{error}</p>
             </div>
           )}
 

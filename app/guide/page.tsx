@@ -322,7 +322,7 @@ export default function GuidePage() {
         <h1 className="text-[26px] font-extrabold text-text-main leading-tight tracking-tight">
           도시공존 사용 가이드
         </h1>
-        <p className="text-[13.5px] text-text-sub mt-2 leading-relaxed">
+        <p className="text-[14px] text-text-sub mt-2 leading-relaxed">
           처음이시라면 여기부터 차근차근 읽어주세요.
           <br />
           <b className="text-text-main">10가지 핵심 기능</b>을 섹션별로 정리했어요.
@@ -380,7 +380,7 @@ export default function GuidePage() {
                       <p className="text-[15px] font-extrabold text-text-main leading-tight">
                         {f.title}
                       </p>
-                      <p className="text-[12.5px] text-text-sub mt-1 leading-relaxed">
+                      <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
                         {f.desc}
                       </p>
                     </div>
@@ -404,7 +404,7 @@ export default function GuidePage() {
 
                   {f.tip && (
                     <div
-                      className="mt-3 rounded-xl p-2.5 text-[11.5px] leading-relaxed"
+                      className="mt-3 rounded-xl p-2.5 text-[12px] leading-relaxed"
                       style={{
                         background: `${f.iconColor}10`,
                         color: "#5A4A3E",

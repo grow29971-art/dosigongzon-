@@ -150,10 +150,10 @@ export default function BlockedUsersPage() {
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13.5px] font-extrabold text-text-main truncate">
+                    <p className="text-[14px] font-extrabold text-text-main truncate">
                       {b.nickname ?? "이름 없음"}
                     </p>
-                    <p className="text-[10.5px] text-text-light mt-0.5">
+                    <p className="text-[11px] text-text-light mt-0.5">
                       {formatDate(b.created_at)} 차단
                     </p>
                   </div>
@@ -161,7 +161,7 @@ export default function BlockedUsersPage() {
                     type="button"
                     onClick={() => handleUnblock(b)}
                     disabled={busyId === b.id}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[11.5px] font-bold active:scale-95 transition-transform disabled:opacity-60"
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[12px] font-bold active:scale-95 transition-transform disabled:opacity-60"
                     style={{ backgroundColor: "var(--color-gray-50)", color: "#A38E7A", border: "1px solid var(--color-gray-200)" }}
                   >
                     {busyId === b.id ? (

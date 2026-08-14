@@ -160,7 +160,7 @@ export default function PendingCareHandoff() {
               <p className="text-[15px] font-extrabold text-white leading-snug">
                 {cat.name}가 첫 밥을 받았어요! 🎉
               </p>
-              <p className="text-[11.5px] mt-0.5" style={{ color: "rgba(255,255,255,0.75)" }}>
+              <p className="text-[12px] mt-0.5" style={{ color: "rgba(255,255,255,0.75)" }}>
                 오늘부터 {cat.name}의 집사예요 — 내일 또 챙겨주면 진짜 돌봄이 시작돼요
               </p>
             </>
@@ -169,7 +169,7 @@ export default function PendingCareHandoff() {
               <p className="text-[10px] font-extrabold tracking-[0.14em]" style={{ color: "rgba(255,235,210,0.9)" }}>
                 방금 고른 아이
               </p>
-              <p className="text-[15.5px] font-extrabold text-white leading-snug mt-0.5">
+              <p className="text-[16px] font-extrabold text-white leading-snug mt-0.5">
                 {cat.name}
                 {cat.region ? (
                   <span className="text-[11px] font-bold ml-1.5" style={{ color: "rgba(255,255,255,0.6)" }}>
@@ -177,7 +177,7 @@ export default function PendingCareHandoff() {
                   </span>
                 ) : null}
               </p>
-              <p className="text-[11.5px] mt-0.5 leading-snug" style={{ color: "rgba(255,255,255,0.8)" }}>
+              <p className="text-[12px] mt-0.5 leading-snug" style={{ color: "rgba(255,255,255,0.8)" }}>
                 기다리고 있었어요 — 첫 밥 한 끼 기록해줄까요?
               </p>
             </>
@@ -190,7 +190,7 @@ export default function PendingCareHandoff() {
           <FirstFeedPushPrompt catName={cat.name} />
           <Link
             href={`/cats/${cat.id}`}
-            className="mt-3.5 flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13.5px] font-extrabold active:scale-[0.98] transition-transform"
+            className="mt-3.5 flex items-center justify-center gap-1.5 py-3 rounded-xl text-[14px] font-extrabold active:scale-[0.98] transition-transform"
             style={{ background: "rgba(255,255,255,0.95)", color: "#7A5238" }}
           >
             {cat.name} 보러 가기 <ChevronRight size={14} />

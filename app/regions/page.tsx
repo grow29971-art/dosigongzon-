@@ -84,7 +84,7 @@ export default function RegionsIndexPage() {
       <section className="px-5 pt-4">
         <div className="flex items-center gap-1.5 mb-1.5">
           <MapPin size={14} style={{ color: "var(--color-primary)" }} />
-          <span className="text-[11.5px] font-bold" style={{ color: "var(--color-primary)" }}>대한민국</span>
+          <span className="text-[12px] font-bold" style={{ color: "var(--color-primary)" }}>대한민국</span>
         </div>
         <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight">
           전국 길고양이<br />돌봄 지도
@@ -109,7 +109,7 @@ export default function RegionsIndexPage() {
             <div className="flex-1 min-w-0">
               <p className="text-[10px] font-bold tracking-[0.12em] text-white/80">SEOUL</p>
               <p className="text-[18px] font-extrabold text-white tracking-tight mt-0.5">{SEOUL_HIGHLIGHT.name}</p>
-              <p className="text-[11.5px] text-white/85 mt-0.5">{SEOUL_HIGHLIGHT.desc}</p>
+              <p className="text-[12px] text-white/85 mt-0.5">{SEOUL_HIGHLIGHT.desc}</p>
             </div>
             <ArrowRight size={20} className="text-white shrink-0" />
           </div>
@@ -131,7 +131,7 @@ export default function RegionsIndexPage() {
                 <span className="text-[14px] font-extrabold text-text-main">{s.shortName}</span>
                 <ArrowRight size={12} className="text-text-light" />
               </div>
-              <p className="text-[10.5px] text-text-light mt-1 truncate">{s.name}</p>
+              <p className="text-[11px] text-text-light mt-1 truncate">{s.name}</p>
             </Link>
           ))}
         </div>
@@ -140,7 +140,7 @@ export default function RegionsIndexPage() {
       {/* 하단 SEO 본문 */}
       <section className="px-5 mt-7">
         <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "var(--shadow-card)" }}>
-          <p className="text-[12.5px] text-text-sub leading-relaxed">
+          <p className="text-[13px] text-text-sub leading-relaxed">
             <b className="text-text-main">도시공존</b>은 전국 어디서나 길고양이 돌봄 기록을 남길 수 있어요.
             현재 서울은 25개 구·동 단위 상세 페이지를 제공하고, 다른 광역시·도는 지역 단위 안내를
             먼저 운영합니다. 사용자가 늘어나는 지역부터 점진적으로 구·군 단위 페이지를 추가합니다.

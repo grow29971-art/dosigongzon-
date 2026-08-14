@@ -542,7 +542,7 @@ export default function AddCatModal({
               <label className="text-[12px] font-bold text-white">
                 사진 <span className="text-white/45 font-normal">(선택) · 첫 장이 대표</span>
               </label>
-              <span className="text-[10.5px] text-white/45">
+              <span className="text-[11px] text-white/45">
                 {photoFiles.length}/{MAX_PHOTOS}
               </span>
             </div>
@@ -693,7 +693,7 @@ export default function AddCatModal({
           <button
             type="button"
             onClick={() => setShowMore((v) => !v)}
-            className="w-full flex items-center justify-center gap-1 py-2.5 rounded-2xl text-[12.5px] font-bold transition-all active:scale-[0.99]"
+            className="w-full flex items-center justify-center gap-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all active:scale-[0.99]"
             style={{ background: "rgba(99,102,241,0.10)", color: "#B4B8FF", border: "1px dashed rgba(129,140,248,0.4)" }}
           >
             {showMore ? "추가 정보 접기 ▴" : "한 줄 소개·성별·건강 등 추가 (선택) ▾"}
@@ -711,7 +711,7 @@ export default function AddCatModal({
               style={{ background: "rgba(120,200,140,0.10)", border: "1px solid rgba(120,200,140,0.28)" }}
             >
               <ShieldAlert size={14} className="shrink-0 mt-0.5" style={{ color: "#8FE0A8" }} />
-              <p className="text-[11.5px] leading-relaxed" style={{ color: "#B8EFC8" }}>
+              <p className="text-[12px] leading-relaxed" style={{ color: "#B8EFC8" }}>
                 <b>길고양이 안전을 위해</b> 정확한 위치를 알 수 있는 표현은 적지 마세요.
                 <br />
                 <span style={{ color: "rgba(184,239,200,0.75)" }}>
@@ -735,13 +735,13 @@ export default function AddCatModal({
             <div className="flex items-start justify-between gap-2 mt-1">
               <div className="flex-1 min-w-0 space-y-0.5">
                 {descLocationViolations.length > 0 && (
-                  <p className="text-[10.5px] leading-relaxed" style={{ color: "#B84545" }}>
+                  <p className="text-[11px] leading-relaxed" style={{ color: "#B84545" }}>
                     ⚠ {descLocationViolations.map((v) => `${v.label}(${v.match})`).join(", ")} —
                     일반 표현(우리 동네·골목·근처)으로 바꿔주세요.
                   </p>
                 )}
                 {descAbuseViolations.length > 0 && (
-                  <p className="text-[10.5px] leading-relaxed" style={{ color: "#B84545" }}>
+                  <p className="text-[11px] leading-relaxed" style={{ color: "#B84545" }}>
                     🚫 {formatAbuseMessage(descAbuseViolations)}
                   </p>
                 )}
@@ -848,7 +848,7 @@ export default function AddCatModal({
               <button
                 type="button"
                 onClick={() => setAdoptionStatus(null)}
-                className="py-2.5 rounded-2xl text-[12.5px] font-bold transition-all active:scale-95 col-span-2"
+                className="py-2.5 rounded-2xl text-[13px] font-bold transition-all active:scale-95 col-span-2"
                 style={{
                   backgroundColor: adoptionStatus === null ? "rgba(99,102,241,0.14)" : undefined,
                   color: adoptionStatus === null ? "#C7CAFF" : "rgba(255,255,255,0.5)",
@@ -873,7 +873,7 @@ export default function AddCatModal({
                 </button>
               ))}
             </div>
-            <p className="text-[10.5px] text-white/45 mt-1.5 leading-relaxed px-1">
+            <p className="text-[11px] text-white/45 mt-1.5 leading-relaxed px-1">
               설정하면 고양이 상세 페이지에 배지와 문의 버튼이 생겨 다른 사용자가 쪽지로 연락할 수 있어요.
             </p>
           </div>
@@ -916,7 +916,7 @@ export default function AddCatModal({
                 );
               })}
             </div>
-            <p className="text-[10.5px] text-white/45 mt-1.5 leading-relaxed px-1">
+            <p className="text-[11px] text-white/45 mt-1.5 leading-relaxed px-1">
               학대 우려가 큰 아이는 <b>내 서클</b>이나 <b>나만 보기</b>로 설정하세요.{" "}
               <Link href="/mypage/circle" className="underline" style={{ color: "#6B8E6F" }}>
                 서클 멤버 관리

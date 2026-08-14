@@ -168,7 +168,7 @@ function SignupContent() {
             <button
               type="button"
               onClick={handleOpenExternal}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[12.5px] active:scale-95"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[13px] active:scale-95"
               style={{ backgroundColor: "rgba(0,0,0,0.05)", color: "#6B5043" }}
             >
               <ExternalLink size={14} />
@@ -193,7 +193,7 @@ function SignupContent() {
           <h1 className="text-[26px] font-extrabold text-text-main tracking-tight">
             {eventParam === "keyring" ? "이벤트 응모 가입" : "도시공존에 합류하기"}
           </h1>
-          <p className="text-[13.5px] text-text-sub mt-2 leading-relaxed">
+          <p className="text-[14px] text-text-sub mt-2 leading-relaxed">
             카카오 또는 구글로 1초 가입 · 광고 없음 · 무료
           </p>
         </div>
@@ -207,13 +207,13 @@ function SignupContent() {
               border: "1.5px solid rgba(173, 94, 59,0.30)",
             }}
           >
-            <p className="text-[10.5px] font-extrabold tracking-[0.12em] mb-1.5" style={{ color: "var(--color-primary)" }}>
+            <p className="text-[11px] font-extrabold tracking-[0.12em] mb-1.5" style={{ color: "var(--color-primary)" }}>
               🎁 1000명 이벤트 응모
             </p>
             <p className="text-[13px] font-extrabold text-text-main leading-tight mb-1">
               가입 후 돌보는 아이 등록 → 응모!
             </p>
-            <p className="text-[11.5px] text-text-sub leading-relaxed">
+            <p className="text-[12px] text-text-sub leading-relaxed">
               1,000명 달성 시 추첨으로 20명에게 <b>당신이 돌보는 아이 모양</b>의 커스텀 아크릴 키링을 보내드려요.
             </p>
           </div>
@@ -226,7 +226,7 @@ function SignupContent() {
             style={{ backgroundColor: "var(--color-warning-soft)", border: "1px solid #F5DAB0" }}
           >
             <span className="text-[14px] mt-0.5">⚠️</span>
-            <p className="text-[11.5px] leading-relaxed" style={{ color: "#6F4910" }}>
+            <p className="text-[12px] leading-relaxed" style={{ color: "#6F4910" }}>
               <b>삼성 인터넷</b>에서는 카카오 가입이 자주 실패해요 (KOE205).
               <b>크롬·사파리</b>로 열면 안정적이에요.
             </p>
@@ -254,7 +254,7 @@ function SignupContent() {
             >
               {agreed && <Check size={12} color="white" strokeWidth={3} />}
             </div>
-            <span className="text-[12.5px] text-text-sub leading-relaxed">
+            <span className="text-[13px] text-text-sub leading-relaxed">
               <span className="font-bold text-primary">[필수]</span>{" "}
               <Link href="/terms" className="font-bold text-primary underline">이용약관</Link> 및{" "}
               <Link href="/privacy" className="font-bold text-primary underline">개인정보처리방침</Link>에 동의하며, 만 14세 이상입니다
@@ -276,7 +276,7 @@ function SignupContent() {
             >
               {marketingOptIn && <Check size={12} color="white" strokeWidth={3} />}
             </div>
-            <span className="text-[12.5px] text-text-sub leading-relaxed">
+            <span className="text-[13px] text-text-sub leading-relaxed">
               <span className="font-bold" style={{ color: "rgba(60,46,35,0.55)" }}>[선택]</span>{" "}
               동네 소식·이벤트·캠페인 안내 푸시 알림 수신에 동의합니다 (마이페이지에서 언제든 끌 수 있어요)
             </span>
@@ -296,7 +296,7 @@ function SignupContent() {
 
         {/* 14세 미만 보호자 동의 안내 — 정보통신망법 시행령 §16 */}
         <div className="mb-4 pl-7">
-          <p className="text-[10.5px] leading-relaxed" style={{ color: "rgba(60,46,35,0.5)" }}>
+          <p className="text-[11px] leading-relaxed" style={{ color: "rgba(60,46,35,0.5)" }}>
             ※ 만 14세 미만은 직접 가입할 수 없어요. 보호자와 함께{" "}
             <a
               href="mailto:grow29971@gmail.com?subject=%5B%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%A1%B4%5D%2014%EC%84%B8%20%EB%AF%B8%EB%A7%8C%20%EA%B0%80%EC%9E%85%20%EC%8B%A0%EC%B2%AD&body=%EB%B3%B4%ED%98%B8%EC%9E%90%20%EC%84%B1%ED%95%A8%3A%0A%EC%9E%90%EB%85%80%20%EB%8B%89%EB%84%A4%EC%9E%84%3A%0A%EC%9E%90%EB%85%80%20%EB%82%98%EC%9D%B4%3A%0A%EC%97%B0%EB%9D%BD%EC%B2%98%3A%0A%0A%E2%96%B2%20%EB%B3%B4%ED%98%B8%EC%9E%90%EB%A1%9C%EC%84%9C%20%EC%9E%90%EB%85%80%EC%9D%98%20%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%A1%B4%20%EA%B0%80%EC%9E%85%EC%97%90%20%EB%8F%99%EC%9D%98%ED%95%A9%EB%8B%88%EB%8B%A4."
@@ -362,7 +362,7 @@ function SignupContent() {
           </button>
         </div>
 
-        <p className="text-[11.5px] text-text-light text-center mt-6">
+        <p className="text-[12px] text-text-light text-center mt-6">
           이미 계정이 있으면 같은 방법으로 다시 누르면 로그인돼요.
         </p>
 

@@ -71,7 +71,7 @@ export default async function AreasIndexPage() {
       <section className="px-5 pt-4">
         <div className="flex items-center gap-1.5 mb-1.5">
           <MapPin size={14} style={{ color: "var(--color-primary)" }} />
-          <span className="text-[11.5px] font-bold" style={{ color: "var(--color-primary)" }}>전국</span>
+          <span className="text-[12px] font-bold" style={{ color: "var(--color-primary)" }}>전국</span>
         </div>
         <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight">
           전국 <br />길고양이 돌봄 지도
@@ -101,7 +101,7 @@ export default async function AreasIndexPage() {
                     </span>
                   )}
                 </div>
-                <p className="text-[10.5px] text-text-light mt-1 line-clamp-1">
+                <p className="text-[11px] text-text-light mt-1 line-clamp-1">
                   {g.dongs.slice(0, 3).join(" · ")}
                 </p>
               </Link>
@@ -124,7 +124,7 @@ export default async function AreasIndexPage() {
             <div>
               <p className="text-[10px] font-bold tracking-[0.12em]" style={{ color: "var(--color-primary)" }}>NATIONWIDE</p>
               <p className="text-[15px] font-extrabold text-text-main mt-0.5">다른 광역시·도 보기</p>
-              <p className="text-[11.5px] text-text-sub mt-0.5">부산·인천·대구·대전·광주·울산·세종·제주·경기</p>
+              <p className="text-[12px] text-text-sub mt-0.5">부산·인천·대구·대전·광주·울산·세종·제주·경기</p>
             </div>
             <span className="text-[18px]" style={{ color: "var(--color-primary)" }}>→</span>
           </div>
@@ -133,7 +133,7 @@ export default async function AreasIndexPage() {
 
       <section className="px-5 mt-5 cv-auto">
         <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "var(--shadow-card)" }}>
-          <p className="text-[12.5px] text-text-sub leading-relaxed">
+          <p className="text-[13px] text-text-sub leading-relaxed">
             <b className="text-text-main">도시공존</b>은 전국 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다.
             각 구별 페이지에서 동네에 등록된 고양이의 돌봄 기록, TNR 상태, 긴급 구조 요청을 확인할 수 있습니다.
             정확한 급식소 위치는 아이들의 안전을 위해 공개되지 않습니다.

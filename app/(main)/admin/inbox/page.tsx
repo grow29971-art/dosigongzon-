@@ -392,7 +392,7 @@ export default function AdminInboxPage() {
                   </div>
                 )}
                 {r.description && (
-                  <p className="text-[11.5px] text-text-sub leading-relaxed mb-2">
+                  <p className="text-[12px] text-text-sub leading-relaxed mb-2">
                     {r.description}
                   </p>
                 )}
@@ -501,7 +501,7 @@ export default function AdminInboxPage() {
                 {/* 기존 답변(있으면) — 수정 가능하게 prefill */}
                 {i.admin_note && (
                   <div className="mt-3">
-                    <p className="text-[10.5px] font-bold text-text-light tracking-[0.1em] mb-1.5">
+                    <p className="text-[11px] font-bold text-text-light tracking-[0.1em] mb-1.5">
                       기존 답변
                     </p>
                     <div
@@ -519,7 +519,7 @@ export default function AdminInboxPage() {
 
                 {/* 답변 작성 */}
                 <div className="mt-3">
-                  <p className="text-[10.5px] font-bold text-text-light tracking-[0.1em] mb-1.5">
+                  <p className="text-[11px] font-bold text-text-light tracking-[0.1em] mb-1.5">
                     {i.admin_note ? "답변 수정" : "답변 작성"}
                   </p>
                   <textarea
@@ -540,7 +540,7 @@ export default function AdminInboxPage() {
                     type="button"
                     onClick={() => handleSendReply(i.id)}
                     disabled={replying === i.id}
-                    className="mt-2 w-full py-2.5 rounded-xl text-white text-[12.5px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-60"
+                    className="mt-2 w-full py-2.5 rounded-xl text-white text-[13px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-60"
                     style={{
                       background: "linear-gradient(135deg, #6B8E6F 0%, #4F6E53 100%)",
                       boxShadow: "0 3px 10px rgba(107,142,111,0.25)",

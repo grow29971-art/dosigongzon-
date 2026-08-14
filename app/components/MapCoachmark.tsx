@@ -79,7 +79,7 @@ export default function MapCoachmark({ hasMyCat, isLoggedIn }: Props) {
               첫 고양이 등록하기
             </p>
           </div>
-          <p className="text-[12.5px] font-bold text-text-main leading-snug">
+          <p className="text-[13px] font-bold text-text-main leading-snug">
             여기 <span className="text-primary">+ 버튼</span>을 눌러서
             <br />우리 동네 아이를 등록해보세요
           </p>

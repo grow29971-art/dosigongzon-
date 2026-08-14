@@ -391,7 +391,7 @@ export default function AdminUsersPage() {
                   })()}
                 </div>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-[10.5px] text-text-light flex items-center gap-0.5 truncate">
+                  <span className="text-[11px] text-text-light flex items-center gap-0.5 truncate">
                     <Mail size={10} /> {u.email}
                   </span>
                 </div>

@@ -114,7 +114,7 @@ export default function AdminAnnouncementPage() {
             <Megaphone size={18} className="text-primary" />
             접속 팝업 공지
           </h1>
-          <p className="text-[11.5px] text-text-sub">
+          <p className="text-[12px] text-text-sub">
             등록하면 사용자 최초 접속 시 모달로 1회 표시 · 쪽지와 별개
           </p>
         </div>
@@ -143,7 +143,7 @@ export default function AdminAnnouncementPage() {
           </div>
         ) : (
           <div
-            className="rounded-2xl p-4 text-[12.5px] text-center"
+            className="rounded-2xl p-4 text-[13px] text-center"
             style={{ background: "#F1ECE4", color: "rgba(60,46,35,0.5)" }}
           >
             표시 중인 공지가 없어요.
@@ -162,7 +162,7 @@ export default function AdminAnnouncementPage() {
           rows={7}
           maxLength={1000}
           placeholder="예) 도시공존에 곧 굿즈샵이 열려요! 준비되면 알려드릴게요 🐾"
-          className="w-full rounded-2xl bg-white p-4 text-[13.5px] leading-relaxed resize-none"
+          className="w-full rounded-2xl bg-white p-4 text-[14px] leading-relaxed resize-none"
           style={{
             border: "1px solid rgba(0,0,0,0.06)",
             boxShadow: "inset 0 1px 2px rgba(0,0,0,0.02)",

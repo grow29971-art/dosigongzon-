@@ -60,7 +60,7 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
               ? "응원 고마워요! 🎉"
               : `${regionName ? regionName + " " : "우리 동네 "}고양이에게 응원을 보내보세요`}
           </p>
-          <p className="text-[11.5px] text-text-sub mt-0.5 leading-snug">
+          <p className="text-[12px] text-text-sub mt-0.5 leading-snug">
             {cheered ? "이제 직접 돌보는 아이도 등록해볼까요?" : "하트 한 번이면 돼요 — 가장 쉬운 첫 참여 🩷"}
           </p>
         </div>

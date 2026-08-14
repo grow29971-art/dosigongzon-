@@ -69,7 +69,7 @@ export default function VisibilityIntroSheet({ open, onClose, onPick }: Visibili
           <h2 className="text-[19px] font-extrabold text-text-main leading-snug tracking-tight">
             어떻게 등록할까요?
           </h2>
-          <p className="text-[12.5px] text-text-sub leading-relaxed mt-1.5">
+          <p className="text-[13px] text-text-sub leading-relaxed mt-1.5">
             아이의 안전을 위해 공개 범위를 먼저 골라주세요.
             <br />등록 후에도 마이페이지에서 언제든지 바꿀 수 있어요.
           </p>
@@ -131,7 +131,7 @@ export default function VisibilityIntroSheet({ open, onClose, onPick }: Visibili
             paddingBottom: "max(12px, env(safe-area-inset-bottom))",
           }}
         >
-          <p className="text-[10.5px] text-text-light text-center leading-relaxed">
+          <p className="text-[11px] text-text-light text-center leading-relaxed">
             ⓘ 어떤 옵션이든 사진 GPS는 자동 제거되고, 좌표는 ±444m 흐려서 저장돼요.
           </p>
         </div>

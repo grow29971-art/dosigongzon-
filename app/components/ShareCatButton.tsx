@@ -123,7 +123,7 @@ export default function ShareCatButton({ catId, name, region, description, urgen
       aria-label="카카오톡으로 고양이 공유"
     >
       {status === "idle" ? <Share2 size={16} /> : <Check size={16} />}
-      <span className="text-[13.5px] font-extrabold">{label}</span>
+      <span className="text-[14px] font-extrabold">{label}</span>
     </button>
   );
 }

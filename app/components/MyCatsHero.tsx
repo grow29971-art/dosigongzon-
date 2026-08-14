@@ -120,7 +120,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
             {careInboxMode && pendingCount > 0 ? "오늘의 돌봄" : "내 아이들"}
           </h2>
           <span
-            className="text-[10.5px] font-extrabold px-2 py-0.5 chip-square"
+            className="text-[11px] font-extrabold px-2 py-0.5 chip-square"
             style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}
           >
             {careInboxMode && pendingCount > 0
@@ -178,7 +178,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
 
               {/* 오늘 상태 칩 */}
               <span
-                className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-1 chip-square text-[9.5px] font-extrabold pointer-events-none"
+                className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-1 chip-square text-[10px] font-extrabold pointer-events-none"
                 style={{
                   background: fedToday ? "rgba(34,163,102,0.92)" : "rgba(255,255,255,0.92)",
                   color: fedToday ? "#fff" : "var(--color-text-sub)",
@@ -189,7 +189,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
 
               {/* 이름 + 밥주기/돌봄 버튼 */}
               <div className="absolute inset-x-0 bottom-0 px-3 pb-3 pointer-events-none">
-                <p className="text-[15.5px] font-extrabold text-white drop-shadow tracking-tight mb-2 truncate">
+                <p className="text-[16px] font-extrabold text-white drop-shadow tracking-tight mb-2 truncate">
                   {cat.name}
                 </p>
                 <div className="flex gap-1.5">
@@ -258,7 +258,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
                   </div>
                   <Link
                     href={`/cats/${cat.id}`}
-                    className="py-1.5 rounded-xl text-[10.5px] font-bold text-white/80 text-center"
+                    className="py-1.5 rounded-xl text-[11px] font-bold text-white/80 text-center"
                     style={{ background: "rgba(255,255,255,0.14)" }}
                   >
                     메모·사진과 함께 기록 →
@@ -288,7 +288,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
           >
             <Plus size={20} style={{ color: "var(--color-primary)" }} strokeWidth={2.5} />
           </div>
-          <span className="text-[11.5px] font-extrabold" style={{ color: "var(--color-primary)" }}>
+          <span className="text-[12px] font-extrabold" style={{ color: "var(--color-primary)" }}>
             새 친구 등록
           </span>
         </Link>

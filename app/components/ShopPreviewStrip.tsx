@@ -90,14 +90,14 @@ export default function ShopPreviewStrip() {
                   />
                 </button>
               </div>
-              <p className="text-[11.5px] font-bold text-text-main mt-1.5 leading-snug truncate">{p.name}</p>
+              <p className="text-[12px] font-bold text-text-main mt-1.5 leading-snug truncate">{p.name}</p>
               <p className="text-[12px] font-extrabold text-text-main">{price.toLocaleString()}원</p>
             </Link>
           );
         })}
       </div>
 
-      <p className="text-[10.5px] text-text-light mt-1.5 px-1">
+      <p className="text-[11px] text-text-light mt-1.5 px-1">
         아직 오픈 전이에요 — 찜해두시면 오픈 소식을 가장 먼저 알려드릴게요
       </p>
     </div>

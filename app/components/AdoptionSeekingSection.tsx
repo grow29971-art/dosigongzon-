@@ -84,9 +84,9 @@ export default async function AdoptionSeekingSection() {
                 )}
               </div>
               <div className="px-2 py-1.5">
-                <p className="text-[11.5px] font-extrabold text-text-main truncate">{c.name}</p>
+                <p className="text-[12px] font-extrabold text-text-main truncate">{c.name}</p>
                 {c.region && (
-                  <p className="text-[9.5px] text-text-light truncate mt-0.5">{c.region}</p>
+                  <p className="text-[10px] text-text-light truncate mt-0.5">{c.region}</p>
                 )}
               </div>
             </Link>

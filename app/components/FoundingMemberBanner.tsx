@@ -82,13 +82,13 @@ export default function FoundingMemberBanner() {
         </div>
         <div className="flex-1 min-w-0">
           <p
-            className="text-[13.5px] font-extrabold mb-0.5"
+            className="text-[14px] font-extrabold mb-0.5"
             style={{ color: "#5C4A3E" }}
           >
             ✨ 창립 멤버에 합류하셨어요
           </p>
           <p
-            className="text-[11.5px] leading-relaxed"
+            className="text-[12px] leading-relaxed"
             style={{ color: "rgba(92,74,62,0.75)" }}
           >
             정식 오픈(2026-05-20) 전 도시공존을 함께 시작한 초기 멤버에게 드리는 영구 타이틀이에요.
