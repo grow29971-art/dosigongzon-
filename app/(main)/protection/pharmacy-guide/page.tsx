@@ -344,7 +344,7 @@ export default async function PharmacyGuidePage() {
                 borderTop: i === 0 ? "none" : "1px solid rgba(216,85,85,0.1)",
               }}
             >
-              <span style={{ fontSize: 16, marginTop: 2 }}>⛔</span>
+              <span style={{ fontSize: 17, marginTop: 2 }}>⛔</span>
               <div className="flex-1 min-w-0">
                 <p className="text-[13px] font-bold" style={{ color: "#8B2F2F" }}>
                   {d.name}

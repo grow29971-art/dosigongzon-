@@ -196,14 +196,14 @@ export default function FeatureTourModal({
           <p className="text-[11px] font-extrabold tracking-[0.16em] mb-1.5" style={{ color: current.color }}>
             {current.eyebrow}
           </p>
-          <h2 className="text-[21px] font-extrabold text-text-main tracking-tight leading-snug whitespace-pre-line">
+          <h2 className="text-[20px] font-extrabold text-text-main tracking-tight leading-snug whitespace-pre-line">
             {current.title}
           </h2>
         </div>
 
         {/* 본문 */}
         <div className="px-7 pt-5 pb-6 flex-1 overflow-y-auto">
-          <p className="text-[14px] text-text-sub leading-relaxed">{current.body}</p>
+          <p className="text-[15px] text-text-sub leading-relaxed">{current.body}</p>
         </div>
 
         {/* 하단 컨트롤 */}

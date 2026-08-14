@@ -235,9 +235,9 @@ export default function CommunityPage() {
           }}
         >
           <Eye size={14} className="text-primary" />
-          <span className="text-[12px] text-text-sub">방문자</span>
-          <span className="text-[14px] font-extrabold text-primary">{todayVisit.toLocaleString()}</span>
-          <span className="text-[12px] text-text-sub">명</span>
+          <span className="text-[13px] text-text-sub">방문자</span>
+          <span className="text-[15px] font-extrabold text-primary">{todayVisit.toLocaleString()}</span>
+          <span className="text-[13px] text-text-sub">명</span>
         </div>
       )}
 
@@ -284,7 +284,7 @@ export default function CommunityPage() {
             )}
           </button>
           {neighborhoodOnly && visiblePosts.length === 0 && (
-            <p className="text-[10px] text-text-light ml-1">
+            <p className="text-[11px] text-text-light ml-1">
               내 동네({myRegions.map((r) => r.name).join(", ")}) 글이 아직 없어요
             </p>
           )}
@@ -338,7 +338,7 @@ export default function CommunityPage() {
                     }}
                   >
                     <span
-                      className="text-[10px] font-extrabold px-2 py-1 shrink-0"
+                      className="text-[11px] font-extrabold px-2 py-1 shrink-0"
                       style={{
                         backgroundColor: `${cat.iconBg}15`,
                         color: cat.iconBg,

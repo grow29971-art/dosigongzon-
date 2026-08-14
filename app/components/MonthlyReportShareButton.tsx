@@ -26,7 +26,7 @@ export default function MonthlyReportShareButton({ text }: { text: string }) {
       }}
     >
       <Share2 size={16} color="#fff" strokeWidth={2.2} />
-      <span className="text-[14px] font-extrabold text-white">이번 달 리포트 공유하기</span>
+      <span className="text-[15px] font-extrabold text-white">이번 달 리포트 공유하기</span>
     </button>
   );
 }

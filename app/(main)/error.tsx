@@ -37,7 +37,7 @@ export default function MainError({
         <p className="text-[11px] font-extrabold tracking-[0.12em] mb-2" style={{ color: "#D85555" }}>
           OOPS
         </p>
-        <h1 className="text-[18px] font-extrabold text-text-main mb-2 tracking-tight">
+        <h1 className="text-[20px] font-extrabold text-text-main mb-2 tracking-tight">
           이 페이지에 문제가 생겼어요
         </h1>
         <p className="text-[13px] text-text-sub leading-relaxed mb-5">
@@ -73,7 +73,7 @@ export default function MainError({
         </div>
 
         {error.digest && (
-          <p className="mt-4 text-[10px] font-mono" style={{ color: "#9A8A7A" }}>
+          <p className="mt-4 text-[11px] font-mono" style={{ color: "#9A8A7A" }}>
             ref: {error.digest}
           </p>
         )}

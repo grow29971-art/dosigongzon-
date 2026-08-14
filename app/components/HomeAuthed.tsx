@@ -652,11 +652,11 @@ export default function HomeAuthed({
           }}
         >
           <div className="p-4 flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 text-[22px]" style={{ background: "rgba(255,255,255,0.2)" }}>
+            <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 text-[24px]" style={{ background: "rgba(255,255,255,0.2)" }}>
               📍
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-bold text-white leading-snug">우리 동네부터 알려주세요</p>
+              <p className="text-[15px] font-bold text-white leading-snug">우리 동네부터 알려주세요</p>
               <p className="text-[11px] leading-snug mt-0.5" style={{ color: "rgba(255,255,255,0.9)" }}>
                 동네를 정하면 우리 동네 고양이·소식이 여기 나타나요
               </p>
@@ -687,7 +687,7 @@ export default function HomeAuthed({
               <h2 id="care-inbox-title" className="text-[20px] font-bold tracking-tight text-text-main">
                 오늘의 돌봄
               </h2>
-              <p className="mt-1 text-[12px] leading-relaxed text-text-sub">
+              <p className="mt-1 text-[13px] leading-relaxed text-text-sub">
                 아직 챙기지 못한 아이부터 확인하고 기록해 주세요.
               </p>
             </div>
@@ -730,7 +730,7 @@ export default function HomeAuthed({
             return (
               <>
                 <div className="flex items-center justify-between">
-                  <p className="text-[12px] font-bold text-text-sub tracking-tight">{greet}</p>
+                  <p className="text-[13px] font-bold text-text-sub tracking-tight">{greet}</p>
                   <div className="flex items-center gap-1.5">
                     {streakInfo && streakInfo.streak > 0 && (
                       <span
@@ -775,7 +775,7 @@ export default function HomeAuthed({
                     </Link>
                   </div>
                 </div>
-                <h1 className="text-[22px] font-extrabold text-text-main tracking-tight leading-snug mt-1.5">
+                <h1 className="text-[24px] font-extrabold text-text-main tracking-tight leading-snug mt-1.5">
                   {name ? `${name}님, ` : ""}
                   {hungryCatName ? (
                     // 부담·죄책감 대신 초대 톤 — "기다려요"(방치 암시)보다 가볍게 권유
@@ -812,7 +812,7 @@ export default function HomeAuthed({
             </div>
             <button
               onClick={() => { setWeatherError(""); setWeatherLoading(true); window.location.reload(); }}
-              className="text-[12px] font-semibold text-primary px-3 py-1.5 rounded-xl bg-primary/10 active:scale-95 transition-transform shrink-0"
+              className="text-[13px] font-semibold text-primary px-3 py-1.5 rounded-xl bg-primary/10 active:scale-95 transition-transform shrink-0"
             >
               재시도
             </button>
@@ -829,7 +829,7 @@ export default function HomeAuthed({
                   {new Date().toLocaleDateString("ko-KR", { month: "long", day: "numeric", weekday: "short" })}
                 </span>
               </div>
-              <p className="text-[12px] text-text-sub capitalize">{weather.weatherDesc}</p>
+              <p className="text-[13px] text-text-sub capitalize">{weather.weatherDesc}</p>
             </div>
 
             {/* 온도 + 아이콘 + 체감·습도·바람 한 줄 */}
@@ -846,7 +846,7 @@ export default function HomeAuthed({
                   >
                     {weather.temp}
                   </span>
-                  <span className="text-[14px] font-bold text-text-light mb-0.5">°C</span>
+                  <span className="text-[15px] font-bold text-text-light mb-0.5">°C</span>
                 </div>
               </div>
               <div className="text-right">
@@ -915,7 +915,7 @@ export default function HomeAuthed({
                       className="flex items-start gap-2 px-3 py-2 rounded-xl"
                       style={{ backgroundColor: `${tip.color}10` }}
                     >
-                      <span className="text-[14px] shrink-0">{tip.emoji}</span>
+                      <span className="text-[15px] shrink-0">{tip.emoji}</span>
                       <p className="text-[11px] font-semibold leading-snug" style={{ color: tip.color }}>
                         {tip.text}
                       </p>
@@ -989,14 +989,14 @@ export default function HomeAuthed({
                 내 동네 소식
               </h2>
               {primaryRegion && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ background: "rgba(173, 94, 59,0.12)", color: "var(--color-primary)" }}>
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg" style={{ background: "rgba(173, 94, 59,0.12)", color: "var(--color-primary)" }}>
                   📍 {primaryRegion.name}
                 </span>
               )}
             </div>
             <Link
               href={primaryRegion ? "/map" : "/mypage/activity-regions"}
-              className="flex items-center gap-0.5 text-[12px] font-semibold text-primary"
+              className="flex items-center gap-0.5 text-[13px] font-semibold text-primary"
             >
               {primaryRegion ? "지도에서 보기" : "지역 설정"} <ChevronRight size={14} />
             </Link>
@@ -1065,7 +1065,7 @@ export default function HomeAuthed({
 
                   {hoodTab === "cats" ? (
                   <Link href="/map" className="block active:scale-[0.99] transition-transform">
-                    <p className="text-[10px] text-text-light mb-2">
+                    <p className="text-[11px] text-text-light mb-2">
                       반경 {primaryRegion.radius_m >= 1000 ? `${primaryRegion.radius_m / 1000}km` : `${primaryRegion.radius_m}m`} · 탭하면 지도에서 볼 수 있어요
                     </p>
                     <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
@@ -1090,7 +1090,7 @@ export default function HomeAuthed({
                               boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
                             }}
                           />
-                          <p className="text-[10px] font-bold text-text-main mt-1 truncate">
+                          <p className="text-[11px] font-bold text-text-main mt-1 truncate">
                             {c.name}
                           </p>
                         </div>
@@ -1108,7 +1108,7 @@ export default function HomeAuthed({
                           className="flex items-center gap-2 py-1.5 active:opacity-70"
                         >
                           <span
-                            className="text-[10px] font-bold px-2 py-0.5 rounded-md shrink-0"
+                            className="text-[11px] font-bold px-2 py-0.5 rounded-md shrink-0"
                             style={{ backgroundColor: "rgba(173, 94, 59,0.12)", color: "var(--color-primary)" }}
                           >
                             {p.region}
@@ -1116,14 +1116,14 @@ export default function HomeAuthed({
                           <p className="text-[13px] font-bold text-text-main truncate flex-1">
                             {p.title}
                           </p>
-                          <span className="text-[10px] text-text-light shrink-0">
+                          <span className="text-[11px] text-text-light shrink-0">
                             {formatRelativeTime(p.createdAt)}
                           </span>
                         </Link>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-[12px] text-text-sub text-center py-4">
+                    <p className="text-[13px] text-text-sub text-center py-4">
                       아직 우리 동네 이야기가 없어요 — 첫 글을 남겨보세요!
                     </p>
                   )}
@@ -1140,7 +1140,7 @@ export default function HomeAuthed({
                 >
                   <div className="flex items-start gap-3 mb-3">
                     <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-[18px]"
+                      className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-[20px]"
                       style={{ backgroundColor: "rgba(173, 94, 59,0.15)" }}
                     >
                       🐾
@@ -1189,7 +1189,7 @@ export default function HomeAuthed({
                                   boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
                                 }}
                               />
-                              <p className="text-[10px] font-bold text-text-main mt-1 truncate">
+                              <p className="text-[11px] font-bold text-text-main mt-1 truncate">
                                 {c.name}
                               </p>
                             </Link>
@@ -1226,7 +1226,7 @@ export default function HomeAuthed({
                     border: "1px solid rgba(0,0,0,0.04)",
                   }}
                 >
-                  <p className="text-[12px] font-bold text-text-main mb-2">
+                  <p className="text-[13px] font-bold text-text-main mb-2">
                     💬 우리 동네 이야기
                   </p>
                   <div className="space-y-1.5">
@@ -1237,7 +1237,7 @@ export default function HomeAuthed({
                         className="flex items-center gap-2 py-1.5 active:opacity-70"
                       >
                         <span
-                          className="text-[10px] font-bold px-2 py-0.5 rounded-md shrink-0"
+                          className="text-[11px] font-bold px-2 py-0.5 rounded-md shrink-0"
                           style={{ backgroundColor: "rgba(173, 94, 59,0.12)", color: "var(--color-primary)" }}
                         >
                           {p.region}
@@ -1245,7 +1245,7 @@ export default function HomeAuthed({
                         <p className="text-[13px] font-bold text-text-main truncate flex-1">
                           {p.title}
                         </p>
-                        <span className="text-[10px] text-text-light shrink-0">
+                        <span className="text-[11px] text-text-light shrink-0">
                           {formatRelativeTime(p.createdAt)}
                         </span>
                       </Link>
@@ -1279,7 +1279,7 @@ export default function HomeAuthed({
                 </span>
               </div>
               {primary && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: "var(--color-sage-soft)", color: "var(--color-sage)" }}>
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: "var(--color-sage-soft)", color: "var(--color-sage)" }}>
                   📍 {primary.name}
                 </span>
               )}
@@ -1317,7 +1317,7 @@ export default function HomeAuthed({
                         }}
                       />
                       <div className="flex-1 min-w-0">
-                        <p className="text-[12px] text-text-sub leading-snug truncate">
+                        <p className="text-[13px] text-text-sub leading-snug truncate">
                           <span className="font-bold" style={{ color: "var(--color-sage)" }}>
                             {f.actorName}
                           </span>
@@ -1327,7 +1327,7 @@ export default function HomeAuthed({
                           <span className="text-text-light">에게 </span>
                           <span className="text-text-main">{f.message}</span>
                         </p>
-                        <p className="text-[10px] text-text-light mt-0.5">
+                        <p className="text-[11px] text-text-light mt-0.5">
                           {formatRelativeTime(f.createdAt)}
                         </p>
                       </div>
@@ -1364,13 +1364,13 @@ export default function HomeAuthed({
               className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
               style={{ background: `linear-gradient(135deg, ${lc}20 0%, ${lc}10 100%)`, border: `2px solid ${lc}30` }}
             >
-              <span className="text-[22px]">{levelInfo.emoji}</span>
+              <span className="text-[24px]">{levelInfo.emoji}</span>
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <p className="text-[15px] font-bold text-text-main tracking-tight truncate">{levelInfo.title}</p>
                 <span
-                  className="text-[10px] font-bold px-2 py-0.5 rounded-lg text-white shrink-0"
+                  className="text-[11px] font-bold px-2 py-0.5 rounded-lg text-white shrink-0"
                   style={{ backgroundColor: lc }}
                 >
                   Lv.{levelInfo.level}
@@ -1386,7 +1386,7 @@ export default function HomeAuthed({
                     }}
                   />
                 </div>
-                <span className="text-[10px] font-bold text-text-light tabular-nums shrink-0">
+                <span className="text-[11px] font-bold text-text-light tabular-nums shrink-0">
                   {levelInfo.score}{levelInfo.next ? `/${levelInfo.next}` : " MAX"}
                 </span>
               </div>
@@ -1419,7 +1419,7 @@ export default function HomeAuthed({
               </div>
               <Link
                 href="/mypage"
-                className="mt-3 flex items-center justify-center gap-1 py-2 rounded-xl text-[12px] font-bold text-primary active:scale-[0.98] transition-transform"
+                className="mt-3 flex items-center justify-center gap-1 py-2 rounded-xl text-[13px] font-bold text-primary active:scale-[0.98] transition-transform"
                 style={{ background: "var(--color-primary-softer)" }}
               >
                 업적·타이틀 전체 보기 <ChevronRight size={13} />
@@ -1438,7 +1438,7 @@ export default function HomeAuthed({
             <div className="flex items-center gap-2">
               <h2 className="text-[17px] font-bold text-text-main tracking-tight">오늘 할 일</h2>
             </div>
-            <span className="text-[10px] font-bold text-text-light">매일 리셋</span>
+            <span className="text-[11px] font-bold text-text-light">매일 리셋</span>
           </div>
           <div className="flex gap-2.5 overflow-x-auto no-scrollbar -mx-5 px-5 pb-1" style={{ scrollSnapType: "x proximity" }}>
             {([
@@ -1459,9 +1459,9 @@ export default function HomeAuthed({
                     background: "var(--color-surface)", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)",
                   }}
                 >
-                  <span className="text-[21px] mb-0.5">{c.emoji}</span>
+                  <span className="text-[20px] mb-0.5">{c.emoji}</span>
                   <span className="text-[13px] font-bold text-text-main tracking-tight">{c.title}</span>
-                  <span className="text-[10px] font-semibold text-text-light leading-snug">{c.sub}</span>
+                  <span className="text-[11px] font-semibold text-text-light leading-snug">{c.sub}</span>
                 </Link>
               ) : (
                 <button
@@ -1475,9 +1475,9 @@ export default function HomeAuthed({
                     border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)",
                   }}
                 >
-                  <span className="text-[21px] mb-0.5">{c.emoji}</span>
+                  <span className="text-[20px] mb-0.5">{c.emoji}</span>
                   <span className="text-[13px] font-bold text-text-main tracking-tight">{c.title}</span>
-                  <span className="text-[10px] font-semibold text-text-light leading-snug">{c.sub}</span>
+                  <span className="text-[11px] font-semibold text-text-light leading-snug">{c.sub}</span>
                 </button>
               ),
             )}
@@ -1535,7 +1535,7 @@ export default function HomeAuthed({
                     }}
                   >
                     <div
-                      className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-[18px]"
+                      className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-[20px]"
                       style={{
                         background: `${rankBg}20`,
                       }}
@@ -1585,7 +1585,7 @@ export default function HomeAuthed({
             </div>
             <Link
               href="/map"
-              className="flex items-center gap-0.5 text-[12px] font-semibold text-primary"
+              className="flex items-center gap-0.5 text-[13px] font-semibold text-primary"
             >
               지도 <ChevronRight size={14} />
             </Link>
@@ -1639,7 +1639,7 @@ export default function HomeAuthed({
                 <p className="text-[13px] font-bold text-text-main truncate">
                   {c.name}
                 </p>
-                <p className="text-[10px] text-text-sub truncate">
+                <p className="text-[11px] text-text-sub truncate">
                   {c.region ?? "우리 동네"}
                 </p>
               </Link>
@@ -1757,7 +1757,7 @@ export default function HomeAuthed({
                         }}
                       >
                         <span style={{ fontSize: 11 }}>🎂</span>
-                        <span className="text-[10px] font-bold text-white tracking-tight">
+                        <span className="text-[11px] font-bold text-white tracking-tight">
                           {label}
                         </span>
                       </div>
@@ -1768,7 +1768,7 @@ export default function HomeAuthed({
                         {a.name}
                       </p>
                       {a.region && (
-                        <p className="text-[10px] text-white/80 drop-shadow">
+                        <p className="text-[11px] text-white/80 drop-shadow">
                           📍 {a.region}
                         </p>
                       )}
@@ -1821,7 +1821,7 @@ export default function HomeAuthed({
                   }}
                 >
                   <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center text-[18px] shrink-0"
+                    className="w-9 h-9 rounded-xl flex items-center justify-center text-[20px] shrink-0"
                     style={{
                       background: "var(--color-gray-100)",
                     }}
@@ -1880,7 +1880,7 @@ export default function HomeAuthed({
             <div className="flex items-center gap-2 min-w-0">
               <Sparkles size={14} style={{ color: "var(--color-primary)" }} />
               <span
-                className="text-[12px] font-bold truncate"
+                className="text-[13px] font-bold truncate"
                 style={{ color: "var(--color-primary-dark)" }}
               >
                 지난 방문 이후 새 글 {newPostsCount}개
@@ -1902,7 +1902,7 @@ export default function HomeAuthed({
             </div>
             <Link
               href="/community/popular"
-              className="flex items-center gap-0.5 text-[12px] font-semibold text-primary"
+              className="flex items-center gap-0.5 text-[13px] font-semibold text-primary"
             >
               전체보기 <ChevronRight size={14} />
             </Link>
@@ -1931,7 +1931,7 @@ export default function HomeAuthed({
                       {post.authorName} · {formatRelativeTime(post.createdAt)}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0 text-[10px] text-text-light">
+                  <div className="flex items-center gap-2 shrink-0 text-[11px] text-text-light">
                     <span>❤️ {post.likeCount}</span>
                     <span>💬 {post.commentCount}</span>
                   </div>
@@ -1961,7 +1961,7 @@ export default function HomeAuthed({
           <Sparkles size={22} className="text-primary" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[14px] font-bold text-text-main">꿀팁게시판</p>
+          <p className="text-[15px] font-bold text-text-main">꿀팁게시판</p>
           <p className="text-[11px] text-text-sub mt-0.5">
             길고양이 돌봄·TNR·구조 정보글 모음
           </p>

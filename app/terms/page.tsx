@@ -23,10 +23,10 @@ export default function TermsPage() {
 
       <div className="space-y-6 text-[13px] text-text-sub leading-relaxed">
         {/* 제1장 총칙 */}
-        <div className="text-[14px] font-extrabold text-primary">제1장 총칙</div>
+        <div className="text-[15px] font-extrabold text-primary">제1장 총칙</div>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제1조 (목적)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제1조 (목적)</h2>
           <p>
             이 약관은 도시공존(이하 &quot;운영자&quot;)이 운영하는 길고양이 돌봄 시민 참여 플랫폼 &quot;도시공존&quot;(이하 &quot;서비스&quot;)의
             이용조건 및 절차, 운영자와 회원 간의 권리·의무 및 책임사항, 기타 필요한 사항을 규정함을 목적으로 합니다.
@@ -34,7 +34,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제2조 (정의)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제2조 (정의)</h2>
           <p className="mb-1">이 약관에서 사용하는 용어의 정의는 다음과 같습니다.</p>
           <ol className="list-decimal pl-5 space-y-1">
             <li>&quot;서비스&quot;란 운영자가 제공하는 웹 및 모바일 플랫폼(dosigongzon.com)을 통해 이용할 수 있는 모든 서비스를 말합니다.</li>
@@ -46,7 +46,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제3조 (약관의 효력 및 변경)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제3조 (약관의 효력 및 변경)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>이 약관은 서비스 화면에 게시하거나 기타의 방법으로 회원에게 공지함으로써 효력이 발생합니다.</li>
             <li>운영자는 합리적인 사유가 발생할 경우 관련 법령에 위배되지 않는 범위 내에서 이 약관을 변경할 수 있으며, 약관이 변경된 경우에는 지체 없이 공지합니다.</li>
@@ -55,7 +55,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제4조 (약관 외 준칙)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제4조 (약관 외 준칙)</h2>
           <p>
             이 약관에서 정하지 아니한 사항과 이 약관의 해석에 관하여는 「전자상거래 등에서의 소비자보호에 관한 법률」,
             「약관의 규제에 관한 법률」, 「정보통신망 이용촉진 및 정보보호 등에 관한 법률」 등 관련 법령에 따릅니다.
@@ -63,10 +63,10 @@ export default function TermsPage() {
         </section>
 
         {/* 제2장 서비스 이용계약 */}
-        <div className="text-[14px] font-extrabold text-primary pt-2">제2장 서비스 이용계약</div>
+        <div className="text-[15px] font-extrabold text-primary pt-2">제2장 서비스 이용계약</div>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제5조 (이용계약의 체결)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제5조 (이용계약의 체결)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>이용계약은 회원이 되고자 하는 자(이하 &quot;가입신청자&quot;)가 이 약관의 내용에 동의한 후 회원가입 신청을 하고, 운영자가 이를 승낙함으로써 체결됩니다.</li>
             <li>회원가입은 이메일 가입 또는 소셜 계정(Google, 카카오) 연동 방식으로 할 수 있습니다.</li>
@@ -86,7 +86,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제6조 (회원탈퇴 및 자격상실)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제6조 (회원탈퇴 및 자격상실)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>회원은 언제든지 서비스 내 탈퇴 기능을 통하여 이용계약 해지를 신청할 수 있으며, 운영자는 즉시 처리합니다.</li>
             <li>회원이 다음 각 호의 사유에 해당하는 경우 운영자는 회원자격을 제한 또는 정지시킬 수 있습니다.
@@ -101,10 +101,10 @@ export default function TermsPage() {
         </section>
 
         {/* 제3장 서비스 이용 */}
-        <div className="text-[14px] font-extrabold text-primary pt-2">제3장 서비스 이용</div>
+        <div className="text-[15px] font-extrabold text-primary pt-2">제3장 서비스 이용</div>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제7조 (서비스의 제공 및 변경)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제7조 (서비스의 제공 및 변경)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>운영자는 다음과 같은 서비스를 제공합니다.
               <ul className="list-disc pl-4 mt-1 space-y-0.5">
@@ -123,7 +123,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제8조 (서비스의 중단)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제8조 (서비스의 중단)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>운영자는 시스템 점검, 교체, 고장, 통신 두절 등의 사유가 발생한 경우 서비스의 제공을 일시적으로 중단할 수 있습니다.</li>
             <li>천재지변 또는 이에 준하는 불가항력으로 인하여 서비스를 제공할 수 없는 경우에는 서비스 제공을 제한하거나 일시 중단할 수 있습니다.</li>
@@ -131,7 +131,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제9조 (위치정보의 이용)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제9조 (위치정보의 이용)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>서비스는 동물 보호를 목적으로 길고양이 위치를 <b>동(洞) 단위</b>로만 표기합니다. 정확한 골목·건물 단위 좌표는 회원에게도 제공되지 않습니다.</li>
             <li>등록 시 입력된 좌표에는 자동으로 <b>약 ±444m의 랜덤 오프셋</b>이 적용되어 저장되며, 비로그인 외부인에게는 추가로 <b>약 ±500m</b>의 결정적 퍼징이 적용됩니다(합산 최대 약 ±944m).</li>
@@ -144,7 +144,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제9조의5 (단말 위치의 이용 — 개인위치정보 미수집)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제9조의5 (단말 위치의 이용 — 개인위치정보 미수집)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>서비스는 회원 단말의 위치(GPS)를 <b>단말 안에서만 이용</b>하며, 회원의 위치 좌표(개인위치정보)를 <b>운영자 서버로 전송·수집·저장하지 않습니다.</b> 위치 접근은 회원이 단말의 위치 권한을 허용한 경우에만, 해당 기능 이용 시점에 한하여 이루어집니다.</li>
             <li>단말 내 이용 목적: (가) 지도 화면을 이용자 인근으로 자동 이동 및 &lsquo;내 위치&rsquo; 표시, (나) 고양이 등록·활동 지역 설정 시 동네(동·구) 자동 감지 보조, (다) 위급 시 &lsquo;곁에 있어요&rsquo; 기능에서 주소·좌표를 화면에 표시.</li>
@@ -157,7 +157,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제9조의2 (AI 집사 챗봇)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제9조의2 (AI 집사 챗봇)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>AI 집사 챗봇은 Google Gemini 기반 자동 응답 시스템으로, <b>참고용 정보 제공만을 목적</b>으로 합니다.</li>
             <li>AI 응답은 <b>의료 진단·법률 자문이 아니며</b>, 응급·의료·법률 사안은 반드시 자격 있는 수의사·변호사 등 전문가의 직접 판단을 받아야 합니다.</li>
@@ -167,7 +167,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제9조의3 (쇼핑몰 등 유료 서비스)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제9조의3 (쇼핑몰 등 유료 서비스)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>운영자는 서비스 내에서 실물 상품 및 후원형 상품을 판매하는 쇼핑몰을 운영할 수 있습니다.</li>
             <li>판매자 정보, 배송, 교환·반품·환불에 관한 세부 사항은 <Link href="/shop/policy" className="text-primary underline">쇼핑몰 이용안내</Link>에 따르며, 이는 본 약관의 일부를 구성합니다.</li>
@@ -179,7 +179,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제9조의4 (포인트)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제9조의4 (포인트)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>운영자는 출석 등 서비스 참여 활동에 대한 보상으로 포인트를 지급할 수 있으며, 포인트는 쇼핑몰 결제 시 1포인트당 1원으로 사용할 수 있습니다.</li>
             <li>포인트는 무상으로 지급되는 혜택으로서 현금으로 환급되지 않으며, 타인에게 양도할 수 없습니다.</li>
@@ -191,10 +191,10 @@ export default function TermsPage() {
         </section>
 
         {/* 제4장 의무 */}
-        <div className="text-[14px] font-extrabold text-primary pt-2">제4장 의무</div>
+        <div className="text-[15px] font-extrabold text-primary pt-2">제4장 의무</div>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제10조 (운영자의 의무)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제10조 (운영자의 의무)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>운영자는 관련 법령과 이 약관이 금지하는 행위를 하지 않으며, 지속적이고 안정적으로 서비스를 제공하기 위하여 최선을 다합니다.</li>
             <li>운영자는 회원의 개인정보 보호를 위한 보안 시스템을 갖추어야 하며, 개인정보처리방침을 공시하고 준수합니다.</li>
@@ -203,7 +203,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제11조 (회원의 의무)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제11조 (회원의 의무)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>회원은 다음 행위를 하여서는 안 됩니다.
               <ul className="list-disc pl-4 mt-1 space-y-0.5">
@@ -222,10 +222,10 @@ export default function TermsPage() {
         </section>
 
         {/* 제5장 게시물 */}
-        <div className="text-[14px] font-extrabold text-primary pt-2">제5장 게시물</div>
+        <div className="text-[15px] font-extrabold text-primary pt-2">제5장 게시물</div>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제12조 (게시물의 저작권 및 이용 허락)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제12조 (게시물의 저작권 및 이용 허락)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>회원이 서비스 내에 게시한 게시물(글, 사진, 고양이 프로필, 돌봄 기록 등)의 저작권은 해당 회원에게 귀속됩니다.</li>
             <li>회원은 서비스 가입 시 다음 범위 내에서 운영자가 게시물을 이용할 수 있도록 <b>비독점적·무상·무기한</b>의 이용을 허락합니다.
@@ -242,7 +242,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제13조 (게시물의 관리)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제13조 (게시물의 관리)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>회원의 게시물이 「정보통신망법」 및 「저작권법」 등 관련 법령에 위반되는 내용을 포함하는 경우, 권리자는 관련 법령이 정한 절차에 따라 해당 게시물의 게시중단 및 삭제 등을 요청할 수 있으며, 운영자는 관련 법령에 따라 조치를 취하여야 합니다.</li>
             <li>운영자는 권리자의 요청이 없는 경우에도 다음 각 호에 해당하는 게시물에 대해서는 사전 통보 없이 삭제 또는 비공개 처리할 수 있습니다.
@@ -259,7 +259,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제13조의2 (저작권 침해 신고 절차)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제13조의2 (저작권 침해 신고 절차)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>본인의 저작물이 회원에 의해 무단으로 게시되었다고 판단되는 권리자는 「저작권법」 제103조에 따라 운영자에게 해당 게시물의 게시중단(전송 중단)을 요청할 수 있습니다.</li>
             <li>요청 시 다음 정보를 <b>grow29971@gmail.com</b>으로 보내주십시오.
@@ -277,17 +277,17 @@ export default function TermsPage() {
         </section>
 
         {/* 제6장 손해배상 및 면책 */}
-        <div className="text-[14px] font-extrabold text-primary pt-2">제6장 손해배상 및 면책</div>
+        <div className="text-[15px] font-extrabold text-primary pt-2">제6장 손해배상 및 면책</div>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제14조 (손해배상)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제14조 (손해배상)</h2>
           <p>
             운영자 또는 회원이 이 약관의 규정을 위반하여 상대방에게 손해가 발생한 경우, 해당 당사자는 상대방에게 발생한 손해를 배상하여야 합니다.
           </p>
         </section>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제15조 (면책조항)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제15조 (면책조항)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>운영자는 천재지변, 전쟁, 기간통신사업자의 서비스 중지 등 불가항력적인 사유로 서비스를 제공할 수 없는 경우 책임이 면제됩니다.</li>
             <li>운영자는 회원의 귀책사유로 인한 서비스 이용 장애에 대하여 책임을 지지 않습니다.</li>
@@ -297,7 +297,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-[14px] font-bold text-text-main mb-2">제16조 (분쟁해결)</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">제16조 (분쟁해결)</h2>
           <ol className="list-decimal pl-5 space-y-1">
             <li>운영자는 회원이 제기하는 정당한 의견이나 불만을 반영하고, 피해 보상 처리를 위하여 피해 보상 처리 기구를 운영합니다.</li>
             <li>운영자와 회원 간 발생한 분쟁에 관한 소송은 대한민국 법원을 관할 법원으로 합니다.</li>

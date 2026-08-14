@@ -84,7 +84,7 @@ export default function HomeStreakCard({
             }}
           >
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#FFF" }} />
-            <span className="text-[10px] font-extrabold text-white tracking-tight">
+            <span className="text-[11px] font-extrabold text-white tracking-tight">
               ⏰ {hoursLeft}시간 남음
             </span>
           </div>
@@ -98,7 +98,7 @@ export default function HomeStreakCard({
               borderRadius: 18,
               background: s >= 1 ? `linear-gradient(135deg, #FF9A3C 0%, #E8652A 100%)` : "#F0EBE3",
               boxShadow: s >= 1 ? "0 6px 16px rgba(255,154,60,0.35)" : "none",
-              fontSize: 26,
+              fontSize: 24,
             }}
           >
             <span style={{ filter: s === 0 ? "grayscale(1)" : "none", opacity: s === 0 ? 0.5 : 1 }}>
@@ -106,13 +106,13 @@ export default function HomeStreakCard({
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: accent }}>
+            <p className="text-[11px] font-extrabold tracking-[0.12em]" style={{ color: accent }}>
               STREAK
             </p>
-            <p className="text-[16px] font-extrabold text-text-main tracking-tight leading-tight mt-0.5">
+            <p className="text-[17px] font-extrabold text-text-main tracking-tight leading-tight mt-0.5">
               {headline}
             </p>
-            <p className="text-[12px] text-text-sub mt-1 leading-snug">{subline}</p>
+            <p className="text-[13px] text-text-sub mt-1 leading-snug">{subline}</p>
             <StreakFreezeButton streak={s} hasToday={hasToday} onUsed={onFreezeUsed} />
           </div>
         </div>
@@ -120,7 +120,7 @@ export default function HomeStreakCard({
         <div className="mt-3">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[11px] font-bold text-text-sub">이번 주 돌봄</span>
-            <span className="text-[12px] font-extrabold" style={{ color: accent }}>
+            <span className="text-[13px] font-extrabold" style={{ color: accent }}>
               {weekly.count}/{weekly.goal}
               {progress >= 100 && <span className="ml-1">🎉</span>}
             </span>

@@ -643,7 +643,7 @@ export default function DiseaseGuidePage() {
                 border: "1px solid rgba(0,0,0,0.05)",
               }}
             >
-              <span style={{ fontSize: 22, lineHeight: 1 }} className="shrink-0">
+              <span style={{ fontSize: 24, lineHeight: 1 }} className="shrink-0">
                 {s.emoji}
               </span>
               <div className="flex-1 min-w-0">

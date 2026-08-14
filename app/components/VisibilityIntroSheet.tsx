@@ -66,7 +66,7 @@ export default function VisibilityIntroSheet({ open, onClose, onPick }: Visibili
               <X size={15} className="text-text-sub" />
             </button>
           </div>
-          <h2 className="text-[19px] font-extrabold text-text-main leading-snug tracking-tight">
+          <h2 className="text-[20px] font-extrabold text-text-main leading-snug tracking-tight">
             어떻게 등록할까요?
           </h2>
           <p className="text-[13px] text-text-sub leading-relaxed mt-1.5">
@@ -109,7 +109,7 @@ export default function VisibilityIntroSheet({ open, onClose, onPick }: Visibili
                       </span>
                     )}
                   </div>
-                  <p className="text-[12px] text-text-sub leading-relaxed mb-1.5">{info.description}</p>
+                  <p className="text-[13px] text-text-sub leading-relaxed mb-1.5">{info.description}</p>
                   <p className="text-[11px] leading-relaxed" style={{ color: `${info.color}` }}>
                     {key === "public" && "이웃과 함께 돌보는 표준 옵션"}
                     {key === "circle" && "학대 우려가 큰 아이에게 추천"}

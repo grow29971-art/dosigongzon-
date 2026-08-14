@@ -99,7 +99,7 @@ export default function CircleJoinPage() {
   if (!ownerProfile) {
     return (
       <div className="min-h-dvh px-6 pt-20 text-center" style={{ background: "#F7F4EE" }}>
-        <p className="text-[14px] text-text-sub mb-3">유효하지 않은 초대 링크예요.</p>
+        <p className="text-[15px] text-text-sub mb-3">유효하지 않은 초대 링크예요.</p>
         <Link href="/mypage/circle" className="text-primary text-[13px] font-bold">
           내 서클로 이동
         </Link>
@@ -111,7 +111,7 @@ export default function CircleJoinPage() {
     return (
       <div className="min-h-dvh px-6 pt-20 text-center" style={{ background: "#F7F4EE" }}>
         <ShieldCheck size={40} className="mx-auto mb-3" style={{ color: "#4F6B53" }} />
-        <p className="text-[14px] text-text-sub mb-3">본인의 초대 링크예요.</p>
+        <p className="text-[15px] text-text-sub mb-3">본인의 초대 링크예요.</p>
         <p className="text-[13px] text-text-light mb-5">이 링크를 카카오톡으로 공유해 이웃을 초대해보세요.</p>
         <Link href="/mypage/circle" className="inline-block px-6 py-2.5 rounded-2xl bg-primary text-white font-extrabold text-[13px] active:scale-95">
           내 서클 관리
@@ -131,7 +131,7 @@ export default function CircleJoinPage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
-        <h1 className="text-[16px] font-extrabold text-text-main">서클 초대</h1>
+        <h1 className="text-[17px] font-extrabold text-text-main">서클 초대</h1>
       </div>
 
       {result === "accepted" || result === "already" ? (
@@ -143,7 +143,7 @@ export default function CircleJoinPage() {
           }}
         >
           <Check size={40} className="mx-auto mb-3" color="#FFF7C4" />
-          <p className="text-[18px] font-extrabold mb-2">
+          <p className="text-[20px] font-extrabold mb-2">
             {result === "already" ? "이미 멤버예요" : "서클에 합류했어요!"}
           </p>
           <p className="text-[13px] mb-5" style={{ color: "rgba(255,255,255,0.85)" }}>
@@ -174,11 +174,11 @@ export default function CircleJoinPage() {
             <p className="text-[11px] font-extrabold tracking-[0.18em] mb-1.5" style={{ color: "#4F6B53" }}>
               PRIVATE CIRCLE 초대
             </p>
-            <p className="text-[16px] font-extrabold text-text-main leading-snug mb-2">
+            <p className="text-[17px] font-extrabold text-text-main leading-snug mb-2">
               <b style={{ color: "#4F6B53" }}>{ownerProfile.nickname ?? "익명 길집사"}</b>
               님이 당신을<br />서클에 초대했어요
             </p>
-            <p className="text-[12px] text-text-sub leading-relaxed">
+            <p className="text-[13px] text-text-sub leading-relaxed">
               수락하면 이 분이 "내 서클" 핀으로 등록한 고양이를
               <br />볼 수 있는 신뢰 그룹에 합류하게 돼요.
             </p>
@@ -194,7 +194,7 @@ export default function CircleJoinPage() {
             <button
               onClick={handleReject}
               disabled={busy}
-              className="flex-1 py-3 rounded-2xl text-[14px] font-bold active:scale-95 disabled:opacity-50"
+              className="flex-1 py-3 rounded-2xl text-[15px] font-bold active:scale-95 disabled:opacity-50"
               style={{ background: "var(--color-gray-100)", color: "#8B7562" }}
             >
               <X size={14} className="inline mr-1" /> 거절
@@ -202,7 +202,7 @@ export default function CircleJoinPage() {
             <button
               onClick={handleAccept}
               disabled={busy}
-              className="flex-[1.5] py-3 rounded-2xl text-[14px] font-extrabold text-white active:scale-95 disabled:opacity-50"
+              className="flex-[1.5] py-3 rounded-2xl text-[15px] font-extrabold text-white active:scale-95 disabled:opacity-50"
               style={{
                 background: "linear-gradient(135deg, #4F6B53 0%, #6B8E6F 100%)",
                 boxShadow: "0 4px 12px rgba(79,107,83,0.3)",

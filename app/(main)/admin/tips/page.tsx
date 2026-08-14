@@ -217,7 +217,7 @@ export default function AdminTipsPage() {
   if (!isAdmin) {
     return (
       <div className="px-5 pt-20 text-center">
-        <p className="text-[14px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
+        <p className="text-[15px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
         <Link href="/mypage" className="inline-block mt-4 text-[13px] font-bold text-primary">
           마이페이지로
         </Link>
@@ -231,7 +231,7 @@ export default function AdminTipsPage() {
       <div className="mb-5">
         <button
           onClick={() => router.push("/admin")}
-          className="flex items-center gap-1 text-[12px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
         >
           <ArrowLeft size={14} />
           관리자
@@ -239,12 +239,12 @@ export default function AdminTipsPage() {
         <div className="flex items-end justify-between">
           <div>
             <div className="flex items-baseline gap-2 mb-1">
-              <h1 className="text-[22px] font-extrabold text-text-main tracking-tight flex items-center gap-1.5">
+              <h1 className="text-[24px] font-extrabold text-text-main tracking-tight flex items-center gap-1.5">
                 <Sparkles size={18} className="text-primary" />
                 꿀팁게시판 관리
               </h1>
             </div>
-            <p className="text-[12px] text-text-sub">정보글을 작성·발행·수정할 수 있어요</p>
+            <p className="text-[13px] text-text-sub">정보글을 작성·발행·수정할 수 있어요</p>
           </div>
           <button
             onClick={handleCreate}
@@ -269,7 +269,7 @@ export default function AdminTipsPage() {
           }}
         >
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[14px] font-extrabold text-text-main">
+            <h2 className="text-[15px] font-extrabold text-text-main">
               {editingId === "new" ? "새 꿀팁 작성" : "꿀팁 수정"}
             </h2>
             <button
@@ -344,13 +344,13 @@ export default function AdminTipsPage() {
                 {uploadingImage ? (
                   <>
                     <Loader2 size={22} className="animate-spin mb-1" />
-                    <span className="text-[12px] font-semibold">업로드 중...</span>
+                    <span className="text-[13px] font-semibold">업로드 중...</span>
                   </>
                 ) : (
                   <>
                     <ImagePlus size={24} className="mb-1" />
-                    <span className="text-[12px] font-semibold">이미지 선택</span>
-                    <span className="text-[10px] mt-0.5">JPG/PNG · 20MB 이하</span>
+                    <span className="text-[13px] font-semibold">이미지 선택</span>
+                    <span className="text-[11px] mt-0.5">JPG/PNG · 20MB 이하</span>
                   </>
                 )}
                 <input
@@ -421,7 +421,7 @@ export default function AdminTipsPage() {
                 onChange={(e) => setDraft((d) => ({ ...d, published: e.target.checked }))}
                 className="w-4 h-4 accent-primary"
               />
-              <span className="text-[12px] font-semibold text-text-sub">발행</span>
+              <span className="text-[13px] font-semibold text-text-sub">발행</span>
             </label>
             <label className="flex items-center gap-1.5 cursor-pointer p-2 rounded-lg" style={{ background: "var(--color-gray-50)" }}>
               <input
@@ -430,7 +430,7 @@ export default function AdminTipsPage() {
                 onChange={(e) => setDraft((d) => ({ ...d, featured: e.target.checked }))}
                 className="w-4 h-4 accent-primary"
               />
-              <span className="text-[12px] font-semibold text-text-sub flex items-center gap-0.5">
+              <span className="text-[13px] font-semibold text-text-sub flex items-center gap-0.5">
                 <Sparkles size={10} /> 추천
               </span>
             </label>
@@ -441,7 +441,7 @@ export default function AdminTipsPage() {
                 onChange={(e) => setDraft((d) => ({ ...d, pinned: e.target.checked }))}
                 className="w-4 h-4 accent-primary"
               />
-              <span className="text-[12px] font-semibold text-text-sub flex items-center gap-0.5">
+              <span className="text-[13px] font-semibold text-text-sub flex items-center gap-0.5">
                 <Pin size={10} /> 고정
               </span>
             </label>
@@ -533,23 +533,23 @@ export default function AdminTipsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                     {!item.published && (
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 chip-square bg-text-muted text-white">
+                      <span className="text-[11px] font-bold px-1.5 py-0.5 chip-square bg-text-muted text-white">
                         초안
                       </span>
                     )}
                     {item.featured && (
-                      <span className="text-[10px] font-bold text-primary flex items-center gap-0.5">
+                      <span className="text-[11px] font-bold text-primary flex items-center gap-0.5">
                         <Sparkles size={10} /> 추천
                       </span>
                     )}
                     {item.pinned && (
-                      <span className="text-[10px] font-bold text-primary flex items-center gap-0.5">
+                      <span className="text-[11px] font-bold text-primary flex items-center gap-0.5">
                         <Pin size={10} /> 고정
                       </span>
                     )}
-                    <span className="text-[10px] text-text-light">· /{item.slug}</span>
+                    <span className="text-[11px] text-text-light">· /{item.slug}</span>
                   </div>
-                  <p className="text-[14px] font-extrabold text-text-main leading-tight truncate">
+                  <p className="text-[15px] font-extrabold text-text-main leading-tight truncate">
                     {item.title}
                   </p>
                   {item.description && (
@@ -558,7 +558,7 @@ export default function AdminTipsPage() {
                     </p>
                   )}
                   {item.tags.length > 0 && (
-                    <p className="text-[10px] text-text-light mt-0.5 truncate">
+                    <p className="text-[11px] text-text-light mt-0.5 truncate">
                       {item.tags.map((t) => `#${t}`).join(" ")}
                     </p>
                   )}
@@ -568,21 +568,21 @@ export default function AdminTipsPage() {
                 <Link
                   href={`/tips/${item.slug}`}
                   target="_blank"
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold"
                   style={{ backgroundColor: "#F2EBE0", color: "#8B6F4E" }}
                 >
                   <ExternalLink size={12} /> 보기
                 </Link>
                 <button
                   onClick={() => handleEdit(item)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold"
                   style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-primary)" }}
                 >
                   <Pencil size={12} /> 수정
                 </button>
                 <button
                   onClick={() => handleDelete(item)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold"
                   style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}
                 >
                   <Trash2 size={12} /> 삭제

@@ -104,14 +104,14 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
           <Bell size={17} color="#fff" strokeWidth={2.3} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-primary-dark)" }}>매일 6시 알림</p>
+          <p className="text-[11px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-primary-dark)" }}>매일 6시 알림</p>
           <p className="text-[13px] font-extrabold text-text-main leading-tight mt-0.5">
             🍚 내 아이 한 끼 챙길 시간, 알려드릴까요?
           </p>
           <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
             바쁘면 까먹어요 — 알림이 챙겨드려요.
           </p>
-          <p className="text-[10px] mt-0.5" style={{ color: "#BFA084" }}>
+          <p className="text-[11px] mt-0.5" style={{ color: "#BFA084" }}>
             켜면 돌봄·소식 알림(마케팅 포함) 수신에 동의해요 · 마이페이지에서 해제 가능
           </p>
         </div>
@@ -120,7 +120,7 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
             type="button"
             onClick={enable}
             disabled={busy}
-            className="h-8 px-3 rounded-full text-white text-[12px] font-extrabold active:scale-95 transition-transform disabled:opacity-60"
+            className="h-8 px-3 rounded-full text-white text-[13px] font-extrabold active:scale-95 transition-transform disabled:opacity-60"
             style={{ background: "var(--color-primary)", boxShadow: "0 3px 8px rgba(173, 94, 59,0.3)" }}
           >
             {busy ? "..." : "켜기"}

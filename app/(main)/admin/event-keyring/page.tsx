@@ -184,7 +184,7 @@ export default function AdminEventKeyringPage() {
             <ArrowLeft size={18} className="text-text-main" />
           </Link>
           <div>
-            <h1 className="text-[18px] font-extrabold text-text-main flex items-center gap-1.5">
+            <h1 className="text-[20px] font-extrabold text-text-main flex items-center gap-1.5">
               <Gift size={16} style={{ color: "var(--color-primary)" }} />
               이벤트 응모자
             </h1>
@@ -198,7 +198,7 @@ export default function AdminEventKeyringPage() {
             <RefreshCw size={15} className={`text-text-main ${loading ? "animate-spin" : ""}`} />
           </button>
           <button onClick={exportCsv} disabled={entries.length === 0}
-            className="px-3 h-9 rounded-xl bg-primary text-white text-[12px] font-extrabold flex items-center gap-1 active:scale-95 disabled:opacity-50"
+            className="px-3 h-9 rounded-xl bg-primary text-white text-[13px] font-extrabold flex items-center gap-1 active:scale-95 disabled:opacity-50"
             style={{ boxShadow: "0 2px 8px rgba(173, 94, 59,0.25)" }}>
             <Download size={13} />
             CSV
@@ -210,7 +210,7 @@ export default function AdminEventKeyringPage() {
       <div className="px-4 mb-3 flex gap-1.5 overflow-x-auto no-scrollbar">
         {(["all", ...STATUS_ORDER] as const).map((k) => (
           <button key={k} onClick={() => setFilter(k)}
-            className="shrink-0 px-3 py-1.5 chip-square text-[12px] font-bold active:scale-95 transition-transform"
+            className="shrink-0 px-3 py-1.5 chip-square text-[13px] font-bold active:scale-95 transition-transform"
             style={{
               background: filter === k ? "var(--color-primary)" : "#FFFFFF",
               color: filter === k ? "#FFFFFF" : "#6B5043",
@@ -290,23 +290,23 @@ function EntryCard({
         {/* 정보 */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-1">
-            <span className="text-[10px] font-extrabold px-1.5 py-0.5 chip-square"
+            <span className="text-[11px] font-extrabold px-1.5 py-0.5 chip-square"
               style={{ background: meta.bg, color: meta.color }}>
               {meta.emoji} {meta.label}
             </span>
-            <span className="text-[10px] text-text-light ml-auto">
+            <span className="text-[11px] text-text-light ml-auto">
               {new Date(entry.created_at).toLocaleDateString("ko-KR")}
             </span>
           </div>
           <p className="text-[15px] font-extrabold text-text-main truncate">{displayName}</p>
           {entry.phone && (
-            <a href={`tel:${entry.phone}`} className="flex items-center gap-1 mt-0.5 text-[12px] font-bold" style={{ color: "#22B573" }}>
+            <a href={`tel:${entry.phone}`} className="flex items-center gap-1 mt-0.5 text-[13px] font-bold" style={{ color: "#22B573" }}>
               <Phone size={11} />
               {entry.phone}
             </a>
           )}
           {entry.address && (
-            <p className="flex items-start gap-1 mt-1 text-[12px] text-text-sub leading-snug">
+            <p className="flex items-start gap-1 mt-1 text-[13px] text-text-sub leading-snug">
               <MapPin size={11} className="shrink-0 mt-0.5" />
               <span>{entry.address}</span>
             </p>
@@ -326,7 +326,7 @@ function EntryCard({
           const active = entry.status === s;
           return (
             <button key={s} onClick={() => onStatus(entry.id, s)} disabled={active}
-              className="flex-1 min-w-0 py-2 rounded-lg text-[12px] font-bold flex items-center justify-center gap-1 active:scale-95 disabled:opacity-50"
+              className="flex-1 min-w-0 py-2 rounded-lg text-[13px] font-bold flex items-center justify-center gap-1 active:scale-95 disabled:opacity-50"
               style={{
                 background: active ? m.color : `${m.color}15`,
                 color: active ? "#fff" : m.color,
@@ -348,7 +348,7 @@ function EntryCard({
           placeholder="관리자 메모 (예: 운송장 1234567890)"
           maxLength={200}
           disabled={savingNote}
-          className="w-full px-3 py-2 rounded-lg text-[12px] outline-none"
+          className="w-full px-3 py-2 rounded-lg text-[13px] outline-none"
           style={{ background: "var(--color-gray-50)", border: "1px solid var(--color-gray-200)" }}
         />
       </div>

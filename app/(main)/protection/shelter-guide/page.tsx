@@ -348,7 +348,7 @@ export default function ShelterGuidePage() {
             className="bg-white rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98]"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <span style={{ fontSize: 22 }}>🍚</span>
+            <span style={{ fontSize: 24 }}>🍚</span>
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">먹이 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">안전한 급식 · 계절별 주의사항</p>
@@ -359,7 +359,7 @@ export default function ShelterGuidePage() {
             className="bg-white rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98]"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <span style={{ fontSize: 22 }}>🚨</span>
+            <span style={{ fontSize: 24 }}>🚨</span>
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">응급 구조 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">다친 아이 발견 시 대응법</p>

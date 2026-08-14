@@ -242,16 +242,16 @@ export default async function TipDetailPage({ params }: Params) {
           )}
           <h1
             className="font-extrabold text-text-main"
-            style={{ fontSize: "22px", lineHeight: 1.35, letterSpacing: "-0.01em" }}
+            style={{ fontSize: "24px", lineHeight: 1.35, letterSpacing: "-0.01em" }}
           >
             {tip.title}
           </h1>
           {tip.description && (
-            <p className="text-[14px] text-text-sub leading-relaxed mt-2.5">
+            <p className="text-[15px] text-text-sub leading-relaxed mt-2.5">
               {tip.description}
             </p>
           )}
-          <div className="flex items-center gap-2 mt-3 text-[12px] text-text-light">
+          <div className="flex items-center gap-2 mt-3 text-[13px] text-text-light">
             <span className="font-bold text-primary">도시공존</span>
             <span>·</span>
             <span>{formatDate(tip.published_at)}</span>
@@ -273,7 +273,7 @@ export default async function TipDetailPage({ params }: Params) {
             aria-label="목차"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <p className="text-[12px] font-extrabold text-text-sub mb-2 inline-flex items-center gap-1.5">
+            <p className="text-[13px] font-extrabold text-text-sub mb-2 inline-flex items-center gap-1.5">
               <ListIcon size={13} />
               목차
             </p>
@@ -332,7 +332,7 @@ export default async function TipDetailPage({ params }: Params) {
           className="bg-white rounded-2xl p-4 mb-4"
           style={{ boxShadow: "var(--shadow-card)" }}
         >
-          <p className="text-[12px] font-extrabold text-text-sub mb-2.5">이 글 공유하기</p>
+          <p className="text-[13px] font-extrabold text-text-sub mb-2.5">이 글 공유하기</p>
           <TipShareButtons url={url} title={tip.title} description={description} />
         </div>
 
@@ -342,7 +342,7 @@ export default async function TipDetailPage({ params }: Params) {
             className="bg-white rounded-2xl p-4 mb-4"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <p className="text-[12px] font-extrabold text-text-sub mb-2.5">관련 꿀팁</p>
+            <p className="text-[13px] font-extrabold text-text-sub mb-2.5">관련 꿀팁</p>
             <div className="space-y-2">
               {related.map((r) => (
                 <RelatedRow key={r.id} tip={r} />
@@ -359,7 +359,7 @@ export default async function TipDetailPage({ params }: Params) {
             border: "1px solid rgba(173, 94, 59,0.15)",
           }}
         >
-          <p className="text-[12px] font-extrabold text-primary mb-1.5">도시공존이란?</p>
+          <p className="text-[13px] font-extrabold text-primary mb-1.5">도시공존이란?</p>
           <p className="text-[13px] text-text-main leading-relaxed mb-3">
             우리 동네 길고양이 지도, 돌봄다이어리, TNR 신청, 동네 채팅을 한곳에서
             할 수 있는 시민 참여 플랫폼이에요. 길고양이와 시민이 함께 살아가는
@@ -367,7 +367,7 @@ export default async function TipDetailPage({ params }: Params) {
           </p>
           <Link
             href="/about"
-            className="inline-flex items-center gap-1 text-[12px] font-extrabold text-primary"
+            className="inline-flex items-center gap-1 text-[13px] font-extrabold text-primary"
           >
             자세히 보기
             <ChevronRight size={13} />
@@ -394,7 +394,7 @@ function RelatedRow({ tip }: { tip: Tip }) {
           className="shrink-0 rounded-lg flex items-center justify-center"
           style={{ width: 56, height: 56, background: "#F2EBE0" }}
         >
-          <span className="text-primary text-[18px]">✨</span>
+          <span className="text-primary text-[20px]">✨</span>
         </div>
       )}
       <div className="flex-1 min-w-0">

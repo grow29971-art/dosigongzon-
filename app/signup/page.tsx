@@ -159,7 +159,7 @@ function SignupContent() {
                 <p className="text-[13px] font-extrabold" style={{ color: "#8A6410" }}>
                   카카오로 바로 가입할 수 있어요
                 </p>
-                <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#8A6410" }}>
+                <p className="text-[13px] mt-1 leading-relaxed" style={{ color: "#8A6410" }}>
                   {inAppBrowserLabel(inApp)} 안에서는 <b>구글·애플 가입만</b> 막혀 있어요.
                   그 두 가지로 가입하시려면 아래에서 브라우저를 열어주세요.
                 </p>
@@ -190,10 +190,10 @@ function SignupContent() {
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4">
             <PawPrint size={40} className="text-primary" strokeWidth={1.8} />
           </div>
-          <h1 className="text-[26px] font-extrabold text-text-main tracking-tight">
+          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
             {eventParam === "keyring" ? "이벤트 응모 가입" : "도시공존에 합류하기"}
           </h1>
-          <p className="text-[14px] text-text-sub mt-2 leading-relaxed">
+          <p className="text-[15px] text-text-sub mt-2 leading-relaxed">
             카카오 또는 구글로 1초 가입 · 광고 없음 · 무료
           </p>
         </div>
@@ -213,7 +213,7 @@ function SignupContent() {
             <p className="text-[13px] font-extrabold text-text-main leading-tight mb-1">
               가입 후 돌보는 아이 등록 → 응모!
             </p>
-            <p className="text-[12px] text-text-sub leading-relaxed">
+            <p className="text-[13px] text-text-sub leading-relaxed">
               1,000명 달성 시 추첨으로 20명에게 <b>당신이 돌보는 아이 모양</b>의 커스텀 아크릴 키링을 보내드려요.
             </p>
           </div>
@@ -225,8 +225,8 @@ function SignupContent() {
             className="mb-3 rounded-xl px-3.5 py-2.5 flex items-start gap-2"
             style={{ backgroundColor: "var(--color-warning-soft)", border: "1px solid #F5DAB0" }}
           >
-            <span className="text-[14px] mt-0.5">⚠️</span>
-            <p className="text-[12px] leading-relaxed" style={{ color: "#6F4910" }}>
+            <span className="text-[15px] mt-0.5">⚠️</span>
+            <p className="text-[13px] leading-relaxed" style={{ color: "#6F4910" }}>
               <b>삼성 인터넷</b>에서는 카카오 가입이 자주 실패해요 (KOE205).
               <b>크롬·사파리</b>로 열면 안정적이에요.
             </p>
@@ -314,7 +314,7 @@ function SignupContent() {
           <button
             onClick={() => handleSignup("kakao")}
             disabled={!!loading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-extrabold active:scale-[0.97] transition-transform disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-extrabold active:scale-[0.97] transition-transform disabled:opacity-60"
             /* 인앱에서도 카카오는 실제로 진행되므로 약관 동의 상태를 그대로 반영한다 */
             style={{ backgroundColor: "#FEE500", color: "#191919", opacity: agreed ? 1 : 0.6 }}
           >
@@ -330,7 +330,7 @@ function SignupContent() {
           <button
             onClick={() => handleSignup("google")}
             disabled={!!loading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.97] transition-transform border border-[#E0E0E0] disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold active:scale-[0.97] transition-transform border border-[#E0E0E0] disabled:opacity-60"
             style={{ backgroundColor: "#FFFFFF", color: "#2A2A28", opacity: (agreed || inApp) ? 1 : 0.6 }}
           >
             {loading === "google" ? (
@@ -348,7 +348,7 @@ function SignupContent() {
           <button
             onClick={() => handleSignup("apple")}
             disabled={!!loading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.97] transition-transform disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold active:scale-[0.97] transition-transform disabled:opacity-60"
             style={{ backgroundColor: "#000000", color: "#FFFFFF", opacity: (agreed || inApp) ? 1 : 0.6 }}
           >
             {loading === "apple" ? (
@@ -362,20 +362,20 @@ function SignupContent() {
           </button>
         </div>
 
-        <p className="text-[12px] text-text-light text-center mt-6">
+        <p className="text-[13px] text-text-light text-center mt-6">
           이미 계정이 있으면 같은 방법으로 다시 누르면 로그인돼요.
         </p>
 
         {/* 이메일 로그인 */}
         <div className="mt-5 pt-5 border-t border-border">
-          <p className="text-[12px] text-text-sub text-center mb-3">이메일로 로그인</p>
+          <p className="text-[13px] text-text-sub text-center mb-3">이메일로 로그인</p>
           <div className="space-y-2">
             <input
               type="email"
               placeholder="이메일"
               value={emailInput}
               onChange={e => setEmailInput(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-border text-[14px] outline-none focus:border-primary"
+              className="w-full px-4 py-3 rounded-xl border border-border text-[15px] outline-none focus:border-primary"
               style={{ backgroundColor: "#fff" }}
             />
             <input
@@ -383,7 +383,7 @@ function SignupContent() {
               placeholder="비밀번호"
               value={passwordInput}
               onChange={e => setPasswordInput(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-border text-[14px] outline-none focus:border-primary"
+              className="w-full px-4 py-3 rounded-xl border border-border text-[15px] outline-none focus:border-primary"
               style={{ backgroundColor: "#fff" }}
             />
             <button
@@ -403,7 +403,7 @@ function SignupContent() {
                   window.location.href = "/";
                 }
               }}
-              className="w-full py-3 rounded-xl text-[14px] font-bold text-white disabled:opacity-50"
+              className="w-full py-3 rounded-xl text-[15px] font-bold text-white disabled:opacity-50"
               style={{ backgroundColor: "var(--color-primary)" }}
             >
               {emailLoading ? <Loader2 size={16} className="animate-spin mx-auto" /> : "로그인"}

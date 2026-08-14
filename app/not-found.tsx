@@ -55,13 +55,13 @@ export default function NotFound() {
             🐾
           </div>
           <p
-            className="text-[14px] font-extrabold tracking-[0.3em] mb-4"
+            className="text-[15px] font-extrabold tracking-[0.3em] mb-4"
             style={{ color: "var(--color-primary)" }}
           >
             404
           </p>
           <h1
-            className="text-[22px] font-extrabold text-text-main tracking-tight leading-tight mb-2"
+            className="text-[24px] font-extrabold text-text-main tracking-tight leading-tight mb-2"
           >
             아이를 찾지 못했어요
           </h1>
@@ -74,7 +74,7 @@ export default function NotFound() {
           <div className="flex flex-col gap-2.5">
             <Link
               href="/"
-              className="w-full py-3 rounded-2xl text-[14px] font-extrabold text-white active:scale-[0.98] transition-transform"
+              className="w-full py-3 rounded-2xl text-[15px] font-extrabold text-white active:scale-[0.98] transition-transform"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                 boxShadow: "var(--shadow-primary)",

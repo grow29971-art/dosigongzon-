@@ -51,7 +51,7 @@ export default async function JourneyPage() {
       >
         <Link
           href="/mypage"
-          className="inline-flex items-center gap-1 text-[12px] font-semibold text-text-sub mb-3"
+          className="inline-flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3"
         >
           <ArrowLeft size={14} />
           마이페이지
@@ -65,7 +65,7 @@ export default async function JourneyPage() {
         <p className="text-[13px] text-text-sub leading-relaxed">
           도시공존에서 쌓아온 발자취와 따뜻한 순간들이에요.
         </p>
-        <p className="mt-2 text-[12px] text-text-light">
+        <p className="mt-2 text-[13px] text-text-light">
           총 {items.length}개의 작은 이야기가 모였습니다.
         </p>
       </div>
@@ -110,7 +110,7 @@ function MilestoneRow({ m }: { m: Milestone }) {
       <div className="flex items-start gap-3">
         {/* 아이콘 (점 위치) */}
         <div
-          className="relative shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-[18px]"
+          className="relative shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-[20px]"
           style={{
             background: c.bg,
             border: `2px solid ${c.ring}`,
@@ -131,10 +131,10 @@ function MilestoneRow({ m }: { m: Milestone }) {
           <p className="text-[11px] font-bold tracking-wide" style={{ color: c.text }}>
             {fmtDate(m.date)}
           </p>
-          <p className="mt-0.5 text-[14px] font-extrabold text-text-main tracking-tight leading-tight">
+          <p className="mt-0.5 text-[15px] font-extrabold text-text-main tracking-tight leading-tight">
             {m.title}
           </p>
-          <p className="mt-1 text-[12px] text-text-sub leading-relaxed">{m.desc}</p>
+          <p className="mt-1 text-[13px] text-text-sub leading-relaxed">{m.desc}</p>
         </div>
       </div>
     </Wrapper>
@@ -152,10 +152,10 @@ function EmptyState() {
       }}
     >
       <Sparkles size={28} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-      <p className="text-[14px] font-extrabold text-text-main mb-1.5">
+      <p className="text-[15px] font-extrabold text-text-main mb-1.5">
         여정이 막 시작됐어요
       </p>
-      <p className="text-[12px] text-text-sub leading-relaxed">
+      <p className="text-[13px] text-text-sub leading-relaxed">
         지도에서 첫 고양이를 등록하거나 동네 이야기에 응원의 댓글을 남기면
         여기에 따뜻한 순간들이 차곡차곡 쌓여요.
       </p>

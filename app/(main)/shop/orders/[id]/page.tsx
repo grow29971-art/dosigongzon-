@@ -157,7 +157,7 @@ export default function OrderDetailPage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </button>
-        <h1 className="text-[16px] font-extrabold text-text-main">주문 상세</h1>
+        <h1 className="text-[17px] font-extrabold text-text-main">주문 상세</h1>
       </div>
 
       {loading ? (
@@ -168,7 +168,7 @@ export default function OrderDetailPage() {
         </div>
       ) : !order || !status ? (
         <div className="flex flex-col items-center text-center pt-16 px-6">
-          <p className="text-[14px] font-bold text-text-main mb-4">주문을 찾을 수 없어요</p>
+          <p className="text-[15px] font-bold text-text-main mb-4">주문을 찾을 수 없어요</p>
           <button
             onClick={() => router.push("/shop/orders")}
             className="px-5 py-2.5 rounded-2xl bg-primary text-white text-[13px] font-bold"
@@ -181,7 +181,7 @@ export default function OrderDetailPage() {
           {/* 주문번호 + 상태 */}
           <section className="p-4" style={sectionStyle}>
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[12px] font-semibold text-text-light">{order.order_number}</span>
+              <span className="text-[13px] font-semibold text-text-light">{order.order_number}</span>
               <span
                 className="text-[11px] font-bold px-2.5 py-1 rounded-lg"
                 style={{ backgroundColor: `${status.color}15`, color: status.color }}
@@ -242,7 +242,7 @@ export default function OrderDetailPage() {
             {/* 환불 축 상태 — 배송 상태와 독립 */}
             {!isAborted && refundStatus === "requested" && (
               <div
-                className="mt-3 py-2.5 text-center rounded-2xl text-[12px] font-bold"
+                className="mt-3 py-2.5 text-center rounded-2xl text-[13px] font-bold"
                 style={{ background: "rgba(255,169,39,0.12)", color: "var(--color-warning)" }}
               >
                 환불 요청이 접수됐어요 — 관리자 확인 후 처리돼요
@@ -250,7 +250,7 @@ export default function OrderDetailPage() {
             )}
             {!isAborted && refundStatus === "rejected" && (
               <div
-                className="mt-3 py-2.5 text-center rounded-2xl text-[12px] font-bold"
+                className="mt-3 py-2.5 text-center rounded-2xl text-[13px] font-bold"
                 style={{ background: "rgba(138,144,160,0.12)", color: "var(--color-text-sub)" }}
               >
                 환불 요청이 반려됐어요 — 필요하면 다시 요청할 수 있어요
@@ -291,7 +291,7 @@ export default function OrderDetailPage() {
               <p className="text-[13px] text-text-sub">💛 후원 상품 주문이라 배송이 없어요.</p>
             )}
             {order.memo && (
-              <p className="text-[12px] text-text-light mt-2">메모: {order.memo}</p>
+              <p className="text-[13px] text-text-light mt-2">메모: {order.memo}</p>
             )}
             {order.tracking_number && (
               <p className="text-[13px] text-text-sub mt-2 flex items-center gap-1.5">

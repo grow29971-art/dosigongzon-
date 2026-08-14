@@ -50,7 +50,7 @@ export default function MakerPage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
-        <span className="text-[12px] font-semibold text-text-sub">홈</span>
+        <span className="text-[13px] font-semibold text-text-sub">홈</span>
       </div>
 
       {/* 히어로 */}
@@ -58,12 +58,12 @@ export default function MakerPage() {
         <p className="text-[11px] font-extrabold tracking-[0.18em] mb-2" style={{ color: "var(--color-primary-dark)" }}>
           MADE BY ONE NEIGHBOR
         </p>
-        <h1 className="text-[26px] font-extrabold text-text-main leading-tight tracking-tight">
+        <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight">
           이 플랫폼,
           <br />
           <span style={{ color: "var(--color-primary-dark)" }}>한 사람이 직접 만들었어요.</span>
         </h1>
-        <p className="text-[14px] text-text-sub mt-3 leading-relaxed">
+        <p className="text-[15px] text-text-sub mt-3 leading-relaxed">
           <b className="text-text-main">김성우</b> · 1인 풀스택 메이커
           <br />
           Software · Hardware · Product · Operations
@@ -74,7 +74,7 @@ export default function MakerPage() {
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
           <Sparkles size={14} style={{ color: "var(--color-primary-dark)" }} />
-          <h2 className="text-[14px] font-extrabold text-text-main">철학과 가치</h2>
+          <h2 className="text-[15px] font-extrabold text-text-main">철학과 가치</h2>
         </div>
 
         {/* Mission */}
@@ -87,11 +87,11 @@ export default function MakerPage() {
         >
           <div className="flex items-center gap-1.5 mb-3">
             <Compass size={14} style={{ color: "var(--color-primary)" }} />
-            <span className="text-[10px] font-extrabold tracking-[0.18em]" style={{ color: "var(--color-primary)" }}>
+            <span className="text-[11px] font-extrabold tracking-[0.18em]" style={{ color: "var(--color-primary)" }}>
               MISSION
             </span>
           </div>
-          <p className="text-[16px] font-extrabold text-text-main leading-[1.55] mb-2.5 tracking-tight">
+          <p className="text-[17px] font-extrabold text-text-main leading-[1.55] mb-2.5 tracking-tight">
             언제나 어디서든 모두가<br />
             느낄 수 있는 새로운 형태의 자연을 제공합니다.
           </p>
@@ -110,7 +110,7 @@ export default function MakerPage() {
         >
           <div className="flex items-center gap-1.5 mb-3">
             <Eye size={14} style={{ color: "#4F6B53" }} />
-            <span className="text-[10px] font-extrabold tracking-[0.18em]" style={{ color: "#4F6B53" }}>
+            <span className="text-[11px] font-extrabold tracking-[0.18em]" style={{ color: "#4F6B53" }}>
               VISION
             </span>
           </div>
@@ -132,7 +132,7 @@ export default function MakerPage() {
         {/* Values 3카드 */}
         <div className="flex items-center gap-1.5 mb-2 ml-1 mt-4">
           <Sparkles size={14} style={{ color: "var(--color-primary-dark)" }} />
-          <span className="text-[10px] font-extrabold tracking-[0.18em]" style={{ color: "var(--color-primary-dark)" }}>
+          <span className="text-[11px] font-extrabold tracking-[0.18em]" style={{ color: "var(--color-primary-dark)" }}>
             VALUES
           </span>
         </div>
@@ -168,7 +168,7 @@ export default function MakerPage() {
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
           <Heart size={14} style={{ color: "var(--color-like)" }} />
-          <h2 className="text-[14px] font-extrabold text-text-main">왜 시작했나</h2>
+          <h2 className="text-[15px] font-extrabold text-text-main">왜 시작했나</h2>
         </div>
         <div
           className="rounded-3xl p-5"
@@ -197,7 +197,7 @@ export default function MakerPage() {
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
           <Sparkles size={14} style={{ color: "var(--color-primary)" }} />
-          <h2 className="text-[14px] font-extrabold text-text-main">어떻게 만드나</h2>
+          <h2 className="text-[15px] font-extrabold text-text-main">어떻게 만드나</h2>
         </div>
         <div className="bg-white rounded-3xl p-5" style={{ boxShadow: "var(--shadow-card)" }}>
           <p className="text-[13px] leading-[1.95] text-text-sub mb-4">
@@ -240,7 +240,7 @@ export default function MakerPage() {
             />
           </div>
 
-          <p className="text-[12px] leading-[1.95] text-text-sub mt-4">
+          <p className="text-[13px] leading-[1.95] text-text-sub mt-4">
             소프트웨어 한 줄, 회로 한 가닥, 도면 한 장이 모여
             길 위의 아이들에게 닿을 수 있다고 믿어요.
             이 플랫폼은 그 믿음에서 출발했습니다.
@@ -252,7 +252,7 @@ export default function MakerPage() {
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
           <ShieldCheck size={14} style={{ color: "#4F6B53" }} />
-          <h2 className="text-[14px] font-extrabold text-text-main">어떻게 굴러가나</h2>
+          <h2 className="text-[15px] font-extrabold text-text-main">어떻게 굴러가나</h2>
         </div>
         <div
           className="rounded-3xl p-5"
@@ -289,7 +289,7 @@ export default function MakerPage() {
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
           <Hand size={14} style={{ color: "var(--color-primary)" }} />
-          <h2 className="text-[14px] font-extrabold text-text-main">길집사님께</h2>
+          <h2 className="text-[15px] font-extrabold text-text-main">길집사님께</h2>
         </div>
         <div
           className="rounded-3xl p-5"
@@ -318,7 +318,7 @@ export default function MakerPage() {
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
           <Coffee size={14} style={{ color: "#8B5A3C" }} />
-          <h2 className="text-[14px] font-extrabold text-text-main">제휴·문의·차 한 잔</h2>
+          <h2 className="text-[15px] font-extrabold text-text-main">제휴·문의·차 한 잔</h2>
         </div>
         <div className="bg-white rounded-3xl p-5" style={{ boxShadow: "var(--shadow-card)" }}>
           <p className="text-[13px] leading-[1.95] text-text-sub mb-4">
@@ -374,7 +374,7 @@ function SkillCard({ icon, title, sub }: { icon: React.ReactNode; title: string;
     >
       <div className="flex items-center gap-1.5 mb-1" style={{ color: "var(--color-primary-dark)" }}>
         {icon}
-        <p className="text-[12px] font-extrabold tracking-tight text-text-main">{title}</p>
+        <p className="text-[13px] font-extrabold tracking-tight text-text-main">{title}</p>
       </div>
       <p className="text-[11px] text-text-sub leading-tight">{sub}</p>
     </div>
@@ -409,12 +409,12 @@ function ValueCard({
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: accentDark }}>
+          <span className="text-[11px] font-extrabold tracking-[0.12em]" style={{ color: accentDark }}>
             0{n}
           </span>
-          <p className="text-[14px] font-extrabold text-text-main tracking-tight">{title}</p>
+          <p className="text-[15px] font-extrabold text-text-main tracking-tight">{title}</p>
         </div>
-        <p className="text-[12px] text-text-sub leading-relaxed">{body}</p>
+        <p className="text-[13px] text-text-sub leading-relaxed">{body}</p>
       </div>
     </div>
   );
@@ -434,10 +434,10 @@ function PrincipleRow({
   return (
     <div className={last ? "" : "pb-3 mb-3 border-b"} style={last ? {} : { borderColor: "rgba(107,142,111,0.18)" }}>
       <div className="flex items-start gap-2.5">
-        <span className="text-[18px] shrink-0 leading-none mt-0.5">{emoji}</span>
+        <span className="text-[20px] shrink-0 leading-none mt-0.5">{emoji}</span>
         <div className="flex-1 min-w-0">
           <p className="text-[13px] font-extrabold text-text-main leading-snug tracking-tight">{title}</p>
-          <p className="text-[12px] text-text-sub mt-1 leading-relaxed">{body}</p>
+          <p className="text-[13px] text-text-sub mt-1 leading-relaxed">{body}</p>
         </div>
       </div>
     </div>

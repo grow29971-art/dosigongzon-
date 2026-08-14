@@ -85,7 +85,7 @@ export default function ReactionBar({
             aria-label={`${emoji} 반응`}
             aria-pressed={picked}
           >
-            <span style={{ fontSize: 12 }}>{emoji}</span>
+            <span style={{ fontSize: 13 }}>{emoji}</span>
             {count > 0 && <span className="tabular-nums">{count}</span>}
           </button>
         );

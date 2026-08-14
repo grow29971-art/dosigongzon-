@@ -83,10 +83,10 @@ export default function MyCatsQuickCare() {
     >
       <div className="flex items-center justify-between mb-2.5">
         <div className="min-w-0">
-          <p className="text-[10px] font-extrabold tracking-[0.15em]" style={{ color: "var(--color-primary-dark)" }}>내 아이 오늘 한 끼</p>
-          <p className="text-[12px] text-text-sub mt-0.5">탭 한 번이면 끝 — 메모·사진 없이도 OK</p>
+          <p className="text-[11px] font-extrabold tracking-[0.15em]" style={{ color: "var(--color-primary-dark)" }}>내 아이 오늘 한 끼</p>
+          <p className="text-[13px] text-text-sub mt-0.5">탭 한 번이면 끝 — 메모·사진 없이도 OK</p>
         </div>
-        <p className="text-[12px] font-extrabold shrink-0" style={{ color: "var(--color-primary-dark)" }}>
+        <p className="text-[13px] font-extrabold shrink-0" style={{ color: "var(--color-primary-dark)" }}>
           <span style={{ color: doneCount === cats.length ? "#6B8E6F" : "#E88D5A" }}>{doneCount}</span>/{cats.length}
         </p>
       </div>
@@ -131,7 +131,7 @@ export default function MyCatsQuickCare() {
                 {c.fedToday ? (
                   <>
                     <Check size={11} strokeWidth={3} />
-                    <span className="text-[10px] font-extrabold">완료</span>
+                    <span className="text-[11px] font-extrabold">완료</span>
                   </>
                 ) : (
                   <span className="text-[11px] font-extrabold">🍚 한 끼</span>

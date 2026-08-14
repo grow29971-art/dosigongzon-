@@ -75,7 +75,7 @@ export default function InquiryModal({ open, onClose }: Props) {
             >
               <MessageSquare size={14} color="#fff" strokeWidth={2.5} />
             </div>
-            <h2 className="text-[16px] font-extrabold text-text-main tracking-tight">
+            <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
               문의하기
             </h2>
           </div>
@@ -100,10 +100,10 @@ export default function InquiryModal({ open, onClose }: Props) {
             >
               <Check size={24} color="#fff" strokeWidth={3} />
             </div>
-            <p className="text-[14px] font-extrabold text-text-main mb-1">
+            <p className="text-[15px] font-extrabold text-text-main mb-1">
               문의가 전송됐어요
             </p>
-            <p className="text-[12px] text-text-sub">
+            <p className="text-[13px] text-text-sub">
               보통 24시간 내에 마이페이지 &gt; 내 문의 보기로 답변드려요
             </p>
           </div>
@@ -147,7 +147,7 @@ export default function InquiryModal({ open, onClose }: Props) {
                   border: "1px solid var(--color-gray-200)",
                 }}
               />
-              <p className="text-[10px] text-text-light mt-1 text-right">
+              <p className="text-[11px] text-text-light mt-1 text-right">
                 {body.length} / 2000
               </p>
             </div>

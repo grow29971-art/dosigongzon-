@@ -75,7 +75,7 @@ export default function MapIntroModal() {
           <div className="w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-3" style={{ background: "rgba(173, 94, 59,0.15)" }}>
             <ShieldCheck size={28} style={{ color: "var(--color-primary-dark)" }} />
           </div>
-          <p className="text-[10px] font-extrabold tracking-[0.15em] mb-1" style={{ color: "var(--color-primary-dark)" }}>
+          <p className="text-[11px] font-extrabold tracking-[0.15em] mb-1" style={{ color: "var(--color-primary-dark)" }}>
             안심하고 둘러보세요
           </p>
           <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
@@ -87,21 +87,21 @@ export default function MapIntroModal() {
         <div className="px-6 py-5">
           <div className="flex flex-col gap-3">
             <div className="flex gap-3">
-              <span className="text-[18px] shrink-0">🐾</span>
+              <span className="text-[20px] shrink-0">🐾</span>
               <p className="text-[13px] leading-[1.65] text-text-sub">
                 지도 속 고양이는 <b className="text-text-main">실제 위치가 아니에요.</b> 자기 동네
                 안을 불규칙하게 돌아다니며 계속 자리를 바꿔요.
               </p>
             </div>
             <div className="flex gap-3">
-              <span className="text-[18px] shrink-0">🔒</span>
+              <span className="text-[20px] shrink-0">🔒</span>
               <p className="text-[13px] leading-[1.65] text-text-sub">
                 등록할 때부터 <b className="text-text-main">실제 좌표는 저장하지 않아요.</b> 그래서
                 지도를 아무리 봐도 급식소나 아지트는 알 수 없어요.
               </p>
             </div>
             <div className="flex gap-3">
-              <span className="text-[18px] shrink-0">💤</span>
+              <span className="text-[20px] shrink-0">💤</span>
               <p className="text-[13px] leading-[1.65] text-text-sub">
                 쉬고(💤) · 산책하고(🐾) · 우다다(💨) 하는 모습을 구경하고, 탭해서
                 쓰다듬어 주세요.
@@ -114,7 +114,7 @@ export default function MapIntroModal() {
         <div className="px-6 pb-6">
           <button
             onClick={close}
-            className="w-full py-3 rounded-2xl text-[14px] font-extrabold text-white active:scale-[0.98] transition-transform"
+            className="w-full py-3 rounded-2xl text-[15px] font-extrabold text-white active:scale-[0.98] transition-transform"
             style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
           >
             둘러보기 시작

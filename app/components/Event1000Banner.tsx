@@ -50,13 +50,13 @@ export default async function Event1000Banner() {
           {/* 상단 라벨 */}
           <div className="flex items-center gap-1.5 mb-2">
             <Sparkles size={13} className="text-white/90" />
-            <span className="text-[10px] font-extrabold tracking-[0.15em] text-white/90">
+            <span className="text-[11px] font-extrabold tracking-[0.15em] text-white/90">
               {reached ? "TARGET REACHED · 추첨 진행 중" : "GRAND OPENING EVENT"}
             </span>
           </div>
 
           {/* 메인 카피 */}
-          <h2 className="text-[19px] font-extrabold tracking-tight leading-tight">
+          <h2 className="text-[20px] font-extrabold tracking-tight leading-tight">
             {reached ? (
               <>가입자 1,000명 달성!<br />추첨 곧 발표</>
             ) : (
@@ -65,7 +65,7 @@ export default async function Event1000Banner() {
           </h2>
 
           {/* 설명 */}
-          <p className="text-[12px] mt-2 leading-relaxed text-white/90">
+          <p className="text-[13px] mt-2 leading-relaxed text-white/90">
             {reached
               ? "당첨자에게 등록된 이메일·쪽지로 곧 안내드릴게요."
               : "당신이 돌보는 길고양이를 등록하고 응모하면, 그 아이 모양 아크릴 키링을 추첨으로 보내드려요 ✨"}
@@ -74,9 +74,9 @@ export default async function Event1000Banner() {
           {/* 진행률 */}
           <div className="mt-4">
             <div className="flex items-baseline justify-between mb-1.5">
-              <span className="text-[22px] font-extrabold tabular-nums tracking-tight">
+              <span className="text-[24px] font-extrabold tabular-nums tracking-tight">
                 {userCount.toLocaleString()}
-                <span className="text-[12px] font-bold opacity-80"> / {TARGET.toLocaleString()}명</span>
+                <span className="text-[13px] font-bold opacity-80"> / {TARGET.toLocaleString()}명</span>
               </span>
               {!reached && (
                 <span className="text-[11px] font-bold opacity-90">
@@ -103,7 +103,7 @@ export default async function Event1000Banner() {
           >
             <Gift size={18} className="shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-[12px] font-extrabold leading-tight">
+              <p className="text-[13px] font-extrabold leading-tight">
                 길고양이 아크릴 키링
               </p>
               <p className="text-[11px] mt-0.5 leading-snug opacity-90">

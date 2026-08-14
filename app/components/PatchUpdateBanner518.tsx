@@ -45,7 +45,7 @@ export default function PatchUpdateBanner518() {
           <div className="flex items-start justify-between gap-2 mb-2">
             <div className="flex items-center gap-1.5">
               <ShieldCheck size={14} color="#FFF7C4" />
-              <span className="text-[10px] font-extrabold tracking-[0.18em]" style={{ color: "#FFF7C4" }}>
+              <span className="text-[11px] font-extrabold tracking-[0.18em]" style={{ color: "#FFF7C4" }}>
                 NEW · 5/18 업데이트
               </span>
             </div>
@@ -61,11 +61,11 @@ export default function PatchUpdateBanner518() {
           <p className="text-[15px] font-extrabold text-white leading-snug mb-2 tracking-tight">
             🛡 Private Circle — 믿는 이웃에게만 핀 공개
           </p>
-          <p className="text-[12px] leading-[1.75]" style={{ color: "rgba(255,255,255,0.92)" }}>
+          <p className="text-[13px] leading-[1.75]" style={{ color: "rgba(255,255,255,0.92)" }}>
             걱정되는 아이는 <b style={{ color: "#FFF7C4" }}>"내 서클"</b>로 등록하면 내가
             승인한 이웃에게만 보입니다. 일반 가입자에게도 외부인에게도 노출되지 않아요.
           </p>
-          <p className="text-[12px] mt-2 leading-relaxed" style={{ color: "rgba(255,255,255,0.75)" }}>
+          <p className="text-[13px] mt-2 leading-relaxed" style={{ color: "rgba(255,255,255,0.75)" }}>
             함께 강화: 좌표 ±444m 흐림 · 비로그인 외부인 도트만 · 위치 단어 자동 차단 ·
             사진 GPS 자동 제거
           </p>

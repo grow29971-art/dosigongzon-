@@ -142,7 +142,7 @@ export default function AdminOrdersPage() {
     return (
       <div className="px-5 pt-20 text-center">
         <Shield size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[14px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
+        <p className="text-[15px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
         <Link href="/mypage" className="inline-block mt-4 text-[13px] font-bold text-primary">
           마이페이지로 돌아가기
         </Link>
@@ -170,7 +170,7 @@ export default function AdminOrdersPage() {
           className="mb-4 p-3.5"
           style={{ background: "#fff", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card)", border: "1.5px solid rgba(232,141,90,0.35)" }}
         >
-          <h2 className="text-[14px] font-extrabold text-text-main mb-2.5">환불 요청 {refunds.length}건</h2>
+          <h2 className="text-[15px] font-extrabold text-text-main mb-2.5">환불 요청 {refunds.length}건</h2>
           <div className="space-y-2.5">
             {refunds.map((r) => {
               const state = REFUND_STATE_LABEL[r.status];
@@ -179,7 +179,7 @@ export default function AdminOrdersPage() {
                 <div key={r.id} className="p-3 rounded-xl" style={{ background: "var(--color-warm-white)" }}>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[11px] font-semibold text-text-light">{r.order?.order_number ?? r.order_id}</span>
-                    <span className="text-[10px] font-extrabold px-2 py-0.5 chip-square" style={{ backgroundColor: `${state.color}15`, color: state.color }}>
+                    <span className="text-[11px] font-extrabold px-2 py-0.5 chip-square" style={{ backgroundColor: `${state.color}15`, color: state.color }}>
                       {state.label}
                     </span>
                   </div>
@@ -187,7 +187,7 @@ export default function AdminOrdersPage() {
                     {formatWon(r.amount)} 환불
                     {r.return_shipping_fee > 0 && <span className="text-text-light font-semibold"> (반품비 {formatWon(r.return_shipping_fee)} 차감됨)</span>}
                   </p>
-                  <p className="text-[12px] text-text-sub mt-0.5">
+                  <p className="text-[13px] text-text-sub mt-0.5">
                     사유: {REFUND_REASON_LABELS[r.reason_code as RefundReasonCode] ?? r.reason_code}
                     {r.reason_note && ` — ${r.reason_note}`}
                   </p>
@@ -203,14 +203,14 @@ export default function AdminOrdersPage() {
                         onChange={(e) => setRejectReason(e.target.value)}
                         placeholder="거부 사유 (유저에게 전달돼요)"
                         maxLength={500}
-                        className="w-full px-3 py-2 rounded-xl text-[12px] outline-none"
+                        className="w-full px-3 py-2 rounded-xl text-[13px] outline-none"
                         style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.08)" }}
                       />
                       <div className="mt-1.5 flex gap-1.5">
                         <button
                           onClick={() => { setRejectId(null); setRejectReason(""); }}
                           disabled={busy}
-                          className="flex-1 py-2 rounded-xl text-[12px] font-bold"
+                          className="flex-1 py-2 rounded-xl text-[13px] font-bold"
                           style={{ background: "#fff", color: "var(--color-text-sub)" }}
                         >
                           돌아가기
@@ -218,7 +218,7 @@ export default function AdminOrdersPage() {
                         <button
                           onClick={() => handleRefundAction(r, "reject")}
                           disabled={busy}
-                          className="flex-1 py-2 rounded-xl text-[12px] font-extrabold text-white disabled:opacity-50"
+                          className="flex-1 py-2 rounded-xl text-[13px] font-extrabold text-white disabled:opacity-50"
                           style={{ background: "#D85555" }}
                         >
                           {busy ? "처리 중…" : "거부 확정"}
@@ -230,7 +230,7 @@ export default function AdminOrdersPage() {
                       <button
                         onClick={() => { setRejectId(r.id); setRejectReason(""); }}
                         disabled={busy}
-                        className="flex-1 py-2 rounded-xl text-[12px] font-bold"
+                        className="flex-1 py-2 rounded-xl text-[13px] font-bold"
                         style={{ background: "#fff", color: "#D85555", border: "1px solid rgba(216,85,85,0.25)" }}
                       >
                         거부
@@ -238,7 +238,7 @@ export default function AdminOrdersPage() {
                       <button
                         onClick={() => handleRefundAction(r, "approve")}
                         disabled={busy}
-                        className="flex-1 py-2 rounded-xl text-[12px] font-extrabold text-white disabled:opacity-50"
+                        className="flex-1 py-2 rounded-xl text-[13px] font-extrabold text-white disabled:opacity-50"
                         style={{ background: "var(--color-primary)" }}
                       >
                         {busy ? "처리 중…" : r.status === "requested" ? "승인 (토스 환불 실행)" : "재시도"}
@@ -249,7 +249,7 @@ export default function AdminOrdersPage() {
               );
             })}
           </div>
-          {refundError && <p className="mt-2 text-[12px] font-bold" style={{ color: "#D85555" }}>{refundError}</p>}
+          {refundError && <p className="mt-2 text-[13px] font-bold" style={{ color: "#D85555" }}>{refundError}</p>}
         </section>
       )}
 
@@ -257,7 +257,7 @@ export default function AdminOrdersPage() {
       <div className="flex items-center gap-1.5 mb-4 overflow-x-auto pb-1">
         <button
           onClick={() => handleFilter("all")}
-          className="px-3 py-1.5 rounded-xl text-[12px] font-bold shrink-0"
+          className="px-3 py-1.5 rounded-xl text-[13px] font-bold shrink-0"
           style={{ background: filter === "all" ? "#2C2C2C" : "#fff", color: filter === "all" ? "#fff" : "#666", boxShadow: "0 2px 6px rgba(0,0,0,0.05)" }}
         >
           전체
@@ -266,7 +266,7 @@ export default function AdminOrdersPage() {
           <button
             key={s}
             onClick={() => handleFilter(s)}
-            className="px-3 py-1.5 rounded-xl text-[12px] font-bold shrink-0"
+            className="px-3 py-1.5 rounded-xl text-[13px] font-bold shrink-0"
             style={{
               background: filter === s ? ORDER_STATUS_MAP[s].color : "#fff",
               color: filter === s ? "#fff" : "#666",
@@ -301,7 +301,7 @@ export default function AdminOrdersPage() {
                     <span className="text-[11px] font-semibold text-text-light">{order.order_number}</span>
                     <div className="flex items-center gap-1.5">
                       <span
-                        className="text-[10px] font-extrabold px-2 py-0.5 chip-square"
+                        className="text-[11px] font-extrabold px-2 py-0.5 chip-square"
                         style={{ backgroundColor: `${status.color}15`, color: status.color }}
                       >
                         {status.label}
@@ -316,14 +316,14 @@ export default function AdminOrdersPage() {
                         {order.recipient_name ?? "후원 주문"} · {formatDate(order.created_at)}
                       </p>
                     </div>
-                    <span className="text-[14px] font-extrabold text-text-main shrink-0 ml-2">{formatWon(order.payment_amount)}</span>
+                    <span className="text-[15px] font-extrabold text-text-main shrink-0 ml-2">{formatWon(order.payment_amount)}</span>
                   </div>
                 </button>
 
                 {open && (
                   <div className="px-3.5 pb-3.5" style={{ borderTop: "1px dashed rgba(0,0,0,0.08)" }}>
                     {/* 상세 정보 */}
-                    <div className="pt-3 space-y-1 text-[12px] text-text-sub">
+                    <div className="pt-3 space-y-1 text-[13px] text-text-sub">
                       {order.items.map((item) => (
                         <p key={item.id}>· {item.product_name} × {item.quantity} = {formatWon(item.subtotal)}</p>
                       ))}
@@ -381,7 +381,7 @@ export default function AdminOrdersPage() {
                         ⚠ 취소/환불로 변경하면 재고가 복구돼요. 실제 결제금 환불은 토스페이먼츠 연동 후 자동 처리되며, 그 전에는 토스 상점관리자에서 직접 환불해야 해요.
                       </p>
                     )}
-                    {error && <p className="mt-2 text-[12px] font-bold" style={{ color: "#D85555" }}>{error}</p>}
+                    {error && <p className="mt-2 text-[13px] font-bold" style={{ color: "#D85555" }}>{error}</p>}
                   </div>
                 )}
               </div>

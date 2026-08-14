@@ -143,8 +143,8 @@ export default function AdminWeeklyIssuesPage() {
     return (
       <div className="px-5 pt-20 text-center">
         <Shield size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[14px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
-        <p className="text-[12px] text-text-sub">접근 권한이 없어요.</p>
+        <p className="text-[15px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
+        <p className="text-[13px] text-text-sub">접근 권한이 없어요.</p>
         <Link
           href="/mypage"
           className="inline-block mt-4 text-[13px] font-bold text-primary"
@@ -160,7 +160,7 @@ export default function AdminWeeklyIssuesPage() {
       <div className="mb-5">
         <button
           onClick={() => router.push("/admin")}
-          className="flex items-center gap-1 text-[12px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
         >
           <ArrowLeft size={14} />
           관리자
@@ -168,14 +168,14 @@ export default function AdminWeeklyIssuesPage() {
         <div className="flex items-end justify-between">
           <div>
             <div className="flex items-baseline gap-2 mb-1">
-              <h1 className="text-[22px] font-extrabold text-text-main tracking-tight">
+              <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
                 이번 주 이슈
               </h1>
-              <span className="text-[10px] font-semibold text-text-light">
+              <span className="text-[11px] font-semibold text-text-light">
                 Weekly Issues
               </span>
             </div>
-            <p className="text-[12px] text-text-sub">
+            <p className="text-[13px] text-text-sub">
               최근 7일 이내 시작한 이슈가 홈 화면에 노출돼요
             </p>
           </div>
@@ -201,7 +201,7 @@ export default function AdminWeeklyIssuesPage() {
           }}
         >
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[14px] font-extrabold text-text-main">
+            <h2 className="text-[15px] font-extrabold text-text-main">
               {editingId === "new" ? "새 이슈 작성" : "이슈 수정"}
             </h2>
             <button
@@ -326,7 +326,7 @@ export default function AdminWeeklyIssuesPage() {
               >
                 <div className="flex items-start gap-3">
                   <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center text-[22px] shrink-0"
+                    className="w-12 h-12 rounded-xl flex items-center justify-center text-[24px] shrink-0"
                     style={{
                       background: "linear-gradient(135deg, #F0F4F8 0%, #DCE4EE 100%)",
                     }}
@@ -336,7 +336,7 @@ export default function AdminWeeklyIssuesPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                       <span
-                        className="text-[10px] font-bold px-2 py-0.5 chip-square"
+                        className="text-[11px] font-bold px-2 py-0.5 chip-square"
                         style={{
                           color: isLive ? "#5B7A8F" : "#A38E7A",
                           backgroundColor: isLive ? "#E5E8ED" : "var(--color-gray-100)",
@@ -344,11 +344,11 @@ export default function AdminWeeklyIssuesPage() {
                       >
                         {isLive ? "노출 중" : "지난 이슈"}
                       </span>
-                      <span className="text-[10px] text-text-light">
+                      <span className="text-[11px] text-text-light">
                         · 주 시작 {item.week_start}
                       </span>
                     </div>
-                    <p className="text-[14px] font-extrabold text-text-main leading-tight">
+                    <p className="text-[15px] font-extrabold text-text-main leading-tight">
                       {item.title}
                     </p>
                     {item.body && (
@@ -361,14 +361,14 @@ export default function AdminWeeklyIssuesPage() {
                 <div className="flex gap-1.5 mt-3 pt-3 border-t border-divider">
                   <button
                     onClick={() => handleEdit(item)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold"
                     style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-primary)" }}
                   >
                     <Pencil size={12} /> 수정
                   </button>
                   <button
                     onClick={() => handleDelete(item)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold"
                     style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}
                   >
                     <Trash2 size={12} /> 삭제

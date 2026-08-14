@@ -87,13 +87,13 @@ export default function PageIntroBanner({
           <p className="text-[13px] font-extrabold text-text-main tracking-tight">
             {title}
           </p>
-          <p className="text-[12px] text-text-sub mt-1 leading-relaxed">
+          <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
             {description}
           </p>
           {ctaLabel && ctaHref && (
             <Link
               href={ctaHref}
-              className="inline-flex items-center gap-0.5 mt-2 text-[12px] font-extrabold active:scale-95 transition-transform"
+              className="inline-flex items-center gap-0.5 mt-2 text-[13px] font-extrabold active:scale-95 transition-transform"
               style={{ color: accent }}
             >
               {ctaLabel}

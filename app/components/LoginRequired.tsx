@@ -35,7 +35,7 @@ export default function LoginRequired({
       <div className="flex flex-col gap-2 w-full max-w-[280px]">
         <Link
           href={loginHref}
-          className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary text-white text-[14px] font-extrabold active:scale-[0.98] transition-transform"
+          className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary text-white text-[15px] font-extrabold active:scale-[0.98] transition-transform"
           style={{ boxShadow: "var(--shadow-primary)" }}
         >
           <LogIn size={16} strokeWidth={2.5} />

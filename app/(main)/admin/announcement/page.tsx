@@ -114,7 +114,7 @@ export default function AdminAnnouncementPage() {
             <Megaphone size={18} className="text-primary" />
             접속 팝업 공지
           </h1>
-          <p className="text-[12px] text-text-sub">
+          <p className="text-[13px] text-text-sub">
             등록하면 사용자 최초 접속 시 모달로 1회 표시 · 쪽지와 별개
           </p>
         </div>
@@ -122,7 +122,7 @@ export default function AdminAnnouncementPage() {
 
       {/* 현재 공지 */}
       <section className="mb-5">
-        <p className="text-[12px] font-extrabold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
+        <p className="text-[13px] font-extrabold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
           현재 표시 중인 공지
         </p>
         {current ? (
@@ -135,7 +135,7 @@ export default function AdminAnnouncementPage() {
               type="button"
               onClick={handleClear}
               disabled={busy}
-              className="mt-3 flex items-center gap-1.5 text-[12px] font-bold px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-50"
+              className="mt-3 flex items-center gap-1.5 text-[13px] font-bold px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-50"
               style={{ background: "var(--color-error-soft)", color: "#B84545" }}
             >
               <EyeOff size={13} /> 이 공지 내리기
@@ -153,7 +153,7 @@ export default function AdminAnnouncementPage() {
 
       {/* 새 공지 작성 */}
       <section className="mb-4">
-        <p className="text-[12px] font-extrabold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
+        <p className="text-[13px] font-extrabold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
           새 공지 ({message.length}/1000)
         </p>
         <textarea
@@ -162,7 +162,7 @@ export default function AdminAnnouncementPage() {
           rows={7}
           maxLength={1000}
           placeholder="예) 도시공존에 곧 굿즈샵이 열려요! 준비되면 알려드릴게요 🐾"
-          className="w-full rounded-2xl bg-white p-4 text-[14px] leading-relaxed resize-none"
+          className="w-full rounded-2xl bg-white p-4 text-[15px] leading-relaxed resize-none"
           style={{
             border: "1px solid rgba(0,0,0,0.06)",
             boxShadow: "inset 0 1px 2px rgba(0,0,0,0.02)",
@@ -175,7 +175,7 @@ export default function AdminAnnouncementPage() {
         type="button"
         onClick={handlePublish}
         disabled={busy || !message.trim()}
-        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[14px] font-extrabold active:scale-[0.98] disabled:opacity-60"
+        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[15px] font-extrabold active:scale-[0.98] disabled:opacity-60"
         style={{
           background: "linear-gradient(135deg, #C47E5A 0%, #A96A47 100%)",
           boxShadow: "0 6px 18px rgba(196,126,90,0.3)",

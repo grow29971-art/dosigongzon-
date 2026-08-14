@@ -184,8 +184,8 @@ export default function AdminNewsPage() {
     return (
       <div className="px-5 pt-20 text-center">
         <Shield size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[14px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
-        <p className="text-[12px] text-text-sub">접근 권한이 없어요.</p>
+        <p className="text-[15px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
+        <p className="text-[13px] text-text-sub">접근 권한이 없어요.</p>
         <Link
           href="/mypage"
           className="inline-block mt-4 text-[13px] font-bold text-primary"
@@ -202,7 +202,7 @@ export default function AdminNewsPage() {
       <div className="mb-5">
         <button
           onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[12px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
         >
           <ArrowLeft size={14} />
           마이페이지
@@ -210,14 +210,14 @@ export default function AdminNewsPage() {
         <div className="flex items-end justify-between">
           <div>
             <div className="flex items-baseline gap-2 mb-1">
-              <h1 className="text-[22px] font-extrabold text-text-main tracking-tight">
+              <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
                 뉴스 관리
               </h1>
-              <span className="text-[10px] font-semibold text-text-light">
+              <span className="text-[11px] font-semibold text-text-light">
                 Admin · News
               </span>
             </div>
-            <p className="text-[12px] text-text-sub">
+            <p className="text-[13px] text-text-sub">
               홈 화면 소식 & 일정을 수정·추가·삭제할 수 있어요
             </p>
           </div>
@@ -244,7 +244,7 @@ export default function AdminNewsPage() {
           }}
         >
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[14px] font-extrabold text-text-main">
+            <h2 className="text-[15px] font-extrabold text-text-main">
               {editingId === "new" ? "새 소식 작성" : "소식 수정"}
             </h2>
             <button
@@ -331,13 +331,13 @@ export default function AdminNewsPage() {
                 {uploadingImage ? (
                   <>
                     <Loader2 size={22} className="animate-spin mb-1" />
-                    <span className="text-[12px] font-semibold">업로드 중...</span>
+                    <span className="text-[13px] font-semibold">업로드 중...</span>
                   </>
                 ) : (
                   <>
                     <ImagePlus size={24} className="mb-1" />
-                    <span className="text-[12px] font-semibold">이미지 선택</span>
-                    <span className="text-[10px] mt-0.5">JPG/PNG · 20MB 이하</span>
+                    <span className="text-[13px] font-semibold">이미지 선택</span>
+                    <span className="text-[11px] mt-0.5">JPG/PNG · 20MB 이하</span>
                   </>
                 )}
                 <input
@@ -442,7 +442,7 @@ export default function AdminNewsPage() {
               onChange={(e) => setDraft((d) => ({ ...d, pinned: e.target.checked }))}
               className="w-4 h-4 accent-primary"
             />
-            <span className="text-[12px] font-semibold text-text-sub flex items-center gap-1">
+            <span className="text-[13px] font-semibold text-text-sub flex items-center gap-1">
               <Pin size={11} /> 상단 고정
             </span>
           </label>
@@ -518,19 +518,19 @@ export default function AdminNewsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                       <span
-                        className="text-[10px] font-bold px-2 py-0.5 chip-square"
+                        className="text-[11px] font-bold px-2 py-0.5 chip-square"
                         style={{ color: preset.color, backgroundColor: preset.bg }}
                       >
                         {preset.label}
                       </span>
                       {item.pinned && (
-                        <span className="text-[10px] font-bold text-primary flex items-center gap-0.5">
+                        <span className="text-[11px] font-bold text-primary flex items-center gap-0.5">
                           <Pin size={10} /> 고정
                         </span>
                       )}
                       {item.auto_imported && (
                         <span
-                          className="text-[10px] font-bold px-1.5 py-0.5 chip-square"
+                          className="text-[11px] font-bold px-1.5 py-0.5 chip-square"
                           style={{ color: "#7A6B8E", backgroundColor: "#EAE6E8" }}
                         >
                           자동수집
@@ -539,11 +539,11 @@ export default function AdminNewsPage() {
                       {(() => {
                         const label = resolveDdayLabel(item);
                         return label ? (
-                          <span className="text-[10px] text-text-light">· {label}</span>
+                          <span className="text-[11px] text-text-light">· {label}</span>
                         ) : null;
                       })()}
                     </div>
-                    <p className="text-[14px] font-extrabold text-text-main leading-tight truncate">
+                    <p className="text-[15px] font-extrabold text-text-main leading-tight truncate">
                       {item.title}
                     </p>
                     {item.description && (
@@ -552,7 +552,7 @@ export default function AdminNewsPage() {
                       </p>
                     )}
                     {item.auto_imported && item.source_name && (
-                      <p className="text-[10px] text-text-light mt-0.5 truncate">
+                      <p className="text-[11px] text-text-light mt-0.5 truncate">
                         출처: {item.source_name}
                       </p>
                     )}
@@ -561,14 +561,14 @@ export default function AdminNewsPage() {
                 <div className="flex gap-1.5 mt-3 pt-3 border-t border-divider">
                   <button
                     onClick={() => handleEdit(item)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold"
                     style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-primary)" }}
                   >
                     <Pencil size={12} /> 수정
                   </button>
                   <button
                     onClick={() => handleDelete(item)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold"
                     style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}
                   >
                     <Trash2 size={12} /> 삭제

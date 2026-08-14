@@ -300,7 +300,7 @@ export default function AdminBroadcastPage() {
             <Megaphone size={18} className="text-primary" />
             전체 쪽지 발송
           </h1>
-          <p className="text-[12px] text-text-sub">
+          <p className="text-[13px] text-text-sub">
             코호트별 일괄 발송 · 도배 trigger 면제 적용됨
           </p>
         </div>
@@ -308,7 +308,7 @@ export default function AdminBroadcastPage() {
 
       {/* 코호트 선택 */}
       <section className="mb-5">
-        <p className="text-[12px] font-extrabold mb-2.5 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
+        <p className="text-[13px] font-extrabold mb-2.5 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
           1. 대상 코호트
         </p>
         <div className="grid grid-cols-2 gap-2">
@@ -331,7 +331,7 @@ export default function AdminBroadcastPage() {
               >
                 <div className="flex items-center gap-2 mb-1">
                   <Icon size={14} color={c.color} />
-                  <span className="text-[12px] font-extrabold" style={{ color: c.color }}>
+                  <span className="text-[13px] font-extrabold" style={{ color: c.color }}>
                     {c.label}
                   </span>
                 </div>
@@ -346,7 +346,7 @@ export default function AdminBroadcastPage() {
 
       {/* 템플릿 */}
       <section className="mb-5">
-        <p className="text-[12px] font-extrabold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
+        <p className="text-[13px] font-extrabold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
           2. 템플릿 (선택)
         </p>
         <div className="flex flex-wrap gap-1.5">
@@ -370,7 +370,7 @@ export default function AdminBroadcastPage() {
 
       {/* 메시지 입력 */}
       <section className="mb-5">
-        <p className="text-[12px] font-extrabold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
+        <p className="text-[13px] font-extrabold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
           3. 메시지 ({message.length}/1000)
         </p>
         <textarea
@@ -379,7 +379,7 @@ export default function AdminBroadcastPage() {
           rows={10}
           maxLength={1000}
           placeholder="안녕하세요, 도시공존 운영자입니다..."
-          className="w-full rounded-2xl bg-white p-4 text-[14px] leading-relaxed resize-none"
+          className="w-full rounded-2xl bg-white p-4 text-[15px] leading-relaxed resize-none"
           style={{
             border: "1px solid rgba(0,0,0,0.06)",
             boxShadow: "inset 0 1px 2px rgba(0,0,0,0.02)",
@@ -427,7 +427,7 @@ export default function AdminBroadcastPage() {
         type="button"
         onClick={handleSend}
         disabled={sending || !message.trim()}
-        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[14px] font-extrabold active:scale-[0.98] disabled:opacity-60"
+        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[15px] font-extrabold active:scale-[0.98] disabled:opacity-60"
         style={{
           background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
           boxShadow: "0 6px 18px rgba(173, 94, 59,0.28)",
@@ -466,7 +466,7 @@ export default function AdminBroadcastPage() {
           </p>
           {result.firstError && (
             <p
-              className="mt-2 px-2.5 py-1.5 rounded-lg text-[12px] font-mono break-all"
+              className="mt-2 px-2.5 py-1.5 rounded-lg text-[13px] font-mono break-all"
               style={{ background: "rgba(0,0,0,0.06)", color: "#5C3F0A" }}
             >
               첫 에러: {result.firstError}

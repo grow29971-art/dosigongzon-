@@ -58,7 +58,7 @@ export default async function MonthlyReportPage({
       >
         <Link
           href="/mypage"
-          className="inline-flex items-center gap-1 text-[12px] font-semibold text-text-sub mb-3"
+          className="inline-flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3"
         >
           <ArrowLeft size={14} />
           마이페이지
@@ -105,10 +105,10 @@ export default async function MonthlyReportPage({
             style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "var(--shadow-card)" }}
           >
             <TrendingUp size={28} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-            <p className="text-[14px] font-extrabold text-text-main mb-1.5">
+            <p className="text-[15px] font-extrabold text-text-main mb-1.5">
               {year}년 {month}월엔 기록이 없어요
             </p>
-            <p className="text-[12px] text-text-sub leading-relaxed">
+            <p className="text-[13px] text-text-sub leading-relaxed">
               돌봄일지를 남기거나 고양이를 등록하면 이 달의 리포트가 채워져요.
             </p>
           </div>
@@ -143,7 +143,7 @@ function StatTile({ icon, label, value, unit, tint }: { icon: React.ReactNode; l
       </div>
       <div>
         <p className="text-[20px] font-extrabold text-text-main tracking-tight leading-none">
-          {value}<span className="text-[12px] font-bold text-text-sub ml-0.5">{unit}</span>
+          {value}<span className="text-[13px] font-bold text-text-sub ml-0.5">{unit}</span>
         </p>
         <p className="text-[11px] text-text-sub mt-1">{label}</p>
       </div>

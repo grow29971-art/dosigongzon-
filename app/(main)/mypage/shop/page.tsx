@@ -70,7 +70,7 @@ export default function ShopPage() {
       </div>
 
       <div className="px-4 pb-10">
-        <p className="text-[12px] mb-4" style={{ color: UI.textMuted }}>
+        <p className="text-[13px] mb-4" style={{ color: UI.textMuted }}>
           출석·돌봄 기록·매일 로그인으로 코인을 모아보세요. 케어 간식은 홈 다마고치에게, 테두리는 카드 꾸미기에 사용해요.
         </p>
 
@@ -96,7 +96,7 @@ export default function ShopPage() {
                     <div className="flex items-center justify-between">
                       <span style={{ fontSize: 28 }}>{item.icon}</span>
                       {owned[key] > 0 && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }}>
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }}>
                           보유 {owned[key]}
                         </span>
                       )}
@@ -106,7 +106,7 @@ export default function ShopPage() {
                     <button
                       onClick={() => buy(key)}
                       disabled={!canAfford || buyingKey === key}
-                      className="mt-1 py-2 rounded-xl text-[12px] font-black flex items-center justify-center gap-1"
+                      className="mt-1 py-2 rounded-xl text-[13px] font-black flex items-center justify-center gap-1"
                       style={{
                         background: canAfford ? `${UI.accent.green}22` : "rgba(255,255,255,0.06)",
                         boxShadow: canAfford ? `inset 0 0 0 1px ${UI.accent.green}` : "none",
@@ -120,7 +120,7 @@ export default function ShopPage() {
                 );
               })}
             </div>
-            <p className="text-[10px] mb-5" style={{ color: UI.textMuted }}>구매하면 홈 화면 다마고치 카드에 아이템 칩이 생겨요. 일일 밥주기 한도와 무관하게 쓸 수 있어요.</p>
+            <p className="text-[11px] mb-5" style={{ color: UI.textMuted }}>구매하면 홈 화면 다마고치 카드에 아이템 칩이 생겨요. 일일 밥주기 한도와 무관하게 쓸 수 있어요.</p>
 
             <p className="text-[11px] font-extrabold mb-2" style={{ color: UI.accent.gold }}>💎 테두리 코스메틱 — 카드를 레어하게</p>
             <div className="grid grid-cols-2 gap-3">
@@ -132,7 +132,7 @@ export default function ShopPage() {
                     <div className="flex items-center justify-between">
                       <span style={{ fontSize: 28 }}>{item.icon}</span>
                       {owned[key] > 0 && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }}>
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }}>
                           보유 {owned[key]}
                         </span>
                       )}
@@ -142,7 +142,7 @@ export default function ShopPage() {
                     <button
                       onClick={() => buy(key)}
                       disabled={!canAfford || buyingKey === key}
-                      className="mt-1 py-2 rounded-xl text-[12px] font-black flex items-center justify-center gap-1"
+                      className="mt-1 py-2 rounded-xl text-[13px] font-black flex items-center justify-center gap-1"
                       style={{
                         background: canAfford ? `${UI.accent.gold}22` : "rgba(255,255,255,0.06)",
                         boxShadow: canAfford ? `inset 0 0 0 1px ${UI.accent.gold}` : "none",
@@ -156,7 +156,7 @@ export default function ShopPage() {
                 );
               })}
             </div>
-            <p className="text-[10px] mt-3" style={{ color: UI.textMuted }}>카드창고나 가방에서 장착/해제할 수 있어요.</p>
+            <p className="text-[11px] mt-3" style={{ color: UI.textMuted }}>카드창고나 가방에서 장착/해제할 수 있어요.</p>
           </>
         )}
       </div>

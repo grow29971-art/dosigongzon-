@@ -201,7 +201,7 @@ export default function MyCardsPage() {
           ) : filtered.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-[32px] mb-3">🃏</p>
-              <p className="text-[14px] font-semibold" style={{ color: UI.textSub }}>{filter === "all" ? "아직 카드가 없어요" : `${RARITY_LABELS[filter as CardRarity]} 카드가 없어요`}</p>
+              <p className="text-[15px] font-semibold" style={{ color: UI.textSub }}>{filter === "all" ? "아직 카드가 없어요" : `${RARITY_LABELS[filter as CardRarity]} 카드가 없어요`}</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-4">
@@ -291,7 +291,7 @@ export default function MyCardsPage() {
             {/* 테두리 코스메틱 */}
             <div className="w-full rounded-2xl p-3" style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[12px] font-bold flex items-center gap-1.5" style={{ color: UI.textMain }}>
+                <span className="text-[13px] font-bold flex items-center gap-1.5" style={{ color: UI.textMain }}>
                   <Sparkles size={13} /> 테두리 코스메틱
                 </span>
                 {selected.equipped_border_key && (
@@ -303,14 +303,14 @@ export default function MyCardsPage() {
               </div>
               {selected.equipped_border_key ? (
                 <div className="flex items-center gap-2 rounded-xl px-2.5 py-2 mb-2" style={{ background: `${UI.accent.gold}1A` }}>
-                  <span style={{ fontSize: 18 }}>{SHOP_ITEMS[selected.equipped_border_key as ShopItemKey]?.icon}</span>
+                  <span style={{ fontSize: 20 }}>{SHOP_ITEMS[selected.equipped_border_key as ShopItemKey]?.icon}</span>
                   <div className="min-w-0">
                     <p className="text-[11px] font-bold truncate" style={{ color: UI.accent.gold }}>{SHOP_ITEMS[selected.equipped_border_key as ShopItemKey]?.name}</p>
-                    <p className="text-[10px] truncate" style={{ color: UI.textSub }}>{SHOP_ITEMS[selected.equipped_border_key as ShopItemKey]?.desc}</p>
+                    <p className="text-[11px] truncate" style={{ color: UI.textSub }}>{SHOP_ITEMS[selected.equipped_border_key as ShopItemKey]?.desc}</p>
                   </div>
                 </div>
               ) : (
-                <p className="text-[10px] mb-2" style={{ color: UI.textSub }}>장착한 테두리가 없어요.</p>
+                <p className="text-[11px] mb-2" style={{ color: UI.textSub }}>장착한 테두리가 없어요.</p>
               )}
               <div className="grid grid-cols-2 gap-1.5">
                 {BORDER_FX_ITEM_KEYS.filter(k => k !== selected.equipped_border_key).map((key) => {
@@ -320,8 +320,8 @@ export default function MyCardsPage() {
                     <button key={key} onClick={() => doEquip(selected.id, key)} disabled={qty <= 0 || equipLoading}
                       className="rounded-xl px-2 py-1.5 text-left flex items-center gap-1.5"
                       style={{ background: UI.panelAlt, opacity: qty > 0 ? 1 : 0.4 }}>
-                      <span style={{ fontSize: 14 }}>{item.icon}</span>
-                      <span className="text-[10px] font-bold truncate" style={{ color: UI.textMain }}>{item.name} ({qty})</span>
+                      <span style={{ fontSize: 15 }}>{item.icon}</span>
+                      <span className="text-[11px] font-bold truncate" style={{ color: UI.textMain }}>{item.name} ({qty})</span>
                     </button>
                   );
                 })}
@@ -335,7 +335,7 @@ export default function MyCardsPage() {
 
             {/* 자랑하기 */}
             <button onClick={() => shareCard(selected)}
-              className="w-full py-2.5 rounded-xl text-[12px] font-bold flex items-center justify-center gap-2"
+              className="w-full py-2.5 rounded-xl text-[13px] font-bold flex items-center justify-center gap-2"
               style={{ background: UI.panel, color: UI.textSub, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
               <Share2 size={13} /> 커뮤니티에 자랑하기
             </button>

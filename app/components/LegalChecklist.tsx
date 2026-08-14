@@ -55,7 +55,7 @@ export default function LegalChecklist({
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-bold text-text-main">{title}</p>
-          <p className="text-[12px] text-text-sub">{subtitle}</p>
+          <p className="text-[13px] text-text-sub">{subtitle}</p>
         </div>
       </div>
 

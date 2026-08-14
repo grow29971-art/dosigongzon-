@@ -247,7 +247,7 @@ export default function CheckoutPage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </button>
-        <h1 className="text-[16px] font-extrabold text-text-main">주문서</h1>
+        <h1 className="text-[17px] font-extrabold text-text-main">주문서</h1>
       </div>
 
       {loading ? (
@@ -258,7 +258,7 @@ export default function CheckoutPage() {
         </div>
       ) : items.length === 0 ? (
         <div className="flex flex-col items-center text-center pt-16 px-6">
-          <p className="text-[14px] font-bold text-text-main mb-4">주문할 상품이 없어요</p>
+          <p className="text-[15px] font-bold text-text-main mb-4">주문할 상품이 없어요</p>
           <button
             onClick={() => router.push("/shop")}
             className="px-5 py-2.5 rounded-2xl bg-primary text-white text-[13px] font-bold"
@@ -430,13 +430,13 @@ export default function CheckoutPage() {
                 <button
                   type="button"
                   onClick={() => setPointsInput(maxPoints)}
-                  className="shrink-0 px-3.5 rounded-xl text-[12px] font-bold active:scale-95 transition-transform"
+                  className="shrink-0 px-3.5 rounded-xl text-[13px] font-bold active:scale-95 transition-transform"
                   style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}
                 >
                   최대 사용
                 </button>
               </div>
-              <p className="text-[10px] text-text-light mt-1.5">
+              <p className="text-[11px] text-text-light mt-1.5">
                 1P = 1원 · 주문 금액의 30%까지 사용 가능 (이 주문 최대 {maxPoints.toLocaleString()}P) · 주문 취소 시 자동 반환
               </p>
             </section>
@@ -500,7 +500,7 @@ export default function CheckoutPage() {
           style={{ background: "var(--color-surface)", boxShadow: "0 -4px 16px rgba(20,40,70,0.08)" }}
         >
           {!PAYMENT_ENABLED && (
-            <p className="text-[12px] text-center font-semibold mb-2" style={{ color: "var(--color-warning)" }}>
+            <p className="text-[13px] text-center font-semibold mb-2" style={{ color: "var(--color-warning)" }}>
               {PAYMENT_DISABLED_MESSAGE}
             </p>
           )}
@@ -523,7 +523,7 @@ export default function CheckoutPage() {
             style={{ background: "var(--color-surface)", borderRadius: "var(--radius-modal) var(--radius-modal) 0 0", height: "70dvh" }}
           >
             <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
-              <span className="text-[14px] font-bold text-text-main">주소 검색</span>
+              <span className="text-[15px] font-bold text-text-main">주소 검색</span>
               <button onClick={() => setPostcodeOpen(false)} aria-label="닫기" className="w-8 h-8 flex items-center justify-center">
                 <X size={18} className="text-text-sub" />
               </button>

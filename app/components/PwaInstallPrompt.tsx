@@ -174,13 +174,13 @@ export default function PwaInstallPrompt() {
             <Download size={19} color="#fff" strokeWidth={2.3} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-primary)" }}>
+            <p className="text-[11px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-primary)" }}>
               INSTALL
             </p>
             <p className="text-[15px] font-extrabold text-text-main tracking-tight leading-tight mt-0.5">
               도시공존을 앱처럼 쓰세요
             </p>
-            <p className="text-[12px] text-text-sub mt-1 leading-snug">
+            <p className="text-[13px] text-text-sub mt-1 leading-snug">
               홈 화면에 추가하면 빠르게 열 수 있어요
             </p>
           </div>
@@ -198,10 +198,10 @@ export default function PwaInstallPrompt() {
         {/* iOS 안내 */}
         {showIosHint && (
           <div className="mt-3 rounded-xl p-3" style={{ background: "var(--color-primary-softer)" }}>
-            <p className="text-[12px] text-text-main leading-relaxed mb-2 font-semibold">
+            <p className="text-[13px] text-text-main leading-relaxed mb-2 font-semibold">
               사파리 하단 공유 버튼을 눌러주세요:
             </p>
-            <ol className="space-y-1 text-[12px] text-text-sub leading-relaxed pl-1">
+            <ol className="space-y-1 text-[13px] text-text-sub leading-relaxed pl-1">
               <li className="flex items-center gap-1.5">
                 <Share size={13} style={{ color: "var(--color-primary)" }} />
                 <span>공유 아이콘 탭</span>

@@ -36,18 +36,18 @@ export default async function RescuePage() {
       >
         <Link
           href="/"
-          className="flex items-center gap-1 text-[12px] font-semibold mb-3 opacity-85 active:scale-95"
+          className="flex items-center gap-1 text-[13px] font-semibold mb-3 opacity-85 active:scale-95"
         >
           <ArrowLeft size={14} />
           홈으로
         </Link>
         <div className="flex items-center gap-2 mb-1">
           <AlertTriangle size={20} />
-          <h1 className="text-[22px] font-extrabold tracking-tight">
+          <h1 className="text-[24px] font-extrabold tracking-tight">
             긴급 구조 피드
           </h1>
         </div>
-        <p className="text-[12px] opacity-85">
+        <p className="text-[13px] opacity-85">
           지금 도움이 필요한 아이들 · 가장 가까운 이웃의 손길이 절실해요
         </p>
       </div>
@@ -71,18 +71,18 @@ export default async function RescuePage() {
               background: "linear-gradient(135deg, #E88D5A 0%, #D85555 100%)",
             }}
           >
-            <span className="text-[16px]">🚨</span>
+            <span className="text-[17px]">🚨</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[12px] font-bold text-text-sub">
+            <p className="text-[13px] font-bold text-text-sub">
               위험 상태로 기록된 아이
             </p>
-            <p className="text-[22px] font-extrabold tracking-tight" style={{ color: "#D85555" }}>
+            <p className="text-[24px] font-extrabold tracking-tight" style={{ color: "#D85555" }}>
               {cats.length}마리
             </p>
           </div>
           <div
-            className="px-2.5 py-1 rounded-xl text-[10px] font-extrabold flex items-center gap-1"
+            className="px-2.5 py-1 rounded-xl text-[11px] font-extrabold flex items-center gap-1"
             style={{ background: "#FDECEC", color: "#B84545" }}
           >
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#D85555" }} />
@@ -99,10 +99,10 @@ export default async function RescuePage() {
             style={{ boxShadow: "var(--shadow-card)" }}
           >
             <p className="text-[30px] mb-2">💚</p>
-            <p className="text-[14px] font-extrabold text-text-main mb-1">
+            <p className="text-[15px] font-extrabold text-text-main mb-1">
               지금 긴급 상태인 아이가 없어요
             </p>
-            <p className="text-[12px] text-text-sub">
+            <p className="text-[13px] text-text-sub">
               모두 안전한 순간이에요. 평소처럼 돌봄 기록을 이어가 주세요.
             </p>
           </div>
@@ -137,7 +137,7 @@ export default async function RescuePage() {
                     <div className="flex-1 min-w-0 py-2.5 pr-3">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span
-                          className="px-2 py-0.5 rounded-lg text-[10px] font-extrabold flex items-center gap-1"
+                          className="px-2 py-0.5 rounded-lg text-[11px] font-extrabold flex items-center gap-1"
                           style={{ background: "#D85555", color: "#fff" }}
                         >
                           🚨 위험
@@ -156,7 +156,7 @@ export default async function RescuePage() {
                         </p>
                       )}
                       {cat.description && (
-                        <p className="text-[12px] text-text-sub mt-1 line-clamp-2 leading-snug">
+                        <p className="text-[13px] text-text-sub mt-1 line-clamp-2 leading-snug">
                           {cat.description}
                         </p>
                       )}
@@ -180,7 +180,7 @@ export default async function RescuePage() {
 
         {/* 하단 안내 */}
         <div
-          className="mt-5 rounded-2xl p-4 text-[12px] leading-snug"
+          className="mt-5 rounded-2xl p-4 text-[13px] leading-snug"
           style={{ background: "#FFF9F0", border: "1px solid rgba(232,141,90,0.25)" }}
         >
           <p className="font-extrabold text-text-main mb-1">💡 도움을 주고 싶다면</p>

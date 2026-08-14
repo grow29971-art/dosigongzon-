@@ -69,7 +69,7 @@ export default function FirstFeedPushPrompt({ catName }: { catName: string }) {
 
   if (done) {
     return (
-      <p className="mt-2.5 text-[12px] font-bold text-center" style={{ color: "rgba(255,255,255,0.85)" }}>
+      <p className="mt-2.5 text-[13px] font-bold text-center" style={{ color: "rgba(255,255,255,0.85)" }}>
         좋아요! {catName} 소식이 오면 살짝 알려드릴게요 🔔
       </p>
     );
@@ -96,7 +96,7 @@ export default function FirstFeedPushPrompt({ catName }: { catName: string }) {
         <button
           type="button"
           onClick={() => setShow(false)}
-          className="flex-1 py-2.5 rounded-xl text-[12px] font-bold active:scale-[0.98] transition-transform"
+          className="flex-1 py-2.5 rounded-xl text-[13px] font-bold active:scale-[0.98] transition-transform"
           style={{ background: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.75)" }}
         >
           괜찮아요

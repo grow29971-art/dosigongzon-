@@ -84,12 +84,12 @@ export default async function PostOGImage({ params }: { params: Params }) {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 26,
+                  fontSize: 24,
                 }}
               >
                 🐾
               </div>
-              <span style={{ fontSize: 22, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}>
+              <span style={{ fontSize: 24, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}>
                 도시공존 커뮤니티
               </span>
             </div>
@@ -102,7 +102,7 @@ export default async function PostOGImage({ params }: { params: Params }) {
                 borderRadius: 999,
                 background: cat.color,
                 color: "#fff",
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: 900,
                 boxShadow: `0 6px 16px ${cat.color}55`,
               }}

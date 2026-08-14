@@ -300,7 +300,7 @@ export default function PostDetailPage({
           <ArrowLeft size={24} className="text-text-main" />
         </button>
         <span
-          className="text-[12px] font-bold text-white px-2.5 py-1 rounded-lg"
+          className="text-[13px] font-bold text-white px-2.5 py-1 rounded-lg"
           style={{ backgroundColor: cat.color }}
         >
           {cat.emoji} {cat.label}
@@ -308,7 +308,7 @@ export default function PostDetailPage({
 
         {post.isPinned && (
           <span
-            className="text-[10px] font-bold px-2 py-1 rounded-lg flex items-center gap-1"
+            className="text-[11px] font-bold px-2 py-1 rounded-lg flex items-center gap-1"
             style={{ backgroundColor: "#C9A96120", color: "#C9A961" }}
           >
             <Pin size={10} /> 공지
@@ -470,7 +470,7 @@ export default function PostDetailPage({
             <button
               type="button"
               onClick={handleShareKakao}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] font-extrabold active:scale-95 transition-transform"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] font-extrabold active:scale-95 transition-transform"
               style={{
                 backgroundColor: "#FEE500",
                 color: "#3C1E1E",
@@ -478,13 +478,13 @@ export default function PostDetailPage({
               }}
               aria-label="카카오톡으로 공유"
             >
-              <span style={{ fontSize: 12 }}>💬</span>
+              <span style={{ fontSize: 13 }}>💬</span>
               카톡
             </button>
             <button
               type="button"
               onClick={handleShare}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] font-bold active:scale-95 transition-transform"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] font-bold active:scale-95 transition-transform"
               style={{
                 backgroundColor: shareStatus === "copied" ? "#6B8E6F" : "#FFFFFF",
                 border: `1px solid ${shareStatus === "copied" ? "#6B8E6F" : "var(--color-gray-200)"}`,
@@ -515,7 +515,7 @@ export default function PostDetailPage({
                   authorName: post.authorName ?? null,
                 })
               }
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[12px] active:scale-95 transition-transform"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] active:scale-95 transition-transform"
               style={{ backgroundColor: "#FFFFFF", border: "1px solid var(--color-gray-200)", color: "#A38E7A" }}
             >
               <Flag size={12} strokeWidth={2.2} />
@@ -537,7 +537,7 @@ export default function PostDetailPage({
             <Loader2 size={18} className="animate-spin text-primary" />
           </div>
         ) : comments.length === 0 ? (
-          <div className="text-center py-6 text-[12px] text-text-light">
+          <div className="text-center py-6 text-[13px] text-text-light">
             첫 번째 댓글을 남겨보세요
           </div>
         ) : (
@@ -659,7 +659,7 @@ export default function PostDetailPage({
                 replyTo ? `${replyTo.name}에게 답글...` : user ? "댓글을 입력하세요..." : "로그인 후 댓글을 작성할 수 있어요"
               }
               disabled={!user || submitting}
-              className="flex-1 px-4 py-2.5 rounded-full border border-border bg-surface-alt text-[14px] text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
+              className="flex-1 px-4 py-2.5 rounded-full border border-border bg-surface-alt text-[15px] text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
             />
             <button
               onClick={handleSubmitComment}
@@ -714,7 +714,7 @@ function CommentItem({
             <Image src={c.author_avatar_url} alt="" width={24} height={24} className="rounded-full object-cover" style={{ width: 24, height: 24 }} />
           ) : (
             <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center">
-              <span className="text-[10px] font-extrabold text-primary">
+              <span className="text-[11px] font-extrabold text-primary">
                 {c.author_name?.charAt(0) ?? "?"}
               </span>
             </div>

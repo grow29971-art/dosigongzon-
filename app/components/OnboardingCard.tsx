@@ -105,7 +105,7 @@ export default function OnboardingCard({
           <p className="text-[15px] font-bold text-text-main tracking-tight leading-tight">
             시작 가이드 <span style={{ color: "var(--color-primary)" }}>{doneCount}/{total}</span>
           </p>
-          <p className="text-[12px] text-text-sub mt-1 leading-snug">
+          <p className="text-[13px] text-text-sub mt-1 leading-snug">
             지도에서 아이 한 마리만 등록하면 시작돼요
           </p>
         </div>

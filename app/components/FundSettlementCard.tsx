@@ -38,8 +38,8 @@ export default function FundSettlementCard() {
       style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "var(--shadow-card-sm)" }}
     >
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-[14px] font-extrabold text-text-main tracking-tight">💛 후원금 투명 정산</h3>
-        <span className="text-[10px] font-bold text-text-light">실시간 공개</span>
+        <h3 className="text-[15px] font-extrabold text-text-main tracking-tight">💛 후원금 투명 정산</h3>
+        <span className="text-[11px] font-bold text-text-light">실시간 공개</span>
       </div>
 
       {/* 3분할 요약 */}
@@ -50,8 +50,8 @@ export default function FundSettlementCard() {
           { label: "잔액", value: balance, color: "var(--color-primary)" },
         ].map((s) => (
           <div key={s.label} className="text-center py-2.5 rounded-2xl" style={{ background: "var(--color-surface-alt)" }}>
-            <p className="text-[10px] font-bold text-text-light mb-0.5">{s.label}</p>
-            <p className="text-[14px] font-black tabular-nums" style={{ color: s.color }}>
+            <p className="text-[11px] font-bold text-text-light mb-0.5">{s.label}</p>
+            <p className="text-[15px] font-black tabular-nums" style={{ color: s.color }}>
               {s.value.toLocaleString()}
               <span className="text-[9px] font-bold text-text-light">원</span>
             </p>
@@ -67,7 +67,7 @@ export default function FundSettlementCard() {
       >
         <span className="text-[13px]">✂️</span>
         <span className="text-[11px] font-bold text-text-sub">후원금으로 중성화한 아이</span>
-        <span className="text-[14px] font-black tabular-nums" style={{ color: "#4F6B53" }}>
+        <span className="text-[15px] font-black tabular-nums" style={{ color: "#4F6B53" }}>
           {neuteredCount.toLocaleString()}
         </span>
         <span className="text-[11px] font-bold text-text-sub">마리</span>
@@ -84,7 +84,7 @@ export default function FundSettlementCard() {
               <p className="text-[11px] font-bold text-text-sub mb-1.5">최근 사용 내역</p>
               <div className="flex flex-col gap-1">
                 {disbursements.map((d, i) => (
-                  <div key={i} className="flex items-center gap-2 text-[12px]">
+                  <div key={i} className="flex items-center gap-2 text-[13px]">
                     <span className="text-text-light tabular-nums shrink-0">{d.spent_at.slice(5).replace("-", ".")}</span>
                     <span className="text-text-main truncate flex-1">{d.memo}</span>
                     <span className="font-extrabold tabular-nums shrink-0" style={{ color: "var(--color-like)" }}>-{won(d.amount)}</span>
@@ -96,7 +96,7 @@ export default function FundSettlementCard() {
           {/* "나머지는 전부"처럼 총량을 단정하는 표현은 실제 로직(상품별 후원 비율)과
               어긋나 표시광고법상 과장으로 읽힐 수 있다. 실제 계산과 1:1로 대응하는
               문장만 쓴다. (2026-08-07 법률 검토) */}
-          <p className="text-[10px] text-text-light mt-2.5">
+          <p className="text-[11px] text-text-light mt-2.5">
             일반 상품은 결제 금액의 5%, 전액 후원 상품은 100%가 이 금액에 쌓여요.
           </p>
         </>

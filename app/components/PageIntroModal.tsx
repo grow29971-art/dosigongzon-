@@ -110,7 +110,7 @@ export default function PageIntroModal({
           >
             {headerEmoji}
           </div>
-          <p className="text-[10px] font-extrabold tracking-[0.15em] mb-1" style={{ color: accentDark }}>
+          <p className="text-[11px] font-extrabold tracking-[0.15em] mb-1" style={{ color: accentDark }}>
             {badge}
           </p>
           <h2 className="text-[17px] font-extrabold text-text-main tracking-tight text-balance">
@@ -122,7 +122,7 @@ export default function PageIntroModal({
           <div className="flex flex-col gap-3">
             {items.map((it, i) => (
               <div key={i} className="flex gap-3">
-                <span className="text-[18px] shrink-0 leading-tight">{it.emoji}</span>
+                <span className="text-[20px] shrink-0 leading-tight">{it.emoji}</span>
                 <p className="text-[13px] leading-[1.65] text-text-sub">{it.text}</p>
               </div>
             ))}
@@ -132,7 +132,7 @@ export default function PageIntroModal({
         <div className="px-6 pb-6">
           <button
             onClick={close}
-            className="w-full py-3 rounded-2xl text-[14px] font-extrabold text-white active:scale-[0.98] transition-transform"
+            className="w-full py-3 rounded-2xl text-[15px] font-extrabold text-white active:scale-[0.98] transition-transform"
             style={{ background: `linear-gradient(135deg, ${accent} 0%, ${accentDark} 100%)` }}
           >
             {buttonLabel}

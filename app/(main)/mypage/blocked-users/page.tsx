@@ -54,7 +54,7 @@ export default function BlockedUsersPage() {
   if (!user) {
     return (
       <div className="px-5 pt-20 text-center">
-        <p className="text-[14px] text-text-sub">로그인이 필요해요.</p>
+        <p className="text-[15px] text-text-sub">로그인이 필요해요.</p>
         <Link href="/login?next=%2Fmypage%2Fblocked-users" className="inline-block mt-4 text-[13px] font-bold text-primary">
           로그인하기
         </Link>
@@ -74,7 +74,7 @@ export default function BlockedUsersPage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
-        <h1 className="text-[16px] font-extrabold text-text-main">차단한 사용자</h1>
+        <h1 className="text-[17px] font-extrabold text-text-main">차단한 사용자</h1>
       </div>
 
       <div className="px-4 mt-3">
@@ -144,13 +144,13 @@ export default function BlockedUsersPage() {
                       className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                       style={{ backgroundColor: "var(--color-gray-100)", border: "1.5px solid #E5E0D6" }}
                     >
-                      <span className="text-[14px] font-extrabold" style={{ color: "#A38E7A" }}>
+                      <span className="text-[15px] font-extrabold" style={{ color: "#A38E7A" }}>
                         {(b.nickname ?? "?").charAt(0)}
                       </span>
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-extrabold text-text-main truncate">
+                    <p className="text-[15px] font-extrabold text-text-main truncate">
                       {b.nickname ?? "이름 없음"}
                     </p>
                     <p className="text-[11px] text-text-light mt-0.5">
@@ -161,7 +161,7 @@ export default function BlockedUsersPage() {
                     type="button"
                     onClick={() => handleUnblock(b)}
                     disabled={busyId === b.id}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[12px] font-bold active:scale-95 transition-transform disabled:opacity-60"
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[13px] font-bold active:scale-95 transition-transform disabled:opacity-60"
                     style={{ backgroundColor: "var(--color-gray-50)", color: "#A38E7A", border: "1px solid var(--color-gray-200)" }}
                   >
                     {busyId === b.id ? (

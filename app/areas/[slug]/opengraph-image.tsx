@@ -96,7 +96,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
         <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 50 }}>
           <span
             style={{
-              fontSize: 22,
+              fontSize: 24,
               fontWeight: 700,
               color: "#8B5A3C",
               letterSpacing: 2,
@@ -130,7 +130,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
           {dongPreview && (
             <div
               style={{
-                fontSize: 22,
+                fontSize: 24,
                 color: "#6B5043",
                 fontWeight: 600,
                 marginTop: 4,
@@ -222,7 +222,7 @@ function Stat({
       </div>
       <span
         style={{
-          fontSize: 18,
+          fontSize: 20,
           fontWeight: 700,
           color: urgent ? "rgba(255,255,255,0.92)" : "#6B5043",
         }}

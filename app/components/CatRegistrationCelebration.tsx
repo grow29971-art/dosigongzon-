@@ -158,7 +158,7 @@ export default function CatRegistrationCelebration({
 
           <h2
             id="cat-register-celebration-title"
-            className="text-[18px] font-extrabold text-text-main text-center tracking-tight leading-tight px-2"
+            className="text-[20px] font-extrabold text-text-main text-center tracking-tight leading-tight px-2"
           >
             {headline}
           </h2>
@@ -178,7 +178,7 @@ export default function CatRegistrationCelebration({
                 card={card}
                 size="md"
               />
-              <p className="text-[10px] text-gray-400 mt-2">마이페이지 → 내 카드에서 확인할 수 있어요</p>
+              <p className="text-[11px] text-gray-400 mt-2">마이페이지 → 내 카드에서 확인할 수 있어요</p>
             </div>
           )}
           {/* 첫 밥 기록 — 등록 직후 가장 자연스러운 다음 행동. card 유무와 무관하게 노출.
@@ -209,7 +209,7 @@ export default function CatRegistrationCelebration({
           )}
           {isFirstEver && !card && (
             <div
-              className="rounded-2xl px-4 py-3 mb-3 text-[12px] leading-snug"
+              className="rounded-2xl px-4 py-3 mb-3 text-[13px] leading-snug"
               style={{ background: "#FFF9EF", color: "#7A5F3F" }}
             >
               <p className="font-extrabold mb-1" style={{ color: "var(--color-primary)" }}>
@@ -237,7 +237,7 @@ export default function CatRegistrationCelebration({
               type="button"
               onClick={handleInvite}
               disabled={inviting}
-              className="w-full mt-2 py-2.5 rounded-2xl text-[12px] font-extrabold flex items-center justify-center gap-1.5 active:scale-[0.98] disabled:opacity-60"
+              className="w-full mt-2 py-2.5 rounded-2xl text-[13px] font-extrabold flex items-center justify-center gap-1.5 active:scale-[0.98] disabled:opacity-60"
               style={{
                 backgroundColor: "#FEE500",
                 color: "#191919",

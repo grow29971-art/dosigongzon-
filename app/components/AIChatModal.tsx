@@ -174,7 +174,7 @@ export default function AIChatModal({
         {/* 면책 고지 */}
         <div className="px-4 py-2 flex items-start gap-2" style={{ backgroundColor: "var(--color-gray-50)", borderBottom: "1px solid #E5E0D6" }}>
           <Info size={13} className="shrink-0 mt-0.5" style={{ color: "#A38E7A" }} />
-          <p className="text-[10px] leading-relaxed" style={{ color: "#8B7A68" }}>
+          <p className="text-[11px] leading-relaxed" style={{ color: "#8B7A68" }}>
             AI 집사의 답변은 참고용이며 <b>전문 수의사 상담을 대체하지 않습니다</b>. 대화 내용은 Google AI에 전송되며 서버에 저장되지 않습니다.
           </p>
         </div>
@@ -187,7 +187,7 @@ export default function AIChatModal({
               className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
-                className="max-w-[80%] px-4 py-3 text-[14px] leading-relaxed whitespace-pre-line"
+                className="max-w-[80%] px-4 py-3 text-[15px] leading-relaxed whitespace-pre-line"
                 style={
                   msg.role === "user"
                     ? {
@@ -223,7 +223,7 @@ export default function AIChatModal({
                   key={q}
                   type="button"
                   onClick={() => send(q)}
-                  className="text-[12px] font-semibold px-3 py-2 rounded-2xl active:scale-95 transition-transform"
+                  className="text-[13px] font-semibold px-3 py-2 rounded-2xl active:scale-95 transition-transform"
                   style={{ backgroundColor: "#fff", color: "var(--color-primary)", border: "1.5px solid #E5DCD3" }}
                 >
                   {q}
@@ -273,7 +273,7 @@ export default function AIChatModal({
                 if (e.key === "Enter" && !e.nativeEvent.isComposing) send();
               }}
               placeholder="길고양이에 대해 물어보세요..."
-              className="flex-1 rounded-2xl px-4 py-3 text-[14px] outline-none transition"
+              className="flex-1 rounded-2xl px-4 py-3 text-[15px] outline-none transition"
               style={{
                 backgroundColor: "var(--color-gray-50)",
                 color: "#2A2A28",

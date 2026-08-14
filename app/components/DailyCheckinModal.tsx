@@ -82,19 +82,19 @@ export default function DailyCheckinModal() {
           <div className="p-6 text-center">
             <p style={{ fontSize: 44 }} className="mb-2">🎉</p>
             <p className="text-[17px] font-extrabold mb-1" style={{ color: "#2B2B3D" }}>오늘의 출석체크 완료!</p>
-            <p className="text-[12px] mb-4" style={{ color: "#8A8598" }}>오늘도 아이들을 챙겨주셔서 고마워요</p>
+            <p className="text-[13px] mb-4" style={{ color: "#8A8598" }}>오늘도 아이들을 챙겨주셔서 고마워요</p>
             <div className="flex justify-center gap-2 mb-5">
-              <span className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-extrabold" style={{ background: "#FFF3D6", color: "#C98A1E" }}>
+              <span className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] font-extrabold" style={{ background: "#FFF3D6", color: "#C98A1E" }}>
                 <Coins size={13} /> +{result.coins}
               </span>
               {result.exp > 0 && (
-                <span className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-extrabold" style={{ background: "#E3EEF9", color: "#2F5E93" }}>
+                <span className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] font-extrabold" style={{ background: "#E3EEF9", color: "#2F5E93" }}>
                   <Sparkles size={13} /> 카드 EXP +{result.exp}
                 </span>
               )}
             </div>
             {result.leveledUp && (
-              <p className="text-[12px] font-extrabold mb-3" style={{ color: "#4FAF63" }}>🎊 대표 카드가 Lv.{result.newLevel}로 레벨업했어요!</p>
+              <p className="text-[13px] font-extrabold mb-3" style={{ color: "#4FAF63" }}>🎊 대표 카드가 Lv.{result.newLevel}로 레벨업했어요!</p>
             )}
             <button onClick={() => setShow(false)} className="w-full py-3 rounded-2xl text-[13px] font-extrabold text-white"
               style={{ background: "linear-gradient(135deg,var(--color-primary),var(--color-primary-dark))" }}>
@@ -109,7 +109,7 @@ export default function DailyCheckinModal() {
                 <X size={14} style={{ color: "#8A8598" }} />
               </button>
             </div>
-            <p className="text-[12px] mb-4" style={{ color: "#8A8598" }}>오늘 아이들을 챙겼다면 체크해주세요</p>
+            <p className="text-[13px] mb-4" style={{ color: "#8A8598" }}>오늘 아이들을 챙겼다면 체크해주세요</p>
             <div className="flex flex-col gap-2 mb-5">
               {TASKS.map((t) => {
                 const on = checked.has(t.key);
@@ -118,7 +118,7 @@ export default function DailyCheckinModal() {
                     className="flex items-center gap-2.5 rounded-2xl px-3 py-3 text-left"
                     style={{ background: on ? "#E3EEF9" : "#F6F5FA" }}>
                     {on ? <CheckCircle2 size={20} style={{ color: "var(--color-primary)" }} /> : <Circle size={20} style={{ color: "#C4C0CE" }} />}
-                    <span style={{ fontSize: 16 }}>{t.emoji}</span>
+                    <span style={{ fontSize: 17 }}>{t.emoji}</span>
                     <span className="text-[13px] font-bold" style={{ color: on ? "#2F5E93" : "#6B6578" }}>{t.label}</span>
                   </button>
                 );

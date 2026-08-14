@@ -131,7 +131,7 @@ function ProductCard({ product, wished, onToggleWish }: { product: Product; wish
             )}
           </div>
           {product.is_donation ? (
-            <p className="text-[10px] font-semibold mt-1.5" style={{ color: "var(--color-warning)" }}>
+            <p className="text-[11px] font-semibold mt-1.5" style={{ color: "var(--color-warning)" }}>
               수익의 일부 후원 💛
             </p>
           ) : null}
@@ -295,7 +295,7 @@ export default function ShopPage() {
               <span className="text-[11px] font-bold text-text-sub">
                 {donation.goalLabel}까지
               </span>
-              <span className="text-[12px] font-bold" style={{ color: "var(--color-primary-dark)" }}>
+              <span className="text-[13px] font-bold" style={{ color: "var(--color-primary-dark)" }}>
                 {donation.total.toLocaleString()}원
                 <span className="font-bold text-text-light"> / {donation.goal.toLocaleString()}원</span>
               </span>
@@ -350,7 +350,7 @@ export default function ShopPage() {
               key={f.key}
               type="button"
               onClick={() => setFilter(f.key)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-[12px] font-bold active:scale-95 transition-transform shrink-0"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-[13px] font-bold active:scale-95 transition-transform shrink-0"
               style={{
                 background: on ? "var(--color-primary)" : "rgba(255,255,255,0.9)",
                 color: on ? "#fff" : "var(--color-text-sub)",
@@ -374,7 +374,7 @@ export default function ShopPage() {
       ) : visible.length === 0 ? (
         <div className="flex flex-col items-center text-center pt-14">
           <PawPrint size={40} className="mb-3" style={{ color: "var(--color-text-muted)" }} />
-          <p className="text-[14px] font-bold text-text-main mb-1">아직 준비 중이에요</p>
+          <p className="text-[15px] font-bold text-text-main mb-1">아직 준비 중이에요</p>
           <p className="text-[13px] text-text-sub">곧 채워질 거예요!</p>
         </div>
       ) : (

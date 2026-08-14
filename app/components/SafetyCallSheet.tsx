@@ -100,8 +100,8 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
       >
         <div className="flex items-start justify-between mb-1">
           <div>
-            <h2 className="text-[18px] font-extrabold text-text-main">곁에 있어요 🤍</h2>
-            <p className="text-[12px] text-text-sub mt-0.5 leading-relaxed">
+            <h2 className="text-[20px] font-extrabold text-text-main">곁에 있어요 🤍</h2>
+            <p className="text-[13px] text-text-sub mt-0.5 leading-relaxed">
               돌봄 중 위급하면 아래 버튼으로 전화 앱을 바로 열 수 있어요.
             </p>
           </div>
@@ -112,7 +112,7 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
 
         {/* 최초 1회 한계 고지 */}
         {showNotice && (
-          <div className="rounded-xl px-3.5 py-2.5 mt-3 text-[12px] leading-relaxed" style={{ backgroundColor: "#FFF6E8", color: "#6F5A3A" }}>
+          <div className="rounded-xl px-3.5 py-2.5 mt-3 text-[13px] leading-relaxed" style={{ backgroundColor: "#FFF6E8", color: "#6F5A3A" }}>
             이 기능은 휴대폰 전화 앱을 <b>대신 열어주는 바로가기</b>예요. 자동으로 발신되지 않고,
             통신 상태에 따라 실패할 수 있어요.
           </div>
@@ -137,12 +137,12 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
           {geo.status === "ok" && (
             <>
               {geo.address && (
-                <p className="text-[16px] font-extrabold text-text-main leading-snug">{geo.address}</p>
+                <p className="text-[17px] font-extrabold text-text-main leading-snug">{geo.address}</p>
               )}
               <p className="text-[13px] text-text-sub mt-0.5 tabular-nums">
                 위도 {geo.lat.toFixed(5)} · 경도 {geo.lng.toFixed(5)}
               </p>
-              <p className="text-[10px] text-text-light mt-1">이 위치는 화면에만 표시되고 어디에도 저장·전송되지 않아요.</p>
+              <p className="text-[11px] text-text-light mt-1">이 위치는 화면에만 표시되고 어디에도 저장·전송되지 않아요.</p>
             </>
           )}
         </div>
@@ -172,18 +172,18 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
         ) : (
           <div className="rounded-2xl px-4 py-4 mt-3 text-center" style={{ backgroundColor: "#FFF3EC", border: "1px solid #EAD3C6" }}>
             <p className="text-[15px] font-extrabold text-text-main">{confirmTarget.number}에 전화를 겁니다</p>
-            <p className="text-[12px] text-text-sub mt-0.5">{confirmTarget.desc}</p>
+            <p className="text-[13px] text-text-sub mt-0.5">{confirmTarget.desc}</p>
             <div className="flex gap-2.5 mt-3">
               <a
                 href={`tel:${confirmTarget.number}`}
-                className="flex-1 rounded-xl py-3 text-[14px] font-extrabold text-white active:scale-95 transition-transform"
+                className="flex-1 rounded-xl py-3 text-[15px] font-extrabold text-white active:scale-95 transition-transform"
                 style={{ backgroundColor: "var(--color-primary)" }}
               >
                 전화 걸기
               </a>
               <button
                 onClick={() => setConfirmTarget(null)}
-                className="flex-1 rounded-xl py-3 text-[14px] font-bold text-text-sub active:scale-95 transition-transform"
+                className="flex-1 rounded-xl py-3 text-[15px] font-bold text-text-sub active:scale-95 transition-transform"
                 style={{ backgroundColor: "var(--color-surface-alt)" }}
               >
                 취소
@@ -195,7 +195,7 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
         {/* 내 위치 보내기 (A-2) — 서버 무경유 */}
         <ShareMyLocation />
 
-        <p className="text-[10px] text-text-light text-center mt-3 leading-relaxed">
+        <p className="text-[11px] text-text-light text-center mt-3 leading-relaxed">
           휴대폰 기본 전화·문자·공유 기능으로 연결해주는 바로가기예요 · 잘못 눌렀다면 통화 전에 끊으면 돼요
         </p>
       </div>

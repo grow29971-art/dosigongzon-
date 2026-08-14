@@ -175,7 +175,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
-        <span className="text-[12px] font-semibold text-text-sub">
+        <span className="text-[13px] font-semibold text-text-sub">
           <Link href="/areas" className="hover:underline">서울</Link>
           {" · "}
           <Link href={`/areas/${slug}`} className="hover:underline">{gu.name}</Link>
@@ -185,14 +185,14 @@ export default async function AreaDongPage({ params }: { params: Params }) {
       <section className="px-5 pt-4">
         <div className="flex items-center gap-1.5 mb-1.5">
           <MapPin size={14} style={{ color: "var(--color-primary)" }} />
-          <span className="text-[12px] font-bold" style={{ color: "var(--color-primary)" }}>
+          <span className="text-[13px] font-bold" style={{ color: "var(--color-primary)" }}>
             서울특별시 {gu.name} {dongName}
           </span>
         </div>
-        <h1 className="text-[25px] font-extrabold text-text-main leading-tight tracking-tight">
+        <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight">
           {dongName} 길고양이 돌봄 지도
         </h1>
-        <p className="text-[14px] text-text-sub mt-2 leading-relaxed">
+        <p className="text-[15px] text-text-sub mt-2 leading-relaxed">
           {dongName}에 등록된 길고양이 <b style={{ color: "var(--color-primary)" }}>{catCount}마리</b>의 돌봄 기록.
           {urgent > 0 && (
             <> 지금 도움이 필요한 아이 <b style={{ color: "#D85555" }}>{urgent}마리</b>.</>
@@ -220,7 +220,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
 
       {/* 고양이 그리드 */}
       <section className="px-5 mt-7">
-        <h2 className="text-[16px] font-extrabold text-text-main mb-3 flex items-center gap-1.5">
+        <h2 className="text-[17px] font-extrabold text-text-main mb-3 flex items-center gap-1.5">
           <Heart size={15} style={{ color: "var(--color-like)" }} />
           {dongName} 고양이들
         </h2>
@@ -249,7 +249,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
             <p className="text-[15px] font-extrabold text-text-main leading-tight tracking-tight mb-1.5">
               {dongName}의 첫 번째 길집사가 되어주세요
             </p>
-            <p className="text-[12px] leading-relaxed mb-4" style={{ color: "rgba(92,74,62,0.85)" }}>
+            <p className="text-[13px] leading-relaxed mb-4" style={{ color: "rgba(92,74,62,0.85)" }}>
               아직 비어있어요. 한 번의 돌봄 기록이 이웃을 부르고,
               <br />
               곧 {dongName}에도 따뜻한 지도가 생겨요.
@@ -301,7 +301,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
                     />
                     {urgent && (
                       <span
-                        className="absolute top-2 left-2 text-[10px] font-extrabold px-2 py-0.5 rounded-lg text-white z-10"
+                        className="absolute top-2 left-2 text-[11px] font-extrabold px-2 py-0.5 rounded-lg text-white z-10"
                         style={{ backgroundColor: HEALTH_MAP.danger.color }}
                       >
                         🚨 긴급
@@ -330,7 +330,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
       {/* 주변 병원 (구 단위) */}
       {hospitals.length > 0 && (
         <section className="px-5 mt-7">
-          <h2 className="text-[16px] font-extrabold text-text-main mb-3 flex items-center gap-1.5">
+          <h2 className="text-[17px] font-extrabold text-text-main mb-3 flex items-center gap-1.5">
             <Stethoscope size={15} style={{ color: "#22B573" }} />
             {gu.name} 치료 병원
           </h2>
@@ -341,14 +341,14 @@ export default async function AreaDongPage({ params }: { params: Params }) {
                 className="bg-white rounded-2xl p-3.5"
                 style={{ boxShadow: "var(--shadow-card)" }}
               >
-                <p className="text-[14px] font-extrabold text-text-main">{h.name}</p>
+                <p className="text-[15px] font-extrabold text-text-main">{h.name}</p>
                 {h.address && (
-                  <p className="text-[12px] text-text-sub mt-0.5 leading-snug">{h.address}</p>
+                  <p className="text-[13px] text-text-sub mt-0.5 leading-snug">{h.address}</p>
                 )}
                 {h.phone && (
                   <a
                     href={`tel:${h.phone}`}
-                    className="text-[12px] font-bold mt-1 inline-block"
+                    className="text-[13px] font-bold mt-1 inline-block"
                     style={{ color: "#22B573" }}
                   >
                     📞 {h.phone}
@@ -363,7 +363,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
       {/* 같은 구의 다른 동 */}
       {otherDongs.length > 0 && (
         <section className="px-5 mt-7">
-          <h2 className="text-[14px] font-extrabold text-text-main mb-2.5">
+          <h2 className="text-[15px] font-extrabold text-text-main mb-2.5">
             {gu.name} 다른 동네
           </h2>
           <div className="grid grid-cols-3 gap-1.5">
@@ -371,7 +371,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
               <Link
                 key={d}
                 href={`/areas/${slug}/${encodeURIComponent(d)}`}
-                className="text-center py-2 rounded-xl bg-white text-[12px] font-bold active:scale-95 transition-transform"
+                className="text-center py-2 rounded-xl bg-white text-[13px] font-bold active:scale-95 transition-transform"
                 style={{ color: "#6B5043", boxShadow: "var(--shadow-card-sm)" }}
               >
                 {d}
@@ -380,7 +380,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
           </div>
           <Link
             href={`/areas/${slug}`}
-            className="block text-center text-[12px] font-bold mt-3"
+            className="block text-center text-[13px] font-bold mt-3"
             style={{ color: "var(--color-primary)" }}
           >
             {gu.name} 전체 보기 →

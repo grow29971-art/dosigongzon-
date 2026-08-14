@@ -98,7 +98,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
         <BookHeart size={16} color="rgba(255,233,168,0.9)" />
         <h2 className="text-[15px] font-bold text-white">추모일기</h2>
       </div>
-      <p className="text-[12px] mb-4" style={{ color: "rgba(255,255,255,0.4)" }}>
+      <p className="text-[13px] mb-4" style={{ color: "rgba(255,255,255,0.4)" }}>
         {mine.length > 0
           ? `${catName}에게 쓴 ${mine.length}번째 편지까지 왔어요.`
           : `${catName}에게 하고 싶은 말을 남겨보세요.`}
@@ -132,7 +132,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
             </p>
 
             <div>
-              <p className="text-[12px] font-bold" style={{ color: "rgba(255,233,168,0.9)" }}>
+              <p className="text-[13px] font-bold" style={{ color: "rgba(255,233,168,0.9)" }}>
                 잘 쓰지 않아도 돼요
               </p>
               <p className="text-[13px] leading-[1.8] mt-1" style={{ color: "rgba(255,255,255,0.62)" }}>
@@ -142,7 +142,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
             </div>
 
             <div>
-              <p className="text-[12px] font-bold" style={{ color: "rgba(255,233,168,0.9)" }}>
+              <p className="text-[13px] font-bold" style={{ color: "rgba(255,233,168,0.9)" }}>
                 매일 안 써도 돼요
               </p>
               <p className="text-[13px] leading-[1.8] mt-1" style={{ color: "rgba(255,255,255,0.62)" }}>
@@ -153,7 +153,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
             </div>
 
             <div>
-              <p className="text-[12px] font-bold" style={{ color: "rgba(255,233,168,0.9)" }}>
+              <p className="text-[13px] font-bold" style={{ color: "rgba(255,233,168,0.9)" }}>
                 기본은 나만 보기
               </p>
               <p className="text-[13px] leading-[1.8] mt-1" style={{ color: "rgba(255,255,255,0.62)" }}>
@@ -163,7 +163,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
             </div>
 
             <p
-              className="text-[12px] leading-[1.75] mt-1 px-3.5 py-3"
+              className="text-[13px] leading-[1.75] mt-1 px-3.5 py-3"
               style={{ color: "rgba(255,255,255,0.5)", background: "rgba(0,0,0,0.2)", borderRadius: 12 }}
             >
               며칠이 지나도 잠이 오지 않거나 일상이 어려울 만큼 힘들다면, 혼자 견디지 않으셔도 돼요.
@@ -179,7 +179,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
           className="p-4"
           style={{ borderRadius: 18, background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)" }}
         >
-          <p className="text-[12px] font-semibold mb-2.5" style={{ color: "rgba(255,255,255,0.6)" }}>
+          <p className="text-[13px] font-semibold mb-2.5" style={{ color: "rgba(255,255,255,0.6)" }}>
             오늘의 마음 <span style={{ color: "rgba(255,255,255,0.35)" }}>(선택)</span>
           </p>
           <div className="flex gap-1.5 mb-3.5">
@@ -200,7 +200,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
             ))}
           </div>
           {mood !== null && (
-            <p className="text-[12px] -mt-2 mb-3" style={{ color: "rgba(255,233,168,0.8)" }}>
+            <p className="text-[13px] -mt-2 mb-3" style={{ color: "rgba(255,233,168,0.8)" }}>
               {DIARY_MOODS.find((m) => m.value === mood)?.label}
             </p>
           )}
@@ -210,7 +210,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
             onChange={(e) => setBody(e.target.value.slice(0, 2000))}
             rows={4}
             placeholder={`${catName}에게 하고 싶은 말을 적어보세요. 한 줄이어도 괜찮아요.`}
-            className="w-full text-[14px] leading-[1.7] px-4 py-3 outline-none resize-none"
+            className="w-full text-[15px] leading-[1.7] px-4 py-3 outline-none resize-none"
             style={{
               borderRadius: 14,
               background: "rgba(0,0,0,0.22)",
@@ -222,7 +222,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
           <div className="flex items-center justify-between mt-3">
             <button
               onClick={() => setShared((v) => !v)}
-              className="flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded-full"
+              className="flex items-center gap-1.5 text-[13px] px-3 py-1.5 rounded-full"
               style={{
                 background: shared ? "rgba(255,233,168,0.16)" : "rgba(255,255,255,0.07)",
                 color: shared ? "rgba(255,233,168,0.95)" : "rgba(255,255,255,0.55)",
@@ -276,11 +276,11 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
             >
               <div className="flex items-center gap-2">
                 {m && <span className="text-[15px]">{m.emoji}</span>}
-                <span className="text-[12px]" style={{ color: "rgba(255,255,255,0.42)" }}>
+                <span className="text-[13px]" style={{ color: "rgba(255,255,255,0.42)" }}>
                   {fmt(d.created_at)}
                 </span>
                 {!isMine && d.author_name && (
-                  <span className="text-[12px]" style={{ color: "rgba(255,255,255,0.42)" }}>
+                  <span className="text-[13px]" style={{ color: "rgba(255,255,255,0.42)" }}>
                     · {d.author_name}
                   </span>
                 )}
@@ -310,7 +310,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
               </div>
 
               <p
-                className="text-[14px] leading-[1.8] mt-2.5 whitespace-pre-wrap"
+                className="text-[15px] leading-[1.8] mt-2.5 whitespace-pre-wrap"
                 style={{ color: "rgba(255,255,255,0.82)" }}
               >
                 {d.body}

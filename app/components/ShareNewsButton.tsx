@@ -77,7 +77,7 @@ export default function ShareNewsButton({ newsId, title, description, badgeLabel
       }}
     >
       {status === "idle" ? <Share2 size={16} aria-hidden="true" /> : <Check size={16} aria-hidden="true" />}
-      <span className="text-[14px] font-extrabold">{label}</span>
+      <span className="text-[15px] font-extrabold">{label}</span>
     </button>
   );
 }

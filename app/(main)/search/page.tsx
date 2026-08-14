@@ -139,7 +139,7 @@ function SearchPageInner() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="고양이·게시글·병원·가이드 검색"
-              className="flex-1 text-[14px] text-text-main bg-transparent outline-none placeholder:text-text-muted"
+              className="flex-1 text-[15px] text-text-main bg-transparent outline-none placeholder:text-text-muted"
             />
             {query && (
               <button
@@ -169,7 +169,7 @@ function SearchPageInner() {
               <button
                 key={t.key}
                 onClick={() => setTab(t.key)}
-                className="shrink-0 px-3 py-1.5 rounded-full text-[12px] font-bold active:scale-95 transition-transform"
+                className="shrink-0 px-3 py-1.5 rounded-full text-[13px] font-bold active:scale-95 transition-transform"
                 style={{
                   background: tab === t.key ? "var(--color-primary)" : "#FFFFFF",
                   color: tab === t.key ? "#FFFFFF" : "#6B5043",
@@ -271,8 +271,8 @@ function EmptyState({ icon, title, desc }: { icon: React.ReactNode; title: strin
       >
         {icon}
       </div>
-      <p className="text-[14px] font-extrabold text-text-main">{title}</p>
-      <p className="text-[12px] text-text-sub mt-1 leading-relaxed max-w-[280px]">{desc}</p>
+      <p className="text-[15px] font-extrabold text-text-main">{title}</p>
+      <p className="text-[13px] text-text-sub mt-1 leading-relaxed max-w-[280px]">{desc}</p>
     </div>
   );
 }
@@ -304,7 +304,7 @@ function SectionCats({ items, tab }: { items: CatHit[]; query: string; tab: Sear
                 />
                 {urgent && (
                   <span
-                    className="absolute top-2 left-2 text-[10px] font-extrabold px-2 py-0.5 rounded-lg text-white z-10"
+                    className="absolute top-2 left-2 text-[11px] font-extrabold px-2 py-0.5 rounded-lg text-white z-10"
                     style={{ backgroundColor: HEALTH_MAP.danger.color }}
                   >
                     🚨 긴급
@@ -339,8 +339,8 @@ function SectionPosts({ items }: { items: PostHit[] }) {
             className="block rounded-2xl bg-white p-3.5 active:scale-[0.99] transition-transform"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <p className="text-[14px] font-extrabold text-text-main line-clamp-1">{p.title}</p>
-            <p className="text-[12px] text-text-sub mt-0.5 line-clamp-2 leading-snug">{p.content}</p>
+            <p className="text-[15px] font-extrabold text-text-main line-clamp-1">{p.title}</p>
+            <p className="text-[13px] text-text-sub mt-0.5 line-clamp-2 leading-snug">{p.content}</p>
             <div className="flex items-center gap-2 mt-1.5 text-[11px] text-text-light">
               <span>{p.author_name ?? "익명"}</span>
               <span>·</span>
@@ -371,17 +371,17 @@ function SectionHospitals({ items }: { items: HospitalHit[] }) {
             className="rounded-2xl bg-white p-3.5"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <p className="text-[14px] font-extrabold text-text-main">{h.name}</p>
+            <p className="text-[15px] font-extrabold text-text-main">{h.name}</p>
             {h.address && (
               <div className="flex items-start gap-1 mt-1">
                 <MapPin size={11} className="text-text-light mt-0.5 shrink-0" />
-                <span className="text-[12px] text-text-sub leading-snug">{h.address}</span>
+                <span className="text-[13px] text-text-sub leading-snug">{h.address}</span>
               </div>
             )}
             {h.phone && (
               <a
                 href={`tel:${h.phone}`}
-                className="inline-flex items-center gap-1 mt-1.5 text-[12px] font-bold"
+                className="inline-flex items-center gap-1 mt-1.5 text-[13px] font-bold"
                 style={{ color: "#22B573" }}
               >
                 <Phone size={11} />
@@ -422,7 +422,7 @@ function SectionUsers({ items }: { items: UserHit[] }) {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <p className="text-[14px] font-extrabold text-text-main truncate">{u.nickname}</p>
+                  <p className="text-[15px] font-extrabold text-text-main truncate">{u.nickname}</p>
                   {u.admin_title && (
                     <span
                       className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md shrink-0"
@@ -456,7 +456,7 @@ function SectionGuides({ items }: { items: GuideHit[] }) {
             className="block rounded-2xl bg-white p-3.5 active:scale-[0.99] transition-transform"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <p className="text-[14px] font-extrabold text-text-main">{g.title}</p>
+            <p className="text-[15px] font-extrabold text-text-main">{g.title}</p>
           </Link>
         ))}
       </div>
@@ -469,7 +469,7 @@ function SectionHeader({ icon, label, count }: { icon: React.ReactNode; label: s
   return (
     <div className="flex items-center gap-1.5 mb-2.5 px-1">
       <span style={{ color: "var(--color-primary)" }}>{icon}</span>
-      <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">{label}</h2>
+      <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">{label}</h2>
       <span className="text-[11px] font-bold text-text-light">{count}</span>
     </div>
   );

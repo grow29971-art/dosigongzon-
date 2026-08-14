@@ -25,8 +25,8 @@ const VARIANT_STYLE: Record<Variant, React.CSSProperties> = {
 };
 
 const SIZE_STYLE: Record<Size, React.CSSProperties> = {
-  lg: { height: 52, padding: "0 20px", fontSize: 16, borderRadius: "var(--radius-input)" },
-  md: { height: 44, padding: "0 16px", fontSize: 14, borderRadius: "var(--radius-input)" },
+  lg: { height: 52, padding: "0 20px", fontSize: 17, borderRadius: "var(--radius-input)" },
+  md: { height: 44, padding: "0 16px", fontSize: 15, borderRadius: "var(--radius-input)" },
   sm: { height: 34, padding: "0 12px", fontSize: 13, borderRadius: "var(--radius-square-lg)" },
 };
 

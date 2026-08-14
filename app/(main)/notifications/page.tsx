@@ -80,8 +80,8 @@ export default function NotificationsPage() {
           style={{ background: "#FFFFFF", borderRadius: "var(--radius-card)", border: "1px solid rgba(0,0,0,0.04)" }}
         >
           <Bell size={36} strokeWidth={1.2} className="text-text-light mx-auto mb-3" />
-          <p className="text-[14px] font-bold text-text-main mb-1">아직 알림이 없어요</p>
-          <p className="text-[12px] text-text-sub">고양이를 등록하면 돌봄 소식을 받을 수 있어요</p>
+          <p className="text-[15px] font-bold text-text-main mb-1">아직 알림이 없어요</p>
+          <p className="text-[13px] text-text-sub">고양이를 등록하면 돌봄 소식을 받을 수 있어요</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -138,7 +138,7 @@ export default function NotificationsPage() {
                         <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: config.color }} />
                       )}
                     </div>
-                    <p className="text-[12px] text-text-sub mt-0.5 truncate">
+                    <p className="text-[13px] text-text-sub mt-0.5 truncate">
                       <span className="font-semibold" style={{ color: config.color }}>{item.targetName}</span>
                       {item.type === "dm_received"
                         ? `: ${item.message}`
@@ -152,7 +152,7 @@ export default function NotificationsPage() {
                         ? ` ${item.message}`
                         : ` 에 ${item.message}`}
                     </p>
-                    <p className="text-[10px] text-text-light mt-1">{formatTime(item.createdAt)}</p>
+                    <p className="text-[11px] text-text-light mt-1">{formatTime(item.createdAt)}</p>
                   </div>
 
                   <ChevronRight size={14} className="text-text-light shrink-0 mt-3" />

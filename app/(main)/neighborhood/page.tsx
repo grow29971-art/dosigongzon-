@@ -163,7 +163,7 @@ export default function NeighborhoodPage() {
                       {formatRelativeTime(post.createdAt)}
                     </span>
                   </div>
-                  <h3 className="text-[16px] font-bold text-text-main leading-snug mb-1.5">
+                  <h3 className="text-[17px] font-bold text-text-main leading-snug mb-1.5">
                     {post.title}
                   </h3>
                   <p className="text-[13px] text-text-sub leading-relaxed line-clamp-2 mb-3">
@@ -215,10 +215,10 @@ export default function NeighborhoodPage() {
               <div className="w-10 h-1 rounded-full bg-border" />
             </div>
             <div className="px-5 py-3 border-b border-divider">
-              <h2 className="text-[16px] font-bold text-text-main">
+              <h2 className="text-[17px] font-bold text-text-main">
                 내 동네 설정
               </h2>
-              <p className="text-[12px] text-text-sub mt-0.5">
+              <p className="text-[13px] text-text-sub mt-0.5">
                 해당 지역의 소식만 모아서 볼 수 있어요
               </p>
             </div>
@@ -299,13 +299,13 @@ export default function NeighborhoodPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => setShowWarning(false)}
-                className="flex-1 py-3 rounded-2xl text-[14px] font-semibold text-text-sub bg-surface-alt active:scale-95 transition-transform"
+                className="flex-1 py-3 rounded-2xl text-[15px] font-semibold text-text-sub bg-surface-alt active:scale-95 transition-transform"
               >
                 취소
               </button>
               <button
                 onClick={confirmWrite}
-                className="flex-1 py-3 rounded-2xl text-[14px] font-semibold text-white bg-primary active:scale-95 transition-transform"
+                className="flex-1 py-3 rounded-2xl text-[15px] font-semibold text-white bg-primary active:scale-95 transition-transform"
               >
                 확인하고 글쓰기
               </button>

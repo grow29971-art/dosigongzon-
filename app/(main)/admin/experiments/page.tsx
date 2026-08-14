@@ -138,20 +138,20 @@ export default function AdminExperimentsPage() {
             onChange={(e) => setAreaName(e.target.value)}
             placeholder="예: 망원1동"
             maxLength={40}
-            className="flex-1 rounded-xl px-3.5 text-[14px] outline-none focus:ring-2"
+            className="flex-1 rounded-xl px-3.5 text-[15px] outline-none focus:ring-2"
             style={{ minHeight: 46, background: "var(--color-surface-alt)", border: "1px solid transparent" }}
           />
           <button
             onClick={createExperiment}
             disabled={busy}
-            className="flex items-center gap-1.5 px-4 rounded-xl text-white text-[14px] font-bold disabled:opacity-60"
+            className="flex items-center gap-1.5 px-4 rounded-xl text-white text-[15px] font-bold disabled:opacity-60"
             style={{ minHeight: 46, background: "var(--color-primary)" }}
           >
             {busy ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
             생성
           </button>
         </div>
-        {error && <p role="alert" className="mt-2 text-[12px] font-semibold" style={{ color: "#C24747" }}>{error}</p>}
+        {error && <p role="alert" className="mt-2 text-[13px] font-semibold" style={{ color: "#C24747" }}>{error}</p>}
       </div>
 
       {/* 목록 */}
@@ -184,7 +184,7 @@ export default function AdminExperimentsPage() {
                 {exp.status === "active" ? "진행 중" : exp.status === "ended" ? "종료" : "대기"}
               </span>
             </div>
-            <p className="text-[12px] mt-1" style={{ color: "var(--color-text-light)" }}>
+            <p className="text-[13px] mt-1" style={{ color: "var(--color-text-light)" }}>
               {exp.starts_at} ~ {exp.ends_at} · 참여 {exp.member_count}명
             </p>
           </button>
@@ -200,11 +200,11 @@ export default function AdminExperimentsPage() {
       {selected && (
         <div className="rounded-2xl p-5" style={{ background: "#fff", boxShadow: "0 4px 20px rgba(25,31,40,0.06)" }}>
           <div className="flex items-center justify-between mb-1">
-            <h2 className="text-[16px] font-extrabold">{selected.experiment.public_area_name} 지표</h2>
+            <h2 className="text-[17px] font-extrabold">{selected.experiment.public_area_name} 지표</h2>
             {selected.experiment.status === "active" && (
               <button
                 onClick={() => endExperiment(selected.experiment.id)}
-                className="inline-flex items-center gap-1 text-[12px] font-bold"
+                className="inline-flex items-center gap-1 text-[13px] font-bold"
                 style={{ color: "#C24747" }}
               >
                 <StopCircle size={14} /> 조기 종료
@@ -244,7 +244,7 @@ export default function AdminExperimentsPage() {
           <h3 className="text-[13px] font-extrabold mt-5 mb-2">이벤트 집계 (건수 전용)</h3>
           <div className="flex flex-wrap gap-1.5">
             {Object.entries(selected.eventCounts).length === 0 && (
-              <p className="text-[12px]" style={{ color: "var(--color-text-light)" }}>아직 이벤트가 없어요.</p>
+              <p className="text-[13px]" style={{ color: "var(--color-text-light)" }}>아직 이벤트가 없어요.</p>
             )}
             {Object.entries(selected.eventCounts).map(([event, count]) => (
               <span

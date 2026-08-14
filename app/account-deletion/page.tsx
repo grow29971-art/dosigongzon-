@@ -36,9 +36,9 @@ export default function AccountDeletionPage() {
         <header className="mb-6">
           <div className="flex items-center gap-2 mb-2">
             <Cat size={16} style={{ color: "var(--color-primary)" }} />
-            <span className="text-[12px] font-bold" style={{ color: "var(--color-primary)" }}>도시공존</span>
+            <span className="text-[13px] font-bold" style={{ color: "var(--color-primary)" }}>도시공존</span>
           </div>
-          <h1 className="text-[26px] font-extrabold text-text-main tracking-tight leading-tight">
+          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight leading-tight">
             계정 삭제 안내
           </h1>
           <p className="text-[13px] text-text-sub mt-2 leading-relaxed">
@@ -63,7 +63,7 @@ export default function AccountDeletionPage() {
             >
               <Trash2 size={16} color="#fff" strokeWidth={2.5} />
             </div>
-            <h2 className="text-[16px] font-extrabold text-text-main">
+            <h2 className="text-[17px] font-extrabold text-text-main">
               방법 1. 앱·웹에서 직접 삭제 (권장)
             </h2>
           </div>
@@ -76,7 +76,7 @@ export default function AccountDeletionPage() {
               >
                 1
               </span>
-              <span className="text-[14px] text-text-main leading-relaxed">
+              <span className="text-[15px] text-text-main leading-relaxed">
                 <Link href="/login" className="font-bold underline" style={{ color: "var(--color-primary)" }}>로그인</Link>
                 {" "}후 우측 하단{" "}
                 <strong>마이</strong>{" "}탭 진입
@@ -89,7 +89,7 @@ export default function AccountDeletionPage() {
               >
                 2
               </span>
-              <span className="text-[14px] text-text-main leading-relaxed">
+              <span className="text-[15px] text-text-main leading-relaxed">
                 페이지 맨 아래로 스크롤 → <strong>계정 삭제</strong> 버튼 탭
               </span>
             </li>
@@ -100,7 +100,7 @@ export default function AccountDeletionPage() {
               >
                 3
               </span>
-              <span className="text-[14px] text-text-main leading-relaxed">
+              <span className="text-[15px] text-text-main leading-relaxed">
                 확인 안내에 따라 진행 — 즉시 처리됩니다
               </span>
             </li>
@@ -137,7 +137,7 @@ export default function AccountDeletionPage() {
             >
               <Mail size={16} color="#fff" strokeWidth={2.5} />
             </div>
-            <h2 className="text-[16px] font-extrabold text-text-main">
+            <h2 className="text-[17px] font-extrabold text-text-main">
               방법 2. 이메일로 요청
             </h2>
           </div>
@@ -176,7 +176,7 @@ export default function AccountDeletionPage() {
         >
           <div className="flex items-center gap-2 mb-3">
             <ShieldAlert size={16} style={{ color: "#B84545" }} />
-            <h2 className="text-[14px] font-extrabold" style={{ color: "#B84545" }}>
+            <h2 className="text-[15px] font-extrabold" style={{ color: "#B84545" }}>
               삭제되는 데이터
             </h2>
           </div>
@@ -201,7 +201,7 @@ export default function AccountDeletionPage() {
         >
           <div className="flex items-center gap-2 mb-3">
             <Clock size={16} style={{ color: "#4A7BA8" }} />
-            <h2 className="text-[14px] font-extrabold" style={{ color: "#4A7BA8" }}>
+            <h2 className="text-[15px] font-extrabold" style={{ color: "#4A7BA8" }}>
               일부 보존되는 데이터 (법령상 의무)
             </h2>
           </div>
@@ -224,7 +224,7 @@ export default function AccountDeletionPage() {
         </section>
 
         {/* 안내 */}
-        <p className="text-[12px] text-text-light leading-relaxed text-center mt-6 mb-4 px-2">
+        <p className="text-[13px] text-text-light leading-relaxed text-center mt-6 mb-4 px-2">
           삭제된 데이터는 복구할 수 없습니다.
           <br />
           처리 관련 문의: <a href="mailto:grow29971@gmail.com" className="underline">grow29971@gmail.com</a>

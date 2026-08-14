@@ -46,7 +46,7 @@ export default function UIListRow({
     <>
       {icon !== undefined && (
         <div
-          className="w-10 h-10 flex items-center justify-center shrink-0 text-[19px]"
+          className="w-10 h-10 flex items-center justify-center shrink-0 text-[20px]"
           style={{ background: iconBg, borderRadius: "var(--radius-square-lg)" }}
         >
           {icon}
@@ -63,7 +63,7 @@ export default function UIListRow({
       ) : (
         <>
           {value !== undefined && (
-            <span className="text-[14px] font-bold text-text-sub shrink-0">{value}</span>
+            <span className="text-[15px] font-bold text-text-sub shrink-0">{value}</span>
           )}
           {interactive && chevron && (
             <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />

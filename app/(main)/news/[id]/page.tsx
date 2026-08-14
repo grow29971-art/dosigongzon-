@@ -100,7 +100,7 @@ export default function NewsDetailPage({
         {ddayLabel && (
           <div className="absolute top-12 right-4">
             <span
-              className="text-[12px] font-bold px-3 py-1.5 rounded-xl backdrop-blur-sm"
+              className="text-[13px] font-bold px-3 py-1.5 rounded-xl backdrop-blur-sm"
               style={{
                 color: isEnded ? "#8B7562" : isToday ? "#fff" : isUpcoming ? "#B84545" : "#6B8E6F",
                 backgroundColor: isEnded
@@ -119,7 +119,7 @@ export default function NewsDetailPage({
 
         {/* 이미지 위 설명 */}
         {news.description && (
-          <p className="absolute bottom-4 left-5 right-5 text-white text-[14px] font-semibold leading-snug drop-shadow-md">
+          <p className="absolute bottom-4 left-5 right-5 text-white text-[15px] font-semibold leading-snug drop-shadow-md">
             {news.description}
           </p>
         )}
@@ -137,7 +137,7 @@ export default function NewsDetailPage({
               {preset.label}
             </span>
             {news.date_label && (
-              <span className="text-[12px] text-text-light">
+              <span className="text-[13px] text-text-light">
                 {news.date_label}
               </span>
             )}
@@ -146,7 +146,7 @@ export default function NewsDetailPage({
             {news.title}
           </h1>
           {news.description && (
-            <p className="text-[14px] text-text-sub leading-relaxed">
+            <p className="text-[15px] text-text-sub leading-relaxed">
               {news.description}
             </p>
           )}
@@ -155,7 +155,7 @@ export default function NewsDetailPage({
         {/* 본문 */}
         {news.body && (
           <div className="card p-5 mb-4">
-            <div className="text-[14px] text-text-main leading-[1.8] whitespace-pre-line">
+            <div className="text-[15px] text-text-main leading-[1.8] whitespace-pre-line">
               {news.body}
             </div>
           </div>

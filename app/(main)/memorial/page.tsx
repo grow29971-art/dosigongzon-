@@ -71,7 +71,7 @@ function MemorialAbout({ defaultOpen }: { defaultOpen: boolean }) {
         aria-expanded={open}
       >
         <Info size={15} color="rgba(255,233,168,0.9)" />
-        <span className="text-[14px] font-bold text-white flex-1">고양이별은 어떤 곳인가요?</span>
+        <span className="text-[15px] font-bold text-white flex-1">고양이별은 어떤 곳인가요?</span>
         <ChevronDown
           size={16}
           color="rgba(255,255,255,0.5)"
@@ -81,7 +81,7 @@ function MemorialAbout({ defaultOpen }: { defaultOpen: boolean }) {
 
       {open && (
         <div className="px-5 pb-5" style={{ animation: "memFadeIn 300ms ease both" }}>
-          <p className="text-[14px] leading-[1.85]" style={{ color: "rgba(255,255,255,0.72)" }}>
+          <p className="text-[15px] leading-[1.85]" style={{ color: "rgba(255,255,255,0.72)" }}>
             길에서 살아가는 아이들은 언젠가 먼저 떠납니다. 그때 지도에서 이름을 지워버리면
             함께한 시간까지 없던 일이 되는 것 같습니다. 고양이별은 그 아이들이 머무는 곳이에요.
             지도에서만 내려올 뿐, <b className="text-white">이름도 사진도 그동안의 돌봄 기록도 그대로 남습니다.</b>
@@ -132,7 +132,7 @@ function MemorialAbout({ defaultOpen }: { defaultOpen: boolean }) {
           </div>
 
           <p
-            className="text-[12px] leading-[1.75] mt-5 px-4 py-3"
+            className="text-[13px] leading-[1.75] mt-5 px-4 py-3"
             style={{ color: "rgba(255,255,255,0.5)", background: "rgba(0,0,0,0.18)", borderRadius: 12 }}
           >
             떠나보내는 일을 서두르지 않으셔도 돼요. 며칠 보이지 않는 것과 떠난 것은 다르니까요.
@@ -314,7 +314,7 @@ export default function MemorialPage() {
           {/* 곁별 수 = 고양이별에 온 아이 수 */}
           <CatStarPlanet size={148} companions={cats?.length ?? 0} />
           <h1 className="text-[24px] font-bold text-white mt-1">고양이별</h1>
-          <p className="text-[14px] leading-[1.7] mt-3" style={{ color: "rgba(255,255,255,0.62)" }}>
+          <p className="text-[15px] leading-[1.7] mt-3" style={{ color: "rgba(255,255,255,0.62)" }}>
             먼저 떠난 아이들이 머무는 곳이에요.
             <br />
             이름과 돌본 기록은 지워지지 않아요.
@@ -326,7 +326,7 @@ export default function MemorialPage() {
 
         {/* 목록 */}
         {cats === null && (
-          <p className="text-center text-[14px] mt-10" style={{ color: "rgba(255,255,255,0.45)" }}>
+          <p className="text-center text-[15px] mt-10" style={{ color: "rgba(255,255,255,0.45)" }}>
             불러오는 중…
           </p>
         )}
@@ -340,7 +340,7 @@ export default function MemorialPage() {
             </p>
             <Link
               href="/map"
-              className="inline-flex items-center justify-center h-[46px] px-6 rounded-2xl mt-7 text-[14px] font-bold"
+              className="inline-flex items-center justify-center h-[46px] px-6 rounded-2xl mt-7 text-[15px] font-bold"
               style={{ background: "rgba(255,255,255,0.92)", color: "#3a2c4d" }}
             >
               지도로 돌아가기
@@ -394,7 +394,7 @@ export default function MemorialPage() {
                       {cat.region ?? "지역 미상"} · 함께한 {cared}일
                       {cat.care_log_count > 0 && ` · 돌봄 기록 ${cat.care_log_count}개`}
                     </p>
-                    <p className="text-[12px] mt-0.5" style={{ color: "rgba(255,255,255,0.34)" }}>
+                    <p className="text-[13px] mt-0.5" style={{ color: "rgba(255,255,255,0.34)" }}>
                       {new Date(cat.memorial_at).toLocaleDateString("ko-KR", {
                         year: "numeric",
                         month: "long",
@@ -407,7 +407,7 @@ export default function MemorialPage() {
 
                 {cat.memorial_note && (
                   <p
-                    className="text-[14px] leading-[1.7] mt-4 px-4 py-3 whitespace-pre-wrap"
+                    className="text-[15px] leading-[1.7] mt-4 px-4 py-3 whitespace-pre-wrap"
                     style={{
                       color: "rgba(255,255,255,0.78)",
                       background: "rgba(0,0,0,0.18)",
@@ -430,7 +430,7 @@ export default function MemorialPage() {
                 <div className="flex items-center gap-2 mt-2">
                   <button
                     onClick={() => handleFlower(cat.id)}
-                    className="flex-1 h-[42px] rounded-xl flex items-center justify-center gap-1.5 text-[14px] font-semibold active:scale-[0.97] transition-transform"
+                    className="flex-1 h-[42px] rounded-xl flex items-center justify-center gap-1.5 text-[15px] font-semibold active:scale-[0.97] transition-transform"
                     style={{
                       background: flowered.has(cat.id) ? "rgba(255,233,168,0.92)" : "rgba(255,255,255,0.1)",
                       color: flowered.has(cat.id) ? "#3a2c4d" : "rgba(255,255,255,0.8)",
@@ -494,10 +494,10 @@ export default function MemorialPage() {
                 <Trash2 size={20} color="#C94A4A" />
               </div>
 
-              <h2 className="text-[18px] font-bold text-gray-900">
+              <h2 className="text-[20px] font-bold text-gray-900">
                 {deleteTarget.name}(을)를 영구 삭제할까요?
               </h2>
-              <p className="text-[14px] leading-[1.7] text-gray-600 mt-2">
+              <p className="text-[15px] leading-[1.7] text-gray-600 mt-2">
                 고양이별에서 내리는 게 아니라 <b className="text-gray-900">기록째 지웁니다.</b>{" "}
                 되돌릴 수 없어요.
               </p>
@@ -519,7 +519,7 @@ export default function MemorialPage() {
                 onChange={(e) => setDeleteText(e.target.value)}
                 placeholder={deleteTarget.name}
                 autoFocus
-                className="w-full text-[14px] px-4 py-3 outline-none"
+                className="w-full text-[15px] px-4 py-3 outline-none"
                 style={{ borderRadius: 12, background: "#F6F3F0", border: "1px solid #E7E0DA" }}
               />
 
@@ -533,11 +533,11 @@ export default function MemorialPage() {
               </button>
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="w-full h-[46px] mt-1 text-[14px] font-medium text-gray-500"
+                className="w-full h-[46px] mt-1 text-[15px] font-medium text-gray-500"
               >
                 취소
               </button>
-              <p className="text-[12px] text-gray-400 text-center mt-1">
+              <p className="text-[13px] text-gray-400 text-center mt-1">
                 지도로 되돌리려는 거라면 취소하고 <b>되돌리기</b>를 눌러주세요.
               </p>
             </div>

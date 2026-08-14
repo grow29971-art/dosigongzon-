@@ -277,10 +277,10 @@ export default function AdminInboxPage() {
     return (
       <div className="px-5 pt-20 text-center">
         <Shield size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[14px] font-bold text-text-main mb-1">
+        <p className="text-[15px] font-bold text-text-main mb-1">
           관리자 전용 페이지예요
         </p>
-        <p className="text-[12px] text-text-sub">접근 권한이 없어요.</p>
+        <p className="text-[13px] text-text-sub">접근 권한이 없어요.</p>
         <Link
           href="/mypage"
           className="inline-block mt-4 text-[13px] font-bold text-primary"
@@ -300,20 +300,20 @@ export default function AdminInboxPage() {
       <div className="mb-4">
         <button
           onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[12px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
         >
           <ArrowLeft size={14} />
           마이페이지
         </button>
         <div className="flex items-baseline gap-2 mb-1">
-          <h1 className="text-[22px] font-extrabold text-text-main tracking-tight">
+          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
             신고·문의 관리
           </h1>
-          <span className="text-[10px] font-semibold text-text-light">
+          <span className="text-[11px] font-semibold text-text-light">
             Admin · Inbox
           </span>
         </div>
-        <p className="text-[12px] text-text-sub">
+        <p className="text-[13px] text-text-sub">
           유저가 보낸 신고와 문의를 확인하고 처리해요
         </p>
       </div>
@@ -358,13 +358,13 @@ export default function AdminInboxPage() {
               >
                 <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
                   <span
-                    className="text-[10px] font-extrabold px-2 py-0.5 chip-square text-white"
+                    className="text-[11px] font-extrabold px-2 py-0.5 chip-square text-white"
                     style={{ backgroundColor: "#D85555" }}
                   >
                     {REPORT_REASON_LABELS[r.reason]}
                   </span>
                   <span
-                    className="text-[10px] font-bold px-2 py-0.5 chip-square"
+                    className="text-[11px] font-bold px-2 py-0.5 chip-square"
                     style={{
                       backgroundColor: `${REPORT_STATUS_COLORS[r.status]}22`,
                       color: REPORT_STATUS_COLORS[r.status],
@@ -372,14 +372,14 @@ export default function AdminInboxPage() {
                   >
                     {REPORT_STATUS_LABELS[r.status]}
                   </span>
-                  <span className="text-[10px] text-text-light">
+                  <span className="text-[11px] text-text-light">
                     · {r.target_type}
                   </span>
-                  <span className="text-[10px] text-text-light ml-auto">
+                  <span className="text-[11px] text-text-light ml-auto">
                     {formatRelative(r.created_at)}
                   </span>
                 </div>
-                <p className="text-[12px] font-semibold text-text-main mb-1">
+                <p className="text-[13px] font-semibold text-text-main mb-1">
                   신고자: 익명
                 </p>
                 {r.target_snapshot && (
@@ -392,7 +392,7 @@ export default function AdminInboxPage() {
                   </div>
                 )}
                 {r.description && (
-                  <p className="text-[12px] text-text-sub leading-relaxed mb-2">
+                  <p className="text-[13px] text-text-sub leading-relaxed mb-2">
                     {r.description}
                   </p>
                 )}
@@ -472,7 +472,7 @@ export default function AdminInboxPage() {
               >
                 <div className="flex items-center gap-1.5 mb-1.5">
                   <span
-                    className="text-[10px] font-bold px-2 py-0.5 chip-square"
+                    className="text-[11px] font-bold px-2 py-0.5 chip-square"
                     style={{
                       backgroundColor: `${INQUIRY_STATUS_COLORS[i.status]}22`,
                       color: INQUIRY_STATUS_COLORS[i.status],
@@ -480,11 +480,11 @@ export default function AdminInboxPage() {
                   >
                     {INQUIRY_STATUS_LABELS[i.status]}
                   </span>
-                  <span className="text-[10px] text-text-light ml-auto">
+                  <span className="text-[11px] text-text-light ml-auto">
                     {formatRelative(i.created_at)}
                   </span>
                 </div>
-                <p className="text-[14px] font-extrabold text-text-main mb-1 leading-tight">
+                <p className="text-[15px] font-extrabold text-text-main mb-1 leading-tight">
                   {i.subject}
                 </p>
                 <p className="text-[11px] text-text-light mb-2">
@@ -492,7 +492,7 @@ export default function AdminInboxPage() {
                   {i.user_email && `(${i.user_email})`}
                 </p>
                 <div
-                  className="text-[12px] leading-relaxed p-3 rounded-lg whitespace-pre-wrap"
+                  className="text-[13px] leading-relaxed p-3 rounded-lg whitespace-pre-wrap"
                   style={{ backgroundColor: "var(--color-gray-50)", color: "#4A3F35" }}
                 >
                   {i.body}
@@ -505,7 +505,7 @@ export default function AdminInboxPage() {
                       기존 답변
                     </p>
                     <div
-                      className="text-[12px] leading-relaxed p-3 rounded-lg whitespace-pre-wrap"
+                      className="text-[13px] leading-relaxed p-3 rounded-lg whitespace-pre-wrap"
                       style={{
                         backgroundColor: "var(--color-sage-soft)",
                         border: "1px solid #CDE5CF",
@@ -610,7 +610,7 @@ function TabButton({
       <span className="text-[13px] font-extrabold tracking-tight">{label}</span>
       {count > 0 && (
         <span
-          className="text-[10px] font-extrabold px-1.5 py-0.5 chip-square tabular-nums"
+          className="text-[11px] font-extrabold px-1.5 py-0.5 chip-square tabular-nums"
           style={{
             backgroundColor: active ? "rgba(255,255,255,0.3)" : `${color}22`,
             color: active ? "#FFFFFF" : color,

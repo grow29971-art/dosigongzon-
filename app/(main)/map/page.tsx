@@ -2057,7 +2057,7 @@ export default function MapPage() {
   if (!apiKey) {
     return (
       <div className="px-5 pt-14 pb-8">
-        <h1 className="text-[22px] font-extrabold text-text-main tracking-tight mb-2">
+        <h1 className="text-[24px] font-extrabold text-text-main tracking-tight mb-2">
           우리 동네 시민참여 돌봄 고양이
         </h1>
         <div className="card p-6 mt-6">
@@ -2068,8 +2068,8 @@ export default function MapPage() {
             지도 키가 설정되지 않았어요
           </p>
           <p className="text-[13px] text-text-sub leading-relaxed">
-            <code className="text-[12px] bg-surface-alt px-1.5 py-0.5 rounded">.env.local</code>에{" "}
-            <code className="text-[12px] bg-surface-alt px-1.5 py-0.5 rounded">NEXT_PUBLIC_KAKAO_MAP_KEY</code>를
+            <code className="text-[13px] bg-surface-alt px-1.5 py-0.5 rounded">.env.local</code>에{" "}
+            <code className="text-[13px] bg-surface-alt px-1.5 py-0.5 rounded">NEXT_PUBLIC_KAKAO_MAP_KEY</code>를
             추가하고 개발 서버를 재시작해주세요.
           </p>
         </div>
@@ -2114,12 +2114,12 @@ export default function MapPage() {
                 }).length;
               })()}
             </span>
-            <span className="text-[10px] text-text-light">/</span>
+            <span className="text-[11px] text-text-light">/</span>
             <span className="text-[11px] font-bold text-text-light">{cats.length}</span>
             {todayVisit != null && (
               <>
                 <span className="w-px h-3 mx-0.5" style={{ backgroundColor: "var(--color-gray-200)" }} />
-                <span className="text-[10px] font-bold text-text-light">방문자 {todayVisit.toLocaleString()}명</span>
+                <span className="text-[11px] font-bold text-text-light">방문자 {todayVisit.toLocaleString()}명</span>
               </>
             )}
           </div>
@@ -2186,7 +2186,7 @@ export default function MapPage() {
                   value={searchQ}
                   onChange={(e) => setSearchQ(e.target.value)}
                   placeholder="이름·동네·태그로 찾기"
-                  className="flex-1 text-[12px] font-semibold bg-transparent outline-none placeholder:text-text-light"
+                  className="flex-1 text-[13px] font-semibold bg-transparent outline-none placeholder:text-text-light"
                 />
                 {searchQ && (
                   <button
@@ -2346,7 +2346,7 @@ export default function MapPage() {
           >
             <Shield size={15} className="mt-0.5 shrink-0" style={{ color: "#fff" }} />
             <div className="min-w-0 flex-1">
-              <p className="text-[12px] font-bold text-white">
+              <p className="text-[13px] font-bold text-white">
                 둘러보기 모드예요
               </p>
               <p className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.8)" }}>
@@ -2408,12 +2408,12 @@ export default function MapPage() {
                   <Shield size={16} color="var(--color-sage)" strokeWidth={2.5} />
                 )}
                 <div className="min-w-0 flex-1">
-                  <p className="text-[12px] font-bold leading-tight" style={{ color: hasAlert ? "var(--color-error)" : "var(--color-sage)" }}>
+                  <p className="text-[13px] font-bold leading-tight" style={{ color: hasAlert ? "var(--color-error)" : "var(--color-sage)" }}>
                     {hasAlert
                       ? `${currentGu || "전체"} 학대 경보 ${alertedCount}건`
                       : `${currentGu || "이 동네"} · 현재 경보 없음`}
                   </p>
-                  <p className="text-[10px] mt-0.5" style={{ color: hasAlert ? "var(--color-error)" : "var(--color-sage)" }}>
+                  <p className="text-[11px] mt-0.5" style={{ color: hasAlert ? "var(--color-error)" : "var(--color-sage)" }}>
                     {hasAlert
                       ? Array.from(alertDongs.entries()).map(([dong, cnt]) => `${dong} ${cnt}건`).join(" · ")
                       : "학대 징후 발견 시 시민 제보가 가장 큰 힘이에요"}
@@ -2431,7 +2431,7 @@ export default function MapPage() {
                   <p className="text-[11px] leading-relaxed mt-2.5" style={{ color: "var(--color-gray-700)" }}>
                     동물보호법 제8조 위반 · <b>3년 이하 징역 또는 3,000만원 이하 벌금</b>
                   </p>
-                  <div className="flex flex-wrap gap-1.5 text-[10px]" style={{ color: "var(--color-gray-700)" }}>
+                  <div className="flex flex-wrap gap-1.5 text-[11px]" style={{ color: "var(--color-gray-700)" }}>
                     <span>· 증거 촬영(사진·영상·시간·장소)</span>
                     <span>· 지도에 경보 기록 남기기</span>
                     <span>· 구청·경찰·동물보호콜센터 신고</span>
@@ -2500,12 +2500,12 @@ export default function MapPage() {
       {catsError && (
         <div className="absolute top-32 left-4 right-4 z-10">
           <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: "var(--color-gray-100)" }}>
-            <p className="text-[12px] font-semibold" style={{ color: "var(--color-error)" }}>
+            <p className="text-[13px] font-semibold" style={{ color: "var(--color-error)" }}>
               {catsError}
             </p>
             <button
               onClick={fetchCats}
-              className="text-[12px] font-bold text-primary mt-1"
+              className="text-[13px] font-bold text-primary mt-1"
             >
               다시 시도
             </button>
@@ -2517,8 +2517,8 @@ export default function MapPage() {
       {mapError && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="bg-white rounded-2xl px-5 py-4 max-w-[280px] shadow-lg pointer-events-auto">
-            <p className="text-[14px] font-bold text-text-main mb-1">지도를 불러올 수 없어요</p>
-            <p className="text-[12px] text-text-sub leading-relaxed">{mapError}</p>
+            <p className="text-[15px] font-bold text-text-main mb-1">지도를 불러올 수 없어요</p>
+            <p className="text-[13px] text-text-sub leading-relaxed">{mapError}</p>
           </div>
         </div>
       )}
@@ -2552,7 +2552,7 @@ export default function MapPage() {
               <Globe size={16} color="#fff" strokeWidth={2.5} />
             </div>
             <div>
-              <p className="text-[12px] font-bold text-white leading-tight">전체</p>
+              <p className="text-[13px] font-bold text-white leading-tight">전체</p>
               <p className="text-[9px] font-semibold" style={{ color: "rgba(255,255,255,0.7)" }}>전체 채팅</p>
             </div>
           </button>
@@ -2565,7 +2565,7 @@ export default function MapPage() {
               className="px-3 py-2 rounded-2xl max-w-[160px]"
               style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "0 2px 10px rgba(0,0,0,0.08)" }}
             >
-              <p className="text-[10px] font-semibold text-text-main leading-snug">전체 채팅에서 동네 이웃을 만나보세요 💬</p>
+              <p className="text-[11px] font-semibold text-text-main leading-snug">전체 채팅에서 동네 이웃을 만나보세요 💬</p>
             </div>
           )}
         </div>
@@ -2661,7 +2661,7 @@ export default function MapPage() {
             className="px-3 py-2 rounded-2xl max-w-[180px] text-right"
             style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "0 2px 10px rgba(0,0,0,0.08)" }}
           >
-            <p className="text-[10px] font-semibold text-text-main leading-snug">우리 동네 고양이를 등록하고 품앗이 케어해보세요 🐾</p>
+            <p className="text-[11px] font-semibold text-text-main leading-snug">우리 동네 고양이를 등록하고 품앗이 케어해보세요 🐾</p>
             <p className="text-[9px] text-text-light mt-0.5 leading-snug">
               고양이 위치는 보안상 동 단위로 표기돼요.
               <br />
@@ -2716,10 +2716,10 @@ export default function MapPage() {
               {chatArea === "전체"
                 ? <Globe size={16} style={{ color: "var(--color-sage)" }} />
                 : <MessageCircle size={16} className="text-primary" />}
-              <span className="text-[14px] font-bold text-text-main flex-1">
+              <span className="text-[15px] font-bold text-text-main flex-1">
                 {chatArea === "전체" ? "전체 채팅" : `${chatArea} 채팅`}
               </span>
-              <span className="text-[10px] text-text-light">{chatMessages.length}개 메시지</span>
+              <span className="text-[11px] text-text-light">{chatMessages.length}개 메시지</span>
               <button onClick={() => setChatOpen(false)} className="w-8 h-8 rounded-full bg-surface-alt flex items-center justify-center active:scale-90">
                 <X size={16} className="text-text-sub" />
               </button>
@@ -2739,7 +2739,7 @@ export default function MapPage() {
               {chatMessages.length === 0 && (
                 <div className="flex flex-col items-center justify-center h-full text-text-light">
                   <MessageCircle size={32} strokeWidth={1.2} className="mb-2 opacity-30" />
-                  <p className="text-[12px]">아직 대화가 없어요</p>
+                  <p className="text-[13px]">아직 대화가 없어요</p>
                   <p className="text-[11px] mt-0.5">첫 메시지를 보내보세요!</p>
                 </div>
               )}
@@ -2753,17 +2753,17 @@ export default function MapPage() {
                         <img src={thumbnailUrl(msg.author_avatar_url, 56) ?? msg.author_avatar_url} alt="" loading="lazy" decoding="async" className="w-7 h-7 rounded-full object-cover shrink-0 mt-0.5" />
                       ) : (
                         <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                          <span className="text-[10px] font-bold text-primary">{(msg.author_name ?? "?")[0]}</span>
+                          <span className="text-[11px] font-bold text-primary">{(msg.author_name ?? "?")[0]}</span>
                         </div>
                       )
                     )}
                     <div className={`max-w-[75%] ${isMe ? "items-end" : "items-start"}`}>
                       {!isMe && (
                         <div className="flex items-center gap-1 mb-0.5 px-1">
-                          <span className="text-[10px] font-semibold text-text-sub">{msg.author_name ?? "익명"}</span>
+                          <span className="text-[11px] font-semibold text-text-sub">{msg.author_name ?? "익명"}</span>
                           {msg.author_level && (
                             <span
-                              className="text-[8px] font-bold px-1 py-[1px] rounded-md tabular-nums"
+                              className="text-[9px] font-bold px-1 py-[1px] rounded-md tabular-nums"
                               style={{
                                 backgroundColor: getLevelColor(msg.author_level),
                                 color: "#FFFFFF",
@@ -2852,7 +2852,7 @@ export default function MapPage() {
 
             <div className="px-5 pt-5 pb-2">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[18px]">🐾</span>
+                <span className="text-[20px]">🐾</span>
                 <h3 className="text-[17px] font-bold text-text-main">{selectedDong}</h3>
                 <span
                   className="text-[11px] font-bold px-2 py-0.5 chip-square"
@@ -2888,7 +2888,7 @@ export default function MapPage() {
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[14px] font-bold text-text-main truncate">{cat.name}</span>
+                        <span className="text-[15px] font-bold text-text-main truncate">{cat.name}</span>
                         {isAlerted && (
                           <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md" style={{ backgroundColor: "var(--color-error)", color: "#fff" }}>경보</span>
                         )}
@@ -2958,7 +2958,7 @@ export default function MapPage() {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-[16px] font-bold text-text-main leading-tight">
+                  <h3 className="text-[17px] font-bold text-text-main leading-tight">
                     {selectedHospital.name}
                   </h3>
                   <p className="text-[11px] text-text-sub mt-0.5">
@@ -2973,7 +2973,7 @@ export default function MapPage() {
                   {selectedHospital.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="text-[10px] font-bold px-2 py-0.5 rounded-md"
+                      className="text-[11px] font-bold px-2 py-0.5 rounded-md"
                       style={{ backgroundColor: `${accent}18`, color: accent }}
                     >
                       {tag}
@@ -3010,7 +3010,7 @@ export default function MapPage() {
                 )}
                 {selectedHospital.note && (
                   <div
-                    className="mt-2 px-3 py-2.5 rounded-xl text-[12px] leading-relaxed"
+                    className="mt-2 px-3 py-2.5 rounded-xl text-[13px] leading-relaxed"
                     style={{ backgroundColor: `${accent}10`, color: `${accent}DD` }}
                   >
                     {selectedHospital.note}
@@ -3027,7 +3027,7 @@ export default function MapPage() {
               {selectedHospital.phone && (
                 <a
                   href={`tel:${selectedHospital.phone}`}
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-[14px] font-bold text-white active:scale-[0.97] transition-transform"
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-[15px] font-bold text-white active:scale-[0.97] transition-transform"
                   style={{
                     background: `linear-gradient(135deg, ${accent} 0%, ${accent}DD 100%)`,
                     boxShadow: `0 6px 18px ${accent}55`,
@@ -3064,7 +3064,7 @@ export default function MapPage() {
                       }
                     } catch { toast.error("신고 처리 중 오류가 발생했어요"); }
                   }}
-                  className="flex items-center justify-center gap-1.5 w-full py-2.5 rounded-2xl text-[12px] font-bold active:scale-[0.97] transition-transform"
+                  className="flex items-center justify-center gap-1.5 w-full py-2.5 rounded-2xl text-[13px] font-bold active:scale-[0.97] transition-transform"
                   style={{ backgroundColor: "var(--color-gray-50)", color: "var(--color-text-light)" }}
                 >
                   <Flag size={13} />
@@ -3183,7 +3183,7 @@ export default function MapPage() {
                 style={{ height: 34, background: catCardTheme.typeBg }}
               >
                 <span
-                  className="inline-flex items-center gap-1 chip-square px-2 py-0.5 text-[10px] font-bold tracking-wide"
+                  className="inline-flex items-center gap-1 chip-square px-2 py-0.5 text-[11px] font-bold tracking-wide"
                   style={{ background: "rgba(255,255,255,0.25)", color: "#fff" }}
                 >
                   <span>{catCardTheme.typeIcon}</span>
@@ -3192,13 +3192,13 @@ export default function MapPage() {
                 <div className="flex items-center gap-2">
                   {selectedCat.card_level != null && selectedCat.card_level > 1 && (
                     <span
-                      className="chip-square px-2 py-0.5 text-[10px] font-bold"
+                      className="chip-square px-2 py-0.5 text-[11px] font-bold"
                       style={{ background: "rgba(255,255,255,0.25)", color: "#fff" }}
                     >
                       Lv.{selectedCat.card_level}
                     </span>
                   )}
-                  <span className="text-[10px] font-bold" style={{ color: "rgba(255,255,255,0.85)" }}>
+                  <span className="text-[11px] font-bold" style={{ color: "rgba(255,255,255,0.85)" }}>
                     No.{catDexNo}
                   </span>
                 </div>
@@ -3231,7 +3231,7 @@ export default function MapPage() {
                 {selectedCat.region && (
                   <div className="flex items-center gap-1.5 px-3 py-1.5 chip-square" style={{ background: "var(--color-gray-100)" }}>
                     <MapPin size={12} className="text-primary" />
-                    <span className="text-[12px] font-bold text-text-main">{selectedCat.region}</span>
+                    <span className="text-[13px] font-bold text-text-main">{selectedCat.region}</span>
                   </div>
                 )}
                 {selectedCat.caretaker_name && (
@@ -3289,7 +3289,7 @@ export default function MapPage() {
 
               {/* 배회 마커 안내 — 탭하면 스토킹·학대 방지 설계 상세 설명 펼침 */}
               <details className="px-4 pb-1 group">
-                <summary className="text-[10px] text-text-light text-center list-none cursor-pointer select-none [&::-webkit-details-marker]:hidden">
+                <summary className="text-[11px] text-text-light text-center list-none cursor-pointer select-none [&::-webkit-details-marker]:hidden">
                   🐾 마커는 아이들 보호를 위해 실제 위치와 다르게 계속 움직여요{" "}
                   <span className="underline underline-offset-2 font-semibold">자세히</span>
                 </summary>
@@ -3297,7 +3297,7 @@ export default function MapPage() {
                   className="mt-2 rounded-2xl px-4 py-3.5 text-left"
                   style={{ backgroundColor: "var(--color-surface-alt)" }}
                 >
-                  <p className="text-[12px] font-bold text-text-main mb-2">
+                  <p className="text-[13px] font-bold text-text-main mb-2">
                     🛡 스토킹·학대를 막는 3중 위치 보호
                   </p>
                   <ul className="space-y-2 text-[11px] leading-relaxed text-text-sub">
@@ -3397,7 +3397,7 @@ export default function MapPage() {
                   <div>
                     <label className="text-[11px] font-bold text-text-sub mb-1 block">이름</label>
                     <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} maxLength={20}
-                      className="w-full px-3 py-2 rounded-xl text-[14px] outline-none" style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-gray-200)" }} />
+                      className="w-full px-3 py-2 rounded-xl text-[15px] outline-none" style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-gray-200)" }} />
                   </div>
                   <div>
                     <label className="text-[11px] font-bold text-text-sub mb-1 block">설명</label>
@@ -3447,7 +3447,7 @@ export default function MapPage() {
                         </span>
                         <ChevronRight size={14} />
                       </button>
-                      <p className="text-[10px] text-text-light mt-1">
+                      <p className="text-[11px] text-text-light mt-1">
                         동 단위로 위치를 옮길 수 있어요. 동이 바뀌면 새 동네 이름이 자동으로 입력돼요.
                       </p>
                     </div>
@@ -3532,14 +3532,14 @@ export default function MapPage() {
                           >
                             <span className="text-[15px] leading-none mt-0.5">{info.emoji}</span>
                             <div className="flex-1 min-w-0">
-                              <p className="text-[12px] font-bold" style={{ color: active ? info.color : "var(--color-gray-800)" }}>
+                              <p className="text-[13px] font-bold" style={{ color: active ? info.color : "var(--color-gray-800)" }}>
                                 {info.label}
                               </p>
                               <p className="text-[11px] mt-0.5 leading-relaxed" style={{ color: active ? info.color : "var(--color-text-light)", opacity: active ? 0.85 : 1 }}>
                                 {info.description}
                               </p>
                             </div>
-                            {active && <span className="text-[12px] shrink-0" style={{ color: info.color }}>✓</span>}
+                            {active && <span className="text-[13px] shrink-0" style={{ color: info.color }}>✓</span>}
                           </button>
                         );
                       })}
@@ -3593,7 +3593,7 @@ export default function MapPage() {
                       {selectedCat.name}
                     </h2>
                     {selectedCat.region && (
-                      <span className="text-[12px] text-text-light">
+                      <span className="text-[13px] text-text-light">
                         {selectedCat.region}에 살아요
                       </span>
                     )}
@@ -3647,7 +3647,7 @@ export default function MapPage() {
                         strokeWidth={2.5}
                         fill={likedCatIds.has(selectedCat.id) ? "#fff" : "none"}
                       />
-                      <span className="text-[12px] font-bold">
+                      <span className="text-[13px] font-bold">
                         {selectedCat.like_count ?? 0}
                       </span>
                     </button>
@@ -3675,7 +3675,7 @@ export default function MapPage() {
                       ) : (
                         <AlertTriangle size={13} strokeWidth={2.5} />
                       )}
-                      <span className="text-[12px] font-bold">
+                      <span className="text-[13px] font-bold">
                         {myActiveAlert ? "경보 중" : "학대경보"}
                       </span>
                     </button>
@@ -3734,7 +3734,7 @@ export default function MapPage() {
                         style={{ background: "var(--color-gray-800)", color: "#fff", boxShadow: "0 1px 4px rgba(0,0,0,0.10)" }}
                         aria-label="QR 코드"
                       >
-                        <span style={{ fontSize: 12 }}>▦</span>
+                        <span style={{ fontSize: 13 }}>▦</span>
                         <span className="text-[11px] font-bold">QR</span>
                       </button>
                     </div>
@@ -3743,19 +3743,19 @@ export default function MapPage() {
                   {/* 프로필 뱃지: 성별 · 중성화 · 건강 */}
                   <div className="flex flex-wrap gap-1.5 mb-2">
                     {selectedCat.gender && selectedCat.gender !== "unknown" && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-text-sub)" }}>
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-text-sub)" }}>
                         {GENDER_MAP[selectedCat.gender]?.emoji} {GENDER_MAP[selectedCat.gender]?.label}
                       </span>
                     )}
                     {selectedCat.neutered != null && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: selectedCat.neutered ? "var(--color-sage-soft)" : "var(--color-care-soft)", color: selectedCat.neutered ? "var(--color-sage)" : "var(--color-care)" }}>
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: selectedCat.neutered ? "var(--color-sage-soft)" : "var(--color-care-soft)", color: selectedCat.neutered ? "var(--color-sage)" : "var(--color-care)" }}>
                         {selectedCat.neutered ? "중성화 완료" : "중성화 필요"}
                       </span>
                     )}
                     {selectedCat.health_status && selectedCat.health_status !== "good" && (() => {
                       const h = HEALTH_MAP[selectedCat.health_status];
                       return (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: `${h.color}18`, color: h.color }}>
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: `${h.color}18`, color: h.color }}>
                           {h.emoji} {h.label}
                         </span>
                       );
@@ -3763,7 +3763,7 @@ export default function MapPage() {
                   </div>
 
                   {selectedCat.description && (
-                    <p className="text-[14px] text-text-sub leading-relaxed mb-3">
+                    <p className="text-[15px] text-text-sub leading-relaxed mb-3">
                       {selectedCat.description}
                     </p>
                   )}
@@ -3791,7 +3791,7 @@ export default function MapPage() {
                 >
                   <div className="flex items-center gap-1.5 mb-2">
                     <AlertTriangle size={14} style={{ color: "var(--color-error)" }} />
-                    <span className="text-[12px] font-bold" style={{ color: "var(--color-error)" }}>
+                    <span className="text-[13px] font-bold" style={{ color: "var(--color-error)" }}>
                       위험 상황 {alertCount}건 신고됨 — 빠른 대응
                     </span>
                   </div>
@@ -3802,7 +3802,7 @@ export default function MapPage() {
                       style={{ backgroundColor: "var(--color-error)" }}
                     >
                       <Phone size={14} color="#fff" />
-                      <span className="text-[10px] font-bold text-white">112 신고</span>
+                      <span className="text-[11px] font-bold text-white">112 신고</span>
                     </a>
                     <a
                       href="tel:1577-0954"
@@ -3810,7 +3810,7 @@ export default function MapPage() {
                       style={{ backgroundColor: "var(--color-primary)" }}
                     >
                       <Phone size={14} color="#fff" />
-                      <span className="text-[10px] font-bold text-white">동물보호</span>
+                      <span className="text-[11px] font-bold text-white">동물보호</span>
                     </a>
                     <button
                       type="button"
@@ -3823,13 +3823,13 @@ export default function MapPage() {
                       ) : (
                         <Copy size={14} color="#fff" />
                       )}
-                      <span className="text-[10px] font-bold text-white">
+                      <span className="text-[11px] font-bold text-white">
                         {copyStatus === "copied" ? "복사됨" : "기록 복사"}
                       </span>
                     </button>
                   </div>
                   <p
-                    className="text-[10px] mt-2 leading-relaxed"
+                    className="text-[11px] mt-2 leading-relaxed"
                     style={{ color: "var(--color-error)" }}
                   >
                     112: 긴급 학대 현장 · 1577-0954: 동물보호상담센터
@@ -3843,7 +3843,7 @@ export default function MapPage() {
                   <button
                     type="button"
                     onClick={() => setCatCardTab("carelog")}
-                    className="flex-1 py-2 rounded-xl text-[12px] font-bold transition-all"
+                    className="flex-1 py-2 rounded-xl text-[13px] font-bold transition-all"
                     style={{
                       backgroundColor: catCardTab === "carelog" ? "var(--color-primary)" : "var(--color-gray-50)",
                       color: catCardTab === "carelog" ? "#fff" : "var(--color-text-light)",
@@ -3854,7 +3854,7 @@ export default function MapPage() {
                   <button
                     type="button"
                     onClick={() => setCatCardTab("community")}
-                    className="flex-1 py-2 rounded-xl text-[12px] font-bold transition-all"
+                    className="flex-1 py-2 rounded-xl text-[13px] font-bold transition-all"
                     style={{
                       backgroundColor: catCardTab === "community" ? "var(--color-primary)" : "var(--color-gray-50)",
                       color: catCardTab === "community" ? "#fff" : "var(--color-text-light)",
@@ -3866,7 +3866,7 @@ export default function MapPage() {
                     <button
                       type="button"
                       onClick={() => setCatCardTab("card")}
-                      className="flex-1 py-2 rounded-xl text-[12px] font-bold transition-all"
+                      className="flex-1 py-2 rounded-xl text-[13px] font-bold transition-all"
                       style={{
                         backgroundColor: catCardTab === "card" ? "#6366F1" : "#F0F0FF",
                         color: catCardTab === "card" ? "#fff" : "#6366F1",
@@ -3915,7 +3915,7 @@ export default function MapPage() {
                     </div>
                   )}
                   {!commentsLoading && comments.length === 0 && !commentsError && (
-                    <p className="text-[12px] text-text-light text-center py-3">
+                    <p className="text-[13px] text-text-light text-center py-3">
                       아직 기록이 없어요. 첫 기록을 남겨보세요.
                     </p>
                   )}
@@ -3980,7 +3980,7 @@ export default function MapPage() {
                           )}
                           <TitleBadge titleId={c.author_title} />
 
-                          <span className="text-[10px] text-text-light ml-auto">
+                          <span className="text-[11px] text-text-light ml-auto">
                             {formatRelativeTime(c.created_at)}
                           </span>
                           {user?.id === c.author_id && (
@@ -4002,7 +4002,7 @@ export default function MapPage() {
                         </div>
                         {c.body && (
                           <p
-                            className="text-[12px] leading-relaxed"
+                            className="text-[13px] leading-relaxed"
                             style={{ color: isAlert ? "var(--color-error)" : "var(--color-gray-700)" }}
                           >
                             {c.body}
@@ -4071,7 +4071,7 @@ export default function MapPage() {
                                   aria-label="좋아요"
                                 >
                                   <ThumbsUp size={11} strokeWidth={2.2} fill={liked ? "#FFFFFF" : "none"} />
-                                  <span className="text-[10px] font-bold tabular-nums">
+                                  <span className="text-[11px] font-bold tabular-nums">
                                     {c.like_count}
                                   </span>
                                 </button>
@@ -4087,7 +4087,7 @@ export default function MapPage() {
                                   aria-label="싫어요"
                                 >
                                   <ThumbsDown size={11} strokeWidth={2.2} fill={disliked ? "#FFFFFF" : "none"} />
-                                  <span className="text-[10px] font-bold tabular-nums">
+                                  <span className="text-[11px] font-bold tabular-nums">
                                     {c.dislike_count}
                                   </span>
                                 </button>
@@ -4161,7 +4161,7 @@ export default function MapPage() {
                     className="mt-3 rounded-xl px-3 py-2.5"
                     style={{ backgroundColor: "var(--color-error-soft)", border: "1.5px solid var(--color-error)" }}
                   >
-                    <p className="text-[12px] font-bold leading-snug" style={{ color: "var(--color-error)" }}>
+                    <p className="text-[13px] font-bold leading-snug" style={{ color: "var(--color-error)" }}>
                       🚨 학대·위험 신고 모드
                     </p>
                     <p className="text-[11px] leading-relaxed mt-0.5" style={{ color: "var(--color-error)" }}>
@@ -4224,7 +4224,7 @@ export default function MapPage() {
                         // 입력창이 두 개가 되고, 여기 쓴 글이 기록에서 사라진 것처럼 보인다. (2026-08-09)
                         : "이 아이 이야기를 남겨주세요"
                     }
-                    className="flex-1 min-w-0 px-3 py-2 rounded-xl text-[12px] outline-none"
+                    className="flex-1 min-w-0 px-3 py-2 rounded-xl text-[13px] outline-none"
                     style={{ backgroundColor: "var(--color-gray-50)", color: "var(--color-gray-900)" }}
                     disabled={submittingComment}
                   />

@@ -659,7 +659,7 @@ export default function FaqPage() {
           >
             <ArrowLeft size={18} color="var(--color-text-sub)" />
           </Link>
-          <p className="text-[12px]" style={{ color: "var(--color-text-light)" }}>
+          <p className="text-[13px]" style={{ color: "var(--color-text-light)" }}>
             도시공존 / 자주 묻는 질문
           </p>
         </div>
@@ -667,13 +667,13 @@ export default function FaqPage() {
         {/* 타이틀 */}
         <header className="mb-7">
           <h1
-            className="mb-2 text-[26px] font-extrabold leading-tight"
+            className="mb-2 text-[24px] font-extrabold leading-tight"
             style={{ color: "var(--color-text-main)" }}
           >
             길고양이 자주 묻는 질문
           </h1>
           <p
-            className="text-[14px] leading-relaxed"
+            className="text-[15px] leading-relaxed"
             style={{ color: "var(--color-text-sub)" }}
           >
             발견·구조·TNR·임시보호·입양·학대 신고까지 — 시민이 가장 많이 묻는{" "}
@@ -688,7 +688,7 @@ export default function FaqPage() {
           style={{ borderColor: "rgba(173, 94, 59,0.18)", background: "rgba(255,253,250,0.7)" }}
         >
           <p
-            className="mb-3 text-[12px] font-bold tracking-wide"
+            className="mb-3 text-[13px] font-bold tracking-wide"
             style={{ color: "var(--color-text-light)" }}
           >
             카테고리
@@ -724,7 +724,7 @@ export default function FaqPage() {
                 >
                   <Icon size={17} color={c.color} />
                 </span>
-                <h2 className="text-[18px] font-bold" style={{ color: "var(--color-text-main)" }}>
+                <h2 className="text-[20px] font-bold" style={{ color: "var(--color-text-main)" }}>
                   {c.label}
                 </h2>
               </div>
@@ -736,7 +736,7 @@ export default function FaqPage() {
                     style={{ borderColor: "rgba(173, 94, 59,0.15)" }}
                   >
                     <summary
-                      className="flex cursor-pointer list-none items-start justify-between gap-3 text-[14px] font-semibold leading-snug"
+                      className="flex cursor-pointer list-none items-start justify-between gap-3 text-[15px] font-semibold leading-snug"
                       style={{ color: "var(--color-text-main)" }}
                     >
                       <span className="flex-1">Q. {it.q}</span>
@@ -767,7 +767,7 @@ export default function FaqPage() {
           }}
         >
           <h3
-            className="mb-2 text-[16px] font-bold"
+            className="mb-2 text-[17px] font-bold"
             style={{ color: "var(--color-text-main)" }}
           >
             여기 답이 없는 질문이 있나요?

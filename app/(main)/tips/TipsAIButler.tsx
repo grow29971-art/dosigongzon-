@@ -46,7 +46,7 @@ export default function TipsAIButler() {
             <p className="text-[15px] font-extrabold text-text-main tracking-tight">
               AI 집사 <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "var(--color-primary)", opacity: 0.5 }}>BETA</span>
             </p>
-            <p className="text-[12px] text-text-sub mt-0.5">로그인하면 길고양이 돌봄, 뭐든 물어볼 수 있어요</p>
+            <p className="text-[13px] text-text-sub mt-0.5">로그인하면 길고양이 돌봄, 뭐든 물어볼 수 있어요</p>
           </div>
         </Link>
       ) : (
@@ -68,12 +68,12 @@ export default function TipsAIButler() {
                   border: "1px solid rgba(0,0,0,0.04)",
                 }}
               >
-                <span className="text-[16px] shrink-0">{q.emoji}</span>
-                <p className="text-[12px] font-bold text-text-main leading-tight">{q.question}</p>
+                <span className="text-[17px] shrink-0">{q.emoji}</span>
+                <p className="text-[13px] font-bold text-text-main leading-tight">{q.question}</p>
               </div>
             ))}
           </div>
-          <p className="text-[10px] text-text-light mt-1.5 px-1 leading-snug">
+          <p className="text-[11px] text-text-light mt-1.5 px-1 leading-snug">
             🤖 AI 응답은 참고용이에요. 위급 상황은 매뉴얼 또는 가까운 동물병원에 직접 연락해주세요.
           </p>
         </>

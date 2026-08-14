@@ -46,7 +46,7 @@ export default function ShopPreviewStrip() {
         </h2>
         <Link
           href="/shop"
-          className="flex items-center gap-0.5 text-[12px] font-bold"
+          className="flex items-center gap-0.5 text-[13px] font-bold"
           style={{ color: "var(--color-primary)" }}
         >
           전체보기 <ChevronRight size={13} />
@@ -90,8 +90,8 @@ export default function ShopPreviewStrip() {
                   />
                 </button>
               </div>
-              <p className="text-[12px] font-bold text-text-main mt-1.5 leading-snug truncate">{p.name}</p>
-              <p className="text-[12px] font-extrabold text-text-main">{price.toLocaleString()}원</p>
+              <p className="text-[13px] font-bold text-text-main mt-1.5 leading-snug truncate">{p.name}</p>
+              <p className="text-[13px] font-extrabold text-text-main">{price.toLocaleString()}원</p>
             </Link>
           );
         })}

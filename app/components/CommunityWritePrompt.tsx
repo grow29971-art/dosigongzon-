@@ -51,7 +51,7 @@ export default function CommunityWritePrompt() {
           <PenLine size={15} color="#fff" strokeWidth={2.3} />
         </div>
         <div className="min-w-0">
-          <p className="text-[14px] font-extrabold text-text-main leading-tight">이런 글 어때요?</p>
+          <p className="text-[15px] font-extrabold text-text-main leading-tight">이런 글 어때요?</p>
           <p className="text-[11px] text-text-sub mt-0.5">탭하면 제목이 채워져 바로 쓸 수 있어요</p>
         </div>
       </div>

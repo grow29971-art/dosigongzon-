@@ -54,13 +54,13 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
           🐾
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-like)" }}>첫 발걸음</p>
-          <p className="text-[14px] font-extrabold text-text-main leading-tight mt-0.5">
+          <p className="text-[11px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-like)" }}>첫 발걸음</p>
+          <p className="text-[15px] font-extrabold text-text-main leading-tight mt-0.5">
             {cheered
               ? "응원 고마워요! 🎉"
               : `${regionName ? regionName + " " : "우리 동네 "}고양이에게 응원을 보내보세요`}
           </p>
-          <p className="text-[12px] text-text-sub mt-0.5 leading-snug">
+          <p className="text-[13px] text-text-sub mt-0.5 leading-snug">
             {cheered ? "이제 직접 돌보는 아이도 등록해볼까요?" : "하트 한 번이면 돼요 — 가장 쉬운 첫 참여 🩷"}
           </p>
         </div>

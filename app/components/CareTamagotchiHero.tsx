@@ -257,7 +257,7 @@ export default function CareTamagotchiHero() {
   if (notReady) {
     return (
       <div className="card px-4 py-3 mb-4">
-        <p className="text-[12px] text-text-light">🐾 다마고치 케어 기능 준비 중이에요</p>
+        <p className="text-[13px] text-text-light">🐾 다마고치 케어 기능 준비 중이에요</p>
       </div>
     );
   }
@@ -298,7 +298,7 @@ export default function CareTamagotchiHero() {
           aria-label={`${cat.name} 케어 펼치기`}
         >
           <span
-            className="relative w-11 h-11 rounded-2xl overflow-hidden shrink-0 flex items-center justify-center text-[22px]"
+            className="relative w-11 h-11 rounded-2xl overflow-hidden shrink-0 flex items-center justify-center text-[24px]"
             style={{ background: "var(--color-primary-soft)" }}
           >
             {photo ? (
@@ -537,7 +537,7 @@ export default function CareTamagotchiHero() {
       </div>
 
       {/* 실존 고양이 오해 방지 캡션 */}
-      <p className="text-[10px] text-text-muted mt-2.5">
+      <p className="text-[11px] text-text-muted mt-2.5">
         우리 둘만의 다마고치 — 실제 아이 상태와는 무관해요 🐾
       </p>
     </div>

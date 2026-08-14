@@ -53,7 +53,7 @@ export default async function CelebratePage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
-        <span className="text-[12px] font-semibold text-text-sub">홈</span>
+        <span className="text-[13px] font-semibold text-text-sub">홈</span>
       </div>
 
       {/* 히어로 — 출시 축하 */}
@@ -66,7 +66,7 @@ export default async function CelebratePage() {
           🎉 도시공존<br />
           <span style={{ color: "var(--color-primary)" }}>정식 출시</span>
         </h1>
-        <p className="text-[14px] text-text-sub mt-4 leading-[1.85] max-w-md mx-auto">
+        <p className="text-[15px] text-text-sub mt-4 leading-[1.85] max-w-md mx-auto">
           처음부터 함께해 주신 모든 길집사와 시민 여러분께
           <br />
           진심으로 감사드립니다.
@@ -127,7 +127,7 @@ export default async function CelebratePage() {
             앞으로도 한 분 한 분의 손이 헛되지 않게,
             끝까지 함께하겠습니다.
           </p>
-          <p className="text-[12px] mt-5 text-right" style={{ color: "var(--color-primary-dark)" }}>
+          <p className="text-[13px] mt-5 text-right" style={{ color: "var(--color-primary-dark)" }}>
             — 도시공존 운영자 김성우 드림 🐾
           </p>
         </div>
@@ -143,10 +143,10 @@ export default async function CelebratePage() {
           }}
         >
           <Trophy size={22} className="mx-auto mb-2" style={{ color: "var(--color-primary)" }} />
-          <p className="text-[14px] font-extrabold text-text-main mb-1.5 tracking-tight">
+          <p className="text-[15px] font-extrabold text-text-main mb-1.5 tracking-tight">
             창립 멤버 (Founding Member)
           </p>
-          <p className="text-[12px] text-text-sub leading-relaxed">
+          <p className="text-[13px] text-text-sub leading-relaxed">
             6월 1일 이전 가입하신 길집사는<br />
             <b className="text-text-main">FOUNDING MEMBER 타이틀</b>이 영구 부여됐어요.
             <br />
@@ -159,7 +159,7 @@ export default async function CelebratePage() {
       <section className="px-5 mt-7">
         <Link
           href="/map"
-          className="block w-full text-center py-3.5 rounded-2xl text-[14px] font-extrabold text-white active:scale-[0.98] transition-transform"
+          className="block w-full text-center py-3.5 rounded-2xl text-[15px] font-extrabold text-white active:scale-[0.98] transition-transform"
           style={{
             background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
             boxShadow: "0 6px 18px rgba(173, 94, 59,0.35)",

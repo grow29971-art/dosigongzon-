@@ -157,7 +157,7 @@ export default function WritePage() {
                 </p>
                 <Link
                   href="/map"
-                  className="inline-flex items-center gap-1 mt-2 text-[12px] font-extrabold"
+                  className="inline-flex items-center gap-1 mt-2 text-[13px] font-extrabold"
                   style={{ color: "var(--color-primary-dark)" }}
                 >
                   지도로 가서 등록하기
@@ -259,7 +259,7 @@ export default function WritePage() {
                 ) : (
                   <>
                     <ImagePlus size={20} className="mb-0.5" />
-                    <span className="text-[10px] font-semibold">
+                    <span className="text-[11px] font-semibold">
                       {imageUrls.length}/{MAX_IMAGES}
                     </span>
                   </>

@@ -140,7 +140,7 @@ export default function AdminPushPage() {
     return (
       <div className="px-5 pt-14 pb-8 text-center">
         <p className="text-[15px] text-text-sub">관리자 권한이 필요합니다.</p>
-        <Link href="/map" className="text-primary text-[14px] font-bold mt-4 inline-block">
+        <Link href="/map" className="text-primary text-[15px] font-bold mt-4 inline-block">
           돌아가기
         </Link>
       </div>
@@ -159,20 +159,20 @@ export default function AdminPushPage() {
         </Link>
         <div>
           <h1 className="text-[20px] font-extrabold text-text-main">푸시 알림 발송</h1>
-          <p className="text-[12px] text-text-sub">전체 구독자에게 알림을 보냅니다</p>
+          <p className="text-[13px] text-text-sub">전체 구독자에게 알림을 보냅니다</p>
         </div>
       </div>
 
       {/* 미리보기 */}
       <div className="rounded-2xl p-4 mb-5" style={{ backgroundColor: "#F5F3EE", border: "1px solid rgba(173, 94, 59,0.15)" }}>
-        <p className="text-[10px] font-bold text-text-light mb-2">미리보기</p>
+        <p className="text-[11px] font-bold text-text-light mb-2">미리보기</p>
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
             <Bell size={18} className="text-primary" />
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-[13px] font-bold text-text-main">{title || "도시공존"}</p>
-            <p className="text-[12px] text-text-sub mt-0.5 break-words">
+            <p className="text-[13px] text-text-sub mt-0.5 break-words">
               {body || "메시지 내용이 여기에 표시됩니다"}
             </p>
           </div>
@@ -181,7 +181,7 @@ export default function AdminPushPage() {
 
       {/* 이벤트 quick-fill — 6/1 출시 이후 자동 비활성 (수동 삭제) */}
       <div className="mb-5 space-y-2">
-        <p className="text-[10px] font-extrabold tracking-[0.15em] text-text-light mb-1.5">EVENT QUICK-FILL</p>
+        <p className="text-[11px] font-extrabold tracking-[0.15em] text-text-light mb-1.5">EVENT QUICK-FILL</p>
 
         <button
           type="button"
@@ -296,19 +296,19 @@ export default function AdminPushPage() {
       {/* 폼 */}
       <div className="space-y-4">
         <div>
-          <label className="text-[12px] font-bold text-text-main mb-1.5 block">제목</label>
+          <label className="text-[13px] font-bold text-text-main mb-1.5 block">제목</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="도시공존"
             maxLength={50}
-            className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[14px] text-text-main outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted"
+            className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[15px] text-text-main outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted"
           />
         </div>
 
         <div>
-          <label className="text-[12px] font-bold text-text-main mb-1.5 block">
+          <label className="text-[13px] font-bold text-text-main mb-1.5 block">
             메시지 <span className="text-error">*</span>
           </label>
           <textarea
@@ -317,21 +317,21 @@ export default function AdminPushPage() {
             placeholder="예: 새로운 고양이 5마리가 등록됐어요! 확인해보세요."
             maxLength={200}
             rows={3}
-            className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[14px] text-text-main outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted resize-none"
+            className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[15px] text-text-main outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted resize-none"
           />
-          <p className="text-[10px] text-text-light mt-1 text-right">{body.length}/200</p>
+          <p className="text-[11px] text-text-light mt-1 text-right">{body.length}/200</p>
         </div>
 
         <div>
-          <label className="text-[12px] font-bold text-text-main mb-1.5 block">클릭 시 이동 경로</label>
+          <label className="text-[13px] font-bold text-text-main mb-1.5 block">클릭 시 이동 경로</label>
           <input
             type="text"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="/"
-            className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[14px] text-text-main outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted"
+            className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[15px] text-text-main outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-text-muted"
           />
-          <p className="text-[10px] text-text-light mt-1">예: /map, /community, /protection</p>
+          <p className="text-[11px] text-text-light mt-1">예: /map, /community, /protection</p>
         </div>
 
         {error && (
@@ -375,7 +375,7 @@ export default function AdminPushPage() {
 
         {/* ── 예약 발송 ── */}
         <div className="pt-2">
-          <label className="text-[12px] font-bold text-text-main mb-1.5 block">
+          <label className="text-[13px] font-bold text-text-main mb-1.5 block">
             예약 발송 시각
           </label>
           <input
@@ -383,9 +383,9 @@ export default function AdminPushPage() {
             value={scheduleAt}
             onChange={(e) => setScheduleAt(e.target.value)}
             min={toLocalInputValue(new Date())}
-            className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[14px] text-text-main outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+            className="w-full px-4 py-3 rounded-2xl bg-surface-alt text-[15px] text-text-main outline-none focus:ring-2 focus:ring-primary/20 transition-all"
           />
-          <p className="text-[10px] text-text-light mt-1 leading-relaxed">
+          <p className="text-[11px] text-text-light mt-1 leading-relaxed">
             발송 점검은 <b>매일 오후 1시</b>에 한 번 돕니다. 지정한 시각이 지난 뒤 첫 점검에서 나가요.
             (예: 8/8 오후 1시로 두면 그날 오후 1시에 발송)
           </p>
@@ -413,7 +413,7 @@ export default function AdminPushPage() {
         {/* 예약 목록 */}
         {scheduled.length > 0 && (
           <div className="pt-4">
-            <p className="text-[10px] font-extrabold tracking-[0.15em] text-text-light mb-2">예약 목록</p>
+            <p className="text-[11px] font-extrabold tracking-[0.15em] text-text-light mb-2">예약 목록</p>
             <div className="space-y-2">
               {scheduled.map((s) => (
                 <div
@@ -424,7 +424,7 @@ export default function AdminPushPage() {
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1">
                       <p className="text-[13px] font-extrabold text-text-main truncate">{s.title}</p>
-                      <p className="text-[12px] text-text-sub mt-0.5 line-clamp-2">{s.body}</p>
+                      <p className="text-[13px] text-text-sub mt-0.5 line-clamp-2">{s.body}</p>
                       <p className="text-[11px] text-text-light mt-1">
                         {new Date(s.scheduled_at).toLocaleString("ko-KR", {
                           month: "long", day: "numeric", hour: "2-digit", minute: "2-digit",

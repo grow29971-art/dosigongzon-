@@ -57,11 +57,11 @@ export default async function ZoneLandingPage({
           style={{ background: "linear-gradient(160deg, #AD5E3B 0%, #8A4325 100%)" }}
         >
           <Shield size={30} className="mx-auto mb-2 opacity-90" />
-          <p className="text-[12px] font-bold opacity-85">{zone.label}</p>
-          <h1 className="text-[19px] font-extrabold mt-1 leading-snug">
+          <p className="text-[13px] font-bold opacity-85">{zone.label}</p>
+          <h1 className="text-[20px] font-extrabold mt-1 leading-snug">
             이곳은 등록된 돌봄 구역입니다
           </h1>
-          <p className="text-[12px] mt-2 leading-relaxed opacity-90">
+          <p className="text-[13px] mt-2 leading-relaxed opacity-90">
             이 구역의 길고양이는 이웃들이 함께 돌보고 있어요.
             <br />
             동물을 해치는 행위는 <b>동물보호법에 따라 처벌될 수 있는 범죄</b>입니다
@@ -71,7 +71,7 @@ export default async function ZoneLandingPage({
         </div>
 
         {zone.notice && (
-          <p className="text-[12px] text-text-sub mt-3 px-1 leading-relaxed">{zone.notice}</p>
+          <p className="text-[13px] text-text-sub mt-3 px-1 leading-relaxed">{zone.notice}</p>
         )}
 
         {/* 긴급 안내 — 진행 중 상황은 112 우선 */}
@@ -91,7 +91,7 @@ export default async function ZoneLandingPage({
         {SAFETY_ZONE_REPORT_ENABLED ? (
           <div className="mt-6">
             <h2 className="text-[15px] font-extrabold text-text-main mb-1">목격하신 일을 알려주세요</h2>
-            <p className="text-[12px] text-text-sub mb-4 leading-relaxed">
+            <p className="text-[13px] text-text-sub mb-4 leading-relaxed">
               로그인 없이 익명으로 제보할 수 있어요. 도시공존은 내용을 판단하지 않고,
               확인 후 필요 시 경찰·동물보호센터로 전달하는 통로 역할만 해요.
             </p>
@@ -100,7 +100,7 @@ export default async function ZoneLandingPage({
         ) : (
           <div className="mt-6 rounded-2xl px-4 py-5 text-center" style={{ backgroundColor: "#FFF3EC", border: "1px solid #EAD3C6" }}>
             <p className="text-[13px] font-extrabold text-text-main">제보 접수를 잠시 중단했어요</p>
-            <p className="text-[12px] text-text-sub mt-1.5 leading-relaxed">
+            <p className="text-[13px] text-text-sub mt-1.5 leading-relaxed">
               점검 중이에요. 지금 벌어지는 상황이라면 아래 112로 바로 신고해주세요.
             </p>
           </div>

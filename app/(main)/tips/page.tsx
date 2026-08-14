@@ -164,7 +164,7 @@ export default async function TipsIndexPage() {
               구조 매뉴얼
             </span>
           </div>
-          <p className="text-[12px] leading-snug mb-3" style={{ color: "rgba(92,42,30,0.80)" }}>
+          <p className="text-[13px] leading-snug mb-3" style={{ color: "rgba(92,42,30,0.80)" }}>
             응급·새끼 발견·TNR·법률까지 — 한 발 빠른 대처가 한 생명을 살려요
           </p>
 
@@ -200,7 +200,7 @@ export default async function TipsIndexPage() {
                 <span className="text-[11px] font-extrabold text-text-main leading-none">
                   {cat.label}
                 </span>
-                <span className="text-[10px] font-bold text-text-light leading-none">
+                <span className="text-[11px] font-bold text-text-light leading-none">
                   {cat.sub}
                 </span>
               </Link>
@@ -241,7 +241,7 @@ export default async function TipsIndexPage() {
               <Link
                 key={tag}
                 href={`/tips?tag=${encodeURIComponent(tag)}`}
-                className="shrink-0 text-[12px] font-bold px-2.5 py-1 chip-square bg-white text-text-sub border border-black/[0.04] active:scale-95 transition-transform"
+                className="shrink-0 text-[13px] font-bold px-2.5 py-1 chip-square bg-white text-text-sub border border-black/[0.04] active:scale-95 transition-transform"
               >
                 #{tag}
               </Link>
@@ -279,14 +279,14 @@ export default async function TipsIndexPage() {
             border: "1px solid rgba(173, 94, 59,0.15)",
           }}
         >
-          <p className="text-[12px] font-extrabold text-primary mb-1.5">도시공존이란?</p>
+          <p className="text-[13px] font-extrabold text-primary mb-1.5">도시공존이란?</p>
           <p className="text-[13px] text-text-main leading-relaxed mb-3">
             우리 동네 길고양이 지도, 돌봄다이어리, TNR 신청, 동네 채팅을 한곳에서
             할 수 있는 시민 참여 플랫폼이에요.
           </p>
           <Link
             href="/about"
-            className="inline-flex items-center gap-1 text-[12px] font-extrabold text-primary"
+            className="inline-flex items-center gap-1 text-[13px] font-extrabold text-primary"
           >
             자세히 보기
             <ChevronRight size={13} />
@@ -324,14 +324,14 @@ function TipCard({ tip }: { tip: Tip }) {
           )}
           {tip.featured && (
             <span
-              className="absolute top-3 left-3 text-[10px] font-extrabold px-2 py-0.5 rounded-md text-white"
+              className="absolute top-3 left-3 text-[11px] font-extrabold px-2 py-0.5 rounded-md text-white"
               style={{ background: "rgba(173, 94, 59,0.95)" }}
             >
               ✨ 추천
             </span>
           )}
           {tip.pinned && (
-            <span className="absolute top-3 right-3 text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-white/90 text-primary inline-flex items-center gap-0.5">
+            <span className="absolute top-3 right-3 text-[11px] font-extrabold px-2 py-0.5 rounded-md bg-white/90 text-primary inline-flex items-center gap-0.5">
               <Pin size={10} /> 고정
             </span>
           )}
@@ -342,7 +342,7 @@ function TipCard({ tip }: { tip: Tip }) {
               {tip.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="text-[10px] font-bold px-1.5 py-0.5 rounded-md"
+                  className="text-[11px] font-bold px-1.5 py-0.5 rounded-md"
                   style={{ background: "#F2EBE0", color: "#8B6F4E" }}
                 >
                   #{tag}
@@ -350,7 +350,7 @@ function TipCard({ tip }: { tip: Tip }) {
               ))}
             </div>
           )}
-          <h2 className="text-[16px] font-extrabold text-text-main leading-snug line-clamp-2">
+          <h2 className="text-[17px] font-extrabold text-text-main leading-snug line-clamp-2">
             {tip.title}
           </h2>
           {tip.description && (

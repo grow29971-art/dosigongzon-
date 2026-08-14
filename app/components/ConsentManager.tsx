@@ -114,7 +114,7 @@ export default function ConsentManager() {
                 🍪 쿠키 사용에 대해 알려드려요
               </p>
               <p
-                className="text-[12px] leading-relaxed"
+                className="text-[13px] leading-relaxed"
                 style={{ color: "rgba(60,46,35,0.7)" }}
               >
                 도시공존은 서비스 개선을 위해 익명 방문 통계(Vercel Analytics·SpeedInsights)와 광고 효과 측정(Meta 픽셀)을 수집해요.

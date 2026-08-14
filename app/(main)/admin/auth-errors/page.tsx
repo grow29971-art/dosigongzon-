@@ -154,8 +154,8 @@ export default function AdminAuthErrorsPage() {
     return (
       <div className="px-5 pt-20 text-center">
         <Shield size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[14px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
-        <p className="text-[12px] text-text-sub">접근 권한이 없어요.</p>
+        <p className="text-[15px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
+        <p className="text-[13px] text-text-sub">접근 권한이 없어요.</p>
         <Link href="/mypage" className="inline-block mt-4 text-[13px] font-bold text-primary">
           마이페이지로 돌아가기
         </Link>
@@ -176,18 +176,18 @@ export default function AdminAuthErrorsPage() {
       <div className="mb-4">
         <button
           onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[12px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
         >
           <ArrowLeft size={14} />
           마이페이지
         </button>
         <div className="flex items-baseline gap-2 mb-1">
-          <h1 className="text-[22px] font-extrabold text-text-main tracking-tight">
+          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
             로그인 실패 로그
           </h1>
-          <span className="text-[10px] font-semibold text-text-light">Admin · Auth Errors</span>
+          <span className="text-[11px] font-semibold text-text-light">Admin · Auth Errors</span>
         </div>
-        <p className="text-[12px] text-text-sub">
+        <p className="text-[13px] text-text-sub">
           OAuth/매직링크/비밀번호 로그인 실패 원인을 확인해요
         </p>
       </div>
@@ -252,7 +252,7 @@ export default function AdminAuthErrorsPage() {
           </span>
           <span className="text-[24px] font-extrabold" style={{ color: totalCount === 0 ? "#3F5B42" : "#8B2F2F" }}>
             {totalCount}
-            <span className="text-[12px] font-semibold ml-0.5">건</span>
+            <span className="text-[13px] font-semibold ml-0.5">건</span>
           </span>
         </div>
         {totalCount > 0 && (
@@ -264,7 +264,7 @@ export default function AdminAuthErrorsPage() {
                   key={prov}
                   type="button"
                   onClick={() => setProviderFilter(providerFilter === prov ? null : (prov === "unknown" ? null : prov))}
-                  className="text-[10px] font-bold px-2 py-0.5 rounded-lg active:scale-95"
+                  className="text-[11px] font-bold px-2 py-0.5 rounded-lg active:scale-95"
                   style={{
                     backgroundColor: providerFilter === prov ? "#B84545" : "rgba(255,255,255,0.7)",
                     color: providerFilter === prov ? "#fff" : "#8B2F2F",
@@ -289,7 +289,7 @@ export default function AdminAuthErrorsPage() {
             <h2 className="text-[13px] font-extrabold text-text-main">
               에러 코드 TOP
             </h2>
-            <span className="text-[10px] text-text-light">(클릭하면 해당 코드만 필터)</span>
+            <span className="text-[11px] text-text-light">(클릭하면 해당 코드만 필터)</span>
           </div>
           <div className="space-y-1.5">
             {stats.slice(0, 10).map((s, idx) => {
@@ -307,7 +307,7 @@ export default function AdminAuthErrorsPage() {
                   }}
                 >
                   <span
-                    className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-extrabold shrink-0"
+                    className="w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-extrabold shrink-0"
                     style={{
                       backgroundColor: idx === 0 ? "#D85555" : idx === 1 ? "#E88D5A" : "#C9A961",
                       color: "#fff",
@@ -316,10 +316,10 @@ export default function AdminAuthErrorsPage() {
                     {idx + 1}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[12px] font-extrabold text-text-main truncate">
+                    <p className="text-[13px] font-extrabold text-text-main truncate">
                       {guide.title}
                     </p>
-                    <p className="text-[10px] text-text-sub font-mono truncate mt-0.5">
+                    <p className="text-[11px] text-text-sub font-mono truncate mt-0.5">
                       {s.error_code} · {s.provider ?? "?"}
                     </p>
                   </div>
@@ -347,7 +347,7 @@ export default function AdminAuthErrorsPage() {
             <button
               type="button"
               onClick={() => setProviderFilter(null)}
-              className="text-[10px] font-bold px-2 py-1 rounded-lg active:scale-95"
+              className="text-[11px] font-bold px-2 py-1 rounded-lg active:scale-95"
               style={{ backgroundColor: "#E8B84A", color: "#fff" }}
             >
               provider: {providerFilter} ×
@@ -357,7 +357,7 @@ export default function AdminAuthErrorsPage() {
             <button
               type="button"
               onClick={() => setCodeFilter(null)}
-              className="text-[10px] font-bold px-2 py-1 rounded-lg active:scale-95"
+              className="text-[11px] font-bold px-2 py-1 rounded-lg active:scale-95"
               style={{ backgroundColor: "#E8B84A", color: "#fff" }}
             >
               code: {codeFilter} ×
@@ -409,7 +409,7 @@ export default function AdminAuthErrorsPage() {
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[12px] font-extrabold text-text-main">
+                      <span className="text-[13px] font-extrabold text-text-main">
                         {guide.title}
                       </span>
                       {log.provider && (
@@ -430,7 +430,7 @@ export default function AdminAuthErrorsPage() {
                         {log.stage}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1.5 mt-1 text-[10px] text-text-light">
+                    <div className="flex items-center gap-1.5 mt-1 text-[11px] text-text-light">
                       <span className="font-mono">{log.error_code ?? "?"}</span>
                       <span>·</span>
                       <span>{shortUA(log.user_agent)}</span>
@@ -460,7 +460,7 @@ export default function AdminAuthErrorsPage() {
                       <button
                         type="button"
                         onClick={() => handleDeleteOne(log.id)}
-                        className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold active:scale-95"
+                        className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold active:scale-95"
                         style={{ backgroundColor: "var(--color-error-soft)", color: "#B84545" }}
                       >
                         <Trash2 size={10} />
@@ -483,7 +483,7 @@ function Field({ label, value, mono, small }: { label: string; value: string; mo
     <div className="flex gap-2">
       <span className="shrink-0 w-[72px] text-text-sub font-bold">{label}</span>
       <span
-        className={`flex-1 min-w-0 break-all ${mono ? "font-mono" : ""} ${small ? "text-[10px]" : ""}`}
+        className={`flex-1 min-w-0 break-all ${mono ? "font-mono" : ""} ${small ? "text-[11px]" : ""}`}
         style={{ color: "#333" }}
       >
         {value}

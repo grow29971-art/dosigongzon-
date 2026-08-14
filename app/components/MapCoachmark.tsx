@@ -74,8 +74,8 @@ export default function MapCoachmark({ hasMyCat, isLoggedIn }: Props) {
             <X size={11} className="text-text-sub" />
           </button>
           <div className="flex items-center gap-1.5 mb-1 pr-6">
-            <span style={{ fontSize: 16 }}>🐾</span>
-            <p className="text-[12px] font-extrabold" style={{ color: "var(--color-primary)" }}>
+            <span style={{ fontSize: 17 }}>🐾</span>
+            <p className="text-[13px] font-extrabold" style={{ color: "var(--color-primary)" }}>
               첫 고양이 등록하기
             </p>
           </div>

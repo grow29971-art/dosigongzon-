@@ -70,10 +70,10 @@ export default function MyActivityDashboard() {
     <div className="mb-5">
       <div className="flex items-center gap-2 mb-3 px-1">
         <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#48A59E" }} />
-        <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+        <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
           내 활동 대시보드
         </h2>
-        <span className="text-[10px] text-text-light ml-auto">
+        <span className="text-[11px] text-text-light ml-auto">
           누적 {data.totalAllTime.toLocaleString()}건
         </span>
       </div>
@@ -97,8 +97,8 @@ export default function MyActivityDashboard() {
             <TrendingUp size={18} color="#fff" strokeWidth={2.5} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-bold text-text-sub">이번 달 돌봄</p>
-            <p className="text-[22px] font-extrabold tracking-tight" style={{ color: "#48A59E" }}>
+            <p className="text-[11px] font-bold text-text-sub">이번 달 돌봄</p>
+            <p className="text-[24px] font-extrabold tracking-tight" style={{ color: "#48A59E" }}>
               {data.thisMonthCount.toLocaleString()}번
             </p>
           </div>
@@ -153,10 +153,10 @@ export default function MyActivityDashboard() {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[12px] font-extrabold text-text-main truncate">
+                    <p className="text-[13px] font-extrabold text-text-main truncate">
                       {i === 0 && "🥇 "}{c.catName}
                     </p>
-                    <p className="text-[10px] font-bold" style={{ color: i === 0 ? "#A67B1E" : "#A38E7A" }}>
+                    <p className="text-[11px] font-bold" style={{ color: i === 0 ? "#A67B1E" : "#A38E7A" }}>
                       {c.count}번
                     </p>
                   </div>

@@ -36,7 +36,7 @@ function FailContent() {
       >
         <XCircle size={32} style={{ color: "var(--color-error)" }} />
       </div>
-      <h1 className="text-[18px] font-extrabold text-text-main mb-2">결제가 완료되지 않았어요</h1>
+      <h1 className="text-[20px] font-extrabold text-text-main mb-2">결제가 완료되지 않았어요</h1>
       <p className="text-[13px] text-text-sub leading-relaxed mb-2 max-w-[300px]">{friendlyMessage}</p>
       {code && code !== "PAY_PROCESS_CANCELED" && (
         <p className="text-[11px] text-text-light mb-6">오류 코드: {code}</p>
@@ -44,7 +44,7 @@ function FailContent() {
       <div className="flex flex-col gap-2 w-full max-w-[280px] mt-4">
         <Link
           href="/shop/checkout"
-          className="py-3.5 rounded-2xl bg-primary text-white text-[14px] font-bold"
+          className="py-3.5 rounded-2xl bg-primary text-white text-[15px] font-bold"
           style={{ boxShadow: "var(--shadow-primary)" }}
         >
           다시 시도하기

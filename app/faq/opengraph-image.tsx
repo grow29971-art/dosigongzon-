@@ -84,7 +84,7 @@ export default function FaqOGImage() {
             ❓
           </div>
           <span
-            style={{ fontSize: 26, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}
+            style={{ fontSize: 24, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}
           >
             도시공존 · 자주 묻는 질문
           </span>
@@ -108,7 +108,7 @@ export default function FaqOGImage() {
           </div>
           <p
             style={{
-              fontSize: 26,
+              fontSize: 24,
               fontWeight: 600,
               color: "#5A5A5A",
               margin: 0,

@@ -68,7 +68,7 @@ export default function InviteSection() {
     <div className="mb-3">
       <div className="flex items-center gap-2 mb-3 px-1">
         <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-like)" }} />
-        <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+        <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
           친구 초대
         </h2>
         <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "var(--color-like)", opacity: 0.6 }}>
@@ -96,7 +96,7 @@ export default function InviteSection() {
             <Gift size={20} color="#fff" strokeWidth={2.2} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+            <p className="text-[15px] font-extrabold text-text-main tracking-tight">
               내 초대 코드
             </p>
             <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
@@ -123,9 +123,9 @@ export default function InviteSection() {
               style={{ background: "#FFF", border: "1.5px dashed var(--color-like-soft)" }}
             >
               <div>
-                <p className="text-[10px] font-bold text-text-light tracking-[0.1em]">INVITE CODE</p>
+                <p className="text-[11px] font-bold text-text-light tracking-[0.1em]">INVITE CODE</p>
                 <p
-                  className="text-[22px] font-black tracking-[0.18em] mt-0.5"
+                  className="text-[24px] font-black tracking-[0.18em] mt-0.5"
                   style={{ color: "var(--color-like)" }}
                 >
                   {info.inviteCode}
@@ -142,7 +142,7 @@ export default function InviteSection() {
                 aria-label="초대 링크 복사"
               >
                 {copied ? <Check size={14} /> : <Copy size={14} />}
-                <span className="text-[12px] font-extrabold">{copied ? "복사됨" : "링크 복사"}</span>
+                <span className="text-[13px] font-extrabold">{copied ? "복사됨" : "링크 복사"}</span>
               </button>
             </div>
 
@@ -169,7 +169,7 @@ export default function InviteSection() {
             )}
           </>
         ) : (
-          <p className="text-[12px] text-text-sub text-center py-4">
+          <p className="text-[13px] text-text-sub text-center py-4">
             초대 코드를 불러올 수 없어요. 잠시 후 다시 시도해주세요.
           </p>
         )}

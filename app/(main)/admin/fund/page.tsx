@@ -82,7 +82,7 @@ export default function AdminFundPage() {
     return (
       <div className="px-4 pt-20 text-center">
         <Shield size={40} className="mx-auto text-text-light mb-3" />
-        <p className="text-[14px] font-bold text-text-main">관리자만 접근할 수 있어요</p>
+        <p className="text-[15px] font-bold text-text-main">관리자만 접근할 수 있어요</p>
       </div>
     );
   }
@@ -92,12 +92,12 @@ export default function AdminFundPage() {
       <button onClick={() => router.push("/admin")} className="flex items-center gap-1 text-[13px] text-text-sub mb-4 active:scale-95">
         <ArrowLeft size={16} /> 관리자
       </button>
-      <h1 className="text-[22px] font-extrabold text-text-main tracking-tight mb-1">후원금 지출 관리</h1>
+      <h1 className="text-[24px] font-extrabold text-text-main tracking-tight mb-1">후원금 지출 관리</h1>
       <p className="text-[13px] text-text-sub mb-3">여기 등록한 지출이 쇼핑의 &lsquo;투명 정산&rsquo; 위젯에 바로 반영돼요.</p>
 
       {/* 계산식 안내 — 세 숫자가 각각 어디서 오는지 한눈에. 손이 필요한 칸이 하나뿐임을 명시 */}
       <div
-        className="mb-5 px-3.5 py-3 rounded-2xl text-[12px] leading-relaxed"
+        className="mb-5 px-3.5 py-3 rounded-2xl text-[13px] leading-relaxed"
         style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(173, 94, 59,0.12)" }}
       >
         <p className="font-extrabold text-text-main mb-1.5">숫자는 이렇게 계산돼요</p>
@@ -124,15 +124,15 @@ export default function AdminFundPage() {
           { label: "잔액", value: balance, color: "var(--color-primary)" },
         ].map((s) => (
           <div key={s.label} className="text-center py-3 rounded-2xl" style={{ background: "var(--color-surface-alt)" }}>
-            <p className="text-[10px] font-bold text-text-light mb-0.5">{s.label}</p>
-            <p className="text-[14px] font-black tabular-nums" style={{ color: s.color }}>{s.value.toLocaleString()}<span className="text-[9px] text-text-light">원</span></p>
+            <p className="text-[11px] font-bold text-text-light mb-0.5">{s.label}</p>
+            <p className="text-[15px] font-black tabular-nums" style={{ color: s.color }}>{s.value.toLocaleString()}<span className="text-[9px] text-text-light">원</span></p>
           </div>
         ))}
       </div>
 
       {/* 등록 폼 */}
       <div className="p-4 rounded-2xl mb-5" style={{ background: "#fff", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)" }}>
-        <h2 className="text-[14px] font-extrabold text-text-main mb-3">지출 등록</h2>
+        <h2 className="text-[15px] font-extrabold text-text-main mb-3">지출 등록</h2>
         <div className="space-y-2.5">
           <input
             type="text" inputMode="numeric" value={amount}
@@ -170,10 +170,10 @@ export default function AdminFundPage() {
       </div>
 
       {/* 내역 */}
-      <h2 className="text-[14px] font-extrabold text-text-main mb-2 px-1">지출 내역 ({items.length})</h2>
+      <h2 className="text-[15px] font-extrabold text-text-main mb-2 px-1">지출 내역 ({items.length})</h2>
       <div className="flex flex-col gap-2">
         {items.length === 0 ? (
-          <p className="text-[12px] text-text-light text-center py-6">아직 등록된 지출이 없어요.</p>
+          <p className="text-[13px] text-text-light text-center py-6">아직 등록된 지출이 없어요.</p>
         ) : items.map((d) => (
           <div key={d.id} className="flex items-center gap-3 px-3.5 py-3 rounded-xl" style={{ background: "#fff", border: "1px solid var(--color-divider)" }}>
             <div className="flex-1 min-w-0">

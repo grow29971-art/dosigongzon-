@@ -373,7 +373,7 @@ export default function AddCatModal({
           <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-4">
             <Lock size={24} className="text-primary" />
           </div>
-          <h2 className="text-[18px] font-extrabold text-text-main mb-2">
+          <h2 className="text-[20px] font-extrabold text-text-main mb-2">
             로그인이 필요해요
           </h2>
           <p className="text-[13px] text-text-sub leading-relaxed mb-5">
@@ -383,7 +383,7 @@ export default function AddCatModal({
           <Link
             href="/login?next=%2Fmap"
             onClick={onClose}
-            className="block w-full py-3.5 rounded-2xl bg-primary text-white text-[14px] font-bold text-center active:scale-[0.97] transition-transform"
+            className="block w-full py-3.5 rounded-2xl bg-primary text-white text-[15px] font-bold text-center active:scale-[0.97] transition-transform"
           >
             로그인하러 가기
           </Link>
@@ -435,7 +435,7 @@ export default function AddCatModal({
         {/* 헤더 */}
         <div className="relative flex items-center justify-between px-5 py-3 border-b border-white/12">
           <div className="flex items-center gap-2.5">
-            <span className="w-8 h-8 rounded-xl flex items-center justify-center text-[16px] shrink-0"
+            <span className="w-8 h-8 rounded-xl flex items-center justify-center text-[17px] shrink-0"
               style={{ background: "linear-gradient(135deg,#6366F1,#818CF8)", boxShadow: "0 2px 10px rgba(99,102,241,0.5)" }}>
               🃏
             </span>
@@ -481,7 +481,7 @@ export default function AddCatModal({
                     aria-current={discoveryStep === step.id ? "step" : undefined}
                     onClick={() => setDiscoveryStep(step.id)}
                   >
-                    <span className="block text-[10px] font-extrabold text-[#A5B4FC]">
+                    <span className="block text-[11px] font-extrabold text-[#A5B4FC]">
                       {index + 1}단계
                     </span>
                     <span className="mt-0.5 block text-[11px] font-bold text-white/80">
@@ -515,7 +515,7 @@ export default function AddCatModal({
             discoveryStep === "location" &&
             nearbyCandidates.length > 0 && (
               <div className="rounded-2xl border border-amber-300/30 bg-amber-200/10 p-3">
-                <p className="text-[12px] font-extrabold text-amber-100">
+                <p className="text-[13px] font-extrabold text-amber-100">
                   잠깐, 주변에 이미 등록된 아이가 있어요
                 </p>
                 <p className="mt-1 text-[11px] text-white/65">
@@ -539,7 +539,7 @@ export default function AddCatModal({
           {/* 사진 업로드 — 최대 5장 */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-[12px] font-bold text-white">
+              <label className="text-[13px] font-bold text-white">
                 사진 <span className="text-white/45 font-normal">(선택) · 첫 장이 대표</span>
               </label>
               <span className="text-[11px] text-white/45">
@@ -555,7 +555,7 @@ export default function AddCatModal({
                   style={{ background: "linear-gradient(135deg, #0F0F1A 0%, #1A1A2E 100%)", borderColor: "#6366F1" }}
                 >
                   <Camera size={34} className="text-white" strokeWidth={1.5} />
-                  <p className="text-[14px] font-extrabold text-white">사진 찍기</p>
+                  <p className="text-[15px] font-extrabold text-white">사진 찍기</p>
                   <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.5)" }}>카메라로 우리 동네 아이를 담아요</p>
                 </button>
                 <input
@@ -577,7 +577,7 @@ export default function AddCatModal({
                   style={{ background: "rgba(255,255,255,0.06)" }}
                 >
                   <Camera size={15} className="text-white/45" strokeWidth={1.5} />
-                  <p className="text-[12px] text-white/60">갤러리에서 선택</p>
+                  <p className="text-[13px] text-white/60">갤러리에서 선택</p>
                 </button>
               </div>
             ) : (
@@ -615,7 +615,7 @@ export default function AddCatModal({
                     className="aspect-square rounded-xl bg-white/[0.07] border-2 border-dashed border-white/15 flex flex-col items-center justify-center gap-1 active:scale-[0.97]"
                   >
                     <Camera size={20} className="text-white/45" strokeWidth={1.5} />
-                    <p className="text-[10px] text-white/60 font-medium">추가</p>
+                    <p className="text-[11px] text-white/60 font-medium">추가</p>
                   </button>
                 )}
               </div>
@@ -632,7 +632,7 @@ export default function AddCatModal({
 
           {/* 이름 */}
           <div>
-            <label className="text-[12px] font-bold text-white mb-2 block">
+            <label className="text-[13px] font-bold text-white mb-2 block">
               이름 <span className="text-error">*</span>
             </label>
             <input
@@ -641,7 +641,7 @@ export default function AddCatModal({
               onChange={(e) => setName(e.target.value)}
               placeholder="예: 까망이, 치즈, 삼색이"
               maxLength={20}
-              className="w-full px-4 py-3 rounded-2xl bg-white/[0.07] text-[14px] text-white outline-none focus:bg-white/10 focus:ring-2 focus:ring-[#6366F1]/20 transition-all placeholder:text-white/30"
+              className="w-full px-4 py-3 rounded-2xl bg-white/[0.07] text-[15px] text-white outline-none focus:bg-white/10 focus:ring-2 focus:ring-[#6366F1]/20 transition-all placeholder:text-white/30"
             />
           </div>
           </>
@@ -650,10 +650,10 @@ export default function AddCatModal({
           {/* 동네 */}
           {(!showDiscoverySteps || discoveryStep === "location") && (
           <div>
-            <label className="text-[12px] font-bold text-white mb-2 block">
+            <label className="text-[13px] font-bold text-white mb-2 block">
               동네 <span className="text-error">*</span>
               {detectedGu && (
-                <span className="text-[10px] font-normal text-white/45 ml-2">
+                <span className="text-[11px] font-normal text-white/45 ml-2">
                   📍 {detectedGu}
                 </span>
               )}
@@ -662,12 +662,12 @@ export default function AddCatModal({
               <div className="flex items-center gap-2">
                 <div className="flex-1 flex items-center gap-2 px-4 py-3 rounded-2xl bg-[#6366F1]/10 border border-[#6366F1]/20">
                   <MapPin size={14} className="text-[#818CF8] shrink-0" />
-                  <span className="text-[14px] font-bold text-white">{selectedDong}</span>
+                  <span className="text-[15px] font-bold text-white">{selectedDong}</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setEditingDong(true)}
-                  className="text-[12px] text-white/60 underline shrink-0 px-2"
+                  className="text-[13px] text-white/60 underline shrink-0 px-2"
                 >
                   변경
                 </button>
@@ -681,7 +681,7 @@ export default function AddCatModal({
                 autoFocus={editingDong}
                 placeholder="예: 구월동, 역삼동, 해운대동"
                 maxLength={20}
-                className="w-full px-4 py-3 rounded-2xl bg-white/[0.07] text-[14px] text-white outline-none focus:bg-white/10 focus:ring-2 focus:ring-[#6366F1]/20 transition-all placeholder:text-white/30"
+                className="w-full px-4 py-3 rounded-2xl bg-white/[0.07] text-[15px] text-white outline-none focus:bg-white/10 focus:ring-2 focus:ring-[#6366F1]/20 transition-all placeholder:text-white/30"
               />
             )}
           </div>
@@ -703,7 +703,7 @@ export default function AddCatModal({
           <>
           {/* 한 줄 소개 */}
           <div>
-            <label className="text-[12px] font-bold text-white mb-2 block">한 줄 소개</label>
+            <label className="text-[13px] font-bold text-white mb-2 block">한 줄 소개</label>
 
             {/* 안내 — 위치 특정 금지 */}
             <div
@@ -711,7 +711,7 @@ export default function AddCatModal({
               style={{ background: "rgba(120,200,140,0.10)", border: "1px solid rgba(120,200,140,0.28)" }}
             >
               <ShieldAlert size={14} className="shrink-0 mt-0.5" style={{ color: "#8FE0A8" }} />
-              <p className="text-[12px] leading-relaxed" style={{ color: "#B8EFC8" }}>
+              <p className="text-[13px] leading-relaxed" style={{ color: "#B8EFC8" }}>
                 <b>길고양이 안전을 위해</b> 정확한 위치를 알 수 있는 표현은 적지 마세요.
                 <br />
                 <span style={{ color: "rgba(184,239,200,0.75)" }}>
@@ -726,7 +726,7 @@ export default function AddCatModal({
               placeholder="예: 우리 동네 터줏대감. 사람을 봐도 도망가지 않아요."
               maxLength={120}
               rows={3}
-              className={`w-full px-4 py-3 rounded-2xl text-[14px] text-white outline-none transition-all placeholder:text-white/30 resize-none ${
+              className={`w-full px-4 py-3 rounded-2xl text-[15px] text-white outline-none transition-all placeholder:text-white/30 resize-none ${
                 descLocationViolations.length > 0 || descAbuseViolations.length > 0
                   ? "bg-red-500/10 ring-2 ring-red-400/40 focus:ring-red-400/60"
                   : "bg-white/[0.07] focus:bg-white/10 focus:ring-2 focus:ring-[#6366F1]/20"
@@ -746,13 +746,13 @@ export default function AddCatModal({
                   </p>
                 )}
               </div>
-              <p className="text-[10px] text-white/45 shrink-0">{description.length}/120</p>
+              <p className="text-[11px] text-white/45 shrink-0">{description.length}/120</p>
             </div>
           </div>
 
           {/* 태그 */}
           <div>
-            <label className="text-[12px] font-bold text-white mb-2 block">상태 태그</label>
+            <label className="text-[13px] font-bold text-white mb-2 block">상태 태그</label>
             <div className="flex flex-wrap gap-2">
               {TAG_PRESETS.map((tag) => {
                 const active = tags.includes(tag);
@@ -761,7 +761,7 @@ export default function AddCatModal({
                     key={tag}
                     type="button"
                     onClick={() => toggleTag(tag)}
-                    className={`text-[12px] font-semibold px-3 py-1.5 rounded-full transition-all active:scale-95 ${
+                    className={`text-[13px] font-semibold px-3 py-1.5 rounded-full transition-all active:scale-95 ${
                       active
                         ? "bg-[#6366F1] text-white"
                         : "bg-white/[0.07] text-white/60 border border-white/15"
@@ -777,7 +777,7 @@ export default function AddCatModal({
 
           {/* 성별 */}
           <div>
-            <label className="text-[12px] font-bold text-white mb-2 block">성별</label>
+            <label className="text-[13px] font-bold text-white mb-2 block">성별</label>
             <div className="flex gap-2">
               {(Object.entries(GENDER_MAP) as [CatGender, { label: string; emoji: string }][]).map(([key, info]) => (
                 <button
@@ -796,7 +796,7 @@ export default function AddCatModal({
 
           {/* 중성화 여부 */}
           <div>
-            <label className="text-[12px] font-bold text-white mb-2 block">중성화 여부</label>
+            <label className="text-[13px] font-bold text-white mb-2 block">중성화 여부</label>
             <div className="flex gap-2">
               {([
                 { value: true, label: "✂️ 완료" },
@@ -819,7 +819,7 @@ export default function AddCatModal({
 
           {/* 건강 상태 */}
           <div>
-            <label className="text-[12px] font-bold text-white mb-2 block">건강 상태</label>
+            <label className="text-[13px] font-bold text-white mb-2 block">건강 상태</label>
             <div className="flex gap-2">
               {(Object.entries(HEALTH_MAP) as [CatHealthStatus, { label: string; emoji: string; color: string }][]).map(([key, info]) => (
                 <button
@@ -841,7 +841,7 @@ export default function AddCatModal({
 
           {/* 입양·임시보호 매칭 (선택) */}
           <div>
-            <label className="text-[12px] font-bold text-white mb-2 block">
+            <label className="text-[13px] font-bold text-white mb-2 block">
               입양·임시보호 <span className="text-white/45 font-normal">(선택)</span>
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -862,7 +862,7 @@ export default function AddCatModal({
                   key={key}
                   type="button"
                   onClick={() => setAdoptionStatus(key)}
-                  className="py-2.5 rounded-2xl text-[12px] font-bold transition-all active:scale-95"
+                  className="py-2.5 rounded-2xl text-[13px] font-bold transition-all active:scale-95"
                   style={{
                     backgroundColor: adoptionStatus === key ? info.color : undefined,
                     color: adoptionStatus === key ? "#fff" : info.color,
@@ -885,7 +885,7 @@ export default function AddCatModal({
           {/* 공개 범위 — Private Circle */}
           {(!showDiscoverySteps || discoveryStep === "visibility") && (
           <div>
-            <label className="text-[12px] font-bold text-white mb-2 block">
+            <label className="text-[13px] font-bold text-white mb-2 block">
               공개 범위 <span className="text-white/45 font-normal">(보안)</span>
             </label>
             <div className="space-y-1.5">
@@ -902,7 +902,7 @@ export default function AddCatModal({
                       border: `1.5px solid ${active ? info.color : "rgba(255,255,255,0.16)"}`,
                     }}
                   >
-                    <span className="text-[18px] leading-none mt-0.5">{info.emoji}</span>
+                    <span className="text-[20px] leading-none mt-0.5">{info.emoji}</span>
                     <div className="flex-1 min-w-0">
                       <p className="text-[13px] font-extrabold" style={{ color: active ? info.color : "rgba(255,255,255,0.85)" }}>
                         {info.label}
@@ -911,7 +911,7 @@ export default function AddCatModal({
                         {info.description}
                       </p>
                     </div>
-                    {active && <span className="text-[14px] shrink-0" style={{ color: info.color }}>✓</span>}
+                    {active && <span className="text-[15px] shrink-0" style={{ color: info.color }}>✓</span>}
                   </button>
                 );
               })}

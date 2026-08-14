@@ -224,7 +224,7 @@ export default function FeedingGuidePage() {
               className="rounded-xl p-3 flex items-start gap-3"
               style={{ background: "var(--color-error-soft)", border: "1px solid rgba(216,85,85,0.15)" }}
             >
-              <span style={{ fontSize: 22, lineHeight: 1 }} className="shrink-0">{f.emoji}</span>
+              <span style={{ fontSize: 24, lineHeight: 1 }} className="shrink-0">{f.emoji}</span>
               <div>
                 <p className="text-[13px] font-bold" style={{ color: "#8B2F2F" }}>{f.name}</p>
                 <p className="text-[13px] text-text-sub mt-0.5 leading-snug">{f.reason}</p>
@@ -247,7 +247,7 @@ export default function FeedingGuidePage() {
               className="rounded-xl p-3 flex items-start gap-3"
               style={{ background: "var(--color-sage-soft)", border: "1px solid rgba(107,142,111,0.18)" }}
             >
-              <span style={{ fontSize: 22, lineHeight: 1 }} className="shrink-0">{f.emoji}</span>
+              <span style={{ fontSize: 24, lineHeight: 1 }} className="shrink-0">{f.emoji}</span>
               <div>
                 <p className="text-[13px] font-bold" style={{ color: "#2E5A34" }}>{f.name}</p>
                 <p className="text-[13px] text-text-sub mt-0.5 leading-snug">{f.tip}</p>
@@ -351,7 +351,7 @@ export default function FeedingGuidePage() {
             className="bg-white rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98]"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <span style={{ fontSize: 22 }}>🚨</span>
+            <span style={{ fontSize: 24 }}>🚨</span>
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">응급 구조 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">다친 아이 발견 시 대응법</p>
@@ -362,7 +362,7 @@ export default function FeedingGuidePage() {
             className="bg-white rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98]"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <span style={{ fontSize: 22 }}>✂️</span>
+            <span style={{ fontSize: 24 }}>✂️</span>
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">TNR 포획 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">중성화 수술 전 과정</p>
@@ -373,7 +373,7 @@ export default function FeedingGuidePage() {
             className="bg-white rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98]"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <span style={{ fontSize: 22 }}>🐾</span>
+            <span style={{ fontSize: 24 }}>🐾</span>
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">냥줍 가이드 (새끼 고양이)</p>
               <p className="text-[11px] text-text-sub mt-0.5">관찰·체온·급여 3단계</p>

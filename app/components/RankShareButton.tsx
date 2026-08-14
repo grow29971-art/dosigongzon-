@@ -42,7 +42,7 @@ export default function RankShareButton({
       aria-label="내 순위 자랑하기"
     >
       {copied ? <Check size={14} /> : <Share2 size={14} />}
-      <span className="text-[12px] font-extrabold">{copied ? "복사됨" : "자랑하기"}</span>
+      <span className="text-[13px] font-extrabold">{copied ? "복사됨" : "자랑하기"}</span>
     </button>
   );
 }

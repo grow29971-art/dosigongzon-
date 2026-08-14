@@ -85,7 +85,7 @@ export default function StreakFreezeButton({ streak, hasToday, onUsed }: Props) 
           border: "1px solid rgba(74,123,168,0.25)",
         }}
       >
-        <p className="text-[12px] font-extrabold text-text-main mb-2">
+        <p className="text-[13px] font-extrabold text-text-main mb-2">
           🧊 오늘을 건너뛸까요? (주 1회 한정)
         </p>
         <p className="text-[11px] text-text-sub mb-2.5 leading-snug">
@@ -117,7 +117,7 @@ export default function StreakFreezeButton({ streak, hasToday, onUsed }: Props) 
           </button>
         </div>
         {error && (
-          <p className="text-[10px] mt-2 font-bold" style={{ color: "#B84545" }}>
+          <p className="text-[11px] mt-2 font-bold" style={{ color: "#B84545" }}>
             {error}
           </p>
         )}

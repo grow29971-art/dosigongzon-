@@ -117,7 +117,7 @@ export default function AchievementToast({
         }}
       >
         <div
-          className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 text-[22px]"
+          className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 text-[24px]"
           style={{
             background: `linear-gradient(135deg, ${current.color} 0%, ${current.color}DD 100%)`,
             boxShadow: `0 4px 14px ${current.color}55`,
@@ -126,10 +126,10 @@ export default function AchievementToast({
           {current.emoji}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-extrabold tracking-[0.12em]" style={{ color: current.color }}>
+          <p className="text-[11px] font-extrabold tracking-[0.12em]" style={{ color: current.color }}>
             {current.kind === "level_up" ? "LEVEL UP" : "UNLOCKED"}
           </p>
-          <p className="text-[14px] font-extrabold text-text-main leading-tight tracking-tight mt-0.5">
+          <p className="text-[15px] font-extrabold text-text-main leading-tight tracking-tight mt-0.5">
             {current.title}
           </p>
           <p className="text-[11px] font-semibold text-text-sub mt-0.5 leading-tight truncate">

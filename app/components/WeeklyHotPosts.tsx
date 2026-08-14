@@ -16,7 +16,7 @@ export default async function WeeklyHotPosts() {
     <div className="mb-5">
       <div className="flex items-center gap-2 mb-3 px-1">
         <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-like)" }} />
-        <h2 className="text-[14px] font-extrabold text-text-main tracking-tight flex items-center gap-1">
+        <h2 className="text-[15px] font-extrabold text-text-main tracking-tight flex items-center gap-1">
           <Flame size={14} style={{ color: "var(--color-like)" }} />
           이번 주 HOT
         </h2>
@@ -48,7 +48,7 @@ export default async function WeeklyHotPosts() {
               >
                 {/* 순위 뱃지 */}
                 <div
-                  className="shrink-0 w-8 h-8 rounded-xl flex items-center justify-center text-[14px] font-extrabold"
+                  className="shrink-0 w-8 h-8 rounded-xl flex items-center justify-center text-[15px] font-extrabold"
                   style={{
                     background:
                       idx === 0
@@ -88,7 +88,7 @@ export default async function WeeklyHotPosts() {
                       {plain}
                     </p>
                   )}
-                  <div className="flex items-center gap-3 mt-1.5 text-[10px] text-text-light font-semibold">
+                  <div className="flex items-center gap-3 mt-1.5 text-[11px] text-text-light font-semibold">
                     {post.viewCount > 0 && (
                       <span className="flex items-center gap-0.5">
                         <Eye size={10} />

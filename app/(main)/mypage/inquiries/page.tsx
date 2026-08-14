@@ -73,7 +73,7 @@ export default function MyInquiriesPage() {
   if (!user) {
     return (
       <div className="px-5 pt-20 text-center">
-        <p className="text-[14px] text-text-sub">로그인이 필요해요.</p>
+        <p className="text-[15px] text-text-sub">로그인이 필요해요.</p>
         <Link href="/login?next=%2Fmypage%2Finquiries" className="inline-block mt-4 text-[13px] font-bold text-primary">
           로그인하기
         </Link>
@@ -92,18 +92,18 @@ export default function MyInquiriesPage() {
       <div className="mb-5">
         <button
           onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[12px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
         >
           <ArrowLeft size={14} />
           마이페이지
         </button>
         <div className="flex items-baseline gap-2 mb-1">
-          <h1 className="text-[22px] font-extrabold text-text-main tracking-tight">
+          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
             내 문의
           </h1>
-          <span className="text-[10px] font-semibold text-text-light">My Inquiries</span>
+          <span className="text-[11px] font-semibold text-text-light">My Inquiries</span>
         </div>
-        <div className="flex items-center gap-3 text-[12px] text-text-sub">
+        <div className="flex items-center gap-3 text-[13px] text-text-sub">
           <span className="flex items-center gap-1">
             <Inbox size={13} /> 전체 {items.length}
           </span>
@@ -128,7 +128,7 @@ export default function MyInquiriesPage() {
         >
           <div className="px-4 pt-3.5 pb-2">
             <div className="flex items-baseline gap-2">
-              <h2 className="text-[14px] font-extrabold text-text-main">내 신고 상태</h2>
+              <h2 className="text-[15px] font-extrabold text-text-main">내 신고 상태</h2>
               <span className="text-[11px] text-text-sub ml-auto">{reportsPanel.headline}</span>
             </div>
           </div>
@@ -143,7 +143,7 @@ export default function MyInquiriesPage() {
                 }}
               >
                 <p className="text-[13px] font-bold text-text-main">{it.line}</p>
-                <p className="text-[12px] text-text-sub mt-0.5">{it.detail}</p>
+                <p className="text-[13px] text-text-sub mt-0.5">{it.detail}</p>
               </div>
             ))}
           </div>
@@ -157,13 +157,13 @@ export default function MyInquiriesPage() {
           style={{ border: "1px solid rgba(0,0,0,0.05)" }}
         >
           <MessageSquare size={36} strokeWidth={1.2} className="text-text-light mx-auto mb-3" />
-          <p className="text-[14px] font-bold text-text-main mb-1">아직 접수한 문의가 없어요</p>
-          <p className="text-[12px] text-text-sub mb-4">
+          <p className="text-[15px] font-bold text-text-main mb-1">아직 접수한 문의가 없어요</p>
+          <p className="text-[13px] text-text-sub mb-4">
             궁금한 점이나 불편사항을 관리자에게 전달할 수 있어요
           </p>
           <Link
             href="/mypage"
-            className="inline-block px-4 py-2 rounded-xl text-[12px] font-bold text-white"
+            className="inline-block px-4 py-2 rounded-xl text-[13px] font-bold text-white"
             style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
           >
             마이페이지에서 문의하기
@@ -193,7 +193,7 @@ export default function MyInquiriesPage() {
               >
                 <div className="flex items-center gap-2 mb-1.5">
                   <span
-                    className="text-[10px] font-extrabold px-2 py-0.5 chip-square"
+                    className="text-[11px] font-extrabold px-2 py-0.5 chip-square"
                     style={{ backgroundColor: `${color}15`, color }}
                   >
                     {label}
@@ -202,10 +202,10 @@ export default function MyInquiriesPage() {
                     {formatDate(iq.created_at)}
                   </span>
                 </div>
-                <p className="text-[14px] font-extrabold text-text-main truncate">
+                <p className="text-[15px] font-extrabold text-text-main truncate">
                   {iq.subject}
                 </p>
-                <p className="text-[12px] text-text-sub mt-0.5 truncate">
+                <p className="text-[13px] text-text-sub mt-0.5 truncate">
                   {iq.body}
                 </p>
               </button>
@@ -217,7 +217,7 @@ export default function MyInquiriesPage() {
                 >
                   {/* 내 문의 원본 */}
                   <div className="rounded-xl p-3" style={{ background: "var(--color-gray-50)" }}>
-                    <p className="text-[10px] font-extrabold text-text-sub tracking-[0.1em] mb-1.5">
+                    <p className="text-[11px] font-extrabold text-text-sub tracking-[0.1em] mb-1.5">
                       내 문의
                     </p>
                     <p className="text-[13px] text-text-main whitespace-pre-wrap leading-relaxed">
@@ -236,10 +236,10 @@ export default function MyInquiriesPage() {
                     >
                       <div className="flex items-center gap-1.5 mb-1.5">
                         <CheckCircle2 size={12} style={{ color: "#48A59E" }} />
-                        <p className="text-[10px] font-extrabold tracking-[0.1em]" style={{ color: "#48A59E" }}>
+                        <p className="text-[11px] font-extrabold tracking-[0.1em]" style={{ color: "#48A59E" }}>
                           관리자 답변
                         </p>
-                        <span className="text-[10px] text-text-light ml-auto">
+                        <span className="text-[11px] text-text-light ml-auto">
                           {formatDate(iq.updated_at)}
                         </span>
                       </div>
@@ -252,7 +252,7 @@ export default function MyInquiriesPage() {
                       className="rounded-xl p-3 text-center"
                       style={{ background: "#FFF9E8", border: "1px dashed rgba(201,169,97,0.3)" }}
                     >
-                      <p className="text-[12px]" style={{ color: "#8A7318" }}>
+                      <p className="text-[13px]" style={{ color: "#8A7318" }}>
                         {iq.status === "pending"
                           ? "아직 답변을 기다리고 있어요"
                           : "답변이 등록되지 않았어요"}

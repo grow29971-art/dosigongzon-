@@ -20,7 +20,7 @@ export function AdoptionBadge({ status, size = "sm" }: BadgeProps) {
   return (
     <span
       className={`inline-flex items-center gap-1 rounded-full font-extrabold ${
-        isSm ? "px-2 py-0.5 text-[11px]" : "px-2.5 py-1 text-[12px]"
+        isSm ? "px-2 py-0.5 text-[11px]" : "px-2.5 py-1 text-[13px]"
       }`}
       style={{
         backgroundColor: `${meta.color}18`,
@@ -78,7 +78,7 @@ export function AdoptionInquireButton({
       }}
     >
       <HandHeart size={16} />
-      <span className="text-[14px]">{meta.short} 문의하기</span>
+      <span className="text-[15px]">{meta.short} 문의하기</span>
     </button>
   );
 }

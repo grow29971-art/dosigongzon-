@@ -70,7 +70,7 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
               </span>
             </button>
           </div>
-          <p className="text-[12px] text-text-sub leading-relaxed whitespace-pre-line">
+          <p className="text-[13px] text-text-sub leading-relaxed whitespace-pre-line">
             {b.text}
           </p>
         </div>
@@ -113,7 +113,7 @@ function LogoCard({ href, label, filename }: { href: string; label: string; file
           backgroundPosition: "center",
         }}
       />
-      <span className="text-[10px] font-extrabold mt-0.5" style={{ color: "#8B5A3C" }}>
+      <span className="text-[11px] font-extrabold mt-0.5" style={{ color: "#8B5A3C" }}>
         {label}
       </span>
       <Download size={10} style={{ color: "var(--color-primary)" }} />

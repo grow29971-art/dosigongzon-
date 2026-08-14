@@ -142,7 +142,7 @@ export default function CareLogCelebration({
             </div>
           ) : (
             <>
-              <p className="text-[12px] font-bold text-text-sub text-center mb-3">
+              <p className="text-[13px] font-bold text-text-sub text-center mb-3">
                 내일도 들러주실래요?
               </p>
               <div className="flex gap-2">
@@ -160,7 +160,7 @@ export default function CareLogCelebration({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-3 rounded-2xl text-[12px] font-bold"
+                  className="px-4 py-3 rounded-2xl text-[13px] font-bold"
                   style={{ background: "var(--color-gray-50)", color: "#A38E7A" }}
                 >
                   닫기
@@ -175,7 +175,7 @@ export default function CareLogCelebration({
             <Link
               href="/shop?category=food"
               onClick={onClose}
-              className="block text-center text-[12px] font-bold mt-3 py-3 rounded-2xl active:scale-[0.98] transition-transform"
+              className="block text-center text-[13px] font-bold mt-3 py-3 rounded-2xl active:scale-[0.98] transition-transform"
               style={{ background: "rgba(232,148,10,0.1)", color: "#B87409" }}
             >
               🔥 {streak}일 연속 기념 — 아이들 간식 구경하고 찜해두기

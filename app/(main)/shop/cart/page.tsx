@@ -74,7 +74,7 @@ export default function CartPage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </button>
-        <h1 className="text-[16px] font-extrabold text-text-main">장바구니</h1>
+        <h1 className="text-[17px] font-extrabold text-text-main">장바구니</h1>
       </div>
 
       {loading ? (
@@ -91,7 +91,7 @@ export default function CartPage() {
           >
             <ShoppingBag size={28} style={{ color: "var(--color-primary)" }} />
           </div>
-          <p className="text-[14px] font-bold text-text-main mb-1">장바구니가 비어있습니다</p>
+          <p className="text-[15px] font-bold text-text-main mb-1">장바구니가 비어있습니다</p>
           <p className="text-[13px] text-text-sub mb-6">담아둔 상품이 아직 없어요</p>
           <Link
             href="/shop"
@@ -116,12 +116,12 @@ export default function CartPage() {
                 </Link>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-bold text-text-main truncate">{item.product.name}</p>
-                  <p className="text-[12px] text-text-sub mt-0.5">{formatWon(unitPrice)}</p>
+                  <p className="text-[13px] text-text-sub mt-0.5">{formatWon(unitPrice)}</p>
                   <div className="mt-1.5 flex items-center gap-2 px-2 py-1 rounded-xl w-fit" style={{ background: "var(--color-warm-white)" }}>
                     <button onClick={() => handleQuantity(item, -1)} disabled={busyId === item.id} className="w-5 h-5 flex items-center justify-center disabled:opacity-30">
                       <Minus size={12} />
                     </button>
-                    <span className="text-[12px] font-medium w-4 text-center">{item.quantity}</span>
+                    <span className="text-[13px] font-medium w-4 text-center">{item.quantity}</span>
                     <button onClick={() => handleQuantity(item, 1)} disabled={busyId === item.id || item.quantity >= item.product.stock} className="w-5 h-5 flex items-center justify-center disabled:opacity-30">
                       <Plus size={12} />
                     </button>
@@ -144,11 +144,11 @@ export default function CartPage() {
           className="fixed bottom-0 left-0 right-0 z-40 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
           style={{ background: "var(--color-surface)", boxShadow: "0 -4px 16px rgba(20,40,70,0.08)" }}
         >
-          <div className="flex items-center justify-between text-[12px] text-text-sub mb-1">
+          <div className="flex items-center justify-between text-[13px] text-text-sub mb-1">
             <span>상품금액</span>
             <span>{formatWon(productTotal)}</span>
           </div>
-          <div className="flex items-center justify-between text-[12px] text-text-sub mb-2">
+          <div className="flex items-center justify-between text-[13px] text-text-sub mb-2">
             <span>배송비</span>
             <span>{shippingFee > 0 ? formatWon(shippingFee) : "무료"}</span>
           </div>
@@ -158,7 +158,7 @@ export default function CartPage() {
           </div>
           <button
             onClick={() => router.push("/shop/checkout")}
-            className="w-full py-3.5 rounded-2xl bg-primary text-white text-[14px] font-bold active:scale-[0.98] transition-transform"
+            className="w-full py-3.5 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.98] transition-transform"
             style={{ boxShadow: "var(--shadow-primary)" }}
           >
             주문하기

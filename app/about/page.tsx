@@ -127,7 +127,7 @@ export default async function AboutPage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
-        <span className="text-[12px] font-semibold text-text-sub">홈</span>
+        <span className="text-[13px] font-semibold text-text-sub">홈</span>
       </div>
 
       {/* 히어로 */}
@@ -138,7 +138,7 @@ export default async function AboutPage() {
             전국 · 비영리 시민 참여 플랫폼
           </span>
         </div>
-        <h1 className="text-[26px] font-extrabold text-text-main leading-tight tracking-tight">
+        <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight">
           전국 길고양이 <span style={{ color: "var(--color-primary)" }}>{stats.cats.toLocaleString()}마리</span>의<br />
           돌봄 기록을 한 화면에.
         </h1>
@@ -161,10 +161,10 @@ export default async function AboutPage() {
 
       {/* 왜 만들었나 — 문제의식 */}
       <section className="px-5 mt-8">
-        <h2 className="text-[16px] font-bold text-text-main mb-1">
+        <h2 className="text-[17px] font-bold text-text-main mb-1">
           왜 도시공존을 만들었을까요
         </h2>
-        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+        <p className="text-[13px] text-text-sub mb-3 leading-relaxed">
           길 위의 아이들을 돌보는 일은 따뜻하지만, 돌보는 사람은 늘 외롭고 막막했어요.
           그 막막함의 정체를 들여다보니 세 가지 문제가 있었습니다.
         </p>
@@ -202,7 +202,7 @@ export default async function AboutPage() {
 
       {/* 핵심 기능 */}
       <section className="px-5 mt-8">
-        <h2 className="text-[16px] font-bold text-text-main mb-3">
+        <h2 className="text-[17px] font-bold text-text-main mb-3">
           우리가 하는 일
         </h2>
         <div className="space-y-2.5">
@@ -231,7 +231,7 @@ export default async function AboutPage() {
 
       {/* 철학 — Mission / Vision / Values */}
       <section className="px-5 mt-8">
-        <h2 className="text-[16px] font-bold text-text-main mb-3">철학과 가치</h2>
+        <h2 className="text-[17px] font-bold text-text-main mb-3">철학과 가치</h2>
 
         {/* Mission */}
         <div
@@ -333,7 +333,7 @@ export default async function AboutPage() {
 
       {/* 위치 보안 — 배회 마커 3중 보호 */}
       <section className="px-5 mt-8">
-        <h2 className="text-[16px] font-bold text-text-main mb-3">고양이 위치는 이렇게 지켜요</h2>
+        <h2 className="text-[17px] font-bold text-text-main mb-3">고양이 위치는 이렇게 지켜요</h2>
         <div
           className="rounded-3xl p-5"
           style={{
@@ -356,7 +356,7 @@ export default async function AboutPage() {
             학대 시도로부터 아이들을 지키기 위해, 지도에 표시되는 고양이 위치는 3중으로 보호됩니다.
             지도를 아무리 오래 지켜봐도 실제 급식소나 아지트는 알아낼 수 없어요.
           </p>
-          <ul className="space-y-2.5 text-[12px] text-text-sub leading-relaxed">
+          <ul className="space-y-2.5 text-[13px] text-text-sub leading-relaxed">
             <li className="flex gap-2">
               <span className="shrink-0">🔒</span>
               <span>
@@ -389,7 +389,7 @@ export default async function AboutPage() {
 
       {/* 만든 사람 — 1인 운영자 정체성 */}
       <section className="px-5 mt-8">
-        <h2 className="text-[16px] font-bold text-text-main mb-3">만든 사람</h2>
+        <h2 className="text-[17px] font-bold text-text-main mb-3">만든 사람</h2>
         <div
           className="rounded-3xl p-5"
           style={{
@@ -488,10 +488,10 @@ export default async function AboutPage() {
 
       {/* 직접 만드는 돌봄 하드웨어 */}
       <section className="px-5 mt-8">
-        <h2 className="text-[16px] font-bold text-text-main mb-1">
+        <h2 className="text-[17px] font-bold text-text-main mb-1">
           화면 밖에서도, 직접 만듭니다
         </h2>
-        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+        <p className="text-[13px] text-text-sub mb-3 leading-relaxed">
           겨울철 동사, 차량 사고처럼 코드만으로는 닿지 않는 길 위의 위험이 있어요.
           그래서 도시공존은 소프트웨어를 넘어, 아이들을 실제로 지켜줄
           <b className="text-text-main"> 돌봄 하드웨어</b>를 직접 설계하고 만들고 있습니다.
@@ -549,10 +549,10 @@ export default async function AboutPage() {
 
       {/* 기술 자산 — 어떻게 만들어졌나 */}
       <section className="px-5 mt-8">
-        <h2 className="text-[16px] font-bold text-text-main mb-1">
+        <h2 className="text-[17px] font-bold text-text-main mb-1">
           이 플랫폼은 어떻게 만들어졌나요
         </h2>
-        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+        <p className="text-[13px] text-text-sub mb-3 leading-relaxed">
           기록 한 줄이 헛되이 흘러가지 않게, 그리고 아이들의 좌표가 오용되지 않게.
           도시공존은 안전과 정확성을 1순위로 두고 직접 짠 시스템 위에서 돌아갑니다.
         </p>
@@ -592,7 +592,7 @@ export default async function AboutPage() {
 
       {/* 미디어 키트 — 언론·블로거 즉시 활용 */}
       <section className="px-5 mt-8">
-        <h2 className="text-[16px] font-bold text-text-main mb-1 flex items-center gap-1.5">
+        <h2 className="text-[17px] font-bold text-text-main mb-1 flex items-center gap-1.5">
           <Newspaper size={15} style={{ color: "var(--color-primary)" }} />
           미디어 키트 · 보도 자료
         </h2>
@@ -604,7 +604,7 @@ export default async function AboutPage() {
 
       {/* 파트너십/문의 */}
       <section className="px-5 mt-8">
-        <h2 className="text-[16px] font-bold text-text-main mb-3">
+        <h2 className="text-[17px] font-bold text-text-main mb-3">
           제휴 · 언론 · 블로그 문의
         </h2>
         <div className="bg-white rounded-2xl p-5" style={{ boxShadow: "var(--shadow-card)" }}>
@@ -631,7 +631,7 @@ export default async function AboutPage() {
               style={{ background: "rgba(225,48,108,0.10)", border: "1px solid rgba(225,48,108,0.22)" }}
             >
               <Camera size={15} style={{ color: "#E1306C" }} />
-              <span className="text-[12px] font-bold" style={{ color: "#C13584" }}>@regen2997</span>
+              <span className="text-[13px] font-bold" style={{ color: "#C13584" }}>@regen2997</span>
             </a>
             <a
               href="https://blog.naver.com/re_gen777"
@@ -641,7 +641,7 @@ export default async function AboutPage() {
               style={{ background: "rgba(3,199,90,0.10)", border: "1px solid rgba(3,199,90,0.22)" }}
             >
               <Globe size={15} style={{ color: "#03C75A" }} />
-              <span className="text-[12px] font-bold" style={{ color: "#029F49" }}>블로그</span>
+              <span className="text-[13px] font-bold" style={{ color: "#029F49" }}>블로그</span>
             </a>
           </div>
           <p className="text-[11px] text-text-light mt-2.5 text-center">
@@ -679,7 +679,7 @@ function StatCard({ value, label, color, emoji }: { value: number; label: string
       className="bg-white rounded-2xl py-4 flex flex-col items-center"
       style={{ boxShadow: "var(--shadow-card)" }}
     >
-      <span style={{ fontSize: 22 }}>{emoji}</span>
+      <span style={{ fontSize: 24 }}>{emoji}</span>
       <span className="text-[20px] font-bold mt-0.5" style={{ color }}>
         {value.toLocaleString()}
       </span>
@@ -697,7 +697,7 @@ function FeatureRow({ icon, title, desc }: { icon: React.ReactNode; title: strin
       <div className="shrink-0 mt-0.5">{icon}</div>
       <div className="min-w-0">
         <p className="text-[13px] font-bold text-text-main">{title}</p>
-        <p className="text-[12px] text-text-sub mt-1 leading-relaxed">{desc}</p>
+        <p className="text-[13px] text-text-sub mt-1 leading-relaxed">{desc}</p>
       </div>
     </div>
   );
@@ -742,12 +742,12 @@ function ProblemRow({
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-[10px] font-bold tracking-[0.12em]" style={{ color: "var(--color-gray-600)" }}>
+          <span className="text-[11px] font-bold tracking-[0.12em]" style={{ color: "var(--color-gray-600)" }}>
             0{n}
           </span>
           <p className="text-[13px] font-bold text-text-main">{title}</p>
         </div>
-        <p className="text-[12px] text-text-sub leading-relaxed">{desc}</p>
+        <p className="text-[13px] text-text-sub leading-relaxed">{desc}</p>
       </div>
     </div>
   );
@@ -829,7 +829,7 @@ function SkillBadge({
         {icon}
         <p className="text-[11px] font-bold tracking-tight text-text-main">{title}</p>
       </div>
-      <p className="text-[10px] text-text-sub leading-tight">{sub}</p>
+      <p className="text-[11px] text-text-sub leading-tight">{sub}</p>
     </div>
   );
 }
@@ -863,14 +863,14 @@ function ValueCard({
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 mb-1">
           <span
-            className="text-[10px] font-bold tracking-[0.12em]"
+            className="text-[11px] font-bold tracking-[0.12em]"
             style={{ color: accentDark }}
           >
             0{n}
           </span>
-          <p className="text-[14px] font-bold text-text-main tracking-tight">{title}</p>
+          <p className="text-[15px] font-bold text-text-main tracking-tight">{title}</p>
         </div>
-        <p className="text-[12px] text-text-sub leading-relaxed">{body}</p>
+        <p className="text-[13px] text-text-sub leading-relaxed">{body}</p>
       </div>
     </div>
   );

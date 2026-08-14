@@ -308,7 +308,7 @@ export default function GuidePage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
-        <span className="text-[12px] font-semibold text-text-sub">홈</span>
+        <span className="text-[13px] font-semibold text-text-sub">홈</span>
       </div>
 
       {/* 히어로 */}
@@ -319,10 +319,10 @@ export default function GuidePage() {
             HOW TO USE
           </span>
         </div>
-        <h1 className="text-[26px] font-extrabold text-text-main leading-tight tracking-tight">
+        <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight">
           도시공존 사용 가이드
         </h1>
-        <p className="text-[14px] text-text-sub mt-2 leading-relaxed">
+        <p className="text-[15px] text-text-sub mt-2 leading-relaxed">
           처음이시라면 여기부터 차근차근 읽어주세요.
           <br />
           <b className="text-text-main">10가지 핵심 기능</b>을 섹션별로 정리했어요.
@@ -389,7 +389,7 @@ export default function GuidePage() {
                   {f.steps && f.steps.length > 0 && (
                     <ul className="mt-3 space-y-1.5 pl-1">
                       {f.steps.map((s, i) => (
-                        <li key={i} className="flex items-start gap-2 text-[12px] text-text-main leading-relaxed">
+                        <li key={i} className="flex items-start gap-2 text-[13px] text-text-main leading-relaxed">
                           <span
                             className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-[9px] font-extrabold text-white mt-0.5"
                             style={{ background: f.iconColor }}
@@ -404,7 +404,7 @@ export default function GuidePage() {
 
                   {f.tip && (
                     <div
-                      className="mt-3 rounded-xl p-2.5 text-[12px] leading-relaxed"
+                      className="mt-3 rounded-xl p-2.5 text-[13px] leading-relaxed"
                       style={{
                         background: `${f.iconColor}10`,
                         color: "#5A4A3E",
@@ -416,7 +416,7 @@ export default function GuidePage() {
 
                   <Link
                     href={f.href}
-                    className="inline-flex items-center gap-1 mt-3 text-[12px] font-extrabold active:scale-95 transition-transform"
+                    className="inline-flex items-center gap-1 mt-3 text-[13px] font-extrabold active:scale-95 transition-transform"
                     style={{ color: f.iconColor }}
                   >
                     {f.hrefLabel}
@@ -438,7 +438,7 @@ export default function GuidePage() {
             boxShadow: "0 8px 24px rgba(173, 94, 59,0.3)",
           }}
         >
-          <p className="text-[16px] font-extrabold text-white leading-snug">
+          <p className="text-[17px] font-extrabold text-white leading-snug">
             이제 동네 아이들에게 <br />
             인사하러 가볼까요? 🐾
           </p>
@@ -455,7 +455,7 @@ export default function GuidePage() {
       <section className="px-5 mt-6 text-center">
         <Link
           href="/about"
-          className="text-[12px] text-text-sub underline"
+          className="text-[13px] text-text-sub underline"
         >
           도시공존이 왜 만들어졌나요? →
         </Link>

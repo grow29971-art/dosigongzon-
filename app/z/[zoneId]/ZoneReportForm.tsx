@@ -80,7 +80,7 @@ export default function ZoneReportForm({ zoneId }: { zoneId: string }) {
       <div className="rounded-2xl px-5 py-6 text-center" style={{ backgroundColor: "#F0F7F1", border: "1px solid #CFE3D2" }}>
         <CheckCircle2 size={32} className="mx-auto mb-2" style={{ color: "#4A7B52" }} />
         <p className="text-[15px] font-extrabold text-text-main">제보가 접수됐어요</p>
-        <p className="text-[12px] text-text-sub mt-1.5 leading-relaxed">
+        <p className="text-[13px] text-text-sub mt-1.5 leading-relaxed">
           운영팀이 확인 후 필요 시 경찰·동물보호센터로 전달해요.
           <br />
           <b>지금 진행 중인 위급 상황이라면 112에 직접 전화해주세요.</b>
@@ -103,7 +103,7 @@ export default function ZoneReportForm({ zoneId }: { zoneId: string }) {
   return (
     <div className="space-y-4">
       <div>
-        <p className="text-[12px] font-extrabold text-text-main mb-1.5">무엇을 보셨나요?</p>
+        <p className="text-[13px] font-extrabold text-text-main mb-1.5">무엇을 보셨나요?</p>
         <div className="flex flex-wrap gap-1.5">
           {INCIDENT_OPTIONS.map((o) => (
             <button key={o.value} onClick={() => setIncidentType(o.value)} className={chip(incidentType === o.value)} style={chipStyle(incidentType === o.value)}>
@@ -114,7 +114,7 @@ export default function ZoneReportForm({ zoneId }: { zoneId: string }) {
       </div>
 
       <div>
-        <p className="text-[12px] font-extrabold text-text-main mb-1.5">언제쯤이었나요?</p>
+        <p className="text-[13px] font-extrabold text-text-main mb-1.5">언제쯤이었나요?</p>
         <div className="flex flex-wrap gap-1.5">
           {WHEN_OPTIONS.map((o) => (
             <button key={o.value} onClick={() => setOccurredWhen(o.value)} className={chip(occurredWhen === o.value)} style={chipStyle(occurredWhen === o.value)}>
@@ -125,7 +125,7 @@ export default function ZoneReportForm({ zoneId }: { zoneId: string }) {
       </div>
 
       <div>
-        <p className="text-[12px] font-extrabold text-text-main mb-1.5">동물 상태는요?</p>
+        <p className="text-[13px] font-extrabold text-text-main mb-1.5">동물 상태는요?</p>
         <div className="flex flex-wrap gap-1.5">
           {STATUS_OPTIONS.map((o) => (
             <button key={o.value} onClick={() => setAnimalStatus(o.value)} className={chip(animalStatus === o.value)} style={chipStyle(animalStatus === o.value)}>
@@ -136,7 +136,7 @@ export default function ZoneReportForm({ zoneId }: { zoneId: string }) {
       </div>
 
       <div>
-        <p className="text-[12px] font-extrabold text-text-main mb-1">상세 설명 (선택)</p>
+        <p className="text-[13px] font-extrabold text-text-main mb-1">상세 설명 (선택)</p>
         <p className="text-[11px] text-text-light mb-1.5 leading-relaxed">
           기관 전달용으로만 쓰이고 화면에 공개되지 않아요. <b>사람의 이름·차량번호·얼굴 등 신원 정보는 적지 말아주세요.</b>
         </p>

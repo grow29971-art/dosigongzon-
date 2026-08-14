@@ -11,7 +11,7 @@ export default function PrivacyPage() {
       <p style={{ color: '#888', marginBottom: 40 }}>최종 수정일: 2026년 7월 12일</p>
 
       <section style={{ marginBottom: 32 }}>
-        <h2 style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>1. 수집하는 개인정보 항목</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>1. 수집하는 개인정보 항목</h2>
         <p>도시공존(이하 "서비스")은 서비스 제공을 위해 다음과 같은 정보를 수집합니다.</p>
         <ul style={{ paddingLeft: 20, marginTop: 8 }}>
           <li>이메일 주소 (회원가입 시)</li>
@@ -26,12 +26,12 @@ export default function PrivacyPage() {
             회원 식별자와 누른 시각을 기록합니다.
           </li>
         </ul>
-        <p style={{ marginTop: 8, fontSize: 14, color: '#666' }}>
+        <p style={{ marginTop: 8, fontSize: 15, color: '#666' }}>
           ※ 행사 참여 의사는 <strong>참여 인원 추산 목적으로만</strong> 사용하며, 참여자 명단을 공개하거나
           제3자에게 제공하지 않습니다. 이용자는 앱에서 언제든 &ldquo;참여 취소하기&rdquo;로 철회할 수 있고,
           해당 기록은 <strong>행사 종료 다음 날 일괄 파기</strong>합니다.
         </p>
-        <p style={{ marginTop: 8, fontSize: 14, color: '#666' }}>
+        <p style={{ marginTop: 8, fontSize: 15, color: '#666' }}>
           ※ 단말기 GPS를 이용한 실시간 위치 측위는 현재 수집하지 않습니다. 지도에 표시되는
           고양이 위치는 이용자가 지도에서 직접 지정한 좌표이며, 개인의 위치를 나타내지 않습니다.
           사진 업로드 시 위치 메타데이터(EXIF GPS)는 자동으로 제거됩니다.
@@ -39,7 +39,7 @@ export default function PrivacyPage() {
       </section>
 
       <section style={{ marginBottom: 32 }}>
-        <h2 style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>2. 개인정보 수집 및 이용 목적</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>2. 개인정보 수집 및 이용 목적</h2>
         <ul style={{ paddingLeft: 20 }}>
           <li>회원 식별 및 서비스 제공</li>
           <li>길고양이 돌봄 정보 공유 커뮤니티 운영</li>
@@ -52,7 +52,7 @@ export default function PrivacyPage() {
       </section>
 
       <section style={{ marginBottom: 32 }}>
-        <h2 style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>3. 개인정보 보유 및 이용 기간</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>3. 개인정보 보유 및 이용 기간</h2>
         <p>회원 탈퇴 시까지 보유하며, 탈퇴 즉시 파기합니다. 단, 관계 법령에 따라 다음 정보는 명시된 기간 동안 보관합니다.</p>
         <ul style={{ paddingLeft: 20, marginTop: 8 }}>
           <li>계약 또는 청약철회, 대금 결제 및 재화 공급 기록 — 5년 (전자상거래법)</li>
@@ -62,7 +62,7 @@ export default function PrivacyPage() {
       </section>
 
       <section style={{ marginBottom: 32 }}>
-        <h2 style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>4. 개인정보 제3자 제공</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>4. 개인정보 제3자 제공</h2>
         <p>서비스는 이용자의 개인정보를 원칙적으로 외부에 제공하지 않습니다. 단, 다음의 경우는 예외로 합니다.</p>
         <ul style={{ paddingLeft: 20, marginTop: 8 }}>
           <li>이용자가 직접 동의한 경우 또는 법령에 따라 요구되는 경우</li>
@@ -73,7 +73,7 @@ export default function PrivacyPage() {
       </section>
 
       <section style={{ marginBottom: 32 }}>
-        <h2 style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>5. 개인정보의 국외 이전 (처리 위탁)</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>5. 개인정보의 국외 이전 (처리 위탁)</h2>
         <p>
           서비스는 안정적인 운영을 위해 아래와 같이 개인정보 처리를 국외 사업자에 위탁하고 있습니다.
           이전되는 정보는 암호화된 통신(TLS)으로 전송·보관되며, 위탁 목적 달성 시 또는 회원 탈퇴 시 파기됩니다.
@@ -90,7 +90,7 @@ export default function PrivacyPage() {
       </section>
 
       <section style={{ marginBottom: 32 }}>
-        <h2 style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>6. 행태정보 수집 및 맞춤형 광고</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>6. 행태정보 수집 및 맞춤형 광고</h2>
         <p>
           서비스는 광고 성과 측정을 위해 Meta 픽셀을 사용할 수 있습니다. 이는 첫 방문 시
           쿠키 동의 배너에서 <b>동의한 경우에만</b> 작동하며, 거부 시 어떠한 행태정보도
@@ -99,7 +99,7 @@ export default function PrivacyPage() {
       </section>
 
       <section style={{ marginBottom: 32 }}>
-        <h2 style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>7. 이용자의 권리</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>7. 이용자의 권리</h2>
         <p>
           이용자는 언제든지 자신의 개인정보를 조회·수정하거나 회원 탈퇴(마이페이지 또는{' '}
           <a href="/account-deletion" style={{ color: 'var(--color-primary)' }}>계정 삭제 안내</a>)를
@@ -109,12 +109,12 @@ export default function PrivacyPage() {
       </section>
 
       <section style={{ marginBottom: 32 }}>
-        <h2 style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>8. 개인정보 보호책임자</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>8. 개인정보 보호책임자</h2>
         <p>이메일: <a href="mailto:grow29971@gmail.com" style={{ color: 'var(--color-primary)' }}>grow29971@gmail.com</a></p>
       </section>
 
       <section>
-        <h2 style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>9. 개인정보 처리방침 변경</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>9. 개인정보 처리방침 변경</h2>
         <p>본 방침은 법령 및 서비스 변경에 따라 수정될 수 있으며, 변경 시 서비스 내 공지를 통해 안내합니다.</p>
       </section>
     </main>

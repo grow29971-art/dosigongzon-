@@ -199,7 +199,7 @@ export default function CategoryPage() {
       <div className="px-4 pt-14 pb-4">
         <button
           onClick={() => router.push("/community")}
-          className="flex items-center gap-1 text-[12px] font-semibold text-text-sub mb-4 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-4 active:scale-95 transition-transform"
         >
           <ArrowLeft size={14} />
           커뮤니티
@@ -226,14 +226,14 @@ export default function CategoryPage() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-baseline gap-2">
-                <h1 className="text-[22px] font-extrabold text-text-main tracking-tight">
+                <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
                   {meta.title}
                 </h1>
-                <span className="text-[12px] font-bold tabular-nums" style={{ color: meta.color }}>
+                <span className="text-[13px] font-bold tabular-nums" style={{ color: meta.color }}>
                   {posts.length}
                 </span>
               </div>
-              <p className="text-[12px] text-text-sub mt-0.5">{meta.subtitle}</p>
+              <p className="text-[13px] text-text-sub mt-0.5">{meta.subtitle}</p>
             </div>
           </div>
         </div>
@@ -247,7 +247,7 @@ export default function CategoryPage() {
           <div className="px-4 mb-3">
             <div className="flex items-center gap-1.5 mb-2 px-1">
               <Megaphone size={13} style={{ color: meta.color }} />
-              <span className="text-[12px] font-extrabold" style={{ color: meta.color }}>
+              <span className="text-[13px] font-extrabold" style={{ color: meta.color }}>
                 공지사항
               </span>
             </div>
@@ -270,7 +270,7 @@ export default function CategoryPage() {
                   <p className="text-[13px] font-bold text-text-main truncate flex-1">
                     {post.title}
                   </p>
-                  <span className="text-[10px] text-text-light shrink-0">
+                  <span className="text-[11px] text-text-light shrink-0">
                     {formatRelativeTime(post.createdAt)}
                   </span>
                 </Link>
@@ -293,8 +293,8 @@ export default function CategoryPage() {
         {posts.filter((p) => !p.isPinned).length === 0 && posts.filter((p) => p.isPinned).length === 0 ? (
           <div className="flex flex-col items-center py-16 text-text-light">
             <meta.Icon size={48} strokeWidth={1.2} style={{ color: meta.color, opacity: 0.3 }} />
-            <p className="text-[14px] mt-4 text-text-sub font-semibold">아직 글이 없어요</p>
-            <p className="text-[12px] mt-1">첫 번째 글을 작성해보세요</p>
+            <p className="text-[15px] mt-4 text-text-sub font-semibold">아직 글이 없어요</p>
+            <p className="text-[13px] mt-1">첫 번째 글을 작성해보세요</p>
           </div>
         ) : (
           posts.filter((p) => !p.isPinned).map((post, idx, arr) => (
@@ -309,7 +309,7 @@ export default function CategoryPage() {
                 <div className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 56, height: 56 }}>
                   <Image src={post.images[0]} alt={post.title} fill sizes="56px" style={{ objectFit: "cover" }} />
                   {post.images.length > 1 && (
-                    <span className="absolute bottom-0.5 right-0.5 text-[8px] font-bold px-1 rounded-md z-10" style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}>
+                    <span className="absolute bottom-0.5 right-0.5 text-[9px] font-bold px-1 rounded-md z-10" style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}>
                       +{post.images.length - 1}
                     </span>
                   )}
@@ -318,10 +318,10 @@ export default function CategoryPage() {
 
               {/* 본문 */}
               <div className="flex-1 min-w-0">
-                <h3 className="text-[14px] font-bold text-text-main leading-snug truncate">
+                <h3 className="text-[15px] font-bold text-text-main leading-snug truncate">
                   {post.title}
                 </h3>
-                <p className="text-[12px] text-text-sub truncate mt-0.5">
+                <p className="text-[13px] text-text-sub truncate mt-0.5">
                   {post.content}
                 </p>
                 <div className="flex items-center gap-2 mt-1.5">
@@ -330,19 +330,19 @@ export default function CategoryPage() {
                     <Image src={post.authorAvatarUrl} alt="" width={16} height={16} className="rounded-full object-cover" style={{ width: 16, height: 16 }} />
                   ) : (
                     <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: `${meta.color}1A` }}>
-                      <span className="text-[7px] font-bold" style={{ color: meta.color }}>{post.authorName.charAt(0)}</span>
+                      <span className="text-[9px] font-bold" style={{ color: meta.color }}>{post.authorName.charAt(0)}</span>
                     </div>
                   )}
                   <span className="text-[11px] text-text-sub font-semibold">{post.authorName}</span>
                   {post.authorLevel && (
-                    <span className="text-[8px] font-extrabold px-1 py-[0.5px] rounded" style={{ backgroundColor: getLevelColor(post.authorLevel), color: "#fff" }}>
+                    <span className="text-[9px] font-extrabold px-1 py-[0.5px] rounded" style={{ backgroundColor: getLevelColor(post.authorLevel), color: "#fff" }}>
                       Lv.{post.authorLevel}
                     </span>
                   )}
-                  <span className="text-[10px] text-text-light ml-auto shrink-0">{formatRelativeTime(post.createdAt)}</span>
+                  <span className="text-[11px] text-text-light ml-auto shrink-0">{formatRelativeTime(post.createdAt)}</span>
                 </div>
                 {/* 통계 */}
-                <div className="flex items-center gap-3 mt-1 text-text-light text-[10px]">
+                <div className="flex items-center gap-3 mt-1 text-text-light text-[11px]">
                   <span className="flex items-center gap-0.5">
                     <Eye size={10} /> {post.viewCount}
                   </span>

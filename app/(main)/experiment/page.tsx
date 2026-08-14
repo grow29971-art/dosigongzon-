@@ -125,7 +125,7 @@ export default function ExperimentPage() {
     return (
       <div className="flex flex-col items-center justify-center py-40 gap-3">
         <Loader2 size={28} className="animate-spin" style={{ color: "var(--color-primary)" }} />
-        <p className="text-[14px]" style={{ color: "var(--color-text-light)" }}>불러오는 중이에요…</p>
+        <p className="text-[15px]" style={{ color: "var(--color-text-light)" }}>불러오는 중이에요…</p>
       </div>
     );
   }
@@ -180,7 +180,7 @@ export default function ExperimentPage() {
         <p className="text-[13px] font-bold" style={{ color: "var(--color-primary)" }}>
           동네 돌봄 실험
         </p>
-        <h1 className="text-[22px] font-extrabold mt-0.5" style={{ color: "var(--color-text, #191F28)" }}>
+        <h1 className="text-[24px] font-extrabold mt-0.5" style={{ color: "var(--color-text, #191F28)" }}>
           {experiment.publicAreaName} 돌봄 기록
         </h1>
         <p className="text-[13px] mt-1 flex items-center gap-1.5" style={{ color: "var(--color-text-light)" }}>
@@ -204,7 +204,7 @@ export default function ExperimentPage() {
         className="rounded-[24px] p-5 mb-4"
         style={{ background: "#fff", boxShadow: "0 4px 20px rgba(25,31,40,0.06)" }}
       >
-        <h2 id="today-care-heading" className="text-[16px] font-extrabold mb-1">
+        <h2 id="today-care-heading" className="text-[17px] font-extrabold mb-1">
           오늘 돌봄 완료 🐾
         </h2>
         <p className="text-[13px] mb-4" style={{ color: "var(--color-text-light)" }}>
@@ -278,18 +278,18 @@ export default function ExperimentPage() {
         <div className="grid grid-cols-3 gap-2 text-center">
           <div>
             <p className="text-[24px] font-extrabold leading-tight">{area.weekLogCount}</p>
-            <p className="text-[12px] opacity-90 mt-0.5">돌봄 완료</p>
+            <p className="text-[13px] opacity-90 mt-0.5">돌봄 완료</p>
           </div>
           <div>
             <p className="text-[24px] font-extrabold leading-tight">{area.weekCarerCount}</p>
-            <p className="text-[12px] opacity-90 mt-0.5">함께한 돌봄자</p>
+            <p className="text-[13px] opacity-90 mt-0.5">함께한 돌봄자</p>
           </div>
           <div>
             <p className="text-[24px] font-extrabold leading-tight">{area.streakDays}</p>
-            <p className="text-[12px] opacity-90 mt-0.5">연속 기록일</p>
+            <p className="text-[13px] opacity-90 mt-0.5">연속 기록일</p>
           </div>
         </div>
-        <p className="text-[12px] opacity-85 mt-3">
+        <p className="text-[13px] opacity-85 mt-3">
           {area.weekLogCount === 0
             ? "이번 주 첫 기록을 기다리고 있어요. 한 번의 기록이면 충분해요."
             : "작은 기록들이 우리 동네 돌봄의 증거가 되고 있어요."}
@@ -303,11 +303,11 @@ export default function ExperimentPage() {
         style={{ background: "#fff", boxShadow: "0 4px 20px rgba(25,31,40,0.06)" }}
       >
         <h2 id="me-heading" className="text-[15px] font-extrabold mb-2">나의 기록</h2>
-        <p className="text-[14px]" style={{ color: "#4E5968" }}>
+        <p className="text-[15px]" style={{ color: "#4E5968" }}>
           이번 주 <b style={{ color: "var(--color-primary)" }}>{me.weekLogCount}회</b> · 실험 시작 후 누적{" "}
           <b style={{ color: "var(--color-primary)" }}>{me.totalLogCount}회</b>
         </p>
-        <p className="text-[12px] mt-1.5" style={{ color: "var(--color-text-light)" }}>
+        <p className="text-[13px] mt-1.5" style={{ color: "var(--color-text-light)" }}>
           나의 기록은 나와 운영자만 볼 수 있어요. 동네 화면에는 합계 숫자만 표시돼요.
         </p>
       </section>
@@ -357,7 +357,7 @@ function EmptyShell({ title, emoji, children }: { title: string; emoji: string; 
     <div className="px-6 pt-24 pb-10 max-w-lg mx-auto text-center">
       <p className="text-[44px] mb-3" aria-hidden>{emoji}</p>
       <h1 className="text-[20px] font-extrabold mb-2">{title}</h1>
-      <div className="text-[14px] leading-relaxed" style={{ color: "var(--color-text-light)" }}>
+      <div className="text-[15px] leading-relaxed" style={{ color: "var(--color-text-light)" }}>
         {children}
       </div>
     </div>

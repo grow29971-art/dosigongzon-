@@ -286,7 +286,7 @@ export default function CircleChatPage() {
   if (!user) {
     return (
       <div className="px-6 pt-20 text-center">
-        <p className="text-[14px] text-text-sub mb-3">로그인이 필요해요.</p>
+        <p className="text-[15px] text-text-sub mb-3">로그인이 필요해요.</p>
         <Link href="/login" className="text-primary text-[13px] font-bold">
           로그인
         </Link>
@@ -349,7 +349,7 @@ export default function CircleChatPage() {
           <div className="pt-20 text-center">
             <Users size={32} className="mx-auto mb-3 text-text-light" />
             <p className="text-[13px] text-text-sub mb-1">아직 대화가 없어요</p>
-            <p className="text-[12px] text-text-light">첫 메시지를 보내 이웃과 인사 나눠보세요.</p>
+            <p className="text-[13px] text-text-light">첫 메시지를 보내 이웃과 인사 나눠보세요.</p>
           </div>
         ) : (
           groupedByDate.map((group, gi) => (
@@ -373,7 +373,7 @@ export default function CircleChatPage() {
                       {m.image_url && <ChatImage raw={m.image_url} isMine={isMine} />}
                       {m.body && (
                         <div
-                          className={`px-3 py-2 rounded-2xl text-[14px] leading-relaxed whitespace-pre-wrap break-words ${isMine ? "rounded-tr-sm" : "rounded-tl-sm"}`}
+                          className={`px-3 py-2 rounded-2xl text-[15px] leading-relaxed whitespace-pre-wrap break-words ${isMine ? "rounded-tr-sm" : "rounded-tl-sm"}`}
                           style={{
                             background: isMine ? "var(--color-primary)" : "#FFFFFF",
                             color: isMine ? "#FFFFFF" : "#3D2F25",
@@ -384,7 +384,7 @@ export default function CircleChatPage() {
                         </div>
                       )}
                       <div className="flex items-center gap-1.5 mt-0.5 px-1">
-                        <span className="text-[10px] text-text-light">{formatTime(m.created_at)}</span>
+                        <span className="text-[11px] text-text-light">{formatTime(m.created_at)}</span>
                         {isMine && (
                           <button
                             type="button"
@@ -461,7 +461,7 @@ export default function CircleChatPage() {
             placeholder={photoPreview ? "사진과 함께 보낼 메시지 (선택)" : "메시지를 입력하세요"}
             maxLength={1000}
             disabled={sending}
-            className="flex-1 rounded-2xl px-4 py-2.5 text-[14px] outline-none disabled:opacity-50"
+            className="flex-1 rounded-2xl px-4 py-2.5 text-[15px] outline-none disabled:opacity-50"
             style={{ background: "var(--color-gray-50)", color: "#2A2A28" }}
           />
           <button

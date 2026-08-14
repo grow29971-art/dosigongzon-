@@ -102,14 +102,14 @@ export default async function NewsIndexPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                     <span
-                      className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md"
+                      className="text-[11px] font-extrabold px-1.5 py-0.5 rounded-md"
                       style={{ background: badge.bg, color: badge.color }}
                     >
                       {badge.label}
                     </span>
                     {dday && (
                       <span
-                        className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md"
+                        className="text-[11px] font-extrabold px-1.5 py-0.5 rounded-md"
                         style={{ background: "#F7F4EE", color: "#6B5043" }}
                       >
                         {dday}
@@ -121,16 +121,16 @@ export default async function NewsIndexPage() {
                       </span>
                     )}
                   </div>
-                  <p className="text-[14px] font-extrabold text-text-main leading-snug line-clamp-2">
+                  <p className="text-[15px] font-extrabold text-text-main leading-snug line-clamp-2">
                     {item.title}
                   </p>
                   {item.description && (
-                    <p className="text-[12px] text-text-sub line-clamp-2 mt-1 leading-snug">
+                    <p className="text-[13px] text-text-sub line-clamp-2 mt-1 leading-snug">
                       {item.description}
                     </p>
                   )}
                   {(item.date_label || item.source_name) && (
-                    <p className="text-[10px] text-text-light mt-1 line-clamp-1">
+                    <p className="text-[11px] text-text-light mt-1 line-clamp-1">
                       {item.date_label}
                       {item.date_label && item.source_name && " · "}
                       {item.source_name && <>출처 {item.source_name}</>}

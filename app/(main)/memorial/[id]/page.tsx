@@ -51,7 +51,7 @@ export default async function MemorialCatPage({
         </p>
         <Link
           href={`/cats/${cat.id}`}
-          className="h-[46px] px-6 rounded-2xl flex items-center text-[14px] font-bold text-white"
+          className="h-[46px] px-6 rounded-2xl flex items-center text-[15px] font-bold text-white"
           style={{ background: "var(--color-primary)" }}
         >
           {cat.name} 보러 가기
@@ -104,7 +104,7 @@ export default async function MemorialCatPage({
           >
             <ChevronLeft size={20} color="#fff" />
           </Link>
-          <span className="text-[12px] font-semibold ml-2" style={{ color: "rgba(255,255,255,0.5)" }}>
+          <span className="text-[13px] font-semibold ml-2" style={{ color: "rgba(255,255,255,0.5)" }}>
             고양이별
           </span>
         </div>
@@ -129,7 +129,7 @@ export default async function MemorialCatPage({
             )}
           </div>
 
-          <h1 className="text-[26px] font-extrabold text-white mt-5">{cat.name}</h1>
+          <h1 className="text-[24px] font-extrabold text-white mt-5">{cat.name}</h1>
           <p className="text-[13px] mt-2" style={{ color: "rgba(255,255,255,0.55)" }}>
             {cat.region ?? "지역 미상"} · 함께한 {cared}일
           </p>
@@ -142,7 +142,7 @@ export default async function MemorialCatPage({
 
           {cat.memorial_note && (
             <p
-              className="text-[14px] leading-[1.8] mt-6 px-5 py-4 whitespace-pre-wrap w-full"
+              className="text-[15px] leading-[1.8] mt-6 px-5 py-4 whitespace-pre-wrap w-full"
               style={{ color: "rgba(255,255,255,0.8)", background: "rgba(0,0,0,0.2)", borderRadius: 18 }}
             >
               {cat.memorial_note}
@@ -164,7 +164,7 @@ export default async function MemorialCatPage({
               border: "1px solid rgba(255,255,255,0.12)",
             }}
           >
-            <p className="text-[14px] leading-[1.8] text-white">
+            <p className="text-[15px] leading-[1.8] text-white">
               {people.size > 1 ? `${people.size}명이 ` : ""}
               <b style={{ color: "#FFE9A8" }}>{logs.length}번</b>
               {" "}돌봤어요
@@ -176,7 +176,7 @@ export default async function MemorialCatPage({
                 return (
                   <span
                     key={type}
-                    className="text-[12px] px-3 py-1.5 rounded-full"
+                    className="text-[13px] px-3 py-1.5 rounded-full"
                     style={{ background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.78)" }}
                   >
                     {meta.emoji} {meta.label} {n}
@@ -193,7 +193,7 @@ export default async function MemorialCatPage({
         {/* 돌봄 기록 전체 */}
         <div className="mt-10">
           <h2 className="text-[15px] font-bold text-white mb-1">함께한 기록</h2>
-          <p className="text-[12px] mb-5" style={{ color: "rgba(255,255,255,0.4)" }}>
+          <p className="text-[13px] mb-5" style={{ color: "rgba(255,255,255,0.4)" }}>
             {logs.length > 0
               ? "지도에서 내려와도 이 기록은 지워지지 않아요."
               : "남겨진 돌봄 기록이 없어요."}
@@ -202,7 +202,7 @@ export default async function MemorialCatPage({
           <div className="flex flex-col gap-6">
             {[...groups.entries()].map(([day, items]) => (
               <div key={day}>
-                <p className="text-[12px] font-semibold mb-2.5" style={{ color: "rgba(255,233,168,0.72)" }}>
+                <p className="text-[13px] font-semibold mb-2.5" style={{ color: "rgba(255,233,168,0.72)" }}>
                   {fmtDate(day)}
                 </p>
                 <div className="flex flex-col gap-2.5">
@@ -225,7 +225,7 @@ export default async function MemorialCatPage({
                             {meta?.label ?? "돌봄"}
                             {l.amount ? ` · ${l.amount}` : ""}
                           </span>
-                          <span className="text-[12px] ml-auto" style={{ color: "rgba(255,255,255,0.38)" }}>
+                          <span className="text-[13px] ml-auto" style={{ color: "rgba(255,255,255,0.38)" }}>
                             {new Date(l.logged_at).toLocaleTimeString("ko-KR", {
                               hour: "2-digit",
                               minute: "2-digit",
@@ -254,7 +254,7 @@ export default async function MemorialCatPage({
                         )}
 
                         {l.author_name && (
-                          <p className="text-[12px] mt-2.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+                          <p className="text-[13px] mt-2.5" style={{ color: "rgba(255,255,255,0.35)" }}>
                             {l.author_name}
                           </p>
                         )}

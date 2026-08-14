@@ -86,8 +86,8 @@ export default function AdminDashboardPage() {
     return (
       <div className="px-5 pt-20 text-center">
         <Shield size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[14px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
-        <p className="text-[12px] text-text-sub">접근 권한이 없어요.</p>
+        <p className="text-[15px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
+        <p className="text-[13px] text-text-sub">접근 권한이 없어요.</p>
         <Link href="/mypage" className="inline-block mt-4 text-[13px] font-bold text-primary">
           마이페이지로 돌아가기
         </Link>
@@ -259,7 +259,7 @@ export default function AdminDashboardPage() {
       >
         <button
           onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[12px] font-semibold mb-3 opacity-80 active:scale-95"
+          className="flex items-center gap-1 text-[13px] font-semibold mb-3 opacity-80 active:scale-95"
         >
           <ArrowLeft size={14} />
           마이페이지
@@ -267,10 +267,10 @@ export default function AdminDashboardPage() {
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-baseline gap-2">
             <Shield size={20} />
-            <h1 className="text-[22px] font-extrabold tracking-tight">
+            <h1 className="text-[24px] font-extrabold tracking-tight">
               관리자 대시보드
             </h1>
-            <span className="text-[10px] font-semibold opacity-50">Admin</span>
+            <span className="text-[11px] font-semibold opacity-50">Admin</span>
           </div>
           <button
             type="button"
@@ -287,7 +287,7 @@ export default function AdminDashboardPage() {
             )}
           </button>
         </div>
-        <p className="text-[12px] opacity-70">
+        <p className="text-[13px] opacity-70">
           도시공존 운영 관리 · 통계와 메뉴를 한 곳에
         </p>
       </div>
@@ -308,13 +308,13 @@ export default function AdminDashboardPage() {
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <p
-                  className="text-[10px] font-extrabold tracking-[0.20em] mb-1"
+                  className="text-[11px] font-extrabold tracking-[0.20em] mb-1"
                   style={{ color: stats.daysUntilLaunch > 0 ? "#8E5430" : "rgba(255,255,255,0.85)" }}
                 >
                   {stats.daysUntilLaunch > 0 ? "OFFICIAL LAUNCH" : "POST-LAUNCH"}
                 </p>
                 <p
-                  className="text-[22px] font-extrabold tracking-tight leading-tight"
+                  className="text-[24px] font-extrabold tracking-tight leading-tight"
                   style={{ color: stats.daysUntilLaunch > 0 ? "#5C3A1E" : "#FFFFFF" }}
                 >
                   {stats.daysUntilLaunch > 0
@@ -337,13 +337,13 @@ export default function AdminDashboardPage() {
                   TODAY
                 </p>
                 <p
-                  className="text-[18px] font-extrabold tabular-nums tracking-tight"
+                  className="text-[20px] font-extrabold tabular-nums tracking-tight"
                   style={{ color: stats.daysUntilLaunch > 0 ? "#5C3A1E" : "#FFFFFF" }}
                 >
                   +{stats.newUsersToday}
                 </p>
                 <p
-                  className="text-[10px] font-bold tabular-nums"
+                  className="text-[11px] font-bold tabular-nums"
                   style={{ color: stats.daysUntilLaunch > 0 ? "#8E5430" : "rgba(255,255,255,0.75)" }}
                 >
                   어제 +{stats.newUsersYesterday}
@@ -440,7 +440,7 @@ export default function AdminDashboardPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+                  <p className="text-[15px] font-extrabold text-text-main tracking-tight">
                     {m.title}
                   </p>
                   {m.badge !== undefined && m.badge > 0 && (
@@ -512,13 +512,13 @@ function StatCard({
     >
       <div className="flex items-center gap-1.5 mb-1">
         <Icon size={12} style={{ color }} />
-        <span className="text-[10px] font-bold text-text-sub">{label}</span>
+        <span className="text-[11px] font-bold text-text-sub">{label}</span>
       </div>
-      <p className="text-[22px] font-extrabold tracking-tight" style={{ color }}>
+      <p className="text-[24px] font-extrabold tracking-tight" style={{ color }}>
         {value.toLocaleString()}
       </p>
       {sub && (
-        <p className="text-[10px] mt-0.5" style={{ color: subColor ?? "#999" }}>
+        <p className="text-[11px] mt-0.5" style={{ color: subColor ?? "#999" }}>
           {sub}
         </p>
       )}

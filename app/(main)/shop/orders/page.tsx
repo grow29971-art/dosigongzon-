@@ -53,7 +53,7 @@ export default function OrdersPage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </button>
-        <h1 className="text-[16px] font-extrabold text-text-main">주문 내역</h1>
+        <h1 className="text-[17px] font-extrabold text-text-main">주문 내역</h1>
       </div>
 
       {loading ? (
@@ -70,7 +70,7 @@ export default function OrdersPage() {
           >
             <PackageOpen size={28} style={{ color: "var(--color-primary)" }} />
           </div>
-          <p className="text-[14px] font-bold text-text-main mb-1">주문 내역이 없어요</p>
+          <p className="text-[15px] font-bold text-text-main mb-1">주문 내역이 없어요</p>
           <p className="text-[13px] text-text-sub mb-6">첫 주문을 기다리고 있어요!</p>
           <Link
             href="/shop"
@@ -113,7 +113,7 @@ export default function OrdersPage() {
                       )}
                     </div>
                     <div className="flex items-center gap-1 shrink-0 ml-3">
-                      <span className="text-[14px] font-bold text-text-main">{formatWon(order.payment_amount)}</span>
+                      <span className="text-[15px] font-bold text-text-main">{formatWon(order.payment_amount)}</span>
                       <ChevronRight size={16} className="text-text-light" />
                     </div>
                   </div>

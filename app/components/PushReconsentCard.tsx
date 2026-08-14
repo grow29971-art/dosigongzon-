@@ -140,7 +140,7 @@ export default function PushReconsentCard() {
           <p className="text-[11px] mt-0.5" style={{ color: "#A88160" }}>
             이웃이 아이들을 챙긴 소식과 안부 리마인드를 보내드려요
           </p>
-          <p className="text-[10px] mt-0.5" style={{ color: "#BFA084" }}>
+          <p className="text-[11px] mt-0.5" style={{ color: "#BFA084" }}>
             켜면 돌봄·소식 알림(마케팅 포함) 수신에 동의해요 · 마이페이지에서 언제든 해제
           </p>
         </div>

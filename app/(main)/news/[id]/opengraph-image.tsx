@@ -129,12 +129,12 @@ export default async function NewsOGImage({ params }: { params: Params }) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 26,
+                fontSize: 24,
               }}
             >
               📰
             </div>
-            <span style={{ fontSize: 22, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}>
+            <span style={{ fontSize: 24, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}>
               도시공존 소식
             </span>
             <div
@@ -145,7 +145,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
                 borderRadius: 999,
                 background: badge.color,
                 color: "#fff",
-                fontSize: 16,
+                fontSize: 17,
                 fontWeight: 800,
                 marginLeft: 4,
               }}
@@ -172,7 +172,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
             </div>
             <p
               style={{
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: 500,
                 color: "#5A5A5A",
                 margin: 0,
@@ -198,7 +198,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
                   borderRadius: 999,
                   background: "rgba(173, 94, 59,0.18)",
                   color: "#8B5A3C",
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: 700,
                 }}
               >
@@ -213,7 +213,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
                 borderRadius: 999,
                 background: "rgba(255,255,255,0.85)",
                 color: "#8B5A3C",
-                fontSize: 18,
+                fontSize: 20,
                 fontWeight: 800,
                 border: "2px solid rgba(173, 94, 59,0.3)",
                 marginLeft: "auto",

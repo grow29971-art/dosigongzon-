@@ -91,16 +91,16 @@ export default function JoinClient({ token, state }: { token: string; state: Inv
 
         {state.status === "valid" && (
           <>
-            <p className="text-[14px] leading-relaxed mb-2" style={{ color: "#4E5968" }}>
+            <p className="text-[15px] leading-relaxed mb-2" style={{ color: "#4E5968" }}>
               {inviteCopy(state.areaName)}
             </p>
-            <p className="text-[12px] mb-5" style={{ color: "var(--color-text-light)" }}>
+            <p className="text-[13px] mb-5" style={{ color: "var(--color-text-light)" }}>
               기간: {state.startsAt} ~ {state.endsAt} · 하루 한 번, 버튼 하나로 기록해요.
             </p>
             <button
               onClick={join}
               disabled={busy}
-              className="w-full flex items-center justify-center gap-2 rounded-2xl text-white text-[16px] font-bold active:scale-[0.98] transition-transform disabled:opacity-60"
+              className="w-full flex items-center justify-center gap-2 rounded-2xl text-white text-[17px] font-bold active:scale-[0.98] transition-transform disabled:opacity-60"
               style={{ minHeight: 54, background: "var(--color-primary)" }}
             >
               {busy && <Loader2 size={18} className="animate-spin" />}
@@ -116,7 +116,7 @@ export default function JoinClient({ token, state }: { token: string; state: Inv
 
         {state.status !== "valid" && (
           <>
-            <p className="text-[14px] leading-relaxed mb-5" style={{ color: "var(--color-text-light)" }}>
+            <p className="text-[15px] leading-relaxed mb-5" style={{ color: "var(--color-text-light)" }}>
               {state.status === "invalid" && "링크가 정확한지 확인하거나, 초대한 분께 새 링크를 요청해 주세요."}
               {state.status === "expired" && "초대한 분께 새 초대 링크를 요청해 주세요."}
               {state.status === "used" && "초대 링크는 한 분만 사용할 수 있어요. 초대한 분께 새 링크를 요청해 주세요."}
@@ -132,7 +132,7 @@ export default function JoinClient({ token, state }: { token: string; state: Inv
           </>
         )}
       </div>
-      <p className="mt-6 text-[12px]" style={{ color: "var(--color-text-light)" }}>
+      <p className="mt-6 text-[13px]" style={{ color: "var(--color-text-light)" }}>
         위치 정보는 공개되지 않아요 · 경쟁 순위 없음
       </p>
     </div>

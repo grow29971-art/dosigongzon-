@@ -201,7 +201,7 @@ export default async function HomeLanding({
           <b className="text-text-main"> TNR·건강·급식</b> 기록을 실시간으로 남기고,
           긴급한 아이를 동네 이웃과 빠르게 잇는 전국 길고양이 돌봄 지도예요.
         </p>
-        <p className="text-[12px] mt-2 leading-relaxed" style={{ color: "var(--color-text-light)" }}>
+        <p className="text-[13px] mt-2 leading-relaxed" style={{ color: "var(--color-text-light)" }}>
           급식소 정확 좌표는 <b style={{ color: "var(--color-sage)" }}>비공개</b> · 광고 없는 무료 운영 · PWA 지원
         </p>
 
@@ -222,7 +222,7 @@ export default async function HomeLanding({
             }}
           >
             <PawPrint size={15} />
-            <span className="text-[14px] font-bold tracking-tight">지도 바로 보기</span>
+            <span className="text-[15px] font-bold tracking-tight">지도 바로 보기</span>
           </Link>
           <Link
             href="/signup"
@@ -234,7 +234,7 @@ export default async function HomeLanding({
             }}
           >
             <Sparkles size={14} />
-            <span className="text-[14px] font-bold tracking-tight">돌봄 시작하기</span>
+            <span className="text-[15px] font-bold tracking-tight">돌봄 시작하기</span>
           </Link>
         </div>
         <p className="mt-2 text-center text-[11px] font-bold" style={{ color: "rgba(173, 94, 59,0.7)" }}>
@@ -246,7 +246,7 @@ export default async function HomeLanding({
         {/* 처음이신가요? 가이드 링크 */}
         <Link
           href="/guide"
-          className="mt-3 flex items-center justify-center gap-1.5 text-[12px] font-bold active:scale-[0.98] transition-transform"
+          className="mt-3 flex items-center justify-center gap-1.5 text-[13px] font-bold active:scale-[0.98] transition-transform"
           style={{ color: "var(--color-text-light)" }}
         >
           <span>처음이신가요? 10가지 기능 한눈에 보기</span>
@@ -280,7 +280,7 @@ export default async function HomeLanding({
           <ul className="p-5 space-y-4">
             <li className="flex items-start gap-3">
               <span
-                className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-[12px] font-bold mt-0.5"
+                className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold mt-0.5"
                 style={{
                   background: "rgba(255,255,255,0.95)",
                   color: "var(--color-sage)",
@@ -293,7 +293,7 @@ export default async function HomeLanding({
                 <p className="text-[15px] font-bold text-white leading-snug tracking-tight">
                   쓰레기봉투를 안 찢어요
                 </p>
-                <p className="text-[12px] leading-relaxed mt-1" style={{ color: "rgba(255,255,255,0.82)" }}>
+                <p className="text-[13px] leading-relaxed mt-1" style={{ color: "rgba(255,255,255,0.82)" }}>
                   꾸준한 급식으로 음식물 쓰레기를 뒤지지 않아요.
                 </p>
               </div>
@@ -305,7 +305,7 @@ export default async function HomeLanding({
             />
             <li className="flex items-start gap-3">
               <span
-                className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-[12px] font-bold mt-0.5"
+                className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold mt-0.5"
                 style={{
                   background: "rgba(255,255,255,0.95)",
                   color: "var(--color-sage)",
@@ -318,7 +318,7 @@ export default async function HomeLanding({
                 <p className="text-[15px] font-bold text-white leading-snug tracking-tight">
                   자동차 안에 들어가지 않아요
                 </p>
-                <p className="text-[12px] leading-relaxed mt-1" style={{ color: "rgba(255,255,255,0.82)" }}>
+                <p className="text-[13px] leading-relaxed mt-1" style={{ color: "rgba(255,255,255,0.82)" }}>
                   안전한 쉼터가 있으면 차 엔진룸에 숨지 않아요.
                 </p>
               </div>
@@ -330,7 +330,7 @@ export default async function HomeLanding({
             />
             <li className="flex items-start gap-3">
               <span
-                className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-[12px] font-bold mt-0.5"
+                className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold mt-0.5"
                 style={{
                   background: "rgba(255,255,255,0.95)",
                   color: "var(--color-sage)",
@@ -343,7 +343,7 @@ export default async function HomeLanding({
                 <p className="text-[15px] font-bold text-white leading-snug tracking-tight">
                   울음소리가 줄어들어요
                 </p>
-                <p className="text-[12px] leading-relaxed mt-1" style={{ color: "rgba(255,255,255,0.82)" }}>
+                <p className="text-[13px] leading-relaxed mt-1" style={{ color: "rgba(255,255,255,0.82)" }}>
                   TNR(중성화)로 발정기 울음과 영역 다툼이 사라져요.
                 </p>
               </div>
@@ -375,7 +375,7 @@ export default async function HomeLanding({
               지금 활발한 동네
             </h2>
           </div>
-          <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+          <p className="text-[13px] text-text-sub mb-3 leading-relaxed">
             이번 주 새 친구·길집사·치료 병원이 가장 많이 모이는 동네예요.
           </p>
           <div className="space-y-2">
@@ -465,7 +465,7 @@ export default async function HomeLanding({
               <p className="text-[15px] font-bold text-text-main leading-snug mb-1 tracking-tight">
                 정확한 자리는 누구도 모릅니다
               </p>
-              <p className="text-[12px] text-text-sub leading-relaxed">
+              <p className="text-[13px] text-text-sub leading-relaxed">
                 좌표는 <b className="text-text-main">동(洞) 단위</b>까지만 처리됩니다.
                 여러 겹의 방어로 더 좁힐 수 없게 막아두었어요.
               </p>
@@ -492,7 +492,7 @@ export default async function HomeLanding({
               걱정되는 아이는 <b style={{ color: "var(--color-warning)" }}>"내 서클"</b>로 설정하면,
               내가 직접 승인한 이웃에게만 보입니다.
             </p>
-            <p className="text-[12px] leading-relaxed mt-2" style={{ color: "rgba(255,255,255,0.78)" }}>
+            <p className="text-[13px] leading-relaxed mt-2" style={{ color: "rgba(255,255,255,0.78)" }}>
               일반 가입자에게도 보이지 않고, 외부인에게는 존재 자체가 노출되지 않습니다.
               믿는 사람들 사이에서만 조용히 함께 돌볼 수 있어요.
             </p>
@@ -544,12 +544,12 @@ export default async function HomeLanding({
             border: "1px solid rgba(173, 94, 59,0.20)",
           }}
         >
-          <p className="text-[12px] text-text-sub leading-[1.85]">
+          <p className="text-[13px] text-text-sub leading-[1.85]">
             <b className="text-text-main">한계도 솔직히 말씀드려요.</b> 100% 안전은 없습니다.
             하지만 학대자들은 도시공존이 있든 없든 골목을 답사합니다.
             가장 위험한 환경은 <b className="text-text-main">동네가 무관심한 상태</b>예요.
           </p>
-          <p className="text-[12px] text-text-sub leading-[1.85] mt-2">
+          <p className="text-[13px] text-text-sub leading-[1.85] mt-2">
             <b style={{ color: "var(--color-primary-dark)" }}>길집사와 시민의 시선이 모이는 것</b> — 그게 학대자에게 가장
             강한 억제력입니다. 도시공존은 그 시선을 모으려고 만들어진 도구예요.
           </p>
@@ -565,7 +565,7 @@ export default async function HomeLanding({
             이렇게 시작해보세요
           </h2>
         </div>
-        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+        <p className="text-[13px] text-text-sub mb-3 leading-relaxed">
           처음이라도 괜찮아요. 1분이면 첫 한 줄을 남길 수 있어요.
         </p>
         <div className="space-y-2">
@@ -593,7 +593,7 @@ export default async function HomeLanding({
         </div>
         <Link
           href="/guide"
-          className="mt-3 flex items-center justify-center gap-1 text-[12px] font-bold py-2.5 rounded-xl active:scale-[0.98] transition-transform"
+          className="mt-3 flex items-center justify-center gap-1 text-[13px] font-bold py-2.5 rounded-xl active:scale-[0.98] transition-transform"
           style={{ background: "var(--color-surface)", color: "var(--color-text-light)", border: "1px solid var(--color-divider)" }}
         >
           <span>10가지 기능 한 화면에서 보기</span>
@@ -614,7 +614,7 @@ export default async function HomeLanding({
               이번 주 활동 길집사 TOP 3
             </h2>
           </div>
-          <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+          <p className="text-[13px] text-text-sub mb-3 leading-relaxed">
             지금 실제로 동네 길고양이를 돌보고 있는 분들이에요.
           </p>
           <div className="space-y-2">
@@ -653,7 +653,7 @@ export default async function HomeLanding({
           </div>
           <Link
             href="/ranking"
-            className="mt-3 flex items-center justify-center gap-1 text-[12px] font-bold py-2.5 rounded-xl active:scale-[0.98] transition-transform"
+            className="mt-3 flex items-center justify-center gap-1 text-[13px] font-bold py-2.5 rounded-xl active:scale-[0.98] transition-transform"
             style={{ background: "var(--color-surface)", color: "var(--color-text-light)", border: "1px solid var(--color-divider)" }}
           >
             <span>전체 랭킹 보기</span>
@@ -736,7 +736,7 @@ export default async function HomeLanding({
               <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
               <h2 className="text-[15px] font-bold text-text-main tracking-tight">최근 등록된 아이들</h2>
             </div>
-            <Link href="/map" className="flex items-center gap-0.5 text-[12px] font-semibold text-primary">
+            <Link href="/map" className="flex items-center gap-0.5 text-[13px] font-semibold text-primary">
               전체보기 <ArrowRight size={12} />
             </Link>
           </div>
@@ -763,7 +763,7 @@ export default async function HomeLanding({
                     />
                     {urgent && (
                       <span
-                        className="absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-lg text-white"
+                        className="absolute top-2 left-2 text-[11px] font-bold px-2 py-0.5 rounded-lg text-white"
                         style={{ backgroundColor: "var(--color-error)" }}
                       >
                         긴급
@@ -790,7 +790,7 @@ export default async function HomeLanding({
           <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4A7BA8" }} />
           <h2 className="text-[15px] font-bold text-text-main tracking-tight">동네별 길고양이 지도</h2>
         </div>
-        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+        <p className="text-[13px] text-text-sub mb-3 leading-relaxed">
           내 동네를 눌러 주변 고양이들을 확인하고 돌봄 기록에 참여하세요.
         </p>
         <div className="grid grid-cols-3 gap-1.5 mb-3">
@@ -802,7 +802,7 @@ export default async function HomeLanding({
               style={{ boxShadow: "var(--shadow-card-sm)" }}
             >
               <p className="text-[13px] font-bold text-text-main">{g.name}</p>
-              <p className="text-[10px] text-text-light mt-0.5 truncate">
+              <p className="text-[11px] text-text-light mt-0.5 truncate">
                 {g.dongs.slice(0, 2).join("·")}
               </p>
             </Link>
@@ -846,12 +846,12 @@ export default async function HomeLanding({
           </div>
           <Link
             href="/protection"
-            className="flex items-center gap-0.5 text-[12px] font-semibold text-primary"
+            className="flex items-center gap-0.5 text-[13px] font-semibold text-primary"
           >
             전체보기 <ArrowRight size={12} />
           </Link>
         </div>
-        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+        <p className="text-[13px] text-text-sub mb-3 leading-relaxed">
           공공기관 자료 기반의 응급·돌봄·법률 가이드. 동네에서 다친 아이를 만났을 때 바로 펼쳐보세요.
         </p>
         <div className="grid grid-cols-2 gap-2">
@@ -927,12 +927,12 @@ export default async function HomeLanding({
             </div>
             <Link
               href="/tips"
-              className="flex items-center gap-0.5 text-[12px] font-semibold text-primary"
+              className="flex items-center gap-0.5 text-[13px] font-semibold text-primary"
             >
               전체보기 <ArrowRight size={12} />
             </Link>
           </div>
-          <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+          <p className="text-[13px] text-text-sub mb-3 leading-relaxed">
             길고양이 돌봄·TNR·중성화·구조에 도움되는 정보글. 도시공존이 큐레이션해 모았어요.
           </p>
           <div className="space-y-2">
@@ -1015,7 +1015,7 @@ export default async function HomeLanding({
             border: "1px solid rgba(173, 94, 59,0.20)",
           }}
         >
-          <p className="text-[14px] font-bold text-text-main mb-1">
+          <p className="text-[15px] font-bold text-text-main mb-1">
             동네 길집사 단톡방에 공유해보세요 🐾
           </p>
           <p className="text-[11px] text-text-sub mb-3 leading-relaxed">
@@ -1033,7 +1033,7 @@ export default async function HomeLanding({
             도시공존은 이렇게 만들어져요
           </h2>
         </div>
-        <p className="text-[12px] text-text-sub mb-3 leading-relaxed">
+        <p className="text-[13px] text-text-sub mb-3 leading-relaxed">
           기록 한 줄이 헛되이 흘러가지 않게, 안전하게 오래 쌓일 수 있게 직접 짠 시스템 위에서 돌아갑니다.
         </p>
         <div className="grid grid-cols-2 gap-2">
@@ -1093,7 +1093,7 @@ export default async function HomeLanding({
               <Code2 size={18} style={{ color: "var(--color-primary-dark)" }} />
             </div>
             <div className="min-w-0">
-              <p className="text-[14px] font-bold text-text-main">
+              <p className="text-[15px] font-bold text-text-main">
                 만든 사람 · 김성우
               </p>
             </div>
@@ -1108,7 +1108,7 @@ export default async function HomeLanding({
           <div className="flex gap-2 mt-4">
             <Link
               href="/maker"
-              className="flex-1 flex items-center justify-center gap-1 py-2.5 rounded-xl text-[12px] font-bold active:scale-[0.98] transition-transform"
+              className="flex-1 flex items-center justify-center gap-1 py-2.5 rounded-xl text-[13px] font-bold active:scale-[0.98] transition-transform"
               style={{
                 background: "var(--color-surface)",
                 color: "var(--color-primary-dark)",
@@ -1120,7 +1120,7 @@ export default async function HomeLanding({
             </Link>
             <a
               href="mailto:grow29971@gmail.com?subject=%5B%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%A1%B4%5D%20%EC%A0%9C%ED%9C%B4%2F%EB%AC%B8%EC%9D%98"
-              className="flex items-center justify-center gap-1 px-4 py-2.5 rounded-xl text-[12px] font-bold text-white active:scale-[0.98] transition-transform"
+              className="flex items-center justify-center gap-1 px-4 py-2.5 rounded-xl text-[13px] font-bold text-white active:scale-[0.98] transition-transform"
               style={{
                 background: "var(--color-primary)",
                 boxShadow: "var(--shadow-primary)",
@@ -1144,7 +1144,7 @@ export default async function HomeLanding({
           <span>·</span>
           <Link href="/maker" className="hover:underline">만든 사람</Link>
         </div>
-        <p className="text-[10px] text-text-light">© 2026 도시공존 · dosigongzon.com</p>
+        <p className="text-[11px] text-text-light">© 2026 도시공존 · dosigongzon.com</p>
       </footer>
     </div>
   );
@@ -1153,7 +1153,7 @@ export default async function HomeLanding({
 function TrustInline({ emoji, value, label, color }: { emoji: string; value: number; label: string; color: string }) {
   return (
     <div className="flex items-center gap-2">
-      <span style={{ fontSize: 18 }}>{emoji}</span>
+      <span style={{ fontSize: 20 }}>{emoji}</span>
       <div className="flex flex-col leading-tight">
         <span className="text-[15px] font-bold" style={{ color }}>
           {value.toLocaleString()}
@@ -1345,9 +1345,9 @@ function FaqRow({ q, a }: { q: string; a: string }) {
     >
       <summary className="text-[13px] font-bold text-text-main cursor-pointer list-none flex items-center justify-between">
         <span>{q}</span>
-        <span className="text-text-light text-[12px]">+</span>
+        <span className="text-text-light text-[13px]">+</span>
       </summary>
-      <p className="text-[12px] text-text-sub mt-2.5 leading-relaxed">{a}</p>
+      <p className="text-[13px] text-text-sub mt-2.5 leading-relaxed">{a}</p>
     </details>
   );
 }
@@ -1358,7 +1358,7 @@ function SafetyRow({ icon, title, body }: { icon: string; title: string; body: s
       className="bg-white rounded-xl p-3 flex items-start gap-2.5"
       style={{ boxShadow: "var(--shadow-card-sm)", border: "1px solid var(--color-divider)" }}
     >
-      <span className="text-[18px] shrink-0 leading-none mt-0.5">{icon}</span>
+      <span className="text-[20px] shrink-0 leading-none mt-0.5">{icon}</span>
       <div className="min-w-0 flex-1">
         <p className="text-[13px] font-bold text-text-main leading-snug tracking-tight">{title}</p>
         <p className="text-[11px] text-text-sub leading-relaxed mt-0.5">{body}</p>

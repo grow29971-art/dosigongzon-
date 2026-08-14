@@ -177,7 +177,7 @@ export default function AdminUsersPage() {
     return (
       <div className="px-5 pt-20 text-center">
         <Shield size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[14px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
+        <p className="text-[15px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
         <Link href="/mypage" className="text-[13px] font-bold text-primary mt-4 inline-block">
           마이페이지로 돌아가기
         </Link>
@@ -220,20 +220,20 @@ export default function AdminUsersPage() {
       <div className="mb-5">
         <button
           onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[12px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
         >
           <ArrowLeft size={14} />
           마이페이지
         </button>
         <div className="flex items-baseline gap-2 mb-1">
-          <h1 className="text-[22px] font-extrabold text-text-main tracking-tight">
+          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
             가입자 관리
           </h1>
-          <span className="text-[10px] font-semibold text-text-light">
+          <span className="text-[11px] font-semibold text-text-light">
             Admin · Users
           </span>
         </div>
-        <div className="flex items-center gap-3 text-[12px] text-text-sub">
+        <div className="flex items-center gap-3 text-[13px] text-text-sub">
           <span className="flex items-center gap-1">
             <Users size={13} /> 전체 {users.length}명
           </span>
@@ -345,7 +345,7 @@ export default function AdminUsersPage() {
                 />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="text-[14px] font-extrabold text-primary">
+                  <span className="text-[15px] font-extrabold text-primary">
                     {u.nickname.charAt(0)}
                   </span>
                 </div>
@@ -395,7 +395,7 @@ export default function AdminUsersPage() {
                     <Mail size={10} /> {u.email}
                   </span>
                 </div>
-                <div className="flex items-center gap-3 mt-0.5 text-[10px] text-text-light">
+                <div className="flex items-center gap-3 mt-0.5 text-[11px] text-text-light">
                   <span className="flex items-center gap-0.5">
                     <Clock size={10} /> 가입 {formatDate(u.created_at)}
                   </span>
@@ -404,7 +404,7 @@ export default function AdminUsersPage() {
                   </span>
                 </div>
                 {u.is_suspended && u.suspended_reason && (
-                  <p className="text-[10px] mt-1" style={{ color: "#D85555" }}>
+                  <p className="text-[11px] mt-1" style={{ color: "#D85555" }}>
                     정지 사유: {u.suspended_reason}
                   </p>
                 )}
@@ -413,7 +413,7 @@ export default function AdminUsersPage() {
                   <button
                     type="button"
                     onClick={() => setTitleTarget(titleTarget === u.id ? null : u.id)}
-                    className="text-[10px] font-bold px-2 py-0.5 rounded-lg active:scale-95"
+                    className="text-[11px] font-bold px-2 py-0.5 rounded-lg active:scale-95"
                     style={{ backgroundColor: "var(--color-gray-50)", color: "var(--color-primary)" }}
                   >
                     {u.admin_title ? "🏷️ 타이틀 변경" : "🏷️ 타이틀 부여"}
@@ -423,7 +423,7 @@ export default function AdminUsersPage() {
                       type="button"
                       onClick={() => handleUnsuspend(u)}
                       disabled={busyUserId === u.id}
-                      className="text-[10px] font-bold px-2 py-0.5 rounded-lg active:scale-95 disabled:opacity-50 flex items-center gap-1"
+                      className="text-[11px] font-bold px-2 py-0.5 rounded-lg active:scale-95 disabled:opacity-50 flex items-center gap-1"
                       style={{ backgroundColor: "#E8F4E8", color: "#3F5B42" }}
                     >
                       {busyUserId === u.id ? <Loader2 size={10} className="animate-spin" /> : <CheckCircle size={10} />}
@@ -434,7 +434,7 @@ export default function AdminUsersPage() {
                       type="button"
                       onClick={() => handleSuspend(u)}
                       disabled={busyUserId === u.id}
-                      className="text-[10px] font-bold px-2 py-0.5 rounded-lg active:scale-95 disabled:opacity-50 flex items-center gap-1"
+                      className="text-[11px] font-bold px-2 py-0.5 rounded-lg active:scale-95 disabled:opacity-50 flex items-center gap-1"
                       style={{ backgroundColor: "var(--color-error-soft)", color: "#B84545" }}
                     >
                       {busyUserId === u.id ? <Loader2 size={10} className="animate-spin" /> : <Ban size={10} />}
@@ -449,7 +449,7 @@ export default function AdminUsersPage() {
                       <button
                         type="button"
                         onClick={() => handleSetTitle(u.id, null)}
-                        className="text-[10px] font-bold px-2 py-1 rounded-lg active:scale-95"
+                        className="text-[11px] font-bold px-2 py-1 rounded-lg active:scale-95"
                         style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}
                       >
                         ✕ 제거
@@ -460,7 +460,7 @@ export default function AdminUsersPage() {
                         key={t.id}
                         type="button"
                         onClick={() => handleSetTitle(u.id, t.id)}
-                        className="text-[10px] font-bold px-2 py-1 rounded-lg active:scale-95"
+                        className="text-[11px] font-bold px-2 py-1 rounded-lg active:scale-95"
                         style={{
                           backgroundColor: u.admin_title === t.id ? t.color : `${t.color}15`,
                           color: u.admin_title === t.id ? "#fff" : t.color,

@@ -124,7 +124,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
             <h2 className="text-[17px] font-extrabold text-text-main mt-1 tracking-tight">
               {catName} QR 코드
             </h2>
-            <p className="text-[12px] text-text-sub mt-1 leading-relaxed">
+            <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
               인쇄해 동네에 붙이면 스캔하는 이웃이 도시공존으로 들어와요.
             </p>
           </div>

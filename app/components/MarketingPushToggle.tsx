@@ -66,7 +66,7 @@ export default function MarketingPushToggle() {
         <BellRing size={18} color="#4A7BA8" strokeWidth={2} />
       </div>
       <div className="flex-1 min-w-0 text-left">
-        <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+        <p className="text-[15px] font-extrabold text-text-main tracking-tight">
           동네 소식 푸시 받기
         </p>
         <p className="text-[11px] text-text-sub mt-0.5">

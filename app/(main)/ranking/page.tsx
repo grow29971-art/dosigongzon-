@@ -40,14 +40,14 @@ export default async function RankingPage() {
       <div className="px-5 pt-12 pb-5">
         <Link
           href="/mypage"
-          className="inline-flex items-center gap-1 text-[12px] font-semibold text-text-sub mb-3"
+          className="inline-flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3"
         >
           <ArrowLeft size={14} />
           마이페이지
         </Link>
         <div className="flex items-baseline gap-2 mb-1">
           <Trophy size={20} style={{ color: "#C9A961" }} />
-          <h1 className="text-[22px] font-extrabold tracking-tight text-text-main">
+          <h1 className="text-[24px] font-extrabold tracking-tight text-text-main">
             길집사 활동 랭킹
           </h1>
         </div>
@@ -62,11 +62,11 @@ export default async function RankingPage() {
           className="rounded-2xl px-4 py-3 bg-white"
           style={{ boxShadow: "var(--shadow-card)" }}
         >
-          <summary className="text-[12px] font-extrabold text-text-main cursor-pointer list-none flex items-center justify-between">
+          <summary className="text-[13px] font-extrabold text-text-main cursor-pointer list-none flex items-center justify-between">
             <span>점수는 어떻게 계산되나요?</span>
-            <span className="text-text-light text-[12px]">+</span>
+            <span className="text-text-light text-[13px]">+</span>
           </summary>
-          <ul className="text-[12px] text-text-sub mt-2.5 leading-relaxed space-y-0.5">
+          <ul className="text-[13px] text-text-sub mt-2.5 leading-relaxed space-y-0.5">
             <li>· 고양이 등록 — 1마리 +10점</li>
             <li>· 돌봄 기록 (댓글) — 1건 +1점</li>
             <li>· 위급 경보 — 1건 +2점 추가</li>
@@ -101,14 +101,14 @@ export default async function RankingPage() {
               boxShadow: isTop3 ? "0 6px 18px rgba(201,169,97,0.25)" : "0 4px 14px rgba(0,0,0,0.05)",
             }}
           >
-            <div className="text-[26px] leading-none shrink-0">{isTop3 ? "🎉" : "🐾"}</div>
+            <div className="text-[24px] leading-none shrink-0">{isTop3 ? "🎉" : "🐾"}</div>
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-extrabold tracking-[0.15em]" style={{ color: isTop3 ? "#A9851F" : "var(--color-primary-dark)" }}>
+              <p className="text-[11px] font-extrabold tracking-[0.15em]" style={{ color: isTop3 ? "#A9851F" : "var(--color-primary-dark)" }}>
                 이번 주 내 순위
               </p>
               <p className="text-[15px] font-extrabold text-text-main leading-tight mt-0.5">
                 {myRankNumber}위{isTop3 ? " · TOP 3 🏆" : ""}
-                <span className="text-[12px] font-bold text-text-sub"> · {myScore.toLocaleString()}점</span>
+                <span className="text-[13px] font-bold text-text-sub"> · {myScore.toLocaleString()}점</span>
               </p>
             </div>
             <RankShareButton rank={myRankNumber} score={myScore} top3={isTop3} />
@@ -124,12 +124,12 @@ export default async function RankingPage() {
             style={{ boxShadow: "var(--shadow-card)" }}
           >
             <p className="text-[13px] font-bold text-text-main">아직 랭킹이 없어요</p>
-            <p className="text-[12px] text-text-sub mt-1">
+            <p className="text-[13px] text-text-sub mt-1">
               가장 먼저 고양이를 등록하고 1위가 되어보세요!
             </p>
             <Link
               href="/map"
-              className="inline-block mt-3 px-4 py-2 rounded-xl text-[12px] font-extrabold text-white"
+              className="inline-block mt-3 px-4 py-2 rounded-xl text-[13px] font-extrabold text-white"
               style={{ background: "var(--color-primary)" }}
             >
               지도로 가기
@@ -235,24 +235,24 @@ function PodiumCard({ row, place, height }: { row: RankingRow; place: 1 | 2 | 3;
           />
         ) : (
           <div
-            className="w-12 h-12 rounded-full flex items-center justify-center text-[18px]"
+            className="w-12 h-12 rounded-full flex items-center justify-center text-[20px]"
             style={{ background: "#FFF", border: `2.5px solid ${border}` }}
           >
             🐾
           </div>
         )}
-        <p className="text-[12px] font-extrabold text-text-main mt-1.5 truncate max-w-full px-1">
+        <p className="text-[13px] font-extrabold text-text-main mt-1.5 truncate max-w-full px-1">
           {row.nickname ?? "익명"}
         </p>
         <p
-          className="text-[10px] font-bold tracking-tight"
+          className="text-[11px] font-bold tracking-tight"
           style={{ color: getLevelColor(level.level) }}
         >
           {level.emoji} {level.title}
         </p>
-        <p className="text-[14px] font-extrabold tabular-nums mt-1" style={{ color: "#2A2A28" }}>
+        <p className="text-[15px] font-extrabold tabular-nums mt-1" style={{ color: "#2A2A28" }}>
           {row.score.toLocaleString()}
-          <span className="text-[10px] font-bold opacity-70 ml-0.5">점</span>
+          <span className="text-[11px] font-bold opacity-70 ml-0.5">점</span>
         </p>
       </div>
     </Link>
@@ -275,7 +275,7 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
       }}
     >
       <div
-        className="w-8 text-center text-[14px] font-extrabold tabular-nums shrink-0"
+        className="w-8 text-center text-[15px] font-extrabold tabular-nums shrink-0"
         style={{ color: row.rank <= 10 ? "#C9A961" : "#8B7562" }}
       >
         {row.rank}
@@ -292,7 +292,7 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
         />
       ) : (
         <div
-          className="w-9 h-9 rounded-full flex items-center justify-center text-[14px] shrink-0"
+          className="w-9 h-9 rounded-full flex items-center justify-center text-[15px] shrink-0"
           style={{ background: "var(--color-gray-50)", border: `1.5px solid ${getLevelColor(level.level)}` }}
         >
           🐾
@@ -321,7 +321,7 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
         </span>
       </div>
       <div
-        className="text-[14px] font-extrabold tabular-nums shrink-0 ml-1"
+        className="text-[15px] font-extrabold tabular-nums shrink-0 ml-1"
         style={{ color: "#2A2A28" }}
       >
         {row.score.toLocaleString()}

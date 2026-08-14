@@ -118,7 +118,7 @@ export default async function OpengraphImage() {
                 borderRadius: 999,
                 background: "#D85555",
                 color: "#FFFFFF",
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: 800,
                 boxShadow: "0 8px 24px rgba(216,85,85,0.40)",
               }}
@@ -136,7 +136,7 @@ export default async function OpengraphImage() {
                 borderRadius: 999,
                 background: "linear-gradient(135deg, #AD5E3B 0%, #E86B8C 100%)",
                 color: "#FFFFFF",
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: 900,
                 boxShadow: "0 8px 24px rgba(173, 94, 59,0.40)",
               }}
@@ -164,7 +164,7 @@ export default async function OpengraphImage() {
           </div>
           <p
             style={{
-              fontSize: 26,
+              fontSize: 24,
               fontWeight: 600,
               color: "#5A5A5A",
               margin: 0,
@@ -224,7 +224,7 @@ function StatCard({
           {value.toLocaleString()}
         </span>
       </div>
-      <span style={{ fontSize: 18, fontWeight: 700, color: "#6B5043" }}>{label}</span>
+      <span style={{ fontSize: 20, fontWeight: 700, color: "#6B5043" }}>{label}</span>
     </div>
   );
 }

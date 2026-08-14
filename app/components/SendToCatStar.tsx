@@ -251,10 +251,10 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
               <Star size={24} color="#FFE9A8" fill="#FFE9A8" />
             </div>
 
-            <h2 className="text-[19px] font-bold text-gray-900 mb-2">
+            <h2 className="text-[20px] font-bold text-gray-900 mb-2">
               {cat.name}(이)를 고양이별로 보낼까요?
             </h2>
-            <p className="text-[14px] leading-[1.65] text-gray-600 mb-5">
+            <p className="text-[15px] leading-[1.65] text-gray-600 mb-5">
               지도에서는 내려가지만 <b className="text-gray-800">사라지지 않아요.</b> 지금까지 남긴 돌봄
               기록과 사진, 카드는 그대로 고양이별에 보관되고 언제든 다시 볼 수 있어요.
             </p>
@@ -267,7 +267,7 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
               onChange={(e) => setNote(e.target.value.slice(0, 200))}
               rows={3}
               placeholder="하고 싶은 말이 있다면 남겨주세요."
-              className="w-full text-[14px] leading-[1.6] px-4 py-3 outline-none resize-none"
+              className="w-full text-[15px] leading-[1.6] px-4 py-3 outline-none resize-none"
               style={{ borderRadius: 14, background: "#F6F3F0", border: "1px solid #E7E0DA" }}
             />
             <div className="text-right text-[11px] text-gray-400 mt-1 mb-5">{note.length}/200</div>
@@ -282,11 +282,11 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
             </button>
             <button
               onClick={onClose}
-              className="w-full h-[46px] mt-2 text-[14px] font-medium text-gray-500"
+              className="w-full h-[46px] mt-2 text-[15px] font-medium text-gray-500"
             >
               아직 아니에요
             </button>
-            <p className="text-[12px] text-gray-400 text-center mt-1">
+            <p className="text-[13px] text-gray-400 text-center mt-1">
               잘못 보냈다면 고양이별에서 다시 지도로 되돌릴 수 있어요.
             </p>
           </div>
@@ -381,7 +381,7 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={photo} alt="" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[26px]">🐈</div>
+                    <div className="w-full h-full flex items-center justify-center text-[24px]">🐈</div>
                   )}
                 </div>
               </div>
@@ -423,7 +423,7 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
           <h2 className="text-[20px] font-bold text-white mt-6 text-center">
             {cat.name}(이)가 무지개다리를 건넜어요
           </h2>
-          <p className="text-[14px] leading-[1.7] text-center mt-3" style={{ color: "rgba(255,255,255,0.72)" }}>
+          <p className="text-[15px] leading-[1.7] text-center mt-3" style={{ color: "rgba(255,255,255,0.72)" }}>
             그동안 돌봐주셔서 고마웠어요.
             <br />
             {cat.name}(이)의 기록은 고양이별에 남아 있어요.
@@ -436,7 +436,7 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
           >
             함께한 기록 보기
           </button>
-          <button onClick={onClose} className="w-full h-[46px] mt-1 text-[14px]" style={{ color: "rgba(255,255,255,0.6)" }}>
+          <button onClick={onClose} className="w-full h-[46px] mt-1 text-[15px]" style={{ color: "rgba(255,255,255,0.6)" }}>
             닫기
           </button>
         </div>

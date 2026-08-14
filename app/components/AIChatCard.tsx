@@ -41,7 +41,7 @@ export default function AIChatCard() {
                 BETA
               </span>
             </div>
-            <p className="text-[12px] text-text-sub mt-0.5">
+            <p className="text-[13px] text-text-sub mt-0.5">
               길고양이 돌봄이 궁금하다면 물어보세요
             </p>
           </div>

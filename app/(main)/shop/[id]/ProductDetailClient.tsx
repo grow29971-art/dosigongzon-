@@ -95,7 +95,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </button>
-        <span className="text-[12px] font-semibold text-text-sub">{SHOP_CATEGORIES[product.category].label}</span>
+        <span className="text-[13px] font-semibold text-text-sub">{SHOP_CATEGORIES[product.category].label}</span>
       </div>
 
       {/* 이미지 슬라이더 */}
@@ -120,7 +120,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         </div>
         {soldOut && (
           <div className="absolute inset-0 rounded-3xl flex items-center justify-center" style={{ background: "rgba(38,42,56,0.55)" }}>
-            <span className="text-white text-[16px] font-bold px-4 py-2 rounded-xl" style={{ background: "rgba(0,0,0,0.35)" }}>품절</span>
+            <span className="text-white text-[17px] font-bold px-4 py-2 rounded-xl" style={{ background: "rgba(0,0,0,0.35)" }}>품절</span>
           </div>
         )}
         {images.length > 1 && (
@@ -151,12 +151,12 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           </span>
         )}
         <h1 className="text-[20px] font-extrabold text-text-main tracking-tight leading-snug">{product.name}</h1>
-        {product.weight && <p className="text-[12px] text-text-light mt-1">{product.weight}</p>}
+        {product.weight && <p className="text-[13px] text-text-light mt-1">{product.weight}</p>}
 
         <div className="mt-2.5 flex items-baseline gap-2 flex-wrap">
           {discounted && (
             <span
-              className="text-[12px] font-bold px-1.5 py-0.5 rounded-md text-white"
+              className="text-[13px] font-bold px-1.5 py-0.5 rounded-md text-white"
               style={{ background: "var(--color-error)" }}
             >
               {discountRate(product.price, product.sale_price as number)}%
@@ -166,7 +166,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           {discounted && <span className="text-[13px] text-text-light line-through">{formatWon(product.price)}</span>}
         </div>
 
-        <div className="mt-3 flex items-center gap-1.5 text-[12px] text-text-sub">
+        <div className="mt-3 flex items-center gap-1.5 text-[13px] text-text-sub">
           <Truck size={14} />
           {isVirtual
             ? "배송 없음 · 후원금으로 전액 사용됩니다"
@@ -200,7 +200,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                   <div key={step.label} className="flex items-center flex-1 min-w-0">
                     <div className="flex flex-col items-center gap-0.5 flex-1 min-w-0">
                       <step.Icon size={15} style={{ color: "var(--color-primary)" }} />
-                      <span className="text-[10px] font-bold truncate" style={{ color: "var(--color-primary-dark)" }}>{step.label}</span>
+                      <span className="text-[11px] font-bold truncate" style={{ color: "var(--color-primary-dark)" }}>{step.label}</span>
                     </div>
                     {i < 2 && (
                       <span className="text-[11px] shrink-0 px-0.5" style={{ color: "var(--color-text-light)" }}>→</span>
@@ -220,7 +220,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               <button onClick={() => setQuantity((q) => Math.max(1, q - 1))} disabled={quantity <= 1} className="w-6 h-6 flex items-center justify-center disabled:opacity-30" aria-label="수량 줄이기">
                 <Minus size={14} />
               </button>
-              <span className="text-[14px] font-medium w-5 text-center">{quantity}</span>
+              <span className="text-[15px] font-medium w-5 text-center">{quantity}</span>
               <button onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))} disabled={quantity >= product.stock} className="w-6 h-6 flex items-center justify-center disabled:opacity-30" aria-label="수량 늘리기">
                 <Plus size={14} />
               </button>
@@ -270,7 +270,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         {soldOut ? (
           <button
             disabled
-            className="w-full py-3.5 rounded-2xl text-[14px] font-bold opacity-40"
+            className="w-full py-3.5 rounded-2xl text-[15px] font-bold opacity-40"
             style={{ background: "var(--color-warm-white)", color: "var(--color-text-sub)" }}
           >
             품절된 상품입니다
@@ -287,7 +287,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         ) : (
           <div className="flex items-center gap-2">
             <div className="shrink-0 pr-1">
-              <p className="text-[10px] text-text-light">총 금액</p>
+              <p className="text-[11px] text-text-light">총 금액</p>
               <p className="text-[15px] font-bold text-text-main">{formatWon(unitPrice * quantity)}</p>
             </div>
             <button

@@ -151,11 +151,11 @@ export default function InventoryPage() {
               <button onClick={() => setBorderPicker(true)}
                 className="w-full flex items-center gap-3 rounded-2xl px-3.5 py-3 mb-3 text-left"
                 style={{ background: UI.panel, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}` }}>
-                <span style={{ fontSize: 22 }}>
+                <span style={{ fontSize: 24 }}>
                   {activeCat.equipped_border_key ? SHOP_ITEMS[activeCat.equipped_border_key as ShopItemKey]?.icon : "✨"}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[12px] font-bold text-white truncate">
+                  <p className="text-[13px] font-bold text-white truncate">
                     {activeCat.name}의 테두리
                   </p>
                   <p className="text-[11px] truncate" style={{ color: UI.textSub }}>
@@ -179,7 +179,7 @@ export default function InventoryPage() {
                 ))}
               </div>
               {listKeys.length === 0 ? (
-                <p className="text-[12px] text-gray-500 text-center py-10">보유한 아이템이 없어요</p>
+                <p className="text-[13px] text-gray-500 text-center py-10">보유한 아이템이 없어요</p>
               ) : (
                 <div className="grid grid-cols-2 gap-2">
                   {listKeys.map((key) => {
@@ -195,7 +195,7 @@ export default function InventoryPage() {
                         </span>
                         <div className="min-w-0 flex-1">
                           <p className="text-[11px] font-bold text-white truncate">{item.name} {qty > 0 && <span className="text-gray-400 font-normal">x{qty}</span>}</p>
-                          <p className="text-[10px] text-gray-500 truncate">{item.desc}</p>
+                          <p className="text-[11px] text-gray-500 truncate">{item.desc}</p>
                         </div>
                         {isEquipped && <CheckCircle2 size={14} style={{ color: UI.accent.pink }} className="shrink-0" />}
                       </button>
@@ -207,7 +207,7 @@ export default function InventoryPage() {
 
             {totalOwnedCount === 0 && (
               <div className="text-center py-6">
-                <p className="text-gray-400 text-[12px] mb-3">가방이 비어있어요</p>
+                <p className="text-gray-400 text-[13px] mb-3">가방이 비어있어요</p>
                 <Link href="/mypage/shop"
                   className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-[13px] font-extrabold text-white"
                   style={{ background: "linear-gradient(135deg,#FFB020,#FF8020)" }}>
@@ -233,11 +233,11 @@ export default function InventoryPage() {
               <button onClick={() => doEquip(null)} disabled={equipLoading}
                 className="w-full flex items-center gap-2 rounded-2xl px-3 py-2.5 mb-2 text-left" style={{ background: "rgba(225,80,95,0.15)" }}>
                 <X size={14} style={{ color: "#E1505F" }} />
-                <span className="text-[12px] font-bold" style={{ color: "#E1505F" }}>해제하기</span>
+                <span className="text-[13px] font-bold" style={{ color: "#E1505F" }}>해제하기</span>
               </button>
             )}
             {BORDER_FX_ITEM_KEYS.filter(k => (owned[k] ?? 0) > 0).length === 0 ? (
-              <p className="text-gray-400 text-[12px] py-6 text-center">보유한 테두리 아이템이 없어요. 상점에서 구매해보세요!</p>
+              <p className="text-gray-400 text-[13px] py-6 text-center">보유한 테두리 아이템이 없어요. 상점에서 구매해보세요!</p>
             ) : (
               <div className="flex flex-col gap-2">
                 {BORDER_FX_ITEM_KEYS.filter(k => (owned[k] ?? 0) > 0).map((key) => {
@@ -247,10 +247,10 @@ export default function InventoryPage() {
                     <button key={key} onClick={() => doEquip(isThis ? null : key)} disabled={equipLoading}
                       className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left"
                       style={{ background: isThis ? "rgba(232,176,64,0.22)" : "rgba(255,255,255,0.05)" }}>
-                      <span style={{ fontSize: 22 }}>{item.icon}</span>
+                      <span style={{ fontSize: 24 }}>{item.icon}</span>
                       <div className="min-w-0 flex-1">
                         <p className="text-[13px] font-bold text-white truncate">{item.name}</p>
-                        <p className="text-[10px] text-gray-500 truncate">{item.desc}</p>
+                        <p className="text-[11px] text-gray-500 truncate">{item.desc}</p>
                       </div>
                       {isThis && <CheckCircle2 size={18} style={{ color: "#E8B040" }} className="shrink-0" />}
                     </button>
@@ -263,7 +263,7 @@ export default function InventoryPage() {
       )}
 
       {toast && (
-        <div className="fixed left-1/2 bottom-8 -translate-x-1/2 z-[220] px-4 py-2.5 rounded-full text-[12px] font-bold text-white"
+        <div className="fixed left-1/2 bottom-8 -translate-x-1/2 z-[220] px-4 py-2.5 rounded-full text-[13px] font-bold text-white"
           style={{ background: "rgba(20,20,30,0.92)" }}>
           {toast}
         </div>

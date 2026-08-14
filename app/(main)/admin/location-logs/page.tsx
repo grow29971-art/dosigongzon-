@@ -63,18 +63,18 @@ export default function LocationLogsPage() {
       >
         <Link
           href="/admin"
-          className="flex items-center gap-1 text-[12px] font-semibold mb-3 opacity-80 active:scale-95"
+          className="flex items-center gap-1 text-[13px] font-semibold mb-3 opacity-80 active:scale-95"
         >
           <ArrowLeft size={14} />
           관리자 홈
         </Link>
         <div className="flex items-baseline gap-2 mb-1">
           <MapPin size={20} />
-          <h1 className="text-[22px] font-extrabold tracking-tight">
+          <h1 className="text-[24px] font-extrabold tracking-tight">
             위치 변경 이력
           </h1>
         </div>
-        <p className="text-[12px] opacity-70">
+        <p className="text-[13px] opacity-70">
           고양이 좌표 변경 로그 · 어뷰징 감지용
         </p>
       </div>
@@ -97,14 +97,14 @@ export default function LocationLogsPage() {
           </div>
         ) : err ? (
           <div
-            className="rounded-2xl px-4 py-3 text-[12px] font-bold"
+            className="rounded-2xl px-4 py-3 text-[13px] font-bold"
             style={{ background: "#FDECEC", color: "#B84545" }}
           >
             {err}
           </div>
         ) : rows.length === 0 ? (
           <div
-            className="bg-white rounded-2xl p-6 text-center text-[12px] text-text-sub"
+            className="bg-white rounded-2xl p-6 text-center text-[13px] text-text-sub"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
             아직 위치 변경 기록이 없어요.
@@ -131,16 +131,16 @@ export default function LocationLogsPage() {
                   <div className="flex items-center justify-between mb-2">
                     <Link
                       href={`/cats/${r.cat_id}`}
-                      className="text-[14px] font-extrabold text-text-main truncate active:opacity-70"
+                      className="text-[15px] font-extrabold text-text-main truncate active:opacity-70"
                     >
                       🐱 {r.cat_name ?? "(삭제된 고양이)"}
                     </Link>
-                    <span className="text-[10px] text-text-light shrink-0 ml-2">
+                    <span className="text-[11px] text-text-light shrink-0 ml-2">
                       {formatTime(r.created_at)}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2 text-[12px] mb-2">
+                  <div className="flex items-center gap-2 text-[13px] mb-2">
                     <span
                       className="px-2 py-1 chip-square font-bold"
                       style={{
@@ -211,7 +211,7 @@ function SummaryCard({
         border: "1px solid rgba(0,0,0,0.04)",
       }}
     >
-      <p className="text-[10px] font-bold text-text-sub">{label}</p>
+      <p className="text-[11px] font-bold text-text-sub">{label}</p>
       <p
         className="text-[20px] font-extrabold tracking-tight mt-0.5"
         style={{ color }}

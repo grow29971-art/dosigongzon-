@@ -140,7 +140,7 @@ export default function PushOptInCard({
           >
             {description}
           </p>
-          <p className="text-[10px] mt-0.5" style={{ color: "#BFA084" }}>
+          <p className="text-[11px] mt-0.5" style={{ color: "#BFA084" }}>
             켜면 돌봄·소식 알림(마케팅 포함) 수신에 동의해요 · 마이페이지에서 언제든 해제
           </p>
         </div>

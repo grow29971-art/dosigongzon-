@@ -116,7 +116,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
       {/* 섹션 헤더 */}
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-2">
-          <h2 className="text-[16px] font-extrabold text-text-main tracking-tight">
+          <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
             {careInboxMode && pendingCount > 0 ? "오늘의 돌봄" : "내 아이들"}
           </h2>
           <span
@@ -128,7 +128,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
               : `${doneCount}/${cats.length} 오늘 밥`}
           </span>
         </div>
-        <Link href="/mypage" className="flex items-center gap-0.5 text-[12px] font-bold text-text-light">
+        <Link href="/mypage" className="flex items-center gap-0.5 text-[13px] font-bold text-text-light">
           전체보기 <ChevronRight size={13} />
         </Link>
       </div>
@@ -178,7 +178,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
 
               {/* 오늘 상태 칩 */}
               <span
-                className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-1 chip-square text-[10px] font-extrabold pointer-events-none"
+                className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-1 chip-square text-[11px] font-extrabold pointer-events-none"
                 style={{
                   background: fedToday ? "rgba(34,163,102,0.92)" : "rgba(255,255,255,0.92)",
                   color: fedToday ? "#fff" : "var(--color-text-sub)",
@@ -189,14 +189,14 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
 
               {/* 이름 + 밥주기/돌봄 버튼 */}
               <div className="absolute inset-x-0 bottom-0 px-3 pb-3 pointer-events-none">
-                <p className="text-[16px] font-extrabold text-white drop-shadow tracking-tight mb-2 truncate">
+                <p className="text-[17px] font-extrabold text-white drop-shadow tracking-tight mb-2 truncate">
                   {cat.name}
                 </p>
                 <div className="flex gap-1.5">
                   <button
                     onClick={(e) => { e.stopPropagation(); if (!fedToday && !cat.busy) logCare(cat.id, "feed"); }}
                     disabled={fedToday || cat.busy}
-                    className="flex-1 min-w-0 py-2 rounded-xl text-[12px] font-extrabold flex items-center justify-center gap-1 active:scale-95 transition-transform pointer-events-auto"
+                    className="flex-1 min-w-0 py-2 rounded-xl text-[13px] font-extrabold flex items-center justify-center gap-1 active:scale-95 transition-transform pointer-events-auto"
                     style={{
                       background: fedToday ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.95)",
                       color: fedToday ? "#fff" : "var(--color-text-main)",
@@ -288,7 +288,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
           >
             <Plus size={20} style={{ color: "var(--color-primary)" }} strokeWidth={2.5} />
           </div>
-          <span className="text-[12px] font-extrabold" style={{ color: "var(--color-primary)" }}>
+          <span className="text-[13px] font-extrabold" style={{ color: "var(--color-primary)" }}>
             새 친구 등록
           </span>
         </Link>

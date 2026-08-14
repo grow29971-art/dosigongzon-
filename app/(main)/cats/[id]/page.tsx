@@ -146,7 +146,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
-        <span className="text-[12px] font-semibold text-text-sub">{currentUserId ? "지도" : "도시공존"}</span>
+        <span className="text-[13px] font-semibold text-text-sub">{currentUserId ? "지도" : "도시공존"}</span>
       </div>
 
       {/* 커버 이미지 */}
@@ -178,7 +178,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           </h1>
           <div className="flex items-center gap-1.5 mt-1">
             <MapPin size={12} color="#fff" />
-            <span className="text-[12px] font-bold text-white">{region}</span>
+            <span className="text-[13px] font-bold text-white">{region}</span>
           </div>
         </div>
       </div>
@@ -380,7 +380,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                 ))}
                 {communityStats.uniqueCaretakers > 3 && (
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold"
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold"
                     style={{
                       background: "var(--color-primary)",
                       color: "#fff",
@@ -582,7 +582,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             </p>
             <Link
               href={`/map?cat=${cat.id}`}
-              className="inline-flex items-center gap-1.5 mt-3 px-4 py-2 rounded-xl text-white text-[12px] font-bold active:scale-[0.97] transition-transform"
+              className="inline-flex items-center gap-1.5 mt-3 px-4 py-2 rounded-xl text-white text-[13px] font-bold active:scale-[0.97] transition-transform"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                 boxShadow: "0 6px 18px rgba(173, 94, 59,0.35)",
@@ -622,7 +622,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                       unoptimized
                     />
                     <div
-                      className="absolute bottom-0 left-0 right-0 px-1.5 py-0.5 text-[10px] font-bold text-white tabular-nums"
+                      className="absolute bottom-0 left-0 right-0 px-1.5 py-0.5 text-[11px] font-bold text-white tabular-nums"
                       style={{
                         background: "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 100%)",
                       }}
@@ -637,7 +637,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             {/* 더 올리기 CTA — 작게 */}
             <Link
               href={`/map?cat=${cat.id}`}
-              className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12px] font-bold active:scale-[0.98] transition-transform"
+              className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold active:scale-[0.98] transition-transform"
               style={{
                 background: "var(--color-surface)",
                 color: "var(--color-primary)",
@@ -705,8 +705,8 @@ function StatCard({ emoji, label, value, color }: { emoji: string; label: string
       style={{ boxShadow: "var(--shadow-card)" }}
     >
       <span style={{ fontSize: 20 }}>{emoji}</span>
-      <span className="text-[16px] font-bold" style={{ color }}>{value}</span>
-      <span className="text-[10px] text-text-sub font-semibold mt-0.5">{label}</span>
+      <span className="text-[17px] font-bold" style={{ color }}>{value}</span>
+      <span className="text-[11px] text-text-sub font-semibold mt-0.5">{label}</span>
     </div>
   );
 }

@@ -47,14 +47,14 @@ export default async function CaretakersPage() {
       <div className="px-5 pt-12 pb-5">
         <Link
           href="/mypage"
-          className="inline-flex items-center gap-1 text-[12px] font-semibold text-text-sub mb-3"
+          className="inline-flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3"
         >
           <ArrowLeft size={14} />
           마이페이지
         </Link>
         <div className="flex items-baseline gap-2 mb-1">
           <UserPlus size={20} className="text-primary" />
-          <h1 className="text-[22px] font-extrabold tracking-tight text-text-main">
+          <h1 className="text-[24px] font-extrabold tracking-tight text-text-main">
             동네 길집사 찾기
           </h1>
         </div>
@@ -80,7 +80,7 @@ export default async function CaretakersPage() {
               }}
             >
               <Sparkles size={13} className="text-primary shrink-0" />
-              <p className="text-[12px] font-bold text-text-main leading-tight">
+              <p className="text-[13px] font-bold text-text-main leading-tight">
                 {myRegions.join(" · ")}에서 활동하는 {caretakers.length}분
               </p>
             </div>
@@ -170,7 +170,7 @@ function CaretakerCard({
           {caretaker.sharedRegions.slice(0, 3).map((r) => (
             <span
               key={r}
-              className="text-[10px] font-bold px-1.5 py-0.5 rounded-md"
+              className="text-[11px] font-bold px-1.5 py-0.5 rounded-md"
               style={{ background: "rgba(107,142,111,0.12)", color: "#3F5B42" }}
             >
               {r}
@@ -215,10 +215,10 @@ function EmptyNoRegion() {
       }}
     >
       <MapPin size={32} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-      <p className="text-[14px] font-extrabold text-text-main mb-1.5">
+      <p className="text-[15px] font-extrabold text-text-main mb-1.5">
         먼저 활동 지역을 등록해주세요
       </p>
-      <p className="text-[12px] text-text-sub leading-relaxed mb-4">
+      <p className="text-[13px] text-text-sub leading-relaxed mb-4">
         활동 지역을 설정하면 같은 동네 길집사를 찾아드려요.
       </p>
       <Link
@@ -242,10 +242,10 @@ function EmptyNoMatch({ myRegions }: { myRegions: string[] }) {
       }}
     >
       <UserPlus size={32} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-      <p className="text-[14px] font-extrabold text-text-main mb-1.5">
+      <p className="text-[15px] font-extrabold text-text-main mb-1.5">
         아직 같은 동네 길집사가 없어요
       </p>
-      <p className="text-[12px] text-text-sub leading-relaxed mb-2">
+      <p className="text-[13px] text-text-sub leading-relaxed mb-2">
         {myRegions.join(", ")} 지역에 등록된 다른 분이 없어요.
       </p>
       <p className="text-[11px] text-text-light leading-relaxed">

@@ -40,7 +40,7 @@ export default function FirstProjectBanner() {
           <div className="flex items-start justify-between gap-2 mb-2">
             <div className="flex items-center gap-1.5">
               <Vote size={14} color="#FFF7C4" />
-              <span className="text-[10px] font-extrabold tracking-[0.18em]" style={{ color: "#FFF7C4" }}>
+              <span className="text-[11px] font-extrabold tracking-[0.18em]" style={{ color: "#FFF7C4" }}>
                 NEW · 사용처 투표
               </span>
             </div>

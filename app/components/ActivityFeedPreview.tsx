@@ -99,7 +99,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
         }}
       >
         <Loader2 size={14} className="animate-spin text-text-light" />
-        <span className="text-[12px] text-text-light">새 소식 불러오는 중…</span>
+        <span className="text-[13px] text-text-light">새 소식 불러오는 중…</span>
       </div>
     );
   }
@@ -153,11 +153,11 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
       <div className="flex items-center justify-between mb-2 px-1">
         <div className="flex items-center gap-2">
           <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
-          <h2 className="text-[14px] font-extrabold text-text-main tracking-tight">
+          <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
             새 소식
           </h2>
           <span
-            className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md tabular-nums"
+            className="text-[11px] font-extrabold px-1.5 py-0.5 rounded-md tabular-nums"
             style={{ background: "#AD5E3B22", color: "var(--color-primary-dark)" }}
           >
             {items.length}
@@ -210,7 +210,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
                   {item.message}
                 </p>
               </div>
-              <span className="text-[10px] text-text-light shrink-0 mt-0.5">
+              <span className="text-[11px] text-text-light shrink-0 mt-0.5">
                 {formatTime(item.createdAt)}
               </span>
             </Link>

@@ -43,7 +43,7 @@ export default function CareTeamCard() {
             <h2 id="care-team-heading" className="text-[15px] font-extrabold text-text-main">
               돌봄팀
             </h2>
-            <p className="mt-1 text-[12px] leading-relaxed text-text-sub">
+            <p className="mt-1 text-[13px] leading-relaxed text-text-sub">
               서클·동네 채팅·고양이 커뮤니티를 한 곳에서 오갈 수 있어요.
             </p>
           </div>
@@ -69,7 +69,7 @@ export default function CareTeamCard() {
                     aria-current="page"
                   >
                     {label}
-                    <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-bold text-text-sub">
+                    <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[11px] font-bold text-text-sub">
                       현재 위치
                     </span>
                   </div>

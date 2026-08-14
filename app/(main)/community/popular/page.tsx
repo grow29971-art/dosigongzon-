@@ -65,8 +65,8 @@ export default async function PopularPostsPage() {
         {posts.length === 0 ? (
           <div className="flex flex-col items-center py-16 text-text-light">
             <Flame size={48} strokeWidth={1.2} style={{ color: ACCENT, opacity: 0.3 }} />
-            <p className="text-[14px] mt-4 text-text-sub font-semibold">아직 인기글이 없어요</p>
-            <p className="text-[12px] mt-1">조회·좋아요·댓글이 쌓이면 여기 떠요</p>
+            <p className="text-[15px] mt-4 text-text-sub font-semibold">아직 인기글이 없어요</p>
+            <p className="text-[13px] mt-1">조회·좋아요·댓글이 쌓이면 여기 떠요</p>
           </div>
         ) : (
           posts.map((post, idx, arr) => {
@@ -100,7 +100,7 @@ export default async function PopularPostsPage() {
                     <Image src={post.images[0]} alt={post.title} fill sizes="56px" style={{ objectFit: "cover" }} />
                     {post.images.length > 1 && (
                       <span
-                        className="absolute bottom-0.5 right-0.5 text-[8px] font-bold px-1 rounded-md z-10"
+                        className="absolute bottom-0.5 right-0.5 text-[9px] font-bold px-1 rounded-md z-10"
                         style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}
                       >
                         +{post.images.length - 1}
@@ -119,10 +119,10 @@ export default async function PopularPostsPage() {
                       {cat.emoji} {cat.label}
                     </span>
                   </div>
-                  <h3 className="text-[14px] font-bold text-text-main leading-snug truncate">
+                  <h3 className="text-[15px] font-bold text-text-main leading-snug truncate">
                     {post.title}
                   </h3>
-                  <p className="text-[12px] text-text-sub truncate mt-0.5">{post.content}</p>
+                  <p className="text-[13px] text-text-sub truncate mt-0.5">{post.content}</p>
                   <div className="flex items-center gap-2 mt-1.5">
                     {post.authorAvatarUrl ? (
                       <Image
@@ -135,7 +135,7 @@ export default async function PopularPostsPage() {
                       />
                     ) : (
                       <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--color-gray-100)" }}>
-                        <span className="text-[7px] font-bold" style={{ color: "#A38E7A" }}>
+                        <span className="text-[9px] font-bold" style={{ color: "#A38E7A" }}>
                           {post.authorName.charAt(0)}
                         </span>
                       </div>
@@ -143,17 +143,17 @@ export default async function PopularPostsPage() {
                     <span className="text-[11px] text-text-sub font-semibold">{post.authorName}</span>
                     {post.authorLevel && (
                       <span
-                        className="text-[8px] font-extrabold px-1 py-[0.5px] rounded"
+                        className="text-[9px] font-extrabold px-1 py-[0.5px] rounded"
                         style={{ backgroundColor: getLevelColor(post.authorLevel), color: "#fff" }}
                       >
                         Lv.{post.authorLevel}
                       </span>
                     )}
-                    <span className="text-[10px] text-text-light ml-auto shrink-0">
+                    <span className="text-[11px] text-text-light ml-auto shrink-0">
                       {formatRelativeTime(post.createdAt)}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3 mt-1 text-text-light text-[10px]">
+                  <div className="flex items-center gap-3 mt-1 text-text-light text-[11px]">
                     <span className="flex items-center gap-0.5">
                       <Eye size={10} /> {post.viewCount}
                     </span>

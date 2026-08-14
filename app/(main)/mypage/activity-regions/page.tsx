@@ -493,7 +493,7 @@ export default function ActivityRegionsPage() {
           <ArrowLeft size={18} className="text-text-main" />
         </button>
         <div className="flex-1 min-w-0">
-          <h1 className="text-[16px] font-extrabold text-text-main tracking-tight">
+          <h1 className="text-[17px] font-extrabold text-text-main tracking-tight">
             활동 지역 설정
           </h1>
           <p className="text-[11px] text-text-sub">
@@ -526,7 +526,7 @@ export default function ActivityRegionsPage() {
               >
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <MapPin size={12} />
-                  <span className="text-[10px] font-bold opacity-80">
+                  <span className="text-[11px] font-bold opacity-80">
                     활동 지역 {slot}
                   </span>
                   {r?.is_primary && (
@@ -541,7 +541,7 @@ export default function ActivityRegionsPage() {
                   {r ? r.name : "미설정"}
                 </p>
                 {r && (
-                  <p className="text-[10px] opacity-70 mt-0.5">
+                  <p className="text-[11px] opacity-70 mt-0.5">
                     반경 {r.radius_m >= 1000 ? `${r.radius_m / 1000}km` : `${r.radius_m}m`}
                   </p>
                 )}
@@ -575,7 +575,7 @@ export default function ActivityRegionsPage() {
                   className="pointer-events-auto mx-4 rounded-2xl px-4 py-3 text-center"
                   style={{ background: "#FFFFFF", boxShadow: "0 2px 10px rgba(0,0,0,0.1)" }}
                 >
-                  <p className="text-[12px] font-bold text-text-main mb-1">⚠️ 지도 로드 실패</p>
+                  <p className="text-[13px] font-bold text-text-main mb-1">⚠️ 지도 로드 실패</p>
                   <p className="text-[11px] text-text-sub mb-2">{mapError}</p>
                   <button
                     type="button"
@@ -604,7 +604,7 @@ export default function ActivityRegionsPage() {
                 onChange={(e) => setSearchQ(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && !e.nativeEvent.isComposing && handleSearch()}
                 placeholder="주소·장소 검색 (예: 남동구청)"
-                className="flex-1 bg-transparent text-[12px] font-semibold outline-none"
+                className="flex-1 bg-transparent text-[13px] font-semibold outline-none"
               />
               {searching && <Loader2 size={14} className="animate-spin text-primary" />}
             </div>
@@ -620,10 +620,10 @@ export default function ActivityRegionsPage() {
                     onClick={() => pickSearchResult(r)}
                     className="w-full text-left px-3 py-2 active:bg-gray-50 border-b border-gray-100 last:border-0"
                   >
-                    <p className="text-[12px] font-bold text-text-main truncate">
+                    <p className="text-[13px] font-bold text-text-main truncate">
                       {r.place_name}
                     </p>
-                    <p className="text-[10px] text-text-sub truncate">
+                    <p className="text-[11px] text-text-sub truncate">
                       {r.road_address_name || r.address_name}
                     </p>
                   </button>
@@ -648,7 +648,7 @@ export default function ActivityRegionsPage() {
             className="absolute bottom-3 left-3 z-10 px-3 py-1.5 rounded-xl"
             style={{ background: "rgba(255,255,255,0.92)", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
           >
-            <p className="text-[10px] font-bold text-text-main">
+            <p className="text-[11px] font-bold text-text-main">
               지도를 터치해서 중심점을 바꿔보세요
             </p>
           </div>
@@ -755,7 +755,7 @@ export default function ActivityRegionsPage() {
         {/* 피드백 */}
         {err && (
           <div
-            className="rounded-2xl px-4 py-2.5 text-[12px] font-bold"
+            className="rounded-2xl px-4 py-2.5 text-[13px] font-bold"
             style={{ background: "#FDECEC", color: "#B84545" }}
           >
             {err}
@@ -763,7 +763,7 @@ export default function ActivityRegionsPage() {
         )}
         {ok && (
           <div
-            className="rounded-2xl px-4 py-2.5 text-[12px] font-bold"
+            className="rounded-2xl px-4 py-2.5 text-[13px] font-bold"
             style={{ background: "#E8F4E8", color: "#3F5B42" }}
           >
             {ok}
@@ -780,7 +780,7 @@ export default function ActivityRegionsPage() {
               style={{ background: "#fff", color: "#B84545", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}
             >
               <Trash2 size={15} />
-              <span className="text-[12px] font-extrabold">삭제</span>
+              <span className="text-[13px] font-extrabold">삭제</span>
             </button>
           )}
           <button

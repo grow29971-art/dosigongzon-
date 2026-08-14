@@ -157,7 +157,7 @@ export default function AdminProductsPage() {
     return (
       <div className="px-5 pt-20 text-center">
         <Shield size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[14px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
+        <p className="text-[15px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
         <Link href="/mypage" className="inline-block mt-4 text-[13px] font-bold text-primary">
           마이페이지로 돌아가기
         </Link>
@@ -185,7 +185,7 @@ export default function AdminProductsPage() {
         <h1 className="text-[17px] font-extrabold text-text-main">상품 관리</h1>
         <button
           onClick={handleCreate}
-          className="ml-auto flex items-center gap-1 px-3 py-2 rounded-2xl bg-primary text-white text-[12px] font-extrabold active:scale-95 transition-transform"
+          className="ml-auto flex items-center gap-1 px-3 py-2 rounded-2xl bg-primary text-white text-[13px] font-extrabold active:scale-95 transition-transform"
         >
           <Plus size={14} strokeWidth={3} /> 상품 등록
         </button>
@@ -198,7 +198,7 @@ export default function AdminProductsPage() {
           style={{ background: "#fff", borderRadius: "var(--radius-card)", boxShadow: "0 6px 20px rgba(0,0,0,0.08)", border: "1.5px solid rgba(173, 94, 59,0.3)" }}
         >
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[14px] font-extrabold text-text-main">
+            <span className="text-[15px] font-extrabold text-text-main">
               {editingId === "new" ? "새 상품 등록" : "상품 수정"}
             </span>
             <button onClick={() => setEditingId(null)} aria-label="닫기">
@@ -278,7 +278,7 @@ export default function AdminProductsPage() {
                   key={c}
                   type="button"
                   onClick={() => setDraft({ ...draft, category: c })}
-                  className="px-3 py-1.5 rounded-xl text-[12px] font-bold"
+                  className="px-3 py-1.5 rounded-xl text-[13px] font-bold"
                   style={{
                     background: draft.category === c ? "var(--color-primary)" : "var(--color-warm-white)",
                     color: draft.category === c ? "#fff" : "var(--color-text-sub)",
@@ -296,7 +296,7 @@ export default function AdminProductsPage() {
                 <button
                   type="button"
                   onClick={() => setDraft({ ...draft, badge: null })}
-                  className="px-3 py-1.5 rounded-xl text-[12px] font-bold"
+                  className="px-3 py-1.5 rounded-xl text-[13px] font-bold"
                   style={{
                     background: draft.badge === null ? "var(--color-primary)" : "var(--color-warm-white)",
                     color: draft.badge === null ? "#fff" : "var(--color-text-sub)",
@@ -309,7 +309,7 @@ export default function AdminProductsPage() {
                     key={b}
                     type="button"
                     onClick={() => setDraft({ ...draft, badge: b })}
-                    className="px-3 py-1.5 rounded-xl text-[12px] font-bold"
+                    className="px-3 py-1.5 rounded-xl text-[13px] font-bold"
                     style={{
                       background: draft.badge === b ? "var(--color-primary)" : "var(--color-warm-white)",
                       color: draft.badge === b ? "#fff" : "var(--color-text-sub)",
@@ -438,12 +438,12 @@ export default function AdminProductsPage() {
               <span className="text-[13px] font-bold text-text-main">판매 활성화</span>
             </label>
 
-            {error && <p className="text-[12px] font-bold" style={{ color: "#D85555" }}>{error}</p>}
+            {error && <p className="text-[13px] font-bold" style={{ color: "#D85555" }}>{error}</p>}
 
             <button
               onClick={handleSave}
               disabled={saving || uploading}
-              className="w-full py-3 rounded-2xl bg-primary text-white text-[14px] font-extrabold disabled:opacity-50 flex items-center justify-center gap-1.5"
+              className="w-full py-3 rounded-2xl bg-primary text-white text-[15px] font-extrabold disabled:opacity-50 flex items-center justify-center gap-1.5"
             >
               {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
               {editingId === "new" ? "등록하기" : "수정 저장"}
@@ -453,7 +453,7 @@ export default function AdminProductsPage() {
       )}
 
       {!editingId && error && (
-        <p className="text-[12px] font-bold mb-3" style={{ color: "#D85555" }}>{error}</p>
+        <p className="text-[13px] font-bold mb-3" style={{ color: "#D85555" }}>{error}</p>
       )}
 
       {/* 상품 목록 */}
@@ -472,7 +472,7 @@ export default function AdminProductsPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[13px] font-bold text-text-main truncate">{p.name}</p>
-                <p className="text-[12px] text-text-sub mt-0.5">
+                <p className="text-[13px] text-text-sub mt-0.5">
                   {formatWon(p.sale_price ?? p.price)}
                   {p.sale_price != null && <span className="line-through ml-1 text-text-light">{formatWon(p.price)}</span>}
                   {" · "}재고 {p.stock} · {CATEGORY_MAP[p.category].label}
@@ -483,7 +483,7 @@ export default function AdminProductsPage() {
               <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   onClick={() => handleToggleActive(p)}
-                  className="px-2 py-1 chip-square text-[10px] font-extrabold"
+                  className="px-2 py-1 chip-square text-[11px] font-extrabold"
                   style={{
                     background: p.is_active ? "rgba(107,142,111,0.12)" : "rgba(216,85,85,0.1)",
                     color: p.is_active ? "#6B8E6F" : "#D85555",

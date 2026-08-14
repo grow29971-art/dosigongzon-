@@ -181,7 +181,7 @@ function MessagesPage() {
     return (
       <div className="px-5 pt-20 text-center">
         <Mail size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[14px] font-bold text-text-main mb-1">로그인이 필요해요</p>
+        <p className="text-[15px] font-bold text-text-main mb-1">로그인이 필요해요</p>
         <button onClick={() => router.push("/login")} className="text-[13px] font-bold text-primary mt-2">로그인하기</button>
       </div>
     );
@@ -198,7 +198,7 @@ function MessagesPage() {
           </button>
           <div className="flex-1 min-w-0">
             <p className="text-[15px] font-extrabold text-text-main truncate">{selectedPartner.name}</p>
-            <p className="text-[10px] text-text-light">1:1 쪽지 · 읽고 7일 후 자동 삭제</p>
+            <p className="text-[11px] text-text-light">1:1 쪽지 · 읽고 7일 후 자동 삭제</p>
           </div>
           <FollowButton userId={selectedPartner.id} size="sm" />
         </div>
@@ -208,7 +208,7 @@ function MessagesPage() {
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-text-light">
               <Mail size={32} strokeWidth={1.2} className="mb-2 opacity-30" />
-              <p className="text-[12px]">첫 쪽지를 보내보세요</p>
+              <p className="text-[13px]">첫 쪽지를 보내보세요</p>
             </div>
           )}
           {messages.map((msg) => {
@@ -221,7 +221,7 @@ function MessagesPage() {
                     <img src={thumbnailUrl(msg.sender_avatar_url, 56) ?? msg.sender_avatar_url} alt="" loading="lazy" decoding="async" className="w-7 h-7 rounded-full object-cover shrink-0 mt-0.5" />
                   ) : (
                     <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                      <span className="text-[10px] font-bold text-primary">{(selectedPartner.name)[0]}</span>
+                      <span className="text-[11px] font-bold text-primary">{(selectedPartner.name)[0]}</span>
                     </div>
                   )
                 )}
@@ -252,7 +252,7 @@ function MessagesPage() {
                     <span className="text-[9px] text-text-light">
                       {new Date(msg.created_at).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })}
                     </span>
-                    {isMe && msg.is_read && <span className="text-[8px] text-primary font-bold">읽음</span>}
+                    {isMe && msg.is_read && <span className="text-[9px] text-primary font-bold">읽음</span>}
                   </div>
                 </div>
               </div>
@@ -353,8 +353,8 @@ function MessagesPage() {
       ) : convs.length === 0 ? (
         <div className="flex flex-col items-center pt-20 text-text-light">
           <Mail size={48} strokeWidth={1.2} className="mb-3 opacity-30" />
-          <p className="text-[14px] text-text-sub font-semibold">받은 쪽지가 없어요</p>
-          <p className="text-[12px] mt-1">커뮤니티에서 이웃에게 쪽지를 보내보세요</p>
+          <p className="text-[15px] text-text-sub font-semibold">받은 쪽지가 없어요</p>
+          <p className="text-[13px] mt-1">커뮤니티에서 이웃에게 쪽지를 보내보세요</p>
         </div>
       ) : (
         <div className="px-4 space-y-2">
@@ -376,7 +376,7 @@ function MessagesPage() {
                 <img src={thumbnailUrl(c.partnerAvatar, 80) ?? c.partnerAvatar} alt="" loading="lazy" decoding="async" className="w-10 h-10 rounded-full object-cover shrink-0" />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="text-[14px] font-extrabold text-primary">{c.partnerName[0]}</span>
+                  <span className="text-[15px] font-extrabold text-primary">{c.partnerName[0]}</span>
                 </div>
               )}
               <div className="flex-1 min-w-0">

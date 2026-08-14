@@ -59,7 +59,7 @@ export default function MemorialFlowerButton({ catId }: { catId: string }) {
   return (
     <button
       onClick={handle}
-      className="w-full h-[50px] rounded-2xl flex items-center justify-center gap-2 text-[14px] font-bold active:scale-[0.98] transition-transform"
+      className="w-full h-[50px] rounded-2xl flex items-center justify-center gap-2 text-[15px] font-bold active:scale-[0.98] transition-transform"
       style={{
         background: mine ? "rgba(255,233,168,0.92)" : "rgba(255,255,255,0.1)",
         color: mine ? "#3a2c4d" : "rgba(255,255,255,0.82)",

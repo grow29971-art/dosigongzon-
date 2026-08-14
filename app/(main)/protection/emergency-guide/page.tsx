@@ -271,7 +271,7 @@ export default function EmergencyGuidePage() {
               style={{ background: "var(--color-error-soft)", border: "1px solid rgba(216,85,85,0.15)" }}
             >
               <div className="flex items-center gap-1.5 mb-1">
-                <span style={{ fontSize: 16 }}>{s.emoji}</span>
+                <span style={{ fontSize: 17 }}>{s.emoji}</span>
                 <span className="text-[13px] font-bold" style={{ color: "#8B2F2F" }}>
                   {s.title}
                 </span>

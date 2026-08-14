@@ -101,7 +101,7 @@ export default function AdminPharmacyGuidePage() {
   if (!isAdmin) return (
     <div className="px-5 pt-20 text-center">
       <Shield size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-      <p className="text-[14px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
+      <p className="text-[15px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
       <Link href="/mypage" className="text-[13px] font-bold text-primary mt-4 inline-block">마이페이지로 돌아가기</Link>
     </div>
   );
@@ -110,13 +110,13 @@ export default function AdminPharmacyGuidePage() {
     <div className="px-4 pt-14 pb-24">
       {/* 헤더 */}
       <div className="mb-5">
-        <button onClick={() => router.push("/mypage")} className="flex items-center gap-1 text-[12px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform">
+        <button onClick={() => router.push("/mypage")} className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform">
           <ArrowLeft size={14} /> 마이페이지
         </button>
         <div className="flex items-end justify-between">
           <div>
-            <h1 className="text-[22px] font-extrabold text-text-main tracking-tight">약품 가이드 관리</h1>
-            <p className="text-[12px] text-text-sub">약품·영양제 정보를 추가·수정·삭제</p>
+            <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">약품 가이드 관리</h1>
+            <p className="text-[13px] text-text-sub">약품·영양제 정보를 추가·수정·삭제</p>
           </div>
           <button onClick={handleCreate} className="w-11 h-11 rounded-full bg-primary flex items-center justify-center active:scale-95 transition-transform" style={{ boxShadow: "var(--shadow-primary)" }}>
             <Plus size={20} color="#fff" strokeWidth={2.5} />
@@ -128,7 +128,7 @@ export default function AdminPharmacyGuidePage() {
       {editingId && (
         <div className="mb-5 p-4" style={{ background: "#FFFFFF", borderRadius: "var(--radius-card)", boxShadow: "0 8px 24px rgba(173, 94, 59,0.14)", border: "1.5px solid rgba(173, 94, 59,0.2)" }}>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[14px] font-extrabold text-text-main">{editingId === "new" ? "새 약품 추가" : "약품 수정"}</h2>
+            <h2 className="text-[15px] font-extrabold text-text-main">{editingId === "new" ? "새 약품 추가" : "약품 수정"}</h2>
             <button onClick={handleCancel} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--color-gray-100)" }}>
               <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
             </button>
@@ -147,7 +147,7 @@ export default function AdminPharmacyGuidePage() {
               </div>
             ) : (
               <label className="flex flex-col items-center justify-center aspect-[16/9] rounded-xl cursor-pointer" style={{ backgroundColor: "var(--color-gray-50)", border: "1.5px dashed #C9BDAA", color: "#A38E7A" }}>
-                {uploading ? <Loader2 size={22} className="animate-spin mb-1" /> : <><ImagePlus size={24} className="mb-1" /><span className="text-[12px] font-semibold">이미지 선택</span></>}
+                {uploading ? <Loader2 size={22} className="animate-spin mb-1" /> : <><ImagePlus size={24} className="mb-1" /><span className="text-[13px] font-semibold">이미지 선택</span></>}
                 <input type="file" accept="image/*" className="hidden" disabled={uploading} onChange={handleImageSelect} />
               </label>
             )}
@@ -200,23 +200,23 @@ export default function AdminPharmacyGuidePage() {
                 <img src={item.image_url} alt="" className="w-16 h-16 rounded-xl object-cover shrink-0" />
               ) : (
                 <div className="w-16 h-16 rounded-xl shrink-0 flex items-center justify-center" style={{ background: `${item.color}18` }}>
-                  <span className="text-[10px] font-bold" style={{ color: item.color }}>{item.category}</span>
+                  <span className="text-[11px] font-bold" style={{ color: item.color }}>{item.category}</span>
                 </div>
               )}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <span className="text-[10px] font-bold px-2 py-0.5 chip-square" style={{ color: "#fff", backgroundColor: item.color }}>{item.category}</span>
-                  {item.brand && <span className="text-[10px] text-text-light">{item.brand}</span>}
+                  <span className="text-[11px] font-bold px-2 py-0.5 chip-square" style={{ color: "#fff", backgroundColor: item.color }}>{item.category}</span>
+                  {item.brand && <span className="text-[11px] text-text-light">{item.brand}</span>}
                 </div>
-                <p className="text-[14px] font-extrabold text-text-main leading-tight truncate">{item.name}</p>
+                <p className="text-[15px] font-extrabold text-text-main leading-tight truncate">{item.name}</p>
                 {item.price && <p className="text-[11px] mt-0.5" style={{ color: item.color }}>{item.price}</p>}
               </div>
             </div>
             <div className="flex gap-1.5 mt-3 pt-3 border-t border-divider">
-              <button onClick={() => handleEdit(item)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold" style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-primary)" }}>
+              <button onClick={() => handleEdit(item)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold" style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-primary)" }}>
                 <Pencil size={12} /> 수정
               </button>
-              <button onClick={() => handleDelete(item)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[12px] font-bold" style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}>
+              <button onClick={() => handleDelete(item)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold" style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}>
                 <Trash2 size={12} /> 삭제
               </button>
             </div>

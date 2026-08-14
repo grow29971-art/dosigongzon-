@@ -153,7 +153,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
               return (
                 <span
                   key={type}
-                  className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold"
+                  className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold"
                   style={{
                     backgroundColor: `${info.color}15`,
                     color: info.color,
@@ -164,7 +164,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
               );
             },
           )}
-          <span className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold" style={{ backgroundColor: "#AD5E3B15", color: "var(--color-primary)" }}>
+          <span className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold" style={{ backgroundColor: "#AD5E3B15", color: "var(--color-primary)" }}>
             길집사 {stats.caretakerCount}명
           </span>
         </div>
@@ -173,7 +173,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
       {/* 기록 목록 */}
       <div className="overflow-y-auto px-1 space-y-2" style={{ maxHeight: 220 }}>
         {logs.length === 0 ? (
-          <p className="text-[12px] text-text-light text-center py-6">
+          <p className="text-[13px] text-text-light text-center py-6">
             아직 돌봄 기록이 없어요
           </p>
         ) : (
@@ -188,7 +188,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
               >
                 {/* 타입 아이콘 */}
                 <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-[16px]"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-[17px]"
                   style={{ backgroundColor: `${info.color}18` }}
                 >
                   {info.emoji}
@@ -197,13 +197,13 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
                     <span
-                      className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+                      className="text-[11px] font-bold px-1.5 py-0.5 rounded"
                       style={{ backgroundColor: `${info.color}18`, color: info.color }}
                     >
                       {info.label}
                     </span>
                     {log.amount && (
-                      <span className="text-[10px] text-text-light">{log.amount}</span>
+                      <span className="text-[11px] text-text-light">{log.amount}</span>
                     )}
                     {log.is_private && (
                       <span
@@ -218,7 +218,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                     </span>
                   </div>
                   {log.memo && (
-                    <p className="text-[12px] text-text-main mt-1 leading-snug">{log.memo}</p>
+                    <p className="text-[13px] text-text-main mt-1 leading-snug">{log.memo}</p>
                   )}
                   {log.photo_url && (() => {
                     // 2026-05-23 핫픽스: Image Transformation 비활성 — 원본 URL 사용.
@@ -235,7 +235,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                     );
                   })()}
                   <div className="flex items-center gap-1.5 mt-1">
-                    <span className="text-[10px] text-text-light">
+                    <span className="text-[11px] text-text-light">
                       {log.author_name ?? "익명"}
                     </span>
                     {isMine && (
@@ -262,7 +262,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
             <button
               type="button"
               onClick={() => setShowForm(true)}
-              className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12px] font-bold active:scale-[0.97] transition-transform"
+              className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold active:scale-[0.97] transition-transform"
               style={{ backgroundColor: "var(--color-gray-50)", color: "var(--color-primary)" }}
             >
               <Plus size={14} />
@@ -301,7 +301,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="사료량 (예: 200g, 캔 1개)"
-                  className="w-full px-3 py-2 rounded-xl text-[12px] outline-none"
+                  className="w-full px-3 py-2 rounded-xl text-[13px] outline-none"
                   style={{ backgroundColor: "#fff", border: "1px solid #E5E0D6", color: "#2A2A28" }}
                 />
               )}
@@ -319,7 +319,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                     }
                   }}
                   placeholder="메모 (선택)"
-                  className="flex-1 min-w-0 px-3 py-2 rounded-xl text-[12px] outline-none"
+                  className="flex-1 min-w-0 px-3 py-2 rounded-xl text-[13px] outline-none"
                   style={{ backgroundColor: "#fff", border: "1px solid #E5E0D6", color: "#2A2A28" }}
                 />
                 <input
@@ -351,7 +351,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                 aria-pressed={isPrivate}
               >
                 {isPrivate ? <Lock size={13} style={{ color: "#8B65B8" }} /> : <Unlock size={13} style={{ color: "#A38E7A" }} />}
-                <span className="text-[12px] font-bold" style={{ color: isPrivate ? "#8B65B8" : "#A38E7A" }}>
+                <span className="text-[13px] font-bold" style={{ color: isPrivate ? "#8B65B8" : "#A38E7A" }}>
                   {isPrivate ? "비밀글 — 나만 볼 수 있어요" : "비밀글로 남기기"}
                 </span>
                 {/* 공존 시그니처: 사각 토글 (원형 아님) */}

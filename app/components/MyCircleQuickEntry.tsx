@@ -65,11 +65,11 @@ export default function MyCircleQuickEntry() {
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <p className="text-[14px] font-extrabold text-text-main tracking-tight">
+              <p className="text-[15px] font-extrabold text-text-main tracking-tight">
                 내 서클
               </p>
               <span
-                className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md tracking-wider"
+                className="text-[11px] font-extrabold px-1.5 py-0.5 rounded-md tracking-wider"
                 style={{ background: "rgba(79,107,83,0.15)", color: "#4F6B53" }}
               >
                 PRIVATE
@@ -114,7 +114,7 @@ export default function MyCircleQuickEntry() {
               <span>채팅방 열기</span>
               {unreadTotal > 0 && (
                 <span
-                  className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-extrabold leading-none"
+                  className="ml-1 px-1.5 py-0.5 rounded-full text-[11px] font-extrabold leading-none"
                   style={{ background: "#FFF7C4", color: "#4F6B53" }}
                 >
                   {unreadTotal > 99 ? "99+" : unreadTotal}

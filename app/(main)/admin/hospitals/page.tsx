@@ -194,7 +194,7 @@ export default function AdminHospitalsPage() {
     return (
       <div className="px-5 pt-20 text-center">
         <Shield size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[14px] font-bold text-text-main mb-1">
+        <p className="text-[15px] font-bold text-text-main mb-1">
           관리자 전용 페이지예요
         </p>
         <Link
@@ -215,7 +215,7 @@ export default function AdminHospitalsPage() {
       <div className="mb-5">
         <button
           onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[12px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
         >
           <ArrowLeft size={14} />
           마이페이지
@@ -223,14 +223,14 @@ export default function AdminHospitalsPage() {
         <div className="flex items-end justify-between">
           <div>
             <div className="flex items-baseline gap-2 mb-1">
-              <h1 className="text-[22px] font-extrabold text-text-main tracking-tight">
+              <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
                 병원 관리
               </h1>
-              <span className="text-[10px] font-semibold text-text-light">
+              <span className="text-[11px] font-semibold text-text-light">
                 Admin · Hospitals
               </span>
             </div>
-            <p className="text-[12px] text-text-sub">
+            <p className="text-[13px] text-text-sub">
               구조동물 치료 도움병원을 추가·수정·삭제할 수 있어요
             </p>
           </div>
@@ -277,14 +277,14 @@ export default function AdminHospitalsPage() {
             {syncing ? (
               <>
                 <RefreshCw size={14} className="animate-spin" style={{ color: "#22B573" }} />
-                <span className="text-[12px] font-bold" style={{ color: "#22B573" }}>
+                <span className="text-[13px] font-bold" style={{ color: "#22B573" }}>
                   전국 동물병원 검색 중... (1~2분 소요)
                 </span>
               </>
             ) : (
               <>
                 <Database size={14} style={{ color: syncResult?.startsWith("오류") || syncResult?.startsWith("동기화 실패") ? "#D85555" : "#22B573" }} />
-                <span className="text-[12px] font-bold" style={{ color: syncResult?.startsWith("오류") || syncResult?.startsWith("동기화 실패") ? "#D85555" : "#22B573" }}>
+                <span className="text-[13px] font-bold" style={{ color: syncResult?.startsWith("오류") || syncResult?.startsWith("동기화 실패") ? "#D85555" : "#22B573" }}>
                   {syncResult}
                 </span>
               </>
@@ -305,7 +305,7 @@ export default function AdminHospitalsPage() {
           }}
         >
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[14px] font-extrabold text-text-main">
+            <h2 className="text-[15px] font-extrabold text-text-main">
               {editingId === "new" ? "새 병원 추가" : "병원 수정"}
             </h2>
             <button
@@ -397,7 +397,7 @@ export default function AdminHospitalsPage() {
               onChange={(e) => setDraft((d) => ({ ...d, pinned: e.target.checked }))}
               className="w-4 h-4 accent-primary"
             />
-            <span className="text-[12px] font-semibold text-text-sub flex items-center gap-1">
+            <span className="text-[13px] font-semibold text-text-sub flex items-center gap-1">
               <Pin size={11} /> 추천 병원으로 상단 고정
             </span>
           </label>

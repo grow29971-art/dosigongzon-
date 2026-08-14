@@ -217,7 +217,7 @@ export default function CatLocationPicker({
                 className="pointer-events-auto mx-4 rounded-2xl px-4 py-3 text-center"
                 style={{ background: "#fff", boxShadow: "0 2px 10px rgba(0,0,0,0.1)" }}
               >
-                <p className="text-[12px] font-bold text-text-main mb-1">⚠️ 지도 로드 실패</p>
+                <p className="text-[13px] font-bold text-text-main mb-1">⚠️ 지도 로드 실패</p>
                 <p className="text-[11px] text-text-sub">{mapError}</p>
               </div>
             ) : (
@@ -282,15 +282,15 @@ export default function CatLocationPicker({
               <MapPin size={18} className="text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-bold text-primary tracking-[0.05em]">자동 감지된 위치</p>
-              <p className="text-[18px] font-extrabold text-text-main truncate leading-tight mt-0.5">
+              <p className="text-[11px] font-bold text-primary tracking-[0.05em]">자동 감지된 위치</p>
+              <p className="text-[20px] font-extrabold text-text-main truncate leading-tight mt-0.5">
                 {region || "감지 중…"}
               </p>
               {fullAddress && (
                 <p className="text-[11px] text-text-sub truncate mt-0.5">{fullAddress}</p>
               )}
               {regionChanged && initialRegion && (
-                <p className="text-[10px] text-text-light mt-0.5">
+                <p className="text-[11px] text-text-light mt-0.5">
                   이전: {initialRegion}
                 </p>
               )}
@@ -319,7 +319,7 @@ export default function CatLocationPicker({
           }}
         >
           <Check size={16} />
-          <span className="text-[14px] font-extrabold">이 위치로 변경</span>
+          <span className="text-[15px] font-extrabold">이 위치로 변경</span>
         </button>
       </div>
     </div>

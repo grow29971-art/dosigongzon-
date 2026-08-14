@@ -95,7 +95,7 @@ export default function FundVoteCard() {
       style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "var(--shadow-card-sm)" }}
     >
       <div className="flex items-center justify-between mb-0.5">
-        <h3 className="text-[14px] font-extrabold text-text-main tracking-tight">🗳️ 수익, 어디에 쓸까요?</h3>
+        <h3 className="text-[15px] font-extrabold text-text-main tracking-tight">🗳️ 수익, 어디에 쓸까요?</h3>
         <span className="text-[11px] font-bold text-text-light tabular-nums">{total.toLocaleString()}명 참여</span>
       </div>
       <p className="text-[11px] text-text-light mb-3">가장 많은 표를 받은 곳에 먼저 쓰여요 · 투표는 언제든 바꿀 수 있어요</p>
@@ -129,8 +129,8 @@ export default function FundVoteCard() {
                 <span className={`text-[13px] ${mine ? "font-extrabold text-primary" : "font-bold text-text-main"}`}>
                   {o.label}
                 </span>
-                {mine && <span className="text-[10px] font-extrabold text-primary">✓ 내 선택</span>}
-                <span className="ml-auto text-[12px] font-extrabold tabular-nums" style={{ color: mine ? "var(--color-primary)" : "var(--color-text-sub)" }}>
+                {mine && <span className="text-[11px] font-extrabold text-primary">✓ 내 선택</span>}
+                <span className="ml-auto text-[13px] font-extrabold tabular-nums" style={{ color: mine ? "var(--color-primary)" : "var(--color-text-sub)" }}>
                   {pct}%
                 </span>
               </span>
@@ -141,7 +141,7 @@ export default function FundVoteCard() {
         {/* 기타 — 아이디어를 관리자에게 전송 (투표 아님) */}
         {ideaDone ? (
           <div className="px-3.5 py-3 rounded-2xl text-center" style={{ background: "var(--color-primary-soft)" }}>
-            <p className="text-[12px] font-extrabold text-primary">💌 아이디어 고마워요! 잘 읽어볼게요</p>
+            <p className="text-[13px] font-extrabold text-primary">💌 아이디어 고마워요! 잘 읽어볼게요</p>
           </div>
         ) : !ideaOpen ? (
           <button
@@ -169,7 +169,7 @@ export default function FundVoteCard() {
             <div className="flex gap-2 mt-2">
               <button
                 onClick={() => { setIdeaOpen(false); setIdea(""); setIdeaErr(""); }}
-                className="px-3.5 py-2 rounded-xl text-[12px] font-bold text-text-sub active:scale-95 transition-transform"
+                className="px-3.5 py-2 rounded-xl text-[13px] font-bold text-text-sub active:scale-95 transition-transform"
                 style={{ background: "var(--color-surface-alt)" }}
               >
                 취소

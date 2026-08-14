@@ -141,7 +141,7 @@ function LoginContent() {
                 <p className="text-[13px] font-extrabold" style={{ color: "#8A6410" }}>
                   카카오로 바로 로그인할 수 있어요
                 </p>
-                <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#8A6410" }}>
+                <p className="text-[13px] mt-1 leading-relaxed" style={{ color: "#8A6410" }}>
                   {inAppBrowserLabel(inApp)} 안에서는 <b>구글·애플 로그인만</b> 막혀 있어요.
                   그 두 가지를 쓰시려면 아래에서 브라우저를 열어주세요.
                 </p>
@@ -172,8 +172,8 @@ function LoginContent() {
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4">
             <PawPrint size={40} className="text-primary" strokeWidth={1.8} />
           </div>
-          <h1 className="text-[26px] font-extrabold text-text-main tracking-tight">도시공존</h1>
-          <p className="text-[14px] text-text-sub mt-2 leading-relaxed">
+          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">도시공존</h1>
+          <p className="text-[15px] text-text-sub mt-2 leading-relaxed">
             카카오 또는 구글로 1초 만에 시작하기
           </p>
         </div>
@@ -210,11 +210,11 @@ function LoginContent() {
                 }}>
                   {oauthGuide.title}
                 </p>
-                <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#5A5A5A" }}>
+                <p className="text-[13px] mt-1 leading-relaxed" style={{ color: "#5A5A5A" }}>
                   {oauthGuide.body}
                 </p>
                 {oauthGuide.tip && (
-                  <p className="text-[12px] mt-2 leading-relaxed font-semibold" style={{ color: "#3F5B42" }}>
+                  <p className="text-[13px] mt-2 leading-relaxed font-semibold" style={{ color: "#3F5B42" }}>
                     💡 {oauthGuide.tip}
                   </p>
                 )}
@@ -230,7 +230,7 @@ function LoginContent() {
                     const next = searchParams.get("next");
                     router.replace(next && next.startsWith("/") && !next.startsWith("//") ? `/login?next=${encodeURIComponent(next)}` : "/login");
                   }}
-                  className="mt-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-bold active:scale-95"
+                  className="mt-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-bold active:scale-95"
                   style={{
                     backgroundColor: "rgba(255,255,255,0.7)",
                     color:
@@ -243,7 +243,7 @@ function LoginContent() {
                   다시 시도
                 </button>
                 {(authErrorCode || authError) && (
-                  <p className="text-[10px] mt-2 font-mono" style={{ color: "#9A8A7A" }}>
+                  <p className="text-[11px] mt-2 font-mono" style={{ color: "#9A8A7A" }}>
                     코드: {authErrorCode || authError}
                   </p>
                 )}
@@ -266,7 +266,7 @@ function LoginContent() {
             style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid #E5E0D6" }}
           >
             <span className="text-[13px] mt-0.5">💡</span>
-            <p className="text-[12px] text-text-sub leading-relaxed">
+            <p className="text-[13px] text-text-sub leading-relaxed">
               가입과 로그인이 같아요. 처음이시면 그냥 카카오 또는 구글 버튼을 눌러주세요.
             </p>
           </div>
@@ -299,8 +299,8 @@ function LoginContent() {
             className="mb-3 rounded-xl px-3.5 py-2.5 flex items-start gap-2"
             style={{ backgroundColor: "var(--color-warning-soft)", border: "1px solid #F5DAB0" }}
           >
-            <span className="text-[14px] mt-0.5">⚠️</span>
-            <p className="text-[12px] leading-relaxed" style={{ color: "#6F4910" }}>
+            <span className="text-[15px] mt-0.5">⚠️</span>
+            <p className="text-[13px] leading-relaxed" style={{ color: "#6F4910" }}>
               <b>삼성 인터넷</b>에서는 카카오 로그인이 자주 실패해요 (KOE205).
               <b>크롬·사파리</b>로 열면 안정적이에요.
             </p>
@@ -312,7 +312,7 @@ function LoginContent() {
           <button
             onClick={() => handleSocial("kakao")}
             disabled={!!socialLoading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-extrabold active:scale-[0.97] transition-transform disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-extrabold active:scale-[0.97] transition-transform disabled:opacity-60"
             /* 인앱에서도 카카오는 실제로 진행되므로 약관 동의 상태를 그대로 반영 */
             style={{ backgroundColor: "#FEE500", color: "#191919", opacity: agreed ? 1 : 0.6 }}
           >
@@ -328,7 +328,7 @@ function LoginContent() {
           <button
             onClick={() => handleSocial("google")}
             disabled={!!socialLoading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.97] transition-transform border border-[#E0E0E0] disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold active:scale-[0.97] transition-transform border border-[#E0E0E0] disabled:opacity-60"
             style={{ backgroundColor: "#FFFFFF", color: "#2A2A28", opacity: (agreed || inApp) ? 1 : 0.6 }}
           >
             {socialLoading === "google" ? (
@@ -346,7 +346,7 @@ function LoginContent() {
           <button
             onClick={() => handleSocial("apple")}
             disabled={!!socialLoading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.97] transition-transform disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold active:scale-[0.97] transition-transform disabled:opacity-60"
             style={{ backgroundColor: "#000000", color: "#FFFFFF", opacity: (agreed || inApp) ? 1 : 0.6 }}
           >
             {socialLoading === "apple" ? (
@@ -360,21 +360,21 @@ function LoginContent() {
           </button>
         </div>
 
-        <p className="text-[12px] text-text-light text-center mt-6 leading-relaxed">
+        <p className="text-[13px] text-text-light text-center mt-6 leading-relaxed">
           한 번 연결하면 다음부터 1클릭 로그인 ·<br />
           광고 없음 · 무료
         </p>
 
         {/* 이메일 로그인 */}
         <div className="mt-5 pt-5 border-t border-border">
-          <p className="text-[12px] text-text-sub text-center mb-3">이메일로 로그인</p>
+          <p className="text-[13px] text-text-sub text-center mb-3">이메일로 로그인</p>
           <div className="space-y-2">
             <input
               type="email"
               placeholder="이메일"
               value={emailInput}
               onChange={e => setEmailInput(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-border text-[14px] outline-none focus:border-primary"
+              className="w-full px-4 py-3 rounded-xl border border-border text-[15px] outline-none focus:border-primary"
               style={{ backgroundColor: "#fff" }}
             />
             <input
@@ -382,7 +382,7 @@ function LoginContent() {
               placeholder="비밀번호"
               value={passwordInput}
               onChange={e => setPasswordInput(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-border text-[14px] outline-none focus:border-primary"
+              className="w-full px-4 py-3 rounded-xl border border-border text-[15px] outline-none focus:border-primary"
               style={{ backgroundColor: "#fff" }}
             />
             <button
@@ -402,7 +402,7 @@ function LoginContent() {
                   window.location.href = "/";
                 }
               }}
-              className="w-full py-3 rounded-xl text-[14px] font-bold text-white disabled:opacity-50"
+              className="w-full py-3 rounded-xl text-[15px] font-bold text-white disabled:opacity-50"
               style={{ backgroundColor: "var(--color-primary)" }}
             >
               {emailLoading ? <Loader2 size={16} className="animate-spin mx-auto" /> : "로그인"}

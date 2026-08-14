@@ -76,7 +76,7 @@ export default function HospitalsPage() {
             className="w-5 h-[2px] rounded-full"
             style={{ backgroundColor: "var(--color-primary)", opacity: 0.6 }}
           />
-          <p className="text-[12px] font-bold text-text-sub">
+          <p className="text-[13px] font-bold text-text-sub">
             길 위의 아이들 치료를 도와주시는 병원
           </p>
           <span
@@ -143,7 +143,7 @@ export default function HospitalsPage() {
             strokeWidth={1.2}
             className="text-text-light mx-auto mb-3"
           />
-          <p className="text-[14px] font-bold text-text-main mb-1">
+          <p className="text-[15px] font-bold text-text-main mb-1">
             {hospitals.length === 0
               ? "아직 등록된 병원이 없어요"
               : "검색 결과가 없어요"}
@@ -167,7 +167,7 @@ export default function HospitalsPage() {
                 <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
                   {group.city}
                 </h2>
-                <span className="text-[10px] font-bold text-text-light tabular-nums">
+                <span className="text-[11px] font-bold text-text-light tabular-nums">
                   {group.districts.reduce(
                     (sum, d) => sum + d.hospitals.length,
                     0,
@@ -180,7 +180,7 @@ export default function HospitalsPage() {
               <div className="space-y-4">
                 {group.districts.map((d) => (
                   <div key={d.district}>
-                    <h3 className="text-[12px] font-bold text-text-sub mb-2 px-1 flex items-center gap-1.5">
+                    <h3 className="text-[13px] font-bold text-text-sub mb-2 px-1 flex items-center gap-1.5">
                       <MapPin size={11} className="text-text-light" />
                       {d.district}
                     </h3>
@@ -262,7 +262,7 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
           {hospital.tags.map((tag) => (
             <span
               key={tag}
-              className="text-[10px] font-bold px-2 py-0.5 rounded-md"
+              className="text-[11px] font-bold px-2 py-0.5 rounded-md"
               style={{ backgroundColor: "var(--color-gray-50)", color: "#8B6F5A" }}
             >
               {tag}
@@ -274,13 +274,13 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
       {/* 정보 */}
       <div className="space-y-1 mb-2">
         {hospital.address && (
-          <div className="flex items-start gap-2 text-[12px] text-text-sub">
+          <div className="flex items-start gap-2 text-[13px] text-text-sub">
             <MapPin size={12} className="text-text-light shrink-0 mt-0.5" />
             <span className="leading-relaxed">{hospital.address}</span>
           </div>
         )}
         {hospital.hours && (
-          <div className="flex items-start gap-2 text-[12px] text-text-sub">
+          <div className="flex items-start gap-2 text-[13px] text-text-sub">
             <Clock size={12} className="text-text-light shrink-0 mt-0.5" />
             <span className="leading-relaxed">{hospital.hours}</span>
           </div>

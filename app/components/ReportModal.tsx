@@ -142,7 +142,7 @@ export default function ReportModal({
             </div>
             <h2
               id="report-modal-title"
-              className="text-[16px] font-extrabold text-text-main tracking-tight"
+              className="text-[17px] font-extrabold text-text-main tracking-tight"
             >
               신고하기
             </h2>
@@ -170,10 +170,10 @@ export default function ReportModal({
             >
               <Check size={24} color="#fff" strokeWidth={3} />
             </div>
-            <p className="text-[14px] font-extrabold text-text-main mb-1">
+            <p className="text-[15px] font-extrabold text-text-main mb-1">
               신고가 접수됐어요
             </p>
-            <p className="text-[12px] text-text-sub">
+            <p className="text-[13px] text-text-sub">
               관리자가 확인 후 조치해드려요
             </p>
           </div>
@@ -189,7 +189,7 @@ export default function ReportModal({
                     <button
                       key={r}
                       onClick={() => setReason(r)}
-                      className="py-2.5 rounded-xl text-[12px] font-bold transition-all"
+                      className="py-2.5 rounded-xl text-[13px] font-bold transition-all"
                       style={{
                         backgroundColor: active ? "#D85555" : "var(--color-gray-50)",
                         color: active ? "#FFFFFF" : "#4A3F35",
@@ -214,7 +214,7 @@ export default function ReportModal({
                 rows={3}
                 maxLength={500}
                 placeholder="관리자에게 전달할 상세 내용을 적어주세요"
-                className="w-full px-3 py-2.5 rounded-xl text-[12px] outline-none resize-none"
+                className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none resize-none"
                 style={{
                   backgroundColor: "var(--color-gray-50)",
                   color: "#2A2A28",
@@ -271,7 +271,7 @@ export default function ReportModal({
                   </button>
                 )}
               </div>
-              <p className="text-[10px] mt-1.5 leading-relaxed" style={{ color: "#A38E7A" }}>
+              <p className="text-[11px] mt-1.5 leading-relaxed" style={{ color: "#A38E7A" }}>
                 사진 속 위치정보(EXIF)는 자동으로 제거돼요 · 관리자만 열람 · 90일 후 자동 파기
               </p>
             </div>
@@ -301,7 +301,7 @@ export default function ReportModal({
                   <div className="flex-1">
                     <div className="flex items-center gap-1">
                       <Ban size={11} style={{ color: "#B84545" }} />
-                      <span className="text-[12px] font-extrabold" style={{ color: "#4A3F35" }}>
+                      <span className="text-[13px] font-extrabold" style={{ color: "#4A3F35" }}>
                         {authorName ? `${authorName}님 차단` : "이 사용자 차단"}
                       </span>
                     </div>

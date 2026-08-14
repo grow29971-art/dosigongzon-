@@ -99,7 +99,7 @@ export default function AdminZonesPage() {
           <Shield size={20} className="text-primary" />
           <h1 className="text-[20px] font-extrabold text-text-main">QR 지킴판</h1>
         </div>
-        <p className="text-[12px] text-text-sub leading-relaxed mb-4">
+        <p className="text-[13px] text-text-sub leading-relaxed mb-4">
           구역을 만들면 QR이 생성돼요. 스캔하면 익명 목격제보 랜딩으로 연결됩니다.
           <br />
           <b style={{ color: "#B84545" }}>⚠️ QR은 밥자리에 직접 붙이지 마세요</b> — 위치를 광고하는 역효과가 나요.
@@ -139,12 +139,12 @@ export default function AdminZonesPage() {
           <div key={zone.id} className="rounded-2xl bg-white p-4 mb-3" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)", opacity: zone.active ? 1 : 0.55 }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0">
-                <p className="text-[14px] font-extrabold text-text-main truncate">{zone.label}</p>
+                <p className="text-[15px] font-extrabold text-text-main truncate">{zone.label}</p>
                 <p className="text-[11px] text-text-light">{zone.active ? "운영 중" : "중지됨"} · 제보 {reports.filter((r) => r.zone_id === zone.id).length}건</p>
               </div>
               <button
                 onClick={() => setZoneActive(zone.id, !zone.active).then(refresh).catch((e) => setError(e.message))}
-                className="text-[12px] font-bold px-3 py-1.5 rounded-lg active:scale-95"
+                className="text-[13px] font-bold px-3 py-1.5 rounded-lg active:scale-95"
                 style={{ backgroundColor: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}
               >
                 {zone.active ? "운영 중지" : "다시 운영"}
@@ -157,11 +157,11 @@ export default function AdminZonesPage() {
                 <div className="text-[11px] text-text-sub leading-relaxed">
                   <a
                     href={qrMap[zone.id]} download={`지킴판QR_${zone.label}.png`}
-                    className="inline-flex items-center gap-1 text-[12px] font-bold text-primary mb-1"
+                    className="inline-flex items-center gap-1 text-[13px] font-bold text-primary mb-1"
                   >
                     <Download size={13} /> QR 이미지 저장
                   </a>
-                  <p className="break-all text-[10px] text-text-light">/z/{zone.id}</p>
+                  <p className="break-all text-[11px] text-text-light">/z/{zone.id}</p>
                 </div>
               </div>
             )}
@@ -198,21 +198,21 @@ export default function AdminZonesPage() {
               · {new Date(r.created_at).toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}
             </p>
             {r.detail && (
-              <p className="text-[12px] text-text-main mt-1.5 rounded-xl px-3 py-2 leading-relaxed" style={{ backgroundColor: "var(--color-surface-alt)" }}>
+              <p className="text-[13px] text-text-main mt-1.5 rounded-xl px-3 py-2 leading-relaxed" style={{ backgroundColor: "var(--color-surface-alt)" }}>
                 {r.detail}
               </p>
             )}
             <div className="flex gap-1.5 mt-2.5">
               {r.status === "received" && (
                 <button onClick={() => handleStatus(r.id, "forwarded")} disabled={busy}
-                  className="text-[12px] font-bold px-3 py-1.5 rounded-lg text-white active:scale-95 disabled:opacity-60"
+                  className="text-[13px] font-bold px-3 py-1.5 rounded-lg text-white active:scale-95 disabled:opacity-60"
                   style={{ backgroundColor: "#4A7BA8" }}>
                   기관 이관 처리
                 </button>
               )}
               {r.status !== "closed" && (
                 <button onClick={() => handleStatus(r.id, "closed")} disabled={busy}
-                  className="text-[12px] font-bold px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-60"
+                  className="text-[13px] font-bold px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-60"
                   style={{ backgroundColor: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}>
                   종결
                 </button>

@@ -88,8 +88,8 @@ export default function DailyCatBox() {
             🎁
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-extrabold tracking-[0.15em]" style={{ color: "var(--color-primary-dark)" }}>오늘의 냥 상자</p>
-            <p className="text-[14px] font-extrabold text-text-main leading-tight mt-0.5">탭해서 오늘의 냥식을 열어보세요</p>
+            <p className="text-[11px] font-extrabold tracking-[0.15em]" style={{ color: "var(--color-primary-dark)" }}>오늘의 냥 상자</p>
+            <p className="text-[15px] font-extrabold text-text-main leading-tight mt-0.5">탭해서 오늘의 냥식을 열어보세요</p>
             <p className="text-[11px] text-text-sub mt-0.5">매일 새로운 고양이 이야기 · 출석 도장 🐾</p>
           </div>
           <Sparkles size={16} style={{ color: "#E88D5A" }} className="shrink-0" />
@@ -111,7 +111,7 @@ export default function DailyCatBox() {
       }}
     >
       <div className="flex items-center justify-between mb-2">
-        <p className="text-[10px] font-extrabold tracking-[0.15em] flex items-center gap-1" style={{ color: "var(--color-primary-dark)" }}>
+        <p className="text-[11px] font-extrabold tracking-[0.15em] flex items-center gap-1" style={{ color: "var(--color-primary-dark)" }}>
           <PawPrint size={11} /> 오늘의 냥
         </p>
         {streak > 0 && (
@@ -120,11 +120,11 @@ export default function DailyCatBox() {
           </span>
         )}
       </div>
-      <p className="text-[14px] font-bold text-text-main leading-relaxed">{fact}</p>
+      <p className="text-[15px] font-bold text-text-main leading-relaxed">{fact}</p>
       {isBonus && (
         <div className="mt-2.5 flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: "rgba(232,141,90,0.12)" }}>
           <Gift size={14} style={{ color: "#D8743C" }} className="shrink-0" />
-          <p className="text-[12px] font-extrabold leading-snug" style={{ color: "var(--color-primary-dark)" }}>
+          <p className="text-[13px] font-extrabold leading-snug" style={{ color: "var(--color-primary-dark)" }}>
             오늘은 행운의 날! 길고양이에게 따뜻한 한 끼 어때요 🐾
           </p>
         </div>

@@ -95,12 +95,12 @@ export default async function CatOGImage({ params }: { params: Params }) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 26,
+                fontSize: 24,
               }}
             >
               🐾
             </div>
-            <span style={{ fontSize: 22, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}>
+            <span style={{ fontSize: 24, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}>
               도시공존
             </span>
           </div>
@@ -134,7 +134,7 @@ export default async function CatOGImage({ params }: { params: Params }) {
             </div>
             <p
               style={{
-                fontSize: 26,
+                fontSize: 24,
                 fontWeight: 600,
                 color: "#5A5A5A",
                 margin: 0,
@@ -158,7 +158,7 @@ export default async function CatOGImage({ params }: { params: Params }) {
                   borderRadius: 999,
                   background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)",
                   color: "#fff",
-                  fontSize: 22,
+                  fontSize: 24,
                   fontWeight: 800,
                 }}
               >
