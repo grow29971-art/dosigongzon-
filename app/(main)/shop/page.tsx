@@ -346,20 +346,9 @@ export default function ShopPage() {
         {FILTERS.map((f) => {
           const on = filter === f.key;
           return (
-            <button
-              key={f.key}
-              type="button"
-              onClick={() => setFilter(f.key)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-[13px] font-bold press-strong transition-transform shrink-0"
-              style={{
-                background: on ? "var(--color-primary)" : "rgba(255,255,255,0.9)",
-                color: on ? "#fff" : "var(--color-text-sub)",
-                boxShadow: on ? "var(--shadow-card)" : "0 2px 6px rgba(0,0,0,0.05)",
-              }}
-            >
-              <f.Icon size={13} />
+            <UIChip key={f.key} onClick={() => setFilter(f.key)} active={on} icon={<f.Icon size={13} />}>
               {f.label}
-            </button>
+            </UIChip>
           );
         })}
       </div>

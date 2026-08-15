@@ -38,6 +38,7 @@ import {
   PhoneCall,
   PawPrint,
 } from "lucide-react";
+import UIChip from "@/app/components/ui/Chip";
 import dynamic from "next/dynamic";
 import { CARD_THEME, pseudoDexNo, type CardRarity } from "@/app/components/CatCard";
 // 모달·고급 패널은 첫 페인트 후로 코드 스플리팅 (열기 전엔 다운로드 안 함)
@@ -2151,19 +2152,9 @@ export default function MapPage() {
               { key: "hospitals", label: "병원", active: showHospitals, toggle: () => setShowHospitals(!showHospitals), color: "#149D5B" },
               { key: "pharmacies", label: "약국", active: showPharmacies, toggle: () => setShowPharmacies(!showPharmacies), color: "#F0762B" },
             ].map((f) => (
-              <button
-                key={f.key}
-                type="button"
-                onClick={f.toggle}
-                className="px-3 py-2 rounded-xl text-[11px] font-bold press-strong transition-all shrink-0"
-                style={{
-                  backgroundColor: f.active ? f.color : "rgba(255,255,255,0.85)",
-                  color: f.active ? "#fff" : "var(--color-text-light)",
-                  boxShadow: f.active ? `0 2px 8px ${f.color}40` : "0 1px 4px rgba(0,0,0,0.06)",
-                }}
-              >
+              <UIChip key={f.key} onClick={f.toggle} active={f.active} activeColor={f.color} floating>
                 {f.label}
-              </button>
+              </UIChip>
             ))}
           </div>
           )}
@@ -2247,19 +2238,9 @@ export default function MapPage() {
                 ] as { key: CatFilter; label: string; color: string }[]).map((f) => {
                   const active = catFilter === f.key;
                   return (
-                    <button
-                      key={f.key}
-                      type="button"
-                      onClick={() => setCatFilter(f.key)}
-                      className="px-3 py-1.5 rounded-2xl text-[11px] font-bold press-strong transition-all shrink-0"
-                      style={{
-                        backgroundColor: active ? f.color : "rgba(255,255,255,0.95)",
-                        color: active ? "#fff" : "var(--color-gray-700)",
-                        boxShadow: active ? `0 2px 8px ${f.color}44` : "0 1px 4px rgba(0,0,0,0.06)",
-                      }}
-                    >
+                    <UIChip key={f.key} onClick={() => setCatFilter(f.key)} active={active} activeColor={f.color} floating>
                       {f.label}
-                    </button>
+                    </UIChip>
                   );
                 })}
               </div>
@@ -2272,25 +2253,15 @@ export default function MapPage() {
           <div className="flex gap-1.5 mt-2 pointer-events-auto overflow-x-auto no-scrollbar">
             {activityRegions.length > 0 ? (
               <>
-                <button
-                  type="button"
-                  onClick={() => setRegionFilter("all")}
-                  className="px-3 py-1.5 rounded-2xl text-[11px] font-bold press-strong transition-all shrink-0"
-                  style={{
-                    backgroundColor: regionFilter === "all" ? "var(--color-gray-900)" : "rgba(255,255,255,0.95)",
-                    color: regionFilter === "all" ? "#fff" : "var(--color-gray-700)",
-                    boxShadow: "var(--shadow-raised)",
-                  }}
-                >
+                <UIChip onClick={() => setRegionFilter("all")} active={regionFilter === "all"} activeColor="var(--color-gray-900)" floating>
                   전체
-                </button>
+                </UIChip>
                 {activityRegions.map((r) => {
                   const color = r.slot === 1 ? "#AD5E3B" : "#4A7BA8";
                   const active = regionFilter === r.slot;
                   return (
-                    <button
+                    <UIChip
                       key={r.slot}
-                      type="button"
                       onClick={() => {
                         setRegionFilter(r.slot as 1 | 2);
                         if (mapInstanceRef.current && window.kakao) {
@@ -2298,16 +2269,13 @@ export default function MapPage() {
                           mapInstanceRef.current.setLevel(4);
                         }
                       }}
-                      className="px-3 py-1.5 rounded-2xl text-[11px] font-bold press-strong transition-all shrink-0 flex items-center gap-1"
-                      style={{
-                        backgroundColor: active ? color : "rgba(255,255,255,0.95)",
-                        color: active ? "#fff" : "var(--color-gray-700)",
-                        boxShadow: active ? `0 2px 8px ${color}44` : "0 1px 6px rgba(0,0,0,0.08)",
-                      }}
+                      active={active}
+                      activeColor={color}
+                      floating
                     >
                       {r.name}
                       {r.is_primary && <Star size={9} fill="currentColor" className="shrink-0" />}
-                    </button>
+                    </UIChip>
                   );
                 })}
                 <Link

@@ -29,6 +29,7 @@ import CommunityWritePrompt from "@/app/components/CommunityWritePrompt";
 import CareTeamCard from "@/app/components/CareTeamCard";
 import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
 import UIListRow from "@/app/components/ui/ListRow";
+import UIChip from "@/app/components/ui/Chip";
 
 /* ═══ 카테고리 카드 데이터 ═══ */
 type CategoryCard = {
@@ -244,35 +245,10 @@ export default function CommunityPage() {
       {/* ── 내 동네만 필터 ── */}
       {myRegions.length > 0 && (
         <div className="mb-4 flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setNeighborhoodOnly(false)}
-            className="px-3 py-1.5 text-[11px] font-bold press-strong transition-transform"
-            style={{
-              borderRadius: "var(--radius-square-lg)",
-              backgroundColor: !neighborhoodOnly ? "var(--color-text-main)" : "rgba(255,255,255,0.9)",
-              color: !neighborhoodOnly ? "#fff" : "var(--color-text-sub)",
-              boxShadow: "var(--shadow-card-sm)",
-            }}
-          >
+          <UIChip onClick={() => setNeighborhoodOnly(false)} active={!neighborhoodOnly} activeColor="var(--color-text-main)">
             전체
-          </button>
-          <button
-            type="button"
-            onClick={() => setNeighborhoodOnly(true)}
-            className="px-3 py-1.5 text-[11px] font-bold press-strong transition-transform flex items-center gap-1"
-            style={{
-              borderRadius: "var(--radius-square-lg)",
-              background: neighborhoodOnly
-                ? "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)"
-                : "rgba(255,255,255,0.9)",
-              color: neighborhoodOnly ? "#fff" : "var(--color-text-sub)",
-              boxShadow: neighborhoodOnly
-                ? "0 2px 8px rgba(173, 94, 59,0.35)"
-                : "0 2px 6px rgba(0,0,0,0.05)",
-            }}
-          >
-            <MapPin size={11} />
+          </UIChip>
+          <UIChip onClick={() => setNeighborhoodOnly(true)} active={neighborhoodOnly} icon={<MapPin size={11} />}>
             내 동네만
             {neighborhoodOnly && (
               <span
@@ -282,7 +258,7 @@ export default function CommunityPage() {
                 {visiblePosts.length}
               </span>
             )}
-          </button>
+          </UIChip>
           {neighborhoodOnly && visiblePosts.length === 0 && (
             <p className="text-[11px] text-text-light ml-1">
               내 동네({myRegions.map((r) => r.name).join(", ")}) 글이 아직 없어요
