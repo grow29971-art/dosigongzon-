@@ -120,7 +120,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
             className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 4px 12px rgba(173, 94, 59,0.30)",
+              boxShadow: "var(--shadow-primary)",
             }}
           >
             <Bell size={15} color="#fff" strokeWidth={2.2} />

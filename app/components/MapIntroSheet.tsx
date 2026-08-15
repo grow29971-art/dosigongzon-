@@ -56,7 +56,7 @@ export default function MapIntroSheet() {
         className="w-full bg-white px-6 pt-7"
         style={{
           borderRadius: "var(--radius-sheet) var(--radius-sheet) 0 0",
-          boxShadow: "0 -12px 40px rgba(0,0,0,0.18)",
+          boxShadow: "var(--shadow-sheet)",
           paddingBottom: "max(1.75rem, env(safe-area-inset-bottom))",
           animation: "introSheetUp 0.35s ease-out",
         }}
@@ -88,7 +88,7 @@ export default function MapIntroSheet() {
           className="mt-6 w-full py-4 rounded-2xl text-white text-[15px] font-bold flex items-center justify-center gap-2 active:scale-[0.98]"
           style={{
             background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-            boxShadow: "0 6px 18px rgba(173,94,59,0.3)",
+            boxShadow: "var(--shadow-primary)",
           }}
         >
           <MapPin size={18} />

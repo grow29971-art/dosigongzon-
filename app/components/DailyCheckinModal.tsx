@@ -77,7 +77,7 @@ export default function DailyCheckinModal() {
 
   return (
     <div className="fixed inset-0 z-[190] flex items-center justify-center p-6" style={{ background: "rgba(20,30,50,0.6)" }}>
-      <div className="w-full max-w-xs rounded-3xl overflow-hidden" style={{ background: "#fff", boxShadow: "0 20px 50px rgba(0,0,0,0.3)" }}>
+      <div className="w-full max-w-xs rounded-3xl overflow-hidden" style={{ background: "#fff", boxShadow: "var(--shadow-modal)" }}>
         {result ? (
           <div className="p-6 text-center">
             <p style={{ fontSize: 44 }} className="mb-2">🎉</p>

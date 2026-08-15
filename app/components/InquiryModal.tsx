@@ -59,7 +59,7 @@ export default function InquiryModal({ open, onClose }: Props) {
         style={{
           background: "#FFFFFF",
           borderRadius: "var(--radius-modal)",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
+          boxShadow: "var(--shadow-modal)",
         }}
         onClick={(e) => e.stopPropagation()}
       >

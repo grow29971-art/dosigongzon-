@@ -171,7 +171,7 @@ function WelcomeContent() {
               type="button"
               onClick={() => pickIntent("caretaker", "/map")}
               className="px-4 py-4 rounded-2xl flex items-center gap-3 active:scale-[0.98] transition-transform"
-              style={{ background: "rgba(255,255,255,0.96)", boxShadow: "0 8px 22px rgba(0,0,0,0.18)" }}
+              style={{ background: "rgba(255,255,255,0.96)", boxShadow: "var(--shadow-fab)" }}
             >
               <span className="text-[24px] shrink-0">🐾</span>
               <div className="text-left flex-1 min-w-0">
@@ -185,7 +185,7 @@ function WelcomeContent() {
               type="button"
               onClick={() => pickIntent("interested", "/")}
               className="px-4 py-4 rounded-2xl flex items-center gap-3 active:scale-[0.98] transition-transform"
-              style={{ background: "rgba(255,255,255,0.96)", boxShadow: "0 8px 22px rgba(0,0,0,0.18)" }}
+              style={{ background: "rgba(255,255,255,0.96)", boxShadow: "var(--shadow-fab)" }}
             >
               <span className="text-[24px] shrink-0">💛</span>
               <div className="text-left flex-1 min-w-0">
@@ -199,7 +199,7 @@ function WelcomeContent() {
               type="button"
               onClick={() => pickIntent("browsing", "/community")}
               className="px-4 py-4 rounded-2xl flex items-center gap-3 active:scale-[0.98] transition-transform"
-              style={{ background: "rgba(255,255,255,0.96)", boxShadow: "0 8px 22px rgba(0,0,0,0.18)" }}
+              style={{ background: "rgba(255,255,255,0.96)", boxShadow: "var(--shadow-fab)" }}
             >
               <span className="text-[24px] shrink-0">💬</span>
               <div className="text-left flex-1 min-w-0">
@@ -246,7 +246,7 @@ function WelcomeContent() {
                 background: "rgba(255,255,255,0.18)",
                 backdropFilter: "blur(10px)",
                 border: "1px solid rgba(255,255,255,0.25)",
-                boxShadow: "0 12px 36px rgba(0,0,0,0.18)",
+                boxShadow: "var(--shadow-modal)",
               }}
             >
               <PartyPopper size={44} color="#FFFFFF" strokeWidth={1.6} />
@@ -352,7 +352,7 @@ function WelcomeContent() {
             style={{
               background: "#FFFFFF",
               color: slide.accent,
-              boxShadow: "0 8px 22px rgba(0,0,0,0.18)",
+              boxShadow: "var(--shadow-fab)",
             }}
           >
             {isLast ? (

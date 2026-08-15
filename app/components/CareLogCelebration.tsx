@@ -78,7 +78,7 @@ export default function CareLogCelebration({
         className="w-full max-w-sm rounded-[28px] overflow-hidden relative"
         style={{
           background: "#FFFFFF",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+          boxShadow: "var(--shadow-modal)",
         }}
       >
         {/* 상단 그라디언트 */}
@@ -152,7 +152,7 @@ export default function CareLogCelebration({
                   className="flex-1 py-3 rounded-2xl text-[13px] font-bold text-white active:scale-[0.98]"
                   style={{
                     background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-                    boxShadow: "0 4px 14px rgba(173, 94, 59,0.45)",
+                    boxShadow: "var(--shadow-primary)",
                   }}
                 >
                   네, 내일도 올게요

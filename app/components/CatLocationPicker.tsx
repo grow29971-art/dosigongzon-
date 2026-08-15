@@ -215,7 +215,7 @@ export default function CatLocationPicker({
             {mapError ? (
               <div
                 className="pointer-events-auto mx-4 rounded-2xl px-4 py-3 text-center"
-                style={{ background: "#fff", boxShadow: "0 2px 10px rgba(0,0,0,0.1)" }}
+                style={{ background: "#fff", boxShadow: "var(--shadow-raised)" }}
               >
                 <p className="text-[13px] font-bold text-text-main mb-1">⚠️ 지도 로드 실패</p>
                 <p className="text-[11px] text-text-sub">{mapError}</p>
@@ -265,7 +265,7 @@ export default function CatLocationPicker({
       {/* 하단 확정 바 */}
       <div
         className="px-4 pt-3 pb-6 bg-white"
-        style={{ boxShadow: "0 -4px 14px rgba(0,0,0,0.08)" }}
+        style={{ boxShadow: "var(--shadow-sheet)" }}
       >
         <div
           className="rounded-2xl px-4 py-3.5 mb-2.5"

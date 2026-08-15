@@ -90,12 +90,15 @@
 
   /* ── Shadow 토큰 ──
      card: 기본 카드 · card-sm: 얕은 카드 · raised: 떠있는 요소(버튼/헤더)
-     primary: 테라코타 CTA 글로우 · modal: 오버레이 */
+     primary: 테라코타 CTA 글로우 · modal: 오버레이
+     fab: 플로팅 버튼 · sheet: 위로 뜨는 바텀시트/네비 (2026-08-15 신설 — 이 7종 외 그림자 금지) */
   --shadow-card-sm: 0 1px 4px rgba(0, 0, 0, 0.03);
   --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.04);
   --shadow-raised: 0 2px 8px rgba(0, 0, 0, 0.08);
   --shadow-primary: 0 6px 20px rgba(173, 94, 59, 0.3);
   --shadow-modal: 0 20px 50px rgba(0, 0, 0, 0.25);
+  --shadow-fab: 0 6px 20px rgba(0, 0, 0, 0.14);
+  --shadow-sheet: 0 -6px 24px rgba(0, 0, 0, 0.08);
 
   /* ── 타이포 스케일 (2026-07-15, 토스식 위계) ──
      화면마다 제각각이던 px를 6단계로 수렴. 새 화면은 이 스케일만 사용.

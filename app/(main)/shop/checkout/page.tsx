@@ -497,7 +497,7 @@ export default function CheckoutPage() {
       {items.length > 0 && !loading && (
         <div
           className="fixed bottom-0 left-0 right-0 z-40 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
-          style={{ background: "var(--color-surface)", boxShadow: "0 -4px 16px rgba(20,40,70,0.08)" }}
+          style={{ background: "var(--color-surface)", boxShadow: "var(--shadow-sheet)" }}
         >
           {!PAYMENT_ENABLED && (
             <p className="text-[13px] text-center font-semibold mb-2" style={{ color: "var(--color-warning)" }}>

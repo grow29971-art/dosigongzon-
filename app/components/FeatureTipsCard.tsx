@@ -206,7 +206,7 @@ export default function FeatureTipsCard({ activity, regions }: Props) {
         style={{
           background: "#FFFFFF",
           borderRadius: "var(--radius-card)",
-          boxShadow: "0 4px 18px rgba(0,0,0,0.05)",
+          boxShadow: "var(--shadow-card)",
           border: `1px solid ${tip.iconColor}20`,
         }}
       >

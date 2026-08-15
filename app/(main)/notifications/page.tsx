@@ -116,7 +116,7 @@ export default function NotificationsPage() {
                   style={{
                     background: item.isRead ? "#FFFFFF" : "#FDF9F2",
                     borderRadius: "var(--radius-card-sm)",
-                    boxShadow: "0 1px 4px rgba(0,0,0,0.03)",
+                    boxShadow: "var(--shadow-card-sm)",
                     border: item.isRead ? "1px solid rgba(0,0,0,0.04)" : `1px solid ${config.color}20`,
                   }}
                 >

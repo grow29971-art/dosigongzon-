@@ -232,7 +232,7 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
       {phase === "confirm" && (
         <div
           className="relative w-full bg-white overflow-hidden"
-          style={{ maxWidth: 400, borderRadius: "var(--radius-sheet)", boxShadow: "0 20px 60px rgba(0,0,0,0.35)" }}
+          style={{ maxWidth: 400, borderRadius: "var(--radius-sheet)", boxShadow: "var(--shadow-modal)" }}
         >
           <button
             onClick={onClose}

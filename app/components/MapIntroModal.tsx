@@ -67,7 +67,7 @@ export default function MapIntroModal() {
     >
       <div
         className="relative w-full max-w-sm rounded-[28px] overflow-hidden"
-        style={{ background: "#fff", boxShadow: "0 20px 50px rgba(0,0,0,0.3)" }}
+        style={{ background: "#fff", boxShadow: "var(--shadow-modal)" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* 헤더 */}

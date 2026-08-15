@@ -162,7 +162,7 @@ export default async function CelebratePage() {
           className="block w-full text-center py-3.5 rounded-2xl text-[15px] font-bold text-white active:scale-[0.98] transition-transform"
           style={{
             background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-            boxShadow: "0 6px 18px rgba(173, 94, 59,0.35)",
+            boxShadow: "var(--shadow-primary)",
           }}
         >
           🐾 지도 열기 — 우리 동네 아이들 만나러

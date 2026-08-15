@@ -123,7 +123,7 @@ export default function PushReconsentCard() {
         background: "linear-gradient(135deg, #FFF6EE 0%, #FFE9D2 100%)",
         borderRadius: "var(--radius-input)",
         border: "1px solid #F2D6B6",
-        boxShadow: "0 6px 20px rgba(44,44,44,0.12)",
+        boxShadow: "var(--shadow-fab)",
       }}
     >
       <div className="flex items-center gap-2.5">

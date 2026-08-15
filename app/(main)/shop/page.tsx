@@ -61,7 +61,7 @@ function ProductCard({ product, wished, onToggleWish }: { product: Product; wish
         style={{
           background: "var(--color-surface)",
           borderRadius: "var(--radius-card)",
-          boxShadow: "0 6px 20px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.03)",
+          boxShadow: "var(--shadow-card)",
           border: "1px solid rgba(0,0,0,0.04)",
         }}
       >
@@ -103,7 +103,7 @@ function ProductCard({ product, wished, onToggleWish }: { product: Product; wish
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleWish(product.id); }}
             aria-label={wished ? "찜 해제" : "찜하기"}
             className="absolute bottom-2 right-2 z-10 w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform"
-            style={{ background: "rgba(255,255,255,0.94)", boxShadow: "0 1px 6px rgba(0,0,0,0.14)" }}
+            style={{ background: "rgba(255,255,255,0.94)", boxShadow: "var(--shadow-raised)" }}
           >
             <Heart size={16} fill={wished ? "var(--color-like)" : "none"} style={{ color: wished ? "var(--color-like)" : "var(--color-text-light)" }} />
           </button>

@@ -207,7 +207,7 @@ export default function AdminCatsPage() {
             style={{
               background: filter === key ? "var(--color-primary)" : "#fff",
               color: filter === key ? "#fff" : "#666",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+              boxShadow: "var(--shadow-card-sm)",
             }}
           >
             {label}
@@ -216,7 +216,7 @@ export default function AdminCatsPage() {
         <button
           onClick={selectAllVisible}
           className="ml-auto px-3 py-1.5 rounded-xl text-[13px] font-bold"
-          style={{ background: "#fff", color: "var(--color-primary)", boxShadow: "0 2px 6px rgba(0,0,0,0.05)" }}
+          style={{ background: "#fff", color: "var(--color-primary)", boxShadow: "var(--shadow-card-sm)" }}
         >
           {selected.size === visible.length && visible.length > 0 ? "전체 해제" : "전체 선택"}
         </button>
@@ -295,7 +295,7 @@ export default function AdminCatsPage() {
       {selected.size > 0 && (
         <div
           className="fixed bottom-0 left-0 right-0 z-40 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
-          style={{ background: "#fff", boxShadow: "0 -4px 16px rgba(20,40,70,0.08)" }}
+          style={{ background: "#fff", boxShadow: "var(--shadow-sheet)" }}
         >
           <button
             onClick={handleBulkDelete}

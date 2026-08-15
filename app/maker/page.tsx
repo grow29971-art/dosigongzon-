@@ -330,7 +330,7 @@ export default function MakerPage() {
             className="flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-bold text-white active:scale-[0.98] transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 4px 14px rgba(173, 94, 59,0.30)",
+              boxShadow: "var(--shadow-primary)",
             }}
           >
             <Mail size={14} />

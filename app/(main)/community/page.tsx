@@ -252,7 +252,7 @@ export default function CommunityPage() {
               borderRadius: "var(--radius-square-lg)",
               backgroundColor: !neighborhoodOnly ? "var(--color-text-main)" : "rgba(255,255,255,0.9)",
               color: !neighborhoodOnly ? "#fff" : "var(--color-text-sub)",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+              boxShadow: "var(--shadow-card-sm)",
             }}
           >
             전체
@@ -333,7 +333,7 @@ export default function CommunityPage() {
                     style={{
                       background: "#FFFFFF",
                       borderRadius: "var(--radius-card-sm)",
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)",
+                      boxShadow: "var(--shadow-card-sm)",
                       border: "1px solid rgba(0,0,0,0.04)",
                     }}
                   >

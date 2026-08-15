@@ -276,7 +276,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
           background: "#fff", borderRadius: "var(--radius-full)",
           padding: isLg ? "3px 10px" : "2px 7px",
           fontSize: fs.label, fontWeight: 700, color: cfg.accent,
-          boxShadow: "0 1px 4px rgba(0,0,0,0.12)", flexShrink: 0,
+          boxShadow: "var(--shadow-raised)", flexShrink: 0,
         }}>
           {cfg.label}
         </span>
@@ -284,7 +284,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
           display: "flex", alignItems: "center", gap: 3,
           background: "#fff", borderRadius: "var(--radius-full)",
           padding: isLg ? "3px 9px" : "2px 6px",
-          boxShadow: "0 1px 4px rgba(0,0,0,0.12)", flexShrink: 0,
+          boxShadow: "var(--shadow-raised)", flexShrink: 0,
         }}>
           <Heart size={fs.hp - 2} fill="#FF6B81" color="#FF6B81" />
           <span style={{ fontSize: fs.hp, fontWeight: 700, color: "#2B2B3D", lineHeight: 1 }}>{hpDisplay}</span>

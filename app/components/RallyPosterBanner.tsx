@@ -17,7 +17,7 @@ export default function RallyPosterBanner() {
         style={{
           borderRadius: "var(--radius-modal)",
           overflow: "hidden",
-          boxShadow: "0 12px 32px rgba(173,94,59,0.22)",
+          boxShadow: "var(--shadow-primary)",
           border: "1px solid rgba(0,0,0,0.05)",
         }}
       >

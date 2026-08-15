@@ -80,7 +80,7 @@ export default function Og200EventModal() {
       <div
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-sm rounded-[28px] overflow-hidden relative"
-        style={{ background: "#FFFFFF", boxShadow: "0 20px 60px rgba(0,0,0,0.3)" }}
+        style={{ background: "#FFFFFF", boxShadow: "var(--shadow-modal)" }}
       >
         {/* 헤더 — 그라데이션 */}
         <div
@@ -110,7 +110,7 @@ export default function Og200EventModal() {
             className="w-[68px] h-[68px] mx-auto rounded-full flex items-center justify-center mb-3"
             style={{
               background: "linear-gradient(135deg, #E88D5A 0%, var(--color-primary) 100%)",
-              boxShadow: "0 8px 24px rgba(173, 94, 59,0.45)",
+              boxShadow: "var(--shadow-primary)",
             }}
           >
             <span className="text-[34px] leading-none">🌟</span>

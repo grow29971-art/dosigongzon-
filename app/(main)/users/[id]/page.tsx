@@ -111,7 +111,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                   ? `url('${profile.avatar_url}') center/cover`
                   : "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                 border: "3px solid #fff",
-                boxShadow: "0 6px 16px rgba(0,0,0,0.1)",
+                boxShadow: "var(--shadow-fab)",
               }}
             >
               {!profile.avatar_url && (
@@ -318,7 +318,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                       ? `url('${sanitizeImageUrl(c.photo_url, "")}') center/cover`
                       : "var(--color-gray-100)",
                     border: "2px solid #fff",
-                    boxShadow: "0 3px 10px rgba(0,0,0,0.06)",
+                    boxShadow: "var(--shadow-card)",
                   }}
                 >
                   {!c.photo_url && (

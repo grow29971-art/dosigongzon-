@@ -302,7 +302,7 @@ export default function AdminDashboardPage() {
                 stats.daysUntilLaunch > 0
                   ? "linear-gradient(135deg, #FFE8C2 0%, #FFCFB5 60%, #FFB99B 100%)"
                   : "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)",
-              boxShadow: "0 8px 24px rgba(173, 94, 59,0.20)",
+              boxShadow: "var(--shadow-primary)",
             }}
           >
             <div className="flex items-center justify-between gap-3">

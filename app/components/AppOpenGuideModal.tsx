@@ -88,7 +88,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
       <div
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-sm rounded-[28px] overflow-hidden relative"
-        style={{ background: "#FFFFFF", boxShadow: "0 20px 60px rgba(0,0,0,0.3)" }}
+        style={{ background: "#FFFFFF", boxShadow: "var(--shadow-modal)" }}
       >
         {/* 헤더 그라데이션 */}
         <div className="relative px-6 pt-7 pb-6" style={{ background: "linear-gradient(135deg, #FFF1D9 0%, #FFE0C0 100%)" }}>
@@ -102,7 +102,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
           </button>
           <p className="text-[11px] font-bold tracking-[0.2em] mb-2" style={{ color: "var(--color-primary-dark)" }}>오늘 이거 해보세요</p>
           <div className="flex items-center gap-3">
-            <div className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 text-3xl" style={{ background: "#FFFFFF", boxShadow: "0 4px 14px rgba(173, 94, 59,0.25)" }}>
+            <div className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 text-3xl" style={{ background: "#FFFFFF", boxShadow: "var(--shadow-primary)" }}>
               {spot.emoji}
             </div>
             <div className="min-w-0">

@@ -168,7 +168,7 @@ export default function PwaInstallPrompt() {
             className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 4px 12px rgba(173, 94, 59,0.35)",
+              boxShadow: "var(--shadow-primary)",
             }}
           >
             <Download size={19} color="#fff" strokeWidth={2.3} />
@@ -222,7 +222,7 @@ export default function PwaInstallPrompt() {
             className="w-full mt-3 py-2.5 rounded-xl text-[13px] font-bold text-white active:scale-[0.98] transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 4px 12px rgba(173, 94, 59,0.35)",
+              boxShadow: "var(--shadow-primary)",
             }}
           >
             홈 화면에 추가

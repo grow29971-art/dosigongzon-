@@ -286,7 +286,7 @@ export default function CategoryPage() {
         style={{
           background: "#FFFFFF",
           borderRadius: "var(--radius-card)",
-          boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
+          boxShadow: "var(--shadow-card)",
           border: "1px solid rgba(0,0,0,0.04)",
         }}
       >

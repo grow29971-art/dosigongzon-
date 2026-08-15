@@ -222,7 +222,7 @@ export default function ShelterGuidePage() {
             <div
               key={m.name}
               className="rounded-xl p-3 flex items-start gap-3 bg-white"
-              style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.04)" }}
+              style={{ boxShadow: "var(--shadow-card-sm)" }}
             >
               <span style={{ fontSize: 20, lineHeight: 1 }} className="shrink-0">{m.emoji}</span>
               <div>

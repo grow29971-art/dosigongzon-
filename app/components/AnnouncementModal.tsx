@@ -49,7 +49,7 @@ export default function AnnouncementModal() {
     >
       <div
         className="relative w-full max-w-sm rounded-3xl bg-white p-6 pt-7"
-        style={{ boxShadow: "0 18px 50px rgba(0,0,0,0.3)" }}
+        style={{ boxShadow: "var(--shadow-modal)" }}
         onClick={(e) => e.stopPropagation()}
       >
         <button

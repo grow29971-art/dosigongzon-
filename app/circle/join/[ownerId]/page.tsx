@@ -166,7 +166,7 @@ export default function CircleJoinPage() {
         <>
           <div
             className="rounded-3xl p-6 mb-4 text-center bg-white"
-            style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.06)" }}
+            style={{ boxShadow: "var(--shadow-card)" }}
           >
             <div className="flex justify-center mb-3">
               <Avatar url={ownerProfile.avatar_url} size={72} />

@@ -147,7 +147,7 @@ export default function ConsentManager() {
                 className="flex-1 rounded-xl px-4 py-2.5 text-[13px] font-bold text-white active:scale-[0.98] transition-transform"
                 style={{
                   background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-                  boxShadow: "0 4px 12px rgba(173, 94, 59,0.28)",
+                  boxShadow: "var(--shadow-primary)",
                 }}
               >
                 동의하고 계속

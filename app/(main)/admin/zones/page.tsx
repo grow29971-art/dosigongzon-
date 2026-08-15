@@ -111,7 +111,7 @@ export default function AdminZonesPage() {
         )}
 
         {/* 구역 생성 */}
-        <div className="rounded-2xl bg-white p-4 mb-4" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
+        <div className="rounded-2xl bg-white p-4 mb-4" style={{ boxShadow: "var(--shadow-card)" }}>
           <p className="text-[13px] font-bold text-text-main mb-2">새 구역 만들기</p>
           <input
             value={newLabel} onChange={(e) => setNewLabel(e.target.value)}
@@ -136,7 +136,7 @@ export default function AdminZonesPage() {
 
         {/* 구역 목록 + QR */}
         {zones.map((zone) => (
-          <div key={zone.id} className="rounded-2xl bg-white p-4 mb-3" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)", opacity: zone.active ? 1 : 0.55 }}>
+          <div key={zone.id} className="rounded-2xl bg-white p-4 mb-3" style={{ boxShadow: "var(--shadow-card)", opacity: zone.active ? 1 : 0.55 }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0">
                 <p className="text-[15px] font-bold text-text-main truncate">{zone.label}</p>
@@ -178,7 +178,7 @@ export default function AdminZonesPage() {
         </p>
         {reports.length === 0 && <p className="text-[13px] text-text-light">아직 제보가 없어요.</p>}
         {reports.map((r) => (
-          <div key={r.id} className="rounded-2xl bg-white p-4 mb-2.5" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
+          <div key={r.id} className="rounded-2xl bg-white p-4 mb-2.5" style={{ boxShadow: "var(--shadow-card)" }}>
             <div className="flex items-center justify-between mb-1">
               <span className="text-[13px] font-bold text-text-main">
                 {INCIDENT_LABELS[r.incident_type] ?? r.incident_type}

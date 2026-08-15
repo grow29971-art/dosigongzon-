@@ -187,7 +187,7 @@ export default async function TipsIndexPage() {
                 className="rounded-2xl px-2 py-2.5 flex flex-col items-center gap-1 active:scale-[0.96] transition-transform"
                 style={{
                   background: "#FFFFFF",
-                  boxShadow: "0 3px 10px rgba(0,0,0,0.06)",
+                  boxShadow: "var(--shadow-card)",
                   border: "1px solid rgba(255,255,255,0.6)",
                 }}
               >
@@ -306,7 +306,7 @@ function TipCard({ tip }: { tip: Tip }) {
     <Link href={`/tips/${tip.slug}`} className="block">
       <article
         className="rounded-2xl overflow-hidden bg-white active:scale-[0.99] transition-transform"
-        style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.06)" }}
+        style={{ boxShadow: "var(--shadow-card)" }}
       >
         <div className="relative w-full aspect-[16/9] bg-[var(--color-gray-100)]">
           {photo ? (

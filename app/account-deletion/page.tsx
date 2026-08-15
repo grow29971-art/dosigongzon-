@@ -53,7 +53,7 @@ export default function AccountDeletionPage() {
           style={{
             background: "#FFFFFF",
             border: "1px solid rgba(0,0,0,0.06)",
-            boxShadow: "0 4px 14px rgba(0,0,0,0.04)",
+            boxShadow: "var(--shadow-card)",
           }}
         >
           <div className="flex items-center gap-2 mb-3">
@@ -111,7 +111,7 @@ export default function AccountDeletionPage() {
             className="mt-5 flex items-center justify-between w-full px-4 py-3 rounded-xl active:scale-[0.99] transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 6px 16px rgba(173, 94, 59,0.3)",
+              boxShadow: "var(--shadow-primary)",
             }}
           >
             <span className="text-[13px] font-bold text-white">
@@ -127,7 +127,7 @@ export default function AccountDeletionPage() {
           style={{
             background: "#FFFFFF",
             border: "1px solid rgba(0,0,0,0.06)",
-            boxShadow: "0 4px 14px rgba(0,0,0,0.04)",
+            boxShadow: "var(--shadow-card)",
           }}
         >
           <div className="flex items-center gap-2 mb-3">

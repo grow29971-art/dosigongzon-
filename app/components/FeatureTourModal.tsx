@@ -172,7 +172,7 @@ export default function FeatureTourModal({
     >
       <div
         className="w-full max-w-sm rounded-[28px] overflow-hidden relative flex flex-col"
-        style={{ background: "#FFFFFF", boxShadow: "0 24px 70px rgba(0,0,0,0.35)", maxHeight: "min(640px, 92vh)" }}
+        style={{ background: "#FFFFFF", boxShadow: "var(--shadow-modal)", maxHeight: "min(640px, 92vh)" }}
       >
         {/* 건너뛰기 — 항상 도달 가능 */}
         <button

@@ -91,7 +91,7 @@ export default function OrdersPage() {
               >
                 <div
                   className="p-4"
-                  style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card-sm)", boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)", border: "1px solid rgba(0,0,0,0.04)" }}
+                  style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card-sm)", border: "1px solid rgba(0,0,0,0.04)" }}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-[11px] font-semibold text-text-light">{order.order_number}</span>

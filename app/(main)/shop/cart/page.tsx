@@ -109,7 +109,7 @@ export default function CartPage() {
               <div
                 key={item.id}
                 className="flex items-center gap-3 p-3"
-                style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card-sm)", boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)", border: "1px solid rgba(0,0,0,0.04)" }}
+                style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card-sm)", border: "1px solid rgba(0,0,0,0.04)" }}
               >
                 <Link href={`/shop/${item.product.id}`} className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 64, height: 64 }}>
                   <Image src={thumb} alt={item.product.name} fill className="object-cover" unoptimized={thumb.includes("placehold.co")} />
@@ -142,7 +142,7 @@ export default function CartPage() {
       {items.length > 0 && (
         <div
           className="fixed bottom-0 left-0 right-0 z-40 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
-          style={{ background: "var(--color-surface)", boxShadow: "0 -4px 16px rgba(20,40,70,0.08)" }}
+          style={{ background: "var(--color-surface)", boxShadow: "var(--shadow-sheet)" }}
         >
           <div className="flex items-center justify-between text-[13px] text-text-sub mb-1">
             <span>상품금액</span>

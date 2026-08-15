@@ -152,7 +152,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
       {/* 커버 이미지 */}
       <div
         className="relative mx-4 mt-2 rounded-3xl overflow-hidden"
-        style={{ aspectRatio: "4 / 3", boxShadow: "0 10px 28px rgba(0,0,0,0.12)" }}
+        style={{ aspectRatio: "4 / 3", boxShadow: "var(--shadow-fab)" }}
       >
         <Image
           src={photo}
@@ -312,7 +312,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                     width: 72,
                     height: 72,
                     border: idx === 0 ? "2px solid var(--color-primary)" : "1.5px solid rgba(0,0,0,0.06)",
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+                    boxShadow: "var(--shadow-raised)",
                   }}
                   aria-label={`사진 ${idx + 1}`}
                 >
@@ -585,7 +585,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
               className="inline-flex items-center gap-1.5 mt-3 px-4 py-2 rounded-xl text-white text-[13px] font-bold active:scale-[0.97] transition-transform"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-                boxShadow: "0 6px 18px rgba(173, 94, 59,0.35)",
+                boxShadow: "var(--shadow-primary)",
               }}
             >
               <Camera size={13} />

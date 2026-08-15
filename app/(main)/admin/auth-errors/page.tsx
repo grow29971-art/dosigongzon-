@@ -204,7 +204,7 @@ export default function AdminAuthErrorsPage() {
               style={{
                 backgroundColor: days === d ? "#2C2C2C" : "rgba(255,255,255,0.95)",
                 color: days === d ? "#fff" : "#555",
-                boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+                boxShadow: "var(--shadow-card)",
               }}
             >
               최근 {d}일
@@ -216,7 +216,7 @@ export default function AdminAuthErrorsPage() {
           onClick={refresh}
           disabled={refreshing}
           className="w-9 h-9 rounded-xl bg-white flex items-center justify-center active:scale-90 disabled:opacity-50"
-          style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.06)" }}
+          style={{ boxShadow: "var(--shadow-card)" }}
           aria-label="새로고침"
         >
           {refreshing ? (
@@ -229,7 +229,7 @@ export default function AdminAuthErrorsPage() {
           type="button"
           onClick={handlePurge}
           className="w-9 h-9 rounded-xl bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.06)" }}
+          style={{ boxShadow: "var(--shadow-card)" }}
           aria-label="오래된 로그 삭제"
         >
           <Trash2 size={14} style={{ color: "#B84545" }} />

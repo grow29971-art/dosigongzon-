@@ -81,7 +81,7 @@ export default function ShopPreviewStrip() {
                   onClick={(e) => toggle(e, p.id)}
                   aria-label={wished ? "찜 해제" : "찜하기"}
                   className="absolute bottom-1.5 right-1.5 w-8 h-8 rounded-full flex items-center justify-center active:scale-90 transition-transform"
-                  style={{ background: "rgba(255,255,255,0.92)", boxShadow: "0 1px 5px rgba(0,0,0,0.12)" }}
+                  style={{ background: "rgba(255,255,255,0.92)", boxShadow: "var(--shadow-raised)" }}
                 >
                   <Heart
                     size={15}

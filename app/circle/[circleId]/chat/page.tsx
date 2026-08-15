@@ -76,7 +76,7 @@ function ChatImage({ raw, isMine }: { raw: string; isMine: boolean }) {
       target="_blank"
       rel="noopener noreferrer"
       className={`block mb-1 rounded-2xl overflow-hidden ${rounding}`}
-      style={{ maxWidth: 220, boxShadow: "0 2px 6px rgba(0,0,0,0.10)" }}
+      style={{ maxWidth: 220, boxShadow: "var(--shadow-raised)" }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt="" loading="lazy" className="w-full h-auto block" />
@@ -355,7 +355,7 @@ export default function CircleChatPage() {
           groupedByDate.map((group, gi) => (
             <div key={gi}>
               <div className="flex justify-center my-3">
-                <span className="text-[11px] px-2.5 py-1 rounded-full bg-white text-text-light" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+                <span className="text-[11px] px-2.5 py-1 rounded-full bg-white text-text-light" style={{ boxShadow: "var(--shadow-card-sm)" }}>
                   {formatDate(group.date)}
                 </span>
               </div>

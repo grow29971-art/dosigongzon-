@@ -120,7 +120,7 @@ export default function CatRegistrationCelebration({
       <div
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-sm rounded-[28px] overflow-hidden relative"
-        style={{ background: "#FFFFFF", boxShadow: "0 20px 60px rgba(0,0,0,0.3)" }}
+        style={{ background: "#FFFFFF", boxShadow: "var(--shadow-modal)" }}
       >
         <div
           className="relative px-6 pt-8 pb-5 overflow-hidden"
@@ -145,7 +145,7 @@ export default function CatRegistrationCelebration({
               className="w-16 h-16 rounded-full flex items-center justify-center"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-                boxShadow: "0 8px 24px rgba(173, 94, 59,0.4)",
+                boxShadow: "var(--shadow-primary)",
               }}
             >
               {isFirstEver ? (
@@ -227,7 +227,7 @@ export default function CatRegistrationCelebration({
             className="w-full py-3 rounded-2xl text-[13px] font-bold text-white active:scale-[0.98]"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 4px 14px rgba(173, 94, 59,0.45)",
+              boxShadow: "var(--shadow-primary)",
             }}
           >
             확인

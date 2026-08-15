@@ -26,7 +26,7 @@ export default function MainError({
     >
       <div
         className="w-full max-w-sm rounded-3xl bg-white p-7 text-center"
-        style={{ boxShadow: "0 12px 36px rgba(0,0,0,0.08)" }}
+        style={{ boxShadow: "var(--shadow-fab)" }}
       >
         <div
           className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"

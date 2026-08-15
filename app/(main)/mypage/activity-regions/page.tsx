@@ -487,7 +487,7 @@ export default function ActivityRegionsPage() {
         <button
           onClick={() => router.back()}
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+          style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -555,7 +555,7 @@ export default function ActivityRegionsPage() {
           className="relative rounded-2xl overflow-hidden"
           style={{
             height: 320,
-            boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
+            boxShadow: "var(--shadow-raised)",
           }}
         >
           <div
@@ -573,7 +573,7 @@ export default function ActivityRegionsPage() {
               {mapError ? (
                 <div
                   className="pointer-events-auto mx-4 rounded-2xl px-4 py-3 text-center"
-                  style={{ background: "#FFFFFF", boxShadow: "0 2px 10px rgba(0,0,0,0.1)" }}
+                  style={{ background: "#FFFFFF", boxShadow: "var(--shadow-raised)" }}
                 >
                   <p className="text-[13px] font-bold text-text-main mb-1">⚠️ 지도 로드 실패</p>
                   <p className="text-[11px] text-text-sub mb-2">{mapError}</p>
@@ -595,7 +595,7 @@ export default function ActivityRegionsPage() {
           <div className="absolute top-3 left-3 right-3 z-10">
             <div
               className="flex items-center gap-2 rounded-2xl px-3 py-2 bg-white"
-              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
+              style={{ boxShadow: "var(--shadow-raised)" }}
             >
               <Search size={14} className="text-text-sub" />
               <input
@@ -611,7 +611,7 @@ export default function ActivityRegionsPage() {
             {searchResults.length > 0 && (
               <div
                 className="mt-1 bg-white rounded-2xl overflow-hidden"
-                style={{ boxShadow: "0 4px 14px rgba(0,0,0,0.12)" }}
+                style={{ boxShadow: "var(--shadow-raised)" }}
               >
                 {searchResults.map((r) => (
                   <button
@@ -646,7 +646,7 @@ export default function ActivityRegionsPage() {
           {/* 안내 */}
           <div
             className="absolute bottom-3 left-3 z-10 px-3 py-1.5 rounded-xl"
-            style={{ background: "rgba(255,255,255,0.92)", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+            style={{ background: "rgba(255,255,255,0.92)", boxShadow: "var(--shadow-raised)" }}
           >
             <p className="text-[11px] font-bold text-text-main">
               지도를 터치해서 중심점을 바꿔보세요
@@ -657,7 +657,7 @@ export default function ActivityRegionsPage() {
         {/* 이름 입력 */}
         <div
           className="bg-white rounded-2xl p-4"
-          style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}
+          style={{ boxShadow: "var(--shadow-card)" }}
         >
           <label className="text-[11px] font-bold text-text-sub">
             지역 이름
@@ -678,7 +678,7 @@ export default function ActivityRegionsPage() {
         {/* 반경 선택 */}
         <div
           className="bg-white rounded-2xl p-4"
-          style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}
+          style={{ boxShadow: "var(--shadow-card)" }}
         >
           <div className="flex items-center justify-between mb-2.5">
             <label className="text-[11px] font-bold text-text-sub">
@@ -715,7 +715,7 @@ export default function ActivityRegionsPage() {
         {/* 주 활동 지역 */}
         <div
           className="bg-white rounded-2xl p-4 flex items-center gap-3"
-          style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}
+          style={{ boxShadow: "var(--shadow-card)" }}
         >
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
@@ -777,7 +777,7 @@ export default function ActivityRegionsPage() {
               type="button"
               onClick={handleDelete}
               className="px-4 py-3 rounded-2xl flex items-center gap-1.5 active:scale-95"
-              style={{ background: "#fff", color: "#B84545", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}
+              style={{ background: "#fff", color: "#B84545", boxShadow: "var(--shadow-card)" }}
             >
               <Trash2 size={15} />
               <span className="text-[13px] font-bold">삭제</span>

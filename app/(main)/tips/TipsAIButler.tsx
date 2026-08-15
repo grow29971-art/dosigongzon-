@@ -37,7 +37,7 @@ export default function TipsAIButler() {
             className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 5px 12px rgba(173, 94, 59,0.35)",
+              boxShadow: "var(--shadow-primary)",
             }}
           >
             <Bot size={20} color="#fff" strokeWidth={2.3} />

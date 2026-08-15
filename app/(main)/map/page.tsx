@@ -2099,7 +2099,7 @@ export default function MapPage() {
           {/* 지역 + 마릿수 */}
           <div
             className="flex items-center gap-2 px-4 py-2.5 rounded-2xl shrink-0"
-            style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}
+            style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "var(--shadow-raised)" }}
           >
             <MapPin size={14} style={{ color: "var(--color-primary)" }} />
             <span className="text-[13px] font-bold text-text-main">{currentGu || "전체"}</span>
@@ -2178,7 +2178,7 @@ export default function MapPage() {
                 style={{
                   background: "rgba(255,255,255,0.95)",
                   backdropFilter: "blur(8px)",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                  boxShadow: "var(--shadow-card)",
                 }}
               >
                 <Search size={13} className="text-text-sub shrink-0" />
@@ -2209,7 +2209,7 @@ export default function MapPage() {
                     ? "var(--color-primary)"
                     : "rgba(255,255,255,0.95)",
                   color: catFilter !== "all" || showFilterPanel ? "#fff" : "var(--color-text-light)",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                  boxShadow: "var(--shadow-card)",
                 }}
                 aria-label="고양이 필터"
                 aria-expanded={showFilterPanel}
@@ -2227,7 +2227,7 @@ export default function MapPage() {
                   style={{
                     background: searchMatchCount > 0 ? "rgba(255,255,255,0.95)" : "rgba(216,85,85,0.92)",
                     color: searchMatchCount > 0 ? "var(--color-primary)" : "#fff",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                    boxShadow: "var(--shadow-raised)",
                   }}
                 >
                   {searchMatchCount > 0 ? `${searchMatchCount}마리 찾음 — 지도로 이동할게요` : "검색 결과가 없어요"}
@@ -2279,7 +2279,7 @@ export default function MapPage() {
                   style={{
                     backgroundColor: regionFilter === "all" ? "var(--color-gray-900)" : "rgba(255,255,255,0.95)",
                     color: regionFilter === "all" ? "#fff" : "var(--color-gray-700)",
-                    boxShadow: "0 1px 6px rgba(0,0,0,0.08)",
+                    boxShadow: "var(--shadow-raised)",
                   }}
                 >
                   전체
@@ -2316,7 +2316,7 @@ export default function MapPage() {
                   style={{
                     backgroundColor: "rgba(255,255,255,0.7)",
                     color: "var(--color-text-light)",
-                    boxShadow: "0 1px 6px rgba(0,0,0,0.06)",
+                    boxShadow: "var(--shadow-card)",
                     border: "1px dashed rgba(163,142,122,0.4)",
                   }}
                 >
@@ -2564,7 +2564,7 @@ export default function MapPage() {
           {currentGu && (
             <div
               className="px-3 py-2 rounded-2xl max-w-[160px]"
-              style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "0 2px 10px rgba(0,0,0,0.08)" }}
+              style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "var(--shadow-raised)" }}
             >
               <p className="text-[11px] font-semibold text-text-main leading-snug">전체 채팅에서 동네 이웃을 만나보세요</p>
             </div>
@@ -2660,7 +2660,7 @@ export default function MapPage() {
           </div>
           <div
             className="px-3 py-2 rounded-2xl max-w-[180px] text-right"
-            style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "0 2px 10px rgba(0,0,0,0.08)" }}
+            style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "var(--shadow-raised)" }}
           >
             <p className="text-[11px] font-semibold text-text-main leading-snug">우리 동네 고양이를 등록하고 품앗이 케어해보세요</p>
             <p className="text-[9px] text-text-light mt-0.5 leading-snug">
@@ -2707,7 +2707,7 @@ export default function MapPage() {
             style={{
               background: "var(--color-surface)",
               borderRadius: "var(--radius-sheet)",
-              boxShadow: "0 -4px 24px rgba(0,0,0,0.12)",
+              boxShadow: "var(--shadow-sheet)",
               border: "1px solid rgba(0,0,0,0.06)",
               height: "65dvh",
             }}
@@ -3108,7 +3108,7 @@ export default function MapPage() {
                   setEditLng(null);
                 }}
                 className="w-11 h-11 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
-                style={{ boxShadow: "0 4px 14px rgba(0,0,0,0.18)" }}
+                style={{ boxShadow: "var(--shadow-fab)" }}
                 aria-label="수정"
               >
                 <Pencil size={17} className="text-primary" />
@@ -3160,7 +3160,7 @@ export default function MapPage() {
             className="fixed w-11 h-11 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform pointer-events-auto"
             style={{
               top: "calc(env(safe-area-inset-top) + 12px)", right: 16, zIndex: 30,
-              boxShadow: "0 4px 14px rgba(0,0,0,0.18)",
+              boxShadow: "var(--shadow-fab)",
             }}
             aria-label="닫기"
           >
@@ -3711,7 +3711,7 @@ export default function MapPage() {
                         style={{
                           background: shareStatus === "copied" ? "var(--color-sage)" : "var(--color-gray-50)",
                           color: shareStatus === "copied" ? "#fff" : "var(--color-text-light)",
-                          boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+                          boxShadow: "var(--shadow-card-sm)",
                         }}
                         aria-label="공유"
                       >
@@ -3732,7 +3732,7 @@ export default function MapPage() {
                         type="button"
                         onClick={() => setQrModalOpen(true)}
                         className="flex items-center gap-1 px-2.5 py-1.5 rounded-2xl active:scale-95 transition-transform"
-                        style={{ background: "var(--color-gray-800)", color: "#fff", boxShadow: "0 1px 4px rgba(0,0,0,0.10)" }}
+                        style={{ background: "var(--color-gray-800)", color: "#fff", boxShadow: "var(--shadow-raised)" }}
                         aria-label="QR 코드"
                       >
                         <span style={{ fontSize: 13 }}>▦</span>
@@ -3943,7 +3943,7 @@ export default function MapPage() {
                               loading="lazy"
                               decoding="async"
                               className="w-5 h-5 rounded-full object-cover shrink-0"
-                              style={{ border: "1.5px solid #fff", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}
+                              style={{ border: "1.5px solid #fff", boxShadow: "var(--shadow-raised)" }}
                             />
                           ) : (
                             <div

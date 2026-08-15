@@ -153,7 +153,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
                 borderRadius: "var(--radius-card)",
                 scrollSnapAlign: "start",
                 background: "var(--color-surface-alt)",
-                boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
+                boxShadow: "var(--shadow-raised)",
               }}
             >
               {/* 사진 (탭 → 상세) */}

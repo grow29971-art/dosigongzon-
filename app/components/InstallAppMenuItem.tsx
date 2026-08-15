@@ -157,7 +157,7 @@ export default function InstallAppMenuItem() {
                 className="w-11 h-11 rounded-full flex items-center justify-center"
                 style={{
                   background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-                  boxShadow: "0 4px 12px rgba(173, 94, 59,0.35)",
+                  boxShadow: "var(--shadow-primary)",
                 }}
               >
                 <Download size={19} color="#fff" strokeWidth={2.2} />

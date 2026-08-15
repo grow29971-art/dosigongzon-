@@ -648,7 +648,7 @@ export default function HomeAuthed({
           style={{
             background: "var(--color-primary)",
             borderRadius: "var(--radius-card)",
-            boxShadow: "0 8px 24px rgba(173, 94, 59,0.28)",
+            boxShadow: "var(--shadow-primary)",
           }}
         >
           <div className="p-4 flex items-center gap-3">
@@ -1087,7 +1087,7 @@ export default function HomeAuthed({
                             className="w-12 h-12 rounded-full mx-auto object-cover"
                             style={{
                               border: "2px solid #fff",
-                              boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                              boxShadow: "var(--shadow-raised)",
                             }}
                           />
                           <p className="text-[11px] font-bold text-text-main mt-1 truncate">
@@ -1186,7 +1186,7 @@ export default function HomeAuthed({
                                 className="w-12 h-12 rounded-full mx-auto object-cover"
                                 style={{
                                   border: "2px solid #fff",
-                                  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                                  boxShadow: "var(--shadow-raised)",
                                 }}
                               />
                               <p className="text-[11px] font-bold text-text-main mt-1 truncate">
@@ -1204,7 +1204,7 @@ export default function HomeAuthed({
                     className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white active:scale-[0.98] transition-transform"
                     style={{
                       background: "var(--color-primary)",
-                      boxShadow: "0 4px 12px rgba(173, 94, 59,0.3)",
+                      boxShadow: "var(--shadow-primary)",
                     }}
                   >
                     <span className="text-[13px] font-bold tracking-tight">
@@ -1313,7 +1313,7 @@ export default function HomeAuthed({
                             ? `url('${f.catPhoto}') center/cover`
                             : "var(--color-gray-100)",
                           border: "2px solid #fff",
-                          boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
+                          boxShadow: "var(--shadow-card)",
                         }}
                       />
                       <div className="flex-1 min-w-0">
@@ -1349,7 +1349,7 @@ export default function HomeAuthed({
           style={{
             background: "var(--color-surface)",
             borderRadius: "var(--radius-card)",
-            boxShadow: "0 8px 28px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.03)",
+            boxShadow: "var(--shadow-card)",
             border: "1px solid rgba(0,0,0,0.04)",
           }}
         >
@@ -1531,7 +1531,7 @@ export default function HomeAuthed({
                     style={{
                       background: "var(--color-surface)",
                       borderRadius: "var(--radius-input)",
-                      boxShadow: "0 2px 6px rgba(0,0,0,0.04)",
+                      boxShadow: "var(--shadow-card-sm)",
                     }}
                   >
                     <div
@@ -1549,7 +1549,7 @@ export default function HomeAuthed({
                           ? `url('${r.avatarUrl}') center/cover`
                           : "var(--color-primary)",
                         border: "2px solid #fff",
-                        boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+                        boxShadow: "var(--shadow-raised)",
                       }}
                     >
                       {!r.avatarUrl && (
@@ -1606,7 +1606,7 @@ export default function HomeAuthed({
                       background: c.photo_url
                         ? `url('${c.photo_url}') center/cover`
                         : "var(--color-gray-100)",
-                      boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
+                      boxShadow: "var(--shadow-raised)",
                       border: "2px solid #fff",
                     }}
                   />
@@ -1816,7 +1816,7 @@ export default function HomeAuthed({
                   style={{
                     background: "var(--color-surface)",
                     borderRadius: "var(--radius-card-sm)",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)",
+                    boxShadow: "var(--shadow-card-sm)",
                     border: "1px solid rgba(173, 94, 59,0.18)",
                   }}
                 >
@@ -1919,7 +1919,7 @@ export default function HomeAuthed({
                   style={{
                     background: "var(--color-surface)",
                     borderRadius: "var(--radius-card-sm)",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02)",
+                    boxShadow: "var(--shadow-card-sm)",
                     border: "1px solid rgba(0,0,0,0.04)",
                   }}
                 >
@@ -1989,7 +1989,7 @@ export default function HomeAuthed({
             className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-white text-[15px] font-bold active:scale-[0.98] transition-transform pointer-events-auto"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-              boxShadow: "0 6px 20px rgba(173, 94, 59,0.35)",
+              boxShadow: "var(--shadow-primary)",
             }}
           >
             돌봄 기록하기

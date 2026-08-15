@@ -288,7 +288,7 @@ export default async function HomeLanding({
                 style={{
                   background: "rgba(255,255,255,0.95)",
                   color: "var(--color-sage)",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+                  boxShadow: "var(--shadow-raised)",
                 }}
               >
                 01
@@ -313,7 +313,7 @@ export default async function HomeLanding({
                 style={{
                   background: "rgba(255,255,255,0.95)",
                   color: "var(--color-sage)",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+                  boxShadow: "var(--shadow-raised)",
                 }}
               >
                 02
@@ -338,7 +338,7 @@ export default async function HomeLanding({
                 style={{
                   background: "rgba(255,255,255,0.95)",
                   color: "var(--color-sage)",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+                  boxShadow: "var(--shadow-raised)",
                 }}
               >
                 03
@@ -827,7 +827,7 @@ export default async function HomeLanding({
           className="rounded-2xl px-4 py-3 flex items-center justify-around"
           style={{
             background: "var(--color-surface)",
-            boxShadow: "0 4px 14px rgba(0,0,0,0.05)",
+            boxShadow: "var(--shadow-card)",
             border: "1px solid rgba(0,0,0,0.04)",
           }}
         >

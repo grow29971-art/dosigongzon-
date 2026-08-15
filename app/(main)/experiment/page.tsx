@@ -202,7 +202,7 @@ export default function ExperimentPage() {
       <section
         aria-labelledby="today-care-heading"
         className="rounded-3xl p-5 mb-4"
-        style={{ background: "#fff", boxShadow: "0 4px 20px rgba(25,31,40,0.06)" }}
+        style={{ background: "#fff", boxShadow: "var(--shadow-card)" }}
       >
         <h2 id="today-care-heading" className="text-[17px] font-bold mb-1">
           오늘 돌봄 완료 🐾
@@ -300,7 +300,7 @@ export default function ExperimentPage() {
       <section
         aria-labelledby="me-heading"
         className="rounded-3xl p-5 mb-4"
-        style={{ background: "#fff", boxShadow: "0 4px 20px rgba(25,31,40,0.06)" }}
+        style={{ background: "#fff", boxShadow: "var(--shadow-card)" }}
       >
         <h2 id="me-heading" className="text-[15px] font-bold mb-2">나의 기록</h2>
         <p className="text-[15px]" style={{ color: "#4E5968" }}>
@@ -317,7 +317,7 @@ export default function ExperimentPage() {
         <section
           aria-labelledby="invite-heading"
           className="rounded-3xl p-5"
-          style={{ background: "#fff", boxShadow: "0 4px 20px rgba(25,31,40,0.06)" }}
+          style={{ background: "#fff", boxShadow: "var(--shadow-card)" }}
         >
           <h2 id="invite-heading" className="text-[15px] font-bold mb-1.5">
             이웃 돌봄자 초대하기

@@ -484,7 +484,7 @@ export default function MemorialPage() {
         >
           <div
             className="w-full bg-white overflow-hidden"
-            style={{ maxWidth: 380, borderRadius: "var(--radius-modal)", boxShadow: "0 20px 60px rgba(0,0,0,0.45)" }}
+            style={{ maxWidth: 380, borderRadius: "var(--radius-modal)", boxShadow: "var(--shadow-modal)" }}
           >
             <div className="px-6 pt-7 pb-6">
               <div

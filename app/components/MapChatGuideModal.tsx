@@ -49,7 +49,7 @@ export default function MapChatGuideModal() {
     >
       <div
         className="bg-white w-full max-w-md rounded-3xl p-5 relative animate-rise"
-        style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.25)" }}
+        style={{ boxShadow: "var(--shadow-modal)" }}
         onClick={(e) => e.stopPropagation()}
       >
         <button

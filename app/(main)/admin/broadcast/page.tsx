@@ -430,7 +430,7 @@ export default function AdminBroadcastPage() {
         className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[15px] font-bold active:scale-[0.98] disabled:opacity-60"
         style={{
           background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
-          boxShadow: "0 6px 18px rgba(173, 94, 59,0.28)",
+          boxShadow: "var(--shadow-primary)",
         }}
       >
         {sending ? (

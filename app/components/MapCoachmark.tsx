@@ -88,7 +88,7 @@ export default function MapCoachmark({ hasMyCat, isLoggedIn }: Props) {
             className="absolute -bottom-2 right-8 w-4 h-4 rotate-45"
             style={{
               background: "linear-gradient(135deg, #FFFFFF 0%, #FFF9F0 100%)",
-              boxShadow: "2px 2px 4px rgba(0,0,0,0.08)",
+              boxShadow: "var(--shadow-raised)",
             }}
           />
         </div>

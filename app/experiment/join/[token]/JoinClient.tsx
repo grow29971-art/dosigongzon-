@@ -78,7 +78,7 @@ export default function JoinClient({ token, state }: { token: string; state: Inv
     <div className="min-h-dvh flex flex-col items-center px-6 pt-20 pb-10" style={{ background: "#FBF8F3" }}>
       <div
         className="w-full max-w-md rounded-[28px] p-7 text-center"
-        style={{ background: "#fff", boxShadow: "0 8px 32px rgba(25,31,40,0.08)" }}
+        style={{ background: "#fff", boxShadow: "var(--shadow-fab)" }}
       >
         <div
           className="mx-auto mb-4 flex items-center justify-center rounded-full"

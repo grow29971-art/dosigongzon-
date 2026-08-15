@@ -104,7 +104,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           ref={sliderRef}
           onScroll={handleScroll}
           className="flex overflow-x-auto rounded-3xl"
-          style={{ scrollSnapType: "x mandatory", aspectRatio: "1 / 1", boxShadow: "0 10px 28px rgba(0,0,0,0.12)", scrollbarWidth: "none" }}
+          style={{ scrollSnapType: "x mandatory", aspectRatio: "1 / 1", boxShadow: "var(--shadow-fab)", scrollbarWidth: "none" }}
         >
           {images.length > 0 ? (
             images.map((src, i) => (
@@ -265,7 +265,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       {/* 하단 고정 바 */}
       <div
         className="fixed bottom-0 left-0 right-0 z-40 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
-        style={{ background: "var(--color-surface)", boxShadow: "0 -4px 16px rgba(20,40,70,0.08)" }}
+        style={{ background: "var(--color-surface)", boxShadow: "var(--shadow-sheet)" }}
       >
         {soldOut ? (
           <button

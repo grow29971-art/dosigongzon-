@@ -41,7 +41,7 @@ export default function VisibilityIntroSheet({ open, onClose, onPick }: Visibili
     >
       <div
         className="w-full max-w-lg bg-white rounded-t-[28px] overflow-hidden animate-slide-up"
-        style={{ maxHeight: "92dvh", boxShadow: "0 -4px 24px rgba(0,0,0,0.18)" }}
+        style={{ maxHeight: "92dvh", boxShadow: "var(--shadow-sheet)" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* 헤더 */}

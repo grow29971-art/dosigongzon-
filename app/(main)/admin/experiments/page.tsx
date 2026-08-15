@@ -127,7 +127,7 @@ export default function AdminExperimentsPage() {
       </p>
 
       {/* 생성 */}
-      <div className="rounded-2xl p-4 mb-6" style={{ background: "#fff", boxShadow: "0 4px 20px rgba(25,31,40,0.06)" }}>
+      <div className="rounded-2xl p-4 mb-6" style={{ background: "#fff", boxShadow: "var(--shadow-card)" }}>
         <label htmlFor="area-name" className="block text-[13px] font-bold mb-1.5">
           공개 지역명 (오늘부터 14일)
         </label>
@@ -168,7 +168,7 @@ export default function AdminExperimentsPage() {
             className="text-left rounded-2xl p-4 active:scale-[0.99] transition-transform"
             style={{
               background: "#fff",
-              boxShadow: "0 4px 20px rgba(25,31,40,0.06)",
+              boxShadow: "var(--shadow-card)",
               border: selected?.experiment.id === exp.id ? "1.5px solid var(--color-primary)" : "1.5px solid transparent",
             }}
           >
@@ -198,7 +198,7 @@ export default function AdminExperimentsPage() {
         </div>
       )}
       {selected && (
-        <div className="rounded-2xl p-5" style={{ background: "#fff", boxShadow: "0 4px 20px rgba(25,31,40,0.06)" }}>
+        <div className="rounded-2xl p-5" style={{ background: "#fff", boxShadow: "var(--shadow-card)" }}>
           <div className="flex items-center justify-between mb-1">
             <h2 className="text-[17px] font-bold">{selected.experiment.public_area_name} 지표</h2>
             {selected.experiment.status === "active" && (
