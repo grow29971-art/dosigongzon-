@@ -478,7 +478,7 @@ export default async function AboutPage() {
             href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("[도시공존] 안녕하세요")}`}
             className="mt-4 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold text-white press transition-transform"
             style={{
-              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+              background: "var(--color-primary)",
               boxShadow: "var(--shadow-primary)",
             }}
           >

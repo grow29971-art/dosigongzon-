@@ -144,7 +144,7 @@ export default function CatRegistrationCelebration({
             <div
               className="w-16 h-16 rounded-full flex items-center justify-center"
               style={{
-                background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+                background: "var(--color-primary)",
                 boxShadow: "var(--shadow-primary)",
               }}
             >
@@ -226,7 +226,7 @@ export default function CatRegistrationCelebration({
             onClick={onClose}
             className="w-full py-3 rounded-2xl text-[13px] font-bold text-white press"
             style={{
-              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+              background: "var(--color-primary)",
               boxShadow: "var(--shadow-primary)",
             }}
           >

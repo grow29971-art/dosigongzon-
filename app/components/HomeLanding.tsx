@@ -221,7 +221,7 @@ export default async function HomeLanding({
             href="/map"
             className="flex-[1.4] flex items-center justify-center gap-1.5 py-4 rounded-2xl text-white press transition-transform"
             style={{
-              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+              background: "var(--color-primary)",
               boxShadow: "0 8px 22px rgba(173, 94, 59,0.38), 0 2px 6px rgba(168,104,74,0.22)",
             }}
           >

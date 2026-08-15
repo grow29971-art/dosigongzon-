@@ -166,7 +166,7 @@ export default function WeeklyCheckinCard() {
             onClick={claim}
             disabled={claiming}
             className="shrink-0 px-3.5 py-1.5 rounded-xl text-[13px] font-bold text-white press-strong transition-transform"
-            style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
+            style={{ background: "var(--color-primary)" }}
           >
             {claiming ? "받는 중…" : `+${claimableSum}P 받기`}
           </button>

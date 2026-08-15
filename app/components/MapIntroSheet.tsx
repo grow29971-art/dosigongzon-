@@ -87,7 +87,7 @@ export default function MapIntroSheet() {
           onClick={dismiss}
           className="mt-6 w-full py-4 rounded-2xl text-white text-[15px] font-bold flex items-center justify-center gap-2 press"
           style={{
-            background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+            background: "var(--color-primary)",
             boxShadow: "var(--shadow-primary)",
           }}
         >

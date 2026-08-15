@@ -161,7 +161,7 @@ export default async function CelebratePage() {
           href="/map"
           className="block w-full text-center py-3.5 rounded-2xl text-[15px] font-bold text-white press transition-transform"
           style={{
-            background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+            background: "var(--color-primary)",
             boxShadow: "var(--shadow-primary)",
           }}
         >

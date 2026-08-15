@@ -119,7 +119,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
             style={{
-              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+              background: "var(--color-primary)",
               boxShadow: "var(--shadow-primary)",
             }}
           >

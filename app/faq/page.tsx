@@ -782,7 +782,7 @@ export default function FaqPage() {
             <Link
               href="/protection"
               className="rounded-full px-4 py-2 text-[13px] font-bold text-white shadow-sm press"
-              style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
+              style={{ background: "var(--color-primary)" }}
             >
               보호 지침 전체 보기
             </Link>

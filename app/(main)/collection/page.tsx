@@ -121,7 +121,7 @@ export default function CollectionPage() {
               <Link
                 href="/map"
                 className="mt-5 flex items-center justify-center gap-2 py-3 rounded-2xl text-white text-[15px] font-bold press transition-transform"
-                style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)", boxShadow: "var(--shadow-primary)" }}
+                style={{ background: "var(--color-primary)", boxShadow: "var(--shadow-primary)" }}
               >
                 <MapPin size={15} /> 지도에서 못 만난 고양이 만나러 가기
               </Link>
@@ -142,7 +142,7 @@ function EmptyPrompt({ emoji, title, desc, ctaLabel, href }: { emoji: string; ti
       <Link
         href={href}
         className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-white text-[15px] font-bold press transition-transform"
-        style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)", boxShadow: "var(--shadow-primary)" }}
+        style={{ background: "var(--color-primary)", boxShadow: "var(--shadow-primary)" }}
       >
         {ctaLabel}
       </Link>

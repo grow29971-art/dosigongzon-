@@ -1988,7 +1988,7 @@ export default function HomeAuthed({
             onClick={() => document.getElementById("my-cats")?.scrollIntoView({ behavior: "smooth", block: "start" })}
             className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-white text-[15px] font-bold press transition-transform pointer-events-auto"
             style={{
-              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+              background: "var(--color-primary)",
               boxShadow: "var(--shadow-primary)",
             }}
           >

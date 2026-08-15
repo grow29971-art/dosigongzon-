@@ -164,7 +164,7 @@ export default function MyInquiriesPage() {
           <Link
             href="/mypage"
             className="inline-block px-4 py-2 rounded-xl text-[13px] font-bold text-white"
-            style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
+            style={{ background: "var(--color-primary)" }}
           >
             마이페이지에서 문의하기
           </Link>

@@ -269,7 +269,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
                 href={`/signup?next=${encodeURIComponent(`/regions/${sido}`)}`}
                 className="flex-[1.5] flex items-center justify-center py-2.5 rounded-xl text-white text-[13px] font-bold press transition-transform"
                 style={{
-                  background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+                  background: "var(--color-primary)",
                   boxShadow: "var(--shadow-primary)",
                 }}
               >

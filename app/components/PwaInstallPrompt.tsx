@@ -167,7 +167,7 @@ export default function PwaInstallPrompt() {
           <div
             className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
             style={{
-              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+              background: "var(--color-primary)",
               boxShadow: "var(--shadow-primary)",
             }}
           >
@@ -221,7 +221,7 @@ export default function PwaInstallPrompt() {
             onClick={install}
             className="w-full mt-3 py-2.5 rounded-xl text-[13px] font-bold text-white press transition-transform"
             style={{
-              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+              background: "var(--color-primary)",
               boxShadow: "var(--shadow-primary)",
             }}
           >

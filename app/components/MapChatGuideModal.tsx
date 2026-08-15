@@ -107,7 +107,7 @@ export default function MapChatGuideModal() {
           >
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
+              style={{ background: "var(--color-primary)" }}
             >
               <MessageCircle size={18} color="#FFFFFF" strokeWidth={2.4} />
             </div>
@@ -128,7 +128,7 @@ export default function MapChatGuideModal() {
           type="button"
           onClick={dismiss}
           className="w-full py-3 rounded-2xl text-white text-[13px] font-bold press transition-transform"
-          style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
+          style={{ background: "var(--color-primary)" }}
         >
           알겠어요
         </button>

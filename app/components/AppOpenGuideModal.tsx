@@ -118,7 +118,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
             href={spot.href}
             onClick={close}
             className="flex items-center justify-center gap-1.5 py-3.5 rounded-2xl text-white text-[15px] font-bold press transition-transform"
-            style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)", boxShadow: "var(--shadow-primary)" }}
+            style={{ background: "var(--color-primary)", boxShadow: "var(--shadow-primary)" }}
           >
             {spot.cta} <ChevronRight size={15} />
           </Link>

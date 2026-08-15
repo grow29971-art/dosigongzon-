@@ -143,7 +143,7 @@ export default function WritePage() {
             <div className="flex items-start gap-2.5">
               <div
                 className="w-9 h-9 rounded-xl shrink-0 flex items-center justify-center"
-                style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
+                style={{ background: "var(--color-primary)" }}
               >
                 <PawPrint size={17} color="#fff" strokeWidth={2.3} />
               </div>

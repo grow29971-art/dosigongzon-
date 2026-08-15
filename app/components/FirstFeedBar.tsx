@@ -81,7 +81,7 @@ export default function FirstFeedBar({ catId, catName }: { catId: string; catNam
         className="mx-auto max-w-lg p-3.5"
         style={{
           // 앱에서 그라디언트가 허용되는 유일한 히어로 CTA — 단, 색은 동결 토큰 계열만
-          background: "linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%)",
+          background: "var(--color-primary)",
           borderRadius: "var(--radius-card)",
           boxShadow: "var(--shadow-primary)",
         }}

@@ -51,7 +51,7 @@ export default function MainError({
             onClick={reset}
             className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-white text-[13px] font-bold press transition-transform"
             style={{
-              background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+              background: "var(--color-primary)",
               boxShadow: "var(--shadow-primary)",
             }}
           >

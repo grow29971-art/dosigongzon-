@@ -31,7 +31,7 @@ export default async function PublicHeader() {
         <Link href="/" className="flex items-center gap-1.5 press-strong transition-transform">
           <div
             className="w-7 h-7 rounded-xl flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
+            style={{ background: "var(--color-primary)" }}
           >
             <PawPrint size={15} color="#fff" strokeWidth={2.3} />
           </div>
@@ -65,7 +65,7 @@ export default async function PublicHeader() {
               href="/signup"
               className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] font-bold press-strong transition-transform text-white"
               style={{
-                background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+                background: "var(--color-primary)",
                 boxShadow: "0 2px 8px rgba(173, 94, 59,0.35)",
               }}
             >

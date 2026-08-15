@@ -329,7 +329,7 @@ export default function MyPage() {
               disabled={avatarUploading}
               className="relative w-16 h-16 rounded-full flex items-center justify-center shrink-0 overflow-hidden press-strong transition-transform"
               style={{
-                background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+                background: "var(--color-primary)",
                 boxShadow: "0 0 0 2px #fff",
                 border: "1px solid var(--color-divider)",
               }}
@@ -1202,7 +1202,7 @@ export default function MyPage() {
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center shrink-0"
               style={{
-                background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+                background: "var(--color-primary)",
                 boxShadow: "var(--shadow-primary)",
               }}
             >

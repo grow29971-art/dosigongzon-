@@ -76,7 +76,7 @@ export default function NotFound() {
               href="/"
               className="w-full py-3 rounded-2xl text-[15px] font-bold text-white press transition-transform"
               style={{
-                background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+                background: "var(--color-primary)",
                 boxShadow: "var(--shadow-primary)",
               }}
             >

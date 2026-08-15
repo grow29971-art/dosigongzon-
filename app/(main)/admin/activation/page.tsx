@@ -330,7 +330,7 @@ export default function AdminActivationPage() {
                         href={`/messages?to=${u.id}`}
                         className="shrink-0 flex items-center gap-1 px-3 py-1.5 chip-square text-[11px] font-bold press-strong"
                         style={{
-                          background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+                          background: "var(--color-primary)",
                           color: "#fff",
                         }}
                         aria-label="쪽지 보내기"

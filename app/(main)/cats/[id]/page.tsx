@@ -194,7 +194,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             className="rounded-2xl p-5"
             style={{
               background: "linear-gradient(135deg, #2b2440 0%, #3a2c4d 55%, #55456f 100%)",
-              boxShadow: "0 8px 22px rgba(58,44,77,0.28)",
+              boxShadow: "var(--shadow-card)",
             }}
           >
             <div className="flex items-center gap-2">
@@ -237,7 +237,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             style={{
               background: "var(--color-primary-softer)",
               border: "1.5px solid rgba(173, 94, 59,0.30)",
-              boxShadow: "0 6px 18px rgba(173, 94, 59,0.18)",
+              boxShadow: "var(--shadow-card)",
             }}
           >
             <div
@@ -584,7 +584,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
               href={`/map?cat=${cat.id}`}
               className="inline-flex items-center gap-1.5 mt-3 px-4 py-2 rounded-xl text-white text-[13px] font-bold press-strong transition-transform"
               style={{
-                background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+                background: "var(--color-primary)",
                 boxShadow: "var(--shadow-primary)",
               }}
             >

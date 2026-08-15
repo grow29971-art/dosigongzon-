@@ -111,7 +111,7 @@ export default function RallyJoinButton() {
         style={{
           background: done
             ? "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)"
-            : "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+            : "var(--color-primary)",
           boxShadow: done ? "0 8px 20px rgba(107,142,111,0.28)" : "0 8px 20px rgba(173,94,59,0.28)",
         }}
       >

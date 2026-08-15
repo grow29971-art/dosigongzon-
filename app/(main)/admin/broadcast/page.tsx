@@ -429,7 +429,7 @@ export default function AdminBroadcastPage() {
         disabled={sending || !message.trim()}
         className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[15px] font-bold press disabled:opacity-60"
         style={{
-          background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
+          background: "var(--color-primary)",
           boxShadow: "var(--shadow-primary)",
         }}
       >

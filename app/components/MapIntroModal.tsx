@@ -115,7 +115,7 @@ export default function MapIntroModal() {
           <button
             onClick={close}
             className="w-full py-3 rounded-2xl text-[15px] font-bold text-white press transition-transform"
-            style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
+            style={{ background: "var(--color-primary)" }}
           >
             둘러보기 시작
           </button>

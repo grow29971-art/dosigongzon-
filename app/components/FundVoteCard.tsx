@@ -178,7 +178,7 @@ export default function FundVoteCard() {
                 onClick={sendIdea}
                 disabled={ideaBusy || !idea.trim()}
                 className="flex-1 py-2 rounded-xl text-[13px] font-bold text-white press transition-transform disabled:opacity-40"
-                style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
+                style={{ background: "var(--color-primary)" }}
               >
                 {ideaBusy ? "보내는 중…" : "보내기"}
               </button>
