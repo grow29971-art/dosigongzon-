@@ -11,9 +11,10 @@ interface BeforeInstallPromptEvent extends Event {
 
 const DISMISS_KEY = "dosigongzon_pwa_dismissed";
 const VISITS_KEY = "dosigongzon_visits";
-const DISMISS_TTL_DAYS = 3;
-// 노출 조건: 첫 방문부터 AND 현재 세션에서 5초 이상 체류 (자주 노출 모드)
-const MIN_VISITS = 1;
+const DISMISS_TTL_DAYS = 30; // 2026-08-15: 3→30일 — 닫은 사람에게 사흘마다 다시 묻지 않는다
+// 노출 조건: 3회차 방문부터 AND 현재 세션에서 5초 이상 체류.
+// (2026-08-15: 첫 방문 즉시 노출이던 것을 완화 — 마이페이지 "앱으로 설치" 메뉴가 상시 경로)
+const MIN_VISITS = 3;
 const DWELL_MS = 5_000;
 
 function isDismissedRecently(): boolean {
@@ -159,7 +160,7 @@ export default function PwaInstallPrompt() {
         style={{
           maxWidth: 420,
           background: "#FFFFFF",
-          boxShadow: "0 12px 36px rgba(173, 94, 59,0.25), 0 2px 8px rgba(0,0,0,0.08)",
+          boxShadow: "var(--shadow-fab)",
           border: "1px solid rgba(173, 94, 59,0.25)",
         }}
       >
