@@ -102,7 +102,7 @@ export default function AdminZonesPage() {
         <p className="text-[13px] text-text-sub leading-relaxed mb-4">
           구역을 만들면 QR이 생성돼요. 스캔하면 익명 목격제보 랜딩으로 연결됩니다.
           <br />
-          <b style={{ color: "#B84545" }}>⚠️ QR은 밥자리에 직접 붙이지 마세요</b> — 위치를 광고하는 역효과가 나요.
+          <b style={{ color: "#B84545" }}>QR은 밥자리에 직접 붙이지 마세요</b> — 위치를 광고하는 역효과가 나요.
           동네 진입부·아파트 게시판·관리사무소 레벨에 부착해주세요.
         </p>
 

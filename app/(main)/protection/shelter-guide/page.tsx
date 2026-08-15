@@ -3,7 +3,7 @@ import Link from "next/link";
 import GuideReadMarker from "@/app/components/GuideReadMarker";
 import {
   ArrowLeft, Thermometer, Wrench, AlertTriangle,
-  HelpCircle, Hammer, Cat,
+  HelpCircle, Hammer, Cat, Utensils,
 } from "lucide-react";
 
 const SITE_URL = "https://dosigongzon.com";
@@ -348,7 +348,7 @@ export default function ShelterGuidePage() {
             className="bg-white rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98]"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <span style={{ fontSize: 24 }}>🍚</span>
+            <Utensils size={18} color="var(--color-sage)" className="shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">먹이 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">안전한 급식 · 계절별 주의사항</p>
@@ -359,7 +359,7 @@ export default function ShelterGuidePage() {
             className="bg-white rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98]"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <span style={{ fontSize: 24 }}>🚨</span>
+            <AlertTriangle size={18} color="var(--color-error)" className="shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">응급 구조 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">다친 아이 발견 시 대응법</p>

@@ -116,14 +116,14 @@ export default function Og200EventModal() {
             <span className="text-[34px] leading-none">🌟</span>
           </div>
           <p className="text-center text-[11px] font-bold tracking-[0.25em] mb-1" style={{ color: "#8E5430" }}>
-            LIMITED · OFFICIAL LAUNCH 🎉
+            LIMITED · OFFICIAL LAUNCH
           </p>
           <h2
             id="og200-title"
             className="text-[24px] font-bold text-center tracking-tight leading-tight"
             style={{ color: "#5C3A1E" }}
           >
-            🎉 "초기 200" 타이틀이 도착했어요
+            "초기 200" 타이틀이 도착했어요
           </h2>
         </div>
 
@@ -140,7 +140,7 @@ export default function Og200EventModal() {
             style={{ background: "#FFF9EF", color: "#7A5F3F" }}
           >
             <p className="font-bold mb-1" style={{ color: "var(--color-primary-dark)" }}>
-              💎 이런 의미예요
+              이런 의미예요
             </p>
             <ul className="space-y-1 pl-1">
               <li>· 출시 후 가입한 사람은 절대 받을 수 없어요</li>
@@ -151,7 +151,7 @@ export default function Og200EventModal() {
 
           <p className="text-[13px] leading-relaxed text-text-sub mb-5 text-center">
             처음부터 함께해 주셔서 진심으로 감사드립니다.
-            <br />출시 후에도 한결같이 좋은 서비스 만들겠습니다 🐾
+            <br />출시 후에도 한결같이 좋은 서비스 만들겠습니다
             <br /><span className="text-[11px] text-text-light">— 도시공존 운영자 김성우 드림</span>
           </p>
 

@@ -132,7 +132,7 @@ function ProductCard({ product, wished, onToggleWish }: { product: Product; wish
           </div>
           {product.is_donation ? (
             <p className="text-[11px] font-semibold mt-1.5" style={{ color: "var(--color-warning)" }}>
-              수익의 일부 후원 💛
+              수익의 일부 후원
             </p>
           ) : null}
         </div>
@@ -274,7 +274,7 @@ export default function ShopPage() {
       >
         <p className="text-[13px] font-bold text-text-main leading-relaxed">
           여기서 사면 <b style={{ color: "var(--color-primary-dark)" }}>결제 금액의 5%</b>가
-          <br />길고양이 <b style={{ color: "var(--color-primary-dark)" }}>중성화(TNR)</b>에 쓰여요 🐱
+          <br />길고양이 <b style={{ color: "var(--color-primary-dark)" }}>중성화(TNR)</b>에 쓰여요
         </p>
         {/* 투명성 안내 */}
         <div
@@ -283,10 +283,10 @@ export default function ShopPage() {
         >
           <p className="text-[11px] leading-[1.65] text-text-sub">
             어차피 사는 사료·용품이잖아요.
-            <br />얼마가 모였고 얼마를 썼는지는 <b className="text-text-main">아래에 그대로 공개</b>돼요 💛
+            <br />얼마가 모였고 얼마를 썼는지는 <b className="text-text-main">아래에 그대로 공개</b>돼요
           </p>
           <p className="text-[11px] font-bold text-text-main mt-1.5 pt-1.5" style={{ borderTop: "1px solid rgba(196,126,90,0.12)" }}>
-            도시공존은 특정 단체·정당과 무관하게, 오직 <b style={{ color: "var(--color-primary-dark)" }}>길집사님들과</b> 함께 만들어가요 🐾
+            도시공존은 특정 단체·정당과 무관하게, 오직 <b style={{ color: "var(--color-primary-dark)" }}>길집사님들과</b> 함께 만들어가요
           </p>
         </div>
         {donation && donation.total > 0 ? (
@@ -311,7 +311,7 @@ export default function ShopPage() {
             </div>
             <p className="text-[11px] text-text-light mt-1.5">
               {donation.total >= donation.goal
-                ? "목표 달성! 중성화 지원에 쓰여요 🎉"
+                ? "목표 달성! 중성화 지원에 쓰여요"
                 : "구매 하나하나가 여기 쌓여요"}
             </p>
           </div>

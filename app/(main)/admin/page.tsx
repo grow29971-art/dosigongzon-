@@ -320,7 +320,7 @@ export default function AdminDashboardPage() {
                   {stats.daysUntilLaunch > 0
                     ? `2026-06-01 D-${stats.daysUntilLaunch}`
                     : stats.daysUntilLaunch === 0
-                      ? "🎉 D-Day"
+                      ? "D-Day"
                       : `출시 +${Math.abs(stats.daysUntilLaunch)}일`}
                 </p>
               </div>

@@ -389,7 +389,7 @@ export default function AdminTipsPage() {
             }}
           />
           <p className="text-[11px] text-text-light -mt-2 mb-2">
-            ⚠️ &lt;script&gt; · &lt;iframe&gt; · on* 핸들러는 자동 제거돼요
+            &lt;script&gt; · &lt;iframe&gt; · on* 핸들러는 자동 제거돼요
           </p>
 
           {/* 출처 */}

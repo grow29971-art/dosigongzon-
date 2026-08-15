@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowLeft, AlertTriangle, Shield, Stethoscope, Phone, Car,
-  HelpCircle, BookOpen, Flame, Droplet,
+  HelpCircle, BookOpen, Flame, Droplet, Siren, PawPrint, Construction,
+  Cat, Scissors, Scale,
 } from "lucide-react";
 import ShareGuideButton from "@/app/components/ShareGuideButton";
 import GuideReadMarker from "@/app/components/GuideReadMarker";
@@ -191,7 +192,7 @@ export default function EmergencyGuidePage() {
             className="rounded-xl bg-white p-3 flex flex-col items-center active:scale-95"
             style={{ border: "1px solid rgba(216,85,85,0.15)" }}
           >
-            <span className="text-[17px]">🚔</span>
+            <Siren size={17} color="#B84545" />
             <p className="text-[11px] text-text-sub mt-1">학대·범죄 신고</p>
             <p className="text-[15px] font-bold" style={{ color: "#B84545" }}>112</p>
           </a>
@@ -200,7 +201,7 @@ export default function EmergencyGuidePage() {
             className="rounded-xl bg-white p-3 flex flex-col items-center active:scale-95"
             style={{ border: "1px solid rgba(216,85,85,0.15)" }}
           >
-            <span className="text-[17px]">🐾</span>
+            <PawPrint size={17} color="#B84545" />
             <p className="text-[11px] text-text-sub mt-1">동물보호상담</p>
             <p className="text-[13px] font-bold" style={{ color: "#B84545" }}>1577-0954</p>
           </a>
@@ -209,7 +210,7 @@ export default function EmergencyGuidePage() {
             className="rounded-xl bg-white p-3 flex flex-col items-center active:scale-95"
             style={{ border: "1px solid rgba(216,85,85,0.15)" }}
           >
-            <span className="text-[17px]">🚧</span>
+            <Construction size={17} color="#B84545" />
             <p className="text-[11px] text-text-sub mt-1">도로 로드킬</p>
             <p className="text-[13px] font-bold" style={{ color: "#B84545" }}>1577-2504</p>
           </a>
@@ -481,7 +482,7 @@ export default function EmergencyGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <span className="text-[17px]">🐱</span>
+            <Cat size={18} color="var(--color-care)" className="shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">새끼 고양이(냥줍) 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">어린 아이 발견했을 때 대응</p>
@@ -492,7 +493,7 @@ export default function EmergencyGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <span className="text-[17px]">✂️</span>
+            <Scissors size={18} color="var(--color-primary)" className="shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">TNR 포획 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">중성화 수술을 위한 안전한 포획</p>
@@ -503,7 +504,7 @@ export default function EmergencyGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <span className="text-[17px]">⚖️</span>
+            <Scale size={18} color="var(--color-text-sub)" className="shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">동물보호법·학대 신고</p>
               <p className="text-[11px] text-text-sub mt-0.5">법적 대응과 증거 확보 방법</p>

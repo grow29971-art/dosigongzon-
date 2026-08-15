@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, MapPin, PawPrint, CalendarDays, Camera, BookOpen, Sparkles, Star } from "lucide-react";
+import { ArrowLeft, MapPin, PawPrint, CalendarDays, Camera, BookOpen, Sparkles, Star, Heart, MessageCircle } from "lucide-react";
 import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer, getCatCommunityStatsServer, getCatDiaryServer } from "@/lib/cats-server";
 import { GENDER_MAP, HEALTH_MAP, thumbnailUrl, optimizedImageUrl } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
@@ -253,7 +253,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
               }}
             />
             <p className="text-[15px] font-bold text-text-main leading-tight tracking-tight mb-1.5">
-              🐾 우리 동네 길고양이도 같이 돌봐요
+              우리 동네 길고양이도 같이 돌봐요
             </p>
             <p className="text-[11px] leading-relaxed mb-3" style={{ color: "rgba(92,74,62,0.85)" }}>
               도시공존은 광고 없는 무료 시민 참여 길고양이 지도예요.
@@ -334,9 +334,9 @@ export default async function CatDetailPage({ params }: { params: Params }) {
 
       {/* 카운트 스탯 */}
       <div className="grid grid-cols-3 gap-2 px-4 mt-4">
-        <StatCard emoji="❤️" label="좋아요" value={cat.like_count ?? 0} color="var(--color-like)" />
-        <StatCard emoji="🐾" label="돌봄다이어리" value={careCount} color="var(--color-sage)" />
-        <StatCard emoji="💬" label="댓글" value={commentCount} color="var(--color-gray-600)" />
+        <StatCard icon={<Heart size={18} style={{ color: "var(--color-like)" }} />} label="좋아요" value={cat.like_count ?? 0} color="var(--color-like)" />
+        <StatCard icon={<PawPrint size={18} style={{ color: "var(--color-sage)" }} />} label="돌봄다이어리" value={careCount} color="var(--color-sage)" />
+        <StatCard icon={<MessageCircle size={18} style={{ color: "var(--color-gray-600)" }} />} label="댓글" value={commentCount} color="var(--color-gray-600)" />
       </div>
 
       {/* 사회적 증명 — 이 아이를 함께 돌보는 이웃 */}
@@ -439,7 +439,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                 bg={cat.neutered ? "var(--color-sage-soft)" : "var(--color-care-soft)"}
                 fg={cat.neutered ? "var(--color-sage)" : "var(--color-care)"}
               >
-                {cat.neutered ? "✂️ 중성화 완료" : "중성화 필요"}
+                {cat.neutered ? "중성화 완료" : "중성화 필요"}
               </Badge>
             )}
             {cat.health_status && cat.health_status !== "good" && (() => {
@@ -544,7 +544,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                     style={{ color: hasTodayPhoto ? "var(--color-sage)" : "var(--color-primary-dark)" }}
                   >
                     {hasTodayPhoto
-                      ? `오늘 ${todayCount}장 채워졌어요 ✨`
+                      ? `오늘 ${todayCount}장 채워졌어요`
                       : `오늘의 ${cat.name} 사진을 올려주세요`}
                   </p>
                   <p
@@ -578,7 +578,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             <p className="text-[11px] text-text-sub mt-1.5 leading-relaxed">
               지도에서 사진을 한 장 올려주세요.
               <br />
-              매일 한 장씩 모이면 시간을 담은 다이어리가 돼요 🐾
+              매일 한 장씩 모이면 시간을 담은 다이어리가 돼요
             </p>
             <Link
               href={`/map?cat=${cat.id}`}
@@ -688,7 +688,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
         )}
         <p className="text-[11px] text-text-light text-center leading-relaxed mt-2">
           아이들 안전을 위해 지도 위치는 대략적인 활동 범위로만 표시돼요.
-          <br />동네 단톡방에 공유하면 더 많은 이웃이 지켜줘요 🫶
+          <br />동네 단톡방에 공유하면 더 많은 이웃이 지켜줘요
         </p>
       </div>
 
@@ -698,13 +698,13 @@ export default async function CatDetailPage({ params }: { params: Params }) {
   );
 }
 
-function StatCard({ emoji, label, value, color }: { emoji: string; label: string; value: number; color: string }) {
+function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: number; color: string }) {
   return (
     <div
       className="bg-white rounded-2xl py-3 flex flex-col items-center justify-center"
       style={{ boxShadow: "var(--shadow-card)" }}
     >
-      <span style={{ fontSize: 20 }}>{emoji}</span>
+      <span style={{ fontSize: 20 }}>{icon}</span>
       <span className="text-[17px] font-bold" style={{ color }}>{value}</span>
       <span className="text-[11px] text-text-sub font-semibold mt-0.5">{label}</span>
     </div>

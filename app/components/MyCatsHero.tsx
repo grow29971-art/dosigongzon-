@@ -208,7 +208,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
                     ) : fedToday ? (
                       <><Check size={13} strokeWidth={3} /> 완료</>
                     ) : (
-                      <>🍚 밥주기</>
+                      <>밥주기</>
                     )}
                   </button>
                   <button

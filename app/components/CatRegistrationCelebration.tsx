@@ -190,7 +190,7 @@ export default function CatRegistrationCelebration({
                 style={{ background: "#EAF6EC", color: "#3B7A46" }}
               >
                 <Check size={16} strokeWidth={3} />
-                오늘 {catName} 밥 완료! 🍚
+                오늘 {catName} 밥 완료!
               </div>
             ) : (
               <button
@@ -203,7 +203,7 @@ export default function CatRegistrationCelebration({
                   boxShadow: "0 4px 14px rgba(217,116,63,0.4)",
                 }}
               >
-                🍚 {meal === "saving" ? "기록 중…" : "지금 첫 밥 기록하기"}
+                {meal === "saving" ? "기록 중…" : "지금 첫 밥 기록하기"}
               </button>
             )
           )}
@@ -213,7 +213,7 @@ export default function CatRegistrationCelebration({
               style={{ background: "#FFF9EF", color: "#7A5F3F" }}
             >
               <p className="font-bold mb-1" style={{ color: "var(--color-primary)" }}>
-                💡 다음 단계 힌트
+                다음 단계 힌트
               </p>
               <p>
                 돌봄다이어리 한 줄을 남기면 레벨·업적이 시작돼요. 근처 이웃에게

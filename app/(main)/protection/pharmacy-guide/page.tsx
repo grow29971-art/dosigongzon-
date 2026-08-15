@@ -4,7 +4,7 @@ import Link from "next/link";
 import GuideReadMarker from "@/app/components/GuideReadMarker";
 import {
   AlertTriangle, HelpCircle, BookOpen, Pill, Shield, Stethoscope,
-  Droplets, Bug, Eye, Heart,
+  Droplets, Bug, Eye, Heart, Ban, Cat,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import BackButton from "./BackButton";
@@ -291,7 +291,7 @@ export default async function PharmacyGuidePage() {
               style={{ border: `1px solid ${c.color}20`, boxShadow: "var(--shadow-card-sm)" }}
             >
               <div className="flex items-center gap-2 mb-2">
-                <span style={{ fontSize: 20 }}>{c.emoji}</span>
+                <c.Icon size={18} color={c.color} />
                 <h3 className="text-[15px] font-bold" style={{ color: c.color }}>
                   {c.title}
                 </h3>
@@ -344,7 +344,7 @@ export default async function PharmacyGuidePage() {
                 borderTop: i === 0 ? "none" : "1px solid rgba(216,85,85,0.1)",
               }}
             >
-              <span style={{ fontSize: 17, marginTop: 2 }}>⛔</span>
+              <Ban size={16} color="var(--color-error)" className="shrink-0" style={{ marginTop: 2 }} />
               <div className="flex-1 min-w-0">
                 <p className="text-[13px] font-bold" style={{ color: "#8B2F2F" }}>
                   {d.name}
@@ -484,7 +484,7 @@ export default async function PharmacyGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <span className="text-[17px]">🚨</span>
+            <AlertTriangle size={18} color="var(--color-error)" className="shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">응급 구조 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">중독·부상 발생 시 대응법</p>
@@ -495,7 +495,7 @@ export default async function PharmacyGuidePage() {
             className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
             style={{ border: "1px solid rgba(0,0,0,0.05)" }}
           >
-            <span className="text-[17px]">🐱</span>
+            <Cat size={18} color="var(--color-care)" className="shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">새끼 고양이(냥줍) 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">KMR 분유·연령별 급여</p>

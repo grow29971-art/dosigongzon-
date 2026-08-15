@@ -36,6 +36,7 @@ import {
   BookOpen,
   Sparkles,
   PhoneCall,
+  PawPrint,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { CARD_THEME, pseudoDexNo, type CardRarity } from "@/app/components/CatCard";
@@ -2229,7 +2230,7 @@ export default function MapPage() {
                     boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
                   }}
                 >
-                  {searchMatchCount > 0 ? `🐾 ${searchMatchCount}마리 찾음 — 지도로 이동할게요` : "검색 결과가 없어요"}
+                  {searchMatchCount > 0 ? `${searchMatchCount}마리 찾음 — 지도로 이동할게요` : "검색 결과가 없어요"}
                 </span>
               </div>
             )}
@@ -2305,7 +2306,7 @@ export default function MapPage() {
                       }}
                     >
                       {r.name}
-                      {r.is_primary && <span style={{ fontSize: 9 }}>⭐</span>}
+                      {r.is_primary && <Star size={9} fill="currentColor" className="shrink-0" />}
                     </button>
                   );
                 })}
@@ -2565,7 +2566,7 @@ export default function MapPage() {
               className="px-3 py-2 rounded-2xl max-w-[160px]"
               style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "0 2px 10px rgba(0,0,0,0.08)" }}
             >
-              <p className="text-[11px] font-semibold text-text-main leading-snug">전체 채팅에서 동네 이웃을 만나보세요 💬</p>
+              <p className="text-[11px] font-semibold text-text-main leading-snug">전체 채팅에서 동네 이웃을 만나보세요</p>
             </div>
           )}
         </div>
@@ -2661,11 +2662,11 @@ export default function MapPage() {
             className="px-3 py-2 rounded-2xl max-w-[180px] text-right"
             style={{ backgroundColor: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", boxShadow: "0 2px 10px rgba(0,0,0,0.08)" }}
           >
-            <p className="text-[11px] font-semibold text-text-main leading-snug">우리 동네 고양이를 등록하고 품앗이 케어해보세요 🐾</p>
+            <p className="text-[11px] font-semibold text-text-main leading-snug">우리 동네 고양이를 등록하고 품앗이 케어해보세요</p>
             <p className="text-[9px] text-text-light mt-0.5 leading-snug">
               고양이 위치는 보안상 동 단위로 표기돼요.
               <br />
-              안심하고 등록해주세요 — 내가 못 가는 시간엔 이웃이 지켜줘요 🫶
+              안심하고 등록해주세요 — 내가 못 가는 시간엔 이웃이 지켜줘요
             </p>
           </div>
         </div>
@@ -2730,7 +2731,7 @@ export default function MapPage() {
               className="px-5 py-2 text-[11px] text-text-sub flex items-center gap-1.5 shrink-0"
               style={{ background: "rgba(173, 94, 59,0.06)", borderBottom: "1px solid rgba(0,0,0,0.04)" }}
             >
-              <span>🕓</span>
+              <Clock size={12} className="shrink-0" />
               <span>채팅은 <b className="text-text-main">매일 새벽 4시</b>에 모두 정리됩니다 서버비 감당이안돼서요 ㅠㅠ</span>
             </div>
 
@@ -2852,7 +2853,7 @@ export default function MapPage() {
 
             <div className="px-5 pt-5 pb-2">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[20px]">🐾</span>
+                <PawPrint size={18} style={{ color: "var(--color-primary)" }} />
                 <h3 className="text-[17px] font-bold text-text-main">{selectedDong}</h3>
                 <span
                   className="text-[11px] font-bold px-2 py-0.5 chip-square"
@@ -3290,7 +3291,7 @@ export default function MapPage() {
               {/* 배회 마커 안내 — 탭하면 스토킹·학대 방지 설계 상세 설명 펼침 */}
               <details className="px-4 pb-1 group">
                 <summary className="text-[11px] text-text-light text-center list-none cursor-pointer select-none [&::-webkit-details-marker]:hidden">
-                  🐾 마커는 아이들 보호를 위해 실제 위치와 다르게 계속 움직여요{" "}
+                  마커는 아이들 보호를 위해 실제 위치와 다르게 계속 움직여요{" "}
                   <span className="underline underline-offset-2 font-semibold">자세히</span>
                 </summary>
                 <div
@@ -3298,7 +3299,7 @@ export default function MapPage() {
                   style={{ backgroundColor: "var(--color-surface-alt)" }}
                 >
                   <p className="text-[13px] font-bold text-text-main mb-2">
-                    🛡 스토킹·학대를 막는 3중 위치 보호
+                    스토킹·학대를 막는 3중 위치 보호
                   </p>
                   <ul className="space-y-2 text-[11px] leading-relaxed text-text-sub">
                     <li>
@@ -3317,7 +3318,7 @@ export default function MapPage() {
                   </ul>
                   <p className="text-[11px] leading-relaxed mt-2.5" style={{ color: "var(--color-text-light)" }}>
                     학대 신고가 접수되면 마커에 ⚠️ 경보가 붙어 이웃이 함께 지켜봐요. 아이들을
-                    위해 급식소·쉼터의 정확한 위치는 글이나 설명에도 적지 말아주세요 🙏
+                    위해 급식소·쉼터의 정확한 위치는 글이나 설명에도 적지 말아주세요
                   </p>
                 </div>
               </details>
@@ -3373,7 +3374,7 @@ export default function MapPage() {
                           style={{ color: hasTodayPhoto ? "var(--color-sage)" : "var(--color-primary-dark)" }}
                         >
                           {hasTodayPhoto
-                            ? `오늘 ${todayPhotoCount}장 채워졌어요 ✨`
+                            ? `오늘 ${todayPhotoCount}장 채워졌어요`
                             : `오늘의 ${selectedCat.name} 사진을 올려주세요`}
                         </p>
                         <p
@@ -3382,7 +3383,7 @@ export default function MapPage() {
                         >
                           {hasTodayPhoto
                             ? "다이어리에 차곡차곡 쌓이고 있어요"
-                            : "아래 댓글창에서 📷 버튼으로 첨부해보세요"}
+                            : "아래 댓글창에서 사진 버튼으로 첨부해보세요"}
                         </p>
                       </div>
                       <BookOpen size={13} className="shrink-0" style={{ color: hasTodayPhoto ? "var(--color-sage)" : "var(--color-primary)" }} />
@@ -3402,7 +3403,7 @@ export default function MapPage() {
                   <div>
                     <label className="text-[11px] font-bold text-text-sub mb-1 block">설명</label>
                     <p className="text-[11px] leading-relaxed mb-1.5" style={{ color: "var(--color-sage)" }}>
-                      🛡 안전을 위해 정확한 위치(역·출구·시장·공원·아파트·주소 등)는 적지 마세요.
+                      안전을 위해 정확한 위치(역·출구·시장·공원·아파트·주소 등)는 적지 마세요.
                     </p>
                     <textarea value={editDesc} onChange={(e) => setEditDesc(e.target.value)} rows={3} maxLength={200}
                       className="w-full px-3 py-2 rounded-xl text-[13px] outline-none resize-none"
@@ -3412,12 +3413,12 @@ export default function MapPage() {
                       }} />
                     {editDescViolations.length > 0 && (
                       <p className="text-[11px] mt-1 leading-relaxed" style={{ color: "var(--color-error)" }}>
-                        ⚠ {editDescViolations.map((v) => `${v.label}(${v.match})`).join(", ")} — 일반 표현으로 바꿔주세요.
+                        {editDescViolations.map((v) => `${v.label}(${v.match})`).join(", ")} — 일반 표현으로 바꿔주세요.
                       </p>
                     )}
                     {editDescAbuseViolations.length > 0 && (
                       <p className="text-[11px] mt-1 leading-relaxed" style={{ color: "var(--color-error)" }}>
-                        🚫 {formatAbuseMessage(editDescAbuseViolations)}
+                        {formatAbuseMessage(editDescAbuseViolations)}
                       </p>
                     )}
                   </div>
@@ -3618,7 +3619,7 @@ export default function MapPage() {
                           className="inline-flex items-center gap-1 px-2 py-0.5 chip-square text-[11px] font-bold"
                           style={{ background: "rgba(107,142,111,0.12)", color: "var(--color-sage)", border: "1px solid rgba(107,142,111,0.30)" }}
                         >
-                          🤝 함께 돌볼 수 있어요
+                          함께 돌볼 수 있어요
                         </span>
                       )}
                     </div>
@@ -3682,7 +3683,7 @@ export default function MapPage() {
                     {(selectedCat.like_count ?? 0) > 0 && (
                       <span className="text-[11px] text-text-light font-semibold">
                         {likedCatIds.has(selectedCat.id)
-                          ? "마음이 전해졌어요 💛"
+                          ? "마음이 전해졌어요"
                           : `${selectedCat.like_count}명이 응원해요`}
                       </span>
                     )}
@@ -4162,7 +4163,7 @@ export default function MapPage() {
                     style={{ backgroundColor: "var(--color-error-soft)", border: "1.5px solid var(--color-error)" }}
                   >
                     <p className="text-[13px] font-bold leading-snug" style={{ color: "var(--color-error)" }}>
-                      🚨 학대·위험 신고 모드
+                      학대·위험 신고 모드
                     </p>
                     <p className="text-[11px] leading-relaxed mt-0.5" style={{ color: "var(--color-error)" }}>
                       지금 남기는 기록은 <b>학대/위험 신고</b>로 표시돼요. 2건 이상 쌓이면 마커에 경보 라벨이 뜨고,
@@ -4172,7 +4173,7 @@ export default function MapPage() {
                   </div>
                 ) : (
                   <p className="mt-3 text-[11px] text-text-light leading-relaxed px-1">
-                    💡 왼쪽 <b style={{ color: "var(--color-error)" }}>⚠️</b> 버튼을 누르면 <b>학대·위험 신고 모드</b>로 바뀌어요.
+                    왼쪽 <b style={{ color: "var(--color-error)" }}>⚠️</b> 버튼을 누르면 <b>학대·위험 신고 모드</b>로 바뀌어요.
                     신고 누적 시 동네 이웃에게 즉시 알리는 용도.
                   </p>
                 )}

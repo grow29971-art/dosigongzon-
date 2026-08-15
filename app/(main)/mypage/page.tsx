@@ -27,6 +27,8 @@ import {
   ShieldCheck,
   TrendingUp,
   Star,
+  Bot,
+  Lock,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 const InquiryModal = dynamic(() => import("@/app/components/InquiryModal"), { ssr: false });
@@ -442,7 +444,7 @@ export default function MyPage() {
                       className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 chip-square text-[11px] font-bold"
                       style={{ background: "var(--color-primary-soft)", color: "var(--color-primary-dark)" }}
                     >
-                      🐾 첫 등록 후 {joinedDays}일째 함께 돌봐요
+                      첫 등록 후 {joinedDays}일째 함께 돌봐요
                     </span>
                   )}
                   {avatarError && (
@@ -533,17 +535,17 @@ export default function MyPage() {
                       <p className="text-[11px] font-bold text-text-light mb-2">Lv.{lv.level} 혜택</p>
                       <div className="grid grid-cols-2 gap-1.5">
                         <div className="flex items-center gap-1.5 text-[11px]">
-                          <span>🤖</span>
+                          <Bot size={14} />
                           <span className="text-text-sub">AI 대화</span>
                           <span className="font-bold text-text-main ml-auto">{perks.aiChatPerMinute}회/분</span>
                         </div>
                         <div className="flex items-center gap-1.5 text-[11px]">
-                          <span>📝</span>
+                          <Pencil size={14} />
                           <span className="text-text-sub">글 작성</span>
                           <span className="font-bold text-text-main ml-auto">{perks.dailyPostLimit === 0 ? "무제한" : `${perks.dailyPostLimit}개/일`}</span>
                         </div>
                         <div className="flex items-center gap-1.5 text-[11px]">
-                          <span>{perks.canUseSpecialEmoji ? "✨" : "🔒"}</span>
+                          {perks.canUseSpecialEmoji ? <Sparkles size={14} /> : <Lock size={14} />}
                           <span className="text-text-sub">특별 이모지</span>
                           <span className="font-bold ml-auto" style={{ color: perks.canUseSpecialEmoji ? "var(--color-gray-600)" : "var(--color-text-light)" }}>{perks.canUseSpecialEmoji ? "사용 가능" : "Lv.3+"}</span>
                         </div>

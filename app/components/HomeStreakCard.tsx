@@ -42,7 +42,7 @@ export default function HomeStreakCard({
     : urgentSubline
       ? `${s}일 연속 기록이 오늘 끊길 수 있어요. 한 줄이면 돼요!`
       : !hasToday
-        ? "아직 오늘 기록이 없어요. 끊기지 않게 💛"
+        ? "아직 오늘 기록이 없어요. 끊기지 않게"
         : s >= 7
           ? "대단해요! 꾸준함이 아이들을 지켜요"
           : "매일 조금씩이 가장 큰 힘이에요";
@@ -85,7 +85,7 @@ export default function HomeStreakCard({
           >
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#FFF" }} />
             <span className="text-[11px] font-bold text-white tracking-tight">
-              ⏰ {hoursLeft}시간 남음
+              {hoursLeft}시간 남음
             </span>
           </div>
         )}
@@ -122,7 +122,6 @@ export default function HomeStreakCard({
             <span className="text-[11px] font-bold text-text-sub">이번 주 돌봄</span>
             <span className="text-[13px] font-bold" style={{ color: accent }}>
               {weekly.count}/{weekly.goal}
-              {progress >= 100 && <span className="ml-1">🎉</span>}
             </span>
           </div>
           <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "rgba(0,0,0,0.06)" }}>
@@ -166,8 +165,8 @@ export default function HomeStreakCard({
             >
               <span className="text-[11px] font-bold" style={{ color: streakInfo.isRecord ? "#A67B1E" : "#8C7B6A" }}>
                 {streakInfo.isRecord
-                  ? `🎉 역대 최장 기록 갱신 중! (${streakInfo.longestStreak}일)`
-                  : `🏆 역대 최장 ${streakInfo.longestStreak}일 · 돌파까지 ${streakInfo.longestStreak - s + 1}일`}
+                  ? `역대 최장 기록 갱신 중! (${streakInfo.longestStreak}일)`
+                  : `역대 최장 ${streakInfo.longestStreak}일 · 돌파까지 ${streakInfo.longestStreak - s + 1}일`}
               </span>
             </div>
           )}
@@ -175,14 +174,14 @@ export default function HomeStreakCard({
           <div className="mt-3 px-3 py-2 rounded-lg flex items-center justify-between" style={{ background: `${accent}12` }}>
             <span className="text-[11px] font-bold" style={{ color: accent }}>
               {progress >= 100
-                ? "🏆 주간 개근 달성! +5점 · 업적 잠금 해제"
+                ? "주간 개근 달성! +5점 · 업적 잠금 해제"
                 : s >= 100
-                ? "👑 100일 연속 · +100점 유지 중"
+                ? "100일 연속 · +100점 유지 중"
                 : s >= 30
-                ? "🔥🔥 30일 연속 · +30점 · 다음 목표: 100일"
+                ? "30일 연속 · +30점 · 다음 목표: 100일"
                 : s >= 7
-                ? "🔥 7일 연속 · +10점 · 다음 목표: 30일"
-                : `7일 연속 달성 시 🔥 +10점 · 주간 개근 +5점`}
+                ? "7일 연속 · +10점 · 다음 목표: 30일"
+                : `7일 연속 달성 시 +10점 · 주간 개근 +5점`}
             </span>
           </div>
         </div>

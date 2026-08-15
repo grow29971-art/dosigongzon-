@@ -101,13 +101,13 @@ export default async function RankingPage() {
               boxShadow: isTop3 ? "0 6px 18px rgba(201,169,97,0.25)" : "0 4px 14px rgba(0,0,0,0.05)",
             }}
           >
-            <div className="text-[24px] leading-none shrink-0">{isTop3 ? "🎉" : "🐾"}</div>
+            <div className="text-[24px] leading-none shrink-0">{isTop3 ? <Trophy size={18} /> : <PawPrint size={18} />}</div>
             <div className="flex-1 min-w-0">
               <p className="text-[11px] font-bold tracking-[0.15em]" style={{ color: isTop3 ? "#A9851F" : "var(--color-primary-dark)" }}>
                 이번 주 내 순위
               </p>
               <p className="text-[15px] font-bold text-text-main leading-tight mt-0.5">
-                {myRankNumber}위{isTop3 ? " · TOP 3 🏆" : ""}
+                {myRankNumber}위{isTop3 ? " · TOP 3" : ""}
                 <span className="text-[13px] font-bold text-text-sub"> · {myScore.toLocaleString()}점</span>
               </p>
             </div>
@@ -180,7 +180,7 @@ export default async function RankingPage() {
               로그인하면 내 순위도 보여요
             </p>
             <p className="text-[11px] text-text-sub mt-0.5">
-              지금 시작하면 여기 오를 수 있어요 🐾
+              지금 시작하면 여기 오를 수 있어요
             </p>
           </Link>
         </div>
@@ -238,7 +238,7 @@ function PodiumCard({ row, place, height }: { row: RankingRow; place: 1 | 2 | 3;
             className="w-12 h-12 rounded-full flex items-center justify-center text-[20px]"
             style={{ background: "#FFF", border: `2.5px solid ${border}` }}
           >
-            🐾
+            <PawPrint size={18} />
           </div>
         )}
         <p className="text-[13px] font-bold text-text-main mt-1.5 truncate max-w-full px-1">
@@ -295,7 +295,7 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
           className="w-9 h-9 rounded-full flex items-center justify-center text-[15px] shrink-0"
           style={{ background: "var(--color-gray-50)", border: `1.5px solid ${getLevelColor(level.level)}` }}
         >
-          🐾
+          <PawPrint size={14} />
         </div>
       )}
       <div className="flex-1 min-w-0">

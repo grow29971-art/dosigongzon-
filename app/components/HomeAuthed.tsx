@@ -24,7 +24,7 @@ import {
   Bell,
   Bot,
   Search,
-  ShoppingBag,
+  ShoppingBag, Flame, PawPrint,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 // 업적 토스트 — 업적 잠금 해제 시에만 보임. ssr 끄고 lazy.
@@ -653,7 +653,7 @@ export default function HomeAuthed({
         >
           <div className="p-4 flex items-center gap-3">
             <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 text-[24px]" style={{ background: "rgba(255,255,255,0.2)" }}>
-              📍
+              <MapPin size={18} color="#fff" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[15px] font-bold text-white leading-snug">우리 동네부터 알려주세요</p>
@@ -716,12 +716,12 @@ export default function HomeAuthed({
               new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }),
             ).getHours();
             const greet =
-              h < 5 ? "늦은 밤에도 수고 많으세요 🌙"
-              : h < 11 ? "좋은 아침이에요 ☀️"
-              : h < 14 ? "점심은 드셨어요? 🍽️"
-              : h < 18 ? "오늘도 고생하세요 🌤️"
-              : h < 22 ? "좋은 저녁이에요 🌆"
-              : "편안한 밤 되세요 🌙";
+              h < 5 ? "늦은 밤에도 수고 많으세요"
+              : h < 11 ? "좋은 아침이에요"
+              : h < 14 ? "점심은 드셨어요?"
+              : h < 18 ? "오늘도 고생하세요"
+              : h < 22 ? "좋은 저녁이에요"
+              : "편안한 밤 되세요";
             const name =
               (user?.user_metadata?.nickname as string | undefined) ??
               (user?.user_metadata?.full_name as string | undefined) ??
@@ -737,7 +737,7 @@ export default function HomeAuthed({
                         className="flex items-center gap-1 px-2.5 py-1 chip-square text-[11px] font-bold"
                         style={{ background: "var(--color-care-soft)", border: "1px solid rgba(232,148,10,0.3)", color: "var(--color-care)" }}
                       >
-                        🔥 {streakInfo.streak}일
+                        <Flame size={14} />{streakInfo.streak}일
                       </span>
                     )}
                     <Link
@@ -780,10 +780,10 @@ export default function HomeAuthed({
                   {hungryCatName ? (
                     // 부담·죄책감 대신 초대 톤 — "기다려요"(방치 암시)보다 가볍게 권유
                     <>
-                      오늘 <span className="text-primary">{hungryCatName}</span> 밥 챙겨줄까요? 🍚
+                      오늘 <span className="text-primary">{hungryCatName}</span> 밥 챙겨줄까요?
                     </>
                   ) : (
-                    <>오늘도 함께해 주셔서 고마워요 💛</>
+                    <>오늘도 함께해 주셔서 고마워요</>
                   )}
                 </h1>
               </>
@@ -990,7 +990,7 @@ export default function HomeAuthed({
               </h2>
               {primaryRegion && (
                 <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg" style={{ background: "rgba(173, 94, 59,0.12)", color: "var(--color-primary)" }}>
-                  📍 {primaryRegion.name}
+                  {primaryRegion.name}
                 </span>
               )}
             </div>
@@ -1044,8 +1044,8 @@ export default function HomeAuthed({
                   {/* 세그먼트 탭 */}
                   <div className="flex items-center gap-1 p-1 rounded-xl mb-2.5" style={{ background: "var(--color-warm-white)" }}>
                     {([
-                      ["cats", `🐾 동네 고양이 ${neighborhoodCats.length}`],
-                      ["posts", "💬 동네 이야기"],
+                      ["cats", `동네 고양이 ${neighborhoodCats.length}`],
+                      ["posts", "동네 이야기"],
                     ] as const).map(([key, label]) => (
                       <button
                         key={key}
@@ -1143,7 +1143,7 @@ export default function HomeAuthed({
                       className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-[20px]"
                       style={{ backgroundColor: "rgba(173, 94, 59,0.15)" }}
                     >
-                      🐾
+                      <PawPrint size={18} style={{ color: "var(--color-primary)" }} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[13px] font-bold text-text-main mb-0.5">
@@ -1227,7 +1227,7 @@ export default function HomeAuthed({
                   }}
                 >
                   <p className="text-[13px] font-bold text-text-main mb-2">
-                    💬 우리 동네 이야기
+                    우리 동네 이야기
                   </p>
                   <div className="space-y-1.5">
                     {neighborhoodPosts.map((p) => (
@@ -1280,7 +1280,7 @@ export default function HomeAuthed({
               </div>
               {primary && (
                 <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: "var(--color-sage-soft)", color: "var(--color-sage)" }}>
-                  📍 {primary.name}
+                  {primary.name}
                 </span>
               )}
             </div>
@@ -1714,7 +1714,7 @@ export default function HomeAuthed({
             {anniversaries.map((a) => {
               const label = a.years === 0
                 ? "오늘 구조됐어요"
-                : `만난 지 ${a.years}주년 🎉`;
+                : `만난 지 ${a.years}주년`;
               const bgGradient = a.years >= 3
                 ? "var(--color-like)"
                 : a.years >= 1
@@ -1769,7 +1769,7 @@ export default function HomeAuthed({
                       </p>
                       {a.region && (
                         <p className="text-[11px] text-white/80 drop-shadow">
-                          📍 {a.region}
+                          {a.region}
                         </p>
                       )}
                     </div>
@@ -1992,7 +1992,7 @@ export default function HomeAuthed({
               boxShadow: "0 6px 20px rgba(173, 94, 59,0.35)",
             }}
           >
-            🍚 돌봄 기록하기
+            돌봄 기록하기
           </button>
         </div>
       </div>

@@ -89,7 +89,7 @@ export default function MapChatGuideModal() {
             <Globe size={18} color="#FFFFFF" strokeWidth={2.4} />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[15px] font-bold text-text-main">🌐 전체 채팅</p>
+            <p className="text-[15px] font-bold text-text-main">전체 채팅</p>
             <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
               <span className="font-bold" style={{ color: "#48A59E" }}>전국 어디서든</span> 모든 사용자가 함께 대화하는 방. 길고양이 정보 공유, 응급 상황 도움 요청, 소소한 일상까지.
             </p>
@@ -112,7 +112,7 @@ export default function MapChatGuideModal() {
               <MessageCircle size={18} color="#FFFFFF" strokeWidth={2.4} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[15px] font-bold text-text-main">💬 동네 채팅</p>
+              <p className="text-[15px] font-bold text-text-main">동네 채팅</p>
               <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
                 <span className="font-bold" style={{ color: "var(--color-primary-dark)" }}>현재 보고 있는 구</span> 단위 채팅방. 같은 동네 길집사끼리 실시간 정보 교환. 지도 위치를 옮기면 그 동네 채팅방으로 자동 연결.
               </p>
@@ -121,7 +121,7 @@ export default function MapChatGuideModal() {
         )}
 
         <p className="text-[11px] text-text-light mb-3 px-1">
-          💡 매일 새벽 4시 자동 정리되어 새로 시작해요
+          매일 새벽 4시 자동 정리되어 새로 시작해요
         </p>
 
         <button

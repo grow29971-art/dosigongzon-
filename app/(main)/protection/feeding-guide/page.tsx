@@ -3,7 +3,7 @@ import Link from "next/link";
 import GuideReadMarker from "@/app/components/GuideReadMarker";
 import {
   ArrowLeft, Utensils, AlertTriangle, Clock, MapPin, Droplet,
-  HelpCircle, BookOpen, Ban, Cat, Scale,
+  HelpCircle, BookOpen, Ban, Cat, Scale, Scissors, PawPrint,
 } from "lucide-react";
 
 const SITE_URL = "https://dosigongzon.com";
@@ -351,7 +351,7 @@ export default function FeedingGuidePage() {
             className="bg-white rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98]"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <span style={{ fontSize: 24 }}>🚨</span>
+            <AlertTriangle size={18} color="var(--color-error)" className="shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">응급 구조 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">다친 아이 발견 시 대응법</p>
@@ -362,7 +362,7 @@ export default function FeedingGuidePage() {
             className="bg-white rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98]"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <span style={{ fontSize: 24 }}>✂️</span>
+            <Scissors size={18} color="var(--color-primary)" className="shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">TNR 포획 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">중성화 수술 전 과정</p>
@@ -373,7 +373,7 @@ export default function FeedingGuidePage() {
             className="bg-white rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98]"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <span style={{ fontSize: 24 }}>🐾</span>
+            <PawPrint size={18} color="var(--color-care)" className="shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">냥줍 가이드 (새끼 고양이)</p>
               <p className="text-[11px] text-text-sub mt-0.5">관찰·체온·급여 3단계</p>

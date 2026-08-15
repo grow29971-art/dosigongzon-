@@ -329,7 +329,7 @@ export default function AdminProductsPage() {
                   checked={draft.is_donation}
                   onChange={(e) => setDraft({ ...draft, is_donation: e.target.checked })}
                 />
-                <span className="text-[13px] font-bold text-text-main">후원 연계 💛</span>
+                <span className="text-[13px] font-bold text-text-main">후원 연계</span>
               </label>
               <label className="flex items-center gap-2">
                 <input

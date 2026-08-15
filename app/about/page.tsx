@@ -33,6 +33,8 @@ import {
   Hammer,
   Camera,
   Globe,
+  PawPrint,
+  User,
 } from "lucide-react";
 import { createAnonClient } from "@/lib/supabase/anon";
 import MediaKit from "@/app/components/MediaKit";
@@ -358,14 +360,14 @@ export default async function AboutPage() {
           </p>
           <ul className="space-y-2.5 text-[13px] text-text-sub leading-relaxed">
             <li className="flex gap-2">
-              <span className="shrink-0">🔒</span>
+              <Lock size={14} color="var(--color-text-sub)" className="shrink-0 mt-0.5" />
               <span>
                 <b className="text-text-main">실제 좌표는 애초에 저장하지 않아요.</b> 등록하는 순간 수백 미터
                 무작위로 이동된 좌표만 저장돼요. 운영자조차 실제 위치를 모릅니다.
               </span>
             </li>
             <li className="flex gap-2">
-              <span className="shrink-0">🐾</span>
+              <PawPrint size={14} color="var(--color-text-sub)" className="shrink-0 mt-0.5" />
               <span>
                 <b className="text-text-main">마커가 진짜 고양이처럼 살아 움직여요.</b> 지도 속 아이들은 자기
                 동네 안에서 쉬고(💤)·산책하고(🐾)·달리며(💨) 계속 자리를 바꿔요. 새벽과 저녁엔 부지런히
@@ -373,7 +375,7 @@ export default async function AboutPage() {
               </span>
             </li>
             <li className="flex gap-2">
-              <span className="shrink-0">👤</span>
+              <User size={14} color="var(--color-text-sub)" className="shrink-0 mt-0.5" />
               <span>
                 <b className="text-text-main">로그인하지 않으면 더 흐리게.</b> 비로그인 방문자에게는 위치가
                 한층 더 넓게 퍼져 보이고, 사진·동네 이름도 가려집니다.

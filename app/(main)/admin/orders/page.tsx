@@ -378,7 +378,7 @@ export default function AdminOrdersPage() {
 
                     {(draftStatus === "cancelled" || draftStatus === "refunded") && order.status !== "cancelled" && order.status !== "refunded" && (
                       <p className="mt-2 text-[11px] font-bold" style={{ color: "#D85555" }}>
-                        ⚠ 취소/환불로 변경하면 재고가 복구돼요. 실제 결제금 환불은 토스페이먼츠 연동 후 자동 처리되며, 그 전에는 토스 상점관리자에서 직접 환불해야 해요.
+                        취소/환불로 변경하면 재고가 복구돼요. 실제 결제금 환불은 토스페이먼츠 연동 후 자동 처리되며, 그 전에는 토스 상점관리자에서 직접 환불해야 해요.
                       </p>
                     )}
                     {error && <p className="mt-2 text-[13px] font-bold" style={{ color: "#D85555" }}>{error}</p>}

@@ -173,7 +173,7 @@ export default function AdminPharmacyGuidePage() {
           <textarea value={draft.description} onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))} rows={4} placeholder="성분, 효능 등 상세 설명" className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-1 resize-none" style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-gray-200)" }} />
 
           <Field label="사용법" value={draft.usage_info ?? ""} onChange={(v) => setDraft((d) => ({ ...d, usage_info: v || null }))} placeholder="투여 방법, 횟수" />
-          <Field label="💡 팁" value={draft.tip ?? ""} onChange={(v) => setDraft((d) => ({ ...d, tip: v || null }))} placeholder="주의사항이나 꿀팁" />
+          <Field label="팁" value={draft.tip ?? ""} onChange={(v) => setDraft((d) => ({ ...d, tip: v || null }))} placeholder="주의사항이나 꿀팁" />
           <Field label="가격대" value={draft.price ?? ""} onChange={(v) => setDraft((d) => ({ ...d, price: v || null }))} placeholder="예: 15,000~20,000원" />
           <Field label="정렬 순서" value={String(draft.sort_order)} onChange={(v) => setDraft((d) => ({ ...d, sort_order: parseInt(v) || 0 }))} placeholder="0이 가장 위" />
 

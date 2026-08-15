@@ -437,7 +437,7 @@ export default function AddCatModal({
           <div className="flex items-center gap-2.5">
             <span className="w-8 h-8 rounded-xl flex items-center justify-center text-[17px] shrink-0"
               style={{ background: "linear-gradient(135deg,#6366F1,#818CF8)", boxShadow: "0 2px 10px rgba(99,102,241,0.5)" }}>
-              🃏
+              <Plus size={16} className="text-white" />
             </span>
             <div>
               <h2
@@ -654,7 +654,7 @@ export default function AddCatModal({
               동네 <span className="text-error">*</span>
               {detectedGu && (
                 <span className="text-[11px] font-normal text-white/45 ml-2">
-                  📍 {detectedGu}
+                  {detectedGu}
                 </span>
               )}
             </label>
@@ -736,13 +736,13 @@ export default function AddCatModal({
               <div className="flex-1 min-w-0 space-y-0.5">
                 {descLocationViolations.length > 0 && (
                   <p className="text-[11px] leading-relaxed" style={{ color: "#B84545" }}>
-                    ⚠ {descLocationViolations.map((v) => `${v.label}(${v.match})`).join(", ")} —
+                    {descLocationViolations.map((v) => `${v.label}(${v.match})`).join(", ")} —
                     일반 표현(우리 동네·골목·근처)으로 바꿔주세요.
                   </p>
                 )}
                 {descAbuseViolations.length > 0 && (
                   <p className="text-[11px] leading-relaxed" style={{ color: "#B84545" }}>
-                    🚫 {formatAbuseMessage(descAbuseViolations)}
+                    {formatAbuseMessage(descAbuseViolations)}
                   </p>
                 )}
               </div>

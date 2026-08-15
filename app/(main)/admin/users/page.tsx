@@ -416,7 +416,7 @@ export default function AdminUsersPage() {
                     className="text-[11px] font-bold px-2 py-0.5 rounded-lg active:scale-95"
                     style={{ backgroundColor: "var(--color-gray-50)", color: "var(--color-primary)" }}
                   >
-                    {u.admin_title ? "🏷️ 타이틀 변경" : "🏷️ 타이틀 부여"}
+                    {u.admin_title ? "타이틀 변경" : "타이틀 부여"}
                   </button>
                   {u.is_suspended ? (
                     <button

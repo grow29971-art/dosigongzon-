@@ -275,7 +275,7 @@ function WelcomeContent() {
             </h1>
             {/* 닉네임 변경 가능 힌트 — 신규 가입자가 random nickname을 마음에 안 들어도 모르는 경우 방지 */}
             <p className="text-[13px] text-white/65 mb-4 leading-snug text-center">
-              ✏️ 마이페이지에서 언제든 다른 닉네임으로 바꿀 수 있어요
+              마이페이지에서 언제든 다른 닉네임으로 바꿀 수 있어요
             </p>
             <p className="text-[15px] text-center text-white/85 leading-[1.85] max-w-[300px]">
               도시공존의 새로운 이웃이 되어주셔서 정말 고마워요.
@@ -387,21 +387,21 @@ const SLIDES = [
     bg: "linear-gradient(170deg, #4A7BA8 0%, #6B9BC4 60%, #A8C7E0 100%)",
     accent: "#3A6086",
     Icon: MapPin,
-    title: "🗺️ 우리 동네 고양이 지도",
-    body: "어떤 아이가 어디서 사는지, 건강 상태까지\n지도 한 장에 한눈에 모여요.\n\n마음에 드는 아이에겐 응원도 한 번 🩷\n가장 쉬운 첫 걸음이에요.",
+    title: "우리 동네 고양이 지도",
+    body: "어떤 아이가 어디서 사는지, 건강 상태까지\n지도 한 장에 한눈에 모여요.\n\n마음에 드는 아이에겐 응원도 한 번\n가장 쉬운 첫 걸음이에요.",
   },
   {
     bg: "linear-gradient(170deg, #6B8E6F 0%, #8FAE92 50%, #BFD4C2 100%)",
     accent: "#4F6E53",
     Icon: Heart,
-    title: "🧰 돌봄에 필요한 도구",
-    body: "📝 밥·물·건강 한 줄 돌봄일지\n🤖 궁금하면 AI집사에게 바로 질문\n🏥 가까운 동물병원·약국 찾기\n\n돌보는 데 필요한 도구를 한곳에 모았어요.",
+    title: "돌봄에 필요한 도구",
+    body: "밥·물·건강 한 줄 돌봄일지\n궁금하면 AI집사에게 바로 질문\n가까운 동물병원·약국 찾기\n\n돌보는 데 필요한 도구를 한곳에 모았어요.",
   },
   {
     bg: "linear-gradient(170deg, #4F6B53 0%, #6B8E6F 60%, #8FAE92 100%)",
     accent: "#3D5640",
     Icon: ShieldCheck,
-    title: "🛡️ 안전하게 돌보는 도구",
-    body: "걱정되는 아이는 '내 서클·나만 보기'로\n비공개 등록 — 외부엔 존재도 안 보여요.\n\n🚨 응급 상황엔 단계별 보호 가이드가\n바로 도와줘요.",
+    title: "안전하게 돌보는 도구",
+    body: "걱정되는 아이는 '내 서클·나만 보기'로\n비공개 등록 — 외부엔 존재도 안 보여요.\n\n응급 상황엔 단계별 보호 가이드가\n바로 도와줘요.",
   },
 ];

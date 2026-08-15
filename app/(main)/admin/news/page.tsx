@@ -394,7 +394,7 @@ export default function AdminNewsPage() {
             />
             {draft.event_date && draft.dday && (
               <p className="text-[11px] mt-1.5" style={{ color: "#B07A1C" }}>
-                ⚠️ 이벤트 날짜가 우선 표시돼요. 위 수동 입력값은 무시됩니다.
+                이벤트 날짜가 우선 표시돼요. 위 수동 입력값은 무시됩니다.
               </p>
             )}
           </div>

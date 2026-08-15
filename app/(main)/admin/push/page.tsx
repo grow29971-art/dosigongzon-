@@ -201,7 +201,7 @@ export default function AdminPushPage() {
           }}
         >
           <p className="text-[13px] font-bold" style={{ color: "#8A4A28" }}>
-            🐾 8/8 보신각 집회 리마인더
+            8/8 보신각 집회 리마인더
           </p>
           <p className="text-[11px] mt-0.5" style={{ color: "#9A5A34" }}>
             제목·본문·이동경로 + 8/8 오후 1시 예약 시각까지 자동 채움. 아래 &quot;예약 발송&quot;을 누르세요.
@@ -222,7 +222,7 @@ export default function AdminPushPage() {
           }}
         >
           <p className="text-[13px] font-bold" style={{ color: "#7A4F30" }}>
-            🌟 초기 200 이벤트 안내 (출시 D-3)
+            초기 200 이벤트 안내 (출시 D-3)
           </p>
           <p className="text-[11px] mt-0.5" style={{ color: "#8E5430" }}>
             제목·본문·이동경로 자동 채움. 클릭 후 발송 버튼만 누르세요.
@@ -243,7 +243,7 @@ export default function AdminPushPage() {
           }}
         >
           <p className="text-[13px] font-bold" style={{ color: "#2C5A85" }}>
-            📱 Play 스토어 앱 출시 안내
+            Play 스토어 앱 출시 안내
           </p>
           <p className="text-[11px] mt-0.5" style={{ color: "#3F6B8E" }}>
             Play 스토어 설치 URL로 외부 이동. 마케팅 옵트인자 대상.
@@ -264,7 +264,7 @@ export default function AdminPushPage() {
           }}
         >
           <p className="text-[13px] font-bold" style={{ color: "#A8395B" }}>
-            🎉 정식 출시 D-Day (6/1 당일 발송)
+            정식 출시 D-Day (6/1 당일 발송)
           </p>
           <p className="text-[11px] mt-0.5" style={{ color: "#B5546F" }}>
             /celebrate 페이지로 안내. 출시일 한 번만 발송.
@@ -285,7 +285,7 @@ export default function AdminPushPage() {
           }}
         >
           <p className="text-[13px] font-bold" style={{ color: "#3F6B4E" }}>
-            🌱 출시 +7일 회고 (6/1 발송)
+            출시 +7일 회고 (6/1 발송)
           </p>
           <p className="text-[11px] mt-0.5" style={{ color: "#5F8F73" }}>
             첫 주 통계·회고. 출시 다음 주말 발송 권장.

@@ -133,7 +133,7 @@ export default function LocationLogsPage() {
                       href={`/cats/${r.cat_id}`}
                       className="text-[15px] font-bold text-text-main truncate active:opacity-70"
                     >
-                      🐱 {r.cat_name ?? "(삭제된 고양이)"}
+                      {r.cat_name ?? "(삭제된 고양이)"}
                     </Link>
                     <span className="text-[11px] text-text-light shrink-0 ml-2">
                       {formatTime(r.created_at)}

@@ -80,7 +80,7 @@ export default function NotFound() {
                 boxShadow: "var(--shadow-primary)",
               }}
             >
-              🏠 홈으로 가기
+              홈으로 가기
             </Link>
             <div className="grid grid-cols-2 gap-2">
               <Link
@@ -92,7 +92,7 @@ export default function NotFound() {
                   border: "1px solid rgba(0,0,0,0.05)",
                 }}
               >
-                🗺️ 지도
+                지도
               </Link>
               <Link
                 href="/protection"
@@ -103,7 +103,7 @@ export default function NotFound() {
                   border: "1px solid rgba(0,0,0,0.05)",
                 }}
               >
-                📖 보호지침
+                보호지침
               </Link>
               <Link
                 href="/community"
@@ -114,7 +114,7 @@ export default function NotFound() {
                   border: "1px solid rgba(0,0,0,0.05)",
                 }}
               >
-                💬 커뮤니티
+                커뮤니티
               </Link>
               <Link
                 href="/guide"
@@ -125,7 +125,7 @@ export default function NotFound() {
                   border: "1px solid rgba(0,0,0,0.05)",
                 }}
               >
-                ✨ 기능 가이드
+                기능 가이드
               </Link>
             </div>
           </div>
@@ -133,7 +133,7 @@ export default function NotFound() {
           {/* 감성 문구 */}
           <p className="text-[11px] text-text-light mt-6 leading-relaxed">
             길을 잃은 건 오늘 하루의 아주 작은 일이에요.<br />
-            동네의 아이들이 기다리고 있어요 💛
+            동네의 아이들이 기다리고 있어요
           </p>
         </div>
       </div>

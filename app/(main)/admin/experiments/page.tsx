@@ -212,7 +212,7 @@ export default function AdminExperimentsPage() {
             )}
           </div>
           <p className="text-[11px] mb-4" style={{ color: "var(--color-text-light)" }}>
-            ⚠️ 소표본 원자료 단순 집계 — 통계적 유의성을 주장하지 않습니다.
+            소표본 원자료 단순 집계 — 통계적 유의성을 주장하지 않습니다.
           </p>
 
           <dl className="grid grid-cols-2 gap-x-3 gap-y-3 text-[13px]">

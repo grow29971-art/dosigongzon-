@@ -27,6 +27,10 @@ import {
   Radio,
   Mail,
   Trophy,
+  Dices,
+  Ghost,
+  Ban,
+  Camera,
 } from "lucide-react";
 import { createAnonClient } from "@/lib/supabase/anon";
 import { SEOUL_GUS } from "@/lib/seoul-regions";
@@ -510,27 +514,27 @@ export default async function HomeLanding({
         {/* 5개 보호 레이어 */}
         <div className="space-y-1.5 mb-3">
           <SafetyRow
-            icon="🎲"
+            icon={<Dices size={18} />}
             title="등록 시 좌표 자체를 흐리게"
             body="같은 자리를 두 번 찍어도 매번 다른 값으로 저장돼요. 본인도 역추적 불가."
           />
           <SafetyRow
-            icon="👻"
+            icon={<Ghost size={18} />}
             title="비로그인 외부인 = 도트와 카운트만"
             body="사진·이름·동 이름 일절 비공개. 동 단위 N마리 신호만 노출."
           />
           <SafetyRow
-            icon="🚫"
+            icon={<Ban size={18} />}
             title="위치 단어 자동 차단"
             body="역·출구·시장·공원·아파트·도로명·학교 등 11종 패턴 등록 차단."
           />
           <SafetyRow
-            icon="📷"
+            icon={<Camera size={18} />}
             title="사진 GPS 메타데이터 자동 제거"
             body="업로드 시 WebP 재인코딩으로 EXIF 전부 삭제. 좌표 추출 불가."
           />
           <SafetyRow
-            icon="🔒"
+            icon={<Lock size={18} />}
             title="DB 권한 격리 (RLS)"
             body="본인이 등록한 핀만 수정·삭제. 코드 우회 시도도 DB가 거부."
           />
@@ -644,7 +648,7 @@ export default async function HomeLanding({
                     {c.nickname || "익명 길집사"}
                   </p>
                   <p className="text-[11px] text-text-sub mt-0.5">
-                    🐱 {c.cat_count}마리 · 💛 돌봄 {c.care_count}회 · {c.score}점
+                    {c.cat_count}마리 · 돌봄 {c.care_count}회 · {c.score}점
                   </p>
                 </div>
                 <ChevronRight size={16} className="text-text-light shrink-0" />
@@ -827,11 +831,11 @@ export default async function HomeLanding({
             border: "1px solid rgba(0,0,0,0.04)",
           }}
         >
-          <TrustInline emoji="🐾" value={data.catCount} label="등록" color="var(--color-primary)" />
+          <TrustInline icon={<PawPrint size={18} style={{ color: "var(--color-primary)" }} />} value={data.catCount} label="등록" color="var(--color-primary)" />
           <span className="w-px h-8" style={{ background: "rgba(0,0,0,0.06)" }} />
-          <TrustInline emoji="❤️" value={data.userCount} label="이웃" color="var(--color-like)" />
+          <TrustInline icon={<Heart size={18} style={{ color: "var(--color-like)" }} />} value={data.userCount} label="이웃" color="var(--color-like)" />
           <span className="w-px h-8" style={{ background: "rgba(0,0,0,0.06)" }} />
-          <TrustInline emoji="🏥" value={data.hospitalCount} label="병원" color="var(--color-sage)" />
+          <TrustInline icon={<Stethoscope size={18} style={{ color: "var(--color-sage)" }} />} value={data.hospitalCount} label="병원" color="var(--color-sage)" />
         </div>
       </section>
 
@@ -1016,7 +1020,7 @@ export default async function HomeLanding({
           }}
         >
           <p className="text-[15px] font-bold text-text-main mb-1">
-            동네 길집사 단톡방에 공유해보세요 🐾
+            동네 길집사 단톡방에 공유해보세요
           </p>
           <p className="text-[11px] text-text-sub mb-3 leading-relaxed">
             아이들을 지켜줄 이웃이 한 명 더 늘어납니다.
@@ -1150,10 +1154,10 @@ export default async function HomeLanding({
   );
 }
 
-function TrustInline({ emoji, value, label, color }: { emoji: string; value: number; label: string; color: string }) {
+function TrustInline({ icon, value, label, color }: { icon: React.ReactNode; value: number; label: string; color: string }) {
   return (
     <div className="flex items-center gap-2">
-      <span style={{ fontSize: 20 }}>{emoji}</span>
+      <span style={{ fontSize: 20 }}>{icon}</span>
       <div className="flex flex-col leading-tight">
         <span className="text-[15px] font-bold" style={{ color }}>
           {value.toLocaleString()}
@@ -1352,7 +1356,7 @@ function FaqRow({ q, a }: { q: string; a: string }) {
   );
 }
 
-function SafetyRow({ icon, title, body }: { icon: string; title: string; body: string }) {
+function SafetyRow({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
   return (
     <div
       className="bg-white rounded-xl p-3 flex items-start gap-2.5"
