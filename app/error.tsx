@@ -26,7 +26,7 @@ export default function ErrorPage({
     <div
       className="min-h-screen flex flex-col items-center justify-center px-6 py-12"
       style={{
-        background: "linear-gradient(135deg, #F6EFE3 0%, #EADFCB 60%, #DAC4A3 100%)",
+        background: "#F6EFE3",
       }}
     >
       <div

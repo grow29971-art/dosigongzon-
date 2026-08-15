@@ -154,7 +154,7 @@ export default function KeyringEventPage() {
         <div
           className="rounded-2xl p-4"
           style={{
-            background: "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
+            background: "#FFF8F2",
             border: "1.5px solid rgba(173, 94, 59,0.25)",
           }}
         >
@@ -195,7 +195,7 @@ export default function KeyringEventPage() {
                 className="h-full rounded-full transition-all"
                 style={{
                   width: `${Math.min((memberCount / 1000) * 100, 100)}%`,
-                  background: "linear-gradient(90deg, var(--color-primary) 0%, #5BC4C4 100%)",
+                  background: "var(--color-primary)",
                 }}
               />
             </div>

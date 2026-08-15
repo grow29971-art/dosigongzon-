@@ -184,7 +184,7 @@ export default function FeedingGuidePage() {
       <div
         className="rounded-2xl p-5 mb-6"
         style={{
-          background: "linear-gradient(135deg, #FFF4E8 0%, #FFE8D1 100%)",
+          background: "#FFF4E8",
           border: "1px solid rgba(232,141,90,0.18)",
         }}
       >

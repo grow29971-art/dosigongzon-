@@ -81,7 +81,7 @@ export default function StreakFreezeButton({ streak, hasToday, onUsed }: Props) 
         // 튕겨 성공/에러 피드백을 못 봤음 — 패널 루트에서 기본이동·전파를 막는다.
         onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
         style={{
-          background: "linear-gradient(135deg, #E8F0F8 0%, #D8E4F0 100%)",
+          background: "#E8F0F8",
           border: "1px solid rgba(74,123,168,0.25)",
         }}
       >
@@ -99,7 +99,7 @@ export default function StreakFreezeButton({ streak, hasToday, onUsed }: Props) 
             onClick={handleUse}
             className="flex-1 py-2 rounded-xl text-[11px] font-bold text-white press-strong disabled:opacity-60 flex items-center justify-center gap-1"
             style={{
-              background: "linear-gradient(135deg, #4A7BA8 0%, #2E5A8A 100%)",
+              background: "#4A7BA8",
               boxShadow: "0 2px 8px rgba(74,123,168,0.35)",
             }}
           >

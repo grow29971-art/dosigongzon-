@@ -167,7 +167,7 @@ export default function KittenGuidePage() {
       <div
         className="rounded-2xl p-5 mb-6"
         style={{
-          background: "linear-gradient(135deg, #FFF9E8 0%, #FFF3CC 100%)",
+          background: "#FFF9E8",
           border: "1px solid rgba(201,169,97,0.2)",
         }}
       >

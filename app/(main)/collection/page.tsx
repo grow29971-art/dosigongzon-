@@ -60,7 +60,7 @@ export default function CollectionPage() {
         {!loading && data && data.total > 0 && (
           <>
             {/* 진행률 */}
-            <div className="mb-5 p-4 rounded-2xl" style={{ background: "linear-gradient(135deg, #FFFFFF 0%, #FCF6EC 100%)", border: "1px solid rgba(173, 94, 59,0.18)", boxShadow: "0 4px 14px var(--color-primary-softer)" }}>
+            <div className="mb-5 p-4 rounded-2xl" style={{ background: "#FFFFFF", border: "1px solid rgba(173, 94, 59,0.18)", boxShadow: "0 4px 14px var(--color-primary-softer)" }}>
               <div className="flex items-baseline justify-between mb-2">
                 <p className="text-[13px] font-bold" style={{ color: "var(--color-primary-dark)" }}>
                   {data.regionName} 도감
@@ -70,7 +70,7 @@ export default function CollectionPage() {
                 </p>
               </div>
               <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "rgba(173, 94, 59,0.15)" }}>
-                <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: "linear-gradient(90deg, var(--color-primary) 0%, #5BC4C4 100%)" }} />
+                <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: "var(--color-primary)" }} />
               </div>
               <p className="text-[11px] text-text-sub mt-2 leading-snug">
                 만난 고양이는 컬러로, 아직 못 만난 아이는 실루엣으로 보여요. 돌봄·댓글을 남기면 도감이 채워져요 🐾

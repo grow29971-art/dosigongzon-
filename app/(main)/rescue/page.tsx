@@ -30,7 +30,7 @@ export default async function RescuePage() {
       <div
         className="px-5 pt-12 pb-5"
         style={{
-          background: "linear-gradient(135deg, #D85555 0%, #B84545 100%)",
+          background: "#D85555",
           color: "#fff",
         }}
       >
@@ -68,7 +68,7 @@ export default async function RescuePage() {
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
             style={{
-              background: "linear-gradient(135deg, #E88D5A 0%, #D85555 100%)",
+              background: "#E88D5A",
             }}
           >
             <span className="text-[17px]">🚨</span>

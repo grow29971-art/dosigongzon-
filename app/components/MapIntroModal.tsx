@@ -71,7 +71,7 @@ export default function MapIntroModal() {
         onClick={(e) => e.stopPropagation()}
       >
         {/* 헤더 */}
-        <div className="px-6 pt-6 pb-4 text-center" style={{ background: "linear-gradient(160deg, #EEF5FF 0%, #E3EEFC 100%)" }}>
+        <div className="px-6 pt-6 pb-4 text-center" style={{ background: "#EEF5FF" }}>
           <div className="w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-3" style={{ background: "rgba(173, 94, 59,0.15)" }}>
             <ShieldCheck size={28} style={{ color: "var(--color-primary-dark)" }} />
           </div>

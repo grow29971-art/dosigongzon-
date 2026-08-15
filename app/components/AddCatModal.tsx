@@ -414,7 +414,7 @@ export default function AddCatModal({
         className="relative mt-auto w-full rounded-t-[28px] flex flex-col overflow-hidden"
         style={{
           maxHeight: "92dvh",
-          background: "linear-gradient(165deg, #241748 0%, #1A1030 45%, #12081F 100%)",
+          background: "#241748",
           border: "1px solid rgba(99,102,241,0.35)",
           borderBottom: "none",
           boxShadow: "0 -10px 40px rgba(99,102,241,0.22), inset 0 1px 0 rgba(255,255,255,0.08)",
@@ -436,7 +436,7 @@ export default function AddCatModal({
         <div className="relative flex items-center justify-between px-5 py-3 border-b border-white/12">
           <div className="flex items-center gap-2.5">
             <span className="w-8 h-8 rounded-xl flex items-center justify-center text-[17px] shrink-0"
-              style={{ background: "linear-gradient(135deg,#6366F1,#818CF8)", boxShadow: "0 2px 10px rgba(99,102,241,0.5)" }}>
+              style={{ background: "#6366F1", boxShadow: "0 2px 10px rgba(99,102,241,0.5)" }}>
               <Plus size={16} className="text-white" />
             </span>
             <div>
@@ -552,7 +552,7 @@ export default function AddCatModal({
                   type="button"
                   onClick={() => captureInputRef.current?.click()}
                   className="relative w-full aspect-[4/3] rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-2 press transition-transform overflow-hidden"
-                  style={{ background: "linear-gradient(135deg, #0F0F1A 0%, #1A1A2E 100%)", borderColor: "#6366F1" }}
+                  style={{ background: "#0F0F1A", borderColor: "#6366F1" }}
                 >
                   <Camera size={34} className="text-white" strokeWidth={1.5} />
                   <p className="text-[15px] font-bold text-white">사진 찍기</p>
@@ -946,7 +946,7 @@ export default function AddCatModal({
             disabled={submitting}
             className="w-full py-4 rounded-2xl text-white text-[15px] font-bold press-strong transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
             style={{
-              background: "linear-gradient(135deg, #6366F1, #818CF8)",
+              background: "#6366F1",
               boxShadow: "0 6px 24px rgba(99,102,241,0.45), 0 0 0 1px rgba(255,255,255,0.15) inset",
             }}
           >

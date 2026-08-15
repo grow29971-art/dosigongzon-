@@ -57,7 +57,7 @@ export default function LocationLogsPage() {
       <div
         className="px-5 pt-12 pb-5"
         style={{
-          background: "linear-gradient(135deg, #2C2C2C 0%, #3F3F3F 100%)",
+          background: "#2C2C2C",
           color: "#fff",
         }}
       >

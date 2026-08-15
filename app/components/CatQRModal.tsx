@@ -151,7 +151,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
             onClick={handleDownload}
             disabled={!dataUrl}
             className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold text-white press-strong disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #AD5E3B 0%, #8A4325 100%)" }}
+            style={{ background: "#AD5E3B" }}
           >
             <Download size={14} />
             <span>이미지 저장</span>

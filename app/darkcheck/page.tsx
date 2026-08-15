@@ -58,7 +58,7 @@ export default function DarkCheckPage() {
 
       <div style={{ ...box, background: "#FFFFFF" }}>A: 일반 배경 (원래 흰색)</div>
       <canvas ref={canvasRef} width={340} height={48} style={{ borderRadius: "var(--radius-square-lg)", border: "2px solid #191F28", display: "block", marginBottom: 10, maxWidth: "100%" }} />
-      <div style={{ ...box, background: "none", backgroundImage: "linear-gradient(#FFFFFF, #FFFFFF)" }}>
+      <div style={{ ...box, background: "none", background: "#FFFFFF" }}>
         C: 그라디언트 배경 (원래 흰색)
       </div>
       <div style={{ ...box, background: "#AD5E3B", color: "#FFFFFF", border: "none" }}>D: 테라코타 (원래 주황갈색)</div>

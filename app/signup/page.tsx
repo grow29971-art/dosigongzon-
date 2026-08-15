@@ -203,7 +203,7 @@ function SignupContent() {
           <div
             className="mb-4 rounded-2xl p-4"
             style={{
-              background: "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
+              background: "#FFF8F2",
               border: "1.5px solid rgba(173, 94, 59,0.30)",
             }}
           >

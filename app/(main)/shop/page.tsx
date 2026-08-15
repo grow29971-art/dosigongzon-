@@ -269,7 +269,7 @@ export default function ShopPage() {
       <div
         className="mb-4 px-5 py-4 rounded-3xl"
         style={{
-          background: "linear-gradient(135deg, rgba(196,126,90,0.12) 0%, var(--color-like-soft) 100%)",
+          background: "rgba(196,126,90,0.12)",
           border: "1px solid rgba(196,126,90,0.18)",
         }}
       >

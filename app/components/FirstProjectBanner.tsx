@@ -32,7 +32,7 @@ export default function FirstProjectBanner() {
       <div
         className="rounded-2xl overflow-hidden"
         style={{
-          background: "linear-gradient(160deg, #8A4325 0%, #AD5E3B 60%, #C47E5A 100%)",
+          background: "#8A4325",
           boxShadow: "0 8px 24px rgba(173, 94, 59,0.22), 0 2px 6px rgba(173, 94, 59,0.14)",
         }}
       >

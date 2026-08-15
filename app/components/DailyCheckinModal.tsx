@@ -97,7 +97,7 @@ export default function DailyCheckinModal() {
               <p className="text-[13px] font-bold mb-3" style={{ color: "#4FAF63" }}>🎊 대표 카드가 Lv.{result.newLevel}로 레벨업했어요!</p>
             )}
             <button onClick={() => setShow(false)} className="w-full py-3 rounded-2xl text-[13px] font-bold text-white"
-              style={{ background: "linear-gradient(135deg,var(--color-primary),var(--color-primary-dark))" }}>
+              style={{ background: "var(--color-primary)" }}>
               확인
             </button>
           </div>

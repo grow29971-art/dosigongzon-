@@ -138,7 +138,7 @@ export default function CircleJoinPage() {
         <div
           className="rounded-3xl p-6 text-center"
           style={{
-            background: "linear-gradient(160deg, #4F6B53 0%, #6B8E6F 70%, #8FAE92 100%)",
+            background: "#4F6B53",
             color: "#fff",
           }}
         >
@@ -204,7 +204,7 @@ export default function CircleJoinPage() {
               disabled={busy}
               className="flex-[1.5] py-3 rounded-2xl text-[15px] font-bold text-white press-strong disabled:opacity-50"
               style={{
-                background: "linear-gradient(135deg, #4F6B53 0%, #6B8E6F 100%)",
+                background: "#4F6B53",
                 boxShadow: "0 4px 12px rgba(79,107,83,0.3)",
               }}
             >
@@ -229,7 +229,7 @@ function Avatar({ url, size = 40 }: { url: string | null; size?: number }) {
     return (
       <div
         className="rounded-full flex items-center justify-center text-white text-[24px] font-bold"
-        style={{ width: size, height: size, background: "linear-gradient(135deg, #4F6B53, #6B8E6F)" }}
+        style={{ width: size, height: size, background: "#4F6B53" }}
       >
         🐾
       </div>

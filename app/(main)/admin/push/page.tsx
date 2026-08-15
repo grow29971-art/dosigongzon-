@@ -196,7 +196,7 @@ export default function AdminPushPage() {
           }}
           className="w-full text-left px-4 py-2.5 rounded-xl press transition-transform"
           style={{
-            background: "linear-gradient(135deg, #FFE3D3 0%, #FFC9AE 100%)",
+            background: "#FFE3D3",
             border: "1px solid rgba(173, 94, 59,0.35)",
           }}
         >
@@ -217,7 +217,7 @@ export default function AdminPushPage() {
           }}
           className="w-full text-left px-4 py-2.5 rounded-xl press transition-transform"
           style={{
-            background: "linear-gradient(135deg, #FFE8C2 0%, #FFCFB5 100%)",
+            background: "#FFE8C2",
             border: "1px solid rgba(173, 94, 59,0.30)",
           }}
         >
@@ -238,7 +238,7 @@ export default function AdminPushPage() {
           }}
           className="w-full text-left px-4 py-2.5 rounded-xl press transition-transform"
           style={{
-            background: "linear-gradient(135deg, #DCEAF6 0%, #B5D2EC 100%)",
+            background: "#DCEAF6",
             border: "1px solid rgba(74,123,168,0.30)",
           }}
         >
@@ -259,7 +259,7 @@ export default function AdminPushPage() {
           }}
           className="w-full text-left px-4 py-2.5 rounded-xl press transition-transform"
           style={{
-            background: "linear-gradient(135deg, #FFD6E4 0%, #FFB99B 100%)",
+            background: "#FFD6E4",
             border: "1px solid var(--color-like-soft)",
           }}
         >
@@ -280,7 +280,7 @@ export default function AdminPushPage() {
           }}
           className="w-full text-left px-4 py-2.5 rounded-xl press transition-transform"
           style={{
-            background: "linear-gradient(135deg, #E4F2E4 0%, #C9E5C9 100%)",
+            background: "#E4F2E4",
             border: "1px solid rgba(107,142,111,0.30)",
           }}
         >

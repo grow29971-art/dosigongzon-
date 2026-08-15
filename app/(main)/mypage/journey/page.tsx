@@ -46,7 +46,7 @@ export default async function JourneyPage() {
       <div
         className="px-5 pt-12 pb-7"
         style={{
-          background: "linear-gradient(160deg, #FFF8F2 0%, #FCEFD9 50%, #F7F4EE 100%)",
+          background: "#FFF8F2",
         }}
       >
         <Link
@@ -79,7 +79,7 @@ export default async function JourneyPage() {
             {/* 세로 선 */}
             <div
               className="absolute left-[20px] top-2 bottom-2 w-[2px] rounded-full"
-              style={{ background: "linear-gradient(to bottom, #AD5E3B33 0%, #AD5E3B11 100%)" }}
+              style={{ background: "#AD5E3B33" }}
             />
 
             <div className="space-y-4">

@@ -199,7 +199,7 @@ export default function CatRegistrationCelebration({
                 disabled={meal === "saving"}
                 className="w-full flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3 mb-3 text-[13px] font-bold text-white press disabled:opacity-60"
                 style={{
-                  background: "linear-gradient(135deg, #E88D5A 0%, #D9743F 100%)",
+                  background: "#E88D5A",
                   boxShadow: "0 4px 14px rgba(217,116,63,0.4)",
                 }}
               >

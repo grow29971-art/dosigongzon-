@@ -171,12 +171,12 @@ export default function MyCardsPage() {
           <div className="grid grid-cols-2 gap-1.5 mb-4 mt-3">
             <Link href="/mypage/shop"
               className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[11px] text-white"
-              style={{ background: "linear-gradient(135deg,#FFC15E,#FFA030)", boxShadow: "0 4px 12px rgba(255,160,48,0.3)" }}>
+              style={{ background: "#FFC15E", boxShadow: "0 4px 12px rgba(255,160,48,0.3)" }}>
               <Coins size={15} /> 상점
             </Link>
             <Link href="/mypage/cards/inventory"
               className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl font-bold text-[11px] text-white"
-              style={{ background: "linear-gradient(135deg,#B08FE0,#7A5AE0)", boxShadow: "0 4px 12px rgba(122,90,224,0.3)" }}>
+              style={{ background: "#B08FE0", boxShadow: "0 4px 12px rgba(122,90,224,0.3)" }}>
               <Backpack size={15} /> 가방
             </Link>
           </div>

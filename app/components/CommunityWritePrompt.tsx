@@ -40,14 +40,14 @@ export default function CommunityWritePrompt() {
     <div
       className="mb-4 p-4"
       style={{
-        background: "linear-gradient(135deg, #F6EEFA 0%, #EFE3F7 100%)",
+        background: "#F6EEFA",
         borderRadius: "var(--radius-card)",
         border: "1px solid rgba(139,101,184,0.2)",
         boxShadow: "0 4px 14px rgba(139,101,184,0.1)",
       }}
     >
       <div className="flex items-center gap-2 mb-2.5">
-        <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: "linear-gradient(135deg, #8B65B8 0%, #6F4F96 100%)" }}>
+        <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: "#8B65B8" }}>
           <PenLine size={15} color="#fff" strokeWidth={2.3} />
         </div>
         <div className="min-w-0">

@@ -86,7 +86,7 @@ export default function MyActivityDashboard() {
         <div
           className="px-4 py-4 flex items-center gap-3"
           style={{
-            background: "linear-gradient(135deg, #48A59E15 0%, #48A59E05 100%)",
+            background: "#48A59E15",
             borderBottom: "1px solid var(--color-divider)",
           }}
         >

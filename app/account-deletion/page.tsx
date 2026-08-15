@@ -133,7 +133,7 @@ export default function AccountDeletionPage() {
           <div className="flex items-center gap-2 mb-3">
             <div
               className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #4A7BA8 0%, #3D6890 100%)" }}
+              style={{ background: "#4A7BA8" }}
             >
               <Mail size={16} color="#fff" strokeWidth={2.5} />
             </div>

@@ -59,7 +59,7 @@ export default function MapCoachmark({ hasMyCat, isLoggedIn }: Props) {
         <div
           className="relative rounded-2xl px-4 py-3"
           style={{
-            background: "linear-gradient(135deg, #FFFFFF 0%, #FFF9F0 100%)",
+            background: "#FFFFFF",
             boxShadow: "0 12px 28px rgba(0,0,0,0.25), 0 2px 6px rgba(173, 94, 59,0.2)",
             maxWidth: 240,
           }}
@@ -87,7 +87,7 @@ export default function MapCoachmark({ hasMyCat, isLoggedIn }: Props) {
           <div
             className="absolute -bottom-2 right-8 w-4 h-4 rotate-45"
             style={{
-              background: "linear-gradient(135deg, #FFFFFF 0%, #FFF9F0 100%)",
+              background: "#FFFFFF",
               boxShadow: "var(--shadow-raised)",
             }}
           />

@@ -78,13 +78,13 @@ export default function MapChatGuideModal() {
         <div
           className="rounded-2xl p-3.5 mb-2.5 flex items-start gap-3"
           style={{
-            background: "linear-gradient(135deg, rgba(72,165,158,0.08) 0%, rgba(72,165,158,0.04) 100%)",
+            background: "rgba(72,165,158,0.08)",
             border: "1px solid rgba(72,165,158,0.18)",
           }}
         >
           <div
             className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: "linear-gradient(135deg, #48A59E 0%, #3D8B85 100%)" }}
+            style={{ background: "#48A59E" }}
           >
             <Globe size={18} color="#FFFFFF" strokeWidth={2.4} />
           </div>
@@ -101,7 +101,7 @@ export default function MapChatGuideModal() {
           <div
             className="rounded-2xl p-3.5 mb-4 flex items-start gap-3"
             style={{
-              background: "linear-gradient(135deg, var(--color-primary-softer) 0%, rgba(173, 94, 59,0.04) 100%)",
+              background: "var(--color-primary-softer)",
               border: "1px solid rgba(173, 94, 59,0.18)",
             }}
           >

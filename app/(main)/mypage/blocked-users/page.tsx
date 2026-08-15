@@ -85,7 +85,7 @@ export default function BlockedUsersPage() {
         >
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-            style={{ background: "linear-gradient(135deg, #D85555 0%, #B84545 100%)" }}
+            style={{ background: "#D85555" }}
           >
             <Ban size={16} color="#fff" strokeWidth={2.5} />
           </div>

@@ -158,7 +158,7 @@ export default function PwaInstallPrompt() {
         className="pointer-events-auto rounded-2xl p-4 mx-auto"
         style={{
           maxWidth: 420,
-          background: "linear-gradient(135deg, #FFFFFF 0%, #FFF9F0 100%)",
+          background: "#FFFFFF",
           boxShadow: "0 12px 36px rgba(173, 94, 59,0.25), 0 2px 8px rgba(0,0,0,0.08)",
           border: "1px solid rgba(173, 94, 59,0.25)",
         }}

@@ -54,7 +54,7 @@ export default async function MonthlyReportPage({
       {/* 헤더 */}
       <div
         className="px-5 pt-12 pb-7"
-        style={{ background: "linear-gradient(160deg, #F0FAF3 0%, #DCF0E4 50%, #F7F4EE 100%)" }}
+        style={{ background: "#F0FAF3" }}
       >
         <Link
           href="/mypage"

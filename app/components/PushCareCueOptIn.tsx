@@ -90,7 +90,7 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
     <div
       className="mb-3 p-3.5"
       style={{
-        background: "linear-gradient(135deg, #FFF1D9 0%, #FFE0C0 100%)",
+        background: "#FFF1D9",
         borderRadius: "var(--radius-card-sm)",
         border: "1px solid rgba(232,141,90,0.3)",
         boxShadow: "0 4px 14px rgba(232,141,90,0.12)",
@@ -99,7 +99,7 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
       <div className="flex items-center gap-3">
         <div
           className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-          style={{ background: "linear-gradient(135deg, #E88D5A 0%, var(--color-primary) 100%)", boxShadow: "0 3px 10px rgba(173, 94, 59,0.35)" }}
+          style={{ background: "#E88D5A", boxShadow: "0 3px 10px rgba(173, 94, 59,0.35)" }}
         >
           <Bell size={17} color="#fff" strokeWidth={2.3} />
         </div>

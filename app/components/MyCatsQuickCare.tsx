@@ -75,7 +75,7 @@ export default function MyCatsQuickCare() {
     <div
       className="mb-3 p-4"
       style={{
-        background: "linear-gradient(135deg, #FFF6E8 0%, #FCE9CC 100%)",
+        background: "#FFF6E8",
         borderRadius: "var(--radius-card)",
         border: "1px solid rgba(232,141,90,0.25)",
         boxShadow: "0 4px 14px rgba(232,141,90,0.1)",

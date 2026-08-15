@@ -97,7 +97,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
         <div
           className="rounded-3xl p-5"
           style={{
-            background: "linear-gradient(135deg, #FFFFFF 0%, #FFF9F0 100%)",
+            background: "#FFFFFF",
             boxShadow: "0 8px 24px rgba(173, 94, 59,0.15)",
             border: "1px solid var(--color-primary-soft)",
           }}
@@ -139,7 +139,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                 <span
                   className="px-2 py-0.5 rounded-md text-[11px] font-bold flex items-center gap-1"
                   style={{
-                    background: "linear-gradient(135deg, #FFD93D 0%, #FFAA00 100%)",
+                    background: "#FFD93D",
                     color: "#fff",
                     boxShadow: "0 2px 6px rgba(255,170,0,0.3)",
                   }}

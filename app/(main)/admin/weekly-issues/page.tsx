@@ -328,7 +328,7 @@ export default function AdminWeeklyIssuesPage() {
                   <div
                     className="w-12 h-12 rounded-xl flex items-center justify-center text-[24px] shrink-0"
                     style={{
-                      background: "linear-gradient(135deg, #F0F4F8 0%, #DCE4EE 100%)",
+                      background: "#F0F4F8",
                     }}
                   >
                     {item.emoji ?? <CalendarClock size={20} style={{ color: "#5B7A8F" }} />}

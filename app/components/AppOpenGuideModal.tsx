@@ -91,7 +91,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
         style={{ background: "#FFFFFF", boxShadow: "var(--shadow-modal)" }}
       >
         {/* 헤더 그라데이션 */}
-        <div className="relative px-6 pt-7 pb-6" style={{ background: "linear-gradient(135deg, #FFF1D9 0%, #FFE0C0 100%)" }}>
+        <div className="relative px-6 pt-7 pb-6" style={{ background: "#FFF1D9" }}>
           <button
             type="button"
             onClick={close}

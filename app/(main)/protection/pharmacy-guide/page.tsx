@@ -248,7 +248,7 @@ export default async function PharmacyGuidePage() {
       <div
         className="rounded-2xl p-5 mb-6"
         style={{
-          background: "linear-gradient(135deg, #F0EDF7 0%, #EAE4F2 100%)",
+          background: "#F0EDF7",
           border: "1px solid rgba(155,109,215,0.2)",
         }}
       >

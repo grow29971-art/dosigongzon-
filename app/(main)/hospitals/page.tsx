@@ -247,7 +247,7 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
             href={`tel:${hospital.phone}`}
             className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 press-strong transition-transform"
             style={{
-              background: "linear-gradient(135deg, #6B8E6F 0%, #5A7C5E 100%)",
+              background: "#6B8E6F",
               boxShadow: "0 4px 10px rgba(107,142,111,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",
             }}
           >

@@ -79,7 +79,7 @@ export default function HomeStreakCard({
           <div
             className="absolute -top-2 right-4 px-2.5 py-1 rounded-full flex items-center gap-1"
             style={{
-              background: "linear-gradient(135deg, #E85555 0%, #C43838 100%)",
+              background: "#E85555",
               boxShadow: "0 4px 10px rgba(216,85,85,0.45)",
             }}
           >

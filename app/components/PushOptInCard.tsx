@@ -115,7 +115,7 @@ export default function PushOptInCard({
     <div
       className="mb-3 px-4 py-3"
       style={{
-        background: "linear-gradient(135deg, #FFF6EE 0%, #FFE9D2 100%)",
+        background: "#FFF6EE",
         borderRadius: "var(--radius-input)",
         border: "1px solid #F2D6B6",
       }}

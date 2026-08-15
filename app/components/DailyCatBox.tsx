@@ -73,7 +73,7 @@ export default function DailyCatBox() {
         disabled={!mounted}
         className="w-full mb-3 press transition-transform text-left"
         style={{
-          background: "linear-gradient(135deg, #FFF1D9 0%, #FFE0C0 100%)",
+          background: "#FFF1D9",
           borderRadius: "var(--radius-card)",
           padding: "14px 16px",
           border: "1px solid rgba(173, 94, 59,0.22)",
@@ -83,7 +83,7 @@ export default function DailyCatBox() {
         <div className="flex items-center gap-3">
           <div
             className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 text-2xl"
-            style={{ background: "linear-gradient(135deg, #E88D5A 0%, var(--color-primary) 100%)", boxShadow: "var(--shadow-primary)" }}
+            style={{ background: "#E88D5A", boxShadow: "var(--shadow-primary)" }}
           >
             🎁
           </div>
@@ -103,7 +103,7 @@ export default function DailyCatBox() {
     <div
       className="mb-3"
       style={{
-        background: "linear-gradient(135deg, #FFFDF8 0%, #FFF4E4 100%)",
+        background: "#FFFDF8",
         borderRadius: "var(--radius-card)",
         padding: "14px 16px",
         border: "1px solid rgba(173, 94, 59,0.2)",

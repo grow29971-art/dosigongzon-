@@ -120,7 +120,7 @@ export default function PushReconsentCard() {
       className="fixed left-1/2 -translate-x-1/2 z-30 w-[calc(100%-24px)] max-w-lg px-4 py-3"
       style={{
         bottom: "84px",
-        background: "linear-gradient(135deg, #FFF6EE 0%, #FFE9D2 100%)",
+        background: "#FFF6EE",
         borderRadius: "var(--radius-input)",
         border: "1px solid #F2D6B6",
         boxShadow: "var(--shadow-fab)",

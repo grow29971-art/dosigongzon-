@@ -108,7 +108,7 @@ export default async function CelebratePage() {
         <div
           className="rounded-3xl p-6"
           style={{
-            background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)",
+            background: "#FFF9F2",
             border: "1px solid rgba(173, 94, 59,0.20)",
           }}
         >
@@ -138,7 +138,7 @@ export default async function CelebratePage() {
         <div
           className="rounded-2xl p-5 text-center"
           style={{
-            background: "linear-gradient(135deg, rgba(173, 94, 59,0.10) 0%, var(--color-like-soft) 100%)",
+            background: "rgba(173, 94, 59,0.10)",
             border: "1px solid rgba(173, 94, 59,0.20)",
           }}
         >

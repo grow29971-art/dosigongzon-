@@ -230,7 +230,7 @@ export default function MyInquiriesPage() {
                     <div
                       className="rounded-xl p-3"
                       style={{
-                        background: "linear-gradient(135deg, rgba(72,165,158,0.08) 0%, rgba(72,165,158,0.04) 100%)",
+                        background: "rgba(72,165,158,0.08)",
                         border: "1px solid rgba(72,165,158,0.2)",
                       }}
                     >

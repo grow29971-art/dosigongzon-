@@ -228,7 +228,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
           <div
             className="relative overflow-hidden rounded-2xl p-5 text-center"
             style={{
-              background: "linear-gradient(135deg, #FFF6E8 0%, #FCE7D2 60%, #F8D9BE 100%)",
+              background: "#FFF6E8",
               border: "1.5px solid rgba(173, 94, 59,0.30)",
               boxShadow: "0 6px 18px rgba(173, 94, 59,0.18)",
             }}

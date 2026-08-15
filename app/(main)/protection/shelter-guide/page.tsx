@@ -188,7 +188,7 @@ export default function ShelterGuidePage() {
       <div
         className="rounded-2xl p-5 mb-6"
         style={{
-          background: "linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%)",
+          background: "#E3F2FD",
           border: "1px solid rgba(74,123,168,0.18)",
         }}
       >

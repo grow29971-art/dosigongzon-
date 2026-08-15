@@ -116,7 +116,7 @@ export default async function AreasIndexPage() {
           href="/regions"
           className="block rounded-2xl p-4 press transition-transform"
           style={{
-            background: "linear-gradient(135deg, #FFF8F2 0%, #F7F4EE 100%)",
+            background: "#FFF8F2",
             border: "1.5px solid rgba(173, 94, 59,0.25)",
           }}
         >

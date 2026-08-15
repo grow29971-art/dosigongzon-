@@ -79,7 +79,7 @@ export default function InviteSection() {
       <div
         className="p-5"
         style={{
-          background: "linear-gradient(135deg, #FFF5F8 0%, #FFE9F0 100%)",
+          background: "#FFF5F8",
           borderRadius: "var(--radius-card)",
           border: "1px solid var(--color-like-soft)",
           boxShadow: "0 4px 14px var(--color-like-soft)",

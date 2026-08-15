@@ -83,11 +83,11 @@ export default async function PopularPostsPage() {
                   className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold"
                   style={
                     idx === 0
-                      ? { background: "linear-gradient(135deg, #FFD700, #E8B040)", color: "#fff" }
+                      ? { background: "#FFD700", color: "#fff" }
                       : idx === 1
-                      ? { background: "linear-gradient(135deg, #C0C0C0, #999)", color: "#fff" }
+                      ? { background: "#C0C0C0", color: "#fff" }
                       : idx === 2
-                      ? { background: "linear-gradient(135deg, #CD7F32, #A0522D)", color: "#fff" }
+                      ? { background: "#CD7F32", color: "#fff" }
                       : { background: "#F7F4EE", color: "#A38E7A" }
                   }
                 >

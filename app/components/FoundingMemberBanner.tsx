@@ -59,7 +59,7 @@ export default function FoundingMemberBanner() {
     <div
       className="relative mb-3 rounded-2xl px-4 py-3.5"
       style={{
-        background: "linear-gradient(135deg, #FFF6E8 0%, #F4E6C8 100%)",
+        background: "#FFF6E8",
         border: "1.5px solid rgba(173, 94, 59,0.25)",
         boxShadow: "0 4px 14px rgba(173, 94, 59,0.12)",
       }}

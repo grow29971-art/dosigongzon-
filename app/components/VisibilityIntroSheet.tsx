@@ -47,7 +47,7 @@ export default function VisibilityIntroSheet({ open, onClose, onPick }: Visibili
         {/* 헤더 */}
         <div
           className="px-5 pt-5 pb-4"
-          style={{ background: "linear-gradient(160deg, #FFF9F2 0%, #F7F4EE 100%)" }}
+          style={{ background: "#FFF9F2" }}
         >
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-2">

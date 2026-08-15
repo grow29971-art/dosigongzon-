@@ -107,7 +107,7 @@ export default function CareLogCelebration({
             <div
               className="w-16 h-16 rounded-full flex items-center justify-center"
               style={{
-                background: "linear-gradient(135deg, #FF9A3C 0%, #E8652A 100%)",
+                background: "#FF9A3C",
                 boxShadow: "0 8px 24px rgba(232,101,42,0.4)",
               }}
             >

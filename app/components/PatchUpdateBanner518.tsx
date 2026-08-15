@@ -37,7 +37,7 @@ export default function PatchUpdateBanner518() {
       <div
         className="rounded-2xl overflow-hidden"
         style={{
-          background: "linear-gradient(160deg, #4F6B53 0%, #6B8E6F 70%, #8FAE92 100%)",
+          background: "#4F6B53",
           boxShadow: "0 8px 24px rgba(79,107,83,0.20), 0 2px 6px rgba(79,107,83,0.12)",
         }}
       >

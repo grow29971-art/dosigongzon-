@@ -210,7 +210,7 @@ export default function InventoryPage() {
                 <p className="text-gray-400 text-[13px] mb-3">가방이 비어있어요</p>
                 <Link href="/mypage/shop"
                   className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-[13px] font-bold text-white"
-                  style={{ background: "linear-gradient(135deg,#FFB020,#FF8020)" }}>
+                  style={{ background: "#FFB020" }}>
                   <Coins size={14} /> 상점 가기
                 </Link>
               </div>

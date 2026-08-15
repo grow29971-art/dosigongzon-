@@ -134,7 +134,7 @@ export default function ReportModal({
             <div
               className="w-8 h-8 rounded-xl flex items-center justify-center"
               style={{
-                background: "linear-gradient(135deg, #D85555 0%, #B84545 100%)",
+                background: "#D85555",
                 boxShadow: "0 4px 10px rgba(216,85,85,0.35)",
               }}
             >
@@ -164,7 +164,7 @@ export default function ReportModal({
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
               style={{
-                background: "linear-gradient(135deg, #6B8E6F 0%, #5A7C5E 100%)",
+                background: "#6B8E6F",
                 boxShadow: "0 6px 16px rgba(107,142,111,0.4)",
               }}
             >
@@ -337,7 +337,7 @@ export default function ReportModal({
                 disabled={submitting}
                 className="flex-1 py-3 rounded-xl text-[13px] font-bold text-white disabled:opacity-40 flex items-center justify-center gap-1.5"
                 style={{
-                  background: "linear-gradient(135deg, #D85555 0%, #B84545 100%)",
+                  background: "#D85555",
                   boxShadow: "0 6px 14px rgba(216,85,85,0.35)",
                 }}
               >

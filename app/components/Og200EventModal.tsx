@@ -85,7 +85,7 @@ export default function Og200EventModal() {
         {/* 헤더 — 그라데이션 */}
         <div
           className="relative px-6 pt-8 pb-6 overflow-hidden"
-          style={{ background: "linear-gradient(135deg, #FFE8C2 0%, #FFCFB5 60%, #FFB99B 100%)" }}
+          style={{ background: "#FFE8C2" }}
         >
           <button
             type="button"
@@ -109,7 +109,7 @@ export default function Og200EventModal() {
           <div
             className="w-[68px] h-[68px] mx-auto rounded-full flex items-center justify-center mb-3"
             style={{
-              background: "linear-gradient(135deg, #E88D5A 0%, var(--color-primary) 100%)",
+              background: "#E88D5A",
               boxShadow: "var(--shadow-primary)",
             }}
           >

@@ -270,7 +270,7 @@ export default function ExperimentPage() {
       <section
         aria-labelledby="area-heading"
         className="rounded-3xl p-5 mb-4 text-white"
-        style={{ background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-light, #C47E5A))" }}
+        style={{ background: "var(--color-primary)" }}
       >
         <h2 id="area-heading" className="text-[15px] font-bold mb-3 flex items-center gap-1.5">
           <Sprout size={16} /> 이번 주 {experiment.publicAreaName}

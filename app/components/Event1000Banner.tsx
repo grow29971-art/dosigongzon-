@@ -89,7 +89,7 @@ export default async function Event1000Banner() {
                 className="h-full rounded-full transition-all"
                 style={{
                   width: `${percent}%`,
-                  background: "linear-gradient(90deg, #FFFFFF 0%, #FFF8E1 100%)",
+                  background: "#FFFFFF",
                   boxShadow: "0 0 8px rgba(255,255,255,0.6)",
                 }}
               />

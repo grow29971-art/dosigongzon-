@@ -164,7 +164,7 @@ export default function TrappingGuidePage() {
       <div
         className="rounded-2xl p-5 mb-6"
         style={{
-          background: "linear-gradient(135deg, #E8F4E8 0%, #D9EAD9 100%)",
+          background: "#E8F4E8",
           border: "1px solid rgba(107,142,111,0.2)",
         }}
       >

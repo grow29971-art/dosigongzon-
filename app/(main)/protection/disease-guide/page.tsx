@@ -579,7 +579,7 @@ export default function DiseaseGuidePage() {
       <div
         className="rounded-2xl p-5 mb-6"
         style={{
-          background: "linear-gradient(135deg, #FFF0F0 0%, #FFE1E1 100%)",
+          background: "#FFF0F0",
           border: "1px solid rgba(216,85,85,0.18)",
         }}
       >

@@ -110,7 +110,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
       <div
         className="mb-3 relative overflow-hidden p-4"
         style={{
-          background: "linear-gradient(135deg, #FFF6E8 0%, #FCE7D2 100%)",
+          background: "#FFF6E8",
           borderRadius: "var(--radius-card)",
           border: "1px solid rgba(173, 94, 59,0.20)",
         }}

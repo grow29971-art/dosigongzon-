@@ -121,7 +121,7 @@ export default function PendingCareHandoff() {
     <div
       className="mb-4 p-4 relative overflow-hidden"
       style={{
-        background: "linear-gradient(135deg, #4A3527 0%, #7A5238 55%, #C47E5A 100%)",
+        background: "#4A3527",
         borderRadius: "var(--radius-card)",
         boxShadow: "0 10px 28px rgba(122,82,56,0.35)",
       }}
@@ -203,7 +203,7 @@ export default function PendingCareHandoff() {
             disabled={phase === "busy"}
             className="mt-3.5 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-[15px] font-bold press transition-transform"
             style={{
-              background: "linear-gradient(135deg, #FFF7C4 0%, #E8B040 100%)",
+              background: "#FFF7C4",
               color: "#4A3527",
               boxShadow: "0 6px 16px rgba(232,176,64,0.35)",
               opacity: phase === "busy" ? 0.7 : 1,

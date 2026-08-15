@@ -542,7 +542,7 @@ export default function AdminInboxPage() {
                     disabled={replying === i.id}
                     className="mt-2 w-full py-2.5 rounded-xl text-white text-[13px] font-bold press transition-transform disabled:opacity-60"
                     style={{
-                      background: "linear-gradient(135deg, #6B8E6F 0%, #4F6E53 100%)",
+                      background: "#6B8E6F",
                       boxShadow: "0 3px 10px rgba(107,142,111,0.25)",
                     }}
                   >

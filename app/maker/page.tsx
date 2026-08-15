@@ -81,7 +81,7 @@ export default function MakerPage() {
         <div
           className="rounded-3xl p-5 mb-3"
           style={{
-            background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)",
+            background: "#FFF9F2",
             border: "1px solid rgba(173, 94, 59,0.20)",
           }}
         >
@@ -104,7 +104,7 @@ export default function MakerPage() {
         <div
           className="rounded-3xl p-5 mb-3"
           style={{
-            background: "linear-gradient(135deg, #F2F7F0 0%, #E5EDDD 100%)",
+            background: "#F2F7F0",
             border: "1px solid rgba(107,142,111,0.22)",
           }}
         >
@@ -173,7 +173,7 @@ export default function MakerPage() {
         <div
           className="rounded-3xl p-5"
           style={{
-            background: "linear-gradient(135deg, #FFF9F2 0%, #F4E8D8 100%)",
+            background: "#FFF9F2",
             border: "1px solid rgba(173, 94, 59,0.20)",
           }}
         >
@@ -257,7 +257,7 @@ export default function MakerPage() {
         <div
           className="rounded-3xl p-5"
           style={{
-            background: "linear-gradient(135deg, rgba(107,142,111,0.10) 0%, rgba(107,142,111,0.04) 100%)",
+            background: "rgba(107,142,111,0.10)",
             border: "1px solid rgba(107,142,111,0.22)",
           }}
         >
@@ -294,7 +294,7 @@ export default function MakerPage() {
         <div
           className="rounded-3xl p-5"
           style={{
-            background: "linear-gradient(135deg, #FFF8DC 0%, #FFEFB6 100%)",
+            background: "#FFF8DC",
             border: "1px solid rgba(232,176,64,0.25)",
           }}
         >
@@ -368,7 +368,7 @@ function SkillCard({ icon, title, sub }: { icon: React.ReactNode; title: string;
     <div
       className="rounded-xl p-3"
       style={{
-        background: "linear-gradient(135deg, #FFF9F2 0%, #F4E8D8 100%)",
+        background: "#FFF9F2",
         border: "1px solid rgba(173, 94, 59,0.18)",
       }}
     >

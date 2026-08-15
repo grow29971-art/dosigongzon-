@@ -386,7 +386,7 @@ export default function CirclePage() {
         <div
           className="rounded-2xl p-4 flex items-start gap-2.5"
           style={{
-            background: "linear-gradient(135deg, rgba(107,142,111,0.10) 0%, rgba(107,142,111,0.04) 100%)",
+            background: "rgba(107,142,111,0.10)",
             border: "1px solid rgba(107,142,111,0.22)",
           }}
         >
@@ -627,7 +627,7 @@ export default function CirclePage() {
                 href={`/circle/${myCircleId}/chat`}
                 className="w-full block rounded-2xl p-4 press transition-transform"
                 style={{
-                  background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)",
+                  background: "#FFF9F2",
                   border: "1px solid rgba(173, 94, 59,0.22)",
                   boxShadow: "0 2px 10px rgba(173, 94, 59,0.10)",
                 }}
@@ -701,7 +701,7 @@ export default function CirclePage() {
             </div>
             <div
               className="rounded-2xl p-3"
-              style={{ boxShadow: "var(--shadow-card)", background: "linear-gradient(135deg, #FFFEF5 0%, #FFF8DC 100%)", border: "1px solid rgba(254,229,0,0.4)" }}
+              style={{ boxShadow: "var(--shadow-card)", background: "#FFFEF5", border: "1px solid rgba(254,229,0,0.4)" }}
             >
               <p className="text-[13px] leading-relaxed mb-2.5" style={{ color: "#6B5916" }}>
                 링크 한 번이면 친한 이웃을 바로 서클에 초대할 수 있어요. 카카오톡으로 공유 → 받는 사람이 수락하면 즉시 멤버.
@@ -834,7 +834,7 @@ function Avatar({ url, size = 40 }: { url: string | null; size?: number }) {
     return (
       <div
         className="shrink-0 rounded-full flex items-center justify-center text-white text-[13px] font-bold"
-        style={{ width: size, height: size, background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))" }}
+        style={{ width: size, height: size, background: "var(--color-primary)" }}
       >
         🐾
       </div>

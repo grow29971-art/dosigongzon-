@@ -355,7 +355,7 @@ export default async function TipDetailPage({ params }: Params) {
         <div
           className="p-5 rounded-2xl"
           style={{
-            background: "linear-gradient(135deg, #FBF8F3 0%, #F2EBE0 100%)",
+            background: "#FBF8F3",
             border: "1px solid rgba(173, 94, 59,0.15)",
           }}
         >

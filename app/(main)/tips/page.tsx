@@ -130,7 +130,7 @@ export default async function TipsIndexPage() {
         <div
           className="relative overflow-hidden p-4 pt-4"
           style={{
-            background: "linear-gradient(135deg, #FFE6E0 0%, #FFCFB5 50%, #FFD9A8 100%)",
+            background: "#FFE6E0",
             borderRadius: "var(--radius-card)",
             border: "1.5px solid rgba(216,85,85,0.25)",
             boxShadow: "0 8px 24px rgba(216,85,85,0.15), 0 2px 6px rgba(173, 94, 59,0.10)",
@@ -212,7 +212,7 @@ export default async function TipsIndexPage() {
             href="/protection"
             className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-bold text-white press transition-transform"
             style={{
-              background: "linear-gradient(135deg, #D85555 0%, #B83A2A 100%)",
+              background: "#D85555",
               boxShadow: "0 6px 18px rgba(216,85,85,0.35)",
             }}
           >
@@ -275,7 +275,7 @@ export default async function TipsIndexPage() {
         <div
           className="mt-6 p-5 rounded-2xl"
           style={{
-            background: "linear-gradient(135deg, #FBF8F3 0%, #F2EBE0 100%)",
+            background: "#FBF8F3",
             border: "1px solid rgba(173, 94, 59,0.15)",
           }}
         >

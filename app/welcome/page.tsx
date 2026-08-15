@@ -148,7 +148,7 @@ function WelcomeContent() {
     return (
       <div
         className="fixed inset-0 overflow-hidden flex flex-col"
-        style={{ background: "linear-gradient(170deg, #4F6B53 0%, #6B8E6F 60%, #8FAE92 100%)" }}
+        style={{ background: "#4F6B53" }}
       >
         <button
           onClick={handleSkip}

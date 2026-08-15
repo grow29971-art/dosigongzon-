@@ -51,7 +51,7 @@ export default function MyCircleQuickEntry() {
       <div
         className="rounded-2xl p-4"
         style={{
-          background: "linear-gradient(135deg, rgba(107,142,111,0.10) 0%, rgba(107,142,111,0.04) 100%)",
+          background: "rgba(107,142,111,0.10)",
           border: "1px solid rgba(107,142,111,0.22)",
         }}
       >
@@ -59,7 +59,7 @@ export default function MyCircleQuickEntry() {
         <div className="flex items-start gap-2 mb-3">
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: "linear-gradient(135deg, #4F6B53 0%, #6B8E6F 100%)" }}
+            style={{ background: "#4F6B53" }}
           >
             <ShieldCheck size={17} color="#fff" />
           </div>
@@ -97,7 +97,7 @@ export default function MyCircleQuickEntry() {
           <Link
             href="/mypage/circle"
             className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold text-white press-strong transition-transform"
-            style={{ background: "linear-gradient(135deg, #4F6B53 0%, #6B8E6F 100%)", boxShadow: "0 4px 12px rgba(79,107,83,0.30)" }}
+            style={{ background: "#4F6B53", boxShadow: "0 4px 12px rgba(79,107,83,0.30)" }}
           >
             <UserPlus size={14} />
             <span>이웃 초대 시작하기</span>
@@ -108,7 +108,7 @@ export default function MyCircleQuickEntry() {
             <Link
               href={circleId ? `/circle/${circleId}/chat` : "/mypage/circle"}
               className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold text-white press-strong transition-transform relative"
-              style={{ background: "linear-gradient(135deg, #4F6B53 0%, #6B8E6F 100%)", boxShadow: "0 3px 10px rgba(79,107,83,0.25)" }}
+              style={{ background: "#4F6B53", boxShadow: "0 3px 10px rgba(79,107,83,0.25)" }}
             >
               <MessageCircle size={13} />
               <span>채팅방 열기</span>

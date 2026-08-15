@@ -221,7 +221,7 @@ export default function EmergencyGuidePage() {
       <div
         className="rounded-2xl p-5 mb-6"
         style={{
-          background: "linear-gradient(135deg, #FFF4E8 0%, #FFE8D1 100%)",
+          background: "#FFF4E8",
           border: "1px solid rgba(184,69,69,0.15)",
         }}
       >

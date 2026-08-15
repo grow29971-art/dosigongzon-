@@ -43,7 +43,7 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
     <div
       className="mb-3 p-4"
       style={{
-        background: "linear-gradient(135deg, #FFF3F6 0%, #FFE7EC 100%)",
+        background: "#FFF3F6",
         borderRadius: "var(--radius-card)",
         border: "1px solid var(--color-like-soft)",
         boxShadow: "0 6px 20px var(--color-like-soft)",
