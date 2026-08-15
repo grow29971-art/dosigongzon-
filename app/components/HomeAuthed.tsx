@@ -989,7 +989,7 @@ export default function HomeAuthed({
                 내 동네 소식
               </h2>
               {primaryRegion && (
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg" style={{ background: "rgba(173, 94, 59,0.12)", color: "var(--color-primary)" }}>
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg" style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}>
                   {primaryRegion.name}
                 </span>
               )}
@@ -1017,7 +1017,7 @@ export default function HomeAuthed({
               >
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: "rgba(173, 94, 59,0.15)" }}
+                  style={{ backgroundColor: "var(--color-primary-soft)" }}
                 >
                   <MapPin size={18} color="var(--color-primary)" strokeWidth={2} />
                 </div>
@@ -1109,7 +1109,7 @@ export default function HomeAuthed({
                         >
                           <span
                             className="text-[11px] font-bold px-2 py-0.5 rounded-md shrink-0"
-                            style={{ backgroundColor: "rgba(173, 94, 59,0.12)", color: "var(--color-primary)" }}
+                            style={{ backgroundColor: "var(--color-primary-soft)", color: "var(--color-primary)" }}
                           >
                             {p.region}
                           </span>
@@ -1141,7 +1141,7 @@ export default function HomeAuthed({
                   <div className="flex items-start gap-3 mb-3">
                     <div
                       className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-[20px]"
-                      style={{ backgroundColor: "rgba(173, 94, 59,0.15)" }}
+                      style={{ backgroundColor: "var(--color-primary-soft)" }}
                     >
                       <PawPrint size={18} style={{ color: "var(--color-primary)" }} />
                     </div>
@@ -1238,7 +1238,7 @@ export default function HomeAuthed({
                       >
                         <span
                           className="text-[11px] font-bold px-2 py-0.5 rounded-md shrink-0"
-                          style={{ backgroundColor: "rgba(173, 94, 59,0.12)", color: "var(--color-primary)" }}
+                          style={{ backgroundColor: "var(--color-primary-soft)", color: "var(--color-primary)" }}
                         >
                           {p.region}
                         </span>
@@ -1958,7 +1958,7 @@ export default function HomeAuthed({
       >
         <div
           className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-          style={{ background: "rgba(173, 94, 59,0.15)" }}
+          style={{ background: "var(--color-primary-soft)" }}
         >
           <Sparkles size={22} className="text-primary" />
         </div>
