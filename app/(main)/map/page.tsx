@@ -2298,7 +2298,7 @@ export default function MapPage() {
                 style={{
                   background: "var(--color-primary)",
                   color: "#fff",
-                  boxShadow: "0 2px 8px rgba(173, 94, 59,0.35)",
+                  boxShadow: "var(--shadow-raised)",
                 }}
               >
                 내 활동 지역 추가하기
@@ -2511,7 +2511,7 @@ export default function MapPage() {
             style={{
               background: "var(--color-sage)",
               borderRadius: "var(--radius-modal)",
-              boxShadow: "0 6px 20px rgba(34,163,102,0.45), 0 0 0 2px rgba(255,255,255,0.8)",
+              boxShadow: "var(--shadow-fab)",
             }}
           >
             <div
@@ -2549,13 +2549,11 @@ export default function MapPage() {
             className="relative w-11 h-11 rounded-full flex items-center justify-center press-strong transition-transform overflow-hidden"
             style={{
               background: "linear-gradient(180deg, #4a3a63 0%, #2b2140 100%)",
-              boxShadow: "0 1px 0 rgba(255,255,255,0.18) inset, 0 3px 8px rgba(30,20,50,0.28), 0 8px 18px rgba(30,20,50,0.18)",
+              boxShadow: "var(--shadow-fab)",
             }}
             aria-label="고양이별 — 먼저 떠난 아이들"
             title="고양이별"
           >
-            <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1/2 rounded-t-full pointer-events-none"
-              style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 100%)" }} />
             <Star size={16} color="#FFE9A8" fill="#FFE9A8" className="relative" />
           </Link>
 
@@ -2565,12 +2563,10 @@ export default function MapPage() {
             className="relative w-11 h-11 rounded-full flex items-center justify-center press-strong transition-transform overflow-hidden"
             style={{
               background: "var(--color-surface)",
-              boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 -3px 6px rgba(60,70,110,0.08) inset, 0 3px 8px rgba(30,40,80,0.14), 0 8px 18px rgba(30,40,80,0.10)",
+              boxShadow: "var(--shadow-fab)",
             }}
             aria-label="곁에 있어요 — 112/119 빠른 전화"
           >
-            <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1/2 rounded-t-full pointer-events-none"
-              style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 100%)" }} />
             <PhoneCall size={17} style={{ color: "var(--color-error)" }} strokeWidth={2.4} className="relative" />
           </button>
           <button
@@ -2578,13 +2574,10 @@ export default function MapPage() {
             className="relative w-11 h-11 rounded-full flex items-center justify-center press-strong transition-transform overflow-hidden"
             style={{
               background: "var(--color-surface)",
-              boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 -3px 6px rgba(60,70,110,0.08) inset, 0 3px 8px rgba(30,40,80,0.14), 0 8px 18px rgba(30,40,80,0.10)",
+              boxShadow: "var(--shadow-fab)",
             }}
             aria-label="내 위치"
           >
-            {/* 유리질 광택 하이라이트 */}
-            <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1/2 rounded-t-full pointer-events-none"
-              style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 100%)" }} />
             <LocateFixed size={18} style={{ color: "var(--color-primary)" }} strokeWidth={2.4} className="relative" />
           </button>
           <div className="relative">
@@ -2598,10 +2591,7 @@ export default function MapPage() {
                 />
                 <span
                   className="absolute -top-1.5 -right-1.5 text-[9px] font-bold px-1.5 py-0.5 chip-square text-white z-10"
-                  style={{
-                    background: "var(--color-like)",
-                    boxShadow: "0 2px 6px rgba(232,107,140,0.4)",
-                  }}
+                  style={{ background: "var(--color-like)" }}
                 >
                   NEW
                 </span>
@@ -2612,18 +2602,12 @@ export default function MapPage() {
               className="relative rounded-full flex items-center justify-center press-strong transition-transform overflow-hidden"
               style={{
                 width: 58, height: 58,
-                background: "linear-gradient(160deg, var(--color-primary-light) 0%, var(--color-primary) 45%, var(--color-primary-dark) 100%)",
-                boxShadow: "0 0 0 4px #fff, 0 6px 14px rgba(173,94,59,0.45), 0 2px 4px rgba(173,94,59,0.3), inset 0 -3px 6px rgba(138,67,37,0.35)",
+                background: "var(--color-primary)",
+                boxShadow: "0 0 0 4px #fff, var(--shadow-primary)",
               }}
               aria-label="고양이 등록"
             >
-              {/* 유리질 광택 하이라이트 (상단) */}
-              <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1/2 pointer-events-none"
-                style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 100%)", borderRadius: "999px 999px 0 0" }} />
-              {/* 바닥 접지 그림자용 살짝 어두운 하단 테두리 */}
-              <span aria-hidden="true" className="absolute inset-x-2 bottom-0 h-2 rounded-full pointer-events-none"
-                style={{ background: "rgba(20,35,90,0.25)", filter: "blur(3px)" }} />
-              <Plus size={26} color="#fff" strokeWidth={2.5} className="relative" style={{ filter: "drop-shadow(0 1px 1px rgba(20,40,100,0.35))" }} />
+              <Plus size={26} color="#fff" strokeWidth={2.5} className="relative" />
             </button>
           </div>
           <div
@@ -2807,7 +2791,7 @@ export default function MapPage() {
             style={{
               background: "var(--color-surface)",
               borderRadius: "var(--radius-sheet)",
-              boxShadow: "0 -4px 24px rgba(173, 94, 59,0.15), 0 2px 8px rgba(0,0,0,0.06)",
+              boxShadow: "var(--shadow-sheet)",
               border: "1.5px solid rgba(173, 94, 59,0.2)",
               maxHeight: "70dvh",
             }}
@@ -2893,7 +2877,7 @@ export default function MapPage() {
             style={{
               background: "var(--color-surface)",
               borderRadius: "var(--radius-sheet)",
-              boxShadow: `0 -4px 24px ${accent}26, 0 2px 8px rgba(0,0,0,0.06)`,
+              boxShadow: "var(--shadow-sheet)",
               border: `1.5px solid ${accent}33`,
             }}
           >
@@ -2912,7 +2896,7 @@ export default function MapPage() {
                   style={{
                     borderRadius: isPharm ? 24 : 16,
                     background: `linear-gradient(135deg, ${accent} 0%, ${accent}DD 100%)`,
-                    boxShadow: `0 6px 14px ${accent}55`,
+                    boxShadow: "var(--shadow-fab)",
                   }}
                 >
                   {isPharm ? (
@@ -2999,7 +2983,7 @@ export default function MapPage() {
                   className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-[15px] font-bold text-white press-strong transition-transform"
                   style={{
                     background: `linear-gradient(135deg, ${accent} 0%, ${accent}DD 100%)`,
-                    boxShadow: `0 6px 18px ${accent}55`,
+                    boxShadow: "var(--shadow-fab)",
                   }}
                 >
                   <Phone size={16} strokeWidth={2.5} />
@@ -3094,7 +3078,7 @@ export default function MapPage() {
                 className="w-11 h-11 rounded-full flex items-center justify-center press-strong transition-transform"
                 style={{
                   background: "linear-gradient(135deg, #3a2c4d, #6b5b8a)",
-                  boxShadow: "0 4px 14px rgba(58,44,77,0.38)",
+                  boxShadow: "var(--shadow-fab)",
                 }}
                 aria-label="고양이별로 보내기"
                 title="고양이별로 보내기"
@@ -3114,7 +3098,7 @@ export default function MapPage() {
                   }
                 }}
                 className="w-11 h-11 rounded-full flex items-center justify-center press-strong transition-transform"
-                style={{ background: "var(--color-error)", boxShadow: "0 4px 14px rgba(216,85,85,0.40)" }}
+                style={{ background: "var(--color-error)", boxShadow: "var(--shadow-fab)" }}
                 aria-label="삭제"
               >
                 <Trash2 size={17} color="#fff" />
@@ -3140,7 +3124,7 @@ export default function MapPage() {
             style={{
               maxHeight: "calc(100dvh - max(env(safe-area-inset-top), 12px) - 80px)",
               border: `2.5px solid ${catCardTheme.frameOuter}`,
-              boxShadow: `0 0 20px ${catCardTheme.accent}66, 0 -4px 24px rgba(0,0,0,0.12)`,
+              boxShadow: "var(--shadow-sheet)",
             }}
           >
 
@@ -3241,7 +3225,7 @@ export default function MapPage() {
                       className={`flex items-center gap-2 pl-3.5 pr-4 py-2.5 rounded-full press-strong transition-transform ${petPop ? "pet-pop" : ""}`}
                       style={{
                         background: "var(--color-like)",
-                        boxShadow: "0 5px 16px rgba(232,107,140,0.40)",
+                        boxShadow: "var(--shadow-fab)",
                       }}
                       aria-label={`${selectedCat.name} 쓰다듬기`}
                     >
@@ -3665,7 +3649,7 @@ export default function MapPage() {
                         style={{
                           background: "#FEE500",
                           color: "#3C1E1E",
-                          boxShadow: "0 2px 6px rgba(254,229,0,0.45)",
+                          boxShadow: "var(--shadow-raised)",
                         }}
                         aria-label="카카오톡으로 공유"
                       >
@@ -3941,7 +3925,7 @@ export default function MapPage() {
                               style={{
                                 backgroundColor: getLevelColor(c.author_level),
                                 color: "#FFFFFF",
-                                boxShadow: `0 1px 3px ${getLevelColor(c.author_level)}55`,
+                                boxShadow: "var(--shadow-card-sm)",
                               }}
                             >
                               Lv.{c.author_level}
