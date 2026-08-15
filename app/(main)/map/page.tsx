@@ -3123,7 +3123,7 @@ export default function MapPage() {
             className="relative bg-white rounded-[28px] overflow-hidden pointer-events-auto animate-slide-up overflow-y-auto"
             style={{
               maxHeight: "calc(100dvh - max(env(safe-area-inset-top), 12px) - 80px)",
-              border: `2.5px solid ${catCardTheme.frameOuter}`,
+              border: "1px solid var(--color-border)",
               boxShadow: "var(--shadow-sheet)",
             }}
           >
