@@ -41,7 +41,7 @@ export default function ShopPreviewStrip() {
   return (
     <div className="mb-5">
       <div className="flex items-center justify-between mb-3 px-1">
-        <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+        <h2 className="text-[17px] font-bold text-text-main tracking-tight">
           곧 열리는 상점 🛍️
         </h2>
         <Link
@@ -91,7 +91,7 @@ export default function ShopPreviewStrip() {
                 </button>
               </div>
               <p className="text-[13px] font-bold text-text-main mt-1.5 leading-snug truncate">{p.name}</p>
-              <p className="text-[13px] font-extrabold text-text-main">{price.toLocaleString()}원</p>
+              <p className="text-[13px] font-bold text-text-main">{price.toLocaleString()}원</p>
             </Link>
           );
         })}

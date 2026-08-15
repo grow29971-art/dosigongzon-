@@ -667,7 +667,7 @@ export default function FaqPage() {
         {/* 타이틀 */}
         <header className="mb-7">
           <h1
-            className="mb-2 text-[24px] font-extrabold leading-tight"
+            className="mb-2 text-[24px] font-bold leading-tight"
             style={{ color: "var(--color-text-main)" }}
           >
             길고양이 자주 묻는 질문

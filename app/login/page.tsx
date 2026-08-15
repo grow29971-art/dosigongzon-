@@ -138,7 +138,7 @@ function LoginContent() {
             <div className="flex items-start gap-2.5 mb-3">
               <AlertCircle size={18} className="mt-0.5 shrink-0" style={{ color: "#B8860B" }} />
               <div className="min-w-0">
-                <p className="text-[13px] font-extrabold" style={{ color: "#8A6410" }}>
+                <p className="text-[13px] font-bold" style={{ color: "#8A6410" }}>
                   카카오로 바로 로그인할 수 있어요
                 </p>
                 <p className="text-[13px] mt-1 leading-relaxed" style={{ color: "#8A6410" }}>
@@ -172,7 +172,7 @@ function LoginContent() {
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4">
             <PawPrint size={40} className="text-primary" strokeWidth={1.8} />
           </div>
-          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">도시공존</h1>
+          <h1 className="text-[24px] font-bold text-text-main tracking-tight">도시공존</h1>
           <p className="text-[15px] text-text-sub mt-2 leading-relaxed">
             카카오 또는 구글로 1초 만에 시작하기
           </p>
@@ -203,7 +203,7 @@ function LoginContent() {
                 }}
               />
               <div className="min-w-0 flex-1">
-                <p className="text-[13px] font-extrabold" style={{
+                <p className="text-[13px] font-bold" style={{
                   color:
                     oauthGuide.severity === "danger" ? "#8B2F2F" :
                     oauthGuide.severity === "warn" ? "#6F4910" : "#22457A",
@@ -312,7 +312,7 @@ function LoginContent() {
           <button
             onClick={() => handleSocial("kakao")}
             disabled={!!socialLoading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-extrabold active:scale-[0.97] transition-transform disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-bold active:scale-[0.97] transition-transform disabled:opacity-60"
             /* 인앱에서도 카카오는 실제로 진행되므로 약관 동의 상태를 그대로 반영 */
             style={{ backgroundColor: "#FEE500", color: "#191919", opacity: agreed ? 1 : 0.6 }}
           >

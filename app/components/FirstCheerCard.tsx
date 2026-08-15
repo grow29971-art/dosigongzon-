@@ -54,8 +54,8 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
           🐾
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-like)" }}>첫 발걸음</p>
-          <p className="text-[15px] font-extrabold text-text-main leading-tight mt-0.5">
+          <p className="text-[11px] font-bold tracking-[0.12em]" style={{ color: "var(--color-like)" }}>첫 발걸음</p>
+          <p className="text-[15px] font-bold text-text-main leading-tight mt-0.5">
             {cheered
               ? "응원 고마워요! 🎉"
               : `${regionName ? regionName + " " : "우리 동네 "}고양이에게 응원을 보내보세요`}
@@ -102,7 +102,7 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
       {cheered && (
         <Link
           href="/map"
-          className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white text-[13px] font-extrabold active:scale-[0.98] transition-transform"
+          className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white text-[13px] font-bold active:scale-[0.98] transition-transform"
           style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
         >
           <PawPrint size={14} /> 우리 동네 고양이 등록하기 <ChevronRight size={13} />

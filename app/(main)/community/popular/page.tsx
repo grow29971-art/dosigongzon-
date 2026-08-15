@@ -44,7 +44,7 @@ export default async function PopularPostsPage() {
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
         <div>
-          <h1 className="text-[20px] font-extrabold text-text-main tracking-tight flex items-center gap-1.5">
+          <h1 className="text-[20px] font-bold text-text-main tracking-tight flex items-center gap-1.5">
             <Flame size={18} style={{ color: ACCENT }} />
             인기 게시물
           </h1>
@@ -80,7 +80,7 @@ export default async function PopularPostsPage() {
               >
                 {/* 순위 배지 (TOP 3은 메달, 그 외는 숫자) */}
                 <div
-                  className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-extrabold"
+                  className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold"
                   style={
                     idx === 0
                       ? { background: "linear-gradient(135deg, #FFD700, #E8B040)", color: "#fff" }
@@ -113,7 +113,7 @@ export default async function PopularPostsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-0.5">
                     <span
-                      className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md shrink-0"
+                      className="text-[9px] font-bold px-1.5 py-0.5 rounded-md shrink-0"
                       style={{ backgroundColor: `${cat.color}18`, color: cat.color }}
                     >
                       {cat.emoji} {cat.label}
@@ -143,7 +143,7 @@ export default async function PopularPostsPage() {
                     <span className="text-[11px] text-text-sub font-semibold">{post.authorName}</span>
                     {post.authorLevel && (
                       <span
-                        className="text-[9px] font-extrabold px-1 py-[0.5px] rounded"
+                        className="text-[9px] font-bold px-1 py-[0.5px] rounded"
                         style={{ backgroundColor: getLevelColor(post.authorLevel), color: "#fff" }}
                       >
                         Lv.{post.authorLevel}

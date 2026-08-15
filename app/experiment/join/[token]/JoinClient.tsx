@@ -87,7 +87,7 @@ export default function JoinClient({ token, state }: { token: string; state: Inv
         >
           <Sprout size={30} style={{ color: "var(--color-primary)" }} />
         </div>
-        <h1 className="text-[20px] font-extrabold mb-2">{heading}</h1>
+        <h1 className="text-[20px] font-bold mb-2">{heading}</h1>
 
         {state.status === "valid" && (
           <>

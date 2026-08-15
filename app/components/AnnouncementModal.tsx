@@ -79,7 +79,7 @@ export default function AnnouncementModal() {
         <button
           type="button"
           onClick={dismiss}
-          className="mt-5 w-full py-3 rounded-2xl text-white text-[15px] font-extrabold active:scale-[0.98]"
+          className="mt-5 w-full py-3 rounded-2xl text-white text-[15px] font-bold active:scale-[0.98]"
           style={{
             background: "linear-gradient(135deg, #C47E5A 0%, #A96A47 100%)",
             boxShadow: "0 6px 16px rgba(196,126,90,0.32)",

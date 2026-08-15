@@ -275,7 +275,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
         <span style={{
           background: "#fff", borderRadius: "var(--radius-full)",
           padding: isLg ? "3px 10px" : "2px 7px",
-          fontSize: fs.label, fontWeight: 800, color: cfg.accent,
+          fontSize: fs.label, fontWeight: 700, color: cfg.accent,
           boxShadow: "0 1px 4px rgba(0,0,0,0.12)", flexShrink: 0,
         }}>
           {cfg.label}
@@ -287,7 +287,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
           boxShadow: "0 1px 4px rgba(0,0,0,0.12)", flexShrink: 0,
         }}>
           <Heart size={fs.hp - 2} fill="#FF6B81" color="#FF6B81" />
-          <span style={{ fontSize: fs.hp, fontWeight: 800, color: "#2B2B3D", lineHeight: 1 }}>{hpDisplay}</span>
+          <span style={{ fontSize: fs.hp, fontWeight: 700, color: "#2B2B3D", lineHeight: 1 }}>{hpDisplay}</span>
         </span>
       </div>
 
@@ -302,7 +302,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
           </div>
         )}
         <div style={{
-          fontSize: fs.name, fontWeight: 800, color: "#3A3630", lineHeight: 1.2,
+          fontSize: fs.name, fontWeight: 700, color: "#3A3630", lineHeight: 1.2,
           overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
         }}>
           {card.card_name ?? name}
@@ -336,7 +336,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
         </span>
         <span style={{
           background: lv >= 10 ? "linear-gradient(135deg,#FFD76A,#FFA83A)" : "#FF6B81",
-          color: "#fff", fontWeight: 800, borderRadius: "var(--radius-full)",
+          color: "#fff", fontWeight: 700, borderRadius: "var(--radius-full)",
           padding: isLg ? "3px 10px" : "2px 7px", fontSize: fs.dex + 1, flexShrink: 0,
         }}>
           Lv.{lv}
@@ -401,13 +401,13 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
           boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.05)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-            <span style={{ fontWeight: 800, color: "var(--color-primary-dark)", flexShrink: 0 }}>⚔️ PVP</span>
+            <span style={{ fontWeight: 700, color: "var(--color-primary-dark)", flexShrink: 0 }}>⚔️ PVP</span>
             <span style={{ color: "#5A554C", fontWeight: 600 }}>
               {card.pvp_wins ?? 0}승 {card.pvp_losses ?? 0}패 {card.pvp_draws ?? 0}무
             </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-            <span style={{ fontWeight: 800, color: "#5FA83D", flexShrink: 0 }}>🐾 PVE</span>
+            <span style={{ fontWeight: 700, color: "#5FA83D", flexShrink: 0 }}>🐾 PVE</span>
             <span style={{ color: "#5A554C", fontWeight: 600 }}>
               {card.pve_win_count ?? 0}승 {card.pve_losses ?? 0}패 {card.pve_draws ?? 0}무
             </span>
@@ -427,7 +427,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
               <span style={{ fontSize: isLg ? 11 : 9, flexShrink: 0 }}>{pickIcon(move1)}</span>
               <span style={{ fontSize: fs.moveName, color: "#3A3630", fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{move1}</span>
             </div>
-            <span style={{ fontSize: fs.movePow, fontWeight: 800, color: cfg.accent, flexShrink: 0, marginLeft: 4 }}>{move1Power}</span>
+            <span style={{ fontSize: fs.movePow, fontWeight: 700, color: cfg.accent, flexShrink: 0, marginLeft: 4 }}>{move1Power}</span>
           </div>
 
           <div style={{

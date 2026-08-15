@@ -126,7 +126,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
             <Bell size={15} color="#fff" strokeWidth={2.2} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-extrabold text-text-main tracking-tight">
+            <p className="text-[13px] font-bold text-text-main tracking-tight">
               {hasMyCat ? "아직 새 소식이 없어요" : "첫 돌봄 기록부터 시작해요"}
             </p>
             <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
@@ -137,7 +137,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
           </div>
           <Link
             href={hasMyCat ? "/map" : "/map"}
-            className="shrink-0 px-3 py-1.5 rounded-xl text-[11px] font-extrabold active:scale-95"
+            className="shrink-0 px-3 py-1.5 rounded-xl text-[11px] font-bold active:scale-95"
             style={{ backgroundColor: "var(--color-primary)", color: "#fff" }}
           >
             <PawPrint size={11} className="inline mr-1" strokeWidth={2.5} />
@@ -153,11 +153,11 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
       <div className="flex items-center justify-between mb-2 px-1">
         <div className="flex items-center gap-2">
           <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
-          <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+          <h2 className="text-[15px] font-bold text-text-main tracking-tight">
             새 소식
           </h2>
           <span
-            className="text-[11px] font-extrabold px-1.5 py-0.5 rounded-md tabular-nums"
+            className="text-[11px] font-bold px-1.5 py-0.5 rounded-md tabular-nums"
             style={{ background: "#AD5E3B22", color: "var(--color-primary-dark)" }}
           >
             {items.length}
@@ -201,7 +201,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
                 <Icon size={15} style={{ color: config.color }} strokeWidth={2.2} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-extrabold text-text-main leading-tight tracking-tight">
+                <p className="text-[13px] font-bold text-text-main leading-tight tracking-tight">
                   {item.targetName}
                 </p>
                 <p className="text-[11px] text-text-sub mt-0.5 leading-snug line-clamp-1">

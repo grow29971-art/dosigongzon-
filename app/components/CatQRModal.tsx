@@ -118,10 +118,10 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
       >
         <div className="px-5 pt-5 pb-3 flex items-start justify-between">
           <div>
-            <p className="text-[11px] font-extrabold tracking-[0.18em]" style={{ color: "#8A4325" }}>
+            <p className="text-[11px] font-bold tracking-[0.18em]" style={{ color: "#8A4325" }}>
               SHARE OFFLINE
             </p>
-            <h2 className="text-[17px] font-extrabold text-text-main mt-1 tracking-tight">
+            <h2 className="text-[17px] font-bold text-text-main mt-1 tracking-tight">
               {catName} QR 코드
             </h2>
             <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
@@ -150,7 +150,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
             type="button"
             onClick={handleDownload}
             disabled={!dataUrl}
-            className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-extrabold text-white active:scale-[0.97] disabled:opacity-50"
+            className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold text-white active:scale-[0.97] disabled:opacity-50"
             style={{ background: "linear-gradient(135deg, #AD5E3B 0%, #8A4325 100%)" }}
           >
             <Download size={14} />
@@ -160,7 +160,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
             type="button"
             onClick={handlePrint}
             disabled={!dataUrl}
-            className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-extrabold active:scale-[0.97] disabled:opacity-50"
+            className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold active:scale-[0.97] disabled:opacity-50"
             style={{ background: "#FFFFFF", color: "#8A4325", border: "1.5px solid rgba(173, 94, 59,0.30)" }}
           >
             <Printer size={14} />

@@ -126,7 +126,7 @@ export default function ShareMyLocation() {
         <button
           onClick={getLocation}
           disabled={locating}
-          className="w-full rounded-xl py-3 text-[15px] font-extrabold text-white active:scale-95 transition-transform flex items-center justify-center gap-1.5 disabled:opacity-60"
+          className="w-full rounded-xl py-3 text-[15px] font-bold text-white active:scale-95 transition-transform flex items-center justify-center gap-1.5 disabled:opacity-60"
           style={{ backgroundColor: "var(--color-primary)" }}
         >
           {locating ? (<><Loader2 size={15} className="animate-spin" /> 위치 확인 중…</>) : "지금 위치 링크 만들기"}
@@ -135,7 +135,7 @@ export default function ShareMyLocation() {
         <div className="space-y-2">
           <button
             onClick={shareViaSheet}
-            className="w-full rounded-xl py-3 text-[15px] font-extrabold text-white active:scale-95 transition-transform flex items-center justify-center gap-1.5"
+            className="w-full rounded-xl py-3 text-[15px] font-bold text-white active:scale-95 transition-transform flex items-center justify-center gap-1.5"
             style={{ backgroundColor: "var(--color-primary)" }}
           >
             <Share2 size={15} /> 공유로 보내기 (카톡·문자 등)

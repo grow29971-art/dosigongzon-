@@ -36,7 +36,7 @@ export default async function AdoptionSeekingSection() {
       <div className="flex items-center justify-between mb-2.5 px-0.5">
         <div className="flex items-center gap-1.5">
           <HandHeart size={15} style={{ color: "var(--color-primary)" }} />
-          <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+          <h2 className="text-[15px] font-bold text-text-main tracking-tight">
             지금 가족·임보를 기다려요
           </h2>
         </div>
@@ -73,7 +73,7 @@ export default async function AdoptionSeekingSection() {
                 />
                 {meta && (
                   <span
-                    className="absolute top-1.5 left-1.5 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md z-10"
+                    className="absolute top-1.5 left-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded-md z-10"
                     style={{
                       backgroundColor: meta.color,
                       color: "#fff",
@@ -84,7 +84,7 @@ export default async function AdoptionSeekingSection() {
                 )}
               </div>
               <div className="px-2 py-1.5">
-                <p className="text-[13px] font-extrabold text-text-main truncate">{c.name}</p>
+                <p className="text-[13px] font-bold text-text-main truncate">{c.name}</p>
                 {c.region && (
                   <p className="text-[11px] text-text-light truncate mt-0.5">{c.region}</p>
                 )}

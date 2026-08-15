@@ -306,7 +306,7 @@ export default function AdminInboxPage() {
           마이페이지
         </button>
         <div className="flex items-baseline gap-2 mb-1">
-          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
+          <h1 className="text-[24px] font-bold text-text-main tracking-tight">
             신고·문의 관리
           </h1>
           <span className="text-[11px] font-semibold text-text-light">
@@ -358,7 +358,7 @@ export default function AdminInboxPage() {
               >
                 <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
                   <span
-                    className="text-[11px] font-extrabold px-2 py-0.5 chip-square text-white"
+                    className="text-[11px] font-bold px-2 py-0.5 chip-square text-white"
                     style={{ backgroundColor: "#D85555" }}
                   >
                     {REPORT_REASON_LABELS[r.reason]}
@@ -484,7 +484,7 @@ export default function AdminInboxPage() {
                     {formatRelative(i.created_at)}
                   </span>
                 </div>
-                <p className="text-[15px] font-extrabold text-text-main mb-1 leading-tight">
+                <p className="text-[15px] font-bold text-text-main mb-1 leading-tight">
                   {i.subject}
                 </p>
                 <p className="text-[11px] text-text-light mb-2">
@@ -540,7 +540,7 @@ export default function AdminInboxPage() {
                     type="button"
                     onClick={() => handleSendReply(i.id)}
                     disabled={replying === i.id}
-                    className="mt-2 w-full py-2.5 rounded-xl text-white text-[13px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-60"
+                    className="mt-2 w-full py-2.5 rounded-xl text-white text-[13px] font-bold active:scale-[0.98] transition-transform disabled:opacity-60"
                     style={{
                       background: "linear-gradient(135deg, #6B8E6F 0%, #4F6E53 100%)",
                       boxShadow: "0 3px 10px rgba(107,142,111,0.25)",
@@ -607,10 +607,10 @@ function TabButton({
       }}
     >
       <Icon size={14} strokeWidth={2.3} />
-      <span className="text-[13px] font-extrabold tracking-tight">{label}</span>
+      <span className="text-[13px] font-bold tracking-tight">{label}</span>
       {count > 0 && (
         <span
-          className="text-[11px] font-extrabold px-1.5 py-0.5 chip-square tabular-nums"
+          className="text-[11px] font-bold px-1.5 py-0.5 chip-square tabular-nums"
           style={{
             backgroundColor: active ? "rgba(255,255,255,0.3)" : `${color}22`,
             color: active ? "#FFFFFF" : color,

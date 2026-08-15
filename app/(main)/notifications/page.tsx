@@ -67,7 +67,7 @@ export default function NotificationsPage() {
       {/* 헤더 */}
       <div className="mb-5 px-1">
         <div className="flex items-baseline gap-2 mb-1">
-          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">알림</h1>
+          <h1 className="text-[24px] font-bold text-text-main tracking-tight">알림</h1>
           <span className="text-[11px] font-semibold text-text-light">Notifications</span>
         </div>
         <p className="text-[13px] text-text-sub">내 고양이 소식과 받은 쪽지를 확인하세요</p>

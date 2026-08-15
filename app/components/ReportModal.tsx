@@ -142,7 +142,7 @@ export default function ReportModal({
             </div>
             <h2
               id="report-modal-title"
-              className="text-[17px] font-extrabold text-text-main tracking-tight"
+              className="text-[17px] font-bold text-text-main tracking-tight"
             >
               신고하기
             </h2>
@@ -170,7 +170,7 @@ export default function ReportModal({
             >
               <Check size={24} color="#fff" strokeWidth={3} />
             </div>
-            <p className="text-[15px] font-extrabold text-text-main mb-1">
+            <p className="text-[15px] font-bold text-text-main mb-1">
               신고가 접수됐어요
             </p>
             <p className="text-[13px] text-text-sub">
@@ -301,7 +301,7 @@ export default function ReportModal({
                   <div className="flex-1">
                     <div className="flex items-center gap-1">
                       <Ban size={11} style={{ color: "#B84545" }} />
-                      <span className="text-[13px] font-extrabold" style={{ color: "#4A3F35" }}>
+                      <span className="text-[13px] font-bold" style={{ color: "#4A3F35" }}>
                         {authorName ? `${authorName}님 차단` : "이 사용자 차단"}
                       </span>
                     </div>

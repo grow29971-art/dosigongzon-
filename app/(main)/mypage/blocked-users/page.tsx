@@ -74,7 +74,7 @@ export default function BlockedUsersPage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
-        <h1 className="text-[17px] font-extrabold text-text-main">차단한 사용자</h1>
+        <h1 className="text-[17px] font-bold text-text-main">차단한 사용자</h1>
       </div>
 
       <div className="px-4 mt-3">
@@ -90,7 +90,7 @@ export default function BlockedUsersPage() {
             <Ban size={16} color="#fff" strokeWidth={2.5} />
           </div>
           <div className="flex-1">
-            <p className="text-[13px] font-extrabold" style={{ color: "#4A3F35" }}>
+            <p className="text-[13px] font-bold" style={{ color: "#4A3F35" }}>
               차단된 사용자와는 메시지·댓글이 보이지 않아요
             </p>
             <p className="text-[11px] mt-0.5" style={{ color: "#A38E7A" }}>
@@ -111,7 +111,7 @@ export default function BlockedUsersPage() {
             >
               <Users size={24} style={{ color: "#A38E7A" }} strokeWidth={1.8} />
             </div>
-            <p className="text-[13px] font-extrabold text-text-main">
+            <p className="text-[13px] font-bold text-text-main">
               차단한 사용자가 없어요
             </p>
             <p className="text-[11px] text-text-sub mt-1">
@@ -144,13 +144,13 @@ export default function BlockedUsersPage() {
                       className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                       style={{ backgroundColor: "var(--color-gray-100)", border: "1.5px solid #E5E0D6" }}
                     >
-                      <span className="text-[15px] font-extrabold" style={{ color: "#A38E7A" }}>
+                      <span className="text-[15px] font-bold" style={{ color: "#A38E7A" }}>
                         {(b.nickname ?? "?").charAt(0)}
                       </span>
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-[15px] font-extrabold text-text-main truncate">
+                    <p className="text-[15px] font-bold text-text-main truncate">
                       {b.nickname ?? "이름 없음"}
                     </p>
                     <p className="text-[11px] text-text-light mt-0.5">

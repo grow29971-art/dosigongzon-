@@ -223,7 +223,7 @@ export default function AdminHospitalsPage() {
         <div className="flex items-end justify-between">
           <div>
             <div className="flex items-baseline gap-2 mb-1">
-              <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
+              <h1 className="text-[24px] font-bold text-text-main tracking-tight">
                 병원 관리
               </h1>
               <span className="text-[11px] font-semibold text-text-light">
@@ -305,7 +305,7 @@ export default function AdminHospitalsPage() {
           }}
         >
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[15px] font-extrabold text-text-main">
+            <h2 className="text-[15px] font-bold text-text-main">
               {editingId === "new" ? "새 병원 추가" : "병원 수정"}
             </h2>
             <button
@@ -460,7 +460,7 @@ export default function AdminHospitalsPage() {
           {groups.map((group) => (
             <section key={group.city}>
               <div className="flex items-center gap-2 mb-2 px-1">
-                <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+                <h2 className="text-[17px] font-bold text-text-main tracking-tight">
                   {group.city}
                 </h2>
               </div>
@@ -492,7 +492,7 @@ export default function AdminHospitalsPage() {
                                 {h.pinned && (
                                   <Pin size={10} style={{ color: "var(--color-primary)" }} />
                                 )}
-                                <p className="text-[13px] font-extrabold text-text-main truncate">
+                                <p className="text-[13px] font-bold text-text-main truncate">
                                   {h.name}
                                 </p>
                               </div>

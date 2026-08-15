@@ -158,7 +158,7 @@ export default function KittenGuidePage() {
         >
           <ArrowLeft size={22} className="text-text-main" />
         </Link>
-        <h1 className="text-[24px] font-extrabold text-text-main tracking-tight leading-snug">
+        <h1 className="text-[24px] font-bold text-text-main tracking-tight leading-snug">
           새끼 고양이(냥줍) 발견했을 때 완벽 가이드
         </h1>
       </div>

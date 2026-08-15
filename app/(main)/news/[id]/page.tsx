@@ -142,7 +142,7 @@ export default function NewsDetailPage({
               </span>
             )}
           </div>
-          <h1 className="text-[20px] font-extrabold text-text-main leading-snug mb-2">
+          <h1 className="text-[20px] font-bold text-text-main leading-snug mb-2">
             {news.title}
           </h1>
           {news.description && (

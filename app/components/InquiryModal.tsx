@@ -75,7 +75,7 @@ export default function InquiryModal({ open, onClose }: Props) {
             >
               <MessageSquare size={14} color="#fff" strokeWidth={2.5} />
             </div>
-            <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+            <h2 className="text-[17px] font-bold text-text-main tracking-tight">
               문의하기
             </h2>
           </div>
@@ -100,7 +100,7 @@ export default function InquiryModal({ open, onClose }: Props) {
             >
               <Check size={24} color="#fff" strokeWidth={3} />
             </div>
-            <p className="text-[15px] font-extrabold text-text-main mb-1">
+            <p className="text-[15px] font-bold text-text-main mb-1">
               문의가 전송됐어요
             </p>
             <p className="text-[13px] text-text-sub">

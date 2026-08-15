@@ -90,7 +90,7 @@ export default function NeighborhoodPage() {
           >
             <ArrowLeft size={24} className="text-text-main" />
           </button>
-          <h1 className="text-[20px] font-extrabold text-text-main">
+          <h1 className="text-[20px] font-bold text-text-main">
             동네 소식
           </h1>
         </div>

@@ -64,7 +64,7 @@ export default function EmailDigestToggle() {
         <Mail size={18} color="var(--color-like)" strokeWidth={2} />
       </div>
       <div className="flex-1 min-w-0 text-left">
-        <p className="text-[15px] font-extrabold text-text-main tracking-tight">
+        <p className="text-[15px] font-bold text-text-main tracking-tight">
           주간 이메일 받기
         </p>
         <p className="text-[11px] text-text-sub mt-0.5">

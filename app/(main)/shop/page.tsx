@@ -213,7 +213,7 @@ export default function ShopPage() {
       <div className="mb-4 px-1 flex items-end justify-between">
         <div>
           <div className="flex items-baseline gap-2 mb-1">
-            <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">쇼핑</h1>
+            <h1 className="text-[24px] font-bold text-text-main tracking-tight">쇼핑</h1>
           </div>
           <p className="text-[13px] text-text-sub leading-relaxed">
             길집사님들이 실제로 쓰는 것만 골라 들여오고 있어요

@@ -173,7 +173,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
               <AdoptionBadge status={cat.adoption_status} size="md" />
             </div>
           )}
-          <h1 className="text-[28px] font-extrabold text-white tracking-tight drop-shadow">
+          <h1 className="text-[28px] font-bold text-white tracking-tight drop-shadow">
             {cat.name}
           </h1>
           <div className="flex items-center gap-1.5 mt-1">

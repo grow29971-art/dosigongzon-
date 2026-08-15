@@ -156,7 +156,7 @@ function SignupContent() {
             <div className="flex items-start gap-2.5 mb-3">
               <AlertCircle size={18} className="mt-0.5 shrink-0" style={{ color: "#B8860B" }} />
               <div className="min-w-0">
-                <p className="text-[13px] font-extrabold" style={{ color: "#8A6410" }}>
+                <p className="text-[13px] font-bold" style={{ color: "#8A6410" }}>
                   카카오로 바로 가입할 수 있어요
                 </p>
                 <p className="text-[13px] mt-1 leading-relaxed" style={{ color: "#8A6410" }}>
@@ -190,7 +190,7 @@ function SignupContent() {
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4">
             <PawPrint size={40} className="text-primary" strokeWidth={1.8} />
           </div>
-          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
+          <h1 className="text-[24px] font-bold text-text-main tracking-tight">
             {eventParam === "keyring" ? "이벤트 응모 가입" : "도시공존에 합류하기"}
           </h1>
           <p className="text-[15px] text-text-sub mt-2 leading-relaxed">
@@ -207,10 +207,10 @@ function SignupContent() {
               border: "1.5px solid rgba(173, 94, 59,0.30)",
             }}
           >
-            <p className="text-[11px] font-extrabold tracking-[0.12em] mb-1.5" style={{ color: "var(--color-primary)" }}>
+            <p className="text-[11px] font-bold tracking-[0.12em] mb-1.5" style={{ color: "var(--color-primary)" }}>
               🎁 1000명 이벤트 응모
             </p>
-            <p className="text-[13px] font-extrabold text-text-main leading-tight mb-1">
+            <p className="text-[13px] font-bold text-text-main leading-tight mb-1">
               가입 후 돌보는 아이 등록 → 응모!
             </p>
             <p className="text-[13px] text-text-sub leading-relaxed">
@@ -314,7 +314,7 @@ function SignupContent() {
           <button
             onClick={() => handleSignup("kakao")}
             disabled={!!loading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-extrabold active:scale-[0.97] transition-transform disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-bold active:scale-[0.97] transition-transform disabled:opacity-60"
             /* 인앱에서도 카카오는 실제로 진행되므로 약관 동의 상태를 그대로 반영한다 */
             style={{ backgroundColor: "#FEE500", color: "#191919", opacity: agreed ? 1 : 0.6 }}
           >

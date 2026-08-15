@@ -107,7 +107,7 @@ export default function RallyJoinButton() {
       <button
         onClick={handleJoin}
         disabled={busy || done}
-        className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[15px] font-extrabold text-white active:scale-[0.97] transition-transform disabled:active:scale-100"
+        className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[15px] font-bold text-white active:scale-[0.97] transition-transform disabled:active:scale-100"
         style={{
           background: done
             ? "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)"

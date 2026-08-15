@@ -157,7 +157,7 @@ export default function PendingCareHandoff() {
         <div className="flex-1 min-w-0">
           {phase === "done" ? (
             <>
-              <p className="text-[15px] font-extrabold text-white leading-snug">
+              <p className="text-[15px] font-bold text-white leading-snug">
                 {cat.name}가 첫 밥을 받았어요! 🎉
               </p>
               <p className="text-[13px] mt-0.5" style={{ color: "rgba(255,255,255,0.75)" }}>
@@ -166,10 +166,10 @@ export default function PendingCareHandoff() {
             </>
           ) : (
             <>
-              <p className="text-[11px] font-extrabold tracking-[0.14em]" style={{ color: "rgba(255,235,210,0.9)" }}>
+              <p className="text-[11px] font-bold tracking-[0.14em]" style={{ color: "rgba(255,235,210,0.9)" }}>
                 방금 고른 아이
               </p>
-              <p className="text-[17px] font-extrabold text-white leading-snug mt-0.5">
+              <p className="text-[17px] font-bold text-white leading-snug mt-0.5">
                 {cat.name}
                 {cat.region ? (
                   <span className="text-[11px] font-bold ml-1.5" style={{ color: "rgba(255,255,255,0.6)" }}>
@@ -190,7 +190,7 @@ export default function PendingCareHandoff() {
           <FirstFeedPushPrompt catName={cat.name} />
           <Link
             href={`/cats/${cat.id}`}
-            className="mt-3.5 flex items-center justify-center gap-1.5 py-3 rounded-xl text-[15px] font-extrabold active:scale-[0.98] transition-transform"
+            className="mt-3.5 flex items-center justify-center gap-1.5 py-3 rounded-xl text-[15px] font-bold active:scale-[0.98] transition-transform"
             style={{ background: "rgba(255,255,255,0.95)", color: "#7A5238" }}
           >
             {cat.name} 보러 가기 <ChevronRight size={14} />
@@ -201,7 +201,7 @@ export default function PendingCareHandoff() {
           <button
             onClick={feed}
             disabled={phase === "busy"}
-            className="mt-3.5 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-[15px] font-extrabold active:scale-[0.98] transition-transform"
+            className="mt-3.5 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-[15px] font-bold active:scale-[0.98] transition-transform"
             style={{
               background: "linear-gradient(135deg, #FFF7C4 0%, #E8B040 100%)",
               color: "#4A3527",

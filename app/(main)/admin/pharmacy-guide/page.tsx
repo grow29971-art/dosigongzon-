@@ -115,7 +115,7 @@ export default function AdminPharmacyGuidePage() {
         </button>
         <div className="flex items-end justify-between">
           <div>
-            <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">약품 가이드 관리</h1>
+            <h1 className="text-[24px] font-bold text-text-main tracking-tight">약품 가이드 관리</h1>
             <p className="text-[13px] text-text-sub">약품·영양제 정보를 추가·수정·삭제</p>
           </div>
           <button onClick={handleCreate} className="w-11 h-11 rounded-full bg-primary flex items-center justify-center active:scale-95 transition-transform" style={{ boxShadow: "var(--shadow-primary)" }}>
@@ -128,7 +128,7 @@ export default function AdminPharmacyGuidePage() {
       {editingId && (
         <div className="mb-5 p-4" style={{ background: "#FFFFFF", borderRadius: "var(--radius-card)", boxShadow: "0 8px 24px rgba(173, 94, 59,0.14)", border: "1.5px solid rgba(173, 94, 59,0.2)" }}>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[15px] font-extrabold text-text-main">{editingId === "new" ? "새 약품 추가" : "약품 수정"}</h2>
+            <h2 className="text-[15px] font-bold text-text-main">{editingId === "new" ? "새 약품 추가" : "약품 수정"}</h2>
             <button onClick={handleCancel} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--color-gray-100)" }}>
               <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
             </button>
@@ -208,7 +208,7 @@ export default function AdminPharmacyGuidePage() {
                   <span className="text-[11px] font-bold px-2 py-0.5 chip-square" style={{ color: "#fff", backgroundColor: item.color }}>{item.category}</span>
                   {item.brand && <span className="text-[11px] text-text-light">{item.brand}</span>}
                 </div>
-                <p className="text-[15px] font-extrabold text-text-main leading-tight truncate">{item.name}</p>
+                <p className="text-[15px] font-bold text-text-main leading-tight truncate">{item.name}</p>
                 {item.price && <p className="text-[11px] mt-0.5" style={{ color: item.color }}>{item.price}</p>}
               </div>
             </div>

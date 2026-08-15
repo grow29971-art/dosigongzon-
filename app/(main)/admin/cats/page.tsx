@@ -176,7 +176,7 @@ export default function AdminCatsPage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </button>
-        <h1 className="text-[17px] font-extrabold text-text-main flex items-center gap-1.5">
+        <h1 className="text-[17px] font-bold text-text-main flex items-center gap-1.5">
           <CatIcon size={17} className="text-primary" /> 고양이 관리
         </h1>
         <span className="text-[13px] font-bold text-text-light ml-auto">{cats.length}마리</span>
@@ -268,7 +268,7 @@ export default function AdminCatsPage() {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-extrabold text-text-main truncate">
+                  <p className="text-[13px] font-bold text-text-main truncate">
                     {cat.name}
                     {cat.hidden && <span className="ml-1.5 text-[11px] font-bold px-1.5 py-0.5 rounded" style={{ background: "rgba(216,85,85,0.12)", color: "#D85555" }}>숨김</span>}
                   </p>
@@ -300,7 +300,7 @@ export default function AdminCatsPage() {
           <button
             onClick={handleBulkDelete}
             disabled={working}
-            className="w-full py-3.5 rounded-2xl text-white text-[15px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-3.5 rounded-2xl text-white text-[15px] font-bold active:scale-[0.98] transition-transform disabled:opacity-50 flex items-center justify-center gap-2"
             style={{ background: "#D85555", boxShadow: "0 6px 20px rgba(216,85,85,0.3)" }}
           >
             {working ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}

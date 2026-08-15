@@ -58,7 +58,7 @@ export default async function JourneyPage() {
         </Link>
         <div className="flex items-center gap-2 mb-1.5">
           <Sparkles size={20} className="text-primary" />
-          <h1 className="text-[24px] font-extrabold tracking-tight text-text-main">
+          <h1 className="text-[24px] font-bold tracking-tight text-text-main">
             당신의 여정
           </h1>
         </div>
@@ -131,7 +131,7 @@ function MilestoneRow({ m }: { m: Milestone }) {
           <p className="text-[11px] font-bold tracking-wide" style={{ color: c.text }}>
             {fmtDate(m.date)}
           </p>
-          <p className="mt-0.5 text-[15px] font-extrabold text-text-main tracking-tight leading-tight">
+          <p className="mt-0.5 text-[15px] font-bold text-text-main tracking-tight leading-tight">
             {m.title}
           </p>
           <p className="mt-1 text-[13px] text-text-sub leading-relaxed">{m.desc}</p>
@@ -152,7 +152,7 @@ function EmptyState() {
       }}
     >
       <Sparkles size={28} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-      <p className="text-[15px] font-extrabold text-text-main mb-1.5">
+      <p className="text-[15px] font-bold text-text-main mb-1.5">
         여정이 막 시작됐어요
       </p>
       <p className="text-[13px] text-text-sub leading-relaxed">

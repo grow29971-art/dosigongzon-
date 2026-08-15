@@ -247,7 +247,7 @@ export default function CheckoutPage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </button>
-        <h1 className="text-[17px] font-extrabold text-text-main">주문서</h1>
+        <h1 className="text-[17px] font-bold text-text-main">주문서</h1>
       </div>
 
       {loading ? (

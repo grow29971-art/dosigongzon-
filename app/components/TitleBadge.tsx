@@ -19,7 +19,7 @@ export default function TitleBadge({ titleId, size = "xs" }: Props) {
 
   return (
     <span
-      className="inline-flex items-center gap-0.5 rounded-full font-extrabold whitespace-nowrap"
+      className="inline-flex items-center gap-0.5 rounded-full font-bold whitespace-nowrap"
       style={{
         fontSize,
         padding: `${padY}px ${padX}px`,

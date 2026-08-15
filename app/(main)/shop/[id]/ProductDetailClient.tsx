@@ -150,7 +150,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             {product.badge}
           </span>
         )}
-        <h1 className="text-[20px] font-extrabold text-text-main tracking-tight leading-snug">{product.name}</h1>
+        <h1 className="text-[20px] font-bold text-text-main tracking-tight leading-snug">{product.name}</h1>
         {product.weight && <p className="text-[13px] text-text-light mt-1">{product.weight}</p>}
 
         <div className="mt-2.5 flex items-baseline gap-2 flex-wrap">

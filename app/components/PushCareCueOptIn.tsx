@@ -104,8 +104,8 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
           <Bell size={17} color="#fff" strokeWidth={2.3} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-primary-dark)" }}>매일 6시 알림</p>
-          <p className="text-[13px] font-extrabold text-text-main leading-tight mt-0.5">
+          <p className="text-[11px] font-bold tracking-[0.12em]" style={{ color: "var(--color-primary-dark)" }}>매일 6시 알림</p>
+          <p className="text-[13px] font-bold text-text-main leading-tight mt-0.5">
             🍚 내 아이 한 끼 챙길 시간, 알려드릴까요?
           </p>
           <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
@@ -120,7 +120,7 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
             type="button"
             onClick={enable}
             disabled={busy}
-            className="h-8 px-3 rounded-full text-white text-[13px] font-extrabold active:scale-95 transition-transform disabled:opacity-60"
+            className="h-8 px-3 rounded-full text-white text-[13px] font-bold active:scale-95 transition-transform disabled:opacity-60"
             style={{ background: "var(--color-primary)", boxShadow: "0 3px 8px rgba(173, 94, 59,0.3)" }}
           >
             {busy ? "..." : "켜기"}

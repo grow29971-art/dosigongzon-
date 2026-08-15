@@ -56,7 +56,7 @@ export default function ReturnDigestCard({ lastVisitAt }: { lastVisitAt: number 
       >
         <div className="flex items-center gap-1.5 mb-2">
           <MailOpen size={14} style={{ color: "var(--color-primary)" }} />
-          <p className="text-[13px] font-extrabold" style={{ color: "var(--color-primary-dark)" }}>
+          <p className="text-[13px] font-bold" style={{ color: "var(--color-primary-dark)" }}>
             다녀간 사이
           </p>
           <span className="flex-1" />

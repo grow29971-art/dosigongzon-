@@ -493,7 +493,7 @@ export default function ActivityRegionsPage() {
           <ArrowLeft size={18} className="text-text-main" />
         </button>
         <div className="flex-1 min-w-0">
-          <h1 className="text-[17px] font-extrabold text-text-main tracking-tight">
+          <h1 className="text-[17px] font-bold text-text-main tracking-tight">
             활동 지역 설정
           </h1>
           <p className="text-[11px] text-text-sub">
@@ -537,7 +537,7 @@ export default function ActivityRegionsPage() {
                     />
                   )}
                 </div>
-                <p className="text-[13px] font-extrabold truncate">
+                <p className="text-[13px] font-bold truncate">
                   {r ? r.name : "미설정"}
                 </p>
                 {r && (
@@ -580,7 +580,7 @@ export default function ActivityRegionsPage() {
                   <button
                     type="button"
                     onClick={() => window.location.reload()}
-                    className="text-[11px] font-extrabold text-primary"
+                    className="text-[11px] font-bold text-primary"
                   >
                     새로고침
                   </button>
@@ -685,7 +685,7 @@ export default function ActivityRegionsPage() {
               활동 반경
             </label>
             <span
-              className="text-[13px] font-extrabold"
+              className="text-[13px] font-bold"
               style={{ color: SLOT_COLORS[activeSlot] }}
             >
               {radius >= 1000 ? `${radius / 1000}km` : `${radius}m`}
@@ -724,7 +724,7 @@ export default function ActivityRegionsPage() {
             <Star size={16} fill="#E8B84A" strokeWidth={0} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-extrabold text-text-main">
+            <p className="text-[13px] font-bold text-text-main">
               주 활동 지역
             </p>
             <p className="text-[11px] text-text-sub">
@@ -733,7 +733,7 @@ export default function ActivityRegionsPage() {
           </div>
           {savedOnSlot?.is_primary ? (
             <span
-              className="px-3 py-1.5 chip-square text-[11px] font-extrabold"
+              className="px-3 py-1.5 chip-square text-[11px] font-bold"
               style={{ background: "#E8B84A", color: "#fff" }}
             >
               <Check size={11} className="inline mr-0.5" />
@@ -744,7 +744,7 @@ export default function ActivityRegionsPage() {
               type="button"
               onClick={handleSetPrimary}
               disabled={!savedOnSlot}
-              className="px-3 py-1.5 rounded-xl text-[11px] font-extrabold active:scale-95 disabled:opacity-40"
+              className="px-3 py-1.5 rounded-xl text-[11px] font-bold active:scale-95 disabled:opacity-40"
               style={{ background: "#F7F4EE", color: "#333" }}
             >
               지정하기
@@ -780,7 +780,7 @@ export default function ActivityRegionsPage() {
               style={{ background: "#fff", color: "#B84545", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}
             >
               <Trash2 size={15} />
-              <span className="text-[13px] font-extrabold">삭제</span>
+              <span className="text-[13px] font-bold">삭제</span>
             </button>
           )}
           <button
@@ -799,7 +799,7 @@ export default function ActivityRegionsPage() {
             ) : (
               <Save size={15} />
             )}
-            <span className="text-[13px] font-extrabold">
+            <span className="text-[13px] font-bold">
               {savedOnSlot ? "변경사항 저장" : "활동 지역 저장"}
             </span>
           </button>

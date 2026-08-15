@@ -98,7 +98,7 @@ export default function MyInquiriesPage() {
           마이페이지
         </button>
         <div className="flex items-baseline gap-2 mb-1">
-          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
+          <h1 className="text-[24px] font-bold text-text-main tracking-tight">
             내 문의
           </h1>
           <span className="text-[11px] font-semibold text-text-light">My Inquiries</span>
@@ -128,7 +128,7 @@ export default function MyInquiriesPage() {
         >
           <div className="px-4 pt-3.5 pb-2">
             <div className="flex items-baseline gap-2">
-              <h2 className="text-[15px] font-extrabold text-text-main">내 신고 상태</h2>
+              <h2 className="text-[15px] font-bold text-text-main">내 신고 상태</h2>
               <span className="text-[11px] text-text-sub ml-auto">{reportsPanel.headline}</span>
             </div>
           </div>
@@ -193,7 +193,7 @@ export default function MyInquiriesPage() {
               >
                 <div className="flex items-center gap-2 mb-1.5">
                   <span
-                    className="text-[11px] font-extrabold px-2 py-0.5 chip-square"
+                    className="text-[11px] font-bold px-2 py-0.5 chip-square"
                     style={{ backgroundColor: `${color}15`, color }}
                   >
                     {label}
@@ -202,7 +202,7 @@ export default function MyInquiriesPage() {
                     {formatDate(iq.created_at)}
                   </span>
                 </div>
-                <p className="text-[15px] font-extrabold text-text-main truncate">
+                <p className="text-[15px] font-bold text-text-main truncate">
                   {iq.subject}
                 </p>
                 <p className="text-[13px] text-text-sub mt-0.5 truncate">
@@ -217,7 +217,7 @@ export default function MyInquiriesPage() {
                 >
                   {/* 내 문의 원본 */}
                   <div className="rounded-xl p-3" style={{ background: "var(--color-gray-50)" }}>
-                    <p className="text-[11px] font-extrabold text-text-sub tracking-[0.1em] mb-1.5">
+                    <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-1.5">
                       내 문의
                     </p>
                     <p className="text-[13px] text-text-main whitespace-pre-wrap leading-relaxed">
@@ -236,7 +236,7 @@ export default function MyInquiriesPage() {
                     >
                       <div className="flex items-center gap-1.5 mb-1.5">
                         <CheckCircle2 size={12} style={{ color: "#48A59E" }} />
-                        <p className="text-[11px] font-extrabold tracking-[0.1em]" style={{ color: "#48A59E" }}>
+                        <p className="text-[11px] font-bold tracking-[0.1em]" style={{ color: "#48A59E" }}>
                           관리자 답변
                         </p>
                         <span className="text-[11px] text-text-light ml-auto">

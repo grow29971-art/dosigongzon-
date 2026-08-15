@@ -53,7 +53,7 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
           style={{ boxShadow: "var(--shadow-card)" }}
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-extrabold tracking-[0.1em] uppercase" style={{ color: "var(--color-primary)" }}>
+            <span className="text-[11px] font-bold tracking-[0.1em] uppercase" style={{ color: "var(--color-primary)" }}>
               {b.label}
             </span>
             <button
@@ -65,7 +65,7 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
               }}
             >
               {copiedId === b.id ? <Check size={11} /> : <Copy size={11} />}
-              <span className="text-[11px] font-extrabold">
+              <span className="text-[11px] font-bold">
                 {copiedId === b.id ? "복사됨" : "복사"}
               </span>
             </button>
@@ -81,7 +81,7 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
         className="bg-white rounded-2xl p-4"
         style={{ boxShadow: "var(--shadow-card)" }}
       >
-        <p className="text-[11px] font-extrabold tracking-[0.1em] uppercase mb-2.5" style={{ color: "var(--color-primary)" }}>
+        <p className="text-[11px] font-bold tracking-[0.1em] uppercase mb-2.5" style={{ color: "var(--color-primary)" }}>
           로고 · 아이콘 다운로드
         </p>
         <div className="grid grid-cols-3 gap-2">
@@ -113,7 +113,7 @@ function LogoCard({ href, label, filename }: { href: string; label: string; file
           backgroundPosition: "center",
         }}
       />
-      <span className="text-[11px] font-extrabold mt-0.5" style={{ color: "#8B5A3C" }}>
+      <span className="text-[11px] font-bold mt-0.5" style={{ color: "#8B5A3C" }}>
         {label}
       </span>
       <Download size={10} style={{ color: "var(--color-primary)" }} />

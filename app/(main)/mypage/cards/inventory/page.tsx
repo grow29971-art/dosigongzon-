@@ -114,7 +114,7 @@ export default function InventoryPage() {
         <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>
           <ArrowLeft size={18} className="text-white" />
         </button>
-        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><StickerIcon icon={Backpack} color={UI.accent.pink} size={30} /> 소지품</h1>
+        <h1 className="text-[17px] font-bold text-white flex items-center gap-2"><StickerIcon icon={Backpack} color={UI.accent.pink} size={30} /> 소지품</h1>
       </div>
 
       <div className="px-4 pb-10">
@@ -209,7 +209,7 @@ export default function InventoryPage() {
               <div className="text-center py-6">
                 <p className="text-gray-400 text-[13px] mb-3">가방이 비어있어요</p>
                 <Link href="/mypage/shop"
-                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-[13px] font-extrabold text-white"
+                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-[13px] font-bold text-white"
                   style={{ background: "linear-gradient(135deg,#FFB020,#FF8020)" }}>
                   <Coins size={14} /> 상점 가기
                 </Link>
@@ -224,7 +224,7 @@ export default function InventoryPage() {
         <div className="fixed inset-0 z-[210] flex items-end justify-center" style={{ background: "rgba(0,0,0,0.6)" }} onClick={() => setBorderPicker(false)}>
           <div onClick={(e) => e.stopPropagation()} className="w-full max-w-lg rounded-t-3xl p-5" style={{ background: UI.panelAlt, boxShadow: `inset 0 0 0 1px ${UI.panelBorder}`, maxHeight: "75vh", overflowY: "auto" }}>
             <div className="flex items-center justify-between mb-3">
-              <p className="text-white text-[15px] font-extrabold">✨ 테두리 오라 선택</p>
+              <p className="text-white text-[15px] font-bold">✨ 테두리 오라 선택</p>
               <button onClick={() => setBorderPicker(false)} className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.1)" }}>
                 <X size={14} className="text-white" />
               </button>

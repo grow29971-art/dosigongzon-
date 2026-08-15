@@ -162,7 +162,7 @@ export default function LegalGuidePage() {
         >
           <ArrowLeft size={22} className="text-text-main" />
         </Link>
-        <h1 className="text-[24px] font-extrabold text-text-main tracking-tight leading-snug">
+        <h1 className="text-[24px] font-bold text-text-main tracking-tight leading-snug">
           길고양이 학대 신고·동물보호법 완벽 가이드
         </h1>
       </div>

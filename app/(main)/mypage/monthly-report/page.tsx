@@ -65,7 +65,7 @@ export default async function MonthlyReportPage({
         </Link>
         <div className="flex items-center gap-2 mb-1.5">
           <TrendingUp size={20} color="#5BA876" strokeWidth={2.2} />
-          <h1 className="text-[24px] font-extrabold tracking-tight text-text-main">
+          <h1 className="text-[24px] font-bold tracking-tight text-text-main">
             성장 리포트
           </h1>
         </div>
@@ -79,7 +79,7 @@ export default async function MonthlyReportPage({
           >
             <ChevronLeft size={16} className="text-text-main" />
           </Link>
-          <span className="text-[15px] font-extrabold text-text-main tracking-tight px-2">
+          <span className="text-[15px] font-bold text-text-main tracking-tight px-2">
             {year}년 {month}월
           </span>
           {next ? (
@@ -105,7 +105,7 @@ export default async function MonthlyReportPage({
             style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "var(--shadow-card)" }}
           >
             <TrendingUp size={28} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-            <p className="text-[15px] font-extrabold text-text-main mb-1.5">
+            <p className="text-[15px] font-bold text-text-main mb-1.5">
               {year}년 {month}월엔 기록이 없어요
             </p>
             <p className="text-[13px] text-text-sub leading-relaxed">
@@ -142,7 +142,7 @@ function StatTile({ icon, label, value, unit, tint }: { icon: React.ReactNode; l
         {icon}
       </div>
       <div>
-        <p className="text-[20px] font-extrabold text-text-main tracking-tight leading-none">
+        <p className="text-[20px] font-bold text-text-main tracking-tight leading-none">
           {value}<span className="text-[13px] font-bold text-text-sub ml-0.5">{unit}</span>
         </p>
         <p className="text-[11px] text-text-sub mt-1">{label}</p>

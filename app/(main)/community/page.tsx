@@ -186,7 +186,7 @@ export default function CommunityPage() {
       <div className="mb-6 px-1 flex items-end justify-between">
         <div>
           <div className="flex items-baseline gap-2 mb-1">
-            <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
+            <h1 className="text-[24px] font-bold text-text-main tracking-tight">
               커뮤니티
             </h1>
             <span className="text-[11px] font-semibold text-text-light">
@@ -236,7 +236,7 @@ export default function CommunityPage() {
         >
           <Eye size={14} className="text-primary" />
           <span className="text-[13px] text-text-sub">방문자</span>
-          <span className="text-[15px] font-extrabold text-primary">{todayVisit.toLocaleString()}</span>
+          <span className="text-[15px] font-bold text-primary">{todayVisit.toLocaleString()}</span>
           <span className="text-[13px] text-text-sub">명</span>
         </div>
       )}
@@ -313,7 +313,7 @@ export default function CommunityPage() {
       {popularPosts.length > 0 && (
         <div className="mt-6">
           <div className="flex items-center gap-1.5 mb-3 px-1">
-            <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+            <h2 className="text-[17px] font-bold text-text-main tracking-tight">
               인기 글
             </h2>
             <TrendingUp size={14} style={{ color: "#C9A961" }} />
@@ -338,7 +338,7 @@ export default function CommunityPage() {
                     }}
                   >
                     <span
-                      className="text-[11px] font-extrabold px-2 py-1 shrink-0"
+                      className="text-[11px] font-bold px-2 py-1 shrink-0"
                       style={{
                         backgroundColor: `${cat.iconBg}15`,
                         color: cat.iconBg,

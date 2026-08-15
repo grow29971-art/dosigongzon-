@@ -52,7 +52,7 @@ export default function VisibilityIntroSheet({ open, onClose, onPick }: Visibili
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-2">
               <ShieldCheck size={18} style={{ color: "#4F6B53" }} />
-              <span className="text-[11px] font-extrabold tracking-[0.16em]" style={{ color: "#4F6B53" }}>
+              <span className="text-[11px] font-bold tracking-[0.16em]" style={{ color: "#4F6B53" }}>
                 STEP 1 · 공개 범위 선택
               </span>
             </div>
@@ -66,7 +66,7 @@ export default function VisibilityIntroSheet({ open, onClose, onPick }: Visibili
               <X size={15} className="text-text-sub" />
             </button>
           </div>
-          <h2 className="text-[20px] font-extrabold text-text-main leading-snug tracking-tight">
+          <h2 className="text-[20px] font-bold text-text-main leading-snug tracking-tight">
             어떻게 등록할까요?
           </h2>
           <p className="text-[13px] text-text-sub leading-relaxed mt-1.5">
@@ -97,12 +97,12 @@ export default function VisibilityIntroSheet({ open, onClose, onPick }: Visibili
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-1">
-                    <p className="text-[15px] font-extrabold tracking-tight" style={{ color: info.color }}>
+                    <p className="text-[15px] font-bold tracking-tight" style={{ color: info.color }}>
                       {info.label}
                     </p>
                     {key === "circle" && (
                       <span
-                        className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full"
+                        className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
                         style={{ background: info.color, color: "#fff" }}
                       >
                         NEW

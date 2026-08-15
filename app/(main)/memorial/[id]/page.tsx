@@ -129,7 +129,7 @@ export default async function MemorialCatPage({
             )}
           </div>
 
-          <h1 className="text-[24px] font-extrabold text-white mt-5">{cat.name}</h1>
+          <h1 className="text-[24px] font-bold text-white mt-5">{cat.name}</h1>
           <p className="text-[13px] mt-2" style={{ color: "rgba(255,255,255,0.55)" }}>
             {cat.region ?? "지역 미상"} · 함께한 {cared}일
           </p>

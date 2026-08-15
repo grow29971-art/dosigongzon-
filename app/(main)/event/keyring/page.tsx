@@ -143,7 +143,7 @@ export default function KeyringEventPage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
-        <h1 className="text-[20px] font-extrabold text-text-main flex items-center gap-1.5">
+        <h1 className="text-[20px] font-bold text-text-main flex items-center gap-1.5">
           <Gift size={16} style={{ color: "var(--color-primary)" }} />
           1000명 이벤트 응모
         </h1>
@@ -158,10 +158,10 @@ export default function KeyringEventPage() {
             border: "1.5px solid rgba(173, 94, 59,0.25)",
           }}
         >
-          <p className="text-[11px] font-extrabold tracking-[0.12em] mb-1" style={{ color: "var(--color-primary)" }}>
+          <p className="text-[11px] font-bold tracking-[0.12em] mb-1" style={{ color: "var(--color-primary)" }}>
             🎁 내가 돌보는 아이 모양 커스텀 키링
           </p>
-          <p className="text-[15px] font-extrabold text-text-main leading-tight mb-1">
+          <p className="text-[15px] font-bold text-text-main leading-tight mb-1">
             가입자 1,000명 달성 시 20명 추첨
           </p>
           <p className="text-[13px] text-text-sub leading-relaxed">
@@ -181,9 +181,9 @@ export default function KeyringEventPage() {
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-1.5">
                 <TrendingUp size={13} style={{ color: "var(--color-primary)" }} />
-                <span className="text-[13px] font-extrabold text-text-main">이벤트 진행도</span>
+                <span className="text-[13px] font-bold text-text-main">이벤트 진행도</span>
               </div>
-              <span className="text-[11px] font-extrabold" style={{ color: "var(--color-primary)" }}>
+              <span className="text-[11px] font-bold" style={{ color: "var(--color-primary)" }}>
                 {memberCount.toLocaleString()} / 1,000명
               </span>
             </div>
@@ -221,7 +221,7 @@ export default function KeyringEventPage() {
             ) : (
               <Gift size={36} className="mx-auto mb-3" style={{ color: "#B07A1C" }} />
             )}
-            <p className="text-[17px] font-extrabold text-text-main mb-2">
+            <p className="text-[17px] font-bold text-text-main mb-2">
               {done ? "응모 완료!" : "이미 응모하셨어요"}
             </p>
             {enteredCatName && (
@@ -259,7 +259,7 @@ export default function KeyringEventPage() {
             >
               <PawPrint size={26} style={{ color: "var(--color-primary)" }} />
             </div>
-            <p className="text-[15px] font-extrabold text-text-main mb-1.5">
+            <p className="text-[15px] font-bold text-text-main mb-1.5">
               먼저 돌보는 아이를 등록해주세요
             </p>
             <p className="text-[13px] text-text-sub leading-relaxed mb-4">
@@ -269,7 +269,7 @@ export default function KeyringEventPage() {
             </p>
             <Link
               href="/map"
-              className="inline-flex items-center gap-1.5 px-5 py-3 rounded-2xl bg-primary text-white text-[15px] font-extrabold active:scale-[0.97] transition-transform"
+              className="inline-flex items-center gap-1.5 px-5 py-3 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.97] transition-transform"
               style={{ boxShadow: "0 6px 20px rgba(173, 94, 59,0.30)" }}
             >
               <PlusCircle size={16} />
@@ -286,7 +286,7 @@ export default function KeyringEventPage() {
 
             {/* 고양이 선택 */}
             <div>
-              <p className="text-[13px] font-extrabold text-text-main mb-2 flex items-center gap-1.5">
+              <p className="text-[13px] font-bold text-text-main mb-2 flex items-center gap-1.5">
                 <PawPrint size={13} style={{ color: "var(--color-primary)" }} />
                 키링으로 만들 아이를 골라주세요
               </p>
@@ -328,7 +328,7 @@ export default function KeyringEventPage() {
                         )}
                       </div>
                       <div className="p-2.5">
-                        <p className="text-[13px] font-extrabold text-text-main truncate">{cat.name}</p>
+                        <p className="text-[13px] font-bold text-text-main truncate">{cat.name}</p>
                         <div className="flex items-center gap-0.5 mt-0.5">
                           <MapPin size={10} className="text-text-light" />
                           <span className="text-[11px] text-text-sub truncate">

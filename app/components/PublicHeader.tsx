@@ -35,7 +35,7 @@ export default async function PublicHeader() {
           >
             <PawPrint size={15} color="#fff" strokeWidth={2.3} />
           </div>
-          <span className="text-[15px] font-extrabold text-text-main tracking-tight">
+          <span className="text-[15px] font-bold text-text-main tracking-tight">
             도시공존
           </span>
         </Link>
@@ -63,7 +63,7 @@ export default async function PublicHeader() {
             </Link>
             <Link
               href="/signup"
-              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] font-extrabold active:scale-95 transition-transform text-white"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] font-bold active:scale-95 transition-transform text-white"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                 boxShadow: "0 2px 8px rgba(173, 94, 59,0.35)",

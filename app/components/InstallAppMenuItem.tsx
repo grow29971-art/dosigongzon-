@@ -121,7 +121,7 @@ export default function InstallAppMenuItem() {
           )}
         </div>
         <div className="flex-1 min-w-0 text-left">
-          <p className="text-[15px] font-extrabold text-text-main tracking-tight">
+          <p className="text-[15px] font-bold text-text-main tracking-tight">
             {installed ? "앱 설치 완료" : "앱으로 설치하기"}
           </p>
           <p className="text-[11px] text-text-sub mt-0.5">{subtitle}</p>
@@ -163,10 +163,10 @@ export default function InstallAppMenuItem() {
                 <Download size={19} color="#fff" strokeWidth={2.2} />
               </div>
               <div>
-                <p className="text-[11px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-primary)" }}>
+                <p className="text-[11px] font-bold tracking-[0.12em]" style={{ color: "var(--color-primary)" }}>
                   INSTALL
                 </p>
-                <p className="text-[15px] font-extrabold text-text-main tracking-tight">
+                <p className="text-[15px] font-bold text-text-main tracking-tight">
                   홈 화면에 추가하기
                 </p>
               </div>
@@ -179,7 +179,7 @@ export default function InstallAppMenuItem() {
                 <ol className="space-y-2.5 text-[13px] text-text-main">
                   <li className="flex items-center gap-2">
                     <span
-                      className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white shrink-0"
+                      className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
                       style={{ background: "var(--color-primary)" }}
                     >1</span>
                     <Share size={14} style={{ color: "var(--color-primary)" }} />
@@ -187,7 +187,7 @@ export default function InstallAppMenuItem() {
                   </li>
                   <li className="flex items-center gap-2">
                     <span
-                      className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white shrink-0"
+                      className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
                       style={{ background: "var(--color-primary)" }}
                     >2</span>
                     <PlusSquare size={14} style={{ color: "var(--color-primary)" }} />
@@ -195,7 +195,7 @@ export default function InstallAppMenuItem() {
                   </li>
                   <li className="flex items-center gap-2">
                     <span
-                      className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white shrink-0"
+                      className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
                       style={{ background: "var(--color-primary)" }}
                     >3</span>
                     <span>우측 상단 "추가" 버튼</span>

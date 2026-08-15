@@ -95,7 +95,7 @@ export default function FundVoteCard() {
       style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "var(--shadow-card-sm)" }}
     >
       <div className="flex items-center justify-between mb-0.5">
-        <h3 className="text-[15px] font-extrabold text-text-main tracking-tight">🗳️ 수익, 어디에 쓸까요?</h3>
+        <h3 className="text-[15px] font-bold text-text-main tracking-tight">🗳️ 수익, 어디에 쓸까요?</h3>
         <span className="text-[11px] font-bold text-text-light tabular-nums">{total.toLocaleString()}명 참여</span>
       </div>
       <p className="text-[11px] text-text-light mb-3">가장 많은 표를 받은 곳에 먼저 쓰여요 · 투표는 언제든 바꿀 수 있어요</p>
@@ -126,11 +126,11 @@ export default function FundVoteCard() {
               />
               <span className="relative flex items-center gap-2">
                 <span className="text-[15px]">{o.emoji}</span>
-                <span className={`text-[13px] ${mine ? "font-extrabold text-primary" : "font-bold text-text-main"}`}>
+                <span className={`text-[13px] ${mine ? "font-bold text-primary" : "font-bold text-text-main"}`}>
                   {o.label}
                 </span>
-                {mine && <span className="text-[11px] font-extrabold text-primary">✓ 내 선택</span>}
-                <span className="ml-auto text-[13px] font-extrabold tabular-nums" style={{ color: mine ? "var(--color-primary)" : "var(--color-text-sub)" }}>
+                {mine && <span className="text-[11px] font-bold text-primary">✓ 내 선택</span>}
+                <span className="ml-auto text-[13px] font-bold tabular-nums" style={{ color: mine ? "var(--color-primary)" : "var(--color-text-sub)" }}>
                   {pct}%
                 </span>
               </span>
@@ -141,7 +141,7 @@ export default function FundVoteCard() {
         {/* 기타 — 아이디어를 관리자에게 전송 (투표 아님) */}
         {ideaDone ? (
           <div className="px-3.5 py-3 rounded-2xl text-center" style={{ background: "var(--color-primary-soft)" }}>
-            <p className="text-[13px] font-extrabold text-primary">💌 아이디어 고마워요! 잘 읽어볼게요</p>
+            <p className="text-[13px] font-bold text-primary">💌 아이디어 고마워요! 잘 읽어볼게요</p>
           </div>
         ) : !ideaOpen ? (
           <button
@@ -177,7 +177,7 @@ export default function FundVoteCard() {
               <button
                 onClick={sendIdea}
                 disabled={ideaBusy || !idea.trim()}
-                className="flex-1 py-2 rounded-xl text-[13px] font-extrabold text-white active:scale-[0.98] transition-transform disabled:opacity-40"
+                className="flex-1 py-2 rounded-xl text-[13px] font-bold text-white active:scale-[0.98] transition-transform disabled:opacity-40"
                 style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
               >
                 {ideaBusy ? "보내는 중…" : "보내기"}

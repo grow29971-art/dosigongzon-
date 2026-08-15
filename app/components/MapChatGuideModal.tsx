@@ -63,10 +63,10 @@ export default function MapChatGuideModal() {
         </button>
 
         <div className="mb-4 pr-8">
-          <p className="text-[11px] font-extrabold tracking-[0.12em] mb-1" style={{ color: "var(--color-primary)" }}>
+          <p className="text-[11px] font-bold tracking-[0.12em] mb-1" style={{ color: "var(--color-primary)" }}>
             CHAT GUIDE
           </p>
-          <h2 className="text-[20px] font-extrabold text-text-main tracking-tight leading-tight">
+          <h2 className="text-[20px] font-bold text-text-main tracking-tight leading-tight">
             지도에서 다른 사람들과 대화해보세요
           </h2>
           <p className="text-[13px] text-text-sub mt-1.5 leading-relaxed">
@@ -89,7 +89,7 @@ export default function MapChatGuideModal() {
             <Globe size={18} color="#FFFFFF" strokeWidth={2.4} />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[15px] font-extrabold text-text-main">🌐 전체 채팅</p>
+            <p className="text-[15px] font-bold text-text-main">🌐 전체 채팅</p>
             <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
               <span className="font-bold" style={{ color: "#48A59E" }}>전국 어디서든</span> 모든 사용자가 함께 대화하는 방. 길고양이 정보 공유, 응급 상황 도움 요청, 소소한 일상까지.
             </p>
@@ -112,7 +112,7 @@ export default function MapChatGuideModal() {
               <MessageCircle size={18} color="#FFFFFF" strokeWidth={2.4} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[15px] font-extrabold text-text-main">💬 동네 채팅</p>
+              <p className="text-[15px] font-bold text-text-main">💬 동네 채팅</p>
               <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
                 <span className="font-bold" style={{ color: "var(--color-primary-dark)" }}>현재 보고 있는 구</span> 단위 채팅방. 같은 동네 길집사끼리 실시간 정보 교환. 지도 위치를 옮기면 그 동네 채팅방으로 자동 연결.
               </p>
@@ -127,7 +127,7 @@ export default function MapChatGuideModal() {
         <button
           type="button"
           onClick={dismiss}
-          className="w-full py-3 rounded-2xl text-white text-[13px] font-extrabold active:scale-[0.99] transition-transform"
+          className="w-full py-3 rounded-2xl text-white text-[13px] font-bold active:scale-[0.99] transition-transform"
           style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
         >
           알겠어요

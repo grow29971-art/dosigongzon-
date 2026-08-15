@@ -159,7 +159,7 @@ export default function AdminEventKeyringPage() {
   if (!authorized) {
     return (
       <div className="min-h-dvh flex flex-col items-center justify-center px-6 text-center">
-        <p className="text-[15px] font-extrabold text-text-main mb-2">권한 없음</p>
+        <p className="text-[15px] font-bold text-text-main mb-2">권한 없음</p>
         <Link href="/mypage" className="text-[13px] font-bold text-primary mt-4">마이페이지로</Link>
       </div>
     );
@@ -184,7 +184,7 @@ export default function AdminEventKeyringPage() {
             <ArrowLeft size={18} className="text-text-main" />
           </Link>
           <div>
-            <h1 className="text-[20px] font-extrabold text-text-main flex items-center gap-1.5">
+            <h1 className="text-[20px] font-bold text-text-main flex items-center gap-1.5">
               <Gift size={16} style={{ color: "var(--color-primary)" }} />
               이벤트 응모자
             </h1>
@@ -198,7 +198,7 @@ export default function AdminEventKeyringPage() {
             <RefreshCw size={15} className={`text-text-main ${loading ? "animate-spin" : ""}`} />
           </button>
           <button onClick={exportCsv} disabled={entries.length === 0}
-            className="px-3 h-9 rounded-xl bg-primary text-white text-[13px] font-extrabold flex items-center gap-1 active:scale-95 disabled:opacity-50"
+            className="px-3 h-9 rounded-xl bg-primary text-white text-[13px] font-bold flex items-center gap-1 active:scale-95 disabled:opacity-50"
             style={{ boxShadow: "0 2px 8px rgba(173, 94, 59,0.25)" }}>
             <Download size={13} />
             CSV
@@ -290,7 +290,7 @@ function EntryCard({
         {/* 정보 */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-1">
-            <span className="text-[11px] font-extrabold px-1.5 py-0.5 chip-square"
+            <span className="text-[11px] font-bold px-1.5 py-0.5 chip-square"
               style={{ background: meta.bg, color: meta.color }}>
               {meta.emoji} {meta.label}
             </span>
@@ -298,7 +298,7 @@ function EntryCard({
               {new Date(entry.created_at).toLocaleDateString("ko-KR")}
             </span>
           </div>
-          <p className="text-[15px] font-extrabold text-text-main truncate">{displayName}</p>
+          <p className="text-[15px] font-bold text-text-main truncate">{displayName}</p>
           {entry.phone && (
             <a href={`tel:${entry.phone}`} className="flex items-center gap-1 mt-0.5 text-[13px] font-bold" style={{ color: "#22B573" }}>
               <Phone size={11} />

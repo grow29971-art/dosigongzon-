@@ -267,7 +267,7 @@ export default function AdminDashboardPage() {
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-baseline gap-2">
             <Shield size={20} />
-            <h1 className="text-[24px] font-extrabold tracking-tight">
+            <h1 className="text-[24px] font-bold tracking-tight">
               관리자 대시보드
             </h1>
             <span className="text-[11px] font-semibold opacity-50">Admin</span>
@@ -308,13 +308,13 @@ export default function AdminDashboardPage() {
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <p
-                  className="text-[11px] font-extrabold tracking-[0.20em] mb-1"
+                  className="text-[11px] font-bold tracking-[0.20em] mb-1"
                   style={{ color: stats.daysUntilLaunch > 0 ? "#8E5430" : "rgba(255,255,255,0.85)" }}
                 >
                   {stats.daysUntilLaunch > 0 ? "OFFICIAL LAUNCH" : "POST-LAUNCH"}
                 </p>
                 <p
-                  className="text-[24px] font-extrabold tracking-tight leading-tight"
+                  className="text-[24px] font-bold tracking-tight leading-tight"
                   style={{ color: stats.daysUntilLaunch > 0 ? "#5C3A1E" : "#FFFFFF" }}
                 >
                   {stats.daysUntilLaunch > 0
@@ -331,13 +331,13 @@ export default function AdminDashboardPage() {
                 }}
               >
                 <p
-                  className="text-[9px] font-extrabold tracking-[0.15em]"
+                  className="text-[9px] font-bold tracking-[0.15em]"
                   style={{ color: stats.daysUntilLaunch > 0 ? "#8E5430" : "rgba(255,255,255,0.85)" }}
                 >
                   TODAY
                 </p>
                 <p
-                  className="text-[20px] font-extrabold tabular-nums tracking-tight"
+                  className="text-[20px] font-bold tabular-nums tracking-tight"
                   style={{ color: stats.daysUntilLaunch > 0 ? "#5C3A1E" : "#FFFFFF" }}
                 >
                   +{stats.newUsersToday}
@@ -415,7 +415,7 @@ export default function AdminDashboardPage() {
       {/* 메뉴 그리드 */}
       <div className="px-4">
         <div className="flex items-center gap-2 mb-3 px-1">
-          <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+          <h2 className="text-[17px] font-bold text-text-main tracking-tight">
             관리 메뉴
           </h2>
         </div>
@@ -440,12 +440,12 @@ export default function AdminDashboardPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <p className="text-[15px] font-extrabold text-text-main tracking-tight">
+                  <p className="text-[15px] font-bold text-text-main tracking-tight">
                     {m.title}
                   </p>
                   {m.badge !== undefined && m.badge > 0 && (
                     <span
-                      className="text-[9px] font-extrabold px-1.5 py-0.5 chip-square"
+                      className="text-[9px] font-bold px-1.5 py-0.5 chip-square"
                       style={{
                         background: m.color,
                         color: "#fff",
@@ -467,7 +467,7 @@ export default function AdminDashboardPage() {
         {/* 위험 액션 */}
         <div className="mt-6">
           <div className="flex items-center gap-2 mb-3 px-1">
-            <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+            <h2 className="text-[17px] font-bold text-text-main tracking-tight">
               빠른 정보
             </h2>
           </div>
@@ -514,7 +514,7 @@ function StatCard({
         <Icon size={12} style={{ color }} />
         <span className="text-[11px] font-bold text-text-sub">{label}</span>
       </div>
-      <p className="text-[24px] font-extrabold tracking-tight" style={{ color }}>
+      <p className="text-[24px] font-bold tracking-tight" style={{ color }}>
         {value.toLocaleString()}
       </p>
       {sub && (

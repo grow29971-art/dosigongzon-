@@ -43,7 +43,7 @@ export default async function RescuePage() {
         </Link>
         <div className="flex items-center gap-2 mb-1">
           <AlertTriangle size={20} />
-          <h1 className="text-[24px] font-extrabold tracking-tight">
+          <h1 className="text-[24px] font-bold tracking-tight">
             긴급 구조 피드
           </h1>
         </div>
@@ -77,12 +77,12 @@ export default async function RescuePage() {
             <p className="text-[13px] font-bold text-text-sub">
               위험 상태로 기록된 아이
             </p>
-            <p className="text-[24px] font-extrabold tracking-tight" style={{ color: "#D85555" }}>
+            <p className="text-[24px] font-bold tracking-tight" style={{ color: "#D85555" }}>
               {cats.length}마리
             </p>
           </div>
           <div
-            className="px-2.5 py-1 rounded-xl text-[11px] font-extrabold flex items-center gap-1"
+            className="px-2.5 py-1 rounded-xl text-[11px] font-bold flex items-center gap-1"
             style={{ background: "#FDECEC", color: "#B84545" }}
           >
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#D85555" }} />
@@ -99,7 +99,7 @@ export default async function RescuePage() {
             style={{ boxShadow: "var(--shadow-card)" }}
           >
             <p className="text-[30px] mb-2">💚</p>
-            <p className="text-[15px] font-extrabold text-text-main mb-1">
+            <p className="text-[15px] font-bold text-text-main mb-1">
               지금 긴급 상태인 아이가 없어요
             </p>
             <p className="text-[13px] text-text-sub">
@@ -137,7 +137,7 @@ export default async function RescuePage() {
                     <div className="flex-1 min-w-0 py-2.5 pr-3">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span
-                          className="px-2 py-0.5 rounded-lg text-[11px] font-extrabold flex items-center gap-1"
+                          className="px-2 py-0.5 rounded-lg text-[11px] font-bold flex items-center gap-1"
                           style={{ background: "#D85555", color: "#fff" }}
                         >
                           🚨 위험
@@ -146,7 +146,7 @@ export default async function RescuePage() {
                           {timeSince(cat.created_at)}
                         </span>
                       </div>
-                      <h2 className="text-[15px] font-extrabold text-text-main tracking-tight leading-tight truncate">
+                      <h2 className="text-[15px] font-bold text-text-main tracking-tight leading-tight truncate">
                         {cat.name}
                       </h2>
                       {cat.region && (
@@ -183,7 +183,7 @@ export default async function RescuePage() {
           className="mt-5 rounded-2xl p-4 text-[13px] leading-snug"
           style={{ background: "#FFF9F0", border: "1px solid rgba(232,141,90,0.25)" }}
         >
-          <p className="font-extrabold text-text-main mb-1">💡 도움을 주고 싶다면</p>
+          <p className="font-bold text-text-main mb-1">💡 도움을 주고 싶다면</p>
           <ol className="space-y-1 text-text-sub pl-4 list-decimal">
             <li>가장 가까운 아이부터 직접 방문해 상태 확인</li>
             <li>

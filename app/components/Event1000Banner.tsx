@@ -50,13 +50,13 @@ export default async function Event1000Banner() {
           {/* 상단 라벨 */}
           <div className="flex items-center gap-1.5 mb-2">
             <Sparkles size={13} className="text-white/90" />
-            <span className="text-[11px] font-extrabold tracking-[0.15em] text-white/90">
+            <span className="text-[11px] font-bold tracking-[0.15em] text-white/90">
               {reached ? "TARGET REACHED · 추첨 진행 중" : "GRAND OPENING EVENT"}
             </span>
           </div>
 
           {/* 메인 카피 */}
-          <h2 className="text-[20px] font-extrabold tracking-tight leading-tight">
+          <h2 className="text-[20px] font-bold tracking-tight leading-tight">
             {reached ? (
               <>가입자 1,000명 달성!<br />추첨 곧 발표</>
             ) : (
@@ -74,7 +74,7 @@ export default async function Event1000Banner() {
           {/* 진행률 */}
           <div className="mt-4">
             <div className="flex items-baseline justify-between mb-1.5">
-              <span className="text-[24px] font-extrabold tabular-nums tracking-tight">
+              <span className="text-[24px] font-bold tabular-nums tracking-tight">
                 {userCount.toLocaleString()}
                 <span className="text-[13px] font-bold opacity-80"> / {TARGET.toLocaleString()}명</span>
               </span>
@@ -103,7 +103,7 @@ export default async function Event1000Banner() {
           >
             <Gift size={18} className="shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-extrabold leading-tight">
+              <p className="text-[13px] font-bold leading-tight">
                 길고양이 아크릴 키링
               </p>
               <p className="text-[11px] mt-0.5 leading-snug opacity-90">
@@ -116,7 +116,7 @@ export default async function Event1000Banner() {
                 style={{ background: "rgba(255,255,255,0.22)" }}
               >
                 <Users size={11} />
-                <span className="text-[11px] font-extrabold tabular-nums">
+                <span className="text-[11px] font-bold tabular-nums">
                   {entryCount.toLocaleString()}명
                 </span>
               </div>
@@ -127,7 +127,7 @@ export default async function Event1000Banner() {
           {!reached && (
             <Link
               href="/event/keyring"
-              className="mt-4 w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-extrabold active:scale-[0.97] transition-transform"
+              className="mt-4 w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold active:scale-[0.97] transition-transform"
               style={{ background: "#FFFFFF", color: "var(--color-primary-dark)" }}
             >
               응모하기

@@ -271,7 +271,7 @@ function EmptyState({ icon, title, desc }: { icon: React.ReactNode; title: strin
       >
         {icon}
       </div>
-      <p className="text-[15px] font-extrabold text-text-main">{title}</p>
+      <p className="text-[15px] font-bold text-text-main">{title}</p>
       <p className="text-[13px] text-text-sub mt-1 leading-relaxed max-w-[280px]">{desc}</p>
     </div>
   );
@@ -304,7 +304,7 @@ function SectionCats({ items, tab }: { items: CatHit[]; query: string; tab: Sear
                 />
                 {urgent && (
                   <span
-                    className="absolute top-2 left-2 text-[11px] font-extrabold px-2 py-0.5 rounded-lg text-white z-10"
+                    className="absolute top-2 left-2 text-[11px] font-bold px-2 py-0.5 rounded-lg text-white z-10"
                     style={{ backgroundColor: HEALTH_MAP.danger.color }}
                   >
                     🚨 긴급
@@ -312,7 +312,7 @@ function SectionCats({ items, tab }: { items: CatHit[]; query: string; tab: Sear
                 )}
               </div>
               <div className="p-2.5">
-                <p className="text-[13px] font-extrabold text-text-main truncate">{c.name}</p>
+                <p className="text-[13px] font-bold text-text-main truncate">{c.name}</p>
                 <div className="flex items-center gap-0.5 mt-0.5">
                   <MapPin size={10} className="text-text-light" />
                   <span className="text-[11px] text-text-sub truncate">{c.region ?? "미정"}</span>
@@ -339,7 +339,7 @@ function SectionPosts({ items }: { items: PostHit[] }) {
             className="block rounded-2xl bg-white p-3.5 active:scale-[0.99] transition-transform"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <p className="text-[15px] font-extrabold text-text-main line-clamp-1">{p.title}</p>
+            <p className="text-[15px] font-bold text-text-main line-clamp-1">{p.title}</p>
             <p className="text-[13px] text-text-sub mt-0.5 line-clamp-2 leading-snug">{p.content}</p>
             <div className="flex items-center gap-2 mt-1.5 text-[11px] text-text-light">
               <span>{p.author_name ?? "익명"}</span>
@@ -371,7 +371,7 @@ function SectionHospitals({ items }: { items: HospitalHit[] }) {
             className="rounded-2xl bg-white p-3.5"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <p className="text-[15px] font-extrabold text-text-main">{h.name}</p>
+            <p className="text-[15px] font-bold text-text-main">{h.name}</p>
             {h.address && (
               <div className="flex items-start gap-1 mt-1">
                 <MapPin size={11} className="text-text-light mt-0.5 shrink-0" />
@@ -422,10 +422,10 @@ function SectionUsers({ items }: { items: UserHit[] }) {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <p className="text-[15px] font-extrabold text-text-main truncate">{u.nickname}</p>
+                  <p className="text-[15px] font-bold text-text-main truncate">{u.nickname}</p>
                   {u.admin_title && (
                     <span
-                      className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md shrink-0"
+                      className="text-[9px] font-bold px-1.5 py-0.5 rounded-md shrink-0"
                       style={{ background: "var(--color-primary)", color: "#fff" }}
                     >
                       {u.admin_title}
@@ -456,7 +456,7 @@ function SectionGuides({ items }: { items: GuideHit[] }) {
             className="block rounded-2xl bg-white p-3.5 active:scale-[0.99] transition-transform"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <p className="text-[15px] font-extrabold text-text-main">{g.title}</p>
+            <p className="text-[15px] font-bold text-text-main">{g.title}</p>
           </Link>
         ))}
       </div>
@@ -469,7 +469,7 @@ function SectionHeader({ icon, label, count }: { icon: React.ReactNode; label: s
   return (
     <div className="flex items-center gap-1.5 mb-2.5 px-1">
       <span style={{ color: "var(--color-primary)" }}>{icon}</span>
-      <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">{label}</h2>
+      <h2 className="text-[15px] font-bold text-text-main tracking-tight">{label}</h2>
       <span className="text-[11px] font-bold text-text-light">{count}</span>
     </div>
   );

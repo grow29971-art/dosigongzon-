@@ -189,7 +189,7 @@ export default function CatLocationPicker({
           <X size={18} className="text-text-sub" />
         </button>
         <div className="flex-1 min-w-0">
-          <h1 className="text-[15px] font-extrabold text-text-main tracking-tight truncate">
+          <h1 className="text-[15px] font-bold text-text-main tracking-tight truncate">
             {catName} 위치 변경
           </h1>
           <p className="text-[11px] text-text-sub">
@@ -236,7 +236,7 @@ export default function CatLocationPicker({
             style={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.25))" }}
           >
             <div
-              className="px-3 py-1.5 rounded-2xl text-[11px] font-extrabold text-white whitespace-nowrap mb-1"
+              className="px-3 py-1.5 rounded-2xl text-[11px] font-bold text-white whitespace-nowrap mb-1"
               style={{ background: "var(--color-primary)" }}
             >
               📍 여기로 이동
@@ -283,7 +283,7 @@ export default function CatLocationPicker({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[11px] font-bold text-primary tracking-[0.05em]">자동 감지된 위치</p>
-              <p className="text-[20px] font-extrabold text-text-main truncate leading-tight mt-0.5">
+              <p className="text-[20px] font-bold text-text-main truncate leading-tight mt-0.5">
                 {region || "감지 중…"}
               </p>
               {fullAddress && (
@@ -319,7 +319,7 @@ export default function CatLocationPicker({
           }}
         >
           <Check size={16} />
-          <span className="text-[15px] font-extrabold">이 위치로 변경</span>
+          <span className="text-[15px] font-bold">이 위치로 변경</span>
         </button>
       </div>
     </div>

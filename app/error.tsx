@@ -55,12 +55,12 @@ export default function ErrorPage({
             😿
           </div>
           <p
-            className="text-[13px] font-extrabold tracking-[0.3em] mb-3"
+            className="text-[13px] font-bold tracking-[0.3em] mb-3"
             style={{ color: "#D85555" }}
           >
             OOPS
           </p>
-          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight leading-tight mb-2">
+          <h1 className="text-[24px] font-bold text-text-main tracking-tight leading-tight mb-2">
             문제가 발생했어요
           </h1>
           <p className="text-[13px] text-text-sub leading-relaxed mb-6">
@@ -81,7 +81,7 @@ export default function ErrorPage({
             <button
               type="button"
               onClick={() => reset()}
-              className="w-full py-3 rounded-2xl text-[15px] font-extrabold text-white active:scale-[0.98] transition-transform"
+              className="w-full py-3 rounded-2xl text-[15px] font-bold text-white active:scale-[0.98] transition-transform"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                 boxShadow: "var(--shadow-primary)",

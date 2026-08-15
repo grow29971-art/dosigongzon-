@@ -85,7 +85,7 @@ export default function StreakFreezeButton({ streak, hasToday, onUsed }: Props) 
           border: "1px solid rgba(74,123,168,0.25)",
         }}
       >
-        <p className="text-[13px] font-extrabold text-text-main mb-2">
+        <p className="text-[13px] font-bold text-text-main mb-2">
           🧊 오늘을 건너뛸까요? (주 1회 한정)
         </p>
         <p className="text-[11px] text-text-sub mb-2.5 leading-snug">
@@ -97,7 +97,7 @@ export default function StreakFreezeButton({ streak, hasToday, onUsed }: Props) 
             type="button"
             disabled={busy}
             onClick={handleUse}
-            className="flex-1 py-2 rounded-xl text-[11px] font-extrabold text-white active:scale-95 disabled:opacity-60 flex items-center justify-center gap-1"
+            className="flex-1 py-2 rounded-xl text-[11px] font-bold text-white active:scale-95 disabled:opacity-60 flex items-center justify-center gap-1"
             style={{
               background: "linear-gradient(135deg, #4A7BA8 0%, #2E5A8A 100%)",
               boxShadow: "0 2px 8px rgba(74,123,168,0.35)",
@@ -141,7 +141,7 @@ export default function StreakFreezeButton({ streak, hasToday, onUsed }: Props) 
       }}
     >
       <Snowflake size={12} />
-      <span className="text-[11px] font-extrabold">🧊 주 1회 쿠폰으로 오늘 건너뛰기</span>
+      <span className="text-[11px] font-bold">🧊 주 1회 쿠폰으로 오늘 건너뛰기</span>
     </button>
   );
 }

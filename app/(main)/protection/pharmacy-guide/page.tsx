@@ -216,7 +216,7 @@ export default async function PharmacyGuidePage() {
       <div className="flex items-center gap-3 mb-5">
         <BackButton />
         <div>
-          <h1 className="text-[20px] font-extrabold text-text-main tracking-tight leading-snug">
+          <h1 className="text-[20px] font-bold text-text-main tracking-tight leading-snug">
             길고양이 약품·영양제 가이드
           </h1>
           <p className="text-[11px] text-text-sub mt-0.5">동물약국에서 구매 가능한 길고양이 돌봄 용품</p>

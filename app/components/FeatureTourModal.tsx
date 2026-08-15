@@ -193,10 +193,10 @@ export default function FeatureTourModal({
           >
             <current.Icon size={30} color={current.color} strokeWidth={2} />
           </div>
-          <p className="text-[11px] font-extrabold tracking-[0.16em] mb-1.5" style={{ color: current.color }}>
+          <p className="text-[11px] font-bold tracking-[0.16em] mb-1.5" style={{ color: current.color }}>
             {current.eyebrow}
           </p>
-          <h2 className="text-[20px] font-extrabold text-text-main tracking-tight leading-snug whitespace-pre-line">
+          <h2 className="text-[20px] font-bold text-text-main tracking-tight leading-snug whitespace-pre-line">
             {current.title}
           </h2>
         </div>
@@ -240,7 +240,7 @@ export default function FeatureTourModal({
               type="button"
               onClick={handleNext}
               disabled={closing}
-              className="flex-1 py-3.5 rounded-2xl text-[15px] font-extrabold text-white flex items-center justify-center gap-1.5 active:scale-[0.98] transition-transform"
+              className="flex-1 py-3.5 rounded-2xl text-[15px] font-bold text-white flex items-center justify-center gap-1.5 active:scale-[0.98] transition-transform"
               style={{
                 background: `linear-gradient(135deg, ${current.color} 0%, ${current.color}CC 100%)`,
                 boxShadow: `0 8px 20px ${current.color}40`,

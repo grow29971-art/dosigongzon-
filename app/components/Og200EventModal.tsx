@@ -115,12 +115,12 @@ export default function Og200EventModal() {
           >
             <span className="text-[34px] leading-none">🌟</span>
           </div>
-          <p className="text-center text-[11px] font-extrabold tracking-[0.25em] mb-1" style={{ color: "#8E5430" }}>
+          <p className="text-center text-[11px] font-bold tracking-[0.25em] mb-1" style={{ color: "#8E5430" }}>
             LIMITED · OFFICIAL LAUNCH 🎉
           </p>
           <h2
             id="og200-title"
-            className="text-[24px] font-extrabold text-center tracking-tight leading-tight"
+            className="text-[24px] font-bold text-center tracking-tight leading-tight"
             style={{ color: "#5C3A1E" }}
           >
             🎉 "초기 200" 타이틀이 도착했어요
@@ -139,7 +139,7 @@ export default function Og200EventModal() {
             className="rounded-2xl px-4 py-3 mb-4 text-[13px] leading-relaxed"
             style={{ background: "#FFF9EF", color: "#7A5F3F" }}
           >
-            <p className="font-extrabold mb-1" style={{ color: "var(--color-primary-dark)" }}>
+            <p className="font-bold mb-1" style={{ color: "var(--color-primary-dark)" }}>
               💎 이런 의미예요
             </p>
             <ul className="space-y-1 pl-1">
@@ -159,7 +159,7 @@ export default function Og200EventModal() {
             <Link
               href="/mypage"
               onClick={dismiss}
-              className="flex-[1.4] flex items-center justify-center py-3 rounded-2xl text-white text-[13px] font-extrabold active:scale-[0.98]"
+              className="flex-[1.4] flex items-center justify-center py-3 rounded-2xl text-white text-[13px] font-bold active:scale-[0.98]"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                 boxShadow: "var(--shadow-primary)",
@@ -170,7 +170,7 @@ export default function Og200EventModal() {
             <button
               type="button"
               onClick={dismiss}
-              className="flex-1 py-3 rounded-2xl text-[13px] font-extrabold active:scale-[0.98] bg-white"
+              className="flex-1 py-3 rounded-2xl text-[13px] font-bold active:scale-[0.98] bg-white"
               style={{ color: "var(--color-primary-dark)", border: "1.5px solid rgba(173, 94, 59,0.30)" }}
             >
               나중에

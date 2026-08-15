@@ -48,7 +48,7 @@ export default function ShopPolicyPage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
-        <h1 className="text-[17px] font-extrabold text-text-main">쇼핑몰 이용안내</h1>
+        <h1 className="text-[17px] font-bold text-text-main">쇼핑몰 이용안내</h1>
       </div>
 
       <div className="px-4 mt-3 space-y-4">

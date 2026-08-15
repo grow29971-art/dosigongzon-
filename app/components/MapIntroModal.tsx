@@ -43,7 +43,7 @@ export default function MapIntroModal() {
     return (
       <button
         onClick={() => setShow(true)}
-        className="fixed z-40 w-8 h-8 rounded-full flex items-center justify-center text-[15px] font-extrabold active:scale-90 transition-transform"
+        className="fixed z-40 w-8 h-8 rounded-full flex items-center justify-center text-[15px] font-bold active:scale-90 transition-transform"
         style={{
           left: 12,
           bottom: "calc(5.5rem + env(safe-area-inset-bottom))",
@@ -75,10 +75,10 @@ export default function MapIntroModal() {
           <div className="w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-3" style={{ background: "rgba(173, 94, 59,0.15)" }}>
             <ShieldCheck size={28} style={{ color: "var(--color-primary-dark)" }} />
           </div>
-          <p className="text-[11px] font-extrabold tracking-[0.15em] mb-1" style={{ color: "var(--color-primary-dark)" }}>
+          <p className="text-[11px] font-bold tracking-[0.15em] mb-1" style={{ color: "var(--color-primary-dark)" }}>
             안심하고 둘러보세요
           </p>
-          <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+          <h2 className="text-[17px] font-bold text-text-main tracking-tight">
             아이들의 위치는 안전하게 지켜져요
           </h2>
         </div>
@@ -114,7 +114,7 @@ export default function MapIntroModal() {
         <div className="px-6 pb-6">
           <button
             onClick={close}
-            className="w-full py-3 rounded-2xl text-[15px] font-extrabold text-white active:scale-[0.98] transition-transform"
+            className="w-full py-3 rounded-2xl text-[15px] font-bold text-white active:scale-[0.98] transition-transform"
             style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
           >
             둘러보기 시작

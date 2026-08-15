@@ -116,11 +116,11 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
       {/* 섹션 헤더 */}
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-2">
-          <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+          <h2 className="text-[17px] font-bold text-text-main tracking-tight">
             {careInboxMode && pendingCount > 0 ? "오늘의 돌봄" : "내 아이들"}
           </h2>
           <span
-            className="text-[11px] font-extrabold px-2 py-0.5 chip-square"
+            className="text-[11px] font-bold px-2 py-0.5 chip-square"
             style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}
           >
             {careInboxMode && pendingCount > 0
@@ -178,7 +178,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
 
               {/* 오늘 상태 칩 */}
               <span
-                className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-1 chip-square text-[11px] font-extrabold pointer-events-none"
+                className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-1 chip-square text-[11px] font-bold pointer-events-none"
                 style={{
                   background: fedToday ? "rgba(34,163,102,0.92)" : "rgba(255,255,255,0.92)",
                   color: fedToday ? "#fff" : "var(--color-text-sub)",
@@ -189,14 +189,14 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
 
               {/* 이름 + 밥주기/돌봄 버튼 */}
               <div className="absolute inset-x-0 bottom-0 px-3 pb-3 pointer-events-none">
-                <p className="text-[17px] font-extrabold text-white drop-shadow tracking-tight mb-2 truncate">
+                <p className="text-[17px] font-bold text-white drop-shadow tracking-tight mb-2 truncate">
                   {cat.name}
                 </p>
                 <div className="flex gap-1.5">
                   <button
                     onClick={(e) => { e.stopPropagation(); if (!fedToday && !cat.busy) logCare(cat.id, "feed"); }}
                     disabled={fedToday || cat.busy}
-                    className="flex-1 min-w-0 py-2 rounded-xl text-[13px] font-extrabold flex items-center justify-center gap-1 active:scale-95 transition-transform pointer-events-auto"
+                    className="flex-1 min-w-0 py-2 rounded-xl text-[13px] font-bold flex items-center justify-center gap-1 active:scale-95 transition-transform pointer-events-auto"
                     style={{
                       background: fedToday ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.95)",
                       color: fedToday ? "#fff" : "var(--color-text-main)",
@@ -236,7 +236,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
                   >
                     <X size={14} className="text-white" strokeWidth={3} />
                   </button>
-                  <p className="text-[11px] font-extrabold text-white/85 mb-2 px-0.5">다른 돌봄 기록</p>
+                  <p className="text-[11px] font-bold text-white/85 mb-2 px-0.5">다른 돌봄 기록</p>
                   <div className="grid grid-cols-2 gap-1.5 mb-1.5">
                     {QUICK_CARE.map((q) => {
                       const done = cat.doneTypes.includes(q.type);
@@ -245,7 +245,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
                           key={q.type}
                           onClick={() => { if (!cat.busy) logCare(cat.id, q.type); }}
                           disabled={cat.busy}
-                          className="py-2 rounded-xl text-[11px] font-extrabold flex items-center justify-center gap-1 active:scale-95 transition-transform"
+                          className="py-2 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1 active:scale-95 transition-transform"
                           style={{
                             background: done ? "rgba(34,163,102,0.35)" : "rgba(255,255,255,0.92)",
                             color: done ? "#fff" : "var(--color-text-main)",
@@ -288,7 +288,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
           >
             <Plus size={20} style={{ color: "var(--color-primary)" }} strokeWidth={2.5} />
           </div>
-          <span className="text-[13px] font-extrabold" style={{ color: "var(--color-primary)" }}>
+          <span className="text-[13px] font-bold" style={{ color: "var(--color-primary)" }}>
             새 친구 등록
           </span>
         </Link>

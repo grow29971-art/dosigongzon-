@@ -371,7 +371,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                 type="button"
                 onClick={handleSubmit}
                 disabled={submitting || !careType}
-                className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-extrabold disabled:opacity-40 active:scale-[0.97] transition-all"
+                className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 active:scale-[0.97] transition-all"
               >
                 {submitting ? (
                   <>

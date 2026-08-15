@@ -84,7 +84,7 @@ export default function HomeStreakCard({
             }}
           >
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#FFF" }} />
-            <span className="text-[11px] font-extrabold text-white tracking-tight">
+            <span className="text-[11px] font-bold text-white tracking-tight">
               ⏰ {hoursLeft}시간 남음
             </span>
           </div>
@@ -106,10 +106,10 @@ export default function HomeStreakCard({
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[11px] font-extrabold tracking-[0.12em]" style={{ color: accent }}>
+            <p className="text-[11px] font-bold tracking-[0.12em]" style={{ color: accent }}>
               STREAK
             </p>
-            <p className="text-[17px] font-extrabold text-text-main tracking-tight leading-tight mt-0.5">
+            <p className="text-[17px] font-bold text-text-main tracking-tight leading-tight mt-0.5">
               {headline}
             </p>
             <p className="text-[13px] text-text-sub mt-1 leading-snug">{subline}</p>
@@ -120,7 +120,7 @@ export default function HomeStreakCard({
         <div className="mt-3">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[11px] font-bold text-text-sub">이번 주 돌봄</span>
-            <span className="text-[13px] font-extrabold" style={{ color: accent }}>
+            <span className="text-[13px] font-bold" style={{ color: accent }}>
               {weekly.count}/{weekly.goal}
               {progress >= 100 && <span className="ml-1">🎉</span>}
             </span>
@@ -137,7 +137,7 @@ export default function HomeStreakCard({
               return (
                 <div key={i} className="flex flex-col items-center gap-1" style={{ width: 32 }}>
                   <div
-                    className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-extrabold"
+                    className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold"
                     style={{
                       background: done ? accent : isToday ? `${accent}25` : "rgba(0,0,0,0.05)",
                       color: done ? "#fff" : isToday ? accent : "#B0A89C",

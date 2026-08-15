@@ -68,7 +68,7 @@ export default function InviteSection() {
     <div className="mb-3">
       <div className="flex items-center gap-2 mb-3 px-1">
         <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-like)" }} />
-        <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+        <h2 className="text-[15px] font-bold text-text-main tracking-tight">
           친구 초대
         </h2>
         <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "var(--color-like)", opacity: 0.6 }}>
@@ -96,7 +96,7 @@ export default function InviteSection() {
             <Gift size={20} color="#fff" strokeWidth={2.2} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[15px] font-extrabold text-text-main tracking-tight">
+            <p className="text-[15px] font-bold text-text-main tracking-tight">
               내 초대 코드
             </p>
             <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
@@ -105,7 +105,7 @@ export default function InviteSection() {
           </div>
           <div className="flex items-center gap-1 px-2.5 py-1 rounded-full" style={{ background: "var(--color-like-soft)" }}>
             <Users size={12} style={{ color: "var(--color-like)" }} />
-            <span className="text-[11px] font-extrabold" style={{ color: "var(--color-like)" }}>
+            <span className="text-[11px] font-bold" style={{ color: "var(--color-like)" }}>
               {info?.invitedCount ?? 0}명
             </span>
           </div>
@@ -125,7 +125,7 @@ export default function InviteSection() {
               <div>
                 <p className="text-[11px] font-bold text-text-light tracking-[0.1em]">INVITE CODE</p>
                 <p
-                  className="text-[24px] font-black tracking-[0.18em] mt-0.5"
+                  className="text-[24px] font-extrabold tracking-[0.18em] mt-0.5"
                   style={{ color: "var(--color-like)" }}
                 >
                   {info.inviteCode}
@@ -142,7 +142,7 @@ export default function InviteSection() {
                 aria-label="초대 링크 복사"
               >
                 {copied ? <Check size={14} /> : <Copy size={14} />}
-                <span className="text-[13px] font-extrabold">{copied ? "복사됨" : "링크 복사"}</span>
+                <span className="text-[13px] font-bold">{copied ? "복사됨" : "링크 복사"}</span>
               </button>
             </div>
 
@@ -159,7 +159,7 @@ export default function InviteSection() {
               }}
             >
               <Share2 size={14} />
-              <span className="text-[13px] font-extrabold">카카오톡으로 초대장 보내기</span>
+              <span className="text-[13px] font-bold">카카오톡으로 초대장 보내기</span>
             </button>
 
             {info.invitedByCode && (

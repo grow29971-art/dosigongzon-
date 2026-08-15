@@ -239,7 +239,7 @@ export default function AdminTipsPage() {
         <div className="flex items-end justify-between">
           <div>
             <div className="flex items-baseline gap-2 mb-1">
-              <h1 className="text-[24px] font-extrabold text-text-main tracking-tight flex items-center gap-1.5">
+              <h1 className="text-[24px] font-bold text-text-main tracking-tight flex items-center gap-1.5">
                 <Sparkles size={18} className="text-primary" />
                 꿀팁게시판 관리
               </h1>
@@ -269,7 +269,7 @@ export default function AdminTipsPage() {
           }}
         >
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[15px] font-extrabold text-text-main">
+            <h2 className="text-[15px] font-bold text-text-main">
               {editingId === "new" ? "새 꿀팁 작성" : "꿀팁 수정"}
             </h2>
             <button
@@ -549,7 +549,7 @@ export default function AdminTipsPage() {
                     )}
                     <span className="text-[11px] text-text-light">· /{item.slug}</span>
                   </div>
-                  <p className="text-[15px] font-extrabold text-text-main leading-tight truncate">
+                  <p className="text-[15px] font-bold text-text-main leading-tight truncate">
                     {item.title}
                   </p>
                   {item.description && (

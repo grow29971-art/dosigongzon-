@@ -86,7 +86,7 @@ export default function RegionsIndexPage() {
           <MapPin size={14} style={{ color: "var(--color-primary)" }} />
           <span className="text-[13px] font-bold" style={{ color: "var(--color-primary)" }}>대한민국</span>
         </div>
-        <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight">
+        <h1 className="text-[24px] font-bold text-text-main leading-tight tracking-tight">
           전국 길고양이<br />돌봄 지도
         </h1>
         <p className="text-[13px] text-text-sub mt-2 leading-relaxed">
@@ -108,7 +108,7 @@ export default function RegionsIndexPage() {
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
               <p className="text-[11px] font-bold tracking-[0.12em] text-white/80">SEOUL</p>
-              <p className="text-[20px] font-extrabold text-white tracking-tight mt-0.5">{SEOUL_HIGHLIGHT.name}</p>
+              <p className="text-[20px] font-bold text-white tracking-tight mt-0.5">{SEOUL_HIGHLIGHT.name}</p>
               <p className="text-[13px] text-white/85 mt-0.5">{SEOUL_HIGHLIGHT.desc}</p>
             </div>
             <ArrowRight size={20} className="text-white shrink-0" />
@@ -118,7 +118,7 @@ export default function RegionsIndexPage() {
 
       {/* 광역시·도 그리드 */}
       <section className="px-5 mt-5">
-        <h2 className="text-[13px] font-extrabold text-text-main mb-2.5 px-1">광역시·도</h2>
+        <h2 className="text-[13px] font-bold text-text-main mb-2.5 px-1">광역시·도</h2>
         <div className="grid grid-cols-2 gap-2">
           {KOREA_SIDOS.map((s) => (
             <Link
@@ -128,7 +128,7 @@ export default function RegionsIndexPage() {
               style={{ boxShadow: "var(--shadow-card)" }}
             >
               <div className="flex items-baseline justify-between">
-                <span className="text-[15px] font-extrabold text-text-main">{s.shortName}</span>
+                <span className="text-[15px] font-bold text-text-main">{s.shortName}</span>
                 <ArrowRight size={12} className="text-text-light" />
               </div>
               <p className="text-[11px] text-text-light mt-1 truncate">{s.name}</p>

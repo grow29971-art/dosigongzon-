@@ -110,7 +110,7 @@ export default function AdminAnnouncementPage() {
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
         <div>
-          <h1 className="text-[20px] font-extrabold text-text-main tracking-tight flex items-center gap-2">
+          <h1 className="text-[20px] font-bold text-text-main tracking-tight flex items-center gap-2">
             <Megaphone size={18} className="text-primary" />
             접속 팝업 공지
           </h1>
@@ -122,7 +122,7 @@ export default function AdminAnnouncementPage() {
 
       {/* 현재 공지 */}
       <section className="mb-5">
-        <p className="text-[13px] font-extrabold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
+        <p className="text-[13px] font-bold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
           현재 표시 중인 공지
         </p>
         {current ? (
@@ -153,7 +153,7 @@ export default function AdminAnnouncementPage() {
 
       {/* 새 공지 작성 */}
       <section className="mb-4">
-        <p className="text-[13px] font-extrabold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
+        <p className="text-[13px] font-bold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
           새 공지 ({message.length}/1000)
         </p>
         <textarea
@@ -175,7 +175,7 @@ export default function AdminAnnouncementPage() {
         type="button"
         onClick={handlePublish}
         disabled={busy || !message.trim()}
-        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[15px] font-extrabold active:scale-[0.98] disabled:opacity-60"
+        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[15px] font-bold active:scale-[0.98] disabled:opacity-60"
         style={{
           background: "linear-gradient(135deg, #C47E5A 0%, #A96A47 100%)",
           boxShadow: "0 6px 18px rgba(196,126,90,0.3)",

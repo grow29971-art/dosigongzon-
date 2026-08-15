@@ -114,7 +114,7 @@ export default async function TipsIndexPage() {
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
         <div>
-          <h1 className="text-[20px] font-extrabold text-text-main tracking-tight flex items-center gap-1.5">
+          <h1 className="text-[20px] font-bold text-text-main tracking-tight flex items-center gap-1.5">
             <Bot size={18} className="text-primary" />
             AI집사
           </h1>
@@ -153,12 +153,12 @@ export default async function TipsIndexPage() {
           <div className="flex items-center justify-between mb-1.5">
             <div className="flex items-center gap-1.5">
               <AlertTriangle size={15} style={{ color: "#B83A2A" }} />
-              <h2 className="text-[15px] font-extrabold tracking-tight" style={{ color: "#5C2A1E" }}>
+              <h2 className="text-[15px] font-bold tracking-tight" style={{ color: "#5C2A1E" }}>
                 위급할 땐 여기로
               </h2>
             </div>
             <span
-              className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md tracking-wider"
+              className="text-[9px] font-bold px-1.5 py-0.5 rounded-md tracking-wider"
               style={{ background: "rgba(216,85,85,0.18)", color: "#A8392A" }}
             >
               구조 매뉴얼
@@ -197,7 +197,7 @@ export default async function TipsIndexPage() {
                 >
                   <cat.Icon size={16} style={{ color: cat.color }} strokeWidth={2.3} />
                 </div>
-                <span className="text-[11px] font-extrabold text-text-main leading-none">
+                <span className="text-[11px] font-bold text-text-main leading-none">
                   {cat.label}
                 </span>
                 <span className="text-[11px] font-bold text-text-light leading-none">
@@ -210,7 +210,7 @@ export default async function TipsIndexPage() {
           {/* 강한 CTA — 무조건 누를 수 있는 톤 */}
           <Link
             href="/protection"
-            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-extrabold text-white active:scale-[0.98] transition-transform"
+            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-bold text-white active:scale-[0.98] transition-transform"
             style={{
               background: "linear-gradient(135deg, #D85555 0%, #B83A2A 100%)",
               boxShadow: "0 6px 18px rgba(216,85,85,0.35)",
@@ -227,7 +227,7 @@ export default async function TipsIndexPage() {
       <div className="px-4 mb-2.5">
         <div className="flex items-center gap-1.5 px-1">
           <Sparkles size={15} className="text-primary" />
-          <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+          <h2 className="text-[17px] font-bold text-text-main tracking-tight">
             도시공존 꿀팁 매거진
           </h2>
         </div>
@@ -279,14 +279,14 @@ export default async function TipsIndexPage() {
             border: "1px solid rgba(173, 94, 59,0.15)",
           }}
         >
-          <p className="text-[13px] font-extrabold text-primary mb-1.5">도시공존이란?</p>
+          <p className="text-[13px] font-bold text-primary mb-1.5">도시공존이란?</p>
           <p className="text-[13px] text-text-main leading-relaxed mb-3">
             우리 동네 길고양이 지도, 돌봄다이어리, TNR 신청, 동네 채팅을 한곳에서
             할 수 있는 시민 참여 플랫폼이에요.
           </p>
           <Link
             href="/about"
-            className="inline-flex items-center gap-1 text-[13px] font-extrabold text-primary"
+            className="inline-flex items-center gap-1 text-[13px] font-bold text-primary"
           >
             자세히 보기
             <ChevronRight size={13} />
@@ -324,14 +324,14 @@ function TipCard({ tip }: { tip: Tip }) {
           )}
           {tip.featured && (
             <span
-              className="absolute top-3 left-3 text-[11px] font-extrabold px-2 py-0.5 rounded-md text-white"
+              className="absolute top-3 left-3 text-[11px] font-bold px-2 py-0.5 rounded-md text-white"
               style={{ background: "rgba(173, 94, 59,0.95)" }}
             >
               ✨ 추천
             </span>
           )}
           {tip.pinned && (
-            <span className="absolute top-3 right-3 text-[11px] font-extrabold px-2 py-0.5 rounded-md bg-white/90 text-primary inline-flex items-center gap-0.5">
+            <span className="absolute top-3 right-3 text-[11px] font-bold px-2 py-0.5 rounded-md bg-white/90 text-primary inline-flex items-center gap-0.5">
               <Pin size={10} /> 고정
             </span>
           )}
@@ -350,7 +350,7 @@ function TipCard({ tip }: { tip: Tip }) {
               ))}
             </div>
           )}
-          <h2 className="text-[17px] font-extrabold text-text-main leading-snug line-clamp-2">
+          <h2 className="text-[17px] font-bold text-text-main leading-snug line-clamp-2">
             {tip.title}
           </h2>
           {tip.description && (

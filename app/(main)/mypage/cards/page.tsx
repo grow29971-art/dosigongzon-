@@ -162,7 +162,7 @@ export default function MyCardsPage() {
           <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>
             <ArrowLeft size={18} style={{ color: UI.textMain }} />
           </button>
-          <h1 className="text-[17px] font-extrabold" style={{ color: UI.textMain }}>내 고양이 카드</h1>
+          <h1 className="text-[17px] font-bold" style={{ color: UI.textMain }}>내 고양이 카드</h1>
           <span className="text-[13px] font-semibold ml-auto" style={{ color: UI.textSub }}>{cats.length}장</span>
         </div>
 

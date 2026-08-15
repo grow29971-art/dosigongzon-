@@ -232,7 +232,7 @@ export default async function TipDetailPage({ params }: Params) {
                 <Link
                   key={tag}
                   href={`/tips?tag=${encodeURIComponent(tag)}`}
-                  className="text-[11px] font-extrabold px-2 py-0.5 rounded-md"
+                  className="text-[11px] font-bold px-2 py-0.5 rounded-md"
                   style={{ background: "#F2EBE0", color: "#8B6F4E" }}
                 >
                   #{tag}
@@ -241,7 +241,7 @@ export default async function TipDetailPage({ params }: Params) {
             </div>
           )}
           <h1
-            className="font-extrabold text-text-main"
+            className="font-bold text-text-main"
             style={{ fontSize: "24px", lineHeight: 1.35, letterSpacing: "-0.01em" }}
           >
             {tip.title}
@@ -273,7 +273,7 @@ export default async function TipDetailPage({ params }: Params) {
             aria-label="목차"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <p className="text-[13px] font-extrabold text-text-sub mb-2 inline-flex items-center gap-1.5">
+            <p className="text-[13px] font-bold text-text-sub mb-2 inline-flex items-center gap-1.5">
               <ListIcon size={13} />
               목차
             </p>
@@ -332,7 +332,7 @@ export default async function TipDetailPage({ params }: Params) {
           className="bg-white rounded-2xl p-4 mb-4"
           style={{ boxShadow: "var(--shadow-card)" }}
         >
-          <p className="text-[13px] font-extrabold text-text-sub mb-2.5">이 글 공유하기</p>
+          <p className="text-[13px] font-bold text-text-sub mb-2.5">이 글 공유하기</p>
           <TipShareButtons url={url} title={tip.title} description={description} />
         </div>
 
@@ -342,7 +342,7 @@ export default async function TipDetailPage({ params }: Params) {
             className="bg-white rounded-2xl p-4 mb-4"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <p className="text-[13px] font-extrabold text-text-sub mb-2.5">관련 꿀팁</p>
+            <p className="text-[13px] font-bold text-text-sub mb-2.5">관련 꿀팁</p>
             <div className="space-y-2">
               {related.map((r) => (
                 <RelatedRow key={r.id} tip={r} />
@@ -359,7 +359,7 @@ export default async function TipDetailPage({ params }: Params) {
             border: "1px solid rgba(173, 94, 59,0.15)",
           }}
         >
-          <p className="text-[13px] font-extrabold text-primary mb-1.5">도시공존이란?</p>
+          <p className="text-[13px] font-bold text-primary mb-1.5">도시공존이란?</p>
           <p className="text-[13px] text-text-main leading-relaxed mb-3">
             우리 동네 길고양이 지도, 돌봄다이어리, TNR 신청, 동네 채팅을 한곳에서
             할 수 있는 시민 참여 플랫폼이에요. 길고양이와 시민이 함께 살아가는
@@ -367,7 +367,7 @@ export default async function TipDetailPage({ params }: Params) {
           </p>
           <Link
             href="/about"
-            className="inline-flex items-center gap-1 text-[13px] font-extrabold text-primary"
+            className="inline-flex items-center gap-1 text-[13px] font-bold text-primary"
           >
             자세히 보기
             <ChevronRight size={13} />

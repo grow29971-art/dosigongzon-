@@ -285,7 +285,7 @@ export default function MyPage() {
       />
       {/* 헤더 — 페이지 대제목(24px/extrabold 800)만 예외로 유지 */}
       <div className="mb-6 px-1">
-        <h1 className="text-[24px] font-extrabold text-text-main tracking-tight mb-1">
+        <h1 className="text-[24px] font-bold text-text-main tracking-tight mb-1">
           마이페이지
         </h1>
         <p className="text-[13px] text-text-sub leading-relaxed">

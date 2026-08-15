@@ -3,7 +3,7 @@ import { Box } from "lucide-react";
 export default function SheltersPage() {
   return (
     <div className="px-5 pt-14 pb-4">
-      <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">스마트 쉼터</h1>
+      <h1 className="text-[24px] font-bold text-text-main tracking-tight">스마트 쉼터</h1>
       <p className="text-sm text-text-sub mt-1">내가 관리하는 쉼터 상태를 확인하세요</p>
       <div className="flex flex-col items-center pt-20 text-text-light">
         <Box size={48} strokeWidth={1.2} />

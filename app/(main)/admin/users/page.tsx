@@ -226,7 +226,7 @@ export default function AdminUsersPage() {
           마이페이지
         </button>
         <div className="flex items-baseline gap-2 mb-1">
-          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
+          <h1 className="text-[24px] font-bold text-text-main tracking-tight">
             가입자 관리
           </h1>
           <span className="text-[11px] font-semibold text-text-light">
@@ -345,7 +345,7 @@ export default function AdminUsersPage() {
                 />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="text-[15px] font-extrabold text-primary">
+                  <span className="text-[15px] font-bold text-primary">
                     {u.nickname.charAt(0)}
                   </span>
                 </div>
@@ -362,7 +362,7 @@ export default function AdminUsersPage() {
                     const meta = PROVIDER_META[p] ?? { label: p, bg: "#EEE", fg: "#555", emoji: "" };
                     return (
                       <span
-                        className="text-[9px] font-extrabold px-1.5 py-0.5 chip-square"
+                        className="text-[9px] font-bold px-1.5 py-0.5 chip-square"
                         style={{ backgroundColor: meta.bg, color: meta.fg }}
                         title={`로그인: ${meta.label}`}
                       >
@@ -372,7 +372,7 @@ export default function AdminUsersPage() {
                   })()}
                   {u.is_suspended && (
                     <span
-                      className="text-[9px] font-extrabold px-1.5 py-0.5 chip-square"
+                      className="text-[9px] font-bold px-1.5 py-0.5 chip-square"
                       style={{ backgroundColor: "#D85555", color: "#fff" }}
                     >
                       정지
@@ -382,7 +382,7 @@ export default function AdminUsersPage() {
                     const at = findAdminTitle(u.admin_title);
                     return at ? (
                       <span
-                        className="text-[9px] font-extrabold px-1.5 py-0.5 chip-square"
+                        className="text-[9px] font-bold px-1.5 py-0.5 chip-square"
                         style={{ backgroundColor: at.color, color: "#fff" }}
                       >
                         {at.emoji} {at.name}

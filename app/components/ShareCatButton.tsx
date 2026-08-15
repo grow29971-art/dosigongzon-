@@ -89,7 +89,7 @@ export default function ShareCatButton({ catId, name, region, description, urgen
         aria-label="긴급 카카오톡 공유"
       >
         {status === "idle" ? <Siren size={18} /> : <Check size={18} />}
-        <span className="text-[15px] font-extrabold">{urgentLabel}</span>
+        <span className="text-[15px] font-bold">{urgentLabel}</span>
         <style jsx>{`
           @keyframes urgent-pulse {
             0%, 100% { box-shadow: 0 6px 22px rgba(229,57,53,0.45); }
@@ -123,7 +123,7 @@ export default function ShareCatButton({ catId, name, region, description, urgen
       aria-label="카카오톡으로 고양이 공유"
     >
       {status === "idle" ? <Share2 size={16} /> : <Check size={16} />}
-      <span className="text-[15px] font-extrabold">{label}</span>
+      <span className="text-[15px] font-bold">{label}</span>
     </button>
   );
 }

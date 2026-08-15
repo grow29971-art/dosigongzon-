@@ -373,7 +373,7 @@ export default function AddCatModal({
           <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-4">
             <Lock size={24} className="text-primary" />
           </div>
-          <h2 className="text-[20px] font-extrabold text-text-main mb-2">
+          <h2 className="text-[20px] font-bold text-text-main mb-2">
             로그인이 필요해요
           </h2>
           <p className="text-[13px] text-text-sub leading-relaxed mb-5">
@@ -442,7 +442,7 @@ export default function AddCatModal({
             <div>
               <h2
                 id="add-cat-modal-title"
-                className="text-[17px] font-extrabold text-white"
+                className="text-[17px] font-bold text-white"
               >
                 우리 동네 아이 등록
               </h2>
@@ -481,7 +481,7 @@ export default function AddCatModal({
                     aria-current={discoveryStep === step.id ? "step" : undefined}
                     onClick={() => setDiscoveryStep(step.id)}
                   >
-                    <span className="block text-[11px] font-extrabold text-[#A5B4FC]">
+                    <span className="block text-[11px] font-bold text-[#A5B4FC]">
                       {index + 1}단계
                     </span>
                     <span className="mt-0.5 block text-[11px] font-bold text-white/80">
@@ -515,7 +515,7 @@ export default function AddCatModal({
             discoveryStep === "location" &&
             nearbyCandidates.length > 0 && (
               <div className="rounded-2xl border border-amber-300/30 bg-amber-200/10 p-3">
-                <p className="text-[13px] font-extrabold text-amber-100">
+                <p className="text-[13px] font-bold text-amber-100">
                   잠깐, 주변에 이미 등록된 아이가 있어요
                 </p>
                 <p className="mt-1 text-[11px] text-white/65">
@@ -555,7 +555,7 @@ export default function AddCatModal({
                   style={{ background: "linear-gradient(135deg, #0F0F1A 0%, #1A1A2E 100%)", borderColor: "#6366F1" }}
                 >
                   <Camera size={34} className="text-white" strokeWidth={1.5} />
-                  <p className="text-[15px] font-extrabold text-white">사진 찍기</p>
+                  <p className="text-[15px] font-bold text-white">사진 찍기</p>
                   <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.5)" }}>카메라로 우리 동네 아이를 담아요</p>
                 </button>
                 <input
@@ -591,7 +591,7 @@ export default function AddCatModal({
                     <img src={src} alt={`미리보기 ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" />
                     {idx === 0 && (
                       <span
-                        className="absolute top-1 left-1 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md text-white"
+                        className="absolute top-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded-md text-white"
                         style={{ background: "#6366F1" }}
                       >
                         대표
@@ -904,7 +904,7 @@ export default function AddCatModal({
                   >
                     <span className="text-[20px] leading-none mt-0.5">{info.emoji}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-extrabold" style={{ color: active ? info.color : "rgba(255,255,255,0.85)" }}>
+                      <p className="text-[13px] font-bold" style={{ color: active ? info.color : "rgba(255,255,255,0.85)" }}>
                         {info.label}
                       </p>
                       <p className="text-[11px] mt-0.5 leading-relaxed" style={{ color: active ? info.color : "rgba(255,255,255,0.5)", opacity: active ? 0.85 : 1 }}>

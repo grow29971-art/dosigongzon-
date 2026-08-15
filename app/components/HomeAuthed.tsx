@@ -775,7 +775,7 @@ export default function HomeAuthed({
                     </Link>
                   </div>
                 </div>
-                <h1 className="text-[24px] font-extrabold text-text-main tracking-tight leading-snug mt-1.5">
+                <h1 className="text-[24px] font-bold text-text-main tracking-tight leading-snug mt-1.5">
                   {name ? `${name}님, ` : ""}
                   {hungryCatName ? (
                     // 부담·죄책감 대신 초대 톤 — "기다려요"(방치 암시)보다 가볍게 권유
@@ -1412,7 +1412,7 @@ export default function HomeAuthed({
                     style={{ backgroundColor: `${s.color}08`, border: `1px solid ${s.color}15` }}
                   >
                     <p className="text-[11px] mb-0.5">{s.icon}</p>
-                    <p className="text-[17px] font-black" style={{ color: s.color }}>{s.value}</p>
+                    <p className="text-[17px] font-extrabold" style={{ color: s.color }}>{s.value}</p>
                     <p className="text-[9px] font-semibold text-text-light">{s.label}</p>
                   </div>
                 ))}

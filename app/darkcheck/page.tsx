@@ -51,7 +51,7 @@ export default function DarkCheckPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#F9FAFB", color: "#191F28", padding: 20, fontFamily: "sans-serif" }}>
-      <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>다크모드 진단</h1>
+      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 4 }}>다크모드 진단</h1>
       <p style={{ fontSize: 13, color: "#4E5968", marginBottom: 16 }}>
         이 화면을 캡처해서 보내주세요. 각 박스가 무슨 색으로 보이는지가 중요해요.
       </p>

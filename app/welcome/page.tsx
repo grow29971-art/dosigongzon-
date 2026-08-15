@@ -159,7 +159,7 @@ function WelcomeContent() {
         </button>
 
         <div className="flex-1 flex flex-col items-center justify-center px-7">
-          <h2 className="text-[24px] font-extrabold text-center text-white tracking-tight leading-[1.4] mb-2">
+          <h2 className="text-[24px] font-bold text-center text-white tracking-tight leading-[1.4] mb-2">
             어떻게 시작해볼까요?
           </h2>
           <p className="text-[13px] text-center text-white/85 mb-7 leading-relaxed">
@@ -175,7 +175,7 @@ function WelcomeContent() {
             >
               <span className="text-[24px] shrink-0">🐾</span>
               <div className="text-left flex-1 min-w-0">
-                <p className="text-[15px] font-extrabold text-text-main leading-tight">이미 돌보고 있어요</p>
+                <p className="text-[15px] font-bold text-text-main leading-tight">이미 돌보고 있어요</p>
                 <p className="text-[13px] text-text-sub mt-0.5">지도·돌봄일지로 바로</p>
               </div>
               <ChevronRight size={16} className="text-text-sub shrink-0" />
@@ -189,7 +189,7 @@ function WelcomeContent() {
             >
               <span className="text-[24px] shrink-0">💛</span>
               <div className="text-left flex-1 min-w-0">
-                <p className="text-[15px] font-extrabold text-text-main leading-tight">관심 있어 들어왔어요</p>
+                <p className="text-[15px] font-bold text-text-main leading-tight">관심 있어 들어왔어요</p>
                 <p className="text-[13px] text-text-sub mt-0.5">동네 둘러보면서 천천히</p>
               </div>
               <ChevronRight size={16} className="text-text-sub shrink-0" />
@@ -203,7 +203,7 @@ function WelcomeContent() {
             >
               <span className="text-[24px] shrink-0">💬</span>
               <div className="text-left flex-1 min-w-0">
-                <p className="text-[15px] font-extrabold text-text-main leading-tight">그냥 구경하러</p>
+                <p className="text-[15px] font-bold text-text-main leading-tight">그냥 구경하러</p>
                 <p className="text-[13px] text-text-sub mt-0.5">동네 커뮤니티 이야기부터</p>
               </div>
               <ChevronRight size={16} className="text-text-sub shrink-0" />
@@ -262,13 +262,13 @@ function WelcomeContent() {
                 }}
               >
                 <Sparkles size={11} color="#FFF7C4" />
-                <span className="text-[11px] font-extrabold tracking-[0.12em] text-white">
+                <span className="text-[11px] font-bold tracking-[0.12em] text-white">
                   EARLY SUPPORTER · 100명 한정
                 </span>
               </div>
             )}
 
-            <h1 className="text-[24px] font-extrabold text-center text-white tracking-tight leading-[1.3] mb-2">
+            <h1 className="text-[24px] font-bold text-center text-white tracking-tight leading-[1.3] mb-2">
               <span className="opacity-90">환영합니다,</span>
               <br />
               <span style={{ color: "#FFF7C4" }}>{nickname}</span>님 🐾
@@ -301,7 +301,7 @@ function WelcomeContent() {
             >
               <slide.Icon size={38} color="#FFFFFF" strokeWidth={1.6} />
             </div>
-            <h2 className="text-[24px] font-extrabold text-center text-white tracking-tight leading-[1.4] mb-4 whitespace-pre-line">
+            <h2 className="text-[24px] font-bold text-center text-white tracking-tight leading-[1.4] mb-4 whitespace-pre-line">
               {slide.title}
             </h2>
             <p className="text-[15px] text-center text-white/85 leading-[1.95] max-w-[320px] whitespace-pre-line">
@@ -348,7 +348,7 @@ function WelcomeContent() {
           )}
           <button
             onClick={handleNext}
-            className="flex-1 h-[52px] rounded-2xl text-[15px] font-extrabold flex items-center justify-center gap-1.5 active:scale-[0.98]"
+            className="flex-1 h-[52px] rounded-2xl text-[15px] font-bold flex items-center justify-center gap-1.5 active:scale-[0.98]"
             style={{
               background: "#FFFFFF",
               color: slide.accent,

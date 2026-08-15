@@ -194,7 +194,7 @@ export default function FeatureTipsCard({ activity, regions }: Props) {
     <div className="mb-5">
       <div className="flex items-center gap-2 mb-3 px-1">
         <div className="w-1 h-4 rounded-full" style={{ backgroundColor: tip.iconColor }} />
-        <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+        <h2 className="text-[15px] font-bold text-text-main tracking-tight">
           도시공존 살펴보기
         </h2>
         <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: tip.iconColor, opacity: 0.6 }}>
@@ -227,7 +227,7 @@ export default function FeatureTipsCard({ activity, regions }: Props) {
             <Icon size={20} style={{ color: tip.iconColor }} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[15px] font-extrabold text-text-main leading-tight tracking-tight">
+            <p className="text-[15px] font-bold text-text-main leading-tight tracking-tight">
               {tip.title}
             </p>
             <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
@@ -235,7 +235,7 @@ export default function FeatureTipsCard({ activity, regions }: Props) {
             </p>
             <Link
               href={tip.href}
-              className="inline-block mt-3 text-[13px] font-extrabold active:scale-95 transition-transform"
+              className="inline-block mt-3 text-[13px] font-bold active:scale-95 transition-transform"
               style={{ color: tip.iconColor }}
             >
               {tip.ctaLabel} →

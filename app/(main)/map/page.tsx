@@ -2057,7 +2057,7 @@ export default function MapPage() {
   if (!apiKey) {
     return (
       <div className="px-5 pt-14 pb-8">
-        <h1 className="text-[24px] font-extrabold text-text-main tracking-tight mb-2">
+        <h1 className="text-[24px] font-bold text-text-main tracking-tight mb-2">
           우리 동네 시민참여 돌봄 고양이
         </h1>
         <div className="card p-6 mt-6">
@@ -3589,7 +3589,7 @@ export default function MapPage() {
                 /* ═══ 보기 모드 ═══ */
                 <>
                   <div className="flex items-baseline gap-2 mb-1.5">
-                    <h2 className="text-[20px] font-extrabold text-text-main tracking-tight">
+                    <h2 className="text-[20px] font-bold text-text-main tracking-tight">
                       {selectedCat.name}
                     </h2>
                     {selectedCat.region && (

@@ -90,7 +90,7 @@ export default function ShareAreaButton({ guName, slug, catCount, urgentCount }:
       aria-label="카카오톡으로 동네 지도 공유"
     >
       {status === "idle" ? <Share2 size={14} /> : <Check size={14} />}
-      <span className="text-[13px] font-extrabold">{label}</span>
+      <span className="text-[13px] font-bold">{label}</span>
     </button>
   );
 }

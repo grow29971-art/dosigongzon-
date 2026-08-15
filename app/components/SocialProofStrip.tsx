@@ -68,7 +68,7 @@ export default function SocialProofStrip() {
       </div>
 
       <div className="flex-1 min-w-0">
-        <p className="text-[13px] font-extrabold text-text-main tracking-tight leading-tight">
+        <p className="text-[13px] font-bold text-text-main tracking-tight leading-tight">
           {primary}
         </p>
         {activeCaretakersToday > 0 && totalCats > 0 && (
@@ -88,7 +88,7 @@ export default function SocialProofStrip() {
             className="w-1.5 h-1.5 rounded-full animate-pulse"
             style={{ background: "#48A59E" }}
           />
-          <span className="text-[11px] font-extrabold" style={{ color: "#2E7870" }}>
+          <span className="text-[11px] font-bold" style={{ color: "#2E7870" }}>
             LIVE
           </span>
         </div>

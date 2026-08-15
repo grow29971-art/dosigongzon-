@@ -158,7 +158,7 @@ export default function AdminPushPage() {
           <ArrowLeft size={18} className="text-text-sub" />
         </Link>
         <div>
-          <h1 className="text-[20px] font-extrabold text-text-main">푸시 알림 발송</h1>
+          <h1 className="text-[20px] font-bold text-text-main">푸시 알림 발송</h1>
           <p className="text-[13px] text-text-sub">전체 구독자에게 알림을 보냅니다</p>
         </div>
       </div>
@@ -181,7 +181,7 @@ export default function AdminPushPage() {
 
       {/* 이벤트 quick-fill — 6/1 출시 이후 자동 비활성 (수동 삭제) */}
       <div className="mb-5 space-y-2">
-        <p className="text-[11px] font-extrabold tracking-[0.15em] text-text-light mb-1.5">EVENT QUICK-FILL</p>
+        <p className="text-[11px] font-bold tracking-[0.15em] text-text-light mb-1.5">EVENT QUICK-FILL</p>
 
         <button
           type="button"
@@ -200,7 +200,7 @@ export default function AdminPushPage() {
             border: "1px solid rgba(173, 94, 59,0.35)",
           }}
         >
-          <p className="text-[13px] font-extrabold" style={{ color: "#8A4A28" }}>
+          <p className="text-[13px] font-bold" style={{ color: "#8A4A28" }}>
             🐾 8/8 보신각 집회 리마인더
           </p>
           <p className="text-[11px] mt-0.5" style={{ color: "#9A5A34" }}>
@@ -221,7 +221,7 @@ export default function AdminPushPage() {
             border: "1px solid rgba(173, 94, 59,0.30)",
           }}
         >
-          <p className="text-[13px] font-extrabold" style={{ color: "#7A4F30" }}>
+          <p className="text-[13px] font-bold" style={{ color: "#7A4F30" }}>
             🌟 초기 200 이벤트 안내 (출시 D-3)
           </p>
           <p className="text-[11px] mt-0.5" style={{ color: "#8E5430" }}>
@@ -242,7 +242,7 @@ export default function AdminPushPage() {
             border: "1px solid rgba(74,123,168,0.30)",
           }}
         >
-          <p className="text-[13px] font-extrabold" style={{ color: "#2C5A85" }}>
+          <p className="text-[13px] font-bold" style={{ color: "#2C5A85" }}>
             📱 Play 스토어 앱 출시 안내
           </p>
           <p className="text-[11px] mt-0.5" style={{ color: "#3F6B8E" }}>
@@ -263,7 +263,7 @@ export default function AdminPushPage() {
             border: "1px solid var(--color-like-soft)",
           }}
         >
-          <p className="text-[13px] font-extrabold" style={{ color: "#A8395B" }}>
+          <p className="text-[13px] font-bold" style={{ color: "#A8395B" }}>
             🎉 정식 출시 D-Day (6/1 당일 발송)
           </p>
           <p className="text-[11px] mt-0.5" style={{ color: "#B5546F" }}>
@@ -284,7 +284,7 @@ export default function AdminPushPage() {
             border: "1px solid rgba(107,142,111,0.30)",
           }}
         >
-          <p className="text-[13px] font-extrabold" style={{ color: "#3F6B4E" }}>
+          <p className="text-[13px] font-bold" style={{ color: "#3F6B4E" }}>
             🌱 출시 +7일 회고 (6/1 발송)
           </p>
           <p className="text-[11px] mt-0.5" style={{ color: "#5F8F73" }}>
@@ -413,7 +413,7 @@ export default function AdminPushPage() {
         {/* 예약 목록 */}
         {scheduled.length > 0 && (
           <div className="pt-4">
-            <p className="text-[11px] font-extrabold tracking-[0.15em] text-text-light mb-2">예약 목록</p>
+            <p className="text-[11px] font-bold tracking-[0.15em] text-text-light mb-2">예약 목록</p>
             <div className="space-y-2">
               {scheduled.map((s) => (
                 <div
@@ -423,7 +423,7 @@ export default function AdminPushPage() {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1">
-                      <p className="text-[13px] font-extrabold text-text-main truncate">{s.title}</p>
+                      <p className="text-[13px] font-bold text-text-main truncate">{s.title}</p>
                       <p className="text-[13px] text-text-sub mt-0.5 line-clamp-2">{s.body}</p>
                       <p className="text-[11px] text-text-light mt-1">
                         {new Date(s.scheduled_at).toLocaleString("ko-KR", {

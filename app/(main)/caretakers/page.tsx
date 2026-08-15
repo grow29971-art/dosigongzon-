@@ -54,7 +54,7 @@ export default async function CaretakersPage() {
         </Link>
         <div className="flex items-baseline gap-2 mb-1">
           <UserPlus size={20} className="text-primary" />
-          <h1 className="text-[24px] font-extrabold tracking-tight text-text-main">
+          <h1 className="text-[24px] font-bold tracking-tight text-text-main">
             동네 길집사 찾기
           </h1>
         </div>
@@ -139,12 +139,12 @@ function CaretakerCard({
 
         <Link href={`/users/${caretaker.id}`} className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <p className="text-[15px] font-extrabold text-text-main tracking-tight truncate">
+            <p className="text-[15px] font-bold text-text-main tracking-tight truncate">
               {caretaker.nickname}
             </p>
             {caretaker.admin_title && (
               <span
-                className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md shrink-0"
+                className="text-[9px] font-bold px-1.5 py-0.5 rounded-md shrink-0"
                 style={{ background: "var(--color-primary)", color: "#fff" }}
               >
                 {caretaker.admin_title}
@@ -215,7 +215,7 @@ function EmptyNoRegion() {
       }}
     >
       <MapPin size={32} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-      <p className="text-[15px] font-extrabold text-text-main mb-1.5">
+      <p className="text-[15px] font-bold text-text-main mb-1.5">
         먼저 활동 지역을 등록해주세요
       </p>
       <p className="text-[13px] text-text-sub leading-relaxed mb-4">
@@ -242,7 +242,7 @@ function EmptyNoMatch({ myRegions }: { myRegions: string[] }) {
       }}
     >
       <UserPlus size={32} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-      <p className="text-[15px] font-extrabold text-text-main mb-1.5">
+      <p className="text-[15px] font-bold text-text-main mb-1.5">
         아직 같은 동네 길집사가 없어요
       </p>
       <p className="text-[13px] text-text-sub leading-relaxed mb-2">

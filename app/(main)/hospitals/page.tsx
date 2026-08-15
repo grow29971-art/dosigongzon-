@@ -67,7 +67,7 @@ export default function HospitalsPage() {
       {/* ── 헤더 ── */}
       <div className="mb-5 px-1">
         <div className="flex items-baseline gap-2 mb-1">
-          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
+          <h1 className="text-[24px] font-bold text-text-main tracking-tight">
             구조동물 치료 도움병원
           </h1>
         </div>
@@ -164,7 +164,7 @@ export default function HospitalsPage() {
                   className="w-1 h-4 rounded-full"
                   style={{ backgroundColor: "var(--color-primary)" }}
                 />
-                <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+                <h2 className="text-[15px] font-bold text-text-main tracking-tight">
                   {group.city}
                 </h2>
                 <span className="text-[11px] font-bold text-text-light tabular-nums">
@@ -222,7 +222,7 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
           <div className="flex items-center gap-1.5 mb-1">
             {hospital.pinned && (
               <span
-                className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md flex items-center gap-0.5"
+                className="text-[9px] font-bold px-1.5 py-0.5 rounded-md flex items-center gap-0.5"
                 style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-primary)" }}
               >
                 <Pin size={9} /> 추천
@@ -237,7 +237,7 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
             >
               <Heart size={12} color="#fff" strokeWidth={2.3} fill="#fff" />
             </div>
-            <h4 className="text-[15px] font-extrabold text-text-main tracking-tight">
+            <h4 className="text-[15px] font-bold text-text-main tracking-tight">
               {hospital.name}
             </h4>
           </div>

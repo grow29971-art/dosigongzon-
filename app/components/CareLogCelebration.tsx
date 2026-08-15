@@ -117,7 +117,7 @@ export default function CareLogCelebration({
 
           <h2
             id="care-celebration-title"
-            className="text-[20px] font-extrabold text-text-main text-center tracking-tight"
+            className="text-[20px] font-bold text-text-main text-center tracking-tight"
           >
             {headline}
           </h2>
@@ -133,7 +133,7 @@ export default function CareLogCelebration({
               className="rounded-2xl px-4 py-3.5 text-center"
               style={{ background: "#E8F4E8" }}
             >
-              <p className="text-[13px] font-extrabold" style={{ color: "#3F5B42" }}>
+              <p className="text-[13px] font-bold" style={{ color: "#3F5B42" }}>
                 ✓ 내일 다시 뵈어요
               </p>
               <p className="text-[11px] font-semibold mt-0.5" style={{ color: "#5A7C5E" }}>
@@ -149,7 +149,7 @@ export default function CareLogCelebration({
                 <button
                   type="button"
                   onClick={handleCommit}
-                  className="flex-1 py-3 rounded-2xl text-[13px] font-extrabold text-white active:scale-[0.98]"
+                  className="flex-1 py-3 rounded-2xl text-[13px] font-bold text-white active:scale-[0.98]"
                   style={{
                     background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                     boxShadow: "0 4px 14px rgba(173, 94, 59,0.45)",

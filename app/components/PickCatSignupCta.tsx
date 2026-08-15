@@ -36,7 +36,7 @@ export default function PickCatSignupCta({ catId, catName }: { catId: string; ca
     <Link
       href={`/signup?next=${encodeURIComponent(`/cats/${catId}`)}`}
       onClick={commit}
-      className="flex-[1.6] flex items-center justify-center py-2.5 rounded-xl text-white text-[13px] font-extrabold active:scale-[0.98] transition-transform"
+      className="flex-[1.6] flex items-center justify-center py-2.5 rounded-xl text-white text-[13px] font-bold active:scale-[0.98] transition-transform"
       style={{
         background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
         boxShadow: "var(--shadow-primary)",

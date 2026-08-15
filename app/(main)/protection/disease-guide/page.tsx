@@ -570,7 +570,7 @@ export default function DiseaseGuidePage() {
         </span>
       </div>
 
-      <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight mb-3">
+      <h1 className="text-[24px] font-bold text-text-main leading-tight tracking-tight mb-3">
         길고양이 <span style={{ color: "var(--color-error)" }}>질병</span> 가이드 — <br />
         증상·대응·예방 한눈에
       </h1>

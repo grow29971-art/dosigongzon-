@@ -28,7 +28,7 @@ export default function TipsAdminFab() {
     <Link
       href="/admin/tips"
       aria-label="꿀팁 작성"
-      className="fixed z-40 flex items-center gap-1.5 px-4 py-3 rounded-full bg-primary text-white text-[13px] font-extrabold active:scale-95 transition-transform"
+      className="fixed z-40 flex items-center gap-1.5 px-4 py-3 rounded-full bg-primary text-white text-[13px] font-bold active:scale-95 transition-transform"
       style={{
         right: 16,
         bottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)",

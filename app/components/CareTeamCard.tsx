@@ -40,7 +40,7 @@ export default function CareTeamCard() {
             <Users size={20} aria-hidden="true" />
           </div>
           <div>
-            <h2 id="care-team-heading" className="text-[15px] font-extrabold text-text-main">
+            <h2 id="care-team-heading" className="text-[15px] font-bold text-text-main">
               돌봄팀
             </h2>
             <p className="mt-1 text-[13px] leading-relaxed text-text-sub">

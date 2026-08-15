@@ -82,7 +82,7 @@ export default function FoundingMemberBanner() {
         </div>
         <div className="flex-1 min-w-0">
           <p
-            className="text-[15px] font-extrabold mb-0.5"
+            className="text-[15px] font-bold mb-0.5"
             style={{ color: "#5C4A3E" }}
           >
             ✨ 창립 멤버에 합류하셨어요

@@ -192,7 +192,7 @@ export default async function HomeLanding({
               : "길집사 시민 참여 플랫폼"}
           </span>
         </div>
-        <h1 className="text-[30px] font-extrabold text-text-main leading-[1.15] tracking-tight">
+        <h1 className="text-[30px] font-bold text-text-main leading-[1.15] tracking-tight">
           전국 길고양이 <span className="text-primary">{data.catCount.toLocaleString()}마리</span>,<br />
           <span className="text-primary">한 화면에서 함께 돌봐요.</span>
         </h1>

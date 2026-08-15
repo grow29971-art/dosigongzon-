@@ -138,7 +138,7 @@ export default async function AboutPage() {
             전국 · 비영리 시민 참여 플랫폼
           </span>
         </div>
-        <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight">
+        <h1 className="text-[24px] font-bold text-text-main leading-tight tracking-tight">
           전국 길고양이 <span style={{ color: "var(--color-primary)" }}>{stats.cats.toLocaleString()}마리</span>의<br />
           돌봄 기록을 한 화면에.
         </h1>

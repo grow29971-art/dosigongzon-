@@ -97,7 +97,7 @@ export default function AdminZonesPage() {
         </Link>
         <div className="flex items-center gap-2 mb-1">
           <Shield size={20} className="text-primary" />
-          <h1 className="text-[20px] font-extrabold text-text-main">QR 지킴판</h1>
+          <h1 className="text-[20px] font-bold text-text-main">QR 지킴판</h1>
         </div>
         <p className="text-[13px] text-text-sub leading-relaxed mb-4">
           구역을 만들면 QR이 생성돼요. 스캔하면 익명 목격제보 랜딩으로 연결됩니다.
@@ -112,7 +112,7 @@ export default function AdminZonesPage() {
 
         {/* 구역 생성 */}
         <div className="rounded-2xl bg-white p-4 mb-4" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
-          <p className="text-[13px] font-extrabold text-text-main mb-2">새 구역 만들기</p>
+          <p className="text-[13px] font-bold text-text-main mb-2">새 구역 만들기</p>
           <input
             value={newLabel} onChange={(e) => setNewLabel(e.target.value)}
             placeholder="라벨 — 동 단위까지만 (예: 역삼동 돌봄구역 A)" maxLength={40}
@@ -127,7 +127,7 @@ export default function AdminZonesPage() {
           />
           <button
             onClick={handleCreate} disabled={busy}
-            className="w-full rounded-xl py-2.5 text-[13px] font-extrabold text-white active:scale-95 disabled:opacity-60 flex items-center justify-center gap-1"
+            className="w-full rounded-xl py-2.5 text-[13px] font-bold text-white active:scale-95 disabled:opacity-60 flex items-center justify-center gap-1"
             style={{ backgroundColor: "var(--color-primary)" }}
           >
             <Plus size={14} /> 구역 생성
@@ -139,7 +139,7 @@ export default function AdminZonesPage() {
           <div key={zone.id} className="rounded-2xl bg-white p-4 mb-3" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)", opacity: zone.active ? 1 : 0.55 }}>
             <div className="flex items-center justify-between">
               <div className="min-w-0">
-                <p className="text-[15px] font-extrabold text-text-main truncate">{zone.label}</p>
+                <p className="text-[15px] font-bold text-text-main truncate">{zone.label}</p>
                 <p className="text-[11px] text-text-light">{zone.active ? "운영 중" : "중지됨"} · 제보 {reports.filter((r) => r.zone_id === zone.id).length}건</p>
               </div>
               <button
@@ -171,7 +171,7 @@ export default function AdminZonesPage() {
         {/* 제보 목록 */}
         <div className="flex items-center gap-1.5 mt-6 mb-2">
           <Inbox size={16} className="text-primary" />
-          <h2 className="text-[15px] font-extrabold text-text-main">접수된 제보</h2>
+          <h2 className="text-[15px] font-bold text-text-main">접수된 제보</h2>
         </div>
         <p className="text-[11px] text-text-light mb-3 leading-relaxed">
           도시공존은 내용을 판정하지 않아요 — 확인 후 경찰·동물보호센터 이관 여부만 결정합니다. 제보는 90일 후 자동 파기.
@@ -180,7 +180,7 @@ export default function AdminZonesPage() {
         {reports.map((r) => (
           <div key={r.id} className="rounded-2xl bg-white p-4 mb-2.5" style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[13px] font-extrabold text-text-main">
+              <span className="text-[13px] font-bold text-text-main">
                 {INCIDENT_LABELS[r.incident_type] ?? r.incident_type}
               </span>
               <span

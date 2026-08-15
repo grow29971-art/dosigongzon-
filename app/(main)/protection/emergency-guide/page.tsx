@@ -166,7 +166,7 @@ export default function EmergencyGuidePage() {
         >
           <ArrowLeft size={22} className="text-text-main" />
         </Link>
-        <h1 className="text-[24px] font-extrabold text-text-main tracking-tight leading-snug">
+        <h1 className="text-[24px] font-bold text-text-main tracking-tight leading-snug">
           길고양이 응급 구조·응급처치 완벽 가이드
         </h1>
       </div>

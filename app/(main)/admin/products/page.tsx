@@ -182,10 +182,10 @@ export default function AdminProductsPage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </button>
-        <h1 className="text-[17px] font-extrabold text-text-main">상품 관리</h1>
+        <h1 className="text-[17px] font-bold text-text-main">상품 관리</h1>
         <button
           onClick={handleCreate}
-          className="ml-auto flex items-center gap-1 px-3 py-2 rounded-2xl bg-primary text-white text-[13px] font-extrabold active:scale-95 transition-transform"
+          className="ml-auto flex items-center gap-1 px-3 py-2 rounded-2xl bg-primary text-white text-[13px] font-bold active:scale-95 transition-transform"
         >
           <Plus size={14} strokeWidth={3} /> 상품 등록
         </button>
@@ -198,7 +198,7 @@ export default function AdminProductsPage() {
           style={{ background: "#fff", borderRadius: "var(--radius-card)", boxShadow: "0 6px 20px rgba(0,0,0,0.08)", border: "1.5px solid rgba(173, 94, 59,0.3)" }}
         >
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[15px] font-extrabold text-text-main">
+            <span className="text-[15px] font-bold text-text-main">
               {editingId === "new" ? "새 상품 등록" : "상품 수정"}
             </span>
             <button onClick={() => setEditingId(null)} aria-label="닫기">
@@ -443,7 +443,7 @@ export default function AdminProductsPage() {
             <button
               onClick={handleSave}
               disabled={saving || uploading}
-              className="w-full py-3 rounded-2xl bg-primary text-white text-[15px] font-extrabold disabled:opacity-50 flex items-center justify-center gap-1.5"
+              className="w-full py-3 rounded-2xl bg-primary text-white text-[15px] font-bold disabled:opacity-50 flex items-center justify-center gap-1.5"
             >
               {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
               {editingId === "new" ? "등록하기" : "수정 저장"}
@@ -483,7 +483,7 @@ export default function AdminProductsPage() {
               <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   onClick={() => handleToggleActive(p)}
-                  className="px-2 py-1 chip-square text-[11px] font-extrabold"
+                  className="px-2 py-1 chip-square text-[11px] font-bold"
                   style={{
                     background: p.is_active ? "rgba(107,142,111,0.12)" : "rgba(216,85,85,0.1)",
                     color: p.is_active ? "#6B8E6F" : "#D85555",

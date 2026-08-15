@@ -43,7 +43,7 @@ export default function TipsAIButler() {
             <Bot size={20} color="#fff" strokeWidth={2.3} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[15px] font-extrabold text-text-main tracking-tight">
+            <p className="text-[15px] font-bold text-text-main tracking-tight">
               AI 집사 <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "var(--color-primary)", opacity: 0.5 }}>BETA</span>
             </p>
             <p className="text-[13px] text-text-sub mt-0.5">로그인하면 길고양이 돌봄, 뭐든 물어볼 수 있어요</p>
@@ -55,7 +55,7 @@ export default function TipsAIButler() {
 
           <div className="flex items-center gap-1.5 mt-4 mb-2 px-1">
             <Sparkles size={13} className="text-primary" />
-            <h2 className="text-[13px] font-extrabold text-text-main tracking-tight">AI 집사에게 자주 묻는 질문</h2>
+            <h2 className="text-[13px] font-bold text-text-main tracking-tight">AI 집사에게 자주 묻는 질문</h2>
           </div>
           <div className="grid grid-cols-2 gap-2">
             {QUICK_QUESTIONS.map((q) => (

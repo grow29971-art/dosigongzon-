@@ -361,7 +361,7 @@ export default function PostDetailPage({
 
       {/* ── 게시글 본문 ── */}
       <div className="px-5">
-        <h1 className="text-xl font-extrabold text-text-main leading-snug">
+        <h1 className="text-xl font-bold text-text-main leading-snug">
           {post.title}
         </h1>
 
@@ -381,7 +381,7 @@ export default function PostDetailPage({
               </p>
               {post.authorLevel && (
                 <span
-                  className="text-[9px] font-extrabold px-1.5 py-[1px] rounded-md tabular-nums"
+                  className="text-[9px] font-bold px-1.5 py-[1px] rounded-md tabular-nums"
                   style={{
                     backgroundColor: getLevelColor(post.authorLevel),
                     color: "#FFFFFF",
@@ -470,7 +470,7 @@ export default function PostDetailPage({
             <button
               type="button"
               onClick={handleShareKakao}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] font-extrabold active:scale-95 transition-transform"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] font-bold active:scale-95 transition-transform"
               style={{
                 backgroundColor: "#FEE500",
                 color: "#3C1E1E",
@@ -714,7 +714,7 @@ function CommentItem({
             <Image src={c.author_avatar_url} alt="" width={24} height={24} className="rounded-full object-cover" style={{ width: 24, height: 24 }} />
           ) : (
             <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center">
-              <span className="text-[11px] font-extrabold text-primary">
+              <span className="text-[11px] font-bold text-primary">
                 {c.author_name?.charAt(0) ?? "?"}
               </span>
             </div>
@@ -732,7 +732,7 @@ function CommentItem({
           )}
           {c.author_level && (
             <span
-              className="text-[9px] font-extrabold px-1.5 py-[1px] rounded-md tabular-nums"
+              className="text-[9px] font-bold px-1.5 py-[1px] rounded-md tabular-nums"
               style={{
                 backgroundColor: getLevelColor(c.author_level),
                 color: "#FFFFFF",

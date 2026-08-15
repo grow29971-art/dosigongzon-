@@ -108,7 +108,7 @@ export default function ConsentManager() {
           >
             <div className="mb-3">
               <p
-                className="mb-1 text-[13px] font-extrabold"
+                className="mb-1 text-[13px] font-bold"
                 style={{ color: "#3D2F25" }}
               >
                 🍪 쿠키 사용에 대해 알려드려요
@@ -132,7 +132,7 @@ export default function ConsentManager() {
               <button
                 type="button"
                 onClick={handleReject}
-                className="flex-1 rounded-xl px-4 py-2.5 text-[13px] font-extrabold active:scale-[0.98] transition-transform"
+                className="flex-1 rounded-xl px-4 py-2.5 text-[13px] font-bold active:scale-[0.98] transition-transform"
                 style={{
                   background: "rgba(60,46,35,0.06)",
                   color: "rgba(60,46,35,0.7)",
@@ -144,7 +144,7 @@ export default function ConsentManager() {
               <button
                 type="button"
                 onClick={handleAccept}
-                className="flex-1 rounded-xl px-4 py-2.5 text-[13px] font-extrabold text-white active:scale-[0.98] transition-transform"
+                className="flex-1 rounded-xl px-4 py-2.5 text-[13px] font-bold text-white active:scale-[0.98] transition-transform"
                 style={{
                   background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                   boxShadow: "0 4px 12px rgba(173, 94, 59,0.28)",

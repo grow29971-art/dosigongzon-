@@ -70,7 +70,7 @@ export default function LocationLogsPage() {
         </Link>
         <div className="flex items-baseline gap-2 mb-1">
           <MapPin size={20} />
-          <h1 className="text-[24px] font-extrabold tracking-tight">
+          <h1 className="text-[24px] font-bold tracking-tight">
             위치 변경 이력
           </h1>
         </div>
@@ -131,7 +131,7 @@ export default function LocationLogsPage() {
                   <div className="flex items-center justify-between mb-2">
                     <Link
                       href={`/cats/${r.cat_id}`}
-                      className="text-[15px] font-extrabold text-text-main truncate active:opacity-70"
+                      className="text-[15px] font-bold text-text-main truncate active:opacity-70"
                     >
                       🐱 {r.cat_name ?? "(삭제된 고양이)"}
                     </Link>
@@ -164,7 +164,7 @@ export default function LocationLogsPage() {
                       {r.new_region ?? "?"}
                     </span>
                     <span
-                      className="ml-auto text-[11px] font-extrabold"
+                      className="ml-auto text-[11px] font-bold"
                       style={{ color: far ? "#D85555" : "#666" }}
                     >
                       {formatDistance(r.distance_m)}
@@ -213,7 +213,7 @@ function SummaryCard({
     >
       <p className="text-[11px] font-bold text-text-sub">{label}</p>
       <p
-        className="text-[20px] font-extrabold tracking-tight mt-0.5"
+        className="text-[20px] font-bold tracking-tight mt-0.5"
         style={{ color }}
       >
         {value.toLocaleString()}

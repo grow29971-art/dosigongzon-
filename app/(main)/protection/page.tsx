@@ -318,7 +318,7 @@ export default function ProtectionPage() {
       {/* ── 헤더 ── */}
       <div className="mb-4 px-1">
         <div className="flex items-baseline gap-2 mb-1">
-          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
+          <h1 className="text-[24px] font-bold text-text-main tracking-tight">
             보호지침
           </h1>
         </div>

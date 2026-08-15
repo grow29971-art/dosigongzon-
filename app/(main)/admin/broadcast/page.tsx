@@ -296,7 +296,7 @@ export default function AdminBroadcastPage() {
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
         <div>
-          <h1 className="text-[20px] font-extrabold text-text-main tracking-tight flex items-center gap-2">
+          <h1 className="text-[20px] font-bold text-text-main tracking-tight flex items-center gap-2">
             <Megaphone size={18} className="text-primary" />
             전체 쪽지 발송
           </h1>
@@ -308,7 +308,7 @@ export default function AdminBroadcastPage() {
 
       {/* 코호트 선택 */}
       <section className="mb-5">
-        <p className="text-[13px] font-extrabold mb-2.5 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
+        <p className="text-[13px] font-bold mb-2.5 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
           1. 대상 코호트
         </p>
         <div className="grid grid-cols-2 gap-2">
@@ -331,7 +331,7 @@ export default function AdminBroadcastPage() {
               >
                 <div className="flex items-center gap-2 mb-1">
                   <Icon size={14} color={c.color} />
-                  <span className="text-[13px] font-extrabold" style={{ color: c.color }}>
+                  <span className="text-[13px] font-bold" style={{ color: c.color }}>
                     {c.label}
                   </span>
                 </div>
@@ -346,7 +346,7 @@ export default function AdminBroadcastPage() {
 
       {/* 템플릿 */}
       <section className="mb-5">
-        <p className="text-[13px] font-extrabold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
+        <p className="text-[13px] font-bold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
           2. 템플릿 (선택)
         </p>
         <div className="flex flex-wrap gap-1.5">
@@ -370,7 +370,7 @@ export default function AdminBroadcastPage() {
 
       {/* 메시지 입력 */}
       <section className="mb-5">
-        <p className="text-[13px] font-extrabold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
+        <p className="text-[13px] font-bold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
           3. 메시지 ({message.length}/1000)
         </p>
         <textarea
@@ -411,7 +411,7 @@ export default function AdminBroadcastPage() {
         type="button"
         onClick={handleTestSend}
         disabled={sending || !message.trim()}
-        className="w-full mb-2.5 flex items-center justify-center gap-2 py-3 rounded-2xl text-[13px] font-extrabold active:scale-[0.98] disabled:opacity-60"
+        className="w-full mb-2.5 flex items-center justify-center gap-2 py-3 rounded-2xl text-[13px] font-bold active:scale-[0.98] disabled:opacity-60"
         style={{
           background: "#FFFFFF",
           color: "var(--color-primary-dark)",
@@ -427,7 +427,7 @@ export default function AdminBroadcastPage() {
         type="button"
         onClick={handleSend}
         disabled={sending || !message.trim()}
-        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[15px] font-extrabold active:scale-[0.98] disabled:opacity-60"
+        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[15px] font-bold active:scale-[0.98] disabled:opacity-60"
         style={{
           background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
           boxShadow: "0 6px 18px rgba(173, 94, 59,0.28)",
@@ -458,7 +458,7 @@ export default function AdminBroadcastPage() {
             color: result.ok ? "#2E7D32" : "#7A5F16",
           }}
         >
-          <p className="font-extrabold mb-1">
+          <p className="font-bold mb-1">
             {result.ok ? "✓ 발송 완료" : "⚠ 일부 실패"}
           </p>
           <p>

@@ -100,13 +100,13 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
           >
             <X size={15} style={{ color: "#7A4F30" }} />
           </button>
-          <p className="text-[11px] font-extrabold tracking-[0.2em] mb-2" style={{ color: "var(--color-primary-dark)" }}>오늘 이거 해보세요</p>
+          <p className="text-[11px] font-bold tracking-[0.2em] mb-2" style={{ color: "var(--color-primary-dark)" }}>오늘 이거 해보세요</p>
           <div className="flex items-center gap-3">
             <div className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 text-3xl" style={{ background: "#FFFFFF", boxShadow: "0 4px 14px rgba(173, 94, 59,0.25)" }}>
               {spot.emoji}
             </div>
             <div className="min-w-0">
-              <p className="text-[17px] font-extrabold text-text-main leading-tight tracking-tight">{spot.title}</p>
+              <p className="text-[17px] font-bold text-text-main leading-tight tracking-tight">{spot.title}</p>
               <p className="text-[13px] text-text-sub mt-1 leading-snug">{spot.desc}</p>
             </div>
           </div>
@@ -117,13 +117,13 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
           <Link
             href={spot.href}
             onClick={close}
-            className="flex items-center justify-center gap-1.5 py-3.5 rounded-2xl text-white text-[15px] font-extrabold active:scale-[0.98] transition-transform"
+            className="flex items-center justify-center gap-1.5 py-3.5 rounded-2xl text-white text-[15px] font-bold active:scale-[0.98] transition-transform"
             style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)", boxShadow: "var(--shadow-primary)" }}
           >
             {spot.cta} <ChevronRight size={15} />
           </Link>
 
-          <p className="text-[11px] font-extrabold tracking-[0.12em] mt-5 mb-2.5" style={{ color: "var(--color-primary-dark)" }}>이런 기능도 있어요</p>
+          <p className="text-[11px] font-bold tracking-[0.12em] mt-5 mb-2.5" style={{ color: "var(--color-primary-dark)" }}>이런 기능도 있어요</p>
           <div className="grid grid-cols-3 gap-2">
             {CHIPS.map((c) => (
               <Link

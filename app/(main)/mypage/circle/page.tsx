@@ -378,7 +378,7 @@ export default function CirclePage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
-        <h1 className="text-[17px] font-extrabold text-text-main">내 서클</h1>
+        <h1 className="text-[17px] font-bold text-text-main">내 서클</h1>
       </div>
 
       {/* 설명 카드 */}
@@ -415,7 +415,7 @@ export default function CirclePage() {
                 <Clock3 size={20} aria-hidden="true" />
               </div>
               <div>
-                <h2 id="care-shift-heading" className="text-[15px] font-extrabold text-text-main">
+                <h2 id="care-shift-heading" className="text-[15px] font-bold text-text-main">
                   돌봄 교대
                 </h2>
                 <p className="mt-1 text-[13px] leading-relaxed text-text-sub">
@@ -472,7 +472,7 @@ export default function CirclePage() {
                   type="button"
                   disabled={!shiftAssigneeId || !shiftStartsAt || shiftSubmitting}
                   onClick={handleCreateCareShift}
-                  className="min-h-11 w-full rounded-xl bg-primary px-4 py-2.5 text-[13px] font-extrabold text-white disabled:opacity-40"
+                  className="min-h-11 w-full rounded-xl bg-primary px-4 py-2.5 text-[13px] font-bold text-white disabled:opacity-40"
                 >
                   {shiftSubmitting ? "요청 중..." : "돌봄 교대 요청"}
                 </button>
@@ -483,7 +483,7 @@ export default function CirclePage() {
               </p>
             )}
             <div className="mt-4 border-t border-black/5 pt-4">
-              <h3 className="text-[13px] font-extrabold text-text-main">내 돌봄 교대</h3>
+              <h3 className="text-[13px] font-bold text-text-main">내 돌봄 교대</h3>
               {careShiftsLoading ? (
                 <div className="flex justify-center py-5" aria-label="돌봄 교대 불러오는 중">
                   <Loader2 size={18} className="animate-spin text-primary" />
@@ -494,7 +494,7 @@ export default function CirclePage() {
                   <button
                     type="button"
                     onClick={() => void loadCareShifts()}
-                    className="mt-2 min-h-11 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-[13px] font-extrabold text-text-main"
+                    className="mt-2 min-h-11 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-[13px] font-bold text-text-main"
                   >
                     다시 시도
                   </button>
@@ -541,7 +541,7 @@ export default function CirclePage() {
                                 shift.status === "requested" ? "accepted" : "completed",
                               )
                             }
-                            className="mt-2 min-h-11 w-full rounded-xl bg-primary px-3 py-2 text-[13px] font-extrabold text-white disabled:opacity-40"
+                            className="mt-2 min-h-11 w-full rounded-xl bg-primary px-3 py-2 text-[13px] font-bold text-white disabled:opacity-40"
                           >
                             {careShiftTransitioning === shift.id
                               ? "처리 중..."
@@ -573,7 +573,7 @@ export default function CirclePage() {
             <section className="px-5 mt-6">
               <div className="flex items-center gap-2 mb-3">
                 <Mail size={14} style={{ color: "var(--color-primary)" }} />
-                <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">받은 초대</h2>
+                <h2 className="text-[17px] font-bold text-text-main tracking-tight">받은 초대</h2>
                 <span className="text-[11px] font-bold px-2 py-0.5 chip-square text-white" style={{ background: "var(--color-primary)" }}>
                   {invitations.length}
                 </span>
@@ -587,7 +587,7 @@ export default function CirclePage() {
                   >
                     <Avatar url={inv.owner_avatar_url} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-extrabold text-text-main truncate">
+                      <p className="text-[13px] font-bold text-text-main truncate">
                         {inv.owner_nickname ?? "익명 길집사"}
                       </p>
                       <p className="text-[11px] text-text-light">서클 초대를 보냈어요</p>
@@ -596,7 +596,7 @@ export default function CirclePage() {
                       <button
                         onClick={() => handleRespond(inv, "accepted")}
                         disabled={busy === inv.id}
-                        className="px-3 py-2 rounded-xl text-[13px] font-extrabold text-white active:scale-95 disabled:opacity-50"
+                        className="px-3 py-2 rounded-xl text-[13px] font-bold text-white active:scale-95 disabled:opacity-50"
                         style={{ background: "#6B8E6F" }}
                       >
                         <Check size={13} />
@@ -621,7 +621,7 @@ export default function CirclePage() {
             <section className="px-5 mt-6">
               <div className="flex items-center gap-2 mb-3">
                 <MessageCircle size={14} style={{ color: "var(--color-primary)" }} />
-                <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">서클 채팅</h2>
+                <h2 className="text-[17px] font-bold text-text-main tracking-tight">서클 채팅</h2>
               </div>
               <Link
                 href={`/circle/${myCircleId}/chat`}
@@ -640,7 +640,7 @@ export default function CirclePage() {
                     <MessageCircle size={20} color="#fff" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[15px] font-extrabold text-text-main">내 서클 채팅방 열기</p>
+                    <p className="text-[15px] font-bold text-text-main">내 서클 채팅방 열기</p>
                     <p className="text-[11px] text-text-sub mt-0.5">
                       멤버끼리 한 채팅방에서 대화 · 실시간 동기화
                     </p>
@@ -667,14 +667,14 @@ export default function CirclePage() {
                           >
                             <Avatar url={c.owner_avatar_url} size={36} />
                             <div className="flex-1 min-w-0">
-                              <p className="text-[13px] font-extrabold text-text-main truncate">
+                              <p className="text-[13px] font-bold text-text-main truncate">
                                 {c.owner_nickname ?? "익명"}님의 서클
                               </p>
                               <p className="text-[11px] text-text-light">멤버 {c.member_count + 1}명</p>
                             </div>
                             {unread > 0 && (
                               <span
-                                className="shrink-0 px-2 py-0.5 chip-square text-[11px] font-extrabold leading-none"
+                                className="shrink-0 px-2 py-0.5 chip-square text-[11px] font-bold leading-none"
                                 style={{ background: "#D85555", color: "#FFF" }}
                               >
                                 {unread > 99 ? "99+" : unread}
@@ -694,8 +694,8 @@ export default function CirclePage() {
           <section className="px-5 mt-6">
             <div className="flex items-center gap-2 mb-3">
               <Link2 size={14} style={{ color: "#FEE500" }} />
-              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">초대 링크</h2>
-              <span className="text-[9px] font-extrabold tracking-[0.15em] px-1.5 py-0.5 chip-square" style={{ background: "#FEE500", color: "#191919" }}>
+              <h2 className="text-[17px] font-bold text-text-main tracking-tight">초대 링크</h2>
+              <span className="text-[9px] font-bold tracking-[0.15em] px-1.5 py-0.5 chip-square" style={{ background: "#FEE500", color: "#191919" }}>
                 빠른 초대
               </span>
             </div>
@@ -709,7 +709,7 @@ export default function CirclePage() {
               <div className="flex gap-2">
                 <button
                   onClick={handleKakaoShare}
-                  className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-extrabold active:scale-95"
+                  className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold active:scale-95"
                   style={{ background: "#FEE500", color: "#191919" }}
                 >
                   <svg width="14" height="14" viewBox="0 0 18 18" aria-hidden="true">
@@ -733,7 +733,7 @@ export default function CirclePage() {
           <section className="px-5 mt-6">
             <div className="flex items-center gap-2 mb-3">
               <UserPlus size={14} style={{ color: "#4A7BA8" }} />
-              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">닉네임 검색 초대</h2>
+              <h2 className="text-[17px] font-bold text-text-main tracking-tight">닉네임 검색 초대</h2>
             </div>
             <div className="bg-white rounded-2xl p-3" style={{ boxShadow: "var(--shadow-card)" }}>
               <div className="flex items-center gap-2">
@@ -756,7 +756,7 @@ export default function CirclePage() {
                 <button
                   onClick={handleSearch}
                   disabled={searching || searchQuery.trim().length < 2}
-                  className="px-4 py-2 rounded-xl bg-primary text-white text-[13px] font-extrabold active:scale-95 disabled:opacity-40"
+                  className="px-4 py-2 rounded-xl bg-primary text-white text-[13px] font-bold active:scale-95 disabled:opacity-40"
                 >
                   {searching ? <Loader2 size={13} className="animate-spin" /> : "검색"}
                 </button>
@@ -776,7 +776,7 @@ export default function CirclePage() {
                       <button
                         onClick={() => handleInvite(r)}
                         disabled={busy === r.id}
-                        className="px-3 py-1.5 rounded-lg text-[13px] font-extrabold text-white active:scale-95 disabled:opacity-50"
+                        className="px-3 py-1.5 rounded-lg text-[13px] font-bold text-white active:scale-95 disabled:opacity-50"
                         style={{ background: "#4A7BA8" }}
                       >
                         {busy === r.id ? <Loader2 size={11} className="animate-spin" /> : "초대"}
@@ -795,7 +795,7 @@ export default function CirclePage() {
           <section className="px-5 mt-6">
             <div className="flex items-center gap-2 mb-3">
               <Users size={14} style={{ color: "#6B8E6F" }} />
-              <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">내 서클 멤버</h2>
+              <h2 className="text-[17px] font-bold text-text-main tracking-tight">내 서클 멤버</h2>
               <span className="text-[11px] font-bold px-2 py-0.5 chip-square text-white" style={{ background: "#6B8E6F" }}>
                 {acceptedMembers.length}
               </span>
@@ -833,7 +833,7 @@ function Avatar({ url, size = 40 }: { url: string | null; size?: number }) {
   if (!safe) {
     return (
       <div
-        className="shrink-0 rounded-full flex items-center justify-center text-white text-[13px] font-extrabold"
+        className="shrink-0 rounded-full flex items-center justify-center text-white text-[13px] font-bold"
         style={{ width: size, height: size, background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))" }}
       >
         🐾
@@ -871,7 +871,7 @@ function MemberRow({
     >
       <Avatar url={member.member_avatar_url ?? null} />
       <div className="flex-1 min-w-0">
-        <p className="text-[13px] font-extrabold text-text-main truncate">
+        <p className="text-[13px] font-bold text-text-main truncate">
           {member.member_nickname ?? "익명 길집사"}
         </p>
         <p className="text-[11px]" style={{ color: pending ? "#C9A961" : "#6B8E6F" }}>

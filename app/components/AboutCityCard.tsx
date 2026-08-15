@@ -16,7 +16,7 @@ export default function AboutCityCard({ className = "mb-4" }: { className?: stri
       className={`px-4 py-4 rounded-3xl ${className}`}
       style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "var(--shadow-card-sm)" }}
     >
-      <h3 className="text-[15px] font-extrabold text-text-main tracking-tight mb-1">도시공존은 어떤 곳이에요?</h3>
+      <h3 className="text-[15px] font-bold text-text-main tracking-tight mb-1">도시공존은 어떤 곳이에요?</h3>
       <p className="text-[13px] leading-[1.7] text-text-sub mb-3">
         이름 그대로, <b className="text-text-main">길고양이와 도시가 함께 사는 방법</b>을 만들어요.
         돌봄을 한 방향이 아니라 소프트웨어부터 하드웨어까지 여러 각도에서 풀어가는 1인 메이커예요.
@@ -26,10 +26,10 @@ export default function AboutCityCard({ className = "mb-4" }: { className?: stri
           <div key={p.name} className="flex items-center gap-2.5 px-3 py-2 rounded-xl" style={{ background: "var(--color-surface-alt)" }}>
             <span className="text-[17px] shrink-0">{p.emoji}</span>
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-extrabold text-text-main leading-tight">{p.name}</p>
+              <p className="text-[13px] font-bold text-text-main leading-tight">{p.name}</p>
               <p className="text-[11px] text-text-light">{p.desc}</p>
             </div>
-            <span className="text-[11px] font-extrabold px-2 py-0.5 rounded-full shrink-0" style={{ background: `${p.color}18`, color: p.color }}>
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0" style={{ background: `${p.color}18`, color: p.color }}>
               {p.status}
             </span>
           </div>

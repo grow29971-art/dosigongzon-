@@ -38,7 +38,7 @@ export default function FundSettlementCard() {
       style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "var(--shadow-card-sm)" }}
     >
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-[15px] font-extrabold text-text-main tracking-tight">💛 후원금 투명 정산</h3>
+        <h3 className="text-[15px] font-bold text-text-main tracking-tight">💛 후원금 투명 정산</h3>
         <span className="text-[11px] font-bold text-text-light">실시간 공개</span>
       </div>
 
@@ -51,7 +51,7 @@ export default function FundSettlementCard() {
         ].map((s) => (
           <div key={s.label} className="text-center py-2.5 rounded-2xl" style={{ background: "var(--color-surface-alt)" }}>
             <p className="text-[11px] font-bold text-text-light mb-0.5">{s.label}</p>
-            <p className="text-[15px] font-black tabular-nums" style={{ color: s.color }}>
+            <p className="text-[15px] font-extrabold tabular-nums" style={{ color: s.color }}>
               {s.value.toLocaleString()}
               <span className="text-[9px] font-bold text-text-light">원</span>
             </p>
@@ -67,7 +67,7 @@ export default function FundSettlementCard() {
       >
         <span className="text-[13px]">✂️</span>
         <span className="text-[11px] font-bold text-text-sub">후원금으로 중성화한 아이</span>
-        <span className="text-[15px] font-black tabular-nums" style={{ color: "#4F6B53" }}>
+        <span className="text-[15px] font-extrabold tabular-nums" style={{ color: "#4F6B53" }}>
           {neuteredCount.toLocaleString()}
         </span>
         <span className="text-[11px] font-bold text-text-sub">마리</span>
@@ -87,7 +87,7 @@ export default function FundSettlementCard() {
                   <div key={i} className="flex items-center gap-2 text-[13px]">
                     <span className="text-text-light tabular-nums shrink-0">{d.spent_at.slice(5).replace("-", ".")}</span>
                     <span className="text-text-main truncate flex-1">{d.memo}</span>
-                    <span className="font-extrabold tabular-nums shrink-0" style={{ color: "var(--color-like)" }}>-{won(d.amount)}</span>
+                    <span className="font-bold tabular-nums shrink-0" style={{ color: "var(--color-like)" }}>-{won(d.amount)}</span>
                   </div>
                 ))}
               </div>

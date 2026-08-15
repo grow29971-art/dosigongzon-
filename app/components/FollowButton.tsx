@@ -84,7 +84,7 @@ export default function FollowButton({ userId, size = "sm", variant = "default",
       type="button"
       onClick={toggle}
       disabled={busy}
-      className={`inline-flex items-center gap-1 rounded-xl font-extrabold active:scale-95 transition-transform disabled:opacity-60 ${sm ? "px-2.5 py-1 text-[11px]" : "px-3 py-1.5 text-[13px]"}`}
+      className={`inline-flex items-center gap-1 rounded-xl font-bold active:scale-95 transition-transform disabled:opacity-60 ${sm ? "px-2.5 py-1 text-[11px]" : "px-3 py-1.5 text-[13px]"}`}
       style={{
         background: bg,
         color: fg,

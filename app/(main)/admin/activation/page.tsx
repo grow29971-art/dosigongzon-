@@ -212,7 +212,7 @@ export default function AdminActivationPage() {
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
         <div>
-          <h1 className="text-[20px] font-extrabold text-text-main tracking-tight flex items-center gap-2">
+          <h1 className="text-[20px] font-bold text-text-main tracking-tight flex items-center gap-2">
             <Users size={18} className="text-primary" />
             가입자 활성도 코호트
           </h1>
@@ -270,13 +270,13 @@ export default function AdminActivationPage() {
                       <Icon size={14} color={meta.color} />
                     </span>
                     <span
-                      className="text-[13px] font-extrabold"
+                      className="text-[13px] font-bold"
                       style={{ color: meta.color }}
                     >
                       {meta.label}
                     </span>
                   </div>
-                  <p className="text-[24px] font-extrabold leading-none" style={{ color: "#3D2F25" }}>
+                  <p className="text-[24px] font-bold leading-none" style={{ color: "#3D2F25" }}>
                     {count}
                   </p>
                   <p className="text-[11px] mt-1.5 leading-snug" style={{ color: "rgba(60,46,35,0.55)" }}>
@@ -294,7 +294,7 @@ export default function AdminActivationPage() {
               style={{ boxShadow: "var(--shadow-card)" }}
             >
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-[15px] font-extrabold" style={{ color: "#3D2F25" }}>
+                <h2 className="text-[15px] font-bold" style={{ color: "#3D2F25" }}>
                   {COHORT_META[selected].label} · {visibleUsers.length}명
                 </h2>
                 <button
@@ -328,7 +328,7 @@ export default function AdminActivationPage() {
                       </div>
                       <Link
                         href={`/messages?to=${u.id}`}
-                        className="shrink-0 flex items-center gap-1 px-3 py-1.5 chip-square text-[11px] font-extrabold active:scale-[0.97]"
+                        className="shrink-0 flex items-center gap-1 px-3 py-1.5 chip-square text-[11px] font-bold active:scale-[0.97]"
                         style={{
                           background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                           color: "#fff",

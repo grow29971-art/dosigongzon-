@@ -126,10 +126,10 @@ export default function AchievementToast({
           {current.emoji}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-extrabold tracking-[0.12em]" style={{ color: current.color }}>
+          <p className="text-[11px] font-bold tracking-[0.12em]" style={{ color: current.color }}>
             {current.kind === "level_up" ? "LEVEL UP" : "UNLOCKED"}
           </p>
-          <p className="text-[15px] font-extrabold text-text-main leading-tight tracking-tight mt-0.5">
+          <p className="text-[15px] font-bold text-text-main leading-tight tracking-tight mt-0.5">
             {current.title}
           </p>
           <p className="text-[11px] font-semibold text-text-sub mt-0.5 leading-tight truncate">
@@ -145,7 +145,7 @@ export default function AchievementToast({
           aria-label="자랑하기"
         >
           {copied ? <Check size={13} /> : <Share2 size={13} />}
-          <span className="text-[11px] font-extrabold">{copied ? "복사됨" : "자랑"}</span>
+          <span className="text-[11px] font-bold">{copied ? "복사됨" : "자랑"}</span>
         </button>
         <button
           type="button"

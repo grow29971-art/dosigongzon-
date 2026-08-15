@@ -141,7 +141,7 @@ export default function DistrictContactsPage() {
           <ArrowLeft size={18} className="text-text-sub" />
         </Link>
         <div>
-          <h1 className="text-[20px] font-extrabold text-text-main">구청 동물보호 연락처</h1>
+          <h1 className="text-[20px] font-bold text-text-main">구청 동물보호 연락처</h1>
           <p className="text-[13px] text-text-sub">TNR · 구조 · 학대신고 담당부서</p>
         </div>
       </div>

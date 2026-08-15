@@ -16,7 +16,7 @@ export default async function WeeklyHotPosts() {
     <div className="mb-5">
       <div className="flex items-center gap-2 mb-3 px-1">
         <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-like)" }} />
-        <h2 className="text-[15px] font-extrabold text-text-main tracking-tight flex items-center gap-1">
+        <h2 className="text-[15px] font-bold text-text-main tracking-tight flex items-center gap-1">
           <Flame size={14} style={{ color: "var(--color-like)" }} />
           이번 주 HOT
         </h2>
@@ -48,7 +48,7 @@ export default async function WeeklyHotPosts() {
               >
                 {/* 순위 뱃지 */}
                 <div
-                  className="shrink-0 w-8 h-8 rounded-xl flex items-center justify-center text-[15px] font-extrabold"
+                  className="shrink-0 w-8 h-8 rounded-xl flex items-center justify-center text-[15px] font-bold"
                   style={{
                     background:
                       idx === 0
@@ -69,7 +69,7 @@ export default async function WeeklyHotPosts() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-1">
                     <span
-                      className="px-1.5 py-0.5 rounded text-[9px] font-extrabold shrink-0"
+                      className="px-1.5 py-0.5 rounded text-[9px] font-bold shrink-0"
                       style={{ background: `${cat.color}20`, color: cat.color }}
                     >
                       {cat.emoji} {cat.label}
@@ -80,7 +80,7 @@ export default async function WeeklyHotPosts() {
                       </span>
                     )}
                   </div>
-                  <p className="text-[13px] font-extrabold text-text-main tracking-tight leading-tight line-clamp-1">
+                  <p className="text-[13px] font-bold text-text-main tracking-tight leading-tight line-clamp-1">
                     {post.title}
                   </p>
                   {plain && (

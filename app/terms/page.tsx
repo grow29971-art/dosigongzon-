@@ -18,12 +18,12 @@ export default function TermsPage() {
         >
           <ArrowLeft size={18} className="text-text-sub" />
         </Link>
-        <h1 className="text-[20px] font-extrabold text-text-main">이용약관</h1>
+        <h1 className="text-[20px] font-bold text-text-main">이용약관</h1>
       </div>
 
       <div className="space-y-6 text-[13px] text-text-sub leading-relaxed">
         {/* 제1장 총칙 */}
-        <div className="text-[15px] font-extrabold text-primary">제1장 총칙</div>
+        <div className="text-[15px] font-bold text-primary">제1장 총칙</div>
 
         <section>
           <h2 className="text-[15px] font-bold text-text-main mb-2">제1조 (목적)</h2>
@@ -63,7 +63,7 @@ export default function TermsPage() {
         </section>
 
         {/* 제2장 서비스 이용계약 */}
-        <div className="text-[15px] font-extrabold text-primary pt-2">제2장 서비스 이용계약</div>
+        <div className="text-[15px] font-bold text-primary pt-2">제2장 서비스 이용계약</div>
 
         <section>
           <h2 className="text-[15px] font-bold text-text-main mb-2">제5조 (이용계약의 체결)</h2>
@@ -101,7 +101,7 @@ export default function TermsPage() {
         </section>
 
         {/* 제3장 서비스 이용 */}
-        <div className="text-[15px] font-extrabold text-primary pt-2">제3장 서비스 이용</div>
+        <div className="text-[15px] font-bold text-primary pt-2">제3장 서비스 이용</div>
 
         <section>
           <h2 className="text-[15px] font-bold text-text-main mb-2">제7조 (서비스의 제공 및 변경)</h2>
@@ -191,7 +191,7 @@ export default function TermsPage() {
         </section>
 
         {/* 제4장 의무 */}
-        <div className="text-[15px] font-extrabold text-primary pt-2">제4장 의무</div>
+        <div className="text-[15px] font-bold text-primary pt-2">제4장 의무</div>
 
         <section>
           <h2 className="text-[15px] font-bold text-text-main mb-2">제10조 (운영자의 의무)</h2>
@@ -222,7 +222,7 @@ export default function TermsPage() {
         </section>
 
         {/* 제5장 게시물 */}
-        <div className="text-[15px] font-extrabold text-primary pt-2">제5장 게시물</div>
+        <div className="text-[15px] font-bold text-primary pt-2">제5장 게시물</div>
 
         <section>
           <h2 className="text-[15px] font-bold text-text-main mb-2">제12조 (게시물의 저작권 및 이용 허락)</h2>
@@ -277,7 +277,7 @@ export default function TermsPage() {
         </section>
 
         {/* 제6장 손해배상 및 면책 */}
-        <div className="text-[15px] font-extrabold text-primary pt-2">제6장 손해배상 및 면책</div>
+        <div className="text-[15px] font-bold text-primary pt-2">제6장 손해배상 및 면책</div>
 
         <section>
           <h2 className="text-[15px] font-bold text-text-main mb-2">제14조 (손해배상)</h2>

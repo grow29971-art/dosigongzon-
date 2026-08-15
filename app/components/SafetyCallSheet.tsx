@@ -100,7 +100,7 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
       >
         <div className="flex items-start justify-between mb-1">
           <div>
-            <h2 className="text-[20px] font-extrabold text-text-main">곁에 있어요 🤍</h2>
+            <h2 className="text-[20px] font-bold text-text-main">곁에 있어요 🤍</h2>
             <p className="text-[13px] text-text-sub mt-0.5 leading-relaxed">
               돌봄 중 위급하면 아래 버튼으로 전화 앱을 바로 열 수 있어요.
             </p>
@@ -137,7 +137,7 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
           {geo.status === "ok" && (
             <>
               {geo.address && (
-                <p className="text-[17px] font-extrabold text-text-main leading-snug">{geo.address}</p>
+                <p className="text-[17px] font-bold text-text-main leading-snug">{geo.address}</p>
               )}
               <p className="text-[13px] text-text-sub mt-0.5 tabular-nums">
                 위도 {geo.lat.toFixed(5)} · 경도 {geo.lng.toFixed(5)}
@@ -156,7 +156,7 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
               style={{ backgroundColor: "var(--color-primary)", color: "#fff" }}
             >
               <Phone size={20} />
-              <span className="text-[15px] font-extrabold">112 전화 걸기</span>
+              <span className="text-[15px] font-bold">112 전화 걸기</span>
               <span className="text-[11px] opacity-85">경찰 · 위협받을 때</span>
             </button>
             <button
@@ -165,18 +165,18 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
               style={{ backgroundColor: "#4A7BA8", color: "#fff" }}
             >
               <Phone size={20} />
-              <span className="text-[15px] font-extrabold">119 전화 걸기</span>
+              <span className="text-[15px] font-bold">119 전화 걸기</span>
               <span className="text-[11px] opacity-85">구조 · 응급의료</span>
             </button>
           </div>
         ) : (
           <div className="rounded-2xl px-4 py-4 mt-3 text-center" style={{ backgroundColor: "#FFF3EC", border: "1px solid #EAD3C6" }}>
-            <p className="text-[15px] font-extrabold text-text-main">{confirmTarget.number}에 전화를 겁니다</p>
+            <p className="text-[15px] font-bold text-text-main">{confirmTarget.number}에 전화를 겁니다</p>
             <p className="text-[13px] text-text-sub mt-0.5">{confirmTarget.desc}</p>
             <div className="flex gap-2.5 mt-3">
               <a
                 href={`tel:${confirmTarget.number}`}
-                className="flex-1 rounded-xl py-3 text-[15px] font-extrabold text-white active:scale-95 transition-transform"
+                className="flex-1 rounded-xl py-3 text-[15px] font-bold text-white active:scale-95 transition-transform"
                 style={{ backgroundColor: "var(--color-primary)" }}
               >
                 전화 걸기

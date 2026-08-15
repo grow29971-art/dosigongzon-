@@ -70,7 +70,7 @@ function SuccessContent() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] px-6 text-center">
         <Loader2 size={36} className="animate-spin text-primary mb-5" />
-        <h1 className="text-[20px] font-extrabold text-text-main mb-2">결제를 확인하고 있어요</h1>
+        <h1 className="text-[20px] font-bold text-text-main mb-2">결제를 확인하고 있어요</h1>
         <p className="text-[13px] text-text-sub">잠시만 기다려주세요. 화면을 닫지 마세요.</p>
       </div>
     );
@@ -85,7 +85,7 @@ function SuccessContent() {
         >
           <XCircle size={32} style={{ color: "var(--color-error)" }} />
         </div>
-        <h1 className="text-[20px] font-extrabold text-text-main mb-2">결제 승인에 실패했어요</h1>
+        <h1 className="text-[20px] font-bold text-text-main mb-2">결제 승인에 실패했어요</h1>
         <p className="text-[13px] text-text-sub leading-relaxed mb-7 max-w-[300px]">{errorMsg}</p>
         <div className="flex flex-col gap-2 w-full max-w-[280px]">
           <Link
@@ -111,7 +111,7 @@ function SuccessContent() {
       >
         <CheckCircle2 size={32} style={{ color: "var(--color-sage)" }} />
       </div>
-      <h1 className="text-[20px] font-extrabold text-text-main mb-2">결제가 완료됐어요!</h1>
+      <h1 className="text-[20px] font-bold text-text-main mb-2">결제가 완료됐어요!</h1>
       <p className="text-[13px] text-text-sub leading-relaxed mb-1">
         주문번호 <span className="font-bold text-text-main">{orderNumber}</span>
       </p>

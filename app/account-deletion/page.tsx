@@ -38,7 +38,7 @@ export default function AccountDeletionPage() {
             <Cat size={16} style={{ color: "var(--color-primary)" }} />
             <span className="text-[13px] font-bold" style={{ color: "var(--color-primary)" }}>도시공존</span>
           </div>
-          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight leading-tight">
+          <h1 className="text-[24px] font-bold text-text-main tracking-tight leading-tight">
             계정 삭제 안내
           </h1>
           <p className="text-[13px] text-text-sub mt-2 leading-relaxed">
@@ -63,7 +63,7 @@ export default function AccountDeletionPage() {
             >
               <Trash2 size={16} color="#fff" strokeWidth={2.5} />
             </div>
-            <h2 className="text-[17px] font-extrabold text-text-main">
+            <h2 className="text-[17px] font-bold text-text-main">
               방법 1. 앱·웹에서 직접 삭제 (권장)
             </h2>
           </div>
@@ -71,7 +71,7 @@ export default function AccountDeletionPage() {
           <ol className="space-y-3 mt-4">
             <li className="flex gap-3">
               <span
-                className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white"
+                className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white"
                 style={{ background: "var(--color-primary)" }}
               >
                 1
@@ -84,7 +84,7 @@ export default function AccountDeletionPage() {
             </li>
             <li className="flex gap-3">
               <span
-                className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white"
+                className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white"
                 style={{ background: "var(--color-primary)" }}
               >
                 2
@@ -95,7 +95,7 @@ export default function AccountDeletionPage() {
             </li>
             <li className="flex gap-3">
               <span
-                className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white"
+                className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white"
                 style={{ background: "var(--color-primary)" }}
               >
                 3
@@ -114,7 +114,7 @@ export default function AccountDeletionPage() {
               boxShadow: "0 6px 16px rgba(173, 94, 59,0.3)",
             }}
           >
-            <span className="text-[13px] font-extrabold text-white">
+            <span className="text-[13px] font-bold text-white">
               마이페이지로 이동
             </span>
             <ChevronRight size={16} color="#fff" />
@@ -137,7 +137,7 @@ export default function AccountDeletionPage() {
             >
               <Mail size={16} color="#fff" strokeWidth={2.5} />
             </div>
-            <h2 className="text-[17px] font-extrabold text-text-main">
+            <h2 className="text-[17px] font-bold text-text-main">
               방법 2. 이메일로 요청
             </h2>
           </div>
@@ -155,7 +155,7 @@ export default function AccountDeletionPage() {
             }}
           >
             <div>
-              <p className="text-[13px] font-extrabold" style={{ color: "#4A7BA8" }}>
+              <p className="text-[13px] font-bold" style={{ color: "#4A7BA8" }}>
                 grow29971@gmail.com
               </p>
               <p className="text-[11px] text-text-sub mt-0.5">
@@ -176,7 +176,7 @@ export default function AccountDeletionPage() {
         >
           <div className="flex items-center gap-2 mb-3">
             <ShieldAlert size={16} style={{ color: "#B84545" }} />
-            <h2 className="text-[15px] font-extrabold" style={{ color: "#B84545" }}>
+            <h2 className="text-[15px] font-bold" style={{ color: "#B84545" }}>
               삭제되는 데이터
             </h2>
           </div>
@@ -201,7 +201,7 @@ export default function AccountDeletionPage() {
         >
           <div className="flex items-center gap-2 mb-3">
             <Clock size={16} style={{ color: "#4A7BA8" }} />
-            <h2 className="text-[15px] font-extrabold" style={{ color: "#4A7BA8" }}>
+            <h2 className="text-[15px] font-bold" style={{ color: "#4A7BA8" }}>
               일부 보존되는 데이터 (법령상 의무)
             </h2>
           </div>

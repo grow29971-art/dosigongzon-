@@ -315,11 +315,11 @@ export default function GuidePage() {
       <section className="px-5 pt-4">
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 mb-3">
           <Heart size={12} style={{ color: "var(--color-primary)" }} />
-          <span className="text-[11px] font-extrabold" style={{ color: "var(--color-primary)" }}>
+          <span className="text-[11px] font-bold" style={{ color: "var(--color-primary)" }}>
             HOW TO USE
           </span>
         </div>
-        <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight">
+        <h1 className="text-[24px] font-bold text-text-main leading-tight tracking-tight">
           도시공존 사용 가이드
         </h1>
         <p className="text-[15px] text-text-sub mt-2 leading-relaxed">
@@ -335,12 +335,12 @@ export default function GuidePage() {
             style={{ boxShadow: "var(--shadow-primary)" }}
           >
             <MapPin size={14} />
-            <span className="text-[13px] font-extrabold">지도 먼저 가볼래요</span>
+            <span className="text-[13px] font-bold">지도 먼저 가볼래요</span>
           </Link>
           <Link
             href="/signup"
             className="flex-1 flex items-center justify-center py-3 rounded-2xl active:scale-[0.98] transition-transform"
-            style={{ backgroundColor: "#FFF", color: "var(--color-primary)", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 800 }}
+            style={{ backgroundColor: "#FFF", color: "var(--color-primary)", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 700 }}
           >
             가입하고 시작
           </Link>
@@ -352,7 +352,7 @@ export default function GuidePage() {
         <section key={section.groupLabel} className="px-5 mt-8">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-1 h-4 rounded-full" style={{ backgroundColor: section.groupColor }} />
-            <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+            <h2 className="text-[15px] font-bold text-text-main tracking-tight">
               {section.groupLabel}
             </h2>
           </div>
@@ -377,7 +377,7 @@ export default function GuidePage() {
                       <Icon size={20} style={{ color: f.iconColor }} />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-[15px] font-extrabold text-text-main leading-tight">
+                      <p className="text-[15px] font-bold text-text-main leading-tight">
                         {f.title}
                       </p>
                       <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
@@ -391,7 +391,7 @@ export default function GuidePage() {
                       {f.steps.map((s, i) => (
                         <li key={i} className="flex items-start gap-2 text-[13px] text-text-main leading-relaxed">
                           <span
-                            className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-[9px] font-extrabold text-white mt-0.5"
+                            className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-[9px] font-bold text-white mt-0.5"
                             style={{ background: f.iconColor }}
                           >
                             {i + 1}
@@ -416,7 +416,7 @@ export default function GuidePage() {
 
                   <Link
                     href={f.href}
-                    className="inline-flex items-center gap-1 mt-3 text-[13px] font-extrabold active:scale-95 transition-transform"
+                    className="inline-flex items-center gap-1 mt-3 text-[13px] font-bold active:scale-95 transition-transform"
                     style={{ color: f.iconColor }}
                   >
                     {f.hrefLabel}
@@ -438,13 +438,13 @@ export default function GuidePage() {
             boxShadow: "0 8px 24px rgba(173, 94, 59,0.3)",
           }}
         >
-          <p className="text-[17px] font-extrabold text-white leading-snug">
+          <p className="text-[17px] font-bold text-white leading-snug">
             이제 동네 아이들에게 <br />
             인사하러 가볼까요? 🐾
           </p>
           <Link
             href="/map"
-            className="inline-block mt-4 bg-white text-[13px] font-extrabold px-6 py-3 rounded-2xl active:scale-95 transition-transform"
+            className="inline-block mt-4 bg-white text-[13px] font-bold px-6 py-3 rounded-2xl active:scale-95 transition-transform"
             style={{ color: "var(--color-primary)" }}
           >
             지도 열기 →

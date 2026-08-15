@@ -55,7 +55,7 @@ export default async function NewsIndexPage() {
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
         <div>
-          <h1 className="text-[20px] font-extrabold text-text-main tracking-tight flex items-center gap-1.5">
+          <h1 className="text-[20px] font-bold text-text-main tracking-tight flex items-center gap-1.5">
             <Newspaper size={18} className="text-primary" />
             고양이 사회 소식
           </h1>
@@ -102,14 +102,14 @@ export default async function NewsIndexPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                     <span
-                      className="text-[11px] font-extrabold px-1.5 py-0.5 rounded-md"
+                      className="text-[11px] font-bold px-1.5 py-0.5 rounded-md"
                       style={{ background: badge.bg, color: badge.color }}
                     >
                       {badge.label}
                     </span>
                     {dday && (
                       <span
-                        className="text-[11px] font-extrabold px-1.5 py-0.5 rounded-md"
+                        className="text-[11px] font-bold px-1.5 py-0.5 rounded-md"
                         style={{ background: "#F7F4EE", color: "#6B5043" }}
                       >
                         {dday}
@@ -121,7 +121,7 @@ export default async function NewsIndexPage() {
                       </span>
                     )}
                   </div>
-                  <p className="text-[15px] font-extrabold text-text-main leading-snug line-clamp-2">
+                  <p className="text-[15px] font-bold text-text-main leading-snug line-clamp-2">
                     {item.title}
                   </p>
                   {item.description && (

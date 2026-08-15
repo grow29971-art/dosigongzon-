@@ -115,19 +115,19 @@ export default async function UserProfilePage({ params }: { params: Params }) {
               }}
             >
               {!profile.avatar_url && (
-                <div className="w-full h-full flex items-center justify-center text-[28px] font-extrabold text-white">
+                <div className="w-full h-full flex items-center justify-center text-[28px] font-bold text-white">
                   {profile.nickname.charAt(0)}
                 </div>
               )}
             </div>
             <div className="flex-1 min-w-0 pt-1">
               <div className="flex items-center gap-1.5 flex-wrap">
-                <h1 className="text-[20px] font-extrabold text-text-main tracking-tight truncate">
+                <h1 className="text-[20px] font-bold text-text-main tracking-tight truncate">
                   {profile.nickname}
                 </h1>
                 {adminTitle && (
                   <span
-                    className="text-[11px] font-extrabold px-1.5 py-0.5 rounded-md"
+                    className="text-[11px] font-bold px-1.5 py-0.5 rounded-md"
                     style={{ backgroundColor: adminTitle.color, color: "#fff" }}
                   >
                     {adminTitle.emoji} {adminTitle.name}
@@ -137,7 +137,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
               {/* 레벨 배지 */}
               <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                 <span
-                  className="px-2 py-0.5 rounded-md text-[11px] font-extrabold flex items-center gap-1"
+                  className="px-2 py-0.5 rounded-md text-[11px] font-bold flex items-center gap-1"
                   style={{
                     background: "linear-gradient(135deg, #FFD93D 0%, #FFAA00 100%)",
                     color: "#fff",
@@ -148,7 +148,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                 </span>
                 {stats.currentStreak >= 2 && (
                   <span
-                    className="px-2 py-0.5 rounded-md text-[11px] font-extrabold flex items-center gap-1"
+                    className="px-2 py-0.5 rounded-md text-[11px] font-bold flex items-center gap-1"
                     style={{ background: "#FFE8D5", color: "#C4621E" }}
                   >
                     <Flame size={10} />
@@ -183,7 +183,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
               {regions.map((r) => (
                 <span
                   key={r.name}
-                  className="px-2 py-0.5 rounded-lg text-[11px] font-extrabold"
+                  className="px-2 py-0.5 rounded-lg text-[11px] font-bold"
                   style={{
                     background: r.is_primary ? "var(--color-primary)" : "#F7F4EE",
                     color: r.is_primary ? "#fff" : "#A38E7A",
@@ -202,7 +202,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
         <div className="px-4 mt-5">
           <div className="flex items-center gap-2 mb-3 px-1">
             <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E8B040" }} />
-            <h2 className="text-[15px] font-extrabold text-text-main tracking-tight flex items-center gap-1">
+            <h2 className="text-[15px] font-bold text-text-main tracking-tight flex items-center gap-1">
               <Trophy size={14} style={{ color: "#E8B040" }} />
               획득한 업적
             </h2>
@@ -225,7 +225,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                   {t.emoji}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-extrabold text-text-main truncate">
+                  <p className="text-[13px] font-bold text-text-main truncate">
                     {t.name}
                   </p>
                   <p className="text-[11px] text-text-sub truncate leading-tight">
@@ -243,7 +243,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
         <div className="px-4 mt-5">
           <div className="flex items-center gap-2 mb-3 px-1">
             <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#6B8E6F" }} />
-            <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+            <h2 className="text-[15px] font-bold text-text-main tracking-tight">
               최근 활동
             </h2>
           </div>
@@ -287,7 +287,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
       <div className="px-4 mt-5">
         <div className="flex items-center gap-2 mb-3 px-1">
           <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
-          <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+          <h2 className="text-[15px] font-bold text-text-main tracking-tight">
             등록한 고양이
           </h2>
           {cats.length > 0 && (
@@ -327,7 +327,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                     </div>
                   )}
                 </div>
-                <p className="text-[13px] font-extrabold text-text-main truncate text-center tracking-tight">
+                <p className="text-[13px] font-bold text-text-main truncate text-center tracking-tight">
                   {c.name}
                 </p>
                 {c.region && (
@@ -383,7 +383,7 @@ function StatBox({ label, value, color }: { label: string; value: number; color:
       className="rounded-xl p-2.5 text-center"
       style={{ background: `${color}10`, border: `1px solid ${color}20` }}
     >
-      <p className="text-[17px] font-extrabold tracking-tight" style={{ color }}>
+      <p className="text-[17px] font-bold tracking-tight" style={{ color }}>
         {value.toLocaleString()}
       </p>
       <p className="text-[11px] text-text-sub font-bold mt-0.5">{label}</p>

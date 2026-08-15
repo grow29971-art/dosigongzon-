@@ -189,7 +189,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
             서울특별시 {gu.name} {dongName}
           </span>
         </div>
-        <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight">
+        <h1 className="text-[24px] font-bold text-text-main leading-tight tracking-tight">
           {dongName} 길고양이 돌봄 지도
         </h1>
         <p className="text-[15px] text-text-sub mt-2 leading-relaxed">
@@ -206,12 +206,12 @@ export default async function AreaDongPage({ params }: { params: Params }) {
             style={{ boxShadow: "var(--shadow-primary)" }}
           >
             <PawPrint size={14} />
-            <span className="text-[13px] font-extrabold">지도에서 보기</span>
+            <span className="text-[13px] font-bold">지도에서 보기</span>
           </Link>
           <Link
             href="/signup"
             className="flex-1 flex items-center justify-center py-3 rounded-2xl active:scale-[0.98] transition-transform"
-            style={{ backgroundColor: "#FFF", color: "var(--color-primary)", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 800 }}
+            style={{ backgroundColor: "#FFF", color: "var(--color-primary)", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 700 }}
           >
             돌봄 시작하기
           </Link>
@@ -220,7 +220,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
 
       {/* 고양이 그리드 */}
       <section className="px-5 mt-7">
-        <h2 className="text-[17px] font-extrabold text-text-main mb-3 flex items-center gap-1.5">
+        <h2 className="text-[17px] font-bold text-text-main mb-3 flex items-center gap-1.5">
           <Heart size={15} style={{ color: "var(--color-like)" }} />
           {dongName} 고양이들
         </h2>
@@ -246,7 +246,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
               }}
             />
             <p className="text-[28px] leading-none mb-2" aria-hidden>🐾</p>
-            <p className="text-[15px] font-extrabold text-text-main leading-tight tracking-tight mb-1.5">
+            <p className="text-[15px] font-bold text-text-main leading-tight tracking-tight mb-1.5">
               {dongName}의 첫 번째 길집사가 되어주세요
             </p>
             <p className="text-[13px] leading-relaxed mb-4" style={{ color: "rgba(92,74,62,0.85)" }}>
@@ -259,7 +259,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
             <div className="flex gap-2">
               <Link
                 href={`/signup?next=${encodeURIComponent(`/areas/${slug}/${encodeURIComponent(dongName)}`)}`}
-                className="flex-[1.5] flex items-center justify-center py-2.5 rounded-xl text-white text-[13px] font-extrabold active:scale-[0.98] transition-transform"
+                className="flex-[1.5] flex items-center justify-center py-2.5 rounded-xl text-white text-[13px] font-bold active:scale-[0.98] transition-transform"
                 style={{
                   background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                   boxShadow: "var(--shadow-primary)",
@@ -269,7 +269,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
               </Link>
               <Link
                 href={`/areas/${slug}`}
-                className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[13px] font-extrabold active:scale-[0.98] transition-transform bg-white"
+                className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[13px] font-bold active:scale-[0.98] transition-transform bg-white"
                 style={{
                   color: "var(--color-primary-dark)",
                   border: "1px solid rgba(173, 94, 59,0.30)",
@@ -301,7 +301,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
                     />
                     {urgent && (
                       <span
-                        className="absolute top-2 left-2 text-[11px] font-extrabold px-2 py-0.5 rounded-lg text-white z-10"
+                        className="absolute top-2 left-2 text-[11px] font-bold px-2 py-0.5 rounded-lg text-white z-10"
                         style={{ backgroundColor: HEALTH_MAP.danger.color }}
                       >
                         🚨 긴급
@@ -309,7 +309,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
                     )}
                   </div>
                   <div className="p-2.5">
-                    <p className="text-[13px] font-extrabold text-text-main truncate">{c.name}</p>
+                    <p className="text-[13px] font-bold text-text-main truncate">{c.name}</p>
                     <div className="flex items-center gap-0.5 mt-0.5">
                       <MapPin size={10} className="text-text-light" />
                       <span className="text-[11px] text-text-sub truncate">{c.region ?? dongName}</span>
@@ -330,7 +330,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
       {/* 주변 병원 (구 단위) */}
       {hospitals.length > 0 && (
         <section className="px-5 mt-7">
-          <h2 className="text-[17px] font-extrabold text-text-main mb-3 flex items-center gap-1.5">
+          <h2 className="text-[17px] font-bold text-text-main mb-3 flex items-center gap-1.5">
             <Stethoscope size={15} style={{ color: "#22B573" }} />
             {gu.name} 치료 병원
           </h2>
@@ -341,7 +341,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
                 className="bg-white rounded-2xl p-3.5"
                 style={{ boxShadow: "var(--shadow-card)" }}
               >
-                <p className="text-[15px] font-extrabold text-text-main">{h.name}</p>
+                <p className="text-[15px] font-bold text-text-main">{h.name}</p>
                 {h.address && (
                   <p className="text-[13px] text-text-sub mt-0.5 leading-snug">{h.address}</p>
                 )}
@@ -363,7 +363,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
       {/* 같은 구의 다른 동 */}
       {otherDongs.length > 0 && (
         <section className="px-5 mt-7">
-          <h2 className="text-[15px] font-extrabold text-text-main mb-2.5">
+          <h2 className="text-[15px] font-bold text-text-main mb-2.5">
             {gu.name} 다른 동네
           </h2>
           <div className="grid grid-cols-3 gap-1.5">

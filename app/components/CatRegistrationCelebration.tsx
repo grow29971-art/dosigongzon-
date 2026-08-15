@@ -158,7 +158,7 @@ export default function CatRegistrationCelebration({
 
           <h2
             id="cat-register-celebration-title"
-            className="text-[20px] font-extrabold text-text-main text-center tracking-tight leading-tight px-2"
+            className="text-[20px] font-bold text-text-main text-center tracking-tight leading-tight px-2"
           >
             {headline}
           </h2>
@@ -186,7 +186,7 @@ export default function CatRegistrationCelebration({
           {cat?.id && (
             meal === "done" ? (
               <div
-                className="flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3 mb-3 text-[13px] font-extrabold"
+                className="flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3 mb-3 text-[13px] font-bold"
                 style={{ background: "#EAF6EC", color: "#3B7A46" }}
               >
                 <Check size={16} strokeWidth={3} />
@@ -197,7 +197,7 @@ export default function CatRegistrationCelebration({
                 type="button"
                 onClick={logFirstMeal}
                 disabled={meal === "saving"}
-                className="w-full flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3 mb-3 text-[13px] font-extrabold text-white active:scale-[0.98] disabled:opacity-60"
+                className="w-full flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3 mb-3 text-[13px] font-bold text-white active:scale-[0.98] disabled:opacity-60"
                 style={{
                   background: "linear-gradient(135deg, #E88D5A 0%, #D9743F 100%)",
                   boxShadow: "0 4px 14px rgba(217,116,63,0.4)",
@@ -212,7 +212,7 @@ export default function CatRegistrationCelebration({
               className="rounded-2xl px-4 py-3 mb-3 text-[13px] leading-snug"
               style={{ background: "#FFF9EF", color: "#7A5F3F" }}
             >
-              <p className="font-extrabold mb-1" style={{ color: "var(--color-primary)" }}>
+              <p className="font-bold mb-1" style={{ color: "var(--color-primary)" }}>
                 💡 다음 단계 힌트
               </p>
               <p>
@@ -224,7 +224,7 @@ export default function CatRegistrationCelebration({
           <button
             type="button"
             onClick={onClose}
-            className="w-full py-3 rounded-2xl text-[13px] font-extrabold text-white active:scale-[0.98]"
+            className="w-full py-3 rounded-2xl text-[13px] font-bold text-white active:scale-[0.98]"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "0 4px 14px rgba(173, 94, 59,0.45)",
@@ -237,7 +237,7 @@ export default function CatRegistrationCelebration({
               type="button"
               onClick={handleInvite}
               disabled={inviting}
-              className="w-full mt-2 py-2.5 rounded-2xl text-[13px] font-extrabold flex items-center justify-center gap-1.5 active:scale-[0.98] disabled:opacity-60"
+              className="w-full mt-2 py-2.5 rounded-2xl text-[13px] font-bold flex items-center justify-center gap-1.5 active:scale-[0.98] disabled:opacity-60"
               style={{
                 backgroundColor: "#FEE500",
                 color: "#191919",

@@ -326,7 +326,7 @@ export default function CircleChatPage() {
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-extrabold text-text-main truncate">
+          <p className="text-[15px] font-bold text-text-main truncate">
             {ownerInfo?.ownerId === user.id ? "내 서클" : `${ownerInfo?.nickname ?? "이웃"}님의 서클`}
           </p>
           <div className="flex items-center gap-1 mt-0.5">
@@ -484,7 +484,7 @@ function Avatar({ url, size = 32 }: { url: string | null; size?: number }) {
   if (!safe) {
     return (
       <div
-        className="shrink-0 rounded-full flex items-center justify-center text-white text-[13px] font-extrabold"
+        className="shrink-0 rounded-full flex items-center justify-center text-white text-[13px] font-bold"
         style={{ width: size, height: size, background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))" }}
       >
         🐾

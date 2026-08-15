@@ -197,7 +197,7 @@ function MessagesPage() {
             <ArrowLeft size={24} className="text-text-main" />
           </button>
           <div className="flex-1 min-w-0">
-            <p className="text-[15px] font-extrabold text-text-main truncate">{selectedPartner.name}</p>
+            <p className="text-[15px] font-bold text-text-main truncate">{selectedPartner.name}</p>
             <p className="text-[11px] text-text-light">1:1 쪽지 · 읽고 7일 후 자동 삭제</p>
           </div>
           <FollowButton userId={selectedPartner.id} size="sm" />
@@ -334,7 +334,7 @@ function MessagesPage() {
         <button onClick={() => router.back()} className="p-2 -ml-2 active:scale-90 transition-transform">
           <ArrowLeft size={24} className="text-text-main" />
         </button>
-        <h1 className="text-[20px] font-extrabold text-text-main">쪽지함</h1>
+        <h1 className="text-[20px] font-bold text-text-main">쪽지함</h1>
       </div>
 
       <div className="px-4 mb-3">
@@ -376,7 +376,7 @@ function MessagesPage() {
                 <img src={thumbnailUrl(c.partnerAvatar, 80) ?? c.partnerAvatar} alt="" loading="lazy" decoding="async" className="w-10 h-10 rounded-full object-cover shrink-0" />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="text-[15px] font-extrabold text-primary">{c.partnerName[0]}</span>
+                  <span className="text-[15px] font-bold text-primary">{c.partnerName[0]}</span>
                 </div>
               )}
               <div className="flex-1 min-w-0">

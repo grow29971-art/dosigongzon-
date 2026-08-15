@@ -26,7 +26,7 @@ export default function LoginRequired({
       >
         <MessagesSquare size={28} color="#fff" strokeWidth={2.2} />
       </div>
-      <h1 className="text-[20px] font-extrabold text-text-main tracking-tight mb-2">
+      <h1 className="text-[20px] font-bold text-text-main tracking-tight mb-2">
         {title}
       </h1>
       <p className="text-[13px] text-text-sub max-w-[320px] leading-relaxed mb-6">
@@ -35,7 +35,7 @@ export default function LoginRequired({
       <div className="flex flex-col gap-2 w-full max-w-[280px]">
         <Link
           href={loginHref}
-          className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary text-white text-[15px] font-extrabold active:scale-[0.98] transition-transform"
+          className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.98] transition-transform"
           style={{ boxShadow: "var(--shadow-primary)" }}
         >
           <LogIn size={16} strokeWidth={2.5} />

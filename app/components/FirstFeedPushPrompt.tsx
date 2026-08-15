@@ -77,7 +77,7 @@ export default function FirstFeedPushPrompt({ catName }: { catName: string }) {
 
   return (
     <div className="mt-3 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}>
-      <p className="text-[13px] font-extrabold text-white text-center leading-snug">
+      <p className="text-[13px] font-bold text-white text-center leading-snug">
         {catName} 소식만 받아볼래요?
       </p>
       <p className="text-[11px] text-center mt-0.5" style={{ color: "rgba(255,255,255,0.7)" }}>
@@ -88,7 +88,7 @@ export default function FirstFeedPushPrompt({ catName }: { catName: string }) {
           type="button"
           onClick={enable}
           disabled={busy}
-          className="flex-[1.4] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-extrabold active:scale-[0.98] transition-transform disabled:opacity-60"
+          className="flex-[1.4] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold active:scale-[0.98] transition-transform disabled:opacity-60"
           style={{ background: "rgba(255,255,255,0.95)", color: "#7A5238" }}
         >
           <Bell size={13} /> {busy ? "켜는 중..." : "소식 받기"}

@@ -62,10 +62,10 @@ export default function ShopPage() {
         <button onClick={() => router.back()} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)" }}>
           <ArrowLeft size={18} className="text-white" />
         </button>
-        <h1 className="text-[17px] font-extrabold text-white flex items-center gap-2"><StickerIcon icon={Coins} color={UI.accent.gold} size={30} /> 상점</h1>
+        <h1 className="text-[17px] font-bold text-white flex items-center gap-2"><StickerIcon icon={Coins} color={UI.accent.gold} size={30} /> 상점</h1>
         <div className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: `${UI.accent.gold}1F` }}>
           <Coins size={14} color={UI.accent.gold} />
-          <span className="text-[13px] font-black" style={{ color: UI.accent.gold }}>{coins}</span>
+          <span className="text-[13px] font-extrabold" style={{ color: UI.accent.gold }}>{coins}</span>
         </div>
       </div>
 
@@ -86,7 +86,7 @@ export default function ShopPage() {
           </div>
         ) : (
           <>
-            <p className="text-[11px] font-extrabold mb-2" style={{ color: UI.accent.green }}>🍚 케어 간식 — 홈 다마고치에게 줘요</p>
+            <p className="text-[11px] font-bold mb-2" style={{ color: UI.accent.green }}>🍚 케어 간식 — 홈 다마고치에게 줘요</p>
             <div className="grid grid-cols-2 gap-3 mb-2">
               {SHOP_ITEM_KEYS.filter(k => !!SHOP_ITEMS[k].care).map((key) => {
                 const item = SHOP_ITEMS[key];
@@ -106,7 +106,7 @@ export default function ShopPage() {
                     <button
                       onClick={() => buy(key)}
                       disabled={!canAfford || buyingKey === key}
-                      className="mt-1 py-2 rounded-xl text-[13px] font-black flex items-center justify-center gap-1"
+                      className="mt-1 py-2 rounded-xl text-[13px] font-extrabold flex items-center justify-center gap-1"
                       style={{
                         background: canAfford ? `${UI.accent.green}22` : "rgba(255,255,255,0.06)",
                         boxShadow: canAfford ? `inset 0 0 0 1px ${UI.accent.green}` : "none",
@@ -122,7 +122,7 @@ export default function ShopPage() {
             </div>
             <p className="text-[11px] mb-5" style={{ color: UI.textMuted }}>구매하면 홈 화면 다마고치 카드에 아이템 칩이 생겨요. 일일 밥주기 한도와 무관하게 쓸 수 있어요.</p>
 
-            <p className="text-[11px] font-extrabold mb-2" style={{ color: UI.accent.gold }}>💎 테두리 코스메틱 — 카드를 레어하게</p>
+            <p className="text-[11px] font-bold mb-2" style={{ color: UI.accent.gold }}>💎 테두리 코스메틱 — 카드를 레어하게</p>
             <div className="grid grid-cols-2 gap-3">
               {BORDER_FX_ITEM_KEYS.map((key) => {
                 const item = SHOP_ITEMS[key];
@@ -142,7 +142,7 @@ export default function ShopPage() {
                     <button
                       onClick={() => buy(key)}
                       disabled={!canAfford || buyingKey === key}
-                      className="mt-1 py-2 rounded-xl text-[13px] font-black flex items-center justify-center gap-1"
+                      className="mt-1 py-2 rounded-xl text-[13px] font-extrabold flex items-center justify-center gap-1"
                       style={{
                         background: canAfford ? `${UI.accent.gold}22` : "rgba(255,255,255,0.06)",
                         boxShadow: canAfford ? `inset 0 0 0 1px ${UI.accent.gold}` : "none",

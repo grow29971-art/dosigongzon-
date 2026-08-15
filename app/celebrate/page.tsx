@@ -60,9 +60,9 @@ export default async function CelebratePage() {
       <section className="px-5 pt-8 text-center">
         <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mb-4" style={{ background: "rgba(173, 94, 59,0.12)", color: "var(--color-primary-dark)" }}>
           <Sparkles size={12} />
-          <span className="text-[11px] font-extrabold tracking-[0.18em]">OFFICIAL LAUNCH · 2026.06.01</span>
+          <span className="text-[11px] font-bold tracking-[0.18em]">OFFICIAL LAUNCH · 2026.06.01</span>
         </div>
-        <h1 className="text-[32px] font-extrabold text-text-main leading-tight tracking-tight">
+        <h1 className="text-[32px] font-bold text-text-main leading-tight tracking-tight">
           🎉 도시공존<br />
           <span style={{ color: "var(--color-primary)" }}>정식 출시</span>
         </h1>
@@ -75,7 +75,7 @@ export default async function CelebratePage() {
 
       {/* 누적 통계 */}
       <section className="px-5 mt-8">
-        <p className="text-[11px] font-extrabold tracking-[0.18em] text-center mb-3" style={{ color: "var(--color-primary-dark)" }}>
+        <p className="text-[11px] font-bold tracking-[0.18em] text-center mb-3" style={{ color: "var(--color-primary-dark)" }}>
           THIS FAR, TOGETHER
         </p>
         <div className="grid grid-cols-3 gap-2">
@@ -143,7 +143,7 @@ export default async function CelebratePage() {
           }}
         >
           <Trophy size={22} className="mx-auto mb-2" style={{ color: "var(--color-primary)" }} />
-          <p className="text-[15px] font-extrabold text-text-main mb-1.5 tracking-tight">
+          <p className="text-[15px] font-bold text-text-main mb-1.5 tracking-tight">
             창립 멤버 (Founding Member)
           </p>
           <p className="text-[13px] text-text-sub leading-relaxed">
@@ -159,7 +159,7 @@ export default async function CelebratePage() {
       <section className="px-5 mt-7">
         <Link
           href="/map"
-          className="block w-full text-center py-3.5 rounded-2xl text-[15px] font-extrabold text-white active:scale-[0.98] transition-transform"
+          className="block w-full text-center py-3.5 rounded-2xl text-[15px] font-bold text-white active:scale-[0.98] transition-transform"
           style={{
             background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
             boxShadow: "0 6px 18px rgba(173, 94, 59,0.35)",
@@ -211,7 +211,7 @@ function StatBlock({
       >
         {icon}
       </div>
-      <p className="text-[20px] font-extrabold tracking-tight" style={{ color: accent }}>
+      <p className="text-[20px] font-bold tracking-tight" style={{ color: accent }}>
         {value}
       </p>
       <p className="text-[11px] text-text-sub mt-0.5">{label}</p>

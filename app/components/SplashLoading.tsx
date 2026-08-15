@@ -27,7 +27,7 @@ export default function SplashLoading() {
       </div>
 
       {/* 타이틀 */}
-      <h1 className="text-[24px] font-black tracking-[-0.04em] leading-none mb-2">
+      <h1 className="text-[24px] font-extrabold tracking-[-0.04em] leading-none mb-2">
         <span className="text-text-main">도시</span>
         <span className="text-primary">공존</span>
       </h1>

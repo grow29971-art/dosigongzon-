@@ -34,7 +34,7 @@ export default function AIChatCard() {
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-baseline gap-2">
-              <p className="text-[15px] font-extrabold text-text-main tracking-tight">
+              <p className="text-[15px] font-bold text-text-main tracking-tight">
                 AI 집사
               </p>
               <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "var(--color-primary)", opacity: 0.5 }}>

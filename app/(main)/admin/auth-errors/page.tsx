@@ -182,7 +182,7 @@ export default function AdminAuthErrorsPage() {
           마이페이지
         </button>
         <div className="flex items-baseline gap-2 mb-1">
-          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
+          <h1 className="text-[24px] font-bold text-text-main tracking-tight">
             로그인 실패 로그
           </h1>
           <span className="text-[11px] font-semibold text-text-light">Admin · Auth Errors</span>
@@ -250,7 +250,7 @@ export default function AdminAuthErrorsPage() {
           <span className="text-[11px] font-bold" style={{ color: totalCount === 0 ? "#3F5B42" : "#8B2F2F" }}>
             최근 {days}일 실패
           </span>
-          <span className="text-[24px] font-extrabold" style={{ color: totalCount === 0 ? "#3F5B42" : "#8B2F2F" }}>
+          <span className="text-[24px] font-bold" style={{ color: totalCount === 0 ? "#3F5B42" : "#8B2F2F" }}>
             {totalCount}
             <span className="text-[13px] font-semibold ml-0.5">건</span>
           </span>
@@ -286,7 +286,7 @@ export default function AdminAuthErrorsPage() {
         >
           <div className="flex items-center gap-2 mb-3">
             <AlertCircle size={13} style={{ color: "#E88D5A" }} />
-            <h2 className="text-[13px] font-extrabold text-text-main">
+            <h2 className="text-[13px] font-bold text-text-main">
               에러 코드 TOP
             </h2>
             <span className="text-[11px] text-text-light">(클릭하면 해당 코드만 필터)</span>
@@ -307,7 +307,7 @@ export default function AdminAuthErrorsPage() {
                   }}
                 >
                   <span
-                    className="w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-extrabold shrink-0"
+                    className="w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-bold shrink-0"
                     style={{
                       backgroundColor: idx === 0 ? "#D85555" : idx === 1 ? "#E88D5A" : "#C9A961",
                       color: "#fff",
@@ -316,7 +316,7 @@ export default function AdminAuthErrorsPage() {
                     {idx + 1}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-extrabold text-text-main truncate">
+                    <p className="text-[13px] font-bold text-text-main truncate">
                       {guide.title}
                     </p>
                     <p className="text-[11px] text-text-sub font-mono truncate mt-0.5">
@@ -324,7 +324,7 @@ export default function AdminAuthErrorsPage() {
                     </p>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-[13px] font-extrabold" style={{ color: "#B84545" }}>
+                    <p className="text-[13px] font-bold" style={{ color: "#B84545" }}>
                       {s.count}
                     </p>
                     <p className="text-[9px] text-text-light">
@@ -368,7 +368,7 @@ export default function AdminAuthErrorsPage() {
 
       {/* 로그 리스트 */}
       <div className="flex items-center gap-2 mb-2 mt-4">
-        <h2 className="text-[17px] font-extrabold text-text-main tracking-tight">
+        <h2 className="text-[17px] font-bold text-text-main tracking-tight">
           최근 로그 {logs.length > 0 && <span className="text-text-light font-bold">({logs.length})</span>}
         </h2>
       </div>
@@ -409,7 +409,7 @@ export default function AdminAuthErrorsPage() {
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[13px] font-extrabold text-text-main">
+                      <span className="text-[13px] font-bold text-text-main">
                         {guide.title}
                       </span>
                       {log.provider && (

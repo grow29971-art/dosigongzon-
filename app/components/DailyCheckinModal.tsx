@@ -81,22 +81,22 @@ export default function DailyCheckinModal() {
         {result ? (
           <div className="p-6 text-center">
             <p style={{ fontSize: 44 }} className="mb-2">🎉</p>
-            <p className="text-[17px] font-extrabold mb-1" style={{ color: "#2B2B3D" }}>오늘의 출석체크 완료!</p>
+            <p className="text-[17px] font-bold mb-1" style={{ color: "#2B2B3D" }}>오늘의 출석체크 완료!</p>
             <p className="text-[13px] mb-4" style={{ color: "#8A8598" }}>오늘도 아이들을 챙겨주셔서 고마워요</p>
             <div className="flex justify-center gap-2 mb-5">
-              <span className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] font-extrabold" style={{ background: "#FFF3D6", color: "#C98A1E" }}>
+              <span className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] font-bold" style={{ background: "#FFF3D6", color: "#C98A1E" }}>
                 <Coins size={13} /> +{result.coins}
               </span>
               {result.exp > 0 && (
-                <span className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] font-extrabold" style={{ background: "#E3EEF9", color: "#2F5E93" }}>
+                <span className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] font-bold" style={{ background: "#E3EEF9", color: "#2F5E93" }}>
                   <Sparkles size={13} /> 카드 EXP +{result.exp}
                 </span>
               )}
             </div>
             {result.leveledUp && (
-              <p className="text-[13px] font-extrabold mb-3" style={{ color: "#4FAF63" }}>🎊 대표 카드가 Lv.{result.newLevel}로 레벨업했어요!</p>
+              <p className="text-[13px] font-bold mb-3" style={{ color: "#4FAF63" }}>🎊 대표 카드가 Lv.{result.newLevel}로 레벨업했어요!</p>
             )}
-            <button onClick={() => setShow(false)} className="w-full py-3 rounded-2xl text-[13px] font-extrabold text-white"
+            <button onClick={() => setShow(false)} className="w-full py-3 rounded-2xl text-[13px] font-bold text-white"
               style={{ background: "linear-gradient(135deg,var(--color-primary),var(--color-primary-dark))" }}>
               확인
             </button>
@@ -104,7 +104,7 @@ export default function DailyCheckinModal() {
         ) : (
           <div className="p-6">
             <div className="flex items-center justify-between mb-1">
-              <p className="text-[17px] font-extrabold" style={{ color: "#2B2B3D" }}>오늘의 출석체크</p>
+              <p className="text-[17px] font-bold" style={{ color: "#2B2B3D" }}>오늘의 출석체크</p>
               <button onClick={() => setShow(false)} className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: "var(--color-gray-100)" }}>
                 <X size={14} style={{ color: "#8A8598" }} />
               </button>
@@ -125,7 +125,7 @@ export default function DailyCheckinModal() {
               })}
             </div>
             <button onClick={submit} disabled={!allChecked || submitting}
-              className="w-full py-3 rounded-2xl text-[13px] font-extrabold text-white"
+              className="w-full py-3 rounded-2xl text-[13px] font-bold text-white"
               style={{
                 background: allChecked ? "linear-gradient(135deg,var(--color-primary),var(--color-primary-dark))" : "#E3E1EC",
                 color: allChecked ? "#fff" : "#B4AFC2",

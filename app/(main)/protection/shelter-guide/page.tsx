@@ -181,7 +181,7 @@ export default function ShelterGuidePage() {
         </span>
       </div>
 
-      <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight mb-3">
+      <h1 className="text-[24px] font-bold text-text-main leading-tight tracking-tight mb-3">
         길고양이 <span style={{ color: "#4A7BA8" }}>겨울나기</span> · <br />숨숨집 만들기
       </h1>
 

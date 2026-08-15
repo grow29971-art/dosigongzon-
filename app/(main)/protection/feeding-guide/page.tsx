@@ -175,7 +175,7 @@ export default function FeedingGuidePage() {
         </span>
       </div>
 
-      <h1 className="text-[24px] font-extrabold text-text-main leading-tight tracking-tight mb-3">
+      <h1 className="text-[24px] font-bold text-text-main leading-tight tracking-tight mb-3">
         길고양이 먹이 가이드 — <br />
         <span style={{ color: "var(--color-care)" }}>안전한 급식</span>의 기본
       </h1>

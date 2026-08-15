@@ -174,10 +174,10 @@ export default function PwaInstallPrompt() {
             <Download size={19} color="#fff" strokeWidth={2.3} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[11px] font-extrabold tracking-[0.12em]" style={{ color: "var(--color-primary)" }}>
+            <p className="text-[11px] font-bold tracking-[0.12em]" style={{ color: "var(--color-primary)" }}>
               INSTALL
             </p>
-            <p className="text-[15px] font-extrabold text-text-main tracking-tight leading-tight mt-0.5">
+            <p className="text-[15px] font-bold text-text-main tracking-tight leading-tight mt-0.5">
               도시공존을 앱처럼 쓰세요
             </p>
             <p className="text-[13px] text-text-sub mt-1 leading-snug">
@@ -219,7 +219,7 @@ export default function PwaInstallPrompt() {
           <button
             type="button"
             onClick={install}
-            className="w-full mt-3 py-2.5 rounded-xl text-[13px] font-extrabold text-white active:scale-[0.98] transition-transform"
+            className="w-full mt-3 py-2.5 rounded-xl text-[13px] font-bold text-white active:scale-[0.98] transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "0 4px 12px rgba(173, 94, 59,0.35)",

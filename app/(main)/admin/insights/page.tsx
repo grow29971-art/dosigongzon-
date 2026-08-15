@@ -59,7 +59,7 @@ export default function AdminInsightsPage() {
   if (!authorized) {
     return (
       <div className="min-h-dvh flex flex-col items-center justify-center px-6 text-center">
-        <p className="text-[15px] font-extrabold text-text-main mb-2">권한 없음</p>
+        <p className="text-[15px] font-bold text-text-main mb-2">권한 없음</p>
         <p className="text-[13px] text-text-sub">관리자만 접근할 수 있어요.</p>
         <Link href="/mypage" className="inline-block mt-4 text-[13px] font-bold text-primary">
           마이페이지로
@@ -81,7 +81,7 @@ export default function AdminInsightsPage() {
           <ArrowLeft size={18} className="text-text-main" />
         </button>
         <div>
-          <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">분석</h1>
+          <h1 className="text-[24px] font-bold text-text-main tracking-tight">분석</h1>
           <p className="text-[13px] text-text-sub">운영 지표 스냅샷</p>
         </div>
       </div>
@@ -144,7 +144,7 @@ export default function AdminInsightsPage() {
             >
               <div className="flex items-baseline justify-between mb-2.5">
                 <span className="text-[13px] text-text-sub">총 실패</span>
-                <span className="text-[20px] font-extrabold text-text-main">{data.authErrorsWeek}</span>
+                <span className="text-[20px] font-bold text-text-main">{data.authErrorsWeek}</span>
               </div>
               {data.authErrorTopCodes.length === 0 ? (
                 <p className="text-[13px] text-text-light">기록 없음</p>
@@ -209,7 +209,7 @@ export default function AdminInsightsPage() {
                     style={{ boxShadow: "var(--shadow-card-sm)" }}
                   >
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-[11px] font-extrabold w-4 shrink-0" style={{ color: "var(--color-primary)" }}>
+                      <span className="text-[11px] font-bold w-4 shrink-0" style={{ color: "var(--color-primary)" }}>
                         {i + 1}
                       </span>
                       <div className="min-w-0">
@@ -217,7 +217,7 @@ export default function AdminInsightsPage() {
                         <p className="text-[11px] text-text-light truncate">{c.region ?? "지역 미정"}</p>
                       </div>
                     </div>
-                    <span className="text-[13px] font-extrabold" style={{ color: "var(--color-like)" }}>
+                    <span className="text-[13px] font-bold" style={{ color: "var(--color-like)" }}>
                       ♥ {c.like_count}
                     </span>
                   </Link>
@@ -240,12 +240,12 @@ export default function AdminInsightsPage() {
                     style={{ boxShadow: "var(--shadow-card-sm)" }}
                   >
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-[11px] font-extrabold w-4 shrink-0" style={{ color: "var(--color-primary)" }}>
+                      <span className="text-[11px] font-bold w-4 shrink-0" style={{ color: "var(--color-primary)" }}>
                         {i + 1}
                       </span>
                       <p className="text-[13px] font-bold text-text-main truncate">{u.name}</p>
                     </div>
-                    <span className="text-[13px] font-extrabold text-text-main">
+                    <span className="text-[13px] font-bold text-text-main">
                       {u.count}건
                     </span>
                   </Link>
@@ -264,7 +264,7 @@ function Section({ icon, label, children }: { icon: React.ReactNode; label: stri
     <section>
       <div className="flex items-center gap-1.5 mb-2.5 px-1">
         <span style={{ color: "var(--color-primary)" }}>{icon}</span>
-        <h2 className="text-[13px] font-extrabold text-text-main tracking-tight">{label}</h2>
+        <h2 className="text-[13px] font-bold text-text-main tracking-tight">{label}</h2>
       </div>
       {children}
     </section>
@@ -289,7 +289,7 @@ function StatCard({
         {icon}
         <span className="text-[11px] font-bold">{label}</span>
       </div>
-      <p className="text-[24px] font-extrabold text-text-main tabular-nums tracking-tight">
+      <p className="text-[24px] font-bold text-text-main tabular-nums tracking-tight">
         {value.toLocaleString()}
       </p>
       {delta > 0 && (
@@ -308,7 +308,7 @@ function MiniCard({ label, value }: { label: string; value: number }) {
       style={{ boxShadow: "var(--shadow-card-sm)" }}
     >
       <p className="text-[11px] font-semibold text-text-sub">{label}</p>
-      <p className="text-[20px] font-extrabold text-text-main tabular-nums tracking-tight mt-0.5">
+      <p className="text-[20px] font-bold text-text-main tabular-nums tracking-tight mt-0.5">
         {value.toLocaleString()}
       </p>
     </div>

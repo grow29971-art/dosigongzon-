@@ -226,7 +226,7 @@ export default function CategoryPage() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-baseline gap-2">
-                <h1 className="text-[24px] font-extrabold text-text-main tracking-tight">
+                <h1 className="text-[24px] font-bold text-text-main tracking-tight">
                   {meta.title}
                 </h1>
                 <span className="text-[13px] font-bold tabular-nums" style={{ color: meta.color }}>
@@ -247,7 +247,7 @@ export default function CategoryPage() {
           <div className="px-4 mb-3">
             <div className="flex items-center gap-1.5 mb-2 px-1">
               <Megaphone size={13} style={{ color: meta.color }} />
-              <span className="text-[13px] font-extrabold" style={{ color: meta.color }}>
+              <span className="text-[13px] font-bold" style={{ color: meta.color }}>
                 공지사항
               </span>
             </div>
@@ -335,7 +335,7 @@ export default function CategoryPage() {
                   )}
                   <span className="text-[11px] text-text-sub font-semibold">{post.authorName}</span>
                   {post.authorLevel && (
-                    <span className="text-[9px] font-extrabold px-1 py-[0.5px] rounded" style={{ backgroundColor: getLevelColor(post.authorLevel), color: "#fff" }}>
+                    <span className="text-[9px] font-bold px-1 py-[0.5px] rounded" style={{ backgroundColor: getLevelColor(post.authorLevel), color: "#fff" }}>
                       Lv.{post.authorLevel}
                     </span>
                   )}

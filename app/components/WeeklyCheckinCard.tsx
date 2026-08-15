@@ -108,11 +108,11 @@ export default function WeeklyCheckinCard() {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-[17px]">🗓️</span>
-          <h3 className="text-[15px] font-extrabold text-text-main tracking-tight">주간 출석</h3>
+          <h3 className="text-[15px] font-bold text-text-main tracking-tight">주간 출석</h3>
           <span className="text-[11px] font-bold text-text-light">{dayCount}/7일</span>
         </div>
         <span
-          className="text-[11px] font-extrabold px-2.5 py-1 rounded-full tabular-nums"
+          className="text-[11px] font-bold px-2.5 py-1 rounded-full tabular-nums"
           style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}
         >
           {balance.toLocaleString()}P
@@ -150,7 +150,7 @@ export default function WeeklyCheckinCard() {
             return (
               <span
                 key={m.days}
-                className="flex-1 text-center text-[11px] font-extrabold py-1.5 rounded-lg tabular-nums"
+                className="flex-1 text-center text-[11px] font-bold py-1.5 rounded-lg tabular-nums"
                 style={{
                   background: got ? "rgba(34,163,102,0.12)" : reached ? "rgba(255,169,39,0.16)" : "var(--color-surface-alt)",
                   color: got ? "#22A366" : reached ? "#E8930C" : "var(--color-text-muted)",
@@ -165,7 +165,7 @@ export default function WeeklyCheckinCard() {
           <button
             onClick={claim}
             disabled={claiming}
-            className="shrink-0 px-3.5 py-1.5 rounded-xl text-[13px] font-extrabold text-white active:scale-95 transition-transform"
+            className="shrink-0 px-3.5 py-1.5 rounded-xl text-[13px] font-bold text-white active:scale-95 transition-transform"
             style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
           >
             {claiming ? "받는 중…" : `+${claimableSum}P 받기`}
@@ -174,7 +174,7 @@ export default function WeeklyCheckinCard() {
       </div>
 
       {justGranted > 0 && (
-        <p className="text-[11px] font-extrabold text-center mt-2" style={{ color: "#22A366" }}>
+        <p className="text-[11px] font-bold text-center mt-2" style={{ color: "#22A366" }}>
           🎉 {justGranted}P 적립! 쇼핑에서 1P=1원으로 쓸 수 있어요
         </p>
       )}

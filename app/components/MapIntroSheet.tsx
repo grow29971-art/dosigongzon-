@@ -67,7 +67,7 @@ export default function MapIntroSheet() {
           style={{ background: "rgba(0,0,0,0.12)" }}
         />
 
-        <h2 className="text-[20px] font-extrabold text-text-main tracking-tight leading-snug">
+        <h2 className="text-[20px] font-bold text-text-main tracking-tight leading-snug">
           우리 동네 길고양이,
           <br />
           지도 한 장에 다 있어요
@@ -85,7 +85,7 @@ export default function MapIntroSheet() {
         <button
           type="button"
           onClick={dismiss}
-          className="mt-6 w-full py-4 rounded-2xl text-white text-[15px] font-extrabold flex items-center justify-center gap-2 active:scale-[0.98]"
+          className="mt-6 w-full py-4 rounded-2xl text-white text-[15px] font-bold flex items-center justify-center gap-2 active:scale-[0.98]"
           style={{
             background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
             boxShadow: "0 6px 18px rgba(173,94,59,0.3)",

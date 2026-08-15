@@ -161,7 +161,7 @@ export default function AdminOrdersPage() {
         >
           <ArrowLeft size={18} className="text-text-main" />
         </button>
-        <h1 className="text-[17px] font-extrabold text-text-main">주문 관리</h1>
+        <h1 className="text-[17px] font-bold text-text-main">주문 관리</h1>
       </div>
 
       {/* 환불 요청 — 심사 대기·실패 건 (승인 시 토스 취소까지 자동 실행) */}
@@ -170,7 +170,7 @@ export default function AdminOrdersPage() {
           className="mb-4 p-3.5"
           style={{ background: "#fff", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card)", border: "1.5px solid rgba(232,141,90,0.35)" }}
         >
-          <h2 className="text-[15px] font-extrabold text-text-main mb-2.5">환불 요청 {refunds.length}건</h2>
+          <h2 className="text-[15px] font-bold text-text-main mb-2.5">환불 요청 {refunds.length}건</h2>
           <div className="space-y-2.5">
             {refunds.map((r) => {
               const state = REFUND_STATE_LABEL[r.status];
@@ -179,7 +179,7 @@ export default function AdminOrdersPage() {
                 <div key={r.id} className="p-3 rounded-xl" style={{ background: "var(--color-warm-white)" }}>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[11px] font-semibold text-text-light">{r.order?.order_number ?? r.order_id}</span>
-                    <span className="text-[11px] font-extrabold px-2 py-0.5 chip-square" style={{ backgroundColor: `${state.color}15`, color: state.color }}>
+                    <span className="text-[11px] font-bold px-2 py-0.5 chip-square" style={{ backgroundColor: `${state.color}15`, color: state.color }}>
                       {state.label}
                     </span>
                   </div>
@@ -218,7 +218,7 @@ export default function AdminOrdersPage() {
                         <button
                           onClick={() => handleRefundAction(r, "reject")}
                           disabled={busy}
-                          className="flex-1 py-2 rounded-xl text-[13px] font-extrabold text-white disabled:opacity-50"
+                          className="flex-1 py-2 rounded-xl text-[13px] font-bold text-white disabled:opacity-50"
                           style={{ background: "#D85555" }}
                         >
                           {busy ? "처리 중…" : "거부 확정"}
@@ -238,7 +238,7 @@ export default function AdminOrdersPage() {
                       <button
                         onClick={() => handleRefundAction(r, "approve")}
                         disabled={busy}
-                        className="flex-1 py-2 rounded-xl text-[13px] font-extrabold text-white disabled:opacity-50"
+                        className="flex-1 py-2 rounded-xl text-[13px] font-bold text-white disabled:opacity-50"
                         style={{ background: "var(--color-primary)" }}
                       >
                         {busy ? "처리 중…" : r.status === "requested" ? "승인 (토스 환불 실행)" : "재시도"}
@@ -301,7 +301,7 @@ export default function AdminOrdersPage() {
                     <span className="text-[11px] font-semibold text-text-light">{order.order_number}</span>
                     <div className="flex items-center gap-1.5">
                       <span
-                        className="text-[11px] font-extrabold px-2 py-0.5 chip-square"
+                        className="text-[11px] font-bold px-2 py-0.5 chip-square"
                         style={{ backgroundColor: `${status.color}15`, color: status.color }}
                       >
                         {status.label}
@@ -316,7 +316,7 @@ export default function AdminOrdersPage() {
                         {order.recipient_name ?? "후원 주문"} · {formatDate(order.created_at)}
                       </p>
                     </div>
-                    <span className="text-[15px] font-extrabold text-text-main shrink-0 ml-2">{formatWon(order.payment_amount)}</span>
+                    <span className="text-[15px] font-bold text-text-main shrink-0 ml-2">{formatWon(order.payment_amount)}</span>
                   </div>
                 </button>
 
@@ -369,7 +369,7 @@ export default function AdminOrdersPage() {
                       <button
                         onClick={() => handleSave(order)}
                         disabled={saving}
-                        className="px-4 py-2.5 rounded-xl bg-primary text-white text-[13px] font-extrabold disabled:opacity-50 flex items-center gap-1"
+                        className="px-4 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-50 flex items-center gap-1"
                       >
                         {saving ? <Loader2 size={13} className="animate-spin" /> : <Save size={13} />}
                         저장

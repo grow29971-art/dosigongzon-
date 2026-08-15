@@ -47,7 +47,7 @@ export default async function RankingPage() {
         </Link>
         <div className="flex items-baseline gap-2 mb-1">
           <Trophy size={20} style={{ color: "#C9A961" }} />
-          <h1 className="text-[24px] font-extrabold tracking-tight text-text-main">
+          <h1 className="text-[24px] font-bold tracking-tight text-text-main">
             길집사 활동 랭킹
           </h1>
         </div>
@@ -62,7 +62,7 @@ export default async function RankingPage() {
           className="rounded-2xl px-4 py-3 bg-white"
           style={{ boxShadow: "var(--shadow-card)" }}
         >
-          <summary className="text-[13px] font-extrabold text-text-main cursor-pointer list-none flex items-center justify-between">
+          <summary className="text-[13px] font-bold text-text-main cursor-pointer list-none flex items-center justify-between">
             <span>점수는 어떻게 계산되나요?</span>
             <span className="text-text-light text-[13px]">+</span>
           </summary>
@@ -103,10 +103,10 @@ export default async function RankingPage() {
           >
             <div className="text-[24px] leading-none shrink-0">{isTop3 ? "🎉" : "🐾"}</div>
             <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-extrabold tracking-[0.15em]" style={{ color: isTop3 ? "#A9851F" : "var(--color-primary-dark)" }}>
+              <p className="text-[11px] font-bold tracking-[0.15em]" style={{ color: isTop3 ? "#A9851F" : "var(--color-primary-dark)" }}>
                 이번 주 내 순위
               </p>
-              <p className="text-[15px] font-extrabold text-text-main leading-tight mt-0.5">
+              <p className="text-[15px] font-bold text-text-main leading-tight mt-0.5">
                 {myRankNumber}위{isTop3 ? " · TOP 3 🏆" : ""}
                 <span className="text-[13px] font-bold text-text-sub"> · {myScore.toLocaleString()}점</span>
               </p>
@@ -129,7 +129,7 @@ export default async function RankingPage() {
             </p>
             <Link
               href="/map"
-              className="inline-block mt-3 px-4 py-2 rounded-xl text-[13px] font-extrabold text-white"
+              className="inline-block mt-3 px-4 py-2 rounded-xl text-[13px] font-bold text-white"
               style={{ background: "var(--color-primary)" }}
             >
               지도로 가기
@@ -145,7 +145,7 @@ export default async function RankingPage() {
       {/* 본인이 Top 50 밖일 때 본인 순위 표시 */}
       {user && myRank && !inTop && (
         <div className="px-4 mt-4">
-          <div className="text-[11px] font-extrabold tracking-[0.15em] text-text-sub mb-1.5 px-1">
+          <div className="text-[11px] font-bold tracking-[0.15em] text-text-sub mb-1.5 px-1">
             내 순위
           </div>
           <RankRow
@@ -176,7 +176,7 @@ export default async function RankingPage() {
             className="block rounded-2xl px-4 py-3.5 text-center bg-white"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
-            <p className="text-[13px] font-extrabold text-text-main">
+            <p className="text-[13px] font-bold text-text-main">
               로그인하면 내 순위도 보여요
             </p>
             <p className="text-[11px] text-text-sub mt-0.5">
@@ -241,7 +241,7 @@ function PodiumCard({ row, place, height }: { row: RankingRow; place: 1 | 2 | 3;
             🐾
           </div>
         )}
-        <p className="text-[13px] font-extrabold text-text-main mt-1.5 truncate max-w-full px-1">
+        <p className="text-[13px] font-bold text-text-main mt-1.5 truncate max-w-full px-1">
           {row.nickname ?? "익명"}
         </p>
         <p
@@ -250,7 +250,7 @@ function PodiumCard({ row, place, height }: { row: RankingRow; place: 1 | 2 | 3;
         >
           {level.emoji} {level.title}
         </p>
-        <p className="text-[15px] font-extrabold tabular-nums mt-1" style={{ color: "#2A2A28" }}>
+        <p className="text-[15px] font-bold tabular-nums mt-1" style={{ color: "#2A2A28" }}>
           {row.score.toLocaleString()}
           <span className="text-[11px] font-bold opacity-70 ml-0.5">점</span>
         </p>
@@ -275,7 +275,7 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
       }}
     >
       <div
-        className="w-8 text-center text-[15px] font-extrabold tabular-nums shrink-0"
+        className="w-8 text-center text-[15px] font-bold tabular-nums shrink-0"
         style={{ color: row.rank <= 10 ? "#C9A961" : "#8B7562" }}
       >
         {row.rank}
@@ -299,7 +299,7 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
         </div>
       )}
       <div className="flex-1 min-w-0">
-        <p className="text-[13px] font-extrabold text-text-main truncate">
+        <p className="text-[13px] font-bold text-text-main truncate">
           {row.nickname ?? "익명"}
         </p>
         <p
@@ -321,7 +321,7 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
         </span>
       </div>
       <div
-        className="text-[15px] font-extrabold tabular-nums shrink-0 ml-1"
+        className="text-[15px] font-bold tabular-nums shrink-0 ml-1"
         style={{ color: "#2A2A28" }}
       >
         {row.score.toLocaleString()}

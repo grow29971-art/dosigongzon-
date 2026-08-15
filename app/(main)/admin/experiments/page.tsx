@@ -119,7 +119,7 @@ export default function AdminExperimentsPage() {
       <Link href="/admin" className="inline-flex items-center gap-1 text-[13px] font-bold mb-4" style={{ color: "var(--color-text-light)" }}>
         <ArrowLeft size={15} /> 관리자 홈
       </Link>
-      <h1 className="text-[20px] font-extrabold mb-1 flex items-center gap-2">
+      <h1 className="text-[20px] font-bold mb-1 flex items-center gap-2">
         <FlaskConical size={20} style={{ color: "var(--color-primary)" }} /> 동네 돌봄 실험
       </h1>
       <p className="text-[13px] mb-5" style={{ color: "var(--color-text-light)" }}>
@@ -173,7 +173,7 @@ export default function AdminExperimentsPage() {
             }}
           >
             <div className="flex items-center justify-between">
-              <span className="text-[15px] font-extrabold">{exp.public_area_name}</span>
+              <span className="text-[15px] font-bold">{exp.public_area_name}</span>
               <span
                 className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                 style={{
@@ -200,7 +200,7 @@ export default function AdminExperimentsPage() {
       {selected && (
         <div className="rounded-2xl p-5" style={{ background: "#fff", boxShadow: "0 4px 20px rgba(25,31,40,0.06)" }}>
           <div className="flex items-center justify-between mb-1">
-            <h2 className="text-[17px] font-extrabold">{selected.experiment.public_area_name} 지표</h2>
+            <h2 className="text-[17px] font-bold">{selected.experiment.public_area_name} 지표</h2>
             {selected.experiment.status === "active" && (
               <button
                 onClick={() => endExperiment(selected.experiment.id)}
@@ -232,7 +232,7 @@ export default function AdminExperimentsPage() {
             />
           </dl>
 
-          <h3 className="text-[13px] font-extrabold mt-5 mb-2">주차별 반복 기록자</h3>
+          <h3 className="text-[13px] font-bold mt-5 mb-2">주차별 반복 기록자</h3>
           <div className="flex flex-col gap-1.5">
             {selected.metrics.weeklyRepeatCarers.map((w) => (
               <p key={w.week} className="text-[13px]" style={{ color: "#4E5968" }}>
@@ -241,7 +241,7 @@ export default function AdminExperimentsPage() {
             ))}
           </div>
 
-          <h3 className="text-[13px] font-extrabold mt-5 mb-2">이벤트 집계 (건수 전용)</h3>
+          <h3 className="text-[13px] font-bold mt-5 mb-2">이벤트 집계 (건수 전용)</h3>
           <div className="flex flex-wrap gap-1.5">
             {Object.entries(selected.eventCounts).length === 0 && (
               <p className="text-[13px]" style={{ color: "var(--color-text-light)" }}>아직 이벤트가 없어요.</p>
@@ -266,7 +266,7 @@ function MetricItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <dt className="text-[11px] mb-0.5" style={{ color: "var(--color-text-light)" }}>{label}</dt>
-      <dd className="font-extrabold" style={{ color: "var(--color-primary)" }}>{value}</dd>
+      <dd className="font-bold" style={{ color: "var(--color-primary)" }}>{value}</dd>
     </div>
   );
 }

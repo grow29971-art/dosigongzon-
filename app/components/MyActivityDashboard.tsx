@@ -70,7 +70,7 @@ export default function MyActivityDashboard() {
     <div className="mb-5">
       <div className="flex items-center gap-2 mb-3 px-1">
         <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#48A59E" }} />
-        <h2 className="text-[15px] font-extrabold text-text-main tracking-tight">
+        <h2 className="text-[15px] font-bold text-text-main tracking-tight">
           내 활동 대시보드
         </h2>
         <span className="text-[11px] text-text-light ml-auto">
@@ -98,13 +98,13 @@ export default function MyActivityDashboard() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[11px] font-bold text-text-sub">이번 달 돌봄</p>
-            <p className="text-[24px] font-extrabold tracking-tight" style={{ color: "#48A59E" }}>
+            <p className="text-[24px] font-bold tracking-tight" style={{ color: "#48A59E" }}>
               {data.thisMonthCount.toLocaleString()}번
             </p>
           </div>
           {deltaPct !== null && (
             <div
-              className="px-2.5 py-1 rounded-xl text-[11px] font-extrabold shrink-0"
+              className="px-2.5 py-1 rounded-xl text-[11px] font-bold shrink-0"
               style={{
                 background: delta >= 0 ? "#E8F4F1" : "#FDECEC",
                 color: delta >= 0 ? "#2F7B73" : "#B84545",
@@ -116,7 +116,7 @@ export default function MyActivityDashboard() {
           )}
           {deltaPct === null && data.lastMonthCount === 0 && data.thisMonthCount > 0 && (
             <div
-              className="px-2.5 py-1 rounded-xl text-[11px] font-extrabold shrink-0"
+              className="px-2.5 py-1 rounded-xl text-[11px] font-bold shrink-0"
               style={{ background: "#FFF4DC", color: "#A67B1E" }}
             >
               🎉 첫 달
@@ -153,7 +153,7 @@ export default function MyActivityDashboard() {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-extrabold text-text-main truncate">
+                    <p className="text-[13px] font-bold text-text-main truncate">
                       {i === 0 && "🥇 "}{c.catName}
                     </p>
                     <p className="text-[11px] font-bold" style={{ color: i === 0 ? "#A67B1E" : "#A38E7A" }}>
@@ -174,7 +174,7 @@ export default function MyActivityDashboard() {
                 <Clock size={12} style={{ color: "#8B65B8" }} />
                 <span className="text-[11px] font-bold text-text-sub">주 활동 시간대</span>
               </div>
-              <span className="text-[11px] font-extrabold" style={{ color: "#8B65B8" }}>
+              <span className="text-[11px] font-bold" style={{ color: "#8B65B8" }}>
                 {peakLabel}
               </span>
             </div>
@@ -224,7 +224,7 @@ export default function MyActivityDashboard() {
                 return (
                   <div
                     key={type}
-                    className="px-2.5 py-1.5 rounded-xl text-[11px] font-extrabold flex items-center gap-1"
+                    className="px-2.5 py-1.5 rounded-xl text-[11px] font-bold flex items-center gap-1"
                     style={{
                       background: i === 0 ? config.color : `${config.color}15`,
                       color: i === 0 ? "#fff" : config.color,
