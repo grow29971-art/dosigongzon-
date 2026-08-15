@@ -2684,7 +2684,7 @@ export default function MapPage() {
               style={{ background: "rgba(173, 94, 59,0.06)", borderBottom: "1px solid var(--color-divider)" }}
             >
               <Clock size={12} className="shrink-0" />
-              <span>채팅은 <b className="text-text-main">매일 새벽 4시</b>에 모두 정리됩니다 서버비 감당이안돼서요 ㅠㅠ</span>
+              <span>채팅은 <b className="text-text-main">매일 새벽 4시</b>에 모두 정리돼요 — 하루치 대화만 남는 가벼운 방이에요</span>
             </div>
 
             {/* 메시지 목록 */}
