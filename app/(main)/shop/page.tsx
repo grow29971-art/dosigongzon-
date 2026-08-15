@@ -19,6 +19,7 @@ import { sanitizeImageUrl } from "@/lib/url-validate";
 import PushOptInCard from "@/app/components/PushOptInCard";
 import FundSettlementCard from "@/app/components/FundSettlementCard";
 import PageIntroModal from "@/app/components/PageIntroModal";
+import UIChip from "@/app/components/ui/Chip";
 
 type FilterKey = ProductCategory | "all";
 
