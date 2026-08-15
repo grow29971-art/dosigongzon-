@@ -69,7 +69,7 @@ import { getTodayAnniversaries, type Anniversary } from "@/lib/anniversaries-rep
 const OnboardingCard = dynamic(() => import("@/app/components/OnboardingCard"), { ssr: false });
 // 온보딩→홈 핸드오프 — 온보딩에서 고른 아이 첫 밥 CTA (pending_care 있을 때만 렌더)
 const PendingCareHandoff = dynamic(() => import("@/app/components/PendingCareHandoff"), { ssr: false });
-const DailyCatBox = dynamic(() => import("@/app/components/DailyCatBox"), { ssr: false });
+const DailyCatBox = dynamic(() => import("@/app/components/DailyCatBox"), { ssr: false }); const PetitionSection = dynamic(() => import("@/app/components/PetitionSection"), { ssr: false }); // 한 줄인 이유: 673행 계측 라인 번호 보존
 const DailyCheckinModal = dynamic(() => import("@/app/components/DailyCheckinModal"), { ssr: false });
 const FirstCheerCard = dynamic(() => import("@/app/components/FirstCheerCard"), { ssr: false });
 const AppOpenGuideModal = dynamic(() => import("@/app/components/AppOpenGuideModal"), { ssr: false });
@@ -614,7 +614,7 @@ export default function HomeAuthed({
   // 상품을 다시 켤 때 함께 true로 되돌릴 것.
   const SHOW_WEATHER_SHOP_BRIDGE = false;
   const SHOW_SHOP_PREVIEW = true;         // 홈 쇼핑 프리뷰 스트립(찜) — 2026-07-21 쇼핑 동선 회의. 케어 지표 하락 시 이 플래그로 롤백
-  const SHOW_REALTIME_FEED = false, SHOW_DAILY_MEAL = false, SHOW_ADOPTION = false, SHOW_RECORD_FAB = false; const SHOW_CARE_INBOX_HOME = isCoreJourneyEnabled("P1"); // 2026-08-15 홈 다이어트(B11): 실시간피드=동네소식 중복·냥식/입양=잡화점 카드·FAB=기록 진입점 1개 원칙(내 아이들로 단일화). 한 줄인 이유: 673행 계측 마운트 라인 번호 보존
+  const SHOW_REALTIME_FEED = false, SHOW_DAILY_MEAL = false, SHOW_ADOPTION = false, SHOW_RECORD_FAB = false, SHOW_PETITION = true; const SHOW_CARE_INBOX_HOME = isCoreJourneyEnabled("P1"); // 2026-08-15 홈 다이어트(B11): 실시간피드=동네소식 중복·냥식/입양=잡화점 카드·FAB=기록 진입점 1개 원칙(내 아이들로 단일화). SHOW_PETITION: 청원 링크 카드(7/22 기각→8/15 사장님 지시로 번복). 한 줄인 이유: 673행 계측 마운트 라인 번호 보존
 
   return (
     <>
@@ -1683,6 +1683,9 @@ export default function HomeAuthed({
 
       {/* ══════ 이번 주 HOT 게시글 (SSR) ══════ */}
       {hotSlot}
+
+      {/* ══════ 진행 중인 청원 — 큐레이션 링크 카드, 마감 지나면 자동 숨김 (2026-08-15) ══════ */}
+      {SHOW_PETITION && <PetitionSection />}
 
       {/* ══════ ↓ 홍보/부가 카드 — 3.5화면 콘텐츠 아래로 (Figma 4화면 구조 2026-07-13) ══════ */}
 
