@@ -83,6 +83,16 @@ await page.goto(BASE_URL + "/", { waitUntil: "networkidle2", timeout: 40000 });
 await new Promise((r) => setTimeout(r, 8000)); // dynamic ssr:false 마운트 + /api/petitions fetch 대기
 console.log("홈 URL:", page.url());
 
+// 개입 요소 상태 (모달 닫기 전에 측정)
+const intrusion = await page.evaluate(() => {
+  const text = document.body.innerText;
+  const checkinModalOpen = !!document.querySelector('div.fixed.inset-0[class*="z-[190]"]') && text.includes("오늘 아이들을 챙겼다면");
+  const checkinCard = [...document.querySelectorAll("button")].some((b) => b.textContent?.includes("오늘의 출석체크") && b.textContent?.includes("코인"));
+  const pwaBanner = text.includes("도시공존을 앱처럼 쓰세요");
+  return { checkinModalOpen, checkinCard, pwaBanner };
+});
+console.log("개입 상태:", JSON.stringify(intrusion));
+
 // 공지/이벤트 모달 닫기 (최대 3회)
 for (let i = 0; i < 3; i++) {
   const closed = await page.evaluate(() => {
