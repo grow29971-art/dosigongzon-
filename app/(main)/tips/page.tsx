@@ -131,7 +131,7 @@ export default async function TipsIndexPage() {
           className="relative overflow-hidden p-4 pt-4"
           style={{
             background: "linear-gradient(135deg, #FFE6E0 0%, #FFCFB5 50%, #FFD9A8 100%)",
-            borderRadius: 22,
+            borderRadius: "var(--radius-card)",
             border: "1.5px solid rgba(216,85,85,0.25)",
             boxShadow: "0 8px 24px rgba(216,85,85,0.15), 0 2px 6px rgba(173, 94, 59,0.10)",
           }}

@@ -232,7 +232,7 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
       {phase === "confirm" && (
         <div
           className="relative w-full bg-white overflow-hidden"
-          style={{ maxWidth: 400, borderRadius: 26, boxShadow: "0 20px 60px rgba(0,0,0,0.35)" }}
+          style={{ maxWidth: 400, borderRadius: "var(--radius-sheet)", boxShadow: "0 20px 60px rgba(0,0,0,0.35)" }}
         >
           <button
             onClick={onClose}
@@ -268,7 +268,7 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
               rows={3}
               placeholder="하고 싶은 말이 있다면 남겨주세요."
               className="w-full text-[15px] leading-[1.6] px-4 py-3 outline-none resize-none"
-              style={{ borderRadius: 14, background: "#F6F3F0", border: "1px solid #E7E0DA" }}
+              style={{ borderRadius: "var(--radius-input)", background: "#F6F3F0", border: "1px solid #E7E0DA" }}
             />
             <div className="text-right text-[11px] text-gray-400 mt-1 mb-5">{note.length}/200</div>
 

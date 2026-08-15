@@ -347,7 +347,7 @@ export default function AdminOrdersPage() {
                         value={draftStatus}
                         onChange={(e) => setDraftStatus(e.target.value as OrderStatus)}
                         className="flex-1 px-3 py-2.5 text-[13px] font-bold outline-none"
-                        style={{ background: "var(--color-warm-white)", borderRadius: 12, border: "1px solid rgba(0,0,0,0.05)" }}
+                        style={{ background: "var(--color-warm-white)", borderRadius: "var(--radius-square-lg)", border: "1px solid rgba(0,0,0,0.05)" }}
                       >
                         {ALL_STATUSES.map((s) => (
                           <option key={s} value={s}>{ORDER_STATUS_MAP[s].label}</option>
@@ -355,7 +355,7 @@ export default function AdminOrdersPage() {
                       </select>
                     </div>
                     <div className="mt-2 flex items-center gap-2">
-                      <div className="flex-1 flex items-center gap-1.5 px-3 py-2.5" style={{ background: "var(--color-warm-white)", borderRadius: 12, border: "1px solid rgba(0,0,0,0.05)" }}>
+                      <div className="flex-1 flex items-center gap-1.5 px-3 py-2.5" style={{ background: "var(--color-warm-white)", borderRadius: "var(--radius-square-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
                         <Truck size={13} className="text-text-light shrink-0" />
                         <input
                           type="text"

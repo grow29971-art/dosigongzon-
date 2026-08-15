@@ -107,7 +107,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
       {/* 안내 */}
       <div
         className="mb-4"
-        style={{ borderRadius: 16, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}
+        style={{ borderRadius: "var(--radius-card-sm)", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}
       >
         <button
           onClick={() => setGuideOpen((v) => !v)}
@@ -164,7 +164,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
 
             <p
               className="text-[13px] leading-[1.75] mt-1 px-3.5 py-3"
-              style={{ color: "rgba(255,255,255,0.5)", background: "rgba(0,0,0,0.2)", borderRadius: 12 }}
+              style={{ color: "rgba(255,255,255,0.5)", background: "rgba(0,0,0,0.2)", borderRadius: "var(--radius-square-lg)" }}
             >
               며칠이 지나도 잠이 오지 않거나 일상이 어려울 만큼 힘들다면, 혼자 견디지 않으셔도 돼요.
               반려동물을 잃은 슬픔은 전문 상담을 받아도 되는 슬픔이에요.
@@ -177,7 +177,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
       {userId ? (
         <div
           className="p-4"
-          style={{ borderRadius: 18, background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)" }}
+          style={{ borderRadius: "var(--radius-card)", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)" }}
         >
           <p className="text-[13px] font-semibold mb-2.5" style={{ color: "rgba(255,255,255,0.6)" }}>
             오늘의 마음 <span style={{ color: "rgba(255,255,255,0.35)" }}>(선택)</span>
@@ -212,7 +212,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
             placeholder={`${catName}에게 하고 싶은 말을 적어보세요. 한 줄이어도 괜찮아요.`}
             className="w-full text-[15px] leading-[1.7] px-4 py-3 outline-none resize-none"
             style={{
-              borderRadius: 14,
+              borderRadius: "var(--radius-input)",
               background: "rgba(0,0,0,0.22)",
               border: "1px solid rgba(255,255,255,0.1)",
               color: "rgba(255,255,255,0.9)",
@@ -244,7 +244,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
       ) : (
         <div
           className="px-4 py-5 text-center"
-          style={{ borderRadius: 18, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+          style={{ borderRadius: "var(--radius-card)", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
         >
           <p className="text-[13px] leading-[1.7]" style={{ color: "rgba(255,255,255,0.6)" }}>
             로그인하면 추모일기를 남길 수 있어요.
@@ -269,7 +269,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
               key={d.id}
               className="px-4 py-3.5"
               style={{
-                borderRadius: 16,
+                borderRadius: "var(--radius-card-sm)",
                 background: isMine ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.045)",
                 border: `1px solid rgba(255,255,255,${isMine ? 0.13 : 0.08})`,
               }}

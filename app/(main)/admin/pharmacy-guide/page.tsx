@@ -193,7 +193,7 @@ export default function AdminPharmacyGuidePage() {
         {items.length === 0 ? (
           <div className="card p-6 text-center text-[13px] text-text-sub">등록된 약품이 없어요.</div>
         ) : items.map((item) => (
-          <div key={item.id} className="p-4" style={{ background: "#FFFFFF", borderRadius: 18, boxShadow: "0 4px 14px rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.04)" }}>
+          <div key={item.id} className="p-4" style={{ background: "#FFFFFF", borderRadius: "var(--radius-card)", boxShadow: "0 4px 14px rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.04)" }}>
             <div className="flex items-start gap-3">
               {item.image_url ? (
                 // eslint-disable-next-line @next/next/no-img-element

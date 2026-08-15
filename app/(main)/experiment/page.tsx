@@ -201,7 +201,7 @@ export default function ExperimentPage() {
       {/* 오늘 돌봄 완료 */}
       <section
         aria-labelledby="today-care-heading"
-        className="rounded-[24px] p-5 mb-4"
+        className="rounded-3xl p-5 mb-4"
         style={{ background: "#fff", boxShadow: "0 4px 20px rgba(25,31,40,0.06)" }}
       >
         <h2 id="today-care-heading" className="text-[17px] font-bold mb-1">
@@ -269,7 +269,7 @@ export default function ExperimentPage() {
       {/* 지역 공동 성과 */}
       <section
         aria-labelledby="area-heading"
-        className="rounded-[24px] p-5 mb-4 text-white"
+        className="rounded-3xl p-5 mb-4 text-white"
         style={{ background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-light, #C47E5A))" }}
       >
         <h2 id="area-heading" className="text-[15px] font-bold mb-3 flex items-center gap-1.5">
@@ -299,7 +299,7 @@ export default function ExperimentPage() {
       {/* 내 기록 (지역 집계와 분리) */}
       <section
         aria-labelledby="me-heading"
-        className="rounded-[24px] p-5 mb-4"
+        className="rounded-3xl p-5 mb-4"
         style={{ background: "#fff", boxShadow: "0 4px 20px rgba(25,31,40,0.06)" }}
       >
         <h2 id="me-heading" className="text-[15px] font-bold mb-2">나의 기록</h2>
@@ -316,7 +316,7 @@ export default function ExperimentPage() {
       {!ended && (
         <section
           aria-labelledby="invite-heading"
-          className="rounded-[24px] p-5"
+          className="rounded-3xl p-5"
           style={{ background: "#fff", boxShadow: "0 4px 20px rgba(25,31,40,0.06)" }}
         >
           <h2 id="invite-heading" className="text-[15px] font-bold mb-1.5">

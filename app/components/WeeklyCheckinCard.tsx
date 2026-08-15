@@ -100,7 +100,7 @@ export default function WeeklyCheckinCard() {
       className="mb-4 p-4"
       style={{
         background: "#FFFFFF",
-        borderRadius: 20,
+        borderRadius: "var(--radius-card)",
         border: "1px solid var(--color-divider)",
         boxShadow: "var(--shadow-card-sm)",
       }}

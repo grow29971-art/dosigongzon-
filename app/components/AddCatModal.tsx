@@ -411,7 +411,7 @@ export default function AddCatModal({
       `}</style>
 
       <div
-        className="relative mt-auto w-full rounded-t-[32px] flex flex-col overflow-hidden"
+        className="relative mt-auto w-full rounded-t-[28px] flex flex-col overflow-hidden"
         style={{
           maxHeight: "92dvh",
           background: "linear-gradient(165deg, #241748 0%, #1A1030 45%, #12081F 100%)",

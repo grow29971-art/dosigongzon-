@@ -53,7 +53,7 @@ export default async function ZoneLandingPage({
       <div className="max-w-lg mx-auto px-5 py-10">
         {/* 지킴판 선언 */}
         <div
-          className="rounded-[24px] px-5 py-6 text-center text-white"
+          className="rounded-3xl px-5 py-6 text-center text-white"
           style={{ background: "linear-gradient(160deg, #AD5E3B 0%, #8A4325 100%)" }}
         >
           <Shield size={30} className="mx-auto mb-2 opacity-90" />

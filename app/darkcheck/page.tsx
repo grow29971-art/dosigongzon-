@@ -42,7 +42,7 @@ export default function DarkCheckPage() {
 
   const box: React.CSSProperties = {
     padding: "18px 14px",
-    borderRadius: 12,
+    borderRadius: "var(--radius-square-lg)",
     border: "2px solid #191F28",
     fontWeight: 700,
     fontSize: 15,
@@ -57,13 +57,13 @@ export default function DarkCheckPage() {
       </p>
 
       <div style={{ ...box, background: "#FFFFFF" }}>A: 일반 배경 (원래 흰색)</div>
-      <canvas ref={canvasRef} width={340} height={48} style={{ borderRadius: 12, border: "2px solid #191F28", display: "block", marginBottom: 10, maxWidth: "100%" }} />
+      <canvas ref={canvasRef} width={340} height={48} style={{ borderRadius: "var(--radius-square-lg)", border: "2px solid #191F28", display: "block", marginBottom: 10, maxWidth: "100%" }} />
       <div style={{ ...box, background: "none", backgroundImage: "linear-gradient(#FFFFFF, #FFFFFF)" }}>
         C: 그라디언트 배경 (원래 흰색)
       </div>
       <div style={{ ...box, background: "#AD5E3B", color: "#FFFFFF", border: "none" }}>D: 테라코타 (원래 주황갈색)</div>
 
-      <div style={{ marginTop: 20, padding: 14, borderRadius: 12, background: "#FFFFFF", fontSize: 13, lineHeight: 1.7, wordBreak: "break-all" }}>
+      <div style={{ marginTop: 20, padding: 14, borderRadius: "var(--radius-square-lg)", background: "#FFFFFF", fontSize: 13, lineHeight: 1.7, wordBreak: "break-all" }}>
         <div><b>브라우저:</b> {info.browser}</div>
         <div><b>시스템 다크모드:</b> {info.prefersDark ? "켜짐" : "꺼짐"}</div>
         <div><b>앱(설치형) 모드:</b> {info.standalone ? "예" : "아니오"}</div>

@@ -69,7 +69,7 @@ export default function BottomNav() {
         backdropFilter: "blur(20px) saturate(180%)",
         WebkitBackdropFilter: "blur(20px) saturate(180%)",
         border: "1px solid rgba(255,255,255,0.65)",
-        borderRadius: 26,
+        borderRadius: "var(--radius-sheet)",
         boxShadow:
           "0 8px 32px rgba(25,31,40,0.14), 0 1px 2px rgba(25,31,40,0.06)",
       }}

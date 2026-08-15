@@ -74,7 +74,7 @@ export default function DailyCatBox() {
         className="w-full mb-3 active:scale-[0.98] transition-transform text-left"
         style={{
           background: "linear-gradient(135deg, #FFF1D9 0%, #FFE0C0 100%)",
-          borderRadius: 18,
+          borderRadius: "var(--radius-card)",
           padding: "14px 16px",
           border: "1px solid rgba(173, 94, 59,0.22)",
           boxShadow: "0 4px 14px rgba(173, 94, 59,0.14)",
@@ -104,7 +104,7 @@ export default function DailyCatBox() {
       className="mb-3"
       style={{
         background: "linear-gradient(135deg, #FFFDF8 0%, #FFF4E4 100%)",
-        borderRadius: 18,
+        borderRadius: "var(--radius-card)",
         padding: "14px 16px",
         border: "1px solid rgba(173, 94, 59,0.2)",
         boxShadow: "0 4px 14px var(--color-primary-soft)",

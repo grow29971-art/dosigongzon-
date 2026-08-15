@@ -87,7 +87,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-sm rounded-[26px] overflow-hidden relative"
+        className="w-full max-w-sm rounded-[28px] overflow-hidden relative"
         style={{ background: "#FFFFFF", boxShadow: "0 20px 60px rgba(0,0,0,0.3)" }}
       >
         {/* 헤더 그라데이션 */}

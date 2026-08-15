@@ -92,7 +92,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
         className="mb-3 px-4 py-3 flex items-center gap-2"
         style={{
           background: "#FFFFFF",
-          borderRadius: 18,
+          borderRadius: "var(--radius-card)",
           boxShadow: "var(--shadow-card)",
           border: "1px solid rgba(0,0,0,0.04)",
           minHeight: 92,
@@ -111,7 +111,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
         className="mb-3 relative overflow-hidden p-4"
         style={{
           background: "linear-gradient(135deg, #FFF6E8 0%, #FCE7D2 100%)",
-          borderRadius: 18,
+          borderRadius: "var(--radius-card)",
           border: "1px solid rgba(173, 94, 59,0.20)",
         }}
       >
@@ -177,7 +177,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
         className="overflow-hidden"
         style={{
           background: "#FFFFFF",
-          borderRadius: 18,
+          borderRadius: "var(--radius-card)",
           boxShadow: "0 4px 14px rgba(173, 94, 59,0.06), 0 1px 3px rgba(0,0,0,0.02)",
           border: "1px solid rgba(0,0,0,0.04)",
         }}

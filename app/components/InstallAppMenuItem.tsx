@@ -140,7 +140,7 @@ export default function InstallAppMenuItem() {
             onClick={() => setIosModalOpen(false)}
           />
           <div
-            className="relative w-full max-w-sm rounded-[24px] p-5"
+            className="relative w-full max-w-sm rounded-3xl p-5"
             style={{ background: "#FFFFFF", boxShadow: "var(--shadow-modal)" }}
           >
             <button

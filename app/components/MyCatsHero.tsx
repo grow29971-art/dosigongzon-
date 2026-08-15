@@ -150,7 +150,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
               style={{
                 width: 168,
                 aspectRatio: "3 / 4",
-                borderRadius: 22,
+                borderRadius: "var(--radius-card)",
                 scrollSnapAlign: "start",
                 background: "var(--color-surface-alt)",
                 boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
@@ -226,7 +226,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
               {moreOpen === cat.id && (
                 <div
                   className="absolute inset-0 flex flex-col justify-end px-3 pb-3 pt-8"
-                  style={{ background: "rgba(0,0,0,0.62)", backdropFilter: "blur(3px)", borderRadius: 22 }}
+                  style={{ background: "rgba(0,0,0,0.62)", backdropFilter: "blur(3px)", borderRadius: "var(--radius-card)" }}
                 >
                   <button
                     onClick={() => setMoreOpen(null)}
@@ -276,7 +276,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
           style={{
             width: 130,
             aspectRatio: "3 / 4.13",
-            borderRadius: 22,
+            borderRadius: "var(--radius-card)",
             scrollSnapAlign: "start",
             background: "#FFFFFF",
             border: "1.5px dashed rgba(173, 94, 59,0.35)",

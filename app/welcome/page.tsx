@@ -323,7 +323,7 @@ function WelcomeContent() {
               style={{
                 width: i === step ? 28 : 7,
                 height: 7,
-                borderRadius: 4,
+                borderRadius: "var(--radius-square-sm)",
                 backgroundColor: i === step ? "#FFFFFF" : "rgba(255,255,255,0.3)",
               }}
               aria-label={`${i + 1}번째 안내`}

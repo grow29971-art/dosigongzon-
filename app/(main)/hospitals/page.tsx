@@ -93,7 +93,7 @@ export default function HospitalsPage() {
         className="flex items-center gap-2 px-4 py-3 mb-3"
         style={{
           background: "#FFFFFF",
-          borderRadius: 18,
+          borderRadius: "var(--radius-card)",
           boxShadow: "0 4px 16px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02)",
           border: "1px solid rgba(0,0,0,0.04)",
         }}
@@ -207,7 +207,7 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
       className="p-4"
       style={{
         background: "#FFFFFF",
-        borderRadius: 18,
+        borderRadius: "var(--radius-card)",
         boxShadow: hospital.pinned
           ? "0 8px 24px rgba(173, 94, 59,0.14), 0 1px 3px rgba(0,0,0,0.03)"
           : "0 4px 16px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02)",

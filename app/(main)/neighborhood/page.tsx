@@ -208,7 +208,7 @@ export default function NeighborhoodPage() {
             onClick={() => region && setShowPicker(false)}
           />
           <div
-            className="relative mt-auto w-full rounded-t-[32px] flex flex-col"
+            className="relative mt-auto w-full rounded-t-[28px] flex flex-col"
             style={{ maxHeight: "60dvh", backgroundColor: "#F5F3EE" }}
           >
             <div className="flex justify-center pt-3 pb-1">

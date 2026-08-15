@@ -105,7 +105,7 @@ export default function MapCoachmark({ hasMyCat, isLoggedIn }: Props) {
         >
           {/* 펄스 링 */}
           <div
-            className="absolute inset-2 rounded-[22px] animate-ping"
+            className="absolute inset-2 rounded-[20px] animate-ping"
             style={{ background: "rgba(173, 94, 59,0.35)" }}
           />
           <ArrowDownRight

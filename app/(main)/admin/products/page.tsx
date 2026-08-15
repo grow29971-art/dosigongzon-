@@ -167,7 +167,7 @@ export default function AdminProductsPage() {
 
   const inputStyle = {
     background: "var(--color-warm-white)",
-    borderRadius: 12,
+    borderRadius: "var(--radius-square-lg)",
     border: "1px solid rgba(0,0,0,0.05)",
   } as const;
 

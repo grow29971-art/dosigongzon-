@@ -66,7 +66,7 @@ export default function HomeStreakCard({
             : hasToday
               ? `linear-gradient(135deg, ${accent}18 0%, ${accent}08 100%)`
               : "#FFFFFF",
-          borderRadius: 22,
+          borderRadius: "var(--radius-card)",
           border: atRisk
             ? "1.5px solid #D85555"
             : `1px solid ${hasToday ? `${accent}30` : "rgba(0,0,0,0.05)"}`,
@@ -95,7 +95,7 @@ export default function HomeStreakCard({
             style={{
               width: 52,
               height: 52,
-              borderRadius: 18,
+              borderRadius: "var(--radius-card)",
               background: s >= 1 ? `linear-gradient(135deg, #FF9A3C 0%, #E8652A 100%)` : "#F0EBE3",
               boxShadow: s >= 1 ? "0 6px 16px rgba(255,154,60,0.35)" : "none",
               fontSize: 24,

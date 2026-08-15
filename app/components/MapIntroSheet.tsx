@@ -55,7 +55,7 @@ export default function MapIntroSheet() {
       <div
         className="w-full bg-white px-6 pt-7"
         style={{
-          borderRadius: "28px 28px 0 0",
+          borderRadius: "var(--radius-sheet) var(--radius-sheet) 0 0",
           boxShadow: "0 -12px 40px rgba(0,0,0,0.18)",
           paddingBottom: "max(1.75rem, env(safe-area-inset-bottom))",
           animation: "introSheetUp 0.35s ease-out",

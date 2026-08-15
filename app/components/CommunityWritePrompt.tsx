@@ -41,7 +41,7 @@ export default function CommunityWritePrompt() {
       className="mb-4 p-4"
       style={{
         background: "linear-gradient(135deg, #F6EEFA 0%, #EFE3F7 100%)",
-        borderRadius: 18,
+        borderRadius: "var(--radius-card)",
         border: "1px solid rgba(139,101,184,0.2)",
         boxShadow: "0 4px 14px rgba(139,101,184,0.1)",
       }}

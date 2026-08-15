@@ -138,7 +138,7 @@ export default function AIChatModal({
 
       {/* 바텀 시트 */}
       <div
-        className="relative mt-auto w-full flex flex-col rounded-t-[32px]"
+        className="relative mt-auto w-full flex flex-col rounded-t-[28px]"
         style={{ height: "85dvh", backgroundColor: "#F5F3EE" }}
       >
         {/* 핸들 바 */}

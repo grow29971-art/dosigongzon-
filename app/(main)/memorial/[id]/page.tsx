@@ -143,7 +143,7 @@ export default async function MemorialCatPage({
           {cat.memorial_note && (
             <p
               className="text-[15px] leading-[1.8] mt-6 px-5 py-4 whitespace-pre-wrap w-full"
-              style={{ color: "rgba(255,255,255,0.8)", background: "rgba(0,0,0,0.2)", borderRadius: 18 }}
+              style={{ color: "rgba(255,255,255,0.8)", background: "rgba(0,0,0,0.2)", borderRadius: "var(--radius-card)" }}
             >
               {cat.memorial_note}
             </p>
@@ -159,7 +159,7 @@ export default async function MemorialCatPage({
           <div
             className="mt-10 px-5 py-5"
             style={{
-              borderRadius: 20,
+              borderRadius: "var(--radius-card)",
               background: "rgba(255,255,255,0.07)",
               border: "1px solid rgba(255,255,255,0.12)",
             }}
@@ -214,7 +214,7 @@ export default async function MemorialCatPage({
                         key={l.id}
                         className="px-4 py-3.5"
                         style={{
-                          borderRadius: 16,
+                          borderRadius: "var(--radius-card-sm)",
                           background: "rgba(255,255,255,0.06)",
                           border: "1px solid rgba(255,255,255,0.09)",
                         }}
@@ -249,7 +249,7 @@ export default async function MemorialCatPage({
                             src={img}
                             alt=""
                             className="w-full mt-3 object-cover"
-                            style={{ borderRadius: 12, maxHeight: 260 }}
+                            style={{ borderRadius: "var(--radius-square-lg)", maxHeight: 260 }}
                           />
                         )}
 

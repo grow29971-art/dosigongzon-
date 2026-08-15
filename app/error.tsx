@@ -30,7 +30,7 @@ export default function ErrorPage({
       }}
     >
       <div
-        className="w-full max-w-md rounded-[32px] text-center relative overflow-hidden"
+        className="w-full max-w-md rounded-[28px] text-center relative overflow-hidden"
         style={{
           background: "#FFFFFF",
           boxShadow: "0 20px 60px rgba(0,0,0,0.08)",

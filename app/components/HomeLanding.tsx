@@ -275,7 +275,7 @@ export default async function HomeLanding({
 
         {/* 메인 카드 — 솔리드 그린 배경으로 임팩트 강화 */}
         <div
-          className="rounded-[24px] overflow-hidden"
+          className="rounded-3xl overflow-hidden"
           style={{
             background: "var(--color-sage)",
             boxShadow: "var(--shadow-card)",

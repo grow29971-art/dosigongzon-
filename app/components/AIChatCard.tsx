@@ -17,7 +17,7 @@ export default function AIChatCard() {
         className="px-5 py-4"
         style={{
           background: "#FFFFFF",
-          borderRadius: 22,
+          borderRadius: "var(--radius-card)",
           boxShadow: "0 6px 20px rgba(173, 94, 59,0.10), 0 1px 3px rgba(0,0,0,0.03)",
           border: "1px solid rgba(0,0,0,0.04)",
         }}

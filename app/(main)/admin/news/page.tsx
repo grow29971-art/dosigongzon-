@@ -497,7 +497,7 @@ export default function AdminNewsPage() {
                 className="p-4"
                 style={{
                   background: "#FFFFFF",
-                  borderRadius: 18,
+                  borderRadius: "var(--radius-card)",
                   boxShadow: "0 4px 14px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)",
                   border: "1px solid rgba(0,0,0,0.04)",
                 }}

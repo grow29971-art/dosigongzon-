@@ -397,7 +397,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
       {isLg && (
         <div style={{
           display: "flex", flexDirection: "column", gap: 3, marginTop: 6,
-          background: "#fff", borderRadius: 12, padding: "7px 10px",
+          background: "#fff", borderRadius: "var(--radius-square-lg)", padding: "7px 10px",
           boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.05)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
@@ -419,7 +419,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
       {!compact && (
         <div style={{ display: "flex", flexDirection: "column", gap: isLg ? 6 : 4, marginTop: isLg ? 8 : 6 }}>
           <div style={{
-            background: "#fff", borderRadius: 12, padding: isLg ? "6px 9px" : "4px 7px",
+            background: "#fff", borderRadius: "var(--radius-square-lg)", padding: isLg ? "6px 9px" : "4px 7px",
             display: "flex", alignItems: "center", justifyContent: "space-between",
             boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.05)",
           }}>
@@ -431,7 +431,7 @@ function CardFace({ name, photoUrl, card, size }: Omit<CatCardProps, "onClick"> 
           </div>
 
           <div style={{
-            background: "#fff", borderRadius: 12, padding: isLg ? "6px 9px" : "4px 7px",
+            background: "#fff", borderRadius: "var(--radius-square-lg)", padding: isLg ? "6px 9px" : "4px 7px",
             display: "flex", alignItems: "center", justifyContent: "space-between",
             boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.05)",
           }}>

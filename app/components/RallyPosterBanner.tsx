@@ -15,7 +15,7 @@ export default function RallyPosterBanner() {
         rel="noopener"
         className="block active:scale-[0.99] transition-transform"
         style={{
-          borderRadius: 24,
+          borderRadius: "var(--radius-modal)",
           overflow: "hidden",
           boxShadow: "0 12px 32px rgba(173,94,59,0.22)",
           border: "1px solid rgba(0,0,0,0.05)",

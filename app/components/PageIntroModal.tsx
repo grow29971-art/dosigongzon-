@@ -99,7 +99,7 @@ export default function PageIntroModal({
       onClick={close}
     >
       <div
-        className="relative w-full max-w-sm rounded-[26px] overflow-hidden"
+        className="relative w-full max-w-sm rounded-[28px] overflow-hidden"
         style={{ background: "#fff", boxShadow: "0 20px 50px rgba(0,0,0,0.3)" }}
         onClick={(e) => e.stopPropagation()}
       >

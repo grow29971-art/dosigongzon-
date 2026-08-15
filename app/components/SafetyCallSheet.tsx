@@ -95,7 +95,7 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
     <div className="fixed inset-0 z-[70] flex items-end justify-center" role="dialog" aria-label="곁에 있어요 — 빠른 전화">
       <button aria-label="닫기" className="absolute inset-0 bg-black/45" onClick={onClose} />
       <div
-        className="relative w-full max-w-lg rounded-t-[26px] bg-white px-5 pt-5 pb-8"
+        className="relative w-full max-w-lg rounded-t-[28px] bg-white px-5 pt-5 pb-8"
         style={{ boxShadow: "0 -8px 30px rgba(0,0,0,0.18)" }}
       >
         <div className="flex items-start justify-between mb-1">

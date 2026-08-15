@@ -60,7 +60,7 @@ function MemorialAbout({ defaultOpen }: { defaultOpen: boolean }) {
   return (
     <div
       style={{
-        borderRadius: 20,
+        borderRadius: "var(--radius-card)",
         background: "rgba(255,255,255,0.06)",
         border: "1px solid rgba(255,255,255,0.11)",
       }}
@@ -133,7 +133,7 @@ function MemorialAbout({ defaultOpen }: { defaultOpen: boolean }) {
 
           <p
             className="text-[13px] leading-[1.75] mt-5 px-4 py-3"
-            style={{ color: "rgba(255,255,255,0.5)", background: "rgba(0,0,0,0.18)", borderRadius: 12 }}
+            style={{ color: "rgba(255,255,255,0.5)", background: "rgba(0,0,0,0.18)", borderRadius: "var(--radius-square-lg)" }}
           >
             떠나보내는 일을 서두르지 않으셔도 돼요. 며칠 보이지 않는 것과 떠난 것은 다르니까요.
           </p>
@@ -359,7 +359,7 @@ export default function MemorialPage() {
                 key={cat.id}
                 className="p-5"
                 style={{
-                  borderRadius: 22,
+                  borderRadius: "var(--radius-card)",
                   background: "rgba(255,255,255,0.07)",
                   border: "1px solid rgba(255,255,255,0.12)",
                   backdropFilter: "blur(8px)",
@@ -411,7 +411,7 @@ export default function MemorialPage() {
                     style={{
                       color: "rgba(255,255,255,0.78)",
                       background: "rgba(0,0,0,0.18)",
-                      borderRadius: 14,
+                      borderRadius: "var(--radius-input)",
                     }}
                   >
                     {cat.memorial_note}
@@ -421,7 +421,7 @@ export default function MemorialPage() {
                 <Link
                   href={`/memorial/${cat.id}`}
                   className="flex items-center justify-center gap-1 h-[40px] mt-4 text-[13px] font-semibold"
-                  style={{ borderRadius: 12, background: "rgba(255,255,255,0.06)", color: "rgba(255,233,168,0.85)" }}
+                  style={{ borderRadius: "var(--radius-square-lg)", background: "rgba(255,255,255,0.06)", color: "rgba(255,233,168,0.85)" }}
                 >
                   {cat.care_log_count > 0 ? `함께한 기록 ${cat.care_log_count}개 보기` : "추모관 들어가기"}
                   <ChevronRight size={14} />
@@ -484,7 +484,7 @@ export default function MemorialPage() {
         >
           <div
             className="w-full bg-white overflow-hidden"
-            style={{ maxWidth: 380, borderRadius: 24, boxShadow: "0 20px 60px rgba(0,0,0,0.45)" }}
+            style={{ maxWidth: 380, borderRadius: "var(--radius-modal)", boxShadow: "0 20px 60px rgba(0,0,0,0.45)" }}
           >
             <div className="px-6 pt-7 pb-6">
               <div
@@ -504,7 +504,7 @@ export default function MemorialPage() {
 
               <ul
                 className="text-[13px] leading-[1.9] mt-4 px-4 py-3"
-                style={{ background: "#FBF3F3", borderRadius: 14, color: "#8B3A3A" }}
+                style={{ background: "#FBF3F3", borderRadius: "var(--radius-input)", color: "#8B3A3A" }}
               >
                 <li>· 돌봄 기록 {deleteTarget.care_log_count}개</li>
                 <li>· 헌화 {deleteTarget.flower_count}개</li>
@@ -520,7 +520,7 @@ export default function MemorialPage() {
                 placeholder={deleteTarget.name}
                 autoFocus
                 className="w-full text-[15px] px-4 py-3 outline-none"
-                style={{ borderRadius: 12, background: "#F6F3F0", border: "1px solid #E7E0DA" }}
+                style={{ borderRadius: "var(--radius-square-lg)", background: "#F6F3F0", border: "1px solid #E7E0DA" }}
               />
 
               <button
