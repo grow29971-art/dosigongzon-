@@ -78,14 +78,14 @@ export default function BlockUserButton({ userId, userName, size = "sm", onChang
   const label = blocked ? "차단 해제" : "차단";
   const bg = blocked ? "var(--color-gray-50)" : "var(--color-error-soft)";
   const fg = blocked ? "#A38E7A" : "#B84545";
-  const border = blocked ? "1px solid rgba(0,0,0,0.06)" : "1px solid #E8C5C5";
+  const border = blocked ? "1px solid var(--color-divider)" : "1px solid #E8C5C5";
 
   return (
     <button
       type="button"
       onClick={toggle}
       disabled={busy}
-      className={`inline-flex items-center gap-1 rounded-xl font-bold active:scale-95 transition-transform disabled:opacity-60 ${sm ? "px-2.5 py-1 text-[11px]" : "px-3 py-1.5 text-[13px]"}`}
+      className={`inline-flex items-center gap-1 rounded-xl font-bold press-strong transition-transform disabled:opacity-60 ${sm ? "px-2.5 py-1 text-[11px]" : "px-3 py-1.5 text-[13px]"}`}
       style={{ background: bg, color: fg, border }}
       aria-label={label}
     >

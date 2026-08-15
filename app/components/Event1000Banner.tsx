@@ -127,7 +127,7 @@ export default async function Event1000Banner() {
           {!reached && (
             <Link
               href="/event/keyring"
-              className="mt-4 w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold active:scale-[0.97] transition-transform"
+              className="mt-4 w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold press-strong transition-transform"
               style={{ background: "#FFFFFF", color: "var(--color-primary-dark)" }}
             >
               응모하기

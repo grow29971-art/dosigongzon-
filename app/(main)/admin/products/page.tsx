@@ -168,7 +168,7 @@ export default function AdminProductsPage() {
   const inputStyle = {
     background: "var(--color-warm-white)",
     borderRadius: "var(--radius-square-lg)",
-    border: "1px solid rgba(0,0,0,0.05)",
+    border: "1px solid var(--color-divider)",
   } as const;
 
   return (
@@ -176,7 +176,7 @@ export default function AdminProductsPage() {
       <div className="flex items-center gap-2 mb-5">
         <button
           onClick={() => router.back()}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로 가기"
         >
@@ -185,7 +185,7 @@ export default function AdminProductsPage() {
         <h1 className="text-[17px] font-bold text-text-main">상품 관리</h1>
         <button
           onClick={handleCreate}
-          className="ml-auto flex items-center gap-1 px-3 py-2 rounded-2xl bg-primary text-white text-[13px] font-bold active:scale-95 transition-transform"
+          className="ml-auto flex items-center gap-1 px-3 py-2 rounded-2xl bg-primary text-white text-[13px] font-bold press-strong transition-transform"
         >
           <Plus size={14} strokeWidth={3} /> 상품 등록
         </button>
@@ -465,7 +465,7 @@ export default function AdminProductsPage() {
             <div
               key={p.id}
               className="flex items-center gap-3 p-3"
-              style={{ background: "#fff", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)", opacity: p.is_active ? 1 : 0.55 }}
+              style={{ background: "#fff", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card)", border: "1px solid var(--color-divider)", opacity: p.is_active ? 1 : 0.55 }}
             >
               <div className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 52, height: 52, background: "var(--color-warm-white)" }}>
                 {p.images[0] && <Image src={p.images[0]} alt="" fill className="object-cover" />}

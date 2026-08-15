@@ -100,7 +100,7 @@ export default function JoinClient({ token, state }: { token: string; state: Inv
             <button
               onClick={join}
               disabled={busy}
-              className="w-full flex items-center justify-center gap-2 rounded-2xl text-white text-[17px] font-bold active:scale-[0.98] transition-transform disabled:opacity-60"
+              className="w-full flex items-center justify-center gap-2 rounded-2xl text-white text-[17px] font-bold press transition-transform disabled:opacity-60"
               style={{ minHeight: 54, background: "var(--color-primary)" }}
             >
               {busy && <Loader2 size={18} className="animate-spin" />}

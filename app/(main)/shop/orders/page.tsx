@@ -47,7 +47,7 @@ export default function OrdersPage() {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <button
           onClick={() => router.back()}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로 가기"
         >
@@ -74,7 +74,7 @@ export default function OrdersPage() {
           <p className="text-[13px] text-text-sub mb-6">첫 주문을 기다리고 있어요!</p>
           <Link
             href="/shop"
-            className="px-5 py-2.5 rounded-2xl bg-primary text-white text-[13px] font-bold active:scale-95 transition-transform"
+            className="px-5 py-2.5 rounded-2xl bg-primary text-white text-[13px] font-bold press-strong transition-transform"
           >
             쇼핑하러가기
           </Link>
@@ -87,11 +87,11 @@ export default function OrdersPage() {
               <Link
                 key={order.id}
                 href={`/shop/orders/${order.id}`}
-                className="block active:scale-[0.99] transition-transform"
+                className="block press transition-transform"
               >
                 <div
                   className="p-4"
-                  style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card-sm)", border: "1px solid rgba(0,0,0,0.04)" }}
+                  style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card-sm)", border: "1px solid var(--color-divider)" }}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-[11px] font-semibold text-text-light">{order.order_number}</span>

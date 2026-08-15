@@ -151,7 +151,7 @@ export default function ReportModal({
             onClick={onClose}
             disabled={submitting}
             aria-label="신고 창 닫기"
-            className="w-7 h-7 rounded-lg flex items-center justify-center active:scale-90"
+            className="w-7 h-7 rounded-lg flex items-center justify-center press-strong"
             style={{ backgroundColor: "var(--color-gray-100)" }}
           >
             <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
@@ -218,7 +218,7 @@ export default function ReportModal({
                 style={{
                   backgroundColor: "var(--color-gray-50)",
                   color: "#2A2A28",
-                  border: "1px solid var(--color-gray-200)",
+                  border: "1px solid var(--color-border)",
                 }}
               />
             </div>
@@ -248,7 +248,7 @@ export default function ReportModal({
                       src={URL.createObjectURL(f)}
                       alt=""
                       className="w-14 h-14 rounded-lg object-cover"
-                      style={{ border: "1px solid var(--color-gray-200)" }}
+                      style={{ border: "1px solid var(--color-border)" }}
                     />
                     <button
                       onClick={() => setPhotos((prev) => prev.filter((_, j) => j !== i))}
@@ -263,7 +263,7 @@ export default function ReportModal({
                 {photos.length < EVIDENCE_MAX_FILES && (
                   <button
                     onClick={() => photoInputRef.current?.click()}
-                    className="w-14 h-14 rounded-lg flex items-center justify-center active:scale-95"
+                    className="w-14 h-14 rounded-lg flex items-center justify-center press-strong"
                     style={{ backgroundColor: "var(--color-gray-50)", border: "1.5px dashed #C3BCB3" }}
                     aria-label="사진 추가"
                   >
@@ -280,7 +280,7 @@ export default function ReportModal({
             {canBlock && (
               <div className="px-5 pb-3">
                 <label
-                  className="flex items-start gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer active:scale-[0.99] transition-transform"
+                  className="flex items-start gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer press transition-transform"
                   style={{ backgroundColor: alsoBlock ? "var(--color-error-soft)" : "var(--color-gray-50)", border: `1.5px solid ${alsoBlock ? "#E8C5C5" : "var(--color-gray-200)"}` }}
                 >
                   <input

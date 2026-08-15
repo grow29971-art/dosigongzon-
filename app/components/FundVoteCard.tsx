@@ -92,7 +92,7 @@ export default function FundVoteCard() {
   return (
     <div
       className="mb-4 px-4 py-4 rounded-3xl"
-      style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "var(--shadow-card-sm)" }}
+      style={{ background: "#FFFFFF", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)" }}
     >
       <div className="flex items-center justify-between mb-0.5">
         <h3 className="text-[15px] font-bold text-text-main tracking-tight">🗳️ 수익, 어디에 쓸까요?</h3>
@@ -110,7 +110,7 @@ export default function FundVoteCard() {
               key={o.id}
               onClick={() => vote(o.id)}
               disabled={busy}
-              className="relative w-full text-left px-3.5 py-2.5 rounded-2xl overflow-hidden active:scale-[0.99] transition-transform"
+              className="relative w-full text-left px-3.5 py-2.5 rounded-2xl overflow-hidden press transition-transform"
               style={{
                 border: mine ? "1.5px solid var(--color-primary)" : "1px solid var(--color-divider)",
                 background: "var(--color-surface-alt)",
@@ -146,7 +146,7 @@ export default function FundVoteCard() {
         ) : !ideaOpen ? (
           <button
             onClick={() => { setIdeaOpen(true); setIdeaErr(""); }}
-            className="w-full text-left px-3.5 py-2.5 rounded-2xl active:scale-[0.99] transition-transform"
+            className="w-full text-left px-3.5 py-2.5 rounded-2xl press transition-transform"
             style={{ border: "1px dashed var(--color-border)", background: "transparent" }}
           >
             <span className="flex items-center gap-2 text-[13px] font-bold text-text-sub">
@@ -169,7 +169,7 @@ export default function FundVoteCard() {
             <div className="flex gap-2 mt-2">
               <button
                 onClick={() => { setIdeaOpen(false); setIdea(""); setIdeaErr(""); }}
-                className="px-3.5 py-2 rounded-xl text-[13px] font-bold text-text-sub active:scale-95 transition-transform"
+                className="px-3.5 py-2 rounded-xl text-[13px] font-bold text-text-sub press-strong transition-transform"
                 style={{ background: "var(--color-surface-alt)" }}
               >
                 취소
@@ -177,7 +177,7 @@ export default function FundVoteCard() {
               <button
                 onClick={sendIdea}
                 disabled={ideaBusy || !idea.trim()}
-                className="flex-1 py-2 rounded-xl text-[13px] font-bold text-white active:scale-[0.98] transition-transform disabled:opacity-40"
+                className="flex-1 py-2 rounded-xl text-[13px] font-bold text-white press transition-transform disabled:opacity-40"
                 style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
               >
                 {ideaBusy ? "보내는 중…" : "보내기"}

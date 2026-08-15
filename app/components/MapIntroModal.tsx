@@ -43,7 +43,7 @@ export default function MapIntroModal() {
     return (
       <button
         onClick={() => setShow(true)}
-        className="fixed z-40 w-8 h-8 rounded-full flex items-center justify-center text-[15px] font-bold active:scale-90 transition-transform"
+        className="fixed z-40 w-8 h-8 rounded-full flex items-center justify-center text-[15px] font-bold press-strong transition-transform"
         style={{
           left: 12,
           bottom: "calc(5.5rem + env(safe-area-inset-bottom))",
@@ -114,7 +114,7 @@ export default function MapIntroModal() {
         <div className="px-6 pb-6">
           <button
             onClick={close}
-            className="w-full py-3 rounded-2xl text-[15px] font-bold text-white active:scale-[0.98] transition-transform"
+            className="w-full py-3 rounded-2xl text-[15px] font-bold text-white press transition-transform"
             style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
           >
             둘러보기 시작
@@ -123,7 +123,7 @@ export default function MapIntroModal() {
 
         <button
           onClick={close}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center active:scale-90"
+          className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center press-strong"
           style={{ background: "rgba(255,255,255,0.6)" }}
           aria-label="닫기"
         >

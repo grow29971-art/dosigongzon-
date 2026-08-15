@@ -97,7 +97,7 @@ export default async function RankingPage() {
             className="rounded-2xl px-4 py-3.5 flex items-center gap-3"
             style={{
               background: isTop3 ? "linear-gradient(135deg, #FFF6D6 0%, #F7E69C 100%)" : "#FFFFFF",
-              border: isTop3 ? "1.5px solid rgba(201,169,97,0.55)" : "1px solid rgba(0,0,0,0.05)",
+              border: isTop3 ? "1.5px solid rgba(201,169,97,0.55)" : "1px solid var(--color-divider)",
               boxShadow: isTop3 ? "0 6px 18px rgba(201,169,97,0.25)" : "0 4px 14px rgba(0,0,0,0.05)",
             }}
           >
@@ -211,7 +211,7 @@ function PodiumCard({ row, place, height }: { row: RankingRow; place: 1 | 2 | 3;
   return (
     <Link
       href={`/users/${row.user_id}`}
-      className="block rounded-2xl px-2 pt-3 pb-3 active:scale-[0.97] transition-transform relative"
+      className="block rounded-2xl px-2 pt-3 pb-3 press-strong transition-transform relative"
       style={{
         background: bg,
         border: `1.5px solid ${border}`,
@@ -267,10 +267,10 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
   return (
     <Link
       href={`/users/${row.user_id}`}
-      className="flex items-center gap-3 rounded-2xl px-3 py-2.5 active:scale-[0.99] transition-transform"
+      className="flex items-center gap-3 rounded-2xl px-3 py-2.5 press transition-transform"
       style={{
         background: highlight ? "#FFF3DC" : "#FFFFFF",
-        border: highlight ? "1.5px solid rgba(201,169,97,0.5)" : "1px solid rgba(0,0,0,0.04)",
+        border: highlight ? "1.5px solid rgba(201,169,97,0.5)" : "1px solid var(--color-divider)",
         boxShadow: "var(--shadow-card)",
       }}
     >

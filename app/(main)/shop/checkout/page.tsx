@@ -233,7 +233,7 @@ export default function CheckoutPage() {
   const inputStyle = {
     background: "var(--color-warm-white)",
     borderRadius: "var(--radius-input)",
-    border: "1px solid rgba(0,0,0,0.05)",
+    border: "1px solid var(--color-divider)",
   } as const;
 
   return (
@@ -241,7 +241,7 @@ export default function CheckoutPage() {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <button
           onClick={() => router.back()}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로 가기"
         >
@@ -282,7 +282,7 @@ export default function CheckoutPage() {
           {/* 주문 상품 */}
           <section
             className="p-4"
-            style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
+            style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid var(--color-divider)" }}
           >
             <h2 className="text-[13px] font-bold text-text-main mb-3">주문 상품 {items.length}건</h2>
             <div className="space-y-2.5">
@@ -321,7 +321,7 @@ export default function CheckoutPage() {
           ) : (<>
           <section
             className="p-4"
-            style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
+            style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid var(--color-divider)" }}
           >
             <h2 className="text-[13px] font-bold text-text-main mb-3">배송지 정보</h2>
             <div className="space-y-2.5">
@@ -355,7 +355,7 @@ export default function CheckoutPage() {
                 <button
                   type="button"
                   onClick={() => setPostcodeOpen(true)}
-                  className="flex-1 py-3 rounded-2xl text-[13px] font-bold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-transform"
+                  className="flex-1 py-3 rounded-2xl text-[13px] font-bold flex items-center justify-center gap-1.5 press transition-transform"
                   style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}
                 >
                   <MapPin size={14} />
@@ -386,7 +386,7 @@ export default function CheckoutPage() {
           {/* 주문 메모 */}
           <section
             className="p-4"
-            style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
+            style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid var(--color-divider)" }}
           >
             <h2 className="text-[13px] font-bold text-text-main mb-3">주문 메모 <span className="text-[11px] font-semibold text-text-light">(선택)</span></h2>
             <textarea
@@ -404,7 +404,7 @@ export default function CheckoutPage() {
           {pointsEligible && (
             <section
               className="p-4"
-              style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
+              style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid var(--color-divider)" }}
             >
               <div className="flex items-center justify-between mb-2.5">
                 <h2 className="text-[13px] font-bold text-text-main">포인트 사용</h2>
@@ -430,7 +430,7 @@ export default function CheckoutPage() {
                 <button
                   type="button"
                   onClick={() => setPointsInput(maxPoints)}
-                  className="shrink-0 px-3.5 rounded-xl text-[13px] font-bold active:scale-95 transition-transform"
+                  className="shrink-0 px-3.5 rounded-xl text-[13px] font-bold press-strong transition-transform"
                   style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}
                 >
                   최대 사용
@@ -446,7 +446,7 @@ export default function CheckoutPage() {
           {(pointBalance ?? 0) === 0 && !items.some((i) => i.product.is_virtual || i.product.is_donation) && (
             <Link
               href="/#daily-box"
-              className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl active:scale-[0.99] transition-transform"
+              className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl press transition-transform"
               style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(173, 94, 59,0.18)" }}
             >
               <PawPrint size={16} className="shrink-0" style={{ color: "var(--color-primary)" }} />
@@ -459,7 +459,7 @@ export default function CheckoutPage() {
           {/* 결제 금액 */}
           <section
             className="p-4"
-            style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
+            style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid var(--color-divider)" }}
           >
             <h2 className="text-[13px] font-bold text-text-main mb-3">결제 금액</h2>
             <div className="flex items-center justify-between text-[13px] text-text-sub mb-1.5">
@@ -507,7 +507,7 @@ export default function CheckoutPage() {
           <button
             onClick={handleSubmit}
             disabled={submitting || !PAYMENT_ENABLED}
-            className="w-full py-3.5 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.98] transition-transform disabled:opacity-50"
+            className="w-full py-3.5 rounded-2xl bg-primary text-white text-[15px] font-bold press transition-transform disabled:opacity-50"
             style={{ boxShadow: "var(--shadow-primary)" }}
           >
             {!PAYMENT_ENABLED ? "결제 준비 중" : submitting ? "주문 처리 중…" : `${formatWon(finalAmount)} 결제하기`}
@@ -522,7 +522,7 @@ export default function CheckoutPage() {
             className="w-full max-w-lg overflow-hidden"
             style={{ background: "var(--color-surface)", borderRadius: "var(--radius-modal) var(--radius-modal) 0 0", height: "70dvh" }}
           >
-            <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
+            <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid var(--color-divider)" }}>
               <span className="text-[15px] font-bold text-text-main">주소 검색</span>
               <button onClick={() => setPostcodeOpen(false)} aria-label="닫기" className="w-8 h-8 flex items-center justify-center">
                 <X size={18} className="text-text-sub" />

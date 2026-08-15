@@ -59,7 +59,7 @@ export default async function AreasIndexPage() {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈"
         >
@@ -90,7 +90,7 @@ export default async function AreasIndexPage() {
               <Link
                 key={g.slug}
                 href={`/areas/${g.slug}`}
-                className="bg-white rounded-2xl p-3.5 active:scale-[0.97] transition-transform"
+                className="bg-white rounded-2xl p-3.5 press-strong transition-transform"
                 style={{ boxShadow: "var(--shadow-card)" }}
               >
                 <div className="flex items-baseline justify-between">
@@ -114,7 +114,7 @@ export default async function AreasIndexPage() {
       <section className="px-5 mt-7 cv-auto">
         <Link
           href="/regions"
-          className="block rounded-2xl p-4 active:scale-[0.98] transition-transform"
+          className="block rounded-2xl p-4 press transition-transform"
           style={{
             background: "linear-gradient(135deg, #FFF8F2 0%, #F7F4EE 100%)",
             border: "1.5px solid rgba(173, 94, 59,0.25)",

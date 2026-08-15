@@ -644,7 +644,7 @@ export default function HomeAuthed({
       {user && myRegions.length === 0 && activity && activity.catCount > 0 && (
         <Link
           href="/mypage/activity-regions"
-          className="block mb-4 active:scale-[0.99] transition-transform"
+          className="block mb-4 press transition-transform"
           style={{
             background: "var(--color-primary)",
             borderRadius: "var(--radius-card)",
@@ -707,7 +707,7 @@ export default function HomeAuthed({
           background: "var(--color-surface)",
           borderRadius: "var(--radius-card)",
           boxShadow: "var(--shadow-card)",
-          border: "1px solid rgba(0,0,0,0.04)",
+          border: "1px solid var(--color-divider)",
         }}
       >
         <div className="px-4 pt-4">
@@ -742,7 +742,7 @@ export default function HomeAuthed({
                     )}
                     <Link
                       href="/tips"
-                      className="w-9 h-9 rounded-xl bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
+                      className="w-9 h-9 rounded-xl bg-surface-alt flex items-center justify-center press-strong transition-transform"
                       aria-label="AI 집사"
                     >
                       {/* AI집사 이중 진입점 — 탭 재편(D-day) 시 탭이 빠져도 발견성 유지 (2026-07-21 회의) */}
@@ -750,14 +750,14 @@ export default function HomeAuthed({
                     </Link>
                     <Link
                       href="/search"
-                      className="w-9 h-9 rounded-xl bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
+                      className="w-9 h-9 rounded-xl bg-surface-alt flex items-center justify-center press-strong transition-transform"
                       aria-label="통합 검색"
                     >
                       <Search size={16} className="text-text-sub" />
                     </Link>
                     <Link
                       href="/notifications"
-                      className="relative w-9 h-9 rounded-xl bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
+                      className="relative w-9 h-9 rounded-xl bg-surface-alt flex items-center justify-center press-strong transition-transform"
                       aria-label="알림"
                     >
                       <Bell size={16} className={unreadCount > 0 ? "text-primary" : "text-text-sub"} />
@@ -812,7 +812,7 @@ export default function HomeAuthed({
             </div>
             <button
               onClick={() => { setWeatherError(""); setWeatherLoading(true); window.location.reload(); }}
-              className="text-[13px] font-semibold text-primary px-3 py-1.5 rounded-xl bg-primary/10 active:scale-95 transition-transform shrink-0"
+              className="text-[13px] font-semibold text-primary px-3 py-1.5 rounded-xl bg-primary/10 press-strong transition-transform shrink-0"
             >
               재시도
             </button>
@@ -924,7 +924,7 @@ export default function HomeAuthed({
                   {SHOW_WEATHER_SHOP_BRIDGE && bridge && (
                     <Link
                       href={`/shop?category=${bridge.cat}`}
-                      className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl active:scale-[0.98] transition-transform"
+                      className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl press transition-transform"
                       style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(173, 94, 59,0.15)" }}
                     >
                       <span className="flex items-center gap-1.5 text-[11px] font-bold" style={{ color: "var(--color-primary-dark)" }}>
@@ -1005,7 +1005,7 @@ export default function HomeAuthed({
           {!primaryRegion ? (
             <Link
               href="/mypage/activity-regions"
-              className="block active:scale-[0.99] transition-transform"
+              className="block press transition-transform"
             >
               <div
                 className="px-4 py-4 flex items-center gap-3"
@@ -1038,7 +1038,7 @@ export default function HomeAuthed({
                     background: "var(--color-surface)",
                     borderRadius: "var(--radius-card)",
                     boxShadow: "var(--shadow-card)",
-                    border: "1px solid rgba(0,0,0,0.04)",
+                    border: "1px solid var(--color-divider)",
                   }}
                 >
                   {/* 세그먼트 탭 */}
@@ -1064,7 +1064,7 @@ export default function HomeAuthed({
                   </div>
 
                   {hoodTab === "cats" ? (
-                  <Link href="/map" className="block active:scale-[0.99] transition-transform">
+                  <Link href="/map" className="block press transition-transform">
                     <p className="text-[11px] text-text-light mb-2">
                       반경 {primaryRegion.radius_m >= 1000 ? `${primaryRegion.radius_m / 1000}km` : `${primaryRegion.radius_m}m`} · 탭하면 지도에서 볼 수 있어요
                     </p>
@@ -1135,7 +1135,7 @@ export default function HomeAuthed({
                     background: "var(--color-surface)",
                     borderRadius: "var(--radius-card)",
                     boxShadow: "var(--shadow-card)",
-                    border: "1px solid rgba(0,0,0,0.04)",
+                    border: "1px solid var(--color-divider)",
                   }}
                 >
                   <div className="flex items-start gap-3 mb-3">
@@ -1174,7 +1174,7 @@ export default function HomeAuthed({
                             <Link
                               key={c.id}
                               href={`/cats/${c.id}`}
-                              className="shrink-0 text-center active:scale-[0.97] transition-transform"
+                              className="shrink-0 text-center press-strong transition-transform"
                               style={{ width: 56 }}
                             >
                               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -1201,7 +1201,7 @@ export default function HomeAuthed({
 
                   <Link
                     href="/map"
-                    className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white active:scale-[0.98] transition-transform"
+                    className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white press transition-transform"
                     style={{
                       background: "var(--color-primary)",
                       boxShadow: "var(--shadow-primary)",
@@ -1223,7 +1223,7 @@ export default function HomeAuthed({
                     background: "var(--color-surface)",
                     borderRadius: "var(--radius-card)",
                     boxShadow: "var(--shadow-card)",
-                    border: "1px solid rgba(0,0,0,0.04)",
+                    border: "1px solid var(--color-divider)",
                   }}
                 >
                   <p className="text-[13px] font-bold text-text-main mb-2">
@@ -1301,7 +1301,7 @@ export default function HomeAuthed({
                     href={href}
                     className="block active:bg-gray-50 transition-colors"
                     style={{
-                      borderTop: i === 0 ? "none" : "1px solid rgba(0,0,0,0.04)",
+                      borderTop: i === 0 ? "none" : "1px solid var(--color-divider)",
                     }}
                   >
                     <div className="flex items-center gap-3 px-4 py-3">
@@ -1350,7 +1350,7 @@ export default function HomeAuthed({
             background: "var(--color-surface)",
             borderRadius: "var(--radius-card)",
             boxShadow: "var(--shadow-card)",
-            border: "1px solid rgba(0,0,0,0.04)",
+            border: "1px solid var(--color-divider)",
           }}
         >
           {/* 헤더(레벨+경험치) = 접기 토글 */}
@@ -1358,7 +1358,7 @@ export default function HomeAuthed({
             type="button"
             onClick={() => setActivityOpen((v) => !v)}
             aria-expanded={activityOpen}
-            className="w-full text-left p-4 flex items-center gap-3 active:scale-[0.99] transition-transform"
+            className="w-full text-left p-4 flex items-center gap-3 press transition-transform"
           >
             <div
               className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
@@ -1419,7 +1419,7 @@ export default function HomeAuthed({
               </div>
               <Link
                 href="/mypage"
-                className="mt-3 flex items-center justify-center gap-1 py-2 rounded-xl text-[13px] font-bold text-primary active:scale-[0.98] transition-transform"
+                className="mt-3 flex items-center justify-center gap-1 py-2 rounded-xl text-[13px] font-bold text-primary press transition-transform"
                 style={{ background: "var(--color-primary-softer)" }}
               >
                 업적·타이틀 전체 보기 <ChevronRight size={13} />
@@ -1453,7 +1453,7 @@ export default function HomeAuthed({
                 <Link
                   key={c.title}
                   href={c.href}
-                  className="shrink-0 flex flex-col gap-0.5 active:scale-[0.97] transition-transform"
+                  className="shrink-0 flex flex-col gap-0.5 press-strong transition-transform"
                   style={{
                     width: 132, padding: "13px 13px 12px", borderRadius: "var(--radius-card)", scrollSnapAlign: "start",
                     background: "var(--color-surface)", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)",
@@ -1468,7 +1468,7 @@ export default function HomeAuthed({
                   key={c.title}
                   type="button"
                   onClick={() => document.getElementById(c.target!)?.scrollIntoView({ behavior: "smooth", block: "center" })}
-                  className="shrink-0 flex flex-col gap-0.5 text-left active:scale-[0.97] transition-transform"
+                  className="shrink-0 flex flex-col gap-0.5 text-left press-strong transition-transform"
                   style={{
                     width: 132, padding: "13px 13px 12px", borderRadius: "var(--radius-card)", scrollSnapAlign: "start",
                     background: c.hot ? "var(--color-warning-soft)" : "var(--color-surface)",
@@ -1595,7 +1595,7 @@ export default function HomeAuthed({
               <Link
                 key={c.id}
                 href={`/cats/${c.id}`}
-                className="shrink-0 active:scale-[0.97] transition-transform"
+                className="shrink-0 press-strong transition-transform"
                 style={{ width: 112 }}
               >
                 <div className="relative">
@@ -1657,7 +1657,7 @@ export default function HomeAuthed({
           background: "var(--color-surface)",
           borderRadius: "var(--radius-card)",
           boxShadow: "var(--shadow-card)",
-          border: "1px solid rgba(0,0,0,0.04)",
+          border: "1px solid var(--color-divider)",
         }}
       >
         <div
@@ -1724,7 +1724,7 @@ export default function HomeAuthed({
                 <Link
                   key={a.catId}
                   href={`/cats/${a.catId}`}
-                  className="shrink-0 active:scale-[0.97] transition-transform"
+                  className="shrink-0 press-strong transition-transform"
                   style={{ width: 200 }}
                 >
                   <div
@@ -1851,7 +1851,7 @@ export default function HomeAuthed({
                   href={sanitizeHttpUrl(issue.external_url, "#")}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block active:scale-[0.99] transition-transform"
+                  className="block press transition-transform"
                 >
                   {card}
                 </a>
@@ -1867,7 +1867,7 @@ export default function HomeAuthed({
       {SHOW_NEW_POSTS_BADGE && newPostsCount > 0 && (
         <Link
           href="/community"
-          className="block mb-3 active:scale-[0.99] transition-transform"
+          className="block mb-3 press transition-transform"
         >
           <div
             className="flex items-center justify-between px-4 py-2.5"
@@ -1912,7 +1912,7 @@ export default function HomeAuthed({
               <Link
                 key={post.id}
                 href={`/community/${post.id}`}
-                className="block active:scale-[0.99] transition-transform"
+                className="block press transition-transform"
               >
                 <div
                   className="flex items-center gap-3 px-4 py-3"
@@ -1920,7 +1920,7 @@ export default function HomeAuthed({
                     background: "var(--color-surface)",
                     borderRadius: "var(--radius-card-sm)",
                     boxShadow: "var(--shadow-card-sm)",
-                    border: "1px solid rgba(0,0,0,0.04)",
+                    border: "1px solid var(--color-divider)",
                   }}
                 >
                   <div className="flex-1 min-w-0">
@@ -1946,7 +1946,7 @@ export default function HomeAuthed({
       {SHOW_TIPS_ENTRY && (
       <Link
         href="/tips"
-        className="flex items-center gap-3 p-4 mb-4 active:scale-[0.99] transition-transform"
+        className="flex items-center gap-3 p-4 mb-4 press transition-transform"
         style={{
           background: "var(--color-primary-softer)",
           borderRadius: "var(--radius-card)",
@@ -1986,7 +1986,7 @@ export default function HomeAuthed({
           <button
             type="button"
             onClick={() => document.getElementById("my-cats")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-white text-[15px] font-bold active:scale-[0.98] transition-transform pointer-events-auto"
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-white text-[15px] font-bold press transition-transform pointer-events-auto"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "var(--shadow-primary)",

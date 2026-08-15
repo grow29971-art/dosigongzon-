@@ -136,7 +136,7 @@ export default function DistrictContactsPage() {
       <div className="flex items-center gap-3 mb-5">
         <Link
           href="/protection"
-          className="w-9 h-9 rounded-full bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
+          className="w-9 h-9 rounded-full bg-surface-alt flex items-center justify-center press-strong transition-transform"
         >
           <ArrowLeft size={18} className="text-text-sub" />
         </Link>
@@ -188,7 +188,7 @@ export default function DistrictContactsPage() {
             className="flex items-center gap-3 px-4 py-3.5 rounded-2xl press"
             style={{
               background: "#FFFFFF",
-              border: "1px solid rgba(0,0,0,0.04)",
+              border: "1px solid var(--color-divider)",
               boxShadow: "var(--shadow-card)",
             }}
           >
@@ -230,7 +230,7 @@ export default function DistrictContactsPage() {
             className="flex items-center gap-3 px-4 py-3.5 rounded-2xl press"
             style={{
               background: "#FFFFFF",
-              border: "1px solid rgba(0,0,0,0.04)",
+              border: "1px solid var(--color-divider)",
               boxShadow: "var(--shadow-card)",
             }}
           >
@@ -253,7 +253,7 @@ export default function DistrictContactsPage() {
             className="flex items-center gap-3 px-4 py-3.5 rounded-2xl press"
             style={{
               background: "#FFFFFF",
-              border: "1px solid rgba(0,0,0,0.04)",
+              border: "1px solid var(--color-divider)",
               boxShadow: "var(--shadow-card)",
             }}
           >

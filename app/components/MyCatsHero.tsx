@@ -146,7 +146,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
           return (
             <div
               key={cat.id}
-              className="relative shrink-0 overflow-hidden active:scale-[0.98] transition-transform"
+              className="relative shrink-0 overflow-hidden press transition-transform"
               style={{
                 width: 168,
                 aspectRatio: "3 / 4",
@@ -196,7 +196,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
                   <button
                     onClick={(e) => { e.stopPropagation(); if (!fedToday && !cat.busy) logCare(cat.id, "feed"); }}
                     disabled={fedToday || cat.busy}
-                    className="flex-1 min-w-0 py-2 rounded-xl text-[13px] font-bold flex items-center justify-center gap-1 active:scale-95 transition-transform pointer-events-auto"
+                    className="flex-1 min-w-0 py-2 rounded-xl text-[13px] font-bold flex items-center justify-center gap-1 press-strong transition-transform pointer-events-auto"
                     style={{
                       background: fedToday ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.95)",
                       color: fedToday ? "#fff" : "var(--color-text-main)",
@@ -214,7 +214,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
                   <button
                     onClick={(e) => { e.stopPropagation(); setMoreOpen(moreOpen === cat.id ? null : cat.id); }}
                     aria-label={`${cat.name} 다른 돌봄 기록`}
-                    className="shrink-0 w-[34px] rounded-xl flex items-center justify-center active:scale-95 transition-transform pointer-events-auto"
+                    className="shrink-0 w-[34px] rounded-xl flex items-center justify-center press-strong transition-transform pointer-events-auto"
                     style={{ background: "rgba(255,255,255,0.28)", backdropFilter: "blur(4px)" }}
                   >
                     <Plus size={15} strokeWidth={3} className="text-white" />
@@ -245,7 +245,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
                           key={q.type}
                           onClick={() => { if (!cat.busy) logCare(cat.id, q.type); }}
                           disabled={cat.busy}
-                          className="py-2 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1 active:scale-95 transition-transform"
+                          className="py-2 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1 press-strong transition-transform"
                           style={{
                             background: done ? "rgba(34,163,102,0.35)" : "rgba(255,255,255,0.92)",
                             color: done ? "#fff" : "var(--color-text-main)",
@@ -272,7 +272,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
         {/* + 새 친구 등록 카드 */}
         <Link
           href="/map"
-          className="shrink-0 flex flex-col items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+          className="shrink-0 flex flex-col items-center justify-center gap-2 press transition-transform"
           style={{
             width: 130,
             aspectRatio: "3 / 4.13",

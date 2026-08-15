@@ -81,7 +81,7 @@ export default function ErrorPage({
             <button
               type="button"
               onClick={() => reset()}
-              className="w-full py-3 rounded-2xl text-[15px] font-bold text-white active:scale-[0.98] transition-transform"
+              className="w-full py-3 rounded-2xl text-[15px] font-bold text-white press transition-transform"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                 boxShadow: "var(--shadow-primary)",
@@ -91,11 +91,11 @@ export default function ErrorPage({
             </button>
             <Link
               href="/"
-              className="w-full py-3 rounded-2xl text-[13px] font-bold active:scale-[0.98]"
+              className="w-full py-3 rounded-2xl text-[13px] font-bold press"
               style={{
                 background: "#F7F4EE",
                 color: "#A38E7A",
-                border: "1px solid rgba(0,0,0,0.05)",
+                border: "1px solid var(--color-divider)",
               }}
             >
               🏠 홈으로 돌아가기

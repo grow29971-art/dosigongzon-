@@ -259,7 +259,7 @@ export default function AdminDashboardPage() {
       >
         <button
           onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[13px] font-semibold mb-3 opacity-80 active:scale-95"
+          className="flex items-center gap-1 text-[13px] font-semibold mb-3 opacity-80 press-strong"
         >
           <ArrowLeft size={14} />
           마이페이지
@@ -276,7 +276,7 @@ export default function AdminDashboardPage() {
             type="button"
             onClick={refresh}
             disabled={refreshing}
-            className="w-9 h-9 rounded-xl flex items-center justify-center active:scale-90 disabled:opacity-50"
+            className="w-9 h-9 rounded-xl flex items-center justify-center press-strong disabled:opacity-50"
             style={{ background: "rgba(255,255,255,0.12)" }}
             aria-label="새로고침"
           >
@@ -424,12 +424,12 @@ export default function AdminDashboardPage() {
             <Link
               key={m.href}
               href={m.href}
-              className="flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
+              className="flex items-center gap-3 px-4 py-3.5 press transition-transform"
               style={{
                 background: "#FFFFFF",
                 borderRadius: "var(--radius-card-sm)",
                 boxShadow: `0 4px 14px ${m.color}10, 0 1px 2px rgba(0,0,0,0.02)`,
-                border: "1px solid rgba(0,0,0,0.04)",
+                border: "1px solid var(--color-divider)",
               }}
             >
               <div
@@ -506,7 +506,7 @@ function StatCard({
       className="rounded-2xl p-3"
       style={{
         background: highlight ? `linear-gradient(135deg, ${color}15 0%, ${color}08 100%)` : "#FFFFFF",
-        border: highlight ? `1px solid ${color}30` : "1px solid rgba(0,0,0,0.04)",
+        border: highlight ? `1px solid ${color}30` : "1px solid var(--color-divider)",
         boxShadow: "var(--shadow-card)",
       }}
     >

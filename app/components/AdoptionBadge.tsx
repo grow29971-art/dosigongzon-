@@ -71,7 +71,7 @@ export function AdoptionInquireButton({
     <button
       type="button"
       onClick={handleClick}
-      className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-white active:scale-[0.98] transition-transform"
+      className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-white press transition-transform"
       style={{
         background: `linear-gradient(135deg, ${meta.color} 0%, ${darken(meta.color)} 100%)`,
         boxShadow: `0 6px 18px ${meta.color}40`,

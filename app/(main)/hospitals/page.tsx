@@ -95,7 +95,7 @@ export default function HospitalsPage() {
           background: "#FFFFFF",
           borderRadius: "var(--radius-card)",
           boxShadow: "var(--shadow-card)",
-          border: "1px solid rgba(0,0,0,0.04)",
+          border: "1px solid var(--color-divider)",
         }}
       >
         <Search size={18} className="text-text-muted shrink-0" />
@@ -213,7 +213,7 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
           : "0 4px 16px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02)",
         border: hospital.pinned
           ? "1.5px solid rgba(173, 94, 59,0.25)"
-          : "1px solid rgba(0,0,0,0.04)",
+          : "1px solid var(--color-divider)",
       }}
     >
       {/* 헤더: 이름 + 고정 마크 + 전화 버튼 */}
@@ -245,7 +245,7 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
         {hospital.phone && (
           <a
             href={`tel:${hospital.phone}`}
-            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 active:scale-90 transition-transform"
+            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 press-strong transition-transform"
             style={{
               background: "linear-gradient(135deg, #6B8E6F 0%, #5A7C5E 100%)",
               boxShadow: "0 4px 10px rgba(107,142,111,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",

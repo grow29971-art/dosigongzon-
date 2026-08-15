@@ -57,7 +57,7 @@ export default function HomeStreakCard({
   const hoursLeft = atRisk ? Math.max(1, 24 - kstHour) : 0;
 
   return (
-    <Link href="/map" className="block mb-4 active:scale-[0.99] transition-transform">
+    <Link href="/map" className="block mb-4 press transition-transform">
       <div
         className="p-5 relative"
         style={{

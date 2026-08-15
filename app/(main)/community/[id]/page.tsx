@@ -295,7 +295,7 @@ export default function PostDetailPage({
       <div className="flex items-center px-4 pt-14 pb-3 gap-3">
         <button
           onClick={() => router.back()}
-          className="p-2 -ml-2 active:scale-90 transition-transform"
+          className="p-2 -ml-2 press-strong transition-transform"
         >
           <ArrowLeft size={24} className="text-text-main" />
         </button>
@@ -318,7 +318,7 @@ export default function PostDetailPage({
         {isAdmin && (
           <div className="ml-auto flex items-center gap-1.5">
             <button
-              className="text-[11px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform flex items-center gap-1"
+              className="text-[11px] font-bold px-3 py-1.5 rounded-lg press-strong transition-transform flex items-center gap-1"
               style={{
                 backgroundColor: post.isPinned ? "var(--color-error-soft)" : "var(--color-gray-100)",
                 color: post.isPinned ? "#D85555" : "#A38E7A",
@@ -339,7 +339,7 @@ export default function PostDetailPage({
               {post.isPinned ? "공지 해제" : "공지 고정"}
             </button>
             <button
-              className="text-[11px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform flex items-center gap-1"
+              className="text-[11px] font-bold px-3 py-1.5 rounded-lg press-strong transition-transform flex items-center gap-1"
               style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}
               onClick={async () => {
                 if (!confirm(`"${post.title}" 글을 삭제할까요?`)) return;
@@ -413,7 +413,7 @@ export default function PostDetailPage({
                 <div
                   key={url}
                   className="relative w-full aspect-square rounded-xl overflow-hidden"
-                  style={{ border: "1px solid var(--color-gray-200)" }}
+                  style={{ border: "1px solid var(--color-border)" }}
                 >
                   <Image
                     src={url}
@@ -435,7 +435,7 @@ export default function PostDetailPage({
           <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={() => handleVote(1)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold active:scale-95 transition-all"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold press-strong transition-all"
               style={{
                 backgroundColor: myVote === 1 ? cat.color : "#FFFFFF",
                 border: `1.5px solid ${myVote === 1 ? cat.color : "var(--color-gray-200)"}`,
@@ -447,7 +447,7 @@ export default function PostDetailPage({
             </button>
             <button
               onClick={() => handleVote(-1)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold active:scale-95 transition-all"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold press-strong transition-all"
               style={{
                 backgroundColor: myVote === -1 ? "#A38E7A" : "#FFFFFF",
                 border: `1.5px solid ${myVote === -1 ? "#A38E7A" : "var(--color-gray-200)"}`,
@@ -470,7 +470,7 @@ export default function PostDetailPage({
             <button
               type="button"
               onClick={handleShareKakao}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] font-bold active:scale-95 transition-transform"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] font-bold press-strong transition-transform"
               style={{
                 backgroundColor: "#FEE500",
                 color: "#3C1E1E",
@@ -484,7 +484,7 @@ export default function PostDetailPage({
             <button
               type="button"
               onClick={handleShare}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] font-bold active:scale-95 transition-transform"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] font-bold press-strong transition-transform"
               style={{
                 backgroundColor: shareStatus === "copied" ? "#6B8E6F" : "#FFFFFF",
                 border: `1px solid ${shareStatus === "copied" ? "#6B8E6F" : "var(--color-gray-200)"}`,
@@ -515,8 +515,8 @@ export default function PostDetailPage({
                   authorName: post.authorName ?? null,
                 })
               }
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] active:scale-95 transition-transform"
-              style={{ backgroundColor: "#FFFFFF", border: "1px solid var(--color-gray-200)", color: "#A38E7A" }}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] press-strong transition-transform"
+              style={{ backgroundColor: "#FFFFFF", border: "1px solid var(--color-border)", color: "#A38E7A" }}
             >
               <Flag size={12} strokeWidth={2.2} />
               신고
@@ -619,7 +619,7 @@ export default function PostDetailPage({
               <button
                 type="button"
                 onClick={() => setReplyTo(null)}
-                className="ml-auto w-5 h-5 rounded-full bg-surface-alt flex items-center justify-center active:scale-90"
+                className="ml-auto w-5 h-5 rounded-full bg-surface-alt flex items-center justify-center press-strong"
               >
                 <X size={10} className="text-text-sub" />
               </button>
@@ -637,7 +637,7 @@ export default function PostDetailPage({
           <button
             type="button"
             onClick={() => setSecretComment((v) => !v)}
-            className="flex items-center gap-1.5 mb-1.5 px-2 py-1 active:scale-95 transition-transform"
+            className="flex items-center gap-1.5 mb-1.5 px-2 py-1 press-strong transition-transform"
             aria-pressed={secretComment}
           >
             {secretComment
@@ -752,7 +752,7 @@ function CommentItem({
           <button
             type="button"
             onClick={onReport}
-            className="w-5 h-5 rounded-md flex items-center justify-center active:scale-90"
+            className="w-5 h-5 rounded-md flex items-center justify-center press-strong"
             style={{ backgroundColor: "var(--color-gray-50)" }}
             aria-label="댓글 신고"
           >
@@ -785,7 +785,7 @@ function CommentItem({
         <button
           type="button"
           onClick={onReply}
-          className="flex items-center gap-1 ml-8 mt-1.5 text-[11px] font-semibold active:scale-95 transition-transform"
+          className="flex items-center gap-1 ml-8 mt-1.5 text-[11px] font-semibold press-strong transition-transform"
           style={{ color: "#A38E7A" }}
         >
           <Reply size={11} />

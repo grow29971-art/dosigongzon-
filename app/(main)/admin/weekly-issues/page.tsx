@@ -160,7 +160,7 @@ export default function AdminWeeklyIssuesPage() {
       <div className="mb-5">
         <button
           onClick={() => router.push("/admin")}
-          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 press-strong transition-transform"
         >
           <ArrowLeft size={14} />
           관리자
@@ -181,7 +181,7 @@ export default function AdminWeeklyIssuesPage() {
           </div>
           <button
             onClick={handleCreate}
-            className="w-11 h-11 rounded-full bg-primary flex items-center justify-center active:scale-95 transition-transform"
+            className="w-11 h-11 rounded-full bg-primary flex items-center justify-center press-strong transition-transform"
             style={{ boxShadow: "var(--shadow-primary)" }}
             aria-label="새 이슈 작성"
           >
@@ -206,7 +206,7 @@ export default function AdminWeeklyIssuesPage() {
             </h2>
             <button
               onClick={handleCancel}
-              className="w-7 h-7 rounded-lg flex items-center justify-center active:scale-90"
+              className="w-7 h-7 rounded-lg flex items-center justify-center press-strong"
               style={{ backgroundColor: "var(--color-gray-100)" }}
             >
               <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
@@ -237,7 +237,7 @@ export default function AdminWeeklyIssuesPage() {
             style={{
               backgroundColor: "var(--color-gray-50)",
               color: "#2A2A28",
-              border: "1px solid var(--color-gray-200)",
+              border: "1px solid var(--color-border)",
             }}
           />
 
@@ -252,7 +252,7 @@ export default function AdminWeeklyIssuesPage() {
             style={{
               backgroundColor: "var(--color-gray-50)",
               color: "#2A2A28",
-              border: "1px solid var(--color-gray-200)",
+              border: "1px solid var(--color-border)",
             }}
           />
 
@@ -285,7 +285,7 @@ export default function AdminWeeklyIssuesPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 active:scale-[0.97] transition-all"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 press-strong transition-all"
             >
               {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
               저장
@@ -321,7 +321,7 @@ export default function AdminWeeklyIssuesPage() {
                   background: "#FFFFFF",
                   borderRadius: "var(--radius-card)",
                   boxShadow: "var(--shadow-card)",
-                  border: "1px solid rgba(0,0,0,0.04)",
+                  border: "1px solid var(--color-divider)",
                 }}
               >
                 <div className="flex items-start gap-3">
@@ -417,7 +417,7 @@ function Input({
       style={{
         backgroundColor: "var(--color-gray-50)",
         color: "#2A2A28",
-        border: "1px solid var(--color-gray-200)",
+        border: "1px solid var(--color-border)",
       }}
     />
   );

@@ -168,7 +168,7 @@ function SignupContent() {
             <button
               type="button"
               onClick={handleOpenExternal}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[13px] active:scale-95"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[13px] press-strong"
               style={{ backgroundColor: "rgba(0,0,0,0.05)", color: "#6B5043" }}
             >
               <ExternalLink size={14} />
@@ -314,7 +314,7 @@ function SignupContent() {
           <button
             onClick={() => handleSignup("kakao")}
             disabled={!!loading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-bold active:scale-[0.97] transition-transform disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-bold press-strong transition-transform disabled:opacity-60"
             /* 인앱에서도 카카오는 실제로 진행되므로 약관 동의 상태를 그대로 반영한다 */
             style={{ backgroundColor: "#FEE500", color: "#191919", opacity: agreed ? 1 : 0.6 }}
           >
@@ -330,7 +330,7 @@ function SignupContent() {
           <button
             onClick={() => handleSignup("google")}
             disabled={!!loading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold active:scale-[0.97] transition-transform border border-[#E0E0E0] disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold press-strong transition-transform border border-[#E0E0E0] disabled:opacity-60"
             style={{ backgroundColor: "#FFFFFF", color: "#2A2A28", opacity: (agreed || inApp) ? 1 : 0.6 }}
           >
             {loading === "google" ? (
@@ -348,7 +348,7 @@ function SignupContent() {
           <button
             onClick={() => handleSignup("apple")}
             disabled={!!loading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold active:scale-[0.97] transition-transform disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold press-strong transition-transform disabled:opacity-60"
             style={{ backgroundColor: "#000000", color: "#FFFFFF", opacity: (agreed || inApp) ? 1 : 0.6 }}
           >
             {loading === "apple" ? (

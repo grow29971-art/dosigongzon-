@@ -236,7 +236,7 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
         >
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform"
+            className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center press-strong transition-transform"
             style={{ background: "rgba(0,0,0,0.05)" }}
             aria-label="닫기"
           >
@@ -275,7 +275,7 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
             <button
               onClick={handleSend}
               disabled={busy}
-              className="w-full h-[52px] rounded-2xl text-white text-[15px] font-bold active:scale-[0.98] transition-transform disabled:opacity-60"
+              className="w-full h-[52px] rounded-2xl text-white text-[15px] font-bold press transition-transform disabled:opacity-60"
               style={{ background: "linear-gradient(135deg, #3a2c4d, #6b5b8a)" }}
             >
               {busy ? "보내는 중…" : "고양이별로 보내기"}
@@ -431,7 +431,7 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
 
           <button
             onClick={() => router.push(`/memorial/${cat.id}`)}
-            className="w-full h-[52px] rounded-2xl mt-8 text-[15px] font-bold active:scale-[0.98] transition-transform"
+            className="w-full h-[52px] rounded-2xl mt-8 text-[15px] font-bold press transition-transform"
             style={{ background: "rgba(255,255,255,0.94)", color: "#3a2c4d" }}
           >
             함께한 기록 보기

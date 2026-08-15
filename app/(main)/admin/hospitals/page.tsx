@@ -215,7 +215,7 @@ export default function AdminHospitalsPage() {
       <div className="mb-5">
         <button
           onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 press-strong transition-transform"
         >
           <ArrowLeft size={14} />
           마이페이지
@@ -238,7 +238,7 @@ export default function AdminHospitalsPage() {
             <button
               onClick={handleSync}
               disabled={syncing}
-              className="w-11 h-11 rounded-full flex items-center justify-center active:scale-95 transition-transform disabled:opacity-40"
+              className="w-11 h-11 rounded-full flex items-center justify-center press-strong transition-transform disabled:opacity-40"
               style={{
                 backgroundColor: "#22B573",
                 boxShadow: "0 6px 14px rgba(34,181,115,0.35)",
@@ -253,7 +253,7 @@ export default function AdminHospitalsPage() {
             </button>
             <button
               onClick={handleCreate}
-              className="w-11 h-11 rounded-full bg-primary flex items-center justify-center active:scale-95 transition-transform"
+              className="w-11 h-11 rounded-full bg-primary flex items-center justify-center press-strong transition-transform"
               style={{ boxShadow: "var(--shadow-primary)" }}
               aria-label="새 병원 추가"
             >
@@ -310,7 +310,7 @@ export default function AdminHospitalsPage() {
             </h2>
             <button
               onClick={handleCancel}
-              className="w-7 h-7 rounded-lg flex items-center justify-center active:scale-90"
+              className="w-7 h-7 rounded-lg flex items-center justify-center press-strong"
               style={{ backgroundColor: "var(--color-gray-100)" }}
             >
               <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
@@ -386,7 +386,7 @@ export default function AdminHospitalsPage() {
             style={{
               backgroundColor: "var(--color-gray-50)",
               color: "#2A2A28",
-              border: "1px solid var(--color-gray-200)",
+              border: "1px solid var(--color-border)",
             }}
           />
 
@@ -412,7 +412,7 @@ export default function AdminHospitalsPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 active:scale-[0.97] transition-all"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 press-strong transition-all"
             >
               {saving ? (
                 <Loader2 size={14} className="animate-spin" />
@@ -443,7 +443,7 @@ export default function AdminHospitalsPage() {
           style={{
             background: "#FFFFFF",
             borderRadius: "var(--radius-card-sm)",
-            border: "1px solid rgba(0,0,0,0.04)",
+            border: "1px solid var(--color-divider)",
           }}
         >
           <Stethoscope
@@ -483,7 +483,7 @@ export default function AdminHospitalsPage() {
                               : "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)",
                             border: h.pinned
                               ? "1.5px solid rgba(173, 94, 59,0.25)"
-                              : "1px solid rgba(0,0,0,0.04)",
+                              : "1px solid var(--color-divider)",
                           }}
                         >
                           <div className="flex items-start justify-between gap-2 mb-1">
@@ -583,7 +583,7 @@ function Input({
       style={{
         backgroundColor: "var(--color-gray-50)",
         color: "#2A2A28",
-        border: "1px solid var(--color-gray-200)",
+        border: "1px solid var(--color-border)",
       }}
     />
   );

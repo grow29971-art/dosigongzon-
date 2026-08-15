@@ -74,7 +74,7 @@ export default function AdminInsightsPage() {
       <div className="px-4 pt-12 pb-4 flex items-center gap-3">
         <button
           onClick={() => router.back()}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로"
         >
@@ -205,7 +205,7 @@ export default function AdminInsightsPage() {
                   <Link
                     key={c.id}
                     href={`/cats/${c.id}`}
-                    className="flex items-center justify-between bg-white rounded-xl px-3.5 py-2.5 active:scale-[0.99]"
+                    className="flex items-center justify-between bg-white rounded-xl px-3.5 py-2.5 press"
                     style={{ boxShadow: "var(--shadow-card-sm)" }}
                   >
                     <div className="flex items-center gap-2 min-w-0">
@@ -236,7 +236,7 @@ export default function AdminInsightsPage() {
                   <Link
                     key={u.user_id}
                     href={`/users/${u.user_id}`}
-                    className="flex items-center justify-between bg-white rounded-xl px-3.5 py-2.5 active:scale-[0.99]"
+                    className="flex items-center justify-between bg-white rounded-xl px-3.5 py-2.5 press"
                     style={{ boxShadow: "var(--shadow-card-sm)" }}
                   >
                     <div className="flex items-center gap-2 min-w-0">
@@ -283,7 +283,7 @@ function StatCard({
   return (
     <div
       className="rounded-2xl bg-white p-3.5"
-      style={{ boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.03)" }}
+      style={{ boxShadow: "var(--shadow-card)", border: "1px solid var(--color-divider)" }}
     >
       <div className="flex items-center gap-1.5 mb-1.5" style={{ color: accent }}>
         {icon}

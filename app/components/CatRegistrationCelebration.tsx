@@ -197,7 +197,7 @@ export default function CatRegistrationCelebration({
                 type="button"
                 onClick={logFirstMeal}
                 disabled={meal === "saving"}
-                className="w-full flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3 mb-3 text-[13px] font-bold text-white active:scale-[0.98] disabled:opacity-60"
+                className="w-full flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3 mb-3 text-[13px] font-bold text-white press disabled:opacity-60"
                 style={{
                   background: "linear-gradient(135deg, #E88D5A 0%, #D9743F 100%)",
                   boxShadow: "0 4px 14px rgba(217,116,63,0.4)",
@@ -224,7 +224,7 @@ export default function CatRegistrationCelebration({
           <button
             type="button"
             onClick={onClose}
-            className="w-full py-3 rounded-2xl text-[13px] font-bold text-white active:scale-[0.98]"
+            className="w-full py-3 rounded-2xl text-[13px] font-bold text-white press"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "var(--shadow-primary)",
@@ -237,7 +237,7 @@ export default function CatRegistrationCelebration({
               type="button"
               onClick={handleInvite}
               disabled={inviting}
-              className="w-full mt-2 py-2.5 rounded-2xl text-[13px] font-bold flex items-center justify-center gap-1.5 active:scale-[0.98] disabled:opacity-60"
+              className="w-full mt-2 py-2.5 rounded-2xl text-[13px] font-bold flex items-center justify-center gap-1.5 press disabled:opacity-60"
               style={{
                 backgroundColor: "#FEE500",
                 color: "#191919",

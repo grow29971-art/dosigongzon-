@@ -113,7 +113,7 @@ export default function OnboardingCard({
           <button
             type="button"
             onClick={onDismiss}
-            className="w-7 h-7 rounded-full flex items-center justify-center active:scale-90 shrink-0"
+            className="w-7 h-7 rounded-full flex items-center justify-center press-strong shrink-0"
             style={{ background: "rgba(0,0,0,0.05)" }}
             aria-label="나중에"
           >
@@ -141,7 +141,7 @@ export default function OnboardingCard({
             <Link
               key={s.key}
               href={s.href}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl active:scale-[0.99] transition-transform"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl press transition-transform"
               style={{
                 background: s.done
                   ? "var(--color-gray-50)"
@@ -152,7 +152,7 @@ export default function OnboardingCard({
                   ? "1px solid var(--color-divider)"
                   : isNext
                     ? "1px solid var(--color-primary-soft)"
-                    : "1px solid rgba(0,0,0,0.04)",
+                    : "1px solid var(--color-divider)",
                 boxShadow: isNext ? "var(--shadow-card)" : "none",
               }}
             >

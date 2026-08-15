@@ -63,7 +63,7 @@ export default function LocationLogsPage() {
       >
         <Link
           href="/admin"
-          className="flex items-center gap-1 text-[13px] font-semibold mb-3 opacity-80 active:scale-95"
+          className="flex items-center gap-1 text-[13px] font-semibold mb-3 opacity-80 press-strong"
         >
           <ArrowLeft size={14} />
           관리자 홈
@@ -125,7 +125,7 @@ export default function LocationLogsPage() {
                       : "0 2px 8px rgba(0,0,0,0.05)",
                     border: far
                       ? "1px solid rgba(216,85,85,0.25)"
-                      : "1px solid rgba(0,0,0,0.04)",
+                      : "1px solid var(--color-divider)",
                   }}
                 >
                   <div className="flex items-center justify-between mb-2">
@@ -208,7 +208,7 @@ function SummaryCard({
       className="rounded-2xl p-3 bg-white"
       style={{
         boxShadow: "var(--shadow-card)",
-        border: "1px solid rgba(0,0,0,0.04)",
+        border: "1px solid var(--color-divider)",
       }}
     >
       <p className="text-[11px] font-bold text-text-sub">{label}</p>

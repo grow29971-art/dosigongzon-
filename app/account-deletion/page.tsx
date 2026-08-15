@@ -23,7 +23,7 @@ export default function AccountDeletionPage() {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈으로"
         >
@@ -52,7 +52,7 @@ export default function AccountDeletionPage() {
           className="rounded-2xl p-5 mb-4"
           style={{
             background: "#FFFFFF",
-            border: "1px solid rgba(0,0,0,0.06)",
+            border: "1px solid var(--color-divider)",
             boxShadow: "var(--shadow-card)",
           }}
         >
@@ -108,7 +108,7 @@ export default function AccountDeletionPage() {
 
           <Link
             href="/mypage"
-            className="mt-5 flex items-center justify-between w-full px-4 py-3 rounded-xl active:scale-[0.99] transition-transform"
+            className="mt-5 flex items-center justify-between w-full px-4 py-3 rounded-xl press transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "var(--shadow-primary)",
@@ -126,7 +126,7 @@ export default function AccountDeletionPage() {
           className="rounded-2xl p-5 mb-4"
           style={{
             background: "#FFFFFF",
-            border: "1px solid rgba(0,0,0,0.06)",
+            border: "1px solid var(--color-divider)",
             boxShadow: "var(--shadow-card)",
           }}
         >
@@ -148,7 +148,7 @@ export default function AccountDeletionPage() {
           </p>
           <a
             href="mailto:grow29971@gmail.com?subject=%5B%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%A1%B4%5D%20%EA%B3%84%EC%A0%95%20%EC%82%AD%EC%A0%9C%20%EC%9A%94%EC%B2%AD&body=%EA%B0%80%EC%9E%85%20%EC%9D%B4%EB%A9%94%EC%9D%BC%3A%20%0A%EC%9A%94%EC%B2%AD%20%EC%82%AC%EC%9C%A0(%EC%84%A0%ED%83%9D)%3A%20"
-            className="flex items-center justify-between w-full px-4 py-3 rounded-xl active:scale-[0.99] transition-transform"
+            className="flex items-center justify-between w-full px-4 py-3 rounded-xl press transition-transform"
             style={{
               background: "#F0F4F8",
               border: "1px solid #D0DCE8",

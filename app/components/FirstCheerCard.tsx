@@ -72,7 +72,7 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
           const isLiked = liked.has(c.id);
           const thumb = thumbnailUrl(c.photo_url, 160);
           return (
-            <div key={c.id} className="flex-1 min-w-0 rounded-2xl overflow-hidden bg-white" style={{ border: "1px solid rgba(0,0,0,0.05)" }}>
+            <div key={c.id} className="flex-1 min-w-0 rounded-2xl overflow-hidden bg-white" style={{ border: "1px solid var(--color-divider)" }}>
               <Link href={`/cats/${c.id}`} className="block relative" style={{ aspectRatio: "1 / 1" }}>
                 {thumb ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -87,7 +87,7 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
                   type="button"
                   onClick={() => cheer(c.id)}
                   disabled={busy === c.id}
-                  className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 active:scale-90 transition-transform"
+                  className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 press-strong transition-transform"
                   style={{ background: isLiked ? "var(--color-like)" : "var(--color-like-soft)" }}
                   aria-label={`${c.name} 응원하기`}
                 >
@@ -102,7 +102,7 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
       {cheered && (
         <Link
           href="/map"
-          className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white text-[13px] font-bold active:scale-[0.98] transition-transform"
+          className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white text-[13px] font-bold press transition-transform"
           style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
         >
           <PawPrint size={14} /> 우리 동네 고양이 등록하기 <ChevronRight size={13} />

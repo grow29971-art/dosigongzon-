@@ -36,14 +36,14 @@ export default async function WeeklyHotPosts() {
             <Link
               key={post.id}
               href={`/community/${post.id}`}
-              className="block active:scale-[0.99] transition-transform"
+              className="block press transition-transform"
             >
               <div
                 className="relative rounded-2xl px-4 py-3 flex items-start gap-3"
                 style={{
                   background: "#FFFFFF",
                   boxShadow: "var(--shadow-card)",
-                  border: "1px solid rgba(0,0,0,0.04)",
+                  border: "1px solid var(--color-divider)",
                 }}
               >
                 {/* 순위 뱃지 */}

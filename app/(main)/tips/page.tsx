@@ -107,7 +107,7 @@ export default async function TipsIndexPage() {
       <div className="px-4 pt-12 pb-4 flex items-center gap-3">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈"
         >
@@ -184,7 +184,7 @@ export default async function TipsIndexPage() {
               <Link
                 key={cat.href}
                 href={cat.href}
-                className="rounded-2xl px-2 py-2.5 flex flex-col items-center gap-1 active:scale-[0.96] transition-transform"
+                className="rounded-2xl px-2 py-2.5 flex flex-col items-center gap-1 press-strong transition-transform"
                 style={{
                   background: "#FFFFFF",
                   boxShadow: "var(--shadow-card)",
@@ -210,7 +210,7 @@ export default async function TipsIndexPage() {
           {/* 강한 CTA — 무조건 누를 수 있는 톤 */}
           <Link
             href="/protection"
-            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-bold text-white active:scale-[0.98] transition-transform"
+            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-bold text-white press transition-transform"
             style={{
               background: "linear-gradient(135deg, #D85555 0%, #B83A2A 100%)",
               boxShadow: "0 6px 18px rgba(216,85,85,0.35)",
@@ -241,7 +241,7 @@ export default async function TipsIndexPage() {
               <Link
                 key={tag}
                 href={`/tips?tag=${encodeURIComponent(tag)}`}
-                className="shrink-0 text-[13px] font-bold px-2.5 py-1 chip-square bg-white text-text-sub border border-black/[0.04] active:scale-95 transition-transform"
+                className="shrink-0 text-[13px] font-bold px-2.5 py-1 chip-square bg-white text-text-sub border border-black/[0.04] press-strong transition-transform"
               >
                 #{tag}
               </Link>
@@ -305,7 +305,7 @@ function TipCard({ tip }: { tip: Tip }) {
   return (
     <Link href={`/tips/${tip.slug}`} className="block">
       <article
-        className="rounded-2xl overflow-hidden bg-white active:scale-[0.99] transition-transform"
+        className="rounded-2xl overflow-hidden bg-white press transition-transform"
         style={{ boxShadow: "var(--shadow-card)" }}
       >
         <div className="relative w-full aspect-[16/9] bg-[var(--color-gray-100)]">

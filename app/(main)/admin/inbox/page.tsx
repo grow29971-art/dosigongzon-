@@ -300,7 +300,7 @@ export default function AdminInboxPage() {
       <div className="mb-4">
         <button
           onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 press-strong transition-transform"
         >
           <ArrowLeft size={14} />
           마이페이지
@@ -352,7 +352,7 @@ export default function AdminInboxPage() {
                   background: "#FFFFFF",
                   borderRadius: "var(--radius-card-sm)",
                   boxShadow: "0 4px 14px rgba(216,85,85,0.08), 0 1px 2px rgba(0,0,0,0.02)",
-                  border: "1px solid rgba(0,0,0,0.04)",
+                  border: "1px solid var(--color-divider)",
                   borderLeft: `3px solid ${REPORT_STATUS_COLORS[r.status]}`,
                 }}
               >
@@ -466,7 +466,7 @@ export default function AdminInboxPage() {
                   background: "#FFFFFF",
                   borderRadius: "var(--radius-card-sm)",
                   boxShadow: "0 4px 14px rgba(74,123,168,0.08), 0 1px 2px rgba(0,0,0,0.02)",
-                  border: "1px solid rgba(0,0,0,0.04)",
+                  border: "1px solid var(--color-divider)",
                   borderLeft: `3px solid ${INQUIRY_STATUS_COLORS[i.status]}`,
                 }}
               >
@@ -533,14 +533,14 @@ export default function AdminInboxPage() {
                     style={{
                       backgroundColor: "#FFFFFF",
                       color: "#2A2A28",
-                      border: "1px solid var(--color-gray-200)",
+                      border: "1px solid var(--color-border)",
                     }}
                   />
                   <button
                     type="button"
                     onClick={() => handleSendReply(i.id)}
                     disabled={replying === i.id}
-                    className="mt-2 w-full py-2.5 rounded-xl text-white text-[13px] font-bold active:scale-[0.98] transition-transform disabled:opacity-60"
+                    className="mt-2 w-full py-2.5 rounded-xl text-white text-[13px] font-bold press transition-transform disabled:opacity-60"
                     style={{
                       background: "linear-gradient(135deg, #6B8E6F 0%, #4F6E53 100%)",
                       boxShadow: "0 3px 10px rgba(107,142,111,0.25)",
@@ -659,7 +659,7 @@ function EmptyBox({ children }: { children: React.ReactNode }) {
         background: "#FFFFFF",
         borderRadius: "var(--radius-card-sm)",
         boxShadow: "var(--shadow-card)",
-        border: "1px solid rgba(0,0,0,0.04)",
+        border: "1px solid var(--color-divider)",
       }}
     >
       {children}

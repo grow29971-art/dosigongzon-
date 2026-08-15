@@ -127,7 +127,7 @@ export default function AdminZonesPage() {
           />
           <button
             onClick={handleCreate} disabled={busy}
-            className="w-full rounded-xl py-2.5 text-[13px] font-bold text-white active:scale-95 disabled:opacity-60 flex items-center justify-center gap-1"
+            className="w-full rounded-xl py-2.5 text-[13px] font-bold text-white press-strong disabled:opacity-60 flex items-center justify-center gap-1"
             style={{ backgroundColor: "var(--color-primary)" }}
           >
             <Plus size={14} /> 구역 생성
@@ -144,7 +144,7 @@ export default function AdminZonesPage() {
               </div>
               <button
                 onClick={() => setZoneActive(zone.id, !zone.active).then(refresh).catch((e) => setError(e.message))}
-                className="text-[13px] font-bold px-3 py-1.5 rounded-lg active:scale-95"
+                className="text-[13px] font-bold px-3 py-1.5 rounded-lg press-strong"
                 style={{ backgroundColor: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}
               >
                 {zone.active ? "운영 중지" : "다시 운영"}
@@ -205,14 +205,14 @@ export default function AdminZonesPage() {
             <div className="flex gap-1.5 mt-2.5">
               {r.status === "received" && (
                 <button onClick={() => handleStatus(r.id, "forwarded")} disabled={busy}
-                  className="text-[13px] font-bold px-3 py-1.5 rounded-lg text-white active:scale-95 disabled:opacity-60"
+                  className="text-[13px] font-bold px-3 py-1.5 rounded-lg text-white press-strong disabled:opacity-60"
                   style={{ backgroundColor: "#4A7BA8" }}>
                   기관 이관 처리
                 </button>
               )}
               {r.status !== "closed" && (
                 <button onClick={() => handleStatus(r.id, "closed")} disabled={busy}
-                  className="text-[13px] font-bold px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-60"
+                  className="text-[13px] font-bold px-3 py-1.5 rounded-lg press-strong disabled:opacity-60"
                   style={{ backgroundColor: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}>
                   종결
                 </button>

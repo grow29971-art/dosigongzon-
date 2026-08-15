@@ -170,7 +170,7 @@ function WelcomeContent() {
             <button
               type="button"
               onClick={() => pickIntent("caretaker", "/map")}
-              className="px-4 py-4 rounded-2xl flex items-center gap-3 active:scale-[0.98] transition-transform"
+              className="px-4 py-4 rounded-2xl flex items-center gap-3 press transition-transform"
               style={{ background: "rgba(255,255,255,0.96)", boxShadow: "var(--shadow-fab)" }}
             >
               <span className="text-[24px] shrink-0">🐾</span>
@@ -184,7 +184,7 @@ function WelcomeContent() {
             <button
               type="button"
               onClick={() => pickIntent("interested", "/")}
-              className="px-4 py-4 rounded-2xl flex items-center gap-3 active:scale-[0.98] transition-transform"
+              className="px-4 py-4 rounded-2xl flex items-center gap-3 press transition-transform"
               style={{ background: "rgba(255,255,255,0.96)", boxShadow: "var(--shadow-fab)" }}
             >
               <span className="text-[24px] shrink-0">💛</span>
@@ -198,7 +198,7 @@ function WelcomeContent() {
             <button
               type="button"
               onClick={() => pickIntent("browsing", "/community")}
-              className="px-4 py-4 rounded-2xl flex items-center gap-3 active:scale-[0.98] transition-transform"
+              className="px-4 py-4 rounded-2xl flex items-center gap-3 press transition-transform"
               style={{ background: "rgba(255,255,255,0.96)", boxShadow: "var(--shadow-fab)" }}
             >
               <span className="text-[24px] shrink-0">💬</span>
@@ -335,7 +335,7 @@ function WelcomeContent() {
           {step > 0 && (
             <button
               onClick={() => goTo(step - 1)}
-              className="w-12 h-[52px] rounded-2xl flex items-center justify-center active:scale-95"
+              className="w-12 h-[52px] rounded-2xl flex items-center justify-center press-strong"
               style={{
                 background: "rgba(255,255,255,0.15)",
                 backdropFilter: "blur(8px)",
@@ -348,7 +348,7 @@ function WelcomeContent() {
           )}
           <button
             onClick={handleNext}
-            className="flex-1 h-[52px] rounded-2xl text-[15px] font-bold flex items-center justify-center gap-1.5 active:scale-[0.98]"
+            className="flex-1 h-[52px] rounded-2xl text-[15px] font-bold flex items-center justify-center gap-1.5 press"
             style={{
               background: "#FFFFFF",
               color: slide.accent,

@@ -142,7 +142,7 @@ function ToastCard({ item, onClose }: { item: ToastItem; onClose: () => void }) 
       <button
         type="button"
         onClick={onClose}
-        className="shrink-0 -mr-1 -mt-0.5 p-1 rounded-md active:scale-90"
+        className="shrink-0 -mr-1 -mt-0.5 p-1 rounded-md press-strong"
         aria-label="닫기"
       >
         <X size={12} style={{ color: "var(--color-gray-500)" }} />

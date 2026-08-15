@@ -58,7 +58,7 @@ export default function MediaKit({ cats, users, hospitals }: MediaKitProps) {
             </span>
             <button
               onClick={() => handleCopy(b.id, b.text)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg active:scale-95 transition-transform"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg press-strong transition-transform"
               style={{
                 background: copiedId === b.id ? "var(--color-sage-soft)" : "rgba(173, 94, 59,0.10)",
                 color: copiedId === b.id ? "#2E7D32" : "var(--color-primary-dark)",
@@ -102,7 +102,7 @@ function LogoCard({ href, label, filename }: { href: string; label: string; file
     <a
       href={href}
       download={filename}
-      className="flex flex-col items-center gap-1 py-3 rounded-xl active:scale-95 transition-transform"
+      className="flex flex-col items-center gap-1 py-3 rounded-xl press-strong transition-transform"
       style={{ background: "#FFF8F2", border: "1px solid rgba(173, 94, 59,0.20)" }}
     >
       <div

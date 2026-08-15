@@ -486,7 +486,7 @@ export default function ActivityRegionsPage() {
       <div className="px-5 pt-14 pb-3 flex items-center gap-3 bg-white/80 backdrop-blur-md sticky top-0 z-40">
         <button
           onClick={() => router.back()}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로"
         >
@@ -514,14 +514,14 @@ export default function ActivityRegionsPage() {
                 key={slot}
                 type="button"
                 onClick={() => switchSlot(slot)}
-                className="flex-1 px-3 py-3 rounded-2xl text-left active:scale-[0.98] transition-transform"
+                className="flex-1 px-3 py-3 rounded-2xl text-left press transition-transform"
                 style={{
                   background: active ? color : "#fff",
                   color: active ? "#fff" : "#333",
                   boxShadow: active
                     ? `0 4px 14px ${color}55`
                     : "0 2px 8px rgba(0,0,0,0.05)",
-                  border: active ? "none" : "1px solid rgba(0,0,0,0.05)",
+                  border: active ? "none" : "1px solid var(--color-divider)",
                 }}
               >
                 <div className="flex items-center gap-1.5 mb-0.5">
@@ -636,7 +636,7 @@ export default function ActivityRegionsPage() {
           <button
             type="button"
             onClick={handleLocateMe}
-            className="absolute bottom-3 right-3 z-10 w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90"
+            className="absolute bottom-3 right-3 z-10 w-10 h-10 rounded-full bg-white flex items-center justify-center press-strong"
             style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.15)" }}
             aria-label="내 위치"
           >
@@ -670,7 +670,7 @@ export default function ActivityRegionsPage() {
             className="w-full mt-1.5 px-3 py-2.5 rounded-xl text-[13px] font-bold outline-none"
             style={{
               background: "#F7F4EE",
-              border: "1px solid rgba(0,0,0,0.05)",
+              border: "1px solid var(--color-divider)",
             }}
           />
         </div>
@@ -699,7 +699,7 @@ export default function ActivityRegionsPage() {
                   key={p.value}
                   type="button"
                   onClick={() => setRadius(p.value)}
-                  className="px-3 py-1.5 chip-square text-[11px] font-bold active:scale-95 transition-transform"
+                  className="px-3 py-1.5 chip-square text-[11px] font-bold press-strong transition-transform"
                   style={{
                     background: active ? SLOT_COLORS[activeSlot] : "#F7F4EE",
                     color: active ? "#fff" : "#666",
@@ -744,7 +744,7 @@ export default function ActivityRegionsPage() {
               type="button"
               onClick={handleSetPrimary}
               disabled={!savedOnSlot}
-              className="px-3 py-1.5 rounded-xl text-[11px] font-bold active:scale-95 disabled:opacity-40"
+              className="px-3 py-1.5 rounded-xl text-[11px] font-bold press-strong disabled:opacity-40"
               style={{ background: "#F7F4EE", color: "#333" }}
             >
               지정하기
@@ -776,7 +776,7 @@ export default function ActivityRegionsPage() {
             <button
               type="button"
               onClick={handleDelete}
-              className="px-4 py-3 rounded-2xl flex items-center gap-1.5 active:scale-95"
+              className="px-4 py-3 rounded-2xl flex items-center gap-1.5 press-strong"
               style={{ background: "#fff", color: "#B84545", boxShadow: "var(--shadow-card)" }}
             >
               <Trash2 size={15} />
@@ -787,7 +787,7 @@ export default function ActivityRegionsPage() {
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="flex-1 py-3 rounded-2xl flex items-center justify-center gap-1.5 active:scale-[0.98] disabled:opacity-50"
+            className="flex-1 py-3 rounded-2xl flex items-center justify-center gap-1.5 press disabled:opacity-50"
             style={{
               background: SLOT_COLORS[activeSlot],
               color: "#fff",

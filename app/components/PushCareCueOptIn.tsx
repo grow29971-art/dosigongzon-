@@ -120,7 +120,7 @@ export default function PushCareCueOptIn({ hasCat }: { hasCat: boolean }) {
             type="button"
             onClick={enable}
             disabled={busy}
-            className="h-8 px-3 rounded-full text-white text-[13px] font-bold active:scale-95 transition-transform disabled:opacity-60"
+            className="h-8 px-3 rounded-full text-white text-[13px] font-bold press-strong transition-transform disabled:opacity-60"
             style={{ background: "var(--color-primary)", boxShadow: "0 3px 8px rgba(173, 94, 59,0.3)" }}
           >
             {busy ? "..." : "켜기"}

@@ -187,7 +187,7 @@ export default function PwaInstallPrompt() {
           <button
             type="button"
             onClick={dismiss}
-            className="w-7 h-7 rounded-full flex items-center justify-center active:scale-90 shrink-0 -mt-1 -mr-1"
+            className="w-7 h-7 rounded-full flex items-center justify-center press-strong shrink-0 -mt-1 -mr-1"
             style={{ background: "rgba(0,0,0,0.05)" }}
             aria-label="닫기"
           >
@@ -219,7 +219,7 @@ export default function PwaInstallPrompt() {
           <button
             type="button"
             onClick={install}
-            className="w-full mt-3 py-2.5 rounded-xl text-[13px] font-bold text-white active:scale-[0.98] transition-transform"
+            className="w-full mt-3 py-2.5 rounded-xl text-[13px] font-bold text-white press transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "var(--shadow-primary)",

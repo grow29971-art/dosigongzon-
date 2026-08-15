@@ -55,14 +55,14 @@ function ProductCard({ product, wished, onToggleWish }: { product: Product; wish
   const discounted = product.sale_price != null && product.sale_price < product.price;
 
   return (
-    <Link href={`/shop/${product.id}`} className="block active:scale-[0.98] transition-transform">
+    <Link href={`/shop/${product.id}`} className="block press transition-transform">
       <div
         className="overflow-hidden h-full"
         style={{
           background: "var(--color-surface)",
           borderRadius: "var(--radius-card)",
           boxShadow: "var(--shadow-card)",
-          border: "1px solid rgba(0,0,0,0.04)",
+          border: "1px solid var(--color-divider)",
         }}
       >
         {/* 이미지 */}
@@ -102,7 +102,7 @@ function ProductCard({ product, wished, onToggleWish }: { product: Product; wish
             type="button"
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleWish(product.id); }}
             aria-label={wished ? "찜 해제" : "찜하기"}
-            className="absolute bottom-2 right-2 z-10 w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform"
+            className="absolute bottom-2 right-2 z-10 w-9 h-9 rounded-full flex items-center justify-center press-strong transition-transform"
             style={{ background: "rgba(255,255,255,0.94)", boxShadow: "var(--shadow-raised)" }}
           >
             <Heart size={16} fill={wished ? "var(--color-like)" : "none"} style={{ color: wished ? "var(--color-like)" : "var(--color-text-light)" }} />
@@ -222,7 +222,7 @@ export default function ShopPage() {
         <div className="flex items-center gap-2">
           <Link
             href="/shop/orders"
-            className="w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
+            className="w-10 h-10 rounded-full bg-white flex items-center justify-center press-strong transition-transform"
             style={{ boxShadow: "var(--shadow-raised)" }}
             aria-label="주문 내역"
           >
@@ -230,7 +230,7 @@ export default function ShopPage() {
           </Link>
           <Link
             href="/shop/cart"
-            className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
+            className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center press-strong transition-transform"
             style={{ boxShadow: "var(--shadow-raised)" }}
             aria-label="장바구니"
           >
@@ -253,7 +253,7 @@ export default function ShopPage() {
       {/* ── 돌봄→포인트→할인 안내 띠 (탭하면 홈 주간 출석으로) ── */}
       <Link
         href="/#daily-box"
-        className="mb-4 flex items-center gap-2.5 px-4 py-2.5 rounded-2xl active:scale-[0.99] transition-transform"
+        className="mb-4 flex items-center gap-2.5 px-4 py-2.5 rounded-2xl press transition-transform"
         style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(173, 94, 59,0.18)" }}
       >
         <PawPrint size={16} className="shrink-0" style={{ color: "var(--color-primary)" }} />
@@ -350,7 +350,7 @@ export default function ShopPage() {
               key={f.key}
               type="button"
               onClick={() => setFilter(f.key)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-[13px] font-bold active:scale-95 transition-transform shrink-0"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-[13px] font-bold press-strong transition-transform shrink-0"
               style={{
                 background: on ? "var(--color-primary)" : "rgba(255,255,255,0.9)",
                 color: on ? "#fff" : "var(--color-text-sub)",

@@ -97,7 +97,7 @@ export default function StreakFreezeButton({ streak, hasToday, onUsed }: Props) 
             type="button"
             disabled={busy}
             onClick={handleUse}
-            className="flex-1 py-2 rounded-xl text-[11px] font-bold text-white active:scale-95 disabled:opacity-60 flex items-center justify-center gap-1"
+            className="flex-1 py-2 rounded-xl text-[11px] font-bold text-white press-strong disabled:opacity-60 flex items-center justify-center gap-1"
             style={{
               background: "linear-gradient(135deg, #4A7BA8 0%, #2E5A8A 100%)",
               boxShadow: "0 2px 8px rgba(74,123,168,0.35)",
@@ -133,7 +133,7 @@ export default function StreakFreezeButton({ streak, hasToday, onUsed }: Props) 
         e.stopPropagation();
         setConfirming(true);
       }}
-      className="mt-2 w-full px-3 py-2 rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.98]"
+      className="mt-2 w-full px-3 py-2 rounded-xl flex items-center justify-center gap-1.5 press"
       style={{
         background: "rgba(74,123,168,0.10)",
         border: "1px dashed rgba(74,123,168,0.35)",

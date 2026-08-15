@@ -132,7 +132,7 @@ export default function ConsentManager() {
               <button
                 type="button"
                 onClick={handleReject}
-                className="flex-1 rounded-xl px-4 py-2.5 text-[13px] font-bold active:scale-[0.98] transition-transform"
+                className="flex-1 rounded-xl px-4 py-2.5 text-[13px] font-bold press transition-transform"
                 style={{
                   background: "rgba(60,46,35,0.06)",
                   color: "rgba(60,46,35,0.7)",
@@ -144,7 +144,7 @@ export default function ConsentManager() {
               <button
                 type="button"
                 onClick={handleAccept}
-                className="flex-1 rounded-xl px-4 py-2.5 text-[13px] font-bold text-white active:scale-[0.98] transition-transform"
+                className="flex-1 rounded-xl px-4 py-2.5 text-[13px] font-bold text-white press transition-transform"
                 style={{
                   background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                   boxShadow: "var(--shadow-primary)",

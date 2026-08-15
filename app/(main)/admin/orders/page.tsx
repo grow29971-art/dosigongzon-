@@ -155,7 +155,7 @@ export default function AdminOrdersPage() {
       <div className="flex items-center gap-2 mb-4">
         <button
           onClick={() => router.back()}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로 가기"
         >
@@ -204,7 +204,7 @@ export default function AdminOrdersPage() {
                         placeholder="거부 사유 (유저에게 전달돼요)"
                         maxLength={500}
                         className="w-full px-3 py-2 rounded-xl text-[13px] outline-none"
-                        style={{ background: "#fff", border: "1px solid rgba(0,0,0,0.08)" }}
+                        style={{ background: "#fff", border: "1px solid var(--color-border)" }}
                       />
                       <div className="mt-1.5 flex gap-1.5">
                         <button
@@ -294,7 +294,7 @@ export default function AdminOrdersPage() {
             return (
               <div
                 key={order.id}
-                style={{ background: "#fff", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card)", border: open ? "1.5px solid rgba(173, 94, 59,0.35)" : "1px solid rgba(0,0,0,0.04)" }}
+                style={{ background: "#fff", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card)", border: open ? "1.5px solid rgba(173, 94, 59,0.35)" : "1px solid var(--color-divider)" }}
               >
                 <button className="w-full text-left p-3.5" onClick={() => handleOpen(order)}>
                   <div className="flex items-center justify-between mb-1.5">
@@ -347,7 +347,7 @@ export default function AdminOrdersPage() {
                         value={draftStatus}
                         onChange={(e) => setDraftStatus(e.target.value as OrderStatus)}
                         className="flex-1 px-3 py-2.5 text-[13px] font-bold outline-none"
-                        style={{ background: "var(--color-warm-white)", borderRadius: "var(--radius-square-lg)", border: "1px solid rgba(0,0,0,0.05)" }}
+                        style={{ background: "var(--color-warm-white)", borderRadius: "var(--radius-square-lg)", border: "1px solid var(--color-divider)" }}
                       >
                         {ALL_STATUSES.map((s) => (
                           <option key={s} value={s}>{ORDER_STATUS_MAP[s].label}</option>
@@ -355,7 +355,7 @@ export default function AdminOrdersPage() {
                       </select>
                     </div>
                     <div className="mt-2 flex items-center gap-2">
-                      <div className="flex-1 flex items-center gap-1.5 px-3 py-2.5" style={{ background: "var(--color-warm-white)", borderRadius: "var(--radius-square-lg)", border: "1px solid rgba(0,0,0,0.05)" }}>
+                      <div className="flex-1 flex items-center gap-1.5 px-3 py-2.5" style={{ background: "var(--color-warm-white)", borderRadius: "var(--radius-square-lg)", border: "1px solid var(--color-divider)" }}>
                         <Truck size={13} className="text-text-light shrink-0" />
                         <input
                           type="text"

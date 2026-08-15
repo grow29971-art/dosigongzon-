@@ -89,7 +89,7 @@ export default function AdminFundPage() {
 
   return (
     <div className="px-4 pt-14 pb-24 max-w-lg mx-auto">
-      <button onClick={() => router.push("/admin")} className="flex items-center gap-1 text-[13px] text-text-sub mb-4 active:scale-95">
+      <button onClick={() => router.push("/admin")} className="flex items-center gap-1 text-[13px] text-text-sub mb-4 press-strong">
         <ArrowLeft size={16} /> 관리자
       </button>
       <h1 className="text-[24px] font-bold text-text-main tracking-tight mb-1">후원금 지출 관리</h1>
@@ -163,7 +163,7 @@ export default function AdminFundPage() {
         {error && <p className="text-[11px] mt-2" style={{ color: "#D85555" }}>{error}</p>}
         <button
           onClick={submit} disabled={saving || !amount || !memo.trim()}
-          className="w-full mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 active:scale-[0.98] transition-transform"
+          className="w-full mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 press transition-transform"
         >
           {saving ? <Loader2 size={14} className="animate-spin" /> : <Plus size={15} />} 등록
         </button>
@@ -184,7 +184,7 @@ export default function AdminFundPage() {
               </p>
             </div>
             <span className="text-[13px] font-bold tabular-nums shrink-0" style={{ color: "var(--color-like)" }}>-{won(d.amount)}</span>
-            <button onClick={() => remove(d.id)} className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center active:scale-90" style={{ background: "rgba(216,85,85,0.1)" }} aria-label="삭제">
+            <button onClick={() => remove(d.id)} className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center press-strong" style={{ background: "rgba(216,85,85,0.1)" }} aria-label="삭제">
               <Trash2 size={14} style={{ color: "#D85555" }} />
             </button>
           </div>

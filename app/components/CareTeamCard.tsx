@@ -76,7 +76,7 @@ export default function CareTeamCard() {
                 ) : (
                   <Link
                     href={section.href}
-                    className="flex items-center justify-between rounded-xl bg-[#F7F4EE] px-3 py-2.5 active:scale-[0.99]"
+                    className="flex items-center justify-between rounded-xl bg-[#F7F4EE] px-3 py-2.5 press"
                   >
                     {label}
                     <ChevronRight size={16} className="shrink-0 text-text-sub" aria-hidden="true" />

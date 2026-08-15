@@ -302,7 +302,7 @@ export default function GuidePage() {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈으로"
         >
@@ -331,7 +331,7 @@ export default function GuidePage() {
         <div className="flex gap-2 mt-4">
           <Link
             href="/map"
-            className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-primary text-white active:scale-[0.98] transition-transform"
+            className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-primary text-white press transition-transform"
             style={{ boxShadow: "var(--shadow-primary)" }}
           >
             <MapPin size={14} />
@@ -339,7 +339,7 @@ export default function GuidePage() {
           </Link>
           <Link
             href="/signup"
-            className="flex-1 flex items-center justify-center py-3 rounded-2xl active:scale-[0.98] transition-transform"
+            className="flex-1 flex items-center justify-center py-3 rounded-2xl press transition-transform"
             style={{ backgroundColor: "#FFF", color: "var(--color-primary)", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 700 }}
           >
             가입하고 시작
@@ -366,7 +366,7 @@ export default function GuidePage() {
                   style={{
                     background: "#FFFFFF",
                     boxShadow: "var(--shadow-card)",
-                    border: "1px solid rgba(0,0,0,0.04)",
+                    border: "1px solid var(--color-divider)",
                   }}
                 >
                   <div className="flex items-start gap-3 mb-2">
@@ -416,7 +416,7 @@ export default function GuidePage() {
 
                   <Link
                     href={f.href}
-                    className="inline-flex items-center gap-1 mt-3 text-[13px] font-bold active:scale-95 transition-transform"
+                    className="inline-flex items-center gap-1 mt-3 text-[13px] font-bold press-strong transition-transform"
                     style={{ color: f.iconColor }}
                   >
                     {f.hrefLabel}
@@ -444,7 +444,7 @@ export default function GuidePage() {
           </p>
           <Link
             href="/map"
-            className="inline-block mt-4 bg-white text-[13px] font-bold px-6 py-3 rounded-2xl active:scale-95 transition-transform"
+            className="inline-block mt-4 bg-white text-[13px] font-bold px-6 py-3 rounded-2xl press-strong transition-transform"
             style={{ color: "var(--color-primary)" }}
           >
             지도 열기 →

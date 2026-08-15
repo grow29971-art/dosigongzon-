@@ -89,7 +89,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <button
           onClick={() => router.back()}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로 가기"
         >
@@ -279,7 +279,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           <button
             onClick={handleBuyNow}
             disabled={busy}
-            className="w-full py-3.5 rounded-2xl text-white text-[15px] font-bold active:scale-[0.98] transition-transform disabled:opacity-50"
+            className="w-full py-3.5 rounded-2xl text-white text-[15px] font-bold press transition-transform disabled:opacity-50"
             style={{ background: "var(--color-primary)", boxShadow: "var(--shadow-primary)" }}
           >
             후원하기
@@ -293,7 +293,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             <button
               onClick={handleAddToCart}
               disabled={busy}
-              className="flex-1 py-3.5 rounded-2xl text-[13px] font-bold active:scale-[0.98] transition-transform disabled:opacity-40 flex items-center justify-center gap-1.5"
+              className="flex-1 py-3.5 rounded-2xl text-[13px] font-bold press transition-transform disabled:opacity-40 flex items-center justify-center gap-1.5"
               style={{ background: "var(--color-surface)", color: "var(--color-primary)", border: "1.5px solid var(--color-primary)" }}
             >
               <ShoppingBag size={15} />
@@ -302,7 +302,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             <button
               onClick={handleBuyNow}
               disabled={busy}
-              className="flex-1 py-3.5 rounded-2xl bg-primary text-white text-[13px] font-bold active:scale-[0.98] transition-transform disabled:opacity-40"
+              className="flex-1 py-3.5 rounded-2xl bg-primary text-white text-[13px] font-bold press transition-transform disabled:opacity-40"
               style={{ boxShadow: "var(--shadow-primary)" }}
             >
               바로 구매

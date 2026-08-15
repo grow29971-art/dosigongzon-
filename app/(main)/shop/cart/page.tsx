@@ -68,7 +68,7 @@ export default function CartPage() {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <button
           onClick={() => router.back()}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로 가기"
         >
@@ -95,7 +95,7 @@ export default function CartPage() {
           <p className="text-[13px] text-text-sub mb-6">담아둔 상품이 아직 없어요</p>
           <Link
             href="/shop"
-            className="px-5 py-2.5 rounded-2xl bg-primary text-white text-[13px] font-bold active:scale-95 transition-transform"
+            className="px-5 py-2.5 rounded-2xl bg-primary text-white text-[13px] font-bold press-strong transition-transform"
           >
             쇼핑하러가기
           </Link>
@@ -109,7 +109,7 @@ export default function CartPage() {
               <div
                 key={item.id}
                 className="flex items-center gap-3 p-3"
-                style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card-sm)", border: "1px solid rgba(0,0,0,0.04)" }}
+                style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card-sm)", border: "1px solid var(--color-divider)" }}
               >
                 <Link href={`/shop/${item.product.id}`} className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 64, height: 64 }}>
                   <Image src={thumb} alt={item.product.name} fill className="object-cover" unoptimized={thumb.includes("placehold.co")} />
@@ -158,7 +158,7 @@ export default function CartPage() {
           </div>
           <button
             onClick={() => router.push("/shop/checkout")}
-            className="w-full py-3.5 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.98] transition-transform"
+            className="w-full py-3.5 rounded-2xl bg-primary text-white text-[15px] font-bold press transition-transform"
             style={{ boxShadow: "var(--shadow-primary)" }}
           >
             주문하기

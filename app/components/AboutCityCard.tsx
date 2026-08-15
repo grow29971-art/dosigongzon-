@@ -14,7 +14,7 @@ export default function AboutCityCard({ className = "mb-4" }: { className?: stri
   return (
     <div
       className={`px-4 py-4 rounded-3xl ${className}`}
-      style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "var(--shadow-card-sm)" }}
+      style={{ background: "#FFFFFF", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)" }}
     >
       <h3 className="text-[15px] font-bold text-text-main tracking-tight mb-1">도시공존은 어떤 곳이에요?</h3>
       <p className="text-[13px] leading-[1.7] text-text-sub mb-3">
@@ -37,7 +37,7 @@ export default function AboutCityCard({ className = "mb-4" }: { className?: stri
       </div>
       <Link
         href="/about"
-        className="mt-3 flex items-center justify-center gap-1 py-2 rounded-xl text-[13px] font-bold active:scale-[0.98] transition-transform"
+        className="mt-3 flex items-center justify-center gap-1 py-2 rounded-xl text-[13px] font-bold press transition-transform"
         style={{ background: "var(--color-primary-softer)", color: "var(--color-primary-dark)" }}
       >
         도시공존 이야기 더 보기 <ChevronRight size={13} />

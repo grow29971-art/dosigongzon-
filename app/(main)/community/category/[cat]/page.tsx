@@ -199,7 +199,7 @@ export default function CategoryPage() {
       <div className="px-4 pt-14 pb-4">
         <button
           onClick={() => router.push("/community")}
-          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-4 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-4 press-strong transition-transform"
         >
           <ArrowLeft size={14} />
           커뮤니티
@@ -287,7 +287,7 @@ export default function CategoryPage() {
           background: "#FFFFFF",
           borderRadius: "var(--radius-card)",
           boxShadow: "var(--shadow-card)",
-          border: "1px solid rgba(0,0,0,0.04)",
+          border: "1px solid var(--color-divider)",
         }}
       >
         {posts.filter((p) => !p.isPinned).length === 0 && posts.filter((p) => p.isPinned).length === 0 ? (
@@ -302,7 +302,7 @@ export default function CategoryPage() {
               key={post.id}
               href={`/community/${post.id}`}
               className="flex items-center gap-3 px-4 py-3 active:bg-black/[0.02] transition-colors"
-              style={idx < arr.length - 1 ? { borderBottom: "1px solid rgba(0,0,0,0.04)" } : {}}
+              style={idx < arr.length - 1 ? { borderBottom: "1px solid var(--color-divider)" } : {}}
             >
               {/* 썸네일 (이미지 있을 때만) */}
               {post.images.length > 0 ? (
@@ -362,7 +362,7 @@ export default function CategoryPage() {
       {/* ── FAB ── */}
       <Link
         href={`/community/write?category=${cat}`}
-        className="fixed bottom-24 right-5 w-14 h-14 rounded-full flex items-center justify-center active:scale-90 transition-transform z-40"
+        className="fixed bottom-24 right-5 w-14 h-14 rounded-full flex items-center justify-center press-strong transition-transform z-40"
         style={{
           background: `linear-gradient(135deg, ${meta.color} 0%, ${meta.color}DD 100%)`,
           boxShadow: `0 10px 24px rgba(${meta.glow},0.40), inset 0 1px 0 rgba(255,255,255,0.3)`,

@@ -84,7 +84,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로"
         >
@@ -298,7 +298,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
         {cats.length === 0 ? (
           <div
             className="py-10 text-center rounded-2xl bg-white"
-            style={{ border: "1px solid rgba(0,0,0,0.05)" }}
+            style={{ border: "1px solid var(--color-divider)" }}
           >
             <PawPrint size={28} className="mx-auto text-text-light mb-2" strokeWidth={1.2} />
             <p className="text-[13px] text-text-sub">아직 등록한 고양이가 없어요</p>
@@ -309,7 +309,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
               <Link
                 key={c.id}
                 href={`/cats/${c.id}`}
-                className="block active:scale-[0.97] transition-transform"
+                className="block press-strong transition-transform"
               >
                 <div
                   className="aspect-square rounded-2xl overflow-hidden mb-1.5"
@@ -349,7 +349,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
           style={{
             background: "#FFFFFF",
             boxShadow: "var(--shadow-card)",
-            border: "1px solid rgba(0,0,0,0.04)",
+            border: "1px solid var(--color-divider)",
           }}
         >
           <Heart size={16} className="mx-auto mb-1" style={{ color: "var(--color-like)" }} />

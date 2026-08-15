@@ -77,7 +77,7 @@ export default function NotificationsPage() {
       {items.length === 0 ? (
         <div
           className="py-16 text-center"
-          style={{ background: "#FFFFFF", borderRadius: "var(--radius-card)", border: "1px solid rgba(0,0,0,0.04)" }}
+          style={{ background: "#FFFFFF", borderRadius: "var(--radius-card)", border: "1px solid var(--color-divider)" }}
         >
           <Bell size={36} strokeWidth={1.2} className="text-text-light mx-auto mb-3" />
           <p className="text-[15px] font-bold text-text-main mb-1">아직 알림이 없어요</p>
@@ -109,7 +109,7 @@ export default function NotificationsPage() {
               <Link
                 key={item.id}
                 href={href}
-                className="block active:scale-[0.99] transition-transform"
+                className="block press transition-transform"
               >
                 <div
                   className="flex items-start gap-3 px-4 py-3.5"
@@ -117,7 +117,7 @@ export default function NotificationsPage() {
                     background: item.isRead ? "#FFFFFF" : "#FDF9F2",
                     borderRadius: "var(--radius-card-sm)",
                     boxShadow: "var(--shadow-card-sm)",
-                    border: item.isRead ? "1px solid rgba(0,0,0,0.04)" : `1px solid ${config.color}20`,
+                    border: item.isRead ? "1px solid var(--color-divider)" : `1px solid ${config.color}20`,
                   }}
                 >
                   {/* 아이콘 */}

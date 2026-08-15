@@ -35,7 +35,7 @@ export default function FundSettlementCard() {
   return (
     <div
       className="mb-4 px-4 py-4 rounded-3xl"
-      style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "var(--shadow-card-sm)" }}
+      style={{ background: "#FFFFFF", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)" }}
     >
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-[15px] font-bold text-text-main tracking-tight">💛 후원금 투명 정산</h3>

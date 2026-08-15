@@ -70,7 +70,7 @@ export default function PageIntroBanner({
       <button
         type="button"
         onClick={dismiss}
-        className="absolute top-2.5 right-2.5 w-6 h-6 rounded-full flex items-center justify-center active:scale-90"
+        className="absolute top-2.5 right-2.5 w-6 h-6 rounded-full flex items-center justify-center press-strong"
         style={{ background: "rgba(0,0,0,0.05)" }}
         aria-label="안내 닫기"
       >
@@ -93,7 +93,7 @@ export default function PageIntroBanner({
           {ctaLabel && ctaHref && (
             <Link
               href={ctaHref}
-              className="inline-flex items-center gap-0.5 mt-2 text-[13px] font-bold active:scale-95 transition-transform"
+              className="inline-flex items-center gap-0.5 mt-2 text-[13px] font-bold press-strong transition-transform"
               style={{ color: accent }}
             >
               {ctaLabel}

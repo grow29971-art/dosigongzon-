@@ -52,7 +52,7 @@ export default function PatchUpdateBanner518() {
             <button
               type="button"
               onClick={handleDismiss}
-              className="shrink-0 active:scale-90 transition-transform"
+              className="shrink-0 press-strong transition-transform"
               aria-label="닫기"
             >
               <X size={16} color="rgba(255,255,255,0.7)" />
@@ -72,7 +72,7 @@ export default function PatchUpdateBanner518() {
           <Link
             href="/mypage/circle"
             onClick={handleDismiss}
-            className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold active:scale-[0.98] transition-transform"
+            className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold press transition-transform"
             style={{ background: "rgba(255,255,255,0.95)", color: "#4F6B53" }}
           >
             <span>내 서클 시작하기</span>

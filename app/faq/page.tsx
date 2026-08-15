@@ -700,7 +700,7 @@ export default function FaqPage() {
                 <li key={c.id}>
                   <a
                     href={`#${c.id}`}
-                    className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] font-semibold transition-colors active:scale-[0.98]"
+                    className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] font-semibold transition-colors press"
                     style={{ background: c.bg, color: c.color }}
                   >
                     <Icon size={15} />
@@ -781,21 +781,21 @@ export default function FaqPage() {
           <div className="flex flex-wrap gap-2">
             <Link
               href="/protection"
-              className="rounded-full px-4 py-2 text-[13px] font-bold text-white shadow-sm active:scale-[0.98]"
+              className="rounded-full px-4 py-2 text-[13px] font-bold text-white shadow-sm press"
               style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
             >
               보호 지침 전체 보기
             </Link>
             <Link
               href="/guide"
-              className="rounded-full border bg-white px-4 py-2 text-[13px] font-bold active:scale-[0.98]"
+              className="rounded-full border bg-white px-4 py-2 text-[13px] font-bold press"
               style={{ borderColor: "rgba(173, 94, 59,0.3)", color: "var(--color-primary-dark)" }}
             >
               앱 사용 가이드
             </Link>
             <a
               href="mailto:grow29971@gmail.com"
-              className="rounded-full border bg-white px-4 py-2 text-[13px] font-bold active:scale-[0.98]"
+              className="rounded-full border bg-white px-4 py-2 text-[13px] font-bold press"
               style={{ borderColor: "rgba(173, 94, 59,0.3)", color: "var(--color-primary-dark)" }}
             >
               메일로 문의

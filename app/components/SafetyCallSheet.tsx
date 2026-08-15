@@ -105,7 +105,7 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
               돌봄 중 위급하면 아래 버튼으로 전화 앱을 바로 열 수 있어요.
             </p>
           </div>
-          <button onClick={onClose} className="p-2 -mr-2 -mt-1 active:scale-90" aria-label="닫기">
+          <button onClick={onClose} className="p-2 -mr-2 -mt-1 press-strong" aria-label="닫기">
             <X size={20} className="text-text-light" />
           </button>
         </div>
@@ -152,7 +152,7 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
           <div className="grid grid-cols-2 gap-2.5 mt-3">
             <button
               onClick={() => setConfirmTarget({ number: "112", label: "112 전화 걸기", desc: "경찰 — 위협·시비·학대 목격" })}
-              className="rounded-2xl py-4 flex flex-col items-center gap-1 active:scale-95 transition-transform"
+              className="rounded-2xl py-4 flex flex-col items-center gap-1 press-strong transition-transform"
               style={{ backgroundColor: "var(--color-primary)", color: "#fff" }}
             >
               <Phone size={20} />
@@ -161,7 +161,7 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
             </button>
             <button
               onClick={() => setConfirmTarget({ number: "119", label: "119 전화 걸기", desc: "구조·응급의료" })}
-              className="rounded-2xl py-4 flex flex-col items-center gap-1 active:scale-95 transition-transform"
+              className="rounded-2xl py-4 flex flex-col items-center gap-1 press-strong transition-transform"
               style={{ backgroundColor: "#4A7BA8", color: "#fff" }}
             >
               <Phone size={20} />
@@ -176,14 +176,14 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
             <div className="flex gap-2.5 mt-3">
               <a
                 href={`tel:${confirmTarget.number}`}
-                className="flex-1 rounded-xl py-3 text-[15px] font-bold text-white active:scale-95 transition-transform"
+                className="flex-1 rounded-xl py-3 text-[15px] font-bold text-white press-strong transition-transform"
                 style={{ backgroundColor: "var(--color-primary)" }}
               >
                 전화 걸기
               </a>
               <button
                 onClick={() => setConfirmTarget(null)}
-                className="flex-1 rounded-xl py-3 text-[15px] font-bold text-text-sub active:scale-95 transition-transform"
+                className="flex-1 rounded-xl py-3 text-[15px] font-bold text-text-sub press-strong transition-transform"
                 style={{ backgroundColor: "var(--color-surface-alt)" }}
               >
                 취소

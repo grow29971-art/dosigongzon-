@@ -91,7 +91,7 @@ export default function NewsDetailPage({
           type="button"
           onClick={() => router.back()}
           aria-label="뒤로가기"
-          className="absolute top-12 left-4 w-10 h-10 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform"
+          className="absolute top-12 left-4 w-10 h-10 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center press-strong transition-transform"
         >
           <ArrowLeft size={20} className="text-text-main" />
         </button>
@@ -177,7 +177,7 @@ export default function NewsDetailPage({
             href={sanitizeHttpUrl(news.external_url)}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.97] transition-transform"
+            className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold press-strong transition-transform"
             style={{ boxShadow: "var(--shadow-primary)" }}
           >
             <ExternalLink size={18} />

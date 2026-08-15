@@ -213,7 +213,7 @@ export default function FeatureTipsCard({ activity, regions }: Props) {
         <button
           type="button"
           onClick={() => dismiss(tip.id)}
-          className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center active:scale-90"
+          className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center press-strong"
           style={{ background: "rgba(0,0,0,0.04)" }}
           aria-label="이 팁 숨기기"
         >
@@ -235,7 +235,7 @@ export default function FeatureTipsCard({ activity, regions }: Props) {
             </p>
             <Link
               href={tip.href}
-              className="inline-block mt-3 text-[13px] font-bold active:scale-95 transition-transform"
+              className="inline-block mt-3 text-[13px] font-bold press-strong transition-transform"
               style={{ color: tip.iconColor }}
             >
               {tip.ctaLabel} →

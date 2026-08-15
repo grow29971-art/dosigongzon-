@@ -266,7 +266,7 @@ export default async function PharmacyGuidePage() {
       <nav
         aria-label="목차"
         className="rounded-2xl bg-white p-4 mb-6"
-        style={{ border: "1px solid rgba(0,0,0,0.05)" }}
+        style={{ border: "1px solid var(--color-divider)" }}
       >
         <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
@@ -376,7 +376,7 @@ export default async function PharmacyGuidePage() {
         </p>
 
         {items.length === 0 && (
-          <div className="py-12 text-center text-[13px] text-text-sub rounded-2xl bg-white" style={{ border: "1px solid rgba(0,0,0,0.05)" }}>
+          <div className="py-12 text-center text-[13px] text-text-sub rounded-2xl bg-white" style={{ border: "1px solid var(--color-divider)" }}>
             아직 등록된 상세 약품이 없어요.
           </div>
         )}
@@ -390,7 +390,7 @@ export default async function PharmacyGuidePage() {
                 background: "var(--color-surface)",
                 borderRadius: "var(--radius-card)",
                 boxShadow: "var(--shadow-card-sm)",
-                border: "1px solid rgba(0,0,0,0.04)",
+                border: "1px solid var(--color-divider)",
               }}
             >
               {p.image_url && (
@@ -458,7 +458,7 @@ export default async function PharmacyGuidePage() {
             <details
               key={q.name}
               className="rounded-xl bg-white p-4 group"
-              style={{ border: "1px solid rgba(0,0,0,0.06)" }}
+              style={{ border: "1px solid var(--color-divider)" }}
             >
               <summary className="cursor-pointer text-[15px] font-bold text-text-main flex items-center gap-2 list-none">
                 <span className="text-primary">Q.</span>
@@ -481,8 +481,8 @@ export default async function PharmacyGuidePage() {
         <div className="space-y-2">
           <Link
             href="/protection/emergency-guide"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
-            style={{ border: "1px solid rgba(0,0,0,0.05)" }}
+            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
+            style={{ border: "1px solid var(--color-divider)" }}
           >
             <AlertTriangle size={18} color="var(--color-error)" className="shrink-0" />
             <div className="flex-1 min-w-0">
@@ -492,8 +492,8 @@ export default async function PharmacyGuidePage() {
           </Link>
           <Link
             href="/protection/kitten-guide"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
-            style={{ border: "1px solid rgba(0,0,0,0.05)" }}
+            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
+            style={{ border: "1px solid var(--color-divider)" }}
           >
             <Cat size={18} color="var(--color-care)" className="shrink-0" />
             <div className="flex-1 min-w-0">
@@ -503,8 +503,8 @@ export default async function PharmacyGuidePage() {
           </Link>
           <Link
             href="/hospitals"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
-            style={{ border: "1px solid rgba(0,0,0,0.05)" }}
+            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
+            style={{ border: "1px solid var(--color-divider)" }}
           >
             <Stethoscope size={18} color="var(--color-sage)" className="shrink-0" />
             <div className="flex-1 min-w-0">
@@ -523,7 +523,7 @@ export default async function PharmacyGuidePage() {
             background: "var(--color-surface)",
             borderRadius: "var(--radius-card-sm)",
             boxShadow: "var(--shadow-card)",
-            border: "1px solid rgba(0,0,0,0.04)",
+            border: "1px solid var(--color-divider)",
           }}
         >
           <p className="text-[13px] font-bold text-text-main mb-1">가까운 동물약국 찾기</p>
@@ -542,7 +542,7 @@ export default async function PharmacyGuidePage() {
       )}
 
       {/* 신뢰 출처 */}
-      <section className="mt-6 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid rgba(0,0,0,0.04)" }}>
+      <section className="mt-6 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-divider)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2">참고한 공공 자료</h3>
         <ul className="text-[13px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
           <li>식품의약품안전처 동물용의약품 공개 자료</li>

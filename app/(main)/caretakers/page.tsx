@@ -114,7 +114,7 @@ function CaretakerCard({
       style={{
         background: "#FFFFFF",
         boxShadow: "var(--shadow-card)",
-        border: "1px solid rgba(0,0,0,0.04)",
+        border: "1px solid var(--color-divider)",
       }}
     >
       <div className="flex items-center gap-3">
@@ -182,7 +182,7 @@ function CaretakerCard({
       <div className="mt-3 flex gap-2">
         <Link
           href={`/users/${caretaker.id}`}
-          className="flex-1 py-2 rounded-xl text-center text-[13px] font-bold active:scale-[0.97] transition-transform"
+          className="flex-1 py-2 rounded-xl text-center text-[13px] font-bold press-strong transition-transform"
           style={{
             background: "var(--color-primary-softer)",
             color: "var(--color-primary)",
@@ -193,7 +193,7 @@ function CaretakerCard({
         </Link>
         <Link
           href={`/messages?to=${caretaker.id}&name=${encodeURIComponent(caretaker.nickname)}&preset=${presetMsg}`}
-          className="flex-1 py-2 rounded-xl text-center text-[13px] font-bold text-white active:scale-[0.97] transition-transform inline-flex items-center justify-center gap-1.5"
+          className="flex-1 py-2 rounded-xl text-center text-[13px] font-bold text-white press-strong transition-transform inline-flex items-center justify-center gap-1.5"
           style={{ background: "var(--color-primary)" }}
         >
           <MessageCircle size={13} />
@@ -210,7 +210,7 @@ function EmptyNoRegion() {
       className="rounded-2xl p-6 text-center"
       style={{
         background: "#FFFFFF",
-        border: "1px solid rgba(0,0,0,0.04)",
+        border: "1px solid var(--color-divider)",
         boxShadow: "var(--shadow-card)",
       }}
     >
@@ -237,7 +237,7 @@ function EmptyNoMatch({ myRegions }: { myRegions: string[] }) {
       className="rounded-2xl p-6 text-center"
       style={{
         background: "#FFFFFF",
-        border: "1px solid rgba(0,0,0,0.04)",
+        border: "1px solid var(--color-divider)",
         boxShadow: "var(--shadow-card)",
       }}
     >

@@ -36,7 +36,7 @@ export default async function RescuePage() {
       >
         <Link
           href="/"
-          className="flex items-center gap-1 text-[13px] font-semibold mb-3 opacity-85 active:scale-95"
+          className="flex items-center gap-1 text-[13px] font-semibold mb-3 opacity-85 press-strong"
         >
           <ArrowLeft size={14} />
           홈으로
@@ -114,7 +114,7 @@ export default async function RescuePage() {
                 <Link
                   key={cat.id}
                   href={`/cats/${cat.id}`}
-                  className="block active:scale-[0.99] transition-transform"
+                  className="block press transition-transform"
                 >
                   <div
                     className="rounded-2xl overflow-hidden flex gap-3"

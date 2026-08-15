@@ -35,7 +35,7 @@ export default function SquareToggle({
       aria-checked={checked}
       disabled={disabled}
       onClick={() => !disabled && onChange(!checked)}
-      className="relative shrink-0 transition-colors active:scale-95 disabled:opacity-40"
+      className="relative shrink-0 transition-colors press-strong disabled:opacity-40"
       style={{
         width: dims.w,
         height: dims.h,

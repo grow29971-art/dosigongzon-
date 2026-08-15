@@ -87,7 +87,7 @@ export default function MyActivityDashboard() {
           className="px-4 py-4 flex items-center gap-3"
           style={{
             background: "linear-gradient(135deg, #48A59E15 0%, #48A59E05 100%)",
-            borderBottom: "1px solid rgba(0,0,0,0.04)",
+            borderBottom: "1px solid var(--color-divider)",
           }}
         >
           <div
@@ -138,10 +138,10 @@ export default function MyActivityDashboard() {
                 <Link
                   key={c.catId}
                   href={`/cats/${c.catId}`}
-                  className="flex-1 min-w-0 flex items-center gap-2 px-2.5 py-2 rounded-xl active:scale-95"
+                  className="flex-1 min-w-0 flex items-center gap-2 px-2.5 py-2 rounded-xl press-strong"
                   style={{
                     background: i === 0 ? "#FFF9EB" : "#F7F4EE",
-                    border: i === 0 ? "1px solid #E8B04040" : "1px solid rgba(0,0,0,0.03)",
+                    border: i === 0 ? "1px solid #E8B04040" : "1px solid var(--color-divider)",
                   }}
                 >
                   <div

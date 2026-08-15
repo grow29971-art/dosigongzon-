@@ -123,7 +123,7 @@ export default async function AboutPage() {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈"
         >
@@ -476,7 +476,7 @@ export default async function AboutPage() {
 
           <a
             href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("[도시공존] 안녕하세요")}`}
-            className="mt-4 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold text-white active:scale-[0.98] transition-transform"
+            className="mt-4 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold text-white press transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "var(--shadow-primary)",
@@ -617,7 +617,7 @@ export default async function AboutPage() {
           </p>
           <a
             href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("[도시공존] 제휴/문의")}`}
-            className="flex items-center justify-center gap-2 py-3 rounded-2xl bg-primary text-white active:scale-[0.98] transition-transform"
+            className="flex items-center justify-center gap-2 py-3 rounded-2xl bg-primary text-white press transition-transform"
             style={{ boxShadow: "var(--shadow-primary)" }}
           >
             <Mail size={16} />
@@ -629,7 +629,7 @@ export default async function AboutPage() {
               href="https://instagram.com/regen2997"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-1.5 py-2.5 rounded-2xl active:scale-[0.98] transition-transform"
+              className="flex items-center justify-center gap-1.5 py-2.5 rounded-2xl press transition-transform"
               style={{ background: "rgba(225,48,108,0.10)", border: "1px solid rgba(225,48,108,0.22)" }}
             >
               <Camera size={15} style={{ color: "#E1306C" }} />
@@ -639,7 +639,7 @@ export default async function AboutPage() {
               href="https://blog.naver.com/re_gen777"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-1.5 py-2.5 rounded-2xl active:scale-[0.98] transition-transform"
+              className="flex items-center justify-center gap-1.5 py-2.5 rounded-2xl press transition-transform"
               style={{ background: "rgba(3,199,90,0.10)", border: "1px solid rgba(3,199,90,0.22)" }}
             >
               <Globe size={15} style={{ color: "#03C75A" }} />
@@ -657,14 +657,14 @@ export default async function AboutPage() {
         <div className="flex gap-2">
           <Link
             href="/map"
-            className="flex-1 flex items-center justify-center py-3 rounded-2xl bg-primary text-white text-[13px] font-bold active:scale-[0.98] transition-transform"
+            className="flex-1 flex items-center justify-center py-3 rounded-2xl bg-primary text-white text-[13px] font-bold press transition-transform"
             style={{ boxShadow: "var(--shadow-primary)" }}
           >
             지도 보러가기
           </Link>
           <Link
             href="/areas"
-            className="flex-1 flex items-center justify-center py-3 rounded-2xl active:scale-[0.98] transition-transform"
+            className="flex-1 flex items-center justify-center py-3 rounded-2xl press transition-transform"
             style={{ backgroundColor: "var(--color-surface)", color: "var(--color-primary)", border: "1.5px solid var(--color-divider)", fontSize: 13, fontWeight: 700 }}
           >
             우리 동네 보기

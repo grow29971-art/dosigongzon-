@@ -59,7 +59,7 @@ export default function VisibilityIntroSheet({ open, onClose, onPick }: Visibili
             <button
               type="button"
               onClick={onClose}
-              className="w-8 h-8 rounded-full flex items-center justify-center active:scale-90"
+              className="w-8 h-8 rounded-full flex items-center justify-center press-strong"
               style={{ background: "rgba(0,0,0,0.05)" }}
               aria-label="닫기"
             >
@@ -83,7 +83,7 @@ export default function VisibilityIntroSheet({ open, onClose, onPick }: Visibili
                 key={key}
                 type="button"
                 onClick={() => onPick(key)}
-                className="w-full p-4 rounded-2xl text-left flex items-start gap-3 active:scale-[0.98] transition-transform"
+                className="w-full p-4 rounded-2xl text-left flex items-start gap-3 press transition-transform"
                 style={{
                   background: `${info.color}10`,
                   border: `1.5px solid ${info.color}55`,

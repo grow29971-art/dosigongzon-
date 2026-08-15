@@ -15,7 +15,7 @@ const sectionStyle = {
   background: "var(--color-surface)",
   borderRadius: "var(--radius-card)",
   boxShadow: "var(--shadow-card)",
-  border: "1px solid rgba(0,0,0,0.04)",
+  border: "1px solid var(--color-divider)",
 } as const;
 
 function Row({ label, value }: { label: string; value: string }) {
@@ -42,7 +42,7 @@ export default function ShopPolicyPage() {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/shop"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="쇼핑몰로 돌아가기"
         >

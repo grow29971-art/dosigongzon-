@@ -37,7 +37,7 @@ export default async function PopularPostsPage() {
       <div className="px-4 pt-12 pb-4 flex items-center gap-3">
         <Link
           href="/community"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="커뮤니티"
         >
@@ -59,7 +59,7 @@ export default async function PopularPostsPage() {
           background: "#FFFFFF",
           borderRadius: "var(--radius-card)",
           boxShadow: "var(--shadow-card)",
-          border: "1px solid rgba(0,0,0,0.04)",
+          border: "1px solid var(--color-divider)",
         }}
       >
         {posts.length === 0 ? (
@@ -76,7 +76,7 @@ export default async function PopularPostsPage() {
                 key={post.id}
                 href={`/community/${post.id}`}
                 className="flex items-center gap-3 px-4 py-3 active:bg-black/[0.02] transition-colors"
-                style={idx < arr.length - 1 ? { borderBottom: "1px solid rgba(0,0,0,0.04)" } : {}}
+                style={idx < arr.length - 1 ? { borderBottom: "1px solid var(--color-divider)" } : {}}
               >
                 {/* 순위 배지 (TOP 3은 메달, 그 외는 숫자) */}
                 <div
@@ -177,7 +177,7 @@ export default async function PopularPostsPage() {
       {/* FAB */}
       <Link
         href="/community/write"
-        className="fixed bottom-24 right-5 w-14 h-14 rounded-full flex items-center justify-center active:scale-90 transition-transform z-40"
+        className="fixed bottom-24 right-5 w-14 h-14 rounded-full flex items-center justify-center press-strong transition-transform z-40"
         style={{
           background: `linear-gradient(135deg, ${ACCENT} 0%, ${ACCENT}DD 100%)`,
           boxShadow: `0 10px 24px rgba(${GLOW},0.40), inset 0 1px 0 rgba(255,255,255,0.3)`,

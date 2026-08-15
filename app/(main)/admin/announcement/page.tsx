@@ -103,7 +103,7 @@ export default function AdminAnnouncementPage() {
       <div className="flex items-center gap-3 mb-6">
         <Link
           href="/admin"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="어드민 홈"
         >
@@ -128,14 +128,14 @@ export default function AdminAnnouncementPage() {
         {current ? (
           <div
             className="rounded-2xl bg-white p-4 text-[13px] whitespace-pre-wrap"
-            style={{ border: "1px solid rgba(0,0,0,0.06)", color: "#3D2F25" }}
+            style={{ border: "1px solid var(--color-divider)", color: "#3D2F25" }}
           >
             {current.body}
             <button
               type="button"
               onClick={handleClear}
               disabled={busy}
-              className="mt-3 flex items-center gap-1.5 text-[13px] font-bold px-3 py-1.5 rounded-lg active:scale-95 disabled:opacity-50"
+              className="mt-3 flex items-center gap-1.5 text-[13px] font-bold px-3 py-1.5 rounded-lg press-strong disabled:opacity-50"
               style={{ background: "var(--color-error-soft)", color: "#B84545" }}
             >
               <EyeOff size={13} /> 이 공지 내리기
@@ -164,7 +164,7 @@ export default function AdminAnnouncementPage() {
           placeholder="예) 도시공존에 곧 굿즈샵이 열려요! 준비되면 알려드릴게요 🐾"
           className="w-full rounded-2xl bg-white p-4 text-[15px] leading-relaxed resize-none"
           style={{
-            border: "1px solid rgba(0,0,0,0.06)",
+            border: "1px solid var(--color-divider)",
             boxShadow: "inset 0 1px 2px rgba(0,0,0,0.02)",
             color: "#3D2F25",
           }}
@@ -175,7 +175,7 @@ export default function AdminAnnouncementPage() {
         type="button"
         onClick={handlePublish}
         disabled={busy || !message.trim()}
-        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[15px] font-bold active:scale-[0.98] disabled:opacity-60"
+        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[15px] font-bold press disabled:opacity-60"
         style={{
           background: "linear-gradient(135deg, #C47E5A 0%, #A96A47 100%)",
           boxShadow: "0 6px 18px rgba(196,126,90,0.3)",

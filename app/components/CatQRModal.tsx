@@ -131,7 +131,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center active:scale-90 shrink-0"
+            className="w-8 h-8 rounded-full flex items-center justify-center press-strong shrink-0"
             style={{ background: "rgba(0,0,0,0.05)" }}
             aria-label="닫기"
           >
@@ -150,7 +150,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
             type="button"
             onClick={handleDownload}
             disabled={!dataUrl}
-            className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold text-white active:scale-[0.97] disabled:opacity-50"
+            className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold text-white press-strong disabled:opacity-50"
             style={{ background: "linear-gradient(135deg, #AD5E3B 0%, #8A4325 100%)" }}
           >
             <Download size={14} />
@@ -160,7 +160,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
             type="button"
             onClick={handlePrint}
             disabled={!dataUrl}
-            className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold active:scale-[0.97] disabled:opacity-50"
+            className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold press-strong disabled:opacity-50"
             style={{ background: "#FFFFFF", color: "#8A4325", border: "1.5px solid rgba(173, 94, 59,0.30)" }}
           >
             <Printer size={14} />

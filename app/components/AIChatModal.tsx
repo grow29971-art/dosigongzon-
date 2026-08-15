@@ -164,7 +164,7 @@ export default function AIChatModal({
           </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform"
+            className="w-9 h-9 rounded-full flex items-center justify-center press-strong transition-transform"
             style={{ backgroundColor: "var(--color-gray-50)" }}
           >
             <X size={18} color="#7A756E" />
@@ -223,7 +223,7 @@ export default function AIChatModal({
                   key={q}
                   type="button"
                   onClick={() => send(q)}
-                  className="text-[13px] font-semibold px-3 py-2 rounded-2xl active:scale-95 transition-transform"
+                  className="text-[13px] font-semibold px-3 py-2 rounded-2xl press-strong transition-transform"
                   style={{ backgroundColor: "#fff", color: "var(--color-primary)", border: "1.5px solid #E5DCD3" }}
                 >
                   {q}
@@ -282,7 +282,7 @@ export default function AIChatModal({
             <button
               onClick={() => send()}
               disabled={!input.trim() || loading}
-              className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 active:scale-90 transition-transform disabled:opacity-40"
+              className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 press-strong transition-transform disabled:opacity-40"
               style={{ backgroundColor: "var(--color-primary)" }}
             >
               <Send size={18} color="white" />

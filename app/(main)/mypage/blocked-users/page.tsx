@@ -68,7 +68,7 @@ export default function BlockedUsersPage() {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/mypage"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="마이페이지로"
         >
@@ -103,7 +103,7 @@ export default function BlockedUsersPage() {
         {items.length === 0 ? (
           <div
             className="rounded-2xl py-12 px-4 text-center"
-            style={{ backgroundColor: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)" }}
+            style={{ backgroundColor: "#FFFFFF", border: "1px solid var(--color-divider)" }}
           >
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
@@ -127,7 +127,7 @@ export default function BlockedUsersPage() {
                 <div
                   key={b.id}
                   className="rounded-2xl p-3 flex items-center gap-3"
-                  style={{ backgroundColor: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)" }}
+                  style={{ backgroundColor: "#FFFFFF", border: "1px solid var(--color-divider)" }}
                 >
                   {avatar ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -161,8 +161,8 @@ export default function BlockedUsersPage() {
                     type="button"
                     onClick={() => handleUnblock(b)}
                     disabled={busyId === b.id}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[13px] font-bold active:scale-95 transition-transform disabled:opacity-60"
-                    style={{ backgroundColor: "var(--color-gray-50)", color: "#A38E7A", border: "1px solid var(--color-gray-200)" }}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[13px] font-bold press-strong transition-transform disabled:opacity-60"
+                    style={{ backgroundColor: "var(--color-gray-50)", color: "#A38E7A", border: "1px solid var(--color-border)" }}
                   >
                     {busyId === b.id ? (
                       <Loader2 size={11} className="animate-spin" />

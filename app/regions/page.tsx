@@ -72,7 +72,7 @@ export default function RegionsIndexPage() {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈"
         >
@@ -99,7 +99,7 @@ export default function RegionsIndexPage() {
       <section className="px-5 mt-6">
         <Link
           href={SEOUL_HIGHLIGHT.href}
-          className="block rounded-2xl p-4 active:scale-[0.98] transition-transform"
+          className="block rounded-2xl p-4 press transition-transform"
           style={{
             background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
             boxShadow: "var(--shadow-primary)",
@@ -124,7 +124,7 @@ export default function RegionsIndexPage() {
             <Link
               key={s.slug}
               href={`/regions/${s.slug}`}
-              className="bg-white rounded-2xl p-3.5 active:scale-[0.97] transition-transform"
+              className="bg-white rounded-2xl p-3.5 press-strong transition-transform"
               style={{ boxShadow: "var(--shadow-card)" }}
             >
               <div className="flex items-baseline justify-between">

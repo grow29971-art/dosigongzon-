@@ -319,7 +319,7 @@ export default function MyPage() {
               background: "var(--color-surface)",
               borderRadius: "var(--radius-card)",
               boxShadow: "var(--shadow-card)",
-              border: "1px solid rgba(0,0,0,0.04)",
+              border: "1px solid var(--color-divider)",
             }}
           >
             {/* 아바타 (탭하면 파일 선택) — 페이지 유일 히어로 그라디언트 */}
@@ -327,11 +327,11 @@ export default function MyPage() {
               type="button"
               onClick={() => avatarInputRef.current?.click()}
               disabled={avatarUploading}
-              className="relative w-16 h-16 rounded-full flex items-center justify-center shrink-0 overflow-hidden active:scale-95 transition-transform"
+              className="relative w-16 h-16 rounded-full flex items-center justify-center shrink-0 overflow-hidden press-strong transition-transform"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                 boxShadow: "0 0 0 2px #fff",
-                border: "1px solid rgba(0,0,0,0.06)",
+                border: "1px solid var(--color-divider)",
               }}
               aria-label="프로필 사진 변경"
             >
@@ -396,7 +396,7 @@ export default function MyPage() {
                       type="button"
                       onClick={handleSaveNick}
                       disabled={nickSaving}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center active:scale-90 transition-transform"
+                      className="w-7 h-7 rounded-lg flex items-center justify-center press-strong transition-transform"
                       style={{ backgroundColor: "var(--color-gray-600)" }}
                     >
                       {nickSaving ? (
@@ -409,7 +409,7 @@ export default function MyPage() {
                       type="button"
                       onClick={handleCancelEditNick}
                       disabled={nickSaving}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center active:scale-90 transition-transform"
+                      className="w-7 h-7 rounded-lg flex items-center justify-center press-strong transition-transform"
                       style={{ backgroundColor: "var(--color-gray-100)" }}
                     >
                       <X size={12} style={{ color: "var(--color-text-light)" }} strokeWidth={3} />
@@ -431,7 +431,7 @@ export default function MyPage() {
                     <button
                       type="button"
                       onClick={handleStartEditNick}
-                      className="w-6 h-6 rounded-lg flex items-center justify-center active:scale-90 transition-transform shrink-0"
+                      className="w-6 h-6 rounded-lg flex items-center justify-center press-strong transition-transform shrink-0"
                       style={{ backgroundColor: "var(--color-gray-100)" }}
                       aria-label="닉네임 수정"
                     >
@@ -621,12 +621,12 @@ export default function MyPage() {
                   <Link
                     key={cat.id}
                     href="/map"
-                    className="flex items-center gap-3 px-3 py-2.5 active:scale-[0.99] transition-transform"
+                    className="flex items-center gap-3 px-3 py-2.5 press transition-transform"
                     style={{
                       background: "var(--color-surface)",
                       borderRadius: "var(--radius-card-sm)",
                       boxShadow: "var(--shadow-card-sm)",
-                      border: "1px solid rgba(0,0,0,0.04)",
+                      border: "1px solid var(--color-divider)",
                     }}
                   >
                     <div
@@ -683,7 +683,7 @@ export default function MyPage() {
                   <Link
                     key={cat.id}
                     href={`/cats/${cat.id}`}
-                    className="shrink-0 active:scale-[0.97] transition-transform"
+                    className="shrink-0 press-strong transition-transform"
                     style={{ width: 96 }}
                   >
                     <div
@@ -756,8 +756,8 @@ export default function MyPage() {
                         background: "var(--color-surface)",
                         borderRadius: "var(--radius-card-sm)",
                         boxShadow: "var(--shadow-card-sm)",
-                        border: "1px solid rgba(0,0,0,0.04)",
-                        borderLeft: isAlert ? "3px solid var(--color-error)" : "1px solid rgba(0,0,0,0.04)",
+                        border: "1px solid var(--color-divider)",
+                        borderLeft: isAlert ? "3px solid var(--color-error)" : "1px solid var(--color-divider)",
                       }}
                     >
                       <div className="flex items-center gap-1.5 mb-1 flex-wrap">
@@ -829,7 +829,7 @@ export default function MyPage() {
             {SHOW_CARD_GAME && (
             <Link
               href="/mypage/cards"
-              className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform mb-2"
+              className="w-full flex items-center gap-3 px-4 py-3.5 press transition-transform mb-2"
               style={{
                 background: "var(--color-gray-900)",
                 borderRadius: "var(--radius-card-sm)",
@@ -849,12 +849,12 @@ export default function MyPage() {
             {SHOW_JOURNEY && (
             <Link
               href="/mypage/journey"
-              className="w-full flex items-center gap-3 px-4 py-3.5 active:scale-[0.99] transition-transform"
+              className="w-full flex items-center gap-3 px-4 py-3.5 press transition-transform"
               style={{
                 background: "var(--color-gray-50)",
                 borderRadius: "var(--radius-card-sm)",
                 boxShadow: "var(--shadow-card)",
-                border: "1px solid rgba(0,0,0,0.04)",
+                border: "1px solid var(--color-divider)",
               }}
             >
               <div
@@ -877,12 +877,12 @@ export default function MyPage() {
             {SHOW_MONTHLY_REPORT && (
             <Link
               href="/mypage/monthly-report"
-              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
+              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 press transition-transform"
               style={{
                 background: "var(--color-surface-alt)",
                 borderRadius: "var(--radius-card-sm)",
                 boxShadow: "var(--shadow-card)",
-                border: "1px solid rgba(0,0,0,0.04)",
+                border: "1px solid var(--color-divider)",
               }}
             >
               <div
@@ -923,12 +923,12 @@ export default function MyPage() {
             {SHOW_CARETAKERS && (
             <Link
               href="/caretakers"
-              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
+              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 press transition-transform"
               style={{
                 background: "var(--color-surface)",
                 borderRadius: "var(--radius-card-sm)",
                 boxShadow: "var(--shadow-card-sm)",
-                border: "1px solid rgba(0,0,0,0.04)",
+                border: "1px solid var(--color-divider)",
               }}
             >
               <div
@@ -951,12 +951,12 @@ export default function MyPage() {
             {SHOW_RANKING && (
             <Link
               href="/ranking"
-              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
+              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 press transition-transform"
               style={{
                 background: "var(--color-surface)",
                 borderRadius: "var(--radius-card-sm)",
                 boxShadow: "var(--shadow-card-sm)",
-                border: "1px solid rgba(0,0,0,0.04)",
+                border: "1px solid var(--color-divider)",
               }}
             >
               <div
@@ -1018,12 +1018,12 @@ export default function MyPage() {
             {SHOW_CIRCLE && (
             <Link
               href="/mypage/circle"
-              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 active:scale-[0.99] transition-transform"
+              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 press transition-transform"
               style={{
                 background: "var(--color-surface)",
                 borderRadius: "var(--radius-card-sm)",
                 boxShadow: "var(--shadow-card-sm)",
-                border: "1px solid rgba(0,0,0,0.04)",
+                border: "1px solid var(--color-divider)",
               }}
             >
               <div
@@ -1074,7 +1074,7 @@ export default function MyPage() {
               </div>
               <Link
                 href="/admin"
-                className="flex items-center gap-3 px-4 py-4 active:scale-[0.99] transition-transform"
+                className="flex items-center gap-3 px-4 py-4 press transition-transform"
                 style={{
                   background: "var(--color-gray-900)",
                   borderRadius: "var(--radius-card)",
@@ -1103,11 +1103,11 @@ export default function MyPage() {
           {/* ── 로그아웃 ── */}
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-[13px] font-bold active:scale-[0.97] transition-transform"
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-[13px] font-bold press-strong transition-transform"
             style={{
               backgroundColor: "var(--color-surface)",
               color: "var(--color-text-light)",
-              border: "1px solid rgba(0,0,0,0.06)",
+              border: "1px solid var(--color-divider)",
               boxShadow: "var(--shadow-card)",
             }}
           >
@@ -1118,7 +1118,7 @@ export default function MyPage() {
           {/* ── 회원탈퇴 ── */}
           <button
             onClick={() => setDeleteConfirmOpen(true)}
-            className="w-full text-center py-3 text-[11px] text-text-light underline active:scale-[0.97] transition-transform mt-2"
+            className="w-full text-center py-3 text-[11px] text-text-light underline press-strong transition-transform mt-2"
           >
             회원탈퇴
           </button>
@@ -1169,14 +1169,14 @@ export default function MyPage() {
                   <button
                     onClick={() => { setDeleteConfirmOpen(false); setDeleteConfirmText(""); }}
                     disabled={deleting}
-                    className="flex-1 py-3 rounded-xl text-[15px] font-bold bg-surface-alt text-text-sub active:scale-[0.97] transition-transform"
+                    className="flex-1 py-3 rounded-xl text-[15px] font-bold bg-surface-alt text-text-sub press-strong transition-transform"
                   >
                     취소
                   </button>
                   <button
                     onClick={handleDeleteAccount}
                     disabled={deleteConfirmText !== "탈퇴합니다" || deleting}
-                    className="flex-1 py-3 rounded-xl text-[15px] font-bold text-white active:scale-[0.97] transition-transform disabled:opacity-40"
+                    className="flex-1 py-3 rounded-xl text-[15px] font-bold text-white press-strong transition-transform disabled:opacity-40"
                     style={{ backgroundColor: "var(--color-error)" }}
                   >
                     {deleting ? "처리 중..." : "탈퇴하기"}
@@ -1191,12 +1191,12 @@ export default function MyPage() {
           {/* 비로그인 */}
           <Link
             href="/login?next=%2Fmypage"
-            className="flex items-center gap-4 px-5 py-5 mb-4 active:scale-[0.98] transition-transform"
+            className="flex items-center gap-4 px-5 py-5 mb-4 press transition-transform"
             style={{
               background: "var(--color-surface)",
               borderRadius: "var(--radius-card)",
               boxShadow: "var(--shadow-card)",
-              border: "1px solid rgba(0,0,0,0.04)",
+              border: "1px solid var(--color-divider)",
             }}
           >
             <div
@@ -1248,7 +1248,7 @@ function StatCard({
         background: "var(--color-surface)",
         borderRadius: "var(--radius-card)",
         boxShadow: "var(--shadow-card-sm)",
-        border: "1px solid rgba(0,0,0,0.04)",
+        border: "1px solid var(--color-divider)",
       }}
     >
       <div
@@ -1317,7 +1317,7 @@ function TitleSection({
             type="button"
             onClick={() => handleToggle(adminTitleId!, true)}
             disabled={saving}
-            className="w-full flex items-center gap-3 p-3 active:scale-[0.98] transition-transform"
+            className="w-full flex items-center gap-3 p-3 press transition-transform"
             style={{
               background: equipped === adminTitleId
                 ? `linear-gradient(135deg, ${myAdminTitle.color}15 0%, ${myAdminTitle.color}08 100%)`
@@ -1325,7 +1325,7 @@ function TitleSection({
               borderRadius: "var(--radius-card-sm)",
               border: equipped === adminTitleId
                 ? `2px solid ${myAdminTitle.color}`
-                : "1px solid rgba(0,0,0,0.06)",
+                : "1px solid var(--color-divider)",
               boxShadow: equipped === adminTitleId
                 ? `0 4px 14px ${myAdminTitle.color}20`
                 : "var(--shadow-card)",
@@ -1393,7 +1393,7 @@ function TitleCard({
       type="button"
       onClick={onToggle}
       disabled={locked}
-      className="relative overflow-hidden p-3 flex flex-col items-center text-center active:scale-[0.97] transition-transform disabled:active:scale-100"
+      className="relative overflow-hidden p-3 flex flex-col items-center text-center press-strong transition-transform disabled:active:scale-100"
       style={{
         background: isEquipped
           ? `${categoryColor}08`
@@ -1408,7 +1408,7 @@ function TitleCard({
           ? `2px solid ${categoryColor}`
           : locked
             ? "1.5px dashed var(--color-border)"
-            : `1px solid rgba(0,0,0,0.06)`,
+            : `1px solid var(--color-divider)`,
       }}
       title={status.description}
     >
@@ -1471,7 +1471,7 @@ function EmptyBox({ children }: { children: React.ReactNode }) {
         background: "var(--color-surface)",
         borderRadius: "var(--radius-card-sm)",
         boxShadow: "var(--shadow-card)",
-        border: "1px solid rgba(0,0,0,0.04)",
+        border: "1px solid var(--color-divider)",
       }}
     >
       {children}

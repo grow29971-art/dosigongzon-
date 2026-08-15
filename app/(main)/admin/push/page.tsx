@@ -153,7 +153,7 @@ export default function AdminPushPage() {
       <div className="flex items-center gap-3 mb-6">
         <Link
           href="/admin/news"
-          className="w-9 h-9 rounded-full bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
+          className="w-9 h-9 rounded-full bg-surface-alt flex items-center justify-center press-strong transition-transform"
         >
           <ArrowLeft size={18} className="text-text-sub" />
         </Link>
@@ -194,7 +194,7 @@ export default function AdminPushPage() {
             // 집회 당일 오후 1시 — 3시간 전 리마인더
             setScheduleAt(toLocalInputValue(new Date(2026, 7, 8, 13, 0)));
           }}
-          className="w-full text-left px-4 py-2.5 rounded-xl active:scale-[0.99] transition-transform"
+          className="w-full text-left px-4 py-2.5 rounded-xl press transition-transform"
           style={{
             background: "linear-gradient(135deg, #FFE3D3 0%, #FFC9AE 100%)",
             border: "1px solid rgba(173, 94, 59,0.35)",
@@ -215,7 +215,7 @@ export default function AdminPushPage() {
             setBody("정식 출시 D-3 — 초기 합류 멤버에게 영구 한정 타이틀을 부여했어요. 마이페이지에서 장착해보세요.");
             setUrl("/mypage");
           }}
-          className="w-full text-left px-4 py-2.5 rounded-xl active:scale-[0.99] transition-transform"
+          className="w-full text-left px-4 py-2.5 rounded-xl press transition-transform"
           style={{
             background: "linear-gradient(135deg, #FFE8C2 0%, #FFCFB5 100%)",
             border: "1px solid rgba(173, 94, 59,0.30)",
@@ -236,7 +236,7 @@ export default function AdminPushPage() {
             setBody("Play 스토어에서 도시공존 앱을 만나보세요. 더 빠른 알림, 한 번에 진입.");
             setUrl("https://play.google.com/store/apps/details?id=kr.dosigongzon.app");
           }}
-          className="w-full text-left px-4 py-2.5 rounded-xl active:scale-[0.99] transition-transform"
+          className="w-full text-left px-4 py-2.5 rounded-xl press transition-transform"
           style={{
             background: "linear-gradient(135deg, #DCEAF6 0%, #B5D2EC 100%)",
             border: "1px solid rgba(74,123,168,0.30)",
@@ -257,7 +257,7 @@ export default function AdminPushPage() {
             setBody("오늘 도시공존이 정식 출시됐어요. 처음부터 함께해 주셔서 진심으로 감사합니다. 누적 기록과 감사 메시지를 확인해보세요.");
             setUrl("/celebrate");
           }}
-          className="w-full text-left px-4 py-2.5 rounded-xl active:scale-[0.99] transition-transform"
+          className="w-full text-left px-4 py-2.5 rounded-xl press transition-transform"
           style={{
             background: "linear-gradient(135deg, #FFD6E4 0%, #FFB99B 100%)",
             border: "1px solid var(--color-like-soft)",
@@ -278,7 +278,7 @@ export default function AdminPushPage() {
             setBody("정식 출시 후 일주일 — 새로 합류한 이웃 소식과 다음 주 업데이트를 확인해보세요.");
             setUrl("/");
           }}
-          className="w-full text-left px-4 py-2.5 rounded-xl active:scale-[0.99] transition-transform"
+          className="w-full text-left px-4 py-2.5 rounded-xl press transition-transform"
           style={{
             background: "linear-gradient(135deg, #E4F2E4 0%, #C9E5C9 100%)",
             border: "1px solid rgba(107,142,111,0.30)",
@@ -357,7 +357,7 @@ export default function AdminPushPage() {
         <button
           onClick={handleSend}
           disabled={sending || scheduling}
-          className="w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.97] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
+          className="w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold press-strong transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
           style={{ boxShadow: "var(--shadow-primary)" }}
         >
           {sending ? (
@@ -393,7 +393,7 @@ export default function AdminPushPage() {
           <button
             onClick={handleSchedule}
             disabled={sending || scheduling}
-            className="w-full mt-3 py-3.5 rounded-2xl text-[15px] font-bold active:scale-[0.97] transition-transform disabled:opacity-60 flex items-center justify-center gap-2 bg-white"
+            className="w-full mt-3 py-3.5 rounded-2xl text-[15px] font-bold press-strong transition-transform disabled:opacity-60 flex items-center justify-center gap-2 bg-white"
             style={{ color: "var(--color-primary-dark)", border: "1.5px solid rgba(173, 94, 59,0.35)" }}
           >
             {scheduling ? (
@@ -441,7 +441,7 @@ export default function AdminPushPage() {
                     {s.status === "pending" && (
                       <button
                         onClick={() => handleCancel(s.id)}
-                        className="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 active:scale-90 transition-transform"
+                        className="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 press-strong transition-transform"
                         style={{ border: "1px solid rgba(173, 94, 59,0.25)" }}
                         aria-label="예약 취소"
                       >

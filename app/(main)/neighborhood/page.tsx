@@ -86,7 +86,7 @@ export default function NeighborhoodPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.back()}
-            className="p-2 -ml-2 active:scale-90 transition-transform"
+            className="p-2 -ml-2 press-strong transition-transform"
           >
             <ArrowLeft size={24} className="text-text-main" />
           </button>
@@ -98,7 +98,7 @@ export default function NeighborhoodPage() {
         {/* 동네 선택 버튼 */}
         <button
           onClick={() => setShowPicker(true)}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/10 active:scale-95 transition-transform"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/10 press-strong transition-transform"
         >
           <MapPin size={14} className="text-primary" />
           <span className="text-[13px] font-semibold text-primary">
@@ -146,7 +146,7 @@ export default function NeighborhoodPage() {
                 href={`/community/${post.id}`}
                 className="block"
               >
-                <article className="card p-5 active:scale-[0.99] transition-transform">
+                <article className="card p-5 press transition-transform">
                   <div className="flex items-center gap-2 mb-2">
                     <span
                       className="text-[11px] font-bold text-white px-2.5 py-0.5 rounded-lg"
@@ -194,7 +194,7 @@ export default function NeighborhoodPage() {
       {region && (
         <button
           onClick={handleWrite}
-          className="fixed bottom-24 right-5 w-14 h-14 rounded-full bg-primary flex items-center justify-center fab-shadow active:scale-90 transition-transform z-40"
+          className="fixed bottom-24 right-5 w-14 h-14 rounded-full bg-primary flex items-center justify-center fab-shadow press-strong transition-transform z-40"
         >
           <Plus size={28} color="#fff" strokeWidth={2.5} />
         </button>
@@ -228,7 +228,7 @@ export default function NeighborhoodPage() {
                   <button
                     key={r}
                     onClick={() => selectRegion(r)}
-                    className={`py-3 rounded-2xl text-[13px] font-semibold transition-all active:scale-95 ${
+                    className={`py-3 rounded-2xl text-[13px] font-semibold transition-all press-strong ${
                       r === region
                         ? "bg-primary text-white"
                         : "bg-white text-text-sub border border-border"
@@ -299,13 +299,13 @@ export default function NeighborhoodPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => setShowWarning(false)}
-                className="flex-1 py-3 rounded-2xl text-[15px] font-semibold text-text-sub bg-surface-alt active:scale-95 transition-transform"
+                className="flex-1 py-3 rounded-2xl text-[15px] font-semibold text-text-sub bg-surface-alt press-strong transition-transform"
               >
                 취소
               </button>
               <button
                 onClick={confirmWrite}
-                className="flex-1 py-3 rounded-2xl text-[15px] font-semibold text-white bg-primary active:scale-95 transition-transform"
+                className="flex-1 py-3 rounded-2xl text-[15px] font-semibold text-white bg-primary press-strong transition-transform"
               >
                 확인하고 글쓰기
               </button>

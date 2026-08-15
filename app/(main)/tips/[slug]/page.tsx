@@ -200,7 +200,7 @@ export default async function TipDetailPage({ params }: Params) {
           />
           <Link
             href="/tips"
-            className="absolute top-12 left-4 w-10 h-10 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform"
+            className="absolute top-12 left-4 w-10 h-10 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center press-strong transition-transform"
             aria-label="꿀팁 매거진"
           >
             <ArrowLeft size={20} className="text-text-main" />
@@ -210,7 +210,7 @@ export default async function TipDetailPage({ params }: Params) {
         <div className="px-4 pt-12">
           <Link
             href="/tips"
-            className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+            className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
             style={{ boxShadow: "var(--shadow-raised)" }}
             aria-label="꿀팁 매거진"
           >
@@ -313,7 +313,7 @@ export default async function TipDetailPage({ params }: Params) {
             href={sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 p-4 rounded-2xl bg-white mb-4 active:scale-[0.99] transition-transform"
+            className="flex items-center gap-2 p-4 rounded-2xl bg-white mb-4 press transition-transform"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
             <ExternalLink size={16} className="text-text-sub shrink-0" />
@@ -383,7 +383,7 @@ function RelatedRow({ tip }: { tip: Tip }) {
   return (
     <Link
       href={`/tips/${tip.slug}`}
-      className="flex gap-3 items-center active:scale-[0.99] transition-transform"
+      className="flex gap-3 items-center press transition-transform"
     >
       {photo ? (
         <div className="relative shrink-0 rounded-lg overflow-hidden" style={{ width: 56, height: 56 }}>

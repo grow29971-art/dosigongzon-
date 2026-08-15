@@ -162,7 +162,7 @@ export default function EmergencyGuidePage() {
       <div className="flex items-center gap-3 mb-6">
         <Link
           href="/protection"
-          className="p-2 -ml-2 active:scale-90 transition-transform"
+          className="p-2 -ml-2 press-strong transition-transform"
           aria-label="뒤로"
         >
           <ArrowLeft size={22} className="text-text-main" />
@@ -189,7 +189,7 @@ export default function EmergencyGuidePage() {
         <div className="grid grid-cols-3 gap-2">
           <a
             href="tel:112"
-            className="rounded-xl bg-white p-3 flex flex-col items-center active:scale-95"
+            className="rounded-xl bg-white p-3 flex flex-col items-center press-strong"
             style={{ border: "1px solid rgba(216,85,85,0.15)" }}
           >
             <Siren size={17} color="#B84545" />
@@ -198,7 +198,7 @@ export default function EmergencyGuidePage() {
           </a>
           <a
             href="tel:1577-0954"
-            className="rounded-xl bg-white p-3 flex flex-col items-center active:scale-95"
+            className="rounded-xl bg-white p-3 flex flex-col items-center press-strong"
             style={{ border: "1px solid rgba(216,85,85,0.15)" }}
           >
             <PawPrint size={17} color="#B84545" />
@@ -207,7 +207,7 @@ export default function EmergencyGuidePage() {
           </a>
           <a
             href="tel:1577-2504"
-            className="rounded-xl bg-white p-3 flex flex-col items-center active:scale-95"
+            className="rounded-xl bg-white p-3 flex flex-col items-center press-strong"
             style={{ border: "1px solid rgba(216,85,85,0.15)" }}
           >
             <Construction size={17} color="#B84545" />
@@ -240,7 +240,7 @@ export default function EmergencyGuidePage() {
       <nav
         aria-label="목차"
         className="rounded-2xl bg-white p-4 mb-6"
-        style={{ border: "1px solid rgba(0,0,0,0.05)" }}
+        style={{ border: "1px solid var(--color-divider)" }}
       >
         <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
@@ -318,7 +318,7 @@ export default function EmergencyGuidePage() {
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
           의사결정에 쓸 시간은 길지 않아요. <strong>5초 내</strong> 네 가지를 빠르게 확인하세요.
         </p>
-        <div className="rounded-2xl overflow-hidden mb-4" style={{ border: "1px solid rgba(0,0,0,0.08)" }}>
+        <div className="rounded-2xl overflow-hidden mb-4" style={{ border: "1px solid var(--color-border)" }}>
           <table className="w-full text-[13px]">
             <thead style={{ background: "var(--color-surface-alt)" }}>
               <tr>
@@ -333,7 +333,7 @@ export default function EmergencyGuidePage() {
                 ["출혈 (빨간 얼룩 있나)", "대량이면 → 압박 후 이송"],
                 ["움직임 (다리 반응)", "한쪽 못 씀 → 골절 의심"],
               ].map(([k, v], i) => (
-                <tr key={i} style={{ borderTop: "1px solid rgba(0,0,0,0.05)" }}>
+                <tr key={i} style={{ borderTop: "1px solid var(--color-divider)" }}>
                   <td className="px-3 py-2 font-semibold text-text-main">{k}</td>
                   <td className="px-3 py-2 text-text-sub">{v}</td>
                 </tr>
@@ -456,7 +456,7 @@ export default function EmergencyGuidePage() {
             <details
               key={q.name}
               className="rounded-xl bg-white p-4 group"
-              style={{ border: "1px solid rgba(0,0,0,0.06)" }}
+              style={{ border: "1px solid var(--color-divider)" }}
             >
               <summary className="cursor-pointer text-[15px] font-bold text-text-main flex items-center gap-2 list-none">
                 <span className="text-primary">Q.</span>
@@ -479,8 +479,8 @@ export default function EmergencyGuidePage() {
         <div className="space-y-2">
           <Link
             href="/protection/kitten-guide"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
-            style={{ border: "1px solid rgba(0,0,0,0.05)" }}
+            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
+            style={{ border: "1px solid var(--color-divider)" }}
           >
             <Cat size={18} color="var(--color-care)" className="shrink-0" />
             <div className="flex-1 min-w-0">
@@ -490,8 +490,8 @@ export default function EmergencyGuidePage() {
           </Link>
           <Link
             href="/protection/trapping-guide"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
-            style={{ border: "1px solid rgba(0,0,0,0.05)" }}
+            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
+            style={{ border: "1px solid var(--color-divider)" }}
           >
             <Scissors size={18} color="var(--color-primary)" className="shrink-0" />
             <div className="flex-1 min-w-0">
@@ -501,8 +501,8 @@ export default function EmergencyGuidePage() {
           </Link>
           <Link
             href="/protection/legal"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
-            style={{ border: "1px solid rgba(0,0,0,0.05)" }}
+            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
+            style={{ border: "1px solid var(--color-divider)" }}
           >
             <Scale size={18} color="var(--color-text-sub)" className="shrink-0" />
             <div className="flex-1 min-w-0">
@@ -514,7 +514,7 @@ export default function EmergencyGuidePage() {
       </section>
 
       {/* 신뢰 출처 */}
-      <section className="mb-8 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid rgba(0,0,0,0.04)" }}>
+      <section className="mb-8 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-divider)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2">참고한 공공 자료</h3>
         <ul className="text-[13px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
           <li>동물보호관리시스템 (animal.go.kr) — 농림축산식품부</li>

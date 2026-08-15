@@ -153,7 +153,7 @@ export default function KittenGuidePage() {
       <div className="flex items-center gap-3 mb-6">
         <Link
           href="/protection"
-          className="p-2 -ml-2 active:scale-90 transition-transform"
+          className="p-2 -ml-2 press-strong transition-transform"
           aria-label="뒤로"
         >
           <ArrowLeft size={22} className="text-text-main" />
@@ -188,7 +188,7 @@ export default function KittenGuidePage() {
       <nav
         aria-label="목차"
         className="rounded-2xl bg-white p-4 mb-6"
-        style={{ border: "1px solid rgba(0,0,0,0.05)" }}
+        style={{ border: "1px solid var(--color-divider)" }}
       >
         <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
@@ -306,7 +306,7 @@ export default function KittenGuidePage() {
           응급 시 임시로 쌀뜨물·따뜻한 물 한 티스푼 정도는 가능하지만, 분유를 최우선 구해야 해요.
         </p>
         <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">연령별 급여량·간격</h3>
-        <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(0,0,0,0.08)" }}>
+        <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--color-border)" }}>
           <table className="w-full text-[13px]">
             <thead style={{ background: "var(--color-surface-alt)" }}>
               <tr>
@@ -323,7 +323,7 @@ export default function KittenGuidePage() {
                 ["3~4주", "5시간", "10~14ml"],
                 ["4주 이상", "이유식 병행", "사료 + 분유"],
               ].map((row, i) => (
-                <tr key={i} style={{ borderTop: "1px solid rgba(0,0,0,0.05)" }}>
+                <tr key={i} style={{ borderTop: "1px solid var(--color-divider)" }}>
                   {row.map((c, j) => (
                     <td key={j} className="px-3 py-2 text-text-main">{c}</td>
                   ))}
@@ -409,7 +409,7 @@ export default function KittenGuidePage() {
             <details
               key={q.name}
               className="rounded-xl bg-white p-4 group"
-              style={{ border: "1px solid rgba(0,0,0,0.06)" }}
+              style={{ border: "1px solid var(--color-divider)" }}
             >
               <summary className="cursor-pointer text-[15px] font-bold text-text-main flex items-center gap-2 list-none">
                 <span className="text-primary">Q.</span>
@@ -432,8 +432,8 @@ export default function KittenGuidePage() {
         <div className="space-y-2">
           <Link
             href="/protection/emergency-guide"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
-            style={{ border: "1px solid rgba(0,0,0,0.05)" }}
+            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
+            style={{ border: "1px solid var(--color-divider)" }}
           >
             <AlertTriangle size={18} color="var(--color-error)" className="shrink-0" />
             <div className="flex-1 min-w-0">
@@ -443,8 +443,8 @@ export default function KittenGuidePage() {
           </Link>
           <Link
             href="/protection/trapping-guide"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
-            style={{ border: "1px solid rgba(0,0,0,0.05)" }}
+            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
+            style={{ border: "1px solid var(--color-divider)" }}
           >
             <Clock size={18} color="var(--color-care)" className="shrink-0" />
             <div className="flex-1 min-w-0">
@@ -454,8 +454,8 @@ export default function KittenGuidePage() {
           </Link>
           <Link
             href="/hospitals"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white active:scale-[0.99]"
-            style={{ border: "1px solid rgba(0,0,0,0.05)" }}
+            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
+            style={{ border: "1px solid var(--color-divider)" }}
           >
             <Stethoscope size={18} color="var(--color-sage)" className="shrink-0" />
             <div className="flex-1 min-w-0">
@@ -467,7 +467,7 @@ export default function KittenGuidePage() {
       </section>
 
       {/* 신뢰 출처 */}
-      <section className="mb-8 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid rgba(0,0,0,0.04)" }}>
+      <section className="mb-8 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-divider)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2 flex items-center gap-1.5">
           <Heart size={14} color="#AD5E3B" />
           참고한 공공 자료

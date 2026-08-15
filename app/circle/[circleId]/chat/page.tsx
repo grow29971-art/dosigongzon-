@@ -319,7 +319,7 @@ export default function CircleChatPage() {
       >
         <Link
           href="/mypage/circle"
-          className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
           style={{ background: "var(--color-gray-50)" }}
           aria-label="뒤로"
         >
@@ -389,7 +389,7 @@ export default function CircleChatPage() {
                           <button
                             type="button"
                             onClick={() => handleDelete(m.id)}
-                            className="text-text-light active:scale-90"
+                            className="text-text-light press-strong"
                             aria-label="삭제"
                           >
                             <Trash2 size={11} />
@@ -445,7 +445,7 @@ export default function CircleChatPage() {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={sending || !!photoPreview}
-            className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 active:scale-90 disabled:opacity-40"
+            className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 press-strong disabled:opacity-40"
             style={{ background: "var(--color-gray-50)", color: "#8B7562" }}
             aria-label="사진 첨부"
           >
@@ -467,7 +467,7 @@ export default function CircleChatPage() {
           <button
             onClick={handleSend}
             disabled={(!input.trim() && !photoFile) || sending}
-            className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 active:scale-90 disabled:opacity-40"
+            className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 press-strong disabled:opacity-40"
             style={{ background: "var(--color-primary)" }}
             aria-label="전송"
           >

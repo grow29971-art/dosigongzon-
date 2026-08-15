@@ -60,7 +60,7 @@ export default function ReportEvidenceBlock({ report }: { report: Report }) {
       )}
       <button
         onClick={copyForm}
-        className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1.5 rounded-lg active:scale-95"
+        className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1.5 rounded-lg press-strong"
         style={{ backgroundColor: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}
       >
         {copied ? <Check size={12} /> : <ClipboardCopy size={12} />}

@@ -193,7 +193,7 @@ function MessagesPage() {
       <div className="flex flex-col" style={{ height: "100dvh" }}>
         {/* 헤더 */}
         <div className="flex items-center gap-3 px-4 pt-14 pb-3 border-b border-divider shrink-0">
-          <button onClick={() => { setSelectedPartner(null); setMessages([]); getConversations().then(setConvs); }} className="p-2 -ml-2 active:scale-90 transition-transform">
+          <button onClick={() => { setSelectedPartner(null); setMessages([]); getConversations().then(setConvs); }} className="p-2 -ml-2 press-strong transition-transform">
             <ArrowLeft size={24} className="text-text-main" />
           </button>
           <div className="flex-1 min-w-0">
@@ -296,7 +296,7 @@ function MessagesPage() {
           <button
             type="button"
             onClick={() => photoInputRef.current?.click()}
-            className="w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-transform shrink-0"
+            className="w-10 h-10 rounded-full flex items-center justify-center press-strong transition-transform shrink-0"
             style={{ backgroundColor: photoFile ? "#6B8E6F" : "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
           >
             <Camera size={18} style={{ color: photoFile ? "#fff" : "var(--color-text-light)" }} />
@@ -318,7 +318,7 @@ function MessagesPage() {
           <button
             onClick={handleSend}
             disabled={sending || (!msgText.trim() && !photoFile)}
-            className="w-10 h-10 rounded-full bg-primary flex items-center justify-center disabled:opacity-40 active:scale-90 transition-transform shrink-0"
+            className="w-10 h-10 rounded-full bg-primary flex items-center justify-center disabled:opacity-40 press-strong transition-transform shrink-0"
           >
             <Send size={16} color="#fff" />
           </button>
@@ -331,7 +331,7 @@ function MessagesPage() {
   return (
     <div className="pb-24">
       <div className="flex items-center gap-3 px-4 pt-14 pb-3">
-        <button onClick={() => router.back()} className="p-2 -ml-2 active:scale-90 transition-transform">
+        <button onClick={() => router.back()} className="p-2 -ml-2 press-strong transition-transform">
           <ArrowLeft size={24} className="text-text-main" />
         </button>
         <h1 className="text-[20px] font-bold text-text-main">쪽지함</h1>
@@ -368,7 +368,7 @@ function MessagesPage() {
                 background: c.unreadCount > 0 ? "linear-gradient(135deg, var(--color-primary-softer), #FFF)" : "#FFFFFF",
                 borderRadius: "var(--radius-card-sm)",
                 boxShadow: "var(--shadow-card)",
-                border: c.unreadCount > 0 ? "1.5px solid rgba(173, 94, 59,0.2)" : "1px solid rgba(0,0,0,0.04)",
+                border: c.unreadCount > 0 ? "1.5px solid rgba(173, 94, 59,0.2)" : "1px solid var(--color-divider)",
               }}
             >
               {c.partnerAvatar ? (

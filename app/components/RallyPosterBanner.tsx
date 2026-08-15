@@ -13,12 +13,12 @@ export default function RallyPosterBanner() {
         href="/events/rally-20260808-v2.jpg"
         target="_blank"
         rel="noopener"
-        className="block active:scale-[0.99] transition-transform"
+        className="block press transition-transform"
         style={{
           borderRadius: "var(--radius-modal)",
           overflow: "hidden",
           boxShadow: "var(--shadow-primary)",
-          border: "1px solid rgba(0,0,0,0.05)",
+          border: "1px solid var(--color-divider)",
         }}
       >
         <Image

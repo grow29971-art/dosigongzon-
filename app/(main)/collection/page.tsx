@@ -26,7 +26,7 @@ export default function CollectionPage() {
     <div className="min-h-dvh bg-warm-white pb-28">
       {/* 헤더 */}
       <div className="sticky top-0 z-10 flex items-center gap-2 px-4 py-3" style={{ background: "rgba(255,253,248,0.92)", backdropFilter: "blur(8px)", borderBottom: "1px solid rgba(173, 94, 59,0.12)" }}>
-        <Link href="/" className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform" style={{ background: "var(--color-primary-soft)" }} aria-label="홈으로">
+        <Link href="/" className="w-9 h-9 rounded-full flex items-center justify-center press-strong transition-transform" style={{ background: "var(--color-primary-soft)" }} aria-label="홈으로">
           <ChevronLeft size={18} style={{ color: "var(--color-primary-dark)" }} />
         </Link>
         <h1 className="text-[17px] font-bold text-text-main tracking-tight">우리 동네 고양이 도감</h1>
@@ -85,7 +85,7 @@ export default function CollectionPage() {
                   <Link
                     key={c.id}
                     href={`/cats/${c.id}`}
-                    className="block active:scale-[0.97] transition-transform"
+                    className="block press-strong transition-transform"
                   >
                     <div
                       className="relative w-full rounded-2xl overflow-hidden flex items-center justify-center"
@@ -120,7 +120,7 @@ export default function CollectionPage() {
             {data.collectedCount < data.total && (
               <Link
                 href="/map"
-                className="mt-5 flex items-center justify-center gap-2 py-3 rounded-2xl text-white text-[15px] font-bold active:scale-[0.98] transition-transform"
+                className="mt-5 flex items-center justify-center gap-2 py-3 rounded-2xl text-white text-[15px] font-bold press transition-transform"
                 style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)", boxShadow: "var(--shadow-primary)" }}
               >
                 <MapPin size={15} /> 지도에서 못 만난 고양이 만나러 가기
@@ -141,7 +141,7 @@ function EmptyPrompt({ emoji, title, desc, ctaLabel, href }: { emoji: string; ti
       <p className="text-[13px] text-text-sub leading-relaxed mb-5">{desc}</p>
       <Link
         href={href}
-        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-white text-[15px] font-bold active:scale-[0.98] transition-transform"
+        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-white text-[15px] font-bold press transition-transform"
         style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)", boxShadow: "var(--shadow-primary)" }}
       >
         {ctaLabel}

@@ -140,7 +140,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href={currentUserId ? "/map" : "/"}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label={currentUserId ? "지도로 돌아가기" : "홈으로 가기"}
         >
@@ -268,7 +268,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
               <PickCatSignupCta catId={cat.id} catName={cat.name} />
               <Link
                 href="/"
-                className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[13px] font-bold active:scale-[0.98] transition-transform bg-white"
+                className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[13px] font-bold press transition-transform bg-white"
                 style={{
                   color: "var(--color-primary-dark)",
                   border: "1px solid rgba(173, 94, 59,0.30)",
@@ -307,7 +307,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                   href={safeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="shrink-0 rounded-xl overflow-hidden active:scale-[0.97] relative"
+                  className="shrink-0 rounded-xl overflow-hidden press-strong relative"
                   style={{
                     width: 72,
                     height: 72,
@@ -515,7 +515,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           return (
             <Link
               href={`/map?cat=${cat.id}`}
-              className="block mb-3 rounded-xl px-3.5 py-3 active:scale-[0.99] transition-transform"
+              className="block mb-3 rounded-xl px-3.5 py-3 press transition-transform"
               style={{
                 background: hasTodayPhoto
                   ? "var(--color-sage-soft)"
@@ -582,7 +582,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             </p>
             <Link
               href={`/map?cat=${cat.id}`}
-              className="inline-flex items-center gap-1.5 mt-3 px-4 py-2 rounded-xl text-white text-[13px] font-bold active:scale-[0.97] transition-transform"
+              className="inline-flex items-center gap-1.5 mt-3 px-4 py-2 rounded-xl text-white text-[13px] font-bold press-strong transition-transform"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                 boxShadow: "var(--shadow-primary)",
@@ -610,7 +610,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                     href={safe}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block rounded-xl overflow-hidden relative active:scale-[0.97] transition-transform"
+                    className="block rounded-xl overflow-hidden relative press-strong transition-transform"
                     style={{ aspectRatio: "1/1", background: "var(--color-gray-100)" }}
                   >
                     <Image
@@ -637,7 +637,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             {/* 더 올리기 CTA — 작게 */}
             <Link
               href={`/map?cat=${cat.id}`}
-              className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold active:scale-[0.98] transition-transform"
+              className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold press transition-transform"
               style={{
                 background: "var(--color-surface)",
                 color: "var(--color-primary)",
@@ -671,7 +671,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
         {currentUserId && (
           <Link
             href={`/map?cat=${cat.id}`}
-            className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary text-white active:scale-[0.98] transition-transform"
+            className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary text-white press transition-transform"
             style={{ boxShadow: "var(--shadow-primary)" }}
           >
             <PawPrint size={16} />

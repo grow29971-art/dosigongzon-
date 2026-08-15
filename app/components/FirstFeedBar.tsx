@@ -101,7 +101,7 @@ export default function FirstFeedBar({ catId, catName }: { catId: string; catNam
             <button
               onClick={feed}
               disabled={phase === "busy"}
-              className="w-full flex items-center justify-center gap-2 py-3 text-[15px] font-bold active:scale-[0.98] transition-transform"
+              className="w-full flex items-center justify-center gap-2 py-3 text-[15px] font-bold press transition-transform"
               style={{
                 background: "#FFFFFF",
                 color: "var(--color-primary-dark)",

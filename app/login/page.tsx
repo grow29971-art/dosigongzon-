@@ -150,7 +150,7 @@ function LoginContent() {
             <button
               type="button"
               onClick={handleOpenExternal}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[13px] transition-transform active:scale-95"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[13px] transition-transform press-strong"
               style={{ backgroundColor: "rgba(0,0,0,0.05)", color: "#6B5043" }}
             >
               <ExternalLink size={14} />
@@ -230,13 +230,13 @@ function LoginContent() {
                     const next = searchParams.get("next");
                     router.replace(next && next.startsWith("/") && !next.startsWith("//") ? `/login?next=${encodeURIComponent(next)}` : "/login");
                   }}
-                  className="mt-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-bold active:scale-95"
+                  className="mt-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-bold press-strong"
                   style={{
                     backgroundColor: "rgba(255,255,255,0.7)",
                     color:
                       oauthGuide.severity === "danger" ? "#8B2F2F" :
                       oauthGuide.severity === "warn" ? "#6F4910" : "#22457A",
-                    border: "1px solid rgba(0,0,0,0.08)",
+                    border: "1px solid var(--color-border)",
                   }}
                 >
                   <RotateCcw size={11} />
@@ -312,7 +312,7 @@ function LoginContent() {
           <button
             onClick={() => handleSocial("kakao")}
             disabled={!!socialLoading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-bold active:scale-[0.97] transition-transform disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-bold press-strong transition-transform disabled:opacity-60"
             /* 인앱에서도 카카오는 실제로 진행되므로 약관 동의 상태를 그대로 반영 */
             style={{ backgroundColor: "#FEE500", color: "#191919", opacity: agreed ? 1 : 0.6 }}
           >
@@ -328,7 +328,7 @@ function LoginContent() {
           <button
             onClick={() => handleSocial("google")}
             disabled={!!socialLoading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold active:scale-[0.97] transition-transform border border-[#E0E0E0] disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold press-strong transition-transform border border-[#E0E0E0] disabled:opacity-60"
             style={{ backgroundColor: "#FFFFFF", color: "#2A2A28", opacity: (agreed || inApp) ? 1 : 0.6 }}
           >
             {socialLoading === "google" ? (
@@ -346,7 +346,7 @@ function LoginContent() {
           <button
             onClick={() => handleSocial("apple")}
             disabled={!!socialLoading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold active:scale-[0.97] transition-transform disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold press-strong transition-transform disabled:opacity-60"
             style={{ backgroundColor: "#000000", color: "#FFFFFF", opacity: (agreed || inApp) ? 1 : 0.6 }}
           >
             {socialLoading === "apple" ? (

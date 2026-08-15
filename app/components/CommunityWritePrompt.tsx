@@ -61,7 +61,7 @@ export default function CommunityWritePrompt() {
           <Link
             key={p.title}
             href={`/community/write?category=${p.category}&t=${encodeURIComponent(p.title)}`}
-            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white active:scale-[0.99] transition-transform"
+            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white press transition-transform"
             style={{ border: "1px solid rgba(139,101,184,0.12)" }}
           >
             <span className="text-base shrink-0">{p.emoji}</span>

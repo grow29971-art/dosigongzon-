@@ -178,7 +178,7 @@ export default function FeatureTourModal({
         <button
           type="button"
           onClick={handleSkip}
-          className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full flex items-center justify-center active:scale-90"
+          className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full flex items-center justify-center press-strong"
           style={{ background: "rgba(0,0,0,0.06)" }}
           aria-label="건너뛰기"
         >
@@ -229,7 +229,7 @@ export default function FeatureTourModal({
               <button
                 type="button"
                 onClick={() => setStep((s) => Math.max(0, s - 1))}
-                className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 active:scale-95"
+                className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 press-strong"
                 style={{ background: "rgba(0,0,0,0.05)" }}
                 aria-label="이전"
               >
@@ -240,7 +240,7 @@ export default function FeatureTourModal({
               type="button"
               onClick={handleNext}
               disabled={closing}
-              className="flex-1 py-3.5 rounded-2xl text-[15px] font-bold text-white flex items-center justify-center gap-1.5 active:scale-[0.98] transition-transform"
+              className="flex-1 py-3.5 rounded-2xl text-[15px] font-bold text-white flex items-center justify-center gap-1.5 press transition-transform"
               style={{
                 background: `linear-gradient(135deg, ${current.color} 0%, ${current.color}CC 100%)`,
                 boxShadow: `0 8px 20px ${current.color}40`,

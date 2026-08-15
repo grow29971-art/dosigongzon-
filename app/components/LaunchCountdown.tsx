@@ -12,7 +12,7 @@ export default function LaunchCountdown() {
       href={PLAY_STORE_URL}
       target="_blank"
       rel="noopener noreferrer"
-      className="block px-5 py-2.5 flex items-center justify-center gap-2 text-white active:scale-[0.99] transition-transform"
+      className="block px-5 py-2.5 flex items-center justify-center gap-2 text-white press transition-transform"
       style={{
         background: "linear-gradient(90deg, var(--color-primary) 0%, var(--color-like) 50%, var(--color-primary) 100%)",
       }}

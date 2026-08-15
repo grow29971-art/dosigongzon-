@@ -45,7 +45,7 @@ export default function ReturnDigestCard({ lastVisitAt }: { lastVisitAt: number 
   if (items.length === 0) return null;
 
   return (
-    <Link href="/notifications" className="block active:scale-[0.99] transition-transform">
+    <Link href="/notifications" className="block press transition-transform">
       <div
         className="mb-4 px-4 py-3.5"
         style={{

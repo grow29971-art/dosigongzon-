@@ -219,7 +219,7 @@ export default async function HomeLanding({
         <div className="flex gap-2 mt-5">
           <Link
             href="/map"
-            className="flex-[1.4] flex items-center justify-center gap-1.5 py-4 rounded-2xl text-white active:scale-[0.98] transition-transform"
+            className="flex-[1.4] flex items-center justify-center gap-1.5 py-4 rounded-2xl text-white press transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "0 8px 22px rgba(173, 94, 59,0.38), 0 2px 6px rgba(168,104,74,0.22)",
@@ -230,7 +230,7 @@ export default async function HomeLanding({
           </Link>
           <Link
             href="/signup"
-            className="flex-1 flex items-center justify-center gap-1.5 py-4 rounded-2xl active:scale-[0.98] transition-transform"
+            className="flex-1 flex items-center justify-center gap-1.5 py-4 rounded-2xl press transition-transform"
             style={{
               background: "rgba(173, 94, 59,0.09)",
               color: "var(--color-primary)",
@@ -250,7 +250,7 @@ export default async function HomeLanding({
         {/* 처음이신가요? 가이드 링크 */}
         <Link
           href="/guide"
-          className="mt-3 flex items-center justify-center gap-1.5 text-[13px] font-bold active:scale-[0.98] transition-transform"
+          className="mt-3 flex items-center justify-center gap-1.5 text-[13px] font-bold press transition-transform"
           style={{ color: "var(--color-text-light)" }}
         >
           <span>처음이신가요? 10가지 기능 한눈에 보기</span>
@@ -387,7 +387,7 @@ export default async function HomeLanding({
               <Link
                 key={r.slug}
                 href={`/areas/${r.slug}`}
-                className="block rounded-2xl bg-white p-4 active:scale-[0.98] transition-transform"
+                className="block rounded-2xl bg-white p-4 press transition-transform"
                 style={{ boxShadow: "var(--shadow-card)", border: "1px solid var(--color-divider)" }}
               >
                 <div className="flex items-center gap-3">
@@ -597,7 +597,7 @@ export default async function HomeLanding({
         </div>
         <Link
           href="/guide"
-          className="mt-3 flex items-center justify-center gap-1 text-[13px] font-bold py-2.5 rounded-xl active:scale-[0.98] transition-transform"
+          className="mt-3 flex items-center justify-center gap-1 text-[13px] font-bold py-2.5 rounded-xl press transition-transform"
           style={{ background: "var(--color-surface)", color: "var(--color-text-light)", border: "1px solid var(--color-divider)" }}
         >
           <span>10가지 기능 한 화면에서 보기</span>
@@ -626,7 +626,7 @@ export default async function HomeLanding({
               <Link
                 key={c.user_id}
                 href="/ranking"
-                className="flex items-center gap-3 p-3.5 rounded-2xl bg-white active:scale-[0.99] transition-transform"
+                className="flex items-center gap-3 p-3.5 rounded-2xl bg-white press transition-transform"
                 style={{ boxShadow: "var(--shadow-card)" }}
               >
                 <div
@@ -657,7 +657,7 @@ export default async function HomeLanding({
           </div>
           <Link
             href="/ranking"
-            className="mt-3 flex items-center justify-center gap-1 text-[13px] font-bold py-2.5 rounded-xl active:scale-[0.98] transition-transform"
+            className="mt-3 flex items-center justify-center gap-1 text-[13px] font-bold py-2.5 rounded-xl press transition-transform"
             style={{ background: "var(--color-surface)", color: "var(--color-text-light)", border: "1px solid var(--color-divider)" }}
           >
             <span>전체 랭킹 보기</span>
@@ -753,7 +753,7 @@ export default async function HomeLanding({
                 <Link
                   key={c.id}
                   href={`/cats/${c.id}`}
-                  className="block rounded-2xl overflow-hidden bg-white active:scale-[0.98] transition-transform"
+                  className="block rounded-2xl overflow-hidden bg-white press transition-transform"
                   style={{ boxShadow: "var(--shadow-raised)" }}
                 >
                   <div className="relative" style={{ aspectRatio: "4/3" }}>
@@ -802,7 +802,7 @@ export default async function HomeLanding({
             <Link
               key={g.slug}
               href={`/areas/${g.slug}`}
-              className="text-center py-2.5 rounded-xl bg-white active:scale-95 transition-transform"
+              className="text-center py-2.5 rounded-xl bg-white press-strong transition-transform"
               style={{ boxShadow: "var(--shadow-card-sm)" }}
             >
               <p className="text-[13px] font-bold text-text-main">{g.name}</p>
@@ -828,7 +828,7 @@ export default async function HomeLanding({
           style={{
             background: "var(--color-surface)",
             boxShadow: "var(--shadow-card)",
-            border: "1px solid rgba(0,0,0,0.04)",
+            border: "1px solid var(--color-divider)",
           }}
         >
           <TrustInline icon={<PawPrint size={18} style={{ color: "var(--color-primary)" }} />} value={data.catCount} label="등록" color="var(--color-primary)" />
@@ -1112,7 +1112,7 @@ export default async function HomeLanding({
           <div className="flex gap-2 mt-4">
             <Link
               href="/maker"
-              className="flex-1 flex items-center justify-center gap-1 py-2.5 rounded-xl text-[13px] font-bold active:scale-[0.98] transition-transform"
+              className="flex-1 flex items-center justify-center gap-1 py-2.5 rounded-xl text-[13px] font-bold press transition-transform"
               style={{
                 background: "var(--color-surface)",
                 color: "var(--color-primary-dark)",
@@ -1124,7 +1124,7 @@ export default async function HomeLanding({
             </Link>
             <a
               href="mailto:grow29971@gmail.com?subject=%5B%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%A1%B4%5D%20%EC%A0%9C%ED%9C%B4%2F%EB%AC%B8%EC%9D%98"
-              className="flex items-center justify-center gap-1 px-4 py-2.5 rounded-xl text-[13px] font-bold text-white active:scale-[0.98] transition-transform"
+              className="flex items-center justify-center gap-1 px-4 py-2.5 rounded-xl text-[13px] font-bold text-white press transition-transform"
               style={{
                 background: "var(--color-primary)",
                 boxShadow: "var(--shadow-primary)",
@@ -1199,7 +1199,7 @@ function GuideCard({
   return (
     <Link
       href={href}
-      className="block bg-white rounded-2xl p-3 active:scale-[0.98] transition-transform"
+      className="block bg-white rounded-2xl p-3 press transition-transform"
       style={{ boxShadow: "var(--shadow-card)" }}
     >
       <div className="flex items-center gap-2.5">
@@ -1223,7 +1223,7 @@ function TipsRow({ tip }: { tip: Tip }) {
   return (
     <Link
       href={`/tips/${tip.slug}`}
-      className="flex gap-3 p-3 bg-white rounded-2xl active:scale-[0.99] transition-transform"
+      className="flex gap-3 p-3 bg-white rounded-2xl press transition-transform"
       style={{ boxShadow: "var(--shadow-card)" }}
     >
       {photo ? (
@@ -1287,7 +1287,7 @@ function StartStep({
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 px-3.5 py-3 rounded-2xl bg-white active:scale-[0.99] transition-transform"
+      className="flex items-center gap-3 px-3.5 py-3 rounded-2xl bg-white press transition-transform"
       style={{
         boxShadow: "var(--shadow-card)",
         border: `1px solid ${color}25`,

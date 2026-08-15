@@ -170,7 +170,7 @@ export default function AdminCatsPage() {
       <div className="flex items-center gap-2 mb-4">
         <button
           onClick={() => router.back()}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로 가기"
         >
@@ -185,7 +185,7 @@ export default function AdminCatsPage() {
       {/* 검색 */}
       <div
         className="flex items-center gap-2 px-3.5 py-2.5 mb-3"
-        style={{ background: "#fff", borderRadius: "var(--radius-input)", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "var(--shadow-card-sm)" }}
+        style={{ background: "#fff", borderRadius: "var(--radius-input)", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)" }}
       >
         <Search size={15} className="text-text-light shrink-0" />
         <input
@@ -245,7 +245,7 @@ export default function AdminCatsPage() {
                   background: "#fff",
                   borderRadius: "var(--radius-card-sm)",
                   boxShadow: "var(--shadow-card)",
-                  border: checked ? "1.5px solid rgba(173, 94, 59,0.45)" : "1px solid rgba(0,0,0,0.04)",
+                  border: checked ? "1.5px solid rgba(173, 94, 59,0.45)" : "1px solid var(--color-divider)",
                   opacity: cat.hidden ? 0.55 : 1,
                 }}
               >
@@ -279,7 +279,7 @@ export default function AdminCatsPage() {
                 <button
                   onClick={() => handleToggleHidden(cat)}
                   disabled={working}
-                  className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 active:scale-90 disabled:opacity-40"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 press-strong disabled:opacity-40"
                   style={{ background: "var(--color-surface-alt)" }}
                   aria-label={cat.hidden ? "숨김 해제" : "숨기기"}
                 >
@@ -300,7 +300,7 @@ export default function AdminCatsPage() {
           <button
             onClick={handleBulkDelete}
             disabled={working}
-            className="w-full py-3.5 rounded-2xl text-white text-[15px] font-bold active:scale-[0.98] transition-transform disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-3.5 rounded-2xl text-white text-[15px] font-bold press transition-transform disabled:opacity-50 flex items-center justify-center gap-2"
             style={{ background: "#D85555", boxShadow: "0 6px 20px rgba(216,85,85,0.3)" }}
           >
             {working ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}

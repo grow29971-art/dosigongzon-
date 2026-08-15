@@ -220,7 +220,7 @@ export default function AdminUsersPage() {
       <div className="mb-5">
         <button
           onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 press-strong transition-transform"
         >
           <ArrowLeft size={14} />
           마이페이지
@@ -252,7 +252,7 @@ export default function AdminUsersPage() {
           style={{
             background: "#FFFFFF",
             borderRadius: "var(--radius-input)",
-            border: "1px solid var(--color-gray-200)",
+            border: "1px solid var(--color-border)",
           }}
         >
           <Search size={16} className="text-text-muted shrink-0" />
@@ -267,10 +267,10 @@ export default function AdminUsersPage() {
         <button
           type="button"
           onClick={() => setSortOrder((s) => s === "newest" ? "oldest" : "newest")}
-          className="flex items-center gap-1 px-3 py-2.5 rounded-xl text-[11px] font-bold active:scale-95 shrink-0"
+          className="flex items-center gap-1 px-3 py-2.5 rounded-xl text-[11px] font-bold press-strong shrink-0"
           style={{
             background: "#FFFFFF",
-            border: "1px solid var(--color-gray-200)",
+            border: "1px solid var(--color-border)",
             color: "#333",
           }}
         >
@@ -284,11 +284,11 @@ export default function AdminUsersPage() {
         <button
           type="button"
           onClick={() => setProviderFilter(null)}
-          className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 shrink-0"
+          className="px-3 py-1.5 rounded-2xl text-[11px] font-bold press-strong shrink-0"
           style={{
             background: providerFilter === null ? "#2C2C2C" : "rgba(255,255,255,0.9)",
             color: providerFilter === null ? "#fff" : "#555",
-            border: "1px solid rgba(0,0,0,0.05)",
+            border: "1px solid var(--color-divider)",
           }}
         >
           전체 {users.length}
@@ -301,7 +301,7 @@ export default function AdminUsersPage() {
               key={p}
               type="button"
               onClick={() => setProviderFilter(active ? null : p)}
-              className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 shrink-0 flex items-center gap-1"
+              className="px-3 py-1.5 rounded-2xl text-[11px] font-bold press-strong shrink-0 flex items-center gap-1"
               style={{
                 background: active ? meta.fg : meta.bg,
                 color: active ? "#fff" : meta.fg,
@@ -332,7 +332,7 @@ export default function AdminUsersPage() {
                 boxShadow: "var(--shadow-card)",
                 border: u.is_suspended
                   ? "1px solid rgba(216,85,85,0.2)"
-                  : "1px solid rgba(0,0,0,0.04)",
+                  : "1px solid var(--color-divider)",
               }}
             >
               {/* 아바타 */}
@@ -413,7 +413,7 @@ export default function AdminUsersPage() {
                   <button
                     type="button"
                     onClick={() => setTitleTarget(titleTarget === u.id ? null : u.id)}
-                    className="text-[11px] font-bold px-2 py-0.5 rounded-lg active:scale-95"
+                    className="text-[11px] font-bold px-2 py-0.5 rounded-lg press-strong"
                     style={{ backgroundColor: "var(--color-gray-50)", color: "var(--color-primary)" }}
                   >
                     {u.admin_title ? "타이틀 변경" : "타이틀 부여"}
@@ -423,7 +423,7 @@ export default function AdminUsersPage() {
                       type="button"
                       onClick={() => handleUnsuspend(u)}
                       disabled={busyUserId === u.id}
-                      className="text-[11px] font-bold px-2 py-0.5 rounded-lg active:scale-95 disabled:opacity-50 flex items-center gap-1"
+                      className="text-[11px] font-bold px-2 py-0.5 rounded-lg press-strong disabled:opacity-50 flex items-center gap-1"
                       style={{ backgroundColor: "#E8F4E8", color: "#3F5B42" }}
                     >
                       {busyUserId === u.id ? <Loader2 size={10} className="animate-spin" /> : <CheckCircle size={10} />}
@@ -434,7 +434,7 @@ export default function AdminUsersPage() {
                       type="button"
                       onClick={() => handleSuspend(u)}
                       disabled={busyUserId === u.id}
-                      className="text-[11px] font-bold px-2 py-0.5 rounded-lg active:scale-95 disabled:opacity-50 flex items-center gap-1"
+                      className="text-[11px] font-bold px-2 py-0.5 rounded-lg press-strong disabled:opacity-50 flex items-center gap-1"
                       style={{ backgroundColor: "var(--color-error-soft)", color: "#B84545" }}
                     >
                       {busyUserId === u.id ? <Loader2 size={10} className="animate-spin" /> : <Ban size={10} />}
@@ -449,7 +449,7 @@ export default function AdminUsersPage() {
                       <button
                         type="button"
                         onClick={() => handleSetTitle(u.id, null)}
-                        className="text-[11px] font-bold px-2 py-1 rounded-lg active:scale-95"
+                        className="text-[11px] font-bold px-2 py-1 rounded-lg press-strong"
                         style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}
                       >
                         ✕ 제거
@@ -460,7 +460,7 @@ export default function AdminUsersPage() {
                         key={t.id}
                         type="button"
                         onClick={() => handleSetTitle(u.id, t.id)}
-                        className="text-[11px] font-bold px-2 py-1 rounded-lg active:scale-95"
+                        className="text-[11px] font-bold px-2 py-1 rounded-lg press-strong"
                         style={{
                           backgroundColor: u.admin_title === t.id ? t.color : `${t.color}15`,
                           color: u.admin_title === t.id ? "#fff" : t.color,

@@ -366,7 +366,7 @@ export default function AddCatModal({
         <div className="relative w-full max-w-sm bg-white rounded-[28px] p-6 shadow-2xl">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-alt flex items-center justify-center active:scale-90 transition-transform"
+            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-alt flex items-center justify-center press-strong transition-transform"
           >
             <X size={18} className="text-text-sub" />
           </button>
@@ -383,7 +383,7 @@ export default function AddCatModal({
           <Link
             href="/login?next=%2Fmap"
             onClick={onClose}
-            className="block w-full py-3.5 rounded-2xl bg-primary text-white text-[15px] font-bold text-center active:scale-[0.97] transition-transform"
+            className="block w-full py-3.5 rounded-2xl bg-primary text-white text-[15px] font-bold text-center press-strong transition-transform"
           >
             로그인하러 가기
           </Link>
@@ -455,7 +455,7 @@ export default function AddCatModal({
             onClick={onClose}
             disabled={submitting}
             aria-label="등록 창 닫기"
-            className="w-9 h-9 rounded-full bg-white/[0.07] flex items-center justify-center active:scale-90 transition-transform disabled:opacity-50 shrink-0"
+            className="w-9 h-9 rounded-full bg-white/[0.07] flex items-center justify-center press-strong transition-transform disabled:opacity-50 shrink-0"
           >
             <X size={18} className="text-white/60" />
           </button>
@@ -551,7 +551,7 @@ export default function AddCatModal({
                 <button
                   type="button"
                   onClick={() => captureInputRef.current?.click()}
-                  className="relative w-full aspect-[4/3] rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-2 active:scale-[0.99] transition-transform overflow-hidden"
+                  className="relative w-full aspect-[4/3] rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-2 press transition-transform overflow-hidden"
                   style={{ background: "linear-gradient(135deg, #0F0F1A 0%, #1A1A2E 100%)", borderColor: "#6366F1" }}
                 >
                   <Camera size={34} className="text-white" strokeWidth={1.5} />
@@ -573,7 +573,7 @@ export default function AddCatModal({
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full py-2.5 rounded-xl border border-dashed border-white/15 flex items-center justify-center gap-2 active:scale-[0.99]"
+                  className="w-full py-2.5 rounded-xl border border-dashed border-white/15 flex items-center justify-center gap-2 press"
                   style={{ background: "rgba(255,255,255,0.06)" }}
                 >
                   <Camera size={15} className="text-white/45" strokeWidth={1.5} />
@@ -600,7 +600,7 @@ export default function AddCatModal({
                     <button
                       type="button"
                       onClick={() => handleRemovePhoto(idx)}
-                      className="absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center active:scale-90"
+                      className="absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center press-strong"
                       style={{ background: "rgba(0,0,0,0.55)" }}
                       aria-label="삭제"
                     >
@@ -612,7 +612,7 @@ export default function AddCatModal({
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="aspect-square rounded-xl bg-white/[0.07] border-2 border-dashed border-white/15 flex flex-col items-center justify-center gap-1 active:scale-[0.97]"
+                    className="aspect-square rounded-xl bg-white/[0.07] border-2 border-dashed border-white/15 flex flex-col items-center justify-center gap-1 press-strong"
                   >
                     <Camera size={20} className="text-white/45" strokeWidth={1.5} />
                     <p className="text-[11px] text-white/60 font-medium">추가</p>
@@ -693,7 +693,7 @@ export default function AddCatModal({
           <button
             type="button"
             onClick={() => setShowMore((v) => !v)}
-            className="w-full flex items-center justify-center gap-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all active:scale-[0.99]"
+            className="w-full flex items-center justify-center gap-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all press"
             style={{ background: "rgba(99,102,241,0.10)", color: "#B4B8FF", border: "1px dashed rgba(129,140,248,0.4)" }}
           >
             {showMore ? "추가 정보 접기 ▴" : "한 줄 소개·성별·건강 등 추가 (선택) ▾"}
@@ -761,7 +761,7 @@ export default function AddCatModal({
                     key={tag}
                     type="button"
                     onClick={() => toggleTag(tag)}
-                    className={`text-[13px] font-semibold px-3 py-1.5 rounded-full transition-all active:scale-95 ${
+                    className={`text-[13px] font-semibold px-3 py-1.5 rounded-full transition-all press-strong ${
                       active
                         ? "bg-[#6366F1] text-white"
                         : "bg-white/[0.07] text-white/60 border border-white/15"
@@ -784,7 +784,7 @@ export default function AddCatModal({
                   key={key}
                   type="button"
                   onClick={() => setGender(key)}
-                  className={`flex-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all active:scale-95 ${
+                  className={`flex-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all press-strong ${
                     gender === key ? "bg-[#6366F1] text-white" : "bg-white/[0.07] text-white/60 border border-white/15"
                   }`}
                 >
@@ -807,7 +807,7 @@ export default function AddCatModal({
                   key={String(opt.value)}
                   type="button"
                   onClick={() => setNeutered(opt.value)}
-                  className={`flex-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all active:scale-95 ${
+                  className={`flex-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all press-strong ${
                     neutered === opt.value ? "bg-[#6366F1] text-white" : "bg-white/[0.07] text-white/60 border border-white/15"
                   }`}
                 >
@@ -826,7 +826,7 @@ export default function AddCatModal({
                   key={key}
                   type="button"
                   onClick={() => setHealthStatus(key)}
-                  className={`flex-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all active:scale-95`}
+                  className={`flex-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all press-strong`}
                   style={{
                     backgroundColor: healthStatus === key ? info.color : undefined,
                     color: healthStatus === key ? "#fff" : info.color,
@@ -848,7 +848,7 @@ export default function AddCatModal({
               <button
                 type="button"
                 onClick={() => setAdoptionStatus(null)}
-                className="py-2.5 rounded-2xl text-[13px] font-bold transition-all active:scale-95 col-span-2"
+                className="py-2.5 rounded-2xl text-[13px] font-bold transition-all press-strong col-span-2"
                 style={{
                   backgroundColor: adoptionStatus === null ? "rgba(99,102,241,0.14)" : undefined,
                   color: adoptionStatus === null ? "#C7CAFF" : "rgba(255,255,255,0.5)",
@@ -862,7 +862,7 @@ export default function AddCatModal({
                   key={key}
                   type="button"
                   onClick={() => setAdoptionStatus(key)}
-                  className="py-2.5 rounded-2xl text-[13px] font-bold transition-all active:scale-95"
+                  className="py-2.5 rounded-2xl text-[13px] font-bold transition-all press-strong"
                   style={{
                     backgroundColor: adoptionStatus === key ? info.color : undefined,
                     color: adoptionStatus === key ? "#fff" : info.color,
@@ -896,7 +896,7 @@ export default function AddCatModal({
                     key={key}
                     type="button"
                     onClick={() => setVisibility(key)}
-                    className="w-full p-3 rounded-2xl text-left flex items-start gap-2.5 transition-all active:scale-[0.99]"
+                    className="w-full p-3 rounded-2xl text-left flex items-start gap-2.5 transition-all press"
                     style={{
                       backgroundColor: active ? `${info.color}22` : "rgba(255,255,255,0.05)",
                       border: `1.5px solid ${active ? info.color : "rgba(255,255,255,0.16)"}`,
@@ -944,7 +944,7 @@ export default function AddCatModal({
           <button
             onClick={handleSubmit}
             disabled={submitting}
-            className="w-full py-4 rounded-2xl text-white text-[15px] font-bold active:scale-[0.97] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
+            className="w-full py-4 rounded-2xl text-white text-[15px] font-bold press-strong transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
             style={{
               background: "linear-gradient(135deg, #6366F1, #818CF8)",
               boxShadow: "0 6px 24px rgba(99,102,241,0.45), 0 0 0 1px rgba(255,255,255,0.15) inset",

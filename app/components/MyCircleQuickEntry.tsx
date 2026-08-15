@@ -96,7 +96,7 @@ export default function MyCircleQuickEntry() {
           /* 멤버 0명: 초대를 강조. 채팅방은 본인만 있어서 의미 적음 → 아래 작은 라벨로 */
           <Link
             href="/mypage/circle"
-            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold text-white active:scale-[0.97] transition-transform"
+            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold text-white press-strong transition-transform"
             style={{ background: "linear-gradient(135deg, #4F6B53 0%, #6B8E6F 100%)", boxShadow: "0 4px 12px rgba(79,107,83,0.30)" }}
           >
             <UserPlus size={14} />
@@ -107,7 +107,7 @@ export default function MyCircleQuickEntry() {
           <div className="flex gap-2">
             <Link
               href={circleId ? `/circle/${circleId}/chat` : "/mypage/circle"}
-              className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold text-white active:scale-[0.97] transition-transform relative"
+              className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold text-white press-strong transition-transform relative"
               style={{ background: "linear-gradient(135deg, #4F6B53 0%, #6B8E6F 100%)", boxShadow: "0 3px 10px rgba(79,107,83,0.25)" }}
             >
               <MessageCircle size={13} />
@@ -123,7 +123,7 @@ export default function MyCircleQuickEntry() {
             </Link>
             <Link
               href="/mypage/circle"
-              className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[13px] font-bold active:scale-[0.97] transition-transform bg-white"
+              className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[13px] font-bold press-strong transition-transform bg-white"
               style={{ color: "#4F6B53", border: "1px solid rgba(79,107,83,0.30)" }}
             >
               관리

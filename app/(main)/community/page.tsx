@@ -199,7 +199,7 @@ export default function CommunityPage() {
         </div>
         <Link
           href="/search"
-          className="w-10 h-10 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
+          className="w-10 h-10 rounded-full bg-white flex items-center justify-center press-strong transition-transform"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="통합 검색"
         >
@@ -247,7 +247,7 @@ export default function CommunityPage() {
           <button
             type="button"
             onClick={() => setNeighborhoodOnly(false)}
-            className="px-3 py-1.5 text-[11px] font-bold active:scale-95 transition-transform"
+            className="px-3 py-1.5 text-[11px] font-bold press-strong transition-transform"
             style={{
               borderRadius: "var(--radius-square-lg)",
               backgroundColor: !neighborhoodOnly ? "var(--color-text-main)" : "rgba(255,255,255,0.9)",
@@ -260,7 +260,7 @@ export default function CommunityPage() {
           <button
             type="button"
             onClick={() => setNeighborhoodOnly(true)}
-            className="px-3 py-1.5 text-[11px] font-bold active:scale-95 transition-transform flex items-center gap-1"
+            className="px-3 py-1.5 text-[11px] font-bold press-strong transition-transform flex items-center gap-1"
             style={{
               borderRadius: "var(--radius-square-lg)",
               background: neighborhoodOnly
@@ -326,7 +326,7 @@ export default function CommunityPage() {
                 <Link
                   key={post.id}
                   href={`/community/${post.id}`}
-                  className="block active:scale-[0.99] transition-transform"
+                  className="block press transition-transform"
                 >
                   <div
                     className="flex items-center gap-3 px-4 py-3"
@@ -334,7 +334,7 @@ export default function CommunityPage() {
                       background: "#FFFFFF",
                       borderRadius: "var(--radius-card-sm)",
                       boxShadow: "var(--shadow-card-sm)",
-                      border: "1px solid rgba(0,0,0,0.04)",
+                      border: "1px solid var(--color-divider)",
                     }}
                   >
                     <span
@@ -366,7 +366,7 @@ export default function CommunityPage() {
       {/* ── FAB ── */}
       <Link
         href="/community/write"
-        className="fixed bottom-24 right-5 w-14 h-14 rounded-full bg-primary flex items-center justify-center fab-shadow active:scale-90 transition-transform z-40"
+        className="fixed bottom-24 right-5 w-14 h-14 rounded-full bg-primary flex items-center justify-center fab-shadow press-strong transition-transform z-40"
         style={{ boxShadow: "0 4px 16px rgba(173, 94, 59,0.45), 0 0 0 4px #fff" }}
       >
         <Plus size={28} color="#fff" strokeWidth={2.5} />

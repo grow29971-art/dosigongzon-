@@ -44,7 +44,7 @@ export default function MakerPage() {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈"
         >
@@ -327,7 +327,7 @@ export default function MakerPage() {
           </p>
           <a
             href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("[도시공존] 안녕하세요")}`}
-            className="flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-bold text-white active:scale-[0.98] transition-transform"
+            className="flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-bold text-white press transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "var(--shadow-primary)",

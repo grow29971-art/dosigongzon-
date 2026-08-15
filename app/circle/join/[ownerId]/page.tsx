@@ -88,7 +88,7 @@ export default function CircleJoinPage() {
         <p className="text-[13px] text-text-sub mb-5">로그인하시면 초대를 수락할 수 있어요.</p>
         <Link
           href={`/login?next=${encodeURIComponent(`/circle/join/${ownerId}`)}`}
-          className="inline-block px-6 py-2.5 rounded-2xl bg-primary text-white font-bold text-[13px] active:scale-95"
+          className="inline-block px-6 py-2.5 rounded-2xl bg-primary text-white font-bold text-[13px] press-strong"
         >
           로그인하고 수락하기
         </Link>
@@ -113,7 +113,7 @@ export default function CircleJoinPage() {
         <ShieldCheck size={40} className="mx-auto mb-3" style={{ color: "#4F6B53" }} />
         <p className="text-[15px] text-text-sub mb-3">본인의 초대 링크예요.</p>
         <p className="text-[13px] text-text-light mb-5">이 링크를 카카오톡으로 공유해 이웃을 초대해보세요.</p>
-        <Link href="/mypage/circle" className="inline-block px-6 py-2.5 rounded-2xl bg-primary text-white font-bold text-[13px] active:scale-95">
+        <Link href="/mypage/circle" className="inline-block px-6 py-2.5 rounded-2xl bg-primary text-white font-bold text-[13px] press-strong">
           내 서클 관리
         </Link>
       </div>
@@ -125,7 +125,7 @@ export default function CircleJoinPage() {
       <div className="flex items-center gap-2 mb-6">
         <Link
           href="/mypage/circle"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로"
         >
@@ -151,7 +151,7 @@ export default function CircleJoinPage() {
           </p>
           <Link
             href="/map"
-            className="inline-block px-6 py-2.5 rounded-2xl bg-white font-bold text-[13px] active:scale-95"
+            className="inline-block px-6 py-2.5 rounded-2xl bg-white font-bold text-[13px] press-strong"
             style={{ color: "#4F6B53" }}
           >
             지도로 이동
@@ -194,7 +194,7 @@ export default function CircleJoinPage() {
             <button
               onClick={handleReject}
               disabled={busy}
-              className="flex-1 py-3 rounded-2xl text-[15px] font-bold active:scale-95 disabled:opacity-50"
+              className="flex-1 py-3 rounded-2xl text-[15px] font-bold press-strong disabled:opacity-50"
               style={{ background: "var(--color-gray-100)", color: "#8B7562" }}
             >
               <X size={14} className="inline mr-1" /> 거절
@@ -202,7 +202,7 @@ export default function CircleJoinPage() {
             <button
               onClick={handleAccept}
               disabled={busy}
-              className="flex-[1.5] py-3 rounded-2xl text-[15px] font-bold text-white active:scale-95 disabled:opacity-50"
+              className="flex-[1.5] py-3 rounded-2xl text-[15px] font-bold text-white press-strong disabled:opacity-50"
               style={{
                 background: "linear-gradient(135deg, #4F6B53 0%, #6B8E6F 100%)",
                 boxShadow: "0 4px 12px rgba(79,107,83,0.3)",

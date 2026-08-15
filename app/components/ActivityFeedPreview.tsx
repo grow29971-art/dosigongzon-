@@ -94,7 +94,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
           background: "#FFFFFF",
           borderRadius: "var(--radius-card)",
           boxShadow: "var(--shadow-card)",
-          border: "1px solid rgba(0,0,0,0.04)",
+          border: "1px solid var(--color-divider)",
           minHeight: 92,
         }}
       >
@@ -137,7 +137,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
           </div>
           <Link
             href={hasMyCat ? "/map" : "/map"}
-            className="shrink-0 px-3 py-1.5 rounded-xl text-[11px] font-bold active:scale-95"
+            className="shrink-0 px-3 py-1.5 rounded-xl text-[11px] font-bold press-strong"
             style={{ backgroundColor: "var(--color-primary)", color: "#fff" }}
           >
             <PawPrint size={11} className="inline mr-1" strokeWidth={2.5} />
@@ -179,7 +179,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
           background: "#FFFFFF",
           borderRadius: "var(--radius-card)",
           boxShadow: "0 4px 14px rgba(173, 94, 59,0.06), 0 1px 3px rgba(0,0,0,0.02)",
-          border: "1px solid rgba(0,0,0,0.04)",
+          border: "1px solid var(--color-divider)",
         }}
       >
         {items.map((item, idx) => {
@@ -191,7 +191,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
               href={targetHref(item)}
               className="flex items-start gap-3 px-3.5 py-3 active:bg-[#FCFAF6] transition-colors"
               style={{
-                borderTop: idx > 0 ? "1px solid rgba(0,0,0,0.04)" : "none",
+                borderTop: idx > 0 ? "1px solid var(--color-divider)" : "none",
               }}
             >
               <div

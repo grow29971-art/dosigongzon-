@@ -169,7 +169,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href={`/areas/${slug}`}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label={`${gu.name}으로`}
         >
@@ -202,7 +202,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
         <div className="flex gap-2 mt-4">
           <Link
             href="/map"
-            className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-primary text-white active:scale-[0.98] transition-transform"
+            className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-primary text-white press transition-transform"
             style={{ boxShadow: "var(--shadow-primary)" }}
           >
             <PawPrint size={14} />
@@ -210,7 +210,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
           </Link>
           <Link
             href="/signup"
-            className="flex-1 flex items-center justify-center py-3 rounded-2xl active:scale-[0.98] transition-transform"
+            className="flex-1 flex items-center justify-center py-3 rounded-2xl press transition-transform"
             style={{ backgroundColor: "#FFF", color: "var(--color-primary)", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 700 }}
           >
             돌봄 시작하기
@@ -259,7 +259,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
             <div className="flex gap-2">
               <Link
                 href={`/signup?next=${encodeURIComponent(`/areas/${slug}/${encodeURIComponent(dongName)}`)}`}
-                className="flex-[1.5] flex items-center justify-center py-2.5 rounded-xl text-white text-[13px] font-bold active:scale-[0.98] transition-transform"
+                className="flex-[1.5] flex items-center justify-center py-2.5 rounded-xl text-white text-[13px] font-bold press transition-transform"
                 style={{
                   background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                   boxShadow: "var(--shadow-primary)",
@@ -269,7 +269,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
               </Link>
               <Link
                 href={`/areas/${slug}`}
-                className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[13px] font-bold active:scale-[0.98] transition-transform bg-white"
+                className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[13px] font-bold press transition-transform bg-white"
                 style={{
                   color: "var(--color-primary-dark)",
                   border: "1px solid rgba(173, 94, 59,0.30)",
@@ -288,7 +288,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
                 <Link
                   key={c.id}
                   href={`/cats/${c.id}`}
-                  className="block rounded-2xl overflow-hidden bg-white active:scale-[0.98] transition-transform"
+                  className="block rounded-2xl overflow-hidden bg-white press transition-transform"
                   style={{ boxShadow: "var(--shadow-raised)" }}
                 >
                   <div className="relative" style={{ aspectRatio: "1 / 1" }}>
@@ -371,7 +371,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
               <Link
                 key={d}
                 href={`/areas/${slug}/${encodeURIComponent(d)}`}
-                className="text-center py-2 rounded-xl bg-white text-[13px] font-bold active:scale-95 transition-transform"
+                className="text-center py-2 rounded-xl bg-white text-[13px] font-bold press-strong transition-transform"
                 style={{ color: "#6B5043", boxShadow: "var(--shadow-card-sm)" }}
               >
                 {d}

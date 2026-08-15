@@ -187,7 +187,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
               <button
                 key={m.value}
                 onClick={() => setMood(mood === m.value ? null : m.value)}
-                className="flex-1 py-2 rounded-xl text-[17px] active:scale-95 transition-transform"
+                className="flex-1 py-2 rounded-xl text-[17px] press-strong transition-transform"
                 style={{
                   background: mood === m.value ? "rgba(255,233,168,0.9)" : "rgba(255,255,255,0.07)",
                   border: mood === m.value ? "1px solid rgba(255,233,168,1)" : "1px solid rgba(255,255,255,0.08)",
@@ -234,7 +234,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
             <button
               onClick={handleSubmit}
               disabled={busy || !body.trim()}
-              className="h-[40px] px-5 rounded-xl text-[13px] font-bold active:scale-[0.97] transition-transform disabled:opacity-40"
+              className="h-[40px] px-5 rounded-xl text-[13px] font-bold press-strong transition-transform disabled:opacity-40"
               style={{ background: "rgba(255,255,255,0.94)", color: "#3a2c4d" }}
             >
               {busy ? "남기는 중…" : "남기기"}

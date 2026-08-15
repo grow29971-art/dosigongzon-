@@ -82,7 +82,7 @@ export default function InquiryModal({ open, onClose }: Props) {
           <button
             onClick={onClose}
             disabled={submitting}
-            className="w-7 h-7 rounded-lg flex items-center justify-center active:scale-90"
+            className="w-7 h-7 rounded-lg flex items-center justify-center press-strong"
             style={{ backgroundColor: "var(--color-gray-100)" }}
           >
             <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
@@ -124,7 +124,7 @@ export default function InquiryModal({ open, onClose }: Props) {
                 style={{
                   backgroundColor: "var(--color-gray-50)",
                   color: "#2A2A28",
-                  border: "1px solid var(--color-gray-200)",
+                  border: "1px solid var(--color-border)",
                 }}
               />
             </div>
@@ -144,7 +144,7 @@ export default function InquiryModal({ open, onClose }: Props) {
                 style={{
                   backgroundColor: "var(--color-gray-50)",
                   color: "#2A2A28",
-                  border: "1px solid var(--color-gray-200)",
+                  border: "1px solid var(--color-border)",
                 }}
               />
               <p className="text-[11px] text-text-light mt-1 text-right">

@@ -307,7 +307,7 @@ export default function TermsPage() {
 
         <div
           className="rounded-xl px-4 py-3 mt-4"
-          style={{ backgroundColor: "#F5F3EE", border: "1px solid rgba(0,0,0,0.06)" }}
+          style={{ backgroundColor: "#F5F3EE", border: "1px solid var(--color-divider)" }}
         >
           <p className="text-[11px] text-text-light"><b>부칙</b></p>
           <p className="text-[11px] text-text-light mt-1">제1조 (시행일) 이 약관은 2026년 4월 20일부터 시행합니다.</p>

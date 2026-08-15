@@ -67,7 +67,7 @@ export default function FoundingMemberBanner() {
       <button
         type="button"
         onClick={handleDismiss}
-        className="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center active:scale-90"
+        className="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center press-strong"
         style={{ background: "rgba(173, 94, 59,0.10)" }}
         aria-label="배너 닫기"
       >

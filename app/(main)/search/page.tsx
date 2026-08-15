@@ -117,12 +117,12 @@ function SearchPageInner() {
       {/* ── 상단 검색 바 ── */}
       <div
         className="sticky top-0 z-30 px-4 pt-12 pb-3"
-        style={{ background: "#F7F4EE", borderBottom: "1px solid rgba(0,0,0,0.04)" }}
+        style={{ background: "#F7F4EE", borderBottom: "1px solid var(--color-divider)" }}
       >
         <div className="flex items-center gap-2">
           <button
             onClick={() => router.back()}
-            className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+            className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
             style={{ boxShadow: "var(--shadow-raised)" }}
             aria-label="뒤로"
           >
@@ -145,7 +145,7 @@ function SearchPageInner() {
               <button
                 type="button"
                 onClick={() => setQuery("")}
-                className="w-5 h-5 rounded-full flex items-center justify-center active:scale-90"
+                className="w-5 h-5 rounded-full flex items-center justify-center press-strong"
                 style={{ background: "rgba(0,0,0,0.05)" }}
                 aria-label="지우기"
               >
@@ -169,11 +169,11 @@ function SearchPageInner() {
               <button
                 key={t.key}
                 onClick={() => setTab(t.key)}
-                className="shrink-0 px-3 py-1.5 rounded-full text-[13px] font-bold active:scale-95 transition-transform"
+                className="shrink-0 px-3 py-1.5 rounded-full text-[13px] font-bold press-strong transition-transform"
                 style={{
                   background: tab === t.key ? "var(--color-primary)" : "#FFFFFF",
                   color: tab === t.key ? "#FFFFFF" : "#6B5043",
-                  border: tab === t.key ? "1px solid var(--color-primary)" : "1px solid rgba(0,0,0,0.05)",
+                  border: tab === t.key ? "1px solid var(--color-primary)" : "1px solid var(--color-divider)",
                 }}
               >
                 {t.label} {t.count > 0 && <span className="ml-0.5 opacity-80">{t.count}</span>}
@@ -291,7 +291,7 @@ function SectionCats({ items, tab }: { items: CatHit[]; query: string; tab: Sear
             <Link
               key={c.id}
               href={`/cats/${c.id}`}
-              className="block rounded-2xl overflow-hidden bg-white active:scale-[0.98] transition-transform"
+              className="block rounded-2xl overflow-hidden bg-white press transition-transform"
               style={{ boxShadow: "var(--shadow-raised)" }}
             >
               <div className="relative" style={{ aspectRatio: "1 / 1" }}>
@@ -336,7 +336,7 @@ function SectionPosts({ items }: { items: PostHit[] }) {
           <Link
             key={p.id}
             href={`/community/${p.id}`}
-            className="block rounded-2xl bg-white p-3.5 active:scale-[0.99] transition-transform"
+            className="block rounded-2xl bg-white p-3.5 press transition-transform"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
             <p className="text-[15px] font-bold text-text-main line-clamp-1">{p.title}</p>
@@ -407,7 +407,7 @@ function SectionUsers({ items }: { items: UserHit[] }) {
             <Link
               key={u.id}
               href={`/users/${u.id}`}
-              className="flex items-center gap-3 rounded-2xl bg-white p-3 active:scale-[0.99] transition-transform"
+              className="flex items-center gap-3 rounded-2xl bg-white p-3 press transition-transform"
               style={{ boxShadow: "var(--shadow-card)" }}
             >
               <div
@@ -453,7 +453,7 @@ function SectionGuides({ items }: { items: GuideHit[] }) {
             href={g.slug === "district-contacts" || g.slug === "legal"
               ? `/protection/${g.slug}`
               : `/protection/${g.slug}`}
-            className="block rounded-2xl bg-white p-3.5 active:scale-[0.99] transition-transform"
+            className="block rounded-2xl bg-white p-3.5 press transition-transform"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
             <p className="text-[15px] font-bold text-text-main">{g.title}</p>

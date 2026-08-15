@@ -13,7 +13,7 @@ export default function RescueBanner({ count }: { count: number }) {
   return (
     <Link
       href="/rescue"
-      className="block mb-5 active:scale-[0.99] transition-transform"
+      className="block mb-5 press transition-transform"
     >
       <div
         className="rounded-2xl px-4 py-3 flex items-center gap-3 bg-[linear-gradient(135deg,#FFEBEB_0%,#FFD9D9_100%)] dark:bg-[linear-gradient(135deg,#3A1818_0%,#4A1F1F_100%)] border-[1.5px] border-[#D85555] dark:border-[#6B2828]"

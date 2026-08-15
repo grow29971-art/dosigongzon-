@@ -98,7 +98,7 @@ function MilestoneRow({ m }: { m: Milestone }) {
   const c = CAT_COLOR[m.category];
   const Wrapper = ({ children }: { children: React.ReactNode }) =>
     m.catId ? (
-      <Link href={`/cats/${m.catId}`} className="block active:scale-[0.99] transition-transform">
+      <Link href={`/cats/${m.catId}`} className="block press transition-transform">
         {children}
       </Link>
     ) : (
@@ -125,7 +125,7 @@ function MilestoneRow({ m }: { m: Milestone }) {
           style={{
             background: "#FFFFFF",
             boxShadow: "var(--shadow-card)",
-            border: "1px solid rgba(0,0,0,0.04)",
+            border: "1px solid var(--color-divider)",
           }}
         >
           <p className="text-[11px] font-bold tracking-wide" style={{ color: c.text }}>
@@ -147,7 +147,7 @@ function EmptyState() {
       className="rounded-2xl p-6 text-center"
       style={{
         background: "#FFFFFF",
-        border: "1px solid rgba(0,0,0,0.04)",
+        border: "1px solid var(--color-divider)",
         boxShadow: "var(--shadow-card)",
       }}
     >

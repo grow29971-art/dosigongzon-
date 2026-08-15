@@ -294,7 +294,7 @@ export default function CareTamagotchiHero() {
         <button
           type="button"
           onClick={() => toggleExpanded(true)}
-          className="w-full flex items-center gap-3 active:scale-[0.99] transition-transform"
+          className="w-full flex items-center gap-3 press transition-transform"
           aria-label={`${cat.name} 케어 펼치기`}
         >
           <span
@@ -357,7 +357,7 @@ export default function CareTamagotchiHero() {
         <button
           type="button"
           onClick={() => toggleExpanded(false)}
-          className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 active:scale-90"
+          className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 press-strong"
           aria-label="케어 접기"
           style={{ background: "var(--color-surface-alt)" }}
         >

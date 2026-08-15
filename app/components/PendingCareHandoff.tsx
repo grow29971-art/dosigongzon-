@@ -129,7 +129,7 @@ export default function PendingCareHandoff() {
       {phase !== "done" && (
         <button
           onClick={dismiss}
-          className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center active:scale-90 transition-transform"
+          className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center press-strong transition-transform"
           style={{ background: "rgba(255,255,255,0.15)" }}
           aria-label="닫기"
         >
@@ -138,7 +138,7 @@ export default function PendingCareHandoff() {
       )}
 
       <div className="flex items-center gap-3.5">
-        <Link href={`/cats/${cat.id}`} className="shrink-0 active:scale-95 transition-transform">
+        <Link href={`/cats/${cat.id}`} className="shrink-0 press-strong transition-transform">
           <div
             className="w-16 h-16 rounded-2xl overflow-hidden"
             style={{ border: "2px solid rgba(255,255,255,0.35)", boxShadow: "0 4px 14px rgba(0,0,0,0.25)" }}
@@ -190,7 +190,7 @@ export default function PendingCareHandoff() {
           <FirstFeedPushPrompt catName={cat.name} />
           <Link
             href={`/cats/${cat.id}`}
-            className="mt-3.5 flex items-center justify-center gap-1.5 py-3 rounded-xl text-[15px] font-bold active:scale-[0.98] transition-transform"
+            className="mt-3.5 flex items-center justify-center gap-1.5 py-3 rounded-xl text-[15px] font-bold press transition-transform"
             style={{ background: "rgba(255,255,255,0.95)", color: "#7A5238" }}
           >
             {cat.name} 보러 가기 <ChevronRight size={14} />
@@ -201,7 +201,7 @@ export default function PendingCareHandoff() {
           <button
             onClick={feed}
             disabled={phase === "busy"}
-            className="mt-3.5 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-[15px] font-bold active:scale-[0.98] transition-transform"
+            className="mt-3.5 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-[15px] font-bold press transition-transform"
             style={{
               background: "linear-gradient(135deg, #FFF7C4 0%, #E8B040 100%)",
               color: "#4A3527",

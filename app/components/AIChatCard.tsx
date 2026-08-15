@@ -19,7 +19,7 @@ export default function AIChatCard() {
           background: "#FFFFFF",
           borderRadius: "var(--radius-card)",
           boxShadow: "0 6px 20px rgba(173, 94, 59,0.10), 0 1px 3px rgba(0,0,0,0.03)",
-          border: "1px solid rgba(0,0,0,0.04)",
+          border: "1px solid var(--color-divider)",
         }}
       >
         <div className="flex items-center gap-3.5 mb-3.5">
@@ -49,10 +49,10 @@ export default function AIChatCard() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setChatOpen(true)}
-            className="flex-1 rounded-xl px-4 py-2.5 text-[13px] text-text-muted text-left transition-all active:scale-[0.98]"
+            className="flex-1 rounded-xl px-4 py-2.5 text-[13px] text-text-muted text-left transition-all press"
             style={{
               backgroundColor: "var(--color-gray-50)",
-              border: "1px solid var(--color-gray-200)",
+              border: "1px solid var(--color-border)",
             }}
           >
             예: 새끼 고양이를 발견했어요...
@@ -60,7 +60,7 @@ export default function AIChatCard() {
           <button
             onClick={() => setChatOpen(true)}
             aria-label="AI 집사에게 질문하기"
-            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 active:scale-90 transition-transform"
+            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 press-strong transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "0 4px 10px rgba(173, 94, 59,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",

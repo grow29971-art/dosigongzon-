@@ -71,7 +71,7 @@ export default function DailyCatBox() {
         type="button"
         onClick={open}
         disabled={!mounted}
-        className="w-full mb-3 active:scale-[0.98] transition-transform text-left"
+        className="w-full mb-3 press transition-transform text-left"
         style={{
           background: "linear-gradient(135deg, #FFF1D9 0%, #FFE0C0 100%)",
           borderRadius: "var(--radius-card)",

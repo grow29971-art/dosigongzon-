@@ -48,7 +48,7 @@ export default async function NewsIndexPage() {
       <div className="px-4 pt-12 pb-4 flex items-center gap-3">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈"
         >
@@ -88,10 +88,10 @@ export default async function NewsIndexPage() {
 
             const cardInner = (
               <div
-                className="flex gap-3 p-3.5 rounded-2xl bg-white active:scale-[0.99] transition-transform"
+                className="flex gap-3 p-3.5 rounded-2xl bg-white press transition-transform"
                 style={{
                   boxShadow: "var(--shadow-card)",
-                  border: item.pinned ? `1.5px solid ${badge.color}40` : "1px solid rgba(0,0,0,0.04)",
+                  border: item.pinned ? `1.5px solid ${badge.color}40` : "1px solid var(--color-divider)",
                 }}
               >
                 {photo && (

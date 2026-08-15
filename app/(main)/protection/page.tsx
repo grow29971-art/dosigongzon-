@@ -199,7 +199,7 @@ function InfoCard({ card, isRead }: { card: (typeof cards)[number]; isRead?: boo
         boxShadow: "var(--shadow-card-sm)",
         border: card.highlight
           ? `1.5px solid rgba(${card.glowColor},0.30)`
-          : "1px solid rgba(0,0,0,0.04)",
+          : "1px solid var(--color-divider)",
       }}
     >
       <div className="flex items-center gap-4 relative z-10">
@@ -485,7 +485,7 @@ export default function ProtectionPage() {
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 px-4 py-3.5 rounded-2xl press"
-            style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "var(--shadow-card)" }}
+            style={{ background: "#FFFFFF", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card)" }}
           >
             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: "rgba(3,199,90,0.1)" }}>
               <span className="text-[17px]">🍚</span>
@@ -501,7 +501,7 @@ export default function ProtectionPage() {
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 px-4 py-3.5 rounded-2xl press"
-            style={{ background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "var(--shadow-card)" }}
+            style={{ background: "#FFFFFF", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card)" }}
           >
             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: "rgba(3,199,90,0.1)" }}>
               <span className="text-[17px]">🐱</span>

@@ -164,7 +164,7 @@ export default function FeedingGuidePage() {
       <div className="flex items-center gap-2 mb-5">
         <Link
           href="/protection"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="보호지침으로"
         >
@@ -197,7 +197,7 @@ export default function FeedingGuidePage() {
       </div>
 
       {/* 목차 */}
-      <nav aria-label="목차" className="rounded-2xl bg-white p-4 mb-6" style={{ border: "1px solid rgba(0,0,0,0.05)" }}>
+      <nav aria-label="목차" className="rounded-2xl bg-white p-4 mb-6" style={{ border: "1px solid var(--color-divider)" }}>
         <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
           <li><a href="#bad" className="hover:underline">절대 주면 안 되는 음식 10가지</a></li>
@@ -348,7 +348,7 @@ export default function FeedingGuidePage() {
         <div className="grid grid-cols-1 gap-2">
           <Link
             href="/protection/emergency-guide"
-            className="bg-white rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98]"
+            className="bg-white rounded-2xl p-4 flex items-center gap-3 press"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
             <AlertTriangle size={18} color="var(--color-error)" className="shrink-0" />
@@ -359,7 +359,7 @@ export default function FeedingGuidePage() {
           </Link>
           <Link
             href="/protection/trapping-guide"
-            className="bg-white rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98]"
+            className="bg-white rounded-2xl p-4 flex items-center gap-3 press"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
             <Scissors size={18} color="var(--color-primary)" className="shrink-0" />
@@ -370,7 +370,7 @@ export default function FeedingGuidePage() {
           </Link>
           <Link
             href="/protection/kitten-guide"
-            className="bg-white rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98]"
+            className="bg-white rounded-2xl p-4 flex items-center gap-3 press"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
             <PawPrint size={18} color="var(--color-care)" className="shrink-0" />
@@ -386,7 +386,7 @@ export default function FeedingGuidePage() {
       <section className="mb-2">
         <Link
           href="/map"
-          className="block text-center py-4 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.98]"
+          className="block text-center py-4 rounded-2xl bg-primary text-white text-[15px] font-bold press"
           style={{ boxShadow: "var(--shadow-primary)" }}
         >
           <Cat size={16} className="inline mr-1.5 -mt-0.5" />

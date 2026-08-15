@@ -79,7 +79,7 @@ export default function ShareAreaButton({ guName, slug, catCount, urgentCount }:
       type="button"
       onClick={handleShare}
       disabled={loading}
-      className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl active:scale-[0.98] transition-transform disabled:opacity-70"
+      className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl press transition-transform disabled:opacity-70"
       style={{
         backgroundColor: status === "idle" ? "#FEE500" : "var(--color-sage-soft)",
         color: status === "idle" ? "#191919" : "#2E7D32",

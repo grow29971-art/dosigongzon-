@@ -149,7 +149,7 @@ export default function CareLogCelebration({
                 <button
                   type="button"
                   onClick={handleCommit}
-                  className="flex-1 py-3 rounded-2xl text-[13px] font-bold text-white active:scale-[0.98]"
+                  className="flex-1 py-3 rounded-2xl text-[13px] font-bold text-white press"
                   style={{
                     background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                     boxShadow: "var(--shadow-primary)",
@@ -175,7 +175,7 @@ export default function CareLogCelebration({
             <Link
               href="/shop?category=food"
               onClick={onClose}
-              className="block text-center text-[13px] font-bold mt-3 py-3 rounded-2xl active:scale-[0.98] transition-transform"
+              className="block text-center text-[13px] font-bold mt-3 py-3 rounded-2xl press transition-transform"
               style={{ background: "rgba(232,148,10,0.1)", color: "#B87409" }}
             >
               🔥 {streak}일 연속 기념 — 아이들 간식 구경하고 찜해두기

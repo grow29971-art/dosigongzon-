@@ -119,7 +119,7 @@ export default function MyCatsQuickCare() {
                 type="button"
                 onClick={() => feed(c.id)}
                 disabled={c.fedToday || c.busy}
-                className="mt-1 h-7 px-2.5 rounded-full flex items-center justify-center gap-0.5 active:scale-90 transition-transform"
+                className="mt-1 h-7 px-2.5 rounded-full flex items-center justify-center gap-0.5 press-strong transition-transform"
                 style={{
                   background: c.fedToday ? "#6B8E6F" : "#E88D5A",
                   color: "#fff",

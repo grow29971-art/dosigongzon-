@@ -242,7 +242,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                       <button
                         type="button"
                         onClick={() => handleDelete(log.id)}
-                        className="ml-auto text-text-light active:scale-90"
+                        className="ml-auto text-text-light press-strong"
                       >
                         <Trash2 size={11} />
                       </button>
@@ -262,7 +262,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
             <button
               type="button"
               onClick={() => setShowForm(true)}
-              className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold active:scale-[0.97] transition-transform"
+              className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold press-strong transition-transform"
               style={{ backgroundColor: "var(--color-gray-50)", color: "var(--color-primary)" }}
             >
               <Plus size={14} />
@@ -281,7 +281,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                       key={type}
                       type="button"
                       onClick={() => setCareType(type)}
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all active:scale-95"
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all press-strong"
                       style={{
                         backgroundColor: careType === type ? info.color : "#fff",
                         color: careType === type ? "#fff" : info.color,
@@ -332,7 +332,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center active:scale-90"
+                  className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center press-strong"
                   style={{ backgroundColor: photoFile ? "#6B8E6F" : "#fff", border: "1px solid #E5E0D6" }}
                 >
                   <Camera size={14} style={{ color: photoFile ? "#fff" : "#A38E7A" }} />
@@ -343,7 +343,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
               <button
                 type="button"
                 onClick={() => setIsPrivate((v) => !v)}
-                className="flex items-center gap-2 w-full px-3 py-2 rounded-xl active:scale-[0.98] transition-transform"
+                className="flex items-center gap-2 w-full px-3 py-2 rounded-xl press transition-transform"
                 style={{
                   backgroundColor: isPrivate ? "rgba(139,101,184,0.10)" : "#fff",
                   border: isPrivate ? "1px solid rgba(139,101,184,0.35)" : "1px solid #E5E0D6",
@@ -371,7 +371,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                 type="button"
                 onClick={handleSubmit}
                 disabled={submitting || !careType}
-                className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 active:scale-[0.97] transition-all"
+                className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 press-strong transition-all"
               >
                 {submitting ? (
                   <>

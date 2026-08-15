@@ -110,7 +110,7 @@ export default function AdminPharmacyGuidePage() {
     <div className="px-4 pt-14 pb-24">
       {/* 헤더 */}
       <div className="mb-5">
-        <button onClick={() => router.push("/mypage")} className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform">
+        <button onClick={() => router.push("/mypage")} className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 press-strong transition-transform">
           <ArrowLeft size={14} /> 마이페이지
         </button>
         <div className="flex items-end justify-between">
@@ -118,7 +118,7 @@ export default function AdminPharmacyGuidePage() {
             <h1 className="text-[24px] font-bold text-text-main tracking-tight">약품 가이드 관리</h1>
             <p className="text-[13px] text-text-sub">약품·영양제 정보를 추가·수정·삭제</p>
           </div>
-          <button onClick={handleCreate} className="w-11 h-11 rounded-full bg-primary flex items-center justify-center active:scale-95 transition-transform" style={{ boxShadow: "var(--shadow-primary)" }}>
+          <button onClick={handleCreate} className="w-11 h-11 rounded-full bg-primary flex items-center justify-center press-strong transition-transform" style={{ boxShadow: "var(--shadow-primary)" }}>
             <Plus size={20} color="#fff" strokeWidth={2.5} />
           </button>
         </div>
@@ -140,7 +140,7 @@ export default function AdminPharmacyGuidePage() {
             {draft.image_url ? (
               <div className="relative">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={draft.image_url} alt="" className="w-full aspect-[16/9] rounded-xl object-cover" style={{ border: "1px solid var(--color-gray-200)" }} />
+                <img src={draft.image_url} alt="" className="w-full aspect-[16/9] rounded-xl object-cover" style={{ border: "1px solid var(--color-border)" }} />
                 <button type="button" onClick={() => setDraft((d) => ({ ...d, image_url: null }))} className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}>
                   <X size={16} strokeWidth={3} />
                 </button>
@@ -170,7 +170,7 @@ export default function AdminPharmacyGuidePage() {
           </div>
 
           <label className="block text-[11px] font-bold text-text-sub mb-1 mt-2">설명 *</label>
-          <textarea value={draft.description} onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))} rows={4} placeholder="성분, 효능 등 상세 설명" className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-1 resize-none" style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-gray-200)" }} />
+          <textarea value={draft.description} onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))} rows={4} placeholder="성분, 효능 등 상세 설명" className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-1 resize-none" style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-border)" }} />
 
           <Field label="사용법" value={draft.usage_info ?? ""} onChange={(v) => setDraft((d) => ({ ...d, usage_info: v || null }))} placeholder="투여 방법, 횟수" />
           <Field label="팁" value={draft.tip ?? ""} onChange={(v) => setDraft((d) => ({ ...d, tip: v || null }))} placeholder="주의사항이나 꿀팁" />
@@ -180,7 +180,7 @@ export default function AdminPharmacyGuidePage() {
           {error && <p className="text-[11px] mb-2" style={{ color: "#B84545" }}>{error}</p>}
 
           <div className="flex gap-2 mt-3">
-            <button onClick={handleSave} disabled={saving || uploading} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 active:scale-[0.97] transition-all">
+            <button onClick={handleSave} disabled={saving || uploading} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 press-strong transition-all">
               {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} 저장
             </button>
             <button onClick={handleCancel} disabled={saving} className="px-5 py-2.5 rounded-xl text-[13px] font-bold" style={{ backgroundColor: "var(--color-gray-100)", color: "#A38E7A" }}>취소</button>
@@ -193,7 +193,7 @@ export default function AdminPharmacyGuidePage() {
         {items.length === 0 ? (
           <div className="card p-6 text-center text-[13px] text-text-sub">등록된 약품이 없어요.</div>
         ) : items.map((item) => (
-          <div key={item.id} className="p-4" style={{ background: "#FFFFFF", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}>
+          <div key={item.id} className="p-4" style={{ background: "#FFFFFF", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid var(--color-divider)" }}>
             <div className="flex items-start gap-3">
               {item.image_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -232,7 +232,7 @@ function Field({ label, value, onChange, placeholder }: { label: string; value: 
     <>
       <label className="block text-[11px] font-bold text-text-sub mb-1 mt-2">{label}</label>
       <input type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
-        className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-1" style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-gray-200)" }} />
+        className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-1" style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-border)" }} />
     </>
   );
 }

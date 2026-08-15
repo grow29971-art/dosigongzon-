@@ -147,14 +147,14 @@ export default function PushOptInCard({
         <button
           onClick={handleEnable}
           disabled={busy}
-          className="px-3 py-1.5 rounded-lg text-[11px] font-bold shrink-0 active:scale-95 transition-transform disabled:opacity-50"
+          className="px-3 py-1.5 rounded-lg text-[11px] font-bold shrink-0 press-strong transition-transform disabled:opacity-50"
           style={{ backgroundColor: "var(--color-primary)", color: "#fff" }}
         >
           {busy ? "..." : "켜기"}
         </button>
         <button
           onClick={handleDismiss}
-          className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 active:scale-90"
+          className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 press-strong"
           aria-label="닫기"
         >
           <X size={14} style={{ color: "#A88160" }} />

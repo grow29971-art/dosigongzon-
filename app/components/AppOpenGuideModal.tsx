@@ -95,7 +95,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
           <button
             type="button"
             onClick={close}
-            className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-white/55 active:scale-90"
+            className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-white/55 press-strong"
             aria-label="닫기"
           >
             <X size={15} style={{ color: "#7A4F30" }} />
@@ -117,7 +117,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
           <Link
             href={spot.href}
             onClick={close}
-            className="flex items-center justify-center gap-1.5 py-3.5 rounded-2xl text-white text-[15px] font-bold active:scale-[0.98] transition-transform"
+            className="flex items-center justify-center gap-1.5 py-3.5 rounded-2xl text-white text-[15px] font-bold press transition-transform"
             style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)", boxShadow: "var(--shadow-primary)" }}
           >
             {spot.cta} <ChevronRight size={15} />
@@ -130,7 +130,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
                 key={c.href}
                 href={c.href}
                 onClick={close}
-                className="flex flex-col items-center gap-1 py-2.5 rounded-xl active:scale-[0.97] transition-transform"
+                className="flex flex-col items-center gap-1 py-2.5 rounded-xl press-strong transition-transform"
                 style={{ background: "#FAF5EE", border: "1px solid rgba(173, 94, 59,0.12)" }}
               >
                 <span className="text-xl">{c.emoji}</span>

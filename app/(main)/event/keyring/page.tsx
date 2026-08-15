@@ -137,7 +137,7 @@ export default function KeyringEventPage() {
       <div className="px-4 pt-12 pb-3 flex items-center gap-3">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈"
         >
@@ -269,7 +269,7 @@ export default function KeyringEventPage() {
             </p>
             <Link
               href="/map"
-              className="inline-flex items-center gap-1.5 px-5 py-3 rounded-2xl bg-primary text-white text-[15px] font-bold active:scale-[0.97] transition-transform"
+              className="inline-flex items-center gap-1.5 px-5 py-3 rounded-2xl bg-primary text-white text-[15px] font-bold press-strong transition-transform"
               style={{ boxShadow: "var(--shadow-primary)" }}
             >
               <PlusCircle size={16} />
@@ -302,7 +302,7 @@ export default function KeyringEventPage() {
                       key={cat.id}
                       type="button"
                       onClick={() => setSelectedCatId(cat.id)}
-                      className="relative block rounded-2xl overflow-hidden bg-white text-left active:scale-[0.98] transition-transform"
+                      className="relative block rounded-2xl overflow-hidden bg-white text-left press transition-transform"
                       style={{
                         boxShadow: selected
                           ? "0 8px 22px rgba(173, 94, 59,0.35)"
@@ -348,7 +348,7 @@ export default function KeyringEventPage() {
             <button
               onClick={handleSubmit}
               disabled={submitting || !selectedCatId}
-              className="w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold disabled:opacity-50 active:scale-[0.97] flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-2xl bg-primary text-white text-[15px] font-bold disabled:opacity-50 press-strong flex items-center justify-center gap-2"
               style={{ boxShadow: "var(--shadow-primary)" }}
             >
               {submitting ? <Loader2 size={18} className="animate-spin" /> : <Gift size={18} />}

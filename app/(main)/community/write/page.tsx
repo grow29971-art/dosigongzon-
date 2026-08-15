@@ -123,7 +123,7 @@ export default function WritePage() {
     <div className="pb-24">
       {/* ── 헤더 ── */}
       <div className="flex items-center justify-between px-4 pt-14 pb-3">
-        <button onClick={() => router.back()} className="p-2 -ml-2 active:scale-90 transition-transform">
+        <button onClick={() => router.back()} className="p-2 -ml-2 press-strong transition-transform">
           <ArrowLeft size={24} className="text-text-main" />
         </button>
         <h1 className="text-lg font-bold text-text-main">글쓰기</h1>
@@ -231,12 +231,12 @@ export default function WritePage() {
                   src={url}
                   alt=""
                   className="w-full h-full object-cover rounded-xl"
-                  style={{ border: "1px solid var(--color-gray-200)" }}
+                  style={{ border: "1px solid var(--color-border)" }}
                 />
                 <button
                   type="button"
                   onClick={() => removeImage(url)}
-                  className="absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center active:scale-90"
+                  className="absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center press-strong"
                   style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}
                   aria-label="사진 제거"
                 >
@@ -247,7 +247,7 @@ export default function WritePage() {
 
             {imageUrls.length < MAX_IMAGES && (
               <label
-                className="flex flex-col items-center justify-center aspect-square rounded-xl cursor-pointer active:scale-[0.97] transition-transform"
+                className="flex flex-col items-center justify-center aspect-square rounded-xl cursor-pointer press-strong transition-transform"
                 style={{
                   backgroundColor: "var(--color-gray-50)",
                   border: "1.5px dashed #C9BDAA",
@@ -308,7 +308,7 @@ export default function WritePage() {
         <button
           onClick={handleSubmit}
           disabled={!canSubmit || submitting}
-          className={`w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-[15px] font-bold transition-all active:scale-[0.97] ${
+          className={`w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-[15px] font-bold transition-all press-strong ${
             canSubmit
               ? "bg-primary text-white"
               : "bg-border text-text-muted"

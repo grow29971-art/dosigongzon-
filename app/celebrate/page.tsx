@@ -47,7 +47,7 @@ export default async function CelebratePage() {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="홈"
         >
@@ -159,7 +159,7 @@ export default async function CelebratePage() {
       <section className="px-5 mt-7">
         <Link
           href="/map"
-          className="block w-full text-center py-3.5 rounded-2xl text-[15px] font-bold text-white active:scale-[0.98] transition-transform"
+          className="block w-full text-center py-3.5 rounded-2xl text-[15px] font-bold text-white press transition-transform"
           style={{
             background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
             boxShadow: "var(--shadow-primary)",
@@ -169,7 +169,7 @@ export default async function CelebratePage() {
         </Link>
         <Link
           href="/maker"
-          className="block w-full text-center py-2.5 rounded-2xl text-[13px] font-bold mt-2 active:scale-[0.98]"
+          className="block w-full text-center py-2.5 rounded-2xl text-[13px] font-bold mt-2 press"
           style={{ background: "#FFFFFF", color: "var(--color-primary-dark)", border: "1px solid rgba(173, 94, 59,0.25)" }}
         >
           운영 이야기 보기

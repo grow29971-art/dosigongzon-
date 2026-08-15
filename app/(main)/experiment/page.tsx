@@ -223,7 +223,7 @@ export default function ExperimentPage() {
                 disabled={disabled}
                 aria-pressed={done}
                 aria-label={`${meta.label} ${done ? "기록됨" : "기록하기"}`}
-                className="flex items-center justify-center gap-2 rounded-2xl px-3 font-bold text-[15px] active:scale-95 transition-transform disabled:opacity-60"
+                className="flex items-center justify-center gap-2 rounded-2xl px-3 font-bold text-[15px] press-strong transition-transform disabled:opacity-60"
                 style={{
                   minHeight: 56,
                   background: done ? "var(--color-primary-soft)" : "var(--color-surface-alt)",
@@ -329,7 +329,7 @@ export default function ExperimentPage() {
           <button
             onClick={createInvite}
             disabled={inviteBusy}
-            className="w-full flex items-center justify-center gap-2 rounded-2xl text-white text-[15px] font-bold active:scale-[0.98] transition-transform disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2 rounded-2xl text-white text-[15px] font-bold press transition-transform disabled:opacity-60"
             style={{ minHeight: 52, background: "var(--color-primary)" }}
           >
             {inviteBusy ? <Loader2 size={18} className="animate-spin" /> : <Share2 size={18} />}

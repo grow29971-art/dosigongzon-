@@ -179,7 +179,7 @@ export default function AdminEventKeyringPage() {
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-4 flex items-center justify-between gap-2">
         <div className="flex items-center gap-3 min-w-0">
-          <Link href="/admin" className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          <Link href="/admin" className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
             style={{ boxShadow: "var(--shadow-raised)" }} aria-label="admin">
             <ArrowLeft size={18} className="text-text-main" />
           </Link>
@@ -193,12 +193,12 @@ export default function AdminEventKeyringPage() {
         </div>
         <div className="flex gap-1.5 shrink-0">
           <button onClick={reload} disabled={loading}
-            className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90 disabled:opacity-50"
+            className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong disabled:opacity-50"
             style={{ boxShadow: "var(--shadow-raised)" }} aria-label="새로고침">
             <RefreshCw size={15} className={`text-text-main ${loading ? "animate-spin" : ""}`} />
           </button>
           <button onClick={exportCsv} disabled={entries.length === 0}
-            className="px-3 h-9 rounded-xl bg-primary text-white text-[13px] font-bold flex items-center gap-1 active:scale-95 disabled:opacity-50"
+            className="px-3 h-9 rounded-xl bg-primary text-white text-[13px] font-bold flex items-center gap-1 press-strong disabled:opacity-50"
             style={{ boxShadow: "0 2px 8px rgba(173, 94, 59,0.25)" }}>
             <Download size={13} />
             CSV
@@ -210,11 +210,11 @@ export default function AdminEventKeyringPage() {
       <div className="px-4 mb-3 flex gap-1.5 overflow-x-auto no-scrollbar">
         {(["all", ...STATUS_ORDER] as const).map((k) => (
           <button key={k} onClick={() => setFilter(k)}
-            className="shrink-0 px-3 py-1.5 chip-square text-[13px] font-bold active:scale-95 transition-transform"
+            className="shrink-0 px-3 py-1.5 chip-square text-[13px] font-bold press-strong transition-transform"
             style={{
               background: filter === k ? "var(--color-primary)" : "#FFFFFF",
               color: filter === k ? "#FFFFFF" : "#6B5043",
-              border: filter === k ? "1px solid var(--color-primary)" : "1px solid rgba(0,0,0,0.05)",
+              border: filter === k ? "1px solid var(--color-primary)" : "1px solid var(--color-divider)",
             }}>
             {k === "all" ? "전체" : STATUS_META[k].label} {counts[k] > 0 && <span className="ml-0.5 opacity-80">{counts[k]}</span>}
           </button>
@@ -326,7 +326,7 @@ function EntryCard({
           const active = entry.status === s;
           return (
             <button key={s} onClick={() => onStatus(entry.id, s)} disabled={active}
-              className="flex-1 min-w-0 py-2 rounded-lg text-[13px] font-bold flex items-center justify-center gap-1 active:scale-95 disabled:opacity-50"
+              className="flex-1 min-w-0 py-2 rounded-lg text-[13px] font-bold flex items-center justify-center gap-1 press-strong disabled:opacity-50"
               style={{
                 background: active ? m.color : `${m.color}15`,
                 color: active ? "#fff" : m.color,
@@ -349,7 +349,7 @@ function EntryCard({
           maxLength={200}
           disabled={savingNote}
           className="w-full px-3 py-2 rounded-lg text-[13px] outline-none"
-          style={{ background: "var(--color-gray-50)", border: "1px solid var(--color-gray-200)" }}
+          style={{ background: "var(--color-gray-50)", border: "1px solid var(--color-border)" }}
         />
       </div>
     </div>

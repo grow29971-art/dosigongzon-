@@ -85,7 +85,7 @@ export default function MapIntroSheet() {
         <button
           type="button"
           onClick={dismiss}
-          className="mt-6 w-full py-4 rounded-2xl text-white text-[15px] font-bold flex items-center justify-center gap-2 active:scale-[0.98]"
+          className="mt-6 w-full py-4 rounded-2xl text-white text-[15px] font-bold flex items-center justify-center gap-2 press"
           style={{
             background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
             boxShadow: "var(--shadow-primary)",
@@ -99,7 +99,7 @@ export default function MapIntroSheet() {
           <Link
             href="/protection"
             onClick={dismiss}
-            className="flex-1 py-3 rounded-2xl text-[13px] font-bold text-center flex items-center justify-center gap-1.5 active:scale-[0.98]"
+            className="flex-1 py-3 rounded-2xl text-[13px] font-bold text-center flex items-center justify-center gap-1.5 press"
             style={{ background: "#F1ECE4", color: "#6B5847" }}
           >
             <BookOpen size={14} />
@@ -108,7 +108,7 @@ export default function MapIntroSheet() {
           <Link
             href="/protection/emergency-guide"
             onClick={dismiss}
-            className="flex-1 py-3 rounded-2xl text-[13px] font-bold text-center flex items-center justify-center gap-1.5 active:scale-[0.98]"
+            className="flex-1 py-3 rounded-2xl text-[13px] font-bold text-center flex items-center justify-center gap-1.5 press"
             style={{ background: "var(--color-error-soft)", color: "#B84545" }}
           >
             <Siren size={14} />

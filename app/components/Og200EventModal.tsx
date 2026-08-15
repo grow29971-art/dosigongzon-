@@ -90,7 +90,7 @@ export default function Og200EventModal() {
           <button
             type="button"
             onClick={dismiss}
-            className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-white/50 active:scale-90"
+            className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-white/50 press-strong"
             aria-label="닫기"
           >
             <X size={15} style={{ color: "#7A4F30" }} />
@@ -159,7 +159,7 @@ export default function Og200EventModal() {
             <Link
               href="/mypage"
               onClick={dismiss}
-              className="flex-[1.4] flex items-center justify-center py-3 rounded-2xl text-white text-[13px] font-bold active:scale-[0.98]"
+              className="flex-[1.4] flex items-center justify-center py-3 rounded-2xl text-white text-[13px] font-bold press"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                 boxShadow: "var(--shadow-primary)",
@@ -170,7 +170,7 @@ export default function Og200EventModal() {
             <button
               type="button"
               onClick={dismiss}
-              className="flex-1 py-3 rounded-2xl text-[13px] font-bold active:scale-[0.98] bg-white"
+              className="flex-1 py-3 rounded-2xl text-[13px] font-bold press bg-white"
               style={{ color: "var(--color-primary-dark)", border: "1.5px solid rgba(173, 94, 59,0.30)" }}
             >
               나중에

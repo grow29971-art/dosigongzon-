@@ -140,7 +140,7 @@ export default function AchievementToast({
         <button
           type="button"
           onClick={share}
-          className="h-8 px-2.5 rounded-full flex items-center gap-1 shrink-0 active:scale-90 text-white"
+          className="h-8 px-2.5 rounded-full flex items-center gap-1 shrink-0 press-strong text-white"
           style={{ background: current.color }}
           aria-label="자랑하기"
         >
@@ -150,7 +150,7 @@ export default function AchievementToast({
         <button
           type="button"
           onClick={() => onDismiss(current.id)}
-          className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 active:scale-90"
+          className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 press-strong"
           style={{ background: "var(--color-gray-50)" }}
           aria-label="닫기"
         >

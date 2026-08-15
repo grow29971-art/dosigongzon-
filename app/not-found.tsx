@@ -74,7 +74,7 @@ export default function NotFound() {
           <div className="flex flex-col gap-2.5">
             <Link
               href="/"
-              className="w-full py-3 rounded-2xl text-[15px] font-bold text-white active:scale-[0.98] transition-transform"
+              className="w-full py-3 rounded-2xl text-[15px] font-bold text-white press transition-transform"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                 boxShadow: "var(--shadow-primary)",
@@ -85,44 +85,44 @@ export default function NotFound() {
             <div className="grid grid-cols-2 gap-2">
               <Link
                 href="/map"
-                className="py-2.5 rounded-2xl text-[13px] font-bold active:scale-[0.98]"
+                className="py-2.5 rounded-2xl text-[13px] font-bold press"
                 style={{
                   background: "#F7F4EE",
                   color: "#A38E7A",
-                  border: "1px solid rgba(0,0,0,0.05)",
+                  border: "1px solid var(--color-divider)",
                 }}
               >
                 지도
               </Link>
               <Link
                 href="/protection"
-                className="py-2.5 rounded-2xl text-[13px] font-bold active:scale-[0.98]"
+                className="py-2.5 rounded-2xl text-[13px] font-bold press"
                 style={{
                   background: "#F7F4EE",
                   color: "#A38E7A",
-                  border: "1px solid rgba(0,0,0,0.05)",
+                  border: "1px solid var(--color-divider)",
                 }}
               >
                 보호지침
               </Link>
               <Link
                 href="/community"
-                className="py-2.5 rounded-2xl text-[13px] font-bold active:scale-[0.98]"
+                className="py-2.5 rounded-2xl text-[13px] font-bold press"
                 style={{
                   background: "#F7F4EE",
                   color: "#A38E7A",
-                  border: "1px solid rgba(0,0,0,0.05)",
+                  border: "1px solid var(--color-divider)",
                 }}
               >
                 커뮤니티
               </Link>
               <Link
                 href="/guide"
-                className="py-2.5 rounded-2xl text-[13px] font-bold active:scale-[0.98]"
+                className="py-2.5 rounded-2xl text-[13px] font-bold press"
                 style={{
                   background: "#F7F4EE",
                   color: "#A38E7A",
-                  border: "1px solid rgba(0,0,0,0.05)",
+                  border: "1px solid var(--color-divider)",
                 }}
               >
                 기능 가이드

@@ -55,7 +55,7 @@ export default function MapChatGuideModal() {
         <button
           type="button"
           onClick={dismiss}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center active:scale-90"
+          className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center press-strong"
           style={{ background: "rgba(0,0,0,0.05)" }}
           aria-label="닫기"
         >
@@ -127,7 +127,7 @@ export default function MapChatGuideModal() {
         <button
           type="button"
           onClick={dismiss}
-          className="w-full py-3 rounded-2xl text-white text-[13px] font-bold active:scale-[0.99] transition-transform"
+          className="w-full py-3 rounded-2xl text-white text-[13px] font-bold press transition-transform"
           style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
         >
           알겠어요

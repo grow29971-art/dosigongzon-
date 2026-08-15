@@ -28,7 +28,7 @@ export default async function PublicHeader() {
     >
       <div className="max-w-lg mx-auto px-4 h-12 flex items-center justify-between">
         {/* 로고 + 브랜드 */}
-        <Link href="/" className="flex items-center gap-1.5 active:scale-95 transition-transform">
+        <Link href="/" className="flex items-center gap-1.5 press-strong transition-transform">
           <div
             className="w-7 h-7 rounded-xl flex items-center justify-center"
             style={{ background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)" }}
@@ -44,7 +44,7 @@ export default async function PublicHeader() {
         {isLoggedIn ? (
           <Link
             href="/mypage"
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[13px] font-bold active:scale-95 transition-transform"
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[13px] font-bold press-strong transition-transform"
             style={{ background: "rgba(173, 94, 59,0.12)", color: "var(--color-primary)" }}
             aria-label="마이페이지"
           >
@@ -55,7 +55,7 @@ export default async function PublicHeader() {
           <div className="flex items-center gap-1.5">
             <Link
               href="/login"
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[13px] font-bold active:scale-95 transition-transform"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[13px] font-bold press-strong transition-transform"
               style={{ color: "#6B5043" }}
             >
               <LogIn size={12} />
@@ -63,7 +63,7 @@ export default async function PublicHeader() {
             </Link>
             <Link
               href="/signup"
-              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] font-bold active:scale-95 transition-transform text-white"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] font-bold press-strong transition-transform text-white"
               style={{
                 background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                 boxShadow: "0 2px 8px rgba(173, 94, 59,0.35)",

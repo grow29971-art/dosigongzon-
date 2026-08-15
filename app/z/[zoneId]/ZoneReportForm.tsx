@@ -93,7 +93,7 @@ export default function ZoneReportForm({ zoneId }: { zoneId: string }) {
   }
 
   const chip = (selected: boolean) =>
-    `px-3 py-2 rounded-xl text-[13px] font-bold active:scale-95 transition-transform ${
+    `px-3 py-2 rounded-xl text-[13px] font-bold press-strong transition-transform ${
       selected ? "text-white" : "text-text-sub"
     }`;
   const chipStyle = (selected: boolean) => ({
@@ -158,7 +158,7 @@ export default function ZoneReportForm({ zoneId }: { zoneId: string }) {
       <button
         onClick={submit}
         disabled={submitting}
-        className="w-full rounded-2xl py-4 text-[15px] font-bold text-white active:scale-95 transition-transform disabled:opacity-60 flex items-center justify-center gap-1.5"
+        className="w-full rounded-2xl py-4 text-[15px] font-bold text-white press-strong transition-transform disabled:opacity-60 flex items-center justify-center gap-1.5"
         style={{ backgroundColor: "var(--color-primary)" }}
       >
         {submitting ? (<><Loader2 size={16} className="animate-spin" /> 접수 중…</>) : "익명으로 제보하기"}

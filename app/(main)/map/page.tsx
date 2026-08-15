@@ -1859,7 +1859,7 @@ export default function MapPage() {
               font-size: 10px; font-weight: 800; white-space: nowrap;
               letter-spacing: -0.3px; line-height: 1.35;
               box-shadow: 0 2px 10px rgba(0,0,0,0.16);
-              border: 1px solid rgba(0,0,0,0.05);
+              border: 1px solid var(--color-divider);
             ">${label}</div>
           </div>
         `;
@@ -2130,7 +2130,7 @@ export default function MapPage() {
             <button
               type="button"
               onClick={() => setDetailToolsOpen((v) => !v)}
-              className="px-3 py-2 rounded-xl text-[11px] font-bold active:scale-95 transition-all shrink-0 flex items-center gap-1"
+              className="px-3 py-2 rounded-xl text-[11px] font-bold press-strong transition-all shrink-0 flex items-center gap-1"
               style={{
                 backgroundColor: detailToolsOpen ? "var(--color-primary)" : "rgba(255,255,255,0.85)",
                 color: detailToolsOpen ? "#fff" : "var(--color-text-light)",
@@ -2155,7 +2155,7 @@ export default function MapPage() {
                 key={f.key}
                 type="button"
                 onClick={f.toggle}
-                className="px-3 py-2 rounded-xl text-[11px] font-bold active:scale-95 transition-all shrink-0"
+                className="px-3 py-2 rounded-xl text-[11px] font-bold press-strong transition-all shrink-0"
                 style={{
                   backgroundColor: f.active ? f.color : "rgba(255,255,255,0.85)",
                   color: f.active ? "#fff" : "var(--color-text-light)",
@@ -2193,7 +2193,7 @@ export default function MapPage() {
                   <button
                     type="button"
                     onClick={() => setSearchQ("")}
-                    className="shrink-0 w-5 h-5 rounded-full bg-surface-alt flex items-center justify-center active:scale-90"
+                    className="shrink-0 w-5 h-5 rounded-full bg-surface-alt flex items-center justify-center press-strong"
                     aria-label="검색어 지우기"
                   >
                     <X size={11} className="text-text-sub" />
@@ -2203,7 +2203,7 @@ export default function MapPage() {
               <button
                 type="button"
                 onClick={() => setShowFilterPanel((v) => !v)}
-                className="w-9 h-9 rounded-full flex items-center justify-center active:scale-90 shrink-0"
+                className="w-9 h-9 rounded-full flex items-center justify-center press-strong shrink-0"
                 style={{
                   background: catFilter !== "all" || showFilterPanel
                     ? "var(--color-primary)"
@@ -2251,7 +2251,7 @@ export default function MapPage() {
                       key={f.key}
                       type="button"
                       onClick={() => setCatFilter(f.key)}
-                      className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-all shrink-0"
+                      className="px-3 py-1.5 rounded-2xl text-[11px] font-bold press-strong transition-all shrink-0"
                       style={{
                         backgroundColor: active ? f.color : "rgba(255,255,255,0.95)",
                         color: active ? "#fff" : "var(--color-gray-700)",
@@ -2275,7 +2275,7 @@ export default function MapPage() {
                 <button
                   type="button"
                   onClick={() => setRegionFilter("all")}
-                  className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-all shrink-0"
+                  className="px-3 py-1.5 rounded-2xl text-[11px] font-bold press-strong transition-all shrink-0"
                   style={{
                     backgroundColor: regionFilter === "all" ? "var(--color-gray-900)" : "rgba(255,255,255,0.95)",
                     color: regionFilter === "all" ? "#fff" : "var(--color-gray-700)",
@@ -2298,7 +2298,7 @@ export default function MapPage() {
                           mapInstanceRef.current.setLevel(4);
                         }
                       }}
-                      className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-all shrink-0 flex items-center gap-1"
+                      className="px-3 py-1.5 rounded-2xl text-[11px] font-bold press-strong transition-all shrink-0 flex items-center gap-1"
                       style={{
                         backgroundColor: active ? color : "rgba(255,255,255,0.95)",
                         color: active ? "#fff" : "var(--color-gray-700)",
@@ -2312,7 +2312,7 @@ export default function MapPage() {
                 })}
                 <Link
                   href="/mypage/activity-regions"
-                  className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-all shrink-0"
+                  className="px-3 py-1.5 rounded-2xl text-[11px] font-bold press-strong transition-all shrink-0"
                   style={{
                     backgroundColor: "rgba(255,255,255,0.7)",
                     color: "var(--color-text-light)",
@@ -2326,7 +2326,7 @@ export default function MapPage() {
             ) : (
               <Link
                 href="/mypage/activity-regions"
-                className="px-3 py-1.5 rounded-2xl text-[11px] font-bold active:scale-95 transition-all shrink-0"
+                className="px-3 py-1.5 rounded-2xl text-[11px] font-bold press-strong transition-all shrink-0"
                 style={{
                   background: "var(--color-primary)",
                   color: "#fff",
@@ -2356,7 +2356,7 @@ export default function MapPage() {
             </div>
             <a
               href="/login?next=%2Fmap"
-              className="shrink-0 px-3 py-1.5 rounded-xl text-[11px] font-bold active:scale-95"
+              className="shrink-0 px-3 py-1.5 rounded-xl text-[11px] font-bold press-strong"
               style={{ backgroundColor: "var(--color-surface)", color: "var(--color-primary)" }}
             >
               로그인
@@ -2401,7 +2401,7 @@ export default function MapPage() {
               <button
                 type="button"
                 onClick={() => setAbuseCardExpanded((v) => !v)}
-                className="w-full px-4 py-2.5 flex items-center gap-3 text-left active:scale-[0.99] transition-transform"
+                className="w-full px-4 py-2.5 flex items-center gap-3 text-left press transition-transform"
               >
                 {hasAlert ? (
                   <AlertTriangle size={16} color="var(--color-error)" strokeWidth={2.5} />
@@ -2428,7 +2428,7 @@ export default function MapPage() {
               </button>
 
               {abuseCardExpanded && (
-                <div className="px-4 pb-3 space-y-2.5" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+                <div className="px-4 pb-3 space-y-2.5" style={{ borderTop: "1px solid var(--color-divider)" }}>
                   <p className="text-[11px] leading-relaxed mt-2.5" style={{ color: "var(--color-gray-700)" }}>
                     동물보호법 제8조 위반 · <b>3년 이하 징역 또는 3,000만원 이하 벌금</b>
                   </p>
@@ -2440,7 +2440,7 @@ export default function MapPage() {
                   <div className="flex gap-2">
                     <a
                       href="tel:112"
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-[11px] font-bold active:scale-[0.97] transition-transform"
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-[11px] font-bold press-strong transition-transform"
                       style={{ backgroundColor: "var(--color-gray-900)", color: "#fff" }}
                     >
                       <Phone size={11} strokeWidth={2.5} />
@@ -2448,7 +2448,7 @@ export default function MapPage() {
                     </a>
                     <a
                       href="tel:1577-0954"
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-[11px] font-bold active:scale-[0.97] transition-transform"
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-[11px] font-bold press-strong transition-transform"
                       style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-gray-800)" }}
                     >
                       <Phone size={11} strokeWidth={2.5} />
@@ -2539,7 +2539,7 @@ export default function MapPage() {
               setChatArea("전체");
               setChatOpen(true);
             }}
-            className="flex items-center gap-2.5 pl-3 pr-4 py-2.5 active:scale-[0.95] transition-transform"
+            className="flex items-center gap-2.5 pl-3 pr-4 py-2.5 press-strong transition-transform"
             style={{
               background: "var(--color-sage)",
               borderRadius: "var(--radius-modal)",
@@ -2578,7 +2578,7 @@ export default function MapPage() {
           {/* 고양이별 — 먼저 떠난 아이들. 밤하늘 톤이라 다른 FAB과 구분된다 */}
           <Link
             href="/memorial"
-            className="relative w-11 h-11 rounded-full flex items-center justify-center active:scale-90 transition-transform overflow-hidden"
+            className="relative w-11 h-11 rounded-full flex items-center justify-center press-strong transition-transform overflow-hidden"
             style={{
               background: "linear-gradient(180deg, #4a3a63 0%, #2b2140 100%)",
               boxShadow: "0 1px 0 rgba(255,255,255,0.18) inset, 0 3px 8px rgba(30,20,50,0.28), 0 8px 18px rgba(30,20,50,0.18)",
@@ -2594,7 +2594,7 @@ export default function MapPage() {
           {/* 곁에 있어요 — 112/119 빠른 전화 (A-1). 공포 프레임 대신 안심 톤 */}
           <button
             onClick={() => setSafetyOpen(true)}
-            className="relative w-11 h-11 rounded-full flex items-center justify-center active:scale-90 transition-transform overflow-hidden"
+            className="relative w-11 h-11 rounded-full flex items-center justify-center press-strong transition-transform overflow-hidden"
             style={{
               background: "var(--color-surface)",
               boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 -3px 6px rgba(60,70,110,0.08) inset, 0 3px 8px rgba(30,40,80,0.14), 0 8px 18px rgba(30,40,80,0.10)",
@@ -2607,7 +2607,7 @@ export default function MapPage() {
           </button>
           <button
             onClick={handleLocateMe}
-            className="relative w-11 h-11 rounded-full flex items-center justify-center active:scale-90 transition-transform overflow-hidden"
+            className="relative w-11 h-11 rounded-full flex items-center justify-center press-strong transition-transform overflow-hidden"
             style={{
               background: "var(--color-surface)",
               boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 -3px 6px rgba(60,70,110,0.08) inset, 0 3px 8px rgba(30,40,80,0.14), 0 8px 18px rgba(30,40,80,0.10)",
@@ -2641,7 +2641,7 @@ export default function MapPage() {
             )}
             <button
               onClick={handleAddClick}
-              className="relative rounded-full flex items-center justify-center active:scale-90 transition-transform overflow-hidden"
+              className="relative rounded-full flex items-center justify-center press-strong transition-transform overflow-hidden"
               style={{
                 width: 58, height: 58,
                 background: "linear-gradient(160deg, var(--color-primary-light) 0%, var(--color-primary) 45%, var(--color-primary-dark) 100%)",
@@ -2708,7 +2708,7 @@ export default function MapPage() {
               background: "var(--color-surface)",
               borderRadius: "var(--radius-sheet)",
               boxShadow: "var(--shadow-sheet)",
-              border: "1px solid rgba(0,0,0,0.06)",
+              border: "1px solid var(--color-divider)",
               height: "65dvh",
             }}
           >
@@ -2721,7 +2721,7 @@ export default function MapPage() {
                 {chatArea === "전체" ? "전체 채팅" : `${chatArea} 채팅`}
               </span>
               <span className="text-[11px] text-text-light">{chatMessages.length}개 메시지</span>
-              <button onClick={() => setChatOpen(false)} className="w-8 h-8 rounded-full bg-surface-alt flex items-center justify-center active:scale-90">
+              <button onClick={() => setChatOpen(false)} className="w-8 h-8 rounded-full bg-surface-alt flex items-center justify-center press-strong">
                 <X size={16} className="text-text-sub" />
               </button>
             </div>
@@ -2729,7 +2729,7 @@ export default function MapPage() {
             {/* 일일 정리 안내 — 사용자가 메시지 사라지는 이유 알 수 있게 */}
             <div
               className="px-5 py-2 text-[11px] text-text-sub flex items-center gap-1.5 shrink-0"
-              style={{ background: "rgba(173, 94, 59,0.06)", borderBottom: "1px solid rgba(0,0,0,0.04)" }}
+              style={{ background: "rgba(173, 94, 59,0.06)", borderBottom: "1px solid var(--color-divider)" }}
             >
               <Clock size={12} className="shrink-0" />
               <span>채팅은 <b className="text-text-main">매일 새벽 4시</b>에 모두 정리됩니다 서버비 감당이안돼서요 ㅠㅠ</span>
@@ -2807,7 +2807,7 @@ export default function MapPage() {
                   onChange={(e) => setChatText(e.target.value)}
                   placeholder="메시지를 입력하세요"
                   className="flex-1 px-3.5 py-2.5 rounded-2xl text-[13px] outline-none"
-                  style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-gray-200)" }}
+                  style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-border)" }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.nativeEvent.isComposing && chatText.trim()) {
                       e.preventDefault();
@@ -2819,7 +2819,7 @@ export default function MapPage() {
                   type="button"
                   onClick={handleChatSend}
                   disabled={chatSending || !chatText.trim()}
-                  className="w-10 h-10 rounded-full bg-primary flex items-center justify-center disabled:opacity-40 active:scale-90 transition-transform"
+                  className="w-10 h-10 rounded-full bg-primary flex items-center justify-center disabled:opacity-40 press-strong transition-transform"
                 >
                   {chatSending ? <Loader2 size={16} className="animate-spin text-white" /> : <Send size={16} color="#fff" />}
                 </button>
@@ -2846,7 +2846,7 @@ export default function MapPage() {
           >
             <button
               onClick={() => setSelectedDong(null)}
-              className="absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform shadow-md"
+              className="absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center press-strong transition-transform shadow-md"
             >
               <X size={18} className="text-text-sub" />
             </button>
@@ -2931,7 +2931,7 @@ export default function MapPage() {
           >
             <button
               onClick={() => setSelectedHospital(null)}
-              className="absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform shadow-md"
+              className="absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center press-strong transition-transform shadow-md"
             >
               <X size={18} className="text-text-sub" />
             </button>
@@ -3028,7 +3028,7 @@ export default function MapPage() {
               {selectedHospital.phone && (
                 <a
                   href={`tel:${selectedHospital.phone}`}
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-[15px] font-bold text-white active:scale-[0.97] transition-transform"
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-[15px] font-bold text-white press-strong transition-transform"
                   style={{
                     background: `linear-gradient(135deg, ${accent} 0%, ${accent}DD 100%)`,
                     boxShadow: `0 6px 18px ${accent}55`,
@@ -3065,7 +3065,7 @@ export default function MapPage() {
                       }
                     } catch { toast.error("신고 처리 중 오류가 발생했어요"); }
                   }}
-                  className="flex items-center justify-center gap-1.5 w-full py-2.5 rounded-2xl text-[13px] font-bold active:scale-[0.97] transition-transform"
+                  className="flex items-center justify-center gap-1.5 w-full py-2.5 rounded-2xl text-[13px] font-bold press-strong transition-transform"
                   style={{ backgroundColor: "var(--color-gray-50)", color: "var(--color-text-light)" }}
                 >
                   <Flag size={13} />
@@ -3107,7 +3107,7 @@ export default function MapPage() {
                   setEditLat(null);
                   setEditLng(null);
                 }}
-                className="w-11 h-11 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform"
+                className="w-11 h-11 rounded-full bg-white flex items-center justify-center press-strong transition-transform"
                 style={{ boxShadow: "var(--shadow-fab)" }}
                 aria-label="수정"
               >
@@ -3123,7 +3123,7 @@ export default function MapPage() {
                     photo_url: selectedCat.photo_url ?? null,
                   })
                 }
-                className="w-11 h-11 rounded-full flex items-center justify-center active:scale-90 transition-transform"
+                className="w-11 h-11 rounded-full flex items-center justify-center press-strong transition-transform"
                 style={{
                   background: "linear-gradient(135deg, #3a2c4d, #6b5b8a)",
                   boxShadow: "0 4px 14px rgba(58,44,77,0.38)",
@@ -3145,7 +3145,7 @@ export default function MapPage() {
                     toast.error(err instanceof Error ? err.message : "삭제 실패");
                   }
                 }}
-                className="w-11 h-11 rounded-full flex items-center justify-center active:scale-90 transition-transform"
+                className="w-11 h-11 rounded-full flex items-center justify-center press-strong transition-transform"
                 style={{ background: "var(--color-error)", boxShadow: "0 4px 14px rgba(216,85,85,0.40)" }}
                 aria-label="삭제"
               >
@@ -3157,7 +3157,7 @@ export default function MapPage() {
           {/* 닫기 버튼 — 카드 높이와 무관하게 항상 화면 우측 상단에 고정 */}
           <button
             onClick={() => { setSelectedCat(null); setEditingCat(false); setEditLat(null); setEditLng(null); }}
-            className="fixed w-11 h-11 rounded-full bg-white flex items-center justify-center active:scale-90 transition-transform pointer-events-auto"
+            className="fixed w-11 h-11 rounded-full bg-white flex items-center justify-center press-strong transition-transform pointer-events-auto"
             style={{
               top: "calc(env(safe-area-inset-top) + 12px)", right: 16, zIndex: 30,
               boxShadow: "var(--shadow-fab)",
@@ -3270,7 +3270,7 @@ export default function MapPage() {
                     ))}
                     <button
                       onClick={doPet}
-                      className={`flex items-center gap-2 pl-3.5 pr-4 py-2.5 rounded-full active:scale-95 transition-transform ${petPop ? "pet-pop" : ""}`}
+                      className={`flex items-center gap-2 pl-3.5 pr-4 py-2.5 rounded-full press-strong transition-transform ${petPop ? "pet-pop" : ""}`}
                       style={{
                         background: "var(--color-like)",
                         boxShadow: "0 5px 16px rgba(232,107,140,0.40)",
@@ -3345,7 +3345,7 @@ export default function MapPage() {
                 return (
                   <Link
                     href={`/cats/${selectedCat.id}`}
-                    className="block mb-3 rounded-2xl px-3.5 py-3 active:scale-[0.99] transition-transform"
+                    className="block mb-3 rounded-2xl px-3.5 py-3 press transition-transform"
                     style={{
                       background: hasTodayPhoto
                         ? "linear-gradient(135deg, rgba(91,168,118,0.14) 0%, rgba(107,142,111,0.10) 100%)"
@@ -3398,7 +3398,7 @@ export default function MapPage() {
                   <div>
                     <label className="text-[11px] font-bold text-text-sub mb-1 block">이름</label>
                     <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} maxLength={20}
-                      className="w-full px-3 py-2 rounded-xl text-[15px] outline-none" style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-gray-200)" }} />
+                      className="w-full px-3 py-2 rounded-xl text-[15px] outline-none" style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-border)" }} />
                   </div>
                   <div>
                     <label className="text-[11px] font-bold text-text-sub mb-1 block">설명</label>
@@ -3425,7 +3425,7 @@ export default function MapPage() {
                   <div>
                     <label className="text-[11px] font-bold text-text-sub mb-1 block">동네</label>
                     <input type="text" value={editRegion} onChange={(e) => setEditRegion(e.target.value)} maxLength={20}
-                      className="w-full px-3 py-2 rounded-xl text-[13px] outline-none" style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-gray-200)" }} />
+                      className="w-full px-3 py-2 rounded-xl text-[13px] outline-none" style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid var(--color-border)" }} />
                   </div>
 
                   {/* 위치 변경 (등록자 본인 + 관리자) */}
@@ -3435,10 +3435,10 @@ export default function MapPage() {
                       <button
                         type="button"
                         onClick={() => setPickingLocation(true)}
-                        className="w-full px-3 py-2.5 rounded-xl text-[13px] font-bold flex items-center justify-between active:scale-[0.98]"
+                        className="w-full px-3 py-2.5 rounded-xl text-[13px] font-bold flex items-center justify-between press"
                         style={{
                           backgroundColor: editLat !== null ? "#FFF2E8" : "var(--color-gray-50)",
-                          border: editLat !== null ? "1px solid var(--color-primary)" : "1px solid var(--color-gray-200)",
+                          border: editLat !== null ? "1px solid var(--color-primary)" : "1px solid var(--color-border)",
                           color: editLat !== null ? "var(--color-primary)" : "var(--color-text-light)",
                         }}
                       >
@@ -3498,7 +3498,7 @@ export default function MapPage() {
                       style={{
                         backgroundColor: editAdoption === null ? "var(--color-gray-100)" : undefined,
                         color: editAdoption === null ? "var(--color-text-light)" : "var(--color-text-light)",
-                        border: editAdoption === null ? "1px solid var(--color-primary)" : "1px solid var(--color-gray-200)",
+                        border: editAdoption === null ? "1px solid var(--color-primary)" : "1px solid var(--color-border)",
                       }}>
                       해당 없음
                     </button>
@@ -3525,7 +3525,7 @@ export default function MapPage() {
                             key={k}
                             type="button"
                             onClick={() => setEditVisibility(k)}
-                            className="w-full p-2.5 rounded-xl text-left flex items-start gap-2 transition-all active:scale-[0.99]"
+                            className="w-full p-2.5 rounded-xl text-left flex items-start gap-2 transition-all press"
                             style={{
                               backgroundColor: active ? `${info.color}15` : "var(--color-gray-50)",
                               border: `1.5px solid ${active ? info.color : "var(--color-gray-200)"}`,
@@ -3577,7 +3577,7 @@ export default function MapPage() {
                         }
                       }}
                       disabled={editSaving || !editName.trim() || editDescViolations.length > 0 || editDescAbuseViolations.length > 0}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 active:scale-[0.97] transition-all"
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 press-strong transition-all"
                     >
                       {editSaving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} 저장
                     </button>
@@ -3631,7 +3631,7 @@ export default function MapPage() {
                       type="button"
                       onClick={handleToggleCatLike}
                       disabled={likingCat}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl active:scale-95 transition-transform disabled:opacity-60"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl press-strong transition-transform disabled:opacity-60"
                       style={{
                         background: likedCatIds.has(selectedCat.id)
                           ? "var(--color-like)"
@@ -3657,7 +3657,7 @@ export default function MapPage() {
                       type="button"
                       onClick={handleToggleAbuseAlert}
                       disabled={togglingAlert}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl active:scale-95 transition-transform disabled:opacity-60"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl press-strong transition-transform disabled:opacity-60"
                       style={{
                         background: myActiveAlert ? "var(--color-error)" : "var(--color-gray-50)",
                         color: myActiveAlert ? "#fff" : "var(--color-text-light)",
@@ -3693,7 +3693,7 @@ export default function MapPage() {
                       <button
                         type="button"
                         onClick={handleShareCatToKakao}
-                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-2xl active:scale-95 transition-transform"
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-2xl press-strong transition-transform"
                         style={{
                           background: "#FEE500",
                           color: "#3C1E1E",
@@ -3707,7 +3707,7 @@ export default function MapPage() {
                       <button
                         type="button"
                         onClick={handleShareCat}
-                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-2xl active:scale-95 transition-transform"
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-2xl press-strong transition-transform"
                         style={{
                           background: shareStatus === "copied" ? "var(--color-sage)" : "var(--color-gray-50)",
                           color: shareStatus === "copied" ? "#fff" : "var(--color-text-light)",
@@ -3731,7 +3731,7 @@ export default function MapPage() {
                       <button
                         type="button"
                         onClick={() => setQrModalOpen(true)}
-                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-2xl active:scale-95 transition-transform"
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-2xl press-strong transition-transform"
                         style={{ background: "var(--color-gray-800)", color: "#fff", boxShadow: "var(--shadow-raised)" }}
                         aria-label="QR 코드"
                       >
@@ -3799,7 +3799,7 @@ export default function MapPage() {
                   <div className="grid grid-cols-3 gap-1.5">
                     <a
                       href="tel:112"
-                      className="flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl transition-transform active:scale-95"
+                      className="flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl transition-transform press-strong"
                       style={{ backgroundColor: "var(--color-error)" }}
                     >
                       <Phone size={14} color="#fff" />
@@ -3807,7 +3807,7 @@ export default function MapPage() {
                     </a>
                     <a
                       href="tel:1577-0954"
-                      className="flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl transition-transform active:scale-95"
+                      className="flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl transition-transform press-strong"
                       style={{ backgroundColor: "var(--color-primary)" }}
                     >
                       <Phone size={14} color="#fff" />
@@ -3816,7 +3816,7 @@ export default function MapPage() {
                     <button
                       type="button"
                       onClick={handleCopyAlertRecord}
-                      className="flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl transition-transform active:scale-95"
+                      className="flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl transition-transform press-strong"
                       style={{ backgroundColor: "var(--color-sage)" }}
                     >
                       {copyStatus === "copied" ? (
@@ -3995,7 +3995,7 @@ export default function MapPage() {
                                   setComments((prev) => prev.filter((cm) => cm.id !== c.id));
                                 } catch { toast.error("삭제 실패"); }
                               }}
-                              className="ml-1 text-text-light active:scale-90"
+                              className="ml-1 text-text-light press-strong"
                             >
                               <Trash2 size={11} />
                             </button>
@@ -4013,7 +4013,7 @@ export default function MapPage() {
                           <button
                             type="button"
                             onClick={() => setLightboxUrl(c.photo_url)}
-                            className="mt-2 block rounded-xl overflow-hidden active:scale-[0.98] transition-transform"
+                            className="mt-2 block rounded-xl overflow-hidden press transition-transform"
                             style={{
                               width: "100%",
                               maxWidth: 220,
@@ -4063,7 +4063,7 @@ export default function MapPage() {
                                 <button
                                   type="button"
                                   onClick={() => handleVoteComment(c.id, 1)}
-                                  className="flex items-center gap-1 px-2 py-1 rounded-lg active:scale-95 transition-all"
+                                  className="flex items-center gap-1 px-2 py-1 rounded-lg press-strong transition-all"
                                   style={{
                                     backgroundColor: liked ? "var(--color-sage)" : "var(--color-surface)",
                                     border: `1px solid ${liked ? "var(--color-sage)" : "var(--color-gray-200)"}`,
@@ -4079,7 +4079,7 @@ export default function MapPage() {
                                 <button
                                   type="button"
                                   onClick={() => handleVoteComment(c.id, -1)}
-                                  className="flex items-center gap-1 px-2 py-1 rounded-lg active:scale-95 transition-all"
+                                  className="flex items-center gap-1 px-2 py-1 rounded-lg press-strong transition-all"
                                   style={{
                                     backgroundColor: disliked ? "var(--color-gray-500)" : "var(--color-surface)",
                                     border: `1px solid ${disliked ? "var(--color-gray-500)" : "var(--color-gray-200)"}`,
@@ -4103,10 +4103,10 @@ export default function MapPage() {
                                       authorName: c.author_name ?? null,
                                     })
                                   }
-                                  className="ml-auto flex items-center justify-center w-7 h-7 rounded-lg active:scale-90 transition-transform"
+                                  className="ml-auto flex items-center justify-center w-7 h-7 rounded-lg press-strong transition-transform"
                                   style={{
                                     backgroundColor: "var(--color-surface)",
-                                    border: "1px solid var(--color-gray-200)",
+                                    border: "1px solid var(--color-border)",
                                   }}
                                   aria-label="신고"
                                   title="신고하기"
@@ -4265,7 +4265,7 @@ export default function MapPage() {
           <button
             type="button"
             onClick={() => setLightboxUrl(null)}
-            className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform shadow-md"
+            className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center press-strong transition-transform shadow-md"
             aria-label="닫기"
           >
             <X size={20} className="text-text-sub" />

@@ -49,7 +49,7 @@ export default function MainError({
         <div className="flex gap-2">
           <button
             onClick={reset}
-            className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-white text-[13px] font-bold active:scale-[0.98] transition-transform"
+            className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-white text-[13px] font-bold press transition-transform"
             style={{
               background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
               boxShadow: "var(--shadow-primary)",
@@ -60,7 +60,7 @@ export default function MainError({
           </button>
           <Link
             href="/"
-            className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-bold active:scale-[0.98] transition-transform"
+            className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-bold press transition-transform"
             style={{
               backgroundColor: "#FFF",
               color: "var(--color-primary)",

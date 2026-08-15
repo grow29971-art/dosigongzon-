@@ -83,7 +83,7 @@ export default function BottomNav() {
               href={href}
               aria-label={wip ? `${label} (준비 중)` : label}
               aria-current={on ? "page" : undefined}
-              className="relative flex flex-1 min-w-0 flex-col items-center justify-center gap-0.5 px-0.5 active:scale-90 transition-transform"
+              className="relative flex flex-1 min-w-0 flex-col items-center justify-center gap-0.5 px-0.5 press-strong transition-transform"
             >
               <span className="relative">
                 <Icon

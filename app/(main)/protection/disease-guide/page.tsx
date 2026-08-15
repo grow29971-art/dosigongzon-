@@ -559,7 +559,7 @@ export default function DiseaseGuidePage() {
       <div className="flex items-center gap-2 mb-5">
         <Link
           href="/protection"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="보호지침으로"
         >
@@ -614,7 +614,7 @@ export default function DiseaseGuidePage() {
       </div>
 
       {/* 목차 */}
-      <nav aria-label="목차" className="rounded-2xl bg-white p-4 mb-6" style={{ border: "1px solid rgba(0,0,0,0.05)" }}>
+      <nav aria-label="목차" className="rounded-2xl bg-white p-4 mb-6" style={{ border: "1px solid var(--color-divider)" }}>
         <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
           <li><a href="#matrix" className="hover:underline">증상 → 의심 질병 매트릭스</a></li>
@@ -640,7 +640,7 @@ export default function DiseaseGuidePage() {
               className="rounded-xl p-3 flex items-start gap-3"
               style={{
                 background: "var(--color-surface-alt)",
-                border: "1px solid rgba(0,0,0,0.05)",
+                border: "1px solid var(--color-divider)",
               }}
             >
               <span style={{ fontSize: 24, lineHeight: 1 }} className="shrink-0">
@@ -929,7 +929,7 @@ export default function DiseaseGuidePage() {
             <details
               key={i}
               className="rounded-2xl bg-white p-4 group"
-              style={{ border: "1px solid rgba(0,0,0,0.05)" }}
+              style={{ border: "1px solid var(--color-divider)" }}
             >
               <summary className="cursor-pointer text-[13px] font-bold text-text-main">
                 Q. {q.name}
@@ -946,21 +946,21 @@ export default function DiseaseGuidePage() {
       <div className="flex gap-2 flex-wrap">
         <Link
           href="/protection/emergency-guide"
-          className="px-3 py-2 rounded-xl text-[13px] font-bold active:scale-95"
+          className="px-3 py-2 rounded-xl text-[13px] font-bold press-strong"
           style={{ background: "#FFF1E6", color: "var(--color-primary)", border: "1px solid rgba(173, 94, 59,0.25)" }}
         >
           응급 구조 가이드
         </Link>
         <Link
           href="/protection/pharmacy-guide"
-          className="px-3 py-2 rounded-xl text-[13px] font-bold active:scale-95"
+          className="px-3 py-2 rounded-xl text-[13px] font-bold press-strong"
           style={{ background: "#F4EDFA", color: "#8B65B8", border: "1px solid rgba(139,101,184,0.25)" }}
         >
           약품 가이드
         </Link>
         <Link
           href="/hospitals"
-          className="px-3 py-2 rounded-xl text-[13px] font-bold active:scale-95"
+          className="px-3 py-2 rounded-xl text-[13px] font-bold press-strong"
           style={{ background: "#E8F4E8", color: "var(--color-sage)", border: "1px solid rgba(107,142,111,0.25)" }}
         >
           가까운 병원 찾기

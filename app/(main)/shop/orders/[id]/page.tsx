@@ -48,7 +48,7 @@ const sectionStyle = {
   background: "var(--color-surface)",
   borderRadius: "var(--radius-card)",
   boxShadow: "var(--shadow-card)",
-  border: "1px solid rgba(0,0,0,0.04)",
+  border: "1px solid var(--color-divider)",
 } as const;
 
 export default function OrderDetailPage() {
@@ -151,7 +151,7 @@ export default function OrderDetailPage() {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <button
           onClick={() => router.back()}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="뒤로 가기"
         >
@@ -340,7 +340,7 @@ export default function OrderDetailPage() {
           {canRequestRefund && (
             <button
               onClick={() => { setReason("change_of_mind"); setNote(""); setRefundOpen(true); }}
-              className="w-full py-3 rounded-2xl text-[13px] font-bold active:scale-[0.98] transition-transform"
+              className="w-full py-3 rounded-2xl text-[13px] font-bold press transition-transform"
               style={{ background: "rgba(240,68,82,0.08)", color: "var(--color-error)", border: "1px solid rgba(240,68,82,0.2)" }}
             >
               {preShipment ? "주문 취소" : "환불 요청"}
@@ -373,7 +373,7 @@ export default function OrderDetailPage() {
                       style={{
                         background: reason === code ? "rgba(173,94,59,0.08)" : "var(--color-warm-white)",
                         color: reason === code ? "var(--color-primary)" : "var(--color-text-sub)",
-                        border: reason === code ? "1.5px solid rgba(173,94,59,0.4)" : "1px solid rgba(0,0,0,0.05)",
+                        border: reason === code ? "1.5px solid rgba(173,94,59,0.4)" : "1px solid var(--color-divider)",
                       }}
                     >
                       {REFUND_REASON_LABELS[code]}
@@ -387,7 +387,7 @@ export default function OrderDetailPage() {
                   maxLength={500}
                   rows={2}
                   className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none resize-none mb-3"
-                  style={{ background: "var(--color-warm-white)", border: "1px solid rgba(0,0,0,0.05)" }}
+                  style={{ background: "var(--color-warm-white)", border: "1px solid var(--color-divider)" }}
                 />
               </>
             )}

@@ -205,7 +205,7 @@ export default function AdminActivationPage() {
       <div className="flex items-center gap-3 mb-6">
         <Link
           href="/admin"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="어드민 홈"
         >
@@ -251,12 +251,12 @@ export default function AdminActivationPage() {
                   key={id}
                   type="button"
                   onClick={() => setSelected(isSelected ? null : id)}
-                  className="text-left rounded-2xl p-3.5 active:scale-[0.98] transition-transform"
+                  className="text-left rounded-2xl p-3.5 press transition-transform"
                   style={{
                     background: isSelected ? meta.bg : "#FFFFFF",
                     border: isSelected
                       ? `1.5px solid ${meta.color}`
-                      : "1px solid rgba(0,0,0,0.04)",
+                      : "1px solid var(--color-divider)",
                     boxShadow: isSelected
                       ? `0 6px 18px ${meta.color}22`
                       : "var(--shadow-card)",
@@ -328,7 +328,7 @@ export default function AdminActivationPage() {
                       </div>
                       <Link
                         href={`/messages?to=${u.id}`}
-                        className="shrink-0 flex items-center gap-1 px-3 py-1.5 chip-square text-[11px] font-bold active:scale-[0.97]"
+                        className="shrink-0 flex items-center gap-1 px-3 py-1.5 chip-square text-[11px] font-bold press-strong"
                         style={{
                           background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
                           color: "#fff",

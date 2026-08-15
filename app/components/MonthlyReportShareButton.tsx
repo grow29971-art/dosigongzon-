@@ -18,7 +18,7 @@ export default function MonthlyReportShareButton({ text }: { text: string }) {
   return (
     <button
       onClick={handleShare}
-      className="w-full flex items-center justify-center gap-2 py-3.5 active:scale-[0.98] transition-transform"
+      className="w-full flex items-center justify-center gap-2 py-3.5 press transition-transform"
       style={{
         background: "#5BA876",
         borderRadius: "var(--radius-input)",

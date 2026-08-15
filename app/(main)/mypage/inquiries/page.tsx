@@ -92,7 +92,7 @@ export default function MyInquiriesPage() {
       <div className="mb-5">
         <button
           onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 press-strong transition-transform"
         >
           <ArrowLeft size={14} />
           마이페이지
@@ -124,7 +124,7 @@ export default function MyInquiriesPage() {
       {showReportsPanel && reportsPanel && (
         <div
           className="mb-5 rounded-2xl bg-white overflow-hidden"
-          style={{ border: "1px solid rgba(0,0,0,0.05)", boxShadow: "var(--shadow-card)" }}
+          style={{ border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card)" }}
         >
           <div className="px-4 pt-3.5 pb-2">
             <div className="flex items-baseline gap-2">
@@ -132,13 +132,13 @@ export default function MyInquiriesPage() {
               <span className="text-[11px] text-text-sub ml-auto">{reportsPanel.headline}</span>
             </div>
           </div>
-          <div style={{ borderTop: "1px solid rgba(0,0,0,0.05)" }}>
+          <div style={{ borderTop: "1px solid var(--color-divider)" }}>
             {reportsPanel.items.map((it) => (
               <div
                 key={it.id}
                 className="px-4 py-3"
                 style={{
-                  borderBottom: "1px solid rgba(0,0,0,0.04)",
+                  borderBottom: "1px solid var(--color-divider)",
                   opacity: it.closed ? 0.65 : 1,
                 }}
               >
@@ -154,7 +154,7 @@ export default function MyInquiriesPage() {
       {items.length === 0 && (
         <div
           className="py-16 text-center rounded-2xl bg-white"
-          style={{ border: "1px solid rgba(0,0,0,0.05)" }}
+          style={{ border: "1px solid var(--color-divider)" }}
         >
           <MessageSquare size={36} strokeWidth={1.2} className="text-text-light mx-auto mb-3" />
           <p className="text-[15px] font-bold text-text-main mb-1">아직 접수한 문의가 없어요</p>
@@ -213,7 +213,7 @@ export default function MyInquiriesPage() {
               {expanded && (
                 <div
                   className="px-4 pb-4 pt-2 space-y-3"
-                  style={{ borderTop: "1px solid rgba(0,0,0,0.05)" }}
+                  style={{ borderTop: "1px solid var(--color-divider)" }}
                 >
                   {/* 내 문의 원본 */}
                   <div className="rounded-xl p-3" style={{ background: "var(--color-gray-50)" }}>

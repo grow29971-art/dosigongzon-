@@ -183,7 +183,7 @@ export default function CatLocationPicker({
         <button
           type="button"
           onClick={onCancel}
-          className="w-9 h-9 rounded-full bg-surface-alt flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-surface-alt flex items-center justify-center press-strong"
           aria-label="닫기"
         >
           <X size={18} className="text-text-sub" />
@@ -250,7 +250,7 @@ export default function CatLocationPicker({
           type="button"
           onClick={handleLocateMe}
           disabled={locating}
-          className="absolute bottom-4 right-4 z-10 w-11 h-11 rounded-full bg-white flex items-center justify-center active:scale-90 disabled:opacity-60"
+          className="absolute bottom-4 right-4 z-10 w-11 h-11 rounded-full bg-white flex items-center justify-center press-strong disabled:opacity-60"
           style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.18)" }}
           aria-label="내 위치"
         >
@@ -311,7 +311,7 @@ export default function CatLocationPicker({
             onConfirm({ lat, lng, region: region.trim() });
           }}
           disabled={!mapReady || !region.trim()}
-          className="w-full py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50"
+          className="w-full py-3.5 rounded-2xl flex items-center justify-center gap-2 press disabled:opacity-50"
           style={{
             background: "var(--color-primary)",
             color: "#fff",

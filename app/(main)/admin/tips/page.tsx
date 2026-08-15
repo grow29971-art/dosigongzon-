@@ -231,7 +231,7 @@ export default function AdminTipsPage() {
       <div className="mb-5">
         <button
           onClick={() => router.push("/admin")}
-          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 press-strong transition-transform"
         >
           <ArrowLeft size={14} />
           관리자
@@ -248,7 +248,7 @@ export default function AdminTipsPage() {
           </div>
           <button
             onClick={handleCreate}
-            className="w-11 h-11 rounded-full bg-primary flex items-center justify-center active:scale-95 transition-transform"
+            className="w-11 h-11 rounded-full bg-primary flex items-center justify-center press-strong transition-transform"
             style={{ boxShadow: "var(--shadow-primary)" }}
             aria-label="새 꿀팁 작성"
           >
@@ -274,7 +274,7 @@ export default function AdminTipsPage() {
             </h2>
             <button
               onClick={handleCancel}
-              className="w-7 h-7 rounded-lg flex items-center justify-center active:scale-90"
+              className="w-7 h-7 rounded-lg flex items-center justify-center press-strong"
               style={{ backgroundColor: "var(--color-gray-100)" }}
             >
               <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
@@ -320,12 +320,12 @@ export default function AdminTipsPage() {
                   src={draft.thumbnail_url}
                   alt=""
                   className="w-full aspect-[16/9] rounded-xl object-cover"
-                  style={{ border: "1px solid var(--color-gray-200)" }}
+                  style={{ border: "1px solid var(--color-border)" }}
                 />
                 <button
                   type="button"
                   onClick={handleImageClear}
-                  className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center active:scale-90"
+                  className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center press-strong"
                   style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}
                   aria-label="이미지 제거"
                 >
@@ -334,7 +334,7 @@ export default function AdminTipsPage() {
               </div>
             ) : (
               <label
-                className="flex flex-col items-center justify-center aspect-[16/9] rounded-xl cursor-pointer active:scale-[0.99] transition-transform"
+                className="flex flex-col items-center justify-center aspect-[16/9] rounded-xl cursor-pointer press transition-transform"
                 style={{
                   backgroundColor: "var(--color-gray-50)",
                   border: "1.5px dashed #C9BDAA",
@@ -383,7 +383,7 @@ export default function AdminTipsPage() {
             style={{
               backgroundColor: "var(--color-gray-50)",
               color: "#2A2A28",
-              border: "1px solid var(--color-gray-200)",
+              border: "1px solid var(--color-border)",
               fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, monospace",
               minHeight: 280,
             }}
@@ -464,7 +464,7 @@ export default function AdminTipsPage() {
             style={{
               backgroundColor: "var(--color-gray-50)",
               color: "#2A2A28",
-              border: "1px solid var(--color-gray-200)",
+              border: "1px solid var(--color-border)",
             }}
           />
 
@@ -478,7 +478,7 @@ export default function AdminTipsPage() {
             <button
               onClick={handleSave}
               disabled={saving || uploadingImage}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 active:scale-[0.97] transition-all"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 press-strong transition-all"
             >
               {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
               저장
@@ -510,7 +510,7 @@ export default function AdminTipsPage() {
                 background: "#FFFFFF",
                 borderRadius: "var(--radius-card)",
                 boxShadow: "var(--shadow-card)",
-                border: "1px solid rgba(0,0,0,0.04)",
+                border: "1px solid var(--color-divider)",
                 opacity: item.published ? 1 : 0.6,
               }}
             >
@@ -633,7 +633,7 @@ function Input({
       style={{
         backgroundColor: "var(--color-gray-50)",
         color: "#2A2A28",
-        border: "1px solid var(--color-gray-200)",
+        border: "1px solid var(--color-border)",
       }}
     />
   );

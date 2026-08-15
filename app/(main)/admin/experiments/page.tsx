@@ -165,7 +165,7 @@ export default function AdminExperimentsPage() {
           <button
             key={exp.id}
             onClick={() => openMetrics(exp.id)}
-            className="text-left rounded-2xl p-4 active:scale-[0.99] transition-transform"
+            className="text-left rounded-2xl p-4 press transition-transform"
             style={{
               background: "#fff",
               boxShadow: "var(--shadow-card)",

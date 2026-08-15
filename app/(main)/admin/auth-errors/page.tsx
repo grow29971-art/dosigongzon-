@@ -176,7 +176,7 @@ export default function AdminAuthErrorsPage() {
       <div className="mb-4">
         <button
           onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 active:scale-95 transition-transform"
+          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 press-strong transition-transform"
         >
           <ArrowLeft size={14} />
           마이페이지
@@ -200,7 +200,7 @@ export default function AdminAuthErrorsPage() {
               key={d}
               type="button"
               onClick={() => setDays(d)}
-              className="px-3 py-1.5 rounded-xl text-[11px] font-bold active:scale-95 shrink-0"
+              className="px-3 py-1.5 rounded-xl text-[11px] font-bold press-strong shrink-0"
               style={{
                 backgroundColor: days === d ? "#2C2C2C" : "rgba(255,255,255,0.95)",
                 color: days === d ? "#fff" : "#555",
@@ -215,7 +215,7 @@ export default function AdminAuthErrorsPage() {
           type="button"
           onClick={refresh}
           disabled={refreshing}
-          className="w-9 h-9 rounded-xl bg-white flex items-center justify-center active:scale-90 disabled:opacity-50"
+          className="w-9 h-9 rounded-xl bg-white flex items-center justify-center press-strong disabled:opacity-50"
           style={{ boxShadow: "var(--shadow-card)" }}
           aria-label="새로고침"
         >
@@ -228,7 +228,7 @@ export default function AdminAuthErrorsPage() {
         <button
           type="button"
           onClick={handlePurge}
-          className="w-9 h-9 rounded-xl bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-xl bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-card)" }}
           aria-label="오래된 로그 삭제"
         >
@@ -264,7 +264,7 @@ export default function AdminAuthErrorsPage() {
                   key={prov}
                   type="button"
                   onClick={() => setProviderFilter(providerFilter === prov ? null : (prov === "unknown" ? null : prov))}
-                  className="text-[11px] font-bold px-2 py-0.5 rounded-lg active:scale-95"
+                  className="text-[11px] font-bold px-2 py-0.5 rounded-lg press-strong"
                   style={{
                     backgroundColor: providerFilter === prov ? "#B84545" : "rgba(255,255,255,0.7)",
                     color: providerFilter === prov ? "#fff" : "#8B2F2F",
@@ -300,7 +300,7 @@ export default function AdminAuthErrorsPage() {
                   key={`${s.error_code}-${s.provider}`}
                   type="button"
                   onClick={() => setCodeFilter(active ? null : s.error_code)}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl active:scale-[0.99] text-left"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl press text-left"
                   style={{
                     backgroundColor: active ? "rgba(173, 94, 59,0.12)" : "#F7F4EE",
                     border: active ? "1px solid rgba(173, 94, 59,0.3)" : "1px solid transparent",
@@ -347,7 +347,7 @@ export default function AdminAuthErrorsPage() {
             <button
               type="button"
               onClick={() => setProviderFilter(null)}
-              className="text-[11px] font-bold px-2 py-1 rounded-lg active:scale-95"
+              className="text-[11px] font-bold px-2 py-1 rounded-lg press-strong"
               style={{ backgroundColor: "#E8B84A", color: "#fff" }}
             >
               provider: {providerFilter} ×
@@ -357,7 +357,7 @@ export default function AdminAuthErrorsPage() {
             <button
               type="button"
               onClick={() => setCodeFilter(null)}
-              className="text-[11px] font-bold px-2 py-1 rounded-lg active:scale-95"
+              className="text-[11px] font-bold px-2 py-1 rounded-lg press-strong"
               style={{ backgroundColor: "#E8B84A", color: "#fff" }}
             >
               code: {codeFilter} ×
@@ -391,7 +391,7 @@ export default function AdminAuthErrorsPage() {
               <div
                 key={log.id}
                 className="bg-white rounded-2xl overflow-hidden"
-                style={{ boxShadow: "var(--shadow-card)", border: "1px solid rgba(0,0,0,0.04)" }}
+                style={{ boxShadow: "var(--shadow-card)", border: "1px solid var(--color-divider)" }}
               >
                 <button
                   type="button"
@@ -448,7 +448,7 @@ export default function AdminAuthErrorsPage() {
                 {expanded && (
                   <div
                     className="px-3 pb-3 pt-1 text-[11px] space-y-1.5"
-                    style={{ borderTop: "1px solid rgba(0,0,0,0.05)" }}
+                    style={{ borderTop: "1px solid var(--color-divider)" }}
                   >
                     <Field label="시각" value={formatAbs(log.created_at)} />
                     <Field label="에러 코드" value={log.error_code ?? "(없음)"} mono />
@@ -460,7 +460,7 @@ export default function AdminAuthErrorsPage() {
                       <button
                         type="button"
                         onClick={() => handleDeleteOne(log.id)}
-                        className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold active:scale-95"
+                        className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold press-strong"
                         style={{ backgroundColor: "var(--color-error-soft)", color: "#B84545" }}
                       >
                         <Trash2 size={10} />

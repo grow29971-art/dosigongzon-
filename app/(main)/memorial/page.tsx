@@ -302,7 +302,7 @@ export default function MemorialPage() {
         <div className="flex items-center gap-2 py-3">
           <Link
             href="/map"
-            className="w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-transform"
+            className="w-10 h-10 rounded-full flex items-center justify-center press-strong transition-transform"
             style={{ background: "rgba(255,255,255,0.1)" }}
             aria-label="뒤로"
           >
@@ -430,7 +430,7 @@ export default function MemorialPage() {
                 <div className="flex items-center gap-2 mt-2">
                   <button
                     onClick={() => handleFlower(cat.id)}
-                    className="flex-1 h-[42px] rounded-xl flex items-center justify-center gap-1.5 text-[15px] font-semibold active:scale-[0.97] transition-transform"
+                    className="flex-1 h-[42px] rounded-xl flex items-center justify-center gap-1.5 text-[15px] font-semibold press-strong transition-transform"
                     style={{
                       background: flowered.has(cat.id) ? "rgba(255,233,168,0.92)" : "rgba(255,255,255,0.1)",
                       color: flowered.has(cat.id) ? "#3a2c4d" : "rgba(255,255,255,0.8)",
@@ -444,7 +444,7 @@ export default function MemorialPage() {
                   {canRestore && (
                     <button
                       onClick={() => handleRestore(cat)}
-                      className="h-[42px] px-4 rounded-xl flex items-center gap-1.5 text-[13px] active:scale-[0.97] transition-transform"
+                      className="h-[42px] px-4 rounded-xl flex items-center gap-1.5 text-[13px] press-strong transition-transform"
                       style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }}
                       title="다시 지도로"
                     >
@@ -457,7 +457,7 @@ export default function MemorialPage() {
                   {isAdmin && (
                     <button
                       onClick={() => { setDeleteTarget(cat); setDeleteText(""); }}
-                      className="w-[42px] h-[42px] rounded-xl flex items-center justify-center shrink-0 active:scale-[0.97] transition-transform"
+                      className="w-[42px] h-[42px] rounded-xl flex items-center justify-center shrink-0 press-strong transition-transform"
                       style={{ background: "rgba(216,85,85,0.16)", color: "rgba(255,150,150,0.9)" }}
                       aria-label={`${cat.name} 영구 삭제 (관리자)`}
                       title="영구 삭제 (관리자)"
@@ -526,7 +526,7 @@ export default function MemorialPage() {
               <button
                 onClick={() => void handleAdminDelete()}
                 disabled={deleting || deleteText.trim() !== deleteTarget.name}
-                className="w-full h-[50px] rounded-2xl mt-5 text-white text-[15px] font-bold active:scale-[0.98] transition-transform disabled:opacity-40"
+                className="w-full h-[50px] rounded-2xl mt-5 text-white text-[15px] font-bold press transition-transform disabled:opacity-40"
                 style={{ background: "#C94A4A" }}
               >
                 {deleting ? "삭제 중…" : "영구 삭제"}

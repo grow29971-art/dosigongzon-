@@ -372,7 +372,7 @@ export default function CirclePage() {
       <div className="px-4 pt-12 pb-3 flex items-center gap-2 sticky top-0 z-10" style={{ background: "#F7F4EE" }}>
         <Link
           href="/mypage"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="마이페이지로"
         >
@@ -596,7 +596,7 @@ export default function CirclePage() {
                       <button
                         onClick={() => handleRespond(inv, "accepted")}
                         disabled={busy === inv.id}
-                        className="px-3 py-2 rounded-xl text-[13px] font-bold text-white active:scale-95 disabled:opacity-50"
+                        className="px-3 py-2 rounded-xl text-[13px] font-bold text-white press-strong disabled:opacity-50"
                         style={{ background: "#6B8E6F" }}
                       >
                         <Check size={13} />
@@ -604,7 +604,7 @@ export default function CirclePage() {
                       <button
                         onClick={() => handleRespond(inv, "rejected")}
                         disabled={busy === inv.id}
-                        className="px-3 py-2 rounded-xl text-[13px] font-bold active:scale-95 disabled:opacity-50"
+                        className="px-3 py-2 rounded-xl text-[13px] font-bold press-strong disabled:opacity-50"
                         style={{ background: "var(--color-gray-100)", color: "#8B7562" }}
                       >
                         <X size={13} />
@@ -625,7 +625,7 @@ export default function CirclePage() {
               </div>
               <Link
                 href={`/circle/${myCircleId}/chat`}
-                className="w-full block rounded-2xl p-4 active:scale-[0.99] transition-transform"
+                className="w-full block rounded-2xl p-4 press transition-transform"
                 style={{
                   background: "linear-gradient(135deg, #FFF9F2 0%, #FCEFD9 100%)",
                   border: "1px solid rgba(173, 94, 59,0.22)",
@@ -662,7 +662,7 @@ export default function CirclePage() {
                           <Link
                             key={c.circle_id}
                             href={`/circle/${c.circle_id}/chat`}
-                            className="flex items-center gap-3 p-3 rounded-xl bg-white active:scale-[0.99]"
+                            className="flex items-center gap-3 p-3 rounded-xl bg-white press"
                             style={{ boxShadow: "var(--shadow-card-sm)", border: "1px solid #F0E6D8" }}
                           >
                             <Avatar url={c.owner_avatar_url} size={36} />
@@ -709,7 +709,7 @@ export default function CirclePage() {
               <div className="flex gap-2">
                 <button
                   onClick={handleKakaoShare}
-                  className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold active:scale-95"
+                  className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold press-strong"
                   style={{ background: "#FEE500", color: "#191919" }}
                 >
                   <svg width="14" height="14" viewBox="0 0 18 18" aria-hidden="true">
@@ -719,7 +719,7 @@ export default function CirclePage() {
                 </button>
                 <button
                   onClick={handleCopyInviteUrl}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold active:scale-95"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold press-strong"
                   style={{ background: "#FFFFFF", color: "#6B5916", border: "1px solid rgba(254,229,0,0.5)" }}
                 >
                   {copied ? <Check size={12} /> : <Copy size={12} />}
@@ -756,7 +756,7 @@ export default function CirclePage() {
                 <button
                   onClick={handleSearch}
                   disabled={searching || searchQuery.trim().length < 2}
-                  className="px-4 py-2 rounded-xl bg-primary text-white text-[13px] font-bold active:scale-95 disabled:opacity-40"
+                  className="px-4 py-2 rounded-xl bg-primary text-white text-[13px] font-bold press-strong disabled:opacity-40"
                 >
                   {searching ? <Loader2 size={13} className="animate-spin" /> : "검색"}
                 </button>
@@ -776,7 +776,7 @@ export default function CirclePage() {
                       <button
                         onClick={() => handleInvite(r)}
                         disabled={busy === r.id}
-                        className="px-3 py-1.5 rounded-lg text-[13px] font-bold text-white active:scale-95 disabled:opacity-50"
+                        className="px-3 py-1.5 rounded-lg text-[13px] font-bold text-white press-strong disabled:opacity-50"
                         style={{ background: "#4A7BA8" }}
                       >
                         {busy === r.id ? <Loader2 size={11} className="animate-spin" /> : "초대"}
@@ -881,7 +881,7 @@ function MemberRow({
       <button
         onClick={onRemove}
         disabled={busy}
-        className="px-3 py-2 rounded-xl text-[13px] font-bold active:scale-95 disabled:opacity-50"
+        className="px-3 py-2 rounded-xl text-[13px] font-bold press-strong disabled:opacity-50"
         style={{ background: "var(--color-gray-100)", color: "#8B7562" }}
       >
         {busy ? <Loader2 size={12} className="animate-spin" /> : "내보내기"}

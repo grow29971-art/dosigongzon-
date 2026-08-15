@@ -98,7 +98,7 @@ export default async function MemorialCatPage({
         <div className="flex items-center py-3">
           <Link
             href="/memorial"
-            className="w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-transform"
+            className="w-10 h-10 rounded-full flex items-center justify-center press-strong transition-transform"
             style={{ background: "rgba(255,255,255,0.1)" }}
             aria-label="고양이별로"
           >

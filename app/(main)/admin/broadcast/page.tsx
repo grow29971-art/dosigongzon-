@@ -289,7 +289,7 @@ export default function AdminBroadcastPage() {
       <div className="flex items-center gap-3 mb-6">
         <Link
           href="/admin"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center active:scale-90"
+          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
           style={{ boxShadow: "var(--shadow-raised)" }}
           aria-label="어드민 홈"
         >
@@ -320,10 +320,10 @@ export default function AdminBroadcastPage() {
                 key={c.id}
                 type="button"
                 onClick={() => setCohort(c.id)}
-                className="text-left rounded-2xl p-3 active:scale-[0.98] transition-transform"
+                className="text-left rounded-2xl p-3 press transition-transform"
                 style={{
                   background: selected ? `${c.color}10` : "#FFFFFF",
-                  border: selected ? `1.5px solid ${c.color}` : "1px solid rgba(0,0,0,0.04)",
+                  border: selected ? `1.5px solid ${c.color}` : "1px solid var(--color-divider)",
                   boxShadow: selected
                     ? `0 4px 12px ${c.color}22`
                     : "0 2px 6px rgba(0,0,0,0.04)",
@@ -355,7 +355,7 @@ export default function AdminBroadcastPage() {
               key={t.label}
               type="button"
               onClick={() => setMessage(t.text)}
-              className="text-[11px] px-3 py-1.5 chip-square font-semibold active:scale-[0.97]"
+              className="text-[11px] px-3 py-1.5 chip-square font-semibold press-strong"
               style={{
                 background: "rgba(173, 94, 59,0.10)",
                 color: "var(--color-primary-dark)",
@@ -381,7 +381,7 @@ export default function AdminBroadcastPage() {
           placeholder="안녕하세요, 도시공존 운영자입니다..."
           className="w-full rounded-2xl bg-white p-4 text-[15px] leading-relaxed resize-none"
           style={{
-            border: "1px solid rgba(0,0,0,0.06)",
+            border: "1px solid var(--color-divider)",
             boxShadow: "inset 0 1px 2px rgba(0,0,0,0.02)",
             color: "#3D2F25",
           }}
@@ -411,7 +411,7 @@ export default function AdminBroadcastPage() {
         type="button"
         onClick={handleTestSend}
         disabled={sending || !message.trim()}
-        className="w-full mb-2.5 flex items-center justify-center gap-2 py-3 rounded-2xl text-[13px] font-bold active:scale-[0.98] disabled:opacity-60"
+        className="w-full mb-2.5 flex items-center justify-center gap-2 py-3 rounded-2xl text-[13px] font-bold press disabled:opacity-60"
         style={{
           background: "#FFFFFF",
           color: "var(--color-primary-dark)",
@@ -427,7 +427,7 @@ export default function AdminBroadcastPage() {
         type="button"
         onClick={handleSend}
         disabled={sending || !message.trim()}
-        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[15px] font-bold active:scale-[0.98] disabled:opacity-60"
+        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[15px] font-bold press disabled:opacity-60"
         style={{
           background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
           boxShadow: "var(--shadow-primary)",

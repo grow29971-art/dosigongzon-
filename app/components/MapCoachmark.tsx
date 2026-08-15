@@ -67,7 +67,7 @@ export default function MapCoachmark({ hasMyCat, isLoggedIn }: Props) {
           <button
             type="button"
             onClick={dismiss}
-            className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full flex items-center justify-center active:scale-90"
+            className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full flex items-center justify-center press-strong"
             style={{ background: "rgba(0,0,0,0.05)" }}
             aria-label="닫기"
           >

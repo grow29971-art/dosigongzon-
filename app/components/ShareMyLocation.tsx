@@ -126,7 +126,7 @@ export default function ShareMyLocation() {
         <button
           onClick={getLocation}
           disabled={locating}
-          className="w-full rounded-xl py-3 text-[15px] font-bold text-white active:scale-95 transition-transform flex items-center justify-center gap-1.5 disabled:opacity-60"
+          className="w-full rounded-xl py-3 text-[15px] font-bold text-white press-strong transition-transform flex items-center justify-center gap-1.5 disabled:opacity-60"
           style={{ backgroundColor: "var(--color-primary)" }}
         >
           {locating ? (<><Loader2 size={15} className="animate-spin" /> 위치 확인 중…</>) : "지금 위치 링크 만들기"}
@@ -135,7 +135,7 @@ export default function ShareMyLocation() {
         <div className="space-y-2">
           <button
             onClick={shareViaSheet}
-            className="w-full rounded-xl py-3 text-[15px] font-bold text-white active:scale-95 transition-transform flex items-center justify-center gap-1.5"
+            className="w-full rounded-xl py-3 text-[15px] font-bold text-white press-strong transition-transform flex items-center justify-center gap-1.5"
             style={{ backgroundColor: "var(--color-primary)" }}
           >
             <Share2 size={15} /> 공유로 보내기 (카톡·문자 등)
@@ -144,7 +144,7 @@ export default function ShareMyLocation() {
             <a
               key={`${g.phone}-${i}`}
               href={smsHref(g.phone, shareText)}
-              className="w-full rounded-xl py-3 text-[15px] font-bold active:scale-95 transition-transform flex items-center justify-center gap-1.5"
+              className="w-full rounded-xl py-3 text-[15px] font-bold press-strong transition-transform flex items-center justify-center gap-1.5"
               style={{ backgroundColor: "#fff", color: "var(--color-text-main)", border: "1px solid var(--color-divider)" }}
             >
               <MessageSquare size={15} className="text-primary" /> {g.name}에게 문자 보내기
@@ -165,7 +165,7 @@ export default function ShareMyLocation() {
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-bold text-text-sub">보호 연락처 (내 폰에만 저장 · 최대 {MAX_GUARDIANS}명)</span>
           {guardians.length < MAX_GUARDIANS && (
-            <button onClick={() => setAddOpen((v) => !v)} className="text-[11px] font-bold text-primary flex items-center gap-0.5 active:scale-95">
+            <button onClick={() => setAddOpen((v) => !v)} className="text-[11px] font-bold text-primary flex items-center gap-0.5 press-strong">
               <Plus size={12} /> 추가
             </button>
           )}
@@ -176,7 +176,7 @@ export default function ShareMyLocation() {
         {guardians.map((g, i) => (
           <div key={`${g.phone}-list-${i}`} className="flex items-center justify-between mt-1.5">
             <span className="text-[13px] text-text-main font-semibold">{g.name} <span className="text-text-light font-normal">{g.phone}</span></span>
-            <button onClick={() => removeGuardian(i)} className="p-1.5 active:scale-90" aria-label={`${g.name} 삭제`}>
+            <button onClick={() => removeGuardian(i)} className="p-1.5 press-strong" aria-label={`${g.name} 삭제`}>
               <Trash2 size={13} className="text-text-light" />
             </button>
           </div>
@@ -191,7 +191,7 @@ export default function ShareMyLocation() {
               value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="전화번호" inputMode="tel"
               className="flex-1 px-2.5 py-2 rounded-lg text-[13px] outline-none bg-white" maxLength={16}
             />
-            <button onClick={addGuardian} className="px-3 rounded-lg text-[13px] font-bold text-white active:scale-95" style={{ backgroundColor: "var(--color-primary)" }}>
+            <button onClick={addGuardian} className="px-3 rounded-lg text-[13px] font-bold text-white press-strong" style={{ backgroundColor: "var(--color-primary)" }}>
               저장
             </button>
           </div>

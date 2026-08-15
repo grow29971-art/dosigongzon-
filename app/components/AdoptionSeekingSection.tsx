@@ -60,7 +60,7 @@ export default async function AdoptionSeekingSection() {
             <Link
               key={c.id}
               href={`/cats/${c.id}`}
-              className="block rounded-2xl overflow-hidden bg-white active:scale-[0.97] transition-transform"
+              className="block rounded-2xl overflow-hidden bg-white press-strong transition-transform"
               style={{ boxShadow: "var(--shadow-card)" }}
             >
               <div className="relative" style={{ aspectRatio: "1 / 1" }}>
