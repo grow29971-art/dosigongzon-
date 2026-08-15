@@ -1,26 +1,40 @@
 "use client";
 
 // 진행 중인 길고양이 관련 청원 링크 카드 (2026-08-15, 사장님 지시로 7/22 기각 결정 번복)
-// 시스템이 아니라 큐레이션 리스트: 새 청원은 PETITIONS에 한 줄 추가, 마감 지나면 자동 숨김.
-// 카피는 중립 유지(특정 입장 유도 금지 — 7/22 회의 리스크 회피). 전체 카드는 SHOW_PETITION 플래그로 롤백.
+// 국회 국민동의청원은 /api/petitions(1시간 ISR 프록시, 8/4 오삭제됐던 라우트 복원)로 실시간 자동 수집,
+// 국회 밖 청원(청원24 등)은 MANUAL_PETITIONS에 한 줄 추가 — 마감 지나면 자동 숨김.
+// 7/22 회의 하한선 준수: 서명·동의 수집 없음, 카피 중립, 정렬은 마감임박순(진영 부스팅 방지).
+// 전체 카드는 홈의 SHOW_PETITION 플래그로 롤백.
 
+import { useEffect, useState } from "react";
 import { ExternalLink, Megaphone } from "lucide-react";
 
-interface Petition {
+interface DisplayPetition {
+  key: string;
   title: string;
-  org: string; // 플랫폼·단계 표기
+  sub: string; // 플랫폼·동의수 등 부가 정보 (D-day 제외)
   url: string;
-  until: string; // YYYY-MM-DD (마감일, 이날까지 노출)
+  until: string; // YYYY-MM-DD
 }
 
-const PETITIONS: Petition[] = [
+const MANUAL_PETITIONS: DisplayPetition[] = [
   {
+    key: "cheongwon-14",
     title: "동물보호법 시행규칙 제14조 길고양이 구조·보호조치 예외 규정 삭제 등 촉구",
-    org: "청원24 · 의견수렴 중",
+    sub: "청원24 · 의견수렴 중",
     url: "https://www.cheongwon.go.kr/portal/petition/open/viewdetail/PRIb51350afcaa743f1a6e247ab051e3927",
     until: "2026-08-21",
   },
 ];
+
+interface ApiPetition {
+  id: string;
+  title: string;
+  agreeCount: number;
+  goal: number;
+  endDate: string;
+  url: string;
+}
 
 function kstToday(): string {
   return new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
@@ -31,8 +45,32 @@ function dday(until: string, today: string): number {
 }
 
 export default function PetitionSection() {
+  const [assembly, setAssembly] = useState<DisplayPetition[]>([]);
+
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/petitions")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: { petitions?: ApiPetition[] } | null) => {
+        if (!alive || !data?.petitions) return;
+        setAssembly(
+          data.petitions.map((p) => ({
+            key: p.id,
+            title: p.title,
+            sub: `국회 국민동의청원 · ${p.agreeCount.toLocaleString()}명 동의`,
+            url: p.url,
+            until: p.endDate,
+          })),
+        );
+      })
+      .catch(() => { /* 국회 API 장애 — 수동 목록만 노출 */ });
+    return () => { alive = false; };
+  }, []);
+
   const today = kstToday();
-  const active = PETITIONS.filter((p) => p.until >= today);
+  const active = [...MANUAL_PETITIONS, ...assembly]
+    .filter((p) => p.until >= today)
+    .sort((a, b) => a.until.localeCompare(b.until)); // 마감임박순 (7/23 중립 정렬 결정)
   if (active.length === 0) return null;
 
   return (
@@ -45,7 +83,7 @@ export default function PetitionSection() {
           const d = dday(p.until, today);
           return (
             <a
-              key={p.url}
+              key={p.key}
               href={p.url}
               target="_blank"
               rel="noopener noreferrer"
@@ -61,7 +99,7 @@ export default function PetitionSection() {
               <div className="flex-1 min-w-0">
                 <p className="text-[13px] font-semibold text-text-main leading-snug line-clamp-2">{p.title}</p>
                 <p className="text-[11px] text-text-light mt-0.5">
-                  {p.org} · {d === 0 ? "오늘 마감" : `D-${d}`}
+                  {p.sub} · {d === 0 ? "오늘 마감" : `D-${d}`}
                 </p>
               </div>
               <ExternalLink size={14} className="shrink-0 text-text-muted" />
