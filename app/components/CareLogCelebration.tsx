@@ -108,7 +108,7 @@ export default function CareLogCelebration({
               className="w-16 h-16 rounded-full flex items-center justify-center"
               style={{
                 background: "#FF9A3C",
-                boxShadow: "0 8px 24px rgba(232,101,42,0.4)",
+                boxShadow: "var(--shadow-fab)",
               }}
             >
               <Heart size={28} color="#fff" fill="#fff" strokeWidth={0} />

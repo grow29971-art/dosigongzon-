@@ -126,7 +126,7 @@ export default function AdminPharmacyGuidePage() {
 
       {/* 편집 폼 */}
       {editingId && (
-        <div className="mb-5 p-4" style={{ background: "#FFFFFF", borderRadius: "var(--radius-card)", boxShadow: "0 8px 24px rgba(173, 94, 59,0.14)", border: "1.5px solid rgba(173, 94, 59,0.2)" }}>
+        <div className="mb-5 p-4" style={{ background: "#FFFFFF", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1.5px solid rgba(173, 94, 59,0.2)" }}>
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-[15px] font-bold text-text-main">{editingId === "new" ? "새 약품 추가" : "약품 수정"}</h2>
             <button onClick={handleCancel} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--color-gray-100)" }}>

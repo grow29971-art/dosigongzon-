@@ -33,7 +33,7 @@ export default function ErrorPage({
         className="w-full max-w-md rounded-[28px] text-center relative overflow-hidden"
         style={{
           background: "#FFFFFF",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.08)",
+          boxShadow: "var(--shadow-fab)",
           padding: "48px 32px 36px",
         }}
       >

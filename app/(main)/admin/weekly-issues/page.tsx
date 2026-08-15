@@ -196,7 +196,7 @@ export default function AdminWeeklyIssuesPage() {
           style={{
             background: "#FFFFFF",
             borderRadius: "var(--radius-card)",
-            boxShadow: "0 8px 24px rgba(173, 94, 59,0.14), 0 1px 3px rgba(0,0,0,0.03)",
+            boxShadow: "var(--shadow-card)",
             border: "1.5px solid rgba(173, 94, 59,0.2)",
           }}
         >

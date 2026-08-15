@@ -98,7 +98,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
           className="rounded-3xl p-5"
           style={{
             background: "#FFFFFF",
-            boxShadow: "0 8px 24px rgba(173, 94, 59,0.15)",
+            boxShadow: "var(--shadow-card)",
             border: "1px solid var(--color-primary-soft)",
           }}
         >
@@ -141,7 +141,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                   style={{
                     background: "#FFD93D",
                     color: "#fff",
-                    boxShadow: "0 2px 6px rgba(255,170,0,0.3)",
+                    boxShadow: "var(--shadow-raised)",
                   }}
                 >
                   {level.emoji} Lv.{level.level} {level.title}

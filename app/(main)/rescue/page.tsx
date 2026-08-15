@@ -61,7 +61,7 @@ export default async function RescuePage() {
           className="rounded-2xl px-4 py-3 flex items-center gap-3"
           style={{
             background: "#FFFFFF",
-            boxShadow: "0 4px 14px rgba(216,85,85,0.12)",
+            boxShadow: "var(--shadow-fab)",
             border: "1px solid rgba(216,85,85,0.18)",
           }}
         >
@@ -120,7 +120,7 @@ export default async function RescuePage() {
                     className="rounded-2xl overflow-hidden flex gap-3"
                     style={{
                       background: "#FFFFFF",
-                      boxShadow: "0 4px 14px rgba(216,85,85,0.08)",
+                      boxShadow: "var(--shadow-fab)",
                       border: "1.5px solid #D8555525",
                     }}
                   >

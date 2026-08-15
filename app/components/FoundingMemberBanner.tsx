@@ -61,7 +61,7 @@ export default function FoundingMemberBanner() {
       style={{
         background: "#FFF6E8",
         border: "1.5px solid rgba(173, 94, 59,0.25)",
-        boxShadow: "0 4px 14px rgba(173, 94, 59,0.12)",
+        boxShadow: "var(--shadow-card)",
       }}
     >
       <button

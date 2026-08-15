@@ -155,7 +155,7 @@ export default function InviteSection() {
               style={{
                 backgroundColor: "#FEE500",
                 color: "#191919",
-                boxShadow: "0 4px 12px rgba(254,229,0,0.35)",
+                boxShadow: "var(--shadow-raised)",
               }}
             >
               <Share2 size={14} />

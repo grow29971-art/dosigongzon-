@@ -77,7 +77,7 @@ export default function DailyCatBox() {
           borderRadius: "var(--radius-card)",
           padding: "14px 16px",
           border: "1px solid rgba(173, 94, 59,0.22)",
-          boxShadow: "0 4px 14px rgba(173, 94, 59,0.14)",
+          boxShadow: "var(--shadow-card)",
         }}
       >
         <div className="flex items-center gap-3">

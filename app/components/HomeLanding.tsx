@@ -638,7 +638,7 @@ export default async function HomeLanding({
                         : idx === 1
                         ? "var(--color-gray-400)"
                         : "var(--color-primary-dark)",
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+                    boxShadow: "var(--shadow-raised)",
                   }}
                 >
                   {idx + 1}

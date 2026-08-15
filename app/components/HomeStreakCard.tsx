@@ -80,7 +80,7 @@ export default function HomeStreakCard({
             className="absolute -top-2 right-4 px-2.5 py-1 rounded-full flex items-center gap-1"
             style={{
               background: "#E85555",
-              boxShadow: "0 4px 10px rgba(216,85,85,0.45)",
+              boxShadow: "var(--shadow-raised)",
             }}
           >
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#FFF" }} />

@@ -629,7 +629,7 @@ export default function CirclePage() {
                 style={{
                   background: "#FFF9F2",
                   border: "1px solid rgba(173, 94, 59,0.22)",
-                  boxShadow: "0 2px 10px rgba(173, 94, 59,0.10)",
+                  boxShadow: "var(--shadow-card)",
                 }}
               >
                 <div className="flex items-center gap-3">

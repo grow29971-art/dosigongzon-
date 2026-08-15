@@ -18,7 +18,7 @@ export default function AIChatCard() {
         style={{
           background: "#FFFFFF",
           borderRadius: "var(--radius-card)",
-          boxShadow: "0 6px 20px rgba(173, 94, 59,0.10), 0 1px 3px rgba(0,0,0,0.03)",
+          boxShadow: "var(--shadow-card)",
           border: "1px solid var(--color-divider)",
         }}
       >

@@ -346,7 +346,7 @@ export default function MyPage() {
                 style={{
                   background: "var(--color-surface)",
                   border: "2px solid var(--color-surface)",
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+                  boxShadow: "var(--shadow-raised)",
                 }}
               >
                 {avatarUploading ? (

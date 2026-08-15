@@ -100,7 +100,7 @@ export default function StreakFreezeButton({ streak, hasToday, onUsed }: Props) 
             className="flex-1 py-2 rounded-xl text-[11px] font-bold text-white press-strong disabled:opacity-60 flex items-center justify-center gap-1"
             style={{
               background: "#4A7BA8",
-              boxShadow: "0 2px 8px rgba(74,123,168,0.35)",
+              boxShadow: "var(--shadow-raised)",
             }}
           >
             {busy ? <Loader2 size={12} className="animate-spin" /> : <Snowflake size={12} />}

@@ -436,7 +436,7 @@ export default function AddCatModal({
         <div className="relative flex items-center justify-between px-5 py-3 border-b border-white/12">
           <div className="flex items-center gap-2.5">
             <span className="w-8 h-8 rounded-xl flex items-center justify-center text-[17px] shrink-0"
-              style={{ background: "#6366F1", boxShadow: "0 2px 10px rgba(99,102,241,0.5)" }}>
+              style={{ background: "#6366F1", boxShadow: "var(--shadow-raised)" }}>
               <Plus size={16} className="text-white" />
             </span>
             <div>

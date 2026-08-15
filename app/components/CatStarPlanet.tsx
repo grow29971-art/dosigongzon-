@@ -67,7 +67,7 @@ export default function CatStarPlanet({ size = 150, companions = 0 }: Props) {
             marginTop: -ringH / 2,
             transform: "rotate(-17deg)",
             border: `${Math.max(2, size * 0.022)}px solid rgba(255,224,180,0.30)`,
-            boxShadow: "0 0 18px rgba(255,224,180,0.18)",
+            boxShadow: "var(--shadow-raised)",
             clipPath: "inset(0 0 50% 0)",
           }}
         />
@@ -132,7 +132,7 @@ export default function CatStarPlanet({ size = 150, companions = 0 }: Props) {
             marginTop: -ringH / 2,
             transform: "rotate(-17deg)",
             border: `${Math.max(2, size * 0.022)}px solid rgba(255,224,180,0.42)`,
-            boxShadow: "0 0 14px rgba(255,224,180,0.22)",
+            boxShadow: "var(--shadow-raised)",
             clipPath: "inset(50% 0 0 0)",
           }}
         />
@@ -148,7 +148,7 @@ export default function CatStarPlanet({ size = 150, companions = 0 }: Props) {
               width: d.s,
               height: d.s,
               background: "#FFE9A8",
-              boxShadow: "0 0 6px rgba(255,233,168,0.9)",
+              boxShadow: "var(--shadow-raised)",
               animation: `planetDot 3.4s ease-in-out ${d.d}s infinite`,
             }}
           />

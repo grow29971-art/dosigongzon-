@@ -238,7 +238,7 @@ export default async function SidoLandingPage({ params }: { params: Params }) {
             style={{
               background: "#FFF6E8",
               border: "1.5px solid rgba(173, 94, 59,0.30)",
-              boxShadow: "0 6px 18px rgba(173, 94, 59,0.18)",
+              boxShadow: "var(--shadow-card)",
             }}
           >
             <div

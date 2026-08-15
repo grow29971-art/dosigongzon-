@@ -57,7 +57,7 @@ export default function SocialProofStrip() {
         className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
         style={{
           background: "#E88D5A",
-          boxShadow: "0 4px 12px rgba(232,141,90,0.35)",
+          boxShadow: "var(--shadow-raised)",
         }}
       >
         {activeCaretakersToday > 0 ? (

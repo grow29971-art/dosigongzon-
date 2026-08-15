@@ -78,7 +78,7 @@ export default function MyCatsQuickCare() {
         background: "#FFF6E8",
         borderRadius: "var(--radius-card)",
         border: "1px solid rgba(232,141,90,0.25)",
-        boxShadow: "0 4px 14px rgba(232,141,90,0.1)",
+        boxShadow: "var(--shadow-fab)",
       }}
     >
       <div className="flex items-center justify-between mb-2.5">

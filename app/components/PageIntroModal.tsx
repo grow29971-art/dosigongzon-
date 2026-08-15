@@ -82,7 +82,7 @@ export default function PageIntroModal({
           bottom: "calc(5.5rem + env(safe-area-inset-bottom))",
           background: "rgba(255,255,255,0.95)",
           color: "var(--color-text-light)",
-          boxShadow: "0 3px 12px rgba(0,0,0,0.15)",
+          boxShadow: "var(--shadow-raised)",
           border: "1px solid var(--color-divider)",
         }}
         aria-label="이용안내 다시 보기"

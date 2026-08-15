@@ -54,7 +54,7 @@ export default function SquareToggle({
           transform: `translate(${checked ? travel : 0}px, -50%)`,
           borderRadius: "var(--radius-square-sm)", // 원형이 아니라 라운드 사각 (시그니처)
           background: "#fff",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.25)",
+          boxShadow: "var(--shadow-raised)",
           transition: "transform 0.18s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       />

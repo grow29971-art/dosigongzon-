@@ -205,7 +205,7 @@ export default function CircleJoinPage() {
               className="flex-[1.5] py-3 rounded-2xl text-[15px] font-bold text-white press-strong disabled:opacity-50"
               style={{
                 background: "#4F6B53",
-                boxShadow: "0 4px 12px rgba(79,107,83,0.3)",
+                boxShadow: "var(--shadow-raised)",
               }}
             >
               {busy ? <Loader2 size={14} className="animate-spin inline" /> : <Check size={14} className="inline mr-1" />}

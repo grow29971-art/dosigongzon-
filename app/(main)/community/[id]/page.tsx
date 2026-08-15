@@ -474,7 +474,7 @@ export default function PostDetailPage({
               style={{
                 backgroundColor: "#FEE500",
                 color: "#3C1E1E",
-                boxShadow: "0 2px 6px rgba(254,229,0,0.45)",
+                boxShadow: "var(--shadow-raised)",
               }}
               aria-label="카카오톡으로 공유"
             >

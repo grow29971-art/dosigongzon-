@@ -66,7 +66,7 @@ export default async function PublicHeader() {
               className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] font-bold press-strong transition-transform text-white"
               style={{
                 background: "var(--color-primary)",
-                boxShadow: "0 2px 8px rgba(173, 94, 59,0.35)",
+                boxShadow: "var(--shadow-card)",
               }}
             >
               시작하기

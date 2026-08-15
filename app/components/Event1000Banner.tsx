@@ -90,7 +90,7 @@ export default async function Event1000Banner() {
                 style={{
                   width: `${percent}%`,
                   background: "#FFFFFF",
-                  boxShadow: "0 0 8px rgba(255,255,255,0.6)",
+                  boxShadow: "var(--shadow-raised)",
                 }}
               />
             </div>

@@ -22,7 +22,7 @@ export default function MonthlyReportShareButton({ text }: { text: string }) {
       style={{
         background: "#5BA876",
         borderRadius: "var(--radius-input)",
-        boxShadow: "0 4px 14px rgba(91,168,118,0.30)",
+        boxShadow: "var(--shadow-fab)",
       }}
     >
       <Share2 size={16} color="#fff" strokeWidth={2.2} />

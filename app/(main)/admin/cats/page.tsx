@@ -301,7 +301,7 @@ export default function AdminCatsPage() {
             onClick={handleBulkDelete}
             disabled={working}
             className="w-full py-3.5 rounded-2xl text-white text-[15px] font-bold press transition-transform disabled:opacity-50 flex items-center justify-center gap-2"
-            style={{ background: "#D85555", boxShadow: "0 6px 20px rgba(216,85,85,0.3)" }}
+            style={{ background: "#D85555", boxShadow: "var(--shadow-fab)" }}
           >
             {working ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
             선택한 {selected.size}마리 삭제

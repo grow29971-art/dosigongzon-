@@ -637,7 +637,7 @@ export default function ActivityRegionsPage() {
             type="button"
             onClick={handleLocateMe}
             className="absolute bottom-3 right-3 z-10 w-10 h-10 rounded-full bg-white flex items-center justify-center press-strong"
-            style={{ boxShadow: "0 2px 10px rgba(0,0,0,0.15)" }}
+            style={{ boxShadow: "var(--shadow-raised)" }}
             aria-label="내 위치"
           >
             <LocateFixed size={18} style={{ color: SLOT_COLORS[activeSlot] }} />

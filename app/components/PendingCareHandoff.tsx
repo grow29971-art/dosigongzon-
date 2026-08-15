@@ -123,7 +123,7 @@ export default function PendingCareHandoff() {
       style={{
         background: "#4A3527",
         borderRadius: "var(--radius-card)",
-        boxShadow: "0 10px 28px rgba(122,82,56,0.35)",
+        boxShadow: "var(--shadow-fab)",
       }}
     >
       {phase !== "done" && (
@@ -141,7 +141,7 @@ export default function PendingCareHandoff() {
         <Link href={`/cats/${cat.id}`} className="shrink-0 press-strong transition-transform">
           <div
             className="w-16 h-16 rounded-2xl overflow-hidden"
-            style={{ border: "2px solid rgba(255,255,255,0.35)", boxShadow: "0 4px 14px rgba(0,0,0,0.25)" }}
+            style={{ border: "2px solid rgba(255,255,255,0.35)", boxShadow: "var(--shadow-fab)" }}
           >
             {thumb ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -205,7 +205,7 @@ export default function PendingCareHandoff() {
             style={{
               background: "#FFF7C4",
               color: "#4A3527",
-              boxShadow: "0 6px 16px rgba(232,176,64,0.35)",
+              boxShadow: "var(--shadow-fab)",
               opacity: phase === "busy" ? 0.7 : 1,
             }}
           >

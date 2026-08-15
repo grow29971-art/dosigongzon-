@@ -766,7 +766,7 @@ export default function HomeAuthed({
                           className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 rounded-full flex items-center justify-center text-[9px] font-bold text-white"
                           style={{
                             background: "var(--color-error)",
-                            boxShadow: "0 2px 6px rgba(240,68,82,0.4)",
+                            boxShadow: "var(--shadow-raised)",
                           }}
                         >
                           {unreadCount > 99 ? "99+" : unreadCount}
@@ -1517,7 +1517,7 @@ export default function HomeAuthed({
               background: "var(--color-warning-soft)",
               borderRadius: "var(--radius-card)",
               border: "1px solid rgba(232,176,64,0.25)",
-              boxShadow: "0 4px 14px rgba(232,176,64,0.15)",
+              boxShadow: "var(--shadow-fab)",
             }}
           >
             <div className="space-y-2.5">
@@ -1620,7 +1620,7 @@ export default function HomeAuthed({
                         : idx === 2
                         ? "var(--color-primary-light)"
                         : "rgba(44,44,44,0.7)",
-                      boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                      boxShadow: "var(--shadow-raised)",
                     }}
                   >
                     {idx + 1}
@@ -1629,7 +1629,7 @@ export default function HomeAuthed({
                     className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 px-1.5 py-0.5 chip-square"
                     style={{
                       background: "var(--color-like)",
-                      boxShadow: "0 2px 4px rgba(232,107,140,0.4)",
+                      boxShadow: "var(--shadow-raised)",
                     }}
                   >
                     <span style={{ fontSize: 9 }}>❤️</span>
@@ -1737,7 +1737,7 @@ export default function HomeAuthed({
                       background: a.photoUrl
                         ? `url('${a.photoUrl}') center/cover`
                         : "var(--color-gray-100)",
-                      boxShadow: "0 6px 18px rgba(232,107,140,0.25)",
+                      boxShadow: "var(--shadow-fab)",
                     }}
                   >
                     {/* 그라디언트 오버레이 */}
@@ -1755,7 +1755,7 @@ export default function HomeAuthed({
                         className="px-2.5 py-1 chip-square flex items-center gap-1"
                         style={{
                           background: bgGradient,
-                          boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
+                          boxShadow: "var(--shadow-raised)",
                         }}
                       >
                         <span style={{ fontSize: 11 }}>🎂</span>
@@ -1952,7 +1952,7 @@ export default function HomeAuthed({
         style={{
           background: "var(--color-primary-softer)",
           borderRadius: "var(--radius-card)",
-          boxShadow: "0 4px 16px rgba(173, 94, 59,0.10), 0 1px 3px rgba(0,0,0,0.03)",
+          boxShadow: "var(--shadow-card)",
           border: "1px solid rgba(173, 94, 59,0.18)",
         }}
       >

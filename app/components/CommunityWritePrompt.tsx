@@ -43,7 +43,7 @@ export default function CommunityWritePrompt() {
         background: "#F6EEFA",
         borderRadius: "var(--radius-card)",
         border: "1px solid rgba(139,101,184,0.2)",
-        boxShadow: "0 4px 14px rgba(139,101,184,0.1)",
+        boxShadow: "var(--shadow-fab)",
       }}
     >
       <div className="flex items-center gap-2 mb-2.5">

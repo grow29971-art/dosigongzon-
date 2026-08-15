@@ -351,7 +351,7 @@ export default function AdminInboxPage() {
                 style={{
                   background: "#FFFFFF",
                   borderRadius: "var(--radius-card-sm)",
-                  boxShadow: "0 4px 14px rgba(216,85,85,0.08), 0 1px 2px rgba(0,0,0,0.02)",
+                  boxShadow: "var(--shadow-card)",
                   border: "1px solid var(--color-divider)",
                   borderLeft: `3px solid ${REPORT_STATUS_COLORS[r.status]}`,
                 }}
@@ -465,7 +465,7 @@ export default function AdminInboxPage() {
                 style={{
                   background: "#FFFFFF",
                   borderRadius: "var(--radius-card-sm)",
-                  boxShadow: "0 4px 14px rgba(74,123,168,0.08), 0 1px 2px rgba(0,0,0,0.02)",
+                  boxShadow: "var(--shadow-card)",
                   border: "1px solid var(--color-divider)",
                   borderLeft: `3px solid ${INQUIRY_STATUS_COLORS[i.status]}`,
                 }}
@@ -543,7 +543,7 @@ export default function AdminInboxPage() {
                     className="mt-2 w-full py-2.5 rounded-xl text-white text-[13px] font-bold press transition-transform disabled:opacity-60"
                     style={{
                       background: "#6B8E6F",
-                      boxShadow: "0 3px 10px rgba(107,142,111,0.25)",
+                      boxShadow: "var(--shadow-raised)",
                     }}
                   >
                     {replying === i.id

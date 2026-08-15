@@ -178,7 +178,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
         style={{
           background: "#FFFFFF",
           borderRadius: "var(--radius-card)",
-          boxShadow: "0 4px 14px rgba(173, 94, 59,0.06), 0 1px 3px rgba(0,0,0,0.02)",
+          boxShadow: "var(--shadow-card)",
           border: "1px solid var(--color-divider)",
         }}
       >

@@ -70,7 +70,7 @@ export default function InquiryModal({ open, onClose }: Props) {
               className="w-8 h-8 rounded-xl flex items-center justify-center"
               style={{
                 background: "#4A7BA8",
-                boxShadow: "0 4px 10px rgba(74,123,168,0.35)",
+                boxShadow: "var(--shadow-raised)",
               }}
             >
               <MessageSquare size={14} color="#fff" strokeWidth={2.5} />
@@ -95,7 +95,7 @@ export default function InquiryModal({ open, onClose }: Props) {
               className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
               style={{
                 background: "#6B8E6F",
-                boxShadow: "0 6px 16px rgba(107,142,111,0.4)",
+                boxShadow: "var(--shadow-fab)",
               }}
             >
               <Check size={24} color="#fff" strokeWidth={3} />
@@ -177,7 +177,7 @@ export default function InquiryModal({ open, onClose }: Props) {
                 className="flex-1 py-3 rounded-xl text-[13px] font-bold text-white disabled:opacity-40 flex items-center justify-center gap-1.5"
                 style={{
                   background: "#4A7BA8",
-                  boxShadow: "0 6px 14px rgba(74,123,168,0.35)",
+                  boxShadow: "var(--shadow-fab)",
                 }}
               >
                 {submitting ? (

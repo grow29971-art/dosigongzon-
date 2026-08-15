@@ -213,7 +213,7 @@ export default async function TipsIndexPage() {
             className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-bold text-white press transition-transform"
             style={{
               background: "#D85555",
-              boxShadow: "0 6px 18px rgba(216,85,85,0.35)",
+              boxShadow: "var(--shadow-fab)",
             }}
           >
             <BookOpen size={14} />

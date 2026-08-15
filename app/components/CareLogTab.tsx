@@ -361,7 +361,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                 >
                   <span
                     className="absolute top-0.5 w-4 h-4 bg-white transition-all"
-                    style={{ left: isPrivate ? "18px" : "2px", borderRadius: "var(--radius-square-sm)", boxShadow: "0 1px 2px rgba(0,0,0,0.2)" }}
+                    style={{ left: isPrivate ? "18px" : "2px", borderRadius: "var(--radius-square-sm)", boxShadow: "var(--shadow-raised)" }}
                   />
                 </span>
               </button>

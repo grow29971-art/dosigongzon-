@@ -241,7 +241,7 @@ export default function AdminHospitalsPage() {
               className="w-11 h-11 rounded-full flex items-center justify-center press-strong transition-transform disabled:opacity-40"
               style={{
                 backgroundColor: "#22B573",
-                boxShadow: "0 6px 14px rgba(34,181,115,0.35)",
+                boxShadow: "var(--shadow-fab)",
               }}
               aria-label="공공데이터 동기화"
             >
@@ -300,7 +300,7 @@ export default function AdminHospitalsPage() {
           style={{
             background: "#FFFFFF",
             borderRadius: "var(--radius-card)",
-            boxShadow: "0 8px 24px rgba(173, 94, 59,0.14), 0 1px 3px rgba(0,0,0,0.03)",
+            boxShadow: "var(--shadow-card)",
             border: "1.5px solid rgba(173, 94, 59,0.2)",
           }}
         >

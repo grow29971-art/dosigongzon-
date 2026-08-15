@@ -200,7 +200,7 @@ export default function CatRegistrationCelebration({
                 className="w-full flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3 mb-3 text-[13px] font-bold text-white press disabled:opacity-60"
                 style={{
                   background: "#E88D5A",
-                  boxShadow: "0 4px 14px rgba(217,116,63,0.4)",
+                  boxShadow: "var(--shadow-fab)",
                 }}
               >
                 {meal === "saving" ? "기록 중…" : "지금 첫 밥 기록하기"}
@@ -241,7 +241,7 @@ export default function CatRegistrationCelebration({
               style={{
                 backgroundColor: "#FEE500",
                 color: "#191919",
-                boxShadow: "0 3px 10px rgba(254,229,0,0.30)",
+                boxShadow: "var(--shadow-raised)",
               }}
             >
               <Share2 size={13} />

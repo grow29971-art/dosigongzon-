@@ -321,7 +321,7 @@ export default function KeyringEventPage() {
                         {selected && (
                           <div
                             className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full flex items-center justify-center"
-                            style={{ background: "var(--color-primary)", boxShadow: "0 2px 8px rgba(173, 94, 59,0.5)" }}
+                            style={{ background: "var(--color-primary)", boxShadow: "var(--shadow-card)" }}
                           >
                             <Check size={13} color="#fff" strokeWidth={3} />
                           </div>

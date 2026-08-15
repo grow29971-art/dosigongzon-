@@ -97,7 +97,7 @@ export default function MyCircleQuickEntry() {
           <Link
             href="/mypage/circle"
             className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold text-white press-strong transition-transform"
-            style={{ background: "#4F6B53", boxShadow: "0 4px 12px rgba(79,107,83,0.30)" }}
+            style={{ background: "#4F6B53", boxShadow: "var(--shadow-raised)" }}
           >
             <UserPlus size={14} />
             <span>이웃 초대 시작하기</span>
@@ -108,7 +108,7 @@ export default function MyCircleQuickEntry() {
             <Link
               href={circleId ? `/circle/${circleId}/chat` : "/mypage/circle"}
               className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold text-white press-strong transition-transform relative"
-              style={{ background: "#4F6B53", boxShadow: "0 3px 10px rgba(79,107,83,0.25)" }}
+              style={{ background: "#4F6B53", boxShadow: "var(--shadow-raised)" }}
             >
               <MessageCircle size={13} />
               <span>채팅방 열기</span>

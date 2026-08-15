@@ -102,7 +102,7 @@ export default function ConsentManager() {
           <div
             className="mx-auto max-w-lg rounded-2xl bg-white p-4"
             style={{
-              boxShadow: "0 8px 28px rgba(60,46,35,0.15), 0 2px 6px rgba(60,46,35,0.06)",
+              boxShadow: "var(--shadow-card)",
               border: "1px solid rgba(173, 94, 59,0.18)",
             }}
           >

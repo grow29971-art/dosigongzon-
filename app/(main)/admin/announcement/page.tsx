@@ -178,7 +178,7 @@ export default function AdminAnnouncementPage() {
         className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[15px] font-bold press disabled:opacity-60"
         style={{
           background: "#C47E5A",
-          boxShadow: "0 6px 18px rgba(196,126,90,0.3)",
+          boxShadow: "var(--shadow-primary)",
         }}
       >
         {busy ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
