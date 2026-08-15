@@ -603,7 +603,7 @@ export default function HomeAuthed({
   const SHOW_FUND_BANNER = false;         // 첫 프로젝트(펀드) 배너 — 쇼핑 오픈 전 공허
   const SHOW_TODO_CHIPS = false;          // '오늘 할 일' 칩(냥상자·도감·랭킹)
   const SHOW_CHECKIN = true;              // 출석/냥상자/주간출석 — 코인 경제 부활(2026-07-16, 다마고치 케어 간식 재원)
-  const SHOW_POPULAR_CATS = true;         // 이번 주 인기 고양이 TOP5 — 관계주의 훅(2026-07-16 회의). length>0 가드로 인원 적으면 자동 숨김
+  const SHOW_POPULAR_CATS = false;        // 2026-08-15 홈 다이어트(B11): 돌봄왕 TOP3·인기 TOP5 랭킹 숨김 — WAU 한 자리에 랭킹은 공허. 7/16 회의로 켰던 것, 유저 늘면 복원
   const SHOW_EVENT_BANNERS = false;       // 파운딩멤버 등 이벤트 배너
   const SHOW_CIRCLE_ENTRY = true;         // 서클 빠른 진입 — "혼자→같이" 리텐션 앵커(2026-07-16 회의)
   const SHOW_INVITE = true;               // 초대 섹션 — 바이럴 유입(catCount>0 가드). (2026-07-16 회의)
@@ -614,7 +614,7 @@ export default function HomeAuthed({
   // 상품을 다시 켤 때 함께 true로 되돌릴 것.
   const SHOW_WEATHER_SHOP_BRIDGE = false;
   const SHOW_SHOP_PREVIEW = true;         // 홈 쇼핑 프리뷰 스트립(찜) — 2026-07-21 쇼핑 동선 회의. 케어 지표 하락 시 이 플래그로 롤백
-  const SHOW_CARE_INBOX_HOME = isCoreJourneyEnabled("P1");
+  const SHOW_REALTIME_FEED = false, SHOW_DAILY_MEAL = false, SHOW_ADOPTION = false, SHOW_RECORD_FAB = false; const SHOW_CARE_INBOX_HOME = isCoreJourneyEnabled("P1"); // 2026-08-15 홈 다이어트(B11): 실시간피드=동네소식 중복·냥식/입양=잡화점 카드·FAB=기록 진입점 1개 원칙(내 아이들로 단일화). 한 줄인 이유: 673행 계측 마운트 라인 번호 보존
 
   return (
     <>
@@ -1259,7 +1259,7 @@ export default function HomeAuthed({
       )}
 
       {/* ══════ 실시간 동네 피드 — 동네 소식 바로 아래 배치, 3건 (Figma 4화면 구조 2026-07-13) ══════ */}
-      {feed.length > 0 && (() => {
+      {SHOW_REALTIME_FEED && feed.length > 0 && (() => {
         const primary = myRegions.find((r) => r.is_primary) ?? myRegions[0] ?? null;
         return (
           <div className="mb-5">
@@ -1651,6 +1651,7 @@ export default function HomeAuthed({
       {/* 오늘의 균형 체크리스트·안부 재참여 카드 — 사용자 요청으로 제거 (2026-07-10) */}
 
       {/* ══════ 오늘의 냥식 ══════ */}
+      {SHOW_DAILY_MEAL && (
       <div
         className="flex items-start gap-3.5 px-5 py-4 mb-5"
         style={{
@@ -1675,9 +1676,10 @@ export default function HomeAuthed({
           </p>
         </div>
       </div>
+      )}
 
       {/* ══════ 입양·임보 기다리는 아이들 (SSR) ══════ */}
-      {adoptionSlot}
+      {SHOW_ADOPTION && adoptionSlot}
 
       {/* ══════ 이번 주 HOT 게시글 (SSR) ══════ */}
       {hotSlot}
@@ -1977,7 +1979,7 @@ export default function HomeAuthed({
     </div>
 
     {/* ══════ 플로팅 돌봄 기록 버튼 — 스크롤 내내 따라다님, 탭하면 내 아이들로 (2026-07-11) ══════ */}
-    {user && activity && activity.catCount > 0 && (
+    {SHOW_RECORD_FAB && user && activity && activity.catCount > 0 && (
       <div
         className="fixed left-0 right-0 z-40 px-5 pointer-events-none"
         style={{ bottom: "calc(env(safe-area-inset-bottom) + 72px)" }}
