@@ -129,7 +129,8 @@ export async function POST(req: Request) {
   const secretKey = process.env.TOSS_SECRET_KEY;
   if (!secretKey) {
     console.error("[payment/webhook] TOSS_SECRET_KEY 미설정 — 결제 대사를 수행할 수 없음");
-    return NextResponse.json({ ok: true, skipped: "no secret key" });
+    // 응답 바디로 설정 상태를 노출하지 않는다 — 무인증 프로브가 결제 개통 여부를 탐지 못 하게.
+    return NextResponse.json({ ok: true });
   }
 
   // 0. 원문 본문을 먼저 text로 읽는다 — 서명 대상이 원문 바이트라
