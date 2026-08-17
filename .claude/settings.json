@@ -1,9 +1,16 @@
 {
   "hooks": {
-    "PreCommit": [
+    "PreToolUse": [
       {
-        "command": "npx tsc --noEmit",
-        "description": "커밋 전 타입 체크"
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/precommit-tsc.mjs\"",
+            "timeout": 180,
+            "statusMessage": "커밋 전 타입 체크 중…"
+          }
+        ]
       }
     ]
   }
