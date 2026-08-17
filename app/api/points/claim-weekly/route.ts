@@ -8,6 +8,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { rateLimit } from "@/lib/rate-limit";
+import { thisMondayKstDate, thisSundayKstDate, isoWeekKey } from "@/lib/kst";
 
 // (라우트 파일은 핸들러 외 export 금지 — WeeklyCheckinCard가 같은 값을 복제 보유)
 const MILESTONES: { days: number; points: number }[] = [
@@ -15,21 +16,6 @@ const MILESTONES: { days: number; points: number }[] = [
   { days: 5, points: 100 },
   { days: 7, points: 150 },
 ];
-
-// KST 기준 이번 주 월요일 날짜 + ISO 주차 키 (예: 2026-W29)
-function kstWeekInfo(): { monday: string; weekKey: string } {
-  const kstNow = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
-  const dow = (kstNow.getDay() + 6) % 7; // 월=0 … 일=6
-  const monday = new Date(kstNow);
-  monday.setDate(kstNow.getDate() - dow);
-  const mondayStr = monday.toLocaleDateString("en-CA");
-  // ISO 주차 계산 (목요일 기준)
-  const thu = new Date(monday);
-  thu.setDate(monday.getDate() + 3);
-  const jan1 = new Date(thu.getFullYear(), 0, 1);
-  const week = Math.ceil(((thu.getTime() - jan1.getTime()) / 86400000 + 1) / 7);
-  return { monday: mondayStr, weekKey: `${thu.getFullYear()}-W${String(week).padStart(2, "0")}` };
-}
 
 export async function POST() {
   const supabase = await createClient();
@@ -43,12 +29,17 @@ export async function POST() {
 
   const svc = createServiceClient();
 
-  const { monday, weekKey } = kstWeekInfo();
+  // 이번 주(KST 월~일) 경계로 조회 — gte만 걸면 서버 TZ 가정이 깨졌을 때
+  // 지난 주 출석일이 이번 주로 흡수돼 재지급될 수 있어 lte(일요일) 상한도 함께 건다.
+  const monday = thisMondayKstDate();
+  const sunday = thisSundayKstDate();
+  const weekKey = isoWeekKey(monday);
   const { data: days, error: daysError } = await svc
     .from("checkin_days")
     .select("day")
     .eq("user_id", user.id)
-    .gte("day", monday);
+    .gte("day", monday)
+    .lte("day", sunday);
   if (daysError) {
     console.error("[points/claim-weekly] checkin_days query failed:", daysError);
     return NextResponse.json({ error: "출석 정보를 불러올 수 없어요." }, { status: 500 });

@@ -37,3 +37,22 @@ export function thisMondayKstDate(): string {
 export function thisMondayKstISO(): string {
   return new Date(thisMondayKstDate() + "T00:00:00+09:00").toISOString();
 }
+
+/** 이번 주 일요일(KST)의 달력 날짜 "YYYY-MM-DD" — 주간 조회 상한용 */
+export function thisSundayKstDate(): string {
+  const anchor = new Date(thisMondayKstDate() + "T00:00:00Z");
+  anchor.setUTCDate(anchor.getUTCDate() + 6);
+  return anchor.toISOString().slice(0, 10);
+}
+
+/** 월요일 날짜(YYYY-MM-DD) → ISO 주차 키 "YYYY-Www" (목요일 기준·UTC 앵커).
+ *  주간 포인트 멱등키(weekly:{weekKey}:m{days})의 유일 소스 — 서버/클라 동일값 보장. */
+export function isoWeekKey(mondayDate: string = thisMondayKstDate()): string {
+  const monday = new Date(mondayDate + "T00:00:00Z");
+  const thu = new Date(monday);
+  thu.setUTCDate(thu.getUTCDate() + 3);
+  const year = thu.getUTCFullYear();
+  const jan1 = new Date(Date.UTC(year, 0, 1));
+  const week = Math.ceil(((thu.getTime() - jan1.getTime()) / 86400000 + 1) / 7);
+  return `${year}-W${String(week).padStart(2, "0")}`;
+}

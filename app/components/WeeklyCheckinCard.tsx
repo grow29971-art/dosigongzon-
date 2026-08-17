@@ -8,6 +8,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { thisMondayKstDate, kstToday, isoWeekKey } from "@/lib/kst";
 
 const MILESTONES = [
   { days: 3, points: 50 },
@@ -16,16 +17,17 @@ const MILESTONES = [
 ];
 const DAY_LABELS = ["월", "화", "수", "목", "금", "토", "일"];
 
-function kstWeek(): { monday: Date; weekKey: string; todayIdx: number } {
-  const kstNow = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
-  const dow = (kstNow.getDay() + 6) % 7;
-  const monday = new Date(kstNow);
-  monday.setDate(kstNow.getDate() - dow);
-  const thu = new Date(monday);
-  thu.setDate(monday.getDate() + 3);
-  const jan1 = new Date(thu.getFullYear(), 0, 1);
-  const week = Math.ceil(((thu.getTime() - jan1.getTime()) / 86400000 + 1) / 7);
-  return { monday, weekKey: `${thu.getFullYear()}-W${String(week).padStart(2, "0")}`, todayIdx: dow };
+// 서버(claim-weekly)와 동일한 lib/kst 소스로 주 경계·주차키 계산 — weekKey가 어긋나면
+// 수령 여부 표시가 서버와 불일치. weekDates는 checkin_days.day와 대조할 KST 달력 날짜.
+function kstWeek(): { weekDates: string[]; weekKey: string; todayIdx: number } {
+  const monday = thisMondayKstDate();
+  const anchor = new Date(monday + "T00:00:00Z");
+  const weekDates = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(anchor);
+    d.setUTCDate(d.getUTCDate() + i);
+    return d.toISOString().slice(0, 10);
+  });
+  return { weekDates, weekKey: isoWeekKey(monday), todayIdx: weekDates.indexOf(kstToday()) };
 }
 
 export default function WeeklyCheckinCard() {
@@ -36,12 +38,7 @@ export default function WeeklyCheckinCard() {
   const [claiming, setClaiming] = useState(false);
   const [justGranted, setJustGranted] = useState(0);
 
-  const { monday, weekKey, todayIdx } = kstWeek();
-  const weekDates: string[] = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(monday);
-    d.setDate(monday.getDate() + i);
-    return d.toLocaleDateString("en-CA");
-  });
+  const { weekDates, weekKey, todayIdx } = kstWeek();
 
   useEffect(() => {
     let cancelled = false;
