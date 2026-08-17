@@ -9,6 +9,7 @@
 // 수동 호출: POST /api/cron/payment-reconcile (CRON_SECRET 필요)
 
 import { createServiceClient } from "@/lib/supabase/service";
+import { safePgError, safeErrorMessage } from "@/lib/log-sanitize";
 
 export const maxDuration = 60;
 
@@ -66,8 +67,8 @@ export async function POST(request: Request) {
   }
 
   if (ordersError) {
-    console.error("[payment-reconcile] orders fetch failed:", ordersError);
-    return Response.json({ ok: false, error: ordersError.message }, { status: 500 });
+    console.error("[payment-reconcile] orders fetch failed:", safePgError(ordersError));
+    return Response.json({ ok: false, error: "주문 조회에 실패했어요." }, { status: 500 });
   }
 
   const rows = (orders ?? []) as unknown as {
@@ -96,7 +97,7 @@ export async function POST(request: Request) {
         continue;
       }
     } catch (e) {
-      console.error("[payment-reconcile] toss fetch error:", e, order.order_number);
+      console.error("[payment-reconcile] toss fetch error:", safeErrorMessage(e, [order.payment_key]), order.order_number);
       continue; // 네트워크 오류는 다음 실행에서 재확인
     }
     checked++;
