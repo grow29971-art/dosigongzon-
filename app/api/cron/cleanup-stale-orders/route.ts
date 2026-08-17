@@ -26,10 +26,14 @@ export async function POST(request: Request) {
   const supabase = createServiceClient();
   const cutoff = new Date(Date.now() - STALE_HOURS * 60 * 60 * 1000).toISOString();
 
+  // payment_key가 잡힌 pending은 confirm이 토스 승인 중(카드 청구 진행)일 수 있어
+  // 취소 대상에서 제외한다 — cancel 라우트와 동일한 가드. 청구됐는데 무환불 취소되는
+  // 이중장애(confirm 크래시 + 웹훅 미도달)를 막고, 해당 주문은 웹훅/reconcile에 위임.
   const { data: updated, error } = await supabase
     .from("orders")
     .update({ status: "cancelled", updated_at: new Date().toISOString() })
     .eq("status", "pending")
+    .is("payment_key", null)
     .lt("created_at", cutoff)
     .select("id");
 
