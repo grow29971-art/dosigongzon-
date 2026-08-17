@@ -6,6 +6,7 @@
 //  한때 lib/payment-log.ts와 중복됐다가 이 파일로 최종 통일)
 // ══════════════════════════════════════════
 
+import "server-only"; // 시크릿 마스킹 유틸 — 서버 전용 경계 고정
 import { createHmac } from "node:crypto";
 
 // paymentKey → 복원 불가 HMAC 다이제스트 12자리. 같은 키는 같은 값이 나와

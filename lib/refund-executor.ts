@@ -10,6 +10,7 @@
 //      (기존 cancel 라우트의 .eq(status).select 패턴 재사용) → 재고·포인트 이중 환원 차단.
 // ══════════════════════════════════════════
 
+import "server-only"; // TOSS_SECRET_KEY 사용 — 클라이언트 번들 유입 시 빌드 실패시킴
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   donationDelta,
