@@ -17,6 +17,7 @@ import { type SupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient } from "@/lib/supabase/service";
 import { safePgError, maskPaymentKey, safeErrorMessage } from "@/lib/log-sanitize";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
+import { maxPointsUsable } from "@/lib/points-config";
 
 export const maxDuration = 60;
 
@@ -243,11 +244,14 @@ export async function POST(req: Request) {
           donationFixes.push({ id: it.id, donation_amount: correctDonation });
         }
       }
-      // 포인트 검증 — confirm 4.5와 동일 규칙 (후원 상품 포함 시 포인트 불가, 최소 100원)
+      // 포인트 검증 — confirm 4.5와 동일 규칙
+      // (후원 상품 포함 시 포인트 불가, 최소 100원, 주문액 30% 상한).
+      // confirm은 maxPointsUsable 30% 상한을 강제하는데 웹훅은 최소 100원만 봤던 갭 보정.
       const pointsValid =
         Number.isInteger(webhookPoints) && webhookPoints >= 0 &&
         !(webhookPoints > 0 && hasDonation) &&
-        !(webhookPoints > 0 && prodSum + ship - webhookPoints < 100);
+        !(webhookPoints > 0 && prodSum + ship - webhookPoints < 100) &&
+        !(webhookPoints > 0 && webhookPoints > maxPointsUsable(prodSum + ship));
       expectedAmount = bad || !pointsValid ? -1 : prodSum + ship - webhookPoints;
     }
 
