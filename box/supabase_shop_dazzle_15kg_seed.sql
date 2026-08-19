@@ -30,6 +30,15 @@ VALUES (
   '대즐'
 );
 
+-- ── 2026-08-19 후속: 공급사 서면 수령 → 설명 보강 (서비스롤 PATCH 실행 완료, 기록용) ──
+-- UPDATE public.products SET description =
+--   '홀리스틱 기능성 고양이 사료예요. 단백질 32% · 지방 12% · 포크프리(돼지고기 무첨가). 유산균(장 건강), 보스웰리아&MSM(관절), 고섬유질(헤어볼 배출), pH 균형(요로 건강) 도움 성분을 배합했어요. 전연령(All Life Stages) 급여 가능해요.' || E'\n\n' ||
+--   '국내 제조 — 사조동아원(주) 당진 HACCP 인증 공장에서 생산하고, 중금속·곰팡이독소·살모넬라 불검출 검정을 받았어요. AAFCO 영양기준 충족 설계예요.'
+-- WHERE id = '495e4774-68e1-4700-af69-df598e819244';
+-- 상세이미지 3장: storage cat-photos/products/product_dazzle_detail_{1,2,3}.jpg (서비스롤 업로드)
+-- 고시 실값 출처: 사조동아원 검정증명서·KFIA(등 2-174)·HACCP(2008-72)·공급사 상세페이지
+-- → lib/product-disclosure.ts 에 반영. 유통기한 표기 기준만 공급사 확인 대기.
+
 -- ── 롤백 ──
 -- DELETE FROM public.products WHERE name = '대즐 치킨&연어 전연령 사료 15kg';
 -- (이미지 롤백: storage cat-photos/products/product_dazzle_chicken_salmon_15kg.jpg 삭제)

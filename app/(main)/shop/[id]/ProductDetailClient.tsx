@@ -8,7 +8,7 @@ import { ArrowLeft, Minus, Plus, PawPrint, ShoppingBag, Truck, ShoppingCart, Coi
 import { useAuth } from "@/lib/auth-context";
 import { addToCart, SHOP_CATEGORIES, type Product } from "@/lib/shop-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
-import { PRODUCT_DISCLOSURES } from "@/lib/product-disclosure";
+import { PRODUCT_DISCLOSURES, PRODUCT_DETAIL_IMAGES } from "@/lib/product-disclosure";
 
 function formatWon(amount: number): string {
   return `${amount.toLocaleString()}원`;
@@ -244,6 +244,24 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 {descOpen ? "접기" : "더보기"}
               </button>
             )}
+          </div>
+        )}
+
+        {/* 상세 이미지 — 공급사 제공 상세페이지 (세로 분할본을 이어붙여 렌더) */}
+        {PRODUCT_DETAIL_IMAGES[product.id] && (
+          <div className="mt-6 rounded-2xl overflow-hidden" style={{ border: "1px solid var(--color-divider)" }}>
+            {PRODUCT_DETAIL_IMAGES[product.id].map((img, i) => (
+              <Image
+                key={img.src}
+                src={img.src}
+                alt={`${product.name} 상세 정보 ${i + 1}`}
+                width={img.width}
+                height={img.height}
+                className="w-full h-auto block"
+                loading="lazy"
+                sizes="(max-width: 512px) 100vw, 512px"
+              />
+            ))}
           </div>
         )}
 
