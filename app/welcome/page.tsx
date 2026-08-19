@@ -20,6 +20,7 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import { trackPixelOnce } from "@/lib/meta-pixel";
+import { PUSH_GATE_SEEN_PREFIX } from "@/app/components/PushOnboardInterstitial";
 
 export default function WelcomePage() {
   return (
@@ -137,8 +138,15 @@ function WelcomeContent() {
   };
 
   const goPushOrFinish = () => {
-    if (canPromptPush()) setShowPush(true);
-    else finishOnboarding();
+    if (canPromptPush()) {
+      // 기존 유저용 전면 게이트(PushOnboardInterstitial)와 seen 키 공유 — 신규 가입자 이중 노출 방지
+      try {
+        if (user) localStorage.setItem(PUSH_GATE_SEEN_PREFIX + user.id, String(Date.now()));
+      } catch { /* no-op */ }
+      setShowPush(true);
+    } else {
+      finishOnboarding();
+    }
   };
 
   const handleNext = () => {
