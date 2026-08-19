@@ -4,7 +4,7 @@
 // /api/auth/callback 에서 첫 가입자(!nickname_set)일 때 ?next=...로 우회시켜 들어온다.
 // 이미 가입한 유저가 이 URL로 와도 그냥 next로 보내준다 (재노출 방지는 nickname_set 플래그로).
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   PartyPopper,
@@ -12,6 +12,7 @@ import {
   MapPin,
   PawPrint,
   Heart,
+  Bell,
   ChevronRight,
   ChevronLeft,
   ShieldCheck,
@@ -58,6 +59,11 @@ function WelcomeContent() {
   const [earlySupporter, setEarlySupporter] = useState(false);
   // 마지막 슬라이드 후 의도 picker(audience 흡수)
   const [showIntent, setShowIntent] = useState(false);
+  // 슬라이드 후 알림 켜기 스텝 — 신규 가입자 전원이 한 번은 통과 (2026-08-19 사장님 지시)
+  const [showPush, setShowPush] = useState(false);
+  const [pushBusy, setPushBusy] = useState(false);
+  // 건너뛰기로 온 유저는 알림 스텝 후 intent picker 없이 바로 목적지로 (기존 skip 동선 보존)
+  const skippedSlidesRef = useRef(false);
 
   // 비로그인 시 홈으로
   useEffect(() => {
@@ -110,10 +116,19 @@ function WelcomeContent() {
     }, 300);
   };
 
-  const handleNext = () => {
-    if (step < SLIDES.length - 1) {
-      goTo(step + 1);
-    } else if (next === "/") {
+  // 알림 스텝을 띄울 수 있는 환경인지 — 미지원(iOS 비설치 등)·이미 응답한 경우는 조용히 통과
+  const canPromptPush = () => {
+    if (typeof window === "undefined") return false;
+    if (typeof Notification === "undefined") return false;
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) return false;
+    if (Notification.permission !== "default") return false;
+    if (!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY?.trim()) return false;
+    return true;
+  };
+
+  const finishOnboarding = () => {
+    setShowPush(false);
+    if (!skippedSlidesRef.current && next === "/") {
       // 기본 목적지일 때만 의도 picker — 가입 전 명시적 URL이 있으면 그대로 존중
       setShowIntent(true);
     } else {
@@ -121,7 +136,65 @@ function WelcomeContent() {
     }
   };
 
-  const handleSkip = () => router.replace(next);
+  const goPushOrFinish = () => {
+    if (canPromptPush()) setShowPush(true);
+    else finishOnboarding();
+  };
+
+  const handleNext = () => {
+    if (step < SLIDES.length - 1) {
+      goTo(step + 1);
+    } else {
+      goPushOrFinish();
+    }
+  };
+
+  // 슬라이드 건너뛰기도 알림 스텝은 한 번 거친다 — 신규 가입자 전원 노출 원칙
+  const handleSkip = () => {
+    skippedSlidesRef.current = true;
+    goPushOrFinish();
+  };
+
+  // "알림 켜기" 탭(사용자 제스처) → 네이티브 권한 프롬프트 → 구독 + 마케팅 수신 동의.
+  // 동의 문구는 버튼 위에 명시 — 구독·동의 통합 플로우 (PushOptInCard와 동일 패턴, 2026-07-22 리텐션 회의)
+  const handleEnablePush = async () => {
+    if (pushBusy) return;
+    setPushBusy(true);
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission === "granted") {
+        const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY?.trim();
+        if (vapidKey) {
+          const reg = await navigator.serviceWorker.ready;
+          const existing = await reg.pushManager.getSubscription();
+          if (!existing) {
+            const sub = await reg.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: urlBase64ToUint8Array(vapidKey) as BufferSource,
+            });
+            await fetch("/api/push/subscribe", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ subscription: sub.toJSON() }),
+            });
+          }
+        }
+        if (user) {
+          try {
+            await createClient()
+              .from("profiles")
+              .update({ marketing_push_enabled: true })
+              .eq("id", user.id);
+          } catch { /* 동의 반영 실패는 온보딩 진행을 막지 않음 */ }
+        }
+      }
+    } catch {
+      // 권한/구독 실패 — 온보딩은 계속 진행
+    } finally {
+      setPushBusy(false);
+      finishOnboarding();
+    }
+  };
 
   // 의도 1문항 — user_metadata.intent에 저장 + 의도별 첫 화면 라우팅.
   // 광고로 들어온 broad audience를 앱 내부에서 흡수하기 위함.
@@ -143,6 +216,69 @@ function WelcomeContent() {
     );
   }
 
+  // 알림 켜기 스텝 — 신규 가입자 전원 통과. "켜기" 탭이 곧 사용자 제스처라 네이티브 프롬프트 즉시 발화.
+  if (showPush) {
+    return (
+      <div
+        className="fixed inset-0 overflow-hidden flex flex-col"
+        style={{ background: "linear-gradient(170deg, #8C5A37 0%, var(--color-primary) 55%, #C98A62 100%)" }}
+      >
+        <div className="flex-1 flex flex-col items-center justify-center px-7">
+          <div
+            className="w-24 h-24 rounded-full flex items-center justify-center mb-7"
+            style={{
+              background: "rgba(255,255,255,0.18)",
+              backdropFilter: "blur(10px)",
+              border: "1px solid rgba(255,255,255,0.25)",
+              boxShadow: "var(--shadow-modal)",
+            }}
+          >
+            <Bell size={42} color="#FFFFFF" strokeWidth={1.6} />
+          </div>
+
+          <h2 className="text-[24px] font-bold text-center text-white tracking-tight leading-[1.4] mb-4">
+            알림 켜고 시작해요
+          </h2>
+          <p className="text-[15px] text-center text-white/85 leading-[1.9] max-w-[320px]">
+            내 글에 달린 댓글, 쪽지 답장,
+            <br />
+            돌봄 소식과 동네 이벤트까지 —
+            <br />
+            중요한 순간을 놓치지 않게 알려드려요.
+          </p>
+        </div>
+
+        <div className="px-6 pb-10 z-20">
+          {/* 정보통신망법 §50 — 마케팅 수신 동의 문구 명시 (구독·동의 통합 플로우) */}
+          <p className="text-[11px] text-center mb-3 leading-relaxed" style={{ color: "rgba(255,255,255,0.65)" }}>
+            켜면 돌봄·소식 알림(마케팅 포함) 수신에 동의해요 · 마이페이지에서 언제든 해제
+          </p>
+          <button
+            onClick={handleEnablePush}
+            disabled={pushBusy}
+            className="w-full h-[52px] rounded-2xl text-[15px] font-bold flex items-center justify-center gap-1.5 press disabled:opacity-60"
+            style={{
+              background: "#FFFFFF",
+              color: "var(--color-primary-dark)",
+              boxShadow: "var(--shadow-fab)",
+            }}
+          >
+            <Bell size={17} />
+            {pushBusy ? "설정 중..." : "알림 켜기"}
+          </button>
+          <button
+            onClick={finishOnboarding}
+            disabled={pushBusy}
+            className="w-full py-3 mt-2 text-[13px] font-medium active:opacity-50"
+            style={{ color: "rgba(255,255,255,0.7)" }}
+          >
+            나중에 할게요
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   // 마지막 슬라이드 후 의도 picker — 3-way 선택으로 audience 흡수.
   if (showIntent) {
     return (
@@ -151,7 +287,7 @@ function WelcomeContent() {
         style={{ background: "#4F6B53" }}
       >
         <button
-          onClick={handleSkip}
+          onClick={() => router.replace(next)}
           className="absolute top-12 right-5 z-20 text-[13px] font-medium px-3 py-1.5 rounded-full active:opacity-50"
           style={{ color: "rgba(255,255,255,0.75)" }}
         >
@@ -371,6 +507,14 @@ function WelcomeContent() {
       </div>
     </div>
   );
+}
+
+// VAPID 공개키 → PushManager.subscribe용 바이트 배열 (PushOptInCard와 동일 헬퍼)
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = atob(base64);
+  return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
 }
 
 // 슬라이드 3개로 압축 (이전 5개 → 환영 / 지도+등록 / 돌봄+커뮤니티)
