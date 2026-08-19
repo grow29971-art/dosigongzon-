@@ -8,6 +8,7 @@ import { ArrowLeft, Minus, Plus, PawPrint, ShoppingBag, Truck, ShoppingCart, Coi
 import { useAuth } from "@/lib/auth-context";
 import { addToCart, SHOP_CATEGORIES, type Product } from "@/lib/shop-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import { PRODUCT_DISCLOSURES } from "@/lib/product-disclosure";
 
 function formatWon(amount: number): string {
   return `${amount.toLocaleString()}원`;
@@ -242,6 +243,38 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               >
                 {descOpen ? "접기" : "더보기"}
               </button>
+            )}
+          </div>
+        )}
+
+        {/* 상품정보 제공고시 — 전자상거래법·사료관리법 표시의무. 접힘 없이 항상 노출 */}
+        {PRODUCT_DISCLOSURES[product.id] && (
+          <div className="mt-6">
+            <h2 className="text-[13px] font-bold text-text-main mb-2">상품정보 제공고시</h2>
+            <div
+              className="rounded-2xl overflow-hidden"
+              style={{ border: "1px solid var(--color-divider)" }}
+            >
+              {PRODUCT_DISCLOSURES[product.id].rows.map((row, i) => (
+                <div
+                  key={row.label}
+                  className="flex gap-3 px-3.5 py-2"
+                  style={{ borderTop: i === 0 ? "none" : "1px solid var(--color-divider)" }}
+                >
+                  <span className="text-[11px] font-bold text-text-light w-[88px] shrink-0 pt-px">{row.label}</span>
+                  <span
+                    className="text-[11px] leading-relaxed"
+                    style={{ color: row.pending ? "var(--color-text-muted)" : "var(--color-text-sub)" }}
+                  >
+                    {row.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+            {PRODUCT_DISCLOSURES[product.id].note && (
+              <p className="text-[11px] text-text-light mt-2 leading-relaxed">
+                {PRODUCT_DISCLOSURES[product.id].note}
+              </p>
             )}
           </div>
         )}
