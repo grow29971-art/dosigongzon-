@@ -52,6 +52,11 @@ VALUES (
 -- 유닛 이코노믹스(판매가 70,000 기준): 매입 50,000 + TNR 기부 7,000(10%) + PG 약 2,300(3%)
 -- → 마진 약 10,700원 (배송비 부담주체에 따라 ±5,000). D-day 게이트 1(매입<판매) 실증.
 
+-- ── 2026-08-19 후속 4: is_donation=true 전환 (서비스롤 PATCH 실행 완료, 기록용) ──
+-- 후원 적립 계산(confirm·webhook)은 is_donation=true 상품만 donation_percent를 적용한다.
+-- false 상태면 "일반 상품 10%" 고지와 달리 후원금 0원 적립 — 표기·실계산 불일치라 교정.
+-- 효과: 상세 후원 배너 노출 + 결제 시 10% 적립 + 포인트 사용 불가(체크아웃 정책) + 환불 후원특례 적용.
+
 -- ── 롤백 ──
 -- DELETE FROM public.products WHERE name = '대즐 치킨&연어 전연령 사료 15kg';
 -- (이미지 롤백: storage cat-photos/products/product_dazzle_chicken_salmon_15kg.jpg 삭제)
