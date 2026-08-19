@@ -388,9 +388,9 @@ export default function ShopPage() {
       {/* ── 사업자정보 푸터 — 전자상거래법 표시의무 + 토스페이먼츠 심사 요건("홈페이지 하단 기재") ── */}
       <div className="mt-4 text-center text-[10px] leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
         <p>도시공존 · 대표 김성우 · 사업자등록번호 793-16-02886</p>
-        <p>인천광역시 검단구 원당대로820번길 35, 13동 401호</p>
+        <p>인천광역시 검단구 원당대로820번길 35, 초롱마을 13동 401호 (당하동)</p>
         <p>전화 010-7790-2997 · grow29971@gmail.com</p>
-        <p>통신판매업 신고 수리 완료 (신고번호 확인 중)</p>
+        <p>통신판매업 신고번호 제2026-인천검단-0207호</p>
       </div>
     </div>
   );
