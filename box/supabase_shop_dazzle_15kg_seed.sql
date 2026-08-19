@@ -39,6 +39,14 @@ VALUES (
 -- 고시 실값 출처: 사조동아원 검정증명서·KFIA(등 2-174)·HACCP(2008-72)·공급사 상세페이지
 -- → lib/product-disclosure.ts 에 반영. 유통기한 표기 기준만 공급사 확인 대기.
 
+-- ── 2026-08-19 후속 2: 도시공존 콜라보 전환 (서비스롤 PATCH 실행 완료, 기록용) ──
+-- name = '대즐 × 도시공존 콜라보 치킨&연어 전연령 사료 15kg'
+-- images[0] = products/product_dazzle_collab_15kg.jpg (콜라보 뱃지 목업, 사장님 제공)
+-- images[1] = products/product_dazzle_chicken_salmon_15kg.jpg (기존 팩샷 유지)
+-- description 첫 문단에 콜라보 에디션 + TNR 10% 명시
+-- ⚠ 콜라보 이미지는 AI 목업 — 실제 출고 포장이 다르면 실판매 전 실물 사진 교체
+--   또는 "이미지는 연출컷" 고지 필요 (표시광고 정합)
+
 -- ── 롤백 ──
 -- DELETE FROM public.products WHERE name = '대즐 치킨&연어 전연령 사료 15kg';
 -- (이미지 롤백: storage cat-photos/products/product_dazzle_chicken_salmon_15kg.jpg 삭제)
