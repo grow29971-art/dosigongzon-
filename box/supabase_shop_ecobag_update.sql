@@ -23,6 +23,10 @@ WHERE id = 'fdaf8099-b81f-4309-ad96-19cf32b9327e';
 -- ⚠ 9,000원은 POD 제작 단가(통상 6,000~9,000원+인쇄·마진)에 따라 역마진 위험 —
 --   실판매 전 제작처 견적으로 이익 > 0 검증 필수 (D-day 게이트 5 에코백 시뮬레이션)
 
+-- ── 2026-08-19 후속 2: 진열 철회 (사장님 지시 "에코백 지워줘", 서비스롤 PATCH 실행 완료) ──
+-- UPDATE public.products SET is_active = false WHERE id = 'fdaf8099-b81f-4309-ad96-19cf32b9327e';
+-- 행 삭제 아님 — 이름·이미지·9,000원 가격은 보존, is_active만 내림 (재진열 시 true 한 줄)
+
 -- ── 롤백 ──
 -- UPDATE public.products SET name='캣대디 에코백', is_active=false, badge=NULL, stock=99,
 --   images='{}', description='사료 담아가기 딱 좋은 튼튼한 에코백. 도시공존 로고 프린트.'
