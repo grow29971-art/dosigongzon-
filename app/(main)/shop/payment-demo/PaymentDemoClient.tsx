@@ -14,7 +14,7 @@ import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
 const TOSS_CLIENT_KEY = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY?.trim() ?? "";
 
 const DEMO_PRODUCT = {
-  name: "대즐 치킨&연어 전연령 사료 15kg",
+  name: "대즐 × 도시공존 콜라보 치킨&연어 전연령 사료 15kg",
   amount: 70000,
 };
 
