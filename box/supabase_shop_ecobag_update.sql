@@ -17,7 +17,11 @@ UPDATE public.products SET
   stock = 30
 WHERE id = 'fdaf8099-b81f-4309-ad96-19cf32b9327e';
 
--- 유지된 기존 값: price 15000 · shipping_fee 3000 · donation_percent 10 · is_donation true
+-- 유지된 기존 값: shipping_fee 3000 · donation_percent 10 · is_donation true
+-- ── 2026-08-19 후속: 가격 15,000 → 9,000원 (사장님 지시, 서비스롤 PATCH 실행 완료) ──
+-- UPDATE public.products SET price = 9000 WHERE id = 'fdaf8099-b81f-4309-ad96-19cf32b9327e';
+-- ⚠ 9,000원은 POD 제작 단가(통상 6,000~9,000원+인쇄·마진)에 따라 역마진 위험 —
+--   실판매 전 제작처 견적으로 이익 > 0 검증 필수 (D-day 게이트 5 에코백 시뮬레이션)
 
 -- ── 롤백 ──
 -- UPDATE public.products SET name='캣대디 에코백', is_active=false, badge=NULL, stock=99,
