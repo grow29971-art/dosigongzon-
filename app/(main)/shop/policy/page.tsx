@@ -55,13 +55,15 @@ export default function ShopPolicyPage() {
         {/* 판매자 정보 */}
         <section className="p-4" style={sectionStyle}>
           <h2 className="text-[13px] font-bold text-text-main mb-2">판매자 정보</h2>
-          <Row label="상호" value="도시공존 (사업자 등록 절차 진행 중)" />
-          <Row label="사업자등록번호" value="등록 완료 후 고지 예정" />
-          <Row label="통신판매업 신고" value="등록 완료 후 고지 예정" />
+          <Row label="상호" value="도시공존" />
+          <Row label="대표자" value="김성우" />
+          <Row label="사업자등록번호" value="793-16-02886" />
+          <Row label="통신판매업 신고" value="신고 수리 완료 (신고번호 확인 중)" />
+          <Row label="사업장 주소" value="인천광역시 서구 당하동 1026-13 초롱마을 13동 401호" />
+          <Row label="전화" value="010-7790-2997" />
           <Row label="문의" value={CONTACT_EMAIL} />
           <p className="text-[11px] text-text-light mt-2 leading-relaxed">
-            현재 쇼핑몰은 정식 오픈 준비 중이며, 사업자 등록이 완료되는 대로 위
-            정보를 갱신해 고지합니다.
+            통신판매업 신고번호는 확인되는 대로 즉시 이 페이지에 고지합니다.
           </p>
         </section>
 
