@@ -14,11 +14,14 @@ jobs:
   invariants:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: "24"
-      # 테스트는 node 내장 러너 + 소스 문자열 검사라 의존성 설치 없이도 돈다.
-      # (.ts 직접 import는 node 24의 타입 스트리핑으로 처리)
+      # 테스트는 node 내장 러너 + 소스 문자열 검사라 전체 의존성 설치가 필요 없다.
+      # 단 lib/log-sanitize.ts 가 server-only 를 import 하므로(2026-08-17 PG점검)
+      # 그 마커 패키지 하나만 설치한다. (--conditions react-server 로 빈 모듈 해석)
+      - name: server-only 마커 패키지 설치
+        run: npm install --no-save server-only
       - name: 보안 불변식 테스트
         run: npm test
