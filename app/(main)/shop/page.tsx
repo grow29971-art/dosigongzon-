@@ -324,15 +324,21 @@ export default function ShopPage() {
         )}
       </div>
 
-      {/* ── 정식 오픈 준비 중 안내 ── */}
+      {/* ── 정식 오픈 준비 중 안내 — 실수 주문 우려 차단을 위해 크게, 결제 불가를 명시 ── */}
       <div
-        className="mb-4 flex items-center gap-2 px-3.5 py-2 rounded-2xl"
-        style={{ background: "rgba(255,169,39,0.1)", border: "1px solid rgba(255,169,39,0.25)" }}
+        className="mb-4 flex items-start gap-3 px-4 py-3.5 rounded-2xl"
+        style={{ background: "rgba(255,169,39,0.12)", border: "1.5px solid rgba(255,169,39,0.4)" }}
       >
-        <Construction size={15} className="shrink-0" style={{ color: "var(--color-warning)" }} />
-        <p className="text-[11px] font-semibold leading-snug" style={{ color: "var(--color-warning)" }}>
-          정식 오픈을 준비하고 있어요. 준비되면 알려드릴게요.
-        </p>
+        <Construction size={22} className="shrink-0 mt-0.5" style={{ color: "var(--color-warning)" }} />
+        <div className="min-w-0">
+          <p className="text-[15px] font-bold leading-snug" style={{ color: "#8A5A0A" }}>
+            정식 오픈을 준비하고 있어요
+          </p>
+          <p className="text-[13px] font-semibold mt-1 leading-relaxed" style={{ color: "#8A5A0A" }}>
+            지금은 <b>구경과 찜만 가능</b>하고 결제는 열리지 않아요.
+            실수로 주문될 걱정은 안 하셔도 돼요. 준비되면 알려드릴게요!
+          </p>
+        </div>
       </div>
 
       {/* ── 오픈 사전알림 (푸시 옵트인 재사용, 쇼핑 전용 dismiss 키) ── */}
