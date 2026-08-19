@@ -58,7 +58,7 @@ export const PRODUCT_DISCLOSURES: Record<string, ProductDisclosure> = {
         value:
           "한국사료협회·한국단미사료협회 검정 — 중금속(납·카드뮴·비소·수은·셀레늄)·곰팡이독소(아플라톡신·오크라톡신)·대장균·살모넬라 불검출 (2026-02~03)",
       },
-      { label: "유통기한", value: "포장 별도 표기 (제조일 기준 기한 공급사 확인 중)", pending: true },
+      { label: "유통기한", value: "포장에 표기 · 현재 판매분 2028년 6월까지 (2026-08-19 공급사 확인)" },
       {
         label: "주의사항",
         value:
@@ -66,7 +66,8 @@ export const PRODUCT_DISCLOSURES: Record<string, ProductDisclosure> = {
       },
       { label: "소비자상담", value: "010-7790-2997 · grow29971@gmail.com" },
     ],
-    note: "유통기한 표기 기준은 공급사에 확인 중이며, 확인 후 즉시 갱신합니다. 실판매는 확인 완료 후 개시합니다.",
+    // 전 항목 공급사 서면·확인 완료 (2026-08-19) — 게이트 8 표시의무 충족.
+    // 유통기한은 입고 로트가 바뀌면 "현재 판매분" 연월을 갱신할 것.
   },
 };
 
