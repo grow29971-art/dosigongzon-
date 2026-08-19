@@ -59,7 +59,7 @@ export default function ShopPolicyPage() {
           <Row label="대표자" value="김성우" />
           <Row label="사업자등록번호" value="793-16-02886" />
           <Row label="통신판매업 신고" value="신고 수리 완료 (신고번호 확인 중)" />
-          <Row label="사업장 주소" value="인천광역시 서구 당하동 1026-13 초롱마을 13동 401호" />
+          <Row label="사업장 주소" value="인천광역시 검단구 원당대로820번길 35, 13동 401호" />
           <Row label="전화" value="010-7790-2997" />
           <Row label="문의" value={CONTACT_EMAIL} />
           <p className="text-[11px] text-text-light mt-2 leading-relaxed">
