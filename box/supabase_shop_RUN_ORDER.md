@@ -16,6 +16,8 @@
 | 9 | `supabase_shop_donation_10_migration.sql` | 후원 비율 20%→10% (일부 후원 상품 + 신규 기본값, 전액 후원은 유지) |
 | 10 | `supabase_orders_status_guard_migration.sql` | **[보안]** 주문 상태 전이 가드 트리거 — 비정상 전환(cancelled→paid 등)·payment_key 없는 paid를 DB가 거부 |
 | 11 | `supabase_shop_reviews_migration.sql` | 구매후기 테이블(별점+사진) — 실구매자만 작성 가능하도록 RLS가 주문 이력 검증 (3번의 touch_updated_at 함수 필요) |
+| 12 | `supabase_shop_shipping_sum_migration.sql` | **[D-day 게이트 3]** 게스트 주문 RPC 배송비 greatest→품목당 합산 — 코드 측(computeCartTotal·confirm·webhook)과 동일 식 필수 |
+| 13 | `supabase_shop_review_refund_guard_migration.sql` | **[보안]** 환불·취소 시 해당 후기 자동 숨김 트리거 — 리뷰 세탁 봇 방어 (11번 선행) |
 | — | `supabase_shop_seed.sql` | (선택) 카테고리별 3개 총 21개 샘플 상품. 실상품 등록 시 불필요 |
 
 ## 주의
