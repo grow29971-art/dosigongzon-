@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { computeCartTotal, type CartItem, type Product } from "@/lib/shop-repo";
 import { enforceUserActionLimit } from "@/lib/rate-limit";
 import { PAYMENT_ENABLED, PAYMENT_DISABLED_MESSAGE } from "@/lib/payments-config";
-import { maxPointsUsable } from "@/lib/points-config";
+import { maxPointsUsable, POINTS_MAX_USE_RATE } from "@/lib/points-config";
 
 export type OrderStatus =
   | "pending" | "paid" | "preparing" | "shipping"
@@ -162,9 +162,11 @@ export async function createOrderFromCart(
 
   const { productTotal, shippingFee, grandTotal } = computeCartTotal(items);
 
-  // 포인트 사용 한도 — 주문 금액의 30% + 최종 결제액 100원 이상 (points-config 공유 정책)
+  // 포인트 사용 한도 — points-config 공유 정책 (상한율 + 최종 결제액 100원 이상)
   if (pointsUsed > 0 && pointsUsed > maxPointsUsable(grandTotal)) {
-    throw new Error("포인트는 주문 금액의 30%까지, 최종 결제 금액 100원 이상을 남기고 사용할 수 있어요.");
+    throw new Error(
+      `포인트는 주문 금액의 ${Math.round(POINTS_MAX_USE_RATE * 100)}%까지, 최종 결제 금액 100원 이상을 남기고 사용할 수 있어요.`,
+    );
   }
 
   const { data: order, error: orderError } = await supabase

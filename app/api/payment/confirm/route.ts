@@ -201,7 +201,7 @@ export async function POST(req: Request) {
         .eq("id", order.id);
       return NextResponse.json({ error: "포인트 사용 조건이 올바르지 않아요." }, { status: 409 });
     }
-    // 포인트 사용 한도 — 주문 금액의 30% + 최종 결제액 100원 이상 (points-config 공유 정책).
+    // 포인트 사용 한도 — points-config 공유 정책 (상한율 + 최종 결제액 100원 이상).
     // order-repo의 1차 검증을 우회해 orders를 직접 조작해도 여기서 걸림.
     if (pointsUsed > 0 && pointsUsed > maxPointsUsable(expectedProducts + expectedShipping)) {
       await svc.from("orders")

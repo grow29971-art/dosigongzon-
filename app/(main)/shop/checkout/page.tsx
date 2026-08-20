@@ -10,7 +10,7 @@ import { useAuth } from "@/lib/auth-context";
 import { listCartItems, computeCartTotal, type CartItem } from "@/lib/shop-repo";
 import { createOrderFromCart, createGuestOrder, cancelGuestOrder, isVirtualOnlyCart } from "@/lib/order-repo";
 import { PAYMENT_ENABLED, PAYMENT_DISABLED_MESSAGE } from "@/lib/payments-config";
-import { maxPointsUsable } from "@/lib/points-config";
+import { maxPointsUsable, POINTS_MAX_USE_RATE } from "@/lib/points-config";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 
 const TOSS_CLIENT_KEY = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY ?? "";
@@ -135,7 +135,7 @@ export default function CheckoutPage() {
   const virtualOnly = isVirtualOnlyCart(items);
 
   // 포인트 사용 가능 여부·한도 — 후원/가상 상품 포함 주문은 불가.
-  // 사용 한도는 points-config 공유 정책 (주문 금액의 30% + 최종 결제액 100원 이상).
+  // 사용 한도는 points-config 공유 정책 (상한율 + 최종 결제액 100원 이상).
   const pointsEligible =
     (pointBalance ?? 0) > 0 && !items.some((i) => i.product.is_virtual || i.product.is_donation);
   const maxPoints = pointsEligible ? Math.min(pointBalance ?? 0, maxPointsUsable(grandTotal)) : 0;
@@ -437,7 +437,7 @@ export default function CheckoutPage() {
                 </button>
               </div>
               <p className="text-[11px] text-text-light mt-1.5">
-                1P = 1원 · 주문 금액의 30%까지 사용 가능 (이 주문 최대 {maxPoints.toLocaleString()}P) · 주문 취소 시 자동 반환
+                1P = 1원 · 주문 금액의 {Math.round(POINTS_MAX_USE_RATE * 100)}%까지 사용 가능 (이 주문 최대 {maxPoints.toLocaleString()}P) · 주문 취소 시 자동 반환
               </p>
             </section>
           )}
