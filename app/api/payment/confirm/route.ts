@@ -182,7 +182,7 @@ export async function POST(req: Request) {
       const unit = p.sale_price ?? p.price;
       const subtotal = unit * item.quantity;
       expectedProducts += subtotal;
-      expectedShipping = Math.max(expectedShipping, p.shipping_fee);
+      expectedShipping += p.shipping_fee * item.quantity; // 품목당 합산 — computeCartTotal·웹훅·게스트 RPC와 동일 식
       if (p.is_donation || p.is_virtual) hasDonationOrVirtual = true;
       const correctDonation = p.is_donation ? Math.floor((subtotal * p.donation_percent) / 100) : 0;
       if (item.donation_amount !== correctDonation) {

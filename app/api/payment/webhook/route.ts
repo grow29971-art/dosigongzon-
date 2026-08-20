@@ -237,7 +237,7 @@ export async function POST(req: Request) {
         if (!p) { bad = true; break; }
         const subtotal = (p.sale_price ?? p.price) * it.quantity;
         prodSum += subtotal;
-        ship = Math.max(ship, p.shipping_fee);
+        ship += p.shipping_fee * it.quantity; // 품목당 합산 — computeCartTotal·confirm·게스트 RPC와 동일 식
         if (p.is_donation || p.is_virtual) hasDonation = true;
         const correctDonation = p.is_donation ? Math.floor((subtotal * p.donation_percent) / 100) : 0;
         if (it.donation_amount !== correctDonation) {

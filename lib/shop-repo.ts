@@ -261,6 +261,9 @@ export async function removeFromCart(cartItemId: string): Promise<void> {
 }
 
 // ── 배송비 포함 합계 계산 (무료배송 상품은 shipping_fee=0) ──
+// 배송비는 품목당 합산(shipping_fee × 수량) — D-day 게이트 3.
+// ⚠ payment/confirm·payment/webhook의 서버 재계산, create_guest_order RPC와
+//   반드시 같은 식이어야 한다. 한 곳만 바꾸면 금액 검증(integrity)이 어긋나 주문이 전부 죽는다.
 export function computeCartTotal(items: CartItem[]): {
   productTotal: number;
   shippingFee: number;
@@ -271,7 +274,7 @@ export function computeCartTotal(items: CartItem[]): {
   for (const item of items) {
     const unitPrice = item.product.sale_price ?? item.product.price;
     productTotal += unitPrice * item.quantity;
-    shippingFee = Math.max(shippingFee, item.product.shipping_fee);
+    shippingFee += item.product.shipping_fee * item.quantity;
   }
   return { productTotal, shippingFee, grandTotal: productTotal + shippingFee };
 }
