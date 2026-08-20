@@ -129,6 +129,7 @@ export default function OrderDetailPage() {
     deliveredAt: order.delivered_at ?? null,
     // 서버(buildRefundOrderInput)와 같은 근거를 써야 화면 안내와 실제 판정이 갈리지 않는다
     hasTracking: !!order.tracking_number?.trim(),
+    shippingFee: order.shipping_fee ?? 0,
     hasPhysicalItem: !!order.recipient_address,
     hasDonationItem: order.items.some((i) => (i.donation_amount ?? 0) > 0),
     allVirtual: !order.recipient_address,

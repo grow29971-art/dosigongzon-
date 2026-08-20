@@ -17,8 +17,18 @@ export const WITHDRAWAL_DAYS = 7;
 // "안 날부터 30일 / 받은 날부터 3개월" 중 먼저 오는 날. 여기선 보수적으로 받은 날 기준 3개월.
 export const DEFECT_CLAIM_DAYS = 90;
 
-// 반품 배송비(단순변심 시 구매자 부담분). products.shipping_fee 기본값과 맞춤.
-export const RETURN_SHIPPING_FEE = 3000;
+// 반품 배송비(단순변심 시 구매자 부담분) — D-day 게이트 6 (2026-08-20).
+// 3,000원 고정은 20kg 사료 반품(왕복 실비 11,000원)에서 건당 −8,000원 출혈이라 폐기.
+// 규칙: 주문 배송비에 연동한다(무게·부피가 배송비에 이미 반영돼 있으므로 간접 무게 연동).
+//   - 주문 배송비 > 0: 구매자가 최초 편도를 이미 부담 → 반품 편도(= 주문 배송비)만 차감.
+//   - 주문 배송비 = 0(무료배송): 판매자가 최초 편도를 부담한 상태 → 왕복 실비를 차감.
+// ⚠ 이 숫자·규칙은 /shop/policy 고지와 일치해야 한다 — policy 페이지가 아래 상수를
+//   직접 import해 렌더하므로 상수만 바꾸면 고지도 함께 바뀐다(불일치 원천 차단).
+export const RETURN_SHIPPING_FEE_BASE = 5500; // 편도 택배 실비 기준(20kg 이하 일반 택배)
+
+export function returnShippingFeeFor(orderShippingFee: number): number {
+  return orderShippingFee > 0 ? orderShippingFee : RETURN_SHIPPING_FEE_BASE * 2;
+}
 
 export type RefundReasonCode =
   | "change_of_mind"    // 단순변심
@@ -72,6 +82,7 @@ export interface RefundOrderInput {
   // 관리자가 운송장만 입력하고 상태를 안 바꾸면 shipped_at은 null로 남기 때문
   // (shop-admin-repo.ts:230-236은 status가 shipping/delivered로 갈 때만 shipped_at을 채운다).
   hasTracking: boolean;
+  shippingFee: number;         // 주문 시 부과된 배송비 — 반품 배송비 산정 근거(게이트 6)
   hasPhysicalItem: boolean;    // 실물 상품 포함 여부 (재고 복원·회수 필요)
   hasDonationItem: boolean;    // 후원 상품 포함 여부 (공개 집계 차감 필요)
   allVirtual: boolean;         // 전 품목이 가상상품
@@ -131,7 +142,7 @@ export function decideRefund(
   // 상태만 보면 송장이 나간 주문에서 반품비를 못 물려 판매자가 왕복 배송비를 떠안는다.
   const dispatched = order.hasTracking || !!order.shippedAt;
   const shipped = order.status === "shipping" || order.status === "delivered" || dispatched;
-  const returnFee = bearer === "buyer" && shipped ? RETURN_SHIPPING_FEE : 0;
+  const returnFee = bearer === "buyer" && shipped ? returnShippingFeeFor(order.shippingFee) : 0;
 
   // ── 1. 전 품목 가상상품 — 배송 개념이 없다 ──
   if (order.allVirtual) {

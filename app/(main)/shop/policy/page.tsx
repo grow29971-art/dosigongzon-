@@ -3,6 +3,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+// 반품 배송비 고지는 정책 상수를 직접 렌더 — lib/refund-policy.ts와 불일치가 원천 불가능
+import { RETURN_SHIPPING_FEE_BASE } from "@/lib/refund-policy";
 
 export const metadata: Metadata = {
   title: "쇼핑몰 이용안내 | 도시공존",
@@ -80,7 +82,11 @@ export default function ShopPolicyPage() {
           <h2 className="text-[13px] font-bold text-text-main mb-2.5">교환·반품 안내</h2>
           <ul className="space-y-1.5">
             <Item>상품을 받은 날부터 <b className="text-text-main">7일 이내</b>에 교환·반품을 신청할 수 있어요. (전자상거래법 제17조)</Item>
-            <Item>단순 변심에 의한 교환·반품은 왕복 배송비를 구매자가 부담해요.</Item>
+            <Item>
+              단순 변심에 의한 교환·반품은 왕복 배송비를 구매자가 부담해요. 반품 배송비는
+              주문 시 결제한 배송비와 같은 금액이 환불액에서 차감되며, 무료배송 상품은 왕복
+              택배 실비 {(RETURN_SHIPPING_FEE_BASE * 2).toLocaleString()}원이 차감돼요.
+            </Item>
             <Item>상품 하자·오배송의 경우 배송비 전액을 판매자가 부담해요.</Item>
             <Item>
               다음의 경우에는 교환·반품이 어려워요: 사용·훼손으로 상품 가치가 떨어진 경우,

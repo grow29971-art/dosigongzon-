@@ -28,6 +28,7 @@ export interface RefundOrderRow {
   order_number: string;
   status: OrderStatus;
   payment_amount: number;
+  shipping_fee: number;
   payment_key: string | null;
   points_used?: number | null;
   refund_status?: string | null;
@@ -69,6 +70,7 @@ export function buildRefundOrderInput(
     shippedAt: order.shipped_at ?? null,
     deliveredAt: order.delivered_at ?? null,
     hasTracking: !!order.tracking_number?.trim(),
+    shippingFee: order.shipping_fee ?? 0,
     hasPhysicalItem: itemFlags.some((f) => f?.is_virtual !== true),
     hasDonationItem: items.some((it, i) => (it.donation_amount ?? 0) > 0 || itemFlags[i]?.is_donation === true),
     allVirtual: items.length > 0 && itemFlags.every((f) => f?.is_virtual === true),
