@@ -9,6 +9,7 @@ import { useAuth } from "@/lib/auth-context";
 import { addToCart, SHOP_CATEGORIES, type Product } from "@/lib/shop-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { PRODUCT_DISCLOSURES, PRODUCT_DETAIL_IMAGES } from "@/lib/product-disclosure";
+import ProductReviews from "./ProductReviews";
 
 function formatWon(amount: number): string {
   return `${amount.toLocaleString()}원`;
@@ -296,6 +297,9 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             )}
           </div>
         )}
+
+        {/* 구매후기 — 가상상품(후원)은 제외 */}
+        {!isVirtual && <ProductReviews productId={product.id} />}
       </div>
 
       {/* 토스트 */}
