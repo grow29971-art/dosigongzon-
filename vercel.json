@@ -2,6 +2,10 @@
   "regions": ["icn1"],
   "crons": [
     {
+      "path": "/api/cron/order-dispatch",
+      "schedule": "0 4 * * *"
+    },
+    {
       "path": "/api/cron/sync-pharmacies",
       "schedule": "0 18 * * *"
     },

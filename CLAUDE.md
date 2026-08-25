@@ -72,6 +72,7 @@ box/                 — SQL 마이그레이션 + 개발일지 (배포 안 함)
 - `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_EMAIL`
 - `NEXT_PUBLIC_META_PIXEL_ID`(클라이언트 fbq), `META_PIXEL_ACCESS_TOKEN`(서버 CAPI — 미설정 시 lib/meta-capi.ts는 silent skip)
 - `GOOGLE_GENERATIVE_AI_API_KEY`(Gemini AI 챗봇·이미지 변환), `CRON_SECRET`(/api/cron/*)
+- `TELEGRAM_BOT_TOKEN`, `TELEGRAM_ADMIN_CHAT_ID`(발주 다이제스트 등 운영자 텔레그램 알림 — 미설정 시 lib/telegram.ts silent skip)
 
 ## 자주 쓰는 명령
 ```bash
