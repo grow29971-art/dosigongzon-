@@ -35,6 +35,15 @@ export async function computeFundSettlement(svc: SupabaseClient): Promise<FundSe
       .reduce((s, r) => s + (r.donation_amount ?? 0), 0);
   }
 
+  // 수동 조정(증액/감액) 합산 — 오프라인 후원·정정 등 앱 밖의 돈 (테이블 없으면 조용히 0)
+  const { data: adjRows, error: adjErr } = await svc
+    .from("fund_adjustments")
+    .select("amount");
+  if (!adjErr && adjRows) {
+    collected += (adjRows as { amount: number }[])
+      .reduce((s, r) => s + (r.amount ?? 0), 0);
+  }
+
   // 쓰인 금액(전체 합계) + 최근 지출 내역 (테이블 없으면 조용히 0)
   let spent = 0;
   let disbursements: { amount: number; memo: string; spent_at: string }[] = [];

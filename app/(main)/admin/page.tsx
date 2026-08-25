@@ -112,8 +112,8 @@ export default function AdminDashboardPage() {
     },
     {
       href: "/admin/fund",
-      title: "후원금 지출 관리",
-      subtitle: "투명 정산 위젯에 쓰인 금액 등록",
+      title: "후원금 관리",
+      subtitle: "지출 등록·금액 조정·정산 카드 갱신",
       Icon: HeartHandshake,
       color: "var(--color-like)",
     },
