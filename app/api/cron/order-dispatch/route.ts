@@ -26,8 +26,12 @@ interface OrderRow {
   postal_code: string | null;
   memo: string | null;
   paid_at: string | null;
+  payment_amount: number;
+  shipping_fee: number;
   items: { product_name: string; quantity: number }[];
 }
+
+const won = (n: number) => `${n.toLocaleString()}원`;
 
 async function handle(request: Request): Promise<Response> {
   const authHeader = request.headers.get("authorization");
@@ -39,7 +43,7 @@ async function handle(request: Request): Promise<Response> {
   const svc = createServiceClient();
   const { data, error } = await svc
     .from("orders")
-    .select("id, order_number, recipient_name, recipient_phone, recipient_address, recipient_address_detail, postal_code, memo, paid_at, items:order_items(product_name, quantity)")
+    .select("id, order_number, recipient_name, recipient_phone, recipient_address, recipient_address_detail, postal_code, memo, paid_at, payment_amount, shipping_fee, items:order_items(product_name, quantity)")
     .eq("status", "paid")
     .not("recipient_address", "is", null) // 실물 주문만 (후원/가상은 배송 없음)
     .order("paid_at", { ascending: true });
@@ -54,26 +58,32 @@ async function handle(request: Request): Promise<Response> {
     return Response.json({ ok: true, orders: 0, sent: 0, note: "발주 대상 없음 — 발송 생략" });
   }
 
-  const today = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+  const kst = new Date(Date.now() + 9 * 3600e3);
+  const today = `${kst.getUTCMonth() + 1}월 ${kst.getUTCDate()}일`;
+  const totalAmount = orders.reduce((s, o) => s + (o.payment_amount ?? 0), 0);
   const lines: string[] = [
-    `📦 도시공존 발주 다이제스트 — ${today} 13:00`,
-    `결제완료 ${orders.length}건 · 아래를 대즐(드롭쉬핑)에 전달 + 입금해주세요.`,
+    `📦 오늘 보낼 주문 ${orders.length}건 (${today})`,
+    "아래 내용을 대즐에 전달하고 입금해 주세요.",
     "",
   ];
   orders.forEach((o, i) => {
-    const itemsLine = o.items.map((it) => `${it.product_name} × ${it.quantity}`).join(", ");
+    const itemsLine = o.items.map((it) => `${it.product_name} × ${it.quantity}개`).join(", ");
     lines.push(
-      `[${i + 1}] ${o.order_number}`,
-      `· 품목: ${itemsLine}`,
-      `· 수취인: ${o.recipient_name ?? "-"} / ${o.recipient_phone ?? "-"}`,
-      `· 주소: (${o.postal_code ?? "-"}) ${o.recipient_address ?? "-"}${o.recipient_address_detail ? " " + o.recipient_address_detail : ""}`,
+      `${i + 1}번 주문 · ${o.order_number}`,
+      `- 상품: ${itemsLine}`,
+      `- 받는 분: ${o.recipient_name ?? "-"} (${o.recipient_phone ?? "-"})`,
+      `- 주소: (${o.postal_code ?? "-"}) ${o.recipient_address ?? "-"}${o.recipient_address_detail ? " " + o.recipient_address_detail : ""}`,
+      `- 결제금액: ${won(o.payment_amount ?? 0)}${o.shipping_fee > 0 ? ` (배송비 ${won(o.shipping_fee)} 포함)` : ""}`,
     );
-    if (o.memo) lines.push(`· 메모: ${o.memo}`);
+    if (o.memo) lines.push(`- 요청사항: ${o.memo}`);
     lines.push("");
   });
+  if (orders.length > 1) {
+    lines.push(`💰 오늘 결제금액 합계: ${won(totalAmount)}`, "");
+  }
   lines.push(
-    "발주 전달 후 관리자 → 주문 관리에서 '상품준비중'으로 바꿔주세요.",
-    "안 바꾸면 내일 다이제스트에 다시 표시됩니다(누락 방지).",
+    "✅ 다 보냈으면 관리자 → 주문 관리에서 '상품준비중'으로 바꿔주세요.",
+    "안 바꾸면 내일 또 알려드려요 (깜빡 방지).",
   );
 
   const sent = await sendTelegramToAdmin(lines.join("\n"));
