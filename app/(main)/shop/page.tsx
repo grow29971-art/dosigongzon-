@@ -205,7 +205,7 @@ export default function ShopPage() {
         accent="#E8930C"
         accentDark="#B5720A"
         items={[
-          { emoji: "💛", text: <>결제 금액의 <b className="text-text-main">10%</b>는 길고양이 <b className="text-text-main">중성화(TNR)</b>에 써요. 모인 금액과 쓴 금액은 그대로 공개돼요.</> },
+          { emoji: "💛", text: <>수익(이익)의 <b className="text-text-main">10%</b>는 길고양이 <b className="text-text-main">중성화(TNR)</b>에 써요. 모인 금액과 쓴 금액은 그대로 공개돼요.</> },
           { emoji: "🐾", text: <>매일 돌봄 출석으로 모은 포인트를 <b className="text-text-main">1P = 1원</b> 할인으로 쓸 수 있어요.</> },
           { emoji: "🔍", text: <>모인 금액·쓰인 금액을 <b className="text-text-main">투명하게 공개</b>해요.</> },
         ]}
@@ -274,7 +274,7 @@ export default function ShopPage() {
         }}
       >
         <p className="text-[13px] font-bold text-text-main leading-relaxed">
-          여기서 사면 <b style={{ color: "var(--color-primary-dark)" }}>결제 금액의 10%</b>가
+          여기서 사면 <b style={{ color: "var(--color-primary-dark)" }}>수익(이익)의 10%</b>가
           <br />길고양이 <b style={{ color: "var(--color-primary-dark)" }}>중성화(TNR)</b>에 쓰여요
         </p>
         {/* 투명성 안내 */}

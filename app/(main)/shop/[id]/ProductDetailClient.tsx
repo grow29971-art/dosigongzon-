@@ -189,7 +189,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             <p className="text-[13px] font-bold leading-relaxed" style={{ color: "var(--color-primary-dark)" }}>
               {product.donation_percent === 100
                 ? "이 후원금은 전액 길고양이를 위해 사용됩니다 💛"
-                : `이 상품은 결제 금액의 ${product.donation_percent}%가 길고양이 중성화(TNR)에 쓰여요 🐱`}
+                : `이 상품은 수익(이익)의 ${product.donation_percent}%가 길고양이 중성화(TNR)에 쓰여요 🐱`}
             </p>
             {/* 구매 → 수익 → 후원 미니 흐름 */}
             {product.donation_percent !== 100 && (
