@@ -13,6 +13,7 @@ import {
   decideRefund, refundableAmount, REFUND_REASON_LABELS,
   type RefundOrderInput, type RefundReasonCode,
 } from "@/lib/refund-policy";
+import { trackingSearchUrl } from "@/lib/courier";
 
 // 유저가 고를 수 있는 환불 사유 (서버 USER_REASONS와 동일 세트)
 const USER_REASONS: RefundReasonCode[] = [
@@ -295,9 +296,21 @@ export default function OrderDetailPage() {
               <p className="text-[13px] text-text-light mt-2">메모: {order.memo}</p>
             )}
             {order.tracking_number && (
-              <p className="text-[13px] text-text-sub mt-2 flex items-center gap-1.5">
-                <Truck size={13} /> 운송장번호 <span className="font-bold text-text-main">{order.tracking_number}</span>
-              </p>
+              <div className="mt-2.5">
+                <p className="text-[13px] text-text-sub flex items-center gap-1.5">
+                  <Truck size={13} /> {order.courier ? `${order.courier} · ` : ""}운송장번호{" "}
+                  <span className="font-bold text-text-main">{order.tracking_number}</span>
+                </p>
+                <a
+                  href={trackingSearchUrl(order.courier, order.tracking_number)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-2 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[13px] font-bold press transition-transform"
+                  style={{ background: "var(--color-primary-soft)", color: "var(--color-primary-dark)", border: "1px solid rgba(173,94,59,0.18)" }}
+                >
+                  <Truck size={14} /> 배송 조회하기
+                </a>
+              </div>
             )}
           </section>
 

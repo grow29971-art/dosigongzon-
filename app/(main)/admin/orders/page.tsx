@@ -8,6 +8,7 @@ import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { ORDER_STATUS_MAP, orderDisplayName, type OrderStatus, type OrderWithItems } from "@/lib/order-repo";
 import { listAllOrders, listOpenRefunds, updateOrderAdmin, type AdminRefundRequest } from "@/lib/shop-admin-repo";
 import { REFUND_REASON_LABELS, type RefundReasonCode } from "@/lib/refund-policy";
+import { COURIERS } from "@/lib/courier";
 
 // 환불 원장 상태별 표시 (requested 외에는 비정상 중단 건 — 재시도 대상)
 const REFUND_STATE_LABEL: Record<AdminRefundRequest["status"], { label: string; color: string }> = {
@@ -41,8 +42,10 @@ export default function AdminOrdersPage() {
   const [openId, setOpenId] = useState<string | null>(null);
   const [draftStatus, setDraftStatus] = useState<OrderStatus>("paid");
   const [draftTracking, setDraftTracking] = useState("");
+  const [draftCourier, setDraftCourier] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
 
   const [refunds, setRefunds] = useState<AdminRefundRequest[]>([]);
   const [refundBusyId, setRefundBusyId] = useState<string | null>(null);
@@ -110,17 +113,37 @@ export default function AdminOrdersPage() {
     setOpenId(order.id);
     setDraftStatus(order.status);
     setDraftTracking(order.tracking_number ?? "");
+    setDraftCourier(order.courier ?? "");
     setError("");
+    setNotice("");
   };
 
   const handleSave = async (order: OrderWithItems) => {
     setSaving(true);
     setError("");
+    setNotice("");
     try {
       await updateOrderAdmin(order, {
         status: draftStatus,
         tracking_number: draftTracking.trim() || null,
+        courier: draftCourier || null,
       });
+      // 배송중으로 처음 전환되면 구매자에게 푸시+쪽지 알림 (실패해도 저장은 유지)
+      if (draftStatus === "shipping" && order.status !== "shipping") {
+        try {
+          const r = await fetch("/api/admin/notify-shipping", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderId: order.id }),
+          });
+          const d = await r.json().catch(() => ({}));
+          if (r.ok && d.reason === "guest") setNotice("저장 완료 · 게스트 주문이라 알림은 보낼 수 없어요.");
+          else if (r.ok) setNotice(`저장 완료 · 구매자에게 알림 발송 (푸시 ${d.sent ?? 0}건${d.dm ? " + 쪽지" : ""})`);
+          else setNotice("저장 완료 · 알림 발송은 실패했어요.");
+        } catch {
+          setNotice("저장 완료 · 알림 발송은 실패했어요.");
+        }
+      }
       await refresh(filter);
       setOpenId(null);
     } catch (e) {
@@ -278,6 +301,12 @@ export default function AdminOrdersPage() {
         ))}
       </div>
 
+      {notice && (
+        <p className="mb-3 px-3 py-2 rounded-xl text-[13px] font-bold" style={{ background: "rgba(107,142,111,0.12)", color: "#4F6B53" }}>
+          {notice}
+        </p>
+      )}
+
       {loading ? (
         <div className="flex justify-center pt-10">
           <Loader2 size={24} className="animate-spin text-primary" />
@@ -355,6 +384,17 @@ export default function AdminOrdersPage() {
                       </select>
                     </div>
                     <div className="mt-2 flex items-center gap-2">
+                      <select
+                        value={draftCourier}
+                        onChange={(e) => setDraftCourier(e.target.value)}
+                        className="px-3 py-2.5 text-[13px] font-bold outline-none shrink-0"
+                        style={{ background: "var(--color-warm-white)", borderRadius: "var(--radius-square-lg)", border: "1px solid var(--color-divider)", maxWidth: 130 }}
+                      >
+                        <option value="">택배사</option>
+                        {COURIERS.map((c) => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
                       <div className="flex-1 flex items-center gap-1.5 px-3 py-2.5" style={{ background: "var(--color-warm-white)", borderRadius: "var(--radius-square-lg)", border: "1px solid var(--color-divider)" }}>
                         <Truck size={13} className="text-text-light shrink-0" />
                         <input
@@ -375,6 +415,11 @@ export default function AdminOrdersPage() {
                         저장
                       </button>
                     </div>
+                    {draftStatus === "shipping" && order.status !== "shipping" && (
+                      <p className="mt-2 text-[11px] text-text-light">
+                        배송중으로 저장하면 구매자에게 &ldquo;배송 시작&rdquo; 푸시·쪽지가 자동 발송돼요.
+                      </p>
+                    )}
 
                     {(draftStatus === "cancelled" || draftStatus === "refunded") && order.status !== "cancelled" && order.status !== "refunded" && (
                       <p className="mt-2 text-[11px] font-bold" style={{ color: "#D85555" }}>

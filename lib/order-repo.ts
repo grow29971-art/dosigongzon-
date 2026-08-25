@@ -53,6 +53,7 @@ export interface Order {
   refund_reason?: string | null;
   shipped_at?: string | null;   // 청약철회 7일 기산점 — 관리자가 배송중 전환 시 기록
   delivered_at?: string | null;
+  courier?: string | null;      // 택배사 — 운송장과 함께 배송 조회 링크 구성 (마이그레이션 전엔 없음)
 }
 
 export interface OrderItem {

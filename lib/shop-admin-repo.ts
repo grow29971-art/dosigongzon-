@@ -257,7 +257,7 @@ const STOCK_RESTORE_FROM: OrderStatus[] = ["paid", "preparing", "shipping"];
 //  그 전까지는 상태 관리 + 재고 복구만 담당)
 export async function updateOrderAdmin(
   order: OrderWithItems,
-  changes: { status?: OrderStatus; tracking_number?: string | null },
+  changes: { status?: OrderStatus; tracking_number?: string | null; courier?: string | null },
 ): Promise<void> {
   await requireAdmin();
   const supabase = createClient();
@@ -279,11 +279,12 @@ export async function updateOrderAdmin(
     .update({ ...changes, ...timestamps, updated_at: now })
     .eq("id", order.id);
 
-  // 마이그레이션 전(shipped_at/delivered_at 컬럼 없음)이면 시각 없이 재시도
+  // 마이그레이션 전(shipped_at/delivered_at/courier 컬럼 없음)이면 해당 컬럼 없이 재시도
   if (error && (error.code === "PGRST204" || error.code === "42703")) {
+    const { courier: _courier, ...legacyChanges } = changes;
     ({ error } = await supabase
       .from("orders")
-      .update({ ...changes, updated_at: now })
+      .update({ ...legacyChanges, updated_at: now })
       .eq("id", order.id));
   }
 
