@@ -18,6 +18,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { safePgError, maskPaymentKey, safeErrorMessage } from "@/lib/log-sanitize";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { maxPointsUsable } from "@/lib/points-config";
+import { donationForItem, embeddedCostPrice, type EmbeddedCost } from "@/lib/donation-calc";
 
 export const maxDuration = 60;
 
@@ -220,12 +221,13 @@ export async function POST(req: Request) {
     if (productIds.length !== items.length || items.length === 0) {
       expectedAmount = -1; // 상품 정보 이상 → 강제 불일치 처리
     } else {
+      // product_costs는 관리자·서버 전용 테이블 — service_role이라 임베드 조회 가능 (이익 기준 후원액 계산용)
       const { data: prods } = await svc
         .from("products")
-        .select("id, price, sale_price, shipping_fee, is_donation, donation_percent, is_virtual")
+        .select("id, price, sale_price, shipping_fee, is_donation, donation_percent, is_virtual, product_costs(cost_price)")
         .in("id", productIds);
       const pm = new Map(
-        ((prods ?? []) as { id: string; price: number; sale_price: number | null; shipping_fee: number; is_donation: boolean; donation_percent: number; is_virtual: boolean }[])
+        ((prods ?? []) as unknown as { id: string; price: number; sale_price: number | null; shipping_fee: number; is_donation: boolean; donation_percent: number; is_virtual: boolean; product_costs: EmbeddedCost }[])
           .map((p) => [p.id, p]),
       );
       let prodSum = 0;
@@ -239,7 +241,10 @@ export async function POST(req: Request) {
         prodSum += subtotal;
         ship += p.shipping_fee * it.quantity; // 품목당 합산 — computeCartTotal·confirm·게스트 RPC와 동일 식
         if (p.is_donation || p.is_virtual) hasDonation = true;
-        const correctDonation = p.is_donation ? Math.floor((subtotal * p.donation_percent) / 100) : 0;
+        const correctDonation = donationForItem(
+          { ...p, cost_price: embeddedCostPrice(p.product_costs) },
+          it.quantity,
+        ); // 이익 기준 — DB 트리거·게스트 RPC·confirm과 동일 식 (lib/donation-calc.ts)
         if (it.donation_amount !== correctDonation) {
           donationFixes.push({ id: it.id, donation_amount: correctDonation });
         }

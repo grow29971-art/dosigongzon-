@@ -20,6 +20,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { PAYMENT_ENABLED, PAYMENT_DISABLED_MESSAGE } from "@/lib/payments-config";
 import { maxPointsUsable } from "@/lib/points-config";
+import { donationForItem, embeddedCostPrice, type EmbeddedCost } from "@/lib/donation-calc";
 import { safePgError, maskPaymentKey, safeTossError, safeErrorMessage } from "@/lib/log-sanitize";
 
 const TOSS_CONFIRM_URL = "https://api.tosspayments.com/v1/payments/confirm";
@@ -156,16 +157,17 @@ export async function POST(req: Request) {
     if (productIds.length !== items.length) {
       return NextResponse.json({ error: "주문 상품 정보가 올바르지 않아요." }, { status: 400 });
     }
+    // product_costs는 관리자·서버 전용 테이블 — service_role이라 임베드 조회 가능 (이익 기준 후원액 계산용)
     const { data: prods, error: prodError } = await svc
       .from("products")
-      .select("id, price, sale_price, shipping_fee, is_active, is_donation, donation_percent, is_virtual")
+      .select("id, price, sale_price, shipping_fee, is_active, is_donation, donation_percent, is_virtual, product_costs(cost_price)")
       .in("id", productIds);
     if (prodError) {
       console.error("[payment/confirm] product verify fetch failed:", safePgError(prodError));
       return NextResponse.json({ error: "상품 확인 중 오류가 발생했어요." }, { status: 502 });
     }
     const priceMap = new Map(
-      ((prods ?? []) as { id: string; price: number; sale_price: number | null; shipping_fee: number; is_active: boolean; is_donation: boolean; donation_percent: number; is_virtual: boolean }[])
+      ((prods ?? []) as unknown as { id: string; price: number; sale_price: number | null; shipping_fee: number; is_active: boolean; is_donation: boolean; donation_percent: number; is_virtual: boolean; product_costs: EmbeddedCost }[])
         .map((p) => [p.id, p]),
     );
     let expectedProducts = 0;
@@ -184,7 +186,10 @@ export async function POST(req: Request) {
       expectedProducts += subtotal;
       expectedShipping += p.shipping_fee * item.quantity; // 품목당 합산 — computeCartTotal·웹훅·게스트 RPC와 동일 식
       if (p.is_donation || p.is_virtual) hasDonationOrVirtual = true;
-      const correctDonation = p.is_donation ? Math.floor((subtotal * p.donation_percent) / 100) : 0;
+      const correctDonation = donationForItem(
+        { ...p, cost_price: embeddedCostPrice(p.product_costs) },
+        item.quantity,
+      ); // 이익 기준 — DB 트리거·게스트 RPC·웹훅과 동일 식 (lib/donation-calc.ts)
       if (item.donation_amount !== correctDonation) {
         donationFixes.push({ id: item.id, donation_amount: correctDonation });
         item.donation_amount = correctDonation; // 응답(성공 화면)에도 교정값 반영

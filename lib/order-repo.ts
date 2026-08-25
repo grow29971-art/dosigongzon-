@@ -197,21 +197,19 @@ export async function createOrderFromCart(
 
   const created = order as Order;
 
-  // 주문 시점 상품 스냅샷 저장 (후원 적립액 포함 — 이후 비율 변경과 무관하게 고정)
+  // 주문 시점 상품 스냅샷 저장 — 후원액은 이익(판매가−매입가) 기준인데 매입가는
+  // 서버 전용(product_costs)이라 클라이언트가 계산할 수 없다. 0으로 보내면
+  // DB 트리거(enforce_order_item_snapshot)가 서버 권위값으로 강제 기록한다.
   const snapshots = items.map((item) => {
     const unitPrice = item.product.sale_price ?? item.product.price;
-    const subtotal = unitPrice * item.quantity;
-    const donationAmount = item.product.is_donation
-      ? Math.floor((subtotal * item.product.donation_percent) / 100)
-      : 0;
     return {
       order_id: created.id,
       product_id: item.product_id,
       product_name: item.product.name,
       product_price: unitPrice,
       quantity: item.quantity,
-      subtotal,
-      donation_amount: donationAmount,
+      subtotal: unitPrice * item.quantity,
+      donation_amount: 0,
     };
   });
   const { error: itemsError } = await supabase.from("order_items").insert(snapshots);

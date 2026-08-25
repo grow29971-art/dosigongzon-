@@ -119,6 +119,39 @@ export async function setProductActive(id: string, isActive: boolean): Promise<v
   }
 }
 
+// ── 매입가 (product_costs — 관리자·서버 전용 테이블, RLS로 일반 유저 비노출) ──
+// 후원 적립이 이익(판매가−매입가) 기준이라 매입가 입력이 곧 공개 정산의 정확도.
+// 미입력(행 없음)이면 0으로 간주 = 판매액 전체가 이익으로 계산된다.
+export async function getProductCosts(): Promise<Map<string, number>> {
+  await requireAdmin();
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("product_costs")
+    .select("product_id, cost_price");
+  if (error) {
+    // 마이그레이션 전(테이블 없음)이면 빈 맵 — 목록 화면은 계속 동작
+    console.error("[shop-admin-repo] getProductCosts failed:", error.code);
+    return new Map();
+  }
+  return new Map(
+    ((data ?? []) as { product_id: string; cost_price: number }[])
+      .map((r) => [r.product_id, r.cost_price]),
+  );
+}
+
+export async function setProductCost(productId: string, costPrice: number): Promise<void> {
+  await requireAdmin();
+  if (!Number.isInteger(costPrice) || costPrice < 0) throw new Error("매입가는 0 이상 정수여야 해요.");
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("product_costs")
+    .upsert({ product_id: productId, cost_price: costPrice, updated_at: new Date().toISOString() });
+  if (error) {
+    console.error("[shop-admin-repo] setProductCost failed:", error.code);
+    throw new Error("매입가 저장에 실패했어요. (profit_donation 마이그레이션 실행 여부 확인)");
+  }
+}
+
 // ── 상품 이미지 업로드 (cat-photos 버킷 재사용, product_ prefix) ──
 export async function uploadProductImage(file: File): Promise<string> {
   const adminId = await requireAdmin();

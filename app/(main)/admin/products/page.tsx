@@ -11,7 +11,8 @@ import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { CATEGORY_MAP, type Product, type ProductBadge, type ProductCategory } from "@/lib/shop-repo";
 import {
   listAllProducts, createProduct, updateProduct, setProductActive,
-  uploadProductImage, MAX_PRODUCT_IMAGES, type ProductInput,
+  uploadProductImage, getProductCosts, setProductCost,
+  MAX_PRODUCT_IMAGES, type ProductInput,
 } from "@/lib/shop-admin-repo";
 
 const CATEGORIES = Object.keys(CATEGORY_MAP) as ProductCategory[];
@@ -49,6 +50,9 @@ export default function AdminProductsPage() {
 
   const [editingId, setEditingId] = useState<string | null>(null); // 'new' | product id
   const [draft, setDraft] = useState<ProductInput>(EMPTY_DRAFT);
+  // 매입가 — products가 아닌 관리자 전용 product_costs 테이블 (이익 기준 후원 적립의 원천값)
+  const [costs, setCosts] = useState<Map<string, number>>(new Map());
+  const [draftCost, setDraftCost] = useState(0);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -59,7 +63,10 @@ export default function AdminProductsPage() {
       .then(async (admin) => {
         if (cancelled) return;
         setIsAdmin(admin);
-        if (admin) setItems(await listAllProducts());
+        if (admin) {
+          setItems(await listAllProducts());
+          setCosts(await getProductCosts());
+        }
       })
       .finally(() => {
         if (cancelled) return;
@@ -69,10 +76,14 @@ export default function AdminProductsPage() {
     return () => { cancelled = true; };
   }, []);
 
-  const refresh = async () => setItems(await listAllProducts());
+  const refresh = async () => {
+    setItems(await listAllProducts());
+    setCosts(await getProductCosts());
+  };
 
   const handleCreate = () => {
     setDraft(EMPTY_DRAFT);
+    setDraftCost(0);
     setEditingId("new");
     setError("");
   };
@@ -95,6 +106,7 @@ export default function AdminProductsPage() {
       is_virtual: p.is_virtual,
       supplier: p.supplier ?? null,
     });
+    setDraftCost(costs.get(p.id) ?? 0);
     setEditingId(p.id);
     setError("");
   };
@@ -103,8 +115,13 @@ export default function AdminProductsPage() {
     setSaving(true);
     setError("");
     try {
-      if (editingId === "new") await createProduct(draft);
+      let productId = editingId;
+      if (editingId === "new") productId = (await createProduct(draft)).id;
       else if (editingId) await updateProduct(editingId, draft);
+      // 매입가는 별도 테이블 — 값이 있거나 기존 값과 달라졌을 때만 저장
+      if (productId && productId !== "new" && draftCost !== (costs.get(productId) ?? 0)) {
+        await setProductCost(productId, draftCost);
+      }
       await refresh();
       setEditingId(null);
     } catch (e) {
@@ -385,6 +402,20 @@ export default function AdminProductsPage() {
                   maxLength={100}
                 />
               </label>
+              <label className="block">
+                <span className="text-[11px] font-bold text-text-sub">매입가 (원, 관리자만 봄)</span>
+                <input
+                  type="number"
+                  value={draftCost}
+                  onChange={(e) => setDraftCost(Math.max(0, parseInt(e.target.value) || 0))}
+                  className="w-full px-3 py-2.5 text-[13px] outline-none mt-1"
+                  style={inputStyle}
+                  min={0}
+                />
+                <span className="block text-[10px] text-text-light mt-0.5">
+                  후원 적립 = (판매가−매입가)의 {draft.donation_percent}% — 0이면 판매액 전체가 이익으로 계산돼요
+                </span>
+              </label>
             </div>
 
             {/* 이미지 업로드 */}
@@ -478,6 +509,7 @@ export default function AdminProductsPage() {
                   {" · "}재고 {p.stock} · {CATEGORY_MAP[p.category].label}
                   {p.is_donation ? ` · 💛${p.donation_percent}%` : ""}
                   {p.is_virtual ? " · 가상" : ""}
+                  {(costs.get(p.id) ?? 0) > 0 ? ` · 매입 ${formatWon(costs.get(p.id)!)}` : ""}
                 </p>
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
