@@ -207,6 +207,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             crossOrigin="anonymous"
           />
         </noscript>
+        {/* Noto Serif KR — D 에디토리얼 제목용 (jsdelivr fontsource: 기존 CSP style/font-src 범위 내).
+            제목에만 쓰여 폰트 파일은 실제 글리프 사용 시점에 로드됨(font-display: swap). */}
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/fontsource/css/noto-serif-kr@latest/700.css"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/fontsource/css/noto-serif-kr@latest/900.css"
+          crossOrigin="anonymous"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
