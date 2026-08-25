@@ -666,6 +666,21 @@ export default function HomeAuthed({
         </Link>
       )}
 
+      {/* ══════ 에디토리얼 매스트헤드 (2026-08-26 D안) — 날짜 아이브로 + 세리프 대제목 + 실데이터 헤드라인 ══════ */}
+      {user && (
+        <div className="mb-5 px-1">
+          <p className="text-[11px] font-bold" style={{ letterSpacing: "2.5px", color: "var(--color-primary)" }}>
+            {new Date().toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul", month: "long", day: "numeric", weekday: "long" })}
+          </p>
+          <h1 className="text-[30px] font-bold tracking-tight leading-tight text-text-main mt-1.5">오늘의 돌봄</h1>
+          <p className="mt-1.5 text-[13px] text-text-sub leading-relaxed">
+            {hungryCatName
+              ? `${hungryCatName}${(hungryCatName.charCodeAt(hungryCatName.length - 1) - 0xac00) % 28 > 0 ? "이" : ""}가 오늘 첫 밥을 기다리고 있어요`
+              : "오늘도 아이들 곁을 지켜주셔서 고마워요"}
+          </p>
+        </div>
+      )}
+
       {/* ══════ 첫 구원 프로젝트 — 사용처 투표 유도 배너 (닫기 가능, 2026-07-14) ══════ */}
       {SHOW_FUND_BANNER && <FirstProjectBanner />}
 
@@ -684,8 +699,9 @@ export default function HomeAuthed({
         >
           {SHOW_CARE_INBOX_HOME && (
             <div className="mb-3 px-1">
+              {/* 매스트헤드 대제목이 "오늘의 돌봄"을 가져가서 섹션명은 원래 이름으로 (2026-08-26 D안) */}
               <h2 id="care-inbox-title" className="text-[20px] font-bold tracking-tight text-text-main">
-                오늘의 돌봄
+                내 아이들
               </h2>
               <p className="mt-1 text-[13px] leading-relaxed text-text-sub">
                 아직 챙기지 못한 아이부터 확인하고 기록해 주세요.

@@ -67,7 +67,7 @@ export default function MapIntroSheet() {
           style={{ background: "rgba(0,0,0,0.12)" }}
         />
 
-        <h2 className="text-[20px] font-bold text-text-main tracking-tight leading-snug">
+        <h2 className="serif-display text-[22px] text-text-main tracking-tight leading-snug">
           우리 동네 길고양이,
           <br />
           지도 한 장에 다 있어요
