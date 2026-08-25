@@ -241,7 +241,7 @@ export default function CatLocationPicker({
             >
               📍 여기로 이동
             </div>
-            <MapPin size={36} fill="#AD5E3B" strokeWidth={1.5} color="#fff" />
+            <MapPin size={36} fill="#B05C36" strokeWidth={1.5} color="#fff" />
           </div>
         </div>
 
@@ -271,13 +271,13 @@ export default function CatLocationPicker({
           className="rounded-2xl px-4 py-3.5 mb-2.5"
           style={{
             background: "#FFF8F2",
-            border: "1.5px solid rgba(173, 94, 59,0.25)",
+            border: "1.5px solid rgba(176, 92, 54,0.25)",
           }}
         >
           <div className="flex items-center gap-3">
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "rgba(173, 94, 59,0.15)" }}
+              style={{ background: "rgba(176, 92, 54,0.15)" }}
             >
               <MapPin size={18} className="text-primary" />
             </div>

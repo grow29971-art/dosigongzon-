@@ -131,7 +131,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
                 href={c.href}
                 onClick={close}
                 className="flex flex-col items-center gap-1 py-2.5 rounded-xl press-strong transition-transform"
-                style={{ background: "#FAF5EE", border: "1px solid rgba(173, 94, 59,0.12)" }}
+                style={{ background: "#FAF5EE", border: "1px solid rgba(176, 92, 54,0.12)" }}
               >
                 <span className="text-xl">{c.emoji}</span>
                 <span className="text-[11px] font-bold" style={{ color: "#5C4A3E" }}>{c.label}</span>

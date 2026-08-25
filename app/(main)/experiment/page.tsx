@@ -180,7 +180,7 @@ export default function ExperimentPage() {
         <p className="text-[13px] font-bold" style={{ color: "var(--color-primary)" }}>
           동네 돌봄 실험
         </p>
-        <h1 className="text-[24px] font-bold mt-0.5" style={{ color: "var(--color-text, #191F28)" }}>
+        <h1 className="text-[24px] font-bold mt-0.5" style={{ color: "var(--color-text, #211D17)" }}>
           {experiment.publicAreaName} 돌봄 기록
         </h1>
         <p className="text-[13px] mt-1 flex items-center gap-1.5" style={{ color: "var(--color-text-light)" }}>
@@ -227,7 +227,7 @@ export default function ExperimentPage() {
                 style={{
                   minHeight: 56,
                   background: done ? "var(--color-primary-soft)" : "var(--color-surface-alt)",
-                  color: done ? "var(--color-primary)" : "#4E5968",
+                  color: done ? "var(--color-primary)" : "#5D564B",
                   border: done ? "1.5px solid var(--color-primary)" : "1.5px solid transparent",
                 }}
               >
@@ -303,7 +303,7 @@ export default function ExperimentPage() {
         style={{ background: "#fff", boxShadow: "var(--shadow-card)" }}
       >
         <h2 id="me-heading" className="text-[15px] font-bold mb-2">나의 기록</h2>
-        <p className="text-[15px]" style={{ color: "#4E5968" }}>
+        <p className="text-[15px]" style={{ color: "#5D564B" }}>
           이번 주 <b style={{ color: "var(--color-primary)" }}>{me.weekLogCount}회</b> · 실험 시작 후 누적{" "}
           <b style={{ color: "var(--color-primary)" }}>{me.totalLogCount}회</b>
         </p>
@@ -345,7 +345,7 @@ function Banner({ text }: { text: string }) {
   return (
     <div
       className="rounded-2xl px-4 py-3 mb-4 text-[13px] font-semibold"
-      style={{ background: "var(--color-primary-soft, rgba(173,94,59,0.1))", color: "var(--color-primary)" }}
+      style={{ background: "var(--color-primary-soft, rgba(176,92,54,0.1))", color: "var(--color-primary)" }}
     >
       {text}
     </div>

@@ -51,7 +51,7 @@ export default async function TipOGImage({ params }: { params: Params }) {
             width: 420,
             height: 420,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(173, 94, 59,0.25) 0%, rgba(173, 94, 59,0) 70%)",
+            background: "radial-gradient(circle, rgba(176, 92, 54,0.25) 0%, rgba(176, 92, 54,0) 70%)",
           }}
         />
 
@@ -95,7 +95,7 @@ export default async function TipOGImage({ params }: { params: Params }) {
                 width: 44,
                 height: 44,
                 borderRadius: 14,
-                background: "#AD5E3B",
+                background: "#B05C36",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -152,7 +152,7 @@ export default async function TipOGImage({ params }: { params: Params }) {
                   alignItems: "center",
                   padding: "8px 16px",
                   borderRadius: 999,
-                  background: "rgba(173, 94, 59,0.18)",
+                  background: "rgba(176, 92, 54,0.18)",
                   color: "#8B5A3C",
                   fontSize: 20,
                   fontWeight: 700,
@@ -171,7 +171,7 @@ export default async function TipOGImage({ params }: { params: Params }) {
                 color: "#8B5A3C",
                 fontSize: 20,
                 fontWeight: 800,
-                border: "2px solid rgba(173, 94, 59,0.3)",
+                border: "2px solid rgba(176, 92, 54,0.3)",
                 marginLeft: "auto",
               }}
             >

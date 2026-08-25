@@ -177,7 +177,7 @@ export default function AdminAnnouncementPage() {
         disabled={busy || !message.trim()}
         className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[15px] font-bold press disabled:opacity-60"
         style={{
-          background: "#C47E5A",
+          background: "#C97C52",
           boxShadow: "var(--shadow-primary)",
         }}
       >

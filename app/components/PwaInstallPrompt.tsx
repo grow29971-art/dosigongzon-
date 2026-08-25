@@ -161,7 +161,7 @@ export default function PwaInstallPrompt() {
           maxWidth: 420,
           background: "#FFFFFF",
           boxShadow: "var(--shadow-fab)",
-          border: "1px solid rgba(173, 94, 59,0.25)",
+          border: "1px solid rgba(176, 92, 54,0.25)",
         }}
       >
         <div className="flex items-start gap-3">

@@ -377,7 +377,7 @@ export default function CircleChatPage() {
                           style={{
                             background: isMine ? "var(--color-primary)" : "#FFFFFF",
                             color: isMine ? "#FFFFFF" : "#3D2F25",
-                            boxShadow: isMine ? "0 2px 6px rgba(173, 94, 59,0.25)" : "0 1px 3px rgba(0,0,0,0.05)",
+                            boxShadow: isMine ? "0 2px 6px rgba(176, 92, 54,0.25)" : "0 1px 3px rgba(0,0,0,0.05)",
                           }}
                         >
                           {m.body}

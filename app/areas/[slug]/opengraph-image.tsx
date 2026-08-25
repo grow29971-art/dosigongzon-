@@ -69,7 +69,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
             borderRadius: "50%",
             background: hasUrgent
               ? "radial-gradient(circle, rgba(216,85,85,0.22) 0%, rgba(216,85,85,0) 70%)"
-              : "radial-gradient(circle, rgba(173, 94, 59,0.22) 0%, rgba(173, 94, 59,0) 70%)",
+              : "radial-gradient(circle, rgba(176, 92, 54,0.22) 0%, rgba(176, 92, 54,0) 70%)",
           }}
         />
 
@@ -80,7 +80,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
               width: 52,
               height: 52,
               borderRadius: 16,
-              background: "#AD5E3B",
+              background: "#B05C36",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -110,7 +110,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
               fontWeight: 900,
               lineHeight: 1,
               letterSpacing: -3,
-              color: hasUrgent ? "#B53D3D" : "#AD5E3B",
+              color: hasUrgent ? "#B53D3D" : "#B05C36",
               display: "flex",
             }}
           >
@@ -155,7 +155,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
             emoji="🐾"
             value={catCount}
             label={`${guName}에 등록된 아이`}
-            color="#AD5E3B"
+            color="#B05C36"
           />
           {hasUrgent ? (
             <Stat
@@ -203,7 +203,7 @@ function Stat({
         display: "flex",
         flexDirection: "column",
         gap: 2,
-        border: urgent ? "none" : "2px solid rgba(173, 94, 59,0.20)",
+        border: urgent ? "none" : "2px solid rgba(176, 92, 54,0.20)",
         boxShadow: urgent ? "0 12px 32px rgba(216,85,85,0.35)" : "none",
       }}
     >

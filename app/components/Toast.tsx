@@ -124,7 +124,7 @@ function ToastCard({ item, onClose }: { item: ToastItem; onClose: () => void }) 
     <div
       className="pointer-events-auto flex items-start gap-2 px-4 py-3 w-full max-w-sm transition-all"
       style={{
-        background: "rgba(25,31,40,0.94)",
+        background: "rgba(33,29,23,0.94)",
         borderRadius: "var(--radius-input)",
         boxShadow: "var(--shadow-modal)",
         transform: entered ? "translateY(0)" : "translateY(-20px)",

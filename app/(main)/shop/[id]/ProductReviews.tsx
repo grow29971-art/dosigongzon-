@@ -263,7 +263,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
         <p className="mt-4 text-[13px] text-text-light">후기를 불러오는 중…</p>
       ) : reviews.length === 0 ? (
         <div className="mt-3 py-8 flex flex-col items-center gap-2 rounded-2xl" style={{ background: "var(--color-warm-white)" }}>
-          <PawPrint size={28} style={{ color: "rgba(173,94,59,0.28)" }} />
+          <PawPrint size={28} style={{ color: "rgba(176,92,54,0.28)" }} />
           <p className="text-[13px] text-text-light">아직 후기가 없어요. 구매하시면 첫 후기를 남길 수 있어요!</p>
         </div>
       ) : (
@@ -284,7 +284,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
                       <Image src={avatar} alt="" fill className="object-cover" sizes="32px" />
                     ) : (
                       <span className="w-full h-full flex items-center justify-center">
-                        <PawPrint size={15} style={{ color: "rgba(173,94,59,0.4)" }} />
+                        <PawPrint size={15} style={{ color: "rgba(176,92,54,0.4)" }} />
                       </span>
                     )}
                   </div>

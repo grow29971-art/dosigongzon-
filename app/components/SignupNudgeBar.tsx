@@ -73,8 +73,8 @@ export default function SignupNudgeBar() {
         className={`pointer-events-auto mx-auto mx-4 max-w-md rounded-2xl px-4 py-3 flex items-center gap-3 transition-all ${shown ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
         style={{
           background: "#FFFFFF",
-          boxShadow: "0 12px 36px rgba(173, 94, 59,0.28), 0 2px 6px rgba(0,0,0,0.08)",
-          border: "1px solid rgba(173, 94, 59,0.25)",
+          boxShadow: "0 12px 36px rgba(176, 92, 54,0.28), 0 2px 6px rgba(0,0,0,0.08)",
+          border: "1px solid rgba(176, 92, 54,0.25)",
           marginLeft: 12,
           marginRight: 12,
         }}

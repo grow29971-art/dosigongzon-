@@ -164,7 +164,7 @@ export default function AdminPushPage() {
       </div>
 
       {/* 미리보기 */}
-      <div className="rounded-2xl p-4 mb-5" style={{ backgroundColor: "#F5F3EE", border: "1px solid rgba(173, 94, 59,0.15)" }}>
+      <div className="rounded-2xl p-4 mb-5" style={{ backgroundColor: "#F5F3EE", border: "1px solid rgba(176, 92, 54,0.15)" }}>
         <p className="text-[11px] font-bold text-text-light mb-2">미리보기</p>
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
@@ -197,7 +197,7 @@ export default function AdminPushPage() {
           className="w-full text-left px-4 py-2.5 rounded-xl press transition-transform"
           style={{
             background: "#FFE3D3",
-            border: "1px solid rgba(173, 94, 59,0.35)",
+            border: "1px solid rgba(176, 92, 54,0.35)",
           }}
         >
           <p className="text-[13px] font-bold" style={{ color: "#8A4A28" }}>
@@ -218,7 +218,7 @@ export default function AdminPushPage() {
           className="w-full text-left px-4 py-2.5 rounded-xl press transition-transform"
           style={{
             background: "#FFE8C2",
-            border: "1px solid rgba(173, 94, 59,0.30)",
+            border: "1px solid rgba(176, 92, 54,0.30)",
           }}
         >
           <p className="text-[13px] font-bold" style={{ color: "#7A4F30" }}>
@@ -394,7 +394,7 @@ export default function AdminPushPage() {
             onClick={handleSchedule}
             disabled={sending || scheduling}
             className="w-full mt-3 py-3.5 rounded-2xl text-[15px] font-bold press-strong transition-transform disabled:opacity-60 flex items-center justify-center gap-2 bg-white"
-            style={{ color: "var(--color-primary-dark)", border: "1.5px solid rgba(173, 94, 59,0.35)" }}
+            style={{ color: "var(--color-primary-dark)", border: "1.5px solid rgba(176, 92, 54,0.35)" }}
           >
             {scheduling ? (
               <>
@@ -419,7 +419,7 @@ export default function AdminPushPage() {
                 <div
                   key={s.id}
                   className="rounded-2xl px-4 py-3"
-                  style={{ backgroundColor: "#F5F3EE", border: "1px solid rgba(173, 94, 59,0.15)" }}
+                  style={{ backgroundColor: "#F5F3EE", border: "1px solid rgba(176, 92, 54,0.15)" }}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1">
@@ -442,7 +442,7 @@ export default function AdminPushPage() {
                       <button
                         onClick={() => handleCancel(s.id)}
                         className="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 press-strong transition-transform"
-                        style={{ border: "1px solid rgba(173, 94, 59,0.25)" }}
+                        style={{ border: "1px solid rgba(176, 92, 54,0.25)" }}
                         aria-label="예약 취소"
                       >
                         <X size={14} className="text-text-sub" />

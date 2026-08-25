@@ -925,7 +925,7 @@ export default function HomeAuthed({
                     <Link
                       href={`/shop?category=${bridge.cat}`}
                       className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl press transition-transform"
-                      style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(173, 94, 59,0.15)" }}
+                      style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(176, 92, 54,0.15)" }}
                     >
                       <span className="flex items-center gap-1.5 text-[11px] font-bold" style={{ color: "var(--color-primary-dark)" }}>
                         <ShoppingBag size={13} />
@@ -1012,7 +1012,7 @@ export default function HomeAuthed({
                 style={{
                   background: "var(--color-primary-softer)",
                   borderRadius: "var(--radius-card)",
-                  border: "1px dashed rgba(173, 94, 59,0.3)",
+                  border: "1px dashed rgba(176, 92, 54,0.3)",
                 }}
               >
                 <div
@@ -1822,7 +1822,7 @@ export default function HomeAuthed({
                     background: "var(--color-surface)",
                     borderRadius: "var(--radius-card-sm)",
                     boxShadow: "var(--shadow-card-sm)",
-                    border: "1px solid rgba(173, 94, 59,0.18)",
+                    border: "1px solid rgba(176, 92, 54,0.18)",
                   }}
                 >
                   <div
@@ -1956,7 +1956,7 @@ export default function HomeAuthed({
           background: "var(--color-primary-softer)",
           borderRadius: "var(--radius-card)",
           boxShadow: "var(--shadow-card)",
-          border: "1px solid rgba(173, 94, 59,0.18)",
+          border: "1px solid rgba(176, 92, 54,0.18)",
         }}
       >
         <div

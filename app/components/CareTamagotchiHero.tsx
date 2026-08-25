@@ -574,8 +574,8 @@ const SCENE_CSS = `
 .cth-lamp::after{content:"";position:absolute;top:24px;left:-3px;width:22px;height:15px;border-radius:0 0 44% 44%;background:#FFD873;box-shadow:0 0 22px 9px rgba(255,216,110,.62)}
 .cth-rain{position:absolute;inset:0;z-index:2;pointer-events:none}
 .cth-rain i{position:absolute;top:-14px;width:2px;height:13px;border-radius:2px;background:rgba(180,205,225,.72);animation:cthFall linear infinite}
-.cth-rug{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:150px;height:30px;border-radius:50%;background:rgba(196,126,90,.20);z-index:1}
-.cth-bowl{position:absolute;bottom:16px;left:28px;width:42px;height:18px;border-radius:0 0 21px 21px;background:#C47E5A;z-index:2;box-shadow:inset 0 3px 0 rgba(255,255,255,.25)}
+.cth-rug{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:150px;height:30px;border-radius:50%;background:rgba(201,124,82,.20);z-index:1}
+.cth-bowl{position:absolute;bottom:16px;left:28px;width:42px;height:18px;border-radius:0 0 21px 21px;background:#C97C52;z-index:2;box-shadow:inset 0 3px 0 rgba(255,255,255,.25)}
 .cth-bowl::before{content:"";position:absolute;top:-5px;left:5px;right:5px;height:9px;border-radius:50%;background:#E8B98C}
 
 .cth-badge{position:relative;display:block;width:34px;height:34px;border-radius:11px;overflow:hidden;flex-shrink:0;

@@ -155,7 +155,7 @@ export default function KeyringEventPage() {
           className="rounded-2xl p-4"
           style={{
             background: "#FFF8F2",
-            border: "1.5px solid rgba(173, 94, 59,0.25)",
+            border: "1.5px solid rgba(176, 92, 54,0.25)",
           }}
         >
           <p className="text-[11px] font-bold tracking-[0.12em] mb-1" style={{ color: "var(--color-primary)" }}>
@@ -176,7 +176,7 @@ export default function KeyringEventPage() {
         <div className="px-4 mb-4">
           <div
             className="rounded-2xl p-4"
-            style={{ background: "#FFF", border: "1px solid rgba(173, 94, 59,0.18)", boxShadow: "var(--shadow-card)" }}
+            style={{ background: "#FFF", border: "1px solid rgba(176, 92, 54,0.18)", boxShadow: "var(--shadow-card)" }}
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-1.5">
@@ -189,7 +189,7 @@ export default function KeyringEventPage() {
             </div>
             <div
               className="w-full h-2 rounded-full overflow-hidden"
-              style={{ background: "rgba(173, 94, 59,0.15)" }}
+              style={{ background: "rgba(176, 92, 54,0.15)" }}
             >
               <div
                 className="h-full rounded-full transition-all"
@@ -251,11 +251,11 @@ export default function KeyringEventPage() {
           // 자격 미달: 등록한 고양이 0마리
           <div
             className="rounded-2xl p-6 text-center"
-            style={{ background: "#FFF", border: "1px dashed rgba(173, 94, 59,0.35)" }}
+            style={{ background: "#FFF", border: "1px dashed rgba(176, 92, 54,0.35)" }}
           >
             <div
               className="w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-3"
-              style={{ background: "rgba(173, 94, 59,0.12)" }}
+              style={{ background: "rgba(176, 92, 54,0.12)" }}
             >
               <PawPrint size={26} style={{ color: "var(--color-primary)" }} />
             </div>
@@ -305,7 +305,7 @@ export default function KeyringEventPage() {
                       className="relative block rounded-2xl overflow-hidden bg-white text-left press transition-transform"
                       style={{
                         boxShadow: selected
-                          ? "0 8px 22px rgba(173, 94, 59,0.35)"
+                          ? "0 8px 22px rgba(176, 92, 54,0.35)"
                           : "var(--shadow-raised)",
                         border: selected ? "2.5px solid var(--color-primary)" : "2.5px solid transparent",
                       }}

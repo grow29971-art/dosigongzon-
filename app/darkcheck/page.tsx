@@ -33,7 +33,7 @@ export default function DarkCheckPage() {
       if (ctx) {
         ctx.fillStyle = "#FFFFFF";
         ctx.fillRect(0, 0, c.width, c.height);
-        ctx.fillStyle = "#191F28";
+        ctx.fillStyle = "#211D17";
         ctx.font = "bold 16px sans-serif";
         ctx.fillText("B: 캔버스 (원래 흰색)", 12, 32);
       }
@@ -43,31 +43,31 @@ export default function DarkCheckPage() {
   const box: React.CSSProperties = {
     padding: "18px 14px",
     borderRadius: "var(--radius-square-lg)",
-    border: "2px solid #191F28",
+    border: "2px solid #211D17",
     fontWeight: 700,
     fontSize: 15,
     marginBottom: 10,
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#F9FAFB", color: "#191F28", padding: 20, fontFamily: "sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: "#FAF6F0", color: "#211D17", padding: 20, fontFamily: "sans-serif" }}>
       <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 4 }}>다크모드 진단</h1>
-      <p style={{ fontSize: 13, color: "#4E5968", marginBottom: 16 }}>
+      <p style={{ fontSize: 13, color: "#5D564B", marginBottom: 16 }}>
         이 화면을 캡처해서 보내주세요. 각 박스가 무슨 색으로 보이는지가 중요해요.
       </p>
 
       <div style={{ ...box, background: "#FFFFFF" }}>A: 일반 배경 (원래 흰색)</div>
-      <canvas ref={canvasRef} width={340} height={48} style={{ borderRadius: "var(--radius-square-lg)", border: "2px solid #191F28", display: "block", marginBottom: 10, maxWidth: "100%" }} />
+      <canvas ref={canvasRef} width={340} height={48} style={{ borderRadius: "var(--radius-square-lg)", border: "2px solid #211D17", display: "block", marginBottom: 10, maxWidth: "100%" }} />
       <div style={{ ...box, background: "none", backgroundImage: "linear-gradient(#FFFFFF, #FFFFFF)" }}>
         C: 그라디언트 배경 (원래 흰색)
       </div>
-      <div style={{ ...box, background: "#AD5E3B", color: "#FFFFFF", border: "none" }}>D: 테라코타 (원래 주황갈색)</div>
+      <div style={{ ...box, background: "#B05C36", color: "#FFFFFF", border: "none" }}>D: 테라코타 (원래 주황갈색)</div>
 
       <div style={{ marginTop: 20, padding: 14, borderRadius: "var(--radius-square-lg)", background: "#FFFFFF", fontSize: 13, lineHeight: 1.7, wordBreak: "break-all" }}>
         <div><b>브라우저:</b> {info.browser}</div>
         <div><b>시스템 다크모드:</b> {info.prefersDark ? "켜짐" : "꺼짐"}</div>
         <div><b>앱(설치형) 모드:</b> {info.standalone ? "예" : "아니오"}</div>
-        <div style={{ marginTop: 8, fontSize: 11, color: "#8B95A1" }}>{info.ua}</div>
+        <div style={{ marginTop: 8, fontSize: 11, color: "#A39A8D" }}>{info.ua}</div>
       </div>
     </div>
   );

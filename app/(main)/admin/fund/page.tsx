@@ -158,7 +158,7 @@ export default function AdminFundPage() {
       {/* 계산식 안내 — 세 숫자가 각각 어디서 오는지 한눈에 */}
       <div
         className="mb-4 px-3.5 py-3 rounded-2xl text-[13px] leading-relaxed"
-        style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(173, 94, 59,0.12)" }}
+        style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(176, 92, 54,0.12)" }}
       >
         <p className="font-bold text-text-main mb-1.5">숫자는 이렇게 계산돼요</p>
         <p className="text-text-sub">

@@ -117,7 +117,7 @@ export default function InstallAppMenuItem() {
           {installed ? (
             <Check size={18} color="#2E7D32" strokeWidth={2.2} />
           ) : (
-            <Download size={18} color="#AD5E3B" strokeWidth={2.2} />
+            <Download size={18} color="#B05C36" strokeWidth={2.2} />
           )}
         </div>
         <div className="flex-1 min-w-0 text-left">

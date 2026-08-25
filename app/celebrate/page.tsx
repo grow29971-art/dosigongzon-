@@ -58,7 +58,7 @@ export default async function CelebratePage() {
 
       {/* 히어로 — 출시 축하 */}
       <section className="px-5 pt-8 text-center">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mb-4" style={{ background: "rgba(173, 94, 59,0.12)", color: "var(--color-primary-dark)" }}>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mb-4" style={{ background: "rgba(176, 92, 54,0.12)", color: "var(--color-primary-dark)" }}>
           <Sparkles size={12} />
           <span className="text-[11px] font-bold tracking-[0.18em]">OFFICIAL LAUNCH · 2026.06.01</span>
         </div>
@@ -83,7 +83,7 @@ export default async function CelebratePage() {
             icon={<PawPrint size={18} color="#fff" />}
             value={stats.cats.toLocaleString()}
             label="등록된 아이들"
-            color="#AD5E3B"
+            color="#B05C36"
             accent="var(--color-primary-dark)"
           />
           <StatBlock
@@ -109,7 +109,7 @@ export default async function CelebratePage() {
           className="rounded-3xl p-6"
           style={{
             background: "#FFF9F2",
-            border: "1px solid rgba(173, 94, 59,0.20)",
+            border: "1px solid rgba(176, 92, 54,0.20)",
           }}
         >
           <p className="text-[13px] leading-[2] text-text-sub">
@@ -138,8 +138,8 @@ export default async function CelebratePage() {
         <div
           className="rounded-2xl p-5 text-center"
           style={{
-            background: "rgba(173, 94, 59,0.10)",
-            border: "1px solid rgba(173, 94, 59,0.20)",
+            background: "rgba(176, 92, 54,0.10)",
+            border: "1px solid rgba(176, 92, 54,0.20)",
           }}
         >
           <Trophy size={22} className="mx-auto mb-2" style={{ color: "var(--color-primary)" }} />
@@ -170,7 +170,7 @@ export default async function CelebratePage() {
         <Link
           href="/maker"
           className="block w-full text-center py-2.5 rounded-2xl text-[13px] font-bold mt-2 press"
-          style={{ background: "#FFFFFF", color: "var(--color-primary-dark)", border: "1px solid rgba(173, 94, 59,0.25)" }}
+          style={{ background: "#FFFFFF", color: "var(--color-primary-dark)", border: "1px solid rgba(176, 92, 54,0.25)" }}
         >
           운영 이야기 보기
         </Link>

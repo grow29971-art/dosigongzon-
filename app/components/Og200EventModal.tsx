@@ -171,7 +171,7 @@ export default function Og200EventModal() {
               type="button"
               onClick={dismiss}
               className="flex-1 py-3 rounded-2xl text-[13px] font-bold press bg-white"
-              style={{ color: "var(--color-primary-dark)", border: "1.5px solid rgba(173, 94, 59,0.30)" }}
+              style={{ color: "var(--color-primary-dark)", border: "1.5px solid rgba(176, 92, 54,0.30)" }}
             >
               나중에
             </button>

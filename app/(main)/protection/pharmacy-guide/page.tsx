@@ -475,7 +475,7 @@ export default async function PharmacyGuidePage() {
       {/* 관련 가이드 */}
       <section className="mb-8">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <BookOpen size={18} color="#AD5E3B" />
+          <BookOpen size={18} color="#B05C36" />
           관련 가이드
         </h2>
         <div className="space-y-2">

@@ -29,7 +29,7 @@ import {
 const PREVIEW_COUNT = 4;
 
 const TYPE_CONFIG: Record<NotificationType, { icon: typeof Bell; color: string; bg: string }> = {
-  comment_on_my_cat:   { icon: MessageCircle, color: "var(--color-primary)", bg: "#AD5E3B15" },
+  comment_on_my_cat:   { icon: MessageCircle, color: "var(--color-primary)", bg: "#B05C3615" },
   carelog_on_my_cat:   { icon: Heart,         color: "#6B8E6F", bg: "#6B8E6F15" },
   dm_received:         { icon: MessageCircle, color: "#4A7BA8", bg: "#4A7BA815" },
   alert_on_my_cat:     { icon: AlertTriangle, color: "#D85555", bg: "#D8555515" },
@@ -112,7 +112,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
         style={{
           background: "#FFF6E8",
           borderRadius: "var(--radius-card)",
-          border: "1px solid rgba(173, 94, 59,0.20)",
+          border: "1px solid rgba(176, 92, 54,0.20)",
         }}
       >
         <div className="flex items-center gap-2.5">
@@ -158,7 +158,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
           </h2>
           <span
             className="text-[11px] font-bold px-1.5 py-0.5 rounded-md tabular-nums"
-            style={{ background: "#AD5E3B22", color: "var(--color-primary-dark)" }}
+            style={{ background: "#B05C3622", color: "var(--color-primary-dark)" }}
           >
             {items.length}
           </span>

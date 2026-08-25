@@ -72,7 +72,7 @@ function ProductCard({ product, wished, onToggleWish }: { product: Product; wish
             <Image src={thumb} alt={product.name} fill className="object-cover" />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
-              <PawPrint size={40} style={{ color: "rgba(173, 94, 59,0.28)" }} />
+              <PawPrint size={40} style={{ color: "rgba(176, 92, 54,0.28)" }} />
             </div>
           )}
           {product.badge && (
@@ -255,7 +255,7 @@ export default function ShopPage() {
       <Link
         href="/#daily-box"
         className="mb-4 flex items-center gap-2.5 px-4 py-2.5 rounded-2xl press transition-transform"
-        style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(173, 94, 59,0.18)" }}
+        style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(176, 92, 54,0.18)" }}
       >
         <PawPrint size={16} className="shrink-0" style={{ color: "var(--color-primary)" }} />
         <p className="text-[11px] font-bold leading-snug flex-1" style={{ color: "var(--color-primary-dark)" }}>
@@ -269,8 +269,8 @@ export default function ShopPage() {
       <div
         className="mb-4 px-5 py-4 rounded-3xl"
         style={{
-          background: "rgba(196,126,90,0.12)",
-          border: "1px solid rgba(196,126,90,0.18)",
+          background: "rgba(201,124,82,0.12)",
+          border: "1px solid rgba(201,124,82,0.18)",
         }}
       >
         <p className="text-[13px] font-bold text-text-main leading-relaxed">
@@ -280,13 +280,13 @@ export default function ShopPage() {
         {/* 투명성 안내 */}
         <div
           className="mt-2.5 px-3 py-2 rounded-xl"
-          style={{ background: "rgba(255,255,255,0.55)", border: "1px solid rgba(196,126,90,0.15)" }}
+          style={{ background: "rgba(255,255,255,0.55)", border: "1px solid rgba(201,124,82,0.15)" }}
         >
           <p className="text-[11px] leading-[1.65] text-text-sub">
             어차피 사는 사료·용품이잖아요.
             <br />얼마가 모였고 얼마를 썼는지는 <b className="text-text-main">아래에 그대로 공개</b>돼요
           </p>
-          <p className="text-[11px] font-bold text-text-main mt-1.5 pt-1.5" style={{ borderTop: "1px solid rgba(196,126,90,0.12)" }}>
+          <p className="text-[11px] font-bold text-text-main mt-1.5 pt-1.5" style={{ borderTop: "1px solid rgba(201,124,82,0.12)" }}>
             도시공존은 특정 단체·정당과 무관하게, 오직 <b style={{ color: "var(--color-primary-dark)" }}>길집사님들과</b> 함께 만들어가요
           </p>
         </div>
@@ -301,7 +301,7 @@ export default function ShopPage() {
                 <span className="font-bold text-text-light"> / {donation.goal.toLocaleString()}원</span>
               </span>
             </div>
-            <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: "rgba(173,94,59,0.15)" }}>
+            <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: "rgba(176,92,54,0.15)" }}>
               <div
                 className="h-full rounded-full transition-all"
                 style={{

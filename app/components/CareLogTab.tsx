@@ -164,7 +164,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
               );
             },
           )}
-          <span className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold" style={{ backgroundColor: "#AD5E3B15", color: "var(--color-primary)" }}>
+          <span className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold" style={{ backgroundColor: "#B05C3615", color: "var(--color-primary)" }}>
             길집사 {stats.caretakerCount}명
           </span>
         </div>

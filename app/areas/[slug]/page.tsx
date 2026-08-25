@@ -186,7 +186,7 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
             className="relative overflow-hidden rounded-2xl p-5 text-center"
             style={{
               background: "#FFF6E8",
-              border: "1.5px solid rgba(173, 94, 59,0.30)",
+              border: "1.5px solid rgba(176, 92, 54,0.30)",
               boxShadow: "var(--shadow-card)",
             }}
           >
@@ -229,7 +229,7 @@ export default async function AreaLandingPage({ params }: { params: Params }) {
                 className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[13px] font-bold press transition-transform bg-white"
                 style={{
                   color: "var(--color-primary-dark)",
-                  border: "1px solid rgba(173, 94, 59,0.30)",
+                  border: "1px solid rgba(176, 92, 54,0.30)",
                 }}
               >
                 서울 다른 구

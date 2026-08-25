@@ -235,7 +235,7 @@ export default function AdminExperimentsPage() {
           <h3 className="text-[13px] font-bold mt-5 mb-2">주차별 반복 기록자</h3>
           <div className="flex flex-col gap-1.5">
             {selected.metrics.weeklyRepeatCarers.map((w) => (
-              <p key={w.week} className="text-[13px]" style={{ color: "#4E5968" }}>
+              <p key={w.week} className="text-[13px]" style={{ color: "#5D564B" }}>
                 {w.week}주차 — 반복 기록자 <b>{w.repeatCarers}명</b> / 활동 {w.activeCarers}명 / 기록 {w.logCount}건
               </p>
             ))}
@@ -250,7 +250,7 @@ export default function AdminExperimentsPage() {
               <span
                 key={event}
                 className="text-[11px] font-bold px-2 py-1 rounded-lg"
-                style={{ background: "var(--color-surface-alt)", color: "#4E5968" }}
+                style={{ background: "var(--color-surface-alt)", color: "#5D564B" }}
               >
                 {event}: {count}
               </span>

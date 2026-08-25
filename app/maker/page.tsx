@@ -82,7 +82,7 @@ export default function MakerPage() {
           className="rounded-3xl p-5 mb-3"
           style={{
             background: "#FFF9F2",
-            border: "1px solid rgba(173, 94, 59,0.20)",
+            border: "1px solid rgba(176, 92, 54,0.20)",
           }}
         >
           <div className="flex items-center gap-1.5 mb-3">
@@ -174,7 +174,7 @@ export default function MakerPage() {
           className="rounded-3xl p-5"
           style={{
             background: "#FFF9F2",
-            border: "1px solid rgba(173, 94, 59,0.20)",
+            border: "1px solid rgba(176, 92, 54,0.20)",
           }}
         >
           <p className="text-[13px] leading-[2] text-text-sub">
@@ -369,7 +369,7 @@ function SkillCard({ icon, title, sub }: { icon: React.ReactNode; title: string;
       className="rounded-xl p-3"
       style={{
         background: "#FFF9F2",
-        border: "1px solid rgba(173, 94, 59,0.18)",
+        border: "1px solid rgba(176, 92, 54,0.18)",
       }}
     >
       <div className="flex items-center gap-1.5 mb-1" style={{ color: "var(--color-primary-dark)" }}>

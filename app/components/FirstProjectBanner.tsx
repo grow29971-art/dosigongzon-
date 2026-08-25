@@ -33,7 +33,7 @@ export default function FirstProjectBanner() {
         className="rounded-2xl overflow-hidden"
         style={{
           background: "#8A4325",
-          boxShadow: "0 8px 24px rgba(173, 94, 59,0.22), 0 2px 6px rgba(173, 94, 59,0.14)",
+          boxShadow: "0 8px 24px rgba(176, 92, 54,0.22), 0 2px 6px rgba(176, 92, 54,0.14)",
         }}
       >
         <div className="p-4">

@@ -213,7 +213,7 @@ export default function OrderDetailPage() {
                           className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
                           style={{
                             background: reached ? "var(--color-primary)" : "var(--color-surface-alt)",
-                            boxShadow: reached ? "0 2px 6px rgba(173, 94, 59,0.35)" : "none",
+                            boxShadow: reached ? "0 2px 6px rgba(176, 92, 54,0.35)" : "none",
                           }}
                         >
                           {reached && <Check size={13} color="#fff" strokeWidth={3} />}
@@ -306,7 +306,7 @@ export default function OrderDetailPage() {
                   target="_blank"
                   rel="noreferrer"
                   className="mt-2 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[13px] font-bold press transition-transform"
-                  style={{ background: "var(--color-primary-soft)", color: "var(--color-primary-dark)", border: "1px solid rgba(173,94,59,0.18)" }}
+                  style={{ background: "var(--color-primary-soft)", color: "var(--color-primary-dark)", border: "1px solid rgba(176,92,54,0.18)" }}
                 >
                   <Truck size={14} /> 배송 조회하기
                 </a>
@@ -385,9 +385,9 @@ export default function OrderDetailPage() {
                       onClick={() => setReason(code)}
                       className="w-full px-3 py-2.5 rounded-xl text-left text-[13px] font-bold"
                       style={{
-                        background: reason === code ? "rgba(173,94,59,0.08)" : "var(--color-warm-white)",
+                        background: reason === code ? "rgba(176,92,54,0.08)" : "var(--color-warm-white)",
                         color: reason === code ? "var(--color-primary)" : "var(--color-text-sub)",
-                        border: reason === code ? "1.5px solid rgba(173,94,59,0.4)" : "1px solid var(--color-divider)",
+                        border: reason === code ? "1.5px solid rgba(176,92,54,0.4)" : "1px solid var(--color-divider)",
                       }}
                     >
                       {REFUND_REASON_LABELS[code]}

@@ -628,7 +628,7 @@ export default function CirclePage() {
                 className="w-full block rounded-2xl p-4 press transition-transform"
                 style={{
                   background: "#FFF9F2",
-                  border: "1px solid rgba(173, 94, 59,0.22)",
+                  border: "1px solid rgba(176, 92, 54,0.22)",
                   boxShadow: "var(--shadow-card)",
                 }}
               >

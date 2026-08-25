@@ -60,7 +60,7 @@ export default function FoundingMemberBanner() {
       className="relative mb-3 rounded-2xl px-4 py-3.5"
       style={{
         background: "#FFF6E8",
-        border: "1.5px solid rgba(173, 94, 59,0.25)",
+        border: "1.5px solid rgba(176, 92, 54,0.25)",
         boxShadow: "var(--shadow-card)",
       }}
     >
@@ -68,7 +68,7 @@ export default function FoundingMemberBanner() {
         type="button"
         onClick={handleDismiss}
         className="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center press-strong"
-        style={{ background: "rgba(173, 94, 59,0.10)" }}
+        style={{ background: "rgba(176, 92, 54,0.10)" }}
         aria-label="배너 닫기"
       >
         <X size={14} color="#8A4325" />

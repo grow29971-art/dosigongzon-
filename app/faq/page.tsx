@@ -75,7 +75,7 @@ const CATEGORIES: FaqCategory[] = [
     label: "길고양이를 발견했어요",
     Icon: AlertCircle,
     color: "var(--color-primary)",
-    bg: "rgba(173, 94, 59,0.12)",
+    bg: "rgba(176, 92, 54,0.12)",
     items: [
       {
         q: "길고양이를 처음 발견했어요. 어떻게 해야 하나요?",
@@ -441,7 +441,7 @@ const CATEGORIES: FaqCategory[] = [
     label: "길집사 활동",
     Icon: Users,
     color: "var(--color-text-sub)",
-    bg: "rgba(78,89,104,0.10)",
+    bg: "rgba(93,86,75,0.10)",
     items: [
       {
         q: "처음 길집사를 시작하려는데, 어떻게 해야 하나요?",
@@ -685,7 +685,7 @@ export default function FaqPage() {
         <nav
           aria-label="카테고리 목차"
           className="mb-7 rounded-2xl border p-4"
-          style={{ borderColor: "rgba(173, 94, 59,0.18)", background: "rgba(255,253,250,0.7)" }}
+          style={{ borderColor: "rgba(176, 92, 54,0.18)", background: "rgba(255,253,250,0.7)" }}
         >
           <p
             className="mb-3 text-[13px] font-bold tracking-wide"
@@ -733,7 +733,7 @@ export default function FaqPage() {
                   <details
                     key={idx}
                     className="group rounded-2xl border bg-white px-4 py-3 transition-shadow open:shadow-md"
-                    style={{ borderColor: "rgba(173, 94, 59,0.15)" }}
+                    style={{ borderColor: "rgba(176, 92, 54,0.15)" }}
                   >
                     <summary
                       className="flex cursor-pointer list-none items-start justify-between gap-3 text-[15px] font-semibold leading-snug"
@@ -763,7 +763,7 @@ export default function FaqPage() {
           className="mt-10 rounded-2xl p-5"
           style={{
             background: "var(--color-primary-softer)",
-            border: "1px solid rgba(173, 94, 59,0.18)",
+            border: "1px solid rgba(176, 92, 54,0.18)",
           }}
         >
           <h3
@@ -789,14 +789,14 @@ export default function FaqPage() {
             <Link
               href="/guide"
               className="rounded-full border bg-white px-4 py-2 text-[13px] font-bold press"
-              style={{ borderColor: "rgba(173, 94, 59,0.3)", color: "var(--color-primary-dark)" }}
+              style={{ borderColor: "rgba(176, 92, 54,0.3)", color: "var(--color-primary-dark)" }}
             >
               앱 사용 가이드
             </Link>
             <a
               href="mailto:grow29971@gmail.com"
               className="rounded-full border bg-white px-4 py-2 text-[13px] font-bold press"
-              style={{ borderColor: "rgba(173, 94, 59,0.3)", color: "var(--color-primary-dark)" }}
+              style={{ borderColor: "rgba(176, 92, 54,0.3)", color: "var(--color-primary-dark)" }}
             >
               메일로 문의
             </a>

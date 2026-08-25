@@ -82,7 +82,7 @@ export default function JoinClient({ token, state }: { token: string; state: Inv
       >
         <div
           className="mx-auto mb-4 flex items-center justify-center rounded-full"
-          style={{ width: 64, height: 64, background: "var(--color-primary-soft, rgba(173,94,59,0.1))" }}
+          style={{ width: 64, height: 64, background: "var(--color-primary-soft, rgba(176,92,54,0.1))" }}
           aria-hidden
         >
           <Sprout size={30} style={{ color: "var(--color-primary)" }} />
@@ -91,7 +91,7 @@ export default function JoinClient({ token, state }: { token: string; state: Inv
 
         {state.status === "valid" && (
           <>
-            <p className="text-[15px] leading-relaxed mb-2" style={{ color: "#4E5968" }}>
+            <p className="text-[15px] leading-relaxed mb-2" style={{ color: "#5D564B" }}>
               {inviteCopy(state.areaName)}
             </p>
             <p className="text-[13px] mb-5" style={{ color: "var(--color-text-light)" }}>
@@ -125,7 +125,7 @@ export default function JoinClient({ token, state }: { token: string; state: Inv
             <Link
               href="/"
               className="inline-block px-6 py-3 rounded-2xl text-[15px] font-bold"
-              style={{ background: "var(--color-surface-alt, #F2F4F6)", color: "#4E5968" }}
+              style={{ background: "var(--color-surface-alt, #F3EEE5)", color: "#5D564B" }}
             >
               도시공존 둘러보기
             </Link>

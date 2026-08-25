@@ -99,7 +99,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#F9FAFB", // meta theme-color는 CSS 변수를 해석하지 못함 — warm-white 실제 hex
+  themeColor: "#FAF6F0", // meta theme-color는 CSS 변수를 해석하지 못함 — warm-white 실제 hex
   colorScheme: "light dark", // 다크 "지원" 선언으로 크롬/WebView 강제 다크닝 회피 (실제 스타일은 항상 라이트 — globals.css 참고)
 };
 

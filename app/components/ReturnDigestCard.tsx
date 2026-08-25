@@ -51,7 +51,7 @@ export default function ReturnDigestCard({ lastVisitAt }: { lastVisitAt: number 
         style={{
           background: "var(--color-primary-soft)",
           borderRadius: "var(--radius-card-sm)",
-          border: "1px solid rgba(173,94,59,0.14)",
+          border: "1px solid rgba(176,92,54,0.14)",
         }}
       >
         <div className="flex items-center gap-1.5 mb-2">

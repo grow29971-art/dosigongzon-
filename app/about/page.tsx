@@ -192,7 +192,7 @@ export default async function AboutPage() {
         </div>
         <div
           className="rounded-2xl p-4 mt-3 flex items-start gap-2.5"
-          style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(173, 94, 59,0.20)" }}
+          style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(176, 92, 54,0.20)" }}
         >
           <Heart size={15} style={{ color: "var(--color-primary)" }} className="shrink-0 mt-0.5" />
           <p className="text-[13px] leading-relaxed text-text-sub">
@@ -240,7 +240,7 @@ export default async function AboutPage() {
           className="rounded-3xl p-5 mb-3"
           style={{
             background: "var(--color-primary-softer)",
-            border: "1px solid rgba(173, 94, 59,0.20)",
+            border: "1px solid rgba(176, 92, 54,0.20)",
           }}
         >
           <div className="flex items-center gap-1.5 mb-3">
@@ -340,13 +340,13 @@ export default async function AboutPage() {
           className="rounded-3xl p-5"
           style={{
             background: "rgba(74,123,168,0.08)",
-            border: "1px solid rgba(173, 94, 59,0.20)",
+            border: "1px solid rgba(176, 92, 54,0.20)",
           }}
         >
           <div className="flex items-center gap-3 mb-3">
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "rgba(173, 94, 59,0.15)" }}
+              style={{ background: "rgba(176, 92, 54,0.15)" }}
             >
               <ShieldCheck size={22} style={{ color: "var(--color-primary-dark)" }} />
             </div>
@@ -396,13 +396,13 @@ export default async function AboutPage() {
           className="rounded-3xl p-5"
           style={{
             background: "var(--color-primary-softer)",
-            border: "1px solid rgba(173, 94, 59,0.20)",
+            border: "1px solid rgba(176, 92, 54,0.20)",
           }}
         >
           <div className="flex items-center gap-3 mb-3">
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "rgba(173, 94, 59,0.15)" }}
+              style={{ background: "rgba(176, 92, 54,0.15)" }}
             >
               <Code2 size={22} style={{ color: "var(--color-primary-dark)" }} />
             </div>
@@ -524,7 +524,7 @@ export default async function AboutPage() {
           />
           <ProductCard
             icon={<Flame size={22} color="#FFFFFF" />}
-            accent="#AD5E3B"
+            accent="#B05C36"
             accentDark="var(--color-primary-dark)"
             badge="양산 준비 중"
             title="고양이난로"
@@ -825,7 +825,7 @@ function SkillBadge({
   return (
     <div
       className="rounded-xl p-2.5 bg-white"
-      style={{ border: "1px solid rgba(173, 94, 59,0.18)" }}
+      style={{ border: "1px solid rgba(176, 92, 54,0.18)" }}
     >
       <div className="flex items-center gap-1.5 mb-0.5" style={{ color: "var(--color-primary-dark)" }}>
         {icon}

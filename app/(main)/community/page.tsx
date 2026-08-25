@@ -232,7 +232,7 @@ export default function CommunityPage() {
           className="mb-4 flex items-center justify-center gap-2 py-2.5 rounded-2xl"
           style={{
             background: "var(--color-primary-softer)",
-            border: "1px solid rgba(173, 94, 59,0.12)",
+            border: "1px solid rgba(176, 92, 54,0.12)",
           }}
         >
           <Eye size={14} className="text-primary" />
@@ -343,7 +343,7 @@ export default function CommunityPage() {
       <Link
         href="/community/write"
         className="fixed bottom-24 right-5 w-14 h-14 rounded-full bg-primary flex items-center justify-center fab-shadow press-strong transition-transform z-40"
-        style={{ boxShadow: "0 4px 16px rgba(173, 94, 59,0.45), 0 0 0 4px #fff" }}
+        style={{ boxShadow: "0 4px 16px rgba(176, 92, 54,0.45), 0 0 0 4px #fff" }}
       >
         <Plus size={28} color="#fff" strokeWidth={2.5} />
       </Link>

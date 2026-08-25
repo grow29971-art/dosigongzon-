@@ -236,7 +236,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             className="rounded-2xl p-4 relative overflow-hidden"
             style={{
               background: "var(--color-primary-softer)",
-              border: "1.5px solid rgba(173, 94, 59,0.30)",
+              border: "1.5px solid rgba(176, 92, 54,0.30)",
               boxShadow: "var(--shadow-card)",
             }}
           >
@@ -271,7 +271,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                 className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[13px] font-bold press transition-transform bg-white"
                 style={{
                   color: "var(--color-primary-dark)",
-                  border: "1px solid rgba(173, 94, 59,0.30)",
+                  border: "1px solid rgba(176, 92, 54,0.30)",
                 }}
               >
                 더 둘러보기
@@ -346,7 +346,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             className="rounded-2xl px-4 py-3 flex items-center gap-3"
             style={{
               background: "var(--color-primary-softer)",
-              border: "1px solid rgba(173, 94, 59,0.18)",
+              border: "1px solid rgba(176, 92, 54,0.18)",
             }}
           >
             {/* 돌봄 이웃 아바타 스택 */}
@@ -522,14 +522,14 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                   : "var(--color-primary-softer)",
                 border: hasTodayPhoto
                   ? "1.5px solid rgba(34,163,102,0.35)"
-                  : "1.5px dashed rgba(173, 94, 59,0.40)",
+                  : "1.5px dashed rgba(176, 92, 54,0.40)",
               }}
             >
               <div className="flex items-center gap-2.5">
                 <div
                   className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
                   style={{
-                    background: hasTodayPhoto ? "rgba(34,163,102,0.22)" : "rgba(173, 94, 59,0.18)",
+                    background: hasTodayPhoto ? "rgba(34,163,102,0.22)" : "rgba(176, 92, 54,0.18)",
                   }}
                 >
                   {hasTodayPhoto ? (
@@ -568,7 +568,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             className="rounded-2xl p-5 text-center"
             style={{
               background: "var(--color-primary-softer)",
-              border: "1.5px dashed rgba(173, 94, 59,0.35)",
+              border: "1.5px dashed rgba(176, 92, 54,0.35)",
             }}
           >
             <Sparkles size={20} className="mx-auto mb-1.5" style={{ color: "var(--color-primary)" }} />

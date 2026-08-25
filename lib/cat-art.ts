@@ -331,7 +331,7 @@ function headMarkup(a: CatPalette, clipId: string): string {
  */
 export function personMarkerSvg(width: number): string {
   const height = Math.round((width * 100) / 72);
-  const HOODIE = "#AD5E3B", HOODIE_DARK = "#8F4A2E", PANTS = "#4A4038", SKIN = "#F6D7B8";
+  const HOODIE = "#B05C36", HOODIE_DARK = "#8F4A2E", PANTS = "#4A4038", SKIN = "#F6D7B8";
   const HAIR = "#6B4A33";
   const OUTLINE = "rgba(40,30,30,0.13)";
   const leg = (x: number, far: boolean) => `

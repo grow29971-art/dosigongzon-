@@ -1180,7 +1180,7 @@ export default function MapPage() {
       <div style="
         position:absolute;left:50%;top:50%;
         width:44px;height:44px;border-radius:50%;
-        background:rgba(173,94,59,0.28);
+        background:rgba(176,92,54,0.28);
         animation:dosi-user-pulse 1.8s ease-out infinite;
         z-index:1;
       "></div>
@@ -1223,7 +1223,7 @@ export default function MapPage() {
     if (activityRegions.length === 0) return;
 
     activityRegions.forEach((r) => {
-      const color = r.slot === 1 ? "#AD5E3B" : "#4A7BA8";
+      const color = r.slot === 1 ? "#B05C36" : "#4A7BA8";
       const active = regionFilter === "all" || regionFilter === r.slot;
       const circle = new window.kakao.maps.Circle({
         map: mapInstanceRef.current,
@@ -1515,7 +1515,7 @@ export default function MapPage() {
           const coord = roamCoord(cat, isLoggedIn);
           const pos = new window.kakao.maps.LatLng(coord.lat, coord.lng);
           // 마커 색은 파랑으로 통일 (2026-07-13 사용자 요청). 학대경보는 별도 ⚠️ 배지로 표시.
-          const borderColor = "#AD5E3B";
+          const borderColor = "#B05C36";
 
           const el = document.createElement("div");
           // tier 1·2: 작은 dot, tier 3: 사진 마커
@@ -1563,7 +1563,7 @@ export default function MapPage() {
       // 동 이름으로 중심 좌표 얻기
       const hasAlert = dongCats.some((c) => alertedCats.has(c.id));
       // 마커 색은 파랑으로 통일 (2026-07-13 사용자 요청). 학대경보는 별도 ⚠️ 배지로 표시.
-      const clusterColor = "#AD5E3B";
+      const clusterColor = "#B05C36";
       const count = dongCats.length;
 
       // 첫 번째 고양이의 좌표를 동 대표 좌표로 사용 (Geocoder보다 빠르고 정확)
@@ -2135,7 +2135,7 @@ export default function MapPage() {
               style={{
                 backgroundColor: detailToolsOpen ? "var(--color-primary)" : "rgba(255,255,255,0.85)",
                 color: detailToolsOpen ? "#fff" : "var(--color-text-light)",
-                boxShadow: detailToolsOpen ? "0 2px 8px rgba(173, 94, 59, 0.25)" : "0 1px 4px rgba(0,0,0,0.06)",
+                boxShadow: detailToolsOpen ? "0 2px 8px rgba(176, 92, 54, 0.25)" : "0 1px 4px rgba(0,0,0,0.06)",
               }}
               aria-expanded={detailToolsOpen}
             >
@@ -2148,7 +2148,7 @@ export default function MapPage() {
           {detailToolsVisible && (
           <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
             {[
-              { key: "cats", label: "고양이", active: showCats, toggle: () => setShowCats(!showCats), color: "#AD5E3B" },
+              { key: "cats", label: "고양이", active: showCats, toggle: () => setShowCats(!showCats), color: "#B05C36" },
               { key: "hospitals", label: "병원", active: showHospitals, toggle: () => setShowHospitals(!showHospitals), color: "#149D5B" },
               { key: "pharmacies", label: "약국", active: showPharmacies, toggle: () => setShowPharmacies(!showPharmacies), color: "#F0762B" },
             ].map((f) => (
@@ -2257,7 +2257,7 @@ export default function MapPage() {
                   전체
                 </UIChip>
                 {activityRegions.map((r) => {
-                  const color = r.slot === 1 ? "#AD5E3B" : "#4A7BA8";
+                  const color = r.slot === 1 ? "#B05C36" : "#4A7BA8";
                   const active = regionFilter === r.slot;
                   return (
                     <UIChip
@@ -2586,7 +2586,7 @@ export default function MapPage() {
               <>
                 <span
                   className="absolute inset-0 rounded-full animate-ping"
-                  style={{ background: "rgba(173, 94, 59,0.45)" }}
+                  style={{ background: "rgba(176, 92, 54,0.45)" }}
                   aria-hidden="true"
                 />
                 <span
@@ -2681,7 +2681,7 @@ export default function MapPage() {
             {/* 일일 정리 안내 — 사용자가 메시지 사라지는 이유 알 수 있게 */}
             <div
               className="px-5 py-2 text-[11px] text-text-sub flex items-center gap-1.5 shrink-0"
-              style={{ background: "rgba(173, 94, 59,0.06)", borderBottom: "1px solid var(--color-divider)" }}
+              style={{ background: "rgba(176, 92, 54,0.06)", borderBottom: "1px solid var(--color-divider)" }}
             >
               <Clock size={12} className="shrink-0" />
               <span>채팅은 <b className="text-text-main">매일 새벽 4시</b>에 모두 정리돼요 — 하루치 대화만 남는 가벼운 방이에요</span>
@@ -2792,7 +2792,7 @@ export default function MapPage() {
               background: "var(--color-surface)",
               borderRadius: "var(--radius-sheet)",
               boxShadow: "var(--shadow-sheet)",
-              border: "1.5px solid rgba(173, 94, 59,0.2)",
+              border: "1.5px solid rgba(176, 92, 54,0.2)",
               maxHeight: "70dvh",
             }}
           >
@@ -3301,17 +3301,17 @@ export default function MapPage() {
                     style={{
                       background: hasTodayPhoto
                         ? "linear-gradient(135deg, rgba(91,168,118,0.14) 0%, rgba(107,142,111,0.10) 100%)"
-                        : "linear-gradient(135deg, rgba(173, 94, 59,0.16) 0%, rgba(232,176,64,0.10) 100%)",
+                        : "linear-gradient(135deg, rgba(176, 92, 54,0.16) 0%, rgba(232,176,64,0.10) 100%)",
                       border: hasTodayPhoto
                         ? "1.5px solid rgba(91,168,118,0.35)"
-                        : "1.5px dashed rgba(173, 94, 59,0.40)",
+                        : "1.5px dashed rgba(176, 92, 54,0.40)",
                     }}
                   >
                     <div className="flex items-center gap-2.5">
                       <div
                         className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
                         style={{
-                          background: hasTodayPhoto ? "rgba(91,168,118,0.22)" : "rgba(173, 94, 59,0.18)",
+                          background: hasTodayPhoto ? "rgba(91,168,118,0.22)" : "rgba(176, 92, 54,0.18)",
                         }}
                       >
                         {hasTodayPhoto ? (

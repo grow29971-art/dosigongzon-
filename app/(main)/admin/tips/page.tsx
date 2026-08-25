@@ -265,7 +265,7 @@ export default function AdminTipsPage() {
             background: "#FFFFFF",
             borderRadius: "var(--radius-card)",
             boxShadow: "var(--shadow-card)",
-            border: "1.5px solid rgba(173, 94, 59,0.2)",
+            border: "1.5px solid rgba(176, 92, 54,0.2)",
           }}
         >
           <div className="flex items-center justify-between mb-3">

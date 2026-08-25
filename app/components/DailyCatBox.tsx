@@ -76,7 +76,7 @@ export default function DailyCatBox() {
           background: "#FFF1D9",
           borderRadius: "var(--radius-card)",
           padding: "14px 16px",
-          border: "1px solid rgba(173, 94, 59,0.22)",
+          border: "1px solid rgba(176, 92, 54,0.22)",
           boxShadow: "var(--shadow-card)",
         }}
       >
@@ -106,7 +106,7 @@ export default function DailyCatBox() {
         background: "#FFFDF8",
         borderRadius: "var(--radius-card)",
         padding: "14px 16px",
-        border: "1px solid rgba(173, 94, 59,0.2)",
+        border: "1px solid rgba(176, 92, 54,0.2)",
         boxShadow: "0 4px 14px var(--color-primary-soft)",
       }}
     >

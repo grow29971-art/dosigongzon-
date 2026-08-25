@@ -52,7 +52,7 @@ const SECTIONS: FeatureSection[] = [
       {
         icon: MapPin,
         iconColor: "var(--color-primary)",
-        iconBg: "rgba(173, 94, 59,0.12)",
+        iconBg: "rgba(176, 92, 54,0.12)",
         title: "동네 길고양이 지도",
         desc: "우리 동네에 등록된 길고양이를 지도에서 한눈에. 고양이·병원·약국을 색깔로 구분해서 보여줘요.",
         steps: [
@@ -259,7 +259,7 @@ const SECTIONS: FeatureSection[] = [
       {
         icon: Download,
         iconColor: "var(--color-primary)",
-        iconBg: "rgba(173, 94, 59,0.12)",
+        iconBg: "rgba(176, 92, 54,0.12)",
         title: "앱으로 설치 (PWA)",
         desc: "홈 화면에 설치하면 브라우저 탭 없이 앱처럼 열려요. 푸시 알림도 더 안정적.",
         steps: [

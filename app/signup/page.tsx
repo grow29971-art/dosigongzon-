@@ -204,7 +204,7 @@ function SignupContent() {
             className="mb-4 rounded-2xl p-4"
             style={{
               background: "#FFF8F2",
-              border: "1.5px solid rgba(173, 94, 59,0.30)",
+              border: "1.5px solid rgba(176, 92, 54,0.30)",
             }}
           >
             <p className="text-[11px] font-bold tracking-[0.12em] mb-1.5" style={{ color: "var(--color-primary)" }}>

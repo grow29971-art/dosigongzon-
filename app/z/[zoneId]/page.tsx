@@ -41,7 +41,7 @@ export default async function ZoneLandingPage({
           <br />
           위급 상황이라면 112에 직접 전화해주세요.
         </p>
-        <a href="tel:112" className="mt-4 px-5 py-2.5 rounded-xl text-[13px] font-bold text-white" style={{ backgroundColor: "#AD5E3B" }}>
+        <a href="tel:112" className="mt-4 px-5 py-2.5 rounded-xl text-[13px] font-bold text-white" style={{ backgroundColor: "#B05C36" }}>
           112 전화 걸기
         </a>
       </div>
@@ -54,7 +54,7 @@ export default async function ZoneLandingPage({
         {/* 지킴판 선언 */}
         <div
           className="rounded-3xl px-5 py-6 text-center text-white"
-          style={{ background: "#AD5E3B" }}
+          style={{ background: "#B05C36" }}
         >
           <Shield size={30} className="mx-auto mb-2 opacity-90" />
           <p className="text-[13px] font-bold opacity-85">{zone.label}</p>

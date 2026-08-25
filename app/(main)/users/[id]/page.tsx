@@ -171,7 +171,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
           <div className="grid grid-cols-4 gap-2 mt-5">
             <StatBox label="팔로워" value={counts.followers} color="#4A7BA8" />
             <StatBox label="팔로잉" value={counts.following} color="#8B65B8" />
-            <StatBox label="등록 고양이" value={cats.length} color="#AD5E3B" />
+            <StatBox label="등록 고양이" value={cats.length} color="#B05C36" />
             <StatBox label="돌봄 기록" value={careLogCount} color="#6B8E6F" />
           </div>
 

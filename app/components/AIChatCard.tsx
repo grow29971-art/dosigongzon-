@@ -27,7 +27,7 @@ export default function AIChatCard() {
             className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
             style={{
               background: "var(--color-primary)",
-              boxShadow: "0 5px 12px rgba(173, 94, 59,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)",
+              boxShadow: "0 5px 12px rgba(176, 92, 54,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)",
             }}
           >
             <Bot size={20} color="#fff" strokeWidth={2.3} />
@@ -63,7 +63,7 @@ export default function AIChatCard() {
             className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 press-strong transition-transform"
             style={{
               background: "var(--color-primary)",
-              boxShadow: "0 4px 10px rgba(173, 94, 59,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",
+              boxShadow: "0 4px 10px rgba(176, 92, 54,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",
             }}
           >
             <Send size={15} color="white" />
