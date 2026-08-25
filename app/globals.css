@@ -228,6 +228,13 @@ body {
   letter-spacing: -0.02em;
 }
 
+/* 모든 페이지 대제목(h1)은 세리프 — 앱 전체 h1이 text-[24px] 패턴으로 통일돼 있어
+   전역 한 줄로 에디토리얼 아이덴티티를 입힌다. 굵기는 기존 클래스(.font-bold 등)가 이김. */
+h1 {
+  font-family: var(--font-serif);
+  letter-spacing: -0.02em;
+}
+
 /* ── 태그 ── */
 .tag {
   display: inline-flex;
