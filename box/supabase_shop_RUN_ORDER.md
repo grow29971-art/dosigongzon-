@@ -19,6 +19,7 @@
 | 12 | `supabase_shop_shipping_sum_migration.sql` | **[D-day 게이트 3]** 게스트 주문 RPC 배송비 greatest→품목당 합산 — 코드 측(computeCartTotal·confirm·webhook)과 동일 식 필수 |
 | 13 | `supabase_shop_review_refund_guard_migration.sql` | **[보안]** 환불·취소 시 해당 후기 자동 숨김 트리거 — 리뷰 세탁 봇 방어 (11번 선행) |
 | 14 | `supabase_shop_profit_donation_migration.sql` | **[D-day 게이트 9]** 후원 적립 판매액→이익(판매가−매입가) 기준 + product_costs 테이블(관리자 전용) + 대즐 매입가 50,000 시드 — 트리거·게스트 RPC·confirm·webhook 4곳 동일 식 (6·12번 선행) |
+| 15 | `supabase_shop_fund_snapshot_migration.sql` | 후원금 정산 일일 스냅샷 테이블(단일행, service 전용) — 정산 카드가 라이브 집계 대신 하루 1회(09:00 KST 크론) 값만 표시 |
 | — | `supabase_shop_seed.sql` | (선택) 카테고리별 3개 총 21개 샘플 상품. 실상품 등록 시 불필요 |
 
 ## 주의

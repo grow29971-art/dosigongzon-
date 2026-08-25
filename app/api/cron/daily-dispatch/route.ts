@@ -21,7 +21,8 @@ export const maxDuration = 300;
 const DISPATCH_ORIGIN = process.env.CRON_DISPATCH_ORIGIN || "https://dosigongzon.com";
 
 // weather-alert: 혹한·폭염 급식 경보 (2026-07-22 신설 — 조건 미충족 시 발송 0이 정상)
-const DAILY_JOBS = ["news-crawl", "admin-daily-digest", "payment-reconcile", "weather-alert"] as const;
+// fund-snapshot: 후원금 정산 일일 스냅샷 (2026-08-25 — 정산 카드는 이 값만 표시, 하루 1회 갱신)
+const DAILY_JOBS = ["news-crawl", "admin-daily-digest", "payment-reconcile", "weather-alert", "fund-snapshot"] as const;
 
 // 요일 조건부 잡 (2026-07-22 리텐션 회의: 유령 3종 부활 — 스케줄 슬롯 추가 없이 편입)
 // 디스패처는 00:00 UTC = 09:00 KST 발화. 원래 의도 시각과 다르지만 배달 보장이 우선.

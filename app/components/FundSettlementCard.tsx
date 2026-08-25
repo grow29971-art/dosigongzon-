@@ -13,9 +13,22 @@ interface Settlement {
   disbursements: { amount: number; memo: string; spent_at: string }[];
   /** 지도에 등록된 개체 중 중성화가 확인된 수 (후원금 집행 실적과는 별개) */
   neuteredCount?: number;
+  /** 일일 스냅샷 기준 시각 — null이면 아직 첫 스냅샷 전(라이브 집계 폴백) */
+  snappedAt?: string | null;
 }
 
 const won = (n: number) => `${n.toLocaleString()}원`;
+
+// "8.25 09:00 기준" — 스냅샷 시각을 짧게. 하루 1회 갱신이라는 사실을 숨기지 않는다.
+function snapLabel(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "매일 1회 갱신";
+  const mm = d.getMonth() + 1;
+  const dd = d.getDate();
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mi = String(d.getMinutes()).padStart(2, "0");
+  return `${mm}.${dd} ${hh}:${mi} 기준 · 매일 갱신`;
+}
 
 export default function FundSettlementCard() {
   const [data, setData] = useState<Settlement | null>(null);
@@ -39,7 +52,9 @@ export default function FundSettlementCard() {
     >
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-[15px] font-bold text-text-main tracking-tight">💛 후원금 투명 정산</h3>
-        <span className="text-[11px] font-bold text-text-light">실시간 공개</span>
+        <span className="text-[11px] font-bold text-text-light">
+          {data.snappedAt ? snapLabel(data.snappedAt) : "매일 1회 갱신"}
+        </span>
       </div>
 
       {/* 3분할 요약 */}

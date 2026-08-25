@@ -1,68 +1,49 @@
 // ══════════════════════════════════════════
-// 후원금 투명 정산 요약 (공개)
-// 모인 금액 = 결제완료 주문의 donation_amount 합계 (취소/환불 제외)
-// 쓰인 금액 = fund_disbursements 합계 · 잔액 = 모인 − 쓰인
+// 후원금 투명 정산 요약 (공개) — 일일 스냅샷 모드 (2026-08-25)
+// 숫자는 매 요청 집계가 아니라 fund_snapshot(하루 1회, 09:00 KST 크론 갱신)을 읽는다.
+// 구매 직후 총액 변화로 개별 주문 금액이 역산되는 것을 막고, "기준 시각"이 명확한
+// 정산을 보여주기 위함. 스냅샷이 아직 없으면(마이그레이션/첫 크론 전) 라이브 집계 폴백.
 // ══════════════════════════════════════════
 
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/service";
-
-const COUNTED_STATUSES = ["paid", "preparing", "shipping", "delivered"];
+import { computeFundSettlement } from "@/lib/fund-settlement";
 
 export async function GET() {
   const svc = createServiceClient();
 
-  // 모인 금액 — donation_totals 뷰(부분환불 차감 반영) 우선, 마이그레이션 전이면 기존 집계 폴백
-  let collected: number;
-  const { data: viewRow, error: viewError } = await svc
-    .from("donation_totals")
-    .select("donation_net")
+  const { data: snap, error: snapError } = await svc
+    .from("fund_snapshot")
+    .select("collected, spent, neutered_count, disbursements, snapped_at")
+    .eq("id", 1)
     .maybeSingle();
-  if (!viewError && viewRow) {
-    collected = Number((viewRow as { donation_net: number | string }).donation_net ?? 0);
-  } else {
-    const { data: items } = await svc
-      .from("order_items")
-      .select("donation_amount, order:orders!inner(status)")
-      .in("order.status", COUNTED_STATUSES);
-    collected = ((items ?? []) as { donation_amount: number }[])
-      .reduce((s, r) => s + (r.donation_amount ?? 0), 0);
+
+  if (!snapError && snap) {
+    const row = snap as {
+      collected: number;
+      spent: number;
+      neutered_count: number;
+      disbursements: { amount: number; memo: string; spent_at: string }[];
+      snapped_at: string;
+    };
+    return NextResponse.json(
+      {
+        collected: row.collected,
+        spent: row.spent,
+        balance: row.collected - row.spent,
+        disbursements: row.disbursements ?? [],
+        neuteredCount: row.neutered_count,
+        snappedAt: row.snapped_at,
+      },
+      // 하루 1회 데이터 — CDN 1시간 캐시로 충분 (다음 스냅샷은 다음날 아침)
+      { headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" } },
+    );
   }
 
-  // 쓰인 금액(전체 합계) + 최근 지출 내역 (테이블 없으면 조용히 0)
-  let spent = 0;
-  let disbursements: { amount: number; memo: string; spent_at: string }[] = [];
-  const { data: allDis, error: disErr } = await svc
-    .from("fund_disbursements")
-    .select("amount, memo, spent_at")
-    .order("spent_at", { ascending: false });
-  if (!disErr && allDis) {
-    const rows = allDis as typeof disbursements;
-    spent = rows.reduce((s, d) => s + (d.amount ?? 0), 0);
-    disbursements = rows.slice(0, 10); // 표시는 최근 10건
-  }
-
-  // 후원금으로 중성화한 마릿수 — 집행 내역(fund_disbursements)에 기록된 값의 합계.
-  // 지도에 등록된 중성화 개체 수와는 다르다. 이건 "우리가 모은 돈으로 실제 수술한 수"라
-  // 집행이 없으면 0이며, 0을 그대로 보여주는 것이 정직하다.
-  // (neutered_count 컬럼 마이그레이션 전이면 조용히 0)
-  let neuteredCount = 0;
-  const { data: neuteredRows, error: neuteredErr } = await svc
-    .from("fund_disbursements")
-    .select("neutered_count");
-  if (!neuteredErr && neuteredRows) {
-    neuteredCount = (neuteredRows as { neutered_count: number | null }[])
-      .reduce((s, r) => s + (r.neutered_count ?? 0), 0);
-  }
-
+  // 폴백: 스냅샷 없음(마이그레이션/첫 크론 전) — 기존 라이브 집계로 카드가 계속 동작
+  const settlement = await computeFundSettlement(svc);
   return NextResponse.json(
-    {
-      collected,
-      spent,
-      balance: collected - spent,
-      disbursements,
-      neuteredCount,
-    },
+    { ...settlement, snappedAt: null },
     { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
   );
 }
