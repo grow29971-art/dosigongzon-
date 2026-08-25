@@ -13,3 +13,9 @@ export const PAYMENT_ENABLED: boolean = false;
 
 export const PAYMENT_DISABLED_MESSAGE =
   "상점 결제는 준비 중이에요. 통신판매업 신고 완료 후 곧 열립니다 🛒";
+
+// 토스페이먼츠 결제 수수료율 (VAT 포함) — 발주 다이제스트의 "남는 돈" 계산용.
+// ⚠ 현재는 계약 확정 전이라 일반 요율 3.3%로 보수적으로 잡음(남는 돈이 실제보다
+//   적게 보이는 쪽이 안전). 심사 통과 후 계약서의 실제 요율(영세 우대 시 더 낮음)로
+//   이 값만 교체하면 된다. 정산 리포트와 대조해 검증할 것.
+export const TOSS_FEE_RATE = 0.033;

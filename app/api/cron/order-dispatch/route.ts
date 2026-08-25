@@ -15,6 +15,7 @@
 
 import { createServiceClient } from "@/lib/supabase/service";
 import { sendTelegramToAdmin, telegramConfigured } from "@/lib/telegram";
+import { TOSS_FEE_RATE } from "@/lib/payments-config";
 
 interface OrderRow {
   id: string;
@@ -75,7 +76,8 @@ async function handle(request: Request): Promise<Response> {
 
   const kst = new Date(Date.now() + 9 * 3600e3);
   const today = `${kst.getUTCMonth() + 1}월 ${kst.getUTCDate()}일`;
-  let totalAmount = 0, totalCost = 0, totalDonation = 0, anyMissingCost = false;
+  let totalAmount = 0, totalCost = 0, totalDonation = 0, totalFee = 0, anyMissingCost = false;
+  const feePct = `${(TOSS_FEE_RATE * 100).toFixed(1)}%`;
   const lines: string[] = [
     `📦 오늘 보낼 주문 ${orders.length}건 (${today})`,
     "아래 내용을 대즐에 전달하고 입금해 주세요.",
@@ -86,10 +88,12 @@ async function handle(request: Request): Promise<Response> {
     const cost = o.items.reduce((s, it) => s + (it.product_id ? (costMap.get(it.product_id) ?? 0) : 0) * it.quantity, 0);
     const missingCost = o.items.some((it) => !it.product_id || !costMap.has(it.product_id));
     const donation = o.items.reduce((s, it) => s + (it.donation_amount ?? 0), 0);
-    const profit = (o.payment_amount ?? 0) - cost - donation;
+    const fee = Math.round((o.payment_amount ?? 0) * TOSS_FEE_RATE);
+    const profit = (o.payment_amount ?? 0) - cost - donation - fee;
     totalAmount += o.payment_amount ?? 0;
     totalCost += cost;
     totalDonation += donation;
+    totalFee += fee;
     if (missingCost) anyMissingCost = true;
     lines.push(
       `${i + 1}번 주문 · ${o.order_number}`,
@@ -99,7 +103,8 @@ async function handle(request: Request): Promise<Response> {
       `- 결제금액: ${won(o.payment_amount ?? 0)}${o.shipping_fee > 0 ? ` (배송비 ${won(o.shipping_fee)} 포함)` : ""}`,
       `- 원가(매입가): ${won(cost)}${missingCost ? " ⚠매입가 미입력 상품 있음" : ""}`,
       `- 후원 적립: ${won(donation)}`,
-      `- 남는 돈(예상): ${won(profit)}`,
+      `- 카드 수수료(${feePct}): ${won(fee)}`,
+      `- 진짜 남는 돈: ${won(profit)}`,
     );
     if (o.memo) lines.push(`- 요청사항: ${o.memo}`);
     lines.push("");
@@ -107,13 +112,13 @@ async function handle(request: Request): Promise<Response> {
   if (orders.length > 1) {
     lines.push(
       `💰 오늘 합계`,
-      `- 결제금액 ${won(totalAmount)} · 원가 ${won(totalCost)} · 후원 ${won(totalDonation)}`,
-      `- 남는 돈(예상) ${won(totalAmount - totalCost - totalDonation)}`,
+      `- 결제금액 ${won(totalAmount)} · 원가 ${won(totalCost)} · 후원 ${won(totalDonation)} · 수수료 ${won(totalFee)}`,
+      `- 진짜 남는 돈 ${won(totalAmount - totalCost - totalDonation - totalFee)}`,
       "",
     );
   }
   lines.push(
-    "※ 남는 돈은 결제금액 − 매입가 − 후원 적립. 카드 수수료(약 2~3%)와 배송 실비 부담분은 안 뺀 값이에요." + (anyMissingCost ? " ⚠매입가 미입력 상품은 원가 0으로 계산됨 — 관리자 상품 폼에서 입력해 주세요." : ""),
+    `※ 진짜 남는 돈 = 결제금액 − 매입가 − 후원 적립 − 카드 수수료(${feePct}, 계약 확정 전 보수 추정치). 배송 실비 부담분이 있으면 그만큼 더 빠져요.` + (anyMissingCost ? " ⚠매입가 미입력 상품은 원가 0으로 계산됨 — 관리자 상품 폼에서 입력해 주세요." : ""),
     "",
     "✅ 다 보냈으면 관리자 → 주문 관리에서 '상품준비중'으로 바꿔주세요.",
     "안 바꾸면 내일 또 알려드려요 (깜빡 방지).",
