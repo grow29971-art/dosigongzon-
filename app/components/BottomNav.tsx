@@ -46,8 +46,11 @@ const shopOpenTabs: Tab[] = [
 
 const tabs = SHOP_OPEN_NAV ? shopOpenTabs : legacyTabs;
 
-const ACTIVE = "var(--color-primary)";
-const INACTIVE = "#4E5968";
+// D 아이보리 에디토리얼 리디자인 (2026-08-26 사장님 시안 확정):
+// 플로팅 라운드 필 → 화면 전폭 도킹 바 + 상단 헤어라인.
+// 활성 탭 = 잉크색 굵은 아이콘 + 라벨 아래 테라코타 점. 비활성 = 웜 페일 톤.
+const ACTIVE = "var(--color-text-main)";
+const INACTIVE = "var(--color-text-light)";
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -61,20 +64,16 @@ export default function BottomNav() {
   return (
     <nav
       aria-label="하단 메뉴"
-      className="fixed left-1/2 -translate-x-1/2 z-50"
+      className="fixed left-0 right-0 bottom-0 z-50"
       style={{
-        bottom: "calc(env(safe-area-inset-bottom, 0px) + 10px)",
-        width: "min(calc(100% - 16px), 30rem)",
-        background: "rgba(255,255,255,0.85)",
-        backdropFilter: "blur(20px) saturate(180%)",
-        WebkitBackdropFilter: "blur(20px) saturate(180%)",
-        border: "1px solid rgba(255,255,255,0.65)",
-        borderRadius: "var(--radius-sheet)",
-        boxShadow:
-          "0 8px 32px rgba(25,31,40,0.14), 0 1px 2px rgba(25,31,40,0.06)",
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
+        background: "rgba(250,246,240,0.94)",
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
+        borderTop: "1px solid var(--color-border)",
       }}
     >
-      <div className="flex items-stretch px-1 pt-1.5 pb-1" style={{ minHeight: 60 }}>
+      <div className="flex items-stretch px-2 pt-2 pb-1.5 mx-auto" style={{ minHeight: 60, maxWidth: "30rem" }}>
         {tabs.map(({ href, label, Icon, wip }) => {
           const on = isActive(href);
           return (
@@ -83,15 +82,14 @@ export default function BottomNav() {
               href={href}
               aria-label={wip ? `${label} (준비 중)` : label}
               aria-current={on ? "page" : undefined}
-              className="relative flex flex-1 min-w-0 flex-col items-center justify-center gap-0.5 px-0.5 press-strong transition-transform"
+              className="relative flex flex-1 min-w-0 flex-col items-center justify-start gap-1 px-0.5 press-strong transition-transform"
             >
               <span className="relative">
                 <Icon
-                  size={22}
+                  size={21}
                   color={on ? ACTIVE : INACTIVE}
-                  strokeWidth={on ? 2.3 : 1.7}
-                  fill={on ? "var(--color-primary-soft)" : "none"}
-                  style={{ transition: "transform 0.15s", transform: on ? "scale(1.06)" : "none" }}
+                  strokeWidth={on ? 2.2 : 1.7}
+                  style={{ transition: "transform 0.15s", transform: on ? "scale(1.04)" : "none" }}
                 />
                 {wip && (
                   <span
@@ -104,7 +102,7 @@ export default function BottomNav() {
               <span
                 className="w-full text-center whitespace-nowrap"
                 style={{
-                  fontSize: "11px",
+                  fontSize: "10px",
                   lineHeight: 1.1,
                   letterSpacing: "-0.2px",
                   color: on ? ACTIVE : INACTIVE,
@@ -113,6 +111,15 @@ export default function BottomNav() {
               >
                 {label}
               </span>
+              <span
+                aria-hidden
+                className="rounded-full"
+                style={{
+                  width: 4,
+                  height: 4,
+                  background: on ? "var(--color-primary)" : "transparent",
+                }}
+              />
             </Link>
           );
         })}
