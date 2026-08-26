@@ -1,8 +1,9 @@
 // ══════════════════════════════════════════
 // 발주 다이제스트 — 매일 13:00 KST (04:00 UTC, vercel.json 크론)
-// 결제완료(paid) 상태의 실물 주문을 전부 모아 발주서로 정리해
-// 운영자 텔레그램으로 보낸다. 운영자는 이걸 드롭쉬핑 업체(대즐 카톡)에
-// 전달하고 입금한 뒤, 주문 관리에서 "상품준비중"으로 바꾼다.
+// 결제완료(paid) 상태의 실물 주문을 모아 운영자 텔레그램으로 알린다.
+// ⚠ 개인정보(전체 주소·전화·메모)는 싣지 않는다 — 텔레그램은 해외 서버라
+//   원문 전송 = 국외이전 소지(8/26 원탁회의). 마스킹 요약만 보내고,
+//   운영자는 관리자 주문 페이지에서 배송정보를 복사해 대즐에 전달한다.
 //
 // 설계 원칙:
 // - paid에 머무는 주문은 다음날 또 뜬다 = 발주 누락 방지 리마인더 겸용.
@@ -21,11 +22,7 @@ interface OrderRow {
   id: string;
   order_number: string;
   recipient_name: string | null;
-  recipient_phone: string | null;
   recipient_address: string | null;
-  recipient_address_detail: string | null;
-  postal_code: string | null;
-  memo: string | null;
   paid_at: string | null;
   payment_amount: number;
   shipping_fee: number;
@@ -44,7 +41,7 @@ async function handle(request: Request): Promise<Response> {
   const svc = createServiceClient();
   const { data, error } = await svc
     .from("orders")
-    .select("id, order_number, recipient_name, recipient_phone, recipient_address, recipient_address_detail, postal_code, memo, paid_at, payment_amount, shipping_fee, items:order_items(product_id, product_name, quantity, donation_amount)")
+    .select("id, order_number, recipient_name, recipient_address, paid_at, payment_amount, shipping_fee, items:order_items(product_id, product_name, quantity, donation_amount)")
     .eq("status", "paid")
     .not("recipient_address", "is", null) // 실물 주문만 (후원/가상은 배송 없음)
     .order("paid_at", { ascending: true });
@@ -80,9 +77,20 @@ async function handle(request: Request): Promise<Response> {
   const feePct = `${(TOSS_FEE_RATE * 100).toFixed(1)}%`;
   const lines: string[] = [
     `📦 오늘 보낼 주문 ${orders.length}건 (${today})`,
-    "아래 내용을 대즐에 전달하고 입금해 주세요.",
+    "주문 내용과 입금액을 확인하세요.",
     "",
   ];
+  // ── 개인정보 마스킹 (2026-08-26 원탁회의 — 보안·법률·프로파일러 3자 수렴) ──
+  // 텔레그램은 해외 서버라 고객 주소·전화 원문 전송 = 개인정보 국외이전 소지.
+  // 발주서에는 비식별 요약만 싣고, 전체 배송정보는 관리자 주문 페이지에서 복사한다.
+  const maskName = (n: string | null) =>
+    !n ? "-" : n.length <= 1 ? n + "*" : n[0] + "*".repeat(Math.max(1, n.length - 2)) + (n.length > 2 ? n[n.length - 1] : "");
+  const coarseAddress = (a: string | null) => {
+    if (!a) return "-";
+    const parts = a.trim().split(/\s+/);
+    return parts.slice(0, 3).join(" "); // 시/구/동 수준까지만 — 상세주소·번지 제외
+  };
+
   orders.forEach((o, i) => {
     const itemsLine = o.items.map((it) => `${it.product_name} × ${it.quantity}개`).join(", ");
     const cost = o.items.reduce((s, it) => s + (it.product_id ? (costMap.get(it.product_id) ?? 0) : 0) * it.quantity, 0);
@@ -98,15 +106,13 @@ async function handle(request: Request): Promise<Response> {
     lines.push(
       `${i + 1}번 주문 · ${o.order_number}`,
       `- 상품: ${itemsLine}`,
-      `- 받는 분: ${o.recipient_name ?? "-"} (${o.recipient_phone ?? "-"})`,
-      `- 주소: (${o.postal_code ?? "-"}) ${o.recipient_address ?? "-"}${o.recipient_address_detail ? " " + o.recipient_address_detail : ""}`,
+      `- 받는 분: ${maskName(o.recipient_name)} · ${coarseAddress(o.recipient_address)}`,
       `- 결제금액: ${won(o.payment_amount ?? 0)}${o.shipping_fee > 0 ? ` (배송비 ${won(o.shipping_fee)} 포함)` : ""}`,
       `- 원가(매입가): ${won(cost)}${missingCost ? " ⚠매입가 미입력 상품 있음" : ""}`,
       `- 후원 적립: ${won(donation)}`,
       `- 카드 수수료(${feePct}): ${won(fee)}`,
       `- 진짜 남는 돈: ${won(profit)}`,
     );
-    if (o.memo) lines.push(`- 요청사항: ${o.memo}`);
     lines.push("");
   });
   if (orders.length > 1) {
@@ -120,7 +126,11 @@ async function handle(request: Request): Promise<Response> {
   lines.push(
     `※ 진짜 남는 돈 = 결제금액 − 매입가 − 후원 적립 − 카드 수수료(${feePct}, 계약 확정 전 보수 추정치). 배송 실비 부담분이 있으면 그만큼 더 빠져요.` + (anyMissingCost ? " ⚠매입가 미입력 상품은 원가 0으로 계산됨 — 관리자 상품 폼에서 입력해 주세요." : ""),
     "",
-    "✅ 다 보냈으면 관리자 → 주문 관리에서 '상품준비중'으로 바꿔주세요.",
+    "📋 배송지·연락처 전체 정보는 관리자 주문 페이지에서 복사해 대즐에 전달하세요:",
+    "https://dosigongzon.com/admin/orders",
+    "(개인정보 보호를 위해 이 메시지에는 싣지 않아요)",
+    "",
+    "✅ 다 보냈으면 주문 관리에서 '상품준비중'으로 바꿔주세요.",
     "안 바꾸면 내일 또 알려드려요 (깜빡 방지).",
   );
 
