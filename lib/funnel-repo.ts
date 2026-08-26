@@ -97,6 +97,36 @@ export function getSource(): string | null {
   }
 }
 
+// ── 가입자 귀속 (2026-08-26 원탁회의) ──
+// funnel_events의 signup_home은 pending_care 경로에서만 발화해 일반 가입이 구멍이었다.
+// 로그인된 기기에서 1회, first-touch 출처를 profiles.signup_source에 영구 기록한다.
+// null일 때만 쓰므로(.is 필터) 재로그인·기기 변경으로 덮어써지지 않는다.
+// 마이그레이션 전(컬럼 없음)에는 조용히 실패하고 가드를 안 남겨 다음에 재시도한다.
+const SOURCE_SYNC_KEY = "dosigongzon_source_synced_v1";
+
+export async function syncSignupSourceOnce(): Promise<void> {
+  try {
+    if (localStorage.getItem(SOURCE_SYNC_KEY)) return;
+    const source = getSource();
+    if (!source) return;
+
+    const { createClient } = await import("@/lib/supabase/client");
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return; // 비로그인 — 가입 후 다음 방문에서 동기화됨
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({ signup_source: source })
+      .eq("id", user.id)
+      .is("signup_source", null);
+    // 성공(또는 이미 값 있음 = 0행 매치도 성공 응답)이면 이 기기는 다시 안 시도
+    if (!error) localStorage.setItem(SOURCE_SYNC_KEY, "1");
+  } catch {
+    /* 계측 부가 기능 — 어떤 실패도 UX에 영향 주지 않는다 */
+  }
+}
+
 // 퍼널·펀드투표·찜 계측이 공유하는 기기 식별자 — 결제 오픈 게이트의 "유니크 N명"이
 // 퍼널 방문자 모수와 같은 단위로 잡히도록 반드시 이 함수를 쓸 것
 export function getAnonId(): string {

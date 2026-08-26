@@ -10,11 +10,13 @@
 // 렌더 출력이 없고 계측 발화 지점을 건드리지 않는다 — 순수 가산.
 
 import { useEffect } from "react";
-import { captureSource } from "@/lib/funnel-repo";
+import { captureSource, syncSignupSourceOnce } from "@/lib/funnel-repo";
 
 export default function SourceCapture() {
   useEffect(() => {
     captureSource();
+    // 로그인돼 있으면 first-touch 출처를 profiles.signup_source에 1회 귀속 (2026-08-26)
+    void syncSignupSourceOnce();
   }, []);
   return null;
 }
