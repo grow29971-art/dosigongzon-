@@ -11,11 +11,13 @@ import { updateSession } from "@/lib/supabase/proxy";
 const KNOWN_CRONS = new Set([
   "admin-daily-digest", "area-chat-nudge", "backfill-cat-art", "care-cue",
   "cleanup-area-chats", "cleanup-read-dms", "cleanup-stale-orders", "community-topic",
-  "daily-dispatch", "engagement-push", "health-alert-push", "like-digest",
-  "news-crawl", "onboarding-nudge", "payment-reconcile", "purge-safety-data",
+  "daily-dispatch", "engagement-push", "fund-snapshot", "health-alert-push", "like-digest",
+  "news-crawl", "onboarding-nudge", "order-dispatch", "payment-reconcile", "purge-safety-data",
   "retention-report", "scheduled-push", "storage-diet", "streak-reminder",
   "sync-pharmacies", "weather-alert", "weekly-digest", "weekly-dispatch",
   "weekly-postcard-push",
+  // ⚠ 새 크론 라우트를 만들면 여기에도 추가할 것 — 없으면 실행은 되지만
+  //   cron_runs 하트비트가 안 남아 결행 감시가 눈먼다 (8/26 fund-snapshot에서 실측).
 ]);
 
 function logCronRun(request: NextRequest, event: NextFetchEvent, name: string) {
