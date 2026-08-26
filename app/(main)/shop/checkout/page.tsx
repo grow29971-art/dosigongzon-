@@ -485,6 +485,7 @@ export default function CheckoutPage() {
               <span>총 결제금액</span>
               <span style={{ color: "var(--color-primary)" }}>{formatWon(finalAmount)}</span>
             </div>
+            <p className="text-[11px] text-text-light mt-1.5">모든 금액은 부가세(VAT) 포함이에요.</p>
           </section>
 
           {error && (

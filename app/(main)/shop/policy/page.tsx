@@ -97,6 +97,15 @@ export default function ShopPolicyPage() {
           </ul>
         </section>
 
+        {/* 가격 표시 — 전자상거래법 총액표시 (2026-08-26 원탁회의 세무 게이트) */}
+        <section className="p-4" style={sectionStyle}>
+          <h2 className="text-[13px] font-bold text-text-main mb-2.5">가격 표시</h2>
+          <p className="text-[13px] text-text-sub leading-relaxed">
+            쇼핑몰의 모든 상품 가격과 배송비는 <b>부가가치세(VAT)가 포함된 최종 금액</b>이에요.
+            표시된 금액 외에 추가로 청구되는 세금은 없어요.
+          </p>
+        </section>
+
         {/* 환불 안내 */}
         <section className="p-4" style={sectionStyle}>
           <h2 className="text-[13px] font-bold text-text-main mb-2.5">환불 안내</h2>

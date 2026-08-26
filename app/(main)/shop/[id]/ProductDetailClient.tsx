@@ -166,6 +166,8 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           )}
           <span className="text-[24px] font-bold text-text-main">{formatWon(unitPrice)}</span>
           {discounted && <span className="text-[13px] text-text-light line-through">{formatWon(product.price)}</span>}
+          {/* 전자상거래법 총액표시 — 부가세 포함 가격임을 명시 (2026-08-26 원탁회의 세무 게이트) */}
+          <span className="text-[11px] text-text-light">부가세 포함</span>
         </div>
 
         <div className="mt-3 flex items-center gap-1.5 text-[13px] text-text-sub">
