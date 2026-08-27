@@ -325,22 +325,7 @@ export async function createCareLog(
 
   // 돌봄 활동 코인 지급 (일 5회 제한, fire-and-forget)
   fetch("/api/coins/care-bonus", { method: "POST" }).catch(() => {});
-
-  // 돌봄 횟수 → 카드 등급 진화 체크 (fire-and-forget)
-  fetch("/api/cats/check-rarity-upgrade", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ cat_id: input.cat_id }),
-  })
-    .then(r => r.json())
-    .then((d: { upgraded?: boolean; old_rarity?: string; new_rarity?: string; new_card_name?: string }) => {
-      if (d.upgraded && typeof window !== "undefined") {
-        window.dispatchEvent(new CustomEvent("cat-card-rarity-upgrade", {
-          detail: { cat_id: input.cat_id, old_rarity: d.old_rarity, new_rarity: d.new_rarity, card_name: d.new_card_name },
-        }));
-      }
-    })
-    .catch(() => {});
+  // (카드 등급 진화 체크는 2026-08-27 카드 시스템 폐지로 제거)
 
   // 푸시 알림: 고양이 주인이 본인 아닌 경우
   try {

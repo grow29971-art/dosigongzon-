@@ -6,7 +6,7 @@ import Link from "next/link";
 import { getMyInviteInfo } from "@/lib/invites-repo";
 import { shareToKakao } from "@/lib/kakao-share";
 import { track } from "@vercel/analytics";
-import CatCard, { type CatCardData } from "@/app/components/CatCard";
+// 카드 시스템 폐지(2026-08-27) — 카드 연출 제거, 축하+첫 밥 유도만 남김
 import { createCareLog } from "@/lib/care-logs-repo";
 import type { Cat } from "@/lib/cats-repo";
 
@@ -16,7 +16,6 @@ type Props = {
   isFirstEver: boolean;
   registrationCount?: number;
   cat?: Cat | null;
-  card?: CatCardData | null;
   onClose: () => void;
 };
 
@@ -31,7 +30,6 @@ export default function CatRegistrationCelebration({
   isFirstEver,
   registrationCount = 0,
   cat = null,
-  card = null,
   onClose,
 }: Props) {
   const [inviting, setInviting] = useState(false);
@@ -168,20 +166,7 @@ export default function CatRegistrationCelebration({
         </div>
 
         <div className="px-6 pb-6 pt-4">
-          {/* CatchCat 카드 */}
-          {card && (
-            <div className="flex flex-col items-center mb-4">
-              <p className="text-[11px] font-bold text-gray-400 mb-2 tracking-widest uppercase">✦ 고양이 카드 획득 ✦</p>
-              <CatCard
-                name={catName}
-                photoUrl={cat?.photo_url ?? null}
-                card={card}
-                size="md"
-              />
-              <p className="text-[11px] text-gray-400 mt-2">마이페이지 → 내 카드에서 확인할 수 있어요</p>
-            </div>
-          )}
-          {/* 첫 밥 기록 — 등록 직후 가장 자연스러운 다음 행동. card 유무와 무관하게 노출.
+          {/* 첫 밥 기록 — 등록 직후 가장 자연스러운 다음 행동.
               1탭이면 오늘의 첫 돌봄이 기록돼 두 번째 활성화 이벤트로 이어진다. */}
           {cat?.id && (
             meal === "done" ? (
@@ -207,7 +192,7 @@ export default function CatRegistrationCelebration({
               </button>
             )
           )}
-          {isFirstEver && !card && (
+          {isFirstEver && (
             <div
               className="rounded-2xl px-4 py-3 mb-3 text-[13px] leading-snug"
               style={{ background: "#FFF9EF", color: "#7A5F3F" }}

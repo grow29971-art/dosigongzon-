@@ -40,7 +40,6 @@ import {
 } from "lucide-react";
 import UIChip from "@/app/components/ui/Chip";
 import dynamic from "next/dynamic";
-import { CARD_THEME, pseudoDexNo, type CardRarity } from "@/app/components/CatCard";
 // 모달·고급 패널은 첫 페인트 후로 코드 스플리팅 (열기 전엔 다운로드 안 함)
 const AddCatModal = dynamic(() => import("@/app/components/AddCatModal"), { ssr: false });
 const VisibilityIntroSheet = dynamic(() => import("@/app/components/VisibilityIntroSheet"), { ssr: false });
@@ -108,7 +107,6 @@ type AreaChat = {
 };
 import { createClient as createSupabaseClient } from "@/lib/supabase/client";
 const CareLogTab = dynamic(() => import("@/app/components/CareLogTab"), { ssr: false });
-const CatCard = dynamic(() => import("@/app/components/CatCard"), { ssr: false });
 import MapIntroModal from "@/app/components/MapIntroModal";
 import CareTeamCard from "@/app/components/CareTeamCard";
 import { getDisplayName as getChatDisplayName, updateCat, deleteCat, deleteComment, toggleCatLike, petCat, listMyLikedCatIds, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, VISIBILITY_MAP, type CatGender, type CatHealthStatus, type AdoptionStatus, type CatVisibility } from "@/lib/cats-repo";
@@ -232,11 +230,8 @@ export default function MapPage() {
   // placeholder로 대체 — 다른 고양이를 선택하면 다시 시도.
   const [selectedCatPhotoFailed, setSelectedCatPhotoFailed] = useState(false);
   useEffect(() => { setSelectedCatPhotoFailed(false); }, [selectedCat?.id]);
-  const [catCardTab, setCatCardTab] = useState<"carelog" | "community" | "card">("carelog");
-  // 선택된 고양이의 포획 카드 등급에 맞춰 상세 패널을 카드처럼 테마링
-  const catRarity = (selectedCat?.card_rarity ?? "common") as CardRarity;
-  const catCardTheme = CARD_THEME[catRarity] ?? CARD_THEME.common;
-  const catDexNo = selectedCat ? pseudoDexNo(selectedCat.card_name ?? selectedCat.name) : "000";
+  // 카드 시스템 제거 (2026-08-27 사장님 지시) — 탭은 돌봄다이어리·커뮤니티 2개만
+  const [catCardTab, setCatCardTab] = useState<"carelog" | "community">("carelog");
   const [showCats, setShowCats] = useState(true);
   const [todayVisit, setTodayVisit] = useState<number | null>(null);
   const [showHospitals, setShowHospitals] = useState(true);
@@ -3128,41 +3123,14 @@ export default function MapPage() {
             }}
           >
 
-            {/* 카드 페이스 — 포켓몬GO식 "인카운터" 헤더: 속성 컬러 리본 + 원형 사진 */}
+            {/* 상세 헤더 — 원형 사진 (카드 등급 테마링은 카드 시스템과 함께 제거, 2026-08-27) */}
             <div style={{ background: "var(--color-surface)" }}>
-              {/* 속성 리본: 등급 뱃지 · 레벨 · 도감번호 — 진한 속성색 배경(GO 인카운터 카드 톤) */}
-              <div
-                className="flex items-center justify-between px-3.5"
-                style={{ height: 34, background: catCardTheme.typeBg }}
-              >
-                <span
-                  className="inline-flex items-center gap-1 chip-square px-2 py-0.5 text-[11px] font-bold tracking-wide"
-                  style={{ background: "rgba(255,255,255,0.25)", color: "#fff" }}
-                >
-                  <span>{catCardTheme.typeIcon}</span>
-                  <span>{catCardTheme.label}</span>
-                </span>
-                <div className="flex items-center gap-2">
-                  {selectedCat.card_level != null && selectedCat.card_level > 1 && (
-                    <span
-                      className="chip-square px-2 py-0.5 text-[11px] font-bold"
-                      style={{ background: "rgba(255,255,255,0.25)", color: "#fff" }}
-                    >
-                      Lv.{selectedCat.card_level}
-                    </span>
-                  )}
-                  <span className="text-[11px] font-bold" style={{ color: "rgba(255,255,255,0.85)" }}>
-                    No.{catDexNo}
-                  </span>
-                </div>
-              </div>
-
-              {/* 사진 — 둥근 원형 프레임(도감 인카운터 느낌), 흰 배경 위에 살짝 띄워서 */}
-              <div className="px-4 pt-4 pb-1 flex justify-center" style={{ background: `linear-gradient(180deg, ${catCardTheme.typeBg}22, transparent 70%)` }}>
+              {/* 사진 — 둥근 원형 프레임 */}
+              <div className="px-4 pt-5 pb-1 flex justify-center">
                 <div
                   ref={petPhotoRef}
                   className="relative overflow-hidden bg-surface-alt rounded-full"
-                  style={{ width: 148, height: 148, boxShadow: `0 0 0 5px #fff, 0 0 0 8px ${catCardTheme.typeBg}, 0 8px 20px rgba(0,0,0,0.15)` }}
+                  style={{ width: 148, height: 148, boxShadow: "0 0 0 5px #fff, 0 0 0 8px var(--color-primary), 0 8px 20px rgba(0,0,0,0.15)" }}
                 >
                   {selectedCat.photo_url && !selectedCatPhotoFailed ? (
                     <img
@@ -3275,14 +3243,6 @@ export default function MapPage() {
                 </div>
               </details>
 
-              {selectedCat.card_flavor && (
-                <p
-                  className="text-[11px] italic leading-relaxed px-4 py-2.5 text-center"
-                  style={{ color: "var(--color-text-light)" }}
-                >
-                  &ldquo;{selectedCat.card_flavor}&rdquo;
-                </p>
-              )}
             </div>
 
             {/* 정보 */}
@@ -3815,47 +3775,11 @@ export default function MapPage() {
                   >
                     커뮤니티 {comments.length > 0 && `· ${comments.length}`}
                   </button>
-                  {selectedCat.card_generated_at && (
-                    <button
-                      type="button"
-                      onClick={() => setCatCardTab("card")}
-                      className="flex-1 py-2 rounded-xl text-[13px] font-bold transition-all"
-                      style={{
-                        backgroundColor: catCardTab === "card" ? "#6366F1" : "#F0F0FF",
-                        color: catCardTab === "card" ? "#fff" : "#6366F1",
-                      }}
-                    >
-                      🃏 카드
-                    </button>
-                  )}
                 </div>
 
                 {/* 돌봄다이어리 탭 */}
                 {catCardTab === "carelog" && (
                   <CareLogTab catId={selectedCat.id} isLoggedIn={isLoggedIn} currentUserId={user?.id} />
-                )}
-
-                {/* CatchCat 카드 탭 */}
-                {catCardTab === "card" && selectedCat.card_generated_at && (
-                  <div className="flex flex-col items-center py-3">
-                    <CatCard
-                      name={selectedCat.name}
-                      photoUrl={selectedCat.photo_url}
-                      card={{
-                        card_rarity: (selectedCat.card_rarity ?? "common") as import("@/app/components/CatCard").CardRarity,
-                        card_name: selectedCat.card_name,
-                        card_traits: selectedCat.card_traits ?? [],
-                        card_stats: selectedCat.card_stats,
-                        card_flavor: selectedCat.card_flavor,
-                        card_level: selectedCat.card_level,
-                        card_exp: selectedCat.card_exp,
-                        card_generated_at: selectedCat.card_generated_at,
-                        best_win_streak: selectedCat.best_win_streak,
-                        pve_win_count: selectedCat.pve_win_count,
-                      }}
-                      size="md"
-                    />
-                  </div>
                 )}
 
                 {/* 커뮤니티 탭 (기존 댓글) */}

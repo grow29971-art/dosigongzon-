@@ -95,7 +95,7 @@ export default function MyPage() {
 
   // 마이페이지 메뉴 간결화 (2026-07-15) — MAU 초기 저활용 진입점을 눈에서 숨김.
   // 라우트·코드는 유지하며, 각 플래그를 true로 되돌리면 복원.
-  const SHOW_CARD_GAME = false;      // 내 고양이 카드(CatchCat 게임)
+  // SHOW_CARD_GAME 플래그 삭제 — 카드 시스템 전면 폐지(2026-08-27, 라우트·컴포넌트·데이터까지 제거)
   const SHOW_JOURNEY = false;        // 당신의 여정
   const SHOW_MONTHLY_REPORT = false; // 이번 달 성장 리포트
   const SHOW_CARETAKERS = false;     // 동네 길집사 찾기 — 인원 필요
@@ -826,26 +826,7 @@ export default function MyPage() {
                 내 설정
               </h2>
             </div>
-            {SHOW_CARD_GAME && (
-            <Link
-              href="/mypage/cards"
-              className="w-full flex items-center gap-3 px-4 py-3.5 press transition-transform mb-2"
-              style={{
-                background: "var(--color-gray-900)",
-                borderRadius: "var(--radius-card-sm)",
-                boxShadow: "var(--shadow-card)",
-              }}
-            >
-              <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(255,255,255,0.12)" }}>
-                <span className="text-[20px]">🃏</span>
-              </div>
-              <div className="flex-1 min-w-0 text-left">
-                <p className="text-[13px] font-bold text-white">내 고양이 카드</p>
-                <p className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>CatchCat — 등록한 고양이 카드 컬렉션</p>
-              </div>
-              <ChevronRight size={16} style={{ color: "rgba(255,255,255,0.3)" }} />
-            </Link>
-            )}
+            {/* 카드 컬렉션 진입 카드 제거 — 카드 시스템 폐지 (2026-08-27 사장님 지시, 라우트도 삭제됨) */}
             {SHOW_JOURNEY && (
             <Link
               href="/mypage/journey"

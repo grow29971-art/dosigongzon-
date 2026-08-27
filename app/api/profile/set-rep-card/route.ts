@@ -14,8 +14,7 @@ export async function POST(req: Request) {
       .from("cats")
       .select("id")
       .eq("id", cat_id)
-      .eq("caretaker_id", user.id)
-      .not("card_generated_at", "is", null)
+      .eq("caretaker_id", user.id) // 카드 폐지(8/27): 소유 확인만 — 카드 생성 여부 조건 제거
       .maybeSingle();
     if (!cat) return NextResponse.json({ error: "cat not found" }, { status: 404 });
   }

@@ -8,7 +8,6 @@ import { X, Camera, MapPin, Loader2, Plus, Lock, ShieldAlert } from "lucide-reac
 import { createCat, uploadCatPhoto, type Cat, type CatGender, type CatHealthStatus, type AdoptionStatus, type CatVisibility, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, VISIBILITY_MAP } from "@/lib/cats-repo";
 import { useAuth } from "@/lib/auth-context";
 import CatRegistrationCelebration from "@/app/components/CatRegistrationCelebration";
-import type { CatCardData } from "@/app/components/CatCard";
 import { findLocationViolations, formatViolationMessage } from "@/lib/location-patterns";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 import {
@@ -119,15 +118,14 @@ export default function AddCatModal({
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  // 등록 직후 축하 모달
+  // 등록 직후 축하 모달 (카드 생성은 2026-08-27 카드 시스템 폐지로 제거)
   const [celebration, setCelebration] = useState<{
     open: boolean;
     catName: string;
     isFirstEver: boolean;
     registrationCount: number;
     cat: Cat | null;
-    card: CatCardData | null;
-  }>({ open: false, catName: "", isFirstEver: false, registrationCount: 0, cat: null, card: null });
+  }>({ open: false, catName: "", isFirstEver: false, registrationCount: 0, cat: null });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const captureInputRef = useRef<HTMLInputElement>(null);
 
@@ -309,45 +307,12 @@ export default function AddCatModal({
         localStorage.setItem(countKey, String(registrationCount));
       } catch {}
 
-      // CatchCat 카드 생성 — 사진 있으면 base64, 없으면 API가 랜덤 생성
-      let generatedCard: CatCardData | null = null;
-      if (newCat.id) {
-        try {
-          let body: Record<string, string | boolean> = { cat_id: newCat.id };
-          if (photoFiles[0]) {
-            const b64 = await resizeToBase64(photoFiles[0], 800);
-            body = { ...body, image_base64: b64, mime_type: "image/jpeg" };
-          }
-          const cardRes = await fetch("/api/cats/generate-card", {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify(body),
-          });
-          const cardJson = await cardRes.json();
-          if (cardRes.ok && cardJson.card) {
-            generatedCard = cardJson.card;
-            if (["rare", "legendary"].includes(generatedCard?.card_rarity ?? "")) {
-              fetch("/api/cats/rare-alert", {
-                method: "POST",
-                headers: { "content-type": "application/json" },
-                body: JSON.stringify({ cat_id: newCat.id }),
-              }).catch(() => {});
-            }
-          } else {
-            console.warn("[CatchCat] 카드 생성 실패:", cardJson);
-          }
-        } catch (err) {
-          console.error("[CatchCat] 카드 생성 예외:", err);
-        }
-      }
-
       setCelebration({
         open: true,
         catName: newCat.name,
         isFirstEver,
         registrationCount,
         cat: newCat,
-        card: generatedCard,
       });
       setSubmitting(false);
     } catch (err) {
@@ -973,7 +938,6 @@ export default function AddCatModal({
         isFirstEver={celebration.isFirstEver}
         registrationCount={celebration.registrationCount}
         cat={celebration.cat}
-        card={celebration.card}
         onClose={() => {
           setCelebration((prev) => ({ ...prev, open: false }));
           if (celebration.cat) onCreated(celebration.cat);

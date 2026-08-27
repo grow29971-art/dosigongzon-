@@ -43,19 +43,13 @@ export interface Cat {
   memorial_at?: string | null;   // 고양이별로 보낸 시각. null/undefined 면 생존
   memorial_note?: string | null; // 마지막 인사
   memorial_by?: string | null;
-  card_rarity: string | null;
-  card_name: string | null;
-  card_traits: string[] | null;
-  card_stats: { cuteness: number; wildness: number; sociability: number; mysteriousness: number } | null;
-  card_flavor: string | null;
-  card_generated_at: string | null;
+  // 카드 시스템 폐지(2026-08-27) — 등급·특성·배틀 필드 제거.
+  // card_level/card_exp만 "돌봄 레벨"로 존치: 다마고치·출석 보상이 사용한다.
   card_level: number;
   card_exp: number;
-  best_win_streak?: number | null;
-  pve_win_count?: number | null;
 }
 
-// 카드 레벨 임계값 (누적 XP)
+// 돌봄 레벨 임계값 (누적 XP)
 export const CARD_LEVEL_XP = [0, 50, 120, 220, 350, 520, 730, 990, 1300, 1670] as const;
 export function getCardLevelProgress(exp: number, level: number) {
   const current = CARD_LEVEL_XP[Math.min(level - 1, 9)] ?? 0;
@@ -527,9 +521,7 @@ export async function createCat(input: CreateCatInput): Promise<Cat> {
   assertSafeName(input.name);
   assertSafeRegion(input.region);
 
-  // Rate limit — 고양이 등록마다 카드 생성 시 실제 Gemini API 호출이 나가서
-  // (신규 등록 시 card_generated_at이 비어있어 매번 호출됨), 제한 없이 빠르게
-  // 여러 마리를 연달아 등록하면 AI API 비용을 무한정 소모시킬 수 있었음.
+  // Rate limit — 등록 남용 방지 (마커 아트 백필 크론의 Gemini 비용도 등록 수에 비례).
   await enforceUserActionLimit(supabase, {
     table: "cats",
     userColumn: "caretaker_id",

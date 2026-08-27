@@ -55,8 +55,8 @@ export async function POST(req: Request) {
   let targetCatId: string | null = repCardId ?? null;
   if (!targetCatId) {
     const { data: recentCat } = await svc
-      .from("cats").select("id").eq("caretaker_id", user.id).not("card_generated_at", "is", null)
-      .order("card_generated_at", { ascending: false }).limit(1).maybeSingle();
+      .from("cats").select("id").eq("caretaker_id", user.id)
+      .order("created_at", { ascending: false }).limit(1).maybeSingle(); // 카드 폐지(8/27): 최신 등록묘 기준
     targetCatId = (recentCat as { id: string } | null)?.id ?? null;
   }
 
