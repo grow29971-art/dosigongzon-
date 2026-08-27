@@ -12,6 +12,26 @@
 --   profiles.coins / user_items 케어 간식(premium_can·churu·growth_can) → 코인 상점
 -- ══════════════════════════════════════════════════════════════
 
+-- ── 0. profiles_public 뷰 선(先) 재정의 (2BP01 해소) ──
+-- 뷰가 boss_defeats·best_win_streak을 투영하고 있어 컬럼 drop이 막힌다.
+-- ⚠ CASCADE 금지 — 이 뷰는 프로필 락다운(7/30)의 공개 통로라 통째로 지우면 앱이 깨진다.
+--   코드 실측: 뷰에서 배틀 컬럼을 읽는 곳 없음(닉네임·아바타·perfect_catch_count만) → 빼도 안전.
+-- Postgres는 create or replace로 뷰 컬럼을 못 빼므로 drop→create→grant 순서.
+begin;
+drop view if exists public.profiles_public;
+create view public.profiles_public as
+select
+  id,
+  nickname,
+  avatar_url,
+  admin_title,
+  suspended,
+  created_at,
+  perfect_catch_count
+from public.profiles;
+grant select on public.profiles_public to anon, authenticated;
+commit;
+
 -- ── 1. 배틀 잔재 (7/20 파일 그대로 — 당시 미실행분) ──
 drop table if exists card_battles;
 alter table profiles drop column if exists boss_defeats;
