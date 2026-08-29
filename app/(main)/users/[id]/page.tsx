@@ -14,6 +14,7 @@ import {
   getUserRegionsServer,
 } from "@/lib/users-server";
 import { findAdminTitle, TITLES, CATEGORY_COLORS } from "@/lib/titles";
+import { createClient } from "@/lib/supabase/server";
 import { computeLevel, computeScore } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import FollowButton from "@/app/components/FollowButton";
@@ -47,12 +48,19 @@ export default async function UserProfilePage({ params }: { params: Params }) {
   const profile = await getUserProfileServer(id);
   if (!profile) notFound();
 
+  // 로그인 여부 — 활동 지역·최근 활동(시각+장소 패턴)은 비로그인에게 숨긴다.
+  // 비로그인 공개 시 "이 사람이 이 동네에서 언제 활동하는지"가 무인증 노출돼 표적화 벡터가 됨
+  // (2026-08-29 법률감사 H3). 닉네임·아바타·등록묘·레벨 등 기본 프로필은 그대로 공개.
+  const supabase = await createClient();
+  const { data: { user: viewer } } = await supabase.auth.getUser();
+  const isLoggedIn = !!viewer;
+
   const [counts, cats, stats, activity, regions] = await Promise.all([
     getUserFollowCountsServer(id),
     getUserCatsServer(id, 30),
     getUserPublicStatsServer(id),
-    getUserRecentActivityServer(id, 8),
-    getUserRegionsServer(id),
+    isLoggedIn ? getUserRecentActivityServer(id, 8) : Promise.resolve([]),
+    isLoggedIn ? getUserRegionsServer(id) : Promise.resolve([]),
   ]);
   const careLogCount = stats.careLogCount;
 

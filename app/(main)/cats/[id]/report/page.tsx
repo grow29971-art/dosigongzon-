@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ArrowLeft, FileText } from "lucide-react";
 import { getCatByIdServer } from "@/lib/cats-server";
 import { getCareReportServer } from "@/lib/care-report-server";
 import { CARE_TYPE_MAP, type CareType } from "@/lib/care-logs-repo";
+import { createClient } from "@/lib/supabase/server";
 import PrintButton from "@/app/components/PrintButton";
 
 // 돌봄 활동 확인서 — 민원 대응·지자체 협의·학대 신고 시 첨부하는 증빙 문서.
@@ -22,14 +23,22 @@ const fmtDate = (iso: string) =>
     year: "numeric", month: "long", day: "numeric", timeZone: "Asia/Seoul",
   });
 
-const fmtDateTime = (iso: string) =>
-  new Date(iso).toLocaleString("ko-KR", {
-    year: "2-digit", month: "2-digit", day: "2-digit",
-    hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Seoul",
+// 상세 표는 '날짜'까지만 — 분 단위 활동시각은 "언제 나타나는지"를 노출하는 스토킹 벡터라
+// 증빙 목적에 필요한 날짜 단위로 뭉갠다 (2026-08-29 법률감사 H3).
+const fmtDateOnly = (iso: string) =>
+  new Date(iso).toLocaleDateString("ko-KR", {
+    year: "2-digit", month: "2-digit", day: "2-digit", timeZone: "Asia/Seoul",
   });
 
 export default async function CareReportPage({ params }: { params: Params }) {
   const { id } = await params;
+
+  // 로그인 필수 — 참여 시민 닉네임·활동 패턴이 담긴 문서라 비로그인 공개 시 표적화 벡터가 됨
+  // (2026-08-29 법률감사 H3: 좌표는 퍼징하면서 활동 패턴을 무인증 공개하면 방어선 불일치)
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect(`/login?from=/cats/${id}/report`);
+
   const cat = await getCatByIdServer(id);
   if (!cat) notFound();
 
@@ -194,7 +203,7 @@ export default async function CareReportPage({ params }: { params: Params }) {
             <table className="w-full text-[11px] mb-5" style={{ borderCollapse: "collapse" }}>
               <thead>
                 <tr>
-                  <Th>일시 (KST)</Th>
+                  <Th>날짜 (KST)</Th>
                   <Th>유형</Th>
                   <Th>기록자</Th>
                   <Th>내용</Th>
@@ -204,7 +213,7 @@ export default async function CareReportPage({ params }: { params: Params }) {
               <tbody>
                 {report.rows.map((r) => (
                   <tr key={r.id}>
-                    <Td nowrap>{fmtDateTime(r.logged_at)}</Td>
+                    <Td nowrap>{fmtDateOnly(r.logged_at)}</Td>
                     <Td nowrap>{CARE_TYPE_MAP[r.care_type]?.label ?? r.care_type}</Td>
                     <Td nowrap>{r.author_name ?? "익명"}</Td>
                     <Td>{[r.memo, r.amount].filter(Boolean).join(" · ") || "—"}</Td>
@@ -219,10 +228,14 @@ export default async function CareReportPage({ params }: { params: Params }) {
         {/* 하단 고지 */}
         <div className="pt-4 mt-2" style={{ borderTop: "1px solid var(--color-border)" }}>
           <p className="text-[11px] text-text-light leading-relaxed">
-            ※ 각 기록의 시각은 작성 시점에 서버에 저장된 시각(KST)입니다. 기록 원본과 첨부 사진은
-            dosigongzon.com/cats/{cat.id} 에서 열람할 수 있습니다. 본 확인서는 동물보호법 제8조(학대 금지)
-            관련 신고, 급식소·중성화(TNR) 협의, 민원 대응 시 참고 자료로 활용할 수 있으며, 고양이 안전을
-            위해 정확한 위치 좌표는 포함하지 않습니다.
+            ※ 본 확인서는 이용자가 자율적으로 입력한 활동 기록을 집계한 것으로, 제3자 검증을 거치지
+            않았습니다. 기록 원본과 첨부 사진은 dosigongzon.com/cats/{cat.id} 에서 열람할 수 있습니다.
+            동물보호법 제10조(동물학대 등의 금지) 관련 신고, 급식소·중성화(TNR) 협의, 민원 대응 시 참고
+            자료로 활용할 수 있으며, 고양이 안전을 위해 정확한 위치 좌표는 포함하지 않습니다.
+          </p>
+          <p className="text-[11px] leading-relaxed mt-2" style={{ color: "#B84545" }}>
+            ⚠ 이 확인서에는 참여 시민의 닉네임이 포함되어 있습니다. 분쟁 상대방 등 제3자에게 직접
+            전달하는 경우 참여자 신변 노출에 유의하세요.
           </p>
           <p className="text-[11px] font-bold text-text-sub mt-3 text-center tracking-widest">도 시 공 존</p>
         </div>

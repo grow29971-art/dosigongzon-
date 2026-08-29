@@ -425,8 +425,9 @@ export default async function CatDetailPage({ params }: { params: Params }) {
       )}
 
       {/* 이 아이의 지킴이 — 최다 돌봄 시민 지명 인정. "안 써도 아무도 모른다"를 뒤집는
-          이름 박힌 책임 (2026-08-29 PMF 회의 후보②). 3회 이상부터, 추모 아이는 제외 */}
-      {guardian && guardian.count >= 3 && !cat.memorial_at && (
+          이름 박힌 책임 (2026-08-29 PMF 회의 후보②). 3회 이상부터, 추모 아이는 제외.
+          로그인 유저에게만 노출 — 비로그인 공개 시 특정 시민 신원+활동 노출(법률감사 H3) */}
+      {currentUserId && guardian && guardian.count >= 3 && !cat.memorial_at && (
         <div className="px-4 mt-3">
           <div
             className="rounded-2xl px-4 py-3 flex items-center gap-3"
@@ -721,7 +722,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           />
         )}
         {/* 돌봄 활동 확인서 — 기록을 민원·구청 협의·학대 신고용 증빙 자산으로 (2026-08-29 PMF 회의 후보③) */}
-        {careCount > 0 && (
+        {currentUserId && careCount > 0 && (
           <Link
             href={`/cats/${cat.id}/report`}
             className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white press transition-transform"
