@@ -25,6 +25,7 @@ import {
   Bot,
   Search,
   ShoppingBag, Flame, PawPrint,
+  FileText, HandHeart, ShieldCheck,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 // 업적 토스트 — 업적 잠금 해제 시에만 보임. ssr 끄고 lazy.
@@ -709,6 +710,66 @@ export default function HomeAuthed({
             </div>
           )}
           <MyCatsHero careInboxMode={SHOW_CARE_INBOX_HOME} />
+        </section>
+      )}
+
+      {/* ══════ 지킴이 도구 — 기록을 지키는 힘으로 (2026-08-29 PMF 개편: 유용성을 가상 교감보다 위로) ══════ */}
+      {user && (
+        <section className="mb-4">
+          <div className="mb-2 px-1">
+            <h2 className="text-[20px] font-bold tracking-tight text-text-main">지킴이 도구</h2>
+            <p className="mt-1 text-[13px] leading-relaxed text-text-sub">
+              쌓인 기록은 나와 아이들을 지키는 근거가 돼요.
+            </p>
+          </div>
+          <div
+            className="dark-card-level"
+            style={{
+              background: "var(--color-surface)",
+              borderRadius: "var(--radius-card)",
+              boxShadow: "var(--shadow-card)",
+              border: "1px solid var(--color-divider)",
+            }}
+          >
+            <Link href="/mypage/report" className="flex items-center gap-3 px-4 py-3.5 press transition-transform">
+              <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: "var(--color-primary-softer)" }}>
+                <FileText size={17} style={{ color: "var(--color-primary)" }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-bold text-text-main leading-tight">돌봄 활동 확인서</p>
+                <p className="text-[11px] text-text-sub mt-0.5 leading-snug">민원·봉사 증빙·구청 협의용 PDF 문서</p>
+              </div>
+              <ChevronRight size={15} className="shrink-0" style={{ color: "var(--color-text-light)" }} />
+            </Link>
+            <Link
+              href="/community/category/sitter"
+              className="flex items-center gap-3 px-4 py-3.5 press transition-transform"
+              style={{ borderTop: "1px solid var(--color-divider)" }}
+            >
+              <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(74,123,168,0.12)" }}>
+                <HandHeart size={17} style={{ color: "#4A7BA8" }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-bold text-text-main leading-tight">돌봄 부탁</p>
+                <p className="text-[11px] text-text-sub mt-0.5 leading-snug">입원·여행 때 밥자리 대타를 구해요</p>
+              </div>
+              <ChevronRight size={15} className="shrink-0" style={{ color: "var(--color-text-light)" }} />
+            </Link>
+            <Link
+              href="/protection"
+              className="flex items-center gap-3 px-4 py-3.5 press transition-transform"
+              style={{ borderTop: "1px solid var(--color-divider)" }}
+            >
+              <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: "var(--color-sage-soft)" }}>
+                <ShieldCheck size={17} style={{ color: "var(--color-sage)" }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-bold text-text-main leading-tight">보호 지침 · 신고 대응</p>
+                <p className="text-[11px] text-text-sub mt-0.5 leading-snug">학대·민원 상황에서 뭘 해야 하는지</p>
+              </div>
+              <ChevronRight size={15} className="shrink-0" style={{ color: "var(--color-text-light)" }} />
+            </Link>
+          </div>
         </section>
       )}
 
