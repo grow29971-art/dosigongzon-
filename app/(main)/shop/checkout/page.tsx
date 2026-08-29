@@ -78,6 +78,9 @@ export default function CheckoutPage() {
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  // 게스트(비회원) 개인정보 수집·이용 동의 (2026-08-29 법률감사 M2 — 회원은 가입 시 포괄동의,
+  // 게스트는 별도 동의 절차가 없어 개인정보보호법 §15·§22 미충족이었음)
+  const [privacyConsent, setPrivacyConsent] = useState(false);
 
   // 포인트 (주간 출석 적립 — 1P = 1원 할인). 테이블 미생성/잔액 0이면 섹션 숨김.
   const [pointBalance, setPointBalance] = useState<number | null>(null);
@@ -155,6 +158,10 @@ export default function CheckoutPage() {
         setError("연락처를 정확히 입력해주세요. (숫자와 - 만)"); return;
       }
       if (!postalCode || !address) { setError("주소를 검색해서 선택해주세요."); return; }
+      // 비회원은 개인정보 수집·이용 동의 필수 (회원은 가입 시 동의로 갈음)
+      if (!user && !privacyConsent) {
+        setError("개인정보 수집·이용 동의가 필요해요."); return;
+      }
     }
     if (!TOSS_CLIENT_KEY) {
       setError("결제 수단이 아직 준비 중이에요. 잠시 후 다시 시도해주세요.");
@@ -398,6 +405,29 @@ export default function CheckoutPage() {
               maxLength={200}
             />
           </section>
+
+          {/* 비회원 개인정보 수집·이용 동의 (2026-08-29 법률감사 M2) */}
+          {!user && (
+            <label
+              className="flex items-start gap-2.5 p-4 cursor-pointer"
+              style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1px solid var(--color-divider)" }}
+            >
+              <input
+                type="checkbox"
+                checked={privacyConsent}
+                onChange={(e) => setPrivacyConsent(e.target.checked)}
+                className="mt-0.5 w-4 h-4 shrink-0 accent-[var(--color-primary)]"
+              />
+              <span className="text-[12px] leading-relaxed text-text-sub">
+                <b className="text-text-main">[필수]</b> 주문·배송을 위한 개인정보 수집·이용에 동의합니다.
+                <br />
+                <span className="text-text-light">
+                  수집 항목: 수령인 이름·연락처·주소 / 목적: 주문 처리·배송 / 보유기간: 전자상거래법에 따라 5년.
+                  자세한 내용은 <Link href="/privacy" className="underline" style={{ color: "var(--color-primary)" }}>개인정보처리방침</Link>.
+                </span>
+              </span>
+            </label>
+          )}
           </>)}
 
           {/* 포인트 사용 — 주간 출석 적립 (1P=1원). 후원 상품 포함 시 숨김 */}
