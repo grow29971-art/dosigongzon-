@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, MapPin, PawPrint, CalendarDays, Camera, BookOpen, Sparkles, Star, Heart, MessageCircle } from "lucide-react";
+import { ArrowLeft, MapPin, PawPrint, CalendarDays, Camera, BookOpen, Sparkles, Star, Heart, MessageCircle, FileText } from "lucide-react";
 import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer, getCatCommunityStatsServer, getCatDiaryServer } from "@/lib/cats-server";
 import { GENDER_MAP, HEALTH_MAP, thumbnailUrl, optimizedImageUrl } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
@@ -685,6 +685,27 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             region={region}
             description={cat.description}
           />
+        )}
+        {/* 돌봄 활동 확인서 — 기록을 민원·구청 협의·학대 신고용 증빙 자산으로 (2026-08-29 PMF 회의 후보③) */}
+        {careCount > 0 && (
+          <Link
+            href={`/cats/${cat.id}/report`}
+            className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white press transition-transform"
+            style={{ border: "1px solid var(--color-border)", boxShadow: "var(--shadow-card)" }}
+          >
+            <div
+              className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+              style={{ background: "var(--color-primary-softer)" }}
+            >
+              <FileText size={16} style={{ color: "var(--color-primary)" }} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[13px] font-bold text-text-main leading-tight">돌봄 활동 확인서 만들기</p>
+              <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
+                민원·구청 협의·학대 신고 때 쓰는 증빙 문서 — 기록 {careCount}건이 근거가 돼요
+              </p>
+            </div>
+          </Link>
         )}
         <p className="text-[11px] text-text-light text-center leading-relaxed mt-2">
           아이들 안전을 위해 지도 위치는 대략적인 활동 범위로만 표시돼요.
