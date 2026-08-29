@@ -316,9 +316,7 @@ export async function createCareLog(
   // 카드 UI와 함께 삭제돼 소비자 0이라 dispatch 제거 (2026-08-29 버그 사냥 P4)
   supabase.rpc("add_cat_card_exp", { p_cat_id: input.cat_id, p_amount: 10 }).then(() => {}, () => {});
 
-  // 돌봄 활동 코인 지급 (일 5회 제한, fire-and-forget)
-  fetch("/api/coins/care-bonus", { method: "POST" }).catch(() => {});
-  // (카드 등급 진화 체크는 2026-08-27 카드 시스템 폐지로 제거)
+  // (돌봄 코인 지급 제거 — 2026-08-29 코인 경제 폐지. 카드 등급 진화도 8/27 폐지)
 
   // 푸시 알림: 고양이 주인이 본인 아닌 경우
   try {

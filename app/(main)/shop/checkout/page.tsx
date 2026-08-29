@@ -445,13 +445,13 @@ export default function CheckoutPage() {
           {/* 포인트 0P 힌트 — 적립 유도 (후원/가상 상품 주문 아닐 때만) */}
           {(pointBalance ?? 0) === 0 && !items.some((i) => i.product.is_virtual || i.product.is_donation) && (
             <Link
-              href="/#daily-box"
+              href="/"
               className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl press transition-transform"
               style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(176, 92, 54,0.18)" }}
             >
               <PawPrint size={16} className="shrink-0" style={{ color: "var(--color-primary)" }} />
               <p className="text-[11px] font-bold leading-snug flex-1" style={{ color: "var(--color-primary-dark)" }}>
-                매일 돌봄 출석하면 포인트가 쌓여요 · 다음엔 <b>1P = 1원</b>으로 할인받으세요
+                매일 돌봄 기록을 남기면 포인트가 쌓여요 · 다음엔 <b>1P = 1원</b>으로 할인받으세요
               </p>
             </Link>
           )}

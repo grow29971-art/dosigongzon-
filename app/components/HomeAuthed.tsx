@@ -70,8 +70,8 @@ import { getTodayAnniversaries, type Anniversary } from "@/lib/anniversaries-rep
 const OnboardingCard = dynamic(() => import("@/app/components/OnboardingCard"), { ssr: false });
 // 온보딩→홈 핸드오프 — 온보딩에서 고른 아이 첫 밥 CTA (pending_care 있을 때만 렌더)
 const PendingCareHandoff = dynamic(() => import("@/app/components/PendingCareHandoff"), { ssr: false });
-const DailyCatBox = dynamic(() => import("@/app/components/DailyCatBox"), { ssr: false }); const PetitionSection = dynamic(() => import("@/app/components/PetitionSection"), { ssr: false }); // 한 줄인 이유: 673행 계측 라인 번호 보존
-const DailyCheckinModal = dynamic(() => import("@/app/components/DailyCheckinModal"), { ssr: false });
+const PetitionSection = dynamic(() => import("@/app/components/PetitionSection"), { ssr: false }); // 냥상자·일일출석 제거(2026-08-29), 673행 계측 라인 번호 보존 위해 줄 유지
+
 const FirstCheerCard = dynamic(() => import("@/app/components/FirstCheerCard"), { ssr: false });
 const AppOpenGuideModal = dynamic(() => import("@/app/components/AppOpenGuideModal"), { ssr: false });
 import MyCatsHero from "@/app/components/MyCatsHero";
@@ -205,12 +205,7 @@ export default function HomeAuthed({
     }
   }, [user]);
 
-  // 로그인 코인 보너스 — 하루 1회(+8), 중복 지급은 서버가 KST 날짜 선점으로 차단.
-  // 코인 경제 부활(2026-07-16)과 함께 복원 — 케어 간식 구매 재원.
-  useEffect(() => {
-    if (!user) return;
-    fetch("/api/coins/daily-login", { method: "POST" }).catch(() => {});
-  }, [user]);
+  // (로그인 코인 보너스 제거 — 2026-08-29 코인 경제 폐지)
 
   // allPosts 또는 lastVisitAt 갱신 시 새 글 개수 재계산
   useEffect(() => {
@@ -602,7 +597,7 @@ export default function HomeAuthed({
   // 쇼핑/포인트 오픈·인원 확보 후 각 플래그를 true로 되돌리면 복원(라우트·코드는 유지).
   const SHOW_FUND_BANNER = false;         // 첫 프로젝트(펀드) 배너 — 쇼핑 오픈 전 공허
   const SHOW_TODO_CHIPS = false;          // '오늘 할 일' 칩(냥상자·도감·랭킹)
-  const SHOW_CHECKIN = true;              // 출석/냥상자/주간출석 — 코인 경제 부활(2026-07-16, 다마고치 케어 간식 재원)
+  const SHOW_CHECKIN = true;              // 주간 돌봄 보드(쇼핑 포인트 적립) — 코인·냥상자·일일출석은 2026-08-29 폐지
   const SHOW_POPULAR_CATS = false;        // 2026-08-15 홈 다이어트(B11): 돌봄왕 TOP3·인기 TOP5 랭킹 숨김 — WAU 한 자리에 랭킹은 공허. 7/16 회의로 켰던 것, 유저 늘면 복원
   const SHOW_EVENT_BANNERS = false;       // 파운딩멤버 등 이벤트 배너
   const SHOW_CIRCLE_ENTRY = true;         // 서클 빠른 진입 — "혼자→같이" 리텐션 앵커(2026-07-16 회의)
@@ -1022,8 +1017,7 @@ export default function HomeAuthed({
       {/* ══════ 쇼핑 프리뷰 — 케어 섹션 뒤 배치 (2026-07-21 쇼핑 동선 회의, 케어 위계 유지) ══════ */}
       {SHOW_SHOP_PREVIEW && user && <ShopPreviewStrip />}
 
-      {/* ══════ 일일 출석체크 모달 — 코인·돌봄 EXP·계정 레벨 보상 ══════ */}
-      {SHOW_CHECKIN && user && suppressWelcomeModals === false && <DailyCheckinModal />}
+      {/* 일일 출석체크 모달 제거 (2026-08-29 코인 경제 폐지) */}
 
       {/* ══════ 첫 응원 카드 — 활성화 1단: 1탭 응원 → 등록 escalation (catCount===0) ══════ */}
       {user && activity && activity.catCount === 0 && cheerCats.length > 0 && (
@@ -1560,11 +1554,9 @@ export default function HomeAuthed({
         </div>
       )}
 
-      {/* 주간 출석 보드 — 스탬프 + 마일스톤 포인트 (쇼핑 할인용) */}
+      {/* 주간 돌봄 보드 — 그날 돌봄 기록 스탬프 + 마일스톤 포인트 (쇼핑 할인용) */}
       {SHOW_CHECKIN && user && <WeeklyCheckinCard />}
-
-      {/* 오늘의 냥 상자 — 일일 출석 리추얼 */}
-      {SHOW_CHECKIN && user && <div id="daily-box" style={{ scrollMarginTop: 12 }}><DailyCatBox /></div>}
+      {/* 오늘의 냥 상자 제거 (2026-08-29 코인 경제 폐지) */}
 
       {/* ══════ 돌봄 연속 일수(스트릭) — 프리즈 UI 보존, 부가 영역으로 이동 (2026-07-11) ══════ */}
       {user && streakInfo && (

@@ -206,7 +206,7 @@ export default function ShopPage() {
         accentDark="#B5720A"
         items={[
           { emoji: "💛", text: <>수익(이익)의 <b className="text-text-main">10%</b>는 길고양이 <b className="text-text-main">중성화(TNR)</b>에 써요. 모인 금액과 쓴 금액은 그대로 공개돼요.</> },
-          { emoji: "🐾", text: <>매일 돌봄 출석으로 모은 포인트를 <b className="text-text-main">1P = 1원</b> 할인으로 쓸 수 있어요.</> },
+          { emoji: "🐾", text: <>매일 돌봄 기록으로 모은 포인트를 <b className="text-text-main">1P = 1원</b> 할인으로 쓸 수 있어요.</> },
           { emoji: "🔍", text: <>모인 금액·쓰인 금액을 <b className="text-text-main">투명하게 공개</b>해요.</> },
         ]}
       />
@@ -251,15 +251,15 @@ export default function ShopPage() {
       {/* ── 후원금 투명 정산 (쇼핑 최상단) ── */}
       <FundSettlementCard />
 
-      {/* ── 돌봄→포인트→할인 안내 띠 (탭하면 홈 주간 출석으로) ── */}
+      {/* ── 돌봄→포인트→할인 안내 띠 (탭하면 홈 주간 돌봄 보드로) ── */}
       <Link
-        href="/#daily-box"
+        href="/"
         className="mb-4 flex items-center gap-2.5 px-4 py-2.5 rounded-2xl press transition-transform"
         style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(176, 92, 54,0.18)" }}
       >
         <PawPrint size={16} className="shrink-0" style={{ color: "var(--color-primary)" }} />
         <p className="text-[11px] font-bold leading-snug flex-1" style={{ color: "var(--color-primary-dark)" }}>
-          매일 돌봄 출석하면 포인트 적립 · 쇼핑에서 <b>1P = 1원</b>으로 쓸 수 있어요
+          매일 돌봄 기록하면 포인트 적립 · 쇼핑에서 <b>1P = 1원</b>으로 쓸 수 있어요
         </p>
         <ChevronRight size={15} style={{ color: "var(--color-primary)" }} className="shrink-0" />
       </Link>
