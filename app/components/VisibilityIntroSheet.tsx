@@ -77,6 +77,18 @@ export default function VisibilityIntroSheet({ open, onClose, onPick }: Visibili
 
         {/* 3 카드 */}
         <div className="px-5 py-4 space-y-2.5 overflow-y-auto" style={{ maxHeight: "calc(92dvh - 200px)" }}>
+          {/* 민감 케이스 → 서클 유도 넛지 (2026-08-29) */}
+          <div
+            className="rounded-2xl px-3.5 py-3 flex items-start gap-2.5"
+            style={{ background: `${VISIBILITY_MAP.circle.color}14`, border: `1px dashed ${VISIBILITY_MAP.circle.color}66` }}
+          >
+            <span className="text-[15px] leading-none mt-0.5">🏠</span>
+            <p className="text-[12px] leading-relaxed" style={{ color: "#4F6B53" }}>
+              <b>개인 급식소·집 근처</b>이거나 <b>학대·괴롭힘을 당한 적 있는 아이</b>라면{" "}
+              <b style={{ color: VISIBILITY_MAP.circle.color }}>{VISIBILITY_MAP.circle.emoji} 내 서클</b>을
+              골라주세요. 믿을 수 있는 이웃에게만 보여요.
+            </p>
+          </div>
           {(Object.entries(VISIBILITY_MAP) as [CatVisibility, typeof VISIBILITY_MAP["public"]][]).map(
             ([key, info]) => (
               <button
