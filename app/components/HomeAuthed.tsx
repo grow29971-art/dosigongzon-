@@ -77,7 +77,6 @@ const AppOpenGuideModal = dynamic(() => import("@/app/components/AppOpenGuideMod
 import MyCatsHero from "@/app/components/MyCatsHero";
 import ReturnDigestCard from "@/app/components/ReturnDigestCard";
 import ShopPreviewStrip from "@/app/components/ShopPreviewStrip";
-import CareTamagotchiHero from "@/app/components/CareTamagotchiHero";
 const WeeklyCheckinCard = dynamic(() => import("@/app/components/WeeklyCheckinCard"), { ssr: false });
 const PushCareCueOptIn = dynamic(() => import("@/app/components/PushCareCueOptIn"), { ssr: false });
 const FeatureTipsCard = dynamic(() => import("@/app/components/FeatureTipsCard"), { ssr: false });
@@ -628,8 +627,8 @@ export default function HomeAuthed({
       items={[
         { emoji: "🐾", text: <>지도에서 <b className="text-text-main">+ 버튼</b>으로 우리 동네 고양이를 등록해요.</> },
         { emoji: "🍚", text: <>매일 <b className="text-text-main">내 아이들</b>에게 밥·물·간식을 1탭으로 기록해요.</> },
+        { emoji: "📄", text: <>쌓인 기록은 <b className="text-text-main">돌봄 활동 확인서</b>로 만들어 민원·신고 때 근거가 돼요.</> },
         { emoji: "🗺️", text: <>아래로 내리면 우리 동네 고양이·소식이 이어져요.</> },
-        { emoji: "😸", text: <>대표 아이와 <b className="text-text-main">다마고치</b>처럼 교감해요. 방치해도 아프거나 떠나지 않으니 부담 없이!</> },
         // 국회 청원 안내 삭제 (2026-08-09). 청원 기능은 2026-07-22 revert 됐는데
         // 첫 안내 모달이 없는 UI를 가리키고 있었다 — 신규 유저가 맨 위에서 찾다 못 찾는다.
       ]}
@@ -773,8 +772,7 @@ export default function HomeAuthed({
         </section>
       )}
 
-      {/* ══════ 다마고치 케어 히어로 — 대표묘와의 가상 교감 (2026-07-22부터 컴팩트 접힘 기본) ══════ */}
-      <CareTamagotchiHero />
+      {/* 다마고치 케어 히어로 제거 (2026-08-29 사장님 지시 — 가상 교감 기능 폐지) */}
 
       {/* ══════ 오늘의 브리핑 카드 — 인사·헤드라인·스트릭·알림 + 날씨를 한 카드로 (홈 리디자인 2차 2026-07-11) ══════ */}
       {/* 브랜드 타이틀은 시안대로 제거 — 앱 아이덴티티는 스플래시/네비가 담당 */}
