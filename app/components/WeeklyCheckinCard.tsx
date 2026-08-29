@@ -105,7 +105,8 @@ export default function WeeklyCheckinCard() {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-[17px]">🗓️</span>
-          <h3 className="text-[15px] font-bold text-text-main tracking-tight">주간 출석</h3>
+          {/* "출석"(게임 용어) → "돌봄"(행동 용어) 재프레이밍 (2026-08-29 PMF 개편) */}
+          <h3 className="text-[15px] font-bold text-text-main tracking-tight">이번 주 돌봄</h3>
           <span className="text-[11px] font-bold text-text-light">{dayCount}/7일</span>
         </div>
         <span

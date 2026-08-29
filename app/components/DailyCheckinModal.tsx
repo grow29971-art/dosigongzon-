@@ -98,7 +98,8 @@ export default function DailyCheckinModal() {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[13px] font-semibold text-text-main">오늘의 출석체크</p>
-          <p className="text-[11px] text-text-light mt-0.5">아이들 챙기고 코인 받기 · {checked.size}/{TASKS.length}</p>
+          {/* "코인 받기" 프레임 → 돌봄 행동 프레임 (2026-08-29 PMF 개편 — 보상은 완료 화면에서 자연 노출) */}
+          <p className="text-[11px] text-text-light mt-0.5">오늘 챙긴 밥·물·건강 남기기 · {checked.size}/{TASKS.length}</p>
         </div>
         <ChevronRight size={15} className="shrink-0 text-text-muted" />
       </button>
