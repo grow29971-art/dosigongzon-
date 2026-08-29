@@ -312,16 +312,9 @@ export async function createCareLog(
     window.dispatchEvent(new CustomEvent("cat-care-logged", { detail: { cat_id: input.cat_id } }));
   }
 
-  // 카드 EXP 추가 (fire-and-forget)
-  supabase.rpc("add_cat_card_exp", { p_cat_id: input.cat_id, p_amount: 10 })
-    .then(({ data }: { data: { leveled_up?: boolean; level?: number } | null }) => {
-      if (data?.leveled_up && typeof window !== "undefined") {
-        window.dispatchEvent(new CustomEvent("cat-card-levelup", {
-          detail: { cat_id: input.cat_id, level: data.level },
-        }));
-      }
-    })
-    .catch(() => {});
+  // 돌봄 레벨 EXP 적립 (fire-and-forget) — cat-card-levelup 이벤트는 리스너가
+  // 카드 UI와 함께 삭제돼 소비자 0이라 dispatch 제거 (2026-08-29 버그 사냥 P4)
+  supabase.rpc("add_cat_card_exp", { p_cat_id: input.cat_id, p_amount: 10 }).then(() => {}, () => {});
 
   // 돌봄 활동 코인 지급 (일 5회 제한, fire-and-forget)
   fetch("/api/coins/care-bonus", { method: "POST" }).catch(() => {});

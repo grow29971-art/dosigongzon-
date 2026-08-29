@@ -3061,7 +3061,7 @@ export default function MapPage() {
                 <Pencil size={17} className="text-primary" />
               </button>
               {/* 고양이별로 보내기 — 무지개다리를 건넌 아이용.
-                  삭제는 care_logs·카드까지 CASCADE 로 지우므로 기록을 남기려면 이쪽이다. */}
+                  삭제는 care_logs까지 CASCADE 로 지우므로 기록을 남기려면 이쪽이다. */}
               <button
                 onClick={() =>
                   setStarCat({

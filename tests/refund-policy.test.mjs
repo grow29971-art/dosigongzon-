@@ -11,7 +11,7 @@ import {
   withdrawalBaseDate,
   WITHDRAWAL_DAYS,
   DEFECT_CLAIM_DAYS,
-  RETURN_SHIPPING_FEE,
+  returnShippingFeeFor,
 } from "../lib/refund-policy.ts";
 
 const NOW = Date.UTC(2026, 6, 31, 0, 0, 0); // 2026-07-31
@@ -29,8 +29,11 @@ const base = {
   hasDonationItem: false,
   allVirtual: false,
   hasTracking: false,
+  shippingFee: 3000, // 게이트 6(2026-08-20): 반품비는 주문 배송비 연동 — 고정 상수 폐지
 };
 const order = (o) => ({ ...base, ...o });
+// 구매자 부담 반품비 기대값 — 유료배송 주문은 그 배송비(편도), 무료배송은 왕복 실비
+const RETURN_FEE = returnShippingFeeFor(base.shippingFee);
 
 // ══════════════════════════════════════════
 // 1. 종료된 주문 — 재환불 차단
@@ -92,7 +95,7 @@ test("송장 공백 문자열은 발송으로 보지 않는다 — 정상 즉시
 test("발송된 배송전 주문의 단순변심은 반품비를 구매자가 부담 (H-2 회귀)", () => {
   const r = decideRefund(order({ status: "preparing", hasTracking: true }), "change_of_mind", NOW);
   assert.equal(r.shippingFeeBearer, "buyer");
-  assert.equal(r.returnShippingFee, RETURN_SHIPPING_FEE);
+  assert.equal(r.returnShippingFee, RETURN_FEE);
 });
 
 test("발송된 배송전 주문이라도 하자·오배송은 판매자 부담 (H-2 회귀)", () => {
@@ -106,7 +109,7 @@ test("배송 중은 자동환불 금지 — 회수 필요하므로 심사", () =
   const r = decideRefund(order({ status: "shipping", shippedAt: daysAgo(1) }), "change_of_mind", NOW);
   assert.equal(r.allowed, true);
   assert.equal(r.mode, "review");
-  assert.equal(r.returnShippingFee, RETURN_SHIPPING_FEE); // 단순변심 → 구매자 부담
+  assert.equal(r.returnShippingFee, RETURN_FEE); // 단순변심 → 구매자 부담
 });
 
 test("배송 완료 + 단순변심 + 7일 이내 → 심사 후 환불, 반품비 차감", () => {
@@ -114,7 +117,7 @@ test("배송 완료 + 단순변심 + 7일 이내 → 심사 후 환불, 반품�
   assert.equal(r.allowed, true);
   assert.equal(r.mode, "review");
   assert.equal(r.shippingFeeBearer, "buyer");
-  assert.equal(r.returnShippingFee, RETURN_SHIPPING_FEE);
+  assert.equal(r.returnShippingFee, RETURN_FEE);
 });
 
 test("배송 완료 + 단순변심 + 7일 초과 → 거부 (청약철회 기간 경과)", () => {

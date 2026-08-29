@@ -963,7 +963,7 @@ export default function HomeAuthed({
       {/* ══════ 쇼핑 프리뷰 — 케어 섹션 뒤 배치 (2026-07-21 쇼핑 동선 회의, 케어 위계 유지) ══════ */}
       {SHOW_SHOP_PREVIEW && user && <ShopPreviewStrip />}
 
-      {/* ══════ 일일 출석체크 모달 — 코인·카드 EXP·계정 레벨 보상 ══════ */}
+      {/* ══════ 일일 출석체크 모달 — 코인·돌봄 EXP·계정 레벨 보상 ══════ */}
       {SHOW_CHECKIN && user && suppressWelcomeModals === false && <DailyCheckinModal />}
 
       {/* ══════ 첫 응원 카드 — 활성화 1단: 1탭 응원 → 등록 escalation (catCount===0) ══════ */}

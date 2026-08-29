@@ -1,7 +1,7 @@
 "use client";
 
 // 일일 출석체크 — 물주기/밥주기/청소/건강체크. 전부 체크하고 제출하면:
-//  - 코인 +25, 카드 경험치 +50(대표 카드 없으면 최근 카드), 계정 레벨 점수도
+//  - 코인 +25, 돌봄 레벨 EXP +50(대표묘 없으면 최근 등록묘), 계정 레벨 점수도
 //    체크한 항목 수만큼 실제 돌봄일지(care_logs)로 기록돼 자연히 오름
 // 2026-08-15 홈 다이어트 후속: 홈 진입 시 자동 팝업 → 인라인 카드(탭하면 모달)로 전환.
 //   "첫 화면 프롬프트 1개" 원칙 — 개입형 모달을 유저가 여는 카드로 강등.
@@ -118,12 +118,12 @@ export default function DailyCheckinModal() {
                   </span>
                   {result.exp > 0 && (
                     <span className="flex items-center gap-1 px-3 py-1.5 chip-square text-[13px] font-bold" style={{ background: "var(--color-primary-soft)", color: "var(--color-primary-dark)" }}>
-                      <Sparkles size={13} /> 카드 EXP +{result.exp}
+                      <Sparkles size={13} /> 돌봄 EXP +{result.exp}
                     </span>
                   )}
                 </div>
                 {result.leveledUp && (
-                  <p className="text-[13px] font-bold mb-3" style={{ color: "var(--color-sage)" }}>대표 카드가 Lv.{result.newLevel}로 레벨업했어요!</p>
+                  <p className="text-[13px] font-bold mb-3" style={{ color: "var(--color-sage)" }}>대표 아이가 Lv.{result.newLevel}로 레벨업했어요!</p>
                 )}
                 <button onClick={finish} className="w-full py-3 rounded-2xl text-[13px] font-bold text-white"
                   style={{ background: "var(--color-primary)" }}>

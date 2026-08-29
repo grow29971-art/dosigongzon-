@@ -16,7 +16,7 @@ const FAIL_CLOSED_ROUTES = [
   // [파일, 필수 RPC 이름, 금지 패턴(비원자 폴백 흔적)]
   ["app/api/shop/buy/route.ts", "buy_shop_item_atomic", ['.from("user_items")', '.from("profiles")']],
   ["app/api/shop/use-item/route.ts", "consume_user_item", ['.from("user_items")']],
-  ["app/api/cats/equip-item/route.ts", "equip_item_atomic", ['.from("user_items")', '.from("cats")']],
+  // equip-item은 카드 시스템 폐지(2026-08-27)로 라우트 삭제됨 — 목록에서 제거
 ];
 
 for (const [file, rpc, forbidden] of FAIL_CLOSED_ROUTES) {

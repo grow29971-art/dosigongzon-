@@ -14,9 +14,20 @@
 // - 텔레그램 미설정이면 조용히 스킵 (lib/telegram.ts silent skip).
 // ══════════════════════════════════════════
 
+import { timingSafeEqual } from "node:crypto";
 import { createServiceClient } from "@/lib/supabase/service";
 import { sendTelegramToAdmin, telegramConfigured } from "@/lib/telegram";
 import { TOSS_FEE_RATE } from "@/lib/payments-config";
+
+// CRON_SECRET 상수시간 비교 — 평문 !== 는 타이밍 사이드채널 (8/29 보안 점검)
+function cronAuthorized(request: Request): boolean {
+  const secret = process.env.CRON_SECRET;
+  const header = request.headers.get("authorization") ?? "";
+  if (!secret) return false;
+  const expected = Buffer.from(`Bearer ${secret}`);
+  const actual = Buffer.from(header);
+  return expected.length === actual.length && timingSafeEqual(expected, actual);
+}
 
 interface OrderRow {
   id: string;
@@ -32,9 +43,7 @@ interface OrderRow {
 const won = (n: number) => `${n.toLocaleString()}원`;
 
 async function handle(request: Request): Promise<Response> {
-  const authHeader = request.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+  if (!cronAuthorized(request)) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -57,6 +66,8 @@ async function handle(request: Request): Promise<Response> {
   }
 
   // 매입가(원가) — 관리자·서버 전용 product_costs (미입력 상품은 0으로 계산되니 표시로 구분)
+  // ⚠ 알려진 한계(8/29): 원가는 "현재값", 후원은 "주문 시점 스냅샷" — 결제 후 매입가를
+  // 바꾸면 이 표시용 "남는 돈"이 약간 어긋난다. 결제 검증과 무관한 리포팅 전용 값.
   const productIds = Array.from(new Set(
     orders.flatMap((o) => o.items.map((it) => it.product_id)).filter((id): id is string => !!id),
   ));
@@ -83,12 +94,18 @@ async function handle(request: Request): Promise<Response> {
   // ── 개인정보 마스킹 (2026-08-26 원탁회의 — 보안·법률·프로파일러 3자 수렴) ──
   // 텔레그램은 해외 서버라 고객 주소·전화 원문 전송 = 개인정보 국외이전 소지.
   // 발주서에는 비식별 요약만 싣고, 전체 배송정보는 관리자 주문 페이지에서 복사한다.
+  // 8/29 보강: 공백 토큰화만 믿으면 무공백 주소가 통째로 통과 → 행정구역 접미사
+  // 경계에서 자르고 길이 상한을 이중으로 건다. 1글자 이름은 전체 마스킹.
   const maskName = (n: string | null) =>
-    !n ? "-" : n.length <= 1 ? n + "*" : n[0] + "*".repeat(Math.max(1, n.length - 2)) + (n.length > 2 ? n[n.length - 1] : "");
+    !n ? "-" : n.length <= 1 ? "*" : n[0] + "*".repeat(Math.max(1, n.length - 2)) + (n.length > 2 ? n[n.length - 1] : "");
   const coarseAddress = (a: string | null) => {
     if (!a) return "-";
-    const parts = a.trim().split(/\s+/);
-    return parts.slice(0, 3).join(" "); // 시/구/동 수준까지만 — 상세주소·번지 제외
+    const trimmed = a.trim();
+    // 1차: 동/읍/면(또는 그 앞의 시·구·군)까지의 행정구역 경계에서 절단
+    const m = trimmed.match(/^.{0,40}?([가-힣]+(시|도)\s*)?([가-힣0-9]+(구|군)\s*)?[가-힣0-9]+(동|읍|면|가)(?=\s|$|\d)/);
+    if (m) return m[0].trim();
+    // 2차 폴백: 공백 토큰 2개까지, 어떤 경우에도 20자 상한 (번지·상세주소 차단)
+    return trimmed.split(/\s+/).slice(0, 2).join(" ").slice(0, 20);
   };
 
   orders.forEach((o, i) => {

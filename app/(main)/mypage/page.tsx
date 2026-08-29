@@ -281,7 +281,7 @@ export default function MyPage() {
         title="내 돌봄 발자취를 모아봐요"
         items={[
           { emoji: "🏆", text: <>돌볼수록 <b className="text-text-main">레벨·업적·타이틀</b>이 쌓여요.</> },
-          { emoji: "🐱", text: <>내 고양이·돌봄 기록·포획 카드를 관리해요.</> },
+          { emoji: "🐱", text: <>내 고양이와 돌봄 기록을 관리해요.</> },
           { emoji: "⚙️", text: <>알림·서클·차단 등 설정도 여기서 할 수 있어요.</> },
         ]}
       />

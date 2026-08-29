@@ -3,13 +3,22 @@
 // 이 스냅샷만 읽으므로, 구매가 일어나도 카드 숫자는 하루 1회만 갱신된다.
 // (구매 직후 총액 변화로 개별 주문 금액이 역산되는 것 방지 + 기준 시각이 명확한 정산)
 
+import { timingSafeEqual } from "node:crypto";
 import { createServiceClient } from "@/lib/supabase/service";
 import { computeFundSettlement } from "@/lib/fund-settlement";
 
+// CRON_SECRET 상수시간 비교 (8/29 보안 점검 — 평문 !== 타이밍 사이드채널 봉인)
+function cronAuthorized(request: Request): boolean {
+  const secret = process.env.CRON_SECRET;
+  const header = request.headers.get("authorization") ?? "";
+  if (!secret) return false;
+  const expected = Buffer.from(`Bearer ${secret}`);
+  const actual = Buffer.from(header);
+  return expected.length === actual.length && timingSafeEqual(expected, actual);
+}
+
 async function handle(request: Request): Promise<Response> {
-  const authHeader = request.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+  if (!cronAuthorized(request)) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 

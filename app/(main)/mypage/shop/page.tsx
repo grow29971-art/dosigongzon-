@@ -71,7 +71,7 @@ export default function ShopPage() {
 
       <div className="px-4 pb-10">
         <p className="text-[13px] mb-4" style={{ color: UI.textMuted }}>
-          출석·돌봄 기록·매일 로그인으로 코인을 모아보세요. 케어 간식은 홈 다마고치에게, 테두리는 카드 꾸미기에 사용해요.
+          출석·돌봄 기록·매일 로그인으로 코인을 모아보세요. 케어 간식은 홈 다마고치에게 사용해요.
         </p>
 
         {msg && (

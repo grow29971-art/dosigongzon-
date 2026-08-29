@@ -11,6 +11,7 @@ import { NextResponse } from "next/server";
 import webpush from "web-push";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
+import { rateLimit } from "@/lib/rate-limit";
 
 const VAPID_PUBLIC = (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? "").trim();
 const VAPID_PRIVATE = (process.env.VAPID_PRIVATE_KEY ?? "").trim();
@@ -37,6 +38,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "잘못된 요청이에요." }, { status: 400 });
   }
   if (!body.orderId) return NextResponse.json({ error: "orderId가 필요해요." }, { status: 400 });
+
+  // 같은 주문 반복 발송 방지 — 10분에 1회 (관리자 자가 스팸·중복 클릭 억제, 8/29 보안 점검)
+  if (!rateLimit(`notify-ship:${body.orderId}`, { max: 1, windowMs: 10 * 60 * 1000 })) {
+    return NextResponse.json({ error: "이 주문은 방금 알림을 보냈어요. 잠시 후 다시 시도해주세요." }, { status: 429 });
+  }
 
   const { data: order } = await svc
     .from("orders")

@@ -50,7 +50,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "already_checked_in" }, { status: 400 });
   }
 
-  // 카드 경험치를 받을 대상 카드 — 대표 카드가 있으면 그걸로, 없으면 가장 최근 카드
+  // 돌봄 EXP를 받을 대상 — 대표묘가 있으면 그걸로, 없으면 가장 최근 등록묘
   const repCardId = (profile as { rep_card_cat_id?: string | null }).rep_card_cat_id;
   let targetCatId: string | null = repCardId ?? null;
   if (!targetCatId) {
