@@ -451,3 +451,49 @@ export async function restoreHospitalByAdmin(hospitalId: string): Promise<void> 
     throw new Error(`병원 복원 실패: ${error.message}`);
   }
 }
+
+// ══ 게시글·댓글 hidden 토글 (2026-08-29 법률감사 H1: posts는 Supabase로 이전됐는데
+//    admin inbox가 "localStorage라 삭제 불가"로 오판해 신고 처리가 막혀 있었음) ══
+// 삭제가 아닌 hidden=true 토글 — 정보통신망법 임시조치는 지체없이(1건에도) 가능해야 하고,
+// 오신고 복원·증거 보존을 위해 hard delete 대신 숨김을 쓴다. RLS posts_update_admin 필요.
+export async function hidePostByAdmin(postId: string): Promise<void> {
+  await requireAdmin();
+  const supabase = createClient();
+  const { error } = await supabase.from("posts").update({ hidden: true }).eq("id", postId);
+  if (error) {
+    console.error("[support-repo] hidePostByAdmin failed:", error);
+    throw new Error(`게시글 숨김 실패: ${error.message}`);
+  }
+}
+
+export async function restorePostByAdmin(postId: string): Promise<void> {
+  await requireAdmin();
+  const supabase = createClient();
+  const { error } = await supabase.from("posts").update({ hidden: false }).eq("id", postId);
+  if (error) {
+    console.error("[support-repo] restorePostByAdmin failed:", error);
+    throw new Error(`게시글 복원 실패: ${error.message}`);
+  }
+}
+
+// 자동숨김(신고 3건 누적) 또는 관리자 숨김된 댓글을 복원 — 오신고·표적 몰이 신고 대비.
+// RLS cat_comments_update_admin / post_comments_update_admin 필요.
+export async function restoreCommentByAdmin(commentId: string): Promise<void> {
+  await requireAdmin();
+  const supabase = createClient();
+  const { error } = await supabase.from("cat_comments").update({ hidden: false }).eq("id", commentId);
+  if (error) {
+    console.error("[support-repo] restoreCommentByAdmin failed:", error);
+    throw new Error(`댓글 복원 실패: ${error.message}`);
+  }
+}
+
+export async function restorePostCommentByAdmin(commentId: string): Promise<void> {
+  await requireAdmin();
+  const supabase = createClient();
+  const { error } = await supabase.from("post_comments").update({ hidden: false }).eq("id", commentId);
+  if (error) {
+    console.error("[support-repo] restorePostCommentByAdmin failed:", error);
+    throw new Error(`커뮤니티 댓글 복원 실패: ${error.message}`);
+  }
+}

@@ -26,6 +26,10 @@ import {
   deletePostCommentByAdmin,
   hideHospitalByAdmin,
   restoreHospitalByAdmin,
+  hidePostByAdmin,
+  restorePostByAdmin,
+  restoreCommentByAdmin,
+  restorePostCommentByAdmin,
   suspendUser,
   REPORT_REASON_LABELS,
   REPORT_STATUS_LABELS,
@@ -115,10 +119,21 @@ export default function AdminInboxPage() {
 
   // 신고 대상 삭제
   const handleDeleteTarget = async (report: Report) => {
+    // 게시글: 삭제가 아닌 hidden 토글(정보통신망법 임시조치·오신고 복원·증거 보존).
+    // 2026-08-29 법률감사 H1: posts는 Supabase로 이전됐는데 "localStorage라 삭제 불가"로 막혀 있었음.
     if (report.target_type === "post") {
-      alert(
-        "커뮤니티 게시글은 localStorage 기반이라 서버에서 삭제할 수 없어요.\n신고 기록만 처리해주세요.",
-      );
+      if (!confirm("이 커뮤니티 게시글을 숨길까요?\n(삭제가 아닌 숨김 — 오신고 시 복원 가능)")) return;
+      try {
+        await hidePostByAdmin(report.target_id);
+        const sameTargetReports = reports.filter(
+          (r) => r.target_type === "post" && r.target_id === report.target_id && r.status === "pending",
+        );
+        for (const r of sameTargetReports) await updateReportStatus(r.id, "resolved");
+        await refresh();
+        alert("게시글이 숨김 처리됐어요.");
+      } catch (err) {
+        alert(err instanceof Error ? err.message : "숨김 실패");
+      }
       return;
     }
     // 병원 폐업 신고: 삭제 대신 hidden 토글. 라벨·확인 메시지·액션 모두 분기.
@@ -161,6 +176,25 @@ export default function AdminInboxPage() {
       alert("대상이 삭제됐어요.");
     } catch (err) {
       alert(err instanceof Error ? err.message : "삭제 실패");
+    }
+  };
+
+  // 게시글·댓글 복원 (자동숨김 3건 누적 또는 관리자 숨김의 오신고 처리 — 2026-08-29 법률감사 H1/H2)
+  const handleRestoreTarget = async (report: Report) => {
+    const label =
+      report.target_type === "post" ? "게시글"
+        : report.target_type === "comment" ? "고양이 댓글" : "커뮤니티 댓글";
+    if (!confirm(`이 ${label}을(를) 다시 표시할까요? (오신고 처리)`)) return;
+    try {
+      if (report.target_type === "post") await restorePostByAdmin(report.target_id);
+      else if (report.target_type === "comment") await restoreCommentByAdmin(report.target_id);
+      else if (report.target_type === "post_comment") await restorePostCommentByAdmin(report.target_id);
+      const same = reports.filter((r) => r.target_type === report.target_type && r.target_id === report.target_id);
+      for (const r of same) await updateReportStatus(r.id, "dismissed");
+      await refresh();
+      alert(`${label}이(가) 복원됐어요.`);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "복원 실패");
     }
   };
 
@@ -401,26 +435,23 @@ export default function AdminInboxPage() {
                 {/* 관리자 액션 — 상단 행(대상 처리) */}
                 <div className="flex gap-1.5 mt-3 pt-2.5 border-t border-divider">
                   <ActionBtn
-                    label={r.target_type === "hospital_closed" ? "병원 숨김" : "대상 삭제"}
+                    label={
+                      r.target_type === "hospital_closed"
+                        ? "병원 숨김"
+                        : r.target_type === "post"
+                          ? "게시글 숨김"
+                          : "대상 삭제"
+                    }
                     onClick={() => handleDeleteTarget(r)}
                     Icon={Eraser}
                     bg="#B84545"
-                    disabled={r.target_type === "post"}
                   />
                   {r.target_type === "hospital_closed" ? (
-                    <ActionBtn
-                      label="병원 복원"
-                      onClick={() => handleRestoreHospital(r)}
-                      Icon={Check}
-                      bg="#6B8E6F"
-                    />
+                    <ActionBtn label="병원 복원" onClick={() => handleRestoreHospital(r)} Icon={Check} bg="#6B8E6F" />
+                  ) : r.target_type === "post" || r.target_type === "comment" || r.target_type === "post_comment" ? (
+                    <ActionBtn label="복원(오신고)" onClick={() => handleRestoreTarget(r)} Icon={Check} bg="#6B8E6F" />
                   ) : (
-                    <ActionBtn
-                      label="신고자 정지"
-                      onClick={() => handleSuspendReporter(r)}
-                      Icon={Ban}
-                      bg="#8B65B8"
-                    />
+                    <ActionBtn label="신고자 정지" onClick={() => handleSuspendReporter(r)} Icon={Ban} bg="#8B65B8" />
                   )}
                 </div>
                 {/* 관리자 액션 — 하단 행(상태 변경) */}
