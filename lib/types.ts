@@ -16,6 +16,7 @@ export interface User {
 // ── 게시글 카테고리 ──
 export type PostCategory =
   | "emergency"  // 긴급
+  | "sitter"     // 돌봄 부탁 (입원·여행 시 밥자리 대타 — 2026-08-29 PMF 개편)
   | "foster"     // 임시보호
   | "adoption"   // 입양
   | "market"     // 중고마켓
@@ -23,6 +24,7 @@ export type PostCategory =
 
 export const CATEGORY_MAP: Record<PostCategory, { label: string; color: string; emoji: string }> = {
   emergency: { label: "긴급",     color: "#D85555", emoji: "🚨" },
+  sitter:    { label: "돌봄 부탁", color: "#4A7BA8", emoji: "🤝" },
   foster:    { label: "임보",     color: "#E88D5A", emoji: "🏠" },
   adoption:  { label: "입양",     color: "#E86B8C", emoji: "💕" },
   market:    { label: "중고마켓", color: "#48A59E", emoji: "🛍️" },

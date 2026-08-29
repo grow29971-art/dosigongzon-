@@ -7,6 +7,7 @@ import {
   Siren,
   Home,
   Heart,
+  HandHeart,
   ShoppingBag,
   MessagesSquare,
   TrendingUp,
@@ -51,6 +52,16 @@ const CATEGORIES: CategoryCard[] = [
     Icon: Siren,
     iconBg: "#D85555",
     glowColor: "216,85,85",
+    highlight: true,
+  },
+  {
+    // 돌봄 부탁 — 입원·여행 때 밥자리 대타 (2026-08-29 PMF 개편: 캣맘의 실제 pain)
+    key: "sitter",
+    title: "돌봄 부탁",
+    subtitle: "입원 · 여행 때 밥자리 대타 요청",
+    Icon: HandHeart,
+    iconBg: "#4A7BA8",
+    glowColor: "74,123,168",
     highlight: true,
   },
   {

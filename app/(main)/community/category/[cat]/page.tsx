@@ -12,6 +12,7 @@ import {
   Plus,
   Siren,
   Home,
+  HandHeart,
   ShoppingBag,
   MessagesSquare,
   ThumbsUp,
@@ -40,6 +41,13 @@ const CATEGORY_META: Record<
     Icon: Siren,
     color: "#D85555",
     glow: "216,85,85",
+  },
+  sitter: {
+    title: "돌봄 부탁",
+    subtitle: "입원 · 여행 때 밥자리 대타 요청",
+    Icon: HandHeart,
+    color: "#4A7BA8",
+    glow: "74,123,168",
   },
   foster: {
     title: "임보",
