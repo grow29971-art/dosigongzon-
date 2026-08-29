@@ -8,6 +8,7 @@ import type { PostCategory } from "@/lib/types";
 import { CATEGORY_MAP } from "@/lib/types";
 import { createPost } from "@/lib/posts-repo";
 import { uploadCatPhoto } from "@/lib/cats-repo";
+import { listMyActivityRegions } from "@/lib/activity-regions-repo";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 
@@ -15,12 +16,20 @@ const CATEGORIES = Object.entries(CATEGORY_MAP) as [PostCategory, typeof CATEGOR
 
 const MAX_IMAGES = 4;
 
+// 돌봄 부탁 글 양식 — 위치는 쪽지로만(안전 계약). 빈 내용일 때만 자동 채움.
+const SITTER_TEMPLATE = `📅 기간: 예) 9/1(월)~9/5(금) 아침 1회
+🐱 아이들: 예) 2마리 · 사료는 제가 준비해둘게요
+🙏 부탁: 밥·물만 부탁드려요
+※ 정확한 밥자리 위치는 공개글 대신 쪽지로만 알려드려요`;
+
 export default function WritePage() {
   const router = useRouter();
   const { user } = useAuth();
   const [category, setCategory] = useState<PostCategory>("free");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  // 돌봄 부탁 전용 — 동네(동 단위). posts.region으로 저장돼 동네 매칭 푸시에 쓰인다.
+  const [region, setRegion] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -53,6 +62,21 @@ export default function WritePage() {
       /* ignore */
     }
   }, []);
+
+  // 돌봄 부탁 선택 시: 빈 내용이면 양식 자동 채움 + 활동 지역으로 동네 프리필
+  useEffect(() => {
+    if (category !== "sitter") return;
+    setContent((prev) => (prev.trim() === "" ? SITTER_TEMPLATE : prev));
+    if (region === "" && user) {
+      listMyActivityRegions()
+        .then((regions) => {
+          const primary = regions.find((r) => r.is_primary) ?? regions[0];
+          if (primary?.name) setRegion((prev) => (prev === "" ? primary.name : prev));
+        })
+        .catch(() => {});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, user]);
 
   const canSubmit = title.trim().length > 0 && content.trim().length > 0 && !uploading;
 
@@ -106,12 +130,30 @@ export default function WritePage() {
     setSubmitting(true);
     setSubmitError("");
     try {
-      await createPost({
+      const post = await createPost({
         category,
         title: title.trim(),
         content: content.trim(),
         images: imageUrls,
+        region: category === "sitter" ? region.trim() || undefined : undefined,
       });
+      // 돌봄 부탁 — 같은 동네 활동 이웃에게 푸시 (fire-and-forget, 실패해도 글은 등록됨)
+      if (category === "sitter" && post?.id) {
+        try {
+          const supabase = createClient();
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.access_token) {
+            fetch("/api/posts/sitter-notify", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.access_token}`,
+              },
+              body: JSON.stringify({ postId: post.id }),
+            }).catch(() => {});
+          }
+        } catch { /* 무시 */ }
+      }
       router.push("/community");
     } catch (err) {
       setSubmitting(false);
@@ -189,6 +231,33 @@ export default function WritePage() {
           </div>
         </div>
 
+        {/* 돌봄 부탁 — 동네 입력 + 안전 안내 (2026-08-29 PMF 개편) */}
+        {category === "sitter" && (
+          <div>
+            <div
+              className="rounded-2xl p-4 mb-3"
+              style={{ background: "rgba(74,123,168,0.08)", border: "1.5px solid rgba(74,123,168,0.22)" }}
+            >
+              <p className="text-[13px] font-bold text-text-main leading-tight mb-1">
+                같은 동네 이웃에게 알림이 가요
+              </p>
+              <p className="text-[11px] text-text-sub leading-relaxed">
+                아래 동네를 적으면 그 동네에서 활동하는 이웃에게 부탁 알림이 전달돼요.
+                <b> 정확한 밥자리 위치는 글 대신 쪽지로만</b> 주고받아 주세요.
+              </p>
+            </div>
+            <label className="text-[13px] font-bold text-text-sub mb-2 block">동네 (동 단위)</label>
+            <input
+              type="text"
+              value={region}
+              onChange={(e) => setRegion(e.target.value)}
+              placeholder="예) 행궁동"
+              maxLength={20}
+              className="w-full px-4 py-3.5 rounded-2xl border border-border bg-white text-[15px] text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
+            />
+          </div>
+        )}
+
         {/* 긴급 글 ↔ 확인서 연결 — 신고·민원 글에 증빙을 붙이도록 (2026-08-29 PMF 개편) */}
         {category === "emergency" && (
           <div
@@ -228,7 +297,7 @@ export default function WritePage() {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="제목을 입력하세요"
+            placeholder={category === "sitter" ? "예) 9/1~9/5 아침 밥자리 대타 구해요" : "제목을 입력하세요"}
             maxLength={50}
             className="w-full px-4 py-3.5 rounded-2xl border border-border bg-white text-[15px] text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
           />
