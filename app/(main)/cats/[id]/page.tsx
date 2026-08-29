@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, MapPin, PawPrint, CalendarDays, Camera, BookOpen, Sparkles, Star, Heart, MessageCircle, FileText } from "lucide-react";
-import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer, getCatCommunityStatsServer, getCatDiaryServer } from "@/lib/cats-server";
+import { ArrowLeft, MapPin, PawPrint, CalendarDays, Camera, BookOpen, Sparkles, Star, Heart, MessageCircle, FileText, Award } from "lucide-react";
+import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer, getCatCommunityStatsServer, getCatDiaryServer, getCatGuardianServer } from "@/lib/cats-server";
 import { GENDER_MAP, HEALTH_MAP, thumbnailUrl, optimizedImageUrl } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { createClient } from "@/lib/supabase/server";
@@ -70,10 +70,11 @@ export default async function CatDetailPage({ params }: { params: Params }) {
   const { data: { user } } = await supabase.auth.getUser();
   const currentUserId = user?.id ?? null;
 
-  const [commentCount, careCount, communityStats, diary, totalCatsForNudge] = await Promise.all([
+  const [commentCount, careCount, communityStats, guardian, diary, totalCatsForNudge] = await Promise.all([
     getCatCommentsCountServer(cat.id),
     getCatCareLogsCountServer(cat.id),
     getCatCommunityStatsServer(cat.id),
+    getCatGuardianServer(cat.id),
     getCatDiaryServer(cat.id, 60),
     // 비로그인 회원가입 nudge용 — 누적 등록 수
     currentUserId ? Promise.resolve(0) : supabase.rpc("total_cat_count").then((r) => Number(r.data ?? 0)),
@@ -417,6 +418,38 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                   좋아요 {communityStats.likeUserCount}명 · 최근 30일 기록
                 </p>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 이 아이의 지킴이 — 최다 돌봄 시민 지명 인정. "안 써도 아무도 모른다"를 뒤집는
+          이름 박힌 책임 (2026-08-29 PMF 회의 후보②). 3회 이상부터, 추모 아이는 제외 */}
+      {guardian && guardian.count >= 3 && !cat.memorial_at && (
+        <div className="px-4 mt-3">
+          <div
+            className="rounded-2xl px-4 py-3 flex items-center gap-3"
+            style={{
+              background: "linear-gradient(135deg, #FFF7E8 0%, #FDEEDC 100%)",
+              border: "1px solid rgba(196,126,42,0.28)",
+            }}
+          >
+            <div
+              className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+              style={{ background: "rgba(196,126,42,0.16)" }}
+            >
+              <Award size={17} style={{ color: "#B8802E" }} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[13px] font-bold text-text-main tracking-tight leading-tight">
+                <Link href={`/users/${guardian.authorId}`} className="hover:underline" style={{ color: "#9A6A22" }}>
+                  {guardian.name}
+                </Link>
+                님 덕분에 {cat.name}의 돌봄이 이어지고 있어요
+              </p>
+              <p className="text-[11px] mt-0.5 leading-tight" style={{ color: "#A98243" }}>
+                돌봄 {guardian.count}회 · 첫 기록 후 {guardian.sinceDays}일째
+              </p>
             </div>
           </div>
         </div>

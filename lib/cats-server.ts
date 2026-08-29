@@ -127,6 +127,63 @@ export async function getMemorialCareLogsServer(catId: string, limit = 500) {
   return data ?? [];
 }
 
+// ── 지킴이(전체 기간 최다 돌봄 시민) — "○○님 덕분에" 지명 인정용 (2026-08-29 PMF 회의 후보②) ──
+export interface CatGuardian {
+  authorId: string;
+  name: string;
+  count: number;           // 전체 기간 돌봄 기록 수
+  firstLoggedAt: string;   // 그 시민의 첫 기록
+  sinceDays: number;       // 첫 기록 후 오늘까지 일수 (당일 = 1)
+}
+
+export async function getCatGuardianServer(catId: string): Promise<CatGuardian | null> {
+  if (!/^[0-9a-fA-F-]{32,36}$/.test(catId)) return null;
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("care_logs")
+    .select("author_id, author_name, logged_at")
+    .eq("cat_id", catId)
+    .order("logged_at", { ascending: false })
+    .limit(1000);
+
+  if (error || !data || data.length === 0) return null;
+
+  const byAuthor = new Map<string, { name: string; count: number; first: string }>();
+  for (const r of data as { author_id: string | null; author_name: string | null; logged_at: string }[]) {
+    if (!r.author_id) continue;
+    const cur = byAuthor.get(r.author_id);
+    if (cur) {
+      cur.count += 1;
+      if (r.logged_at < cur.first) cur.first = r.logged_at;
+    } else {
+      byAuthor.set(r.author_id, { name: r.author_name ?? "익명", count: 1, first: r.logged_at });
+    }
+  }
+  if (byAuthor.size === 0) return null;
+
+  let topId = "";
+  let top: { name: string; count: number; first: string } | null = null;
+  for (const [id, v] of byAuthor) {
+    if (!top || v.count > top.count) {
+      top = v;
+      topId = id;
+    }
+  }
+  if (!top) return null;
+
+  const sinceDays =
+    Math.floor((Date.now() - new Date(top.first).getTime()) / (24 * 60 * 60 * 1000)) + 1;
+
+  return {
+    authorId: topId,
+    name: top.name,
+    count: top.count,
+    firstLoggedAt: top.first,
+    sinceDays,
+  };
+}
+
 export interface CatCommunityStats {
   uniqueCaretakers: number;         // 이 고양이를 돌본 unique 유저 수
   recentCaretakers: {               // 최근 돌본 이웃 프로필 (최대 3명)
