@@ -35,6 +35,13 @@ export interface CareReport {
 const kstDay = (iso: string) =>
   new Date(iso).toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
 
+// KST 달력일 기준 경과 일수 (같은 날 = 1). 원시 ms 차이로 세면 "8/9 저녁~8/10 오후"가
+// 1일로 나와 활동 일수(2일)와 모순된다 — 날짜 문자열 차이로 계산.
+const kstSpanDays = (firstIso: string, lastIso: string) =>
+  Math.round(
+    (Date.parse(kstDay(lastIso)) - Date.parse(kstDay(firstIso))) / (24 * 60 * 60 * 1000),
+  ) + 1;
+
 // ── 유저 단위: 내 돌봄 활동 확인서 (봉사 증빙·B2G·민원 대응용) ──
 export interface MyCareReport {
   totalCount: number;
@@ -105,11 +112,7 @@ export async function getMyCareReportServer(userId: string): Promise<MyCareRepor
 
   const lastLoggedAt = rows[0].logged_at;
   const firstLoggedAt = rows[rows.length - 1].logged_at;
-  const spanDays =
-    Math.floor(
-      (new Date(lastLoggedAt).getTime() - new Date(firstLoggedAt).getTime()) /
-        (24 * 60 * 60 * 1000),
-    ) + 1;
+  const spanDays = kstSpanDays(firstLoggedAt, lastLoggedAt);
 
   const byCat = Array.from(byCatMap.entries())
     .sort((a, b) => b[1] - a[1])
@@ -194,11 +197,7 @@ export async function getCareReportServer(catId: string): Promise<CareReport> {
   // rows는 최신순 → 마지막 원소가 가장 오래된 기록
   const lastLoggedAt = rows[0].logged_at;
   const firstLoggedAt = rows[rows.length - 1].logged_at;
-  const spanDays =
-    Math.floor(
-      (new Date(lastLoggedAt).getTime() - new Date(firstLoggedAt).getTime()) /
-        (24 * 60 * 60 * 1000),
-    ) + 1;
+  const spanDays = kstSpanDays(firstLoggedAt, lastLoggedAt);
 
   const caretakers = Array.from(byAuthor.values())
     .sort((a, b) => b.count - a.count)

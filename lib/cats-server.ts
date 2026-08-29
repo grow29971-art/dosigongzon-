@@ -172,8 +172,14 @@ export async function getCatGuardianServer(catId: string): Promise<CatGuardian |
   }
   if (!top) return null;
 
+  // KST 달력일 기준 (당일 = 1) — ms 차이로 세면 날짜 경계에서 하루씩 어긋난다
+  const kstDay = (iso: string) =>
+    new Date(iso).toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
   const sinceDays =
-    Math.floor((Date.now() - new Date(top.first).getTime()) / (24 * 60 * 60 * 1000)) + 1;
+    Math.round(
+      (Date.parse(kstDay(new Date().toISOString())) - Date.parse(kstDay(top.first))) /
+        (24 * 60 * 60 * 1000),
+    ) + 1;
 
   return {
     authorId: topId,
