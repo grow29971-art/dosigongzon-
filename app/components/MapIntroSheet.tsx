@@ -67,19 +67,22 @@ export default function MapIntroSheet() {
           style={{ background: "rgba(0,0,0,0.12)" }}
         />
 
+        {/* 2026-08-29 PMF 개편: "기록 앱" → "지켜주는 도구"로 가치 제안 재작성.
+            죄책감 프레임 금지 원칙 유지 — 요구가 아니라 앱이 해주는 일을 말한다. */}
         <h2 className="serif-display text-[22px] text-text-main tracking-tight leading-snug">
-          우리 동네 길고양이,
+          돌보는 사람을 지켜주는
           <br />
-          지도 한 장에 다 있어요
+          길고양이 지도예요
         </h2>
         <p className="text-[15px] text-text-sub leading-relaxed mt-2.5">
           {catCount !== null ? (
             <>
-              지금 <b className="text-primary">{catCount.toLocaleString()}마리</b>가 이웃들의
-              돌봄 기록으로 지켜지고 있어요.{" "}
+              지금 <b className="text-primary">{catCount.toLocaleString()}마리</b>의 돌봄이
+              기록되고 있어요.{" "}
             </>
           ) : null}
-          누가 밥을 챙겼는지, 어디가 아픈지 — 지도에서 확인하고 함께 기록할 수 있어요.
+          여기 쌓인 밥·건강 기록은 민원·학대 신고·구청 협의 때 아이들과 나를 지키는
+          증빙 문서가 돼요.
         </p>
 
         <button

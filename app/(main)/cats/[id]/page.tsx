@@ -257,10 +257,11 @@ export default async function CatDetailPage({ params }: { params: Params }) {
               우리 동네 길고양이도 같이 돌봐요
             </p>
             <p className="text-[11px] leading-relaxed mb-3" style={{ color: "rgba(92,74,62,0.85)" }}>
-              도시공존은 광고 없는 무료 시민 참여 길고양이 지도예요.
+              도시공존은 광고 없는 무료 길고양이 돌봄 지도예요. 여기 남는 기록은
+              민원·학대 신고 때 아이들을 지키는 증빙이 돼요.
               {totalCatsForNudge > 0 && (
                 <>
-                  {" "}전국 <b style={{ color: "var(--color-primary-dark)" }}>{totalCatsForNudge.toLocaleString()}마리</b>가 이미 등록돼 함께 돌봐지고 있어요.
+                  {" "}지금 <b style={{ color: "var(--color-primary-dark)" }}>{totalCatsForNudge.toLocaleString()}마리</b>가 함께 돌봐지고 있어요.
                 </>
               )}
             </p>

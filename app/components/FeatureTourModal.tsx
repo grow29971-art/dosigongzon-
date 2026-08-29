@@ -18,6 +18,7 @@ import {
   Sparkles,
   Users,
   BookOpen,
+  FileText,
   type LucideIcon,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -48,6 +49,14 @@ const STEPS: TourStep[] = [
     eyebrow: "핵심 기능",
     title: "밥 준 걸 기록하기",
     body: "우리 동네 고양이를 등록하고 밥·물·건강을 1탭으로 남기면, 그 아이의 돌봄 기록이 이웃에게 이어져요.",
+  },
+  {
+    // 2026-08-29 PMF 개편: 기록의 수신자를 밝힌다 — 기록은 숙제가 아니라 보험.
+    Icon: FileText,
+    color: "var(--color-primary-dark)",
+    eyebrow: "증빙",
+    title: "기록이 증거가 돼요",
+    body: "쌓인 기록은 '돌봄 활동 확인서'(PDF)로 만들어져요. 민원·학대 신고·구청 협의 때 아이들과 나를 지키는 근거가 돼요.",
   },
   {
     Icon: MapPin,
@@ -93,7 +102,7 @@ const CORE_JOURNEY_STEPS: TourStep[] = [
     color: "#E88D5A",
     eyebrow: "2 · 돌봄",
     title: "오늘 필요한 돌봄을 기록해요",
-    body: "밥, 물, 건강 상태를 남기면 다음 돌봄이 필요한 이웃에게 이어져요.",
+    body: "밥, 물, 건강 상태를 남기면 이웃에게 이어지고, 민원·신고 때 쓰는 증빙 문서로도 만들어져요.",
   },
   {
     Icon: Users,
