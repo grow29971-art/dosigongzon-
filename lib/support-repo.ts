@@ -9,7 +9,7 @@ import { requireAdmin } from "@/lib/admin-guard";
 import { enforceUserActionLimit } from "@/lib/rate-limit";
 
 // ══ 신고 ══
-export type ReportTargetType = "comment" | "cat" | "post" | "post_comment" | "hospital_closed";
+export type ReportTargetType = "comment" | "cat" | "post" | "post_comment" | "hospital_closed" | "dm";
 export type ReportReason =
   | "spam"
   | "abuse"

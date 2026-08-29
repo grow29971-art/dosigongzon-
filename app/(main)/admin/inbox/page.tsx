@@ -136,6 +136,27 @@ export default function AdminInboxPage() {
       }
       return;
     }
+    // DM 신고: 삭제할 콘텐츠 없음(쪽지는 자동 삭제). target_id = 신고당한 발신자 user id →
+    // 그 유저를 정지. (2026-08-29 법률감사 H2)
+    if (report.target_type === "dm") {
+      const days = prompt(
+        "신고된 쪽지 발신자를 정지합니다.\n정지 기간(일, 빈 값이면 영구):",
+        "7",
+      );
+      if (days === null) return;
+      const n = days.trim() === "" ? null : parseInt(days, 10);
+      if (n !== null && (isNaN(n) || n < 0)) { alert("숫자를 입력해주세요."); return; }
+      try {
+        await suspendUser(report.target_id, "쪽지 신고 (협박/스토킹/성희롱 등)", n);
+        const same = reports.filter((r) => r.target_type === "dm" && r.target_id === report.target_id && r.status === "pending");
+        for (const r of same) await updateReportStatus(r.id, "resolved");
+        await refresh();
+        alert(n === null ? "발신자가 영구 정지됐어요." : `발신자가 ${n}일 정지됐어요.`);
+      } catch (err) {
+        alert(err instanceof Error ? err.message : "정지 실패");
+      }
+      return;
+    }
     // 병원 폐업 신고: 삭제 대신 hidden 토글. 라벨·확인 메시지·액션 모두 분기.
     if (report.target_type === "hospital_closed") {
       if (!confirm("이 병원을 지도에서 숨길까요?\n(데이터 삭제는 아님 — 오신고 시 복원 가능)")) return;
@@ -440,7 +461,9 @@ export default function AdminInboxPage() {
                         ? "병원 숨김"
                         : r.target_type === "post"
                           ? "게시글 숨김"
-                          : "대상 삭제"
+                          : r.target_type === "dm"
+                            ? "발신자 정지"
+                            : "대상 삭제"
                     }
                     onClick={() => handleDeleteTarget(r)}
                     Icon={Eraser}

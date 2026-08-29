@@ -2,10 +2,11 @@
 
 import { useEffect, useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Send, Loader2, Mail, ChevronRight, Camera, X } from "lucide-react";
+import { ArrowLeft, Send, Loader2, Mail, ChevronRight, Camera, X, Flag } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import FollowButton from "@/app/components/FollowButton";
+import ReportModal from "@/app/components/ReportModal";
 import PageIntroBanner from "@/app/components/PageIntroBanner";
 import {
   getConversations,
@@ -40,6 +41,7 @@ function MessagesPage() {
   const [sending, setSending] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [reportOpen, setReportOpen] = useState(false); // DM 신고·차단 (2026-08-29 법률감사 H2)
   const photoInputRef = useRef<HTMLInputElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -201,7 +203,31 @@ function MessagesPage() {
             <p className="text-[11px] text-text-light">1:1 쪽지 · 읽고 7일 후 자동 삭제</p>
           </div>
           <FollowButton userId={selectedPartner.id} size="sm" />
+          {/* 신고·차단 — 협박·스토킹·성희롱 쪽지 대응 (2026-08-29 법률감사 H2) */}
+          <button
+            type="button"
+            onClick={() => setReportOpen(true)}
+            className="p-2 press-strong transition-transform"
+            aria-label="신고·차단"
+          >
+            <Flag size={18} className="text-text-light" />
+          </button>
         </div>
+        {reportOpen && (
+          <ReportModal
+            open={reportOpen}
+            onClose={() => setReportOpen(false)}
+            targetType="dm"
+            targetId={selectedPartner.id}
+            authorUserId={selectedPartner.id}
+            authorName={selectedPartner.name}
+            targetSnapshot={messages
+              .filter((m) => m.sender_id === selectedPartner.id)
+              .slice(-5)
+              .map((m) => m.body || (m.photo_url ? "📷 사진" : ""))
+              .join("\n") || "(받은 쪽지 없음)"}
+          />
+        )}
 
         {/* 메시지 */}
         <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
