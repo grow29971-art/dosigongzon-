@@ -36,6 +36,8 @@ export default function AdminFundPage() {
   const [amount, setAmount] = useState("");
   const [memo, setMemo] = useState("");
   const [neuteredCount, setNeuteredCount] = useState("");
+  const [recipient, setRecipient] = useState("");     // 수령처 (세무 증빙 M5)
+  const [evidenceUrl, setEvidenceUrl] = useState(""); // 증빙 링크
   const [spentAt, setSpentAt] = useState(todayKst());
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -83,8 +85,11 @@ export default function AdminFundPage() {
         memo,
         spent_at: spentAt,
         neuteredCount: neuteredCount ? Number(neuteredCount) : undefined,
+        recipient: recipient || undefined,
+        evidenceUrl: evidenceUrl || undefined,
       });
       setAmount(""); setMemo(""); setNeuteredCount(""); setSpentAt(todayKst());
+      setRecipient(""); setEvidenceUrl("");
       await reload();
     } catch (e) {
       setError(e instanceof Error ? e.message : "등록 실패");
@@ -301,6 +306,19 @@ export default function AdminFundPage() {
             onChange={(e) => setNeuteredCount(e.target.value.replace(/[^0-9]/g, ""))}
             placeholder="중성화 마릿수 (없으면 비워두세요)"
             className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none tabular-nums"
+            style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+          />
+          {/* 세무 증빙 — 기부금 vs 판촉비 분류 근거 (2026-08-29 법률감사 M5) */}
+          <input
+            type="text" value={recipient} onChange={(e) => setRecipient(e.target.value)} maxLength={200}
+            placeholder="수령처 (단체·병원·개인명 — 세무 증빙용, 선택)"
+            className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none"
+            style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+          />
+          <input
+            type="url" value={evidenceUrl} onChange={(e) => setEvidenceUrl(e.target.value)} maxLength={500}
+            placeholder="증빙 링크 (계좌이체 내역·영수증 URL — 선택)"
+            className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none"
             style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
           />
           <input

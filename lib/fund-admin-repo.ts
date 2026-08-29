@@ -13,6 +13,10 @@ export interface Disbursement {
   created_at: string;
   /** 이 집행으로 중성화한 고양이 수 — 쇼핑 정산 카드에 합산 표시된다 */
   neutered_count: number;
+  /** 수령처(단체명/개인명) — 세무 증빙(기부금 vs 판촉비 분류 근거, 2026-08-29 법률감사 M5) */
+  recipient?: string | null;
+  /** 증빙 링크(계좌이체 내역·영수증 등) */
+  evidence_url?: string | null;
 }
 
 export interface DisbursementInput {
@@ -20,13 +24,15 @@ export interface DisbursementInput {
   memo: string;
   spent_at?: string; // 기본 오늘(KST)
   neuteredCount?: number;
+  recipient?: string;
+  evidenceUrl?: string;
 }
 
 export async function listDisbursements(): Promise<Disbursement[]> {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("fund_disbursements")
-    .select("id, amount, memo, spent_at, created_at, neutered_count")
+    .select("id, amount, memo, spent_at, created_at, neutered_count, recipient, evidence_url")
     .order("spent_at", { ascending: false });
   if (error) {
     console.error("[fund-admin-repo] list failed:", error);
@@ -49,6 +55,8 @@ export async function createDisbursement(input: DisbursementInput): Promise<void
     if (!Number.isFinite(n) || n < 0) throw new Error("중성화 마릿수를 올바르게 입력해주세요.");
     row.neutered_count = n;
   }
+  if (input.recipient?.trim()) row.recipient = input.recipient.trim().slice(0, 200);
+  if (input.evidenceUrl?.trim()) row.evidence_url = input.evidenceUrl.trim().slice(0, 500);
   const { error } = await supabase.from("fund_disbursements").insert(row);
   if (error) {
     console.error("[fund-admin-repo] create failed:", error);
