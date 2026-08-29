@@ -271,6 +271,11 @@ export default function WritePage() {
               그동안 쌓인 돌봄 기록이 학대 신고·민원 대응의 근거가 돼요.
               확인서를 인쇄·PDF로 만들어 경찰·구청 제출물에 붙일 수 있어요.
             </p>
+            {/* 사실적시 명예훼손 예방 안내 (2026-08-29 법률감사 Low) */}
+            <p className="text-[11px] leading-relaxed mt-2 pt-2" style={{ color: "#B84545", borderTop: "1px solid rgba(216,85,85,0.2)" }}>
+              특정인을 지목할 땐 실명·얼굴·차량번호를 가리고, 확인되지 않은 내용은 &ldquo;의혹/제보&rdquo;로
+              표현해 주세요. 확정적으로 단정하면 사실이어도 명예훼손이 될 수 있어요.
+            </p>
             <div className="flex gap-3 mt-2">
               <Link
                 href="/mypage/report"

@@ -210,10 +210,10 @@ export default async function MyCareReportPage() {
 
         <div className="pt-4 mt-2" style={{ borderTop: "1px solid var(--color-border)" }}>
           <p className="text-[11px] text-text-light leading-relaxed">
-            ※ 각 기록의 시각은 작성 시점에 서버에 저장된 시각(KST)입니다. 기록 원본과 첨부 사진은
-            플랫폼에서 열람할 수 있습니다. 본 확인서는 민원 대응, 급식소·중성화(TNR) 협의, 봉사활동
-            증빙, 지원사업 제출 시 참고 자료로 활용할 수 있으며, 고양이 안전을 위해 정확한 위치
-            좌표는 포함하지 않습니다.
+            ※ 본 확인서는 이용자가 자율적으로 입력한 활동 기록을 집계한 것으로, 제3자 검증을 거치지
+            않았습니다. 기록 원본과 첨부 사진은 플랫폼에서 열람할 수 있습니다. 본 확인서는 민원 대응,
+            급식소·중성화(TNR) 협의, 봉사활동 증빙, 지원사업 제출 시 참고 자료로 활용할 수 있으며,
+            고양이 안전을 위해 정확한 위치 좌표는 포함하지 않습니다.
           </p>
           <p className="text-[11px] font-bold text-text-sub mt-3 text-center tracking-widest">도 시 공 존</p>
         </div>
