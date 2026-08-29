@@ -2393,7 +2393,7 @@ export default function MapPage() {
               {abuseCardExpanded && (
                 <div className="px-4 pb-3 space-y-2.5" style={{ borderTop: "1px solid var(--color-divider)" }}>
                   <p className="text-[11px] leading-relaxed mt-2.5" style={{ color: "var(--color-gray-700)" }}>
-                    동물보호법 제8조 위반 · <b>3년 이하 징역 또는 3,000만원 이하 벌금</b>
+                    동물보호법 제10조 위반 · <b>3년 이하 징역 또는 3,000만원 이하 벌금</b>
                   </p>
                   <div className="flex flex-wrap gap-1.5 text-[11px]" style={{ color: "var(--color-gray-700)" }}>
                     <span>· 증거 촬영(사진·영상·시간·장소)</span>

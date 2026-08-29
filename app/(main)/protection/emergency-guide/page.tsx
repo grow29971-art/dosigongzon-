@@ -91,7 +91,7 @@ const faqSchema = {
       name: "학대 정황이 보이는 현장을 목격했어요",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "즉시 112 신고가 원칙입니다. 동물보호법 제8조 위반은 형사처벌 대상(3년 이하 징역, 3천만 원 이하 벌금). 증거 확보가 중요하니 안전한 거리에서 사진·동영상 촬영, 장소·시간 기록. 도시공존 지도에서 학대 경보를 남기면 이웃들이 함께 주의하게 됩니다.",
+        text: "즉시 112 신고가 원칙입니다. 동물보호법 제10조 위반은 형사처벌 대상(3년 이하 징역, 3천만 원 이하 벌금). 증거 확보가 중요하니 안전한 거리에서 사진·동영상 촬영, 장소·시간 기록. 도시공존 지도에서 학대 경보를 남기면 이웃들이 함께 주의하게 됩니다.",
       },
     },
     {
@@ -419,7 +419,7 @@ export default function EmergencyGuidePage() {
           사후 조치·신고
         </h2>
         <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
-          <li><strong>학대 정황</strong>이 있으면 112 신고 + 증거 사진 확보 (동물보호법 제8조 위반 = 형사처벌 대상)</li>
+          <li><strong>학대 정황</strong>이 있으면 112 신고 + 증거 사진 확보 (동물보호법 제10조 위반 = 형사처벌 대상)</li>
           <li><strong>로드킬</strong>은 도로관리청(1577-2504)에 장소·시간 신고 → 재발 방지·운전자 주의 표지판</li>
           <li>병원 치료 후 발견 장소에 재방사할지, 임시보호할지 결정 — <Link href="/community/category/foster" className="text-primary font-bold underline">커뮤니티 임보</Link>에 도움 요청 가능</li>
           <li>도시공존 지도의 <Link href="/map" className="text-primary font-bold underline">학대 경보</Link>를 남겨 이웃들도 주의하게</li>

@@ -13,9 +13,9 @@ const LAST_UPDATED = "2026-04-19";
 export const metadata: Metadata = {
   title: "길고양이 학대 신고·동물보호법 완벽 가이드",
   description:
-    "길고양이 학대·숨숨집 훼손 시 증거 확보부터 신고·처벌까지. 동물보호법 제8조·14조·46조 해설, 2024 개정 내용, 처벌 수위·신고 방법 총정리.",
+    "길고양이 학대·숨숨집 훼손 시 증거 확보부터 신고·처벌까지. 동물보호법 제10조(학대금지)·제97조(벌칙)·제39조(신고자 보호) 해설, 처벌 수위·신고 방법 총정리.",
   keywords: [
-    "동물보호법", "길고양이 학대 신고", "동물학대 처벌", "동물보호법 제8조",
+    "동물보호법", "길고양이 학대 신고", "동물학대 처벌", "동물보호법 제10조",
     "학대 증거 확보", "112 동물학대", "재물손괴죄 숨숨집", "동물보호상담센터",
     "길집사 법적 대응", "구조대 학대 신고",
   ],
@@ -45,7 +45,7 @@ const faqSchema = {
       name: "길고양이를 학대하면 실제로 처벌받나요?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "네, 동물보호법 제8조에 따라 3년 이하 징역 또는 3천만 원 이하 벌금입니다. 2024년 개정으로 상습범은 형량이 1/2 가중되고 향후 동물 사육 제한 명령까지 가능해졌어요. 실제로 증거(사진·영상·목격자)가 충분하면 벌금형~집행유예형 판결이 나오고 있습니다.",
+        text: "네, 동물보호법 제10조에 따라 3년 이하 징역 또는 3천만 원 이하 벌금입니다. 2024년 개정으로 상습범은 형량이 1/2 가중되고 향후 동물 사육 제한 명령까지 가능해졌어요. 실제로 증거(사진·영상·목격자)가 충분하면 벌금형~집행유예형 판결이 나오고 있습니다.",
       },
     },
     {
@@ -77,7 +77,7 @@ const faqSchema = {
       name: "신고자 신분이 공개되나요?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "동물보호법 제14조에 따라 신고자는 보호되며, 가해자에게 신분이 공개되지 않습니다. 단 형사재판에서는 증인으로 출석 요청될 수 있어요. 익명 신고도 가능하지만 증거와 함께 실명으로 접수하면 수사가 빨라집니다.",
+        text: "동물보호법 제39조 제3항에 따라 신고자의 신분은 그 의사에 반하여 공개되지 않습니다. 단 형사재판에서는 증인으로 출석 요청될 수 있어요. 익명 신고도 가능하지만 증거와 함께 실명으로 접수하면 수사가 빨라집니다.",
       },
     },
     {
@@ -93,7 +93,7 @@ const faqSchema = {
       name: "TNR 고양이 귀를 자르는 건 학대 아닌가요?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "이어팁은 법적으로 적법한 절차입니다. 동물보호법 제24조의2에 따라 지자체 TNR 사업의 일환으로 수의사가 마취 상태에서 위생적으로 진행하며, 재포획·중복 수술을 방지하는 인식표 역할을 합니다. 개인이 무단으로 귀를 자르는 것은 학대입니다.",
+        text: "이어팁은 법적으로 적법한 절차입니다. 「동물보호법」과 농림축산식품부 「고양이 중성화사업 실시 요령」(고시)에 따라 지자체 TNR 사업의 일환으로 수의사가 마취 상태에서 위생적으로 진행하며, 재포획·중복 수술을 방지하는 인식표 역할을 합니다. 개인이 무단으로 귀를 자르는 것은 학대입니다.",
       },
     },
     {
@@ -101,7 +101,7 @@ const faqSchema = {
       name: "고양이를 발로 차거나 폭언을 하는 사람을 봤어요. 범죄인가요?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "상해·생명의 위험을 가한 행위는 동물보호법 제8조 위반으로 형사 처벌 대상입니다. 단순 폭언·위협은 법적으로 애매할 수 있지만, 실제로 물리적 폭행이 있었다면 명백한 학대입니다. 증거 영상이 있으면 112 신고.",
+        text: "상해·생명의 위험을 가한 행위는 동물보호법 제10조 위반으로 형사 처벌 대상입니다. 단순 폭언·위협은 법적으로 애매할 수 있지만, 실제로 물리적 폭행이 있었다면 명백한 학대입니다. 증거 영상이 있으면 112 신고.",
       },
     },
     {
@@ -133,7 +133,7 @@ const ABUSE_CHECKLIST: ChecklistItem[] = [
   { id: "a3", text: "일시·장소·행위 내용을 메모로 기록", category: "증거 확보" },
   { id: "a4", text: "목격자 연락처 확보", category: "증거 확보" },
   { id: "a5", text: "피해 고양이 상태·위치 기록", category: "증거 확보" },
-  { id: "a6", text: "112 신고 — 동물보호법 제8조 위반", category: "신고" },
+  { id: "a6", text: "112 신고 — 동물보호법 제10조 위반", category: "신고" },
   { id: "a7", text: "동물보호콜센터 1577-0954 신고", category: "신고" },
   { id: "a8", text: "동물보호관리시스템 온라인 신고 (animal.go.kr)", category: "신고" },
   { id: "a9", text: "피해 동물 부상 시 가까운 동물병원 이송", category: "구조" },
@@ -213,7 +213,7 @@ export default function LegalGuidePage() {
       >
         <p className="text-[13px] leading-relaxed text-text-main">
           길고양이 학대·숨숨집 훼손은 <strong>막연한 "나쁜 짓"이 아니라 명확한 범죄</strong>입니다.
-          동물보호법 제8조 위반은 <strong>3년 이하 징역 또는 3천만 원 이하 벌금</strong>. 재물손괴죄도 형사 처벌 대상.
+          동물보호법 제10조 위반은 <strong>3년 이하 징역 또는 3천만 원 이하 벌금</strong>. 재물손괴죄도 형사 처벌 대상.
           하지만 제대로 <strong>증거를 확보하고 신고하는 방법</strong>을 모르면 실제 처벌로 이어지기 어려워요.
           이 가이드는 법조문 해설 + 신고 절차 + 증거 확보 + FAQ 까지 길집사가 알아야 할 법률 지식을 모두 담았습니다.
         </p>
@@ -248,7 +248,7 @@ export default function LegalGuidePage() {
         </h2>
         <div className="space-y-3">
           <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid var(--color-divider)" }}>
-            <p className="text-[15px] font-bold text-text-main">제8조 — 동물학대 등의 금지</p>
+            <p className="text-[15px] font-bold text-text-main">제10조 — 동물학대 등의 금지</p>
             <p className="text-[13px] font-semibold mt-1" style={{ color: "#B84545" }}>
               3년 이하 징역 또는 3,000만 원 이하 벌금
             </p>
@@ -270,7 +270,7 @@ export default function LegalGuidePage() {
           </div>
 
           <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid var(--color-divider)" }}>
-            <p className="text-[15px] font-bold text-text-main">제24조의2 — 길고양이 TNR 사업 근거</p>
+            <p className="text-[15px] font-bold text-text-main">길고양이 TNR 사업 근거 (동물보호법 · 중성화사업 실시 요령 고시)</p>
             <p className="text-[13px] text-text-sub mt-2 leading-relaxed">
               지자체가 <strong>길고양이 중성화 사업을 의무적으로 시행</strong>하도록 규정.
               왼쪽 귀 끝 V자 절단(이어팁)이 재포획 방지용 적법 표식으로 인정됩니다.
@@ -278,7 +278,7 @@ export default function LegalGuidePage() {
           </div>
 
           <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid var(--color-divider)" }}>
-            <p className="text-[15px] font-bold text-text-main">제46조 — 처벌 (2024 개정)</p>
+            <p className="text-[15px] font-bold text-text-main">제97조 — 벌칙</p>
             <p className="text-[13px] text-text-sub mt-2 leading-relaxed">
               <strong>상습범은 형의 1/2까지 가중</strong>, 유죄 확정 시 <strong>동물 사육 제한 명령</strong> 부과 가능.
             </p>
@@ -355,7 +355,7 @@ export default function LegalGuidePage() {
           <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid rgba(216,85,85,0.2)" }}>
             <p className="text-[15px] font-bold text-text-main">1. 112 (경찰)</p>
             <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
-              <strong>긴급·현행범</strong> 상황. 출동 지체되면 증거 유실 위험. 동물보호법 제8조 위반이라고 명확히 얘기하세요.
+              <strong>긴급·현행범</strong> 상황. 출동 지체되면 증거 유실 위험. 동물보호법 제10조 위반이라고 명확히 얘기하세요.
             </p>
           </div>
           <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid var(--color-divider)" }}>
@@ -401,7 +401,7 @@ export default function LegalGuidePage() {
         </h2>
         <LegalChecklist
           title="학대 목격 시"
-          subtitle="동물보호법 제8조 위반"
+          subtitle="동물보호법 제10조 위반"
           iconNode={<CircleAlert size={22} color="#B84545" strokeWidth={1.8} />}
           iconBg="var(--color-gray-100)"
           iconColor="#B84545"

@@ -15,7 +15,7 @@ export default function LegalGuideOG() {
         title="길고양이와 법"
         highlightText="법"
         highlightColor="#D85555"
-        subtitle="동물보호법 제8조 · 학대 신고 절차 · 재물손괴 적용 · 구조 비용 지원까지 한눈에."
+        subtitle="동물보호법 제10조 · 학대 신고 절차 · 재물손괴 적용 · 구조 비용 지원까지 한눈에."
         tags={["📜 보호법", "🚨 학대신고", "🛡️ 구조", "📞 112"]}
       />
     ),
