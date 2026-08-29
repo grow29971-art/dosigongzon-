@@ -1,14 +1,15 @@
-// 주간 출석 포인트 수령 API
-// 이번 주(KST 월~일) 출석체크 완료 일수 기준 마일스톤 포인트 지급.
+// 주간 돌봄 포인트 수령 API
+// 이번 주(KST 월~일) '실제 돌봄일지를 남긴 날' 수 기준 마일스톤 포인트 지급.
+// 2026-08-29 게임 요소(코인·다마고치·일일출석체크) 제거로, 출석 스탬프(checkin_days) 대신
+// care_logs의 서로 다른 KST 날짜 수를 집계원으로 사용 — 실제 돌봄이 곧 쇼핑 할인 적립.
 // 3일 50P / 5일 100P / 7일 150P — point_ledger의 (user, reason) 유니크로 중복 지급 원천 차단.
-// 포인트는 쇼핑몰 결제 시 1P = 1원 할인. 실돈 부채라 적립량은 보수적으로 유지
-// (2026-07-20 100/200/300 → 50/100/150 하향 — 주 최대 600P가 쇼핑몰 부담이 컸음).
+// 포인트는 쇼핑몰 결제 시 1P = 1원 할인. 실돈 부채라 적립량은 보수적으로 유지.
 
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { rateLimit } from "@/lib/rate-limit";
-import { thisMondayKstDate, thisSundayKstDate, isoWeekKey } from "@/lib/kst";
+import { thisMondayKstISO, thisMondayKstDate, toKstDate, isoWeekKey } from "@/lib/kst";
 
 // (라우트 파일은 핸들러 외 export 금지 — WeeklyCheckinCard가 같은 값을 복제 보유)
 const MILESTONES: { days: number; points: number }[] = [
@@ -29,23 +30,23 @@ export async function POST() {
 
   const svc = createServiceClient();
 
-  // 이번 주(KST 월~일) 경계로 조회 — gte만 걸면 서버 TZ 가정이 깨졌을 때
-  // 지난 주 출석일이 이번 주로 흡수돼 재지급될 수 있어 lte(일요일) 상한도 함께 건다.
-  const monday = thisMondayKstDate();
-  const sunday = thisSundayKstDate();
-  const weekKey = isoWeekKey(monday);
-  const { data: days, error: daysError } = await svc
-    .from("checkin_days")
-    .select("day")
-    .eq("user_id", user.id)
-    .gte("day", monday)
-    .lte("day", sunday);
-  if (daysError) {
-    console.error("[points/claim-weekly] checkin_days query failed:", daysError);
-    return NextResponse.json({ error: "출석 정보를 불러올 수 없어요." }, { status: 500 });
+  // 이번 주(KST 월~일) 돌봄일지의 서로 다른 KST 날짜 수를 집계.
+  // 주 시작(월 0시 KST)의 UTC 경계 이후 logged_at만 조회 후, KST 달력일로 유일화한다.
+  const weekKey = isoWeekKey(thisMondayKstDate());
+  const weekStartIso = thisMondayKstISO();
+  const { data: logs, error: logsError } = await svc
+    .from("care_logs")
+    .select("logged_at")
+    .eq("author_id", user.id)
+    .gte("logged_at", weekStartIso);
+  if (logsError) {
+    console.error("[points/claim-weekly] care_logs query failed:", logsError);
+    return NextResponse.json({ error: "돌봄 정보를 불러올 수 없어요." }, { status: 500 });
   }
 
-  const dayCount = (days ?? []).length;
+  const dayCount = new Set(
+    (logs ?? []).map((r: { logged_at: string }) => toKstDate(r.logged_at)),
+  ).size;
   let granted = 0;
   const grantedMilestones: number[] = [];
   for (const m of MILESTONES) {

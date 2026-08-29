@@ -1,14 +1,13 @@
 "use client";
 
-// 주간 출석 보드 — 이번 주(월~일) 출석 스탬프 + 마일스톤 포인트 수령 (2026-07-13)
-// 일일 출석체크(DailyCheckinModal)를 완료한 날이 스탬프로 찍힘.
+// 주간 돌봄 보드 — 이번 주(월~일) 돌봄일지를 남긴 날 스탬프 + 마일스톤 포인트 수령.
+// 2026-08-29 게임 요소 제거로, 출석 스탬프(checkin_days) 대신 그날 care_logs가 있으면 스탬프.
 // 3일 50P / 5일 100P / 7일 150P — 포인트는 쇼핑몰에서 1P=1원 할인.
 // 서버(claim-weekly/route.ts)의 MILESTONES와 반드시 같은 값 유지.
-// 마이그레이션(supabase_weekly_points_migration.sql) 전이면 조용히 렌더 안 함.
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { thisMondayKstDate, kstToday, isoWeekKey } from "@/lib/kst";
+import { thisMondayKstDate, thisMondayKstISO, kstToday, toKstDate, isoWeekKey } from "@/lib/kst";
 
 const MILESTONES = [
   { days: 3, points: 50 },
@@ -46,15 +45,16 @@ export default function WeeklyCheckinCard() {
       const sb = createClient();
       const { data: { user } } = await sb.auth.getUser();
       if (!user) return;
-      const [daysRes, ledgerRes, pointRes] = await Promise.all([
-        sb.from("checkin_days").select("day").eq("user_id", user.id).gte("day", weekDates[0]),
+      const [logsRes, ledgerRes, pointRes] = await Promise.all([
+        sb.from("care_logs").select("logged_at").eq("author_id", user.id).gte("logged_at", thisMondayKstISO()),
         sb.from("point_ledger").select("reason").eq("user_id", user.id).like("reason", `weekly:${weekKey}:%`),
         sb.from("user_points").select("balance").eq("user_id", user.id).maybeSingle(),
       ]);
       // 마이그레이션 전(테이블 없음)이면 렌더하지 않음
-      if (daysRes.error || ledgerRes.error) return;
+      if (logsRes.error || ledgerRes.error) return;
       if (cancelled) return;
-      setCheckedDays(new Set((daysRes.data ?? []).map((r: { day: string }) => r.day)));
+      // 그날 돌봄일지가 하나라도 있으면 스탬프 — KST 달력일로 유일화
+      setCheckedDays(new Set((logsRes.data ?? []).map((r: { logged_at: string }) => toKstDate(r.logged_at))));
       setClaimed(new Set(
         (ledgerRes.data ?? [])
           .map((r: { reason: string }) => Number(r.reason.split(":m")[1]))
@@ -177,7 +177,7 @@ export default function WeeklyCheckinCard() {
         </p>
       )}
       <p className="text-[11px] text-text-light mt-2 text-center">
-        일일 출석체크를 완료하면 스탬프가 찍혀요 · 포인트는 쇼핑몰 결제 할인에 사용
+        그날 돌봄 기록을 남기면 스탬프가 찍혀요 · 포인트는 쇼핑몰 결제 할인에 사용
       </p>
     </div>
   );
