@@ -178,6 +178,13 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               ? "무료배송"
               : `배송비 ${formatWon(product.shipping_fee)}`}
         </div>
+        {/* 구매 적립 안내 (2026-08-30) — 산 만큼 포인트로 돌려받는 즉각 보상 */}
+        {!isVirtual && (
+          <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[12px] font-bold"
+            style={{ background: "var(--color-sage-soft)", color: "#1E8E56" }}>
+            🎁 구매 시 {formatWon(Math.floor(unitPrice * 0.02))} 적립 (기본 2% · 단골 최대 5%)
+          </div>
+        )}
 
         {/* 후원 안내 카드 */}
         {product.is_donation && (

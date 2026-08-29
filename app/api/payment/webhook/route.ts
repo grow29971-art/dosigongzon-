@@ -18,6 +18,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { safePgError, maskPaymentKey, safeErrorMessage } from "@/lib/log-sanitize";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { maxPointsUsable } from "@/lib/points-config";
+import { grantPurchaseReward } from "@/lib/purchase-reward";
 import { donationForItem, embeddedCostPrice, type EmbeddedCost } from "@/lib/donation-calc";
 
 export const maxDuration = 60;
@@ -83,7 +84,7 @@ async function restoreStock(svc: SupabaseClient, items: OrderItem[]): Promise<vo
 // 결제 확정 공통 처리 — 재고 차감 + paid 전환 + 장바구니 정리
 async function finalizePaid(
   svc: SupabaseClient,
-  order: { id: string; user_id: string; items: OrderItem[] },
+  order: { id: string; user_id: string; order_number: string; payment_amount: number | null; items: OrderItem[] },
   toss: TossPayment,
   decrementStock: boolean,
 ): Promise<void> {
@@ -124,6 +125,13 @@ async function finalizePaid(
   const ids = order.items.map((i) => i.product_id).filter((id): id is string => !!id);
   if (ids.length > 0) {
     await svc.from("cart_items").delete().eq("user_id", order.user_id).in("product_id", ids);
+  }
+
+  // 구매 적립 — confirm과 동일 reason(purchase-reward:order.id)이라 이중 지급 없음. (2026-08-30)
+  try {
+    await grantPurchaseReward(svc, order, order.user_id);
+  } catch (e) {
+    console.error("[payment/webhook] purchase reward failed:", safeErrorMessage(e, []), order.id);
   }
 }
 

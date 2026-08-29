@@ -516,6 +516,12 @@ export default function CheckoutPage() {
               <span style={{ color: "var(--color-primary)" }}>{formatWon(finalAmount)}</span>
             </div>
             <p className="text-[11px] text-text-light mt-1.5">모든 금액은 부가세(VAT) 포함이에요.</p>
+            {/* 구매 적립 안내 — 회원만(게스트는 지갑 없음). 등급별 2~5%, 여기선 기본 2%로 안내 (2026-08-30) */}
+            {user && finalAmount > 0 && (
+              <p className="text-[11px] font-bold mt-1" style={{ color: "#1E8E56" }}>
+                🎁 구매 시 <b>{Math.floor(finalAmount * 0.02).toLocaleString()}P</b> 적립 예정 (기본 2% · 단골 최대 5%)
+              </p>
+            )}
           </section>
 
           {error && (

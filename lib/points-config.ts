@@ -19,3 +19,26 @@ export function maxPointsUsable(grandTotal: number): number {
     Math.min(Math.floor(grandTotal * POINTS_MAX_USE_RATE), grandTotal - POINTS_MIN_REMAINING_PAY),
   );
 }
+
+// ── 구매 적립 (2026-08-30) — 산 만큼 포인트로 돌려주는 즉각 보상. 등급별 차등.
+// 결제 성공 시 결제액(payment_amount)의 tier% 를 적립. 회원만(게스트는 지갑 없음).
+// 등급 기준 = 이 유저의 과거 결제완료 주문 수. 실돈 부채라 요율은 보수적으로.
+export const PURCHASE_REWARD_TIERS: { minPastOrders: number; rate: number; label: string }[] = [
+  { minPastOrders: 10, rate: 0.05, label: "VIP" },
+  { minPastOrders: 3, rate: 0.03, label: "단골" },
+  { minPastOrders: 0, rate: 0.02, label: "기본" },
+];
+
+/** 과거 결제완료 주문 수 → 적립 등급·요율 (내림차순 첫 매치). */
+export function purchaseRewardTier(pastPaidOrders: number): { rate: number; label: string } {
+  for (const t of PURCHASE_REWARD_TIERS) {
+    if (pastPaidOrders >= t.minPastOrders) return { rate: t.rate, label: t.label };
+  }
+  return { rate: PURCHASE_REWARD_TIERS[PURCHASE_REWARD_TIERS.length - 1].rate, label: "기본" };
+}
+
+/** 결제액 × 요율 → 적립 포인트(원 단위 내림). */
+export function purchaseRewardPoints(payAmount: number, rate: number): number {
+  if (!Number.isFinite(payAmount) || payAmount <= 0) return 0;
+  return Math.floor(payAmount * rate);
+}

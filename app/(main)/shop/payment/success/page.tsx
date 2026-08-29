@@ -13,6 +13,7 @@ function SuccessContent() {
   const [orderNumber, setOrderNumber] = useState("");
   const [orderId, setOrderId] = useState("");
   const [donation, setDonation] = useState(0);
+  const [rewardPoints, setRewardPoints] = useState(0); // 구매 적립 (2026-08-30)
   const requested = useRef(false);
 
   useEffect(() => {
@@ -58,6 +59,7 @@ function SuccessContent() {
         setOrderNumber(json.orderNumber ?? tossOrderId);
         setOrderId(json.orderId ?? "");
         setDonation(typeof json.donation === "number" ? json.donation : 0);
+        setRewardPoints(typeof json.rewardPoints === "number" ? json.rewardPoints : 0);
         setState("done");
       })
       .catch((e) => {
@@ -115,6 +117,19 @@ function SuccessContent() {
       <p className="text-[13px] text-text-sub leading-relaxed mb-1">
         주문번호 <span className="font-bold text-text-main">{orderNumber}</span>
       </p>
+      {rewardPoints > 0 && (
+        <div
+          className="mb-3 px-4 py-3 rounded-2xl"
+          style={{ background: "var(--color-sage-soft)", border: "1px solid rgba(34,163,102,0.28)" }}
+        >
+          <p className="text-[14px] font-bold" style={{ color: "#1E8E56" }}>
+            🎁 {rewardPoints.toLocaleString()}P 적립됐어요!
+          </p>
+          <p className="text-[11px] mt-0.5" style={{ color: "#2E9A63" }}>
+            다음 구매 때 1P = 1원으로 쓸 수 있어요
+          </p>
+        </div>
+      )}
       {donation > 0 && (
         <div
           className="mb-4 px-4 py-3 rounded-2xl"
