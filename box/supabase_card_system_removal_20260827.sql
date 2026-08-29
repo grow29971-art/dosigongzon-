@@ -32,6 +32,12 @@ from public.profiles;
 grant select on public.profiles_public to anon, authenticated;
 commit;
 
+-- ── 0b. cats_public_map 뷰 선(先) 드랍 (2차 2BP01 해소) ──
+-- 이 뷰는 cats 전 컬럼을 동적으로 복사해 만들어져(좌표 퍼징 뷰) 배틀·카드 컬럼을
+-- 전부 물고 있다. ⚠ CASCADE 금지 — 아래 컬럼 정리 후 섹션 2b에서 같은 동적
+-- 블록으로 재생성한다(그때는 정리된 컬럼 목록으로 만들어짐).
+drop view if exists public.cats_public_map;
+
 -- ── 1. 배틀 잔재 (7/20 파일 그대로 — 당시 미실행분) ──
 drop table if exists card_battles;
 alter table profiles drop column if exists boss_defeats;
@@ -70,6 +76,35 @@ alter table cats drop column if exists battle_special4;
 -- 테두리 코스메틱 (장착 컬럼 + 보유 아이템)
 alter table cats drop column if exists equipped_border_key;
 delete from user_items where item_key like 'border_%';
+
+-- ── 2b. cats_public_map 재생성 — 정리된 컬럼 목록으로 (0b에서 드랍한 뷰) ──
+-- supabase_cat_memorial_migration.sql의 동적 생성 블록 그대로: lat/lng는 좌표 퍼징,
+-- memorial_by 제외, 공개 조건 동일. 재생성 후 grant·쓰기 revoke 반드시 재적용.
+do $$
+declare
+  cols text;
+begin
+  select string_agg(quote_ident(column_name), ', ' order by ordinal_position)
+    into cols
+    from information_schema.columns
+   where table_schema = 'public'
+     and table_name = 'cats'
+     and column_name not in ('lat', 'lng', 'memorial_by');
+
+  execute format($f$
+    create view public.cats_public_map as
+    select
+      %s,
+      lat + (((hashtext(id::text || '_lat') & 1023) - 512) * 0.0000081) as lat,
+      lng + (((hashtext(id::text || '_lng') & 1023) - 512) * 0.0000101) as lng
+    from public.cats
+    where hidden = false and visibility = 'public' and memorial_at is null
+  $f$, cols);
+end $$;
+
+grant select on public.cats_public_map to anon, authenticated;
+-- 공개 뷰 쓰기 차단 — drop 후 새로 만든 뷰라 기존 revoke가 날아감, 반드시 다시 건다
+revoke insert, update, delete on public.cats_public_map from anon, authenticated;
 
 -- ── 3. 🔴 P0: add_cat_card_exp 재정의 — 돌봄 레벨 적립 보존 (8/29 버그 사냥 발견) ──
 -- 기존 함수가 card_generated_at(위에서 DROP됨)을 조건으로 읽어서, 재정의 없이
