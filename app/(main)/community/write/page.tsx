@@ -189,6 +189,38 @@ export default function WritePage() {
           </div>
         </div>
 
+        {/* 긴급 글 ↔ 확인서 연결 — 신고·민원 글에 증빙을 붙이도록 (2026-08-29 PMF 개편) */}
+        {category === "emergency" && (
+          <div
+            className="rounded-2xl p-4"
+            style={{ background: "var(--color-error-soft)", border: "1.5px solid rgba(216,85,85,0.25)" }}
+          >
+            <p className="text-[13px] font-bold text-text-main leading-tight mb-1">
+              신고·민원 글에는 돌봄 활동 확인서를 함께 내세요
+            </p>
+            <p className="text-[11px] text-text-sub leading-relaxed">
+              그동안 쌓인 돌봄 기록이 학대 신고·민원 대응의 근거가 돼요.
+              확인서를 인쇄·PDF로 만들어 경찰·구청 제출물에 붙일 수 있어요.
+            </p>
+            <div className="flex gap-3 mt-2">
+              <Link
+                href="/mypage/report"
+                className="text-[13px] font-bold"
+                style={{ color: "#B84545" }}
+              >
+                내 확인서 열기 →
+              </Link>
+              <Link
+                href="/protection/emergency-guide"
+                className="text-[13px] font-bold"
+                style={{ color: "#B84545" }}
+              >
+                응급 대응 가이드 →
+              </Link>
+            </div>
+          </div>
+        )}
+
         {/* ── 제목 ── */}
         <div>
           <label className="text-[13px] font-bold text-text-sub mb-2 block">제목</label>

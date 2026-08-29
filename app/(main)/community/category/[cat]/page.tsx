@@ -13,6 +13,7 @@ import {
   Siren,
   Home,
   HandHeart,
+  FileText,
   ShoppingBag,
   MessagesSquare,
   ThumbsUp,
@@ -246,6 +247,50 @@ export default function CategoryPage() {
           </div>
         </div>
       </div>
+
+      {/* 긴급 카테고리 — 확인서 연결 배너 (2026-08-29 PMF 개편: 기록을 신고 증빙으로) */}
+      {cat === "emergency" && (
+        <div className="px-4 mb-3">
+          <Link
+            href="/mypage/report"
+            className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white press transition-transform"
+            style={{ border: "1.5px solid rgba(216,85,85,0.22)", boxShadow: "var(--shadow-card)" }}
+          >
+            <div
+              className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+              style={{ background: "var(--color-error-soft)" }}
+            >
+              <FileText size={16} style={{ color: "#B84545" }} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[13px] font-bold text-text-main leading-tight">
+                신고할 땐 돌봄 활동 확인서를 함께
+              </p>
+              <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
+                쌓인 돌봄 기록이 학대 신고·민원 대응의 근거가 돼요 — 인쇄·PDF 지원
+              </p>
+            </div>
+          </Link>
+        </div>
+      )}
+
+      {/* 돌봄 부탁 카테고리 — 안전 안내 (2026-08-29): 밥자리 정확 위치는 공개글 금지 */}
+      {cat === "sitter" && (
+        <div className="px-4 mb-3">
+          <div
+            className="rounded-2xl px-4 py-3"
+            style={{ background: "rgba(74,123,168,0.08)", border: "1.5px solid rgba(74,123,168,0.22)" }}
+          >
+            <p className="text-[13px] font-bold text-text-main leading-tight">
+              입원·여행 때 밥자리를 이웃에게 부탁하는 곳이에요
+            </p>
+            <p className="text-[11px] text-text-sub mt-1 leading-relaxed">
+              글에는 동네(동 단위)·기간·마릿수만 적어주세요.
+              <b> 정확한 밥자리 위치는 공개글이 아니라 쪽지로만</b> 주고받아야 아이들이 안전해요.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* ── 공지사항 (pinned) ── */}
       {(() => {
