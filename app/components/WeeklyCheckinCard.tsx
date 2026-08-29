@@ -17,7 +17,7 @@ const MILESTONES = [
 const DAY_LABELS = ["월", "화", "수", "목", "금", "토", "일"];
 
 // 서버(claim-weekly)와 동일한 lib/kst 소스로 주 경계·주차키 계산 — weekKey가 어긋나면
-// 수령 여부 표시가 서버와 불일치. weekDates는 checkin_days.day와 대조할 KST 달력 날짜.
+// 수령 여부 표시가 서버와 불일치. weekDates는 care_logs의 KST 날짜와 대조할 달력 날짜.
 function kstWeek(): { weekDates: string[]; weekKey: string; todayIdx: number } {
   const monday = thisMondayKstDate();
   const anchor = new Date(monday + "T00:00:00Z");
