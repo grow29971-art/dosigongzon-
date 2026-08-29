@@ -35,6 +35,112 @@ export interface CareReport {
 const kstDay = (iso: string) =>
   new Date(iso).toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
 
+// ── 유저 단위: 내 돌봄 활동 확인서 (봉사 증빙·B2G·민원 대응용) ──
+export interface MyCareReport {
+  totalCount: number;
+  firstLoggedAt: string | null;
+  lastLoggedAt: string | null;
+  activeDays: number;
+  spanDays: number;
+  byType: Partial<Record<CareType, number>>;
+  byMonth: { ym: string; count: number }[];
+  byCat: { catId: string; catName: string; region: string | null; count: number }[];
+  photoCount: number;
+  rows: (CareReportRow & { catName: string })[]; // 최신순 상세 (최대 100건)
+}
+
+export async function getMyCareReportServer(userId: string): Promise<MyCareReport> {
+  const empty: MyCareReport = {
+    totalCount: 0,
+    firstLoggedAt: null,
+    lastLoggedAt: null,
+    activeDays: 0,
+    spanDays: 0,
+    byType: {},
+    byMonth: [],
+    byCat: [],
+    photoCount: 0,
+    rows: [],
+  };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("care_logs")
+    .select("id, cat_id, care_type, memo, photo_url, amount, author_name, logged_at")
+    .eq("author_id", userId)
+    .order("logged_at", { ascending: false })
+    .limit(1000);
+
+  if (error || !data || data.length === 0) {
+    if (error) console.error("[care-report] getMyCareReportServer failed:", error);
+    return empty;
+  }
+
+  const rows = data as (CareReportRow & { cat_id: string })[];
+
+  const dayKeys = new Set<string>();
+  const byType: Partial<Record<CareType, number>> = {};
+  const byMonthMap = new Map<string, number>();
+  const byCatMap = new Map<string, number>();
+  let photoCount = 0;
+
+  for (const r of rows) {
+    const day = kstDay(r.logged_at);
+    dayKeys.add(day);
+    byType[r.care_type] = (byType[r.care_type] ?? 0) + 1;
+    byMonthMap.set(day.slice(0, 7), (byMonthMap.get(day.slice(0, 7)) ?? 0) + 1);
+    byCatMap.set(r.cat_id, (byCatMap.get(r.cat_id) ?? 0) + 1);
+    if (r.photo_url) photoCount += 1;
+  }
+
+  // 고양이 이름·지역 조회
+  const catIds = Array.from(byCatMap.keys());
+  const { data: cats } = await supabase
+    .from("cats")
+    .select("id, name, region")
+    .in("id", catIds.slice(0, 100));
+  const catInfo = new Map(
+    ((cats ?? []) as { id: string; name: string; region: string | null }[]).map((c) => [c.id, c]),
+  );
+
+  const lastLoggedAt = rows[0].logged_at;
+  const firstLoggedAt = rows[rows.length - 1].logged_at;
+  const spanDays =
+    Math.floor(
+      (new Date(lastLoggedAt).getTime() - new Date(firstLoggedAt).getTime()) /
+        (24 * 60 * 60 * 1000),
+    ) + 1;
+
+  const byCat = Array.from(byCatMap.entries())
+    .sort((a, b) => b[1] - a[1])
+    .map(([catId, count]) => ({
+      catId,
+      catName: catInfo.get(catId)?.name ?? "(삭제된 고양이)",
+      region: catInfo.get(catId)?.region ?? null,
+      count,
+    }));
+
+  const byMonth = Array.from(byMonthMap.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([ym, count]) => ({ ym, count }));
+
+  return {
+    totalCount: rows.length,
+    firstLoggedAt,
+    lastLoggedAt,
+    activeDays: dayKeys.size,
+    spanDays,
+    byType,
+    byMonth,
+    byCat,
+    photoCount,
+    rows: rows.slice(0, 100).map(({ cat_id, ...rest }) => ({
+      ...rest,
+      catName: catInfo.get(cat_id)?.name ?? "—",
+    })),
+  };
+}
+
 export async function getCareReportServer(catId: string): Promise<CareReport> {
   const empty: CareReport = {
     totalCount: 0,

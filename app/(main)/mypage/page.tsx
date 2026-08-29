@@ -29,6 +29,7 @@ import {
   Star,
   Bot,
   Lock,
+  FileText,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 const InquiryModal = dynamic(() => import("@/app/components/InquiryModal"), { ssr: false });
@@ -827,6 +828,33 @@ export default function MyPage() {
               </h2>
             </div>
             {/* 카드 컬렉션 진입 카드 제거 — 카드 시스템 폐지 (2026-08-27 사장님 지시, 라우트도 삭제됨) */}
+            {/* 내 돌봄 활동 확인서 — 기록을 증빙 자산으로 (2026-08-29 PMF 개편) */}
+            <Link
+              href="/mypage/report"
+              className="w-full flex items-center gap-3 px-4 py-3.5 mb-2 press transition-transform"
+              style={{
+                background: "var(--color-primary-softer)",
+                borderRadius: "var(--radius-card-sm)",
+                boxShadow: "var(--shadow-card)",
+                border: "1px solid rgba(176,92,54,0.22)",
+              }}
+            >
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                style={{ backgroundColor: "var(--color-surface)" }}
+              >
+                <FileText size={18} color="var(--color-primary)" strokeWidth={2} />
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-[15px] font-bold text-text-main tracking-tight">
+                  내 돌봄 활동 확인서
+                </p>
+                <p className="text-[11px] text-text-sub mt-0.5">
+                  민원·봉사 증빙·지원사업용 PDF 문서 만들기
+                </p>
+              </div>
+              <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-primary)", opacity: 0.7 }} />
+            </Link>
             {SHOW_JOURNEY && (
             <Link
               href="/mypage/journey"
