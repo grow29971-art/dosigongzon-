@@ -19,6 +19,7 @@ import { sanitizeImageUrl } from "@/lib/url-validate";
 import PushOptInCard from "@/app/components/PushOptInCard";
 import FundSettlementCard from "@/app/components/FundSettlementCard";
 import PageIntroModal from "@/app/components/PageIntroModal";
+import PointsGuideSheet from "@/app/components/PointsGuideSheet";
 import UIChip from "@/app/components/ui/Chip";
 
 type FilterKey = ProductCategory | "all";
@@ -251,18 +252,22 @@ export default function ShopPage() {
       {/* ── 후원금 투명 정산 (쇼핑 최상단) ── */}
       <FundSettlementCard />
 
-      {/* ── 돌봄→포인트→할인 안내 띠 (탭하면 홈 주간 돌봄 보드로) ── */}
-      <Link
-        href="/"
-        className="mb-4 flex items-center gap-2.5 px-4 py-2.5 rounded-2xl press transition-transform"
+      {/* 포인트 안내 시트 — 첫 진입 1회 자동, 아래 띠 탭으로 재열람 (2026-08-30) */}
+      <PointsGuideSheet />
+
+      {/* ── 포인트 안내 띠 (탭하면 포인트 안내 시트 열림) ── */}
+      <button
+        type="button"
+        onClick={() => window.dispatchEvent(new CustomEvent("open-points-guide"))}
+        className="mb-4 w-full flex items-center gap-2.5 px-4 py-2.5 rounded-2xl press transition-transform text-left"
         style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(176, 92, 54,0.18)" }}
       >
         <PawPrint size={16} className="shrink-0" style={{ color: "var(--color-primary)" }} />
         <p className="text-[11px] font-bold leading-snug flex-1" style={{ color: "var(--color-primary-dark)" }}>
-          매일 돌봄 기록하면 포인트 적립 · 쇼핑에서 <b>1P = 1원</b>으로 쓸 수 있어요
+          포인트 어떻게 모으고 쓰나요? · 돌봄·구매로 적립 → <b>1P = 1원</b> 할인
         </p>
         <ChevronRight size={15} style={{ color: "var(--color-primary)" }} className="shrink-0" />
-      </Link>
+      </button>
 
       {/* ── 후원 배너 + 공동 목표 진행바 ── */}
       {/* 적립액 0원일 땐 금액 없이 문구만 (0원 노출 역효과 방지) */}
