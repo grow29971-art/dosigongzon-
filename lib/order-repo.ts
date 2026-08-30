@@ -108,6 +108,9 @@ export async function createOrderFromCart(
   items: CartItem[],
   shipping: ShippingInput | null,
   pointsUsed: number = 0,
+  // 후원 지정 — 후원(10%) 중 selfRatio%를 designatedCatId(내 등록묘)에게 배정 (2026-08-30).
+  // 금액은 안 바꾸고 배분 라벨만 저장. 미지정이면 전액 동네 기금.
+  designation?: { catId: string; selfRatio: number },
 ): Promise<Order> {
   // 통신판매업 신고 완료 전 실화폐 결제 하드락 — 주문 생성 자체를 막아 결제창이 안 열리게.
   // (최종 방어는 /api/payment/confirm 서버 관문. 코인 구매는 이 경로가 아니라 무관.)
@@ -161,6 +164,23 @@ export async function createOrderFromCart(
     }
   }
 
+  // 후원 지정 검증 — catId는 반드시 본인 등록묘, ratio는 0~100 정수
+  let designatedCatId: string | null = null;
+  let selfRatio = 0;
+  if (designation && designation.selfRatio > 0) {
+    const r = Math.round(designation.selfRatio);
+    if (!Number.isInteger(r) || r < 0 || r > 100) throw new Error("후원 배분 비율이 올바르지 않아요.");
+    const { data: ownCat } = await supabase
+      .from("cats")
+      .select("id")
+      .eq("id", designation.catId)
+      .eq("caretaker_id", user.id)
+      .maybeSingle();
+    if (!ownCat) throw new Error("내가 등록한 고양이만 지정할 수 있어요.");
+    designatedCatId = designation.catId;
+    selfRatio = r;
+  }
+
   const { productTotal, shippingFee, grandTotal } = computeCartTotal(items);
 
   // 포인트 사용 한도 — points-config 공유 정책 (상한율 + 최종 결제액 100원 이상)
@@ -181,6 +201,8 @@ export async function createOrderFromCart(
       payment_amount: grandTotal - pointsUsed,
       // 마이그레이션 전 배포 호환: 컬럼은 포인트 사용 시에만 포함
       ...(pointsUsed > 0 ? { points_used: pointsUsed } : {}),
+      // 후원 지정 — 마이그레이션 전이면 지정 시에만 포함(컬럼 없으면 미지정 주문은 그대로 성공)
+      ...(designatedCatId ? { designated_cat_id: designatedCatId, donation_self_ratio: selfRatio } : {}),
       recipient_name: shipping?.recipient_name ?? null,
       recipient_phone: shipping?.recipient_phone ?? null,
       recipient_address: shipping?.recipient_address ?? null,

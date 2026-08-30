@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, PawPrint, CalendarDays, Camera, BookOpen, Sparkles, Star, Heart, MessageCircle, FileText, Award } from "lucide-react";
-import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer, getCatCommunityStatsServer, getCatDiaryServer, getCatGuardianServer } from "@/lib/cats-server";
+import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer, getCatCommunityStatsServer, getCatDiaryServer, getCatGuardianServer, getCatDesignatedFundServer } from "@/lib/cats-server";
 import { GENDER_MAP, HEALTH_MAP, thumbnailUrl, optimizedImageUrl } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { createClient } from "@/lib/supabase/server";
@@ -70,11 +70,12 @@ export default async function CatDetailPage({ params }: { params: Params }) {
   const { data: { user } } = await supabase.auth.getUser();
   const currentUserId = user?.id ?? null;
 
-  const [commentCount, careCount, communityStats, guardian, diary, totalCatsForNudge] = await Promise.all([
+  const [commentCount, careCount, communityStats, guardian, designatedFund, diary, totalCatsForNudge] = await Promise.all([
     getCatCommentsCountServer(cat.id),
     getCatCareLogsCountServer(cat.id),
     getCatCommunityStatsServer(cat.id),
     getCatGuardianServer(cat.id),
+    getCatDesignatedFundServer(cat.id),
     getCatDiaryServer(cat.id, 60),
     // 비로그인 회원가입 nudge용 — 누적 등록 수
     currentUserId ? Promise.resolve(0) : supabase.rpc("total_cat_count").then((r) => Number(r.data ?? 0)),
@@ -451,6 +452,28 @@ export default async function CatDetailPage({ params }: { params: Params }) {
               </p>
               <p className="text-[11px] mt-0.5 leading-tight" style={{ color: "#A98243" }}>
                 돌봄 {guardian.count}회 · 첫 기록 후 {guardian.sinceDays}일째
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 이 아이에게 배정된 돌봄 기금 — 구매 후원 지정분 (2026-08-30). 있을 때만, 추모 아이 제외 */}
+      {designatedFund > 0 && !cat.memorial_at && (
+        <div className="px-4 mt-3">
+          <div
+            className="rounded-2xl px-4 py-3 flex items-center gap-3"
+            style={{ background: "var(--color-sage-soft)", border: "1px solid rgba(34,163,102,0.22)" }}
+          >
+            <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(34,163,102,0.15)" }}>
+              <Heart size={16} style={{ color: "#1E8E56" }} fill="#1E8E56" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[13px] font-bold text-text-main leading-tight">
+                {cat.name}에게 모인 돌봄 기금 <span style={{ color: "#1E8E56" }}>{designatedFund.toLocaleString()}원</span>
+              </p>
+              <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
+                이웃들의 쇼핑 후원이 이 아이의 중성화·치료에 우선 쓰여요
               </p>
             </div>
           </div>

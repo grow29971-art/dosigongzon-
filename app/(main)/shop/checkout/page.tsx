@@ -81,6 +81,10 @@ export default function CheckoutPage() {
   // 게스트(비회원) 개인정보 수집·이용 동의 (2026-08-29 법률감사 M2 — 회원은 가입 시 포괄동의,
   // 게스트는 별도 동의 절차가 없어 개인정보보호법 §15·§22 미충족이었음)
   const [privacyConsent, setPrivacyConsent] = useState(false);
+  // 후원 지정 — 후원(10%) 중 selfRatio%를 내가 돌보는 고양이에게 배정 (2026-08-30)
+  const [myCats, setMyCats] = useState<{ id: string; name: string }[]>([]);
+  const [designatedCatId, setDesignatedCatId] = useState<string>("");
+  const [selfRatio, setSelfRatio] = useState(70); // 기본 내 아이 70% : 동네 30%
 
   // 포인트 (주간 출석 적립 — 1P = 1원 할인). 테이블 미생성/잔액 0이면 섹션 숨김.
   const [pointBalance, setPointBalance] = useState<number | null>(null);
@@ -103,6 +107,18 @@ export default function CheckoutPage() {
           .maybeSingle()
           .then(({ data, error: pErr }: { data: { balance: number } | null; error: unknown }) => {
             if (!pErr && data) setPointBalance(data.balance);
+          });
+        // 내가 돌보는 고양이 — 후원 지정 슬라이더용
+        createClient()
+          .from("cats")
+          .select("id, name")
+          .eq("caretaker_id", user.id)
+          .is("memorial_at", null)
+          .order("created_at", { ascending: true })
+          .then(({ data }: { data: { id: string; name: string }[] | null }) => {
+            const cats = data ?? [];
+            setMyCats(cats);
+            if (cats.length > 0) setDesignatedCatId((prev) => prev || cats[0].id);
           });
       });
     }
@@ -185,7 +201,12 @@ export default function CheckoutPage() {
     let guestToken: string | null = null;
     try {
       if (user) {
-        const o = await createOrderFromCart(items, shipping, effectivePoints);
+        // 후원 지정 — 내 고양이 있고 비율>0일 때만 전달 (가상 상품만 주문이면 후원 배분 무의미)
+        const designation =
+          !virtualOnly && designatedCatId && selfRatio > 0
+            ? { catId: designatedCatId, selfRatio }
+            : undefined;
+        const o = await createOrderFromCart(items, shipping, effectivePoints, designation);
         orderId = o.id; orderNumber = o.order_number; paymentAmount = o.payment_amount;
       } else {
         // 게스트 주문 — 포인트 미사용, 서버가 금액 재계산
@@ -427,6 +448,54 @@ export default function CheckoutPage() {
                 </span>
               </span>
             </label>
+          )}
+
+          {/* 후원 배분 — 후원(수익 10%)을 내가 돌보는 고양이에게 배정 (2026-08-30) */}
+          {user && myCats.length > 0 && (
+            <section
+              className="p-4"
+              style={{ background: "var(--color-primary-softer)", borderRadius: "var(--radius-card)", border: "1px solid rgba(176,92,54,0.2)" }}
+            >
+              <p className="text-[13px] font-bold text-text-main mb-1">이 주문의 후원, 누구에게?</p>
+              <p className="text-[11px] text-text-sub leading-relaxed mb-3">
+                구매 후원(수익의 10%)을 <b className="text-text-main">내가 돌보는 아이</b>에게 먼저 쓰고,
+                나머지는 동네 길고양이 중성화에 써요. 후원 금액은 그대로예요.
+              </p>
+              {myCats.length > 1 && (
+                <select
+                  value={designatedCatId}
+                  onChange={(e) => setDesignatedCatId(e.target.value)}
+                  className="w-full mb-3 px-3 py-2.5 rounded-xl text-[13px] outline-none"
+                  style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
+                >
+                  {myCats.map((c) => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+              )}
+              <div className="flex items-center justify-between text-[12px] font-bold mb-1.5">
+                <span style={{ color: "var(--color-primary-dark)" }}>
+                  {myCats.find((c) => c.id === designatedCatId)?.name ?? "내 아이"} {selfRatio}%
+                </span>
+                <span className="text-text-sub">동네 {100 - selfRatio}%</span>
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                step={10}
+                value={selfRatio}
+                onChange={(e) => setSelfRatio(Number(e.target.value))}
+                className="w-full accent-[var(--color-primary)]"
+              />
+              <p className="text-[11px] text-text-light mt-1.5">
+                {selfRatio === 0
+                  ? "전액 동네 길고양이 기금으로 가요."
+                  : selfRatio === 100
+                    ? "이 아이의 중성화·치료·겨울집에 우선 배정돼요."
+                    : `이 아이에게 우선 배정하고, 남으면 동네 기금으로 가요.`}
+              </p>
+            </section>
           )}
           </>)}
 

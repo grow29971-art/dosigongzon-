@@ -33,6 +33,16 @@ export const getCatByIdServer = cache(async (id: string): Promise<Cat | null> =>
   return (data as Cat | null) ?? null;
 });
 
+// 이 고양이에게 배정된 돌봄 기금(공개 집계) — 구매 후원 지정분 합계 (2026-08-30).
+// 여러 구매자의 지정 몫을 더해야 해서 security definer 함수(cat_designated_fund) 사용.
+export async function getCatDesignatedFundServer(id: string): Promise<number> {
+  if (!/^[0-9a-fA-F-]{32,36}$/.test(id)) return 0;
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("cat_designated_fund", { p_cat_id: id });
+  if (error) return 0; // 마이그레이션 전(함수 없음)이면 0 — 카드 자체를 숨김
+  return typeof data === "number" ? data : 0;
+}
+
 export async function getCatCommentsCountServer(id: string): Promise<number> {
   const supabase = await createClient();
   const { count } = await supabase
