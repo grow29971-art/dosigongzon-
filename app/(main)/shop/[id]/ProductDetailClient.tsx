@@ -9,6 +9,7 @@ import { useAuth } from "@/lib/auth-context";
 import { addToCart, SHOP_CATEGORIES, type Product } from "@/lib/shop-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { PRODUCT_DISCLOSURES, PRODUCT_DETAIL_IMAGES } from "@/lib/product-disclosure";
+import { PURCHASE_REWARD_BASE_RATE, PURCHASE_REWARD_MAX_RATE } from "@/lib/points-config";
 import ProductReviews from "./ProductReviews";
 
 function formatWon(amount: number): string {
@@ -178,11 +179,12 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               ? "무료배송"
               : `배송비 ${formatWon(product.shipping_fee)}`}
         </div>
-        {/* 구매 적립 안내 (2026-08-30) — 산 만큼 포인트로 돌려받는 즉각 보상 */}
+        {/* 구매 적립 안내 (2026-08-30) — 산 만큼 포인트로 돌려받는 즉각 보상. 요율은 points-config에서 관리 */}
         {!isVirtual && (
           <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[12px] font-bold"
             style={{ background: "var(--color-sage-soft)", color: "#1E8E56" }}>
-            🎁 구매 시 {formatWon(Math.floor(unitPrice * 0.02))} 적립 (기본 2% · 단골 최대 5%)
+            🎁 구매 시 {formatWon(Math.floor(unitPrice * PURCHASE_REWARD_BASE_RATE))} 적립
+            (기본 {Math.round(PURCHASE_REWARD_BASE_RATE * 100)}% · 단골 최대 {Math.round(PURCHASE_REWARD_MAX_RATE * 100)}%)
           </div>
         )}
 

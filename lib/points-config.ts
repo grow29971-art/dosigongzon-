@@ -24,10 +24,14 @@ export function maxPointsUsable(grandTotal: number): number {
 // 결제 성공 시 결제액(payment_amount)의 tier% 를 적립. 회원만(게스트는 지갑 없음).
 // 등급 기준 = 이 유저의 과거 결제완료 주문 수. 실돈 부채라 요율은 보수적으로.
 export const PURCHASE_REWARD_TIERS: { minPastOrders: number; rate: number; label: string }[] = [
-  { minPastOrders: 10, rate: 0.05, label: "VIP" },
-  { minPastOrders: 3, rate: 0.03, label: "단골" },
-  { minPastOrders: 0, rate: 0.02, label: "기본" },
+  { minPastOrders: 10, rate: 0.03, label: "VIP" },
+  { minPastOrders: 3, rate: 0.02, label: "단골" },
+  { minPastOrders: 0, rate: 0.01, label: "기본" },
 ];
+
+// 화면 표시용 — 체크아웃·상품 상세가 이 값을 참조해 설정과 문구가 어긋나지 않게.
+export const PURCHASE_REWARD_BASE_RATE = 0.01;   // 기본 등급 요율(신규~2회)
+export const PURCHASE_REWARD_MAX_RATE = 0.03;    // 최고 등급 요율(VIP)
 
 /** 과거 결제완료 주문 수 → 적립 등급·요율 (내림차순 첫 매치). */
 export function purchaseRewardTier(pastPaidOrders: number): { rate: number; label: string } {
