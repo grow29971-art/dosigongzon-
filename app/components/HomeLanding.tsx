@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { unstable_cache } from "next/cache";
-import { thumbnailUrl } from "@/lib/cats-repo";
+import { thumbnailUrl, HEALTH_MAP, type CatHealthStatus } from "@/lib/cats-repo";
 import {
   MapPin,
   Heart,
@@ -58,10 +58,18 @@ const SITE_URL = "https://dosigongzon.com";
 // 앱/난로/쉼터 3카드 소개 블록 — 2026-09-02 유입 급증 대응으로 숨김(첫인상=라이브 활동 우선)
 const SHOW_ABOUT_PILLARS = false;
 
+// 골든존 스포트라이트 카드용 최소 필드 — 좌표·지역 등 위치 정보는 아예 조회하지 않는다(프라이버시)
+type SpotlightCat = {
+  id: string;
+  name: string;
+  photo_url: string | null;
+  health_status: string;
+};
+
 async function getLandingData() {
   try {
     const supabase = createAnonClient();
-    const [catsRpcRes, recentCatsRes, hospitalsRes, profilesRes, guCounts] = await Promise.all([
+    const [catsRpcRes, recentCatsRes, hospitalsRes, profilesRes, guCounts, alertCatsRes, fillCatsRes] = await Promise.all([
       // visibility 무관 전체 카운트 (RPC SECURITY DEFINER) — private도 통계에는 포함
       supabase.rpc("total_cat_count"),
       supabase
@@ -72,7 +80,31 @@ async function getLandingData() {
       supabase.from("rescue_hospitals").select("*", { count: "exact", head: true }).eq("hidden", false),
       supabase.from("profiles_public").select("id", { count: "exact", head: true }),
       getGuCounts(),
+      // 골든존 스포트라이트 ① 위험·주의 우선 (사진 있는 아이만, 고양이별 제외)
+      supabase
+        .from("cats")
+        .select("id, name, photo_url, health_status")
+        .in("health_status", ["danger", "caution"])
+        .not("photo_url", "is", null)
+        .is("memorial_at", null)
+        .order("created_at", { ascending: false })
+        .limit(12),
+      // 골든존 스포트라이트 ② 나머지는 최근 등록순으로 채움
+      supabase
+        .from("cats")
+        .select("id, name, photo_url, health_status")
+        .eq("health_status", "good")
+        .not("photo_url", "is", null)
+        .is("memorial_at", null)
+        .order("created_at", { ascending: false })
+        .limit(12),
     ]);
+
+    // 위험 → 주의 → 최근 등록 순으로 12마리
+    const alerts = ((alertCatsRes.data ?? []) as SpotlightCat[]).sort(
+      (a, b) => (a.health_status === "danger" ? 0 : 1) - (b.health_status === "danger" ? 0 : 1),
+    );
+    const spotlightCats = [...alerts, ...((fillCatsRes.data ?? []) as SpotlightCat[])].slice(0, 12);
 
     return {
       catCount: Number(catsRpcRes.data ?? 0),
@@ -87,9 +119,10 @@ async function getLandingData() {
         created_at: string;
       }>,
       guCounts,
+      spotlightCats,
     };
   } catch {
-    return { catCount: 0, hospitalCount: 0, userCount: 0, recentCats: [], guCounts: {} };
+    return { catCount: 0, hospitalCount: 0, userCount: 0, recentCats: [], guCounts: {}, spotlightCats: [] as SpotlightCat[] };
   }
 }
 
@@ -192,8 +225,52 @@ export default async function HomeLanding({
         </div>
       )}
 
+      {/* 골든존 — 고양이 얼굴 12마리 가로 스크롤 (STEP1, 2026-09-02).
+          정렬: 위험 → 주의 → 최근 등록. 위치·좌표는 조회조차 안 함(프라이버시). */}
+      {data.spotlightCats.length > 0 && (
+        <section className="pt-14 pb-2">
+          <div className="px-5 flex items-center gap-1.5 mb-2.5">
+            <PawPrint size={14} style={{ color: "var(--color-primary)" }} />
+            <h2 className="text-[15px] font-bold text-text-main tracking-tight">
+              우리가 함께 지켜보는 아이들
+            </h2>
+          </div>
+          <div className="flex gap-2.5 overflow-x-auto no-scrollbar px-5 pb-1">
+            {data.spotlightCats.map((c) => {
+              const h = HEALTH_MAP[c.health_status as CatHealthStatus] ?? HEALTH_MAP.good;
+              const safe = sanitizeImageUrl(c.photo_url, "https://placehold.co/240x240/EEEAE2/2A2A28?text=%3F");
+              const photo = thumbnailUrl(safe, 240) ?? safe;
+              return (
+                <Link key={c.id} href={`/cats/${c.id}`} className="shrink-0 w-[104px] press transition-transform">
+                  <div
+                    className="relative rounded-2xl overflow-hidden"
+                    style={{ boxShadow: "var(--shadow-card-sm)" }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={photo}
+                      alt={c.name}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-[104px] h-[104px] object-cover"
+                    />
+                    <span
+                      className="absolute top-1.5 left-1.5 text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full"
+                      style={{ backgroundColor: h.color }}
+                    >
+                      {h.label}
+                    </span>
+                  </div>
+                  <p className="mt-1.5 text-[12px] font-bold text-text-main text-center truncate">{c.name}</p>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       {/* 히어로 */}
-      <section className={`px-5 ${SHOW_ABOUT_PILLARS ? "pt-6" : "pt-14"} pb-8`} style={{ background: "var(--color-warm-white)" }}>
+      <section className={`px-5 ${SHOW_ABOUT_PILLARS || data.spotlightCats.length > 0 ? "pt-6" : "pt-14"} pb-8`} style={{ background: "var(--color-warm-white)" }}>
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 mb-3">
           <Heart size={12} style={{ color: "var(--color-primary)" }} />
           <span className="text-[11px] font-bold" style={{ color: "var(--color-primary)" }}>
