@@ -1,6 +1,6 @@
 "use client";
 
-// 비로그인 고양이 상세의 "무료로 시작하기" CTA — 온보딩 pick 지점 (2026-07-24)
+// 비로그인 고양이 상세의 "{이름} 소식 받기" CTA — 온보딩 pick 지점 (2026-07-24, 카피 2026-09-02)
 // "지도가 곧 온보딩"(7/22 B안)에서 pick = 지도→상세로 들어온 방문자가 이 아이를 계기로
 // 가입을 결심하는 순간. 누르면 pending_care 커밋(localStorage) + onboarding_pick 계측 후
 // 가입으로 보낸다. 가입 후 홈에서 PendingCareHandoff가 이 키를 이어받아 첫 밥 CTA로 연결.
@@ -42,7 +42,7 @@ export default function PickCatSignupCta({ catId, catName }: { catId: string; ca
         boxShadow: "var(--shadow-primary)",
       }}
     >
-      무료로 시작하기
+      {catName ? `${catName} 소식 받기` : "이 아이 소식 받기"}
     </Link>
   );
 }

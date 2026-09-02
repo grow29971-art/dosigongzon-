@@ -255,7 +255,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
               }}
             />
             <p className="text-[15px] font-bold text-text-main leading-tight tracking-tight mb-1.5">
-              우리 동네 길고양이도 같이 돌봐요
+              {cat.name}(이)의 다음 소식, 계속 받아보실래요?
             </p>
             <p className="text-[11px] leading-relaxed mb-3" style={{ color: "rgba(92,74,62,0.85)" }}>
               도시공존은 광고 없는 무료 길고양이 돌봄 지도예요. 여기 남는 기록은
