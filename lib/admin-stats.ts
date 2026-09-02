@@ -1,9 +1,8 @@
 // ══════════════════════════════════════════
 // 관리자 대시보드 통계 집계
-// 모든 쿼리 RLS 보호 (admin만 접근)
+// 2026-09-02: 클라이언트 RLS count → 서버 API(/api/admin/stats) 집계로 전환.
+// profiles 잠금(self+admin) 이후 클라이언트에서 세면 가입자 수가 실제보다 작게 나왔다.
 // ══════════════════════════════════════════
-
-import { createClient } from "@/lib/supabase/client";
 
 export interface AdminStats {
   totalCats: number;
@@ -17,7 +16,7 @@ export interface AdminStats {
   suspendedUsers: number;
   errors7d: number;
   // 출시 D-day & 일별 가입 추이
-  daysUntilLaunch: number; // 5/25까지 남은 일수, 음수면 출시 후
+  daysUntilLaunch: number; // 출시일까지 남은 일수, 음수면 출시 후
   newUsersToday: number;
   newUsersYesterday: number;
   newCatsToday: number;
@@ -26,58 +25,28 @@ export interface AdminStats {
 // 정식 출시 D-day — LaunchCountdown과 동일
 const LAUNCH_DATE = new Date("2026-06-01T00:00:00+09:00");
 
-async function safeCount(
-  supabase: ReturnType<typeof createClient>,
-  table: string,
-  filter?: (q: ReturnType<ReturnType<typeof createClient>["from"]>) => ReturnType<ReturnType<typeof createClient>["from"]>,
-): Promise<number> {
-  try {
-    let q = supabase.from(table).select("*", { count: "exact", head: true });
-    if (filter) q = filter(q) as typeof q;
-    const { count } = await q;
-    return count ?? 0;
-  } catch {
-    return 0;
-  }
-}
+const EMPTY_COUNTS = {
+  totalCats: 0,
+  totalPosts: 0,
+  totalComments: 0,
+  pendingReports: 0,
+  pendingInquiries: 0,
+  totalUsers: 0,
+  suspendedUsers: 0,
+  todayErrors: 0,
+  errors7d: 0,
+  newUsersToday: 0,
+  newUsersYesterday: 0,
+  newCatsToday: 0,
+};
 
 export async function getAdminStats(): Promise<AdminStats> {
-  const supabase = createClient();
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
-  const yesterdayStart = new Date(todayStart);
-  yesterdayStart.setDate(yesterdayStart.getDate() - 1);
-  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-
-  const [
-    totalCats,
-    totalPosts,
-    totalComments,
-    pendingReports,
-    pendingInquiries,
-    totalUsers,
-    suspendedUsers,
-    todayErrors,
-    errors7d,
-    newUsersToday,
-    newUsersYesterday,
-    newCatsToday,
-  ] = await Promise.all([
-    safeCount(supabase, "cats"),
-    safeCount(supabase, "posts"),
-    safeCount(supabase, "cat_comments"),
-    safeCount(supabase, "reports", (q) => q.eq("status", "pending")),
-    safeCount(supabase, "inquiries", (q) => q.eq("status", "pending")),
-    safeCount(supabase, "profiles"),
-    safeCount(supabase, "profiles", (q) => q.not("suspended_until", "is", null)),
-    safeCount(supabase, "auth_error_logs", (q) => q.gte("created_at", todayStart.toISOString())),
-    safeCount(supabase, "auth_error_logs", (q) => q.gte("created_at", weekAgo.toISOString())),
-    safeCount(supabase, "profiles", (q) => q.gte("created_at", todayStart.toISOString())),
-    safeCount(supabase, "profiles", (q) =>
-      q.gte("created_at", yesterdayStart.toISOString()).lt("created_at", todayStart.toISOString()),
-    ),
-    safeCount(supabase, "cats", (q) => q.gte("created_at", todayStart.toISOString())),
-  ]);
+  // 서버 집계 — admin 검증은 라우트가 수행(비관리자는 403 → 0으로 표시)
+  let counts = EMPTY_COUNTS;
+  try {
+    const res = await fetch("/api/admin/stats");
+    if (res.ok) counts = { ...EMPTY_COUNTS, ...(await res.json()) };
+  } catch { /* 네트워크 실패 시 0 유지 */ }
 
   // 출시까지 남은 일수 (음수면 출시 후 경과일)
   const diffMs = LAUNCH_DATE.getTime() - Date.now();
@@ -93,20 +62,5 @@ export async function getAdminStats(): Promise<AdminStats> {
     }
   } catch { /* skip */ }
 
-  return {
-    totalCats,
-    totalPosts,
-    totalComments,
-    pendingReports,
-    pendingInquiries,
-    todayVisits,
-    todayErrors,
-    totalUsers,
-    suspendedUsers,
-    errors7d,
-    daysUntilLaunch,
-    newUsersToday,
-    newUsersYesterday,
-    newCatsToday,
-  };
+  return { ...counts, todayVisits, daysUntilLaunch };
 }
