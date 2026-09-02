@@ -64,7 +64,7 @@ export const PRODUCT_DISCLOSURES: Record<string, ProductDisclosure> = {
         value:
           "직사광선을 피해 서늘하고 건조한 곳에 보관하고, 개봉 후에는 밀봉해 주세요. 사료 교체 시 7일간 점차 비율을 늘려 주세요. 급여 후 남은 사료와 포장재는 꼭 회수해 주세요.",
       },
-      { label: "소비자상담", value: "010-7790-2997 · grow29971@gmail.com" },
+      { label: "소비자상담", value: "grow29971@gmail.com (앱 내 문의하기 병행)" },
     ],
     // 전 항목 공급사 서면·확인 완료 (2026-08-19) — 게이트 8 표시의무 충족.
     // 유통기한은 입고 로트가 바뀌면 "현재 판매분" 연월을 갱신할 것.
