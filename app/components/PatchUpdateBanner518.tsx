@@ -59,7 +59,7 @@ export default function PatchUpdateBanner518() {
             </button>
           </div>
           <p className="text-[15px] font-bold text-white leading-snug mb-2 tracking-tight">
-            🛡 Private Circle — 믿는 이웃에게만 핀 공개
+            🛡 우리동네 길집사 — 믿는 이웃에게만 핀 공개
           </p>
           <p className="text-[13px] leading-[1.75]" style={{ color: "rgba(255,255,255,0.92)" }}>
             걱정되는 아이는 <b style={{ color: "#FFF7C4" }}>"내 서클"</b>로 등록하면 내가

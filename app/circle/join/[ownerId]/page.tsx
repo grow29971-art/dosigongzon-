@@ -147,7 +147,7 @@ export default function CircleJoinPage() {
             {result === "already" ? "이미 멤버예요" : "서클에 합류했어요!"}
           </p>
           <p className="text-[13px] mb-5" style={{ color: "rgba(255,255,255,0.85)" }}>
-            {ownerProfile.nickname ?? "익명"}님의 Private Circle 멤버로 등록됐어요.
+            {ownerProfile.nickname ?? "익명"}님의 우리동네 길집사 멤버로 등록됐어요.
           </p>
           <Link
             href="/map"
@@ -172,7 +172,7 @@ export default function CircleJoinPage() {
               <Avatar url={ownerProfile.avatar_url} size={72} />
             </div>
             <p className="text-[11px] font-bold tracking-[0.18em] mb-1.5" style={{ color: "#4F6B53" }}>
-              PRIVATE CIRCLE 초대
+              우리동네 길집사 초대
             </p>
             <p className="text-[17px] font-bold text-text-main leading-snug mb-2">
               <b style={{ color: "#4F6B53" }}>{ownerProfile.nickname ?? "익명 길집사"}</b>

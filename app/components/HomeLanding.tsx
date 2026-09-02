@@ -492,7 +492,7 @@ export default async function HomeLanding({
               위치를 아무에게나 보이고 싶지 않은 아이가 있어요
             </p>
             <p className="text-[13px] leading-[1.85]" style={{ color: "rgba(255,255,255,0.92)" }}>
-              그럴 때 쓰는 게 <b style={{ color: "var(--color-warning)" }}>Private Circle</b>입니다.
+              그럴 때 쓰는 게 <b style={{ color: "var(--color-warning)" }}>우리동네 길집사</b>입니다.
               걱정되는 아이는 <b style={{ color: "var(--color-warning)" }}>"내 서클"</b>로 설정하면,
               내가 직접 승인한 이웃에게만 보입니다.
             </p>

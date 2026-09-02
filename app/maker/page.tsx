@@ -303,7 +303,7 @@ export default function MakerPage() {
             그 동네의 또 다른 길집사에게는 큰 안심이 됩니다.
           </p>
           <p className="text-[13px] leading-[2] text-text-sub mt-3">
-            너무 걱정되는 아이가 있다면 <b className="text-text-main">Private Circle</b>로
+            너무 걱정되는 아이가 있다면 <b className="text-text-main">우리동네 길집사</b>로
             믿는 이웃에게만 보이게 등록하셔도 돼요. 어떤 선택을 하시든,
             그 손은 도시공존이 끝까지 함께 지키겠습니다.
           </p>

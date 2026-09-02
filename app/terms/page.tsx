@@ -109,7 +109,7 @@ export default function TermsPage() {
             <li>운영자는 다음과 같은 서비스를 제공합니다.
               <ul className="list-disc pl-4 mt-1 space-y-0.5">
                 <li>길고양이 위치 등록 및 지도 서비스 (공개 범위: 전체 / 내 서클 / 나만 보기)</li>
-                <li>Private Circle — 회원이 직접 승인한 이웃에게만 핀을 노출하는 서클 관리</li>
+                <li>우리동네 길집사(구 Private Circle) — 회원이 직접 승인한 이웃에게만 핀을 노출하는 서클 관리</li>
                 <li>돌봄 커뮤니티 (게시판, 댓글, 1:1 쪽지)</li>
                 <li>보호지침, 약품 가이드 등 돌봄 정보 제공</li>
                 <li>동물병원·약국 위치 정보 제공</li>
