@@ -80,22 +80,22 @@ async function getLandingData() {
       supabase.from("rescue_hospitals").select("*", { count: "exact", head: true }).eq("hidden", false),
       supabase.from("profiles_public").select("id", { count: "exact", head: true }),
       getGuCounts(),
-      // 골든존 스포트라이트 ① 위험·주의 우선 (사진 있는 아이만, 고양이별 제외)
+      // 골든존 스포트라이트 — cats_public_map 뷰 사용 (public·비숨김·고양이별 제외가 뷰에 내장).
+      // base cats에 memorial_at 필터를 걸면 anon은 컬럼 권한(42501)으로 거부된다 — 좌표 잠금 계약.
+      // ① 위험·주의 우선 (사진 있는 아이만)
       supabase
-        .from("cats")
+        .from("cats_public_map")
         .select("id, name, photo_url, health_status")
         .in("health_status", ["danger", "caution"])
         .not("photo_url", "is", null)
-        .is("memorial_at", null)
         .order("created_at", { ascending: false })
         .limit(12),
-      // 골든존 스포트라이트 ② 나머지는 최근 등록순으로 채움
+      // ② 나머지는 최근 등록순으로 채움
       supabase
-        .from("cats")
+        .from("cats_public_map")
         .select("id, name, photo_url, health_status")
         .eq("health_status", "good")
         .not("photo_url", "is", null)
-        .is("memorial_at", null)
         .order("created_at", { ascending: false })
         .limit(12),
     ]);
