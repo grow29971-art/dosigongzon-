@@ -93,6 +93,7 @@ import {
 import { sanitizeImageUrl, sanitizeHttpUrl } from "@/lib/url-validate";
 import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
 import CareTeamCard from "@/app/components/CareTeamCard";
+import CatSpotlightRow from "@/app/components/CatSpotlightRow";
 
 import { CAT_FACTS } from "@/lib/cat-facts";
 
@@ -1048,6 +1049,9 @@ export default function HomeAuthed({
           {SHOW_EVENT_BANNERS && user && myRegions.length > 0 && <FoundingMemberBanner />}
         </>
       )}
+
+      {/* ══════ 고양이 스포트라이트 — 위험·주의 우선 12마리 + ❤️ 지켜보기 (STEP2, 2026-09-02) ══════ */}
+      {user && <CatSpotlightRow className="mb-5 -mx-5" />}
 
       {/* ══════ 내 동네 소식 ══════ */}
       {user && (

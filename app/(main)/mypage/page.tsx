@@ -27,6 +27,7 @@ import {
   ShieldCheck,
   TrendingUp,
   Star,
+  Heart,
   Bot,
   Lock,
   FileText,
@@ -920,6 +921,14 @@ export default function MyPage() {
                 iconBg="var(--color-primary-soft)"
                 title="활동 지역 설정"
                 subtitle="최대 2곳까지 내 동네를 지정할 수 있어요"
+              />
+              <UIListRow
+                href="/mypage/watching"
+                icon={<Heart size={18} color="#E0533D" fill="#E0533D" strokeWidth={2} />}
+                iconBg="rgba(224,83,61,0.10)"
+                title="내가 지켜보는 아이"
+                subtitle="하트 누른 고양이들을 모아봐요"
+                style={{ borderTop: "1px solid var(--color-divider)" }}
               />
               <UIListRow
                 href="/memorial"

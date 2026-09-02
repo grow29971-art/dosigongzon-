@@ -3,7 +3,8 @@
 
 import Link from "next/link";
 import { unstable_cache } from "next/cache";
-import { thumbnailUrl, HEALTH_MAP, type CatHealthStatus } from "@/lib/cats-repo";
+import { thumbnailUrl } from "@/lib/cats-repo";
+import CatSpotlightRow, { type SpotlightCat } from "@/app/components/CatSpotlightRow";
 import {
   MapPin,
   Heart,
@@ -58,14 +59,7 @@ const SITE_URL = "https://dosigongzon.com";
 // 앱/난로/쉼터 3카드 소개 블록 — 2026-09-02 유입 급증 대응으로 숨김(첫인상=라이브 활동 우선)
 const SHOW_ABOUT_PILLARS = false;
 
-// 골든존 스포트라이트 카드용 최소 필드 — 좌표·지역 등 위치 정보는 아예 조회하지 않는다(프라이버시)
-type SpotlightCat = {
-  id: string;
-  name: string;
-  photo_url: string | null;
-  health_status: string;
-};
-
+// 골든존 스포트라이트: 최소 필드만(SpotlightCat) — 좌표·지역 등 위치 정보는 아예 조회하지 않는다(프라이버시)
 async function getLandingData() {
   try {
     const supabase = createAnonClient();
@@ -225,48 +219,10 @@ export default async function HomeLanding({
         </div>
       )}
 
-      {/* 골든존 — 고양이 얼굴 12마리 가로 스크롤 (STEP1, 2026-09-02).
+      {/* 골든존 — 고양이 얼굴 12마리 가로 스크롤 + 하트(STEP1·2, 2026-09-02).
           정렬: 위험 → 주의 → 최근 등록. 위치·좌표는 조회조차 안 함(프라이버시). */}
       {data.spotlightCats.length > 0 && (
-        <section className="pt-14 pb-2">
-          <div className="px-5 flex items-center gap-1.5 mb-2.5">
-            <PawPrint size={14} style={{ color: "var(--color-primary)" }} />
-            <h2 className="text-[15px] font-bold text-text-main tracking-tight">
-              우리가 함께 지켜보는 아이들
-            </h2>
-          </div>
-          <div className="flex gap-2.5 overflow-x-auto no-scrollbar px-5 pb-1">
-            {data.spotlightCats.map((c) => {
-              const h = HEALTH_MAP[c.health_status as CatHealthStatus] ?? HEALTH_MAP.good;
-              const safe = sanitizeImageUrl(c.photo_url, "https://placehold.co/240x240/EEEAE2/2A2A28?text=%3F");
-              const photo = thumbnailUrl(safe, 240) ?? safe;
-              return (
-                <Link key={c.id} href={`/cats/${c.id}`} className="shrink-0 w-[104px] press transition-transform">
-                  <div
-                    className="relative rounded-2xl overflow-hidden"
-                    style={{ boxShadow: "var(--shadow-card-sm)" }}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={photo}
-                      alt={c.name}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-[104px] h-[104px] object-cover"
-                    />
-                    <span
-                      className="absolute top-1.5 left-1.5 text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full"
-                      style={{ backgroundColor: h.color }}
-                    >
-                      {h.label}
-                    </span>
-                  </div>
-                  <p className="mt-1.5 text-[12px] font-bold text-text-main text-center truncate">{c.name}</p>
-                </Link>
-              );
-            })}
-          </div>
-        </section>
+        <CatSpotlightRow cats={data.spotlightCats} className="pt-14 pb-2" />
       )}
 
       {/* 히어로 */}
