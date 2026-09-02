@@ -16,6 +16,9 @@ import {
   ChevronRight,
   ChevronLeft,
   ShieldCheck,
+  Share,
+  PlusSquare,
+  Download,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
@@ -49,6 +52,27 @@ function finalCtaLabel(next: string): string {
   return "시작하기";
 }
 
+// ── iOS 판별 헬퍼 (InstallAppMenuItem과 동일 로직) ──
+// iOS 사파리(미설치)는 Notification API가 없어 알림 스텝이 스킵된다.
+// 대신 "홈 화면에 추가" 스텝을 보여줘 설치 → 알림 경로를 연다. (2026-09-02)
+function isStandalone(): boolean {
+  if (typeof window === "undefined") return false;
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    ("standalone" in window.navigator && (window.navigator as { standalone?: boolean }).standalone === true)
+  );
+}
+
+function isIos(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return /iphone|ipad|ipod/i.test(navigator.userAgent);
+}
+
+function isIosSafari(): boolean {
+  const ua = navigator.userAgent;
+  return isIos() && /safari/i.test(ua) && !/crios|fxios/i.test(ua);
+}
+
 function WelcomeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -63,6 +87,8 @@ function WelcomeContent() {
   // 슬라이드 후 알림 켜기 스텝 — 신규 가입자 전원이 한 번은 통과 (2026-08-19 사장님 지시)
   const [showPush, setShowPush] = useState(false);
   const [pushBusy, setPushBusy] = useState(false);
+  // iOS 미설치 유저용 "홈 화면에 추가" 스텝 — 알림 스텝의 iOS 대체재 (2026-09-02)
+  const [showIosInstall, setShowIosInstall] = useState(false);
   // 건너뛰기로 온 유저는 알림 스텝 후 intent picker 없이 바로 목적지로 (기존 skip 동선 보존)
   const skippedSlidesRef = useRef(false);
 
@@ -129,6 +155,7 @@ function WelcomeContent() {
 
   const finishOnboarding = () => {
     setShowPush(false);
+    setShowIosInstall(false);
     if (!skippedSlidesRef.current && next === "/") {
       // 기본 목적지일 때만 의도 picker — 가입 전 명시적 URL이 있으면 그대로 존중
       setShowIntent(true);
@@ -144,6 +171,9 @@ function WelcomeContent() {
         if (user) localStorage.setItem(PUSH_GATE_SEEN_PREFIX + user.id, String(Date.now()));
       } catch { /* no-op */ }
       setShowPush(true);
+    } else if (isIos() && !isStandalone()) {
+      // iOS 미설치 = 웹푸시 불가 환경. 알림 대신 홈 화면 추가를 안내해 설치 → 알림 경로를 연다.
+      setShowIosInstall(true);
     } else {
       finishOnboarding();
     }
@@ -281,6 +311,90 @@ function WelcomeContent() {
             style={{ color: "rgba(255,255,255,0.7)" }}
           >
             나중에 할게요
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // iOS 홈 화면 추가 스텝 — 웹푸시가 안 되는 iOS 미설치 유저에게 설치 경로 안내 (2026-09-02).
+  // 설치는 브라우저가 대신 해줄 수 없어(beforeinstallprompt 미지원) 안내만 하고 보내준다.
+  if (showIosInstall) {
+    return (
+      <div
+        className="fixed inset-0 overflow-hidden flex flex-col"
+        style={{ background: "linear-gradient(170deg, #8C5A37 0%, var(--color-primary) 55%, #C98A62 100%)" }}
+      >
+        <div className="flex-1 flex flex-col items-center justify-center px-7">
+          <div
+            className="w-24 h-24 rounded-full flex items-center justify-center mb-7"
+            style={{
+              background: "rgba(255,255,255,0.18)",
+              backdropFilter: "blur(10px)",
+              border: "1px solid rgba(255,255,255,0.25)",
+              boxShadow: "var(--shadow-modal)",
+            }}
+          >
+            <Download size={42} color="#FFFFFF" strokeWidth={1.6} />
+          </div>
+
+          <h2 className="text-[24px] font-bold text-center text-white tracking-tight leading-[1.4] mb-3">
+            홈 화면에 추가해두세요
+          </h2>
+          <p className="text-[15px] text-center text-white/85 leading-[1.8] max-w-[320px] mb-6">
+            아이폰은 홈 화면에 추가해야
+            <br />
+            댓글·쪽지·돌봄 알림을 받을 수 있어요.
+          </p>
+
+          {isIosSafari() ? (
+            <div
+              className="w-full max-w-[320px] rounded-2xl px-5 py-4 space-y-3"
+              style={{ background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.2)" }}
+            >
+              <div className="flex items-center gap-2.5 text-[14px] font-bold text-white">
+                <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] shrink-0" style={{ background: "rgba(255,255,255,0.25)" }}>1</span>
+                <Share size={15} color="#FFF7C4" />
+                <span>사파리 하단 공유 아이콘 탭</span>
+              </div>
+              <div className="flex items-center gap-2.5 text-[14px] font-bold text-white">
+                <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] shrink-0" style={{ background: "rgba(255,255,255,0.25)" }}>2</span>
+                <PlusSquare size={15} color="#FFF7C4" />
+                <span>&quot;홈 화면에 추가&quot; 선택</span>
+              </div>
+              <div className="flex items-center gap-2.5 text-[14px] font-bold text-white">
+                <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] shrink-0" style={{ background: "rgba(255,255,255,0.25)" }}>3</span>
+                <span>우측 상단 &quot;추가&quot; 버튼</span>
+              </div>
+            </div>
+          ) : (
+            <div
+              className="w-full max-w-[320px] rounded-2xl px-5 py-4"
+              style={{ background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.2)" }}
+            >
+              <p className="text-[14px] font-bold text-white leading-[1.8]">
+                <b style={{ color: "#FFF7C4" }}>사파리</b>로 dosigongzon.com을 열고
+                <br />
+                공유 → &quot;홈 화면에 추가&quot;를 눌러주세요.
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className="px-6 pb-10 z-20">
+          <p className="text-[11px] text-center mb-3 leading-relaxed" style={{ color: "rgba(255,255,255,0.65)" }}>
+            나중에 마이페이지 → 앱으로 설치하기에서도 할 수 있어요
+          </p>
+          <button
+            onClick={finishOnboarding}
+            className="w-full h-[52px] rounded-2xl text-[15px] font-bold flex items-center justify-center gap-1.5 press"
+            style={{
+              background: "#FFFFFF",
+              color: "var(--color-primary-dark)",
+              boxShadow: "var(--shadow-fab)",
+            }}
+          >
+            확인했어요
           </button>
         </div>
       </div>
