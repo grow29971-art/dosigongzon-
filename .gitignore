@@ -48,3 +48,6 @@ next-env.d.ts
 
 # DB 백업 (개인정보 포함 — 로컬 보관만)
 /box/backups/
+
+# dryforge local workspace
+.dryforge/

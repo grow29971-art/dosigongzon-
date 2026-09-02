@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 도시공존 🐾
 
-## Getting Started
+길고양이와 도시가 함께 사는 방법을 만드는 시민 참여 플랫폼입니다.
+지도에 우리 동네 고양이를 기록하고, 밥·건강·TNR을 이웃과 함께 챙깁니다.
 
-First, run the development server:
+**서비스**: https://dosigongzon.com (웹·PWA, Android는 Play 스토어 "도시공존")
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 무엇이 있나
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- 🗺️ **돌봄 지도** — 고양이·동물병원·약국 핀, 동네 채팅. 아이들의 안전을 위해 정확 위치는
+  흐려서만 공개됩니다.
+- 📝 **돌봄 기록** — 밥·물·건강 체크·TNR·병원 기록이 쌓여 민원·학대 대응의 증빙이 됩니다.
+- 🛡️ **우리동네 길집사(서클)** — 걱정되는 아이는 내가 승인한 이웃에게만 보이게 등록.
+- 📚 **보호지침** — 응급처치부터 겨울 쉼터까지, 공공 자료 기반 가이드와 AI 집사 챗봇.
+- 🛒 **쇼핑** — 판매 수익의 10%는 고양이들에게 후원됩니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 기술
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Next.js 16 (App Router) · Supabase (PostgreSQL/RLS/Auth) · Kakao Maps · Tailwind CSS 4 · Vercel
 
-## Learn More
+광고 없이 무료로 운영됩니다. 프로젝트 구조와 개발 규칙은 저장소의 `CLAUDE.md`와 `docs/`를
+참고하세요.
 
-To learn more about Next.js, take a look at the following resources:
+## 문의
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 앱 내 마이페이지 → 문의하기
+- grow29971@gmail.com
