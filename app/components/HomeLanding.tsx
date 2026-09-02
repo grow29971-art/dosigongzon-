@@ -55,6 +55,9 @@ const getCachedTopCaretakers = unstable_cache(
 
 const SITE_URL = "https://dosigongzon.com";
 
+// 앱/난로/쉼터 3카드 소개 블록 — 2026-09-02 유입 급증 대응으로 숨김(첫인상=라이브 활동 우선)
+const SHOW_ABOUT_PILLARS = false;
+
 async function getLandingData() {
   try {
     const supabase = createAnonClient();
@@ -180,14 +183,17 @@ export default async function HomeLanding({
         buttonLabel="둘러보기"
       />
 
-      {/* 도시공존 소개 — 비로그인 방문자(인스타 유입 등)가 최상단에서 바로 이해 */}
-      <div className="px-5 pt-14 pb-1">
-        {/* 보신각 집회 배너는 행사 종료로 내림 (2026-08-08) */}
-        <AboutCityCard className="mb-0" />
-      </div>
+      {/* 도시공존 소개(앱/난로/쉼터 3카드) — 2026-09-02 유입 급증 대응으로 숨김:
+          첫인상을 카탈로그가 아니라 라이브 활동(LIVE 스트립+CTA)으로. 복원 시 플래그만 켜면 됨 */}
+      {SHOW_ABOUT_PILLARS && (
+        <div className="px-5 pt-14 pb-1">
+          {/* 보신각 집회 배너는 행사 종료로 내림 (2026-08-08) */}
+          <AboutCityCard className="mb-0" />
+        </div>
+      )}
 
       {/* 히어로 */}
-      <section className="px-5 pt-6 pb-8" style={{ background: "var(--color-warm-white)" }}>
+      <section className={`px-5 ${SHOW_ABOUT_PILLARS ? "pt-6" : "pt-14"} pb-8`} style={{ background: "var(--color-warm-white)" }}>
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 mb-3">
           <Heart size={12} style={{ color: "var(--color-primary)" }} />
           <span className="text-[11px] font-bold" style={{ color: "var(--color-primary)" }}>
@@ -226,7 +232,7 @@ export default async function HomeLanding({
             }}
           >
             <PawPrint size={15} />
-            <span className="text-[15px] font-bold tracking-tight">지도 바로 보기</span>
+            <span className="text-[15px] font-bold tracking-tight">우리 동네 고양이 보기</span>
           </Link>
           <Link
             href="/signup"
@@ -238,7 +244,7 @@ export default async function HomeLanding({
             }}
           >
             <Sparkles size={14} />
-            <span className="text-[15px] font-bold tracking-tight">돌봄 시작하기</span>
+            <span className="text-[15px] font-bold tracking-tight">1초 가입하기</span>
           </Link>
         </div>
         <p className="mt-2 text-center text-[11px] font-bold" style={{ color: "rgba(176, 92, 54,0.7)" }}>
