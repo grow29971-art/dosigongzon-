@@ -348,6 +348,26 @@ export async function createCareLog(
     }
   } catch {}
 
+  // 하트(지켜보기) 유저들에게 소식 푸시 — fire-and-forget (STEP2 후속, 2026-09-02).
+  // 비밀 기록은 밖으로 알리지 않는다. 서버가 실기록 검증·공개 고양이 확인·쿨다운을 담당.
+  if (!input.is_private) {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        void fetch("/api/cats/notify-watchers", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ catId: input.cat_id, careType: input.care_type }),
+        }).catch(() => {});
+      }
+    } catch {
+      // 푸시 실패해도 기록 자체는 성공
+    }
+  }
+
   return data as CareLog;
 }
 
