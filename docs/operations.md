@@ -73,6 +73,20 @@ git add <파일> ; git commit -m "fix: ..." ; git push
 - 로그인 실패 분석: `auth_error_logs`를 provider·stage·error_code·UA로 집계(관리자 화면
   `/admin/auth-errors`에도 있음).
 
+## 감시 루프(쓰기 없는 자율 점검)
+
+- `node scripts/watch-probe.mjs` — anon/service 이중 프로브로 보안 계약(프로필 잠금·base cats 좌표
+  컬럼 거부·zone_reports/cron_runs/auth_error_logs/funnel_events/orders anon 0행·공개 지도 뷰 생존),
+  크론 하트비트(vercel.json 16개 + 디스패처 서브잡 9개, 발화점+90분 여유), 사이트 3경로 응답,
+  main 최신 커밋 배포 상태, 24h·7일 지표를 잰다. 코드·DB를 고치지 않는다.
+- 산출물은 `docs/tracking/watch/YYYY-MM-DD.md`(+latest.md) — git 추적 안 함(옵시디언 볼트로
+  리포 폴더를 열면 보임). FAIL이 있으면 종료코드 1. 새로 나타난 이상은 사람이
+  `docs/tracking/findings.md`에 옮긴다 — 스크립트가 findings를 직접 쓰지 않는다.
+- 스케줄: Windows 작업 스케줄러 `city-watch-probe` 매일 09:30(로그인 상태에서만 실행,
+  로그 `docs/tracking/watch/run.log`). 확인: `schtasks /Query /TN city-watch-probe /V /FO LIST`.
+- 새 크론 라우트를 만들면 proxy.ts KNOWN_CRONS와 함께 이 스크립트의 기대 목록(디스패처
+  서브잡)도 갱신할 것 — 안 하면 결행 감시가 눈먼다.
+
 ## 백업·보조 스크립트
 
 - DB 백업: `node scripts/backup-db.mjs`. 스크린샷 생성·약국 스크래핑 등 일회성 도구도
