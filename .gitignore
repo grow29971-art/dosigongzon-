@@ -54,3 +54,4 @@ next-env.d.ts
 
 # 감시 루프 산출물 (scripts/watch-probe.mjs, 옵시디언 볼트용 — findings.md만 사람이 남김)
 /docs/tracking/watch/
+.playwright-mcp/
