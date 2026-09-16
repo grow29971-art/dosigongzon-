@@ -173,7 +173,7 @@ export default function CatLocationPicker({
   return (
     <div
       className="fixed inset-0 z-[200] flex flex-col"
-      style={{ background: "#F7F4EE" }}
+      style={{ background: "#FFFFFF" }}
     >
       {/* 헤더 */}
       <div
@@ -270,7 +270,7 @@ export default function CatLocationPicker({
         <div
           className="rounded-2xl px-4 py-3.5 mb-2.5"
           style={{
-            background: "#FFF8F2",
+            background: "#F2F2F2",
             border: "1.5px solid rgba(17, 17, 17,0.25)",
           }}
         >

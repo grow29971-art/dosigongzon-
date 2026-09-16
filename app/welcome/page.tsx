@@ -248,7 +248,7 @@ function WelcomeContent() {
 
   if (authLoading || !user) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center" style={{ background: "#FFF9F2" }}>
+      <div className="fixed inset-0 flex items-center justify-center" style={{ background: "#F2F2F2" }}>
         <Sparkles size={28} className="animate-pulse" style={{ color: "var(--color-primary)" }} />
       </div>
     );

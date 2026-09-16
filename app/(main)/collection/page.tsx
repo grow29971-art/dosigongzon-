@@ -91,7 +91,7 @@ export default function CollectionPage() {
                       className="relative w-full rounded-2xl overflow-hidden flex items-center justify-center"
                       style={{
                         aspectRatio: "1 / 1",
-                        background: c.collected ? "#F4E6CE" : "rgba(120,110,100,0.08)",
+                        background: c.collected ? "#EBEBEB" : "rgba(120,110,100,0.08)",
                         border: c.collected ? "1.5px solid rgba(17, 17, 17,0.3)" : "1.5px dashed rgba(120,110,100,0.2)",
                       }}
                     >
@@ -109,7 +109,7 @@ export default function CollectionPage() {
                         <span className="absolute top-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ background: "var(--color-primary)" }}>내 아이</span>
                       )}
                     </div>
-                    <p className="text-[11px] font-bold text-center mt-1 truncate" style={{ color: c.collected ? "#2A2A28" : "rgba(120,110,100,0.6)" }}>
+                    <p className="text-[11px] font-bold text-center mt-1 truncate" style={{ color: c.collected ? "#2A2A2A" : "rgba(120,110,100,0.6)" }}>
                       {c.collected ? c.name : "???"}
                     </p>
                   </Link>

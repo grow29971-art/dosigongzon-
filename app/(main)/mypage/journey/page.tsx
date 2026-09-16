@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 
 const CAT_COLOR: Record<MilestoneCategory, { bg: string; ring: string; text: string }> = {
   join:     { bg: "#E8ECE5", ring: "#5BA876", text: "#3F5B42" },
-  cat:      { bg: "#FFF1E6", ring: "#111111", text: "#7A4A2A" },
+  cat:      { bg: "#F2F2F2", ring: "#111111", text: "#7A4A2A" },
   care:     { bg: "#FFF5E0", ring: "#E8B040", text: "#8C6A1F" },
   comment:  { bg: "#F0E8F8", ring: "#8B65B8", text: "#5A3F7E" },
   post:     { bg: "#E5EDF5", ring: "#4A7BA8", text: "#2A4A6B" },
@@ -41,12 +41,12 @@ export default async function JourneyPage() {
   const items = await getMyJourneyServer(user.id);
 
   return (
-    <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
+    <div className="pb-24 min-h-screen" style={{ background: "#FFFFFF" }}>
       {/* 헤더 */}
       <div
         className="px-5 pt-12 pb-7"
         style={{
-          background: "#FFF8F2",
+          background: "#F2F2F2",
         }}
       >
         <Link

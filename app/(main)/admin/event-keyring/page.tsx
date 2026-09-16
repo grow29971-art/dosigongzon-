@@ -36,7 +36,7 @@ interface UserMini {
 }
 
 const STATUS_META: Record<EntryStatus, { label: string; color: string; bg: string; emoji: string }> = {
-  pending:  { label: "대기",   color: "#A38E7A", bg: "var(--color-gray-100)", emoji: "⏳" },
+  pending:  { label: "대기",   color: "#8A8A8A", bg: "var(--color-gray-100)", emoji: "⏳" },
   selected: { label: "당첨",   color: "#5BA876", bg: "#E8ECE5", emoji: "🎉" },
   shipped:  { label: "배송완료", color: "#4A7BA8", bg: "#E5E8ED", emoji: "📦" },
   rejected: { label: "제외",   color: "#D85555", bg: "var(--color-error-soft)", emoji: "✖️" },
@@ -175,7 +175,7 @@ export default function AdminEventKeyringPage() {
   const visible = filter === "all" ? entries : entries.filter((e) => e.status === filter);
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "#FFFFFF" }}>
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-4 flex items-center justify-between gap-2">
         <div className="flex items-center gap-3 min-w-0">
@@ -213,7 +213,7 @@ export default function AdminEventKeyringPage() {
             className="shrink-0 px-3 py-1.5 chip-square text-[13px] font-bold press-strong transition-transform"
             style={{
               background: filter === k ? "var(--color-primary)" : "#FFFFFF",
-              color: filter === k ? "#FFFFFF" : "#6B5043",
+              color: filter === k ? "#FFFFFF" : "#555555",
               border: filter === k ? "1px solid var(--color-primary)" : "1px solid var(--color-divider)",
             }}>
             {k === "all" ? "전체" : STATUS_META[k].label} {counts[k] > 0 && <span className="ml-0.5 opacity-80">{counts[k]}</span>}

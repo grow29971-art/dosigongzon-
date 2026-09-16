@@ -87,7 +87,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
   const unlockedTitles = TITLES.filter((t) => t.unlocked(activitySummary)).slice(0, 4);
 
   return (
-    <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
+    <div className="pb-24" style={{ background: "#FFFFFF", minHeight: "100vh" }}>
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
@@ -193,8 +193,8 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                   key={r.name}
                   className="px-2 py-0.5 rounded-lg text-[11px] font-bold"
                   style={{
-                    background: r.is_primary ? "var(--color-primary)" : "#F7F4EE",
-                    color: r.is_primary ? "#fff" : "#A38E7A",
+                    background: r.is_primary ? "var(--color-primary)" : "#FFFFFF",
+                    color: r.is_primary ? "#fff" : "#8A8A8A",
                   }}
                 >
                   {r.is_primary && "★ "}{r.name}

@@ -124,7 +124,7 @@ export default function CatRegistrationCelebration({
           className="relative px-6 pt-8 pb-5 overflow-hidden"
           style={{
             background: isFirstEver
-              ? "linear-gradient(135deg, #FFE3D5 0%, #FFCFB5 100%)"
+              ? "linear-gradient(135deg, #FFE3D5 0%, #E0E0E0 100%)"
               : "linear-gradient(135deg, #F5E6D8 0%, #E8D5C0 100%)",
           }}
         >
@@ -225,7 +225,7 @@ export default function CatRegistrationCelebration({
               className="w-full mt-2 py-2.5 rounded-2xl text-[13px] font-bold flex items-center justify-center gap-1.5 press disabled:opacity-60"
               style={{
                 backgroundColor: "#FEE500",
-                color: "#191919",
+                color: "#111111",
                 boxShadow: "var(--shadow-raised)",
               }}
             >

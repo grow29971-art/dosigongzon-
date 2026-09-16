@@ -10,7 +10,7 @@ export default function SplashLoading() {
     <div
       className="fixed inset-0 flex flex-col items-center justify-center z-[90]"
       style={{
-        background: "#F5F3EE",
+        background: "#F7F7F7",
       }}
     >
       {/* 로고 */}

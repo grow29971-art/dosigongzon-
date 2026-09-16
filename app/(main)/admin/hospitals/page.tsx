@@ -313,7 +313,7 @@ export default function AdminHospitalsPage() {
               className="w-7 h-7 rounded-lg flex items-center justify-center press-strong"
               style={{ backgroundColor: "var(--color-gray-100)" }}
             >
-              <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
+              <X size={13} style={{ color: "#8A8A8A" }} strokeWidth={3} />
             </button>
           </div>
 
@@ -385,7 +385,7 @@ export default function AdminHospitalsPage() {
             className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-3 resize-none"
             style={{
               backgroundColor: "var(--color-gray-50)",
-              color: "#2A2A28",
+              color: "#2A2A2A",
               border: "1px solid var(--color-border)",
             }}
           />
@@ -427,7 +427,7 @@ export default function AdminHospitalsPage() {
               className="px-5 py-2.5 rounded-xl text-[13px] font-bold"
               style={{
                 backgroundColor: "var(--color-gray-100)",
-                color: "#A38E7A",
+                color: "#8A8A8A",
               }}
             >
               취소
@@ -582,7 +582,7 @@ function Input({
       className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-1"
       style={{
         backgroundColor: "var(--color-gray-50)",
-        color: "#2A2A28",
+        color: "#2A2A2A",
         border: "1px solid var(--color-border)",
       }}
     />

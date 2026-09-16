@@ -162,7 +162,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
   const otherDongs = gu.dongs.filter((d) => d !== dongName).slice(0, 12);
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "#FFFFFF" }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, "\\u003c") }} />
 
@@ -228,7 +228,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
           <div
             className="relative overflow-hidden rounded-2xl p-5 text-center"
             style={{
-              background: "#FFF6E8",
+              background: "#F2F2F2",
               border: "1.5px solid rgba(17, 17, 17,0.30)",
               boxShadow: "var(--shadow-card)",
             }}
@@ -372,7 +372,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
                 key={d}
                 href={`/areas/${slug}/${encodeURIComponent(d)}`}
                 className="text-center py-2 rounded-xl bg-white text-[13px] font-bold press-strong transition-transform"
-                style={{ color: "#6B5043", boxShadow: "var(--shadow-card-sm)" }}
+                style={{ color: "#555555", boxShadow: "var(--shadow-card-sm)" }}
               >
                 {d}
               </Link>

@@ -47,9 +47,9 @@ export default async function NewsOGImage({ params }: { params: Params }) {
           width: "100%",
           height: "100%",
           display: "flex",
-          background: "linear-gradient(135deg, #F6EFE3 0%, #EADFCB 55%, #DAC4A3 100%)",
+          background: "linear-gradient(135deg, #F2F2F2 0%, #EADFCB 55%, #DAC4A3 100%)",
           fontFamily: "sans-serif",
-          color: "#2C2C2C",
+          color: "#2A2A2A",
           position: "relative",
         }}
       >
@@ -134,7 +134,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
             >
               📰
             </div>
-            <span style={{ fontSize: 24, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}>
+            <span style={{ fontSize: 24, fontWeight: 900, color: "#2A2A2A", letterSpacing: -0.5 }}>
               도시공존 소식
             </span>
             <div
@@ -161,7 +161,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
                 fontWeight: 900,
                 lineHeight: 1.15,
                 letterSpacing: -2,
-                color: "#2C2C2C",
+                color: "#2A2A2A",
                 display: "-webkit-box",
                 WebkitLineClamp: 3,
                 WebkitBoxOrient: "vertical",
@@ -197,7 +197,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
                   padding: "8px 16px",
                   borderRadius: 999,
                   background: "rgba(17, 17, 17,0.18)",
-                  color: "#8B5A3C",
+                  color: "#555555",
                   fontSize: 20,
                   fontWeight: 700,
                 }}
@@ -212,7 +212,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
                 padding: "8px 18px",
                 borderRadius: 999,
                 background: "rgba(255,255,255,0.85)",
-                color: "#8B5A3C",
+                color: "#555555",
                 fontSize: 20,
                 fontWeight: 800,
                 border: "2px solid rgba(17, 17, 17,0.3)",

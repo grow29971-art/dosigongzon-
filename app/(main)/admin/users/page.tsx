@@ -38,8 +38,8 @@ interface UserRow {
 const PROVIDER_META: Record<string, { label: string; bg: string; fg: string; emoji: string }> = {
   google:     { label: "구글",     bg: "#E3EBF7", fg: "#3A6CB5", emoji: "🟦" },
   kakao:      { label: "카카오",   bg: "#FEF4C8", fg: "#7A5F16", emoji: "🟨" },
-  email:      { label: "이메일",   bg: "var(--color-gray-100)", fg: "#8B5A3C", emoji: "✉️" },
-  apple:      { label: "애플",     bg: "#E5E5E5", fg: "#2A2A28", emoji: "" },
+  email:      { label: "이메일",   bg: "var(--color-gray-100)", fg: "#555555", emoji: "✉️" },
+  apple:      { label: "애플",     bg: "#E5E5E5", fg: "#2A2A2A", emoji: "" },
   naver:      { label: "네이버",   bg: "#E0F0E4", fg: "#1C7A33", emoji: "🟩" },
   facebook:   { label: "페이스북", bg: "#E4EAF5", fg: "#3B5998", emoji: "Ⓕ" },
 };
@@ -286,7 +286,7 @@ export default function AdminUsersPage() {
           onClick={() => setProviderFilter(null)}
           className="px-3 py-1.5 rounded-2xl text-[11px] font-bold press-strong shrink-0"
           style={{
-            background: providerFilter === null ? "#2C2C2C" : "rgba(255,255,255,0.9)",
+            background: providerFilter === null ? "#2A2A2A" : "rgba(255,255,255,0.9)",
             color: providerFilter === null ? "#fff" : "#555",
             border: "1px solid var(--color-divider)",
           }}

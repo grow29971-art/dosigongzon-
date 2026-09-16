@@ -5,7 +5,7 @@ import { SkeletonBlock, SkeletonCircle, SkeletonText } from "@/app/components/Sk
 
 export default function CatDetailLoading() {
   return (
-    <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
+    <div className="pb-24" style={{ background: "#FFFFFF", minHeight: "100vh" }}>
       {/* 히어로 사진 자리 */}
       <SkeletonBlock style={{ aspectRatio: "1 / 1", borderRadius: 0, width: "100%" }} />
 

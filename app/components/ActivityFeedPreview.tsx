@@ -110,7 +110,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
       <div
         className="mb-3 relative overflow-hidden p-4"
         style={{
-          background: "#FFF6E8",
+          background: "#F2F2F2",
           borderRadius: "var(--radius-card)",
           border: "1px solid rgba(17, 17, 17,0.20)",
         }}
@@ -189,7 +189,7 @@ export default function ActivityFeedPreview({ hasMyCat }: { hasMyCat: boolean })
             <Link
               key={item.id}
               href={targetHref(item)}
-              className="flex items-start gap-3 px-3.5 py-3 active:bg-[#FCFAF6] transition-colors"
+              className="flex items-start gap-3 px-3.5 py-3 active:bg-[#FFFFFF] transition-colors"
               style={{
                 borderTop: idx > 0 ? "1px solid var(--color-divider)" : "none",
               }}

@@ -178,7 +178,7 @@ export default function WritePage() {
           <div
             className="rounded-2xl p-4"
             style={{
-              background: "#FFF8F2",
+              background: "#F2F2F2",
               border: "1.5px solid rgba(17, 17, 17,0.25)",
             }}
           >
@@ -357,7 +357,7 @@ export default function WritePage() {
                 style={{
                   backgroundColor: "var(--color-gray-50)",
                   border: "1.5px dashed #C9BDAA",
-                  color: "#A38E7A",
+                  color: "#8A8A8A",
                 }}
               >
                 {uploading ? (

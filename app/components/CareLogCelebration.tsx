@@ -88,7 +88,7 @@ export default function CareLogCelebration({
             background: isFirstEver
               ? "linear-gradient(135deg, #FFE9C5 0%, #FFD89B 100%)"
               : streak >= 7
-                ? "linear-gradient(135deg, #FFE3D5 0%, #FFCFB5 100%)"
+                ? "linear-gradient(135deg, #FFE3D5 0%, #E0E0E0 100%)"
                 : "linear-gradient(135deg, #F5E6D8 0%, #E8D5C0 100%)",
           }}
         >
@@ -161,7 +161,7 @@ export default function CareLogCelebration({
                   type="button"
                   onClick={onClose}
                   className="px-4 py-3 rounded-2xl text-[13px] font-bold"
-                  style={{ background: "var(--color-gray-50)", color: "#A38E7A" }}
+                  style={{ background: "var(--color-gray-50)", color: "#8A8A8A" }}
                 >
                   닫기
                 </button>

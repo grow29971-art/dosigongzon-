@@ -28,7 +28,7 @@ export function GuideOGTemplate({
     border: "2px solid rgba(17, 17, 17,0.25)",
     fontSize: 22,
     fontWeight: 800,
-    color: "#8B5A3C",
+    color: "#555555",
     display: "flex",
   };
 
@@ -41,9 +41,9 @@ export function GuideOGTemplate({
         flexDirection: "column",
         justifyContent: "space-between",
         padding: "64px 80px",
-        background: "linear-gradient(135deg, #F6EFE3 0%, #EADFCB 55%, #DAC4A3 100%)",
+        background: "linear-gradient(135deg, #F2F2F2 0%, #EADFCB 55%, #DAC4A3 100%)",
         fontFamily: "sans-serif",
-        color: "#2C2C2C",
+        color: "#2A2A2A",
         position: "relative",
       }}
     >
@@ -103,7 +103,7 @@ export function GuideOGTemplate({
             <span style={{ fontSize: 18, fontWeight: 700, color: "#A8684A", letterSpacing: 2.4 }}>
               DOSI GONGZON
             </span>
-            <span style={{ fontSize: 30, fontWeight: 900, color: "#2C2C2C", marginTop: -2 }}>
+            <span style={{ fontSize: 30, fontWeight: 900, color: "#2A2A2A", marginTop: -2 }}>
               도시공존
             </span>
           </div>

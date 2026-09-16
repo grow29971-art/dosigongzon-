@@ -75,7 +75,7 @@ export default function MyCatsQuickCare() {
     <div
       className="mb-3 p-4"
       style={{
-        background: "#FFF6E8",
+        background: "#F2F2F2",
         borderRadius: "var(--radius-card)",
         border: "1px solid rgba(232,141,90,0.25)",
         boxShadow: "var(--shadow-fab)",
@@ -100,7 +100,7 @@ export default function MyCatsQuickCare() {
                 <div
                   className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center"
                   style={{
-                    background: "#F4E6CE",
+                    background: "#EBEBEB",
                     border: c.fedToday ? "2px solid #6B8E6F" : "2px solid rgba(17, 17, 17,0.3)",
                   }}
                 >
@@ -112,7 +112,7 @@ export default function MyCatsQuickCare() {
                   )}
                 </div>
               </Link>
-              <p className="text-[11px] font-bold text-center mt-1 truncate w-full" style={{ color: "#2A2A28" }}>
+              <p className="text-[11px] font-bold text-center mt-1 truncate w-full" style={{ color: "#2A2A2A" }}>
                 {c.name}
               </p>
               <button

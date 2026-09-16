@@ -30,7 +30,7 @@ export const CARE_TYPE_MAP: Record<
   tnr: { label: "TNR", emoji: "✂️", color: "#8B65B8" },
   hospital: { label: "병원 방문", emoji: "🏥", color: "#D85555" },
   shelter: { label: "쉼터 관리", emoji: "🏠", color: "#4A7BA8" },
-  other: { label: "기타", emoji: "📝", color: "#A38E7A" },
+  other: { label: "기타", emoji: "📝", color: "#8A8A8A" },
 };
 
 // ── 타입 ──

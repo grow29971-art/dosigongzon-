@@ -140,7 +140,7 @@ export default function MyActivityDashboard() {
                   href={`/cats/${c.catId}`}
                   className="flex-1 min-w-0 flex items-center gap-2 px-2.5 py-2 rounded-xl press-strong"
                   style={{
-                    background: i === 0 ? "#FFF9EB" : "#F7F4EE",
+                    background: i === 0 ? "#FFF9EB" : "#FFFFFF",
                     border: i === 0 ? "1px solid #E8B04040" : "1px solid var(--color-divider)",
                   }}
                 >
@@ -156,7 +156,7 @@ export default function MyActivityDashboard() {
                     <p className="text-[13px] font-bold text-text-main truncate">
                       {i === 0 && "🥇 "}{c.catName}
                     </p>
-                    <p className="text-[11px] font-bold" style={{ color: i === 0 ? "#A67B1E" : "#A38E7A" }}>
+                    <p className="text-[11px] font-bold" style={{ color: i === 0 ? "#A67B1E" : "#8A8A8A" }}>
                       {c.count}번
                     </p>
                   </div>

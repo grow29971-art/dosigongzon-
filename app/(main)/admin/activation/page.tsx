@@ -201,7 +201,7 @@ export default function AdminActivationPage() {
   const visibleUsers = selected ? cohorts[selected] : [];
 
   return (
-    <div className="px-4 pt-12 pb-24 max-w-2xl mx-auto" style={{ background: "#F7F4EE", minHeight: "100dvh" }}>
+    <div className="px-4 pt-12 pb-24 max-w-2xl mx-auto" style={{ background: "#FFFFFF", minHeight: "100dvh" }}>
       <div className="flex items-center gap-3 mb-6">
         <Link
           href="/admin"
@@ -276,7 +276,7 @@ export default function AdminActivationPage() {
                       {meta.label}
                     </span>
                   </div>
-                  <p className="text-[24px] font-bold leading-none" style={{ color: "#3D2F25" }}>
+                  <p className="text-[24px] font-bold leading-none" style={{ color: "#2A2A2A" }}>
                     {count}
                   </p>
                   <p className="text-[11px] mt-1.5 leading-snug" style={{ color: "rgba(60,46,35,0.55)" }}>
@@ -294,7 +294,7 @@ export default function AdminActivationPage() {
               style={{ boxShadow: "var(--shadow-card)" }}
             >
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-[15px] font-bold" style={{ color: "#3D2F25" }}>
+                <h2 className="text-[15px] font-bold" style={{ color: "#2A2A2A" }}>
                   {COHORT_META[selected].label} · {visibleUsers.length}명
                 </h2>
                 <button
@@ -318,7 +318,7 @@ export default function AdminActivationPage() {
                       style={{ background: "rgba(247,244,238,0.6)" }}
                     >
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-bold truncate" style={{ color: "#3D2F25" }}>
+                        <p className="text-[13px] font-bold truncate" style={{ color: "#2A2A2A" }}>
                           {u.nickname}
                         </p>
                         <p className="text-[11px] truncate" style={{ color: "rgba(60,46,35,0.55)" }}>

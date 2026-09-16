@@ -43,7 +43,7 @@ export default async function CelebratePage() {
   const stats = await getStats();
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "#FFFFFF" }}>
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
@@ -108,7 +108,7 @@ export default async function CelebratePage() {
         <div
           className="rounded-3xl p-6"
           style={{
-            background: "#FFF9F2",
+            background: "#F2F2F2",
             border: "1px solid rgba(17, 17, 17,0.20)",
           }}
         >

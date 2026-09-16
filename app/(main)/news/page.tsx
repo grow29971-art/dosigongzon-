@@ -44,7 +44,7 @@ export default async function NewsIndexPage() {
   const items = await fetchNews();
 
   return (
-    <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
+    <div className="pb-24" style={{ background: "#FFFFFF", minHeight: "100vh" }}>
       <div className="px-4 pt-12 pb-4 flex items-center gap-3">
         <Link
           href="/"
@@ -110,7 +110,7 @@ export default async function NewsIndexPage() {
                     {dday && (
                       <span
                         className="text-[11px] font-bold px-1.5 py-0.5 rounded-md"
-                        style={{ background: "#F7F4EE", color: "#6B5043" }}
+                        style={{ background: "#FFFFFF", color: "#555555" }}
                       >
                         {dday}
                       </span>

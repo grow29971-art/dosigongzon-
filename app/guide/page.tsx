@@ -293,7 +293,7 @@ export default function GuidePage() {
   };
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "#FFFFFF" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, "\\u003c") }}

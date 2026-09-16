@@ -56,7 +56,7 @@ export default async function PublicHeader() {
             <Link
               href="/login"
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[13px] font-bold press-strong transition-transform"
-              style={{ color: "#6B5043" }}
+              style={{ color: "#555555" }}
             >
               <LogIn size={12} />
               로그인

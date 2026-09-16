@@ -321,7 +321,7 @@ export default function PostDetailPage({
               className="text-[11px] font-bold px-3 py-1.5 rounded-lg press-strong transition-transform flex items-center gap-1"
               style={{
                 backgroundColor: post.isPinned ? "var(--color-error-soft)" : "var(--color-gray-100)",
-                color: post.isPinned ? "#D85555" : "#A38E7A",
+                color: post.isPinned ? "#D85555" : "#8A8A8A",
               }}
               onClick={async () => {
                 const supabase = createClient();
@@ -449,9 +449,9 @@ export default function PostDetailPage({
               onClick={() => handleVote(-1)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold press-strong transition-all"
               style={{
-                backgroundColor: myVote === -1 ? "#A38E7A" : "#FFFFFF",
-                border: `1.5px solid ${myVote === -1 ? "#A38E7A" : "var(--color-gray-200)"}`,
-                color: myVote === -1 ? "#FFFFFF" : "#A38E7A",
+                backgroundColor: myVote === -1 ? "#8A8A8A" : "#FFFFFF",
+                border: `1.5px solid ${myVote === -1 ? "#8A8A8A" : "var(--color-gray-200)"}`,
+                color: myVote === -1 ? "#FFFFFF" : "#8A8A8A",
               }}
             >
               <ThumbsDown size={15} strokeWidth={2.2} fill={myVote === -1 ? "#FFFFFF" : "none"} />
@@ -516,7 +516,7 @@ export default function PostDetailPage({
                 })
               }
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] press-strong transition-transform"
-              style={{ backgroundColor: "#FFFFFF", border: "1px solid var(--color-border)", color: "#A38E7A" }}
+              style={{ backgroundColor: "#FFFFFF", border: "1px solid var(--color-border)", color: "#8A8A8A" }}
             >
               <Flag size={12} strokeWidth={2.2} />
               신고
@@ -756,7 +756,7 @@ function CommentItem({
             style={{ backgroundColor: "var(--color-gray-50)" }}
             aria-label="댓글 신고"
           >
-            <Flag size={9} style={{ color: "#A38E7A" }} strokeWidth={2.5} />
+            <Flag size={9} style={{ color: "#8A8A8A" }} strokeWidth={2.5} />
           </button>
         </div>
       </div>
@@ -786,7 +786,7 @@ function CommentItem({
           type="button"
           onClick={onReply}
           className="flex items-center gap-1 ml-8 mt-1.5 text-[11px] font-semibold press-strong transition-transform"
-          style={{ color: "#A38E7A" }}
+          style={{ color: "#8A8A8A" }}
         >
           <Reply size={11} />
           답글

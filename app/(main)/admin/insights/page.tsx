@@ -69,7 +69,7 @@ export default function AdminInsightsPage() {
   }
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "#FFFFFF" }}>
       {/* ── 헤더 ── */}
       <div className="px-4 pt-12 pb-4 flex items-center gap-3">
         <button

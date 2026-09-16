@@ -85,7 +85,7 @@ export default function Og200EventModal() {
         {/* 헤더 — 그라데이션 */}
         <div
           className="relative px-6 pt-8 pb-6 overflow-hidden"
-          style={{ background: "#FFE8C2" }}
+          style={{ background: "#EBEBEB" }}
         >
           <button
             type="button"

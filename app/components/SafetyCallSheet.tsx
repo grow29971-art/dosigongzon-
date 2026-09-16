@@ -112,7 +112,7 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
 
         {/* 최초 1회 한계 고지 */}
         {showNotice && (
-          <div className="rounded-xl px-3.5 py-2.5 mt-3 text-[13px] leading-relaxed" style={{ backgroundColor: "#FFF6E8", color: "#6F5A3A" }}>
+          <div className="rounded-xl px-3.5 py-2.5 mt-3 text-[13px] leading-relaxed" style={{ backgroundColor: "#F2F2F2", color: "#6F5A3A" }}>
             이 기능은 휴대폰 전화 앱을 <b>대신 열어주는 바로가기</b>예요. 자동으로 발신되지 않고,
             통신 상태에 따라 실패할 수 있어요.
           </div>
@@ -170,7 +170,7 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
             </button>
           </div>
         ) : (
-          <div className="rounded-2xl px-4 py-4 mt-3 text-center" style={{ backgroundColor: "#FFF3EC", border: "1px solid #EAD3C6" }}>
+          <div className="rounded-2xl px-4 py-4 mt-3 text-center" style={{ backgroundColor: "#F2F2F2", border: "1px solid #EAD3C6" }}>
             <p className="text-[15px] font-bold text-text-main">{confirmTarget.number}에 전화를 겁니다</p>
             <p className="text-[13px] text-text-sub mt-0.5">{confirmTarget.desc}</p>
             <div className="flex gap-2.5 mt-3">

@@ -75,7 +75,7 @@ export default function JoinClient({ token, state }: { token: string; state: Inv
             : `${state.areaName} 돌봄 기록 실험`;
 
   return (
-    <div className="min-h-dvh flex flex-col items-center px-6 pt-20 pb-10" style={{ background: "#FBF8F3" }}>
+    <div className="min-h-dvh flex flex-col items-center px-6 pt-20 pb-10" style={{ background: "#FFFFFF" }}>
       <div
         className="w-full max-w-md rounded-[28px] p-7 text-center"
         style={{ background: "#fff", boxShadow: "var(--shadow-fab)" }}

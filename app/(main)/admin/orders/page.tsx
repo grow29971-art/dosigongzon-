@@ -281,7 +281,7 @@ export default function AdminOrdersPage() {
         <button
           onClick={() => handleFilter("all")}
           className="px-3 py-1.5 rounded-xl text-[13px] font-bold shrink-0"
-          style={{ background: filter === "all" ? "#2C2C2C" : "#fff", color: filter === "all" ? "#fff" : "#666", boxShadow: "var(--shadow-card-sm)" }}
+          style={{ background: filter === "all" ? "#2A2A2A" : "#fff", color: filter === "all" ? "#fff" : "#666", boxShadow: "var(--shadow-card-sm)" }}
         >
           전체
         </button>

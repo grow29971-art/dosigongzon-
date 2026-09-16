@@ -271,7 +271,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
           ) : (
             <div
               className="p-3 rounded-2xl space-y-2.5"
-              style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid #E5E0D6" }}
+              style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid #E0E0E0" }}
             >
               {/* 유형 선택 */}
               <div className="flex gap-1.5 flex-wrap">
@@ -302,7 +302,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="사료량 (예: 200g, 캔 1개)"
                   className="w-full px-3 py-2 rounded-xl text-[13px] outline-none"
-                  style={{ backgroundColor: "#fff", border: "1px solid #E5E0D6", color: "#2A2A28" }}
+                  style={{ backgroundColor: "#fff", border: "1px solid #E0E0E0", color: "#2A2A2A" }}
                 />
               )}
 
@@ -320,7 +320,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                   }}
                   placeholder="메모 (선택)"
                   className="flex-1 min-w-0 px-3 py-2 rounded-xl text-[13px] outline-none"
-                  style={{ backgroundColor: "#fff", border: "1px solid #E5E0D6", color: "#2A2A28" }}
+                  style={{ backgroundColor: "#fff", border: "1px solid #E0E0E0", color: "#2A2A2A" }}
                 />
                 <input
                   ref={fileInputRef}
@@ -333,9 +333,9 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center press-strong"
-                  style={{ backgroundColor: photoFile ? "#6B8E6F" : "#fff", border: "1px solid #E5E0D6" }}
+                  style={{ backgroundColor: photoFile ? "#6B8E6F" : "#fff", border: "1px solid #E0E0E0" }}
                 >
-                  <Camera size={14} style={{ color: photoFile ? "#fff" : "#A38E7A" }} />
+                  <Camera size={14} style={{ color: photoFile ? "#fff" : "#8A8A8A" }} />
                 </button>
               </div>
 
@@ -346,12 +346,12 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                 className="flex items-center gap-2 w-full px-3 py-2 rounded-xl press transition-transform"
                 style={{
                   backgroundColor: isPrivate ? "rgba(139,101,184,0.10)" : "#fff",
-                  border: isPrivate ? "1px solid rgba(139,101,184,0.35)" : "1px solid #E5E0D6",
+                  border: isPrivate ? "1px solid rgba(139,101,184,0.35)" : "1px solid #E0E0E0",
                 }}
                 aria-pressed={isPrivate}
               >
-                {isPrivate ? <Lock size={13} style={{ color: "#8B65B8" }} /> : <Unlock size={13} style={{ color: "#A38E7A" }} />}
-                <span className="text-[13px] font-bold" style={{ color: isPrivate ? "#8B65B8" : "#A38E7A" }}>
+                {isPrivate ? <Lock size={13} style={{ color: "#8B65B8" }} /> : <Unlock size={13} style={{ color: "#8A8A8A" }} />}
+                <span className="text-[13px] font-bold" style={{ color: isPrivate ? "#8B65B8" : "#8A8A8A" }}>
                   {isPrivate ? "비밀글 — 나만 볼 수 있어요" : "비밀글로 남기기"}
                 </span>
                 {/* 공존 시그니처: 사각 토글 (원형 아님) */}

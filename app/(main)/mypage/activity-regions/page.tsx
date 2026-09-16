@@ -481,7 +481,7 @@ export default function ActivityRegionsPage() {
   const savedOnSlot = regions.find((r) => r.slot === activeSlot);
 
   return (
-    <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
+    <div className="pb-24" style={{ background: "#FFFFFF", minHeight: "100vh" }}>
       {/* 헤더 */}
       <div className="px-5 pt-14 pb-3 flex items-center gap-3 bg-white/80 backdrop-blur-md sticky top-0 z-40">
         <button
@@ -669,7 +669,7 @@ export default function ActivityRegionsPage() {
             placeholder="예: 구월동, 우리집 근처"
             className="w-full mt-1.5 px-3 py-2.5 rounded-xl text-[13px] font-bold outline-none"
             style={{
-              background: "#F7F4EE",
+              background: "#FFFFFF",
               border: "1px solid var(--color-divider)",
             }}
           />
@@ -701,7 +701,7 @@ export default function ActivityRegionsPage() {
                   onClick={() => setRadius(p.value)}
                   className="px-3 py-1.5 chip-square text-[11px] font-bold press-strong transition-transform"
                   style={{
-                    background: active ? SLOT_COLORS[activeSlot] : "#F7F4EE",
+                    background: active ? SLOT_COLORS[activeSlot] : "#FFFFFF",
                     color: active ? "#fff" : "#666",
                   }}
                 >
@@ -745,7 +745,7 @@ export default function ActivityRegionsPage() {
               onClick={handleSetPrimary}
               disabled={!savedOnSlot}
               className="px-3 py-1.5 rounded-xl text-[11px] font-bold press-strong disabled:opacity-40"
-              style={{ background: "#F7F4EE", color: "#333" }}
+              style={{ background: "#FFFFFF", color: "#333" }}
             >
               지정하기
             </button>

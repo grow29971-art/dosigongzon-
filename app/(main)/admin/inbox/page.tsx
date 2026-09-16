@@ -490,7 +490,7 @@ export default function AdminInboxPage() {
                     label="반려"
                     onClick={() => handleReportStatus(r.id, "dismissed")}
                     Icon={XIcon}
-                    bg="#A38E7A"
+                    bg="#8A8A8A"
                     disabled={r.status === "dismissed"}
                   />
                   <ActionBtn
@@ -586,7 +586,7 @@ export default function AdminInboxPage() {
                     className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none resize-none"
                     style={{
                       backgroundColor: "#FFFFFF",
-                      color: "#2A2A28",
+                      color: "#2A2A2A",
                       border: "1px solid var(--color-border)",
                     }}
                   />
@@ -614,7 +614,7 @@ export default function AdminInboxPage() {
                     label="종료"
                     onClick={() => handleInquiryStatus(i.id, "closed")}
                     Icon={XIcon}
-                    bg="#A38E7A"
+                    bg="#8A8A8A"
                     disabled={i.status === "closed"}
                   />
                   <ActionBtn

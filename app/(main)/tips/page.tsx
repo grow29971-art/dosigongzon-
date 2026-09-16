@@ -78,7 +78,7 @@ export default async function TipsIndexPage() {
   };
 
   return (
-    <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
+    <div className="pb-24" style={{ background: "#FFFFFF", minHeight: "100vh" }}>
       <PageIntroModal
         storageKey="dosigongzon_intro_tips"
         badge="AI 집사"
@@ -275,7 +275,7 @@ export default async function TipsIndexPage() {
         <div
           className="mt-6 p-5 rounded-2xl"
           style={{
-            background: "#FBF8F3",
+            background: "#FFFFFF",
             border: "1px solid rgba(17, 17, 17,0.15)",
           }}
         >
@@ -343,7 +343,7 @@ function TipCard({ tip }: { tip: Tip }) {
                 <span
                   key={tag}
                   className="text-[11px] font-bold px-1.5 py-0.5 rounded-md"
-                  style={{ background: "#F2EBE0", color: "#8B6F4E" }}
+                  style={{ background: "#EBEBEB", color: "#8B6F4E" }}
                 >
                   #{tag}
                 </span>

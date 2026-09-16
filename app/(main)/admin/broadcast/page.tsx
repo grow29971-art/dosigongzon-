@@ -284,7 +284,7 @@ export default function AdminBroadcastPage() {
   return (
     <div
       className="px-4 pt-12 pb-24 max-w-2xl mx-auto"
-      style={{ background: "#F7F4EE", minHeight: "100dvh" }}
+      style={{ background: "#FFFFFF", minHeight: "100dvh" }}
     >
       <div className="flex items-center gap-3 mb-6">
         <Link
@@ -383,7 +383,7 @@ export default function AdminBroadcastPage() {
           style={{
             border: "1px solid var(--color-divider)",
             boxShadow: "inset 0 1px 2px rgba(0,0,0,0.02)",
-            color: "#3D2F25",
+            color: "#2A2A2A",
           }}
         />
       </section>
@@ -399,7 +399,7 @@ export default function AdminBroadcastPage() {
         ) : previewCount !== null ? (
           <span>
             이 코호트 예상 대상{" "}
-            <b style={{ color: "#3D2F25" }}>{previewCount}명</b>
+            <b style={{ color: "#2A2A2A" }}>{previewCount}명</b>
           </span>
         ) : (
           <span>예상 대상 수 확인 불가</span>

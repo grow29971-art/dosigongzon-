@@ -119,7 +119,7 @@ export default function HospitalsPage() {
                 className="shrink-0 px-4 py-2 rounded-full text-[13px] font-bold transition-all"
                 style={{
                   backgroundColor: active ? "var(--color-primary)" : "#FFFFFF",
-                  color: active ? "#FFFFFF" : "#A38E7A",
+                  color: active ? "#FFFFFF" : "#8A8A8A",
                   border: `1.5px solid ${active ? "var(--color-primary)" : "var(--color-gray-200)"}`,
                   boxShadow: active ? "0 4px 12px rgba(17, 17, 17,0.35)" : "0 1px 3px rgba(0,0,0,0.03)",
                 }}

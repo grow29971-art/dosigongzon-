@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 
 export default function MakerPage() {
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "#FFFFFF" }}>
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
@@ -81,7 +81,7 @@ export default function MakerPage() {
         <div
           className="rounded-3xl p-5 mb-3"
           style={{
-            background: "#FFF9F2",
+            background: "#F2F2F2",
             border: "1px solid rgba(17, 17, 17,0.20)",
           }}
         >
@@ -173,7 +173,7 @@ export default function MakerPage() {
         <div
           className="rounded-3xl p-5"
           style={{
-            background: "#FFF9F2",
+            background: "#F2F2F2",
             border: "1px solid rgba(17, 17, 17,0.20)",
           }}
         >
@@ -317,7 +317,7 @@ export default function MakerPage() {
       {/* 연락처 / 제휴 */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <Coffee size={14} style={{ color: "#8B5A3C" }} />
+          <Coffee size={14} style={{ color: "#555555" }} />
           <h2 className="text-[15px] font-bold text-text-main">제휴·문의·차 한 잔</h2>
         </div>
         <div className="bg-white rounded-3xl p-5" style={{ boxShadow: "var(--shadow-card)" }}>
@@ -368,7 +368,7 @@ function SkillCard({ icon, title, sub }: { icon: React.ReactNode; title: string;
     <div
       className="rounded-xl p-3"
       style={{
-        background: "#FFF9F2",
+        background: "#F2F2F2",
         border: "1px solid rgba(17, 17, 17,0.18)",
       }}
     >

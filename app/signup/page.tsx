@@ -169,7 +169,7 @@ function SignupContent() {
               type="button"
               onClick={handleOpenExternal}
               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[13px] press-strong"
-              style={{ backgroundColor: "rgba(0,0,0,0.05)", color: "#6B5043" }}
+              style={{ backgroundColor: "rgba(0,0,0,0.05)", color: "#555555" }}
             >
               <ExternalLink size={14} />
               {detectOS() === "ios" && inApp !== "kakaotalk"
@@ -177,7 +177,7 @@ function SignupContent() {
                 : "크롬/사파리에서 열기"}
             </button>
             {showIosCopyHint && (
-              <div className="mt-3 rounded-xl p-3 text-[11px] leading-relaxed" style={{ backgroundColor: "#FFF", color: "#6B5043" }}>
+              <div className="mt-3 rounded-xl p-3 text-[11px] leading-relaxed" style={{ backgroundColor: "#FFF", color: "#555555" }}>
                 <p className="font-bold mb-1">주소가 복사됐어요 ✓</p>
                 <p>사파리(iOS) 또는 크롬(Android)을 열고 주소창에 붙여넣어주세요.</p>
               </div>
@@ -203,7 +203,7 @@ function SignupContent() {
           <div
             className="mb-4 rounded-2xl p-4"
             style={{
-              background: "#FFF8F2",
+              background: "#F2F2F2",
               border: "1.5px solid rgba(17, 17, 17,0.30)",
             }}
           >
@@ -223,7 +223,7 @@ function SignupContent() {
         {isSamsung && !inApp && (
           <div
             className="mb-3 rounded-xl px-3.5 py-2.5 flex items-start gap-2"
-            style={{ backgroundColor: "var(--color-warning-soft)", border: "1px solid #F5DAB0" }}
+            style={{ backgroundColor: "var(--color-warning-soft)", border: "1px solid #E0E0E0" }}
           >
             <span className="text-[15px] mt-0.5">⚠️</span>
             <p className="text-[13px] leading-relaxed" style={{ color: "#6F4910" }}>
@@ -316,13 +316,13 @@ function SignupContent() {
             disabled={!!loading}
             className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-bold press-strong transition-transform disabled:opacity-60"
             /* 인앱에서도 카카오는 실제로 진행되므로 약관 동의 상태를 그대로 반영한다 */
-            style={{ backgroundColor: "#FEE500", color: "#191919", opacity: agreed ? 1 : 0.6 }}
+            style={{ backgroundColor: "#FEE500", color: "#111111", opacity: agreed ? 1 : 0.6 }}
           >
             {loading === "kakao" ? (
               <Loader2 size={18} className="animate-spin" />
             ) : (
               <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-                <path d="M9 1.5C4.582 1.5 1 4.262 1 7.668c0 2.219 1.51 4.166 3.788 5.272-.167.625-.604 2.265-.69 2.617-.108.438.16.43.336.314.138-.092 2.198-1.5 3.083-2.107.49.073.99.111 1.483.111 4.418 0 8-2.762 8-6.207C17 4.262 13.418 1.5 9 1.5z" fill="#191919" />
+                <path d="M9 1.5C4.582 1.5 1 4.262 1 7.668c0 2.219 1.51 4.166 3.788 5.272-.167.625-.604 2.265-.69 2.617-.108.438.16.43.336.314.138-.092 2.198-1.5 3.083-2.107.49.073.99.111 1.483.111 4.418 0 8-2.762 8-6.207C17 4.262 13.418 1.5 9 1.5z" fill="#111111" />
               </svg>
             )}
             카카오로 시작하기
@@ -331,7 +331,7 @@ function SignupContent() {
             onClick={() => handleSignup("google")}
             disabled={!!loading}
             className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold press-strong transition-transform border border-[#E0E0E0] disabled:opacity-60"
-            style={{ backgroundColor: "#FFFFFF", color: "#2A2A28", opacity: (agreed || inApp) ? 1 : 0.6 }}
+            style={{ backgroundColor: "#FFFFFF", color: "#2A2A2A", opacity: (agreed || inApp) ? 1 : 0.6 }}
           >
             {loading === "google" ? (
               <Loader2 size={18} className="animate-spin" />

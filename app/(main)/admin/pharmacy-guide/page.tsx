@@ -130,7 +130,7 @@ export default function AdminPharmacyGuidePage() {
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-[15px] font-bold text-text-main">{editingId === "new" ? "새 약품 추가" : "약품 수정"}</h2>
             <button onClick={handleCancel} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--color-gray-100)" }}>
-              <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
+              <X size={13} style={{ color: "#8A8A8A" }} strokeWidth={3} />
             </button>
           </div>
 
@@ -146,7 +146,7 @@ export default function AdminPharmacyGuidePage() {
                 </button>
               </div>
             ) : (
-              <label className="flex flex-col items-center justify-center aspect-[16/9] rounded-xl cursor-pointer" style={{ backgroundColor: "var(--color-gray-50)", border: "1.5px dashed #C9BDAA", color: "#A38E7A" }}>
+              <label className="flex flex-col items-center justify-center aspect-[16/9] rounded-xl cursor-pointer" style={{ backgroundColor: "var(--color-gray-50)", border: "1.5px dashed #C9BDAA", color: "#8A8A8A" }}>
                 {uploading ? <Loader2 size={22} className="animate-spin mb-1" /> : <><ImagePlus size={24} className="mb-1" /><span className="text-[13px] font-semibold">이미지 선택</span></>}
                 <input type="file" accept="image/*" className="hidden" disabled={uploading} onChange={handleImageSelect} />
               </label>
@@ -183,7 +183,7 @@ export default function AdminPharmacyGuidePage() {
             <button onClick={handleSave} disabled={saving || uploading} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 press-strong transition-all">
               {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} 저장
             </button>
-            <button onClick={handleCancel} disabled={saving} className="px-5 py-2.5 rounded-xl text-[13px] font-bold" style={{ backgroundColor: "var(--color-gray-100)", color: "#A38E7A" }}>취소</button>
+            <button onClick={handleCancel} disabled={saving} className="px-5 py-2.5 rounded-xl text-[13px] font-bold" style={{ backgroundColor: "var(--color-gray-100)", color: "#8A8A8A" }}>취소</button>
           </div>
         </div>
       )}

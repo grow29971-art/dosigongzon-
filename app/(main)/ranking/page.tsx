@@ -35,7 +35,7 @@ export default async function RankingPage() {
   const isTop3 = myRankNumber !== null && myRankNumber <= 3;
 
   return (
-    <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
+    <div className="pb-24 min-h-screen" style={{ background: "#FFFFFF" }}>
       {/* 헤더 */}
       <div className="px-5 pt-12 pb-5">
         <Link
@@ -250,7 +250,7 @@ function PodiumCard({ row, place, height }: { row: RankingRow; place: 1 | 2 | 3;
         >
           {level.emoji} {level.title}
         </p>
-        <p className="text-[15px] font-bold tabular-nums mt-1" style={{ color: "#2A2A28" }}>
+        <p className="text-[15px] font-bold tabular-nums mt-1" style={{ color: "#2A2A2A" }}>
           {row.score.toLocaleString()}
           <span className="text-[11px] font-bold opacity-70 ml-0.5">점</span>
         </p>
@@ -276,7 +276,7 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
     >
       <div
         className="w-8 text-center text-[15px] font-bold tabular-nums shrink-0"
-        style={{ color: row.rank <= 10 ? "#C9A961" : "#8B7562" }}
+        style={{ color: row.rank <= 10 ? "#C9A961" : "#6B6B6B" }}
       >
         {row.rank}
       </div>
@@ -322,7 +322,7 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
       </div>
       <div
         className="text-[15px] font-bold tabular-nums shrink-0 ml-1"
-        style={{ color: "#2A2A28" }}
+        style={{ color: "#2A2A2A" }}
       >
         {row.score.toLocaleString()}
       </div>

@@ -202,7 +202,7 @@ export default function AdminAuthErrorsPage() {
               onClick={() => setDays(d)}
               className="px-3 py-1.5 rounded-xl text-[11px] font-bold press-strong shrink-0"
               style={{
-                backgroundColor: days === d ? "#2C2C2C" : "rgba(255,255,255,0.95)",
+                backgroundColor: days === d ? "#2A2A2A" : "rgba(255,255,255,0.95)",
                 color: days === d ? "#fff" : "#555",
                 boxShadow: "var(--shadow-card)",
               }}
@@ -302,7 +302,7 @@ export default function AdminAuthErrorsPage() {
                   onClick={() => setCodeFilter(active ? null : s.error_code)}
                   className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl press text-left"
                   style={{
-                    backgroundColor: active ? "rgba(17, 17, 17,0.12)" : "#F7F4EE",
+                    backgroundColor: active ? "rgba(17, 17, 17,0.12)" : "#FFFFFF",
                     border: active ? "1px solid rgba(17, 17, 17,0.3)" : "1px solid transparent",
                   }}
                 >

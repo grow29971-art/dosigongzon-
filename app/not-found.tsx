@@ -12,7 +12,7 @@ export default function NotFound() {
     <div
       className="min-h-screen flex flex-col items-center justify-center px-6 py-12"
       style={{
-        background: "#F6EFE3",
+        background: "#F2F2F2",
       }}
     >
       <div
@@ -87,8 +87,8 @@ export default function NotFound() {
                 href="/map"
                 className="py-2.5 rounded-2xl text-[13px] font-bold press"
                 style={{
-                  background: "#F7F4EE",
-                  color: "#A38E7A",
+                  background: "#FFFFFF",
+                  color: "#8A8A8A",
                   border: "1px solid var(--color-divider)",
                 }}
               >
@@ -98,8 +98,8 @@ export default function NotFound() {
                 href="/protection"
                 className="py-2.5 rounded-2xl text-[13px] font-bold press"
                 style={{
-                  background: "#F7F4EE",
-                  color: "#A38E7A",
+                  background: "#FFFFFF",
+                  color: "#8A8A8A",
                   border: "1px solid var(--color-divider)",
                 }}
               >
@@ -109,8 +109,8 @@ export default function NotFound() {
                 href="/community"
                 className="py-2.5 rounded-2xl text-[13px] font-bold press"
                 style={{
-                  background: "#F7F4EE",
-                  color: "#A38E7A",
+                  background: "#FFFFFF",
+                  color: "#8A8A8A",
                   border: "1px solid var(--color-divider)",
                 }}
               >
@@ -120,8 +120,8 @@ export default function NotFound() {
                 href="/guide"
                 className="py-2.5 rounded-2xl text-[13px] font-bold press"
                 style={{
-                  background: "#F7F4EE",
-                  color: "#A38E7A",
+                  background: "#FFFFFF",
+                  color: "#8A8A8A",
                   border: "1px solid var(--color-divider)",
                 }}
               >

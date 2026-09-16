@@ -9,7 +9,7 @@ const SW = 1.4;
 export function NavHomeIcon({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <path d="M4 11.5 12 4l8 7.5" stroke={STROKE} strokeWidth={SW} strokeLinejoin="round" fill="#FFF6E8" />
+      <path d="M4 11.5 12 4l8 7.5" stroke={STROKE} strokeWidth={SW} strokeLinejoin="round" fill="#F2F2F2" />
       <path d="M5.5 10.5V19a1 1 0 0 0 1 1H9.5v-4.5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V20h3a1 1 0 0 0 1-1v-8.5"
         stroke={STROKE} strokeWidth={SW} strokeLinejoin="round" fill="#FFFDF8" />
       <path d="M4 11.5 12 4l8 7.5" stroke="#E14B3C" strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round" fill="none" />

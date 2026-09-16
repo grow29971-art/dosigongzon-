@@ -98,7 +98,7 @@ export default function AdminAnnouncementPage() {
   return (
     <div
       className="px-4 pt-12 pb-24 max-w-2xl mx-auto"
-      style={{ background: "#F7F4EE", minHeight: "100dvh" }}
+      style={{ background: "#FFFFFF", minHeight: "100dvh" }}
     >
       <div className="flex items-center gap-3 mb-6">
         <Link
@@ -128,7 +128,7 @@ export default function AdminAnnouncementPage() {
         {current ? (
           <div
             className="rounded-2xl bg-white p-4 text-[13px] whitespace-pre-wrap"
-            style={{ border: "1px solid var(--color-divider)", color: "#3D2F25" }}
+            style={{ border: "1px solid var(--color-divider)", color: "#2A2A2A" }}
           >
             {current.body}
             <button
@@ -144,7 +144,7 @@ export default function AdminAnnouncementPage() {
         ) : (
           <div
             className="rounded-2xl p-4 text-[13px] text-center"
-            style={{ background: "#F1ECE4", color: "rgba(60,46,35,0.5)" }}
+            style={{ background: "#EBEBEB", color: "rgba(60,46,35,0.5)" }}
           >
             표시 중인 공지가 없어요.
           </div>
@@ -166,7 +166,7 @@ export default function AdminAnnouncementPage() {
           style={{
             border: "1px solid var(--color-divider)",
             boxShadow: "inset 0 1px 2px rgba(0,0,0,0.02)",
-            color: "#3D2F25",
+            color: "#2A2A2A",
           }}
         />
       </section>

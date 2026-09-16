@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function AccountDeletionPage() {
   return (
-    <div className="pb-16" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
+    <div className="pb-16" style={{ background: "#FFFFFF", minHeight: "100vh" }}>
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link

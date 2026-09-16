@@ -277,7 +277,7 @@ export default function AdminTipsPage() {
               className="w-7 h-7 rounded-lg flex items-center justify-center press-strong"
               style={{ backgroundColor: "var(--color-gray-100)" }}
             >
-              <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
+              <X size={13} style={{ color: "#8A8A8A" }} strokeWidth={3} />
             </button>
           </div>
 
@@ -338,7 +338,7 @@ export default function AdminTipsPage() {
                 style={{
                   backgroundColor: "var(--color-gray-50)",
                   border: "1.5px dashed #C9BDAA",
-                  color: "#A38E7A",
+                  color: "#8A8A8A",
                 }}
               >
                 {uploadingImage ? (
@@ -382,7 +382,7 @@ export default function AdminTipsPage() {
             className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-3 resize-y"
             style={{
               backgroundColor: "var(--color-gray-50)",
-              color: "#2A2A28",
+              color: "#2A2A2A",
               border: "1px solid var(--color-border)",
               fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, monospace",
               minHeight: 280,
@@ -463,7 +463,7 @@ export default function AdminTipsPage() {
             className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-3"
             style={{
               backgroundColor: "var(--color-gray-50)",
-              color: "#2A2A28",
+              color: "#2A2A2A",
               border: "1px solid var(--color-border)",
             }}
           />
@@ -487,7 +487,7 @@ export default function AdminTipsPage() {
               onClick={handleCancel}
               disabled={saving}
               className="px-5 py-2.5 rounded-xl text-[13px] font-bold"
-              style={{ backgroundColor: "var(--color-gray-100)", color: "#A38E7A" }}
+              style={{ backgroundColor: "var(--color-gray-100)", color: "#8A8A8A" }}
             >
               취소
             </button>
@@ -525,7 +525,7 @@ export default function AdminTipsPage() {
                 ) : (
                   <div
                     className="w-16 h-16 rounded-xl shrink-0 flex items-center justify-center"
-                    style={{ background: "#F2EBE0" }}
+                    style={{ background: "#EBEBEB" }}
                   >
                     <Sparkles size={20} className="text-primary opacity-60" />
                   </div>
@@ -569,7 +569,7 @@ export default function AdminTipsPage() {
                   href={`/tips/${item.slug}`}
                   target="_blank"
                   className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold"
-                  style={{ backgroundColor: "#F2EBE0", color: "#8B6F4E" }}
+                  style={{ backgroundColor: "#EBEBEB", color: "#8B6F4E" }}
                 >
                   <ExternalLink size={12} /> 보기
                 </Link>
@@ -632,7 +632,7 @@ function Input({
       className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-1 disabled:opacity-50 disabled:cursor-not-allowed"
       style={{
         backgroundColor: "var(--color-gray-50)",
-        color: "#2A2A28",
+        color: "#2A2A2A",
         border: "1px solid var(--color-border)",
       }}
     />

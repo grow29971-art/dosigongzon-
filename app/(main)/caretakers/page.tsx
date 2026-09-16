@@ -42,7 +42,7 @@ export default async function CaretakersPage() {
   const caretakers = await listNearbyCaretakersServer(user.id);
 
   return (
-    <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
+    <div className="pb-24 min-h-screen" style={{ background: "#FFFFFF" }}>
       {/* 헤더 */}
       <div className="px-5 pt-12 pb-5">
         <Link
@@ -121,7 +121,7 @@ function CaretakerCard({
         <Link
           href={`/users/${caretaker.id}`}
           className="shrink-0 w-12 h-12 rounded-full overflow-hidden bg-surface-alt flex items-center justify-center"
-          style={{ border: "1.5px solid #E5E0D6" }}
+          style={{ border: "1.5px solid #E0E0E0" }}
         >
           {avatar ? (
             <Image

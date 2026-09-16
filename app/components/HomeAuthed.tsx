@@ -113,7 +113,7 @@ const WEATHER_ICONS: Record<string, typeof Sun> = {
 function getTempColor(temp: number): string {
   if (temp <= 0) return "#5B7A8F";
   if (temp <= 10) return "#7A9BB0";
-  if (temp <= 20) return "#2A2A28";
+  if (temp <= 20) return "#2A2A2A";
   if (temp <= 30) return "var(--color-primary)";
   return "#B84545";
 }

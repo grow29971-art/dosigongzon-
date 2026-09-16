@@ -27,7 +27,7 @@ export default function HomeStreakCard({
   const accent =
     s >= 30 ? "#D85555" :
     s >= 7  ? "#E88D5A" :
-    s >= 1  ? "var(--color-primary)" : "#A38E7A";
+    s >= 1  ? "var(--color-primary)" : "#8A8A8A";
   const headline = s === 0
     ? (hasToday ? "오늘 돌봄을 시작했어요" : "오늘 첫 돌봄을 기록해보세요")
     : hasToday
@@ -145,7 +145,7 @@ export default function HomeStreakCard({
                   >
                     {done ? "✓" : ""}
                   </div>
-                  <span className="text-[9px] font-bold" style={{ color: isToday ? accent : "#A38E7A" }}>
+                  <span className="text-[9px] font-bold" style={{ color: isToday ? accent : "#8A8A8A" }}>
                     {dayLabels[i]}
                   </span>
                 </div>

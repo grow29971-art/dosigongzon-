@@ -113,11 +113,11 @@ function SearchPageInner() {
     data.counts.cats + data.counts.posts + data.counts.hospitals + data.counts.guides;
 
   return (
-    <div className="min-h-dvh pb-20" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-20" style={{ background: "#FFFFFF" }}>
       {/* ── 상단 검색 바 ── */}
       <div
         className="sticky top-0 z-30 px-4 pt-12 pb-3"
-        style={{ background: "#F7F4EE", borderBottom: "1px solid var(--color-divider)" }}
+        style={{ background: "#FFFFFF", borderBottom: "1px solid var(--color-divider)" }}
       >
         <div className="flex items-center gap-2">
           <button
@@ -172,7 +172,7 @@ function SearchPageInner() {
                 className="shrink-0 px-3 py-1.5 rounded-full text-[13px] font-bold press-strong transition-transform"
                 style={{
                   background: tab === t.key ? "var(--color-primary)" : "#FFFFFF",
-                  color: tab === t.key ? "#FFFFFF" : "#6B5043",
+                  color: tab === t.key ? "#FFFFFF" : "#555555",
                   border: tab === t.key ? "1px solid var(--color-primary)" : "1px solid var(--color-divider)",
                 }}
               >
@@ -252,7 +252,7 @@ function SearchPageInner() {
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<div className="min-h-dvh" style={{ background: "#F7F4EE" }} />}>
+    <Suspense fallback={<div className="min-h-dvh" style={{ background: "#FFFFFF" }} />}>
       <SearchPageInner />
     </Suspense>
   );
@@ -412,7 +412,7 @@ function SectionUsers({ items }: { items: UserHit[] }) {
             >
               <div
                 className="shrink-0 w-10 h-10 rounded-full overflow-hidden bg-surface-alt flex items-center justify-center"
-                style={{ border: "1.5px solid #E5E0D6" }}
+                style={{ border: "1.5px solid #E0E0E0" }}
               >
                 {avatar ? (
                   <Image src={avatar} alt={u.nickname} width={40} height={40} className="object-cover w-full h-full" />

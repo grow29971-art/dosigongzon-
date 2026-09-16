@@ -50,7 +50,7 @@ export default async function MonthlyReportPage({
     `${pickMonthComment(total)}`;
 
   return (
-    <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
+    <div className="pb-24 min-h-screen" style={{ background: "#FFFFFF" }}>
       {/* 헤더 */}
       <div
         className="px-5 pt-12 pb-7"

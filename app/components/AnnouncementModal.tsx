@@ -57,9 +57,9 @@ export default function AnnouncementModal() {
           onClick={dismiss}
           aria-label="닫기"
           className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center press-strong"
-          style={{ background: "#F1ECE4" }}
+          style={{ background: "#EBEBEB" }}
         >
-          <X size={16} style={{ color: "#8B7562" }} />
+          <X size={16} style={{ color: "#6B6B6B" }} />
         </button>
 
         <div
@@ -71,7 +71,7 @@ export default function AnnouncementModal() {
 
         <p
           className="text-[15px] leading-relaxed whitespace-pre-wrap"
-          style={{ color: "#3D2F25" }}
+          style={{ color: "#2A2A2A" }}
         >
           {ann.body}
         </p>

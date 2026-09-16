@@ -25,9 +25,9 @@ export default function FaqOGImage() {
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          background: "linear-gradient(135deg, #F6EFE3 0%, #EADFCB 55%, #DAC4A3 100%)",
+          background: "linear-gradient(135deg, #F2F2F2 0%, #EADFCB 55%, #DAC4A3 100%)",
           fontFamily: "sans-serif",
-          color: "#2C2C2C",
+          color: "#2A2A2A",
           position: "relative",
           padding: "64px 80px",
         }}
@@ -84,7 +84,7 @@ export default function FaqOGImage() {
             ❓
           </div>
           <span
-            style={{ fontSize: 24, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}
+            style={{ fontSize: 24, fontWeight: 900, color: "#2A2A2A", letterSpacing: -0.5 }}
           >
             도시공존 · 자주 묻는 질문
           </span>
@@ -98,7 +98,7 @@ export default function FaqOGImage() {
               fontWeight: 900,
               lineHeight: 1.05,
               letterSpacing: -3,
-              color: "#2C2C2C",
+              color: "#2A2A2A",
               display: "flex",
               flexDirection: "column",
             }}
@@ -156,7 +156,7 @@ export default function FaqOGImage() {
               padding: "10px 22px",
               borderRadius: 999,
               background: "rgba(255,255,255,0.9)",
-              color: "#8B5A3C",
+              color: "#555555",
               fontSize: 20,
               fontWeight: 800,
               border: "2px solid rgba(17, 17, 17,0.3)",

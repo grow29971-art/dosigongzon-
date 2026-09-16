@@ -543,7 +543,7 @@ const SYMPTOM_MATRIX: { symptom: string; emoji: string; suspects: string[] }[] =
 
 const SEVERITY_META = {
   high: { label: "응급/위중", color: "#D85555", bg: "#FDECEC" },
-  mid:  { label: "주의 관찰", color: "#E88D5A", bg: "#FFF1E6" },
+  mid:  { label: "주의 관찰", color: "#E88D5A", bg: "#F2F2F2" },
   low:  { label: "경증",     color: "#6B8E6F", bg: "#E8F4E8" },
 } as const;
 
@@ -774,7 +774,7 @@ export default function DiseaseGuidePage() {
                     {/* 진행 */}
                     <div
                       className="rounded-xl p-3"
-                      style={{ background: "#FFF1E6", border: "1px solid rgba(232,141,90,0.25)" }}
+                      style={{ background: "#F2F2F2", border: "1px solid rgba(232,141,90,0.25)" }}
                     >
                       <p
                         className="text-[11px] font-bold tracking-[0.1em] mb-1.5 flex items-center gap-1"
@@ -947,7 +947,7 @@ export default function DiseaseGuidePage() {
         <Link
           href="/protection/emergency-guide"
           className="px-3 py-2 rounded-xl text-[13px] font-bold press-strong"
-          style={{ background: "#FFF1E6", color: "var(--color-primary)", border: "1px solid rgba(17, 17, 17,0.25)" }}
+          style={{ background: "#F2F2F2", color: "var(--color-primary)", border: "1px solid rgba(17, 17, 17,0.25)" }}
         >
           응급 구조 가이드
         </Link>

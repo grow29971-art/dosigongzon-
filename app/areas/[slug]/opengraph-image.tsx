@@ -53,9 +53,9 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
           padding: "60px 72px",
           background: hasUrgent
             ? "linear-gradient(135deg, #FFF1ED 0%, #FCDED4 55%, #F5B8A5 100%)"
-            : "linear-gradient(135deg, #F6EFE3 0%, #EADFCB 55%, #DAC4A3 100%)",
+            : "linear-gradient(135deg, #F2F2F2 0%, #EADFCB 55%, #DAC4A3 100%)",
           fontFamily: "sans-serif",
-          color: "#2C2C2C",
+          color: "#2A2A2A",
           position: "relative",
         }}
       >
@@ -98,7 +98,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
             style={{
               fontSize: 24,
               fontWeight: 700,
-              color: "#8B5A3C",
+              color: "#555555",
               letterSpacing: 2,
             }}
           >
@@ -120,7 +120,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
             style={{
               fontSize: 44,
               fontWeight: 800,
-              color: "#2C2C2C",
+              color: "#2A2A2A",
               marginTop: 6,
               display: "flex",
             }}
@@ -131,7 +131,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
             <div
               style={{
                 fontSize: 24,
-                color: "#6B5043",
+                color: "#555555",
                 fontWeight: 600,
                 marginTop: 4,
                 display: "flex",
@@ -224,7 +224,7 @@ function Stat({
         style={{
           fontSize: 20,
           fontWeight: 700,
-          color: urgent ? "rgba(255,255,255,0.92)" : "#6B5043",
+          color: urgent ? "rgba(255,255,255,0.92)" : "#555555",
         }}
       >
         {label}

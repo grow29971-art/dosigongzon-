@@ -60,7 +60,7 @@ export default function LegalChecklist({
       </div>
 
       <div className="flex items-center gap-2 mb-4">
-        <div className="flex-1 h-1.5 rounded-full bg-[#E5E0D6] overflow-hidden">
+        <div className="flex-1 h-1.5 rounded-full bg-[#E0E0E0] overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-300"
             style={{ width: `${progress}%`, backgroundColor: iconColor }}

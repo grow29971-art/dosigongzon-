@@ -45,7 +45,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
     QRCode.toCanvas(canvas, targetUrl, {
       width: 320,
       margin: 2,
-      color: { dark: "#3D2F25", light: "#FFFFFF" },
+      color: { dark: "#2A2A2A", light: "#FFFFFF" },
       errorCorrectionLevel: "M",
     })
       .then(() => {
@@ -88,10 +88,10 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
           <title>${safeName} 도시공존 QR</title>
           <style>
             body { font-family: 'Apple SD Gothic Neo', sans-serif; text-align: center; padding: 32px; }
-            h1 { font-size: 20px; margin: 0 0 8px; color: #3D2F25; }
-            p { font-size: 12px; color: #8B7562; margin: 0 0 24px; line-height: 1.6; }
+            h1 { font-size: 20px; margin: 0 0 8px; color: #2A2A2A; }
+            p { font-size: 12px; color: #6B6B6B; margin: 0 0 24px; line-height: 1.6; }
             img { max-width: 320px; width: 100%; }
-            .footer { font-size: 11px; color: #A38E7A; margin-top: 20px; }
+            .footer { font-size: 11px; color: #8A8A8A; margin-top: 20px; }
           </style>
         </head>
         <body>
@@ -140,7 +140,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
         </div>
 
         <div className="px-5 pb-4 flex justify-center">
-          <div className="rounded-2xl p-3" style={{ background: "#F7F4EE" }}>
+          <div className="rounded-2xl p-3" style={{ background: "#FFFFFF" }}>
             <canvas ref={canvasRef} className="block" />
           </div>
         </div>

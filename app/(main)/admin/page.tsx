@@ -248,12 +248,12 @@ export default function AdminDashboardPage() {
   ];
 
   return (
-    <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
+    <div className="pb-24 min-h-screen" style={{ background: "#FFFFFF" }}>
       {/* 헤더 (다크 톤 — 일반 페이지와 구분) */}
       <div
         className="px-5 pt-12 pb-5"
         style={{
-          background: "#2C2C2C",
+          background: "#2A2A2A",
           color: "#fff",
         }}
       >
@@ -300,7 +300,7 @@ export default function AdminDashboardPage() {
             style={{
               background:
                 stats.daysUntilLaunch > 0
-                  ? "linear-gradient(135deg, #FFE8C2 0%, #FFCFB5 60%, #FFB99B 100%)"
+                  ? "linear-gradient(135deg, #EBEBEB 0%, #E0E0E0 60%, #FFB99B 100%)"
                   : "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)",
               boxShadow: "var(--shadow-primary)",
             }}

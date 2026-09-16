@@ -80,7 +80,7 @@ export default function ReactionBar({
             style={{
               background: picked ? `${color}22` : active ? "#FFFFFF" : "transparent",
               border: `1px solid ${picked ? color : "var(--color-gray-200)"}`,
-              color: picked ? color : "#8B7562",
+              color: picked ? color : "#6B6B6B",
             }}
             aria-label={`${emoji} 반응`}
             aria-pressed={picked}

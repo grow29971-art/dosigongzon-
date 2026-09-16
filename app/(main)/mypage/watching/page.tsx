@@ -51,9 +51,9 @@ export default function WatchingPage() {
   };
 
   return (
-    <div className="min-h-dvh pb-6" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-6" style={{ background: "#FFFFFF" }}>
       {/* 헤더 */}
-      <div className="px-4 pt-12 pb-3 flex items-center gap-2 sticky top-0 z-10" style={{ background: "#F7F4EE" }}>
+      <div className="px-4 pt-12 pb-3 flex items-center gap-2 sticky top-0 z-10" style={{ background: "#FFFFFF" }}>
         <Link
           href="/mypage"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"

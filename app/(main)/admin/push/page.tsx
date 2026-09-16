@@ -164,7 +164,7 @@ export default function AdminPushPage() {
       </div>
 
       {/* 미리보기 */}
-      <div className="rounded-2xl p-4 mb-5" style={{ backgroundColor: "#F5F3EE", border: "1px solid rgba(17, 17, 17,0.15)" }}>
+      <div className="rounded-2xl p-4 mb-5" style={{ backgroundColor: "#F7F7F7", border: "1px solid rgba(17, 17, 17,0.15)" }}>
         <p className="text-[11px] font-bold text-text-light mb-2">미리보기</p>
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
@@ -217,7 +217,7 @@ export default function AdminPushPage() {
           }}
           className="w-full text-left px-4 py-2.5 rounded-xl press transition-transform"
           style={{
-            background: "#FFE8C2",
+            background: "#EBEBEB",
             border: "1px solid rgba(17, 17, 17,0.30)",
           }}
         >
@@ -419,7 +419,7 @@ export default function AdminPushPage() {
                 <div
                   key={s.id}
                   className="rounded-2xl px-4 py-3"
-                  style={{ backgroundColor: "#F5F3EE", border: "1px solid rgba(17, 17, 17,0.15)" }}
+                  style={{ backgroundColor: "#F7F7F7", border: "1px solid rgba(17, 17, 17,0.15)" }}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1">

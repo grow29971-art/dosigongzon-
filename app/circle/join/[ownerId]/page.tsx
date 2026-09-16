@@ -74,7 +74,7 @@ export default function CircleJoinPage() {
 
   if (loading || authLoading) {
     return (
-      <div className="min-h-dvh flex items-center justify-center" style={{ background: "#F7F4EE" }}>
+      <div className="min-h-dvh flex items-center justify-center" style={{ background: "#FFFFFF" }}>
         <Loader2 size={28} className="animate-spin text-primary" />
       </div>
     );
@@ -82,7 +82,7 @@ export default function CircleJoinPage() {
 
   if (!user) {
     return (
-      <div className="min-h-dvh px-6 pt-20 text-center" style={{ background: "#F7F4EE" }}>
+      <div className="min-h-dvh px-6 pt-20 text-center" style={{ background: "#FFFFFF" }}>
         <ShieldCheck size={40} className="mx-auto mb-3" style={{ color: "#4F6B53" }} />
         <p className="text-[15px] font-bold text-text-main mb-2">서클 초대 받기</p>
         <p className="text-[13px] text-text-sub mb-5">로그인하시면 초대를 수락할 수 있어요.</p>
@@ -98,7 +98,7 @@ export default function CircleJoinPage() {
 
   if (!ownerProfile) {
     return (
-      <div className="min-h-dvh px-6 pt-20 text-center" style={{ background: "#F7F4EE" }}>
+      <div className="min-h-dvh px-6 pt-20 text-center" style={{ background: "#FFFFFF" }}>
         <p className="text-[15px] text-text-sub mb-3">유효하지 않은 초대 링크예요.</p>
         <Link href="/mypage/circle" className="text-primary text-[13px] font-bold">
           내 서클로 이동
@@ -109,7 +109,7 @@ export default function CircleJoinPage() {
 
   if (isSelf) {
     return (
-      <div className="min-h-dvh px-6 pt-20 text-center" style={{ background: "#F7F4EE" }}>
+      <div className="min-h-dvh px-6 pt-20 text-center" style={{ background: "#FFFFFF" }}>
         <ShieldCheck size={40} className="mx-auto mb-3" style={{ color: "#4F6B53" }} />
         <p className="text-[15px] text-text-sub mb-3">본인의 초대 링크예요.</p>
         <p className="text-[13px] text-text-light mb-5">이 링크를 카카오톡으로 공유해 이웃을 초대해보세요.</p>
@@ -121,7 +121,7 @@ export default function CircleJoinPage() {
   }
 
   return (
-    <div className="min-h-dvh px-6 pt-14 pb-10" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh px-6 pt-14 pb-10" style={{ background: "#FFFFFF" }}>
       <div className="flex items-center gap-2 mb-6">
         <Link
           href="/mypage/circle"
@@ -195,7 +195,7 @@ export default function CircleJoinPage() {
               onClick={handleReject}
               disabled={busy}
               className="flex-1 py-3 rounded-2xl text-[15px] font-bold press-strong disabled:opacity-50"
-              style={{ background: "var(--color-gray-100)", color: "#8B7562" }}
+              style={{ background: "var(--color-gray-100)", color: "#6B6B6B" }}
             >
               <X size={14} className="inline mr-1" /> 거절
             </button>

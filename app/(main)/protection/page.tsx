@@ -359,7 +359,7 @@ export default function ProtectionPage() {
         style={{
           background: progress.read === progress.total
             ? "linear-gradient(135deg, #E8F4E8 0%, #D5EDD5 100%)"
-            : "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
+            : "linear-gradient(135deg, #F2F2F2 0%, #FCEFD9 100%)",
           border: `1px solid ${progress.read === progress.total ? "rgba(34,163,102,0.2)" : "rgba(17, 17, 17,0.18)"}`,
         }}
       >

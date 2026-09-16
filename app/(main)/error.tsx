@@ -22,7 +22,7 @@ export default function MainError({
   return (
     <div
       className="min-h-dvh flex items-center justify-center px-6"
-      style={{ background: "#F7F4EE" }}
+      style={{ background: "#FFFFFF" }}
     >
       <div
         className="w-full max-w-sm rounded-3xl bg-white p-7 text-center"

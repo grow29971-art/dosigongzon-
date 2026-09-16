@@ -103,7 +103,7 @@ function LogoCard({ href, label, filename }: { href: string; label: string; file
       href={href}
       download={filename}
       className="flex flex-col items-center gap-1 py-3 rounded-xl press-strong transition-transform"
-      style={{ background: "#FFF8F2", border: "1px solid rgba(17, 17, 17,0.20)" }}
+      style={{ background: "#F2F2F2", border: "1px solid rgba(17, 17, 17,0.20)" }}
     >
       <div
         className="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -113,7 +113,7 @@ function LogoCard({ href, label, filename }: { href: string; label: string; file
           backgroundPosition: "center",
         }}
       />
-      <span className="text-[11px] font-bold mt-0.5" style={{ color: "#8B5A3C" }}>
+      <span className="text-[11px] font-bold mt-0.5" style={{ color: "#555555" }}>
         {label}
       </span>
       <Download size={10} style={{ color: "var(--color-primary)" }} />

@@ -57,7 +57,7 @@ export const REPORT_STATUS_COLORS: Record<ReportStatus, string> = {
   pending: "#C9A961",
   reviewed: "#4A7BA8",
   resolved: "#6B8E6F",
-  dismissed: "#A38E7A",
+  dismissed: "#8A8A8A",
 };
 
 export interface CreateReportInput {
@@ -203,7 +203,7 @@ export const INQUIRY_STATUS_LABELS: Record<InquiryStatus, string> = {
 export const INQUIRY_STATUS_COLORS: Record<InquiryStatus, string> = {
   pending: "#C9A961",
   replied: "#6B8E6F",
-  closed: "#A38E7A",
+  closed: "#8A8A8A",
 };
 
 export interface CreateInquiryInput {

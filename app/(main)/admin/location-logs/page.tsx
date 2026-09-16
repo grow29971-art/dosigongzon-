@@ -52,12 +52,12 @@ export default function LocationLogsPage() {
   const longMoves = rows.filter((r) => (r.distance_m ?? 0) >= 500);
 
   return (
-    <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
+    <div className="pb-24 min-h-screen" style={{ background: "#FFFFFF" }}>
       {/* 헤더 */}
       <div
         className="px-5 pt-12 pb-5"
         style={{
-          background: "#2C2C2C",
+          background: "#2A2A2A",
           color: "#fff",
         }}
       >
@@ -145,7 +145,7 @@ export default function LocationLogsPage() {
                       className="px-2 py-1 chip-square font-bold"
                       style={{
                         background: "var(--color-gray-50)",
-                        color: "#A38E7A",
+                        color: "#8A8A8A",
                       }}
                     >
                       {r.old_region ?? "?"}
@@ -158,7 +158,7 @@ export default function LocationLogsPage() {
                       className="px-2 py-1 chip-square font-bold"
                       style={{
                         background: dongChanged ? "#FFF2E8" : "var(--color-gray-50)",
-                        color: dongChanged ? "var(--color-primary)" : "#A38E7A",
+                        color: dongChanged ? "var(--color-primary)" : "#8A8A8A",
                       }}
                     >
                       {r.new_region ?? "?"}

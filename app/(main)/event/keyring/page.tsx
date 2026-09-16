@@ -132,7 +132,7 @@ export default function KeyringEventPage() {
   const isLoadingCats = myCats === null;
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "#FFFFFF" }}>
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-3 flex items-center gap-3">
         <Link
@@ -154,7 +154,7 @@ export default function KeyringEventPage() {
         <div
           className="rounded-2xl p-4"
           style={{
-            background: "#FFF8F2",
+            background: "#F2F2F2",
             border: "1.5px solid rgba(17, 17, 17,0.25)",
           }}
         >
@@ -213,7 +213,7 @@ export default function KeyringEventPage() {
             className="rounded-2xl p-6 text-center"
             style={{
               background: done ? "#E8ECE5" : "var(--color-warning-soft)",
-              border: `1px solid ${done ? "#D6DCD2" : "#F5DAB0"}`,
+              border: `1px solid ${done ? "#D6DCD2" : "#E0E0E0"}`,
             }}
           >
             {done ? (

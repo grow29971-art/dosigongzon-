@@ -51,9 +51,9 @@ export default async function OpengraphImage() {
           display: "flex",
           flexDirection: "column",
           padding: "60px 72px",
-          background: "linear-gradient(135deg, #F6EFE3 0%, #EADFCB 55%, #DAC4A3 100%)",
+          background: "linear-gradient(135deg, #F2F2F2 0%, #EADFCB 55%, #DAC4A3 100%)",
           fontFamily: "sans-serif",
-          color: "#2C2C2C",
+          color: "#2A2A2A",
           position: "relative",
         }}
       >
@@ -103,7 +103,7 @@ export default async function OpengraphImage() {
               <span style={{ fontSize: 20, fontWeight: 700, color: "#000000", letterSpacing: 3 }}>
                 DOSI GONGZON
               </span>
-              <span style={{ fontSize: 38, fontWeight: 900, color: "#2C2C2C", marginTop: -2 }}>
+              <span style={{ fontSize: 38, fontWeight: 900, color: "#2A2A2A", marginTop: -2 }}>
                 도시공존
               </span>
             </div>
@@ -154,7 +154,7 @@ export default async function OpengraphImage() {
               fontWeight: 900,
               lineHeight: 1.15,
               letterSpacing: -2,
-              color: "#2C2C2C",
+              color: "#2A2A2A",
               display: "flex",
               flexDirection: "column",
             }}
@@ -224,7 +224,7 @@ function StatCard({
           {value.toLocaleString()}
         </span>
       </div>
-      <span style={{ fontSize: 20, fontWeight: 700, color: "#6B5043" }}>{label}</span>
+      <span style={{ fontSize: 20, fontWeight: 700, color: "#555555" }}>{label}</span>
     </div>
   );
 }

@@ -11,7 +11,7 @@ export default function LegalGuideOG() {
     (
       <GuideOGTemplate
         badge="⚖️ 법률"
-        badgeColor="#2C2C2C"
+        badgeColor="#2A2A2A"
         title="길고양이와 법"
         highlightText="법"
         highlightColor="#D85555"
