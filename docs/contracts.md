@@ -48,13 +48,20 @@
 - 소비자: 데스크톱 앱「도시공존 커뮤니티봇」(`C:\Users\grow2\community-bot`, Electron 포터블).
 - 인증: `Authorization: Bearer <COMMUNITY_BOT_SECRET>` — Vercel 에 그 변수가 없으면 `CRON_SECRET` 을
   겸용한다(도입 초기). 전용 시크릿을 넣으면 크론 시크릿과 분리된다.
-- `GET personas` → `{ ok, personas:[{id,nickname,voice,writesPosts}], stats:{postsToday,commentsToday,postsCap,commentsCap,recentBotTitles,...} }`
+- **닉네임 규칙(사장님 2026-09-16)**: 글·댓글 닉네임은 `NICKNAME_POOL`(`lib/community-personas.ts`, 40개)에서
+  매번 랜덤. 말투는 닉네임 해시로 고정(`voiceFor`). 봇 글에 달린 이용자 댓글에 답할 때는 **그 글의 작성자 닉네임**을
+  서버가 강제한다(`reply`). 봇 판정은 이름이 아니라 `author_title='staff'`(+구 명의).
+- `GET personas` → `{ ok, nicknames:[...], voices:[{id,voice}], personas:[...구버전 호환], stats:{postsToday,commentsToday,repliesToday,postsCap,commentsCap,repliesCap,recentBotTitles,recentNicknames,...} }`
 - `GET candidates?minAgeHours=1&limit=10` → `{ ok, candidates:[{id,title,content,authorName,commentCount,createdAt}] }`
   (자유게시판·숨김 아님·봇 글 아님·운영 댓글 없음·1시간~7일).
-- `POST post` `{personaId,title,content}` → `{ ok, postId, url }`. 자유게시판 고정, 운영 배지 강제,
-  하루 3개 상한(429), 같은 제목 중복(409), 링크 금지(400).
-- `POST comment` `{personaId,postId,body}` → `{ ok, commentId, pushed, pushFailed, url }`. free 유저 글에만,
+- `POST post` `{nickname,title,content}` → `{ ok, postId, nickname, url }`. 자유게시판 고정, 운영 배지 강제,
+  하루 3개 상한(429), 같은 제목 중복(409), 링크 금지(400). 닉네임은 풀에 있거나 한글·영문·숫자 2~12자.
+- `POST comment` `{nickname,postId,body}` → `{ ok, commentId, nickname, pushed, pushFailed, url }`. free 이용자 글에만,
   글당 운영 댓글 1개(409), 하루 10개 상한(429). 글쓴이 푸시는 4절 페이로드 계약.
+- `GET reply-candidates?limit=10` → `{ ok, candidates:[{commentId,postId,postTitle,postNickname,postExcerpt,authorName,body,createdAt}] }`
+  (최근 14일 봇 글의 이용자 댓글 중 운영 답글 없는 것).
+- `POST reply` `{postId,parentId,body}` → `{ ok, commentId, nickname, pushed, pushFailed, url }`. 닉네임은 글 작성자로 고정,
+  댓글당 답글 1개(409), 하루 20개 상한(429). 댓글쓴이 푸시.
 - `GET metrics?postIds=a,b&commentIds=x,y` → `{ ok, posts:[{id,viewCount,likeCount,commentCount,createdAt,replies:[{authorName,body,createdAt}]}], comments:[{id,postId,createdAt,repliesAfter,authorReplied}] }`
   (각 50개까지. replies 는 운영·비밀 댓글을 뺀 최신 8개). exe 의 회고(자가 학습) 루프가 1·6·24·72·168시간 뒤에 부른다.
 - 공통 실패: `{ ok:false, error }` + 4xx/5xx. 텍스트 생성은 exe 쪽(Claude)이 하고 서버는 검증·저장만 한다.

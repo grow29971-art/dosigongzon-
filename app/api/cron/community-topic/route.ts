@@ -1,18 +1,15 @@
 // 운영 페르소나 커뮤니티 이야깃거리 — Vercel Cron 월·수·금 09:30 KST (00:30 UTC)
 // 배경: 커뮤니티 글이 끊기면(최근 7일 0건 관측) 신규 유저가 "죽은 앱"으로 인식.
 // 페르소나(lib/community-personas.ts)가 돌아가며 자유게시판에 가벼운 주제를 올려 마중물 역할.
-// 2026-09-16: "AI 집사 나비" 단일 명의 → 페르소나 로테이션. 글에는 반드시 "운영" 배지(author_title=staff).
+// 2026-09-16: "AI 집사 나비" 단일 명의 → 닉네임 풀에서 매번 랜덤(최근 것 피함), 말투는 닉네임 해시로 고정. 글에는 반드시 "운영" 배지(author_title=staff).
 // Gemini 실패/미설정 시 페르소나별 큐레이션 폴백. 최근 40시간 내 봇 글 있으면 스킵(중복 방지).
 
 import { createServiceClient } from "@/lib/supabase/service";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import {
-  ALL_BOT_NAMES,
-  PERSONAS,
-  STAFF_TITLE_ID,
-  pickPersona,
-  type Persona,
-} from "@/lib/community-personas";
+import { LEGACY_BOT_NAMES, STAFF_TITLE_ID, personaFor, pickRandomNickname, type Persona } from "@/lib/community-personas";
+
+/** 봇 글 = 운영 배지 또는 구 명의 (닉네임은 풀에서 매번 랜덤이라 이름으로 판정하지 않는다) */
+const BOT_OR = `author_title.eq.${STAFF_TITLE_ID},author_name.in.(${LEGACY_BOT_NAMES.map((n) => `"${n}"`).join(",")})`;
 
 export const maxDuration = 60;
 
@@ -88,7 +85,7 @@ export async function POST(request: Request) {
   const { data: recentBot } = await supabase
     .from("posts")
     .select("id")
-    .in("author_name", ALL_BOT_NAMES)
+    .or(BOT_OR)
     .gte("created_at", since)
     .limit(1);
   if (recentBot && recentBot.length > 0) {
@@ -100,7 +97,8 @@ export async function POST(request: Request) {
   const { count: recentUserPosts } = await supabase
     .from("posts")
     .select("*", { count: "exact", head: true })
-    .not("author_name", "in", `(${ALL_BOT_NAMES.map((n) => `"${n}"`).join(",")})`)
+    .or(`author_title.is.null,author_title.neq.${STAFF_TITLE_ID}`)
+    .not("author_name", "in", `(${LEGACY_BOT_NAMES.map((n) => `"${n}"`).join(",")})`)
     .gte("created_at", day);
   if ((recentUserPosts ?? 0) >= 3) {
     return Response.json({ ok: true, skipped: "커뮤니티 활성 상태" });
@@ -112,19 +110,15 @@ export async function POST(request: Request) {
     return Response.json({ ok: false, error: "admins 없음" }, { status: 500 });
   }
 
-  // 페르소나 로테이션: 직전 봇 글과 다른 글 담당 페르소나
+  // 닉네임: 풀에서 랜덤, 최근 봇 글 8개의 닉네임은 피한다. 말투는 닉네임 해시로 고정(personaFor)
   const { data: lastBotPosts } = await supabase
     .from("posts")
     .select("author_name, title")
-    .in("author_name", ALL_BOT_NAMES)
+    .or(BOT_OR)
     .order("created_at", { ascending: false })
     .limit(8);
-  const lastAuthor = (lastBotPosts?.[0] as { author_name: string } | undefined)?.author_name ?? "";
-  const writers = PERSONAS.filter((p) => p.writesPosts);
-  const persona =
-    writers.length > 1
-      ? pickPersona(new Date().toISOString().slice(0, 10), (p) => p.writesPosts && p.nickname !== lastAuthor)
-      : writers[0];
+  const recentNames = ((lastBotPosts ?? []) as { author_name: string | null }[]).map((p) => p.author_name ?? "");
+  const persona = personaFor(pickRandomNickname(recentNames));
   const recentTitles = ((lastBotPosts ?? []) as { title: string }[]).map((p) => p.title);
 
   const topic = await generateTopic(persona, recentTitles);
@@ -151,7 +145,8 @@ export async function POST(request: Request) {
   return Response.json({
     ok: true,
     postId: (post as { id: string }).id,
-    persona: persona.id,
+    nickname: persona.nickname,
+    voice: persona.id,
     source: topic.source,
     title: topic.title,
   });

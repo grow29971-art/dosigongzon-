@@ -11,7 +11,7 @@
 import webpush from "web-push";
 import { createServiceClient } from "@/lib/supabase/service";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { ALL_BOT_NAMES, STAFF_TITLE_ID, pickPersona, type Persona } from "@/lib/community-personas";
+import { STAFF_TITLE_ID, isBotAuthor, personaFor, pickRandomNickname, type Persona } from "@/lib/community-personas";
 
 export const maxDuration = 60;
 
@@ -23,6 +23,7 @@ interface PostRow {
   content: string;
   author_id: string | null;
   author_name: string | null;
+  author_title: string | null;
   comment_count: number;
   created_at: string;
 }
@@ -94,7 +95,7 @@ async function handle(request: Request): Promise<Response> {
   const to = new Date(Date.now() - 2 * 3600 * 1000).toISOString();
   const { data: rows, error: qErr } = await supabase
     .from("posts")
-    .select("id, title, content, author_id, author_name, comment_count, created_at")
+    .select("id, title, content, author_id, author_name, author_title, comment_count, created_at")
     .eq("category", "free")
     .eq("hidden", false)
     .eq("is_pinned", false)
@@ -107,7 +108,7 @@ async function handle(request: Request): Promise<Response> {
   if (qErr) {
     return Response.json({ ok: false, error: qErr.message }, { status: 500 });
   }
-  const userPosts = ((rows ?? []) as PostRow[]).filter((p) => !ALL_BOT_NAMES.includes(p.author_name ?? ""));
+  const userPosts = ((rows ?? []) as PostRow[]).filter((p) => !isBotAuthor(p));
   if (userPosts.length === 0) {
     return Response.json({ ok: true, skipped: "대상 글 없음" });
   }
@@ -130,7 +131,14 @@ async function handle(request: Request): Promise<Response> {
   }
   const adminId = (admins[0] as { user_id: string }).user_id;
 
-  const persona = pickPersona(target.id);
+  // 닉네임은 풀에서 랜덤(최근 운영 댓글 닉네임은 피함), 말투는 닉네임 해시로 고정
+  const { data: recentStaffNames } = await supabase
+    .from("post_comments")
+    .select("author_name")
+    .eq("author_title", STAFF_TITLE_ID)
+    .order("created_at", { ascending: false })
+    .limit(8);
+  const persona = personaFor(pickRandomNickname(((recentStaffNames ?? []) as { author_name: string | null }[]).map((c) => c.author_name ?? "")));
   const comment = await generateComment(persona, target);
 
   const { data: inserted, error: insErr } = await supabase
@@ -193,7 +201,8 @@ async function handle(request: Request): Promise<Response> {
     ok: true,
     postId: target.id,
     commentId: (inserted as { id: string }).id,
-    persona: persona.id,
+    nickname: persona.nickname,
+    voice: persona.id,
     source: comment.source,
     pushed,
     pushFailed,

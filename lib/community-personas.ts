@@ -1,29 +1,29 @@
 // ══════════════════════════════════════════
 // 도시공존 — 커뮤니티 운영 페르소나 (2026-09-16)
-// 글·댓글 자동 작성 크론(community-topic / community-comment)이 쓰는 닉네임·말투·폴백 문구.
+// 글·댓글 자동 작성(크론 community-topic / community-comment, exe 커뮤니티봇)이 쓰는 닉네임·말투·폴백 문구.
 // 규칙: 페르소나 글·댓글은 반드시 author_title = STAFF_TITLE_ID("운영" 배지)로 저장한다.
 //       배지 없이 사람인 척 쓰는 경로는 만들지 않는다(docs/business-rules.md 커뮤니티 절).
+// 2026-09-16 (사장님): 닉네임은 고정 3개가 아니라 풀에서 매번 랜덤. 단, 어떤 글의 작성자 닉네임으로
+//       올라간 글에 봇이 답글을 달 때는 그 글의 작성자 닉네임을 그대로 쓴다(일관성). 말투는 닉네임 해시로 고정.
 // ══════════════════════════════════════════
 
 export const STAFF_TITLE_ID = "staff";
 
 export interface Persona {
+  /** 말투 id (voice id) */
   id: string;
   nickname: string;
-  /** Gemini 프롬프트에 넣는 말투·관심사 설명 */
+  /** Gemini/Claude 프롬프트에 넣는 말투·관심사 설명 */
   voice: string;
-  /** 글 작성 담당 여부 */
   writesPosts: boolean;
-  /** 글 폴백(Gemini 실패 시) */
   fallbackPosts: { title: string; content: string }[];
-  /** 댓글 폴백 */
   fallbackComments: string[];
 }
 
-export const PERSONAS: Persona[] = [
+/** 말투 3종 — 닉네임마다 해시로 하나가 고정된다 */
+export const VOICES: Omit<Persona, "nickname">[] = [
   {
-    id: "nabi",
-    nickname: "집사 나비",
+    id: "warm",
     voice:
       "다정하고 수다스러운 동네 길집사. 고양이 이야기를 꺼내 이웃의 경험담을 묻는 걸 좋아함. 존댓말, 이모지 1~2개, 질문형으로 끝냄.",
     writesPosts: true,
@@ -57,8 +57,7 @@ export const PERSONAS: Persona[] = [
     ],
   },
   {
-    id: "golmok",
-    nickname: "골목지기",
+    id: "practical",
     voice:
       "몇 년째 급식소를 돌보는 실전파 길집사. 급식·쉼터·TNR 같은 실용 팁을 짧고 담백하게 나눔. 존댓말, 이모지는 거의 안 씀, 경험담 한 줄 + 질문 한 줄.",
     writesPosts: true,
@@ -92,36 +91,74 @@ export const PERSONAS: Persona[] = [
     ],
   },
   {
-    id: "cheese",
-    nickname: "치즈네이모",
+    id: "cheer",
     voice:
-      "치즈 고양이 세 마리를 돌보는 따뜻한 이웃. 글쓴이를 응원하고 공감하는 짧은 댓글을 남김. 존댓말, 이모지 1개, 40~90자, 질문은 가끔만.",
-    writesPosts: false,
-    fallbackPosts: [],
+      "고양이 여러 마리를 돌보는 따뜻한 이웃. 글쓴이를 응원하고 공감하는 짧은 말을 남김. 존댓말, 이모지 1개, 질문은 가끔만.",
+    writesPosts: true,
+    fallbackPosts: [
+      {
+        title: "오늘 밥자리에서 있었던 작은 일 하나씩만 🧡",
+        content:
+          "저는 오늘 물그릇 갈아주다가 아이가 발등에 앉아서 한참을 못 움직였어요.\n대단한 일 아니어도 좋아요. 오늘 밥자리에서 있었던 작은 일, 한 줄씩만 들려주세요.",
+      },
+      {
+        title: "우리 동네 고양이는 ___ 할 때 제일 귀엽다",
+        content:
+          "저는 '밥 먹다 말고 고개 들어 쳐다볼 때'요.\n빈칸을 채워 주세요. 다들 어떤 순간이 제일 귀여우세요?",
+      },
+    ],
     fallbackComments: [
       "고생 많으셨어요. 아이들이 다 알아줄 거예요 🧡",
       "글 읽으니까 마음이 따뜻해지네요. 오늘도 힘내세요!",
-      "저희 동네 치즈들도 요즘 그래요 😺 다들 잘 지내길!",
+      "저희 동네 아이들도 요즘 그래요 😺 다들 잘 지내길!",
       "덕분에 좋은 정보 얻어가요. 감사합니다 🙏",
     ],
   },
 ];
 
-export const PERSONA_NICKNAMES = PERSONAS.map((p) => p.nickname);
+/** 닉네임 풀 — 매번 여기서 랜덤. 최근 쓴 것은 피한다. */
+export const NICKNAME_POOL = [
+  "집사 나비", "골목지기", "치즈네이모", "나무지기", "담벼락집사", "밥자리지기", "새벽급식러", "옥탑방집사",
+  "마당냥이엄마", "골목냥이아빠", "물그릇당번", "쉼터지기", "동네순찰냥", "캔따개", "츄르배달부", "고등어네",
+  "삼색이집사", "까망이네", "턱시도네", "노랑이엄마", "회색냥이삼촌", "골목길산책", "빌라뒷마당", "주차장지기",
+  "편의점앞집사", "놀이터냥이", "장독대집사", "화단지기", "보일러실냥이", "옆집아줌마", "윗집집사", "경비실친구",
+  "밤산책러", "새벽집사", "퇴근길집사", "우산집사", "털뭉치네", "냥냥펀치", "꼬리흔들", "발도장",
+];
 
-/** 구 봇 명의(2026-07~09). 중복 가드·통계에서 페르소나와 함께 봇으로 취급 */
-export const LEGACY_BOT_NAMES = ["AI 집사 나비"];
-
-export const ALL_BOT_NAMES = [...PERSONA_NICKNAMES, ...LEGACY_BOT_NAMES];
-
-export function isBotAuthorName(name: string | null | undefined): boolean {
-  return !!name && ALL_BOT_NAMES.includes(name);
-}
-
-/** 문자열 해시로 결정적 선택 (같은 글엔 같은 페르소나) */
-export function pickPersona(seed: string, filter: (p: Persona) => boolean = () => true): Persona {
-  const pool = PERSONAS.filter(filter);
+/** 닉네임 → 말투 (해시로 고정. 같은 닉네임은 언제나 같은 말투) */
+export function voiceFor(nickname: string): Omit<Persona, "nickname"> {
   let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
-  return pool[h % pool.length];
+  for (let i = 0; i < nickname.length; i++) h = (h * 31 + nickname.charCodeAt(i)) >>> 0;
+  return VOICES[h % VOICES.length];
 }
+
+export function personaFor(nickname: string): Persona {
+  return { ...voiceFor(nickname), nickname };
+}
+
+/** 풀에서 랜덤 닉네임 (exclude 에 있는 것은 피함. 다 피할 수 없으면 아무거나) */
+export function pickRandomNickname(exclude: string[] = []): string {
+  const pool = NICKNAME_POOL.filter((n) => !exclude.includes(n));
+  const list = pool.length ? pool : NICKNAME_POOL;
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+/** 닉네임 유효성 — 풀에 있거나, 한글·영문·숫자·공백 2~12자 */
+export function isValidBotNickname(name: string): boolean {
+  return NICKNAME_POOL.includes(name) || /^[가-힣A-Za-z0-9 ]{2,12}$/.test(name);
+}
+
+/** 구 페르소나 id → 닉네임 (exe 구버전·문서 호환) */
+export const LEGACY_PERSONA_IDS: Record<string, string> = { nabi: "집사 나비", golmok: "골목지기", cheese: "치즈네이모" };
+
+/** 구 봇 명의(2026-07~09). author_title 이 없던 시절 글의 봇 판정용 */
+export const LEGACY_BOT_NAMES = ["AI 집사 나비", "집사 나비", "골목지기", "치즈네이모"];
+
+/** 봇 판정: 운영 배지가 있거나 구 명의. (닉네임이 풀에 있다고 봇으로 보지 않는다 — 진짜 유저가 같은 닉을 쓸 수 있다) */
+export function isBotAuthor(row: { author_title?: string | null; author_name?: string | null }): boolean {
+  return row.author_title === STAFF_TITLE_ID || (!!row.author_name && LEGACY_BOT_NAMES.includes(row.author_name));
+}
+
+/** @deprecated 크론 통계·문서 호환용. 새 코드는 isBotAuthor 를 쓴다 */
+export const ALL_BOT_NAMES = [...LEGACY_BOT_NAMES];
+export const PERSONAS: Persona[] = LEGACY_BOT_NAMES.slice(1).map(personaFor);
