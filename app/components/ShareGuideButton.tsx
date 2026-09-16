@@ -6,6 +6,7 @@
 import { useState } from "react";
 import { Share2, Check } from "lucide-react";
 import { shareToKakao } from "@/lib/kakao-share";
+import { getPageOgImageUrl } from "@/lib/og-image-url";
 
 interface Props {
   slug: string;           // 예: "emergency-guide"
@@ -25,7 +26,8 @@ export default function ShareGuideButton({ slug, title, description }: Props) {
 
     const origin = window.location.origin;
     const url = `${origin}/protection/${slug}?utm_source=kakao&utm_medium=share&utm_campaign=guide_share`;
-    const imageUrl = `${origin}/protection/${slug}/opengraph-image`;
+    // 각 보호지침 페이지의 og:image(파일 컨벤션 해시 주소) 사용 — 손 조립 주소는 (main) 그룹에서 404
+    const imageUrl = getPageOgImageUrl(`${origin}/opengraph-image`);
 
     const ok = await shareToKakao({
       title,

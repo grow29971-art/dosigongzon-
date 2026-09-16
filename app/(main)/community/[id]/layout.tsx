@@ -34,20 +34,13 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       url: `${SITE_URL}/community/${post.id}`,
       publishedTime: post.createdAt,
       authors: [post.authorName],
-      images: [
-        {
-          url: `/community/${post.id}/opengraph-image`,
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
+      // images 는 같은 폴더의 opengraph-image.tsx(파일 컨벤션)가 해시 주소로 자동 주입한다.
+      // 손 조립 `/community/{id}/opengraph-image` 는 (main) 그룹에서 404 — 덮어쓰지 말 것.
     },
     twitter: {
       card: "summary_large_image",
       title: `${post.title} | ${cat.label}`,
       description,
-      images: [`/community/${post.id}/opengraph-image`],
     },
   };
 }

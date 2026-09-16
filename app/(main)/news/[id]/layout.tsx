@@ -29,15 +29,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       description,
       url: `${SITE_URL}/news/${news.id}`,
       publishedTime: news.created_at,
-      // 동적 OG (헤드라인·이미지·뱃지가 합성된 풍부한 미리보기) — opengraph-image.tsx 위임
-      images: [
-        {
-          url: `${SITE_URL}/news/${news.id}/opengraph-image`,
-          width: 1200,
-          height: 630,
-          alt: news.title,
-        },
-      ],
+      // 동적 OG (헤드라인·이미지·뱃지가 합성된 풍부한 미리보기)는 같은 폴더의 opengraph-image.tsx
+      // (파일 컨벤션)가 해시 주소로 자동 주입한다. 손 조립 `/news/{id}/opengraph-image` 는
+      // (main) 그룹에서 404 — images 로 덮어쓰지 말 것.
     },
   };
 }

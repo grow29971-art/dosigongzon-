@@ -37,8 +37,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
   const url = `${SITE_URL}/tips/${tip.slug}`;
   const description = tip.description || extractTextFromHtml(tip.body, 160);
-  // 동적 OG (제목·썸네일·태그가 합성된 풍부한 미리보기). page 폴더의 opengraph-image.tsx가 이미지를 생성.
-  const image = `${SITE_URL}/tips/${tip.slug}/opengraph-image`;
+  // 동적 OG (제목·썸네일·태그가 합성된 풍부한 미리보기)는 같은 폴더의 opengraph-image.tsx
+  // (파일 컨벤션)가 해시 주소로 자동 주입한다. 손 조립 `/tips/{slug}/opengraph-image` 는
+  // (main) 그룹에서 404 — openGraph/twitter images 로 덮어쓰지 말 것.
 
   return {
     title: tip.title,
@@ -56,20 +57,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       modifiedTime: tip.updated_at,
       authors: ["도시공존"],
       tags: tip.tags,
-      images: [
-        {
-          url: image,
-          width: 1200,
-          height: 630,
-          alt: tip.title,
-        },
-      ],
     },
     twitter: {
       card: "summary_large_image",
       title: tip.title,
       description,
-      images: [image],
     },
   };
 }

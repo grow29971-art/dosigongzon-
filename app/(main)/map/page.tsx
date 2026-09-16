@@ -960,7 +960,11 @@ export default function MapPage() {
     const description = selectedCat.description
       ? selectedCat.description.slice(0, 100)
       : `${selectedCat.region ?? "우리 동네"}에 사는 ${selectedCat.name}을(를) 함께 돌봐주세요 🐾`;
-    const imageUrl = `${window.location.origin}/cats/${selectedCat.id}/opengraph-image`;
+    // 지도 페이지의 og:image 는 지도 것이라 못 쓰고, 손 조립 /cats/{id}/opengraph-image 는 (main) 그룹에서 404.
+    // 고양이 사진(있으면) → 없으면 루트 정적 OG.
+    const imageUrl =
+      (selectedCat.photo_url ? sanitizeImageUrl(selectedCat.photo_url, "") : "") ||
+      `${window.location.origin}/opengraph-image`;
 
     const ok = await shareToKakao({ title, description, imageUrl, url });
     if (!ok) {

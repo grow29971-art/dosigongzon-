@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Share2, Check, Siren } from "lucide-react";
 import { shareToKakao } from "@/lib/kakao-share";
+import { getPageOgImageUrl } from "@/lib/og-image-url";
 
 interface Props {
   catId: string;
@@ -37,7 +38,8 @@ export default function ShareCatButton({ catId, name, region, description, urgen
       : description
       ? description.slice(0, 100)
       : `${region}에 사는 ${name}을(를) 함께 돌봐주세요 🐾`;
-    const imageUrl = `${origin}/cats/${catId}/opengraph-image`;
+    // 고양이 상세의 og:image(파일 컨벤션 해시 주소) 사용 — 손 조립 주소는 (main) 그룹에서 404
+    const imageUrl = getPageOgImageUrl(`${origin}/opengraph-image`);
 
     const ok = await shareToKakao({
       title,

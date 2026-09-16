@@ -35,6 +35,7 @@ import type { Post, PostCategory } from "@/lib/types";
 import { CATEGORY_MAP } from "@/lib/types";
 import { getPostById, formatRelativeTime, incrementPostViewCount, updatePostVote } from "@/lib/posts-repo";
 import { shareToKakao } from "@/lib/kakao-share";
+import { getPageOgImageUrl } from "@/lib/og-image-url";
 import ReactionBar from "@/app/components/ReactionBar";
 import { listReactionsBatch, type ReactionSummary } from "@/lib/reactions-repo";
 import { getMyPostVotes, setMyPostVote, type PostVote } from "@/lib/store";
@@ -183,7 +184,8 @@ export default function PostDetailPage({
     const url = `${window.location.origin}/community/${post.id}`;
     const title = post.title;
     const description = post.content.replace(/\s+/g, " ").trim().slice(0, 120) || "도시공존 커뮤니티";
-    const imageUrl = `${window.location.origin}/community/${post.id}/opengraph-image`;
+    // 글 상세의 og:image(파일 컨벤션 해시 주소) 사용 — 손 조립 주소는 (main) 그룹에서 404
+    const imageUrl = getPageOgImageUrl(`${window.location.origin}/opengraph-image`);
     const ok = await shareToKakao({ title, description, imageUrl, url });
     if (!ok) {
       try {

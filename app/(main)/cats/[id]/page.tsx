@@ -43,20 +43,13 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       title: `${cat.name} · ${region} | 도시공존`,
       description,
       url: `${SITE_URL}/cats/${cat.id}`,
-      images: [
-        {
-          url: `/cats/${cat.id}/opengraph-image`,
-          width: 1200,
-          height: 630,
-          alt: `${cat.name} (${region})`,
-        },
-      ],
+      // images 는 같은 폴더의 opengraph-image.tsx(파일 컨벤션)가 해시 주소로 자동 주입한다.
+      // 손 조립 `/cats/{id}/opengraph-image` 는 (main) 그룹에서 404 — 덮어쓰지 말 것.
     },
     twitter: {
       card: "summary_large_image",
       title: `${cat.name} · ${region}`,
       description,
-      images: [`/cats/${cat.id}/opengraph-image`],
     },
   };
 }
@@ -96,7 +89,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: `${cat.name} · ${region} 길고양이 돌봄 기록`,
-    image: photo ?? `${SITE_URL}/cats/${cat.id}/opengraph-image`,
+    image: photo ?? `${SITE_URL}/opengraph-image`,
     datePublished: cat.created_at,
     inLanguage: "ko-KR",
     author: {

@@ -1,11 +1,12 @@
 // 소식(뉴스) 글 공유 버튼 — 카카오톡 Feed 템플릿 + 클립보드 폴백.
-// 동적 OG 이미지(/news/[id]/opengraph-image)와 함께 매력적 미리보기 발송.
+// 동적 OG 이미지(news/[id]/opengraph-image.tsx 가 주입한 페이지 og:image)와 함께 매력적 미리보기 발송.
 
 "use client";
 
 import { useState } from "react";
 import { Share2, Check } from "lucide-react";
 import { shareToKakao } from "@/lib/kakao-share";
+import { getPageOgImageUrl } from "@/lib/og-image-url";
 
 interface Props {
   newsId: string;
@@ -24,7 +25,8 @@ export default function ShareNewsButton({ newsId, title, description, badgeLabel
 
     const origin = window.location.origin;
     const url = `${origin}/news/${newsId}?utm_source=kakao&utm_medium=share&utm_campaign=news_share`;
-    const imageUrl = `${origin}/news/${newsId}/opengraph-image`;
+    // 뉴스 상세의 og:image(파일 컨벤션 해시 주소) 사용 — 손 조립 주소는 (main) 그룹에서 404
+    const imageUrl = getPageOgImageUrl(`${origin}/opengraph-image`);
     const desc =
       (description ?? "").slice(0, 100) ||
       `${badgeLabel ?? "소식"} — 도시공존이 전하는 길고양이·동물보호 이야기`;
