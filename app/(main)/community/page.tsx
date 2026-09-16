@@ -1,126 +1,63 @@
 "use client";
 
-import { useEffect, useState } from "react";
+// 커뮤니티 — 피드형 (2026-09-16 사장님 지시: 카페 피드 레퍼런스).
+// 상단 카테고리 필 칩(가로 스크롤) + 카드 없는 전폭 피드 + "글쓰기" 확장 FAB.
+// 이전 구조(카테고리 그룹 리스트·인기 글·안내 배너·방문자 수·글감 프롬프트)는 삭제가 아니라
+// SHOW_COMMUNITY_LEGACY 플래그로 숨김. 카테고리별 라우트(/community/category/*)는 딥링크용으로 유지.
+
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { MapPin, PenLine, Search, Siren, HandHeart, Flame, MessagesSquare } from "lucide-react";
 import PageIntroModal from "@/app/components/PageIntroModal";
-import {
-  Siren,
-  Home,
-  Heart,
-  HandHeart,
-  ShoppingBag,
-  MessagesSquare,
-  TrendingUp,
-  Plus,
-  Eye,
-  Search,
-  Flame,
-} from "lucide-react";
 import type { Post, PostCategory } from "@/lib/types";
-import { listPosts, formatRelativeTime } from "@/lib/posts-repo";
-import {
-  listMyActivityRegions,
-  type ActivityRegion,
-} from "@/lib/activity-regions-repo";
-import { MapPin } from "lucide-react";
+import { CATEGORY_MAP } from "@/lib/types";
+import { listPosts, updatePostVote } from "@/lib/posts-repo";
+import { listFirstCommentsForPosts, type PostComment } from "@/lib/post-comments-repo";
+import { isCurrentUserAdmin } from "@/lib/news-repo";
+import { getMyPostVotes, setMyPostVote, type PostVote } from "@/lib/store";
+import { listMyActivityRegions, type ActivityRegion } from "@/lib/activity-regions-repo";
 import { useAuth } from "@/lib/auth-context";
 import LoginRequired from "@/app/components/LoginRequired";
 import PageIntroBanner from "@/app/components/PageIntroBanner";
 import CommunityWritePrompt from "@/app/components/CommunityWritePrompt";
 import CareTeamCard from "@/app/components/CareTeamCard";
-import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
-import UIListRow from "@/app/components/ui/ListRow";
+import CommunityFeedItem from "@/app/components/CommunityFeedItem";
 import UIChip from "@/app/components/ui/Chip";
+import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
 
-/* ═══ 카테고리 카드 데이터 ═══ */
-type CategoryCard = {
-  // "popular"은 가상 카테고리 — DB에는 없고 /community/popular로 라우팅
-  key: PostCategory | "popular";
-  title: string;
-  subtitle: string;
-  Icon: typeof Siren;
-  iconBg: string;
-  glowColor: string;
-  highlight?: boolean;
-};
+// 이전 커뮤니티 홈 섹션(안내 모달·배너·글감·돌봄팀 카드) — 피드 전환으로 숨김, 코드는 보존
+const SHOW_COMMUNITY_LEGACY = false;
 
-const CATEGORIES: CategoryCard[] = [
-  {
-    key: "emergency",
-    title: "긴급",
-    subtitle: "학대 · 실종 · 응급 구조 제보",
-    Icon: Siren,
-    iconBg: "#D85555",
-    glowColor: "216,85,85",
-    highlight: true,
-  },
-  {
-    // 돌봄 부탁 — 입원·여행 때 밥자리 대타 (2026-08-29 PMF 개편: 캣맘의 실제 pain)
-    key: "sitter",
-    title: "돌봄 부탁",
-    subtitle: "입원 · 여행 때 밥자리 대타 요청",
-    Icon: HandHeart,
-    iconBg: "#4A7BA8",
-    glowColor: "74,123,168",
-    highlight: true,
-  },
-  {
-    key: "foster",
-    title: "임보",
-    subtitle: "임시보호 요청 · 제안",
-    Icon: Home,
-    iconBg: "#E88D5A",
-    glowColor: "232,141,90",
-  },
-  {
-    key: "adoption",
-    title: "입양",
-    subtitle: "새 가족을 찾아요",
-    Icon: Heart,
-    iconBg: "var(--color-like)",
-    glowColor: "232,107,140",
-  },
-  {
-    key: "market",
-    title: "중고마켓",
-    subtitle: "용품 거래 · 무료 나눔",
-    Icon: ShoppingBag,
-    iconBg: "#48A59E",
-    glowColor: "72,165,158",
-  },
-  {
-    key: "free",
-    title: "자유게시판",
-    subtitle: "일상 · 정보 · 수다",
-    Icon: MessagesSquare,
-    iconBg: "#8B65B8",
-    glowColor: "139,101,184",
-  },
-  // 가상 카테고리 — 실제 PostCategory에는 없고 /community/popular로 라우팅
-  {
-    key: "popular",
-    title: "인기 게시물",
-    subtitle: "최근 30일 가장 반응 많은 글",
-    Icon: Flame,
-    iconBg: "#E55A3C",
-    glowColor: "229,90,60",
-    highlight: true,
-  },
+type FilterKey = "all" | PostCategory | "popular";
+
+const FILTERS: { key: FilterKey; label: string }[] = [
+  { key: "all", label: "전체" },
+  { key: "emergency", label: CATEGORY_MAP.emergency.label },
+  { key: "sitter", label: CATEGORY_MAP.sitter.label },
+  { key: "free", label: CATEGORY_MAP.free.label },
+  { key: "foster", label: CATEGORY_MAP.foster.label },
+  { key: "adoption", label: CATEGORY_MAP.adoption.label },
+  { key: "market", label: CATEGORY_MAP.market.label },
+  { key: "popular", label: "인기" },
 ];
 
-/* ═══ 페이지 ═══ */
+const popularityScore = (p: Post) => p.likeCount * 3 + p.commentCount * 2 + p.viewCount;
+
 export default function CommunityPage() {
   const { user, loading: authLoading } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [todayVisit, setTodayVisit] = useState<number | null>(null);
-  const [totalUsers, setTotalUsers] = useState<number | null>(null);
+  const [firstComments, setFirstComments] = useState<Record<string, PostComment>>({});
+  const [myVotes, setMyVotes] = useState<Record<string, PostVote>>({});
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [filter, setFilter] = useState<FilterKey>("all");
   const [myRegions, setMyRegions] = useState<ActivityRegion[]>([]);
   const [neighborhoodOnly, setNeighborhoodOnly] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     if (!user) return;
+    setMyVotes(getMyPostVotes());
 
     // sessionStorage 5분 캐시 → 즉시 표시 후 백그라운드 새로고침
     const CACHE_KEY = "dosi_community_posts_v1";
@@ -134,232 +71,196 @@ export default function CommunityPage() {
     } catch {}
     listPosts().then((data) => {
       setPosts(data);
-      try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {}
+      try {
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
+      } catch {}
+      // 첫 댓글 미리보기 — 댓글 있는 글만
+      const ids = data.filter((p) => p.commentCount > 0).map((p) => p.id);
+      listFirstCommentsForPosts(ids).then(setFirstComments).catch(() => {});
     });
 
-    // 비크리티컬: 첫 페인트 후로
-    const idle = (window as unknown as { requestIdleCallback?: (cb: () => void) => void }).requestIdleCallback
+    const idle =
+      (window as unknown as { requestIdleCallback?: (cb: () => void) => void }).requestIdleCallback
       ?? ((cb: () => void) => setTimeout(cb, 800));
     idle(() => {
-      fetch("/api/visit").then((r) => r.json()).then((d) => {
-        // 라벨이 "방문자 N명"(누적) — 오늘 수치가 아니라 누적을 쓴다
-        setTodayVisit(d.cumulative);
-        setTotalUsers(d.total);
-      }).catch(() => {});
       listMyActivityRegions().then(setMyRegions).catch(() => {});
+      isCurrentUserAdmin().then(setIsAdmin).catch(() => {});
     });
   }, [user]);
+
+  const visiblePosts = useMemo(() => {
+    let list = posts;
+    if (filter === "popular") {
+      list = [...list].sort((a, b) => popularityScore(b) - popularityScore(a)).slice(0, 20);
+    } else if (filter !== "all") {
+      list = list.filter((p) => p.category === filter);
+    }
+    if (neighborhoodOnly) {
+      list = list.filter(
+        (p) => !!p.region && myRegions.some((r) => r.name.includes(p.region!) || p.region!.includes(r.name)),
+      );
+    }
+    return list;
+  }, [posts, filter, neighborhoodOnly, myRegions]);
 
   // 비로그인 가드
   if (mounted && !authLoading && !user) {
     return <LoginRequired from="/community" />;
   }
 
-  const filterByNeighborhood = (p: Post) => {
-    if (!p.region) return false;
-    return myRegions.some(
-      (r) => p.region && (r.name.includes(p.region) || p.region.includes(r.name)),
-    );
+  // 좋아요 토글 — category/[cat]/page.tsx와 동일 규칙(관리자는 누적, 일반은 토글·롤백)
+  const handleLike = async (postId: string) => {
+    const patch = (dLike: -1 | 0 | 1) =>
+      setPosts((prev) =>
+        prev.map((p) => (p.id === postId ? { ...p, likeCount: Math.max(0, p.likeCount + dLike) } : p)),
+      );
+
+    if (isAdmin) {
+      patch(1);
+      try {
+        await updatePostVote(postId, 1, 0);
+      } catch {
+        patch(-1);
+      }
+      return;
+    }
+
+    const prev = myVotes[postId] ?? 0;
+    const next: PostVote | 0 = prev === 1 ? 0 : 1;
+    let dLike: -1 | 0 | 1 = 0;
+    let dDislike: -1 | 0 | 1 = 0;
+    if (prev === 1) dLike = -1;
+    if (prev === -1) dDislike = -1;
+    if (next === 1) dLike = (dLike + 1) as -1 | 0 | 1;
+
+    patch(dLike);
+    setMyPostVote(postId, next);
+    setMyVotes(getMyPostVotes());
+    try {
+      await updatePostVote(postId, dLike, dDislike);
+    } catch {
+      patch(dLike === 0 ? 0 : ((-dLike) as -1 | 1));
+      setMyPostVote(postId, prev);
+      setMyVotes(getMyPostVotes());
+    }
   };
-
-  const visiblePosts = neighborhoodOnly ? posts.filter(filterByNeighborhood) : posts;
-
-  // P4 돌봄팀 통합: flag on(kill switch off)일 때만 돌봄팀 진입 카드 노출.
-  const showCareTeam = isCoreJourneyEnabled("P4");
 
   if (!mounted) return null;
 
-  // 인기 게시글 3건 — 좋아요 + 댓글 + 조회수 가중 합산
-  const popularPosts = [...visiblePosts]
-    .sort(
-      (a, b) =>
-        (b.likeCount * 3 + b.commentCount * 2 + b.viewCount)
-        - (a.likeCount * 3 + a.commentCount * 2 + a.viewCount),
-    )
-    .slice(0, 3);
+  const showCareTeam = SHOW_COMMUNITY_LEGACY && isCoreJourneyEnabled("P4");
+  const writeHref = filter !== "all" && filter !== "popular" ? `/community/write?category=${filter}` : "/community/write";
 
   return (
-    <div className="px-4 pt-14 pb-24">
-      <PageIntroModal
-        storageKey="dosigongzon_intro_community"
-        badge="커뮤니티"
-        headerEmoji="💬"
-        title="이웃 길집사와 이야기 나눠요"
-        headerBg="linear-gradient(160deg, #EDE7F6 0%, #E4DAF3 100%)"
-        accent="#8B65B8"
-        accentDark="#6E4E96"
-        items={[
-          { emoji: "🐾", text: <>동네 돌봄 소식·꿀팁·질문을 자유롭게 나눠요.</> },
-          { emoji: "🔒", text: <>댓글은 <b className="text-text-main">비밀 댓글</b>로 글쓴이에게만 조용히 남길 수도 있어요.</> },
-          { emoji: "✍️", text: <>우하단 글쓰기 버튼으로 첫 글을 남겨보세요.</> },
-        ]}
-      />
-      {/* ── 헤더 ── */}
-      <div className="mb-6 px-1 flex items-end justify-between">
-        <div>
-          <div className="flex items-baseline gap-2 mb-1">
-            <h1 className="text-[24px] font-bold text-text-main tracking-tight">
-              커뮤니티
-            </h1>
-            <span className="text-[11px] font-semibold text-text-light">
-              Community
-            </span>
-          </div>
-          <p className="text-[13px] text-text-sub leading-relaxed">
-            동네 이웃들과 함께 만드는 공간
-          </p>
-        </div>
-        <Link
-          href="/search"
-          className="w-10 h-10 rounded-full bg-white flex items-center justify-center press-strong transition-transform"
-          style={{ boxShadow: "var(--shadow-raised)" }}
-          aria-label="통합 검색"
-        >
-          <Search size={18} className="text-text-sub" />
-        </Link>
-      </div>
-
-      {/* 페이지 사용법 안내 (dismiss 가능) */}
-      <div className="mb-4">
-        <PageIntroBanner
-          id="community"
-          title="커뮤니티에서 할 수 있는 것"
-          description="긴급 구조·임보 요청·입양 공고·용품 나눔·일상 대화까지. 카테고리별로 구별되니 찾기 쉬워요. 우측 하단 + 버튼으로 글쓰기. 홈 맨 위에서 '국회 길고양이 청원'도 확인할 수 있어요."
-          ctaLabel="자세한 사용법"
-          ctaHref="/guide"
+    <div className="pb-24" style={{ background: "var(--color-surface-alt)" }}>
+      {SHOW_COMMUNITY_LEGACY && (
+        <PageIntroModal
+          storageKey="dosigongzon_intro_community"
+          badge="커뮤니티"
+          headerEmoji="💬"
+          title="이웃 길집사와 이야기 나눠요"
+          headerBg="linear-gradient(160deg, #EDE7F6 0%, #E4DAF3 100%)"
           accent="#8B65B8"
+          accentDark="#6E4E96"
+          items={[
+            { emoji: "🐾", text: <>동네 돌봄 소식·꿀팁·질문을 자유롭게 나눠요.</> },
+            { emoji: "🔒", text: <>댓글은 <b className="text-text-main">비밀 댓글</b>로 글쓴이에게만 조용히 남길 수도 있어요.</> },
+            { emoji: "✍️", text: <>우하단 글쓰기 버튼으로 첫 글을 남겨보세요.</> },
+          ]}
         />
-      </div>
-
-      {/* 글쓰기 유도 — 글감 프롬프트 (빈 페이지 공포 ↓) */}
-      <CommunityWritePrompt />
-
-      {/* P4 돌봄팀 통합 진입 카드 — flag off/kill switch on이면 렌더 안 함 */}
-      {showCareTeam && <CareTeamCard />}
-
-      {/* ── 오늘 방문자 (누적 총 방문자 수) ── */}
-      {todayVisit !== null && (
-        <div
-          className="mb-4 flex items-center justify-center gap-2 py-2.5 rounded-2xl"
-          style={{
-            background: "var(--color-primary-softer)",
-            border: "1px solid rgba(176, 92, 54,0.12)",
-          }}
-        >
-          <Eye size={14} className="text-primary" />
-          <span className="text-[13px] text-text-sub">방문자</span>
-          <span className="text-[15px] font-bold text-primary">{todayVisit.toLocaleString()}</span>
-          <span className="text-[13px] text-text-sub">명</span>
-        </div>
       )}
 
-      {/* ── 내 동네만 필터 ── */}
-      {myRegions.length > 0 && (
-        <div className="mb-4 flex items-center gap-2">
-          <UIChip onClick={() => setNeighborhoodOnly(false)} active={!neighborhoodOnly} activeColor="var(--color-text-main)">
-            전체
-          </UIChip>
-          <UIChip onClick={() => setNeighborhoodOnly(true)} active={neighborhoodOnly} icon={<MapPin size={11} />}>
-            내 동네만
-            {neighborhoodOnly && (
-              <span
-                className="ml-0.5 px-1.5 py-0.5 rounded-md text-[9px]"
-                style={{ background: "rgba(255,255,255,0.25)" }}
-              >
-                {visiblePosts.length}
-              </span>
-            )}
-          </UIChip>
-          {neighborhoodOnly && visiblePosts.length === 0 && (
-            <p className="text-[11px] text-text-light ml-1">
-              내 동네({myRegions.map((r) => r.name).join(", ")}) 글이 아직 없어요
-            </p>
+      {/* ── 상단: 제목 + 검색, 카테고리 필 칩 (sticky) ── */}
+      <div className="sticky top-0 z-30 bg-white" style={{ borderBottom: "1px solid var(--color-divider)" }}>
+        <div className="px-4 pt-12 pb-2 flex items-center justify-between">
+          <h1 className="text-[20px] font-bold text-text-main tracking-tight">커뮤니티</h1>
+          <Link
+            href="/search"
+            className="w-9 h-9 -mr-2 flex items-center justify-center text-text-sub press"
+            aria-label="통합 검색"
+          >
+            <Search size={20} />
+          </Link>
+        </div>
+        <div className="flex items-center gap-2 px-4 pb-3 overflow-x-auto no-scrollbar">
+          {FILTERS.map((f) => (
+            <UIChip
+              key={f.key}
+              active={filter === f.key}
+              onClick={() => setFilter(f.key)}
+              style={{ borderRadius: "var(--radius-full)", height: 36, padding: "0 16px", fontSize: 14 }}
+            >
+              {f.label}
+            </UIChip>
+          ))}
+          {myRegions.length > 0 && (
+            <UIChip
+              active={neighborhoodOnly}
+              activeColor="var(--color-text-main)"
+              onClick={() => setNeighborhoodOnly((v) => !v)}
+              icon={<MapPin size={12} />}
+              style={{ borderRadius: "var(--radius-full)", height: 36, padding: "0 14px", fontSize: 14 }}
+            >
+              내 동네
+            </UIChip>
           )}
         </div>
-      )}
-
-      {/* ── 카테고리 — 토스식 그룹 리스트 (2026-07-16): 색색 카드 6장 → 흰 카드 1장 + 행 구분선.
-          색은 아이콘 박스에만 남기고 장식(글로우·색 테두리)은 제거 — 타이포·아이콘만으로 위계. ── */}
-      <div className="card px-3 py-1">
-        {([CATEGORIES[0], CATEGORIES[5], CATEGORIES[1], CATEGORIES[2], CATEGORIES[3], CATEGORIES[4]] as CategoryCard[]).map(
-          (card, idx, arr) => (
-            <UIListRow
-              key={card.key}
-              href={card.key === "popular" ? "/community/popular" : `/community/category/${card.key}`}
-              icon={<card.Icon size={20} color={card.iconBg} strokeWidth={2} />}
-              iconBg={`${card.iconBg}15`}
-              title={card.title}
-              subtitle={card.subtitle}
-              style={idx < arr.length - 1 ? { borderBottom: "1px solid var(--color-divider)" } : undefined}
-            />
-          ),
-        )}
       </div>
 
-      {/* ── 인기 글 ── */}
-      {popularPosts.length > 0 && (
-        <div className="mt-6">
-          <div className="flex items-center gap-1.5 mb-3 px-1">
-            <h2 className="text-[17px] font-bold text-text-main tracking-tight">
-              인기 글
-            </h2>
-            <TrendingUp size={14} style={{ color: "#C9A961" }} />
-          </div>
-          <div className="space-y-2.5">
-            {popularPosts.map((post) => {
-              const cat = CATEGORIES.find((c) => c.key === post.category);
-              if (!cat) return null;
-              return (
-                <Link
-                  key={post.id}
-                  href={`/community/${post.id}`}
-                  className="block press transition-transform"
-                >
-                  <div
-                    className="flex items-center gap-3 px-4 py-3"
-                    style={{
-                      background: "#FFFFFF",
-                      borderRadius: "var(--radius-card-sm)",
-                      boxShadow: "var(--shadow-card-sm)",
-                      border: "1px solid var(--color-divider)",
-                    }}
-                  >
-                    <span
-                      className="text-[11px] font-bold px-2 py-1 shrink-0"
-                      style={{
-                        backgroundColor: `${cat.iconBg}15`,
-                        color: cat.iconBg,
-                        borderRadius: "var(--radius-square)",
-                      }}
-                    >
-                      {cat.title}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-bold text-text-main truncate">
-                        {post.title}
-                      </p>
-                      <p className="text-[11px] text-text-light mt-0.5">
-                        {post.authorName} · {formatRelativeTime(post.createdAt)}
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+      {SHOW_COMMUNITY_LEGACY && (
+        <div className="px-4 pt-3">
+          <PageIntroBanner
+            id="community"
+            title="커뮤니티에서 할 수 있는 것"
+            description="긴급 구조·임보 요청·입양 공고·용품 나눔·일상 대화까지. 카테고리별로 구별되니 찾기 쉬워요."
+            ctaLabel="자세한 사용법"
+            ctaHref="/guide"
+            accent="#8B65B8"
+          />
+          <CommunityWritePrompt />
+          {showCareTeam && <CareTeamCard />}
         </div>
       )}
 
-      {/* ── FAB ── */}
+      {/* ── 피드 ── */}
+      {visiblePosts.length === 0 ? (
+        <div className="flex flex-col items-center py-20 text-text-light bg-white">
+          {filter === "emergency" ? (
+            <Siren size={40} strokeWidth={1.2} />
+          ) : filter === "sitter" ? (
+            <HandHeart size={40} strokeWidth={1.2} />
+          ) : filter === "popular" ? (
+            <Flame size={40} strokeWidth={1.2} />
+          ) : (
+            <MessagesSquare size={40} strokeWidth={1.2} />
+          )}
+          <p className="text-[15px] mt-4 text-text-sub font-semibold">
+            {neighborhoodOnly ? "내 동네 글이 아직 없어요" : "아직 글이 없어요"}
+          </p>
+          <p className="text-[13px] mt-1">첫 번째 글을 남겨보세요</p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {visiblePosts.map((post) => (
+            <CommunityFeedItem
+              key={post.id}
+              post={post}
+              liked={myVotes[post.id] === 1}
+              firstComment={firstComments[post.id]}
+              onLike={handleLike}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* ── 글쓰기 FAB ── */}
       <Link
-        href="/community/write"
-        className="fixed bottom-24 right-5 w-14 h-14 rounded-full bg-primary flex items-center justify-center fab-shadow press-strong transition-transform z-40"
-        style={{ boxShadow: "0 4px 16px rgba(176, 92, 54,0.45), 0 0 0 4px #fff" }}
+        href={writeHref}
+        className="fixed bottom-24 right-5 h-14 px-6 rounded-full bg-primary flex items-center gap-2 fab-shadow press-strong transition-transform z-40"
+        aria-label="글쓰기"
       >
-        <Plus size={28} color="#fff" strokeWidth={2.5} />
+        <PenLine size={20} color="#fff" strokeWidth={2.2} />
+        <span className="text-[17px] font-bold" style={{ color: "#fff" }}>글쓰기</span>
       </Link>
     </div>
   );
 }
-
-/* ═══ 2칸 그리드용 컴팩트 카드 ═══ */

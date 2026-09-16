@@ -528,7 +528,7 @@ export default function PostDetailPage({
         <div className="h-px bg-divider my-5" />
 
         {/* ── 댓글 ── */}
-        <h2 className="text-[15px] font-bold text-text-main mb-3">
+        <h2 id="comments" className="text-[15px] font-bold text-text-main mb-3 scroll-mt-16">
           댓글 {comments.length}
         </h2>
 

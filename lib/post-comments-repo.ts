@@ -190,3 +190,30 @@ export async function deletePostComment(id: string): Promise<void> {
     throw new Error(`삭제 실패: ${error.message}`);
   }
 }
+
+// ── 여러 게시글의 첫 댓글 한 번에 조회 (피드 미리보기용, 2026-09-16) ──
+// 비밀 댓글은 미리보기에서 제외한다(RLS가 이미 거르지만 컬럼이 있으면 이중 방어).
+export async function listFirstCommentsForPosts(
+  postIds: string[],
+): Promise<Record<string, PostComment>> {
+  if (postIds.length === 0) return {};
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("post_comments")
+    .select("*")
+    .in("post_id", postIds)
+    .is("parent_id", null)
+    .order("created_at", { ascending: true })
+    .limit(500);
+
+  if (error) {
+    console.error("[post-comments-repo] listFirstCommentsForPosts failed:", error);
+    return {};
+  }
+  const first: Record<string, PostComment> = {};
+  for (const c of (data ?? []) as PostComment[]) {
+    if (c.is_secret) continue;
+    if (!first[c.post_id]) first[c.post_id] = c;
+  }
+  return first;
+}
