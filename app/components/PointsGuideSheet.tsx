@@ -43,12 +43,13 @@ export default function PointsGuideSheet() {
   return (
     <div
       className="fixed inset-0 z-[150] flex items-end"
-      style={{ background: "rgba(30,22,16,0.4)" }}
+      style={{ background: "rgba(0,0,0,0.4)" }}
       onClick={dismiss}
     >
       <div
-        className="w-full bg-white px-5 pt-6"
+        className="w-full px-5 pt-6"
         style={{
+          background: "var(--color-surface)",
           borderRadius: "var(--radius-sheet) var(--radius-sheet) 0 0",
           boxShadow: "var(--shadow-sheet)",
           paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))",
@@ -59,15 +60,14 @@ export default function PointsGuideSheet() {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-1">
-          <h2 className="text-[19px] font-bold text-text-main tracking-tight">포인트 안내</h2>
+          <h2 className="text-[20px] font-bold text-text-main tracking-tight">포인트 안내</h2>
           <button
             type="button"
             onClick={dismiss}
-            className="w-8 h-8 rounded-full flex items-center justify-center press-strong"
-            style={{ background: "rgba(0,0,0,0.05)" }}
+            className="w-8 h-8 flex items-center justify-center press-strong"
             aria-label="닫기"
           >
-            <X size={16} className="text-text-sub" />
+            <X size={18} style={{ color: "var(--color-text-light)" }} />
           </button>
         </div>
         <p className="text-[13px] text-text-sub leading-relaxed mb-4">
@@ -76,14 +76,12 @@ export default function PointsGuideSheet() {
         </p>
 
         {/* 1. 돌봄으로 벌기 */}
-        <div className="rounded-2xl p-4 mb-2.5" style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(176,92,54,0.18)" }}>
+        <div className="py-3.5" style={{ borderTop: "1px solid var(--color-divider)" }}>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(176,92,54,0.15)" }}>
-              <PawPrint size={15} style={{ color: "var(--color-primary)" }} />
-            </span>
-            <p className="text-[14px] font-bold text-text-main">① 돌봄 기록으로 벌기</p>
+            <PawPrint size={18} strokeWidth={1.8} className="shrink-0" style={{ color: "var(--color-text-sub)" }} />
+            <p className="text-[15px] font-semibold text-text-main">돌봄 기록으로 벌기</p>
           </div>
-          <p className="text-[12px] text-text-sub leading-relaxed">
+          <p className="text-[13px] text-text-sub leading-relaxed">
             한 주(월~일)에 <b>돌봄 기록을 남긴 날</b>이 쌓이면 포인트를 드려요.
             <br />
             <b className="text-text-main">3일 50P · 5일 100P · 7일 150P</b>
@@ -93,14 +91,12 @@ export default function PointsGuideSheet() {
         </div>
 
         {/* 2. 구매로 벌기 */}
-        <div className="rounded-2xl p-4 mb-2.5" style={{ background: "var(--color-sage-soft)", border: "1px solid rgba(34,163,102,0.2)" }}>
+        <div className="py-3.5" style={{ borderTop: "1px solid var(--color-divider)" }}>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(34,163,102,0.15)" }}>
-              <Gift size={15} style={{ color: "#1E8E56" }} />
-            </span>
-            <p className="text-[14px] font-bold text-text-main">② 구매하면 적립</p>
+            <Gift size={18} strokeWidth={1.8} className="shrink-0" style={{ color: "var(--color-text-sub)" }} />
+            <p className="text-[15px] font-semibold text-text-main">구매하면 적립</p>
           </div>
-          <p className="text-[12px] text-text-sub leading-relaxed">
+          <p className="text-[13px] text-text-sub leading-relaxed">
             상품을 사면 결제 금액의 <b className="text-text-main">{basePct}%</b>가 포인트로 돌아와요.
             <br />
             많이 구매한 단골일수록 적립률이 올라가요 — <b>기본 {basePct}% · 단골 {basePct + 1}% · VIP {maxPct}%</b>.
@@ -110,14 +106,12 @@ export default function PointsGuideSheet() {
         </div>
 
         {/* 3. 사용하기 */}
-        <div className="rounded-2xl p-4 mb-4" style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-divider)" }}>
+        <div className="py-3.5 mb-2" style={{ borderTop: "1px solid var(--color-divider)", borderBottom: "1px solid var(--color-divider)" }}>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style={{ background: "var(--color-gray-100)" }}>
-              <Coins size={15} style={{ color: "var(--color-gray-600)" }} />
-            </span>
-            <p className="text-[14px] font-bold text-text-main">③ 사용하기</p>
+            <Coins size={18} strokeWidth={1.8} className="shrink-0" style={{ color: "var(--color-text-sub)" }} />
+            <p className="text-[15px] font-semibold text-text-main">사용하기</p>
           </div>
-          <p className="text-[12px] text-text-sub leading-relaxed">
+          <p className="text-[13px] text-text-sub leading-relaxed">
             결제할 때 <b className="text-text-main">1P = 1원</b>으로 할인에 써요.
             <br />
             한 주문에서 <b>주문 금액의 {usePct}%</b>까지 쓸 수 있어요(부담 없이 오래 모으라고 둔 상한).
@@ -134,8 +128,8 @@ export default function PointsGuideSheet() {
         <button
           type="button"
           onClick={dismiss}
-          className="w-full py-3.5 rounded-2xl text-white text-[15px] font-bold press"
-          style={{ background: "var(--color-primary)", boxShadow: "var(--shadow-primary)" }}
+          className="w-full h-12 text-[15px] font-semibold press"
+          style={{ background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
         >
           알겠어요
         </button>

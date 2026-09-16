@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { PawPrint } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "길을 잃었어요 (404)",
@@ -7,135 +8,52 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+const LINKS = [
+  { href: "/map", label: "지도" },
+  { href: "/protection", label: "보호지침" },
+  { href: "/community", label: "커뮤니티" },
+  { href: "/guide", label: "기능 가이드" },
+];
+
 export default function NotFound() {
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center px-6 py-12"
-      style={{
-        background: "#F6EFE3",
-      }}
-    >
-      <div
-        className="w-full max-w-md rounded-[28px] text-center relative overflow-hidden"
-        style={{
-          background: "#FFFFFF",
-          boxShadow: "var(--shadow-fab)",
-          padding: "48px 32px 36px",
-        }}
-      >
-        {/* 장식 원 */}
-        <div
-          style={{
-            position: "absolute",
-            top: -60,
-            right: -40,
-            width: 180,
-            height: 180,
-            borderRadius: "50%",
-            background:
-              "radial-gradient(circle, rgba(176, 92, 54,0.15) 0%, rgba(176, 92, 54,0) 70%)",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: -80,
-            left: -60,
-            width: 200,
-            height: 200,
-            borderRadius: "50%",
-            background:
-              "radial-gradient(circle, rgba(107,142,111,0.12) 0%, rgba(107,142,111,0) 70%)",
-          }}
-        />
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12 bg-surface">
+      <div className="w-full max-w-md text-center">
+        <PawPrint size={44} strokeWidth={1.6} className="mx-auto mb-4" style={{ color: "var(--color-text-light)" }} aria-hidden />
+        <p className="text-[13px] font-semibold tracking-[0.2em] mb-3 text-text-light">404</p>
+        <h1 className="text-[24px] font-bold text-text-main tracking-tight leading-tight mb-2">
+          아이를 찾지 못했어요
+        </h1>
+        <p className="text-[13px] text-text-sub leading-relaxed mb-7">
+          주소가 바뀌었거나 삭제된 페이지예요.
+        </p>
 
-        {/* 일러스트 대체 — 큰 고양이 이모지 + 404 텍스트 */}
-        <div className="relative">
-          <div className="text-[90px] leading-none mb-2" aria-hidden>
-            🐾
-          </div>
-          <p
-            className="text-[15px] font-bold tracking-[0.3em] mb-4"
-            style={{ color: "var(--color-primary)" }}
+        {/* 주요 이동 버튼 */}
+        <div className="flex flex-col gap-2.5">
+          <Link
+            href="/"
+            className="w-full h-12 flex items-center justify-center text-[15px] font-semibold press transition-transform"
+            style={{ background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
           >
-            404
-          </p>
-          <h1
-            className="text-[24px] font-bold text-text-main tracking-tight leading-tight mb-2"
-          >
-            아이를 찾지 못했어요
-          </h1>
-          <p className="text-[13px] text-text-sub leading-relaxed mb-7">
-            주소가 바뀌었거나 삭제된 페이지예요.<br />
-            대신 가볼 만한 곳을 준비했어요.
-          </p>
-
-          {/* 주요 이동 버튼 */}
-          <div className="flex flex-col gap-2.5">
-            <Link
-              href="/"
-              className="w-full py-3 rounded-2xl text-[15px] font-bold text-white press transition-transform"
-              style={{
-                background: "var(--color-primary)",
-                boxShadow: "var(--shadow-primary)",
-              }}
-            >
-              홈으로 가기
-            </Link>
-            <div className="grid grid-cols-2 gap-2">
+            홈으로 가기
+          </Link>
+          <div className="grid grid-cols-2 gap-2">
+            {LINKS.map((l) => (
               <Link
-                href="/map"
-                className="py-2.5 rounded-2xl text-[13px] font-bold press"
-                style={{
-                  background: "#F7F4EE",
-                  color: "#A38E7A",
-                  border: "1px solid var(--color-divider)",
-                }}
+                key={l.href}
+                href={l.href}
+                className="h-10 flex items-center justify-center text-[13px] font-semibold press"
+                style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)", borderRadius: "var(--radius-input)" }}
               >
-                지도
+                {l.label}
               </Link>
-              <Link
-                href="/protection"
-                className="py-2.5 rounded-2xl text-[13px] font-bold press"
-                style={{
-                  background: "#F7F4EE",
-                  color: "#A38E7A",
-                  border: "1px solid var(--color-divider)",
-                }}
-              >
-                보호지침
-              </Link>
-              <Link
-                href="/community"
-                className="py-2.5 rounded-2xl text-[13px] font-bold press"
-                style={{
-                  background: "#F7F4EE",
-                  color: "#A38E7A",
-                  border: "1px solid var(--color-divider)",
-                }}
-              >
-                커뮤니티
-              </Link>
-              <Link
-                href="/guide"
-                className="py-2.5 rounded-2xl text-[13px] font-bold press"
-                style={{
-                  background: "#F7F4EE",
-                  color: "#A38E7A",
-                  border: "1px solid var(--color-divider)",
-                }}
-              >
-                기능 가이드
-              </Link>
-            </div>
+            ))}
           </div>
-
-          {/* 감성 문구 */}
-          <p className="text-[11px] text-text-light mt-6 leading-relaxed">
-            길을 잃은 건 오늘 하루의 아주 작은 일이에요.<br />
-            동네의 아이들이 기다리고 있어요
-          </p>
         </div>
+
+        <p className="text-[11px] text-text-light mt-6 leading-relaxed">
+          동네의 아이들이 기다리고 있어요
+        </p>
       </div>
     </div>
   );

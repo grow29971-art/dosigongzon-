@@ -16,15 +16,21 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+const STEP_NUM: React.CSSProperties = {
+  background: "var(--color-gray-100)",
+  color: "var(--color-text-sub)",
+  borderRadius: "var(--radius-square)",
+};
+
 export default function AccountDeletionPage() {
   return (
-    <div className="pb-16" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
+    <div className="pb-16" style={{ background: "var(--color-surface)", minHeight: "100vh" }}>
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
+          style={{ background: "var(--color-gray-100)" }}
           aria-label="홈으로"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -35,8 +41,8 @@ export default function AccountDeletionPage() {
         {/* 타이틀 */}
         <header className="mb-6">
           <div className="flex items-center gap-2 mb-2">
-            <Cat size={16} style={{ color: "var(--color-primary)" }} />
-            <span className="text-[13px] font-bold" style={{ color: "var(--color-primary)" }}>도시공존</span>
+            <Cat size={16} className="text-text-light" />
+            <span className="text-[13px] font-semibold text-text-sub">도시공존</span>
           </div>
           <h1 className="text-[24px] font-bold text-text-main tracking-tight leading-tight">
             계정 삭제 안내
@@ -49,31 +55,19 @@ export default function AccountDeletionPage() {
 
         {/* 방법 1: 앱·웹에서 직접 삭제 */}
         <section
-          className="rounded-2xl p-5 mb-4"
-          style={{
-            background: "#FFFFFF",
-            border: "1px solid var(--color-divider)",
-            boxShadow: "var(--shadow-card)",
-          }}
+          className="rounded-xl p-5 mb-4"
+          style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
         >
           <div className="flex items-center gap-2 mb-3">
-            <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: "var(--color-primary)" }}
-            >
-              <Trash2 size={16} color="#fff" strokeWidth={2.5} />
-            </div>
+            <Trash2 size={18} className="text-text-sub shrink-0" />
             <h2 className="text-[17px] font-bold text-text-main">
               방법 1. 앱·웹에서 직접 삭제 (권장)
             </h2>
           </div>
 
-          <ol className="space-y-3 mt-4">
-            <li className="flex gap-3">
-              <span
-                className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white"
-                style={{ background: "var(--color-primary)" }}
-              >
+          <ol className="mt-4">
+            <li className="flex gap-3 py-3" style={{ borderBottom: "1px solid var(--color-divider)" }}>
+              <span className="shrink-0 w-6 h-6 flex items-center justify-center text-[11px] font-semibold" style={STEP_NUM}>
                 1
               </span>
               <span className="text-[15px] text-text-main leading-relaxed">
@@ -82,22 +76,16 @@ export default function AccountDeletionPage() {
                 <strong>마이</strong>{" "}탭 진입
               </span>
             </li>
-            <li className="flex gap-3">
-              <span
-                className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white"
-                style={{ background: "var(--color-primary)" }}
-              >
+            <li className="flex gap-3 py-3" style={{ borderBottom: "1px solid var(--color-divider)" }}>
+              <span className="shrink-0 w-6 h-6 flex items-center justify-center text-[11px] font-semibold" style={STEP_NUM}>
                 2
               </span>
               <span className="text-[15px] text-text-main leading-relaxed">
                 페이지 맨 아래로 스크롤 → <strong>계정 삭제</strong> 버튼 탭
               </span>
             </li>
-            <li className="flex gap-3">
-              <span
-                className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white"
-                style={{ background: "var(--color-primary)" }}
-              >
+            <li className="flex gap-3 py-3">
+              <span className="shrink-0 w-6 h-6 flex items-center justify-center text-[11px] font-semibold" style={STEP_NUM}>
                 3
               </span>
               <span className="text-[15px] text-text-main leading-relaxed">
@@ -108,35 +96,23 @@ export default function AccountDeletionPage() {
 
           <Link
             href="/mypage"
-            className="mt-5 flex items-center justify-between w-full px-4 py-3 rounded-xl press transition-transform"
-            style={{
-              background: "var(--color-primary)",
-              boxShadow: "var(--shadow-primary)",
-            }}
+            className="mt-3 flex items-center justify-between w-full px-4 py-3 press"
+            style={{ background: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
           >
             <span className="text-[13px] font-bold text-white">
               마이페이지로 이동
             </span>
-            <ChevronRight size={16} color="#fff" />
+            <ChevronRight size={16} className="text-white" />
           </Link>
         </section>
 
         {/* 방법 2: 이메일로 요청 */}
         <section
-          className="rounded-2xl p-5 mb-4"
-          style={{
-            background: "#FFFFFF",
-            border: "1px solid var(--color-divider)",
-            boxShadow: "var(--shadow-card)",
-          }}
+          className="rounded-xl p-5 mb-4"
+          style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
         >
           <div className="flex items-center gap-2 mb-3">
-            <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: "#4A7BA8" }}
-            >
-              <Mail size={16} color="#fff" strokeWidth={2.5} />
-            </div>
+            <Mail size={18} className="text-text-sub shrink-0" />
             <h2 className="text-[17px] font-bold text-text-main">
               방법 2. 이메일로 요청
             </h2>
@@ -148,39 +124,33 @@ export default function AccountDeletionPage() {
           </p>
           <a
             href="mailto:grow29971@gmail.com?subject=%5B%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%A1%B4%5D%20%EA%B3%84%EC%A0%95%20%EC%82%AD%EC%A0%9C%20%EC%9A%94%EC%B2%AD&body=%EA%B0%80%EC%9E%85%20%EC%9D%B4%EB%A9%94%EC%9D%BC%3A%20%0A%EC%9A%94%EC%B2%AD%20%EC%82%AC%EC%9C%A0(%EC%84%A0%ED%83%9D)%3A%20"
-            className="flex items-center justify-between w-full px-4 py-3 rounded-xl press transition-transform"
-            style={{
-              background: "#F0F4F8",
-              border: "1px solid #D0DCE8",
-            }}
+            className="flex items-center justify-between w-full px-4 py-3 press"
+            style={{ background: "var(--color-gray-100)", borderRadius: "var(--radius-input)" }}
           >
             <div>
-              <p className="text-[13px] font-bold" style={{ color: "#4A7BA8" }}>
+              <p className="text-[13px] font-bold text-text-main">
                 grow29971@gmail.com
               </p>
               <p className="text-[11px] text-text-sub mt-0.5">
                 평일 1~3영업일 내 처리
               </p>
             </div>
-            <ChevronRight size={16} style={{ color: "#4A7BA8" }} />
+            <ChevronRight size={16} style={{ color: "var(--color-text-muted)" }} />
           </a>
         </section>
 
         {/* 삭제되는 데이터 */}
         <section
-          className="rounded-2xl p-5 mb-4"
-          style={{
-            background: "var(--color-error-soft)",
-            border: "1px solid #E8C5C5",
-          }}
+          className="rounded-xl p-5 mb-4"
+          style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
         >
           <div className="flex items-center gap-2 mb-3">
-            <ShieldAlert size={16} style={{ color: "#B84545" }} />
-            <h2 className="text-[15px] font-bold" style={{ color: "#B84545" }}>
+            <ShieldAlert size={16} style={{ color: "var(--color-error)" }} />
+            <h2 className="text-[15px] font-bold text-text-main">
               삭제되는 데이터
             </h2>
           </div>
-          <ul className="space-y-2 text-[13px] leading-relaxed" style={{ color: "#4A3F35" }}>
+          <ul className="space-y-2 text-[13px] leading-relaxed text-text-sub">
             <li>· 계정 정보 (이메일, 닉네임, 프로필 사진)</li>
             <li>· 등록한 길고양이 정보 및 사진</li>
             <li>· 작성한 게시글, 댓글, 돌봄다이어리</li>
@@ -193,19 +163,16 @@ export default function AccountDeletionPage() {
 
         {/* 보존되는 데이터 */}
         <section
-          className="rounded-2xl p-5 mb-4"
-          style={{
-            background: "#F0F4F8",
-            border: "1px solid #D0DCE8",
-          }}
+          className="rounded-xl p-5 mb-4"
+          style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
         >
           <div className="flex items-center gap-2 mb-3">
-            <Clock size={16} style={{ color: "#4A7BA8" }} />
-            <h2 className="text-[15px] font-bold" style={{ color: "#4A7BA8" }}>
+            <Clock size={16} className="text-text-sub" />
+            <h2 className="text-[15px] font-bold text-text-main">
               일부 보존되는 데이터 (법령상 의무)
             </h2>
           </div>
-          <ul className="space-y-2 text-[13px] leading-relaxed" style={{ color: "#4A3F35" }}>
+          <ul className="space-y-2 text-[13px] leading-relaxed text-text-sub">
             <li>
               · <strong>로그인 기록 / 접속 IP</strong> — <strong>3개월</strong>{" "}
               (통신비밀보호법)

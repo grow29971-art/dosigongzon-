@@ -33,7 +33,7 @@ export default async function ZoneLandingPage({
 
   if (!zone) {
     return (
-      <div className="min-h-dvh bg-warm-white flex flex-col items-center justify-center px-6 text-center">
+      <div className="min-h-dvh bg-surface flex flex-col items-center justify-center px-6 text-center">
         <PawPrint size={36} className="text-text-light mb-3" />
         <p className="text-[15px] font-bold text-text-main">등록되지 않은 구역이에요</p>
         <p className="text-[13px] text-text-sub mt-1.5 leading-relaxed">
@@ -41,7 +41,7 @@ export default async function ZoneLandingPage({
           <br />
           위급 상황이라면 112에 직접 전화해주세요.
         </p>
-        <a href="tel:112" className="mt-4 px-5 py-2.5 rounded-xl text-[13px] font-bold text-white" style={{ backgroundColor: "#B05C36" }}>
+        <a href="tel:112" className="mt-4 px-5 py-2.5 rounded-lg text-[13px] font-bold text-white press" style={{ backgroundColor: "var(--color-primary)" }}>
           112 전화 걸기
         </a>
       </div>
@@ -49,19 +49,19 @@ export default async function ZoneLandingPage({
   }
 
   return (
-    <div className="min-h-dvh bg-warm-white">
+    <div className="min-h-dvh bg-surface">
       <div className="max-w-lg mx-auto px-5 py-10">
         {/* 지킴판 선언 */}
         <div
-          className="rounded-3xl px-5 py-6 text-center text-white"
-          style={{ background: "#B05C36" }}
+          className="rounded-xl px-5 py-6 text-center"
+          style={{ border: "1px solid var(--color-border)" }}
         >
-          <Shield size={30} className="mx-auto mb-2 opacity-90" />
-          <p className="text-[13px] font-bold opacity-85">{zone.label}</p>
-          <h1 className="text-[20px] font-bold mt-1 leading-snug">
+          <Shield size={30} className="mx-auto mb-2 text-text-sub" />
+          <p className="text-[13px] font-semibold text-text-sub">{zone.label}</p>
+          <h1 className="text-[20px] font-bold text-text-main mt-1 leading-snug">
             이곳은 등록된 돌봄 구역입니다
           </h1>
-          <p className="text-[13px] mt-2 leading-relaxed opacity-90">
+          <p className="text-[13px] text-text-sub mt-2 leading-relaxed">
             이 구역의 길고양이는 이웃들이 함께 돌보고 있어요.
             <br />
             동물을 해치는 행위는 <b>동물보호법에 따라 처벌될 수 있는 범죄</b>입니다
@@ -77,10 +77,10 @@ export default async function ZoneLandingPage({
         {/* 긴급 안내 — 진행 중 상황은 112 우선 */}
         <a
           href="tel:112"
-          className="mt-4 rounded-2xl px-4 py-3.5 flex items-center gap-3"
-          style={{ backgroundColor: "#FFF3EC", border: "1px solid #EAD3C6" }}
+          className="mt-4 rounded-xl px-4 py-3.5 flex items-center gap-3 press"
+          style={{ border: "1px solid var(--color-border)" }}
         >
-          <PhoneCall size={18} style={{ color: "#B84545" }} />
+          <PhoneCall size={18} style={{ color: "var(--color-error)" }} />
           <div className="flex-1">
             <p className="text-[13px] font-bold text-text-main">지금 눈앞에서 벌어지고 있나요?</p>
             <p className="text-[11px] text-text-sub">제보보다 112 전화가 먼저예요 — 탭하면 전화 앱이 열려요</p>
@@ -98,7 +98,7 @@ export default async function ZoneLandingPage({
             <ZoneReportForm zoneId={zone.id} />
           </div>
         ) : (
-          <div className="mt-6 rounded-2xl px-4 py-5 text-center" style={{ backgroundColor: "#FFF3EC", border: "1px solid #EAD3C6" }}>
+          <div className="mt-6 rounded-xl px-4 py-5 text-center" style={{ border: "1px solid var(--color-border)" }}>
             <p className="text-[13px] font-bold text-text-main">제보 접수를 잠시 중단했어요</p>
             <p className="text-[13px] text-text-sub mt-1.5 leading-relaxed">
               점검 중이에요. 지금 벌어지는 상황이라면 아래 112로 바로 신고해주세요.

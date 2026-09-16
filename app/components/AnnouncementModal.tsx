@@ -44,46 +44,34 @@ export default function AnnouncementModal() {
   return (
     <div
       className="fixed inset-0 z-[200] flex items-center justify-center px-6"
-      style={{ background: "rgba(30,22,16,0.55)", backdropFilter: "blur(2px)" }}
+      style={{ background: "rgba(0,0,0,0.5)" }}
       onClick={dismiss}
     >
       <div
-        className="relative w-full max-w-sm rounded-3xl bg-white p-6 pt-7"
-        style={{ boxShadow: "var(--shadow-modal)" }}
+        className="relative w-full max-w-sm p-6 pt-7"
+        style={{ background: "var(--color-surface)", borderRadius: "var(--radius-modal)", boxShadow: "var(--shadow-modal)" }}
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           onClick={dismiss}
           aria-label="닫기"
-          className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center press-strong"
-          style={{ background: "#F1ECE4" }}
+          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center press-strong"
         >
-          <X size={16} style={{ color: "#8B7562" }} />
+          <X size={18} style={{ color: "var(--color-text-light)" }} />
         </button>
 
-        <div
-          className="w-11 h-11 rounded-2xl flex items-center justify-center mb-3"
-          style={{ background: "rgba(201,124,82,0.14)" }}
-        >
-          <Megaphone size={20} style={{ color: "#C97C52" }} />
-        </div>
+        <Megaphone size={24} strokeWidth={1.8} className="mb-3" style={{ color: "var(--color-text-main)" }} />
 
-        <p
-          className="text-[15px] leading-relaxed whitespace-pre-wrap"
-          style={{ color: "#3D2F25" }}
-        >
+        <p className="text-[15px] leading-relaxed whitespace-pre-wrap text-text-main">
           {ann.body}
         </p>
 
         <button
           type="button"
           onClick={dismiss}
-          className="mt-5 w-full py-3 rounded-2xl text-white text-[15px] font-bold press"
-          style={{
-            background: "#C97C52",
-            boxShadow: "var(--shadow-primary)",
-          }}
+          className="mt-5 w-full h-12 text-[15px] font-semibold press"
+          style={{ background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
         >
           확인했어요
         </button>

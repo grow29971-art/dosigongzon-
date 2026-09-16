@@ -88,41 +88,33 @@ export default function ConsentManager() {
         </>
       )}
 
-      {/* 첫 방문 시 배너 */}
+      {/* 첫 방문 시 배너 — 흰 면 + 헤어라인 바텀시트(그림자 허용) */}
       {consent === "pending" && (
         <div
           role="dialog"
           aria-label="쿠키 사용 동의"
           className="fixed left-0 right-0 bottom-0 z-[60] px-4 pb-4 pt-3"
-          style={{
-            background: "linear-gradient(180deg, rgba(247,244,238,0) 0%, rgba(247,244,238,0.95) 30%, #F7F4EE 100%)",
-            backdropFilter: "blur(6px)",
-          }}
         >
           <div
-            className="mx-auto max-w-lg rounded-2xl bg-white p-4"
+            className="mx-auto max-w-lg p-4"
             style={{
-              boxShadow: "var(--shadow-card)",
-              border: "1px solid rgba(176, 92, 54,0.18)",
+              background: "var(--color-surface)",
+              borderRadius: "var(--radius-card)",
+              border: "1px solid var(--color-border)",
+              boxShadow: "var(--shadow-sheet)",
             }}
           >
             <div className="mb-3">
-              <p
-                className="mb-1 text-[13px] font-bold"
-                style={{ color: "#3D2F25" }}
-              >
-                🍪 쿠키 사용에 대해 알려드려요
+              <p className="mb-1 text-[15px] font-semibold text-text-main">
+                쿠키 사용에 대해 알려드려요
               </p>
-              <p
-                className="text-[13px] leading-relaxed"
-                style={{ color: "rgba(60,46,35,0.7)" }}
-              >
+              <p className="text-[13px] leading-relaxed text-text-sub">
                 도시공존은 서비스 개선을 위해 익명 방문 통계(Vercel Analytics·SpeedInsights)와 광고 효과 측정(Meta 픽셀)을 수집해요.
                 동의하지 않아도 모든 기능은 그대로 이용 가능합니다.{" "}
                 <Link
                   href="/privacy"
                   className="underline"
-                  style={{ color: "#8B5A3C" }}
+                  style={{ color: "var(--color-primary)" }}
                 >
                   개인정보처리방침
                 </Link>
@@ -132,11 +124,11 @@ export default function ConsentManager() {
               <button
                 type="button"
                 onClick={handleReject}
-                className="flex-1 rounded-xl px-4 py-2.5 text-[13px] font-bold press transition-transform"
+                className="flex-1 h-10 px-4 text-[13px] font-semibold press transition-transform"
                 style={{
-                  background: "rgba(60,46,35,0.06)",
-                  color: "rgba(60,46,35,0.7)",
-                  border: "1px solid rgba(60,46,35,0.08)",
+                  background: "var(--color-gray-100)",
+                  color: "var(--color-text-main)",
+                  borderRadius: "var(--radius-input)",
                 }}
               >
                 거부
@@ -144,10 +136,11 @@ export default function ConsentManager() {
               <button
                 type="button"
                 onClick={handleAccept}
-                className="flex-1 rounded-xl px-4 py-2.5 text-[13px] font-bold text-white press transition-transform"
+                className="flex-1 h-10 px-4 text-[13px] font-semibold press transition-transform"
                 style={{
                   background: "var(--color-primary)",
-                  boxShadow: "var(--shadow-primary)",
+                  color: "var(--color-surface)",
+                  borderRadius: "var(--radius-input)",
                 }}
               >
                 동의하고 계속

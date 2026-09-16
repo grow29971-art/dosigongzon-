@@ -87,51 +87,30 @@ export default function PushOnboardInterstitial() {
 
   return (
     <div
-      className="fixed inset-0 overflow-hidden flex flex-col"
-      style={{
-        zIndex: 999,
-        background: "linear-gradient(170deg, #8C5A37 0%, var(--color-primary) 55%, #C98A62 100%)",
-      }}
+      className="fixed inset-0 overflow-hidden flex flex-col bg-surface"
+      style={{ zIndex: 999 }}
     >
       <div className="flex-1 flex flex-col items-center justify-center px-7">
-        <div
-          className="w-24 h-24 rounded-full flex items-center justify-center mb-7"
-          style={{
-            background: "rgba(255,255,255,0.18)",
-            backdropFilter: "blur(10px)",
-            border: "1px solid rgba(255,255,255,0.25)",
-            boxShadow: "var(--shadow-modal)",
-          }}
-        >
-          <Bell size={42} color="#FFFFFF" strokeWidth={1.6} />
-        </div>
+        <Bell size={44} strokeWidth={1.6} className="mb-7" style={{ color: "var(--color-text-main)" }} />
 
-        <h2 className="text-[24px] font-bold text-center text-white tracking-tight leading-[1.4] mb-4">
+        <h2 className="text-[24px] font-bold text-center text-text-main tracking-tight leading-[1.4] mb-4">
           알림 켜고 소식 받아요
         </h2>
-        <p className="text-[15px] text-center text-white/85 leading-[1.9] max-w-[320px]">
-          내 글에 달린 댓글, 쪽지 답장,
-          <br />
-          돌봄 소식과 동네 이벤트까지 —
-          <br />
-          중요한 순간을 놓치지 않게 알려드려요.
+        <p className="text-[15px] text-center text-text-sub leading-[1.8] max-w-[320px]">
+          댓글·쪽지 답장·돌봄 소식을 놓치지 않게 알려드려요.
         </p>
       </div>
 
       <div className="px-6 pb-10 z-20">
         {/* 정보통신망법 §50 — 마케팅 수신 동의 문구 명시 (구독·동의 통합 플로우) */}
-        <p className="text-[11px] text-center mb-3 leading-relaxed" style={{ color: "rgba(255,255,255,0.65)" }}>
+        <p className="text-[11px] text-center mb-3 leading-relaxed text-text-light">
           켜면 돌봄·소식 알림(마케팅 포함) 수신에 동의해요 · 마이페이지에서 언제든 해제
         </p>
         <button
           onClick={handleEnable}
           disabled={busy}
-          className="w-full h-[52px] rounded-2xl text-[15px] font-bold flex items-center justify-center gap-1.5 press disabled:opacity-60"
-          style={{
-            background: "#FFFFFF",
-            color: "var(--color-primary-dark)",
-            boxShadow: "var(--shadow-fab)",
-          }}
+          className="w-full h-12 text-[15px] font-semibold flex items-center justify-center gap-1.5 press disabled:opacity-60"
+          style={{ background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
         >
           <Bell size={17} />
           {busy ? "설정 중..." : "알림 켜기"}
@@ -139,8 +118,7 @@ export default function PushOnboardInterstitial() {
         <button
           onClick={markSeenAndClose}
           disabled={busy}
-          className="w-full py-3 mt-2 text-[13px] font-medium active:opacity-50"
-          style={{ color: "rgba(255,255,255,0.7)" }}
+          className="w-full py-3 mt-2 text-[13px] font-medium text-text-sub active:opacity-50"
         >
           나중에 할게요
         </button>

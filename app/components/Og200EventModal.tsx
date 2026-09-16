@@ -12,7 +12,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Sparkles, X } from "lucide-react";
+import { Star, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 
@@ -71,7 +71,7 @@ export default function Og200EventModal() {
   return (
     <div
       className="fixed inset-0 z-[170] flex items-center justify-center p-5"
-      style={{ background: "rgba(0,0,0,0.55)" }}
+      style={{ background: "rgba(0,0,0,0.5)" }}
       onClick={dismiss}
       role="dialog"
       aria-modal="true"
@@ -79,49 +79,27 @@ export default function Og200EventModal() {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-sm rounded-[28px] overflow-hidden relative"
-        style={{ background: "#FFFFFF", boxShadow: "var(--shadow-modal)" }}
+        className="w-full max-w-sm overflow-hidden relative"
+        style={{ background: "var(--color-surface)", borderRadius: "var(--radius-modal)", boxShadow: "var(--shadow-modal)" }}
       >
-        {/* 헤더 — 그라데이션 */}
-        <div
-          className="relative px-6 pt-8 pb-6 overflow-hidden"
-          style={{ background: "#FFE8C2" }}
-        >
+        {/* 헤더 */}
+        <div className="relative px-6 pt-8 pb-5" style={{ borderBottom: "1px solid var(--color-divider)" }}>
           <button
             type="button"
             onClick={dismiss}
-            className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-white/50 press-strong"
+            className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center press-strong"
             aria-label="닫기"
           >
-            <X size={15} style={{ color: "#7A4F30" }} />
+            <X size={18} style={{ color: "var(--color-text-light)" }} />
           </button>
 
-          <div className="absolute top-4 left-5 animate-pulse">
-            <Sparkles size={12} style={{ color: "#fff", opacity: 0.7 }} />
-          </div>
-          <div className="absolute top-14 right-12 animate-pulse" style={{ animationDelay: "0.3s" }}>
-            <Sparkles size={10} style={{ color: "#fff", opacity: 0.5 }} />
-          </div>
-          <div className="absolute bottom-5 right-5 animate-pulse" style={{ animationDelay: "0.6s" }}>
-            <Sparkles size={14} style={{ color: "#fff", opacity: 0.6 }} />
-          </div>
-
-          <div
-            className="w-[68px] h-[68px] mx-auto rounded-full flex items-center justify-center mb-3"
-            style={{
-              background: "#E88D5A",
-              boxShadow: "var(--shadow-primary)",
-            }}
-          >
-            <span className="text-[34px] leading-none">🌟</span>
-          </div>
-          <p className="text-center text-[11px] font-bold tracking-[0.25em] mb-1" style={{ color: "#8E5430" }}>
+          <Star size={36} strokeWidth={1.6} className="mx-auto mb-3" style={{ color: "var(--color-primary)" }} />
+          <p className="text-center text-[11px] font-medium mb-1 text-text-light">
             LIMITED · OFFICIAL LAUNCH
           </p>
           <h2
             id="og200-title"
-            className="text-[24px] font-bold text-center tracking-tight leading-tight"
-            style={{ color: "#5C3A1E" }}
+            className="text-[20px] font-bold text-center tracking-tight leading-tight text-text-main"
           >
             "초기 200" 타이틀이 도착했어요
           </h2>
@@ -132,26 +110,22 @@ export default function Og200EventModal() {
           <p className="text-[13px] leading-relaxed text-text-main mb-4">
             정식 출시 전, 도시공존에 가장 먼저 합류한
             {" "}초기 멤버에게만 영구 한정 타이틀
-            {" "}<b style={{ color: "var(--color-primary-dark)" }}>🌟 초기 200</b>이 자동 부여됐어요.
+            {" "}<b style={{ color: "var(--color-primary)" }}>초기 200</b>이 자동 부여됐어요.
           </p>
 
-          <div
-            className="rounded-2xl px-4 py-3 mb-4 text-[13px] leading-relaxed"
-            style={{ background: "#FFF9EF", color: "#7A5F3F" }}
-          >
-            <p className="font-bold mb-1" style={{ color: "var(--color-primary-dark)" }}>
+          <div className="mb-4 text-[13px] leading-relaxed text-text-sub" style={{ borderTop: "1px solid var(--color-divider)", borderBottom: "1px solid var(--color-divider)", padding: "12px 0" }}>
+            <p className="font-semibold mb-1 text-text-main">
               이런 의미예요
             </p>
             <ul className="space-y-1 pl-1">
               <li>· 출시 후 가입한 사람은 절대 받을 수 없어요</li>
               <li>· 마이페이지 타이틀에서 장착할 수 있어요</li>
-              <li>· 닉네임 옆에 🌟 표시로 영구 노출돼요</li>
+              <li>· 닉네임 옆에 타이틀로 영구 노출돼요</li>
             </ul>
           </div>
 
           <p className="text-[13px] leading-relaxed text-text-sub mb-5 text-center">
             처음부터 함께해 주셔서 진심으로 감사드립니다.
-            <br />출시 후에도 한결같이 좋은 서비스 만들겠습니다
             <br /><span className="text-[11px] text-text-light">— 도시공존 운영자 김성우 드림</span>
           </p>
 
@@ -159,19 +133,16 @@ export default function Og200EventModal() {
             <Link
               href="/mypage"
               onClick={dismiss}
-              className="flex-[1.4] flex items-center justify-center py-3 rounded-2xl text-white text-[13px] font-bold press"
-              style={{
-                background: "var(--color-primary)",
-                boxShadow: "var(--shadow-primary)",
-              }}
+              className="flex-[1.4] flex items-center justify-center h-12 text-[15px] font-semibold press"
+              style={{ background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
             >
               내 타이틀 보러가기
             </Link>
             <button
               type="button"
               onClick={dismiss}
-              className="flex-1 py-3 rounded-2xl text-[13px] font-bold press bg-white"
-              style={{ color: "var(--color-primary-dark)", border: "1.5px solid rgba(176, 92, 54,0.30)" }}
+              className="flex-1 h-12 text-[15px] font-semibold press"
+              style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)", borderRadius: "var(--radius-input)" }}
             >
               나중에
             </button>

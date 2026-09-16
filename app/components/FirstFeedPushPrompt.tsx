@@ -70,7 +70,7 @@ export default function FirstFeedPushPrompt({ catName }: { catName: string }) {
   if (done) {
     return (
       <p className="mt-2.5 text-[13px] font-bold text-center" style={{ color: "rgba(255,255,255,0.85)" }}>
-        좋아요! {catName} 소식이 오면 살짝 알려드릴게요 🔔
+        좋아요! {catName} 소식이 오면 살짝 알려드릴게요
       </p>
     );
   }
@@ -88,16 +88,16 @@ export default function FirstFeedPushPrompt({ catName }: { catName: string }) {
           type="button"
           onClick={enable}
           disabled={busy}
-          className="flex-[1.4] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold press transition-transform disabled:opacity-60"
-          style={{ background: "rgba(255,255,255,0.95)", color: "#7A5238" }}
+          className="flex-[1.4] flex items-center justify-center gap-1.5 h-10 text-[13px] font-semibold press transition-transform disabled:opacity-60"
+          style={{ background: "var(--color-surface)", color: "var(--color-primary-dark)", borderRadius: "var(--radius-input)" }}
         >
           <Bell size={13} /> {busy ? "켜는 중..." : "소식 받기"}
         </button>
         <button
           type="button"
           onClick={() => setShow(false)}
-          className="flex-1 py-2.5 rounded-xl text-[13px] font-bold press transition-transform"
-          style={{ background: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.75)" }}
+          className="flex-1 h-10 text-[13px] font-semibold press transition-transform"
+          style={{ background: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.75)", borderRadius: "var(--radius-input)" }}
         >
           괜찮아요
         </button>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, MapPin } from "lucide-react";
+import { ArrowLeft, MapPin, ChevronRight } from "lucide-react";
 import { SEOUL_GUS } from "@/lib/seoul-regions";
 import { getGuCounts } from "@/lib/region-counts";
 
@@ -50,7 +50,7 @@ export default async function AreasIndexPage() {
   };
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "var(--color-surface)" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
@@ -59,8 +59,8 @@ export default async function AreasIndexPage() {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
+          style={{ background: "var(--color-gray-100)" }}
           aria-label="홈"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -70,8 +70,8 @@ export default async function AreasIndexPage() {
 
       <section className="px-5 pt-4">
         <div className="flex items-center gap-1.5 mb-1.5">
-          <MapPin size={14} style={{ color: "var(--color-primary)" }} />
-          <span className="text-[13px] font-bold" style={{ color: "var(--color-primary)" }}>전국</span>
+          <MapPin size={14} className="text-text-light" />
+          <span className="text-[13px] font-semibold text-text-sub">전국</span>
         </div>
         <h1 className="text-[24px] font-bold text-text-main leading-tight tracking-tight">
           전국 <br />길고양이 돌봄 지도
@@ -90,8 +90,8 @@ export default async function AreasIndexPage() {
               <Link
                 key={g.slug}
                 href={`/areas/${g.slug}`}
-                className="bg-white rounded-2xl p-3.5 press-strong transition-transform"
-                style={{ boxShadow: "var(--shadow-card)" }}
+                className="rounded-xl p-3.5 press"
+                style={{ border: "1px solid var(--color-border)" }}
               >
                 <div className="flex items-baseline justify-between">
                   <span className="text-[15px] font-bold text-text-main">{g.name}</span>
@@ -114,25 +114,22 @@ export default async function AreasIndexPage() {
       <section className="px-5 mt-7 cv-auto">
         <Link
           href="/regions"
-          className="block rounded-2xl p-4 press transition-transform"
-          style={{
-            background: "#FFF8F2",
-            border: "1.5px solid rgba(176, 92, 54,0.25)",
-          }}
+          className="block rounded-xl p-4 press"
+          style={{ border: "1px solid var(--color-border)" }}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[11px] font-bold tracking-[0.12em]" style={{ color: "var(--color-primary)" }}>NATIONWIDE</p>
+              <p className="text-[11px] font-semibold tracking-[0.12em] text-text-light">NATIONWIDE</p>
               <p className="text-[15px] font-bold text-text-main mt-0.5">다른 광역시·도 보기</p>
               <p className="text-[13px] text-text-sub mt-0.5">부산·인천·대구·대전·광주·울산·세종·제주·경기</p>
             </div>
-            <span className="text-[20px]" style={{ color: "var(--color-primary)" }}>→</span>
+            <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
           </div>
         </Link>
       </section>
 
       <section className="px-5 mt-5 cv-auto">
-        <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "var(--shadow-card)" }}>
+        <div className="rounded-xl p-4" style={{ border: "1px solid var(--color-border)" }}>
           <p className="text-[13px] text-text-sub leading-relaxed">
             <b className="text-text-main">도시공존</b>은 전국 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다.
             각 구별 페이지에서 동네에 등록된 고양이의 돌봄 기록, TNR 상태, 긴급 구조 요청을 확인할 수 있습니다.

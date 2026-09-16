@@ -63,7 +63,7 @@ export default function RegionsIndexPage() {
   };
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "var(--color-surface)" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
@@ -72,8 +72,8 @@ export default function RegionsIndexPage() {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
+          style={{ background: "var(--color-gray-100)" }}
           aria-label="홈"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -83,8 +83,8 @@ export default function RegionsIndexPage() {
 
       <section className="px-5 pt-4">
         <div className="flex items-center gap-1.5 mb-1.5">
-          <MapPin size={14} style={{ color: "var(--color-primary)" }} />
-          <span className="text-[13px] font-bold" style={{ color: "var(--color-primary)" }}>대한민국</span>
+          <MapPin size={14} className="text-text-light" />
+          <span className="text-[13px] font-semibold text-text-sub">대한민국</span>
         </div>
         <h1 className="text-[24px] font-bold text-text-main leading-tight tracking-tight">
           전국 길고양이<br />돌봄 지도
@@ -99,19 +99,16 @@ export default function RegionsIndexPage() {
       <section className="px-5 mt-6">
         <Link
           href={SEOUL_HIGHLIGHT.href}
-          className="block rounded-2xl p-4 press transition-transform"
-          style={{
-            background: "var(--color-primary)",
-            boxShadow: "var(--shadow-primary)",
-          }}
+          className="block rounded-xl p-4 press"
+          style={{ border: "1px solid var(--color-border)" }}
         >
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-bold tracking-[0.12em] text-white/80">SEOUL</p>
-              <p className="text-[20px] font-bold text-white tracking-tight mt-0.5">{SEOUL_HIGHLIGHT.name}</p>
-              <p className="text-[13px] text-white/85 mt-0.5">{SEOUL_HIGHLIGHT.desc}</p>
+              <p className="text-[11px] font-semibold tracking-[0.12em] text-text-light">SEOUL</p>
+              <p className="text-[20px] font-bold text-text-main tracking-tight mt-0.5">{SEOUL_HIGHLIGHT.name}</p>
+              <p className="text-[13px] text-text-sub mt-0.5">{SEOUL_HIGHLIGHT.desc}</p>
             </div>
-            <ArrowRight size={20} className="text-white shrink-0" />
+            <ArrowRight size={20} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
           </div>
         </Link>
       </section>
@@ -124,8 +121,8 @@ export default function RegionsIndexPage() {
             <Link
               key={s.slug}
               href={`/regions/${s.slug}`}
-              className="bg-white rounded-2xl p-3.5 press-strong transition-transform"
-              style={{ boxShadow: "var(--shadow-card)" }}
+              className="rounded-xl p-3.5 press"
+              style={{ border: "1px solid var(--color-border)" }}
             >
               <div className="flex items-baseline justify-between">
                 <span className="text-[15px] font-bold text-text-main">{s.shortName}</span>
@@ -139,7 +136,7 @@ export default function RegionsIndexPage() {
 
       {/* 하단 SEO 본문 */}
       <section className="px-5 mt-7">
-        <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "var(--shadow-card)" }}>
+        <div className="rounded-xl p-4" style={{ border: "1px solid var(--color-border)" }}>
           <p className="text-[13px] text-text-sub leading-relaxed">
             <b className="text-text-main">도시공존</b>은 전국 어디서나 길고양이 돌봄 기록을 남길 수 있어요.
             현재 서울은 25개 구·동 단위 상세 페이지를 제공하고, 다른 광역시·도는 지역 단위 안내를

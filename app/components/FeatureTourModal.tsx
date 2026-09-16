@@ -15,7 +15,6 @@ import {
   PawPrint,
   MapPin,
   Bot,
-  Sparkles,
   Users,
   BookOpen,
   FileText,
@@ -26,7 +25,6 @@ import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
 
 interface TourStep {
   Icon: LucideIcon;
-  color: string;
   eyebrow: string;
   title: string;
   body: string;
@@ -35,14 +33,12 @@ interface TourStep {
 const STEPS: TourStep[] = [
   {
     Icon: PawPrint,
-    color: "var(--color-primary)",
     eyebrow: "WELCOME",
     title: "처음 오셨어요?",
     body: "우리 동네 길 위의 아이들, 함께 알아가 볼까요?",
   },
   {
     Icon: PawPrint,
-    color: "#E88D5A",
     // 여기가 "핵심 기능"이라고 자기 소개하는 자리다. 신규 유저 전원이 본다.
     // 원래 "포획해서 카드 만들기"였는데, 이 앱의 핵심은 돌봄 기록이다
     // (30일 care_logs 120행 vs 카드 관련 행위 실측 미미). 자기 소개를 사실과 맞춘다. (2026-08-09)
@@ -53,21 +49,18 @@ const STEPS: TourStep[] = [
   {
     // 2026-08-29 PMF 개편: 기록의 수신자를 밝힌다 — 기록은 숙제가 아니라 보험.
     Icon: FileText,
-    color: "var(--color-primary-dark)",
     eyebrow: "증빙",
     title: "기록이 증거가 돼요",
     body: "쌓인 기록은 '돌봄 활동 확인서'(PDF)로 만들어져요. 민원·학대 신고·구청 협의 때 아이들과 나를 지키는 근거가 돼요.",
   },
   {
     Icon: MapPin,
-    color: "#5A8AC4",
     eyebrow: "지도",
     title: "우리 동네 지도",
     body: "내 주변에 어떤 아이들이 있는지, 누가 어떤 소식을 남겼는지 지도 하나로 볼 수 있어요.",
   },
   {
     Icon: Bot,
-    color: "#8B65B8",
     eyebrow: "AI 집사",
     title: "궁금할 땐 AI 집사에게",
     body: "새끼를 발견했거나 다친 아이를 만났을 때, 응급처치부터 TNR까지 바로 물어보세요.",
@@ -75,14 +68,12 @@ const STEPS: TourStep[] = [
   // "등급 & 성장" 슬라이드 삭제 — 카드 시스템 폐지(2026-08-27)로 존재하지 않는 기능 안내였음 (8/29 버그 사냥 P2)
   {
     Icon: Users,
-    color: "#6B8E6F",
     eyebrow: "커뮤니티",
     title: "동네 돌봄러들과 함께",
     body: "같은 동네 돌봄러들과 소식을 나누고, 도움이 필요할 때 서로 힘이 되어줘요.",
   },
   {
     Icon: BookOpen,
-    color: "var(--color-primary-dark)",
     eyebrow: "가이드",
     title: "언제든 다시 볼 수 있는 가이드",
     body: "응급처치·새끼 발견·TNR·겨울 쉼터까지, 필요할 때마다 꺼내볼 수 있는 가이드가 준비돼 있어요.",
@@ -92,21 +83,18 @@ const STEPS: TourStep[] = [
 const CORE_JOURNEY_STEPS: TourStep[] = [
   {
     Icon: MapPin,
-    color: "#5A8AC4",
     eyebrow: "1 · 발견",
     title: "우리 동네 아이를 찾아요",
     body: "지도에서 가까운 아이와 최근 돌봄 소식을 먼저 확인해요.",
   },
   {
     Icon: PawPrint,
-    color: "#E88D5A",
     eyebrow: "2 · 돌봄",
     title: "오늘 필요한 돌봄을 기록해요",
     body: "밥, 물, 건강 상태를 남기면 이웃에게 이어지고, 민원·신고 때 쓰는 증빙 문서로도 만들어져요.",
   },
   {
     Icon: Users,
-    color: "#6B8E6F",
     eyebrow: "3 · 연결",
     title: "혼자가 아닌 돌봄을 시작해요",
     body: "활동 지역을 정하고 같은 동네 이웃과 안전하게 돌봄을 이어가요.",
@@ -169,34 +157,28 @@ export default function FeatureTourModal({
   return (
     <div
       className="fixed inset-0 z-[200] flex items-center justify-center p-4"
-      style={{ background: "rgba(20,16,12,0.55)", backdropFilter: "blur(4px)" }}
+      style={{ background: "rgba(0,0,0,0.5)" }}
       role="dialog"
       aria-modal="true"
     >
       <div
-        className="w-full max-w-sm rounded-[28px] overflow-hidden relative flex flex-col"
-        style={{ background: "#FFFFFF", boxShadow: "var(--shadow-modal)", maxHeight: "min(640px, 92vh)" }}
+        className="w-full max-w-sm overflow-hidden relative flex flex-col"
+        style={{ background: "var(--color-surface)", borderRadius: "var(--radius-modal)", boxShadow: "var(--shadow-modal)", maxHeight: "min(640px, 92vh)" }}
       >
         {/* 건너뛰기 — 항상 도달 가능 */}
         <button
           type="button"
           onClick={handleSkip}
-          className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full flex items-center justify-center press-strong"
-          style={{ background: "rgba(0,0,0,0.06)" }}
+          className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center press-strong"
           aria-label="건너뛰기"
         >
-          <X size={15} className="text-text-sub" />
+          <X size={18} style={{ color: "var(--color-text-light)" }} />
         </button>
 
-        {/* 헤더 */}
-        <div className="px-7 pt-9 pb-7" style={{ background: `linear-gradient(135deg, ${current.color}22 0%, ${current.color}0A 100%)` }}>
-          <div
-            className="w-16 h-16 rounded-3xl flex items-center justify-center mb-5"
-            style={{ background: `${current.color}22`, border: `1.5px solid ${current.color}55` }}
-          >
-            <current.Icon size={30} color={current.color} strokeWidth={2} />
-          </div>
-          <p className="text-[11px] font-bold tracking-[0.16em] mb-1.5" style={{ color: current.color }}>
+        {/* 헤더 — 회색 선 아이콘, 틴트·그라디언트 없음 */}
+        <div className="px-6 pt-8 pb-4">
+          <current.Icon size={32} strokeWidth={1.8} className="mb-4" style={{ color: "var(--color-text-main)" }} />
+          <p className="text-[11px] font-medium mb-1.5 text-text-light">
             {current.eyebrow}
           </p>
           <h2 className="text-[20px] font-bold text-text-main tracking-tight leading-snug whitespace-pre-line">
@@ -205,12 +187,12 @@ export default function FeatureTourModal({
         </div>
 
         {/* 본문 */}
-        <div className="px-7 pt-5 pb-6 flex-1 overflow-y-auto">
+        <div className="px-6 pb-6 flex-1 overflow-y-auto">
           <p className="text-[15px] text-text-sub leading-relaxed">{current.body}</p>
         </div>
 
         {/* 하단 컨트롤 */}
-        <div className="px-7 pb-7">
+        <div className="px-6 pb-6">
           {/* 진행 인디케이터 */}
           <div className="flex items-center justify-center gap-1.5 mb-5">
             {steps.map((_, i) => (
@@ -220,8 +202,8 @@ export default function FeatureTourModal({
                 style={{
                   width: i === step ? 20 : 6,
                   height: 6,
-                  borderRadius: 3,
-                  background: i === step ? current.color : "rgba(0,0,0,0.12)",
+                  borderRadius: "var(--radius-square-sm)",
+                  background: i === step ? "var(--color-text-main)" : "var(--color-gray-300)",
                 }}
               />
             ))}
@@ -232,21 +214,22 @@ export default function FeatureTourModal({
               <button
                 type="button"
                 onClick={() => setStep((s) => Math.max(0, s - 1))}
-                className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 press-strong"
-                style={{ background: "rgba(0,0,0,0.05)" }}
+                className="w-12 h-12 flex items-center justify-center shrink-0 press-strong"
+                style={{ background: "var(--color-gray-100)", borderRadius: "var(--radius-input)" }}
                 aria-label="이전"
               >
-                <ChevronLeft size={18} className="text-text-sub" />
+                <ChevronLeft size={18} className="text-text-main" />
               </button>
             )}
             <button
               type="button"
               onClick={handleNext}
               disabled={closing}
-              className="flex-1 py-3.5 rounded-2xl text-[15px] font-bold text-white flex items-center justify-center gap-1.5 press transition-transform"
+              className="flex-1 h-12 text-[15px] font-semibold flex items-center justify-center gap-1.5 press transition-transform"
               style={{
-                background: `linear-gradient(135deg, ${current.color} 0%, ${current.color}CC 100%)`,
-                boxShadow: `0 8px 20px ${current.color}40`,
+                background: "var(--color-primary)",
+                color: "var(--color-surface)",
+                borderRadius: "var(--radius-input)",
                 opacity: closing ? 0.7 : 1,
               }}
             >

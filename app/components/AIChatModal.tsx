@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { X, Send, Bot, Info } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import UIChip from "@/app/components/ui/Chip";
 import { getDisplayName, getMyActivitySummary, computeScore, computeLevel } from "@/lib/cats-repo";
 
 /* ═══ 타입 ═══ */
@@ -33,7 +34,7 @@ export default function AIChatModal({
     {
       id: 0,
       role: "ai",
-      text: `안녕하세요 ${addressName}! 도시공존 AI 집사예요 🐱\n길고양이 돌봄에 대해 궁금한 점이 있으시면 편하게 물어보세요!`,
+      text: `안녕하세요 ${addressName}! 도시공존 AI 집사예요.\n길고양이 돌봄에 대해 궁금한 점이 있으시면 편하게 물어보세요!`,
     },
   ]);
 
@@ -44,7 +45,7 @@ export default function AIChatModal({
         m.id === 0 && m.role === "ai"
           ? {
               ...m,
-              text: `안녕하세요 ${addressName}! 도시공존 AI 집사예요 🐱\n길고양이 돌봄에 대해 궁금한 점이 있으시면 편하게 물어보세요!`,
+              text: `안녕하세요 ${addressName}! 도시공존 AI 집사예요.\n길고양이 돌봄에 대해 궁금한 점이 있으시면 편하게 물어보세요!`,
             }
           : m,
       ),
@@ -121,7 +122,7 @@ export default function AIChatModal({
         {
           id: idRef.current++,
           role: "ai",
-          text: `죄송해요, 잠시 문제가 생겼어요 😿\n\n${reason}`,
+          text: `죄송해요, 잠시 문제가 생겼어요.\n\n${reason}`,
         },
       ]);
     } finally {
@@ -138,8 +139,13 @@ export default function AIChatModal({
 
       {/* 바텀 시트 */}
       <div
-        className="relative mt-auto w-full flex flex-col rounded-t-[28px]"
-        style={{ height: "85dvh", backgroundColor: "#F5F3EE" }}
+        className="relative mt-auto w-full flex flex-col"
+        style={{
+          height: "85dvh",
+          background: "var(--color-surface)",
+          borderRadius: "var(--radius-sheet) var(--radius-sheet) 0 0",
+          boxShadow: "var(--shadow-sheet)",
+        }}
       >
         {/* 핸들 바 */}
         <div className="flex justify-center pt-3 pb-1">
@@ -149,32 +155,27 @@ export default function AIChatModal({
         {/* 헤더 */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-divider">
           <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: "var(--color-primary-soft)" }}
-            >
-              <Bot size={20} color="#B05C36" />
-            </div>
+            <Bot size={24} strokeWidth={1.8} style={{ color: "var(--color-text-main)" }} />
             <div>
-              <p className="text-[15px] font-bold" style={{ color: "#2A2A28" }}>도시공존 AI 집사</p>
-              <p className="text-[11px]" style={{ color: "#7A756E" }}>
+              <p className="text-[15px] font-semibold text-text-main">도시공존 AI 집사</p>
+              <p className="text-[11px] text-text-light">
                 {loading ? "AI가 답변을 생각 중이에요..." : "길고양이 돌봄 전문가"}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full flex items-center justify-center press-strong transition-transform"
-            style={{ backgroundColor: "var(--color-gray-50)" }}
+            className="w-9 h-9 flex items-center justify-center press-strong transition-transform"
+            aria-label="닫기"
           >
-            <X size={18} color="#7A756E" />
+            <X size={18} style={{ color: "var(--color-text-light)" }} />
           </button>
         </div>
 
         {/* 면책 고지 */}
-        <div className="px-4 py-2 flex items-start gap-2" style={{ backgroundColor: "var(--color-gray-50)", borderBottom: "1px solid #E5E0D6" }}>
-          <Info size={13} className="shrink-0 mt-0.5" style={{ color: "#A38E7A" }} />
-          <p className="text-[11px] leading-relaxed" style={{ color: "#8B7A68" }}>
+        <div className="px-4 py-2 flex items-start gap-2 border-b border-divider">
+          <Info size={13} className="shrink-0 mt-0.5" style={{ color: "var(--color-text-light)" }} />
+          <p className="text-[11px] leading-relaxed text-text-light">
             AI 집사의 답변은 참고용이며 <b>전문 수의사 상담을 대체하지 않습니다</b>. 대화 내용은 Google AI에 전송되며 서버에 저장되지 않습니다.
           </p>
         </div>
@@ -191,15 +192,14 @@ export default function AIChatModal({
                 style={
                   msg.role === "user"
                     ? {
-                        backgroundColor: "var(--color-primary)",
-                        color: "#fff",
-                        borderRadius: "20px 20px 8px 20px",
+                        background: "var(--color-primary)",
+                        color: "var(--color-surface)",
+                        borderRadius: "12px 12px 4px 12px",
                       }
                     : {
-                        backgroundColor: "#FFFFFF",
-                        color: "#2A2A28",
-                        borderRadius: "20px 20px 20px 8px",
-                        boxShadow: "var(--shadow-card)",
+                        background: "var(--color-gray-100)",
+                        color: "var(--color-text-main)",
+                        borderRadius: "12px 12px 12px 4px",
                       }
                 }
               >
@@ -219,15 +219,9 @@ export default function AIChatModal({
                 "근처 동물병원 찾고 싶어요",
                 "겨울철 쉼터 만드는 법",
               ].map((q) => (
-                <button
-                  key={q}
-                  type="button"
-                  onClick={() => send(q)}
-                  className="text-[13px] font-semibold px-3 py-2 rounded-2xl press-strong transition-transform"
-                  style={{ backgroundColor: "#fff", color: "var(--color-primary)", border: "1.5px solid #E5DCD3" }}
-                >
+                <UIChip key={q} onClick={() => send(q)}>
                   {q}
-                </button>
+                </UIChip>
               ))}
             </div>
           )}
@@ -238,14 +232,13 @@ export default function AIChatModal({
               <div
                 className="px-4 py-3 flex items-center gap-1.5"
                 style={{
-                  backgroundColor: "#FFFFFF",
-                  borderRadius: "20px 20px 20px 8px",
-                  boxShadow: "var(--shadow-card)",
+                  background: "var(--color-gray-100)",
+                  borderRadius: "12px 12px 12px 4px",
                 }}
               >
-                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(176, 92, 54,0.4)", animationDelay: "0ms" }} />
-                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(176, 92, 54,0.4)", animationDelay: "150ms" }} />
-                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(176, 92, 54,0.4)", animationDelay: "300ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--color-gray-400)", animationDelay: "0ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--color-gray-400)", animationDelay: "150ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--color-gray-400)", animationDelay: "300ms" }} />
               </div>
             </div>
           )}
@@ -253,16 +246,15 @@ export default function AIChatModal({
 
         {/* 입력 영역 */}
         <div
-          className="px-4 py-3 border-t"
+          className="px-4 py-3 border-t border-divider"
           style={{
-            borderColor: "#E5E0D6",
-            backgroundColor: "#FFFFFF",
+            background: "var(--color-surface)",
             paddingBottom: "max(12px, env(safe-area-inset-bottom))",
           }}
         >
           {/* AI 면책 안내 — 의료·법률 자문 아님 */}
-          <p className="text-[11px] mb-2 leading-relaxed text-center" style={{ color: "#8B7562" }}>
-            ⓘ AI 응답은 <b>참고용</b>이며 의료 진단·법률 자문이 아닙니다. 응급·의료는 수의사와 상의해주세요.
+          <p className="text-[11px] mb-2 leading-relaxed text-center text-text-light">
+            AI 응답은 <b>참고용</b>이며 의료 진단·법률 자문이 아닙니다. 응급·의료는 수의사와 상의해주세요.
           </p>
           <div className="flex items-center gap-2">
             <input
@@ -273,17 +265,18 @@ export default function AIChatModal({
                 if (e.key === "Enter" && !e.nativeEvent.isComposing) send();
               }}
               placeholder="길고양이에 대해 물어보세요..."
-              className="flex-1 rounded-2xl px-4 py-3 text-[15px] outline-none transition"
+              className="flex-1 px-4 h-11 text-[15px] outline-none transition text-text-main"
               style={{
-                backgroundColor: "var(--color-gray-50)",
-                color: "#2A2A28",
+                background: "var(--color-gray-100)",
+                borderRadius: "var(--radius-input)",
               }}
             />
             <button
               onClick={() => send()}
               disabled={!input.trim() || loading}
               className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 press-strong transition-transform disabled:opacity-40"
-              style={{ backgroundColor: "var(--color-primary)" }}
+              style={{ background: "var(--color-primary)" }}
+              aria-label="보내기"
             >
               <Send size={18} color="white" />
             </button>

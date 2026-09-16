@@ -19,6 +19,8 @@ import {
   Users,
   Wind,
   HandHeart,
+  Shield,
+  Scale,
 } from "lucide-react";
 
 const SITE_URL = "https://dosigongzon.com";
@@ -38,14 +40,16 @@ export const metadata: Metadata = {
   },
 };
 
+const BOX: React.CSSProperties = { border: "1px solid var(--color-border)" };
+
 export default function MakerPage() {
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "var(--color-surface)" }}>
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
+          style={{ background: "var(--color-gray-100)" }}
           aria-label="홈"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -55,13 +59,13 @@ export default function MakerPage() {
 
       {/* 히어로 */}
       <section className="px-5 pt-6">
-        <p className="text-[11px] font-bold tracking-[0.18em] mb-2" style={{ color: "var(--color-primary-dark)" }}>
+        <p className="text-[11px] font-semibold tracking-[0.18em] mb-2 text-text-light">
           MADE BY ONE NEIGHBOR
         </p>
         <h1 className="text-[24px] font-bold text-text-main leading-tight tracking-tight">
           이 플랫폼,
           <br />
-          <span style={{ color: "var(--color-primary-dark)" }}>한 사람이 직접 만들었어요.</span>
+          <span style={{ color: "var(--color-primary)" }}>한 사람이 직접 만들었어요.</span>
         </h1>
         <p className="text-[15px] text-text-sub mt-3 leading-relaxed">
           <b className="text-text-main">김성우</b> · 1인 풀스택 메이커
@@ -73,21 +77,15 @@ export default function MakerPage() {
       {/* 철학과 가치 — Mission / Vision / Values */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <Sparkles size={14} style={{ color: "var(--color-primary-dark)" }} />
+          <Sparkles size={14} className="text-text-light" />
           <h2 className="text-[15px] font-bold text-text-main">철학과 가치</h2>
         </div>
 
         {/* Mission */}
-        <div
-          className="rounded-3xl p-5 mb-3"
-          style={{
-            background: "#FFF9F2",
-            border: "1px solid rgba(176, 92, 54,0.20)",
-          }}
-        >
+        <div className="rounded-xl p-5 mb-3" style={BOX}>
           <div className="flex items-center gap-1.5 mb-3">
-            <Compass size={14} style={{ color: "var(--color-primary)" }} />
-            <span className="text-[11px] font-bold tracking-[0.18em]" style={{ color: "var(--color-primary)" }}>
+            <Compass size={14} className="text-text-light" />
+            <span className="text-[11px] font-semibold tracking-[0.18em] text-text-light">
               MISSION
             </span>
           </div>
@@ -101,16 +99,10 @@ export default function MakerPage() {
         </div>
 
         {/* Vision */}
-        <div
-          className="rounded-3xl p-5 mb-3"
-          style={{
-            background: "#F2F7F0",
-            border: "1px solid rgba(107,142,111,0.22)",
-          }}
-        >
+        <div className="rounded-xl p-5 mb-3" style={BOX}>
           <div className="flex items-center gap-1.5 mb-3">
-            <Eye size={14} style={{ color: "#4F6B53" }} />
-            <span className="text-[11px] font-bold tracking-[0.18em]" style={{ color: "#4F6B53" }}>
+            <Eye size={14} className="text-text-light" />
+            <span className="text-[11px] font-semibold tracking-[0.18em] text-text-light">
               VISION
             </span>
           </div>
@@ -129,37 +121,32 @@ export default function MakerPage() {
           </p>
         </div>
 
-        {/* Values 3카드 */}
+        {/* Values 3항목 — 구분선 리스트 */}
         <div className="flex items-center gap-1.5 mb-2 ml-1 mt-4">
-          <Sparkles size={14} style={{ color: "var(--color-primary-dark)" }} />
-          <span className="text-[11px] font-bold tracking-[0.18em]" style={{ color: "var(--color-primary-dark)" }}>
+          <Sparkles size={14} className="text-text-light" />
+          <span className="text-[11px] font-semibold tracking-[0.18em] text-text-light">
             VALUES
           </span>
         </div>
-        <div className="space-y-2">
-          <ValueCard
+        <div className="rounded-xl px-4" style={BOX}>
+          <ValueRow
             n={1}
-            icon={<Users size={16} color="#FFFFFF" />}
-            accent="var(--color-primary)"
-            accentDark="var(--color-primary-dark)"
+            icon={<Users size={18} />}
             title="연대"
             body="우리는 저마다 다른 문화·환경에서 각기 다른 삶을 살아왔지만, 인류라는 공통점을 가진 형제들이다. 항상 서로의 생각·개성·성향을 존중하고 형제애를 중요시한다."
           />
-          <ValueCard
+          <ValueRow
             n={2}
-            icon={<Wind size={16} color="#FFFFFF" />}
-            accent="#4A7BA8"
-            accentDark="#3A6086"
+            icon={<Wind size={18} />}
             title="자유와 몰입"
             body="새로운 생각을 가로막는 고정 관념·관습·틀에서 벗어나 자연의 일부가 되어 한계를 초월하고 자유롭게 사고하며, 자연의 천재지변과 같이 매섭게 행동한다."
           />
-          <ValueCard
+          <ValueRow
             n={3}
-            icon={<HandHeart size={16} color="#FFFFFF" />}
-            accent="#6B8E6F"
-            accentDark="#4F6B53"
+            icon={<HandHeart size={18} />}
             title="봉사"
             body="우리는 지구촌 형제들의 보급선이다. 우리는 모두에게 형제를 대하는 마음으로 서비스와 제품을 제공한다."
+            last
           />
         </div>
       </section>
@@ -167,16 +154,10 @@ export default function MakerPage() {
       {/* 시작한 이유 */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <Heart size={14} style={{ color: "var(--color-like)" }} />
+          <Heart size={14} className="text-text-light" />
           <h2 className="text-[15px] font-bold text-text-main">왜 시작했나</h2>
         </div>
-        <div
-          className="rounded-3xl p-5"
-          style={{
-            background: "#FFF9F2",
-            border: "1px solid rgba(176, 92, 54,0.20)",
-          }}
-        >
+        <div className="rounded-xl p-5" style={BOX}>
           <p className="text-[13px] leading-[2] text-text-sub">
             매일 밥자리에 들러 사료를 채우고, 비 오는 날엔 우산 든 채 한참을 기다리고,
             누가 알아주지 않아도 그 아이가 오늘 잘 있는지 한 번 더 둘러보는 길집사들이
@@ -196,10 +177,10 @@ export default function MakerPage() {
       {/* 만드는 방식 — 한 사람 풀스택 */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <Sparkles size={14} style={{ color: "var(--color-primary)" }} />
+          <Sparkles size={14} className="text-text-light" />
           <h2 className="text-[15px] font-bold text-text-main">어떻게 만드나</h2>
         </div>
-        <div className="bg-white rounded-3xl p-5" style={{ boxShadow: "var(--shadow-card)" }}>
+        <div className="rounded-xl p-5" style={BOX}>
           <p className="text-[13px] leading-[1.95] text-text-sub mb-4">
             기획·디자인·개발·운영·고객 응대까지 모두 직접 합니다.
             소프트웨어만 다루지 않고{" "}
@@ -251,33 +232,27 @@ export default function MakerPage() {
       {/* 운영 원칙 — 자비 운영 */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <ShieldCheck size={14} style={{ color: "#4F6B53" }} />
+          <ShieldCheck size={14} className="text-text-light" />
           <h2 className="text-[15px] font-bold text-text-main">어떻게 굴러가나</h2>
         </div>
-        <div
-          className="rounded-3xl p-5"
-          style={{
-            background: "rgba(107,142,111,0.10)",
-            border: "1px solid rgba(107,142,111,0.22)",
-          }}
-        >
+        <div className="rounded-xl px-4" style={BOX}>
           <PrincipleRow
-            emoji="💛"
+            icon={<Heart size={18} />}
             title="광고도, 유료 구독도, 데이터 판매도 없습니다"
             body="서버·도메인·AI 사용료·하드웨어 부품비는 운영자의 자비와 쇼핑몰 수익으로 충당하고, 쇼핑몰 수익의 일부는 길고양이들에게 다시 후원돼요. 단체·정당·기업의 지원은 받지 않아 중립을 지킬 수 있습니다."
           />
           <PrincipleRow
-            emoji="🛡"
+            icon={<Shield size={18} />}
             title="아이들의 안전이 1순위"
             body="좌표는 동(洞) 단위로만 흐려서 저장하고, 비로그인 외부인에게는 도트와 카운트만 노출돼요. 사진 GPS 메타데이터(EXIF)는 업로드 시 자동 제거합니다."
           />
           <PrincipleRow
-            emoji="🤝"
+            icon={<Users size={18} />}
             title="시민이 만드는 시민의 도구"
             body="기록·돌봄·소통의 주체는 길집사와 시민이에요. 운영자는 그 손이 더 멀리 닿을 수 있게 도구를 만들고 유지할 뿐입니다."
           />
           <PrincipleRow
-            emoji="🌱"
+            icon={<Scale size={18} />}
             title="중립과 투명"
             body="공신력 있는 공공기관 자료(농림축산식품부·동물보호관리시스템 등)와 동물약국 표시사항을 바탕으로 정보를 정리하고, 의료·법률 판단은 반드시 전문가와 상의하도록 안내합니다."
             last
@@ -288,16 +263,10 @@ export default function MakerPage() {
       {/* 길집사에게 전하는 말 */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <Hand size={14} style={{ color: "var(--color-primary)" }} />
+          <Hand size={14} className="text-text-light" />
           <h2 className="text-[15px] font-bold text-text-main">길집사님께</h2>
         </div>
-        <div
-          className="rounded-3xl p-5"
-          style={{
-            background: "#FFF8DC",
-            border: "1px solid rgba(232,176,64,0.25)",
-          }}
-        >
+        <div className="rounded-xl p-5" style={BOX}>
           <p className="text-[13px] leading-[2] text-text-sub">
             처음 만난 아이의 사진 한 장, 한 줄 기록이
             그 동네의 또 다른 길집사에게는 큰 안심이 됩니다.
@@ -309,7 +278,7 @@ export default function MakerPage() {
           </p>
           <p className="text-[13px] leading-[2] text-text-sub mt-3">
             의견·제안·불편한 점 무엇이든 메일 한 통이면 운영자에게 직접 닿습니다.
-            오래 같이 가요. 🐾
+            오래 같이 가요.
           </p>
         </div>
       </section>
@@ -317,21 +286,18 @@ export default function MakerPage() {
       {/* 연락처 / 제휴 */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <Coffee size={14} style={{ color: "#8B5A3C" }} />
+          <Coffee size={14} className="text-text-light" />
           <h2 className="text-[15px] font-bold text-text-main">제휴·문의·차 한 잔</h2>
         </div>
-        <div className="bg-white rounded-3xl p-5" style={{ boxShadow: "var(--shadow-card)" }}>
+        <div className="rounded-xl p-5" style={BOX}>
           <p className="text-[13px] leading-[1.95] text-text-sub mb-4">
             언론·블로그 취재, 동물보호 단체 협업, 지자체·캠페인 제휴, 학교 프로젝트
             인터뷰 등 어떤 결의 이야기든 환영합니다. 답장은 운영자가 직접 드려요.
           </p>
           <a
             href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("[도시공존] 안녕하세요")}`}
-            className="flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[13px] font-bold text-white press transition-transform"
-            style={{
-              background: "var(--color-primary)",
-              boxShadow: "var(--shadow-primary)",
-            }}
+            className="flex items-center justify-center gap-1.5 py-3 text-[13px] font-bold text-white press"
+            style={{ background: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
           >
             <Mail size={14} />
             <span>운영자에게 직접 메일 보내기</span>
@@ -346,15 +312,15 @@ export default function MakerPage() {
       <section className="px-5 mt-7 text-center">
         <p className="text-[11px] text-text-light leading-relaxed">
           더 자세한 서비스 소개는{" "}
-          <Link href="/about" className="underline" style={{ color: "var(--color-primary-dark)" }}>
+          <Link href="/about" className="underline text-text-sub">
             소개 페이지
           </Link>
           {" · "}이용약관·개인정보처리방침은{" "}
-          <Link href="/terms" className="underline" style={{ color: "var(--color-primary-dark)" }}>
+          <Link href="/terms" className="underline text-text-sub">
             약관
           </Link>
           {" · "}
-          <Link href="/privacy" className="underline" style={{ color: "var(--color-primary-dark)" }}>
+          <Link href="/privacy" className="underline text-text-sub">
             처리방침
           </Link>
         </p>
@@ -365,14 +331,8 @@ export default function MakerPage() {
 
 function SkillCard({ icon, title, sub }: { icon: React.ReactNode; title: string; sub: string }) {
   return (
-    <div
-      className="rounded-xl p-3"
-      style={{
-        background: "#FFF9F2",
-        border: "1px solid rgba(176, 92, 54,0.18)",
-      }}
-    >
-      <div className="flex items-center gap-1.5 mb-1" style={{ color: "var(--color-primary-dark)" }}>
+    <div className="p-3" style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card-sm)" }}>
+      <div className="flex items-center gap-1.5 mb-1 text-text-sub">
         {icon}
         <p className="text-[13px] font-bold tracking-tight text-text-main">{title}</p>
       </div>
@@ -381,37 +341,25 @@ function SkillCard({ icon, title, sub }: { icon: React.ReactNode; title: string;
   );
 }
 
-function ValueCard({
+function ValueRow({
   n,
   icon,
-  accent,
-  accentDark,
   title,
   body,
+  last,
 }: {
   n: number;
   icon: React.ReactNode;
-  accent: string;
-  accentDark: string;
   title: string;
   body: string;
+  last?: boolean;
 }) {
   return (
-    <div
-      className="rounded-2xl p-4 flex items-start gap-3 bg-white"
-      style={{ boxShadow: "var(--shadow-card)" }}
-    >
-      <div
-        className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
-        style={{ background: `linear-gradient(135deg, ${accent} 0%, ${accentDark} 100%)` }}
-      >
-        {icon}
-      </div>
+    <div className="py-4 flex items-start gap-3" style={last ? undefined : { borderBottom: "1px solid var(--color-divider)" }}>
+      <div className="shrink-0 w-10 h-10 flex items-center justify-center text-text-sub">{icon}</div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-[11px] font-bold tracking-[0.12em]" style={{ color: accentDark }}>
-            0{n}
-          </span>
+          <span className="text-[11px] font-semibold tracking-[0.12em] text-text-light">0{n}</span>
           <p className="text-[15px] font-bold text-text-main tracking-tight">{title}</p>
         </div>
         <p className="text-[13px] text-text-sub leading-relaxed">{body}</p>
@@ -421,20 +369,20 @@ function ValueCard({
 }
 
 function PrincipleRow({
-  emoji,
+  icon,
   title,
   body,
   last,
 }: {
-  emoji: string;
+  icon: React.ReactNode;
   title: string;
   body: string;
   last?: boolean;
 }) {
   return (
-    <div className={last ? "" : "pb-3 mb-3 border-b"} style={last ? {} : { borderColor: "rgba(107,142,111,0.18)" }}>
-      <div className="flex items-start gap-2.5">
-        <span className="text-[20px] shrink-0 leading-none mt-0.5">{emoji}</span>
+    <div className="py-4" style={last ? undefined : { borderBottom: "1px solid var(--color-divider)" }}>
+      <div className="flex items-start gap-3">
+        <div className="shrink-0 w-10 h-10 flex items-center justify-center text-text-sub">{icon}</div>
         <div className="flex-1 min-w-0">
           <p className="text-[13px] font-bold text-text-main leading-snug tracking-tight">{title}</p>
           <p className="text-[13px] text-text-sub mt-1 leading-relaxed">{body}</p>
