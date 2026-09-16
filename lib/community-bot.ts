@@ -19,6 +19,8 @@ import { LEGACY_BOT_NAMES, LEGACY_PERSONA_IDS, STAFF_TITLE_ID, isBotAuthor, isVa
 export const POSTS_PER_DAY_CAP = 3;
 export const COMMENTS_PER_DAY_CAP = 10;
 export const REPLIES_PER_DAY_CAP = 20;
+/** 봇 글 하나에 다른 닉네임의 봇 댓글(최상위)은 이만큼까지 (사장님 2026-09-16: 내 글에도 다른 닉으로 댓글) */
+export const OWN_POST_COMMENTS_CAP = 2;
 
 export const POST_TITLE_MIN = 5;
 export const POST_TITLE_MAX = 50;
@@ -162,6 +164,8 @@ export interface CommentCandidate {
   authorName: string;
   commentCount: number;
   createdAt: string;
+  /** 이 글에 이미 달린 봇 최상위 댓글 수 (own 모드에서 상한 판단용) */
+  staffComments?: number;
 }
 
 interface PostRow {
@@ -181,7 +185,7 @@ interface PostRow {
  */
 export async function listCommentCandidates(
   supabase: SupabaseClient,
-  opts: { minAgeMs: number; limit: number },
+  opts: { minAgeMs: number; limit: number; own?: boolean },
 ): Promise<BotResult<CommentCandidate[]>> {
   const from = isoAgo(7 * 86400 * 1000);
   const to = isoAgo(opts.minAgeMs);
@@ -198,19 +202,25 @@ export async function listCommentCandidates(
     .order("created_at", { ascending: false })
     .limit(40);
   if (error) return { ok: false, error: error.message, status: 500 };
-  const userPosts = ((data ?? []) as PostRow[]).filter((p) => !isBotAuthor(p));
-  if (userPosts.length === 0) return { ok: true, value: [] };
+  const rows = (data ?? []) as PostRow[];
+  // own=true: 봇 글 중 다른 닉네임 봇 댓글(최상위)이 OWN_POST_COMMENTS_CAP 미만인 것. 아니면 이용자 글 중 운영 댓글 없는 것
+  const targets = rows.filter((p) => (opts.own ? isBotAuthor(p) : !isBotAuthor(p)));
+  if (targets.length === 0) return { ok: true, value: [] };
 
-  const { data: done } = await supabase
+  const { data: staff } = await supabase
     .from("post_comments")
-    .select("post_id")
+    .select("post_id, parent_id")
     .eq("author_title", STAFF_TITLE_ID)
-    .in("post_id", userPosts.map((p) => p.id));
-  const doneSet = new Set(((done ?? []) as { post_id: string }[]).map((c) => c.post_id));
+    .in("post_id", targets.map((p) => p.id));
+  const topCount = new Map<string, number>();
+  for (const c of (staff ?? []) as { post_id: string; parent_id: string | null }[]) {
+    if (!c.parent_id) topCount.set(c.post_id, (topCount.get(c.post_id) ?? 0) + 1);
+  }
+  const allowed = opts.own ? OWN_POST_COMMENTS_CAP : 1;
   return {
     ok: true,
-    value: userPosts
-      .filter((p) => !doneSet.has(p.id))
+    value: targets
+      .filter((p) => (topCount.get(p.id) ?? 0) < allowed)
       .slice(0, opts.limit)
       .map((p) => ({
         id: p.id,
@@ -219,6 +229,7 @@ export async function listCommentCandidates(
         authorName: p.author_name ?? "익명",
         commentCount: p.comment_count,
         createdAt: p.created_at,
+        staffComments: topCount.get(p.id) ?? 0,
       })),
   };
 }
@@ -266,16 +277,20 @@ export async function insertPersonaComment(
   if (!target) return { ok: false, error: "글을 찾을 수 없어요", status: 404 };
   if (target.category !== "free") return { ok: false, error: "자유게시판 글에만 댓글을 달아요", status: 400 };
   if (target.hidden) return { ok: false, error: "숨겨진 글이에요", status: 400 };
-  if (!target.author_id || isBotAuthor(target)) {
-    return { ok: false, error: "운영 글에는 첫 댓글을 달지 않아요 (답글은 reply 로)", status: 400 };
+  if (!target.author_id) return { ok: false, error: "작성자가 없는 글이에요", status: 400 };
+  const ownPost = isBotAuthor(target);
+  if (ownPost && target.author_name === input.persona.nickname) {
+    return { ok: false, error: "내 글에는 글쓴이와 다른 닉네임으로만 댓글을 달아요", status: 400 };
   }
   const { data: existing } = await supabase
     .from("post_comments")
-    .select("id")
+    .select("id, parent_id, author_name")
     .eq("post_id", target.id)
-    .eq("author_title", STAFF_TITLE_ID)
-    .limit(1);
-  if (existing && existing.length > 0) return { ok: false, error: "이미 운영 댓글이 달린 글이에요", status: 409 };
+    .eq("author_title", STAFF_TITLE_ID);
+  const staffTop = ((existing ?? []) as { id: string; parent_id: string | null; author_name: string | null }[]).filter((c) => !c.parent_id);
+  if (!ownPost && staffTop.length > 0) return { ok: false, error: "이미 운영 댓글이 달린 글이에요", status: 409 };
+  if (ownPost && staffTop.length >= OWN_POST_COMMENTS_CAP) return { ok: false, error: `내 글에는 봇 댓글을 ${OWN_POST_COMMENTS_CAP}개까지만 달아요`, status: 409 };
+  if (ownPost && staffTop.some((c) => c.author_name === input.persona.nickname)) return { ok: false, error: "같은 닉네임이 이미 이 글에 댓글을 달았어요", status: 409 };
 
   const authorId = await adminAuthorId(supabase);
   if (!authorId) return { ok: false, error: "admins 없음", status: 500 };

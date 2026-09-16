@@ -10,7 +10,9 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const minAgeHours = Math.min(48, Math.max(0, Number(url.searchParams.get("minAgeHours") ?? "1") || 0));
   const limit = Math.min(20, Math.max(1, Number(url.searchParams.get("limit") ?? "10") || 10));
-  const result = await listCommentCandidates(createServiceClient(), { minAgeMs: minAgeHours * 3600 * 1000, limit });
+  // own=1: 봇 글 중 다른 닉네임 봇 댓글이 2개 미만인 것 (사장님 2026-09-16: 내 글에도 다른 닉으로 댓글)
+  const own = url.searchParams.get("own") === "1";
+  const result = await listCommentCandidates(createServiceClient(), { minAgeMs: minAgeHours * 3600 * 1000, limit, own });
   if (!result.ok) return Response.json({ ok: false, error: result.error }, { status: result.status });
   return Response.json({ ok: true, candidates: result.value });
 }

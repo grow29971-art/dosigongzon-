@@ -52,8 +52,9 @@
   매번 랜덤. 말투는 닉네임 해시로 고정(`voiceFor`). 봇 글에 달린 이용자 댓글에 답할 때는 **그 글의 작성자 닉네임**을
   서버가 강제한다(`reply`). 봇 판정은 이름이 아니라 `author_title='staff'`(+구 명의).
 - `GET personas` → `{ ok, nicknames:[...], voices:[{id,voice}], personas:[...구버전 호환], stats:{postsToday,commentsToday,repliesToday,postsCap,commentsCap,repliesCap,recentBotTitles,recentNicknames,...} }`
-- `GET candidates?minAgeHours=1&limit=10` → `{ ok, candidates:[{id,title,content,authorName,commentCount,createdAt}] }`
-  (자유게시판·숨김 아님·봇 글 아님·운영 댓글 없음·1시간~7일).
+- `GET candidates?minAgeHours=1&limit=10` → `{ ok, candidates:[{id,title,content,authorName,commentCount,createdAt,staffComments}] }`
+  (자유게시판·숨김 아님·봇 글 아님·운영 댓글 없음·1시간~7일). `&own=1` 이면 반대로 **봇 글** 중 봇 최상위 댓글이 2개 미만인 것
+  (사장님 2026-09-16: 내 글에도 다른 닉네임으로 댓글). `POST comment` 는 봇 글이면 글쓴이와 다른 닉네임만 받고 글당 2개·같은 닉 1개 상한.
 - `POST post` `{nickname,title,content}` → `{ ok, postId, nickname, url }`. 자유게시판 고정, 운영 배지 강제,
   하루 3개 상한(429), 같은 제목 중복(409), 링크 금지(400). 닉네임은 풀에 있거나 한글·영문·숫자 2~12자.
 - `POST comment` `{nickname,postId,body}` → `{ ok, commentId, nickname, pushed, pushFailed, url }`. free 이용자 글에만,
