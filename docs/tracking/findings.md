@@ -35,7 +35,23 @@
   (대타 매칭·지명 책임·증빙 리포트 등)을 검증한 뒤 방향을 정하기로 합의돼 있다.
 - 접근: 2026-09-02 투입된 스포트라이트·하트·소식 푸시의 지표 변화를 먼저 재측정.
 
-## 리디자인 후속: 앱 밖 자산·lib 색 상수의 구 팔레트 잔존 (2026-09-16)
+## DOMPurify 서버 정화가 폴백 경로로 도는지 확인 필요 (2026-09-16)
+
+- 증상: `/tips/[slug]`의 렌더 시점 DOMPurify(jsdom) 정화가 Node 20에서 모듈 로드 실패(ERR_REQUIRE_ESM)해
+  정규식 sanitizer로 폴백하도록 고쳤고(8b4aeebd), `engines.node=22.x`도 지정했다. 배포 직후 로그에 폴백 1건이
+  찍혀 있어 Node 22 적용 후 DOMPurify 정상 경로가 도는지 아직 확인되지 않았다.
+- 영향: 폴백도 write-time과 같은 화이트리스트 정화라 XSS 방어선은 유지되지만, mutation XSS 이론적 여지가
+  DOMPurify보다 크다(관리자 self-XSS 한정).
+- 접근: 다음 배포 후 Vercel 로그에서 "폴백" 검색 → 0건이면 종결. 남아 있으면 `html-encoding-sniffer`를 5.x로
+  overrides 고정하거나 jsdom 없는 sanitizer로 교체.
+
+## OG 이미지에 고양이 사진(webp)이 안 실린다 (2026-09-16)
+
+- 증상: satori(next/og)가 webp를 지원하지 않아 고양이 OG는 사진 없이 이름·회색 면으로 렌더된다(경고 로그).
+- 영향: 카톡 공유 미리보기에 사진이 없다. 기능 영향 없음.
+- 접근: 업로드 시 jpg 썸네일을 함께 만들거나 OG 생성 시 서버에서 변환(sharp) — 비용 대비 보류.
+
+## (해결) 리디자인 후속: 앱 밖 자산·lib 색 상수의 구 팔레트 잔존 (2026-09-16) — 같은 날 밤 반영 완료(00cdc52b·671a967d)
 
 - 증상: 앱 화면은 순백·뉴트럴로 바뀌었지만 OG 이미지 19종(`**/opengraph-image.tsx`), 주간 메일
   (`lib/weekly-digest.ts`), 관리자 문의 알림 HTML(`app/api/admin/notify-inquiry`)은 아이보리 톤 그대로.
@@ -47,7 +63,7 @@
 - 접근: OG·메일을 별도 커밋군으로 새 톤에 맞추고, lib 필드는 소비자 grep 후 삭제. 별칭 토큰
   (`--shadow-card/-card-sm/-primary`, `--color-warm-white`)은 참조 0건 확인 후 globals.css에서 삭제.
 
-## 리디자인 접합부 중복 부품 (2026-09-16)
+## (해결) 리디자인 접합부 중복 부품 (2026-09-16) — 같은 날 밤 승격 완료(2da0910b). 이름만 같고 역할이 다른 `users/[id]` SectionTitle·`admin/_ui` EmptyState·`auth-errors` Field는 의도적으로 남김
 
 - 증상: 화면군을 병렬로 만들면서 같은 역할의 작은 부품이 파일마다 따로 생겼다 — `SectionTitle` 3벌
   (`cats/[id]/report`·`mypage/report`·`users/[id]`), 표 셀 `Th/Td/Tr` 2벌(헤더 배경·굵기 미세 불일치),

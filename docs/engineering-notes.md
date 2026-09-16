@@ -89,3 +89,15 @@
   `design-tokens.test.mjs`·`design-swap.test.mjs`도 같은 방식.
 - **커밋 훅**: `git commit`이 포함된 셸 호출 전에 `npx tsc --noEmit`이 돌아 커밋마다 1분쯤 걸린다. 워크트리
   안에서 커밋해도 훅은 루트 트리에서 tsc를 돈다.
+- **(main) 그룹 아래 동적 OG 이미지 주소는 손으로 조립하면 404**: `app/(main)/**`의 `opengraph-image.tsx`는 Next가
+  `<head>`에 해시 주소(`opengraph-image-xxxx?hash`)로 주입하며, 손 조립 `/cats/{id}/opengraph-image`는 404다
+  (루트 라우트 `/faq/opengraph-image`·`/areas/{slug}/opengraph-image`는 200 — 그룹 유무 차이). `generateMetadata`
+  에서 `openGraph.images`를 손 조립 문자열로 덮어쓰면 올바른 주입이 밀려나므로 **images를 지정하지 않는다**.
+  클라이언트 카카오 공유는 `lib/og-image-url.ts`의 `getPageOgImageUrl()`로 페이지 `og:image` 메타를 읽는다.
+  가드: `tests/og-image-url.test.mjs`.
+- **satori(next/og)는 webp를 못 그린다**: 고양이 사진이 webp라 OG 이미지에 사진을 넣으면 "지원되지 않는 이미지
+  형식: image/webp" 경고 후 사진 없이 렌더된다(에러 아님). 사진을 OG에 쓰려면 jpg/png 변환이 선행.
+- **/tips/[slug] 500의 정체(2026-09-16)**: `isomorphic-dompurify → jsdom → html-encoding-sniffer(CJS)`가 ESM 전용
+  `@exodus/bytes`를 require()해 Node 20 런타임에서 ERR_REQUIRE_ESM. 락은 8/25 이후 무변경이라 런타임 문제.
+  조치: `package.json engines.node=22.x`(require(esm) 가능) + `lib/html-sanitize-server.ts`를 지연 로드·실패 시
+  정규식 sanitizer 폴백. 서버 전용 모듈은 이렇게 **로드 실패를 페이지 500으로 번지게 두지 말 것**.
