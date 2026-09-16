@@ -23,13 +23,14 @@ interface Props {
  * 페이지 상단에 표시되는 "이 페이지 사용법" 안내 배너.
  * X로 dismiss하면 7일 동안 다시 안 뜸.
  */
+// 2026-09-16 시빅 포스터(대안 C): 틴트 그라디언트 카드 → 검정 밴드 + 라임 아이콘 박스.
+// accent prop은 호환용으로 남기되 밴드에서는 쓰지 않는다(라임은 검정 위에서만).
 export default function PageIntroBanner({
   id,
   title,
   description,
   ctaLabel,
   ctaHref,
-  accent = "var(--color-primary)",
 }: Props) {
   const [visible, setVisible] = useState(false);
 
@@ -59,42 +60,38 @@ export default function PageIntroBanner({
 
   return (
     <div
-      className="relative rounded-2xl p-4 mx-1"
-      style={{
-        background: `linear-gradient(135deg, #FFFFFF 0%, ${accent}0C 100%)`,
-        border: `1px solid ${accent}30`,
-        boxShadow: `0 4px 14px ${accent}12`,
-      }}
+      className="relative p-4 mx-1"
+      style={{ background: "var(--color-rule)", color: "#FFFFFF" }}
       role="note"
     >
       <button
         type="button"
         onClick={dismiss}
-        className="absolute top-2.5 right-2.5 w-6 h-6 rounded-full flex items-center justify-center press-strong"
-        style={{ background: "rgba(0,0,0,0.05)" }}
+        className="absolute top-2.5 right-2.5 w-6 h-6 flex items-center justify-center press-strong"
+        style={{ background: "rgba(255,255,255,0.12)" }}
         aria-label="안내 닫기"
       >
-        <X size={11} className="text-text-sub" />
+        <X size={11} color="#FFFFFF" />
       </button>
       <div className="flex items-start gap-2.5 pr-6">
         <div
-          className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
-          style={{ backgroundColor: `${accent}1A` }}
+          className="w-7 h-7 flex items-center justify-center shrink-0 mt-0.5"
+          style={{ backgroundColor: "var(--color-lime)" }}
         >
-          <Sparkles size={14} style={{ color: accent }} />
+          <Sparkles size={14} color="#111111" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-[13px] font-bold text-text-main tracking-tight">
+          <p className="text-[13px] font-bold tracking-tight" style={{ color: "#FFFFFF" }}>
             {title}
           </p>
-          <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
+          <p className="text-[13px] mt-1 leading-relaxed" style={{ color: "rgba(255,255,255,0.72)" }}>
             {description}
           </p>
           {ctaLabel && ctaHref && (
             <Link
               href={ctaHref}
               className="inline-flex items-center gap-0.5 mt-2 text-[13px] font-bold press-strong transition-transform"
-              style={{ color: accent }}
+              style={{ color: "var(--color-lime)" }}
             >
               {ctaLabel}
               <ArrowRight size={11} />
