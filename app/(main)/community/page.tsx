@@ -7,7 +7,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { MapPin, PenLine, Search, Siren, HandHeart, Flame, MessagesSquare } from "lucide-react";
+import { MapPin, PenLine, Search, Siren, HandHeart, Flame, MessagesSquare, Pin, ChevronDown } from "lucide-react";
 import PageIntroModal from "@/app/components/PageIntroModal";
 import type { Post, PostCategory } from "@/lib/types";
 import { CATEGORY_MAP } from "@/lib/types";
@@ -53,6 +53,7 @@ export default function CommunityPage() {
   const [filter, setFilter] = useState<FilterKey>("all");
   const [myRegions, setMyRegions] = useState<ActivityRegion[]>([]);
   const [neighborhoodOnly, setNeighborhoodOnly] = useState(false);
+  const [noticesOpen, setNoticesOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -88,8 +89,15 @@ export default function CommunityPage() {
     });
   }, [user]);
 
+  // 공지(pinned)는 피드에 섞지 않고 상단 접힌 블록으로 — 실제 글이 첫 화면에 오도록
+  const pinnedPosts = useMemo(() => {
+    const pinned = posts.filter((p) => p.isPinned);
+    if (filter === "all" || filter === "popular") return pinned;
+    return pinned.filter((p) => p.category === filter);
+  }, [posts, filter]);
+
   const visiblePosts = useMemo(() => {
-    let list = posts;
+    let list = posts.filter((p) => !p.isPinned);
     if (filter === "popular") {
       list = [...list].sort((a, b) => popularityScore(b) - popularityScore(a)).slice(0, 20);
     } else if (filter !== "all") {
@@ -218,6 +226,43 @@ export default function CommunityPage() {
           />
           <CommunityWritePrompt />
           {showCareTeam && <CareTeamCard />}
+        </div>
+      )}
+
+      {/* ── 공지 (접힘) ── */}
+      {pinnedPosts.length > 0 && (
+        <div className="bg-white mb-2" style={{ borderBottom: "1px solid var(--color-divider)" }}>
+          <button
+            type="button"
+            onClick={() => setNoticesOpen((v) => !v)}
+            className="w-full flex items-center gap-2 px-4 py-3 text-left press"
+            aria-expanded={noticesOpen}
+          >
+            <Pin size={14} className="text-primary shrink-0" />
+            <span className="text-[13px] font-bold text-text-main flex-1 truncate">
+              {noticesOpen ? `공지 ${pinnedPosts.length}개` : pinnedPosts[0].title}
+            </span>
+            {!noticesOpen && pinnedPosts.length > 1 && (
+              <span className="text-[12px] text-text-light shrink-0">+{pinnedPosts.length - 1}</span>
+            )}
+            <ChevronDown
+              size={16}
+              className="text-text-light shrink-0 transition-transform"
+              style={{ transform: noticesOpen ? "rotate(180deg)" : undefined }}
+            />
+          </button>
+          {noticesOpen &&
+            pinnedPosts.map((p) => (
+              <Link
+                key={p.id}
+                href={`/community/${p.id}`}
+                className="flex items-center gap-2 px-4 py-2.5 press"
+                style={{ borderTop: "1px solid var(--color-divider)" }}
+              >
+                <span className="text-[11px] font-semibold text-text-light shrink-0">{CATEGORY_MAP[p.category].label}</span>
+                <span className="text-[13px] text-text-main flex-1 truncate">{p.title}</span>
+              </Link>
+            ))}
         </div>
       )}
 
