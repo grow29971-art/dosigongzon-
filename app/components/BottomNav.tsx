@@ -46,9 +46,9 @@ const shopOpenTabs: Tab[] = [
 
 const tabs = SHOP_OPEN_NAV ? shopOpenTabs : legacyTabs;
 
-// D 아이보리 에디토리얼 리디자인 (2026-08-26 사장님 시안 확정):
-// 플로팅 라운드 필 → 화면 전폭 도킹 바 + 상단 헤어라인.
-// 활성 탭 = 잉크색 굵은 아이콘 + 라벨 아래 테라코타 점. 비활성 = 웜 페일 톤.
+// D 아이보리 에디토리얼 리디자인 (2026-08-26): 플로팅 라운드 필 → 화면 전폭 도킹 바.
+// 시빅 포스터 스킨 (2026-09-16 대안 C 사장님 선택): 상단 2px 검정 룰,
+// 활성 탭 = 라임 블록 배경 + 잉크 아이콘/라벨(점 제거). 비활성 = 그레이.
 const ACTIVE = "var(--color-text-main)";
 const INACTIVE = "var(--color-text-light)";
 
@@ -67,13 +67,11 @@ export default function BottomNav() {
       className="fixed left-0 right-0 bottom-0 z-50"
       style={{
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
-        background: "rgba(250,246,240,0.94)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        borderTop: "1px solid var(--color-border)",
+        background: "#FFFFFF",
+        borderTop: "2px solid var(--color-rule)",
       }}
     >
-      <div className="flex items-stretch px-2 pt-2 pb-1.5 mx-auto" style={{ minHeight: 60, maxWidth: "30rem" }}>
+      <div className="flex items-stretch mx-auto" style={{ minHeight: 60, maxWidth: "30rem" }}>
         {tabs.map(({ href, label, Icon, wip }) => {
           const on = isActive(href);
           return (
@@ -82,7 +80,8 @@ export default function BottomNav() {
               href={href}
               aria-label={wip ? `${label} (준비 중)` : label}
               aria-current={on ? "page" : undefined}
-              className="relative flex flex-1 min-w-0 flex-col items-center justify-start gap-1 px-0.5 press-strong transition-transform"
+              className="relative flex flex-1 min-w-0 flex-col items-center justify-center gap-1 px-0.5 py-2 press-strong transition-transform"
+              style={{ background: on ? "var(--color-lime)" : "transparent" }}
             >
               <span className="relative">
                 <Icon
@@ -111,15 +110,6 @@ export default function BottomNav() {
               >
                 {label}
               </span>
-              <span
-                aria-hidden
-                className="rounded-full"
-                style={{
-                  width: 4,
-                  height: 4,
-                  background: on ? "var(--color-primary)" : "transparent",
-                }}
-              />
             </Link>
           );
         })}
