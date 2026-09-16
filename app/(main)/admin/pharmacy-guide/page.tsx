@@ -23,7 +23,9 @@ import {
 } from "../_ui";
 
 const EMPTY: PharmacyGuideInput = {
-  name: "", brand: null, category: "", color: "var(--color-primary)",
+  // color는 저장 데이터(DB 기본값 '#C47E5A', supabase_pharmacy_guide_migration.sql)라 CSS 토큰 문자열을
+  // 넣지 않는다 — 공개 페이지는 이 값을 쓰지 않으며 hex 잔존 검사에서 이 파일은 예외.
+  name: "", brand: null, category: "", color: "#C47E5A",
   image_url: null, description: "", usage_info: null, tip: null, price: null, sort_order: 0,
 };
 

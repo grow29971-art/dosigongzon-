@@ -65,6 +65,8 @@ const REPORT_EXCLUDE = [
   /(^|[\\/])app[\\/]layout\.tsx$/,
   /(^|[\\/])app[\\/]darkcheck[\\/]/,
   /(^|[\\/])app[\\/]api[\\/]/,
+  // 약품 가이드 관리 폼의 color 기본값은 DB 저장 데이터(스타일 아님)
+  /(^|[\\/])admin[\\/]pharmacy-guide[\\/]page\.tsx$/,
   ...SWAP_EXCLUDE,
 ];
 

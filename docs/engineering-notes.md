@@ -69,3 +69,23 @@
 
 - 학습 데이터의 Next.js와 API·관례가 다르다. 코드 작성 전 `node_modules/next/dist/docs/`의 해당
   가이드를 먼저 읽고, deprecation 경고를 따른다.
+
+## 리디자인 작업 함정 (2026-09-16 「익숙한 동네앱」)
+
+- **CRLF 작업 트리**: `core.autocrlf=true`라 `\n` 기반 문자열 치환(sed·스크립트)을 하면 lone `\r`이 생겨
+  git이 파일을 바이너리로 판정한다(`git diff --stat`에 `Bin`). 편집 후 줄바꿈을 정규화하고 커밋 전
+  `Bin`이 없는지 확인. 커밋된 인덱스는 LF, 작업 트리는 CRLF가 정상.
+- **Vercel 프리뷰는 curl로 302**: 배포 보호(팀 SSO) 때문에 비로그인 요청은 전부 302다. 프리뷰 실측은
+  Vercel에 로그인된 크롬으로만 가능. 프리뷰 URL은 GitHub 커밋 상태의 target_url(대시보드)에서 읽는다
+  (`city-git-<브랜치>-<hash>-grow29971-6597s-projects.vercel.app`).
+- **프리뷰 환경에는 카카오 지도 키가 없다**: `NEXT_PUBLIC_KAKAO_MAP_KEY`가 Production 스코프에만 있어
+  프리뷰의 /map·랜딩 지도는 "지도 키가 설정되지 않았어요"를 띄운다. 코드 문제가 아니다.
+- **색 치환 도구** `scripts/design-swap.mjs`: 구 hex/rgba→토큰(`--mode=var`) 또는 새 hex(`--mode=hex`,
+  SVG 문자열·canvas·meta용), `rounded-2xl/3xl→xl`, `--report`로 잔존 hex 집계(예외 목록은 파일 상단
+  `REPORT_EXCLUDE`). `app/globals.css`는 치환 대상 아님.
+- **테스트가 소스 문자열을 고정한다**: `tests/*.test.mjs` 다수가 tsx 소스를 읽어 심볼·마운트 수·문구를
+  assert(`<CareTeamCard` 4곳, `mapInstanceRef`, `<MapIntroSheet` 1곳, "내 아이들" 등). 화면을 고치기 전에
+  해당 테스트를 먼저 읽고, 테스트를 고쳐서 통과시키지 않는다. 리디자인 가드 테스트 `tests/redesign-*.test.mjs`·
+  `design-tokens.test.mjs`·`design-swap.test.mjs`도 같은 방식.
+- **커밋 훅**: `git commit`이 포함된 셸 호출 전에 `npx tsc --noEmit`이 돌아 커밋마다 1분쯤 걸린다. 워크트리
+  안에서 커밋해도 훅은 루트 트리에서 tsc를 돈다.
