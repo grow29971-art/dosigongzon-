@@ -304,7 +304,7 @@ export default function MyPage() {
           description="레벨·업적·streak으로 활동이 보상돼요. 친구 초대(+15점), 주간 이메일, 앱 설치, 동네 푸시도 여기서 켜고 끌 수 있어요."
           ctaLabel="전체 기능 안내"
           ctaHref="/guide"
-          accent="#211D17"
+          accent="#111111"
         />
       </div>
 
@@ -837,7 +837,7 @@ export default function MyPage() {
                 background: "var(--color-primary-softer)",
                 borderRadius: "var(--radius-card-sm)",
                 boxShadow: "var(--shadow-card)",
-                border: "1px solid rgba(176,92,54,0.22)",
+                border: "1px solid rgba(17,17,17,0.22)",
               }}
             >
               <div

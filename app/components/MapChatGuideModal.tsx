@@ -102,7 +102,7 @@ export default function MapChatGuideModal() {
             className="rounded-2xl p-3.5 mb-4 flex items-start gap-3"
             style={{
               background: "var(--color-primary-softer)",
-              border: "1px solid rgba(176, 92, 54,0.18)",
+              border: "1px solid rgba(17, 17, 17,0.18)",
             }}
           >
             <div

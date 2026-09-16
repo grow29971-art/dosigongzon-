@@ -32,8 +32,8 @@ export default function FirstProjectBanner() {
       <div
         className="rounded-2xl overflow-hidden"
         style={{
-          background: "#8A4325",
-          boxShadow: "0 8px 24px rgba(176, 92, 54,0.22), 0 2px 6px rgba(176, 92, 54,0.14)",
+          background: "#000000",
+          boxShadow: "0 8px 24px rgba(17, 17, 17,0.22), 0 2px 6px rgba(17, 17, 17,0.14)",
         }}
       >
         <div className="p-4">
@@ -64,7 +64,7 @@ export default function FirstProjectBanner() {
             href="/shop"
             onClick={handleDismiss}
             className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold press transition-transform"
-            style={{ background: "rgba(255,255,255,0.95)", color: "#8A4325" }}
+            style={{ background: "rgba(255,255,255,0.95)", color: "#000000" }}
           >
             <span>투표하러 가기</span>
             <ArrowRight size={13} />

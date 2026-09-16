@@ -66,7 +66,7 @@ export default function AnnouncementModal() {
           className="w-11 h-11 rounded-2xl flex items-center justify-center mb-3"
           style={{ background: "rgba(201,124,82,0.14)" }}
         >
-          <Megaphone size={20} style={{ color: "#C97C52" }} />
+          <Megaphone size={20} style={{ color: "#333333" }} />
         </div>
 
         <p
@@ -81,7 +81,7 @@ export default function AnnouncementModal() {
           onClick={dismiss}
           className="mt-5 w-full py-3 rounded-2xl text-white text-[15px] font-bold press"
           style={{
-            background: "#C97C52",
+            background: "#333333",
             boxShadow: "var(--shadow-primary)",
           }}
         >

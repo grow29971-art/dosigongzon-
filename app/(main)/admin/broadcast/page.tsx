@@ -42,7 +42,7 @@ const COHORT_OPTIONS: Array<{
     label: "창립 멤버",
     description: "5/20 전 가입한 founding_member 타이틀 보유자",
     Icon: Sparkles,
-    color: "#B05C36",
+    color: "#111111",
   },
   {
     id: "no_cat",
@@ -63,7 +63,7 @@ const COHORT_OPTIONS: Array<{
     label: "마케팅 동의자 (광고용)",
     description: "마케팅 수신 동의자만 — 쇼핑·이벤트 등 (광고)성 안내는 반드시 이 코호트로",
     Icon: Tag,
-    color: "#C97C52",
+    color: "#333333",
   },
 ];
 
@@ -357,9 +357,9 @@ export default function AdminBroadcastPage() {
               onClick={() => setMessage(t.text)}
               className="text-[11px] px-3 py-1.5 chip-square font-semibold press-strong"
               style={{
-                background: "rgba(176, 92, 54,0.10)",
+                background: "rgba(17, 17, 17,0.10)",
                 color: "var(--color-primary-dark)",
-                border: "1px solid rgba(176, 92, 54,0.22)",
+                border: "1px solid rgba(17, 17, 17,0.22)",
               }}
             >
               {t.label}
@@ -415,7 +415,7 @@ export default function AdminBroadcastPage() {
         style={{
           background: "#FFFFFF",
           color: "var(--color-primary-dark)",
-          border: "1.5px solid rgba(176, 92, 54,0.35)",
+          border: "1.5px solid rgba(17, 17, 17,0.35)",
         }}
       >
         {sending ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}

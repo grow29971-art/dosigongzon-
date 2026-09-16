@@ -129,7 +129,7 @@ export default function PushReconsentCard() {
       <div className="flex items-center gap-2.5">
         <div
           className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-          style={{ backgroundColor: "rgba(176, 92, 54,0.15)" }}
+          style={{ backgroundColor: "rgba(17, 17, 17,0.15)" }}
         >
           <BellRing size={16} style={{ color: "var(--color-primary)" }} />
         </div>

@@ -16,7 +16,7 @@ import {
 } from "@/lib/pharmacy-guide-repo";
 
 const COLORS = [
-  { label: "갈색", value: "#B05C36" },
+  { label: "갈색", value: "#111111" },
   { label: "초록", value: "#6B8E6F" },
   { label: "빨강", value: "#D85555" },
   { label: "파랑", value: "#4A7BA8" },
@@ -27,7 +27,7 @@ const COLORS = [
 ];
 
 const EMPTY: PharmacyGuideInput = {
-  name: "", brand: null, category: "", color: "#B05C36",
+  name: "", brand: null, category: "", color: "#111111",
   image_url: null, description: "", usage_info: null, tip: null, price: null, sort_order: 0,
 };
 
@@ -126,7 +126,7 @@ export default function AdminPharmacyGuidePage() {
 
       {/* 편집 폼 */}
       {editingId && (
-        <div className="mb-5 p-4" style={{ background: "#FFFFFF", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1.5px solid rgba(176, 92, 54,0.2)" }}>
+        <div className="mb-5 p-4" style={{ background: "#FFFFFF", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)", border: "1.5px solid rgba(17, 17, 17,0.2)" }}>
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-[15px] font-bold text-text-main">{editingId === "new" ? "새 약품 추가" : "약품 수정"}</h2>
             <button onClick={handleCancel} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--color-gray-100)" }}>

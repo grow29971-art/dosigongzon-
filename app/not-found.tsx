@@ -33,7 +33,7 @@ export default function NotFound() {
             height: 180,
             borderRadius: "50%",
             background:
-              "radial-gradient(circle, rgba(176, 92, 54,0.15) 0%, rgba(176, 92, 54,0) 70%)",
+              "radial-gradient(circle, rgba(17, 17, 17,0.15) 0%, rgba(17, 17, 17,0) 70%)",
           }}
         />
         <div

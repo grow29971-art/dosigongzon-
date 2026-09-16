@@ -19,7 +19,7 @@ export default function SplashLoading() {
         style={{
           background: "var(--color-primary)",
           boxShadow:
-            "0 16px 40px rgba(176, 92, 54,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -3px 6px rgba(0,0,0,0.1)",
+            "0 16px 40px rgba(17, 17, 17,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -3px 6px rgba(0,0,0,0.1)",
           animation: "splash-pulse 1.8s ease-in-out infinite",
         }}
       >

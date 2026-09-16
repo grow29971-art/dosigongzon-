@@ -261,7 +261,7 @@ export default async function HomeLanding({
             className="flex-[1.4] flex items-center justify-center gap-1.5 py-4 rounded-2xl text-white press transition-transform"
             style={{
               background: "var(--color-primary)",
-              boxShadow: "0 8px 22px rgba(176, 92, 54,0.38), 0 2px 6px rgba(168,104,74,0.22)",
+              boxShadow: "0 8px 22px rgba(17, 17, 17,0.38), 0 2px 6px rgba(168,104,74,0.22)",
             }}
           >
             <PawPrint size={15} />
@@ -271,16 +271,16 @@ export default async function HomeLanding({
             href="/signup"
             className="flex-1 flex items-center justify-center gap-1.5 py-4 rounded-2xl press transition-transform"
             style={{
-              background: "rgba(176, 92, 54,0.09)",
+              background: "rgba(17, 17, 17,0.09)",
               color: "var(--color-primary)",
-              border: "1.5px solid rgba(176, 92, 54,0.45)",
+              border: "1.5px solid rgba(17, 17, 17,0.45)",
             }}
           >
             <Sparkles size={14} />
             <span className="text-[15px] font-bold tracking-tight">1초 가입하기</span>
           </Link>
         </div>
-        <p className="mt-2 text-center text-[11px] font-bold" style={{ color: "rgba(176, 92, 54,0.7)" }}>
+        <p className="mt-2 text-center text-[11px] font-bold" style={{ color: "rgba(17, 17, 17,0.7)" }}>
           {/* 같은 페이지 아래(:606)에 "1초 가입"이 있어 숫자가 서로 달랐다.
               카카오·구글 OAuth 한 번이므로 그쪽에 맞춘다. (2026-08-09) */}
           1초 가입 · 광고 없는 무료 운영
@@ -584,7 +584,7 @@ export default async function HomeLanding({
           className="rounded-2xl p-4 mb-3"
           style={{
             background: "var(--color-primary-softer)",
-            border: "1px solid rgba(176, 92, 54,0.20)",
+            border: "1px solid rgba(17, 17, 17,0.20)",
           }}
         >
           <p className="text-[13px] text-text-sub leading-[1.85]">
@@ -711,7 +711,7 @@ export default async function HomeLanding({
           className="relative rounded-3xl px-6 py-7 overflow-hidden"
           style={{
             background: "var(--color-primary-softer)",
-            border: "1px solid rgba(176, 92, 54,0.18)",
+            border: "1px solid rgba(17, 17, 17,0.18)",
           }}
         >
           <span
@@ -721,7 +721,7 @@ export default async function HomeLanding({
               fontSize: 60,
               lineHeight: 1,
               fontFamily: "serif",
-              color: "rgba(176, 92, 54,0.25)",
+              color: "rgba(17, 17, 17,0.25)",
             }}
           >
             “
@@ -950,7 +950,7 @@ export default async function HomeLanding({
           <GuideCard
             href="/protection/legal"
             icon={<ShieldCheck size={18} color="var(--color-text-sub)" />}
-            iconBg="rgba(93,86,75,0.08)"
+            iconBg="rgba(85,85,85,0.08)"
             title="법률 가이드"
             sub="학대 대응 매뉴얼"
           />
@@ -1055,7 +1055,7 @@ export default async function HomeLanding({
           className="rounded-2xl p-5"
           style={{
             background: "var(--color-primary-softer)",
-            border: "1px solid rgba(176, 92, 54,0.20)",
+            border: "1px solid rgba(17, 17, 17,0.20)",
           }}
         >
           <p className="text-[15px] font-bold text-text-main mb-1">
@@ -1088,7 +1088,7 @@ export default async function HomeLanding({
           />
           <TechCard
             icon={<Bot size={16} color="var(--color-text-sub)" />}
-            iconBg="rgba(93,86,75,0.08)"
+            iconBg="rgba(85,85,85,0.08)"
             title="AI 집사 챗봇"
             sub="Google Gemini 기반"
           />
@@ -1125,13 +1125,13 @@ export default async function HomeLanding({
           className="rounded-3xl p-5"
           style={{
             background: "var(--color-primary-softer)",
-            border: "1px solid rgba(176, 92, 54,0.20)",
+            border: "1px solid rgba(17, 17, 17,0.20)",
           }}
         >
           <div className="flex items-center gap-2 mb-2">
             <div
               className="w-9 h-9 rounded-full flex items-center justify-center"
-              style={{ background: "rgba(176, 92, 54,0.15)" }}
+              style={{ background: "rgba(17, 17, 17,0.15)" }}
             >
               <Code2 size={18} style={{ color: "var(--color-primary-dark)" }} />
             </div>
@@ -1155,7 +1155,7 @@ export default async function HomeLanding({
               style={{
                 background: "var(--color-surface)",
                 color: "var(--color-primary-dark)",
-                border: "1px solid rgba(176, 92, 54,0.25)",
+                border: "1px solid rgba(17, 17, 17,0.25)",
               }}
             >
               <span>운영 이야기 보기</span>
