@@ -26,6 +26,7 @@ export default function ShareCatButton({ catId, name, region, description, urgen
       ? "utm_source=kakao&utm_medium=share&utm_campaign=cat_urgent"
       : "utm_source=kakao&utm_medium=share&utm_campaign=cat_share";
     const url = `${origin}/cats/${catId}?${utm}`;
+    // 카카오 메시지 본문(외부 공유 문구)은 그대로 둔다 — 화면 문법과 무관
     const title = urgent
       ? `🚨 긴급 돌봄 필요: ${name} · ${region}`
       : `${name} · ${region}`;
@@ -69,33 +70,22 @@ export default function ShareCatButton({ catId, name, region, description, urgen
         ? "긴급 공유 완료"
         : status === "copied"
         ? "링크 복사됨 — 단톡방에 붙여넣기"
-        : "🚨 긴급 · 동네에 알리기";
+        : "긴급 · 동네에 알리기";
+    // 위험 상태 전용 — 의미색(error) 채움. 그림자·펄스 없음.
     return (
       <button
         type="button"
         onClick={handleShare}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl press transition-transform disabled:opacity-70"
+        className="w-full flex items-center justify-center gap-2 h-12 press disabled:opacity-70 text-white"
         style={{
-          background: status === "idle"
-            ? "linear-gradient(135deg, #E53935 0%, #C62828 100%)"
-            : "linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%)",
-          color: "#fff",
-          boxShadow: status === "idle"
-            ? "0 6px 22px rgba(229,57,53,0.45)"
-            : "0 4px 14px rgba(46,125,50,0.35)",
-          animation: status === "idle" ? "urgent-pulse 1.6s ease-in-out infinite" : undefined,
+          background: status === "idle" ? "var(--color-error)" : "var(--color-sage)",
+          borderRadius: "var(--radius-input)",
         }}
         aria-label="긴급 카카오톡 공유"
       >
         {status === "idle" ? <Siren size={18} /> : <Check size={18} />}
-        <span className="text-[15px] font-bold">{urgentLabel}</span>
-        <style jsx>{`
-          @keyframes urgent-pulse {
-            0%, 100% { box-shadow: 0 6px 22px rgba(229,57,53,0.45); }
-            50% { box-shadow: 0 6px 28px rgba(229,57,53,0.75); }
-          }
-        `}</style>
+        <span className="text-[15px] font-semibold">{urgentLabel}</span>
       </button>
     );
   }
@@ -112,18 +102,16 @@ export default function ShareCatButton({ catId, name, region, description, urgen
       type="button"
       onClick={handleShare}
       disabled={loading}
-      className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl press transition-transform disabled:opacity-70"
+      className="w-full flex items-center justify-center gap-2 h-12 press disabled:opacity-70"
       style={{
         backgroundColor: status === "idle" ? "#FEE500" : "var(--color-sage-soft)",
-        color: status === "idle" ? "#191919" : "#2E7D32",
-        boxShadow: status === "idle"
-          ? "0 4px 14px rgba(254,229,0,0.35)"
-          : "0 2px 8px rgba(46,125,50,0.18)",
+        color: status === "idle" ? "var(--color-text-main)" : "var(--color-sage)",
+        borderRadius: "var(--radius-input)",
       }}
       aria-label="카카오톡으로 고양이 공유"
     >
       {status === "idle" ? <Share2 size={16} /> : <Check size={16} />}
-      <span className="text-[15px] font-bold">{label}</span>
+      <span className="text-[15px] font-semibold">{label}</span>
     </button>
   );
 }

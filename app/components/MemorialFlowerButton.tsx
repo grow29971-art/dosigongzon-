@@ -59,11 +59,14 @@ export default function MemorialFlowerButton({ catId }: { catId: string }) {
   return (
     <button
       onClick={handle}
-      className="w-full h-[50px] rounded-2xl flex items-center justify-center gap-2 text-[15px] font-bold press transition-transform"
+      className="w-full h-12 flex items-center justify-center gap-2 text-[15px] font-semibold press"
       style={{
-        background: mine ? "rgba(255,233,168,0.92)" : "rgba(255,255,255,0.1)",
-        color: mine ? "#3a2c4d" : "rgba(255,255,255,0.82)",
+        borderRadius: "var(--radius-input)",
+        background: mine ? "var(--color-primary)" : "var(--color-surface)",
+        color: mine ? "var(--color-surface)" : "var(--color-text-main)",
+        border: `1px solid ${mine ? "var(--color-primary)" : "var(--color-border)"}`,
       }}
+      aria-pressed={mine}
     >
       <Flower2 size={16} />
       {mine ? "헌화했어요" : "헌화하기"}

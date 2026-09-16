@@ -1,18 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, Share2, Check } from "lucide-react";
+import { X, Share2, Check, Trophy, TrendingUp } from "lucide-react";
 
 export interface ToastData {
   id: string;
   kind: "level_up" | "title_unlock";
+  /** 호출처(HomeAuthed) 호환용 — 리디자인(2026-09-16)으로 화면에는 그리지 않는다 */
   emoji: string;
   title: string;
   subtitle: string;
+  /** 호출처 호환용 — 리디자인으로 색 테두리·틴트 폐지, 화면에는 쓰지 않는다 */
   color: string;
 }
 
-const CONFETTI = ["🎉", "✨", "🐾", "💛", "⭐", "🧡", "🎊"];
+// 컨페티 조각 색 — 의미색 토큰만 (이모지 조각 폐지)
+const CONFETTI_COLORS = [
+  "var(--color-primary)",
+  "var(--color-care)",
+  "var(--color-sage)",
+  "var(--color-like)",
+  "var(--color-warning)",
+];
 
 /**
  * 레벨업 / 새 업적 잠금 해제 토스트 — 달성 "모먼트".
@@ -77,31 +86,35 @@ export default function AchievementToast({
     }
   };
 
+  const Icon = current.kind === "level_up" ? TrendingUp : Trophy;
+
   return (
     <div
       className="fixed top-4 left-1/2 z-[180] pointer-events-none"
       style={{
         transform: `translate(-50%, ${visible ? "0" : "-120%"})`,
-        transition: "transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)",
+        transition: "transform var(--motion-spring)",
         width: "calc(100% - 2rem)",
         maxWidth: 380,
       }}
     >
-      {/* 컨페티 레이어 */}
+      {/* 컨페티 레이어 — 의미색 사각 조각 */}
       {confetti && (
         <div className="absolute inset-x-0 top-0 h-0 overflow-visible pointer-events-none" aria-hidden>
           {Array.from({ length: 18 }).map((_, i) => (
             <span
               key={`${current.id}-${i}`}
-              className="confetti-piece absolute text-[15px]"
+              className="confetti-piece absolute"
               style={{
                 left: `${6 + Math.random() * 88}%`,
                 top: 0,
+                width: 6,
+                height: 10,
+                borderRadius: 2,
+                background: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
                 animationDelay: `${Math.random() * 0.25}s`,
               }}
-            >
-              {CONFETTI[i % CONFETTI.length]}
-            </span>
+            />
           ))}
         </div>
       )}
@@ -109,30 +122,28 @@ export default function AchievementToast({
       <div
         role="status"
         aria-live="polite"
-        className="pointer-events-auto rounded-2xl overflow-hidden flex items-center gap-3 px-4 py-3"
+        className="pointer-events-auto overflow-hidden flex items-center gap-3 px-4 py-3"
         style={{
-          background: "#FFFFFF",
-          boxShadow: `0 10px 30px ${current.color}35, 0 2px 8px rgba(0,0,0,0.1)`,
-          border: `2px solid ${current.color}`,
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "var(--radius-card)",
+          boxShadow: "var(--shadow-raised)",
         }}
       >
         <div
-          className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 text-[24px]"
-          style={{
-            background: `linear-gradient(135deg, ${current.color} 0%, ${current.color}DD 100%)`,
-            boxShadow: `0 4px 14px ${current.color}55`,
-          }}
+          className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
+          style={{ background: "var(--color-gray-100)", color: "var(--color-primary)" }}
         >
-          {current.emoji}
+          <Icon size={22} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-bold tracking-[0.12em]" style={{ color: current.color }}>
+          <p className="text-[11px] font-bold tracking-[0.12em]" style={{ color: "var(--color-primary)" }}>
             {current.kind === "level_up" ? "LEVEL UP" : "UNLOCKED"}
           </p>
           <p className="text-[15px] font-bold text-text-main leading-tight tracking-tight mt-0.5">
             {current.title}
           </p>
-          <p className="text-[11px] font-semibold text-text-sub mt-0.5 leading-tight truncate">
+          <p className="text-[11px] font-medium text-text-sub mt-0.5 leading-tight truncate">
             {current.subtitle}
           </p>
         </div>
@@ -140,21 +151,25 @@ export default function AchievementToast({
         <button
           type="button"
           onClick={share}
-          className="h-8 px-2.5 rounded-full flex items-center gap-1 shrink-0 press-strong text-white"
-          style={{ background: current.color }}
+          className="h-8 px-2.5 flex items-center gap-1 shrink-0 press-strong"
+          style={{
+            background: "var(--color-primary)",
+            color: "var(--color-surface)",
+            borderRadius: "var(--radius-input)",
+          }}
           aria-label="자랑하기"
         >
           {copied ? <Check size={13} /> : <Share2 size={13} />}
-          <span className="text-[11px] font-bold">{copied ? "복사됨" : "자랑"}</span>
+          <span className="text-[11px] font-semibold">{copied ? "복사됨" : "자랑"}</span>
         </button>
         <button
           type="button"
           onClick={() => onDismiss(current.id)}
-          className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 press-strong"
-          style={{ background: "var(--color-gray-50)" }}
+          className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 press-strong text-text-sub"
+          style={{ background: "var(--color-gray-100)" }}
           aria-label="닫기"
         >
-          <X size={13} style={{ color: "#A38E7A" }} />
+          <X size={13} />
         </button>
       </div>
     </div>

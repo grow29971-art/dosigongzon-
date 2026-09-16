@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, MapPin, PawPrint, CalendarDays, Camera, BookOpen, Sparkles, Star, Heart, MessageCircle, FileText, Award } from "lucide-react";
+import { ArrowLeft, MapPin, PawPrint, CalendarDays, Camera, Sparkles, Star, Heart, MessageCircle, FileText, Award, ChevronRight, HeartPulse, TriangleAlert } from "lucide-react";
 import { getCatByIdServer, getCatCommentsCountServer, getCatCareLogsCountServer, getCatCommunityStatsServer, getCatDiaryServer, getCatGuardianServer, getCatDesignatedFundServer } from "@/lib/cats-server";
-import { GENDER_MAP, HEALTH_MAP, thumbnailUrl, optimizedImageUrl } from "@/lib/cats-repo";
+import { GENDER_MAP, HEALTH_MAP, thumbnailUrl } from "@/lib/cats-repo";
+import { catArtWalkSvg } from "@/lib/cat-art";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { createClient } from "@/lib/supabase/server";
 import FollowButton from "@/app/components/FollowButton";
@@ -81,7 +82,8 @@ export default async function CatDetailPage({ params }: { params: Params }) {
     currentUserId ? Promise.resolve(0) : supabase.rpc("total_cat_count").then((r) => Number(r.data ?? 0)),
   ]);
 
-  const photo = sanitizeImageUrl(cat.photo_url, "https://placehold.co/800x800/EEEAE2/2A2A28?text=%3F");
+  // 사진 없는 아이는 placeholder 이미지 대신 마커 아트(지도와 같은 캐릭터)로 그린다
+  const photo = sanitizeImageUrl(cat.photo_url, "") || null;
   const region = cat.region ?? "우리 동네";
   const createdAt = new Date(cat.created_at).toLocaleDateString("ko-KR", {
     year: "numeric",
@@ -94,7 +96,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: `${cat.name} · ${region} 길고양이 돌봄 기록`,
-    image: photo,
+    image: photo ?? `${SITE_URL}/cats/${cat.id}/opengraph-image`,
     datePublished: cat.created_at,
     inLanguage: "ko-KR",
     author: {
@@ -127,8 +129,14 @@ export default async function CatDetailPage({ params }: { params: Params }) {
     ],
   };
 
+  const healthTone = cat.health_status === "danger"
+    ? { color: "var(--color-error)", Icon: HeartPulse }
+    : cat.health_status === "caution"
+      ? { color: "var(--color-warning)", Icon: TriangleAlert }
+      : null;
+
   return (
-    <div className="pb-24" style={{ background: "var(--color-warm-white)", minHeight: "100vh" }}>
+    <div className="pb-24" style={{ background: "var(--color-surface)", minHeight: "100vh" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
@@ -142,8 +150,8 @@ export default async function CatDetailPage({ params }: { params: Params }) {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href={currentUserId ? "/map" : "/"}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
+          style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
           aria-label={currentUserId ? "지도로 돌아가기" : "홈으로 가기"}
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -151,37 +159,42 @@ export default async function CatDetailPage({ params }: { params: Params }) {
         <span className="text-[13px] font-semibold text-text-sub">{currentUserId ? "지도" : "도시공존"}</span>
       </div>
 
-      {/* 커버 이미지 */}
-      <div
-        className="relative mx-4 mt-2 rounded-3xl overflow-hidden"
-        style={{ aspectRatio: "4 / 3", boxShadow: "var(--shadow-fab)" }}
-      >
-        <Image
-          src={photo}
-          alt={cat.name}
-          fill
-          priority
-          sizes="(max-width: 720px) 100vw, 720px"
-          style={{ objectFit: "cover" }}
-        />
-        <div
-          className="absolute inset-x-0 bottom-0 p-4 z-10"
-          style={{
-            background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 100%)",
-          }}
-        >
-          {cat.adoption_status && (
-            <div className="mb-1.5">
-              <AdoptionBadge status={cat.adoption_status} size="md" />
-            </div>
-          )}
-          <h1 className="text-[28px] font-bold text-white tracking-tight drop-shadow">
-            {cat.name}
-          </h1>
-          <div className="flex items-center gap-1.5 mt-1">
-            <MapPin size={12} color="#fff" />
-            <span className="text-[13px] font-bold text-white">{region}</span>
+      {/* 히어로 — 실사 사진 풀블리드. 사진이 없으면 마커 아트(지도와 같은 캐릭터) */}
+      <div className="relative mt-2 overflow-hidden" style={{ aspectRatio: "4 / 3", background: "var(--color-surface-alt)" }}>
+        {photo ? (
+          <Image
+            src={photo}
+            alt={cat.name}
+            fill
+            priority
+            sizes="(max-width: 720px) 100vw, 720px"
+            style={{ objectFit: "cover" }}
+          />
+        ) : (
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            aria-label={`${cat.name} 마커 아트`}
+            role="img"
+            dangerouslySetInnerHTML={{
+              __html: catArtWalkSvg(cat.art_key ?? cat.id, 168, { walking: false, colors: cat.art_colors }),
+            }}
+          />
+        )}
+      </div>
+
+      {/* 이름·상태·메타 — 흰 면 + 헤어라인 */}
+      <div className="px-4 pt-4 pb-4" style={{ borderBottom: "1px solid var(--color-border)" }}>
+        {cat.adoption_status && (
+          <div className="mb-1.5">
+            <AdoptionBadge status={cat.adoption_status} size="md" />
           </div>
+        )}
+        <h1 className="text-[24px] font-bold text-text-main tracking-tight leading-tight">
+          {cat.name}
+        </h1>
+        <div className="flex items-center gap-1 mt-1 text-text-sub">
+          <MapPin size={13} />
+          <span className="text-[13px]">{region}</span>
         </div>
       </div>
 
@@ -191,95 +204,63 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           PickCatSignupCta 마운트 시 발화하므로 순서를 바꿔도 계측량은 그대로) */}
       {/* 고양이별로 간 아이 — 돌봄 권유 대신 추모 안내로 바꾼다 */}
       {cat.memorial_at && (
-        <div className="px-4 mt-3">
-          <div
-            className="rounded-2xl p-5"
-            style={{
-              background: "linear-gradient(135deg, #2b2440 0%, #3a2c4d 55%, #55456f 100%)",
-              boxShadow: "var(--shadow-card)",
-            }}
-          >
-            <div className="flex items-center gap-2">
-              <Star size={16} color="#FFE9A8" fill="#FFE9A8" />
-              <p className="text-[13px] font-bold text-white">
-                {cat.name}(이)는 고양이별에 있어요
-              </p>
-            </div>
-            <p className="text-[13px] leading-[1.7] mt-2" style={{ color: "rgba(255,255,255,0.66)" }}>
-              {new Date(cat.memorial_at).toLocaleDateString("ko-KR", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-              에 무지개다리를 건넜어요. 아래 기록은 그대로 남아 있어요.
+        <div className="px-4 py-4" style={{ borderBottom: "1px solid var(--color-border)" }}>
+          <div className="flex items-center gap-2">
+            <Star size={16} className="text-text-sub" />
+            <p className="text-[15px] font-semibold text-text-main">
+              {cat.name}(이)는 고양이별에 있어요
             </p>
-            {cat.memorial_note && (
-              <p
-                className="text-[13px] leading-[1.7] mt-3 px-3.5 py-3 whitespace-pre-wrap"
-                style={{ color: "rgba(255,255,255,0.82)", background: "rgba(0,0,0,0.2)", borderRadius: "var(--radius-input)" }}
-              >
-                {cat.memorial_note}
-              </p>
-            )}
-            <Link
-              href="/memorial"
-              className="inline-flex items-center justify-center h-[40px] px-5 rounded-xl mt-4 text-[13px] font-bold"
-              style={{ background: "rgba(255,255,255,0.94)", color: "#3a2c4d" }}
-            >
-              고양이별 가보기
-            </Link>
           </div>
+          <p className="text-[13px] text-text-sub leading-relaxed mt-1.5">
+            {new Date(cat.memorial_at).toLocaleDateString("ko-KR", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+            에 무지개다리를 건넜어요. 아래 기록은 그대로 남아 있어요.
+          </p>
+          {cat.memorial_note && (
+            <p
+              className="text-[13px] text-text-main leading-relaxed mt-3 px-3.5 py-3 whitespace-pre-wrap"
+              style={{ background: "var(--color-surface-alt)", borderRadius: "var(--radius-input)" }}
+            >
+              {cat.memorial_note}
+            </p>
+          )}
+          <Link
+            href="/memorial"
+            className="inline-flex items-center gap-1 mt-3 text-[13px] font-semibold"
+            style={{ color: "var(--color-primary)" }}
+          >
+            고양이별 가보기
+            <ChevronRight size={14} />
+          </Link>
         </div>
       )}
 
       {!currentUserId && !cat.memorial_at && (
-        <div className="px-4 mt-3">
-          <div
-            className="rounded-2xl p-4 relative overflow-hidden"
-            style={{
-              background: "var(--color-primary-softer)",
-              border: "1.5px solid rgba(176, 92, 54,0.30)",
-              boxShadow: "var(--shadow-card)",
-            }}
-          >
-            <div
-              aria-hidden
-              style={{
-                position: "absolute",
-                top: -40,
-                right: -30,
-                width: 140,
-                height: 140,
-                borderRadius: "50%",
-                background: "radial-gradient(circle, rgba(232,141,90,0.18) 0%, rgba(232,141,90,0) 70%)",
-              }}
-            />
-            <p className="text-[15px] font-bold text-text-main leading-tight tracking-tight mb-1.5">
-              {cat.name}(이)의 다음 소식, 계속 받아보실래요?
-            </p>
-            <p className="text-[11px] leading-relaxed mb-3" style={{ color: "rgba(92,74,62,0.85)" }}>
-              도시공존은 광고 없는 무료 길고양이 돌봄 지도예요. 여기 남는 기록은
-              민원·학대 신고 때 아이들을 지키는 증빙이 돼요.
-              {totalCatsForNudge > 0 && (
-                <>
-                  {" "}지금 <b style={{ color: "var(--color-primary-dark)" }}>{totalCatsForNudge.toLocaleString()}마리</b>가 함께 돌봐지고 있어요.
-                </>
-              )}
-            </p>
-            <div className="flex gap-2">
-              {/* 온보딩 pick 지점 — pending_care 커밋 + onboarding_pick 계측 후 가입으로 */}
-              <PickCatSignupCta catId={cat.id} catName={cat.name} />
-              <Link
-                href="/"
-                className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[13px] font-bold press transition-transform bg-white"
-                style={{
-                  color: "var(--color-primary-dark)",
-                  border: "1px solid rgba(176, 92, 54,0.30)",
-                }}
-              >
-                더 둘러보기
-              </Link>
-            </div>
+        <div className="px-4 py-4" style={{ borderBottom: "1px solid var(--color-border)" }}>
+          <p className="text-[15px] font-semibold text-text-main leading-snug mb-1">
+            {cat.name}(이)의 다음 소식, 계속 받아보실래요?
+          </p>
+          <p className="text-[13px] text-text-sub leading-relaxed mb-3">
+            광고 없는 무료 길고양이 돌봄 지도예요. 기록은 민원·학대 신고 때 아이들을 지키는 증빙이 돼요.
+            {totalCatsForNudge > 0 && (
+              <>
+                {" "}지금 <b className="text-text-main">{totalCatsForNudge.toLocaleString()}마리</b>가 함께 돌봐지고 있어요.
+              </>
+            )}
+          </p>
+          <div className="flex gap-2">
+            {/* 온보딩 pick 지점 — pending_care 커밋 + onboarding_pick 계측 후 가입으로 */}
+            <PickCatSignupCta catId={cat.id} catName={cat.name} />
+            <Link
+              href="/"
+              className="flex-1 flex items-center justify-center h-10 text-[13px] font-semibold press text-text-main"
+              style={{ background: "var(--color-gray-100)", borderRadius: "var(--radius-input)" }}
+            >
+              더 둘러보기
+            </Link>
           </div>
         </div>
       )}
@@ -310,12 +291,13 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                   href={safeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="shrink-0 rounded-xl overflow-hidden press-strong relative"
+                  className="shrink-0 overflow-hidden press-strong relative"
                   style={{
                     width: 72,
                     height: 72,
-                    border: idx === 0 ? "2px solid var(--color-primary)" : "1.5px solid rgba(0,0,0,0.06)",
-                    boxShadow: "var(--shadow-raised)",
+                    borderRadius: "var(--radius-card-sm)",
+                    border: idx === 0 ? "2px solid var(--color-primary)" : "1px solid var(--color-border)",
+                    background: "var(--color-surface-alt)",
                   }}
                   aria-label={`사진 ${idx + 1}`}
                 >
@@ -335,23 +317,17 @@ export default async function CatDetailPage({ params }: { params: Params }) {
         </div>
       )}
 
-      {/* 카운트 스탯 */}
-      <div className="grid grid-cols-3 gap-2 px-4 mt-4">
-        <StatCard icon={<Heart size={18} style={{ color: "var(--color-like)" }} />} label="좋아요" value={cat.like_count ?? 0} color="var(--color-like)" />
-        <StatCard icon={<PawPrint size={18} style={{ color: "var(--color-sage)" }} />} label="돌봄다이어리" value={careCount} color="var(--color-sage)" />
-        <StatCard icon={<MessageCircle size={18} style={{ color: "var(--color-gray-600)" }} />} label="댓글" value={commentCount} color="var(--color-gray-600)" />
+      {/* 카운트 스탯 — 헤어라인 한 줄, 세로 구분선 */}
+      <div className="mx-4 mt-4 grid grid-cols-3" style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}>
+        <StatCell icon={<Heart size={16} />} label="좋아요" value={cat.like_count ?? 0} />
+        <StatCell icon={<PawPrint size={16} />} label="돌봄다이어리" value={careCount} divider />
+        <StatCell icon={<MessageCircle size={16} />} label="댓글" value={commentCount} divider />
       </div>
 
       {/* 사회적 증명 — 이 아이를 함께 돌보는 이웃 */}
       {(communityStats.uniqueCaretakers > 0 || communityStats.likeUserCount > 0) && (
         <div className="px-4 mt-3">
-          <div
-            className="rounded-2xl px-4 py-3 flex items-center gap-3"
-            style={{
-              background: "var(--color-primary-softer)",
-              border: "1px solid rgba(176, 92, 54,0.18)",
-            }}
-          >
+          <div className="flex items-center gap-3 py-3" style={{ borderBottom: "1px solid var(--color-divider)" }}>
             {/* 돌봄 이웃 아바타 스택 */}
             {communityStats.recentCaretakers.length > 0 && (
               <div className="flex -space-x-2 shrink-0">
@@ -361,7 +337,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                     className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center"
                     style={{
                       background: "var(--color-gray-100)",
-                      border: "2px solid #fff",
+                      border: "2px solid var(--color-surface)",
                     }}
                     title={c.name}
                   >
@@ -375,7 +351,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-[11px] font-bold" style={{ color: "var(--color-text-light)" }}>
+                      <span className="text-[11px] font-semibold" style={{ color: "var(--color-text-light)" }}>
                         {c.name.charAt(0)}
                       </span>
                     )}
@@ -383,11 +359,10 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                 ))}
                 {communityStats.uniqueCaretakers > 3 && (
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold"
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-semibold text-text-sub"
                     style={{
-                      background: "var(--color-primary)",
-                      color: "#fff",
-                      border: "2px solid #fff",
+                      background: "var(--color-gray-100)",
+                      border: "2px solid var(--color-surface)",
                     }}
                   >
                     +{communityStats.uniqueCaretakers - 3}
@@ -397,26 +372,19 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             )}
 
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-bold text-text-main tracking-tight leading-tight">
+              <p className="text-[15px] font-semibold text-text-main leading-tight">
                 {communityStats.uniqueCaretakers > 0 ? (
                   <>
-                    이웃{" "}
-                    <span style={{ color: "var(--color-primary)" }}>
-                      {communityStats.uniqueCaretakers}명
-                    </span>
-                    이 {cat.name}을(를) 함께 돌보고 있어요
+                    이웃 {communityStats.uniqueCaretakers}명이 {cat.name}을(를) 함께 돌보고 있어요
                   </>
                 ) : (
                   <>
-                    <span style={{ color: "var(--color-like)" }}>
-                      {communityStats.likeUserCount}명
-                    </span>
-                    이 이 아이를 지켜보고 있어요
+                    {communityStats.likeUserCount}명이 이 아이를 지켜보고 있어요
                   </>
                 )}
               </p>
               {communityStats.uniqueCaretakers > 0 && communityStats.likeUserCount > 0 && (
-                <p className="text-[11px] text-text-sub mt-0.5 leading-tight">
+                <p className="text-[13px] text-text-sub mt-0.5 leading-tight">
                   좋아요 {communityStats.likeUserCount}명 · 최근 30일 기록
                 </p>
               )}
@@ -429,28 +397,19 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           이름 박힌 책임 (2026-08-29 PMF 회의 후보②). 3회 이상부터, 추모 아이는 제외.
           로그인 유저에게만 노출 — 비로그인 공개 시 특정 시민 신원+활동 노출(법률감사 H3) */}
       {currentUserId && guardian && guardian.count >= 3 && !cat.memorial_at && (
-        <div className="px-4 mt-3">
-          <div
-            className="rounded-2xl px-4 py-3 flex items-center gap-3"
-            style={{
-              background: "linear-gradient(135deg, #FFF7E8 0%, #FDEEDC 100%)",
-              border: "1px solid rgba(196,126,42,0.28)",
-            }}
-          >
-            <div
-              className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "rgba(196,126,42,0.16)" }}
-            >
-              <Award size={17} style={{ color: "#B8802E" }} />
+        <div className="px-4">
+          <div className="flex items-center gap-3 py-3" style={{ borderBottom: "1px solid var(--color-divider)" }}>
+            <div className="w-10 h-10 flex items-center justify-center shrink-0 text-text-sub">
+              <Award size={20} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-bold text-text-main tracking-tight leading-tight">
-                <Link href={`/users/${guardian.authorId}`} className="hover:underline" style={{ color: "#9A6A22" }}>
+              <p className="text-[15px] font-semibold text-text-main leading-tight">
+                <Link href={`/users/${guardian.authorId}`} className="hover:underline" style={{ color: "var(--color-primary)" }}>
                   {guardian.name}
                 </Link>
                 님 덕분에 {cat.name}의 돌봄이 이어지고 있어요
               </p>
-              <p className="text-[11px] mt-0.5 leading-tight" style={{ color: "#A98243" }}>
+              <p className="text-[13px] text-text-sub mt-0.5 leading-tight">
                 돌봄 {guardian.count}회 · 첫 기록 후 {guardian.sinceDays}일째
               </p>
             </div>
@@ -460,19 +419,16 @@ export default async function CatDetailPage({ params }: { params: Params }) {
 
       {/* 이 아이에게 배정된 돌봄 기금 — 구매 후원 지정분 (2026-08-30). 있을 때만, 추모 아이 제외 */}
       {designatedFund > 0 && !cat.memorial_at && (
-        <div className="px-4 mt-3">
-          <div
-            className="rounded-2xl px-4 py-3 flex items-center gap-3"
-            style={{ background: "var(--color-sage-soft)", border: "1px solid rgba(34,163,102,0.22)" }}
-          >
-            <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(34,163,102,0.15)" }}>
-              <Heart size={16} style={{ color: "#1E8E56" }} fill="#1E8E56" />
+        <div className="px-4">
+          <div className="flex items-center gap-3 py-3" style={{ borderBottom: "1px solid var(--color-divider)" }}>
+            <div className="w-10 h-10 flex items-center justify-center shrink-0 text-text-sub">
+              <Heart size={20} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-bold text-text-main leading-tight">
-                {cat.name}에게 모인 돌봄 기금 <span style={{ color: "#1E8E56" }}>{designatedFund.toLocaleString()}원</span>
+              <p className="text-[15px] font-semibold text-text-main leading-tight">
+                {cat.name}에게 모인 돌봄 기금 {designatedFund.toLocaleString()}원
               </p>
-              <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
+              <p className="text-[13px] text-text-sub mt-0.5 leading-snug">
                 이웃들의 쇼핑 후원이 이 아이의 중성화·치료에 우선 쓰여요
               </p>
             </div>
@@ -480,90 +436,71 @@ export default async function CatDetailPage({ params }: { params: Params }) {
         </div>
       )}
 
-      {/* 프로필 뱃지 */}
-      <div className="px-4 mt-4">
-        <div
-          className="bg-white rounded-2xl p-4"
-          style={{ boxShadow: "var(--shadow-card)" }}
-        >
-          <div className="flex flex-wrap gap-1.5 mb-3">
-            {cat.gender && cat.gender !== "unknown" && (
-              <Badge bg="var(--color-gray-100)" fg="var(--color-gray-600)">
-                {GENDER_MAP[cat.gender]?.emoji} {GENDER_MAP[cat.gender]?.label}
-              </Badge>
-            )}
-            {cat.neutered != null && (
-              <Badge
-                bg={cat.neutered ? "var(--color-sage-soft)" : "var(--color-care-soft)"}
-                fg={cat.neutered ? "var(--color-sage)" : "var(--color-care)"}
-              >
-                {cat.neutered ? "중성화 완료" : "중성화 필요"}
-              </Badge>
-            )}
-            {cat.health_status && cat.health_status !== "good" && (() => {
-              const h = HEALTH_MAP[cat.health_status];
-              return (
-                <Badge bg={`${h.color}18`} fg={h.color}>
-                  {h.emoji} {h.label}
-                </Badge>
-              );
-            })()}
-            {cat.tags.map((t) => (
-              <Badge key={t} bg="var(--color-gray-100)" fg="var(--color-primary)">
-                {t}
-              </Badge>
-            ))}
-          </div>
-          {cat.description && (
-            <p className="text-[13px] text-text-main leading-relaxed">
-              {cat.description}
-            </p>
+      {/* 프로필 — 상태 칩·소개·등록 메타 */}
+      <div className="px-4 mt-4 pb-4" style={{ borderBottom: "1px solid var(--color-border)" }}>
+        <div className="flex flex-wrap gap-1.5 mb-3">
+          {cat.gender && cat.gender !== "unknown" && (
+            <Badge>{GENDER_MAP[cat.gender]?.label}</Badge>
           )}
-          <div className="flex items-center gap-1.5 mt-3 text-[11px] text-text-light flex-wrap">
-            <CalendarDays size={11} />
-            <span>{createdAt} 등록</span>
-            {cat.caretaker_name && (
-              <>
-                <span>·</span>
-                {cat.caretaker_id ? (
-                  <Link
-                    href={`/users/${cat.caretaker_id}`}
-                    className="font-bold hover:underline"
-                    style={{ color: "var(--color-primary)" }}
-                  >
-                    길집사 {cat.caretaker_name}
-                  </Link>
-                ) : (
-                  <span>길집사 {cat.caretaker_name}</span>
-                )}
-                {cat.caretaker_id && (
-                  <FollowButton userId={cat.caretaker_id} size="sm" />
-                )}
-              </>
-            )}
-          </div>
+          {cat.neutered != null && (
+            <Badge>{cat.neutered ? "중성화 완료" : "중성화 필요"}</Badge>
+          )}
+          {cat.health_status && cat.health_status !== "good" && healthTone && (
+            <Badge color={healthTone.color}>
+              <healthTone.Icon size={12} />
+              {HEALTH_MAP[cat.health_status].label}
+            </Badge>
+          )}
+          {cat.tags.map((t) => (
+            <Badge key={t}>{t}</Badge>
+          ))}
+        </div>
+        {cat.description && (
+          <p className="text-[15px] text-text-main leading-relaxed">
+            {cat.description}
+          </p>
+        )}
+        <div className="flex items-center gap-1.5 mt-3 text-[13px] text-text-light flex-wrap">
+          <CalendarDays size={12} />
+          <span>{createdAt} 등록</span>
+          {cat.caretaker_name && (
+            <>
+              <span>·</span>
+              {cat.caretaker_id ? (
+                <Link
+                  href={`/users/${cat.caretaker_id}`}
+                  className="font-semibold hover:underline"
+                  style={{ color: "var(--color-primary)" }}
+                >
+                  길집사 {cat.caretaker_name}
+                </Link>
+              ) : (
+                <span>길집사 {cat.caretaker_name}</span>
+              )}
+              {cat.caretaker_id && (
+                <FollowButton userId={cat.caretaker_id} size="sm" />
+              )}
+            </>
+          )}
         </div>
       </div>
 
-      {/* 📸 다이어리 — 시간이 쌓인 사진 갤러리 */}
+      {/* 다이어리 — 시간이 쌓인 사진 갤러리 */}
       <div className="px-4 mt-5">
-        <div className="flex items-center justify-between mb-2.5 px-1">
-          <div className="flex items-center gap-1.5">
-            <BookOpen size={16} style={{ color: "var(--color-primary)" }} />
-            {/* 위 스탯카드의 "돌봄다이어리"(care_logs 개수)와 이름이 겹쳐서,
-                두 숫자가 안 맞으면 고장난 것처럼 보였다. 이건 사진 모음이다. (2026-08-09) */}
-            <h2 className="text-[15px] font-bold text-text-main tracking-tight">
-              {cat.name} 사진첩
-            </h2>
-          </div>
+        <div className="flex items-center justify-between mb-2.5">
+          {/* 위 스탯카드의 "돌봄다이어리"(care_logs 개수)와 이름이 겹쳐서,
+              두 숫자가 안 맞으면 고장난 것처럼 보였다. 이건 사진 모음이다. (2026-08-09) */}
+          <h2 className="text-[17px] font-bold text-text-main tracking-tight">
+            {cat.name} 사진첩
+          </h2>
           {diary.totalPhotos > 0 && (
-            <span className="text-[11px] font-bold text-text-sub tabular-nums">
+            <span className="text-[13px] text-text-sub tabular-nums">
               {diary.uniqueDays}일 · {diary.totalPhotos}장
             </span>
           )}
         </div>
 
-        {/* 📅 오늘 상태 안내 — 오늘 사진 있으면 칭찬, 없으면 유도 */}
+        {/* 오늘 상태 안내 — 오늘 사진 있으면 칭찬, 없으면 유도 */}
         {(() => {
           const todayKst = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
           const todayCount = diary.entries.filter(
@@ -573,78 +510,39 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           return (
             <Link
               href={`/map?cat=${cat.id}`}
-              className="block mb-3 rounded-xl px-3.5 py-3 press transition-transform"
-              style={{
-                background: hasTodayPhoto
-                  ? "var(--color-sage-soft)"
-                  : "var(--color-primary-softer)",
-                border: hasTodayPhoto
-                  ? "1.5px solid rgba(34,163,102,0.35)"
-                  : "1.5px dashed rgba(176, 92, 54,0.40)",
-              }}
+              className="flex items-center gap-3 mb-3 px-3 py-3 press"
+              style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
             >
-              <div className="flex items-center gap-2.5">
-                <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-                  style={{
-                    background: hasTodayPhoto ? "rgba(34,163,102,0.22)" : "rgba(176, 92, 54,0.18)",
-                  }}
-                >
-                  {hasTodayPhoto ? (
-                    <Sparkles size={16} style={{ color: "var(--color-sage)" }} />
-                  ) : (
-                    <Camera size={16} style={{ color: "var(--color-primary)" }} />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p
-                    className="text-[13px] font-bold leading-tight"
-                    style={{ color: hasTodayPhoto ? "var(--color-sage)" : "var(--color-primary-dark)" }}
-                  >
-                    {hasTodayPhoto
-                      ? `오늘 ${todayCount}장 채워졌어요`
-                      : `오늘의 ${cat.name} 사진을 올려주세요`}
-                  </p>
-                  <p
-                    className="text-[11px] mt-0.5 leading-snug"
-                    style={{ color: hasTodayPhoto ? "var(--color-sage)" : "var(--color-primary-dark)" }}
-                  >
-                    {hasTodayPhoto
-                      ? "한 장 더 남기면 다이어리가 더 두꺼워져요"
-                      : "지도에서 사진과 함께 돌봄 기록을 남겨보세요"}
-                  </p>
-                </div>
-                <Camera size={13} className="shrink-0" style={{ color: hasTodayPhoto ? "var(--color-sage)" : "var(--color-primary)" }} />
+              <div className="w-10 h-10 flex items-center justify-center shrink-0 text-text-sub">
+                {hasTodayPhoto ? <Sparkles size={20} /> : <Camera size={20} />}
               </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[15px] font-semibold text-text-main leading-tight">
+                  {hasTodayPhoto
+                    ? `오늘 ${todayCount}장 채워졌어요`
+                    : `오늘의 ${cat.name} 사진을 올려주세요`}
+                </p>
+                <p className="text-[13px] text-text-sub mt-0.5 leading-snug">
+                  {hasTodayPhoto
+                    ? "한 장 더 남기면 다이어리가 더 두꺼워져요"
+                    : "지도에서 사진과 함께 돌봄 기록을 남겨보세요"}
+                </p>
+              </div>
+              <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
             </Link>
           );
         })()}
 
         {diary.entries.length === 0 ? (
           // 빈 상태 — 첫 사진 유도
-          <div
-            className="rounded-2xl p-5 text-center"
-            style={{
-              background: "var(--color-primary-softer)",
-              border: "1.5px dashed rgba(176, 92, 54,0.35)",
-            }}
-          >
-            <Sparkles size={20} className="mx-auto mb-1.5" style={{ color: "var(--color-primary)" }} />
-            <p className="text-[13px] font-bold text-text-main leading-tight">
-              {cat.name}의 다이어리가 비어 있어요
-            </p>
-            <p className="text-[11px] text-text-sub mt-1.5 leading-relaxed">
-              지도에서 사진을 한 장 올려주세요.
-              <br />
-              매일 한 장씩 모이면 시간을 담은 다이어리가 돼요
+          <div className="py-6 text-center" style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}>
+            <p className="text-[13px] text-text-sub leading-relaxed">
+              아직 사진이 없어요. 지도에서 한 장 올려주세요.
             </p>
             <Link
               href={`/map?cat=${cat.id}`}
-              className="inline-flex items-center gap-1.5 mt-3 px-4 py-2 rounded-xl text-white text-[13px] font-bold press-strong transition-transform"
-              style={{
-                background: "var(--color-primary)",
-                boxShadow: "var(--shadow-primary)",
-              }}
+              className="inline-flex items-center gap-1.5 mt-3 h-10 px-4 text-white text-[13px] font-semibold press-strong"
+              style={{ background: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
             >
               <Camera size={13} />
               첫 사진 올리기
@@ -668,8 +566,8 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                     href={safe}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block rounded-xl overflow-hidden relative press-strong transition-transform"
-                    style={{ aspectRatio: "1/1", background: "var(--color-gray-100)" }}
+                    className="block overflow-hidden relative press-strong"
+                    style={{ aspectRatio: "1/1", background: "var(--color-gray-100)", borderRadius: "var(--radius-card-sm)" }}
                   >
                     <Image
                       src={thumbnailUrl(safe, 240) ?? safe}
@@ -680,10 +578,8 @@ export default async function CatDetailPage({ params }: { params: Params }) {
                       unoptimized
                     />
                     <div
-                      className="absolute bottom-0 left-0 right-0 px-1.5 py-0.5 text-[11px] font-bold text-white tabular-nums"
-                      style={{
-                        background: "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 100%)",
-                      }}
+                      className="absolute bottom-0 left-0 right-0 px-1.5 py-0.5 text-[11px] font-semibold text-white tabular-nums"
+                      style={{ background: "rgba(0,0,0,0.45)" }}
                     >
                       {dateLabel}
                     </div>
@@ -695,14 +591,10 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             {/* 더 올리기 CTA — 작게 */}
             <Link
               href={`/map?cat=${cat.id}`}
-              className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold press transition-transform"
-              style={{
-                background: "var(--color-surface)",
-                color: "var(--color-primary)",
-                border: "1px solid var(--color-border)",
-              }}
+              className="mt-3 flex items-center justify-center gap-1.5 h-10 text-[13px] font-semibold press text-text-main"
+              style={{ background: "var(--color-gray-100)", borderRadius: "var(--radius-input)" }}
             >
-              <Camera size={12} />
+              <Camera size={13} />
               오늘의 사진 추가하기
             </Link>
           </>
@@ -729,11 +621,11 @@ export default async function CatDetailPage({ params }: { params: Params }) {
         {currentUserId && (
           <Link
             href={`/map?cat=${cat.id}`}
-            className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary text-white press transition-transform"
-            style={{ boxShadow: "var(--shadow-primary)" }}
+            className="flex items-center justify-center gap-2 h-12 text-white press"
+            style={{ background: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
           >
             <PawPrint size={16} />
-            <span className="text-[13px] font-bold">지도에서 돌봄하기</span>
+            <span className="text-[15px] font-semibold">지도에서 돌봄하기</span>
           </Link>
         )}
         {cat.health_status !== "danger" && (
@@ -748,26 +640,23 @@ export default async function CatDetailPage({ params }: { params: Params }) {
         {currentUserId && careCount > 0 && (
           <Link
             href={`/cats/${cat.id}/report`}
-            className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white press transition-transform"
-            style={{ border: "1px solid var(--color-border)", boxShadow: "var(--shadow-card)" }}
+            className="flex items-center gap-3 px-3 py-3 press"
+            style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
           >
-            <div
-              className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "var(--color-primary-softer)" }}
-            >
-              <FileText size={16} style={{ color: "var(--color-primary)" }} />
+            <div className="w-10 h-10 flex items-center justify-center shrink-0 text-text-sub">
+              <FileText size={20} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-bold text-text-main leading-tight">돌봄 활동 확인서 만들기</p>
-              <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
-                민원·구청 협의·학대 신고 때 쓰는 증빙 문서 — 기록 {careCount}건이 근거가 돼요
+              <p className="text-[15px] font-semibold text-text-main leading-tight">돌봄 활동 확인서 만들기</p>
+              <p className="text-[13px] text-text-sub mt-0.5 leading-snug">
+                민원·구청 협의·학대 신고용 증빙 — 기록 {careCount}건이 근거가 돼요
               </p>
             </div>
+            <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
           </Link>
         )}
         <p className="text-[11px] text-text-light text-center leading-relaxed mt-2">
           아이들 안전을 위해 지도 위치는 대략적인 활동 범위로만 표시돼요.
-          <br />동네 단톡방에 공유하면 더 많은 이웃이 지켜줘요
         </p>
       </div>
 
@@ -777,24 +666,29 @@ export default async function CatDetailPage({ params }: { params: Params }) {
   );
 }
 
-function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: number; color: string }) {
+function StatCell({ icon, label, value, divider }: { icon: React.ReactNode; label: string; value: number; divider?: boolean }) {
   return (
     <div
-      className="bg-white rounded-2xl py-3 flex flex-col items-center justify-center"
-      style={{ boxShadow: "var(--shadow-card)" }}
+      className="py-3 flex flex-col items-center justify-center gap-0.5"
+      style={divider ? { borderLeft: "1px solid var(--color-border)" } : undefined}
     >
-      <span style={{ fontSize: 20 }}>{icon}</span>
-      <span className="text-[17px] font-bold" style={{ color }}>{value}</span>
-      <span className="text-[11px] text-text-sub font-semibold mt-0.5">{label}</span>
+      <span className="text-text-sub">{icon}</span>
+      <span className="text-[17px] font-bold text-text-main tabular-nums">{value}</span>
+      <span className="text-[11px] text-text-sub">{label}</span>
     </div>
   );
 }
 
-function Badge({ children, bg, fg }: { children: React.ReactNode; bg: string; fg: string }) {
+function Badge({ children, color }: { children: React.ReactNode; color?: string }) {
   return (
     <span
-      className="text-[11px] font-bold px-2 py-0.5 rounded-lg"
-      style={{ backgroundColor: bg, color: fg }}
+      className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5"
+      style={{
+        borderRadius: "var(--radius-square)",
+        background: "var(--color-surface)",
+        border: `1px solid ${color ?? "var(--color-border)"}`,
+        color: color ?? "var(--color-text-sub)",
+      }}
     >
       {children}
     </span>

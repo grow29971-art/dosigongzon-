@@ -1,5 +1,8 @@
 "use client";
 
+// 신고 모달 — 2026-09-16 리디자인: 웜 hex·틴트 아이콘 박스·그림자 버튼 폐지.
+// 흰 면 + 헤어라인, 회색 선 아이콘, 사유 칩은 사각 칩(선택=테라코타 채움), 차단만 의미색(error).
+
 import { useState, useEffect, useRef } from "react";
 import { X, Flag, Loader2, Check, Ban, Camera } from "lucide-react";
 import {
@@ -122,7 +125,7 @@ export default function ReportModal({
       <div
         className="w-full max-w-sm relative"
         style={{
-          background: "#FFFFFF",
+          background: "var(--color-surface)",
           borderRadius: "var(--radius-modal)",
           boxShadow: "var(--shadow-modal)",
         }}
@@ -130,16 +133,8 @@ export default function ReportModal({
       >
         {/* 헤더 */}
         <div className="flex items-center justify-between px-5 pt-5 pb-3">
-          <div className="flex items-center gap-2">
-            <div
-              className="w-8 h-8 rounded-xl flex items-center justify-center"
-              style={{
-                background: "#D85555",
-                boxShadow: "var(--shadow-raised)",
-              }}
-            >
-              <Flag size={14} color="#fff" strokeWidth={2.5} />
-            </div>
+          <div className="flex items-center gap-2 text-text-sub">
+            <Flag size={16} />
             <h2
               id="report-modal-title"
               className="text-[17px] font-bold text-text-main tracking-tight"
@@ -148,13 +143,14 @@ export default function ReportModal({
             </h2>
           </div>
           <button
+            type="button"
             onClick={onClose}
             disabled={submitting}
             aria-label="신고 창 닫기"
-            className="w-7 h-7 rounded-lg flex items-center justify-center press-strong"
+            className="w-8 h-8 rounded-full flex items-center justify-center press-strong text-text-sub"
             style={{ backgroundColor: "var(--color-gray-100)" }}
           >
-            <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
+            <X size={14} />
           </button>
         </div>
 
@@ -163,12 +159,9 @@ export default function ReportModal({
           <div className="px-5 pb-6 text-center">
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
-              style={{
-                background: "#6B8E6F",
-                boxShadow: "var(--shadow-fab)",
-              }}
+              style={{ background: "var(--color-sage-soft)", color: "var(--color-sage)" }}
             >
-              <Check size={24} color="#fff" strokeWidth={3} />
+              <Check size={24} strokeWidth={2.5} />
             </div>
             <p className="text-[15px] font-bold text-text-main mb-1">
               신고가 접수됐어요
@@ -181,19 +174,20 @@ export default function ReportModal({
           <>
             {/* 사유 선택 */}
             <div className="px-5 pb-3">
-              <p className="text-[11px] font-bold text-text-sub mb-2">신고 사유</p>
+              <p className="text-[13px] font-semibold text-text-sub mb-2">신고 사유</p>
               <div className="grid grid-cols-2 gap-1.5">
                 {REASONS.map((r) => {
                   const active = reason === r;
                   return (
                     <button
                       key={r}
+                      type="button"
                       onClick={() => setReason(r)}
-                      className="py-2.5 rounded-xl text-[13px] font-bold transition-all"
+                      className="h-10 chip-square text-[13px] font-semibold transition-colors press"
                       style={{
-                        backgroundColor: active ? "#D85555" : "var(--color-gray-50)",
-                        color: active ? "#FFFFFF" : "#4A3F35",
-                        border: `1.5px solid ${active ? "#D85555" : "var(--color-gray-200)"}`,
+                        backgroundColor: active ? "var(--color-primary)" : "var(--color-surface)",
+                        color: active ? "var(--color-surface)" : "var(--color-text-sub)",
+                        border: `1px solid ${active ? "var(--color-primary)" : "var(--color-border)"}`,
                       }}
                     >
                       {REPORT_REASON_LABELS[r]}
@@ -205,7 +199,7 @@ export default function ReportModal({
 
             {/* 상세 설명 */}
             <div className="px-5 pb-3">
-              <p className="text-[11px] font-bold text-text-sub mb-2">
+              <p className="text-[13px] font-semibold text-text-sub mb-2">
                 상세 설명 (선택)
               </p>
               <textarea
@@ -214,18 +208,18 @@ export default function ReportModal({
                 rows={3}
                 maxLength={500}
                 placeholder="관리자에게 전달할 상세 내용을 적어주세요"
-                className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none resize-none"
+                className="w-full px-3 py-2.5 text-[13px] text-text-main outline-none resize-none placeholder:text-text-light focus:border-primary"
                 style={{
-                  backgroundColor: "var(--color-gray-50)",
-                  color: "#2A2A28",
+                  backgroundColor: "var(--color-surface)",
                   border: "1px solid var(--color-border)",
+                  borderRadius: "var(--radius-input)",
                 }}
               />
             </div>
 
             {/* 증거 사진 첨부 (B-2) — EXIF 제거 사본만 저장, 90일 후 자동 파기 */}
             <div className="px-5 pb-3">
-              <p className="text-[11px] font-bold text-text-sub mb-2">
+              <p className="text-[13px] font-semibold text-text-sub mb-2">
                 증거 사진 (선택 · 최대 {EVIDENCE_MAX_FILES}장)
               </p>
               <input
@@ -251,27 +245,29 @@ export default function ReportModal({
                       style={{ border: "1px solid var(--color-border)" }}
                     />
                     <button
+                      type="button"
                       onClick={() => setPhotos((prev) => prev.filter((_, j) => j !== i))}
                       aria-label="사진 제거"
                       className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center"
-                      style={{ backgroundColor: "#B84545" }}
+                      style={{ backgroundColor: "var(--color-text-main)", color: "var(--color-surface)" }}
                     >
-                      <X size={10} color="#fff" strokeWidth={3} />
+                      <X size={10} strokeWidth={3} />
                     </button>
                   </div>
                 ))}
                 {photos.length < EVIDENCE_MAX_FILES && (
                   <button
+                    type="button"
                     onClick={() => photoInputRef.current?.click()}
-                    className="w-14 h-14 rounded-lg flex items-center justify-center press-strong"
-                    style={{ backgroundColor: "var(--color-gray-50)", border: "1.5px dashed #C3BCB3" }}
+                    className="w-14 h-14 rounded-lg flex items-center justify-center press-strong text-text-sub"
+                    style={{ backgroundColor: "var(--color-surface)", border: "1px dashed var(--color-gray-300)" }}
                     aria-label="사진 추가"
                   >
-                    <Camera size={16} style={{ color: "#A38E7A" }} />
+                    <Camera size={16} />
                   </button>
                 )}
               </div>
-              <p className="text-[11px] mt-1.5 leading-relaxed" style={{ color: "#A38E7A" }}>
+              <p className="text-[11px] mt-1.5 leading-relaxed text-text-light">
                 사진 속 위치정보(EXIF)는 자동으로 제거돼요 · 관리자만 열람 · 90일 후 자동 파기
               </p>
             </div>
@@ -280,8 +276,12 @@ export default function ReportModal({
             {canBlock && (
               <div className="px-5 pb-3">
                 <label
-                  className="flex items-start gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer press transition-transform"
-                  style={{ backgroundColor: alsoBlock ? "var(--color-error-soft)" : "var(--color-gray-50)", border: `1.5px solid ${alsoBlock ? "#E8C5C5" : "var(--color-gray-200)"}` }}
+                  className="flex items-start gap-2.5 px-3 py-2.5 cursor-pointer press"
+                  style={{
+                    backgroundColor: alsoBlock ? "var(--color-error-soft)" : "var(--color-surface)",
+                    border: `1px solid ${alsoBlock ? "var(--color-error)" : "var(--color-border)"}`,
+                    borderRadius: "var(--radius-input)",
+                  }}
                 >
                   <input
                     type="checkbox"
@@ -292,20 +292,21 @@ export default function ReportModal({
                   <div
                     className="w-4 h-4 rounded mt-0.5 shrink-0 flex items-center justify-center"
                     style={{
-                      backgroundColor: alsoBlock ? "#B84545" : "#FFFFFF",
-                      border: `1.5px solid ${alsoBlock ? "#B84545" : "#C3BCB3"}`,
+                      backgroundColor: alsoBlock ? "var(--color-error)" : "var(--color-surface)",
+                      border: `1px solid ${alsoBlock ? "var(--color-error)" : "var(--color-gray-300)"}`,
+                      color: "var(--color-surface)",
                     }}
                   >
-                    {alsoBlock && <Check size={11} color="#FFFFFF" strokeWidth={3} />}
+                    {alsoBlock && <Check size={11} strokeWidth={3} />}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-1">
-                      <Ban size={11} style={{ color: "#B84545" }} />
-                      <span className="text-[13px] font-bold" style={{ color: "#4A3F35" }}>
+                      <Ban size={11} style={{ color: "var(--color-error)" }} />
+                      <span className="text-[13px] font-semibold text-text-main">
                         {authorName ? `${authorName}님 차단` : "이 사용자 차단"}
                       </span>
                     </div>
-                    <p className="text-[11px] mt-0.5" style={{ color: "#A38E7A" }}>
+                    <p className="text-[11px] mt-0.5 text-text-light">
                       서로 메시지·댓글이 안 보여요. 마이페이지에서 해제 가능.
                     </p>
                   </div>
@@ -314,7 +315,7 @@ export default function ReportModal({
             )}
 
             {error && (
-              <p className="px-5 text-[11px]" style={{ color: "#B84545" }}>
+              <p className="px-5 text-[11px]" style={{ color: "var(--color-error)" }}>
                 {error}
               </p>
             )}
@@ -322,23 +323,27 @@ export default function ReportModal({
             {/* 버튼 */}
             <div className="flex gap-2 px-5 pb-5 pt-2">
               <button
+                type="button"
                 onClick={onClose}
                 disabled={submitting}
-                className="flex-1 py-3 rounded-xl text-[13px] font-bold"
+                className="flex-1 h-12 text-[15px] font-semibold press"
                 style={{
                   backgroundColor: "var(--color-gray-100)",
-                  color: "#A38E7A",
+                  color: "var(--color-text-main)",
+                  borderRadius: "var(--radius-input)",
                 }}
               >
                 취소
               </button>
               <button
+                type="button"
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="flex-1 py-3 rounded-xl text-[13px] font-bold text-white disabled:opacity-40 flex items-center justify-center gap-1.5"
+                className="flex-1 h-12 text-[15px] font-semibold disabled:opacity-40 flex items-center justify-center gap-1.5 press"
                 style={{
-                  background: "#D85555",
-                  boxShadow: "var(--shadow-fab)",
+                  background: "var(--color-primary)",
+                  color: "var(--color-surface)",
+                  borderRadius: "var(--radius-input)",
                 }}
               >
                 {submitting ? (

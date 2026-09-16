@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Heart, Sparkles } from "lucide-react";
+import { Heart, Check } from "lucide-react";
 
 type Props = {
   open: boolean;
@@ -16,6 +16,7 @@ type Props = {
  * 돌봄 기록 직후 peak-end 연출 + commitment 마이크로 루프.
  * - 첫 돌봄은 특별한 카피
  * - "내일도 들러주실래요?" 소프트 약속 → localStorage에 약속 날짜 기록
+ * 2026-09-16 리디자인: 그라디언트 헤더·반짝이·이모지 헤드라인 제거, 흰 모달 + 헤어라인.
  */
 export default function CareLogCelebration({
   open,
@@ -35,14 +36,14 @@ export default function CareLogCelebration({
 
   // 헤드라인 결정
   const headline = isFirstEver
-    ? "첫 돌봄 완료! 🎉"
+    ? "첫 돌봄 완료"
     : streak >= 30
-      ? `${streak}일 연속! 놀라워요 🔥`
+      ? `${streak}일 연속, 놀라워요`
       : streak >= 7
-        ? `${streak}일 연속이에요! 🔥`
+        ? `${streak}일 연속이에요`
         : streak >= 2
-          ? `${streak}일 연속 유지 💪`
-          : "기록 완료 💛";
+          ? `${streak}일 연속 유지`
+          : "기록 완료";
 
   const subline = isFirstEver
     ? `${catName}과(와) 함께하는 첫 페이지를 남겼어요`
@@ -75,43 +76,20 @@ export default function CareLogCelebration({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-sm rounded-[28px] overflow-hidden relative"
+        className="w-full max-w-sm overflow-hidden relative"
         style={{
-          background: "#FFFFFF",
+          background: "var(--color-surface)",
+          borderRadius: "var(--radius-modal)",
           boxShadow: "var(--shadow-modal)",
         }}
       >
-        {/* 상단 그라디언트 */}
-        <div
-          className="relative px-6 pt-8 pb-5 overflow-hidden"
-          style={{
-            background: isFirstEver
-              ? "linear-gradient(135deg, #FFE9C5 0%, #FFD89B 100%)"
-              : streak >= 7
-                ? "linear-gradient(135deg, #FFE3D5 0%, #FFCFB5 100%)"
-                : "linear-gradient(135deg, #F5E6D8 0%, #E8D5C0 100%)",
-          }}
-        >
-          {/* 반짝이 이펙트 */}
-          <div className="absolute top-3 left-5 animate-pulse">
-            <Sparkles size={14} style={{ color: "#E8B040", opacity: 0.8 }} />
-          </div>
-          <div className="absolute top-8 right-10 animate-pulse" style={{ animationDelay: "0.3s" }}>
-            <Sparkles size={10} style={{ color: "#D85555", opacity: 0.7 }} />
-          </div>
-          <div className="absolute bottom-4 right-5 animate-pulse" style={{ animationDelay: "0.6s" }}>
-            <Sparkles size={16} style={{ color: "var(--color-primary)", opacity: 0.8 }} />
-          </div>
-
+        <div className="px-6 pt-7 pb-5" style={{ borderBottom: "1px solid var(--color-border)" }}>
           <div className="flex items-center justify-center mb-3">
             <div
-              className="w-16 h-16 rounded-full flex items-center justify-center"
-              style={{
-                background: "#FF9A3C",
-                boxShadow: "var(--shadow-fab)",
-              }}
+              className="w-14 h-14 rounded-full flex items-center justify-center"
+              style={{ background: "var(--color-primary)" }}
             >
-              <Heart size={28} color="#fff" fill="#fff" strokeWidth={0} />
+              <Heart size={24} className="text-white" fill="currentColor" strokeWidth={0} />
             </div>
           </div>
 
@@ -121,7 +99,7 @@ export default function CareLogCelebration({
           >
             {headline}
           </h2>
-          <p className="text-[13px] font-bold text-text-sub text-center mt-1.5 leading-snug">
+          <p className="text-[13px] text-text-sub text-center mt-1.5 leading-snug">
             {subline}
           </p>
         </div>
@@ -130,38 +108,35 @@ export default function CareLogCelebration({
         <div className="px-6 pb-6 pt-4">
           {committed ? (
             <div
-              className="rounded-2xl px-4 py-3.5 text-center"
-              style={{ background: "#E8F4E8" }}
+              className="px-4 py-3.5 text-center"
+              style={{ background: "var(--color-sage-soft)", borderRadius: "var(--radius-card-sm)" }}
             >
-              <p className="text-[13px] font-bold" style={{ color: "#3F5B42" }}>
-                ✓ 내일 다시 뵈어요
+              <p className="text-[13px] font-semibold inline-flex items-center gap-1" style={{ color: "var(--color-sage)" }}>
+                <Check size={14} /> 내일 다시 뵈어요
               </p>
-              <p className="text-[11px] font-semibold mt-0.5" style={{ color: "#5A7C5E" }}>
+              <p className="text-[11px] mt-0.5 text-text-sub">
                 저녁에 리마인더를 보내드릴게요
               </p>
             </div>
           ) : (
             <>
-              <p className="text-[13px] font-bold text-text-sub text-center mb-3">
+              <p className="text-[13px] font-semibold text-text-sub text-center mb-3">
                 내일도 들러주실래요?
               </p>
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={handleCommit}
-                  className="flex-1 py-3 rounded-2xl text-[13px] font-bold text-white press"
-                  style={{
-                    background: "var(--color-primary)",
-                    boxShadow: "var(--shadow-primary)",
-                  }}
+                  className="flex-1 h-12 text-[15px] font-semibold text-white press"
+                  style={{ background: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
                 >
                   네, 내일도 올게요
                 </button>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-3 rounded-2xl text-[13px] font-bold"
-                  style={{ background: "var(--color-gray-50)", color: "#A38E7A" }}
+                  className="px-4 h-12 text-[15px] font-semibold text-text-main press"
+                  style={{ background: "var(--color-gray-100)", borderRadius: "var(--radius-input)" }}
                 >
                   닫기
                 </button>
@@ -175,10 +150,10 @@ export default function CareLogCelebration({
             <Link
               href="/shop?category=food"
               onClick={onClose}
-              className="block text-center text-[13px] font-bold mt-3 py-3 rounded-2xl press transition-transform"
-              style={{ background: "rgba(232,148,10,0.1)", color: "#B87409" }}
+              className="block text-center text-[13px] font-semibold mt-3 py-3 press"
+              style={{ color: "var(--color-primary)" }}
             >
-              🔥 {streak}일 연속 기념 — 아이들 간식 구경하고 찜해두기
+              {streak}일 연속 기념 — 아이들 간식 구경하고 찜해두기
             </Link>
           )}
         </div>

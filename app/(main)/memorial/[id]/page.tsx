@@ -5,8 +5,12 @@ import { ChevronLeft, Star } from "lucide-react";
 import { getCatByIdServer, getMemorialCareLogsServer } from "@/lib/cats-server";
 import { CARE_TYPE_MAP, type CareType } from "@/lib/care-logs-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import { catArtWalkSvg } from "@/lib/cat-art";
 import MemorialFlowerButton from "@/app/components/MemorialFlowerButton";
 import MemorialDiary from "@/app/components/MemorialDiary";
+
+// 2026-09-16 리디자인 「익숙한 동네앱」: 밤하늘 그라디언트 대신 흰 면.
+// 프로필(원형 사진) → 헤어라인 → 요약 → 추모일기 → 날짜별 구분선 리스트.
 
 export async function generateMetadata({
   params,
@@ -51,8 +55,8 @@ export default async function MemorialCatPage({
         </p>
         <Link
           href={`/cats/${cat.id}`}
-          className="h-[46px] px-6 rounded-2xl flex items-center text-[15px] font-bold text-white"
-          style={{ background: "var(--color-primary)" }}
+          className="h-12 px-6 flex items-center text-[15px] font-semibold text-white"
+          style={{ background: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
         >
           {cat.name} 보러 가기
         </Link>
@@ -90,96 +94,81 @@ export default async function MemorialCatPage({
   const photo = sanitizeImageUrl(cat.photo_url);
 
   return (
-    <div
-      className="min-h-screen"
-      style={{ background: "linear-gradient(180deg, #07060F 0%, #140F26 34%, #241B3B 68%, #33254A 100%)" }}
-    >
-      <div className="px-5 pb-28" style={{ paddingTop: "max(env(safe-area-inset-top), 16px)" }}>
-        <div className="flex items-center py-3">
+    <div className="min-h-screen" style={{ background: "var(--color-surface)" }}>
+      <div className="px-4 pb-28" style={{ paddingTop: "max(env(safe-area-inset-top), 16px)" }}>
+        <div className="flex items-center gap-2 py-3">
           <Link
             href="/memorial"
-            className="w-10 h-10 rounded-full flex items-center justify-center press-strong transition-transform"
-            style={{ background: "rgba(255,255,255,0.1)" }}
+            className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
+            style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
             aria-label="고양이별로"
           >
-            <ChevronLeft size={20} color="#fff" />
+            <ChevronLeft size={20} className="text-text-main" />
           </Link>
-          <span className="text-[13px] font-semibold ml-2" style={{ color: "rgba(255,255,255,0.5)" }}>
-            고양이별
-          </span>
+          <span className="text-[13px] font-semibold text-text-sub">고양이별</span>
         </div>
 
         {/* 프로필 */}
-        <div className="flex flex-col items-center text-center pt-6">
+        <div className="flex flex-col items-center text-center pt-6 pb-5" style={{ borderBottom: "1px solid var(--color-border)" }}>
           <div
-            className="rounded-full overflow-hidden"
-            style={{
-              width: 128,
-              height: 128,
-              border: "3px solid rgba(255,233,168,0.55)",
-              boxShadow: "0 0 40px rgba(255,233,168,0.3)",
-              background: "#2a2340",
-            }}
+            className="rounded-full overflow-hidden flex items-center justify-center"
+            style={{ width: 112, height: 112, background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
           >
             {photo ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={photo} alt={cat.name} className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-[46px]">🐈</div>
+              <span
+                aria-hidden
+                dangerouslySetInnerHTML={{
+                  __html: catArtWalkSvg(cat.art_key ?? cat.id, 84, { walking: false, colors: cat.art_colors }),
+                }}
+              />
             )}
           </div>
 
-          <h1 className="text-[24px] font-bold text-white mt-5">{cat.name}</h1>
-          <p className="text-[13px] mt-2" style={{ color: "rgba(255,255,255,0.55)" }}>
+          <h1 className="text-[24px] font-bold text-text-main mt-4">{cat.name}</h1>
+          <p className="text-[13px] mt-1 text-text-sub">
             {cat.region ?? "지역 미상"} · 함께한 {cared}일
           </p>
-          <div className="flex items-center gap-1.5 mt-2">
-            <Star size={12} color="#FFE9A8" fill="#FFE9A8" />
-            <p className="text-[13px]" style={{ color: "rgba(255,255,255,0.42)" }}>
-              {fmtDate(cat.memorial_at)}에 고양이별로
-            </p>
+          <div className="flex items-center gap-1.5 mt-1 text-text-light">
+            <Star size={12} />
+            <p className="text-[13px]">{fmtDate(cat.memorial_at)}에 고양이별로</p>
           </div>
 
           {cat.memorial_note && (
             <p
-              className="text-[15px] leading-[1.8] mt-6 px-5 py-4 whitespace-pre-wrap w-full"
-              style={{ color: "rgba(255,255,255,0.8)", background: "rgba(0,0,0,0.2)", borderRadius: "var(--radius-card)" }}
+              className="text-[15px] leading-[1.8] mt-5 px-4 py-3.5 whitespace-pre-wrap w-full text-left text-text-main"
+              style={{ background: "var(--color-surface-alt)", borderRadius: "var(--radius-card)" }}
             >
               {cat.memorial_note}
             </p>
           )}
 
-          <div className="w-full mt-5">
+          <div className="w-full mt-4">
             <MemorialFlowerButton catId={cat.id} />
           </div>
         </div>
 
         {/* 요약 */}
         {logs.length > 0 && (
-          <div
-            className="mt-10 px-5 py-5"
-            style={{
-              borderRadius: "var(--radius-card)",
-              background: "rgba(255,255,255,0.07)",
-              border: "1px solid rgba(255,255,255,0.12)",
-            }}
-          >
-            <p className="text-[15px] leading-[1.8] text-white">
+          <div className="py-4" style={{ borderBottom: "1px solid var(--color-border)" }}>
+            <p className="text-[15px] leading-[1.6] text-text-main">
               {people.size > 1 ? `${people.size}명이 ` : ""}
-              <b style={{ color: "#FFE9A8" }}>{logs.length}번</b>
+              <b>{logs.length}번</b>
               {" "}돌봤어요
             </p>
-            <div className="flex flex-wrap gap-2 mt-3.5">
+            <div className="flex flex-wrap gap-1.5 mt-2.5">
               {topTypes.map(([type, n]) => {
                 const meta = CARE_TYPE_MAP[type as CareType];
                 if (!meta) return null;
                 return (
                   <span
                     key={type}
-                    className="text-[13px] px-3 py-1.5 rounded-full"
-                    style={{ background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.78)" }}
+                    className="text-[13px] px-2.5 py-1 text-text-sub"
+                    style={{ borderRadius: "var(--radius-square)", border: "1px solid var(--color-border)" }}
                   >
-                    {meta.emoji} {meta.label} {n}
+                    {meta.label} {n}
                   </span>
                 );
               })}
@@ -191,41 +180,36 @@ export default async function MemorialCatPage({
         <MemorialDiary catId={cat.id} catName={cat.name} />
 
         {/* 돌봄 기록 전체 */}
-        <div className="mt-10">
-          <h2 className="text-[15px] font-bold text-white mb-1">함께한 기록</h2>
-          <p className="text-[13px] mb-5" style={{ color: "rgba(255,255,255,0.4)" }}>
+        <div className="mt-8">
+          <h2 className="text-[17px] font-bold text-text-main mb-0.5">함께한 기록</h2>
+          <p className="text-[13px] mb-3 text-text-sub">
             {logs.length > 0
               ? "지도에서 내려와도 이 기록은 지워지지 않아요."
               : "남겨진 돌봄 기록이 없어요."}
           </p>
 
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-5">
             {[...groups.entries()].map(([day, items]) => (
               <div key={day}>
-                <p className="text-[13px] font-semibold mb-2.5" style={{ color: "rgba(255,233,168,0.72)" }}>
+                <p className="text-[13px] font-semibold mb-1 text-text-sub">
                   {fmtDate(day)}
                 </p>
-                <div className="flex flex-col gap-2.5">
+                <div className="flex flex-col">
                   {items.map((l) => {
                     const meta = CARE_TYPE_MAP[l.care_type as CareType];
                     const img = sanitizeImageUrl(l.photo_url);
                     return (
                       <div
                         key={l.id}
-                        className="px-4 py-3.5"
-                        style={{
-                          borderRadius: "var(--radius-card-sm)",
-                          background: "rgba(255,255,255,0.06)",
-                          border: "1px solid rgba(255,255,255,0.09)",
-                        }}
+                        className="py-3"
+                        style={{ borderBottom: "1px solid var(--color-divider)" }}
                       >
                         <div className="flex items-center gap-2">
-                          <span className="text-[15px]">{meta?.emoji ?? "📝"}</span>
-                          <span className="text-[13px] font-bold text-white">
+                          <span className="text-[15px] font-semibold text-text-main">
                             {meta?.label ?? "돌봄"}
                             {l.amount ? ` · ${l.amount}` : ""}
                           </span>
-                          <span className="text-[13px] ml-auto" style={{ color: "rgba(255,255,255,0.38)" }}>
+                          <span className="text-[13px] ml-auto text-text-light">
                             {new Date(l.logged_at).toLocaleTimeString("ko-KR", {
                               hour: "2-digit",
                               minute: "2-digit",
@@ -235,10 +219,7 @@ export default async function MemorialCatPage({
                         </div>
 
                         {l.memo && (
-                          <p
-                            className="text-[13px] leading-[1.7] mt-2 whitespace-pre-wrap"
-                            style={{ color: "rgba(255,255,255,0.75)" }}
-                          >
+                          <p className="text-[13px] leading-[1.7] mt-1.5 whitespace-pre-wrap text-text-main">
                             {l.memo}
                           </p>
                         )}
@@ -248,13 +229,13 @@ export default async function MemorialCatPage({
                           <img
                             src={img}
                             alt=""
-                            className="w-full mt-3 object-cover"
-                            style={{ borderRadius: "var(--radius-square-lg)", maxHeight: 260 }}
+                            className="w-full mt-2.5 object-cover"
+                            style={{ borderRadius: "var(--radius-card-sm)", maxHeight: 260 }}
                           />
                         )}
 
                         {l.author_name && (
-                          <p className="text-[13px] mt-2.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+                          <p className="text-[13px] mt-2 text-text-light">
                             {l.author_name}
                           </p>
                         )}

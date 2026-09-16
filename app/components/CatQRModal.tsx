@@ -2,6 +2,8 @@
 
 // 고양이 QR 코드 — 종이로 인쇄해 동네에 공유.
 // "스캔하면 이 아이의 도시공존 페이지로" — 오프라인 → 온라인 유입.
+// QR 캔버스(qrcode는 hex만 받음)·인쇄 팝업(별 문서라 :root 토큰이 없음)은 var()가 안 먹는 자리 —
+// 런타임에 :root 토큰 값을 읽어 넘기고, 못 읽으면 라이브러리 기본색(검정/흰색)·CSS 키워드로 폴백한다. hex 리터럴 없음.
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -19,6 +21,15 @@ interface CatQRModalProps {
 // opener(dosigongzon.com)의 origin을 상속한다. 고양이 이름은 사용자 입력이므로
 // 이스케이프 없이 삽입하면 same-origin Stored XSS가 된다. 요소 텍스트·따옴표 속성
 // 양쪽을 안전하게 하기 위해 & < > " ' 를 모두 엔티티로 변환한다.
+/** :root에 박힌 디자인 토큰 값을 읽는다(예: 텍스트 메인 색). 없으면 빈 문자열. */
+function readToken(name: string): string {
+  try {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  } catch {
+    return "";
+  }
+}
+
 function escapeHtml(raw: string): string {
   return raw
     .replace(/&/g, "&amp;")
@@ -42,10 +53,13 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
   useEffect(() => {
     if (!open || !canvasRef.current) return;
     const canvas = canvasRef.current;
+    const ink = readToken("--color-text-main");
+    const paper = readToken("--color-surface");
     QRCode.toCanvas(canvas, targetUrl, {
       width: 320,
       margin: 2,
-      color: { dark: "#3D2F25", light: "#FFFFFF" },
+      // 토큰을 못 읽으면 color 자체를 생략 → 라이브러리 기본(검정/흰색)
+      ...(ink && paper ? { color: { dark: ink, light: paper } } : {}),
       errorCorrectionLevel: "M",
     })
       .then(() => {
@@ -82,20 +96,23 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
     const w = window.open("", "_blank", "width=500,height=700");
     if (!w) return;
     const safeName = escapeHtml(catName);
+    const inkMain = readToken("--color-text-main") || "black";
+    const inkSub = readToken("--color-text-sub") || "gray";
+    const inkLight = readToken("--color-text-light") || "gray";
     w.document.write(`
       <html>
         <head>
           <title>${safeName} 도시공존 QR</title>
           <style>
-            body { font-family: 'Apple SD Gothic Neo', sans-serif; text-align: center; padding: 32px; }
-            h1 { font-size: 20px; margin: 0 0 8px; color: #3D2F25; }
-            p { font-size: 12px; color: #8B7562; margin: 0 0 24px; line-height: 1.6; }
+            body { font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif; text-align: center; padding: 32px; }
+            h1 { font-size: 20px; margin: 0 0 8px; color: ${inkMain}; }
+            p { font-size: 12px; color: ${inkSub}; margin: 0 0 24px; line-height: 1.6; }
             img { max-width: 320px; width: 100%; }
-            .footer { font-size: 11px; color: #A38E7A; margin-top: 20px; }
+            .footer { font-size: 11px; color: ${inkLight}; margin-top: 20px; }
           </style>
         </head>
         <body>
-          <h1>🐾 ${safeName}</h1>
+          <h1>${safeName}</h1>
           <p>이 아이의 안부를 함께 살펴주세요<br/>QR 스캔 → 도시공존 페이지</p>
           <img src="${dataUrl}" alt="${safeName} QR" />
           <p class="footer">dosigongzon.com — 길고양이 시민 참여 지도</p>
@@ -113,15 +130,13 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md bg-white rounded-3xl overflow-hidden"
+        className="w-full max-w-md overflow-hidden"
+        style={{ background: "var(--color-surface)", borderRadius: "var(--radius-modal)", boxShadow: "var(--shadow-modal)" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="px-5 pt-5 pb-3 flex items-start justify-between">
           <div>
-            <p className="text-[11px] font-bold tracking-[0.18em]" style={{ color: "#8A4325" }}>
-              SHARE OFFLINE
-            </p>
-            <h2 className="text-[17px] font-bold text-text-main mt-1 tracking-tight">
+            <h2 className="text-[17px] font-bold text-text-main tracking-tight">
               {catName} QR 코드
             </h2>
             <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
@@ -132,7 +147,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
             type="button"
             onClick={onClose}
             className="w-8 h-8 rounded-full flex items-center justify-center press-strong shrink-0"
-            style={{ background: "rgba(0,0,0,0.05)" }}
+            style={{ background: "var(--color-gray-100)" }}
             aria-label="닫기"
           >
             <X size={15} className="text-text-sub" />
@@ -140,7 +155,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
         </div>
 
         <div className="px-5 pb-4 flex justify-center">
-          <div className="rounded-2xl p-3" style={{ background: "#F7F4EE" }}>
+          <div className="p-3" style={{ borderRadius: "var(--radius-card)", border: "1px solid var(--color-border)" }}>
             <canvas ref={canvasRef} className="block" />
           </div>
         </div>
@@ -150,8 +165,8 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
             type="button"
             onClick={handleDownload}
             disabled={!dataUrl}
-            className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold text-white press-strong disabled:opacity-50"
-            style={{ background: "#B05C36" }}
+            className="flex items-center justify-center gap-1.5 h-12 text-[15px] font-semibold text-white press-strong disabled:opacity-50"
+            style={{ background: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
           >
             <Download size={14} />
             <span>이미지 저장</span>
@@ -160,8 +175,8 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
             type="button"
             onClick={handlePrint}
             disabled={!dataUrl}
-            className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold press-strong disabled:opacity-50"
-            style={{ background: "#FFFFFF", color: "#8A4325", border: "1.5px solid rgba(176, 92, 54,0.30)" }}
+            className="flex items-center justify-center gap-1.5 h-12 text-[15px] font-semibold text-text-main press-strong disabled:opacity-50"
+            style={{ background: "var(--color-gray-100)", borderRadius: "var(--radius-input)" }}
           >
             <Printer size={14} />
             <span>인쇄하기</span>
@@ -169,8 +184,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
         </div>
 
         <p className="text-[11px] text-text-light text-center pb-4 px-5 leading-relaxed">
-          A4·A5 어디든 인쇄 가능. 전봇대·우편함·게시판 등 동네에 공유하시면<br/>
-          이웃이 스캔해 함께 돌볼 수 있어요.
+          전봇대·우편함·게시판에 붙이면 이웃이 스캔해 함께 돌볼 수 있어요.
         </p>
       </div>
     </div>,

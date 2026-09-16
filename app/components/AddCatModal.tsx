@@ -4,10 +4,12 @@ import { GEOLOCATION_ENABLED } from "@/lib/geo";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { X, Camera, MapPin, Loader2, Plus, Lock, ShieldAlert } from "lucide-react";
+import { X, Camera, MapPin, Loader2, Plus, Lock, ShieldAlert, ChevronDown, Check } from "lucide-react";
 import { createCat, uploadCatPhoto, type Cat, type CatGender, type CatHealthStatus, type AdoptionStatus, type CatVisibility, GENDER_MAP, HEALTH_MAP, ADOPTION_MAP, VISIBILITY_MAP } from "@/lib/cats-repo";
 import { useAuth } from "@/lib/auth-context";
 import CatRegistrationCelebration from "@/app/components/CatRegistrationCelebration";
+import UIButton from "@/app/components/ui/Button";
+import UIChip from "@/app/components/ui/Chip";
 import { findLocationViolations, formatViolationMessage } from "@/lib/location-patterns";
 import { findAbuseViolations, formatAbuseMessage } from "@/lib/abuse-patterns";
 import {
@@ -323,32 +325,44 @@ export default function AddCatModal({
 
   if (!open || !portalRoot) return null;
 
+  const fieldStyle: React.CSSProperties = {
+    borderRadius: "var(--radius-input)",
+    background: "var(--color-surface-alt)",
+    border: "1px solid var(--color-border)",
+    color: "var(--color-text-main)",
+  };
+
   // ── 비로그인 시 로그인 유도 ──
   if (!user) {
     return createPortal(
       <div className="fixed inset-0 z-[100] flex items-center justify-center px-5">
         <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-        <div className="relative w-full max-w-sm bg-white rounded-[28px] p-6 shadow-2xl">
+        <div
+          className="relative w-full max-w-sm p-6"
+          style={{ background: "var(--color-surface)", borderRadius: "var(--radius-modal)", boxShadow: "var(--shadow-modal)" }}
+        >
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-alt flex items-center justify-center press-strong transition-transform"
+            className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center press-strong"
+            style={{ background: "var(--color-gray-100)" }}
+            aria-label="닫기"
           >
             <X size={18} className="text-text-sub" />
           </button>
-          <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-            <Lock size={24} className="text-primary" />
+          <div className="mb-3 text-text-sub">
+            <Lock size={22} />
           </div>
           <h2 className="text-[20px] font-bold text-text-main mb-2">
             로그인이 필요해요
           </h2>
           <p className="text-[13px] text-text-sub leading-relaxed mb-5">
-            우리 동네 고양이를 등록하려면 먼저 로그인해주세요. 누가 어떤 아이를 돌보는지 기록해야
-            오래 이어갈 수 있어요.
+            우리 동네 고양이를 등록하려면 먼저 로그인해주세요.
           </p>
           <Link
             href="/login?next=%2Fmap"
             onClick={onClose}
-            className="block w-full py-3.5 rounded-2xl bg-primary text-white text-[15px] font-bold text-center press-strong transition-transform"
+            className="flex items-center justify-center w-full h-12 text-white text-[15px] font-semibold press-strong"
+            style={{ background: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
           >
             로그인하러 가기
           </Link>
@@ -368,61 +382,39 @@ export default function AddCatModal({
     >
       <div className="absolute inset-0 bg-black/40" onClick={() => !submitting && onClose()} />
 
-      <style>{`
-        @keyframes addcat-holo-sweep {
-          0%   { background-position: -220% center; }
-          100% { background-position: 220% center; }
-        }
-      `}</style>
-
       <div
-        className="relative mt-auto w-full rounded-t-[28px] flex flex-col overflow-hidden"
+        className="relative mt-auto w-full flex flex-col overflow-hidden animate-slide-up"
         style={{
           maxHeight: "92dvh",
-          background: "#241748",
-          border: "1px solid rgba(99,102,241,0.35)",
-          borderBottom: "none",
-          boxShadow: "0 -10px 40px rgba(99,102,241,0.22), inset 0 1px 0 rgba(255,255,255,0.08)",
+          background: "var(--color-surface)",
+          borderTopLeftRadius: "var(--radius-sheet)",
+          borderTopRightRadius: "var(--radius-sheet)",
+          boxShadow: "var(--shadow-sheet)",
         }}
       >
-        {/* 카드 홀로그램 스윕 */}
-        <div className="pointer-events-none absolute inset-0" style={{
-          background: "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.06) 48%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.06) 52%, transparent 70%)",
-          backgroundSize: "260% 100%",
-          animation: "addcat-holo-sweep 3.2s ease-in-out infinite",
-        }} />
-
         {/* 핸들 바 */}
-        <div className="relative flex justify-center pt-3 pb-1">
-          <div className="w-10 h-1 rounded-full bg-border" />
+        <div className="flex justify-center pt-3 pb-1">
+          <div className="w-10 h-1 rounded-full" style={{ background: "var(--color-gray-300)" }} />
         </div>
 
         {/* 헤더 */}
-        <div className="relative flex items-center justify-between px-5 py-3 border-b border-white/12">
-          <div className="flex items-center gap-2.5">
-            <span className="w-8 h-8 rounded-xl flex items-center justify-center text-[17px] shrink-0"
-              style={{ background: "#6366F1", boxShadow: "var(--shadow-raised)" }}>
-              <Plus size={16} className="text-white" />
-            </span>
-            <div>
-              <h2
-                id="add-cat-modal-title"
-                className="text-[17px] font-bold text-white"
-              >
-                우리 동네 아이 등록
-              </h2>
-              <p className="text-[11px] text-white/60 mt-0.5">
-                이름과 동네만 있으면 바로 등록돼요 · 사진·소개는 선택
-              </p>
-            </div>
+        <div className="flex items-center justify-between px-5 py-3" style={{ borderBottom: "1px solid var(--color-border)" }}>
+          <div className="min-w-0">
+            <h2 id="add-cat-modal-title" className="text-[17px] font-bold text-text-main">
+              우리 동네 아이 등록
+            </h2>
+            <p className="text-[13px] text-text-sub mt-0.5">
+              이름과 동네만 있으면 바로 등록돼요
+            </p>
           </div>
           <button
             onClick={onClose}
             disabled={submitting}
             aria-label="등록 창 닫기"
-            className="w-9 h-9 rounded-full bg-white/[0.07] flex items-center justify-center press-strong transition-transform disabled:opacity-50 shrink-0"
+            className="w-9 h-9 rounded-full flex items-center justify-center press-strong disabled:opacity-50 shrink-0"
+            style={{ background: "var(--color-gray-100)" }}
           >
-            <X size={18} className="text-white/60" />
+            <X size={18} className="text-text-sub" />
           </button>
         </div>
 
@@ -431,59 +423,63 @@ export default function AddCatModal({
           {showDiscoverySteps && (
             <div>
             <ol className="grid grid-cols-3 gap-2" aria-label="발견 기록 3단계">
-              {DISCOVERY_RECORD_STEPS.map((step, index) => (
-                <li
-                  key={step.id}
-                  className={`rounded-xl border px-2 py-2 text-center ${
-                    discoveryStep === step.id
-                      ? "border-[#818CF8] bg-[#6366F1]/20"
-                      : "border-white/15 bg-white/[0.06]"
-                  }`}
-                >
-                  <button
-                    type="button"
-                    className="w-full"
-                    aria-current={discoveryStep === step.id ? "step" : undefined}
-                    onClick={() => setDiscoveryStep(step.id)}
+              {DISCOVERY_RECORD_STEPS.map((step, index) => {
+                const active = discoveryStep === step.id;
+                return (
+                  <li
+                    key={step.id}
+                    className="text-center"
+                    style={{
+                      borderRadius: "var(--radius-card-sm)",
+                      border: `1px solid ${active ? "var(--color-primary)" : "var(--color-border)"}`,
+                      background: active ? "var(--color-primary-soft)" : "var(--color-surface)",
+                    }}
                   >
-                    <span className="block text-[11px] font-bold text-[#A5B4FC]">
-                      {index + 1}단계
-                    </span>
-                    <span className="mt-0.5 block text-[11px] font-bold text-white/80">
-                      {step.label}
-                    </span>
-                  </button>
-                </li>
-              ))}
+                    <button
+                      type="button"
+                      className="w-full px-2 py-2"
+                      aria-current={active ? "step" : undefined}
+                      onClick={() => setDiscoveryStep(step.id)}
+                    >
+                      <span className="block text-[11px] font-semibold" style={{ color: active ? "var(--color-primary)" : "var(--color-text-light)" }}>
+                        {index + 1}단계
+                      </span>
+                      <span className="mt-0.5 block text-[13px] font-semibold text-text-main">
+                        {step.label}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
             </ol>
             <div className="mt-2 flex items-center justify-between">
-              <button
-                type="button"
+              <UIButton
+                variant="text"
+                size="sm"
                 disabled={discoveryStep === "location"}
                 onClick={() => setDiscoveryStep((step) => getAdjacentDiscoveryRecordStep(step, "previous"))}
-                className="rounded-lg px-3 py-1.5 text-[11px] font-bold text-white/65 disabled:opacity-30"
               >
                 이전
-              </button>
-              <button
-                type="button"
+              </UIButton>
+              <UIButton
+                variant="secondary"
+                size="sm"
                 disabled={discoveryStep === "visibility"}
                 onClick={() => setDiscoveryStep((step) => getAdjacentDiscoveryRecordStep(step, "next"))}
-                className="rounded-lg bg-[#6366F1]/20 px-3 py-1.5 text-[11px] font-bold text-[#C7CAFF] disabled:opacity-30"
               >
                 다음
-              </button>
+              </UIButton>
             </div>
             </div>
           )}
           {showDiscoverySteps &&
             discoveryStep === "location" &&
             nearbyCandidates.length > 0 && (
-              <div className="rounded-2xl border border-amber-300/30 bg-amber-200/10 p-3">
-                <p className="text-[13px] font-bold text-amber-100">
+              <div className="p-3" style={{ borderRadius: "var(--radius-card)", border: "1px solid var(--color-border)" }}>
+                <p className="text-[15px] font-semibold text-text-main">
                   잠깐, 주변에 이미 등록된 아이가 있어요
                 </p>
-                <p className="mt-1 text-[11px] text-white/65">
+                <p className="mt-1 text-[13px] text-text-sub">
                   같은 아이라면 새로 등록하지 말고 기존 기록을 이어주세요.
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2">
@@ -491,7 +487,8 @@ export default function AddCatModal({
                     <Link
                       key={candidate.id}
                       href={`/cats/${candidate.id}`}
-                      className="rounded-lg bg-white/10 px-2.5 py-1.5 text-[11px] font-bold text-white/85"
+                      className="h-8 px-3 inline-flex items-center text-[13px] font-semibold text-text-main"
+                      style={{ borderRadius: "var(--radius-square)", border: "1px solid var(--color-border)" }}
                     >
                       {candidate.name}
                     </Link>
@@ -504,10 +501,10 @@ export default function AddCatModal({
           {/* 사진 업로드 — 최대 5장 */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-[13px] font-bold text-white">
-                사진 <span className="text-white/45 font-normal">(선택) · 첫 장이 대표</span>
+              <label className="text-[13px] font-semibold text-text-main">
+                사진 <span className="text-text-light font-normal">(선택) · 첫 장이 대표</span>
               </label>
-              <span className="text-[11px] text-white/45">
+              <span className="text-[11px] text-text-light">
                 {photoFiles.length}/{MAX_PHOTOS}
               </span>
             </div>
@@ -516,12 +513,12 @@ export default function AddCatModal({
                 <button
                   type="button"
                   onClick={() => captureInputRef.current?.click()}
-                  className="relative w-full aspect-[4/3] rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-2 press transition-transform overflow-hidden"
-                  style={{ background: "#0F0F1A", borderColor: "#6366F1" }}
+                  className="relative w-full aspect-[4/3] flex flex-col items-center justify-center gap-2 press overflow-hidden"
+                  style={{ borderRadius: "var(--radius-card)", background: "var(--color-surface-alt)", border: "1px dashed var(--color-gray-300)" }}
                 >
-                  <Camera size={34} className="text-white" strokeWidth={1.5} />
-                  <p className="text-[15px] font-bold text-white">사진 찍기</p>
-                  <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.5)" }}>카메라로 우리 동네 아이를 담아요</p>
+                  <Camera size={30} className="text-text-sub" strokeWidth={1.5} />
+                  <p className="text-[15px] font-semibold text-text-main">사진 찍기</p>
+                  <p className="text-[13px] text-text-sub">카메라로 우리 동네 아이를 담아요</p>
                 </button>
                 <input
                   ref={captureInputRef}
@@ -535,29 +532,27 @@ export default function AddCatModal({
                     if (e.target) e.target.value = "";
                   }}
                 />
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-full py-2.5 rounded-xl border border-dashed border-white/15 flex items-center justify-center gap-2 press"
-                  style={{ background: "rgba(255,255,255,0.06)" }}
-                >
-                  <Camera size={15} className="text-white/45" strokeWidth={1.5} />
-                  <p className="text-[13px] text-white/60">갤러리에서 선택</p>
-                </button>
+                <UIButton variant="secondary" size="md" full onClick={() => fileInputRef.current?.click()}>
+                  <Camera size={15} strokeWidth={1.5} />
+                  갤러리에서 선택
+                </UIButton>
               </div>
             ) : (
               <div className="grid grid-cols-3 gap-2">
                 {photoPreviews.map((src, idx) => (
                   <div
                     key={idx}
-                    className="relative aspect-square rounded-xl overflow-hidden"
-                    style={{ border: idx === 0 ? "2px solid #6366F1" : "1px solid rgba(255,255,255,0.16)" }}
+                    className="relative aspect-square overflow-hidden"
+                    style={{
+                      borderRadius: "var(--radius-card-sm)",
+                      border: idx === 0 ? "2px solid var(--color-primary)" : "1px solid var(--color-border)",
+                    }}
                   >
                     <img src={src} alt={`미리보기 ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" />
                     {idx === 0 && (
                       <span
-                        className="absolute top-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded-md text-white"
-                        style={{ background: "#6366F1" }}
+                        className="absolute top-1 left-1 text-[11px] font-semibold px-1.5 py-0.5 text-white"
+                        style={{ background: "var(--color-primary)", borderRadius: "var(--radius-square)" }}
                       >
                         대표
                       </span>
@@ -569,7 +564,7 @@ export default function AddCatModal({
                       style={{ background: "rgba(0,0,0,0.55)" }}
                       aria-label="삭제"
                     >
-                      <X size={11} color="#fff" strokeWidth={2.8} />
+                      <X size={11} className="text-white" strokeWidth={2.8} />
                     </button>
                   </div>
                 ))}
@@ -577,10 +572,11 @@ export default function AddCatModal({
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="aspect-square rounded-xl bg-white/[0.07] border-2 border-dashed border-white/15 flex flex-col items-center justify-center gap-1 press-strong"
+                    className="aspect-square flex flex-col items-center justify-center gap-1 press-strong"
+                    style={{ borderRadius: "var(--radius-card-sm)", background: "var(--color-surface-alt)", border: "1px dashed var(--color-gray-300)" }}
                   >
-                    <Camera size={20} className="text-white/45" strokeWidth={1.5} />
-                    <p className="text-[11px] text-white/60 font-medium">추가</p>
+                    <Camera size={20} className="text-text-sub" strokeWidth={1.5} />
+                    <p className="text-[11px] text-text-sub font-medium">추가</p>
                   </button>
                 )}
               </div>
@@ -597,7 +593,7 @@ export default function AddCatModal({
 
           {/* 이름 */}
           <div>
-            <label className="text-[13px] font-bold text-white mb-2 block">
+            <label className="text-[13px] font-semibold text-text-main mb-2 block">
               이름 <span className="text-error">*</span>
             </label>
             <input
@@ -606,7 +602,8 @@ export default function AddCatModal({
               onChange={(e) => setName(e.target.value)}
               placeholder="예: 까망이, 치즈, 삼색이"
               maxLength={20}
-              className="w-full px-4 py-3 rounded-2xl bg-white/[0.07] text-[15px] text-white outline-none focus:bg-white/10 focus:ring-2 focus:ring-[#6366F1]/20 transition-all placeholder:text-white/30"
+              className="w-full px-4 py-3 text-[15px] outline-none focus:border-primary transition-colors placeholder:text-text-light"
+              style={fieldStyle}
             />
           </div>
           </>
@@ -615,24 +612,24 @@ export default function AddCatModal({
           {/* 동네 */}
           {(!showDiscoverySteps || discoveryStep === "location") && (
           <div>
-            <label className="text-[13px] font-bold text-white mb-2 block">
+            <label className="text-[13px] font-semibold text-text-main mb-2 block">
               동네 <span className="text-error">*</span>
               {detectedGu && (
-                <span className="text-[11px] font-normal text-white/45 ml-2">
+                <span className="text-[11px] font-normal text-text-light ml-2">
                   {detectedGu}
                 </span>
               )}
             </label>
             {selectedDong && !editingDong ? (
               <div className="flex items-center gap-2">
-                <div className="flex-1 flex items-center gap-2 px-4 py-3 rounded-2xl bg-[#6366F1]/10 border border-[#6366F1]/20">
-                  <MapPin size={14} className="text-[#818CF8] shrink-0" />
-                  <span className="text-[15px] font-bold text-white">{selectedDong}</span>
+                <div className="flex-1 flex items-center gap-2 px-4 py-3" style={fieldStyle}>
+                  <MapPin size={14} className="text-text-sub shrink-0" />
+                  <span className="text-[15px] font-semibold text-text-main">{selectedDong}</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setEditingDong(true)}
-                  className="text-[13px] text-white/60 underline shrink-0 px-2"
+                  className="text-[13px] text-text-sub underline shrink-0 px-2"
                 >
                   변경
                 </button>
@@ -646,7 +643,8 @@ export default function AddCatModal({
                 autoFocus={editingDong}
                 placeholder="예: 구월동, 역삼동, 해운대동"
                 maxLength={20}
-                className="w-full px-4 py-3 rounded-2xl bg-white/[0.07] text-[15px] text-white outline-none focus:bg-white/10 focus:ring-2 focus:ring-[#6366F1]/20 transition-all placeholder:text-white/30"
+                className="w-full px-4 py-3 text-[15px] outline-none focus:border-primary transition-colors placeholder:text-text-light"
+                style={fieldStyle}
               />
             )}
           </div>
@@ -658,28 +656,33 @@ export default function AddCatModal({
           <button
             type="button"
             onClick={() => setShowMore((v) => !v)}
-            className="w-full flex items-center justify-center gap-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all press"
-            style={{ background: "rgba(99,102,241,0.10)", color: "#B4B8FF", border: "1px dashed rgba(129,140,248,0.4)" }}
+            className="w-full flex items-center justify-between h-12 px-1 text-[15px] font-semibold text-text-main press"
+            style={{ borderTop: "1px solid var(--color-divider)", borderBottom: "1px solid var(--color-divider)" }}
+            aria-expanded={showMore}
           >
-            {showMore ? "추가 정보 접기 ▴" : "한 줄 소개·성별·건강 등 추가 (선택) ▾"}
+            <span>{showMore ? "추가 정보 접기" : "한 줄 소개·성별·건강 등 추가 (선택)"}</span>
+            <ChevronDown
+              size={18}
+              style={{ color: "var(--color-text-muted)", transform: showMore ? "rotate(180deg)" : "none", transition: "transform 200ms ease" }}
+            />
           </button>
 
           {showMore && (
           <>
           {/* 한 줄 소개 */}
           <div>
-            <label className="text-[13px] font-bold text-white mb-2 block">한 줄 소개</label>
+            <label className="text-[13px] font-semibold text-text-main mb-2 block">한 줄 소개</label>
 
             {/* 안내 — 위치 특정 금지 */}
             <div
-              className="mb-2 rounded-xl px-3 py-2.5 flex items-start gap-2"
-              style={{ background: "rgba(120,200,140,0.10)", border: "1px solid rgba(120,200,140,0.28)" }}
+              className="mb-2 px-3 py-2.5 flex items-start gap-2"
+              style={{ borderRadius: "var(--radius-card-sm)", border: "1px solid var(--color-border)" }}
             >
-              <ShieldAlert size={14} className="shrink-0 mt-0.5" style={{ color: "#8FE0A8" }} />
-              <p className="text-[13px] leading-relaxed" style={{ color: "#B8EFC8" }}>
-                <b>길고양이 안전을 위해</b> 정확한 위치를 알 수 있는 표현은 적지 마세요.
+              <ShieldAlert size={14} className="shrink-0 mt-0.5 text-text-sub" />
+              <p className="text-[13px] leading-relaxed text-text-sub">
+                <b className="text-text-main">길고양이 안전을 위해</b> 정확한 위치를 알 수 있는 표현은 적지 마세요.
                 <br />
-                <span style={{ color: "rgba(184,239,200,0.75)" }}>
+                <span className="text-text-light">
                   예: 역 이름·출구 번호·시장·공원·아파트·도로 주소·학교
                 </span>
               </p>
@@ -691,155 +694,113 @@ export default function AddCatModal({
               placeholder="예: 우리 동네 터줏대감. 사람을 봐도 도망가지 않아요."
               maxLength={120}
               rows={3}
-              className={`w-full px-4 py-3 rounded-2xl text-[15px] text-white outline-none transition-all placeholder:text-white/30 resize-none ${
-                descLocationViolations.length > 0 || descAbuseViolations.length > 0
-                  ? "bg-red-500/10 ring-2 ring-red-400/40 focus:ring-red-400/60"
-                  : "bg-white/[0.07] focus:bg-white/10 focus:ring-2 focus:ring-[#6366F1]/20"
-              }`}
+              className="w-full px-4 py-3 text-[15px] outline-none transition-colors placeholder:text-text-light resize-none"
+              style={{
+                ...fieldStyle,
+                borderColor:
+                  descLocationViolations.length > 0 || descAbuseViolations.length > 0
+                    ? "var(--color-error)"
+                    : "var(--color-border)",
+              }}
             />
             <div className="flex items-start justify-between gap-2 mt-1">
               <div className="flex-1 min-w-0 space-y-0.5">
                 {descLocationViolations.length > 0 && (
-                  <p className="text-[11px] leading-relaxed" style={{ color: "#B84545" }}>
+                  <p className="text-[11px] leading-relaxed text-error">
                     {descLocationViolations.map((v) => `${v.label}(${v.match})`).join(", ")} —
                     일반 표현(우리 동네·골목·근처)으로 바꿔주세요.
                   </p>
                 )}
                 {descAbuseViolations.length > 0 && (
-                  <p className="text-[11px] leading-relaxed" style={{ color: "#B84545" }}>
+                  <p className="text-[11px] leading-relaxed text-error">
                     {formatAbuseMessage(descAbuseViolations)}
                   </p>
                 )}
               </div>
-              <p className="text-[11px] text-white/45 shrink-0">{description.length}/120</p>
+              <p className="text-[11px] text-text-light shrink-0">{description.length}/120</p>
             </div>
           </div>
 
           {/* 태그 */}
           <div>
-            <label className="text-[13px] font-bold text-white mb-2 block">상태 태그</label>
+            <label className="text-[13px] font-semibold text-text-main mb-2 block">상태 태그</label>
             <div className="flex flex-wrap gap-2">
-              {TAG_PRESETS.map((tag) => {
-                const active = tags.includes(tag);
-                return (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => toggleTag(tag)}
-                    className={`text-[13px] font-semibold px-3 py-1.5 rounded-full transition-all press-strong ${
-                      active
-                        ? "bg-[#6366F1] text-white"
-                        : "bg-white/[0.07] text-white/60 border border-white/15"
-                    }`}
-                  >
-                    {active ? "✓ " : ""}
-                    {tag}
-                  </button>
-                );
-              })}
+              {TAG_PRESETS.map((tag) => (
+                <UIChip key={tag} active={tags.includes(tag)} onClick={() => toggleTag(tag)}>
+                  {tag}
+                </UIChip>
+              ))}
             </div>
           </div>
 
           {/* 성별 */}
           <div>
-            <label className="text-[13px] font-bold text-white mb-2 block">성별</label>
+            <label className="text-[13px] font-semibold text-text-main mb-2 block">성별</label>
             <div className="flex gap-2">
               {(Object.entries(GENDER_MAP) as [CatGender, { label: string; emoji: string }][]).map(([key, info]) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => setGender(key)}
-                  className={`flex-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all press-strong ${
-                    gender === key ? "bg-[#6366F1] text-white" : "bg-white/[0.07] text-white/60 border border-white/15"
-                  }`}
-                >
-                  {info.emoji} {info.label}
-                </button>
+                <UIChip key={key} active={gender === key} onClick={() => setGender(key)} className="flex-1 justify-center">
+                  {info.label}
+                </UIChip>
               ))}
             </div>
           </div>
 
           {/* 중성화 여부 */}
           <div>
-            <label className="text-[13px] font-bold text-white mb-2 block">중성화 여부</label>
+            <label className="text-[13px] font-semibold text-text-main mb-2 block">중성화 여부</label>
             <div className="flex gap-2">
               {([
-                { value: true, label: "✂️ 완료" },
-                { value: false, label: "❌ 미완료" },
-                { value: null, label: "❓ 모름" },
+                { value: true, label: "완료" },
+                { value: false, label: "미완료" },
+                { value: null, label: "모름" },
               ] as const).map((opt) => (
-                <button
+                <UIChip
                   key={String(opt.value)}
-                  type="button"
+                  active={neutered === opt.value}
                   onClick={() => setNeutered(opt.value)}
-                  className={`flex-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all press-strong ${
-                    neutered === opt.value ? "bg-[#6366F1] text-white" : "bg-white/[0.07] text-white/60 border border-white/15"
-                  }`}
+                  className="flex-1 justify-center"
                 >
                   {opt.label}
-                </button>
+                </UIChip>
               ))}
             </div>
           </div>
 
-          {/* 건강 상태 */}
+          {/* 건강 상태 — 위험·주의만 의미색, 양호는 기본(테라코타) */}
           <div>
-            <label className="text-[13px] font-bold text-white mb-2 block">건강 상태</label>
+            <label className="text-[13px] font-semibold text-text-main mb-2 block">건강 상태</label>
             <div className="flex gap-2">
               {(Object.entries(HEALTH_MAP) as [CatHealthStatus, { label: string; emoji: string; color: string }][]).map(([key, info]) => (
-                <button
+                <UIChip
                   key={key}
-                  type="button"
+                  active={healthStatus === key}
+                  activeColor={key === "danger" ? "var(--color-error)" : key === "caution" ? "var(--color-warning)" : undefined}
                   onClick={() => setHealthStatus(key)}
-                  className={`flex-1 py-2.5 rounded-2xl text-[13px] font-bold transition-all press-strong`}
-                  style={{
-                    backgroundColor: healthStatus === key ? info.color : undefined,
-                    color: healthStatus === key ? "#fff" : info.color,
-                    border: healthStatus === key ? "none" : `1.5px solid ${info.color}40`,
-                  }}
+                  className="flex-1 justify-center"
                 >
-                  {info.emoji} {info.label}
-                </button>
+                  {info.label}
+                </UIChip>
               ))}
             </div>
           </div>
 
           {/* 입양·임시보호 매칭 (선택) */}
           <div>
-            <label className="text-[13px] font-bold text-white mb-2 block">
-              입양·임시보호 <span className="text-white/45 font-normal">(선택)</span>
+            <label className="text-[13px] font-semibold text-text-main mb-2 block">
+              입양·임시보호 <span className="text-text-light font-normal">(선택)</span>
             </label>
             <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => setAdoptionStatus(null)}
-                className="py-2.5 rounded-2xl text-[13px] font-bold transition-all press-strong col-span-2"
-                style={{
-                  backgroundColor: adoptionStatus === null ? "rgba(99,102,241,0.14)" : undefined,
-                  color: adoptionStatus === null ? "#C7CAFF" : "rgba(255,255,255,0.5)",
-                  border: adoptionStatus === null ? "1.5px solid #6366F1" : "1.5px solid rgba(255,255,255,0.16)",
-                }}
-              >
+              <UIChip active={adoptionStatus === null} onClick={() => setAdoptionStatus(null)} className="col-span-2 justify-center">
                 해당 없음
-              </button>
+              </UIChip>
               {(Object.entries(ADOPTION_MAP) as [Exclude<AdoptionStatus, null>, typeof ADOPTION_MAP["seeking_home"]][]).map(([key, info]) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => setAdoptionStatus(key)}
-                  className="py-2.5 rounded-2xl text-[13px] font-bold transition-all press-strong"
-                  style={{
-                    backgroundColor: adoptionStatus === key ? info.color : undefined,
-                    color: adoptionStatus === key ? "#fff" : info.color,
-                    border: adoptionStatus === key ? "none" : `1.5px solid ${info.color}40`,
-                  }}
-                >
-                  {info.emoji} {info.short}
-                </button>
+                <UIChip key={key} active={adoptionStatus === key} onClick={() => setAdoptionStatus(key)} className="justify-center">
+                  {info.short}
+                </UIChip>
               ))}
             </div>
-            <p className="text-[11px] text-white/45 mt-1.5 leading-relaxed px-1">
-              설정하면 고양이 상세 페이지에 배지와 문의 버튼이 생겨 다른 사용자가 쪽지로 연락할 수 있어요.
+            <p className="text-[11px] text-text-light mt-1.5 leading-relaxed px-1">
+              설정하면 상세 페이지에 배지와 문의 버튼이 생겨요.
             </p>
           </div>
           </>
@@ -850,40 +811,41 @@ export default function AddCatModal({
           {/* 공개 범위 — Private Circle */}
           {(!showDiscoverySteps || discoveryStep === "visibility") && (
           <div>
-            <label className="text-[13px] font-bold text-white mb-2 block">
-              공개 범위 <span className="text-white/45 font-normal">(보안)</span>
+            <label className="text-[13px] font-semibold text-text-main mb-2 block">
+              공개 범위 <span className="text-text-light font-normal">(보안)</span>
             </label>
-            <div className="space-y-1.5">
-              {(Object.entries(VISIBILITY_MAP) as [CatVisibility, typeof VISIBILITY_MAP["public"]][]).map(([key, info]) => {
+            <div style={{ borderRadius: "var(--radius-card)", border: "1px solid var(--color-border)" }}>
+              {(Object.entries(VISIBILITY_MAP) as [CatVisibility, typeof VISIBILITY_MAP["public"]][]).map(([key, info], i, arr) => {
                 const active = visibility === key;
                 return (
                   <button
                     key={key}
                     type="button"
                     onClick={() => setVisibility(key)}
-                    className="w-full p-3 rounded-2xl text-left flex items-start gap-2.5 transition-all press"
-                    style={{
-                      backgroundColor: active ? `${info.color}22` : "rgba(255,255,255,0.05)",
-                      border: `1.5px solid ${active ? info.color : "rgba(255,255,255,0.16)"}`,
-                    }}
+                    className="w-full px-4 py-3 text-left flex items-center gap-3 press"
+                    style={{ borderBottom: i < arr.length - 1 ? "1px solid var(--color-divider)" : "none", minHeight: 56 }}
+                    aria-pressed={active}
                   >
-                    <span className="text-[20px] leading-none mt-0.5">{info.emoji}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-bold" style={{ color: active ? info.color : "rgba(255,255,255,0.85)" }}>
-                        {info.label}
-                      </p>
-                      <p className="text-[11px] mt-0.5 leading-relaxed" style={{ color: active ? info.color : "rgba(255,255,255,0.5)", opacity: active ? 0.85 : 1 }}>
-                        {info.description}
-                      </p>
+                      <p className="text-[15px] font-semibold text-text-main">{info.label}</p>
+                      <p className="text-[13px] mt-0.5 leading-relaxed text-text-sub">{info.description}</p>
                     </div>
-                    {active && <span className="text-[15px] shrink-0" style={{ color: info.color }}>✓</span>}
+                    <span
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+                      style={{
+                        background: active ? "var(--color-primary)" : "var(--color-surface)",
+                        border: `1px solid ${active ? "var(--color-primary)" : "var(--color-gray-300)"}`,
+                      }}
+                    >
+                      {active && <Check size={12} className="text-white" strokeWidth={3} />}
+                    </span>
                   </button>
                 );
               })}
             </div>
-            <p className="text-[11px] text-white/45 mt-1.5 leading-relaxed px-1">
+            <p className="text-[11px] text-text-light mt-1.5 leading-relaxed px-1">
               학대 우려가 큰 아이는 <b>내 서클</b>이나 <b>나만 보기</b>로 설정하세요.{" "}
-              <Link href="/mypage/circle" className="underline" style={{ color: "#6B8E6F" }}>
+              <Link href="/mypage/circle" className="underline" style={{ color: "var(--color-primary)" }}>
                 서클 멤버 관리
               </Link>
             </p>
@@ -892,8 +854,8 @@ export default function AddCatModal({
 
           {/* 에러 메시지 */}
           {error && (
-            <div className="rounded-2xl px-4 py-3" style={{ backgroundColor: "rgba(220,80,80,0.14)", border: "1px solid rgba(220,80,80,0.3)" }}>
-              <p className="text-[13px] font-semibold" style={{ color: "#FF8A8A" }}>
+            <div className="px-4 py-3" style={{ borderRadius: "var(--radius-card-sm)", background: "var(--color-error-soft)" }}>
+              <p className="text-[13px] font-semibold text-error">
                 {error}
               </p>
             </div>
@@ -902,19 +864,11 @@ export default function AddCatModal({
 
         {/* 하단 버튼 */}
         <div
-          className="relative px-5 py-3 border-t border-white/12"
-          style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
+          className="px-5 py-3"
+          style={{ borderTop: "1px solid var(--color-border)", paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
         >
           {(!showDiscoverySteps || discoveryStep === "visibility") && (
-          <button
-            onClick={handleSubmit}
-            disabled={submitting}
-            className="w-full py-4 rounded-2xl text-white text-[15px] font-bold press-strong transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
-            style={{
-              background: "#6366F1",
-              boxShadow: "0 6px 24px rgba(99,102,241,0.45), 0 0 0 1px rgba(255,255,255,0.15) inset",
-            }}
-          >
+          <UIButton variant="primary" size="lg" full onClick={handleSubmit} disabled={submitting}>
             {submitting ? (
               <>
                 <Loader2 size={18} className="animate-spin" />
@@ -926,7 +880,7 @@ export default function AddCatModal({
                 이 동네 아이로 등록하기
               </>
             )}
-          </button>
+          </UIButton>
           )}
         </div>
       </div>

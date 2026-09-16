@@ -1,5 +1,6 @@
 // 고양이 입양·임시보호 상태 배지 + DM 문의 버튼.
 // 고양이 상세 페이지, 지도 마커, 카드 등에서 재사용.
+// 2026-09-16 리디자인: 상태색 틴트·그라디언트·이모지 폐지 — 회색 사각 칩 + 테라코타 CTA.
 
 "use client";
 
@@ -19,16 +20,15 @@ export function AdoptionBadge({ status, size = "sm" }: BadgeProps) {
   const isSm = size === "sm";
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full font-bold ${
+      className={`inline-flex items-center gap-1 chip-square font-semibold ${
         isSm ? "px-2 py-0.5 text-[11px]" : "px-2.5 py-1 text-[13px]"
       }`}
       style={{
-        backgroundColor: `${meta.color}18`,
-        color: meta.color,
-        border: `1px solid ${meta.color}33`,
+        backgroundColor: "var(--color-gray-100)",
+        color: "var(--color-text-sub)",
       }}
     >
-      <span>{meta.emoji}</span>
+      <HandHeart size={isSm ? 11 : 13} />
       <span>{meta.short}</span>
     </span>
   );
@@ -71,26 +71,17 @@ export function AdoptionInquireButton({
     <button
       type="button"
       onClick={handleClick}
-      className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-white press transition-transform"
+      className="w-full flex items-center justify-center gap-2 h-12 font-semibold press"
       style={{
-        background: `linear-gradient(135deg, ${meta.color} 0%, ${darken(meta.color)} 100%)`,
-        boxShadow: `0 6px 18px ${meta.color}40`,
+        background: "var(--color-primary)",
+        color: "var(--color-surface)",
+        borderRadius: "var(--radius-input)",
       }}
     >
       <HandHeart size={16} />
       <span className="text-[15px]">{meta.short} 문의하기</span>
     </button>
   );
-}
-
-function darken(hex: string): string {
-  // 단순화된 darker 버전 — 정교한 색상 조정은 tailwind 토큰으로 대체 가능
-  const map: Record<string, string> = {
-    "var(--color-primary)": "var(--color-primary-dark)",
-    "#4A7BA8": "#3A6B96",
-    "#8B65B8": "#6F4D97",
-  };
-  return map[hex] ?? hex;
 }
 
 function buildPresetMessage(status: Exclude<AdoptionStatus, null>, catName: string): string {

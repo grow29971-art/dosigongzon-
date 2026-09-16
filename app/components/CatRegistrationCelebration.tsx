@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, PawPrint, Heart, Share2, Check } from "lucide-react";
+import { PawPrint, Heart, Share2, Check } from "lucide-react";
 import Link from "next/link";
 import { getMyInviteInfo } from "@/lib/invites-repo";
 import { shareToKakao } from "@/lib/kakao-share";
@@ -23,6 +23,7 @@ type Props = {
  * 고양이 등록 직후 peak-end 축하.
  * - 첫 등록은 특별한 메시지 (서비스 합류의 순간)
  * - 일반 등록은 짧은 확인
+ * 2026-09-16 리디자인: 그라디언트 헤더·반짝이·이모지 헤드라인 제거, 흰 모달 + 헤어라인.
  */
 export default function CatRegistrationCelebration({
   open,
@@ -87,16 +88,16 @@ export default function CatRegistrationCelebration({
   // 그 외 일반 등록은 단순 확인 + N마리째 카운터 노출(누적감)
   const milestoneInfo = ((): { headline: string; subline: string } | null => {
     if (isFirstEver) return null;
-    if (registrationCount === 50) return { headline: `🥇 50마리째! ${catName}`, subline: "동네의 절반을 알게 된 진정한 길집사예요" };
-    if (registrationCount === 20) return { headline: `👑 20마리째! ${catName}`, subline: "마을의 눈 — 동네 길잡이가 되셨어요" };
-    if (registrationCount === 10) return { headline: `🏡 10마리째! ${catName}`, subline: "두 자릿수 길집사 영역에 들어왔어요" };
-    if (registrationCount === 5) return { headline: `🐾 5마리째! ${catName}`, subline: "부지런한 집사 영역에 들어왔어요" };
-    if (registrationCount === 3) return { headline: `🌱 3마리째! ${catName}`, subline: "동네 지도가 점점 두꺼워져요" };
+    if (registrationCount === 50) return { headline: `50마리째, ${catName}`, subline: "동네의 절반을 알게 된 진정한 길집사예요" };
+    if (registrationCount === 20) return { headline: `20마리째, ${catName}`, subline: "마을의 눈 — 동네 길잡이가 되셨어요" };
+    if (registrationCount === 10) return { headline: `10마리째, ${catName}`, subline: "두 자릿수 길집사 영역에 들어왔어요" };
+    if (registrationCount === 5) return { headline: `5마리째, ${catName}`, subline: "부지런한 집사 영역에 들어왔어요" };
+    if (registrationCount === 3) return { headline: `3마리째, ${catName}`, subline: "동네 지도가 점점 두꺼워져요" };
     return null;
   })();
 
   const headline = isFirstEver
-    ? `${catName}이(가) 지도에 올라왔어요! 🎉`
+    ? `${catName}이(가) 지도에 올라왔어요`
     : milestoneInfo?.headline ?? `${catName} 등록 완료`;
 
   const subline = isFirstEver
@@ -117,39 +118,19 @@ export default function CatRegistrationCelebration({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-sm rounded-[28px] overflow-hidden relative"
-        style={{ background: "#FFFFFF", boxShadow: "var(--shadow-modal)" }}
+        className="w-full max-w-sm overflow-hidden relative"
+        style={{ background: "var(--color-surface)", borderRadius: "var(--radius-modal)", boxShadow: "var(--shadow-modal)" }}
       >
-        <div
-          className="relative px-6 pt-8 pb-5 overflow-hidden"
-          style={{
-            background: isFirstEver
-              ? "linear-gradient(135deg, #FFE3D5 0%, #FFCFB5 100%)"
-              : "linear-gradient(135deg, #F5E6D8 0%, #E8D5C0 100%)",
-          }}
-        >
-          <div className="absolute top-3 left-5 animate-pulse">
-            <Sparkles size={14} style={{ color: "#E8B040", opacity: 0.8 }} />
-          </div>
-          <div className="absolute top-10 right-8 animate-pulse" style={{ animationDelay: "0.3s" }}>
-            <PawPrint size={12} style={{ color: "var(--color-primary)", opacity: 0.5 }} />
-          </div>
-          <div className="absolute bottom-4 right-6 animate-pulse" style={{ animationDelay: "0.6s" }}>
-            <Sparkles size={16} style={{ color: "var(--color-primary)", opacity: 0.8 }} />
-          </div>
-
+        <div className="px-6 pt-7 pb-5" style={{ borderBottom: "1px solid var(--color-border)" }}>
           <div className="flex items-center justify-center mb-3">
             <div
-              className="w-16 h-16 rounded-full flex items-center justify-center"
-              style={{
-                background: "var(--color-primary)",
-                boxShadow: "var(--shadow-primary)",
-              }}
+              className="w-14 h-14 rounded-full flex items-center justify-center"
+              style={{ background: "var(--color-primary)" }}
             >
               {isFirstEver ? (
-                <Heart size={26} color="#fff" fill="#fff" strokeWidth={0} />
+                <Heart size={24} className="text-white" fill="currentColor" strokeWidth={0} />
               ) : (
-                <PawPrint size={26} color="#fff" strokeWidth={2.5} />
+                <PawPrint size={24} className="text-white" strokeWidth={2.5} />
               )}
             </div>
           </div>
@@ -160,7 +141,7 @@ export default function CatRegistrationCelebration({
           >
             {headline}
           </h2>
-          <p className="text-[13px] font-bold text-text-sub text-center mt-1.5 leading-snug">
+          <p className="text-[13px] text-text-sub text-center mt-1.5 leading-snug">
             {subline}
           </p>
         </div>
@@ -171,48 +152,37 @@ export default function CatRegistrationCelebration({
           {cat?.id && (
             meal === "done" ? (
               <div
-                className="flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3 mb-3 text-[13px] font-bold"
-                style={{ background: "#EAF6EC", color: "#3B7A46" }}
+                className="flex items-center justify-center gap-1.5 px-4 py-3 mb-3 text-[13px] font-semibold"
+                style={{ background: "var(--color-sage-soft)", color: "var(--color-sage)", borderRadius: "var(--radius-card-sm)" }}
               >
                 <Check size={16} strokeWidth={3} />
-                오늘 {catName} 밥 완료!
+                오늘 {catName} 밥 완료
               </div>
             ) : (
               <button
                 type="button"
                 onClick={logFirstMeal}
                 disabled={meal === "saving"}
-                className="w-full flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3 mb-3 text-[13px] font-bold text-white press disabled:opacity-60"
-                style={{
-                  background: "#E88D5A",
-                  boxShadow: "var(--shadow-fab)",
-                }}
+                className="w-full flex items-center justify-center gap-1.5 h-12 mb-3 text-[15px] font-semibold text-white press disabled:opacity-60"
+                style={{ background: "var(--color-care)", borderRadius: "var(--radius-input)" }}
               >
                 {meal === "saving" ? "기록 중…" : "지금 첫 밥 기록하기"}
               </button>
             )
           )}
           {isFirstEver && (
-            <div
-              className="rounded-2xl px-4 py-3 mb-3 text-[13px] leading-snug"
-              style={{ background: "#FFF9EF", color: "#7A5F3F" }}
-            >
-              <p className="font-bold mb-1" style={{ color: "var(--color-primary)" }}>
-                다음 단계 힌트
-              </p>
-              <p>
-                돌봄다이어리 한 줄을 남기면 레벨·업적이 시작돼요. 근처 이웃에게
-                알림도 함께 전달됩니다.
-              </p>
-            </div>
+            <p className="text-[13px] text-text-sub leading-snug mb-3 text-center">
+              돌봄다이어리 한 줄을 남기면 레벨이 시작되고 근처 이웃에게 알림이 가요.
+            </p>
           )}
           <button
             type="button"
             onClick={onClose}
-            className="w-full py-3 rounded-2xl text-[13px] font-bold text-white press"
+            className="w-full h-12 text-[15px] font-semibold press"
             style={{
-              background: "var(--color-primary)",
-              boxShadow: "var(--shadow-primary)",
+              background: isFirstEver && cat?.id ? "var(--color-gray-100)" : "var(--color-primary)",
+              color: isFirstEver && cat?.id ? "var(--color-text-main)" : "var(--color-surface)",
+              borderRadius: "var(--radius-input)",
             }}
           >
             확인
@@ -222,14 +192,10 @@ export default function CatRegistrationCelebration({
               type="button"
               onClick={handleInvite}
               disabled={inviting}
-              className="w-full mt-2 py-2.5 rounded-2xl text-[13px] font-bold flex items-center justify-center gap-1.5 press disabled:opacity-60"
-              style={{
-                backgroundColor: "#FEE500",
-                color: "#191919",
-                boxShadow: "var(--shadow-raised)",
-              }}
+              className="w-full mt-2 h-12 text-[15px] font-semibold flex items-center justify-center gap-1.5 press disabled:opacity-60"
+              style={{ backgroundColor: "#FEE500", color: "var(--color-text-main)", borderRadius: "var(--radius-input)" }}
             >
-              <Share2 size={13} />
+              <Share2 size={14} />
               {inviting ? "잠시만요…" : `이웃과 ${catName} 함께 돌보기`}
             </button>
           )}
