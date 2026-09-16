@@ -114,7 +114,7 @@ export default async function TipDetailPage({ params }: Params) {
   // 렌더 sink 최종 방어: extractToc로 헤딩 id 주입 후 DOMPurify로 재정화
   // (write-time 정규식 sanitizer + render-time DOMPurify 이중 방어)
   const { html: rawBodyWithIds, toc } = extractToc(tip.body);
-  const bodyWithIds = sanitizeTipHtmlServer(rawBodyWithIds);
+  const bodyWithIds = await sanitizeTipHtmlServer(rawBodyWithIds);
 
   const related = await getRelatedTipsServer(tip.slug, tip.tags, 3);
 
