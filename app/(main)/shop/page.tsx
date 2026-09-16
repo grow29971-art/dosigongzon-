@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ShoppingCart, ReceiptText, PawPrint, LayoutGrid,
-  Fish, SprayCan, HeartPulse, ToyBrick, Home, Gift, ChevronRight, Heart,
+  Fish, SprayCan, HeartPulse, ToyBrick, Home, Gift, Heart, ImageOff,
   Construction,
   type LucideIcon,
 } from "lucide-react";
@@ -21,6 +21,7 @@ import FundSettlementCard from "@/app/components/FundSettlementCard";
 import PageIntroModal from "@/app/components/PageIntroModal";
 import PointsGuideSheet from "@/app/components/PointsGuideSheet";
 import UIChip from "@/app/components/ui/Chip";
+import UIListRow from "@/app/components/ui/ListRow";
 
 type FilterKey = ProductCategory | "all";
 
@@ -49,7 +50,7 @@ function discountRate(price: number, salePrice: number): number {
   return Math.round(((price - salePrice) / price) * 100);
 }
 
-/* ═══ 상품 카드 ═══ */
+/* ═══ 상품 카드 — 당근 매물식: 8px 둥근 사각 사진 + 아래 글자, 테두리·그림자 없음 ═══ */
 // wished/onToggleWish: 오픈 전 찜 (2026-07-21 쇼핑 동선 회의 — 결제 하드락 중 완결 행동)
 function ProductCard({ product, wished, onToggleWish }: { product: Product; wished: boolean; onToggleWish: (id: string) => void }) {
   const thumb = product.images[0] ? sanitizeImageUrl(product.images[0], "") : "";
@@ -57,87 +58,69 @@ function ProductCard({ product, wished, onToggleWish }: { product: Product; wish
   const discounted = product.sale_price != null && product.sale_price < product.price;
 
   return (
-    <Link href={`/shop/${product.id}`} className="block press transition-transform">
+    <Link href={`/shop/${product.id}`} className="block press">
+      {/* 이미지 */}
       <div
-        className="overflow-hidden h-full"
-        style={{
-          background: "var(--color-surface)",
-          borderRadius: "var(--radius-card)",
-          boxShadow: "var(--shadow-card)",
-          border: "1px solid var(--color-divider)",
-        }}
+        className="relative w-full overflow-hidden"
+        style={{ aspectRatio: "1 / 1", background: "var(--color-surface-alt)", borderRadius: "var(--radius-card-sm)" }}
       >
-        {/* 이미지 */}
-        <div className="relative w-full" style={{ aspectRatio: "1 / 1", background: "var(--color-warm-white)" }}>
-          {thumb ? (
-            <Image src={thumb} alt={product.name} fill className="object-cover" />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <PawPrint size={40} style={{ color: "rgba(176, 92, 54,0.28)" }} />
-            </div>
-          )}
-          {product.badge && (
-            <span
-              className="absolute top-2 left-2 text-[11px] font-bold px-2 py-0.5 rounded-lg text-white"
-              style={{ background: product.badge === "인기" ? "var(--color-error)" : product.badge === "신상" ? "var(--color-primary)" : "var(--color-warning)" }}
-            >
-              {product.badge}
-            </span>
-          )}
-          {product.shipping_fee === 0 && !product.is_virtual && (
-            <span
-              className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded-md"
-              style={{ background: "rgba(34,163,102,0.92)", color: "#fff" }}
-            >
-              무료배송
-            </span>
-          )}
-          {soldOut && (
-            <div className="absolute inset-0 flex items-center justify-center" style={{ background: "rgba(38,42,56,0.55)" }}>
-              <span className="text-white text-[13px] font-bold px-3 py-1.5 rounded-xl" style={{ background: "rgba(0,0,0,0.35)" }}>
-                품절
-              </span>
-            </div>
-          )}
-          {/* 찜 — Link 내부라 preventDefault로 상세 이동 차단 */}
-          <button
-            type="button"
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleWish(product.id); }}
-            aria-label={wished ? "찜 해제" : "찜하기"}
-            className="absolute bottom-2 right-2 z-10 w-9 h-9 rounded-full flex items-center justify-center press-strong transition-transform"
-            style={{ background: "rgba(255,255,255,0.94)", boxShadow: "var(--shadow-raised)" }}
-          >
-            <Heart size={16} fill={wished ? "var(--color-like)" : "none"} style={{ color: wished ? "var(--color-like)" : "var(--color-text-light)" }} />
-          </button>
-        </div>
-
-        {/* 정보 */}
-        <div className="px-3 py-3">
-          <p className="text-[13px] font-medium text-text-main leading-snug" style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-            {product.name}
-          </p>
-          {product.weight && (
-            <p className="text-[11px] text-text-light mt-0.5">{product.weight}</p>
-          )}
-          <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
-            {discounted && (
-              <span className="text-[11px] font-medium" style={{ color: "var(--color-error)" }}>
-                {discountRate(product.price, product.sale_price as number)}%
-              </span>
-            )}
-            <span className="text-[15px] font-bold text-text-main">
-              {formatWon(discounted ? (product.sale_price as number) : product.price)}
-            </span>
-            {discounted && (
-              <span className="text-[11px] text-text-light line-through">{formatWon(product.price)}</span>
-            )}
+        {thumb ? (
+          <Image src={thumb} alt={product.name} fill className="object-cover" />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <ImageOff size={28} style={{ color: "var(--color-text-muted)" }} />
           </div>
-          {product.is_donation ? (
-            <p className="text-[11px] font-semibold mt-1.5" style={{ color: "var(--color-warning)" }}>
-              수익의 일부 후원
-            </p>
-          ) : null}
+        )}
+        {product.badge && (
+          <span
+            className="absolute top-2 left-2 text-[11px] font-medium px-1.5 py-0.5"
+            style={{ background: "var(--color-surface)", color: "var(--color-text-sub)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-square)" }}
+          >
+            {product.badge}
+          </span>
+        )}
+        {soldOut && (
+          <div className="absolute inset-0 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.45)" }}>
+            <span className="text-white text-[13px] font-semibold">품절</span>
+          </div>
+        )}
+        {/* 찜 — Link 내부라 preventDefault로 상세 이동 차단 */}
+        <button
+          type="button"
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleWish(product.id); }}
+          aria-label={wished ? "찜 해제" : "찜하기"}
+          className="absolute bottom-2 right-2 z-10 w-8 h-8 rounded-full flex items-center justify-center press-strong"
+          style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
+        >
+          <Heart size={15} fill={wished ? "var(--color-like)" : "none"} style={{ color: wished ? "var(--color-like)" : "var(--color-text-light)" }} />
+        </button>
+      </div>
+
+      {/* 정보 */}
+      <div className="pt-2 px-0.5">
+        <p className="text-[13px] text-text-main leading-snug" style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+          {product.name}
+        </p>
+        <div className="mt-1 flex items-center gap-1.5 flex-wrap">
+          {discounted && (
+            <span className="text-[13px] font-bold" style={{ color: "var(--color-error)" }}>
+              {discountRate(product.price, product.sale_price as number)}%
+            </span>
+          )}
+          <span className="text-[15px] font-bold text-text-main">
+            {formatWon(discounted ? (product.sale_price as number) : product.price)}
+          </span>
+          {discounted && (
+            <span className="text-[11px] text-text-light line-through">{formatWon(product.price)}</span>
+          )}
         </div>
+        <p className="text-[11px] text-text-light mt-0.5">
+          {[
+            product.weight,
+            product.shipping_fee === 0 && !product.is_virtual ? "무료배송" : null,
+            product.is_donation ? "수익 일부 후원" : null,
+          ].filter(Boolean).join(" · ")}
+        </p>
       </div>
     </Link>
   );
@@ -200,46 +183,39 @@ export default function ShopPage() {
       <PageIntroModal
         storageKey="dosigongzon_intro_shop"
         badge="쇼핑"
-        headerEmoji="🛍️"
+        headerEmoji=""
         title="사면, 아이들에게 돌아가요"
-        headerBg="linear-gradient(160deg, var(--color-care-soft) 0%, #FCE9D6 100%)"
-        accent="#E8930C"
-        accentDark="#B5720A"
         items={[
-          { emoji: "💛", text: <>수익(이익)의 <b className="text-text-main">10%</b>는 길고양이 <b className="text-text-main">중성화(TNR)</b>에 써요. 모인 금액과 쓴 금액은 그대로 공개돼요.</> },
-          { emoji: "🐾", text: <>매일 돌봄 기록으로 모은 포인트를 <b className="text-text-main">1P = 1원</b> 할인으로 쓸 수 있어요.</> },
-          { emoji: "🔍", text: <>모인 금액·쓰인 금액을 <b className="text-text-main">투명하게 공개</b>해요.</> },
+          { emoji: "", text: <>수익(이익)의 <b className="text-text-main">10%</b>는 길고양이 <b className="text-text-main">중성화(TNR)</b>에 써요. 모인 금액과 쓴 금액은 그대로 공개돼요.</> },
+          { emoji: "", text: <>매일 돌봄 기록으로 모은 포인트를 <b className="text-text-main">1P = 1원</b> 할인으로 쓸 수 있어요.</> },
+          { emoji: "", text: <>모인 금액·쓰인 금액을 <b className="text-text-main">투명하게 공개</b>해요.</> },
         ]}
       />
       {/* ── 헤더 ── */}
       <div className="mb-4 px-1 flex items-end justify-between">
         <div>
-          <div className="flex items-baseline gap-2 mb-1">
-            <h1 className="text-[24px] font-bold text-text-main tracking-tight">쇼핑</h1>
-          </div>
+          <h1 className="text-[24px] font-bold text-text-main tracking-tight mb-1">쇼핑</h1>
           <p className="text-[13px] text-text-sub leading-relaxed">
             길집사님들이 실제로 쓰는 것만 골라 들여오고 있어요
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <Link
             href="/shop/orders"
-            className="w-10 h-10 rounded-full bg-white flex items-center justify-center press-strong transition-transform"
-            style={{ boxShadow: "var(--shadow-raised)" }}
+            className="w-10 h-10 rounded-full flex items-center justify-center press-strong"
             aria-label="주문 내역"
           >
-            <ReceiptText size={18} className="text-text-sub" />
+            <ReceiptText size={20} className="text-text-sub" />
           </Link>
           <Link
             href="/shop/cart"
-            className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center press-strong transition-transform"
-            style={{ boxShadow: "var(--shadow-raised)" }}
+            className="relative w-10 h-10 rounded-full flex items-center justify-center press-strong"
             aria-label="장바구니"
           >
-            <ShoppingCart size={18} className="text-text-sub" />
+            <ShoppingCart size={20} className="text-text-sub" />
             {cartCount > 0 && (
               <span
-                className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full text-white text-[9px] font-bold flex items-center justify-center"
+                className="absolute top-0.5 right-0.5 min-w-[16px] h-4 px-1 rounded-full text-white text-[9px] font-semibold flex items-center justify-center"
                 style={{ background: "var(--color-error)" }}
               >
                 {cartCount > 99 ? "99+" : cartCount}
@@ -252,63 +228,47 @@ export default function ShopPage() {
       {/* ── 후원금 투명 정산 (쇼핑 최상단) ── */}
       <FundSettlementCard />
 
-      {/* 포인트 안내 시트 — 첫 진입 1회 자동, 아래 띠 탭으로 재열람 (2026-08-30) */}
+      {/* 포인트 안내 시트 — 첫 진입 1회 자동, 아래 행 탭으로 재열람 (2026-08-30) */}
       <PointsGuideSheet />
 
-      {/* ── 포인트 안내 띠 (탭하면 포인트 안내 시트 열림) ── */}
-      <button
-        type="button"
-        onClick={() => window.dispatchEvent(new CustomEvent("open-points-guide"))}
-        className="mb-4 w-full flex items-center gap-2.5 px-4 py-2.5 rounded-2xl press transition-transform text-left"
-        style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(176, 92, 54,0.18)" }}
-      >
-        <PawPrint size={16} className="shrink-0" style={{ color: "var(--color-primary)" }} />
-        <p className="text-[11px] font-bold leading-snug flex-1" style={{ color: "var(--color-primary-dark)" }}>
-          포인트 어떻게 모으고 쓰나요? · 돌봄·구매로 적립 → <b>1P = 1원</b> 할인
-        </p>
-        <ChevronRight size={15} style={{ color: "var(--color-primary)" }} className="shrink-0" />
-      </button>
+      {/* ── 포인트 안내 행 (탭하면 포인트 안내 시트 열림) ── */}
+      <div className="mb-4" style={{ borderTop: "1px solid var(--color-divider)", borderBottom: "1px solid var(--color-divider)" }}>
+        <UIListRow
+          icon={<PawPrint size={20} />}
+          title="포인트, 어떻게 모으고 쓰나요?"
+          subtitle="돌봄·구매로 적립 → 1P = 1원 할인"
+          onClick={() => window.dispatchEvent(new CustomEvent("open-points-guide"))}
+          divider={false}
+        />
+      </div>
 
-      {/* ── 후원 배너 + 공동 목표 진행바 ── */}
+      {/* ── 후원 안내 + 공동 목표 진행바 ── */}
       {/* 적립액 0원일 땐 금액 없이 문구만 (0원 노출 역효과 방지) */}
       <div
-        className="mb-4 px-5 py-4 rounded-3xl"
-        style={{
-          background: "rgba(201,124,82,0.12)",
-          border: "1px solid rgba(201,124,82,0.18)",
-        }}
+        className="mb-4 px-4 py-4"
+        style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
       >
-        <p className="text-[13px] font-bold text-text-main leading-relaxed">
-          여기서 사면 <b style={{ color: "var(--color-primary-dark)" }}>수익(이익)의 10%</b>가
-          <br />길고양이 <b style={{ color: "var(--color-primary-dark)" }}>중성화(TNR)</b>에 쓰여요
+        <p className="text-[15px] font-semibold text-text-main leading-snug">
+          여기서 사면 수익(이익)의 10%가 길고양이 중성화(TNR)에 쓰여요
         </p>
-        {/* 투명성 안내 */}
-        <div
-          className="mt-2.5 px-3 py-2 rounded-xl"
-          style={{ background: "rgba(255,255,255,0.55)", border: "1px solid rgba(201,124,82,0.15)" }}
-        >
-          <p className="text-[11px] leading-[1.65] text-text-sub">
-            어차피 사는 사료·용품이잖아요.
-            <br />얼마가 모였고 얼마를 썼는지는 <b className="text-text-main">아래에 그대로 공개</b>돼요
-          </p>
-          <p className="text-[11px] font-bold text-text-main mt-1.5 pt-1.5" style={{ borderTop: "1px solid rgba(201,124,82,0.12)" }}>
-            도시공존은 특정 단체·정당과 무관하게, 오직 <b style={{ color: "var(--color-primary-dark)" }}>길집사님들과</b> 함께 만들어가요
-          </p>
-        </div>
+        <p className="text-[13px] text-text-sub leading-relaxed mt-1.5">
+          어차피 사는 사료·용품이잖아요. 얼마가 모였고 얼마를 썼는지는 아래에 그대로 공개돼요.
+        </p>
+        <p className="text-[13px] text-text-sub leading-relaxed mt-1">
+          도시공존은 특정 단체·정당과 무관하게, 오직 길집사님들과 함께 만들어가요.
+        </p>
         {donation && donation.total > 0 ? (
-          <div className="mt-3">
+          <div className="mt-3 pt-3" style={{ borderTop: "1px solid var(--color-divider)" }}>
             <div className="flex items-baseline justify-between mb-1.5">
-              <span className="text-[11px] font-bold text-text-sub">
-                {donation.goalLabel}까지
-              </span>
-              <span className="text-[13px] font-bold" style={{ color: "var(--color-primary-dark)" }}>
+              <span className="text-[13px] text-text-sub">{donation.goalLabel}까지</span>
+              <span className="text-[13px] font-bold text-text-main tabular-nums">
                 {donation.total.toLocaleString()}원
-                <span className="font-bold text-text-light"> / {donation.goal.toLocaleString()}원</span>
+                <span className="font-normal text-text-light"> / {donation.goal.toLocaleString()}원</span>
               </span>
             </div>
-            <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: "rgba(176,92,54,0.15)" }}>
+            <div className="w-full h-2 rounded-sm overflow-hidden" style={{ background: "var(--color-gray-200)" }}>
               <div
-                className="h-full rounded-full transition-all"
+                className="h-full rounded-sm transition-all"
                 style={{
                   width: `${Math.min(100, Math.max(3, (donation.total / donation.goal) * 100))}%`,
                   background: "var(--color-primary)",
@@ -323,25 +283,20 @@ export default function ShopPage() {
           </div>
         ) : (
           // 헤드라인에서 이미 용도를 말했으니 여기서는 반복하지 않는다
-          <p className="text-[11px] text-text-sub mt-1">
-            첫 구매가 첫 후원이 돼요
-          </p>
+          <p className="text-[11px] text-text-light mt-2">첫 구매가 첫 후원이 돼요</p>
         )}
       </div>
 
-      {/* ── 정식 오픈 준비 중 안내 — 실수 주문 우려 차단을 위해 크게, 결제 불가를 명시 ── */}
+      {/* ── 정식 오픈 준비 중 안내 — 실수 주문 우려 차단을 위해 결제 불가를 명시 ── */}
       <div
-        className="mb-4 flex items-start gap-3 px-4 py-3.5 rounded-2xl"
-        style={{ background: "rgba(255,169,39,0.12)", border: "1.5px solid rgba(255,169,39,0.4)" }}
+        className="mb-4 flex items-start gap-3 px-4 py-3.5"
+        style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
       >
-        <Construction size={22} className="shrink-0 mt-0.5" style={{ color: "var(--color-warning)" }} />
+        <Construction size={20} className="shrink-0 mt-0.5 text-text-sub" />
         <div className="min-w-0">
-          <p className="text-[15px] font-bold leading-snug" style={{ color: "#8A5A0A" }}>
-            정식 오픈을 준비하고 있어요
-          </p>
-          <p className="text-[13px] font-semibold mt-1 leading-relaxed" style={{ color: "#8A5A0A" }}>
-            지금은 <b>구경과 찜만 가능</b>하고 결제는 열리지 않아요.
-            실수로 주문될 걱정은 안 하셔도 돼요. 준비되면 알려드릴게요!
+          <p className="text-[15px] font-semibold text-text-main leading-snug">정식 오픈을 준비하고 있어요</p>
+          <p className="text-[13px] text-text-sub mt-0.5 leading-relaxed">
+            지금은 구경과 찜만 가능하고 결제는 열리지 않아요.
           </p>
         </div>
       </div>
@@ -367,19 +322,18 @@ export default function ShopPage() {
 
       {/* ── 상품 그리드 ── */}
       {loading ? (
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-x-3 gap-y-5">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="rounded-[var(--radius-card)] animate-pulse" style={{ aspectRatio: "1 / 1.4", background: "var(--color-surface-alt)" }} />
+            <div key={i} className="animate-pulse" style={{ aspectRatio: "1 / 1.4", background: "var(--color-surface-alt)", borderRadius: "var(--radius-card-sm)" }} />
           ))}
         </div>
       ) : visible.length === 0 ? (
         <div className="flex flex-col items-center text-center pt-14">
-          <PawPrint size={40} className="mb-3" style={{ color: "var(--color-text-muted)" }} />
-          <p className="text-[15px] font-bold text-text-main mb-1">아직 준비 중이에요</p>
-          <p className="text-[13px] text-text-sub">곧 채워질 거예요!</p>
+          <PawPrint size={32} className="mb-3" style={{ color: "var(--color-text-muted)" }} />
+          <p className="text-[13px] text-text-sub">아직 준비 중이에요</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-x-3 gap-y-5">
           {visible.map((p) => (
             <ProductCard key={p.id} product={p} wished={wish.includes(p.id)} onToggleWish={(id) => setWish(toggleWishlist(id))} />
           ))}
@@ -390,14 +344,14 @@ export default function ShopPage() {
       <div className="mt-8 text-center">
         <Link
           href="/shop/policy"
-          className="text-[11px] font-semibold text-text-light underline underline-offset-2"
+          className="text-[11px] text-text-light underline underline-offset-2"
         >
           쇼핑몰 이용안내 · 교환/반품/환불 규정
         </Link>
       </div>
 
       {/* ── 사업자정보 푸터 — 전자상거래법 표시의무 + 토스페이먼츠 심사 요건("홈페이지 하단 기재") ── */}
-      <div className="mt-4 text-center text-[10px] leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
+      <div className="mt-4 text-center text-[11px] leading-relaxed" style={{ color: "var(--color-text-light)" }}>
         <p>도시공존 · 대표 김성우 · 사업자등록번호 793-16-02886</p>
         <p>사업장 소재지: 인천광역시 검단구 원당대로820번길 35, 초롱마을 13동 401호 (당하동)</p>
         <p>전화 010-7790-2997 · grow29971@gmail.com</p>

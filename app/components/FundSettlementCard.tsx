@@ -1,10 +1,12 @@
 "use client";
 
-// 후원금 투명 정산 위젯 (2026-07-15)
+// 후원금 투명 정산 위젯 (2026-07-15 → 2026-09-16 「익숙한 동네앱」 리디자인)
 // 모인 금액 / 쓰인 금액 / 잔액 + 최근 지출 내역. 실제 데이터만 표시.
 // 아직 집계 전(모인·쓰인 모두 0)이면 "오픈 후 집계" 안내로 정직하게.
+// 흰 면 + 헤어라인, 숫자는 전부 text-main(다색 없음), 지출은 구분선 리스트.
 
 import { useEffect, useState } from "react";
+import { Scissors } from "lucide-react";
 
 interface Settlement {
   collected: number;
@@ -47,28 +49,32 @@ export default function FundSettlementCard() {
 
   return (
     <div
-      className="mb-4 px-4 py-4 rounded-3xl"
-      style={{ background: "#FFFFFF", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)" }}
+      className="mb-4 px-4 py-4"
+      style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
     >
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-[15px] font-bold text-text-main tracking-tight">💛 후원금 투명 정산</h3>
-        <span className="text-[11px] font-bold text-text-light">
+        <h3 className="text-[15px] font-bold text-text-main tracking-tight">후원금 투명 정산</h3>
+        <span className="text-[11px] text-text-light">
           {data.snappedAt ? snapLabel(data.snappedAt) : "매일 1회 갱신"}
         </span>
       </div>
 
-      {/* 3분할 요약 */}
-      <div className="grid grid-cols-3 gap-2">
+      {/* 3분할 요약 — 세로 헤어라인으로만 구획 */}
+      <div className="grid grid-cols-3">
         {[
-          { label: "모인 금액", value: collected, color: "#22A366" },
-          { label: "쓰인 금액", value: spent, color: "var(--color-like)" },
-          { label: "잔액", value: balance, color: "var(--color-primary)" },
-        ].map((s) => (
-          <div key={s.label} className="text-center py-2.5 rounded-2xl" style={{ background: "var(--color-surface-alt)" }}>
-            <p className="text-[11px] font-bold text-text-light mb-0.5">{s.label}</p>
-            <p className="text-[15px] font-extrabold tabular-nums" style={{ color: s.color }}>
+          { label: "모인 금액", value: collected },
+          { label: "쓰인 금액", value: spent },
+          { label: "잔액", value: balance },
+        ].map((s, i) => (
+          <div
+            key={s.label}
+            className="text-center py-1"
+            style={{ borderLeft: i === 0 ? "none" : "1px solid var(--color-divider)" }}
+          >
+            <p className="text-[11px] text-text-light mb-0.5">{s.label}</p>
+            <p className="text-[15px] font-bold text-text-main tabular-nums">
               {s.value.toLocaleString()}
-              <span className="text-[9px] font-bold text-text-light">원</span>
+              <span className="text-[11px] font-normal text-text-light">원</span>
             </p>
           </div>
         ))}
@@ -77,32 +83,34 @@ export default function FundSettlementCard() {
       {/* 후원금으로 실제 중성화한 마릿수. 집행 전이라 0이며, 0을 숨기지 않는다 —
           모인 금액 옆에 성과를 함께 두는 것이 투명 정산의 취지다. */}
       <div
-        className="mt-2 flex items-center justify-center gap-1.5 py-2.5 rounded-2xl"
-        style={{ background: "rgba(107,142,111,0.10)", border: "1px solid rgba(107,142,111,0.22)" }}
+        className="mt-3 pt-3 flex items-center justify-center gap-1.5"
+        style={{ borderTop: "1px solid var(--color-divider)" }}
       >
-        <span className="text-[13px]">✂️</span>
-        <span className="text-[11px] font-bold text-text-sub">후원금으로 중성화한 아이</span>
-        <span className="text-[15px] font-extrabold tabular-nums" style={{ color: "#4F6B53" }}>
-          {neuteredCount.toLocaleString()}
-        </span>
-        <span className="text-[11px] font-bold text-text-sub">마리</span>
+        <Scissors size={14} className="text-text-light" />
+        <span className="text-[13px] text-text-sub">후원금으로 중성화한 아이</span>
+        <span className="text-[15px] font-bold text-text-main tabular-nums">{neuteredCount.toLocaleString()}</span>
+        <span className="text-[13px] text-text-sub">마리</span>
       </div>
 
       {empty ? (
-        <p className="text-[11px] text-text-light text-center mt-3 leading-relaxed">
-          정식 오픈 후 첫 구매부터 집계를 시작해요.<br />모인 금액과 쓰인 금액을 여기서 투명하게 공개할게요.
+        <p className="text-[11px] text-text-light text-center mt-3">
+          정식 오픈 후 첫 구매부터 집계를 시작해요
         </p>
       ) : (
         <>
           {disbursements.length > 0 && (
             <div className="mt-3">
-              <p className="text-[11px] font-bold text-text-sub mb-1.5">최근 사용 내역</p>
-              <div className="flex flex-col gap-1">
+              <p className="text-[13px] font-semibold text-text-main mb-1">최근 사용 내역</p>
+              <div>
                 {disbursements.map((d, i) => (
-                  <div key={i} className="flex items-center gap-2 text-[13px]">
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 py-2 text-[13px]"
+                    style={{ borderTop: "1px solid var(--color-divider)" }}
+                  >
                     <span className="text-text-light tabular-nums shrink-0">{d.spent_at.slice(5).replace("-", ".")}</span>
                     <span className="text-text-main truncate flex-1">{d.memo}</span>
-                    <span className="font-bold tabular-nums shrink-0" style={{ color: "var(--color-like)" }}>-{won(d.amount)}</span>
+                    <span className="font-semibold text-text-main tabular-nums shrink-0">-{won(d.amount)}</span>
                   </div>
                 ))}
               </div>
