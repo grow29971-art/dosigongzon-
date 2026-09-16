@@ -57,7 +57,16 @@ export const REPORT_ALLOW = Object.freeze(["#FEE500", "#03C75A"]);
 /** 치환 대상에서 제외할 경로 (토큰 정의 자체). */
 const SWAP_EXCLUDE = [/(^|[\\/])app[\\/]globals\.css$/];
 /** --report 에서 제외할 경로 (hex 필수 문맥 + 토큰 정의 자체). */
-const REPORT_EXCLUDE = [/(^|[\\/])opengraph-image\.tsx$/, /(^|[\\/])lib[\\/]cat-art\.ts$/, ...SWAP_EXCLUDE];
+const REPORT_EXCLUDE = [
+  /(^|[\\/])opengraph-image\.tsx$/,
+  /(^|[\\/])lib[\\/]cat-art\.ts$/,
+  // 잔존 허용(리디자인 spec): meta theme-color는 var() 불가, darkcheck는 다크닝 점검용 리터럴,
+  // api 아래 이메일 HTML 템플릿은 이번 범위 제외(후속)
+  /(^|[\\/])app[\\/]layout\.tsx$/,
+  /(^|[\\/])app[\\/]darkcheck[\\/]/,
+  /(^|[\\/])app[\\/]api[\\/]/,
+  ...SWAP_EXCLUDE,
+];
 
 export const MODES = Object.freeze(["var", "hex"]);
 

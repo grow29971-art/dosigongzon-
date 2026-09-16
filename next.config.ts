@@ -7,7 +7,9 @@ import { withSentryConfig } from "@sentry/nextjs";
 // CSP 정책 — 이 프로젝트의 실제 외부 의존성만 allowlist로 허용.
 // - Kakao Maps SDK + 타일: dapi.kakao.com, *.daumcdn.net
 // - Supabase Storage/Realtime/Auth: *.supabase.co (+ wss)
-// - 이미지: placehold.co, 모든 https (사용자 업로드 이미지 호스트가 다양할 수 있음)
+// - 이미지: 모든 https (사용자 업로드 이미지 호스트가 다양할 수 있음). placehold.co는 2026-09-16
+//   리디자인에서 앱 화면 참조를 전부 제거해 remotePatterns에서도 뺐다(OG 이미지 폴백만 남음 — OG는
+//   next/og가 직접 fetch하므로 remotePatterns를 타지 않는다).
 // 인라인 스타일/스크립트: React/Next 런타임이 필요로 해서 'unsafe-inline' 유지.
 // nonce 기반 strict CSP는 동적 렌더링 강제 등 트레이드오프가 커 현재 단계에서는 보류.
 //
@@ -127,7 +129,6 @@ const nextConfig: NextConfig = {
         hostname: SUPABASE_HOSTNAME,
         pathname: "/storage/v1/object/**",
       },
-      { protocol: "https", hostname: "placehold.co" },
       { protocol: "https", hostname: "lh3.googleusercontent.com", pathname: "/**" },
       { protocol: "https", hostname: "k.kakaocdn.net", pathname: "/**" },
     ],
