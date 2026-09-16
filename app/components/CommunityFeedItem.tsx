@@ -14,6 +14,7 @@ import { CATEGORY_MAP } from "@/lib/types";
 import { formatRelativeTime } from "@/lib/posts-repo";
 import type { PostComment } from "@/lib/post-comments-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import TitleBadge from "@/app/components/TitleBadge";
 
 interface Props {
   post: Post;
@@ -83,7 +84,10 @@ export default function CommunityFeedItem({ post, liked, firstComment, onLike }:
           )}
         </Link>
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-bold text-text-main leading-tight truncate">{post.authorName}</p>
+          <p className="flex items-center gap-1.5 min-w-0">
+            <span className="text-[15px] font-bold text-text-main leading-tight truncate">{post.authorName}</span>
+            <TitleBadge titleId={post.authorTitle} />
+          </p>
           <p className="flex items-center gap-1 text-[12px] text-text-sub mt-1">
             <MessageSquare size={12} />
             <span>{cat.label}</span>
@@ -219,7 +223,8 @@ export default function CommunityFeedItem({ post, liked, firstComment, onLike }:
       )}
       {firstComment && (
         <p className="text-[15px] text-text-main mt-1.5 truncate">
-          <span className="font-bold mr-2">{firstComment.author_name ?? "익명"}</span>
+          <span className="font-bold mr-1.5">{firstComment.author_name ?? "익명"}</span>
+          <span className="mr-2 align-middle"><TitleBadge titleId={firstComment.author_title} /></span>
           {firstComment.body}
         </p>
       )}

@@ -344,6 +344,9 @@ export const ADMIN_TITLES: AdminTitle[] = [
   { id: "early_supporter", name: "초기 서포터", emoji: "🌱", color: "#6B8E6F", description: "서비스 초기부터 함께한 서포터" },
   { id: "content_creator", name: "콘텐츠 크리에이터", emoji: "📸", color: "#4A7BA8", description: "우수한 돌봄 콘텐츠를 생산하는 회원" },
   { id: "donor", name: "후원자", emoji: "💝", color: "#E86B8C", description: "길고양이 돌봄을 후원하는 회원" },
+  // 운영 페르소나 계정(lib/community-personas.ts) 전용 — 글·댓글 자동 작성 시 필수 부착.
+  // DB 가드(is_admin_only_title)에도 'staff'가 들어가야 일반 유저가 사칭 못 한다.
+  { id: "staff", name: "운영", emoji: "🏷️", color: "#5D564B", description: "도시공존 운영 계정이 남긴 글·댓글" },
 ];
 
 export function findAdminTitle(id: string | null | undefined): AdminTitle | null {
