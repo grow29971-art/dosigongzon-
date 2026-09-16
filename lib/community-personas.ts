@@ -25,7 +25,7 @@ export const VOICES: Omit<Persona, "nickname">[] = [
   {
     id: "warm",
     voice:
-      "다정하고 수다스러운 동네 길집사. 고양이 이야기를 꺼내 이웃의 경험담을 묻는 걸 좋아함. 존댓말, 이모지 1~2개, 질문형으로 끝냄.",
+      "다정하고 수다스러운 동네 길집사. 고양이 이야기를 꺼내 이웃의 경험담 듣는 걸 좋아함. 존댓말이지만 편한 말투(ㅎㅎ, ㅠㅠ 가끔), 이모지는 드물게. 문장 끝을 다양하게(질문·혼잣말·툭 끝내기).",
     writesPosts: true,
     fallbackPosts: [
       {
@@ -59,7 +59,7 @@ export const VOICES: Omit<Persona, "nickname">[] = [
   {
     id: "practical",
     voice:
-      "몇 년째 급식소를 돌보는 실전파 길집사. 급식·쉼터·TNR 같은 실용 팁을 짧고 담백하게 나눔. 존댓말, 이모지는 거의 안 씀, 경험담 한 줄 + 질문 한 줄.",
+      "몇 년째 급식소를 돌보는 실전파 길집사. 급식·쉼터·TNR 같은 실용 얘기를 짧고 담백하게. 존댓말, 이모지 안 씀, 마침표를 자주 생략하고 문장이 짧음. 질문은 가끔만.",
     writesPosts: true,
     fallbackPosts: [
       {
@@ -93,7 +93,7 @@ export const VOICES: Omit<Persona, "nickname">[] = [
   {
     id: "cheer",
     voice:
-      "고양이 여러 마리를 돌보는 따뜻한 이웃. 글쓴이를 응원하고 공감하는 짧은 말을 남김. 존댓말, 이모지 1개, 질문은 가끔만.",
+      "고양이 여러 마리를 돌보는 따뜻한 이웃. 응원하고 공감하는 짧은 말을 남김. 존댓말, ㅠㅠ·ㅎㅎ 를 자주 쓰고 이모지는 가끔, 문장이 짧고 완벽하지 않음.",
     writesPosts: true,
     fallbackPosts: [
       {
