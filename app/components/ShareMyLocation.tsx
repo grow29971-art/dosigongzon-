@@ -9,6 +9,7 @@
 // - 보호 연락처(별칭+번호)는 localStorage에만 저장. 서버 저장 금지.
 // - 위치 획득 실패는 침묵하지 않고 즉시 표기.
 // - 실시간 추적·상시 공유 아님 — 누를 때 1회 링크 전송뿐.
+// 2026-09-16 「익숙한 동네앱」 리디자인: 틴트 박스 → 흰 면 + 헤어라인, 라운드 8px, 의미색 토큰만.
 // ══════════════════════════════════════════
 
 import { useEffect, useState } from "react";
@@ -43,6 +44,10 @@ function smsHref(phone: string, body: string): string {
   const sep = isIOS ? "&" : "?";
   return `sms:${phone}${sep}body=${encodeURIComponent(body)}`;
 }
+
+const PRIMARY_BTN =
+  "w-full h-12 text-[15px] font-semibold text-white press-strong transition-transform flex items-center justify-center gap-1.5";
+const PRIMARY_BTN_STYLE = { backgroundColor: "var(--color-primary)", borderRadius: "var(--radius-input)" } as const;
 
 export default function ShareMyLocation() {
   const [guardians, setGuardians] = useState<Guardian[]>([]);
@@ -112,42 +117,49 @@ export default function ShareMyLocation() {
   };
 
   return (
-    <div className="rounded-2xl px-4 py-3.5 mt-3" style={{ backgroundColor: "var(--color-surface-alt)" }}>
+    <div
+      className="px-4 py-3.5 mt-3"
+      style={{
+        background: "var(--color-surface)",
+        border: "1px solid var(--color-border)",
+        borderRadius: "var(--radius-card)",
+      }}
+    >
       <div className="flex items-center gap-1.5 mb-1">
-        <Send size={13} className="text-primary" />
-        <span className="text-[11px] font-bold text-text-sub">내 위치 보내기</span>
+        <Send size={13} style={{ color: "var(--color-text-sub)" }} />
+        <span className="text-[13px] font-semibold text-text-main">내 위치 보내기</span>
       </div>
       <p className="text-[11px] text-text-light leading-relaxed mb-2.5">
-        믿을 수 있는 사람에게 지금 위치 링크를 문자·공유로 <b>직접</b> 보내요.
-        위치는 서버를 거치지 않고 내 폰에서 바로 전송돼요.
+        지금 위치 링크를 문자·공유로 직접 보내요. 서버를 거치지 않고 내 폰에서 바로 전송돼요.
       </p>
 
       {!shareText ? (
         <button
           onClick={getLocation}
           disabled={locating}
-          className="w-full rounded-xl py-3 text-[15px] font-bold text-white press-strong transition-transform flex items-center justify-center gap-1.5 disabled:opacity-60"
-          style={{ backgroundColor: "var(--color-primary)" }}
+          className={`${PRIMARY_BTN} disabled:opacity-60`}
+          style={PRIMARY_BTN_STYLE}
         >
           {locating ? (<><Loader2 size={15} className="animate-spin" /> 위치 확인 중…</>) : "지금 위치 링크 만들기"}
         </button>
       ) : (
         <div className="space-y-2">
-          <button
-            onClick={shareViaSheet}
-            className="w-full rounded-xl py-3 text-[15px] font-bold text-white press-strong transition-transform flex items-center justify-center gap-1.5"
-            style={{ backgroundColor: "var(--color-primary)" }}
-          >
+          <button onClick={shareViaSheet} className={PRIMARY_BTN} style={PRIMARY_BTN_STYLE}>
             <Share2 size={15} /> 공유로 보내기 (카톡·문자 등)
           </button>
           {guardians.map((g, i) => (
             <a
               key={`${g.phone}-${i}`}
               href={smsHref(g.phone, shareText)}
-              className="w-full rounded-xl py-3 text-[15px] font-bold press-strong transition-transform flex items-center justify-center gap-1.5"
-              style={{ backgroundColor: "#fff", color: "var(--color-text-main)", border: "1px solid var(--color-divider)" }}
+              className="w-full h-12 text-[15px] font-semibold press-strong transition-transform flex items-center justify-center gap-1.5"
+              style={{
+                backgroundColor: "var(--color-surface)",
+                color: "var(--color-text-main)",
+                border: "1px solid var(--color-border)",
+                borderRadius: "var(--radius-input)",
+              }}
             >
-              <MessageSquare size={15} className="text-primary" /> {g.name}에게 문자 보내기
+              <MessageSquare size={15} style={{ color: "var(--color-text-sub)" }} /> {g.name}에게 문자 보내기
             </a>
           ))}
           <button onClick={getLocation} className="w-full text-[11px] text-text-light underline underline-offset-2 pt-0.5">
@@ -157,15 +169,15 @@ export default function ShareMyLocation() {
       )}
 
       {error && (
-        <p className="text-[13px] font-bold mt-2" style={{ color: "#B84545" }}>{error}</p>
+        <p className="text-[13px] font-semibold mt-2" style={{ color: "var(--color-error)" }}>{error}</p>
       )}
 
       {/* 보호 연락처 관리 — 내 폰(localStorage)에만 저장 */}
       <div className="mt-3 pt-2.5" style={{ borderTop: "1px solid var(--color-divider)" }}>
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-bold text-text-sub">보호 연락처 (내 폰에만 저장 · 최대 {MAX_GUARDIANS}명)</span>
+          <span className="text-[11px] font-semibold text-text-sub">보호 연락처 (내 폰에만 저장 · 최대 {MAX_GUARDIANS}명)</span>
           {guardians.length < MAX_GUARDIANS && (
-            <button onClick={() => setAddOpen((v) => !v)} className="text-[11px] font-bold text-primary flex items-center gap-0.5 press-strong">
+            <button onClick={() => setAddOpen((v) => !v)} className="text-[11px] font-semibold text-primary flex items-center gap-0.5 press-strong">
               <Plus size={12} /> 추가
             </button>
           )}
@@ -185,13 +197,15 @@ export default function ShareMyLocation() {
           <div className="flex gap-1.5 mt-2">
             <input
               value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="별칭 (예: 언니)"
-              className="w-24 px-2.5 py-2 rounded-lg text-[13px] outline-none bg-white" maxLength={10}
+              className="w-24 px-2.5 py-2 rounded-lg text-[13px] outline-none" maxLength={10}
+              style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
             />
             <input
               value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="전화번호" inputMode="tel"
-              className="flex-1 px-2.5 py-2 rounded-lg text-[13px] outline-none bg-white" maxLength={16}
+              className="flex-1 px-2.5 py-2 rounded-lg text-[13px] outline-none" maxLength={16}
+              style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
             />
-            <button onClick={addGuardian} className="px-3 rounded-lg text-[13px] font-bold text-white press-strong" style={{ backgroundColor: "var(--color-primary)" }}>
+            <button onClick={addGuardian} className="px-3 rounded-lg text-[13px] font-semibold text-white press-strong" style={{ backgroundColor: "var(--color-primary)" }}>
               저장
             </button>
           </div>

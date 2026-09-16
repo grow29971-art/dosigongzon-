@@ -173,12 +173,12 @@ export default function CatLocationPicker({
   return (
     <div
       className="fixed inset-0 z-[200] flex flex-col"
-      style={{ background: "#F7F4EE" }}
+      style={{ background: "var(--color-surface)" }}
     >
-      {/* 헤더 */}
+      {/* 헤더 — 흰 면 + 하단 헤어라인 */}
       <div
-        className="px-4 pt-14 pb-3 flex items-center gap-3 bg-white/90 backdrop-blur-md"
-        style={{ boxShadow: "var(--shadow-raised)" }}
+        className="px-4 pt-14 pb-3 flex items-center gap-3"
+        style={{ background: "var(--color-surface)", borderBottom: "1px solid var(--color-border)" }}
       >
         <button
           type="button"
@@ -189,7 +189,7 @@ export default function CatLocationPicker({
           <X size={18} className="text-text-sub" />
         </button>
         <div className="flex-1 min-w-0">
-          <h1 className="text-[15px] font-bold text-text-main tracking-tight truncate">
+          <h1 className="text-[15px] font-semibold text-text-main tracking-tight truncate">
             {catName} 위치 변경
           </h1>
           <p className="text-[11px] text-text-sub">
@@ -210,14 +210,14 @@ export default function CatLocationPicker({
         {(!mapReady || mapError) && (
           <div
             className="absolute inset-0 flex items-center justify-center z-[5] pointer-events-none"
-            style={{ background: "rgba(238,234,226,0.85)" }}
+            style={{ background: "rgba(255,255,255,0.85)" }}
           >
             {mapError ? (
               <div
-                className="pointer-events-auto mx-4 rounded-2xl px-4 py-3 text-center"
-                style={{ background: "#fff", boxShadow: "var(--shadow-raised)" }}
+                className="pointer-events-auto mx-4 rounded-xl px-4 py-3 text-center"
+                style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
               >
-                <p className="text-[13px] font-bold text-text-main mb-1">⚠️ 지도 로드 실패</p>
+                <p className="text-[13px] font-semibold text-text-main mb-1">지도 로드 실패</p>
                 <p className="text-[11px] text-text-sub">{mapError}</p>
               </div>
             ) : (
@@ -236,12 +236,12 @@ export default function CatLocationPicker({
             style={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.25))" }}
           >
             <div
-              className="px-3 py-1.5 rounded-2xl text-[11px] font-bold text-white whitespace-nowrap mb-1"
+              className="px-3 py-1.5 chip-square text-[11px] font-semibold text-white whitespace-nowrap mb-1"
               style={{ background: "var(--color-primary)" }}
             >
-              📍 여기로 이동
+              여기로 이동
             </div>
-            <MapPin size={36} fill="#B05C36" strokeWidth={1.5} color="#fff" />
+            <MapPin size={36} strokeWidth={1.5} className="text-white" style={{ fill: "var(--color-primary)" }} />
           </div>
         </div>
 
@@ -251,7 +251,7 @@ export default function CatLocationPicker({
           onClick={handleLocateMe}
           disabled={locating}
           className="absolute bottom-4 right-4 z-10 w-11 h-11 rounded-full bg-white flex items-center justify-center press-strong disabled:opacity-60"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          style={{ boxShadow: "var(--shadow-fab)" }}
           aria-label="내 위치"
         >
           {locating ? (
@@ -262,27 +262,19 @@ export default function CatLocationPicker({
         </button>
       </div>
 
-      {/* 하단 확정 바 */}
+      {/* 하단 확정 바 — 흰 면 + 상단 헤어라인, 감지 위치는 틴트 박스 없이 행 하나 */}
       <div
-        className="px-4 pt-3 pb-6 bg-white"
-        style={{ boxShadow: "var(--shadow-sheet)" }}
+        className="px-4 pt-3 pb-6"
+        style={{ background: "var(--color-surface)", borderTop: "1px solid var(--color-border)", boxShadow: "var(--shadow-sheet)" }}
       >
         <div
-          className="rounded-2xl px-4 py-3.5 mb-2.5"
-          style={{
-            background: "#FFF8F2",
-            border: "1.5px solid rgba(176, 92, 54,0.25)",
-          }}
+          className="px-1 py-2 mb-2"
+          style={{ borderBottom: "1px solid var(--color-divider)" }}
         >
           <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "rgba(176, 92, 54,0.15)" }}
-            >
-              <MapPin size={18} className="text-primary" />
-            </div>
+            <MapPin size={20} className="shrink-0" style={{ color: "var(--color-text-sub)" }} />
             <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-bold text-primary tracking-[0.05em]">자동 감지된 위치</p>
+              <p className="text-[11px] font-medium text-text-light">자동 감지된 위치</p>
               <p className="text-[20px] font-bold text-text-main truncate leading-tight mt-0.5">
                 {region || "감지 중…"}
               </p>
@@ -298,7 +290,7 @@ export default function CatLocationPicker({
           </div>
         </div>
         <p className="text-[11px] text-text-light leading-relaxed mb-3 px-1">
-          💡 동 이름이 익숙한 이름과 다르면 다음 화면 &ldquo;동네&rdquo; 칸에서 직접 고칠 수 있어요. (행정동·법정동 차이로 다르게 보일 수 있음)
+          동 이름이 익숙한 이름과 다르면 다음 화면 &ldquo;동네&rdquo; 칸에서 직접 고칠 수 있어요.
         </p>
 
         <button
@@ -311,15 +303,15 @@ export default function CatLocationPicker({
             onConfirm({ lat, lng, region: region.trim() });
           }}
           disabled={!mapReady || !region.trim()}
-          className="w-full py-3.5 rounded-2xl flex items-center justify-center gap-2 press disabled:opacity-50"
+          className="w-full h-12 flex items-center justify-center gap-2 press disabled:opacity-50"
           style={{
             background: "var(--color-primary)",
-            color: "#fff",
-            boxShadow: "var(--shadow-primary)",
+            color: "var(--color-surface)",
+            borderRadius: "var(--radius-input)",
           }}
         >
           <Check size={16} />
-          <span className="text-[15px] font-bold">이 위치로 변경</span>
+          <span className="text-[15px] font-semibold">이 위치로 변경</span>
         </button>
       </div>
     </div>

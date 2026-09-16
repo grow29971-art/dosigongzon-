@@ -9,6 +9,8 @@ const DISMISS_DAYS = 30;
 /**
  * 지도 페이지 첫 진입 시 동네 채팅 / 전체 채팅 사용법 안내.
  * X로 닫으면 30일간 다시 안 뜸.
+ * 2026-09-16 「익숙한 동네앱」 리디자인: 틴트 카드·색 아이콘 원 제거 → 구분선 리스트 행(회색 선 아이콘),
+ * 모달 라운드 12px, 영문 대문자 라벨 제거.
  */
 export default function MapChatGuideModal() {
   const [visible, setVisible] = useState(false);
@@ -41,94 +43,85 @@ export default function MapChatGuideModal() {
   return (
     <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-6 sm:pb-0"
-      style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
+      style={{ background: "rgba(0,0,0,0.5)" }}
       onClick={dismiss}
       role="dialog"
       aria-modal="true"
       aria-label="지도 채팅 사용법 안내"
     >
       <div
-        className="bg-white w-full max-w-md rounded-3xl p-5 relative animate-rise"
-        style={{ boxShadow: "var(--shadow-modal)" }}
+        className="w-full max-w-md relative animate-rise overflow-hidden"
+        style={{
+          background: "var(--color-surface)",
+          borderRadius: "var(--radius-modal)",
+          boxShadow: "var(--shadow-modal)",
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           onClick={dismiss}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center press-strong"
-          style={{ background: "rgba(0,0,0,0.05)" }}
+          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center press-strong"
           aria-label="닫기"
         >
-          <X size={14} className="text-text-sub" />
+          <X size={18} style={{ color: "var(--color-text-light)" }} />
         </button>
 
-        <div className="mb-4 pr-8">
-          <p className="text-[11px] font-bold tracking-[0.12em] mb-1" style={{ color: "var(--color-primary)" }}>
-            CHAT GUIDE
-          </p>
-          <h2 className="text-[20px] font-bold text-text-main tracking-tight leading-tight">
+        <div className="px-5 pt-5 pb-3 pr-12">
+          <p className="text-[11px] font-medium text-text-light mb-1">지도 채팅</p>
+          <h2 className="text-[17px] font-bold text-text-main tracking-tight leading-snug">
             지도에서 다른 사람들과 대화해보세요
           </h2>
-          <p className="text-[13px] text-text-sub mt-1.5 leading-relaxed">
-            지도 좌하단의 두 가지 채팅 버튼으로 다른 길집사들과 실시간 소통할 수 있어요.
+          <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
+            지도 좌하단 채팅 버튼으로 다른 길집사들과 실시간으로 이야기할 수 있어요.
           </p>
         </div>
 
-        {/* 전체 채팅 카드 */}
-        <div
-          className="rounded-2xl p-3.5 mb-2.5 flex items-start gap-3"
-          style={{
-            background: "rgba(72,165,158,0.08)",
-            border: "1px solid rgba(72,165,158,0.18)",
-          }}
-        >
+        {/* 전체 채팅 행 */}
+        <div className="px-5">
           <div
-            className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: "#48A59E" }}
+            className="flex items-start gap-3 py-3"
+            style={{ borderTop: "1px solid var(--color-divider)" }}
           >
-            <Globe size={18} color="#FFFFFF" strokeWidth={2.4} />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-[15px] font-bold text-text-main">전체 채팅</p>
-            <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
-              <span className="font-bold" style={{ color: "#48A59E" }}>전국 어디서든</span> 모든 사용자가 함께 대화하는 방. 길고양이 정보 공유, 응급 상황 도움 요청, 소소한 일상까지.
-            </p>
-          </div>
-        </div>
-
-        {/* 동네 채팅 카드 — 일시 숨김 (가입자 늘면 아래 false→true로 복원) */}
-        {false && (
-          <div
-            className="rounded-2xl p-3.5 mb-4 flex items-start gap-3"
-            style={{
-              background: "var(--color-primary-softer)",
-              border: "1px solid rgba(176, 92, 54,0.18)",
-            }}
-          >
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "var(--color-primary)" }}
-            >
-              <MessageCircle size={18} color="#FFFFFF" strokeWidth={2.4} />
-            </div>
+            <Globe size={20} className="shrink-0 mt-0.5" style={{ color: "var(--color-text-sub)" }} />
             <div className="min-w-0 flex-1">
-              <p className="text-[15px] font-bold text-text-main">동네 채팅</p>
-              <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
-                <span className="font-bold" style={{ color: "var(--color-primary-dark)" }}>현재 보고 있는 구</span> 단위 채팅방. 같은 동네 길집사끼리 실시간 정보 교환. 지도 위치를 옮기면 그 동네 채팅방으로 자동 연결.
+              <p className="text-[15px] font-semibold text-text-main">전체 채팅</p>
+              <p className="text-[13px] text-text-sub mt-0.5 leading-relaxed">
+                전국 모든 사용자가 함께 쓰는 방이에요. 길고양이 정보 공유, 응급 도움 요청, 소소한 일상까지.
               </p>
             </div>
           </div>
-        )}
 
-        <p className="text-[11px] text-text-light mb-3 px-1">
-          매일 새벽 4시 자동 정리되어 새로 시작해요
-        </p>
+          {/* 동네 채팅 행 — 일시 숨김 (가입자 늘면 아래 false→true로 복원) */}
+          {false && (
+            <div
+              className="flex items-start gap-3 py-3"
+              style={{ borderTop: "1px solid var(--color-divider)" }}
+            >
+              <MessageCircle size={20} className="shrink-0 mt-0.5" style={{ color: "var(--color-text-sub)" }} />
+              <div className="min-w-0 flex-1">
+                <p className="text-[15px] font-semibold text-text-main">동네 채팅</p>
+                <p className="text-[13px] text-text-sub mt-0.5 leading-relaxed">
+                  현재 보고 있는 구 단위 채팅방이에요. 지도 위치를 옮기면 그 동네 채팅방으로 자동 연결돼요.
+                </p>
+              </div>
+            </div>
+          )}
+
+          <p className="text-[11px] text-text-light pt-2 pb-4">
+            매일 새벽 4시 자동 정리되어 새로 시작해요
+          </p>
+        </div>
 
         <button
           type="button"
           onClick={dismiss}
-          className="w-full py-3 rounded-2xl text-white text-[13px] font-bold press transition-transform"
-          style={{ background: "var(--color-primary)" }}
+          className="w-full h-12 text-[15px] font-semibold press transition-transform"
+          style={{
+            background: "transparent",
+            color: "var(--color-primary)",
+            borderTop: "1px solid var(--color-border)",
+          }}
         >
           알겠어요
         </button>
