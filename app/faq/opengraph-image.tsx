@@ -1,20 +1,13 @@
-// FAQ 페이지 OG 이미지 — 카톡·SNS 공유 시 매력적 미리보기
+// FAQ 페이지 OG 이미지 — 카톡·SNS 공유 시 미리보기
 import { ImageResponse } from "next/og";
+import { OGBrand, OG_BRAND, OG_CHIP, OG_CHIP_BRAND, OG_INK, OG_INK_SUB, OG_LINE } from "@/lib/og-helpers";
 
 export const runtime = "nodejs";
 export const alt = "도시공존 — 길고양이 자주 묻는 질문";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const TOPICS: Array<{ label: string; emoji: string; color: string }> = [
-  { label: "발견·신고", emoji: "🚨", color: "#B05C36" },
-  { label: "새끼고양이", emoji: "🍼", color: "#E8B57E" },
-  { label: "TNR·중성화", emoji: "✂️", color: "#8A4325" },
-  { label: "임시보호·입양", emoji: "🏠", color: "#7AAE82" },
-  { label: "응급·치료", emoji: "🏥", color: "#D85555" },
-  { label: "법·신고", emoji: "⚖️", color: "#5F7A8E" },
-  { label: "길집사 활동", emoji: "❤️", color: "#9D7AB8" },
-];
+const TOPICS = ["발견·신고", "새끼고양이", "TNR·중성화", "임시보호·입양", "응급·치료", "법·신고", "길집사 활동"];
 
 export default function FaqOGImage() {
   return new ImageResponse(
@@ -25,69 +18,15 @@ export default function FaqOGImage() {
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          background: "linear-gradient(135deg, #F6EFE3 0%, #EADFCB 55%, #DAC4A3 100%)",
+          background: "#FFFFFF",
           fontFamily: "sans-serif",
-          color: "#2C2C2C",
-          position: "relative",
+          color: OG_INK,
           padding: "64px 80px",
         }}
       >
-        {/* 장식 원 */}
-        <div
-          style={{
-            position: "absolute",
-            top: -120,
-            right: -100,
-            width: 480,
-            height: 480,
-            borderRadius: "50%",
-            background:
-              "radial-gradient(circle, rgba(176, 92, 54,0.22) 0%, rgba(176, 92, 54,0) 70%)",
-            display: "flex",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: -100,
-            left: -80,
-            width: 360,
-            height: 360,
-            borderRadius: "50%",
-            background:
-              "radial-gradient(circle, rgba(232,181,126,0.25) 0%, rgba(232,181,126,0) 70%)",
-            display: "flex",
-          }}
-        />
-
         {/* 브랜드 */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 14,
-            marginBottom: 36,
-          }}
-        >
-          <div
-            style={{
-              width: 52,
-              height: 52,
-              borderRadius: 16,
-              background: "#B05C36",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 30,
-            }}
-          >
-            ❓
-          </div>
-          <span
-            style={{ fontSize: 24, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}
-          >
-            도시공존 · 자주 묻는 질문
-          </span>
+        <div style={{ display: "flex", marginBottom: 36 }}>
+          <OGBrand label="도시공존 · 자주 묻는 질문" size={52} />
         </div>
 
         {/* 헤드라인 */}
@@ -95,22 +34,22 @@ export default function FaqOGImage() {
           <div
             style={{
               fontSize: 72,
-              fontWeight: 900,
+              fontWeight: 700,
               lineHeight: 1.05,
-              letterSpacing: -3,
-              color: "#2C2C2C",
+              letterSpacing: -2.5,
+              color: OG_INK,
               display: "flex",
               flexDirection: "column",
             }}
           >
             <span>길고양이 자주 묻는</span>
-            <span style={{ color: "#B05C36" }}>30개 질문</span>
+            <span style={{ color: OG_BRAND }}>30개 질문</span>
           </div>
           <p
             style={{
               fontSize: 24,
-              fontWeight: 600,
-              color: "#5A5A5A",
+              fontWeight: 500,
+              color: OG_INK_SUB,
               margin: 0,
               lineHeight: 1.45,
               maxWidth: 900,
@@ -120,51 +59,23 @@ export default function FaqOGImage() {
           </p>
         </div>
 
-        {/* 카테고리 칩 */}
+        {/* 주제 칩 */}
         <div
           style={{
             display: "flex",
             flexWrap: "wrap",
             gap: 10,
             marginTop: "auto",
+            paddingTop: 24,
+            borderTop: `1px solid ${OG_LINE}`,
           }}
         >
           {TOPICS.map((t) => (
-            <div
-              key={t.label}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "10px 18px",
-                borderRadius: 999,
-                background: `${t.color}1F`,
-                color: t.color,
-                fontSize: 20,
-                fontWeight: 800,
-                border: `2px solid ${t.color}40`,
-              }}
-            >
-              <span>{t.emoji}</span>
-              <span>{t.label}</span>
+            <div key={t} style={OG_CHIP}>
+              {t}
             </div>
           ))}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              padding: "10px 22px",
-              borderRadius: 999,
-              background: "rgba(255,255,255,0.9)",
-              color: "#8B5A3C",
-              fontSize: 20,
-              fontWeight: 800,
-              border: "2px solid rgba(176, 92, 54,0.3)",
-              marginLeft: "auto",
-            }}
-          >
-            dosigongzon.com/faq
-          </div>
+          <div style={{ ...OG_CHIP_BRAND, marginLeft: "auto" }}>dosigongzon.com/faq</div>
         </div>
       </div>
     ),

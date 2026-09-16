@@ -1,6 +1,16 @@
 import { ImageResponse } from "next/og";
 import { getCatByIdServer } from "@/lib/cats-server";
 import { sanitizeOgImageUrl } from "@/lib/url-validate";
+import {
+  OGBrand,
+  OG_CHIP,
+  OG_CHIP_BRAND,
+  OG_BRAND,
+  OG_FACE,
+  OG_INK,
+  OG_INK_SUB,
+  OG_LINE,
+} from "@/lib/og-helpers";
 
 export const runtime = "nodejs";
 export const alt = "도시공존 — 길고양이 이야기";
@@ -15,10 +25,8 @@ export default async function CatOGImage({ params }: { params: Params }) {
 
   const name = cat?.name ?? "길고양이";
   const region = cat?.region ?? "우리 동네";
-  const photoUrl = sanitizeOgImageUrl(
-    cat?.photo_url ?? null,
-    "https://placehold.co/800x800/EEEAE2/2A2A28?text=Cat",
-  );
+  // 사진이 없거나 허용 호스트 밖이면 빈 문자열 → 회색 면 + 이름으로 대체(플레이스홀더 서비스 미사용)
+  const photoUrl = sanitizeOgImageUrl(cat?.photo_url ?? null, "");
   const likeCount = cat?.like_count ?? 0;
   const description = cat?.description?.slice(0, 60) ?? "길 위의 생명과 함께 걷는 따뜻한 한 걸음";
 
@@ -29,26 +37,12 @@ export default async function CatOGImage({ params }: { params: Params }) {
           width: "100%",
           height: "100%",
           display: "flex",
-          background: "linear-gradient(135deg, #F6EFE3 0%, #EADFCB 55%, #DAC4A3 100%)",
+          background: "#FFFFFF",
           fontFamily: "sans-serif",
-          color: "#2C2C2C",
-          position: "relative",
+          color: OG_INK,
         }}
       >
-        {/* 장식용 원 */}
-        <div
-          style={{
-            position: "absolute",
-            top: -100,
-            right: -80,
-            width: 420,
-            height: 420,
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(176, 92, 54,0.25) 0%, rgba(176, 92, 54,0) 70%)",
-          }}
-        />
-
-        {/* 왼쪽: 고양이 사진 */}
+        {/* 왼쪽: 고양이 사진(없으면 회색 면 + 이름) */}
         <div
           style={{
             width: 500,
@@ -59,19 +53,40 @@ export default async function CatOGImage({ params }: { params: Params }) {
             justifyContent: "center",
           }}
         >
-          <div
-            style={{
-              width: 400,
-              height: 400,
-              borderRadius: 48,
-              backgroundImage: `url('${photoUrl}')`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              boxShadow: "0 20px 50px rgba(0,0,0,0.25)",
-              border: "8px solid #fff",
-              display: "flex",
-            }}
-          />
+          {photoUrl ? (
+            <div
+              style={{
+                width: 400,
+                height: 400,
+                borderRadius: 12,
+                backgroundImage: `url('${photoUrl}')`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                border: `1px solid ${OG_LINE}`,
+                display: "flex",
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: 400,
+                height: 400,
+                borderRadius: 12,
+                background: OG_FACE,
+                border: `1px solid ${OG_LINE}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 44,
+                fontWeight: 700,
+                color: OG_INK_SUB,
+                textAlign: "center",
+                padding: 32,
+              }}
+            >
+              {name}
+            </div>
+          )}
         </div>
 
         {/* 오른쪽: 텍스트 */}
@@ -84,49 +99,18 @@ export default async function CatOGImage({ params }: { params: Params }) {
             justifyContent: "space-between",
           }}
         >
-          {/* 브랜드 */}
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 14,
-                background: "#B05C36",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 24,
-              }}
-            >
-              🐾
-            </div>
-            <span style={{ fontSize: 24, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}>
-              도시공존
-            </span>
-          </div>
+          <OGBrand />
 
           {/* 이름·동 */}
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <div style={{ display: "flex", fontSize: 24, fontWeight: 700, color: OG_BRAND }}>{region}</div>
             <div
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                fontSize: 24,
+                fontSize: 80,
                 fontWeight: 700,
-                color: "#B05C36",
-              }}
-            >
-              <span>📍</span>
-              <span>{region}</span>
-            </div>
-            <div
-              style={{
-                fontSize: 88,
-                fontWeight: 900,
                 lineHeight: 1.0,
-                letterSpacing: -3,
-                color: "#2C2C2C",
+                letterSpacing: -2,
+                color: OG_INK,
                 display: "flex",
               }}
             >
@@ -135,8 +119,8 @@ export default async function CatOGImage({ params }: { params: Params }) {
             <p
               style={{
                 fontSize: 24,
-                fontWeight: 600,
-                color: "#5A5A5A",
+                fontWeight: 500,
+                color: OG_INK_SUB,
                 margin: 0,
                 lineHeight: 1.4,
                 maxWidth: 520,
@@ -148,39 +132,8 @@ export default async function CatOGImage({ params }: { params: Params }) {
 
           {/* 하단 스탯 */}
           <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-            {likeCount > 0 && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "10px 20px",
-                  borderRadius: 999,
-                  background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)",
-                  color: "#fff",
-                  fontSize: 24,
-                  fontWeight: 800,
-                }}
-              >
-                <span>❤️</span>
-                <span>{likeCount}명이 응원중</span>
-              </div>
-            )}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                padding: "10px 20px",
-                borderRadius: 999,
-                background: "rgba(255,255,255,0.8)",
-                color: "#8B5A3C",
-                fontSize: 20,
-                fontWeight: 800,
-                border: "2px solid rgba(176, 92, 54,0.3)",
-              }}
-            >
-              dosigongzon.com
-            </div>
+            {likeCount > 0 && <div style={OG_CHIP}>{likeCount}명이 응원중</div>}
+            <div style={OG_CHIP_BRAND}>dosigongzon.com</div>
           </div>
         </div>
       </div>

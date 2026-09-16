@@ -67,12 +67,12 @@ export async function POST(request: Request) {
         `내용:\n${content || "(없음)"}\n\n` +
         `--\n관리자 페이지: ${adminUrl}\n`,
       html:
-        `<div style="font-family:-apple-system,sans-serif;max-width:560px">` +
-        `<h2 style="margin:0 0 12px">${typeLabel} 들어왔어요</h2>` +
-        `<p style="margin:0 0 6px;color:#555"><b>보낸 사람:</b> ${escapeHtml(userName)} (${escapeHtml(userEmail)})</p>` +
-        `<p style="margin:0 0 6px;color:#555"><b>제목:</b> ${escapeHtml(subject || "(없음)")}</p>` +
-        `<div style="margin:12px 0;padding:12px 14px;background:#F7F4EE;border-radius:8px;white-space:pre-wrap;font-size:14px;line-height:1.6">${escapeHtml(content || "(내용 없음)")}</div>` +
-        `<p style="margin:16px 0 0"><a href="${adminUrl}" style="display:inline-block;padding:8px 14px;background:#B05C36;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold">관리자 페이지 열기</a></p>` +
+        `<div style="font-family:-apple-system,sans-serif;max-width:560px;color:#191919">` +
+        `<h2 style="margin:0 0 12px;color:#191919;font-weight:700">${typeLabel} 들어왔어요</h2>` +
+        `<p style="margin:0 0 6px;color:#4B4B4B"><b>보낸 사람:</b> ${escapeHtml(userName)} (${escapeHtml(userEmail)})</p>` +
+        `<p style="margin:0 0 6px;color:#4B4B4B"><b>제목:</b> ${escapeHtml(subject || "(없음)")}</p>` +
+        `<div style="margin:12px 0;padding:12px 14px;background:#FFFFFF;border:1px solid #E8E8E8;border-radius:8px;color:#191919;white-space:pre-wrap;font-size:14px;line-height:1.6">${escapeHtml(content || "(내용 없음)")}</div>` +
+        `<p style="margin:16px 0 0"><a href="${adminUrl}" style="display:inline-block;padding:8px 14px;background:#B05C36;color:#FFFFFF;text-decoration:none;border-radius:8px;font-weight:700">관리자 페이지 열기</a></p>` +
         `</div>`,
     });
 

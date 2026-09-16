@@ -10,13 +10,11 @@ export default function RescueOG() {
   return new ImageResponse(
     (
       <GuideOGTemplate
-        badge="🚨 긴급"
-        badgeColor="#D85555"
+        badge="긴급"
         title="긴급 구조가 필요해요"
         highlightText="긴급"
-        highlightColor="#D85555"
         subtitle="건강 상태가 위험으로 기록된 아이들. 가장 가까운 이웃의 한 번의 방문이 생명을 바꿔요."
-        tags={["🚨 LIVE", "🏥 병원", "💧 탈수", "🩹 부상"]}
+        tags={["LIVE", "병원", "탈수", "부상"]}
       />
     ),
     { ...size },

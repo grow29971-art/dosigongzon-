@@ -42,14 +42,15 @@ export function sanitizeHttpUrl(
 // ── OG 이미지(next/og) 전용 SSRF 가드 ──
 // next/og의 ImageResponse는 이 URL을 서버에서 직접 fetch한다. 위의 sanitizeImageUrl은
 // XSS(CSS url() 탈출) 방어용이라 http·사설IP·내부 호스트(169.254.169.254 등)를 통과시켜
-// 서버측 SSRF가 된다. OG용은 https + 신뢰 호스트(Supabase 스토리지·플레이스홀더)만 허용.
+// 서버측 SSRF가 된다. OG용은 https + 신뢰 호스트(Supabase 스토리지)만 허용.
+// 2026-09-16 리디자인 후속: 외부 플레이스홀더 이미지 서비스 폴백을 없애고(사진 없으면 회색 면 + 텍스트) 허용 목록에서도 제거.
 const OG_IMAGE_HOST_ALLOW: Set<string> = (() => {
-  const hosts = new Set<string>(["placehold.co"]);
+  const hosts = new Set<string>();
   try {
     const h = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").hostname.toLowerCase();
     if (h) hosts.add(h);
   } catch {
-    /* env 미설정 시 스토리지 호스트 없이 플레이스홀더만 허용 */
+    /* env 미설정 시 허용 호스트 없음 → 모든 외부 이미지가 fallback으로 떨어짐 */
   }
   return hosts;
 })();

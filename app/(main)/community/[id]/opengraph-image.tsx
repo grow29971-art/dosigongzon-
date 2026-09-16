@@ -2,6 +2,15 @@ import { ImageResponse } from "next/og";
 import { getPostByIdServer } from "@/lib/posts-server";
 import { CATEGORY_MAP } from "@/lib/types";
 import { sanitizeOgImageUrl } from "@/lib/url-validate";
+import {
+  OGBrand,
+  OG_CHIP,
+  OG_CHIP_BRAND,
+  OG_INK,
+  OG_INK_LIGHT,
+  OG_INK_SUB,
+  OG_LINE,
+} from "@/lib/og-helpers";
 
 export const runtime = "nodejs";
 export const alt = "도시공존 커뮤니티";
@@ -33,35 +42,11 @@ export default async function PostOGImage({ params }: { params: Params }) {
           width: "100%",
           height: "100%",
           display: "flex",
-          background: `linear-gradient(135deg, ${cat.color}08 0%, #F6EFE3 60%, #EADFCB 100%)`,
+          background: "#FFFFFF",
           fontFamily: "sans-serif",
-          color: "#2C2C2C",
-          position: "relative",
+          color: OG_INK,
         }}
       >
-        {/* 장식 */}
-        <div
-          style={{
-            position: "absolute",
-            top: -120,
-            right: -80,
-            width: 420,
-            height: 420,
-            borderRadius: "50%",
-            background: `radial-gradient(circle, ${cat.color}22 0%, ${cat.color}00 70%)`,
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            width: 10,
-            height: "100%",
-            background: cat.color,
-          }}
-        />
-
         {/* 본문 영역 */}
         <div
           style={{
@@ -74,55 +59,21 @@ export default async function PostOGImage({ params }: { params: Params }) {
         >
           {/* 브랜드 + 카테고리 */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 14,
-                  background: "#B05C36",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 24,
-                }}
-              >
-                🐾
-              </div>
-              <span style={{ fontSize: 24, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}>
-                도시공존 커뮤니티
-              </span>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "10px 20px",
-                borderRadius: 999,
-                background: cat.color,
-                color: "#fff",
-                fontSize: 24,
-                fontWeight: 900,
-                boxShadow: `0 6px 16px ${cat.color}55`,
-              }}
-            >
-              <span>{cat.emoji}</span>
-              <span>{cat.label}</span>
-            </div>
+            <OGBrand label="도시공존 커뮤니티" />
+            <div style={OG_CHIP_BRAND}>{cat.label}</div>
           </div>
 
           {/* 제목 + 발췌 */}
           <div style={{ display: "flex", flexDirection: "column", gap: 18, marginTop: 20 }}>
             <div
               style={{
-                fontSize: 58,
-                fontWeight: 900,
+                fontSize: 56,
+                fontWeight: 700,
                 lineHeight: 1.15,
-                letterSpacing: -2,
-                color: "#1E1E1E",
+                letterSpacing: -1.5,
+                color: OG_INK,
                 display: "-webkit-box",
-                WebkitLineClamp:2,
+                WebkitLineClamp: 2,
                 WebkitBoxOrient: "vertical",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -135,7 +86,7 @@ export default async function PostOGImage({ params }: { params: Params }) {
                 style={{
                   fontSize: 24,
                   fontWeight: 500,
-                  color: "#5A5A5A",
+                  color: OG_INK_SUB,
                   margin: 0,
                   lineHeight: 1.45,
                   display: "-webkit-box",
@@ -152,80 +103,29 @@ export default async function PostOGImage({ params }: { params: Params }) {
           </div>
 
           {/* 하단: 작성자 · 통계 */}
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              paddingTop: 20,
+              borderTop: `1px solid ${OG_LINE}`,
+            }}
+          >
+            <div style={OG_CHIP}>{author}</div>
+            {region && <div style={OG_CHIP}>{region}</div>}
             <div
               style={{
-                padding: "10px 20px",
-                borderRadius: 999,
-                background: "rgba(255,255,255,0.85)",
-                border: "2px solid rgba(0,0,0,0.06)",
-                fontSize: 20,
-                fontWeight: 800,
-                color: "#333",
+                marginLeft: "auto",
                 display: "flex",
-                alignItems: "center",
-                gap: 6,
+                gap: 16,
+                fontSize: 20,
+                fontWeight: 600,
+                color: OG_INK_LIGHT,
               }}
             >
-              <span>👤</span>
-              <span>{author}</span>
-            </div>
-            {region && (
-              <div
-                style={{
-                  padding: "10px 20px",
-                  borderRadius: 999,
-                  background: "rgba(255,255,255,0.85)",
-                  border: "2px solid rgba(0,0,0,0.06)",
-                  fontSize: 20,
-                  fontWeight: 800,
-                  color: "#8B5A3C",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                }}
-              >
-                <span>📍</span>
-                <span>{region}</span>
-              </div>
-            )}
-            <div style={{ marginLeft: "auto", display: "flex", gap: 12 }}>
-              {likes > 0 && (
-                <div
-                  style={{
-                    padding: "10px 18px",
-                    borderRadius: 999,
-                    background: "linear-gradient(135deg, #E86B8C 0%, #D85577 100%)",
-                    color: "#fff",
-                    fontSize: 20,
-                    fontWeight: 800,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                  }}
-                >
-                  <span>❤️</span>
-                  <span>{likes}</span>
-                </div>
-              )}
-              {comments > 0 && (
-                <div
-                  style={{
-                    padding: "10px 18px",
-                    borderRadius: 999,
-                    background: "rgba(74,123,168,0.95)",
-                    color: "#fff",
-                    fontSize: 20,
-                    fontWeight: 800,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                  }}
-                >
-                  <span>💬</span>
-                  <span>{comments}</span>
-                </div>
-              )}
+              {likes > 0 && <span>공감 {likes}</span>}
+              {comments > 0 && <span>댓글 {comments}</span>}
             </div>
           </div>
         </div>
@@ -245,12 +145,11 @@ export default async function PostOGImage({ params }: { params: Params }) {
               style={{
                 width: 340,
                 height: 340,
-                borderRadius: 36,
+                borderRadius: 12,
                 backgroundImage: `url('${firstImage}')`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
-                boxShadow: "0 20px 44px rgba(0,0,0,0.22)",
-                border: "6px solid #fff",
+                border: `1px solid ${OG_LINE}`,
                 display: "flex",
               }}
             />

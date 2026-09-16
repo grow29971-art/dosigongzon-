@@ -2,6 +2,15 @@ import { ImageResponse } from "next/og";
 import { findGuBySlug } from "@/lib/seoul-regions";
 import { getCatCountByRegionServer } from "@/lib/cats-server";
 import { createAnonClient } from "@/lib/supabase/anon";
+import {
+  OGBrand,
+  OG_BRAND,
+  OG_FACE,
+  OG_INK,
+  OG_INK_LIGHT,
+  OG_INK_SUB,
+  OG_LINE,
+} from "@/lib/og-helpers";
 
 export const runtime = "nodejs";
 export const alt = "도시공존 — 우리 동네 길고양이 지도";
@@ -51,66 +60,26 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
           display: "flex",
           flexDirection: "column",
           padding: "60px 72px",
-          background: hasUrgent
-            ? "linear-gradient(135deg, #FFF1ED 0%, #FCDED4 55%, #F5B8A5 100%)"
-            : "linear-gradient(135deg, #F6EFE3 0%, #EADFCB 55%, #DAC4A3 100%)",
+          background: "#FFFFFF",
           fontFamily: "sans-serif",
-          color: "#2C2C2C",
-          position: "relative",
+          color: OG_INK,
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            top: -100,
-            right: -80,
-            width: 420,
-            height: 420,
-            borderRadius: "50%",
-            background: hasUrgent
-              ? "radial-gradient(circle, rgba(216,85,85,0.22) 0%, rgba(216,85,85,0) 70%)"
-              : "radial-gradient(circle, rgba(176, 92, 54,0.22) 0%, rgba(176, 92, 54,0) 70%)",
-          }}
-        />
-
         {/* 상단 브랜드 */}
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div
-            style={{
-              width: 52,
-              height: 52,
-              borderRadius: 16,
-              background: "#B05C36",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 30,
-            }}
-          >
-            🐾
-          </div>
-          <span style={{ fontSize: 24, fontWeight: 800, color: "#8A4325" }}>도시공존</span>
-        </div>
+        <OGBrand size={52} />
 
         {/* 메인 — 지역명 강조 */}
         <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 50 }}>
-          <span
-            style={{
-              fontSize: 24,
-              fontWeight: 700,
-              color: "#8B5A3C",
-              letterSpacing: 2,
-            }}
-          >
+          <span style={{ fontSize: 24, fontWeight: 600, color: OG_INK_LIGHT, letterSpacing: 2 }}>
             서울특별시
           </span>
           <div
             style={{
               fontSize: 96,
-              fontWeight: 900,
+              fontWeight: 700,
               lineHeight: 1,
               letterSpacing: -3,
-              color: hasUrgent ? "#B53D3D" : "#B05C36",
+              color: OG_BRAND,
               display: "flex",
             }}
           >
@@ -119,8 +88,8 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
           <div
             style={{
               fontSize: 44,
-              fontWeight: 800,
-              color: "#2C2C2C",
+              fontWeight: 700,
+              color: OG_INK,
               marginTop: 6,
               display: "flex",
             }}
@@ -131,8 +100,8 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
             <div
               style={{
                 fontSize: 24,
-                color: "#6B5043",
-                fontWeight: 600,
+                color: OG_INK_SUB,
+                fontWeight: 500,
                 marginTop: 4,
                 display: "flex",
               }}
@@ -151,27 +120,11 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
             paddingTop: 28,
           }}
         >
-          <Stat
-            emoji="🐾"
-            value={catCount}
-            label={`${guName}에 등록된 아이`}
-            color="#B05C36"
-          />
+          <Stat value={catCount} label={`${guName}에 등록된 아이`} />
           {hasUrgent ? (
-            <Stat
-              emoji="🚨"
-              value={urgent}
-              label="지금 도움이 필요해요"
-              color="#D85555"
-              urgent
-            />
+            <Stat value={urgent} label="지금 도움이 필요해요" urgent />
           ) : (
-            <Stat
-              emoji="🏘️"
-              value={dongs.length}
-              label={`${guName}의 동네 수`}
-              color="#4A7BA8"
-            />
+            <Stat value={dongs.length} label={`${guName}의 동네 수`} />
           )}
         </div>
       </div>
@@ -181,50 +134,42 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
 }
 
 function Stat({
-  emoji,
   value,
   label,
-  color,
   urgent,
 }: {
-  emoji: string;
   value: number;
   label: string;
-  color: string;
   urgent?: boolean;
 }) {
   return (
     <div
       style={{
         flex: 1,
-        background: urgent ? "#D85555" : "rgba(255,255,255,0.88)",
-        borderRadius: 22,
+        background: urgent ? OG_BRAND : OG_FACE,
+        borderRadius: 12,
         padding: "22px 26px",
         display: "flex",
         flexDirection: "column",
-        gap: 2,
-        border: urgent ? "none" : "2px solid rgba(176, 92, 54,0.20)",
-        boxShadow: urgent ? "0 12px 32px rgba(216,85,85,0.35)" : "none",
+        gap: 4,
+        border: `1px solid ${urgent ? OG_BRAND : OG_LINE}`,
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ fontSize: 30 }}>{emoji}</span>
-        <span
-          style={{
-            fontSize: 48,
-            fontWeight: 900,
-            color: urgent ? "#FFFFFF" : color,
-            lineHeight: 1,
-          }}
-        >
-          {value.toLocaleString()}
-        </span>
-      </div>
+      <span
+        style={{
+          fontSize: 48,
+          fontWeight: 700,
+          color: urgent ? "#FFFFFF" : OG_INK,
+          lineHeight: 1,
+        }}
+      >
+        {value.toLocaleString()}
+      </span>
       <span
         style={{
           fontSize: 20,
-          fontWeight: 700,
-          color: urgent ? "rgba(255,255,255,0.92)" : "#6B5043",
+          fontWeight: 600,
+          color: urgent ? "#FFFFFF" : OG_INK_SUB,
         }}
       >
         {label}
@@ -232,4 +177,3 @@ function Stat({
     </div>
   );
 }
-

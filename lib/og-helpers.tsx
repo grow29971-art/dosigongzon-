@@ -2,36 +2,85 @@ import type { CSSProperties, ReactElement } from "react";
 
 /**
  * 가이드·정보 페이지용 OG 이미지 템플릿.
- * 일관된 브랜드 톤 유지 + 각 페이지별 제목·부제·뱃지만 다름.
+ * 「익숙한 동네앱」 톤(결정 0007): 순백 바탕·뉴트럴 그레이 글자·테라코타 강조·헤어라인·이모지 없음.
+ * 서버 렌더 이미지(satori)라 CSS 변수를 못 쓰므로 이 파일의 인라인 hex는 정상이다.
+ * 각 페이지는 제목·부제·뱃지·태그 문구만 다르다.
  */
+export const OG_INK = "#191919";
+export const OG_INK_SUB = "#4B4B4B";
+export const OG_INK_LIGHT = "#767676";
+export const OG_LINE = "#E8E8E8";
+export const OG_FACE = "#F5F5F5";
+export const OG_BRAND = "#B05C36";
+
+/** 상단 브랜드 마크 + 워드마크 — 모든 OG가 공유. */
+export function OGBrand({ label = "도시공존", size = 44 }: { label?: string; size?: number }): ReactElement {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <div
+        style={{
+          width: size,
+          height: size,
+          borderRadius: 12,
+          background: OG_BRAND,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            width: Math.round(size * 0.36),
+            height: Math.round(size * 0.36),
+            borderRadius: 999,
+            background: "#FFFFFF",
+            display: "flex",
+          }}
+        />
+      </div>
+      <span style={{ fontSize: 24, fontWeight: 700, color: OG_INK, letterSpacing: -0.5 }}>{label}</span>
+    </div>
+  );
+}
+
+/** 회색 면 + 헤어라인 칩 (태그·메타). */
+export const OG_CHIP: CSSProperties = {
+  padding: "10px 18px",
+  borderRadius: 8,
+  background: OG_FACE,
+  border: `1px solid ${OG_LINE}`,
+  fontSize: 20,
+  fontWeight: 600,
+  color: OG_INK_SUB,
+  display: "flex",
+  alignItems: "center",
+};
+
+/** 테라코타 채움 칩 (도메인 표기·강조 1개). */
+export const OG_CHIP_BRAND: CSSProperties = {
+  padding: "10px 18px",
+  borderRadius: 8,
+  background: OG_BRAND,
+  color: "#FFFFFF",
+  fontSize: 20,
+  fontWeight: 700,
+  display: "flex",
+  alignItems: "center",
+};
+
 export function GuideOGTemplate({
   badge,
-  badgeColor,
   title,
   subtitle,
   highlightText,
-  highlightColor = "#B05C36",
   tags,
 }: {
   badge: string;              // 예: "보호지침"
-  badgeColor: string;         // 뱃지 색
-  title: string;              // 큰 제목 (줄바꿈 가능)
+  title: string;              // 큰 제목
   subtitle: string;           // 한 줄 설명
-  highlightText?: string;     // 제목 중 강조할 단어
-  highlightColor?: string;
-  tags: string[];             // 하단 태그 (이모지 포함 권장)
+  highlightText?: string;     // 제목 중 테라코타로 강조할 단어
+  tags: string[];             // 하단 태그(최대 4개, 이모지 없이)
 }): ReactElement {
-  const tagBg: CSSProperties = {
-    padding: "12px 22px",
-    borderRadius: 999,
-    background: "rgba(255,255,255,0.8)",
-    border: "2px solid rgba(176, 92, 54,0.25)",
-    fontSize: 22,
-    fontWeight: 800,
-    color: "#8B5A3C",
-    display: "flex",
-  };
-
   return (
     <div
       style={{
@@ -41,87 +90,15 @@ export function GuideOGTemplate({
         flexDirection: "column",
         justifyContent: "space-between",
         padding: "64px 80px",
-        background: "linear-gradient(135deg, #F6EFE3 0%, #EADFCB 55%, #DAC4A3 100%)",
+        background: "#FFFFFF",
         fontFamily: "sans-serif",
-        color: "#2C2C2C",
-        position: "relative",
+        color: OG_INK,
       }}
     >
-      {/* 장식용 원 */}
-      <div
-        style={{
-          position: "absolute",
-          top: -100,
-          right: -80,
-          width: 420,
-          height: 420,
-          borderRadius: "50%",
-          background: `radial-gradient(circle, ${badgeColor}33 0%, ${badgeColor}00 70%)`,
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          bottom: -120,
-          left: -100,
-          width: 340,
-          height: 340,
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(107,142,111,0.18) 0%, rgba(107,142,111,0) 70%)",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          width: 10,
-          height: "100%",
-          background: badgeColor,
-        }}
-      />
-
       {/* 상단: 브랜드 + 뱃지 */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div
-            style={{
-              width: 56,
-              height: 56,
-              borderRadius: 18,
-              background: "#B05C36",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 34,
-              boxShadow: "0 6px 18px rgba(176, 92, 54,0.3)",
-            }}
-          >
-            🐾
-          </div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: 18, fontWeight: 700, color: "#A8684A", letterSpacing: 2.4 }}>
-              DOSI GONGZON
-            </span>
-            <span style={{ fontSize: 30, fontWeight: 900, color: "#2C2C2C", marginTop: -2 }}>
-              도시공존
-            </span>
-          </div>
-        </div>
-        <div
-          style={{
-            padding: "12px 26px",
-            borderRadius: 999,
-            background: badgeColor,
-            color: "#fff",
-            fontSize: 22,
-            fontWeight: 900,
-            boxShadow: `0 6px 16px ${badgeColor}55`,
-            display: "flex",
-          }}
-        >
-          {badge}
-        </div>
+        <OGBrand size={52} />
+        <div style={OG_CHIP}>{badge}</div>
       </div>
 
       {/* 메인 타이틀 */}
@@ -129,10 +106,10 @@ export function GuideOGTemplate({
         <div
           style={{
             fontSize: 68,
-            fontWeight: 900,
+            fontWeight: 700,
             lineHeight: 1.15,
-            letterSpacing: -2.5,
-            color: "#1E1E1E",
+            letterSpacing: -2,
+            color: OG_INK,
             display: "flex",
             flexWrap: "wrap",
           }}
@@ -140,7 +117,7 @@ export function GuideOGTemplate({
           {highlightText ? (
             <>
               {title.split(highlightText)[0]}
-              <span style={{ color: highlightColor, display: "flex" }}>{highlightText}</span>
+              <span style={{ color: OG_BRAND, display: "flex" }}>{highlightText}</span>
               {title.split(highlightText)[1] ?? ""}
             </>
           ) : (
@@ -150,8 +127,8 @@ export function GuideOGTemplate({
         <p
           style={{
             fontSize: 28,
-            fontWeight: 600,
-            color: "#5A5A5A",
+            fontWeight: 500,
+            color: OG_INK_SUB,
             margin: 0,
             lineHeight: 1.4,
             maxWidth: 960,
@@ -161,27 +138,23 @@ export function GuideOGTemplate({
         </p>
       </div>
 
-      {/* 하단 태그 */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+      {/* 하단: 헤어라인 + 태그 */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          flexWrap: "wrap",
+          paddingTop: 24,
+          borderTop: `1px solid ${OG_LINE}`,
+        }}
+      >
         {tags.slice(0, 4).map((t) => (
-          <div key={t} style={tagBg}>
+          <div key={t} style={OG_CHIP}>
             {t}
           </div>
         ))}
-        <div
-          style={{
-            marginLeft: "auto",
-            padding: "10px 20px",
-            borderRadius: 999,
-            background: "#B05C36",
-            color: "#fff",
-            fontSize: 20,
-            fontWeight: 900,
-            display: "flex",
-          }}
-        >
-          dosigongzon.com
-        </div>
+        <div style={{ ...OG_CHIP_BRAND, marginLeft: "auto" }}>dosigongzon.com</div>
       </div>
     </div>
   );
