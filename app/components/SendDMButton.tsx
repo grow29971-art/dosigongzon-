@@ -26,8 +26,8 @@ export default function SendDMButton({ userId, userName, currentUserId, size = "
       <button
         type="button"
         onClick={handleClick}
-        className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-bold press-strong transition-transform"
-        style={{ backgroundColor: "var(--color-gray-100)", color: "#A38E7A" }}
+        className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-text-sub press-strong transition-transform"
+        style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-square)" }}
       >
         <Mail size={10} /> 쪽지
       </button>
@@ -41,7 +41,7 @@ export default function SendDMButton({ userId, userName, currentUserId, size = "
       className="press-strong transition-transform"
       title="쪽지 보내기"
     >
-      <Mail size={12} style={{ color: "#A38E7A" }} />
+      <Mail size={12} style={{ color: "var(--color-text-light)" }} />
     </button>
   );
 }

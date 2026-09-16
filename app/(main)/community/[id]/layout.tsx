@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     alternates: { canonical: `/community/${post.id}` },
     openGraph: {
       type: "article",
-      title: `${cat.emoji} ${post.title} | ${cat.label} · 도시공존`,
+      title: `${post.title} | ${cat.label} · 도시공존`,
       description,
       url: `${SITE_URL}/community/${post.id}`,
       publishedTime: post.createdAt,
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     },
     twitter: {
       card: "summary_large_image",
-      title: `${cat.emoji} ${post.title}`,
+      title: `${post.title} | ${cat.label}`,
       description,
       images: [`/community/${post.id}/opengraph-image`],
     },

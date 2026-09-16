@@ -23,7 +23,6 @@ import {
 import type { Post, PostCategory } from "@/lib/types";
 import { listPosts, formatRelativeTime, updatePostVote } from "@/lib/posts-repo";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
-import { getLevelColor } from "@/lib/cats-repo";
 import {
   getMyPostVotes,
   setMyPostVote,
@@ -32,52 +31,17 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import LoginRequired from "@/app/components/LoginRequired";
 
+// 2026-09-16 「익숙한 동네앱」 리디자인: 카테고리별 색·글로우 폐지 — 회색 선 아이콘, 긴급만 error.
 const CATEGORY_META: Record<
   PostCategory,
-  { title: string; subtitle: string; Icon: typeof Siren; color: string; glow: string }
+  { title: string; subtitle: string; Icon: typeof Siren }
 > = {
-  emergency: {
-    title: "긴급",
-    subtitle: "학대 · 실종 · 응급 구조 제보",
-    Icon: Siren,
-    color: "#D85555",
-    glow: "216,85,85",
-  },
-  sitter: {
-    title: "돌봄 부탁",
-    subtitle: "입원 · 여행 때 밥자리 대타 요청",
-    Icon: HandHeart,
-    color: "#4A7BA8",
-    glow: "74,123,168",
-  },
-  foster: {
-    title: "임보",
-    subtitle: "임시보호 요청 · 제안",
-    Icon: Home,
-    color: "#E88D5A",
-    glow: "232,141,90",
-  },
-  adoption: {
-    title: "입양",
-    subtitle: "새 가족을 찾아요",
-    Icon: Heart,
-    color: "var(--color-like)",
-    glow: "232,107,140",
-  },
-  market: {
-    title: "중고마켓",
-    subtitle: "용품 거래 · 무료 나눔",
-    Icon: ShoppingBag,
-    color: "#48A59E",
-    glow: "72,165,158",
-  },
-  free: {
-    title: "자유게시판",
-    subtitle: "일상 · 정보 · 수다",
-    Icon: MessagesSquare,
-    color: "#8B65B8",
-    glow: "139,101,184",
-  },
+  emergency: { title: "긴급", subtitle: "학대 · 실종 · 응급 구조 제보", Icon: Siren },
+  sitter: { title: "돌봄 부탁", subtitle: "입원 · 여행 때 밥자리 대타 요청", Icon: HandHeart },
+  foster: { title: "임보", subtitle: "임시보호 요청 · 제안", Icon: Home },
+  adoption: { title: "입양", subtitle: "새 가족을 찾아요", Icon: Heart },
+  market: { title: "중고마켓", subtitle: "용품 거래 · 무료 나눔", Icon: ShoppingBag },
+  free: { title: "자유게시판", subtitle: "일상 · 정보 · 수다", Icon: MessagesSquare },
 };
 
 export default function CategoryPage() {
@@ -202,10 +166,12 @@ export default function CategoryPage() {
     );
   }
 
+  const accent = cat === "emergency" ? "var(--color-error)" : "var(--color-text-sub)";
+
   return (
     <div className="pb-24">
       {/* ── 헤더 ── */}
-      <div className="px-4 pt-14 pb-4">
+      <div className="px-4 pt-14 pb-3">
         <button
           onClick={() => router.push("/community")}
           className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-4 press-strong transition-transform"
@@ -214,36 +180,14 @@ export default function CategoryPage() {
           커뮤니티
         </button>
 
-        <div
-          className="relative overflow-hidden px-5 py-5"
-          style={{
-            background: "#FFFFFF",
-            borderRadius: "var(--radius-modal)",
-            boxShadow: `0 8px 28px rgba(${meta.glow},0.14), 0 2px 6px rgba(0,0,0,0.03)`,
-            border: `1.5px solid rgba(${meta.glow},0.20)`,
-          }}
-        >
-          <div className="flex items-center gap-4">
-            <div
-              className="w-[58px] h-[58px] rounded-2xl flex items-center justify-center shrink-0"
-              style={{
-                background: `linear-gradient(135deg, ${meta.color} 0%, ${meta.color}DD 100%)`,
-                boxShadow: `0 8px 18px rgba(${meta.glow},0.40), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)`,
-              }}
-            >
-              <meta.Icon size={28} color="#FFFFFF" strokeWidth={2.3} />
+        <div className="flex items-center gap-3">
+          <meta.Icon size={24} strokeWidth={1.8} style={{ color: accent }} className="shrink-0" />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-baseline gap-2">
+              <h1 className="text-[24px] font-bold text-text-main tracking-tight">{meta.title}</h1>
+              <span className="text-[13px] font-semibold tabular-nums text-text-light">{posts.length}</span>
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-baseline gap-2">
-                <h1 className="text-[24px] font-bold text-text-main tracking-tight">
-                  {meta.title}
-                </h1>
-                <span className="text-[13px] font-bold tabular-nums" style={{ color: meta.color }}>
-                  {posts.length}
-                </span>
-              </div>
-              <p className="text-[13px] text-text-sub mt-0.5">{meta.subtitle}</p>
-            </div>
+            <p className="text-[13px] text-text-sub mt-0.5">{meta.subtitle}</p>
           </div>
         </div>
       </div>
@@ -253,21 +197,20 @@ export default function CategoryPage() {
         <div className="px-4 mb-3">
           <Link
             href="/mypage/report"
-            className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white press transition-transform"
-            style={{ border: "1.5px solid rgba(216,85,85,0.22)", boxShadow: "var(--shadow-card)" }}
+            className="flex items-center gap-3 px-4 py-3 press transition-transform"
+            style={{
+              background: "var(--color-surface)",
+              border: "1px solid var(--color-border)",
+              borderRadius: "var(--radius-card)",
+            }}
           >
-            <div
-              className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "var(--color-error-soft)" }}
-            >
-              <FileText size={16} style={{ color: "#B84545" }} />
-            </div>
+            <FileText size={20} strokeWidth={1.8} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-bold text-text-main leading-tight">
+              <p className="text-[15px] font-semibold text-text-main leading-tight">
                 신고할 땐 돌봄 활동 확인서를 함께
               </p>
-              <p className="text-[11px] text-text-sub mt-0.5 leading-snug">
-                쌓인 돌봄 기록이 학대 신고·민원 대응의 근거가 돼요 — 인쇄·PDF 지원
+              <p className="text-[13px] text-text-sub mt-0.5 leading-snug">
+                쌓인 돌봄 기록이 신고·민원 대응의 근거가 돼요
               </p>
             </div>
           </Link>
@@ -278,13 +221,17 @@ export default function CategoryPage() {
       {cat === "sitter" && (
         <div className="px-4 mb-3">
           <div
-            className="rounded-2xl px-4 py-3"
-            style={{ background: "rgba(74,123,168,0.08)", border: "1.5px solid rgba(74,123,168,0.22)" }}
+            className="px-4 py-3"
+            style={{
+              background: "var(--color-surface)",
+              border: "1px solid var(--color-border)",
+              borderRadius: "var(--radius-card)",
+            }}
           >
-            <p className="text-[13px] font-bold text-text-main leading-tight">
+            <p className="text-[15px] font-semibold text-text-main leading-tight">
               입원·여행 때 밥자리를 이웃에게 부탁하는 곳이에요
             </p>
-            <p className="text-[11px] text-text-sub mt-1 leading-relaxed">
+            <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
               글에는 동네(동 단위)·기간·마릿수만 적어주세요.
               <b> 정확한 밥자리 위치는 공개글이 아니라 쪽지로만</b> 주고받아야 아이들이 안전해요.
             </p>
@@ -298,34 +245,21 @@ export default function CategoryPage() {
         if (pinned.length === 0) return null;
         return (
           <div className="px-4 mb-3">
-            <div className="flex items-center gap-1.5 mb-2 px-1">
-              <Megaphone size={13} style={{ color: meta.color }} />
-              <span className="text-[13px] font-bold" style={{ color: meta.color }}>
-                공지사항
-              </span>
+            <div className="flex items-center gap-1.5 mb-1 px-1">
+              <Megaphone size={13} className="text-text-sub" />
+              <span className="text-[13px] font-semibold text-text-sub">공지사항</span>
             </div>
-            <div
-              className="overflow-hidden"
-              style={{
-                borderRadius: "var(--radius-card-sm)",
-                border: `1.5px solid ${meta.color}33`,
-                background: `linear-gradient(135deg, ${meta.color}08 0%, ${meta.color}03 100%)`,
-              }}
-            >
-              {pinned.map((post, i) => (
+            <div>
+              {pinned.map((post) => (
                 <Link
                   key={post.id}
                   href={`/community/${post.id}`}
-                  className="flex items-center gap-3 px-4 py-3 active:bg-black/[0.02] transition-colors"
-                  style={i < pinned.length - 1 ? { borderBottom: `1px solid ${meta.color}15` } : {}}
+                  className="flex items-center gap-3 px-1 py-3 press border-b border-divider last:border-b-0"
+                  style={{ minHeight: 48 }}
                 >
-                  <Pin size={12} style={{ color: meta.color }} className="shrink-0" />
-                  <p className="text-[13px] font-bold text-text-main truncate flex-1">
-                    {post.title}
-                  </p>
-                  <span className="text-[11px] text-text-light shrink-0">
-                    {formatRelativeTime(post.createdAt)}
-                  </span>
+                  <Pin size={12} className="shrink-0 text-text-light" />
+                  <p className="text-[15px] font-semibold text-text-main truncate flex-1">{post.title}</p>
+                  <span className="text-[11px] text-text-light shrink-0">{formatRelativeTime(post.createdAt)}</span>
                 </Link>
               ))}
             </div>
@@ -333,36 +267,31 @@ export default function CategoryPage() {
         );
       })()}
 
-      {/* ── 글 목록 (간결 리스트) ── */}
-      <div
-        className="mx-4 overflow-hidden"
-        style={{
-          background: "#FFFFFF",
-          borderRadius: "var(--radius-card)",
-          boxShadow: "var(--shadow-card)",
-          border: "1px solid var(--color-divider)",
-        }}
-      >
+      {/* ── 글 목록 (구분선 리스트) ── */}
+      <div className="px-4" style={{ borderTop: "1px solid var(--color-divider)" }}>
         {posts.filter((p) => !p.isPinned).length === 0 && posts.filter((p) => p.isPinned).length === 0 ? (
           <div className="flex flex-col items-center py-16 text-text-light">
-            <meta.Icon size={48} strokeWidth={1.2} style={{ color: meta.color, opacity: 0.3 }} />
+            <meta.Icon size={40} strokeWidth={1.2} />
             <p className="text-[15px] mt-4 text-text-sub font-semibold">아직 글이 없어요</p>
-            <p className="text-[13px] mt-1">첫 번째 글을 작성해보세요</p>
+            <p className="text-[13px] mt-1">첫 번째 글을 남겨보세요</p>
           </div>
         ) : (
-          posts.filter((p) => !p.isPinned).map((post, idx, arr) => (
+          posts.filter((p) => !p.isPinned).map((post) => (
             <Link
               key={post.id}
               href={`/community/${post.id}`}
-              className="flex items-center gap-3 px-4 py-3 active:bg-black/[0.02] transition-colors"
-              style={idx < arr.length - 1 ? { borderBottom: "1px solid var(--color-divider)" } : {}}
+              className="flex items-center gap-3 py-3 press border-b border-divider last:border-b-0"
+              style={{ minHeight: 64 }}
             >
-              {/* 썸네일 (이미지 있을 때만) */}
+              {/* 썸네일 (이미지 있을 때만) — 8px 둥근 사각 */}
               {post.images.length > 0 ? (
-                <div className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 56, height: 56 }}>
+                <div className="relative shrink-0 overflow-hidden" style={{ width: 56, height: 56, borderRadius: "var(--radius-card-sm)" }}>
                   <Image src={post.images[0]} alt={post.title} fill sizes="56px" style={{ objectFit: "cover" }} />
                   {post.images.length > 1 && (
-                    <span className="absolute bottom-0.5 right-0.5 text-[9px] font-bold px-1 rounded-md z-10" style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}>
+                    <span
+                      className="absolute bottom-0.5 right-0.5 text-[9px] font-semibold px-1 z-10"
+                      style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "var(--color-surface)", borderRadius: "var(--radius-square)" }}
+                    >
                       +{post.images.length - 1}
                     </span>
                   )}
@@ -371,7 +300,7 @@ export default function CategoryPage() {
 
               {/* 본문 */}
               <div className="flex-1 min-w-0">
-                <h3 className="text-[15px] font-bold text-text-main leading-snug truncate">
+                <h3 className="text-[15px] font-semibold text-text-main leading-snug truncate">
                   {post.title}
                 </h3>
                 <p className="text-[13px] text-text-sub truncate mt-0.5">
@@ -382,13 +311,16 @@ export default function CategoryPage() {
                   {post.authorAvatarUrl ? (
                     <Image src={post.authorAvatarUrl} alt="" width={16} height={16} className="rounded-full object-cover" style={{ width: 16, height: 16 }} />
                   ) : (
-                    <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: `${meta.color}1A` }}>
-                      <span className="text-[9px] font-bold" style={{ color: meta.color }}>{post.authorName.charAt(0)}</span>
+                    <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--color-gray-200)" }}>
+                      <span className="text-[9px] font-semibold text-text-sub">{post.authorName.charAt(0)}</span>
                     </div>
                   )}
                   <span className="text-[11px] text-text-sub font-semibold">{post.authorName}</span>
                   {post.authorLevel && (
-                    <span className="text-[9px] font-bold px-1 py-[0.5px] rounded" style={{ backgroundColor: getLevelColor(post.authorLevel), color: "#fff" }}>
+                    <span
+                      className="text-[9px] font-semibold px-1 py-[0.5px] text-text-sub"
+                      style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-square)" }}
+                    >
                       Lv.{post.authorLevel}
                     </span>
                   )}
@@ -399,7 +331,7 @@ export default function CategoryPage() {
                   <span className="flex items-center gap-0.5">
                     <Eye size={10} /> {post.viewCount}
                   </span>
-                  <span className="flex items-center gap-0.5" style={{ color: post.likeCount > 0 ? meta.color : undefined }}>
+                  <span className="flex items-center gap-0.5">
                     <ThumbsUp size={10} /> {post.likeCount}
                   </span>
                   <span className="flex items-center gap-0.5">
@@ -415,13 +347,10 @@ export default function CategoryPage() {
       {/* ── FAB ── */}
       <Link
         href={`/community/write?category=${cat}`}
-        className="fixed bottom-24 right-5 w-14 h-14 rounded-full flex items-center justify-center press-strong transition-transform z-40"
-        style={{
-          background: `linear-gradient(135deg, ${meta.color} 0%, ${meta.color}DD 100%)`,
-          boxShadow: `0 10px 24px rgba(${meta.glow},0.40), inset 0 1px 0 rgba(255,255,255,0.3)`,
-        }}
+        className="fixed bottom-24 right-5 w-14 h-14 rounded-full bg-primary flex items-center justify-center fab-shadow press-strong transition-transform z-40"
+        aria-label="글쓰기"
       >
-        <Plus size={28} color="#fff" strokeWidth={2.5} />
+        <Plus size={28} color="var(--color-surface)" strokeWidth={2.5} />
       </Link>
     </div>
   );

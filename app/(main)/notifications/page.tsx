@@ -1,5 +1,8 @@
 "use client";
 
+// 알림 센터 — 2026-09-16 「익숙한 동네앱」 리디자인: 타입별 색·틴트 원 폐지 → 회색 선 아이콘,
+// 카드 → 구분선 리스트, 읽지 않음은 primary 점 하나. 학대 경보·긴급만 error 색.
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
@@ -21,17 +24,17 @@ import {
   type NotificationType,
 } from "@/lib/notifications-repo";
 
-const TYPE_CONFIG: Record<NotificationType, { icon: typeof Bell; color: string; bg: string }> = {
-  comment_on_my_cat:   { icon: MessageCircle, color: "#B05C36", bg: "#B05C3615" },
-  carelog_on_my_cat:   { icon: Heart,         color: "#6B8E6F", bg: "#6B8E6F15" },
-  dm_received:         { icon: MessageCircle, color: "#4A7BA8", bg: "#4A7BA815" },
-  alert_on_my_cat:     { icon: AlertTriangle, color: "#D85555", bg: "#D8555515" },
-  comment_on_my_post:  { icon: MessageSquare, color: "#8B65B8", bg: "#8B65B815" },
-  inquiry_updated:     { icon: CheckCircle2,  color: "#48A59E", bg: "#48A59E15" },
-  following_activity:  { icon: UserPlus,      color: "#E8B040", bg: "#E8B04015" },
-  invite_accepted:     { icon: Gift,          color: "var(--color-like)", bg: "#E86B8C15" },
-  cat_moved:           { icon: MapPin,        color: "#5A8AC4", bg: "#5A8AC415" },
-  urgent_in_area:      { icon: AlertTriangle, color: "#D85555", bg: "var(--color-error-soft)" },
+const TYPE_CONFIG: Record<NotificationType, { icon: typeof Bell; urgent?: boolean }> = {
+  comment_on_my_cat:   { icon: MessageCircle },
+  carelog_on_my_cat:   { icon: Heart },
+  dm_received:         { icon: MessageCircle },
+  alert_on_my_cat:     { icon: AlertTriangle, urgent: true },
+  comment_on_my_post:  { icon: MessageSquare },
+  inquiry_updated:     { icon: CheckCircle2 },
+  following_activity:  { icon: UserPlus },
+  invite_accepted:     { icon: Gift },
+  cat_moved:           { icon: MapPin },
+  urgent_in_area:      { icon: AlertTriangle, urgent: true },
 };
 
 function formatTime(iso: string): string {
@@ -57,7 +60,7 @@ export default function NotificationsPage() {
   if (loading) {
     return (
       <div className="flex justify-center pt-32">
-        <Loader2 size={28} className="animate-spin text-primary" />
+        <Loader2 size={28} className="animate-spin text-text-light" />
       </div>
     );
   }
@@ -65,29 +68,24 @@ export default function NotificationsPage() {
   return (
     <div className="px-4 pt-14 pb-24">
       {/* 헤더 */}
-      <div className="mb-5 px-1">
-        <div className="flex items-baseline gap-2 mb-1">
-          <h1 className="text-[24px] font-bold text-text-main tracking-tight">알림</h1>
-          <span className="text-[11px] font-semibold text-text-light">Notifications</span>
-        </div>
-        <p className="text-[13px] text-text-sub">내 고양이 소식과 받은 쪽지를 확인하세요</p>
+      <div className="mb-3 px-1">
+        <h1 className="text-[24px] font-bold text-text-main tracking-tight">알림</h1>
+        <p className="text-[13px] text-text-sub mt-1">내 고양이 소식과 받은 쪽지</p>
       </div>
 
       {/* 알림 목록 */}
       {items.length === 0 ? (
-        <div
-          className="py-16 text-center"
-          style={{ background: "#FFFFFF", borderRadius: "var(--radius-card)", border: "1px solid var(--color-divider)" }}
-        >
-          <Bell size={36} strokeWidth={1.2} className="text-text-light mx-auto mb-3" />
-          <p className="text-[15px] font-bold text-text-main mb-1">아직 알림이 없어요</p>
-          <p className="text-[13px] text-text-sub">고양이를 등록하면 돌봄 소식을 받을 수 있어요</p>
+        <div className="py-16 text-center">
+          <Bell size={40} strokeWidth={1.2} className="text-text-light mx-auto mb-3" />
+          <p className="text-[15px] font-semibold text-text-main mb-1">아직 알림이 없어요</p>
+          <p className="text-[13px] text-text-sub">고양이를 등록하면 돌봄 소식을 받아요</p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div style={{ borderTop: "1px solid var(--color-divider)" }}>
           {items.map((item) => {
             const config = TYPE_CONFIG[item.type];
             const Icon = config.icon;
+            const iconColor = config.urgent ? "var(--color-error)" : "var(--color-text-sub)";
             const href =
               item.type === "dm_received"
                 ? `/messages?partner=${item.targetId}`
@@ -109,54 +107,42 @@ export default function NotificationsPage() {
               <Link
                 key={item.id}
                 href={href}
-                className="block press transition-transform"
+                className="flex items-start gap-3 px-1 py-3.5 press transition-transform border-b border-divider last:border-b-0"
+                style={{ minHeight: 64 }}
               >
-                <div
-                  className="flex items-start gap-3 px-4 py-3.5"
-                  style={{
-                    background: item.isRead ? "#FFFFFF" : "#FDF9F2",
-                    borderRadius: "var(--radius-card-sm)",
-                    boxShadow: "var(--shadow-card-sm)",
-                    border: item.isRead ? "1px solid var(--color-divider)" : `1px solid ${config.color}20`,
-                  }}
-                >
-                  {/* 아이콘 */}
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: config.bg }}
-                  >
-                    <Icon size={18} style={{ color: config.color }} />
-                  </div>
-
-                  {/* 내용 */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[13px] font-bold text-text-main truncate">
-                        {item.actorName}
-                      </span>
-                      {!item.isRead && (
-                        <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: config.color }} />
-                      )}
-                    </div>
-                    <p className="text-[13px] text-text-sub mt-0.5 truncate">
-                      <span className="font-semibold" style={{ color: config.color }}>{item.targetName}</span>
-                      {item.type === "dm_received"
-                        ? `: ${item.message}`
-                        : item.type === "inquiry_updated"
-                        ? ` — ${item.message}`
-                        : item.type === "following_activity"
-                        ? ` 에 ${item.message}`
-                        : item.type === "invite_accepted"
-                        ? ` — ${item.message}`
-                        : item.type === "cat_moved"
-                        ? ` ${item.message}`
-                        : ` 에 ${item.message}`}
-                    </p>
-                    <p className="text-[11px] text-text-light mt-1">{formatTime(item.createdAt)}</p>
-                  </div>
-
-                  <ChevronRight size={14} className="text-text-light shrink-0 mt-3" />
+                {/* 아이콘 — 틴트 박스 없이 회색 선 */}
+                <div className="w-10 h-10 flex items-center justify-center shrink-0">
+                  <Icon size={22} strokeWidth={1.8} style={{ color: iconColor }} />
                 </div>
+
+                {/* 내용 */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className={`text-[15px] text-text-main truncate ${item.isRead ? "font-semibold" : "font-bold"}`}>
+                      {item.actorName}
+                    </span>
+                    {!item.isRead && (
+                      <span className="w-2 h-2 rounded-full bg-primary shrink-0" aria-label="읽지 않음" />
+                    )}
+                  </div>
+                  <p className={`text-[13px] mt-0.5 truncate ${item.isRead ? "text-text-sub" : "text-text-main"}`}>
+                    <span className="font-semibold">{item.targetName}</span>
+                    {item.type === "dm_received"
+                      ? `: ${item.message}`
+                      : item.type === "inquiry_updated"
+                      ? ` — ${item.message}`
+                      : item.type === "following_activity"
+                      ? ` 에 ${item.message}`
+                      : item.type === "invite_accepted"
+                      ? ` — ${item.message}`
+                      : item.type === "cat_moved"
+                      ? ` ${item.message}`
+                      : ` 에 ${item.message}`}
+                  </p>
+                  <p className="text-[11px] text-text-light mt-1">{formatTime(item.createdAt)}</p>
+                </div>
+
+                <ChevronRight size={16} className="shrink-0 mt-3" style={{ color: "var(--color-text-muted)" }} />
               </Link>
             );
           })}

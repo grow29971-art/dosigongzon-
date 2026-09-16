@@ -23,14 +23,20 @@ import {
   CornerDownRight,
   Share2,
   Check,
+  Siren,
+  HandHeart,
+  Home,
+  Heart,
+  ShoppingBag,
+  MessagesSquare,
+  type LucideIcon,
 } from "lucide-react";
-import type { Post } from "@/lib/types";
+import type { Post, PostCategory } from "@/lib/types";
 import { CATEGORY_MAP } from "@/lib/types";
 import { getPostById, formatRelativeTime, incrementPostViewCount, updatePostVote } from "@/lib/posts-repo";
 import { shareToKakao } from "@/lib/kakao-share";
 import ReactionBar from "@/app/components/ReactionBar";
 import { listReactionsBatch, type ReactionSummary } from "@/lib/reactions-repo";
-import { getLevelColor } from "@/lib/cats-repo";
 import { getMyPostVotes, setMyPostVote, type PostVote } from "@/lib/store";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { createClient } from "@/lib/supabase/client";
@@ -46,6 +52,37 @@ const ReportModal = dynamic(() => import("@/app/components/ReportModal"), { ssr:
 import TitleBadge from "@/app/components/TitleBadge";
 import SendDMButton from "@/app/components/SendDMButton";
 import LoginRequired from "@/app/components/LoginRequired";
+
+// CATEGORY_MAP[...].emoji 대신 lucide 선 아이콘 (2026-09-16 「익숙한 동네앱」 리디자인)
+const CATEGORY_ICON: Record<PostCategory, LucideIcon> = {
+  emergency: Siren,
+  sitter: HandHeart,
+  foster: Home,
+  adoption: Heart,
+  market: ShoppingBag,
+  free: MessagesSquare,
+};
+
+// 헤어라인 버튼(투표·공유·신고 공통) — 흰 면 + 1px 테두리, 활성 시 채움
+const HAIRLINE_BTN = "flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-semibold press-strong transition-all";
+const hairlineStyle = (active: boolean, fill = "var(--color-text-main)"): React.CSSProperties => ({
+  backgroundColor: active ? fill : "var(--color-surface)",
+  border: `1px solid ${active ? fill : "var(--color-border)"}`,
+  color: active ? "var(--color-surface)" : "var(--color-text-sub)",
+  borderRadius: "var(--radius-input)",
+});
+
+// 레벨 배지 — 회색 태그 (레벨 색 폐지)
+function LevelTag({ level }: { level: number }) {
+  return (
+    <span
+      className="text-[9px] font-semibold px-1.5 py-[1px] tabular-nums text-text-sub"
+      style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-square)" }}
+    >
+      Lv.{level}
+    </span>
+  );
+}
 
 export default function PostDetailPage({
   params,
@@ -275,11 +312,12 @@ export default function PostDetailPage({
   if (!post) {
     return (
       <div className="flex flex-col items-center justify-center pt-32 text-text-light">
-        <MessageCircle size={48} strokeWidth={1.2} />
-        <p className="text-base mt-4 text-text-sub">게시글을 찾을 수 없습니다</p>
+        <MessageCircle size={40} strokeWidth={1.2} />
+        <p className="text-[15px] mt-4 text-text-sub">게시글을 찾을 수 없어요</p>
         <button
           onClick={() => router.push("/community")}
-          className="mt-4 px-4 py-2 rounded-full bg-primary text-white text-sm font-bold"
+          className="mt-4 px-4 py-2 bg-primary text-surface text-[13px] font-semibold press"
+          style={{ borderRadius: "var(--radius-input)" }}
         >
           목록으로
         </button>
@@ -288,28 +326,36 @@ export default function PostDetailPage({
   }
 
   const cat = CATEGORY_MAP[post.category];
+  const CatIcon = CATEGORY_ICON[post.category];
+  const isEmergency = post.category === "emergency";
 
   return (
     <div className="pb-24 overflow-x-hidden">
       {/* ── 헤더 ── */}
-      <div className="flex items-center px-4 pt-14 pb-3 gap-3">
+      <div className="flex items-center px-4 pt-14 pb-3 gap-2">
         <button
           onClick={() => router.back()}
           className="p-2 -ml-2 press-strong transition-transform"
+          aria-label="뒤로"
         >
           <ArrowLeft size={24} className="text-text-main" />
         </button>
         <span
-          className="text-[13px] font-bold text-white px-2.5 py-1 rounded-lg"
-          style={{ backgroundColor: cat.color }}
+          className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1"
+          style={{
+            border: "1px solid var(--color-border)",
+            borderRadius: "var(--radius-square)",
+            color: isEmergency ? "var(--color-error)" : "var(--color-text-sub)",
+          }}
         >
-          {cat.emoji} {cat.label}
+          <CatIcon size={11} strokeWidth={2} />
+          {cat.label}
         </span>
 
         {post.isPinned && (
           <span
-            className="text-[11px] font-bold px-2 py-1 rounded-lg flex items-center gap-1"
-            style={{ backgroundColor: "#C9A96120", color: "#C9A961" }}
+            className="text-[11px] font-semibold px-2 py-1 flex items-center gap-1 text-text-sub"
+            style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-square)" }}
           >
             <Pin size={10} /> 공지
           </span>
@@ -318,11 +364,8 @@ export default function PostDetailPage({
         {isAdmin && (
           <div className="ml-auto flex items-center gap-1.5">
             <button
-              className="text-[11px] font-bold px-3 py-1.5 rounded-lg press-strong transition-transform flex items-center gap-1"
-              style={{
-                backgroundColor: post.isPinned ? "var(--color-error-soft)" : "var(--color-gray-100)",
-                color: post.isPinned ? "#D85555" : "#A38E7A",
-              }}
+              className={HAIRLINE_BTN}
+              style={{ ...hairlineStyle(false), fontSize: 11 }}
               onClick={async () => {
                 const supabase = createClient();
                 const next = !post.isPinned;
@@ -339,8 +382,8 @@ export default function PostDetailPage({
               {post.isPinned ? "공지 해제" : "공지 고정"}
             </button>
             <button
-              className="text-[11px] font-bold px-3 py-1.5 rounded-lg press-strong transition-transform flex items-center gap-1"
-              style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}
+              className={HAIRLINE_BTN}
+              style={{ ...hairlineStyle(false), fontSize: 11, color: "var(--color-error)" }}
               onClick={async () => {
                 if (!confirm(`"${post.title}" 글을 삭제할까요?`)) return;
                 const supabase = createClient();
@@ -361,36 +404,25 @@ export default function PostDetailPage({
 
       {/* ── 게시글 본문 ── */}
       <div className="px-5">
-        <h1 className="text-xl font-bold text-text-main leading-snug">
+        <h1 className="text-[20px] font-bold text-text-main leading-snug">
           {post.title}
         </h1>
 
         {/* 작성자 정보 */}
-        <div className="flex items-center gap-2 mt-3 mb-5">
+        <div className="flex items-center gap-2 mt-3 pb-4" style={{ borderBottom: "1px solid var(--color-divider)" }}>
           {post.authorAvatarUrl ? (
             <Image src={post.authorAvatarUrl} alt="" width={32} height={32} className="rounded-full object-cover shrink-0" style={{ width: 32, height: 32 }} />
           ) : (
-            <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center">
-              <User size={16} className="text-primary" />
+            <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: "var(--color-gray-200)" }}>
+              <User size={16} className="text-text-sub" />
             </div>
           )}
           <div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 flex-wrap">
               <p className="text-[13px] font-semibold text-text-main">
                 {post.authorName}
               </p>
-              {post.authorLevel && (
-                <span
-                  className="text-[9px] font-bold px-1.5 py-[1px] rounded-md tabular-nums"
-                  style={{
-                    backgroundColor: getLevelColor(post.authorLevel),
-                    color: "#FFFFFF",
-                    boxShadow: `0 1px 3px ${getLevelColor(post.authorLevel)}55`,
-                  }}
-                >
-                  Lv.{post.authorLevel}
-                </span>
-              )}
+              {post.authorLevel && <LevelTag level={post.authorLevel} />}
               <TitleBadge titleId={post.authorTitle} size="sm" />
               <SendDMButton userId={post.authorId} userName={post.authorName} currentUserId={user?.id} size="sm" />
             </div>
@@ -402,7 +434,7 @@ export default function PostDetailPage({
         </div>
 
         {/* 본문 내용 */}
-        <div className="card p-5">
+        <div className="pt-4">
           <p className="text-[15px] text-text-main leading-relaxed whitespace-pre-wrap">
             {post.content}
           </p>
@@ -412,8 +444,8 @@ export default function PostDetailPage({
               {post.images.map((url, i) => (
                 <div
                   key={url}
-                  className="relative w-full aspect-square rounded-xl overflow-hidden"
-                  style={{ border: "1px solid var(--color-border)" }}
+                  className="relative w-full aspect-square overflow-hidden"
+                  style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card-sm)" }}
                 >
                   <Image
                     src={url}
@@ -430,31 +462,25 @@ export default function PostDetailPage({
         </div>
 
         {/* 반응 바 — 좁은 화면 대비 2줄로 분리 */}
-        <div className="mt-4 px-1 flex flex-wrap items-center justify-between gap-y-2">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-y-2">
           {/* 왼쪽: 좋아요 · 싫어요 · 조회수 · 댓글수 */}
           <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={() => handleVote(1)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold press-strong transition-all"
-              style={{
-                backgroundColor: myVote === 1 ? cat.color : "#FFFFFF",
-                border: `1.5px solid ${myVote === 1 ? cat.color : "var(--color-gray-200)"}`,
-                color: myVote === 1 ? "#FFFFFF" : cat.color,
-              }}
+              className={HAIRLINE_BTN}
+              style={hairlineStyle(myVote === 1)}
+              aria-pressed={myVote === 1}
             >
-              <ThumbsUp size={15} strokeWidth={2.2} fill={myVote === 1 ? "#FFFFFF" : "none"} />
+              <ThumbsUp size={15} strokeWidth={2} />
               {post.likeCount}
             </button>
             <button
               onClick={() => handleVote(-1)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold press-strong transition-all"
-              style={{
-                backgroundColor: myVote === -1 ? "#A38E7A" : "#FFFFFF",
-                border: `1.5px solid ${myVote === -1 ? "#A38E7A" : "var(--color-gray-200)"}`,
-                color: myVote === -1 ? "#FFFFFF" : "#A38E7A",
-              }}
+              className={HAIRLINE_BTN}
+              style={hairlineStyle(myVote === -1)}
+              aria-pressed={myVote === -1}
             >
-              <ThumbsDown size={15} strokeWidth={2.2} fill={myVote === -1 ? "#FFFFFF" : "none"} />
+              <ThumbsDown size={15} strokeWidth={2} />
               {post.dislikeCount}
             </button>
             <span className="flex items-center gap-1 text-text-light text-[13px] px-1">
@@ -470,26 +496,23 @@ export default function PostDetailPage({
             <button
               type="button"
               onClick={handleShareKakao}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] font-bold press-strong transition-transform"
+              className={HAIRLINE_BTN}
               style={{
                 backgroundColor: "#FEE500",
-                color: "#3C1E1E",
-                boxShadow: "var(--shadow-raised)",
+                border: "1px solid #FEE500",
+                color: "var(--color-text-main)",
+                borderRadius: "var(--radius-input)",
               }}
               aria-label="카카오톡으로 공유"
             >
-              <span style={{ fontSize: 13 }}>💬</span>
+              <MessageCircle size={13} strokeWidth={2.2} />
               카톡
             </button>
             <button
               type="button"
               onClick={handleShare}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] font-bold press-strong transition-transform"
-              style={{
-                backgroundColor: shareStatus === "copied" ? "#6B8E6F" : "#FFFFFF",
-                border: `1px solid ${shareStatus === "copied" ? "#6B8E6F" : "var(--color-gray-200)"}`,
-                color: shareStatus === "copied" ? "#FFFFFF" : cat.color,
-              }}
+              className={HAIRLINE_BTN}
+              style={hairlineStyle(shareStatus === "copied", "var(--color-sage)")}
               aria-label="공유"
             >
               {shareStatus === "copied" ? (
@@ -515,8 +538,8 @@ export default function PostDetailPage({
                   authorName: post.authorName ?? null,
                 })
               }
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] press-strong transition-transform"
-              style={{ backgroundColor: "#FFFFFF", border: "1px solid var(--color-border)", color: "#A38E7A" }}
+              className={HAIRLINE_BTN}
+              style={{ ...hairlineStyle(false), fontWeight: 500 }}
             >
               <Flag size={12} strokeWidth={2.2} />
               신고
@@ -528,25 +551,25 @@ export default function PostDetailPage({
         <div className="h-px bg-divider my-5" />
 
         {/* ── 댓글 ── */}
-        <h2 id="comments" className="text-[15px] font-bold text-text-main mb-3 scroll-mt-16">
+        <h2 id="comments" className="text-[15px] font-bold text-text-main mb-1 scroll-mt-16">
           댓글 {comments.length}
         </h2>
 
         {commentsLoading ? (
           <div className="flex justify-center py-6">
-            <Loader2 size={18} className="animate-spin text-primary" />
+            <Loader2 size={18} className="animate-spin text-text-light" />
           </div>
         ) : comments.length === 0 ? (
           <div className="text-center py-6 text-[13px] text-text-light">
             첫 번째 댓글을 남겨보세요
           </div>
         ) : (
-          <div className="space-y-3">
+          <div>
             {/* 루트 댓글 */}
             {comments.filter((c) => !c.parent_id).map((c) => {
               const replies = comments.filter((r) => r.parent_id === c.id);
               return (
-                <div key={c.id}>
+                <div key={c.id} className="border-b border-divider last:border-b-0">
                   {/* 댓글 */}
                   <CommentItem
                     c={c}
@@ -564,25 +587,25 @@ export default function PostDetailPage({
                   />
                   {/* 대댓글 */}
                   {replies.map((r) => (
-                    <div key={r.id} className="ml-6 mt-1.5">
-                      <div className="flex items-center gap-1 mb-1 pl-2">
-                        <CornerDownRight size={12} className="text-text-light" />
+                    <div key={r.id} className="ml-6 flex gap-1.5">
+                      <CornerDownRight size={12} className="text-text-light shrink-0 mt-4" />
+                      <div className="flex-1 min-w-0">
+                        <CommentItem
+                          c={r}
+                          user={user}
+                          reactionSummary={reactionMap.get(r.id)}
+                          onReactionChange={(id, next) =>
+                            setReactionMap((prev) => {
+                              const m = new Map(prev);
+                              m.set(id, next);
+                              return m;
+                            })
+                          }
+                          onReply={() => setReplyTo({ id: c.id, name: r.author_name ?? "익명" })}
+                          onReport={() => setReportTarget({ type: "post_comment", id: r.id, snapshot: r.body.slice(0, 150), authorUserId: r.author_id ?? null, authorName: r.author_name ?? null })}
+                          isReply
+                        />
                       </div>
-                      <CommentItem
-                        c={r}
-                        user={user}
-                        reactionSummary={reactionMap.get(r.id)}
-                        onReactionChange={(id, next) =>
-                          setReactionMap((prev) => {
-                            const m = new Map(prev);
-                            m.set(id, next);
-                            return m;
-                          })
-                        }
-                        onReply={() => setReplyTo({ id: c.id, name: r.author_name ?? "익명" })}
-                        onReport={() => setReportTarget({ type: "post_comment", id: r.id, snapshot: r.body.slice(0, 150), authorUserId: r.author_id ?? null, authorName: r.author_name ?? null })}
-                        isReply
-                      />
                     </div>
                   ))}
                 </div>
@@ -605,21 +628,23 @@ export default function PostDetailPage({
 
       {/* ── 댓글 입력 (하단 고정, BottomNav 위) ── */}
       <div
-        className="fixed left-0 right-0 bg-white border-t border-border px-4 py-3 z-40"
+        className="fixed left-0 right-0 border-t border-border px-4 py-3 z-40"
         style={{
           bottom: "calc(5rem + env(safe-area-inset-bottom))",
+          background: "var(--color-surface)",
         }}
       >
         <div className="mx-auto max-w-lg">
           {replyTo && (
             <div className="flex items-center gap-2 mb-1.5 px-2">
               <Reply size={12} className="text-primary" />
-              <span className="text-[11px] text-primary font-bold">{replyTo.name}</span>
+              <span className="text-[11px] text-primary font-semibold">{replyTo.name}</span>
               <span className="text-[11px] text-text-light">에게 답글</span>
               <button
                 type="button"
                 onClick={() => setReplyTo(null)}
                 className="ml-auto w-5 h-5 rounded-full bg-surface-alt flex items-center justify-center press-strong"
+                aria-label="답글 취소"
               >
                 <X size={10} className="text-text-sub" />
               </button>
@@ -628,7 +653,7 @@ export default function PostDetailPage({
           {commentError && (
             <p
               className="text-[11px] mb-1 px-2"
-              style={{ color: "#B84545" }}
+              style={{ color: "var(--color-error)" }}
             >
               {commentError}
             </p>
@@ -641,9 +666,9 @@ export default function PostDetailPage({
             aria-pressed={secretComment}
           >
             {secretComment
-              ? <Lock size={12} style={{ color: "#8B65B8" }} />
+              ? <Lock size={12} style={{ color: "var(--color-primary)" }} />
               : <Unlock size={12} className="text-text-light" />}
-            <span className="text-[11px] font-bold" style={{ color: secretComment ? "#8B65B8" : "var(--color-text-light)" }}>
+            <span className="text-[11px] font-semibold" style={{ color: secretComment ? "var(--color-primary)" : "var(--color-text-light)" }}>
               {secretComment ? "비밀 댓글 — 글쓴이와 나만 볼 수 있어요" : "비밀 댓글"}
             </span>
           </button>
@@ -659,7 +684,8 @@ export default function PostDetailPage({
                 replyTo ? `${replyTo.name}에게 답글...` : user ? "댓글을 입력하세요..." : "로그인 후 댓글을 작성할 수 있어요"
               }
               disabled={!user || submitting}
-              className="flex-1 px-4 py-2.5 rounded-full border border-border bg-surface-alt text-[15px] text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
+              className="flex-1 px-4 py-2.5 border border-border bg-surface-alt text-[15px] text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
+              style={{ borderRadius: "var(--radius-input)" }}
             />
             <button
               onClick={handleSubmitComment}
@@ -668,13 +694,14 @@ export default function PostDetailPage({
               style={{
                 backgroundColor: commentText.trim() && user ? "var(--color-primary)" : "var(--color-gray-200)",
               }}
+              aria-label="댓글 등록"
             >
               {submitting ? (
-                <Loader2 size={16} className="animate-spin text-white" />
+                <Loader2 size={16} className="animate-spin text-surface" />
               ) : (
                 <Send
                   size={18}
-                  color={commentText.trim() && user ? "#fff" : "#BFB9B0"}
+                  color={commentText.trim() && user ? "var(--color-surface)" : "var(--color-text-muted)"}
                 />
               )}
             </button>
@@ -685,7 +712,7 @@ export default function PostDetailPage({
   );
 }
 
-/* ═══ 댓글 아이템 ═══ */
+/* ═══ 댓글 아이템 — 카드 없이 구분선 행 (2026-09-16 리디자인) ═══ */
 function CommentItem({
   c,
   user,
@@ -704,17 +731,14 @@ function CommentItem({
   isReply?: boolean;
 }) {
   return (
-    <div
-      className={`card-sm ${isReply ? "p-3" : "p-4"}`}
-      style={isReply ? { backgroundColor: "#FAFAF7" } : undefined}
-    >
+    <div className={isReply ? "py-3" : "py-4"}>
       <div className="flex items-center justify-between mb-1.5">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap min-w-0">
           {c.author_avatar_url ? (
             <Image src={c.author_avatar_url} alt="" width={24} height={24} className="rounded-full object-cover" style={{ width: 24, height: 24 }} />
           ) : (
-            <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center">
-              <span className="text-[11px] font-bold text-primary">
+            <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "var(--color-gray-200)" }}>
+              <span className="text-[11px] font-semibold text-text-sub">
                 {c.author_name?.charAt(0) ?? "?"}
               </span>
             </div>
@@ -724,43 +748,31 @@ function CommentItem({
           </span>
           {c.is_secret && (
             <span
-              className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-[1px] rounded-md"
-              style={{ backgroundColor: "rgba(139,101,184,0.14)", color: "#8B65B8" }}
+              className="inline-flex items-center gap-0.5 text-[9px] font-semibold px-1.5 py-[1px] text-text-sub"
+              style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-square)" }}
             >
               <Lock size={9} /> 비밀
             </span>
           )}
-          {c.author_level && (
-            <span
-              className="text-[9px] font-bold px-1.5 py-[1px] rounded-md tabular-nums"
-              style={{
-                backgroundColor: getLevelColor(c.author_level),
-                color: "#FFFFFF",
-                boxShadow: `0 1px 3px ${getLevelColor(c.author_level)}55`,
-              }}
-            >
-              Lv.{c.author_level}
-            </span>
-          )}
+          {c.author_level && <LevelTag level={c.author_level} />}
           <TitleBadge titleId={c.author_title} />
           <SendDMButton userId={c.author_id} userName={c.author_name} currentUserId={user?.id} />
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 shrink-0">
           <span className="text-[11px] text-text-light">
             {formatRelativeTime(c.created_at)}
           </span>
           <button
             type="button"
             onClick={onReport}
-            className="w-5 h-5 rounded-md flex items-center justify-center press-strong"
-            style={{ backgroundColor: "var(--color-gray-50)" }}
+            className="w-6 h-6 flex items-center justify-center press-strong text-text-light"
             aria-label="댓글 신고"
           >
-            <Flag size={9} style={{ color: "#A38E7A" }} strokeWidth={2.5} />
+            <Flag size={11} strokeWidth={2} />
           </button>
         </div>
       </div>
-      <p className="text-[13px] text-text-sub leading-relaxed pl-8 whitespace-pre-wrap">
+      <p className="text-[15px] text-text-main leading-relaxed pl-8 whitespace-pre-wrap">
         {c.body}
       </p>
 
@@ -785,8 +797,7 @@ function CommentItem({
         <button
           type="button"
           onClick={onReply}
-          className="flex items-center gap-1 ml-8 mt-1.5 text-[11px] font-semibold press-strong transition-transform"
-          style={{ color: "#A38E7A" }}
+          className="flex items-center gap-1 ml-8 mt-1.5 text-[11px] font-semibold text-text-light press-strong transition-transform"
         >
           <Reply size={11} />
           답글

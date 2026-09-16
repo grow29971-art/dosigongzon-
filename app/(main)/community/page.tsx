@@ -1,7 +1,7 @@
 "use client";
 
 // 커뮤니티 — 피드형 (2026-09-16 사장님 지시: 카페 피드 레퍼런스).
-// 상단 카테고리 필 칩(가로 스크롤) + 카드 없는 전폭 피드 + "글쓰기" 확장 FAB.
+// 상단 카테고리 칩(가로 스크롤, UIChip 6px 사각) + 카드 없는 전폭 피드 + "글쓰기" 확장 FAB.
 // 이전 구조(카테고리 그룹 리스트·인기 글·안내 배너·방문자 수·글감 프롬프트)는 삭제가 아니라
 // SHOW_COMMUNITY_LEGACY 플래그로 숨김. 카테고리별 라우트(/community/category/*)는 딥링크용으로 유지.
 
@@ -164,21 +164,18 @@ export default function CommunityPage() {
         <PageIntroModal
           storageKey="dosigongzon_intro_community"
           badge="커뮤니티"
-          headerEmoji="💬"
+          headerEmoji=""
           title="이웃 길집사와 이야기 나눠요"
-          headerBg="linear-gradient(160deg, #EDE7F6 0%, #E4DAF3 100%)"
-          accent="#8B65B8"
-          accentDark="#6E4E96"
           items={[
-            { emoji: "🐾", text: <>동네 돌봄 소식·꿀팁·질문을 자유롭게 나눠요.</> },
-            { emoji: "🔒", text: <>댓글은 <b className="text-text-main">비밀 댓글</b>로 글쓴이에게만 조용히 남길 수도 있어요.</> },
-            { emoji: "✍️", text: <>우하단 글쓰기 버튼으로 첫 글을 남겨보세요.</> },
+            { emoji: "", text: <>동네 돌봄 소식·꿀팁·질문을 자유롭게 나눠요.</> },
+            { emoji: "", text: <>댓글은 <b className="text-text-main">비밀 댓글</b>로 글쓴이에게만 조용히 남길 수도 있어요.</> },
+            { emoji: "", text: <>우하단 글쓰기 버튼으로 첫 글을 남겨보세요.</> },
           ]}
         />
       )}
 
-      {/* ── 상단: 제목 + 검색, 카테고리 필 칩 (sticky) ── */}
-      <div className="sticky top-0 z-30 bg-white" style={{ borderBottom: "1px solid var(--color-divider)" }}>
+      {/* ── 상단: 제목 + 검색, 카테고리 칩 (sticky) ── */}
+      <div className="sticky top-0 z-30" style={{ background: "var(--color-surface)", borderBottom: "1px solid var(--color-divider)" }}>
         <div className="px-4 pt-12 pb-2 flex items-center justify-between">
           <h1 className="text-[20px] font-bold text-text-main tracking-tight">커뮤니티</h1>
           <Link
@@ -195,7 +192,6 @@ export default function CommunityPage() {
               key={f.key}
               active={filter === f.key}
               onClick={() => setFilter(f.key)}
-              style={{ borderRadius: "var(--radius-full)", height: 36, padding: "0 16px", fontSize: 14 }}
             >
               {f.label}
             </UIChip>
@@ -206,7 +202,6 @@ export default function CommunityPage() {
               activeColor="var(--color-text-main)"
               onClick={() => setNeighborhoodOnly((v) => !v)}
               icon={<MapPin size={12} />}
-              style={{ borderRadius: "var(--radius-full)", height: 36, padding: "0 14px", fontSize: 14 }}
             >
               내 동네
             </UIChip>
@@ -219,10 +214,9 @@ export default function CommunityPage() {
           <PageIntroBanner
             id="community"
             title="커뮤니티에서 할 수 있는 것"
-            description="긴급 구조·임보 요청·입양 공고·용품 나눔·일상 대화까지. 카테고리별로 구별되니 찾기 쉬워요."
+            description="긴급 구조·임보·입양·나눔·일상 대화를 카테고리별로 나눠요."
             ctaLabel="자세한 사용법"
             ctaHref="/guide"
-            accent="#8B65B8"
           />
           <CommunityWritePrompt />
           {showCareTeam && <CareTeamCard />}
@@ -231,7 +225,7 @@ export default function CommunityPage() {
 
       {/* ── 공지 (접힘) ── */}
       {pinnedPosts.length > 0 && (
-        <div className="bg-white mb-2" style={{ borderBottom: "1px solid var(--color-divider)" }}>
+        <div className="mb-2" style={{ background: "var(--color-surface)", borderBottom: "1px solid var(--color-divider)" }}>
           <button
             type="button"
             onClick={() => setNoticesOpen((v) => !v)}
@@ -239,7 +233,7 @@ export default function CommunityPage() {
             aria-expanded={noticesOpen}
           >
             <Pin size={14} className="text-primary shrink-0" />
-            <span className="text-[13px] font-bold text-text-main flex-1 truncate">
+            <span className="text-[13px] font-semibold text-text-main flex-1 truncate">
               {noticesOpen ? `공지 ${pinnedPosts.length}개` : pinnedPosts[0].title}
             </span>
             {!noticesOpen && pinnedPosts.length > 1 && (
@@ -268,7 +262,7 @@ export default function CommunityPage() {
 
       {/* ── 피드 ── */}
       {visiblePosts.length === 0 ? (
-        <div className="flex flex-col items-center py-20 text-text-light bg-white">
+        <div className="flex flex-col items-center py-20 text-text-light" style={{ background: "var(--color-surface)" }}>
           {filter === "emergency" ? (
             <Siren size={40} strokeWidth={1.2} />
           ) : filter === "sitter" ? (
@@ -303,8 +297,8 @@ export default function CommunityPage() {
         className="fixed bottom-24 right-5 h-14 px-6 rounded-full bg-primary flex items-center gap-2 fab-shadow press-strong transition-transform z-40"
         aria-label="글쓰기"
       >
-        <PenLine size={20} color="#fff" strokeWidth={2.2} />
-        <span className="text-[17px] font-bold" style={{ color: "#fff" }}>글쓰기</span>
+        <PenLine size={20} color="var(--color-surface)" strokeWidth={2.2} />
+        <span className="text-[17px] font-bold" style={{ color: "var(--color-surface)" }}>글쓰기</span>
       </Link>
     </div>
   );

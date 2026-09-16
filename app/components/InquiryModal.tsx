@@ -57,7 +57,7 @@ export default function InquiryModal({ open, onClose }: Props) {
       <div
         className="w-full max-w-sm relative"
         style={{
-          background: "#FFFFFF",
+          background: "var(--color-surface)",
           borderRadius: "var(--radius-modal)",
           boxShadow: "var(--shadow-modal)",
         }}
@@ -66,15 +66,7 @@ export default function InquiryModal({ open, onClose }: Props) {
         {/* 헤더 */}
         <div className="flex items-center justify-between px-5 pt-5 pb-3">
           <div className="flex items-center gap-2">
-            <div
-              className="w-8 h-8 rounded-xl flex items-center justify-center"
-              style={{
-                background: "#4A7BA8",
-                boxShadow: "var(--shadow-raised)",
-              }}
-            >
-              <MessageSquare size={14} color="#fff" strokeWidth={2.5} />
-            </div>
+            <MessageSquare size={18} strokeWidth={1.8} className="text-text-sub" />
             <h2 className="text-[17px] font-bold text-text-main tracking-tight">
               문의하기
             </h2>
@@ -82,25 +74,17 @@ export default function InquiryModal({ open, onClose }: Props) {
           <button
             onClick={onClose}
             disabled={submitting}
-            className="w-7 h-7 rounded-lg flex items-center justify-center press-strong"
-            style={{ backgroundColor: "var(--color-gray-100)" }}
+            className="w-8 h-8 flex items-center justify-center press-strong"
+            aria-label="닫기"
           >
-            <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
+            <X size={18} style={{ color: "var(--color-text-light)" }} />
           </button>
         </div>
 
         {done ? (
           <div className="px-5 pb-6 text-center">
-            <div
-              className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
-              style={{
-                background: "#6B8E6F",
-                boxShadow: "var(--shadow-fab)",
-              }}
-            >
-              <Check size={24} color="#fff" strokeWidth={3} />
-            </div>
-            <p className="text-[15px] font-bold text-text-main mb-1">
+            <Check size={32} strokeWidth={2} className="mx-auto mb-3" style={{ color: "var(--color-sage)" }} />
+            <p className="text-[15px] font-semibold text-text-main mb-1">
               문의가 전송됐어요
             </p>
             <p className="text-[13px] text-text-sub">
@@ -111,7 +95,7 @@ export default function InquiryModal({ open, onClose }: Props) {
           <>
             {/* 제목 */}
             <div className="px-5 pb-3">
-              <p className="text-[11px] font-bold text-text-sub mb-2">
+              <p className="text-[13px] font-semibold text-text-sub mb-2">
                 제목
               </p>
               <input
@@ -120,18 +104,19 @@ export default function InquiryModal({ open, onClose }: Props) {
                 onChange={(e) => setSubject(e.target.value)}
                 maxLength={100}
                 placeholder="문의 제목"
-                className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none"
+                className="w-full px-3 py-2.5 text-[15px] outline-none focus:border-primary"
                 style={{
-                  backgroundColor: "var(--color-gray-50)",
-                  color: "#2A2A28",
+                  backgroundColor: "var(--color-surface-alt)",
+                  color: "var(--color-text-main)",
                   border: "1px solid var(--color-border)",
+                  borderRadius: "var(--radius-input)",
                 }}
               />
             </div>
 
             {/* 본문 */}
             <div className="px-5 pb-3">
-              <p className="text-[11px] font-bold text-text-sub mb-2">
+              <p className="text-[13px] font-semibold text-text-sub mb-2">
                 내용
               </p>
               <textarea
@@ -140,11 +125,12 @@ export default function InquiryModal({ open, onClose }: Props) {
                 rows={6}
                 maxLength={2000}
                 placeholder="불편 사항, 버그, 제안 등을 자세히 적어주세요"
-                className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none resize-none"
+                className="w-full px-3 py-2.5 text-[15px] outline-none resize-none focus:border-primary"
                 style={{
-                  backgroundColor: "var(--color-gray-50)",
-                  color: "#2A2A28",
+                  backgroundColor: "var(--color-surface-alt)",
+                  color: "var(--color-text-main)",
                   border: "1px solid var(--color-border)",
+                  borderRadius: "var(--radius-input)",
                 }}
               />
               <p className="text-[11px] text-text-light mt-1 text-right">
@@ -153,7 +139,7 @@ export default function InquiryModal({ open, onClose }: Props) {
             </div>
 
             {error && (
-              <p className="px-5 text-[11px]" style={{ color: "#B84545" }}>
+              <p className="px-5 text-[11px]" style={{ color: "var(--color-error)" }}>
                 {error}
               </p>
             )}
@@ -163,10 +149,11 @@ export default function InquiryModal({ open, onClose }: Props) {
               <button
                 onClick={onClose}
                 disabled={submitting}
-                className="flex-1 py-3 rounded-xl text-[13px] font-bold"
+                className="flex-1 py-3 text-[15px] font-semibold press"
                 style={{
                   backgroundColor: "var(--color-gray-100)",
-                  color: "#A38E7A",
+                  color: "var(--color-text-main)",
+                  borderRadius: "var(--radius-input)",
                 }}
               >
                 취소
@@ -174,10 +161,10 @@ export default function InquiryModal({ open, onClose }: Props) {
               <button
                 onClick={handleSubmit}
                 disabled={submitting || !subject.trim() || !body.trim()}
-                className="flex-1 py-3 rounded-xl text-[13px] font-bold text-white disabled:opacity-40 flex items-center justify-center gap-1.5"
+                className="flex-1 py-3 text-[15px] font-semibold text-surface disabled:opacity-40 flex items-center justify-center gap-1.5 press"
                 style={{
-                  background: "#4A7BA8",
-                  boxShadow: "var(--shadow-fab)",
+                  background: "var(--color-primary)",
+                  borderRadius: "var(--radius-input)",
                 }}
               >
                 {submitting ? (
