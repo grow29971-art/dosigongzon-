@@ -19,18 +19,16 @@ export type CareType =
   | "shelter"
   | "other";
 
-export const CARE_TYPE_MAP: Record<
-  CareType,
-  { label: string; emoji: string; color: string }
-> = {
-  feed: { label: "밥 줌", emoji: "🍚", color: "#E88D5A" },
-  water: { label: "물 줌", emoji: "💧", color: "#48A59E" },
-  treat: { label: "간식 줌", emoji: "🍗", color: "#E8B040" },
-  health: { label: "건강 체크", emoji: "🩺", color: "#6B8E6F" },
-  tnr: { label: "TNR", emoji: "✂️", color: "#8B65B8" },
-  hospital: { label: "병원 방문", emoji: "🏥", color: "#D85555" },
-  shelter: { label: "쉼터 관리", emoji: "🏠", color: "#4A7BA8" },
-  other: { label: "기타", emoji: "📝", color: "#A38E7A" },
+// 2026-09-16 리디자인 후속: emoji·color 삭제(소비자 0). 푸시 문구의 타입 이모지는 addCareLog 안의 typeEmoji 인라인 맵이 따로 든다.
+export const CARE_TYPE_MAP: Record<CareType, { label: string }> = {
+  feed: { label: "밥 줌" },
+  water: { label: "물 줌" },
+  treat: { label: "간식 줌" },
+  health: { label: "건강 체크" },
+  tnr: { label: "TNR" },
+  hospital: { label: "병원 방문" },
+  shelter: { label: "쉼터 관리" },
+  other: { label: "기타" },
 };
 
 // ── 타입 ──

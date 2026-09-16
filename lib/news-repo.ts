@@ -105,41 +105,14 @@ export function resolveDdayLabel(item: Pick<NewsItem, "dday" | "event_date">): s
   return computeDday(item.event_date) ?? item.dday;
 }
 
-// 배지 타입별 프리셋 (색상/그라데이션/한국어 라벨)
-export const BADGE_PRESETS: Record<
-  NewsBadgeType,
-  { label: string; color: string; bg: string; gradient: string }
-> = {
-  event: {
-    label: "행사",
-    color: "#B05C36",
-    bg: "#EEE8E0",
-    gradient: "linear-gradient(135deg, #EEE8E0 0%, #E5DCCF 100%)",
-  },
-  tnr: {
-    label: "TNR",
-    color: "#6B8E6F",
-    bg: "#E8ECE5",
-    gradient: "linear-gradient(135deg, #E8ECE5 0%, #D6DCD2 100%)",
-  },
-  law: {
-    label: "법령",
-    color: "#7A6B8E",
-    bg: "#EAE6E8",
-    gradient: "linear-gradient(135deg, #EAE6E8 0%, #DCD6D9 100%)",
-  },
-  notice: {
-    label: "공지",
-    color: "#5B7A8F",
-    bg: "#E5E8ED",
-    gradient: "linear-gradient(135deg, #E5E8ED 0%, #D6DBE2 100%)",
-  },
-  urgent: {
-    label: "긴급",
-    color: "#D85555",
-    bg: "#FBEAEA",
-    gradient: "linear-gradient(135deg, #FBEAEA 0%, #F0D6D6 100%)",
-  },
+// 배지 타입별 한국어 라벨
+// 2026-09-16 리디자인 후속: color/bg/gradient 삭제(소비자 0) — news/[id]/opengraph-image.tsx 는 자체 BADGE_LABELS 를 쓴다.
+export const BADGE_PRESETS: Record<NewsBadgeType, { label: string }> = {
+  event:  { label: "행사" },
+  tnr:    { label: "TNR" },
+  law:    { label: "법령" },
+  notice: { label: "공지" },
+  urgent: { label: "긴급" },
 };
 
 // ── 읽기 ──

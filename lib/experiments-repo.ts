@@ -6,15 +6,13 @@
 
 export type ExperimentActivityType = "feed" | "water" | "clean" | "health" | "other";
 
-export const EXPERIMENT_ACTIVITY_MAP: Record<
-  ExperimentActivityType,
-  { label: string; emoji: string }
-> = {
-  feed: { label: "급식", emoji: "🍚" },
-  water: { label: "물", emoji: "💧" },
-  clean: { label: "청소", emoji: "🧹" },
-  health: { label: "건강 확인", emoji: "🩺" },
-  other: { label: "기타", emoji: "📝" },
+// 2026-09-16 리디자인 후속: emoji 삭제(소비자 0) — experiment/page.tsx 는 label 만 쓴다.
+export const EXPERIMENT_ACTIVITY_MAP: Record<ExperimentActivityType, { label: string }> = {
+  feed: { label: "급식" },
+  water: { label: "물" },
+  clean: { label: "청소" },
+  health: { label: "건강 확인" },
+  other: { label: "기타" },
 };
 
 export const EXPERIMENT_ACTIVITY_TYPES = Object.keys(

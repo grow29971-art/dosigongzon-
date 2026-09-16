@@ -23,6 +23,7 @@ export type PostCategory =
   | "free";      // 자유게시판
 
 // 2026-09-16 리디자인: 장식색 제거 — 회색 단일(긴급만 오류색)
+// color·emoji 유지 — 소비자: app/(main)/community/[id]/opengraph-image.tsx (OG 배경·배지), label 은 커뮤니티 화면 전반
 export const CATEGORY_MAP: Record<PostCategory, { label: string; color: string; emoji: string }> = {
   emergency: { label: "긴급",     color: "#F04452", emoji: "🚨" },
   sitter:    { label: "돌봄 부탁", color: "#767676", emoji: "🤝" },

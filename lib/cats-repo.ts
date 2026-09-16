@@ -59,46 +59,42 @@ export function getCardLevelProgress(exp: number, level: number) {
   return { gained, needed, pct: Math.min(gained / needed, 1) };
 }
 
-export const VISIBILITY_MAP: Record<CatVisibility, { label: string; emoji: string; color: string; description: string }> = {
+// 2026-09-16 리디자인 후속: VISIBILITY/ADOPTION/GENDER/HEALTH_MAP 의 emoji·color 삭제(소비자 0).
+// 공개 범위 아이콘은 화면(map/page.tsx·VisibilityIntroSheet)의 VISIBILITY_ICON, 건강 의미색은 화면이 토큰(--color-error/--color-warning)으로 정한다.
+export const VISIBILITY_MAP: Record<CatVisibility, { label: string; description: string }> = {
   public: {
     label: "전체 공개",
-    emoji: "🌍",
-    color: "#4A7BA8",
     description: "모든 가입자에게 동(洞) 단위로 노출돼요.",
   },
   circle: {
     label: "내 서클",
-    emoji: "🤝",
-    color: "#6B8E6F",
     description: "내가 승인한 서클 멤버에게만 보여요.",
   },
   private: {
     label: "나만 보기",
-    emoji: "🔒",
-    color: "#A8684A",
     description: "본인만 볼 수 있어요. 지도·통계 모두 제외.",
   },
 };
 
 export const ADOPTION_MAP: Record<
   Exclude<AdoptionStatus, null>,
-  { label: string; emoji: string; color: string; short: string }
+  { label: string; short: string }
 > = {
-  seeking_home: { label: "입양처 찾는 중", short: "입양", emoji: "🏡", color: "#B05C36" },
-  temp_care: { label: "임시보호 필요", short: "임보", emoji: "🤝", color: "#4A7BA8" },
-  both: { label: "입양·임보 모두", short: "입양·임보", emoji: "💛", color: "#8B65B8" },
+  seeking_home: { label: "입양처 찾는 중", short: "입양" },
+  temp_care: { label: "임시보호 필요", short: "임보" },
+  both: { label: "입양·임보 모두", short: "입양·임보" },
 };
 
-export const GENDER_MAP: Record<CatGender, { label: string; emoji: string }> = {
-  male: { label: "수컷", emoji: "♂️" },
-  female: { label: "암컷", emoji: "♀️" },
-  unknown: { label: "모름", emoji: "?" },
+export const GENDER_MAP: Record<CatGender, { label: string }> = {
+  male: { label: "수컷" },
+  female: { label: "암컷" },
+  unknown: { label: "모름" },
 };
 
-export const HEALTH_MAP: Record<CatHealthStatus, { label: string; emoji: string; color: string }> = {
-  good: { label: "양호", emoji: "💚", color: "#6B8E6F" },
-  caution: { label: "주의", emoji: "💛", color: "#C9A961" },
-  danger: { label: "위험", emoji: "❤️‍🩹", color: "#D85555" },
+export const HEALTH_MAP: Record<CatHealthStatus, { label: string }> = {
+  good: { label: "양호" },
+  caution: { label: "주의" },
+  danger: { label: "위험" },
 };
 
 export interface CreateCatInput {
@@ -144,10 +140,10 @@ export function getDisplayName(user: UserLike): string {
 
 // ══════════════════════════════════════════
 // 지도 페이지 교육용 팁 (올바른 돌봄 상식)
+// 2026-09-16 리디자인 후속: emoji 필드 삭제(소비자 0). CARE_TIPS 자체도 현재 참조 0.
 // ══════════════════════════════════════════
 
 export interface CareTip {
-  emoji: string;
   title: string;
   body: string;
   severity: "info" | "warn" | "danger";
@@ -155,49 +151,41 @@ export interface CareTip {
 
 export const CARE_TIPS: CareTip[] = [
   {
-    emoji: "⚠️",
     title: "츄르 대신 닭가슴살 · 사료를",
     body: "츄르는 구내염·치아질환을 유발할 수 있어요. 무염으로 삶은 닭가슴살이나 건사료가 훨씬 안전해요.",
     severity: "danger",
   },
   {
-    emoji: "🥛",
     title: "우유는 주지 마세요",
     body: "고양이 대부분은 유당불내증이 있어요. 설사·구토의 원인이 돼요. 깨끗한 물이 최고예요.",
     severity: "warn",
   },
   {
-    emoji: "🐟",
     title: "참치캔은 주식이 될 수 없어요",
     body: "수은 함량이 높고 영양 불균형을 유발해요. 간식으로도 일주일에 한두 번 소량만.",
     severity: "warn",
   },
   {
-    emoji: "💧",
     title: "물그릇은 매일 새로",
     body: "여름철은 2번 이상 교체. 사료보다 물이 훨씬 중요해요. 얕고 넓은 그릇을 선호해요.",
     severity: "info",
   },
   {
-    emoji: "✂️",
     title: "TNR은 고양이를 위한 것",
     body: "중성화는 번식 스트레스·질병·영역 다툼을 크게 줄여요. 개체수 관리 + 개묘 복지 모두에 도움.",
     severity: "info",
   },
   {
-    emoji: "🤚",
     title: "갑자기 만지지 마세요",
     body: "손을 천천히 내밀고 냄새를 맡게 해주세요. 경계심 많은 아이들은 시선을 피해주는 게 좋아요.",
     severity: "info",
   },
   {
-    emoji: "🚨",
     title: "학대 목격 시 112 신고",
     body: "동물보호법상 학대는 형사처벌 대상이에요. 현장 사진·동영상은 중요한 증거가 돼요.",
     severity: "danger",
   },
   {
-    emoji: "🌡️",
     title: "겨울엔 단열 쉼터를",
     body: "스티로폼 박스 + 담요로 간단히 만들 수 있어요. 입구는 작게, 바닥은 지면에서 띄워주세요.",
     severity: "info",
@@ -358,6 +346,7 @@ export function setRoamWeather(weatherMain: string | null, feelsLike: number | n
 }
 
 // 쉼 상태 표현 — 날씨 사유가 있으면 그걸로 (마커 뱃지·카드 칩 공용)
+// emoji 유지 — 소비자: app/(main)/map/page.tsx 마커 HTML(catRoamMode().emoji)
 const REST_BY_REASON: Record<string, { emoji: string; label: string }> = {
   rain: { emoji: "☔", label: "비 피하는 중" },
   snow: { emoji: "☃️", label: "눈 피하는 중" },
@@ -1126,6 +1115,7 @@ export interface LevelInfo {
   progress: number;  // 0~1 현재 레벨 내 진행도
 }
 
+// emoji 유지 — 소비자: app/components/HomeAuthed.tsx 레벨업 토스트(LevelInfo.emoji)
 const LEVEL_THRESHOLDS: { min: number; title: string; emoji: string }[] = [
   { min: 0,   title: "새싹 집사",   emoji: "🌱" },
   { min: 10,  title: "캣프렌드",   emoji: "🐾" },
@@ -1210,6 +1200,7 @@ const LEVEL_COLORS = [
   "#C9A961", // Lv7 전설의 집사 골드
 ];
 
+// 유지 — 소비자: app/(main)/map/page.tsx 채팅 작성자 레벨 점(backgroundColor)
 export function getLevelColor(level: number): string {
   if (level < 1) return LEVEL_COLORS[0];
   return LEVEL_COLORS[Math.min(level - 1, LEVEL_COLORS.length - 1)];
@@ -1664,12 +1655,13 @@ export interface MemorialDiary {
 }
 
 /** 그날의 마음 — 글이 안 나오는 날 이것만 찍고 나가도 되게 */
-export const DIARY_MOODS: { value: number; emoji: string; label: string }[] = [
-  { value: 1, emoji: "😭", label: "많이 힘들어요" },
-  { value: 2, emoji: "😢", label: "울었어요" },
-  { value: 3, emoji: "😔", label: "그리워요" },
-  { value: 4, emoji: "🙂", label: "견딜 만해요" },
-  { value: 5, emoji: "😌", label: "괜찮아졌어요" },
+// 2026-09-16 리디자인 후속: emoji 삭제(소비자 0) — MemorialDiary 는 label 글자 칩만 쓴다.
+export const DIARY_MOODS: { value: number; label: string }[] = [
+  { value: 1, label: "많이 힘들어요" },
+  { value: 2, label: "울었어요" },
+  { value: 3, label: "그리워요" },
+  { value: 4, label: "견딜 만해요" },
+  { value: 5, label: "괜찮아졌어요" },
 ];
 
 export async function listMemorialDiaries(catId: string): Promise<MemorialDiary[]> {

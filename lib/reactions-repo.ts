@@ -8,16 +8,17 @@ import { createClient } from "@/lib/supabase/client";
 export type ReactionTargetType = "cat_comment" | "post_comment";
 export type ReactionEmoji = "heart" | "sad" | "fire" | "thanks";
 
+// emoji 유지 — 소비자: app/components/ReactionBar.tsx (반응 버튼 글리프)
+// 2026-09-16 리디자인 후속: color 삭제(소비자 0)
 export const REACTION_EMOJIS: {
   key: ReactionEmoji;
   emoji: string;
   label: string;
-  color: string;
 }[] = [
-  { key: "heart",  emoji: "❤️", label: "응원",    color: "#E86B8C" },
-  { key: "sad",    emoji: "🥺", label: "안타까워", color: "#8B7562" },
-  { key: "fire",   emoji: "💪", label: "힘내요",   color: "#E88D5A" },
-  { key: "thanks", emoji: "🙏", label: "고마워",   color: "#6B8E6F" },
+  { key: "heart",  emoji: "❤️", label: "응원" },
+  { key: "sad",    emoji: "🥺", label: "안타까워" },
+  { key: "fire",   emoji: "💪", label: "힘내요" },
+  { key: "thanks", emoji: "🙏", label: "고마워" },
 ];
 
 export interface ReactionSummary {

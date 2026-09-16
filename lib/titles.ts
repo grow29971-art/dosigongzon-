@@ -11,7 +11,7 @@ export type TitleCategory = "register" | "record" | "alert" | "popular" | "invit
 export interface TitleDef {
   id: string;
   name: string;
-  emoji: string;
+  emoji: string; // 유지 — 소비자: app/components/HomeAuthed.tsx 업적 해제 토스트
   category: TitleCategory;
   description: string;
   // 잠금 해제 체크
@@ -297,6 +297,7 @@ export const CATEGORY_LABELS: Record<TitleCategory, string> = {
 };
 
 // 2026-09-16 리디자인: 장식색 제거 — 회색 단일(긴급만 오류색)
+// 유지 — 소비자: app/components/HomeAuthed.tsx 업적 해제 토스트(color)
 export const CATEGORY_COLORS: Record<TitleCategory, string> = {
   register: "#767676",
   record: "#767676",
@@ -329,7 +330,7 @@ export function countUnlocked(summary: MyActivitySummary): number {
 export interface AdminTitle {
   id: string;
   name: string;
-  emoji: string;
+  /** 화면 소비자 0 (TitleBadge·admin/users 모두 name·hidden 만 사용) — 지시로 유지 */
   color: string;
   description: string;
   /** true 면 화면에 배지를 그리지 않는다 (DB 표시는 유지 — 봇 판정·통계용) */
@@ -337,21 +338,22 @@ export interface AdminTitle {
 }
 
 // 2026-09-16 리디자인: 장식색 제거 — 회색 단일(긴급만 오류색)
+// 2026-09-16 리디자인 후속: emoji 삭제(소비자 0). hidden 은 TitleBadge·admin/users 가 쓴다.
 export const ADMIN_TITLES: AdminTitle[] = [
-  { id: "og_200", name: "초기 200", emoji: "🌟", color: "#767676", description: "정식 출시 전 도시공존에 합류한 처음 200명에게 영구 부여되는 한정 타이틀" },
-  { id: "founding_member", name: "창립 멤버", emoji: "✨", color: "#767676", description: "정식 오픈(2026-06-01) 전 도시공존을 함께 시작한 초기 멤버" },
-  { id: "official_volunteer", name: "공식 봉사자", emoji: "💛", color: "#767676", description: "공식 인증된 길고양이 봉사 활동가" },
-  { id: "tnr_expert", name: "TNR 전문가", emoji: "✂️", color: "#767676", description: "TNR 활동에 적극 기여한 시민" },
-  { id: "rescue_hero", name: "구조 영웅", emoji: "🦸", color: "#767676", description: "위기 상황에서 고양이를 구조한 시민" },
-  { id: "community_leader", name: "커뮤니티 리더", emoji: "🌟", color: "#767676", description: "커뮤니티를 이끄는 모범 회원" },
-  { id: "veterinary_partner", name: "수의 파트너", emoji: "🏥", color: "#767676", description: "수의학 지식을 나누는 협력자" },
-  { id: "early_supporter", name: "초기 서포터", emoji: "🌱", color: "#767676", description: "서비스 초기부터 함께한 서포터" },
-  { id: "content_creator", name: "콘텐츠 크리에이터", emoji: "📸", color: "#767676", description: "우수한 돌봄 콘텐츠를 생산하는 회원" },
-  { id: "donor", name: "후원자", emoji: "💝", color: "#767676", description: "길고양이 돌봄을 후원하는 회원" },
+  { id: "og_200", name: "초기 200", color: "#767676", description: "정식 출시 전 도시공존에 합류한 처음 200명에게 영구 부여되는 한정 타이틀" },
+  { id: "founding_member", name: "창립 멤버", color: "#767676", description: "정식 오픈(2026-06-01) 전 도시공존을 함께 시작한 초기 멤버" },
+  { id: "official_volunteer", name: "공식 봉사자", color: "#767676", description: "공식 인증된 길고양이 봉사 활동가" },
+  { id: "tnr_expert", name: "TNR 전문가", color: "#767676", description: "TNR 활동에 적극 기여한 시민" },
+  { id: "rescue_hero", name: "구조 영웅", color: "#767676", description: "위기 상황에서 고양이를 구조한 시민" },
+  { id: "community_leader", name: "커뮤니티 리더", color: "#767676", description: "커뮤니티를 이끄는 모범 회원" },
+  { id: "veterinary_partner", name: "수의 파트너", color: "#767676", description: "수의학 지식을 나누는 협력자" },
+  { id: "early_supporter", name: "초기 서포터", color: "#767676", description: "서비스 초기부터 함께한 서포터" },
+  { id: "content_creator", name: "콘텐츠 크리에이터", color: "#767676", description: "우수한 돌봄 콘텐츠를 생산하는 회원" },
+  { id: "donor", name: "후원자", color: "#767676", description: "길고양이 돌봄을 후원하는 회원" },
   // 운영 페르소나 계정(lib/community-personas.ts) 전용 — 글·댓글 자동 작성 시 필수 부착.
   // DB 가드(is_admin_only_title)에도 'staff'가 들어가야 일반 유저가 사칭 못 한다.
   // 2026-09-16 사장님 지시로 화면 배지는 숨김(hidden). DB 값은 봇 판정·통계·답글 로직이 쓰므로 유지.
-  { id: "staff", name: "운영", emoji: "🏷️", color: "#767676", description: "도시공존 운영 계정이 남긴 글·댓글 (화면엔 표시 안 함)", hidden: true },
+  { id: "staff", name: "운영", color: "#767676", description: "도시공존 운영 계정이 남긴 글·댓글 (화면엔 표시 안 함)", hidden: true },
 ];
 
 export function findAdminTitle(id: string | null | undefined): AdminTitle | null {

@@ -13,14 +13,15 @@ export type OrderStatus =
   | "pending" | "paid" | "preparing" | "shipping"
   | "delivered" | "cancelled" | "refunded";
 
-export const ORDER_STATUS_MAP: Record<OrderStatus, { label: string; color: string }> = {
-  pending:   { label: "결제대기",   color: "#A39A8D" },
-  paid:      { label: "결제완료",   color: "#B05C36" },
-  preparing: { label: "상품준비중", color: "#E88D5A" },
-  shipping:  { label: "배송중",     color: "#E88D5A" },
-  delivered: { label: "배송완료",   color: "#6B8E6F" },
-  cancelled: { label: "주문취소",   color: "#D85555" },
-  refunded:  { label: "환불완료",   color: "#D85555" },
+// 2026-09-16 리디자인 후속: color 필드 삭제(소비자 0) — 상태 배지 색은 화면(shop/orders·admin/orders)이 토큰으로 정한다.
+export const ORDER_STATUS_MAP: Record<OrderStatus, { label: string }> = {
+  pending:   { label: "결제대기" },
+  paid:      { label: "결제완료" },
+  preparing: { label: "상품준비중" },
+  shipping:  { label: "배송중" },
+  delivered: { label: "배송완료" },
+  cancelled: { label: "주문취소" },
+  refunded:  { label: "환불완료" },
 };
 
 export interface Order {
