@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getMyJourneyServer, type Milestone } from "@/lib/journey-server";
+import EmptyState from "@/app/components/ui/EmptyState";
 
 export const metadata: Metadata = {
   title: "당신의 여정",
@@ -52,7 +53,12 @@ export default async function JourneyPage() {
       {/* 타임라인 */}
       <div className="px-5 pt-5">
         {items.length === 0 ? (
-          <EmptyState />
+          <EmptyState
+            className="card p-6"
+            icon={<Sparkles size={28} strokeWidth={1.5} />}
+            title="여정이 막 시작됐어요"
+            desc="고양이를 등록하거나 댓글을 남기면 여기에 쌓여요."
+          />
         ) : (
           <div className="relative">
             {/* 세로 선 */}
@@ -105,19 +111,5 @@ function MilestoneRow({ m }: { m: Milestone }) {
         </div>
       </div>
     </Wrapper>
-  );
-}
-
-function EmptyState() {
-  return (
-    <div className="card p-6 text-center">
-      <Sparkles size={28} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-      <p className="text-[15px] font-semibold text-text-main mb-1.5">
-        여정이 막 시작됐어요
-      </p>
-      <p className="text-[13px] text-text-sub leading-relaxed">
-        고양이를 등록하거나 댓글을 남기면 여기에 쌓여요.
-      </p>
-    </div>
   );
 }

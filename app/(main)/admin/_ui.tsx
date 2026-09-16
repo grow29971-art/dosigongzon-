@@ -293,3 +293,30 @@ export const inputStyle: CSSProperties = {
 export function FieldLabel({ children }: { children: ReactNode }) {
   return <p className="text-[13px] font-semibold text-text-sub mb-1.5">{children}</p>;
 }
+
+/* ── 라벨 + 한 줄 텍스트 입력(편집 폼 기본 필드) ── */
+export function Field({
+  label,
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+}) {
+  return (
+    <div className="mb-3">
+      <FieldLabel>{label}</FieldLabel>
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className={inputCls}
+        style={inputStyle}
+      />
+    </div>
+  );
+}

@@ -18,7 +18,7 @@ import {
 } from "@/lib/pharmacy-guide-repo";
 import UIButton from "@/app/components/ui/Button";
 import {
-  AdminForbidden, AdminHeader, AdminLoading, AdminPage, AdminSection, AdminTag, EmptyState, FieldLabel,
+  AdminForbidden, AdminHeader, AdminLoading, AdminPage, AdminSection, AdminTag, EmptyState, Field, FieldLabel,
   HairlineButton, inputCls, inputStyle,
 } from "../_ui";
 
@@ -225,21 +225,5 @@ export default function AdminPharmacyGuidePage() {
         ))}
       </AdminSection>
     </AdminPage>
-  );
-}
-
-function Field({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
-  return (
-    <div className="mb-3">
-      <FieldLabel>{label}</FieldLabel>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className={inputCls}
-        style={inputStyle}
-      />
-    </div>
   );
 }

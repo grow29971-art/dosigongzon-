@@ -7,6 +7,8 @@ import { getCareReportServer } from "@/lib/care-report-server";
 import { CARE_TYPE_MAP, type CareType } from "@/lib/care-logs-repo";
 import { createClient } from "@/lib/supabase/server";
 import PrintButton from "@/app/components/PrintButton";
+import SectionTitle from "@/app/components/ui/SectionTitle";
+import { Th, Td, Tr } from "@/app/components/ui/Table";
 
 // 돌봄 활동 확인서 — 민원 대응·지자체 협의·학대 신고 시 첨부하는 증빙 문서.
 // 이미 공개된 care_logs 데이터의 집계이며 좌표는 포함하지 않는다(region만).
@@ -245,53 +247,5 @@ export default async function CareReportPage({ params }: { params: Params }) {
         <PrintButton />
       </div>
     </div>
-  );
-}
-
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="text-[13px] font-semibold text-text-main mb-2 tracking-tight">{children}</h2>
-  );
-}
-
-function Tr({ label, value }: { label: string; value: string }) {
-  return (
-    <tr>
-      <td
-        className="py-1.5 px-3 font-semibold text-text-sub whitespace-nowrap"
-        style={{ border: "1px solid var(--color-border)", background: "var(--color-surface-alt)", width: "30%" }}
-      >
-        {label}
-      </td>
-      <td className="py-1.5 px-3 text-text-main" style={{ border: "1px solid var(--color-border)" }}>
-        {value}
-      </td>
-    </tr>
-  );
-}
-
-function Th({ children, align }: { children: React.ReactNode; align?: "right" | "center" }) {
-  return (
-    <th
-      className="py-1.5 px-2.5 font-semibold text-text-sub"
-      style={{
-        border: "1px solid var(--color-border)",
-        background: "var(--color-surface-alt)",
-        textAlign: align ?? "left",
-      }}
-    >
-      {children}
-    </th>
-  );
-}
-
-function Td({ children, align, nowrap }: { children: React.ReactNode; align?: "right" | "center"; nowrap?: boolean }) {
-  return (
-    <td
-      className={`py-1.5 px-2.5 text-text-main${nowrap ? " whitespace-nowrap" : ""}`}
-      style={{ border: "1px solid var(--color-border)", textAlign: align ?? "left" }}
-    >
-      {children}
-    </td>
   );
 }

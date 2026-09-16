@@ -6,6 +6,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getMyCareReportServer } from "@/lib/care-report-server";
 import { CARE_TYPE_MAP, type CareType } from "@/lib/care-logs-repo";
 import PrintButton from "@/app/components/PrintButton";
+import SectionTitle from "@/app/components/ui/SectionTitle";
+import { Th, Td, Tr } from "@/app/components/ui/Table";
 
 // 내 돌봄 활동 확인서 — 본인 명의의 전체 돌봄 활동 증빙.
 // 봉사활동 증빙·민원 대응·지자체 협의·지원사업 제출용.
@@ -218,53 +220,5 @@ export default async function MyCareReportPage() {
         <PrintButton />
       </div>
     </div>
-  );
-}
-
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="text-[13px] font-bold text-text-main mb-2 tracking-tight">{children}</h2>
-  );
-}
-
-function Tr({ label, value }: { label: string; value: string }) {
-  return (
-    <tr>
-      <td
-        className="py-1.5 px-3 font-bold text-text-sub whitespace-nowrap"
-        style={{ border: "1px solid var(--color-border)", background: "var(--color-gray-50)", width: "30%" }}
-      >
-        {label}
-      </td>
-      <td className="py-1.5 px-3 text-text-main" style={{ border: "1px solid var(--color-border)" }}>
-        {value}
-      </td>
-    </tr>
-  );
-}
-
-function Th({ children, align }: { children: React.ReactNode; align?: "right" | "center" }) {
-  return (
-    <th
-      className="py-1.5 px-2.5 font-bold text-text-sub"
-      style={{
-        border: "1px solid var(--color-border)",
-        background: "var(--color-gray-50)",
-        textAlign: align ?? "left",
-      }}
-    >
-      {children}
-    </th>
-  );
-}
-
-function Td({ children, align, nowrap }: { children: React.ReactNode; align?: "right" | "center"; nowrap?: boolean }) {
-  return (
-    <td
-      className={`py-1.5 px-2.5 text-text-main${nowrap ? " whitespace-nowrap" : ""}`}
-      style={{ border: "1px solid var(--color-border)", textAlign: align ?? "left" }}
-    >
-      {children}
-    </td>
   );
 }

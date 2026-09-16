@@ -14,6 +14,7 @@ import {
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { SkeletonCatCard, SkeletonPostCard, SkeletonHospitalCard } from "@/app/components/Skeleton";
 import UIChip from "@/app/components/ui/Chip";
+import EmptyState from "@/app/components/ui/EmptyState";
 
 type SearchTab = "all" | "cats" | "posts" | "hospitals" | "users" | "guides";
 
@@ -204,6 +205,7 @@ function SearchPageInner() {
 
         {!loading && !data.query && (
           <EmptyState
+            icon={<Search size={40} strokeWidth={1.2} />}
             title="무엇을 찾고 있나요?"
             desc="고양이·지역·게시글·병원·가이드를 한 번에 검색해요."
           />
@@ -211,6 +213,7 @@ function SearchPageInner() {
 
         {!loading && data.tooShort && (
           <EmptyState
+            icon={<Search size={40} strokeWidth={1.2} />}
             title="2자 이상 입력해주세요"
             desc="검색어가 짧으면 결과가 너무 많아요."
           />
@@ -218,6 +221,7 @@ function SearchPageInner() {
 
         {!loading && data.query && !data.tooShort && totalCount === 0 && (
           <EmptyState
+            icon={<Search size={40} strokeWidth={1.2} />}
             title={`"${data.query}" 결과 없음`}
             desc="다른 검색어로 시도해보세요."
           />
@@ -252,17 +256,6 @@ export default function SearchPage() {
     <Suspense fallback={<div className="min-h-dvh" style={{ background: "var(--color-surface)" }} />}>
       <SearchPageInner />
     </Suspense>
-  );
-}
-
-/* ═══ Empty state ═══ */
-function EmptyState({ title, desc }: { title: string; desc: string }) {
-  return (
-    <div className="py-16 flex flex-col items-center text-center">
-      <Search size={40} strokeWidth={1.2} className="text-text-light mb-3" />
-      <p className="text-[15px] font-semibold text-text-main">{title}</p>
-      <p className="text-[13px] text-text-sub mt-1 leading-relaxed max-w-[280px]">{desc}</p>
-    </div>
   );
 }
 
