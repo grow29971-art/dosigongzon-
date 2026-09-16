@@ -170,8 +170,7 @@ export default function ShelterGuidePage() {
       <div className="flex items-center gap-2 mb-5">
         <Link
           href="/protection"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 -ml-2 flex items-center justify-center press-strong"
           aria-label="보호지침으로"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -182,14 +181,14 @@ export default function ShelterGuidePage() {
       </div>
 
       <h1 className="text-[24px] font-bold text-text-main leading-tight tracking-tight mb-3">
-        길고양이 <span style={{ color: "#4A7BA8" }}>겨울나기</span> · <br />숨숨집 만들기
+        길고양이 <span className="text-text-sub">겨울나기</span> · <br />숨숨집 만들기
       </h1>
 
       <div
-        className="rounded-2xl p-5 mb-6"
+        className="rounded-xl p-5 mb-6"
         style={{
-          background: "#E3F2FD",
-          border: "1px solid rgba(74,123,168,0.18)",
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
         }}
       >
         <p className="text-[13px] leading-relaxed text-text-main">
@@ -200,7 +199,7 @@ export default function ShelterGuidePage() {
         <p className="text-[11px] text-text-sub mt-3">마지막 업데이트: {LAST_UPDATED}</p>
       </div>
 
-      <nav aria-label="목차" className="rounded-2xl bg-white p-4 mb-6" style={{ border: "1px solid var(--color-divider)" }}>
+      <nav aria-label="목차" className="rounded-xl bg-white p-4 mb-6" style={{ border: "1px solid var(--color-border)" }}>
         <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
           <li><a href="#materials" className="hover:underline">준비물</a></li>
@@ -214,17 +213,15 @@ export default function ShelterGuidePage() {
       {/* 준비물 */}
       <section id="materials" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Wrench size={20} color="#4A7BA8" />
+          <Wrench size={20} className="text-text-sub" />
           준비물 (총 약 1만 5천 원)
         </h2>
-        <div className="grid grid-cols-1 gap-2">
+        <div>
           {MATERIALS.map((m) => (
             <div
               key={m.name}
-              className="rounded-xl p-3 flex items-start gap-3 bg-white"
-              style={{ boxShadow: "var(--shadow-card-sm)" }}
+              className="py-3 flex items-start gap-3 border-b border-divider last:border-b-0"
             >
-              <span style={{ fontSize: 20, lineHeight: 1 }} className="shrink-0">{m.emoji}</span>
               <div>
                 <p className="text-[13px] font-bold text-text-main">{m.name}</p>
                 <p className="text-[13px] text-text-sub mt-0.5 leading-snug">{m.note}</p>
@@ -237,19 +234,17 @@ export default function ShelterGuidePage() {
       {/* 제작법 */}
       <section id="how" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Hammer size={20} color="#B05C36" />
+          <Hammer size={20} className="text-text-sub" />
           5단계 제작법
         </h2>
-        <div className="space-y-2">
+        <div>
           {howToSchema.step.map((s, i) => (
             <div
               key={i}
-              className="rounded-2xl bg-white p-4 flex items-start gap-3"
-              style={{ boxShadow: "var(--shadow-card)" }}
+              className="py-3 flex items-start gap-3 border-b border-divider last:border-b-0"
             >
               <div
-                className="w-8 h-8 chip-square flex items-center justify-center shrink-0 text-white text-[13px] font-bold"
-                style={{ background: "var(--color-primary)" }}
+                className="w-8 h-8 chip-square flex items-center justify-center shrink-0 bg-gray-100 text-text-main text-[13px] font-bold"
               >
                 {i + 1}
               </div>
@@ -273,9 +268,9 @@ export default function ShelterGuidePage() {
             <div
               key={c.title}
               className="rounded-xl p-3.5"
-              style={{ background: "var(--color-error-soft)", border: "1px solid rgba(216,85,85,0.15)" }}
+              style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
             >
-              <p className="text-[13px] font-bold" style={{ color: "#8B2F2F" }}>{c.title}</p>
+              <p className="text-[13px] font-bold" style={{ color: "var(--color-error)" }}>{c.title}</p>
               <p className="text-[13px] text-text-sub mt-1 leading-relaxed">{c.desc}</p>
             </div>
           ))}
@@ -285,12 +280,12 @@ export default function ShelterGuidePage() {
       {/* 계절별 */}
       <section id="seasons" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Thermometer size={20} color="var(--color-care)" />
+          <Thermometer size={20} className="text-text-sub" />
           계절별 운영
         </h2>
         <div className="space-y-2.5">
-          <div className="rounded-2xl p-4" style={{ background: "#E3F2FD", border: "1px solid #B3D9E8" }}>
-            <p className="text-[13px] font-bold" style={{ color: "#1E5B8C" }}>겨울 (11월 중순 ~ 2월)</p>
+          <div className="rounded-xl p-4" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
+            <p className="text-[13px] font-bold text-text-main">겨울 (11월 중순 ~ 2월)</p>
             <ul className="text-[13px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
               <li>짚은 2주마다 교체 (습기·벌레)</li>
               <li>입구에 천을 커튼처럼 늘어뜨리면 바람 막이 추가</li>
@@ -298,8 +293,8 @@ export default function ShelterGuidePage() {
               <li>물그릇은 쉼터 밖, 사료는 쉼터 근처 다른 지점</li>
             </ul>
           </div>
-          <div className="rounded-2xl p-4" style={{ background: "var(--color-care-soft)", border: "1px solid #F2D4A5" }}>
-            <p className="text-[13px] font-bold" style={{ color: "#B56A1A" }}>여름 (6 ~ 9월)</p>
+          <div className="rounded-xl p-4" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
+            <p className="text-[13px] font-bold text-text-main">여름 (6 ~ 9월)</p>
             <ul className="text-[13px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
               <li>겨울용 스티로폼 박스는 덥고 곰팡이 위험 — 교체 또는 입구 확장</li>
               <li>그늘 있는 평평한 나무판·돌만 있어도 쉼터 역할</li>
@@ -307,8 +302,8 @@ export default function ShelterGuidePage() {
               <li>벌레·기생충 방제를 고려해 주변 청결 유지</li>
             </ul>
           </div>
-          <div className="rounded-2xl p-4" style={{ background: "#F1F8E9", border: "1px solid #C8E2B0" }}>
-            <p className="text-[13px] font-bold" style={{ color: "#3F6B1F" }}>봄·가을 환절기</p>
+          <div className="rounded-xl p-4" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
+            <p className="text-[13px] font-bold text-text-main">봄·가을 환절기</p>
             <ul className="text-[13px] text-text-sub mt-1.5 leading-relaxed space-y-1 list-disc pl-5">
               <li>봄: 기생충 관리 시작 (구충제 처방 등)</li>
               <li>가을: 겨울 대비 짚·단열 시트 미리 교체</li>
@@ -321,12 +316,12 @@ export default function ShelterGuidePage() {
       {/* FAQ */}
       <section id="faq" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <HelpCircle size={20} color="var(--color-sage)" />
+          <HelpCircle size={20} className="text-text-sub" />
           자주 묻는 질문
         </h2>
-        <div className="space-y-2">
+        <div>
           {faqSchema.mainEntity.map((q, i) => (
-            <details key={i} className="bg-white rounded-2xl p-4" style={{ boxShadow: "var(--shadow-card)" }}>
+            <details key={i} className="py-3 border-b border-divider last:border-b-0 group">
               <summary className="text-[13px] font-bold text-text-main cursor-pointer list-none flex items-center justify-between">
                 <span>Q. {q.name}</span>
                 <span className="text-text-light text-[13px]">+</span>
@@ -342,13 +337,12 @@ export default function ShelterGuidePage() {
       {/* 관련 가이드 */}
       <section className="mb-8">
         <h2 className="text-[15px] font-bold text-text-main mb-3">함께 보면 좋은 가이드</h2>
-        <div className="grid grid-cols-1 gap-2">
+        <div>
           <Link
             href="/protection/feeding-guide"
-            className="bg-white rounded-2xl p-4 flex items-center gap-3 press"
-            style={{ boxShadow: "var(--shadow-card)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
-            <Utensils size={18} color="var(--color-sage)" className="shrink-0" />
+            <Utensils size={18} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">먹이 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">안전한 급식 · 계절별 주의사항</p>
@@ -356,8 +350,7 @@ export default function ShelterGuidePage() {
           </Link>
           <Link
             href="/protection/emergency-guide"
-            className="bg-white rounded-2xl p-4 flex items-center gap-3 press"
-            style={{ boxShadow: "var(--shadow-card)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
             <AlertTriangle size={18} color="var(--color-error)" className="shrink-0" />
             <div className="flex-1 min-w-0">
@@ -371,8 +364,7 @@ export default function ShelterGuidePage() {
       <section className="mb-2">
         <Link
           href="/map"
-          className="block text-center py-4 rounded-2xl bg-primary text-white text-[15px] font-bold press"
-          style={{ boxShadow: "var(--shadow-primary)" }}
+          className="block text-center py-4 rounded-xl bg-primary text-white text-[15px] font-bold press"
         >
           <Cat size={16} className="inline mr-1.5 -mt-0.5" />
           우리 동네 지도에서 돌봄 시작하기

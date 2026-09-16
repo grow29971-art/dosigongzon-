@@ -34,3 +34,25 @@
 - 지금 못 푸는 이유: 단일 수리가 아니라 제품 방향 문제 — 인터뷰(대상 3명)로 "쓸 이유" 가설
   (대타 매칭·지명 책임·증빙 리포트 등)을 검증한 뒤 방향을 정하기로 합의돼 있다.
 - 접근: 2026-09-02 투입된 스포트라이트·하트·소식 푸시의 지표 변화를 먼저 재측정.
+
+## 리디자인 후속: 앱 밖 자산·lib 색 상수의 구 팔레트 잔존 (2026-09-16)
+
+- 증상: 앱 화면은 순백·뉴트럴로 바뀌었지만 OG 이미지 19종(`**/opengraph-image.tsx`), 주간 메일
+  (`lib/weekly-digest.ts`), 관리자 문의 알림 HTML(`app/api/admin/notify-inquiry`)은 아이보리 톤 그대로.
+  lib의 색·이모지 필드(`ORDER_STATUS_MAP.color`, `BADGE_PRESETS`, `HEALTH_MAP`, `ADMIN_TITLES.emoji`,
+  `REACTION_EMOJIS.color`)는 화면 참조만 끊겨 있고 값은 남아 있다.
+- 영향: 카톡 공유 미리보기·메일이 앱과 톤이 다르다. 기능 영향은 없다.
+- 지금 못 푸는 이유: 사장님이 "이번엔 제외"로 범위를 확정(decisions/0007). lib 필드는 푸시·메일 등 다른
+  소비자 확인이 선행.
+- 접근: OG·메일을 별도 커밋군으로 새 톤에 맞추고, lib 필드는 소비자 grep 후 삭제. 별칭 토큰
+  (`--shadow-card/-card-sm/-primary`, `--color-warm-white`)은 참조 0건 확인 후 globals.css에서 삭제.
+
+## 리디자인 접합부 중복 부품 (2026-09-16)
+
+- 증상: 화면군을 병렬로 만들면서 같은 역할의 작은 부품이 파일마다 따로 생겼다 — `SectionTitle` 3벌
+  (`cats/[id]/report`·`mypage/report`·`users/[id]`), 표 셀 `Th/Td/Tr` 2벌(헤더 배경·굵기 미세 불일치),
+  `EmptyState` 2벌(`mypage/journey`·`search`) + `admin/_ui.EmptyState`, `SectionHeader` 2벌(`search`·
+  `HomeLanding`), 관리자 `Field` 2벌(`auth-errors`·`pharmacy-guide`).
+- 영향: 런타임 위험 없음(전부 파일 로컬). 유지보수 시 같은 수정을 여러 곳에 해야 한다.
+- 지금 못 푸는 이유: 리디자인 1회 머지 범위를 더 키우지 않기 위해 보류.
+- 접근: `app/components/ui/`(SectionTitle·EmptyState·Table)와 `admin/_ui.tsx`(Field)로 승격하는 후속 커밋.

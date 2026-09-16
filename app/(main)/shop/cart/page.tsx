@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ArrowLeft, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import { ArrowLeft, Minus, Plus, Trash2, ShoppingBag, ImageOff } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import {
   listCartItems, updateCartQuantity, removeFromCart, computeCartTotal,
   type CartItem,
 } from "@/lib/shop-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import UIButton from "@/app/components/ui/Button";
 
 function formatWon(amount: number): string {
   return `${amount.toLocaleString()}원`;
@@ -65,14 +66,13 @@ export default function CartPage() {
 
   return (
     <div className="pb-32">
-      <div className="px-4 pt-12 pb-2 flex items-center gap-2">
+      <div className="px-4 pt-12 pb-2 flex items-center gap-1">
         <button
           onClick={() => router.back()}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong -ml-2"
           aria-label="뒤로 가기"
         >
-          <ArrowLeft size={18} className="text-text-main" />
+          <ArrowLeft size={20} className="text-text-main" />
         </button>
         <h1 className="text-[17px] font-bold text-text-main">장바구니</h1>
       </div>
@@ -80,58 +80,65 @@ export default function CartPage() {
       {loading ? (
         <div className="px-4 mt-4 space-y-3">
           {[0, 1].map((i) => (
-            <div key={i} className="rounded-2xl animate-pulse" style={{ height: 96, background: "var(--color-surface-alt)" }} />
+            <div key={i} className="animate-pulse" style={{ height: 88, background: "var(--color-surface-alt)", borderRadius: "var(--radius-card-sm)" }} />
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="flex flex-col items-center text-center pt-14 px-6">
-          <div
-            className="w-16 h-16 rounded-3xl flex items-center justify-center mb-4"
-            style={{ background: "var(--color-primary-soft)" }}
-          >
-            <ShoppingBag size={28} style={{ color: "var(--color-primary)" }} />
-          </div>
-          <p className="text-[15px] font-bold text-text-main mb-1">장바구니가 비어있습니다</p>
+        <div className="flex flex-col items-center text-center pt-16 px-6">
+          <ShoppingBag size={32} className="mb-3" style={{ color: "var(--color-text-muted)" }} />
+          <p className="text-[15px] font-semibold text-text-main mb-1">장바구니가 비어있습니다</p>
           <p className="text-[13px] text-text-sub mb-6">담아둔 상품이 아직 없어요</p>
           <Link
             href="/shop"
-            className="px-5 py-2.5 rounded-2xl bg-primary text-white text-[13px] font-bold press-strong transition-transform"
+            className="press inline-flex items-center justify-center h-10 px-5 text-[15px] font-semibold text-white"
+            style={{ background: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
           >
             쇼핑하러가기
           </Link>
         </div>
       ) : (
-        <div className="px-4 mt-3 space-y-2.5">
+        <div className="px-4 mt-1">
           {items.map((item) => {
             const unitPrice = item.product.sale_price ?? item.product.price;
-            const thumb = sanitizeImageUrl(item.product.images[0], "https://placehold.co/200x200?text=No+Image");
+            const thumb = sanitizeImageUrl(item.product.images[0], "");
             return (
               <div
                 key={item.id}
-                className="flex items-center gap-3 p-3"
-                style={{ background: "var(--color-surface)", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card-sm)", border: "1px solid var(--color-divider)" }}
+                className="flex items-center gap-3 py-4"
+                style={{ borderBottom: "1px solid var(--color-divider)" }}
               >
-                <Link href={`/shop/${item.product.id}`} className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 64, height: 64 }}>
-                  <Image src={thumb} alt={item.product.name} fill className="object-cover" unoptimized={thumb.includes("placehold.co")} />
+                <Link
+                  href={`/shop/${item.product.id}`}
+                  className="relative shrink-0 overflow-hidden flex items-center justify-center"
+                  style={{ width: 64, height: 64, background: "var(--color-surface-alt)", borderRadius: "var(--radius-card-sm)" }}
+                >
+                  {thumb ? (
+                    <Image src={thumb} alt={item.product.name} fill className="object-cover" />
+                  ) : (
+                    <ImageOff size={20} style={{ color: "var(--color-text-muted)" }} />
+                  )}
                 </Link>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-bold text-text-main truncate">{item.product.name}</p>
+                  <p className="text-[15px] font-semibold text-text-main truncate">{item.product.name}</p>
                   <p className="text-[13px] text-text-sub mt-0.5">{formatWon(unitPrice)}</p>
-                  <div className="mt-1.5 flex items-center gap-2 px-2 py-1 rounded-xl w-fit" style={{ background: "var(--color-warm-white)" }}>
-                    <button onClick={() => handleQuantity(item, -1)} disabled={busyId === item.id} className="w-5 h-5 flex items-center justify-center disabled:opacity-30">
+                  <div
+                    className="mt-1.5 flex items-center gap-2 px-1.5 py-0.5 w-fit"
+                    style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-input)" }}
+                  >
+                    <button onClick={() => handleQuantity(item, -1)} disabled={busyId === item.id} className="w-6 h-6 flex items-center justify-center disabled:opacity-30" aria-label="수량 줄이기">
                       <Minus size={12} />
                     </button>
-                    <span className="text-[13px] font-medium w-4 text-center">{item.quantity}</span>
-                    <button onClick={() => handleQuantity(item, 1)} disabled={busyId === item.id || item.quantity >= item.product.stock} className="w-5 h-5 flex items-center justify-center disabled:opacity-30">
+                    <span className="text-[13px] font-medium w-4 text-center tabular-nums">{item.quantity}</span>
+                    <button onClick={() => handleQuantity(item, 1)} disabled={busyId === item.id || item.quantity >= item.product.stock} className="w-6 h-6 flex items-center justify-center disabled:opacity-30" aria-label="수량 늘리기">
                       <Plus size={12} />
                     </button>
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-2 shrink-0">
-                  <button onClick={() => handleRemove(item)} disabled={busyId === item.id} aria-label="삭제">
+                  <button onClick={() => handleRemove(item)} disabled={busyId === item.id} aria-label="삭제" className="p-1">
                     <Trash2 size={16} className="text-text-light" />
                   </button>
-                  <span className="text-[13px] font-bold text-text-main">{formatWon(unitPrice * item.quantity)}</span>
+                  <span className="text-[15px] font-bold text-text-main tabular-nums">{formatWon(unitPrice * item.quantity)}</span>
                 </div>
               </div>
             );
@@ -142,27 +149,23 @@ export default function CartPage() {
       {items.length > 0 && (
         <div
           className="fixed bottom-0 left-0 right-0 z-40 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
-          style={{ background: "var(--color-surface)", boxShadow: "var(--shadow-sheet)" }}
+          style={{ background: "var(--color-surface)", borderTop: "1px solid var(--color-border)" }}
         >
           <div className="flex items-center justify-between text-[13px] text-text-sub mb-1">
             <span>상품금액</span>
-            <span>{formatWon(productTotal)}</span>
+            <span className="tabular-nums">{formatWon(productTotal)}</span>
           </div>
           <div className="flex items-center justify-between text-[13px] text-text-sub mb-2">
             <span>배송비</span>
-            <span>{shippingFee > 0 ? formatWon(shippingFee) : "무료"}</span>
+            <span className="tabular-nums">{shippingFee > 0 ? formatWon(shippingFee) : "무료"}</span>
           </div>
           <div className="flex items-center justify-between text-[15px] font-bold text-text-main mb-3">
             <span>결제예정금액</span>
-            <span>{formatWon(grandTotal)}</span>
+            <span className="tabular-nums">{formatWon(grandTotal)}</span>
           </div>
-          <button
-            onClick={() => router.push("/shop/checkout")}
-            className="w-full py-3.5 rounded-2xl bg-primary text-white text-[15px] font-bold press transition-transform"
-            style={{ boxShadow: "var(--shadow-primary)" }}
-          >
+          <UIButton size="lg" full onClick={() => router.push("/shop/checkout")}>
             주문하기
-          </button>
+          </UIButton>
         </div>
       )}
     </div>

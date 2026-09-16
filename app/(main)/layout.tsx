@@ -10,14 +10,14 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   // 일부 안드로이드 기기에서 깨트리므로 루트에서는 적용하지 않음.
   // 가로 오버플로우 방지는 각 페이지 단위 컨테이너에서 처리.
   return (
-    <div className="min-h-dvh bg-warm-white">
+    <div className="min-h-dvh" style={{ background: "var(--color-surface)" }}>
       <WelcomeGate />
       <FeatureTourGate />
       <AnnouncementModal />
       <PushReconsentCard />
       {/* 기존 가입자 1회 전면 알림 게이트 — 신규는 /welcome 스텝이 담당, seen 키 공유 */}
       <PushOnboardInterstitial />
-      {/* 플로팅 네비(높이 58 + 하단 여백 10) 뒤로 콘텐츠가 가려지지 않도록 pb-24 */}
+      {/* 하단 탭(높이 60 + safe-area) 뒤로 콘텐츠가 가려지지 않도록 pb-24 */}
       <main className="pb-24 mx-auto w-full max-w-lg">{children}</main>
       <BottomNav />
     </div>

@@ -5,6 +5,7 @@
 // 감정 정점에서 읽기 전용 화면에 착지했다 — Day0 첫 행동의 최대 끊김 지점.
 // pending_care(방금 고른 아이)가 이 고양이와 일치 + 로그인 상태일 때만 표시.
 // 완주 동작은 홈 PendingCareHandoff와 동일(createCareLog + first_feed 계측 + 키 정리).
+// 2026-09-16 「익숙한 동네앱」 리디자인: 테라코타 채움 카드 → 흰 바 + 헤어라인 + primary 버튼(토스식 하단 CTA).
 
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
@@ -104,17 +105,17 @@ export default function FirstFeedBar({ catId, catName }: { catId: string; catNam
       <div
         className="mx-auto max-w-lg p-3.5"
         style={{
-          // 앱에서 그라디언트가 허용되는 유일한 히어로 CTA — 단, 색은 동결 토큰 계열만
-          background: "var(--color-primary)",
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
           borderRadius: "var(--radius-card)",
-          boxShadow: "var(--shadow-primary)",
+          boxShadow: "var(--shadow-sheet)",
         }}
       >
         {phase === "done" ? (
           <>
-            <p className="text-[15px] font-bold text-white text-center leading-snug">
-              {catName}가 첫 밥을 받았어요 🎉
-              <span className="block text-[13px] font-medium mt-0.5" style={{ color: "rgba(255,255,255,0.8)" }}>
+            <p className="text-[15px] font-semibold text-text-main text-center leading-snug">
+              {catName}가 첫 밥을 받았어요
+              <span className="block text-[13px] font-medium mt-0.5 text-text-sub">
                 오늘부터 {catName}의 집사예요 — 내일 또 챙겨주면 진짜 돌봄이 시작돼요
               </span>
             </p>
@@ -125,10 +126,9 @@ export default function FirstFeedBar({ catId, catName }: { catId: string; catNam
             <button
               onClick={feed}
               disabled={phase === "busy"}
-              className="w-full flex items-center justify-center gap-2 py-3 text-[15px] font-bold press transition-transform"
+              className="w-full h-12 flex items-center justify-center gap-2 text-[15px] font-semibold text-white press transition-transform"
               style={{
-                background: "#FFFFFF",
-                color: "var(--color-primary-dark)",
+                background: "var(--color-primary)",
                 borderRadius: "var(--radius-input)",
                 opacity: phase === "busy" ? 0.7 : 1,
               }}
@@ -137,7 +137,7 @@ export default function FirstFeedBar({ catId, catName }: { catId: string; catNam
               {show === "pending" ? `방금 고른 ${catName}, 첫 밥 주기` : `${catName}에게 첫 밥 기록하기`}
             </button>
             {error && (
-              <p className="mt-1.5 text-[11px] font-medium text-center" style={{ color: "#FFD9D9" }}>
+              <p className="mt-1.5 text-[11px] font-medium text-center" style={{ color: "var(--color-error)" }}>
                 {error}
               </p>
             )}

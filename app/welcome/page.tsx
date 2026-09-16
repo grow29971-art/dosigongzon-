@@ -19,7 +19,9 @@ import {
   Share,
   PlusSquare,
   Download,
+  MessagesSquare,
 } from "lucide-react";
+import UIListRow from "@/app/components/ui/ListRow";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import { trackPixelOnce } from "@/lib/meta-pixel";
@@ -248,8 +250,8 @@ function WelcomeContent() {
 
   if (authLoading || !user) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center" style={{ background: "#FFF9F2" }}>
-        <Sparkles size={28} className="animate-pulse" style={{ color: "var(--color-primary)" }} />
+      <div className="fixed inset-0 flex items-center justify-center bg-surface">
+        <Sparkles size={28} className="animate-pulse" style={{ color: "var(--color-text-light)" }} />
       </div>
     );
   }
@@ -257,49 +259,28 @@ function WelcomeContent() {
   // 알림 켜기 스텝 — 신규 가입자 전원 통과. "켜기" 탭이 곧 사용자 제스처라 네이티브 프롬프트 즉시 발화.
   if (showPush) {
     return (
-      <div
-        className="fixed inset-0 overflow-hidden flex flex-col"
-        style={{ background: "linear-gradient(170deg, #8C5A37 0%, var(--color-primary) 55%, #C98A62 100%)" }}
-      >
+      <div className="fixed inset-0 overflow-hidden flex flex-col bg-surface">
         <div className="flex-1 flex flex-col items-center justify-center px-7">
-          <div
-            className="w-24 h-24 rounded-full flex items-center justify-center mb-7"
-            style={{
-              background: "rgba(255,255,255,0.18)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255,255,255,0.25)",
-              boxShadow: "var(--shadow-modal)",
-            }}
-          >
-            <Bell size={42} color="#FFFFFF" strokeWidth={1.6} />
-          </div>
+          <Bell size={44} strokeWidth={1.6} className="mb-7" style={{ color: "var(--color-text-main)" }} />
 
-          <h2 className="text-[24px] font-bold text-center text-white tracking-tight leading-[1.4] mb-4">
+          <h2 className="text-[24px] font-bold text-center text-text-main tracking-tight leading-[1.4] mb-4">
             알림 켜고 시작해요
           </h2>
-          <p className="text-[15px] text-center text-white/85 leading-[1.9] max-w-[320px]">
-            내 글에 달린 댓글, 쪽지 답장,
-            <br />
-            돌봄 소식과 동네 이벤트까지 —
-            <br />
-            중요한 순간을 놓치지 않게 알려드려요.
+          <p className="text-[15px] text-center text-text-sub leading-[1.8] max-w-[320px]">
+            댓글·쪽지 답장·돌봄 소식을 놓치지 않게 알려드려요.
           </p>
         </div>
 
         <div className="px-6 pb-10 z-20">
           {/* 정보통신망법 §50 — 마케팅 수신 동의 문구 명시 (구독·동의 통합 플로우) */}
-          <p className="text-[11px] text-center mb-3 leading-relaxed" style={{ color: "rgba(255,255,255,0.65)" }}>
+          <p className="text-[11px] text-center mb-3 leading-relaxed text-text-light">
             켜면 돌봄·소식 알림(마케팅 포함) 수신에 동의해요 · 마이페이지에서 언제든 해제
           </p>
           <button
             onClick={handleEnablePush}
             disabled={pushBusy}
-            className="w-full h-[52px] rounded-2xl text-[15px] font-bold flex items-center justify-center gap-1.5 press disabled:opacity-60"
-            style={{
-              background: "#FFFFFF",
-              color: "var(--color-primary-dark)",
-              boxShadow: "var(--shadow-fab)",
-            }}
+            className="w-full h-12 text-[15px] font-semibold flex items-center justify-center gap-1.5 press disabled:opacity-60"
+            style={{ background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
           >
             <Bell size={17} />
             {pushBusy ? "설정 중..." : "알림 켜기"}
@@ -307,8 +288,7 @@ function WelcomeContent() {
           <button
             onClick={finishOnboarding}
             disabled={pushBusy}
-            className="w-full py-3 mt-2 text-[13px] font-medium active:opacity-50"
-            style={{ color: "rgba(255,255,255,0.7)" }}
+            className="w-full py-3 mt-2 text-[13px] font-medium text-text-sub active:opacity-50"
           >
             나중에 할게요
           </button>
@@ -321,59 +301,44 @@ function WelcomeContent() {
   // 설치는 브라우저가 대신 해줄 수 없어(beforeinstallprompt 미지원) 안내만 하고 보내준다.
   if (showIosInstall) {
     return (
-      <div
-        className="fixed inset-0 overflow-hidden flex flex-col"
-        style={{ background: "linear-gradient(170deg, #8C5A37 0%, var(--color-primary) 55%, #C98A62 100%)" }}
-      >
+      <div className="fixed inset-0 overflow-hidden flex flex-col bg-surface">
         <div className="flex-1 flex flex-col items-center justify-center px-7">
-          <div
-            className="w-24 h-24 rounded-full flex items-center justify-center mb-7"
-            style={{
-              background: "rgba(255,255,255,0.18)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255,255,255,0.25)",
-              boxShadow: "var(--shadow-modal)",
-            }}
-          >
-            <Download size={42} color="#FFFFFF" strokeWidth={1.6} />
-          </div>
+          <Download size={44} strokeWidth={1.6} className="mb-7" style={{ color: "var(--color-text-main)" }} />
 
-          <h2 className="text-[24px] font-bold text-center text-white tracking-tight leading-[1.4] mb-3">
+          <h2 className="text-[24px] font-bold text-center text-text-main tracking-tight leading-[1.4] mb-3">
             홈 화면에 추가해두세요
           </h2>
-          <p className="text-[15px] text-center text-white/85 leading-[1.8] max-w-[320px] mb-6">
-            아이폰은 홈 화면에 추가해야
-            <br />
-            댓글·쪽지·돌봄 알림을 받을 수 있어요.
+          <p className="text-[15px] text-center text-text-sub leading-[1.8] max-w-[320px] mb-6">
+            아이폰은 홈 화면에 추가해야 댓글·쪽지·돌봄 알림을 받을 수 있어요.
           </p>
 
           {isIosSafari() ? (
             <div
-              className="w-full max-w-[320px] rounded-2xl px-5 py-4 space-y-3"
-              style={{ background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.2)" }}
+              className="w-full max-w-[320px] px-4"
+              style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
             >
-              <div className="flex items-center gap-2.5 text-[14px] font-bold text-white">
-                <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] shrink-0" style={{ background: "rgba(255,255,255,0.25)" }}>1</span>
-                <Share size={15} color="#FFF7C4" />
+              <div className="flex items-center gap-2.5 text-[15px] font-medium text-text-main py-3" style={{ borderBottom: "1px solid var(--color-divider)" }}>
+                <span className="w-6 h-6 flex items-center justify-center text-[11px] font-semibold shrink-0" style={{ background: "var(--color-gray-100)", color: "var(--color-text-sub)", borderRadius: "var(--radius-square)" }}>1</span>
+                <Share size={15} style={{ color: "var(--color-text-sub)" }} />
                 <span>사파리 하단 공유 아이콘 탭</span>
               </div>
-              <div className="flex items-center gap-2.5 text-[14px] font-bold text-white">
-                <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] shrink-0" style={{ background: "rgba(255,255,255,0.25)" }}>2</span>
-                <PlusSquare size={15} color="#FFF7C4" />
+              <div className="flex items-center gap-2.5 text-[15px] font-medium text-text-main py-3" style={{ borderBottom: "1px solid var(--color-divider)" }}>
+                <span className="w-6 h-6 flex items-center justify-center text-[11px] font-semibold shrink-0" style={{ background: "var(--color-gray-100)", color: "var(--color-text-sub)", borderRadius: "var(--radius-square)" }}>2</span>
+                <PlusSquare size={15} style={{ color: "var(--color-text-sub)" }} />
                 <span>&quot;홈 화면에 추가&quot; 선택</span>
               </div>
-              <div className="flex items-center gap-2.5 text-[14px] font-bold text-white">
-                <span className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] shrink-0" style={{ background: "rgba(255,255,255,0.25)" }}>3</span>
+              <div className="flex items-center gap-2.5 text-[15px] font-medium text-text-main py-3">
+                <span className="w-6 h-6 flex items-center justify-center text-[11px] font-semibold shrink-0" style={{ background: "var(--color-gray-100)", color: "var(--color-text-sub)", borderRadius: "var(--radius-square)" }}>3</span>
                 <span>우측 상단 &quot;추가&quot; 버튼</span>
               </div>
             </div>
           ) : (
             <div
-              className="w-full max-w-[320px] rounded-2xl px-5 py-4"
-              style={{ background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.2)" }}
+              className="w-full max-w-[320px] px-5 py-4"
+              style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
             >
-              <p className="text-[14px] font-bold text-white leading-[1.8]">
-                <b style={{ color: "#FFF7C4" }}>사파리</b>로 dosigongzon.com을 열고
+              <p className="text-[15px] font-medium text-text-main leading-[1.8]">
+                <b>사파리</b>로 dosigongzon.com을 열고
                 <br />
                 공유 → &quot;홈 화면에 추가&quot;를 눌러주세요.
               </p>
@@ -382,17 +347,13 @@ function WelcomeContent() {
         </div>
 
         <div className="px-6 pb-10 z-20">
-          <p className="text-[11px] text-center mb-3 leading-relaxed" style={{ color: "rgba(255,255,255,0.65)" }}>
+          <p className="text-[11px] text-center mb-3 leading-relaxed text-text-light">
             나중에 마이페이지 → 앱으로 설치하기에서도 할 수 있어요
           </p>
           <button
             onClick={finishOnboarding}
-            className="w-full h-[52px] rounded-2xl text-[15px] font-bold flex items-center justify-center gap-1.5 press"
-            style={{
-              background: "#FFFFFF",
-              color: "var(--color-primary-dark)",
-              boxShadow: "var(--shadow-fab)",
-            }}
+            className="w-full h-12 text-[15px] font-semibold flex items-center justify-center gap-1.5 press"
+            style={{ background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
           >
             확인했어요
           </button>
@@ -404,68 +365,44 @@ function WelcomeContent() {
   // 마지막 슬라이드 후 의도 picker — 3-way 선택으로 audience 흡수.
   if (showIntent) {
     return (
-      <div
-        className="fixed inset-0 overflow-hidden flex flex-col"
-        style={{ background: "#4F6B53" }}
-      >
+      <div className="fixed inset-0 overflow-hidden flex flex-col bg-surface">
         <button
           onClick={() => router.replace(next)}
-          className="absolute top-12 right-5 z-20 text-[13px] font-medium px-3 py-1.5 rounded-full active:opacity-50"
-          style={{ color: "rgba(255,255,255,0.75)" }}
+          className="absolute top-12 right-5 z-20 text-[13px] font-medium px-3 py-1.5 text-text-sub active:opacity-50"
         >
           건너뛰기
         </button>
 
         <div className="flex-1 flex flex-col items-center justify-center px-7">
-          <h2 className="text-[24px] font-bold text-center text-white tracking-tight leading-[1.4] mb-2">
+          <h2 className="text-[24px] font-bold text-center text-text-main tracking-tight leading-[1.4] mb-2">
             어떻게 시작해볼까요?
           </h2>
-          <p className="text-[13px] text-center text-white/85 mb-7 leading-relaxed">
-            당신에게 맞는 첫 화면을 보여드릴게요
+          <p className="text-[13px] text-center text-text-sub mb-7 leading-relaxed">
+            맞는 첫 화면을 보여드릴게요
           </p>
 
-          <div className="w-full max-w-sm flex flex-col gap-2.5">
-            <button
-              type="button"
+          <div
+            className="w-full max-w-sm px-4"
+            style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
+          >
+            <UIListRow
+              icon={<PawPrint size={22} strokeWidth={1.8} />}
+              title="이미 돌보고 있어요"
+              subtitle="지도·돌봄일지로 바로"
               onClick={() => pickIntent("caretaker", "/map")}
-              className="px-4 py-4 rounded-2xl flex items-center gap-3 press transition-transform"
-              style={{ background: "rgba(255,255,255,0.96)", boxShadow: "var(--shadow-fab)" }}
-            >
-              <span className="text-[24px] shrink-0">🐾</span>
-              <div className="text-left flex-1 min-w-0">
-                <p className="text-[15px] font-bold text-text-main leading-tight">이미 돌보고 있어요</p>
-                <p className="text-[13px] text-text-sub mt-0.5">지도·돌봄일지로 바로</p>
-              </div>
-              <ChevronRight size={16} className="text-text-sub shrink-0" />
-            </button>
-
-            <button
-              type="button"
+            />
+            <UIListRow
+              icon={<Heart size={22} strokeWidth={1.8} />}
+              title="관심 있어 들어왔어요"
+              subtitle="동네 둘러보면서 천천히"
               onClick={() => pickIntent("interested", "/")}
-              className="px-4 py-4 rounded-2xl flex items-center gap-3 press transition-transform"
-              style={{ background: "rgba(255,255,255,0.96)", boxShadow: "var(--shadow-fab)" }}
-            >
-              <span className="text-[24px] shrink-0">💛</span>
-              <div className="text-left flex-1 min-w-0">
-                <p className="text-[15px] font-bold text-text-main leading-tight">관심 있어 들어왔어요</p>
-                <p className="text-[13px] text-text-sub mt-0.5">동네 둘러보면서 천천히</p>
-              </div>
-              <ChevronRight size={16} className="text-text-sub shrink-0" />
-            </button>
-
-            <button
-              type="button"
+            />
+            <UIListRow
+              icon={<MessagesSquare size={22} strokeWidth={1.8} />}
+              title="그냥 구경하러"
+              subtitle="동네 커뮤니티 이야기부터"
               onClick={() => pickIntent("browsing", "/community")}
-              className="px-4 py-4 rounded-2xl flex items-center gap-3 press transition-transform"
-              style={{ background: "rgba(255,255,255,0.96)", boxShadow: "var(--shadow-fab)" }}
-            >
-              <span className="text-[24px] shrink-0">💬</span>
-              <div className="text-left flex-1 min-w-0">
-                <p className="text-[15px] font-bold text-text-main leading-tight">그냥 구경하러</p>
-                <p className="text-[13px] text-text-sub mt-0.5">동네 커뮤니티 이야기부터</p>
-              </div>
-              <ChevronRight size={16} className="text-text-sub shrink-0" />
-            </button>
+            />
           </div>
         </div>
       </div>
@@ -477,15 +414,11 @@ function WelcomeContent() {
   const isLast = step === SLIDES.length - 1;
 
   return (
-    <div
-      className="fixed inset-0 overflow-hidden flex flex-col"
-      style={{ background: slide.bg, transition: "background 0.6s ease" }}
-    >
+    <div className="fixed inset-0 overflow-hidden flex flex-col bg-surface">
       {/* 건너뛰기 */}
       <button
         onClick={handleSkip}
-        className="absolute top-12 right-5 z-20 text-[13px] font-medium px-3 py-1.5 rounded-full active:opacity-50"
-        style={{ color: "rgba(255,255,255,0.7)" }}
+        className="absolute top-12 right-5 z-20 text-[13px] font-medium px-3 py-1.5 text-text-sub active:opacity-50"
       >
         건너뛰기
       </button>
@@ -498,71 +431,51 @@ function WelcomeContent() {
         {/* 1번 슬라이드는 닉네임/축하 특수 레이아웃 */}
         {isFirst ? (
           <>
-            <div
-              className="w-24 h-24 rounded-full flex items-center justify-center mb-6"
-              style={{
-                background: "rgba(255,255,255,0.18)",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255,255,255,0.25)",
-                boxShadow: "var(--shadow-modal)",
-              }}
-            >
-              <PartyPopper size={44} color="#FFFFFF" strokeWidth={1.6} />
-            </div>
+            <PartyPopper size={44} strokeWidth={1.6} className="mb-6" style={{ color: "var(--color-primary)" }} />
 
             {earlySupporter && (
               <div
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-3"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-3"
                 style={{
-                  background: "rgba(255,255,255,0.25)",
-                  backdropFilter: "blur(8px)",
-                  border: "1px solid rgba(255,255,255,0.35)",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "var(--radius-square)",
                 }}
               >
-                <Sparkles size={11} color="#FFF7C4" />
-                <span className="text-[11px] font-bold tracking-[0.12em] text-white">
+                <Sparkles size={11} style={{ color: "var(--color-text-sub)" }} />
+                <span className="text-[11px] font-semibold text-text-sub">
                   EARLY SUPPORTER · 100명 한정
                 </span>
               </div>
             )}
 
-            <h1 className="text-[24px] font-bold text-center text-white tracking-tight leading-[1.3] mb-2">
-              <span className="opacity-90">환영합니다,</span>
+            <h1 className="text-[24px] font-bold text-center text-text-main tracking-tight leading-[1.3] mb-2">
+              <span className="text-text-sub">환영합니다,</span>
               <br />
-              <span style={{ color: "#FFF7C4" }}>{nickname}</span>님 🐾
+              <span style={{ color: "var(--color-primary)" }}>{nickname}</span>님
             </h1>
             {/* 닉네임 변경 가능 힌트 — 신규 가입자가 random nickname을 마음에 안 들어도 모르는 경우 방지 */}
-            <p className="text-[13px] text-white/65 mb-4 leading-snug text-center">
-              마이페이지에서 언제든 다른 닉네임으로 바꿀 수 있어요
+            <p className="text-[13px] text-text-light mb-4 leading-snug text-center">
+              닉네임은 마이페이지에서 바꿀 수 있어요
             </p>
-            <p className="text-[15px] text-center text-white/85 leading-[1.85] max-w-[300px]">
-              도시공존의 새로운 이웃이 되어주셔서 정말 고마워요.
+            <p className="text-[15px] text-center text-text-sub leading-[1.85] max-w-[300px]">
+              도시공존의 새로운 이웃이 되어주셔서 고마워요.
               {earlySupporter && (
                 <>
                   <br />
-                  <b className="text-white">초기 100명</b>에 들어오신 당신께
+                  <b className="text-text-main">초기 100명</b>에 들어오신 당신께
                   <br />
-                  특별한 <b className="text-white">어얼리 서포터</b> 뱃지를 드릴게요.
+                  <b className="text-text-main">어얼리 서포터</b> 뱃지를 드릴게요.
                 </>
               )}
             </p>
           </>
         ) : (
           <>
-            <div
-              className="w-20 h-20 rounded-full flex items-center justify-center mb-7"
-              style={{
-                background: "rgba(255,255,255,0.18)",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255,255,255,0.25)",
-              }}
-            >
-              <slide.Icon size={38} color="#FFFFFF" strokeWidth={1.6} />
-            </div>
-            <h2 className="text-[24px] font-bold text-center text-white tracking-tight leading-[1.4] mb-4 whitespace-pre-line">
+            <slide.Icon size={40} strokeWidth={1.6} className="mb-7" style={{ color: "var(--color-text-main)" }} />
+            <h2 className="text-[24px] font-bold text-center text-text-main tracking-tight leading-[1.4] mb-4 whitespace-pre-line">
               {slide.title}
             </h2>
-            <p className="text-[15px] text-center text-white/85 leading-[1.95] max-w-[320px] whitespace-pre-line">
+            <p className="text-[15px] text-center text-text-sub leading-[1.8] max-w-[320px] whitespace-pre-line">
               {slide.body}
             </p>
           </>
@@ -582,7 +495,7 @@ function WelcomeContent() {
                 width: i === step ? 28 : 7,
                 height: 7,
                 borderRadius: "var(--radius-square-sm)",
-                backgroundColor: i === step ? "#FFFFFF" : "rgba(255,255,255,0.3)",
+                backgroundColor: i === step ? "var(--color-text-main)" : "var(--color-gray-300)",
               }}
               aria-label={`${i + 1}번째 안내`}
             />
@@ -593,25 +506,20 @@ function WelcomeContent() {
           {step > 0 && (
             <button
               onClick={() => goTo(step - 1)}
-              className="w-12 h-[52px] rounded-2xl flex items-center justify-center press-strong"
+              className="w-12 h-12 flex items-center justify-center press-strong"
               style={{
-                background: "rgba(255,255,255,0.15)",
-                backdropFilter: "blur(8px)",
-                border: "1px solid rgba(255,255,255,0.2)",
+                background: "var(--color-gray-100)",
+                borderRadius: "var(--radius-input)",
               }}
               aria-label="이전"
             >
-              <ChevronLeft size={18} color="#FFFFFF" />
+              <ChevronLeft size={18} style={{ color: "var(--color-text-main)" }} />
             </button>
           )}
           <button
             onClick={handleNext}
-            className="flex-1 h-[52px] rounded-2xl text-[15px] font-bold flex items-center justify-center gap-1.5 press"
-            style={{
-              background: "#FFFFFF",
-              color: slide.accent,
-              boxShadow: "var(--shadow-fab)",
-            }}
+            className="flex-1 h-12 text-[15px] font-semibold flex items-center justify-center gap-1.5 press"
+            style={{ background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
           >
             {isLast ? (
               <>
@@ -641,33 +549,26 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 
 // 슬라이드 3개로 압축 (이전 5개 → 환영 / 지도+등록 / 돌봄+커뮤니티)
 // 테스터 피드백상 5개는 끝까지 보지 않는 경우가 있어 핵심 메시지만 남김.
+// 리디자인(2026-09-16): 슬라이드별 그라디언트·악센트 색 폐지 — 순백 바탕에 회색 선 아이콘.
 const SLIDES = [
   {
-    bg: "linear-gradient(170deg, var(--color-primary) 0%, var(--color-primary-light) 50%, #E8B07C 100%)",
-    accent: "var(--color-primary-dark)",
     Icon: PartyPopper,
     title: "",
     body: "",
   },
   {
-    bg: "linear-gradient(170deg, #4A7BA8 0%, #6B9BC4 60%, #A8C7E0 100%)",
-    accent: "#3A6086",
     Icon: MapPin,
     title: "우리 동네 고양이 지도",
-    body: "어떤 아이가 어디서 사는지, 건강 상태까지\n지도 한 장에 한눈에 모여요.\n\n마음에 드는 아이에겐 응원도 한 번\n가장 쉬운 첫 걸음이에요.",
+    body: "어떤 아이가 어디서 사는지 지도 한 장에 모여요.\n마음에 드는 아이에게 응원 한 번이 가장 쉬운 첫 걸음이에요.",
   },
   {
-    bg: "linear-gradient(170deg, #6B8E6F 0%, #8FAE92 50%, #BFD4C2 100%)",
-    accent: "#4F6E53",
     Icon: Heart,
     title: "돌봄에 필요한 도구",
-    body: "밥·물·건강 한 줄 돌봄일지\n궁금하면 AI집사에게 바로 질문\n가까운 동물병원·약국 찾기\n\n돌보는 데 필요한 도구를 한곳에 모았어요.",
+    body: "밥·물·건강 한 줄 돌봄일지, AI집사 질문, 가까운 동물병원 찾기까지 한곳에.",
   },
   {
-    bg: "linear-gradient(170deg, #4F6B53 0%, #6B8E6F 60%, #8FAE92 100%)",
-    accent: "#3D5640",
     Icon: ShieldCheck,
     title: "안전하게 돌보는 도구",
-    body: "걱정되는 아이는 '내 서클·나만 보기'로\n비공개 등록 — 외부엔 존재도 안 보여요.\n\n응급 상황엔 단계별 보호 가이드가\n바로 도와줘요.",
+    body: "걱정되는 아이는 '내 서클·나만 보기'로 비공개 등록.\n응급 상황엔 단계별 보호 가이드가 도와줘요.",
   },
 ];

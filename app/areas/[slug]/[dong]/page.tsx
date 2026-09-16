@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, MapPin, Heart, PawPrint, Stethoscope } from "lucide-react";
+import { ArrowLeft, MapPin, Heart, PawPrint, Stethoscope, Phone, ChevronRight } from "lucide-react";
 import { findGuBySlug } from "@/lib/seoul-regions";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { createAnonClient } from "@/lib/supabase/anon";
-import { HEALTH_MAP } from "@/lib/cats-repo";
+import { catArtWalkSvg } from "@/lib/cat-art";
 
 const SITE_URL = "https://dosigongzon.com";
 
@@ -162,15 +162,15 @@ export default async function AreaDongPage({ params }: { params: Params }) {
   const otherDongs = gu.dongs.filter((d) => d !== dongName).slice(0, 12);
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "var(--color-surface)" }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, "\\u003c") }} />
 
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href={`/areas/${slug}`}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
+          style={{ background: "var(--color-gray-100)" }}
           aria-label={`${gu.name}으로`}
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -184,8 +184,8 @@ export default async function AreaDongPage({ params }: { params: Params }) {
 
       <section className="px-5 pt-4">
         <div className="flex items-center gap-1.5 mb-1.5">
-          <MapPin size={14} style={{ color: "var(--color-primary)" }} />
-          <span className="text-[13px] font-bold" style={{ color: "var(--color-primary)" }}>
+          <MapPin size={14} className="text-text-light" />
+          <span className="text-[13px] font-semibold text-text-sub">
             서울특별시 {gu.name} {dongName}
           </span>
         </div>
@@ -195,23 +195,22 @@ export default async function AreaDongPage({ params }: { params: Params }) {
         <p className="text-[15px] text-text-sub mt-2 leading-relaxed">
           {dongName}에 등록된 길고양이 <b style={{ color: "var(--color-primary)" }}>{catCount}마리</b>의 돌봄 기록.
           {urgent > 0 && (
-            <> 지금 도움이 필요한 아이 <b style={{ color: "#D85555" }}>{urgent}마리</b>.</>
+            <> 지금 도움이 필요한 아이 <b style={{ color: "var(--color-error)" }}>{urgent}마리</b>.</>
           )}
         </p>
 
         <div className="flex gap-2 mt-4">
           <Link
             href="/map"
-            className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-primary text-white press transition-transform"
-            style={{ boxShadow: "var(--shadow-primary)" }}
+            className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-lg bg-primary text-white press"
           >
             <PawPrint size={14} />
             <span className="text-[13px] font-bold">지도에서 보기</span>
           </Link>
           <Link
             href="/signup"
-            className="flex-1 flex items-center justify-center py-3 rounded-2xl press transition-transform"
-            style={{ backgroundColor: "#FFF", color: "var(--color-primary)", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 700 }}
+            className="flex-1 flex items-center justify-center py-3 rounded-lg press"
+            style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)", fontSize: 13, fontWeight: 700 }}
           >
             돌봄 시작하기
           </Link>
@@ -221,105 +220,69 @@ export default async function AreaDongPage({ params }: { params: Params }) {
       {/* 고양이 그리드 */}
       <section className="px-5 mt-7">
         <h2 className="text-[17px] font-bold text-text-main mb-3 flex items-center gap-1.5">
-          <Heart size={15} style={{ color: "var(--color-like)" }} />
+          <Heart size={15} className="text-text-light" />
           {dongName} 고양이들
         </h2>
         {cats.length === 0 ? (
-          <div
-            className="relative overflow-hidden rounded-2xl p-5 text-center"
-            style={{
-              background: "#FFF6E8",
-              border: "1.5px solid rgba(176, 92, 54,0.30)",
-              boxShadow: "var(--shadow-card)",
-            }}
-          >
-            <div
-              aria-hidden
-              style={{
-                position: "absolute",
-                top: -50,
-                right: -40,
-                width: 160,
-                height: 160,
-                borderRadius: "50%",
-                background: "radial-gradient(circle, rgba(232,141,90,0.22) 0%, rgba(232,141,90,0) 70%)",
-              }}
-            />
-            <p className="text-[28px] leading-none mb-2" aria-hidden>🐾</p>
+          <div className="rounded-xl p-5 text-center" style={{ border: "1px solid var(--color-border)" }}>
+            <PawPrint size={28} className="mx-auto mb-2 text-text-light" aria-hidden />
             <p className="text-[15px] font-bold text-text-main leading-tight tracking-tight mb-1.5">
               {dongName}의 첫 번째 길집사가 되어주세요
             </p>
-            <p className="text-[13px] leading-relaxed mb-4" style={{ color: "rgba(92,74,62,0.85)" }}>
-              아직 비어있어요. 한 번의 돌봄 기록이 이웃을 부르고,
-              <br />
-              곧 {dongName}에도 따뜻한 지도가 생겨요.
-              <br />
-              <b style={{ color: "var(--color-primary-dark)" }}>출시 기념 — 지금 합류하시면 창립 멤버 타이틀을 영구 드려요.</b>
-            </p>
+            <p className="text-[13px] text-text-sub leading-relaxed mb-4">아직 기록이 없어요. 지금 합류하면 창립 멤버 타이틀을 드려요.</p>
             <div className="flex gap-2">
               <Link
                 href={`/signup?next=${encodeURIComponent(`/areas/${slug}/${encodeURIComponent(dongName)}`)}`}
-                className="flex-[1.5] flex items-center justify-center py-2.5 rounded-xl text-white text-[13px] font-bold press transition-transform"
-                style={{
-                  background: "var(--color-primary)",
-                  boxShadow: "var(--shadow-primary)",
-                }}
+                className="flex-[1.5] flex items-center justify-center py-2.5 rounded-lg text-white text-[13px] font-bold press"
+                style={{ background: "var(--color-primary)" }}
               >
                 무료로 시작하기
               </Link>
               <Link
                 href={`/areas/${slug}`}
-                className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[13px] font-bold press transition-transform bg-white"
-                style={{
-                  color: "var(--color-primary-dark)",
-                  border: "1px solid rgba(176, 92, 54,0.30)",
-                }}
+                className="flex-1 flex items-center justify-center py-2.5 rounded-lg text-[13px] font-bold press"
+                style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)" }}
               >
                 {gu.name} 둘러보기
               </Link>
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="rounded-xl" style={{ border: "1px solid var(--color-border)" }}>
             {cats.map((c) => {
-              const photo = sanitizeImageUrl(c.photo_url, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
-              const urgent = c.health_status === "danger";
+              const photo = sanitizeImageUrl(c.photo_url);
+              const isUrgent = c.health_status === "danger";
               return (
                 <Link
                   key={c.id}
                   href={`/cats/${c.id}`}
-                  className="block rounded-2xl overflow-hidden bg-white press transition-transform"
-                  style={{ boxShadow: "var(--shadow-raised)" }}
+                  className="flex items-center gap-3 px-4 py-3 press border-b border-divider last:border-b-0"
+                  style={{ minHeight: 64 }}
                 >
-                  <div className="relative" style={{ aspectRatio: "1 / 1" }}>
-                    <Image
-                      src={photo}
-                      alt={c.name}
-                      fill
-                      sizes="(max-width: 640px) 50vw, 200px"
-                      style={{ objectFit: "cover" }}
-                    />
-                    {urgent && (
-                      <span
-                        className="absolute top-2 left-2 text-[11px] font-bold px-2 py-0.5 rounded-lg text-white z-10"
-                        style={{ backgroundColor: HEALTH_MAP.danger.color }}
-                      >
-                        🚨 긴급
-                      </span>
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0" style={{ background: "var(--color-gray-100)" }}>
+                    {photo ? (
+                      <Image src={photo} alt={c.name} fill sizes="48px" style={{ objectFit: "cover" }} />
+                    ) : (
+                      <div
+                        className="w-full h-full flex items-center justify-center"
+                        aria-hidden
+                        dangerouslySetInnerHTML={{ __html: catArtWalkSvg(c.id, 40) }}
+                      />
                     )}
                   </div>
-                  <div className="p-2.5">
-                    <p className="text-[13px] font-bold text-text-main truncate">{c.name}</p>
-                    <div className="flex items-center gap-0.5 mt-0.5">
-                      <MapPin size={10} className="text-text-light" />
-                      <span className="text-[11px] text-text-sub truncate">{c.region ?? dongName}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-[15px] font-semibold text-text-main truncate">{c.name}</p>
+                      {isUrgent && (
+                        <span className="text-[11px] font-semibold shrink-0" style={{ color: "var(--color-error)" }}>긴급</span>
+                      )}
                     </div>
-                    {c.description && (
-                      <p className="text-[11px] text-text-light line-clamp-2 mt-1 leading-snug">
-                        {c.description}
-                      </p>
-                    )}
+                    <p className="text-[13px] text-text-sub truncate mt-0.5">
+                      {c.region ?? dongName}
+                      {c.description ? ` · ${c.description}` : ""}
+                    </p>
                   </div>
+                  <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
                 </Link>
               );
             })}
@@ -331,27 +294,24 @@ export default async function AreaDongPage({ params }: { params: Params }) {
       {hospitals.length > 0 && (
         <section className="px-5 mt-7">
           <h2 className="text-[17px] font-bold text-text-main mb-3 flex items-center gap-1.5">
-            <Stethoscope size={15} style={{ color: "#22B573" }} />
+            <Stethoscope size={15} className="text-text-light" />
             {gu.name} 치료 병원
           </h2>
-          <div className="space-y-2">
+          <div className="rounded-xl" style={{ border: "1px solid var(--color-border)" }}>
             {hospitals.map((h) => (
-              <div
-                key={h.id}
-                className="bg-white rounded-2xl p-3.5"
-                style={{ boxShadow: "var(--shadow-card)" }}
-              >
-                <p className="text-[15px] font-bold text-text-main">{h.name}</p>
+              <div key={h.id} className="px-4 py-3 border-b border-divider last:border-b-0">
+                <p className="text-[15px] font-semibold text-text-main">{h.name}</p>
                 {h.address && (
                   <p className="text-[13px] text-text-sub mt-0.5 leading-snug">{h.address}</p>
                 )}
                 {h.phone && (
                   <a
                     href={`tel:${h.phone}`}
-                    className="text-[13px] font-bold mt-1 inline-block"
-                    style={{ color: "#22B573" }}
+                    className="inline-flex items-center gap-1 text-[13px] font-semibold mt-1"
+                    style={{ color: "var(--color-sage)" }}
                   >
-                    📞 {h.phone}
+                    <Phone size={12} />
+                    {h.phone}
                   </a>
                 )}
               </div>
@@ -371,8 +331,8 @@ export default async function AreaDongPage({ params }: { params: Params }) {
               <Link
                 key={d}
                 href={`/areas/${slug}/${encodeURIComponent(d)}`}
-                className="text-center py-2 rounded-xl bg-white text-[13px] font-bold press-strong transition-transform"
-                style={{ color: "#6B5043", boxShadow: "var(--shadow-card-sm)" }}
+                className="text-center py-2 rounded-lg text-[13px] font-semibold text-text-main press"
+                style={{ border: "1px solid var(--color-border)" }}
               >
                 {d}
               </Link>
@@ -390,7 +350,7 @@ export default async function AreaDongPage({ params }: { params: Params }) {
 
       {/* 하단 SEO 본문 */}
       <section className="px-5 mt-7">
-        <div className="bg-white rounded-2xl p-4" style={{ boxShadow: "var(--shadow-card)" }}>
+        <div className="rounded-xl p-4" style={{ border: "1px solid var(--color-border)" }}>
           <p className="text-[13px] text-text-sub leading-relaxed">
             <b className="text-text-main">도시공존</b>은 {gu.name} {dongName}을 포함한
             전국 길고양이를 기록하고 돌보는 시민 참여 플랫폼입니다.

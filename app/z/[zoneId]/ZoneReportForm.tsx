@@ -77,15 +77,15 @@ export default function ZoneReportForm({ zoneId }: { zoneId: string }) {
 
   if (done) {
     return (
-      <div className="rounded-2xl px-5 py-6 text-center" style={{ backgroundColor: "#F0F7F1", border: "1px solid #CFE3D2" }}>
-        <CheckCircle2 size={32} className="mx-auto mb-2" style={{ color: "#4A7B52" }} />
+      <div className="rounded-xl px-5 py-6 text-center" style={{ border: "1px solid var(--color-border)" }}>
+        <CheckCircle2 size={32} className="mx-auto mb-2" style={{ color: "var(--color-sage)" }} />
         <p className="text-[15px] font-bold text-text-main">제보가 접수됐어요</p>
         <p className="text-[13px] text-text-sub mt-1.5 leading-relaxed">
           운영팀이 확인 후 필요 시 경찰·동물보호센터로 전달해요.
           <br />
           <b>지금 진행 중인 위급 상황이라면 112에 직접 전화해주세요.</b>
         </p>
-        <a href="tel:112" className="inline-block mt-3 px-5 py-2.5 rounded-xl text-[13px] font-bold text-white" style={{ backgroundColor: "var(--color-primary)" }}>
+        <a href="tel:112" className="inline-block mt-3 px-5 py-2.5 rounded-lg text-[13px] font-bold text-white press" style={{ backgroundColor: "var(--color-primary)" }}>
           112 전화 걸기
         </a>
       </div>
@@ -93,11 +93,13 @@ export default function ZoneReportForm({ zoneId }: { zoneId: string }) {
   }
 
   const chip = (selected: boolean) =>
-    `px-3 py-2 rounded-xl text-[13px] font-bold press-strong transition-transform ${
+    `px-3 py-2 text-[13px] font-semibold press-strong transition-transform ${
       selected ? "text-white" : "text-text-sub"
     }`;
   const chipStyle = (selected: boolean) => ({
-    backgroundColor: selected ? "var(--color-primary)" : "var(--color-surface-alt)",
+    borderRadius: "var(--radius-square)",
+    backgroundColor: selected ? "var(--color-primary)" : "var(--color-surface)",
+    border: `1px solid ${selected ? "var(--color-primary)" : "var(--color-border)"}`,
   });
 
   return (
@@ -146,20 +148,20 @@ export default function ZoneReportForm({ zoneId }: { zoneId: string }) {
           rows={3}
           maxLength={500}
           placeholder="상황을 담백하게 적어주세요 (최대 500자)"
-          className="w-full px-3.5 py-3 rounded-xl text-[13px] outline-none resize-none"
-          style={{ backgroundColor: "var(--color-surface-alt)" }}
+          className="w-full px-3.5 py-3 text-[13px] outline-none resize-none"
+          style={{ backgroundColor: "var(--color-surface-alt)", borderRadius: "var(--radius-input)" }}
         />
       </div>
 
       <TurnstileWidget onVerify={setToken} onExpire={() => setToken(null)} onError={() => setToken(null)} />
 
-      {error && <p className="text-[13px] font-bold" style={{ color: "#B84545" }}>{error}</p>}
+      {error && <p className="text-[13px] font-bold" style={{ color: "var(--color-error)" }}>{error}</p>}
 
       <button
         onClick={submit}
         disabled={submitting}
-        className="w-full rounded-2xl py-4 text-[15px] font-bold text-white press-strong transition-transform disabled:opacity-60 flex items-center justify-center gap-1.5"
-        style={{ backgroundColor: "var(--color-primary)" }}
+        className="w-full py-4 text-[15px] font-bold text-white press-strong transition-transform disabled:opacity-60 flex items-center justify-center gap-1.5"
+        style={{ backgroundColor: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
       >
         {submitting ? (<><Loader2 size={16} className="animate-spin" /> 접수 중…</>) : "익명으로 제보하기"}
       </button>

@@ -75,23 +75,19 @@ export default function JoinClient({ token, state }: { token: string; state: Inv
             : `${state.areaName} 돌봄 기록 실험`;
 
   return (
-    <div className="min-h-dvh flex flex-col items-center px-6 pt-20 pb-10" style={{ background: "#FBF8F3" }}>
+    <div className="min-h-dvh flex flex-col items-center px-6 pt-20 pb-10" style={{ background: "var(--color-surface)" }}>
       <div
-        className="w-full max-w-md rounded-[28px] p-7 text-center"
-        style={{ background: "#fff", boxShadow: "var(--shadow-fab)" }}
+        className="w-full max-w-md p-7 text-center"
+        style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
       >
-        <div
-          className="mx-auto mb-4 flex items-center justify-center rounded-full"
-          style={{ width: 64, height: 64, background: "var(--color-primary-soft, rgba(176,92,54,0.1))" }}
-          aria-hidden
-        >
-          <Sprout size={30} style={{ color: "var(--color-primary)" }} />
+        <div className="mx-auto mb-4 flex items-center justify-center text-text-sub" style={{ width: 48, height: 48 }} aria-hidden>
+          <Sprout size={28} strokeWidth={1.8} />
         </div>
-        <h1 className="text-[20px] font-bold mb-2">{heading}</h1>
+        <h1 className="text-[20px] font-bold mb-2 text-text-main">{heading}</h1>
 
         {state.status === "valid" && (
           <>
-            <p className="text-[15px] leading-relaxed mb-2" style={{ color: "#5D564B" }}>
+            <p className="text-[15px] leading-relaxed mb-2" style={{ color: "var(--color-text-sub)" }}>
               {inviteCopy(state.areaName)}
             </p>
             <p className="text-[13px] mb-5" style={{ color: "var(--color-text-light)" }}>
@@ -100,14 +96,14 @@ export default function JoinClient({ token, state }: { token: string; state: Inv
             <button
               onClick={join}
               disabled={busy}
-              className="w-full flex items-center justify-center gap-2 rounded-2xl text-white text-[17px] font-bold press transition-transform disabled:opacity-60"
-              style={{ minHeight: 54, background: "var(--color-primary)" }}
+              className="w-full flex items-center justify-center gap-2 text-[17px] font-semibold press transition-transform disabled:opacity-60"
+              style={{ minHeight: 52, background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
             >
               {busy && <Loader2 size={18} className="animate-spin" />}
               함께 기록하기
             </button>
             {error && (
-              <p role="alert" className="mt-3 text-[13px] font-semibold" style={{ color: "#C24747" }}>
+              <p role="alert" className="mt-3 text-[13px] font-semibold" style={{ color: "var(--color-error)" }}>
                 {error}
               </p>
             )}
@@ -124,8 +120,8 @@ export default function JoinClient({ token, state }: { token: string; state: Inv
             </p>
             <Link
               href="/"
-              className="inline-block px-6 py-3 rounded-2xl text-[15px] font-bold"
-              style={{ background: "var(--color-surface-alt, #F3EEE5)", color: "#5D564B" }}
+              className="inline-block px-6 h-12 leading-[48px] text-[15px] font-semibold"
+              style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)", borderRadius: "var(--radius-input)" }}
             >
               도시공존 둘러보기
             </Link>

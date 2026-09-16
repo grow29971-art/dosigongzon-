@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { getMyJourneyServer, type Milestone, type MilestoneCategory } from "@/lib/journey-server";
+import { getMyJourneyServer, type Milestone } from "@/lib/journey-server";
 
 export const metadata: Metadata = {
   title: "당신의 여정",
@@ -13,17 +13,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-const CAT_COLOR: Record<MilestoneCategory, { bg: string; ring: string; text: string }> = {
-  join:     { bg: "#E8ECE5", ring: "#5BA876", text: "#3F5B42" },
-  cat:      { bg: "#FFF1E6", ring: "#B05C36", text: "#7A4A2A" },
-  care:     { bg: "#FFF5E0", ring: "#E8B040", text: "#8C6A1F" },
-  comment:  { bg: "#F0E8F8", ring: "#8B65B8", text: "#5A3F7E" },
-  post:     { bg: "#E5EDF5", ring: "#4A7BA8", text: "#2A4A6B" },
-  received: { bg: "#FBE8EE", ring: "#D4708F", text: "#7A3E54" },
-  social:   { bg: "#FCEFD9", ring: "#E88D5A", text: "#7A4524" },
-  region:   { bg: "#E8F0E8", ring: "#6B8E6F", text: "#3F5B42" },
-  streak:   { bg: "#FBE5DC", ring: "#D85555", text: "#7A2A2A" },
-};
+// 카테고리별 색 채움은 리디자인(2026-09-16)으로 폐지 — 점·카드 전부 회색 헤어라인.
 
 function fmtDate(iso: string): string {
   const d = new Date(iso);
@@ -41,14 +31,9 @@ export default async function JourneyPage() {
   const items = await getMyJourneyServer(user.id);
 
   return (
-    <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
+    <div className="pb-24 min-h-screen" style={{ background: "var(--color-surface)" }}>
       {/* 헤더 */}
-      <div
-        className="px-5 pt-12 pb-7"
-        style={{
-          background: "#FFF8F2",
-        }}
-      >
+      <div className="px-5 pt-12 pb-5">
         <Link
           href="/mypage"
           className="inline-flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3"
@@ -56,17 +41,11 @@ export default async function JourneyPage() {
           <ArrowLeft size={14} />
           마이페이지
         </Link>
-        <div className="flex items-center gap-2 mb-1.5">
-          <Sparkles size={20} className="text-primary" />
-          <h1 className="text-[24px] font-bold tracking-tight text-text-main">
-            당신의 여정
-          </h1>
-        </div>
+        <h1 className="text-[24px] font-bold text-text-main mb-1.5">
+          당신의 여정
+        </h1>
         <p className="text-[13px] text-text-sub leading-relaxed">
-          도시공존에서 쌓아온 발자취와 따뜻한 순간들이에요.
-        </p>
-        <p className="mt-2 text-[13px] text-text-light">
-          총 {items.length}개의 작은 이야기가 모였습니다.
+          총 {items.length}개의 순간이 모였어요.
         </p>
       </div>
 
@@ -78,8 +57,8 @@ export default async function JourneyPage() {
           <div className="relative">
             {/* 세로 선 */}
             <div
-              className="absolute left-[20px] top-2 bottom-2 w-[2px] rounded-full"
-              style={{ background: "#B05C3633" }}
+              className="absolute left-[20px] top-2 bottom-2 w-[1px]"
+              style={{ background: "var(--color-border)" }}
             />
 
             <div className="space-y-4">
@@ -95,7 +74,6 @@ export default async function JourneyPage() {
 }
 
 function MilestoneRow({ m }: { m: Milestone }) {
-  const c = CAT_COLOR[m.category];
   const Wrapper = ({ children }: { children: React.ReactNode }) =>
     m.catId ? (
       <Link href={`/cats/${m.catId}`} className="block press transition-transform">
@@ -110,28 +88,17 @@ function MilestoneRow({ m }: { m: Milestone }) {
       <div className="flex items-start gap-3">
         {/* 아이콘 (점 위치) */}
         <div
-          className="relative shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-[20px]"
-          style={{
-            background: c.bg,
-            border: `2px solid ${c.ring}`,
-            boxShadow: `0 4px 12px ${c.ring}33`,
-          }}
+          className="relative shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+          style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
         >
-          {m.emoji}
+          <span className="w-2 h-2 rounded-full" style={{ background: "var(--color-primary)" }} />
         </div>
         {/* 카드 */}
-        <div
-          className="flex-1 min-w-0 rounded-2xl p-3.5"
-          style={{
-            background: "#FFFFFF",
-            boxShadow: "var(--shadow-card)",
-            border: "1px solid var(--color-divider)",
-          }}
-        >
-          <p className="text-[11px] font-bold tracking-wide" style={{ color: c.text }}>
+        <div className="flex-1 min-w-0 card p-3.5">
+          <p className="text-[11px] font-medium text-text-light">
             {fmtDate(m.date)}
           </p>
-          <p className="mt-0.5 text-[15px] font-bold text-text-main tracking-tight leading-tight">
+          <p className="mt-0.5 text-[15px] font-semibold text-text-main leading-tight">
             {m.title}
           </p>
           <p className="mt-1 text-[13px] text-text-sub leading-relaxed">{m.desc}</p>
@@ -143,21 +110,13 @@ function MilestoneRow({ m }: { m: Milestone }) {
 
 function EmptyState() {
   return (
-    <div
-      className="rounded-2xl p-6 text-center"
-      style={{
-        background: "#FFFFFF",
-        border: "1px solid var(--color-divider)",
-        boxShadow: "var(--shadow-card)",
-      }}
-    >
+    <div className="card p-6 text-center">
       <Sparkles size={28} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-      <p className="text-[15px] font-bold text-text-main mb-1.5">
+      <p className="text-[15px] font-semibold text-text-main mb-1.5">
         여정이 막 시작됐어요
       </p>
       <p className="text-[13px] text-text-sub leading-relaxed">
-        지도에서 첫 고양이를 등록하거나 동네 이야기에 응원의 댓글을 남기면
-        여기에 따뜻한 순간들이 차곡차곡 쌓여요.
+        고양이를 등록하거나 댓글을 남기면 여기에 쌓여요.
       </p>
     </div>
   );

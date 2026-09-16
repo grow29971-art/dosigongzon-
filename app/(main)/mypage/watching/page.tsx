@@ -15,6 +15,7 @@ import {
   type CatHealthStatus,
 } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import { catArtWalkSvg } from "@/lib/cat-art";
 
 export default function WatchingPage() {
   const { user, loading: authLoading } = useAuth();
@@ -51,16 +52,15 @@ export default function WatchingPage() {
   };
 
   return (
-    <div className="min-h-dvh pb-6" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-6" style={{ background: "var(--color-surface)" }}>
       {/* 헤더 */}
-      <div className="px-4 pt-12 pb-3 flex items-center gap-2 sticky top-0 z-10" style={{ background: "#F7F4EE" }}>
+      <div className="px-4 pt-12 pb-3 flex items-center gap-2 sticky top-0 z-10" style={{ background: "var(--color-surface)", borderBottom: "1px solid var(--color-border)" }}>
         <Link
           href="/mypage"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong -ml-2"
           aria-label="마이페이지로"
         >
-          <ArrowLeft size={18} className="text-text-main" />
+          <ArrowLeft size={22} className="text-text-main" />
         </Link>
         <h1 className="text-[17px] font-bold text-text-main">내가 지켜보는 아이</h1>
       </div>
@@ -68,81 +68,86 @@ export default function WatchingPage() {
       <section className="px-5 mt-2">
         {loading || authLoading ? (
           <div className="flex justify-center py-16">
-            <Loader2 size={22} className="animate-spin" style={{ color: "var(--color-primary)" }} />
+            <Loader2 size={22} className="animate-spin" style={{ color: "var(--color-text-muted)" }} />
           </div>
         ) : !user ? (
-          <div className="rounded-2xl p-6 text-center bg-white" style={{ boxShadow: "var(--shadow-card)" }}>
-            <p className="text-[15px] font-bold text-text-main mb-2">로그인이 필요해요</p>
+          <div className="card p-6 text-center">
+            <p className="text-[15px] font-semibold text-text-main mb-2">로그인이 필요해요</p>
             <p className="text-[13px] text-text-sub mb-4">하트 누른 아이들을 모아보려면 로그인해주세요.</p>
             <Link
               href="/login?next=/mypage/watching"
-              className="inline-block px-6 py-2.5 rounded-2xl text-white text-[13px] font-bold press"
-              style={{ background: "var(--color-primary)" }}
+              className="inline-flex items-center px-6 h-10 rounded-lg text-[13px] font-semibold press"
+              style={{ background: "var(--color-primary)", color: "var(--color-surface)" }}
             >
               로그인하기
             </Link>
           </div>
         ) : cats.length === 0 ? (
-          <div className="rounded-2xl p-6 text-center bg-white" style={{ boxShadow: "var(--shadow-card)" }}>
-            <Heart size={28} className="mx-auto mb-3" color="#E0533D" />
-            <p className="text-[15px] font-bold text-text-main mb-2">아직 지켜보는 아이가 없어요</p>
+          <div className="card p-6 text-center">
+            <Heart size={28} className="mx-auto mb-3 text-text-light" strokeWidth={1.5} />
+            <p className="text-[15px] font-semibold text-text-main mb-2">아직 지켜보는 아이가 없어요</p>
             <p className="text-[13px] text-text-sub leading-relaxed mb-4">
-              홈이나 고양이 카드에서 ❤️를 누르면
-              <br />
-              여기에 모여요.
+              고양이 카드에서 하트를 누르면 여기에 모여요.
             </p>
             <Link
               href="/map"
-              className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-2xl text-white text-[13px] font-bold press"
-              style={{ background: "var(--color-primary)" }}
+              className="inline-flex items-center gap-1.5 px-6 h-10 rounded-lg text-[13px] font-semibold press"
+              style={{ background: "var(--color-primary)", color: "var(--color-surface)" }}
             >
               <PawPrint size={14} /> 우리 동네 고양이 보러 가기
             </Link>
           </div>
         ) : (
           <>
-            <p className="text-[13px] text-text-sub mb-3 px-1">
+            <p className="text-[13px] text-text-sub mb-2 px-1">
               {cats.length}마리를 지켜보고 있어요. 하트를 다시 누르면 목록에서 빠져요.
             </p>
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="card px-4">
               {cats.map((c) => {
                 const h = HEALTH_MAP[c.health_status as CatHealthStatus] ?? HEALTH_MAP.good;
-                const safe = sanitizeImageUrl(c.photo_url ?? null, "https://placehold.co/400x400/EEEAE2/2A2A28?text=%3F");
-                const photo = thumbnailUrl(safe, 400) ?? safe;
+                const safe = sanitizeImageUrl(c.photo_url ?? null, "");
+                const photo = thumbnailUrl(safe, 96) ?? safe;
                 return (
                   <Link
                     key={c.id}
                     href={`/cats/${c.id}`}
-                    className="block rounded-2xl overflow-hidden bg-white press transition-transform"
-                    style={{ boxShadow: "var(--shadow-card-sm)" }}
+                    className="flex items-center gap-3 py-3 press transition-transform border-b border-divider last:border-b-0"
+                    style={{ minHeight: 64 }}
                   >
-                    <div className="relative" style={{ aspectRatio: "1/1" }}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={photo}
-                        alt={c.name}
-                        loading="lazy"
-                        decoding="async"
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
-                      <span
-                        className="absolute top-2 left-2 text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full"
-                        style={{ backgroundColor: h.color }}
-                      >
-                        {h.label}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={(e) => handleUnheart(e, c.id)}
-                        disabled={busyId === c.id}
-                        aria-label={`${c.name} 지켜보기 해제`}
-                        className="absolute bottom-2 right-2 w-8 h-8 rounded-full flex items-center justify-center press-strong disabled:opacity-60"
-                        style={{ background: "rgba(255,255,255,0.92)", boxShadow: "0 1px 4px rgba(0,0,0,0.15)" }}
-                      >
-                        <Heart size={15} color="#E0533D" fill="#E0533D" strokeWidth={2.2} />
-                      </button>
+                    <div
+                      className="w-12 h-12 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
+                      style={{ background: "var(--color-gray-100)" }}
+                    >
+                      {photo ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={photo}
+                          alt={c.name}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div
+                          className="w-9 h-9 flex items-center justify-center"
+                          aria-hidden
+                          dangerouslySetInnerHTML={{ __html: catArtWalkSvg(c.id, 36) }}
+                        />
+                      )}
                     </div>
-                    <p className="px-2.5 py-2 text-[13px] font-bold text-text-main truncate">{c.name}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[15px] font-semibold text-text-main truncate">{c.name}</p>
+                      <p className="text-[13px] text-text-sub mt-0.5">{h.label}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => handleUnheart(e, c.id)}
+                      disabled={busyId === c.id}
+                      aria-label={`${c.name} 지켜보기 해제`}
+                      className="w-9 h-9 rounded-full flex items-center justify-center press-strong disabled:opacity-60 shrink-0"
+                    >
+                      <Heart size={18} style={{ color: "var(--color-like)", fill: "var(--color-like)" }} strokeWidth={2} />
+                    </button>
                   </Link>
                 );
               })}

@@ -55,7 +55,6 @@ import {
   updateMyAvatar,
   updateMyNickname,
   getDisplayName,
-  getLevelColor,
   getLevelPerks,
   type Cat,
   type CatCommentWithCat,
@@ -66,7 +65,6 @@ import {
   getTitleStatuses,
   countUnlocked,
   CATEGORY_LABELS,
-  CATEGORY_COLORS,
   TITLES,
   findAdminTitle,
   type TitleStatus,
@@ -75,6 +73,8 @@ import { createClient } from "@/lib/supabase/client";
 import { getUnreadCount } from "@/lib/dm-repo";
 import { countMyAcceptedCircleMembers } from "@/lib/circles-repo";
 import UIListRow from "@/app/components/ui/ListRow";
+import { sanitizeImageUrl } from "@/lib/url-validate";
+import { catArtWalkSvg } from "@/lib/cat-art";
 
 function formatRelative(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -274,20 +274,19 @@ export default function MyPage() {
   const avatarUrl = user?.user_metadata?.avatar_url as string | undefined;
 
   return (
-    // 2026-07-21 테라코타 전면 전환으로 theme-mono 파일럿 클래스 해제 — 전역 토큰을 따른다
     <div className="px-4 pt-14 pb-8">
       <PageIntroModal
         storageKey="dosigongzon_intro_mypage"
         badge="마이페이지"
-        headerEmoji="👤"
+        headerEmoji=""
         title="내 돌봄 발자취를 모아봐요"
         items={[
-          { emoji: "🏆", text: <>돌볼수록 <b className="text-text-main">레벨·업적·타이틀</b>이 쌓여요.</> },
-          { emoji: "🐱", text: <>내 고양이와 돌봄 기록을 관리해요.</> },
-          { emoji: "⚙️", text: <>알림·서클·차단 등 설정도 여기서 할 수 있어요.</> },
+          { emoji: "", text: <>돌볼수록 <b className="text-text-main">레벨·업적·타이틀</b>이 쌓여요.</> },
+          { emoji: "", text: <>내 고양이와 돌봄 기록을 관리해요.</> },
+          { emoji: "", text: <>알림·서클·차단 등 설정도 여기서 할 수 있어요.</> },
         ]}
       />
-      {/* 헤더 — 페이지 대제목(24px/extrabold 800)만 예외로 유지 */}
+      {/* 헤더 */}
       <div className="mb-6 px-1">
         <h1 className="text-[24px] font-bold text-text-main tracking-tight mb-1">
           마이페이지
@@ -304,7 +303,6 @@ export default function MyPage() {
           description="레벨·업적·streak으로 활동이 보상돼요. 친구 초대(+15점), 주간 이메일, 앱 설치, 동네 푸시도 여기서 켜고 끌 수 있어요."
           ctaLabel="전체 기능 안내"
           ctaHref="/guide"
-          accent="#211D17"
         />
       </div>
 
@@ -314,47 +312,44 @@ export default function MyPage() {
         </div>
       ) : user ? (
         <>
-          {/* ── 프로필 카드 ── */}
+          {/* ── 프로필 ── */}
           <div
-            className="flex items-center gap-4 px-5 py-4 mb-3"
+            className="flex items-center gap-4 px-4 py-4 mb-3"
             style={{
               background: "var(--color-surface)",
               borderRadius: "var(--radius-card)",
-              boxShadow: "var(--shadow-card)",
-              border: "1px solid var(--color-divider)",
+              border: "1px solid var(--color-border)",
             }}
           >
-            {/* 아바타 (탭하면 파일 선택) — 페이지 유일 히어로 그라디언트 */}
+            {/* 아바타 (탭하면 파일 선택) — 원형 아바타는 full 허용 */}
             <button
               type="button"
               onClick={() => avatarInputRef.current?.click()}
               disabled={avatarUploading}
               className="relative w-16 h-16 rounded-full flex items-center justify-center shrink-0 overflow-hidden press-strong transition-transform"
               style={{
-                background: "var(--color-primary)",
-                boxShadow: "0 0 0 2px #fff",
-                border: "1px solid var(--color-divider)",
+                background: avatarUrl ? "var(--color-surface-alt)" : "var(--color-gray-200)",
+                border: "1px solid var(--color-border)",
               }}
               aria-label="프로필 사진 변경"
             >
               {avatarUrl ? (
                 <Image src={avatarUrl} alt="" fill sizes="64px" style={{ objectFit: "cover" }} />
               ) : (
-                <User size={32} color="#fff" strokeWidth={2} />
+                <User size={30} className="text-text-light" strokeWidth={1.8} />
               )}
-              {/* 하단 카메라 배지 */}
+              {/* 하단 카메라 배지 (원형 아이콘 버튼 — full 허용) */}
               <div
                 className="absolute bottom-0 right-0 w-6 h-6 rounded-full flex items-center justify-center"
                 style={{
                   background: "var(--color-surface)",
-                  border: "2px solid var(--color-surface)",
-                  boxShadow: "var(--shadow-raised)",
+                  border: "1px solid var(--color-border)",
                 }}
               >
                 {avatarUploading ? (
-                  <Loader2 size={11} className="animate-spin" style={{ color: "var(--color-primary)" }} />
+                  <Loader2 size={11} className="animate-spin text-text-sub" />
                 ) : (
-                  <Camera size={11} style={{ color: "var(--color-primary)" }} strokeWidth={2.5} />
+                  <Camera size={11} className="text-text-sub" strokeWidth={2.2} />
                 )}
               </div>
               {/* 업로드 중 오버레이 */}
@@ -386,9 +381,10 @@ export default function MyPage() {
                       maxLength={20}
                       autoFocus
                       disabled={nickSaving}
-                      className="flex-1 min-w-0 px-2 py-1.5 rounded-lg text-[15px] font-bold outline-none"
+                      className="flex-1 min-w-0 px-2 py-1.5 text-[15px] font-bold outline-none"
                       style={{
-                        backgroundColor: "var(--color-gray-50)",
+                        borderRadius: "var(--radius-input)",
+                        backgroundColor: "var(--color-surface-alt)",
                         color: "var(--color-text-main)",
                         border: "1px solid var(--color-border)",
                       }}
@@ -398,23 +394,25 @@ export default function MyPage() {
                       type="button"
                       onClick={handleSaveNick}
                       disabled={nickSaving}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center press-strong transition-transform"
-                      style={{ backgroundColor: "var(--color-gray-600)" }}
+                      className="w-7 h-7 flex items-center justify-center press-strong transition-transform text-white"
+                      style={{ borderRadius: "var(--radius-input)", backgroundColor: "var(--color-primary)" }}
+                      aria-label="닉네임 저장"
                     >
                       {nickSaving ? (
-                        <Loader2 size={12} className="text-white animate-spin" />
+                        <Loader2 size={12} className="animate-spin" />
                       ) : (
-                        <Check size={12} color="#fff" strokeWidth={3} />
+                        <Check size={12} strokeWidth={3} />
                       )}
                     </button>
                     <button
                       type="button"
                       onClick={handleCancelEditNick}
                       disabled={nickSaving}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center press-strong transition-transform"
-                      style={{ backgroundColor: "var(--color-gray-100)" }}
+                      className="w-7 h-7 flex items-center justify-center press-strong transition-transform text-text-light"
+                      style={{ borderRadius: "var(--radius-input)", backgroundColor: "var(--color-gray-100)" }}
+                      aria-label="닉네임 수정 취소"
                     >
-                      <X size={12} style={{ color: "var(--color-text-light)" }} strokeWidth={3} />
+                      <X size={12} strokeWidth={3} />
                     </button>
                   </div>
                   <p className="text-[11px] text-text-light mt-1 truncate">{email}</p>
@@ -433,21 +431,18 @@ export default function MyPage() {
                     <button
                       type="button"
                       onClick={handleStartEditNick}
-                      className="w-6 h-6 rounded-lg flex items-center justify-center press-strong transition-transform shrink-0"
-                      style={{ backgroundColor: "var(--color-gray-100)" }}
+                      className="w-6 h-6 flex items-center justify-center press-strong transition-transform shrink-0 text-text-light"
+                      style={{ borderRadius: "var(--radius-square-sm)" }}
                       aria-label="닉네임 수정"
                     >
-                      <Pencil size={11} style={{ color: "var(--color-text-light)" }} strokeWidth={2.5} />
+                      <Pencil size={12} strokeWidth={2} />
                     </button>
                   </div>
                   <p className="text-[13px] text-text-light mt-0.5 truncate">{email}</p>
                   {joinedDays > 0 && (
-                    <span
-                      className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 chip-square text-[11px] font-bold"
-                      style={{ background: "var(--color-primary-soft)", color: "var(--color-primary-dark)" }}
-                    >
+                    <p className="text-[13px] text-text-sub mt-1">
                       첫 등록 후 {joinedDays}일째 함께 돌봐요
-                    </span>
+                    </p>
                   )}
                   {avatarError && (
                     <p className="text-[11px] mt-1" style={{ color: "var(--color-error)" }}>
@@ -463,38 +458,26 @@ export default function MyPage() {
           {/* /notifications 최근 4건 카드. 비어있으면 첫 등록 유도. */}
           <ActivityFeedPreview hasMyCat={myCats.length > 0} />
 
-          {/* ── 레벨 카드 ── */}
+          {/* ── 레벨 ── */}
           {summary && (() => {
             const score = computeScore(summary);
             const lv = computeLevel(score);
             return (
               <div
-                className="mb-3 px-5 py-4 relative overflow-hidden dark-card-level"
+                className="mb-3 px-4 py-4 dark-card-level"
                 style={{
                   background: "var(--color-surface)",
                   borderRadius: "var(--radius-card)",
-                  boxShadow: "var(--shadow-card)",
-                  border: "1px solid var(--color-primary-soft)",
+                  border: "1px solid var(--color-border)",
                 }}
               >
-                <div className="flex items-center gap-4 mb-3">
-                  <div
-                    className="w-[48px] h-[48px] rounded-full flex items-center justify-center shrink-0 text-2xl"
-                    style={{
-                      backgroundColor: "var(--color-primary-soft)",
-                    }}
-                  >
-                    {lv.emoji}
-                  </div>
+                <div className="flex items-center gap-3 mb-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2">
-                      <span
-                        className="text-[11px] font-bold tracking-wider"
-                        style={{ color: "var(--color-primary-dark)" }}
-                      >
+                      <span className="text-[13px] font-bold text-text-sub tabular-nums">
                         LV.{lv.level}
                       </span>
-                      <span className="text-[11px] font-bold text-text-light tabular-nums">
+                      <span className="text-[11px] text-text-light tabular-nums">
                         {lv.score}점
                       </span>
                     </div>
@@ -509,22 +492,22 @@ export default function MyPage() {
                     <span className="text-[11px] text-text-sub font-semibold">
                       다음 레벨까지
                     </span>
-                    <span className="text-[11px] font-bold tabular-nums" style={{ color: "var(--color-primary)" }}>
+                    <span className="text-[11px] font-semibold text-text-sub tabular-nums">
                       {lv.next
                         ? `${lv.score} / ${lv.next}`
                         : "MAX"}
                     </span>
                   </div>
                   <div
-                    className="h-2 rounded-full overflow-hidden"
-                    style={{ backgroundColor: "var(--color-surface-alt)" }}
+                    className="h-1.5 overflow-hidden"
+                    style={{ borderRadius: "var(--radius-square-sm)", backgroundColor: "var(--color-gray-200)" }}
                   >
                     <div
-                      className="h-full rounded-full transition-all duration-500"
+                      className="h-full transition-all duration-500"
                       style={{
                         width: `${lv.progress * 100}%`,
                         background: "var(--color-primary)",
-                        boxShadow: "var(--shadow-card-sm)",
+                        borderRadius: "var(--radius-square-sm)",
                       }}
                     />
                   </div>
@@ -533,23 +516,23 @@ export default function MyPage() {
                 {(() => {
                   const perks = getLevelPerks(lv.level);
                   return (
-                    <div className="mt-3 pt-3 border-t" style={{ borderColor: "var(--color-divider)" }}>
-                      <p className="text-[11px] font-bold text-text-light mb-2">Lv.{lv.level} 혜택</p>
+                    <div className="mt-3 pt-3 border-t border-divider">
+                      <p className="text-[11px] font-semibold text-text-light mb-2">Lv.{lv.level} 혜택</p>
                       <div className="grid grid-cols-2 gap-1.5">
-                        <div className="flex items-center gap-1.5 text-[11px]">
+                        <div className="flex items-center gap-1.5 text-[11px] text-text-sub">
                           <Bot size={14} />
-                          <span className="text-text-sub">AI 대화</span>
-                          <span className="font-bold text-text-main ml-auto">{perks.aiChatPerMinute}회/분</span>
+                          <span>AI 대화</span>
+                          <span className="font-semibold text-text-main ml-auto">{perks.aiChatPerMinute}회/분</span>
                         </div>
-                        <div className="flex items-center gap-1.5 text-[11px]">
+                        <div className="flex items-center gap-1.5 text-[11px] text-text-sub">
                           <Pencil size={14} />
-                          <span className="text-text-sub">글 작성</span>
-                          <span className="font-bold text-text-main ml-auto">{perks.dailyPostLimit === 0 ? "무제한" : `${perks.dailyPostLimit}개/일`}</span>
+                          <span>글 작성</span>
+                          <span className="font-semibold text-text-main ml-auto">{perks.dailyPostLimit === 0 ? "무제한" : `${perks.dailyPostLimit}개/일`}</span>
                         </div>
-                        <div className="flex items-center gap-1.5 text-[11px]">
+                        <div className="flex items-center gap-1.5 text-[11px] text-text-sub">
                           {perks.canUseSpecialEmoji ? <Sparkles size={14} /> : <Lock size={14} />}
-                          <span className="text-text-sub">특별 이모지</span>
-                          <span className="font-bold ml-auto" style={{ color: perks.canUseSpecialEmoji ? "var(--color-gray-600)" : "var(--color-text-light)" }}>{perks.canUseSpecialEmoji ? "사용 가능" : "Lv.3+"}</span>
+                          <span>특별 이모지</span>
+                          <span className={`font-semibold ml-auto ${perks.canUseSpecialEmoji ? "text-text-main" : "text-text-light"}`}>{perks.canUseSpecialEmoji ? "사용 가능" : "Lv.3+"}</span>
                         </div>
                       </div>
                     </div>
@@ -559,28 +542,34 @@ export default function MyPage() {
             );
           })()}
 
-          {/* ── 활동 요약 (3개 지표) ── */}
-          <div className="grid grid-cols-3 gap-2.5 mb-5">
+          {/* ── 활동 요약 (3개 지표) — 흰 카드 1장, 세로 헤어라인으로 3칸 ── */}
+          <div
+            className="grid grid-cols-3 mb-5"
+            style={{
+              background: "var(--color-surface)",
+              borderRadius: "var(--radius-card)",
+              border: "1px solid var(--color-border)",
+            }}
+          >
             <StatCard
               Icon={CatIcon}
               label="등록 고양이"
               value={summary?.catCount ?? 0}
-              color="var(--color-text-main)"
               loading={dataLoading}
             />
             <StatCard
               Icon={MessageCircle}
               label="돌봄 기록"
               value={summary?.commentCount ?? 0}
-              color="var(--color-gray-600)"
               loading={dataLoading}
+              divider
             />
             <StatCard
               Icon={AlertTriangle}
               label="학대 신고"
               value={summary?.alertCount ?? 0}
-              color="var(--color-error)"
               loading={dataLoading}
+              divider
             />
           </div>
 
@@ -612,59 +601,32 @@ export default function MyPage() {
                 <p className="mb-2">아직 등록한 고양이가 없어요</p>
                 <Link
                   href="/map"
-                  className="inline-flex items-center gap-1 text-[13px] font-bold text-primary"
+                  className="inline-flex items-center gap-1 text-[13px] font-semibold text-primary"
                 >
                   지도에서 등록하기 <ChevronRight size={12} />
                 </Link>
               </EmptyBox>
             ) : (
-              <div className="space-y-2">
+              <div className="card px-3 py-1">
                 {myCats.map((cat) => (
-                  <Link
+                  <UIListRow
                     key={cat.id}
                     href="/map"
-                    className="flex items-center gap-3 px-3 py-2.5 press transition-transform"
-                    style={{
-                      background: "var(--color-surface)",
-                      borderRadius: "var(--radius-card-sm)",
-                      boxShadow: "var(--shadow-card-sm)",
-                      border: "1px solid var(--color-divider)",
-                    }}
-                  >
-                    <div
-                      className="w-12 h-12 rounded-xl overflow-hidden shrink-0"
-                      style={{
-                        background: cat.photo_url
-                          ? `url('${cat.photo_url}') center/cover`
-                          : "var(--color-surface-alt)",
-                        border: "2px solid var(--color-surface)",
-                        boxShadow: "var(--shadow-card-sm)",
-                      }}
-                    >
-                      {!cat.photo_url && (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <CatIcon size={18} style={{ color: "var(--color-primary)" }} strokeWidth={2} />
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[15px] font-bold text-text-main truncate tracking-tight">
-                        {cat.name}
-                      </p>
-                      <div className="flex items-center gap-1 mt-0.5">
+                    icon={<CatThumb id={cat.id} photoUrl={cat.photo_url} size={40} />}
+                    title={cat.name}
+                    subtitle={
+                      <>
                         {cat.region && (
-                          <span className="text-[11px] text-text-sub flex items-center gap-0.5">
-                            <MapPin size={10} />
+                          <span className="inline-flex items-center gap-0.5">
+                            <MapPin size={11} />
                             {cat.region}
+                            {" · "}
                           </span>
                         )}
-                        <span className="text-[11px] text-text-light">
-                          {cat.region && "·"} {formatRelative(cat.created_at)}
-                        </span>
-                      </div>
-                    </div>
-                    <ChevronRight size={16} className="text-text-muted shrink-0" />
-                  </Link>
+                        {formatRelative(cat.created_at)}
+                      </>
+                    }
+                  />
                 ))}
               </div>
             )}
@@ -679,51 +641,23 @@ export default function MyPage() {
                 </h2>
               </div>
               <div
-                className="flex gap-2 overflow-x-auto no-scrollbar px-1 -mx-1 pb-1"
+                className="flex gap-3 overflow-x-auto no-scrollbar px-1 -mx-1 pb-1"
               >
                 {likedCats.map((cat) => (
                   <Link
                     key={cat.id}
                     href={`/cats/${cat.id}`}
-                    className="shrink-0 press-strong transition-transform"
-                    style={{ width: 96 }}
+                    className="shrink-0 flex flex-col items-center press-strong transition-transform"
+                    style={{ width: 76 }}
                   >
-                    <div
-                      className="relative w-24 h-24 rounded-2xl overflow-hidden mb-1.5"
-                      style={{
-                        background: cat.photo_url
-                          ? `url('${cat.photo_url}') center/cover`
-                          : "var(--color-surface-alt)",
-                        boxShadow: "var(--shadow-card-sm)",
-                        border: "2px solid var(--color-surface)",
-                      }}
-                    >
-                      {!cat.photo_url && (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <CatIcon size={24} style={{ color: "var(--color-primary)" }} strokeWidth={2} />
-                        </div>
-                      )}
-                      <div
-                        className="absolute top-1.5 right-1.5 flex items-center gap-0.5 px-1.5 py-0.5 chip-square"
-                        style={{
-                          background: "var(--color-gray-700)",
-                          boxShadow: "var(--shadow-card-sm)",
-                        }}
-                      >
-                        <span style={{ fontSize: 9 }}>❤️</span>
-                        <span className="text-[11px] font-bold text-white">
-                          {cat.like_count ?? 0}
-                        </span>
-                      </div>
-                    </div>
-                    <p className="text-[13px] font-bold text-text-main truncate text-center">
+                    <CatThumb id={cat.id} photoUrl={cat.photo_url} size={64} />
+                    <p className="w-full text-[13px] font-semibold text-text-main truncate text-center mt-1.5">
                       {cat.name}
                     </p>
-                    {cat.region && (
-                      <p className="text-[11px] text-text-sub truncate text-center">
-                        {cat.region}
-                      </p>
-                    )}
+                    <p className="text-[11px] text-text-light inline-flex items-center gap-0.5">
+                      <Heart size={10} />
+                      {cat.like_count ?? 0}
+                    </p>
                   </Link>
                 ))}
               </div>
@@ -740,46 +674,30 @@ export default function MyPage() {
             {dataLoading && myComments.length === 0 ? (
               <EmptyBox>불러오는 중...</EmptyBox>
             ) : myComments.length === 0 ? (
-              <EmptyBox>
-                <p>아직 남긴 기록이 없어요</p>
-                <p className="text-[11px] text-text-light mt-1">
-                  지도에서 고양이를 선택해 기록을 남겨보세요
-                </p>
-              </EmptyBox>
+              <EmptyBox>지도에서 고양이를 골라 첫 기록을 남겨보세요</EmptyBox>
             ) : (
-              <div className="space-y-2">
+              <div className="card px-4 py-1">
                 {myComments.map((c) => {
                   const isAlert = c.kind === "alert";
                   return (
                     <div
                       key={c.id}
-                      className="px-4 py-3"
-                      style={{
-                        background: "var(--color-surface)",
-                        borderRadius: "var(--radius-card-sm)",
-                        boxShadow: "var(--shadow-card-sm)",
-                        border: "1px solid var(--color-divider)",
-                        borderLeft: isAlert ? "3px solid var(--color-error)" : "1px solid var(--color-divider)",
-                      }}
+                      className="py-3 border-b border-divider last:border-b-0"
                     >
                       <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                         {isAlert && (
-                          <AlertTriangle size={11} style={{ color: "var(--color-error)" }} />
+                          <AlertTriangle size={12} style={{ color: "var(--color-error)" }} />
                         )}
                         <span
-                          className="text-[11px] font-bold"
-                          style={{ color: isAlert ? "var(--color-error)" : "var(--color-primary)" }}
+                          className="text-[13px] font-semibold"
+                          style={{ color: isAlert ? "var(--color-error)" : "var(--color-text-main)" }}
                         >
                           {c.cat?.name ?? "알 수 없는 고양이"}
                         </span>
                         {c.author_level && (
                           <span
-                            className="text-[11px] font-bold px-1.5 py-[1px] rounded-md tabular-nums"
-                            style={{
-                              backgroundColor: getLevelColor(c.author_level),
-                              color: "#FFFFFF",
-                              boxShadow: `0 1px 3px ${getLevelColor(c.author_level)}55`,
-                            }}
+                            className="text-[11px] font-medium px-1.5 py-[1px] chip-square tabular-nums text-text-sub"
+                            style={{ border: "1px solid var(--color-border)" }}
                           >
                             Lv.{c.author_level}
                           </span>
@@ -796,7 +714,7 @@ export default function MyPage() {
                       {c.body && (
                         <p
                           className="text-[13px] leading-relaxed"
-                          style={{ color: isAlert ? "var(--color-error)" : "var(--color-gray-800)" }}
+                          style={{ color: isAlert ? "var(--color-error)" : "var(--color-text-sub)" }}
                         >
                           {c.body}
                         </p>
@@ -807,8 +725,8 @@ export default function MyPage() {
                           alt=""
                           width={120}
                           height={90}
-                          className="mt-2 rounded-lg object-cover"
-                          style={{ width: 120, height: 90 }}
+                          className="mt-2 object-cover"
+                          style={{ width: 120, height: 90, borderRadius: "var(--radius-card-sm)" }}
                         />
                       )}
                     </div>
@@ -829,183 +747,78 @@ export default function MyPage() {
               </h2>
             </div>
             {/* 카드 컬렉션 진입 카드 제거 — 카드 시스템 폐지 (2026-08-27 사장님 지시, 라우트도 삭제됨) */}
-            {/* 내 돌봄 활동 확인서 — 기록을 증빙 자산으로 (2026-08-29 PMF 개편) */}
-            <Link
-              href="/mypage/report"
-              className="w-full flex items-center gap-3 px-4 py-3.5 mb-2 press transition-transform"
-              style={{
-                background: "var(--color-primary-softer)",
-                borderRadius: "var(--radius-card-sm)",
-                boxShadow: "var(--shadow-card)",
-                border: "1px solid rgba(176,92,54,0.22)",
-              }}
-            >
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ backgroundColor: "var(--color-surface)" }}
-              >
-                <FileText size={18} color="var(--color-primary)" strokeWidth={2} />
-              </div>
-              <div className="flex-1 min-w-0 text-left">
-                <p className="text-[15px] font-bold text-text-main tracking-tight">
-                  내 돌봄 활동 확인서
-                </p>
-                <p className="text-[11px] text-text-sub mt-0.5">
-                  민원·봉사 증빙·지원사업용 PDF 문서 만들기
-                </p>
-              </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-primary)", opacity: 0.7 }} />
-            </Link>
-            {SHOW_JOURNEY && (
-            <Link
-              href="/mypage/journey"
-              className="w-full flex items-center gap-3 px-4 py-3.5 press transition-transform"
-              style={{
-                background: "var(--color-gray-50)",
-                borderRadius: "var(--radius-card-sm)",
-                boxShadow: "var(--shadow-card)",
-                border: "1px solid var(--color-divider)",
-              }}
-            >
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ backgroundColor: "var(--color-surface)" }}
-              >
-                <Sparkles size={18} color="var(--color-text-main)" strokeWidth={2} />
-              </div>
-              <div className="flex-1 min-w-0 text-left">
-                <p className="text-[15px] font-bold text-text-main tracking-tight">
-                  당신의 여정
-                </p>
-                <p className="text-[11px] text-text-sub mt-0.5">
-                  쌓아온 발자취와 따뜻한 순간들 보기
-                </p>
-              </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-primary)", opacity: 0.7 }} />
-            </Link>
-            )}
-            {SHOW_MONTHLY_REPORT && (
-            <Link
-              href="/mypage/monthly-report"
-              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 press transition-transform"
-              style={{
-                background: "var(--color-surface-alt)",
-                borderRadius: "var(--radius-card-sm)",
-                boxShadow: "var(--shadow-card)",
-                border: "1px solid var(--color-divider)",
-              }}
-            >
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ backgroundColor: "var(--color-surface)" }}
-              >
-                <TrendingUp size={18} color="var(--color-gray-600)" strokeWidth={2} />
-              </div>
-              <div className="flex-1 min-w-0 text-left">
-                <p className="text-[15px] font-bold text-text-main tracking-tight">
-                  이번 달 성장 리포트
-                </p>
-                <p className="text-[11px] text-text-sub mt-0.5">
-                  이번 달 내가 얼마나 채웠는지 한눈에 보기
-                </p>
-              </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-gray-600)", opacity: 0.7 }} />
-            </Link>
-            )}
-            {/* ── 토스식 그룹 카드 (2026-07-16): 개별 카드 나열 → 흰 카드 1장 + 행 구분선.
-                숨김 플래그 블록을 복원할 땐 UIListRow로 전환해서 이 카드에 넣을 것. ── */}
+            {/* 흰 카드 1장 + 행 헤어라인(UIListRow 기본). 숨김 플래그 블록도 같은 행 문법. */}
             <div className="card px-3 py-1">
+              {/* 내 돌봄 활동 확인서 — 기록을 증빙 자산으로 (2026-08-29 PMF 개편) */}
+              <UIListRow
+                href="/mypage/report"
+                icon={<FileText size={20} strokeWidth={1.8} />}
+                title="내 돌봄 활동 확인서"
+                subtitle="민원·봉사 증빙·지원사업용 PDF 문서 만들기"
+              />
+              {SHOW_JOURNEY && (
+                <UIListRow
+                  href="/mypage/journey"
+                  icon={<Sparkles size={20} strokeWidth={1.8} />}
+                  title="당신의 여정"
+                  subtitle="쌓아온 발자취와 따뜻한 순간들 보기"
+                />
+              )}
+              {SHOW_MONTHLY_REPORT && (
+                <UIListRow
+                  href="/mypage/monthly-report"
+                  icon={<TrendingUp size={20} strokeWidth={1.8} />}
+                  title="이번 달 성장 리포트"
+                  subtitle="이번 달 내가 얼마나 채웠는지 한눈에 보기"
+                />
+              )}
               <UIListRow
                 href="/mypage/activity-regions"
-                icon={<MapPin size={18} color="var(--color-text-main)" strokeWidth={2} />}
-                iconBg="var(--color-primary-soft)"
+                icon={<MapPin size={20} strokeWidth={1.8} />}
                 title="활동 지역 설정"
                 subtitle="최대 2곳까지 내 동네를 지정할 수 있어요"
               />
               <UIListRow
                 href="/mypage/watching"
-                icon={<Heart size={18} color="#E0533D" fill="#E0533D" strokeWidth={2} />}
-                iconBg="rgba(224,83,61,0.10)"
+                icon={<Heart size={20} strokeWidth={1.8} />}
                 title="내가 지켜보는 아이"
                 subtitle="하트 누른 고양이들을 모아봐요"
-                style={{ borderTop: "1px solid var(--color-divider)" }}
               />
+              {SHOW_CARETAKERS && (
+                <UIListRow
+                  href="/caretakers"
+                  icon={<UserPlus size={20} strokeWidth={1.8} />}
+                  title="동네 길집사 찾기"
+                  subtitle="같은 동네에서 활동하는 분들과 연결돼요"
+                />
+              )}
+              {SHOW_RANKING && (
+                <UIListRow
+                  href="/ranking"
+                  icon={<Trophy size={20} strokeWidth={1.8} />}
+                  title="길집사 활동 랭킹"
+                  subtitle="내 활동 점수와 동네 길집사 순위를 확인해요"
+                />
+              )}
+              {/* 다음 설정 항목들은 각자 위 헤어라인을 그리므로 이 행은 아래 선을 생략 */}
               <UIListRow
                 href="/memorial"
-                icon={<Star size={18} color="var(--color-primary-dark)" fill="var(--color-primary-dark)" strokeWidth={2} />}
-                iconBg="var(--color-primary-soft)"
+                icon={<Star size={20} strokeWidth={1.8} />}
                 title="고양이별"
                 subtitle="먼저 떠난 아이들을 기억하는 곳이에요"
+                divider={false}
+              />
+              {/* 설정 항목들 — 각 컴포넌트가 자체적으로 위 구분선을 그리는 행(row)으로 렌더 */}
+              <InstallAppMenuItem />
+              <EmailDigestToggle />
+              <MarketingPushToggle />
+              <UIListRow
+                href="/guide"
+                icon={<BookOpen size={20} strokeWidth={1.8} />}
+                title="사용 가이드"
+                subtitle="10가지 핵심 기능 설명을 한눈에"
                 style={{ borderTop: "1px solid var(--color-divider)" }}
               />
-            {SHOW_CARETAKERS && (
-            <Link
-              href="/caretakers"
-              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 press transition-transform"
-              style={{
-                background: "var(--color-surface)",
-                borderRadius: "var(--radius-card-sm)",
-                boxShadow: "var(--shadow-card-sm)",
-                border: "1px solid var(--color-divider)",
-              }}
-            >
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ backgroundColor: "var(--color-surface-alt)" }}
-              >
-                <UserPlus size={18} color="var(--color-gray-600)" strokeWidth={2} />
-              </div>
-              <div className="flex-1 min-w-0 text-left">
-                <p className="text-[15px] font-bold text-text-main tracking-tight">
-                  동네 길집사 찾기
-                </p>
-                <p className="text-[11px] text-text-sub mt-0.5">
-                  같은 동네에서 활동하는 분들과 연결돼요
-                </p>
-              </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-gray-600)", opacity: 0.7 }} />
-            </Link>
-            )}
-            {SHOW_RANKING && (
-            <Link
-              href="/ranking"
-              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 press transition-transform"
-              style={{
-                background: "var(--color-surface)",
-                borderRadius: "var(--radius-card-sm)",
-                boxShadow: "var(--shadow-card-sm)",
-                border: "1px solid var(--color-divider)",
-              }}
-            >
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ backgroundColor: "var(--color-surface-alt)" }}
-              >
-                <Trophy size={18} color="var(--color-text-light)" strokeWidth={2} />
-              </div>
-              <div className="flex-1 min-w-0 text-left">
-                <p className="text-[15px] font-bold text-text-main tracking-tight">
-                  길집사 활동 랭킹
-                </p>
-                <p className="text-[11px] text-text-sub mt-0.5">
-                  내 활동 점수와 동네 길집사 순위를 확인해요
-                </p>
-              </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-text-light)", opacity: 0.7 }} />
-            </Link>
-            )}
-            {/* 설정 항목들 — 각 컴포넌트가 자체적으로 위 구분선을 그리는 행(row)으로 렌더 */}
-            <InstallAppMenuItem />
-            <EmailDigestToggle />
-            <MarketingPushToggle />
-            <UIListRow
-              href="/guide"
-              icon={<BookOpen size={18} color="var(--color-text-sub)" strokeWidth={2} />}
-              iconBg="var(--color-surface-alt)"
-              title="사용 가이드"
-              subtitle="10가지 핵심 기능 설명을 한눈에"
-              style={{ borderTop: "1px solid var(--color-divider)" }}
-            />
             </div>
           </div>
 
@@ -1016,69 +829,38 @@ export default function MyPage() {
                 지원
               </h2>
             </div>
-            {/* ── 토스식 그룹 카드 — 지원 항목 묶음 (복원 시 내 서클도 UIListRow로) ── */}
             <div className="card px-3 py-1">
-            <UIListRow
-              onClick={() => setInquiryOpen(true)}
-              icon={<MessageSquare size={18} color="var(--color-text-sub)" strokeWidth={2} />}
-              iconBg="var(--color-surface-alt)"
-              title="문의하기"
-              subtitle="불편사항, 버그, 제안 등을 관리자에게 전달"
-            />
-            <UIListRow
-              href="/mypage/inquiries"
-              icon={<Inbox size={18} color="var(--color-text-sub)" strokeWidth={2} />}
-              iconBg="var(--color-surface-alt)"
-              title="내 문의 보기"
-              subtitle="접수한 문의·관리자 답변 확인"
-              style={{ borderTop: "1px solid var(--color-divider)" }}
-            />
-            {SHOW_CIRCLE && (
-            <Link
-              href="/mypage/circle"
-              className="w-full flex items-center gap-3 px-4 py-3.5 mt-2 press transition-transform"
-              style={{
-                background: "var(--color-surface)",
-                borderRadius: "var(--radius-card-sm)",
-                boxShadow: "var(--shadow-card-sm)",
-                border: "1px solid var(--color-divider)",
-              }}
-            >
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ backgroundColor: "var(--color-surface-alt)" }}
-              >
-                <ShieldCheck size={18} color="var(--color-text-sub)" strokeWidth={2} />
-              </div>
-              <div className="flex-1 min-w-0 text-left">
-                <div className="flex items-center gap-1.5">
-                  <p className="text-[15px] font-bold text-text-main tracking-tight">
-                    내 서클
-                  </p>
-                  <span
-                    className="text-[11px] font-bold px-1.5 py-0.5 chip-square"
-                    style={{ background: "var(--color-gray-700)", color: "#FFF" }}
-                  >
-                    {circleMemberCount}
-                  </span>
-                </div>
-                <p className="text-[11px] text-text-sub mt-0.5">
-                  {circleMemberCount > 0
-                    ? `${circleMemberCount}명의 이웃과 함께 안전하게 돌봐요`
-                    : "믿는 이웃을 초대해 안전한 돌봄 시작하기"}
-                </p>
-              </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: "var(--color-text-sub)", opacity: 0.7 }} />
-            </Link>
-            )}
-            <UIListRow
-              href="/mypage/blocked-users"
-              icon={<Ban size={18} color="var(--color-error)" strokeWidth={2} />}
-              iconBg="rgba(240,68,82,0.1)"
-              title="차단한 사용자"
-              subtitle="차단 목록 확인 및 해제"
-              style={{ borderTop: "1px solid var(--color-divider)" }}
-            />
+              <UIListRow
+                onClick={() => setInquiryOpen(true)}
+                icon={<MessageSquare size={20} strokeWidth={1.8} />}
+                title="문의하기"
+                subtitle="불편사항, 버그, 제안 등을 관리자에게 전달"
+              />
+              <UIListRow
+                href="/mypage/inquiries"
+                icon={<Inbox size={20} strokeWidth={1.8} />}
+                title="내 문의 보기"
+                subtitle="접수한 문의·관리자 답변 확인"
+              />
+              {SHOW_CIRCLE && (
+                <UIListRow
+                  href="/mypage/circle"
+                  icon={<ShieldCheck size={20} strokeWidth={1.8} />}
+                  title="내 서클"
+                  subtitle={
+                    circleMemberCount > 0
+                      ? `${circleMemberCount}명의 이웃과 함께 안전하게 돌봐요`
+                      : "믿는 이웃을 초대해 안전한 돌봄 시작하기"
+                  }
+                  value={circleMemberCount > 0 ? `${circleMemberCount}명` : undefined}
+                />
+              )}
+              <UIListRow
+                href="/mypage/blocked-users"
+                icon={<Ban size={20} strokeWidth={1.8} />}
+                title="차단한 사용자"
+                subtitle="차단 목록 확인 및 해제"
+              />
             </div>
           </div>
 
@@ -1090,46 +872,29 @@ export default function MyPage() {
                   운영 관리
                 </h2>
               </div>
-              <Link
-                href="/admin"
-                className="flex items-center gap-3 px-4 py-4 press transition-transform"
-                style={{
-                  background: "var(--color-gray-900)",
-                  borderRadius: "var(--radius-card)",
-                  boxShadow: "var(--shadow-card)",
-                }}
-              >
-                <div
-                  className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
-                >
-                  <User size={19} color="#fff" strokeWidth={2.2} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-bold tracking-tight" style={{ color: "#fff" }}>
-                    관리자 대시보드
-                  </p>
-                  <p className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.65)" }}>
-                    통계 · 신고·문의 · 유저 · 뉴스 · 병원 · 약품 · 푸시 · 로그
-                  </p>
-                </div>
-                <ChevronRight size={16} className="shrink-0" style={{ color: "rgba(255,255,255,0.7)" }} />
-              </Link>
+              <div className="card px-3 py-1">
+                <UIListRow
+                  href="/admin"
+                  icon={<User size={20} strokeWidth={1.8} />}
+                  title="관리자 대시보드"
+                  subtitle="통계 · 신고·문의 · 유저 · 뉴스 · 병원 · 약품 · 푸시 · 로그"
+                />
+              </div>
             </div>
           )}
 
           {/* ── 로그아웃 ── */}
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-[13px] font-bold press-strong transition-transform"
+            className="w-full flex items-center justify-center gap-2 py-3.5 text-[15px] font-semibold press-strong transition-transform"
             style={{
+              borderRadius: "var(--radius-input)",
               backgroundColor: "var(--color-surface)",
-              color: "var(--color-text-light)",
-              border: "1px solid var(--color-divider)",
-              boxShadow: "var(--shadow-card)",
+              color: "var(--color-text-sub)",
+              border: "1px solid var(--color-border)",
             }}
           >
-            <LogOut size={14} />
+            <LogOut size={16} />
             로그아웃
           </button>
 
@@ -1155,11 +920,14 @@ export default function MyPage() {
             </p>
           </footer>
 
-          {/* 탈퇴 확인 모달 */}
+          {/* 탈퇴 확인 모달 (모달 — 그림자 허용) */}
           {deleteConfirmOpen && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center px-5">
               <div className="absolute inset-0 bg-black/40" onClick={() => !deleting && setDeleteConfirmOpen(false)} />
-              <div className="relative w-full max-w-sm bg-white rounded-[28px] p-6 shadow-2xl">
+              <div
+                className="relative w-full max-w-sm bg-white p-6"
+                style={{ borderRadius: "var(--radius-modal)", boxShadow: "var(--shadow-modal)" }}
+              >
                 <h2 className="text-[17px] font-bold text-text-main mb-2">
                   정말 탈퇴하시겠어요?
                 </h2>
@@ -1181,20 +949,20 @@ export default function MyPage() {
                   value={deleteConfirmText}
                   onChange={(e) => setDeleteConfirmText(e.target.value)}
                   placeholder="탈퇴합니다"
-                  className="w-full px-4 py-3 rounded-xl bg-surface-alt text-[15px] text-text-main outline-none focus:ring-2 focus:ring-error/20 mb-4 placeholder:text-text-muted"
+                  className="w-full px-4 py-3 rounded-lg bg-surface-alt text-[15px] text-text-main outline-none focus:ring-2 focus:ring-error/20 mb-4 placeholder:text-text-light"
                 />
                 <div className="flex gap-2">
                   <button
                     onClick={() => { setDeleteConfirmOpen(false); setDeleteConfirmText(""); }}
                     disabled={deleting}
-                    className="flex-1 py-3 rounded-xl text-[15px] font-bold bg-surface-alt text-text-sub press-strong transition-transform"
+                    className="flex-1 py-3 rounded-lg text-[15px] font-semibold bg-surface-alt text-text-sub press-strong transition-transform"
                   >
                     취소
                   </button>
                   <button
                     onClick={handleDeleteAccount}
                     disabled={deleteConfirmText !== "탈퇴합니다" || deleting}
-                    className="flex-1 py-3 rounded-xl text-[15px] font-bold text-white press-strong transition-transform disabled:opacity-40"
+                    className="flex-1 py-3 rounded-lg text-[15px] font-semibold text-white press-strong transition-transform disabled:opacity-40"
                     style={{ backgroundColor: "var(--color-error)" }}
                   >
                     {deleting ? "처리 중..." : "탈퇴하기"}
@@ -1207,37 +975,26 @@ export default function MyPage() {
       ) : (
         <>
           {/* 비로그인 */}
-          <Link
-            href="/login?next=%2Fmypage"
-            className="flex items-center gap-4 px-5 py-5 mb-4 press transition-transform"
-            style={{
-              background: "var(--color-surface)",
-              borderRadius: "var(--radius-card)",
-              boxShadow: "var(--shadow-card)",
-              border: "1px solid var(--color-divider)",
-            }}
-          >
-            <div
-              className="w-14 h-14 rounded-full flex items-center justify-center shrink-0"
-              style={{
-                background: "var(--color-primary)",
-                boxShadow: "var(--shadow-primary)",
-              }}
-            >
-              <User size={28} color="#fff" strokeWidth={2} />
-            </div>
-            <div className="flex-1">
-              <p className="text-[17px] font-bold text-text-main">게스트</p>
-              <p className="text-[11px] text-text-light mt-0.5">
-                로그인하고 길고양이 돌봄에 참여하세요
-              </p>
-            </div>
-            <ChevronRight size={18} className="text-text-muted" />
-          </Link>
+          <div className="card px-3 py-1 mb-4">
+            <UIListRow
+              href="/login?next=%2Fmypage"
+              icon={
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center"
+                  style={{ background: "var(--color-gray-200)" }}
+                >
+                  <User size={20} className="text-text-light" strokeWidth={1.8} />
+                </div>
+              }
+              title="게스트"
+              subtitle="로그인하고 길고양이 돌봄에 참여하세요"
+              style={{ minHeight: 72 }}
+            />
+          </div>
         </>
       )}
 
-      <p className="text-center text-[11px] text-text-muted mt-6">도시공존 v0.1.0</p>
+      <p className="text-center text-[11px] text-text-light mt-6">도시공존 v0.1.0</p>
 
       {/* 문의 모달 */}
       <InquiryModal open={inquiryOpen} onClose={() => setInquiryOpen(false)} />
@@ -1245,43 +1002,52 @@ export default function MyPage() {
   );
 }
 
-/* ═══ 지표 카드 ═══ */
+/* ═══ 고양이 썸네일 — 원형, 사진 없으면 cat-art ═══ */
+function CatThumb({ id, photoUrl, size }: { id: string; photoUrl: string | null | undefined; size: number }) {
+  const safe = sanitizeImageUrl(photoUrl ?? null, "");
+  return (
+    <div
+      className="rounded-full overflow-hidden shrink-0 flex items-center justify-center"
+      style={{ width: size, height: size, background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+    >
+      {safe ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={safe} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+      ) : (
+        <div
+          className="flex items-center justify-center"
+          style={{ width: size * 0.7, height: size * 0.7 }}
+          aria-hidden
+          dangerouslySetInnerHTML={{ __html: catArtWalkSvg(id, Math.round(size * 0.7)) }}
+        />
+      )}
+    </div>
+  );
+}
+
+/* ═══ 지표 칸 — 흰 카드 안 3칸, 왼쪽 헤어라인 ═══ */
 function StatCard({
   Icon,
   label,
   value,
-  color,
   loading,
+  divider,
 }: {
   Icon: typeof CatIcon;
   label: string;
   value: number;
-  color: string;
   loading: boolean;
+  divider?: boolean;
 }) {
   return (
     <div
-      className="flex flex-col items-center py-4 px-2"
-      style={{
-        background: "var(--color-surface)",
-        borderRadius: "var(--radius-card)",
-        boxShadow: "var(--shadow-card-sm)",
-        border: "1px solid var(--color-divider)",
-      }}
+      className={`flex flex-col items-center py-4 px-2 ${divider ? "border-l border-divider" : ""}`}
     >
-      <div
-        className="w-10 h-10 rounded-full flex items-center justify-center mb-2"
-        style={{ backgroundColor: "var(--color-surface-alt)" }}
-      >
-        <Icon size={18} color={color} strokeWidth={2} />
-      </div>
-      <p
-        className="text-[17px] font-bold tabular-nums tracking-tight"
-        style={{ color }}
-      >
+      <Icon size={20} className="text-text-sub mb-1.5" strokeWidth={1.8} />
+      <p className="text-[17px] font-bold tabular-nums tracking-tight text-text-main">
         {loading ? "—" : value}
       </p>
-      <p className="text-[11px] text-text-sub mt-0.5 font-semibold">{label}</p>
+      <p className="text-[11px] text-text-sub mt-0.5">{label}</p>
     </div>
   );
 }
@@ -1323,7 +1089,7 @@ function TitleSection({
 
   return (
     <div className="mb-5">
-      {/* 관리자 부여 특별 타이틀 */}
+      {/* 관리자 부여 특별 타이틀 — 색·이모지 없이 회색 테두리 + 이름 */}
       {myAdminTitle && (
         <div className="mb-3">
           <div className="flex items-center gap-2 mb-2 px-1">
@@ -1335,34 +1101,24 @@ function TitleSection({
             type="button"
             onClick={() => handleToggle(adminTitleId!, true)}
             disabled={saving}
-            className="w-full flex items-center gap-3 p-3 press transition-transform"
+            className="w-full flex items-center gap-3 px-4 py-3 press transition-transform"
             style={{
-              background: equipped === adminTitleId
-                ? `linear-gradient(135deg, ${myAdminTitle.color}15 0%, ${myAdminTitle.color}08 100%)`
-                : "var(--color-surface)",
-              borderRadius: "var(--radius-card-sm)",
+              background: "var(--color-surface)",
+              borderRadius: "var(--radius-card)",
               border: equipped === adminTitleId
-                ? `2px solid ${myAdminTitle.color}`
-                : "1px solid var(--color-divider)",
-              boxShadow: equipped === adminTitleId
-                ? `0 4px 14px ${myAdminTitle.color}20`
-                : "var(--shadow-card)",
+                ? "1px solid var(--color-primary)"
+                : "1px solid var(--color-border)",
+              minHeight: 56,
             }}
           >
-            <div
-              className="w-12 h-12 rounded-full flex items-center justify-center text-[24px]"
-              style={{ backgroundColor: `${myAdminTitle.color}15` }}
-            >
-              {myAdminTitle.emoji}
-            </div>
-            <div className="flex-1 text-left">
+            <div className="flex-1 text-left min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-[15px] font-bold text-text-main">{myAdminTitle.name}</span>
+                <span className="text-[15px] font-semibold text-text-main">{myAdminTitle.name}</span>
                 {equipped === adminTitleId && (
-                  <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-md text-white" style={{ backgroundColor: myAdminTitle.color }}>장착중</span>
+                  <span className="text-[11px] font-semibold px-1.5 py-0.5 chip-square text-white" style={{ backgroundColor: "var(--color-primary)" }}>장착중</span>
                 )}
               </div>
-              <p className="text-[11px] text-text-sub mt-0.5">{myAdminTitle.description}</p>
+              <p className="text-[13px] text-text-sub mt-0.5">{myAdminTitle.description}</p>
             </div>
           </button>
         </div>
@@ -1372,7 +1128,7 @@ function TitleSection({
         <h2 className="text-[17px] font-bold text-text-main tracking-tight">
           업적
         </h2>
-        <span className="text-[11px] font-bold text-text-sub tabular-nums ml-0.5">
+        <span className="text-[11px] font-semibold text-text-sub tabular-nums ml-0.5">
           {unlockedCount} / {total}
         </span>
         <span className="text-[11px] text-text-light ml-auto">
@@ -1404,74 +1160,53 @@ function TitleCard({
   onToggle: () => void;
 }) {
   const locked = !status.isUnlocked;
-  const categoryColor = CATEGORY_COLORS[status.category];
 
   return (
     <button
       type="button"
       onClick={onToggle}
       disabled={locked}
-      className="relative overflow-hidden p-3 flex flex-col items-center text-center press-strong transition-transform disabled:active:scale-100"
+      className="relative overflow-hidden px-2 py-3 flex flex-col items-center justify-center text-center press-strong transition-transform disabled:active:scale-100"
       style={{
-        background: isEquipped
-          ? `${categoryColor}08`
-          : locked
-            ? "var(--color-gray-50)"
-            : "var(--color-surface)",
+        background: locked ? "var(--color-surface-alt)" : "var(--color-surface)",
         borderRadius: "var(--radius-card-sm)",
-        boxShadow: locked
-          ? "none"
-          : "var(--shadow-card)",
         border: isEquipped
-          ? `2px solid ${categoryColor}`
-          : locked
-            ? "1.5px dashed var(--color-border)"
-            : `1px solid var(--color-divider)`,
+          ? "1px solid var(--color-primary)"
+          : "1px solid var(--color-border)",
+        minHeight: 72,
       }}
       title={status.description}
     >
       {isEquipped && (
         <span
-          className="absolute top-1 right-1 text-[11px] font-bold px-1.5 py-0.5 chip-square"
-          style={{ backgroundColor: categoryColor, color: "#fff" }}
+          className="absolute top-1 right-1 text-[11px] font-semibold px-1.5 py-0.5 chip-square text-white"
+          style={{ backgroundColor: "var(--color-primary)" }}
         >
           장착
         </span>
       )}
-      <div
-        className="w-10 h-10 rounded-full flex items-center justify-center text-[20px] mb-1.5"
-        style={{
-          background: locked ? "var(--color-gray-100)" : `${categoryColor}12`,
-          filter: locked ? "grayscale(100%) opacity(0.45)" : "none",
-        }}
-      >
-        {status.emoji}
-      </div>
       <p
-        className="text-[11px] font-bold leading-tight"
+        className="text-[13px] font-semibold leading-tight"
         style={{ color: locked ? "var(--color-text-light)" : "var(--color-text-main)" }}
       >
         {status.name}
       </p>
-      <span
-        className="text-[11px] font-bold mt-0.5 uppercase tracking-wider"
-        style={{ color: locked ? "var(--color-text-muted)" : categoryColor }}
-      >
+      <span className="text-[11px] mt-0.5 text-text-light">
         {CATEGORY_LABELS[status.category]}
       </span>
 
       {/* 진행도 바 (잠금 상태일 때만) */}
       {locked && status.progressValue > 0 && (
         <div
-          className="w-full h-1 rounded-full mt-1.5 overflow-hidden"
-          style={{ backgroundColor: "var(--color-border)" }}
+          className="w-full h-1 mt-1.5 overflow-hidden"
+          style={{ borderRadius: "var(--radius-square-sm)", backgroundColor: "var(--color-gray-200)" }}
         >
           <div
-            className="h-full rounded-full"
+            className="h-full"
             style={{
               width: `${status.progressValue * 100}%`,
-              backgroundColor: categoryColor,
-              opacity: 0.55,
+              backgroundColor: "var(--color-primary)",
+              borderRadius: "var(--radius-square-sm)",
             }}
           />
         </div>
@@ -1480,16 +1215,15 @@ function TitleCard({
   );
 }
 
-/* ═══ 빈 상태 박스 ═══ */
+/* ═══ 빈 상태 — 흰 면 + 헤어라인, 한 줄 ═══ */
 function EmptyBox({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="py-6 text-center text-[13px] text-text-sub"
       style={{
         background: "var(--color-surface)",
-        borderRadius: "var(--radius-card-sm)",
-        boxShadow: "var(--shadow-card)",
-        border: "1px solid var(--color-divider)",
+        borderRadius: "var(--radius-card)",
+        border: "1px solid var(--color-border)",
       }}
     >
       {children}

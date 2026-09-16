@@ -1,9 +1,12 @@
 "use client";
 
 // 홈 — 돌봄 연속 일수(스트릭) 카드. HomeAuthed 인라인 블록에서 분리 (2026-07-10).
-// 위치 이동을 쉽게 하려고 컴포넌트화. 로직/디자인은 기존과 동일.
+// 위치 이동을 쉽게 하려고 컴포넌트화. 로직은 기존과 동일.
+// 2026-09-16 「익숙한 동네앱」 리디자인: 그라디언트·불꽃 이모지·단계별 색을 걷어내고
+// 흰 면 + 헤어라인, 강조는 primary 하나. 끊길 위험은 error 의미색으로만.
 
 import Link from "next/link";
+import { Check, Flame } from "lucide-react";
 import StreakFreezeButton from "@/app/components/StreakFreezeButton";
 import type { StreakInfo } from "@/lib/streak-repo";
 
@@ -23,11 +26,6 @@ export default function HomeStreakCard({
   const hasToday = streakInfo.hasToday;
   const weekly = streakInfo.weekly;
   const progress = Math.min(100, Math.round((weekly.count / weekly.goal) * 100));
-  const fireCount = s >= 30 ? 3 : s >= 7 ? 2 : s >= 1 ? 1 : 0;
-  const accent =
-    s >= 30 ? "#D85555" :
-    s >= 7  ? "#E88D5A" :
-    s >= 1  ? "var(--color-primary)" : "#A38E7A";
   const headline = s === 0
     ? (hasToday ? "오늘 돌봄을 시작했어요" : "오늘 첫 돌봄을 기록해보세요")
     : hasToday
@@ -55,80 +53,62 @@ export default function HomeStreakCard({
   const kstHour = kstNowForStreak.getHours();
   const atRisk = !hasToday && s >= 2 && kstHour >= 18;
   const hoursLeft = atRisk ? Math.max(1, 24 - kstHour) : 0;
+  const accent = atRisk ? "var(--color-error)" : "var(--color-primary)";
 
   return (
     <Link href="/map" className="block mb-4 press transition-transform">
       <div
-        className="p-5 relative"
+        className="p-4"
         style={{
-          background: atRisk
-            ? "linear-gradient(135deg, #FFF1F1 0%, #FFE5E5 100%)"
-            : hasToday
-              ? `linear-gradient(135deg, ${accent}18 0%, ${accent}08 100%)`
-              : "#FFFFFF",
+          background: "var(--color-surface)",
           borderRadius: "var(--radius-card)",
-          border: atRisk
-            ? "1.5px solid #D85555"
-            : `1px solid ${hasToday ? `${accent}30` : "rgba(0,0,0,0.05)"}`,
-          boxShadow: atRisk
-            ? "0 4px 16px rgba(216,85,85,0.18)"
-            : "0 4px 16px rgba(0,0,0,0.05)",
+          border: "1px solid var(--color-border)",
         }}
       >
-        {atRisk && (
+        <div className="flex items-start gap-3">
           <div
-            className="absolute -top-2 right-4 px-2.5 py-1 rounded-full flex items-center gap-1"
+            className="flex items-center justify-center shrink-0 w-10 h-10"
             style={{
-              background: "#E85555",
-              boxShadow: "var(--shadow-raised)",
+              borderRadius: "var(--radius-card-sm)",
+              background: "var(--color-surface-alt)",
+              color: s >= 1 ? accent : "var(--color-text-muted)",
             }}
           >
-            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#FFF" }} />
-            <span className="text-[11px] font-bold text-white tracking-tight">
-              {hoursLeft}시간 남음
-            </span>
-          </div>
-        )}
-        <div className="flex items-start gap-3 mb-3">
-          <div
-            className="flex items-center justify-center shrink-0"
-            style={{
-              width: 52,
-              height: 52,
-              borderRadius: "var(--radius-card)",
-              background: s >= 1 ? `linear-gradient(135deg, #FF9A3C 0%, #E8652A 100%)` : "#F0EBE3",
-              boxShadow: s >= 1 ? "0 6px 16px rgba(255,154,60,0.35)" : "none",
-              fontSize: 24,
-            }}
-          >
-            <span style={{ filter: s === 0 ? "grayscale(1)" : "none", opacity: s === 0 ? 0.5 : 1 }}>
-              {fireCount === 3 ? "🔥🔥🔥" : fireCount === 2 ? "🔥🔥" : "🔥"}
-            </span>
+            <Flame size={20} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[11px] font-bold tracking-[0.12em]" style={{ color: accent }}>
-              STREAK
-            </p>
-            <p className="text-[17px] font-bold text-text-main tracking-tight leading-tight mt-0.5">
+            <div className="flex items-center gap-2">
+              <p className="text-[11px] font-medium text-text-light">연속 돌봄</p>
+              {atRisk && (
+                <span
+                  className="text-[11px] font-semibold px-1.5 py-0.5"
+                  style={{
+                    borderRadius: "var(--radius-square)",
+                    background: "var(--color-error-soft)",
+                    color: "var(--color-error)",
+                  }}
+                >
+                  {hoursLeft}시간 남음
+                </span>
+              )}
+            </div>
+            <p className="text-[15px] font-semibold text-text-main leading-snug mt-0.5">
               {headline}
             </p>
-            <p className="text-[13px] text-text-sub mt-1 leading-snug">{subline}</p>
+            <p className="text-[13px] text-text-sub mt-0.5 leading-snug">{subline}</p>
             <StreakFreezeButton streak={s} hasToday={hasToday} onUsed={onFreezeUsed} />
           </div>
         </div>
 
-        <div className="mt-3">
+        <div className="mt-3 pt-3" style={{ borderTop: "1px solid var(--color-divider)" }}>
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[11px] font-bold text-text-sub">이번 주 돌봄</span>
-            <span className="text-[13px] font-bold" style={{ color: accent }}>
+            <span className="text-[13px] text-text-sub">이번 주 돌봄</span>
+            <span className="text-[13px] font-semibold text-text-main tabular-nums">
               {weekly.count}/{weekly.goal}
             </span>
           </div>
-          <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "rgba(0,0,0,0.06)" }}>
-            <div
-              className="h-full rounded-full transition-all"
-              style={{ width: `${progress}%`, background: `linear-gradient(90deg, ${accent} 0%, ${accent}CC 100%)` }}
-            />
+          <div className="progress-bar">
+            <div style={{ width: `${progress}%`, background: "var(--color-primary)" }} />
           </div>
           <div className="flex items-center justify-between mt-2.5">
             {weekly.byDay.map((done, i) => {
@@ -136,16 +116,21 @@ export default function HomeStreakCard({
               return (
                 <div key={i} className="flex flex-col items-center gap-1" style={{ width: 32 }}>
                   <div
-                    className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold"
+                    className="w-6 h-6 rounded-full flex items-center justify-center"
                     style={{
-                      background: done ? accent : isToday ? `${accent}25` : "rgba(0,0,0,0.05)",
-                      color: done ? "#fff" : isToday ? accent : "#B0A89C",
-                      border: isToday && !done ? `1.5px dashed ${accent}` : "none",
+                      background: done ? "var(--color-primary)" : "var(--color-surface)",
+                      color: "var(--color-surface)",
+                      border: done
+                        ? "1px solid var(--color-primary)"
+                        : `1px solid ${isToday ? "var(--color-primary)" : "var(--color-border)"}`,
                     }}
                   >
-                    {done ? "✓" : ""}
+                    {done && <Check size={12} strokeWidth={3} />}
                   </div>
-                  <span className="text-[9px] font-bold" style={{ color: isToday ? accent : "#A38E7A" }}>
+                  <span
+                    className="text-[11px]"
+                    style={{ color: isToday ? "var(--color-primary)" : "var(--color-text-light)", fontWeight: isToday ? 600 : 400 }}
+                  >
                     {dayLabels[i]}
                   </span>
                 </div>
@@ -154,36 +139,24 @@ export default function HomeStreakCard({
           </div>
 
           {streakInfo.longestStreak >= 2 && (
-            <div
-              className="mt-3 px-3 py-2 rounded-lg flex items-center justify-between"
-              style={{
-                background: streakInfo.isRecord
-                  ? "linear-gradient(135deg, #FFF4DC 0%, #FFE9C5 100%)"
-                  : "rgba(0,0,0,0.035)",
-                border: streakInfo.isRecord ? "1px solid #E8B84A55" : "none",
-              }}
-            >
-              <span className="text-[11px] font-bold" style={{ color: streakInfo.isRecord ? "#A67B1E" : "#8C7B6A" }}>
-                {streakInfo.isRecord
-                  ? `역대 최장 기록 갱신 중! (${streakInfo.longestStreak}일)`
-                  : `역대 최장 ${streakInfo.longestStreak}일 · 돌파까지 ${streakInfo.longestStreak - s + 1}일`}
-              </span>
-            </div>
+            <p className="mt-3 text-[11px] text-text-light">
+              {streakInfo.isRecord
+                ? `역대 최장 기록 갱신 중! (${streakInfo.longestStreak}일)`
+                : `역대 최장 ${streakInfo.longestStreak}일 · 돌파까지 ${streakInfo.longestStreak - s + 1}일`}
+            </p>
           )}
 
-          <div className="mt-3 px-3 py-2 rounded-lg flex items-center justify-between" style={{ background: `${accent}12` }}>
-            <span className="text-[11px] font-bold" style={{ color: accent }}>
-              {progress >= 100
-                ? "주간 개근 달성! +5점 · 업적 잠금 해제"
-                : s >= 100
-                ? "100일 연속 · +100점 유지 중"
-                : s >= 30
-                ? "30일 연속 · +30점 · 다음 목표: 100일"
-                : s >= 7
-                ? "7일 연속 · +10점 · 다음 목표: 30일"
-                : `7일 연속 달성 시 +10점 · 주간 개근 +5점`}
-            </span>
-          </div>
+          <p className="mt-1.5 text-[11px] text-text-light">
+            {progress >= 100
+              ? "주간 개근 달성! +5점 · 업적 잠금 해제"
+              : s >= 100
+              ? "100일 연속 · +100점 유지 중"
+              : s >= 30
+              ? "30일 연속 · +30점 · 다음 목표: 100일"
+              : s >= 7
+              ? "7일 연속 · +10점 · 다음 목표: 30일"
+              : `7일 연속 달성 시 +10점 · 주간 개근 +5점`}
+          </p>
         </div>
       </div>
     </Link>

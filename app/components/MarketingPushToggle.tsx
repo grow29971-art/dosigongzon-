@@ -59,17 +59,14 @@ export default function MarketingPushToggle() {
       className="w-full flex items-center gap-3 px-1 py-3"
       style={{ borderTop: "1px solid var(--color-divider)" }}
     >
-      <div
-        className="w-10 h-10 flex items-center justify-center shrink-0"
-        style={{ backgroundColor: "rgba(74,123,168,0.1)", borderRadius: "var(--radius-square-lg)" }}
-      >
-        <BellRing size={18} color="#4A7BA8" strokeWidth={2} />
+      <div className="w-10 h-10 flex items-center justify-center shrink-0 text-text-sub">
+        <BellRing size={20} strokeWidth={1.8} />
       </div>
       <div className="flex-1 min-w-0 text-left">
-        <p className="text-[15px] font-bold text-text-main tracking-tight">
+        <p className="text-[15px] font-semibold text-text-main">
           동네 소식 푸시 받기
         </p>
-        <p className="text-[11px] text-text-sub mt-0.5">
+        <p className="text-[13px] text-text-sub mt-0.5">
           주 1~2회 우리 동네 신규 소식·지역 채팅 유도 (광고성)
         </p>
       </div>
@@ -81,7 +78,6 @@ export default function MarketingPushToggle() {
           onChange={handleToggle}
           disabled={saving}
           size="sm"
-          color="#4A7BA8"
           aria-label="마케팅 푸시 수신 설정"
         />
       )}

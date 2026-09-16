@@ -1,5 +1,6 @@
 // 쇼핑몰 이용안내 — 판매자 정보 · 배송 · 교환/반품 · 환불 (전자상거래법 고지)
 // 읽기 전용 → 서버 컴포넌트. 사업자 등록 완료 시 판매자 정보 채울 것.
+// 2026-09-16 리디자인: 카드 대신 헤어라인 구획 — 본문 문자열은 법정 고지라 손대지 않는다.
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -14,17 +15,14 @@ export const metadata: Metadata = {
 const CONTACT_EMAIL = "grow29971@gmail.com";
 
 const sectionStyle = {
-  background: "var(--color-surface)",
-  borderRadius: "var(--radius-card)",
-  boxShadow: "var(--shadow-card)",
-  border: "1px solid var(--color-divider)",
+  borderBottom: "1px solid var(--color-divider)",
 } as const;
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex gap-3 py-1.5">
-      <span className="text-[13px] font-bold text-text-light w-[92px] shrink-0">{label}</span>
-      <span className="text-[13px] font-semibold text-text-main">{value}</span>
+      <span className="text-[13px] text-text-light w-[92px] shrink-0">{label}</span>
+      <span className="text-[13px] font-medium text-text-main">{value}</span>
     </div>
   );
 }
@@ -32,7 +30,7 @@ function Row({ label, value }: { label: string; value: string }) {
 function Item({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex gap-2 text-[13px] text-text-sub leading-relaxed">
-      <span className="shrink-0" style={{ color: "var(--color-primary)" }}>·</span>
+      <span className="shrink-0 text-text-light">·</span>
       <span>{children}</span>
     </li>
   );
@@ -41,22 +39,21 @@ function Item({ children }: { children: React.ReactNode }) {
 export default function ShopPolicyPage() {
   return (
     <div className="pb-24">
-      <div className="px-4 pt-12 pb-2 flex items-center gap-2">
+      <div className="px-4 pt-12 pb-2 flex items-center gap-1">
         <Link
           href="/shop"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong -ml-2"
           aria-label="쇼핑몰로 돌아가기"
         >
-          <ArrowLeft size={18} className="text-text-main" />
+          <ArrowLeft size={20} className="text-text-main" />
         </Link>
         <h1 className="text-[17px] font-bold text-text-main">쇼핑몰 이용안내</h1>
       </div>
 
-      <div className="px-4 mt-3 space-y-4">
+      <div className="px-4">
         {/* 판매자 정보 */}
-        <section className="p-4" style={sectionStyle}>
-          <h2 className="text-[13px] font-bold text-text-main mb-2">판매자 정보</h2>
+        <section className="py-4" style={sectionStyle}>
+          <h2 className="text-[15px] font-bold text-text-main mb-2">판매자 정보</h2>
           <Row label="상호" value="도시공존" />
           <Row label="대표자" value="김성우" />
           <Row label="사업자등록번호" value="793-16-02886" />
@@ -67,8 +64,8 @@ export default function ShopPolicyPage() {
         </section>
 
         {/* 배송 안내 */}
-        <section className="p-4" style={sectionStyle}>
-          <h2 className="text-[13px] font-bold text-text-main mb-2.5">배송 안내</h2>
+        <section className="py-4" style={sectionStyle}>
+          <h2 className="text-[15px] font-bold text-text-main mb-2.5">배송 안내</h2>
           <ul className="space-y-1.5">
             <Item>결제 확인 후 영업일 기준 2~5일 이내에 택배로 발송돼요.</Item>
             <Item>배송비는 상품별로 표기되며, 주문서에서 최종 배송비를 확인할 수 있어요.</Item>
@@ -78,8 +75,8 @@ export default function ShopPolicyPage() {
         </section>
 
         {/* 교환·반품 안내 */}
-        <section className="p-4" style={sectionStyle}>
-          <h2 className="text-[13px] font-bold text-text-main mb-2.5">교환·반품 안내</h2>
+        <section className="py-4" style={sectionStyle}>
+          <h2 className="text-[15px] font-bold text-text-main mb-2.5">교환·반품 안내</h2>
           <ul className="space-y-1.5">
             <Item>상품을 받은 날부터 <b className="text-text-main">7일 이내</b>에 교환·반품을 신청할 수 있어요. (전자상거래법 제17조)</Item>
             <Item>
@@ -98,8 +95,8 @@ export default function ShopPolicyPage() {
         </section>
 
         {/* 가격 표시 — 전자상거래법 총액표시 (2026-08-26 원탁회의 세무 게이트) */}
-        <section className="p-4" style={sectionStyle}>
-          <h2 className="text-[13px] font-bold text-text-main mb-2.5">가격 표시</h2>
+        <section className="py-4" style={sectionStyle}>
+          <h2 className="text-[15px] font-bold text-text-main mb-2.5">가격 표시</h2>
           <p className="text-[13px] text-text-sub leading-relaxed">
             쇼핑몰의 모든 상품 가격과 배송비는 <b>부가가치세(VAT)가 포함된 최종 금액</b>이에요.
             표시된 금액 외에 추가로 청구되는 세금은 없어요.
@@ -107,8 +104,8 @@ export default function ShopPolicyPage() {
         </section>
 
         {/* 환불 안내 */}
-        <section className="p-4" style={sectionStyle}>
-          <h2 className="text-[13px] font-bold text-text-main mb-2.5">환불 안내</h2>
+        <section className="py-4" style={sectionStyle}>
+          <h2 className="text-[15px] font-bold text-text-main mb-2.5">환불 안내</h2>
           <ul className="space-y-1.5">
             <Item>환불은 결제한 수단으로 진행되며, 카드 결제 취소는 카드사 사정에 따라 3~5영업일이 걸릴 수 있어요.</Item>
             <Item>배송 시작 전 주문은 주문 상세에서 직접 취소할 수 있어요.</Item>
@@ -116,12 +113,12 @@ export default function ShopPolicyPage() {
         </section>
 
         {/* 후원 안내 */}
-        <section className="p-4" style={sectionStyle}>
-          <h2 className="text-[13px] font-bold text-text-main mb-2.5">수익의 사용</h2>
+        <section className="py-4">
+          <h2 className="text-[15px] font-bold text-text-main mb-2.5">수익의 사용</h2>
           <p className="text-[13px] text-text-sub leading-relaxed">
             일반 상품은 <b>수익(이익)의 10%</b>가 길고양이 중성화(TNR) 지원에 사용돼요.
             (전액 후원 상품은 결제 금액 전액) 상품별 비율은 상품 상세에서 확인할 수 있고,
-            모인 금액·쓰인 금액·잔액은 쇼핑몰 홈에서 그대로 공개하고 있어요 💛
+            모인 금액·쓰인 금액·잔액은 쇼핑몰 홈에서 그대로 공개하고 있어요.
           </p>
         </section>
       </div>

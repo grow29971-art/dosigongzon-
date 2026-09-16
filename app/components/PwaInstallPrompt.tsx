@@ -156,29 +156,21 @@ export default function PwaInstallPrompt() {
       aria-label="앱 설치 안내"
     >
       <div
-        className="pointer-events-auto rounded-2xl p-4 mx-auto"
+        className="pointer-events-auto p-4 mx-auto"
         style={{
           maxWidth: 420,
-          background: "#FFFFFF",
+          background: "var(--color-surface)",
+          borderRadius: "var(--radius-card)",
           boxShadow: "var(--shadow-fab)",
-          border: "1px solid rgba(176, 92, 54,0.25)",
+          border: "1px solid var(--color-border)",
         }}
       >
         <div className="flex items-start gap-3">
-          <div
-            className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-            style={{
-              background: "var(--color-primary)",
-              boxShadow: "var(--shadow-primary)",
-            }}
-          >
-            <Download size={19} color="#fff" strokeWidth={2.3} />
+          <div className="w-10 h-10 flex items-center justify-center shrink-0 text-text-sub">
+            <Download size={20} strokeWidth={1.8} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[11px] font-bold tracking-[0.12em]" style={{ color: "var(--color-primary)" }}>
-              INSTALL
-            </p>
-            <p className="text-[15px] font-bold text-text-main tracking-tight leading-tight mt-0.5">
+            <p className="text-[15px] font-semibold text-text-main leading-tight">
               도시공존을 앱처럼 쓰세요
             </p>
             <p className="text-[13px] text-text-sub mt-1 leading-snug">
@@ -188,27 +180,26 @@ export default function PwaInstallPrompt() {
           <button
             type="button"
             onClick={dismiss}
-            className="w-7 h-7 rounded-full flex items-center justify-center press-strong shrink-0 -mt-1 -mr-1"
-            style={{ background: "rgba(0,0,0,0.05)" }}
+            className="w-7 h-7 flex items-center justify-center press-strong shrink-0 -mt-1 -mr-1"
             aria-label="닫기"
           >
-            <X size={13} className="text-text-sub" />
+            <X size={16} style={{ color: "var(--color-text-light)" }} />
           </button>
         </div>
 
         {/* iOS 안내 */}
         {showIosHint && (
-          <div className="mt-3 rounded-xl p-3" style={{ background: "var(--color-primary-softer)" }}>
+          <div className="mt-3 pt-3" style={{ borderTop: "1px solid var(--color-divider)" }}>
             <p className="text-[13px] text-text-main leading-relaxed mb-2 font-semibold">
               사파리 하단 공유 버튼을 눌러주세요:
             </p>
             <ol className="space-y-1 text-[13px] text-text-sub leading-relaxed pl-1">
               <li className="flex items-center gap-1.5">
-                <Share size={13} style={{ color: "var(--color-primary)" }} />
+                <Share size={14} className="text-text-sub" />
                 <span>공유 아이콘 탭</span>
               </li>
               <li className="flex items-center gap-1.5">
-                <PlusSquare size={13} style={{ color: "var(--color-primary)" }} />
+                <PlusSquare size={14} className="text-text-sub" />
                 <span>"홈 화면에 추가" 선택</span>
               </li>
             </ol>
@@ -220,10 +211,11 @@ export default function PwaInstallPrompt() {
           <button
             type="button"
             onClick={install}
-            className="w-full mt-3 py-2.5 rounded-xl text-[13px] font-bold text-white press transition-transform"
+            className="w-full mt-3 h-10 text-[13px] font-semibold press transition-transform"
             style={{
               background: "var(--color-primary)",
-              boxShadow: "var(--shadow-primary)",
+              color: "var(--color-surface)",
+              borderRadius: "var(--radius-input)",
             }}
           >
             홈 화면에 추가

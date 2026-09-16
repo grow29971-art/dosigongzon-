@@ -17,15 +17,7 @@ export default function LoginRequired({
   const loginHref = from ? `/login?next=${encodeURIComponent(from)}` : "/login";
   return (
     <div className="px-5 pt-20 pb-24 flex flex-col items-center text-center">
-      <div
-        className="w-16 h-16 rounded-3xl flex items-center justify-center mb-4"
-        style={{
-          background: "var(--color-primary)",
-          boxShadow: "var(--shadow-primary)",
-        }}
-      >
-        <MessagesSquare size={28} color="#fff" strokeWidth={2.2} />
-      </div>
+      <MessagesSquare size={40} strokeWidth={1.6} className="mb-4" style={{ color: "var(--color-text-light)" }} />
       <h1 className="text-[20px] font-bold text-text-main tracking-tight mb-2">
         {title}
       </h1>
@@ -35,10 +27,10 @@ export default function LoginRequired({
       <div className="flex flex-col gap-2 w-full max-w-[280px]">
         <Link
           href={loginHref}
-          className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary text-white text-[15px] font-bold press transition-transform"
-          style={{ boxShadow: "var(--shadow-primary)" }}
+          className="flex items-center justify-center gap-2 h-12 text-[15px] font-semibold press transition-transform"
+          style={{ background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
         >
-          <LogIn size={16} strokeWidth={2.5} />
+          <LogIn size={16} strokeWidth={2} />
           카카오 · 구글로 시작하기
         </Link>
       </div>

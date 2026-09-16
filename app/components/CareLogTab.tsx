@@ -1,5 +1,8 @@
 "use client";
 
+// 지도 시트의 돌봄 기록 탭 — 2026-09-16 리디자인 「익숙한 동네앱」:
+// 유형별 색·이모지 박스 대신 회색 선 아이콘(CARE_TYPE_ICON) + 구분선 리스트, 칩은 공용 UIChip.
+
 import { useEffect, useState, useRef } from "react";
 import {
   Plus,
@@ -10,6 +13,15 @@ import {
   Send,
   Lock,
   Unlock,
+  Utensils,
+  Droplet,
+  Cookie,
+  Stethoscope,
+  Scissors,
+  Hospital,
+  House,
+  NotebookPen,
+  type LucideIcon,
 } from "lucide-react";
 import {
   listCareLogs,
@@ -26,6 +38,21 @@ import {
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import CareLogCelebration from "@/app/components/CareLogCelebration";
 import { getMyStreakInfo } from "@/lib/streak-repo";
+import UIChip from "@/app/components/ui/Chip";
+import UIButton from "@/app/components/ui/Button";
+import SquareToggle from "@/app/components/ui/SquareToggle";
+
+// CARE_TYPE_MAP.emoji 참조를 끊고 선 아이콘으로 — 상수의 emoji 필드는 푸시 문구 등 다른 소비처가 있어 그대로 둔다
+const CARE_TYPE_ICON: Record<CareType, LucideIcon> = {
+  feed: Utensils,
+  water: Droplet,
+  treat: Cookie,
+  health: Stethoscope,
+  tnr: Scissors,
+  hospital: Hospital,
+  shelter: House,
+  other: NotebookPen,
+};
 
 interface Props {
   catId: string;
@@ -142,9 +169,16 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
     );
   }
 
+  const fieldStyle: React.CSSProperties = {
+    borderRadius: "var(--radius-input)",
+    background: "var(--color-surface)",
+    border: "1px solid var(--color-border)",
+    color: "var(--color-text-main)",
+  };
+
   return (
     <div>
-      {/* 통계 칩 */}
+      {/* 통계 — 회색 칩 한 줄 */}
       {stats && stats.total > 0 && (
         <div className="flex gap-1.5 overflow-x-auto pb-2 px-1 no-scrollbar">
           {(Object.entries(stats.byType) as [CareType, number][]).map(
@@ -153,72 +187,63 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
               return (
                 <span
                   key={type}
-                  className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold"
-                  style={{
-                    backgroundColor: `${info.color}15`,
-                    color: info.color,
-                  }}
+                  className="shrink-0 inline-flex items-center gap-1 h-7 px-2.5 text-[11px] font-semibold text-text-sub"
+                  style={{ borderRadius: "var(--radius-square)", border: "1px solid var(--color-border)" }}
                 >
-                  {info.emoji} {info.label} {count}
+                  {info.label} {count}
                 </span>
               );
             },
           )}
-          <span className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold" style={{ backgroundColor: "#B05C3615", color: "var(--color-primary)" }}>
+          <span
+            className="shrink-0 inline-flex items-center gap-1 h-7 px-2.5 text-[11px] font-semibold text-text-sub"
+            style={{ borderRadius: "var(--radius-square)", border: "1px solid var(--color-border)" }}
+          >
             길집사 {stats.caretakerCount}명
           </span>
         </div>
       )}
 
-      {/* 기록 목록 */}
-      <div className="overflow-y-auto px-1 space-y-2" style={{ maxHeight: 220 }}>
+      {/* 기록 목록 — 구분선 리스트 */}
+      <div className="overflow-y-auto px-1" style={{ maxHeight: 220 }}>
         {logs.length === 0 ? (
           <p className="text-[13px] text-text-light text-center py-6">
             아직 돌봄 기록이 없어요
           </p>
         ) : (
           logs.map((log) => {
-            const info = CARE_TYPE_MAP[log.care_type as CareType];
+            const type = log.care_type as CareType;
+            const info = CARE_TYPE_MAP[type];
+            const Icon = CARE_TYPE_ICON[type] ?? NotebookPen;
             const isMine = currentUserId === log.author_id;
             return (
               <div
                 key={log.id}
-                className="flex gap-2.5 py-2 px-2 rounded-xl"
-                style={{ backgroundColor: "#F9F6F2" }}
+                className="flex gap-3 py-3"
+                style={{ borderBottom: "1px solid var(--color-divider)" }}
               >
-                {/* 타입 아이콘 */}
-                <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-[17px]"
-                  style={{ backgroundColor: `${info.color}18` }}
-                >
-                  {info.emoji}
+                {/* 타입 아이콘 — 회색 선 */}
+                <div className="w-9 h-9 flex items-center justify-center shrink-0 text-text-sub">
+                  <Icon size={18} />
                 </div>
                 {/* 내용 */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span
-                      className="text-[11px] font-bold px-1.5 py-0.5 rounded"
-                      style={{ backgroundColor: `${info.color}18`, color: info.color }}
-                    >
-                      {info.label}
-                    </span>
+                    <span className="text-[15px] font-semibold text-text-main">{info?.label ?? "돌봄"}</span>
                     {log.amount && (
-                      <span className="text-[11px] text-text-light">{log.amount}</span>
+                      <span className="text-[13px] text-text-sub">{log.amount}</span>
                     )}
                     {log.is_private && (
-                      <span
-                        className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded"
-                        style={{ backgroundColor: "rgba(139,101,184,0.14)", color: "#8B65B8" }}
-                      >
-                        <Lock size={9} /> 비밀
+                      <span className="inline-flex items-center gap-0.5 text-[11px] text-text-light">
+                        <Lock size={10} /> 비밀
                       </span>
                     )}
-                    <span className="text-[9px] text-text-light ml-auto">
+                    <span className="text-[11px] text-text-light ml-auto">
                       {formatLogTime(log.logged_at)}
                     </span>
                   </div>
                   {log.memo && (
-                    <p className="text-[13px] text-text-main mt-1 leading-snug">{log.memo}</p>
+                    <p className="text-[13px] text-text-main mt-0.5 leading-snug">{log.memo}</p>
                   )}
                   {log.photo_url && (() => {
                     // 2026-05-23 핫픽스: Image Transformation 비활성 — 원본 URL 사용.
@@ -230,7 +255,8 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                         alt=""
                         loading="lazy"
                         decoding="async"
-                        className="mt-1.5 rounded-lg max-h-28 object-cover"
+                        className="mt-1.5 max-h-28 object-cover"
+                        style={{ borderRadius: "var(--radius-card-sm)" }}
                       />
                     );
                   })()}
@@ -243,8 +269,9 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                         type="button"
                         onClick={() => handleDelete(log.id)}
                         className="ml-auto text-text-light press-strong"
+                        aria-label="기록 삭제"
                       >
-                        <Trash2 size={11} />
+                        <Trash2 size={12} />
                       </button>
                     )}
                   </div>
@@ -259,38 +286,31 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
       {isLoggedIn && (
         <div className="mt-2 px-1">
           {!showForm ? (
-            <button
-              type="button"
-              onClick={() => setShowForm(true)}
-              className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold press-strong transition-transform"
-              style={{ backgroundColor: "var(--color-gray-50)", color: "var(--color-primary)" }}
-            >
+            <UIButton variant="secondary" size="md" full onClick={() => setShowForm(true)}>
               <Plus size={14} />
               돌봄 기록 추가
-            </button>
+            </UIButton>
           ) : (
             <div
-              className="p-3 rounded-2xl space-y-2.5"
-              style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid #E5E0D6" }}
+              className="p-3 space-y-2.5"
+              style={{ borderRadius: "var(--radius-card)", border: "1px solid var(--color-border)" }}
             >
               {/* 유형 선택 */}
               <div className="flex gap-1.5 flex-wrap">
                 {(Object.entries(CARE_TYPE_MAP) as [CareType, typeof CARE_TYPE_MAP["feed"]][]).map(
-                  ([type, info]) => (
-                    <button
-                      key={type}
-                      type="button"
-                      onClick={() => setCareType(type)}
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all press-strong"
-                      style={{
-                        backgroundColor: careType === type ? info.color : "#fff",
-                        color: careType === type ? "#fff" : info.color,
-                        border: `1.5px solid ${info.color}${careType === type ? "" : "40"}`,
-                      }}
-                    >
-                      {info.emoji} {info.label}
-                    </button>
-                  ),
+                  ([type, info]) => {
+                    const Icon = CARE_TYPE_ICON[type];
+                    return (
+                      <UIChip
+                        key={type}
+                        active={careType === type}
+                        onClick={() => setCareType(type)}
+                        icon={<Icon size={13} />}
+                      >
+                        {info.label}
+                      </UIChip>
+                    );
+                  },
                 )}
               </div>
 
@@ -301,8 +321,8 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="사료량 (예: 200g, 캔 1개)"
-                  className="w-full px-3 py-2 rounded-xl text-[13px] outline-none"
-                  style={{ backgroundColor: "#fff", border: "1px solid #E5E0D6", color: "#2A2A28" }}
+                  className="w-full px-3 py-2 text-[13px] outline-none placeholder:text-text-light"
+                  style={fieldStyle}
                 />
               )}
 
@@ -319,8 +339,8 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                     }
                   }}
                   placeholder="메모 (선택)"
-                  className="flex-1 min-w-0 px-3 py-2 rounded-xl text-[13px] outline-none"
-                  style={{ backgroundColor: "#fff", border: "1px solid #E5E0D6", color: "#2A2A28" }}
+                  className="flex-1 min-w-0 px-3 py-2 text-[13px] outline-none placeholder:text-text-light"
+                  style={fieldStyle}
                 />
                 <input
                   ref={fileInputRef}
@@ -332,47 +352,35 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center press-strong"
-                  style={{ backgroundColor: photoFile ? "#6B8E6F" : "#fff", border: "1px solid #E5E0D6" }}
+                  className="shrink-0 w-9 h-9 flex items-center justify-center press-strong"
+                  style={{
+                    borderRadius: "var(--radius-input)",
+                    background: photoFile ? "var(--color-primary)" : "var(--color-surface)",
+                    border: `1px solid ${photoFile ? "var(--color-primary)" : "var(--color-border)"}`,
+                    color: photoFile ? "var(--color-surface)" : "var(--color-text-sub)",
+                  }}
+                  aria-label="사진 첨부"
                 >
-                  <Camera size={14} style={{ color: photoFile ? "#fff" : "#A38E7A" }} />
+                  <Camera size={14} />
                 </button>
               </div>
 
               {/* 비밀글 토글 — 켜면 나(작성자)만 볼 수 있음 */}
-              <button
-                type="button"
-                onClick={() => setIsPrivate((v) => !v)}
-                className="flex items-center gap-2 w-full px-3 py-2 rounded-xl press transition-transform"
-                style={{
-                  backgroundColor: isPrivate ? "rgba(139,101,184,0.10)" : "#fff",
-                  border: isPrivate ? "1px solid rgba(139,101,184,0.35)" : "1px solid #E5E0D6",
-                }}
-                aria-pressed={isPrivate}
+              <div
+                className="flex items-center gap-2 w-full px-3 py-2"
+                style={{ borderRadius: "var(--radius-input)", border: "1px solid var(--color-border)" }}
               >
-                {isPrivate ? <Lock size={13} style={{ color: "#8B65B8" }} /> : <Unlock size={13} style={{ color: "#A38E7A" }} />}
-                <span className="text-[13px] font-bold" style={{ color: isPrivate ? "#8B65B8" : "#A38E7A" }}>
+                {isPrivate ? <Lock size={13} className="text-text-main" /> : <Unlock size={13} className="text-text-sub" />}
+                <span className="text-[13px] font-semibold text-text-main">
                   {isPrivate ? "비밀글 — 나만 볼 수 있어요" : "비밀글로 남기기"}
                 </span>
-                {/* 공존 시그니처: 사각 토글 (원형 아님) */}
-                <span
-                  className="ml-auto w-9 h-5 transition-colors relative"
-                  style={{ backgroundColor: isPrivate ? "#8B65B8" : "#D8D2C8", borderRadius: "var(--radius-square-lg)" }}
-                >
-                  <span
-                    className="absolute top-0.5 w-4 h-4 bg-white transition-all"
-                    style={{ left: isPrivate ? "18px" : "2px", borderRadius: "var(--radius-square-sm)", boxShadow: "var(--shadow-raised)" }}
-                  />
-                </span>
-              </button>
+                <div className="ml-auto">
+                  <SquareToggle checked={isPrivate} onChange={setIsPrivate} size="sm" aria-label="비밀글" />
+                </div>
+              </div>
 
               {/* 등록 버튼 — 한 줄 전체 폭으로 명확하게 */}
-              <button
-                type="button"
-                onClick={handleSubmit}
-                disabled={submitting || !careType}
-                className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 press-strong transition-all"
-              >
+              <UIButton variant="primary" size="md" full onClick={handleSubmit} disabled={submitting || !careType}>
                 {submitting ? (
                   <>
                     <Loader2 size={14} className="animate-spin" />
@@ -380,21 +388,23 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                   </>
                 ) : (
                   <>
-                    <Send size={14} strokeWidth={2.5} />
+                    <Send size={14} />
                     돌봄 기록 등록
                   </>
                 )}
-              </button>
+              </UIButton>
 
               {/* 사진 미리보기 */}
               {photoPreview && (
                 <div className="relative inline-block">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={photoPreview} alt="" className="h-16 rounded-lg object-cover" />
+                  <img src={photoPreview} alt="" className="h-16 object-cover" style={{ borderRadius: "var(--radius-card-sm)" }} />
                   <button
                     type="button"
                     onClick={() => { setPhotoFile(null); setPhotoPreview(null); }}
-                    className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-white shadow flex items-center justify-center"
+                    className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center"
+                    style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
+                    aria-label="사진 제거"
                   >
                     <X size={10} className="text-text-sub" />
                   </button>
@@ -407,7 +417,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
               <button
                 type="button"
                 onClick={() => { setShowForm(false); setCareType(null); setMemo(""); setAmount(""); setPhotoFile(null); setPhotoPreview(null); setError(""); }}
-                className="w-full text-[11px] text-text-light py-1"
+                className="w-full text-[13px] text-text-sub py-1"
               >
                 취소
               </button>

@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Send, Loader2, Trash2, Users, Image as ImageIcon, X } from "lucide-react";
+import { ArrowLeft, Send, Loader2, Trash2, Users, Image as ImageIcon, X, User } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import { sanitizeImageUrl, sanitizeHttpUrl } from "@/lib/url-validate";
@@ -62,7 +62,7 @@ function ChatImage({ raw, isMine }: { raw: string; isMine: boolean }) {
     // signed URL 발급 중 placeholder
     return (
       <div
-        className={`mb-1 rounded-2xl ${rounding} flex items-center justify-center`}
+        className={`mb-1 rounded-xl ${rounding} flex items-center justify-center`}
         style={{ width: 180, height: 120, background: "rgba(0,0,0,0.06)" }}
         aria-label="사진 불러오는 중"
       >
@@ -75,8 +75,8 @@ function ChatImage({ raw, isMine }: { raw: string; isMine: boolean }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`block mb-1 rounded-2xl overflow-hidden ${rounding}`}
-      style={{ maxWidth: 220, boxShadow: "var(--shadow-raised)" }}
+      className={`block mb-1 rounded-xl overflow-hidden ${rounding}`}
+      style={{ maxWidth: 220, border: "1px solid var(--color-border)" }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt="" loading="lazy" className="w-full h-auto block" />
@@ -278,7 +278,7 @@ export default function CircleChatPage() {
   if (authLoading) {
     return (
       <div className="min-h-dvh flex items-center justify-center">
-        <Loader2 size={28} className="animate-spin text-primary" />
+        <Loader2 size={28} className="animate-spin text-text-muted" />
       </div>
     );
   }
@@ -287,7 +287,7 @@ export default function CircleChatPage() {
     return (
       <div className="px-6 pt-20 text-center">
         <p className="text-[15px] text-text-sub mb-3">로그인이 필요해요.</p>
-        <Link href="/login" className="text-primary text-[13px] font-bold">
+        <Link href="/login" className="text-primary text-[13px] font-semibold">
           로그인
         </Link>
       </div>
@@ -307,26 +307,25 @@ export default function CircleChatPage() {
   }
 
   return (
-    <div className="fixed inset-0 flex flex-col" style={{ background: "#F7F4EE" }}>
+    <div className="fixed inset-0 flex flex-col" style={{ background: "var(--color-surface)" }}>
       {/* 헤더 */}
       <div
         className="px-4 pt-3 pb-3 flex items-center gap-2 border-b"
         style={{
-          background: "#FFFFFF",
-          borderColor: "#E5E0D6",
+          background: "var(--color-surface)",
+          borderColor: "var(--color-border)",
           paddingTop: "max(12px, env(safe-area-inset-top))",
         }}
       >
         <Link
           href="/mypage/circle"
-          className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
-          style={{ background: "var(--color-gray-50)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong -ml-2"
           aria-label="뒤로"
         >
-          <ArrowLeft size={18} className="text-text-main" />
+          <ArrowLeft size={22} className="text-text-main" />
         </Link>
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-bold text-text-main truncate">
+          <p className="text-[15px] font-semibold text-text-main truncate">
             {ownerInfo?.ownerId === user.id ? "내 서클" : `${ownerInfo?.nickname ?? "이웃"}님의 서클`}
           </p>
           <div className="flex items-center gap-1 mt-0.5">
@@ -343,19 +342,19 @@ export default function CircleChatPage() {
       >
         {loading ? (
           <div className="flex justify-center pt-8">
-            <Loader2 size={24} className="animate-spin text-primary" />
+            <Loader2 size={24} className="animate-spin text-text-muted" />
           </div>
         ) : messages.length === 0 ? (
           <div className="pt-20 text-center">
             <Users size={32} className="mx-auto mb-3 text-text-light" />
             <p className="text-[13px] text-text-sub mb-1">아직 대화가 없어요</p>
-            <p className="text-[13px] text-text-light">첫 메시지를 보내 이웃과 인사 나눠보세요.</p>
+            <p className="text-[13px] text-text-light">첫 메시지로 인사를 건네보세요.</p>
           </div>
         ) : (
           groupedByDate.map((group, gi) => (
             <div key={gi}>
               <div className="flex justify-center my-3">
-                <span className="text-[11px] px-2.5 py-1 rounded-full bg-white text-text-light" style={{ boxShadow: "var(--shadow-card-sm)" }}>
+                <span className="text-[11px] px-2.5 py-1 chip-square text-text-light" style={{ background: "var(--color-gray-100)" }}>
                   {formatDate(group.date)}
                 </span>
               </div>
@@ -373,11 +372,10 @@ export default function CircleChatPage() {
                       {m.image_url && <ChatImage raw={m.image_url} isMine={isMine} />}
                       {m.body && (
                         <div
-                          className={`px-3 py-2 rounded-2xl text-[15px] leading-relaxed whitespace-pre-wrap break-words ${isMine ? "rounded-tr-sm" : "rounded-tl-sm"}`}
+                          className={`px-3 py-2 rounded-xl text-[15px] leading-relaxed whitespace-pre-wrap break-words ${isMine ? "rounded-tr-sm" : "rounded-tl-sm"}`}
                           style={{
-                            background: isMine ? "var(--color-primary)" : "#FFFFFF",
-                            color: isMine ? "#FFFFFF" : "#3D2F25",
-                            boxShadow: isMine ? "0 2px 6px rgba(176, 92, 54,0.25)" : "0 1px 3px rgba(0,0,0,0.05)",
+                            background: isMine ? "var(--color-primary)" : "var(--color-gray-100)",
+                            color: isMine ? "var(--color-surface)" : "var(--color-text-main)",
                           }}
                         >
                           {m.body}
@@ -409,24 +407,24 @@ export default function CircleChatPage() {
       <div
         className="px-3 py-2.5 border-t"
         style={{
-          background: "#FFFFFF",
-          borderColor: "#E5E0D6",
+          background: "var(--color-surface)",
+          borderColor: "var(--color-border)",
           paddingBottom: "max(10px, env(safe-area-inset-bottom))",
         }}
       >
         {error && (
-          <p className="text-[11px] mb-1.5 px-1" style={{ color: "#B84545" }}>{error}</p>
+          <p className="text-[13px] mb-1.5 px-1" style={{ color: "var(--color-error)" }}>{error}</p>
         )}
         {/* 사진 미리보기 */}
         {photoPreview && (
           <div className="mb-2 relative inline-block">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={photoPreview} alt="" className="rounded-xl max-h-32 object-cover" style={{ maxWidth: 120 }} />
+            <img src={photoPreview} alt="" className="rounded-lg max-h-32 object-cover" style={{ maxWidth: 120 }} />
             <button
               type="button"
               onClick={handleClearPhoto}
               className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center"
-              style={{ background: "#2A2A28", color: "#fff" }}
+              style={{ background: "var(--color-text-main)", color: "var(--color-surface)" }}
               aria-label="사진 제거"
             >
               <X size={11} strokeWidth={3} />
@@ -445,11 +443,10 @@ export default function CircleChatPage() {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={sending || !!photoPreview}
-            className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 press-strong disabled:opacity-40"
-            style={{ background: "var(--color-gray-50)", color: "#8B7562" }}
+            className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 press-strong disabled:opacity-40 text-text-sub"
             aria-label="사진 첨부"
           >
-            <ImageIcon size={17} />
+            <ImageIcon size={20} strokeWidth={1.8} />
           </button>
           <input
             type="text"
@@ -461,17 +458,17 @@ export default function CircleChatPage() {
             placeholder={photoPreview ? "사진과 함께 보낼 메시지 (선택)" : "메시지를 입력하세요"}
             maxLength={1000}
             disabled={sending}
-            className="flex-1 rounded-2xl px-4 py-2.5 text-[15px] outline-none disabled:opacity-50"
-            style={{ background: "var(--color-gray-50)", color: "#2A2A28" }}
+            className="flex-1 px-4 py-2.5 text-[15px] outline-none disabled:opacity-50"
+            style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)", borderRadius: "var(--radius-input)" }}
           />
           <button
             onClick={handleSend}
             disabled={(!input.trim() && !photoFile) || sending}
             className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 press-strong disabled:opacity-40"
-            style={{ background: "var(--color-primary)" }}
+            style={{ background: "var(--color-primary)", color: "var(--color-surface)" }}
             aria-label="전송"
           >
-            {sending ? <Loader2 size={16} className="animate-spin text-white" /> : <Send size={17} color="#fff" />}
+            {sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={17} />}
           </button>
         </div>
       </div>
@@ -484,10 +481,10 @@ function Avatar({ url, size = 32 }: { url: string | null; size?: number }) {
   if (!safe) {
     return (
       <div
-        className="shrink-0 rounded-full flex items-center justify-center text-white text-[13px] font-bold"
-        style={{ width: size, height: size, background: "var(--color-primary)" }}
+        className="shrink-0 rounded-full flex items-center justify-center text-text-light"
+        style={{ width: size, height: size, background: "var(--color-gray-100)" }}
       >
-        🐾
+        <User size={Math.round(size * 0.5)} strokeWidth={1.6} />
       </div>
     );
   }

@@ -3,7 +3,7 @@ import Link from "next/link";
 import GuideReadMarker from "@/app/components/GuideReadMarker";
 import {
   ArrowLeft, ShieldCheck, CircleAlert, Home, Phone,
-  HelpCircle, BookOpen, Gavel, FileText, Scroll,
+  HelpCircle, BookOpen, Gavel, FileText, Scroll, AlertTriangle, Siren, PawPrint,
 } from "lucide-react";
 import LegalChecklist, { type ChecklistItem } from "@/app/components/LegalChecklist";
 import ShareGuideButton from "@/app/components/ShareGuideButton";
@@ -169,15 +169,15 @@ export default function LegalGuidePage() {
 
       {/* 긴급 전화 */}
       <div
-        className="rounded-2xl p-4 mb-5"
+        className="rounded-xl p-4 mb-5"
         style={{
-          background: "var(--color-error-soft)",
-          border: "1px solid rgba(216,85,85,0.3)",
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
         }}
       >
         <div className="flex items-center gap-2 mb-2.5">
-          <Phone size={15} color="#B84545" />
-          <p className="text-[13px] font-bold" style={{ color: "#8B2F2F" }}>
+          <Phone size={15} color="var(--color-error)" />
+          <p className="text-[13px] font-bold" style={{ color: "var(--color-error)" }}>
             학대 현장 목격 시 바로 신고
           </p>
         </div>
@@ -185,30 +185,30 @@ export default function LegalGuidePage() {
           <a
             href="tel:112"
             className="rounded-xl bg-white p-3 flex flex-col items-center press-strong"
-            style={{ border: "1px solid rgba(216,85,85,0.15)" }}
+            style={{ border: "1px solid var(--color-border)" }}
           >
-            <span className="text-[17px]">🚔</span>
+            <Siren size={17} color="var(--color-error)" />
             <p className="text-[11px] text-text-sub mt-1">긴급 학대 신고</p>
-            <p className="text-[15px] font-bold" style={{ color: "#B84545" }}>112</p>
+            <p className="text-[15px] font-bold" style={{ color: "var(--color-error)" }}>112</p>
           </a>
           <a
             href="tel:1577-0954"
             className="rounded-xl bg-white p-3 flex flex-col items-center press-strong"
-            style={{ border: "1px solid rgba(216,85,85,0.15)" }}
+            style={{ border: "1px solid var(--color-border)" }}
           >
-            <span className="text-[17px]">🐾</span>
+            <PawPrint size={17} color="var(--color-error)" />
             <p className="text-[11px] text-text-sub mt-1">동물보호 상담</p>
-            <p className="text-[13px] font-bold" style={{ color: "#B84545" }}>1577-0954</p>
+            <p className="text-[13px] font-bold" style={{ color: "var(--color-error)" }}>1577-0954</p>
           </a>
         </div>
       </div>
 
       {/* 히어로 요약 */}
       <div
-        className="rounded-2xl p-5 mb-6"
+        className="rounded-xl p-5 mb-6"
         style={{
-          background: "#F0EDF7",
-          border: "1px solid rgba(122,107,142,0.2)",
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
         }}
       >
         <p className="text-[13px] leading-relaxed text-text-main">
@@ -225,8 +225,8 @@ export default function LegalGuidePage() {
       {/* 목차 */}
       <nav
         aria-label="목차"
-        className="rounded-2xl bg-white p-4 mb-6"
-        style={{ border: "1px solid var(--color-divider)" }}
+        className="rounded-xl bg-white p-4 mb-6"
+        style={{ border: "1px solid var(--color-border)" }}
       >
         <p className="text-[11px] font-bold text-text-sub tracking-[0.1em] mb-2">목차</p>
         <ol className="text-[13px] space-y-1 text-text-main list-decimal pl-5">
@@ -243,13 +243,13 @@ export default function LegalGuidePage() {
       {/* 법 조항 */}
       <section id="law" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Scroll size={20} color="#7A6B8E" />
+          <Scroll size={20} className="text-text-sub" />
           동물보호법 핵심 조항
         </h2>
         <div className="space-y-3">
-          <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid var(--color-divider)" }}>
+          <div className="rounded-xl bg-white p-4" style={{ border: "1px solid var(--color-border)" }}>
             <p className="text-[15px] font-bold text-text-main">제10조 — 동물학대 등의 금지</p>
-            <p className="text-[13px] font-semibold mt-1" style={{ color: "#B84545" }}>
+            <p className="text-[13px] font-semibold mt-1" style={{ color: "var(--color-error)" }}>
               3년 이하 징역 또는 3,000만 원 이하 벌금
             </p>
             <ul className="text-[13px] text-text-sub mt-2 space-y-1 pl-4 list-disc leading-relaxed">
@@ -261,7 +261,7 @@ export default function LegalGuidePage() {
             </ul>
           </div>
 
-          <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid var(--color-divider)" }}>
+          <div className="rounded-xl bg-white p-4" style={{ border: "1px solid var(--color-border)" }}>
             <p className="text-[15px] font-bold text-text-main">제14조 — 동물의 구조 및 보호</p>
             <p className="text-[13px] text-text-sub mt-2 leading-relaxed">
               피학대·유기 동물 발견 시 <strong>누구나 시장·군수·구청장에게 구조 요청 가능</strong>.
@@ -269,7 +269,7 @@ export default function LegalGuidePage() {
             </p>
           </div>
 
-          <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid var(--color-divider)" }}>
+          <div className="rounded-xl bg-white p-4" style={{ border: "1px solid var(--color-border)" }}>
             <p className="text-[15px] font-bold text-text-main">길고양이 TNR 사업 근거 (동물보호법 · 중성화사업 실시 요령 고시)</p>
             <p className="text-[13px] text-text-sub mt-2 leading-relaxed">
               지자체가 <strong>길고양이 중성화 사업을 의무적으로 시행</strong>하도록 규정.
@@ -277,16 +277,16 @@ export default function LegalGuidePage() {
             </p>
           </div>
 
-          <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid var(--color-divider)" }}>
+          <div className="rounded-xl bg-white p-4" style={{ border: "1px solid var(--color-border)" }}>
             <p className="text-[15px] font-bold text-text-main">제97조 — 벌칙</p>
             <p className="text-[13px] text-text-sub mt-2 leading-relaxed">
               <strong>상습범은 형의 1/2까지 가중</strong>, 유죄 확정 시 <strong>동물 사육 제한 명령</strong> 부과 가능.
             </p>
           </div>
 
-          <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid var(--color-divider)" }}>
+          <div className="rounded-xl bg-white p-4" style={{ border: "1px solid var(--color-border)" }}>
             <p className="text-[15px] font-bold text-text-main">형법 제366조 — 재물손괴죄</p>
-            <p className="text-[13px] font-semibold mt-1" style={{ color: "#B84545" }}>
+            <p className="text-[13px] font-semibold mt-1" style={{ color: "var(--color-error)" }}>
               3년 이하 징역 또는 700만 원 이하 벌금
             </p>
             <p className="text-[13px] text-text-sub mt-2 leading-relaxed">
@@ -300,7 +300,7 @@ export default function LegalGuidePage() {
       {/* 2024 개정 */}
       <section id="changes-2024" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Gavel size={20} color="#B05C36" />
+          <Gavel size={20} className="text-text-sub" />
           2024년 개정 내용 — 무엇이 강해졌나
         </h2>
         <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
@@ -310,7 +310,7 @@ export default function LegalGuidePage() {
           <li><strong>반려동물 관련업 결격 사유</strong> — 학대 전과자는 반려동물업 등록 불가</li>
           <li><strong>수사 협조 확대</strong> — 민간 동물보호단체의 수사 참여·의견 제출 확대</li>
         </ul>
-        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "#E8F4E8", color: "#3F5B42" }}>
+        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "var(--color-surface)", color: "var(--color-text-main)", border: "1px solid var(--color-border)" }}>
           <p className="font-bold mb-1">처벌 경향</p>
           <p>
             2020년대 들어 집행유예·벌금형이 주였지만, 2023년부터 <strong>실형 선고 사례</strong>가 늘고 있습니다.
@@ -322,7 +322,7 @@ export default function LegalGuidePage() {
       {/* 증거 확보 */}
       <section id="evidence" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <FileText size={20} color="#4A7BA8" />
+          <FileText size={20} className="text-text-sub" />
           증거 확보 방법 — 이게 있어야 처벌 가능
         </h2>
         <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">가장 강력한 증거 순</h3>
@@ -352,19 +352,19 @@ export default function LegalGuidePage() {
           신고 채널 3가지
         </h2>
         <div className="space-y-3">
-          <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid rgba(216,85,85,0.2)" }}>
+          <div className="rounded-xl bg-white p-4" style={{ border: "1px solid var(--color-border)" }}>
             <p className="text-[15px] font-bold text-text-main">1. 112 (경찰)</p>
             <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
               <strong>긴급·현행범</strong> 상황. 출동 지체되면 증거 유실 위험. 동물보호법 제10조 위반이라고 명확히 얘기하세요.
             </p>
           </div>
-          <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid var(--color-divider)" }}>
+          <div className="rounded-xl bg-white p-4" style={{ border: "1px solid var(--color-border)" }}>
             <p className="text-[15px] font-bold text-text-main">2. 1577-0954 (동물보호상담센터)</p>
             <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
               <strong>비긴급·상담</strong>용. 신고 접수, 가까운 구조단체 연계, 법률 자문까지 종합 안내.
             </p>
           </div>
-          <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid var(--color-divider)" }}>
+          <div className="rounded-xl bg-white p-4" style={{ border: "1px solid var(--color-border)" }}>
             <p className="text-[15px] font-bold text-text-main">3. 동물보호관리시스템 (animal.go.kr)</p>
             <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
               <strong>온라인 서면 신고</strong>. 증거 파일 첨부 가능. 공식 기록으로 남아 추후 추적·통계 자료 활용.
@@ -387,9 +387,9 @@ export default function LegalGuidePage() {
         <LegalChecklist
           title="숨숨집 파손 시"
           subtitle="재물손괴죄 · 형법 제366조"
-          iconNode={<Home size={22} color="#C9A961" strokeWidth={1.8} />}
-          iconBg="#EDE9E0"
-          iconColor="#C9A961"
+          iconNode={<Home size={22} className="text-text-sub" strokeWidth={1.8} />}
+          iconBg="var(--color-surface)"
+          iconColor="var(--color-text-sub)"
           items={SHELTER_CHECKLIST}
         />
       </section>
@@ -402,9 +402,9 @@ export default function LegalGuidePage() {
         <LegalChecklist
           title="학대 목격 시"
           subtitle="동물보호법 제10조 위반"
-          iconNode={<CircleAlert size={22} color="#B84545" strokeWidth={1.8} />}
+          iconNode={<CircleAlert size={22} color="var(--color-error)" strokeWidth={1.8} />}
           iconBg="var(--color-gray-100)"
-          iconColor="#B84545"
+          iconColor="var(--color-error)"
           items={ABUSE_CHECKLIST}
         />
       </section>
@@ -412,15 +412,14 @@ export default function LegalGuidePage() {
       {/* FAQ */}
       <section id="faq" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-4">
-          <HelpCircle size={20} color="var(--color-sage)" />
+          <HelpCircle size={20} className="text-text-sub" />
           자주 묻는 질문
         </h2>
-        <div className="space-y-3">
+        <div>
           {(faqSchema.mainEntity as { name: string; acceptedAnswer: { text: string } }[]).map((q) => (
             <details
               key={q.name}
-              className="rounded-xl bg-white p-4 group"
-              style={{ border: "1px solid var(--color-divider)" }}
+              className="py-3 border-b border-divider last:border-b-0 group"
             >
               <summary className="cursor-pointer text-[15px] font-bold text-text-main flex items-center gap-2 list-none">
                 <span className="text-primary">Q.</span>
@@ -437,16 +436,15 @@ export default function LegalGuidePage() {
       {/* 관련 가이드 */}
       <section className="mb-8">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <BookOpen size={18} color="#B05C36" />
+          <BookOpen size={18} className="text-text-sub" />
           관련 가이드
         </h2>
-        <div className="space-y-2">
+        <div>
           <Link
             href="/protection/emergency-guide"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
-            style={{ border: "1px solid var(--color-divider)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
-            <span className="text-[17px]">🚨</span>
+            <AlertTriangle size={18} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">길고양이 응급 구조 가이드</p>
               <p className="text-[11px] text-text-sub mt-0.5">피해 동물 응급처치·병원 이송</p>
@@ -454,10 +452,9 @@ export default function LegalGuidePage() {
           </Link>
           <Link
             href="/protection/district-contacts"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
-            style={{ border: "1px solid var(--color-divider)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
-            <span className="text-[17px]">📞</span>
+            <Phone size={18} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">시·구·군청 동물보호 담당부서</p>
               <p className="text-[11px] text-text-sub mt-0.5">지역별 신고·TNR 접수 창구</p>
@@ -465,10 +462,9 @@ export default function LegalGuidePage() {
           </Link>
           <Link
             href="/map"
-            className="flex items-center gap-3 p-4 rounded-xl bg-white press"
-            style={{ border: "1px solid var(--color-divider)" }}
+            className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
           >
-            <ShieldCheck size={18} color="#B84545" className="shrink-0" />
+            <ShieldCheck size={18} color="var(--color-error)" className="shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-bold text-text-main">지도 학대 경보</p>
               <p className="text-[11px] text-text-sub mt-0.5">이웃과 공유하는 위험 지역 경보</p>
@@ -478,7 +474,7 @@ export default function LegalGuidePage() {
       </section>
 
       {/* 신뢰 출처 */}
-      <section className="mb-8 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-divider)" }}>
+      <section className="mb-8 rounded-xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2">참고한 출처</h3>
         <ul className="text-[13px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
           <li>동물보호법 (법률 제19446호, 2024 개정)</li>
@@ -498,7 +494,6 @@ export default function LegalGuidePage() {
           slug="legal"
           title="길고양이 학대 신고·동물보호법 완벽 가이드 | 도시공존"
           description="증거 수집 · 112 신고 · 동물보호법 처벌 조항 · 민사·행정 대응까지."
-          accent="#8B65B8"
         />
       </section>
     </div>

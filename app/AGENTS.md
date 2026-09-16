@@ -20,8 +20,11 @@ supabase 쿼리를 직접 작성하지 않는다.
 
 - 사용자 노출 문자열은 전부 한국어. 위험 상태 등 도메인 라벨은 `HEALTH_MAP` 같은 lib 상수를
   참조하고 화면에 리터럴로 다시 쓰지 않는다.
-- 색·그림자·라운드는 기존 CSS 변수/토큰(`--color-primary`, `--shadow-card` 계열)을 쓴다.
-  새 hex 하드코딩 금지(테마 동결 중). 아이콘은 lucide-react.
+- 색·그림자·라운드는 CSS 토큰만(`--color-primary`, `--color-gray-*`, `--radius-card`, `--shadow-fab` 등).
+  hex 하드코딩 금지(`node scripts/design-swap.mjs app --report`가 0이어야 한다), 카드 안 카드·틴트 아이콘
+  박스·그라디언트·`rounded-2xl` 이상·화면 요소 이모지 금지 — 흰 면 + 헤어라인 + 구분선 리스트(`UIListRow`)와
+  lucide 선 아이콘. 라운드는 12(카드·시트)/8(입력·버튼·썸네일)/6(칩)/원형(아바타)만, 그림자는 FAB·시트·
+  모달·드롭다운에만. 회색 글자는 text-main/sub/light만 쓰고 text-muted는 장식·비활성 전용.
 - 저활용 기능 제거는 삭제가 아니라 `SHOW_*` 플래그 숨김으로.
 - 사용자 입력에서 온 URL은 렌더 전에 `sanitizeImageUrl`/`sanitizeHttpUrl`을 반드시 통과시킨다.
 - 추모(`memorial_at` 있는) 고양이에게 돌봄 권유·입양 문의 UI를 띄우지 않는다 — 조건 분기 누락이

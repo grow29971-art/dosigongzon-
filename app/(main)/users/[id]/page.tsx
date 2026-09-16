@@ -1,9 +1,12 @@
+// 공개 프로필 — 2026-09-16 「익숙한 동네앱」 리디자인: 아이보리 바탕·그림자 카드·스탯 틴트 박스·
+// 업적 이모지·레벨 노랑 배지 폐지 → 순백 바탕, 원형 아바타, 통계는 헤어라인 행, 회색 선 아이콘.
+
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft, MapPin, PawPrint, CalendarDays, Heart,
-  Flame, MessageSquare, MessageCircle, AlertTriangle, Trophy,
+  Flame, MessageSquare, MessageCircle, AlertTriangle, Trophy, Award,
 } from "lucide-react";
 import {
   getUserProfileServer,
@@ -13,7 +16,7 @@ import {
   getUserRecentActivityServer,
   getUserRegionsServer,
 } from "@/lib/users-server";
-import { findAdminTitle, TITLES, CATEGORY_COLORS } from "@/lib/titles";
+import { findAdminTitle, TITLES } from "@/lib/titles";
 import { createClient } from "@/lib/supabase/server";
 import { computeLevel, computeScore } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
@@ -42,6 +45,13 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     robots: { index: false, follow: false }, // 개인 프로필 검색 노출 원치 않음
   };
 }
+
+// 회색 태그 (관리자 타이틀·레벨·연속·지역 공통)
+const TAG_STYLE: React.CSSProperties = {
+  border: "1px solid var(--color-border)",
+  borderRadius: "var(--radius-square)",
+  color: "var(--color-text-sub)",
+};
 
 export default async function UserProfilePage({ params }: { params: Params }) {
   const { id } = await params;
@@ -85,160 +95,114 @@ export default async function UserProfilePage({ params }: { params: Params }) {
   };
   const level = computeLevel(computeScore(activitySummary));
   const unlockedTitles = TITLES.filter((t) => t.unlocked(activitySummary)).slice(0, 4);
+  const avatar = sanitizeImageUrl(profile.avatar_url, "");
 
   return (
-    <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
+    <div className="pb-24" style={{ background: "var(--color-surface)", minHeight: "100vh" }}>
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 -ml-2 flex items-center justify-center press-strong"
           aria-label="뒤로"
         >
-          <ArrowLeft size={18} className="text-text-main" />
+          <ArrowLeft size={20} className="text-text-main" />
         </Link>
       </div>
 
-      {/* 프로필 카드 */}
-      <div className="px-4 mt-2">
-        <div
-          className="rounded-3xl p-5"
-          style={{
-            background: "#FFFFFF",
-            boxShadow: "var(--shadow-card)",
-            border: "1px solid var(--color-primary-soft)",
-          }}
-        >
-          <div className="flex items-start gap-4">
-            {/* 아바타 */}
-            <div
-              className="w-20 h-20 rounded-full shrink-0"
-              style={{
-                background: profile.avatar_url
-                  ? `url('${profile.avatar_url}') center/cover`
-                  : "var(--color-primary)",
-                border: "3px solid #fff",
-                boxShadow: "var(--shadow-fab)",
-              }}
-            >
-              {!profile.avatar_url && (
-                <div className="w-full h-full flex items-center justify-center text-[28px] font-bold text-white">
-                  {profile.nickname.charAt(0)}
-                </div>
+      {/* 프로필 */}
+      <div className="px-4 mt-1">
+        <div className="flex items-start gap-4">
+          {/* 아바타 — 원형 */}
+          <div
+            className="w-20 h-20 rounded-full shrink-0 flex items-center justify-center overflow-hidden"
+            style={{
+              background: avatar ? `url('${avatar}') center/cover` : "var(--color-gray-200)",
+            }}
+          >
+            {!avatar && (
+              <span className="text-[28px] font-bold text-text-sub">{profile.nickname.charAt(0)}</span>
+            )}
+          </div>
+          <div className="flex-1 min-w-0 pt-1">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <h1 className="text-[20px] font-bold text-text-main tracking-tight truncate">
+                {profile.nickname}
+              </h1>
+              {adminTitle && (
+                <span className="text-[11px] font-medium px-1.5 py-0.5" style={TAG_STYLE}>
+                  {adminTitle.name}
+                </span>
               )}
             </div>
-            <div className="flex-1 min-w-0 pt-1">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <h1 className="text-[20px] font-bold text-text-main tracking-tight truncate">
-                  {profile.nickname}
-                </h1>
-                {adminTitle && (
-                  <span
-                    className="text-[11px] font-bold px-1.5 py-0.5 rounded-md"
-                    style={{ backgroundColor: adminTitle.color, color: "#fff" }}
-                  >
-                    {adminTitle.emoji} {adminTitle.name}
-                  </span>
-                )}
-              </div>
-              {/* 레벨 배지 */}
-              <div className="flex items-center gap-1.5 mt-1 flex-wrap">
-                <span
-                  className="px-2 py-0.5 rounded-md text-[11px] font-bold flex items-center gap-1"
-                  style={{
-                    background: "#FFD93D",
-                    color: "#fff",
-                    boxShadow: "var(--shadow-raised)",
-                  }}
-                >
-                  {level.emoji} Lv.{level.level} {level.title}
+            {/* 레벨·연속 */}
+            <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+              <span className="px-2 py-0.5 text-[11px] font-medium flex items-center gap-1" style={TAG_STYLE}>
+                Lv.{level.level} {level.title}
+              </span>
+              {stats.currentStreak >= 2 && (
+                <span className="px-2 py-0.5 text-[11px] font-medium flex items-center gap-1" style={TAG_STYLE}>
+                  <Flame size={10} />
+                  {stats.currentStreak}일 연속
                 </span>
-                {stats.currentStreak >= 2 && (
-                  <span
-                    className="px-2 py-0.5 rounded-md text-[11px] font-bold flex items-center gap-1"
-                    style={{ background: "#FFE8D5", color: "#C4621E" }}
-                  >
-                    <Flame size={10} />
-                    {stats.currentStreak}일 연속
-                  </span>
-                )}
-              </div>
-              <p className="text-[13px] text-text-sub mt-2 flex items-center gap-1">
-                <CalendarDays size={11} />
-                {joinedAt} 가입
-              </p>
-              <div className="mt-3 flex items-center gap-2 flex-wrap">
-                <FollowButton userId={profile.id} size="md" />
-                <BlockUserButton userId={profile.id} userName={profile.nickname ?? undefined} size="md" />
-              </div>
+              )}
+            </div>
+            <p className="text-[13px] text-text-sub mt-2 flex items-center gap-1">
+              <CalendarDays size={11} />
+              {joinedAt} 가입
+            </p>
+            <div className="mt-3 flex items-center gap-2 flex-wrap">
+              <FollowButton userId={profile.id} size="md" />
+              <BlockUserButton userId={profile.id} userName={profile.nickname ?? undefined} size="md" />
             </div>
           </div>
-
-          {/* 스탯 */}
-          <div className="grid grid-cols-4 gap-2 mt-5">
-            <StatBox label="팔로워" value={counts.followers} color="#4A7BA8" />
-            <StatBox label="팔로잉" value={counts.following} color="#8B65B8" />
-            <StatBox label="등록 고양이" value={cats.length} color="#B05C36" />
-            <StatBox label="돌봄 기록" value={careLogCount} color="#6B8E6F" />
-          </div>
-
-          {/* 활동 지역 */}
-          {regions.length > 0 && (
-            <div className="mt-4 flex items-center gap-1.5 flex-wrap">
-              <MapPin size={11} className="text-text-sub" />
-              <span className="text-[11px] font-bold text-text-sub">활동 지역</span>
-              {regions.map((r) => (
-                <span
-                  key={r.name}
-                  className="px-2 py-0.5 rounded-lg text-[11px] font-bold"
-                  style={{
-                    background: r.is_primary ? "var(--color-primary)" : "#F7F4EE",
-                    color: r.is_primary ? "#fff" : "#A38E7A",
-                  }}
-                >
-                  {r.is_primary && "★ "}{r.name}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
+
+        {/* 통계 — 헤어라인 행 */}
+        <div className="mt-5" style={{ borderTop: "1px solid var(--color-divider)" }}>
+          <StatRow label="팔로워" value={counts.followers} />
+          <StatRow label="팔로잉" value={counts.following} />
+          <StatRow label="등록 고양이" value={cats.length} />
+          <StatRow label="돌봄 기록" value={careLogCount} />
+        </div>
+
+        {/* 활동 지역 */}
+        {regions.length > 0 && (
+          <div className="mt-4 flex items-center gap-1.5 flex-wrap">
+            <MapPin size={11} className="text-text-sub" />
+            <span className="text-[11px] font-semibold text-text-sub">활동 지역</span>
+            {regions.map((r) => (
+              <span
+                key={r.name}
+                className="px-2 py-0.5 text-[11px] font-medium"
+                style={
+                  r.is_primary
+                    ? { ...TAG_STYLE, borderColor: "var(--color-primary)", color: "var(--color-primary)" }
+                    : TAG_STYLE
+                }
+              >
+                {r.name}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 획득한 업적 */}
       {unlockedTitles.length > 0 && (
-        <div className="px-4 mt-5">
-          <div className="flex items-center gap-2 mb-3 px-1">
-            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E8B040" }} />
-            <h2 className="text-[15px] font-bold text-text-main tracking-tight flex items-center gap-1">
-              <Trophy size={14} style={{ color: "#E8B040" }} />
-              획득한 업적
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
+        <div className="px-4 mt-6">
+          <SectionTitle icon={<Trophy size={14} />} label="획득한 업적" />
+          <div>
             {unlockedTitles.map((t) => (
               <div
                 key={t.id}
-                className="rounded-2xl p-3 flex items-center gap-2.5"
-                style={{
-                  background: "#FFFFFF",
-                  boxShadow: "var(--shadow-card)",
-                  border: `1px solid ${CATEGORY_COLORS[t.category]}30`,
-                }}
+                className="flex items-center gap-3 py-3 border-b border-divider last:border-b-0"
+                style={{ minHeight: 56 }}
               >
-                <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-[20px]"
-                  style={{ background: `${CATEGORY_COLORS[t.category]}15` }}
-                >
-                  {t.emoji}
-                </div>
+                <Award size={20} strokeWidth={1.8} className="shrink-0 text-text-sub" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-bold text-text-main truncate">
-                    {t.name}
-                  </p>
-                  <p className="text-[11px] text-text-sub truncate leading-tight">
-                    {t.description}
-                  </p>
+                  <p className="text-[15px] font-semibold text-text-main truncate">{t.name}</p>
+                  <p className="text-[13px] text-text-sub truncate leading-tight mt-0.5">{t.description}</p>
                 </div>
               </div>
             ))}
@@ -248,24 +212,16 @@ export default async function UserProfilePage({ params }: { params: Params }) {
 
       {/* 최근 활동 */}
       {activity.length > 0 && (
-        <div className="px-4 mt-5">
-          <div className="flex items-center gap-2 mb-3 px-1">
-            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#6B8E6F" }} />
-            <h2 className="text-[15px] font-bold text-text-main tracking-tight">
-              최근 활동
-            </h2>
-          </div>
-          <div
-            className="rounded-2xl overflow-hidden"
-            style={{ background: "#FFFFFF", boxShadow: "var(--shadow-card)" }}
-          >
+        <div className="px-4 mt-6">
+          <SectionTitle label="최근 활동" />
+          <div>
             {activity.map((item) => {
               const icon =
-                item.kind === "care" ? <PawPrint size={12} style={{ color: "#6B8E6F" }} /> :
+                item.kind === "care" ? <PawPrint size={16} strokeWidth={1.8} className="text-text-sub" /> :
                 item.kind === "comment" ? (item.summary.startsWith("⚠️")
-                  ? <AlertTriangle size={12} style={{ color: "#D85555" }} />
-                  : <MessageCircle size={12} style={{ color: "#4A7BA8" }} />) :
-                <MessageSquare size={12} style={{ color: "#8B65B8" }} />;
+                  ? <AlertTriangle size={16} strokeWidth={1.8} style={{ color: "var(--color-error)" }} />
+                  : <MessageCircle size={16} strokeWidth={1.8} className="text-text-sub" />) :
+                <MessageSquare size={16} strokeWidth={1.8} className="text-text-sub" />;
               const href =
                 item.kind === "post" ? `/community/${item.targetId}` : `/cats/${item.targetId}`;
               const time = formatTimeShort(item.createdAt);
@@ -273,14 +229,15 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                 <Link
                   key={item.id}
                   href={href}
-                  className="flex items-center gap-2.5 px-4 py-2.5 active:bg-surface-alt border-b border-divider last:border-0"
+                  className="flex items-center gap-3 py-3 press border-b border-divider last:border-b-0"
+                  style={{ minHeight: 56 }}
                 >
                   <div className="shrink-0">{icon}</div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-bold text-text-main truncate">
-                      <span style={{ color: "var(--color-primary)" }}>{item.targetName}</span>
+                    <p className="text-[15px] text-text-main truncate">
+                      <span className="font-semibold">{item.targetName}</span>
                       <span className="mx-1 text-text-light">·</span>
-                      <span className="text-text-sub font-semibold">{item.summary}</span>
+                      <span className="text-text-sub">{item.summary}</span>
                     </p>
                   </div>
                   <span className="text-[11px] text-text-light shrink-0">{time}</span>
@@ -292,82 +249,56 @@ export default async function UserProfilePage({ params }: { params: Params }) {
       )}
 
       {/* 등록한 고양이 */}
-      <div className="px-4 mt-5">
-        <div className="flex items-center gap-2 mb-3 px-1">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--color-primary)" }} />
-          <h2 className="text-[15px] font-bold text-text-main tracking-tight">
-            등록한 고양이
-          </h2>
-          {cats.length > 0 && (
-            <span className="text-[11px] text-text-light">{cats.length}마리</span>
-          )}
-        </div>
+      <div className="px-4 mt-6">
+        <SectionTitle label="등록한 고양이" count={cats.length > 0 ? `${cats.length}마리` : undefined} />
 
         {cats.length === 0 ? (
-          <div
-            className="py-10 text-center rounded-2xl bg-white"
-            style={{ border: "1px solid var(--color-divider)" }}
-          >
+          <div className="py-10 text-center">
             <PawPrint size={28} className="mx-auto text-text-light mb-2" strokeWidth={1.2} />
             <p className="text-[13px] text-text-sub">아직 등록한 고양이가 없어요</p>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-2">
-            {cats.map((c) => (
-              <Link
-                key={c.id}
-                href={`/cats/${c.id}`}
-                className="block press-strong transition-transform"
-              >
-                <div
-                  className="aspect-square rounded-2xl overflow-hidden mb-1.5"
-                  style={{
-                    background: c.photo_url
-                      ? `url('${sanitizeImageUrl(c.photo_url, "")}') center/cover`
-                      : "var(--color-gray-100)",
-                    border: "2px solid #fff",
-                    boxShadow: "var(--shadow-card)",
-                  }}
+          <div className="grid grid-cols-3 gap-2 pt-3">
+            {cats.map((c) => {
+              const photo = sanitizeImageUrl(c.photo_url, "");
+              return (
+                <Link
+                  key={c.id}
+                  href={`/cats/${c.id}`}
+                  className="block press-strong transition-transform"
                 >
-                  {!c.photo_url && (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <PawPrint size={22} style={{ color: "var(--color-primary)" }} />
-                    </div>
-                  )}
-                </div>
-                <p className="text-[13px] font-bold text-text-main truncate text-center tracking-tight">
-                  {c.name}
-                </p>
-                {c.region && (
-                  <p className="text-[11px] text-text-sub truncate text-center flex items-center justify-center gap-0.5">
-                    <MapPin size={9} />
-                    {c.region}
+                  <div
+                    className="aspect-square overflow-hidden mb-1.5 flex items-center justify-center"
+                    style={{
+                      borderRadius: "var(--radius-card-sm)",
+                      background: photo ? `url('${photo}') center/cover` : "var(--color-gray-100)",
+                    }}
+                  >
+                    {!photo && <PawPrint size={22} className="text-text-light" strokeWidth={1.5} />}
+                  </div>
+                  <p className="text-[13px] font-semibold text-text-main truncate text-center tracking-tight">
+                    {c.name}
                   </p>
-                )}
-              </Link>
-            ))}
+                  {c.region && (
+                    <p className="text-[11px] text-text-sub truncate text-center flex items-center justify-center gap-0.5">
+                      <MapPin size={9} />
+                      {c.region}
+                    </p>
+                  )}
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>
 
       {/* CTA */}
-      <div className="px-4 mt-6">
-        <div
-          className="rounded-2xl p-4 text-center"
-          style={{
-            background: "#FFFFFF",
-            boxShadow: "var(--shadow-card)",
-            border: "1px solid var(--color-divider)",
-          }}
-        >
-          <Heart size={16} className="mx-auto mb-1" style={{ color: "var(--color-like)" }} />
-          <p className="text-[13px] font-bold text-text-main">
-            함께 돌봐요
-          </p>
-          <p className="text-[11px] text-text-sub mt-0.5">
-            {profile.nickname}님과 같은 이웃이 되어 길고양이를 함께 지켜주세요
-          </p>
-        </div>
+      <div className="px-4 mt-8 text-center">
+        <Heart size={18} strokeWidth={1.8} className="mx-auto mb-1 text-text-light" />
+        <p className="text-[15px] font-semibold text-text-main">함께 돌봐요</p>
+        <p className="text-[13px] text-text-sub mt-0.5">
+          {profile.nickname}님과 같은 이웃이 되어 길고양이를 함께 지켜주세요
+        </p>
       </div>
     </div>
   );
@@ -385,16 +316,21 @@ function formatTimeShort(iso: string): string {
   return new Date(iso).toLocaleDateString("ko-KR", { month: "short", day: "numeric" });
 }
 
-function StatBox({ label, value, color }: { label: string; value: number; color: string }) {
+function SectionTitle({ icon, label, count }: { icon?: React.ReactNode; label: string; count?: string }) {
   return (
-    <div
-      className="rounded-xl p-2.5 text-center"
-      style={{ background: `${color}10`, border: `1px solid ${color}20` }}
-    >
-      <p className="text-[17px] font-bold tracking-tight" style={{ color }}>
-        {value.toLocaleString()}
-      </p>
-      <p className="text-[11px] text-text-sub font-bold mt-0.5">{label}</p>
+    <div className="flex items-center gap-1.5 pb-1 px-1" style={{ borderBottom: "1px solid var(--color-divider)" }}>
+      {icon && <span className="text-text-sub">{icon}</span>}
+      <h2 className="text-[15px] font-bold text-text-main tracking-tight">{label}</h2>
+      {count && <span className="text-[11px] text-text-light">{count}</span>}
+    </div>
+  );
+}
+
+function StatRow({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="flex items-center justify-between py-3 border-b border-divider" style={{ minHeight: 48 }}>
+      <span className="text-[15px] text-text-sub">{label}</span>
+      <span className="text-[15px] font-semibold text-text-main tabular-nums">{value.toLocaleString()}</span>
     </div>
   );
 }

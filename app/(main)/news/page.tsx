@@ -5,7 +5,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Newspaper, ExternalLink, ChevronRight } from "lucide-react";
+import { ArrowLeft, Newspaper, ExternalLink, ChevronRight, Pin } from "lucide-react";
 import { createAnonClient } from "@/lib/supabase/anon";
 import { BADGE_PRESETS, computeDday, type NewsItem } from "@/lib/news-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
@@ -44,30 +44,29 @@ export default async function NewsIndexPage() {
   const items = await fetchNews();
 
   return (
-    <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
+    <div className="pb-24" style={{ background: "var(--color-surface)", minHeight: "100vh" }}>
       <div className="px-4 pt-12 pb-4 flex items-center gap-3">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 -ml-2 flex items-center justify-center press-strong"
           aria-label="홈"
         >
           <ArrowLeft size={18} className="text-text-main" />
         </Link>
         <div>
           <h1 className="text-[20px] font-bold text-text-main tracking-tight flex items-center gap-1.5">
-            <Newspaper size={18} className="text-primary" />
+            <Newspaper size={18} className="text-text-sub" />
             고양이 사회 소식
           </h1>
           <p className="text-[11px] text-text-sub">행사·TNR·법령·공지 모음</p>
         </div>
       </div>
 
-      <div className="px-4 space-y-3">
+      <div className="px-4">
         {items.length === 0 ? (
           <div
-            className="text-center py-16 rounded-2xl bg-white"
-            style={{ boxShadow: "var(--shadow-card)" }}
+            className="text-center py-16 rounded-xl bg-white"
+            style={{ border: "1px solid var(--color-border)" }}
           >
             <Newspaper size={36} strokeWidth={1.2} className="mx-auto mb-3 text-text-light opacity-30" />
             <p className="text-[13px] text-text-sub font-semibold">아직 등록된 소식이 없어요</p>
@@ -87,15 +86,9 @@ export default async function NewsIndexPage() {
             const isExternal = !hasInternalBody && !!item.external_url;
 
             const cardInner = (
-              <div
-                className="flex gap-3 p-3.5 rounded-2xl bg-white press transition-transform"
-                style={{
-                  boxShadow: "var(--shadow-card)",
-                  border: item.pinned ? `1.5px solid ${badge.color}40` : "1px solid var(--color-divider)",
-                }}
-              >
+              <div className="flex gap-3 py-3 border-b border-divider last:border-b-0 press transition-transform">
                 {photo && (
-                  <div className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 72, height: 72 }}>
+                  <div className="relative shrink-0 rounded-lg overflow-hidden" style={{ width: 72, height: 72, background: "var(--color-gray-100)" }}>
                     <Image src={photo} alt={item.title} fill sizes="72px" style={{ objectFit: "cover" }} />
                   </div>
                 )}
@@ -103,25 +96,25 @@ export default async function NewsIndexPage() {
                   <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                     <span
                       className="text-[11px] font-bold px-1.5 py-0.5 rounded-md"
-                      style={{ background: badge.bg, color: badge.color }}
+                      style={{ background: "var(--color-gray-100)", color: "var(--color-text-sub)" }}
                     >
                       {badge.label}
                     </span>
                     {dday && (
                       <span
                         className="text-[11px] font-bold px-1.5 py-0.5 rounded-md"
-                        style={{ background: "#F7F4EE", color: "#6B5043" }}
+                        style={{ border: "1px solid var(--color-border)", color: "var(--color-text-sub)" }}
                       >
                         {dday}
                       </span>
                     )}
                     {item.pinned && (
-                      <span className="text-[9px] font-bold" style={{ color: badge.color }}>
-                        📌 고정
+                      <span className="text-[11px] font-semibold text-text-light inline-flex items-center gap-0.5">
+                        <Pin size={10} /> 고정
                       </span>
                     )}
                   </div>
-                  <p className="text-[15px] font-bold text-text-main leading-snug line-clamp-2">
+                  <p className="text-[15px] font-semibold text-text-main leading-snug line-clamp-2">
                     {item.title}
                   </p>
                   {item.description && (

@@ -1,5 +1,8 @@
 "use client";
 
+// 이모지 리액션 바 — 선택지 이모지 자체가 리액션 데이터(기능)라 이모지는 유지한다.
+// 2026-09-16 리디자인: 필 → 사각 칩, 리액션별 색 틴트 → 선택 시 테라코타 soft, 미선택은 회색.
+
 import { useState } from "react";
 import {
   REACTION_EMOJIS,
@@ -66,21 +69,20 @@ export default function ReactionBar({
 
   return (
     <div className="flex items-center gap-1 flex-wrap">
-      {REACTION_EMOJIS.map(({ key, emoji, color }) => {
+      {REACTION_EMOJIS.map(({ key, emoji }) => {
         const count = cur.counts[key] ?? 0;
         const picked = cur.myReactions.has(key);
-        const active = picked || count > 0;
         return (
           <button
             key={key}
             type="button"
             onClick={() => handleClick(key)}
             disabled={busy === key}
-            className="flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-bold press-strong transition-all disabled:opacity-50"
+            className="flex items-center gap-1 px-2 py-1 chip-square text-[11px] font-semibold press-strong transition-colors disabled:opacity-50"
             style={{
-              background: picked ? `${color}22` : active ? "#FFFFFF" : "transparent",
-              border: `1px solid ${picked ? color : "var(--color-gray-200)"}`,
-              color: picked ? color : "#8B7562",
+              background: picked ? "var(--color-primary-soft)" : "var(--color-surface)",
+              border: `1px solid ${picked ? "var(--color-primary)" : "var(--color-border)"}`,
+              color: picked ? "var(--color-primary)" : "var(--color-text-sub)",
             }}
             aria-label={`${emoji} 반응`}
             aria-pressed={picked}

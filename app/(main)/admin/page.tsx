@@ -1,10 +1,12 @@
 "use client";
 
+// 관리자 대시보드 (2026-09-16 「익숙한 동네앱」 리디자인)
+// 통계 카드 무더기·D-day 그라디언트 카드 → 헤어라인 섹션 + 수치 행(라벨 좌·숫자 우 tabular),
+// 메뉴 그리드 → 구분선 리스트(회색 선 아이콘). 색은 토큰만, 틴트·그림자 없음.
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
   Loader2,
   Shield,
   Newspaper,
@@ -15,9 +17,6 @@ import {
   Bell,
   AlertTriangle,
   Cat as CatIcon,
-  MessageSquare,
-  Eye,
-  Users as UsersIcon,
   ChevronRight,
   RefreshCcw,
   MapPin as MapPinIcon,
@@ -34,18 +33,17 @@ import {
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { getAdminStats, type AdminStats } from "@/lib/admin-stats";
+import { AdminForbidden, AdminHeader, AdminLoading, AdminPage, AdminSection, StatRow } from "./_ui";
 
 type MenuItem = {
   href: string;
   title: string;
   subtitle: string;
   Icon: typeof Newspaper;
-  color: string;
   badge?: number;
 };
 
 export default function AdminDashboardPage() {
-  const router = useRouter();
   const [authChecked, setAuthChecked] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [stats, setStats] = useState<AdminStats | null>(null);
@@ -74,454 +72,155 @@ export default function AdminDashboardPage() {
     })();
   }, []);
 
-  if (!authChecked || loading) {
-    return (
-      <div className="flex justify-center pt-20">
-        <Loader2 size={28} className="animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="px-5 pt-20 text-center">
-        <Shield size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[15px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
-        <p className="text-[13px] text-text-sub">접근 권한이 없어요.</p>
-        <Link href="/mypage" className="inline-block mt-4 text-[13px] font-bold text-primary">
-          마이페이지로 돌아가기
-        </Link>
-      </div>
-    );
-  }
+  if (!authChecked || loading) return <AdminLoading />;
+  if (!isAdmin) return <AdminForbidden />;
 
   const menus: MenuItem[] = [
-    {
-      href: "/admin/products",
-      title: "상품 관리",
-      subtitle: "쇼핑몰 상품 등록·수정·재고",
-      Icon: ShoppingBag,
-      color: "#E8930C",
-    },
-    {
-      href: "/admin/orders",
-      title: "주문 관리",
-      subtitle: "주문 상태·운송장·취소/환불",
-      Icon: PackageCheck,
-      color: "#B05C36",
-    },
-    {
-      href: "/admin/fund",
-      title: "후원금 관리",
-      subtitle: "지출 등록·금액 조정·정산 카드 갱신",
-      Icon: HeartHandshake,
-      color: "var(--color-like)",
-    },
-    {
-      href: "/admin/cats",
-      title: "고양이 관리",
-      subtitle: "지도 고양이 검색·숨김·일괄 삭제",
-      Icon: CatIcon,
-      color: "#E88D5A",
-    },
-    {
-      href: "/admin/event-keyring",
-      title: "이벤트 응모자",
-      subtitle: "1000명 키링 추첨 응모 관리",
-      Icon: Gift,
-      color: "#B05C36",
-    },
-    {
-      href: "/admin/insights",
-      title: "분석 대시보드",
-      subtitle: "가입·활동·인기 지표",
-      Icon: BarChart3,
-      color: "#5BA876",
-    },
-    {
-      href: "/admin/experiments",
-      title: "동네 돌봄 실험",
-      subtitle: "14일 지역 실험 생성·전환 지표",
-      Icon: FlaskConical,
-      color: "#6B8E6F",
-    },
+    { href: "/admin/products", title: "상품 관리", subtitle: "쇼핑몰 상품 등록·수정·재고", Icon: ShoppingBag },
+    { href: "/admin/orders", title: "주문 관리", subtitle: "주문 상태·운송장·취소/환불", Icon: PackageCheck },
+    { href: "/admin/fund", title: "후원금 관리", subtitle: "지출 등록·금액 조정·정산 카드 갱신", Icon: HeartHandshake },
+    { href: "/admin/cats", title: "고양이 관리", subtitle: "지도 고양이 검색·숨김·일괄 삭제", Icon: CatIcon },
+    { href: "/admin/event-keyring", title: "이벤트 응모자", subtitle: "1000명 키링 추첨 응모 관리", Icon: Gift },
+    { href: "/admin/insights", title: "분석 대시보드", subtitle: "가입·활동·인기 지표", Icon: BarChart3 },
+    { href: "/admin/experiments", title: "동네 돌봄 실험", subtitle: "14일 지역 실험 생성·전환 지표", Icon: FlaskConical },
     {
       href: "/admin/inbox",
       title: "신고·문의 관리",
       subtitle: "유저 신고와 문의를 처리",
       Icon: Inbox,
-      color: "#D85555",
       badge: (stats?.pendingReports ?? 0) + (stats?.pendingInquiries ?? 0),
     },
-    {
-      href: "/admin/zones",
-      title: "QR 지킴판",
-      subtitle: "돌봄 구역 QR 생성·익명 제보 확인·이관",
-      Icon: Shield,
-      color: "#4A7B52",
-    },
-    {
-      href: "/admin/users",
-      title: "가입자 관리",
-      subtitle: "전체 회원 조회·정지 현황",
-      Icon: UserIcon,
-      color: "#4A7BA8",
-    },
-    {
-      href: "/admin/activation",
-      title: "활성도 코호트",
-      subtitle: "활성·휴면·이탈·첫 등록 미완료 분류",
-      Icon: Activity,
-      color: "#5BA876",
-    },
-    {
-      href: "/admin/broadcast",
-      title: "전체 쪽지 발송",
-      subtitle: "코호트별 일괄 환영·재참여 메시지",
-      Icon: Megaphone,
-      color: "#B05C36",
-    },
-    {
-      href: "/admin/announcement",
-      title: "접속 팝업 공지",
-      subtitle: "접속 시 뜨는 팝업 공지 등록·내리기",
-      Icon: Megaphone,
-      color: "#C97C52",
-    },
+    { href: "/admin/zones", title: "QR 지킴판", subtitle: "돌봄 구역 QR 생성·익명 제보 확인·이관", Icon: Shield },
+    { href: "/admin/users", title: "가입자 관리", subtitle: "전체 회원 조회·정지 현황", Icon: UserIcon },
+    { href: "/admin/activation", title: "활성도 코호트", subtitle: "활성·휴면·이탈·첫 등록 미완료 분류", Icon: Activity },
+    { href: "/admin/broadcast", title: "전체 쪽지 발송", subtitle: "코호트별 일괄 환영·재참여 메시지", Icon: Megaphone },
+    { href: "/admin/announcement", title: "접속 팝업 공지", subtitle: "접속 시 뜨는 팝업 공지 등록·내리기", Icon: Megaphone },
     {
       href: "/admin/auth-errors",
       title: "로그인 실패 로그",
       subtitle: "OAuth·매직링크 실패 원인",
       Icon: AlertTriangle,
-      color: "#E88D5A",
       badge: stats?.todayErrors ?? 0,
     },
-    {
-      href: "/admin/news",
-      title: "뉴스 관리",
-      subtitle: "홈 화면 소식·일정",
-      Icon: Newspaper,
-      color: "#7A6B8E",
-    },
-    {
-      href: "/admin/tips",
-      title: "꿀팁게시판 관리",
-      subtitle: "정보글 작성·발행·수정",
-      Icon: Sparkles,
-      color: "#B05C36",
-    },
-    {
-      href: "/admin/weekly-issues",
-      title: "이번 주 이슈",
-      subtitle: "주간 동네 이슈 큐레이션",
-      Icon: CalendarClock,
-      color: "#5B7A8F",
-    },
-    {
-      href: "/admin/hospitals",
-      title: "병원 관리",
-      subtitle: "구조동물 치료 도움병원",
-      Icon: Stethoscope,
-      color: "#6B8E6F",
-    },
-    {
-      href: "/admin/pharmacy-guide",
-      title: "약품 가이드",
-      subtitle: "약품·영양제 정보",
-      Icon: Pill,
-      color: "#9B6DD7",
-    },
-    {
-      href: "/admin/push",
-      title: "푸시 알림 발송",
-      subtitle: "전체 사용자에게 공지",
-      Icon: Bell,
-      color: "#B05C36",
-    },
-    {
-      href: "/admin/location-logs",
-      title: "위치 변경 이력",
-      subtitle: "고양이 좌표 변경 감지",
-      Icon: MapPinIcon,
-      color: "#5A8AC4",
-    },
+    { href: "/admin/news", title: "뉴스 관리", subtitle: "홈 화면 소식·일정", Icon: Newspaper },
+    { href: "/admin/tips", title: "꿀팁게시판 관리", subtitle: "정보글 작성·발행·수정", Icon: Sparkles },
+    { href: "/admin/weekly-issues", title: "이번 주 이슈", subtitle: "주간 동네 이슈 큐레이션", Icon: CalendarClock },
+    { href: "/admin/hospitals", title: "병원 관리", subtitle: "구조동물 치료 도움병원", Icon: Stethoscope },
+    { href: "/admin/pharmacy-guide", title: "약품 가이드", subtitle: "약품·영양제 정보", Icon: Pill },
+    { href: "/admin/push", title: "푸시 알림 발송", subtitle: "전체 사용자에게 공지", Icon: Bell },
+    { href: "/admin/location-logs", title: "위치 변경 이력", subtitle: "고양이 좌표 변경 감지", Icon: MapPinIcon },
   ];
 
+  const dday =
+    stats && stats.daysUntilLaunch > 0
+      ? `D-${stats.daysUntilLaunch}`
+      : stats && stats.daysUntilLaunch === 0
+        ? "D-Day"
+        : stats
+          ? `+${Math.abs(stats.daysUntilLaunch)}일`
+          : "";
+
   return (
-    <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
-      {/* 헤더 (다크 톤 — 일반 페이지와 구분) */}
-      <div
-        className="px-5 pt-12 pb-5"
-        style={{
-          background: "#2C2C2C",
-          color: "#fff",
-        }}
-      >
-        <button
-          onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[13px] font-semibold mb-3 opacity-80 press-strong"
-        >
-          <ArrowLeft size={14} />
-          마이페이지
-        </button>
-        <div className="flex items-center justify-between mb-1">
-          <div className="flex items-baseline gap-2">
-            <Shield size={20} />
-            <h1 className="text-[24px] font-bold tracking-tight">
-              관리자 대시보드
-            </h1>
-            <span className="text-[11px] font-semibold opacity-50">Admin</span>
-          </div>
+    <AdminPage>
+      <AdminHeader
+        title="관리자 대시보드"
+        description="도시공존 운영 관리"
+        back="/mypage"
+        backLabel="마이페이지"
+        right={
           <button
             type="button"
             onClick={refresh}
             disabled={refreshing}
-            className="w-9 h-9 rounded-xl flex items-center justify-center press-strong disabled:opacity-50"
-            style={{ background: "rgba(255,255,255,0.12)" }}
+            className="w-9 h-9 rounded-full flex items-center justify-center press-strong disabled:opacity-50 text-text-sub"
+            style={{ border: "1px solid var(--color-border)" }}
             aria-label="새로고침"
           >
-            {refreshing ? (
-              <Loader2 size={14} className="animate-spin" />
-            ) : (
-              <RefreshCcw size={14} />
-            )}
+            {refreshing ? <Loader2 size={16} className="animate-spin" /> : <RefreshCcw size={16} />}
           </button>
-        </div>
-        <p className="text-[13px] opacity-70">
-          도시공존 운영 관리 · 통계와 메뉴를 한 곳에
-        </p>
-      </div>
+        }
+      />
 
-      {/* 출시 D-day 카운트다운 카드 + 오늘 추이 */}
+      {/* 오늘 */}
       {stats && (
-        <div className="px-4 -mt-6 mb-2">
-          <div
-            className="rounded-2xl p-4 relative overflow-hidden"
-            style={{
-              background:
-                stats.daysUntilLaunch > 0
-                  ? "linear-gradient(135deg, #FFE8C2 0%, #FFCFB5 60%, #FFB99B 100%)"
-                  : "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)",
-              boxShadow: "var(--shadow-primary)",
-            }}
-          >
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0">
-                <p
-                  className="text-[11px] font-bold tracking-[0.20em] mb-1"
-                  style={{ color: stats.daysUntilLaunch > 0 ? "#8E5430" : "rgba(255,255,255,0.85)" }}
-                >
-                  {stats.daysUntilLaunch > 0 ? "OFFICIAL LAUNCH" : "POST-LAUNCH"}
-                </p>
-                <p
-                  className="text-[24px] font-bold tracking-tight leading-tight"
-                  style={{ color: stats.daysUntilLaunch > 0 ? "#5C3A1E" : "#FFFFFF" }}
-                >
-                  {stats.daysUntilLaunch > 0
-                    ? `2026-06-01 D-${stats.daysUntilLaunch}`
-                    : stats.daysUntilLaunch === 0
-                      ? "D-Day"
-                      : `출시 +${Math.abs(stats.daysUntilLaunch)}일`}
-                </p>
-              </div>
-              <div
-                className="rounded-2xl px-3 py-2 text-center shrink-0"
-                style={{
-                  background: stats.daysUntilLaunch > 0 ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.18)",
-                }}
-              >
-                <p
-                  className="text-[9px] font-bold tracking-[0.15em]"
-                  style={{ color: stats.daysUntilLaunch > 0 ? "#8E5430" : "rgba(255,255,255,0.85)" }}
-                >
-                  TODAY
-                </p>
-                <p
-                  className="text-[20px] font-bold tabular-nums tracking-tight"
-                  style={{ color: stats.daysUntilLaunch > 0 ? "#5C3A1E" : "#FFFFFF" }}
-                >
-                  +{stats.newUsersToday}
-                </p>
-                <p
-                  className="text-[11px] font-bold tabular-nums"
-                  style={{ color: stats.daysUntilLaunch > 0 ? "#8E5430" : "rgba(255,255,255,0.75)" }}
-                >
-                  어제 +{stats.newUsersYesterday}
-                </p>
-              </div>
-            </div>
-            <p
-              className="text-[11px] mt-3 leading-snug"
-              style={{ color: stats.daysUntilLaunch > 0 ? "rgba(92,58,30,0.80)" : "rgba(255,255,255,0.85)" }}
-            >
-              가입자 <b>{stats.totalUsers}</b>명 · 오늘 신규 등록 고양이 <b>{stats.newCatsToday}</b>마리
-            </p>
-          </div>
-        </div>
+        <AdminSection title="오늘" padding={false}>
+          <StatRow label="신규 가입" sub={`어제 ${stats.newUsersYesterday}명`} value={`+${stats.newUsersToday}`} />
+          <StatRow label="신규 등록 고양이" value={`+${stats.newCatsToday}`} />
+          <StatRow label="방문자" value={stats.todayVisits.toLocaleString()} />
+          <StatRow label="출시(2026-06-01) 기준" value={dday} />
+        </AdminSection>
       )}
 
-      {/* 통계 카드 */}
+      {/* 누적 */}
       {stats && (
-        <div className="px-4 mb-5 grid grid-cols-2 gap-2">
-          <StatCard
-            Icon={UsersIcon}
+        <AdminSection title="누적" padding={false}>
+          <StatRow
             label="전체 가입자"
-            value={stats.totalUsers}
-            color="#4A7BA8"
             sub={stats.suspendedUsers > 0 ? `정지 ${stats.suspendedUsers}명` : undefined}
-            subColor="#B84545"
+            value={stats.totalUsers.toLocaleString()}
           />
-          <StatCard
-            Icon={CatIcon}
-            label="등록 고양이"
-            value={stats.totalCats}
-            color="#B05C36"
-          />
-          <StatCard
-            Icon={MessageSquare}
+          <StatRow label="등록 고양이" value={stats.totalCats.toLocaleString()} />
+          <StatRow
             label="커뮤니티 글"
-            value={stats.totalPosts}
-            color="#8B65B8"
             sub={`댓글 ${stats.totalComments.toLocaleString()}`}
+            value={stats.totalPosts.toLocaleString()}
           />
-          <StatCard
-            Icon={Eye}
-            label="오늘 방문자"
-            value={stats.todayVisits}
-            color="#6B8E6F"
-          />
+        </AdminSection>
+      )}
+
+      {/* 처리 필요 */}
+      {stats && (stats.pendingReports > 0 || stats.pendingInquiries > 0 || stats.errors7d > 0) && (
+        <AdminSection title="처리 필요" padding={false}>
           {(stats.pendingReports > 0 || stats.pendingInquiries > 0) && (
-            <StatCard
-              Icon={Inbox}
+            <StatRow
               label="미처리 신고·문의"
-              value={stats.pendingReports + stats.pendingInquiries}
-              color="#D85555"
               sub={`신고 ${stats.pendingReports} · 문의 ${stats.pendingInquiries}`}
-              highlight
+              value={stats.pendingReports + stats.pendingInquiries}
+              tone="error"
             />
           )}
           {stats.errors7d > 0 && (
-            <StatCard
-              Icon={AlertTriangle}
-              label="7일 로그인 실패"
-              value={stats.errors7d}
-              color="#E88D5A"
-              sub={`오늘 ${stats.todayErrors}건`}
-            />
+            <StatRow label="7일 로그인 실패" sub={`오늘 ${stats.todayErrors}건`} value={stats.errors7d} tone="warning" />
           )}
-        </div>
+        </AdminSection>
       )}
 
-      {/* 메뉴 그리드 */}
-      <div className="px-4">
-        <div className="flex items-center gap-2 mb-3 px-1">
-          <h2 className="text-[17px] font-bold text-text-main tracking-tight">
-            관리 메뉴
-          </h2>
-        </div>
-        <div className="space-y-2">
-          {menus.map((m) => (
-            <Link
-              key={m.href}
-              href={m.href}
-              className="flex items-center gap-3 px-4 py-3.5 press transition-transform"
-              style={{
-                background: "#FFFFFF",
-                borderRadius: "var(--radius-card-sm)",
-                boxShadow: `0 4px 14px ${m.color}10, 0 1px 2px rgba(0,0,0,0.02)`,
-                border: "1px solid var(--color-divider)",
-              }}
-            >
-              <div
-                className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-                style={{ backgroundColor: `${m.color}15` }}
-              >
-                <m.Icon size={19} color={m.color} strokeWidth={2} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <p className="text-[15px] font-bold text-text-main tracking-tight">
-                    {m.title}
-                  </p>
-                  {m.badge !== undefined && m.badge > 0 && (
-                    <span
-                      className="text-[9px] font-bold px-1.5 py-0.5 chip-square"
-                      style={{
-                        background: m.color,
-                        color: "#fff",
-                      }}
-                    >
-                      {m.badge}
-                    </span>
-                  )}
-                </div>
-                <p className="text-[11px] text-text-sub mt-0.5 truncate">
-                  {m.subtitle}
-                </p>
-              </div>
-              <ChevronRight size={16} className="shrink-0" style={{ color: m.color, opacity: 0.6 }} />
-            </Link>
-          ))}
-        </div>
-
-        {/* 위험 액션 */}
-        <div className="mt-6">
-          <div className="flex items-center gap-2 mb-3 px-1">
-            <h2 className="text-[17px] font-bold text-text-main tracking-tight">
-              빠른 정보
-            </h2>
-          </div>
-          <div
-            className="bg-white rounded-2xl p-4 text-[11px] text-text-sub leading-relaxed"
-            style={{ boxShadow: "var(--shadow-card)" }}
+      {/* 관리 메뉴 — 구분선 리스트 */}
+      <AdminSection title="관리 메뉴" padding={false}>
+        {menus.map((m) => (
+          <Link
+            key={m.href}
+            href={m.href}
+            className="flex items-center gap-3 px-4 py-3 border-b border-divider last:border-b-0 press"
+            style={{ minHeight: 56 }}
           >
-            <p className="mb-1"><b>도시공존</b> · 길고양이 돌봄 시민 참여 플랫폼</p>
-            <p>운영 중 이상 감지 시 로그인 실패 로그와 신고·문의함을 먼저 확인해주세요.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+            <m.Icon size={20} className="shrink-0 text-text-sub" strokeWidth={1.8} />
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1.5">
+                <p className="text-[15px] font-semibold text-text-main">{m.title}</p>
+                {m.badge !== undefined && m.badge > 0 && (
+                  <span
+                    className="text-[11px] font-semibold px-1.5 py-0.5 tabular-nums"
+                    style={{
+                      borderRadius: "var(--radius-square)",
+                      background: "var(--color-error-soft)",
+                      color: "var(--color-error)",
+                    }}
+                  >
+                    {m.badge}
+                  </span>
+                )}
+              </div>
+              <p className="text-[13px] text-text-sub mt-0.5 truncate">{m.subtitle}</p>
+            </div>
+            <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
+          </Link>
+        ))}
+      </AdminSection>
 
-function StatCard({
-  Icon,
-  label,
-  value,
-  color,
-  sub,
-  subColor,
-  highlight,
-}: {
-  Icon: typeof Newspaper;
-  label: string;
-  value: number;
-  color: string;
-  sub?: string;
-  subColor?: string;
-  highlight?: boolean;
-}) {
-  return (
-    <div
-      className="rounded-2xl p-3"
-      style={{
-        background: highlight ? `linear-gradient(135deg, ${color}15 0%, ${color}08 100%)` : "#FFFFFF",
-        border: highlight ? `1px solid ${color}30` : "1px solid var(--color-divider)",
-        boxShadow: "var(--shadow-card)",
-      }}
-    >
-      <div className="flex items-center gap-1.5 mb-1">
-        <Icon size={12} style={{ color }} />
-        <span className="text-[11px] font-bold text-text-sub">{label}</span>
-      </div>
-      <p className="text-[24px] font-bold tracking-tight" style={{ color }}>
-        {value.toLocaleString()}
+      <p className="px-1 text-[13px] text-text-light leading-relaxed">
+        이상 감지 시 로그인 실패 로그와 신고·문의함을 먼저 확인하세요.
       </p>
-      {sub && (
-        <p className="text-[11px] mt-0.5" style={{ color: subColor ?? "#999" }}>
-          {sub}
-        </p>
-      )}
-    </div>
+    </AdminPage>
   );
 }

@@ -107,12 +107,11 @@ export default function RallyJoinButton() {
       <button
         onClick={handleJoin}
         disabled={busy || done}
-        className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[15px] font-bold text-white press-strong transition-transform disabled:active:scale-100"
+        className="flex-1 flex items-center justify-center gap-1.5 h-12 text-[15px] font-semibold press-strong transition-transform disabled:active:scale-100"
         style={{
-          background: done
-            ? "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)"
-            : "var(--color-primary)",
-          boxShadow: done ? "0 8px 20px rgba(107,142,111,0.28)" : "0 8px 20px rgba(176,92,54,0.28)",
+          background: done ? "var(--color-gray-100)" : "var(--color-primary)",
+          color: done ? "var(--color-text-main)" : "var(--color-surface)",
+          borderRadius: "var(--radius-input)",
         }}
       >
         {done ? (
@@ -138,8 +137,8 @@ export default function RallyJoinButton() {
           <button
             onClick={handleCancel}
             disabled={busy}
-            className="underline font-bold disabled:opacity-50"
-            style={{ color: "var(--color-primary-dark)" }}
+            className="underline font-semibold disabled:opacity-50"
+            style={{ color: "var(--color-text-sub)" }}
           >
             참여 취소하기
           </button>

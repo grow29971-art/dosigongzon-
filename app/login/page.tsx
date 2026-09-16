@@ -5,7 +5,7 @@
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { PawPrint, Check, Loader2, ExternalLink, AlertCircle, RotateCcw } from "lucide-react";
+import { PawPrint, Check, Loader2, ExternalLink, AlertCircle, AlertTriangle, RotateCcw } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
   detectInAppBrowser,
@@ -126,22 +126,26 @@ function LoginContent() {
     }
   };
 
+  const guideIconColor =
+    oauthGuide?.severity === "danger" ? "var(--color-error)" :
+    oauthGuide?.severity === "warn" ? "var(--color-warning)" : "var(--color-text-sub)";
+
   return (
-    <div className="min-h-dvh bg-warm-white flex flex-col">
+    <div className="min-h-dvh bg-surface flex flex-col">
       <div className="flex-1 overflow-y-auto px-6 py-12 flex flex-col justify-center max-w-lg mx-auto w-full">
         {/* 인앱 브라우저 경고 */}
         {inApp && (
           <div
-            className="mb-6 rounded-2xl p-4"
-            style={{ backgroundColor: "#FFF7E6", border: "1px solid #F0DFB8" }}
+            className="mb-6 p-4"
+            style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
           >
             <div className="flex items-start gap-2.5 mb-3">
-              <AlertCircle size={18} className="mt-0.5 shrink-0" style={{ color: "#B8860B" }} />
+              <AlertCircle size={18} className="mt-0.5 shrink-0" style={{ color: "var(--color-text-sub)" }} />
               <div className="min-w-0">
-                <p className="text-[13px] font-bold" style={{ color: "#8A6410" }}>
+                <p className="text-[15px] font-semibold text-text-main">
                   카카오로 바로 로그인할 수 있어요
                 </p>
-                <p className="text-[13px] mt-1 leading-relaxed" style={{ color: "#8A6410" }}>
+                <p className="text-[13px] mt-1 leading-relaxed text-text-sub">
                   {inAppBrowserLabel(inApp)} 안에서는 <b>구글·애플 로그인만</b> 막혀 있어요.
                   그 두 가지를 쓰시려면 아래에서 브라우저를 열어주세요.
                 </p>
@@ -150,8 +154,8 @@ function LoginContent() {
             <button
               type="button"
               onClick={handleOpenExternal}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[13px] transition-transform press-strong"
-              style={{ backgroundColor: "rgba(0,0,0,0.05)", color: "#6B5043" }}
+              className="w-full flex items-center justify-center gap-2 h-10 font-semibold text-[13px] transition-transform press-strong"
+              style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)", borderRadius: "var(--radius-input)" }}
             >
               <ExternalLink size={14} />
               {detectOS() === "ios" && inApp !== "kakaotalk"
@@ -159,8 +163,8 @@ function LoginContent() {
                 : "크롬/사파리에서 열기"}
             </button>
             {showIosCopyHint && (
-              <div className="mt-3 rounded-xl p-3 text-[11px] leading-relaxed" style={{ backgroundColor: "#FFF", color: "#6B5043" }}>
-                <p className="font-bold mb-1">주소가 복사됐어요 ✓</p>
+              <div className="mt-3 pt-3 text-[11px] leading-relaxed text-text-sub" style={{ borderTop: "1px solid var(--color-divider)" }}>
+                <p className="font-semibold mb-1 text-text-main">주소가 복사됐어요</p>
                 <p>사파리(iOS) 또는 크롬(Android)을 직접 열고 주소창에 붙여넣어주세요.</p>
               </div>
             )}
@@ -169,9 +173,7 @@ function LoginContent() {
 
         {/* 로고 */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4">
-            <PawPrint size={40} className="text-primary" strokeWidth={1.8} />
-          </div>
+          <PawPrint size={40} className="text-primary inline-block mb-4" strokeWidth={1.8} />
           <h1 className="text-[24px] font-bold text-text-main tracking-tight">도시공존</h1>
           <p className="text-[15px] text-text-sub mt-2 leading-relaxed">
             카카오 또는 구글로 1초 만에 시작하기
@@ -181,46 +183,26 @@ function LoginContent() {
         {/* OAuth 에러 가이드 */}
         {oauthGuide && (
           <div
-            className="rounded-2xl p-4 mb-4"
-            style={{
-              backgroundColor:
-                oauthGuide.severity === "danger" ? "var(--color-error-soft)" :
-                oauthGuide.severity === "warn" ? "var(--color-warning-soft)" : "#F0F6FF",
-              border: `1px solid ${
-                oauthGuide.severity === "danger" ? "#E8C5C5" :
-                oauthGuide.severity === "warn" ? "#F5DAB0" : "#C9DBF5"
-              }`,
-            }}
+            className="p-4 mb-4"
+            style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
           >
             <div className="flex items-start gap-2.5">
-              <AlertCircle
-                size={18}
-                className="mt-0.5 shrink-0"
-                style={{
-                  color:
-                    oauthGuide.severity === "danger" ? "#B84545" :
-                    oauthGuide.severity === "warn" ? "#B07A1C" : "#3A6CB5",
-                }}
-              />
+              <AlertCircle size={18} className="mt-0.5 shrink-0" style={{ color: guideIconColor }} />
               <div className="min-w-0 flex-1">
-                <p className="text-[13px] font-bold" style={{
-                  color:
-                    oauthGuide.severity === "danger" ? "#8B2F2F" :
-                    oauthGuide.severity === "warn" ? "#6F4910" : "#22457A",
-                }}>
+                <p className="text-[15px] font-semibold text-text-main">
                   {oauthGuide.title}
                 </p>
-                <p className="text-[13px] mt-1 leading-relaxed" style={{ color: "#5A5A5A" }}>
+                <p className="text-[13px] mt-1 leading-relaxed text-text-sub">
                   {oauthGuide.body}
                 </p>
                 {oauthGuide.tip && (
-                  <p className="text-[13px] mt-2 leading-relaxed font-semibold" style={{ color: "#3F5B42" }}>
-                    💡 {oauthGuide.tip}
+                  <p className="text-[13px] mt-2 leading-relaxed font-semibold text-text-main">
+                    {oauthGuide.tip}
                   </p>
                 )}
                 {/* 사과 + 자동 접수 안내 — 에러는 logAuthError로 운영팀 로그에 실제 기록됨 */}
-                <p className="text-[11px] mt-2 leading-relaxed" style={{ color: "#8A7A6E" }}>
-                  불편을 드려 죄송해요 🙏 이 오류는 운영팀에 자동으로 접수됐어요.
+                <p className="text-[11px] mt-2 leading-relaxed text-text-light">
+                  불편을 드려 죄송해요. 이 오류는 운영팀에 자동으로 접수됐어요.
                   빠른 시일 내에 해결하겠습니다.
                 </p>
                 {/* 다시 시도 — 에러 쿼리만 제거해 깨끗한 로그인 상태로. next는 보존. */}
@@ -230,20 +212,18 @@ function LoginContent() {
                     const next = searchParams.get("next");
                     router.replace(next && next.startsWith("/") && !next.startsWith("//") ? `/login?next=${encodeURIComponent(next)}` : "/login");
                   }}
-                  className="mt-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-bold press-strong"
+                  className="mt-3 flex items-center gap-1.5 h-8 px-3 text-[13px] font-semibold press-strong"
                   style={{
-                    backgroundColor: "rgba(255,255,255,0.7)",
-                    color:
-                      oauthGuide.severity === "danger" ? "#8B2F2F" :
-                      oauthGuide.severity === "warn" ? "#6F4910" : "#22457A",
-                    border: "1px solid var(--color-border)",
+                    background: "var(--color-gray-100)",
+                    color: "var(--color-text-main)",
+                    borderRadius: "var(--radius-input)",
                   }}
                 >
                   <RotateCcw size={11} />
                   다시 시도
                 </button>
                 {(authErrorCode || authError) && (
-                  <p className="text-[11px] mt-2 font-mono" style={{ color: "#9A8A7A" }}>
+                  <p className="text-[11px] mt-2 font-mono text-text-light">
                     코드: {authErrorCode || authError}
                   </p>
                 )}
@@ -254,22 +234,14 @@ function LoginContent() {
 
         {/* 일반 에러 */}
         {error && (
-          <div className="rounded-xl px-4 py-3 mb-4" style={{ backgroundColor: "var(--color-error-soft)" }}>
-            <p className="text-[13px] font-semibold" style={{ color: "#B84545" }}>{error}</p>
-          </div>
+          <p className="text-[13px] font-semibold mb-4 px-1" style={{ color: "var(--color-error)" }}>{error}</p>
         )}
 
         {/* 인앱 외 일반 환경에서의 안내 */}
         {!inApp && (
-          <div
-            className="mb-4 rounded-xl px-4 py-2.5 flex items-start gap-2"
-            style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid #E5E0D6" }}
-          >
-            <span className="text-[13px] mt-0.5">💡</span>
-            <p className="text-[13px] text-text-sub leading-relaxed">
-              가입과 로그인이 같아요. 처음이시면 그냥 카카오 또는 구글 버튼을 눌러주세요.
-            </p>
-          </div>
+          <p className="mb-4 px-1 text-[13px] text-text-sub leading-relaxed text-center">
+            가입과 로그인이 같아요. 처음이시면 카카오 또는 구글 버튼을 눌러주세요.
+          </p>
         )}
 
         {/* 약관 동의 */}
@@ -295,32 +267,29 @@ function LoginContent() {
 
         {/* 삼성 인터넷 경고 */}
         {isSamsung && !inApp && (
-          <div
-            className="mb-3 rounded-xl px-3.5 py-2.5 flex items-start gap-2"
-            style={{ backgroundColor: "var(--color-warning-soft)", border: "1px solid #F5DAB0" }}
-          >
-            <span className="text-[15px] mt-0.5">⚠️</span>
-            <p className="text-[13px] leading-relaxed" style={{ color: "#6F4910" }}>
+          <div className="mb-3 px-1 flex items-start gap-2">
+            <AlertTriangle size={16} className="mt-0.5 shrink-0" style={{ color: "var(--color-warning)" }} />
+            <p className="text-[13px] leading-relaxed text-text-sub">
               <b>삼성 인터넷</b>에서는 카카오 로그인이 자주 실패해요 (KOE205).
               <b>크롬·사파리</b>로 열면 안정적이에요.
             </p>
           </div>
         )}
 
-        {/* 소셜 버튼 */}
+        {/* 소셜 버튼 — 브랜드색(카카오 #FEE500)만 hex 유지, 모서리 8px */}
         <div className="space-y-2.5">
           <button
             onClick={() => handleSocial("kakao")}
             disabled={!!socialLoading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-bold press-strong transition-transform disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 h-12 text-[15px] font-semibold press-strong transition-transform disabled:opacity-60"
             /* 인앱에서도 카카오는 실제로 진행되므로 약관 동의 상태를 그대로 반영 */
-            style={{ backgroundColor: "#FEE500", color: "#191919", opacity: agreed ? 1 : 0.6 }}
+            style={{ backgroundColor: "#FEE500", color: "var(--color-text-main)", borderRadius: "var(--radius-input)", opacity: agreed ? 1 : 0.6 }}
           >
             {socialLoading === "kakao" ? (
               <Loader2 size={18} className="animate-spin" />
             ) : (
               <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-                <path d="M9 1.5C4.582 1.5 1 4.262 1 7.668c0 2.219 1.51 4.166 3.788 5.272-.167.625-.604 2.265-.69 2.617-.108.438.16.43.336.314.138-.092 2.198-1.5 3.083-2.107.49.073.99.111 1.483.111 4.418 0 8-2.762 8-6.207C17 4.262 13.418 1.5 9 1.5z" fill="#191919" />
+                <path d="M9 1.5C4.582 1.5 1 4.262 1 7.668c0 2.219 1.51 4.166 3.788 5.272-.167.625-.604 2.265-.69 2.617-.108.438.16.43.336.314.138-.092 2.198-1.5 3.083-2.107.49.073.99.111 1.483.111 4.418 0 8-2.762 8-6.207C17 4.262 13.418 1.5 9 1.5z" fill="currentColor" />
               </svg>
             )}
             카카오로 시작하기
@@ -328,17 +297,17 @@ function LoginContent() {
           <button
             onClick={() => handleSocial("google")}
             disabled={!!socialLoading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold press-strong transition-transform border border-[#E0E0E0] disabled:opacity-60"
-            style={{ backgroundColor: "#FFFFFF", color: "#2A2A28", opacity: (agreed || inApp) ? 1 : 0.6 }}
+            className="w-full flex items-center justify-center gap-2.5 h-12 text-[15px] font-semibold press-strong transition-transform disabled:opacity-60"
+            style={{ background: "var(--color-surface)", color: "var(--color-text-main)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-input)", opacity: (agreed || inApp) ? 1 : 0.6 }}
           >
             {socialLoading === "google" ? (
               <Loader2 size={18} className="animate-spin" />
             ) : (
-              <svg width="18" height="18" viewBox="0 0 18 18">
-                <path d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.79 2.71v2.26h2.9c1.7-1.56 2.68-3.86 2.68-6.61z" fill="#4285F4" />
-                <path d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.8.54-1.83.86-3.05.86-2.34 0-4.33-1.58-5.04-3.71H.96v2.33A9 9 0 0 0 9 18z" fill="#34A853" />
-                <path d="M3.96 10.71A5.41 5.41 0 0 1 3.68 9c0-.59.1-1.17.28-1.71V4.96H.96A9 9 0 0 0 0 9c0 1.45.35 2.82.96 4.04l3-2.33z" fill="#FBBC05" />
-                <path d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.59C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.96l3 2.33C4.67 5.16 6.66 3.58 9 3.58z" fill="#EA4335" />
+              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                <path d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.79 2.71v2.26h2.9c1.7-1.56 2.68-3.86 2.68-6.61z" fill="currentColor" />
+                <path d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.8.54-1.83.86-3.05.86-2.34 0-4.33-1.58-5.04-3.71H.96v2.33A9 9 0 0 0 9 18z" fill="currentColor" />
+                <path d="M3.96 10.71A5.41 5.41 0 0 1 3.68 9c0-.59.1-1.17.28-1.71V4.96H.96A9 9 0 0 0 0 9c0 1.45.35 2.82.96 4.04l3-2.33z" fill="currentColor" />
+                <path d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.59C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.96l3 2.33C4.67 5.16 6.66 3.58 9 3.58z" fill="currentColor" />
               </svg>
             )}
             Google로 시작하기
@@ -346,8 +315,8 @@ function LoginContent() {
           <button
             onClick={() => handleSocial("apple")}
             disabled={!!socialLoading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold press-strong transition-transform disabled:opacity-60"
-            style={{ backgroundColor: "#000000", color: "#FFFFFF", opacity: (agreed || inApp) ? 1 : 0.6 }}
+            className="w-full flex items-center justify-center gap-2.5 h-12 text-[15px] font-semibold press-strong transition-transform disabled:opacity-60"
+            style={{ background: "var(--color-text-main)", color: "var(--color-surface)", borderRadius: "var(--radius-input)", opacity: (agreed || inApp) ? 1 : 0.6 }}
           >
             {socialLoading === "apple" ? (
               <Loader2 size={18} className="animate-spin" />
@@ -361,8 +330,7 @@ function LoginContent() {
         </div>
 
         <p className="text-[13px] text-text-light text-center mt-6 leading-relaxed">
-          한 번 연결하면 다음부터 1클릭 로그인 ·<br />
-          광고 없음 · 무료
+          한 번 연결하면 다음부터 1클릭 로그인 · 광고 없음 · 무료
         </p>
 
         {/* 이메일 로그인 */}
@@ -374,16 +342,16 @@ function LoginContent() {
               placeholder="이메일"
               value={emailInput}
               onChange={e => setEmailInput(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-border text-[15px] outline-none focus:border-primary"
-              style={{ backgroundColor: "#fff" }}
+              className="w-full px-4 h-12 border border-border text-[15px] outline-none focus:border-primary bg-surface"
+              style={{ borderRadius: "var(--radius-input)" }}
             />
             <input
               type="password"
               placeholder="비밀번호"
               value={passwordInput}
               onChange={e => setPasswordInput(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-border text-[15px] outline-none focus:border-primary"
-              style={{ backgroundColor: "#fff" }}
+              className="w-full px-4 h-12 border border-border text-[15px] outline-none focus:border-primary bg-surface"
+              style={{ borderRadius: "var(--radius-input)" }}
             />
             <button
               type="button"
@@ -402,8 +370,8 @@ function LoginContent() {
                   window.location.href = "/";
                 }
               }}
-              className="w-full py-3 rounded-xl text-[15px] font-bold text-white disabled:opacity-50"
-              style={{ backgroundColor: "var(--color-primary)" }}
+              className="w-full h-12 text-[15px] font-semibold text-white disabled:opacity-50"
+              style={{ backgroundColor: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
             >
               {emailLoading ? <Loader2 size={16} className="animate-spin mx-auto" /> : "로그인"}
             </button>

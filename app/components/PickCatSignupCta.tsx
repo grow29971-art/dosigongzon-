@@ -36,10 +36,11 @@ export default function PickCatSignupCta({ catId, catName }: { catId: string; ca
     <Link
       href={`/signup?next=${encodeURIComponent(`/cats/${catId}`)}`}
       onClick={commit}
-      className="flex-[1.6] flex items-center justify-center py-2.5 rounded-xl text-white text-[13px] font-bold press transition-transform"
+      className="flex-[1.6] h-10 flex items-center justify-center text-[15px] font-semibold press transition-transform"
       style={{
+        borderRadius: "var(--radius-input)",
         background: "var(--color-primary)",
-        boxShadow: "var(--shadow-primary)",
+        color: "var(--color-surface)",
       }}
     >
       {catName ? `${catName} 소식 받기` : "이 아이 소식 받기"}

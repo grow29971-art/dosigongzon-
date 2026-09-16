@@ -43,12 +43,12 @@ export default async function CelebratePage() {
   const stats = await getStats();
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "var(--color-surface)" }}>
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
+          style={{ background: "var(--color-gray-100)" }}
           aria-label="홈"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -58,12 +58,15 @@ export default async function CelebratePage() {
 
       {/* 히어로 — 출시 축하 */}
       <section className="px-5 pt-8 text-center">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full mb-4" style={{ background: "rgba(176, 92, 54,0.12)", color: "var(--color-primary-dark)" }}>
+        <div
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 mb-4"
+          style={{ background: "var(--color-gray-100)", color: "var(--color-text-sub)", borderRadius: "var(--radius-square)" }}
+        >
           <Sparkles size={12} />
-          <span className="text-[11px] font-bold tracking-[0.18em]">OFFICIAL LAUNCH · 2026.06.01</span>
+          <span className="text-[11px] font-semibold tracking-[0.18em]">OFFICIAL LAUNCH · 2026.06.01</span>
         </div>
         <h1 className="text-[32px] font-bold text-text-main leading-tight tracking-tight">
-          🎉 도시공존<br />
+          도시공존<br />
           <span style={{ color: "var(--color-primary)" }}>정식 출시</span>
         </h1>
         <p className="text-[15px] text-text-sub mt-4 leading-[1.85] max-w-md mx-auto">
@@ -75,43 +78,19 @@ export default async function CelebratePage() {
 
       {/* 누적 통계 */}
       <section className="px-5 mt-8">
-        <p className="text-[11px] font-bold tracking-[0.18em] text-center mb-3" style={{ color: "var(--color-primary-dark)" }}>
+        <p className="text-[11px] font-semibold tracking-[0.18em] text-center mb-3 text-text-light">
           THIS FAR, TOGETHER
         </p>
         <div className="grid grid-cols-3 gap-2">
-          <StatBlock
-            icon={<PawPrint size={18} color="#fff" />}
-            value={stats.cats.toLocaleString()}
-            label="등록된 아이들"
-            color="#B05C36"
-            accent="var(--color-primary-dark)"
-          />
-          <StatBlock
-            icon={<Users size={18} color="#fff" />}
-            value={stats.users.toLocaleString()}
-            label="길집사"
-            color="var(--color-like)"
-            accent="var(--color-like)"
-          />
-          <StatBlock
-            icon={<Heart size={18} color="#fff" />}
-            value={stats.hospitals.toLocaleString()}
-            label="치료 병원"
-            color="#6B8E6F"
-            accent="#4F6B53"
-          />
+          <StatBlock icon={<PawPrint size={18} />} value={stats.cats.toLocaleString()} label="등록된 아이들" />
+          <StatBlock icon={<Users size={18} />} value={stats.users.toLocaleString()} label="길집사" />
+          <StatBlock icon={<Heart size={18} />} value={stats.hospitals.toLocaleString()} label="치료 병원" />
         </div>
       </section>
 
       {/* 메시지 — 처음부터 함께한 이야기 */}
       <section className="px-5 mt-8">
-        <div
-          className="rounded-3xl p-6"
-          style={{
-            background: "#FFF9F2",
-            border: "1px solid rgba(176, 92, 54,0.20)",
-          }}
-        >
+        <div className="rounded-xl p-6" style={{ border: "1px solid var(--color-border)" }}>
           <p className="text-[13px] leading-[2] text-text-sub">
             매일 저녁 길 한 곳에 사료를 두고 오는 누군가의 발걸음,
             비 오는 밤에 우산을 들고 한참을 기다리는 누군가의 시간,
@@ -127,22 +106,16 @@ export default async function CelebratePage() {
             앞으로도 한 분 한 분의 손이 헛되지 않게,
             끝까지 함께하겠습니다.
           </p>
-          <p className="text-[13px] mt-5 text-right" style={{ color: "var(--color-primary-dark)" }}>
-            — 도시공존 운영자 김성우 드림 🐾
+          <p className="text-[13px] mt-5 text-right text-text-sub">
+            — 도시공존 운영자 김성우 드림
           </p>
         </div>
       </section>
 
       {/* 창립 멤버 안내 — 6/1 전 가입자 */}
       <section className="px-5 mt-6">
-        <div
-          className="rounded-2xl p-5 text-center"
-          style={{
-            background: "rgba(176, 92, 54,0.10)",
-            border: "1px solid rgba(176, 92, 54,0.20)",
-          }}
-        >
-          <Trophy size={22} className="mx-auto mb-2" style={{ color: "var(--color-primary)" }} />
+        <div className="rounded-xl p-5 text-center" style={{ border: "1px solid var(--color-border)" }}>
+          <Trophy size={22} className="mx-auto mb-2 text-text-sub" />
           <p className="text-[15px] font-bold text-text-main mb-1.5 tracking-tight">
             창립 멤버 (Founding Member)
           </p>
@@ -159,18 +132,16 @@ export default async function CelebratePage() {
       <section className="px-5 mt-7">
         <Link
           href="/map"
-          className="block w-full text-center py-3.5 rounded-2xl text-[15px] font-bold text-white press transition-transform"
-          style={{
-            background: "var(--color-primary)",
-            boxShadow: "var(--shadow-primary)",
-          }}
+          className="flex items-center justify-center gap-1.5 w-full text-center py-3.5 text-[15px] font-bold text-white press"
+          style={{ background: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
         >
-          🐾 지도 열기 — 우리 동네 아이들 만나러
+          <PawPrint size={16} />
+          지도 열기 — 우리 동네 아이들 만나러
         </Link>
         <Link
           href="/maker"
-          className="block w-full text-center py-2.5 rounded-2xl text-[13px] font-bold mt-2 press"
-          style={{ background: "#FFFFFF", color: "var(--color-primary-dark)", border: "1px solid rgba(176, 92, 54,0.25)" }}
+          className="block w-full text-center py-2.5 text-[13px] font-bold mt-2 press"
+          style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)", borderRadius: "var(--radius-input)" }}
         >
           운영 이야기 보기
         </Link>
@@ -184,36 +155,11 @@ export default async function CelebratePage() {
   );
 }
 
-function StatBlock({
-  icon,
-  value,
-  label,
-  color,
-  accent,
-}: {
-  icon: React.ReactNode;
-  value: string;
-  label: string;
-  color: string;
-  accent: string;
-}) {
+function StatBlock({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) {
   return (
-    <div
-      className="rounded-2xl p-3 text-center"
-      style={{
-        background: `linear-gradient(160deg, ${color}15 0%, ${color}05 100%)`,
-        border: `1px solid ${color}30`,
-      }}
-    >
-      <div
-        className="w-9 h-9 mx-auto rounded-2xl flex items-center justify-center mb-2"
-        style={{ background: `linear-gradient(135deg, ${color} 0%, ${accent} 100%)` }}
-      >
-        {icon}
-      </div>
-      <p className="text-[20px] font-bold tracking-tight" style={{ color: accent }}>
-        {value}
-      </p>
+    <div className="rounded-xl p-3 text-center" style={{ border: "1px solid var(--color-border)" }}>
+      <div className="w-9 h-9 mx-auto flex items-center justify-center mb-2 text-text-sub">{icon}</div>
+      <p className="text-[20px] font-bold tracking-tight text-text-main">{value}</p>
       <p className="text-[11px] text-text-sub mt-0.5">{label}</p>
     </div>
   );

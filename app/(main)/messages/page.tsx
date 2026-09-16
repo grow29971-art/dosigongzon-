@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Send, Loader2, Mail, ChevronRight, Camera, X, Flag } from "lucide-react";
+import { ArrowLeft, Send, Loader2, Mail, Camera, X, Flag } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
 import FollowButton from "@/app/components/FollowButton";
@@ -183,8 +183,8 @@ function MessagesPage() {
     return (
       <div className="px-5 pt-20 text-center">
         <Mail size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[15px] font-bold text-text-main mb-1">로그인이 필요해요</p>
-        <button onClick={() => router.push("/login")} className="text-[13px] font-bold text-primary mt-2">로그인하기</button>
+        <p className="text-[15px] font-semibold text-text-main mb-1">로그인이 필요해요</p>
+        <button onClick={() => router.push("/login")} className="text-[13px] font-semibold text-primary mt-2">로그인하기</button>
       </div>
     );
   }
@@ -199,7 +199,7 @@ function MessagesPage() {
             <ArrowLeft size={24} className="text-text-main" />
           </button>
           <div className="flex-1 min-w-0">
-            <p className="text-[15px] font-bold text-text-main truncate">{selectedPartner.name}</p>
+            <p className="text-[15px] font-semibold text-text-main truncate">{selectedPartner.name}</p>
             <p className="text-[11px] text-text-light">1:1 쪽지 · 읽고 7일 후 자동 삭제</p>
           </div>
           <FollowButton userId={selectedPartner.id} size="sm" />
@@ -233,7 +233,7 @@ function MessagesPage() {
         <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-text-light">
-              <Mail size={32} strokeWidth={1.2} className="mb-2 opacity-30" />
+              <Mail size={32} strokeWidth={1.2} className="mb-2" />
               <p className="text-[13px]">첫 쪽지를 보내보세요</p>
             </div>
           )}
@@ -246,8 +246,8 @@ function MessagesPage() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={thumbnailUrl(msg.sender_avatar_url, 56) ?? msg.sender_avatar_url} alt="" loading="lazy" decoding="async" className="w-7 h-7 rounded-full object-cover shrink-0 mt-0.5" />
                   ) : (
-                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                      <span className="text-[11px] font-bold text-primary">{(selectedPartner.name)[0]}</span>
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: "var(--color-gray-200)" }}>
+                      <span className="text-[11px] font-semibold text-text-sub">{(selectedPartner.name)[0]}</span>
                     </div>
                   )
                 )}
@@ -256,7 +256,7 @@ function MessagesPage() {
                     className="overflow-hidden"
                     style={{
                       backgroundColor: isMe ? "var(--color-primary)" : "var(--color-surface-alt)",
-                      borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
+                      borderRadius: isMe ? "12px 12px 4px 12px" : "12px 12px 12px 4px",
                     }}
                   >
                     {msg.photo_url && (
@@ -264,21 +264,21 @@ function MessagesPage() {
                       <img src={optimizedImageUrl(msg.photo_url, 600) ?? msg.photo_url} alt="" loading="lazy" decoding="async" className="max-w-full max-h-48 object-cover" />
                     )}
                     {msg.body && msg.body !== "📷 사진" && (
-                      <p className="px-3.5 py-2 text-[13px] leading-relaxed" style={{ color: isMe ? "#fff" : "var(--color-text-main)" }}>
+                      <p className="px-3.5 py-2 text-[15px] leading-relaxed" style={{ color: isMe ? "var(--color-surface)" : "var(--color-text-main)" }}>
                         {msg.body}
                       </p>
                     )}
                     {(!msg.body || msg.body === "📷 사진") && !msg.photo_url && (
-                      <p className="px-3.5 py-2 text-[13px] leading-relaxed" style={{ color: isMe ? "#fff" : "var(--color-text-main)" }}>
+                      <p className="px-3.5 py-2 text-[15px] leading-relaxed" style={{ color: isMe ? "var(--color-surface)" : "var(--color-text-main)" }}>
                         {msg.body}
                       </p>
                     )}
                   </div>
                   <div className={`flex items-center gap-1 mt-0.5 px-1 ${isMe ? "justify-end" : ""}`}>
-                    <span className="text-[9px] text-text-light">
+                    <span className="text-[11px] text-text-light">
                       {new Date(msg.created_at).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })}
                     </span>
-                    {isMe && msg.is_read && <span className="text-[9px] text-primary font-bold">읽음</span>}
+                    {isMe && msg.is_read && <span className="text-[11px] text-text-light font-medium">읽음</span>}
                   </div>
                 </div>
               </div>
@@ -292,11 +292,13 @@ function MessagesPage() {
           <div className="px-4 py-2 border-t border-divider shrink-0">
             <div className="relative inline-block">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={photoPreview} alt="" className="h-20 rounded-xl object-cover" />
+              <img src={photoPreview} alt="" className="h-20 rounded-lg object-cover" />
               <button
                 type="button"
                 onClick={() => { setPhotoFile(null); setPhotoPreview(null); }}
-                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-white shadow flex items-center justify-center"
+                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center"
+                style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
+                aria-label="사진 제거"
               >
                 <X size={10} className="text-text-sub" />
               </button>
@@ -323,17 +325,18 @@ function MessagesPage() {
             type="button"
             onClick={() => photoInputRef.current?.click()}
             className="w-10 h-10 rounded-full flex items-center justify-center press-strong transition-transform shrink-0"
-            style={{ backgroundColor: photoFile ? "#6B8E6F" : "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+            style={{ backgroundColor: photoFile ? "var(--color-sage)" : "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+            aria-label="사진 첨부"
           >
-            <Camera size={18} style={{ color: photoFile ? "#fff" : "var(--color-text-light)" }} />
+            <Camera size={18} style={{ color: photoFile ? "var(--color-surface)" : "var(--color-text-light)" }} />
           </button>
           <input
             type="text"
             value={msgText}
             onChange={(e) => setMsgText(e.target.value)}
             placeholder="쪽지를 입력하세요"
-            className="flex-1 px-3.5 py-2.5 rounded-2xl text-[13px] outline-none"
-            style={{ backgroundColor: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+            className="flex-1 px-3.5 py-2.5 text-[15px] text-text-main outline-none"
+            style={{ backgroundColor: "var(--color-surface-alt)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-input)" }}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.nativeEvent.isComposing && (msgText.trim() || photoFile)) {
                 e.preventDefault();
@@ -345,8 +348,9 @@ function MessagesPage() {
             onClick={handleSend}
             disabled={sending || (!msgText.trim() && !photoFile)}
             className="w-10 h-10 rounded-full bg-primary flex items-center justify-center disabled:opacity-40 press-strong transition-transform shrink-0"
+            aria-label="보내기"
           >
-            <Send size={16} color="#fff" />
+            <Send size={16} color="var(--color-surface)" />
           </button>
         </div>
       </div>
@@ -367,59 +371,53 @@ function MessagesPage() {
         <PageIntroBanner
           id="messages"
           title="이웃과 1:1 쪽지"
-          description="커뮤니티 글·댓글·프로필에서 쪽지 버튼을 누르면 대화가 시작돼요. 사진도 첨부 가능. 받은 쪽지는 푸시·알림 센터로 바로 알려드려요."
+          description="글·댓글·프로필의 쪽지 버튼으로 대화를 시작해요. 사진도 보낼 수 있어요."
           ctaLabel="전체 기능 보기"
           ctaHref="/guide"
-          accent="var(--color-like)"
         />
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-12"><Loader2 size={28} className="animate-spin text-primary" /></div>
+        <div className="flex justify-center py-12"><Loader2 size={28} className="animate-spin text-text-light" /></div>
       ) : convs.length === 0 ? (
         <div className="flex flex-col items-center pt-20 text-text-light">
-          <Mail size={48} strokeWidth={1.2} className="mb-3 opacity-30" />
+          <Mail size={40} strokeWidth={1.2} className="mb-3" />
           <p className="text-[15px] text-text-sub font-semibold">받은 쪽지가 없어요</p>
           <p className="text-[13px] mt-1">커뮤니티에서 이웃에게 쪽지를 보내보세요</p>
         </div>
       ) : (
-        <div className="px-4 space-y-2">
+        <div className="px-4" style={{ borderTop: "1px solid var(--color-divider)" }}>
           {convs.map((c) => (
             <button
               key={c.partnerId}
               type="button"
               onClick={() => setSelectedPartner({ id: c.partnerId, name: c.partnerName })}
-              className="w-full flex items-center gap-3 px-4 py-3 press text-left"
-              style={{
-                background: c.unreadCount > 0 ? "linear-gradient(135deg, var(--color-primary-softer), #FFF)" : "#FFFFFF",
-                borderRadius: "var(--radius-card-sm)",
-                boxShadow: "var(--shadow-card)",
-                border: c.unreadCount > 0 ? "1.5px solid rgba(176, 92, 54,0.2)" : "1px solid var(--color-divider)",
-              }}
+              className="w-full flex items-center gap-3 py-3 press text-left border-b border-divider last:border-b-0"
+              style={{ minHeight: 64 }}
             >
               {c.partnerAvatar ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={thumbnailUrl(c.partnerAvatar, 80) ?? c.partnerAvatar} alt="" loading="lazy" decoding="async" className="w-10 h-10 rounded-full object-cover shrink-0" />
+                <img src={thumbnailUrl(c.partnerAvatar, 80) ?? c.partnerAvatar} alt="" loading="lazy" decoding="async" className="w-11 h-11 rounded-full object-cover shrink-0" />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="text-[15px] font-bold text-primary">{c.partnerName[0]}</span>
+                <div className="w-11 h-11 rounded-full flex items-center justify-center shrink-0" style={{ background: "var(--color-gray-200)" }}>
+                  <span className="text-[15px] font-semibold text-text-sub">{c.partnerName[0]}</span>
                 </div>
               )}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-[13px] font-bold text-text-main">{c.partnerName}</span>
-                  {c.unreadCount > 0 && (
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 chip-square bg-primary text-white">{c.unreadCount}</span>
-                  )}
+                  <span className={`text-[15px] text-text-main truncate ${c.unreadCount > 0 ? "font-bold" : "font-semibold"}`}>{c.partnerName}</span>
+                  <span className="text-[11px] text-text-light shrink-0">
+                    {new Date(c.lastAt).toLocaleDateString("ko-KR", { month: "short", day: "numeric" })}
+                  </span>
                 </div>
-                <p className="text-[11px] text-text-sub truncate mt-0.5">{c.lastMessage}</p>
+                <p className={`text-[13px] truncate mt-0.5 ${c.unreadCount > 0 ? "text-text-main" : "text-text-sub"}`}>{c.lastMessage}</p>
               </div>
-              <div className="flex flex-col items-end gap-1 shrink-0">
-                <span className="text-[9px] text-text-light">
-                  {new Date(c.lastAt).toLocaleDateString("ko-KR", { month: "short", day: "numeric" })}
-                </span>
-                <ChevronRight size={12} className="text-text-light" />
-              </div>
+              {c.unreadCount > 0 && (
+                <span
+                  className="w-2 h-2 rounded-full bg-primary shrink-0"
+                  aria-label={`읽지 않은 쪽지 ${c.unreadCount}개`}
+                />
+              )}
             </button>
           ))}
         </div>

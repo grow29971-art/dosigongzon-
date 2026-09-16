@@ -6,9 +6,9 @@ export const metadata = {
 // 실제 처리 현황과 불일치 항목 수정 (FCM→자체 웹푸시, GPS 측위 현재 미수집)
 export default function PrivacyPage() {
   return (
-    <main style={{ maxWidth: 800, margin: '0 auto', padding: '40px 24px', fontFamily: 'sans-serif', lineHeight: 1.8, color: '#333' }}>
+    <main style={{ maxWidth: 800, margin: '0 auto', padding: '40px 24px', lineHeight: 1.8, color: 'var(--color-text-main)' }}>
       <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>개인정보 처리방침</h1>
-      <p style={{ color: '#888', marginBottom: 40 }}>최종 수정일: 2026년 7월 12일</p>
+      <p style={{ color: 'var(--color-text-light)', marginBottom: 40 }}>최종 수정일: 2026년 7월 12일</p>
 
       <section style={{ marginBottom: 32 }}>
         <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>1. 수집하는 개인정보 항목</h2>
@@ -26,12 +26,12 @@ export default function PrivacyPage() {
             회원 식별자와 누른 시각을 기록합니다.
           </li>
         </ul>
-        <p style={{ marginTop: 8, fontSize: 15, color: '#666' }}>
+        <p style={{ marginTop: 8, fontSize: 15, color: 'var(--color-text-sub)' }}>
           ※ 행사 참여 의사는 <strong>참여 인원 추산 목적으로만</strong> 사용하며, 참여자 명단을 공개하거나
           제3자에게 제공하지 않습니다. 이용자는 앱에서 언제든 &ldquo;참여 취소하기&rdquo;로 철회할 수 있고,
           해당 기록은 <strong>행사 종료 다음 날 일괄 파기</strong>합니다.
         </p>
-        <p style={{ marginTop: 8, fontSize: 15, color: '#666' }}>
+        <p style={{ marginTop: 8, fontSize: 15, color: 'var(--color-text-sub)' }}>
           ※ 단말기 GPS를 이용한 실시간 위치 측위는 현재 수집하지 않습니다. 지도에 표시되는
           고양이 위치는 이용자가 지도에서 직접 지정한 좌표이며, 개인의 위치를 나타내지 않습니다.
           사진 업로드 시 위치 메타데이터(EXIF GPS)는 자동으로 제거됩니다.

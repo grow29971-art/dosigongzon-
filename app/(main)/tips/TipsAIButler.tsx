@@ -27,24 +27,20 @@ export default function TipsAIButler() {
           href="/login?next=/tips"
           className="flex items-center gap-3.5 px-5 py-4 press transition-transform"
           style={{
-            background: "#FFFFFF",
+            background: "var(--color-surface)",
             borderRadius: "var(--radius-card)",
-            boxShadow: "var(--shadow-card)",
-            border: "1px solid var(--color-divider)",
+            border: "1px solid var(--color-border)",
           }}
         >
           <div
             className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-            style={{
-              background: "var(--color-primary)",
-              boxShadow: "var(--shadow-primary)",
-            }}
+            style={{ background: "var(--color-gray-100)" }}
           >
-            <Bot size={20} color="#fff" strokeWidth={2.3} />
+            <Bot size={20} className="text-text-sub" strokeWidth={1.8} />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[15px] font-bold text-text-main tracking-tight">
-              AI 집사 <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "var(--color-primary)", opacity: 0.5 }}>BETA</span>
+              AI 집사 <span className="text-[11px] font-medium text-text-light">BETA</span>
             </p>
             <p className="text-[13px] text-text-sub mt-0.5">로그인하면 길고양이 돌봄, 뭐든 물어볼 수 있어요</p>
           </div>
@@ -54,27 +50,25 @@ export default function TipsAIButler() {
           <AIChatCard />
 
           <div className="flex items-center gap-1.5 mt-4 mb-2 px-1">
-            <Sparkles size={13} className="text-primary" />
+            <Sparkles size={13} className="text-text-sub" />
             <h2 className="text-[13px] font-bold text-text-main tracking-tight">AI 집사에게 자주 묻는 질문</h2>
           </div>
           <div className="grid grid-cols-2 gap-2">
             {QUICK_QUESTIONS.map((q) => (
               <div
                 key={q.question}
-                className="px-3 py-2.5 rounded-2xl flex items-center gap-2"
+                className="px-3 py-2.5 rounded-xl flex items-center gap-2"
                 style={{
-                  background: "#FFFFFF",
-                  boxShadow: "var(--shadow-card)",
-                  border: "1px solid var(--color-divider)",
+                  background: "var(--color-surface)",
+                  border: "1px solid var(--color-border)",
                 }}
               >
-                <span className="text-[17px] shrink-0">{q.emoji}</span>
                 <p className="text-[13px] font-bold text-text-main leading-tight">{q.question}</p>
               </div>
             ))}
           </div>
           <p className="text-[11px] text-text-light mt-1.5 px-1 leading-snug">
-            🤖 AI 응답은 참고용이에요. 위급 상황은 매뉴얼 또는 가까운 동물병원에 직접 연락해주세요.
+            AI 응답은 참고용이에요. 위급 상황은 매뉴얼 또는 가까운 동물병원에 직접 연락해주세요.
           </p>
         </>
       )}

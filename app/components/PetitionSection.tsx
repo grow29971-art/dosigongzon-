@@ -5,6 +5,7 @@
 // 국회 밖 청원(청원24 등)은 MANUAL_PETITIONS에 한 줄 추가 — 마감 지나면 자동 숨김.
 // 7/22 회의 하한선 준수: 서명·동의 수집 없음, 카피 중립, 정렬은 마감임박순(진영 부스팅 방지).
 // 전체 카드는 홈의 SHOW_PETITION 플래그로 롤백.
+// 2026-09-16 「익숙한 동네앱」 리디자인: 틴트 아이콘 박스 → 회색 선 아이콘, 구분선 리스트.
 
 import { useEffect, useState } from "react";
 import { ExternalLink, Megaphone } from "lucide-react";
@@ -75,8 +76,8 @@ export default function PetitionSection() {
 
   return (
     <div className="mb-5">
-      <div className="flex items-center gap-2 px-1 mb-3">
-        <h2 className="text-[17px] font-bold text-text-main tracking-tight">진행 중인 청원</h2>
+      <div className="px-1 mb-2">
+        <h2 className="text-[17px] font-bold text-text-main">진행 중인 청원</h2>
       </div>
       <div className="card overflow-hidden">
         {active.map((p, i) => {
@@ -87,27 +88,22 @@ export default function PetitionSection() {
               href={p.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`flex items-center gap-3 px-4 py-3.5 press ${i > 0 ? "border-t" : ""}`}
-              style={i > 0 ? { borderColor: "var(--color-divider)" } : undefined}
+              className="flex items-center gap-3 px-4 py-3 press"
+              style={{ minHeight: 56, borderTop: i > 0 ? "1px solid var(--color-divider)" : "none" }}
             >
-              <div
-                className="w-9 h-9 flex items-center justify-center shrink-0"
-                style={{ background: "var(--color-primary-soft)", borderRadius: "var(--radius-square-lg)" }}
-              >
-                <Megaphone size={16} style={{ color: "var(--color-primary)" }} />
-              </div>
+              <Megaphone size={20} className="shrink-0" style={{ color: "var(--color-text-light)" }} strokeWidth={1.8} />
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-semibold text-text-main leading-snug line-clamp-2">{p.title}</p>
-                <p className="text-[11px] text-text-light mt-0.5">
+                <p className="text-[15px] font-semibold text-text-main leading-snug line-clamp-2">{p.title}</p>
+                <p className="text-[13px] text-text-sub mt-0.5">
                   {p.sub} · {d === 0 ? "오늘 마감" : `D-${d}`}
                 </p>
               </div>
-              <ExternalLink size={14} className="shrink-0 text-text-muted" />
+              <ExternalLink size={16} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
             </a>
           );
         })}
-        <p className="px-4 py-2.5 text-[11px] text-text-light" style={{ borderTop: "1px solid var(--color-divider)", background: "var(--color-gray-50)" }}>
-          내용을 확인하고 찬성·반대 의견을 남길 수 있어요 · 외부 사이트로 이동합니다
+        <p className="px-4 py-2.5 text-[11px] text-text-light" style={{ borderTop: "1px solid var(--color-divider)" }}>
+          내용을 확인하고 의견을 남길 수 있어요 · 외부 사이트로 이동합니다
         </p>
       </div>
     </div>

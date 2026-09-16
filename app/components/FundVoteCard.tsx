@@ -1,12 +1,15 @@
 "use client";
 
-// 쇼핑 수익 사용처 투표 카드 (2026-07-14)
+// 쇼핑 수익 사용처 투표 카드 (2026-07-14 → 2026-09-16 「익숙한 동네앱」 리디자인)
 // 로그인 유저 1인 1표(변경 가능), 결과는 누구나 열람. 낙관적 UI로 즉시 반영.
 // 마이그레이션(supabase_fund_vote_migration.sql) 전이면 조용히 렌더 안 함.
+// 선택지의 emoji 필드는 데이터에 남아 있지만 화면에는 쓰지 않는다(이모지 폐지).
 
 import { useEffect, useState } from "react";
+import { Check, Lightbulb } from "lucide-react";
 import { loadFundVote, castFundVote, type FundVoteOption } from "@/lib/fund-vote-repo";
 import { createInquiry } from "@/lib/support-repo";
+import UIButton from "@/app/components/ui/Button";
 
 export default function FundVoteCard() {
   const [ready, setReady] = useState(false);
@@ -91,12 +94,12 @@ export default function FundVoteCard() {
 
   return (
     <div
-      className="mb-4 px-4 py-4 rounded-3xl"
-      style={{ background: "#FFFFFF", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)" }}
+      className="mb-4 px-4 py-4"
+      style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
     >
       <div className="flex items-center justify-between mb-0.5">
-        <h3 className="text-[15px] font-bold text-text-main tracking-tight">🗳️ 수익, 어디에 쓸까요?</h3>
-        <span className="text-[11px] font-bold text-text-light tabular-nums">{total.toLocaleString()}명 참여</span>
+        <h3 className="text-[15px] font-bold text-text-main tracking-tight">수익, 어디에 쓸까요?</h3>
+        <span className="text-[11px] text-text-light tabular-nums">{total.toLocaleString()}명 참여</span>
       </div>
       <p className="text-[11px] text-text-light mb-3">가장 많은 표를 받은 곳에 먼저 쓰여요 · 투표는 언제든 바꿀 수 있어요</p>
 
@@ -110,10 +113,11 @@ export default function FundVoteCard() {
               key={o.id}
               onClick={() => vote(o.id)}
               disabled={busy}
-              className="relative w-full text-left px-3.5 py-2.5 rounded-2xl overflow-hidden press transition-transform"
+              className="relative w-full text-left px-3.5 py-2.5 overflow-hidden press"
               style={{
-                border: mine ? "1.5px solid var(--color-primary)" : "1px solid var(--color-divider)",
-                background: "var(--color-surface-alt)",
+                border: `1px solid ${mine ? "var(--color-primary)" : "var(--color-border)"}`,
+                borderRadius: "var(--radius-card-sm)",
+                background: "var(--color-surface)",
               }}
             >
               {/* 득표율 배경 바 */}
@@ -121,16 +125,19 @@ export default function FundVoteCard() {
                 className="absolute inset-y-0 left-0 transition-all"
                 style={{
                   width: `${pct}%`,
-                  background: mine ? "var(--color-primary-soft)" : "rgba(0,0,0,0.04)",
+                  background: mine ? "var(--color-primary-soft)" : "var(--color-gray-100)",
                 }}
               />
               <span className="relative flex items-center gap-2">
-                <span className="text-[15px]">{o.emoji}</span>
-                <span className={`text-[13px] ${mine ? "font-bold text-primary" : "font-bold text-text-main"}`}>
+                <span className={`text-[13px] font-semibold ${mine ? "text-primary" : "text-text-main"}`}>
                   {o.label}
                 </span>
-                {mine && <span className="text-[11px] font-bold text-primary">✓ 내 선택</span>}
-                <span className="ml-auto text-[13px] font-bold tabular-nums" style={{ color: mine ? "var(--color-primary)" : "var(--color-text-sub)" }}>
+                {mine && (
+                  <span className="inline-flex items-center gap-0.5 text-[11px] font-medium text-primary">
+                    <Check size={12} strokeWidth={2.5} /> 내 선택
+                  </span>
+                )}
+                <span className="ml-auto text-[13px] font-semibold tabular-nums" style={{ color: mine ? "var(--color-primary)" : "var(--color-text-sub)" }}>
                   {pct}%
                 </span>
               </span>
@@ -140,17 +147,17 @@ export default function FundVoteCard() {
 
         {/* 기타 — 아이디어를 관리자에게 전송 (투표 아님) */}
         {ideaDone ? (
-          <div className="px-3.5 py-3 rounded-2xl text-center" style={{ background: "var(--color-primary-soft)" }}>
-            <p className="text-[13px] font-bold text-primary">💌 아이디어 고마워요! 잘 읽어볼게요</p>
-          </div>
+          <p className="px-3.5 py-3 text-center text-[13px] font-medium text-text-sub" style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card-sm)" }}>
+            아이디어 고마워요. 잘 읽어볼게요
+          </p>
         ) : !ideaOpen ? (
           <button
             onClick={() => { setIdeaOpen(true); setIdeaErr(""); }}
-            className="w-full text-left px-3.5 py-2.5 rounded-2xl press transition-transform"
-            style={{ border: "1px dashed var(--color-border)", background: "transparent" }}
+            className="w-full text-left px-3.5 py-2.5 press"
+            style={{ border: "1px dashed var(--color-gray-300)", borderRadius: "var(--radius-card-sm)", background: "transparent" }}
           >
-            <span className="flex items-center gap-2 text-[13px] font-bold text-text-sub">
-              <span className="text-[15px]">💡</span>
+            <span className="flex items-center gap-2 text-[13px] font-medium text-text-sub">
+              <Lightbulb size={15} className="text-text-light" />
               기타 — 아이디어를 저에게 보내주세요
             </span>
           </button>
@@ -162,32 +169,23 @@ export default function FundVoteCard() {
               placeholder="수익을 이런 데 쓰면 좋겠어요… (자유롭게 적어주세요)"
               rows={3}
               maxLength={500}
-              className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none resize-none"
-              style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+              className="w-full px-3 py-2.5 text-[13px] outline-none resize-none"
+              style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-input)" }}
             />
-            {ideaErr && <p className="text-[11px] mt-1" style={{ color: "#D85555" }}>{ideaErr}</p>}
+            {ideaErr && <p className="text-[11px] mt-1" style={{ color: "var(--color-error)" }}>{ideaErr}</p>}
             <div className="flex gap-2 mt-2">
-              <button
-                onClick={() => { setIdeaOpen(false); setIdea(""); setIdeaErr(""); }}
-                className="px-3.5 py-2 rounded-xl text-[13px] font-bold text-text-sub press-strong transition-transform"
-                style={{ background: "var(--color-surface-alt)" }}
-              >
+              <UIButton variant="secondary" onClick={() => { setIdeaOpen(false); setIdea(""); setIdeaErr(""); }}>
                 취소
-              </button>
-              <button
-                onClick={sendIdea}
-                disabled={ideaBusy || !idea.trim()}
-                className="flex-1 py-2 rounded-xl text-[13px] font-bold text-white press transition-transform disabled:opacity-40"
-                style={{ background: "var(--color-primary)" }}
-              >
+              </UIButton>
+              <UIButton className="flex-1" onClick={sendIdea} disabled={ideaBusy || !idea.trim()}>
                 {ideaBusy ? "보내는 중…" : "보내기"}
-              </button>
+              </UIButton>
             </div>
           </div>
         )}
       </div>
 
-      {err && <p className="text-[11px] mt-2" style={{ color: "#D85555" }}>{err}</p>}
+      {err && <p className="text-[11px] mt-2" style={{ color: "var(--color-error)" }}>{err}</p>}
     </div>
   );
 }

@@ -7,13 +7,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { X, ChevronRight } from "lucide-react";
+import { X, ChevronRight, BookOpen, Heart, Trophy, Bot, MessagesSquare, Map, PawPrint, type LucideIcon } from "lucide-react";
 
 const LAST_KEY = "dg_open_guide_last"; // 마지막 노출 날짜(KST) — 하루 1회 게이트
 const IDX_KEY = "dg_open_guide_idx"; // 강조 기능 순환 인덱스
 
 interface Spot {
-  emoji: string;
+  Icon: LucideIcon;
   title: string;
   desc: string;
   cta: string;
@@ -22,19 +22,19 @@ interface Spot {
 
 // 기존 유저용 — 접속마다 순환 강조
 const ROTATION: Spot[] = [
-  { emoji: "📖", title: "우리 동네 고양이 도감", desc: "내가 만난 고양이를 모아보세요. 완성도가 채워져요.", cta: "도감 열기", href: "/collection" },
-  { emoji: "❤️", title: "오늘의 안부 한 줄", desc: "우리 동네 고양이에게 돌봄 기록을 남겨봐요.", cta: "지도 열기", href: "/map" },
-  { emoji: "🏆", title: "이번 주 돌봄왕", desc: "길집사 랭킹에 도전해보세요.", cta: "랭킹 보기", href: "/ranking" },
-  { emoji: "🤖", title: "AI집사에게 물어보기", desc: "돌봄·건강 궁금증을 바로 해결해드려요.", cta: "질문하기", href: "/tips" },
-  { emoji: "💬", title: "동네 커뮤니티", desc: "입양·임보·자유 이야기를 나눠요.", cta: "둘러보기", href: "/community" },
+  { Icon: BookOpen, title: "우리 동네 고양이 도감", desc: "내가 만난 고양이를 모아보세요. 완성도가 채워져요.", cta: "도감 열기", href: "/collection" },
+  { Icon: Heart, title: "오늘의 안부 한 줄", desc: "우리 동네 고양이에게 돌봄 기록을 남겨봐요.", cta: "지도 열기", href: "/map" },
+  { Icon: Trophy, title: "이번 주 돌봄왕", desc: "길집사 랭킹에 도전해보세요.", cta: "랭킹 보기", href: "/ranking" },
+  { Icon: Bot, title: "AI집사에게 물어보기", desc: "돌봄·건강 궁금증을 바로 해결해드려요.", cta: "질문하기", href: "/tips" },
+  { Icon: MessagesSquare, title: "동네 커뮤니티", desc: "입양·임보·자유 이야기를 나눠요.", cta: "둘러보기", href: "/community" },
 ];
 
-const CHIPS = [
-  { emoji: "🗺️", label: "지도", href: "/map" },
-  { emoji: "📖", label: "도감", href: "/collection" },
-  { emoji: "🤖", label: "AI집사", href: "/tips" },
-  { emoji: "🏆", label: "랭킹", href: "/ranking" },
-  { emoji: "💬", label: "커뮤니티", href: "/community" },
+const CHIPS: { Icon: LucideIcon; label: string; href: string }[] = [
+  { Icon: Map, label: "지도", href: "/map" },
+  { Icon: BookOpen, label: "도감", href: "/collection" },
+  { Icon: Bot, label: "AI집사", href: "/tips" },
+  { Icon: Trophy, label: "랭킹", href: "/ranking" },
+  { Icon: MessagesSquare, label: "커뮤니티", href: "/community" },
 ];
 
 export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boolean; hasRegion: boolean }) {
@@ -52,9 +52,9 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
     // "오늘 이거 해보세요" 결정 — 신규는 다음 행동, 기존은 순환 강조
     let chosen: Spot;
     if (!hasRegion) {
-      chosen = { emoji: "🗺️", title: "우리 동네부터 정해요", desc: "활동 지역을 설정하면 동네 고양이·소식이 모여요.", cta: "동네 설정하기", href: "/mypage/activity-regions" };
+      chosen = { Icon: Map, title: "우리 동네부터 정해요", desc: "활동 지역을 설정하면 동네 고양이·소식이 모여요.", cta: "동네 설정하기", href: "/mypage/activity-regions" };
     } else if (!hasCat) {
-      chosen = { emoji: "🐾", title: "동네 고양이에게 첫 응원", desc: "하트 한 번이 가장 쉬운 첫 참여예요.", cta: "지도 열기", href: "/map" };
+      chosen = { Icon: PawPrint, title: "동네 고양이에게 첫 응원", desc: "하트 한 번이 가장 쉬운 첫 참여예요.", cta: "지도 열기", href: "/map" };
     } else {
       let idx = 0;
       try {
@@ -87,24 +87,22 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-sm rounded-[28px] overflow-hidden relative"
-        style={{ background: "#FFFFFF", boxShadow: "var(--shadow-modal)" }}
+        className="w-full max-w-sm overflow-hidden relative"
+        style={{ background: "var(--color-surface)", borderRadius: "var(--radius-modal)", boxShadow: "var(--shadow-modal)" }}
       >
-        {/* 헤더 그라데이션 */}
-        <div className="relative px-6 pt-7 pb-6" style={{ background: "#FFF1D9" }}>
+        {/* 헤더 */}
+        <div className="relative px-6 pt-7 pb-5" style={{ borderBottom: "1px solid var(--color-divider)" }}>
           <button
             type="button"
             onClick={close}
-            className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-white/55 press-strong"
+            className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center press-strong"
             aria-label="닫기"
           >
-            <X size={15} style={{ color: "#7A4F30" }} />
+            <X size={18} style={{ color: "var(--color-text-light)" }} />
           </button>
-          <p className="text-[11px] font-bold tracking-[0.2em] mb-2" style={{ color: "var(--color-primary-dark)" }}>오늘 이거 해보세요</p>
+          <p className="text-[11px] font-medium mb-2 text-text-light">오늘 이거 해보세요</p>
           <div className="flex items-center gap-3">
-            <div className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 text-3xl" style={{ background: "#FFFFFF", boxShadow: "var(--shadow-primary)" }}>
-              {spot.emoji}
-            </div>
+            <spot.Icon size={28} strokeWidth={1.8} className="shrink-0" style={{ color: "var(--color-text-main)" }} />
             <div className="min-w-0">
               <p className="text-[17px] font-bold text-text-main leading-tight tracking-tight">{spot.title}</p>
               <p className="text-[13px] text-text-sub mt-1 leading-snug">{spot.desc}</p>
@@ -117,24 +115,24 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
           <Link
             href={spot.href}
             onClick={close}
-            className="flex items-center justify-center gap-1.5 py-3.5 rounded-2xl text-white text-[15px] font-bold press transition-transform"
-            style={{ background: "var(--color-primary)", boxShadow: "var(--shadow-primary)" }}
+            className="flex items-center justify-center gap-1.5 h-12 text-[15px] font-semibold press transition-transform"
+            style={{ background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
           >
             {spot.cta} <ChevronRight size={15} />
           </Link>
 
-          <p className="text-[11px] font-bold tracking-[0.12em] mt-5 mb-2.5" style={{ color: "var(--color-primary-dark)" }}>이런 기능도 있어요</p>
+          <p className="text-[11px] font-medium mt-5 mb-2.5 text-text-light">이런 기능도 있어요</p>
           <div className="grid grid-cols-3 gap-2">
             {CHIPS.map((c) => (
               <Link
                 key={c.href}
                 href={c.href}
                 onClick={close}
-                className="flex flex-col items-center gap-1 py-2.5 rounded-xl press-strong transition-transform"
-                style={{ background: "#FAF5EE", border: "1px solid rgba(176, 92, 54,0.12)" }}
+                className="flex flex-col items-center gap-1 py-2.5 press-strong transition-transform"
+                style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card-sm)" }}
               >
-                <span className="text-xl">{c.emoji}</span>
-                <span className="text-[11px] font-bold" style={{ color: "#5C4A3E" }}>{c.label}</span>
+                <c.Icon size={20} strokeWidth={1.8} style={{ color: "var(--color-text-sub)" }} />
+                <span className="text-[11px] font-medium text-text-sub">{c.label}</span>
               </Link>
             ))}
           </div>
@@ -142,7 +140,7 @@ export default function AppOpenGuideModal({ hasCat, hasRegion }: { hasCat: boole
           <button
             type="button"
             onClick={close}
-            className="w-full mt-4 text-[13px] font-bold text-text-sub py-1.5"
+            className="w-full mt-4 text-[13px] font-medium text-text-sub py-1.5"
           >
             오늘은 그냥 둘러볼게요
           </button>

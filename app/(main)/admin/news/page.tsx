@@ -1,19 +1,19 @@
 "use client";
 
+// 뉴스 관리 (admin 전용) — 2026-09-16 「익숙한 동네앱」 리디자인:
+// 카드 목록 → 구분선 리스트(썸네일 8px, 그라디언트 폴백 제거), 카테고리 칩, 편집 폼 헤어라인 섹션, 회색 태그. 토큰만.
+
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
   Plus,
   Pencil,
   Trash2,
   Save,
   X,
   Loader2,
-  Shield,
   Pin,
   ImagePlus,
+  Newspaper,
 } from "lucide-react";
 import {
   listNews,
@@ -28,6 +28,12 @@ import {
   type NewsBadgeType,
   type NewsInput,
 } from "@/lib/news-repo";
+import UIButton from "@/app/components/ui/Button";
+import UIChip from "@/app/components/ui/Chip";
+import {
+  AdminForbidden, AdminHeader, AdminLoading, AdminPage, AdminSection, AdminTag, EmptyState, FieldLabel,
+  inputCls, inputStyle,
+} from "../_ui";
 
 const BADGE_TYPES: NewsBadgeType[] = ["event", "tnr", "law", "notice", "urgent"];
 
@@ -49,8 +55,6 @@ const EMPTY_DRAFT: NewsInput = {
 };
 
 export default function AdminNewsPage() {
-  const router = useRouter();
-
   const [authChecked, setAuthChecked] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [items, setItems] = useState<NewsItem[]>([]);
@@ -172,115 +176,45 @@ export default function AdminNewsPage() {
     }
   };
 
-  if (!authChecked || loading) {
-    return (
-      <div className="flex justify-center pt-20">
-        <Loader2 size={28} className="animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="px-5 pt-20 text-center">
-        <Shield size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[15px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
-        <p className="text-[13px] text-text-sub">접근 권한이 없어요.</p>
-        <Link
-          href="/mypage"
-          className="inline-block mt-4 text-[13px] font-bold text-primary"
-        >
-          마이페이지로 돌아가기
-        </Link>
-      </div>
-    );
-  }
+  if (!authChecked || loading) return <AdminLoading />;
+  if (!isAdmin) return <AdminForbidden />;
 
   return (
-    <div className="px-4 pt-14 pb-24">
-      {/* 헤더 */}
-      <div className="mb-5">
-        <button
-          onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 press-strong transition-transform"
-        >
-          <ArrowLeft size={14} />
-          마이페이지
-        </button>
-        <div className="flex items-end justify-between">
-          <div>
-            <div className="flex items-baseline gap-2 mb-1">
-              <h1 className="text-[24px] font-bold text-text-main tracking-tight">
-                뉴스 관리
-              </h1>
-              <span className="text-[11px] font-semibold text-text-light">
-                Admin · News
-              </span>
-            </div>
-            <p className="text-[13px] text-text-sub">
-              홈 화면 소식 & 일정을 수정·추가·삭제할 수 있어요
-            </p>
-          </div>
-          <button
-            onClick={handleCreate}
-            className="w-11 h-11 rounded-full bg-primary flex items-center justify-center press-strong transition-transform"
-            style={{ boxShadow: "var(--shadow-primary)" }}
-            aria-label="새 소식 작성"
-          >
-            <Plus size={20} color="#fff" strokeWidth={2.5} />
-          </button>
-        </div>
-      </div>
+    <AdminPage>
+      <AdminHeader
+        title="뉴스 관리"
+        description="홈 화면 소식 & 일정을 수정·추가·삭제할 수 있어요"
+        back="/mypage"
+        backLabel="마이페이지"
+        right={
+          <UIButton size="sm" onClick={handleCreate}>
+            <Plus size={14} /> 새 소식
+          </UIButton>
+        }
+      />
 
       {/* 편집 폼 */}
       {editingId && (
-        <div
-          className="mb-5 p-4"
-          style={{
-            background: "#FFFFFF",
-            borderRadius: "var(--radius-card)",
-            boxShadow: "var(--shadow-card)",
-            border: "1.5px solid rgba(176, 92, 54,0.2)",
-          }}
-        >
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[15px] font-bold text-text-main">
-              {editingId === "new" ? "새 소식 작성" : "소식 수정"}
-            </h2>
-            <button
-              onClick={handleCancel}
-              className="w-7 h-7 rounded-lg flex items-center justify-center press-strong"
-              style={{ backgroundColor: "var(--color-gray-100)" }}
-            >
-              <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
+        <AdminSection
+          title={editingId === "new" ? "새 소식 작성" : "소식 수정"}
+          right={
+            <button type="button" onClick={handleCancel} className="w-7 h-7 flex items-center justify-center text-text-light" aria-label="닫기">
+              <X size={16} />
             </button>
-          </div>
-
+          }
+        >
           {/* 배지 타입 */}
-          <Label>카테고리</Label>
-          <div className="grid grid-cols-5 gap-1.5 mb-3">
-            {BADGE_TYPES.map((t) => {
-              const preset = BADGE_PRESETS[t];
-              const active = draft.badge_type === t;
-              return (
-                <button
-                  key={t}
-                  onClick={() => setDraft((d) => ({ ...d, badge_type: t }))}
-                  className="py-2 chip-square text-[11px] font-bold transition-all"
-                  style={{
-                    backgroundColor: active ? preset.color : preset.bg,
-                    color: active ? "#fff" : preset.color,
-                    border: `1.5px solid ${active ? preset.color : "transparent"}`,
-                  }}
-                >
-                  {preset.label}
-                </button>
-              );
-            })}
+          <FieldLabel>카테고리</FieldLabel>
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {BADGE_TYPES.map((t) => (
+              <UIChip key={t} active={draft.badge_type === t} onClick={() => setDraft((d) => ({ ...d, badge_type: t }))}>
+                {BADGE_PRESETS[t].label}
+              </UIChip>
+            ))}
           </div>
 
           {/* 제목 */}
-          <Label required>제목</Label>
+          <FieldLabel>제목 *</FieldLabel>
           <Input
             value={draft.title}
             onChange={(v) => setDraft((d) => ({ ...d, title: v }))}
@@ -288,7 +222,7 @@ export default function AdminNewsPage() {
           />
 
           {/* 설명 */}
-          <Label>한 줄 설명</Label>
+          <FieldLabel>한 줄 설명</FieldLabel>
           <Input
             value={draft.description ?? ""}
             onChange={(v) => setDraft((d) => ({ ...d, description: v || null }))}
@@ -296,37 +230,31 @@ export default function AdminNewsPage() {
           />
 
           {/* 이미지 업로드 */}
-          <Label>이미지</Label>
+          <FieldLabel>이미지</FieldLabel>
           <div className="mb-3">
             {draft.image_url ? (
               <div className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={draft.image_url}
                   alt=""
-                  className="w-full aspect-[16/9] rounded-xl object-cover"
-                  style={{ border: "1px solid var(--color-border)" }}
+                  className="w-full aspect-[16/9] object-cover"
+                  style={{ borderRadius: "var(--radius-card-sm)", border: "1px solid var(--color-border)" }}
                 />
                 <button
                   type="button"
                   onClick={handleImageClear}
-                  className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center press-strong"
-                  style={{
-                    backgroundColor: "rgba(0,0,0,0.6)",
-                    color: "#fff",
-                  }}
+                  className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center press"
+                  style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "var(--color-surface)" }}
                   aria-label="이미지 제거"
                 >
-                  <X size={16} strokeWidth={3} />
+                  <X size={16} />
                 </button>
               </div>
             ) : (
               <label
-                className="flex flex-col items-center justify-center aspect-[16/9] rounded-xl cursor-pointer press transition-transform"
-                style={{
-                  backgroundColor: "var(--color-gray-50)",
-                  border: "1.5px dashed #C9BDAA",
-                  color: "#A38E7A",
-                }}
+                className="flex flex-col items-center justify-center aspect-[16/9] cursor-pointer text-text-light"
+                style={{ backgroundColor: "var(--color-surface-alt)", border: "1px dashed var(--color-gray-300)", borderRadius: "var(--radius-card-sm)" }}
               >
                 {uploadingImage ? (
                   <>
@@ -354,7 +282,7 @@ export default function AdminNewsPage() {
           {/* 날짜 표시 + 이벤트 날짜(자동 D-Day) */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <Label>날짜 표시</Label>
+              <FieldLabel>날짜 표시</FieldLabel>
               <Input
                 value={draft.date_label ?? ""}
                 onChange={(v) => setDraft((d) => ({ ...d, date_label: v || null }))}
@@ -362,28 +290,24 @@ export default function AdminNewsPage() {
               />
             </div>
             <div>
-              <Label>이벤트 날짜 (자동 D-Day)</Label>
+              <FieldLabel>이벤트 날짜 (자동 D-Day)</FieldLabel>
               <input
                 type="date"
                 value={draft.event_date ?? ""}
                 onChange={(e) =>
                   setDraft((d) => ({ ...d, event_date: e.target.value || null }))
                 }
-                className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none"
-                style={{
-                  backgroundColor: "var(--color-gray-50)",
-                  color: "#2A2A28",
-                  border: "1px solid var(--color-border)",
-                }}
+                className={`${inputCls} mb-3`}
+                style={inputStyle}
               />
             </div>
           </div>
 
           {/* D-Day 수동 폴백 (이벤트 날짜 없을 때만 사용됨) */}
           <div>
-            <Label>
+            <FieldLabel>
               D-Day 수동 입력 {draft.event_date ? "— 비활성 (이벤트 날짜가 우선)" : "(폴백용)"}
-            </Label>
+            </FieldLabel>
             <Input
               value={draft.dday ?? ""}
               onChange={(v) => setDraft((d) => ({ ...d, dday: v || null }))}
@@ -393,31 +317,27 @@ export default function AdminNewsPage() {
               disabled={!!draft.event_date}
             />
             {draft.event_date && draft.dday && (
-              <p className="text-[11px] mt-1.5" style={{ color: "#B07A1C" }}>
+              <p className="text-[13px] -mt-2 mb-3" style={{ color: "var(--color-warning)" }}>
                 이벤트 날짜가 우선 표시돼요. 위 수동 입력값은 무시됩니다.
               </p>
             )}
           </div>
 
           {/* 본문 */}
-          <Label>본문</Label>
+          <FieldLabel>본문</FieldLabel>
           <textarea
             value={draft.body ?? ""}
             onChange={(e) => setDraft((d) => ({ ...d, body: e.target.value || null }))}
             rows={6}
             placeholder="상세 내용 (줄바꿈 유지됨)"
-            className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-3 resize-none"
-            style={{
-              backgroundColor: "var(--color-gray-50)",
-              color: "#2A2A28",
-              border: "1px solid var(--color-border)",
-            }}
+            className={`${inputCls} mb-3 resize-none`}
+            style={inputStyle}
           />
 
           {/* 외부 링크 */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <Label>외부 링크 URL</Label>
+              <FieldLabel>외부 링크 URL</FieldLabel>
               <Input
                 value={draft.external_url ?? ""}
                 onChange={(v) => setDraft((d) => ({ ...d, external_url: v || null }))}
@@ -425,7 +345,7 @@ export default function AdminNewsPage() {
               />
             </div>
             <div>
-              <Label>외부 링크 라벨</Label>
+              <FieldLabel>외부 링크 라벨</FieldLabel>
               <Input
                 value={draft.external_label ?? ""}
                 onChange={(v) => setDraft((d) => ({ ...d, external_label: v || null }))}
@@ -448,157 +368,93 @@ export default function AdminNewsPage() {
           </label>
 
           {error && (
-            <p className="text-[11px] mb-2" style={{ color: "#B84545" }}>
-              {error}
-            </p>
+            <p className="text-[13px] mb-2" style={{ color: "var(--color-error)" }}>{error}</p>
           )}
 
           {/* 액션 버튼 */}
           <div className="flex gap-2">
-            <button
-              onClick={handleSave}
-              disabled={saving || uploadingImage}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 press-strong transition-all"
-            >
-              {saving ? (
-                <Loader2 size={14} className="animate-spin" />
-              ) : (
-                <Save size={14} />
-              )}
+            <UIButton onClick={handleSave} disabled={saving || uploadingImage} className="flex-1">
+              {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
               저장
-            </button>
-            <button
-              onClick={handleCancel}
-              disabled={saving}
-              className="px-5 py-2.5 rounded-xl text-[13px] font-bold"
-              style={{
-                backgroundColor: "var(--color-gray-100)",
-                color: "#A38E7A",
-              }}
-            >
-              취소
-            </button>
+            </UIButton>
+            <UIButton variant="secondary" onClick={handleCancel} disabled={saving}>취소</UIButton>
           </div>
-        </div>
+        </AdminSection>
       )}
 
       {/* 뉴스 목록 */}
-      <div className="space-y-3">
+      <AdminSection title={`소식 ${items.length}개`} padding={false}>
         {items.length === 0 ? (
-          <div className="card p-6 text-center text-[13px] text-text-sub">
-            아직 등록된 소식이 없어요.
-          </div>
+          <EmptyState>아직 등록된 소식이 없어요.</EmptyState>
         ) : (
           items.map((item) => {
             const preset = BADGE_PRESETS[item.badge_type];
+            const ddayLabel = resolveDdayLabel(item);
             return (
-              <div
-                key={item.id}
-                className="p-4"
-                style={{
-                  background: "#FFFFFF",
-                  borderRadius: "var(--radius-card)",
-                  boxShadow: "var(--shadow-card)",
-                  border: "1px solid var(--color-divider)",
-                }}
-              >
-                <div className="flex items-start gap-3">
-                  {item.image_url ? (
-                    <img
-                      src={item.image_url}
-                      alt=""
-                      className="w-16 h-16 rounded-xl object-cover shrink-0"
-                    />
-                  ) : (
-                    <div
-                      className="w-16 h-16 rounded-xl shrink-0"
-                      style={{ background: preset.gradient }}
-                    />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                      <span
-                        className="text-[11px] font-bold px-2 py-0.5 chip-square"
-                        style={{ color: preset.color, backgroundColor: preset.bg }}
-                      >
-                        {preset.label}
-                      </span>
-                      {item.pinned && (
-                        <span className="text-[11px] font-bold text-primary flex items-center gap-0.5">
-                          <Pin size={10} /> 고정
-                        </span>
-                      )}
-                      {item.auto_imported && (
-                        <span
-                          className="text-[11px] font-bold px-1.5 py-0.5 chip-square"
-                          style={{ color: "#7A6B8E", backgroundColor: "#EAE6E8" }}
-                        >
-                          자동수집
-                        </span>
-                      )}
-                      {(() => {
-                        const label = resolveDdayLabel(item);
-                        return label ? (
-                          <span className="text-[11px] text-text-light">· {label}</span>
-                        ) : null;
-                      })()}
-                    </div>
-                    <p className="text-[15px] font-bold text-text-main leading-tight truncate">
-                      {item.title}
-                    </p>
-                    {item.description && (
-                      <p className="text-[11px] text-text-sub mt-0.5 truncate">
-                        {item.description}
-                      </p>
-                    )}
-                    {item.auto_imported && item.source_name && (
-                      <p className="text-[11px] text-text-light mt-0.5 truncate">
-                        출처: {item.source_name}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="flex gap-1.5 mt-3 pt-3 border-t border-divider">
-                  <button
-                    onClick={() => handleEdit(item)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold"
-                    style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-primary)" }}
+              <div key={item.id} className="flex items-start gap-3 px-4 py-3 border-b border-divider last:border-b-0">
+                {item.image_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={item.image_url}
+                    alt=""
+                    className="w-14 h-14 object-cover shrink-0"
+                    style={{ borderRadius: "var(--radius-card-sm)", border: "1px solid var(--color-border)" }}
+                  />
+                ) : (
+                  <div
+                    className="w-14 h-14 shrink-0 flex items-center justify-center text-text-light"
+                    style={{ background: "var(--color-surface-alt)", borderRadius: "var(--radius-card-sm)" }}
                   >
-                    <Pencil size={12} /> 수정
+                    <Newspaper size={20} strokeWidth={1.8} />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                    <AdminTag tone={item.badge_type === "urgent" ? "error" : "neutral"}>{preset.label}</AdminTag>
+                    {item.pinned && (
+                      <span className="text-[11px] font-semibold text-primary flex items-center gap-0.5">
+                        <Pin size={10} /> 고정
+                      </span>
+                    )}
+                    {item.auto_imported && <AdminTag>자동수집</AdminTag>}
+                    {ddayLabel && <span className="text-[11px] text-text-light">· {ddayLabel}</span>}
+                  </div>
+                  <p className="text-[15px] font-semibold text-text-main leading-tight truncate">{item.title}</p>
+                  {item.description && (
+                    <p className="text-[13px] text-text-sub mt-0.5 truncate">{item.description}</p>
+                  )}
+                  {item.auto_imported && item.source_name && (
+                    <p className="text-[13px] text-text-light mt-0.5 truncate">출처: {item.source_name}</p>
+                  )}
+                </div>
+                <div className="flex gap-1 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => handleEdit(item)}
+                    className="w-8 h-8 flex items-center justify-center press text-text-sub"
+                    aria-label="수정"
+                  >
+                    <Pencil size={14} />
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleDelete(item)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold"
-                    style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}
+                    className="w-8 h-8 flex items-center justify-center press text-text-light"
+                    aria-label="삭제"
                   >
-                    <Trash2 size={12} /> 삭제
+                    <Trash2 size={14} />
                   </button>
                 </div>
               </div>
             );
           })
         )}
-      </div>
-    </div>
+      </AdminSection>
+    </AdminPage>
   );
 }
 
 /* ═══ 공통 작은 컴포넌트 ═══ */
-function Label({
-  children,
-  required,
-}: {
-  children: React.ReactNode;
-  required?: boolean;
-}) {
-  return (
-    <label className="block text-[11px] font-bold text-text-sub mb-1 mt-2">
-      {children}
-      {required && <span className="text-primary ml-0.5">*</span>}
-    </label>
-  );
-}
-
 function Input({
   value,
   onChange,
@@ -617,12 +473,8 @@ function Input({
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
       disabled={disabled}
-      className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-1 disabled:opacity-50 disabled:cursor-not-allowed"
-      style={{
-        backgroundColor: "var(--color-gray-50)",
-        color: "#2A2A28",
-        border: "1px solid var(--color-border)",
-      }}
+      className={`${inputCls} mb-3 disabled:cursor-not-allowed`}
+      style={inputStyle}
     />
   );
 }

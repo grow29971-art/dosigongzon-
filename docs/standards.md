@@ -44,13 +44,30 @@
 - 읽기 전용 페이지는 서버 컴포넌트, 인터랙션 필요하면 `"use client"`. `useRouter().back()`이
   필요한 부분은 별도 클라이언트 컴포넌트로 분리.
 - 저활용 기능은 삭제하지 않고 `SHOW_*` 플래그로 숨긴다(복원 가능성 보존).
-- 아이콘은 lucide-react. 스타일은 Tailwind + 인라인 style 혼용이 관례(그라디언트·색 변수).
+- 아이콘은 lucide-react. 스타일은 Tailwind + 인라인 style 혼용이 관례(색 변수·토큰 참조).
 
-## 디자인 토큰
+## 디자인 토큰·화면 문법 (2026-09-16 「익숙한 동네앱」 — decisions/0007)
 
-- 테마색은 테라코타 계열로 **동결**(WAU 100 도달까지 재논의 없음). 새 하드코딩 hex를 늘리지 말고
-  기존 CSS 변수(`--color-primary` 등)와 그림자 토큰을 쓴다.
-- 다크모드 없음 전제로 색을 정의하지 말 것 — 기존 토큰이 이미 라이트 기준.
+- 주색 테라코타 `#B05C36`은 **동결**(WAU 100 도달까지 재논의 없음). CTA 채움·활성 탭·선택 상태 전용이며
+  장식(글로우·그라디언트·틴트 아이콘 박스)에 쓰지 않는다.
+- 바탕 순백, 회색은 뉴트럴 `--color-gray-50…900`. 글자 회색(`text-main/sub/light`)은 흰 바탕 대비 4.5:1
+  이상, `--color-text-muted`는 장식·비활성 전용(글자 금지).
+- **하드코딩 hex 금지**: `app/**/*.tsx`의 6자리 hex는 0건이 기준. 허용 예외는 브랜드색(카카오 `#FEE500`·
+  네이버 `#03C75A`), `**/opengraph-image.tsx`, `app/layout.tsx`의 theme-color, `app/darkcheck`, `app/api`
+  메일 템플릿, 약품 가이드 DB 기본값. 검사: `node scripts/design-swap.mjs app --report` → `0 literals`.
+  의미색도 리터럴이 아니라 토큰(`--color-error/-warning/-like/-care/-sage`).
+- 라운드 상한 12px(`--radius-card/-modal/-sheet`), 입력·버튼·썸네일 8px(`--radius-input/-card-sm`), 칩 6px
+  (`--radius-square`), 원형은 아바타·고양이 썸네일·원형 아이콘 버튼만. `rounded-2xl/3xl` 금지.
+- 그림자는 FAB·바텀시트·모달·드롭다운에만(`--shadow-fab/-sheet/-modal/-raised`). 카드·리스트·헤더는
+  1px `--color-border` 헤어라인. `--shadow-card/-card-sm/-primary`·`--color-warm-white`는 삭제 예정 별칭 —
+  새 코드에서 쓰지 않는다.
+- 카드 문법 금지: 카드 안 카드·색 테두리 카드·틴트 박스 안 아이콘 대신 흰 면 + 헤어라인 섹션 또는
+  구분선 리스트(`UIListRow`). 화면 구성 요소(제목·버튼·칩·탭·배지·빈 상태)에 이모지 금지 — lucide 선
+  아이콘. 사용자 데이터 본문의 이모지는 건드리지 않는다.
+- 서체는 Pretendard 단일(세리프 금지). 제목 700, 800/900 남용 금지. 타이포 6단 토큰만.
+- 다크모드 없음. 단 "다크 지원 선언 + 항상 라이트 렌더" 방어(globals.css `color-scheme: light dark`)와
+  body·surface 배경 토큰 명시는 유지 — 순백 배경은 WebView 자동 다크닝의 1순위 반전 대상.
+- 대규모 스타일 변경은 revert 기준선 커밋을 먼저 만들고, 브랜치에서 화면군마다 1커밋 후 main에 1회 머지.
 
 ## 데이터 불변 규칙
 

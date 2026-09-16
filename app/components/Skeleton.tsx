@@ -1,5 +1,6 @@
 // 공용 스켈레톤 컴포넌트 — 로딩 시 단순 스피너 대신 콘텐츠 형태 미리 보여줌.
 // CLS(Cumulative Layout Shift) 줄이고 체감 속도 개선.
+// 2026-09-16 「익숙한 동네앱」 리디자인: 회색 토큰만, 블록 라운드 8px, 카드형은 그림자 없이 헤어라인.
 
 interface SkeletonProps {
   className?: string;
@@ -7,9 +8,15 @@ interface SkeletonProps {
 }
 
 const baseStyle: React.CSSProperties = {
-  background: "linear-gradient(90deg, var(--color-gray-100) 0%, #F5F0E8 50%, var(--color-gray-100) 100%)",
+  background: "linear-gradient(90deg, var(--color-gray-100) 0%, var(--color-gray-200) 50%, var(--color-gray-100) 100%)",
   backgroundSize: "200% 100%",
   animation: "skeleton-shimmer 1.4s ease-in-out infinite",
+};
+
+const cardStyle: React.CSSProperties = {
+  background: "var(--color-surface)",
+  border: "1px solid var(--color-border)",
+  borderRadius: "var(--radius-card)",
 };
 
 /** 직사각형 블록 (이미지·카드 등) */
@@ -24,7 +31,7 @@ export function SkeletonCircle({ className, style }: SkeletonProps) {
 
 /** 한 줄 텍스트 */
 export function SkeletonText({ className, style }: SkeletonProps) {
-  return <div className={`rounded-md h-3 ${className ?? ""}`} style={{ ...baseStyle, ...style }} />;
+  return <div className={`rounded-lg h-3 ${className ?? ""}`} style={{ ...baseStyle, ...style }} />;
 }
 
 /* ═══ 페이지별 컴포지션 ═══ */
@@ -32,7 +39,7 @@ export function SkeletonText({ className, style }: SkeletonProps) {
 /** 고양이 카드 (areas·search) */
 export function SkeletonCatCard() {
   return (
-    <div className="rounded-2xl overflow-hidden bg-white" style={{ boxShadow: "var(--shadow-raised)" }}>
+    <div className="overflow-hidden" style={cardStyle}>
       <SkeletonBlock style={{ aspectRatio: "1 / 1", borderRadius: 0 }} />
       <div className="p-2.5">
         <SkeletonText className="w-2/3" />
@@ -45,7 +52,7 @@ export function SkeletonCatCard() {
 /** 게시글 카드 (community·search) */
 export function SkeletonPostCard() {
   return (
-    <div className="rounded-2xl bg-white p-3.5" style={{ boxShadow: "var(--shadow-card)" }}>
+    <div className="p-3.5" style={cardStyle}>
       <SkeletonText className="w-4/5" />
       <SkeletonText className="w-full mt-2 h-2.5" />
       <SkeletonText className="w-3/5 mt-1 h-2.5" />
@@ -60,7 +67,7 @@ export function SkeletonPostCard() {
 /** 병원 카드 (search·hospitals) */
 export function SkeletonHospitalCard() {
   return (
-    <div className="rounded-2xl bg-white p-3.5" style={{ boxShadow: "var(--shadow-card)" }}>
+    <div className="p-3.5" style={cardStyle}>
       <SkeletonText className="w-3/5" />
       <SkeletonText className="w-4/5 mt-2 h-2.5" />
       <SkeletonText className="w-1/3 mt-1.5 h-2.5" />
@@ -71,7 +78,7 @@ export function SkeletonHospitalCard() {
 /** 통계 카드 (admin/insights) */
 export function SkeletonStatCard() {
   return (
-    <div className="rounded-2xl bg-white p-3.5" style={{ boxShadow: "var(--shadow-card)" }}>
+    <div className="p-3.5" style={cardStyle}>
       <SkeletonText className="w-1/3 h-2.5" />
       <SkeletonBlock className="mt-2.5 h-7 w-1/2" />
     </div>
@@ -81,7 +88,10 @@ export function SkeletonStatCard() {
 /** 리스트 행 (TOP 5 등) */
 export function SkeletonListRow() {
   return (
-    <div className="flex items-center justify-between bg-white rounded-xl px-3.5 py-2.5" style={{ boxShadow: "var(--shadow-card-sm)" }}>
+    <div
+      className="flex items-center justify-between px-3.5 py-2.5"
+      style={{ ...cardStyle, borderRadius: "var(--radius-card-sm)" }}
+    >
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <SkeletonCircle className="w-4 h-4 shrink-0" />
         <SkeletonText className="w-2/3" />

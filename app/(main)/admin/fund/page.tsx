@@ -4,15 +4,20 @@
 // SQL 안 치고도 등록/삭제. RLS로 관리자만 쓰기 가능.
 // 공개 카드는 일일 스냅샷(매일 09:00 KST)이라, 여기서 바꾼 값은 다음날 아침 반영되고
 // 급하면 "카드에 지금 반영" 버튼으로 즉시 스냅샷을 갱신한다.
+// 2026-09-16 「익숙한 동네앱」 리디자인: 틴트 안내 박스·요약 카드 → 헤어라인 섹션 + 수치 행, 내역 → 구분선 리스트. 토큰만.
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, Plus, Minus, Trash2, Loader2, Shield, RefreshCcw } from "lucide-react";
+import { Plus, Minus, Trash2, Loader2, RefreshCcw } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import {
   listDisbursements, createDisbursement, deleteDisbursement, type Disbursement,
   listAdjustments, createAdjustment, deleteAdjustment, type Adjustment,
 } from "@/lib/fund-admin-repo";
+import UIButton from "@/app/components/ui/Button";
+import {
+  AdminForbidden, AdminHeader, AdminLoading, AdminPage, AdminSection, EmptyState, HairlineButton, SegmentTabs,
+  StatRow, inputCls, inputStyle,
+} from "../_ui";
 
 const won = (n: number) => `${n.toLocaleString()}원`;
 const todayKst = () => new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
@@ -24,7 +29,6 @@ function snapLabel(iso: string): string {
 }
 
 export default function AdminFundPage() {
-  const router = useRouter();
   const [authChecked, setAuthChecked] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [items, setItems] = useState<Disbursement[]>([]);
@@ -140,223 +144,187 @@ export default function AdminFundPage() {
     }
   };
 
-  if (!authChecked) {
-    return <div className="flex items-center justify-center h-[60vh]"><Loader2 className="animate-spin text-primary" /></div>;
-  }
-  if (!isAdmin) {
-    return (
-      <div className="px-4 pt-20 text-center">
-        <Shield size={40} className="mx-auto text-text-light mb-3" />
-        <p className="text-[15px] font-bold text-text-main">관리자만 접근할 수 있어요</p>
-      </div>
-    );
-  }
+  if (!authChecked) return <AdminLoading />;
+  if (!isAdmin) return <AdminForbidden />;
+
+  const snapDiff =
+    snapCollected != null && collected != null && snapCollected !== collected
+      ? Math.abs(collected - snapCollected)
+      : 0;
 
   return (
-    <div className="px-4 pt-14 pb-24 max-w-lg mx-auto">
-      <button onClick={() => router.push("/admin")} className="flex items-center gap-1 text-[13px] text-text-sub mb-4 press-strong">
-        <ArrowLeft size={16} /> 관리자
-      </button>
-      <h1 className="text-[24px] font-bold text-text-main tracking-tight mb-1">후원금 관리</h1>
-      <p className="text-[13px] text-text-sub mb-3">지출 등록과 금액 조정. 쇼핑의 &lsquo;투명 정산&rsquo; 카드는 매일 아침 9시에 갱신돼요.</p>
+    <AdminPage>
+      <AdminHeader
+        title="후원금 관리"
+        description="지출 등록과 금액 조정. 쇼핑의 ‘투명 정산’ 카드는 매일 아침 9시에 갱신돼요."
+      />
 
-      {/* 계산식 안내 — 세 숫자가 각각 어디서 오는지 한눈에 */}
-      <div
-        className="mb-4 px-3.5 py-3 rounded-2xl text-[13px] leading-relaxed"
-        style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(176, 92, 54,0.12)" }}
-      >
-        <p className="font-bold text-text-main mb-1.5">숫자는 이렇게 계산돼요</p>
-        <p className="text-text-sub">
-          <b>모인 금액</b> = 결제완료 주문의 후원액 합계(자동) <b>+ 수동 조정</b>
-          <br />
-          <span className="text-text-light">주문이 취소·환불되면 자동으로 빠지고, 오프라인 후원·정정은 아래 조정으로 넣어요.</span>
-        </p>
-        <p className="text-text-sub mt-1.5">
-          <b>쓰인 금액</b> = 아래에 등록한 지출의 합계 · <b>등록만 직접</b>
-          <br />
-          <span className="text-text-light">실제로 돈을 쓴 건 앱이 알 수 없어서, 이 칸만 사람이 넣어요.</span>
-        </p>
-        <p className="text-text-sub mt-1.5">
-          <b>잔액</b> = 모인 − 쓰인 · <b>자동</b>
-        </p>
-      </div>
+      {/* 요약 — 라이브 집계 */}
+      <AdminSection title="현재 집계" padding={false}>
+        <StatRow label="모인 금액" sub="결제완료 주문 후원액 합계 + 수동 조정" value={won(collected ?? 0)} tone="sage" />
+        <StatRow label="쓰인 금액" sub="아래에 등록한 지출의 합계" value={won(spent)} tone="like" />
+        <StatRow label="잔액" sub="모인 − 쓰인" value={won(balance)} />
+      </AdminSection>
 
       {/* 카드 반영 상태 — 여기 숫자는 라이브, 공개 카드는 스냅샷. 차이가 나면 버튼으로 밀어넣기 */}
-      <div
-        className="mb-5 px-3.5 py-3 rounded-2xl flex items-center gap-3"
-        style={{ background: "#fff", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)" }}
-      >
-        <div className="flex-1 min-w-0">
-          <p className="text-[13px] font-bold text-text-main">공개 카드 표시 기준</p>
-          <p className="text-[11px] text-text-light mt-0.5">
+      <AdminSection title="공개 카드 표시 기준">
+        <div className="flex items-center gap-3">
+          <p className="flex-1 min-w-0 text-[13px] text-text-sub leading-relaxed">
             {snappedAt ? `${snapLabel(snappedAt)} 스냅샷` : "아직 스냅샷 없음"} · 매일 09:00 자동 갱신
-            {snapCollected != null && collected != null && snapCollected !== collected && (
-              <b style={{ color: "#E8930C" }}> · 지금 값과 {won(Math.abs(collected - snapCollected))} 차이</b>
+            {snapDiff > 0 && (
+              <b style={{ color: "var(--color-warning)" }}> · 지금 값과 {won(snapDiff)} 차이</b>
             )}
           </p>
+          <HairlineButton
+            tone="primary"
+            onClick={pushSnapshot}
+            disabled={pushing}
+            icon={pushing ? <Loader2 size={12} className="animate-spin" /> : <RefreshCcw size={12} />}
+          >
+            카드에 지금 반영
+          </HairlineButton>
         </div>
-        <button
-          onClick={pushSnapshot}
-          disabled={pushing}
-          className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-white press-strong disabled:opacity-50"
-          style={{ background: "var(--color-primary)" }}
-        >
-          {pushing ? <Loader2 size={12} className="animate-spin" /> : <RefreshCcw size={12} />}
-          카드에 지금 반영
-        </button>
-      </div>
-
-      {/* 요약 */}
-      <div className="grid grid-cols-3 gap-2 mb-5">
-        {[
-          { label: "모인 금액", value: collected ?? 0, color: "#22A366" },
-          { label: "쓰인 금액", value: spent, color: "var(--color-like)" },
-          { label: "잔액", value: balance, color: "var(--color-primary)" },
-        ].map((s) => (
-          <div key={s.label} className="text-center py-3 rounded-2xl" style={{ background: "var(--color-surface-alt)" }}>
-            <p className="text-[11px] font-bold text-text-light mb-0.5">{s.label}</p>
-            <p className="text-[15px] font-extrabold tabular-nums" style={{ color: s.color }}>{s.value.toLocaleString()}<span className="text-[9px] text-text-light">원</span></p>
-          </div>
-        ))}
-      </div>
+      </AdminSection>
 
       {/* 금액 조정 (증액/감액) */}
-      <div className="p-4 rounded-2xl mb-5" style={{ background: "#fff", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)" }}>
-        <h2 className="text-[15px] font-bold text-text-main mb-1">모인 금액 조정</h2>
-        <p className="text-[11px] text-text-light mb-3">오프라인 후원 입금, 집계 정정처럼 앱 밖의 돈을 반영해요. 사유가 그대로 장부에 남아요.</p>
-        <div className="flex items-center gap-1.5 mb-2.5">
-          {([[1, "증액 (+)"], [-1, "감액 (−)"]] as const).map(([sign, label]) => (
-            <button
-              key={sign}
-              type="button"
-              onClick={() => setAdjSign(sign)}
-              className="px-3 py-1.5 rounded-xl text-[13px] font-bold"
-              style={{
-                background: adjSign === sign ? (sign === 1 ? "#22A366" : "#D85555") : "var(--color-warm-white)",
-                color: adjSign === sign ? "#fff" : "var(--color-text-sub)",
-              }}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        <div className="space-y-2.5">
+      <AdminSection title="모인 금액 조정">
+        <p className="text-[13px] text-text-light mb-3">오프라인 후원 입금, 집계 정정처럼 앱 밖의 돈을 반영해요. 사유가 그대로 장부에 남아요.</p>
+        <SegmentTabs
+          className="mb-2.5"
+          value={adjSign === 1 ? "plus" : "minus"}
+          onChange={(k) => setAdjSign(k === "plus" ? 1 : -1)}
+          items={[
+            { key: "plus", label: "증액 (+)" },
+            { key: "minus", label: "감액 (−)" },
+          ]}
+        />
+        <div className="space-y-2">
           <input
             type="text" inputMode="numeric" value={adjAmount}
             onChange={(e) => setAdjAmount(e.target.value.replace(/[^0-9]/g, ""))}
             placeholder="금액 (원)"
-            className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none tabular-nums"
-            style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+            className={`${inputCls} tabular-nums`}
+            style={inputStyle}
           />
           <input
             type="text" value={adjMemo} onChange={(e) => setAdjMemo(e.target.value)} maxLength={80}
             placeholder="사유 (예: 오프라인 후원 입금 ○○님)"
-            className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none"
-            style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+            className={inputCls}
+            style={inputStyle}
           />
         </div>
-        <button
-          onClick={submitAdjustment} disabled={adjSaving || !adjAmount || !adjMemo.trim()}
-          className="w-full mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white text-[13px] font-bold disabled:opacity-40 press transition-transform"
-          style={{ background: adjSign === 1 ? "#22A366" : "#D85555" }}
+        <UIButton
+          variant={adjSign === 1 ? "primary" : "danger"}
+          full
+          className="mt-3"
+          onClick={submitAdjustment}
+          disabled={adjSaving || !adjAmount || !adjMemo.trim()}
         >
           {adjSaving ? <Loader2 size={14} className="animate-spin" /> : adjSign === 1 ? <Plus size={15} /> : <Minus size={15} />}
           {adjSign === 1 ? "증액 등록" : "감액 등록"}
-        </button>
+        </UIButton>
 
         {adjustments.length > 0 && (
-          <div className="mt-3 flex flex-col gap-1.5">
+          <div className="mt-3 divide-y divide-divider" style={{ borderTop: "1px solid var(--color-divider)" }}>
             {adjustments.map((a) => (
-              <div key={a.id} className="flex items-center gap-2.5 px-3 py-2 rounded-xl" style={{ background: "var(--color-surface-alt)" }}>
+              <div key={a.id} className="flex items-center gap-3 py-2.5">
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-bold text-text-main truncate">{a.memo}</p>
-                  <p className="text-[11px] text-text-light">{a.created_at.slice(0, 10)}</p>
+                  <p className="text-[15px] text-text-main truncate">{a.memo}</p>
+                  <p className="text-[13px] text-text-light tabular-nums">{a.created_at.slice(0, 10)}</p>
                 </div>
-                <span className="text-[13px] font-bold tabular-nums shrink-0" style={{ color: a.amount > 0 ? "#22A366" : "#D85555" }}>
+                <span
+                  className="text-[15px] font-bold tabular-nums shrink-0"
+                  style={{ color: a.amount > 0 ? "var(--color-sage)" : "var(--color-error)" }}
+                >
                   {a.amount > 0 ? "+" : "−"}{won(Math.abs(a.amount))}
                 </span>
-                <button onClick={() => removeAdjustment(a.id)} className="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center press-strong" style={{ background: "rgba(216,85,85,0.1)" }} aria-label="조정 삭제">
-                  <Trash2 size={13} style={{ color: "#D85555" }} />
+                <button
+                  type="button"
+                  onClick={() => removeAdjustment(a.id)}
+                  className="shrink-0 w-8 h-8 flex items-center justify-center press text-text-light"
+                  aria-label="조정 삭제"
+                >
+                  <Trash2 size={14} />
                 </button>
               </div>
             ))}
           </div>
         )}
-      </div>
+      </AdminSection>
 
       {/* 등록 폼 */}
-      <div className="p-4 rounded-2xl mb-5" style={{ background: "#fff", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)" }}>
-        <h2 className="text-[15px] font-bold text-text-main mb-3">지출 등록</h2>
-        <div className="space-y-2.5">
+      <AdminSection title="지출 등록">
+        <div className="space-y-2">
           <input
             type="text" inputMode="numeric" value={amount}
             onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ""))}
             placeholder="금액 (원)"
-            className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none tabular-nums"
-            style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+            className={`${inputCls} tabular-nums`}
+            style={inputStyle}
           />
           <input
             type="text" value={memo} onChange={(e) => setMemo(e.target.value)} maxLength={80}
             placeholder="사용처 (예: ○○동물병원 구조묘 치료비)"
-            className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none"
-            style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+            className={inputCls}
+            style={inputStyle}
           />
           <input
             type="text" inputMode="numeric" value={neuteredCount}
             onChange={(e) => setNeuteredCount(e.target.value.replace(/[^0-9]/g, ""))}
             placeholder="중성화 마릿수 (없으면 비워두세요)"
-            className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none tabular-nums"
-            style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+            className={`${inputCls} tabular-nums`}
+            style={inputStyle}
           />
           {/* 세무 증빙 — 기부금 vs 판촉비 분류 근거 (2026-08-29 법률감사 M5) */}
           <input
             type="text" value={recipient} onChange={(e) => setRecipient(e.target.value)} maxLength={200}
             placeholder="수령처 (단체·병원·개인명 — 세무 증빙용, 선택)"
-            className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none"
-            style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+            className={inputCls}
+            style={inputStyle}
           />
           <input
             type="url" value={evidenceUrl} onChange={(e) => setEvidenceUrl(e.target.value)} maxLength={500}
             placeholder="증빙 링크 (계좌이체 내역·영수증 URL — 선택)"
-            className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none"
-            style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+            className={inputCls}
+            style={inputStyle}
           />
           <input
             type="date" value={spentAt} onChange={(e) => setSpentAt(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none"
-            style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+            className={inputCls}
+            style={inputStyle}
           />
         </div>
-        {error && <p className="text-[11px] mt-2" style={{ color: "#D85555" }}>{error}</p>}
-        <button
-          onClick={submit} disabled={saving || !amount || !memo.trim()}
-          className="w-full mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 press transition-transform"
-        >
+        {error && <p className="text-[13px] mt-2" style={{ color: "var(--color-error)" }}>{error}</p>}
+        <UIButton full className="mt-3" onClick={submit} disabled={saving || !amount || !memo.trim()}>
           {saving ? <Loader2 size={14} className="animate-spin" /> : <Plus size={15} />} 등록
-        </button>
-      </div>
+        </UIButton>
+      </AdminSection>
 
       {/* 내역 */}
-      <h2 className="text-[15px] font-bold text-text-main mb-2 px-1">지출 내역 ({items.length})</h2>
-      <div className="flex flex-col gap-2">
+      <AdminSection title={`지출 내역 (${items.length})`} padding={false}>
         {items.length === 0 ? (
-          <p className="text-[13px] text-text-light text-center py-6">아직 등록된 지출이 없어요.</p>
+          <EmptyState>아직 등록된 지출이 없어요.</EmptyState>
         ) : items.map((d) => (
-          <div key={d.id} className="flex items-center gap-3 px-3.5 py-3 rounded-xl" style={{ background: "#fff", border: "1px solid var(--color-divider)" }}>
+          <div key={d.id} className="flex items-center gap-3 px-4 py-3 border-b border-divider last:border-b-0">
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-bold text-text-main truncate">{d.memo}</p>
-              <p className="text-[11px] text-text-light">
+              <p className="text-[15px] text-text-main truncate">{d.memo}</p>
+              <p className="text-[13px] text-text-light tabular-nums">
                 {d.spent_at}
-                {d.neutered_count > 0 && <> · ✂️ {d.neutered_count}마리</>}
+                {d.neutered_count > 0 && <> · 중성화 {d.neutered_count}마리</>}
               </p>
             </div>
-            <span className="text-[13px] font-bold tabular-nums shrink-0" style={{ color: "var(--color-like)" }}>-{won(d.amount)}</span>
-            <button onClick={() => remove(d.id)} className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center press-strong" style={{ background: "rgba(216,85,85,0.1)" }} aria-label="삭제">
-              <Trash2 size={14} style={{ color: "#D85555" }} />
+            <span className="text-[15px] font-bold tabular-nums shrink-0" style={{ color: "var(--color-like)" }}>-{won(d.amount)}</span>
+            <button
+              type="button"
+              onClick={() => remove(d.id)}
+              className="shrink-0 w-8 h-8 flex items-center justify-center press text-text-light"
+              aria-label="삭제"
+            >
+              <Trash2 size={14} />
             </button>
           </div>
         ))}
-      </div>
-    </div>
+      </AdminSection>
+    </AdminPage>
   );
 }

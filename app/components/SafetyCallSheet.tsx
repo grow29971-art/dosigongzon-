@@ -8,6 +8,8 @@
 // - 현재 좌표·주소는 화면 표시 전용. 서버/DB/로그/애널리틱스로 절대 전송하지 않는다.
 //   (이 파일에는 fetch·supabase 호출이 없어야 한다 — 추가 금지)
 // - "안전 보장/자동신고/긴급 출동" 류 카피 금지. 정직하게 "전화 앱을 대신 열어줌"으로 표기.
+// 2026-09-16 「익숙한 동네앱」 리디자인: 시트 라운드 12px, 틴트 박스 → 흰 면 + 헤어라인,
+// 112=primary·119=gray-800(카테고리색 없음), 이모지 제거.
 // ══════════════════════════════════════════
 
 import { useEffect, useState } from "react";
@@ -37,6 +39,12 @@ type KakaoGeocoder = {
 type KakaoNS = {
   maps?: { services?: { Geocoder: new () => KakaoGeocoder; Status: { OK: string } } };
 };
+
+const SECTION_STYLE = {
+  background: "var(--color-surface)",
+  border: "1px solid var(--color-border)",
+  borderRadius: "var(--radius-card)",
+} as const;
 
 export default function SafetyCallSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [geo, setGeo] = useState<GeoState>({ status: "loading" });
@@ -95,12 +103,16 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
     <div className="fixed inset-0 z-[70] flex items-end justify-center" role="dialog" aria-label="곁에 있어요 — 빠른 전화">
       <button aria-label="닫기" className="absolute inset-0 bg-black/45" onClick={onClose} />
       <div
-        className="relative w-full max-w-lg rounded-t-[28px] bg-white px-5 pt-5 pb-8"
-        style={{ boxShadow: "var(--shadow-sheet)" }}
+        className="relative w-full max-w-lg px-5 pt-5 pb-8"
+        style={{
+          background: "var(--color-surface)",
+          borderRadius: "var(--radius-sheet) var(--radius-sheet) 0 0",
+          boxShadow: "var(--shadow-sheet)",
+        }}
       >
         <div className="flex items-start justify-between mb-1">
           <div>
-            <h2 className="text-[20px] font-bold text-text-main">곁에 있어요 🤍</h2>
+            <h2 className="text-[20px] font-bold text-text-main">곁에 있어요</h2>
             <p className="text-[13px] text-text-sub mt-0.5 leading-relaxed">
               돌봄 중 위급하면 아래 버튼으로 전화 앱을 바로 열 수 있어요.
             </p>
@@ -112,17 +124,17 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
 
         {/* 최초 1회 한계 고지 */}
         {showNotice && (
-          <div className="rounded-xl px-3.5 py-2.5 mt-3 text-[13px] leading-relaxed" style={{ backgroundColor: "#FFF6E8", color: "#6F5A3A" }}>
-            이 기능은 휴대폰 전화 앱을 <b>대신 열어주는 바로가기</b>예요. 자동으로 발신되지 않고,
+          <div className="px-3.5 py-2.5 mt-3 text-[13px] leading-relaxed text-text-sub" style={SECTION_STYLE}>
+            이 기능은 휴대폰 전화 앱을 <b className="text-text-main">대신 열어주는 바로가기</b>예요. 자동으로 발신되지 않고,
             통신 상태에 따라 실패할 수 있어요.
           </div>
         )}
 
         {/* 현재 위치 — 통화 중 불러줄 수 있게 크게. 화면 표시 전용(서버 미전송) */}
-        <div className="rounded-2xl px-4 py-3.5 mt-3" style={{ backgroundColor: "var(--color-surface-alt)" }}>
+        <div className="px-4 py-3.5 mt-3" style={SECTION_STYLE}>
           <div className="flex items-center gap-1.5 mb-1">
-            <MapPin size={13} className="text-primary" />
-            <span className="text-[11px] font-bold text-text-sub">지금 내 위치 (통화할 때 불러주세요)</span>
+            <MapPin size={13} style={{ color: "var(--color-text-sub)" }} />
+            <span className="text-[11px] font-semibold text-text-sub">지금 내 위치 (통화할 때 불러주세요)</span>
           </div>
           {geo.status === "loading" && (
             <p className="text-[13px] text-text-sub flex items-center gap-1.5">
@@ -130,7 +142,7 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
             </p>
           )}
           {geo.status === "fail" && (
-            <p className="text-[13px] font-bold" style={{ color: "#B84545" }}>
+            <p className="text-[13px] font-semibold" style={{ color: "var(--color-error)" }}>
               위치 확인 실패 — 주변 간판·건물 이름을 확인해서 불러주세요.
             </p>
           )}
@@ -152,39 +164,39 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
           <div className="grid grid-cols-2 gap-2.5 mt-3">
             <button
               onClick={() => setConfirmTarget({ number: "112", label: "112 전화 걸기", desc: "경찰 — 위협·시비·학대 목격" })}
-              className="rounded-2xl py-4 flex flex-col items-center gap-1 press-strong transition-transform"
-              style={{ backgroundColor: "var(--color-primary)", color: "#fff" }}
+              className="py-4 flex flex-col items-center gap-1 press-strong transition-transform text-white"
+              style={{ backgroundColor: "var(--color-primary)", borderRadius: "var(--radius-card)" }}
             >
               <Phone size={20} />
-              <span className="text-[15px] font-bold">112 전화 걸기</span>
+              <span className="text-[15px] font-semibold">112 전화 걸기</span>
               <span className="text-[11px] opacity-85">경찰 · 위협받을 때</span>
             </button>
             <button
               onClick={() => setConfirmTarget({ number: "119", label: "119 전화 걸기", desc: "구조·응급의료" })}
-              className="rounded-2xl py-4 flex flex-col items-center gap-1 press-strong transition-transform"
-              style={{ backgroundColor: "#4A7BA8", color: "#fff" }}
+              className="py-4 flex flex-col items-center gap-1 press-strong transition-transform text-white"
+              style={{ backgroundColor: "var(--color-gray-800)", borderRadius: "var(--radius-card)" }}
             >
               <Phone size={20} />
-              <span className="text-[15px] font-bold">119 전화 걸기</span>
+              <span className="text-[15px] font-semibold">119 전화 걸기</span>
               <span className="text-[11px] opacity-85">구조 · 응급의료</span>
             </button>
           </div>
         ) : (
-          <div className="rounded-2xl px-4 py-4 mt-3 text-center" style={{ backgroundColor: "#FFF3EC", border: "1px solid #EAD3C6" }}>
-            <p className="text-[15px] font-bold text-text-main">{confirmTarget.number}에 전화를 겁니다</p>
+          <div className="px-4 py-4 mt-3 text-center" style={SECTION_STYLE}>
+            <p className="text-[15px] font-semibold text-text-main">{confirmTarget.number}에 전화를 겁니다</p>
             <p className="text-[13px] text-text-sub mt-0.5">{confirmTarget.desc}</p>
             <div className="flex gap-2.5 mt-3">
               <a
                 href={`tel:${confirmTarget.number}`}
-                className="flex-1 rounded-xl py-3 text-[15px] font-bold text-white press-strong transition-transform"
-                style={{ backgroundColor: "var(--color-primary)" }}
+                className="flex-1 h-12 flex items-center justify-center text-[15px] font-semibold text-white press-strong transition-transform"
+                style={{ backgroundColor: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
               >
                 전화 걸기
               </a>
               <button
                 onClick={() => setConfirmTarget(null)}
-                className="flex-1 rounded-xl py-3 text-[15px] font-bold text-text-sub press-strong transition-transform"
-                style={{ backgroundColor: "var(--color-surface-alt)" }}
+                className="flex-1 h-12 text-[15px] font-semibold text-text-main press-strong transition-transform"
+                style={{ backgroundColor: "var(--color-gray-100)", borderRadius: "var(--radius-input)" }}
               >
                 취소
               </button>

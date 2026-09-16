@@ -1,12 +1,16 @@
 "use client";
 
+// 위치 변경 이력 (admin 전용) — 2026-09-16 「익숙한 동네앱」 리디자인:
+// 어두운 헤더·요약 카드 → 헤어라인 섹션 + 수치 행, 로그 카드 → 구분선 리스트. 색은 토큰만.
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Loader2, MapPin, ArrowRight, User } from "lucide-react";
+import { ArrowRight, User } from "lucide-react";
 import {
   listRecentLocationChanges,
   type CatLocationHistoryRow,
 } from "@/lib/cat-location-history-repo";
+import { AdminHeader, AdminLoading, AdminPage, AdminSection, AdminTag, EmptyState, StatRow } from "../_ui";
 
 function formatDistance(m: number | null): string {
   if (m === null || m === undefined) return "-";
@@ -52,172 +56,71 @@ export default function LocationLogsPage() {
   const longMoves = rows.filter((r) => (r.distance_m ?? 0) >= 500);
 
   return (
-    <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
-      {/* 헤더 */}
-      <div
-        className="px-5 pt-12 pb-5"
-        style={{
-          background: "#2C2C2C",
-          color: "#fff",
-        }}
-      >
-        <Link
-          href="/admin"
-          className="flex items-center gap-1 text-[13px] font-semibold mb-3 opacity-80 press-strong"
-        >
-          <ArrowLeft size={14} />
-          관리자 홈
-        </Link>
-        <div className="flex items-baseline gap-2 mb-1">
-          <MapPin size={20} />
-          <h1 className="text-[24px] font-bold tracking-tight">
-            위치 변경 이력
-          </h1>
-        </div>
-        <p className="text-[13px] opacity-70">
-          고양이 좌표 변경 로그 · 어뷰징 감지용
-        </p>
-      </div>
+    <AdminPage>
+      <AdminHeader title="위치 변경 이력" description="고양이 좌표 변경 로그 · 어뷰징 감지용" />
 
-      {/* 요약 */}
-      <div className="px-4 -mt-6 mb-5 grid grid-cols-3 gap-2">
-        <SummaryCard label="전체" value={rows.length} color="#4A7BA8" />
-        <SummaryCard label="동 이동" value={dongMoves.length} color="#B05C36" />
-        <SummaryCard
-          label="500m↑ 이동"
-          value={longMoves.length}
-          color="#D85555"
+      <AdminSection title="요약" padding={false}>
+        <StatRow label="전체" value={rows.length.toLocaleString()} />
+        <StatRow label="동 이동" value={dongMoves.length.toLocaleString()} />
+        <StatRow
+          label="500m 이상 이동"
+          value={longMoves.length.toLocaleString()}
+          tone={longMoves.length > 0 ? "error" : "neutral"}
         />
-      </div>
+      </AdminSection>
 
-      <div className="px-4">
+      <AdminSection title="최근 변경" padding={false}>
         {loading ? (
-          <div className="flex justify-center pt-10">
-            <Loader2 size={24} className="animate-spin text-primary" />
-          </div>
+          <AdminLoading />
         ) : err ? (
-          <div
-            className="rounded-2xl px-4 py-3 text-[13px] font-bold"
-            style={{ background: "#FDECEC", color: "#B84545" }}
-          >
+          <p className="px-4 py-3 text-[13px] font-semibold" style={{ color: "var(--color-error)" }}>
             {err}
-          </div>
+          </p>
         ) : rows.length === 0 ? (
-          <div
-            className="bg-white rounded-2xl p-6 text-center text-[13px] text-text-sub"
-            style={{ boxShadow: "var(--shadow-card)" }}
-          >
-            아직 위치 변경 기록이 없어요.
-          </div>
+          <EmptyState>아직 위치 변경 기록이 없어요.</EmptyState>
         ) : (
-          <div className="space-y-2">
-            {rows.map((r) => {
-              const dongChanged =
-                (r.old_region ?? "") !== (r.new_region ?? "");
-              const far = (r.distance_m ?? 0) >= 500;
-              return (
-                <div
-                  key={r.id}
-                  className="bg-white rounded-2xl p-3.5"
-                  style={{
-                    boxShadow: far
-                      ? "0 2px 14px rgba(216,85,85,0.15)"
-                      : "0 2px 8px rgba(0,0,0,0.05)",
-                    border: far
-                      ? "1px solid rgba(216,85,85,0.25)"
-                      : "1px solid var(--color-divider)",
-                  }}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <Link
-                      href={`/cats/${r.cat_id}`}
-                      className="text-[15px] font-bold text-text-main truncate active:opacity-70"
-                    >
-                      {r.cat_name ?? "(삭제된 고양이)"}
-                    </Link>
-                    <span className="text-[11px] text-text-light shrink-0 ml-2">
-                      {formatTime(r.created_at)}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-[13px] mb-2">
-                    <span
-                      className="px-2 py-1 chip-square font-bold"
-                      style={{
-                        background: "var(--color-gray-50)",
-                        color: "#A38E7A",
-                      }}
-                    >
-                      {r.old_region ?? "?"}
-                    </span>
-                    <ArrowRight
-                      size={13}
-                      className={dongChanged ? "text-primary" : "text-text-light"}
-                    />
-                    <span
-                      className="px-2 py-1 chip-square font-bold"
-                      style={{
-                        background: dongChanged ? "#FFF2E8" : "var(--color-gray-50)",
-                        color: dongChanged ? "var(--color-primary)" : "#A38E7A",
-                      }}
-                    >
-                      {r.new_region ?? "?"}
-                    </span>
-                    <span
-                      className="ml-auto text-[11px] font-bold"
-                      style={{ color: far ? "#D85555" : "#666" }}
-                    >
-                      {formatDistance(r.distance_m)}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-1.5 text-[11px] text-text-sub">
-                    <User size={11} />
-                    {r.changed_by ? (
-                      <Link
-                        href={`/users/${r.changed_by}`}
-                        className="font-semibold active:opacity-70"
-                      >
-                        {r.changed_by_name ?? "(삭제된 유저)"}
-                      </Link>
-                    ) : (
-                      <span>(기록 없음)</span>
-                    )}
-                  </div>
+          rows.map((r) => {
+            const dongChanged = (r.old_region ?? "") !== (r.new_region ?? "");
+            const far = (r.distance_m ?? 0) >= 500;
+            return (
+              <div key={r.id} className="px-4 py-3 border-b border-divider last:border-b-0">
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <Link
+                    href={`/cats/${r.cat_id}`}
+                    className="text-[15px] font-semibold text-text-main truncate press"
+                  >
+                    {r.cat_name ?? "(삭제된 고양이)"}
+                  </Link>
+                  <span className="text-[11px] text-text-light shrink-0">{formatTime(r.created_at)}</span>
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
-function SummaryCard({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: number;
-  color: string;
-}) {
-  return (
-    <div
-      className="rounded-2xl p-3 bg-white"
-      style={{
-        boxShadow: "var(--shadow-card)",
-        border: "1px solid var(--color-divider)",
-      }}
-    >
-      <p className="text-[11px] font-bold text-text-sub">{label}</p>
-      <p
-        className="text-[20px] font-bold tracking-tight mt-0.5"
-        style={{ color }}
-      >
-        {value.toLocaleString()}
-      </p>
-    </div>
+                <div className="flex items-center gap-1.5 text-[13px] mb-1.5">
+                  <AdminTag>{r.old_region ?? "?"}</AdminTag>
+                  <ArrowRight size={13} className="text-text-light" />
+                  <AdminTag tone={dongChanged ? "primary" : "neutral"}>{r.new_region ?? "?"}</AdminTag>
+                  <span
+                    className="ml-auto text-[13px] font-semibold tabular-nums"
+                    style={{ color: far ? "var(--color-error)" : "var(--color-text-sub)" }}
+                  >
+                    {formatDistance(r.distance_m)}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-1.5 text-[13px] text-text-sub">
+                  <User size={12} className="text-text-light" />
+                  {r.changed_by ? (
+                    <Link href={`/users/${r.changed_by}`} className="font-semibold press">
+                      {r.changed_by_name ?? "(삭제된 유저)"}
+                    </Link>
+                  ) : (
+                    <span>(기록 없음)</span>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </AdminSection>
+    </AdminPage>
   );
 }

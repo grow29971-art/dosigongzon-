@@ -13,6 +13,7 @@ interface SocialProof {
  * 홈 히어로 아래 사회적 증명 배너.
  * "지금 N명이 함께 돌보는 중" — 안전·활발함 신호.
  * 데이터가 없거나 0이면 렌더링 생략.
+ * 2026-09-16 「익숙한 동네앱」 리디자인: 그라디언트·채움 아이콘 → 흰 면 + 헤어라인, 회색 선 아이콘.
  */
 export default function SocialProofStrip() {
   const [data, setData] = useState<SocialProof | null>(null);
@@ -46,49 +47,38 @@ export default function SocialProofStrip() {
 
   return (
     <div
-      className="mt-4 px-4 py-3 rounded-2xl flex items-center gap-3"
+      className="mt-4 px-4 py-3 flex items-center gap-3"
       style={{
-        background:
-          "linear-gradient(135deg, rgba(232,141,90,0.10) 0%, rgba(72,165,158,0.08) 100%)",
-        border: "1px solid rgba(176, 92, 54,0.18)",
+        background: "var(--color-surface)",
+        borderRadius: "var(--radius-card)",
+        border: "1px solid var(--color-border)",
       }}
     >
-      <div
-        className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-        style={{
-          background: "#E88D5A",
-          boxShadow: "var(--shadow-raised)",
-        }}
-      >
-        {activeCaretakersToday > 0 ? (
-          <Users size={15} color="#fff" strokeWidth={2.5} />
-        ) : (
-          <Sparkles size={15} color="#fff" strokeWidth={2.5} />
-        )}
-      </div>
+      {activeCaretakersToday > 0 ? (
+        <Users size={20} className="shrink-0" style={{ color: "var(--color-text-light)" }} strokeWidth={1.8} />
+      ) : (
+        <Sparkles size={20} className="shrink-0" style={{ color: "var(--color-text-light)" }} strokeWidth={1.8} />
+      )}
 
       <div className="flex-1 min-w-0">
-        <p className="text-[13px] font-bold text-text-main tracking-tight leading-tight">
+        <p className="text-[15px] font-semibold text-text-main leading-snug">
           {primary}
         </p>
         {activeCaretakersToday > 0 && totalCats > 0 && (
-          <p className="text-[11px] text-text-sub mt-0.5 leading-tight">
-            누적 {totalCats.toLocaleString()}마리 ·{" "}
-            {newCatsThisWeek > 0 && `이번 주 새 친구 ${newCatsThisWeek}마리`}
+          <p className="text-[13px] text-text-sub mt-0.5 leading-snug">
+            누적 {totalCats.toLocaleString()}마리
+            {newCatsThisWeek > 0 && ` · 이번 주 새 친구 ${newCatsThisWeek}마리`}
           </p>
         )}
       </div>
 
       {activeCaretakersToday > 0 && (
-        <div
-          className="flex items-center gap-1 shrink-0 px-2 py-1 rounded-xl"
-          style={{ background: "rgba(255,255,255,0.7)" }}
-        >
+        <div className="flex items-center gap-1 shrink-0">
           <span
             className="w-1.5 h-1.5 rounded-full animate-pulse"
-            style={{ background: "#48A59E" }}
+            style={{ background: "var(--color-sage)" }}
           />
-          <span className="text-[11px] font-bold" style={{ color: "#2E7870" }}>
+          <span className="text-[11px] font-semibold" style={{ color: "var(--color-sage)" }}>
             LIVE
           </span>
         </div>

@@ -1,20 +1,25 @@
 "use client";
 
 // 1000명 이벤트 키링 응모자 관리 (admin 전용).
-// - 전체 응모자 카드 + 상태 변경(pending → selected → shipped, 또는 rejected)
+// - 전체 응모자 목록 + 상태 변경(pending → selected → shipped, 또는 rejected)
 // - admin_note 메모 가능
 // - CSV 내보내기 (배송 전 주소·전화 정리용)
+// 2026-09-16 「익숙한 동네앱」 리디자인: 카드 → 구분선 리스트, 회색 태그(의미색만 예외), 헤어라인 버튼, 이모지 제거.
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import {
-  ArrowLeft, Loader2, Gift, Phone, MapPin, Check, X, Truck, Download, RefreshCw,
+  Gift, Phone, MapPin, Check, X, Truck, Download, RefreshCw,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { createClient } from "@/lib/supabase/client";
 import { sanitizeHttpUrl, sanitizeImageUrl } from "@/lib/url-validate";
 import { useToast } from "@/app/components/Toast";
+import UIChip from "@/app/components/ui/Chip";
+import {
+  AdminForbidden, AdminHeader, AdminLoading, AdminPage, AdminSection, AdminTag, EmptyState, HairlineButton,
+  inputCls, inputStyle, type Tone,
+} from "../_ui";
 
 type EntryStatus = "pending" | "selected" | "shipped" | "rejected";
 
@@ -35,11 +40,11 @@ interface UserMini {
   avatar_url: string | null;
 }
 
-const STATUS_META: Record<EntryStatus, { label: string; color: string; bg: string; emoji: string }> = {
-  pending:  { label: "대기",   color: "#A38E7A", bg: "var(--color-gray-100)", emoji: "⏳" },
-  selected: { label: "당첨",   color: "#5BA876", bg: "#E8ECE5", emoji: "🎉" },
-  shipped:  { label: "배송완료", color: "#4A7BA8", bg: "#E5E8ED", emoji: "📦" },
-  rejected: { label: "제외",   color: "#D85555", bg: "var(--color-error-soft)", emoji: "✖️" },
+const STATUS_META: Record<EntryStatus, { label: string; tone: Tone }> = {
+  pending:  { label: "대기",   tone: "warning" },
+  selected: { label: "당첨",   tone: "primary" },
+  shipped:  { label: "배송완료", tone: "sage" },
+  rejected: { label: "제외",   tone: "error" },
 };
 
 const STATUS_ORDER: EntryStatus[] = ["pending", "selected", "shipped", "rejected"];
@@ -153,17 +158,8 @@ export default function AdminEventKeyringPage() {
     URL.revokeObjectURL(url);
   };
 
-  if (!authChecked) {
-    return <div className="min-h-dvh flex items-center justify-center"><Loader2 className="animate-spin text-primary" /></div>;
-  }
-  if (!authorized) {
-    return (
-      <div className="min-h-dvh flex flex-col items-center justify-center px-6 text-center">
-        <p className="text-[15px] font-bold text-text-main mb-2">권한 없음</p>
-        <Link href="/mypage" className="text-[13px] font-bold text-primary mt-4">마이페이지로</Link>
-      </div>
-    );
-  }
+  if (!authChecked) return <AdminLoading />;
+  if (!authorized) return <AdminForbidden />;
 
   const counts: Record<EntryStatus | "all", number> = {
     all: entries.length,
@@ -175,65 +171,45 @@ export default function AdminEventKeyringPage() {
   const visible = filter === "all" ? entries : entries.filter((e) => e.status === filter);
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
-      {/* 헤더 */}
-      <div className="px-4 pt-12 pb-4 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-3 min-w-0">
-          <Link href="/admin" className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-            style={{ boxShadow: "var(--shadow-raised)" }} aria-label="admin">
-            <ArrowLeft size={18} className="text-text-main" />
-          </Link>
-          <div>
-            <h1 className="text-[20px] font-bold text-text-main flex items-center gap-1.5">
-              <Gift size={16} style={{ color: "var(--color-primary)" }} />
-              이벤트 응모자
-            </h1>
-            <p className="text-[11px] text-text-sub">총 {entries.length}명</p>
+    <AdminPage>
+      <AdminHeader
+        title="이벤트 응모자"
+        description={`총 ${entries.length}명`}
+        right={
+          <div className="flex gap-1.5 shrink-0">
+            <button
+              type="button"
+              onClick={reload}
+              disabled={loading}
+              className="w-9 h-9 rounded-full flex items-center justify-center press disabled:opacity-50 text-text-sub"
+              style={{ border: "1px solid var(--color-border)" }}
+              aria-label="새로고침"
+            >
+              <RefreshCw size={15} className={loading ? "animate-spin" : ""} />
+            </button>
+            <HairlineButton onClick={exportCsv} disabled={entries.length === 0} icon={<Download size={13} />} size="md">
+              CSV
+            </HairlineButton>
           </div>
-        </div>
-        <div className="flex gap-1.5 shrink-0">
-          <button onClick={reload} disabled={loading}
-            className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong disabled:opacity-50"
-            style={{ boxShadow: "var(--shadow-raised)" }} aria-label="새로고침">
-            <RefreshCw size={15} className={`text-text-main ${loading ? "animate-spin" : ""}`} />
-          </button>
-          <button onClick={exportCsv} disabled={entries.length === 0}
-            className="px-3 h-9 rounded-xl bg-primary text-white text-[13px] font-bold flex items-center gap-1 press-strong disabled:opacity-50"
-            style={{ boxShadow: "var(--shadow-card)" }}>
-            <Download size={13} />
-            CSV
-          </button>
-        </div>
-      </div>
+        }
+      />
 
-      {/* 필터 탭 */}
-      <div className="px-4 mb-3 flex gap-1.5 overflow-x-auto no-scrollbar">
+      {/* 필터 칩 */}
+      <div className="mb-3 flex gap-1.5 overflow-x-auto no-scrollbar">
         {(["all", ...STATUS_ORDER] as const).map((k) => (
-          <button key={k} onClick={() => setFilter(k)}
-            className="shrink-0 px-3 py-1.5 chip-square text-[13px] font-bold press-strong transition-transform"
-            style={{
-              background: filter === k ? "var(--color-primary)" : "#FFFFFF",
-              color: filter === k ? "#FFFFFF" : "#6B5043",
-              border: filter === k ? "1px solid var(--color-primary)" : "1px solid var(--color-divider)",
-            }}>
-            {k === "all" ? "전체" : STATUS_META[k].label} {counts[k] > 0 && <span className="ml-0.5 opacity-80">{counts[k]}</span>}
-          </button>
+          <UIChip key={k} active={filter === k} onClick={() => setFilter(k)}>
+            {k === "all" ? "전체" : STATUS_META[k].label}
+            {counts[k] > 0 && <span className="tabular-nums opacity-80">{counts[k]}</span>}
+          </UIChip>
         ))}
       </div>
 
       {/* 목록 */}
-      <div className="px-4 space-y-3">
-        {loading && (
-          <div className="py-10 flex justify-center"><Loader2 size={20} className="animate-spin text-primary" /></div>
-        )}
-        {!loading && visible.length === 0 && (
-          <div className="text-center py-12 rounded-2xl bg-white" style={{ boxShadow: "var(--shadow-card)" }}>
-            <Gift size={32} className="mx-auto mb-2 text-text-light opacity-30" />
-            <p className="text-[13px] text-text-sub font-semibold">응모자가 없어요</p>
-          </div>
-        )}
+      <AdminSection padding={false}>
+        {loading && <AdminLoading />}
+        {!loading && visible.length === 0 && <EmptyState>응모자가 없어요</EmptyState>}
         {!loading && visible.map((entry) => (
-          <EntryCard
+          <EntryRow
             key={entry.id}
             entry={entry}
             profile={profiles[entry.user_id]}
@@ -241,12 +217,12 @@ export default function AdminEventKeyringPage() {
             onNote={updateNote}
           />
         ))}
-      </div>
-    </div>
+      </AdminSection>
+    </AdminPage>
   );
 }
 
-function EntryCard({
+function EntryRow({
   entry, profile, onStatus, onNote,
 }: {
   entry: Entry;
@@ -267,52 +243,54 @@ function EntryCard({
 
   const displayName = profile?.nickname ?? entry.name ?? "익명";
   const isSimpleEntry = !entry.cat_photo_url && !entry.phone && !entry.address;
+  const thumbStyle = { width: 56, height: 56, borderRadius: "var(--radius-card-sm)" } as const;
 
   return (
-    <div className="rounded-2xl bg-white p-4" style={{ boxShadow: "var(--shadow-card)", border: `1px solid ${meta.color}25` }}>
+    <div className="px-4 py-3 border-b border-divider last:border-b-0">
       <div className="flex items-start gap-3">
-        {/* 사진 — 고양이 사진 또는 응모자 아바타 폴백 */}
+        {/* 사진 — 고양이 사진(8px) 또는 응모자 아바타(원형) 폴백 */}
         {entry.cat_photo_url && sanitizeImageUrl(entry.cat_photo_url) ? (
-          <a href={sanitizeHttpUrl(entry.cat_photo_url, "#")} target="_blank" rel="noopener noreferrer"
-            className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 80, height: 80 }}>
-            <Image src={sanitizeImageUrl(entry.cat_photo_url)} alt="" fill sizes="80px" style={{ objectFit: "cover" }} />
+          <a
+            href={sanitizeHttpUrl(entry.cat_photo_url, "#")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative shrink-0 overflow-hidden"
+            style={thumbStyle}
+          >
+            <Image src={sanitizeImageUrl(entry.cat_photo_url)} alt="" fill sizes="56px" style={{ objectFit: "cover" }} />
           </a>
         ) : profile?.avatar_url ? (
-          <div className="relative shrink-0 rounded-xl overflow-hidden bg-surface-alt" style={{ width: 80, height: 80 }}>
-            <Image src={profile.avatar_url} alt="" fill sizes="80px" style={{ objectFit: "cover" }} />
+          <div className="relative shrink-0 rounded-full overflow-hidden bg-surface-alt" style={{ width: 56, height: 56 }}>
+            <Image src={profile.avatar_url} alt="" fill sizes="56px" style={{ objectFit: "cover" }} />
           </div>
         ) : (
-          <div className="shrink-0 rounded-xl flex items-center justify-center bg-surface-alt"
-            style={{ width: 80, height: 80 }}>
-            <Gift size={28} className="text-text-light" />
+          <div className="shrink-0 rounded-full flex items-center justify-center bg-surface-alt text-text-light" style={{ width: 56, height: 56 }}>
+            <Gift size={22} strokeWidth={1.8} />
           </div>
         )}
         {/* 정보 */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 mb-1">
-            <span className="text-[11px] font-bold px-1.5 py-0.5 chip-square"
-              style={{ background: meta.bg, color: meta.color }}>
-              {meta.emoji} {meta.label}
-            </span>
-            <span className="text-[11px] text-text-light ml-auto">
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <p className="text-[15px] font-semibold text-text-main truncate">{displayName}</p>
+            <AdminTag tone={meta.tone}>{meta.label}</AdminTag>
+            <span className="text-[11px] text-text-light ml-auto shrink-0 tabular-nums">
               {new Date(entry.created_at).toLocaleDateString("ko-KR")}
             </span>
           </div>
-          <p className="text-[15px] font-bold text-text-main truncate">{displayName}</p>
           {entry.phone && (
-            <a href={`tel:${entry.phone}`} className="flex items-center gap-1 mt-0.5 text-[13px] font-bold" style={{ color: "#22B573" }}>
-              <Phone size={11} />
+            <a href={`tel:${entry.phone}`} className="flex items-center gap-1 mt-0.5 text-[13px] font-semibold text-text-main tabular-nums">
+              <Phone size={11} className="text-text-light" />
               {entry.phone}
             </a>
           )}
           {entry.address && (
-            <p className="flex items-start gap-1 mt-1 text-[13px] text-text-sub leading-snug">
-              <MapPin size={11} className="shrink-0 mt-0.5" />
+            <p className="flex items-start gap-1 mt-0.5 text-[13px] text-text-sub leading-snug">
+              <MapPin size={11} className="shrink-0 mt-0.5 text-text-light" />
               <span>{entry.address}</span>
             </p>
           )}
           {isSimpleEntry && (
-            <p className="mt-1 text-[11px] text-text-light leading-snug">
+            <p className="mt-0.5 text-[13px] text-text-light leading-snug">
               사진·연락처 미수집 — 추첨 후 쪽지로 별도 안내 예정
             </p>
           )}
@@ -320,38 +298,37 @@ function EntryCard({
       </div>
 
       {/* 상태 변경 버튼 */}
-      <div className="flex gap-1 mt-3 flex-wrap">
+      <div className="flex gap-1 mt-3">
         {STATUS_ORDER.map((s) => {
           const m = STATUS_META[s];
           const active = entry.status === s;
           return (
-            <button key={s} onClick={() => onStatus(entry.id, s)} disabled={active}
-              className="flex-1 min-w-0 py-2 rounded-lg text-[13px] font-bold flex items-center justify-center gap-1 press-strong disabled:opacity-50"
-              style={{
-                background: active ? m.color : `${m.color}15`,
-                color: active ? "#fff" : m.color,
-              }}>
-              {s === "selected" ? <Check size={12} /> : s === "shipped" ? <Truck size={12} /> : s === "rejected" ? <X size={12} /> : null}
+            <HairlineButton
+              key={s}
+              onClick={() => onStatus(entry.id, s)}
+              disabled={active}
+              tone={active ? m.tone : "neutral"}
+              className="flex-1 min-w-0"
+              icon={s === "selected" ? <Check size={12} /> : s === "shipped" ? <Truck size={12} /> : s === "rejected" ? <X size={12} /> : undefined}
+            >
               {m.label}
-            </button>
+            </HairlineButton>
           );
         })}
       </div>
 
       {/* 메모 */}
-      <div className="mt-3">
-        <input
-          type="text"
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          onBlur={saveNote}
-          placeholder="관리자 메모 (예: 운송장 1234567890)"
-          maxLength={200}
-          disabled={savingNote}
-          className="w-full px-3 py-2 rounded-lg text-[13px] outline-none"
-          style={{ background: "var(--color-gray-50)", border: "1px solid var(--color-border)" }}
-        />
-      </div>
+      <input
+        type="text"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        onBlur={saveNote}
+        placeholder="관리자 메모 (예: 운송장 1234567890)"
+        maxLength={200}
+        disabled={savingNote}
+        className={`${inputCls} mt-2 text-[13px]`}
+        style={inputStyle}
+      />
     </div>
   );
 }

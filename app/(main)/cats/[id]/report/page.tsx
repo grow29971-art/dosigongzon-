@@ -53,7 +53,7 @@ export default async function CareReportPage({ params }: { params: Params }) {
     .sort((a, b) => b[1] - a[1]);
 
   return (
-    <div className="pb-24 print:pb-0" style={{ background: "var(--color-warm-white)", minHeight: "100vh" }}>
+    <div className="pb-24 print:pb-0" style={{ background: "var(--color-surface)", minHeight: "100vh" }}>
       {/* 인쇄 시 앱 크롬(하단 내비 등) 숨김 + 문서만 남김 */}
       <style>{`
         @media print {
@@ -68,8 +68,8 @@ export default async function CareReportPage({ params }: { params: Params }) {
       <div className="report-no-print px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href={`/cats/${cat.id}`}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
+          style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
           aria-label="고양이 페이지로 돌아가기"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -79,31 +79,30 @@ export default async function CareReportPage({ params }: { params: Params }) {
 
       <div className="report-no-print px-4 mb-3">
         <div
-          className="rounded-2xl px-4 py-3"
-          style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(176,92,54,0.18)" }}
+          className="px-4 py-3"
+          style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
         >
-          <p className="text-[13px] font-bold text-text-main leading-snug">
+          <p className="text-[15px] font-semibold text-text-main leading-snug">
             민원·구청 협의·학대 신고 때 이 확인서를 첨부하세요
           </p>
-          <p className="text-[11px] text-text-sub mt-1 leading-relaxed">
-            아래 &ldquo;인쇄 · PDF로 저장&rdquo;을 누르면 종이 문서나 PDF 파일로 만들 수 있어요.
-            이 아이가 방치된 동물이 아니라 시민이 지속적으로 돌보는 동네 고양이라는 근거가 돼요.
+          <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
+            아래 &ldquo;인쇄 · PDF로 저장&rdquo;으로 종이 문서나 PDF 파일로 만들 수 있어요.
           </p>
         </div>
       </div>
 
       {/* ── 확인서 본문 (인쇄 대상) ── */}
       <div
-        className="report-sheet bg-white mx-4 rounded-2xl px-6 py-8"
-        style={{ boxShadow: "var(--shadow-card)", border: "1px solid var(--color-border)" }}
+        className="report-sheet mx-4 px-6 py-8"
+        style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
       >
         {/* 표제 */}
         <div className="text-center pb-5 mb-5" style={{ borderBottom: "2px solid var(--color-text-main)" }}>
           <div className="flex items-center justify-center gap-2 mb-2">
-            <FileText size={16} style={{ color: "var(--color-primary)" }} />
-            <span className="text-[11px] font-bold tracking-widest text-text-sub">도시공존 시민 돌봄 기록</span>
+            <FileText size={16} className="text-text-sub" />
+            <span className="text-[11px] font-semibold tracking-widest text-text-sub">도시공존 시민 돌봄 기록</span>
           </div>
-          <h1 className="text-[22px] font-bold text-text-main tracking-tight">돌봄 활동 확인서</h1>
+          <h1 className="text-[24px] font-bold text-text-main tracking-tight">돌봄 활동 확인서</h1>
           <p className="text-[11px] text-text-sub mt-2">
             본 확인서는 시민 참여 길고양이 돌봄 플랫폼 도시공존(dosigongzon.com)에 기록된 데이터를 기반으로 자동 생성되었습니다.
           </p>
@@ -233,11 +232,11 @@ export default async function CareReportPage({ params }: { params: Params }) {
             동물보호법 제10조(동물학대 등의 금지) 관련 신고, 급식소·중성화(TNR) 협의, 민원 대응 시 참고
             자료로 활용할 수 있으며, 고양이 안전을 위해 정확한 위치 좌표는 포함하지 않습니다.
           </p>
-          <p className="text-[11px] leading-relaxed mt-2" style={{ color: "#B84545" }}>
-            ⚠ 이 확인서에는 참여 시민의 닉네임이 포함되어 있습니다. 분쟁 상대방 등 제3자에게 직접
+          <p className="text-[11px] leading-relaxed mt-2" style={{ color: "var(--color-error)" }}>
+            이 확인서에는 참여 시민의 닉네임이 포함되어 있습니다. 분쟁 상대방 등 제3자에게 직접
             전달하는 경우 참여자 신변 노출에 유의하세요.
           </p>
-          <p className="text-[11px] font-bold text-text-sub mt-3 text-center tracking-widest">도 시 공 존</p>
+          <p className="text-[11px] font-semibold text-text-sub mt-3 text-center tracking-widest">도 시 공 존</p>
         </div>
       </div>
 
@@ -251,7 +250,7 @@ export default async function CareReportPage({ params }: { params: Params }) {
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-[13px] font-bold text-text-main mb-2 tracking-tight">{children}</h2>
+    <h2 className="text-[13px] font-semibold text-text-main mb-2 tracking-tight">{children}</h2>
   );
 }
 
@@ -259,8 +258,8 @@ function Tr({ label, value }: { label: string; value: string }) {
   return (
     <tr>
       <td
-        className="py-1.5 px-3 font-bold text-text-sub whitespace-nowrap"
-        style={{ border: "1px solid var(--color-border)", background: "var(--color-warm-white)", width: "30%" }}
+        className="py-1.5 px-3 font-semibold text-text-sub whitespace-nowrap"
+        style={{ border: "1px solid var(--color-border)", background: "var(--color-surface-alt)", width: "30%" }}
       >
         {label}
       </td>
@@ -274,10 +273,10 @@ function Tr({ label, value }: { label: string; value: string }) {
 function Th({ children, align }: { children: React.ReactNode; align?: "right" | "center" }) {
   return (
     <th
-      className="py-1.5 px-2.5 font-bold text-text-sub"
+      className="py-1.5 px-2.5 font-semibold text-text-sub"
       style={{
         border: "1px solid var(--color-border)",
-        background: "var(--color-warm-white)",
+        background: "var(--color-surface-alt)",
         textAlign: align ?? "left",
       }}
     >

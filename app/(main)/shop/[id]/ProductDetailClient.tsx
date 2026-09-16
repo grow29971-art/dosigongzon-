@@ -4,12 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ArrowLeft, Minus, Plus, PawPrint, ShoppingBag, Truck, ShoppingCart, Coins, Heart } from "lucide-react";
+import { ArrowLeft, Minus, Plus, ImageOff, ShoppingBag, Truck, Gift, Heart } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { addToCart, SHOP_CATEGORIES, type Product } from "@/lib/shop-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { PRODUCT_DISCLOSURES, PRODUCT_DETAIL_IMAGES } from "@/lib/product-disclosure";
 import { PURCHASE_REWARD_BASE_RATE, PURCHASE_REWARD_MAX_RATE } from "@/lib/points-config";
+import UIButton from "@/app/components/ui/Button";
 import ProductReviews from "./ProductReviews";
 
 function formatWon(amount: number): string {
@@ -19,12 +20,6 @@ function formatWon(amount: number): string {
 function discountRate(price: number, salePrice: number): number {
   return Math.round(((price - salePrice) / price) * 100);
 }
-
-const BADGE_COLORS: Record<string, string> = {
-  인기: "var(--color-error)",
-  신상: "var(--color-primary)",
-  한정: "var(--color-warning)",
-};
 
 export default function ProductDetailClient({ product }: { product: Product }) {
   const router = useRouter();
@@ -86,28 +81,54 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     }
   };
 
+  // 정보 행(배송·적립·후원) — 헤어라인 리스트. 후원 문구는 법정·후원율 표기라 그대로 둔다.
+  const infoRows: { Icon: typeof Truck; text: string }[] = [
+    {
+      Icon: Truck,
+      text: isVirtual
+        ? "배송 없음 · 후원금으로 전액 사용됩니다"
+        : product.shipping_fee === 0
+          ? "무료배송"
+          : `배송비 ${formatWon(product.shipping_fee)}`,
+    },
+    // 구매 적립 안내 (2026-08-30) — 산 만큼 포인트로 돌려받는 즉각 보상. 요율은 points-config에서 관리
+    ...(!isVirtual
+      ? [{
+          Icon: Gift,
+          text: `구매 시 ${formatWon(Math.floor(unitPrice * PURCHASE_REWARD_BASE_RATE))} 적립 (기본 ${Math.round(PURCHASE_REWARD_BASE_RATE * 100)}% · 단골 최대 ${Math.round(PURCHASE_REWARD_MAX_RATE * 100)}%)`,
+        }]
+      : []),
+    ...(product.is_donation
+      ? [{
+          Icon: Heart,
+          text: product.donation_percent === 100
+            ? "이 후원금은 전액 길고양이를 위해 사용됩니다"
+            : `이 상품은 수익(이익)의 ${product.donation_percent}%가 길고양이 중성화(TNR)에 쓰여요`,
+        }]
+      : []),
+  ];
+
   return (
     <div className="pb-32">
       {/* 헤더 */}
-      <div className="px-4 pt-12 pb-2 flex items-center gap-2">
+      <div className="px-4 pt-12 pb-2 flex items-center gap-1">
         <button
           onClick={() => router.back()}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong -ml-2"
           aria-label="뒤로 가기"
         >
-          <ArrowLeft size={18} className="text-text-main" />
+          <ArrowLeft size={20} className="text-text-main" />
         </button>
-        <span className="text-[13px] font-semibold text-text-sub">{SHOP_CATEGORIES[product.category].label}</span>
+        <span className="text-[13px] text-text-sub">{SHOP_CATEGORIES[product.category].label}</span>
       </div>
 
-      {/* 이미지 슬라이더 */}
-      <div className="relative mx-4 mt-2">
+      {/* 이미지 슬라이더 — 풀폭 */}
+      <div className="relative mt-1">
         <div
           ref={sliderRef}
           onScroll={handleScroll}
-          className="flex overflow-x-auto rounded-3xl"
-          style={{ scrollSnapType: "x mandatory", aspectRatio: "1 / 1", boxShadow: "var(--shadow-fab)", scrollbarWidth: "none" }}
+          className="flex overflow-x-auto"
+          style={{ scrollSnapType: "x mandatory", aspectRatio: "1 / 1", scrollbarWidth: "none", background: "var(--color-surface-alt)" }}
         >
           {images.length > 0 ? (
             images.map((src, i) => (
@@ -116,14 +137,14 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               </div>
             ))
           ) : (
-            <div className="relative shrink-0 w-full h-full flex items-center justify-center" style={{ background: "var(--color-warm-white)" }}>
-              <PawPrint size={64} style={{ color: "rgba(176, 92, 54,0.28)" }} />
+            <div className="relative shrink-0 w-full h-full flex items-center justify-center">
+              <ImageOff size={40} style={{ color: "var(--color-text-muted)" }} />
             </div>
           )}
         </div>
         {soldOut && (
-          <div className="absolute inset-0 rounded-3xl flex items-center justify-center" style={{ background: "rgba(38,42,56,0.55)" }}>
-            <span className="text-white text-[17px] font-bold px-4 py-2 rounded-xl" style={{ background: "rgba(0,0,0,0.35)" }}>품절</span>
+          <div className="absolute inset-0 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.45)" }}>
+            <span className="text-white text-[17px] font-semibold">품절</span>
           </div>
         )}
         {images.length > 1 && (
@@ -135,7 +156,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 style={{
                   width: i === activeImage ? 16 : 6,
                   height: 6,
-                  background: i === activeImage ? "#fff" : "rgba(255,255,255,0.55)",
+                  background: i === activeImage ? "white" : "rgba(255,255,255,0.55)",
                 }}
               />
             ))}
@@ -147,8 +168,8 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       <div className="px-4 mt-5">
         {product.badge && (
           <span
-            className="inline-block text-[11px] font-bold px-2 py-1 rounded-lg text-white mb-2"
-            style={{ background: BADGE_COLORS[product.badge] ?? "var(--color-primary)" }}
+            className="inline-block text-[11px] font-medium px-1.5 py-0.5 mb-2"
+            style={{ background: "var(--color-surface)", color: "var(--color-text-sub)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-square)" }}
           >
             {product.badge}
           </span>
@@ -158,10 +179,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
         <div className="mt-2.5 flex items-baseline gap-2 flex-wrap">
           {discounted && (
-            <span
-              className="text-[13px] font-bold px-1.5 py-0.5 rounded-md text-white"
-              style={{ background: "var(--color-error)" }}
-            >
+            <span className="text-[17px] font-bold" style={{ color: "var(--color-error)" }}>
               {discountRate(product.price, product.sale_price as number)}%
             </span>
           )}
@@ -171,75 +189,38 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           <span className="text-[11px] text-text-light">부가세 포함</span>
         </div>
 
-        <div className="mt-3 flex items-center gap-1.5 text-[13px] text-text-sub">
-          <Truck size={14} />
-          {isVirtual
-            ? "배송 없음 · 후원금으로 전액 사용됩니다"
-            : product.shipping_fee === 0
-              ? "무료배송"
-              : `배송비 ${formatWon(product.shipping_fee)}`}
+        {/* 배송·적립·후원 — 헤어라인 행 */}
+        <div className="mt-4" style={{ borderTop: "1px solid var(--color-divider)", borderBottom: "1px solid var(--color-divider)" }}>
+          {infoRows.map(({ Icon, text }, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-2.5 py-2.5 text-[13px] text-text-sub leading-relaxed"
+              style={{ borderTop: i === 0 ? "none" : "1px solid var(--color-divider)" }}
+            >
+              <Icon size={16} className="shrink-0 mt-0.5 text-text-light" />
+              <span>{text}</span>
+            </div>
+          ))}
         </div>
-        {/* 구매 적립 안내 (2026-08-30) — 산 만큼 포인트로 돌려받는 즉각 보상. 요율은 points-config에서 관리 */}
-        {!isVirtual && (
-          <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[12px] font-bold"
-            style={{ background: "var(--color-sage-soft)", color: "#1E8E56" }}>
-            🎁 구매 시 {formatWon(Math.floor(unitPrice * PURCHASE_REWARD_BASE_RATE))} 적립
-            (기본 {Math.round(PURCHASE_REWARD_BASE_RATE * 100)}% · 단골 최대 {Math.round(PURCHASE_REWARD_MAX_RATE * 100)}%)
-          </div>
-        )}
-
-        {/* 후원 안내 카드 */}
-        {product.is_donation && (
-          <div
-            className="mt-4 px-4 py-3.5 rounded-2xl"
-            style={{
-              background: "var(--color-primary-softer)",
-              border: "1px solid rgba(176,92,54,0.2)",
-            }}
-          >
-            <p className="text-[13px] font-bold leading-relaxed" style={{ color: "var(--color-primary-dark)" }}>
-              {product.donation_percent === 100
-                ? "이 후원금은 전액 길고양이를 위해 사용됩니다 💛"
-                : `이 상품은 수익(이익)의 ${product.donation_percent}%가 길고양이 중성화(TNR)에 쓰여요 🐱`}
-            </p>
-            {/* 구매 → 수익 → 후원 미니 흐름 */}
-            {product.donation_percent !== 100 && (
-              <div className="mt-2.5 flex items-center justify-between">
-                {[
-                  { Icon: ShoppingCart, label: "구매" },
-                  { Icon: Coins, label: "수익 발생" },
-                  { Icon: Heart, label: "일부 후원" },
-                ].map((step, i) => (
-                  <div key={step.label} className="flex items-center flex-1 min-w-0">
-                    <div className="flex flex-col items-center gap-0.5 flex-1 min-w-0">
-                      <step.Icon size={15} style={{ color: "var(--color-primary)" }} />
-                      <span className="text-[11px] font-bold truncate" style={{ color: "var(--color-primary-dark)" }}>{step.label}</span>
-                    </div>
-                    {i < 2 && (
-                      <span className="text-[11px] shrink-0 px-0.5" style={{ color: "var(--color-text-light)" }}>→</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
 
         {/* 수량 선택 — 가상상품 제외 */}
         {!isVirtual && !soldOut && (
-          <div className="mt-5 flex items-center gap-3">
-            <span className="text-[13px] font-bold text-text-main">수량</span>
-            <div className="flex items-center gap-3 px-3 py-1.5 rounded-2xl" style={{ background: "var(--color-warm-white)" }}>
-              <button onClick={() => setQuantity((q) => Math.max(1, q - 1))} disabled={quantity <= 1} className="w-6 h-6 flex items-center justify-center disabled:opacity-30" aria-label="수량 줄이기">
+          <div className="mt-4 flex items-center gap-3">
+            <span className="text-[13px] font-semibold text-text-main">수량</span>
+            <div
+              className="flex items-center gap-3 px-2 py-1"
+              style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-input)" }}
+            >
+              <button onClick={() => setQuantity((q) => Math.max(1, q - 1))} disabled={quantity <= 1} className="w-7 h-7 flex items-center justify-center disabled:opacity-30" aria-label="수량 줄이기">
                 <Minus size={14} />
               </button>
-              <span className="text-[15px] font-medium w-5 text-center">{quantity}</span>
-              <button onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))} disabled={quantity >= product.stock} className="w-6 h-6 flex items-center justify-center disabled:opacity-30" aria-label="수량 늘리기">
+              <span className="text-[15px] font-medium w-5 text-center tabular-nums">{quantity}</span>
+              <button onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))} disabled={quantity >= product.stock} className="w-7 h-7 flex items-center justify-center disabled:opacity-30" aria-label="수량 늘리기">
                 <Plus size={14} />
               </button>
             </div>
             {product.stock <= 5 && (
-              <span className="text-[11px] font-bold" style={{ color: "var(--color-warning)" }}>{product.stock}개 남음</span>
+              <span className="text-[11px]" style={{ color: "var(--color-warning)" }}>{product.stock}개 남음</span>
             )}
           </div>
         )}
@@ -251,7 +232,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             {descLong && (
               <button
                 onClick={() => setDescOpen((o) => !o)}
-                className="mt-2 text-[13px] font-bold text-primary"
+                className="mt-2 text-[13px] font-semibold text-primary"
               >
                 {descOpen ? "접기" : "더보기"}
               </button>
@@ -261,7 +242,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
         {/* 상세 이미지 — 공급사 제공 상세페이지 (세로 분할본을 이어붙여 렌더) */}
         {PRODUCT_DETAIL_IMAGES[product.id] && (
-          <div className="mt-6 rounded-2xl overflow-hidden" style={{ border: "1px solid var(--color-divider)" }}>
+          <div className="mt-6 overflow-hidden" style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card-sm)" }}>
             {PRODUCT_DETAIL_IMAGES[product.id].map((img, i) => (
               <Image
                 key={img.src}
@@ -280,21 +261,18 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         {/* 상품정보 제공고시 — 전자상거래법·사료관리법 표시의무. 접힘 없이 항상 노출 */}
         {PRODUCT_DISCLOSURES[product.id] && (
           <div className="mt-6">
-            <h2 className="text-[13px] font-bold text-text-main mb-2">상품정보 제공고시</h2>
-            <div
-              className="rounded-2xl overflow-hidden"
-              style={{ border: "1px solid var(--color-divider)" }}
-            >
-              {PRODUCT_DISCLOSURES[product.id].rows.map((row, i) => (
+            <h2 className="text-[15px] font-bold text-text-main mb-2">상품정보 제공고시</h2>
+            <div style={{ borderTop: "1px solid var(--color-divider)" }}>
+              {PRODUCT_DISCLOSURES[product.id].rows.map((row) => (
                 <div
                   key={row.label}
-                  className="flex gap-3 px-3.5 py-2"
-                  style={{ borderTop: i === 0 ? "none" : "1px solid var(--color-divider)" }}
+                  className="flex gap-3 py-2"
+                  style={{ borderBottom: "1px solid var(--color-divider)" }}
                 >
-                  <span className="text-[11px] font-bold text-text-light w-[88px] shrink-0 pt-px">{row.label}</span>
+                  <span className="text-[11px] text-text-light w-[88px] shrink-0 pt-px">{row.label}</span>
                   <span
                     className="text-[11px] leading-relaxed"
-                    style={{ color: row.pending ? "var(--color-text-muted)" : "var(--color-text-sub)" }}
+                    style={{ color: row.pending ? "var(--color-text-light)" : "var(--color-text-sub)" }}
                   >
                     {row.value}
                   </span>
@@ -316,12 +294,12 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       {/* 토스트 */}
       {toast && (
         <div
-          className="fixed left-1/2 -translate-x-1/2 bottom-28 z-50 flex items-center gap-3 px-4 py-2.5 rounded-2xl text-white text-[13px] font-bold"
-          style={{ background: "rgba(38,42,56,0.92)" }}
+          className="fixed left-1/2 -translate-x-1/2 bottom-28 z-50 flex items-center gap-3 px-4 py-2.5 text-white text-[13px] font-medium"
+          style={{ background: "rgba(25,25,25,0.92)", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-raised)" }}
         >
           {toast.msg}
           {toast.withCartLink && (
-            <Link href="/shop/cart" className="font-bold underline underline-offset-2" style={{ color: "var(--color-primary-light)" }}>
+            <Link href="/shop/cart" className="font-semibold underline underline-offset-2 text-white">
               장바구니 보기
             </Link>
           )}
@@ -331,48 +309,29 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       {/* 하단 고정 바 */}
       <div
         className="fixed bottom-0 left-0 right-0 z-40 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
-        style={{ background: "var(--color-surface)", boxShadow: "var(--shadow-sheet)" }}
+        style={{ background: "var(--color-surface)", borderTop: "1px solid var(--color-border)" }}
       >
         {soldOut ? (
-          <button
-            disabled
-            className="w-full py-3.5 rounded-2xl text-[15px] font-bold opacity-40"
-            style={{ background: "var(--color-warm-white)", color: "var(--color-text-sub)" }}
-          >
+          <UIButton variant="secondary" size="lg" full disabled>
             품절된 상품입니다
-          </button>
+          </UIButton>
         ) : isVirtual ? (
-          <button
-            onClick={handleBuyNow}
-            disabled={busy}
-            className="w-full py-3.5 rounded-2xl text-white text-[15px] font-bold press transition-transform disabled:opacity-50"
-            style={{ background: "var(--color-primary)", boxShadow: "var(--shadow-primary)" }}
-          >
+          <UIButton size="lg" full onClick={handleBuyNow} disabled={busy}>
             후원하기
-          </button>
+          </UIButton>
         ) : (
           <div className="flex items-center gap-2">
             <div className="shrink-0 pr-1">
               <p className="text-[11px] text-text-light">총 금액</p>
-              <p className="text-[15px] font-bold text-text-main">{formatWon(unitPrice * quantity)}</p>
+              <p className="text-[15px] font-bold text-text-main tabular-nums">{formatWon(unitPrice * quantity)}</p>
             </div>
-            <button
-              onClick={handleAddToCart}
-              disabled={busy}
-              className="flex-1 py-3.5 rounded-2xl text-[13px] font-bold press transition-transform disabled:opacity-40 flex items-center justify-center gap-1.5"
-              style={{ background: "var(--color-surface)", color: "var(--color-primary)", border: "1.5px solid var(--color-primary)" }}
-            >
-              <ShoppingBag size={15} />
+            <UIButton variant="secondary" size="lg" className="flex-1" onClick={handleAddToCart} disabled={busy}>
+              <ShoppingBag size={16} />
               장바구니 담기
-            </button>
-            <button
-              onClick={handleBuyNow}
-              disabled={busy}
-              className="flex-1 py-3.5 rounded-2xl bg-primary text-white text-[13px] font-bold press transition-transform disabled:opacity-40"
-              style={{ boxShadow: "var(--shadow-primary)" }}
-            >
+            </UIButton>
+            <UIButton size="lg" className="flex-1" onClick={handleBuyNow} disabled={busy}>
               바로 구매
-            </button>
+            </UIButton>
           </div>
         )}
       </div>

@@ -52,13 +52,18 @@ export default function FollowButton({ userId, size = "sm", variant = "default",
 
   const sm = size === "sm";
   const iconSize = sm ? 12 : 14;
+  const light = variant === "light";
 
   if (loading) {
     return (
       <button
         disabled
-        className={`inline-flex items-center justify-center rounded-xl ${sm ? "px-2.5 py-1" : "px-3 py-1.5"}`}
-        style={{ background: variant === "light" ? "rgba(255,255,255,0.2)" : "var(--color-gray-50)", opacity: 0.6 }}
+        className={`inline-flex items-center justify-center ${sm ? "px-2.5 py-1" : "px-3 py-1.5"}`}
+        style={{
+          borderRadius: "var(--radius-input)",
+          background: light ? "rgba(255,255,255,0.2)" : "var(--color-gray-100)",
+          opacity: 0.6,
+        }}
       >
         <Loader2 size={iconSize} className="animate-spin text-text-sub" />
       </button>
@@ -68,32 +73,29 @@ export default function FollowButton({ userId, size = "sm", variant = "default",
   const label = following ? "팔로잉" : "팔로우";
   const Icon = following ? UserCheck : UserPlus;
 
-  // 컬러
+  // 팔로우 전: 테라코타 채움(light면 흰 채움) / 팔로잉: 회색 채움(light면 반투명 흰) — 그림자 없음
   const bg = following
-    ? variant === "light" ? "rgba(255,255,255,0.15)" : "var(--color-gray-50)"
-    : variant === "light" ? "#fff" : "var(--color-primary)";
+    ? light ? "rgba(255,255,255,0.15)" : "var(--color-gray-100)"
+    : light ? "var(--color-surface)" : "var(--color-primary)";
   const fg = following
-    ? variant === "light" ? "#fff" : "#8B5A3C"
-    : variant === "light" ? "var(--color-primary)" : "#fff";
-  const shadow = !following
-    ? variant === "light" ? "0 2px 8px rgba(0,0,0,0.2)" : "0 3px 10px rgba(176, 92, 54,0.35)"
-    : "none";
+    ? light ? "var(--color-surface)" : "var(--color-text-main)"
+    : light ? "var(--color-primary)" : "var(--color-surface)";
 
   return (
     <button
       type="button"
       onClick={toggle}
       disabled={busy}
-      className={`inline-flex items-center gap-1 rounded-xl font-bold press-strong transition-transform disabled:opacity-60 ${sm ? "px-2.5 py-1 text-[11px]" : "px-3 py-1.5 text-[13px]"}`}
+      className={`inline-flex items-center gap-1 font-semibold press-strong disabled:opacity-60 ${sm ? "px-2.5 py-1 text-[11px]" : "px-3 py-1.5 text-[13px]"}`}
       style={{
+        borderRadius: "var(--radius-input)",
         background: bg,
         color: fg,
-        boxShadow: shadow,
-        border: following ? `1px solid ${variant === "light" ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.06)"}` : "none",
+        border: following && light ? "1px solid rgba(255,255,255,0.3)" : "none",
       }}
       aria-label={label}
     >
-      {busy ? <Loader2 size={iconSize} className="animate-spin" /> : <Icon size={iconSize} strokeWidth={2.5} />}
+      {busy ? <Loader2 size={iconSize} className="animate-spin" /> : <Icon size={iconSize} strokeWidth={2} />}
       {label}
     </button>
   );

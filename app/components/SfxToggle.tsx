@@ -8,14 +8,16 @@ export default function SfxToggle({ style }: { style?: React.CSSProperties }) {
   const [muted, setMuted] = useState(() => isSfxMuted());
   return (
     <button
+      type="button"
       onClick={() => { const next = !muted; setSfxMuted(next); setMuted(next); }}
+      className="press-strong"
       style={{
-        width: 34, height: 34, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-        background: "rgba(255,255,255,0.08)", flexShrink: 0, ...style,
+        width: 34, height: 34, borderRadius: "var(--radius-full)", display: "flex", alignItems: "center", justifyContent: "center",
+        background: "var(--color-gray-100)", color: "var(--color-text-sub)", flexShrink: 0, ...style,
       }}
       aria-label={muted ? "효과음 켜기" : "효과음 끄기"}
     >
-      {muted ? <VolumeX size={16} color="white" /> : <Volume2 size={16} color="white" />}
+      {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
     </button>
   );
 }

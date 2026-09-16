@@ -11,10 +11,11 @@ interface Props {
   slug: string;           // 예: "emergency-guide"
   title: string;          // 예: "길고양이 응급 구조·응급처치 완벽 가이드"
   description: string;    // 1~2줄 요약
-  accent?: string;        // 버튼 accent (가이드 색상)
+  /** @deprecated 리디자인(2026-09-16)으로 악센트 폐지 — 받되 무시한다(호출처 호환) */
+  accent?: string;
 }
 
-export default function ShareGuideButton({ slug, title, description, accent }: Props) {
+export default function ShareGuideButton({ slug, title, description }: Props) {
   const [status, setStatus] = useState<"idle" | "copied" | "sent">("idle");
   const [loading, setLoading] = useState(false);
 
@@ -63,13 +64,10 @@ export default function ShareGuideButton({ slug, title, description, accent }: P
       type="button"
       onClick={handleShare}
       disabled={loading}
-      className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl press transition-transform disabled:opacity-70"
+      className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl press transition-transform disabled:opacity-70"
       style={{
-        backgroundColor: status === "idle" ? "#FEE500" : "var(--color-sage-soft)",
-        color: status === "idle" ? "#191919" : "#2E7D32",
-        boxShadow: status === "idle"
-          ? `0 4px 14px rgba(254,229,0,0.35)${accent ? `, 0 0 0 1px ${accent}22` : ""}`
-          : "0 2px 8px rgba(46,125,50,0.18)",
+        backgroundColor: status === "idle" ? "#FEE500" : "var(--color-gray-100)",
+        color: status === "idle" ? "var(--color-text-main)" : "var(--color-sage)",
       }}
       aria-label="카카오톡으로 가이드 공유"
     >

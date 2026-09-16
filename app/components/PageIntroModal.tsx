@@ -1,41 +1,38 @@
 "use client";
 
-// 페이지 진입 안내 모달 (범용, 2026-07-15)
-// 각 페이지 첫 방문 시 간략 설명 + 사용법. storageKey로 페이지별 1회 dismiss.
-// 지도(MapIntroModal)와 동일한 톤. 아이콘은 이모지로 받아 가볍게.
+// 페이지 진입 안내 모달 (범용, 2026-07-15 → 2026-09-16 「익숙한 동네앱」 리디자인)
+// 각 페이지 첫 방문 시 간략 설명 + 사용법. storageKey로 페이지별 1회 dismiss(쿨다운 로직 그대로).
+// 흰 면 + 헤어라인 구획, 제목 15px 600, 본문 13px text-sub, CTA는 텍스트 버튼.
+// headerEmoji·accent·accentDark·headerBg·items[].emoji는 호출처 호환을 위해 받되 표시하지 않는다.
 
 import { useEffect, useState } from "react";
-import { X } from "lucide-react";
+import { X, Check, CircleHelp } from "lucide-react";
 
 export interface PageIntroItem {
+  /** @deprecated 리디자인(2026-09-16)으로 이모지 표시 폐지 — 받되 무시한다 */
   emoji: string;
   text: React.ReactNode;
 }
 
-export default function PageIntroModal({
-  storageKey,
-  badge,
-  title,
-  headerEmoji,
-  items,
-  buttonLabel = "시작하기",
-  accent = "var(--color-primary)",
-  accentDark = "var(--color-primary-dark)",
-  headerBg = "linear-gradient(160deg, #EEF5FF 0%, #E3EEFC 100%)",
-  reopenSignal = 0,
-}: {
+export default function PageIntroModal(props: {
   storageKey: string;
   badge: string;
   title: string;
+  /** @deprecated 리디자인(2026-09-16)으로 표시 폐지 — 받되 무시한다 */
   headerEmoji: string;
   items: PageIntroItem[];
   buttonLabel?: string;
+  /** @deprecated 리디자인(2026-09-16)으로 악센트 색 폐지 — 받되 무시한다 */
   accent?: string;
+  /** @deprecated 리디자인(2026-09-16)으로 악센트 색 폐지 — 받되 무시한다 */
   accentDark?: string;
+  /** @deprecated 리디자인(2026-09-16)으로 헤더 틴트 폐지 — 받되 무시한다 */
   headerBg?: string;
   /** 값이 바뀌면(도움말 버튼 클릭 등) 안내창을 강제로 다시 연다 */
   reopenSignal?: number;
 }) {
+  // headerEmoji·accent·accentDark·headerBg·items[].emoji는 의도적으로 읽지 않는다
+  const { storageKey, badge, title, items, buttonLabel = "시작하기", reopenSignal = 0 } = props;
   const [show, setShow] = useState(false);
 
   // 4일에 한 번만 노출 (매번 피로 방지). 쿨다운은 계정별로 독립 —
@@ -71,23 +68,23 @@ export default function PageIntroModal({
 
   const close = () => setShow(false); // 닫아도 다음 방문 때 다시 노출
 
-  // 닫힌 상태에선 좌하단에 작은 "?" 도움말 버튼 → 언제든 안내 다시 보기
+  // 닫힌 상태에선 좌하단에 작은 도움말 버튼 → 언제든 안내 다시 보기 (원형 아이콘 버튼 — full 허용)
   if (!show) {
     return (
       <button
         onClick={() => setShow(true)}
-        className="fixed z-40 w-8 h-8 rounded-full flex items-center justify-center text-[15px] font-bold press-strong transition-transform"
+        className="fixed z-40 w-8 h-8 rounded-full flex items-center justify-center press-strong transition-transform"
         style={{
           left: 12,
           bottom: "calc(5.5rem + env(safe-area-inset-bottom))",
-          background: "rgba(255,255,255,0.95)",
+          background: "var(--color-surface)",
           color: "var(--color-text-light)",
           boxShadow: "var(--shadow-raised)",
-          border: "1px solid var(--color-divider)",
+          border: "1px solid var(--color-border)",
         }}
         aria-label="이용안내 다시 보기"
       >
-        ?
+        <CircleHelp size={18} />
       </button>
     );
   }
@@ -95,57 +92,54 @@ export default function PageIntroModal({
   return (
     <div
       className="fixed inset-0 z-[70] flex items-center justify-center p-5"
-      style={{ background: "rgba(15,20,30,0.55)", backdropFilter: "blur(2px)" }}
+      style={{ background: "rgba(0,0,0,0.5)" }}
       onClick={close}
     >
       <div
-        className="relative w-full max-w-sm rounded-[28px] overflow-hidden"
-        style={{ background: "#fff", boxShadow: "var(--shadow-modal)" }}
+        className="relative w-full max-w-sm overflow-hidden"
+        style={{
+          background: "var(--color-surface)",
+          borderRadius: "var(--radius-modal)",
+          boxShadow: "var(--shadow-modal)",
+        }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-6 pt-6 pb-4 text-center" style={{ background: headerBg }}>
-          <div
-            className="w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-3 text-[28px]"
-            style={{ background: "rgba(255,255,255,0.7)" }}
-          >
-            {headerEmoji}
-          </div>
-          <p className="text-[11px] font-bold tracking-[0.15em] mb-1" style={{ color: accentDark }}>
-            {badge}
-          </p>
-          <h2 className="text-[17px] font-bold text-text-main tracking-tight text-balance">
+        <div className="px-5 pt-5 pb-4 pr-12">
+          <p className="text-[11px] font-medium text-text-light mb-1">{badge}</p>
+          <h2 className="text-[15px] font-semibold text-text-main leading-snug text-balance">
             {title}
           </h2>
         </div>
 
-        <div className="px-6 py-5">
+        <div className="px-5 pb-5">
           <div className="flex flex-col gap-3">
             {items.map((it, i) => (
-              <div key={i} className="flex gap-3">
-                <span className="text-[20px] shrink-0 leading-tight">{it.emoji}</span>
+              <div key={i} className="flex gap-2.5">
+                <Check size={16} className="shrink-0 mt-0.5" style={{ color: "var(--color-text-light)" }} />
                 <p className="text-[13px] leading-[1.65] text-text-sub">{it.text}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="px-6 pb-6">
-          <button
-            onClick={close}
-            className="w-full py-3 rounded-2xl text-[15px] font-bold text-white press transition-transform"
-            style={{ background: `linear-gradient(135deg, ${accent} 0%, ${accentDark} 100%)` }}
-          >
-            {buttonLabel}
-          </button>
-        </div>
+        <button
+          onClick={close}
+          className="w-full h-12 text-[15px] font-semibold press transition-transform"
+          style={{
+            background: "transparent",
+            color: "var(--color-primary)",
+            borderTop: "1px solid var(--color-border)",
+          }}
+        >
+          {buttonLabel}
+        </button>
 
         <button
           onClick={close}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center press-strong"
-          style={{ background: "rgba(255,255,255,0.6)" }}
+          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center press-strong"
           aria-label="닫기"
         >
-          <X size={16} className="text-text-sub" />
+          <X size={18} style={{ color: "var(--color-text-light)" }} />
         </button>
       </div>
     </div>

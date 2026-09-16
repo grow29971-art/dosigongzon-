@@ -66,8 +66,8 @@ export default function BlockUserButton({ userId, userName, size = "sm", onChang
     return (
       <button
         disabled
-        className={`inline-flex items-center justify-center rounded-xl ${sm ? "px-2.5 py-1" : "px-3 py-1.5"}`}
-        style={{ background: "var(--color-gray-50)", opacity: 0.6 }}
+        className={`inline-flex items-center justify-center ${sm ? "px-2.5 py-1" : "px-3 py-1.5"}`}
+        style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-input)", opacity: 0.6 }}
       >
         <Loader2 size={iconSize} className="animate-spin text-text-sub" />
       </button>
@@ -76,20 +76,24 @@ export default function BlockUserButton({ userId, userName, size = "sm", onChang
 
   const Icon = blocked ? ShieldOff : Ban;
   const label = blocked ? "차단 해제" : "차단";
-  const bg = blocked ? "var(--color-gray-50)" : "var(--color-error-soft)";
-  const fg = blocked ? "#A38E7A" : "#B84545";
-  const border = blocked ? "1px solid var(--color-divider)" : "1px solid #E8C5C5";
+  // 헤어라인 버튼 — 차단은 error 글자, 해제는 회색 글자
+  const fg = blocked ? "var(--color-text-sub)" : "var(--color-error)";
 
   return (
     <button
       type="button"
       onClick={toggle}
       disabled={busy}
-      className={`inline-flex items-center gap-1 rounded-xl font-bold press-strong transition-transform disabled:opacity-60 ${sm ? "px-2.5 py-1 text-[11px]" : "px-3 py-1.5 text-[13px]"}`}
-      style={{ background: bg, color: fg, border }}
+      className={`inline-flex items-center gap-1 font-semibold press-strong transition-transform disabled:opacity-60 ${sm ? "px-2.5 py-1 text-[11px]" : "px-3 py-1.5 text-[13px]"}`}
+      style={{
+        background: "var(--color-surface)",
+        color: fg,
+        border: "1px solid var(--color-border)",
+        borderRadius: "var(--radius-input)",
+      }}
       aria-label={label}
     >
-      {busy ? <Loader2 size={iconSize} className="animate-spin" /> : <Icon size={iconSize} strokeWidth={2.5} />}
+      {busy ? <Loader2 size={iconSize} className="animate-spin" /> : <Icon size={iconSize} strokeWidth={2} />}
       {label}
     </button>
   );

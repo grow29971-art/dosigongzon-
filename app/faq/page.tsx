@@ -64,8 +64,6 @@ interface FaqCategory {
   id: string;
   label: string;
   Icon: typeof AlertCircle;
-  color: string;
-  bg: string;
   items: Faq[];
 }
 
@@ -74,8 +72,6 @@ const CATEGORIES: FaqCategory[] = [
     id: "discover",
     label: "길고양이를 발견했어요",
     Icon: AlertCircle,
-    color: "var(--color-primary)",
-    bg: "rgba(176, 92, 54,0.12)",
     items: [
       {
         q: "길고양이를 처음 발견했어요. 어떻게 해야 하나요?",
@@ -157,8 +153,6 @@ const CATEGORIES: FaqCategory[] = [
     id: "kitten",
     label: "새끼고양이를 발견했어요",
     Icon: Baby,
-    color: "var(--color-care)",
-    bg: "rgba(232,148,10,0.14)",
     items: [
       {
         q: "혼자 있는 새끼고양이를 발견했어요. 데려가도 되나요?",
@@ -218,8 +212,6 @@ const CATEGORIES: FaqCategory[] = [
     id: "tnr",
     label: "TNR(중성화)이 궁금해요",
     Icon: Scissors,
-    color: "var(--color-primary-dark)",
-    bg: "rgba(168,104,74,0.12)",
     items: [
       {
         q: "TNR이 정확히 뭔가요? 왜 필요한가요?",
@@ -275,8 +267,6 @@ const CATEGORIES: FaqCategory[] = [
     id: "shelter",
     label: "임시보호와 입양",
     Icon: Home,
-    color: "var(--color-sage)",
-    bg: "rgba(34,163,102,0.12)",
     items: [
       {
         q: "임시보호와 입양의 차이가 뭔가요?",
@@ -332,8 +322,6 @@ const CATEGORIES: FaqCategory[] = [
     id: "health",
     label: "아프거나 다친 고양이",
     Icon: HeartPulse,
-    color: "var(--color-error)",
-    bg: "rgba(240,68,82,0.12)",
     items: [
       {
         q: "길고양이가 자주 걸리는 병은 뭔가요?",
@@ -393,8 +381,6 @@ const CATEGORIES: FaqCategory[] = [
     id: "law",
     label: "법·신고가 궁금해요",
     Icon: Scale,
-    color: "var(--color-gray-600)",
-    bg: "rgba(107,118,132,0.12)",
     items: [
       {
         q: "길집사 활동은 합법인가요?",
@@ -440,8 +426,6 @@ const CATEGORIES: FaqCategory[] = [
     id: "caretaker",
     label: "길집사 활동",
     Icon: Users,
-    color: "var(--color-text-sub)",
-    bg: "rgba(93,86,75,0.10)",
     items: [
       {
         q: "처음 길집사를 시작하려는데, 어떻게 해야 하나요?",
@@ -501,8 +485,6 @@ const CATEGORIES: FaqCategory[] = [
     id: "app",
     label: "도시공존 사용법",
     Icon: Smartphone,
-    color: "#6B8DAE",
-    bg: "rgba(107,141,174,0.14)",
     items: [
       {
         q: "도시공존은 어떤 앱인가요?",
@@ -649,15 +631,16 @@ export default function FaqPage() {
         }}
       />
 
-      <main className="mx-auto w-full max-w-2xl px-4 pb-24 pt-3">
+      <main className="mx-auto w-full max-w-2xl px-4 pb-24 pt-3 bg-surface">
         {/* 헤더 */}
         <div className="mb-6 flex items-center gap-2">
           <Link
             href="/"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm"
+            className="flex h-9 w-9 items-center justify-center rounded-full press-strong"
+            style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)" }}
             aria-label="홈으로"
           >
-            <ArrowLeft size={18} color="var(--color-text-sub)" />
+            <ArrowLeft size={18} color="var(--color-text-main)" />
           </Link>
           <p className="text-[13px]" style={{ color: "var(--color-text-light)" }}>
             도시공존 / 자주 묻는 질문
@@ -684,11 +667,11 @@ export default function FaqPage() {
         {/* 카테고리 목차 */}
         <nav
           aria-label="카테고리 목차"
-          className="mb-7 rounded-2xl border p-4"
-          style={{ borderColor: "rgba(176, 92, 54,0.18)", background: "rgba(255,253,250,0.7)" }}
+          className="mb-7 p-4"
+          style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
         >
           <p
-            className="mb-3 text-[13px] font-bold tracking-wide"
+            className="mb-3 text-[13px] font-semibold"
             style={{ color: "var(--color-text-light)" }}
           >
             카테고리
@@ -700,10 +683,10 @@ export default function FaqPage() {
                 <li key={c.id}>
                   <a
                     href={`#${c.id}`}
-                    className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] font-semibold transition-colors press"
-                    style={{ background: c.bg, color: c.color }}
+                    className="flex items-center gap-2 px-3 py-2 text-[13px] font-medium transition-colors press"
+                    style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)", borderRadius: "var(--radius-input)" }}
                   >
-                    <Icon size={15} />
+                    <Icon size={15} style={{ color: "var(--color-text-sub)" }} />
                     {c.label}
                   </a>
                 </li>
@@ -718,22 +701,17 @@ export default function FaqPage() {
           return (
             <section key={c.id} id={c.id} className="mb-8 scroll-mt-4">
               <div className="mb-3 flex items-center gap-2">
-                <span
-                  className="flex h-8 w-8 items-center justify-center rounded-full"
-                  style={{ background: c.bg }}
-                >
-                  <Icon size={17} color={c.color} />
-                </span>
+                <Icon size={18} style={{ color: "var(--color-text-sub)" }} />
                 <h2 className="text-[20px] font-bold" style={{ color: "var(--color-text-main)" }}>
                   {c.label}
                 </h2>
               </div>
-              <div className="space-y-2">
+              <div style={{ borderTop: "1px solid var(--color-divider)" }}>
                 {c.items.map((it, idx) => (
                   <details
                     key={idx}
-                    className="group rounded-2xl border bg-white px-4 py-3 transition-shadow open:shadow-md"
-                    style={{ borderColor: "rgba(176, 92, 54,0.15)" }}
+                    className="group px-1 py-3"
+                    style={{ borderBottom: "1px solid var(--color-divider)" }}
                   >
                     <summary
                       className="flex cursor-pointer list-none items-start justify-between gap-3 text-[15px] font-semibold leading-snug"
@@ -742,7 +720,8 @@ export default function FaqPage() {
                       <span className="flex-1">Q. {it.q}</span>
                       <ChevronDown
                         size={18}
-                        className="mt-0.5 shrink-0 text-[var(--color-primary-dark)] transition-transform group-open:rotate-180"
+                        className="mt-0.5 shrink-0 transition-transform group-open:rotate-180"
+                        style={{ color: "var(--color-text-light)" }}
                       />
                     </summary>
                     <div
@@ -760,11 +739,8 @@ export default function FaqPage() {
 
         {/* 추가 도움 CTA */}
         <section
-          className="mt-10 rounded-2xl p-5"
-          style={{
-            background: "var(--color-primary-softer)",
-            border: "1px solid rgba(176, 92, 54,0.18)",
-          }}
+          className="mt-10 p-5"
+          style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
         >
           <h3
             className="mb-2 text-[17px] font-bold"
@@ -781,22 +757,22 @@ export default function FaqPage() {
           <div className="flex flex-wrap gap-2">
             <Link
               href="/protection"
-              className="rounded-full px-4 py-2 text-[13px] font-bold text-white shadow-sm press"
-              style={{ background: "var(--color-primary)" }}
+              className="px-4 h-10 inline-flex items-center text-[13px] font-semibold press"
+              style={{ background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
             >
               보호 지침 전체 보기
             </Link>
             <Link
               href="/guide"
-              className="rounded-full border bg-white px-4 py-2 text-[13px] font-bold press"
-              style={{ borderColor: "rgba(176, 92, 54,0.3)", color: "var(--color-primary-dark)" }}
+              className="px-4 h-10 inline-flex items-center text-[13px] font-semibold press"
+              style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)", borderRadius: "var(--radius-input)" }}
             >
               앱 사용 가이드
             </Link>
             <a
               href="mailto:grow29971@gmail.com"
-              className="rounded-full border bg-white px-4 py-2 text-[13px] font-bold press"
-              style={{ borderColor: "rgba(176, 92, 54,0.3)", color: "var(--color-primary-dark)" }}
+              className="px-4 h-10 inline-flex items-center text-[13px] font-semibold press"
+              style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)", borderRadius: "var(--radius-input)" }}
             >
               메일로 문의
             </a>

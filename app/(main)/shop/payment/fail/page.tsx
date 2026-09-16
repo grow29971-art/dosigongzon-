@@ -30,12 +30,7 @@ function FailContent() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] px-6 text-center">
-      <div
-        className="w-16 h-16 rounded-full flex items-center justify-center mb-5"
-        style={{ background: "rgba(216,85,85,0.1)" }}
-      >
-        <XCircle size={32} style={{ color: "var(--color-error)" }} />
-      </div>
+      <XCircle size={40} className="mb-5" style={{ color: "var(--color-error)" }} />
       <h1 className="text-[20px] font-bold text-text-main mb-2">결제가 완료되지 않았어요</h1>
       <p className="text-[13px] text-text-sub leading-relaxed mb-2 max-w-[300px]">{friendlyMessage}</p>
       {code && code !== "PAY_PROCESS_CANCELED" && (
@@ -44,12 +39,12 @@ function FailContent() {
       <div className="flex flex-col gap-2 w-full max-w-[280px] mt-4">
         <Link
           href="/shop/checkout"
-          className="py-3.5 rounded-2xl bg-primary text-white text-[15px] font-bold"
-          style={{ boxShadow: "var(--shadow-primary)" }}
+          className="press inline-flex items-center justify-center h-12 text-[16px] font-semibold text-white"
+          style={{ background: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
         >
           다시 시도하기
         </Link>
-        <Link href="/shop" className="py-3 text-[13px] font-bold text-text-sub">
+        <Link href="/shop" className="py-3 text-[13px] font-semibold text-text-sub">
           쇼핑 홈으로
         </Link>
       </div>

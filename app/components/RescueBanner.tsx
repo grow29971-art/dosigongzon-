@@ -6,6 +6,7 @@ import { AlertTriangle, ChevronRight } from "lucide-react";
 /**
  * 긴급 상태 고양이가 있을 때만 홈에 표시되는 배너.
  * Scarcity/Urgency 원리 — 제한적으로 노출되어야 효과.
+ * 2026-09-16 「익숙한 동네앱」 리디자인: 붉은 그라디언트 → 흰 면 + 헤어라인, 긴급만 error 의미색.
  */
 export default function RescueBanner({ count }: { count: number }) {
   if (count <= 0) return null;
@@ -16,33 +17,24 @@ export default function RescueBanner({ count }: { count: number }) {
       className="block mb-5 press transition-transform"
     >
       <div
-        className="rounded-2xl px-4 py-3 flex items-center gap-3 bg-[linear-gradient(135deg,#FFEBEB_0%,#FFD9D9_100%)] dark:bg-[linear-gradient(135deg,#3A1818_0%,#4A1F1F_100%)] border-[1.5px] border-[#D85555] dark:border-[#6B2828]"
+        className="px-4 flex items-center gap-3"
         style={{
-          boxShadow: "var(--shadow-fab)",
+          minHeight: 64,
+          background: "var(--color-surface)",
+          borderRadius: "var(--radius-card)",
+          border: "1px solid var(--color-border)",
         }}
       >
-        <div
-          className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 relative"
-          style={{
-            background: "#E85555",
-            boxShadow: "var(--shadow-raised)",
-          }}
-        >
-          <AlertTriangle size={18} color="#fff" strokeWidth={2.5} />
-          <span
-            className="absolute -top-1 -right-1 w-3 h-3 rounded-full animate-pulse"
-            style={{ background: "#FF3838", border: "1.5px solid #fff" }}
-          />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-bold tracking-[0.12em] text-[#B84545] dark:text-[#FF9090]">
+        <AlertTriangle size={22} className="shrink-0" style={{ color: "var(--color-error)" }} strokeWidth={2} />
+        <div className="flex-1 min-w-0 py-3">
+          <p className="text-[11px] font-semibold" style={{ color: "var(--color-error)" }}>
             URGENT · 지금 돌봄 필요
           </p>
-          <p className="text-[15px] font-bold tracking-tight leading-tight mt-0.5 text-[#3A1F1F] dark:text-[#FFE0E0]">
-            위험 상태 아이 <span className="text-[#D85555] dark:text-[#FF8585]">{count}마리</span>가 기다리고 있어요
+          <p className="text-[15px] font-semibold text-text-main leading-snug mt-0.5">
+            위험 상태 아이 <span style={{ color: "var(--color-error)" }}>{count}마리</span>가 기다리고 있어요
           </p>
         </div>
-        <ChevronRight size={18} className="text-[#D85555] dark:text-[#FF8585]" />
+        <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
       </div>
     </Link>
   );

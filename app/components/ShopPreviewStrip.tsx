@@ -1,9 +1,10 @@
 "use client";
 
 // 홈 쇼핑 프리뷰 스트립 — 2026-07-21 쇼핑 동선 회의 채택안 (추가 전용, 삭제 없음)
-// 배치: 케어 섹션(다마고치·내 아이들) 뒤 — 코어퍼널(돌봄) 위계를 침범하지 않는다.
+// 배치: 케어 섹션(내 아이들) 뒤 — 코어퍼널(돌봄) 위계를 침범하지 않는다.
 // 결제 하드락 기간이라 CTA는 구매가 아닌 찜(♡, localStorage). 상품 없으면 렌더 안 함.
-// 롤백: HomeAuthed의 SHOW_SHOP_PREVIEW 플래그 한 줄.
+// 롤백: HomeAuthed의 SHOP_PREVIEW 플래그 한 줄.
+// 2026-09-16 「익숙한 동네앱」 리디자인: 상품 사진 8px 둥근 사각 + 헤어라인, 그림자·이모지 없음.
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -40,14 +41,13 @@ export default function ShopPreviewStrip() {
 
   return (
     <div className="mb-5">
-      <div className="flex items-center justify-between mb-3 px-1">
-        <h2 className="text-[17px] font-bold text-text-main tracking-tight">
-          곧 열리는 상점 🛍️
+      <div className="flex items-center justify-between mb-2 px-1">
+        <h2 className="text-[17px] font-bold text-text-main">
+          곧 열리는 상점
         </h2>
         <Link
           href="/shop"
-          className="flex items-center gap-0.5 text-[13px] font-bold"
-          style={{ color: "var(--color-primary)" }}
+          className="flex items-center gap-0.5 text-[13px] font-medium text-text-light"
         >
           전체보기 <ChevronRight size={13} />
         </Link>
@@ -67,13 +67,18 @@ export default function ShopPreviewStrip() {
             >
               <div
                 className="relative w-full overflow-hidden"
-                style={{ aspectRatio: "1 / 1", borderRadius: "var(--radius-card-sm)", background: "var(--color-surface)", boxShadow: "var(--shadow-card)" }}
+                style={{
+                  aspectRatio: "1 / 1",
+                  borderRadius: "var(--radius-card-sm)",
+                  background: "var(--color-surface-alt)",
+                  border: "1px solid var(--color-border)",
+                }}
               >
                 {thumb ? (
                   <Image src={thumb} alt={p.name} fill className="object-cover" sizes="124px" />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <PawPrint size={26} style={{ color: "var(--color-primary-soft)" }} />
+                    <PawPrint size={26} style={{ color: "var(--color-text-muted)" }} />
                   </div>
                 )}
                 <button
@@ -81,24 +86,24 @@ export default function ShopPreviewStrip() {
                   onClick={(e) => toggle(e, p.id)}
                   aria-label={wished ? "찜 해제" : "찜하기"}
                   className="absolute bottom-1.5 right-1.5 w-8 h-8 rounded-full flex items-center justify-center press-strong transition-transform"
-                  style={{ background: "rgba(255,255,255,0.92)", boxShadow: "var(--shadow-raised)" }}
+                  style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
                 >
                   <Heart
                     size={15}
                     fill={wished ? "var(--color-like)" : "none"}
-                    style={{ color: wished ? "var(--color-like)" : "var(--color-text-light)" }}
+                    style={{ color: wished ? "var(--color-like)" : "var(--color-text-sub)" }}
                   />
                 </button>
               </div>
-              <p className="text-[13px] font-bold text-text-main mt-1.5 leading-snug truncate">{p.name}</p>
-              <p className="text-[13px] font-bold text-text-main">{price.toLocaleString()}원</p>
+              <p className="text-[13px] text-text-main mt-1.5 leading-snug truncate">{p.name}</p>
+              <p className="text-[15px] font-bold text-text-main">{price.toLocaleString()}원</p>
             </Link>
           );
         })}
       </div>
 
       <p className="text-[11px] text-text-light mt-1.5 px-1">
-        아직 오픈 전이에요 — 찜해두시면 오픈 소식을 가장 먼저 알려드릴게요
+        아직 오픈 전이에요 — 찜해두면 오픈 소식을 먼저 알려드릴게요
       </p>
     </div>
   );

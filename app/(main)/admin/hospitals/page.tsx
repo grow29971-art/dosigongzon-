@@ -1,17 +1,16 @@
 "use client";
 
+// 병원 관리 (admin 전용) — 2026-09-16 「익숙한 동네앱」 리디자인:
+// 카드 목록 → 시/군별 헤어라인 섹션 + 구분선 리스트, 편집 폼 헤어라인 섹션, 회색 태그, 원형 FAB → 헤더 버튼. 토큰만.
+
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
   Plus,
   Pencil,
   Trash2,
   Save,
   X,
   Loader2,
-  Shield,
   Pin,
   Stethoscope,
   RefreshCw,
@@ -28,6 +27,11 @@ import {
   type RescueHospitalInput,
 } from "@/lib/hospitals-repo";
 import { createClient } from "@/lib/supabase/client";
+import UIButton from "@/app/components/ui/Button";
+import {
+  AdminForbidden, AdminHeader, AdminLoading, AdminPage, AdminSection, AdminTag, FieldLabel, HairlineButton,
+  inputCls, inputStyle,
+} from "../_ui";
 
 const EMPTY: RescueHospitalInput = {
   name: "",
@@ -44,7 +48,6 @@ const EMPTY: RescueHospitalInput = {
 };
 
 export default function AdminHospitalsPage() {
-  const router = useRouter();
   const [authChecked, setAuthChecked] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [items, setItems] = useState<RescueHospital[]>([]);
@@ -182,142 +185,67 @@ export default function AdminHospitalsPage() {
     }
   };
 
-  if (!authChecked || loading) {
-    return (
-      <div className="flex justify-center pt-20">
-        <Loader2 size={28} className="animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="px-5 pt-20 text-center">
-        <Shield size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[15px] font-bold text-text-main mb-1">
-          관리자 전용 페이지예요
-        </p>
-        <Link
-          href="/mypage"
-          className="inline-block mt-4 text-[13px] font-bold text-primary"
-        >
-          마이페이지로 돌아가기
-        </Link>
-      </div>
-    );
-  }
+  if (!authChecked || loading) return <AdminLoading />;
+  if (!isAdmin) return <AdminForbidden />;
 
   const groups = groupByCityDistrict(items);
+  const syncFailed = !!syncResult && (syncResult.startsWith("오류") || syncResult.startsWith("동기화 실패"));
 
   return (
-    <div className="px-4 pt-14 pb-24">
-      {/* 헤더 */}
-      <div className="mb-5">
-        <button
-          onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 press-strong transition-transform"
-        >
-          <ArrowLeft size={14} />
-          마이페이지
-        </button>
-        <div className="flex items-end justify-between">
-          <div>
-            <div className="flex items-baseline gap-2 mb-1">
-              <h1 className="text-[24px] font-bold text-text-main tracking-tight">
-                병원 관리
-              </h1>
-              <span className="text-[11px] font-semibold text-text-light">
-                Admin · Hospitals
-              </span>
-            </div>
-            <p className="text-[13px] text-text-sub">
-              구조동물 치료 도움병원을 추가·수정·삭제할 수 있어요
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <button
+    <AdminPage>
+      <AdminHeader
+        title="병원 관리"
+        description="구조동물 치료 도움병원을 추가·수정·삭제할 수 있어요"
+        back="/mypage"
+        backLabel="마이페이지"
+        right={
+          <div className="flex gap-1.5 shrink-0">
+            <HairlineButton
               onClick={handleSync}
               disabled={syncing}
-              className="w-11 h-11 rounded-full flex items-center justify-center press-strong transition-transform disabled:opacity-40"
-              style={{
-                backgroundColor: "#22B573",
-                boxShadow: "var(--shadow-fab)",
-              }}
+              icon={syncing ? <Loader2 size={14} className="animate-spin" /> : <Database size={14} />}
               aria-label="공공데이터 동기화"
             >
-              {syncing ? (
-                <Loader2 size={18} color="#fff" className="animate-spin" />
-              ) : (
-                <Database size={18} color="#fff" strokeWidth={2.5} />
-              )}
-            </button>
-            <button
-              onClick={handleCreate}
-              className="w-11 h-11 rounded-full bg-primary flex items-center justify-center press-strong transition-transform"
-              style={{ boxShadow: "var(--shadow-primary)" }}
-              aria-label="새 병원 추가"
-            >
-              <Plus size={20} color="#fff" strokeWidth={2.5} />
-            </button>
+              동기화
+            </HairlineButton>
+            <UIButton size="sm" onClick={handleCreate}>
+              <Plus size={14} /> 추가
+            </UIButton>
           </div>
-        </div>
-      </div>
+        }
+      />
 
       {/* 동기화 상태 */}
       {(syncing || syncResult) && (
-        <div
-          className="mb-4 px-4 py-3"
-          style={{
-            background: syncing ? "rgba(34,181,115,0.08)" : syncResult?.startsWith("오류") || syncResult?.startsWith("동기화 실패") ? "rgba(216,85,85,0.08)" : "rgba(34,181,115,0.08)",
-            borderRadius: "var(--radius-card-sm)",
-            border: `1px solid ${syncing ? "rgba(34,181,115,0.15)" : syncResult?.startsWith("오류") || syncResult?.startsWith("동기화 실패") ? "rgba(216,85,85,0.15)" : "rgba(34,181,115,0.15)"}`,
-          }}
+        <p
+          className="mb-3 flex items-center gap-2 text-[13px] font-semibold"
+          style={{ color: syncing ? "var(--color-text-sub)" : syncFailed ? "var(--color-error)" : "var(--color-sage)" }}
         >
-          <div className="flex items-center gap-2">
-            {syncing ? (
-              <>
-                <RefreshCw size={14} className="animate-spin" style={{ color: "#22B573" }} />
-                <span className="text-[13px] font-bold" style={{ color: "#22B573" }}>
-                  전국 동물병원 검색 중... (1~2분 소요)
-                </span>
-              </>
-            ) : (
-              <>
-                <Database size={14} style={{ color: syncResult?.startsWith("오류") || syncResult?.startsWith("동기화 실패") ? "#D85555" : "#22B573" }} />
-                <span className="text-[13px] font-bold" style={{ color: syncResult?.startsWith("오류") || syncResult?.startsWith("동기화 실패") ? "#D85555" : "#22B573" }}>
-                  {syncResult}
-                </span>
-              </>
-            )}
-          </div>
-        </div>
+          {syncing ? (
+            <>
+              <RefreshCw size={14} className="animate-spin" />
+              전국 동물병원 검색 중... (1~2분 소요)
+            </>
+          ) : (
+            <>
+              <Database size={14} />
+              {syncResult}
+            </>
+          )}
+        </p>
       )}
 
       {/* 편집 폼 */}
       {editingId && (
-        <div
-          className="mb-5 p-4"
-          style={{
-            background: "#FFFFFF",
-            borderRadius: "var(--radius-card)",
-            boxShadow: "var(--shadow-card)",
-            border: "1.5px solid rgba(176, 92, 54,0.2)",
-          }}
-        >
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[15px] font-bold text-text-main">
-              {editingId === "new" ? "새 병원 추가" : "병원 수정"}
-            </h2>
-            <button
-              onClick={handleCancel}
-              className="w-7 h-7 rounded-lg flex items-center justify-center press-strong"
-              style={{ backgroundColor: "var(--color-gray-100)" }}
-            >
-              <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
+        <AdminSection
+          title={editingId === "new" ? "새 병원 추가" : "병원 수정"}
+          right={
+            <button type="button" onClick={handleCancel} className="w-7 h-7 flex items-center justify-center text-text-light" aria-label="닫기">
+              <X size={16} />
             </button>
-          </div>
-
-          <Label required>병원명</Label>
+          }
+        >
+          <FieldLabel>병원명 *</FieldLabel>
           <Input
             value={draft.name}
             onChange={(v) => setDraft((d) => ({ ...d, name: v }))}
@@ -326,7 +254,7 @@ export default function AdminHospitalsPage() {
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <Label required>시/도</Label>
+              <FieldLabel>시/도 *</FieldLabel>
               <Input
                 value={draft.city}
                 onChange={(v) => setDraft((d) => ({ ...d, city: v }))}
@@ -334,7 +262,7 @@ export default function AdminHospitalsPage() {
               />
             </div>
             <div>
-              <Label required>시/군/구</Label>
+              <FieldLabel>시/군/구 *</FieldLabel>
               <Input
                 value={draft.district}
                 onChange={(v) => setDraft((d) => ({ ...d, district: v }))}
@@ -343,7 +271,7 @@ export default function AdminHospitalsPage() {
             </div>
           </div>
 
-          <Label>상세 주소</Label>
+          <FieldLabel>상세 주소</FieldLabel>
           <Input
             value={draft.address ?? ""}
             onChange={(v) => setDraft((d) => ({ ...d, address: v || null }))}
@@ -352,7 +280,7 @@ export default function AdminHospitalsPage() {
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <Label>전화번호</Label>
+              <FieldLabel>전화번호</FieldLabel>
               <Input
                 value={draft.phone ?? ""}
                 onChange={(v) => setDraft((d) => ({ ...d, phone: v || null }))}
@@ -360,7 +288,7 @@ export default function AdminHospitalsPage() {
               />
             </div>
             <div>
-              <Label>영업시간</Label>
+              <FieldLabel>영업시간</FieldLabel>
               <Input
                 value={draft.hours ?? ""}
                 onChange={(v) => setDraft((d) => ({ ...d, hours: v || null }))}
@@ -369,25 +297,21 @@ export default function AdminHospitalsPage() {
             </div>
           </div>
 
-          <Label>태그 (쉼표로 구분)</Label>
+          <FieldLabel>태그 (쉼표로 구분)</FieldLabel>
           <Input
             value={tagsInput}
             onChange={setTagsInput}
             placeholder="예: TNR 협력, 24시 응급, 길고양이 할인"
           />
 
-          <Label>특이사항 · 메모</Label>
+          <FieldLabel>특이사항 · 메모</FieldLabel>
           <textarea
             value={draft.note ?? ""}
             onChange={(e) => setDraft((d) => ({ ...d, note: e.target.value || null }))}
             rows={3}
             placeholder="구조자/길집사에게 도움될 정보 (할인 조건, 응급 대응 가능 시간 등)"
-            className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-3 resize-none"
-            style={{
-              backgroundColor: "var(--color-gray-50)",
-              color: "#2A2A28",
-              border: "1px solid var(--color-border)",
-            }}
+            className={`${inputCls} mb-3 resize-none`}
+            style={inputStyle}
           />
 
           <label className="flex items-center gap-2 mb-3 cursor-pointer">
@@ -403,167 +327,83 @@ export default function AdminHospitalsPage() {
           </label>
 
           {error && (
-            <p className="text-[11px] mb-2" style={{ color: "#B84545" }}>
-              {error}
-            </p>
+            <p className="text-[13px] mb-2" style={{ color: "var(--color-error)" }}>{error}</p>
           )}
 
           <div className="flex gap-2">
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 press-strong transition-all"
-            >
-              {saving ? (
-                <Loader2 size={14} className="animate-spin" />
-              ) : (
-                <Save size={14} />
-              )}
+            <UIButton onClick={handleSave} disabled={saving} className="flex-1">
+              {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
               저장
-            </button>
-            <button
-              onClick={handleCancel}
-              disabled={saving}
-              className="px-5 py-2.5 rounded-xl text-[13px] font-bold"
-              style={{
-                backgroundColor: "var(--color-gray-100)",
-                color: "#A38E7A",
-              }}
-            >
-              취소
-            </button>
+            </UIButton>
+            <UIButton variant="secondary" onClick={handleCancel} disabled={saving}>취소</UIButton>
           </div>
-        </div>
+        </AdminSection>
       )}
 
       {/* 병원 목록 (시/군별 그루핑) */}
       {items.length === 0 ? (
-        <div
-          className="py-10 text-center"
-          style={{
-            background: "#FFFFFF",
-            borderRadius: "var(--radius-card-sm)",
-            border: "1px solid var(--color-divider)",
-          }}
-        >
-          <Stethoscope
-            size={36}
-            strokeWidth={1.2}
-            className="text-text-light mx-auto mb-2"
-          />
-          <p className="text-[13px] text-text-sub">
-            아직 등록된 병원이 없어요. + 버튼으로 추가하세요.
-          </p>
-        </div>
+        <AdminSection>
+          <div className="py-8 text-center">
+            <Stethoscope size={36} strokeWidth={1.2} className="text-text-light mx-auto mb-2" />
+            <p className="text-[13px] text-text-sub">아직 등록된 병원이 없어요. 추가 버튼으로 등록하세요.</p>
+          </div>
+        </AdminSection>
       ) : (
-        <div className="space-y-5">
-          {groups.map((group) => (
-            <section key={group.city}>
-              <div className="flex items-center gap-2 mb-2 px-1">
-                <h2 className="text-[17px] font-bold text-text-main tracking-tight">
-                  {group.city}
-                </h2>
-              </div>
-              <div className="space-y-3">
-                {group.districts.map((d) => (
-                  <div key={d.district}>
-                    <h3 className="text-[11px] font-bold text-text-sub mb-1.5 px-1">
-                      {d.district}
-                    </h3>
-                    <div className="space-y-1.5">
-                      {d.hospitals.map((h) => (
-                        <div
-                          key={h.id}
-                          className="p-3"
-                          style={{
-                            background: "#FFFFFF",
-                            borderRadius: "var(--radius-input)",
-                            boxShadow: h.pinned
-                              ? "0 4px 14px rgba(176, 92, 54,0.12), 0 1px 2px rgba(0,0,0,0.02)"
-                              : "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)",
-                            border: h.pinned
-                              ? "1.5px solid rgba(176, 92, 54,0.25)"
-                              : "1px solid var(--color-divider)",
-                          }}
-                        >
-                          <div className="flex items-start justify-between gap-2 mb-1">
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5 mb-0.5">
-                                {h.pinned && (
-                                  <Pin size={10} style={{ color: "var(--color-primary)" }} />
-                                )}
-                                <p className="text-[13px] font-bold text-text-main truncate">
-                                  {h.name}
-                                </p>
-                              </div>
-                              {h.address && (
-                                <p className="text-[11px] text-text-light truncate">
-                                  {h.address}
-                                </p>
-                              )}
-                            </div>
-                            <div className="flex gap-1 shrink-0">
-                              <button
-                                onClick={() => handleEdit(h)}
-                                className="w-7 h-7 rounded-lg flex items-center justify-center"
-                                style={{ backgroundColor: "var(--color-gray-100)" }}
-                                aria-label="수정"
-                              >
-                                <Pencil size={12} style={{ color: "var(--color-primary)" }} strokeWidth={2.3} />
-                              </button>
-                              <button
-                                onClick={() => handleDelete(h)}
-                                className="w-7 h-7 rounded-lg flex items-center justify-center"
-                                style={{ backgroundColor: "var(--color-error-soft)" }}
-                                aria-label="삭제"
-                              >
-                                <Trash2 size={12} style={{ color: "#D85555" }} strokeWidth={2.3} />
-                              </button>
-                            </div>
-                          </div>
-                          {h.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {h.tags.map((t) => (
-                                <span
-                                  key={t}
-                                  className="text-[9px] font-bold px-1.5 py-0.5 rounded"
-                                  style={{ backgroundColor: "var(--color-gray-50)", color: "#8B6F5A" }}
-                                >
-                                  {t}
-                                </span>
-                              ))}
-                            </div>
-                          )}
+        groups.map((group) => (
+          <AdminSection key={group.city} title={group.city} padding={false}>
+            {group.districts.map((d) => (
+              <div key={d.district}>
+                <p className="px-4 pt-3 pb-1 text-[13px] font-semibold text-text-light">{d.district}</p>
+                {d.hospitals.map((h) => (
+                  <div key={h.id} className="px-4 py-3 border-b border-divider last:border-b-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          {h.pinned && <Pin size={12} className="shrink-0 text-primary" />}
+                          <p className="text-[15px] font-semibold text-text-main truncate">{h.name}</p>
                         </div>
-                      ))}
+                        {h.address && (
+                          <p className="text-[13px] text-text-light truncate mt-0.5">{h.address}</p>
+                        )}
+                        {h.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-1.5">
+                            {h.tags.map((t) => (
+                              <AdminTag key={t}>{t}</AdminTag>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex gap-1 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => handleEdit(h)}
+                          className="w-8 h-8 flex items-center justify-center press text-text-sub"
+                          aria-label="수정"
+                        >
+                          <Pencil size={14} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(h)}
+                          className="w-8 h-8 flex items-center justify-center press text-text-light"
+                          aria-label="삭제"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
-            </section>
-          ))}
-        </div>
+            ))}
+          </AdminSection>
+        ))
       )}
-    </div>
+    </AdminPage>
   );
 }
 
 /* ═══ 공통 작은 컴포넌트 ═══ */
-function Label({
-  children,
-  required,
-}: {
-  children: React.ReactNode;
-  required?: boolean;
-}) {
-  return (
-    <label className="block text-[11px] font-bold text-text-sub mb-1 mt-2">
-      {children}
-      {required && <span className="text-primary ml-0.5">*</span>}
-    </label>
-  );
-}
-
 function Input({
   value,
   onChange,
@@ -579,12 +419,8 @@ function Input({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-1"
-      style={{
-        backgroundColor: "var(--color-gray-50)",
-        color: "#2A2A28",
-        border: "1px solid var(--color-border)",
-      }}
+      className={`${inputCls} mb-3`}
+      style={inputStyle}
     />
   );
 }

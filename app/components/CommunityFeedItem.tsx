@@ -1,6 +1,7 @@
 "use client";
 
-// 커뮤니티 피드 아이템 (2026-09-16) — 카드 없는 전폭 피드.
+// 커뮤니티 피드 아이템 (2026-09-16) — 카드 없는 전폭 피드. 색은 토큰만(hex 0건),
+// 아바타 원형·사진 8px 둥근 사각·좋아요 하트는 --color-like.
 // 아바타·닉네임·카테고리 / 본문 전문 / 하트·댓글·공유 / 좋아요 수 / 첫 댓글 / 상대시간.
 // 좋아요 상태는 기존 post_vote_update RPC + localStorage(getMyPostVotes) 관례를 그대로 쓴다.
 
@@ -61,7 +62,7 @@ export default function CommunityFeedItem({ post, liked, firstComment, onLike }:
   };
 
   return (
-    <article className="px-4 pt-4 pb-3 bg-white">
+    <article className="px-4 pt-4 pb-3" style={{ background: "var(--color-surface)" }}>
       {/* ── 작성자 행 ── */}
       <div className="flex items-start gap-3">
         <Link href={detailHref} className="shrink-0">
@@ -77,9 +78,9 @@ export default function CommunityFeedItem({ post, liked, firstComment, onLike }:
           ) : (
             <div
               className="w-11 h-11 rounded-full flex items-center justify-center"
-              style={{ background: "var(--color-primary-soft)" }}
+              style={{ background: "var(--color-gray-200)" }}
             >
-              <span className="text-[16px] font-bold text-primary">{post.authorName.charAt(0)}</span>
+              <span className="text-[16px] font-semibold text-text-sub">{post.authorName.charAt(0)}</span>
             </div>
           )}
         </Link>
@@ -112,8 +113,9 @@ export default function CommunityFeedItem({ post, liked, firstComment, onLike }:
             <>
               <div className="fixed inset-0 z-30" onClick={() => setMenuOpen(false)} />
               <div
-                className="absolute right-0 top-9 z-40 min-w-[140px] py-1 bg-white"
+                className="absolute right-0 top-9 z-40 min-w-[140px] py-1"
                 style={{
+                  background: "var(--color-surface)",
                   borderRadius: "var(--radius-card-sm)",
                   border: "1px solid var(--color-border)",
                   boxShadow: "var(--shadow-raised)",
@@ -175,8 +177,8 @@ export default function CommunityFeedItem({ post, liked, firstComment, onLike }:
             />
             {post.images.length > 1 && (
               <span
-                className="absolute bottom-2 right-2 text-[11px] font-bold px-2 py-0.5 rounded-md"
-                style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}
+                className="absolute bottom-2 right-2 text-[11px] font-semibold px-2 py-0.5"
+                style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "var(--color-surface)", borderRadius: "var(--radius-square)" }}
               >
                 +{post.images.length - 1}
               </span>

@@ -6,7 +6,7 @@
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { PawPrint, Check, Loader2, AlertCircle, ExternalLink } from "lucide-react";
+import { PawPrint, Check, Loader2, AlertCircle, AlertTriangle, ExternalLink, Gift } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
   detectInAppBrowser,
@@ -144,22 +144,22 @@ function SignupContent() {
   };
 
   return (
-    <div className="min-h-dvh bg-warm-white flex flex-col">
+    <div className="min-h-dvh bg-surface flex flex-col">
       <div className="flex-1 overflow-y-auto px-6 py-12 flex flex-col justify-center max-w-lg mx-auto w-full">
         {/* 인앱 브라우저 안내 — 막힌 건 구글·애플뿐이고 카카오는 여기서 바로 된다.
             예전엔 빨간 "가입이 안 돼요" 벽이라 카톡·인스타 유입이 통째로 이탈했다. (2026-08-09) */}
         {inApp && (
           <div
-            className="mb-6 rounded-2xl p-4"
-            style={{ backgroundColor: "#FFF7E6", border: "1px solid #F0DFB8" }}
+            className="mb-6 p-4"
+            style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
           >
             <div className="flex items-start gap-2.5 mb-3">
-              <AlertCircle size={18} className="mt-0.5 shrink-0" style={{ color: "#B8860B" }} />
+              <AlertCircle size={18} className="mt-0.5 shrink-0" style={{ color: "var(--color-text-sub)" }} />
               <div className="min-w-0">
-                <p className="text-[13px] font-bold" style={{ color: "#8A6410" }}>
+                <p className="text-[15px] font-semibold text-text-main">
                   카카오로 바로 가입할 수 있어요
                 </p>
-                <p className="text-[13px] mt-1 leading-relaxed" style={{ color: "#8A6410" }}>
+                <p className="text-[13px] mt-1 leading-relaxed text-text-sub">
                   {inAppBrowserLabel(inApp)} 안에서는 <b>구글·애플 가입만</b> 막혀 있어요.
                   그 두 가지로 가입하시려면 아래에서 브라우저를 열어주세요.
                 </p>
@@ -168,8 +168,8 @@ function SignupContent() {
             <button
               type="button"
               onClick={handleOpenExternal}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[13px] press-strong"
-              style={{ backgroundColor: "rgba(0,0,0,0.05)", color: "#6B5043" }}
+              className="w-full flex items-center justify-center gap-2 h-10 font-semibold text-[13px] press-strong"
+              style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)", borderRadius: "var(--radius-input)" }}
             >
               <ExternalLink size={14} />
               {detectOS() === "ios" && inApp !== "kakaotalk"
@@ -177,8 +177,8 @@ function SignupContent() {
                 : "크롬/사파리에서 열기"}
             </button>
             {showIosCopyHint && (
-              <div className="mt-3 rounded-xl p-3 text-[11px] leading-relaxed" style={{ backgroundColor: "#FFF", color: "#6B5043" }}>
-                <p className="font-bold mb-1">주소가 복사됐어요 ✓</p>
+              <div className="mt-3 pt-3 text-[11px] leading-relaxed text-text-sub" style={{ borderTop: "1px solid var(--color-divider)" }}>
+                <p className="font-semibold mb-1 text-text-main">주소가 복사됐어요</p>
                 <p>사파리(iOS) 또는 크롬(Android)을 열고 주소창에 붙여넣어주세요.</p>
               </div>
             )}
@@ -187,9 +187,7 @@ function SignupContent() {
 
         {/* 로고 */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4">
-            <PawPrint size={40} className="text-primary" strokeWidth={1.8} />
-          </div>
+          <PawPrint size={40} className="text-primary inline-block mb-4" strokeWidth={1.8} />
           <h1 className="text-[24px] font-bold text-text-main tracking-tight">
             {eventParam === "keyring" ? "이벤트 응모 가입" : "도시공존에 합류하기"}
           </h1>
@@ -201,16 +199,14 @@ function SignupContent() {
         {/* 이벤트 컨텍스트 */}
         {eventParam === "keyring" && (
           <div
-            className="mb-4 rounded-2xl p-4"
-            style={{
-              background: "#FFF8F2",
-              border: "1.5px solid rgba(176, 92, 54,0.30)",
-            }}
+            className="mb-4 p-4"
+            style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
           >
-            <p className="text-[11px] font-bold tracking-[0.12em] mb-1.5" style={{ color: "var(--color-primary)" }}>
-              🎁 1000명 이벤트 응모
+            <p className="text-[11px] font-semibold mb-1.5 flex items-center gap-1" style={{ color: "var(--color-primary)" }}>
+              <Gift size={12} />
+              1000명 이벤트 응모
             </p>
-            <p className="text-[13px] font-bold text-text-main leading-tight mb-1">
+            <p className="text-[15px] font-semibold text-text-main leading-tight mb-1">
               가입 후 돌보는 아이 등록 → 응모!
             </p>
             <p className="text-[13px] text-text-sub leading-relaxed">
@@ -221,12 +217,9 @@ function SignupContent() {
 
         {/* 삼성 인터넷 경고 */}
         {isSamsung && !inApp && (
-          <div
-            className="mb-3 rounded-xl px-3.5 py-2.5 flex items-start gap-2"
-            style={{ backgroundColor: "var(--color-warning-soft)", border: "1px solid #F5DAB0" }}
-          >
-            <span className="text-[15px] mt-0.5">⚠️</span>
-            <p className="text-[13px] leading-relaxed" style={{ color: "#6F4910" }}>
+          <div className="mb-3 px-1 flex items-start gap-2">
+            <AlertTriangle size={16} className="mt-0.5 shrink-0" style={{ color: "var(--color-warning)" }} />
+            <p className="text-[13px] leading-relaxed text-text-sub">
               <b>삼성 인터넷</b>에서는 카카오 가입이 자주 실패해요 (KOE205).
               <b>크롬·사파리</b>로 열면 안정적이에요.
             </p>
@@ -235,9 +228,7 @@ function SignupContent() {
 
         {/* 에러 */}
         {error && (
-          <div className="rounded-xl px-4 py-3 mb-4" style={{ backgroundColor: "var(--color-error-soft)" }}>
-            <p className="text-[13px] font-semibold" style={{ color: "#B84545" }}>{error}</p>
-          </div>
+          <p className="text-[13px] font-semibold mb-4 px-1" style={{ color: "var(--color-error)" }}>{error}</p>
         )}
 
         {/* 약관 동의 (필수) */}
@@ -277,7 +268,7 @@ function SignupContent() {
               {marketingOptIn && <Check size={12} color="white" strokeWidth={3} />}
             </div>
             <span className="text-[13px] text-text-sub leading-relaxed">
-              <span className="font-bold" style={{ color: "rgba(60,46,35,0.55)" }}>[선택]</span>{" "}
+              <span className="font-bold text-text-light">[선택]</span>{" "}
               동네 소식·이벤트·캠페인 안내 푸시 알림 수신에 동의합니다 (마이페이지에서 언제든 끌 수 있어요)
             </span>
           </button>
@@ -296,7 +287,7 @@ function SignupContent() {
 
         {/* 14세 미만 보호자 동의 안내 — 정보통신망법 시행령 §16 */}
         <div className="mb-4 pl-7">
-          <p className="text-[11px] leading-relaxed" style={{ color: "rgba(60,46,35,0.5)" }}>
+          <p className="text-[11px] leading-relaxed text-text-light">
             ※ 만 14세 미만은 직접 가입할 수 없어요. 보호자와 함께{" "}
             <a
               href="mailto:grow29971@gmail.com?subject=%5B%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%A1%B4%5D%2014%EC%84%B8%20%EB%AF%B8%EB%A7%8C%20%EA%B0%80%EC%9E%85%20%EC%8B%A0%EC%B2%AD&body=%EB%B3%B4%ED%98%B8%EC%9E%90%20%EC%84%B1%ED%95%A8%3A%0A%EC%9E%90%EB%85%80%20%EB%8B%89%EB%84%A4%EC%9E%84%3A%0A%EC%9E%90%EB%85%80%20%EB%82%98%EC%9D%B4%3A%0A%EC%97%B0%EB%9D%BD%EC%B2%98%3A%0A%0A%E2%96%B2%20%EB%B3%B4%ED%98%B8%EC%9E%90%EB%A1%9C%EC%84%9C%20%EC%9E%90%EB%85%80%EC%9D%98%20%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%A1%B4%20%EA%B0%80%EC%9E%85%EC%97%90%20%EB%8F%99%EC%9D%98%ED%95%A9%EB%8B%88%EB%8B%A4."
@@ -309,20 +300,20 @@ function SignupContent() {
           </p>
         </div>
 
-        {/* 가입 버튼 */}
+        {/* 가입 버튼 — 브랜드색(카카오 #FEE500)만 hex 유지, 모서리 8px */}
         <div className="space-y-2.5">
           <button
             onClick={() => handleSignup("kakao")}
             disabled={!!loading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-bold press-strong transition-transform disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2.5 h-12 text-[15px] font-semibold press-strong transition-transform disabled:opacity-60"
             /* 인앱에서도 카카오는 실제로 진행되므로 약관 동의 상태를 그대로 반영한다 */
-            style={{ backgroundColor: "#FEE500", color: "#191919", opacity: agreed ? 1 : 0.6 }}
+            style={{ backgroundColor: "#FEE500", color: "var(--color-text-main)", borderRadius: "var(--radius-input)", opacity: agreed ? 1 : 0.6 }}
           >
             {loading === "kakao" ? (
               <Loader2 size={18} className="animate-spin" />
             ) : (
               <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-                <path d="M9 1.5C4.582 1.5 1 4.262 1 7.668c0 2.219 1.51 4.166 3.788 5.272-.167.625-.604 2.265-.69 2.617-.108.438.16.43.336.314.138-.092 2.198-1.5 3.083-2.107.49.073.99.111 1.483.111 4.418 0 8-2.762 8-6.207C17 4.262 13.418 1.5 9 1.5z" fill="#191919" />
+                <path d="M9 1.5C4.582 1.5 1 4.262 1 7.668c0 2.219 1.51 4.166 3.788 5.272-.167.625-.604 2.265-.69 2.617-.108.438.16.43.336.314.138-.092 2.198-1.5 3.083-2.107.49.073.99.111 1.483.111 4.418 0 8-2.762 8-6.207C17 4.262 13.418 1.5 9 1.5z" fill="currentColor" />
               </svg>
             )}
             카카오로 시작하기
@@ -330,17 +321,17 @@ function SignupContent() {
           <button
             onClick={() => handleSignup("google")}
             disabled={!!loading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold press-strong transition-transform border border-[#E0E0E0] disabled:opacity-60"
-            style={{ backgroundColor: "#FFFFFF", color: "#2A2A28", opacity: (agreed || inApp) ? 1 : 0.6 }}
+            className="w-full flex items-center justify-center gap-2.5 h-12 text-[15px] font-semibold press-strong transition-transform disabled:opacity-60"
+            style={{ background: "var(--color-surface)", color: "var(--color-text-main)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-input)", opacity: (agreed || inApp) ? 1 : 0.6 }}
           >
             {loading === "google" ? (
               <Loader2 size={18} className="animate-spin" />
             ) : (
-              <svg width="18" height="18" viewBox="0 0 18 18">
-                <path d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.79 2.71v2.26h2.9c1.7-1.56 2.68-3.86 2.68-6.61z" fill="#4285F4" />
-                <path d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.8.54-1.83.86-3.05.86-2.34 0-4.33-1.58-5.04-3.71H.96v2.33A9 9 0 0 0 9 18z" fill="#34A853" />
-                <path d="M3.96 10.71A5.41 5.41 0 0 1 3.68 9c0-.59.1-1.17.28-1.71V4.96H.96A9 9 0 0 0 0 9c0 1.45.35 2.82.96 4.04l3-2.33z" fill="#FBBC05" />
-                <path d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.59C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.96l3 2.33C4.67 5.16 6.66 3.58 9 3.58z" fill="#EA4335" />
+              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                <path d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.79 2.71v2.26h2.9c1.7-1.56 2.68-3.86 2.68-6.61z" fill="currentColor" />
+                <path d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.8.54-1.83.86-3.05.86-2.34 0-4.33-1.58-5.04-3.71H.96v2.33A9 9 0 0 0 9 18z" fill="currentColor" />
+                <path d="M3.96 10.71A5.41 5.41 0 0 1 3.68 9c0-.59.1-1.17.28-1.71V4.96H.96A9 9 0 0 0 0 9c0 1.45.35 2.82.96 4.04l3-2.33z" fill="currentColor" />
+                <path d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.59C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.96l3 2.33C4.67 5.16 6.66 3.58 9 3.58z" fill="currentColor" />
               </svg>
             )}
             Google로 가입하기
@@ -348,8 +339,8 @@ function SignupContent() {
           <button
             onClick={() => handleSignup("apple")}
             disabled={!!loading}
-            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl text-[15px] font-semibold press-strong transition-transform disabled:opacity-60"
-            style={{ backgroundColor: "#000000", color: "#FFFFFF", opacity: (agreed || inApp) ? 1 : 0.6 }}
+            className="w-full flex items-center justify-center gap-2.5 h-12 text-[15px] font-semibold press-strong transition-transform disabled:opacity-60"
+            style={{ background: "var(--color-text-main)", color: "var(--color-surface)", borderRadius: "var(--radius-input)", opacity: (agreed || inApp) ? 1 : 0.6 }}
           >
             {loading === "apple" ? (
               <Loader2 size={18} className="animate-spin" />
@@ -375,16 +366,16 @@ function SignupContent() {
               placeholder="이메일"
               value={emailInput}
               onChange={e => setEmailInput(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-border text-[15px] outline-none focus:border-primary"
-              style={{ backgroundColor: "#fff" }}
+              className="w-full px-4 h-12 border border-border text-[15px] outline-none focus:border-primary bg-surface"
+              style={{ borderRadius: "var(--radius-input)" }}
             />
             <input
               type="password"
               placeholder="비밀번호"
               value={passwordInput}
               onChange={e => setPasswordInput(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-border text-[15px] outline-none focus:border-primary"
-              style={{ backgroundColor: "#fff" }}
+              className="w-full px-4 h-12 border border-border text-[15px] outline-none focus:border-primary bg-surface"
+              style={{ borderRadius: "var(--radius-input)" }}
             />
             <button
               type="button"
@@ -403,8 +394,8 @@ function SignupContent() {
                   window.location.href = "/";
                 }
               }}
-              className="w-full py-3 rounded-xl text-[15px] font-bold text-white disabled:opacity-50"
-              style={{ backgroundColor: "var(--color-primary)" }}
+              className="w-full h-12 text-[15px] font-semibold text-white disabled:opacity-50"
+              style={{ backgroundColor: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
             >
               {emailLoading ? <Loader2 size={16} className="animate-spin mx-auto" /> : "로그인"}
             </button>

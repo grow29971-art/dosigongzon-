@@ -1,17 +1,16 @@
 "use client";
 
+// 이번 주 이슈 관리 (admin 전용) — 2026-09-16 「익숙한 동네앱」 리디자인:
+// 카드 목록 → 구분선 리스트(회색 선 아이콘, 이모지 렌더 제거 — 입력 필드는 데이터라 유지), 편집 폼 헤어라인 섹션. 토큰만.
+
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
   Plus,
   Pencil,
   Trash2,
   Save,
   X,
   Loader2,
-  Shield,
   CalendarClock,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
@@ -24,6 +23,11 @@ import {
   type WeeklyIssue,
   type WeeklyIssueInput,
 } from "@/lib/weekly-issues-repo";
+import UIButton from "@/app/components/ui/Button";
+import {
+  AdminForbidden, AdminHeader, AdminLoading, AdminPage, AdminSection, AdminTag, EmptyState, FieldLabel,
+  inputCls, inputStyle,
+} from "../_ui";
 
 const EMPTY_DRAFT: WeeklyIssueInput = {
   emoji: null,
@@ -35,8 +39,6 @@ const EMPTY_DRAFT: WeeklyIssueInput = {
 };
 
 export default function AdminWeeklyIssuesPage() {
-  const router = useRouter();
-
   const [authChecked, setAuthChecked] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [items, setItems] = useState<WeeklyIssue[]>([]);
@@ -131,134 +133,68 @@ export default function AdminWeeklyIssuesPage() {
     }
   };
 
-  if (!authChecked || loading) {
-    return (
-      <div className="flex justify-center pt-20">
-        <Loader2 size={28} className="animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="px-5 pt-20 text-center">
-        <Shield size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[15px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
-        <p className="text-[13px] text-text-sub">접근 권한이 없어요.</p>
-        <Link
-          href="/mypage"
-          className="inline-block mt-4 text-[13px] font-bold text-primary"
-        >
-          마이페이지로 돌아가기
-        </Link>
-      </div>
-    );
-  }
+  if (!authChecked || loading) return <AdminLoading />;
+  if (!isAdmin) return <AdminForbidden />;
 
   return (
-    <div className="px-4 pt-14 pb-24">
-      <div className="mb-5">
-        <button
-          onClick={() => router.push("/admin")}
-          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 press-strong transition-transform"
-        >
-          <ArrowLeft size={14} />
-          관리자
-        </button>
-        <div className="flex items-end justify-between">
-          <div>
-            <div className="flex items-baseline gap-2 mb-1">
-              <h1 className="text-[24px] font-bold text-text-main tracking-tight">
-                이번 주 이슈
-              </h1>
-              <span className="text-[11px] font-semibold text-text-light">
-                Weekly Issues
-              </span>
-            </div>
-            <p className="text-[13px] text-text-sub">
-              최근 7일 이내 시작한 이슈가 홈 화면에 노출돼요
-            </p>
-          </div>
-          <button
-            onClick={handleCreate}
-            className="w-11 h-11 rounded-full bg-primary flex items-center justify-center press-strong transition-transform"
-            style={{ boxShadow: "var(--shadow-primary)" }}
-            aria-label="새 이슈 작성"
-          >
-            <Plus size={20} color="#fff" strokeWidth={2.5} />
-          </button>
-        </div>
-      </div>
+    <AdminPage>
+      <AdminHeader
+        title="이번 주 이슈"
+        description="최근 7일 이내 시작한 이슈가 홈 화면에 노출돼요"
+        right={
+          <UIButton size="sm" onClick={handleCreate}>
+            <Plus size={14} /> 새 이슈
+          </UIButton>
+        }
+      />
 
       {editingId && (
-        <div
-          className="mb-5 p-4"
-          style={{
-            background: "#FFFFFF",
-            borderRadius: "var(--radius-card)",
-            boxShadow: "var(--shadow-card)",
-            border: "1.5px solid rgba(176, 92, 54,0.2)",
-          }}
-        >
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[15px] font-bold text-text-main">
-              {editingId === "new" ? "새 이슈 작성" : "이슈 수정"}
-            </h2>
-            <button
-              onClick={handleCancel}
-              className="w-7 h-7 rounded-lg flex items-center justify-center press-strong"
-              style={{ backgroundColor: "var(--color-gray-100)" }}
-            >
-              <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
+        <AdminSection
+          title={editingId === "new" ? "새 이슈 작성" : "이슈 수정"}
+          right={
+            <button type="button" onClick={handleCancel} className="w-7 h-7 flex items-center justify-center text-text-light" aria-label="닫기">
+              <X size={16} />
             </button>
-          </div>
-
-          <Label>이모지 (선택)</Label>
+          }
+        >
+          <FieldLabel>이모지 (선택)</FieldLabel>
           <Input
             value={draft.emoji ?? ""}
             onChange={(v) => setDraft((d) => ({ ...d, emoji: v || null }))}
-            placeholder="예: 🐾"
+            placeholder="홈 화면 이슈 카드에 표시"
           />
 
-          <Label required>제목</Label>
+          <FieldLabel>제목 *</FieldLabel>
           <Input
             value={draft.title}
             onChange={(v) => setDraft((d) => ({ ...d, title: v }))}
             placeholder="예: 종로구 길고양이 급식소 봄맞이 정비"
           />
 
-          <Label>설명</Label>
+          <FieldLabel>설명</FieldLabel>
           <textarea
             value={draft.body ?? ""}
             onChange={(e) => setDraft((d) => ({ ...d, body: e.target.value || null }))}
             rows={3}
             placeholder="간단한 안내 (줄바꿈 유지됨)"
-            className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-3 resize-none"
-            style={{
-              backgroundColor: "var(--color-gray-50)",
-              color: "#2A2A28",
-              border: "1px solid var(--color-border)",
-            }}
+            className={`${inputCls} mb-3 resize-none`}
+            style={inputStyle}
           />
 
-          <Label required>주 시작 날짜 (보통 월요일)</Label>
+          <FieldLabel>주 시작 날짜 (보통 월요일) *</FieldLabel>
           <input
             type="date"
             value={draft.week_start}
             onChange={(e) =>
               setDraft((d) => ({ ...d, week_start: e.target.value }))
             }
-            className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-3"
-            style={{
-              backgroundColor: "var(--color-gray-50)",
-              color: "#2A2A28",
-              border: "1px solid var(--color-border)",
-            }}
+            className={`${inputCls} mb-3`}
+            style={inputStyle}
           />
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <Label>외부 링크 URL</Label>
+              <FieldLabel>외부 링크 URL</FieldLabel>
               <Input
                 value={draft.external_url ?? ""}
                 onChange={(v) => setDraft((d) => ({ ...d, external_url: v || null }))}
@@ -266,7 +202,7 @@ export default function AdminWeeklyIssuesPage() {
               />
             </div>
             <div>
-              <Label>링크 라벨</Label>
+              <FieldLabel>링크 라벨</FieldLabel>
               <Input
                 value={draft.external_label ?? ""}
                 onChange={(v) => setDraft((d) => ({ ...d, external_label: v || null }))}
@@ -276,37 +212,22 @@ export default function AdminWeeklyIssuesPage() {
           </div>
 
           {error && (
-            <p className="text-[11px] mb-2" style={{ color: "#B84545" }}>
-              {error}
-            </p>
+            <p className="text-[13px] mb-2" style={{ color: "var(--color-error)" }}>{error}</p>
           )}
 
-          <div className="flex gap-2 mt-2">
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 press-strong transition-all"
-            >
+          <div className="flex gap-2 mt-1">
+            <UIButton onClick={handleSave} disabled={saving} className="flex-1">
               {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
               저장
-            </button>
-            <button
-              onClick={handleCancel}
-              disabled={saving}
-              className="px-5 py-2.5 rounded-xl text-[13px] font-bold"
-              style={{ backgroundColor: "var(--color-gray-100)", color: "#A38E7A" }}
-            >
-              취소
-            </button>
+            </UIButton>
+            <UIButton variant="secondary" onClick={handleCancel} disabled={saving}>취소</UIButton>
           </div>
-        </div>
+        </AdminSection>
       )}
 
-      <div className="space-y-3">
+      <AdminSection title={`이슈 ${items.length}개`} padding={false}>
         {items.length === 0 ? (
-          <div className="card p-6 text-center text-[13px] text-text-sub">
-            아직 등록된 이슈가 없어요.
-          </div>
+          <EmptyState>아직 등록된 이슈가 없어요.</EmptyState>
         ) : (
           items.map((item) => {
             const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
@@ -314,87 +235,42 @@ export default function AdminWeeklyIssuesPage() {
               .slice(0, 10);
             const isLive = item.week_start >= sevenDaysAgo;
             return (
-              <div
-                key={item.id}
-                className="p-4"
-                style={{
-                  background: "#FFFFFF",
-                  borderRadius: "var(--radius-card)",
-                  boxShadow: "var(--shadow-card)",
-                  border: "1px solid var(--color-divider)",
-                }}
-              >
-                <div className="flex items-start gap-3">
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center text-[24px] shrink-0"
-                    style={{
-                      background: "#F0F4F8",
-                    }}
-                  >
-                    {item.emoji ?? <CalendarClock size={20} style={{ color: "#5B7A8F" }} />}
+              <div key={item.id} className="flex items-start gap-3 px-4 py-3 border-b border-divider last:border-b-0">
+                <CalendarClock size={20} className="shrink-0 mt-0.5 text-text-sub" strokeWidth={1.8} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                    <AdminTag tone={isLive ? "sage" : "neutral"}>{isLive ? "노출 중" : "지난 이슈"}</AdminTag>
+                    <span className="text-[13px] text-text-light tabular-nums">· 주 시작 {item.week_start}</span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                      <span
-                        className="text-[11px] font-bold px-2 py-0.5 chip-square"
-                        style={{
-                          color: isLive ? "#5B7A8F" : "#A38E7A",
-                          backgroundColor: isLive ? "#E5E8ED" : "var(--color-gray-100)",
-                        }}
-                      >
-                        {isLive ? "노출 중" : "지난 이슈"}
-                      </span>
-                      <span className="text-[11px] text-text-light">
-                        · 주 시작 {item.week_start}
-                      </span>
-                    </div>
-                    <p className="text-[15px] font-bold text-text-main leading-tight">
-                      {item.title}
-                    </p>
-                    {item.body && (
-                      <p className="text-[11px] text-text-sub mt-0.5 line-clamp-2">
-                        {item.body}
-                      </p>
-                    )}
-                  </div>
+                  <p className="text-[15px] font-semibold text-text-main leading-tight">{item.title}</p>
+                  {item.body && (
+                    <p className="text-[13px] text-text-sub mt-0.5 line-clamp-2">{item.body}</p>
+                  )}
                 </div>
-                <div className="flex gap-1.5 mt-3 pt-3 border-t border-divider">
+                <div className="flex gap-1 shrink-0">
                   <button
+                    type="button"
                     onClick={() => handleEdit(item)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold"
-                    style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-primary)" }}
+                    className="w-8 h-8 flex items-center justify-center press text-text-sub"
+                    aria-label="수정"
                   >
-                    <Pencil size={12} /> 수정
+                    <Pencil size={14} />
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleDelete(item)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold"
-                    style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}
+                    className="w-8 h-8 flex items-center justify-center press text-text-light"
+                    aria-label="삭제"
                   >
-                    <Trash2 size={12} /> 삭제
+                    <Trash2 size={14} />
                   </button>
                 </div>
               </div>
             );
           })
         )}
-      </div>
-    </div>
-  );
-}
-
-function Label({
-  children,
-  required,
-}: {
-  children: React.ReactNode;
-  required?: boolean;
-}) {
-  return (
-    <label className="block text-[11px] font-bold text-text-sub mb-1 mt-2">
-      {children}
-      {required && <span className="text-primary ml-0.5">*</span>}
-    </label>
+      </AdminSection>
+    </AdminPage>
   );
 }
 
@@ -413,12 +289,8 @@ function Input({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-1"
-      style={{
-        backgroundColor: "var(--color-gray-50)",
-        color: "#2A2A28",
-        border: "1px solid var(--color-border)",
-      }}
+      className={`${inputCls} mb-3`}
+      style={inputStyle}
     />
   );
 }

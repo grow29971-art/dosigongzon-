@@ -1,15 +1,14 @@
 "use client";
 
-// 공존 디자인 시스템 — 시그니처 스퀘어 토글 (2026-07-15)
-// 토스풍 클린 토글을 따르되, 노브를 '원형 대신 라운드 사각'으로 → 트레이드드레스 차별화.
-// 트랙도 완전한 pill이 아니라 라운드 사각(radius-square-lg).
+// 공존 디자인 시스템 — 스퀘어 토글 (2026-07-15 → 2026-09-16 「익숙한 동네앱」 리디자인)
+// 트랙 gray-300 / 켜짐 primary, 노브 흰색 6px 라운드 사각(radius-square-sm). 그림자 없음.
 
 interface SquareToggleProps {
   checked: boolean;
   onChange: (next: boolean) => void;
   disabled?: boolean;
   size?: "sm" | "md";
-  /** 켜짐 색 (기본 공존 블루) */
+  /** 켜짐 색 (기본 primary) */
   color?: string;
   "aria-label"?: string;
 }
@@ -40,7 +39,7 @@ export default function SquareToggle({
         width: dims.w,
         height: dims.h,
         borderRadius: "var(--radius-square-lg)",
-        background: checked ? color : "var(--color-border)",
+        background: checked ? color : "var(--color-gray-300)",
         transition: "background 0.18s ease",
       }}
       {...rest}
@@ -52,9 +51,8 @@ export default function SquareToggle({
           height: dims.knob,
           left: dims.pad,
           transform: `translate(${checked ? travel : 0}px, -50%)`,
-          borderRadius: "var(--radius-square-sm)", // 원형이 아니라 라운드 사각 (시그니처)
-          background: "#fff",
-          boxShadow: "var(--shadow-raised)",
+          borderRadius: "var(--radius-square-sm)",
+          background: "var(--color-surface)",
           transition: "transform 0.18s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       />

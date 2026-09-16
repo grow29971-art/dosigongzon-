@@ -2,6 +2,8 @@
 
 // 홈에 영구 노출되는 "내 서클" 빠른 진입 카드.
 // 멤버 수 + 채팅방 + 관리 두 버튼.
+// 2026-09-16 「익숙한 동네앱」 리디자인: 초록 틴트·채움 아이콘 폐기 → 흰 면 + 헤어라인, 회색 선 아이콘,
+// 버튼은 primary/secondary 두 가지.
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -49,41 +51,37 @@ export default function MyCircleQuickEntry() {
   return (
     <section className="mt-3">
       <div
-        className="rounded-2xl p-4"
+        className="p-4"
         style={{
-          background: "rgba(107,142,111,0.10)",
-          border: "1px solid rgba(107,142,111,0.22)",
+          background: "var(--color-surface)",
+          borderRadius: "var(--radius-card)",
+          border: "1px solid var(--color-border)",
         }}
       >
         {/* 헤더 */}
-        <div className="flex items-start gap-2 mb-3">
-          <div
-            className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: "#4F6B53" }}
-          >
-            <ShieldCheck size={17} color="#fff" />
-          </div>
+        <div className="flex items-start gap-3 mb-3">
+          <ShieldCheck size={22} className="shrink-0 mt-0.5" style={{ color: "var(--color-text-sub)" }} />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <p className="text-[15px] font-bold text-text-main tracking-tight">
+              <p className="text-[15px] font-semibold text-text-main">
                 내 서클
               </p>
               <span
-                className="text-[11px] font-bold px-1.5 py-0.5 rounded-md tracking-wider"
-                style={{ background: "rgba(79,107,83,0.15)", color: "#4F6B53" }}
+                className="text-[11px] font-medium px-1.5 py-0.5 text-text-sub"
+                style={{ borderRadius: "var(--radius-square)", border: "1px solid var(--color-border)" }}
               >
                 PRIVATE
               </span>
             </div>
-            <p className="text-[11px] mt-0.5 leading-snug" style={{ color: "rgba(60,46,35,0.65)" }}>
+            <p className="text-[13px] mt-0.5 leading-snug text-text-sub">
               걱정되는 아이를 내가 초대한 이웃에게만 보여줘요
             </p>
-            <div className="flex items-center gap-1 mt-1">
-              <Users size={10} style={{ color: "#4F6B53" }} />
+            <div className="flex items-center gap-1 mt-1 text-text-light">
+              <Users size={12} />
               {loading ? (
-                <Loader2 size={10} className="animate-spin" style={{ color: "#4F6B53" }} />
+                <Loader2 size={12} className="animate-spin" />
               ) : (
-                <span className="text-[11px] font-bold" style={{ color: "#4F6B53" }}>
+                <span className="text-[11px] font-medium">
                   {memberCount === 0 ? "초대 시작하기" : `멤버 ${memberCount}명`}
                 </span>
               )}
@@ -96,10 +94,10 @@ export default function MyCircleQuickEntry() {
           /* 멤버 0명: 초대를 강조. 채팅방은 본인만 있어서 의미 적음 → 아래 작은 라벨로 */
           <Link
             href="/mypage/circle"
-            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold text-white press-strong transition-transform"
-            style={{ background: "#4F6B53", boxShadow: "var(--shadow-raised)" }}
+            className="w-full h-10 flex items-center justify-center gap-1.5 text-[15px] font-semibold press-strong transition-transform"
+            style={{ borderRadius: "var(--radius-input)", background: "var(--color-primary)", color: "var(--color-surface)" }}
           >
-            <UserPlus size={14} />
+            <UserPlus size={15} />
             <span>이웃 초대 시작하기</span>
           </Link>
         ) : (
@@ -107,15 +105,15 @@ export default function MyCircleQuickEntry() {
           <div className="flex gap-2">
             <Link
               href={circleId ? `/circle/${circleId}/chat` : "/mypage/circle"}
-              className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold text-white press-strong transition-transform relative"
-              style={{ background: "#4F6B53", boxShadow: "var(--shadow-raised)" }}
+              className="flex-[1.5] h-10 flex items-center justify-center gap-1.5 text-[15px] font-semibold press-strong transition-transform"
+              style={{ borderRadius: "var(--radius-input)", background: "var(--color-primary)", color: "var(--color-surface)" }}
             >
-              <MessageCircle size={13} />
+              <MessageCircle size={14} />
               <span>채팅방 열기</span>
               {unreadTotal > 0 && (
                 <span
-                  className="ml-1 px-1.5 py-0.5 rounded-full text-[11px] font-bold leading-none"
-                  style={{ background: "#FFF7C4", color: "#4F6B53" }}
+                  className="ml-1 min-w-[18px] h-[18px] px-1.5 rounded-full text-[11px] font-semibold leading-[18px] text-center"
+                  style={{ background: "var(--color-surface)", color: "var(--color-primary)" }}
                 >
                   {unreadTotal > 99 ? "99+" : unreadTotal}
                 </span>
@@ -123,8 +121,8 @@ export default function MyCircleQuickEntry() {
             </Link>
             <Link
               href="/mypage/circle"
-              className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[13px] font-bold press-strong transition-transform bg-white"
-              style={{ color: "#4F6B53", border: "1px solid rgba(79,107,83,0.30)" }}
+              className="flex-1 h-10 flex items-center justify-center text-[15px] font-semibold press-strong transition-transform"
+              style={{ borderRadius: "var(--radius-input)", background: "var(--color-gray-100)", color: "var(--color-text-main)" }}
             >
               관리
             </Link>

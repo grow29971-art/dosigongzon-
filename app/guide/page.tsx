@@ -28,14 +28,11 @@ export const metadata: Metadata = {
 
 interface FeatureSection {
   groupLabel: string;
-  groupColor: string;
   features: Feature[];
 }
 
 interface Feature {
   icon: typeof Cat;
-  iconColor: string;
-  iconBg: string;
   title: string;
   desc: string;
   steps?: string[];
@@ -47,12 +44,9 @@ interface Feature {
 const SECTIONS: FeatureSection[] = [
   {
     groupLabel: "지도와 고양이",
-    groupColor: "var(--color-primary)",
     features: [
       {
         icon: MapPin,
-        iconColor: "var(--color-primary)",
-        iconBg: "rgba(176, 92, 54,0.12)",
         title: "동네 길고양이 지도",
         desc: "우리 동네에 등록된 길고양이를 지도에서 한눈에. 고양이·병원·약국을 색깔로 구분해서 보여줘요.",
         steps: [
@@ -66,8 +60,6 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Cat,
-        iconColor: "#6B8E6F",
-        iconBg: "rgba(107,142,111,0.12)",
         title: "고양이 등록하기",
         desc: "지도 '+' 버튼을 누르면 등록 모달이 열려요. 사진·이름·성격 태그·건강 상태를 입력하면 끝.",
         steps: [
@@ -82,8 +74,6 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Pencil,
-        iconColor: "#48A59E",
-        iconBg: "rgba(72,165,158,0.12)",
         title: "돌봄다이어리 작성",
         desc: "밥·물·간식·건강 체크·TNR·병원 방문·쉼터 관리 7가지 활동을 기록. 매일 작성하면 연속 기록 보너스 점수.",
         steps: [
@@ -99,12 +89,9 @@ const SECTIONS: FeatureSection[] = [
   },
   {
     groupLabel: "소통과 커뮤니티",
-    groupColor: "#4A7BA8",
     features: [
       {
         icon: MessageCircle,
-        iconColor: "#4A7BA8",
-        iconBg: "rgba(74,123,168,0.12)",
         title: "댓글 · 경보 · 리액션",
         desc: "고양이마다 이웃이 남긴 기록·경보를 확인하고 이모지로 반응할 수 있어요.",
         steps: [
@@ -118,8 +105,6 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Users,
-        iconColor: "#8B65B8",
-        iconBg: "rgba(139,101,184,0.12)",
         title: "커뮤니티 게시판",
         desc: "카테고리별 동네 이웃 이야기. 긴급 구조·임보 요청·입양 공고·용품 나눔까지.",
         steps: [
@@ -134,8 +119,6 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: MessageSquare,
-        iconColor: "var(--color-like)",
-        iconBg: "var(--color-like-soft)",
         title: "1:1 쪽지 (DM)",
         desc: "다른 회원과 개인적으로 대화. 임보 상세 협의·입양 문의·동네 연락처 교환 등에 사용.",
         steps: [
@@ -148,10 +131,8 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Sparkles,
-        iconColor: "#48A59E",
-        iconBg: "rgba(72,165,158,0.12)",
         title: "지역 채팅 (동네 LIVE)",
-        desc: "같은 구 이웃들과 실시간 대화. 지도 하단 💬 버튼으로 진입.",
+        desc: "같은 구 이웃들과 실시간 대화. 지도 하단 채팅 버튼으로 진입.",
         href: "/map",
         hrefLabel: "지도에서 채팅 열기",
         tip: "매주 금 저녁에 활발한 동네 채팅 알림이 옵니다 (설정 ON 시).",
@@ -160,12 +141,9 @@ const SECTIONS: FeatureSection[] = [
   },
   {
     groupLabel: "내 활동과 보상",
-    groupColor: "#E88D5A",
     features: [
       {
         icon: Trophy,
-        iconColor: "#E88D5A",
-        iconBg: "rgba(232,141,90,0.12)",
         title: "레벨 · 업적",
         desc: "고양이 등록·돌봄 기록·경보·좋아요·초대·연속 돌봄으로 점수를 쌓아 7단계 레벨업.",
         steps: [
@@ -178,8 +156,6 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Gift,
-        iconColor: "var(--color-like)",
-        iconBg: "var(--color-like-soft)",
         title: "친구 초대",
         desc: "내 초대 코드로 친구가 가입하면 +15점 보너스 + 초대 업적 자동 해제. 카카오톡 공유 버튼 한 번에.",
         steps: [
@@ -194,12 +170,9 @@ const SECTIONS: FeatureSection[] = [
   },
   {
     groupLabel: "정보와 가이드",
-    groupColor: "#6B8E6F",
     features: [
       {
         icon: BookOpen,
-        iconColor: "#6B8E6F",
-        iconBg: "rgba(107,142,111,0.12)",
         title: "보호 지침",
         desc: "상황별 행동 매뉴얼. 응급처치부터 계절 쉼터까지.",
         steps: [
@@ -218,8 +191,6 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: ShieldAlert,
-        iconColor: "#D85555",
-        iconBg: "rgba(216,85,85,0.12)",
         title: "AI 집사 챗봇",
         desc: "홈 화면 AI 집사 카드에서 길고양이 돌봄 관련 질문. 응급처치·먹이·행동 해석 등 상식선에서.",
         href: "/",
@@ -230,12 +201,9 @@ const SECTIONS: FeatureSection[] = [
   },
   {
     groupLabel: "설정과 편의",
-    groupColor: "#8B65B8",
     features: [
       {
         icon: Bell,
-        iconColor: "#4A7BA8",
-        iconBg: "rgba(74,123,168,0.12)",
         title: "알림 · 푸시",
         desc: "내 고양이에 달린 댓글·돌봄, 받은 쪽지, 초대 친구 가입 등을 알림 센터에서 확인.",
         steps: [
@@ -248,8 +216,6 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Mail,
-        iconColor: "var(--color-like)",
-        iconBg: "var(--color-like-soft)",
         title: "주간 이메일 다이제스트",
         desc: "매주 월요일 아침, 이번 주 우리 동네 새 고양이 · 긴급 돌봄 요약을 메일로.",
         href: "/mypage",
@@ -258,8 +224,6 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Download,
-        iconColor: "var(--color-primary)",
-        iconBg: "rgba(176, 92, 54,0.12)",
         title: "앱으로 설치 (PWA)",
         desc: "홈 화면에 설치하면 브라우저 탭 없이 앱처럼 열려요. 푸시 알림도 더 안정적.",
         steps: [
@@ -271,8 +235,6 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Search,
-        iconColor: "#22B573",
-        iconBg: "rgba(34,181,115,0.12)",
         title: "지역별 랜딩",
         desc: "전국 구·동별 전용 페이지. 검색에서 '○○구 길고양이' 검색 시 바로 도착.",
         href: "/areas",
@@ -293,7 +255,7 @@ export default function GuidePage() {
   };
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
+    <div className="min-h-dvh pb-16 bg-surface">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, "\\u003c") }}
@@ -302,8 +264,8 @@ export default function GuidePage() {
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong"
+          style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)" }}
           aria-label="홈으로"
         >
           <ArrowLeft size={18} className="text-text-main" />
@@ -313,9 +275,9 @@ export default function GuidePage() {
 
       {/* 히어로 */}
       <section className="px-5 pt-4">
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 mb-3">
-          <Heart size={12} style={{ color: "var(--color-primary)" }} />
-          <span className="text-[11px] font-bold" style={{ color: "var(--color-primary)" }}>
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-3" style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-square)" }}>
+          <Heart size={12} style={{ color: "var(--color-text-sub)" }} />
+          <span className="text-[11px] font-semibold text-text-sub">
             HOW TO USE
           </span>
         </div>
@@ -331,16 +293,16 @@ export default function GuidePage() {
         <div className="flex gap-2 mt-4">
           <Link
             href="/map"
-            className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-primary text-white press transition-transform"
-            style={{ boxShadow: "var(--shadow-primary)" }}
+            className="flex-1 flex items-center justify-center gap-1.5 h-12 press transition-transform"
+            style={{ background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
           >
             <MapPin size={14} />
-            <span className="text-[13px] font-bold">지도 먼저 가볼래요</span>
+            <span className="text-[15px] font-semibold">지도 먼저 가볼래요</span>
           </Link>
           <Link
             href="/signup"
-            className="flex-1 flex items-center justify-center py-3 rounded-2xl press transition-transform"
-            style={{ backgroundColor: "#FFF", color: "var(--color-primary)", border: "1.5px solid #E8D4BD", fontSize: 13, fontWeight: 700 }}
+            className="flex-1 flex items-center justify-center h-12 text-[15px] font-semibold press transition-transform"
+            style={{ background: "var(--color-gray-100)", color: "var(--color-text-main)", borderRadius: "var(--radius-input)" }}
           >
             가입하고 시작
           </Link>
@@ -350,34 +312,22 @@ export default function GuidePage() {
       {/* 섹션별 가이드 */}
       {SECTIONS.map((section) => (
         <section key={section.groupLabel} className="px-5 mt-8">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: section.groupColor }} />
-            <h2 className="text-[15px] font-bold text-text-main tracking-tight">
-              {section.groupLabel}
-            </h2>
-          </div>
+          <h2 className="text-[17px] font-bold text-text-main tracking-tight mb-3">
+            {section.groupLabel}
+          </h2>
           <div className="space-y-3">
             {section.features.map((f) => {
               const Icon = f.icon;
               return (
                 <div
                   key={f.title}
-                  className="rounded-2xl p-4"
-                  style={{
-                    background: "#FFFFFF",
-                    boxShadow: "var(--shadow-card)",
-                    border: "1px solid var(--color-divider)",
-                  }}
+                  className="p-4"
+                  style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
                 >
                   <div className="flex items-start gap-3 mb-2">
-                    <div
-                      className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-                      style={{ backgroundColor: f.iconBg }}
-                    >
-                      <Icon size={20} style={{ color: f.iconColor }} />
-                    </div>
+                    <Icon size={22} strokeWidth={1.8} className="shrink-0 mt-0.5" style={{ color: "var(--color-text-sub)" }} />
                     <div className="min-w-0">
-                      <p className="text-[15px] font-bold text-text-main leading-tight">
+                      <p className="text-[15px] font-semibold text-text-main leading-tight">
                         {f.title}
                       </p>
                       <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
@@ -391,8 +341,8 @@ export default function GuidePage() {
                       {f.steps.map((s, i) => (
                         <li key={i} className="flex items-start gap-2 text-[13px] text-text-main leading-relaxed">
                           <span
-                            className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-[9px] font-bold text-white mt-0.5"
-                            style={{ background: f.iconColor }}
+                            className="w-4 h-4 flex items-center justify-center shrink-0 text-[9px] font-semibold mt-0.5"
+                            style={{ background: "var(--color-gray-100)", color: "var(--color-text-sub)", borderRadius: "var(--radius-square-sm)" }}
                           >
                             {i + 1}
                           </span>
@@ -403,21 +353,18 @@ export default function GuidePage() {
                   )}
 
                   {f.tip && (
-                    <div
-                      className="mt-3 rounded-xl p-2.5 text-[13px] leading-relaxed"
-                      style={{
-                        background: `${f.iconColor}10`,
-                        color: "#5A4A3E",
-                      }}
+                    <p
+                      className="mt-3 pt-3 text-[13px] leading-relaxed text-text-sub"
+                      style={{ borderTop: "1px solid var(--color-divider)" }}
                     >
                       {f.tip}
-                    </div>
+                    </p>
                   )}
 
                   <Link
                     href={f.href}
-                    className="inline-flex items-center gap-1 mt-3 text-[13px] font-bold press-strong transition-transform"
-                    style={{ color: f.iconColor }}
+                    className="inline-flex items-center gap-1 mt-3 text-[13px] font-semibold press-strong transition-transform"
+                    style={{ color: "var(--color-primary)" }}
                   >
                     {f.hrefLabel}
                     <ArrowRight size={12} />
@@ -432,22 +379,19 @@ export default function GuidePage() {
       {/* 마지막 CTA */}
       <section className="px-5 mt-10">
         <div
-          className="rounded-3xl p-5 text-center"
-          style={{
-            background: "var(--color-primary)",
-            boxShadow: "var(--shadow-primary)",
-          }}
+          className="p-5 text-center"
+          style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-card)" }}
         >
-          <p className="text-[17px] font-bold text-white leading-snug">
+          <p className="text-[17px] font-bold text-text-main leading-snug">
             이제 동네 아이들에게 <br />
             인사하러 가볼까요?
           </p>
           <Link
             href="/map"
-            className="inline-block mt-4 bg-white text-[13px] font-bold px-6 py-3 rounded-2xl press-strong transition-transform"
-            style={{ color: "var(--color-primary)" }}
+            className="inline-flex items-center justify-center mt-4 text-[15px] font-semibold px-6 h-12 press-strong transition-transform"
+            style={{ background: "var(--color-primary)", color: "var(--color-surface)", borderRadius: "var(--radius-input)" }}
           >
-            지도 열기 →
+            지도 열기
           </Link>
         </div>
       </section>
@@ -457,7 +401,7 @@ export default function GuidePage() {
           href="/about"
           className="text-[13px] text-text-sub underline"
         >
-          도시공존이 왜 만들어졌나요? →
+          도시공존이 왜 만들어졌나요?
         </Link>
       </section>
     </div>

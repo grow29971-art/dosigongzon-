@@ -46,7 +46,7 @@ export default async function MyCareReportPage() {
     .sort((a, b) => b[1] - a[1]);
 
   return (
-    <div className="pb-24 print:pb-0" style={{ background: "var(--color-warm-white)", minHeight: "100vh" }}>
+    <div className="pb-24 print:pb-0" style={{ background: "var(--color-surface)", minHeight: "100vh" }}>
       <style>{`
         @media print {
           nav { display: none !important; }
@@ -60,38 +60,33 @@ export default async function MyCareReportPage() {
       <div className="report-no-print px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/mypage"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
+          className="w-9 h-9 rounded-full flex items-center justify-center press-strong -ml-2"
           aria-label="마이페이지로 돌아가기"
         >
-          <ArrowLeft size={18} className="text-text-main" />
+          <ArrowLeft size={22} className="text-text-main" />
         </Link>
         <span className="text-[13px] font-semibold text-text-sub">마이페이지</span>
       </div>
 
       <div className="report-no-print px-4 mb-3">
-        <div
-          className="rounded-2xl px-4 py-3"
-          style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(176,92,54,0.18)" }}
-        >
-          <p className="text-[13px] font-bold text-text-main leading-snug">
+        <div className="px-1 py-2" style={{ borderBottom: "1px solid var(--color-divider)" }}>
+          <p className="text-[13px] font-semibold text-text-main leading-snug">
             내 이름으로 된 돌봄 활동 증빙 문서예요
           </p>
-          <p className="text-[11px] text-text-sub mt-1 leading-relaxed">
-            민원·분쟁 대응, 구청·동물보호 단체 협의, 봉사활동 증빙, 지원사업 제출에 쓸 수 있어요.
-            &ldquo;인쇄 · PDF로 저장&rdquo;을 누르면 문서로 만들어져요.
+          <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
+            민원 대응·협의·봉사 증빙에 쓸 수 있고, &ldquo;인쇄 · PDF로 저장&rdquo;으로 문서가 돼요.
           </p>
         </div>
       </div>
 
       {/* ── 확인서 본문 ── */}
       <div
-        className="report-sheet bg-white mx-4 rounded-2xl px-6 py-8"
-        style={{ boxShadow: "var(--shadow-card)", border: "1px solid var(--color-border)" }}
+        className="report-sheet bg-surface mx-4 rounded-xl px-6 py-8"
+        style={{ border: "1px solid var(--color-border)" }}
       >
         <div className="text-center pb-5 mb-5" style={{ borderBottom: "2px solid var(--color-text-main)" }}>
           <div className="flex items-center justify-center gap-2 mb-2">
-            <FileText size={16} style={{ color: "var(--color-primary)" }} />
+            <FileText size={16} className="text-text-sub" />
             <span className="text-[11px] font-bold tracking-widest text-text-sub">도시공존 시민 돌봄 기록</span>
           </div>
           <h1 className="text-[22px] font-bold text-text-main tracking-tight">돌봄 활동 확인서</h1>
@@ -237,7 +232,7 @@ function Tr({ label, value }: { label: string; value: string }) {
     <tr>
       <td
         className="py-1.5 px-3 font-bold text-text-sub whitespace-nowrap"
-        style={{ border: "1px solid var(--color-border)", background: "var(--color-warm-white)", width: "30%" }}
+        style={{ border: "1px solid var(--color-border)", background: "var(--color-gray-50)", width: "30%" }}
       >
         {label}
       </td>
@@ -254,7 +249,7 @@ function Th({ children, align }: { children: React.ReactNode; align?: "right" | 
       className="py-1.5 px-2.5 font-bold text-text-sub"
       style={{
         border: "1px solid var(--color-border)",
-        background: "var(--color-warm-white)",
+        background: "var(--color-gray-50)",
         textAlign: align ?? "left",
       }}
     >

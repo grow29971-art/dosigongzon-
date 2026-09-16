@@ -11,6 +11,7 @@ import { uploadCatPhoto } from "@/lib/cats-repo";
 import { listMyActivityRegions } from "@/lib/activity-regions-repo";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
+import UIChip from "@/app/components/ui/Chip";
 
 const CATEGORIES = Object.entries(CATEGORY_MAP) as [PostCategory, typeof CATEGORY_MAP[PostCategory]][];
 
@@ -176,31 +177,26 @@ export default function WritePage() {
         {/* 첫 글 안내 — 동네 고양이 0마리 유저에게 부드러운 권유 */}
         {hasNoCats && (
           <div
-            className="rounded-2xl p-4"
+            className="p-4"
             style={{
-              background: "#FFF8F2",
-              border: "1.5px solid rgba(176, 92, 54,0.25)",
+              background: "var(--color-surface)",
+              border: "1px solid var(--color-border)",
+              borderRadius: "var(--radius-card)",
             }}
           >
-            <div className="flex items-start gap-2.5">
-              <div
-                className="w-9 h-9 rounded-xl shrink-0 flex items-center justify-center"
-                style={{ background: "var(--color-primary)" }}
-              >
-                <PawPrint size={17} color="#fff" strokeWidth={2.3} />
-              </div>
+            <div className="flex items-start gap-3">
+              <PawPrint size={20} strokeWidth={1.8} className="shrink-0 mt-0.5 text-text-sub" />
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-bold text-text-main leading-tight mb-1">
+                <p className="text-[15px] font-semibold text-text-main leading-tight mb-1">
                   첫 동네 고양이부터 등록해보세요
                 </p>
-                <p className="text-[11px] text-text-sub leading-relaxed">
-                  지도에 한 마리 등록한 후 글을 쓰면 동네 길집사들이 더 잘 알아봐요.
-                  글은 지금도 쓸 수 있지만, 등록 먼저면 답글·반응이 훨씬 빨라요.
+                <p className="text-[13px] text-text-sub leading-relaxed">
+                  지도에 한 마리 등록하고 글을 쓰면 동네 길집사들이 더 잘 알아봐요.
                 </p>
                 <Link
                   href="/map"
-                  className="inline-flex items-center gap-1 mt-2 text-[13px] font-bold"
-                  style={{ color: "var(--color-primary-dark)" }}
+                  className="inline-flex items-center gap-1 mt-2 text-[13px] font-semibold"
+                  style={{ color: "var(--color-primary)" }}
                 >
                   지도로 가서 등록하기
                   <ArrowRight size={11} />
@@ -212,21 +208,17 @@ export default function WritePage() {
 
         {/* ── 카테고리 선택 ── */}
         <div>
-          <label className="text-[13px] font-bold text-text-sub mb-2 block">카테고리</label>
+          <label className="text-[13px] font-semibold text-text-sub mb-2 block">카테고리</label>
           <div className="flex flex-wrap gap-2">
             {CATEGORIES.map(([key, info]) => (
-              <button
+              <UIChip
                 key={key}
+                active={category === key}
+                activeColor={key === "emergency" ? "var(--color-error)" : undefined}
                 onClick={() => setCategory(key)}
-                className={`px-3.5 py-2 rounded-full text-[13px] font-semibold border transition-all ${
-                  category === key
-                    ? "text-white border-transparent"
-                    : "bg-white text-text-sub border-border"
-                }`}
-                style={category === key ? { backgroundColor: info.color } : {}}
               >
-                {info.emoji} {info.label}
-              </button>
+                {info.label}
+              </UIChip>
             ))}
           </div>
         </div>
@@ -235,25 +227,29 @@ export default function WritePage() {
         {category === "sitter" && (
           <div>
             <div
-              className="rounded-2xl p-4 mb-3"
-              style={{ background: "rgba(74,123,168,0.08)", border: "1.5px solid rgba(74,123,168,0.22)" }}
+              className="p-4 mb-3"
+              style={{
+                background: "var(--color-surface)",
+                border: "1px solid var(--color-border)",
+                borderRadius: "var(--radius-card)",
+              }}
             >
-              <p className="text-[13px] font-bold text-text-main leading-tight mb-1">
+              <p className="text-[15px] font-semibold text-text-main leading-tight mb-1">
                 같은 동네 이웃에게 알림이 가요
               </p>
-              <p className="text-[11px] text-text-sub leading-relaxed">
+              <p className="text-[13px] text-text-sub leading-relaxed">
                 아래 동네를 적으면 그 동네에서 활동하는 이웃에게 부탁 알림이 전달돼요.
                 <b> 정확한 밥자리 위치는 글 대신 쪽지로만</b> 주고받아 주세요.
               </p>
             </div>
-            <label className="text-[13px] font-bold text-text-sub mb-2 block">동네 (동 단위)</label>
+            <label className="text-[13px] font-semibold text-text-sub mb-2 block">동네 (동 단위)</label>
             <input
               type="text"
               value={region}
               onChange={(e) => setRegion(e.target.value)}
               placeholder="예) 행궁동"
               maxLength={20}
-              className="w-full px-4 py-3.5 rounded-2xl border border-border bg-white text-[15px] text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
+              className="w-full px-4 py-3.5 rounded-lg border border-border bg-surface text-[15px] text-text-main placeholder:text-text-light focus:outline-none focus:border-primary transition-colors"
             />
           </div>
         )}
@@ -261,33 +257,36 @@ export default function WritePage() {
         {/* 긴급 글 ↔ 확인서 연결 — 신고·민원 글에 증빙을 붙이도록 (2026-08-29 PMF 개편) */}
         {category === "emergency" && (
           <div
-            className="rounded-2xl p-4"
-            style={{ background: "var(--color-error-soft)", border: "1.5px solid rgba(216,85,85,0.25)" }}
+            className="p-4"
+            style={{
+              background: "var(--color-surface)",
+              border: "1px solid var(--color-border)",
+              borderRadius: "var(--radius-card)",
+            }}
           >
-            <p className="text-[13px] font-bold text-text-main leading-tight mb-1">
+            <p className="text-[15px] font-semibold text-text-main leading-tight mb-1">
               신고·민원 글에는 돌봄 활동 확인서를 함께 내세요
             </p>
-            <p className="text-[11px] text-text-sub leading-relaxed">
-              그동안 쌓인 돌봄 기록이 학대 신고·민원 대응의 근거가 돼요.
-              확인서를 인쇄·PDF로 만들어 경찰·구청 제출물에 붙일 수 있어요.
+            <p className="text-[13px] text-text-sub leading-relaxed">
+              쌓인 돌봄 기록이 신고·민원 대응의 근거가 돼요.
             </p>
             {/* 사실적시 명예훼손 예방 안내 (2026-08-29 법률감사 Low) */}
-            <p className="text-[11px] leading-relaxed mt-2 pt-2" style={{ color: "#B84545", borderTop: "1px solid rgba(216,85,85,0.2)" }}>
+            <p className="text-[13px] leading-relaxed mt-2 pt-2" style={{ color: "var(--color-error)", borderTop: "1px solid var(--color-divider)" }}>
               특정인을 지목할 땐 실명·얼굴·차량번호를 가리고, 확인되지 않은 내용은 &ldquo;의혹/제보&rdquo;로
               표현해 주세요. 확정적으로 단정하면 사실이어도 명예훼손이 될 수 있어요.
             </p>
             <div className="flex gap-3 mt-2">
               <Link
                 href="/mypage/report"
-                className="text-[13px] font-bold"
-                style={{ color: "#B84545" }}
+                className="text-[13px] font-semibold"
+                style={{ color: "var(--color-primary)" }}
               >
                 내 확인서 열기 →
               </Link>
               <Link
                 href="/protection/emergency-guide"
-                className="text-[13px] font-bold"
-                style={{ color: "#B84545" }}
+                className="text-[13px] font-semibold"
+                style={{ color: "var(--color-primary)" }}
               >
                 응급 대응 가이드 →
               </Link>
@@ -297,36 +296,36 @@ export default function WritePage() {
 
         {/* ── 제목 ── */}
         <div>
-          <label className="text-[13px] font-bold text-text-sub mb-2 block">제목</label>
+          <label className="text-[13px] font-semibold text-text-sub mb-2 block">제목</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder={category === "sitter" ? "예) 9/1~9/5 아침 밥자리 대타 구해요" : "제목을 입력하세요"}
             maxLength={50}
-            className="w-full px-4 py-3.5 rounded-2xl border border-border bg-white text-[15px] text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
+            className="w-full px-4 py-3.5 rounded-lg border border-border bg-surface text-[15px] text-text-main placeholder:text-text-light focus:outline-none focus:border-primary transition-colors"
           />
-          <p className="text-[11px] text-text-muted text-right mt-1">{title.length}/50</p>
+          <p className="text-[11px] text-text-light text-right mt-1">{title.length}/50</p>
         </div>
 
         {/* ── 내용 ── */}
         <div>
-          <label className="text-[13px] font-bold text-text-sub mb-2 block">내용</label>
+          <label className="text-[13px] font-semibold text-text-sub mb-2 block">내용</label>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="내용을 입력하세요. 길고양이를 위한 정보를 공유해주세요."
             maxLength={2000}
             rows={8}
-            className="w-full px-4 py-3.5 rounded-2xl border border-border bg-white text-[15px] text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors resize-none leading-relaxed"
+            className="w-full px-4 py-3.5 rounded-lg border border-border bg-surface text-[15px] text-text-main placeholder:text-text-light focus:outline-none focus:border-primary transition-colors resize-none leading-relaxed"
           />
-          <p className="text-[11px] text-text-muted text-right mt-1">{content.length}/2000</p>
+          <p className="text-[11px] text-text-light text-right mt-1">{content.length}/2000</p>
         </div>
 
         {/* ── 사진 첨부 ── */}
         <div>
-          <label className="text-[13px] font-bold text-text-sub mb-2 block">
-            사진 <span className="text-text-muted font-normal">(최대 {MAX_IMAGES}장)</span>
+          <label className="text-[13px] font-semibold text-text-sub mb-2 block">
+            사진 <span className="text-text-light font-normal">(최대 {MAX_IMAGES}장)</span>
           </label>
 
           <div className="grid grid-cols-4 gap-2">
@@ -336,14 +335,14 @@ export default function WritePage() {
                 <img
                   src={url}
                   alt=""
-                  className="w-full h-full object-cover rounded-xl"
+                  className="w-full h-full object-cover rounded-lg"
                   style={{ border: "1px solid var(--color-border)" }}
                 />
                 <button
                   type="button"
                   onClick={() => removeImage(url)}
                   className="absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center press-strong"
-                  style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}
+                  style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "var(--color-surface)" }}
                   aria-label="사진 제거"
                 >
                   <X size={12} strokeWidth={3} />
@@ -353,11 +352,11 @@ export default function WritePage() {
 
             {imageUrls.length < MAX_IMAGES && (
               <label
-                className="flex flex-col items-center justify-center aspect-square rounded-xl cursor-pointer press-strong transition-transform"
+                className="flex flex-col items-center justify-center aspect-square rounded-lg cursor-pointer press-strong transition-transform"
                 style={{
-                  backgroundColor: "var(--color-gray-50)",
-                  border: "1.5px dashed #C9BDAA",
-                  color: "#A38E7A",
+                  backgroundColor: "var(--color-surface)",
+                  border: "1px dashed var(--color-gray-300)",
+                  color: "var(--color-text-light)",
                 }}
               >
                 {uploading ? (
@@ -383,12 +382,12 @@ export default function WritePage() {
           </div>
 
           {uploadError && (
-            <p className="text-[11px] mt-2" style={{ color: "#B84545" }}>
+            <p className="text-[11px] mt-2" style={{ color: "var(--color-error)" }}>
               {uploadError}
             </p>
           )}
           {!user && (
-            <p className="text-[11px] text-text-muted mt-2">
+            <p className="text-[11px] text-text-light mt-2">
               사진 업로드는 로그인이 필요해요.
             </p>
           )}
@@ -396,10 +395,10 @@ export default function WritePage() {
 
         {submitError && (
           <div
-            className="rounded-2xl px-4 py-3"
-            style={{ backgroundColor: "var(--color-error-soft)" }}
+            className="px-4 py-3"
+            style={{ backgroundColor: "var(--color-error-soft)", borderRadius: "var(--radius-card-sm)" }}
           >
-            <p className="text-[13px] font-semibold" style={{ color: "#B84545" }}>
+            <p className="text-[13px] font-semibold" style={{ color: "var(--color-error)" }}>
               {submitError}
             </p>
           </div>
@@ -408,18 +407,17 @@ export default function WritePage() {
 
       {/* ── 하단 등록 버튼 ── */}
       <div
-        className="fixed left-0 right-0 z-30 px-5 py-3 bg-white/95 backdrop-blur-md border-t border-divider"
-        style={{ bottom: "5rem" }}
+        className="fixed left-0 right-0 z-30 px-5 py-3 border-t border-divider"
+        style={{ bottom: "5rem", background: "var(--color-surface)" }}
       >
         <button
           onClick={handleSubmit}
           disabled={!canSubmit || submitting}
-          className={`w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-[15px] font-bold transition-all press-strong ${
+          className={`w-full flex items-center justify-center gap-2 py-4 rounded-lg text-[15px] font-semibold transition-all press-strong ${
             canSubmit
-              ? "bg-primary text-white"
-              : "bg-border text-text-muted"
+              ? "bg-primary text-surface"
+              : "bg-gray-100 text-text-muted"
           }`}
-          style={canSubmit ? { boxShadow: "var(--shadow-primary)" } : undefined}
         >
           {submitting ? (
             <Loader2 size={18} className="animate-spin" />

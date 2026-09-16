@@ -26,6 +26,8 @@ import {
   Search,
   ShoppingBag, Flame, PawPrint,
   FileText, HandHeart, ShieldCheck,
+  Award, Cat as CatIcon, ClipboardList, Shield, Heart, MessageCircle,
+  Gift, BookOpen, Trophy, Cake, Newspaper, Lightbulb,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 // 업적 토스트 — 업적 잠금 해제 시에만 보임. ssr 끄고 lazy.
@@ -47,7 +49,6 @@ import {
   getMyQuietestCat,
   computeScore,
   computeLevel,
-  getLevelColor,
   type MyActivitySummary,
   type LevelInfo,
   type QuietCat,
@@ -94,6 +95,7 @@ import { sanitizeImageUrl, sanitizeHttpUrl } from "@/lib/url-validate";
 import { isCoreJourneyEnabled } from "@/lib/core-journey-flags";
 import CareTeamCard from "@/app/components/CareTeamCard";
 import CatSpotlightRow from "@/app/components/CatSpotlightRow";
+import { catArtWalkSvg } from "@/lib/cat-art";
 
 import { CAT_FACTS } from "@/lib/cat-facts";
 
@@ -110,12 +112,10 @@ const WEATHER_ICONS: Record<string, typeof Sun> = {
   Haze: CloudFog,
 };
 
+// 온도색: 장식색 없이 본문색 하나, 폭염만 의미색(error) — 리디자인 2026-09-16
 function getTempColor(temp: number): string {
-  if (temp <= 0) return "#5B7A8F";
-  if (temp <= 10) return "#7A9BB0";
-  if (temp <= 20) return "#2A2A28";
-  if (temp <= 30) return "var(--color-primary)";
-  return "#B84545";
+  if (temp <= 30) return "var(--color-text-main)";
+  return "var(--color-error)";
 }
 
 interface WeatherData {
@@ -618,13 +618,13 @@ export default function HomeAuthed({
     <PageIntroModal
       storageKey="dosigongzon_intro_home"
       badge="홈"
-      headerEmoji="🏠"
+      headerEmoji=""
       title="우리 동네 길고양이, 여기서 함께 돌봐요"
       items={[
-        { emoji: "🐾", text: <>지도에서 <b className="text-text-main">+ 버튼</b>으로 우리 동네 고양이를 등록해요.</> },
-        { emoji: "🍚", text: <>매일 <b className="text-text-main">내 아이들</b>에게 밥·물·간식을 1탭으로 기록해요.</> },
-        { emoji: "📄", text: <>쌓인 기록은 <b className="text-text-main">돌봄 활동 확인서</b>로 만들어 민원·신고 때 근거가 돼요.</> },
-        { emoji: "🗺️", text: <>아래로 내리면 우리 동네 고양이·소식이 이어져요.</> },
+        { emoji: "", text: <>지도에서 <b className="text-text-main">+ 버튼</b>으로 우리 동네 고양이를 등록해요.</> },
+        { emoji: "", text: <>매일 <b className="text-text-main">내 아이들</b>에게 밥·물·간식을 1탭으로 기록해요.</> },
+        { emoji: "", text: <>쌓인 기록은 <b className="text-text-main">돌봄 활동 확인서</b>로 만들어 민원·신고 때 근거가 돼요.</> },
+        { emoji: "", text: <>아래로 내리면 우리 동네 고양이·소식이 이어져요.</> },
         // 국회 청원 안내 삭제 (2026-08-09). 청원 기능은 2026-07-22 revert 됐는데
         // 첫 안내 모달이 없는 UI를 가리키고 있었다 — 신규 유저가 맨 위에서 찾다 못 찾는다.
       ]}
@@ -642,22 +642,18 @@ export default function HomeAuthed({
           href="/mypage/activity-regions"
           className="block mb-4 press transition-transform"
           style={{
-            background: "var(--color-primary)",
+            background: "var(--color-surface)",
             borderRadius: "var(--radius-card)",
-            boxShadow: "var(--shadow-primary)",
+            border: "1px solid var(--color-border)",
           }}
         >
-          <div className="p-4 flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 text-[24px]" style={{ background: "rgba(255,255,255,0.2)" }}>
-              <MapPin size={18} color="#fff" />
-            </div>
+          <div className="px-4 flex items-center gap-3" style={{ minHeight: 64 }}>
+            <MapPin size={20} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
-              <p className="text-[15px] font-bold text-white leading-snug">우리 동네부터 알려주세요</p>
-              <p className="text-[11px] leading-snug mt-0.5" style={{ color: "rgba(255,255,255,0.9)" }}>
-                동네를 정하면 우리 동네 고양이·소식이 여기 나타나요
-              </p>
+              <p className="text-[15px] font-semibold text-text-main leading-snug">우리 동네부터 알려주세요</p>
+              <p className="text-[13px] text-text-sub leading-snug mt-0.5">동네를 정하면 동네 고양이·소식이 여기 나타나요</p>
             </div>
-            <ChevronRight size={18} color="#fff" className="shrink-0" />
+            <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
           </div>
         </Link>
       )}
@@ -665,10 +661,10 @@ export default function HomeAuthed({
       {/* ══════ 에디토리얼 매스트헤드 (2026-08-26 D안) — 날짜 아이브로 + 세리프 대제목 + 실데이터 헤드라인 ══════ */}
       {user && (
         <div className="mb-5 px-1">
-          <p className="text-[11px] font-bold" style={{ letterSpacing: "2.5px", color: "var(--color-primary)" }}>
+          <p className="text-[13px] font-medium text-text-light">
             {new Date().toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul", month: "long", day: "numeric", weekday: "long" })}
           </p>
-          <h1 className="text-[30px] font-bold tracking-tight leading-tight text-text-main mt-1.5">오늘의 돌봄</h1>
+          <h1 className="text-[24px] font-bold tracking-tight leading-tight text-text-main mt-1">오늘의 돌봄</h1>
           <p className="mt-1.5 text-[13px] text-text-sub leading-relaxed">
             {hungryCatName
               ? `${hungryCatName}${(hungryCatName.charCodeAt(hungryCatName.length - 1) - 0xac00) % 28 > 0 ? "이" : ""}가 오늘 첫 밥을 기다리고 있어요`
@@ -722,47 +718,40 @@ export default function HomeAuthed({
             style={{
               background: "var(--color-surface)",
               borderRadius: "var(--radius-card)",
-              boxShadow: "var(--shadow-card)",
-              border: "1px solid var(--color-divider)",
+              border: "1px solid var(--color-border)",
             }}
           >
-            <Link href="/mypage/report" className="flex items-center gap-3 px-4 py-3.5 press transition-transform">
-              <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: "var(--color-primary-softer)" }}>
-                <FileText size={17} style={{ color: "var(--color-primary)" }} />
-              </div>
+            <Link href="/mypage/report" className="flex items-center gap-3 px-4 press transition-transform" style={{ minHeight: 60 }}>
+              <FileText size={20} className="shrink-0 text-text-sub" />
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-bold text-text-main leading-tight">돌봄 활동 확인서</p>
-                <p className="text-[11px] text-text-sub mt-0.5 leading-snug">민원·봉사 증빙·구청 협의용 PDF 문서</p>
+                <p className="text-[15px] font-semibold text-text-main leading-snug">돌봄 활동 확인서</p>
+                <p className="text-[13px] text-text-sub mt-0.5 leading-snug">민원·봉사 증빙·구청 협의용 PDF</p>
               </div>
-              <ChevronRight size={15} className="shrink-0" style={{ color: "var(--color-text-light)" }} />
+              <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
             </Link>
             <Link
               href="/community/category/sitter"
-              className="flex items-center gap-3 px-4 py-3.5 press transition-transform"
-              style={{ borderTop: "1px solid var(--color-divider)" }}
+              className="flex items-center gap-3 px-4 press transition-transform"
+              style={{ minHeight: 60, borderTop: "1px solid var(--color-divider)" }}
             >
-              <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(74,123,168,0.12)" }}>
-                <HandHeart size={17} style={{ color: "#4A7BA8" }} />
-              </div>
+              <HandHeart size={20} className="shrink-0 text-text-sub" />
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-bold text-text-main leading-tight">돌봄 부탁</p>
-                <p className="text-[11px] text-text-sub mt-0.5 leading-snug">입원·여행 때 밥자리 대타를 구해요</p>
+                <p className="text-[15px] font-semibold text-text-main leading-snug">돌봄 부탁</p>
+                <p className="text-[13px] text-text-sub mt-0.5 leading-snug">입원·여행 때 밥자리 대타를 구해요</p>
               </div>
-              <ChevronRight size={15} className="shrink-0" style={{ color: "var(--color-text-light)" }} />
+              <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
             </Link>
             <Link
               href="/protection"
-              className="flex items-center gap-3 px-4 py-3.5 press transition-transform"
-              style={{ borderTop: "1px solid var(--color-divider)" }}
+              className="flex items-center gap-3 px-4 press transition-transform"
+              style={{ minHeight: 60, borderTop: "1px solid var(--color-divider)" }}
             >
-              <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: "var(--color-sage-soft)" }}>
-                <ShieldCheck size={17} style={{ color: "var(--color-sage)" }} />
-              </div>
+              <ShieldCheck size={20} className="shrink-0 text-text-sub" />
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-bold text-text-main leading-tight">보호 지침 · 신고 대응</p>
-                <p className="text-[11px] text-text-sub mt-0.5 leading-snug">학대·민원 상황에서 뭘 해야 하는지</p>
+                <p className="text-[15px] font-semibold text-text-main leading-snug">보호 지침 · 신고 대응</p>
+                <p className="text-[13px] text-text-sub mt-0.5 leading-snug">학대·민원 상황에서 할 일</p>
               </div>
-              <ChevronRight size={15} className="shrink-0" style={{ color: "var(--color-text-light)" }} />
+              <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
             </Link>
           </div>
         </section>
@@ -777,8 +766,7 @@ export default function HomeAuthed({
         style={{
           background: "var(--color-surface)",
           borderRadius: "var(--radius-card)",
-          boxShadow: "var(--shadow-card)",
-          border: "1px solid var(--color-divider)",
+          border: "1px solid var(--color-border)",
         }}
       >
         <div className="px-4 pt-4">
@@ -805,40 +793,37 @@ export default function HomeAuthed({
                   <div className="flex items-center gap-1.5">
                     {streakInfo && streakInfo.streak > 0 && (
                       <span
-                        className="flex items-center gap-1 px-2.5 py-1 chip-square text-[11px] font-bold"
-                        style={{ background: "var(--color-care-soft)", border: "1px solid rgba(232,148,10,0.3)", color: "var(--color-care)" }}
+                        className="flex items-center gap-1 px-2.5 py-1 chip-square text-[11px] font-semibold"
+                        style={{ border: "1px solid var(--color-border)", color: "var(--color-care)" }}
                       >
                         <Flame size={14} />{streakInfo.streak}일
                       </span>
                     )}
                     <Link
                       href="/tips"
-                      className="w-9 h-9 rounded-xl bg-surface-alt flex items-center justify-center press-strong transition-transform"
+                      className="w-9 h-9 rounded-full flex items-center justify-center press-strong transition-transform"
                       aria-label="AI 집사"
                     >
                       {/* AI집사 이중 진입점 — 탭 재편(D-day) 시 탭이 빠져도 발견성 유지 (2026-07-21 회의) */}
-                      <Bot size={16} className="text-text-sub" />
+                      <Bot size={20} className="text-text-sub" />
                     </Link>
                     <Link
                       href="/search"
-                      className="w-9 h-9 rounded-xl bg-surface-alt flex items-center justify-center press-strong transition-transform"
+                      className="w-9 h-9 rounded-full flex items-center justify-center press-strong transition-transform"
                       aria-label="통합 검색"
                     >
-                      <Search size={16} className="text-text-sub" />
+                      <Search size={20} className="text-text-sub" />
                     </Link>
                     <Link
                       href="/notifications"
-                      className="relative w-9 h-9 rounded-xl bg-surface-alt flex items-center justify-center press-strong transition-transform"
+                      className="relative w-9 h-9 rounded-full flex items-center justify-center press-strong transition-transform"
                       aria-label="알림"
                     >
-                      <Bell size={16} className={unreadCount > 0 ? "text-primary" : "text-text-sub"} />
+                      <Bell size={20} className="text-text-sub" />
                       {unreadCount > 0 && (
                         <span
-                          className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 rounded-full flex items-center justify-center text-[9px] font-bold text-white"
-                          style={{
-                            background: "var(--color-error)",
-                            boxShadow: "var(--shadow-raised)",
-                          }}
+                          className="absolute top-0 right-0 min-w-[16px] h-[16px] px-1 rounded-full flex items-center justify-center text-[9px] font-bold"
+                          style={{ background: "var(--color-error)", color: "var(--color-surface)" }}
                         >
                           {unreadCount > 99 ? "99+" : unreadCount}
                         </span>
@@ -863,7 +848,7 @@ export default function HomeAuthed({
         </div>
 
         {/* 구분선 + 날씨 행 */}
-        <div className="mx-4 my-3" style={{ height: 1, background: "rgba(0,0,0,0.06)" }} />
+        <div className="mx-4 my-3" style={{ height: 1, background: "var(--color-divider)" }} />
         <div className="px-4 pb-4">
         {weatherLoading ? (
           /* 로딩 */
@@ -883,7 +868,8 @@ export default function HomeAuthed({
             </div>
             <button
               onClick={() => { setWeatherError(""); setWeatherLoading(true); window.location.reload(); }}
-              className="text-[13px] font-semibold text-primary px-3 py-1.5 rounded-xl bg-primary/10 press-strong transition-transform shrink-0"
+              className="text-[13px] font-semibold text-text-main px-3 py-1.5 press-strong transition-transform shrink-0"
+              style={{ borderRadius: "var(--radius-input)", border: "1px solid var(--color-border)" }}
             >
               재시도
             </button>
@@ -894,8 +880,8 @@ export default function HomeAuthed({
             {/* 상단: 날짜·지역 한 줄 (홈 리디자인 2026-07-11: 밀도 압축) */}
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-1.5">
-                <MapPin size={12} className="text-primary shrink-0" />
-                <span className="text-[13px] font-bold text-text-main">{weather.city}</span>
+                <MapPin size={12} className="text-text-light shrink-0" />
+                <span className="text-[13px] font-semibold text-text-main">{weather.city}</span>
                 <span className="text-[11px] text-text-light">
                   {new Date().toLocaleDateString("ko-KR", { month: "long", day: "numeric", weekday: "short" })}
                 </span>
@@ -933,37 +919,37 @@ export default function HomeAuthed({
             {/* 돌봄 팁 */}
             {(() => {
               const t = weather.feelsLike;
-              const tips: { emoji: string; text: string; color: string }[] = [];
+              const tips: { text: string }[] = [];
 
               if (t <= -10) {
-                tips.push({ emoji: "🥶", text: "극한 추위! 숨숨집 내부에 핫팩을 넣어주세요. 물이 얼지 않게 자주 교체해주세요.", color: "#4A7BA8" });
+                tips.push({ text: "극한 추위! 숨숨집 내부에 핫팩을 넣어주세요. 물이 얼지 않게 자주 교체해주세요." });
               } else if (t <= 0) {
-                tips.push({ emoji: "❄️", text: "물이 얼 수 있어요. 따뜻한 물로 하루 2회 이상 교체해주세요.", color: "#5B7A8F" });
-                tips.push({ emoji: "🏠", text: "스티로폼 숨숨집에 짚이나 담요를 깔아주세요.", color: "#6B8E6F" });
+                tips.push({ text: "물이 얼 수 있어요. 따뜻한 물로 하루 2회 이상 교체해주세요." });
+                tips.push({ text: "스티로폼 숨숨집에 짚이나 담요를 깔아주세요." });
               } else if (t <= 5) {
-                tips.push({ emoji: "🧣", text: "쌀쌀해요. 쉼터 점검하고 입구가 바람을 막는지 확인해주세요.", color: "#7A9BB0" });
+                tips.push({ text: "쌀쌀해요. 쉼터 점검하고 입구가 바람을 막는지 확인해주세요." });
               } else if (t >= 33) {
-                tips.push({ emoji: "🔥", text: "폭염 주의! 그늘진 곳에 시원한 물을 놓아주세요. 사료가 상하기 쉬워요.", color: "#D85555" });
+                tips.push({ text: "폭염 주의! 그늘진 곳에 시원한 물을 놓아주세요. 사료가 상하기 쉬워요." });
               } else if (t >= 28) {
-                tips.push({ emoji: "☀️", text: "더워요. 물을 자주 갈아주고 그늘에 밥을 놓아주세요.", color: "#E88D5A" });
+                tips.push({ text: "더워요. 물을 자주 갈아주고 그늘에 밥을 놓아주세요." });
               }
 
               if (weather.weatherMain === "Rain" || weather.weatherMain === "Drizzle") {
-                tips.push({ emoji: "🌧️", text: "비 오는 날이에요. 밥그릇에 비가 들어가지 않게 지붕 아래에 놓아주세요.", color: "#4A7BA8" });
+                tips.push({ text: "비 오는 날이에요. 밥그릇에 비가 들어가지 않게 지붕 아래에 놓아주세요." });
               } else if (weather.weatherMain === "Snow") {
-                tips.push({ emoji: "🌨️", text: "눈이 와요. 쉼터 입구에 눈이 쌓이지 않게 치워주세요.", color: "#5B7A8F" });
+                tips.push({ text: "눈이 와요. 쉼터 입구에 눈이 쌓이지 않게 치워주세요." });
               }
 
               if (weather.humidity >= 85) {
-                tips.push({ emoji: "💦", text: "습도가 높아요. 건사료가 눅눅해질 수 있으니 소량만 놓아주세요.", color: "#48A59E" });
+                tips.push({ text: "습도가 높아요. 건사료가 눅눅해질 수 있으니 소량만 놓아주세요." });
               }
 
               if (weather.windSpeed >= 10) {
-                tips.push({ emoji: "💨", text: "바람이 강해요. 밥그릇이 날아가지 않게 무거운 그릇을 사용해주세요.", color: "#8B65B8" });
+                tips.push({ text: "바람이 강해요. 밥그릇이 날아가지 않게 무거운 그릇을 사용해주세요." });
               }
 
               if (tips.length === 0 && t >= 10 && t <= 25) {
-                tips.push({ emoji: "🐾", text: "돌봄하기 좋은 날씨예요. 오늘도 아이들을 챙겨주셔서 감사해요!", color: "#6B8E6F" });
+                tips.push({ text: "돌봄하기 좋은 날씨예요. 오늘도 아이들을 챙겨주셔서 감사해요!" });
               }
 
               // 날씨 조건 → 관련 쇼핑 카테고리 맥락 다리
@@ -983,26 +969,24 @@ export default function HomeAuthed({
                   {tips.slice(0, 1).map((tip, i) => (
                     <div
                       key={i}
-                      className="flex items-start gap-2 px-3 py-2 rounded-xl"
-                      style={{ backgroundColor: `${tip.color}10` }}
+                      className="flex items-start gap-2 px-3 py-2.5"
+                      style={{ background: "var(--color-surface-alt)", borderRadius: "var(--radius-card-sm)" }}
                     >
-                      <span className="text-[15px] shrink-0">{tip.emoji}</span>
-                      <p className="text-[11px] font-semibold leading-snug" style={{ color: tip.color }}>
-                        {tip.text}
-                      </p>
+                      <Lightbulb size={15} className="shrink-0 mt-px text-text-sub" />
+                      <p className="text-[13px] leading-snug text-text-sub">{tip.text}</p>
                     </div>
                   ))}
                   {SHOW_WEATHER_SHOP_BRIDGE && bridge && (
                     <Link
                       href={`/shop?category=${bridge.cat}`}
-                      className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl press transition-transform"
-                      style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(176, 92, 54,0.15)" }}
+                      className="flex items-center justify-between gap-2 px-3 py-2.5 press transition-transform"
+                      style={{ borderRadius: "var(--radius-card-sm)", border: "1px solid var(--color-border)" }}
                     >
-                      <span className="flex items-center gap-1.5 text-[11px] font-bold" style={{ color: "var(--color-primary-dark)" }}>
-                        <ShoppingBag size={13} />
+                      <span className="flex items-center gap-1.5 text-[13px] font-medium text-text-main">
+                        <ShoppingBag size={15} className="text-text-sub" />
                         {bridge.label}
                       </span>
-                      <ChevronRight size={14} style={{ color: "var(--color-primary-dark)" }} />
+                      <ChevronRight size={16} style={{ color: "var(--color-text-muted)" }} />
                     </Link>
                   )}
                 </div>
@@ -1050,7 +1034,7 @@ export default function HomeAuthed({
         </>
       )}
 
-      {/* ══════ 고양이 스포트라이트 — 위험·주의 우선 12마리 + ❤️ 지켜보기 (STEP2, 2026-09-02) ══════ */}
+      {/* ══════ 고양이 스포트라이트 — 위험·주의 우선 12마리 + 지켜보기 (STEP2, 2026-09-02) ══════ */}
       {user && <CatSpotlightRow className="mb-5 -mx-5" />}
 
       {/* ══════ 내 동네 소식 ══════ */}
@@ -1062,7 +1046,7 @@ export default function HomeAuthed({
                 내 동네 소식
               </h2>
               {primaryRegion && (
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg" style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}>
+                <span className="text-[11px] font-medium px-2 py-0.5 chip-square" style={{ background: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}>
                   {primaryRegion.name}
                 </span>
               )}
@@ -1081,24 +1065,20 @@ export default function HomeAuthed({
               className="block press transition-transform"
             >
               <div
-                className="px-4 py-4 flex items-center gap-3"
+                className="px-4 flex items-center gap-3"
                 style={{
-                  background: "var(--color-primary-softer)",
+                  minHeight: 64,
+                  background: "var(--color-surface)",
                   borderRadius: "var(--radius-card)",
-                  border: "1px dashed rgba(176, 92, 54,0.3)",
+                  border: "1px solid var(--color-border)",
                 }}
               >
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: "var(--color-primary-soft)" }}
-                >
-                  <MapPin size={18} color="var(--color-primary)" strokeWidth={2} />
-                </div>
+                <MapPin size={20} className="shrink-0 text-text-sub" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-bold text-text-main">활동 지역을 설정해보세요</p>
-                  <p className="text-[11px] text-text-sub mt-0.5">우리 동네 고양이 소식을 모아 볼 수 있어요</p>
+                  <p className="text-[15px] font-semibold text-text-main">활동 지역을 설정해보세요</p>
+                  <p className="text-[13px] text-text-sub mt-0.5">우리 동네 고양이 소식을 모아 볼 수 있어요</p>
                 </div>
-                <ChevronRight size={16} style={{ color: "var(--color-primary)" }} />
+                <ChevronRight size={18} style={{ color: "var(--color-text-muted)" }} />
               </div>
             </Link>
           ) : (
@@ -1110,12 +1090,11 @@ export default function HomeAuthed({
                   style={{
                     background: "var(--color-surface)",
                     borderRadius: "var(--radius-card)",
-                    boxShadow: "var(--shadow-card)",
-                    border: "1px solid var(--color-divider)",
+                    border: "1px solid var(--color-border)",
                   }}
                 >
                   {/* 세그먼트 탭 */}
-                  <div className="flex items-center gap-1 p-1 rounded-xl mb-2.5" style={{ background: "var(--color-warm-white)" }}>
+                  <div className="flex items-center gap-1 p-1 mb-2.5" style={{ background: "var(--color-surface-alt)", borderRadius: "var(--radius-square-lg)" }}>
                     {([
                       ["cats", `동네 고양이 ${neighborhoodCats.length}`],
                       ["posts", "동네 이야기"],
@@ -1124,11 +1103,12 @@ export default function HomeAuthed({
                         key={key}
                         type="button"
                         onClick={() => setHoodTab(key)}
-                        className="flex-1 py-2 rounded-lg text-[11px] font-bold transition-colors"
+                        className="flex-1 py-1.5 text-[13px] font-semibold transition-colors"
                         style={{
+                          borderRadius: "var(--radius-square)",
                           background: hoodTab === key ? "var(--color-surface)" : "transparent",
                           color: hoodTab === key ? "var(--color-text-main)" : "var(--color-text-light)",
-                          boxShadow: hoodTab === key ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
+                          border: hoodTab === key ? "1px solid var(--color-border)" : "1px solid transparent",
                         }}
                       >
                         {label}
@@ -1143,27 +1123,33 @@ export default function HomeAuthed({
                     </p>
                     <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
                       {neighborhoodCats.map((c) => {
-                        const safe = sanitizeImageUrl(c.photo_url, "https://placehold.co/100x100/EEEAE2/2A2A28?text=%3F");
-                        const avatar = thumbnailUrl(safe, 100) ?? safe;
+                        const safe = sanitizeImageUrl(c.photo_url, "");
+                        const avatar = safe ? thumbnailUrl(safe, 100) ?? safe : "";
                         return (
                         <div
                           key={c.id}
                           className="shrink-0 text-center"
                           style={{ width: 56 }}
                         >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={avatar}
-                            alt={c.name}
-                            loading="lazy"
-                            decoding="async"
-                            className="w-12 h-12 rounded-full mx-auto object-cover"
-                            style={{
-                              border: "2px solid #fff",
-                              boxShadow: "var(--shadow-raised)",
-                            }}
-                          />
-                          <p className="text-[11px] font-bold text-text-main mt-1 truncate">
+                          {avatar ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={avatar}
+                              alt={c.name}
+                              loading="lazy"
+                              decoding="async"
+                              className="w-12 h-12 rounded-full mx-auto object-cover"
+                              style={{ border: "1px solid var(--color-border)" }}
+                            />
+                          ) : (
+                            <div
+                              aria-hidden="true"
+                              className="w-12 h-12 rounded-full mx-auto flex items-center justify-center overflow-hidden"
+                              style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+                              dangerouslySetInnerHTML={{ __html: catArtWalkSvg(c.id, 36, { walking: false }) }}
+                            />
+                          )}
+                          <p className="text-[11px] font-medium text-text-main mt-1 truncate">
                             {c.name}
                           </p>
                         </div>
@@ -1181,12 +1167,12 @@ export default function HomeAuthed({
                           className="flex items-center gap-2 py-1.5 active:opacity-70"
                         >
                           <span
-                            className="text-[11px] font-bold px-2 py-0.5 rounded-md shrink-0"
-                            style={{ backgroundColor: "var(--color-primary-soft)", color: "var(--color-primary)" }}
+                            className="text-[11px] font-medium px-2 py-0.5 chip-square shrink-0"
+                            style={{ background: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}
                           >
                             {p.region}
                           </span>
-                          <p className="text-[13px] font-bold text-text-main truncate flex-1">
+                          <p className="text-[15px] font-medium text-text-main truncate flex-1">
                             {p.title}
                           </p>
                           <span className="text-[11px] text-text-light shrink-0">
@@ -1197,7 +1183,7 @@ export default function HomeAuthed({
                     </div>
                   ) : (
                     <p className="text-[13px] text-text-sub text-center py-4">
-                      아직 우리 동네 이야기가 없어요 — 첫 글을 남겨보세요!
+                      아직 우리 동네 이야기가 없어요
                     </p>
                   )}
                 </div>
@@ -1207,23 +1193,17 @@ export default function HomeAuthed({
                   style={{
                     background: "var(--color-surface)",
                     borderRadius: "var(--radius-card)",
-                    boxShadow: "var(--shadow-card)",
-                    border: "1px solid var(--color-divider)",
+                    border: "1px solid var(--color-border)",
                   }}
                 >
                   <div className="flex items-start gap-3 mb-3">
-                    <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-[20px]"
-                      style={{ backgroundColor: "var(--color-primary-soft)" }}
-                    >
-                      <PawPrint size={18} style={{ color: "var(--color-primary)" }} />
-                    </div>
+                    <PawPrint size={20} className="shrink-0 mt-0.5 text-text-sub" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-bold text-text-main mb-0.5">
+                      <p className="text-[15px] font-semibold text-text-main mb-0.5">
                         {primaryRegion.name}의 첫 등록자가 되어주세요
                       </p>
-                      <p className="text-[11px] text-text-sub leading-relaxed">
-                        첫 한 마리를 등록하면 동네 이웃이 함께 돌볼 수 있어요.
+                      <p className="text-[13px] text-text-sub leading-snug">
+                        첫 한 마리를 등록하면 이웃이 함께 돌볼 수 있어요.
                       </p>
                     </div>
                   </div>
@@ -1231,18 +1211,15 @@ export default function HomeAuthed({
                   {popularCats.length > 0 && (
                     <div
                       className="pt-3 mb-3"
-                      style={{ borderTop: "1px dashed rgba(0,0,0,0.06)" }}
+                      style={{ borderTop: "1px solid var(--color-divider)" }}
                     >
-                      <p className="text-[11px] text-text-light font-bold mb-2">
+                      <p className="text-[13px] text-text-sub mb-2">
                         다른 동네 인기 고양이 둘러보기
                       </p>
                       <div className="flex gap-1.5">
                         {popularCats.slice(0, 4).map((c) => {
-                          const safe = sanitizeImageUrl(
-                            c.photo_url,
-                            "https://placehold.co/100x100/EEEAE2/2A2A28?text=%3F",
-                          );
-                          const avatar = thumbnailUrl(safe, 100) ?? safe;
+                          const safe = sanitizeImageUrl(c.photo_url, "");
+                          const avatar = safe ? thumbnailUrl(safe, 100) ?? safe : "";
                           return (
                             <Link
                               key={c.id}
@@ -1250,19 +1227,25 @@ export default function HomeAuthed({
                               className="shrink-0 text-center press-strong transition-transform"
                               style={{ width: 56 }}
                             >
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img
-                                src={avatar}
-                                alt={c.name}
-                                loading="lazy"
-                                decoding="async"
-                                className="w-12 h-12 rounded-full mx-auto object-cover"
-                                style={{
-                                  border: "2px solid #fff",
-                                  boxShadow: "var(--shadow-raised)",
-                                }}
-                              />
-                              <p className="text-[11px] font-bold text-text-main mt-1 truncate">
+                              {avatar ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={avatar}
+                                  alt={c.name}
+                                  loading="lazy"
+                                  decoding="async"
+                                  className="w-12 h-12 rounded-full mx-auto object-cover"
+                                  style={{ border: "1px solid var(--color-border)" }}
+                                />
+                              ) : (
+                                <div
+                                  aria-hidden="true"
+                                  className="w-12 h-12 rounded-full mx-auto flex items-center justify-center overflow-hidden"
+                                  style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+                                  dangerouslySetInnerHTML={{ __html: catArtWalkSvg(c.id, 36, { walking: false }) }}
+                                />
+                              )}
+                              <p className="text-[11px] font-medium text-text-main mt-1 truncate">
                                 {c.name}
                               </p>
                             </Link>
@@ -1274,13 +1257,14 @@ export default function HomeAuthed({
 
                   <Link
                     href="/map"
-                    className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white press transition-transform"
+                    className="flex items-center justify-center gap-1.5 h-11 press transition-transform"
                     style={{
                       background: "var(--color-primary)",
-                      boxShadow: "var(--shadow-primary)",
+                      color: "var(--color-surface)",
+                      borderRadius: "var(--radius-input)",
                     }}
                   >
-                    <span className="text-[13px] font-bold tracking-tight">
+                    <span className="text-[15px] font-semibold">
                       지도에서 첫 등록 시작
                     </span>
                     <ChevronRight size={14} />
@@ -1295,11 +1279,10 @@ export default function HomeAuthed({
                   style={{
                     background: "var(--color-surface)",
                     borderRadius: "var(--radius-card)",
-                    boxShadow: "var(--shadow-card)",
-                    border: "1px solid var(--color-divider)",
+                    border: "1px solid var(--color-border)",
                   }}
                 >
-                  <p className="text-[13px] font-bold text-text-main mb-2">
+                  <p className="text-[15px] font-semibold text-text-main mb-2">
                     우리 동네 이야기
                   </p>
                   <div className="space-y-1.5">
@@ -1310,12 +1293,12 @@ export default function HomeAuthed({
                         className="flex items-center gap-2 py-1.5 active:opacity-70"
                       >
                         <span
-                          className="text-[11px] font-bold px-2 py-0.5 rounded-md shrink-0"
-                          style={{ backgroundColor: "var(--color-primary-soft)", color: "var(--color-primary)" }}
+                          className="text-[11px] font-medium px-2 py-0.5 chip-square shrink-0"
+                          style={{ background: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}
                         >
                           {p.region}
                         </span>
-                        <p className="text-[13px] font-bold text-text-main truncate flex-1">
+                        <p className="text-[15px] font-medium text-text-main truncate flex-1">
                           {p.title}
                         </p>
                         <span className="text-[11px] text-text-light shrink-0">
@@ -1342,17 +1325,12 @@ export default function HomeAuthed({
                   지금 우리 동네
                 </h2>
                 <span
-                  className="inline-flex items-center px-1.5 py-1 rounded-md"
-                  style={{ backgroundColor: "var(--color-sage-soft)" }}
-                >
-                  <span
-                    className="w-1.5 h-1.5 rounded-full animate-pulse"
-                    style={{ background: "var(--color-sage)" }}
-                  />
-                </span>
+                  className="w-1.5 h-1.5 rounded-full animate-pulse"
+                  style={{ background: "var(--color-sage)" }}
+                />
               </div>
               {primary && (
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg" style={{ backgroundColor: "var(--color-sage-soft)", color: "var(--color-sage)" }}>
+                <span className="text-[11px] font-medium px-2 py-0.5 chip-square" style={{ background: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}>
                   {primary.name}
                 </span>
               )}
@@ -1362,8 +1340,7 @@ export default function HomeAuthed({
               style={{
                 background: "var(--color-surface)",
                 borderRadius: "var(--radius-card)",
-                boxShadow: "var(--shadow-card)",
-                border: "1px solid var(--color-sage-soft)",
+                border: "1px solid var(--color-border)",
               }}
             >
               {feed.slice(0, 3).map((f, i) => {
@@ -1380,18 +1357,17 @@ export default function HomeAuthed({
                     <div className="flex items-center gap-3 px-4 py-3">
                       {/* 고양이 썸네일 */}
                       <div
-                        className="w-10 h-10 rounded-xl shrink-0"
+                        className="w-10 h-10 rounded-full shrink-0"
                         style={{
                           background: f.catPhoto
                             ? `url('${f.catPhoto}') center/cover`
-                            : "var(--color-gray-100)",
-                          border: "2px solid #fff",
-                          boxShadow: "var(--shadow-card)",
+                            : "var(--color-surface-alt)",
+                          border: "1px solid var(--color-border)",
                         }}
                       />
                       <div className="flex-1 min-w-0">
                         <p className="text-[13px] text-text-sub leading-snug truncate">
-                          <span className="font-bold" style={{ color: "var(--color-sage)" }}>
+                          <span className="font-semibold text-text-main">
                             {f.actorName}
                           </span>
                           <span className="text-text-light"> 님이 </span>
@@ -1415,15 +1391,13 @@ export default function HomeAuthed({
 
       {/* ══════ 내 활동 요약 — 기본 접힘, 탭하면 스탯 펼침 (홈 리디자인 2026-07-11) ══════ */}
       {activity && levelInfo && (() => {
-        const lc = getLevelColor(levelInfo.level);
         return (
         <div
           className="mb-5 dark-card-level overflow-hidden"
           style={{
             background: "var(--color-surface)",
             borderRadius: "var(--radius-card)",
-            boxShadow: "var(--shadow-card)",
-            border: "1px solid var(--color-divider)",
+            border: "1px solid var(--color-border)",
           }}
         >
           {/* 헤더(레벨+경험치) = 접기 토글 */}
@@ -1433,33 +1407,27 @@ export default function HomeAuthed({
             aria-expanded={activityOpen}
             className="w-full text-left p-4 flex items-center gap-3 press transition-transform"
           >
-            <div
-              className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: `linear-gradient(135deg, ${lc}20 0%, ${lc}10 100%)`, border: `2px solid ${lc}30` }}
-            >
-              <span className="text-[24px]">{levelInfo.emoji}</span>
-            </div>
+            <Award size={22} className="shrink-0 text-text-sub" />
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <p className="text-[15px] font-bold text-text-main tracking-tight truncate">{levelInfo.title}</p>
+                <p className="text-[15px] font-semibold text-text-main tracking-tight truncate">{levelInfo.title}</p>
                 <span
-                  className="text-[11px] font-bold px-2 py-0.5 rounded-lg text-white shrink-0"
-                  style={{ backgroundColor: lc }}
+                  className="text-[11px] font-medium px-2 py-0.5 chip-square shrink-0"
+                  style={{ background: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}
                 >
                   Lv.{levelInfo.level}
                 </span>
               </div>
               <div className="flex items-center gap-2 mt-1.5">
-                <div className="flex-1 h-1.5 rounded-full overflow-hidden max-w-[140px]" style={{ backgroundColor: "var(--color-gray-100)" }}>
+                <div className="progress-bar flex-1 max-w-[140px]">
                   <div
-                    className="h-full rounded-full"
                     style={{
                       width: `${Math.max(levelInfo.progress * 100, 4)}%`,
-                      background: `linear-gradient(90deg, ${lc} 0%, ${lc}BB 100%)`,
+                      background: "var(--color-primary)",
                     }}
                   />
                 </div>
-                <span className="text-[11px] font-bold text-text-light tabular-nums shrink-0">
+                <span className="text-[11px] font-medium text-text-light tabular-nums shrink-0">
                   {levelInfo.score}{levelInfo.next ? `/${levelInfo.next}` : " MAX"}
                 </span>
               </div>
@@ -1474,26 +1442,26 @@ export default function HomeAuthed({
             <div className="px-4 pb-4">
               <div className="grid grid-cols-4 gap-2">
                 {[
-                  { label: "고양이", value: activity.catCount, color: "var(--color-primary)", icon: "🐱" },
-                  { label: "돌봄", value: activity.commentCount + activity.careLogCount, color: "#48A59E", icon: "📝" },
-                  { label: "신고", value: activity.alertCount, color: "#8B65B8", icon: "🛡️" },
-                  { label: "좋아요", value: activity.likesReceived, color: "#E86B8C", icon: "❤️" },
+                  { label: "고양이", value: activity.catCount, Icon: CatIcon },
+                  { label: "돌봄", value: activity.commentCount + activity.careLogCount, Icon: ClipboardList },
+                  { label: "신고", value: activity.alertCount, Icon: Shield },
+                  { label: "좋아요", value: activity.likesReceived, Icon: Heart },
                 ].map((s) => (
                   <div
                     key={s.label}
-                    className="text-center py-2.5 rounded-2xl"
-                    style={{ backgroundColor: `${s.color}08`, border: `1px solid ${s.color}15` }}
+                    className="text-center py-2.5"
+                    style={{ borderRadius: "var(--radius-card-sm)", border: "1px solid var(--color-border)" }}
                   >
-                    <p className="text-[11px] mb-0.5">{s.icon}</p>
-                    <p className="text-[17px] font-extrabold" style={{ color: s.color }}>{s.value}</p>
-                    <p className="text-[9px] font-semibold text-text-light">{s.label}</p>
+                    <s.Icon size={15} className="mx-auto mb-1 text-text-sub" />
+                    <p className="text-[17px] font-bold text-text-main tabular-nums">{s.value}</p>
+                    <p className="text-[11px] text-text-light">{s.label}</p>
                   </div>
                 ))}
               </div>
               <Link
                 href="/mypage"
-                className="mt-3 flex items-center justify-center gap-1 py-2 rounded-xl text-[13px] font-bold text-primary press transition-transform"
-                style={{ background: "var(--color-primary-softer)" }}
+                className="mt-3 flex items-center justify-center gap-1 h-10 text-[13px] font-semibold text-text-main press transition-transform"
+                style={{ borderRadius: "var(--radius-input)", border: "1px solid var(--color-border)" }}
               >
                 업적·타이틀 전체 보기 <ChevronRight size={13} />
               </Link>
@@ -1511,17 +1479,17 @@ export default function HomeAuthed({
             <div className="flex items-center gap-2">
               <h2 className="text-[17px] font-bold text-text-main tracking-tight">오늘 할 일</h2>
             </div>
-            <span className="text-[11px] font-bold text-text-light">매일 리셋</span>
+            <span className="text-[11px] font-medium text-text-light">매일 리셋</span>
           </div>
           <div className="flex gap-2.5 overflow-x-auto no-scrollbar -mx-5 px-5 pb-1" style={{ scrollSnapType: "x proximity" }}>
             {([
-              { emoji: "🎁", title: "냥 상자 열기", sub: "오늘의 랜덤 보상", target: "daily-box", href: null, hot: true },
+              { Icon: Gift, title: "냥 상자 열기", sub: "오늘의 랜덤 보상", target: "daily-box", href: null, hot: true },
               streakInfo && streakInfo.streak > 0
-                ? { emoji: "🔥", title: `스트릭 ${streakInfo.streak}일째`, sub: "연속 돌봄 지키기", target: "streak-card", href: null, hot: false }
-                : { emoji: "🔥", title: "스트릭 시작", sub: "오늘 돌봄 기록하면 1일", target: "my-cats", href: null, hot: false },
-              { emoji: "📖", title: "동네 도감", sub: "만난 고양이 모으기", target: null, href: "/collection", hot: false },
-              { emoji: "🏆", title: "이번 주 랭킹", sub: "돌봄왕에 도전", target: "weekly-rank", href: null, hot: false },
-            ] as { emoji: string; title: string; sub: string; target: string | null; href: string | null; hot: boolean }[]).map((c) =>
+                ? { Icon: Flame, title: `스트릭 ${streakInfo.streak}일째`, sub: "연속 돌봄 지키기", target: "streak-card", href: null, hot: false }
+                : { Icon: Flame, title: "스트릭 시작", sub: "오늘 돌봄 기록하면 1일", target: "my-cats", href: null, hot: false },
+              { Icon: BookOpen, title: "동네 도감", sub: "만난 고양이 모으기", target: null, href: "/collection", hot: false },
+              { Icon: Trophy, title: "이번 주 랭킹", sub: "돌봄왕에 도전", target: "weekly-rank", href: null, hot: false },
+            ] as { Icon: typeof Gift; title: string; sub: string; target: string | null; href: string | null; hot: boolean }[]).map((c) =>
               c.href ? (
                 <Link
                   key={c.title}
@@ -1529,12 +1497,12 @@ export default function HomeAuthed({
                   className="shrink-0 flex flex-col gap-0.5 press-strong transition-transform"
                   style={{
                     width: 132, padding: "13px 13px 12px", borderRadius: "var(--radius-card)", scrollSnapAlign: "start",
-                    background: "var(--color-surface)", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)",
+                    background: "var(--color-surface)", border: "1px solid var(--color-border)",
                   }}
                 >
-                  <span className="text-[20px] mb-0.5">{c.emoji}</span>
-                  <span className="text-[13px] font-bold text-text-main tracking-tight">{c.title}</span>
-                  <span className="text-[11px] font-semibold text-text-light leading-snug">{c.sub}</span>
+                  <c.Icon size={20} className="mb-1 text-text-sub" />
+                  <span className="text-[13px] font-semibold text-text-main tracking-tight">{c.title}</span>
+                  <span className="text-[11px] text-text-light leading-snug">{c.sub}</span>
                 </Link>
               ) : (
                 <button
@@ -1544,13 +1512,13 @@ export default function HomeAuthed({
                   className="shrink-0 flex flex-col gap-0.5 text-left press-strong transition-transform"
                   style={{
                     width: 132, padding: "13px 13px 12px", borderRadius: "var(--radius-card)", scrollSnapAlign: "start",
-                    background: c.hot ? "var(--color-warning-soft)" : "var(--color-surface)",
-                    border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card-sm)",
+                    background: "var(--color-surface)",
+                    border: "1px solid var(--color-border)",
                   }}
                 >
-                  <span className="text-[20px] mb-0.5">{c.emoji}</span>
-                  <span className="text-[13px] font-bold text-text-main tracking-tight">{c.title}</span>
-                  <span className="text-[11px] font-semibold text-text-light leading-snug">{c.sub}</span>
+                  <c.Icon size={20} className={c.hot ? "mb-1 text-primary" : "mb-1 text-text-sub"} />
+                  <span className="text-[13px] font-semibold text-text-main tracking-tight">{c.title}</span>
+                  <span className="text-[11px] text-text-light leading-snug">{c.sub}</span>
                 </button>
               ),
             )}
@@ -1583,64 +1551,41 @@ export default function HomeAuthed({
             </div>
           </div>
           <div
-            className="p-4"
+            className="overflow-hidden"
             style={{
-              background: "var(--color-warning-soft)",
+              background: "var(--color-surface)",
               borderRadius: "var(--radius-card)",
-              border: "1px solid rgba(232,176,64,0.25)",
-              boxShadow: "var(--shadow-fab)",
+              border: "1px solid var(--color-border)",
             }}
           >
-            <div className="space-y-2.5">
-              {caretakerRank.map((r, idx) => {
-                const medal = idx === 0 ? "🥇" : idx === 1 ? "🥈" : "🥉";
-                const rankBg = idx === 0 ? "#E8B040" : idx === 1 ? "#B8B8B8" : "#C08860";
-                return (
-                  <div
-                    key={r.userId}
-                    className="flex items-center gap-3 px-3 py-2.5"
-                    style={{
-                      background: "var(--color-surface)",
-                      borderRadius: "var(--radius-input)",
-                      boxShadow: "var(--shadow-card-sm)",
-                    }}
-                  >
-                    <div
-                      className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-[20px]"
-                      style={{
-                        background: `${rankBg}20`,
-                      }}
-                    >
-                      {medal}
+            {caretakerRank.map((r, idx) => (
+              <div
+                key={r.userId}
+                className="flex items-center gap-3 px-4"
+                style={{ minHeight: 60, borderTop: idx === 0 ? "none" : "1px solid var(--color-divider)" }}
+              >
+                <span className="w-5 text-center text-[15px] font-bold text-text-main tabular-nums shrink-0">{idx + 1}</span>
+                <div
+                  className="w-9 h-9 rounded-full shrink-0 overflow-hidden"
+                  style={{
+                    background: r.avatarUrl
+                      ? `url('${r.avatarUrl}') center/cover`
+                      : "var(--color-surface-alt)",
+                    border: "1px solid var(--color-border)",
+                  }}
+                >
+                  {!r.avatarUrl && (
+                    <div className="w-full h-full flex items-center justify-center text-[13px] font-semibold text-text-sub">
+                      {r.name.slice(0, 1)}
                     </div>
-                    <div
-                      className="w-9 h-9 rounded-full shrink-0"
-                      style={{
-                        background: r.avatarUrl
-                          ? `url('${r.avatarUrl}') center/cover`
-                          : "var(--color-primary)",
-                        border: "2px solid #fff",
-                        boxShadow: "var(--shadow-raised)",
-                      }}
-                    >
-                      {!r.avatarUrl && (
-                        <div className="w-full h-full flex items-center justify-center text-[13px] font-bold text-white">
-                          {r.name.slice(0, 1)}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-bold text-text-main truncate tracking-tight">
-                        {r.name}
-                      </p>
-                      <p className="text-[11px] text-text-sub">
-                        이번 주 돌봄 <span className="font-bold" style={{ color: "var(--color-care)" }}>{r.careCount}</span>회
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] font-semibold text-text-main truncate">{r.name}</p>
+                  <p className="text-[13px] text-text-sub">이번 주 돌봄 {r.careCount}회</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -1671,43 +1616,30 @@ export default function HomeAuthed({
               >
                 <div className="relative">
                   <div
-                    className="rounded-2xl overflow-hidden mb-2"
+                    className="rounded-xl overflow-hidden mb-2"
                     style={{
                       aspectRatio: "1/1",
                       background: c.photo_url
                         ? `url('${c.photo_url}') center/cover`
-                        : "var(--color-gray-100)",
-                      boxShadow: "var(--shadow-raised)",
-                      border: "2px solid #fff",
+                        : "var(--color-surface-alt)",
+                      border: "1px solid var(--color-border)",
                     }}
                   />
                   <div
-                    className="absolute top-1.5 left-1.5 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white"
-                    style={{
-                      background: idx === 0
-                        ? "var(--color-warning)"
-                        : idx === 1
-                        ? "var(--color-gray-400)"
-                        : idx === 2
-                        ? "var(--color-primary-light)"
-                        : "rgba(44,44,44,0.7)",
-                      boxShadow: "var(--shadow-raised)",
-                    }}
+                    className="absolute top-1.5 left-1.5 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold"
+                    style={{ background: "var(--color-text-main)", color: "var(--color-surface)" }}
                   >
                     {idx + 1}
                   </div>
                   <div
                     className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 px-1.5 py-0.5 chip-square"
-                    style={{
-                      background: "var(--color-like)",
-                      boxShadow: "var(--shadow-raised)",
-                    }}
+                    style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
                   >
-                    <span style={{ fontSize: 9 }}>❤️</span>
-                    <span className="text-[11px] font-bold text-white">{c.like_count}</span>
+                    <Heart size={10} style={{ color: "var(--color-like)" }} fill="var(--color-like)" />
+                    <span className="text-[11px] font-semibold text-text-main tabular-nums">{c.like_count}</span>
                   </div>
                 </div>
-                <p className="text-[13px] font-bold text-text-main truncate">
+                <p className="text-[13px] font-semibold text-text-main truncate">
                   {c.name}
                 </p>
                 <p className="text-[11px] text-text-sub truncate">
@@ -1728,21 +1660,12 @@ export default function HomeAuthed({
         style={{
           background: "var(--color-surface)",
           borderRadius: "var(--radius-card)",
-          boxShadow: "var(--shadow-card)",
-          border: "1px solid var(--color-divider)",
+          border: "1px solid var(--color-border)",
         }}
       >
-        <div
-          className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-          style={{
-            background: "var(--color-warning)",
-            boxShadow: "var(--shadow-raised)",
-          }}
-        >
-          <Sparkles size={18} color="#fff" strokeWidth={2.3} />
-        </div>
+        <Sparkles size={20} className="shrink-0 mt-0.5 text-text-sub" />
         <div className="flex-1 min-w-0">
-          <p className="text-[13px] font-semibold text-text-main leading-relaxed">
+          <p className="text-[15px] text-text-main leading-relaxed">
             {fact}
           </p>
         </div>
@@ -1791,11 +1714,6 @@ export default function HomeAuthed({
               const label = a.years === 0
                 ? "오늘 구조됐어요"
                 : `만난 지 ${a.years}주년`;
-              const bgGradient = a.years >= 3
-                ? "var(--color-like)"
-                : a.years >= 1
-                ? "var(--color-like)"
-                : "var(--color-warning)";
               return (
                 <Link
                   key={a.catId}
@@ -1810,41 +1728,29 @@ export default function HomeAuthed({
                       aspectRatio: "5 / 3",
                       background: a.photoUrl
                         ? `url('${a.photoUrl}') center/cover`
-                        : "var(--color-gray-100)",
-                      boxShadow: "var(--shadow-fab)",
+                        : "var(--color-surface-alt)",
+                      border: "1px solid var(--color-border)",
                     }}
                   >
-                    {/* 그라디언트 오버레이 */}
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 55%)",
-                      }}
-                    />
                     {/* 상단: 기념일 뱃지 */}
-                    <div
-                      className="absolute top-2 left-2 right-2 flex items-center justify-between"
-                    >
+                    <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
                       <div
                         className="px-2.5 py-1 chip-square flex items-center gap-1"
-                        style={{
-                          background: bgGradient,
-                          boxShadow: "var(--shadow-raised)",
-                        }}
+                        style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
                       >
-                        <span style={{ fontSize: 11 }}>🎂</span>
-                        <span className="text-[11px] font-bold text-white tracking-tight">
+                        <Cake size={11} className="text-text-sub" />
+                        <span className="text-[11px] font-semibold text-text-main tracking-tight">
                           {label}
                         </span>
                       </div>
                     </div>
-                    {/* 하단: 이름·지역 */}
-                    <div className="absolute bottom-0 inset-x-0 px-3 py-2.5">
-                      <p className="text-[15px] font-bold text-white drop-shadow tracking-tight">
+                    {/* 하단: 이름·지역 — 단색 반투명 띠 */}
+                    <div className="absolute bottom-0 inset-x-0 px-3 py-2.5" style={{ background: "rgba(0,0,0,0.55)" }}>
+                      <p className="text-[15px] font-semibold tracking-tight" style={{ color: "var(--color-surface)" }}>
                         {a.name}
                       </p>
                       {a.region && (
-                        <p className="text-[11px] text-white/80 drop-shadow">
+                        <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.8)" }}>
                           {a.region}
                         </p>
                       )}
@@ -1891,30 +1797,22 @@ export default function HomeAuthed({
                   className="flex items-start gap-3 px-4 py-3"
                   style={{
                     background: "var(--color-surface)",
-                    borderRadius: "var(--radius-card-sm)",
-                    boxShadow: "var(--shadow-card-sm)",
-                    border: "1px solid rgba(176, 92, 54,0.18)",
+                    borderRadius: "var(--radius-card)",
+                    border: "1px solid var(--color-border)",
                   }}
                 >
-                  <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center text-[20px] shrink-0"
-                    style={{
-                      background: "var(--color-gray-100)",
-                    }}
-                  >
-                    {issue.emoji ?? "📰"}
-                  </div>
+                  <Newspaper size={20} className="shrink-0 mt-0.5 text-text-sub" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-bold text-text-main leading-tight">
+                    <p className="text-[15px] font-semibold text-text-main leading-snug">
                       {issue.title}
                     </p>
                     {issue.body && (
-                      <p className="text-[11px] text-text-sub mt-0.5 line-clamp-2">
+                      <p className="text-[13px] text-text-sub mt-0.5 line-clamp-2">
                         {issue.body}
                       </p>
                     )}
                     {issue.external_url && issue.external_label && (
-                      <p className="text-[11px] mt-1 font-bold" style={{ color: "var(--color-primary)" }}>
+                      <p className="text-[13px] mt-1 font-medium" style={{ color: "var(--color-primary)" }}>
                         {issue.external_label} →
                       </p>
                     )}
@@ -1946,23 +1844,20 @@ export default function HomeAuthed({
           className="block mb-3 press transition-transform"
         >
           <div
-            className="flex items-center justify-between px-4 py-2.5"
+            className="flex items-center justify-between px-4 py-3"
             style={{
-              background: "var(--color-primary-softer)",
-              borderRadius: "var(--radius-input)",
+              background: "var(--color-surface)",
+              borderRadius: "var(--radius-card)",
               border: "1px solid var(--color-border)",
             }}
           >
             <div className="flex items-center gap-2 min-w-0">
-              <Sparkles size={14} style={{ color: "var(--color-primary)" }} />
-              <span
-                className="text-[13px] font-bold truncate"
-                style={{ color: "var(--color-primary-dark)" }}
-              >
+              <Sparkles size={16} className="text-text-sub" />
+              <span className="text-[15px] font-medium text-text-main truncate">
                 지난 방문 이후 새 글 {newPostsCount}개
               </span>
             </div>
-            <ChevronRight size={14} style={{ color: "var(--color-primary)" }} />
+            <ChevronRight size={18} style={{ color: "var(--color-text-muted)" }} />
           </div>
         </Link>
       )}
@@ -1983,34 +1878,32 @@ export default function HomeAuthed({
               전체보기 <ChevronRight size={14} />
             </Link>
           </div>
-          <div className="space-y-2">
-            {popularPosts.map((post) => (
+          <div
+            className="overflow-hidden"
+            style={{
+              background: "var(--color-surface)",
+              borderRadius: "var(--radius-card)",
+              border: "1px solid var(--color-border)",
+            }}
+          >
+            {popularPosts.map((post, idx) => (
               <Link
                 key={post.id}
                 href={`/community/${post.id}`}
-                className="block press transition-transform"
+                className="flex items-center gap-3 px-4 press transition-transform"
+                style={{ minHeight: 60, borderTop: idx === 0 ? "none" : "1px solid var(--color-divider)" }}
               >
-                <div
-                  className="flex items-center gap-3 px-4 py-3"
-                  style={{
-                    background: "var(--color-surface)",
-                    borderRadius: "var(--radius-card-sm)",
-                    boxShadow: "var(--shadow-card-sm)",
-                    border: "1px solid var(--color-divider)",
-                  }}
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-bold text-text-main truncate">
-                      {post.title}
-                    </p>
-                    <p className="text-[11px] text-text-light mt-0.5">
-                      {post.authorName} · {formatRelativeTime(post.createdAt)}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0 text-[11px] text-text-light">
-                    <span>❤️ {post.likeCount}</span>
-                    <span>💬 {post.commentCount}</span>
-                  </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] font-semibold text-text-main truncate">
+                    {post.title}
+                  </p>
+                  <p className="text-[13px] text-text-light mt-0.5">
+                    {post.authorName} · {formatRelativeTime(post.createdAt)}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0 text-[13px] text-text-light">
+                  <span className="flex items-center gap-0.5"><Heart size={13} />{post.likeCount}</span>
+                  <span className="flex items-center gap-0.5"><MessageCircle size={13} />{post.commentCount}</span>
                 </div>
               </Link>
             ))}
@@ -2022,27 +1915,22 @@ export default function HomeAuthed({
       {SHOW_TIPS_ENTRY && (
       <Link
         href="/tips"
-        className="flex items-center gap-3 p-4 mb-4 press transition-transform"
+        className="flex items-center gap-3 px-4 mb-4 press transition-transform"
         style={{
-          background: "var(--color-primary-softer)",
+          minHeight: 64,
+          background: "var(--color-surface)",
           borderRadius: "var(--radius-card)",
-          boxShadow: "var(--shadow-card)",
-          border: "1px solid rgba(176, 92, 54,0.18)",
+          border: "1px solid var(--color-border)",
         }}
       >
-        <div
-          className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-          style={{ background: "var(--color-primary-soft)" }}
-        >
-          <Sparkles size={22} className="text-primary" />
-        </div>
+        <Sparkles size={20} className="shrink-0 text-text-sub" />
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-bold text-text-main">꿀팁게시판</p>
-          <p className="text-[11px] text-text-sub mt-0.5">
+          <p className="text-[15px] font-semibold text-text-main">꿀팁게시판</p>
+          <p className="text-[13px] text-text-sub mt-0.5">
             길고양이 돌봄·TNR·구조 정보글 모음
           </p>
         </div>
-        <ChevronRight size={16} className="text-primary opacity-70" />
+        <ChevronRight size={18} style={{ color: "var(--color-text-muted)" }} />
       </Link>
       )}
 
@@ -2062,10 +1950,12 @@ export default function HomeAuthed({
           <button
             type="button"
             onClick={() => document.getElementById("my-cats")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-white text-[15px] font-bold press transition-transform pointer-events-auto"
+            className="w-full flex items-center justify-center gap-2 h-12 text-[15px] font-semibold press transition-transform pointer-events-auto"
             style={{
               background: "var(--color-primary)",
-              boxShadow: "var(--shadow-primary)",
+              color: "var(--color-surface)",
+              borderRadius: "var(--radius-card)",
+              boxShadow: "var(--shadow-fab)",
             }}
           >
             돌봄 기록하기

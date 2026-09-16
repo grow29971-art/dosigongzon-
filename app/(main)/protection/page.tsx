@@ -1,5 +1,9 @@
 "use client";
 
+// 보호지침 목록 (2026-09-16 「익숙한 동네앱」 리디자인)
+// 카테고리별 틴트 아이콘 카드(벤토 그리드) → 헤어라인 구분선 리스트(회색 선 아이콘 + 제목 + 한 줄 부제 + chevron).
+// 데이터·동선(외부 링크·전화·읽음 진행률)은 그대로.
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
@@ -12,56 +16,39 @@ import {
   Hand,
   ChevronRight,
   Pill,
-  Siren,
-  Heart,
-  HeartHandshake,
   Utensils,
   Home as HomeIcon,
   Stethoscope,
   CheckCircle2,
-  Sparkles,
   AlertTriangle,
   Baby,
   Scissors,
   HelpCircle,
+  ExternalLink,
 } from "lucide-react";
 import { getProgress, getReadSlugs } from "@/lib/protection-progress";
 
-/* ═══ 카드 데이터 ═══ */
+/* ═══ 가이드 데이터 ═══ */
 const cards: {
   title: string;
   subtitle: string;
   Icon: typeof BookOpenText;
-  iconBg: string;
-  iconColor: string;
-  glowColor: string;
   type: "link" | "external" | "tel";
   href: string;
-  wide?: boolean;
-  full?: boolean;
-  highlight?: boolean;
 }[] = [
   {
     title: "돌봄 가이드",
     subtitle: "2026 개정 — 농림축산식품부 공식 PDF",
     Icon: BookOpenText,
-    iconBg: "#4A7BA8",
-    iconColor: "#FFFFFF",
-    glowColor: "74,123,168",
     type: "external",
     // 농식품부 동물복지정책과 「개정 길고양이 돌봄 가이드라인(수정)」 2026-05-19 게시본.
     // 이전 링크(795/577856)는 농식품부가 다른 자료로 슬롯 재활용해 농지법 PDF로 잘못 노출되던 버그였음.
     href: "https://www.mafra.go.kr/bbs/home/791/597438/download.do",
-    wide: true,
-    highlight: true,
   },
   {
     title: "구청 연락처",
     subtitle: "시·군·구별 동물보호 담당부서",
     Icon: Phone,
-    iconBg: "#5BA876",
-    iconColor: "#FFFFFF",
-    glowColor: "91,168,118",
     type: "link",
     href: "/protection/district-contacts",
   },
@@ -69,9 +56,6 @@ const cards: {
     title: "병원 찾기",
     subtitle: "근처 협력병원 검색",
     Icon: BriefcaseMedical,
-    iconBg: "#E88D5A",
-    iconColor: "#FFFFFF",
-    glowColor: "232,141,90",
     type: "link",
     href: "/hospitals",
   },
@@ -79,31 +63,20 @@ const cards: {
     title: "TNR 신청",
     subtitle: "국가동물보호정보시스템 바로가기",
     Icon: Globe,
-    iconBg: "#48A59E",
-    iconColor: "#FFFFFF",
-    glowColor: "72,165,158",
     type: "external",
     href: "https://www.animal.go.kr",
-    wide: true,
   },
   {
     title: "법률 가이드",
     subtitle: "동물보호법 · 학대/훼손 대응 매뉴얼",
     Icon: ShieldCheck,
-    iconBg: "#8B65B8",
-    iconColor: "#FFFFFF",
-    glowColor: "139,101,184",
     type: "link",
     href: "/protection/legal",
-    full: true,
   },
   {
     title: "냥줍 가이드",
     subtitle: "관찰 · 체온 · 급여 3단계",
     Icon: Cat,
-    iconBg: "#E8B040",
-    iconColor: "#FFFFFF",
-    glowColor: "232,176,64",
     type: "link",
     href: "/protection/kitten-guide",
   },
@@ -111,133 +84,89 @@ const cards: {
     title: "응급 구조 가이드",
     subtitle: "안전확보 · 지혈 · 이송 절차",
     Icon: BriefcaseMedical,
-    iconBg: "#D85555",
-    iconColor: "#FFFFFF",
-    glowColor: "216,85,85",
     type: "link",
     href: "/protection/emergency-guide",
-    wide: true,
   },
   {
     title: "포획 가이드",
     subtitle: "준비물 · 설치 · 대기 · 주의사항",
     Icon: Hand,
-    iconBg: "#8BA86B",
-    iconColor: "#FFFFFF",
-    glowColor: "139,168,107",
     type: "link",
     href: "/protection/trapping-guide",
-    full: true,
   },
   {
     title: "질병 가이드",
     subtitle: "길고양이 흔한 10가지 질병 · 증상·대응·예방",
     Icon: Stethoscope,
-    iconBg: "#D85555",
-    iconColor: "#FFFFFF",
-    glowColor: "216,85,85",
     type: "link",
     href: "/protection/disease-guide",
-    wide: true,
-    highlight: true,
   },
   {
     title: "약품 가이드",
     subtitle: "동물약국 영양제 · 구충제 · 상처 관리",
     Icon: Pill,
-    iconBg: "#D4708F",
-    iconColor: "#FFFFFF",
-    glowColor: "212,112,143",
     type: "link",
     href: "/protection/pharmacy-guide",
-    wide: true,
-    highlight: true,
   },
   {
     title: "먹이 가이드",
     subtitle: "주면 안 되는 음식 · 안전한 급식 원칙",
     Icon: Utensils,
-    iconBg: "#E88D5A",
-    iconColor: "#FFFFFF",
-    glowColor: "232,141,90",
     type: "link",
     href: "/protection/feeding-guide",
-    wide: true,
   },
   {
     title: "쉼터 · 겨울나기",
     subtitle: "숨숨집 DIY · 설치 원칙 · 계절 운영",
     Icon: HomeIcon,
-    iconBg: "#4A7BA8",
-    iconColor: "#FFFFFF",
-    glowColor: "74,123,168",
     type: "link",
     href: "/protection/shelter-guide",
-    wide: true,
   },
   {
     title: "자주 묻는 질문",
     subtitle: "발견·구조·TNR·입양·법 — 30문 정리",
     Icon: HelpCircle,
-    iconBg: "#6B8DAE",
-    iconColor: "#FFFFFF",
-    glowColor: "107,141,174",
     type: "link",
     href: "/faq",
-    wide: true,
   },
 ];
 
-/* ═══ 카드 컴포넌트 ═══ */
-function InfoCard({ card, isRead }: { card: (typeof cards)[number]; isRead?: boolean }) {
+/* ═══ 리스트 행 ═══ */
+function GuideRow({ card, isRead }: { card: (typeof cards)[number]; isRead?: boolean }) {
   const inner = (
-    <div
-      className="relative overflow-hidden px-5 py-[18px]"
-      style={{
-        background: "var(--color-surface)",
-        borderRadius: "var(--radius-card)",
-        boxShadow: "var(--shadow-card-sm)",
-        border: card.highlight
-          ? `1.5px solid rgba(${card.glowColor},0.30)`
-          : "1px solid var(--color-divider)",
-      }}
-    >
-      <div className="flex items-center gap-4 relative z-10">
-        {/* 아이콘: 컬러 bg + 광택 + glow */}
-        <div
-          className="w-[48px] h-[48px] rounded-2xl flex items-center justify-center shrink-0 relative dark-icon-box"
-          style={{ backgroundColor: `${card.iconBg}15` }}
-        >
-          <card.Icon size={22} color={card.iconBg} strokeWidth={2} />
+    <>
+      <div className="w-10 h-10 flex items-center justify-center shrink-0 text-text-sub">
+        <card.Icon size={22} strokeWidth={1.8} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <p className="text-[15px] font-semibold text-text-main leading-snug truncate">{card.title}</p>
           {isRead && (
-            <div
-              className="absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center"
-              style={{ background: "var(--color-sage)", border: "1.5px solid #fff", borderRadius: "var(--radius-square-sm)" }}
-            >
-              <CheckCircle2 size={10} color="#fff" strokeWidth={3} />
-            </div>
+            <CheckCircle2
+              size={14}
+              className="shrink-0"
+              style={{ color: "var(--color-sage)" }}
+              aria-label="읽음"
+            />
           )}
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-bold text-text-main tracking-tight leading-tight">
-            {card.title}
-          </p>
-        </div>
-        <ChevronRight
-          size={18}
-          strokeWidth={2.5}
-          className="shrink-0"
-          style={{ color: card.iconBg, opacity: 0.7 }}
-        />
+        <p className="text-[13px] text-text-sub leading-snug mt-0.5 truncate">{card.subtitle}</p>
       </div>
-    </div>
+      {card.type === "external" ? (
+        <ExternalLink size={16} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
+      ) : (
+        <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
+      )}
+    </>
   );
 
-  const className = "block press";
+  const className =
+    "flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press";
+  const style = { minHeight: 64 };
 
   if (card.type === "link") {
     return (
-      <Link href={card.href} className={className}>
+      <Link href={card.href} className={className} style={style}>
         {inner}
       </Link>
     );
@@ -249,6 +178,7 @@ function InfoCard({ card, isRead }: { card: (typeof cards)[number]; isRead?: boo
       target={card.type === "external" ? "_blank" : undefined}
       rel={card.type === "external" ? "noopener noreferrer" : undefined}
       className={className}
+      style={style}
     >
       {inner}
     </a>
@@ -266,12 +196,12 @@ const breadcrumbLd = {
 
 /* ═══ 상황별 빠른 진입 칩 ═══ */
 const QUICK_SITUATIONS = [
-  { label: "다친 아이 발견", icon: AlertTriangle, color: "#D85555", href: "/protection/emergency-guide" },
-  { label: "새끼를 봤어요", icon: Baby, color: "#E8B040", href: "/protection/kitten-guide" },
-  { label: "먹이 줘도 되나?", icon: Utensils, color: "#E88D5A", href: "/protection/feeding-guide" },
-  { label: "TNR 알아보기", icon: Scissors, color: "#8BA86B", href: "/protection/trapping-guide" },
-  { label: "쉼터 만들기", icon: HomeIcon, color: "#4A7BA8", href: "/protection/shelter-guide" },
-  { label: "약·영양제", icon: Pill, color: "#D4708F", href: "/protection/pharmacy-guide" },
+  { label: "다친 아이 발견", icon: AlertTriangle, href: "/protection/emergency-guide" },
+  { label: "새끼를 봤어요", icon: Baby, href: "/protection/kitten-guide" },
+  { label: "먹이 줘도 되나?", icon: Utensils, href: "/protection/feeding-guide" },
+  { label: "TNR 알아보기", icon: Scissors, href: "/protection/trapping-guide" },
+  { label: "쉼터 만들기", icon: HomeIcon, href: "/protection/shelter-guide" },
+  { label: "약·영양제", icon: Pill, href: "/protection/pharmacy-guide" },
 ];
 
 // href에서 slug 추출 ("/protection/foo" → "foo")
@@ -300,14 +230,7 @@ export default function ProtectionPage() {
     return slug ? readSet.has(slug) : false;
   };
 
-  const row1 = cards.slice(0, 1);
-  const row2 = cards.slice(1, 3);
-  const row3 = cards.slice(3, 4);
-  const row4 = cards.slice(4, 5);
-  const row5a = cards.slice(5, 6);
-  const row5b = cards.slice(6, 7);
-  const row6 = cards.slice(7, 8);
-  const row7 = cards.slice(8, 9);
+  const done = progress.read === progress.total;
 
   return (
     <div className="px-4 pt-14 pb-8">
@@ -317,19 +240,15 @@ export default function ProtectionPage() {
       />
       {/* ── 헤더 ── */}
       <div className="mb-4 px-1">
-        <div className="flex items-baseline gap-2 mb-1">
-          <h1 className="text-[24px] font-bold text-text-main tracking-tight">
-            보호지침
-          </h1>
-        </div>
+        <h1 className="text-[24px] font-bold text-text-main tracking-tight mb-1">보호지침</h1>
         <p className="text-[13px] text-text-sub leading-relaxed">
-          길고양이 보호에 필요한 모든 정보를 한 곳에
+          길고양이 보호에 필요한 정보를 한 곳에
         </p>
       </div>
 
       {/* ── 상황별 빠른 선택 ── */}
       <div className="mb-4">
-        <p className="text-[11px] font-bold text-text-sub mb-2 px-1">지금 어떤 상황인가요?</p>
+        <p className="text-[13px] font-semibold text-text-sub mb-2 px-1">지금 어떤 상황인가요?</p>
         <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
           {QUICK_SITUATIONS.map((s) => {
             const Icon = s.icon;
@@ -337,16 +256,15 @@ export default function ProtectionPage() {
               <Link
                 key={s.label}
                 href={s.href}
-                className="shrink-0 flex items-center gap-1.5 px-3 py-2 chip-square press"
+                className="shrink-0 inline-flex items-center gap-1 h-8 px-3 chip-square press text-[13px] font-semibold"
                 style={{
-                  background: `${s.color}10`,
-                  border: `1px solid ${s.color}30`,
+                  background: "var(--color-surface)",
+                  border: "1px solid var(--color-border)",
+                  color: "var(--color-text-sub)",
                 }}
               >
-                <Icon size={13} color={s.color} strokeWidth={2.4} />
-                <span className="text-[13px] font-bold" style={{ color: s.color }}>
-                  {s.label}
-                </span>
+                <Icon size={14} strokeWidth={2} />
+                <span>{s.label}</span>
               </Link>
             );
           })}
@@ -355,163 +273,100 @@ export default function ProtectionPage() {
 
       {/* ── 학습 진행률 ── */}
       <div
-        className="mb-5 rounded-2xl px-4 py-3 flex items-center gap-3"
+        className="mb-4 px-4 py-3 flex items-center gap-3"
         style={{
-          background: progress.read === progress.total
-            ? "linear-gradient(135deg, #E8F4E8 0%, #D5EDD5 100%)"
-            : "linear-gradient(135deg, #FFF8F2 0%, #FCEFD9 100%)",
-          border: `1px solid ${progress.read === progress.total ? "rgba(34,163,102,0.2)" : "rgba(176, 92, 54,0.18)"}`,
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "var(--radius-card)",
         }}
       >
-        <Sparkles size={16} className={progress.read === progress.total ? "text-[#3F5B42]" : "text-[var(--color-primary)]"} />
         <div className="flex-1 min-w-0">
-          <p className="text-[13px] font-bold text-text-main">
-            {progress.read === progress.total
-              ? "9개 가이드 모두 학습 완료! 🎉"
-              : `9개 중 ${progress.read}개 학습`}
+          <p className="text-[13px] font-semibold text-text-main">
+            {done ? "9개 가이드 모두 읽었어요" : `9개 중 ${progress.read}개 읽음`}
           </p>
-          <div className="mt-1.5 h-1.5 rounded-full bg-white/60 overflow-hidden">
+          <div className="progress-bar mt-1.5">
             <div
-              className="h-full rounded-full transition-all duration-500"
               style={{
                 width: `${progress.percent}%`,
-                background: progress.read === progress.total ? "var(--color-sage)" : "var(--color-primary)",
+                background: done ? "var(--color-sage)" : "var(--color-primary)",
               }}
             />
           </div>
         </div>
-        <span className="text-[13px] font-bold tabular-nums" style={{ color: progress.read === progress.total ? "#3F5B42" : "var(--color-primary)" }}>
+        <span
+          className="text-[13px] font-semibold tabular-nums shrink-0"
+          style={{ color: done ? "var(--color-sage)" : "var(--color-primary)" }}
+        >
           {progress.percent}%
         </span>
       </div>
 
-      {/* ── 벤토 그리드 ── */}
-      <div className="space-y-3">
-        {row1.map((c) => (
-          <InfoCard key={c.title} card={c} isRead={isRead(c.href)} />
-        ))}
-
-        <div className="grid grid-cols-2 gap-3">
-          {row2.map((c) => (
-            <InfoCard key={c.title} card={c} isRead={isRead(c.href)} />
-          ))}
-        </div>
-
-        {row3.map((c) => (
-          <InfoCard key={c.title} card={c} isRead={isRead(c.href)} />
-        ))}
-
-        {row4.map((c) => (
-          <InfoCard key={c.title} card={c} isRead={isRead(c.href)} />
-        ))}
-
-        <div className="grid grid-cols-5 gap-3">
-          <div className="col-span-2">
-            {row5a.map((c) => (
-              <InfoCard key={c.title} card={c} isRead={isRead(c.href)} />
-            ))}
-          </div>
-          <div className="col-span-3">
-            {row5b.map((c) => (
-              <InfoCard key={c.title} card={c} isRead={isRead(c.href)} />
-            ))}
-          </div>
-        </div>
-
-        {row6.map((c) => (
-          <InfoCard key={c.title} card={c} isRead={isRead(c.href)} />
-        ))}
-
-        {row7.map((c) => (
-          <InfoCard key={c.title} card={c} isRead={isRead(c.href)} />
+      {/* ── 가이드 목록 ── */}
+      <div>
+        {cards.map((c) => (
+          <GuideRow key={c.title} card={c} isRead={isRead(c.href)} />
         ))}
       </div>
 
       {/* ── 긴급 연락처 ── */}
       <div className="mt-6">
-        <div className="mb-3 px-1">
-          <h2 className="text-[17px] font-bold text-text-main tracking-tight">
-            긴급 연락처
-          </h2>
+        <div className="mb-1 px-1">
+          <h2 className="text-[17px] font-bold text-text-main tracking-tight">긴급 연락처</h2>
         </div>
-        <div className="grid grid-cols-2 gap-2.5">
+        <div>
           {EMERGENCY_CONTACTS.map((c) => {
             const Icon = c.icon;
             return (
               <a
                 key={c.label}
                 href={`tel:${c.tel}`}
-                className="py-4 px-2 flex flex-col items-center press"
-                style={{
-                  background: `${c.accent}0D`,
-                  borderRadius: "var(--radius-card)",
-                  border: `1.5px solid ${c.accent}20`,
-                }}
+                className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
+                style={{ minHeight: 56 }}
               >
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-2"
-                  style={{ backgroundColor: `${c.accent}15` }}
-                >
-                  <Icon size={20} color={c.accent} strokeWidth={2} />
+                <div className="w-10 h-10 flex items-center justify-center shrink-0 text-text-sub">
+                  <Icon size={20} strokeWidth={1.8} />
                 </div>
-                <p className="text-[13px] font-bold text-text-main tracking-tight">
-                  {c.label}
-                </p>
-                <p
-                  className="text-[11px] font-bold mt-0.5 tracking-tight"
-                  style={{ color: c.accent }}
-                >
+                <p className="flex-1 min-w-0 text-[15px] font-semibold text-text-main truncate">{c.label}</p>
+                <span className="text-[14px] font-medium tabular-nums shrink-0" style={{ color: "var(--color-primary)" }}>
                   {c.tel}
-                </p>
+                </span>
               </a>
             );
           })}
         </div>
-        <p className="text-[11px] text-text-light mt-2.5 px-1 leading-relaxed">
+        <p className="text-[11px] text-text-light mt-2 px-1 leading-relaxed">
           학대 현장 목격 시 경찰 우선 · 보호/상담은 동물권 단체
         </p>
       </div>
 
       {/* ── 길고양이 급식소 커뮤니티 ── */}
       <div className="mt-6 mb-4">
-        <div className="mb-3 px-1">
-          <h2 className="text-[17px] font-bold text-text-main tracking-tight">
-            급식소 커뮤니티
-          </h2>
+        <div className="mb-1 px-1">
+          <h2 className="text-[17px] font-bold text-text-main tracking-tight">급식소 커뮤니티</h2>
         </div>
-        <div className="space-y-2">
-          <a
-            href="https://cafe.naver.com/icfc0520"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl press"
-            style={{ background: "#FFFFFF", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card)" }}
-          >
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: "rgba(3,199,90,0.1)" }}>
-              <span className="text-[17px]">🍚</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[15px] font-bold text-text-main">길냥이 급식소</p>
-              <p className="text-[11px] text-text-sub mt-0.5">네이버 카페 · 길고양이 급식 정보 공유</p>
-            </div>
-            <span className="text-[11px] font-bold shrink-0" style={{ color: "#03C75A" }}>NAVER →</span>
-          </a>
-          <a
-            href="https://cafe.naver.com/caretaker"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl press"
-            style={{ background: "#FFFFFF", border: "1px solid var(--color-divider)", boxShadow: "var(--shadow-card)" }}
-          >
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: "rgba(3,199,90,0.1)" }}>
-              <span className="text-[17px]">🐱</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[15px] font-bold text-text-main">길고양이 급식소</p>
-              <p className="text-[11px] text-text-sub mt-0.5">네이버 카페 · 전국 급식소 위치 및 운영</p>
-            </div>
-            <span className="text-[11px] font-bold shrink-0" style={{ color: "#03C75A" }}>NAVER →</span>
-          </a>
+        <div>
+          {COMMUNITY_LINKS.map((c) => (
+            <a
+              key={c.href}
+              href={c.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-1 py-3 border-b border-divider last:border-b-0 press"
+              style={{ minHeight: 64 }}
+            >
+              <div className="w-10 h-10 flex items-center justify-center shrink-0 text-text-sub">
+                <Globe size={20} strokeWidth={1.8} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[15px] font-semibold text-text-main truncate">{c.title}</p>
+                <p className="text-[13px] text-text-sub mt-0.5 truncate">{c.subtitle}</p>
+              </div>
+              <span className="text-[11px] font-semibold shrink-0" style={{ color: "#03C75A" }}>
+                NAVER
+              </span>
+              <ExternalLink size={16} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
+            </a>
+          ))}
         </div>
       </div>
     </div>
@@ -520,28 +375,22 @@ export default function ProtectionPage() {
 
 /* ═══ 긴급 연락처 데이터 ═══ */
 const EMERGENCY_CONTACTS = [
+  { label: "경찰", tel: "112", icon: Phone },
+  { label: "카라", tel: "02-3482-0999", icon: Phone },
+  { label: "케어", tel: "02-313-8886", icon: Phone },
+  { label: "고보협", tel: "070-7426-4888", icon: Phone },
+];
+
+/* ═══ 급식소 커뮤니티 링크 ═══ */
+const COMMUNITY_LINKS = [
   {
-    label: "경찰",
-    tel: "112",
-    icon: Siren,
-    accent: "#D85555",
+    href: "https://cafe.naver.com/icfc0520",
+    title: "길냥이 급식소",
+    subtitle: "네이버 카페 · 길고양이 급식 정보 공유",
   },
   {
-    label: "카라",
-    tel: "02-3482-0999",
-    icon: Heart,
-    accent: "#5BA876",
-  },
-  {
-    label: "케어",
-    tel: "02-313-8886",
-    icon: HeartHandshake,
-    accent: "#E88D5A",
-  },
-  {
-    label: "고보협",
-    tel: "070-7426-4888",
-    icon: Cat,
-    accent: "#8B6FB8",
+    href: "https://cafe.naver.com/caretaker",
+    title: "길고양이 급식소",
+    subtitle: "네이버 카페 · 전국 급식소 위치 및 운영",
   },
 ];

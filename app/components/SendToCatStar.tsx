@@ -6,6 +6,7 @@ import { Star, X, Volume2, VolumeX } from "lucide-react";
 import { sendCatToStar } from "@/lib/cats-repo";
 import { useToast } from "@/app/components/Toast";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import { catArtWalkSvg } from "@/lib/cat-art";
 
 type Phase = "confirm" | "flying" | "done";
 
@@ -19,9 +20,10 @@ interface Props {
 // ── 무지개다리 곡선 ──
 // 화면 왼쪽 아래에서 시작해 오른쪽 위 하늘로 이어진다. viewBox 360×300 기준.
 // 고양이가 걷는 길(WALK)은 다리 윗면에서 살짝 띄운 같은 형태의 곡선.
+// 2026-09-16 리디자인: 7색 무지개 대신 흰 선 7겹(투명도만 다름) — 장식색·글로우 금지 규칙.
 const BRIDGE = "M -10 300 Q 150 130 370 30";
 const WALK = "M -10 282 Q 150 112 370 12";
-const RAINBOW = ["#E85D5D", "#E8944A", "#E8C84A", "#6FB86F", "#4A9BD4", "#5B6FC9", "#9B6FC9"];
+const BRIDGE_LAYERS = [0.95, 0.8, 0.66, 0.54, 0.44, 0.34, 0.26];
 
 const SOUND_KEY = "memorial_sound_off";
 
@@ -181,9 +183,7 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
       className="fixed inset-0 flex items-center justify-center px-6"
       style={{
         zIndex: 100,
-        background: scene
-          ? "linear-gradient(180deg, #0b0918 0%, #1d1735 38%, #3b2b52 72%, #5a3f63 100%)"
-          : "rgba(20,16,30,0.62)",
+        background: scene ? "var(--color-gray-900)" : "rgba(0,0,0,0.55)",
         transition: "background 700ms ease",
       }}
       role="dialog"
@@ -202,7 +202,7 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
                 top: `${s.top}%`,
                 width: s.size,
                 height: s.size,
-                background: "#fff",
+                background: "var(--color-surface)",
                 opacity: s.opacity,
                 animation: `starTwinkle 3.2s ease-in-out ${s.delay}s infinite`,
               }}
@@ -231,62 +231,59 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
       {/* ── 1) 확인 ── */}
       {phase === "confirm" && (
         <div
-          className="relative w-full bg-white overflow-hidden"
-          style={{ maxWidth: 400, borderRadius: "var(--radius-sheet)", boxShadow: "var(--shadow-modal)" }}
+          className="relative w-full overflow-hidden"
+          style={{ maxWidth: 400, background: "var(--color-surface)", borderRadius: "var(--radius-modal)", boxShadow: "var(--shadow-modal)" }}
         >
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center press-strong transition-transform"
-            style={{ background: "rgba(0,0,0,0.05)" }}
+            className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center press-strong"
+            style={{ background: "var(--color-gray-100)" }}
             aria-label="닫기"
           >
-            <X size={17} className="text-gray-500" />
+            <X size={17} className="text-text-sub" />
           </button>
 
-          <div className="px-6 pt-8 pb-6">
-            <div
-              className="w-14 h-14 rounded-full flex items-center justify-center mb-4"
-              style={{ background: "linear-gradient(135deg, #3a2c4d, #6b5b8a)" }}
-            >
-              <Star size={24} color="#FFE9A8" fill="#FFE9A8" />
+          <div className="px-6 pt-7 pb-6">
+            <div className="mb-3 text-text-sub">
+              <Star size={22} />
             </div>
 
-            <h2 className="text-[20px] font-bold text-gray-900 mb-2">
+            <h2 className="text-[20px] font-bold text-text-main mb-2">
               {cat.name}(이)를 고양이별로 보낼까요?
             </h2>
-            <p className="text-[15px] leading-[1.65] text-gray-600 mb-5">
-              지도에서는 내려가지만 <b className="text-gray-800">사라지지 않아요.</b> 지금까지 남긴 돌봄
-              기록과 사진, 카드는 그대로 고양이별에 보관되고 언제든 다시 볼 수 있어요.
+            <p className="text-[15px] leading-[1.65] text-text-sub mb-5">
+              지도에서는 내려가지만 <b className="text-text-main">사라지지 않아요.</b> 돌봄 기록과 사진은
+              고양이별에 그대로 남아요.
             </p>
 
-            <label className="block text-[13px] font-semibold text-gray-700 mb-2">
-              마지막 인사 <span className="font-normal text-gray-400">(선택)</span>
+            <label className="block text-[13px] font-semibold text-text-sub mb-2">
+              마지막 인사 <span className="font-normal text-text-light">(선택)</span>
             </label>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value.slice(0, 200))}
               rows={3}
               placeholder="하고 싶은 말이 있다면 남겨주세요."
-              className="w-full text-[15px] leading-[1.6] px-4 py-3 outline-none resize-none"
-              style={{ borderRadius: "var(--radius-input)", background: "#F6F3F0", border: "1px solid #E7E0DA" }}
+              className="w-full text-[15px] leading-[1.6] px-4 py-3 outline-none resize-none text-text-main"
+              style={{ borderRadius: "var(--radius-input)", background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
             />
-            <div className="text-right text-[11px] text-gray-400 mt-1 mb-5">{note.length}/200</div>
+            <div className="text-right text-[11px] text-text-light mt-1 mb-5">{note.length}/200</div>
 
             <button
               onClick={handleSend}
               disabled={busy}
-              className="w-full h-[52px] rounded-2xl text-white text-[15px] font-bold press transition-transform disabled:opacity-60"
-              style={{ background: "linear-gradient(135deg, #3a2c4d, #6b5b8a)" }}
+              className="w-full h-12 text-white text-[15px] font-semibold press disabled:opacity-60"
+              style={{ background: "var(--color-primary)", borderRadius: "var(--radius-input)" }}
             >
               {busy ? "보내는 중…" : "고양이별로 보내기"}
             </button>
             <button
               onClick={onClose}
-              className="w-full h-[46px] mt-2 text-[15px] font-medium text-gray-500"
+              className="w-full h-11 mt-2 text-[15px] font-medium text-text-sub"
             >
               아직 아니에요
             </button>
-            <p className="text-[13px] text-gray-400 text-center mt-1">
+            <p className="text-[13px] text-text-light text-center mt-1">
               잘못 보냈다면 고양이별에서 다시 지도로 되돌릴 수 있어요.
             </p>
           </div>
@@ -302,25 +299,16 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
               className="absolute inset-0 w-full h-full overflow-visible"
               aria-hidden="true"
             >
-              <defs>
-                <filter id="bridgeGlow" x="-30%" y="-30%" width="160%" height="160%">
-                  <feGaussianBlur stdDeviation="4" result="b" />
-                  <feMerge>
-                    <feMergeNode in="b" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-
-              {/* 무지개 7색 — 아래에서 위로 한 겹씩 그려진다 */}
-              <g filter="url(#bridgeGlow)" opacity="0.92">
-                {RAINBOW.map((color, i) => (
+              {/* 다리 7겹 — 아래에서 위로 한 겹씩 그려진다 (흰 선, 투명도만 다름) */}
+              <g>
+                {BRIDGE_LAYERS.map((alpha, i) => (
                   <path
-                    key={color}
+                    key={alpha}
                     d={BRIDGE}
                     fill="none"
-                    stroke={color}
-                    strokeWidth="7"
+                    stroke="var(--color-surface)"
+                    strokeOpacity={alpha}
+                    strokeWidth="6"
                     strokeLinecap="round"
                     transform={`translate(0 ${i * 6.5})`}
                     style={{
@@ -337,7 +325,7 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
                 <circle
                   key={t}
                   r="2.6"
-                  fill="#FFE9A8"
+                  fill="var(--color-surface)"
                   opacity="0"
                   style={{
                     offsetPath: `path("${WALK}")`,
@@ -372,34 +360,37 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
                     height: 60,
                     marginLeft: -30,
                     marginTop: -30,
-                    border: "2.5px solid rgba(255,255,255,0.85)",
-                    boxShadow: "0 0 26px rgba(255,233,168,0.7)",
-                    background: "#2a2340",
+                    border: "2px solid var(--color-surface)",
+                    background: "var(--color-gray-800)",
                   }}
                 >
                   {photo ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={photo} alt="" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[24px]">🐈</div>
+                    <div
+                      className="w-full h-full flex items-center justify-center"
+                      aria-hidden
+                      dangerouslySetInnerHTML={{ __html: catArtWalkSvg(cat.id, 44, { walking: false }) }}
+                    />
                   )}
                 </div>
               </div>
             </div>
 
-            {/* 다리 끝의 빛 — 고양이가 도착할 즈음 부풀어 오른다 */}
+            {/* 다리 끝의 별 — 고양이가 도착할 즈음 커진다 */}
             <div
-              className="absolute rounded-full"
+              className="absolute"
               style={{
-                right: "-2%",
-                top: "1%",
-                width: 84,
-                height: 84,
-                background: "radial-gradient(circle, rgba(255,247,214,0.95) 0%, rgba(255,233,168,0.42) 45%, rgba(255,233,168,0) 72%)",
+                right: "2%",
+                top: "4%",
+                color: "var(--color-surface)",
                 opacity: 0,
                 animation: "arrivalLight 1.3s ease-out 4s forwards",
               }}
-            />
+            >
+              <Star size={28} />
+            </div>
           </div>
 
           <p
@@ -417,8 +408,8 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
           className="relative flex flex-col items-center w-full"
           style={{ maxWidth: 340, animation: "starFadeIn 900ms ease both" }}
         >
-          <div style={{ animation: "arrivedGlow 2.6s ease-in-out infinite" }}>
-            <Star size={44} color="#FFE9A8" fill="#FFE9A8" />
+          <div style={{ animation: "arrivedGlow 2.6s ease-in-out infinite", color: "var(--color-surface)" }}>
+            <Star size={44} />
           </div>
           <h2 className="text-[20px] font-bold text-white mt-6 text-center">
             {cat.name}(이)가 무지개다리를 건넜어요
@@ -431,12 +422,12 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
 
           <button
             onClick={() => router.push(`/memorial/${cat.id}`)}
-            className="w-full h-[52px] rounded-2xl mt-8 text-[15px] font-bold press transition-transform"
-            style={{ background: "rgba(255,255,255,0.94)", color: "#3a2c4d" }}
+            className="w-full h-12 mt-8 text-[15px] font-semibold press"
+            style={{ background: "var(--color-surface)", color: "var(--color-text-main)", borderRadius: "var(--radius-input)" }}
           >
             함께한 기록 보기
           </button>
-          <button onClick={onClose} className="w-full h-[46px] mt-1 text-[15px]" style={{ color: "rgba(255,255,255,0.6)" }}>
+          <button onClick={onClose} className="w-full h-11 mt-1 text-[15px]" style={{ color: "rgba(255,255,255,0.6)" }}>
             닫기
           </button>
         </div>
@@ -468,15 +459,15 @@ export default function SendToCatStar({ cat, onClose, onSent }: Props) {
         @keyframes arrivalLight {
           0%   { opacity: 0; transform: scale(0.4); }
           45%  { opacity: 1; transform: scale(1.15); }
-          100% { opacity: 0; transform: scale(1.7); }
+          100% { opacity: 0.9; transform: scale(1); }
         }
         @keyframes starFadeIn {
           from { opacity: 0; transform: translateY(10px); }
           to   { opacity: 1; transform: translateY(0); }
         }
         @keyframes arrivedGlow {
-          0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 10px rgba(255,233,168,0.6)); }
-          50%      { transform: scale(1.12); filter: drop-shadow(0 0 26px rgba(255,233,168,0.95)); }
+          0%, 100% { transform: scale(1); }
+          50%      { transform: scale(1.08); }
         }
         @media (prefers-reduced-motion: reduce) {
           [style*="catCross"], [style*="catBob"], [style*="starTwinkle"], [style*="bridgeDraw"],
