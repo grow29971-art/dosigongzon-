@@ -1,17 +1,15 @@
 // 운영자 → 전체 사용자 일괄 쪽지 발송 (admin 전용)
 // 145명 활성화 액션: 환영·재참여·공지 메시지를 코호트별로 발송.
 // API: POST /api/admin/broadcast-dm
+// 2026-09-16 「익숙한 동네앱」 리디자인: 코호트 카드 → 구분선 리스트(라디오), 템플릿 칩, 헤어라인 섹션. 발송 문구 템플릿·법적 안내 무변경.
 
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
   Loader2,
   Send,
-  Megaphone,
   Users as UsersIcon,
   Sparkles,
   Cat as CatIcon,
@@ -20,6 +18,9 @@ import {
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { createClient } from "@/lib/supabase/client";
+import UIButton from "@/app/components/ui/Button";
+import UIChip from "@/app/components/ui/Chip";
+import { AdminHeader, AdminLoading, AdminPage, AdminSection, HairlineButton, inputCls, inputStyle } from "../_ui";
 
 type Cohort = "all" | "founding" | "no_cat" | "dormant" | "marketing";
 
@@ -28,42 +29,36 @@ const COHORT_OPTIONS: Array<{
   label: string;
   description: string;
   Icon: typeof UsersIcon;
-  color: string;
 }> = [
   {
     id: "all",
     label: "전체 가입자",
     description: "모든 회원에게 발송 (운영자 본인 제외)",
     Icon: UsersIcon,
-    color: "#4A7BA8",
   },
   {
     id: "founding",
     label: "창립 멤버",
     description: "5/20 전 가입한 founding_member 타이틀 보유자",
     Icon: Sparkles,
-    color: "#B05C36",
   },
   {
     id: "no_cat",
     label: "첫 등록 미완료",
     description: "가입했지만 고양이 0건 — cold start 대응",
     Icon: CatIcon,
-    color: "#E88D5A",
   },
   {
     id: "dormant",
     label: "휴면 (8~30일)",
     description: "최근 미접속자 — 재참여 유도",
     Icon: Moon,
-    color: "#9D7AB8",
   },
   {
     id: "marketing",
     label: "마케팅 동의자 (광고용)",
     description: "마케팅 수신 동의자만 — 쇼핑·이벤트 등 (광고)성 안내는 반드시 이 코호트로",
     Icon: Tag,
-    color: "#C97C52",
   },
 ];
 
@@ -273,214 +268,116 @@ export default function AdminBroadcastPage() {
     }
   };
 
-  if (checking || !authorized) {
-    return (
-      <div className="flex justify-center pt-20">
-        <Loader2 size={28} className="animate-spin text-primary" />
-      </div>
-    );
-  }
+  if (checking || !authorized) return <AdminLoading />;
 
   return (
-    <div
-      className="px-4 pt-12 pb-24 max-w-2xl mx-auto"
-      style={{ background: "#F7F4EE", minHeight: "100dvh" }}
-    >
-      <div className="flex items-center gap-3 mb-6">
-        <Link
-          href="/admin"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
-          aria-label="어드민 홈"
-        >
-          <ArrowLeft size={18} className="text-text-main" />
-        </Link>
-        <div>
-          <h1 className="text-[20px] font-bold text-text-main tracking-tight flex items-center gap-2">
-            <Megaphone size={18} className="text-primary" />
-            전체 쪽지 발송
-          </h1>
-          <p className="text-[13px] text-text-sub">
-            코호트별 일괄 발송 · 도배 trigger 면제 적용됨
-          </p>
-        </div>
-      </div>
+    <AdminPage>
+      <AdminHeader title="전체 쪽지 발송" description="코호트별 일괄 발송 · 도배 trigger 면제 적용됨" />
 
       {/* 코호트 선택 */}
-      <section className="mb-5">
-        <p className="text-[13px] font-bold mb-2.5 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
-          1. 대상 코호트
-        </p>
-        <div className="grid grid-cols-2 gap-2">
-          {COHORT_OPTIONS.map((c) => {
-            const Icon = c.Icon;
-            const selected = cohort === c.id;
-            return (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => setCohort(c.id)}
-                className="text-left rounded-2xl p-3 press transition-transform"
-                style={{
-                  background: selected ? `${c.color}10` : "#FFFFFF",
-                  border: selected ? `1.5px solid ${c.color}` : "1px solid var(--color-divider)",
-                  boxShadow: selected
-                    ? `0 4px 12px ${c.color}22`
-                    : "0 2px 6px rgba(0,0,0,0.04)",
-                }}
+      <AdminSection title="1. 대상 코호트" padding={false}>
+        {COHORT_OPTIONS.map((c) => {
+          const Icon = c.Icon;
+          const selected = cohort === c.id;
+          return (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => setCohort(c.id)}
+              className="w-full text-left flex items-center gap-3 px-4 py-3 border-b border-divider last:border-b-0 press"
+              style={{ background: selected ? "var(--color-surface-alt)" : undefined, minHeight: 56 }}
+              aria-pressed={selected}
+            >
+              <Icon size={20} className="shrink-0 text-text-sub" strokeWidth={1.8} />
+              <div className="flex-1 min-w-0">
+                <p className="text-[15px] font-semibold text-text-main">{c.label}</p>
+                <p className="text-[13px] text-text-light mt-0.5 leading-snug">{c.description}</p>
+              </div>
+              <span
+                className="w-5 h-5 rounded-full shrink-0 flex items-center justify-center"
+                style={{ border: `1.5px solid ${selected ? "var(--color-primary)" : "var(--color-gray-300)"}` }}
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <Icon size={14} color={c.color} />
-                  <span className="text-[13px] font-bold" style={{ color: c.color }}>
-                    {c.label}
-                  </span>
-                </div>
-                <p className="text-[11px] leading-snug" style={{ color: "rgba(60,46,35,0.55)" }}>
-                  {c.description}
-                </p>
-              </button>
-            );
-          })}
-        </div>
-      </section>
+                {selected && <span className="w-2.5 h-2.5 rounded-full" style={{ background: "var(--color-primary)" }} />}
+              </span>
+            </button>
+          );
+        })}
+      </AdminSection>
 
       {/* 템플릿 */}
-      <section className="mb-5">
-        <p className="text-[13px] font-bold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
-          2. 템플릿 (선택)
-        </p>
+      <AdminSection title="2. 템플릿 (선택)">
         <div className="flex flex-wrap gap-1.5">
           {TEMPLATES.map((t) => (
-            <button
-              key={t.label}
-              type="button"
-              onClick={() => setMessage(t.text)}
-              className="text-[11px] px-3 py-1.5 chip-square font-semibold press-strong"
-              style={{
-                background: "rgba(176, 92, 54,0.10)",
-                color: "var(--color-primary-dark)",
-                border: "1px solid rgba(176, 92, 54,0.22)",
-              }}
-            >
+            <UIChip key={t.label} active={message === t.text} onClick={() => setMessage(t.text)}>
               {t.label}
-            </button>
+            </UIChip>
           ))}
         </div>
-      </section>
+      </AdminSection>
 
       {/* 메시지 입력 */}
-      <section className="mb-5">
-        <p className="text-[13px] font-bold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
-          3. 메시지 ({message.length}/1000)
-        </p>
+      <AdminSection title={`3. 메시지 (${message.length}/1000)`}>
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           rows={10}
           maxLength={1000}
           placeholder="안녕하세요, 도시공존 운영자입니다..."
-          className="w-full rounded-2xl bg-white p-4 text-[15px] leading-relaxed resize-none"
-          style={{
-            border: "1px solid var(--color-divider)",
-            boxShadow: "inset 0 1px 2px rgba(0,0,0,0.02)",
-            color: "#3D2F25",
-          }}
+          className={`${inputCls} leading-relaxed resize-none`}
+          style={inputStyle}
         />
-      </section>
 
-      {/* 예상 대상 수 미리보기 */}
-      <div
-        className="mb-3 flex items-center justify-center gap-1.5 text-[13px]"
-        style={{ color: "rgba(60,46,35,0.6)" }}
-      >
-        <UsersIcon size={13} />
-        {previewLoading ? (
-          <span>예상 대상 계산 중…</span>
-        ) : previewCount !== null ? (
-          <span>
-            이 코호트 예상 대상{" "}
-            <b style={{ color: "#3D2F25" }}>{previewCount}명</b>
-          </span>
-        ) : (
-          <span>예상 대상 수 확인 불가</span>
-        )}
-      </div>
+        {/* 예상 대상 수 미리보기 */}
+        <div className="my-3 flex items-center justify-center gap-1.5 text-[13px] text-text-sub">
+          <UsersIcon size={13} />
+          {previewLoading ? (
+            <span>예상 대상 계산 중…</span>
+          ) : previewCount !== null ? (
+            <span>
+              이 코호트 예상 대상{" "}
+              <b className="text-text-main tabular-nums">{previewCount}명</b>
+            </span>
+          ) : (
+            <span>예상 대상 수 확인 불가</span>
+          )}
+        </div>
 
-      {/* 나에게 테스트 발송 — 진짜 발송 전 확인 */}
-      <button
-        type="button"
-        onClick={handleTestSend}
-        disabled={sending || !message.trim()}
-        className="w-full mb-2.5 flex items-center justify-center gap-2 py-3 rounded-2xl text-[13px] font-bold press disabled:opacity-60"
-        style={{
-          background: "#FFFFFF",
-          color: "var(--color-primary-dark)",
-          border: "1.5px solid rgba(176, 92, 54,0.35)",
-        }}
-      >
-        {sending ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
-        나에게만 테스트 발송 (1통)
-      </button>
+        {/* 나에게 테스트 발송 — 진짜 발송 전 확인 */}
+        <HairlineButton
+          size="md"
+          className="w-full mb-2"
+          onClick={handleTestSend}
+          disabled={sending || !message.trim()}
+          icon={sending ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
+        >
+          나에게만 테스트 발송 (1통)
+        </HairlineButton>
 
-      {/* 발송 버튼 */}
-      <button
-        type="button"
-        onClick={handleSend}
-        disabled={sending || !message.trim()}
-        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[15px] font-bold press disabled:opacity-60"
-        style={{
-          background: "var(--color-primary)",
-          boxShadow: "var(--shadow-primary)",
-        }}
-      >
-        {sending ? (
-          <Loader2 size={16} className="animate-spin" />
-        ) : (
-          <Send size={16} />
-        )}
-        {sending ? "발송 중…" : "발송하기"}
-      </button>
+        {/* 발송 버튼 */}
+        <UIButton size="lg" full onClick={handleSend} disabled={sending || !message.trim()}>
+          {sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+          {sending ? "발송 중…" : "발송하기"}
+        </UIButton>
+      </AdminSection>
 
       {error && (
-        <div
-          className="mt-4 rounded-2xl p-4 text-[13px]"
-          style={{ background: "var(--color-error-soft)", color: "#B84545" }}
-        >
-          {error}
-        </div>
+        <p className="mt-3 text-[13px] font-semibold" style={{ color: "var(--color-error)" }}>{error}</p>
       )}
 
       {result && (
-        <div
-          className="mt-4 rounded-2xl p-4 text-[13px]"
-          style={{
-            background: result.ok ? "#EAF6EC" : "#FFF6E3",
-            color: result.ok ? "#2E7D32" : "#7A5F16",
-          }}
-        >
-          <p className="font-bold mb-1">
-            {result.ok ? "✓ 발송 완료" : "일부 실패"}
-          </p>
-          <p>
+        <AdminSection title={result.ok ? "발송 완료" : "일부 실패"}>
+          <p className="text-[13px] tabular-nums" style={{ color: result.ok ? "var(--color-sage)" : "var(--color-warning)" }}>
             대상 {result.totalTargets}명 · 성공 {result.sent}건 · 실패 {result.failed}건
           </p>
           {result.firstError && (
-            <p
-              className="mt-2 px-2.5 py-1.5 rounded-lg text-[13px] font-mono break-all"
-              style={{ background: "rgba(0,0,0,0.06)", color: "#5C3F0A" }}
-            >
-              첫 에러: {result.firstError}
-            </p>
+            <p className="mt-2 text-[13px] font-mono break-all text-text-sub">첫 에러: {result.firstError}</p>
           )}
-        </div>
+        </AdminSection>
       )}
 
-      <p
-        className="text-center text-[11px] mt-4"
-        style={{ color: "rgba(60,46,35,0.45)" }}
-      >
+      <p className="text-center text-[13px] text-text-light mt-4">
         발송된 쪽지는 회수 불가. 메시지·코호트 다시 한 번 확인 후 발송.
       </p>
-    </div>
+    </AdminPage>
   );
 }

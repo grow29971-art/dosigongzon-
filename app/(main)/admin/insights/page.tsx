@@ -1,18 +1,17 @@
 "use client";
 
+// 분석 대시보드 (admin 전용) — 2026-09-16 「익숙한 동네앱」 리디자인:
+// 통계 카드 그리드 → 헤어라인 섹션 + 수치 행(라벨 좌·숫자 우 tabular), TOP 목록 → 구분선 리스트. 색은 토큰만.
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import {
-  ArrowLeft, TrendingUp, Users, Cat as CatIcon, MessageSquare,
-  Activity, AlertTriangle, Eye, Crown, Loader2, BarChart3,
-} from "lucide-react";
+import { ChevronRight, Heart } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import type { InsightsSnapshot } from "@/lib/insights-repo";
-import { SkeletonStatCard, SkeletonListRow } from "@/app/components/Skeleton";
+import { SkeletonListRow } from "@/app/components/Skeleton";
+import { AdminForbidden, AdminHeader, AdminLoading, AdminPage, AdminSection, EmptyState, StatRow } from "../_ui";
 
 export default function AdminInsightsPage() {
-  const router = useRouter();
   const [checking, setChecking] = useState(true);
   const [authorized, setAuthorized] = useState(false);
   const [data, setData] = useState<InsightsSnapshot | null>(null);
@@ -48,269 +47,122 @@ export default function AdminInsightsPage() {
       .finally(() => setLoading(false));
   }, [authorized]);
 
-  if (checking) {
-    return (
-      <div className="min-h-dvh flex items-center justify-center">
-        <Loader2 size={24} className="animate-spin text-primary" />
-      </div>
-    );
-  }
+  if (checking) return <AdminLoading />;
+  if (!authorized) return <AdminForbidden />;
 
-  if (!authorized) {
-    return (
-      <div className="min-h-dvh flex flex-col items-center justify-center px-6 text-center">
-        <p className="text-[15px] font-bold text-text-main mb-2">권한 없음</p>
-        <p className="text-[13px] text-text-sub">관리자만 접근할 수 있어요.</p>
-        <Link href="/mypage" className="inline-block mt-4 text-[13px] font-bold text-primary">
-          마이페이지로
-        </Link>
-      </div>
-    );
-  }
+  const todaySub = (n: number) => (n > 0 ? `오늘 +${n}` : undefined);
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
-      {/* ── 헤더 ── */}
-      <div className="px-4 pt-12 pb-4 flex items-center gap-3">
-        <button
-          onClick={() => router.back()}
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
-          aria-label="뒤로"
-        >
-          <ArrowLeft size={18} className="text-text-main" />
-        </button>
-        <div>
-          <h1 className="text-[24px] font-bold text-text-main tracking-tight">분석</h1>
-          <p className="text-[13px] text-text-sub">운영 지표 스냅샷</p>
-        </div>
-      </div>
+    <AdminPage>
+      <AdminHeader title="분석" description="운영 지표 스냅샷" />
 
       {loading && (
-        <div className="px-4 space-y-5">
-          <div className="grid grid-cols-2 gap-2.5">
-            {Array.from({ length: 4 }).map((_, i) => <SkeletonStatCard key={i} />)}
-          </div>
-          <div className="grid grid-cols-2 gap-2.5">
-            {Array.from({ length: 4 }).map((_, i) => <SkeletonStatCard key={i} />)}
-          </div>
-          <div className="space-y-1.5">
-            {Array.from({ length: 5 }).map((_, i) => <SkeletonListRow key={i} />)}
-          </div>
+        <div className="space-y-1.5">
+          {Array.from({ length: 8 }).map((_, i) => <SkeletonListRow key={i} />)}
         </div>
       )}
 
       {error && (
-        <div className="mx-4 rounded-xl p-3" style={{ background: "var(--color-error-soft)" }}>
-          <p className="text-[13px] font-semibold" style={{ color: "#B84545" }}>{error}</p>
-        </div>
+        <p className="text-[13px] font-semibold mb-3" style={{ color: "var(--color-error)" }}>{error}</p>
       )}
 
       {data && (
-        <div className="px-4 space-y-5">
-          {/* ── 누적 지표 ── */}
-          <Section icon={<TrendingUp size={14} />} label="누적">
-            <div className="grid grid-cols-2 gap-2.5">
-              <StatCard icon={<Users size={16} />} label="총 가입자" value={data.totalUsers} delta={data.newUsersToday} accent="#4A7BA8" />
-              <StatCard icon={<CatIcon size={16} />} label="등록 고양이" value={data.totalCats} delta={data.newCatsToday} accent="var(--color-primary)" />
-              <StatCard icon={<MessageSquare size={16} />} label="총 게시글" value={data.totalPosts} delta={data.newPostsToday} accent="#8B65B8" />
-              <StatCard icon={<Activity size={16} />} label="돌봄 기록" value={data.totalCareLogs} delta={data.newCareLogsToday} accent="#5BA876" />
-            </div>
-          </Section>
+        <>
+          <AdminSection title="누적" padding={false}>
+            <StatRow label="총 가입자" sub={todaySub(data.newUsersToday)} value={data.totalUsers.toLocaleString()} />
+            <StatRow label="등록 고양이" sub={todaySub(data.newCatsToday)} value={data.totalCats.toLocaleString()} />
+            <StatRow label="총 게시글" sub={todaySub(data.newPostsToday)} value={data.totalPosts.toLocaleString()} />
+            <StatRow label="돌봄 기록" sub={todaySub(data.newCareLogsToday)} value={data.totalCareLogs.toLocaleString()} />
+          </AdminSection>
 
-          {/* ── 이번 주 ── */}
-          <Section icon={<BarChart3 size={14} />} label="이번 주 (월~오늘 KST)">
-            <div className="grid grid-cols-2 gap-2.5">
-              <MiniCard label="신규 가입" value={data.newUsersWeek} />
-              <MiniCard label="신규 고양이" value={data.newCatsWeek} />
-              <MiniCard label="신규 게시글" value={data.newPostsWeek} />
-              <MiniCard label="신규 돌봄" value={data.newCareLogsWeek} />
-            </div>
-          </Section>
+          <AdminSection title="이번 주 (월~오늘 KST)" padding={false}>
+            <StatRow label="신규 가입" value={data.newUsersWeek.toLocaleString()} />
+            <StatRow label="신규 고양이" value={data.newCatsWeek.toLocaleString()} />
+            <StatRow label="신규 게시글" value={data.newPostsWeek.toLocaleString()} />
+            <StatRow label="신규 돌봄" value={data.newCareLogsWeek.toLocaleString()} />
+          </AdminSection>
 
-          {/* ── 방문자 ── */}
-          <Section icon={<Eye size={14} />} label="방문자">
-            <div className="grid grid-cols-2 gap-2.5">
-              <MiniCard label="오늘" value={data.visitsToday} />
-              <MiniCard label="이번 주" value={data.visitsWeek} />
-            </div>
-          </Section>
+          <AdminSection title="방문자" padding={false}>
+            <StatRow label="오늘" value={data.visitsToday.toLocaleString()} />
+            <StatRow label="이번 주" value={data.visitsWeek.toLocaleString()} />
+          </AdminSection>
 
-          {/* ── 에러 ── */}
-          <Section icon={<AlertTriangle size={14} />} label="로그인/인증 에러 (7일)">
-            <div
-              className="rounded-2xl bg-white p-3.5"
-              style={{ boxShadow: "var(--shadow-card)" }}
-            >
-              <div className="flex items-baseline justify-between mb-2.5">
-                <span className="text-[13px] text-text-sub">총 실패</span>
-                <span className="text-[20px] font-bold text-text-main">{data.authErrorsWeek}</span>
-              </div>
-              {data.authErrorTopCodes.length === 0 ? (
-                <p className="text-[13px] text-text-light">기록 없음</p>
-              ) : (
-                <div className="space-y-1.5">
-                  {data.authErrorTopCodes.map((e) => (
-                    <div key={e.code} className="flex items-center justify-between">
-                      <code className="text-[11px] text-text-sub">{e.code}</code>
-                      <span className="text-[13px] font-bold text-text-main">{e.count}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <Link
-                href="/admin/auth-errors"
-                className="inline-block mt-2 text-[13px] font-bold"
-                style={{ color: "var(--color-primary)" }}
-              >
-                전체 로그 보기 →
+          <AdminSection
+            title="로그인/인증 에러 (7일)"
+            padding={false}
+            right={
+              <Link href="/admin/auth-errors" className="flex items-center text-[13px] font-semibold text-primary">
+                전체 로그 <ChevronRight size={14} />
               </Link>
-            </div>
-          </Section>
+            }
+          >
+            <StatRow label="총 실패" value={data.authErrorsWeek.toLocaleString()} tone={data.authErrorsWeek > 0 ? "warning" : "neutral"} />
+            {data.authErrorTopCodes.length === 0 ? (
+              <EmptyState>기록 없음</EmptyState>
+            ) : (
+              data.authErrorTopCodes.map((e) => (
+                <div key={e.code} className="flex items-center justify-between px-4 py-2 border-b border-divider last:border-b-0">
+                  <code className="text-[13px] text-text-sub">{e.code}</code>
+                  <span className="text-[13px] font-semibold text-text-main tabular-nums">{e.count}</span>
+                </div>
+              ))
+            )}
+          </AdminSection>
 
-          {/* ── 위급 알림 (health-alert-push cron) ── */}
-          <Section icon={<AlertTriangle size={14} />} label="위급 알림">
-            <div className="grid grid-cols-2 gap-2.5 mb-2">
-              <StatCard
-                icon={<AlertTriangle size={16} />}
-                label="현재 위급"
-                value={data.urgentCatsTotal}
-                delta={0}
-                accent="#D85555"
-              />
-              <StatCard
-                icon={<AlertTriangle size={16} />}
-                label="3일+ 부재"
-                value={data.urgentCatsStale}
-                delta={0}
-                accent="#E88D5A"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-2.5">
-              <MiniCard label="7일 푸시 발송" value={data.alertPushesWeek} />
-              <MiniCard label="7일 수신 유저" value={data.alertPushedUsersWeek} />
-            </div>
-            <p className="mt-2 px-1 text-[11px] text-text-light leading-relaxed">
-              "3일+ 부재"가 cron 타깃. dedup 적용으로 같은 (유저·고양이) 페어는 24h당 1회만 발송.
+          <AdminSection title="위급 알림" padding={false}>
+            <StatRow label="현재 위급" value={data.urgentCatsTotal.toLocaleString()} tone={data.urgentCatsTotal > 0 ? "error" : "neutral"} />
+            <StatRow label="3일 이상 부재" sub="cron 타깃" value={data.urgentCatsStale.toLocaleString()} tone={data.urgentCatsStale > 0 ? "warning" : "neutral"} />
+            <StatRow label="7일 푸시 발송" value={data.alertPushesWeek.toLocaleString()} />
+            <StatRow label="7일 수신 유저" value={data.alertPushedUsersWeek.toLocaleString()} />
+            <p className="px-4 py-2 text-[13px] text-text-light leading-relaxed">
+              dedup 적용으로 같은 (유저·고양이) 페어는 24h당 1회만 발송.
             </p>
-          </Section>
+          </AdminSection>
 
-          {/* ── 인기 고양이 TOP 5 ── */}
-          <Section icon={<Crown size={14} />} label="인기 고양이 TOP 5">
+          <AdminSection title="인기 고양이 TOP 5" padding={false}>
             {data.topCats.length === 0 ? (
-              <p className="text-[13px] text-text-light px-2">아직 좋아요 기록 없음</p>
+              <EmptyState>아직 좋아요 기록 없음</EmptyState>
             ) : (
-              <div className="space-y-1.5">
-                {data.topCats.map((c, i) => (
-                  <Link
-                    key={c.id}
-                    href={`/cats/${c.id}`}
-                    className="flex items-center justify-between bg-white rounded-xl px-3.5 py-2.5 press"
-                    style={{ boxShadow: "var(--shadow-card-sm)" }}
-                  >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-[11px] font-bold w-4 shrink-0" style={{ color: "var(--color-primary)" }}>
-                        {i + 1}
-                      </span>
-                      <div className="min-w-0">
-                        <p className="text-[13px] font-bold text-text-main truncate">{c.name}</p>
-                        <p className="text-[11px] text-text-light truncate">{c.region ?? "지역 미정"}</p>
-                      </div>
-                    </div>
-                    <span className="text-[13px] font-bold" style={{ color: "var(--color-like)" }}>
-                      ♥ {c.like_count}
-                    </span>
-                  </Link>
-                ))}
-              </div>
+              data.topCats.map((c, i) => (
+                <Link
+                  key={c.id}
+                  href={`/cats/${c.id}`}
+                  className="flex items-center gap-3 px-4 py-3 border-b border-divider last:border-b-0 press"
+                >
+                  <span className="text-[13px] font-semibold text-text-light w-4 shrink-0 tabular-nums">{i + 1}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[15px] font-semibold text-text-main truncate">{c.name}</p>
+                    <p className="text-[13px] text-text-light truncate">{c.region ?? "지역 미정"}</p>
+                  </div>
+                  <span className="flex items-center gap-1 text-[13px] font-semibold tabular-nums" style={{ color: "var(--color-like)" }}>
+                    <Heart size={13} /> {c.like_count}
+                  </span>
+                  <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
+                </Link>
+              ))
             )}
-          </Section>
+          </AdminSection>
 
-          {/* ── 활성 유저 TOP 5 ── */}
-          <Section icon={<Crown size={14} />} label="이번 주 활성 돌봄 TOP 5">
+          <AdminSection title="이번 주 활성 돌봄 TOP 5" padding={false}>
             {data.topCaretakers.length === 0 ? (
-              <p className="text-[13px] text-text-light px-2">아직 기록 없음</p>
+              <EmptyState>아직 기록 없음</EmptyState>
             ) : (
-              <div className="space-y-1.5">
-                {data.topCaretakers.map((u, i) => (
-                  <Link
-                    key={u.user_id}
-                    href={`/users/${u.user_id}`}
-                    className="flex items-center justify-between bg-white rounded-xl px-3.5 py-2.5 press"
-                    style={{ boxShadow: "var(--shadow-card-sm)" }}
-                  >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-[11px] font-bold w-4 shrink-0" style={{ color: "var(--color-primary)" }}>
-                        {i + 1}
-                      </span>
-                      <p className="text-[13px] font-bold text-text-main truncate">{u.name}</p>
-                    </div>
-                    <span className="text-[13px] font-bold text-text-main">
-                      {u.count}건
-                    </span>
-                  </Link>
-                ))}
-              </div>
+              data.topCaretakers.map((u, i) => (
+                <Link
+                  key={u.user_id}
+                  href={`/users/${u.user_id}`}
+                  className="flex items-center gap-3 px-4 py-3 border-b border-divider last:border-b-0 press"
+                >
+                  <span className="text-[13px] font-semibold text-text-light w-4 shrink-0 tabular-nums">{i + 1}</span>
+                  <p className="flex-1 min-w-0 text-[15px] font-semibold text-text-main truncate">{u.name}</p>
+                  <span className="text-[13px] font-semibold text-text-main tabular-nums">{u.count}건</span>
+                  <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
+                </Link>
+              ))
             )}
-          </Section>
-        </div>
+          </AdminSection>
+        </>
       )}
-    </div>
-  );
-}
-
-function Section({ icon, label, children }: { icon: React.ReactNode; label: string; children: React.ReactNode }) {
-  return (
-    <section>
-      <div className="flex items-center gap-1.5 mb-2.5 px-1">
-        <span style={{ color: "var(--color-primary)" }}>{icon}</span>
-        <h2 className="text-[13px] font-bold text-text-main tracking-tight">{label}</h2>
-      </div>
-      {children}
-    </section>
-  );
-}
-
-function StatCard({
-  icon, label, value, delta, accent,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: number;
-  delta: number;
-  accent: string;
-}) {
-  return (
-    <div
-      className="rounded-2xl bg-white p-3.5"
-      style={{ boxShadow: "var(--shadow-card)", border: "1px solid var(--color-divider)" }}
-    >
-      <div className="flex items-center gap-1.5 mb-1.5" style={{ color: accent }}>
-        {icon}
-        <span className="text-[11px] font-bold">{label}</span>
-      </div>
-      <p className="text-[24px] font-bold text-text-main tabular-nums tracking-tight">
-        {value.toLocaleString()}
-      </p>
-      {delta > 0 && (
-        <p className="text-[11px] font-bold mt-0.5" style={{ color: "#5BA876" }}>
-          +{delta} 오늘
-        </p>
-      )}
-    </div>
-  );
-}
-
-function MiniCard({ label, value }: { label: string; value: number }) {
-  return (
-    <div
-      className="rounded-2xl bg-white px-3.5 py-2.5"
-      style={{ boxShadow: "var(--shadow-card-sm)" }}
-    >
-      <p className="text-[11px] font-semibold text-text-sub">{label}</p>
-      <p className="text-[20px] font-bold text-text-main tabular-nums tracking-tight mt-0.5">
-        {value.toLocaleString()}
-      </p>
-    </div>
+    </AdminPage>
   );
 }

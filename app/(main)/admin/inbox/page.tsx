@@ -1,14 +1,10 @@
 "use client";
 
+// 신고·문의 관리 (admin 전용) — 2026-09-16 「익숙한 동네앱」 리디자인:
+// 색 테두리 카드·그라디언트 탭 → 구분선 리스트 + 세그먼트 탭, 상태는 회색 태그(의미색만 예외), 액션은 헤어라인 버튼. 토큰만.
+
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
-  Loader2,
-  Shield,
-  Flag,
-  MessageSquare,
   Trash2,
   Check,
   X as XIcon,
@@ -33,9 +29,7 @@ import {
   suspendUser,
   REPORT_REASON_LABELS,
   REPORT_STATUS_LABELS,
-  REPORT_STATUS_COLORS,
   INQUIRY_STATUS_LABELS,
-  INQUIRY_STATUS_COLORS,
   type Report,
   type Inquiry,
   type ReportStatus,
@@ -43,8 +37,17 @@ import {
 } from "@/lib/support-repo";
 import { Ban, Eraser } from "lucide-react";
 import ReportEvidenceBlock from "@/app/components/ReportEvidenceBlock";
+import UIButton from "@/app/components/ui/Button";
+import {
+  AdminForbidden, AdminHeader, AdminLoading, AdminPage, AdminSection, AdminTag, EmptyState, HairlineButton,
+  SegmentTabs, inputCls, inputStyle, type Tone,
+} from "../_ui";
 
 type Tab = "reports" | "inquiries";
+
+// 상태 태그 톤 — 대기=warning, 완료·답변=sage, 그 외 회색
+const REPORT_STATUS_TONE: Partial<Record<ReportStatus, Tone>> = { pending: "warning", resolved: "sage" };
+const INQUIRY_STATUS_TONE: Partial<Record<InquiryStatus, Tone>> = { pending: "warning", replied: "sage" };
 
 function formatRelative(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -62,7 +65,6 @@ function formatRelative(iso: string): string {
 }
 
 export default function AdminInboxPage() {
-  const router = useRouter();
   const [authChecked, setAuthChecked] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [tab, setTab] = useState<Tab>("reports");
@@ -320,136 +322,55 @@ export default function AdminInboxPage() {
     }
   };
 
-  if (!authChecked || loading) {
-    return (
-      <div className="flex justify-center pt-20">
-        <Loader2 size={28} className="animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="px-5 pt-20 text-center">
-        <Shield size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[15px] font-bold text-text-main mb-1">
-          관리자 전용 페이지예요
-        </p>
-        <p className="text-[13px] text-text-sub">접근 권한이 없어요.</p>
-        <Link
-          href="/mypage"
-          className="inline-block mt-4 text-[13px] font-bold text-primary"
-        >
-          마이페이지로 돌아가기
-        </Link>
-      </div>
-    );
-  }
+  if (!authChecked || loading) return <AdminLoading />;
+  if (!isAdmin) return <AdminForbidden />;
 
   const pendingReports = reports.filter((r) => r.status === "pending").length;
   const pendingInquiries = inquiries.filter((i) => i.status === "pending").length;
 
   return (
-    <div className="px-4 pt-14 pb-24">
-      {/* 헤더 */}
-      <div className="mb-4">
-        <button
-          onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 press-strong transition-transform"
-        >
-          <ArrowLeft size={14} />
-          마이페이지
-        </button>
-        <div className="flex items-baseline gap-2 mb-1">
-          <h1 className="text-[24px] font-bold text-text-main tracking-tight">
-            신고·문의 관리
-          </h1>
-          <span className="text-[11px] font-semibold text-text-light">
-            Admin · Inbox
-          </span>
-        </div>
-        <p className="text-[13px] text-text-sub">
-          유저가 보낸 신고와 문의를 확인하고 처리해요
-        </p>
-      </div>
+    <AdminPage>
+      <AdminHeader
+        title="신고·문의 관리"
+        description="유저가 보낸 신고와 문의를 확인하고 처리해요"
+        back="/mypage"
+        backLabel="마이페이지"
+      />
 
       {/* 탭 */}
-      <div className="flex gap-2 mb-4">
-        <TabButton
-          active={tab === "reports"}
-          label="신고"
-          count={pendingReports}
-          Icon={Flag}
-          color="#D85555"
-          onClick={() => setTab("reports")}
-        />
-        <TabButton
-          active={tab === "inquiries"}
-          label="문의"
-          count={pendingInquiries}
-          Icon={MessageSquare}
-          color="#4A7BA8"
-          onClick={() => setTab("inquiries")}
-        />
-      </div>
+      <SegmentTabs
+        className="mb-3"
+        value={tab}
+        onChange={setTab}
+        items={[
+          { key: "reports", label: "신고", count: pendingReports },
+          { key: "inquiries", label: "문의", count: pendingInquiries },
+        ]}
+      />
 
       {/* 신고 목록 */}
       {tab === "reports" && (
-        <div className="space-y-2.5">
+        <AdminSection padding={false}>
           {reports.length === 0 ? (
-            <EmptyBox>받은 신고가 없어요</EmptyBox>
+            <EmptyState>받은 신고가 없어요</EmptyState>
           ) : (
             reports.map((r) => (
-              <div
-                key={r.id}
-                className="p-4"
-                style={{
-                  background: "#FFFFFF",
-                  borderRadius: "var(--radius-card-sm)",
-                  boxShadow: "var(--shadow-card)",
-                  border: "1px solid var(--color-divider)",
-                  borderLeft: `3px solid ${REPORT_STATUS_COLORS[r.status]}`,
-                }}
-              >
+              <div key={r.id} className="px-4 py-3 border-b border-divider last:border-b-0">
                 <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
-                  <span
-                    className="text-[11px] font-bold px-2 py-0.5 chip-square text-white"
-                    style={{ backgroundColor: "#D85555" }}
-                  >
-                    {REPORT_REASON_LABELS[r.reason]}
-                  </span>
-                  <span
-                    className="text-[11px] font-bold px-2 py-0.5 chip-square"
-                    style={{
-                      backgroundColor: `${REPORT_STATUS_COLORS[r.status]}22`,
-                      color: REPORT_STATUS_COLORS[r.status],
-                    }}
-                  >
-                    {REPORT_STATUS_LABELS[r.status]}
-                  </span>
-                  <span className="text-[11px] text-text-light">
-                    · {r.target_type}
-                  </span>
-                  <span className="text-[11px] text-text-light ml-auto">
-                    {formatRelative(r.created_at)}
-                  </span>
+                  <AdminTag tone="error">{REPORT_REASON_LABELS[r.reason]}</AdminTag>
+                  <AdminTag tone={REPORT_STATUS_TONE[r.status] ?? "neutral"}>{REPORT_STATUS_LABELS[r.status]}</AdminTag>
+                  <span className="text-[11px] text-text-light">· {r.target_type}</span>
+                  <span className="text-[11px] text-text-light ml-auto">{formatRelative(r.created_at)}</span>
                 </div>
-                <p className="text-[13px] font-semibold text-text-main mb-1">
-                  신고자: 익명
-                </p>
+                <p className="text-[13px] font-semibold text-text-main mb-1">신고자: 익명</p>
                 {r.target_snapshot && (
-                  <div
-                    className="text-[11px] leading-relaxed p-2 rounded-lg mb-2"
-                    style={{ backgroundColor: "var(--color-gray-50)", color: "#4A3F35" }}
-                  >
-                    <span className="text-text-light font-bold">대상 내용:</span>{" "}
+                  <p className="text-[13px] leading-relaxed text-text-sub mb-2 pl-2" style={{ borderLeft: "2px solid var(--color-border)" }}>
+                    <span className="text-text-light font-semibold">대상 내용:</span>{" "}
                     {r.target_snapshot}
-                  </div>
+                  </p>
                 )}
                 {r.description && (
-                  <p className="text-[13px] text-text-sub leading-relaxed mb-2">
-                    {r.description}
-                  </p>
+                  <p className="text-[13px] text-text-sub leading-relaxed mb-2">{r.description}</p>
                 )}
                 {/* 증거 사진 + 기관 이관 서식 (B-2) */}
                 <ReportEvidenceBlock report={r} />
@@ -467,14 +388,14 @@ export default function AdminInboxPage() {
                     }
                     onClick={() => handleDeleteTarget(r)}
                     Icon={Eraser}
-                    bg="#B84545"
+                    tone="error"
                   />
                   {r.target_type === "hospital_closed" ? (
-                    <ActionBtn label="병원 복원" onClick={() => handleRestoreHospital(r)} Icon={Check} bg="#6B8E6F" />
+                    <ActionBtn label="병원 복원" onClick={() => handleRestoreHospital(r)} Icon={Check} tone="sage" />
                   ) : r.target_type === "post" || r.target_type === "comment" || r.target_type === "post_comment" ? (
-                    <ActionBtn label="복원(오신고)" onClick={() => handleRestoreTarget(r)} Icon={Check} bg="#6B8E6F" />
+                    <ActionBtn label="복원(오신고)" onClick={() => handleRestoreTarget(r)} Icon={Check} tone="sage" />
                   ) : (
-                    <ActionBtn label="신고자 정지" onClick={() => handleSuspendReporter(r)} Icon={Ban} bg="#8B65B8" />
+                    <ActionBtn label="신고자 정지" onClick={() => handleSuspendReporter(r)} Icon={Ban} tone="error" />
                   )}
                 </div>
                 {/* 관리자 액션 — 하단 행(상태 변경) */}
@@ -483,97 +404,63 @@ export default function AdminInboxPage() {
                     label="처리완료"
                     onClick={() => handleReportStatus(r.id, "resolved")}
                     Icon={Check}
-                    bg="#6B8E6F"
+                    tone="sage"
                     disabled={r.status === "resolved"}
                   />
                   <ActionBtn
                     label="반려"
                     onClick={() => handleReportStatus(r.id, "dismissed")}
                     Icon={XIcon}
-                    bg="#A38E7A"
                     disabled={r.status === "dismissed"}
                   />
                   <ActionBtn
                     label="기록삭제"
                     onClick={() => handleReportDelete(r.id)}
                     Icon={Trash2}
-                    bg="#D85555"
+                    tone="error"
                   />
                 </div>
               </div>
             ))
           )}
-        </div>
+        </AdminSection>
       )}
 
       {/* 문의 목록 */}
       {tab === "inquiries" && (
-        <div className="space-y-2.5">
+        <AdminSection padding={false}>
           {inquiries.length === 0 ? (
-            <EmptyBox>받은 문의가 없어요</EmptyBox>
+            <EmptyState>받은 문의가 없어요</EmptyState>
           ) : (
             inquiries.map((i) => (
-              <div
-                key={i.id}
-                className="p-4"
-                style={{
-                  background: "#FFFFFF",
-                  borderRadius: "var(--radius-card-sm)",
-                  boxShadow: "var(--shadow-card)",
-                  border: "1px solid var(--color-divider)",
-                  borderLeft: `3px solid ${INQUIRY_STATUS_COLORS[i.status]}`,
-                }}
-              >
+              <div key={i.id} className="px-4 py-3 border-b border-divider last:border-b-0">
                 <div className="flex items-center gap-1.5 mb-1.5">
-                  <span
-                    className="text-[11px] font-bold px-2 py-0.5 chip-square"
-                    style={{
-                      backgroundColor: `${INQUIRY_STATUS_COLORS[i.status]}22`,
-                      color: INQUIRY_STATUS_COLORS[i.status],
-                    }}
-                  >
-                    {INQUIRY_STATUS_LABELS[i.status]}
-                  </span>
-                  <span className="text-[11px] text-text-light ml-auto">
-                    {formatRelative(i.created_at)}
-                  </span>
+                  <AdminTag tone={INQUIRY_STATUS_TONE[i.status] ?? "neutral"}>{INQUIRY_STATUS_LABELS[i.status]}</AdminTag>
+                  <span className="text-[11px] text-text-light ml-auto">{formatRelative(i.created_at)}</span>
                 </div>
-                <p className="text-[15px] font-bold text-text-main mb-1 leading-tight">
-                  {i.subject}
-                </p>
-                <p className="text-[11px] text-text-light mb-2">
+                <p className="text-[15px] font-semibold text-text-main mb-0.5 leading-tight">{i.subject}</p>
+                <p className="text-[13px] text-text-light mb-2">
                   {i.user_name ?? "익명"}{" "}
                   {i.user_email && `(${i.user_email})`}
                 </p>
-                <div
-                  className="text-[13px] leading-relaxed p-3 rounded-lg whitespace-pre-wrap"
-                  style={{ backgroundColor: "var(--color-gray-50)", color: "#4A3F35" }}
-                >
-                  {i.body}
-                </div>
+                <p className="text-[13px] leading-relaxed whitespace-pre-wrap text-text-main">{i.body}</p>
 
                 {/* 기존 답변(있으면) — 수정 가능하게 prefill */}
                 {i.admin_note && (
                   <div className="mt-3">
-                    <p className="text-[11px] font-bold text-text-light tracking-[0.1em] mb-1.5">
-                      기존 답변
-                    </p>
-                    <div
-                      className="text-[13px] leading-relaxed p-3 rounded-lg whitespace-pre-wrap"
-                      style={{
-                        backgroundColor: "var(--color-sage-soft)",
-                        border: "1px solid #CDE5CF",
-                        color: "#2E4A31",
-                      }}
+                    <p className="text-[13px] font-semibold text-text-light mb-1">기존 답변</p>
+                    <p
+                      className="text-[13px] leading-relaxed whitespace-pre-wrap text-text-sub pl-2"
+                      style={{ borderLeft: "2px solid var(--color-sage)" }}
                     >
                       {i.admin_note}
-                    </div>
+                    </p>
                   </div>
                 )}
 
                 {/* 답변 작성 */}
                 <div className="mt-3">
-                  <p className="text-[11px] font-bold text-text-light tracking-[0.1em] mb-1.5">
+                  <p className="text-[13px] font-semibold text-text-light mb-1">
                     {i.admin_note ? "답변 수정" : "답변 작성"}
                   </p>
                   <textarea
@@ -583,29 +470,16 @@ export default function AdminInboxPage() {
                     }
                     rows={3}
                     placeholder="유저에게 보낼 답변 내용을 작성하세요..."
-                    className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none resize-none"
-                    style={{
-                      backgroundColor: "#FFFFFF",
-                      color: "#2A2A28",
-                      border: "1px solid var(--color-border)",
-                    }}
+                    className={`${inputCls} text-[13px] resize-none`}
+                    style={inputStyle}
                   />
-                  <button
-                    type="button"
-                    onClick={() => handleSendReply(i.id)}
-                    disabled={replying === i.id}
-                    className="mt-2 w-full py-2.5 rounded-xl text-white text-[13px] font-bold press transition-transform disabled:opacity-60"
-                    style={{
-                      background: "#6B8E6F",
-                      boxShadow: "var(--shadow-raised)",
-                    }}
-                  >
+                  <UIButton full className="mt-2" onClick={() => handleSendReply(i.id)} disabled={replying === i.id}>
                     {replying === i.id
                       ? "저장 중..."
                       : i.admin_note
                       ? "답변 수정 · 답변됨 처리"
                       : "답변 보내기 · 답변됨 처리"}
-                  </button>
+                  </UIButton>
                 </div>
 
                 {/* 액션 */}
@@ -614,109 +488,41 @@ export default function AdminInboxPage() {
                     label="종료"
                     onClick={() => handleInquiryStatus(i.id, "closed")}
                     Icon={XIcon}
-                    bg="#A38E7A"
                     disabled={i.status === "closed"}
                   />
                   <ActionBtn
                     label="삭제"
                     onClick={() => handleInquiryDelete(i.id)}
                     Icon={Trash2}
-                    bg="#D85555"
+                    tone="error"
                   />
                 </div>
               </div>
             ))
           )}
-        </div>
+        </AdminSection>
       )}
-    </div>
+    </AdminPage>
   );
 }
 
-/* ═══ 탭 버튼 ═══ */
-function TabButton({
-  active,
-  label,
-  count,
-  Icon,
-  color,
-  onClick,
-}: {
-  active: boolean;
-  label: string;
-  count: number;
-  Icon: typeof Flag;
-  color: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl transition-all"
-      style={{
-        background: active ? `linear-gradient(135deg, ${color} 0%, ${color}DD 100%)` : "#FFFFFF",
-        color: active ? "#FFFFFF" : color,
-        border: `1.5px solid ${active ? color : "var(--color-gray-200)"}`,
-        boxShadow: active ? `0 4px 12px ${color}55` : "0 2px 6px rgba(0,0,0,0.03)",
-      }}
-    >
-      <Icon size={14} strokeWidth={2.3} />
-      <span className="text-[13px] font-bold tracking-tight">{label}</span>
-      {count > 0 && (
-        <span
-          className="text-[11px] font-bold px-1.5 py-0.5 chip-square tabular-nums"
-          style={{
-            backgroundColor: active ? "rgba(255,255,255,0.3)" : `${color}22`,
-            color: active ? "#FFFFFF" : color,
-          }}
-        >
-          {count}
-        </span>
-      )}
-    </button>
-  );
-}
-
-/* ═══ 액션 버튼 ═══ */
+/* ═══ 액션 버튼 — 헤어라인 버튼, 의미색은 글자에만 ═══ */
 function ActionBtn({
   label,
   onClick,
   Icon,
-  bg,
+  tone = "neutral",
   disabled,
 }: {
   label: string;
   onClick: () => void;
   Icon: typeof Check;
-  bg: string;
+  tone?: Tone;
   disabled?: boolean;
 }) {
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg text-[11px] font-bold disabled:opacity-30"
-      style={{ backgroundColor: `${bg}15`, color: bg }}
-    >
-      <Icon size={11} strokeWidth={2.5} />
+    <HairlineButton onClick={onClick} disabled={disabled} tone={tone} className="flex-1" icon={<Icon size={12} />}>
       {label}
-    </button>
-  );
-}
-
-/* ═══ 빈 상태 ═══ */
-function EmptyBox({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      className="py-12 text-center text-[13px] text-text-sub"
-      style={{
-        background: "#FFFFFF",
-        borderRadius: "var(--radius-card-sm)",
-        boxShadow: "var(--shadow-card)",
-        border: "1px solid var(--color-divider)",
-      }}
-    >
-      {children}
-    </div>
+    </HairlineButton>
   );
 }

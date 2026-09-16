@@ -1,10 +1,10 @@
 "use client";
 
+// 로그인 실패 로그 (admin 전용) — 2026-09-16 「익숙한 동네앱」 리디자인:
+// 그라디언트 요약 카드·순위 색 박스 → 헤어라인 섹션 + 수치 행, 로그 카드 → 구분선 리스트(펼침), 회색 태그. 토큰만.
+
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
   Loader2,
   Shield,
   AlertCircle,
@@ -13,6 +13,7 @@ import {
   RefreshCcw,
   ChevronDown,
   ChevronUp,
+  X,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import {
@@ -24,6 +25,10 @@ import {
   type ErrorCodeStat,
 } from "@/lib/auth-errors-repo";
 import { explainAuthError } from "@/lib/auth-errors";
+import UIChip from "@/app/components/ui/Chip";
+import {
+  AdminForbidden, AdminHeader, AdminLoading, AdminPage, AdminSection, AdminTag, HairlineButton, SegmentTabs, StatRow,
+} from "../_ui";
 
 function formatRelative(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -65,9 +70,13 @@ function shortUA(ua: string | null): string {
   return ua.slice(0, 40);
 }
 
-export default function AdminAuthErrorsPage() {
-  const router = useRouter();
+const PROVIDER_LABEL: Record<string, string> = {
+  google: "구글",
+  kakao: "카카오",
+  magic_link: "매직링크",
+};
 
+export default function AdminAuthErrorsPage() {
   const [authChecked, setAuthChecked] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -142,26 +151,8 @@ export default function AdminAuthErrorsPage() {
     }
   };
 
-  if (!authChecked || loading) {
-    return (
-      <div className="flex justify-center pt-20">
-        <Loader2 size={28} className="animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="px-5 pt-20 text-center">
-        <Shield size={40} className="mx-auto text-text-light mb-3" strokeWidth={1.5} />
-        <p className="text-[15px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
-        <p className="text-[13px] text-text-sub">접근 권한이 없어요.</p>
-        <Link href="/mypage" className="inline-block mt-4 text-[13px] font-bold text-primary">
-          마이페이지로 돌아가기
-        </Link>
-      </div>
-    );
-  }
+  if (!authChecked || loading) return <AdminLoading />;
+  if (!isAdmin) return <AdminForbidden />;
 
   const totalCount = stats.reduce((s, x) => s + x.count, 0);
   const providerBreakdown = stats.reduce<Record<string, number>>((acc, s) => {
@@ -171,266 +162,149 @@ export default function AdminAuthErrorsPage() {
   }, {});
 
   return (
-    <div className="px-4 pt-14 pb-24">
-      {/* 헤더 */}
-      <div className="mb-4">
-        <button
-          onClick={() => router.push("/mypage")}
-          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 press-strong transition-transform"
-        >
-          <ArrowLeft size={14} />
-          마이페이지
-        </button>
-        <div className="flex items-baseline gap-2 mb-1">
-          <h1 className="text-[24px] font-bold text-text-main tracking-tight">
-            로그인 실패 로그
-          </h1>
-          <span className="text-[11px] font-semibold text-text-light">Admin · Auth Errors</span>
-        </div>
-        <p className="text-[13px] text-text-sub">
-          OAuth/매직링크/비밀번호 로그인 실패 원인을 확인해요
-        </p>
-      </div>
-
-      {/* 기간 + 새로고침 + 청소 */}
-      <div className="flex items-center gap-2 mb-3">
-        <div className="flex gap-1.5 flex-1 overflow-x-auto no-scrollbar">
-          {[1, 7, 30].map((d) => (
+    <AdminPage>
+      <AdminHeader
+        title="로그인 실패 로그"
+        description="OAuth/매직링크/비밀번호 로그인 실패 원인을 확인해요"
+        back="/mypage"
+        backLabel="마이페이지"
+        right={
+          <div className="flex gap-1.5 shrink-0">
             <button
-              key={d}
               type="button"
-              onClick={() => setDays(d)}
-              className="px-3 py-1.5 rounded-xl text-[11px] font-bold press-strong shrink-0"
-              style={{
-                backgroundColor: days === d ? "#2C2C2C" : "rgba(255,255,255,0.95)",
-                color: days === d ? "#fff" : "#555",
-                boxShadow: "var(--shadow-card)",
-              }}
+              onClick={refresh}
+              disabled={refreshing}
+              className="w-9 h-9 rounded-full flex items-center justify-center press disabled:opacity-50 text-text-sub"
+              style={{ border: "1px solid var(--color-border)" }}
+              aria-label="새로고침"
             >
-              최근 {d}일
+              {refreshing ? <Loader2 size={14} className="animate-spin" /> : <RefreshCcw size={14} />}
             </button>
-          ))}
-        </div>
-        <button
-          type="button"
-          onClick={refresh}
-          disabled={refreshing}
-          className="w-9 h-9 rounded-xl bg-white flex items-center justify-center press-strong disabled:opacity-50"
-          style={{ boxShadow: "var(--shadow-card)" }}
-          aria-label="새로고침"
-        >
-          {refreshing ? (
-            <Loader2 size={14} className="animate-spin text-primary" />
-          ) : (
-            <RefreshCcw size={14} className="text-text-sub" />
-          )}
-        </button>
-        <button
-          type="button"
-          onClick={handlePurge}
-          className="w-9 h-9 rounded-xl bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-card)" }}
-          aria-label="오래된 로그 삭제"
-        >
-          <Trash2 size={14} style={{ color: "#B84545" }} />
-        </button>
-      </div>
+            <button
+              type="button"
+              onClick={handlePurge}
+              className="w-9 h-9 rounded-full flex items-center justify-center press"
+              style={{ border: "1px solid var(--color-border)", color: "var(--color-error)" }}
+              aria-label="오래된 로그 삭제"
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
+        }
+      />
+
+      {/* 기간 */}
+      <SegmentTabs
+        className="mb-3"
+        value={String(days)}
+        onChange={(k) => setDays(Number(k))}
+        items={[1, 7, 30].map((d) => ({ key: String(d), label: `최근 ${d}일` }))}
+      />
 
       {/* 전체 요약 */}
-      <div
-        className="rounded-2xl p-4 mb-3"
-        style={{
-          background: totalCount === 0
-            ? "linear-gradient(135deg, rgba(107,142,111,0.10), rgba(107,142,111,0.04))"
-            : "linear-gradient(135deg, rgba(216,85,85,0.10), rgba(184,69,69,0.04))",
-          border: `1px solid ${totalCount === 0 ? "rgba(107,142,111,0.2)" : "rgba(216,85,85,0.2)"}`,
-        }}
-      >
-        <div className="flex items-baseline justify-between mb-1">
-          <span className="text-[11px] font-bold" style={{ color: totalCount === 0 ? "#3F5B42" : "#8B2F2F" }}>
-            최근 {days}일 실패
-          </span>
-          <span className="text-[24px] font-bold" style={{ color: totalCount === 0 ? "#3F5B42" : "#8B2F2F" }}>
-            {totalCount}
-            <span className="text-[13px] font-semibold ml-0.5">건</span>
-          </span>
-        </div>
+      <AdminSection title="요약" padding={false}>
+        <StatRow label={`최근 ${days}일 실패`} value={`${totalCount}건`} tone={totalCount === 0 ? "sage" : "error"} />
         {totalCount > 0 && (
-          <div className="flex gap-2 flex-wrap mt-2">
+          <div className="flex gap-1.5 flex-wrap px-4 py-3">
             {Object.entries(providerBreakdown)
               .sort((a, b) => b[1] - a[1])
               .map(([prov, cnt]) => (
-                <button
+                <UIChip
                   key={prov}
-                  type="button"
+                  active={providerFilter === prov}
                   onClick={() => setProviderFilter(providerFilter === prov ? null : (prov === "unknown" ? null : prov))}
-                  className="text-[11px] font-bold px-2 py-0.5 rounded-lg press-strong"
-                  style={{
-                    backgroundColor: providerFilter === prov ? "#B84545" : "rgba(255,255,255,0.7)",
-                    color: providerFilter === prov ? "#fff" : "#8B2F2F",
-                  }}
                 >
-                  {prov === "google" ? "🟦 구글" : prov === "kakao" ? "🟨 카카오" : prov === "magic_link" ? "✉️ 매직링크" : prov}
-                  <span className="ml-1 opacity-70">{cnt}</span>
-                </button>
+                  {PROVIDER_LABEL[prov] ?? prov}
+                  <span className="tabular-nums opacity-70">{cnt}</span>
+                </UIChip>
               ))}
           </div>
         )}
-      </div>
+      </AdminSection>
 
       {/* 에러 코드 TOP */}
       {stats.length > 0 && (
-        <div
-          className="rounded-2xl p-4 mb-3 bg-white"
-          style={{ boxShadow: "var(--shadow-card)" }}
+        <AdminSection
+          title="에러 코드 TOP"
+          padding={false}
+          right={<span className="text-[11px] text-text-light">누르면 해당 코드만 필터</span>}
         >
-          <div className="flex items-center gap-2 mb-3">
-            <AlertCircle size={13} style={{ color: "#E88D5A" }} />
-            <h2 className="text-[13px] font-bold text-text-main">
-              에러 코드 TOP
-            </h2>
-            <span className="text-[11px] text-text-light">(클릭하면 해당 코드만 필터)</span>
-          </div>
-          <div className="space-y-1.5">
-            {stats.slice(0, 10).map((s, idx) => {
-              const guide = explainAuthError(s.error_code, null, s.provider);
-              const active = codeFilter === s.error_code;
-              return (
-                <button
-                  key={`${s.error_code}-${s.provider}`}
-                  type="button"
-                  onClick={() => setCodeFilter(active ? null : s.error_code)}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl press text-left"
-                  style={{
-                    backgroundColor: active ? "rgba(176, 92, 54,0.12)" : "#F7F4EE",
-                    border: active ? "1px solid rgba(176, 92, 54,0.3)" : "1px solid transparent",
-                  }}
-                >
-                  <span
-                    className="w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-bold shrink-0"
-                    style={{
-                      backgroundColor: idx === 0 ? "#D85555" : idx === 1 ? "#E88D5A" : "#C9A961",
-                      color: "#fff",
-                    }}
-                  >
-                    {idx + 1}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-bold text-text-main truncate">
-                      {guide.title}
-                    </p>
-                    <p className="text-[11px] text-text-sub font-mono truncate mt-0.5">
-                      {s.error_code} · {s.provider ?? "?"}
-                    </p>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <p className="text-[13px] font-bold" style={{ color: "#B84545" }}>
-                      {s.count}
-                    </p>
-                    <p className="text-[9px] text-text-light">
-                      {formatRelative(s.last_at)}
-                    </p>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+          {stats.slice(0, 10).map((s, idx) => {
+            const guide = explainAuthError(s.error_code, null, s.provider);
+            const active = codeFilter === s.error_code;
+            return (
+              <button
+                key={`${s.error_code}-${s.provider}`}
+                type="button"
+                onClick={() => setCodeFilter(active ? null : s.error_code)}
+                className="w-full flex items-center gap-3 px-4 py-3 border-b border-divider last:border-b-0 press text-left"
+                style={{ background: active ? "var(--color-surface-alt)" : undefined }}
+              >
+                <span className="w-4 text-[13px] font-semibold text-text-light tabular-nums shrink-0">{idx + 1}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] font-semibold text-text-main truncate">{guide.title}</p>
+                  <p className="text-[13px] text-text-light font-mono truncate mt-0.5">
+                    {s.error_code} · {s.provider ?? "?"}
+                  </p>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className="text-[15px] font-bold tabular-nums" style={{ color: "var(--color-error)" }}>{s.count}</p>
+                  <p className="text-[11px] text-text-light">{formatRelative(s.last_at)}</p>
+                </div>
+              </button>
+            );
+          })}
+        </AdminSection>
       )}
 
       {/* 필터 표시 */}
       {(providerFilter || codeFilter) && (
         <div className="flex items-center gap-2 mb-3 flex-wrap">
           <Filter size={12} className="text-text-sub" />
-          <span className="text-[11px] text-text-sub">필터:</span>
+          <span className="text-[13px] text-text-sub">필터:</span>
           {providerFilter && (
-            <button
-              type="button"
-              onClick={() => setProviderFilter(null)}
-              className="text-[11px] font-bold px-2 py-1 rounded-lg press-strong"
-              style={{ backgroundColor: "#E8B84A", color: "#fff" }}
-            >
-              provider: {providerFilter} ×
-            </button>
+            <HairlineButton onClick={() => setProviderFilter(null)} icon={<X size={12} />}>
+              provider: {providerFilter}
+            </HairlineButton>
           )}
           {codeFilter && (
-            <button
-              type="button"
-              onClick={() => setCodeFilter(null)}
-              className="text-[11px] font-bold px-2 py-1 rounded-lg press-strong"
-              style={{ backgroundColor: "#E8B84A", color: "#fff" }}
-            >
-              code: {codeFilter} ×
-            </button>
+            <HairlineButton onClick={() => setCodeFilter(null)} icon={<X size={12} />}>
+              code: {codeFilter}
+            </HairlineButton>
           )}
         </div>
       )}
 
       {/* 로그 리스트 */}
-      <div className="flex items-center gap-2 mb-2 mt-4">
-        <h2 className="text-[17px] font-bold text-text-main tracking-tight">
-          최근 로그 {logs.length > 0 && <span className="text-text-light font-bold">({logs.length})</span>}
-        </h2>
-      </div>
-
-      {logs.length === 0 ? (
-        <div
-          className="rounded-2xl py-8 text-center bg-white"
-          style={{ boxShadow: "var(--shadow-card)" }}
-        >
-          <Shield size={28} className="mx-auto mb-2 text-text-light" strokeWidth={1.5} />
-          <p className="text-[13px] font-bold text-text-main">로그가 없어요</p>
-          <p className="text-[11px] text-text-sub mt-0.5">로그인 실패가 없거나, 아직 SQL 마이그레이션을 실행하지 않았어요.</p>
-        </div>
-      ) : (
-        <div className="space-y-1.5">
-          {logs.map((log) => {
+      <AdminSection title={`최근 로그${logs.length > 0 ? ` (${logs.length})` : ""}`} padding={false}>
+        {logs.length === 0 ? (
+          <div className="py-10 text-center">
+            <Shield size={28} className="mx-auto mb-2 text-text-light" strokeWidth={1.5} />
+            <p className="text-[13px] font-semibold text-text-main">로그가 없어요</p>
+            <p className="text-[13px] text-text-light mt-0.5">로그인 실패가 없거나, 아직 SQL 마이그레이션을 실행하지 않았어요.</p>
+          </div>
+        ) : (
+          logs.map((log) => {
             const expanded = expandedId === log.id;
             const guide = explainAuthError(log.error_code, log.error_desc, log.provider);
+            const sevColor =
+              guide.severity === "danger" ? "var(--color-error)" :
+              guide.severity === "warn" ? "var(--color-warning)" : "var(--color-text-light)";
             return (
-              <div
-                key={log.id}
-                className="bg-white rounded-2xl overflow-hidden"
-                style={{ boxShadow: "var(--shadow-card)", border: "1px solid var(--color-divider)" }}
-              >
+              <div key={log.id} className="border-b border-divider last:border-b-0">
                 <button
                   type="button"
                   onClick={() => setExpandedId(expanded ? null : log.id)}
-                  className="w-full flex items-start gap-2.5 px-3 py-2.5 text-left active:bg-gray-50"
+                  className="w-full flex items-start gap-2.5 px-4 py-3 text-left press"
                 >
-                  <AlertCircle
-                    size={14}
-                    className="mt-0.5 shrink-0"
-                    style={{
-                      color:
-                        guide.severity === "danger" ? "#B84545" :
-                        guide.severity === "warn" ? "#B07A1C" : "#3A6CB5",
-                    }}
-                  />
+                  <AlertCircle size={14} className="mt-1 shrink-0" style={{ color: sevColor }} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[13px] font-bold text-text-main">
-                        {guide.title}
-                      </span>
-                      {log.provider && (
-                        <span
-                          className="text-[9px] font-bold px-1.5 py-0.5 chip-square"
-                          style={{
-                            backgroundColor: log.provider === "google" ? "#E3EBF7" : log.provider === "kakao" ? "#FEF4C8" : "#F0EDF7",
-                            color: log.provider === "google" ? "#3A6CB5" : log.provider === "kakao" ? "#7A5F16" : "#5D4785",
-                          }}
-                        >
-                          {log.provider}
-                        </span>
-                      )}
-                      <span
-                        className="text-[9px] font-bold px-1.5 py-0.5 chip-square"
-                        style={{ backgroundColor: "#F0F0F0", color: "#666" }}
-                      >
-                        {log.stage}
-                      </span>
+                      <span className="text-[15px] font-semibold text-text-main">{guide.title}</span>
+                      {log.provider && <AdminTag>{log.provider}</AdminTag>}
+                      <AdminTag>{log.stage}</AdminTag>
                     </div>
-                    <div className="flex items-center gap-1.5 mt-1 text-[11px] text-text-light">
+                    <div className="flex items-center gap-1.5 mt-1 text-[13px] text-text-light">
                       <span className="font-mono">{log.error_code ?? "?"}</span>
                       <span>·</span>
                       <span>{shortUA(log.user_agent)}</span>
@@ -439,17 +313,14 @@ export default function AdminAuthErrorsPage() {
                     </div>
                   </div>
                   {expanded ? (
-                    <ChevronUp size={14} className="text-text-sub mt-1 shrink-0" />
+                    <ChevronUp size={16} className="mt-1 shrink-0" style={{ color: "var(--color-text-muted)" }} />
                   ) : (
-                    <ChevronDown size={14} className="text-text-sub mt-1 shrink-0" />
+                    <ChevronDown size={16} className="mt-1 shrink-0" style={{ color: "var(--color-text-muted)" }} />
                   )}
                 </button>
 
                 {expanded && (
-                  <div
-                    className="px-3 pb-3 pt-1 text-[11px] space-y-1.5"
-                    style={{ borderTop: "1px solid var(--color-divider)" }}
-                  >
+                  <div className="px-4 pb-3 pt-2 text-[13px] space-y-1.5" style={{ borderTop: "1px solid var(--color-divider)" }}>
                     <Field label="시각" value={formatAbs(log.created_at)} />
                     <Field label="에러 코드" value={log.error_code ?? "(없음)"} mono />
                     <Field label="설명" value={log.error_desc ?? "(없음)"} />
@@ -457,35 +328,26 @@ export default function AdminAuthErrorsPage() {
                     <Field label="URL" value={log.url ?? "(없음)"} mono small />
                     <Field label="Referrer" value={log.referrer ?? "(없음)"} mono small />
                     <div className="flex justify-end pt-1.5">
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteOne(log.id)}
-                        className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold press-strong"
-                        style={{ backgroundColor: "var(--color-error-soft)", color: "#B84545" }}
-                      >
-                        <Trash2 size={10} />
+                      <HairlineButton tone="error" onClick={() => handleDeleteOne(log.id)} icon={<Trash2 size={12} />}>
                         이 로그 삭제
-                      </button>
+                      </HairlineButton>
                     </div>
                   </div>
                 )}
               </div>
             );
-          })}
-        </div>
-      )}
-    </div>
+          })
+        )}
+      </AdminSection>
+    </AdminPage>
   );
 }
 
 function Field({ label, value, mono, small }: { label: string; value: string; mono?: boolean; small?: boolean }) {
   return (
     <div className="flex gap-2">
-      <span className="shrink-0 w-[72px] text-text-sub font-bold">{label}</span>
-      <span
-        className={`flex-1 min-w-0 break-all ${mono ? "font-mono" : ""} ${small ? "text-[11px]" : ""}`}
-        style={{ color: "#333" }}
-      >
+      <span className="shrink-0 w-[72px] text-text-light">{label}</span>
+      <span className={`flex-1 min-w-0 break-all text-text-main ${mono ? "font-mono" : ""} ${small ? "text-[11px]" : ""}`}>
         {value}
       </span>
     </div>

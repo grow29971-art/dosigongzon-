@@ -1,10 +1,11 @@
 "use client";
 
+// 꿀팁게시판 관리 (admin 전용) — 2026-09-16 「익숙한 동네앱」 리디자인:
+// 카드 목록 → 구분선 리스트(썸네일 8px), 편집 폼 헤어라인 섹션, 회색 태그, 헤어라인 버튼. 토큰만.
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
   Plus,
   Pencil,
   Trash2,
@@ -15,6 +16,7 @@ import {
   ImagePlus,
   Sparkles,
   ExternalLink,
+  FileText,
 } from "lucide-react";
 import {
   listAllTips,
@@ -28,6 +30,11 @@ import {
 } from "@/lib/tips-repo";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { revalidateTips } from "./actions";
+import UIButton from "@/app/components/ui/Button";
+import {
+  AdminForbidden, AdminHeader, AdminLoading, AdminPage, AdminSection, AdminTag, EmptyState, FieldLabel,
+  inputCls, inputStyle,
+} from "../_ui";
 
 const EMPTY_DRAFT: TipInput = {
   slug: "",
@@ -45,8 +52,6 @@ const EMPTY_DRAFT: TipInput = {
 };
 
 export default function AdminTipsPage() {
-  const router = useRouter();
-
   const [authChecked, setAuthChecked] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [items, setItems] = useState<Tip[]>([]);
@@ -206,83 +211,33 @@ export default function AdminTipsPage() {
     }
   };
 
-  if (!authChecked || loading) {
-    return (
-      <div className="flex justify-center pt-20">
-        <Loader2 size={28} className="animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="px-5 pt-20 text-center">
-        <p className="text-[15px] font-bold text-text-main mb-1">관리자 전용 페이지예요</p>
-        <Link href="/mypage" className="inline-block mt-4 text-[13px] font-bold text-primary">
-          마이페이지로
-        </Link>
-      </div>
-    );
-  }
+  if (!authChecked || loading) return <AdminLoading />;
+  if (!isAdmin) return <AdminForbidden />;
 
   return (
-    <div className="px-4 pt-14 pb-24">
-      {/* 헤더 */}
-      <div className="mb-5">
-        <button
-          onClick={() => router.push("/admin")}
-          className="flex items-center gap-1 text-[13px] font-semibold text-text-sub mb-3 press-strong transition-transform"
-        >
-          <ArrowLeft size={14} />
-          관리자
-        </button>
-        <div className="flex items-end justify-between">
-          <div>
-            <div className="flex items-baseline gap-2 mb-1">
-              <h1 className="text-[24px] font-bold text-text-main tracking-tight flex items-center gap-1.5">
-                <Sparkles size={18} className="text-primary" />
-                꿀팁게시판 관리
-              </h1>
-            </div>
-            <p className="text-[13px] text-text-sub">정보글을 작성·발행·수정할 수 있어요</p>
-          </div>
-          <button
-            onClick={handleCreate}
-            className="w-11 h-11 rounded-full bg-primary flex items-center justify-center press-strong transition-transform"
-            style={{ boxShadow: "var(--shadow-primary)" }}
-            aria-label="새 꿀팁 작성"
-          >
-            <Plus size={20} color="#fff" strokeWidth={2.5} />
-          </button>
-        </div>
-      </div>
+    <AdminPage>
+      <AdminHeader
+        title="꿀팁게시판 관리"
+        description="정보글을 작성·발행·수정할 수 있어요"
+        right={
+          <UIButton size="sm" onClick={handleCreate}>
+            <Plus size={14} /> 새 꿀팁
+          </UIButton>
+        }
+      />
 
       {/* 편집 폼 */}
       {editingId && (
-        <div
-          className="mb-5 p-4"
-          style={{
-            background: "#FFFFFF",
-            borderRadius: "var(--radius-card)",
-            boxShadow: "var(--shadow-card)",
-            border: "1.5px solid rgba(176, 92, 54,0.2)",
-          }}
-        >
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[15px] font-bold text-text-main">
-              {editingId === "new" ? "새 꿀팁 작성" : "꿀팁 수정"}
-            </h2>
-            <button
-              onClick={handleCancel}
-              className="w-7 h-7 rounded-lg flex items-center justify-center press-strong"
-              style={{ backgroundColor: "var(--color-gray-100)" }}
-            >
-              <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
+        <AdminSection
+          title={editingId === "new" ? "새 꿀팁 작성" : "꿀팁 수정"}
+          right={
+            <button type="button" onClick={handleCancel} className="w-7 h-7 flex items-center justify-center text-text-light" aria-label="닫기">
+              <X size={16} />
             </button>
-          </div>
-
+          }
+        >
           {/* 제목 */}
-          <Label required>제목</Label>
+          <FieldLabel>제목 *</FieldLabel>
           <Input
             value={draft.title}
             onChange={handleTitleChange}
@@ -290,20 +245,18 @@ export default function AdminTipsPage() {
           />
 
           {/* 슬러그 (URL) */}
-          <Label required>슬러그 (URL 끝부분, 영소문자/숫자/하이픈)</Label>
+          <FieldLabel>슬러그 (URL 끝부분, 영소문자/숫자/하이픈) *</FieldLabel>
           <Input
             value={draft.slug}
             onChange={handleSlugChange}
             placeholder="tnr-application-guide"
           />
           {draft.slug && (
-            <p className="text-[11px] text-text-light mb-2 -mt-0.5">
-              → /tips/{draft.slug}
-            </p>
+            <p className="text-[13px] text-text-light -mt-2 mb-3">→ /tips/{draft.slug}</p>
           )}
 
           {/* 한 줄 설명 (description) */}
-          <Label>한 줄 설명 (SEO meta)</Label>
+          <FieldLabel>한 줄 설명 (SEO meta)</FieldLabel>
           <Input
             value={draft.description ?? ""}
             onChange={(v) => setDraft((d) => ({ ...d, description: v || null }))}
@@ -311,7 +264,7 @@ export default function AdminTipsPage() {
           />
 
           {/* 썸네일 */}
-          <Label>썸네일 이미지</Label>
+          <FieldLabel>썸네일 이미지</FieldLabel>
           <div className="mb-3">
             {draft.thumbnail_url ? (
               <div className="relative">
@@ -319,27 +272,23 @@ export default function AdminTipsPage() {
                 <img
                   src={draft.thumbnail_url}
                   alt=""
-                  className="w-full aspect-[16/9] rounded-xl object-cover"
-                  style={{ border: "1px solid var(--color-border)" }}
+                  className="w-full aspect-[16/9] object-cover"
+                  style={{ borderRadius: "var(--radius-card-sm)", border: "1px solid var(--color-border)" }}
                 />
                 <button
                   type="button"
                   onClick={handleImageClear}
-                  className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center press-strong"
-                  style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "#fff" }}
+                  className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center press"
+                  style={{ backgroundColor: "rgba(0,0,0,0.6)", color: "var(--color-surface)" }}
                   aria-label="이미지 제거"
                 >
-                  <X size={16} strokeWidth={3} />
+                  <X size={16} />
                 </button>
               </div>
             ) : (
               <label
-                className="flex flex-col items-center justify-center aspect-[16/9] rounded-xl cursor-pointer press transition-transform"
-                style={{
-                  backgroundColor: "var(--color-gray-50)",
-                  border: "1.5px dashed #C9BDAA",
-                  color: "#A38E7A",
-                }}
+                className="flex flex-col items-center justify-center aspect-[16/9] cursor-pointer text-text-light"
+                style={{ backgroundColor: "var(--color-surface-alt)", border: "1px dashed var(--color-gray-300)", borderRadius: "var(--radius-card-sm)" }}
               >
                 {uploadingImage ? (
                   <>
@@ -365,7 +314,7 @@ export default function AdminTipsPage() {
           </div>
 
           {/* 태그 */}
-          <Label>태그 (쉼표로 구분)</Label>
+          <FieldLabel>태그 (쉼표로 구분)</FieldLabel>
           <Input
             value={tagsInput}
             onChange={handleTagsChange}
@@ -373,29 +322,23 @@ export default function AdminTipsPage() {
           />
 
           {/* 본문 */}
-          <Label required>본문 (HTML 가능 — h2/h3, p, ul, ol, blockquote, a, img, code 등)</Label>
+          <FieldLabel>본문 (HTML 가능 — h2/h3, p, ul, ol, blockquote, a, img, code 등) *</FieldLabel>
           <textarea
             value={draft.body}
             onChange={(e) => setDraft((d) => ({ ...d, body: e.target.value }))}
             rows={14}
             placeholder={`<h2>들어가며</h2>\n<p>...</p>\n<h2>본론</h2>\n<ul><li>...</li></ul>`}
-            className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-3 resize-y"
-            style={{
-              backgroundColor: "var(--color-gray-50)",
-              color: "#2A2A28",
-              border: "1px solid var(--color-border)",
-              fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, monospace",
-              minHeight: 280,
-            }}
+            className={`${inputCls} text-[13px] mb-1 resize-y font-mono`}
+            style={{ ...inputStyle, minHeight: 280 }}
           />
-          <p className="text-[11px] text-text-light -mt-2 mb-2">
+          <p className="text-[13px] text-text-light mb-3">
             &lt;script&gt; · &lt;iframe&gt; · on* 핸들러는 자동 제거돼요
           </p>
 
           {/* 출처 */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <Label>출처 URL</Label>
+              <FieldLabel>출처 URL</FieldLabel>
               <Input
                 value={draft.source_url ?? ""}
                 onChange={(v) => setDraft((d) => ({ ...d, source_url: v || null }))}
@@ -403,7 +346,7 @@ export default function AdminTipsPage() {
               />
             </div>
             <div>
-              <Label>출처 표시명</Label>
+              <FieldLabel>출처 표시명</FieldLabel>
               <Input
                 value={draft.source_label ?? ""}
                 onChange={(v) => setDraft((d) => ({ ...d, source_label: v || null }))}
@@ -413,8 +356,8 @@ export default function AdminTipsPage() {
           </div>
 
           {/* 발행 옵션 */}
-          <div className="grid grid-cols-3 gap-2 mb-3">
-            <label className="flex items-center gap-1.5 cursor-pointer p-2 rounded-lg" style={{ background: "var(--color-gray-50)" }}>
+          <div className="flex items-center gap-4 mb-3">
+            <label className="flex items-center gap-1.5 cursor-pointer">
               <input
                 type="checkbox"
                 checked={draft.published}
@@ -423,7 +366,7 @@ export default function AdminTipsPage() {
               />
               <span className="text-[13px] font-semibold text-text-sub">발행</span>
             </label>
-            <label className="flex items-center gap-1.5 cursor-pointer p-2 rounded-lg" style={{ background: "var(--color-gray-50)" }}>
+            <label className="flex items-center gap-1.5 cursor-pointer">
               <input
                 type="checkbox"
                 checked={draft.featured}
@@ -431,10 +374,10 @@ export default function AdminTipsPage() {
                 className="w-4 h-4 accent-primary"
               />
               <span className="text-[13px] font-semibold text-text-sub flex items-center gap-0.5">
-                <Sparkles size={10} /> 추천
+                <Sparkles size={11} /> 추천
               </span>
             </label>
-            <label className="flex items-center gap-1.5 cursor-pointer p-2 rounded-lg" style={{ background: "var(--color-gray-50)" }}>
+            <label className="flex items-center gap-1.5 cursor-pointer">
               <input
                 type="checkbox"
                 checked={draft.pinned}
@@ -442,13 +385,13 @@ export default function AdminTipsPage() {
                 className="w-4 h-4 accent-primary"
               />
               <span className="text-[13px] font-semibold text-text-sub flex items-center gap-0.5">
-                <Pin size={10} /> 고정
+                <Pin size={11} /> 고정
               </span>
             </label>
           </div>
 
           {/* 발행일 */}
-          <Label>발행일</Label>
+          <FieldLabel>발행일</FieldLabel>
           <input
             type="datetime-local"
             value={draft.published_at ? draft.published_at.slice(0, 16) : ""}
@@ -460,154 +403,107 @@ export default function AdminTipsPage() {
                   : new Date().toISOString(),
               }))
             }
-            className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-3"
-            style={{
-              backgroundColor: "var(--color-gray-50)",
-              color: "#2A2A28",
-              border: "1px solid var(--color-border)",
-            }}
+            className={`${inputCls} mb-3`}
+            style={inputStyle}
           />
 
           {error && (
-            <p className="text-[11px] mb-2" style={{ color: "#B84545" }}>
-              {error}
-            </p>
+            <p className="text-[13px] mb-2" style={{ color: "var(--color-error)" }}>{error}</p>
           )}
 
           <div className="flex gap-2">
-            <button
-              onClick={handleSave}
-              disabled={saving || uploadingImage}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary text-white text-[13px] font-bold disabled:opacity-40 press-strong transition-all"
-            >
+            <UIButton onClick={handleSave} disabled={saving || uploadingImage} className="flex-1">
               {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
               저장
-            </button>
-            <button
-              onClick={handleCancel}
-              disabled={saving}
-              className="px-5 py-2.5 rounded-xl text-[13px] font-bold"
-              style={{ backgroundColor: "var(--color-gray-100)", color: "#A38E7A" }}
-            >
-              취소
-            </button>
+            </UIButton>
+            <UIButton variant="secondary" onClick={handleCancel} disabled={saving}>취소</UIButton>
           </div>
-        </div>
+        </AdminSection>
       )}
 
       {/* 글 목록 */}
-      <div className="space-y-3">
+      <AdminSection title={`꿀팁 ${items.length}개`} padding={false}>
         {items.length === 0 ? (
-          <div className="card p-6 text-center text-[13px] text-text-sub">
-            아직 등록된 꿀팁이 없어요.
-          </div>
+          <EmptyState>아직 등록된 꿀팁이 없어요.</EmptyState>
         ) : (
           items.map((item) => (
             <div
               key={item.id}
-              className="p-4"
-              style={{
-                background: "#FFFFFF",
-                borderRadius: "var(--radius-card)",
-                boxShadow: "var(--shadow-card)",
-                border: "1px solid var(--color-divider)",
-                opacity: item.published ? 1 : 0.6,
-              }}
+              className="flex items-start gap-3 px-4 py-3 border-b border-divider last:border-b-0"
+              style={{ opacity: item.published ? 1 : 0.6 }}
             >
-              <div className="flex items-start gap-3">
-                {item.thumbnail_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={item.thumbnail_url}
-                    alt=""
-                    className="w-16 h-16 rounded-xl object-cover shrink-0"
-                  />
-                ) : (
-                  <div
-                    className="w-16 h-16 rounded-xl shrink-0 flex items-center justify-center"
-                    style={{ background: "#F2EBE0" }}
-                  >
-                    <Sparkles size={20} className="text-primary opacity-60" />
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                    {!item.published && (
-                      <span className="text-[11px] font-bold px-1.5 py-0.5 chip-square bg-text-muted text-white">
-                        초안
-                      </span>
-                    )}
-                    {item.featured && (
-                      <span className="text-[11px] font-bold text-primary flex items-center gap-0.5">
-                        <Sparkles size={10} /> 추천
-                      </span>
-                    )}
-                    {item.pinned && (
-                      <span className="text-[11px] font-bold text-primary flex items-center gap-0.5">
-                        <Pin size={10} /> 고정
-                      </span>
-                    )}
-                    <span className="text-[11px] text-text-light">· /{item.slug}</span>
-                  </div>
-                  <p className="text-[15px] font-bold text-text-main leading-tight truncate">
-                    {item.title}
-                  </p>
-                  {item.description && (
-                    <p className="text-[11px] text-text-sub mt-0.5 truncate">
-                      {item.description}
-                    </p>
-                  )}
-                  {item.tags.length > 0 && (
-                    <p className="text-[11px] text-text-light mt-0.5 truncate">
-                      {item.tags.map((t) => `#${t}`).join(" ")}
-                    </p>
-                  )}
+              {item.thumbnail_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={item.thumbnail_url}
+                  alt=""
+                  className="w-14 h-14 object-cover shrink-0"
+                  style={{ borderRadius: "var(--radius-card-sm)", border: "1px solid var(--color-border)" }}
+                />
+              ) : (
+                <div
+                  className="w-14 h-14 shrink-0 flex items-center justify-center text-text-light"
+                  style={{ background: "var(--color-surface-alt)", borderRadius: "var(--radius-card-sm)" }}
+                >
+                  <FileText size={20} strokeWidth={1.8} />
                 </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                  {!item.published && <AdminTag>초안</AdminTag>}
+                  {item.featured && (
+                    <span className="text-[11px] font-semibold text-primary flex items-center gap-0.5">
+                      <Sparkles size={10} /> 추천
+                    </span>
+                  )}
+                  {item.pinned && (
+                    <span className="text-[11px] font-semibold text-primary flex items-center gap-0.5">
+                      <Pin size={10} /> 고정
+                    </span>
+                  )}
+                  <span className="text-[11px] text-text-light truncate">· /{item.slug}</span>
+                </div>
+                <p className="text-[15px] font-semibold text-text-main leading-tight truncate">{item.title}</p>
+                {item.description && (
+                  <p className="text-[13px] text-text-sub mt-0.5 truncate">{item.description}</p>
+                )}
+                {item.tags.length > 0 && (
+                  <p className="text-[13px] text-text-light mt-0.5 truncate">
+                    {item.tags.map((t) => `#${t}`).join(" ")}
+                  </p>
+                )}
               </div>
-              <div className="flex gap-1.5 mt-3 pt-3 border-t border-divider">
+              <div className="flex gap-1 shrink-0">
                 <Link
                   href={`/tips/${item.slug}`}
                   target="_blank"
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold"
-                  style={{ backgroundColor: "#F2EBE0", color: "#8B6F4E" }}
+                  className="w-8 h-8 flex items-center justify-center press text-text-sub"
+                  aria-label="보기"
                 >
-                  <ExternalLink size={12} /> 보기
+                  <ExternalLink size={14} />
                 </Link>
                 <button
+                  type="button"
                   onClick={() => handleEdit(item)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold"
-                  style={{ backgroundColor: "var(--color-gray-100)", color: "var(--color-primary)" }}
+                  className="w-8 h-8 flex items-center justify-center press text-text-sub"
+                  aria-label="수정"
                 >
-                  <Pencil size={12} /> 수정
+                  <Pencil size={14} />
                 </button>
                 <button
+                  type="button"
                   onClick={() => handleDelete(item)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[13px] font-bold"
-                  style={{ backgroundColor: "var(--color-error-soft)", color: "#D85555" }}
+                  className="w-8 h-8 flex items-center justify-center press text-text-light"
+                  aria-label="삭제"
                 >
-                  <Trash2 size={12} /> 삭제
+                  <Trash2 size={14} />
                 </button>
               </div>
             </div>
           ))
         )}
-      </div>
-    </div>
-  );
-}
-
-function Label({
-  children,
-  required,
-}: {
-  children: React.ReactNode;
-  required?: boolean;
-}) {
-  return (
-    <label className="block text-[11px] font-bold text-text-sub mb-1 mt-2">
-      {children}
-      {required && <span className="text-primary ml-0.5">*</span>}
-    </label>
+      </AdminSection>
+    </AdminPage>
   );
 }
 
@@ -629,12 +525,8 @@ function Input({
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
       disabled={disabled}
-      className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-1 disabled:opacity-50 disabled:cursor-not-allowed"
-      style={{
-        backgroundColor: "var(--color-gray-50)",
-        color: "#2A2A28",
-        border: "1px solid var(--color-border)",
-      }}
+      className={`${inputCls} mb-3 disabled:cursor-not-allowed`}
+      style={inputStyle}
     />
   );
 }

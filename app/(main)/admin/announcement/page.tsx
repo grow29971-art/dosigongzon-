@@ -1,12 +1,12 @@
 // 접속 팝업 공지 관리 (admin 전용)
 // 등록하면 사용자 최초 접속 시 모달로 1회 표시. 내리기로 즉시 중단.
+// 2026-09-16 「익숙한 동네앱」 리디자인: 헤어라인 섹션·토큰·회색 선 아이콘.
 
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, Megaphone, Send, EyeOff } from "lucide-react";
+import { Loader2, Send, EyeOff } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import {
   getActiveAnnouncement,
@@ -14,6 +14,8 @@ import {
   clearAnnouncements,
   type Announcement,
 } from "@/lib/announcements-repo";
+import UIButton from "@/app/components/ui/Button";
+import { AdminHeader, AdminLoading, AdminPage, AdminSection, EmptyState, HairlineButton, inputCls, inputStyle } from "../_ui";
 
 export default function AdminAnnouncementPage() {
   const router = useRouter();
@@ -60,7 +62,7 @@ export default function AdminAnnouncementPage() {
     setDone("");
     try {
       await publishAnnouncement(message.trim());
-      setDone("✓ 공지를 등록했어요. 이제 접속자에게 팝업으로 표시됩니다.");
+      setDone("공지를 등록했어요. 이제 접속자에게 팝업으로 표시됩니다.");
       setMessage("");
       await refresh();
     } catch (e) {
@@ -78,7 +80,7 @@ export default function AdminAnnouncementPage() {
     setDone("");
     try {
       await clearAnnouncements();
-      setDone("✓ 공지를 내렸어요.");
+      setDone("공지를 내렸어요.");
       await refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "내리기 실패");
@@ -87,118 +89,57 @@ export default function AdminAnnouncementPage() {
     }
   };
 
-  if (checking || !authorized) {
-    return (
-      <div className="flex justify-center pt-20">
-        <Loader2 size={28} className="animate-spin text-primary" />
-      </div>
-    );
-  }
+  if (checking || !authorized) return <AdminLoading />;
 
   return (
-    <div
-      className="px-4 pt-12 pb-24 max-w-2xl mx-auto"
-      style={{ background: "#F7F4EE", minHeight: "100dvh" }}
-    >
-      <div className="flex items-center gap-3 mb-6">
-        <Link
-          href="/admin"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
-          aria-label="어드민 홈"
-        >
-          <ArrowLeft size={18} className="text-text-main" />
-        </Link>
-        <div>
-          <h1 className="text-[20px] font-bold text-text-main tracking-tight flex items-center gap-2">
-            <Megaphone size={18} className="text-primary" />
-            접속 팝업 공지
-          </h1>
-          <p className="text-[13px] text-text-sub">
-            등록하면 사용자 최초 접속 시 모달로 1회 표시 · 쪽지와 별개
-          </p>
-        </div>
-      </div>
+    <AdminPage>
+      <AdminHeader title="접속 팝업 공지" description="사용자 최초 접속 시 모달로 1회 표시 · 쪽지와 별개" />
 
       {/* 현재 공지 */}
-      <section className="mb-5">
-        <p className="text-[13px] font-bold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
-          현재 표시 중인 공지
-        </p>
+      <AdminSection title="현재 표시 중인 공지">
         {current ? (
-          <div
-            className="rounded-2xl bg-white p-4 text-[13px] whitespace-pre-wrap"
-            style={{ border: "1px solid var(--color-divider)", color: "#3D2F25" }}
-          >
-            {current.body}
-            <button
-              type="button"
-              onClick={handleClear}
-              disabled={busy}
-              className="mt-3 flex items-center gap-1.5 text-[13px] font-bold px-3 py-1.5 rounded-lg press-strong disabled:opacity-50"
-              style={{ background: "var(--color-error-soft)", color: "#B84545" }}
-            >
-              <EyeOff size={13} /> 이 공지 내리기
-            </button>
+          <div>
+            <p className="text-[15px] text-text-main whitespace-pre-wrap leading-relaxed">{current.body}</p>
+            <HairlineButton tone="error" onClick={handleClear} disabled={busy} icon={<EyeOff size={13} />} className="mt-3">
+              이 공지 내리기
+            </HairlineButton>
           </div>
         ) : (
-          <div
-            className="rounded-2xl p-4 text-[13px] text-center"
-            style={{ background: "#F1ECE4", color: "rgba(60,46,35,0.5)" }}
-          >
-            표시 중인 공지가 없어요.
-          </div>
+          <EmptyState>표시 중인 공지가 없어요.</EmptyState>
         )}
-      </section>
+      </AdminSection>
 
       {/* 새 공지 작성 */}
-      <section className="mb-4">
-        <p className="text-[13px] font-bold mb-2 px-1" style={{ color: "rgba(60,46,35,0.65)" }}>
-          새 공지 ({message.length}/1000)
-        </p>
+      <AdminSection title={`새 공지 (${message.length}/1000)`}>
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           rows={7}
           maxLength={1000}
-          placeholder="예) 도시공존에 곧 굿즈샵이 열려요! 준비되면 알려드릴게요 🐾"
-          className="w-full rounded-2xl bg-white p-4 text-[15px] leading-relaxed resize-none"
-          style={{
-            border: "1px solid var(--color-divider)",
-            boxShadow: "inset 0 1px 2px rgba(0,0,0,0.02)",
-            color: "#3D2F25",
-          }}
+          placeholder="예) 도시공존에 곧 굿즈샵이 열려요. 준비되면 알려드릴게요"
+          className={`${inputCls} leading-relaxed resize-none`}
+          style={inputStyle}
         />
-      </section>
-
-      <button
-        type="button"
-        onClick={handlePublish}
-        disabled={busy || !message.trim()}
-        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white text-[15px] font-bold press disabled:opacity-60"
-        style={{
-          background: "#C97C52",
-          boxShadow: "var(--shadow-primary)",
-        }}
-      >
-        {busy ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
-        팝업 공지로 등록
-      </button>
+        <UIButton onClick={handlePublish} disabled={busy || !message.trim()} size="lg" full className="mt-3">
+          {busy ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+          팝업 공지로 등록
+        </UIButton>
+      </AdminSection>
 
       {error && (
-        <div className="mt-4 rounded-2xl p-4 text-[13px]" style={{ background: "var(--color-error-soft)", color: "#B84545" }}>
+        <p className="mt-3 text-[13px] font-semibold" style={{ color: "var(--color-error)" }}>
           {error}
-        </div>
+        </p>
       )}
       {done && (
-        <div className="mt-4 rounded-2xl p-4 text-[13px]" style={{ background: "#EAF6EC", color: "#2E7D32" }}>
+        <p className="mt-3 text-[13px] font-semibold" style={{ color: "var(--color-sage)" }}>
           {done}
-        </div>
+        </p>
       )}
 
-      <p className="text-center text-[11px] mt-4" style={{ color: "rgba(60,46,35,0.45)" }}>
+      <p className="text-[13px] text-text-light mt-4 leading-relaxed">
         각 사용자에게 1회만 표시됩니다(닫으면 다시 안 뜸). 광고성 내용은 별도 규제 대상이니 서비스 안내 위주로.
       </p>
-    </div>
+    </AdminPage>
   );
 }

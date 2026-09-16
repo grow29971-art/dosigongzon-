@@ -2,6 +2,7 @@
 // 145명 시점에서 누가 활성·휴면·이탈 후보·첫 등록 미완료인지 파악해서
 // 운영자가 직접 손길 닿게(쪽지 발송 등) 하기 위함.
 // list_all_users RPC + cats count로 클라이언트에서 분류.
+// 2026-09-16 「익숙한 동네앱」 리디자인: 코호트 카드 그리드 → 수치 행(선택 가능), 유저 목록 → 구분선 리스트. 토큰만.
 
 "use client";
 
@@ -9,18 +10,17 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
-  Loader2,
   Activity,
   Moon,
   AlertTriangle,
   Sparkles,
   Cat as CatIcon,
   MessageCircle,
-  Users,
+  ChevronRight,
 } from "lucide-react";
 import { isCurrentUserAdmin } from "@/lib/news-repo";
 import { createClient } from "@/lib/supabase/client";
+import { AdminHeader, AdminLoading, AdminPage, AdminSection, EmptyState, type Tone } from "../_ui";
 
 interface RpcUserRow {
   id: string;
@@ -42,44 +42,48 @@ const COHORT_META: Record<CohortId, {
   label: string;
   description: string;
   Icon: typeof Activity;
-  color: string;
-  bg: string;
+  tone: Tone;
 }> = {
   new: {
     label: "신규",
     description: "최근 24시간 안에 가입",
     Icon: Sparkles,
-    color: "var(--color-primary)",
-    bg: "rgba(176, 92, 54,0.10)",
+    tone: "primary",
   },
   active: {
     label: "활성",
     description: "최근 7일 안에 접속",
     Icon: Activity,
-    color: "#5BA876",
-    bg: "rgba(91,168,118,0.12)",
+    tone: "sage",
   },
   dormant: {
     label: "휴면",
     description: "8~30일 미접속",
     Icon: Moon,
-    color: "#9D7AB8",
-    bg: "rgba(157,122,184,0.12)",
+    tone: "neutral",
   },
   churned: {
     label: "이탈 후보",
     description: "30일+ 미접속",
     Icon: AlertTriangle,
-    color: "#D85555",
-    bg: "rgba(216,85,85,0.12)",
+    tone: "error",
   },
   no_cat: {
     label: "첫 등록 미완료",
     description: "가입했지만 고양이 등록 0건 (cold start 위험)",
     Icon: CatIcon,
-    color: "#E88D5A",
-    bg: "rgba(232,141,90,0.14)",
+    tone: "warning",
   },
+};
+
+const TONE_TEXT: Record<Tone, string> = {
+  neutral: "var(--color-text-main)",
+  error: "var(--color-error)",
+  warning: "var(--color-warning)",
+  sage: "var(--color-sage)",
+  primary: "var(--color-primary)",
+  like: "var(--color-like)",
+  care: "var(--color-care)",
 };
 
 function daysBetween(iso: string | null, now: number): number | null {
@@ -190,57 +194,27 @@ export default function AdminActivationPage() {
     return map;
   }, [users]);
 
-  if (checking || (!authorized && !error)) {
-    return (
-      <div className="flex justify-center pt-20">
-        <Loader2 size={28} className="animate-spin text-primary" />
-      </div>
-    );
-  }
+  if (checking || (!authorized && !error)) return <AdminLoading />;
 
   const visibleUsers = selected ? cohorts[selected] : [];
 
   return (
-    <div className="px-4 pt-12 pb-24 max-w-2xl mx-auto" style={{ background: "#F7F4EE", minHeight: "100dvh" }}>
-      <div className="flex items-center gap-3 mb-6">
-        <Link
-          href="/admin"
-          className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
-          style={{ boxShadow: "var(--shadow-raised)" }}
-          aria-label="어드민 홈"
-        >
-          <ArrowLeft size={18} className="text-text-main" />
-        </Link>
-        <div>
-          <h1 className="text-[20px] font-bold text-text-main tracking-tight flex items-center gap-2">
-            <Users size={18} className="text-primary" />
-            가입자 활성도 코호트
-          </h1>
-          <p className="text-[13px] text-text-sub">
-            전체 {users.length}명 · 운영자가 손길 닿을 코호트별 분류
-          </p>
-        </div>
-      </div>
+    <AdminPage>
+      <AdminHeader
+        title="가입자 활성도 코호트"
+        description={`전체 ${users.length}명 · 운영자가 손길 닿을 코호트별 분류`}
+      />
 
-      {loading && (
-        <div className="flex justify-center py-12">
-          <Loader2 size={24} className="animate-spin text-primary" />
-        </div>
-      )}
+      {loading && <AdminLoading />}
 
       {error && (
-        <div
-          className="rounded-2xl p-4 mb-4 text-[13px]"
-          style={{ background: "var(--color-error-soft)", color: "#B84545" }}
-        >
-          {error}
-        </div>
+        <p className="mb-3 text-[13px] font-semibold" style={{ color: "var(--color-error)" }}>{error}</p>
       )}
 
-      {/* 코호트 카드 그리드 */}
       {!loading && !error && (
         <>
-          <div className="grid grid-cols-2 gap-2.5 mb-6">
+          {/* 코호트 — 수치 행(탭하면 목록) */}
+          <AdminSection title="코호트" padding={false}>
             {(Object.keys(COHORT_META) as CohortId[]).map((id) => {
               const meta = COHORT_META[id];
               const count = cohorts[id].length;
@@ -251,88 +225,50 @@ export default function AdminActivationPage() {
                   key={id}
                   type="button"
                   onClick={() => setSelected(isSelected ? null : id)}
-                  className="text-left rounded-2xl p-3.5 press transition-transform"
-                  style={{
-                    background: isSelected ? meta.bg : "#FFFFFF",
-                    border: isSelected
-                      ? `1.5px solid ${meta.color}`
-                      : "1px solid var(--color-divider)",
-                    boxShadow: isSelected
-                      ? `0 6px 18px ${meta.color}22`
-                      : "var(--shadow-card)",
-                  }}
+                  className="w-full text-left flex items-center gap-3 px-4 py-3 border-b border-divider last:border-b-0 press"
+                  style={{ background: isSelected ? "var(--color-surface-alt)" : undefined, minHeight: 56 }}
                 >
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span
-                      className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
-                      style={{ background: meta.bg }}
-                    >
-                      <Icon size={14} color={meta.color} />
-                    </span>
-                    <span
-                      className="text-[13px] font-bold"
-                      style={{ color: meta.color }}
-                    >
-                      {meta.label}
-                    </span>
+                  <Icon size={20} className="shrink-0 text-text-sub" strokeWidth={1.8} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[15px] font-semibold text-text-main">{meta.label}</p>
+                    <p className="text-[13px] text-text-light mt-0.5">{meta.description}</p>
                   </div>
-                  <p className="text-[24px] font-bold leading-none" style={{ color: "#3D2F25" }}>
+                  <span className="text-[17px] font-bold tabular-nums shrink-0" style={{ color: TONE_TEXT[meta.tone] }}>
                     {count}
-                  </p>
-                  <p className="text-[11px] mt-1.5 leading-snug" style={{ color: "rgba(60,46,35,0.55)" }}>
-                    {meta.description}
-                  </p>
+                  </span>
+                  <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} />
                 </button>
               );
             })}
-          </div>
+          </AdminSection>
 
           {/* 선택된 코호트 사용자 목록 */}
           {selected && (
-            <section
-              className="rounded-2xl bg-white p-4"
-              style={{ boxShadow: "var(--shadow-card)" }}
-            >
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-[15px] font-bold" style={{ color: "#3D2F25" }}>
-                  {COHORT_META[selected].label} · {visibleUsers.length}명
-                </h2>
-                <button
-                  type="button"
-                  onClick={() => setSelected(null)}
-                  className="text-[11px] text-text-sub"
-                >
+            <AdminSection
+              title={`${COHORT_META[selected].label} · ${visibleUsers.length}명`}
+              padding={false}
+              right={
+                <button type="button" onClick={() => setSelected(null)} className="text-[13px] font-semibold text-text-sub">
                   닫기
                 </button>
-              </div>
+              }
+            >
               {visibleUsers.length === 0 ? (
-                <p className="text-[13px] text-text-light py-4 text-center">
-                  해당 코호트에 사용자가 없어요.
-                </p>
+                <EmptyState>해당 코호트에 사용자가 없어요.</EmptyState>
               ) : (
-                <ul className="space-y-2 max-h-[60vh] overflow-y-auto">
+                <ul className="max-h-[60vh] overflow-y-auto">
                   {visibleUsers.map((u) => (
-                    <li
-                      key={u.id}
-                      className="flex items-center gap-3 p-2.5 rounded-xl"
-                      style={{ background: "rgba(247,244,238,0.6)" }}
-                    >
+                    <li key={u.id} className="flex items-center gap-3 px-4 py-3 border-b border-divider last:border-b-0">
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-bold truncate" style={{ color: "#3D2F25" }}>
-                          {u.nickname}
-                        </p>
-                        <p className="text-[11px] truncate" style={{ color: "rgba(60,46,35,0.55)" }}>
-                          {u.email} · 가입 {timeAgo(u.created_at)} · 접속 {timeAgo(u.last_sign_in_at)}
-                          {" · "}🐾 {u.catCount}
+                        <p className="text-[15px] font-semibold text-text-main truncate">{u.nickname}</p>
+                        <p className="text-[13px] text-text-light truncate mt-0.5">
+                          {u.email} · 가입 {timeAgo(u.created_at)} · 접속 {timeAgo(u.last_sign_in_at)} · 고양이 {u.catCount}
                         </p>
                       </div>
                       <Link
                         href={`/messages?to=${u.id}`}
-                        className="shrink-0 flex items-center gap-1 px-3 py-1.5 chip-square text-[11px] font-bold press-strong"
-                        style={{
-                          background: "var(--color-primary)",
-                          color: "#fff",
-                        }}
+                        className="shrink-0 inline-flex items-center gap-1 h-8 px-3 text-[13px] font-semibold text-text-main press"
+                        style={{ border: "1px solid var(--color-border)", borderRadius: "var(--radius-input)" }}
                         aria-label="쪽지 보내기"
                       >
                         <MessageCircle size={12} />
@@ -342,16 +278,16 @@ export default function AdminActivationPage() {
                   ))}
                 </ul>
               )}
-            </section>
+            </AdminSection>
           )}
 
           {!selected && (
-            <p className="text-center text-[13px] mt-2" style={{ color: "rgba(60,46,35,0.5)" }}>
-              카드를 누르면 그 코호트 사용자 목록이 나와요. 휴면·이탈 후보·첫 등록 미완료를 우선 손길 대상으로.
+            <p className="text-[13px] text-text-light px-1">
+              행을 누르면 그 코호트 사용자 목록이 나와요. 휴면·이탈 후보·첫 등록 미완료를 우선 손길 대상으로.
             </p>
           )}
         </>
       )}
-    </div>
+    </AdminPage>
   );
 }
