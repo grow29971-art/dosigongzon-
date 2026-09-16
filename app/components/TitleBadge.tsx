@@ -14,7 +14,7 @@ export default function TitleBadge({ titleId, size = "xs" }: Props) {
   const earned = findTitleById(titleId);
   const admin = earned ? null : findAdminTitle(titleId);
   const title = earned ?? admin;
-  if (!title) return null;
+  if (!title || (admin && admin.hidden)) return null;
 
   const color = earned ? CATEGORY_COLORS[earned.category] : admin!.color;
   const fontSize = size === "sm" ? 10 : 9;

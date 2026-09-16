@@ -455,7 +455,7 @@ export default function AdminUsersPage() {
                         ✕ 제거
                       </button>
                     )}
-                    {ADMIN_TITLES.map((t) => (
+                    {ADMIN_TITLES.filter((t) => !t.hidden).map((t) => (
                       <button
                         key={t.id}
                         type="button"

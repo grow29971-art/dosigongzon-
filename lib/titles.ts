@@ -331,6 +331,8 @@ export interface AdminTitle {
   emoji: string;
   color: string;
   description: string;
+  /** true 면 화면에 배지를 그리지 않는다 (DB 표시는 유지 — 봇 판정·통계용) */
+  hidden?: boolean;
 }
 
 export const ADMIN_TITLES: AdminTitle[] = [
@@ -346,7 +348,8 @@ export const ADMIN_TITLES: AdminTitle[] = [
   { id: "donor", name: "후원자", emoji: "💝", color: "#E86B8C", description: "길고양이 돌봄을 후원하는 회원" },
   // 운영 페르소나 계정(lib/community-personas.ts) 전용 — 글·댓글 자동 작성 시 필수 부착.
   // DB 가드(is_admin_only_title)에도 'staff'가 들어가야 일반 유저가 사칭 못 한다.
-  { id: "staff", name: "운영", emoji: "🏷️", color: "#5D564B", description: "도시공존 운영 계정이 남긴 글·댓글" },
+  // 2026-09-16 사장님 지시로 화면 배지는 숨김(hidden). DB 값은 봇 판정·통계·답글 로직이 쓰므로 유지.
+  { id: "staff", name: "운영", emoji: "🏷️", color: "#5D564B", description: "도시공존 운영 계정이 남긴 글·댓글 (화면엔 표시 안 함)", hidden: true },
 ];
 
 export function findAdminTitle(id: string | null | undefined): AdminTitle | null {
