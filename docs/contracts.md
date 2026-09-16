@@ -42,3 +42,17 @@
   실패 응답은 `{ ok: false, error: string }` + 4xx/5xx, 성공은 `{ ok: true, ... }` 형태가 관례.
 - 크롤러 대상 계약: 랜딩·지역 페이지는 JSON-LD(FAQ 등)를 SSR로 내보낸다. 비로그인 응답에
   정확 좌표가 실리지 않는 것이 SEO 페이지에도 동일하게 적용된다.
+
+## 5. 커뮤니티봇 exe → `/api/bot/community/*` (2026-09-16)
+
+- 소비자: 데스크톱 앱「도시공존 커뮤니티봇」(`C:\Users\grow2\community-bot`, Electron 포터블).
+- 인증: `Authorization: Bearer <COMMUNITY_BOT_SECRET>` — Vercel 에 그 변수가 없으면 `CRON_SECRET` 을
+  겸용한다(도입 초기). 전용 시크릿을 넣으면 크론 시크릿과 분리된다.
+- `GET personas` → `{ ok, personas:[{id,nickname,voice,writesPosts}], stats:{postsToday,commentsToday,postsCap,commentsCap,recentBotTitles,...} }`
+- `GET candidates?minAgeHours=1&limit=10` → `{ ok, candidates:[{id,title,content,authorName,commentCount,createdAt}] }`
+  (자유게시판·숨김 아님·봇 글 아님·운영 댓글 없음·1시간~7일).
+- `POST post` `{personaId,title,content}` → `{ ok, postId, url }`. 자유게시판 고정, 운영 배지 강제,
+  하루 3개 상한(429), 같은 제목 중복(409), 링크 금지(400).
+- `POST comment` `{personaId,postId,body}` → `{ ok, commentId, pushed, pushFailed, url }`. free 유저 글에만,
+  글당 운영 댓글 1개(409), 하루 10개 상한(429). 글쓴이 푸시는 4절 페이로드 계약.
+- 공통 실패: `{ ok:false, error }` + 4xx/5xx. 텍스트 생성은 exe 쪽(Claude)이 하고 서버는 검증·저장만 한다.
