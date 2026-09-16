@@ -44,9 +44,10 @@ const ToastContext = createContext<ToastApi | null>(null);
 
 // 다크 뉴트럴 단일 표면 (2026-08-13 UIUX 오딧): variant는 아이콘 색으로만 구분.
 // 파스텔 배경 4종은 폐기 — 표면이 화면마다 다르면 시스템 알림으로 안 읽힌다.
+// 2026-09-16 리디자인: 표면 gray-900·의미색 토큰·라운드 8px·그림자 raised (hex 0건).
 const VARIANT_ICON: Record<Variant, { iconColor: string; Icon: typeof CheckCircle2 }> = {
-  success: { iconColor: "#4ADE80", Icon: CheckCircle2 },
-  error:   { iconColor: "#FF7A85", Icon: AlertCircle },
+  success: { iconColor: "var(--color-sage)", Icon: CheckCircle2 },
+  error:   { iconColor: "var(--color-error)", Icon: AlertCircle },
   warn:    { iconColor: "var(--color-warning)", Icon: AlertTriangle },
   info:    { iconColor: "var(--color-gray-400)", Icon: Info },
 };
@@ -124,9 +125,9 @@ function ToastCard({ item, onClose }: { item: ToastItem; onClose: () => void }) 
     <div
       className="pointer-events-auto flex items-start gap-2 px-4 py-3 w-full max-w-sm transition-all"
       style={{
-        background: "rgba(33,29,23,0.94)",
+        background: "var(--color-gray-900)",
         borderRadius: "var(--radius-input)",
-        boxShadow: "var(--shadow-modal)",
+        boxShadow: "var(--shadow-raised)",
         transform: entered ? "translateY(0)" : "translateY(-20px)",
         opacity: entered ? 1 : 0,
       }}
@@ -135,17 +136,17 @@ function ToastCard({ item, onClose }: { item: ToastItem; onClose: () => void }) 
       <Icon size={16} className="shrink-0 mt-0.5" style={{ color: iconColor }} />
       <p
         className="flex-1 leading-snug font-medium"
-        style={{ fontSize: "var(--text-label)", color: "#FFFFFF" }}
+        style={{ fontSize: "var(--text-label)", color: "var(--color-surface)" }}
       >
         {item.message}
       </p>
       <button
         type="button"
         onClick={onClose}
-        className="shrink-0 -mr-1 -mt-0.5 p-1 rounded-md press-strong"
+        className="shrink-0 -mr-1 -mt-0.5 p-1 press-strong"
         aria-label="닫기"
       >
-        <X size={12} style={{ color: "var(--color-gray-500)" }} />
+        <X size={12} style={{ color: "var(--color-gray-400)" }} />
       </button>
     </div>
   );

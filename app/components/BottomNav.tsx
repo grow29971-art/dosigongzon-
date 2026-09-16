@@ -9,11 +9,11 @@ import {
 
 // 모던 미니멀 리디자인 (2026-07-10): 스티커 아이콘 → lucide 모노크롬.
 // 이전 스티커 아이콘 세트는 app/components/nav-icons.tsx에 보존.
-// 인스타 스타일 리디자인 (2026-07-26): 플로팅 라운드 필 + 블러.
 // 라벨 복원 (2026-07-27 사장님 요청): 아이콘 아래 텍스트 라벨 표시.
-// 활성 탭은 채워진 아이콘 + 강조색.
 // 쇼핑 미오픈 상태는 라벨 괄호 대신 아이콘 점 배지로 표시 (2026-08-13 UIUX 오딧:
 // 탭 라벨에 시스템 상태를 넣지 않는다 — 진입 후 안내가 담당).
+// 「익숙한 동네앱」 리디자인 (2026-09-16, 결정 0007): 흰 바 + 상단 1px 헤어라인, 블러·플로팅·
+// 점 장식 없음. 활성 = primary(아이콘·라벨), 비활성 = text-light. 라벨 11px.
 
 // ── 결제 오픈 D-day 탭 재편 (2026-07-21 쇼핑 동선 회의 선구축) ──
 // 통신판매업 신고 완료 → PAYMENT_ENABLED=true 되는 날 이 플래그도 true로:
@@ -46,10 +46,7 @@ const shopOpenTabs: Tab[] = [
 
 const tabs = SHOP_OPEN_NAV ? shopOpenTabs : legacyTabs;
 
-// D 아이보리 에디토리얼 리디자인 (2026-08-26 사장님 시안 확정):
-// 플로팅 라운드 필 → 화면 전폭 도킹 바 + 상단 헤어라인.
-// 활성 탭 = 잉크색 굵은 아이콘 + 라벨 아래 테라코타 점. 비활성 = 웜 페일 톤.
-const ACTIVE = "var(--color-text-main)";
+const ACTIVE = "var(--color-primary)";
 const INACTIVE = "var(--color-text-light)";
 
 export default function BottomNav() {
@@ -67,9 +64,7 @@ export default function BottomNav() {
       className="fixed left-0 right-0 bottom-0 z-50"
       style={{
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
-        background: "rgba(250,246,240,0.94)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
+        background: "var(--color-surface)",
         borderTop: "1px solid var(--color-border)",
       }}
     >
@@ -82,14 +77,13 @@ export default function BottomNav() {
               href={href}
               aria-label={wip ? `${label} (준비 중)` : label}
               aria-current={on ? "page" : undefined}
-              className="relative flex flex-1 min-w-0 flex-col items-center justify-start gap-1 px-0.5 press-strong transition-transform"
+              className="relative flex flex-1 min-w-0 flex-col items-center justify-center gap-1 px-0.5 press-strong transition-transform"
             >
               <span className="relative">
                 <Icon
-                  size={21}
+                  size={22}
                   color={on ? ACTIVE : INACTIVE}
-                  strokeWidth={on ? 2.2 : 1.7}
-                  style={{ transition: "transform 0.15s", transform: on ? "scale(1.04)" : "none" }}
+                  strokeWidth={on ? 2.2 : 1.8}
                 />
                 {wip && (
                   <span
@@ -102,24 +96,15 @@ export default function BottomNav() {
               <span
                 className="w-full text-center whitespace-nowrap"
                 style={{
-                  fontSize: "10px",
+                  fontSize: "11px",
                   lineHeight: 1.1,
                   letterSpacing: "-0.2px",
                   color: on ? ACTIVE : INACTIVE,
-                  fontWeight: on ? 700 : 500,
+                  fontWeight: on ? 600 : 500,
                 }}
               >
                 {label}
               </span>
-              <span
-                aria-hidden
-                className="rounded-full"
-                style={{
-                  width: 4,
-                  height: 4,
-                  background: on ? "var(--color-primary)" : "transparent",
-                }}
-              />
             </Link>
           );
         })}
