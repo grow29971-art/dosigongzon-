@@ -164,7 +164,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
               );
             },
           )}
-          <span className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold" style={{ backgroundColor: "#11111115", color: "var(--color-primary)" }}>
+          <span className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold" style={{ backgroundColor: "#B05C3615", color: "var(--color-primary)" }}>
             길집사 {stats.caretakerCount}명
           </span>
         </div>
@@ -208,7 +208,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                     {log.is_private && (
                       <span
                         className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded"
-                        style={{ backgroundColor: "rgba(139,101,184,0.14)", color: "#111111" }}
+                        style={{ backgroundColor: "rgba(139,101,184,0.14)", color: "#8B65B8" }}
                       >
                         <Lock size={9} /> 비밀
                       </span>
@@ -271,7 +271,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
           ) : (
             <div
               className="p-3 rounded-2xl space-y-2.5"
-              style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid #E0E0E0" }}
+              style={{ backgroundColor: "var(--color-gray-50)", border: "1px solid #E5E0D6" }}
             >
               {/* 유형 선택 */}
               <div className="flex gap-1.5 flex-wrap">
@@ -302,7 +302,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="사료량 (예: 200g, 캔 1개)"
                   className="w-full px-3 py-2 rounded-xl text-[13px] outline-none"
-                  style={{ backgroundColor: "#fff", border: "1px solid #E0E0E0", color: "#2A2A2A" }}
+                  style={{ backgroundColor: "#fff", border: "1px solid #E5E0D6", color: "#2A2A28" }}
                 />
               )}
 
@@ -320,7 +320,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                   }}
                   placeholder="메모 (선택)"
                   className="flex-1 min-w-0 px-3 py-2 rounded-xl text-[13px] outline-none"
-                  style={{ backgroundColor: "#fff", border: "1px solid #E0E0E0", color: "#2A2A2A" }}
+                  style={{ backgroundColor: "#fff", border: "1px solid #E5E0D6", color: "#2A2A28" }}
                 />
                 <input
                   ref={fileInputRef}
@@ -333,9 +333,9 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center press-strong"
-                  style={{ backgroundColor: photoFile ? "#555555" : "#fff", border: "1px solid #E0E0E0" }}
+                  style={{ backgroundColor: photoFile ? "#6B8E6F" : "#fff", border: "1px solid #E5E0D6" }}
                 >
-                  <Camera size={14} style={{ color: photoFile ? "#fff" : "#8A8A8A" }} />
+                  <Camera size={14} style={{ color: photoFile ? "#fff" : "#A38E7A" }} />
                 </button>
               </div>
 
@@ -346,18 +346,18 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                 className="flex items-center gap-2 w-full px-3 py-2 rounded-xl press transition-transform"
                 style={{
                   backgroundColor: isPrivate ? "rgba(139,101,184,0.10)" : "#fff",
-                  border: isPrivate ? "1px solid rgba(139,101,184,0.35)" : "1px solid #E0E0E0",
+                  border: isPrivate ? "1px solid rgba(139,101,184,0.35)" : "1px solid #E5E0D6",
                 }}
                 aria-pressed={isPrivate}
               >
-                {isPrivate ? <Lock size={13} style={{ color: "#111111" }} /> : <Unlock size={13} style={{ color: "#8A8A8A" }} />}
-                <span className="text-[13px] font-bold" style={{ color: isPrivate ? "#111111" : "#8A8A8A" }}>
+                {isPrivate ? <Lock size={13} style={{ color: "#8B65B8" }} /> : <Unlock size={13} style={{ color: "#A38E7A" }} />}
+                <span className="text-[13px] font-bold" style={{ color: isPrivate ? "#8B65B8" : "#A38E7A" }}>
                   {isPrivate ? "비밀글 — 나만 볼 수 있어요" : "비밀글로 남기기"}
                 </span>
                 {/* 공존 시그니처: 사각 토글 (원형 아님) */}
                 <span
                   className="ml-auto w-9 h-5 transition-colors relative"
-                  style={{ backgroundColor: isPrivate ? "#111111" : "#D8D2C8", borderRadius: "var(--radius-square-lg)" }}
+                  style={{ backgroundColor: isPrivate ? "#8B65B8" : "#D8D2C8", borderRadius: "var(--radius-square-lg)" }}
                 >
                   <span
                     className="absolute top-0.5 w-4 h-4 bg-white transition-all"

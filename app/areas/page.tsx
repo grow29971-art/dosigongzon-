@@ -50,7 +50,7 @@ export default async function AreasIndexPage() {
   };
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
@@ -116,8 +116,8 @@ export default async function AreasIndexPage() {
           href="/regions"
           className="block rounded-2xl p-4 press transition-transform"
           style={{
-            background: "#F2F2F2",
-            border: "1.5px solid rgba(17, 17, 17,0.25)",
+            background: "#FFF8F2",
+            border: "1.5px solid rgba(176, 92, 54,0.25)",
           }}
         >
           <div className="flex items-center justify-between">

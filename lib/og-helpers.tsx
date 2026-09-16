@@ -10,7 +10,7 @@ export function GuideOGTemplate({
   title,
   subtitle,
   highlightText,
-  highlightColor = "#111111",
+  highlightColor = "#B05C36",
   tags,
 }: {
   badge: string;              // 예: "보호지침"
@@ -25,10 +25,10 @@ export function GuideOGTemplate({
     padding: "12px 22px",
     borderRadius: 999,
     background: "rgba(255,255,255,0.8)",
-    border: "2px solid rgba(17, 17, 17,0.25)",
+    border: "2px solid rgba(176, 92, 54,0.25)",
     fontSize: 22,
     fontWeight: 800,
-    color: "#555555",
+    color: "#8B5A3C",
     display: "flex",
   };
 
@@ -41,9 +41,9 @@ export function GuideOGTemplate({
         flexDirection: "column",
         justifyContent: "space-between",
         padding: "64px 80px",
-        background: "linear-gradient(135deg, #F2F2F2 0%, #EADFCB 55%, #DAC4A3 100%)",
+        background: "linear-gradient(135deg, #F6EFE3 0%, #EADFCB 55%, #DAC4A3 100%)",
         fontFamily: "sans-serif",
-        color: "#2A2A2A",
+        color: "#2C2C2C",
         position: "relative",
       }}
     >
@@ -89,12 +89,12 @@ export function GuideOGTemplate({
               width: 56,
               height: 56,
               borderRadius: 18,
-              background: "#111111",
+              background: "#B05C36",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontSize: 34,
-              boxShadow: "0 6px 18px rgba(17, 17, 17,0.3)",
+              boxShadow: "0 6px 18px rgba(176, 92, 54,0.3)",
             }}
           >
             🐾
@@ -103,7 +103,7 @@ export function GuideOGTemplate({
             <span style={{ fontSize: 18, fontWeight: 700, color: "#A8684A", letterSpacing: 2.4 }}>
               DOSI GONGZON
             </span>
-            <span style={{ fontSize: 30, fontWeight: 900, color: "#2A2A2A", marginTop: -2 }}>
+            <span style={{ fontSize: 30, fontWeight: 900, color: "#2C2C2C", marginTop: -2 }}>
               도시공존
             </span>
           </div>
@@ -173,7 +173,7 @@ export function GuideOGTemplate({
             marginLeft: "auto",
             padding: "10px 20px",
             borderRadius: 999,
-            background: "#111111",
+            background: "#B05C36",
             color: "#fff",
             fontSize: 20,
             fontWeight: 900,

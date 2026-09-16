@@ -309,7 +309,7 @@ export default function PostDetailPage({
         {post.isPinned && (
           <span
             className="text-[11px] font-bold px-2 py-1 rounded-lg flex items-center gap-1"
-            style={{ backgroundColor: "#55555520", color: "#555555" }}
+            style={{ backgroundColor: "#C9A96120", color: "#C9A961" }}
           >
             <Pin size={10} /> 공지
           </span>
@@ -321,7 +321,7 @@ export default function PostDetailPage({
               className="text-[11px] font-bold px-3 py-1.5 rounded-lg press-strong transition-transform flex items-center gap-1"
               style={{
                 backgroundColor: post.isPinned ? "var(--color-error-soft)" : "var(--color-gray-100)",
-                color: post.isPinned ? "#D85555" : "#8A8A8A",
+                color: post.isPinned ? "#D85555" : "#A38E7A",
               }}
               onClick={async () => {
                 const supabase = createClient();
@@ -449,9 +449,9 @@ export default function PostDetailPage({
               onClick={() => handleVote(-1)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold press-strong transition-all"
               style={{
-                backgroundColor: myVote === -1 ? "#8A8A8A" : "#FFFFFF",
-                border: `1.5px solid ${myVote === -1 ? "#8A8A8A" : "var(--color-gray-200)"}`,
-                color: myVote === -1 ? "#FFFFFF" : "#8A8A8A",
+                backgroundColor: myVote === -1 ? "#A38E7A" : "#FFFFFF",
+                border: `1.5px solid ${myVote === -1 ? "#A38E7A" : "var(--color-gray-200)"}`,
+                color: myVote === -1 ? "#FFFFFF" : "#A38E7A",
               }}
             >
               <ThumbsDown size={15} strokeWidth={2.2} fill={myVote === -1 ? "#FFFFFF" : "none"} />
@@ -486,8 +486,8 @@ export default function PostDetailPage({
               onClick={handleShare}
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] font-bold press-strong transition-transform"
               style={{
-                backgroundColor: shareStatus === "copied" ? "#555555" : "#FFFFFF",
-                border: `1px solid ${shareStatus === "copied" ? "#555555" : "var(--color-gray-200)"}`,
+                backgroundColor: shareStatus === "copied" ? "#6B8E6F" : "#FFFFFF",
+                border: `1px solid ${shareStatus === "copied" ? "#6B8E6F" : "var(--color-gray-200)"}`,
                 color: shareStatus === "copied" ? "#FFFFFF" : cat.color,
               }}
               aria-label="공유"
@@ -516,7 +516,7 @@ export default function PostDetailPage({
                 })
               }
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] press-strong transition-transform"
-              style={{ backgroundColor: "#FFFFFF", border: "1px solid var(--color-border)", color: "#8A8A8A" }}
+              style={{ backgroundColor: "#FFFFFF", border: "1px solid var(--color-border)", color: "#A38E7A" }}
             >
               <Flag size={12} strokeWidth={2.2} />
               신고
@@ -641,9 +641,9 @@ export default function PostDetailPage({
             aria-pressed={secretComment}
           >
             {secretComment
-              ? <Lock size={12} style={{ color: "#111111" }} />
+              ? <Lock size={12} style={{ color: "#8B65B8" }} />
               : <Unlock size={12} className="text-text-light" />}
-            <span className="text-[11px] font-bold" style={{ color: secretComment ? "#111111" : "var(--color-text-light)" }}>
+            <span className="text-[11px] font-bold" style={{ color: secretComment ? "#8B65B8" : "var(--color-text-light)" }}>
               {secretComment ? "비밀 댓글 — 글쓴이와 나만 볼 수 있어요" : "비밀 댓글"}
             </span>
           </button>
@@ -725,7 +725,7 @@ function CommentItem({
           {c.is_secret && (
             <span
               className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-[1px] rounded-md"
-              style={{ backgroundColor: "rgba(139,101,184,0.14)", color: "#111111" }}
+              style={{ backgroundColor: "rgba(139,101,184,0.14)", color: "#8B65B8" }}
             >
               <Lock size={9} /> 비밀
             </span>
@@ -756,7 +756,7 @@ function CommentItem({
             style={{ backgroundColor: "var(--color-gray-50)" }}
             aria-label="댓글 신고"
           >
-            <Flag size={9} style={{ color: "#8A8A8A" }} strokeWidth={2.5} />
+            <Flag size={9} style={{ color: "#A38E7A" }} strokeWidth={2.5} />
           </button>
         </div>
       </div>
@@ -786,7 +786,7 @@ function CommentItem({
           type="button"
           onClick={onReply}
           className="flex items-center gap-1 ml-8 mt-1.5 text-[11px] font-semibold press-strong transition-transform"
-          style={{ color: "#8A8A8A" }}
+          style={{ color: "#A38E7A" }}
         >
           <Reply size={11} />
           답글

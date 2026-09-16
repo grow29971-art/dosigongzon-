@@ -166,7 +166,7 @@ export default async function TipDetailPage({ params }: Params) {
   };
 
   return (
-    <article className="pb-12" style={{ background: "#FFFFFF", minHeight: "100vh" }}>
+    <article className="pb-12" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -233,7 +233,7 @@ export default async function TipDetailPage({ params }: Params) {
                   key={tag}
                   href={`/tips?tag=${encodeURIComponent(tag)}`}
                   className="text-[11px] font-bold px-2 py-0.5 rounded-md"
-                  style={{ background: "#EBEBEB", color: "#8B6F4E" }}
+                  style={{ background: "#F2EBE0", color: "#8B6F4E" }}
                 >
                   #{tag}
                 </Link>
@@ -355,8 +355,8 @@ export default async function TipDetailPage({ params }: Params) {
         <div
           className="p-5 rounded-2xl"
           style={{
-            background: "#FFFFFF",
-            border: "1px solid rgba(17, 17, 17,0.15)",
+            background: "#FBF8F3",
+            border: "1px solid rgba(176, 92, 54,0.15)",
           }}
         >
           <p className="text-[13px] font-bold text-primary mb-1.5">도시공존이란?</p>
@@ -392,7 +392,7 @@ function RelatedRow({ tip }: { tip: Tip }) {
       ) : (
         <div
           className="shrink-0 rounded-lg flex items-center justify-center"
-          style={{ width: 56, height: 56, background: "#EBEBEB" }}
+          style={{ width: 56, height: 56, background: "#F2EBE0" }}
         >
           <span className="text-primary text-[20px]">✨</span>
         </div>

@@ -163,7 +163,7 @@ export default function AdminFundPage() {
       {/* 계산식 안내 — 세 숫자가 각각 어디서 오는지 한눈에 */}
       <div
         className="mb-4 px-3.5 py-3 rounded-2xl text-[13px] leading-relaxed"
-        style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(17, 17, 17,0.12)" }}
+        style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(176, 92, 54,0.12)" }}
       >
         <p className="font-bold text-text-main mb-1.5">숫자는 이렇게 계산돼요</p>
         <p className="text-text-sub">
@@ -209,7 +209,7 @@ export default function AdminFundPage() {
       {/* 요약 */}
       <div className="grid grid-cols-3 gap-2 mb-5">
         {[
-          { label: "모인 금액", value: collected ?? 0, color: "#111111" },
+          { label: "모인 금액", value: collected ?? 0, color: "#22A366" },
           { label: "쓰인 금액", value: spent, color: "var(--color-like)" },
           { label: "잔액", value: balance, color: "var(--color-primary)" },
         ].map((s) => (
@@ -232,7 +232,7 @@ export default function AdminFundPage() {
               onClick={() => setAdjSign(sign)}
               className="px-3 py-1.5 rounded-xl text-[13px] font-bold"
               style={{
-                background: adjSign === sign ? (sign === 1 ? "#111111" : "#D85555") : "var(--color-warm-white)",
+                background: adjSign === sign ? (sign === 1 ? "#22A366" : "#D85555") : "var(--color-warm-white)",
                 color: adjSign === sign ? "#fff" : "var(--color-text-sub)",
               }}
             >
@@ -258,7 +258,7 @@ export default function AdminFundPage() {
         <button
           onClick={submitAdjustment} disabled={adjSaving || !adjAmount || !adjMemo.trim()}
           className="w-full mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white text-[13px] font-bold disabled:opacity-40 press transition-transform"
-          style={{ background: adjSign === 1 ? "#111111" : "#D85555" }}
+          style={{ background: adjSign === 1 ? "#22A366" : "#D85555" }}
         >
           {adjSaving ? <Loader2 size={14} className="animate-spin" /> : adjSign === 1 ? <Plus size={15} /> : <Minus size={15} />}
           {adjSign === 1 ? "증액 등록" : "감액 등록"}
@@ -272,7 +272,7 @@ export default function AdminFundPage() {
                   <p className="text-[13px] font-bold text-text-main truncate">{a.memo}</p>
                   <p className="text-[11px] text-text-light">{a.created_at.slice(0, 10)}</p>
                 </div>
-                <span className="text-[13px] font-bold tabular-nums shrink-0" style={{ color: a.amount > 0 ? "#111111" : "#D85555" }}>
+                <span className="text-[13px] font-bold tabular-nums shrink-0" style={{ color: a.amount > 0 ? "#22A366" : "#D85555" }}>
                   {a.amount > 0 ? "+" : "−"}{won(Math.abs(a.amount))}
                 </span>
                 <button onClick={() => removeAdjustment(a.id)} className="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center press-strong" style={{ background: "rgba(216,85,85,0.1)" }} aria-label="조정 삭제">

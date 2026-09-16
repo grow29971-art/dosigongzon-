@@ -87,7 +87,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
   const unlockedTitles = TITLES.filter((t) => t.unlocked(activitySummary)).slice(0, 4);
 
   return (
-    <div className="pb-24" style={{ background: "#FFFFFF", minHeight: "100vh" }}>
+    <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
@@ -177,10 +177,10 @@ export default async function UserProfilePage({ params }: { params: Params }) {
 
           {/* 스탯 */}
           <div className="grid grid-cols-4 gap-2 mt-5">
-            <StatBox label="팔로워" value={counts.followers} color="#6B6B6B" />
-            <StatBox label="팔로잉" value={counts.following} color="#111111" />
-            <StatBox label="등록 고양이" value={cats.length} color="#111111" />
-            <StatBox label="돌봄 기록" value={careLogCount} color="#555555" />
+            <StatBox label="팔로워" value={counts.followers} color="#4A7BA8" />
+            <StatBox label="팔로잉" value={counts.following} color="#8B65B8" />
+            <StatBox label="등록 고양이" value={cats.length} color="#B05C36" />
+            <StatBox label="돌봄 기록" value={careLogCount} color="#6B8E6F" />
           </div>
 
           {/* 활동 지역 */}
@@ -193,8 +193,8 @@ export default async function UserProfilePage({ params }: { params: Params }) {
                   key={r.name}
                   className="px-2 py-0.5 rounded-lg text-[11px] font-bold"
                   style={{
-                    background: r.is_primary ? "var(--color-primary)" : "#FFFFFF",
-                    color: r.is_primary ? "#fff" : "#8A8A8A",
+                    background: r.is_primary ? "var(--color-primary)" : "#F7F4EE",
+                    color: r.is_primary ? "#fff" : "#A38E7A",
                   }}
                 >
                   {r.is_primary && "★ "}{r.name}
@@ -209,9 +209,9 @@ export default async function UserProfilePage({ params }: { params: Params }) {
       {unlockedTitles.length > 0 && (
         <div className="px-4 mt-5">
           <div className="flex items-center gap-2 mb-3 px-1">
-            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#555555" }} />
+            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#E8B040" }} />
             <h2 className="text-[15px] font-bold text-text-main tracking-tight flex items-center gap-1">
-              <Trophy size={14} style={{ color: "#555555" }} />
+              <Trophy size={14} style={{ color: "#E8B040" }} />
               획득한 업적
             </h2>
           </div>
@@ -250,7 +250,7 @@ export default async function UserProfilePage({ params }: { params: Params }) {
       {activity.length > 0 && (
         <div className="px-4 mt-5">
           <div className="flex items-center gap-2 mb-3 px-1">
-            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#555555" }} />
+            <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#6B8E6F" }} />
             <h2 className="text-[15px] font-bold text-text-main tracking-tight">
               최근 활동
             </h2>
@@ -261,11 +261,11 @@ export default async function UserProfilePage({ params }: { params: Params }) {
           >
             {activity.map((item) => {
               const icon =
-                item.kind === "care" ? <PawPrint size={12} style={{ color: "#555555" }} /> :
+                item.kind === "care" ? <PawPrint size={12} style={{ color: "#6B8E6F" }} /> :
                 item.kind === "comment" ? (item.summary.startsWith("⚠️")
                   ? <AlertTriangle size={12} style={{ color: "#D85555" }} />
-                  : <MessageCircle size={12} style={{ color: "#6B6B6B" }} />) :
-                <MessageSquare size={12} style={{ color: "#111111" }} />;
+                  : <MessageCircle size={12} style={{ color: "#4A7BA8" }} />) :
+                <MessageSquare size={12} style={{ color: "#8B65B8" }} />;
               const href =
                 item.kind === "post" ? `/community/${item.targetId}` : `/cats/${item.targetId}`;
               const time = formatTimeShort(item.createdAt);

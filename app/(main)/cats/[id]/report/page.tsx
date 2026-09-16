@@ -80,7 +80,7 @@ export default async function CareReportPage({ params }: { params: Params }) {
       <div className="report-no-print px-4 mb-3">
         <div
           className="rounded-2xl px-4 py-3"
-          style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(17,17,17,0.18)" }}
+          style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(176,92,54,0.18)" }}
         >
           <p className="text-[13px] font-bold text-text-main leading-snug">
             민원·구청 협의·학대 신고 때 이 확인서를 첨부하세요

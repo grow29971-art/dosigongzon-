@@ -543,8 +543,8 @@ const SYMPTOM_MATRIX: { symptom: string; emoji: string; suspects: string[] }[] =
 
 const SEVERITY_META = {
   high: { label: "응급/위중", color: "#D85555", bg: "#FDECEC" },
-  mid:  { label: "주의 관찰", color: "#111111", bg: "#F2F2F2" },
-  low:  { label: "경증",     color: "#555555", bg: "#F2F2F2" },
+  mid:  { label: "주의 관찰", color: "#E88D5A", bg: "#FFF1E6" },
+  low:  { label: "경증",     color: "#6B8E6F", bg: "#E8F4E8" },
 } as const;
 
 export default function DiseaseGuidePage() {
@@ -627,7 +627,7 @@ export default function DiseaseGuidePage() {
       {/* 증상 매트릭스 */}
       <section id="matrix" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Search size={20} color="#6B6B6B" />
+          <Search size={20} color="#4A7BA8" />
           증상 → 의심 질병 매트릭스
         </h2>
         <p className="text-[13px] text-text-main leading-relaxed mb-3">
@@ -774,7 +774,7 @@ export default function DiseaseGuidePage() {
                     {/* 진행 */}
                     <div
                       className="rounded-xl p-3"
-                      style={{ background: "#F2F2F2", border: "1px solid rgba(232,141,90,0.25)" }}
+                      style={{ background: "#FFF1E6", border: "1px solid rgba(232,141,90,0.25)" }}
                     >
                       <p
                         className="text-[11px] font-bold tracking-[0.1em] mb-1.5 flex items-center gap-1"
@@ -785,7 +785,7 @@ export default function DiseaseGuidePage() {
                       <ul className="space-y-1 text-[13px] text-text-main leading-snug">
                         {d.symptomsDetail.progressing.map((s) => (
                           <li key={s} className="flex gap-1.5">
-                            <span className="shrink-0" style={{ color: "#111111" }}>·</span>
+                            <span className="shrink-0" style={{ color: "#E88D5A" }}>·</span>
                             <span>{s}</span>
                           </li>
                         ))}
@@ -921,7 +921,7 @@ export default function DiseaseGuidePage() {
       {/* FAQ */}
       <section id="faq" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <HelpCircle size={20} color="#6B6B6B" />
+          <HelpCircle size={20} color="#4A7BA8" />
           자주 묻는 질문
         </h2>
         <div className="space-y-3">
@@ -947,21 +947,21 @@ export default function DiseaseGuidePage() {
         <Link
           href="/protection/emergency-guide"
           className="px-3 py-2 rounded-xl text-[13px] font-bold press-strong"
-          style={{ background: "#F2F2F2", color: "var(--color-primary)", border: "1px solid rgba(17, 17, 17,0.25)" }}
+          style={{ background: "#FFF1E6", color: "var(--color-primary)", border: "1px solid rgba(176, 92, 54,0.25)" }}
         >
           응급 구조 가이드
         </Link>
         <Link
           href="/protection/pharmacy-guide"
           className="px-3 py-2 rounded-xl text-[13px] font-bold press-strong"
-          style={{ background: "#F4EDFA", color: "#111111", border: "1px solid rgba(139,101,184,0.25)" }}
+          style={{ background: "#F4EDFA", color: "#8B65B8", border: "1px solid rgba(139,101,184,0.25)" }}
         >
           약품 가이드
         </Link>
         <Link
           href="/hospitals"
           className="px-3 py-2 rounded-xl text-[13px] font-bold press-strong"
-          style={{ background: "#F2F2F2", color: "var(--color-sage)", border: "1px solid rgba(107,142,111,0.25)" }}
+          style={{ background: "#E8F4E8", color: "var(--color-sage)", border: "1px solid rgba(107,142,111,0.25)" }}
         >
           가까운 병원 찾기
         </Link>

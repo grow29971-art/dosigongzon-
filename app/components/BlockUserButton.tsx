@@ -77,7 +77,7 @@ export default function BlockUserButton({ userId, userName, size = "sm", onChang
   const Icon = blocked ? ShieldOff : Ban;
   const label = blocked ? "차단 해제" : "차단";
   const bg = blocked ? "var(--color-gray-50)" : "var(--color-error-soft)";
-  const fg = blocked ? "#8A8A8A" : "#B84545";
+  const fg = blocked ? "#A38E7A" : "#B84545";
   const border = blocked ? "1px solid var(--color-divider)" : "1px solid #E8C5C5";
 
   return (

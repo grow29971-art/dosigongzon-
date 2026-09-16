@@ -261,7 +261,7 @@ export default async function HomeLanding({
             className="flex-[1.4] flex items-center justify-center gap-1.5 py-4 rounded-2xl text-white press transition-transform"
             style={{
               background: "var(--color-primary)",
-              boxShadow: "0 8px 22px rgba(17, 17, 17,0.38), 0 2px 6px rgba(168,104,74,0.22)",
+              boxShadow: "0 8px 22px rgba(176, 92, 54,0.38), 0 2px 6px rgba(168,104,74,0.22)",
             }}
           >
             <PawPrint size={15} />
@@ -271,16 +271,16 @@ export default async function HomeLanding({
             href="/signup"
             className="flex-1 flex items-center justify-center gap-1.5 py-4 rounded-2xl press transition-transform"
             style={{
-              background: "rgba(17, 17, 17,0.09)",
+              background: "rgba(176, 92, 54,0.09)",
               color: "var(--color-primary)",
-              border: "1.5px solid rgba(17, 17, 17,0.45)",
+              border: "1.5px solid rgba(176, 92, 54,0.45)",
             }}
           >
             <Sparkles size={14} />
             <span className="text-[15px] font-bold tracking-tight">1초 가입하기</span>
           </Link>
         </div>
-        <p className="mt-2 text-center text-[11px] font-bold" style={{ color: "rgba(17, 17, 17,0.7)" }}>
+        <p className="mt-2 text-center text-[11px] font-bold" style={{ color: "rgba(176, 92, 54,0.7)" }}>
           {/* 같은 페이지 아래(:606)에 "1초 가입"이 있어 숫자가 서로 달랐다.
               카카오·구글 OAuth 한 번이므로 그쪽에 맞춘다. (2026-08-09) */}
           1초 가입 · 광고 없는 무료 운영
@@ -488,7 +488,7 @@ export default async function HomeLanding({
       {/* 안전 정책 — 가입 직전 신뢰 봉합. 학대 우려 길집사 대상 핵심 메시지. */}
       <section className="px-5 mt-10">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#6B6B6B" }} />
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4A7BA8" }} />
           <h2 className="text-[15px] font-bold text-text-main tracking-tight">
             고양이 위치, 어떻게 지키나요?
           </h2>
@@ -503,7 +503,7 @@ export default async function HomeLanding({
           }}
         >
           <div className="flex items-start gap-2.5">
-            <ShieldCheck size={22} className="shrink-0 mt-0.5" style={{ color: "#6B6B6B" }} />
+            <ShieldCheck size={22} className="shrink-0 mt-0.5" style={{ color: "#4A7BA8" }} />
             <div className="min-w-0">
               <p className="text-[15px] font-bold text-text-main leading-snug mb-1 tracking-tight">
                 정확한 자리는 누구도 모릅니다
@@ -584,7 +584,7 @@ export default async function HomeLanding({
           className="rounded-2xl p-4 mb-3"
           style={{
             background: "var(--color-primary-softer)",
-            border: "1px solid rgba(17, 17, 17,0.20)",
+            border: "1px solid rgba(176, 92, 54,0.20)",
           }}
         >
           <p className="text-[13px] text-text-sub leading-[1.85]">
@@ -622,7 +622,7 @@ export default async function HomeLanding({
           <StartStep
             n={2}
             href="/map"
-            color="#6B6B6B"
+            color="#4A7BA8"
             title="우리 동네 지도에서 아이들 찾기"
             desc="구·동을 누르면 그 동네 길고양이만 모아 보여줘요."
           />
@@ -711,7 +711,7 @@ export default async function HomeLanding({
           className="relative rounded-3xl px-6 py-7 overflow-hidden"
           style={{
             background: "var(--color-primary-softer)",
-            border: "1px solid rgba(17, 17, 17,0.18)",
+            border: "1px solid rgba(176, 92, 54,0.18)",
           }}
         >
           <span
@@ -721,7 +721,7 @@ export default async function HomeLanding({
               fontSize: 60,
               lineHeight: 1,
               fontFamily: "serif",
-              color: "rgba(17, 17, 17,0.25)",
+              color: "rgba(176, 92, 54,0.25)",
             }}
           >
             “
@@ -830,7 +830,7 @@ export default async function HomeLanding({
       {/* 내 동네 찾기 */}
       <section className="px-5 mt-8 cv-auto">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#6B6B6B" }} />
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4A7BA8" }} />
           <h2 className="text-[15px] font-bold text-text-main tracking-tight">동네별 길고양이 지도</h2>
         </div>
         <p className="text-[13px] text-text-sub mb-3 leading-relaxed">
@@ -928,29 +928,29 @@ export default async function HomeLanding({
           />
           <GuideCard
             href="/protection/pharmacy-guide"
-            icon={<Pill size={18} color="#111111" />}
-            iconBg="#11111115"
+            icon={<Pill size={18} color="#D4708F" />}
+            iconBg="#D4708F15"
             title="약품 가이드"
             sub="영양제·구충·상처"
           />
           <GuideCard
             href="/protection/shelter-guide"
-            icon={<HomeIcon size={18} color="#6B6B6B" />}
-            iconBg="#6B6B6B15"
+            icon={<HomeIcon size={18} color="#4A7BA8" />}
+            iconBg="#4A7BA815"
             title="쉼터·겨울나기"
             sub="숨숨집 DIY"
           />
           <GuideCard
             href="/protection/trapping-guide"
-            icon={<Hand size={18} color="#6B6B6B" />}
-            iconBg="#6B6B6B15"
+            icon={<Hand size={18} color="#8BA86B" />}
+            iconBg="#8BA86B15"
             title="포획 가이드"
             sub="설치·대기·주의"
           />
           <GuideCard
             href="/protection/legal"
             icon={<ShieldCheck size={18} color="var(--color-text-sub)" />}
-            iconBg="rgba(85,85,85,0.08)"
+            iconBg="rgba(93,86,75,0.08)"
             title="법률 가이드"
             sub="학대 대응 매뉴얼"
           />
@@ -1019,7 +1019,7 @@ export default async function HomeLanding({
             desc="광고 없는 무료 서비스. 시민의 자발적 기록으로 운영됩니다."
           />
           <ValueRow
-            icon={<Download size={17} style={{ color: "#6B6B6B" }} />}
+            icon={<Download size={17} style={{ color: "#4A7BA8" }} />}
             title="앱 설치 없이 홈 화면에 추가"
             desc="PWA 지원. 브라우저에서 바로 설치하면 앱처럼 열려요."
           />
@@ -1055,7 +1055,7 @@ export default async function HomeLanding({
           className="rounded-2xl p-5"
           style={{
             background: "var(--color-primary-softer)",
-            border: "1px solid rgba(17, 17, 17,0.20)",
+            border: "1px solid rgba(176, 92, 54,0.20)",
           }}
         >
           <p className="text-[15px] font-bold text-text-main mb-1">
@@ -1071,7 +1071,7 @@ export default async function HomeLanding({
       {/* 기술 자산 — 어떻게 만들어졌나 */}
       <section className="px-5 mt-8 cv-auto">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#6B6B6B" }} />
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4A7BA8" }} />
           <h2 className="text-[15px] font-bold text-text-main tracking-tight">
             도시공존은 이렇게 만들어져요
           </h2>
@@ -1088,7 +1088,7 @@ export default async function HomeLanding({
           />
           <TechCard
             icon={<Bot size={16} color="var(--color-text-sub)" />}
-            iconBg="rgba(85,85,85,0.08)"
+            iconBg="rgba(93,86,75,0.08)"
             title="AI 집사 챗봇"
             sub="Google Gemini 기반"
           />
@@ -1105,8 +1105,8 @@ export default async function HomeLanding({
             sub="DB 레벨 권한 분리"
           />
           <TechCard
-            icon={<ShieldCheck size={16} color="#6B6B6B" />}
-            iconBg="#6B6B6B15"
+            icon={<ShieldCheck size={16} color="#4A7BA8" />}
+            iconBg="#4A7BA815"
             title="봇·어뷰징 방어"
             sub="Cloudflare Turnstile"
           />
@@ -1125,13 +1125,13 @@ export default async function HomeLanding({
           className="rounded-3xl p-5"
           style={{
             background: "var(--color-primary-softer)",
-            border: "1px solid rgba(17, 17, 17,0.20)",
+            border: "1px solid rgba(176, 92, 54,0.20)",
           }}
         >
           <div className="flex items-center gap-2 mb-2">
             <div
               className="w-9 h-9 rounded-full flex items-center justify-center"
-              style={{ background: "rgba(17, 17, 17,0.15)" }}
+              style={{ background: "rgba(176, 92, 54,0.15)" }}
             >
               <Code2 size={18} style={{ color: "var(--color-primary-dark)" }} />
             </div>
@@ -1155,7 +1155,7 @@ export default async function HomeLanding({
               style={{
                 background: "var(--color-surface)",
                 color: "var(--color-primary-dark)",
-                border: "1px solid rgba(17, 17, 17,0.25)",
+                border: "1px solid rgba(176, 92, 54,0.25)",
               }}
             >
               <span>운영 이야기 보기</span>

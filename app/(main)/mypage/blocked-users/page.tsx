@@ -63,7 +63,7 @@ export default function BlockedUsersPage() {
   }
 
   return (
-    <div className="pb-24" style={{ background: "#FFFFFF", minHeight: "100vh" }}>
+    <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
@@ -93,7 +93,7 @@ export default function BlockedUsersPage() {
             <p className="text-[13px] font-bold" style={{ color: "#4A3F35" }}>
               차단된 사용자와는 메시지·댓글이 보이지 않아요
             </p>
-            <p className="text-[11px] mt-0.5" style={{ color: "#8A8A8A" }}>
+            <p className="text-[11px] mt-0.5" style={{ color: "#A38E7A" }}>
               아래 목록에서 언제든 해제할 수 있어요.
             </p>
           </div>
@@ -109,7 +109,7 @@ export default function BlockedUsersPage() {
               className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
               style={{ backgroundColor: "var(--color-gray-50)" }}
             >
-              <Users size={24} style={{ color: "#8A8A8A" }} strokeWidth={1.8} />
+              <Users size={24} style={{ color: "#A38E7A" }} strokeWidth={1.8} />
             </div>
             <p className="text-[13px] font-bold text-text-main">
               차단한 사용자가 없어요
@@ -137,14 +137,14 @@ export default function BlockedUsersPage() {
                       loading="lazy"
                       decoding="async"
                       className="w-10 h-10 rounded-full object-cover shrink-0 grayscale"
-                      style={{ border: "1.5px solid #E0E0E0" }}
+                      style={{ border: "1.5px solid #E5E0D6" }}
                     />
                   ) : (
                     <div
                       className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                      style={{ backgroundColor: "var(--color-gray-100)", border: "1.5px solid #E0E0E0" }}
+                      style={{ backgroundColor: "var(--color-gray-100)", border: "1.5px solid #E5E0D6" }}
                     >
-                      <span className="text-[15px] font-bold" style={{ color: "#8A8A8A" }}>
+                      <span className="text-[15px] font-bold" style={{ color: "#A38E7A" }}>
                         {(b.nickname ?? "?").charAt(0)}
                       </span>
                     </div>
@@ -162,7 +162,7 @@ export default function BlockedUsersPage() {
                     onClick={() => handleUnblock(b)}
                     disabled={busyId === b.id}
                     className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[13px] font-bold press-strong transition-transform disabled:opacity-60"
-                    style={{ backgroundColor: "var(--color-gray-50)", color: "#8A8A8A", border: "1px solid var(--color-border)" }}
+                    style={{ backgroundColor: "var(--color-gray-50)", color: "#A38E7A", border: "1px solid var(--color-border)" }}
                   >
                     {busyId === b.id ? (
                       <Loader2 size={11} className="animate-spin" />

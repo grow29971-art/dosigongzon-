@@ -119,9 +119,9 @@ export default function HospitalsPage() {
                 className="shrink-0 px-4 py-2 rounded-full text-[13px] font-bold transition-all"
                 style={{
                   backgroundColor: active ? "var(--color-primary)" : "#FFFFFF",
-                  color: active ? "#FFFFFF" : "#8A8A8A",
+                  color: active ? "#FFFFFF" : "#A38E7A",
                   border: `1.5px solid ${active ? "var(--color-primary)" : "var(--color-gray-200)"}`,
-                  boxShadow: active ? "0 4px 12px rgba(17, 17, 17,0.35)" : "0 1px 3px rgba(0,0,0,0.03)",
+                  boxShadow: active ? "0 4px 12px rgba(176, 92, 54,0.35)" : "0 1px 3px rgba(0,0,0,0.03)",
                 }}
               >
                 {c}
@@ -209,10 +209,10 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
         background: "#FFFFFF",
         borderRadius: "var(--radius-card)",
         boxShadow: hospital.pinned
-          ? "0 8px 24px rgba(17, 17, 17,0.14), 0 1px 3px rgba(0,0,0,0.03)"
+          ? "0 8px 24px rgba(176, 92, 54,0.14), 0 1px 3px rgba(0,0,0,0.03)"
           : "0 4px 16px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02)",
         border: hospital.pinned
-          ? "1.5px solid rgba(17, 17, 17,0.25)"
+          ? "1.5px solid rgba(176, 92, 54,0.25)"
           : "1px solid var(--color-divider)",
       }}
     >
@@ -247,7 +247,7 @@ function HospitalCard({ hospital }: { hospital: RescueHospital }) {
             href={`tel:${hospital.phone}`}
             className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 press-strong transition-transform"
             style={{
-              background: "#555555",
+              background: "#6B8E6F",
               boxShadow: "0 4px 10px rgba(107,142,111,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",
             }}
           >

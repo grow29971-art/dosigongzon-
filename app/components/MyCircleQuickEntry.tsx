@@ -59,7 +59,7 @@ export default function MyCircleQuickEntry() {
         <div className="flex items-start gap-2 mb-3">
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: "#2A2A2A" }}
+            style={{ background: "#4F6B53" }}
           >
             <ShieldCheck size={17} color="#fff" />
           </div>
@@ -70,7 +70,7 @@ export default function MyCircleQuickEntry() {
               </p>
               <span
                 className="text-[11px] font-bold px-1.5 py-0.5 rounded-md tracking-wider"
-                style={{ background: "rgba(79,107,83,0.15)", color: "#2A2A2A" }}
+                style={{ background: "rgba(79,107,83,0.15)", color: "#4F6B53" }}
               >
                 PRIVATE
               </span>
@@ -79,11 +79,11 @@ export default function MyCircleQuickEntry() {
               걱정되는 아이를 내가 초대한 이웃에게만 보여줘요
             </p>
             <div className="flex items-center gap-1 mt-1">
-              <Users size={10} style={{ color: "#2A2A2A" }} />
+              <Users size={10} style={{ color: "#4F6B53" }} />
               {loading ? (
-                <Loader2 size={10} className="animate-spin" style={{ color: "#2A2A2A" }} />
+                <Loader2 size={10} className="animate-spin" style={{ color: "#4F6B53" }} />
               ) : (
-                <span className="text-[11px] font-bold" style={{ color: "#2A2A2A" }}>
+                <span className="text-[11px] font-bold" style={{ color: "#4F6B53" }}>
                   {memberCount === 0 ? "초대 시작하기" : `멤버 ${memberCount}명`}
                 </span>
               )}
@@ -97,7 +97,7 @@ export default function MyCircleQuickEntry() {
           <Link
             href="/mypage/circle"
             className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold text-white press-strong transition-transform"
-            style={{ background: "#2A2A2A", boxShadow: "var(--shadow-raised)" }}
+            style={{ background: "#4F6B53", boxShadow: "var(--shadow-raised)" }}
           >
             <UserPlus size={14} />
             <span>이웃 초대 시작하기</span>
@@ -108,14 +108,14 @@ export default function MyCircleQuickEntry() {
             <Link
               href={circleId ? `/circle/${circleId}/chat` : "/mypage/circle"}
               className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold text-white press-strong transition-transform relative"
-              style={{ background: "#2A2A2A", boxShadow: "var(--shadow-raised)" }}
+              style={{ background: "#4F6B53", boxShadow: "var(--shadow-raised)" }}
             >
               <MessageCircle size={13} />
               <span>채팅방 열기</span>
               {unreadTotal > 0 && (
                 <span
                   className="ml-1 px-1.5 py-0.5 rounded-full text-[11px] font-bold leading-none"
-                  style={{ background: "#FFF7C4", color: "#2A2A2A" }}
+                  style={{ background: "#FFF7C4", color: "#4F6B53" }}
                 >
                   {unreadTotal > 99 ? "99+" : unreadTotal}
                 </span>
@@ -124,7 +124,7 @@ export default function MyCircleQuickEntry() {
             <Link
               href="/mypage/circle"
               className="flex-1 flex items-center justify-center py-2.5 rounded-xl text-[13px] font-bold press-strong transition-transform bg-white"
-              style={{ color: "#2A2A2A", border: "1px solid rgba(79,107,83,0.30)" }}
+              style={{ color: "#4F6B53", border: "1px solid rgba(79,107,83,0.30)" }}
             >
               관리
             </Link>

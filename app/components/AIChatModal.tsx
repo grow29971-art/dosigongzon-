@@ -139,7 +139,7 @@ export default function AIChatModal({
       {/* 바텀 시트 */}
       <div
         className="relative mt-auto w-full flex flex-col rounded-t-[28px]"
-        style={{ height: "85dvh", backgroundColor: "#F7F7F7" }}
+        style={{ height: "85dvh", backgroundColor: "#F5F3EE" }}
       >
         {/* 핸들 바 */}
         <div className="flex justify-center pt-3 pb-1">
@@ -153,10 +153,10 @@ export default function AIChatModal({
               className="w-10 h-10 rounded-full flex items-center justify-center"
               style={{ backgroundColor: "var(--color-primary-soft)" }}
             >
-              <Bot size={20} color="#111111" />
+              <Bot size={20} color="#B05C36" />
             </div>
             <div>
-              <p className="text-[15px] font-bold" style={{ color: "#2A2A2A" }}>도시공존 AI 집사</p>
+              <p className="text-[15px] font-bold" style={{ color: "#2A2A28" }}>도시공존 AI 집사</p>
               <p className="text-[11px]" style={{ color: "#7A756E" }}>
                 {loading ? "AI가 답변을 생각 중이에요..." : "길고양이 돌봄 전문가"}
               </p>
@@ -172,8 +172,8 @@ export default function AIChatModal({
         </div>
 
         {/* 면책 고지 */}
-        <div className="px-4 py-2 flex items-start gap-2" style={{ backgroundColor: "var(--color-gray-50)", borderBottom: "1px solid #E0E0E0" }}>
-          <Info size={13} className="shrink-0 mt-0.5" style={{ color: "#8A8A8A" }} />
+        <div className="px-4 py-2 flex items-start gap-2" style={{ backgroundColor: "var(--color-gray-50)", borderBottom: "1px solid #E5E0D6" }}>
+          <Info size={13} className="shrink-0 mt-0.5" style={{ color: "#A38E7A" }} />
           <p className="text-[11px] leading-relaxed" style={{ color: "#8B7A68" }}>
             AI 집사의 답변은 참고용이며 <b>전문 수의사 상담을 대체하지 않습니다</b>. 대화 내용은 Google AI에 전송되며 서버에 저장되지 않습니다.
           </p>
@@ -197,7 +197,7 @@ export default function AIChatModal({
                       }
                     : {
                         backgroundColor: "#FFFFFF",
-                        color: "#2A2A2A",
+                        color: "#2A2A28",
                         borderRadius: "20px 20px 20px 8px",
                         boxShadow: "var(--shadow-card)",
                       }
@@ -243,9 +243,9 @@ export default function AIChatModal({
                   boxShadow: "var(--shadow-card)",
                 }}
               >
-                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(17, 17, 17,0.4)", animationDelay: "0ms" }} />
-                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(17, 17, 17,0.4)", animationDelay: "150ms" }} />
-                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(17, 17, 17,0.4)", animationDelay: "300ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(176, 92, 54,0.4)", animationDelay: "0ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(176, 92, 54,0.4)", animationDelay: "150ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: "rgba(176, 92, 54,0.4)", animationDelay: "300ms" }} />
               </div>
             </div>
           )}
@@ -255,13 +255,13 @@ export default function AIChatModal({
         <div
           className="px-4 py-3 border-t"
           style={{
-            borderColor: "#E0E0E0",
+            borderColor: "#E5E0D6",
             backgroundColor: "#FFFFFF",
             paddingBottom: "max(12px, env(safe-area-inset-bottom))",
           }}
         >
           {/* AI 면책 안내 — 의료·법률 자문 아님 */}
-          <p className="text-[11px] mb-2 leading-relaxed text-center" style={{ color: "#6B6B6B" }}>
+          <p className="text-[11px] mb-2 leading-relaxed text-center" style={{ color: "#8B7562" }}>
             ⓘ AI 응답은 <b>참고용</b>이며 의료 진단·법률 자문이 아닙니다. 응급·의료는 수의사와 상의해주세요.
           </p>
           <div className="flex items-center gap-2">
@@ -276,7 +276,7 @@ export default function AIChatModal({
               className="flex-1 rounded-2xl px-4 py-3 text-[15px] outline-none transition"
               style={{
                 backgroundColor: "var(--color-gray-50)",
-                color: "#2A2A2A",
+                color: "#2A2A28",
               }}
             />
             <button

@@ -156,8 +156,8 @@ export function renderDigestHtml(
           <img src="${photo}" width="60" height="60" style="border-radius:10px;object-fit:cover;flex-shrink:0;" alt="${catName}" />
           <div style="flex:1;min-width:0;">
             <div style="display:inline-block;background:${labelBg};color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;margin-bottom:4px;">${label}</div>
-            <div style="font-size:14px;font-weight:800;color:#2A2A2A;">${catName}</div>
-            <div style="font-size:11px;color:#6B6B6B;margin-top:2px;">📍 ${catRegion}</div>
+            <div style="font-size:14px;font-weight:800;color:#2A2A28;">${catName}</div>
+            <div style="font-size:11px;color:#8B7562;margin-top:2px;">📍 ${catRegion}</div>
           </div>
         </a>
       </div>
@@ -171,16 +171,16 @@ export function renderDigestHtml(
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>${subject}</title>
 </head>
-<body style="margin:0;padding:0;background:#FFFFFF;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',sans-serif;">
+<body style="margin:0;padding:0;background:#F7F4EE;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',sans-serif;">
   <div style="max-width:560px;margin:0 auto;padding:24px 16px;">
     <!-- 헤더 -->
     <div style="background:#fff;border-radius:20px;padding:24px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,0.05);">
-      <div style="font-size:11px;font-weight:800;color:#111111;letter-spacing:0.15em;">WEEKLY DIGEST</div>
-      <div style="font-size:24px;font-weight:900;color:#2A2A2A;margin-top:6px;letter-spacing:-0.02em;">
-        ${displayName} 님, <br/>이번 주 <span style="color:#111111;">도시공존</span> 소식이에요
+      <div style="font-size:11px;font-weight:800;color:#B05C36;letter-spacing:0.15em;">WEEKLY DIGEST</div>
+      <div style="font-size:24px;font-weight:900;color:#2A2A28;margin-top:6px;letter-spacing:-0.02em;">
+        ${displayName} 님, <br/>이번 주 <span style="color:#B05C36;">도시공존</span> 소식이에요
       </div>
-      <div style="font-size:13px;color:#6B6B6B;margin-top:10px;line-height:1.6;">
-        서울 전역에 <b style="color:#111111;">새 고양이 ${content.newCatsThisWeek}마리</b>가 등록됐고,
+      <div style="font-size:13px;color:#8B7562;margin-top:10px;line-height:1.6;">
+        서울 전역에 <b style="color:#B05C36;">새 고양이 ${content.newCatsThisWeek}마리</b>가 등록됐고,
         <b style="color:#E86B8C;">${content.newUsersThisWeek}명</b>의 새 이웃이 합류했어요.
         ${content.myCatCount > 0 ? `당신이 돌보는 아이 <b>${content.myCatCount}마리</b>도 기다리고 있어요.` : ""}
       </div>
@@ -207,26 +207,26 @@ export function renderDigestHtml(
     ` : ""}
 
     <!-- CTA -->
-    <div style="background:linear-gradient(135deg,#111111 0%,#A8684A 100%);border-radius:18px;padding:20px;text-align:center;margin-bottom:14px;">
+    <div style="background:linear-gradient(135deg,#B05C36 0%,#A8684A 100%);border-radius:18px;padding:20px;text-align:center;margin-bottom:14px;">
       <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:10px;">
         오늘 동네 아이들 안부 확인하러 가볼까요?
       </div>
       <a href="${SITE_URL}/map?utm_source=email&utm_medium=digest&utm_campaign=weekly"
-         style="display:inline-block;background:#fff;color:#111111;font-size:13px;font-weight:800;padding:12px 24px;border-radius:999px;text-decoration:none;">
+         style="display:inline-block;background:#fff;color:#B05C36;font-size:13px;font-weight:800;padding:12px 24px;border-radius:999px;text-decoration:none;">
         지도 바로 열기 →
       </a>
     </div>
 
     <!-- footer -->
-    <div style="text-align:center;font-size:11px;color:#8A8A8A;line-height:1.7;padding:16px;">
-      <b style="color:#6B6B6B;">(광고)</b> 도시공존 주간 동네 소식 —
+    <div style="text-align:center;font-size:11px;color:#A38E7A;line-height:1.7;padding:16px;">
+      <b style="color:#8B7562;">(광고)</b> 도시공존 주간 동네 소식 —
       수신 동의하신 분께만 발송되는 메일이에요 🐾<br/>
       <a href="${SITE_URL}/mypage?utm_source=email&utm_medium=digest&unsub=1#email-digest"
-         style="color:#6B6B6B;text-decoration:underline;font-weight:700;">
+         style="color:#8B7562;text-decoration:underline;font-weight:700;">
         수신 거부
       </a>
       &nbsp;·&nbsp;
-      <a href="${SITE_URL}/about" style="color:#8A8A8A;text-decoration:underline;">도시공존 소개</a>
+      <a href="${SITE_URL}/about" style="color:#A38E7A;text-decoration:underline;">도시공존 소개</a>
       <br/>
       <span style="color:#C0B3A0;font-size:10px;">
         원하지 않으시면 위 '수신 거부' 링크를 눌러 즉시 차단할 수 있어요.

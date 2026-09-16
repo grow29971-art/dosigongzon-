@@ -108,7 +108,7 @@ export default function AdminDashboardPage() {
       title: "주문 관리",
       subtitle: "주문 상태·운송장·취소/환불",
       Icon: PackageCheck,
-      color: "#111111",
+      color: "#B05C36",
     },
     {
       href: "/admin/fund",
@@ -122,14 +122,14 @@ export default function AdminDashboardPage() {
       title: "고양이 관리",
       subtitle: "지도 고양이 검색·숨김·일괄 삭제",
       Icon: CatIcon,
-      color: "#111111",
+      color: "#E88D5A",
     },
     {
       href: "/admin/event-keyring",
       title: "이벤트 응모자",
       subtitle: "1000명 키링 추첨 응모 관리",
       Icon: Gift,
-      color: "#111111",
+      color: "#B05C36",
     },
     {
       href: "/admin/insights",
@@ -143,7 +143,7 @@ export default function AdminDashboardPage() {
       title: "동네 돌봄 실험",
       subtitle: "14일 지역 실험 생성·전환 지표",
       Icon: FlaskConical,
-      color: "#555555",
+      color: "#6B8E6F",
     },
     {
       href: "/admin/inbox",
@@ -165,7 +165,7 @@ export default function AdminDashboardPage() {
       title: "가입자 관리",
       subtitle: "전체 회원 조회·정지 현황",
       Icon: UserIcon,
-      color: "#6B6B6B",
+      color: "#4A7BA8",
     },
     {
       href: "/admin/activation",
@@ -179,21 +179,21 @@ export default function AdminDashboardPage() {
       title: "전체 쪽지 발송",
       subtitle: "코호트별 일괄 환영·재참여 메시지",
       Icon: Megaphone,
-      color: "#111111",
+      color: "#B05C36",
     },
     {
       href: "/admin/announcement",
       title: "접속 팝업 공지",
       subtitle: "접속 시 뜨는 팝업 공지 등록·내리기",
       Icon: Megaphone,
-      color: "#333333",
+      color: "#C97C52",
     },
     {
       href: "/admin/auth-errors",
       title: "로그인 실패 로그",
       subtitle: "OAuth·매직링크 실패 원인",
       Icon: AlertTriangle,
-      color: "#111111",
+      color: "#E88D5A",
       badge: stats?.todayErrors ?? 0,
     },
     {
@@ -201,14 +201,14 @@ export default function AdminDashboardPage() {
       title: "뉴스 관리",
       subtitle: "홈 화면 소식·일정",
       Icon: Newspaper,
-      color: "#2A2A2A",
+      color: "#7A6B8E",
     },
     {
       href: "/admin/tips",
       title: "꿀팁게시판 관리",
       subtitle: "정보글 작성·발행·수정",
       Icon: Sparkles,
-      color: "#111111",
+      color: "#B05C36",
     },
     {
       href: "/admin/weekly-issues",
@@ -222,7 +222,7 @@ export default function AdminDashboardPage() {
       title: "병원 관리",
       subtitle: "구조동물 치료 도움병원",
       Icon: Stethoscope,
-      color: "#555555",
+      color: "#6B8E6F",
     },
     {
       href: "/admin/pharmacy-guide",
@@ -236,24 +236,24 @@ export default function AdminDashboardPage() {
       title: "푸시 알림 발송",
       subtitle: "전체 사용자에게 공지",
       Icon: Bell,
-      color: "#111111",
+      color: "#B05C36",
     },
     {
       href: "/admin/location-logs",
       title: "위치 변경 이력",
       subtitle: "고양이 좌표 변경 감지",
       Icon: MapPinIcon,
-      color: "#6B6B6B",
+      color: "#5A8AC4",
     },
   ];
 
   return (
-    <div className="pb-24 min-h-screen" style={{ background: "#FFFFFF" }}>
+    <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
       {/* 헤더 (다크 톤 — 일반 페이지와 구분) */}
       <div
         className="px-5 pt-12 pb-5"
         style={{
-          background: "#2A2A2A",
+          background: "#2C2C2C",
           color: "#fff",
         }}
       >
@@ -300,8 +300,8 @@ export default function AdminDashboardPage() {
             style={{
               background:
                 stats.daysUntilLaunch > 0
-                  ? "linear-gradient(135deg, #EBEBEB 0%, #E0E0E0 60%, #FFB99B 100%)"
-                  : "linear-gradient(135deg, #555555 0%, #2A2A2A 100%)",
+                  ? "linear-gradient(135deg, #FFE8C2 0%, #FFCFB5 60%, #FFB99B 100%)"
+                  : "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)",
               boxShadow: "var(--shadow-primary)",
             }}
           >
@@ -367,7 +367,7 @@ export default function AdminDashboardPage() {
             Icon={UsersIcon}
             label="전체 가입자"
             value={stats.totalUsers}
-            color="#6B6B6B"
+            color="#4A7BA8"
             sub={stats.suspendedUsers > 0 ? `정지 ${stats.suspendedUsers}명` : undefined}
             subColor="#B84545"
           />
@@ -375,20 +375,20 @@ export default function AdminDashboardPage() {
             Icon={CatIcon}
             label="등록 고양이"
             value={stats.totalCats}
-            color="#111111"
+            color="#B05C36"
           />
           <StatCard
             Icon={MessageSquare}
             label="커뮤니티 글"
             value={stats.totalPosts}
-            color="#111111"
+            color="#8B65B8"
             sub={`댓글 ${stats.totalComments.toLocaleString()}`}
           />
           <StatCard
             Icon={Eye}
             label="오늘 방문자"
             value={stats.todayVisits}
-            color="#555555"
+            color="#6B8E6F"
           />
           {(stats.pendingReports > 0 || stats.pendingInquiries > 0) && (
             <StatCard
@@ -405,7 +405,7 @@ export default function AdminDashboardPage() {
               Icon={AlertTriangle}
               label="7일 로그인 실패"
               value={stats.errors7d}
-              color="#111111"
+              color="#E88D5A"
               sub={`오늘 ${stats.todayErrors}건`}
             />
           )}

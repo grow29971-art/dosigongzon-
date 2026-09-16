@@ -32,7 +32,7 @@ export default async function PopularPostsPage() {
   const posts = await getPopularPostsServer(30);
 
   return (
-    <div className="pb-24" style={{ background: "#FFFFFF", minHeight: "100vh" }}>
+    <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-4 flex items-center gap-3">
         <Link
@@ -88,7 +88,7 @@ export default async function PopularPostsPage() {
                       ? { background: "#C0C0C0", color: "#fff" }
                       : idx === 2
                       ? { background: "#CD7F32", color: "#fff" }
-                      : { background: "#FFFFFF", color: "#8A8A8A" }
+                      : { background: "#F7F4EE", color: "#A38E7A" }
                   }
                 >
                   {idx + 1}
@@ -135,7 +135,7 @@ export default async function PopularPostsPage() {
                       />
                     ) : (
                       <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--color-gray-100)" }}>
-                        <span className="text-[9px] font-bold" style={{ color: "#8A8A8A" }}>
+                        <span className="text-[9px] font-bold" style={{ color: "#A38E7A" }}>
                           {post.authorName.charAt(0)}
                         </span>
                       </div>

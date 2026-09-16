@@ -73,10 +73,10 @@ export default function FollowButton({ userId, size = "sm", variant = "default",
     ? variant === "light" ? "rgba(255,255,255,0.15)" : "var(--color-gray-50)"
     : variant === "light" ? "#fff" : "var(--color-primary)";
   const fg = following
-    ? variant === "light" ? "#fff" : "#555555"
+    ? variant === "light" ? "#fff" : "#8B5A3C"
     : variant === "light" ? "var(--color-primary)" : "#fff";
   const shadow = !following
-    ? variant === "light" ? "0 2px 8px rgba(0,0,0,0.2)" : "0 3px 10px rgba(17, 17, 17,0.35)"
+    ? variant === "light" ? "0 2px 8px rgba(0,0,0,0.2)" : "0 3px 10px rgba(176, 92, 54,0.35)"
     : "none";
 
   return (

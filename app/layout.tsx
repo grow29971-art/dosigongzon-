@@ -99,7 +99,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#FFFFFF", // meta theme-color는 CSS 변수를 해석하지 못함 — warm-white 실제 hex
+  themeColor: "#FAF6F0", // meta theme-color는 CSS 변수를 해석하지 못함 — warm-white 실제 hex
   colorScheme: "light dark", // 다크 "지원" 선언으로 크롬/WebView 강제 다크닝 회피 (실제 스타일은 항상 라이트 — globals.css 참고)
 };
 
@@ -207,12 +207,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             crossOrigin="anonymous"
           />
         </noscript>
-        {/* Gothic A1 900 — 시빅 포스터 제목용 (2026-09-16 대안 C, jsdelivr fontsource: 기존 CSP 범위 내).
-            h1·.serif-display에만 쓰여 폰트 파일은 실제 글리프 사용 시점에 로드됨(font-display: swap).
-            이전: noto-serif-kr 700/900. */}
+        {/* Noto Serif KR — D 에디토리얼 제목용 (jsdelivr fontsource: 기존 CSP style/font-src 범위 내).
+            제목에만 쓰여 폰트 파일은 실제 글리프 사용 시점에 로드됨(font-display: swap). */}
         <link
           rel="stylesheet"
-          href="https://cdn.jsdelivr.net/fontsource/css/gothic-a1@latest/900.css"
+          href="https://cdn.jsdelivr.net/fontsource/css/noto-serif-kr@latest/700.css"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/fontsource/css/noto-serif-kr@latest/900.css"
           crossOrigin="anonymous"
         />
         <script

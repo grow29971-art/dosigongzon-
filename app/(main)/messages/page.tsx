@@ -323,7 +323,7 @@ function MessagesPage() {
             type="button"
             onClick={() => photoInputRef.current?.click()}
             className="w-10 h-10 rounded-full flex items-center justify-center press-strong transition-transform shrink-0"
-            style={{ backgroundColor: photoFile ? "#555555" : "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+            style={{ backgroundColor: photoFile ? "#6B8E6F" : "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
           >
             <Camera size={18} style={{ color: photoFile ? "#fff" : "var(--color-text-light)" }} />
           </button>
@@ -394,7 +394,7 @@ function MessagesPage() {
                 background: c.unreadCount > 0 ? "linear-gradient(135deg, var(--color-primary-softer), #FFF)" : "#FFFFFF",
                 borderRadius: "var(--radius-card-sm)",
                 boxShadow: "var(--shadow-card)",
-                border: c.unreadCount > 0 ? "1.5px solid rgba(17, 17, 17,0.2)" : "1px solid var(--color-divider)",
+                border: c.unreadCount > 0 ? "1.5px solid rgba(176, 92, 54,0.2)" : "1px solid var(--color-divider)",
               }}
             >
               {c.partnerAvatar ? (

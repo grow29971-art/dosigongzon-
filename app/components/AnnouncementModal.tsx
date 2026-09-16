@@ -57,21 +57,21 @@ export default function AnnouncementModal() {
           onClick={dismiss}
           aria-label="닫기"
           className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center press-strong"
-          style={{ background: "#EBEBEB" }}
+          style={{ background: "#F1ECE4" }}
         >
-          <X size={16} style={{ color: "#6B6B6B" }} />
+          <X size={16} style={{ color: "#8B7562" }} />
         </button>
 
         <div
           className="w-11 h-11 rounded-2xl flex items-center justify-center mb-3"
           style={{ background: "rgba(201,124,82,0.14)" }}
         >
-          <Megaphone size={20} style={{ color: "#333333" }} />
+          <Megaphone size={20} style={{ color: "#C97C52" }} />
         </div>
 
         <p
           className="text-[15px] leading-relaxed whitespace-pre-wrap"
-          style={{ color: "#2A2A2A" }}
+          style={{ color: "#3D2F25" }}
         >
           {ann.body}
         </p>
@@ -81,7 +81,7 @@ export default function AnnouncementModal() {
           onClick={dismiss}
           className="mt-5 w-full py-3 rounded-2xl text-white text-[15px] font-bold press"
           style={{
-            background: "#333333",
+            background: "#C97C52",
             boxShadow: "var(--shadow-primary)",
           }}
         >

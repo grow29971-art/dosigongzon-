@@ -47,12 +47,12 @@ export default function VisibilityIntroSheet({ open, onClose, onPick }: Visibili
         {/* 헤더 */}
         <div
           className="px-5 pt-5 pb-4"
-          style={{ background: "#F2F2F2" }}
+          style={{ background: "#FFF9F2" }}
         >
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-2">
-              <ShieldCheck size={18} style={{ color: "#2A2A2A" }} />
-              <span className="text-[11px] font-bold tracking-[0.16em]" style={{ color: "#2A2A2A" }}>
+              <ShieldCheck size={18} style={{ color: "#4F6B53" }} />
+              <span className="text-[11px] font-bold tracking-[0.16em]" style={{ color: "#4F6B53" }}>
                 STEP 1 · 공개 범위 선택
               </span>
             </div>
@@ -83,7 +83,7 @@ export default function VisibilityIntroSheet({ open, onClose, onPick }: Visibili
             style={{ background: `${VISIBILITY_MAP.circle.color}14`, border: `1px dashed ${VISIBILITY_MAP.circle.color}66` }}
           >
             <span className="text-[15px] leading-none mt-0.5">🏠</span>
-            <p className="text-[12px] leading-relaxed" style={{ color: "#2A2A2A" }}>
+            <p className="text-[12px] leading-relaxed" style={{ color: "#4F6B53" }}>
               <b>개인 급식소·집 근처</b>이거나 <b>학대·괴롭힘을 당한 적 있는 아이</b>라면{" "}
               <b style={{ color: VISIBILITY_MAP.circle.color }}>{VISIBILITY_MAP.circle.emoji} 내 서클</b>을
               골라주세요. 믿을 수 있는 이웃에게만 보여요.

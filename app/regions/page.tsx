@@ -63,7 +63,7 @@ export default function RegionsIndexPage() {
   };
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}

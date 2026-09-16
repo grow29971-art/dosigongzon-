@@ -68,7 +68,7 @@ function PaymentDemoContent() {
       {/* 심사용 안내 */}
       <div
         className="mb-6 px-4 py-3.5 rounded-2xl flex items-start gap-2.5"
-        style={{ background: "var(--color-warning-soft)", border: "1px solid #E0E0E0" }}
+        style={{ background: "var(--color-warning-soft)", border: "1px solid #F5DAB0" }}
       >
         <ShieldCheck size={17} className="mt-0.5 shrink-0" style={{ color: "#6F4910" }} />
         <p className="text-[13px] leading-relaxed" style={{ color: "#6F4910" }}>

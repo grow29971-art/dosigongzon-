@@ -25,7 +25,7 @@ export default function CollectionPage() {
   return (
     <div className="min-h-dvh bg-warm-white pb-28">
       {/* 헤더 */}
-      <div className="sticky top-0 z-10 flex items-center gap-2 px-4 py-3" style={{ background: "rgba(255,253,248,0.92)", backdropFilter: "blur(8px)", borderBottom: "1px solid rgba(17, 17, 17,0.12)" }}>
+      <div className="sticky top-0 z-10 flex items-center gap-2 px-4 py-3" style={{ background: "rgba(255,253,248,0.92)", backdropFilter: "blur(8px)", borderBottom: "1px solid rgba(176, 92, 54,0.12)" }}>
         <Link href="/" className="w-9 h-9 rounded-full flex items-center justify-center press-strong transition-transform" style={{ background: "var(--color-primary-soft)" }} aria-label="홈으로">
           <ChevronLeft size={18} style={{ color: "var(--color-primary-dark)" }} />
         </Link>
@@ -60,7 +60,7 @@ export default function CollectionPage() {
         {!loading && data && data.total > 0 && (
           <>
             {/* 진행률 */}
-            <div className="mb-5 p-4 rounded-2xl" style={{ background: "#FFFFFF", border: "1px solid rgba(17, 17, 17,0.18)", boxShadow: "0 4px 14px var(--color-primary-softer)" }}>
+            <div className="mb-5 p-4 rounded-2xl" style={{ background: "#FFFFFF", border: "1px solid rgba(176, 92, 54,0.18)", boxShadow: "0 4px 14px var(--color-primary-softer)" }}>
               <div className="flex items-baseline justify-between mb-2">
                 <p className="text-[13px] font-bold" style={{ color: "var(--color-primary-dark)" }}>
                   {data.regionName} 도감
@@ -69,7 +69,7 @@ export default function CollectionPage() {
                   <span style={{ color: "var(--color-primary)" }}>{data.collectedCount}</span> / {data.total} 마리 ({pct}%)
                 </p>
               </div>
-              <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "rgba(17, 17, 17,0.15)" }}>
+              <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "rgba(176, 92, 54,0.15)" }}>
                 <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: "var(--color-primary)" }} />
               </div>
               <p className="text-[11px] text-text-sub mt-2 leading-snug">
@@ -91,8 +91,8 @@ export default function CollectionPage() {
                       className="relative w-full rounded-2xl overflow-hidden flex items-center justify-center"
                       style={{
                         aspectRatio: "1 / 1",
-                        background: c.collected ? "#EBEBEB" : "rgba(120,110,100,0.08)",
-                        border: c.collected ? "1.5px solid rgba(17, 17, 17,0.3)" : "1.5px dashed rgba(120,110,100,0.2)",
+                        background: c.collected ? "#F4E6CE" : "rgba(120,110,100,0.08)",
+                        border: c.collected ? "1.5px solid rgba(176, 92, 54,0.3)" : "1.5px dashed rgba(120,110,100,0.2)",
                       }}
                     >
                       {c.collected ? (
@@ -109,7 +109,7 @@ export default function CollectionPage() {
                         <span className="absolute top-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ background: "var(--color-primary)" }}>내 아이</span>
                       )}
                     </div>
-                    <p className="text-[11px] font-bold text-center mt-1 truncate" style={{ color: c.collected ? "#2A2A2A" : "rgba(120,110,100,0.6)" }}>
+                    <p className="text-[11px] font-bold text-center mt-1 truncate" style={{ color: c.collected ? "#2A2A28" : "rgba(120,110,100,0.6)" }}>
                       {c.collected ? c.name : "???"}
                     </p>
                   </Link>

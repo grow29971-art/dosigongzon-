@@ -50,13 +50,13 @@ export default function SocialProofStrip() {
       style={{
         background:
           "linear-gradient(135deg, rgba(232,141,90,0.10) 0%, rgba(72,165,158,0.08) 100%)",
-        border: "1px solid rgba(17, 17, 17,0.18)",
+        border: "1px solid rgba(176, 92, 54,0.18)",
       }}
     >
       <div
         className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
         style={{
-          background: "#111111",
+          background: "#E88D5A",
           boxShadow: "var(--shadow-raised)",
         }}
       >
@@ -86,7 +86,7 @@ export default function SocialProofStrip() {
         >
           <span
             className="w-1.5 h-1.5 rounded-full animate-pulse"
-            style={{ background: "#111111" }}
+            style={{ background: "#48A59E" }}
           />
           <span className="text-[11px] font-bold" style={{ color: "#2E7870" }}>
             LIVE

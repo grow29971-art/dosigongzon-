@@ -60,7 +60,7 @@ export default function LegalChecklist({
       </div>
 
       <div className="flex items-center gap-2 mb-4">
-        <div className="flex-1 h-1.5 rounded-full bg-[#E0E0E0] overflow-hidden">
+        <div className="flex-1 h-1.5 rounded-full bg-[#E5E0D6] overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-300"
             style={{ width: `${progress}%`, backgroundColor: iconColor }}
@@ -111,7 +111,7 @@ export default function LegalChecklist({
 
       {progress === 100 && (
         <div className="mt-4 p-3 rounded-2xl bg-[#E8ECE5] text-center">
-          <p className="text-[13px] font-semibold text-[#555555]">
+          <p className="text-[13px] font-semibold text-[#6B8E6F]">
             모든 단계를 완료했어요
           </p>
         </div>

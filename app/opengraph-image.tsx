@@ -51,9 +51,9 @@ export default async function OpengraphImage() {
           display: "flex",
           flexDirection: "column",
           padding: "60px 72px",
-          background: "linear-gradient(135deg, #F2F2F2 0%, #EADFCB 55%, #DAC4A3 100%)",
+          background: "linear-gradient(135deg, #F6EFE3 0%, #EADFCB 55%, #DAC4A3 100%)",
           fontFamily: "sans-serif",
-          color: "#2A2A2A",
+          color: "#2C2C2C",
           position: "relative",
         }}
       >
@@ -66,7 +66,7 @@ export default async function OpengraphImage() {
             width: 420,
             height: 420,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(17, 17, 17,0.22) 0%, rgba(17, 17, 17,0) 70%)",
+            background: "radial-gradient(circle, rgba(176, 92, 54,0.22) 0%, rgba(176, 92, 54,0) 70%)",
           }}
         />
         <div
@@ -89,21 +89,21 @@ export default async function OpengraphImage() {
                 width: 64,
                 height: 64,
                 borderRadius: 20,
-                background: "#111111",
+                background: "#B05C36",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontSize: 38,
-                boxShadow: "0 10px 30px rgba(17, 17, 17,0.3)",
+                boxShadow: "0 10px 30px rgba(176, 92, 54,0.3)",
               }}
             >
               🐾
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 20, fontWeight: 700, color: "#000000", letterSpacing: 3 }}>
+              <span style={{ fontSize: 20, fontWeight: 700, color: "#8A4325", letterSpacing: 3 }}>
                 DOSI GONGZON
               </span>
-              <span style={{ fontSize: 38, fontWeight: 900, color: "#2A2A2A", marginTop: -2 }}>
+              <span style={{ fontSize: 38, fontWeight: 900, color: "#2C2C2C", marginTop: -2 }}>
                 도시공존
               </span>
             </div>
@@ -134,11 +134,11 @@ export default async function OpengraphImage() {
                 gap: 10,
                 padding: "12px 22px",
                 borderRadius: 999,
-                background: "linear-gradient(135deg, #111111 0%, #E86B8C 100%)",
+                background: "linear-gradient(135deg, #B05C36 0%, #E86B8C 100%)",
                 color: "#FFFFFF",
                 fontSize: 24,
                 fontWeight: 900,
-                boxShadow: "0 8px 24px rgba(17, 17, 17,0.40)",
+                boxShadow: "0 8px 24px rgba(176, 92, 54,0.40)",
               }}
             >
               🚀 정식 출시!
@@ -154,13 +154,13 @@ export default async function OpengraphImage() {
               fontWeight: 900,
               lineHeight: 1.15,
               letterSpacing: -2,
-              color: "#2A2A2A",
+              color: "#2C2C2C",
               display: "flex",
               flexDirection: "column",
             }}
           >
             <span>우리 동네 길고양이,</span>
-            <span style={{ color: "#111111" }}>함께 기록하고 지켜요.</span>
+            <span style={{ color: "#B05C36" }}>함께 기록하고 지켜요.</span>
           </div>
           <p
             style={{
@@ -184,7 +184,7 @@ export default async function OpengraphImage() {
             paddingTop: 28,
           }}
         >
-          <StatCard emoji="🐾" value={s.cats} label="등록된 아이" color="#111111" />
+          <StatCard emoji="🐾" value={s.cats} label="등록된 아이" color="#B05C36" />
           <StatCard emoji="❤️" value={s.users} label="동네 이웃" color="#E86B8C" />
           <StatCard emoji="🏥" value={s.hospitals} label="치료 병원" color="#22B573" />
         </div>
@@ -215,7 +215,7 @@ function StatCard({
         display: "flex",
         flexDirection: "column",
         gap: 4,
-        border: "2px solid rgba(17, 17, 17,0.20)",
+        border: "2px solid rgba(176, 92, 54,0.20)",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -224,7 +224,7 @@ function StatCard({
           {value.toLocaleString()}
         </span>
       </div>
-      <span style={{ fontSize: 20, fontWeight: 700, color: "#555555" }}>{label}</span>
+      <span style={{ fontSize: 20, fontWeight: 700, color: "#6B5043" }}>{label}</span>
     </div>
   );
 }

@@ -7,9 +7,9 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const TOPICS: Array<{ label: string; emoji: string; color: string }> = [
-  { label: "발견·신고", emoji: "🚨", color: "#111111" },
+  { label: "발견·신고", emoji: "🚨", color: "#B05C36" },
   { label: "새끼고양이", emoji: "🍼", color: "#E8B57E" },
-  { label: "TNR·중성화", emoji: "✂️", color: "#000000" },
+  { label: "TNR·중성화", emoji: "✂️", color: "#8A4325" },
   { label: "임시보호·입양", emoji: "🏠", color: "#7AAE82" },
   { label: "응급·치료", emoji: "🏥", color: "#D85555" },
   { label: "법·신고", emoji: "⚖️", color: "#5F7A8E" },
@@ -25,9 +25,9 @@ export default function FaqOGImage() {
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          background: "linear-gradient(135deg, #F2F2F2 0%, #EADFCB 55%, #DAC4A3 100%)",
+          background: "linear-gradient(135deg, #F6EFE3 0%, #EADFCB 55%, #DAC4A3 100%)",
           fontFamily: "sans-serif",
-          color: "#2A2A2A",
+          color: "#2C2C2C",
           position: "relative",
           padding: "64px 80px",
         }}
@@ -42,7 +42,7 @@ export default function FaqOGImage() {
             height: 480,
             borderRadius: "50%",
             background:
-              "radial-gradient(circle, rgba(17, 17, 17,0.22) 0%, rgba(17, 17, 17,0) 70%)",
+              "radial-gradient(circle, rgba(176, 92, 54,0.22) 0%, rgba(176, 92, 54,0) 70%)",
             display: "flex",
           }}
         />
@@ -74,7 +74,7 @@ export default function FaqOGImage() {
               width: 52,
               height: 52,
               borderRadius: 16,
-              background: "#111111",
+              background: "#B05C36",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -84,7 +84,7 @@ export default function FaqOGImage() {
             ❓
           </div>
           <span
-            style={{ fontSize: 24, fontWeight: 900, color: "#2A2A2A", letterSpacing: -0.5 }}
+            style={{ fontSize: 24, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}
           >
             도시공존 · 자주 묻는 질문
           </span>
@@ -98,13 +98,13 @@ export default function FaqOGImage() {
               fontWeight: 900,
               lineHeight: 1.05,
               letterSpacing: -3,
-              color: "#2A2A2A",
+              color: "#2C2C2C",
               display: "flex",
               flexDirection: "column",
             }}
           >
             <span>길고양이 자주 묻는</span>
-            <span style={{ color: "#111111" }}>30개 질문</span>
+            <span style={{ color: "#B05C36" }}>30개 질문</span>
           </div>
           <p
             style={{
@@ -156,10 +156,10 @@ export default function FaqOGImage() {
               padding: "10px 22px",
               borderRadius: 999,
               background: "rgba(255,255,255,0.9)",
-              color: "#555555",
+              color: "#8B5A3C",
               fontSize: 20,
               fontWeight: 800,
-              border: "2px solid rgba(17, 17, 17,0.3)",
+              border: "2px solid rgba(176, 92, 54,0.3)",
               marginLeft: "auto",
             }}
           >

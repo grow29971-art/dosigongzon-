@@ -178,8 +178,8 @@ export default function WritePage() {
           <div
             className="rounded-2xl p-4"
             style={{
-              background: "#F2F2F2",
-              border: "1.5px solid rgba(17, 17, 17,0.25)",
+              background: "#FFF8F2",
+              border: "1.5px solid rgba(176, 92, 54,0.25)",
             }}
           >
             <div className="flex items-start gap-2.5">
@@ -357,7 +357,7 @@ export default function WritePage() {
                 style={{
                   backgroundColor: "var(--color-gray-50)",
                   border: "1.5px dashed #C9BDAA",
-                  color: "#8A8A8A",
+                  color: "#A38E7A",
                 }}
               >
                 {uploading ? (

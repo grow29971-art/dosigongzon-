@@ -72,7 +72,7 @@ export default async function MyCareReportPage() {
       <div className="report-no-print px-4 mb-3">
         <div
           className="rounded-2xl px-4 py-3"
-          style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(17,17,17,0.18)" }}
+          style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(176,92,54,0.18)" }}
         >
           <p className="text-[13px] font-bold text-text-main leading-snug">
             내 이름으로 된 돌봄 활동 증빙 문서예요

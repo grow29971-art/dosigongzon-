@@ -103,7 +103,7 @@ export default function MapIntroSheet() {
             href="/protection"
             onClick={dismiss}
             className="flex-1 py-3 rounded-2xl text-[13px] font-bold text-center flex items-center justify-center gap-1.5 press"
-            style={{ background: "#EBEBEB", color: "#6B5847" }}
+            style={{ background: "#F1ECE4", color: "#6B5847" }}
           >
             <BookOpen size={14} />
             보호지침 보기

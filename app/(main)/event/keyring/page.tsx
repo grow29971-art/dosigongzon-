@@ -132,7 +132,7 @@ export default function KeyringEventPage() {
   const isLoadingCats = myCats === null;
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
       {/* 헤더 */}
       <div className="px-4 pt-12 pb-3 flex items-center gap-3">
         <Link
@@ -154,8 +154,8 @@ export default function KeyringEventPage() {
         <div
           className="rounded-2xl p-4"
           style={{
-            background: "#F2F2F2",
-            border: "1.5px solid rgba(17, 17, 17,0.25)",
+            background: "#FFF8F2",
+            border: "1.5px solid rgba(176, 92, 54,0.25)",
           }}
         >
           <p className="text-[11px] font-bold tracking-[0.12em] mb-1" style={{ color: "var(--color-primary)" }}>
@@ -176,7 +176,7 @@ export default function KeyringEventPage() {
         <div className="px-4 mb-4">
           <div
             className="rounded-2xl p-4"
-            style={{ background: "#FFF", border: "1px solid rgba(17, 17, 17,0.18)", boxShadow: "var(--shadow-card)" }}
+            style={{ background: "#FFF", border: "1px solid rgba(176, 92, 54,0.18)", boxShadow: "var(--shadow-card)" }}
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-1.5">
@@ -189,7 +189,7 @@ export default function KeyringEventPage() {
             </div>
             <div
               className="w-full h-2 rounded-full overflow-hidden"
-              style={{ background: "rgba(17, 17, 17,0.15)" }}
+              style={{ background: "rgba(176, 92, 54,0.15)" }}
             >
               <div
                 className="h-full rounded-full transition-all"
@@ -213,11 +213,11 @@ export default function KeyringEventPage() {
             className="rounded-2xl p-6 text-center"
             style={{
               background: done ? "#E8ECE5" : "var(--color-warning-soft)",
-              border: `1px solid ${done ? "#D6DCD2" : "#E0E0E0"}`,
+              border: `1px solid ${done ? "#D6DCD2" : "#F5DAB0"}`,
             }}
           >
             {done ? (
-              <Check size={36} className="mx-auto mb-3" style={{ color: "#555555" }} />
+              <Check size={36} className="mx-auto mb-3" style={{ color: "#6B8E6F" }} />
             ) : (
               <Gift size={36} className="mx-auto mb-3" style={{ color: "#B07A1C" }} />
             )}
@@ -251,11 +251,11 @@ export default function KeyringEventPage() {
           // 자격 미달: 등록한 고양이 0마리
           <div
             className="rounded-2xl p-6 text-center"
-            style={{ background: "#FFF", border: "1px dashed rgba(17, 17, 17,0.35)" }}
+            style={{ background: "#FFF", border: "1px dashed rgba(176, 92, 54,0.35)" }}
           >
             <div
               className="w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-3"
-              style={{ background: "rgba(17, 17, 17,0.12)" }}
+              style={{ background: "rgba(176, 92, 54,0.12)" }}
             >
               <PawPrint size={26} style={{ color: "var(--color-primary)" }} />
             </div>
@@ -305,7 +305,7 @@ export default function KeyringEventPage() {
                       className="relative block rounded-2xl overflow-hidden bg-white text-left press transition-transform"
                       style={{
                         boxShadow: selected
-                          ? "0 8px 22px rgba(17, 17, 17,0.35)"
+                          ? "0 8px 22px rgba(176, 92, 54,0.35)"
                           : "var(--shadow-raised)",
                         border: selected ? "2.5px solid var(--color-primary)" : "2.5px solid transparent",
                       }}

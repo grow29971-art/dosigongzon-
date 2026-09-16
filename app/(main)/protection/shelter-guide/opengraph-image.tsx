@@ -11,10 +11,10 @@ export default function ShelterGuideOG() {
     (
       <GuideOGTemplate
         badge="🏠 보호지침"
-        badgeColor="#6B6B6B"
+        badgeColor="#4A7BA8"
         title="길고양이 쉼터"
         highlightText="쉼터"
-        highlightColor="#6B6B6B"
+        highlightColor="#4A7BA8"
         subtitle="숨숨집 DIY · 설치 원칙 · 여름·겨울 계절 운영까지. 안전하고 따뜻한 집을 만들어요."
         tags={["📦 숨숨집", "❄️ 겨울", "☀️ 여름", "📍 설치"]}
       />

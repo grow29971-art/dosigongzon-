@@ -133,7 +133,7 @@ function SuccessContent() {
       {donation > 0 && (
         <div
           className="mb-4 px-4 py-3 rounded-2xl"
-          style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(17,17,17,0.2)" }}
+          style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(176,92,54,0.2)" }}
         >
           <p className="text-[13px] font-bold" style={{ color: "var(--color-primary-dark)" }}>
             이 주문으로 {donation.toLocaleString()}원이

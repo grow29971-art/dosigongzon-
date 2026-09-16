@@ -28,7 +28,7 @@ const PALETTES: Record<string, CatPalette> = {
   mackerel:    { fur: "#9FB4C7", earInner: "#E8A0A8", muzzle: "#E3ECF4", iris: "#4F6A43", pattern: "stripes", patternColor: "#5F7488" }, // 고등어
   tuxedo:      { fur: "#3A3F4B", earInner: "#E8A0A8", muzzle: "#FFFFFF", iris: "#D8A03F", pattern: "tuxedo", patternColor: "#FFFFFF" }, // 턱시도
   allblack:    { fur: "#33363F", earInner: "#5A5E6C", muzzle: "#4A4E5A", iris: "#F2C94C", pattern: "none" },                            // 올블랙
-  allwhite:    { fur: "#FFFFFF", earInner: "#F5B8C0", muzzle: "#FFFFFF", iris: "#5FA8D8", pattern: "none" },                            // 올화이트
+  allwhite:    { fur: "#F7F4EE", earInner: "#F5B8C0", muzzle: "#FFFFFF", iris: "#5FA8D8", pattern: "none" },                            // 올화이트
   graytabby:   { fur: "#B9BDC7", earInner: "#E8A8B0", muzzle: "#E8EAEF", iris: "#7A9A4F", pattern: "stripes", patternColor: "#8E93A1" }, // 회색태비
   calico:      { fur: "#F9F3E7", earInner: "#F0A0A8", muzzle: "#FFFFFF", iris: "#7A5230", pattern: "calico", patternColor: "#F0A24E", patternColor2: "#4E4A55" }, // 삼색
   tortie:      { fur: "#5A4636", earInner: "#E8A0A8", muzzle: "#8A6E52", iris: "#E8B44C", pattern: "tortie", patternColor: "#E08A3C", patternColor2: "#3A2E24" }, // 카오스
@@ -331,7 +331,7 @@ function headMarkup(a: CatPalette, clipId: string): string {
  */
 export function personMarkerSvg(width: number): string {
   const height = Math.round((width * 100) / 72);
-  const HOODIE = "#111111", HOODIE_DARK = "#8F4A2E", PANTS = "#4A4038", SKIN = "#F6D7B8";
+  const HOODIE = "#B05C36", HOODIE_DARK = "#8F4A2E", PANTS = "#4A4038", SKIN = "#F6D7B8";
   const HAIR = "#6B4A33";
   const OUTLINE = "rgba(40,30,30,0.13)";
   const leg = (x: number, far: boolean) => `

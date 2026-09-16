@@ -108,12 +108,12 @@ export default function MyInquiriesPage() {
             <Inbox size={13} /> 전체 {items.length}
           </span>
           {pending > 0 && (
-            <span className="flex items-center gap-1" style={{ color: "#555555" }}>
+            <span className="flex items-center gap-1" style={{ color: "#C9A961" }}>
               <Clock size={13} /> 대기 {pending}
             </span>
           )}
           {replied > 0 && (
-            <span className="flex items-center gap-1" style={{ color: "#111111" }}>
+            <span className="flex items-center gap-1" style={{ color: "#48A59E" }}>
               <CheckCircle2 size={13} /> 답변 {replied}
             </span>
           )}
@@ -235,8 +235,8 @@ export default function MyInquiriesPage() {
                       }}
                     >
                       <div className="flex items-center gap-1.5 mb-1.5">
-                        <CheckCircle2 size={12} style={{ color: "#111111" }} />
-                        <p className="text-[11px] font-bold tracking-[0.1em]" style={{ color: "#111111" }}>
+                        <CheckCircle2 size={12} style={{ color: "#48A59E" }} />
+                        <p className="text-[11px] font-bold tracking-[0.1em]" style={{ color: "#48A59E" }}>
                           관리자 답변
                         </p>
                         <span className="text-[11px] text-text-light ml-auto">

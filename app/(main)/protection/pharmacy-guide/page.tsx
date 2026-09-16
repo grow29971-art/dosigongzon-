@@ -124,7 +124,7 @@ const CATEGORIES = [
     emoji: "🪳",
     Icon: Bug,
     title: "구충제",
-    color: "#555555",
+    color: "#6B8E6F",
     desc: "회충·벼룩·진드기·귀진드기 예방",
     items: [
       { name: "레볼루션", use: "목뒤 바르기 · 1개월 지속", range: "내·외부 종합" },
@@ -150,7 +150,7 @@ const CATEGORIES = [
     emoji: "👁️",
     Icon: Eye,
     title: "안약·귀약",
-    color: "#6B6B6B",
+    color: "#4A7BA8",
     desc: "경미한 증상·청결 관리",
     items: [
       { name: "인공눈물(히알루론산)", use: "점안 1~3회/일", range: "건조·이물감" },
@@ -162,7 +162,7 @@ const CATEGORIES = [
     emoji: "🩹",
     Icon: Droplets,
     title: "응급·외용약",
-    color: "#111111",
+    color: "#E88D5A",
     desc: "가벼운 상처·피부염",
     items: [
       { name: "생리식염수", use: "상처 세척", range: "얕은 상처" },
@@ -475,7 +475,7 @@ export default async function PharmacyGuidePage() {
       {/* 관련 가이드 */}
       <section className="mb-8">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <BookOpen size={18} color="#111111" />
+          <BookOpen size={18} color="#B05C36" />
           관련 가이드
         </h2>
         <div className="space-y-2">

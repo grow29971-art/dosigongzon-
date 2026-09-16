@@ -52,7 +52,7 @@ const SECTIONS: FeatureSection[] = [
       {
         icon: MapPin,
         iconColor: "var(--color-primary)",
-        iconBg: "rgba(17, 17, 17,0.12)",
+        iconBg: "rgba(176, 92, 54,0.12)",
         title: "동네 길고양이 지도",
         desc: "우리 동네에 등록된 길고양이를 지도에서 한눈에. 고양이·병원·약국을 색깔로 구분해서 보여줘요.",
         steps: [
@@ -66,7 +66,7 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Cat,
-        iconColor: "#555555",
+        iconColor: "#6B8E6F",
         iconBg: "rgba(107,142,111,0.12)",
         title: "고양이 등록하기",
         desc: "지도 '+' 버튼을 누르면 등록 모달이 열려요. 사진·이름·성격 태그·건강 상태를 입력하면 끝.",
@@ -82,7 +82,7 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Pencil,
-        iconColor: "#111111",
+        iconColor: "#48A59E",
         iconBg: "rgba(72,165,158,0.12)",
         title: "돌봄다이어리 작성",
         desc: "밥·물·간식·건강 체크·TNR·병원 방문·쉼터 관리 7가지 활동을 기록. 매일 작성하면 연속 기록 보너스 점수.",
@@ -99,11 +99,11 @@ const SECTIONS: FeatureSection[] = [
   },
   {
     groupLabel: "소통과 커뮤니티",
-    groupColor: "#6B6B6B",
+    groupColor: "#4A7BA8",
     features: [
       {
         icon: MessageCircle,
-        iconColor: "#6B6B6B",
+        iconColor: "#4A7BA8",
         iconBg: "rgba(74,123,168,0.12)",
         title: "댓글 · 경보 · 리액션",
         desc: "고양이마다 이웃이 남긴 기록·경보를 확인하고 이모지로 반응할 수 있어요.",
@@ -118,7 +118,7 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Users,
-        iconColor: "#111111",
+        iconColor: "#8B65B8",
         iconBg: "rgba(139,101,184,0.12)",
         title: "커뮤니티 게시판",
         desc: "카테고리별 동네 이웃 이야기. 긴급 구조·임보 요청·입양 공고·용품 나눔까지.",
@@ -148,7 +148,7 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Sparkles,
-        iconColor: "#111111",
+        iconColor: "#48A59E",
         iconBg: "rgba(72,165,158,0.12)",
         title: "지역 채팅 (동네 LIVE)",
         desc: "같은 구 이웃들과 실시간 대화. 지도 하단 💬 버튼으로 진입.",
@@ -160,11 +160,11 @@ const SECTIONS: FeatureSection[] = [
   },
   {
     groupLabel: "내 활동과 보상",
-    groupColor: "#111111",
+    groupColor: "#E88D5A",
     features: [
       {
         icon: Trophy,
-        iconColor: "#111111",
+        iconColor: "#E88D5A",
         iconBg: "rgba(232,141,90,0.12)",
         title: "레벨 · 업적",
         desc: "고양이 등록·돌봄 기록·경보·좋아요·초대·연속 돌봄으로 점수를 쌓아 7단계 레벨업.",
@@ -194,11 +194,11 @@ const SECTIONS: FeatureSection[] = [
   },
   {
     groupLabel: "정보와 가이드",
-    groupColor: "#555555",
+    groupColor: "#6B8E6F",
     features: [
       {
         icon: BookOpen,
-        iconColor: "#555555",
+        iconColor: "#6B8E6F",
         iconBg: "rgba(107,142,111,0.12)",
         title: "보호 지침",
         desc: "상황별 행동 매뉴얼. 응급처치부터 계절 쉼터까지.",
@@ -230,11 +230,11 @@ const SECTIONS: FeatureSection[] = [
   },
   {
     groupLabel: "설정과 편의",
-    groupColor: "#111111",
+    groupColor: "#8B65B8",
     features: [
       {
         icon: Bell,
-        iconColor: "#6B6B6B",
+        iconColor: "#4A7BA8",
         iconBg: "rgba(74,123,168,0.12)",
         title: "알림 · 푸시",
         desc: "내 고양이에 달린 댓글·돌봄, 받은 쪽지, 초대 친구 가입 등을 알림 센터에서 확인.",
@@ -259,7 +259,7 @@ const SECTIONS: FeatureSection[] = [
       {
         icon: Download,
         iconColor: "var(--color-primary)",
-        iconBg: "rgba(17, 17, 17,0.12)",
+        iconBg: "rgba(176, 92, 54,0.12)",
         title: "앱으로 설치 (PWA)",
         desc: "홈 화면에 설치하면 브라우저 탭 없이 앱처럼 열려요. 푸시 알림도 더 안정적.",
         steps: [
@@ -293,7 +293,7 @@ export default function GuidePage() {
   };
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, "\\u003c") }}

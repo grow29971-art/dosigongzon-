@@ -154,7 +154,7 @@ export default function InviteSection() {
               className="w-full flex items-center justify-center gap-2 py-3 rounded-xl press transition-transform disabled:opacity-60"
               style={{
                 backgroundColor: "#FEE500",
-                color: "#111111",
+                color: "#191919",
                 boxShadow: "var(--shadow-raised)",
               }}
             >

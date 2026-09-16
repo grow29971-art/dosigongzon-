@@ -102,7 +102,7 @@ export default async function WeeklyHotPosts() {
                       </span>
                     )}
                     {post.commentCount > 0 && (
-                      <span className="flex items-center gap-0.5" style={{ color: "#6B6B6B" }}>
+                      <span className="flex items-center gap-0.5" style={{ color: "#4A7BA8" }}>
                         <MessageSquare size={10} />
                         {post.commentCount}
                       </span>

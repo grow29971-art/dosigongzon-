@@ -69,7 +69,7 @@ export default function AdminInsightsPage() {
   }
 
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
       {/* ── 헤더 ── */}
       <div className="px-4 pt-12 pb-4 flex items-center gap-3">
         <button
@@ -111,9 +111,9 @@ export default function AdminInsightsPage() {
           {/* ── 누적 지표 ── */}
           <Section icon={<TrendingUp size={14} />} label="누적">
             <div className="grid grid-cols-2 gap-2.5">
-              <StatCard icon={<Users size={16} />} label="총 가입자" value={data.totalUsers} delta={data.newUsersToday} accent="#6B6B6B" />
+              <StatCard icon={<Users size={16} />} label="총 가입자" value={data.totalUsers} delta={data.newUsersToday} accent="#4A7BA8" />
               <StatCard icon={<CatIcon size={16} />} label="등록 고양이" value={data.totalCats} delta={data.newCatsToday} accent="var(--color-primary)" />
-              <StatCard icon={<MessageSquare size={16} />} label="총 게시글" value={data.totalPosts} delta={data.newPostsToday} accent="#111111" />
+              <StatCard icon={<MessageSquare size={16} />} label="총 게시글" value={data.totalPosts} delta={data.newPostsToday} accent="#8B65B8" />
               <StatCard icon={<Activity size={16} />} label="돌봄 기록" value={data.totalCareLogs} delta={data.newCareLogsToday} accent="#5BA876" />
             </div>
           </Section>
@@ -183,7 +183,7 @@ export default function AdminInsightsPage() {
                 label="3일+ 부재"
                 value={data.urgentCatsStale}
                 delta={0}
-                accent="#111111"
+                accent="#E88D5A"
               />
             </div>
             <div className="grid grid-cols-2 gap-2.5">

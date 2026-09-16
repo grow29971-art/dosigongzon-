@@ -85,7 +85,7 @@ export default function Og200EventModal() {
         {/* 헤더 — 그라데이션 */}
         <div
           className="relative px-6 pt-8 pb-6 overflow-hidden"
-          style={{ background: "#EBEBEB" }}
+          style={{ background: "#FFE8C2" }}
         >
           <button
             type="button"
@@ -109,7 +109,7 @@ export default function Og200EventModal() {
           <div
             className="w-[68px] h-[68px] mx-auto rounded-full flex items-center justify-center mb-3"
             style={{
-              background: "#111111",
+              background: "#E88D5A",
               boxShadow: "var(--shadow-primary)",
             }}
           >
@@ -171,7 +171,7 @@ export default function Og200EventModal() {
               type="button"
               onClick={dismiss}
               className="flex-1 py-3 rounded-2xl text-[13px] font-bold press bg-white"
-              style={{ color: "var(--color-primary-dark)", border: "1.5px solid rgba(17, 17, 17,0.30)" }}
+              style={{ color: "var(--color-primary-dark)", border: "1.5px solid rgba(176, 92, 54,0.30)" }}
             >
               나중에
             </button>

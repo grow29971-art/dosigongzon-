@@ -63,13 +63,13 @@ export const VISIBILITY_MAP: Record<CatVisibility, { label: string; emoji: strin
   public: {
     label: "전체 공개",
     emoji: "🌍",
-    color: "#6B6B6B",
+    color: "#4A7BA8",
     description: "모든 가입자에게 동(洞) 단위로 노출돼요.",
   },
   circle: {
     label: "내 서클",
     emoji: "🤝",
-    color: "#555555",
+    color: "#6B8E6F",
     description: "내가 승인한 서클 멤버에게만 보여요.",
   },
   private: {
@@ -84,9 +84,9 @@ export const ADOPTION_MAP: Record<
   Exclude<AdoptionStatus, null>,
   { label: string; emoji: string; color: string; short: string }
 > = {
-  seeking_home: { label: "입양처 찾는 중", short: "입양", emoji: "🏡", color: "#111111" },
-  temp_care: { label: "임시보호 필요", short: "임보", emoji: "🤝", color: "#6B6B6B" },
-  both: { label: "입양·임보 모두", short: "입양·임보", emoji: "💛", color: "#111111" },
+  seeking_home: { label: "입양처 찾는 중", short: "입양", emoji: "🏡", color: "#B05C36" },
+  temp_care: { label: "임시보호 필요", short: "임보", emoji: "🤝", color: "#4A7BA8" },
+  both: { label: "입양·임보 모두", short: "입양·임보", emoji: "💛", color: "#8B65B8" },
 };
 
 export const GENDER_MAP: Record<CatGender, { label: string; emoji: string }> = {
@@ -96,8 +96,8 @@ export const GENDER_MAP: Record<CatGender, { label: string; emoji: string }> = {
 };
 
 export const HEALTH_MAP: Record<CatHealthStatus, { label: string; emoji: string; color: string }> = {
-  good: { label: "양호", emoji: "💚", color: "#555555" },
-  caution: { label: "주의", emoji: "💛", color: "#555555" },
+  good: { label: "양호", emoji: "💚", color: "#6B8E6F" },
+  caution: { label: "주의", emoji: "💛", color: "#C9A961" },
   danger: { label: "위험", emoji: "❤️‍🩹", color: "#D85555" },
 };
 
@@ -1154,7 +1154,7 @@ export function getLevelPerks(level: number): LevelPerks {
       aiChatPerMinute: 30,
       dailyPostLimit: 0, // 무제한
       profileBorder: "3px solid",
-      profileBorderColor: "#555555", // 골드
+      profileBorderColor: "#C9A961", // 골드
       canUseSpecialEmoji: true,
     };
   }
@@ -1201,13 +1201,13 @@ export function computeScore(summary: MyActivitySummary): number {
 
 // 레벨별 표시 색 (뱃지 등)
 const LEVEL_COLORS = [
-  "#555555", // Lv1 새싹 세이지
-  "#111111", // Lv2 캣프렌드 틸
-  "#6B6B6B", // Lv3 캣러버 블루
-  "#111111", // Lv4 캣지기 퍼플
-  "#111111", // Lv5 마을지킴이 오렌지
+  "#6B8E6F", // Lv1 새싹 세이지
+  "#48A59E", // Lv2 캣프렌드 틸
+  "#4A7BA8", // Lv3 캣러버 블루
+  "#8B65B8", // Lv4 캣지기 퍼플
+  "#E88D5A", // Lv5 마을지킴이 오렌지
   "#D85555", // Lv6 골목대장 레드
-  "#555555", // Lv7 전설의 집사 골드
+  "#C9A961", // Lv7 전설의 집사 골드
 ];
 
 export function getLevelColor(level: number): string {

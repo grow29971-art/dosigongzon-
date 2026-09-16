@@ -29,9 +29,9 @@ export default async function CatOGImage({ params }: { params: Params }) {
           width: "100%",
           height: "100%",
           display: "flex",
-          background: "linear-gradient(135deg, #F2F2F2 0%, #EADFCB 55%, #DAC4A3 100%)",
+          background: "linear-gradient(135deg, #F6EFE3 0%, #EADFCB 55%, #DAC4A3 100%)",
           fontFamily: "sans-serif",
-          color: "#2A2A2A",
+          color: "#2C2C2C",
           position: "relative",
         }}
       >
@@ -44,7 +44,7 @@ export default async function CatOGImage({ params }: { params: Params }) {
             width: 420,
             height: 420,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(17, 17, 17,0.25) 0%, rgba(17, 17, 17,0) 70%)",
+            background: "radial-gradient(circle, rgba(176, 92, 54,0.25) 0%, rgba(176, 92, 54,0) 70%)",
           }}
         />
 
@@ -91,7 +91,7 @@ export default async function CatOGImage({ params }: { params: Params }) {
                 width: 44,
                 height: 44,
                 borderRadius: 14,
-                background: "#111111",
+                background: "#B05C36",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -100,7 +100,7 @@ export default async function CatOGImage({ params }: { params: Params }) {
             >
               🐾
             </div>
-            <span style={{ fontSize: 24, fontWeight: 900, color: "#2A2A2A", letterSpacing: -0.5 }}>
+            <span style={{ fontSize: 24, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}>
               도시공존
             </span>
           </div>
@@ -114,7 +114,7 @@ export default async function CatOGImage({ params }: { params: Params }) {
                 gap: 10,
                 fontSize: 24,
                 fontWeight: 700,
-                color: "#111111",
+                color: "#B05C36",
               }}
             >
               <span>📍</span>
@@ -126,7 +126,7 @@ export default async function CatOGImage({ params }: { params: Params }) {
                 fontWeight: 900,
                 lineHeight: 1.0,
                 letterSpacing: -3,
-                color: "#2A2A2A",
+                color: "#2C2C2C",
                 display: "flex",
               }}
             >
@@ -173,10 +173,10 @@ export default async function CatOGImage({ params }: { params: Params }) {
                 padding: "10px 20px",
                 borderRadius: 999,
                 background: "rgba(255,255,255,0.8)",
-                color: "#555555",
+                color: "#8B5A3C",
                 fontSize: 20,
                 fontWeight: 800,
-                border: "2px solid rgba(17, 17, 17,0.3)",
+                border: "2px solid rgba(176, 92, 54,0.3)",
               }}
             >
               dosigongzon.com

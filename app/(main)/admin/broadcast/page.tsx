@@ -35,21 +35,21 @@ const COHORT_OPTIONS: Array<{
     label: "전체 가입자",
     description: "모든 회원에게 발송 (운영자 본인 제외)",
     Icon: UsersIcon,
-    color: "#6B6B6B",
+    color: "#4A7BA8",
   },
   {
     id: "founding",
     label: "창립 멤버",
     description: "5/20 전 가입한 founding_member 타이틀 보유자",
     Icon: Sparkles,
-    color: "#111111",
+    color: "#B05C36",
   },
   {
     id: "no_cat",
     label: "첫 등록 미완료",
     description: "가입했지만 고양이 0건 — cold start 대응",
     Icon: CatIcon,
-    color: "#111111",
+    color: "#E88D5A",
   },
   {
     id: "dormant",
@@ -63,7 +63,7 @@ const COHORT_OPTIONS: Array<{
     label: "마케팅 동의자 (광고용)",
     description: "마케팅 수신 동의자만 — 쇼핑·이벤트 등 (광고)성 안내는 반드시 이 코호트로",
     Icon: Tag,
-    color: "#333333",
+    color: "#C97C52",
   },
 ];
 
@@ -284,7 +284,7 @@ export default function AdminBroadcastPage() {
   return (
     <div
       className="px-4 pt-12 pb-24 max-w-2xl mx-auto"
-      style={{ background: "#FFFFFF", minHeight: "100dvh" }}
+      style={{ background: "#F7F4EE", minHeight: "100dvh" }}
     >
       <div className="flex items-center gap-3 mb-6">
         <Link
@@ -357,9 +357,9 @@ export default function AdminBroadcastPage() {
               onClick={() => setMessage(t.text)}
               className="text-[11px] px-3 py-1.5 chip-square font-semibold press-strong"
               style={{
-                background: "rgba(17, 17, 17,0.10)",
+                background: "rgba(176, 92, 54,0.10)",
                 color: "var(--color-primary-dark)",
-                border: "1px solid rgba(17, 17, 17,0.22)",
+                border: "1px solid rgba(176, 92, 54,0.22)",
               }}
             >
               {t.label}
@@ -383,7 +383,7 @@ export default function AdminBroadcastPage() {
           style={{
             border: "1px solid var(--color-divider)",
             boxShadow: "inset 0 1px 2px rgba(0,0,0,0.02)",
-            color: "#2A2A2A",
+            color: "#3D2F25",
           }}
         />
       </section>
@@ -399,7 +399,7 @@ export default function AdminBroadcastPage() {
         ) : previewCount !== null ? (
           <span>
             이 코호트 예상 대상{" "}
-            <b style={{ color: "#2A2A2A" }}>{previewCount}명</b>
+            <b style={{ color: "#3D2F25" }}>{previewCount}명</b>
           </span>
         ) : (
           <span>예상 대상 수 확인 불가</span>
@@ -415,7 +415,7 @@ export default function AdminBroadcastPage() {
         style={{
           background: "#FFFFFF",
           color: "var(--color-primary-dark)",
-          border: "1.5px solid rgba(17, 17, 17,0.35)",
+          border: "1.5px solid rgba(176, 92, 54,0.35)",
         }}
       >
         {sending ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}

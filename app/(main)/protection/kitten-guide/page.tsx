@@ -205,7 +205,7 @@ export default function KittenGuidePage() {
       {/* Step 1 */}
       <section id="step-1" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <span className="w-7 h-7 chip-square bg-[#555555] text-white text-[13px] font-bold flex items-center justify-center">1</span>
+          <span className="w-7 h-7 chip-square bg-[#C9A961] text-white text-[13px] font-bold flex items-center justify-center">1</span>
           관찰 — 왜 바로 데려가면 안 되나
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
@@ -268,7 +268,7 @@ export default function KittenGuidePage() {
       {/* Step 3 */}
       <section id="step-3" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Thermometer size={20} color="#111111" />
+          <Thermometer size={20} color="#B05C36" />
           <span className="w-7 h-7 chip-square bg-[var(--color-primary)] text-white text-[13px] font-bold flex items-center justify-center">3</span>
           체온 유지 — 36.5도 만들기
         </h2>
@@ -296,8 +296,8 @@ export default function KittenGuidePage() {
       {/* Step 4 */}
       <section id="step-4" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Milk size={20} color="#555555" />
-          <span className="w-7 h-7 chip-square bg-[#555555] text-white text-[13px] font-bold flex items-center justify-center">4</span>
+          <Milk size={20} color="#6B8E6F" />
+          <span className="w-7 h-7 chip-square bg-[#6B8E6F] text-white text-[13px] font-bold flex items-center justify-center">4</span>
           KMR 분유 급여 — 절대 우유 금지
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
@@ -345,8 +345,8 @@ export default function KittenGuidePage() {
       {/* Step 5 */}
       <section id="step-5" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Stethoscope size={20} color="#6B6B6B" />
-          <span className="w-7 h-7 chip-square bg-[#6B6B6B] text-white text-[13px] font-bold flex items-center justify-center">5</span>
+          <Stethoscope size={20} color="#4A7BA8" />
+          <span className="w-7 h-7 chip-square bg-[#4A7BA8] text-white text-[13px] font-bold flex items-center justify-center">5</span>
           동물병원 방문 — 24시간 내
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
@@ -373,8 +373,8 @@ export default function KittenGuidePage() {
       {/* Step 6 */}
       <section id="step-6" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Home size={20} color="#111111" />
-          <span className="w-7 h-7 chip-square bg-[#111111] text-white text-[13px] font-bold flex items-center justify-center">6</span>
+          <Home size={20} color="#8B65B8" />
+          <span className="w-7 h-7 chip-square bg-[#8B65B8] text-white text-[13px] font-bold flex items-center justify-center">6</span>
           입양·임보 결정
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
@@ -426,7 +426,7 @@ export default function KittenGuidePage() {
       {/* 관련 가이드 */}
       <section className="mb-8">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <BookOpen size={18} color="#111111" />
+          <BookOpen size={18} color="#B05C36" />
           관련 가이드
         </h2>
         <div className="space-y-2">
@@ -469,7 +469,7 @@ export default function KittenGuidePage() {
       {/* 신뢰 출처 */}
       <section className="mb-8 rounded-2xl p-4" style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-divider)" }}>
         <h3 className="text-[13px] font-bold text-text-main mb-2 flex items-center gap-1.5">
-          <Heart size={14} color="#111111" />
+          <Heart size={14} color="#B05C36" />
           참고한 공공 자료
         </h3>
         <ul className="text-[13px] text-text-sub space-y-1 pl-4 list-disc leading-relaxed">
@@ -488,7 +488,7 @@ export default function KittenGuidePage() {
           slug="kitten-guide"
           title="새끼 고양이(냥줍) 발견했을 때 완벽 가이드 | 도시공존"
           description="관찰·체온·분유 3단계. 어미 고양이와 분리 판단부터 응급 케어까지."
-          accent="#555555"
+          accent="#E8B040"
         />
       </section>
     </div>

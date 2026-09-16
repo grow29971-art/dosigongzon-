@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 const PILLARS = [
-  { emoji: "📱", name: "도시공존 앱", desc: "길집사님의 돌봄 도구", status: "서비스 중", color: "#111111" },
+  { emoji: "📱", name: "도시공존 앱", desc: "길집사님의 돌봄 도구", status: "서비스 중", color: "#22A366" },
   { emoji: "🔥", name: "길고양이 난로", desc: "겨울 동사를 막는 발열 기기", status: "양산 준비 중", color: "#E8930C" },
   { emoji: "🏠", name: "IoT 스마트 쉼터", desc: "길 위 아이들의 스마트 은신처", status: "개발 중", color: "var(--color-primary)" },
 ];

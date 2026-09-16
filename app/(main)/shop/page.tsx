@@ -73,7 +73,7 @@ function ProductCard({ product, wished, onToggleWish }: { product: Product; wish
             <Image src={thumb} alt={product.name} fill className="object-cover" />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
-              <PawPrint size={40} style={{ color: "rgba(17, 17, 17,0.28)" }} />
+              <PawPrint size={40} style={{ color: "rgba(176, 92, 54,0.28)" }} />
             </div>
           )}
           {product.badge && (
@@ -260,7 +260,7 @@ export default function ShopPage() {
         type="button"
         onClick={() => window.dispatchEvent(new CustomEvent("open-points-guide"))}
         className="mb-4 w-full flex items-center gap-2.5 px-4 py-2.5 rounded-2xl press transition-transform text-left"
-        style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(17, 17, 17,0.18)" }}
+        style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(176, 92, 54,0.18)" }}
       >
         <PawPrint size={16} className="shrink-0" style={{ color: "var(--color-primary)" }} />
         <p className="text-[11px] font-bold leading-snug flex-1" style={{ color: "var(--color-primary-dark)" }}>
@@ -306,7 +306,7 @@ export default function ShopPage() {
                 <span className="font-bold text-text-light"> / {donation.goal.toLocaleString()}원</span>
               </span>
             </div>
-            <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: "rgba(17,17,17,0.15)" }}>
+            <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: "rgba(176,92,54,0.15)" }}>
               <div
                 className="h-full rounded-full transition-all"
                 style={{

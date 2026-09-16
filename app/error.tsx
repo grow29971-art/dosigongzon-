@@ -26,7 +26,7 @@ export default function ErrorPage({
     <div
       className="min-h-screen flex flex-col items-center justify-center px-6 py-12"
       style={{
-        background: "#F2F2F2",
+        background: "#F6EFE3",
       }}
     >
       <div
@@ -71,7 +71,7 @@ export default function ErrorPage({
           {error.digest && (
             <p
               className="text-[11px] font-mono mb-4 px-3 py-1.5 rounded-lg inline-block"
-              style={{ background: "#FFFFFF", color: "#8A8A8A" }}
+              style={{ background: "#F7F4EE", color: "#A38E7A" }}
             >
               ref: {error.digest}
             </p>
@@ -93,8 +93,8 @@ export default function ErrorPage({
               href="/"
               className="w-full py-3 rounded-2xl text-[13px] font-bold press"
               style={{
-                background: "#FFFFFF",
-                color: "#8A8A8A",
+                background: "#F7F4EE",
+                color: "#A38E7A",
                 border: "1px solid var(--color-divider)",
               }}
             >

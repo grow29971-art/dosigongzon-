@@ -45,7 +45,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
     QRCode.toCanvas(canvas, targetUrl, {
       width: 320,
       margin: 2,
-      color: { dark: "#2A2A2A", light: "#FFFFFF" },
+      color: { dark: "#3D2F25", light: "#FFFFFF" },
       errorCorrectionLevel: "M",
     })
       .then(() => {
@@ -88,10 +88,10 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
           <title>${safeName} 도시공존 QR</title>
           <style>
             body { font-family: 'Apple SD Gothic Neo', sans-serif; text-align: center; padding: 32px; }
-            h1 { font-size: 20px; margin: 0 0 8px; color: #2A2A2A; }
-            p { font-size: 12px; color: #6B6B6B; margin: 0 0 24px; line-height: 1.6; }
+            h1 { font-size: 20px; margin: 0 0 8px; color: #3D2F25; }
+            p { font-size: 12px; color: #8B7562; margin: 0 0 24px; line-height: 1.6; }
             img { max-width: 320px; width: 100%; }
-            .footer { font-size: 11px; color: #8A8A8A; margin-top: 20px; }
+            .footer { font-size: 11px; color: #A38E7A; margin-top: 20px; }
           </style>
         </head>
         <body>
@@ -118,7 +118,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
       >
         <div className="px-5 pt-5 pb-3 flex items-start justify-between">
           <div>
-            <p className="text-[11px] font-bold tracking-[0.18em]" style={{ color: "#000000" }}>
+            <p className="text-[11px] font-bold tracking-[0.18em]" style={{ color: "#8A4325" }}>
               SHARE OFFLINE
             </p>
             <h2 className="text-[17px] font-bold text-text-main mt-1 tracking-tight">
@@ -140,7 +140,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
         </div>
 
         <div className="px-5 pb-4 flex justify-center">
-          <div className="rounded-2xl p-3" style={{ background: "#FFFFFF" }}>
+          <div className="rounded-2xl p-3" style={{ background: "#F7F4EE" }}>
             <canvas ref={canvasRef} className="block" />
           </div>
         </div>
@@ -151,7 +151,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
             onClick={handleDownload}
             disabled={!dataUrl}
             className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold text-white press-strong disabled:opacity-50"
-            style={{ background: "#111111" }}
+            style={{ background: "#B05C36" }}
           >
             <Download size={14} />
             <span>이미지 저장</span>
@@ -161,7 +161,7 @@ export default function CatQRModal({ open, onClose, catId, catName }: CatQRModal
             onClick={handlePrint}
             disabled={!dataUrl}
             className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-[13px] font-bold press-strong disabled:opacity-50"
-            style={{ background: "#FFFFFF", color: "#000000", border: "1.5px solid rgba(17, 17, 17,0.30)" }}
+            style={{ background: "#FFFFFF", color: "#8A4325", border: "1.5px solid rgba(176, 92, 54,0.30)" }}
           >
             <Printer size={14} />
             <span>인쇄하기</span>

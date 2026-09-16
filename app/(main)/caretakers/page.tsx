@@ -42,7 +42,7 @@ export default async function CaretakersPage() {
   const caretakers = await listNearbyCaretakersServer(user.id);
 
   return (
-    <div className="pb-24 min-h-screen" style={{ background: "#FFFFFF" }}>
+    <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
       {/* 헤더 */}
       <div className="px-5 pt-12 pb-5">
         <Link
@@ -76,7 +76,7 @@ export default async function CaretakersPage() {
               className="mb-3 px-3 py-2.5 rounded-xl flex items-center gap-2"
               style={{
                 background: "var(--color-primary-softer)",
-                border: "1px solid rgba(17, 17, 17,0.15)",
+                border: "1px solid rgba(176, 92, 54,0.15)",
               }}
             >
               <Sparkles size={13} className="text-primary shrink-0" />
@@ -121,7 +121,7 @@ function CaretakerCard({
         <Link
           href={`/users/${caretaker.id}`}
           className="shrink-0 w-12 h-12 rounded-full overflow-hidden bg-surface-alt flex items-center justify-center"
-          style={{ border: "1.5px solid #E0E0E0" }}
+          style={{ border: "1.5px solid #E5E0D6" }}
         >
           {avatar ? (
             <Image
@@ -171,7 +171,7 @@ function CaretakerCard({
             <span
               key={r}
               className="text-[11px] font-bold px-1.5 py-0.5 rounded-md"
-              style={{ background: "rgba(107,142,111,0.12)", color: "#2A2A2A" }}
+              style={{ background: "rgba(107,142,111,0.12)", color: "#3F5B42" }}
             >
               {r}
             </span>
@@ -186,7 +186,7 @@ function CaretakerCard({
           style={{
             background: "var(--color-primary-softer)",
             color: "var(--color-primary)",
-            border: "1px solid rgba(17, 17, 17,0.18)",
+            border: "1px solid rgba(176, 92, 54,0.18)",
           }}
         >
           프로필 보기

@@ -110,9 +110,9 @@ export default function RallyJoinButton() {
         className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-[15px] font-bold text-white press-strong transition-transform disabled:active:scale-100"
         style={{
           background: done
-            ? "linear-gradient(135deg, #555555 0%, #2A2A2A 100%)"
+            ? "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)"
             : "var(--color-primary)",
-          boxShadow: done ? "0 8px 20px rgba(107,142,111,0.28)" : "0 8px 20px rgba(17,17,17,0.28)",
+          boxShadow: done ? "0 8px 20px rgba(107,142,111,0.28)" : "0 8px 20px rgba(176,92,54,0.28)",
         }}
       >
         {done ? (

@@ -53,9 +53,9 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
           padding: "60px 72px",
           background: hasUrgent
             ? "linear-gradient(135deg, #FFF1ED 0%, #FCDED4 55%, #F5B8A5 100%)"
-            : "linear-gradient(135deg, #F2F2F2 0%, #EADFCB 55%, #DAC4A3 100%)",
+            : "linear-gradient(135deg, #F6EFE3 0%, #EADFCB 55%, #DAC4A3 100%)",
           fontFamily: "sans-serif",
-          color: "#2A2A2A",
+          color: "#2C2C2C",
           position: "relative",
         }}
       >
@@ -69,7 +69,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
             borderRadius: "50%",
             background: hasUrgent
               ? "radial-gradient(circle, rgba(216,85,85,0.22) 0%, rgba(216,85,85,0) 70%)"
-              : "radial-gradient(circle, rgba(17, 17, 17,0.22) 0%, rgba(17, 17, 17,0) 70%)",
+              : "radial-gradient(circle, rgba(176, 92, 54,0.22) 0%, rgba(176, 92, 54,0) 70%)",
           }}
         />
 
@@ -80,7 +80,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
               width: 52,
               height: 52,
               borderRadius: 16,
-              background: "#111111",
+              background: "#B05C36",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -89,7 +89,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
           >
             🐾
           </div>
-          <span style={{ fontSize: 24, fontWeight: 800, color: "#000000" }}>도시공존</span>
+          <span style={{ fontSize: 24, fontWeight: 800, color: "#8A4325" }}>도시공존</span>
         </div>
 
         {/* 메인 — 지역명 강조 */}
@@ -98,7 +98,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
             style={{
               fontSize: 24,
               fontWeight: 700,
-              color: "#555555",
+              color: "#8B5A3C",
               letterSpacing: 2,
             }}
           >
@@ -110,7 +110,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
               fontWeight: 900,
               lineHeight: 1,
               letterSpacing: -3,
-              color: hasUrgent ? "#B53D3D" : "#111111",
+              color: hasUrgent ? "#B53D3D" : "#B05C36",
               display: "flex",
             }}
           >
@@ -120,7 +120,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
             style={{
               fontSize: 44,
               fontWeight: 800,
-              color: "#2A2A2A",
+              color: "#2C2C2C",
               marginTop: 6,
               display: "flex",
             }}
@@ -131,7 +131,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
             <div
               style={{
                 fontSize: 24,
-                color: "#555555",
+                color: "#6B5043",
                 fontWeight: 600,
                 marginTop: 4,
                 display: "flex",
@@ -155,7 +155,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
             emoji="🐾"
             value={catCount}
             label={`${guName}에 등록된 아이`}
-            color="#111111"
+            color="#B05C36"
           />
           {hasUrgent ? (
             <Stat
@@ -170,7 +170,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
               emoji="🏘️"
               value={dongs.length}
               label={`${guName}의 동네 수`}
-              color="#6B6B6B"
+              color="#4A7BA8"
             />
           )}
         </div>
@@ -203,7 +203,7 @@ function Stat({
         display: "flex",
         flexDirection: "column",
         gap: 2,
-        border: urgent ? "none" : "2px solid rgba(17, 17, 17,0.20)",
+        border: urgent ? "none" : "2px solid rgba(176, 92, 54,0.20)",
         boxShadow: urgent ? "0 12px 32px rgba(216,85,85,0.35)" : "none",
       }}
     >
@@ -224,7 +224,7 @@ function Stat({
         style={{
           fontSize: 20,
           fontWeight: 700,
-          color: urgent ? "rgba(255,255,255,0.92)" : "#555555",
+          color: urgent ? "rgba(255,255,255,0.92)" : "#6B5043",
         }}
       >
         {label}

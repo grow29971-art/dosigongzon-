@@ -112,19 +112,19 @@ export const BADGE_PRESETS: Record<
 > = {
   event: {
     label: "행사",
-    color: "#111111",
+    color: "#B05C36",
     bg: "#EEE8E0",
     gradient: "linear-gradient(135deg, #EEE8E0 0%, #E5DCCF 100%)",
   },
   tnr: {
     label: "TNR",
-    color: "#555555",
+    color: "#6B8E6F",
     bg: "#E8ECE5",
     gradient: "linear-gradient(135deg, #E8ECE5 0%, #D6DCD2 100%)",
   },
   law: {
     label: "법령",
-    color: "#2A2A2A",
+    color: "#7A6B8E",
     bg: "#EAE6E8",
     gradient: "linear-gradient(135deg, #EAE6E8 0%, #DCD6D9 100%)",
   },

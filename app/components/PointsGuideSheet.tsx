@@ -76,9 +76,9 @@ export default function PointsGuideSheet() {
         </p>
 
         {/* 1. 돌봄으로 벌기 */}
-        <div className="rounded-2xl p-4 mb-2.5" style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(17,17,17,0.18)" }}>
+        <div className="rounded-2xl p-4 mb-2.5" style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(176,92,54,0.18)" }}>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(17,17,17,0.15)" }}>
+            <span className="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(176,92,54,0.15)" }}>
               <PawPrint size={15} style={{ color: "var(--color-primary)" }} />
             </span>
             <p className="text-[14px] font-bold text-text-main">① 돌봄 기록으로 벌기</p>

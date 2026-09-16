@@ -883,7 +883,7 @@ export default function AddCatModal({
             </div>
             <p className="text-[11px] text-white/45 mt-1.5 leading-relaxed px-1">
               학대 우려가 큰 아이는 <b>내 서클</b>이나 <b>나만 보기</b>로 설정하세요.{" "}
-              <Link href="/mypage/circle" className="underline" style={{ color: "#555555" }}>
+              <Link href="/mypage/circle" className="underline" style={{ color: "#6B8E6F" }}>
                 서클 멤버 관리
               </Link>
             </p>

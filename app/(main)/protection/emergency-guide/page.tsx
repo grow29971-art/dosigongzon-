@@ -311,8 +311,8 @@ export default function EmergencyGuidePage() {
       {/* Step 2 */}
       <section id="step-2" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Stethoscope size={20} color="#6B6B6B" />
-          <span className="w-7 h-7 chip-square bg-[#6B6B6B] text-white text-[13px] font-bold flex items-center justify-center">2</span>
+          <Stethoscope size={20} color="#4A7BA8" />
+          <span className="w-7 h-7 chip-square bg-[#4A7BA8] text-white text-[13px] font-bold flex items-center justify-center">2</span>
           상태 파악 (5초 체크)
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
@@ -349,7 +349,7 @@ export default function EmergencyGuidePage() {
       {/* Step 3 */}
       <section id="step-3" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Droplet size={20} color="#111111" />
+          <Droplet size={20} color="#B05C36" />
           <span className="w-7 h-7 chip-square bg-[var(--color-primary)] text-white text-[13px] font-bold flex items-center justify-center">3</span>
           응급처치 (상황별)
         </h2>
@@ -397,8 +397,8 @@ export default function EmergencyGuidePage() {
       {/* Step 4 */}
       <section id="step-4" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Car size={20} color="#555555" />
-          <span className="w-7 h-7 chip-square bg-[#555555] text-white text-[13px] font-bold flex items-center justify-center">4</span>
+          <Car size={20} color="#6B8E6F" />
+          <span className="w-7 h-7 chip-square bg-[#6B8E6F] text-white text-[13px] font-bold flex items-center justify-center">4</span>
           안전 이송
         </h2>
         <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
@@ -414,8 +414,8 @@ export default function EmergencyGuidePage() {
       {/* Step 5 */}
       <section id="step-5" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Flame size={20} color="#111111" />
-          <span className="w-7 h-7 chip-square bg-[#111111] text-white text-[13px] font-bold flex items-center justify-center">5</span>
+          <Flame size={20} color="#E88D5A" />
+          <span className="w-7 h-7 chip-square bg-[#E88D5A] text-white text-[13px] font-bold flex items-center justify-center">5</span>
           사후 조치·신고
         </h2>
         <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
@@ -473,7 +473,7 @@ export default function EmergencyGuidePage() {
       {/* 관련 가이드 */}
       <section className="mb-8">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <BookOpen size={18} color="#111111" />
+          <BookOpen size={18} color="#B05C36" />
           관련 가이드
         </h2>
         <div className="space-y-2">

@@ -124,12 +124,12 @@ export default function CatRegistrationCelebration({
           className="relative px-6 pt-8 pb-5 overflow-hidden"
           style={{
             background: isFirstEver
-              ? "linear-gradient(135deg, #FFE3D5 0%, #E0E0E0 100%)"
+              ? "linear-gradient(135deg, #FFE3D5 0%, #FFCFB5 100%)"
               : "linear-gradient(135deg, #F5E6D8 0%, #E8D5C0 100%)",
           }}
         >
           <div className="absolute top-3 left-5 animate-pulse">
-            <Sparkles size={14} style={{ color: "#555555", opacity: 0.8 }} />
+            <Sparkles size={14} style={{ color: "#E8B040", opacity: 0.8 }} />
           </div>
           <div className="absolute top-10 right-8 animate-pulse" style={{ animationDelay: "0.3s" }}>
             <PawPrint size={12} style={{ color: "var(--color-primary)", opacity: 0.5 }} />
@@ -184,7 +184,7 @@ export default function CatRegistrationCelebration({
                 disabled={meal === "saving"}
                 className="w-full flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3 mb-3 text-[13px] font-bold text-white press disabled:opacity-60"
                 style={{
-                  background: "#111111",
+                  background: "#E88D5A",
                   boxShadow: "var(--shadow-fab)",
                 }}
               >
@@ -225,7 +225,7 @@ export default function CatRegistrationCelebration({
               className="w-full mt-2 py-2.5 rounded-2xl text-[13px] font-bold flex items-center justify-center gap-1.5 press disabled:opacity-60"
               style={{
                 backgroundColor: "#FEE500",
-                color: "#111111",
+                color: "#191919",
                 boxShadow: "var(--shadow-raised)",
               }}
             >

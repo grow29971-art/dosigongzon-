@@ -88,13 +88,13 @@ export default function CareLogCelebration({
             background: isFirstEver
               ? "linear-gradient(135deg, #FFE9C5 0%, #FFD89B 100%)"
               : streak >= 7
-                ? "linear-gradient(135deg, #FFE3D5 0%, #E0E0E0 100%)"
+                ? "linear-gradient(135deg, #FFE3D5 0%, #FFCFB5 100%)"
                 : "linear-gradient(135deg, #F5E6D8 0%, #E8D5C0 100%)",
           }}
         >
           {/* 반짝이 이펙트 */}
           <div className="absolute top-3 left-5 animate-pulse">
-            <Sparkles size={14} style={{ color: "#555555", opacity: 0.8 }} />
+            <Sparkles size={14} style={{ color: "#E8B040", opacity: 0.8 }} />
           </div>
           <div className="absolute top-8 right-10 animate-pulse" style={{ animationDelay: "0.3s" }}>
             <Sparkles size={10} style={{ color: "#D85555", opacity: 0.7 }} />
@@ -131,9 +131,9 @@ export default function CareLogCelebration({
           {committed ? (
             <div
               className="rounded-2xl px-4 py-3.5 text-center"
-              style={{ background: "#F2F2F2" }}
+              style={{ background: "#E8F4E8" }}
             >
-              <p className="text-[13px] font-bold" style={{ color: "#2A2A2A" }}>
+              <p className="text-[13px] font-bold" style={{ color: "#3F5B42" }}>
                 ✓ 내일 다시 뵈어요
               </p>
               <p className="text-[11px] font-semibold mt-0.5" style={{ color: "#5A7C5E" }}>
@@ -161,7 +161,7 @@ export default function CareLogCelebration({
                   type="button"
                   onClick={onClose}
                   className="px-4 py-3 rounded-2xl text-[13px] font-bold"
-                  style={{ background: "var(--color-gray-50)", color: "#8A8A8A" }}
+                  style={{ background: "var(--color-gray-50)", color: "#A38E7A" }}
                 >
                   닫기
                 </button>

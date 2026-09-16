@@ -454,7 +454,7 @@ export default function CheckoutPage() {
           {user && myCats.length > 0 && (
             <section
               className="p-4"
-              style={{ background: "var(--color-primary-softer)", borderRadius: "var(--radius-card)", border: "1px solid rgba(17,17,17,0.2)" }}
+              style={{ background: "var(--color-primary-softer)", borderRadius: "var(--radius-card)", border: "1px solid rgba(176,92,54,0.2)" }}
             >
               <p className="text-[13px] font-bold text-text-main mb-1">이 주문의 후원, 누구에게?</p>
               <p className="text-[11px] text-text-sub leading-relaxed mb-3">
@@ -546,7 +546,7 @@ export default function CheckoutPage() {
             <Link
               href="/"
               className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl press transition-transform"
-              style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(17, 17, 17,0.18)" }}
+              style={{ background: "var(--color-primary-soft)", border: "1px solid rgba(176, 92, 54,0.18)" }}
             >
               <PawPrint size={16} className="shrink-0" style={{ color: "var(--color-primary)" }} />
               <p className="text-[11px] font-bold leading-snug flex-1" style={{ color: "var(--color-primary-dark)" }}>

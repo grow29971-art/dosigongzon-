@@ -60,7 +60,7 @@ const CATEGORIES: CategoryCard[] = [
     title: "돌봄 부탁",
     subtitle: "입원 · 여행 때 밥자리 대타 요청",
     Icon: HandHeart,
-    iconBg: "#6B6B6B",
+    iconBg: "#4A7BA8",
     glowColor: "74,123,168",
     highlight: true,
   },
@@ -69,7 +69,7 @@ const CATEGORIES: CategoryCard[] = [
     title: "임보",
     subtitle: "임시보호 요청 · 제안",
     Icon: Home,
-    iconBg: "#111111",
+    iconBg: "#E88D5A",
     glowColor: "232,141,90",
   },
   {
@@ -85,7 +85,7 @@ const CATEGORIES: CategoryCard[] = [
     title: "중고마켓",
     subtitle: "용품 거래 · 무료 나눔",
     Icon: ShoppingBag,
-    iconBg: "#111111",
+    iconBg: "#48A59E",
     glowColor: "72,165,158",
   },
   {
@@ -93,7 +93,7 @@ const CATEGORIES: CategoryCard[] = [
     title: "자유게시판",
     subtitle: "일상 · 정보 · 수다",
     Icon: MessagesSquare,
-    iconBg: "#111111",
+    iconBg: "#8B65B8",
     glowColor: "139,101,184",
   },
   // 가상 카테고리 — 실제 PostCategory에는 없고 /community/popular로 라우팅
@@ -186,7 +186,7 @@ export default function CommunityPage() {
         headerEmoji="💬"
         title="이웃 길집사와 이야기 나눠요"
         headerBg="linear-gradient(160deg, #EDE7F6 0%, #E4DAF3 100%)"
-        accent="#111111"
+        accent="#8B65B8"
         accentDark="#6E4E96"
         items={[
           { emoji: "🐾", text: <>동네 돌봄 소식·꿀팁·질문을 자유롭게 나눠요.</> },
@@ -227,7 +227,7 @@ export default function CommunityPage() {
           description="긴급 구조·임보 요청·입양 공고·용품 나눔·일상 대화까지. 카테고리별로 구별되니 찾기 쉬워요. 우측 하단 + 버튼으로 글쓰기. 홈 맨 위에서 '국회 길고양이 청원'도 확인할 수 있어요."
           ctaLabel="자세한 사용법"
           ctaHref="/guide"
-          accent="#111111"
+          accent="#8B65B8"
         />
       </div>
 
@@ -243,7 +243,7 @@ export default function CommunityPage() {
           className="mb-4 flex items-center justify-center gap-2 py-2.5 rounded-2xl"
           style={{
             background: "var(--color-primary-softer)",
-            border: "1px solid rgba(17, 17, 17,0.12)",
+            border: "1px solid rgba(176, 92, 54,0.12)",
           }}
         >
           <Eye size={14} className="text-primary" />
@@ -303,7 +303,7 @@ export default function CommunityPage() {
             <h2 className="text-[17px] font-bold text-text-main tracking-tight">
               인기 글
             </h2>
-            <TrendingUp size={14} style={{ color: "#555555" }} />
+            <TrendingUp size={14} style={{ color: "#C9A961" }} />
           </div>
           <div className="space-y-2.5">
             {popularPosts.map((post) => {
@@ -354,7 +354,7 @@ export default function CommunityPage() {
       <Link
         href="/community/write"
         className="fixed bottom-24 right-5 w-14 h-14 rounded-full bg-primary flex items-center justify-center fab-shadow press-strong transition-transform z-40"
-        style={{ boxShadow: "0 4px 16px rgba(17, 17, 17,0.45), 0 0 0 4px #fff" }}
+        style={{ boxShadow: "0 4px 16px rgba(176, 92, 54,0.45), 0 0 0 4px #fff" }}
       >
         <Plus size={28} color="#fff" strokeWidth={2.5} />
       </Link>

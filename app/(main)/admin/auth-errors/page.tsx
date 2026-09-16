@@ -202,7 +202,7 @@ export default function AdminAuthErrorsPage() {
               onClick={() => setDays(d)}
               className="px-3 py-1.5 rounded-xl text-[11px] font-bold press-strong shrink-0"
               style={{
-                backgroundColor: days === d ? "#2A2A2A" : "rgba(255,255,255,0.95)",
+                backgroundColor: days === d ? "#2C2C2C" : "rgba(255,255,255,0.95)",
                 color: days === d ? "#fff" : "#555",
                 boxShadow: "var(--shadow-card)",
               }}
@@ -247,10 +247,10 @@ export default function AdminAuthErrorsPage() {
         }}
       >
         <div className="flex items-baseline justify-between mb-1">
-          <span className="text-[11px] font-bold" style={{ color: totalCount === 0 ? "#2A2A2A" : "#8B2F2F" }}>
+          <span className="text-[11px] font-bold" style={{ color: totalCount === 0 ? "#3F5B42" : "#8B2F2F" }}>
             최근 {days}일 실패
           </span>
-          <span className="text-[24px] font-bold" style={{ color: totalCount === 0 ? "#2A2A2A" : "#8B2F2F" }}>
+          <span className="text-[24px] font-bold" style={{ color: totalCount === 0 ? "#3F5B42" : "#8B2F2F" }}>
             {totalCount}
             <span className="text-[13px] font-semibold ml-0.5">건</span>
           </span>
@@ -285,7 +285,7 @@ export default function AdminAuthErrorsPage() {
           style={{ boxShadow: "var(--shadow-card)" }}
         >
           <div className="flex items-center gap-2 mb-3">
-            <AlertCircle size={13} style={{ color: "#111111" }} />
+            <AlertCircle size={13} style={{ color: "#E88D5A" }} />
             <h2 className="text-[13px] font-bold text-text-main">
               에러 코드 TOP
             </h2>
@@ -302,14 +302,14 @@ export default function AdminAuthErrorsPage() {
                   onClick={() => setCodeFilter(active ? null : s.error_code)}
                   className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl press text-left"
                   style={{
-                    backgroundColor: active ? "rgba(17, 17, 17,0.12)" : "#FFFFFF",
-                    border: active ? "1px solid rgba(17, 17, 17,0.3)" : "1px solid transparent",
+                    backgroundColor: active ? "rgba(176, 92, 54,0.12)" : "#F7F4EE",
+                    border: active ? "1px solid rgba(176, 92, 54,0.3)" : "1px solid transparent",
                   }}
                 >
                   <span
                     className="w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-bold shrink-0"
                     style={{
-                      backgroundColor: idx === 0 ? "#D85555" : idx === 1 ? "#111111" : "#555555",
+                      backgroundColor: idx === 0 ? "#D85555" : idx === 1 ? "#E88D5A" : "#C9A961",
                       color: "#fff",
                     }}
                   >

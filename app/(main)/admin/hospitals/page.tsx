@@ -301,7 +301,7 @@ export default function AdminHospitalsPage() {
             background: "#FFFFFF",
             borderRadius: "var(--radius-card)",
             boxShadow: "var(--shadow-card)",
-            border: "1.5px solid rgba(17, 17, 17,0.2)",
+            border: "1.5px solid rgba(176, 92, 54,0.2)",
           }}
         >
           <div className="flex items-center justify-between mb-3">
@@ -313,7 +313,7 @@ export default function AdminHospitalsPage() {
               className="w-7 h-7 rounded-lg flex items-center justify-center press-strong"
               style={{ backgroundColor: "var(--color-gray-100)" }}
             >
-              <X size={13} style={{ color: "#8A8A8A" }} strokeWidth={3} />
+              <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
             </button>
           </div>
 
@@ -385,7 +385,7 @@ export default function AdminHospitalsPage() {
             className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none mb-3 resize-none"
             style={{
               backgroundColor: "var(--color-gray-50)",
-              color: "#2A2A2A",
+              color: "#2A2A28",
               border: "1px solid var(--color-border)",
             }}
           />
@@ -427,7 +427,7 @@ export default function AdminHospitalsPage() {
               className="px-5 py-2.5 rounded-xl text-[13px] font-bold"
               style={{
                 backgroundColor: "var(--color-gray-100)",
-                color: "#8A8A8A",
+                color: "#A38E7A",
               }}
             >
               취소
@@ -479,10 +479,10 @@ export default function AdminHospitalsPage() {
                             background: "#FFFFFF",
                             borderRadius: "var(--radius-input)",
                             boxShadow: h.pinned
-                              ? "0 4px 14px rgba(17, 17, 17,0.12), 0 1px 2px rgba(0,0,0,0.02)"
+                              ? "0 4px 14px rgba(176, 92, 54,0.12), 0 1px 2px rgba(0,0,0,0.02)"
                               : "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)",
                             border: h.pinned
-                              ? "1.5px solid rgba(17, 17, 17,0.25)"
+                              ? "1.5px solid rgba(176, 92, 54,0.25)"
                               : "1px solid var(--color-divider)",
                           }}
                         >
@@ -582,7 +582,7 @@ function Input({
       className="w-full px-3 py-2 rounded-xl text-[13px] outline-none mb-1"
       style={{
         backgroundColor: "var(--color-gray-50)",
-        color: "#2A2A2A",
+        color: "#2A2A28",
         border: "1px solid var(--color-border)",
       }}
     />

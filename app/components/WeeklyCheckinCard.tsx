@@ -151,7 +151,7 @@ export default function WeeklyCheckinCard() {
                 className="flex-1 text-center text-[11px] font-bold py-1.5 rounded-lg tabular-nums"
                 style={{
                   background: got ? "rgba(34,163,102,0.12)" : reached ? "rgba(255,169,39,0.16)" : "var(--color-surface-alt)",
-                  color: got ? "#111111" : reached ? "#E8930C" : "var(--color-text-muted)",
+                  color: got ? "#22A366" : reached ? "#E8930C" : "var(--color-text-muted)",
                 }}
               >
                 {got ? "✓ " : ""}{m.days}일 {m.points}P
@@ -172,7 +172,7 @@ export default function WeeklyCheckinCard() {
       </div>
 
       {justGranted > 0 && (
-        <p className="text-[11px] font-bold text-center mt-2" style={{ color: "#111111" }}>
+        <p className="text-[11px] font-bold text-center mt-2" style={{ color: "#22A366" }}>
           🎉 {justGranted}P 적립! 쇼핑에서 1P=1원으로 쓸 수 있어요
         </p>
       )}

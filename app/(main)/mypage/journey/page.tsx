@@ -14,14 +14,14 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 const CAT_COLOR: Record<MilestoneCategory, { bg: string; ring: string; text: string }> = {
-  join:     { bg: "#E8ECE5", ring: "#5BA876", text: "#2A2A2A" },
-  cat:      { bg: "#F2F2F2", ring: "#111111", text: "#7A4A2A" },
-  care:     { bg: "#FFF5E0", ring: "#555555", text: "#8C6A1F" },
-  comment:  { bg: "#F0E8F8", ring: "#111111", text: "#5A3F7E" },
-  post:     { bg: "#E5EDF5", ring: "#6B6B6B", text: "#2A4A6B" },
-  received: { bg: "#FBE8EE", ring: "#111111", text: "#7A3E54" },
-  social:   { bg: "#E0E0E0", ring: "#111111", text: "#7A4524" },
-  region:   { bg: "#E8F0E8", ring: "#555555", text: "#2A2A2A" },
+  join:     { bg: "#E8ECE5", ring: "#5BA876", text: "#3F5B42" },
+  cat:      { bg: "#FFF1E6", ring: "#B05C36", text: "#7A4A2A" },
+  care:     { bg: "#FFF5E0", ring: "#E8B040", text: "#8C6A1F" },
+  comment:  { bg: "#F0E8F8", ring: "#8B65B8", text: "#5A3F7E" },
+  post:     { bg: "#E5EDF5", ring: "#4A7BA8", text: "#2A4A6B" },
+  received: { bg: "#FBE8EE", ring: "#D4708F", text: "#7A3E54" },
+  social:   { bg: "#FCEFD9", ring: "#E88D5A", text: "#7A4524" },
+  region:   { bg: "#E8F0E8", ring: "#6B8E6F", text: "#3F5B42" },
   streak:   { bg: "#FBE5DC", ring: "#D85555", text: "#7A2A2A" },
 };
 
@@ -41,12 +41,12 @@ export default async function JourneyPage() {
   const items = await getMyJourneyServer(user.id);
 
   return (
-    <div className="pb-24 min-h-screen" style={{ background: "#FFFFFF" }}>
+    <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
       {/* 헤더 */}
       <div
         className="px-5 pt-12 pb-7"
         style={{
-          background: "#F2F2F2",
+          background: "#FFF8F2",
         }}
       >
         <Link
@@ -79,7 +79,7 @@ export default async function JourneyPage() {
             {/* 세로 선 */}
             <div
               className="absolute left-[20px] top-2 bottom-2 w-[2px] rounded-full"
-              style={{ background: "#11111133" }}
+              style={{ background: "#B05C3633" }}
             />
 
             <div className="space-y-4">

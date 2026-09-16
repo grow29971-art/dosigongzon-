@@ -341,7 +341,7 @@ export default function MemorialPage() {
             <Link
               href="/map"
               className="inline-flex items-center justify-center h-[46px] px-6 rounded-2xl mt-7 text-[15px] font-bold"
-              style={{ background: "rgba(255,255,255,0.92)", color: "#2A2A2A" }}
+              style={{ background: "rgba(255,255,255,0.92)", color: "#3a2c4d" }}
             >
               지도로 돌아가기
             </Link>
@@ -433,7 +433,7 @@ export default function MemorialPage() {
                     className="flex-1 h-[42px] rounded-xl flex items-center justify-center gap-1.5 text-[15px] font-semibold press-strong transition-transform"
                     style={{
                       background: flowered.has(cat.id) ? "rgba(255,233,168,0.92)" : "rgba(255,255,255,0.1)",
-                      color: flowered.has(cat.id) ? "#2A2A2A" : "rgba(255,255,255,0.8)",
+                      color: flowered.has(cat.id) ? "#3a2c4d" : "rgba(255,255,255,0.8)",
                     }}
                   >
                     <Flower2 size={15} />

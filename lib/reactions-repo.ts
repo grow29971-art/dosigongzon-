@@ -15,9 +15,9 @@ export const REACTION_EMOJIS: {
   color: string;
 }[] = [
   { key: "heart",  emoji: "❤️", label: "응원",    color: "#E86B8C" },
-  { key: "sad",    emoji: "🥺", label: "안타까워", color: "#6B6B6B" },
-  { key: "fire",   emoji: "💪", label: "힘내요",   color: "#111111" },
-  { key: "thanks", emoji: "🙏", label: "고마워",   color: "#555555" },
+  { key: "sad",    emoji: "🥺", label: "안타까워", color: "#8B7562" },
+  { key: "fire",   emoji: "💪", label: "힘내요",   color: "#E88D5A" },
+  { key: "thanks", emoji: "🙏", label: "고마워",   color: "#6B8E6F" },
 ];
 
 export interface ReactionSummary {

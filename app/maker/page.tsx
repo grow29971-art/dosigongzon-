@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 
 export default function MakerPage() {
   return (
-    <div className="min-h-dvh pb-16" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-dvh pb-16" style={{ background: "#F7F4EE" }}>
       <div className="px-4 pt-12 pb-2 flex items-center gap-2">
         <Link
           href="/"
@@ -81,8 +81,8 @@ export default function MakerPage() {
         <div
           className="rounded-3xl p-5 mb-3"
           style={{
-            background: "#F2F2F2",
-            border: "1px solid rgba(17, 17, 17,0.20)",
+            background: "#FFF9F2",
+            border: "1px solid rgba(176, 92, 54,0.20)",
           }}
         >
           <div className="flex items-center gap-1.5 mb-3">
@@ -109,8 +109,8 @@ export default function MakerPage() {
           }}
         >
           <div className="flex items-center gap-1.5 mb-3">
-            <Eye size={14} style={{ color: "#2A2A2A" }} />
-            <span className="text-[11px] font-bold tracking-[0.18em]" style={{ color: "#2A2A2A" }}>
+            <Eye size={14} style={{ color: "#4F6B53" }} />
+            <span className="text-[11px] font-bold tracking-[0.18em]" style={{ color: "#4F6B53" }}>
               VISION
             </span>
           </div>
@@ -148,7 +148,7 @@ export default function MakerPage() {
           <ValueCard
             n={2}
             icon={<Wind size={16} color="#FFFFFF" />}
-            accent="#6B6B6B"
+            accent="#4A7BA8"
             accentDark="#3A6086"
             title="자유와 몰입"
             body="새로운 생각을 가로막는 고정 관념·관습·틀에서 벗어나 자연의 일부가 되어 한계를 초월하고 자유롭게 사고하며, 자연의 천재지변과 같이 매섭게 행동한다."
@@ -156,8 +156,8 @@ export default function MakerPage() {
           <ValueCard
             n={3}
             icon={<HandHeart size={16} color="#FFFFFF" />}
-            accent="#555555"
-            accentDark="#2A2A2A"
+            accent="#6B8E6F"
+            accentDark="#4F6B53"
             title="봉사"
             body="우리는 지구촌 형제들의 보급선이다. 우리는 모두에게 형제를 대하는 마음으로 서비스와 제품을 제공한다."
           />
@@ -173,8 +173,8 @@ export default function MakerPage() {
         <div
           className="rounded-3xl p-5"
           style={{
-            background: "#F2F2F2",
-            border: "1px solid rgba(17, 17, 17,0.20)",
+            background: "#FFF9F2",
+            border: "1px solid rgba(176, 92, 54,0.20)",
           }}
         >
           <p className="text-[13px] leading-[2] text-text-sub">
@@ -251,7 +251,7 @@ export default function MakerPage() {
       {/* 운영 원칙 — 자비 운영 */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <ShieldCheck size={14} style={{ color: "#2A2A2A" }} />
+          <ShieldCheck size={14} style={{ color: "#4F6B53" }} />
           <h2 className="text-[15px] font-bold text-text-main">어떻게 굴러가나</h2>
         </div>
         <div
@@ -317,7 +317,7 @@ export default function MakerPage() {
       {/* 연락처 / 제휴 */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <Coffee size={14} style={{ color: "#555555" }} />
+          <Coffee size={14} style={{ color: "#8B5A3C" }} />
           <h2 className="text-[15px] font-bold text-text-main">제휴·문의·차 한 잔</h2>
         </div>
         <div className="bg-white rounded-3xl p-5" style={{ boxShadow: "var(--shadow-card)" }}>
@@ -368,8 +368,8 @@ function SkillCard({ icon, title, sub }: { icon: React.ReactNode; title: string;
     <div
       className="rounded-xl p-3"
       style={{
-        background: "#F2F2F2",
-        border: "1px solid rgba(17, 17, 17,0.18)",
+        background: "#FFF9F2",
+        border: "1px solid rgba(176, 92, 54,0.18)",
       }}
     >
       <div className="flex items-center gap-1.5 mb-1" style={{ color: "var(--color-primary-dark)" }}>

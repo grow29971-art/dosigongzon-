@@ -154,7 +154,7 @@ export default function ReportModal({
             className="w-7 h-7 rounded-lg flex items-center justify-center press-strong"
             style={{ backgroundColor: "var(--color-gray-100)" }}
           >
-            <X size={13} style={{ color: "#8A8A8A" }} strokeWidth={3} />
+            <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
           </button>
         </div>
 
@@ -164,7 +164,7 @@ export default function ReportModal({
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
               style={{
-                background: "#555555",
+                background: "#6B8E6F",
                 boxShadow: "var(--shadow-fab)",
               }}
             >
@@ -217,7 +217,7 @@ export default function ReportModal({
                 className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none resize-none"
                 style={{
                   backgroundColor: "var(--color-gray-50)",
-                  color: "#2A2A2A",
+                  color: "#2A2A28",
                   border: "1px solid var(--color-border)",
                 }}
               />
@@ -267,11 +267,11 @@ export default function ReportModal({
                     style={{ backgroundColor: "var(--color-gray-50)", border: "1.5px dashed #C3BCB3" }}
                     aria-label="사진 추가"
                   >
-                    <Camera size={16} style={{ color: "#8A8A8A" }} />
+                    <Camera size={16} style={{ color: "#A38E7A" }} />
                   </button>
                 )}
               </div>
-              <p className="text-[11px] mt-1.5 leading-relaxed" style={{ color: "#8A8A8A" }}>
+              <p className="text-[11px] mt-1.5 leading-relaxed" style={{ color: "#A38E7A" }}>
                 사진 속 위치정보(EXIF)는 자동으로 제거돼요 · 관리자만 열람 · 90일 후 자동 파기
               </p>
             </div>
@@ -305,7 +305,7 @@ export default function ReportModal({
                         {authorName ? `${authorName}님 차단` : "이 사용자 차단"}
                       </span>
                     </div>
-                    <p className="text-[11px] mt-0.5" style={{ color: "#8A8A8A" }}>
+                    <p className="text-[11px] mt-0.5" style={{ color: "#A38E7A" }}>
                       서로 메시지·댓글이 안 보여요. 마이페이지에서 해제 가능.
                     </p>
                   </div>
@@ -327,7 +327,7 @@ export default function ReportModal({
                 className="flex-1 py-3 rounded-xl text-[13px] font-bold"
                 style={{
                   backgroundColor: "var(--color-gray-100)",
-                  color: "#8A8A8A",
+                  color: "#A38E7A",
                 }}
               >
                 취소

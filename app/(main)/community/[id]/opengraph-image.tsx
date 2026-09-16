@@ -33,9 +33,9 @@ export default async function PostOGImage({ params }: { params: Params }) {
           width: "100%",
           height: "100%",
           display: "flex",
-          background: `linear-gradient(135deg, ${cat.color}08 0%, #F2F2F2 60%, #EADFCB 100%)`,
+          background: `linear-gradient(135deg, ${cat.color}08 0%, #F6EFE3 60%, #EADFCB 100%)`,
           fontFamily: "sans-serif",
-          color: "#2A2A2A",
+          color: "#2C2C2C",
           position: "relative",
         }}
       >
@@ -80,7 +80,7 @@ export default async function PostOGImage({ params }: { params: Params }) {
                   width: 44,
                   height: 44,
                   borderRadius: 14,
-                  background: "#111111",
+                  background: "#B05C36",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -89,7 +89,7 @@ export default async function PostOGImage({ params }: { params: Params }) {
               >
                 🐾
               </div>
-              <span style={{ fontSize: 24, fontWeight: 900, color: "#2A2A2A", letterSpacing: -0.5 }}>
+              <span style={{ fontSize: 24, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}>
                 도시공존 커뮤니티
               </span>
             </div>
@@ -179,7 +179,7 @@ export default async function PostOGImage({ params }: { params: Params }) {
                   border: "2px solid rgba(0,0,0,0.06)",
                   fontSize: 20,
                   fontWeight: 800,
-                  color: "#555555",
+                  color: "#8B5A3C",
                   display: "flex",
                   alignItems: "center",
                   gap: 6,

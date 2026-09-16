@@ -84,14 +84,14 @@ export default function MapChatGuideModal() {
         >
           <div
             className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: "#111111" }}
+            style={{ background: "#48A59E" }}
           >
             <Globe size={18} color="#FFFFFF" strokeWidth={2.4} />
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-[15px] font-bold text-text-main">전체 채팅</p>
             <p className="text-[13px] text-text-sub mt-1 leading-relaxed">
-              <span className="font-bold" style={{ color: "#111111" }}>전국 어디서든</span> 모든 사용자가 함께 대화하는 방. 길고양이 정보 공유, 응급 상황 도움 요청, 소소한 일상까지.
+              <span className="font-bold" style={{ color: "#48A59E" }}>전국 어디서든</span> 모든 사용자가 함께 대화하는 방. 길고양이 정보 공유, 응급 상황 도움 요청, 소소한 일상까지.
             </p>
           </div>
         </div>
@@ -102,7 +102,7 @@ export default function MapChatGuideModal() {
             className="rounded-2xl p-3.5 mb-4 flex items-start gap-3"
             style={{
               background: "var(--color-primary-softer)",
-              border: "1px solid rgba(17, 17, 17,0.18)",
+              border: "1px solid rgba(176, 92, 54,0.18)",
             }}
           >
             <div

@@ -2,8 +2,7 @@
 
 // 공존 디자인 시스템 — 버튼 (2026-07-15)
 // 토스식 절제된 버튼 문법: 채움(primary) / 옅은 채움(weak) / 회색(neutral) / 텍스트(text).
-// 프레스 피드백은 공용 .press 유틸. 라운드는 radius-input 토큰(시빅 포스터 무드에선 0) — pill 금지.
-// 2026-09-16 대안 C: primary=잉크 검정/흰 글자, weak=라임 틴트/잉크 글자, text=잉크.
+// 프레스 피드백은 공용 .press 유틸. 라운드는 radius-input(14px) — pill 금지(시그니처).
 
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
@@ -19,9 +18,9 @@ interface UIButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const VARIANT_STYLE: Record<Variant, React.CSSProperties> = {
   primary: { background: "var(--color-primary)", color: "#fff" },
-  weak: { background: "var(--color-lime-soft)", color: "var(--color-text-main)" },
+  weak: { background: "var(--color-primary-soft)", color: "var(--color-primary-dark)" },
   neutral: { background: "var(--color-surface-alt)", color: "var(--color-text-sub)" },
-  text: { background: "transparent", color: "var(--color-text-main)" },
+  text: { background: "transparent", color: "var(--color-primary-dark)" },
   danger: { background: "rgba(240,68,82,0.08)", color: "var(--color-error)" },
 };
 

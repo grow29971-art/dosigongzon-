@@ -39,11 +39,11 @@ export default async function Event1000Banner() {
         className="rounded-2xl overflow-hidden"
         style={{
           background: reached
-            ? "linear-gradient(135deg, #555555 0%, #2A2A2A 100%)"
+            ? "linear-gradient(135deg, #6B8E6F 0%, #4F6B53 100%)"
             : "linear-gradient(135deg, #5C93D8 0%, var(--color-primary) 55%, var(--color-primary-dark) 100%)",
           boxShadow: reached
             ? "0 12px 32px rgba(107,142,111,0.30)"
-            : "0 12px 32px rgba(17, 17, 17,0.30)",
+            : "0 12px 32px rgba(176, 92, 54,0.30)",
         }}
       >
         <div className="p-5 text-white">

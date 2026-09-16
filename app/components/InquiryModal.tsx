@@ -69,7 +69,7 @@ export default function InquiryModal({ open, onClose }: Props) {
             <div
               className="w-8 h-8 rounded-xl flex items-center justify-center"
               style={{
-                background: "#6B6B6B",
+                background: "#4A7BA8",
                 boxShadow: "var(--shadow-raised)",
               }}
             >
@@ -85,7 +85,7 @@ export default function InquiryModal({ open, onClose }: Props) {
             className="w-7 h-7 rounded-lg flex items-center justify-center press-strong"
             style={{ backgroundColor: "var(--color-gray-100)" }}
           >
-            <X size={13} style={{ color: "#8A8A8A" }} strokeWidth={3} />
+            <X size={13} style={{ color: "#A38E7A" }} strokeWidth={3} />
           </button>
         </div>
 
@@ -94,7 +94,7 @@ export default function InquiryModal({ open, onClose }: Props) {
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
               style={{
-                background: "#555555",
+                background: "#6B8E6F",
                 boxShadow: "var(--shadow-fab)",
               }}
             >
@@ -123,7 +123,7 @@ export default function InquiryModal({ open, onClose }: Props) {
                 className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none"
                 style={{
                   backgroundColor: "var(--color-gray-50)",
-                  color: "#2A2A2A",
+                  color: "#2A2A28",
                   border: "1px solid var(--color-border)",
                 }}
               />
@@ -143,7 +143,7 @@ export default function InquiryModal({ open, onClose }: Props) {
                 className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none resize-none"
                 style={{
                   backgroundColor: "var(--color-gray-50)",
-                  color: "#2A2A2A",
+                  color: "#2A2A28",
                   border: "1px solid var(--color-border)",
                 }}
               />
@@ -166,7 +166,7 @@ export default function InquiryModal({ open, onClose }: Props) {
                 className="flex-1 py-3 rounded-xl text-[13px] font-bold"
                 style={{
                   backgroundColor: "var(--color-gray-100)",
-                  color: "#8A8A8A",
+                  color: "#A38E7A",
                 }}
               >
                 취소
@@ -176,7 +176,7 @@ export default function InquiryModal({ open, onClose }: Props) {
                 disabled={submitting || !subject.trim() || !body.trim()}
                 className="flex-1 py-3 rounded-xl text-[13px] font-bold text-white disabled:opacity-40 flex items-center justify-center gap-1.5"
                 style={{
-                  background: "#6B6B6B",
+                  background: "#4A7BA8",
                   boxShadow: "var(--shadow-fab)",
                 }}
               >

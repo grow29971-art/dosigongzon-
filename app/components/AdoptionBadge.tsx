@@ -87,8 +87,8 @@ function darken(hex: string): string {
   // 단순화된 darker 버전 — 정교한 색상 조정은 tailwind 토큰으로 대체 가능
   const map: Record<string, string> = {
     "var(--color-primary)": "var(--color-primary-dark)",
-    "#6B6B6B": "#3A6B96",
-    "#111111": "#6F4D97",
+    "#4A7BA8": "#3A6B96",
+    "#8B65B8": "#6F4D97",
   };
   return map[hex] ?? hex;
 }

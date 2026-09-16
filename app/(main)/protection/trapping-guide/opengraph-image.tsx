@@ -11,10 +11,10 @@ export default function TrappingGuideOG() {
     (
       <GuideOGTemplate
         badge="🪤 TNR 지원"
-        badgeColor="#111111"
+        badgeColor="#8B65B8"
         title="길고양이 포획 가이드"
         highlightText="포획"
-        highlightColor="#111111"
+        highlightColor="#8B65B8"
         subtitle="TNR을 위한 포획 도구 선택, 미끼 놓기, 안전 대기, 스트레스 최소화 원칙까지."
         tags={["🪤 포획틀", "🍗 미끼", "⏱️ 대기", "✂️ TNR"]}
       />

@@ -12,11 +12,11 @@ export const contentType = "image/png";
 type Params = Promise<{ id: string }>;
 
 const BADGE_LABELS: Record<string, { label: string; color: string }> = {
-  notice: { label: "공지", color: "#111111" },
+  notice: { label: "공지", color: "#B05C36" },
   event: { label: "행사", color: "#5BA876" },
-  policy: { label: "정책", color: "#6B6B6B" },
+  policy: { label: "정책", color: "#4A7BA8" },
   rescue: { label: "구조", color: "#D85555" },
-  news: { label: "뉴스", color: "#111111" },
+  news: { label: "뉴스", color: "#8B65B8" },
 };
 
 export default async function NewsOGImage({ params }: { params: Params }) {
@@ -47,9 +47,9 @@ export default async function NewsOGImage({ params }: { params: Params }) {
           width: "100%",
           height: "100%",
           display: "flex",
-          background: "linear-gradient(135deg, #F2F2F2 0%, #EADFCB 55%, #DAC4A3 100%)",
+          background: "linear-gradient(135deg, #F6EFE3 0%, #EADFCB 55%, #DAC4A3 100%)",
           fontFamily: "sans-serif",
-          color: "#2A2A2A",
+          color: "#2C2C2C",
           position: "relative",
         }}
       >
@@ -61,7 +61,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
             width: 420,
             height: 420,
             borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(17, 17, 17,0.25) 0%, rgba(17, 17, 17,0) 70%)",
+            background: "radial-gradient(circle, rgba(176, 92, 54,0.25) 0%, rgba(176, 92, 54,0) 70%)",
           }}
         />
 
@@ -125,7 +125,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
                 width: 44,
                 height: 44,
                 borderRadius: 14,
-                background: "#111111",
+                background: "#B05C36",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -134,7 +134,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
             >
               📰
             </div>
-            <span style={{ fontSize: 24, fontWeight: 900, color: "#2A2A2A", letterSpacing: -0.5 }}>
+            <span style={{ fontSize: 24, fontWeight: 900, color: "#2C2C2C", letterSpacing: -0.5 }}>
               도시공존 소식
             </span>
             <div
@@ -161,7 +161,7 @@ export default async function NewsOGImage({ params }: { params: Params }) {
                 fontWeight: 900,
                 lineHeight: 1.15,
                 letterSpacing: -2,
-                color: "#2A2A2A",
+                color: "#2C2C2C",
                 display: "-webkit-box",
                 WebkitLineClamp: 3,
                 WebkitBoxOrient: "vertical",
@@ -196,8 +196,8 @@ export default async function NewsOGImage({ params }: { params: Params }) {
                   alignItems: "center",
                   padding: "8px 16px",
                   borderRadius: 999,
-                  background: "rgba(17, 17, 17,0.18)",
-                  color: "#555555",
+                  background: "rgba(176, 92, 54,0.18)",
+                  color: "#8B5A3C",
                   fontSize: 20,
                   fontWeight: 700,
                 }}
@@ -212,10 +212,10 @@ export default async function NewsOGImage({ params }: { params: Params }) {
                 padding: "8px 18px",
                 borderRadius: 999,
                 background: "rgba(255,255,255,0.85)",
-                color: "#555555",
+                color: "#8B5A3C",
                 fontSize: 20,
                 fontWeight: 800,
-                border: "2px solid rgba(17, 17, 17,0.3)",
+                border: "2px solid rgba(176, 92, 54,0.3)",
                 marginLeft: "auto",
               }}
             >

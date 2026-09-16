@@ -66,7 +66,7 @@ export default function ShareGuideButton({ slug, title, description, accent }: P
       className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl press transition-transform disabled:opacity-70"
       style={{
         backgroundColor: status === "idle" ? "#FEE500" : "var(--color-sage-soft)",
-        color: status === "idle" ? "#111111" : "#2E7D32",
+        color: status === "idle" ? "#191919" : "#2E7D32",
         boxShadow: status === "idle"
           ? `0 4px 14px rgba(254,229,0,0.35)${accent ? `, 0 0 0 1px ${accent}22` : ""}`
           : "0 2px 8px rgba(46,125,50,0.18)",

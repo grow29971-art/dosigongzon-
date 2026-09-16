@@ -78,11 +78,11 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={thumb} alt={c.name} loading="lazy" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-2xl" style={{ background: "#EBEBEB" }}>🐱</div>
+                  <div className="w-full h-full flex items-center justify-center text-2xl" style={{ background: "#F4E6CE" }}>🐱</div>
                 )}
               </Link>
               <div className="flex items-center justify-between px-2 py-1.5 gap-1">
-                <span className="text-[11px] font-bold truncate" style={{ color: "#2A2A2A" }}>{c.name}</span>
+                <span className="text-[11px] font-bold truncate" style={{ color: "#2A2A28" }}>{c.name}</span>
                 <button
                   type="button"
                   onClick={() => cheer(c.id)}

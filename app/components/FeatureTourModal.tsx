@@ -42,7 +42,7 @@ const STEPS: TourStep[] = [
   },
   {
     Icon: PawPrint,
-    color: "#111111",
+    color: "#E88D5A",
     // 여기가 "핵심 기능"이라고 자기 소개하는 자리다. 신규 유저 전원이 본다.
     // 원래 "포획해서 카드 만들기"였는데, 이 앱의 핵심은 돌봄 기록이다
     // (30일 care_logs 120행 vs 카드 관련 행위 실측 미미). 자기 소개를 사실과 맞춘다. (2026-08-09)
@@ -60,14 +60,14 @@ const STEPS: TourStep[] = [
   },
   {
     Icon: MapPin,
-    color: "#6B6B6B",
+    color: "#5A8AC4",
     eyebrow: "지도",
     title: "우리 동네 지도",
     body: "내 주변에 어떤 아이들이 있는지, 누가 어떤 소식을 남겼는지 지도 하나로 볼 수 있어요.",
   },
   {
     Icon: Bot,
-    color: "#111111",
+    color: "#8B65B8",
     eyebrow: "AI 집사",
     title: "궁금할 땐 AI 집사에게",
     body: "새끼를 발견했거나 다친 아이를 만났을 때, 응급처치부터 TNR까지 바로 물어보세요.",
@@ -75,7 +75,7 @@ const STEPS: TourStep[] = [
   // "등급 & 성장" 슬라이드 삭제 — 카드 시스템 폐지(2026-08-27)로 존재하지 않는 기능 안내였음 (8/29 버그 사냥 P2)
   {
     Icon: Users,
-    color: "#555555",
+    color: "#6B8E6F",
     eyebrow: "커뮤니티",
     title: "동네 돌봄러들과 함께",
     body: "같은 동네 돌봄러들과 소식을 나누고, 도움이 필요할 때 서로 힘이 되어줘요.",
@@ -92,21 +92,21 @@ const STEPS: TourStep[] = [
 const CORE_JOURNEY_STEPS: TourStep[] = [
   {
     Icon: MapPin,
-    color: "#6B6B6B",
+    color: "#5A8AC4",
     eyebrow: "1 · 발견",
     title: "우리 동네 아이를 찾아요",
     body: "지도에서 가까운 아이와 최근 돌봄 소식을 먼저 확인해요.",
   },
   {
     Icon: PawPrint,
-    color: "#111111",
+    color: "#E88D5A",
     eyebrow: "2 · 돌봄",
     title: "오늘 필요한 돌봄을 기록해요",
     body: "밥, 물, 건강 상태를 남기면 이웃에게 이어지고, 민원·신고 때 쓰는 증빙 문서로도 만들어져요.",
   },
   {
     Icon: Users,
-    color: "#555555",
+    color: "#6B8E6F",
     eyebrow: "3 · 연결",
     title: "혼자가 아닌 돌봄을 시작해요",
     body: "활동 지역을 정하고 같은 동네 이웃과 안전하게 돌봄을 이어가요.",

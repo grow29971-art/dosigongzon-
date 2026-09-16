@@ -147,7 +147,7 @@ export default function PendingCareHandoff() {
               // eslint-disable-next-line @next/next/no-img-element
               <img src={thumb} alt={cat.name} className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-2xl" style={{ background: "#EBEBEB" }}>
+              <div className="w-full h-full flex items-center justify-center text-2xl" style={{ background: "#F4E6CE" }}>
                 🐱
               </div>
             )}

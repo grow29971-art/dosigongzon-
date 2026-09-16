@@ -154,7 +154,7 @@ export default function AchievementToast({
           style={{ background: "var(--color-gray-50)" }}
           aria-label="닫기"
         >
-          <X size={13} style={{ color: "#8A8A8A" }} />
+          <X size={13} style={{ color: "#A38E7A" }} />
         </button>
       </div>
     </div>

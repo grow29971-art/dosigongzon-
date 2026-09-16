@@ -307,13 +307,13 @@ export default function CircleChatPage() {
   }
 
   return (
-    <div className="fixed inset-0 flex flex-col" style={{ background: "#FFFFFF" }}>
+    <div className="fixed inset-0 flex flex-col" style={{ background: "#F7F4EE" }}>
       {/* 헤더 */}
       <div
         className="px-4 pt-3 pb-3 flex items-center gap-2 border-b"
         style={{
           background: "#FFFFFF",
-          borderColor: "#E0E0E0",
+          borderColor: "#E5E0D6",
           paddingTop: "max(12px, env(safe-area-inset-top))",
         }}
       >
@@ -376,8 +376,8 @@ export default function CircleChatPage() {
                           className={`px-3 py-2 rounded-2xl text-[15px] leading-relaxed whitespace-pre-wrap break-words ${isMine ? "rounded-tr-sm" : "rounded-tl-sm"}`}
                           style={{
                             background: isMine ? "var(--color-primary)" : "#FFFFFF",
-                            color: isMine ? "#FFFFFF" : "#2A2A2A",
-                            boxShadow: isMine ? "0 2px 6px rgba(17, 17, 17,0.25)" : "0 1px 3px rgba(0,0,0,0.05)",
+                            color: isMine ? "#FFFFFF" : "#3D2F25",
+                            boxShadow: isMine ? "0 2px 6px rgba(176, 92, 54,0.25)" : "0 1px 3px rgba(0,0,0,0.05)",
                           }}
                         >
                           {m.body}
@@ -410,7 +410,7 @@ export default function CircleChatPage() {
         className="px-3 py-2.5 border-t"
         style={{
           background: "#FFFFFF",
-          borderColor: "#E0E0E0",
+          borderColor: "#E5E0D6",
           paddingBottom: "max(10px, env(safe-area-inset-bottom))",
         }}
       >
@@ -426,7 +426,7 @@ export default function CircleChatPage() {
               type="button"
               onClick={handleClearPhoto}
               className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center"
-              style={{ background: "#2A2A2A", color: "#fff" }}
+              style={{ background: "#2A2A28", color: "#fff" }}
               aria-label="사진 제거"
             >
               <X size={11} strokeWidth={3} />
@@ -446,7 +446,7 @@ export default function CircleChatPage() {
             onClick={() => fileInputRef.current?.click()}
             disabled={sending || !!photoPreview}
             className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 press-strong disabled:opacity-40"
-            style={{ background: "var(--color-gray-50)", color: "#6B6B6B" }}
+            style={{ background: "var(--color-gray-50)", color: "#8B7562" }}
             aria-label="사진 첨부"
           >
             <ImageIcon size={17} />
@@ -462,7 +462,7 @@ export default function CircleChatPage() {
             maxLength={1000}
             disabled={sending}
             className="flex-1 rounded-2xl px-4 py-2.5 text-[15px] outline-none disabled:opacity-50"
-            style={{ background: "var(--color-gray-50)", color: "#2A2A2A" }}
+            style={{ background: "var(--color-gray-50)", color: "#2A2A28" }}
           />
           <button
             onClick={handleSend}

@@ -192,7 +192,7 @@ export default async function AboutPage() {
         </div>
         <div
           className="rounded-2xl p-4 mt-3 flex items-start gap-2.5"
-          style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(17, 17, 17,0.20)" }}
+          style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(176, 92, 54,0.20)" }}
         >
           <Heart size={15} style={{ color: "var(--color-primary)" }} className="shrink-0 mt-0.5" />
           <p className="text-[13px] leading-relaxed text-text-sub">
@@ -219,7 +219,7 @@ export default async function AboutPage() {
             desc="건강 상태가 위험한 아이는 즉시 동네 이웃에게 공유되어 빠른 구조로 이어집니다."
           />
           <FeatureRow
-            icon={<Users size={18} style={{ color: "#6B6B6B" }} />}
+            icon={<Users size={18} style={{ color: "#4A7BA8" }} />}
             title="동네 커뮤니티"
             desc="길집사끼리 실시간 채팅, 커뮤니티 게시판, 1:1 쪽지로 정보와 안부를 나눠요."
           />
@@ -240,7 +240,7 @@ export default async function AboutPage() {
           className="rounded-3xl p-5 mb-3"
           style={{
             background: "var(--color-primary-softer)",
-            border: "1px solid rgba(17, 17, 17,0.20)",
+            border: "1px solid rgba(176, 92, 54,0.20)",
           }}
         >
           <div className="flex items-center gap-1.5 mb-3">
@@ -294,7 +294,7 @@ export default async function AboutPage() {
           <ValueCard
             n={2}
             icon={<Wind size={16} color="#FFFFFF" />}
-            accent="#6B6B6B"
+            accent="#4A7BA8"
             accentDark="#3A6086"
             title="자유와 몰입"
             body="새로운 생각을 가로막는 고정 관념·관습·틀에서 벗어나 자연의 일부가 되어 한계를 초월하고 자유롭게 사고하며, 자연의 천재지변과 같이 매섭게 행동한다."
@@ -340,13 +340,13 @@ export default async function AboutPage() {
           className="rounded-3xl p-5"
           style={{
             background: "rgba(74,123,168,0.08)",
-            border: "1px solid rgba(17, 17, 17,0.20)",
+            border: "1px solid rgba(176, 92, 54,0.20)",
           }}
         >
           <div className="flex items-center gap-3 mb-3">
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "rgba(17, 17, 17,0.15)" }}
+              style={{ background: "rgba(176, 92, 54,0.15)" }}
             >
               <ShieldCheck size={22} style={{ color: "var(--color-primary-dark)" }} />
             </div>
@@ -396,13 +396,13 @@ export default async function AboutPage() {
           className="rounded-3xl p-5"
           style={{
             background: "var(--color-primary-softer)",
-            border: "1px solid rgba(17, 17, 17,0.20)",
+            border: "1px solid rgba(176, 92, 54,0.20)",
           }}
         >
           <div className="flex items-center gap-3 mb-3">
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "rgba(17, 17, 17,0.15)" }}
+              style={{ background: "rgba(176, 92, 54,0.15)" }}
             >
               <Code2 size={22} style={{ color: "var(--color-primary-dark)" }} />
             </div>
@@ -501,7 +501,7 @@ export default async function AboutPage() {
         <div className="space-y-2.5">
           <ProductCard
             icon={<Home size={22} color="#FFFFFF" />}
-            accent="#6B6B6B"
+            accent="#4A7BA8"
             accentDark="#3A6086"
             badge="IoT · 개발 중"
             title="IoT 스마트쉼터"
@@ -524,7 +524,7 @@ export default async function AboutPage() {
           />
           <ProductCard
             icon={<Flame size={22} color="#FFFFFF" />}
-            accent="#111111"
+            accent="#B05C36"
             accentDark="var(--color-primary-dark)"
             badge="양산 준비 중"
             title="고양이난로"
@@ -580,7 +580,7 @@ export default async function AboutPage() {
             desc="급식소 정확 좌표는 클라이언트로 절대 내려가지 않습니다. Supabase Row Level Security로 DB가 직접 거절합니다."
           />
           <TechRow
-            icon={<ShieldCheck size={18} style={{ color: "#6B6B6B" }} />}
+            icon={<ShieldCheck size={18} style={{ color: "#4A7BA8" }} />}
             title="봇·어뷰징 방어 (Cloudflare Turnstile)"
             desc="회원가입과 민감 액션에 캡차를 걸어 사료 광고·악성 도배·계정 양산을 차단합니다."
           />
@@ -825,7 +825,7 @@ function SkillBadge({
   return (
     <div
       className="rounded-xl p-2.5 bg-white"
-      style={{ border: "1px solid rgba(17, 17, 17,0.18)" }}
+      style={{ border: "1px solid rgba(176, 92, 54,0.18)" }}
     >
       <div className="flex items-center gap-1.5 mb-0.5" style={{ color: "var(--color-primary-dark)" }}>
         {icon}

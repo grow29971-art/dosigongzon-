@@ -367,9 +367,9 @@ export default function CirclePage() {
   const showCareTeam = isCoreJourneyEnabled("P4");
 
   return (
-    <div className="min-h-dvh pb-6" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-dvh pb-6" style={{ background: "#F7F4EE" }}>
       {/* 헤더 */}
-      <div className="px-4 pt-12 pb-3 flex items-center gap-2 sticky top-0 z-10" style={{ background: "#FFFFFF" }}>
+      <div className="px-4 pt-12 pb-3 flex items-center gap-2 sticky top-0 z-10" style={{ background: "#F7F4EE" }}>
         <Link
           href="/mypage"
           className="w-9 h-9 rounded-full bg-white flex items-center justify-center press-strong"
@@ -390,7 +390,7 @@ export default function CirclePage() {
             border: "1px solid rgba(107,142,111,0.22)",
           }}
         >
-          <ShieldCheck size={20} className="shrink-0 mt-0.5" style={{ color: "#2A2A2A" }} />
+          <ShieldCheck size={20} className="shrink-0 mt-0.5" style={{ color: "#4F6B53" }} />
           <p className="text-[13px] text-text-sub leading-relaxed">
             서클 멤버에게만 보이는 고양이를 등록할 수 있어요. 학대 우려가 큰 아이를
             <b className="text-text-main"> 믿는 이웃</b>과만 공유하세요. 등록할 때 공개 범위를
@@ -410,7 +410,7 @@ export default function CirclePage() {
             <div className="flex items-start gap-3">
               <div
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-                style={{ background: "rgba(107,142,111,0.12)", color: "#2A2A2A" }}
+                style={{ background: "rgba(107,142,111,0.12)", color: "#4F6B53" }}
               >
                 <Clock3 size={20} aria-hidden="true" />
               </div>
@@ -424,9 +424,9 @@ export default function CirclePage() {
               </div>
             </div>
             <ol className="mt-3 grid grid-cols-3 gap-2 text-center text-[11px] font-bold text-text-sub">
-              <li className="rounded-xl bg-[#FFFFFF] px-2 py-2">1. 요청</li>
-              <li className="rounded-xl bg-[#FFFFFF] px-2 py-2">2. 수락</li>
-              <li className="rounded-xl bg-[#FFFFFF] px-2 py-2">3. 완료</li>
+              <li className="rounded-xl bg-[#F7F4EE] px-2 py-2">1. 요청</li>
+              <li className="rounded-xl bg-[#F7F4EE] px-2 py-2">2. 수락</li>
+              <li className="rounded-xl bg-[#F7F4EE] px-2 py-2">3. 완료</li>
             </ol>
             {acceptedMembers.length > 0 ? (
               <div className="mt-4 space-y-3 border-t border-black/5 pt-4">
@@ -511,7 +511,7 @@ export default function CirclePage() {
                       completed: "완료",
                     }[shift.status];
                     return (
-                      <li key={shift.id} className="rounded-xl bg-[#FFFFFF] px-3 py-2.5">
+                      <li key={shift.id} className="rounded-xl bg-[#F7F4EE] px-3 py-2.5">
                         <div className="flex items-center justify-between gap-2">
                           <p className="text-[13px] font-bold text-text-main">
                             {shift.requester_id === user.id
@@ -597,7 +597,7 @@ export default function CirclePage() {
                         onClick={() => handleRespond(inv, "accepted")}
                         disabled={busy === inv.id}
                         className="px-3 py-2 rounded-xl text-[13px] font-bold text-white press-strong disabled:opacity-50"
-                        style={{ background: "#555555" }}
+                        style={{ background: "#6B8E6F" }}
                       >
                         <Check size={13} />
                       </button>
@@ -605,7 +605,7 @@ export default function CirclePage() {
                         onClick={() => handleRespond(inv, "rejected")}
                         disabled={busy === inv.id}
                         className="px-3 py-2 rounded-xl text-[13px] font-bold press-strong disabled:opacity-50"
-                        style={{ background: "var(--color-gray-100)", color: "#6B6B6B" }}
+                        style={{ background: "var(--color-gray-100)", color: "#8B7562" }}
                       >
                         <X size={13} />
                       </button>
@@ -627,8 +627,8 @@ export default function CirclePage() {
                 href={`/circle/${myCircleId}/chat`}
                 className="w-full block rounded-2xl p-4 press transition-transform"
                 style={{
-                  background: "#F2F2F2",
-                  border: "1px solid rgba(17, 17, 17,0.22)",
+                  background: "#FFF9F2",
+                  border: "1px solid rgba(176, 92, 54,0.22)",
                   boxShadow: "var(--shadow-card)",
                 }}
               >
@@ -695,7 +695,7 @@ export default function CirclePage() {
             <div className="flex items-center gap-2 mb-3">
               <Link2 size={14} style={{ color: "#FEE500" }} />
               <h2 className="text-[17px] font-bold text-text-main tracking-tight">초대 링크</h2>
-              <span className="text-[9px] font-bold tracking-[0.15em] px-1.5 py-0.5 chip-square" style={{ background: "#FEE500", color: "#111111" }}>
+              <span className="text-[9px] font-bold tracking-[0.15em] px-1.5 py-0.5 chip-square" style={{ background: "#FEE500", color: "#191919" }}>
                 빠른 초대
               </span>
             </div>
@@ -710,10 +710,10 @@ export default function CirclePage() {
                 <button
                   onClick={handleKakaoShare}
                   className="flex-[1.5] flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-bold press-strong"
-                  style={{ background: "#FEE500", color: "#111111" }}
+                  style={{ background: "#FEE500", color: "#191919" }}
                 >
                   <svg width="14" height="14" viewBox="0 0 18 18" aria-hidden="true">
-                    <path d="M9 1.5C4.582 1.5 1 4.262 1 7.668c0 2.219 1.51 4.166 3.788 5.272-.167.625-.604 2.265-.69 2.617-.108.438.16.43.336.314.138-.092 2.198-1.5 3.083-2.107.49.073.99.111 1.483.111 4.418 0 8-2.762 8-6.207C17 4.262 13.418 1.5 9 1.5z" fill="#111111" />
+                    <path d="M9 1.5C4.582 1.5 1 4.262 1 7.668c0 2.219 1.51 4.166 3.788 5.272-.167.625-.604 2.265-.69 2.617-.108.438.16.43.336.314.138-.092 2.198-1.5 3.083-2.107.49.073.99.111 1.483.111 4.418 0 8-2.762 8-6.207C17 4.262 13.418 1.5 9 1.5z" fill="#191919" />
                   </svg>
                   카카오톡 공유
                 </button>
@@ -732,7 +732,7 @@ export default function CirclePage() {
           {/* 닉네임 검색 초대 */}
           <section className="px-5 mt-6">
             <div className="flex items-center gap-2 mb-3">
-              <UserPlus size={14} style={{ color: "#6B6B6B" }} />
+              <UserPlus size={14} style={{ color: "#4A7BA8" }} />
               <h2 className="text-[17px] font-bold text-text-main tracking-tight">닉네임 검색 초대</h2>
             </div>
             <div className="bg-white rounded-2xl p-3" style={{ boxShadow: "var(--shadow-card)" }}>
@@ -777,7 +777,7 @@ export default function CirclePage() {
                         onClick={() => handleInvite(r)}
                         disabled={busy === r.id}
                         className="px-3 py-1.5 rounded-lg text-[13px] font-bold text-white press-strong disabled:opacity-50"
-                        style={{ background: "#6B6B6B" }}
+                        style={{ background: "#4A7BA8" }}
                       >
                         {busy === r.id ? <Loader2 size={11} className="animate-spin" /> : "초대"}
                       </button>
@@ -794,9 +794,9 @@ export default function CirclePage() {
           {/* 멤버 목록 */}
           <section className="px-5 mt-6">
             <div className="flex items-center gap-2 mb-3">
-              <Users size={14} style={{ color: "#555555" }} />
+              <Users size={14} style={{ color: "#6B8E6F" }} />
               <h2 className="text-[17px] font-bold text-text-main tracking-tight">내 서클 멤버</h2>
-              <span className="text-[11px] font-bold px-2 py-0.5 chip-square text-white" style={{ background: "#555555" }}>
+              <span className="text-[11px] font-bold px-2 py-0.5 chip-square text-white" style={{ background: "#6B8E6F" }}>
                 {acceptedMembers.length}
               </span>
             </div>
@@ -874,7 +874,7 @@ function MemberRow({
         <p className="text-[13px] font-bold text-text-main truncate">
           {member.member_nickname ?? "익명 길집사"}
         </p>
-        <p className="text-[11px]" style={{ color: pending ? "#555555" : "#555555" }}>
+        <p className="text-[11px]" style={{ color: pending ? "#C9A961" : "#6B8E6F" }}>
           {pending ? "수락 대기 중" : "수락됨"}
         </p>
       </div>
@@ -882,7 +882,7 @@ function MemberRow({
         onClick={onRemove}
         disabled={busy}
         className="px-3 py-2 rounded-xl text-[13px] font-bold press-strong disabled:opacity-50"
-        style={{ background: "var(--color-gray-100)", color: "#6B6B6B" }}
+        style={{ background: "var(--color-gray-100)", color: "#8B7562" }}
       >
         {busy ? <Loader2 size={12} className="animate-spin" /> : "내보내기"}
       </button>

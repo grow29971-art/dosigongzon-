@@ -95,7 +95,7 @@ export default function ConsentManager() {
           aria-label="쿠키 사용 동의"
           className="fixed left-0 right-0 bottom-0 z-[60] px-4 pb-4 pt-3"
           style={{
-            background: "linear-gradient(180deg, rgba(247,244,238,0) 0%, rgba(247,244,238,0.95) 30%, #FFFFFF 100%)",
+            background: "linear-gradient(180deg, rgba(247,244,238,0) 0%, rgba(247,244,238,0.95) 30%, #F7F4EE 100%)",
             backdropFilter: "blur(6px)",
           }}
         >
@@ -103,13 +103,13 @@ export default function ConsentManager() {
             className="mx-auto max-w-lg rounded-2xl bg-white p-4"
             style={{
               boxShadow: "var(--shadow-card)",
-              border: "1px solid rgba(17, 17, 17,0.18)",
+              border: "1px solid rgba(176, 92, 54,0.18)",
             }}
           >
             <div className="mb-3">
               <p
                 className="mb-1 text-[13px] font-bold"
-                style={{ color: "#2A2A2A" }}
+                style={{ color: "#3D2F25" }}
               >
                 🍪 쿠키 사용에 대해 알려드려요
               </p>
@@ -122,7 +122,7 @@ export default function ConsentManager() {
                 <Link
                   href="/privacy"
                   className="underline"
-                  style={{ color: "#555555" }}
+                  style={{ color: "#8B5A3C" }}
                 >
                   개인정보처리방침
                 </Link>

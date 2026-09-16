@@ -235,7 +235,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
               onClick={handleSubmit}
               disabled={busy || !body.trim()}
               className="h-[40px] px-5 rounded-xl text-[13px] font-bold press-strong transition-transform disabled:opacity-40"
-              style={{ background: "rgba(255,255,255,0.94)", color: "#2A2A2A" }}
+              style={{ background: "rgba(255,255,255,0.94)", color: "#3a2c4d" }}
             >
               {busy ? "남기는 중…" : "남기기"}
             </button>
@@ -252,7 +252,7 @@ export default function MemorialDiary({ catId, catName }: { catId: string; catNa
           <Link
             href={`/login?next=${encodeURIComponent(`/memorial/${catId}`)}`}
             className="inline-flex items-center justify-center h-[42px] px-5 rounded-xl mt-3.5 text-[13px] font-bold"
-            style={{ background: "rgba(255,255,255,0.92)", color: "#2A2A2A" }}
+            style={{ background: "rgba(255,255,255,0.92)", color: "#3a2c4d" }}
           >
             로그인
           </Link>

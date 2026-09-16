@@ -35,7 +35,7 @@ export default async function RankingPage() {
   const isTop3 = myRankNumber !== null && myRankNumber <= 3;
 
   return (
-    <div className="pb-24 min-h-screen" style={{ background: "#FFFFFF" }}>
+    <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
       {/* 헤더 */}
       <div className="px-5 pt-12 pb-5">
         <Link
@@ -46,7 +46,7 @@ export default async function RankingPage() {
           마이페이지
         </Link>
         <div className="flex items-baseline gap-2 mb-1">
-          <Trophy size={20} style={{ color: "#555555" }} />
+          <Trophy size={20} style={{ color: "#C9A961" }} />
           <h1 className="text-[24px] font-bold tracking-tight text-text-main">
             길집사 활동 랭킹
           </h1>
@@ -206,7 +206,7 @@ function PodiumCard({ row, place, height }: { row: RankingRow; place: 1 | 2 | 3;
       ? "rgba(201,169,97,0.6)"
       : place === 2
         ? "rgba(160,160,160,0.6)"
-        : "rgba(17, 17, 17,0.5)";
+        : "rgba(176, 92, 54,0.5)";
 
   return (
     <Link
@@ -250,7 +250,7 @@ function PodiumCard({ row, place, height }: { row: RankingRow; place: 1 | 2 | 3;
         >
           {level.emoji} {level.title}
         </p>
-        <p className="text-[15px] font-bold tabular-nums mt-1" style={{ color: "#2A2A2A" }}>
+        <p className="text-[15px] font-bold tabular-nums mt-1" style={{ color: "#2A2A28" }}>
           {row.score.toLocaleString()}
           <span className="text-[11px] font-bold opacity-70 ml-0.5">점</span>
         </p>
@@ -276,7 +276,7 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
     >
       <div
         className="w-8 text-center text-[15px] font-bold tabular-nums shrink-0"
-        style={{ color: row.rank <= 10 ? "#555555" : "#6B6B6B" }}
+        style={{ color: row.rank <= 10 ? "#C9A961" : "#8B7562" }}
       >
         {row.rank}
       </div>
@@ -322,7 +322,7 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
       </div>
       <div
         className="text-[15px] font-bold tabular-nums shrink-0 ml-1"
-        style={{ color: "#2A2A2A" }}
+        style={{ color: "#2A2A28" }}
       >
         {row.score.toLocaleString()}
       </div>

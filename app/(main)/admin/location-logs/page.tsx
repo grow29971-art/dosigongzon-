@@ -52,12 +52,12 @@ export default function LocationLogsPage() {
   const longMoves = rows.filter((r) => (r.distance_m ?? 0) >= 500);
 
   return (
-    <div className="pb-24 min-h-screen" style={{ background: "#FFFFFF" }}>
+    <div className="pb-24 min-h-screen" style={{ background: "#F7F4EE" }}>
       {/* 헤더 */}
       <div
         className="px-5 pt-12 pb-5"
         style={{
-          background: "#2A2A2A",
+          background: "#2C2C2C",
           color: "#fff",
         }}
       >
@@ -81,8 +81,8 @@ export default function LocationLogsPage() {
 
       {/* 요약 */}
       <div className="px-4 -mt-6 mb-5 grid grid-cols-3 gap-2">
-        <SummaryCard label="전체" value={rows.length} color="#6B6B6B" />
-        <SummaryCard label="동 이동" value={dongMoves.length} color="#111111" />
+        <SummaryCard label="전체" value={rows.length} color="#4A7BA8" />
+        <SummaryCard label="동 이동" value={dongMoves.length} color="#B05C36" />
         <SummaryCard
           label="500m↑ 이동"
           value={longMoves.length}
@@ -145,7 +145,7 @@ export default function LocationLogsPage() {
                       className="px-2 py-1 chip-square font-bold"
                       style={{
                         background: "var(--color-gray-50)",
-                        color: "#8A8A8A",
+                        color: "#A38E7A",
                       }}
                     >
                       {r.old_region ?? "?"}
@@ -158,7 +158,7 @@ export default function LocationLogsPage() {
                       className="px-2 py-1 chip-square font-bold"
                       style={{
                         background: dongChanged ? "#FFF2E8" : "var(--color-gray-50)",
-                        color: dongChanged ? "var(--color-primary)" : "#8A8A8A",
+                        color: dongChanged ? "var(--color-primary)" : "#A38E7A",
                       }}
                     >
                       {r.new_region ?? "?"}

@@ -117,7 +117,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             ))
           ) : (
             <div className="relative shrink-0 w-full h-full flex items-center justify-center" style={{ background: "var(--color-warm-white)" }}>
-              <PawPrint size={64} style={{ color: "rgba(17, 17, 17,0.28)" }} />
+              <PawPrint size={64} style={{ color: "rgba(176, 92, 54,0.28)" }} />
             </div>
           )}
         </div>
@@ -194,7 +194,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             className="mt-4 px-4 py-3.5 rounded-2xl"
             style={{
               background: "var(--color-primary-softer)",
-              border: "1px solid rgba(17,17,17,0.2)",
+              border: "1px solid rgba(176,92,54,0.2)",
             }}
           >
             <p className="text-[13px] font-bold leading-relaxed" style={{ color: "var(--color-primary-dark)" }}>

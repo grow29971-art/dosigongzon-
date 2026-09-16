@@ -12,7 +12,7 @@ import { COURIERS } from "@/lib/courier";
 
 // 환불 원장 상태별 표시 (requested 외에는 비정상 중단 건 — 재시도 대상)
 const REFUND_STATE_LABEL: Record<AdminRefundRequest["status"], { label: string; color: string }> = {
-  requested: { label: "심사 대기", color: "#111111" },
+  requested: { label: "심사 대기", color: "#E88D5A" },
   approved:  { label: "처리 중단 — 재시도 필요", color: "#D85555" },
   failed:    { label: "토스 실패 — 재시도 필요", color: "#D85555" },
 };
@@ -281,7 +281,7 @@ export default function AdminOrdersPage() {
         <button
           onClick={() => handleFilter("all")}
           className="px-3 py-1.5 rounded-xl text-[13px] font-bold shrink-0"
-          style={{ background: filter === "all" ? "#2A2A2A" : "#fff", color: filter === "all" ? "#fff" : "#666", boxShadow: "var(--shadow-card-sm)" }}
+          style={{ background: filter === "all" ? "#2C2C2C" : "#fff", color: filter === "all" ? "#fff" : "#666", boxShadow: "var(--shadow-card-sm)" }}
         >
           전체
         </button>
@@ -302,7 +302,7 @@ export default function AdminOrdersPage() {
       </div>
 
       {notice && (
-        <p className="mb-3 px-3 py-2 rounded-xl text-[13px] font-bold" style={{ background: "rgba(107,142,111,0.12)", color: "#2A2A2A" }}>
+        <p className="mb-3 px-3 py-2 rounded-xl text-[13px] font-bold" style={{ background: "rgba(107,142,111,0.12)", color: "#4F6B53" }}>
           {notice}
         </p>
       )}
@@ -323,7 +323,7 @@ export default function AdminOrdersPage() {
             return (
               <div
                 key={order.id}
-                style={{ background: "#fff", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card)", border: open ? "1.5px solid rgba(17, 17, 17,0.35)" : "1px solid var(--color-divider)" }}
+                style={{ background: "#fff", borderRadius: "var(--radius-card-sm)", boxShadow: "var(--shadow-card)", border: open ? "1.5px solid rgba(176, 92, 54,0.35)" : "1px solid var(--color-divider)" }}
               >
                 <button className="w-full text-left p-3.5" onClick={() => handleOpen(order)}>
                   <div className="flex items-center justify-between mb-1.5">

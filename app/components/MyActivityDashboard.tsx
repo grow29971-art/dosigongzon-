@@ -69,7 +69,7 @@ export default function MyActivityDashboard() {
   return (
     <div className="mb-5">
       <div className="flex items-center gap-2 mb-3 px-1">
-        <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#111111" }} />
+        <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#48A59E" }} />
         <h2 className="text-[15px] font-bold text-text-main tracking-tight">
           내 활동 대시보드
         </h2>
@@ -86,19 +86,19 @@ export default function MyActivityDashboard() {
         <div
           className="px-4 py-4 flex items-center gap-3"
           style={{
-            background: "#11111115",
+            background: "#48A59E15",
             borderBottom: "1px solid var(--color-divider)",
           }}
         >
           <div
             className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: "#111111", boxShadow: "0 4px 12px #11111155" }}
+            style={{ background: "#48A59E", boxShadow: "0 4px 12px #48A59E55" }}
           >
             <TrendingUp size={18} color="#fff" strokeWidth={2.5} />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[11px] font-bold text-text-sub">이번 달 돌봄</p>
-            <p className="text-[24px] font-bold tracking-tight" style={{ color: "#111111" }}>
+            <p className="text-[24px] font-bold tracking-tight" style={{ color: "#48A59E" }}>
               {data.thisMonthCount.toLocaleString()}번
             </p>
           </div>
@@ -128,7 +128,7 @@ export default function MyActivityDashboard() {
         {data.topCats.length > 0 && (
           <div className="px-4 py-3 border-b border-divider">
             <div className="flex items-center gap-1.5 mb-2">
-              <Crown size={12} style={{ color: "#555555" }} />
+              <Crown size={12} style={{ color: "#E8B040" }} />
               <span className="text-[11px] font-bold text-text-sub">
                 가장 많이 돌본 아이
               </span>
@@ -140,8 +140,8 @@ export default function MyActivityDashboard() {
                   href={`/cats/${c.catId}`}
                   className="flex-1 min-w-0 flex items-center gap-2 px-2.5 py-2 rounded-xl press-strong"
                   style={{
-                    background: i === 0 ? "#FFF9EB" : "#FFFFFF",
-                    border: i === 0 ? "1px solid #55555540" : "1px solid var(--color-divider)",
+                    background: i === 0 ? "#FFF9EB" : "#F7F4EE",
+                    border: i === 0 ? "1px solid #E8B04040" : "1px solid var(--color-divider)",
                   }}
                 >
                   <div
@@ -156,7 +156,7 @@ export default function MyActivityDashboard() {
                     <p className="text-[13px] font-bold text-text-main truncate">
                       {i === 0 && "🥇 "}{c.catName}
                     </p>
-                    <p className="text-[11px] font-bold" style={{ color: i === 0 ? "#A67B1E" : "#8A8A8A" }}>
+                    <p className="text-[11px] font-bold" style={{ color: i === 0 ? "#A67B1E" : "#A38E7A" }}>
                       {c.count}번
                     </p>
                   </div>
@@ -171,10 +171,10 @@ export default function MyActivityDashboard() {
           <div className="px-4 py-3 border-b border-divider">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-1.5">
-                <Clock size={12} style={{ color: "#111111" }} />
+                <Clock size={12} style={{ color: "#8B65B8" }} />
                 <span className="text-[11px] font-bold text-text-sub">주 활동 시간대</span>
               </div>
-              <span className="text-[11px] font-bold" style={{ color: "#111111" }}>
+              <span className="text-[11px] font-bold" style={{ color: "#8B65B8" }}>
                 {peakLabel}
               </span>
             </div>
@@ -190,9 +190,9 @@ export default function MyActivityDashboard() {
                     style={{
                       height: h,
                       background: isPeak
-                        ? "linear-gradient(180deg, #111111 0%, #6E4EA0 100%)"
+                        ? "linear-gradient(180deg, #8B65B8 0%, #6E4EA0 100%)"
                         : count > 0
-                          ? "#11111135"
+                          ? "#8B65B835"
                           : "rgba(0,0,0,0.04)",
                     }}
                     title={`${hour}시: ${count}번`}

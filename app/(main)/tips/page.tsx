@@ -78,15 +78,15 @@ export default async function TipsIndexPage() {
   };
 
   return (
-    <div className="pb-24" style={{ background: "#FFFFFF", minHeight: "100vh" }}>
+    <div className="pb-24" style={{ background: "#F7F4EE", minHeight: "100vh" }}>
       <PageIntroModal
         storageKey="dosigongzon_intro_tips"
         badge="AI 집사"
         headerEmoji="🤖"
         title="궁금한 건 AI 집사에게 물어보세요"
-        headerBg="linear-gradient(160deg, var(--color-sage-soft) 0%, #E0E0E0 100%)"
-        accent="#111111"
-        accentDark="#000000"
+        headerBg="linear-gradient(160deg, var(--color-sage-soft) 0%, #DBEEDD 100%)"
+        accent="#22A366"
+        accentDark="#1B7D50"
         items={[
           { emoji: "💬", text: <>응급처치·TNR·사료·겨울나기… 무엇이든 <b className="text-text-main">24시간</b> 답해줘요.</> },
           { emoji: "📖", text: <>상황별 보호 가이드도 이 곳에 모여 있어요.</> },
@@ -133,7 +133,7 @@ export default async function TipsIndexPage() {
             background: "#FFE6E0",
             borderRadius: "var(--radius-card)",
             border: "1.5px solid rgba(216,85,85,0.25)",
-            boxShadow: "0 8px 24px rgba(216,85,85,0.15), 0 2px 6px rgba(17, 17, 17,0.10)",
+            boxShadow: "0 8px 24px rgba(216,85,85,0.15), 0 2px 6px rgba(176, 92, 54,0.10)",
           }}
         >
           <div
@@ -172,14 +172,14 @@ export default async function TipsIndexPage() {
           <div className="grid grid-cols-3 gap-2 mb-3">
             {[
               { href: "/protection/emergency-guide", label: "응급처치", sub: "다쳤을 때", Icon: Siren, color: "#D85555" },
-              { href: "/protection/kitten-guide", label: "새끼 발견", sub: "이런 땐 데려와요", Icon: Baby, color: "#111111" },
+              { href: "/protection/kitten-guide", label: "새끼 발견", sub: "이런 땐 데려와요", Icon: Baby, color: "#E88D5A" },
               { href: "/protection/disease-guide", label: "질병 신호", sub: "증상 체크", Icon: Heart, color: "var(--color-like)" },
-              { href: "/protection/trapping-guide", label: "TNR·포획", sub: "안전한 절차", Icon: Stethoscope, color: "#111111" },
-              { href: "/protection/feeding-guide", label: "밥주기", sub: "올바른 방법", Icon: Sparkles, color: "#111111" },
-              { href: "/protection/shelter-guide", label: "겨울 쉼터", sub: "지금 만들기", Icon: Snowflake, color: "#6B6B6B" },
-              { href: "/protection/pharmacy-guide", label: "약품 안내", sub: "주변 약국", Icon: Pill, color: "#555555" },
+              { href: "/protection/trapping-guide", label: "TNR·포획", sub: "안전한 절차", Icon: Stethoscope, color: "#8B65B8" },
+              { href: "/protection/feeding-guide", label: "밥주기", sub: "올바른 방법", Icon: Sparkles, color: "#48A59E" },
+              { href: "/protection/shelter-guide", label: "겨울 쉼터", sub: "지금 만들기", Icon: Snowflake, color: "#5A8AC4" },
+              { href: "/protection/pharmacy-guide", label: "약품 안내", sub: "주변 약국", Icon: Pill, color: "#6B8E6F" },
               { href: "/protection/district-contacts", label: "지자체 연락", sub: "전국 240+ 곳", Icon: Phone, color: "var(--color-primary-dark)" },
-              { href: "/protection/legal", label: "법률·신고", sub: "학대 대응", Icon: Scale, color: "#2A2A2A" },
+              { href: "/protection/legal", label: "법률·신고", sub: "학대 대응", Icon: Scale, color: "#7A6B8E" },
             ].map((cat) => (
               <Link
                 key={cat.href}
@@ -275,8 +275,8 @@ export default async function TipsIndexPage() {
         <div
           className="mt-6 p-5 rounded-2xl"
           style={{
-            background: "#FFFFFF",
-            border: "1px solid rgba(17, 17, 17,0.15)",
+            background: "#FBF8F3",
+            border: "1px solid rgba(176, 92, 54,0.15)",
           }}
         >
           <p className="text-[13px] font-bold text-primary mb-1.5">도시공존이란?</p>
@@ -325,7 +325,7 @@ function TipCard({ tip }: { tip: Tip }) {
           {tip.featured && (
             <span
               className="absolute top-3 left-3 text-[11px] font-bold px-2 py-0.5 rounded-md text-white"
-              style={{ background: "rgba(17, 17, 17,0.95)" }}
+              style={{ background: "rgba(176, 92, 54,0.95)" }}
             >
               ✨ 추천
             </span>
@@ -343,7 +343,7 @@ function TipCard({ tip }: { tip: Tip }) {
                 <span
                   key={tag}
                   className="text-[11px] font-bold px-1.5 py-0.5 rounded-md"
-                  style={{ background: "#EBEBEB", color: "#8B6F4E" }}
+                  style={{ background: "#F2EBE0", color: "#8B6F4E" }}
                 >
                   #{tag}
                 </span>

@@ -113,7 +113,7 @@ const WEATHER_ICONS: Record<string, typeof Sun> = {
 function getTempColor(temp: number): string {
   if (temp <= 0) return "#5B7A8F";
   if (temp <= 10) return "#7A9BB0";
-  if (temp <= 20) return "#2A2A2A";
+  if (temp <= 20) return "#2A2A28";
   if (temp <= 30) return "var(--color-primary)";
   return "#B84545";
 }
@@ -742,7 +742,7 @@ export default function HomeAuthed({
               style={{ borderTop: "1px solid var(--color-divider)" }}
             >
               <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(74,123,168,0.12)" }}>
-                <HandHeart size={17} style={{ color: "#6B6B6B" }} />
+                <HandHeart size={17} style={{ color: "#4A7BA8" }} />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[14px] font-bold text-text-main leading-tight">돌봄 부탁</p>
@@ -936,34 +936,34 @@ export default function HomeAuthed({
               const tips: { emoji: string; text: string; color: string }[] = [];
 
               if (t <= -10) {
-                tips.push({ emoji: "🥶", text: "극한 추위! 숨숨집 내부에 핫팩을 넣어주세요. 물이 얼지 않게 자주 교체해주세요.", color: "#6B6B6B" });
+                tips.push({ emoji: "🥶", text: "극한 추위! 숨숨집 내부에 핫팩을 넣어주세요. 물이 얼지 않게 자주 교체해주세요.", color: "#4A7BA8" });
               } else if (t <= 0) {
                 tips.push({ emoji: "❄️", text: "물이 얼 수 있어요. 따뜻한 물로 하루 2회 이상 교체해주세요.", color: "#5B7A8F" });
-                tips.push({ emoji: "🏠", text: "스티로폼 숨숨집에 짚이나 담요를 깔아주세요.", color: "#555555" });
+                tips.push({ emoji: "🏠", text: "스티로폼 숨숨집에 짚이나 담요를 깔아주세요.", color: "#6B8E6F" });
               } else if (t <= 5) {
                 tips.push({ emoji: "🧣", text: "쌀쌀해요. 쉼터 점검하고 입구가 바람을 막는지 확인해주세요.", color: "#7A9BB0" });
               } else if (t >= 33) {
                 tips.push({ emoji: "🔥", text: "폭염 주의! 그늘진 곳에 시원한 물을 놓아주세요. 사료가 상하기 쉬워요.", color: "#D85555" });
               } else if (t >= 28) {
-                tips.push({ emoji: "☀️", text: "더워요. 물을 자주 갈아주고 그늘에 밥을 놓아주세요.", color: "#111111" });
+                tips.push({ emoji: "☀️", text: "더워요. 물을 자주 갈아주고 그늘에 밥을 놓아주세요.", color: "#E88D5A" });
               }
 
               if (weather.weatherMain === "Rain" || weather.weatherMain === "Drizzle") {
-                tips.push({ emoji: "🌧️", text: "비 오는 날이에요. 밥그릇에 비가 들어가지 않게 지붕 아래에 놓아주세요.", color: "#6B6B6B" });
+                tips.push({ emoji: "🌧️", text: "비 오는 날이에요. 밥그릇에 비가 들어가지 않게 지붕 아래에 놓아주세요.", color: "#4A7BA8" });
               } else if (weather.weatherMain === "Snow") {
                 tips.push({ emoji: "🌨️", text: "눈이 와요. 쉼터 입구에 눈이 쌓이지 않게 치워주세요.", color: "#5B7A8F" });
               }
 
               if (weather.humidity >= 85) {
-                tips.push({ emoji: "💦", text: "습도가 높아요. 건사료가 눅눅해질 수 있으니 소량만 놓아주세요.", color: "#111111" });
+                tips.push({ emoji: "💦", text: "습도가 높아요. 건사료가 눅눅해질 수 있으니 소량만 놓아주세요.", color: "#48A59E" });
               }
 
               if (weather.windSpeed >= 10) {
-                tips.push({ emoji: "💨", text: "바람이 강해요. 밥그릇이 날아가지 않게 무거운 그릇을 사용해주세요.", color: "#111111" });
+                tips.push({ emoji: "💨", text: "바람이 강해요. 밥그릇이 날아가지 않게 무거운 그릇을 사용해주세요.", color: "#8B65B8" });
               }
 
               if (tips.length === 0 && t >= 10 && t <= 25) {
-                tips.push({ emoji: "🐾", text: "돌봄하기 좋은 날씨예요. 오늘도 아이들을 챙겨주셔서 감사해요!", color: "#555555" });
+                tips.push({ emoji: "🐾", text: "돌봄하기 좋은 날씨예요. 오늘도 아이들을 챙겨주셔서 감사해요!", color: "#6B8E6F" });
               }
 
               // 날씨 조건 → 관련 쇼핑 카테고리 맥락 다리
@@ -996,7 +996,7 @@ export default function HomeAuthed({
                     <Link
                       href={`/shop?category=${bridge.cat}`}
                       className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl press transition-transform"
-                      style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(17, 17, 17,0.15)" }}
+                      style={{ background: "var(--color-primary-softer)", border: "1px solid rgba(176, 92, 54,0.15)" }}
                     >
                       <span className="flex items-center gap-1.5 text-[11px] font-bold" style={{ color: "var(--color-primary-dark)" }}>
                         <ShoppingBag size={13} />
@@ -1085,7 +1085,7 @@ export default function HomeAuthed({
                 style={{
                   background: "var(--color-primary-softer)",
                   borderRadius: "var(--radius-card)",
-                  border: "1px dashed rgba(17, 17, 17,0.3)",
+                  border: "1px dashed rgba(176, 92, 54,0.3)",
                 }}
               >
                 <div
@@ -1475,8 +1475,8 @@ export default function HomeAuthed({
               <div className="grid grid-cols-4 gap-2">
                 {[
                   { label: "고양이", value: activity.catCount, color: "var(--color-primary)", icon: "🐱" },
-                  { label: "돌봄", value: activity.commentCount + activity.careLogCount, color: "#111111", icon: "📝" },
-                  { label: "신고", value: activity.alertCount, color: "#111111", icon: "🛡️" },
+                  { label: "돌봄", value: activity.commentCount + activity.careLogCount, color: "#48A59E", icon: "📝" },
+                  { label: "신고", value: activity.alertCount, color: "#8B65B8", icon: "🛡️" },
                   { label: "좋아요", value: activity.likesReceived, color: "#E86B8C", icon: "❤️" },
                 ].map((s) => (
                   <div
@@ -1594,7 +1594,7 @@ export default function HomeAuthed({
             <div className="space-y-2.5">
               {caretakerRank.map((r, idx) => {
                 const medal = idx === 0 ? "🥇" : idx === 1 ? "🥈" : "🥉";
-                const rankBg = idx === 0 ? "#555555" : idx === 1 ? "#B8B8B8" : "#C08860";
+                const rankBg = idx === 0 ? "#E8B040" : idx === 1 ? "#B8B8B8" : "#C08860";
                 return (
                   <div
                     key={r.userId}
@@ -1893,7 +1893,7 @@ export default function HomeAuthed({
                     background: "var(--color-surface)",
                     borderRadius: "var(--radius-card-sm)",
                     boxShadow: "var(--shadow-card-sm)",
-                    border: "1px solid rgba(17, 17, 17,0.18)",
+                    border: "1px solid rgba(176, 92, 54,0.18)",
                   }}
                 >
                   <div
@@ -2027,7 +2027,7 @@ export default function HomeAuthed({
           background: "var(--color-primary-softer)",
           borderRadius: "var(--radius-card)",
           boxShadow: "var(--shadow-card)",
-          border: "1px solid rgba(17, 17, 17,0.18)",
+          border: "1px solid rgba(176, 92, 54,0.18)",
         }}
       >
         <div
