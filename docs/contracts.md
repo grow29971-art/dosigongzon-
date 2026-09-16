@@ -55,4 +55,6 @@
   하루 3개 상한(429), 같은 제목 중복(409), 링크 금지(400).
 - `POST comment` `{personaId,postId,body}` → `{ ok, commentId, pushed, pushFailed, url }`. free 유저 글에만,
   글당 운영 댓글 1개(409), 하루 10개 상한(429). 글쓴이 푸시는 4절 페이로드 계약.
+- `GET metrics?postIds=a,b&commentIds=x,y` → `{ ok, posts:[{id,viewCount,likeCount,commentCount,createdAt,replies:[{authorName,body,createdAt}]}], comments:[{id,postId,createdAt,repliesAfter,authorReplied}] }`
+  (각 50개까지. replies 는 운영·비밀 댓글을 뺀 최신 8개). exe 의 회고(자가 학습) 루프가 1·6·24·72·168시간 뒤에 부른다.
 - 공통 실패: `{ ok:false, error }` + 4xx/5xx. 텍스트 생성은 exe 쪽(Claude)이 하고 서버는 검증·저장만 한다.

@@ -320,3 +320,111 @@ async function pushToAuthor(
   }
   return { pushed, pushFailed };
 }
+
+// ── 반응 수치 (exe 의 자가 학습 루프용) ────────────────────────
+
+export interface PostMetrics {
+  id: string;
+  viewCount: number;
+  likeCount: number;
+  commentCount: number;
+  createdAt: string;
+  /** 운영 댓글을 뺀 이용자 댓글 샘플 (비밀 댓글 제외, 최신 8개) */
+  replies: { authorName: string; body: string; createdAt: string }[];
+}
+
+export interface CommentMetrics {
+  id: string;
+  postId: string;
+  createdAt: string;
+  /** 이 운영 댓글 뒤에 달린 이용자 댓글 수 */
+  repliesAfter: number;
+  /** 글쓴이가 그 뒤에 댓글을 남겼는지 */
+  authorReplied: boolean;
+}
+
+interface CommentRow {
+  id: string;
+  post_id: string;
+  author_id: string | null;
+  author_name: string | null;
+  author_title: string | null;
+  body: string;
+  is_secret?: boolean | null;
+  created_at: string;
+}
+
+export async function collectMetrics(
+  supabase: SupabaseClient,
+  ids: { postIds: string[]; commentIds: string[] },
+): Promise<BotResult<{ posts: PostMetrics[]; comments: CommentMetrics[] }>> {
+  const postIds = ids.postIds.slice(0, 50);
+  const commentIds = ids.commentIds.slice(0, 50);
+  const posts: PostMetrics[] = [];
+  const comments: CommentMetrics[] = [];
+
+  if (postIds.length) {
+    const { data, error } = await supabase
+      .from("posts")
+      .select("id, view_count, like_count, comment_count, created_at")
+      .in("id", postIds);
+    if (error) return { ok: false, error: error.message, status: 500 };
+    const { data: cmts } = await supabase
+      .from("post_comments")
+      .select("id, post_id, author_id, author_name, author_title, body, is_secret, created_at")
+      .in("post_id", postIds)
+      .order("created_at", { ascending: false })
+      .limit(400);
+    const byPost = new Map<string, CommentRow[]>();
+    for (const c of (cmts ?? []) as CommentRow[]) {
+      if (c.author_title === STAFF_TITLE_ID || c.is_secret) continue;
+      const list = byPost.get(c.post_id) ?? [];
+      if (list.length < 8) list.push(c);
+      byPost.set(c.post_id, list);
+    }
+    for (const p of (data ?? []) as { id: string; view_count: number; like_count: number; comment_count: number; created_at: string }[]) {
+      posts.push({
+        id: p.id,
+        viewCount: p.view_count ?? 0,
+        likeCount: p.like_count ?? 0,
+        commentCount: p.comment_count ?? 0,
+        createdAt: p.created_at,
+        replies: (byPost.get(p.id) ?? []).map((c) => ({ authorName: c.author_name ?? "익명", body: c.body.slice(0, 200), createdAt: c.created_at })),
+      });
+    }
+  }
+
+  if (commentIds.length) {
+    const { data: mine, error } = await supabase
+      .from("post_comments")
+      .select("id, post_id, author_id, author_name, author_title, body, is_secret, created_at")
+      .in("id", commentIds);
+    if (error) return { ok: false, error: error.message, status: 500 };
+    const mineRows = (mine ?? []) as CommentRow[];
+    const targetPostIds = [...new Set(mineRows.map((c) => c.post_id))];
+    if (targetPostIds.length) {
+      const [{ data: later }, { data: postRows }] = await Promise.all([
+        supabase
+          .from("post_comments")
+          .select("id, post_id, author_id, author_name, author_title, body, is_secret, created_at")
+          .in("post_id", targetPostIds)
+          .order("created_at", { ascending: true })
+          .limit(400),
+        supabase.from("posts").select("id, author_id").in("id", targetPostIds),
+      ]);
+      const postAuthor = new Map(((postRows ?? []) as { id: string; author_id: string | null }[]).map((p) => [p.id, p.author_id]));
+      const laterRows = ((later ?? []) as CommentRow[]).filter((c) => c.author_title !== STAFF_TITLE_ID);
+      for (const c of mineRows) {
+        const after = laterRows.filter((l) => l.post_id === c.post_id && l.created_at > c.created_at);
+        comments.push({
+          id: c.id,
+          postId: c.post_id,
+          createdAt: c.created_at,
+          repliesAfter: after.length,
+          authorReplied: after.some((l) => l.author_id && l.author_id === postAuthor.get(c.post_id)),
+        });
+      }
+    }
+  }
+  return { ok: true, value: { posts, comments } };
+}
