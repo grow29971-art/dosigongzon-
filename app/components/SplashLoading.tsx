@@ -4,58 +4,53 @@ import { PawPrint } from "lucide-react";
 
 /**
  * 앱 초기 진입 / auth 체크 중 표시되는 브랜드 로딩 스크린.
+ * 2026-09-16 「익숙한 동네앱」 리디자인: 순백 바탕, 로고 라운드 12px·그림자 없음, 제목 700.
  */
 export default function SplashLoading() {
   return (
     <div
       className="fixed inset-0 flex flex-col items-center justify-center z-[90]"
       style={{
-        background: "#F5F3EE",
+        background: "var(--color-surface)",
       }}
     >
       {/* 로고 */}
       <div
-        className="relative w-[88px] h-[88px] rounded-[28px] flex items-center justify-center mb-5"
+        className="relative w-[72px] h-[72px] flex items-center justify-center mb-5"
         style={{
           background: "var(--color-primary)",
-          boxShadow:
-            "0 16px 40px rgba(176, 92, 54,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -3px 6px rgba(0,0,0,0.1)",
+          borderRadius: "var(--radius-card)",
+          color: "var(--color-surface)",
           animation: "splash-pulse 1.8s ease-in-out infinite",
         }}
       >
-        <PawPrint size={44} color="#fff" strokeWidth={1.8} />
+        <PawPrint size={36} strokeWidth={1.8} />
       </div>
 
       {/* 타이틀 */}
-      <h1 className="text-[24px] font-extrabold tracking-[-0.04em] leading-none mb-2">
+      <h1 className="text-[24px] font-bold tracking-tight leading-none mb-2">
         <span className="text-text-main">도시</span>
         <span className="text-primary">공존</span>
       </h1>
 
       {/* 서브 */}
-      <div className="flex items-center gap-2">
-        <div
-          className="w-5 h-[2px] rounded-full"
-          style={{ backgroundColor: "var(--color-primary)", opacity: 0.5 }}
-        />
-        <p className="text-[13px] font-bold text-text-sub tracking-[-0.01em]">
-          길 위의 아이들
-        </p>
-      </div>
+      <p className="text-[13px] text-text-sub">
+        길 위의 아이들
+      </p>
 
       {/* 로딩 점 */}
       <div className="flex items-center gap-1.5 mt-8">
         <span
           className="w-1.5 h-1.5 rounded-full animate-bounce"
-          style={{ backgroundColor: "var(--color-primary)", animationDelay: "0ms" }}
+          style={{ backgroundColor: "var(--color-gray-300)", animationDelay: "0ms" }}
         />
         <span
           className="w-1.5 h-1.5 rounded-full animate-bounce"
-          style={{ backgroundColor: "var(--color-primary)", animationDelay: "150ms" }}
+          style={{ backgroundColor: "var(--color-gray-300)", animationDelay: "150ms" }}
         />
         <span
           className="w-1.5 h-1.5 rounded-full animate-bounce"
-          style={{ backgroundColor: "var(--color-primary)", animationDelay: "300ms" }}
+          style={{ backgroundColor: "var(--color-gray-300)", animationDelay: "300ms" }}
         />
       </div>
 
@@ -66,7 +61,7 @@ export default function SplashLoading() {
             transform: scale(1);
           }
           50% {
-            transform: scale(1.06);
+            transform: scale(1.04);
           }
         }
       `}</style>

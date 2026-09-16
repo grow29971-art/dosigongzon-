@@ -15,6 +15,9 @@
 //    '현재 위치' 배지 + aria-current="page"로 표시한다(중복 자기링크 제거).
 //  - flag 게이팅은 호출부 책임: 이 컴포넌트는 표시 여부를 판단하지 않는다.
 //    P4 flag off / kill switch on일 때 호출부가 렌더하지 않는다.
+//
+// 2026-09-16 「익숙한 동네앱」 리디자인: 틴트 아이콘 박스·회색 면 행 → 흰 면 + 헤어라인 카드,
+// 회색 선 아이콘, 구분선 리스트 행. 계약 심볼·링크 동작은 그대로.
 // ══════════════════════════════════════════
 
 import Link from "next/link";
@@ -29,57 +32,61 @@ export default function CareTeamCard() {
   return (
     <section className="px-5 mt-5" aria-labelledby="care-team-heading">
       <div
-        className="rounded-2xl bg-white p-4"
-        style={{ boxShadow: "var(--shadow-card)" }}
+        className="overflow-hidden"
+        style={{
+          background: "var(--color-surface)",
+          borderRadius: "var(--radius-card)",
+          border: "1px solid var(--color-border)",
+        }}
       >
-        <div className="flex items-start gap-3">
-          <div
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-            style={{ background: "rgba(107,142,111,0.12)", color: "#4F6B53" }}
-          >
-            <Users size={20} aria-hidden="true" />
-          </div>
+        <div className="flex items-start gap-3 px-4 pt-4 pb-3">
+          <Users size={22} className="shrink-0 mt-0.5" style={{ color: "var(--color-text-sub)" }} strokeWidth={1.8} aria-hidden="true" />
           <div>
-            <h2 id="care-team-heading" className="text-[15px] font-bold text-text-main">
+            <h2 id="care-team-heading" className="text-[15px] font-semibold text-text-main">
               돌봄팀
             </h2>
-            <p className="mt-1 text-[13px] leading-relaxed text-text-sub">
+            <p className="mt-0.5 text-[13px] leading-snug text-text-sub">
               서클·동네 채팅·고양이 커뮤니티를 한 곳에서 오갈 수 있어요.
             </p>
           </div>
         </div>
-        <ul className="mt-3 space-y-2">
+        <ul>
           {careTeamSections().map((section) => {
             const isCurrent = currentKey === section.key;
             const label = (
               <span className="min-w-0">
-                <span className="block text-[13px] font-bold text-text-main">
+                <span className="block text-[15px] font-semibold text-text-main leading-snug">
                   {section.label}
                 </span>
-                <span className="block truncate text-[11px] text-text-sub">
+                <span className="block truncate text-[13px] text-text-sub mt-0.5">
                   {section.description}
                 </span>
               </span>
             );
             return (
-              <li key={section.key}>
+              <li key={section.key} style={{ borderTop: "1px solid var(--color-divider)" }}>
                 {isCurrent ? (
                   <div
-                    className="flex items-center justify-between rounded-xl bg-[#F7F4EE] px-3 py-2.5"
+                    className="flex items-center justify-between gap-3 px-4 py-3"
+                    style={{ minHeight: 56 }}
                     aria-current="page"
                   >
                     {label}
-                    <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[11px] font-bold text-text-sub">
+                    <span
+                      className="shrink-0 px-1.5 py-0.5 text-[11px] font-medium text-text-sub"
+                      style={{ borderRadius: "var(--radius-square)", border: "1px solid var(--color-border)" }}
+                    >
                       현재 위치
                     </span>
                   </div>
                 ) : (
                   <Link
                     href={section.href}
-                    className="flex items-center justify-between rounded-xl bg-[#F7F4EE] px-3 py-2.5 press"
+                    className="flex items-center justify-between gap-3 px-4 py-3 press"
+                    style={{ minHeight: 56 }}
                   >
                     {label}
-                    <ChevronRight size={16} className="shrink-0 text-text-sub" aria-hidden="true" />
+                    <ChevronRight size={18} className="shrink-0" style={{ color: "var(--color-text-muted)" }} aria-hidden="true" />
                   </Link>
                 )}
               </li>

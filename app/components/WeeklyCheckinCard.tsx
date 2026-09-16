@@ -4,8 +4,10 @@
 // 2026-08-29 게임 요소 제거로, 출석 스탬프(checkin_days) 대신 그날 care_logs가 있으면 스탬프.
 // 3일 50P / 5일 100P / 7일 150P — 포인트는 쇼핑몰에서 1P=1원 할인.
 // 서버(claim-weekly/route.ts)의 MILESTONES와 반드시 같은 값 유지.
+// 2026-09-16 「익숙한 동네앱」 리디자인: 이모지 스탬프 → 체크 아이콘, 색은 토큰만, 헤어라인 카드.
 
 import { useEffect, useState } from "react";
+import { Check } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { thisMondayKstDate, thisMondayKstISO, kstToday, toKstDate, isoWeekKey } from "@/lib/kst";
 
@@ -96,22 +98,20 @@ export default function WeeklyCheckinCard() {
     <div
       className="mb-4 p-4"
       style={{
-        background: "#FFFFFF",
+        background: "var(--color-surface)",
         borderRadius: "var(--radius-card)",
-        border: "1px solid var(--color-divider)",
-        boxShadow: "var(--shadow-card-sm)",
+        border: "1px solid var(--color-border)",
       }}
     >
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="text-[17px]">🗓️</span>
           {/* "출석"(게임 용어) → "돌봄"(행동 용어) 재프레이밍 (2026-08-29 PMF 개편) */}
-          <h3 className="text-[15px] font-bold text-text-main tracking-tight">이번 주 돌봄</h3>
-          <span className="text-[11px] font-bold text-text-light">{dayCount}/7일</span>
+          <h3 className="text-[15px] font-semibold text-text-main">이번 주 돌봄</h3>
+          <span className="text-[13px] text-text-light tabular-nums">{dayCount}/7일</span>
         </div>
         <span
-          className="text-[11px] font-bold px-2.5 py-1 rounded-full tabular-nums"
-          style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}
+          className="text-[13px] font-semibold px-2 py-0.5 tabular-nums text-text-main"
+          style={{ borderRadius: "var(--radius-square)", background: "var(--color-surface-alt)" }}
         >
           {balance.toLocaleString()}P
         </span>
@@ -125,15 +125,19 @@ export default function WeeklyCheckinCard() {
           return (
             <div key={label} className="flex flex-col items-center gap-1">
               <div
-                className="w-full aspect-square rounded-xl flex items-center justify-center text-[15px]"
+                className="w-full aspect-square flex items-center justify-center"
                 style={{
-                  background: done ? "rgba(34,163,102,0.12)" : "var(--color-surface-alt)",
-                  border: isToday ? "1.5px solid var(--color-primary)" : "1.5px solid transparent",
+                  borderRadius: "var(--radius-card-sm)",
+                  background: done ? "var(--color-primary)" : "var(--color-surface)",
+                  color: "var(--color-surface)",
+                  border: done
+                    ? "1px solid var(--color-primary)"
+                    : `1px solid ${isToday ? "var(--color-primary)" : "var(--color-border)"}`,
                 }}
               >
-                {done ? "🐾" : ""}
+                {done && <Check size={14} strokeWidth={3} />}
               </div>
-              <span className={`text-[9px] font-bold ${isToday ? "text-primary" : "text-text-light"}`}>{label}</span>
+              <span className={`text-[11px] ${isToday ? "text-primary font-semibold" : "text-text-light"}`}>{label}</span>
             </div>
           );
         })}
@@ -148,10 +152,11 @@ export default function WeeklyCheckinCard() {
             return (
               <span
                 key={m.days}
-                className="flex-1 text-center text-[11px] font-bold py-1.5 rounded-lg tabular-nums"
+                className="flex-1 text-center text-[11px] font-medium py-1.5 tabular-nums"
                 style={{
-                  background: got ? "rgba(34,163,102,0.12)" : reached ? "rgba(255,169,39,0.16)" : "var(--color-surface-alt)",
-                  color: got ? "#22A366" : reached ? "#E8930C" : "var(--color-text-muted)",
+                  borderRadius: "var(--radius-square)",
+                  background: got ? "var(--color-sage-soft)" : "var(--color-surface-alt)",
+                  color: got ? "var(--color-sage)" : reached ? "var(--color-text-main)" : "var(--color-text-light)",
                 }}
               >
                 {got ? "✓ " : ""}{m.days}일 {m.points}P
@@ -163,8 +168,8 @@ export default function WeeklyCheckinCard() {
           <button
             onClick={claim}
             disabled={claiming}
-            className="shrink-0 px-3.5 py-1.5 rounded-xl text-[13px] font-bold text-white press-strong transition-transform"
-            style={{ background: "var(--color-primary)" }}
+            className="shrink-0 h-8 px-3 text-[13px] font-semibold press-strong transition-transform"
+            style={{ borderRadius: "var(--radius-input)", background: "var(--color-primary)", color: "var(--color-surface)" }}
           >
             {claiming ? "받는 중…" : `+${claimableSum}P 받기`}
           </button>
@@ -172,8 +177,8 @@ export default function WeeklyCheckinCard() {
       </div>
 
       {justGranted > 0 && (
-        <p className="text-[11px] font-bold text-center mt-2" style={{ color: "#22A366" }}>
-          🎉 {justGranted}P 적립! 쇼핑에서 1P=1원으로 쓸 수 있어요
+        <p className="text-[13px] font-medium text-center mt-2" style={{ color: "var(--color-sage)" }}>
+          {justGranted}P 적립! 쇼핑에서 1P=1원으로 쓸 수 있어요
         </p>
       )}
       <p className="text-[11px] text-text-light mt-2 text-center">

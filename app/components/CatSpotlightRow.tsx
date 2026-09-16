@@ -1,14 +1,16 @@
 "use client";
 
-// 고양이 스포트라이트 가로 카드 줄 + ❤️ 지켜보기 토글 (STEP2, 2026-09-02)
+// 고양이 스포트라이트 가로 줄 + 지켜보기(하트) 토글 (STEP2, 2026-09-02)
 // - cats prop이 있으면 그대로 렌더(랜딩: 서버 프리페치), 없으면 cats_public_map에서 자체 조회(로그인 홈).
 // - 하트는 기존 cat_likes를 재사용(toggleCatLike) — 별도 테이블 신설 없음.
 //   비로그인이 누르면 해당 고양이로 돌아오는 가입 동선으로 보낸다.
+// 2026-09-16 「익숙한 동네앱」 리디자인: 사진은 원형·크게(84px), 상태 배지는 이름 아래 글자로
+// (위험=error·주의=warning), 사진 없으면 마커 아트 SVG.
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Heart, PawPrint } from "lucide-react";
+import { Heart } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -19,12 +21,20 @@ import {
   type CatHealthStatus,
 } from "@/lib/cats-repo";
 import { sanitizeImageUrl } from "@/lib/url-validate";
+import { catArtWalkSvg } from "@/lib/cat-art";
 
 export type SpotlightCat = {
   id: string;
   name: string;
   photo_url: string | null;
   health_status: string;
+};
+
+// 상태별 글자색 — 의미색 토큰만 (양호는 강조 없음)
+const HEALTH_TEXT: Record<CatHealthStatus, string> = {
+  good: "var(--color-text-light)",
+  caution: "var(--color-warning)",
+  danger: "var(--color-error)",
 };
 
 export default function CatSpotlightRow({
@@ -113,53 +123,59 @@ export default function CatSpotlightRow({
 
   return (
     <section className={className}>
-      <div className="px-5 flex items-center gap-1.5 mb-2.5">
-        <PawPrint size={14} style={{ color: "var(--color-primary)" }} />
-        <h2 className="text-[15px] font-bold text-text-main tracking-tight">{title}</h2>
+      <div className="px-5 mb-3">
+        <h2 className="text-[17px] font-bold text-text-main">{title}</h2>
       </div>
-      <div className="flex gap-2.5 overflow-x-auto no-scrollbar px-5 pb-1">
+      <div className="flex gap-4 overflow-x-auto no-scrollbar px-5 pb-1">
         {items.map((c) => {
-          const h = HEALTH_MAP[c.health_status as CatHealthStatus] ?? HEALTH_MAP.good;
-          const safe = sanitizeImageUrl(c.photo_url, "https://placehold.co/240x240/EEEAE2/2A2A28?text=%3F");
-          const photo = thumbnailUrl(safe, 240) ?? safe;
+          const status: CatHealthStatus = c.health_status in HEALTH_MAP ? (c.health_status as CatHealthStatus) : "good";
+          const h = HEALTH_MAP[status];
+          const safe = sanitizeImageUrl(c.photo_url, "");
+          const photo = safe ? thumbnailUrl(safe, 240) ?? safe : "";
           const isLiked = liked.has(c.id);
           return (
-            <Link key={c.id} href={`/cats/${c.id}`} className="shrink-0 w-[104px] press transition-transform">
-              <div
-                className="relative rounded-2xl overflow-hidden"
-                style={{ boxShadow: "var(--shadow-card-sm)" }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={photo}
-                  alt={c.name}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-[104px] h-[104px] object-cover"
-                />
-                <span
-                  className="absolute top-1.5 left-1.5 text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full"
-                  style={{ backgroundColor: h.color }}
-                >
-                  {h.label}
-                </span>
+            <Link key={c.id} href={`/cats/${c.id}`} className="shrink-0 w-[84px] press transition-transform">
+              <div className="relative w-[84px] h-[84px]">
+                {photo ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={photo}
+                    alt={c.name}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-[84px] h-[84px] rounded-full object-cover"
+                    style={{ border: "1px solid var(--color-border)" }}
+                  />
+                ) : (
+                  <div
+                    aria-hidden="true"
+                    className="w-[84px] h-[84px] rounded-full flex items-center justify-center overflow-hidden"
+                    style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+                    dangerouslySetInnerHTML={{ __html: catArtWalkSvg(c.id, 60, { walking: false }) }}
+                  />
+                )}
                 <button
                   type="button"
                   onClick={(e) => handleHeart(e, c.id)}
                   disabled={busyId === c.id}
                   aria-label={isLiked ? `${c.name} 지켜보기 해제` : `${c.name} 지켜보기`}
-                  className="absolute bottom-1.5 right-1.5 w-7 h-7 rounded-full flex items-center justify-center press-strong disabled:opacity-60"
-                  style={{ background: "rgba(255,255,255,0.92)", boxShadow: "0 1px 4px rgba(0,0,0,0.15)" }}
+                  className="absolute -bottom-0.5 -right-0.5 w-7 h-7 rounded-full flex items-center justify-center press-strong disabled:opacity-60"
+                  style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
                 >
                   <Heart
                     size={14}
-                    color={isLiked ? "#E0533D" : "var(--color-text-sub)"}
-                    fill={isLiked ? "#E0533D" : "none"}
-                    strokeWidth={2.2}
+                    color={isLiked ? "var(--color-like)" : "var(--color-text-sub)"}
+                    fill={isLiked ? "var(--color-like)" : "none"}
+                    strokeWidth={2}
                   />
                 </button>
               </div>
-              <p className="mt-1.5 text-[12px] font-bold text-text-main text-center truncate">{c.name}</p>
+              <p className="mt-2 text-[13px] font-semibold text-text-main text-center truncate">{c.name}</p>
+              {status !== "good" && (
+                <p className="text-[11px] font-medium text-center" style={{ color: HEALTH_TEXT[status] }}>
+                  {h.label}
+                </p>
+              )}
             </Link>
           );
         })}

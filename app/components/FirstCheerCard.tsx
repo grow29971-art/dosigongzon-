@@ -4,11 +4,13 @@
 // 가장 낮은 마찰의 첫 기여 = 우리 동네 실제 고양이에게 1탭 '응원(좋아요)'.
 // 거울효과(다른 아이를 먼저 봄) + 심리적 투자 → 응원하면 '고양이 등록'으로 escalation.
 // 고양이를 1마리라도 등록하면 catCount>0이 되어 이 카드는 자연히 사라짐(부모 게이트).
+// 2026-09-16 「익숙한 동네앱」 리디자인: 분홍 틴트·글로우 → 흰 면 + 헤어라인, 원형 썸네일, 하트만 like 의미색.
 
 import { useState } from "react";
 import Link from "next/link";
-import { Heart, PawPrint, ChevronRight } from "lucide-react";
+import { Heart, ChevronRight } from "lucide-react";
 import { toggleCatLike, thumbnailUrl, type Cat } from "@/lib/cats-repo";
+import { catArtWalkSvg } from "@/lib/cat-art";
 
 export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regionName: string | null }) {
   const [liked, setLiked] = useState<Set<string>>(new Set());
@@ -43,57 +45,63 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
     <div
       className="mb-3 p-4"
       style={{
-        background: "#FFF3F6",
+        background: "var(--color-surface)",
         borderRadius: "var(--radius-card)",
-        border: "1px solid var(--color-like-soft)",
-        boxShadow: "0 6px 20px var(--color-like-soft)",
+        border: "1px solid var(--color-border)",
       }}
     >
-      <div className="flex items-start gap-2.5 mb-3">
-        <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-lg" style={{ background: "var(--color-like)" }}>
-          🐾
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-bold tracking-[0.12em]" style={{ color: "var(--color-like)" }}>첫 발걸음</p>
-          <p className="text-[15px] font-bold text-text-main leading-tight mt-0.5">
-            {cheered
-              ? "응원 고마워요! 🎉"
-              : `${regionName ? regionName + " " : "우리 동네 "}고양이에게 응원을 보내보세요`}
-          </p>
-          <p className="text-[13px] text-text-sub mt-0.5 leading-snug">
-            {cheered ? "이제 직접 돌보는 아이도 등록해볼까요?" : "하트 한 번이면 돼요 — 가장 쉬운 첫 참여 🩷"}
-          </p>
-        </div>
+      <div className="mb-3">
+        <p className="text-[11px] font-medium text-text-light">첫 발걸음</p>
+        <p className="text-[15px] font-semibold text-text-main leading-snug mt-0.5">
+          {cheered
+            ? "응원 고마워요!"
+            : `${regionName ? regionName + " " : "우리 동네 "}고양이에게 응원을 보내보세요`}
+        </p>
+        <p className="text-[13px] text-text-sub mt-0.5 leading-snug">
+          {cheered ? "이제 직접 돌보는 아이도 등록해볼까요?" : "하트 한 번이면 돼요 — 가장 쉬운 첫 참여"}
+        </p>
       </div>
 
-      {/* 동네 고양이 카드 (최대 3) */}
-      <div className="flex gap-2.5">
+      {/* 동네 고양이 (최대 3) — 원형 썸네일 + 이름 + 하트 */}
+      <div className="flex gap-3">
         {cats.map((c) => {
           const isLiked = liked.has(c.id);
           const thumb = thumbnailUrl(c.photo_url, 160);
           return (
-            <div key={c.id} className="flex-1 min-w-0 rounded-2xl overflow-hidden bg-white" style={{ border: "1px solid var(--color-divider)" }}>
-              <Link href={`/cats/${c.id}`} className="block relative" style={{ aspectRatio: "1 / 1" }}>
+            <div key={c.id} className="flex-1 min-w-0 flex flex-col items-center">
+              <Link
+                href={`/cats/${c.id}`}
+                className="block w-16 h-16 rounded-full overflow-hidden"
+                style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+              >
                 {thumb ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={thumb} alt={c.name} loading="lazy" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-2xl" style={{ background: "#F4E6CE" }}>🐱</div>
+                  <span
+                    aria-hidden="true"
+                    className="w-full h-full flex items-center justify-center"
+                    dangerouslySetInnerHTML={{ __html: catArtWalkSvg(c.id, 44, { walking: false }) }}
+                  />
                 )}
               </Link>
-              <div className="flex items-center justify-between px-2 py-1.5 gap-1">
-                <span className="text-[11px] font-bold truncate" style={{ color: "#2A2A28" }}>{c.name}</span>
-                <button
-                  type="button"
-                  onClick={() => cheer(c.id)}
-                  disabled={busy === c.id}
-                  className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 press-strong transition-transform"
-                  style={{ background: isLiked ? "var(--color-like)" : "var(--color-like-soft)" }}
-                  aria-label={`${c.name} 응원하기`}
-                >
-                  <Heart size={14} fill={isLiked ? "#fff" : "none"} style={{ color: isLiked ? "#fff" : "var(--color-like)" }} strokeWidth={2.4} />
-                </button>
-              </div>
+              <span className="text-[13px] font-medium text-text-main truncate w-full text-center mt-1.5">{c.name}</span>
+              <button
+                type="button"
+                onClick={() => cheer(c.id)}
+                disabled={busy === c.id}
+                className="mt-1 h-8 px-3 flex items-center justify-center gap-1 press-strong transition-transform"
+                style={{
+                  borderRadius: "var(--radius-input)",
+                  background: isLiked ? "var(--color-like-soft)" : "var(--color-surface)",
+                  border: `1px solid ${isLiked ? "transparent" : "var(--color-border)"}`,
+                  color: isLiked ? "var(--color-like)" : "var(--color-text-sub)",
+                }}
+                aria-label={`${c.name} 응원하기`}
+              >
+                <Heart size={14} fill={isLiked ? "var(--color-like)" : "none"} strokeWidth={2} />
+                <span className="text-[13px] font-medium">응원</span>
+              </button>
             </div>
           );
         })}
@@ -102,10 +110,10 @@ export default function FirstCheerCard({ cats, regionName }: { cats: Cat[]; regi
       {cheered && (
         <Link
           href="/map"
-          className="mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white text-[13px] font-bold press transition-transform"
-          style={{ background: "var(--color-primary)" }}
+          className="mt-3 h-10 flex items-center justify-center gap-1 text-[15px] font-semibold press transition-transform"
+          style={{ borderRadius: "var(--radius-input)", background: "var(--color-primary)", color: "var(--color-surface)" }}
         >
-          <PawPrint size={14} /> 우리 동네 고양이 등록하기 <ChevronRight size={13} />
+          우리 동네 고양이 등록하기 <ChevronRight size={15} />
         </Link>
       )}
     </div>

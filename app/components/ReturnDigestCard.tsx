@@ -4,6 +4,7 @@
 // 돌아온 순간에 행동 요구보다 보상이 먼저 오도록 홈 최상단에 배치.
 // 데이터는 기존 알림 피드(getNotifications)를 재사용해 지난 방문 이후 건만 추린다.
 // 새 일이 없으면 카드 자체를 렌더하지 않는다(빈 카드 금지 — 디자인 회의 원칙).
+// 2026-09-16 「익숙한 동네앱」 리디자인: primary 틴트 → 흰 면 + 헤어라인.
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -49,25 +50,25 @@ export default function ReturnDigestCard({ lastVisitAt }: { lastVisitAt: number 
       <div
         className="mb-4 px-4 py-3.5"
         style={{
-          background: "var(--color-primary-soft)",
-          borderRadius: "var(--radius-card-sm)",
-          border: "1px solid rgba(176,92,54,0.14)",
+          background: "var(--color-surface)",
+          borderRadius: "var(--radius-card)",
+          border: "1px solid var(--color-border)",
         }}
       >
         <div className="flex items-center gap-1.5 mb-2">
-          <MailOpen size={14} style={{ color: "var(--color-primary)" }} />
-          <p className="text-[13px] font-bold" style={{ color: "var(--color-primary-dark)" }}>
+          <MailOpen size={15} style={{ color: "var(--color-text-sub)" }} />
+          <p className="text-[15px] font-semibold text-text-main">
             다녀간 사이
           </p>
           <span className="flex-1" />
-          <span className="text-[11px] font-bold text-text-sub flex items-center gap-0.5">
-            보러 가기 <ChevronRight size={12} />
+          <span className="text-[13px] font-medium text-text-light flex items-center gap-0.5">
+            보러 가기 <ChevronRight size={13} />
           </span>
         </div>
         <div className="space-y-1">
           {items.map((n) => (
             <p key={n.id} className="text-[13px] text-text-main truncate">
-              <b>{n.actorName}</b>
+              <b className="font-semibold">{n.actorName}</b>
               <span className="text-text-sub">
                 {"님이 "}
                 {n.targetName && <>『{n.targetName}』에 </>}

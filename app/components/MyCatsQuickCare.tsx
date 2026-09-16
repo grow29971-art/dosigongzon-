@@ -4,6 +4,7 @@
 // 핵심 루프(돌봄 기록) 마찰 직격: 지도→고양이→탭→입력→저장(5+단계) → 홈에서 1탭.
 // 오늘 이미 줬으면 ✓ 잠금(이중 기록 방지). 더 자세히는 지도/고양이 상세에서.
 // 데이터: 내 고양이 fetch + 오늘 내 care_logs fetch, 마운트 1회.
+// 2026-09-16 「익숙한 동네앱」 리디자인: 틴트 카드 → 흰 면 + 헤어라인, 원형 썸네일, 색은 토큰만.
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -11,6 +12,7 @@ import { Check, ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { createCareLog } from "@/lib/care-logs-repo";
 import { thumbnailUrl } from "@/lib/cats-repo";
+import { catArtWalkSvg } from "@/lib/cat-art";
 import { kstTodayStartIso } from "@/lib/kst";
 
 interface CatRow {
@@ -75,23 +77,22 @@ export default function MyCatsQuickCare() {
     <div
       className="mb-3 p-4"
       style={{
-        background: "#FFF6E8",
+        background: "var(--color-surface)",
         borderRadius: "var(--radius-card)",
-        border: "1px solid rgba(232,141,90,0.25)",
-        boxShadow: "var(--shadow-fab)",
+        border: "1px solid var(--color-border)",
       }}
     >
-      <div className="flex items-center justify-between mb-2.5">
+      <div className="flex items-center justify-between mb-3">
         <div className="min-w-0">
-          <p className="text-[11px] font-bold tracking-[0.15em]" style={{ color: "var(--color-primary-dark)" }}>내 아이 오늘 한 끼</p>
+          <p className="text-[15px] font-semibold text-text-main">내 아이 오늘 한 끼</p>
           <p className="text-[13px] text-text-sub mt-0.5">탭 한 번이면 끝 — 메모·사진 없이도 OK</p>
         </div>
-        <p className="text-[13px] font-bold shrink-0" style={{ color: "var(--color-primary-dark)" }}>
-          <span style={{ color: doneCount === cats.length ? "#6B8E6F" : "#E88D5A" }}>{doneCount}</span>/{cats.length}
+        <p className="text-[13px] font-semibold shrink-0 tabular-nums text-text-main">
+          <span style={{ color: doneCount === cats.length ? "var(--color-sage)" : "var(--color-primary)" }}>{doneCount}</span>/{cats.length}
         </p>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+      <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
         {cats.map((c) => {
           const thumb = thumbnailUrl(c.photo_url, 96);
           return (
@@ -100,29 +101,30 @@ export default function MyCatsQuickCare() {
                 <div
                   className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center"
                   style={{
-                    background: "#F4E6CE",
-                    border: c.fedToday ? "2px solid #6B8E6F" : "2px solid rgba(176, 92, 54,0.3)",
+                    background: "var(--color-surface-alt)",
+                    border: c.fedToday ? "2px solid var(--color-sage)" : "1px solid var(--color-border)",
                   }}
                 >
                   {thumb ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={thumb} alt={c.name} loading="lazy" className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-xl">🐱</span>
+                    <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: catArtWalkSvg(c.id, 40, { walking: false }) }} />
                   )}
                 </div>
               </Link>
-              <p className="text-[11px] font-bold text-center mt-1 truncate w-full" style={{ color: "#2A2A28" }}>
+              <p className="text-[13px] font-medium text-text-main text-center mt-1 truncate w-full">
                 {c.name}
               </p>
               <button
                 type="button"
                 onClick={() => feed(c.id)}
                 disabled={c.fedToday || c.busy}
-                className="mt-1 h-7 px-2.5 rounded-full flex items-center justify-center gap-0.5 press-strong transition-transform"
+                className="mt-1 h-7 px-2.5 flex items-center justify-center gap-0.5 press-strong transition-transform"
                 style={{
-                  background: c.fedToday ? "#6B8E6F" : "#E88D5A",
-                  color: "#fff",
+                  borderRadius: "var(--radius-input)",
+                  background: c.fedToday ? "var(--color-surface-alt)" : "var(--color-primary)",
+                  color: c.fedToday ? "var(--color-text-light)" : "var(--color-surface)",
                   opacity: c.busy ? 0.6 : 1,
                   cursor: c.fedToday ? "default" : "pointer",
                 }}
@@ -131,10 +133,10 @@ export default function MyCatsQuickCare() {
                 {c.fedToday ? (
                   <>
                     <Check size={11} strokeWidth={3} />
-                    <span className="text-[11px] font-bold">완료</span>
+                    <span className="text-[11px] font-semibold">완료</span>
                   </>
                 ) : (
-                  <span className="text-[11px] font-bold">🍚 한 끼</span>
+                  <span className="text-[11px] font-semibold">한 끼</span>
                 )}
               </button>
             </div>
@@ -144,8 +146,8 @@ export default function MyCatsQuickCare() {
 
       <Link
         href="/map"
-        className="mt-2 flex items-center justify-center gap-1 text-[11px] font-bold py-1.5"
-        style={{ color: "var(--color-primary-dark)" }}
+        className="mt-2 flex items-center justify-center gap-1 text-[13px] font-medium py-1.5"
+        style={{ color: "var(--color-primary)" }}
       >
         더 자세히 기록(사진·메모·종류) <ChevronRight size={12} />
       </Link>

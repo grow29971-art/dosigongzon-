@@ -1,5 +1,6 @@
 // 세계 고양이의 날 보신각 집회 홍보 배너 (2026-08-08 오후 4시, 주최 헬프캣츠 · 후원 도시공존)
 // 홈 최상단(로그인/비로그인 공통) 노출 — 집회 다음 날부터 자동 숨김
+// 2026-09-16 「익숙한 동네앱」 리디자인: 그림자 없이 헤어라인, 라운드 12px.
 import Image from "next/image";
 import RallyJoinButton from "@/app/components/RallyJoinButton";
 
@@ -15,10 +16,9 @@ export default function RallyPosterBanner() {
         rel="noopener"
         className="block press transition-transform"
         style={{
-          borderRadius: "var(--radius-modal)",
+          borderRadius: "var(--radius-card)",
           overflow: "hidden",
-          boxShadow: "var(--shadow-primary)",
-          border: "1px solid var(--color-divider)",
+          border: "1px solid var(--color-border)",
         }}
       >
         <Image

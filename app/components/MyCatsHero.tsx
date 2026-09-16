@@ -1,18 +1,20 @@
 "use client";
 
-// 홈 히어로 — 내 고양이 대형 스와이프 카드 (2026-07-10 홈 개편)
-// 홈 최상단에서 "내 아이들"이 가장 먼저 보이게. 사진 크게 + 오늘 밥 상태 + 1탭 밥주기.
-// 데이터 로직은 MyCatsQuickCare와 동일(내 고양이 + 오늘 care_logs), UI만 히어로 카드.
+// 홈 — 내 고양이 오늘 돌봄 리스트 (2026-07-10 홈 개편 → 2026-09-16 「익숙한 동네앱」 리디자인)
+// 홈 최상단에서 "내 아이들"이 가장 먼저 보이게. 원형 사진 + 오늘 밥 상태 + 1탭 밥주기.
+// 데이터 로직은 MyCatsQuickCare와 동일(내 고양이 + 오늘 care_logs). UI는 당근·토스 구분선 리스트
+// (행 64px, 좌 원형 썸네일·중앙 2줄·우 버튼) — 대형 사진 카드·그라디언트는 폐기.
 // 고양이 0마리면 null — 신규 유저는 FirstCheerCard/OnboardingCard가 담당.
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Check, ChevronRight, PawPrint, Plus, X } from "lucide-react";
+import { Check, ChevronRight, Plus, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { createCareLog, type CareType } from "@/lib/care-logs-repo";
 import { thumbnailUrl } from "@/lib/cats-repo";
+import { catArtWalkSvg } from "@/lib/cat-art";
 import { sanitizeImageUrl } from "@/lib/url-validate";
 import { kstTodayStartIso } from "@/lib/kst";
 import { prioritizePendingFeed, countPendingFeed } from "@/lib/care-inbox";
@@ -26,6 +28,7 @@ interface CatRow {
 }
 
 // 홈에서 1탭으로 기록 가능한 퀵 돌봄 (메모/사진 필요한 유형은 상세 페이지에서)
+// emoji 필드는 데이터 계약상 유지, 화면에는 그리지 않는다(리디자인 2026-09-16).
 const QUICK_CARE: { type: CareType; emoji: string; label: string }[] = [
   { type: "water", emoji: "💧", label: "물 줌" },
   { type: "treat", emoji: "🍗", label: "간식 줌" },
@@ -40,7 +43,7 @@ interface MyCatsHeroProps {
 export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
   const router = useRouter();
   const [cats, setCats] = useState<CatRow[] | null>(null);
-  const [moreOpen, setMoreOpen] = useState<string | null>(null); // 퀵 돌봄 오버레이 열린 고양이 id
+  const [moreOpen, setMoreOpen] = useState<string | null>(null); // 퀵 돌봄 펼침 열린 고양이 id
 
   useEffect(() => {
     let cancelled = false;
@@ -53,7 +56,7 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
         .select("id, name, photo_url")
         .eq("caretaker_id", user.id)
         // 고양이별로 보낸 아이 제외 (2026-08-09). 이게 없으면 떠난 아이가
-        // "오늘의 돌봄"에 남아 매일 아침 "🍚 밥주기" 버튼을 내민다.
+        // "오늘의 돌봄"에 남아 매일 아침 "밥주기" 버튼을 내민다.
         .is("memorial_at", null)
         .order("created_at", { ascending: false })
         .limit(10);
@@ -114,93 +117,84 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
   return (
     <div className="mb-5">
       {/* 섹션 헤더 */}
-      <div className="flex items-center justify-between mb-3 px-1">
+      <div className="flex items-center justify-between mb-2 px-1">
         <div className="flex items-center gap-2">
-          <h2 className="text-[17px] font-bold text-text-main tracking-tight">
+          <h2 className="text-[17px] font-bold text-text-main">
             {careInboxMode && pendingCount > 0 ? "오늘의 돌봄" : "내 아이들"}
           </h2>
-          <span
-            className="text-[11px] font-bold px-2 py-0.5 chip-square"
-            style={{ background: "var(--color-primary-soft)", color: "var(--color-primary)" }}
-          >
+          <span className="text-[13px] text-text-light tabular-nums">
             {careInboxMode && pendingCount > 0
               ? `아직 ${pendingCount}마리`
               : `${doneCount}/${cats.length} 오늘 밥`}
           </span>
         </div>
-        <Link href="/mypage" className="flex items-center gap-0.5 text-[13px] font-bold text-text-light">
+        <Link href="/mypage" className="flex items-center gap-0.5 text-[13px] font-medium text-text-light">
           전체보기 <ChevronRight size={13} />
         </Link>
       </div>
 
-      {/* 가로 스와이프 카드 */}
+      {/* 구분선 리스트 */}
       <div
-        className="flex gap-3 overflow-x-auto no-scrollbar -mx-5 px-5 pb-1"
-        style={{ scrollSnapType: "x mandatory" }}
+        className="overflow-hidden"
+        style={{
+          background: "var(--color-surface)",
+          borderRadius: "var(--radius-card)",
+          border: "1px solid var(--color-border)",
+        }}
       >
-        {displayedCats.map((cat) => {
+        {displayedCats.map((cat, idx) => {
           const photo = cat.photo_url
-            ? sanitizeImageUrl(thumbnailUrl(cat.photo_url, 480) ?? cat.photo_url, "")
+            ? sanitizeImageUrl(thumbnailUrl(cat.photo_url, 160) ?? cat.photo_url, "")
             : "";
           const fedToday = cat.doneTypes.includes("feed");
+          const open = moreOpen === cat.id;
           return (
-            <div
-              key={cat.id}
-              className="relative shrink-0 overflow-hidden press transition-transform"
-              style={{
-                width: 168,
-                aspectRatio: "3 / 4",
-                borderRadius: "var(--radius-card)",
-                scrollSnapAlign: "start",
-                background: "var(--color-surface-alt)",
-                boxShadow: "var(--shadow-raised)",
-              }}
-            >
-              {/* 사진 (탭 → 상세) */}
-              <button
-                className="absolute inset-0 w-full h-full text-left"
-                onClick={() => router.push(`/cats/${cat.id}`)}
-                aria-label={`${cat.name} 상세 보기`}
-              >
-                {photo ? (
-                  <Image src={photo} alt={cat.name} fill className="object-cover" sizes="168px" />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <PawPrint size={44} style={{ color: "rgba(176, 92, 54,0.25)" }} />
-                  </div>
-                )}
-                {/* 하단 그라디언트 */}
-                <div
-                  className="absolute inset-x-0 bottom-0"
-                  style={{ height: "55%", background: "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0) 100%)" }}
-                />
-              </button>
+            <div key={cat.id} style={{ borderTop: idx > 0 ? "1px solid var(--color-divider)" : "none" }}>
+              <div className="flex items-center gap-3 px-4" style={{ minHeight: 64 }}>
+                {/* 원형 썸네일 (탭 → 상세) */}
+                <button
+                  type="button"
+                  className="relative shrink-0 w-12 h-12 rounded-full overflow-hidden press-strong"
+                  style={{ background: "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+                  onClick={() => router.push(`/cats/${cat.id}`)}
+                  aria-label={`${cat.name} 상세 보기`}
+                >
+                  {photo ? (
+                    <Image src={photo} alt={cat.name} fill className="object-cover" sizes="48px" />
+                  ) : (
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-0 flex items-center justify-center"
+                      dangerouslySetInnerHTML={{ __html: catArtWalkSvg(cat.id, 36, { walking: false }) }}
+                    />
+                  )}
+                </button>
 
-              {/* 오늘 상태 칩 */}
-              <span
-                className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-1 chip-square text-[11px] font-bold pointer-events-none"
-                style={{
-                  background: fedToday ? "rgba(34,163,102,0.92)" : "rgba(255,255,255,0.92)",
-                  color: fedToday ? "#fff" : "var(--color-text-sub)",
-                }}
-              >
-                {fedToday ? <>✓ 오늘 밥</> : <>🍚 아직 전</>}
-              </span>
+                {/* 이름 + 오늘 상태 */}
+                <button
+                  type="button"
+                  className="flex-1 min-w-0 text-left py-3"
+                  onClick={() => router.push(`/cats/${cat.id}`)}
+                >
+                  <p className="text-[15px] font-semibold text-text-main truncate leading-snug">{cat.name}</p>
+                  <p
+                    className="text-[13px] mt-0.5 leading-snug"
+                    style={{ color: fedToday ? "var(--color-sage)" : "var(--color-text-sub)" }}
+                  >
+                    {fedToday ? "오늘 밥 완료" : "아직 밥 전"}
+                  </p>
+                </button>
 
-              {/* 이름 + 밥주기/돌봄 버튼 */}
-              <div className="absolute inset-x-0 bottom-0 px-3 pb-3 pointer-events-none">
-                <p className="text-[17px] font-bold text-white drop-shadow tracking-tight mb-2 truncate">
-                  {cat.name}
-                </p>
-                <div className="flex gap-1.5">
+                {/* 밥주기 + 더보기 */}
+                <div className="flex items-center gap-1.5 shrink-0">
                   <button
                     onClick={(e) => { e.stopPropagation(); if (!fedToday && !cat.busy) logCare(cat.id, "feed"); }}
                     disabled={fedToday || cat.busy}
-                    className="flex-1 min-w-0 py-2 rounded-xl text-[13px] font-bold flex items-center justify-center gap-1 press-strong transition-transform pointer-events-auto"
+                    className="h-8 px-3 text-[13px] font-semibold flex items-center justify-center gap-1 press-strong transition-transform disabled:opacity-100"
                     style={{
-                      background: fedToday ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.95)",
-                      color: fedToday ? "#fff" : "var(--color-text-main)",
-                      backdropFilter: "blur(4px)",
+                      borderRadius: "var(--radius-input)",
+                      background: fedToday ? "var(--color-surface-alt)" : "var(--color-primary)",
+                      color: fedToday ? "var(--color-text-light)" : "var(--color-surface)",
                     }}
                   >
                     {cat.busy ? (
@@ -212,32 +206,22 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
                     )}
                   </button>
                   <button
-                    onClick={(e) => { e.stopPropagation(); setMoreOpen(moreOpen === cat.id ? null : cat.id); }}
+                    onClick={(e) => { e.stopPropagation(); setMoreOpen(open ? null : cat.id); }}
                     aria-label={`${cat.name} 다른 돌봄 기록`}
-                    className="shrink-0 w-[34px] rounded-xl flex items-center justify-center press-strong transition-transform pointer-events-auto"
-                    style={{ background: "rgba(255,255,255,0.28)", backdropFilter: "blur(4px)" }}
+                    aria-expanded={open}
+                    className="w-8 h-8 rounded-full flex items-center justify-center press-strong transition-transform"
+                    style={{ background: "var(--color-surface-alt)", color: "var(--color-text-sub)" }}
                   >
-                    <Plus size={15} strokeWidth={3} className="text-white" />
+                    {open ? <X size={15} strokeWidth={2.5} /> : <Plus size={15} strokeWidth={2.5} />}
                   </button>
                 </div>
               </div>
 
-              {/* 퀵 돌봄 오버레이 (물/간식/건강/쉼터) */}
-              {moreOpen === cat.id && (
-                <div
-                  className="absolute inset-0 flex flex-col justify-end px-3 pb-3 pt-8"
-                  style={{ background: "rgba(0,0,0,0.62)", backdropFilter: "blur(3px)", borderRadius: "var(--radius-card)" }}
-                >
-                  <button
-                    onClick={() => setMoreOpen(null)}
-                    aria-label="닫기"
-                    className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full flex items-center justify-center"
-                    style={{ background: "rgba(255,255,255,0.22)" }}
-                  >
-                    <X size={14} className="text-white" strokeWidth={3} />
-                  </button>
-                  <p className="text-[11px] font-bold text-white/85 mb-2 px-0.5">다른 돌봄 기록</p>
-                  <div className="grid grid-cols-2 gap-1.5 mb-1.5">
+              {/* 퀵 돌봄 펼침 (물/간식/건강/쉼터) */}
+              {open && (
+                <div className="px-4 pb-3">
+                  <p className="text-[11px] text-text-light mb-1.5">다른 돌봄 기록</p>
+                  <div className="grid grid-cols-4 gap-1.5">
                     {QUICK_CARE.map((q) => {
                       const done = cat.doneTypes.includes(q.type);
                       return (
@@ -245,23 +229,25 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
                           key={q.type}
                           onClick={() => { if (!cat.busy) logCare(cat.id, q.type); }}
                           disabled={cat.busy}
-                          className="py-2 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1 press-strong transition-transform"
+                          className="h-8 text-[13px] font-medium flex items-center justify-center gap-1 press-strong transition-transform"
                           style={{
-                            background: done ? "rgba(34,163,102,0.35)" : "rgba(255,255,255,0.92)",
-                            color: done ? "#fff" : "var(--color-text-main)",
+                            borderRadius: "var(--radius-input)",
+                            background: done ? "var(--color-sage-soft)" : "var(--color-surface)",
+                            color: done ? "var(--color-sage)" : "var(--color-text-main)",
+                            border: `1px solid ${done ? "transparent" : "var(--color-border)"}`,
                           }}
                         >
-                          <span>{q.emoji}</span> {q.label}{done && <Check size={11} strokeWidth={3} />}
+                          {q.label}{done && <Check size={11} strokeWidth={3} />}
                         </button>
                       );
                     })}
                   </div>
                   <Link
                     href={`/cats/${cat.id}`}
-                    className="py-1.5 rounded-xl text-[11px] font-bold text-white/80 text-center"
-                    style={{ background: "rgba(255,255,255,0.14)" }}
+                    className="mt-2 inline-flex items-center gap-0.5 text-[13px] font-medium"
+                    style={{ color: "var(--color-primary)" }}
                   >
-                    메모·사진과 함께 기록 →
+                    메모·사진과 함께 기록 <ChevronRight size={13} />
                   </Link>
                 </div>
               )}
@@ -269,28 +255,22 @@ export default function MyCatsHero({ careInboxMode = false }: MyCatsHeroProps) {
           );
         })}
 
-        {/* + 새 친구 등록 카드 */}
+        {/* + 새 친구 등록 행 */}
         <Link
           href="/map"
-          className="shrink-0 flex flex-col items-center justify-center gap-2 press transition-transform"
-          style={{
-            width: 130,
-            aspectRatio: "3 / 4.13",
-            borderRadius: "var(--radius-card)",
-            scrollSnapAlign: "start",
-            background: "#FFFFFF",
-            border: "1.5px dashed rgba(176, 92, 54,0.35)",
-          }}
+          className="flex items-center gap-3 px-4 press transition-transform"
+          style={{ minHeight: 56, borderTop: "1px solid var(--color-divider)" }}
         >
-          <div
-            className="w-11 h-11 rounded-full flex items-center justify-center"
-            style={{ background: "var(--color-primary-soft)" }}
+          <span
+            className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
+            style={{ background: "var(--color-surface-alt)", color: "var(--color-primary)" }}
           >
-            <Plus size={20} style={{ color: "var(--color-primary)" }} strokeWidth={2.5} />
-          </div>
-          <span className="text-[13px] font-bold" style={{ color: "var(--color-primary)" }}>
+            <Plus size={18} strokeWidth={2.5} />
+          </span>
+          <span className="flex-1 text-[15px] font-semibold" style={{ color: "var(--color-primary)" }}>
             새 친구 등록
           </span>
+          <ChevronRight size={18} style={{ color: "var(--color-text-muted)" }} />
         </Link>
       </div>
     </div>

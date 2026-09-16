@@ -8,36 +8,28 @@ import { Bot, Send } from "lucide-react";
 const AIChatModal = dynamic(() => import("@/app/components/AIChatModal"), { ssr: false });
 
 // AI 집사 채팅 진입 카드. 가이드(/tips) 페이지의 AI 집사 섹션에서 사용.
+// 2026-09-16 「익숙한 동네앱」 리디자인: 글로우 그림자·채움 아이콘 → 헤어라인 카드, 회색 선 아이콘.
 export default function AIChatCard() {
   const [chatOpen, setChatOpen] = useState(false);
 
   return (
     <>
       <div
-        className="px-5 py-4"
+        className="px-4 py-4"
         style={{
-          background: "#FFFFFF",
+          background: "var(--color-surface)",
           borderRadius: "var(--radius-card)",
-          boxShadow: "var(--shadow-card)",
-          border: "1px solid var(--color-divider)",
+          border: "1px solid var(--color-border)",
         }}
       >
-        <div className="flex items-center gap-3.5 mb-3.5">
-          <div
-            className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-            style={{
-              background: "var(--color-primary)",
-              boxShadow: "0 5px 12px rgba(176, 92, 54,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.08)",
-            }}
-          >
-            <Bot size={20} color="#fff" strokeWidth={2.3} />
-          </div>
+        <div className="flex items-center gap-3 mb-3">
+          <Bot size={22} className="shrink-0" style={{ color: "var(--color-text-sub)" }} strokeWidth={1.8} />
           <div className="flex-1 min-w-0">
             <div className="flex items-baseline gap-2">
-              <p className="text-[15px] font-bold text-text-main tracking-tight">
+              <p className="text-[15px] font-semibold text-text-main">
                 AI 집사
               </p>
-              <span className="text-[9px] font-bold tracking-[0.15em]" style={{ color: "var(--color-primary)", opacity: 0.5 }}>
+              <span className="text-[11px] font-medium text-text-light">
                 BETA
               </span>
             </div>
@@ -49,10 +41,10 @@ export default function AIChatCard() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setChatOpen(true)}
-            className="flex-1 rounded-xl px-4 py-2.5 text-[13px] text-text-muted text-left transition-all press"
+            className="flex-1 h-10 px-4 text-[13px] text-text-muted text-left press"
             style={{
-              backgroundColor: "var(--color-gray-50)",
-              border: "1px solid var(--color-border)",
+              borderRadius: "var(--radius-input)",
+              backgroundColor: "var(--color-surface-alt)",
             }}
           >
             예: 새끼 고양이를 발견했어요...
@@ -60,13 +52,14 @@ export default function AIChatCard() {
           <button
             onClick={() => setChatOpen(true)}
             aria-label="AI 집사에게 질문하기"
-            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 press-strong transition-transform"
+            className="w-10 h-10 flex items-center justify-center shrink-0 press-strong transition-transform"
             style={{
+              borderRadius: "var(--radius-input)",
               background: "var(--color-primary)",
-              boxShadow: "0 4px 10px rgba(176, 92, 54,0.35), inset 0 1px 0 rgba(255,255,255,0.3)",
+              color: "var(--color-surface)",
             }}
           >
-            <Send size={15} color="white" />
+            <Send size={15} />
           </button>
         </div>
       </div>

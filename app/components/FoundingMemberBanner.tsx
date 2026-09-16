@@ -1,6 +1,7 @@
 // 창립 멤버 환영 배너 — 정식 오픈(2026-05-20) 전 가입자(admin_title='founding_member')에게만 표시.
 // 한 번 닫으면 localStorage에 dismiss 기록 → 다시 안 보임.
 // 5/20 오픈 후엔 더 이상 부여 안 되니 영구 희소성을 가진 자부심 마크.
+// 2026-09-16 「익숙한 동네앱」 리디자인: 틴트 배경·채움 아이콘 → 흰 면 + 헤어라인, 회색 선 아이콘.
 
 "use client";
 
@@ -57,42 +58,29 @@ export default function FoundingMemberBanner() {
 
   return (
     <div
-      className="relative mb-3 rounded-2xl px-4 py-3.5"
+      className="relative mb-3 px-4 py-3.5"
       style={{
-        background: "#FFF6E8",
-        border: "1.5px solid rgba(176, 92, 54,0.25)",
-        boxShadow: "var(--shadow-card)",
+        background: "var(--color-surface)",
+        borderRadius: "var(--radius-card)",
+        border: "1px solid var(--color-border)",
       }}
     >
       <button
         type="button"
         onClick={handleDismiss}
-        className="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center press-strong"
-        style={{ background: "rgba(176, 92, 54,0.10)" }}
+        className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center press-strong"
         aria-label="배너 닫기"
       >
-        <X size={14} color="#8A4325" />
+        <X size={16} style={{ color: "var(--color-text-light)" }} />
       </button>
       <div className="flex items-start gap-3 pr-7">
-        <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-          style={{ background: "var(--color-primary)" }}
-        >
-          <Sparkles size={20} color="#FFFFFF" />
-        </div>
+        <Sparkles size={20} className="shrink-0 mt-0.5" style={{ color: "var(--color-text-light)" }} strokeWidth={1.8} />
         <div className="flex-1 min-w-0">
-          <p
-            className="text-[15px] font-bold mb-0.5"
-            style={{ color: "#5C4A3E" }}
-          >
-            ✨ 창립 멤버에 합류하셨어요
+          <p className="text-[15px] font-semibold text-text-main mb-0.5">
+            창립 멤버에 합류하셨어요
           </p>
-          <p
-            className="text-[13px] leading-relaxed"
-            style={{ color: "rgba(92,74,62,0.75)" }}
-          >
-            정식 오픈(2026-05-20) 전 도시공존을 함께 시작한 초기 멤버에게 드리는 영구 타이틀이에요.
-            마이페이지 → 타이틀에서 장착할 수 있어요.
+          <p className="text-[13px] leading-relaxed text-text-sub">
+            정식 오픈(2026-05-20) 전 함께 시작한 초기 멤버에게 드리는 영구 타이틀이에요. 마이페이지 → 타이틀에서 장착할 수 있어요.
           </p>
         </div>
       </div>

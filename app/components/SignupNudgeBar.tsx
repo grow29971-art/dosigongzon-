@@ -1,5 +1,8 @@
 "use client";
 
+// 비로그인 하단 가입 넛지 바. 2026-09-16 「익숙한 동네앱」 리디자인: 글로우 그림자·채움 아이콘 폐기 →
+// 흰 면 + 헤어라인 + raised 그림자(떠 있는 바 — 허용 4종), 회색 선 아이콘, CTA primary.
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -70,38 +73,32 @@ export default function SignupNudgeBar() {
       aria-live="polite"
     >
       <div
-        className={`pointer-events-auto mx-auto mx-4 max-w-md rounded-2xl px-4 py-3 flex items-center gap-3 transition-all ${shown ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
+        className={`pointer-events-auto mx-auto max-w-md px-4 py-3 flex items-center gap-3 transition-all ${shown ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
         style={{
-          background: "#FFFFFF",
-          boxShadow: "0 12px 36px rgba(176, 92, 54,0.28), 0 2px 6px rgba(0,0,0,0.08)",
-          border: "1px solid rgba(176, 92, 54,0.25)",
+          background: "var(--color-surface)",
+          borderRadius: "var(--radius-card)",
+          boxShadow: "var(--shadow-raised)",
+          border: "1px solid var(--color-border)",
           marginLeft: 12,
           marginRight: 12,
         }}
       >
-        <div
-          className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-          style={{
-            background: "var(--color-primary)",
-            boxShadow: "var(--shadow-card)",
-          }}
-        >
-          <Sparkles size={16} color="#fff" strokeWidth={2.3} />
-        </div>
+        <Sparkles size={20} className="shrink-0" style={{ color: "var(--color-text-light)" }} strokeWidth={1.8} />
         <div className="flex-1 min-w-0">
-          <p className="text-[13px] font-bold text-text-main leading-tight tracking-tight">
+          <p className="text-[15px] font-semibold text-text-main leading-snug">
             가입하면 고양이 등록·돌봄 기록 가능!
           </p>
-          <p className="text-[11px] text-text-sub mt-0.5 leading-tight">
-            구글로 <b>10초 가입</b> · 동네 이웃과 함께 돌봐요
+          <p className="text-[13px] text-text-sub mt-0.5 leading-snug">
+            구글로 <b className="font-semibold text-text-main">10초 가입</b> · 동네 이웃과 함께 돌봐요
           </p>
         </div>
         <Link
           href={`/signup?next=${next}`}
-          className="shrink-0 flex items-center gap-1 px-3 py-2 rounded-xl text-white text-[13px] font-bold press-strong transition-transform"
+          className="shrink-0 h-8 px-3 flex items-center gap-1 text-[13px] font-semibold press-strong transition-transform"
           style={{
+            borderRadius: "var(--radius-input)",
             background: "var(--color-primary)",
-            boxShadow: "var(--shadow-card)",
+            color: "var(--color-surface)",
           }}
         >
           가입
@@ -110,11 +107,10 @@ export default function SignupNudgeBar() {
         <button
           type="button"
           onClick={dismiss}
-          className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center press-strong"
-          style={{ background: "rgba(0,0,0,0.05)" }}
+          className="shrink-0 w-8 h-8 -mr-2 flex items-center justify-center press-strong"
           aria-label="닫기"
         >
-          <X size={11} className="text-text-sub" />
+          <X size={16} style={{ color: "var(--color-text-light)" }} />
         </button>
       </div>
     </div>
