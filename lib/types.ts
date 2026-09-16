@@ -22,13 +22,14 @@ export type PostCategory =
   | "market"     // 중고마켓
   | "free";      // 자유게시판
 
+// 2026-09-16 리디자인: 장식색 제거 — 회색 단일(긴급만 오류색)
 export const CATEGORY_MAP: Record<PostCategory, { label: string; color: string; emoji: string }> = {
-  emergency: { label: "긴급",     color: "#D85555", emoji: "🚨" },
-  sitter:    { label: "돌봄 부탁", color: "#4A7BA8", emoji: "🤝" },
-  foster:    { label: "임보",     color: "#E88D5A", emoji: "🏠" },
-  adoption:  { label: "입양",     color: "#E86B8C", emoji: "💕" },
-  market:    { label: "중고마켓", color: "#48A59E", emoji: "🛍️" },
-  free:      { label: "자유게시판", color: "#8B65B8", emoji: "💬" },
+  emergency: { label: "긴급",     color: "#F04452", emoji: "🚨" },
+  sitter:    { label: "돌봄 부탁", color: "#767676", emoji: "🤝" },
+  foster:    { label: "임보",     color: "#767676", emoji: "🏠" },
+  adoption:  { label: "입양",     color: "#767676", emoji: "💕" },
+  market:    { label: "중고마켓", color: "#767676", emoji: "🛍️" },
+  free:      { label: "자유게시판", color: "#767676", emoji: "💬" },
 };
 
 // ── 게시글 ──
