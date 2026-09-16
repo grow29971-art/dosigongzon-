@@ -41,7 +41,7 @@ export default function AIChatCard() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setChatOpen(true)}
-            className="flex-1 h-10 px-4 text-[13px] text-text-muted text-left press"
+            className="flex-1 h-10 px-4 text-[13px] text-text-light text-left press"
             style={{
               borderRadius: "var(--radius-input)",
               backgroundColor: "var(--color-surface-alt)",

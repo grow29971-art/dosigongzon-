@@ -249,7 +249,7 @@ export default function WritePage() {
               onChange={(e) => setRegion(e.target.value)}
               placeholder="예) 행궁동"
               maxLength={20}
-              className="w-full px-4 py-3.5 rounded-lg border border-border bg-surface text-[15px] text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
+              className="w-full px-4 py-3.5 rounded-lg border border-border bg-surface text-[15px] text-text-main placeholder:text-text-light focus:outline-none focus:border-primary transition-colors"
             />
           </div>
         )}
@@ -303,9 +303,9 @@ export default function WritePage() {
             onChange={(e) => setTitle(e.target.value)}
             placeholder={category === "sitter" ? "예) 9/1~9/5 아침 밥자리 대타 구해요" : "제목을 입력하세요"}
             maxLength={50}
-            className="w-full px-4 py-3.5 rounded-lg border border-border bg-surface text-[15px] text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
+            className="w-full px-4 py-3.5 rounded-lg border border-border bg-surface text-[15px] text-text-main placeholder:text-text-light focus:outline-none focus:border-primary transition-colors"
           />
-          <p className="text-[11px] text-text-muted text-right mt-1">{title.length}/50</p>
+          <p className="text-[11px] text-text-light text-right mt-1">{title.length}/50</p>
         </div>
 
         {/* ── 내용 ── */}
@@ -317,15 +317,15 @@ export default function WritePage() {
             placeholder="내용을 입력하세요. 길고양이를 위한 정보를 공유해주세요."
             maxLength={2000}
             rows={8}
-            className="w-full px-4 py-3.5 rounded-lg border border-border bg-surface text-[15px] text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors resize-none leading-relaxed"
+            className="w-full px-4 py-3.5 rounded-lg border border-border bg-surface text-[15px] text-text-main placeholder:text-text-light focus:outline-none focus:border-primary transition-colors resize-none leading-relaxed"
           />
-          <p className="text-[11px] text-text-muted text-right mt-1">{content.length}/2000</p>
+          <p className="text-[11px] text-text-light text-right mt-1">{content.length}/2000</p>
         </div>
 
         {/* ── 사진 첨부 ── */}
         <div>
           <label className="text-[13px] font-semibold text-text-sub mb-2 block">
-            사진 <span className="text-text-muted font-normal">(최대 {MAX_IMAGES}장)</span>
+            사진 <span className="text-text-light font-normal">(최대 {MAX_IMAGES}장)</span>
           </label>
 
           <div className="grid grid-cols-4 gap-2">
@@ -387,7 +387,7 @@ export default function WritePage() {
             </p>
           )}
           {!user && (
-            <p className="text-[11px] text-text-muted mt-2">
+            <p className="text-[11px] text-text-light mt-2">
               사진 업로드는 로그인이 필요해요.
             </p>
           )}

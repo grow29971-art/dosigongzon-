@@ -46,3 +46,13 @@
   소비자 확인이 선행.
 - 접근: OG·메일을 별도 커밋군으로 새 톤에 맞추고, lib 필드는 소비자 grep 후 삭제. 별칭 토큰
   (`--shadow-card/-card-sm/-primary`, `--color-warm-white`)은 참조 0건 확인 후 globals.css에서 삭제.
+
+## 리디자인 접합부 중복 부품 (2026-09-16)
+
+- 증상: 화면군을 병렬로 만들면서 같은 역할의 작은 부품이 파일마다 따로 생겼다 — `SectionTitle` 3벌
+  (`cats/[id]/report`·`mypage/report`·`users/[id]`), 표 셀 `Th/Td/Tr` 2벌(헤더 배경·굵기 미세 불일치),
+  `EmptyState` 2벌(`mypage/journey`·`search`) + `admin/_ui.EmptyState`, `SectionHeader` 2벌(`search`·
+  `HomeLanding`), 관리자 `Field` 2벌(`auth-errors`·`pharmacy-guide`).
+- 영향: 런타임 위험 없음(전부 파일 로컬). 유지보수 시 같은 수정을 여러 곳에 해야 한다.
+- 지금 못 푸는 이유: 리디자인 1회 머지 범위를 더 키우지 않기 위해 보류.
+- 접근: `app/components/ui/`(SectionTitle·EmptyState·Table)와 `admin/_ui.tsx`(Field)로 승격하는 후속 커밋.

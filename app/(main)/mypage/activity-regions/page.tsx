@@ -438,7 +438,7 @@ export default function ActivityRegionsPage() {
       });
       const list = await listMyActivityRegions();
       setRegions(list);
-      setOk("저장했어요 ✓");
+      setOk("저장했어요");
       setTimeout(() => setOk(""), 2000);
     } catch (e) {
       setErr(e instanceof Error ? e.message : "저장 실패");

@@ -3365,7 +3365,7 @@ export default function MapPage() {
                           <button key={tag} type="button"
                             onClick={() => setEditTags((prev) => active ? prev.filter((t) => t !== tag) : [...prev, tag])}
                             className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg transition-all ${active ? "bg-primary text-white" : "bg-surface-alt text-text-sub border border-border"}`}>
-                            {active ? "✓ " : ""}{tag}
+                            {tag}
                           </button>
                         );
                       })}

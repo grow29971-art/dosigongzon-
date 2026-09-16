@@ -159,7 +159,7 @@ export default function WeeklyCheckinCard() {
                   color: got ? "var(--color-sage)" : reached ? "var(--color-text-main)" : "var(--color-text-light)",
                 }}
               >
-                {got ? "✓ " : ""}{m.days}일 {m.points}P
+                {m.days}일 {m.points}P
               </span>
             );
           })}

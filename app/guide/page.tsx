@@ -132,7 +132,7 @@ const SECTIONS: FeatureSection[] = [
       {
         icon: Sparkles,
         title: "지역 채팅 (동네 LIVE)",
-        desc: "같은 구 이웃들과 실시간 대화. 지도 하단 💬 버튼으로 진입.",
+        desc: "같은 구 이웃들과 실시간 대화. 지도 하단 채팅 버튼으로 진입.",
         href: "/map",
         hrefLabel: "지도에서 채팅 열기",
         tip: "매주 금 저녁에 활발한 동네 채팅 알림이 옵니다 (설정 ON 시).",
