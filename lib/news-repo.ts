@@ -118,13 +118,13 @@ export const BADGE_PRESETS: Record<
   },
   tnr: {
     label: "TNR",
-    color: "#6B8E6F",
+    color: "#555555",
     bg: "#E8ECE5",
     gradient: "linear-gradient(135deg, #E8ECE5 0%, #D6DCD2 100%)",
   },
   law: {
     label: "법령",
-    color: "#7A6B8E",
+    color: "#2A2A2A",
     bg: "#EAE6E8",
     gradient: "linear-gradient(135deg, #EAE6E8 0%, #DCD6D9 100%)",
   },

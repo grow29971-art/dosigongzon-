@@ -243,7 +243,7 @@ export default function LegalGuidePage() {
       {/* 법 조항 */}
       <section id="law" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Scroll size={20} color="#7A6B8E" />
+          <Scroll size={20} color="#2A2A2A" />
           동물보호법 핵심 조항
         </h2>
         <div className="space-y-3">
@@ -310,7 +310,7 @@ export default function LegalGuidePage() {
           <li><strong>반려동물 관련업 결격 사유</strong> — 학대 전과자는 반려동물업 등록 불가</li>
           <li><strong>수사 협조 확대</strong> — 민간 동물보호단체의 수사 참여·의견 제출 확대</li>
         </ul>
-        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "#E8F4E8", color: "#3F5B42" }}>
+        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "#F2F2F2", color: "#2A2A2A" }}>
           <p className="font-bold mb-1">처벌 경향</p>
           <p>
             2020년대 들어 집행유예·벌금형이 주였지만, 2023년부터 <strong>실형 선고 사례</strong>가 늘고 있습니다.
@@ -322,7 +322,7 @@ export default function LegalGuidePage() {
       {/* 증거 확보 */}
       <section id="evidence" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <FileText size={20} color="#4A7BA8" />
+          <FileText size={20} color="#6B6B6B" />
           증거 확보 방법 — 이게 있어야 처벌 가능
         </h2>
         <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">가장 강력한 증거 순</h3>
@@ -387,9 +387,9 @@ export default function LegalGuidePage() {
         <LegalChecklist
           title="숨숨집 파손 시"
           subtitle="재물손괴죄 · 형법 제366조"
-          iconNode={<Home size={22} color="#C9A961" strokeWidth={1.8} />}
+          iconNode={<Home size={22} color="#555555" strokeWidth={1.8} />}
           iconBg="#EDE9E0"
-          iconColor="#C9A961"
+          iconColor="#555555"
           items={SHELTER_CHECKLIST}
         />
       </section>
@@ -498,7 +498,7 @@ export default function LegalGuidePage() {
           slug="legal"
           title="길고양이 학대 신고·동물보호법 완벽 가이드 | 도시공존"
           description="증거 수집 · 112 신고 · 동물보호법 처벌 조항 · 민사·행정 대응까지."
-          accent="#8B65B8"
+          accent="#111111"
         />
       </section>
     </div>

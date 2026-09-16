@@ -54,9 +54,9 @@ export const REPORT_STATUS_LABELS: Record<ReportStatus, string> = {
 };
 
 export const REPORT_STATUS_COLORS: Record<ReportStatus, string> = {
-  pending: "#C9A961",
-  reviewed: "#4A7BA8",
-  resolved: "#6B8E6F",
+  pending: "#555555",
+  reviewed: "#6B6B6B",
+  resolved: "#555555",
   dismissed: "#8A8A8A",
 };
 
@@ -201,8 +201,8 @@ export const INQUIRY_STATUS_LABELS: Record<InquiryStatus, string> = {
 };
 
 export const INQUIRY_STATUS_COLORS: Record<InquiryStatus, string> = {
-  pending: "#C9A961",
-  replied: "#6B8E6F",
+  pending: "#555555",
+  replied: "#555555",
   closed: "#8A8A8A",
 };
 

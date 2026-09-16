@@ -217,7 +217,7 @@ export default function KeyringEventPage() {
             }}
           >
             {done ? (
-              <Check size={36} className="mx-auto mb-3" style={{ color: "#6B8E6F" }} />
+              <Check size={36} className="mx-auto mb-3" style={{ color: "#555555" }} />
             ) : (
               <Gift size={36} className="mx-auto mb-3" style={{ color: "#B07A1C" }} />
             )}

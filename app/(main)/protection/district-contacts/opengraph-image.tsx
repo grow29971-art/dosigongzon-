@@ -11,10 +11,10 @@ export default function DistrictContactsOG() {
     (
       <GuideOGTemplate
         badge="📞 연락처"
-        badgeColor="#48A59E"
+        badgeColor="#111111"
         title="구청 동물보호 연락처"
         highlightText="연락처"
-        highlightColor="#48A59E"
+        highlightColor="#111111"
         subtitle="서울 25개 자치구 + 전국 주요 시·군 동물보호 담당부서. 민원·TNR 신청 전화 한 번에."
         tags={["🏢 25개 구", "📱 전화", "✉️ 민원", "📋 TNR 신청"]}
       />

@@ -323,7 +323,7 @@ function MessagesPage() {
             type="button"
             onClick={() => photoInputRef.current?.click()}
             className="w-10 h-10 rounded-full flex items-center justify-center press-strong transition-transform shrink-0"
-            style={{ backgroundColor: photoFile ? "#6B8E6F" : "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
+            style={{ backgroundColor: photoFile ? "#555555" : "var(--color-surface-alt)", border: "1px solid var(--color-border)" }}
           >
             <Camera size={18} style={{ color: photoFile ? "#fff" : "var(--color-text-light)" }} />
           </button>

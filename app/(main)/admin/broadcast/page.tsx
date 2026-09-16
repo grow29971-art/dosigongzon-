@@ -35,7 +35,7 @@ const COHORT_OPTIONS: Array<{
     label: "전체 가입자",
     description: "모든 회원에게 발송 (운영자 본인 제외)",
     Icon: UsersIcon,
-    color: "#4A7BA8",
+    color: "#6B6B6B",
   },
   {
     id: "founding",
@@ -49,7 +49,7 @@ const COHORT_OPTIONS: Array<{
     label: "첫 등록 미완료",
     description: "가입했지만 고양이 0건 — cold start 대응",
     Icon: CatIcon,
-    color: "#E88D5A",
+    color: "#111111",
   },
   {
     id: "dormant",

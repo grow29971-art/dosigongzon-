@@ -124,7 +124,7 @@ const CATEGORIES = [
     emoji: "🪳",
     Icon: Bug,
     title: "구충제",
-    color: "#6B8E6F",
+    color: "#555555",
     desc: "회충·벼룩·진드기·귀진드기 예방",
     items: [
       { name: "레볼루션", use: "목뒤 바르기 · 1개월 지속", range: "내·외부 종합" },
@@ -150,7 +150,7 @@ const CATEGORIES = [
     emoji: "👁️",
     Icon: Eye,
     title: "안약·귀약",
-    color: "#4A7BA8",
+    color: "#6B6B6B",
     desc: "경미한 증상·청결 관리",
     items: [
       { name: "인공눈물(히알루론산)", use: "점안 1~3회/일", range: "건조·이물감" },
@@ -162,7 +162,7 @@ const CATEGORIES = [
     emoji: "🩹",
     Icon: Droplets,
     title: "응급·외용약",
-    color: "#E88D5A",
+    color: "#111111",
     desc: "가벼운 상처·피부염",
     items: [
       { name: "생리식염수", use: "상처 세척", range: "얕은 상처" },

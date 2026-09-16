@@ -29,7 +29,7 @@ import type { KakaoMap, KakaoMapMouseEvent, KakaoPlaceResult, KakaoOverlay, Kaka
 
 const SLOT_COLORS: Record<RegionSlot, string> = {
   1: "#111111",
-  2: "#4A7BA8",
+  2: "#6B6B6B",
 };
 
 export default function ActivityRegionsPage() {
@@ -764,7 +764,7 @@ export default function ActivityRegionsPage() {
         {ok && (
           <div
             className="rounded-2xl px-4 py-2.5 text-[13px] font-bold"
-            style={{ background: "#E8F4E8", color: "#3F5B42" }}
+            style={{ background: "#F2F2F2", color: "#2A2A2A" }}
           >
             {ok}
           </div>

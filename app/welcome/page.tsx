@@ -406,7 +406,7 @@ function WelcomeContent() {
     return (
       <div
         className="fixed inset-0 overflow-hidden flex flex-col"
-        style={{ background: "#4F6B53" }}
+        style={{ background: "#2A2A2A" }}
       >
         <button
           onClick={() => router.replace(next)}
@@ -650,21 +650,21 @@ const SLIDES = [
     body: "",
   },
   {
-    bg: "linear-gradient(170deg, #4A7BA8 0%, #6B9BC4 60%, #A8C7E0 100%)",
+    bg: "linear-gradient(170deg, #6B6B6B 0%, #6B9BC4 60%, #A8C7E0 100%)",
     accent: "#3A6086",
     Icon: MapPin,
     title: "우리 동네 고양이 지도",
     body: "어떤 아이가 어디서 사는지, 건강 상태까지\n지도 한 장에 한눈에 모여요.\n\n마음에 드는 아이에겐 응원도 한 번\n가장 쉬운 첫 걸음이에요.",
   },
   {
-    bg: "linear-gradient(170deg, #6B8E6F 0%, #8FAE92 50%, #BFD4C2 100%)",
+    bg: "linear-gradient(170deg, #555555 0%, #8FAE92 50%, #BFD4C2 100%)",
     accent: "#4F6E53",
     Icon: Heart,
     title: "돌봄에 필요한 도구",
     body: "밥·물·건강 한 줄 돌봄일지\n궁금하면 AI집사에게 바로 질문\n가까운 동물병원·약국 찾기\n\n돌보는 데 필요한 도구를 한곳에 모았어요.",
   },
   {
-    bg: "linear-gradient(170deg, #4F6B53 0%, #6B8E6F 60%, #8FAE92 100%)",
+    bg: "linear-gradient(170deg, #2A2A2A 0%, #555555 60%, #8FAE92 100%)",
     accent: "#3D5640",
     Icon: ShieldCheck,
     title: "안전하게 돌보는 도구",

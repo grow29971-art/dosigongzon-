@@ -14,9 +14,9 @@ type Params = Promise<{ id: string }>;
 const BADGE_LABELS: Record<string, { label: string; color: string }> = {
   notice: { label: "공지", color: "#111111" },
   event: { label: "행사", color: "#5BA876" },
-  policy: { label: "정책", color: "#4A7BA8" },
+  policy: { label: "정책", color: "#6B6B6B" },
   rescue: { label: "구조", color: "#D85555" },
-  news: { label: "뉴스", color: "#8B65B8" },
+  news: { label: "뉴스", color: "#111111" },
 };
 
 export default async function NewsOGImage({ params }: { params: Params }) {

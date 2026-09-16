@@ -84,9 +84,9 @@ export default async function TipsIndexPage() {
         badge="AI 집사"
         headerEmoji="🤖"
         title="궁금한 건 AI 집사에게 물어보세요"
-        headerBg="linear-gradient(160deg, var(--color-sage-soft) 0%, #DBEEDD 100%)"
-        accent="#22A366"
-        accentDark="#1B7D50"
+        headerBg="linear-gradient(160deg, var(--color-sage-soft) 0%, #E0E0E0 100%)"
+        accent="#111111"
+        accentDark="#000000"
         items={[
           { emoji: "💬", text: <>응급처치·TNR·사료·겨울나기… 무엇이든 <b className="text-text-main">24시간</b> 답해줘요.</> },
           { emoji: "📖", text: <>상황별 보호 가이드도 이 곳에 모여 있어요.</> },
@@ -172,14 +172,14 @@ export default async function TipsIndexPage() {
           <div className="grid grid-cols-3 gap-2 mb-3">
             {[
               { href: "/protection/emergency-guide", label: "응급처치", sub: "다쳤을 때", Icon: Siren, color: "#D85555" },
-              { href: "/protection/kitten-guide", label: "새끼 발견", sub: "이런 땐 데려와요", Icon: Baby, color: "#E88D5A" },
+              { href: "/protection/kitten-guide", label: "새끼 발견", sub: "이런 땐 데려와요", Icon: Baby, color: "#111111" },
               { href: "/protection/disease-guide", label: "질병 신호", sub: "증상 체크", Icon: Heart, color: "var(--color-like)" },
-              { href: "/protection/trapping-guide", label: "TNR·포획", sub: "안전한 절차", Icon: Stethoscope, color: "#8B65B8" },
-              { href: "/protection/feeding-guide", label: "밥주기", sub: "올바른 방법", Icon: Sparkles, color: "#48A59E" },
-              { href: "/protection/shelter-guide", label: "겨울 쉼터", sub: "지금 만들기", Icon: Snowflake, color: "#5A8AC4" },
-              { href: "/protection/pharmacy-guide", label: "약품 안내", sub: "주변 약국", Icon: Pill, color: "#6B8E6F" },
+              { href: "/protection/trapping-guide", label: "TNR·포획", sub: "안전한 절차", Icon: Stethoscope, color: "#111111" },
+              { href: "/protection/feeding-guide", label: "밥주기", sub: "올바른 방법", Icon: Sparkles, color: "#111111" },
+              { href: "/protection/shelter-guide", label: "겨울 쉼터", sub: "지금 만들기", Icon: Snowflake, color: "#6B6B6B" },
+              { href: "/protection/pharmacy-guide", label: "약품 안내", sub: "주변 약국", Icon: Pill, color: "#555555" },
               { href: "/protection/district-contacts", label: "지자체 연락", sub: "전국 240+ 곳", Icon: Phone, color: "var(--color-primary-dark)" },
-              { href: "/protection/legal", label: "법률·신고", sub: "학대 대응", Icon: Scale, color: "#7A6B8E" },
+              { href: "/protection/legal", label: "법률·신고", sub: "학대 대응", Icon: Scale, color: "#2A2A2A" },
             ].map((cat) => (
               <Link
                 key={cat.href}

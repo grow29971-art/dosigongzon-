@@ -170,7 +170,7 @@ export default async function AreaOpengraphImage({ params }: { params: Params })
               emoji="🏘️"
               value={dongs.length}
               label={`${guName}의 동네 수`}
-              color="#4A7BA8"
+              color="#6B6B6B"
             />
           )}
         </div>

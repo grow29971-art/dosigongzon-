@@ -94,7 +94,7 @@ export default function CareLogCelebration({
         >
           {/* 반짝이 이펙트 */}
           <div className="absolute top-3 left-5 animate-pulse">
-            <Sparkles size={14} style={{ color: "#E8B040", opacity: 0.8 }} />
+            <Sparkles size={14} style={{ color: "#555555", opacity: 0.8 }} />
           </div>
           <div className="absolute top-8 right-10 animate-pulse" style={{ animationDelay: "0.3s" }}>
             <Sparkles size={10} style={{ color: "#D85555", opacity: 0.7 }} />
@@ -131,9 +131,9 @@ export default function CareLogCelebration({
           {committed ? (
             <div
               className="rounded-2xl px-4 py-3.5 text-center"
-              style={{ background: "#E8F4E8" }}
+              style={{ background: "#F2F2F2" }}
             >
-              <p className="text-[13px] font-bold" style={{ color: "#3F5B42" }}>
+              <p className="text-[13px] font-bold" style={{ color: "#2A2A2A" }}>
                 ✓ 내일 다시 뵈어요
               </p>
               <p className="text-[11px] font-semibold mt-0.5" style={{ color: "#5A7C5E" }}>

@@ -30,14 +30,14 @@ const PREVIEW_COUNT = 4;
 
 const TYPE_CONFIG: Record<NotificationType, { icon: typeof Bell; color: string; bg: string }> = {
   comment_on_my_cat:   { icon: MessageCircle, color: "var(--color-primary)", bg: "#11111115" },
-  carelog_on_my_cat:   { icon: Heart,         color: "#6B8E6F", bg: "#6B8E6F15" },
-  dm_received:         { icon: MessageCircle, color: "#4A7BA8", bg: "#4A7BA815" },
+  carelog_on_my_cat:   { icon: Heart,         color: "#555555", bg: "#55555515" },
+  dm_received:         { icon: MessageCircle, color: "#6B6B6B", bg: "#6B6B6B15" },
   alert_on_my_cat:     { icon: AlertTriangle, color: "#D85555", bg: "#D8555515" },
-  comment_on_my_post:  { icon: MessageSquare, color: "#8B65B8", bg: "#8B65B815" },
-  inquiry_updated:     { icon: CheckCircle2,  color: "#48A59E", bg: "#48A59E15" },
-  following_activity:  { icon: UserPlus,      color: "#E8B040", bg: "#E8B0401a" },
+  comment_on_my_post:  { icon: MessageSquare, color: "#111111", bg: "#11111115" },
+  inquiry_updated:     { icon: CheckCircle2,  color: "#111111", bg: "#11111115" },
+  following_activity:  { icon: UserPlus,      color: "#555555", bg: "#5555551a" },
   invite_accepted:     { icon: Gift,          color: "var(--color-like)", bg: "#E86B8C15" },
-  cat_moved:           { icon: MapPin,        color: "#5A8AC4", bg: "#5A8AC415" },
+  cat_moved:           { icon: MapPin,        color: "#6B6B6B", bg: "#6B6B6B15" },
   urgent_in_area:      { icon: AlertTriangle, color: "#D85555", bg: "var(--color-error-soft)" },
 };
 

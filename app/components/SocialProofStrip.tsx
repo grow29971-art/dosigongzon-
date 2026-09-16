@@ -56,7 +56,7 @@ export default function SocialProofStrip() {
       <div
         className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
         style={{
-          background: "#E88D5A",
+          background: "#111111",
           boxShadow: "var(--shadow-raised)",
         }}
       >
@@ -86,7 +86,7 @@ export default function SocialProofStrip() {
         >
           <span
             className="w-1.5 h-1.5 rounded-full animate-pulse"
-            style={{ background: "#48A59E" }}
+            style={{ background: "#111111" }}
           />
           <span className="text-[11px] font-bold" style={{ color: "#2E7870" }}>
             LIVE

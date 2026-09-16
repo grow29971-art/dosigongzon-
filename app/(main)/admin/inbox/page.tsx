@@ -388,7 +388,7 @@ export default function AdminInboxPage() {
           label="문의"
           count={pendingInquiries}
           Icon={MessageSquare}
-          color="#4A7BA8"
+          color="#6B6B6B"
           onClick={() => setTab("inquiries")}
         />
       </div>
@@ -470,11 +470,11 @@ export default function AdminInboxPage() {
                     bg="#B84545"
                   />
                   {r.target_type === "hospital_closed" ? (
-                    <ActionBtn label="병원 복원" onClick={() => handleRestoreHospital(r)} Icon={Check} bg="#6B8E6F" />
+                    <ActionBtn label="병원 복원" onClick={() => handleRestoreHospital(r)} Icon={Check} bg="#555555" />
                   ) : r.target_type === "post" || r.target_type === "comment" || r.target_type === "post_comment" ? (
-                    <ActionBtn label="복원(오신고)" onClick={() => handleRestoreTarget(r)} Icon={Check} bg="#6B8E6F" />
+                    <ActionBtn label="복원(오신고)" onClick={() => handleRestoreTarget(r)} Icon={Check} bg="#555555" />
                   ) : (
-                    <ActionBtn label="신고자 정지" onClick={() => handleSuspendReporter(r)} Icon={Ban} bg="#8B65B8" />
+                    <ActionBtn label="신고자 정지" onClick={() => handleSuspendReporter(r)} Icon={Ban} bg="#111111" />
                   )}
                 </div>
                 {/* 관리자 액션 — 하단 행(상태 변경) */}
@@ -483,7 +483,7 @@ export default function AdminInboxPage() {
                     label="처리완료"
                     onClick={() => handleReportStatus(r.id, "resolved")}
                     Icon={Check}
-                    bg="#6B8E6F"
+                    bg="#555555"
                     disabled={r.status === "resolved"}
                   />
                   <ActionBtn
@@ -596,7 +596,7 @@ export default function AdminInboxPage() {
                     disabled={replying === i.id}
                     className="mt-2 w-full py-2.5 rounded-xl text-white text-[13px] font-bold press transition-transform disabled:opacity-60"
                     style={{
-                      background: "#6B8E6F",
+                      background: "#555555",
                       boxShadow: "var(--shadow-raised)",
                     }}
                   >

@@ -219,7 +219,7 @@ export default async function AboutPage() {
             desc="건강 상태가 위험한 아이는 즉시 동네 이웃에게 공유되어 빠른 구조로 이어집니다."
           />
           <FeatureRow
-            icon={<Users size={18} style={{ color: "#4A7BA8" }} />}
+            icon={<Users size={18} style={{ color: "#6B6B6B" }} />}
             title="동네 커뮤니티"
             desc="길집사끼리 실시간 채팅, 커뮤니티 게시판, 1:1 쪽지로 정보와 안부를 나눠요."
           />
@@ -294,7 +294,7 @@ export default async function AboutPage() {
           <ValueCard
             n={2}
             icon={<Wind size={16} color="#FFFFFF" />}
-            accent="#4A7BA8"
+            accent="#6B6B6B"
             accentDark="#3A6086"
             title="자유와 몰입"
             body="새로운 생각을 가로막는 고정 관념·관습·틀에서 벗어나 자연의 일부가 되어 한계를 초월하고 자유롭게 사고하며, 자연의 천재지변과 같이 매섭게 행동한다."
@@ -501,7 +501,7 @@ export default async function AboutPage() {
         <div className="space-y-2.5">
           <ProductCard
             icon={<Home size={22} color="#FFFFFF" />}
-            accent="#4A7BA8"
+            accent="#6B6B6B"
             accentDark="#3A6086"
             badge="IoT · 개발 중"
             title="IoT 스마트쉼터"
@@ -580,7 +580,7 @@ export default async function AboutPage() {
             desc="급식소 정확 좌표는 클라이언트로 절대 내려가지 않습니다. Supabase Row Level Security로 DB가 직접 거절합니다."
           />
           <TechRow
-            icon={<ShieldCheck size={18} style={{ color: "#4A7BA8" }} />}
+            icon={<ShieldCheck size={18} style={{ color: "#6B6B6B" }} />}
             title="봇·어뷰징 방어 (Cloudflare Turnstile)"
             desc="회원가입과 민감 액션에 캡차를 걸어 사료 광고·악성 도배·계정 양산을 차단합니다."
           />

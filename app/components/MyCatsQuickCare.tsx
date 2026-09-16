@@ -87,7 +87,7 @@ export default function MyCatsQuickCare() {
           <p className="text-[13px] text-text-sub mt-0.5">탭 한 번이면 끝 — 메모·사진 없이도 OK</p>
         </div>
         <p className="text-[13px] font-bold shrink-0" style={{ color: "var(--color-primary-dark)" }}>
-          <span style={{ color: doneCount === cats.length ? "#6B8E6F" : "#E88D5A" }}>{doneCount}</span>/{cats.length}
+          <span style={{ color: doneCount === cats.length ? "#555555" : "#111111" }}>{doneCount}</span>/{cats.length}
         </p>
       </div>
 
@@ -101,7 +101,7 @@ export default function MyCatsQuickCare() {
                   className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center"
                   style={{
                     background: "#EBEBEB",
-                    border: c.fedToday ? "2px solid #6B8E6F" : "2px solid rgba(17, 17, 17,0.3)",
+                    border: c.fedToday ? "2px solid #555555" : "2px solid rgba(17, 17, 17,0.3)",
                   }}
                 >
                   {thumb ? (
@@ -121,7 +121,7 @@ export default function MyCatsQuickCare() {
                 disabled={c.fedToday || c.busy}
                 className="mt-1 h-7 px-2.5 rounded-full flex items-center justify-center gap-0.5 press-strong transition-transform"
                 style={{
-                  background: c.fedToday ? "#6B8E6F" : "#E88D5A",
+                  background: c.fedToday ? "#555555" : "#111111",
                   color: "#fff",
                   opacity: c.busy ? 0.6 : 1,
                   cursor: c.fedToday ? "default" : "pointer",

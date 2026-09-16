@@ -60,7 +60,7 @@ export default function FundSettlementCard() {
       {/* 3분할 요약 */}
       <div className="grid grid-cols-3 gap-2">
         {[
-          { label: "모인 금액", value: collected, color: "#22A366" },
+          { label: "모인 금액", value: collected, color: "#111111" },
           { label: "쓰인 금액", value: spent, color: "var(--color-like)" },
           { label: "잔액", value: balance, color: "var(--color-primary)" },
         ].map((s) => (
@@ -82,7 +82,7 @@ export default function FundSettlementCard() {
       >
         <span className="text-[13px]">✂️</span>
         <span className="text-[11px] font-bold text-text-sub">후원금으로 중성화한 아이</span>
-        <span className="text-[15px] font-extrabold tabular-nums" style={{ color: "#4F6B53" }}>
+        <span className="text-[15px] font-extrabold tabular-nums" style={{ color: "#2A2A2A" }}>
           {neuteredCount.toLocaleString()}
         </span>
         <span className="text-[11px] font-bold text-text-sub">마리</span>

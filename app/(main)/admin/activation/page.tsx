@@ -77,7 +77,7 @@ const COHORT_META: Record<CohortId, {
     label: "첫 등록 미완료",
     description: "가입했지만 고양이 등록 0건 (cold start 위험)",
     Icon: CatIcon,
-    color: "#E88D5A",
+    color: "#111111",
     bg: "rgba(232,141,90,0.14)",
   },
 };

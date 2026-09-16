@@ -11,10 +11,10 @@ export default function GuideOG() {
     (
       <GuideOGTemplate
         badge="✨ 가이드"
-        badgeColor="#E8B040"
+        badgeColor="#555555"
         title="이 앱으로 뭘 할 수 있어?"
         highlightText="뭘 할 수 있어?"
-        highlightColor="#E8B040"
+        highlightColor="#555555"
         subtitle="지도·돌봄다이어리·커뮤니티·레벨·AI 집사까지. 15가지 기능을 카드 하나씩 시작해보세요."
         tags={["🗺️ 지도", "🐾 돌봄", "💬 커뮤니티", "🏆 레벨"]}
       />

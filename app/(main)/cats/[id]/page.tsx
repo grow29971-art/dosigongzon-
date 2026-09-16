@@ -195,7 +195,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
           <div
             className="rounded-2xl p-5"
             style={{
-              background: "linear-gradient(135deg, #2b2440 0%, #3a2c4d 55%, #55456f 100%)",
+              background: "linear-gradient(135deg, #2b2440 0%, #2A2A2A 55%, #55456f 100%)",
               boxShadow: "var(--shadow-card)",
             }}
           >
@@ -224,7 +224,7 @@ export default async function CatDetailPage({ params }: { params: Params }) {
             <Link
               href="/memorial"
               className="inline-flex items-center justify-center h-[40px] px-5 rounded-xl mt-4 text-[13px] font-bold"
-              style={{ background: "rgba(255,255,255,0.94)", color: "#3a2c4d" }}
+              style={{ background: "rgba(255,255,255,0.94)", color: "#2A2A2A" }}
             >
               고양이별 가보기
             </Link>

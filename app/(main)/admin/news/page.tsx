@@ -531,7 +531,7 @@ export default function AdminNewsPage() {
                       {item.auto_imported && (
                         <span
                           className="text-[11px] font-bold px-1.5 py-0.5 chip-square"
-                          style={{ color: "#7A6B8E", backgroundColor: "#EAE6E8" }}
+                          style={{ color: "#2A2A2A", backgroundColor: "#EAE6E8" }}
                         >
                           자동수집
                         </span>

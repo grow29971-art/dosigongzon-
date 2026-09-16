@@ -47,7 +47,7 @@ export default function CommunityWritePrompt() {
       }}
     >
       <div className="flex items-center gap-2 mb-2.5">
-        <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: "#8B65B8" }}>
+        <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: "#111111" }}>
           <PenLine size={15} color="#fff" strokeWidth={2.3} />
         </div>
         <div className="min-w-0">
@@ -66,7 +66,7 @@ export default function CommunityWritePrompt() {
           >
             <span className="text-base shrink-0">{p.emoji}</span>
             <span className="flex-1 min-w-0 text-[13px] font-bold text-text-main truncate">{p.label}</span>
-            <ChevronRight size={14} style={{ color: "#8B65B8" }} className="shrink-0" />
+            <ChevronRight size={14} style={{ color: "#111111" }} className="shrink-0" />
           </Link>
         ))}
       </div>

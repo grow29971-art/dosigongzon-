@@ -206,7 +206,7 @@ export default function AdminZonesPage() {
               {r.status === "received" && (
                 <button onClick={() => handleStatus(r.id, "forwarded")} disabled={busy}
                   className="text-[13px] font-bold px-3 py-1.5 rounded-lg text-white press-strong disabled:opacity-60"
-                  style={{ backgroundColor: "#4A7BA8" }}>
+                  style={{ backgroundColor: "#6B6B6B" }}>
                   기관 이관 처리
                 </button>
               )}

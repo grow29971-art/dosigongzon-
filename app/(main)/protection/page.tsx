@@ -45,7 +45,7 @@ const cards: {
     title: "돌봄 가이드",
     subtitle: "2026 개정 — 농림축산식품부 공식 PDF",
     Icon: BookOpenText,
-    iconBg: "#4A7BA8",
+    iconBg: "#6B6B6B",
     iconColor: "#FFFFFF",
     glowColor: "74,123,168",
     type: "external",
@@ -69,7 +69,7 @@ const cards: {
     title: "병원 찾기",
     subtitle: "근처 협력병원 검색",
     Icon: BriefcaseMedical,
-    iconBg: "#E88D5A",
+    iconBg: "#111111",
     iconColor: "#FFFFFF",
     glowColor: "232,141,90",
     type: "link",
@@ -79,7 +79,7 @@ const cards: {
     title: "TNR 신청",
     subtitle: "국가동물보호정보시스템 바로가기",
     Icon: Globe,
-    iconBg: "#48A59E",
+    iconBg: "#111111",
     iconColor: "#FFFFFF",
     glowColor: "72,165,158",
     type: "external",
@@ -90,7 +90,7 @@ const cards: {
     title: "법률 가이드",
     subtitle: "동물보호법 · 학대/훼손 대응 매뉴얼",
     Icon: ShieldCheck,
-    iconBg: "#8B65B8",
+    iconBg: "#111111",
     iconColor: "#FFFFFF",
     glowColor: "139,101,184",
     type: "link",
@@ -101,7 +101,7 @@ const cards: {
     title: "냥줍 가이드",
     subtitle: "관찰 · 체온 · 급여 3단계",
     Icon: Cat,
-    iconBg: "#E8B040",
+    iconBg: "#555555",
     iconColor: "#FFFFFF",
     glowColor: "232,176,64",
     type: "link",
@@ -122,7 +122,7 @@ const cards: {
     title: "포획 가이드",
     subtitle: "준비물 · 설치 · 대기 · 주의사항",
     Icon: Hand,
-    iconBg: "#8BA86B",
+    iconBg: "#6B6B6B",
     iconColor: "#FFFFFF",
     glowColor: "139,168,107",
     type: "link",
@@ -145,7 +145,7 @@ const cards: {
     title: "약품 가이드",
     subtitle: "동물약국 영양제 · 구충제 · 상처 관리",
     Icon: Pill,
-    iconBg: "#D4708F",
+    iconBg: "#111111",
     iconColor: "#FFFFFF",
     glowColor: "212,112,143",
     type: "link",
@@ -157,7 +157,7 @@ const cards: {
     title: "먹이 가이드",
     subtitle: "주면 안 되는 음식 · 안전한 급식 원칙",
     Icon: Utensils,
-    iconBg: "#E88D5A",
+    iconBg: "#111111",
     iconColor: "#FFFFFF",
     glowColor: "232,141,90",
     type: "link",
@@ -168,7 +168,7 @@ const cards: {
     title: "쉼터 · 겨울나기",
     subtitle: "숨숨집 DIY · 설치 원칙 · 계절 운영",
     Icon: HomeIcon,
-    iconBg: "#4A7BA8",
+    iconBg: "#6B6B6B",
     iconColor: "#FFFFFF",
     glowColor: "74,123,168",
     type: "link",
@@ -179,7 +179,7 @@ const cards: {
     title: "자주 묻는 질문",
     subtitle: "발견·구조·TNR·입양·법 — 30문 정리",
     Icon: HelpCircle,
-    iconBg: "#6B8DAE",
+    iconBg: "#6B6B6B",
     iconColor: "#FFFFFF",
     glowColor: "107,141,174",
     type: "link",
@@ -267,11 +267,11 @@ const breadcrumbLd = {
 /* ═══ 상황별 빠른 진입 칩 ═══ */
 const QUICK_SITUATIONS = [
   { label: "다친 아이 발견", icon: AlertTriangle, color: "#D85555", href: "/protection/emergency-guide" },
-  { label: "새끼를 봤어요", icon: Baby, color: "#E8B040", href: "/protection/kitten-guide" },
-  { label: "먹이 줘도 되나?", icon: Utensils, color: "#E88D5A", href: "/protection/feeding-guide" },
-  { label: "TNR 알아보기", icon: Scissors, color: "#8BA86B", href: "/protection/trapping-guide" },
-  { label: "쉼터 만들기", icon: HomeIcon, color: "#4A7BA8", href: "/protection/shelter-guide" },
-  { label: "약·영양제", icon: Pill, color: "#D4708F", href: "/protection/pharmacy-guide" },
+  { label: "새끼를 봤어요", icon: Baby, color: "#555555", href: "/protection/kitten-guide" },
+  { label: "먹이 줘도 되나?", icon: Utensils, color: "#111111", href: "/protection/feeding-guide" },
+  { label: "TNR 알아보기", icon: Scissors, color: "#6B6B6B", href: "/protection/trapping-guide" },
+  { label: "쉼터 만들기", icon: HomeIcon, color: "#6B6B6B", href: "/protection/shelter-guide" },
+  { label: "약·영양제", icon: Pill, color: "#111111", href: "/protection/pharmacy-guide" },
 ];
 
 // href에서 slug 추출 ("/protection/foo" → "foo")
@@ -358,12 +358,12 @@ export default function ProtectionPage() {
         className="mb-5 rounded-2xl px-4 py-3 flex items-center gap-3"
         style={{
           background: progress.read === progress.total
-            ? "linear-gradient(135deg, #E8F4E8 0%, #D5EDD5 100%)"
-            : "linear-gradient(135deg, #F2F2F2 0%, #FCEFD9 100%)",
+            ? "linear-gradient(135deg, #F2F2F2 0%, #E0E0E0 100%)"
+            : "linear-gradient(135deg, #F2F2F2 0%, #E0E0E0 100%)",
           border: `1px solid ${progress.read === progress.total ? "rgba(34,163,102,0.2)" : "rgba(17, 17, 17,0.18)"}`,
         }}
       >
-        <Sparkles size={16} className={progress.read === progress.total ? "text-[#3F5B42]" : "text-[var(--color-primary)]"} />
+        <Sparkles size={16} className={progress.read === progress.total ? "text-[#2A2A2A]" : "text-[var(--color-primary)]"} />
         <div className="flex-1 min-w-0">
           <p className="text-[13px] font-bold text-text-main">
             {progress.read === progress.total
@@ -380,7 +380,7 @@ export default function ProtectionPage() {
             />
           </div>
         </div>
-        <span className="text-[13px] font-bold tabular-nums" style={{ color: progress.read === progress.total ? "#3F5B42" : "var(--color-primary)" }}>
+        <span className="text-[13px] font-bold tabular-nums" style={{ color: progress.read === progress.total ? "#2A2A2A" : "var(--color-primary)" }}>
           {progress.percent}%
         </span>
       </div>
@@ -536,12 +536,12 @@ const EMERGENCY_CONTACTS = [
     label: "케어",
     tel: "02-313-8886",
     icon: HeartHandshake,
-    accent: "#E88D5A",
+    accent: "#111111",
   },
   {
     label: "고보협",
     tel: "070-7426-4888",
     icon: Cat,
-    accent: "#8B6FB8",
+    accent: "#111111",
   },
 ];

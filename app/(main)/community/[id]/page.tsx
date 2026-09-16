@@ -309,7 +309,7 @@ export default function PostDetailPage({
         {post.isPinned && (
           <span
             className="text-[11px] font-bold px-2 py-1 rounded-lg flex items-center gap-1"
-            style={{ backgroundColor: "#C9A96120", color: "#C9A961" }}
+            style={{ backgroundColor: "#55555520", color: "#555555" }}
           >
             <Pin size={10} /> 공지
           </span>
@@ -486,8 +486,8 @@ export default function PostDetailPage({
               onClick={handleShare}
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[13px] font-bold press-strong transition-transform"
               style={{
-                backgroundColor: shareStatus === "copied" ? "#6B8E6F" : "#FFFFFF",
-                border: `1px solid ${shareStatus === "copied" ? "#6B8E6F" : "var(--color-gray-200)"}`,
+                backgroundColor: shareStatus === "copied" ? "#555555" : "#FFFFFF",
+                border: `1px solid ${shareStatus === "copied" ? "#555555" : "var(--color-gray-200)"}`,
                 color: shareStatus === "copied" ? "#FFFFFF" : cat.color,
               }}
               aria-label="공유"
@@ -641,9 +641,9 @@ export default function PostDetailPage({
             aria-pressed={secretComment}
           >
             {secretComment
-              ? <Lock size={12} style={{ color: "#8B65B8" }} />
+              ? <Lock size={12} style={{ color: "#111111" }} />
               : <Unlock size={12} className="text-text-light" />}
-            <span className="text-[11px] font-bold" style={{ color: secretComment ? "#8B65B8" : "var(--color-text-light)" }}>
+            <span className="text-[11px] font-bold" style={{ color: secretComment ? "#111111" : "var(--color-text-light)" }}>
               {secretComment ? "비밀 댓글 — 글쓴이와 나만 볼 수 있어요" : "비밀 댓글"}
             </span>
           </button>
@@ -725,7 +725,7 @@ function CommentItem({
           {c.is_secret && (
             <span
               className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-[1px] rounded-md"
-              style={{ backgroundColor: "rgba(139,101,184,0.14)", color: "#8B65B8" }}
+              style={{ backgroundColor: "rgba(139,101,184,0.14)", color: "#111111" }}
             >
               <Lock size={9} /> 비밀
             </span>

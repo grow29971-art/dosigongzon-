@@ -17,13 +17,13 @@ import {
 
 const COLORS = [
   { label: "갈색", value: "#111111" },
-  { label: "초록", value: "#6B8E6F" },
+  { label: "초록", value: "#555555" },
   { label: "빨강", value: "#D85555" },
-  { label: "파랑", value: "#4A7BA8" },
-  { label: "보라", value: "#8B65B8" },
-  { label: "주황", value: "#E88D5A" },
-  { label: "민트", value: "#48A59E" },
-  { label: "골드", value: "#C9A961" },
+  { label: "파랑", value: "#6B6B6B" },
+  { label: "보라", value: "#111111" },
+  { label: "주황", value: "#111111" },
+  { label: "민트", value: "#111111" },
+  { label: "골드", value: "#555555" },
 ];
 
 const EMPTY: PharmacyGuideInput = {

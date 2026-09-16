@@ -488,7 +488,7 @@ export default async function HomeLanding({
       {/* 안전 정책 — 가입 직전 신뢰 봉합. 학대 우려 길집사 대상 핵심 메시지. */}
       <section className="px-5 mt-10">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4A7BA8" }} />
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#6B6B6B" }} />
           <h2 className="text-[15px] font-bold text-text-main tracking-tight">
             고양이 위치, 어떻게 지키나요?
           </h2>
@@ -503,7 +503,7 @@ export default async function HomeLanding({
           }}
         >
           <div className="flex items-start gap-2.5">
-            <ShieldCheck size={22} className="shrink-0 mt-0.5" style={{ color: "#4A7BA8" }} />
+            <ShieldCheck size={22} className="shrink-0 mt-0.5" style={{ color: "#6B6B6B" }} />
             <div className="min-w-0">
               <p className="text-[15px] font-bold text-text-main leading-snug mb-1 tracking-tight">
                 정확한 자리는 누구도 모릅니다
@@ -622,7 +622,7 @@ export default async function HomeLanding({
           <StartStep
             n={2}
             href="/map"
-            color="#4A7BA8"
+            color="#6B6B6B"
             title="우리 동네 지도에서 아이들 찾기"
             desc="구·동을 누르면 그 동네 길고양이만 모아 보여줘요."
           />
@@ -830,7 +830,7 @@ export default async function HomeLanding({
       {/* 내 동네 찾기 */}
       <section className="px-5 mt-8 cv-auto">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4A7BA8" }} />
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#6B6B6B" }} />
           <h2 className="text-[15px] font-bold text-text-main tracking-tight">동네별 길고양이 지도</h2>
         </div>
         <p className="text-[13px] text-text-sub mb-3 leading-relaxed">
@@ -928,22 +928,22 @@ export default async function HomeLanding({
           />
           <GuideCard
             href="/protection/pharmacy-guide"
-            icon={<Pill size={18} color="#D4708F" />}
-            iconBg="#D4708F15"
+            icon={<Pill size={18} color="#111111" />}
+            iconBg="#11111115"
             title="약품 가이드"
             sub="영양제·구충·상처"
           />
           <GuideCard
             href="/protection/shelter-guide"
-            icon={<HomeIcon size={18} color="#4A7BA8" />}
-            iconBg="#4A7BA815"
+            icon={<HomeIcon size={18} color="#6B6B6B" />}
+            iconBg="#6B6B6B15"
             title="쉼터·겨울나기"
             sub="숨숨집 DIY"
           />
           <GuideCard
             href="/protection/trapping-guide"
-            icon={<Hand size={18} color="#8BA86B" />}
-            iconBg="#8BA86B15"
+            icon={<Hand size={18} color="#6B6B6B" />}
+            iconBg="#6B6B6B15"
             title="포획 가이드"
             sub="설치·대기·주의"
           />
@@ -1019,7 +1019,7 @@ export default async function HomeLanding({
             desc="광고 없는 무료 서비스. 시민의 자발적 기록으로 운영됩니다."
           />
           <ValueRow
-            icon={<Download size={17} style={{ color: "#4A7BA8" }} />}
+            icon={<Download size={17} style={{ color: "#6B6B6B" }} />}
             title="앱 설치 없이 홈 화면에 추가"
             desc="PWA 지원. 브라우저에서 바로 설치하면 앱처럼 열려요."
           />
@@ -1071,7 +1071,7 @@ export default async function HomeLanding({
       {/* 기술 자산 — 어떻게 만들어졌나 */}
       <section className="px-5 mt-8 cv-auto">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#4A7BA8" }} />
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "#6B6B6B" }} />
           <h2 className="text-[15px] font-bold text-text-main tracking-tight">
             도시공존은 이렇게 만들어져요
           </h2>
@@ -1105,8 +1105,8 @@ export default async function HomeLanding({
             sub="DB 레벨 권한 분리"
           />
           <TechCard
-            icon={<ShieldCheck size={16} color="#4A7BA8" />}
-            iconBg="#4A7BA815"
+            icon={<ShieldCheck size={16} color="#6B6B6B" />}
+            iconBg="#6B6B6B15"
             title="봇·어뷰징 방어"
             sub="Cloudflare Turnstile"
           />

@@ -247,10 +247,10 @@ export default function AdminAuthErrorsPage() {
         }}
       >
         <div className="flex items-baseline justify-between mb-1">
-          <span className="text-[11px] font-bold" style={{ color: totalCount === 0 ? "#3F5B42" : "#8B2F2F" }}>
+          <span className="text-[11px] font-bold" style={{ color: totalCount === 0 ? "#2A2A2A" : "#8B2F2F" }}>
             최근 {days}일 실패
           </span>
-          <span className="text-[24px] font-bold" style={{ color: totalCount === 0 ? "#3F5B42" : "#8B2F2F" }}>
+          <span className="text-[24px] font-bold" style={{ color: totalCount === 0 ? "#2A2A2A" : "#8B2F2F" }}>
             {totalCount}
             <span className="text-[13px] font-semibold ml-0.5">건</span>
           </span>
@@ -285,7 +285,7 @@ export default function AdminAuthErrorsPage() {
           style={{ boxShadow: "var(--shadow-card)" }}
         >
           <div className="flex items-center gap-2 mb-3">
-            <AlertCircle size={13} style={{ color: "#E88D5A" }} />
+            <AlertCircle size={13} style={{ color: "#111111" }} />
             <h2 className="text-[13px] font-bold text-text-main">
               에러 코드 TOP
             </h2>
@@ -309,7 +309,7 @@ export default function AdminAuthErrorsPage() {
                   <span
                     className="w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-bold shrink-0"
                     style={{
-                      backgroundColor: idx === 0 ? "#D85555" : idx === 1 ? "#E88D5A" : "#C9A961",
+                      backgroundColor: idx === 0 ? "#D85555" : idx === 1 ? "#111111" : "#555555",
                       color: "#fff",
                     }}
                   >

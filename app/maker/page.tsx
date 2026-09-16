@@ -109,8 +109,8 @@ export default function MakerPage() {
           }}
         >
           <div className="flex items-center gap-1.5 mb-3">
-            <Eye size={14} style={{ color: "#4F6B53" }} />
-            <span className="text-[11px] font-bold tracking-[0.18em]" style={{ color: "#4F6B53" }}>
+            <Eye size={14} style={{ color: "#2A2A2A" }} />
+            <span className="text-[11px] font-bold tracking-[0.18em]" style={{ color: "#2A2A2A" }}>
               VISION
             </span>
           </div>
@@ -148,7 +148,7 @@ export default function MakerPage() {
           <ValueCard
             n={2}
             icon={<Wind size={16} color="#FFFFFF" />}
-            accent="#4A7BA8"
+            accent="#6B6B6B"
             accentDark="#3A6086"
             title="자유와 몰입"
             body="새로운 생각을 가로막는 고정 관념·관습·틀에서 벗어나 자연의 일부가 되어 한계를 초월하고 자유롭게 사고하며, 자연의 천재지변과 같이 매섭게 행동한다."
@@ -156,8 +156,8 @@ export default function MakerPage() {
           <ValueCard
             n={3}
             icon={<HandHeart size={16} color="#FFFFFF" />}
-            accent="#6B8E6F"
-            accentDark="#4F6B53"
+            accent="#555555"
+            accentDark="#2A2A2A"
             title="봉사"
             body="우리는 지구촌 형제들의 보급선이다. 우리는 모두에게 형제를 대하는 마음으로 서비스와 제품을 제공한다."
           />
@@ -251,7 +251,7 @@ export default function MakerPage() {
       {/* 운영 원칙 — 자비 운영 */}
       <section className="px-5 mt-7">
         <div className="flex items-center gap-2 mb-3">
-          <ShieldCheck size={14} style={{ color: "#4F6B53" }} />
+          <ShieldCheck size={14} style={{ color: "#2A2A2A" }} />
           <h2 className="text-[15px] font-bold text-text-main">어떻게 굴러가나</h2>
         </div>
         <div

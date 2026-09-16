@@ -164,7 +164,7 @@ export default function TrappingGuidePage() {
       <div
         className="rounded-2xl p-5 mb-6"
         style={{
-          background: "#E8F4E8",
+          background: "#F2F2F2",
           border: "1px solid rgba(107,142,111,0.2)",
         }}
       >
@@ -221,7 +221,7 @@ export default function TrappingGuidePage() {
       {/* Step 1 */}
       <section id="step-1" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <span className="w-7 h-7 chip-square bg-[#6B8E6F] text-white text-[13px] font-bold flex items-center justify-center">1</span>
+          <span className="w-7 h-7 chip-square bg-[#555555] text-white text-[13px] font-bold flex items-center justify-center">1</span>
           신청 — 구청 TNR 사업
         </h2>
         <p className="text-[15px] text-text-main leading-relaxed mb-3">
@@ -310,8 +310,8 @@ export default function TrappingGuidePage() {
       {/* Step 4 */}
       <section id="step-4" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Clock size={20} color="#7A6B8E" />
-          <span className="w-7 h-7 chip-square bg-[#7A6B8E] text-white text-[13px] font-bold flex items-center justify-center">4</span>
+          <Clock size={20} color="#2A2A2A" />
+          <span className="w-7 h-7 chip-square bg-[#2A2A2A] text-white text-[13px] font-bold flex items-center justify-center">4</span>
           대기·포획
         </h2>
         <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
@@ -333,8 +333,8 @@ export default function TrappingGuidePage() {
       {/* Step 5 */}
       <section id="step-5" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Stethoscope size={20} color="#4A7BA8" />
-          <span className="w-7 h-7 chip-square bg-[#4A7BA8] text-white text-[13px] font-bold flex items-center justify-center">5</span>
+          <Stethoscope size={20} color="#6B6B6B" />
+          <span className="w-7 h-7 chip-square bg-[#6B6B6B] text-white text-[13px] font-bold flex items-center justify-center">5</span>
           수술·회복
         </h2>
         <h3 className="text-[15px] font-bold text-text-main mt-4 mb-2">병원에서의 처치</h3>
@@ -379,8 +379,8 @@ export default function TrappingGuidePage() {
       {/* Step 6 */}
       <section id="step-6" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Scissors size={20} color="#8B65B8" />
-          <span className="w-7 h-7 chip-square bg-[#8B65B8] text-white text-[13px] font-bold flex items-center justify-center">6</span>
+          <Scissors size={20} color="#111111" />
+          <span className="w-7 h-7 chip-square bg-[#111111] text-white text-[13px] font-bold flex items-center justify-center">6</span>
           재방사
         </h2>
         <ul className="text-[13px] text-text-main space-y-2 pl-4 list-disc leading-relaxed">
@@ -390,7 +390,7 @@ export default function TrappingGuidePage() {
           <li>며칠간 <strong>상태 관찰</strong> — 상처 감염·탈수 여부</li>
           <li>도시공존 지도에 <strong>이어팁 태그 추가</strong>해서 커뮤니티에 기록</li>
         </ul>
-        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "#E8F4E8", color: "#3F5B42" }}>
+        <div className="mt-4 rounded-xl p-4 text-[13px] leading-relaxed" style={{ background: "#F2F2F2", color: "#2A2A2A" }}>
           <p className="font-bold mb-1">꾸준한 돌봄이 완성</p>
           <p>TNR은 끝이 아니라 시작. 재방사 후 <strong>정기적 급식·급수</strong>와 날씨 대응이 있어야 아이들이 건강하게 지낼 수 있어요.</p>
         </div>

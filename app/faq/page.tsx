@@ -501,7 +501,7 @@ const CATEGORIES: FaqCategory[] = [
     id: "app",
     label: "도시공존 사용법",
     Icon: Smartphone,
-    color: "#6B8DAE",
+    color: "#6B6B6B",
     bg: "rgba(107,141,174,0.14)",
     items: [
       {

@@ -111,7 +111,7 @@ export default function LegalChecklist({
 
       {progress === 100 && (
         <div className="mt-4 p-3 rounded-2xl bg-[#E8ECE5] text-center">
-          <p className="text-[13px] font-semibold text-[#6B8E6F]">
+          <p className="text-[13px] font-semibold text-[#555555]">
             모든 단계를 완료했어요
           </p>
         </div>

@@ -164,7 +164,7 @@ export default function ReportModal({
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
               style={{
-                background: "#6B8E6F",
+                background: "#555555",
                 boxShadow: "var(--shadow-fab)",
               }}
             >

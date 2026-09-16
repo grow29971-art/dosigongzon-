@@ -129,7 +129,7 @@ export default function CatRegistrationCelebration({
           }}
         >
           <div className="absolute top-3 left-5 animate-pulse">
-            <Sparkles size={14} style={{ color: "#E8B040", opacity: 0.8 }} />
+            <Sparkles size={14} style={{ color: "#555555", opacity: 0.8 }} />
           </div>
           <div className="absolute top-10 right-8 animate-pulse" style={{ animationDelay: "0.3s" }}>
             <PawPrint size={12} style={{ color: "var(--color-primary)", opacity: 0.5 }} />
@@ -184,7 +184,7 @@ export default function CatRegistrationCelebration({
                 disabled={meal === "saving"}
                 className="w-full flex items-center justify-center gap-1.5 rounded-2xl px-4 py-3 mb-3 text-[13px] font-bold text-white press disabled:opacity-60"
                 style={{
-                  background: "#E88D5A",
+                  background: "#111111",
                   boxShadow: "var(--shadow-fab)",
                 }}
               >

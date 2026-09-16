@@ -424,7 +424,7 @@ export default function AdminUsersPage() {
                       onClick={() => handleUnsuspend(u)}
                       disabled={busyUserId === u.id}
                       className="text-[11px] font-bold px-2 py-0.5 rounded-lg press-strong disabled:opacity-50 flex items-center gap-1"
-                      style={{ backgroundColor: "#E8F4E8", color: "#3F5B42" }}
+                      style={{ backgroundColor: "#F2F2F2", color: "#2A2A2A" }}
                     >
                       {busyUserId === u.id ? <Loader2 size={10} className="animate-spin" /> : <CheckCircle size={10} />}
                       정지 해제

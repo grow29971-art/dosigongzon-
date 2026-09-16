@@ -297,12 +297,12 @@ export const CATEGORY_LABELS: Record<TitleCategory, string> = {
 };
 
 export const CATEGORY_COLORS: Record<TitleCategory, string> = {
-  register: "#6B8E6F",
-  record: "#4A7BA8",
+  register: "#555555",
+  record: "#6B6B6B",
   alert: "#D85555",
-  popular: "#C9A961",
+  popular: "#555555",
   invite: "#E86B8C",
-  streak: "#E88D5A",
+  streak: "#111111",
   carelog: "#A57C52",
   battle: "#8B3A3A",
 };
@@ -334,15 +334,15 @@ export interface AdminTitle {
 }
 
 export const ADMIN_TITLES: AdminTitle[] = [
-  { id: "og_200", name: "초기 200", emoji: "🌟", color: "#E88D5A", description: "정식 출시 전 도시공존에 합류한 처음 200명에게 영구 부여되는 한정 타이틀" },
+  { id: "og_200", name: "초기 200", emoji: "🌟", color: "#111111", description: "정식 출시 전 도시공존에 합류한 처음 200명에게 영구 부여되는 한정 타이틀" },
   { id: "founding_member", name: "창립 멤버", emoji: "✨", color: "#111111", description: "정식 오픈(2026-06-01) 전 도시공존을 함께 시작한 초기 멤버" },
-  { id: "official_volunteer", name: "공식 봉사자", emoji: "💛", color: "#C9A961", description: "공식 인증된 길고양이 봉사 활동가" },
-  { id: "tnr_expert", name: "TNR 전문가", emoji: "✂️", color: "#8B65B8", description: "TNR 활동에 적극 기여한 시민" },
+  { id: "official_volunteer", name: "공식 봉사자", emoji: "💛", color: "#555555", description: "공식 인증된 길고양이 봉사 활동가" },
+  { id: "tnr_expert", name: "TNR 전문가", emoji: "✂️", color: "#111111", description: "TNR 활동에 적극 기여한 시민" },
   { id: "rescue_hero", name: "구조 영웅", emoji: "🦸", color: "#D85555", description: "위기 상황에서 고양이를 구조한 시민" },
-  { id: "community_leader", name: "커뮤니티 리더", emoji: "🌟", color: "#E88D5A", description: "커뮤니티를 이끄는 모범 회원" },
-  { id: "veterinary_partner", name: "수의 파트너", emoji: "🏥", color: "#48A59E", description: "수의학 지식을 나누는 협력자" },
-  { id: "early_supporter", name: "초기 서포터", emoji: "🌱", color: "#6B8E6F", description: "서비스 초기부터 함께한 서포터" },
-  { id: "content_creator", name: "콘텐츠 크리에이터", emoji: "📸", color: "#4A7BA8", description: "우수한 돌봄 콘텐츠를 생산하는 회원" },
+  { id: "community_leader", name: "커뮤니티 리더", emoji: "🌟", color: "#111111", description: "커뮤니티를 이끄는 모범 회원" },
+  { id: "veterinary_partner", name: "수의 파트너", emoji: "🏥", color: "#111111", description: "수의학 지식을 나누는 협력자" },
+  { id: "early_supporter", name: "초기 서포터", emoji: "🌱", color: "#555555", description: "서비스 초기부터 함께한 서포터" },
+  { id: "content_creator", name: "콘텐츠 크리에이터", emoji: "📸", color: "#6B6B6B", description: "우수한 돌봄 콘텐츠를 생산하는 회원" },
   { id: "donor", name: "후원자", emoji: "💝", color: "#E86B8C", description: "길고양이 돌봄을 후원하는 회원" },
 ];
 

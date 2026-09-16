@@ -162,7 +162,7 @@ export default function SafetyCallSheet({ open, onClose }: { open: boolean; onCl
             <button
               onClick={() => setConfirmTarget({ number: "119", label: "119 전화 걸기", desc: "구조·응급의료" })}
               className="rounded-2xl py-4 flex flex-col items-center gap-1 press-strong transition-transform"
-              style={{ backgroundColor: "#4A7BA8", color: "#fff" }}
+              style={{ backgroundColor: "#6B6B6B", color: "#fff" }}
             >
               <Phone size={20} />
               <span className="text-[15px] font-bold">119 전화 걸기</span>

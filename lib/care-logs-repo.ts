@@ -23,13 +23,13 @@ export const CARE_TYPE_MAP: Record<
   CareType,
   { label: string; emoji: string; color: string }
 > = {
-  feed: { label: "밥 줌", emoji: "🍚", color: "#E88D5A" },
-  water: { label: "물 줌", emoji: "💧", color: "#48A59E" },
-  treat: { label: "간식 줌", emoji: "🍗", color: "#E8B040" },
-  health: { label: "건강 체크", emoji: "🩺", color: "#6B8E6F" },
-  tnr: { label: "TNR", emoji: "✂️", color: "#8B65B8" },
+  feed: { label: "밥 줌", emoji: "🍚", color: "#111111" },
+  water: { label: "물 줌", emoji: "💧", color: "#111111" },
+  treat: { label: "간식 줌", emoji: "🍗", color: "#555555" },
+  health: { label: "건강 체크", emoji: "🩺", color: "#555555" },
+  tnr: { label: "TNR", emoji: "✂️", color: "#111111" },
   hospital: { label: "병원 방문", emoji: "🏥", color: "#D85555" },
-  shelter: { label: "쉼터 관리", emoji: "🏠", color: "#4A7BA8" },
+  shelter: { label: "쉼터 관리", emoji: "🏠", color: "#6B6B6B" },
   other: { label: "기타", emoji: "📝", color: "#8A8A8A" },
 };
 

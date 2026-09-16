@@ -109,7 +109,7 @@ export default function Og200EventModal() {
           <div
             className="w-[68px] h-[68px] mx-auto rounded-full flex items-center justify-center mb-3"
             style={{
-              background: "#E88D5A",
+              background: "#111111",
               boxShadow: "var(--shadow-primary)",
             }}
           >

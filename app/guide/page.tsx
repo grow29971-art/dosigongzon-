@@ -66,7 +66,7 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Cat,
-        iconColor: "#6B8E6F",
+        iconColor: "#555555",
         iconBg: "rgba(107,142,111,0.12)",
         title: "고양이 등록하기",
         desc: "지도 '+' 버튼을 누르면 등록 모달이 열려요. 사진·이름·성격 태그·건강 상태를 입력하면 끝.",
@@ -82,7 +82,7 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Pencil,
-        iconColor: "#48A59E",
+        iconColor: "#111111",
         iconBg: "rgba(72,165,158,0.12)",
         title: "돌봄다이어리 작성",
         desc: "밥·물·간식·건강 체크·TNR·병원 방문·쉼터 관리 7가지 활동을 기록. 매일 작성하면 연속 기록 보너스 점수.",
@@ -99,11 +99,11 @@ const SECTIONS: FeatureSection[] = [
   },
   {
     groupLabel: "소통과 커뮤니티",
-    groupColor: "#4A7BA8",
+    groupColor: "#6B6B6B",
     features: [
       {
         icon: MessageCircle,
-        iconColor: "#4A7BA8",
+        iconColor: "#6B6B6B",
         iconBg: "rgba(74,123,168,0.12)",
         title: "댓글 · 경보 · 리액션",
         desc: "고양이마다 이웃이 남긴 기록·경보를 확인하고 이모지로 반응할 수 있어요.",
@@ -118,7 +118,7 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Users,
-        iconColor: "#8B65B8",
+        iconColor: "#111111",
         iconBg: "rgba(139,101,184,0.12)",
         title: "커뮤니티 게시판",
         desc: "카테고리별 동네 이웃 이야기. 긴급 구조·임보 요청·입양 공고·용품 나눔까지.",
@@ -148,7 +148,7 @@ const SECTIONS: FeatureSection[] = [
       },
       {
         icon: Sparkles,
-        iconColor: "#48A59E",
+        iconColor: "#111111",
         iconBg: "rgba(72,165,158,0.12)",
         title: "지역 채팅 (동네 LIVE)",
         desc: "같은 구 이웃들과 실시간 대화. 지도 하단 💬 버튼으로 진입.",
@@ -160,11 +160,11 @@ const SECTIONS: FeatureSection[] = [
   },
   {
     groupLabel: "내 활동과 보상",
-    groupColor: "#E88D5A",
+    groupColor: "#111111",
     features: [
       {
         icon: Trophy,
-        iconColor: "#E88D5A",
+        iconColor: "#111111",
         iconBg: "rgba(232,141,90,0.12)",
         title: "레벨 · 업적",
         desc: "고양이 등록·돌봄 기록·경보·좋아요·초대·연속 돌봄으로 점수를 쌓아 7단계 레벨업.",
@@ -194,11 +194,11 @@ const SECTIONS: FeatureSection[] = [
   },
   {
     groupLabel: "정보와 가이드",
-    groupColor: "#6B8E6F",
+    groupColor: "#555555",
     features: [
       {
         icon: BookOpen,
-        iconColor: "#6B8E6F",
+        iconColor: "#555555",
         iconBg: "rgba(107,142,111,0.12)",
         title: "보호 지침",
         desc: "상황별 행동 매뉴얼. 응급처치부터 계절 쉼터까지.",
@@ -230,11 +230,11 @@ const SECTIONS: FeatureSection[] = [
   },
   {
     groupLabel: "설정과 편의",
-    groupColor: "#8B65B8",
+    groupColor: "#111111",
     features: [
       {
         icon: Bell,
-        iconColor: "#4A7BA8",
+        iconColor: "#6B6B6B",
         iconBg: "rgba(74,123,168,0.12)",
         title: "알림 · 푸시",
         desc: "내 고양이에 달린 댓글·돌봄, 받은 쪽지, 초대 친구 가입 등을 알림 센터에서 확인.",

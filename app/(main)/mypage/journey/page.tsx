@@ -14,14 +14,14 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 const CAT_COLOR: Record<MilestoneCategory, { bg: string; ring: string; text: string }> = {
-  join:     { bg: "#E8ECE5", ring: "#5BA876", text: "#3F5B42" },
+  join:     { bg: "#E8ECE5", ring: "#5BA876", text: "#2A2A2A" },
   cat:      { bg: "#F2F2F2", ring: "#111111", text: "#7A4A2A" },
-  care:     { bg: "#FFF5E0", ring: "#E8B040", text: "#8C6A1F" },
-  comment:  { bg: "#F0E8F8", ring: "#8B65B8", text: "#5A3F7E" },
-  post:     { bg: "#E5EDF5", ring: "#4A7BA8", text: "#2A4A6B" },
-  received: { bg: "#FBE8EE", ring: "#D4708F", text: "#7A3E54" },
-  social:   { bg: "#FCEFD9", ring: "#E88D5A", text: "#7A4524" },
-  region:   { bg: "#E8F0E8", ring: "#6B8E6F", text: "#3F5B42" },
+  care:     { bg: "#FFF5E0", ring: "#555555", text: "#8C6A1F" },
+  comment:  { bg: "#F0E8F8", ring: "#111111", text: "#5A3F7E" },
+  post:     { bg: "#E5EDF5", ring: "#6B6B6B", text: "#2A4A6B" },
+  received: { bg: "#FBE8EE", ring: "#111111", text: "#7A3E54" },
+  social:   { bg: "#E0E0E0", ring: "#111111", text: "#7A4524" },
+  region:   { bg: "#E8F0E8", ring: "#555555", text: "#2A2A2A" },
   streak:   { bg: "#FBE5DC", ring: "#D85555", text: "#7A2A2A" },
 };
 

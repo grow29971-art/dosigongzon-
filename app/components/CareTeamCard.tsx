@@ -35,7 +35,7 @@ export default function CareTeamCard() {
         <div className="flex items-start gap-3">
           <div
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-            style={{ background: "rgba(107,142,111,0.12)", color: "#4F6B53" }}
+            style={{ background: "rgba(107,142,111,0.12)", color: "#2A2A2A" }}
           >
             <Users size={20} aria-hidden="true" />
           </div>

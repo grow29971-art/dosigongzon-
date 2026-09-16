@@ -97,8 +97,8 @@ export default async function CelebratePage() {
             icon={<Heart size={18} color="#fff" />}
             value={stats.hospitals.toLocaleString()}
             label="치료 병원"
-            color="#6B8E6F"
-            accent="#4F6B53"
+            color="#555555"
+            accent="#2A2A2A"
           />
         </div>
       </section>

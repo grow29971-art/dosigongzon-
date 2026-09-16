@@ -182,7 +182,7 @@ export default function ShelterGuidePage() {
       </div>
 
       <h1 className="text-[24px] font-bold text-text-main leading-tight tracking-tight mb-3">
-        길고양이 <span style={{ color: "#4A7BA8" }}>겨울나기</span> · <br />숨숨집 만들기
+        길고양이 <span style={{ color: "#6B6B6B" }}>겨울나기</span> · <br />숨숨집 만들기
       </h1>
 
       <div
@@ -214,7 +214,7 @@ export default function ShelterGuidePage() {
       {/* 준비물 */}
       <section id="materials" className="mb-8 scroll-mt-20">
         <h2 className="flex items-center gap-2 text-[17px] font-bold text-text-main mb-3">
-          <Wrench size={20} color="#4A7BA8" />
+          <Wrench size={20} color="#6B6B6B" />
           준비물 (총 약 1만 5천 원)
         </h2>
         <div className="grid grid-cols-1 gap-2">

@@ -16,9 +16,9 @@ export type OrderStatus =
 export const ORDER_STATUS_MAP: Record<OrderStatus, { label: string; color: string }> = {
   pending:   { label: "결제대기",   color: "#8A8A8A" },
   paid:      { label: "결제완료",   color: "#111111" },
-  preparing: { label: "상품준비중", color: "#E88D5A" },
-  shipping:  { label: "배송중",     color: "#E88D5A" },
-  delivered: { label: "배송완료",   color: "#6B8E6F" },
+  preparing: { label: "상품준비중", color: "#111111" },
+  shipping:  { label: "배송중",     color: "#111111" },
+  delivered: { label: "배송완료",   color: "#555555" },
   cancelled: { label: "주문취소",   color: "#D85555" },
   refunded:  { label: "환불완료",   color: "#D85555" },
 };

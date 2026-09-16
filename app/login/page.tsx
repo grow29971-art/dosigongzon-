@@ -214,7 +214,7 @@ function LoginContent() {
                   {oauthGuide.body}
                 </p>
                 {oauthGuide.tip && (
-                  <p className="text-[13px] mt-2 leading-relaxed font-semibold" style={{ color: "#3F5B42" }}>
+                  <p className="text-[13px] mt-2 leading-relaxed font-semibold" style={{ color: "#2A2A2A" }}>
                     💡 {oauthGuide.tip}
                   </p>
                 )}

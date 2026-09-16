@@ -47,14 +47,14 @@ const CATEGORY_META: Record<
     title: "돌봄 부탁",
     subtitle: "입원 · 여행 때 밥자리 대타 요청",
     Icon: HandHeart,
-    color: "#4A7BA8",
+    color: "#6B6B6B",
     glow: "74,123,168",
   },
   foster: {
     title: "임보",
     subtitle: "임시보호 요청 · 제안",
     Icon: Home,
-    color: "#E88D5A",
+    color: "#111111",
     glow: "232,141,90",
   },
   adoption: {
@@ -68,14 +68,14 @@ const CATEGORY_META: Record<
     title: "중고마켓",
     subtitle: "용품 거래 · 무료 나눔",
     Icon: ShoppingBag,
-    color: "#48A59E",
+    color: "#111111",
     glow: "72,165,158",
   },
   free: {
     title: "자유게시판",
     subtitle: "일상 · 정보 · 수다",
     Icon: MessagesSquare,
-    color: "#8B65B8",
+    color: "#111111",
     glow: "139,101,184",
   },
 };

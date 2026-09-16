@@ -63,7 +63,7 @@ export default function MarketingPushToggle() {
         className="w-10 h-10 flex items-center justify-center shrink-0"
         style={{ backgroundColor: "rgba(74,123,168,0.1)", borderRadius: "var(--radius-square-lg)" }}
       >
-        <BellRing size={18} color="#4A7BA8" strokeWidth={2} />
+        <BellRing size={18} color="#6B6B6B" strokeWidth={2} />
       </div>
       <div className="flex-1 min-w-0 text-left">
         <p className="text-[15px] font-bold text-text-main tracking-tight">
@@ -81,7 +81,7 @@ export default function MarketingPushToggle() {
           onChange={handleToggle}
           disabled={saving}
           size="sm"
-          color="#4A7BA8"
+          color="#6B6B6B"
           aria-label="마케팅 푸시 수신 설정"
         />
       )}

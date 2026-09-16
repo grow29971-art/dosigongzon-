@@ -208,7 +208,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                     {log.is_private && (
                       <span
                         className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded"
-                        style={{ backgroundColor: "rgba(139,101,184,0.14)", color: "#8B65B8" }}
+                        style={{ backgroundColor: "rgba(139,101,184,0.14)", color: "#111111" }}
                       >
                         <Lock size={9} /> 비밀
                       </span>
@@ -333,7 +333,7 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center press-strong"
-                  style={{ backgroundColor: photoFile ? "#6B8E6F" : "#fff", border: "1px solid #E0E0E0" }}
+                  style={{ backgroundColor: photoFile ? "#555555" : "#fff", border: "1px solid #E0E0E0" }}
                 >
                   <Camera size={14} style={{ color: photoFile ? "#fff" : "#8A8A8A" }} />
                 </button>
@@ -350,14 +350,14 @@ export default function CareLogTab({ catId, isLoggedIn, currentUserId }: Props) 
                 }}
                 aria-pressed={isPrivate}
               >
-                {isPrivate ? <Lock size={13} style={{ color: "#8B65B8" }} /> : <Unlock size={13} style={{ color: "#8A8A8A" }} />}
-                <span className="text-[13px] font-bold" style={{ color: isPrivate ? "#8B65B8" : "#8A8A8A" }}>
+                {isPrivate ? <Lock size={13} style={{ color: "#111111" }} /> : <Unlock size={13} style={{ color: "#8A8A8A" }} />}
+                <span className="text-[13px] font-bold" style={{ color: isPrivate ? "#111111" : "#8A8A8A" }}>
                   {isPrivate ? "비밀글 — 나만 볼 수 있어요" : "비밀글로 남기기"}
                 </span>
                 {/* 공존 시그니처: 사각 토글 (원형 아님) */}
                 <span
                   className="ml-auto w-9 h-5 transition-colors relative"
-                  style={{ backgroundColor: isPrivate ? "#8B65B8" : "#D8D2C8", borderRadius: "var(--radius-square-lg)" }}
+                  style={{ backgroundColor: isPrivate ? "#111111" : "#D8D2C8", borderRadius: "var(--radius-square-lg)" }}
                 >
                   <span
                     className="absolute top-0.5 w-4 h-4 bg-white transition-all"

@@ -171,7 +171,7 @@ function CaretakerCard({
             <span
               key={r}
               className="text-[11px] font-bold px-1.5 py-0.5 rounded-md"
-              style={{ background: "rgba(107,142,111,0.12)", color: "#3F5B42" }}
+              style={{ background: "rgba(107,142,111,0.12)", color: "#2A2A2A" }}
             >
               {r}
             </span>

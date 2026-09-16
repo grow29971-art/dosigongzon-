@@ -34,9 +34,9 @@ export default function TodayVisitors() {
     >
       <span
         className="w-1.5 h-1.5 rounded-full animate-pulse"
-        style={{ background: "#48A59E" }}
+        style={{ background: "#111111" }}
       />
-      <Eye size={12} style={{ color: "#48A59E" }} />
+      <Eye size={12} style={{ color: "#111111" }} />
       <span className="text-[13px] font-bold" style={{ color: "#2E7870" }}>
         지금까지 {todayCount.toLocaleString()}명이 둘러봤어요
       </span>

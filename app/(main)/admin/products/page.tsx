@@ -518,7 +518,7 @@ export default function AdminProductsPage() {
                   className="px-2 py-1 chip-square text-[11px] font-bold"
                   style={{
                     background: p.is_active ? "rgba(107,142,111,0.12)" : "rgba(216,85,85,0.1)",
-                    color: p.is_active ? "#6B8E6F" : "#D85555",
+                    color: p.is_active ? "#555555" : "#D85555",
                   }}
                 >
                   {p.is_active ? "판매중" : "중지됨"}

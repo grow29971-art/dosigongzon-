@@ -1218,7 +1218,7 @@ export default function MapPage() {
     if (activityRegions.length === 0) return;
 
     activityRegions.forEach((r) => {
-      const color = r.slot === 1 ? "#111111" : "#4A7BA8";
+      const color = r.slot === 1 ? "#111111" : "#6B6B6B";
       const active = regionFilter === "all" || regionFilter === r.slot;
       const circle = new window.kakao.maps.Circle({
         map: mapInstanceRef.current,
@@ -1820,7 +1820,7 @@ export default function MapPage() {
       const isManual = h.source !== "kakao";
       const isLarge = isPharmacy || isManual; // 약국 + 수동 등록 = 큰 마커
       const c1 = isPharmacy ? "#FF9E43" : "#2BC47E";
-      const c2 = isPharmacy ? "#F0762B" : "#149D5B";
+      const c2 = isPharmacy ? "#111111" : "#149D5B";
       const uid = `hp${String(h.id).replace(/[^a-zA-Z0-9]/g, "").slice(0, 12)}`;
 
       // 아이콘 — 핀 중앙(22,19.5)에 배치. 병원=둥근 십자, 약국=알약(캡슐)
@@ -2145,7 +2145,7 @@ export default function MapPage() {
             {[
               { key: "cats", label: "고양이", active: showCats, toggle: () => setShowCats(!showCats), color: "#111111" },
               { key: "hospitals", label: "병원", active: showHospitals, toggle: () => setShowHospitals(!showHospitals), color: "#149D5B" },
-              { key: "pharmacies", label: "약국", active: showPharmacies, toggle: () => setShowPharmacies(!showPharmacies), color: "#F0762B" },
+              { key: "pharmacies", label: "약국", active: showPharmacies, toggle: () => setShowPharmacies(!showPharmacies), color: "#111111" },
             ].map((f) => (
               <UIChip key={f.key} onClick={f.toggle} active={f.active} activeColor={f.color} floating>
                 {f.label}
@@ -2252,7 +2252,7 @@ export default function MapPage() {
                   전체
                 </UIChip>
                 {activityRegions.map((r) => {
-                  const color = r.slot === 1 ? "#111111" : "#4A7BA8";
+                  const color = r.slot === 1 ? "#111111" : "#6B6B6B";
                   const active = regionFilter === r.slot;
                   return (
                     <UIChip
@@ -2864,7 +2864,7 @@ export default function MapPage() {
       {/* 선택된 병원/약국 상세 카드 */}
       {selectedHospital && (() => {
         const isPharm = (selectedHospital.tags ?? []).some((t) => t.includes("동물약국"));
-        const accent = isPharm ? "#F0762B" : "#149D5B"; // 마커·필터 칩과 동일 팔레트
+        const accent = isPharm ? "#111111" : "#149D5B"; // 마커·필터 칩과 동일 팔레트
         return (
         <div className="absolute bottom-0 left-0 right-0 z-20 px-4 pb-4 pointer-events-none">
           <div
@@ -3072,7 +3072,7 @@ export default function MapPage() {
                 }
                 className="w-11 h-11 rounded-full flex items-center justify-center press-strong transition-transform"
                 style={{
-                  background: "linear-gradient(135deg, #3a2c4d, #6b5b8a)",
+                  background: "linear-gradient(135deg, #2A2A2A, #6b5b8a)",
                   boxShadow: "var(--shadow-fab)",
                 }}
                 aria-label="고양이별로 보내기"

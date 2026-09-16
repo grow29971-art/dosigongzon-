@@ -11,10 +11,10 @@ export default function FeedingGuideOG() {
     (
       <GuideOGTemplate
         badge="🍚 보호지침"
-        badgeColor="#E88D5A"
+        badgeColor="#111111"
         title="길고양이 먹이 가이드"
         highlightText="먹이"
-        highlightColor="#E88D5A"
+        highlightColor="#111111"
         subtitle="주면 안 되는 음식 10가지 · 안전한 사료 · 급식소 5원칙 · 계절별 주의사항."
         tags={["🚫 금지 음식", "🥣 안전 사료", "📍 급식소", "💧 물"]}
       />

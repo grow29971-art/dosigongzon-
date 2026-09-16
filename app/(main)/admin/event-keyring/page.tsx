@@ -38,7 +38,7 @@ interface UserMini {
 const STATUS_META: Record<EntryStatus, { label: string; color: string; bg: string; emoji: string }> = {
   pending:  { label: "대기",   color: "#8A8A8A", bg: "var(--color-gray-100)", emoji: "⏳" },
   selected: { label: "당첨",   color: "#5BA876", bg: "#E8ECE5", emoji: "🎉" },
-  shipped:  { label: "배송완료", color: "#4A7BA8", bg: "#E5E8ED", emoji: "📦" },
+  shipped:  { label: "배송완료", color: "#6B6B6B", bg: "#E5E8ED", emoji: "📦" },
   rejected: { label: "제외",   color: "#D85555", bg: "var(--color-error-soft)", emoji: "✖️" },
 };
 

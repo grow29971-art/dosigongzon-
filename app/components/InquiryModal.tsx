@@ -69,7 +69,7 @@ export default function InquiryModal({ open, onClose }: Props) {
             <div
               className="w-8 h-8 rounded-xl flex items-center justify-center"
               style={{
-                background: "#4A7BA8",
+                background: "#6B6B6B",
                 boxShadow: "var(--shadow-raised)",
               }}
             >
@@ -94,7 +94,7 @@ export default function InquiryModal({ open, onClose }: Props) {
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
               style={{
-                background: "#6B8E6F",
+                background: "#555555",
                 boxShadow: "var(--shadow-fab)",
               }}
             >
@@ -176,7 +176,7 @@ export default function InquiryModal({ open, onClose }: Props) {
                 disabled={submitting || !subject.trim() || !body.trim()}
                 className="flex-1 py-3 rounded-xl text-[13px] font-bold text-white disabled:opacity-40 flex items-center justify-center gap-1.5"
                 style={{
-                  background: "#4A7BA8",
+                  background: "#6B6B6B",
                   boxShadow: "var(--shadow-fab)",
                 }}
               >

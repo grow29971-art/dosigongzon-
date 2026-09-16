@@ -65,7 +65,7 @@ export default function StreakFreezeButton({ streak, hasToday, onUsed }: Props) 
     return (
       <div
         className="mt-2 px-3 py-2 rounded-xl flex items-center gap-2 text-[11px] font-bold"
-        style={{ background: "rgba(74,123,168,0.08)", color: "#4A7BA8" }}
+        style={{ background: "rgba(74,123,168,0.08)", color: "#6B6B6B" }}
       >
         <Check size={12} />
         이번 주 쿠폰을 이미 사용했어요
@@ -99,7 +99,7 @@ export default function StreakFreezeButton({ streak, hasToday, onUsed }: Props) 
             onClick={handleUse}
             className="flex-1 py-2 rounded-xl text-[11px] font-bold text-white press-strong disabled:opacity-60 flex items-center justify-center gap-1"
             style={{
-              background: "#4A7BA8",
+              background: "#6B6B6B",
               boxShadow: "var(--shadow-raised)",
             }}
           >
@@ -137,7 +137,7 @@ export default function StreakFreezeButton({ streak, hasToday, onUsed }: Props) 
       style={{
         background: "rgba(74,123,168,0.10)",
         border: "1px dashed rgba(74,123,168,0.35)",
-        color: "#4A7BA8",
+        color: "#6B6B6B",
       }}
     >
       <Snowflake size={12} />

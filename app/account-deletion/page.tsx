@@ -133,7 +133,7 @@ export default function AccountDeletionPage() {
           <div className="flex items-center gap-2 mb-3">
             <div
               className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: "#4A7BA8" }}
+              style={{ background: "#6B6B6B" }}
             >
               <Mail size={16} color="#fff" strokeWidth={2.5} />
             </div>
@@ -155,14 +155,14 @@ export default function AccountDeletionPage() {
             }}
           >
             <div>
-              <p className="text-[13px] font-bold" style={{ color: "#4A7BA8" }}>
+              <p className="text-[13px] font-bold" style={{ color: "#6B6B6B" }}>
                 grow29971@gmail.com
               </p>
               <p className="text-[11px] text-text-sub mt-0.5">
                 평일 1~3영업일 내 처리
               </p>
             </div>
-            <ChevronRight size={16} style={{ color: "#4A7BA8" }} />
+            <ChevronRight size={16} style={{ color: "#6B6B6B" }} />
           </a>
         </section>
 
@@ -200,8 +200,8 @@ export default function AccountDeletionPage() {
           }}
         >
           <div className="flex items-center gap-2 mb-3">
-            <Clock size={16} style={{ color: "#4A7BA8" }} />
-            <h2 className="text-[15px] font-bold" style={{ color: "#4A7BA8" }}>
+            <Clock size={16} style={{ color: "#6B6B6B" }} />
+            <h2 className="text-[15px] font-bold" style={{ color: "#6B6B6B" }}>
               일부 보존되는 데이터 (법령상 의무)
             </h2>
           </div>

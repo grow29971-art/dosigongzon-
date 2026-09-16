@@ -390,7 +390,7 @@ export default function CirclePage() {
             border: "1px solid rgba(107,142,111,0.22)",
           }}
         >
-          <ShieldCheck size={20} className="shrink-0 mt-0.5" style={{ color: "#4F6B53" }} />
+          <ShieldCheck size={20} className="shrink-0 mt-0.5" style={{ color: "#2A2A2A" }} />
           <p className="text-[13px] text-text-sub leading-relaxed">
             서클 멤버에게만 보이는 고양이를 등록할 수 있어요. 학대 우려가 큰 아이를
             <b className="text-text-main"> 믿는 이웃</b>과만 공유하세요. 등록할 때 공개 범위를
@@ -410,7 +410,7 @@ export default function CirclePage() {
             <div className="flex items-start gap-3">
               <div
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-                style={{ background: "rgba(107,142,111,0.12)", color: "#4F6B53" }}
+                style={{ background: "rgba(107,142,111,0.12)", color: "#2A2A2A" }}
               >
                 <Clock3 size={20} aria-hidden="true" />
               </div>
@@ -597,7 +597,7 @@ export default function CirclePage() {
                         onClick={() => handleRespond(inv, "accepted")}
                         disabled={busy === inv.id}
                         className="px-3 py-2 rounded-xl text-[13px] font-bold text-white press-strong disabled:opacity-50"
-                        style={{ background: "#6B8E6F" }}
+                        style={{ background: "#555555" }}
                       >
                         <Check size={13} />
                       </button>
@@ -732,7 +732,7 @@ export default function CirclePage() {
           {/* 닉네임 검색 초대 */}
           <section className="px-5 mt-6">
             <div className="flex items-center gap-2 mb-3">
-              <UserPlus size={14} style={{ color: "#4A7BA8" }} />
+              <UserPlus size={14} style={{ color: "#6B6B6B" }} />
               <h2 className="text-[17px] font-bold text-text-main tracking-tight">닉네임 검색 초대</h2>
             </div>
             <div className="bg-white rounded-2xl p-3" style={{ boxShadow: "var(--shadow-card)" }}>
@@ -777,7 +777,7 @@ export default function CirclePage() {
                         onClick={() => handleInvite(r)}
                         disabled={busy === r.id}
                         className="px-3 py-1.5 rounded-lg text-[13px] font-bold text-white press-strong disabled:opacity-50"
-                        style={{ background: "#4A7BA8" }}
+                        style={{ background: "#6B6B6B" }}
                       >
                         {busy === r.id ? <Loader2 size={11} className="animate-spin" /> : "초대"}
                       </button>
@@ -794,9 +794,9 @@ export default function CirclePage() {
           {/* 멤버 목록 */}
           <section className="px-5 mt-6">
             <div className="flex items-center gap-2 mb-3">
-              <Users size={14} style={{ color: "#6B8E6F" }} />
+              <Users size={14} style={{ color: "#555555" }} />
               <h2 className="text-[17px] font-bold text-text-main tracking-tight">내 서클 멤버</h2>
-              <span className="text-[11px] font-bold px-2 py-0.5 chip-square text-white" style={{ background: "#6B8E6F" }}>
+              <span className="text-[11px] font-bold px-2 py-0.5 chip-square text-white" style={{ background: "#555555" }}>
                 {acceptedMembers.length}
               </span>
             </div>
@@ -874,7 +874,7 @@ function MemberRow({
         <p className="text-[13px] font-bold text-text-main truncate">
           {member.member_nickname ?? "익명 길집사"}
         </p>
-        <p className="text-[11px]" style={{ color: pending ? "#C9A961" : "#6B8E6F" }}>
+        <p className="text-[11px]" style={{ color: pending ? "#555555" : "#555555" }}>
           {pending ? "수락 대기 중" : "수락됨"}
         </p>
       </div>

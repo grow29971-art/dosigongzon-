@@ -102,7 +102,7 @@ export default function NewsDetailPage({
             <span
               className="text-[13px] font-bold px-3 py-1.5 rounded-xl backdrop-blur-sm"
               style={{
-                color: isEnded ? "#6B6B6B" : isToday ? "#fff" : isUpcoming ? "#B84545" : "#6B8E6F",
+                color: isEnded ? "#6B6B6B" : isToday ? "#fff" : isUpcoming ? "#B84545" : "#555555",
                 backgroundColor: isEnded
                   ? "rgba(230,222,214,0.9)"
                   : isToday

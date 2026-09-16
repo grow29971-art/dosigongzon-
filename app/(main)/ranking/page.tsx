@@ -46,7 +46,7 @@ export default async function RankingPage() {
           마이페이지
         </Link>
         <div className="flex items-baseline gap-2 mb-1">
-          <Trophy size={20} style={{ color: "#C9A961" }} />
+          <Trophy size={20} style={{ color: "#555555" }} />
           <h1 className="text-[24px] font-bold tracking-tight text-text-main">
             길집사 활동 랭킹
           </h1>
@@ -276,7 +276,7 @@ function RankRow({ row, highlight }: { row: RankingRow; highlight?: boolean }) {
     >
       <div
         className="w-8 text-center text-[15px] font-bold tabular-nums shrink-0"
-        style={{ color: row.rank <= 10 ? "#C9A961" : "#6B6B6B" }}
+        style={{ color: row.rank <= 10 ? "#555555" : "#6B6B6B" }}
       >
         {row.rank}
       </div>

@@ -49,7 +49,7 @@ const TIPS: Tip[] = [
   {
     id: "first_cat",
     icon: PawPrint,
-    iconColor: "#6B8E6F",
+    iconColor: "#555555",
     iconBg: "rgba(107,142,111,0.12)",
     title: "첫 고양이 등록하기",
     desc: "지도에서 + 버튼을 눌러 우리 동네 길고양이를 기록해보세요. 위치는 자동으로 근사치로만 공개돼요.",
@@ -61,7 +61,7 @@ const TIPS: Tip[] = [
   {
     id: "first_care",
     icon: Pencil,
-    iconColor: "#48A59E",
+    iconColor: "#111111",
     iconBg: "rgba(72,165,158,0.12)",
     title: "돌봄다이어리 남기기",
     desc: "밥·물·간식·건강체크 등을 기록하면 다른 이웃도 아이 상태를 알 수 있어요. 연속 기록은 포인트 보너스도 있어요!",
@@ -73,7 +73,7 @@ const TIPS: Tip[] = [
   {
     id: "area_chat",
     icon: MessageCircle,
-    iconColor: "#4A7BA8",
+    iconColor: "#6B6B6B",
     iconBg: "rgba(74,123,168,0.12)",
     title: "지역 채팅 참여하기 💬",
     desc: "지도 하단 채팅 버튼을 누르면 우리 구 이웃들과 실시간 대화. 짧게 인사만 해도 이웃이 늘어요.",
@@ -86,7 +86,7 @@ const TIPS: Tip[] = [
   {
     id: "more_cats",
     icon: Plus,
-    iconColor: "#6B8E6F",
+    iconColor: "#555555",
     iconBg: "rgba(107,142,111,0.12)",
     title: "주변에 또 다른 아이 있나요?",
     desc: "동네에 등록 안 된 아이가 더 있다면 지도에 올려주세요. 다른 이웃이 함께 챙길 수 있어요.",
@@ -99,7 +99,7 @@ const TIPS: Tip[] = [
   {
     id: "streak_challenge",
     icon: Heart,
-    iconColor: "#E88D5A",
+    iconColor: "#111111",
     iconBg: "rgba(232,141,90,0.12)",
     title: "7일 연속 돌봄 도전",
     desc: "이번 주 월~일 모두 기록하면 🏆 주간 개근 업적 + 보너스 점수. 하루 하나만 기록해도 OK.",
@@ -124,7 +124,7 @@ const TIPS: Tip[] = [
   {
     id: "community",
     icon: Users,
-    iconColor: "#8B65B8",
+    iconColor: "#111111",
     iconBg: "rgba(139,101,184,0.12)",
     title: "커뮤니티에서 이웃 만나기",
     desc: "긴급·임보·입양·나눔까지. 근처 길집사와 직접 이야기를 나눌 수 있어요.",
@@ -136,7 +136,7 @@ const TIPS: Tip[] = [
   {
     id: "protection_guide",
     icon: BookOpen,
-    iconColor: "#4A7BA8",
+    iconColor: "#6B6B6B",
     iconBg: "rgba(74,123,168,0.12)",
     title: "보호 가이드 읽기",
     desc: "응급처치 · TNR · 먹이 · 겨울 쉼터까지. 공공기관 자료 기반으로 정리된 가이드.",
